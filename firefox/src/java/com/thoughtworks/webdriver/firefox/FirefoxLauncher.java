@@ -457,7 +457,7 @@ public class FirefoxLauncher {
     }
 
   private File locateFirefoxBinaryFromSystemProperty() {
-    String binaryName = System.getProperty("firefox.bin");
+    String binaryName = System.getProperty("webdriver.firefox.bin");
     if (binaryName == null)
       return null;
 

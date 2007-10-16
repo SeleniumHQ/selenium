@@ -29,7 +29,7 @@ task :install_firefox => [:firefox] do
   cmd = 'java'
   cmd += ' -cp ' + libs.join(File::PATH_SEPARATOR)
   cmd += ' -Dwebdriver.firefox.development="' + File.dirname(__FILE__) + '/firefox/src/extension"' 
-  cmd += " -Dfirefox.bin=\"#{ENV['firefox']}\" " unless ENV['firefox'].nil?
+  cmd += " -Dwebdriver.firefox.bin=\"#{ENV['firefox']}\" " unless ENV['firefox'].nil?
   cmd += ' com.thoughtworks.webdriver.firefox.FirefoxLauncher '
     
   sh cmd, :verbose => true
@@ -158,7 +158,7 @@ def junit(args)
   test_string = 'java '
   test_string += '-cp ' + classpath.join(File::PATH_SEPARATOR) + ' ' if classpath.length > 1
   test_string += '-Djava.library.path=' + args[:native_path].join(File::PATH_SEPARATOR) + ' ' unless args[:native_path].nil?
-  test_string += "-Dfirefox.bin=\"#{ENV['firefox']}\" " unless ENV['firefox'].nil?
+  test_string += "-Dwebdriver.firefox.bin=\"#{ENV['firefox']}\" " unless ENV['firefox'].nil?
   test_string += 'junit.textui.TestRunner'
   puts test_string
   tests.each do |test|

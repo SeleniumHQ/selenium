@@ -9,6 +9,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * An implementation of the {#link WebDriver} interface that drives Firefox. This works through a firefox extension,
+ * which can be installed via the {#link FirefoxLauncher}. Important system variables are:
+ * <ul>
+ *  <li><b>webdriver.firefox.bin</b> - Which firefox binary to use (normally "firefox" on the PATH).</li>
+ *  <li><b>webdriver.firefox.profile</b> - The name of the profile to use (normally "WebDriver").</li>
+ * </ul>
+ *
+ * When the driver starts, it will make a copy of the profile it is using, rather than using that profile directly.
+ * This allows multiple instances of firefox to be started.
+ */
 public class FirefoxDriver implements WebDriver {
     private final ExtensionConnection extension;
     private long id;
@@ -28,8 +39,8 @@ public class FirefoxDriver implements WebDriver {
         if (!extension.isConnected()) {
             throw new RuntimeException(
                     "Unable to connect to Firefox. Is the WebDriver extension installed, and is there a profile called WebDriver?\n" +
-                            "To set up a profile for WebDriver, simply start firefox from the command line with the \"profileManager\" switch\n" +
-                            "This will look like: firefox -profileManager");
+                            "To set up a profile for WebDriver, simply start firefox from the command line with the \"ProfileManager\" switch\n" +
+                            "This will look like: firefox -ProfileManager. Alternatively, use the FirefoxLauncher support class from this project");
         }
 
         fixId();
