@@ -116,7 +116,7 @@ LPTSTR FindActiveConnection()
 
 int QueryOptions(LPTSTR szActiveConnection)
 {
-    _tprintf(L"ACTIVE_CONNECTION=%s\n", (szActiveConnection == NULL ? L"": szActiveConnection));
+    _tprintf(L"ACTIVE_CONNECTION=%s\n", szActiveConnection);
     const int optionCount = 5;
     INTERNET_PER_CONN_OPTION_LIST    List;
     INTERNET_PER_CONN_OPTION         Option[optionCount];
@@ -167,28 +167,23 @@ int QueryOptions(LPTSTR szActiveConnection)
         _tprintf(L"false\n");
     }
 
-    _tprintf(L"INTERNET_PER_CONN_PROXY_SERVER=");
-    if(Option[INTERNET_PER_CONN_PROXY_SERVER].Value.pszValue != NULL) {
-        _tprintf(L"%s\n", Option[INTERNET_PER_CONN_PROXY_SERVER].Value.pszValue);
-    } else {
-        _tprintf(L"\n");
-    }
-    
-    _tprintf(L"INTERNET_PER_CONN_PROXY_BYPASS=");
-    if(Option[INTERNET_PER_CONN_PROXY_BYPASS].Value.pszValue != NULL) {
-        _tprintf(L"%s\n", Option[INTERNET_PER_CONN_PROXY_BYPASS].Value.pszValue);
-    } else {
-        _tprintf(L"\n");
-    }
-    
-    _tprintf(L"INTERNET_PER_CONN_AUTOCONFIG_URL=");
-    if(Option[INTERNET_PER_CONN_AUTOCONFIG_URL].Value.pszValue != NULL) {
-        _tprintf(L"%s\n", Option[INTERNET_PER_CONN_AUTOCONFIG_URL].Value.pszValue);
-    } else {
-        _tprintf(L"\n");
-    }
+    _tprintf(L"INTERNET_PER_CONN_PROXY_SERVER=%s\n", Option[INTERNET_PER_CONN_PROXY_SERVER].Value.pszValue);
+    _tprintf(L"INTERNET_PER_CONN_PROXY_BYPASS=%s\n", Option[INTERNET_PER_CONN_PROXY_BYPASS].Value.pszValue);
+    _tprintf(L"INTERNET_PER_CONN_AUTOCONFIG_URL=%s\n", Option[INTERNET_PER_CONN_AUTOCONFIG_URL].Value.pszValue);
 
 	return 0;
+}
+
+void CheckBlankArg(LPTSTR * pszArg) {
+    if (*pszArg == NULL) return;
+    if (_tcslen(*pszArg) == 0) {
+        *pszArg = NULL;
+        return;
+    }
+    if (!_tcsicmp(*pszArg, L"(null)")) {
+        *pszArg = NULL;
+        return;
+    }
 }
 
 int _tmain(int argc, _TCHAR* argv[])
@@ -211,15 +206,15 @@ int _tmain(int argc, _TCHAR* argv[])
 
             "Run \"hudsuckr\" with exactly eight arguments to set the proxy\n"
             "configuration, like this:\n"
-            "  hudsuckr \"\" true true true true \"localhost:4444\" \"<local>\" \"file://c:/proxy.pac\"\n\n"
+            "  hudsuckr (null) true true true true \"localhost:4444\" \"<local>\" \"file://c:/proxy.pac\"\n\n"
 
             "Specify the name of the connection first (or use the LAN settings by\n"
-            "specifying the blank string \"\"), then set the four flags using \"true\"\n"
-            "and \"false\", then the proxy server (with a colon to specify the port),\n"
-            "the list of servers to bypass delimited by semi-colons (with \"<local>\"\n"
-            "as a special string that bypasses local addresses), and finally the\n"
-            "URL to a proxy PAC autoconfiguration file.  Use \"\" to leave string\n"
-            "settings blank/empty.\n\n"
+            "specifying \"(null)\"), then set the four flags using \"true\" and\n"
+            "\"false\", then the proxy server (with a colon to specify the port), the\n"
+            "list of servers to bypass delimited by semi-colons (with \"<local>\" as\n"
+            "a special string that bypasses local addresses), and finally the URL\n"
+            "to a proxy PAC autoconfiguration file.  Use \"\" or \"(null)\" to leave\n"
+            "string settings blank/empty.\n\n"
 
             "If you're still confused about the flags, look at the proxy settings\n"
             "in the \"Internet Options\" Control Panel. See how you can check those\n"
@@ -236,6 +231,7 @@ int _tmain(int argc, _TCHAR* argv[])
             "web server directly.  Note that the DIRECT flag always appears to be\n"
             "true, even if the PROXY flag is true; we recommend you leave it that\n"
             "way, too."
+            "\n\nNumber of arguments: %d", argc-1
             );
         return -1;
     }
@@ -244,9 +240,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
     int i = 1;
     szActiveConnection = argv[i++];
-    if (_tcslen(szActiveConnection) == 0) {
-        szActiveConnection = NULL;
-    }
+    CheckBlankArg(&szActiveConnection);
 
     bDirect = (_tcsicmp(argv[i++], L"true") == 0);
     bProxy = (_tcsicmp(argv[i++], L"true") == 0);
@@ -257,17 +251,11 @@ int _tmain(int argc, _TCHAR* argv[])
     dwConnFlags = bDirect + (bProxy << 1) + (bAutoProxyUrl << 2) + (bAutoDetect << 3);
     
     szProxyServer = argv[i++];
-    if (_tcslen(szProxyServer) == 0) {
-        szProxyServer = NULL;
-    }
+    CheckBlankArg(&szProxyServer);
     szProxyBypass = argv[i++];
-    if (_tcslen(szProxyBypass) == 0) {
-        szProxyBypass = NULL;
-    }
+    CheckBlankArg(&szProxyBypass);
     szAutoConfigUrl = argv[i++];
-    if (_tcslen(szAutoConfigUrl) == 0) {
-        szAutoConfigUrl = NULL;
-    }
+    CheckBlankArg(&szAutoConfigUrl);
 
     const int optionCount = 4;
     INTERNET_PER_CONN_OPTION_LIST    List;
