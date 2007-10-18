@@ -116,7 +116,7 @@ LPTSTR FindActiveConnection()
 
 int QueryOptions(LPTSTR szActiveConnection)
 {
-    _tprintf(L"ActiveConnection=%s\n", (szActiveConnection == NULL ? L"": szActiveConnection));
+    _tprintf(L"ACTIVE_CONNECTION=%s\n", (szActiveConnection == NULL ? L"": szActiveConnection));
     const int optionCount = 5;
     INTERNET_PER_CONN_OPTION_LIST    List;
     INTERNET_PER_CONN_OPTION         Option[optionCount];
