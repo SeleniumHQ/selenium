@@ -14,6 +14,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -353,6 +355,29 @@ public class LauncherUtils {
 			url += m.group(1);
 		}
 		return url;
+	}
+
+	/** Run the specified pattern on each line of the data to extract a dictionary */
+	public static Map<String,String> parseDictionary(String data, Pattern pattern, boolean reverse) {
+	    Map<String,String> map = new HashMap<String, String>();
+	    for (String line : data.split("\n")) {
+	        Matcher m = pattern.matcher(line);
+	        if (!m.find()) continue;
+	        String name, value;
+	        if (reverse) {
+	            name = m.group(2);
+	            value = m.group(1);
+	        } else {
+	            name = m.group(1);
+	            value = m.group(2);
+	        }
+	        map.put(name, value);
+	    }
+	    return map;
+	}
+
+	public static Map<String,String> parseDictionary(String data, Pattern pattern) {
+	    return parseDictionary(data, pattern, false);
 	}
 
 }

@@ -19,12 +19,10 @@ package org.openqa.selenium.server.browserlaunchers;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.prefs.Preferences;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
@@ -215,7 +213,7 @@ public class MacProxyManager {
         getPrimaryNetworkServiceName();
         String output = runNetworkSetup("-getwebproxy", networkService);
         log.debug(output);
-        Map<String,String> dictionary = parseDictionary(output.toString(), NETWORKSETUP_LINE);
+        Map<String,String> dictionary = LauncherUtils.parseDictionary(output.toString(), NETWORKSETUP_LINE);
         String strEnabled = verifyKey("Enabled", dictionary, "networksetup", output);
         boolean enabled = isTrueOrSomething(strEnabled);
         String server = verifyKey("Server", dictionary, "networksetup", output);
@@ -280,38 +278,15 @@ public class MacProxyManager {
         // and communicated with it line-by-line using stdin/stdout
         String output = runScutil("show State:/Network/Global/IPv4");
         log.debug(output);
-        Map<String,String> dictionary = parseDictionary(output.toString(), SCUTIL_LINE);
+        Map<String,String> dictionary = LauncherUtils.parseDictionary(output.toString(), SCUTIL_LINE);
         String primaryInterface = verifyKey("PrimaryInterface", dictionary, "scutil", output);
         output = runNetworkSetup("-listnetworkserviceorder");
         log.debug(output);
-        dictionary = parseDictionary(output.toString(), NETWORKSETUP_LISTORDER_LINE, true);
+        dictionary = LauncherUtils.parseDictionary(output.toString(), NETWORKSETUP_LISTORDER_LINE, true);
         String userDefinedName = verifyKey(primaryInterface, dictionary, "networksetup -listnetworksetuporder", output); 
         networkService = userDefinedName;
         return userDefinedName;
         
-    }
-    
-    private static Map<String,String> parseDictionary(String data, Pattern pattern) {
-        return parseDictionary(data, pattern, false);
-    }
-    
-    /** Run the specified pattern on each line of the data to extract a dictionary */
-    private static Map<String,String> parseDictionary(String data, Pattern pattern, boolean reverse) {
-        Map<String,String> map = new HashMap<String, String>();
-        for (String line : data.split("\n")) {
-            Matcher m = pattern.matcher(line);
-            if (!m.find()) continue;
-            String name, value;
-            if (reverse) {
-                name = m.group(2);
-                value = m.group(1);
-            } else {
-                name = m.group(1);
-                value = m.group(2);
-            }
-            map.put(name, value);
-        }
-        return map;
     }
     
     /** Execute scutil and quit, returning the output */
