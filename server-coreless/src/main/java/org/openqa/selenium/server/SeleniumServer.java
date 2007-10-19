@@ -46,7 +46,6 @@ import org.mortbay.jetty.Server;
 import org.mortbay.log.LogFactory;
 import org.openqa.selenium.server.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
-import org.openqa.selenium.server.browserlaunchers.UnixUtils;
 import org.openqa.selenium.server.htmlrunner.HTMLLauncher;
 import org.openqa.selenium.server.htmlrunner.HTMLResultsListener;
 import org.openqa.selenium.server.htmlrunner.SeleniumHTMLRunnerResultsHandler;
@@ -190,6 +189,7 @@ public class SeleniumServer {
 
     public static final int DEFAULT_TIMEOUT = (30 * 60);
     public static int timeoutInSeconds = DEFAULT_TIMEOUT;
+    public static int retryTimeoutInSeconds = 10;
     
     // Minimum and maximum number of jetty threads
     public static final int MIN_JETTY_THREADS = 1;
@@ -208,6 +208,8 @@ public class SeleniumServer {
     // useful for situations where Selenium is being invoked programatically and the outside container wants to own logging
     private static boolean dontTouchLogging = false;
 
+    private static final int MAX_SHUTDOWN_RETRIES = 8;
+    
     /**
      * Starts up the server on the specified port (or default if no port was specified)
      * and then starts interactive mode if specified.
@@ -459,7 +461,8 @@ public class SeleniumServer {
                 System.exit(1);
             }
         }
-        SingleEntryAsyncQueue.setDefaultTimeout(timeoutInSeconds);
+        CommandQueue.setDefaultTimeout(timeoutInSeconds);
+        CommandQueue.setRetryTimeout(retryTimeoutInSeconds);
         seleniumProxy.setProxyInjectionMode(proxyInjectionModeArg);
         
         if (!isProxyInjectionMode() &&
@@ -822,6 +825,10 @@ public class SeleniumServer {
     public static void setTimeoutInSeconds(int timeoutInSeconds) {
         SeleniumServer.timeoutInSeconds = timeoutInSeconds;
     }
+    
+    public static void setRetryTimeoutInSeconds(int timeoutInSeconds) {
+      SeleniumServer.retryTimeoutInSeconds = timeoutInSeconds;
+  }
 
     public void addNewStaticContent(File directory) {
         staticContentHandler.addStaticContent(new FsResourceLocator(directory));
@@ -872,18 +879,33 @@ public class SeleniumServer {
      * Stops the Jetty server
      */
     public void stop() {
+      int numTries = 0;
+      Exception shutDownException = null;
+
+      // first, shut down the jetty server.
+      while (numTries <= MAX_SHUTDOWN_RETRIES) {
+        ++numTries;
         try {
-        	server.stop();
-        } catch (InterruptedException ex) {
-        	throw new RuntimeException(ex);
-        } finally {
-        	driver.stopAllBrowsers();
-        	try {
-                if (shutDownHook != null) {
-                    Runtime.getRuntime().removeShutdownHook(shutDownHook);
-                }
-        	} catch (IllegalStateException e) {} // if we're shutting down, it's too late for that!
+          server.stop();
+          
+          // If we reached here stop didnt throw an exception.
+          // So we assume it was successful.
+          break;
+        } catch (Exception ex) {  // org.mortbay.jetty.Server.stop() throws Exception
+          shutDownException = ex;
+          // If Exception is thrown we try to stop the jetty server again
         }
+      }
+
+      if (numTries > MAX_SHUTDOWN_RETRIES) {  // This is bad!! Jetty didnt shutdown..
+        if (null != shutDownException) {
+          throw new RuntimeException(shutDownException);
+        }
+      }
+      
+      // next, stop all of the browser sessions.
+      driver.stopAllBrowsers();
+
     }
 
     /**
@@ -1017,7 +1039,7 @@ public class SeleniumServer {
         SeleniumServer.portDriversShouldContact = port;
     }
 
-	public void setProxyInjectionMode(boolean proxyInjectionMode) {
+	public static void setProxyInjectionMode(boolean proxyInjectionMode) {
         SeleniumServer.proxyInjectionMode = proxyInjectionMode;
     }
 

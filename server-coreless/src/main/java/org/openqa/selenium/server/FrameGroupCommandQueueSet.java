@@ -89,12 +89,6 @@ public class FrameGroupCommandQueueSet {
      */
     public static final String DEFAULT_SELENIUM_WINDOW_NAME = "";
 
-
-    /**
-     * Simple boolean to track if this queue set has been killed or not
-     */
-    private boolean dead = false;
-
     public FrameGroupCommandQueueSet(String sessionId) {
         this.sessionId = sessionId;
     }
@@ -152,74 +146,52 @@ public class FrameGroupCommandQueueSet {
     /** Retrieves a FrameGroupCommandQueueSet for the specifed sessionId 
      */
     static public FrameGroupCommandQueueSet getQueueSet(String sessionId) {
-        dataLock.lock();
-        try {
-            FrameGroupCommandQueueSet queueSet = FrameGroupCommandQueueSet.queueSets.get(sessionId);
-            if (queueSet == null) {
-                throw new RuntimeException("sessionId " + sessionId + " doesn't exist"); 
-            }
-            return queueSet;
-        }
-        finally {
-            dataLock.unlock();
-        }
+      FrameGroupCommandQueueSet queueSet = FrameGroupCommandQueueSet.queueSets.get(sessionId);
+      if (queueSet == null) {
+        throw new RuntimeException("sessionId " + sessionId + " doesn't exist"); 
+      }
+      return queueSet;
     }
     
     /** Creates a FrameGroupCommandQueueSet for the specifed sessionId 
      */
     static public FrameGroupCommandQueueSet makeQueueSet(String sessionId) {
-        dataLock.lock();
-        try {
-            FrameGroupCommandQueueSet queueSet = FrameGroupCommandQueueSet.queueSets.get(sessionId);
-            if (queueSet != null) {
-                throw new RuntimeException("sessionId " + sessionId + " already exists");
-            }
-            queueSet = new FrameGroupCommandQueueSet(sessionId);
-            FrameGroupCommandQueueSet.queueSets.put(sessionId, queueSet);
-            return queueSet;
-        }
-        finally {
-            dataLock.unlock();
-        }
+      FrameGroupCommandQueueSet queueSet = FrameGroupCommandQueueSet.queueSets.get(sessionId);
+      if (queueSet != null) {
+        throw new RuntimeException("sessionId " + sessionId + " already exists");
+      }
+      queueSet = new FrameGroupCommandQueueSet(sessionId);
+      FrameGroupCommandQueueSet.queueSets.put(sessionId, queueSet);
+      return queueSet;
     }
 
     /** Deletes the specified FrameGroupCommandQueueSet */
     static public void clearQueueSet(String sessionId) {
-        dataLock.lock();
-        try {
-            FrameGroupCommandQueueSet queue = FrameGroupCommandQueueSet.queueSets.get(sessionId);
-            queue.endOfLife();
-            FrameGroupCommandQueueSet.queueSets.remove(sessionId);
-        }
-        finally {
-            dataLock.unlock();
-        }
+      log.debug("clearing queue set");
+      FrameGroupCommandQueueSet queue = FrameGroupCommandQueueSet.queueSets.get(sessionId);
+      if (null != queue) {
+        queue.endOfLife();
+        FrameGroupCommandQueueSet.queueSets.remove(sessionId);
+      }
     }
-
 
     public CommandQueue getCommandQueue(String uniqueId) {
-        dataLock.lock();
-    	try {
-			CommandQueue q = uniqueIdToCommandQueue.get(uniqueId);
-			if (q==null) {
-
-			    if (log.isDebugEnabled()) {
-			        log.debug("---------allocating new CommandQueue for " + uniqueId);
-			    }
-			    q = new CommandQueue(sessionId, uniqueId, dataLock);
-			    uniqueIdToCommandQueue.put(uniqueId, q);
-			}
-			else {
-			    if (log.isDebugEnabled()) {
-			        log.debug("---------retrieving CommandQueue for " + uniqueId);
-			    }
-			}
-			return uniqueIdToCommandQueue.get(uniqueId);
-		} finally {
-			dataLock.unlock();
-		}
+      CommandQueue q = uniqueIdToCommandQueue.get(uniqueId);
+      if (q==null) {
+		if (log.isDebugEnabled()) {
+          log.debug("---------allocating new CommandQueue for " + uniqueId);
+        }            
+         
+		q = new CommandQueue(sessionId, uniqueId);
+          uniqueIdToCommandQueue.put(uniqueId, q);
+      } else {
+          if (log.isDebugEnabled()) {
+            log.debug("---------retrieving CommandQueue for " + uniqueId);
+          }
+      }
+      return uniqueIdToCommandQueue.get(uniqueId);
     }
-
+    
     /** Schedules the specified command to be retrieved by the next call to
      * handle command result, and returns the result of that command.
      * 
@@ -231,132 +203,123 @@ public class FrameGroupCommandQueueSet {
      * return "OK" or an error message.
      */
     public String doCommand(String command, String arg, String value) {
-        dataLock.lock();
-        try {
-            if (SeleniumServer.isProxyInjectionMode()) {
-                if (command.equals("selectFrame")) {
-                    if ("".equals(arg)) {
-                        arg = "top";
-                    }
-                    boolean newFrameFound = false;
-                    // DGF iterate in lexical order for testability
-                    Set<String> idSet = uniqueIdToCommandQueue.keySet();
-                    String[] ids = idSet.toArray(new String[0]);
-                    Arrays.sort(ids);
-                    for (String uniqueId : ids) {
-                    	CommandQueue frameQ = uniqueIdToCommandQueue.get(uniqueId);
-                    	if (frameQ.isClosed()) {
-                    	    continue;
-                    	}
-                    	FrameAddress frameAddress = frameQ.getFrameAddress();
-                        if (frameAddress.getWindowName().equals(currentSeleniumWindowName)) {
-                            if (queueMatchesFrameAddress(frameQ, currentLocalFrameAddress, arg)) {
-                                setCurrentFrameAddress(uniqueId);
-                                newFrameFound = true;
-                                break;
-                            }
-                        }
-                    }
-                    if (!newFrameFound) {
-                        return "ERROR: starting from frame " + currentFrameAddress
-                        + ", could not find frame " + arg;
-                    }
-                    return "OK";
-                }
-                if (command.equals("selectWindow")) {
-                    return selectWindow(arg);
-                }
-                if (command.equals("waitForPopUp")) {
-                    String waitingForThisWindowName = arg;
-                    long timeoutInMilliseconds = Long.parseLong(value);
-                    String uniqueId;
-                    try {
-                    	 // Wait for the popup window to load, if it throws
-                    	 // an exception then we should simply return the
-                    	 // command result
-                    	 uniqueId = waitForLoad(waitingForThisWindowName, "top", (int)(timeoutInMilliseconds / 1000l));
-                    	 
-                    	 // if (!result.equals("OK")) {
-                    	 // 	return result;
-                     	 // }
-                    }
-                    catch (RemoteCommandException ex) {
-                    	return ex.getResult();
-                    }
-                    
-                    // Return the result of selecting the frame address, not the window name
-                    setCurrentFrameAddress(uniqueId);
-                    return "OK";
-                }
-                if (command.equals("waitForPageToLoad")) {
-                    return waitForLoad(arg);
-                }
-                if (command.equals("waitForFrameToLoad")) {
-                	String waitingForThisFrameName = arg;
-                	long timeoutInMilliseconds = Long.parseLong(value);
-                	String currentWindowName = getCommandQueue().getFrameAddress().getWindowName();
-                	String result;
-					try {
-						result = waitForLoad(currentWindowName, waitingForThisFrameName, (int)(timeoutInMilliseconds / 1000l));
-					} catch (RemoteCommandException e) {
-						return e.getMessage();
-					}
-                	setCurrentFrameAddress(result);
-                	return "OK";
-                }
-                
-
-                if (command.equals("setTimeout")) {
-                    try {
-                        pageLoadTimeoutInMilliseconds = Integer.parseInt(arg);
-                    } catch (NumberFormatException e) {
-                        return "ERROR: setTimeout arg is not a number: " + arg;
-                    }
-                    return "OK";
-                }
-                
-                if (command.equals("getAllWindowNames")) {
-                	return getAllWindowNames();
-                }                
-                
-                // handle closed queue (the earlier commands don't care about closed queues)
-                CommandQueue queue = getCommandQueue();
-                if (queue.isClosed()) {
-                    try {
-                        String uniqueId = waitForLoad(currentSeleniumWindowName, currentLocalFrameAddress, 1);
-                        setCurrentFrameAddress(uniqueId);
-                    } catch (RemoteCommandException e) {
-                        return WindowClosedException.WINDOW_CLOSED_ERROR;
-                    }
-                }
-                
-                if (command.equals("open")) {
-                    markWhetherJustLoaded(currentUniqueId, false);
-                    String t = getCommandQueue().doCommand(command, arg, value);
-                    if (!"OK".equals(t)) {
-                        return t;
-                    }
-                    return waitForLoad(pageLoadTimeoutInMilliseconds);
-                }
-                
-                // strip off AndWait - in PI mode we handle this in the server rather than in core...
-                if (command.endsWith("AndWait")) {
-                    markWhetherJustLoaded(currentUniqueId, false);
-                    command = command.substring(0, command.length() - "AndWait".length());
-                    String t = getCommandQueue().doCommand(command, arg, value);
-                    if (!t.startsWith("OK")) {
-                        return t;
-                    }
-
-                    return waitForLoad(pageLoadTimeoutInMilliseconds);
-                }
-            } // if (SeleniumServer.isProxyInjectionMode())
-            markWhetherJustLoaded(currentUniqueId, false);
-            return getCommandQueue().doCommand(command, arg, value);
+      if (SeleniumServer.isProxyInjectionMode()) {
+        if (command.equals("selectFrame")) {
+          if ("".equals(arg)) {
+            arg = "top";
+          }
+          boolean newFrameFound = false;
+          // DGF iterate in lexical order for testability
+          Set<String> idSet = uniqueIdToCommandQueue.keySet();
+          String[] ids = idSet.toArray(new String[0]);
+          Arrays.sort(ids);
+          for (String uniqueId : ids) {
+            CommandQueue frameQ = uniqueIdToCommandQueue.get(uniqueId);
+            if (frameQ.isClosed()) {
+        	    continue;
+            }
+            FrameAddress frameAddress = frameQ.getFrameAddress();
+            if (frameAddress.getWindowName().equals(currentSeleniumWindowName)) {
+              if (queueMatchesFrameAddress(frameQ, currentLocalFrameAddress, arg)) {
+                setCurrentFrameAddress(uniqueId);
+                newFrameFound = true;
+                break;
+              }
+            }
+          }
+          if (!newFrameFound) {
+            return "ERROR: starting from frame " + currentFrameAddress
+            + ", could not find frame " + arg;
+          }
+          return "OK";
         }
-        finally {
-            dataLock.unlock();
+        if (command.equals("selectWindow")) {
+            return selectWindow(arg);
         }
+        if (command.equals("waitForPopUp")) {
+          String waitingForThisWindowName = arg;
+          long timeoutInMilliseconds = Long.parseLong(value);
+          String uniqueId;
+          try {
+            // Wait for the popup window to load, if it throws
+            // an exception then we should simply return the
+        	// command result
+        	uniqueId = waitForLoad(waitingForThisWindowName, "top", (int)(timeoutInMilliseconds / 1000l));
+        	 
+        	// if (!result.equals("OK")) {
+        	// 	return result;
+         	// }
+          } catch (RemoteCommandException ex) {
+          	return ex.getResult();
+          }
+          
+          // Return the result of selecting the frame address, not the window name
+          setCurrentFrameAddress(uniqueId);
+          return "OK";
+        }
+        if (command.equals("waitForPageToLoad")) {
+            return waitForLoad(arg);
+        }
+        if (command.equals("waitForFrameToLoad")) {
+          String waitingForThisFrameName = arg;
+          long timeoutInMilliseconds = Long.parseLong(value);
+          String currentWindowName = getCommandQueue().getFrameAddress().getWindowName();
+          String result;
+          try {
+			result = waitForLoad(currentWindowName, waitingForThisFrameName, (int)(timeoutInMilliseconds / 1000l));
+          } catch (RemoteCommandException e) {
+			return e.getMessage();
+          }
+          setCurrentFrameAddress(result);
+          return "OK";
+        }
+
+        if (command.equals("setTimeout")) {
+          try {
+            pageLoadTimeoutInMilliseconds = Integer.parseInt(arg);
+          } catch (NumberFormatException e) {
+            return "ERROR: setTimeout arg is not a number: " + arg;
+          }
+          return "OK";
+        }
+        
+        if (command.equals("getAllWindowNames")) {
+          return getAllWindowNames();
+        }                
+        
+        // handle closed queue (the earlier commands don't care about closed queues)
+        CommandQueue queue = getCommandQueue();
+        if (queue.isClosed()) {
+          try {
+            String uniqueId = waitForLoad(currentSeleniumWindowName, currentLocalFrameAddress, 1);
+            setCurrentFrameAddress(uniqueId);
+          } catch (RemoteCommandException e) {
+            return WindowClosedException.WINDOW_CLOSED_ERROR;
+          }
+        }
+        
+        if (command.equals("open")) {
+          markWhetherJustLoaded(currentUniqueId, false);
+          String t = getCommandQueue().doCommand(command, arg, value);
+          if (!"OK".equals(t)) {
+            return t;
+          }
+          return waitForLoad(pageLoadTimeoutInMilliseconds);
+        }
+        
+        // strip off AndWait - in PI mode we handle this in the server rather than in core...
+        if (command.endsWith("AndWait")) {
+          markWhetherJustLoaded(currentUniqueId, false);
+          command = command.substring(0, command.length() - "AndWait".length());
+          String t = getCommandQueue().doCommand(command, arg, value);
+          if (!t.startsWith("OK")) {
+            return t;
+          }
+          return waitForLoad(pageLoadTimeoutInMilliseconds);
+        }
+      } // if (SeleniumServer.isProxyInjectionMode())
+      markWhetherJustLoaded(currentUniqueId, false);
+      return getCommandQueue().doCommand(command, arg, value);
     }
     
     private void handleInvalidQueue() {
@@ -468,42 +431,77 @@ public class FrameGroupCommandQueueSet {
     private String waitForLoad(String waitingForThisWindowName,
             String waitingForThisLocalFrame, int timeoutInSeconds)
             throws RemoteCommandException {
-        for (String matchingFrameAddress = null; timeoutInSeconds >= 0; timeoutInSeconds--) {
-            dataLock.lock();
-            try {
-                // if the queue has been end-of-life'd, don't bother waiting in this look, just quit immediately
-                if (dead) {
-                    break;
-                }
+      for (String matchingFrameAddress = null; timeoutInSeconds >= 0; timeoutInSeconds--) {
+        dataLock.lock();
+        try {
+          log.debug("waiting for window \"" + waitingForThisWindowName
+              + "\"" + " local frame \"" + waitingForThisLocalFrame
+              + "\" for " + timeoutInSeconds + " more secs");
+          matchingFrameAddress = findMatchingFrameAddress(
+              frameAddressToJustLoaded.keySet(),
+              waitingForThisWindowName, waitingForThisLocalFrame);
+          if (matchingFrameAddress != null) {
+            log.debug("wait is over: window \""
+                 + waitingForThisWindowName
+                 + "\" was seen at last (" + matchingFrameAddress
+                 + ")");
+            // Remove it from the list of matching frame addresses
+            // since it just loaded. Mark whether just loaded
+            // to aid debugging.
+            markWhetherJustLoaded(matchingFrameAddress, false);
+            return matchingFrameAddress;
+          }
 
-                log.debug("waiting for window \"" + waitingForThisWindowName
-                        + "\"" + " local frame \"" + waitingForThisLocalFrame
-                        + "\" for " + timeoutInSeconds + " more secs");
-                matchingFrameAddress = findMatchingFrameAddress(
-                        frameAddressToJustLoaded.keySet(),
-                        waitingForThisWindowName, waitingForThisLocalFrame);
-                if (matchingFrameAddress != null) {
-                    log.debug("wait is over: window \""
-                            + waitingForThisWindowName
-                            + "\" was seen at last (" + matchingFrameAddress
-                            + ")");
-                    // Remove it from the list of matching frame addresses
-                    // since it just loaded. Mark whether just loaded
-                    // to aid debugging.
-                    markWhetherJustLoaded(matchingFrameAddress, false);
-                    return matchingFrameAddress;
-                }
-                try {
-                    resultArrivedOnAnyQueue.await(1, TimeUnit.SECONDS);
-                } catch (InterruptedException e) {
-                }
-            } finally {
-                dataLock.unlock();
-            }
+          waitUntilSignalOrNumSecondsPassed(resultArrivedOnAnyQueue, 1);
+        } finally {
+          dataLock.unlock();
         }
-        String result = "timed out waiting for window \""
-                + waitingForThisWindowName + "\" to appear";
-        throw new RemoteCommandException(result, result);
+      }
+      String result = "timed out waiting for window \""
+          + waitingForThisWindowName + "\" to appear";
+      throw new RemoteCommandException(result, result);
+    }
+
+	/**
+	 *  Waits on the condition, making sure to wait at least as
+	 *  many seconds as specified, unless the condition is signaled
+	 *  first. 
+	 *  
+	 *@param condition
+	 *@param numSeconds
+	 **/
+	protected static boolean waitUntilSignalOrNumSecondsPassed(Condition condition, int numSeconds) {
+	  boolean result = false;
+      if (numSeconds > 0) {
+        long now = System.currentTimeMillis();
+        long deadline = now + (numSeconds * 1000);
+        while(now < deadline) {
+          try {
+			log.debug("waiting for condition for " + (deadline-now) + " more ms");
+            result = condition.await(deadline - now, TimeUnit.MILLISECONDS);
+			log.debug("got condition? : " + result);
+			now = deadline;
+          } catch (InterruptedException ie) {
+            now = System.currentTimeMillis();
+          }
+        }
+      }
+      return result;
+    }
+
+    protected static void sleepForAtLeast(long ms) {
+      if (ms > 0) {
+        long now = System.currentTimeMillis();
+        long deadline = now + ms;
+        while(now < deadline) {
+          try {
+            Thread.sleep(deadline - now);
+            now = deadline; // terminates loop
+          } catch (InterruptedException ie) {
+            now = System.currentTimeMillis();
+          }
+        }
+      }
     }
 
     private String findMatchingFrameAddress(Set<String> uniqueIds, String windowName, String localFrame) {
@@ -536,7 +534,6 @@ public class FrameGroupCommandQueueSet {
             return false;
         }
         boolean windowJustLoaded = justLoaded(uniqueId);
-//        if (windowName != null && f.getLocalFrameAddress().equals("top")) {
         FrameAddress frameAddress = queue.getFrameAddress();
         if (!frameAddress.getLocalFrameAddress().equals(localFrame)) {
             return false;
@@ -553,7 +550,7 @@ public class FrameGroupCommandQueueSet {
     		if (title.equals(windowName) ) {
     			return true;
     		}
-        	
+
         }
         String actualWindowName = frameAddress.getWindowName();
         if (windowName.equals(actualWindowName)) {
@@ -577,32 +574,28 @@ public class FrameGroupCommandQueueSet {
      * @param jsWindowNameVars 
      * @return - the next command to run
      */
-    public RemoteCommand handleCommandResult(String commandResult, FrameAddress incomingFrameAddress, String uniqueId, boolean justLoaded, List jsWindowNameVars) {
-        dataLock.lock();
-        try {
-            CommandQueue queue = getCommandQueue(uniqueId);
-            queue.setFrameAddress(incomingFrameAddress);
-            if (jsWindowNameVars!=null) {
-                for (Object jsWindowNameVar : jsWindowNameVars) {
-                    queue.addJsWindowNameVar((String)jsWindowNameVar);                    
-                }
-            }
-            
-            if (justLoaded) {
-                markWhetherJustLoaded(uniqueId, true);
-            	commandResult = null;
-            }
-            
-            if (WindowClosedException.WINDOW_CLOSED_ERROR.equals(commandResult)) {
-                queue.declareClosed();
-                return new DefaultRemoteCommand("testComplete", "", "");
-            }
-            
-            return queue.handleCommandResult(commandResult);
+    public RemoteCommand handleCommandResult(
+        String commandResult, FrameAddress incomingFrameAddress, 
+        String uniqueId, boolean justLoaded, List jsWindowNameVars) {
+      CommandQueue queue = getCommandQueue(uniqueId);
+      queue.setFrameAddress(incomingFrameAddress);
+      if (jsWindowNameVars!=null) {
+        for (Object jsWindowNameVar : jsWindowNameVars) {
+          queue.addJsWindowNameVar((String)jsWindowNameVar);                    
         }
-        finally {
-            dataLock.unlock();
-        }
+      }
+      
+      if (justLoaded) {
+        markWhetherJustLoaded(uniqueId, true);
+      	commandResult = null;
+      }
+      
+      if (WindowClosedException.WINDOW_CLOSED_ERROR.equals(commandResult)) {
+        queue.declareClosed();
+        return new DefaultRemoteCommand("testComplete", "", "");
+      }
+      
+      return queue.handleCommandResult(commandResult);
     }
 
     /**
@@ -610,16 +603,9 @@ public class FrameGroupCommandQueueSet {
      *
      */
     public void endOfLife() {
-        dataLock.lock();
-        dead = true;
-        try {
-            for (CommandQueue frameQ : uniqueIdToCommandQueue.values()) {
-                frameQ.endOfLife();
-            }
-        }
-        finally {
-            dataLock.unlock();
-        }
+      for (CommandQueue frameQ : uniqueIdToCommandQueue.values()) {
+          frameQ.endOfLife();
+      }
     }
 
     private boolean justLoaded(String uniqueId) {
@@ -627,51 +613,51 @@ public class FrameGroupCommandQueueSet {
     }
 
     private void markWhetherJustLoaded(String frameAddress, boolean justLoaded) {
-        boolean oldState = justLoaded(frameAddress);
-        if (oldState!=justLoaded) {
-            dataLock.lock();
-            try {       
-                if (justLoaded) {
-                    if (log.isDebugEnabled()) {
-                        log.debug(frameAddress + " marked as just loaded");
-                    }
-                    frameAddressToJustLoaded.put(frameAddress, true);
-                }
-                else {
-                    if (log.isDebugEnabled()) {
-                        log.debug(frameAddress + " marked as NOT just loaded");
-                    }
-                    frameAddressToJustLoaded.remove(frameAddress);
-                }
-                resultArrivedOnAnyQueue.signalAll();
+      boolean oldState = justLoaded(frameAddress);
+      if (oldState!=justLoaded) {
+        dataLock.lock();
+        try {       
+          if (justLoaded) {
+            if (log.isDebugEnabled()) {
+              log.debug(frameAddress + " marked as just loaded");
             }
-            finally {
-                dataLock.unlock();
+            frameAddressToJustLoaded.put(frameAddress, true);
+          }
+          else {
+            if (log.isDebugEnabled()) {
+              log.debug(frameAddress + " marked as NOT just loaded");
             }
+            frameAddressToJustLoaded.remove(frameAddress);
+          }
+          resultArrivedOnAnyQueue.signalAll();
         }
+        finally {
+          dataLock.unlock();
+        }
+      }
     }
 
     private void setCurrentFrameAddress(String uniqueId) {
-        assert uniqueId!=null;
-        FrameAddress frameAddress = uniqueIdToCommandQueue.get(uniqueId).getFrameAddress();
-        this.currentUniqueId = uniqueId;
-        this.currentFrameAddress = frameAddress;
-        this.currentSeleniumWindowName = frameAddress.getWindowName();
-        this.currentLocalFrameAddress = frameAddress.getLocalFrameAddress();
-        markWhetherJustLoaded(uniqueId, false);
-        if (log.isDebugEnabled()) {
-            log.debug("Current uniqueId set to " + uniqueId + ", frameAddress = " + frameAddress);
-        }
+      assert uniqueId!=null;
+      FrameAddress frameAddress = uniqueIdToCommandQueue.get(uniqueId).getFrameAddress();
+      this.currentUniqueId = uniqueId;
+      this.currentFrameAddress = frameAddress;
+      this.currentSeleniumWindowName = frameAddress.getWindowName();
+      this.currentLocalFrameAddress = frameAddress.getLocalFrameAddress();
+      markWhetherJustLoaded(uniqueId, false);
+      if (log.isDebugEnabled()) {
+        log.debug("Current uniqueId set to " + uniqueId + ", frameAddress = " + frameAddress);
+      }
     }
 
     public static FrameAddress makeFrameAddress(String seleniumWindowName, String localFrameAddress) {
-        if (seleniumWindowName==null) {
-            // we are talking to a version of selenium core which isn't telling us the
-            // seleniumWindowName.  Set it to the default, which will be right most of
-            // the time.
-            seleniumWindowName = DEFAULT_SELENIUM_WINDOW_NAME;
-        }
-        return FrameAddress.make(seleniumWindowName, localFrameAddress);
+      if (seleniumWindowName==null) {
+        // we are talking to a version of selenium core which isn't telling us the
+        // seleniumWindowName.  Set it to the default, which will be right most of
+        // the time.
+        seleniumWindowName = DEFAULT_SELENIUM_WINDOW_NAME;
+      }
+      return FrameAddress.make(seleniumWindowName, localFrameAddress);
     }
 
 //    /**
@@ -690,43 +676,38 @@ public class FrameGroupCommandQueueSet {
 //    }
 
     public void reset() {
-        dataLock.lock();
-        try {
-            if (SeleniumServer.isProxyInjectionMode()) {
-                // shut down all but the primary top level connection
-                List<FrameAddress> newOrphans = new LinkedList<FrameAddress>(); 
-                for (String uniqueId : uniqueIdToCommandQueue.keySet()) {
-                	CommandQueue q = getCommandQueue(uniqueId);
-                	FrameAddress frameAddress = q.getFrameAddress();
-                    if (frameAddress.getLocalFrameAddress().equals(DEFAULT_LOCAL_FRAME_ADDRESS)
-                            && frameAddress.getWindowName().equals(DEFAULT_SELENIUM_WINDOW_NAME)) {
-                        continue;
-                    }
-                    if (frameAddress.getLocalFrameAddress().equals(DEFAULT_LOCAL_FRAME_ADDRESS)) {
-                        if (log.isDebugEnabled()) {
-                            log.debug("Trying to close " + frameAddress);
-                        }
-                        try {
-							q.doCommandWithoutWaitingForAResponse("close", "", "");
-						} catch (WindowClosedException e) {
-							log.debug("Window was already closed");
-						}
-                    }
-                    orphanedQueues.add(q);
-                    newOrphans.add(frameAddress);
-                }
-                for (FrameAddress frameAddress : newOrphans) {
-                    uniqueIdToCommandQueue.remove(frameAddress);
-                }
+      log.debug("resetting frame group");
+      if (SeleniumServer.isProxyInjectionMode()) {
+        // shut down all but the primary top level connection
+        List<FrameAddress> newOrphans = new LinkedList<FrameAddress>(); 
+        for (String uniqueId : uniqueIdToCommandQueue.keySet()) {
+          CommandQueue q = getCommandQueue(uniqueId);
+          FrameAddress frameAddress = q.getFrameAddress();
+            if (frameAddress.getLocalFrameAddress().equals(DEFAULT_LOCAL_FRAME_ADDRESS)
+                && frameAddress.getWindowName().equals(DEFAULT_SELENIUM_WINDOW_NAME)) {
+              continue;
             }
-            selectWindow(DEFAULT_SELENIUM_WINDOW_NAME);
-            String defaultUrl = "http://localhost:" + SeleniumServer.getPortDriversShouldContact()
-            + "/selenium-server/core/InjectedRemoteRunner.html";
-            doCommand("open", defaultUrl, ""); // will close out subframes
+            if (frameAddress.getLocalFrameAddress().equals(DEFAULT_LOCAL_FRAME_ADDRESS)) {
+              if (log.isDebugEnabled()) {
+                log.debug("Trying to close " + frameAddress);
+              }
+              try {
+                q.doCommandWithoutWaitingForAResponse("close", "", "");
+              } catch (WindowClosedException e) {
+				log.debug("Window was already closed");
+              }
+            }
+            orphanedQueues.add(q);
+            newOrphans.add(frameAddress);
         }
-        finally {
-            dataLock.unlock();
+        for (FrameAddress frameAddress : newOrphans) {
+            uniqueIdToCommandQueue.remove(frameAddress);
         }
+      }
+      selectWindow(DEFAULT_SELENIUM_WINDOW_NAME);
+      String defaultUrl = "http://localhost:" + SeleniumServer.getPortDriversShouldContact()
+          + "/selenium-server/core/InjectedRemoteRunner.html";
+      doCommand("open", defaultUrl, ""); // will close out subframes
     }
 
 	private boolean queueMatchesFrameAddress(CommandQueue queue, String currentLocalFrameAddress, String newFrameAddressExpression) {
@@ -754,7 +735,7 @@ public class FrameGroupCommandQueueSet {
 			}
 		    throw new RuntimeException("unexpected return " + booleanResult + " from boolean command " + command);
 		}
-		CommandQueue.log.debug("doBooleancommand(" + command + "(" + arg1 + ", " + arg2 + ") -> " + result);
+		log.debug("doBooleancommand(" + command + "(" + arg1 + ", " + arg2 + ") -> " + result);
 		return result;
 	}
 }

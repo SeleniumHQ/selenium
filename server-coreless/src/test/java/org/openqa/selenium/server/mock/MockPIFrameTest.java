@@ -1,6 +1,8 @@
 package org.openqa.selenium.server.mock;
 
 import java.io.File;
+import java.util.logging.Handler;
+import java.util.logging.Logger;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -14,12 +16,16 @@ import org.openqa.selenium.server.RemoteCommand;
 import org.openqa.selenium.server.SeleniumServer;
 import org.openqa.selenium.server.WindowClosedException;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
+import org.openqa.selenium.server.log.StdOutHandler;
+import org.openqa.selenium.server.log.TerseFormatter;
 
 public class MockPIFrameTest extends TestCase {
     
     static Log log = LogFactory.getLog(MockPIFrameTest.class);
 
     private static final String DRIVER_URL = "http://localhost:4444/selenium-server/driver/";
+    private static int timeoutInSeconds = 10;
+    private static int retryTimeoutInSeconds = 5;
     private String sessionId;
     private SeleniumServer server;
 
@@ -34,15 +40,30 @@ public class MockPIFrameTest extends TestCase {
         return suite;
     }
     
+    @Override
     public void setUp() throws Exception {
-        setLogProperty();
-        //SeleniumServer.setDebugMode(true);
-        server = new SeleniumServer();
-        server.setProxyInjectionMode(true);
-        server.start();
-        BrowserLauncherFactory.addBrowserLauncher("dummy", DummyBrowserLauncher.class);
-        InjectionHelper.setFailOnError(false);
-        log.info("Starting " + getName());
+      configureLogging();
+      server.setProxyInjectionMode(true);
+      server.setTimeoutInSeconds(timeoutInSeconds);
+      server.setRetryTimeoutInSeconds(retryTimeoutInSeconds);
+      server = new SeleniumServer();
+      server.start();
+      BrowserLauncherFactory.addBrowserLauncher("dummy", DummyBrowserLauncher.class);
+      InjectionHelper.setFailOnError(false);
+      log.info("Starting " + getName());
+    }
+    
+    private void configureLogging() {
+      SeleniumServer.setDebugMode(true);
+      setLogProperty();
+      SeleniumServer.configureLogging();
+      Logger logger = Logger.getLogger("");
+      for (Handler handler : logger.getHandlers()) {
+          if (handler instanceof StdOutHandler) {
+              handler.setFormatter(new TerseFormatter(true));
+              break;
+          }
+      }
     }
 
     private void setLogProperty() {
@@ -54,6 +75,7 @@ public class MockPIFrameTest extends TestCase {
         }
     }
     
+    @Override
     public void tearDown() {
         server.stop();
         DummyBrowserLauncher.clearSessionId();
@@ -68,17 +90,19 @@ public class MockPIFrameTest extends TestCase {
     /** start a basic browser session
      * 
      * @return the currently running MockPIFrame
-     * @throws Exception
      */
     public MockPIFrame startSession() {
         // 1. driver requests new session
         DriverRequest driverRequest = sendCommand("getNewBrowserSession", "*dummy", "http://x");
         // 2. server generates new session, awaits browser launch
         sessionId = waitForSessionId(driverRequest);
+        log.debug("browser starting session " + sessionId);
         // 3. browser starts, requests work
         MockPIFrame frame = new MockPIFrame(DRIVER_URL, sessionId, "frame1");
+        log.debug("browser sending start message");
         frame.seleniumStart();
         // 4. server requests identification, asks for "getTitle"
+        log.debug("browser expecting getTitle command, blocking..");
         frame.expectCommand("getTitle", "", "");
         // 5. browser replies "selenium remote runner" to getTitle
         frame.sendResult("OK,selenium remote runner");
@@ -134,7 +158,7 @@ public class MockPIFrameTest extends TestCase {
         MockPIFrame frame2 = new MockPIFrame(DRIVER_URL, sessionId, "frame2");
         frame2.seleniumStart();
         // X. original frame finally manages to reply "OK" to original "open" command
-        sleep(100);
+        sleepForAtLeast(100);
         frame1.sendResult("OK");
         // 4. server automatically begins waiting for load; asks frame2 for "getTitle"
         frame2.expectCommand("getTitle", "", "");
@@ -182,7 +206,7 @@ public class MockPIFrameTest extends TestCase {
         MockPIFrame frame2 = new MockPIFrame(DRIVER_URL, sessionId, "frame2");
         browserRequest = frame2.seleniumStart();
         
-        sleep(100);
+        sleepForAtLeast(100);
         frame1.sendClose().expectCommand("testComplete", "", "");
         
         browserRequest.expectCommand("getTitle", "", "");
@@ -207,7 +231,7 @@ public class MockPIFrameTest extends TestCase {
         int sequenceNumber = frame1.getSequenceNumber();
         frame1.setSequenceNumber(sequenceNumber+1);
         frame1.sendClose();
-        Thread.sleep(1000);
+        sleepForAtLeast(100);
         frame1.setSequenceNumber(sequenceNumber);
         frame1.sendResult("OK");
         
@@ -241,7 +265,7 @@ public class MockPIFrameTest extends TestCase {
         frame1.sendClose();
         MockPIFrame frame2 = new MockPIFrame(DRIVER_URL, sessionId, "frame2");
         browserRequest = frame2.seleniumStart();
-        sleep(1500);
+        sleepForAtLeast(100);
         
         driverRequest = sendCommand("click", "bar", "");
         browserRequest.expectCommand("getTitle", "", "");
@@ -267,7 +291,7 @@ public class MockPIFrameTest extends TestCase {
         frame1.sendClose();
         MockPIFrame frame2 = new MockPIFrame(DRIVER_URL, sessionId, "frame2");
         browserRequest = frame2.seleniumStart();
-        sleep(500);
+        sleepForAtLeast(100);
         
         driverRequest = sendCommand("waitForPageToLoad", "5000", "");
         browserRequest.expectCommand("getTitle", "", "");
@@ -302,7 +326,7 @@ public class MockPIFrameTest extends TestCase {
         
         MockPIFrame frame2 = new MockPIFrame(DRIVER_URL, sessionId, "frame2");
         browserRequest = frame2.seleniumStart();
-        sleep(100);
+        sleepForAtLeast(100);
         
         driverRequest = sendCommand("click", "bar", "");
         browserRequest.expectCommand("getTitle", "", "");
@@ -338,19 +362,30 @@ public class MockPIFrameTest extends TestCase {
         click.expectResult("OK");
     }
     
+    /**
+     * This test is fragile with respect to the length of the timeout.
+     * The FrameGroupCommandQueue, which provides the expected string
+     * in the last assert, does not receive the same timeout as a parameter
+     * as is set here.  This test may need to be more explicit about
+     * which timeout is truly being set and testing the timeout values
+     * along the way.
+     * 
+     * @throws Exception
+     */
     public void testSetTimeout() throws Exception {
         MockPIFrame frame = startSession();
+        int timeout = 4000;
         
         // 1. driver requests setTimeout, server replies "OK" without contacting the browser
         sendCommand("setTimeout", "100", "").expectResult("OK");
         // 2. driver requests open
-        DriverRequest open = sendCommand("open", "blah.html", "", 5000);
+        DriverRequest open = sendCommand("open", "blah.html", "", timeout);
         // 3. original frame receives open request; replies "OK"
         frame.expectCommand("open", "blah.html", "");
         frame.sendResult("OK");
         // 4. normally, a new frame instance would come into existence, and
-        // send back a "START".  But instead, time passes.
-        Thread.sleep(2000);
+        // send back a "START".  But instead, too much time passes.
+        sleepForAtLeast(timeout);
         // 5. server replies to driver with an error message
         assertEquals("wrong error message on timeout", "timed out waiting for window \"\" to appear", open.getResult());
     }
@@ -374,9 +409,30 @@ public class MockPIFrameTest extends TestCase {
         frame.sendResult("OK");
         driverRequest.expectResult("OK");
     }
+
+    private void sleepForAtLeast(long ms) {
+      if (ms > 0) {
+        long now = System.currentTimeMillis();
+        long deadline = now + ms;
+        while(now < deadline) {
+          try {
+            Thread.sleep(deadline - now);
+            now = deadline; // terminates loop
+          } catch (InterruptedException ie) {
+            now = System.currentTimeMillis();
+          }
+        }
+      }
+    }
     
     /** Open a subWindow, close the subWindow, and send a command to the closed subWindow.
-     * This will fail; then we select the main window and send commands to it. */
+     * This will fail; then we select the main window and send commands to it. 
+     * 
+     * This test passes when run singly or as part of the MockPIFrameTest, 
+     * but does not pass when run in Eclipse as part of the UnitTestSuite.
+     * Raising the timeout does not necessarily help.
+     * test.
+     */
     public void testEvilClosingWindow() throws Exception {
     	MockPIFrame frame = startSession();
         MockPIFrame subWindow = openSubWindow(frame);
@@ -396,9 +452,16 @@ public class MockPIFrameTest extends TestCase {
 		sendCommand("doubleClick", "", "").expectResult(WindowClosedException.WINDOW_CLOSED_ERROR);
 		
 		sendCommand("selectWindow", "null", "").expectResult("OK");
-        
+
+		// sleep for a while.  for evilness.
+		Thread.sleep(retryTimeoutInSeconds/2);
+		
+		// send a new command
         driverRequest = sendCommand("submit", "", "");
         mainBrowserRequest.expectCommand("submit", "", "");
+        
+        // sleep less than the command timeout
+        Thread.sleep(timeoutInSeconds/2);
         mainBrowserRequest = frame.sendResult("OK");
         driverRequest.expectResult("OK");
     }
@@ -510,7 +573,7 @@ public class MockPIFrameTest extends TestCase {
         
         // 1. driver requests click "foo"
         DriverRequest clickFoo = sendCommand("click", "foo", "");
-        Thread.sleep(500);
+        sleepForAtLeast(100);
         // 2. before the browser can respond, driver requests click "bar"
         DriverRequest clickBar = sendCommand("click", "bar", "");
         browserRequest.expectCommand("click", "foo", "");
@@ -528,7 +591,6 @@ public class MockPIFrameTest extends TestCase {
      * new sessionId, so we need to extract it prior to calling getNewBrowserSession.getResult().
      * @param getNewBrowserSession a not-yet-resolved request to get a new browser session; used to get an error message if we're forced to give up
      * @return the sessionId of the requested session
-     * @throws InterruptedException
      */
     private String waitForSessionId(DriverRequest getNewBrowserSession) {
         // wait until timeout
@@ -538,7 +600,7 @@ public class MockPIFrameTest extends TestCase {
         if (timeout == 0) {
             finish = Long.MAX_VALUE;
         }
-        sleep(10);
+        sleepForAtLeast(10);
         String sessionId;
         String result = null;
         while (System.currentTimeMillis() < finish) {
@@ -557,7 +619,7 @@ public class MockPIFrameTest extends TestCase {
                 throw new RuntimeException("sessionId never appeared, getNewBrowserSession said: " + result);
             }
             // The DBL must not have been launched yet; keep waiting 
-            sleep(10);
+            sleepForAtLeast(10);
         }
         sessionId = DummyBrowserLauncher.getSessionId();
         if (sessionId != null) {
@@ -572,24 +634,12 @@ public class MockPIFrameTest extends TestCase {
         throw new RuntimeException("sessionId never appeared, getNewBrowserSession said: " + result);
     }
     
-    private void sleep(long millis) {
-        try {
-            Thread.sleep(millis);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-    }
-    
     private DriverRequest sendCommand(String cmd, String arg1, String arg2, int timeoutInMillis) {
         return sendCommand(new DefaultRemoteCommand(cmd, arg1, arg2), timeoutInMillis);
     }
     
     private DriverRequest sendCommand(String cmd, String arg1, String arg2) {
         return sendCommand(new DefaultRemoteCommand(cmd, arg1, arg2), AsyncHttpRequest.DEFAULT_TIMEOUT);
-    }
-    
-    private DriverRequest sendCommand(RemoteCommand cmd) {
-        return sendCommand(cmd, AsyncHttpRequest.DEFAULT_TIMEOUT);
     }
 
     private DriverRequest sendCommand(RemoteCommand cmd, int timeoutInMillis) {

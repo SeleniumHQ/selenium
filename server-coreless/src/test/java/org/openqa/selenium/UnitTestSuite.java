@@ -4,8 +4,12 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.openqa.selenium.server.ClasspathResourceLocatorTest;
+import org.openqa.selenium.server.CommandHolderTest;
+import org.openqa.selenium.server.CommandQueueTest;
+import org.openqa.selenium.server.CommandResultHolderTest;
 import org.openqa.selenium.server.FsResourceLocatorTest;
 import org.openqa.selenium.server.SeleniumServerTest;
+import org.openqa.selenium.server.SingleEntryAsyncQueueTest;
 import org.openqa.selenium.server.StaticContentHandlerTest;
 import org.openqa.selenium.server.browserlaunchers.MacProxyManagerTest;
 import org.openqa.selenium.server.browserlaunchers.MakeProxyPacTest;
@@ -18,6 +22,8 @@ public class UnitTestSuite extends TestCase {
     public static Test suite() {
         TestSuite suite = new TestSuite(UnitTestSuite.class.getName());
         suite.addTestSuite(SingleEntryAsyncQueueTest.class);
+        suite.addTestSuite(CommandHolderTest.class);
+        suite.addTestSuite(CommandResultHolderTest.class);
         suite.addTestSuite(CommandQueueTest.class);
         suite.addTestSuite(SeleniumServerTest.class);
         suite.addTestSuite(ClasspathResourceLocatorTest.class);

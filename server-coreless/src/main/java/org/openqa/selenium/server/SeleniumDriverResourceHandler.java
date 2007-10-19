@@ -32,6 +32,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.lang.reflect.Field;
 import java.net.URLDecoder;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -71,8 +72,8 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     private SeleniumServer server;
     private static String lastSessionId = null;
     private Map<String, String> domainsBySessionId = new HashMap<String, String>();
-    private Map<String, String> unusedBrowserSessions = new HashMap<String, String>();
-    private Map<String, String> sessionIdsToBrowserStrings = new HashMap<String, String>();
+    private Map<String, String> sessionIdsToBrowserStrings =
+        Collections.synchronizedMap(new HashMap<String, String>());
     private StringBuffer logMessagesBuffer = new StringBuffer();
     private BrowserLauncherFactory browserLauncherFactory = new BrowserLauncherFactory();
 
@@ -96,6 +97,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
 
     public void handle(String pathInContext, String pathParams, HttpRequest req, HttpResponse res) throws HttpException, IOException {
         try {
+        	log.debug("Thread name: " + Thread.currentThread().getName());
             res.setField(HttpFields.__ContentType, "text/plain");
             setNoCacheHeaders(res);
 
@@ -190,7 +192,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
 		RemoteCommand sc = queueSet.handleCommandResult(postedData,
 				frameAddress, uniqueId, justLoaded, jsWindowNameVar);
 		if (sc != null) {
-			respond(res, sc);
+			respond(res, sc, uniqueId);
 		}
 		req.setHandled(true);
 	}
@@ -207,12 +209,13 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         log.debug(sb.toString());
     }
 
-    private void respond(HttpResponse res, RemoteCommand sc) throws IOException {
+    private void respond(HttpResponse res, RemoteCommand sc, String uniqueId) throws IOException {
         ByteArrayOutputStream buf = new ByteArrayOutputStream(1000);
         Writer writer = new OutputStreamWriter(buf, StringUtil.__UTF_8);
         if (sc!=null) {
             writer.write(sc.toString());
-            log.debug("res: " + sc.toString());
+            log.debug("res to " + uniqueId +
+            		": " + sc.toString());
         } else {
             log.debug("res empty");
         }
@@ -518,18 +521,24 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
 
     private String endBrowserSession(String sessionId, boolean cacheUnused) {
         if (cacheUnused) {
-            addUnusedBrowserSession(sessionId);
+          FrameGroupCommandQueueSet.getQueueSet(sessionId).reset();
         }
         else {
             BrowserLauncher launcher = getLauncher(sessionId);
             if (launcher == null) {
                 return "ERROR: No launcher found for sessionId " + sessionId;
             } 
-            launcher.close();
-            synchronized(launchers) {
-                launchers.remove(sessionId);
+            try {
+               launcher.close(); 
+            } catch (RuntimeException re) {
+              throw re;
+            } finally {
+              // recover memory
+              synchronized(launchers) {
+                  launchers.remove(sessionId);
+              }
+              FrameGroupCommandQueueSet.clearQueueSet(sessionId);
             }
-            FrameGroupCommandQueueSet.clearQueueSet(sessionId);
         }
         return "OK";
     }
@@ -561,26 +570,20 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             InjectionHelper.init();
         }
 
-        String sessionId = getUnusedBrowserSession(browserString);
-        if (sessionId != null) {
-            setLastSessionId(sessionId); 
-        }
-        else {
-            sessionId = generateNewSessionId();
-            setLastSessionId(sessionId); 
-            FrameGroupCommandQueueSet queueSet = FrameGroupCommandQueueSet.makeQueueSet(sessionId);
-            BrowserLauncher launcher = browserLauncherFactory.getBrowserLauncher(browserString, sessionId);
-            launchers.put(sessionId, launcher);
-            sessionIdsToBrowserStrings.put(sessionId, browserString);
+        String sessionId = UUID.randomUUID().toString().replace("-", "");
+        setLastSessionId(sessionId); 
+        FrameGroupCommandQueueSet queueSet = FrameGroupCommandQueueSet.makeQueueSet(sessionId);
+        BrowserLauncher launcher = browserLauncherFactory.getBrowserLauncher(browserString, sessionId);
+        registerBrowserLauncher(sessionId, launcher);
+        sessionIdsToBrowserStrings.put(sessionId, browserString);
+        log.info("Allocated session " + sessionId + " for " + startURL + ", launching...");
             
-            boolean multiWindow = server.isMultiWindow();
-            log.info("Launching session " + sessionId);
-            launcher.launchRemoteSession(startURL, multiWindow);
-            queueSet.waitForLoad((long)SeleniumServer.getTimeoutInSeconds() * 1000l);
-        }
+        boolean multiWindow = server.isMultiWindow();
+        launcher.launchRemoteSession(startURL, multiWindow);
+        queueSet.waitForLoad((long)SeleniumServer.getTimeoutInSeconds() * 1000l);
+
         // TODO DGF log4j only
         // NDC.push("sessionId="+sessionId);
-        log.info("Allocated session " + sessionId + " for " + startURL);
         FrameGroupCommandQueueSet queue = FrameGroupCommandQueueSet.getQueueSet(sessionId);
         queue.doCommand("setContext", sessionId, "");
         return sessionId;
@@ -607,15 +610,6 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             throw new IllegalArgumentException("browser string may not be null");
         }
         return browserString;
-    }
-
-    private String getUnusedBrowserSession(String browserString) {
-        return unusedBrowserSessions.remove(browserString);
-    }
-
-    private void addUnusedBrowserSession(String sessionId) {
-        FrameGroupCommandQueueSet.getQueueSet(sessionId).reset();
-        unusedBrowserSessions.put(sessionIdsToBrowserStrings.get(sessionId), sessionId);
     }
 
     /** Perl and Ruby hang forever when they see "Connection: close" in the HTTP headers.
@@ -664,21 +658,19 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     }
     
     public void registerBrowserLauncher(String sessionId, BrowserLauncher launcher) {
-        launchers.put(sessionId, launcher);
+        synchronized (launchers) {
+            launchers.put(sessionId, launcher);
+        }
     }
     
     /** Kills all running browsers */
     public void stopAllBrowsers() {
-        synchronized(launchers) {
-            for (Iterator<Map.Entry<String, BrowserLauncher>> iterator = launchers.entrySet().iterator(); iterator.hasNext();)
-            {
-                Map.Entry<String, BrowserLauncher> entry = iterator.next();
-                entry.getValue().close();
-                iterator.remove();
-            }
+      synchronized(launchers) {
+        for (String sessionId : launchers.keySet()) {
+          endBrowserSession(sessionId, false);
         }
+      }
     }
-
 
     public Map<String, BrowserLauncher> getLaunchers() {
         return launchers;
