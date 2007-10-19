@@ -513,6 +513,8 @@ BrowserBot.prototype.getCurrentPage = function() {
 BrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify, browserBot) {
     var self = this;
 
+    windowToModify.seleniumAlert = windowToModify.alert;
+
     windowToModify.alert = function(alert) {
         browserBot.recordedAlerts.push(alert);
         self.relayBotToRC.call(self, "browserbot.recordedAlerts");
