@@ -122,9 +122,8 @@ public class FirefoxDriver implements WebDriver {
     }
 
     private boolean connectToBrowser(int timeToWaitInSeconds) {
-        int tries = timeToWaitInSeconds * 4;
-        int i = 0;
-        while (!extension.isConnected() && i++ <= tries) {
+        long waitUntil = System.currentTimeMillis() + timeToWaitInSeconds * 1000;
+        while (!extension.isConnected() && waitUntil > System.currentTimeMillis()) {
             try {
                 extension.connect();
             } catch (IOException e) {
