@@ -37,7 +37,6 @@ public class FirefoxLauncher {
         // If there's a browser already running
         connectAndKill();
 
-
         File firefox = locateFirefoxBinary(null);
 
         System.out.println(MessageFormat.format("Creating {0}", profileName));
@@ -64,23 +63,12 @@ public class FirefoxLauncher {
         System.out.println("Deleting existing extensions cache (if it already exists)");
         deleteExtensionsCacheIfItExists(extensionsDir);
 
-        System.out.println(MessageFormat.format("Firefox should now start and then quit.\n\n" +
-                "Once this has happened, please run firefox using:\n\n{0} -P {1}\n\n" +
-                "and go to the \"Tools->Add-ons\" menu and confirm that an add-on called \"Firefox WebDriver\" has been " +
+        System.out.println(MessageFormat.format("Firefox should now start.\n\n" +
+                "Please go to the \"Tools->Add-ons\" menu and confirm that an add-on called \"Firefox WebDriver\" has been " +
                 "successfully installed.\n\nIf this is not present, please quit all open instances of Firefox.\n",
                 firefox.getAbsolutePath(), profileName));
 
-        File extensionsCache = new File(extensionsDir, "extensions.cache");
         startFirefox(firefox, profileName);
-
-        long until = System.currentTimeMillis() + (30 * 1000);
-        while (System.currentTimeMillis() < until && !extensionsCache.exists()) {
-            wait(2);
-        }
-
-        System.out.println("Quitting");
-
-        connectAndKill();
     }
 
     private void connectAndKill() {
@@ -106,12 +94,10 @@ public class FirefoxLauncher {
 
     private void startFirefox(File firefox, String profileName) {
         try {
-            Runtime runtime = Runtime.getRuntime();
-            Process process = runtime.exec(new String[]{firefox.getAbsolutePath(), "-P", profileName}, new String[]{"MOZ_NO_REMOTE=1"});
-            process.waitFor();
+            ProcessBuilder builder = new ProcessBuilder(firefox.getAbsolutePath(), "-P", profileName).redirectErrorStream(true);
+            builder.environment().put("MOZ_NO_REMOTE", "1");
+            Process process = builder.start();
         } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
@@ -166,16 +152,17 @@ public class FirefoxLauncher {
         }
     }
 
-    // Assumes that the prefs file is untouched by people.
+    // Assumes that we only really care about the preferences, not the comments
     private Map<String, String> readExistingPrefs(File userPrefs) {
         Map<String, String> prefs = new HashMap<String, String>();
+
         BufferedReader reader = null;
         try {
             reader = new BufferedReader(new FileReader(userPrefs));
             String line = reader.readLine();
             while (line != null) {
                 if (!line.startsWith("user_pref(\"")) {
-                    line = reader.readLine();   
+                    line = reader.readLine();
                     continue;
                 }
                 line = line.substring("user_pref(\"".length());
@@ -183,7 +170,7 @@ public class FirefoxLauncher {
                 String[] parts = line.split(",");
                 prefs.put(parts[0].trim(), parts[1].trim());
 
-                line = reader.readLine();                
+                line = reader.readLine();
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -249,8 +236,9 @@ public class FirefoxLauncher {
         try {
             File profileDir = createCopyOfDefaultProfile(profileName);
 
-            Runtime runtime = Runtime.getRuntime();
-            runtime.exec(new String[] { binary.getAbsolutePath(), "-Profile", profileDir.getAbsolutePath()}, new String[] {"MOZ_NO_REMOTE=1"});
+            ProcessBuilder builder = new ProcessBuilder(binary.getAbsolutePath(), "-profile", profileDir.getAbsolutePath()).redirectErrorStream(true);
+            builder.environment().put("MOZ_NO_REMOTE", "1");
+            builder.start();
         } catch (IOException e) {
             throw new RuntimeException("Cannot load firefox: " + profileName);
         }
