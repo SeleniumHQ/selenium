@@ -82,7 +82,7 @@ class selenium:
     def start(self):
         result = self.get_string("getNewBrowserSession", [self.browserStartCommand, self.browserURL])
         try:
-            self.sessionId = long(result)
+            self.sessionId = result
         except ValueError:
             raise Exception, result
         
