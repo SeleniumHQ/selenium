@@ -1073,9 +1073,6 @@ objectExtend(HtmlRunnerTestLoop.prototype, {
         this.htmlTestCase = htmlTestCase;
         LOG.info("Starting test " + htmlTestCase.testDocument.location.pathname);
 
-        se = selenium;
-        global.se = selenium;
-
         this.currentRow = null;
         this.currentRowIndex = 0;
 
@@ -1086,17 +1083,6 @@ objectExtend(HtmlRunnerTestLoop.prototype, {
         this.expectedFailureType = null;
 
         this.htmlTestCase.reset();
-
-        this.sejsElement = this.htmlTestCase.testDocument.getElementById('sejs');
-        if (this.sejsElement) {
-            var fname = 'Selenium JavaScript';
-            parse_result = parse(this.sejsElement.innerHTML, fname, 0);
-
-            var x2 = new ExecutionContext(GLOBAL_CODE);
-            ExecutionContext.current = x2;
-
-            execute(parse_result, x2)
-        }
     },
 
     _advanceToNextRow: function() {
