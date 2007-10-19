@@ -46,7 +46,7 @@ function selenium_frameRunTest(oldOnLoadRoutine) {
 }
 
 function seleniumOnLoad() {
-    injectedSessionId = @SESSION_ID@;
+    injectedSessionId = "@SESSION_ID@";
     window["selenium_has_been_loaded_into_this_window"] = true;
     runSeleniumTest();
 }
@@ -66,7 +66,7 @@ else {
     	throw "causing a JavaScript error to tell the world that I did not arrange to be run on load";
 }
 
-injectedSessionId = @SESSION_ID@;
+injectedSessionId = "@SESSION_ID@";
 proxyInjectionMode = true;
 }
 </script>
