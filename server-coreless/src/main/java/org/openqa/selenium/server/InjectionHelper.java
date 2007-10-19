@@ -322,9 +322,9 @@ public class InjectionHelper {
         if (SeleniumServer.isBrowserSideLogEnabled()) {
             moreJs.append("debugMode = true;\n");
         }
-        moreJs.append("injectedSessionId = ")
+        moreJs.append("injectedSessionId = \"")
             .append(sessionId)
-            .append(";\n");
+            .append("\";\n");
         return makeJsChunk(moreJs.toString());
     }
 

@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.Vector;
 
 import javax.imageio.ImageIO;
@@ -73,7 +74,6 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     private Map<String, String> unusedBrowserSessions = new HashMap<String, String>();
     private Map<String, String> sessionIdsToBrowserStrings = new HashMap<String, String>();
     private StringBuffer logMessagesBuffer = new StringBuffer();
-    private long previousSessionId = -1;
     private BrowserLauncherFactory browserLauncherFactory = new BrowserLauncherFactory();
 
     public SeleniumDriverResourceHandler(SeleniumServer server) {
@@ -454,7 +454,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 results = "ERROR: You must specify a browser";
             } else {
             	String browser = values.get(0);
-                String newSessionId = Long.toString(System.currentTimeMillis() % 1000000);
+                String newSessionId = generateNewSessionId();
                 BrowserLauncher simpleLauncher = browserLauncherFactory.getBrowserLauncher(browser, newSessionId);
                 server.registerBrowserLauncher(newSessionId, simpleLauncher);
                 String baseUrl = "http://localhost:" + server.getPort();
@@ -549,33 +549,24 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         }
     }
 
+    private String generateNewSessionId() {
+        return UUID.randomUUID().toString().replaceAll("-", "");
+    }
+
     private String getNewBrowserSession(String browserString, String startURL) {
-        if (SeleniumServer.getForcedBrowserMode()!=null) {
-            browserString = SeleniumServer.getForcedBrowserMode(); 
-            log.info("overriding browser mode w/ forced browser mode setting: " + browserString);
-        }
-        if (SeleniumServer.isProxyInjectionMode() && browserString.equals("*iexplore")) {
-            log.warn("running in proxy injection mode, but you used a *iexplore browser string; this is " +
-                    "almost surely inappropriate, so I'm changing it to *piiexplore...");
-            browserString = "*piiexplore";
-        }
-        else if (SeleniumServer.isProxyInjectionMode() && browserString.equals("*firefox")) {
-            log.warn("running in proxy injection mode, but you used a *firefox browser string; this is " +
-                    "almost surely inappropriate, so I'm changing it to *pifirefox...");
-            browserString = "*pifirefox";
-        }
+
+        browserString = validateBrowserString(browserString);
+
         if (SeleniumServer.isProxyInjectionMode()) {
             InjectionHelper.init();
         }
-        if (browserString == null) {
-            throw new IllegalArgumentException("browser string may not be null");
-        }
+
         String sessionId = getUnusedBrowserSession(browserString);
         if (sessionId != null) {
             setLastSessionId(sessionId); 
         }
         else {
-            sessionId = getSessionIdWithUniqueness();
+            sessionId = generateNewSessionId();
             setLastSessionId(sessionId); 
             FrameGroupCommandQueueSet queueSet = FrameGroupCommandQueueSet.makeQueueSet(sessionId);
             BrowserLauncher launcher = browserLauncherFactory.getBrowserLauncher(browserString, sessionId);
@@ -595,14 +586,27 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         return sessionId;
     }
 
-    private String getSessionIdWithUniqueness() {
-        long sessionId;
+    private String validateBrowserString(String inputString) throws IllegalArgumentException {
+        String browserString = inputString;
+        if (SeleniumServer.getForcedBrowserMode()!=null) {
+            browserString = SeleniumServer.getForcedBrowserMode(); 
+            log.info("overriding browser mode w/ forced browser mode setting: " + browserString);
+        }
+        if (SeleniumServer.isProxyInjectionMode() && browserString.equals("*iexplore")) {
+            log.warn("running in proxy injection mode, but you used a *iexplore browser string; this is " +
+                    "almost surely inappropriate, so I'm changing it to *piiexplore...");
+            browserString = "*piiexplore";
+        }
+        else if (SeleniumServer.isProxyInjectionMode() && browserString.equals("*firefox")) {
+            log.warn("running in proxy injection mode, but you used a *firefox browser string; this is " +
+                    "almost surely inappropriate, so I'm changing it to *pifirefox...");
+            browserString = "*pifirefox";
+        }
 
-        do {
-            sessionId = System.currentTimeMillis() % 1000000;
-        } while (sessionId == previousSessionId);
-        previousSessionId = sessionId;
-        return Long.toString(sessionId);
+        if (null == browserString) {
+            throw new IllegalArgumentException("browser string may not be null");
+        }
+        return browserString;
     }
 
     private String getUnusedBrowserSession(String browserString) {
