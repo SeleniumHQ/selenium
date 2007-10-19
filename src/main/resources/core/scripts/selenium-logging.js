@@ -87,14 +87,14 @@ Logger.prototype = {
                     logWindow.enableButtons();
                 }
                 if (this.pendingMessages.length > 0) {
-                    logWindow.append("info: Appending missed logging messages", "info");
+                    logWindow.append("info("+(new Date().getTime())+"): Appending missed logging messages", "info");
                     while (this.pendingMessages.length > 0) {
                         var msg = this.pendingMessages.shift();
-                        logWindow.append(msg.type + ": " + msg.msg, msg.type);
+                        logWindow.append(msg.type + "("+msg.timestamp+"): " + msg.msg, msg.type);
                     }
-                    logWindow.append("info: Done appending missed logging messages", "info");
+                    logWindow.append("info("+(new Date().getTime())+"): Done appending missed logging messages", "info");
                 }
-                logWindow.append(logLevel + ": " + message, logLevel);
+                logWindow.append(logLevel + "("+(new Date().getTime())+"): " + message, logLevel);
             }
         } else {
             // TODO these logging messages are never flushed, which creates 
@@ -144,4 +144,5 @@ var LOG = new Logger();
 var LogMessage = function(type, msg) {
     this.type = type;
     this.msg = msg;
+    this.timestamp = (new Date().getTime());
 }
