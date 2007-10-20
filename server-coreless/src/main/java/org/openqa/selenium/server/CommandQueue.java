@@ -39,7 +39,7 @@ public class CommandQueue {
     
     private static AtomicInteger defaultTimeout = 
         new AtomicInteger(SeleniumServer.timeoutInSeconds);
-    private static AtomicInteger retryTimeout = new AtomicInteger(1000000);;
+    private static AtomicInteger retryTimeout = new AtomicInteger(10);;
 
     private final BrowserResponseSequencer browserResponseSequencer;
     private final String sessionId;
