@@ -44,7 +44,7 @@ public class BrowserResponseSequencerTest extends TestCase {
 		three.get();
 		long diff = System.currentTimeMillis() - now;
 		assertEquals("[0, 1, 3]", numbers.toString());
-		assertTrue(diff >= 5000);
+		assertTrue(diff >= 4995);
 	}
 	
 	private static class NumberWriter implements Callable<Void> {

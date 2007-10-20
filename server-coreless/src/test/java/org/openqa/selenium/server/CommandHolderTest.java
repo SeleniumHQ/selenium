@@ -57,7 +57,7 @@ public class CommandHolderTest extends TestCase {
 	long after = System.currentTimeMillis();
 	assertNotNull(nextCmd);
 	assertEquals(CommandHolder.RETRY_CMD_STRING, nextCmd.getCommand());
-	assertTrue(after - now >= (retryTimeout*1000)); // at least retry seconds
+	assertTrue(after - now >= (retryTimeout*999)); // at least retry seconds
 	assertNull(holder.peek());
   }
 	

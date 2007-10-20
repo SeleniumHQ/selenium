@@ -53,7 +53,7 @@ public class CommandResultHolderTest extends TestCase {
 	long after = System.currentTimeMillis();
 	assertNotNull(result);
 	assertEquals(CommandResultHolder.CMD_TIMED_OUT_MSG, result);
-	assertTrue(after - now >= (cmdTimeout*1000)); // at least timeout seconds
+	assertTrue(after - now >= (cmdTimeout*999)); // at least timeout seconds
   }
 	
   public void testGetCommandGeneratesNullMsgWhenPoisoned() throws Throwable {
