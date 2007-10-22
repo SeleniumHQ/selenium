@@ -25,7 +25,7 @@ public class MockPIFrameTest extends TestCase {
 
     private static final String DRIVER_URL = "http://localhost:4444/selenium-server/driver/";
     private static int timeoutInSeconds = 10;
-    private static int retryTimeoutInSeconds = 5;
+    private static int retryTimeoutInSeconds = 10;
     private String sessionId;
     private SeleniumServer server;
 
