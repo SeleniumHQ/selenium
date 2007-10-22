@@ -23,7 +23,7 @@ import org.openqa.selenium.server.RemoteCommand;
 public abstract class AsyncHttpRequest {
     _AsyncRunnable runner;
     Thread thread;
-    public static final int DEFAULT_TIMEOUT = 0; //0 = infinite, good for debugging
+    public static final int DEFAULT_TIMEOUT = 30000; //0 = infinite, good for debugging
     protected AsyncHttpRequest() {};
     static Log log = LogFactory.getLog(AsyncHttpRequest.class);
     
