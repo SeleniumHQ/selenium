@@ -44,6 +44,7 @@ public class BrowserRequest extends AsyncHttpRequest {
         int retries = 0;
         while (!"retryLast".equals(cmd) && "retryLast".equals(actual.getCommand())) {
             if (retries > 2) break;
+            retries++;
             log.debug("discarding discovered retryLast; getting next command");
             actual = getCommand();
         }
