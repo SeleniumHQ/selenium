@@ -39,15 +39,6 @@ public class BrowserRequest extends AsyncHttpRequest {
     
     public RemoteCommand expectCommand(String cmd, String arg1, String arg2) {
         RemoteCommand actual = getCommand();
-        // if we're not expecting a retry but get one, then ignore the retry
-        // and get the next command.
-        int retries = 0;
-        while (!"retryLast".equals(cmd) && "retryLast".equals(actual.getCommand())) {
-            if (retries > 2) break;
-            retries++;
-            log.debug("discarding discovered retryLast; getting next command");
-            actual = getCommand();
-        }
         RemoteCommand expected = new DefaultRemoteCommand(cmd, arg1, arg2);
         Assert.assertEquals(cmd + " command got mangled", expected, actual);
         return actual;

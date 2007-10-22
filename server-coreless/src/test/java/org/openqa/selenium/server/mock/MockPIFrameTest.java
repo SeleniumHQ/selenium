@@ -455,7 +455,8 @@ public class MockPIFrameTest extends TestCase {
 
 		// sleep for a while.  for evilness.
 		Thread.sleep(retryTimeoutInSeconds/2);
-		
+		mainBrowserRequest.expectCommand("retryLast", "", "");
+		mainBrowserRequest = frame.sendRetry();
 		// send a new command
         driverRequest = sendCommand("submit", "", "");
         mainBrowserRequest.expectCommand("submit", "", "");
