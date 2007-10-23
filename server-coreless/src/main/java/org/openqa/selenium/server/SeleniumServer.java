@@ -1137,4 +1137,12 @@ public class SeleniumServer {
     public static void setReusingBrowserSessions(boolean reusingBrowserSessions) {
         SeleniumServer.reusingBrowserSessions = reusingBrowserSessions;
     }
+    
+    public static void setLogFile(File logFile) {
+        if (logFile == null) {
+            logOutFileName = null;
+        } else {
+            logOutFileName = logFile.getAbsolutePath();
+        }
+    }
 }

@@ -69,15 +69,18 @@ public class MockPIFrameTest extends TestCase {
     private void setLogProperty() {
         File target = new File("target");
         if (target.exists() && target.isDirectory()) {
-            System.setProperty("selenium.log", "target/mockpiframe.log");
+            SeleniumServer.setLogFile(new File(target, "mockpiframe.log"));
         } else {
-            System.setProperty("selenium.log", "mockpiframe.log");
+            SeleniumServer.setLogFile(new File("mockpiframe.log"));
         }
     }
     
     @Override
     public void tearDown() {
         server.stop();
+        SeleniumServer.setDebugMode(false);
+        SeleniumServer.setLogFile(null);
+        SeleniumServer.configureLogging();
         DummyBrowserLauncher.clearSessionId();
         InjectionHelper.setFailOnError(true);
         server.setProxyInjectionMode(false);
