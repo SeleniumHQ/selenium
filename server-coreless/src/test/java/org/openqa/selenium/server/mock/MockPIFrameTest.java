@@ -54,7 +54,7 @@ public class MockPIFrameTest extends TestCase {
     }
     
     private void configureLogging() {
-      SeleniumServer.setDebugMode(true);
+      //SeleniumServer.setDebugMode(true);
       setLogProperty();
       SeleniumServer.configureLogging();
       Logger logger = Logger.getLogger("");
