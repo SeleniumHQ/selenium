@@ -879,33 +879,42 @@ public class SeleniumServer {
      * Stops the Jetty server
      */
     public void stop() {
-      int numTries = 0;
-      Exception shutDownException = null;
+        int numTries = 0;
+        Exception shutDownException = null;
 
-      // first, shut down the jetty server.
-      while (numTries <= MAX_SHUTDOWN_RETRIES) {
-        ++numTries;
+        // this may be called by a shutdown hook, or it may be called at any time
+        // in case it was called as an ordinary method, try to clean up the shutdown
+        // hook
         try {
-          server.stop();
-          
-          // If we reached here stop didnt throw an exception.
-          // So we assume it was successful.
-          break;
-        } catch (Exception ex) {  // org.mortbay.jetty.Server.stop() throws Exception
-          shutDownException = ex;
-          // If Exception is thrown we try to stop the jetty server again
-        }
-      }
-
-      if (numTries > MAX_SHUTDOWN_RETRIES) {  // This is bad!! Jetty didnt shutdown..
-        if (null != shutDownException) {
-          throw new RuntimeException(shutDownException);
-        }
-      }
+            if (shutDownHook != null) {
+                Runtime.getRuntime().removeShutdownHook(shutDownHook);
+            }
+        } catch (IllegalStateException e) {} // thrown if we're shutting down; that's OK 
       
-      // next, stop all of the browser sessions.
-      driver.stopAllBrowsers();
+        // shut down the jetty server (try try again)
+        while (numTries <= MAX_SHUTDOWN_RETRIES) {
+            ++numTries;
+            try {
+                server.stop();
 
+                // If we reached here stop didnt throw an exception.
+                // So we assume it was successful.
+                break;
+            } catch (Exception ex) { // org.mortbay.jetty.Server.stop() throws Exception
+                log.error(ex);
+                shutDownException = ex;
+                // If Exception is thrown we try to stop the jetty server again
+            }
+        }
+
+        // next, stop all of the browser sessions.
+        driver.stopAllBrowsers();
+
+        if (numTries > MAX_SHUTDOWN_RETRIES) { // This is bad!! Jetty didnt shutdown..
+            if (null != shutDownException) {
+                throw new RuntimeException(shutDownException);
+            }
+        }
     }
 
     /**
