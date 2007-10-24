@@ -1495,7 +1495,24 @@ Selenium.prototype.isEditable = function(locator) {
     if (element.value == undefined) {
         Assert.fail("Element " + locator + " is not an input.");
     }
-    return !element.disabled;
+    if (element.disabled) {
+        return false;
+    }
+    // DGF "readonly" is a bit goofy... it doesn't necessarily have a value
+    // You can write <input readonly value="black">
+    var readOnlyNode = element.getAttributeNode('readonly');
+    if (readOnlyNode) {
+        // DGF on IE, every input element has a readOnly node, but it may be false
+        if (typeof(readOnlyNode.nodeValue) == "boolean") {
+            var readOnly = readOnlyNode.nodeValue;
+            if (readOnly) {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+    return true;
 };
 
 Selenium.prototype.getAllButtons = function() {
