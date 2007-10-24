@@ -39,6 +39,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.Vector;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeoutException;
 
 import javax.imageio.ImageIO;
 
@@ -79,6 +83,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
 
     public SeleniumDriverResourceHandler(SeleniumServer server) {
         this.server = server;
+        
     }
 
     /** Handy helper to retrieve the first parameter value matching the name
@@ -415,6 +420,35 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 log.error("Problem capturing screenshot", e);
                 results = "ERROR: Problem capturing screenshot: " + e.getMessage();
             }
+        } else if ("keyDownNative".equals(cmd)) {
+            try {
+                RobotRetriever.getRobot().keyPress(Integer.parseInt(values.get(0)));
+                results = "OK";
+            } catch (Exception e) {
+                log.error("Problem during keyDown: ", e);
+                results = "ERROR: Problem during keyDown: " + e.getMessage();
+            }
+        } else if ("keyUpNative".equals(cmd)) {
+            try {
+                RobotRetriever.getRobot().keyRelease(Integer.parseInt(values.get(0)));
+                results = "OK";
+            } catch (Exception e) {
+                log.error("Problem during keyUp: ", e);
+                results = "ERROR: Problem during keyUp: " + e.getMessage();
+            }
+        } else if ("keyPressNative".equals(cmd)) {
+            try {
+                Robot r = RobotRetriever.getRobot();
+                int keycode = Integer.parseInt(values.get(0));
+                r.keyPress(keycode);
+                r.waitForIdle();
+                r.keyRelease(keycode);
+                results = "OK";
+            } catch (Exception e) {
+                log.error("Problem during keyDown: ", e);
+                results = "ERROR: Problem during keyDown: " + e.getMessage();
+            }
+        // TODO typeKeysNative.  Requires converting String to array of keycodes.
         } else if ("isPostSupported".equals(cmd)) {
             results = "OK,true";
         } else if ("setSpeed".equals(cmd)) {
@@ -516,8 +550,8 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
        }
     }
 
-    private void captureScreenshot(String fileName) throws AWTException, IOException {
-        Robot robot = new Robot();
+    private void captureScreenshot(String fileName) throws AWTException, IOException, InterruptedException, ExecutionException, TimeoutException {
+        Robot robot = RobotRetriever.getRobot();
         Rectangle captureSize = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
         BufferedImage bufferedImage = robot.createScreenCapture(captureSize);
         File outFile = new File(fileName);
