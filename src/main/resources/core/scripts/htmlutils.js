@@ -626,6 +626,20 @@ PatternMatcher.strategies = {
             return this.regexp.test(actual);
         };
     },
+    
+    regexpi: function(regexpString) {
+        this.regexp = new RegExp(regexpString, "i");
+        this.matches = function(actual) {
+            return this.regexp.test(actual);
+        };
+    },
+
+    regexi: function(regexpString) {
+        this.regexp = new RegExp(regexpString, "i");
+        this.matches = function(actual) {
+            return this.regexp.test(actual);
+        };
+    },
 
 /**
  * "globContains" (aka "wildmat") patterns, e.g. "glob:one,two,*",

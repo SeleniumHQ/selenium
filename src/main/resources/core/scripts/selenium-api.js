@@ -142,6 +142,8 @@ function Selenium(browserbot) {
      * <li><strong>regexp:</strong><em>regexp</em>:
      * Match a string using a regular-expression. The full power of JavaScript
      * regular-expressions is available.</li>
+     * <li><strong>regexpi:</strong><em>regexpi</em>:
+     * Match a string using a case-insensitive regular-expression.</li>
      * <li><strong>exact:</strong><em>string</em>:
      *
      * Match a string exactly, verbatim, without any of that fancy wildcard
