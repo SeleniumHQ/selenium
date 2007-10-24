@@ -1295,14 +1295,25 @@ BrowserBot.prototype._findElementUsingFullXPath = function(xpath, inDocument, in
 
     // Use document.evaluate() if it's available
     if (this.allowNativeXpath && inDocument.evaluate) {
-        return inDocument.evaluate(xpath, inDocument, this._namespaceResolver, 0, null).iterateNext();
+        var result;
+        try {
+            result = inDocument.evaluate(xpath, inDocument, this._namespaceResolver, 0, null);
+        } catch (e) {
+            throw new SeleniumError("Invalid xpath: " + extractExceptionMessage(e));
+        }
+        return result.iterateNext();
     }
 
     // If not, fall back to slower JavaScript implementation
     // DGF set xpathdebug = true (using getEval, if you like) to turn on JS XPath debugging
     //xpathdebug = true;
     var context = new ExprContext(inDocument);
-    var xpathObj = xpathParse(xpath);
+    var xpathObj;
+    try {
+        xpathObj = xpathParse(xpath);
+    } catch (e) {
+        throw new SeleniumError("Invalid xpath: " + extractExceptionMessage(e));
+    }
     var xpathResult = xpathObj.evaluate(context);
     if (xpathResult && xpathResult.value) {
         return xpathResult.value[0];
@@ -1332,7 +1343,12 @@ BrowserBot.prototype.evaluateXPathCount = function(xpath, inDocument) {
 
     // Use document.evaluate() if it's available
     if (this.allowNativeXpath && inDocument.evaluate) {
-        var result = inDocument.evaluate(xpath, inDocument, this._namespaceResolver, XPathResult.NUMBER_TYPE, null);
+        var result;
+        try {
+            result = inDocument.evaluate(xpath, inDocument, this._namespaceResolver, XPathResult.NUMBER_TYPE, null);
+        } catch (e) {
+            throw new SeleniumError("Invalid xpath: " + extractExceptionMessage(e));
+        }
         return result.numberValue;
     }
 
@@ -1340,7 +1356,12 @@ BrowserBot.prototype.evaluateXPathCount = function(xpath, inDocument) {
     // DGF set xpathdebug = true (using getEval, if you like) to turn on JS XPath debugging
     //xpathdebug = true;
     var context = new ExprContext(inDocument);
-    var xpathObj = xpathParse(xpath);
+    var xpathObj;
+    try {
+        xpathObj = xpathParse(xpath);
+    } catch (e) {
+        throw new SeleniumError("Invalid xpath: " + extractExceptionMessage(e));
+    }
     var xpathResult = xpathObj.evaluate(context);
     if (xpathResult && xpathResult.value) {
         return xpathResult.value;
