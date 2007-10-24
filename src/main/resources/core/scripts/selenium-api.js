@@ -2169,9 +2169,10 @@ Selenium.prototype.doCreateCookie = function(nameValuePair, optionsString) {
      * under test, unless you specified a path for this cookie explicitly.
      *
      * @param nameValuePair name and value of the cookie in a format "name=value"
-     * @param optionsString options for the cookie. Currently supported options include 'path' and 'max_age'.
-     *      the optionsString's format is "path=/path/, max_age=60". The order of options are irrelevant, the unit
-     *      of the value of 'max_age' is second.
+     * @param optionsString options for the cookie. Currently supported options include 'path', 'max_age' and 'domain'.
+     *      the optionsString's format is "path=/path/, max_age=60, domain=.foo.com". The order of options are irrelevant, the unit
+     *      of the value of 'max_age' is second.  Note that specifying a domain that isn't a subset of the current domain will
+     *      usually fail.
      */
     var results = /[^\s=\[\]\(\),"\/\?@:;]+=[^\s=\[\]\(\),"\/\?@:;]*/.test(nameValuePair);
     if (!results) {
@@ -2194,27 +2195,52 @@ Selenium.prototype.doCreateCookie = function(nameValuePair, optionsString) {
         }
         cookie += "; path=" + path;
     }
+    results = /domain=([^\s,]+)[,]?/.exec(optionsString);
+    if (results) {
+        var domain = results[1];
+        cookie += "; domain=" + domain;
+    }
     LOG.debug("Setting cookie to: " + cookie);
     this.browserbot.getDocument().cookie = cookie;
 }
 
-Selenium.prototype.doDeleteCookie = function(name,path) {
+Selenium.prototype.doDeleteCookie = function(name,optionsString) {
     /**
      * Delete a named cookie with specified path.
      *
      * @param name the name of the cookie to be deleted
-     * @param path the path property of the cookie to be deleted
+     * @param optionsString options for the cookie. Currently supported options include 'path' and 'domain'.
+     *      the optionsString's format is "path=/path/, domain=.foo.com". The order of options are irrelevant.
+     *      Note that specifying a domain that isn't a subset of the current domain will
+     *      usually fail.
      */
     // set the expire time of the cookie to be deleted to one minute before now.
-    path = path.trim();
+    var path = "";
+    var domain = "";
+    var matched = false;
+    results = /path=([^\s,]+)[,]?/.exec(optionsString);
+    if (results) {
+        matched = true;
+        path = results[1];
+    }
+    results = /domain=([^\s,]+)[,]?/.exec(optionsString);
+    if (results) {
+        matched = true;
+        domain = results[1];
+    }
+    // Treat the entire optionsString as a path (for backwards compatibility)
+    if (optionsString && !matched) {
+        LOG.warn("Using entire optionsString as a path; please change the argument to deleteCookie to use path="+optionsString);
+        path = optionsString;
+    }
     if (browserVersion.khtml) {
         // Safari and conquerer don't like paths with / at the end
         if ("/" != path) {
             path = path.replace(/\/$/, "");
         }
-    }
+    }    
     var expireDateInMilliseconds = (new Date()).getTime() + (-1 * 1000);
-    var cookie = name.trim() + "=deleted; path=" + path + "; expires=" + new Date(expireDateInMilliseconds).toGMTString();
+    var cookie = name.trim() + "=deleted; path=" + path + "; domain=" + domain + "; expires=" + new Date(expireDateInMilliseconds).toGMTString();
     LOG.debug("Setting cookie to: " + cookie);
     this.browserbot.getDocument().cookie = cookie;
 }
