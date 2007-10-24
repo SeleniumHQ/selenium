@@ -2240,7 +2240,16 @@ Selenium.prototype.doDeleteCookie = function(name,optionsString) {
         }
     }    
     var expireDateInMilliseconds = (new Date()).getTime() + (-1 * 1000);
-    var cookie = name.trim() + "=deleted; path=" + path + "; domain=" + domain + "; expires=" + new Date(expireDateInMilliseconds).toGMTString();
+    var cookie = name.trim() + "=deleted; ";
+    path = path.trim();
+    domain = domain.trim();
+    if (path) {
+        cookie += "path=" + path + "; ";
+    }
+    if (domain) {
+        cookie += "domain=" + domain + "; ";
+    }
+    cookie += "expires=" + new Date(expireDateInMilliseconds).toGMTString();
     LOG.debug("Setting cookie to: " + cookie);
     this.browserbot.getDocument().cookie = cookie;
 }
