@@ -1430,6 +1430,18 @@ Selenium.prototype.isVisible = function(locator) {
    */
     var element;
     element = this.browserbot.findElement(locator);
+    // DGF if it's an input tag of type "hidden" then it's not visible
+    if (element.tagName) {
+        var tagName = new String(element.tagName).toLowerCase();
+        if (tagName == "input") {
+            if (element.type) {
+                var elementType = new String(element.type).toLowerCase();
+                if (elementType == "hidden") {
+                    return false;
+                }
+            }
+        }
+    }
     var visibility = this.findEffectiveStyleProperty(element, "visibility");
     var _isDisplayed = this._isDisplayed(element);
     return (visibility != "hidden" && _isDisplayed);
