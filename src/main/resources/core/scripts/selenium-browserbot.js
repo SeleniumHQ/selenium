@@ -350,7 +350,7 @@ BrowserBot.prototype.selectFrame = function(target) {
         this.currentWindow = frame;
         this.isSubFrameSelected = true;
     }
-    else if (target == "relative=up") {
+    else if (target == "relative=up" || target == "relative=parent") {
         this.currentWindow = this.getCurrentWindow().parent;
         this.isSubFrameSelected = (this._getFrameElement(this.currentWindow) != null);
     } else if (target == "relative=top") {

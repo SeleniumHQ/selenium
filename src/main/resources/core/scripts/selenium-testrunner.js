@@ -91,6 +91,7 @@ objectExtend(HtmlTestRunner.prototype, {
     },
 
     _onloadTestSuite:function () {
+        suiteFrame = new HtmlTestSuiteFrame(getSuiteFrame());
         if (! this.getTestSuite().isAvailable()) {
             return;
         }
@@ -171,7 +172,6 @@ objectExtend(SeleniumFrame.prototype, {
         this._onLoad();
         if (this.loadCallback) {
             this.loadCallback();
-            this.loadCallback = null;
         }
     },
 
