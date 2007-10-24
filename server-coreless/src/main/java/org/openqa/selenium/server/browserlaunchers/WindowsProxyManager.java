@@ -35,6 +35,11 @@ public class WindowsProxyManager {
     static Log log = LogFactory.getLog(WindowsProxyManager.class);
     protected static final String REG_KEY_BACKUP_READY = "BackupReady";
 
+    protected static final File USER_COOKIE_DIR = new File(
+      System.getenv("USERPROFILE") + File.separator + "Cookies");
+    protected static final File USER_HIDDEN_COOKIE_DIR = new File(
+      System.getenv("USERPROFILE") + File.separator + "CookiesHiddenBySeleniumRC");
+
     protected static String REG_KEY_BASE = "HKEY_CURRENT_USER";
     private static final Pattern HUDSUCKR_LINE = Pattern.compile("^([^=]+)=(.*)$");
     private HudsuckrSettings oldSettings;
@@ -185,6 +190,11 @@ public class WindowsProxyManager {
             WindowsUtils.writeIntRegistryValue(RegKey.MAX_CONNECTIONS_PER_1_0_SVR.key, 256);
             WindowsUtils.writeIntRegistryValue(RegKey.MAX_CONNECTIONS_PER_1_1_SVR.key, 256);
         }
+        
+        // Hide pre-existing user cookies if -ensureCleanSession is set
+        if (SeleniumServer.isEnsureCleanSession()) {
+          hidePreexistingCookies(USER_COOKIE_DIR, USER_HIDDEN_COOKIE_DIR);
+        }
 
         // TODO Do we want to make these preferences configurable somehow?
         // TODO Disable security warnings
@@ -204,6 +214,12 @@ public class WindowsProxyManager {
     }
 
     public void restoreRegistrySettings() {
+        
+        // restore pre-existing user cookies if -ensureCleanSession is set
+        if (SeleniumServer.isEnsureCleanSession()) {
+          restorePreexistingCookies(USER_COOKIE_DIR, USER_HIDDEN_COOKIE_DIR);
+        }
+      
         // Backup really should be ready, but if not, skip it 
         if (!backupIsReady()) return;
         log.info("Restoring registry settings (won't affect running browsers)...");
@@ -212,6 +228,58 @@ public class WindowsProxyManager {
         }
         restoreHudsuckrSettings();
         backupReady(false);
+    }
+    
+    /**
+     * Hides all previously existing user cookies by moving them
+     * to a different directory.
+     */
+    protected static void hidePreexistingCookies(File cookieDir, File hiddenCookieDir) {
+      if (hiddenCookieDir.exists()) {
+        log.warn("Target directory for hiding user cookies (" +
+        		hiddenCookieDir.getAbsolutePath() + ") already exists.  " +
+        		"Previously hidden user cookies may be overwritten!");
+        LauncherUtils.recursivelyDeleteDir(hiddenCookieDir);
+      } 
+      
+      if (cookieDir.exists()) {
+        log.info("Copying cookies from " + cookieDir.getAbsolutePath() +
+            " to " + hiddenCookieDir.getAbsolutePath());
+        LauncherUtils.copyDirectory(cookieDir, hiddenCookieDir);
+        log.info("Deleting original cookies...");
+        deleteFlatDirContents(cookieDir);
+      }
+    }
+    
+    /**
+     * Restores previously hidden user cookies, if any, back
+     * to the user's Cookie directory.
+     */
+    protected static void restorePreexistingCookies(File cookieDir, File hiddenCookieDir) {
+      deleteFlatDirContents(cookieDir);
+      LauncherUtils.copyDirectory(hiddenCookieDir, cookieDir);
+      LauncherUtils.recursivelyDeleteDir(hiddenCookieDir);
+    }
+    
+    /**
+     * Deletes all files contained by the given directory.
+     * 
+     * We apparently cannot delete all files within the cookie
+     * dir: specifically, index.dat gives us trouble.  Remove what
+     * we can, report what we can't.
+     * 
+     * @param dir
+     */
+    protected static void deleteFlatDirContents(File dir) {
+      if (dir.exists()) {
+        File[] list = dir.listFiles();
+        for (File file : list) {
+          boolean success = file.delete();
+          if (!success) {
+            log.warn("Could not delete file " + file.getAbsolutePath());
+          }
+        }
+      }
     }
 
     private boolean backupIsReady() {

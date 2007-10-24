@@ -166,6 +166,7 @@ public class SeleniumServer {
     private static boolean avoidProxy = false;
     private static boolean proxyInjectionMode = false;
     private static File firefoxProfileTemplate = null;
+    private static boolean ensureCleanSession = false;
     private static Handler[] defaultHandlers;
     private static Map<Handler, Formatter> defaultFormatters;
     private static Map<Handler, Level> defaultLevels;
@@ -270,6 +271,8 @@ public class SeleniumServer {
                     System.err.println("Firefox profile template doesn't exist: " + firefoxProfileTemplate.getAbsolutePath());
                     System.exit(1);
                 }
+            } else if ("-ensureCleanSession".equalsIgnoreCase(arg)) {
+                SeleniumServer.setEnsureCleanSession(true);
             } else if ("-dontInjectRegex".equalsIgnoreCase(arg)) {
                 dontInjectRegex = getArg(args, ++i);
             } else if ("-browserSideLog".equalsIgnoreCase(arg)) {
@@ -517,6 +520,7 @@ public class SeleniumServer {
         printWrappedErrorLine(INDENT, "-firefoxProfileTemplate <dir>: normally, we generate a fresh empty Firefox profile every time we launch.  You can specify a directory to make us copy your profile directory instead.");
         printWrappedErrorLine(INDENT, "-debug: puts you into debug mode, with more trace information and diagnostics on the console");
         printWrappedErrorLine(INDENT, "-browserSideLog: enables logging on the browser side; logging messages will be transmitted to the server.  This can affect performance.");
+        printWrappedErrorLine(INDENT, "-ensureCleanSession: If the browser does not have user profiles, make sure every new session has no artifacts from previous sessions.  For example, enabling this option will cause all user cookies to be archived before launching IE, and restored after IE is closed.");
         printWrappedErrorLine(INDENT, "-log <logFileName>: writes lots of debug information out to a log file");
         printWrappedErrorLine(INDENT, "-htmlSuite <browser> <startURL> <suiteFile> <resultFile>: Run a single HTML Selenese (Selenium Core) suite and then exit immediately, using the specified browser (e.g. \"*firefox\") on the specified URL (e.g. \"http://www.google.com\").  You need to specify the absolute path to the HTML test suite as well as the path to the HTML results file we'll generate.");
         printWrappedErrorLine(INDENT, "-proxyInjectionMode: puts you into proxy injection mode, a mode where the selenium server acts as a proxy server " +
@@ -816,6 +820,14 @@ public class SeleniumServer {
     
     public static void setFirefoxProfileTemplate(File template) {
         firefoxProfileTemplate = template;
+    }
+
+    public static boolean isEnsureCleanSession() {
+        return ensureCleanSession;
+    }
+
+    protected static void setEnsureCleanSession(boolean value) {
+        ensureCleanSession = value;
     }
 
     private static boolean slowResourceProperty() {
