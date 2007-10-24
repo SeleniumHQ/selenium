@@ -51,6 +51,7 @@ public class CommandQueue {
     private ConcurrentHashMap<String, Boolean> cachedJsVariableNamesPointingAtThisWindow;
     private FrameAddress frameAddress;
     private AtomicBoolean closed;
+    private AtomicInteger queueDelay;
 
     public CommandQueue(String newSessionId, String newUniqueId) {
         sessionId = newSessionId;
@@ -63,6 +64,12 @@ public class CommandQueue {
         idGenerator.incrementAndGet();
         commandHolder = new CommandHolder(uniqueId, retryTimeout.get());
         resultHolder = new CommandResultHolder(uniqueId, defaultTimeout.get());
+        queueDelay = new AtomicInteger(millisecondDelayBetweenOperations.get());
+    }
+    
+    public CommandQueue(String newSessionId, String newUniqueId, int opDelay) {
+      this(newSessionId, newUniqueId);
+      setQueueDelay(opDelay);
     }
         
     /** Sends the specified command (to be retrieved by the next call to
@@ -112,9 +119,9 @@ public class CommandQueue {
       }
 
       // wait a bit if we're adding delay between commands
-      if (millisecondDelayBetweenOperations.get() > 0) {
-        log.debug("    Slow mode in effect: sleep " + millisecondDelayBetweenOperations + " milliseconds...");
-        FrameGroupCommandQueueSet.sleepForAtLeast(millisecondDelayBetweenOperations.get());
+      if (queueDelay.get() > 0) {
+        log.debug("    Slow mode in effect: sleep " + queueDelay + " milliseconds...");
+        FrameGroupCommandQueueSet.sleepForAtLeast(queueDelay.get());
         log.debug("    ...done");
       }
       
@@ -284,6 +291,14 @@ public class CommandQueue {
      */
     public boolean isResultExpected() {
     	return resultExpected.get();
+    }
+    
+    public void setQueueDelay(int i) {
+      queueDelay.set(i);
+    }
+    
+    public int getQueueDelay() {
+      return queueDelay.get();
     }
     
     public static void setSpeed(int i) {

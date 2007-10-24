@@ -392,7 +392,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
 
     public String doCommand(String cmd, Vector<String> values, String sessionId, HttpResponse res) {
         log.info("Command request: " + cmd + values.toString() + " on session " + sessionId);
-        String results;
+        String results = null;
         // handle special commands
         if ("getNewBrowserSession".equals(cmd)) {
             String browserString = values.get(0);
@@ -419,14 +419,15 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             results = "OK,true";
         } else if ("setSpeed".equals(cmd)) {
             try {
-                CommandQueue.setSpeed(Integer.parseInt(values.get(0)));
+             int speed = Integer.parseInt(values.get(0));
+             setSpeedForSession(sessionId, speed);
             }
             catch (NumberFormatException e) {
                 return "ERROR: setSlowMode expects a string containing an integer, but saw '" + values.get(0) + "'";
             }
             results = "OK";
         } else if ("getSpeed".equals(cmd)) {
-            results = "OK," + CommandQueue.getSpeed();
+          results = getSpeedForSession(sessionId);
         } else if ("addStaticContent".equals(cmd)) {
             File dir = new File( values.get(0));
             if (dir.exists()) {
@@ -482,6 +483,37 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         }
         log.info("Got result: " + results + " on session " + sessionId);
         return results;
+    }
+
+    protected static String getSpeedForSession(String sessionId) {
+      String results = null;
+      if (null != sessionId) {
+        // get the speed for this session's queues
+        FrameGroupCommandQueueSet queueSet = 
+          FrameGroupCommandQueueSet.getQueueSet(sessionId);
+        if (null != queueSet) {
+          results = "OK," + queueSet.getSpeed();
+        }
+      }
+      if (null == results) {
+        // get the default speed for new command queues.
+        results = "OK," + CommandQueue.getSpeed();
+      }
+      return results;
+    }
+
+    protected static void setSpeedForSession(String sessionId, int speed) {
+      if (null != sessionId) {
+         // set the speed for this session's queues
+         FrameGroupCommandQueueSet queueSet = 
+           FrameGroupCommandQueueSet.getQueueSet(sessionId);
+         if (null != queueSet) {
+           queueSet.setSpeed(speed);
+         }
+       } else {
+         // otherwise set the default speed for all new command queues.
+         CommandQueue.setSpeed(speed);
+       }
     }
 
     private void captureScreenshot(String fileName) throws AWTException, IOException {

@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -68,6 +69,7 @@ public class FrameGroupCommandQueueSet {
     static private Condition resultArrivedOnAnyQueue = dataLock.newCondition();
     
     private int pageLoadTimeoutInMilliseconds = 30000;
+    private AtomicInteger millisecondDelayBetweenOperations;
     
     /**
      * A unique string denoting a session with a browser.  In most cases this session begins with the
@@ -91,6 +93,16 @@ public class FrameGroupCommandQueueSet {
 
     public FrameGroupCommandQueueSet(String sessionId) {
         this.sessionId = sessionId;
+        
+        /*
+         * Initialize delay, using the static CommandQueue getSpeed
+         * in order to imitate previous behavior, wherein that static
+         * field would control the speed for all sessions.  The
+         * speed for a frame group's queues will only be changed if 
+         * they're changed via this class's setSpeed().
+         */
+        millisecondDelayBetweenOperations =
+          new AtomicInteger(CommandQueue.getSpeed());
     }
 
     private String selectWindow(String seleniumWindowName) {
@@ -156,13 +168,15 @@ public class FrameGroupCommandQueueSet {
     /** Creates a FrameGroupCommandQueueSet for the specifed sessionId 
      */
     static public FrameGroupCommandQueueSet makeQueueSet(String sessionId) {
-      FrameGroupCommandQueueSet queueSet = FrameGroupCommandQueueSet.queueSets.get(sessionId);
-      if (queueSet != null) {
-        throw new RuntimeException("sessionId " + sessionId + " already exists");
+      synchronized (queueSets) {
+        FrameGroupCommandQueueSet queueSet = FrameGroupCommandQueueSet.queueSets.get(sessionId);
+        if (queueSet != null) {
+          throw new RuntimeException("sessionId " + sessionId + " already exists");
+        }
+        queueSet = new FrameGroupCommandQueueSet(sessionId);
+        FrameGroupCommandQueueSet.queueSets.put(sessionId, queueSet);
+        return queueSet;
       }
-      queueSet = new FrameGroupCommandQueueSet(sessionId);
-      FrameGroupCommandQueueSet.queueSets.put(sessionId, queueSet);
-      return queueSet;
     }
 
     /** Deletes the specified FrameGroupCommandQueueSet */
@@ -182,14 +196,37 @@ public class FrameGroupCommandQueueSet {
           log.debug("---------allocating new CommandQueue for " + uniqueId);
         }            
          
-		q = new CommandQueue(sessionId, uniqueId);
-          uniqueIdToCommandQueue.put(uniqueId, q);
+		q = new CommandQueue(sessionId, uniqueId,
+		    millisecondDelayBetweenOperations.get());
+        uniqueIdToCommandQueue.put(uniqueId, q);
       } else {
           if (log.isDebugEnabled()) {
             log.debug("---------retrieving CommandQueue for " + uniqueId);
           }
       }
       return uniqueIdToCommandQueue.get(uniqueId);
+    }
+    
+    /**
+     * Sets this frame group's speed, and updates all command queues
+     * to use this speed.
+     * 
+     * @param i millisecond delay between queue operations
+     */
+    protected void setSpeed(int i) {
+      millisecondDelayBetweenOperations.set(i);
+      for (CommandQueue queue : uniqueIdToCommandQueue.values()) {
+        queue.setQueueDelay(i);
+      }
+    }
+    
+    /**
+     * Returns the delay for this frame group's command queues
+     * 
+     * @return millisecond delay between queue operations
+     */
+    protected int getSpeed() {
+      return millisecondDelayBetweenOperations.get();
     }
     
     /** Schedules the specified command to be retrieved by the next call to

@@ -52,6 +52,28 @@ public class CommandQueueTest extends TestCase {
       SeleniumServer.setDebugMode(false);
       SeleniumServer.configureLogging();
   }
+  
+  public void testQueueDelayInitializedAtDefault() {
+    assertEquals(cq.getSpeed(), cq.getQueueDelay());
+  }
+  
+  public void testQueueDelayChangedAsSetNoCrosstalk() {
+    int defaultSpeed = cq.getSpeed();
+    int newSpeed = cq.getQueueDelay() + 42;
+    int newGlobalSpeed = defaultSpeed + 21;
+    cq.setQueueDelay(newSpeed);
+    cq.setSpeed(newGlobalSpeed);
+    assertEquals(newSpeed, cq.getQueueDelay());
+    assertEquals(newGlobalSpeed, cq.getSpeed());
+    
+    CommandQueue cq2 = new CommandQueue(sessionId, getName() + "2");
+    assertEquals(newGlobalSpeed, cq2.getQueueDelay());
+    
+    CommandQueue cq3 = new CommandQueue(sessionId, getName() + "3", newSpeed);
+    assertEquals(newSpeed, cq3.getQueueDelay());
+    
+    cq.setSpeed(defaultSpeed);
+  }
 
   public void testAssertStartingState() {
     assertNull(cq.peekAtCommand());
