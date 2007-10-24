@@ -181,9 +181,10 @@ public class WindowsProxyManager {
 
         WindowsUtils.writeBooleanRegistryValue(RegKey.WARN_ON_FORM_SUBMIT.key, false);
 
-        if (WindowsUtils.doesRegistryValueExist(RegKey.PROXY_OVERRIDE.key)) {
-            WindowsUtils.deleteRegistryValue(RegKey.PROXY_OVERRIDE.key);
-        }
+        // DGF Don't manage proxy settings the IE4 way; use hudsuckr instead
+//        if (WindowsUtils.doesRegistryValueExist(RegKey.PROXY_OVERRIDE.key)) {
+//            WindowsUtils.deleteRegistryValue(RegKey.PROXY_OVERRIDE.key);
+//        }
 
         if (changeMaxConnections) {
             // need at least 1 xmlHttp connection per frame/window
@@ -294,15 +295,17 @@ public class WindowsProxyManager {
     private enum RegKey {
     	POPUP_MGR(REG_KEY_BASE + "\\Software\\Microsoft\\Internet Explorer\\New Windows\\PopupMgr", null), // In IE7 it's a DWORD; in IE6 a string "yes"/"no"
     	USERNAME_PASSWORD_DISABLE(REG_KEY_BASE + "\\Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_HTTP_USERNAME_PASSWORD_DISABLE\\iexplore.exe", boolean.class),
-    	AUTOCONFIG_URL(REG_KEY_BASE + "\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\AutoConfigURL", String.class),
     	MAX_CONNECTIONS_PER_1_0_SVR(REG_KEY_BASE + "\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\MaxConnectionsPer1_0Server", int.class),
     	MAX_CONNECTIONS_PER_1_1_SVR(REG_KEY_BASE + "\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\MaxConnectionsPerServer", int.class),
-    	PROXY_ENABLE(REG_KEY_BASE + "\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\ProxyEnable", boolean.class),
-    	PROXY_OVERRIDE(REG_KEY_BASE + "\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\ProxyOverride", String.class),
-    	PROXY_SERVER(REG_KEY_BASE + "\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\ProxyServer", String.class),
     	AUTOPROXY_RESULT_CACHE(REG_KEY_BASE + "\\Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\EnableAutoproxyResultCache", boolean.class),
     	MIME_EXCLUSION_LIST_FOR_CACHE(REG_KEY_BASE + "\\Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\MimeExclusionListForCache", String.class),
     	WARN_ON_FORM_SUBMIT(REG_KEY_BASE + "\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\Zones\\3\\1601", boolean.class),
+    	//DGF Don't manage proxy settings the IE4 way; use hudsuckr instead
+    	//AUTOCONFIG_URL(REG_KEY_BASE + "\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\AutoConfigURL", String.class),
+        //PROXY_ENABLE(REG_KEY_BASE + "\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\ProxyEnable", boolean.class),
+        //PROXY_OVERRIDE(REG_KEY_BASE + "\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\ProxyOverride", String.class),
+        //PROXY_SERVER(REG_KEY_BASE + "\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\ProxyServer", String.class),
+
     	;
     	
     	RegKey(String key, Class<?> type) {
