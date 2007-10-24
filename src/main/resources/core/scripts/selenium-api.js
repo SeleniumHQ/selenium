@@ -2139,6 +2139,30 @@ Selenium.prototype.getCookie = function() {
     return doc.cookie;
 };
 
+Selenium.prototype.getCookieByName = function(name) {
+    /**
+     * Returns the value of the cookie with the specified name, or throws an error if the cookie is not present.
+     * @param name the name of the cookie
+     * @return string the value of the cookie
+     */
+    var v = this.browserbot.getCookieByName(name);
+    if (v === null) {
+        throw new SeleniumError("Cookie '"+name+"' was not found");
+    }
+    return v;
+};
+
+Selenium.prototype.isCookiePresent = function(name) {
+    /**
+     * Returns true if a cookie with the specified name is present, or false otherwise.
+     * @param name the name of the cookie
+     * @return boolean true if a cookie with the specified name is present, or false otherwise.
+     */
+    var v = this.browserbot.getCookieByName(name);
+    var absent = (v === null);
+    return !absent;
+}   
+
 Selenium.prototype.doCreateCookie = function(nameValuePair, optionsString) {
     /**
      * Create a new cookie whose path and domain are same with those of current page

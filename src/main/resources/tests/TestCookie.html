@@ -111,13 +111,23 @@ Copyright 2004 ThoughtWorks, Inc
             <td>&nbsp;</td>
         </tr>
         <tr>
-            <td>verifyNotCookie</td>
-            <td>regex:testCookie</td>
+            <td>assertCookiePresent</td>
+            <td>addedCookieForPath1</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>verifyCookieByName</td>
+            <td>addedCookieForPath1</td>
+            <td>new value1</td>
+        </tr>
+        <tr>
+            <td>verifyCookieNotPresent</td>
+            <td>testCookie</td>
             <td>&nbsp;</td>
         </tr>
         <tr>
-            <td>verifyNotCookie</td>
-            <td>regex:addedCookieForPath2</td>
+            <td>verifyCookieNotPresent</td>
+            <td>addedCookieForPath2</td>
             <td>&nbsp;</td>
         </tr>
         <tr>
@@ -136,13 +146,13 @@ Copyright 2004 ThoughtWorks, Inc
             <td>&nbsp;</td>
         </tr>
         <tr>
-            <td>verifyCookie</td>
-            <td>addedCookieForPath2=new value2</td>
-            <td>&nbsp;</td>
+            <td>verifyCookieByName</td>
+            <td>addedCookieForPath2</td>
+            <td>new value2</td>
         </tr>
         <tr>
-            <td>verifyNotCookie</td>
-            <td>regex:addedCookieForPath1</td>
+            <td>verifyCookieNotPresent</td>
+            <td>addedCookieForPath1</td>
             <td>&nbsp;</td>
         </tr>
         <tr>
@@ -177,9 +187,9 @@ Testing creating cookies with same name but diffrent paths
             <td>&nbsp;</td>
         </tr>
         <tr>
-            <td>verifyCookie</td>
-            <td>testCookieWithSameName=new value1</td>
-            <td>&nbsp;</td>
+            <td>verifyCookieByName</td>
+            <td>testCookieWithSameName</td>
+            <td>new value1</td>
         </tr>
         <tr>
             <td>open</td>
@@ -207,9 +217,9 @@ Testing creating cookies with same name but diffrent paths
             <td>&nbsp;</td>
         </tr>
         <tr>
-            <td>verifyCookie</td>
-            <td>testCookieWithSameName=new value1</td>
-            <td>&nbsp;</td>
+            <td>verifyCookieByName</td>
+            <td>testCookieWithSameName</td>
+            <td>new value1</td>
         </tr>
         <tr>
             <td>verifyNotCookie</td>

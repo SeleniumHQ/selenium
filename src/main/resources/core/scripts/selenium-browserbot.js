@@ -1079,6 +1079,21 @@ BrowserBot.prototype.getTitle = function() {
     return t;
 }
 
+BrowserBot.prototype.getCookieByName = function(cookieName) {
+    var ck = this.getDocument().cookie;
+    if (!ck) return null;
+    var ckPairs = ck.split(/;/);
+    for (var i = 0; i < ckPairs.length; i++) {
+        var ckPair = ckPairs[i];
+        var ckNameValue = ckPair.split(/=/);
+        var ckName = decodeURIComponent(ckNameValue[0]);
+        if (ckName === cookieName) {
+            return decodeURIComponent(ckNameValue[1]);
+        }
+    }
+    return null;
+}
+
 /*
  * Finds an element recursively in frames and nested frames
  * in the specified document, using various lookup protocols
