@@ -267,6 +267,19 @@ Selenium.prototype.doFireEvent = function(locator, eventName) {
     triggerEvent(element, eventName, false);
 };
 
+Selenium.prototype.doFocus = function(locator) {
+    /** Move the focus to the specified element; for example, if the element is an input field, move the cursor to that field.
+    *
+    * @param locator an <a href="#locators">element locator</a>
+    */
+    var element = this.browserbot.findElement(locator);
+    if (element.focus) {
+        element.focus();
+    } else {
+         triggerEvent(element, "focus", false);
+    }
+}
+
 Selenium.prototype.doKeyPress = function(locator, keySequence) {
     /**
    * Simulates a user pressing and releasing a key.

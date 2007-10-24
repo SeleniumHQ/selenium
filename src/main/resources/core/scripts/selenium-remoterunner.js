@@ -569,3 +569,42 @@ Selenium.prototype.doCaptureScreenshot = function(filename) {
     */
     // This doesn't really do anything on the JS side; we let the Selenium Server take care of this for us!
 };
+
+Selenium.prototype.doKeyDownNative = function(keycode) {
+    /**
+    * Simulates a user pressing a key (without releasing it yet) by sending a native operating system keystroke.
+    * This function uses the java.awt.Robot class to send a keystroke; this more accurately simulates typing
+    * a key on the keyboard.  It does not honor settings from the shiftKeyDown, controlKeyDown, altKeyDown and
+    * metaKeyDown commands, and does not target any particular HTML element.  To send a keystroke to a particular
+    * element, focus on the element first before running this command.
+    *
+    * @param keycode an integer keycode number corresponding to a java.awt.event.KeyEvent; note that Java keycodes are NOT the same thing as JavaScript keycodes!
+    */
+    // This doesn't really do anything on the JS side; we let the Selenium Server take care of this for us!
+};
+
+Selenium.prototype.doKeyUpNative = function(keycode) {
+    /**
+    * Simulates a user releasing a key by sending a native operating system keystroke.
+    * This function uses the java.awt.Robot class to send a keystroke; this more accurately simulates typing
+    * a key on the keyboard.  It does not honor settings from the shiftKeyDown, controlKeyDown, altKeyDown and
+    * metaKeyDown commands, and does not target any particular HTML element.  To send a keystroke to a particular
+    * element, focus on the element first before running this command.
+    *
+    * @param keycode an integer keycode number corresponding to a java.awt.event.KeyEvent; note that Java keycodes are NOT the same thing as JavaScript keycodes!
+    */
+    // This doesn't really do anything on the JS side; we let the Selenium Server take care of this for us!
+};
+
+Selenium.prototype.doKeyPressNative = function(keycode) {
+    /**
+    * Simulates a user pressing and releasing a key by sending a native operating system keystroke.
+    * This function uses the java.awt.Robot class to send a keystroke; this more accurately simulates typing
+    * a key on the keyboard.  It does not honor settings from the shiftKeyDown, controlKeyDown, altKeyDown and
+    * metaKeyDown commands, and does not target any particular HTML element.  To send a keystroke to a particular
+    * element, focus on the element first before running this command.
+    *
+    * @param keycode an integer keycode number corresponding to a java.awt.event.KeyEvent; note that Java keycodes are NOT the same thing as JavaScript keycodes!
+    */
+    // This doesn't really do anything on the JS side; we let the Selenium Server take care of this for us!
+};
