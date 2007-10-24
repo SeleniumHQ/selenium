@@ -221,28 +221,21 @@ public class SeleneseTestCase extends TestCase {
      * @return true if actual matches the expectedPattern, or false otherwise
      */
     public static boolean seleniumEquals(String expectedPattern, String actual) {
-        if (actual.startsWith("regexp:") || actual.startsWith("regex:")) {
+        if (actual.startsWith("regexp:") || actual.startsWith("regex:") || actual.startsWith("regexpi:") || actual.startsWith("regexi:")) {
             // swap 'em
         	String tmp = actual;
             actual = expectedPattern;
             expectedPattern = tmp;
         }
-        if (expectedPattern.startsWith("regexp:")) {
-            String expectedRegEx = expectedPattern.replaceFirst("regexp:", ".*") + ".*";
-            if (!actual.matches(expectedRegEx)) {
-                System.out.println("expected " + actual + " to match regexp " + expectedPattern);
-                return false;                    
-            }
-            return true;
-        }
-        if (expectedPattern.startsWith("regex:")) {
-            String expectedRegEx = expectedPattern.replaceFirst("regex:", ".*") + ".*";
-            if (!actual.matches(expectedRegEx)) {
-                System.out.println("expected " + actual + " to match regex " + expectedPattern);
-                return false;
-            }
-            return true;
-        }
+        Boolean b;
+        b = handleRegex("regexp:", expectedPattern, actual, 0);
+        if (b != null) { return b.booleanValue(); }
+        b = handleRegex("regex:", expectedPattern, actual, 0);
+        if (b != null) { return b.booleanValue(); }
+        b = handleRegex("regexpi:", expectedPattern, actual, Pattern.CASE_INSENSITIVE);
+        if (b != null) { return b.booleanValue(); }
+        b = handleRegex("regexi:", expectedPattern, actual, Pattern.CASE_INSENSITIVE);
+        if (b != null) { return b.booleanValue(); }
         
         if (expectedPattern.startsWith("exact:")) {
             String expectedExact = expectedPattern.replaceFirst("exact:", "");
@@ -263,6 +256,19 @@ public class SeleneseTestCase extends TestCase {
             return false;
         }
         return true;
+    }
+
+    private static Boolean handleRegex(String prefix, String expectedPattern, String actual, int flags) {
+        if (expectedPattern.startsWith(prefix)) {
+            String expectedRegEx = expectedPattern.replaceFirst(prefix, ".*") + ".*";
+            Pattern p = Pattern.compile(expectedRegEx, flags);
+            if (!p.matcher(actual).matches()) {
+                System.out.println("expected " + actual + " to match regexp " + expectedPattern);
+                return Boolean.FALSE;                    
+            }
+            return Boolean.TRUE;
+        }
+        return null;
     }
     
     /** Compares two objects, but handles "regexp:" strings like HTML Selenese
