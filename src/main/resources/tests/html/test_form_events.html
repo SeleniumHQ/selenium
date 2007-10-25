@@ -69,6 +69,7 @@ function attachEventRecorders(elementId) {
     element.onkeydown=recordEvent;
     element.onkeypress=recordEvent;
     element.onkeyup=recordEvent;
+    element.oncontextmenu=recordEvent;
 }
 
 function setupEventRecorders() {

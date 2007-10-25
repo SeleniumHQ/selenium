@@ -1553,6 +1553,11 @@ BrowserBot.prototype.doubleClickElement = function(element, clientX, clientY) {
        this._fireEventOnElement("dblclick", element, clientX, clientY);
 };
 
+// The contextmenu event is fired when the user right-clicks to open the context menu
+BrowserBot.prototype.contextMenuOnElement = function(element, clientX, clientY) {
+       this._fireEventOnElement("contextmenu", element, clientX, clientY);
+};
+
 BrowserBot.prototype._modifyElementTarget = function(element) {
     if (element.target) {
         if (element.target == "_blank" || /^selenium_blank/.test(element.target) ) {

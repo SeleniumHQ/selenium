@@ -225,6 +225,17 @@ Selenium.prototype.doDoubleClick = function(locator) {
    this.browserbot.doubleClickElement(element);
 };
 
+Selenium.prototype.doContextMenu = function(locator) {
+    /**
+   * Simulates opening the context menu for the specified element (as might happen if the user "right-clicked" on the element).
+   *
+   * @param locator an element locator
+   *
+   */
+   var element = this.browserbot.findElement(locator);
+   this.browserbot.contextMenuOnElement(element);
+};
+
 Selenium.prototype.doClickAt = function(locator, coordString) {
     /**
    * Clicks on a link, button, checkbox or radio button. If the click action
@@ -255,6 +266,20 @@ Selenium.prototype.doDoubleClickAt = function(locator, coordString) {
     var element = this.browserbot.findElement(locator);
     var clientXY = getClientXY(element, coordString)
     this.browserbot.doubleClickElement(element, clientXY[0], clientXY[1]);
+};
+
+Selenium.prototype.doContextMenuAt = function(locator, coordString) {
+    /**
+   * Simulates opening the context menu for the specified element (as might happen if the user "right-clicked" on the element).
+   *
+   * @param locator an element locator
+   * @param coordString specifies the x,y position (i.e. - 10,20) of the mouse
+   *      event relative to the element returned by the locator.
+   *
+   */
+    var element = this.browserbot.findElement(locator);
+    var clientXY = getClientXY(element, coordString)
+    this.browserbot.contextMenuOnElement(element, clientXY[0], clientXY[1]);
 };
 
 Selenium.prototype.doFireEvent = function(locator, eventName) {
