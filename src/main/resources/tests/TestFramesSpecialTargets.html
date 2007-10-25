@@ -21,8 +21,8 @@ Copyright 2004 ThoughtWorks, Inc
   <title>TestFramesSpecialTargets</title>
 </head>
 <body>
-    <p>This test reproduces bug SEL-272</p>
-    
+    <p>This test reproduces bug SEL-272 & SEL-417</p>
+
     <p>_top</p>
     
 <table cellpadding="1" cellspacing="1" border="1">
@@ -97,6 +97,36 @@ Copyright 2004 ThoughtWorks, Inc
       <td>changeSpan</td>
       <td>&nbsp;</td>
     </tr>
+  </tbody>
+</table>
+
+<p>_self</p>
+
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td>open</td>
+      <td>../tests/html/Frames.html</td> 
+      <td>&nbsp;</td>
+    </tr>
+
+    <tr>
+      <td>selectFrame</td>
+      <td>bottomFrame</td>
+      <td>&nbsp;</td>
+    </tr>
+
+    <tr>
+      <td>clickAndWait</td>
+      <td>changeSelf</td>
+      <td>&nbsp;</td>
+    </tr>
+    
+    <tr>
+      <td>click</td>
+      <td>changeSpan</td>
+      <td>&nbsp;</td>
+    </tr>
     
     <tr>
       <td>close</td>
@@ -105,7 +135,6 @@ Copyright 2004 ThoughtWorks, Inc
     </tr>
   </tbody>
 </table>
-
 
 </body>
 </html>

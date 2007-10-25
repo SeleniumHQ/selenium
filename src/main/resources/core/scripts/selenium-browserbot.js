@@ -1594,6 +1594,9 @@ BrowserBot.prototype._getTargetWindow = function(element) {
 
 BrowserBot.prototype._getFrameFromGlobal = function(target) {
 
+    if (target == "_self") {
+        return this.getCurrentWindow();
+    }
     if (target == "_top") {
         return this.topFrame;
     } else if (target == "_parent") {
