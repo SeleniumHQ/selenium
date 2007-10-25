@@ -321,8 +321,17 @@ public class FrameGroupCommandQueueSet {
         }
         
         if (command.equals("getAllWindowNames")) {
-          return getAllWindowNames();
-        }                
+          return getAttributeFromAllWindows("name");
+        }
+        if (command.equals("getAllWindowTitles")) {
+            return getAttributeFromAllWindows("document.title");
+        }
+        if (command.equals("getAllWindowIds")) {
+            return getAttributeFromAllWindows("id");
+        }
+        if (command.equals("getAttributeFromAllWindows")) {
+            return getAttributeFromAllWindows(arg);
+        }
         
         // handle closed queue (the earlier commands don't care about closed queues)
         CommandQueue queue = getCommandQueue();
@@ -389,30 +398,33 @@ public class FrameGroupCommandQueueSet {
     	
     	return sb.toString();
     }    
-
+    
     /**
-     * Get all window names from the server.  Since the JS in the browser
+     * Get all window attributes from the server.  Since the JS in the browser
      * cannot possibly know about all windows.
      */
-    private String getAllWindowNames() {
-    	// If we're not in PI mode, send the command back to the browser.
+    private String getAttributeFromAllWindows(String attributeName) {
+        // If we're not in PI mode, send the command back to the browser.
         if (!SeleniumServer.isProxyInjectionMode()) {  
-        	return doCommand("getAllWindowNames", "", "");
+            return doCommand("getAttributeFromAllWindows", "", "");
         }
         
         Set<String> frameAddressSet = uniqueIdToCommandQueue.keySet();
-        List<String> windowNames = new ArrayList<String>();
+        List<String> windowTitles = new ArrayList<String>();
         
         // Find all window names in the set of frame addresses
         for (String uniqueId : frameAddressSet) {
-        	FrameAddress frameAddress = uniqueIdToCommandQueue.get(uniqueId).getFrameAddress();
-        	String windowName = frameAddress.getWindowName();
-        	if (!windowNames.contains(windowName)) {
-        		windowNames.add(windowName);
-        	}
+            CommandQueue q = uniqueIdToCommandQueue.get(uniqueId);
+            String attribute;
+            try {
+                attribute = getRemoteString(q, "getEval", "window." + attributeName, "");
+            } catch (WindowClosedException e) {
+                continue;
+            }
+            windowTitles.add(attribute);
         }
         
-        String frameAddressCSV = getStringArrayAccessorCSV(windowNames.toArray(new String[0]));
+        String frameAddressCSV = getStringArrayAccessorCSV(windowTitles.toArray(new String[0]));
         
         return "OK," + frameAddressCSV;        
     }
@@ -424,7 +436,13 @@ public class FrameGroupCommandQueueSet {
      * @throws WindowClosedException 
      */
     private String getRemoteWindowTitle(CommandQueue queue) throws WindowClosedException {
-        String cmdResult = queue.doCommand("getTitle", "", "");
+        return getRemoteString(queue, "getTitle", "", "");
+    
+    }
+
+    private String getRemoteString(CommandQueue queue, String command, String arg1, String arg2)
+            throws WindowClosedException {
+        String cmdResult = queue.doCommand(command, arg1, arg2);
         
         if (cmdResult == null) cmdResult = "";
         
@@ -438,7 +456,6 @@ public class FrameGroupCommandQueueSet {
         	}
         	throw new RuntimeException("unexpected browser error from getTitle: " + cmdResult);
         }
-    
     }
         
     public String waitForLoad(long timeoutInMilliseconds) {
