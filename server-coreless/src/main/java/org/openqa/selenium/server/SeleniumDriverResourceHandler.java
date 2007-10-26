@@ -32,6 +32,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.lang.reflect.Field;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -732,7 +733,8 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     /** Kills all running browsers */
     public void stopAllBrowsers() {
       synchronized(launchers) {
-        for (String sessionId : launchers.keySet()) {
+          List<String> sessions = new ArrayList<String>(launchers.keySet());
+        for (String sessionId : sessions) {
           endBrowserSession(sessionId, false);
         }
       }
