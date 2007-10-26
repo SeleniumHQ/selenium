@@ -279,8 +279,14 @@ objectExtend(RemoteRunner.prototype, {
                     return;
                 }
                 var command = this._extractCommand(this.xmlHttpForCommandsAndResults);
-                this.currentCommand = command;
-                this.continueTestAtCurrentCommand();
+                if (command.command == 'retryLast') {
+                    setTimeout(fnBind(function() {
+                        sendToRC("RETRY", "retry=true", fnBind(this._HandleHttpResponse, this), this.xmlHttpForCommandsAndResults, true);
+                    }, this), 1000);
+                } else {
+                    this.currentCommand = command;
+                    this.continueTestAtCurrentCommand();
+                }
             }
             // Not OK 
             else {
@@ -371,39 +377,11 @@ function sendToRC(dataToBePosted, urlParms, callback, xmlHttpObject, async) {
     url = addUrlParams(url);
     url += "&sequenceNumber=" + seleniumSequenceNumber++;
     
-    var wrappingCallback;
-    if (callback == null) {
-        callback = function() {};
-        wrappingCallback = callback;
-    } else {
-        wrappingCallback = function() {
-            if (xmlHttpObject.readyState == 4) {
-                if (xmlHttpObject.status == 200) {
-                    var retry = false;
-                    if (typeof currentTest != 'undefined') {
-                        var command = currentTest._extractCommand(xmlHttpObject);
-                            //console.log("*********** " + command.command + " | " + command.target + " | " + command.value);
-                        if (command.command == 'retryLast') {
-                            retry = true;
-                        }
-                    }
-                    if (retry) {
-                        setTimeout(fnBind(function() {
-                            sendToRC("RETRY", "retry=true", callback, xmlHttpObject, async);
-                        }, this), 1000);
-                    } else {
-                        callback();
-                    }
-                }
-            }
-        }
-    }
-    
     var postedData = "postedData=" + encodeURIComponent(dataToBePosted);
 
     //xmlHttpObject.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     xmlHttpObject.open("POST", url, async);
-    xmlHttpObject.onreadystatechange = wrappingCallback;
+    xmlHttpObject.onreadystatechange = callback;
     xmlHttpObject.send(postedData);
     return null;
 }
