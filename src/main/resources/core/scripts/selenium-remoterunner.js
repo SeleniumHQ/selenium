@@ -381,7 +381,7 @@ function sendToRC(dataToBePosted, urlParms, callback, xmlHttpObject, async) {
 
     //xmlHttpObject.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     xmlHttpObject.open("POST", url, async);
-    xmlHttpObject.onreadystatechange = callback;
+    if (callback) xmlHttpObject.onreadystatechange = callback;
     xmlHttpObject.send(postedData);
     return null;
 }
