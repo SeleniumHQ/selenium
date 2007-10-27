@@ -93,9 +93,12 @@ var BrowserVersion = function() {
                 self.isHTA = false;
             }
         }
+        if (navigator.appVersion.match(/MSIE 6.0/)) {
+        	this.isIE6 = true;
+        }
         if ("0" == navigator.appMinorVersion) {
             this.preSV1 = true;
-            if (navigator.appVersion.match(/MSIE 6.0/)) {
+            if (this.isIE6) {
             	this.appearsToBeBrokenInitialIE6 = true;
             }
         }
