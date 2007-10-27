@@ -188,6 +188,7 @@ tab label {
 #speedSliderBox label {
   margin-top: 0;
   font-size: 9px;
+  font-family: Lucida Grande, Verdana;
 }
 
 #speedSliderBox .spacer {
@@ -219,6 +220,8 @@ tab label {
 }
 
 #speedSliderBox thumb {
+  -moz-appearance: none !important;
+  border: none;
   background: url("slider-thumb.png");
   background-repeat: no-repeat;
   background-position: 0 1px;
