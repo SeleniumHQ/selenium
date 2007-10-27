@@ -84,7 +84,7 @@ Application.prototype = {
         this.currentFormat = format;
         this.options.selectedFormat = format.id;
         Preferences.save(this.options, 'selectedFormat');
-        this.setClipbaordFormat(format);
+        this.setClipboardFormat(format);
         this.notify("currentFormatChanged", format);
     },
 

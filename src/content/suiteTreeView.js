@@ -48,7 +48,7 @@ objectExtend(SuiteTreeView.prototype, {
                         testCase.addObserver(this._testCaseObserver);
                         var tests = self.getTestSuite().tests;
                         for (var i = 0; i < tests.length; i++) {
-                            if (tests[i].content == testCase) {
+                            if (tests[i].content && tests[i].content == testCase) {
                                 self.currentTestCase = testCase;
                                 self.currentTestCaseIndex = i;
                                 self.rowUpdated(self.currentTestCaseIndex);

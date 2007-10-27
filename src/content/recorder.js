@@ -42,7 +42,7 @@ Recorder.prototype.reattachWindowMethods = function() {
 	this.window.confirm = function(message) {
 		var result = self.windowMethods['confirm'].call(self.window, message);
 		if (!result) {
-			self.record('chooseCancelOnNextConfirmation');
+			self.record('chooseCancelOnNextConfirmation', null, null, true);
 		}
 		setTimeout(Recorder.record, 100, self, 'assertConfirmation', message, null);
 		return result;
@@ -127,10 +127,10 @@ Recorder.record = function(recorder, command, target, value) {
 	recorder.record(command, target, value);
 }
 
-Recorder.prototype.record = function(command, target, value) {
+Recorder.prototype.record = function(command, target, value, insertBeforeLastCommand) {
 	for (var i = 0; i < this.observers.length; i++) {
 		if (this.observers[i].recordingEnabled) {
-			this.observers[i].addCommand(command, target, value, this.window);
+			this.observers[i].addCommand(command, target, value, this.window, insertBeforeLastCommand);
 		}
 	}
 }

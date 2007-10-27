@@ -84,7 +84,7 @@ SourceView.prototype = {
 		if (this.editor.app.getCurrentFormat().getFormatter().playable) {
 			return this.testCase.commands.length;
 		} else {
-			return this.testCase.getCommandIndexByTextIndex(this.lastValue, this.textbox.selectionStart, this.editor.currentFormat.getFormatter());
+			return this.testCase.getCommandIndexByTextIndex(this.lastValue, this.textbox.selectionStart, this.editor.app.getCurrentFormat().getFormatter());
 		}
 	}
 };
@@ -97,6 +97,7 @@ SourceView.prototype.countNewLine = function(value, cursor) {
 }
 
 SourceView.prototype.updateView = function() {
+    this.log.debug("updateView: testCase=" + this.testCase);
 	var scrollTop = this.textbox.inputField.scrollTop;
 	//this.textbox.value = this.testCase.getSource(this.editor.options, "New Test");
 	this.textbox.value = this.lastValue = this.editor.app.getCurrentFormat().getSourceForTestCase(this.testCase);

@@ -109,9 +109,9 @@ function Editor(window, isSidebar) {
 
 	//window.controllers.appendController(controller);
 
+    this.app.newTestSuite();
 	this.updateViewTabs();
     this.infoPanel = new Editor.InfoPanel(this);
-    this.app.newTestSuite();
     
 	//top.document.commandDispatcher.updateCommands("selenium-ide-state");
 
@@ -457,7 +457,7 @@ Editor.prototype._isSameWindow = function(w1, w2) {
     }
 }
 
-Editor.prototype.addCommand = function(command,target,value,window) {
+Editor.prototype.addCommand = function(command,target,value,window,insertBeforeLastCommand) {
     this.log.debug("addCommand: command=" + command + ", target=" + target + ", value=" + value + " window.name=" + window.name);
     if (this.lastWindow) {
         this.log.debug("window.name=" + window.name + ", lastWindow.name=" + this.lastWindow.name);
@@ -514,11 +514,17 @@ Editor.prototype.addCommand = function(command,target,value,window) {
 	//resultBox.inputField.scrollTop = resultBox.inputField.scrollHeight - resultBox.inputField.clientHeight;
     this.clearLastCommand();
 	this.lastWindow = window;
-
-	this.lastCommandIndex = this.view.getRecordIndex();
-	this.getTestCase().commands.splice(this.lastCommandIndex, 0, new Command(command, target, value));
-	this.view.rowInserted(this.lastCommandIndex);
-	this.timeoutID = setTimeout("editor.clearLastCommand()", 300);
+    var command = new Command(command, target, value);
+    if (insertBeforeLastCommand && this.view.getRecordIndex() > 0) {
+        var index = this.view.getRecordIndex() - 1;
+        this.getTestCase().commands.splice(index, 0, command);
+        this.view.rowInserted(index);
+    } else {
+        this.lastCommandIndex = this.view.getRecordIndex();
+        this.getTestCase().commands.splice(this.lastCommandIndex, 0, command);
+        this.view.rowInserted(this.lastCommandIndex);
+        this.timeoutID = setTimeout("editor.clearLastCommand()", 300);
+    }
 }
 
 Editor.prototype.clearLastCommand = function() {
@@ -671,7 +677,7 @@ Editor.prototype.onPopupOptions = function() {
 Editor.prototype.populateFormatsPopup = function(e, format) {
     XulUtils.clearChildren(e);
 	var formats = this.app.getFormats().formats;
-	for (i = 0; i < formats.length; i++) {
+	for (var i = 0; i < formats.length; i++) {
         XulUtils.appendMenuItem(e, {
                     type: "radio",
                     name: "formats",
@@ -705,7 +711,7 @@ Editor.prototype.getTestCase = function() {
 }
 
 Editor.prototype.toggleView = function(view) {
-	this.log.debug("toggle view");
+	this.log.debug("toggle view: testCase=" + this.getTestCase());
 	if (this.view != null) {
 		this.view.onHide();
 	}
