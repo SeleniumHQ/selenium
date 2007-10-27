@@ -96,11 +96,11 @@ public class LauncherUtils {
 	    return makeProxyPAC(parentDir, port, proxySeleniumTrafficOnly,
             System.getProperty("http.proxyHost"),
             System.getProperty("http.proxyPort"),
-            SeleniumServer.isAvoidProxy());
+            System.getProperty("http.nonProxyHosts"), SeleniumServer.isAvoidProxy());
 	}
 	
 	
-	protected static File makeProxyPAC(File parentDir, int port, boolean proxySeleniumTrafficOnly, String configuredProxy, String proxyPort, boolean avoidProxy) throws FileNotFoundException {
+	protected static File makeProxyPAC(File parentDir, int port, boolean proxySeleniumTrafficOnly, String configuredProxy, String proxyPort, String nonProxyHosts, boolean avoidProxy) throws FileNotFoundException {
 		if (!avoidProxy) {
             proxySeleniumTrafficOnly = false;
         }
@@ -119,6 +119,13 @@ public class LauncherUtils {
 		}
 		out.println("        return 'PROXY localhost:" + Integer.toString(port) + "; " + defaultProxy + "';");
 		if (proxySeleniumTrafficOnly) {
+		    if (nonProxyHosts != null && nonProxyHosts.trim().length() > 0) {
+		        String[] hosts = nonProxyHosts.split("\\|");
+		        for (String host : hosts) {
+		            out.println("    } else if (shExpMatch(host, '"+host+"')) {");
+		            out.println("        return 'DIRECT';");
+		        }
+		    }
     		if (configuredProxy != null) {
     			out.println("    } else {");
     			out.println("        return '" + defaultProxy + "';");
