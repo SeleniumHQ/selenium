@@ -801,6 +801,10 @@ Editor.prototype.cleanupAutoComplete = function() {
     }
 }
 
+Editor.prototype.getInterval = function() {
+    return parseInt(document.getElementById("speedSlider").getAttribute("curpos")) * 10;
+}
+
 Editor.GENERIC_AUTOCOMPLETE = Components.classes["@mozilla.org/autocomplete/search;1?name=selenium-ide-generic"].getService(Components.interfaces.nsISeleniumIDEGenericAutoCompleteSearch);
 
 //

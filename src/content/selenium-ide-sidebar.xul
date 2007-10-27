@@ -65,11 +65,7 @@ limitations under the License.
       <toolbarbutton id="record-button" label="Record" class="icon" tooltiptext="&recordButton.tooltip;" checked="true" onclick="this.checked = !this.checked" oncommand="window.editor.toggleRecordingEnabled(this.checked)"/>
     </toolbar>
     <toolbar>
-      <radiogroup id="runInterval" orient="horizontal">
-	<radio id="run" label="&runRadio.label;" selected="true" value="0"/>
-	<radio id="walk" label="&walkRadio.label;" value="500"/>
-	<radio id="step" label="&stepRadio.label;" value="-1"/>
-      </radiogroup>
+      <stack id="speedSliderBox" />
     </toolbar>
   </toolbox>
 

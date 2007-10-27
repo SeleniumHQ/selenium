@@ -71,7 +71,7 @@ function Debugger(editor) {
                 self.setState(Debugger.PAUSED);
 				return -1;
 			} else {
-				return document.getElementById("runInterval").selectedItem.value;
+                return self.editor.getInterval();
 			}
 		}
 

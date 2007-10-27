@@ -176,3 +176,53 @@ tab label {
   font-size: 8.5pt;
 }
 
+/*
+ * Slider
+ */
+
+#speedSliderBox {
+  margin-left: 8px;
+  margin-right: 8px;
+}
+
+#speedSliderBox label {
+  margin-top: 0;
+  font-size: 9px;
+}
+
+#speedSliderBox .spacer {
+  height: 5px;
+}
+
+#speedSliderBox slider {
+  margin-top: 3px;
+}
+
+#speedSliderBox .slider-middle {
+  background: url("slider-middle.png");
+  background-position: left 8px;
+  background-repeat: repeat-x;
+}
+
+#speedSliderBox .slider-left {
+  background: url("slider.png");
+  background-position: left 8px;
+  background-repeat: no-repeat;
+  width: 5px !important;
+}
+
+#speedSliderBox .slider-right {
+  background: url("slider.png");
+  background-position: right 8px;
+  background-repeat: no-repeat;
+  width: 5px;
+}
+
+#speedSliderBox thumb {
+  background: url("slider-thumb.png");
+  background-repeat: no-repeat;
+  background-position: 0 1px;
+  width: 13px;
+  height: 13px;
+  min-width: 13px;
+}
