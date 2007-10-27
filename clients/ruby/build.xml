@@ -44,5 +44,8 @@
                 <include name="doc/**" />
             </zipfileset>
         </zip>
+        <zip zipfile="target/${ruby.release}-doc.zip">
+            <zipfileset dir="doc" prefix="ruby" />
+        </zip>
     </target>
 </project>

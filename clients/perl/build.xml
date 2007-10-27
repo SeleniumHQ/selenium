@@ -91,6 +91,9 @@
                 <include name="doc/**" />
             </zipfileset>
         </zip>
+        <zip zipfile="target/${perl.release}-doc.zip">
+            <zipfileset dir="doc" prefix="perl" />
+        </zip>
     </target>
     
     <target name="clean">

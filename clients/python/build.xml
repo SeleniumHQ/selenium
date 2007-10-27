@@ -52,6 +52,9 @@
                 <include name="doc/**" />
             </zipfileset>
         </zip>
+        <zip zipfile="target/${python.release}-doc.zip">
+            <zipfileset dir="doc" prefix="python" />
+        </zip>
     </target>
     <target name="clean">
     	<delete>

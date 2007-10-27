@@ -114,6 +114,7 @@
         <profile>
             <id>dist</id>
             <modules>
+                <module>documentation</module>
                 <module>distrib</module>
             </modules>
             <build>

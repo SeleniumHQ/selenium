@@ -87,6 +87,9 @@ class Testing_Selenium_Exception extends PEAR_Exception
                 <include name="doc/**" />
             </zipfileset>
         </zip>
+        <zip zipfile="target/${php.release}-doc.zip">
+            <zipfileset dir="doc" prefix="php" />
+        </zip>
     </target>
     <target name="clean">
       <delete dir="PEAR" />

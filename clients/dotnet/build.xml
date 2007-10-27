@@ -162,6 +162,12 @@
                 <include name="**/*" />
             </zipfileset>
         </zip>
+        
+        <zip destfile="target/${dotnet.release}-doc.zip">
+            <zipfileset dir="target/dist/doc" prefix="dotnet">
+                <include name="**/*" />
+            </zipfileset>
+        </zip>
 		
 	</target>
 	

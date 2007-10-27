@@ -1,0 +1,42 @@
+<assembly>
+    <id>doc</id>
+    <formats>
+        <format>zip</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <dependencySets>
+        <!-- unpack every client driver except for the java client driver (we'll do something special with that one) -->
+        <dependencySet>
+            <outputDirectory>/</outputDirectory>
+            <unpack>true</unpack>
+            <scope>runtime</scope>
+            <outputFileNameMapping></outputFileNameMapping>
+            <includes>
+                <include>org.openqa.selenium.client-drivers:*:jar:doc</include>
+            </includes>
+            <excludes>
+                <exclude>org.openqa.selenium.client-drivers:selenium-java-client-driver:jar:javadoc</exclude>
+            </excludes>
+        </dependencySet>
+        
+        <!-- extract selenium-server-coreless javadoc -->
+        <dependencySet>
+            <outputDirectory>server</outputDirectory>
+            <unpack>true</unpack>
+            <scope>runtime</scope>
+            <includes>
+                <include>org.openqa.selenium.server:selenium-server-coreless:jar:javadoc</include>
+            </includes>
+        </dependencySet>
+        
+        <!-- extract selenium-java-client-driver javadoc -->
+        <dependencySet>
+            <outputDirectory>java</outputDirectory>
+            <unpack>true</unpack>
+            <scope>runtime</scope>
+            <includes>
+                <include>org.openqa.selenium.client-drivers:selenium-java-client-driver:jar:javadoc</include>
+            </includes>
+        </dependencySet>
+    </dependencySets>
+</assembly>

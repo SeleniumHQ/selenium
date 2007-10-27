@@ -121,6 +121,11 @@
                                     <file>target/selenium-perl-client-driver-${project.version}.zip</file>
                                     <type>zip</type>
                                 </artifact>
+                                <artifact>
+                                    <file>target/selenium-perl-client-driver-${project.version}-doc.zip</file>
+                                    <type>zip</type>
+                                    <classifier>doc</classifier>
+                                </artifact>
                             </artifacts>
                         </configuration>
                     </execution>
