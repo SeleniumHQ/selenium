@@ -229,3 +229,12 @@ tab label {
   height: 13px;
   min-width: 13px;
 }
+
+#tableViewUnavailable {
+  -moz-opacity:0.8;
+}
+
+#tableViewUnavailable label {
+  width: 100%;
+  text-align: center;
+}

@@ -186,6 +186,12 @@ limitations under the License.
     <treechildren />
   </tree>
   
+  <vbox id="tableViewUnavailable">
+    <spacer flex="1" />
+    <label value="Table view is not available with this format."/>
+    <spacer flex="1" />
+  </vbox>
+
   <vbox id="logBox">
     <hbox id="logMenu" align="center">
       <toolbarbutton id="logTab" label="&logConsole.label;" onclick="window.editor.infoPanel.switchView(window.editor.infoPanel.logView)" class="console-tab" selected="true"/>

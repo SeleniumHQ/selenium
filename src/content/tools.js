@@ -224,3 +224,7 @@ function defineEnum(clazz, names) {
     }
     return map;
 }
+
+function $(id) {
+    return document.getElementById(id);
+}

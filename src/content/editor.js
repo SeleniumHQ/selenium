@@ -688,15 +688,19 @@ Editor.prototype.populateFormatsPopup = function(e, format) {
 }
 
 Editor.prototype.updateViewTabs = function() {
-	var editorTab = document.getElementById('editorTab');
-	var tabs = document.getElementById('viewTabs');
+	var editorTab = $('editorTab');
+	var tabs = $('viewTabs');
+    var tableViewUnavailable = $('tableViewUnavailable');
 	if (this.app.getCurrentFormat().getFormatter().playable) {
-		editorTab.collapsed = false;
+		editorTab.setAttribute("disabled", false);
+        tableViewUnavailable.setAttribute("hidden", true);
 		this.toggleView(this.view || this.treeView);
 	} else {
 		tabs.selectedIndex = 1;
 		this.toggleView(this.sourceView);
-		editorTab.collapsed = true;
+		editorTab.setAttribute("disabled", true);
+        tableViewUnavailable.setAttribute("hidden", false);
+        tableViewUnavailable.style.backgroundColor = window.getComputedStyle(tableViewUnavailable.parentNode.parentNode, "").backgroundColor;
 	}
 	this.updateState();
 }
