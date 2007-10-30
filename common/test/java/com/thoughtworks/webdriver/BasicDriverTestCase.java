@@ -759,6 +759,27 @@ public abstract class BasicDriverTestCase extends TestCase {
         assertTrue(source.contains("<p id=\"lotsofspaces\""));
     }
 
+    public void testShouldReturnEmptyStringWhenTextIsOnlySpaces() {
+        driver.get(xhtmlTestPage);
+
+        String text = driver.selectElement("id=spaces").getText();
+        assertEquals("", text);
+    }
+
+    public void testShouldReturnEmptyStringWhenTextIsEmpty() {
+        driver.get(xhtmlTestPage);
+
+        String text = driver.selectElement("id=empty").getText();
+        assertEquals("", text);
+    }
+
+    public void testShouldReturnEmptyStringWhenTagIsSelfClosing() {
+        driver.get(xhtmlTestPage);
+
+        String text = driver.selectElement("id=self-closed").getText();
+        assertEquals("", text);
+    }
+
     protected WebDriver driver;
     protected String baseUrl;
     protected String simpleTestPage;

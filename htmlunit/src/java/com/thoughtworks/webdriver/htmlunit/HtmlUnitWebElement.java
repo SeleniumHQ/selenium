@@ -188,13 +188,11 @@ public class HtmlUnitWebElement implements WebElement {
         String text = collapseWhitespace(textSoFar) + toReturn.toString();
 
         int index = text.length();
-        int lastChar = ' ';
-        while (isWhiteSpace(lastChar)) {
+        while (index > 0 && isWhiteSpace(text.charAt(index - 1))) {
             index--;
-            lastChar = text.charAt(index);
         }
 
-        return text.substring(0, index + 1);
+        return text.substring(0, index);
     }
 
     private boolean isWhiteSpace(int lastChar) {

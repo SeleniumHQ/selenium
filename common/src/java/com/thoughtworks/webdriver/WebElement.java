@@ -115,7 +115,7 @@ public interface WebElement {
     boolean isEnabled();
 
     /**
-     * Get the innerText of this element, complete with any leading or trailing whitespace.
+     * Get the innerText of this element, without any leading or trailing whitespace.
      *
      * @return The innerText of this element.
      */

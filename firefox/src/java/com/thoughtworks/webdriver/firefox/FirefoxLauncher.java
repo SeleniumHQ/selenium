@@ -103,7 +103,7 @@ public class FirefoxLauncher {
     }
 
     private void updateUserPrefsFor(File extensionsDir) {
-        File userPrefs = new File(extensionsDir, "prefs.js");
+        File userPrefs = new File(extensionsDir, "user.js");
 
         Map<String, String> prefs = new HashMap<String, String>();
         if (userPrefs.exists()) {
@@ -117,6 +117,7 @@ public class FirefoxLauncher {
         prefs.put("browser.search.update", "false");
         prefs.put("browser.shell.checkDefaultBrowser", "false");
         prefs.put("browser.startup.page", "0");
+        prefs.put("browser.tabs.warnOnClose", "false");
         prefs.put("browser.tabs.warnOnOpen", "false");
         prefs.put("dom.disable_open_during_load", "false");
         prefs.put("extensions.update.enabled", "false");
