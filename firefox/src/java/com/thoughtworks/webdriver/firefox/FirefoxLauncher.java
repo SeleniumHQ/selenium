@@ -97,7 +97,7 @@ public class FirefoxLauncher {
         try {
             ProcessBuilder builder = new ProcessBuilder(firefox.getAbsolutePath(), "-P", profileName).redirectErrorStream(true);
             builder.environment().put("MOZ_NO_REMOTE", "1");
-            Process process = builder.start();
+            builder.start();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -109,8 +109,11 @@ public class FirefoxLauncher {
         Map<String, String> prefs = new HashMap<String, String>();
         if (userPrefs.exists()) {
             prefs = readExistingPrefs(userPrefs);
+            if (!userPrefs.delete())
+                throw new RuntimeException("Cannot delete existing user preferences");
         }
 
+        // Normal settings to facilitate testing
         prefs.put("app.update.enabled", "false");
         prefs.put("browser.download.manager.showWhenStarting", "false");
         prefs.put("browser.link.open_external", "2");
@@ -135,7 +138,12 @@ public class FirefoxLauncher {
         prefs.put("security.warn_viewing_mixed.show_once", "false");
         prefs.put("signon.rememberSignons", "false");
 
-        userPrefs.delete();
+        // Which port should we listen on?
+        prefs.put("webdriver_firefox_port", "7055");
+
+        // Settings to facilitate debugging the driver
+        prefs.put("javascript.options.showInConsole", "true"); // Logs errors in chrome files to the Error Console.
+        prefs.put("browser.dom.window.dump.enabled", "true");  // Enables the use of the dump() statement 
 
         writeNewPrefs(userPrefs, prefs);
     }
@@ -170,6 +178,7 @@ public class FirefoxLauncher {
                 line = line.substring("user_pref(\"".length());
                 line = line.substring(0, line.length() - ");".length());
                 String[] parts = line.split(",");
+                parts[0] = parts[0].substring(0, parts[0].length() - 1);
                 prefs.put(parts[0].trim(), parts[1].trim());
 
                 line = reader.readLine();

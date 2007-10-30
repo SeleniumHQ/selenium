@@ -38,9 +38,3 @@ window.addEventListener("load", function(e) {
         }
     }
 }, true);
-
-window.addEventListener("focus", function(e) {
-    if (driver) {
-        driver.refreshContext = true;
-    }
-}, true);

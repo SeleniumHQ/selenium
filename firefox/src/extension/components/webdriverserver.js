@@ -25,9 +25,13 @@ WebDriverServer.prototype.onSocketAccepted = function(socket, transport) {
 }
 
 WebDriverServer.prototype.startListening = function(port) {
+    if (!port) {
+        var prefs = Utils.getService("@mozilla.org/preferences-service;1", "nsIPrefBranch");
+        port = prefs.getIntPref("webdriver_firefox_port") || 7055;
+    }
+
     if (!this.isListening) {
-        var listenOn = port || 7055;
-        this.serverSocket.init(listenOn, true, -1);
+        this.serverSocket.init(port, true, -1);
         this.serverSocket.asyncListen(this);
         this.isListening = true;
     }
@@ -49,5 +53,6 @@ WebDriverServer.prototype.QueryInterface = function(aIID) {
 };
 
 WebDriverServer.prototype.createInstance = function(ignore1, ignore2, ignore3) {
-    this.startListening();
+    var port = WebDriverServer.readPort();
+    this.startListening(port);
 }
