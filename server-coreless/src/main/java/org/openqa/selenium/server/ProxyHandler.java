@@ -304,6 +304,7 @@ public class ProxyHandler extends AbstractHttpHandler {
 
         // copy headers
         boolean xForwardedFor = false;
+        boolean isGet = "GET".equals(request.getMethod());
         boolean hasContent = false;
         Enumeration enm = request.getFieldNames();
         while (enm.hasMoreElements()) {
@@ -315,7 +316,7 @@ public class ProxyHandler extends AbstractHttpHandler {
             if (connectionHdr != null && connectionHdr.indexOf(hdr) >= 0)
                 continue;
 
-            if (HttpFields.__ContentType.equals(hdr) && !"GET".equals(request.getMethod()))
+            if (!isGet && HttpFields.__ContentType.equals(hdr))
                 hasContent = true;
 
             Enumeration vals = request.getFieldValues(hdr);
@@ -326,13 +327,16 @@ public class ProxyHandler extends AbstractHttpHandler {
                     if ("Referer".equals(hdr) && (-1 != val.indexOf("/selenium-server/"))) {
                         continue;
                     }
+                    if (!isGet && HttpFields.__ContentLength.equals(hdr) && Integer.parseInt(val) > 0) {
+                        hasContent = true;
+                    }
 
                     connection.addRequestProperty(hdr, val);
                     xForwardedFor |= HttpFields.__XForwardedFor.equalsIgnoreCase(hdr);
                 }
             }
         }
-
+        
         // Proxy headers
         if (!_anonymous)
             connection.setRequestProperty("Via", "1.1 (jetty)");
