@@ -44,12 +44,13 @@ public class FirefoxLauncher {
         try {
             process = new ProcessBuilder(firefox.getAbsolutePath(), "-CreateProfile", profileName).redirectErrorStream(true).start();
 
-            // Wait for a second for the process to actually finish
-            wait(1);
+            process.waitFor();
 
             System.out.println(getNextLineOfOutputFrom(process));
         } catch (IOException e) {
             throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+        	throw new RuntimeException(e);
         }
 
         File extensionsDir = locateWebDriverProfile(profileName);
@@ -71,7 +72,7 @@ public class FirefoxLauncher {
         startFirefox(firefox, profileName);
     }
 
-    private void connectAndKill() {
+	private void connectAndKill() {
         ExtensionConnection connection = new ExtensionConnection("localhost", 7055);
         try {
             long tryUntil = System.currentTimeMillis() + (5 * 1000);
