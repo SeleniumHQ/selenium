@@ -37,20 +37,20 @@ Recorder.prototype.reattachWindowMethods = function() {
 	var self = this;
 	this.window.alert = function(alert) {
 		self.windowMethods['alert'].call(self.window, alert);
-		setTimeout(Recorder.record, 100, self, 'assertAlert', alert, null);
+        self.record('assertAlert', alert);
 	}
 	this.window.confirm = function(message) {
 		var result = self.windowMethods['confirm'].call(self.window, message);
 		if (!result) {
 			self.record('chooseCancelOnNextConfirmation', null, null, true);
 		}
-		setTimeout(Recorder.record, 100, self, 'assertConfirmation', message, null);
+        self.record('assertConfirmation', message);
 		return result;
 	}
 	this.window.prompt = function(message) {
 		var result = self.windowMethods['prompt'].call(self.window, message);
-		self.record('answerOnNextPrompt', result);
-		setTimeout(Recorder.record, 100, self, 'assertPrompt', message, null);
+		self.record('answerOnNextPrompt', result, null, true);
+        self.record('assertPrompt', message);
 		return result;
 	}
 	this.window.open = function(url, windowName, windowFeatures, replaceFlag) {
