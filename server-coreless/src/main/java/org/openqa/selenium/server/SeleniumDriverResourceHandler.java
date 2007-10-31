@@ -410,7 +410,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             logMessagesBuffer.setLength(0);
         } else if ("testComplete".equals(cmd)) {
             results = endBrowserSession(sessionId, SeleniumServer.reusingBrowserSessions());
-        } else if ("shutDown".equals(cmd)) {
+        } else if ("shutDown".equals(cmd) || "shutDownSeleniumServer".equals(cmd)) {
             results = null;
             shutDown(res);
         } else if ("captureScreenshot".equals(cmd)) {
@@ -512,9 +512,14 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             if ("open".equals(cmd)) {
                 warnIfApparentDomainChange(sessionId, values.get(0));
             }
-            FrameGroupCommandQueueSet queue = FrameGroupCommandQueueSet.getQueueSet(sessionId);
-            log.debug("Session "+sessionId+" going to doCommand("+cmd+','+values.get(0)+','+values.get(1) + ")");
-            results = queue.doCommand(cmd, values.get(0), values.get(1));
+            try {
+                FrameGroupCommandQueueSet queue = FrameGroupCommandQueueSet.getQueueSet(sessionId);
+                log.debug("Session "+sessionId+" going to doCommand("+cmd+','+values.get(0)+','+values.get(1) + ")");
+                results = queue.doCommand(cmd, values.get(0), values.get(1));
+            } catch (Exception e) {
+                log.error("Exception running command", e);
+                results = "ERROR Server Exception: " + e.getMessage();
+            }
         }
         log.info("Got result: " + results + " on session " + sessionId);
         return results;
