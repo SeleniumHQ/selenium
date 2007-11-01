@@ -548,6 +548,17 @@ Selenium.prototype.doCaptureScreenshot = function(filename) {
     // This doesn't really do anything on the JS side; we let the Selenium Server take care of this for us!
 };
 
+Selenium.prototype.doShutDownSeleniumServer = function(keycode) {
+    /**
+    * Kills the running Selenium Server and all browser sessions.  After you run this command, you will no longer be able to send
+    * commands to the server; you can't remotely start the server once it has been stopped.  Normally
+    * you should prefer to run the "stop" command, which terminates the current browser session, rather than 
+    * shutting down the entire server.
+    *
+    */
+    // This doesn't really do anything on the JS side; we let the Selenium Server take care of this for us!
+};
+
 Selenium.prototype.doKeyDownNative = function(keycode) {
     /**
     * Simulates a user pressing a key (without releasing it yet) by sending a native operating system keystroke.
