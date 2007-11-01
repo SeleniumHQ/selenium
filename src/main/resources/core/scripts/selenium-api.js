@@ -2275,7 +2275,10 @@ Selenium.prototype.doCreateCookie = function(nameValuePair, optionsString) {
 
 Selenium.prototype.doDeleteCookie = function(name,optionsString) {
     /**
-     * Delete a named cookie with specified path.
+     * Delete a named cookie with specified path and domain.  Be careful; to delete a cookie, you
+     * need to delete it using the exact same path and domain that were used to create the cookie.
+     * If the path is wrong, or the domain is wrong, the cookie simply won't be deleted.  Also
+     * note that specifying a domain that isn't a subset of the current domain will usually fail.
      *
      * @param name the name of the cookie to be deleted
      * @param optionsString options for the cookie. Currently supported options include 'path' and 'domain'.
