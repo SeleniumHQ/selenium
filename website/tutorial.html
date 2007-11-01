@@ -94,23 +94,23 @@ Now that you know how to run commands in interactive mode, let's code this test 
 import com.thoughtworks.selenium.*;
 import junit.framework.*;
 public class GoogleTest extends TestCase {
-    private Selenium sel;
+    private Selenium browser;
     public void setUp() {
-        sel = new DefaultSelenium("localhost",
+        browser = new DefaultSelenium("localhost",
             4444, "*firefox", "http://www.google.com");
-        sel.start();
+        browser.start();
     }
     
     public void testGoogle() {
-        sel.open("http://www.google.com/webhp?hl=en");
-        sel.type("q", "hello world");
-        sel.click("btnG");
-        sel.waitForPageToLoad("5000");
-        assertEquals("hello world - Google Search", sel.getTitle());
+        browser.open("http://www.google.com/webhp?hl=en");
+        browser.type("q", "hello world");
+        browser.click("btnG");
+        browser.waitForPageToLoad("5000");
+        assertEquals("hello world - Google Search", browser.getTitle());
     }
     
     public void tearDown() {
-        sel.stop();
+        browser.stop();
     }
 }
 </pre>
@@ -123,27 +123,27 @@ using NUnit.Framework;
 namespace MyTests {
     [TestFixture]
     public class GoogleTest {
-        private ISelenium sel;
+        private ISelenium browser;
         
         [SetUp]
         public void SetUp() {
-            sel = new DefaultSelenium("localhost",
+            browser = new DefaultSelenium("localhost",
                 4444, "*firefox", "http://www.google.com");
-            sel.Start();
+            browser.Start();
         }
         
         [Test]
         public void testGoogle() {
-            sel.Open("http://www.google.com/webhp?hl=en");
-            sel.Type("q", "hello world");
-            sel.Click("btnG");
-            sel.WaitForPageToLoad("5000");
-            Assert.AreEqual("hello world - Google Search", sel.GetTitle());
+            browser.Open("http://www.google.com/webhp?hl=en");
+            browser.Type("q", "hello world");
+            browser.Click("btnG");
+            browser.WaitForPageToLoad("5000");
+            Assert.AreEqual("hello world - Google Search", browser.GetTitle());
         }
         
         [TearDown]
         public void TearDown() {
-            sel.Stop();
+            browser.Stop();
         }
     }
 }
@@ -157,18 +157,18 @@ use Test::More;
 
 plan tests => 1;
 
-my $sel = WWW::Selenium->new( host => "localhost", 
+my $browser = WWW::Selenium->new( host => "localhost", 
                               port => 4444, 
                               browser => "*iexplore", 
                               browser_url => "http://www.google.com";,
                             );
-$sel->start();
-$sel->open("http://www.google.com?hl=en");
-$sel->type("q", "hello world");
-$sel->click("btnG");
-$sel->wait_for_page_to_load(5000);
-like($sel->get_title(), qr/Google Search/);
-$sel->stop();
+$browser->start();
+$browser->open("http://www.google.com?hl=en");
+$browser->type("q", "hello world");
+$browser->click("btnG");
+$browser->wait_for_page_to_load(5000);
+like($browser->get_title(), qr/Google Search/);
+$browser->stop();
 
 </pre>
 
@@ -182,26 +182,26 @@ require_once 'PHPUnit/Framework/TestCase.php';
 
 class GoogleTest extends PHPUnit_Framework_TestCase
 {
-    private $selenium;
+    private $browser;
 
     public function setUp()
     {
-        $this->selenium = new Testing_Selenium("*firefox", "http://www.google.com");
-        $this->selenium->start();
+        $this->browser = new Testing_Selenium("*firefox", "http://www.google.com");
+        $this->browser->start();
     }
 
     public function tearDown()
     {
-        $this->selenium->stop();
+        $this->browser->stop();
     }
 
     public function testGoogle()
     {
-        $this->selenium->open("/webhp?hl=en");
-        $this->selenium->type("q", "hello world");
-        $this->selenium->click("btnG");
-        $this->selenium->waitForPageToLoad(10000);
-        $this->assertRegExp("/Google Search/", $this->selenium->getTitle());
+        $this->browser->open("/webhp?hl=en");
+        $this->browser->type("q", "hello world");
+        $this->browser->click("btnG");
+        $this->browser->waitForPageToLoad(10000);
+        $this->assertRegExp("/Google Search/", $this->browser->getTitle());
     }
 
 }
@@ -217,20 +217,20 @@ import selenium
 
 class GoogleTest(unittest.TestCase):
     def setUp(self):
-        self.selenium = selenium.selenium_class("localhost", \
+        self.browser = selenium.selenium_class("localhost", \
             4444, "*firefox", "http://www.google.com")
-        self.selenium.start()
+        self.browser.start()
         
     def test_google(self):
-        sel = self.selenium
-        sel.open("http://www.google.com/webhp?hl=en")
-        sel.type("q", "hello world")
-        sel.click("btnG")
-        sel.wait_for_page_to_load(5000)
-        self.assertEqual("hello world - Google Search", sel.get_title())
+        browser = self.browser
+        browser.open("http://www.google.com/webhp?hl=en")
+        browser.type("q", "hello world")
+        browser.click("btnG")
+        browser.wait_for_page_to_load(5000)
+        self.assertEqual("hello world - Google Search", browser.get_title())
     
     def tearDown(self):
-        self.selenium.stop()
+        self.browser.stop()
 
 if __name__ == "__main__":
     unittest.main()
@@ -246,21 +246,21 @@ require 'selenium'
 class GoogleTest < Test::Unit::TestCase
 
 	def setup
-		@sel = Selenium::SeleniumDriver.new("localhost", 4444,
+		@browser = Selenium::SeleniumDriver.new("localhost", 4444,
 			"*firefox", "http://www.google.com", 15000)
-		@sel.start
+		@browser.start
 	end
 		
 	def test_google
-		@sel.open("http://www.google.com/webhp?hl=en")
-		@sel.type("q", "hello world")
-		@sel.click("btnG")
-		@sel.wait_for_page_to_load("5000")
-		assert_equal("hello world - Google Search", @sel.get_title())
+		@browser.open("http://www.google.com/webhp?hl=en")
+		@browser.type("q", "hello world")
+		@browser.click("btnG")
+		@browser.wait_for_page_to_load("5000")
+		assert_equal("hello world - Google Search", @browser.get_title())
 	end
 	
 	def teardown
-		@sel.stop
+		@browser.stop
 	end
 end
 </pre></td></tr>
