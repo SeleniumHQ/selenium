@@ -287,6 +287,9 @@ public class LauncherUtils {
 		out.println("user_pref('browser.allowpopups', true);");
 		out.println("user_pref('dom.disable_open_during_load', false);");
 
+		// Allow scripts to run as long as the server timeout
+		out.println("user_pref('dom.max_script_run_time', " + SeleniumServer.getTimeoutInSeconds() + ");");
+
 		// Open links in new windows (Firefox 2.0)
 		out.println("user_pref('browser.link.open_external', 2);");
 		out.println("user_pref('browser.link.open_newwindow', 2);");
