@@ -29,7 +29,9 @@ import org.openqa.selenium.server.SeleniumServer;
 public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
 
     static Log log = LogFactory.getLog(FirefoxChromeLauncher.class);
-    private static final String DEFAULT_NONWINDOWS_LOCATION = "/Applications/Firefox.app/Contents/MacOS/firefox-bin";
+    private static final String DEFAULT_NONWINDOWS_LOCATIONS[] = {
+        "/usr/lib/firefox/firefox-bin", // Ubuntu 7.04 default location
+        "/Applications/Firefox.app/Contents/MacOS/firefox-bin"};
 
     private static boolean simple = false;
 
@@ -88,7 +90,12 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
             if (WindowsUtils.thisIsWindows()) {
                 defaultPath = WindowsUtils.getProgramFilesPath() + "\\Mozilla Firefox\\firefox.exe";
             } else {
-                defaultPath = DEFAULT_NONWINDOWS_LOCATION;
+                for(int x = 0; x < DEFAULT_NONWINDOWS_LOCATIONS.length; x++) {
+                    defaultPath = DEFAULT_NONWINDOWS_LOCATIONS[x];
+                    if (new File(defaultPath).exists()) {
+                        break;
+                    } 
+                }
             }
         }
         File defaultLocation = new File(defaultPath);
