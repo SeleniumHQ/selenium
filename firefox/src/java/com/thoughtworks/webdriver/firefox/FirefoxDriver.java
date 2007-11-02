@@ -170,6 +170,11 @@ public class FirefoxDriver implements WebDriver {
             return FirefoxDriver.this;
         }
 
+        public WebDriver frame(String frameName) {
+            sendMessage("switchToNamedFrame", frameName);
+            return FirefoxDriver.this;
+        }
+
         public WebDriver window(String windowName) {
             String response = sendMessage("switchToWindow", String.valueOf(windowName));
             if (response == null || "No window found".equals(response)) {

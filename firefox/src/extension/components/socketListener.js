@@ -142,8 +142,18 @@ SocketListener.prototype.executeCommand = function() {
             }
         }
 
-        if (driver.context.frameId !== undefined && frames[driver.context.frameId]) {
-            fxdocument = frames[driver.context.frameId].document;
+        if (driver.context.frameId !== undefined) {
+ 			if (frames[driver.context.frameId]) {
+            	fxdocument = frames[driver.context.frameId].document;
+			} else {
+				var bits = driver.context.frameId.split(".");
+				var frame = fxbrowser.contentWindow[bits[0]];
+				for (var i = 1; i < bits.length; i++) {
+					frame = frame.frames[bits[i]];
+				}
+				fxdocument = frame.document;
+				// fxdocument = fxbrowser.contentWindow[driver.context.frameId].document;
+			}
         } else {
             fxdocument = fxbrowser.contentDocument;
         }

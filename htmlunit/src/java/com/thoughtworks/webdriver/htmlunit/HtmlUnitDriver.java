@@ -207,6 +207,26 @@ public class HtmlUnitDriver implements WebDriver {
             return HtmlUnitDriver.this;
         }
 
+        public WebDriver frame(String name) {
+            HtmlPage page = (HtmlPage) webClient.getCurrentWindow().getEnclosedPage();
+            WebWindow window = webClient.getCurrentWindow();
+
+            String[] names = name.split("\\.");
+            for (String frameName : names) {
+                try {
+                    int index = Integer.parseInt(frameName);
+                    window = (WebWindow) page.getFrames().get(index);
+                } catch (NumberFormatException e) {
+                    window = page.getFrameByName(frameName);
+                }
+
+                page = (HtmlPage) window.getEnclosedPage();
+            }
+
+            currentWindow = window;
+            return HtmlUnitDriver.this;
+        }
+
         public WebDriver window(String windowId) {
             WebWindow window = webClient.getWebWindowByName(windowId);
             webClient.setCurrentWindow(window);

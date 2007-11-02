@@ -691,6 +691,27 @@ public abstract class BasicDriverTestCase extends TestCase {
         driver.switchTo().window("");
     }
 
+    public void testShouldBeAbleToSelectAFrameByName() {
+        driver.get(framesetPage);
+
+        driver.switchTo().frame("second");
+        assertEquals("2", driver.selectElement("id=pageNumber").getText());
+    }
+
+    public void testShouldSelectChildFramesByUsingADotSeparatedString() {
+        driver.get(framesetPage);
+
+        driver.switchTo().frame("fourth.child2");
+        assertEquals("11", driver.selectElement("id=pageNumber").getText());
+    }
+
+    public void testShouldSwitchToChildFramesTreatingNumbersAsIndex() {
+        driver.get(framesetPage);
+
+        driver.switchTo().frame("fourth.1");
+        assertEquals("11", driver.selectElement("id=pageNumber").getText());
+    }
+
     public void testShouldBeAbleToPerformMultipleActionsOnDifferentDrivers() {
         driver.get(iframePage);
         driver.switchTo().frame(0);

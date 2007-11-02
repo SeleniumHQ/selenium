@@ -149,6 +149,10 @@ public class InternetExplorerDriver implements WebDriver {
             return InternetExplorerDriver.this;
         }
 
+        public WebDriver frame(String frameName) {
+            throw new UnsupportedOperationException("frame");
+        }
+
         public WebDriver window(String windowName) {
             return null; // For the sake of getting us off the ground
         }

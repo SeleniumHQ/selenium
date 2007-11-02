@@ -132,6 +132,11 @@ FirefoxDriver.prototype.switchToFrame = function(respond, frameId) {
     respond(this.context, "switchToFrame");
 }
 
+FirefoxDriver.prototype.switchToNamedFrame = function(respond, frameId) {
+	this.context = new Context(this.context.windowId, frameId);
+	respond(this.context, "switchToNamedFrame");
+}
+
 FirefoxDriver.prototype.switchToDefaultContent = function(respond) {
     this.context.frameId = "?";
     respond(this.context, "switchToDefaultContent");
