@@ -300,7 +300,15 @@ objectExtend(RemoteRunner.prototype, {
     },
 
     _extractCommand : function(xmlHttp) {
-        var command;
+        var command, text, json;
+        text = command = xmlHttp.responseText;
+        if (/^json=/.test(text)) {
+            eval(text);
+            if (json.rest) {
+                eval(json.rest);
+            }
+            return json;
+        }
         try {
             var re = new RegExp("^(.*?)\n((.|[\r\n])*)");
             if (re.exec(xmlHttp.responseText)) {
