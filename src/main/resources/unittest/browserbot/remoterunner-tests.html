@@ -161,7 +161,7 @@ function testRemoteRunnerStart() {
 
 function testInvalidCommand() {
     testRemoteRunnerStart();
-    xhr.respond("cmd=invalidCommand&1=&2=");
+    xhr.respond("json={command:\"invalidCommand\",target:\"\",value:\"\"}");
     xhr = currentTest.xmlHttpForCommandsAndResults;
     assertEquals("Couldn't get handle to XHR", xhr, currentTest.xmlHttpForCommandsAndResults);
     response = parseArgs(xhr.body).postedData;
@@ -170,17 +170,17 @@ function testInvalidCommand() {
 
 function testNormalCommands() {
     testRemoteRunnerStart();
-    xhr.respond("cmd=specialTestCommand&1=&2=");
+    xhr.respond("json={command:\"specialTestCommand\",target:\"\",value:\"\"}");
     xhr = currentTest.xmlHttpForCommandsAndResults;
     response = parseArgs(xhr.body).postedData;
     assertEvalEquals("OK", "response");
     
-    xhr.respond("cmd=getSpecialTestValue&1=&2=");
+    xhr.respond("json={command:\"getSpecialTestValue\",target:\"\",value:\"\"}");
     xhr = currentTest.xmlHttpForCommandsAndResults;
     response = parseArgs(xhr.body).postedData;
     assertEvalEquals("OK,foo", "response");
     
-    xhr.respond("cmd=isSpecialTestBoolean&1=&2=");
+    xhr.respond("json={command:\"isSpecialTestBoolean\",target:\"\",value:\"\"}");
     xhr = currentTest.xmlHttpForCommandsAndResults;
     response = parseArgs(xhr.body).postedData;
     assertEvalEquals("OK,true", "response");
@@ -188,7 +188,7 @@ function testNormalCommands() {
 
 function testRetryLast() {
     testRemoteRunnerStart();
-    xhr.respond("cmd=retryLast&1=&2=");
+    xhr.respond("json={command:\"retryLast\",target:\"\",value:\"\"}");
     
     xhr = currentTest.xmlHttpForCommandsAndResults;
     url = parseUrl(xhr.url);
@@ -196,7 +196,7 @@ function testRetryLast() {
     assertEvalEquals("true", "args.retry");
     response = parseArgs(xhr.body).postedData;
     assertEvalEquals("RETRY", "response");
-    xhr.respond("cmd=retryLast&1=&2=");
+    xhr.respond("json={command:\"retryLast\",target:\"\",value:\"\"}");
 
     xhr = currentTest.xmlHttpForCommandsAndResults;
     url = parseUrl(xhr.url);
