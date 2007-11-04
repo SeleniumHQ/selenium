@@ -20,6 +20,8 @@ package org.openqa.selenium.server;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.openqa.selenium.server.browserlaunchers.*;
 
@@ -33,6 +35,8 @@ public class DefaultRemoteCommand implements RemoteCommand {
     private final String field;
     private final String value;
     private final String piggybackedJavaScript;
+    private final Pattern JSON_ESCAPABLES = Pattern.compile("([\\\\\"'\b\f\n\r\t])");
+    
 
     public DefaultRemoteCommand(String command, String field, String value) {
         this.command = command;
@@ -56,6 +60,67 @@ public class DefaultRemoteCommand implements RemoteCommand {
     public String getCommandURLString() {
         return "cmd=" + LauncherUtils.urlEncode(command) + "&1=" + LauncherUtils.urlEncode(field) + "&2=" + LauncherUtils.urlEncode(value);
     }
+    
+    public String getJSONString() {
+        String rest = "";
+        if (piggybackedJavaScript != null) {
+            rest = ",rest:\"" + escapeJSON(piggybackedJavaScript) + "\"";
+        }
+        return "json={command:\"" +  escapeJSON(command)
+            + "\",target:\"" + escapeJSON(field)
+            + "\",value:\"" + escapeJSON(value)
+            + "\""
+            + rest + "}";
+    }
+    
+    private String escapeJSON(String s) {
+        // TODO use a real JSON library (but it should be Apache licensed and less than 1.4 megs including deps!)
+        Matcher m = JSON_ESCAPABLES.matcher(s); 
+        boolean result = m.find();
+        if (result) {
+            StringBuffer sb = new StringBuffer();
+            do {
+                String value = m.group(1);
+                if (value.length() != 1) {
+                    throw new RuntimeException("Bug! matcher matched >1 char: <" +
+                    		value + ">: " + s);
+                }
+                char c = value.charAt(0);
+                switch (c) {
+                    case '\\':
+                        m.appendReplacement(sb, "\\\\\\\\");
+                        break;
+                    case '"':
+                        m.appendReplacement(sb, "\\\\\"");
+                        break;
+                    case '\'':
+                        m.appendReplacement(sb, "\\\\'");
+                        break;
+                    case '\b':
+                        m.appendReplacement(sb, "\\\\b");
+                        break;
+                    case '\f':
+                        m.appendReplacement(sb, "\\\\f");
+                        break;
+                    case '\n':
+                        m.appendReplacement(sb, "\\\\n");
+                        break;
+                    case '\r':
+                        m.appendReplacement(sb, "\\\\r");
+                        break;
+                    case '\t':
+                        m.appendReplacement(sb, "\\\\t");
+                        break;
+                    default:
+                        throw new RuntimeException("Bug! matcher matched unexpected char: <" + c + "> " + s);
+                }
+                result = m.find();
+            } while (result);
+            m.appendTail(sb);
+            return sb.toString();
+        }
+        return s;
+    }
 
     public String getCommand() {
         return command;
@@ -69,11 +134,9 @@ public class DefaultRemoteCommand implements RemoteCommand {
         return value;
     }
 
+    @Override
     public String toString() {
-        if (piggybackedJavaScript==null) {
-            return getCommandURLString();
-        }
-        return getCommandURLString() + "\n" + getPiggybackedJavaScript();
+        return getJSONString();
     }
     
     @Override public boolean equals(Object obj) {
@@ -85,29 +148,87 @@ public class DefaultRemoteCommand implements RemoteCommand {
     /** Factory method to create a RemoteCommand from a wiki-style input string */
     public static RemoteCommand parse(String inputLine) {
         if (inputLine == null) throw new NullPointerException("inputLine must not be null");
-        if (!inputLine.startsWith("cmd=")) throw new IllegalArgumentException("invalid command string, missing 'cmd='=" + inputLine);
-        
-
-        String[] parts = inputLine.split("\\&");
-        HashMap<String,String> args = new HashMap<String,String>();
-        for (String part : parts) {
-            String[] pair = part.split("\\=");
-            if (pair.length < 2) {
-                args.put(pair[0], "");
-            } else {
-                try {
-                    args.put(pair[0], URLDecoder.decode(pair[1], "utf-8").trim());
-                } catch (UnsupportedEncodingException e) {
-                    throw new RuntimeException("Bug! utf-8 isn't supported???");
-                }
-            }
-            
+        inputLine = inputLine.trim();
+        // TODO use a real JSON library (but it should be Apache licensed and less than 1.4 megs including deps!)
+        final String prefix = "json={command:\"";
+        if (!inputLine.startsWith(prefix)) throw new IllegalArgumentException("invalid command string, missing '" + prefix + "'=" + inputLine);
+        int index = prefix.length();
+        int hackToPassByReference[] = new int[1];
+        hackToPassByReference[0] = index;
+        String command = parseJSONString(inputLine, hackToPassByReference);
+        index = hackToPassByReference[0] + 1;
+        final String targetDelim = ",target:\"";
+        if (!(inputLine.length() > index + targetDelim.length())) throw new IllegalArgumentException("invalid command string, missing '" + targetDelim + "'=" + inputLine);
+        if (!inputLine.substring(index, index + targetDelim.length()).equals(targetDelim)) throw new IllegalArgumentException("invalid command string, missing '" + targetDelim + "'=" + inputLine);
+        index += targetDelim.length();
+        hackToPassByReference[0] = index;
+        String target = parseJSONString(inputLine, hackToPassByReference);
+        index = hackToPassByReference[0] + 1;
+        final String valueDelim = ",value:\"";
+        if (!(inputLine.length() > index + valueDelim.length())) throw new IllegalArgumentException("invalid command string, missing '" + valueDelim + "'=" + inputLine);
+        if (!inputLine.substring(index, index + valueDelim.length()).equals(valueDelim)) throw new IllegalArgumentException("invalid command string, missing '" + valueDelim + "'=" + inputLine);
+        index += valueDelim.length();
+        hackToPassByReference[0] = index;
+        String value = parseJSONString(inputLine, hackToPassByReference);
+        index = hackToPassByReference[0] + 1;
+        final String restDelim = ",rest:\"";
+        if (!(inputLine.length() > index + restDelim.length())) {
+            return new DefaultRemoteCommand(command, target, value);
         }
-        
-        String command = args.get("cmd");
-        String arg1 = args.get("1");
-        String arg2 = args.get("2");
-        return new DefaultRemoteCommand(command, arg1, arg2);
+        if (!inputLine.substring(index, index + restDelim.length()).equals(restDelim)) throw new IllegalArgumentException("invalid command string, missing '" + restDelim + "'=" + inputLine);
+        index += restDelim.length();
+        hackToPassByReference[0] = index;
+        String rest = parseJSONString(inputLine, hackToPassByReference);
+        return new DefaultRemoteCommand(command, target, value, rest);
+    }
+
+    private static String parseJSONString(String inputLine, int[] hackToPassByReference) {
+        int index = hackToPassByReference[0];
+        StringBuffer sb = new StringBuffer();
+        boolean finished = false;
+        for (; index < inputLine.length(); index++) {
+            char c = inputLine.charAt(index);
+            if ('"' == c) {
+                finished = true;
+                break;
+            }
+            if ('\\' == c) {
+                c = inputLine.charAt(++index);
+                switch (c) {
+                    case 'b':
+                        sb.append('\b');
+                        break;
+                    case 'f':
+                        sb.append('\f');
+                        break;
+                    case 'n':
+                        sb.append('\n');
+                        break;
+                    case 'r':
+                        sb.append('\r');
+                        break;
+                    case 't':
+                        sb.append('\t');
+                        break;
+                    case 'u':
+                        String fourHexDigits = inputLine.substring(index+1, index+5);
+                        c = (char) Integer.parseInt(fourHexDigits, 16);
+                        sb.append(c);
+                        index+=4;
+                        break;
+                    default:
+                        // probably \ or "
+                        sb.append(c);
+                }
+            } else {
+                sb.append(c);
+            }
+        }
+        if (!finished) {
+            throw new IllegalArgumentException("Invalid JSON string, quote never terminated: " + inputLine);
+        }
+        hackToPassByReference[0] = index;
+        return sb.toString();
     }
 
     public String getPiggybackedJavaScript() {

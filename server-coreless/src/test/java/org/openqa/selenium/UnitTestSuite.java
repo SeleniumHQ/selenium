@@ -7,6 +7,7 @@ import org.openqa.selenium.server.ClasspathResourceLocatorTest;
 import org.openqa.selenium.server.CommandHolderTest;
 import org.openqa.selenium.server.CommandQueueTest;
 import org.openqa.selenium.server.CommandResultHolderTest;
+import org.openqa.selenium.server.DefaultRemoteCommandTest;
 import org.openqa.selenium.server.FrameGroupCommandQueueTest;
 import org.openqa.selenium.server.FsResourceLocatorTest;
 import org.openqa.selenium.server.SeleniumDriverResourceHandlerTest;
@@ -41,7 +42,8 @@ public class UnitTestSuite extends TestCase {
         suite.addTestSuite(BrowserResponseSequencerTest.class);
         suite.addTestSuite(MacProxyManagerTest.class);
         suite.addTestSuite(MakeProxyPacTest.class);
-				suite.addTestSuite(WindowsProxyManagerTest.class);
+        suite.addTestSuite(WindowsProxyManagerTest.class);
+        suite.addTestSuite(DefaultRemoteCommandTest.class);
         return suite;
     }
 }
