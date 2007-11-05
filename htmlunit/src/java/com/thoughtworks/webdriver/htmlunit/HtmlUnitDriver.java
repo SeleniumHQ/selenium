@@ -276,5 +276,10 @@ public class HtmlUnitDriver implements WebDriver {
       public WebDriver forward() {
         throw new UnsupportedOperationException("forward");
       }
+
+
+      public WebDriver to(String url) {
+        return get(url);
+      }
     }
 }

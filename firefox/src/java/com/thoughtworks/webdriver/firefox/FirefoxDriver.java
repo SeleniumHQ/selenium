@@ -213,5 +213,10 @@ public class FirefoxDriver implements WebDriver {
         sendMessage("goForward", null);
         return FirefoxDriver.this;
       }
+
+
+      public WebDriver to(String url) {
+        return get(url);
+      }
     }
 }
