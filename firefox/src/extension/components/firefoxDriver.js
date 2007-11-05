@@ -141,3 +141,26 @@ FirefoxDriver.prototype.switchToDefaultContent = function(respond) {
     this.context.frameId = "?";
     respond(this.context, "switchToDefaultContent");
 }
+
+FirefoxDriver.prototype.goBack = function(respond) {
+    var browser = Utils.getBrowser(this.context);
+
+    dump("Can we go back?\n");
+    if (browser.canGoBack) {
+      dump("Yes we can\n");
+      Utils.dump(browser);
+      browser.goBack();
+    }
+
+    respond(this.context, "goBack");
+}
+
+FirefoxDriver.prototype.goForward = function(respond) {
+    var browser = Utils.getBrowser(this.context);
+
+    if (browser.canGoForward) {
+      browser.goForward();
+    }
+
+    respond(this.context, "goForward");
+}

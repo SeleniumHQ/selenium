@@ -156,7 +156,12 @@ public class HtmlUnitDriver implements WebDriver {
         return new HtmlUnitTargetLocator();
     }
 
-    private synchronized HtmlPage lastPage() {
+
+  public Navigation navigate() {
+    return new HtmlUnitNavigation();
+  }
+
+  private synchronized HtmlPage lastPage() {
         return (HtmlPage) currentWindow.getEnclosedPage();
     }
 
@@ -257,5 +262,19 @@ public class HtmlUnitDriver implements WebDriver {
         if (currentWindow != null && currentWindow.equals(window))
             return this;
         return new HtmlUnitDriver(window);
+    }
+
+    private class HtmlUnitNavigation implements Navigation {
+      public WebDriver back() {
+        // This functionality isn't already built into htmlunit. I'm surprised.
+        // https://sourceforge.net/tracker/index.php?func=detail&aid=1337174&group_id=47038&atid=448269
+        // for more the HtmlUnit feature request.
+        throw new UnsupportedOperationException("back");
+      }
+
+
+      public WebDriver forward() {
+        throw new UnsupportedOperationException("forward");
+      }
     }
 }

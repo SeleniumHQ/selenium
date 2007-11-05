@@ -121,7 +121,12 @@ public class FirefoxDriver implements WebDriver {
         return new FirefoxTargetLocator();
     }
 
-    private boolean connectToBrowser(int timeToWaitInSeconds) {
+
+    public Navigation navigate() {
+        return new FirefoxNavigation();  
+    }
+
+  private boolean connectToBrowser(int timeToWaitInSeconds) {
         long waitUntil = System.currentTimeMillis() + timeToWaitInSeconds * 1000;
         while (!extension.isConnected() && waitUntil > System.currentTimeMillis()) {
             try {
@@ -196,5 +201,17 @@ public class FirefoxDriver implements WebDriver {
         public Alert alert() {
             throw new UnsupportedOperationException("alert");
         }
+    }
+
+    private class FirefoxNavigation implements Navigation {
+      public WebDriver back() {
+        sendMessage("goBack", null);
+        return FirefoxDriver.this;
+      }
+
+      public WebDriver forward() {
+        sendMessage("goForward", null);
+        return FirefoxDriver.this;
+      }
     }
 }

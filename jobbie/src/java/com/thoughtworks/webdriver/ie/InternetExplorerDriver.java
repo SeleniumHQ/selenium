@@ -112,7 +112,12 @@ public class InternetExplorerDriver implements WebDriver {
         return new InternetExplorerTargetLocator();
     }
 
-    protected native void waitForLoadToComplete();
+
+    public Navigation navigate() {
+        throw new UnsupportedOperationException("navigate"); 
+    }
+
+  protected native void waitForLoadToComplete();
 
     private void startCom() {
         if (!comStarted) {

@@ -148,7 +148,16 @@ public interface WebDriver {
      */
     TargetLocator switchTo();
 
-    /**
+  /**
+   * An abstraction allowing the driver to access the browser's history and to
+   * navigate to a given URL.
+   *
+   * @return A {@link com.thoughtworks.webdriver.WebDriver.Navigation} that allows
+   * the selection of what to do next
+   */
+    Navigation navigate();
+
+  /**
      * Used to locate a given frame or window.
      */
     public interface TargetLocator {
@@ -186,5 +195,21 @@ public interface WebDriver {
 		WebDriver defaultContent();
 
 		Alert alert();
+    }
+
+    public interface Navigation {
+      /**
+       * Move back a single "item" in the browser's history.
+       *@return The driver, on the previous page (or the same one if there is no history)
+       */
+      WebDriver back();
+
+      /**
+       * Move a single "item" forward in the browser's history. Does nothing if
+       * we are on the latest page viewed.
+       *
+       * @return The driver, on the next page (or the same one if there is no history)
+       */
+      WebDriver forward();
     }
 }

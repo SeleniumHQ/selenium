@@ -801,6 +801,36 @@ public abstract class BasicDriverTestCase extends TestCase {
         assertEquals("", text);
     }
 
+    public void testShouldDoNothingIfThereIsNothingToGoBackTo() {
+      driver.get(formPage);
+
+      driver.navigate().back();
+      assertEquals("We Leave From Here", driver.getTitle());
+    }
+
+    public void testShouldBeAbleToNavigateBackInTheBrowserHistory() {
+        driver.get(formPage);
+
+        driver.selectElement("id=imageButton").submit();
+        assertEquals("We Arrive Here", driver.getTitle());
+
+        driver.navigate().back();
+        assertEquals("We Leave From Here", driver.getTitle());
+    }
+
+    public void testShouldBeAbleToNavigateForwardsInTheBrowserHistory() {
+      driver.get(formPage);
+
+      driver.selectElement("id=imageButton").submit();
+      assertEquals("We Arrive Here", driver.getTitle());
+
+      driver.navigate().back();
+      assertEquals("We Leave From Here", driver.getTitle());
+
+      driver.navigate().forward();
+      assertEquals("We Arrive Here", driver.getTitle());
+    }
+
     protected WebDriver driver;
     protected String baseUrl;
     protected String simpleTestPage;
