@@ -35,7 +35,7 @@ public class WindowsProxyManager {
     static Log log = LogFactory.getLog(WindowsProxyManager.class);
     protected static final String REG_KEY_BACKUP_READY = "BackupReady";
 
-    protected static final File USER_COOKIE_DIR = new File(
+    protected static final File USER_COOKIE_DIR_WINXP = new File(
       System.getenv("USERPROFILE") + File.separator + "Cookies");
     protected static final File USER_HIDDEN_COOKIE_DIR = new File(
       System.getenv("USERPROFILE") + File.separator + "CookiesHiddenBySeleniumRC");
@@ -194,7 +194,7 @@ public class WindowsProxyManager {
         
         // Hide pre-existing user cookies if -ensureCleanSession is set
         if (SeleniumServer.isEnsureCleanSession()) {
-          hidePreexistingCookies(USER_COOKIE_DIR, USER_HIDDEN_COOKIE_DIR);
+          hidePreexistingCookies(USER_COOKIE_DIR_WINXP, USER_HIDDEN_COOKIE_DIR);
         }
 
         // TODO Do we want to make these preferences configurable somehow?
@@ -218,7 +218,7 @@ public class WindowsProxyManager {
         
         // restore pre-existing user cookies if -ensureCleanSession is set
         if (SeleniumServer.isEnsureCleanSession()) {
-          restorePreexistingCookies(USER_COOKIE_DIR, USER_HIDDEN_COOKIE_DIR);
+          restorePreexistingCookies(USER_COOKIE_DIR_WINXP, USER_HIDDEN_COOKIE_DIR);
         }
       
         // Backup really should be ready, but if not, skip it 
@@ -257,9 +257,12 @@ public class WindowsProxyManager {
      * to the user's Cookie directory.
      */
     protected static void restorePreexistingCookies(File cookieDir, File hiddenCookieDir) {
-      deleteFlatDirContents(cookieDir);
-      LauncherUtils.copyDirectory(hiddenCookieDir, cookieDir);
-      LauncherUtils.recursivelyDeleteDir(hiddenCookieDir);
+      //TODO (jbevan): refactor to accept Vista cookie paths.
+      if (cookieDir.exists() && hiddenCookieDir.exists()) {
+        deleteFlatDirContents(cookieDir);
+        LauncherUtils.copyDirectory(hiddenCookieDir, cookieDir);
+        LauncherUtils.recursivelyDeleteDir(hiddenCookieDir);
+      }
     }
     
     /**
@@ -282,7 +285,7 @@ public class WindowsProxyManager {
         }
       }
     }
-
+   
     private boolean backupIsReady() {
         if (!prefNodeExists(REG_KEY_BACKUP_READY)) return false;
         return prefs.getBoolean(REG_KEY_BACKUP_READY, false);
