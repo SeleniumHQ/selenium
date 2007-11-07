@@ -12,13 +12,13 @@
     <html><head><title>Selenium Reference</title></head><body>
 	<xsl:call-template name="header" />
 	<xsl:apply-templates select="//top" />
-	<h2>Selenium Actions</h2>
+	<a name="actions"></a><h2>Selenium Actions</h2>
 	<dl>
 		<xsl:apply-templates select="//function[not(return) and not(starts-with(@name, 'assert'))]" mode="action">
 		    <xsl:sort select="@name" />
 		</xsl:apply-templates>
 	</dl>
-	<h2>Selenium Accessors</h2>
+	<a name="accessors"></a><h2>Selenium Accessors</h2>
 	<dl>
 		<xsl:apply-templates select="//function[starts-with(@name, 'assert')]" mode="assertion">
 		    <xsl:sort select="@name" />
@@ -33,7 +33,21 @@
 
 <xsl:template name="header">
 	<h1>Selenium Reference</h1>
-	<h2>Concepts</h2>
+	<ol>
+	<li><a href="#name">Concepts</a></li>
+	<ol>
+	<li><a href="#locators">Element Locators</a></li>
+	<li><a href="#element-filters">Element Filters</a></li>
+	<li><a href="#patterns">String-match Patterns</a></li>
+	</ol>
+	<li><a href="#actions">Selenium Actions</a></li>
+	<li><a href="#accessors">Selenium Accessors</a></li>
+	<li><a href="#parameter-construction-and-variables">Parameter Construction and Variables</a></li>
+	<li><a href="#whitespace">Whitespace Rules</a></li>
+	<li><a href="#extending-selenium">Extending Selenium</a></li>
+	</ol>
+	
+	<h2>Concepts</h2><a name="concepts"></a>
 	<p>A <strong>command</strong> is what tells Selenium what to do. Selenium commands come in three 'flavors': <strong>Actions</strong>, <strong>Accessors</strong> and <strong>Assertions</strong>.
 	Each command call is one line in the test table of the form:</p>
 	<blockquote>
@@ -142,6 +156,17 @@
 	</table>
 	</blockquote>
 	</blockquote>
+	
+	<div class="section" id="whitespace">
+	<h2><a name="whitespace">Whitespace Rules</a></h2>
+	<blockquote>
+	<p>HTML automatically normalizes whitespace within elements, ignoring leading/trailing spaces and converting extra spaces, tabs and newlines into a single space.  When Selenium reads text out of the page, it attempts to duplicate this behavior, so you can ignore all the tabs and newlines in your HTML and do assertions based on how the text looks in the browser when rendered.  We do this by replacing all non-visible whitespace (including the non-breaking space "&amp;nbsp;") with a single space.  All visible newlines (&lt;br&gt;, &lt;p&gt;, and &lt;pre&gt;formatted newlines) should be preserved.</p>
+	<p>We use the same normalization logic on the text of HTML Selenese test case tables.  This has a number of advantages.  First, you don't need to look at the HTML source of the page to figure out what your assertions should be; "&amp;nbsp;" symbols are invisible to the end user, and so you shouldn't have to worry about them when writing Selenese tests.  (You don't need to put "&amp;nbsp;" markers in your test case to assertText on a field that contains "&amp;nbsp;".)  You may also put extra newlines and spaces in your Selenese &lt;td&gt; tags; since we use the same normalization logic on the test case as we do on the text, we can ensure that assertions and the extracted text will match exactly.</p>
+	<p>This creates a bit of a problem on those rare occasions when you really want/need to insert extra whitespace in your test case.  For example, you may need to type text in a field like this: "foo&nbsp;&nbsp;&nbsp;".  But if you simply write &lt;td&gt;foo&nbsp;&nbsp;&nbsp;&lt;/td&gt; in your Selenese test case, we'll replace your extra spaces with just one space.</p>
+	<p>This problem has a simple workaround.  We've defined a variable in Selenese, ${space}, whose value is a single space.  You can use ${space} to insert a space that won't be automatically trimmed, like this: &lt;td&gt;foo${space}${space}${space}&lt;/td&gt;.  We've also included a variable ${nbsp}, that you can use to insert a non-breaking space.</p>
+	<p>Note that XPaths do <i>not</i> normalize whitespace the way we do.  If you need to write an XPath like //div[text()="hello world"] but the HTML of the link is really "hello&amp;nbsp;world", you'll need to insert a real "&amp;nbsp;" into your Selenese test case to get it to match, like this: //div[text()="hello${nbsp}world"].</p>
+	</blockquote>
+	</div>
 	
 	<div class="section" id="extending-selenium">
 	<h2><a name="extending-selenium">Extending Selenium</a></h2>
