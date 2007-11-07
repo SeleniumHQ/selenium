@@ -99,7 +99,7 @@ Application.prototype = {
         this.notify("clipboardFormatChanged", format);
     },
 
-    getClipbaordFormat: function() {
+    getClipboardFormat: function() {
         return this.clipboardFormat;
     },
 
