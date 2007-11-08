@@ -248,6 +248,7 @@ public class FirefoxLauncher {
             File profileDir = createCopyOfDefaultProfile(profileName);
 
             ProcessBuilder builder = new ProcessBuilder(binary.getAbsolutePath(), "-profile", profileDir.getAbsolutePath()).redirectErrorStream(true);
+            modifyLibraryPath(builder, binary);
             builder.environment().put("MOZ_NO_REMOTE", "1");
             builder.start();
         } catch (IOException e) {
@@ -255,7 +256,26 @@ public class FirefoxLauncher {
         }
     }
 
-    private File createCopyOfDefaultProfile(String profileName) {
+  private void modifyLibraryPath(ProcessBuilder builder, File binary) {
+      String propertyName = "LD_LIBRARY_PATH";
+
+      String osName = System.getProperty("os.name").toLowerCase();
+      if (osName.indexOf("mac") != -1) {
+          propertyName = "DYLD_LIBRARY_PATH";
+      } else if (osName.indexOf("win") != -1) {
+          propertyName = "PATH";
+      }
+
+      String libraryPath = System.getenv(propertyName);
+      if (libraryPath == null) {
+          libraryPath = "";
+      }
+      libraryPath = binary.getParentFile().getAbsolutePath() + File.pathSeparator + libraryPath;
+
+      builder.environment().put(propertyName, libraryPath);
+  }
+
+  private File createCopyOfDefaultProfile(String profileName) {
         // Find the "normal" WebDriver profile, and make a copy of it
         File from = locateWebDriverProfile(profileName);
         if (!from.exists())
