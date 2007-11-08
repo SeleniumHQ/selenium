@@ -3,15 +3,6 @@
   <component name="AntConfiguration">
     <defaultAnt bundledAnt="true" />
   </component>
-  <component name="Build editor project-level loader">
-    <settings>
-      <class-settings class="com.google.devtools.intellig.configcheck.ClearOutputChecker" />
-      <class-settings class="com.google.devtools.intellig.configcheck.JavacHeapChecker" />
-      <class-settings class="com.google.devtools.intellig.configcheck.ProjectJdkChecker" />
-      <class-settings class="com.google.devtools.intellig.configcheck.ProjectPathChecker" />
-      <class-settings class="com.google.devtools.intellig.configcheck.PythonSdkChecker" />
-    </settings>
-  </component>
   <component name="BuildJarProjectSettings">
     <option name="BUILD_JARS_ON_MAKE" value="false" />
   </component>
@@ -679,13 +670,6 @@
     <option name="FILTER_WARNINGS" value="false" />
     <option name="FILTER_INFO" value="true" />
     <option name="CUSTOM_FILTER" />
-  </component>
-  <component name="Mach integration configuration">
-    <pre-compile target="" enabled="false" />
-    <use-mach-for-java enabled="false" />
-    <mach-version />
-    <working-set enabled="false" />
-    <previous-paths />
   </component>
   <component name="Palette2">
     <group name="Swing">

@@ -25,6 +25,7 @@ import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 
 import com.thoughtworks.webdriver.WebDriver;
+import com.thoughtworks.webdriver.RenderingWebDriver;
 import com.thoughtworks.webdriver.firefox.FirefoxDriver;
 import com.thoughtworks.webdriver.ie.InternetExplorerDriver;
 import com.thoughtworks.webdriver.environment.GlobalTestEnvironment;
@@ -87,7 +88,7 @@ public class SeleneseTestCase extends TestCase {
      * @param browserString the browser to use, e.g. *firefox
      * @throws Exception
      */
-    public void setUp(String url, WebDriver baseDriver) throws Exception {
+    public void setUp(String url, RenderingWebDriver baseDriver) throws Exception {
         super.setUp();
 
         selenium = new WebDriverBackedSelenium(baseDriver, url);

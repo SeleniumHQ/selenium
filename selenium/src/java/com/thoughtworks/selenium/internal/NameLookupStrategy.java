@@ -3,6 +3,8 @@ package com.thoughtworks.selenium.internal;
 import com.thoughtworks.selenium.SeleniumException;
 import com.thoughtworks.webdriver.WebDriver;
 import com.thoughtworks.webdriver.WebElement;
+import com.thoughtworks.webdriver.RenderedWebElement;
+import com.thoughtworks.webdriver.RenderingWebDriver;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -21,15 +23,15 @@ public class NameLookupStrategy implements LookupStrategy {
         filterFunctions.put("index", new IndexFilterFunction());
     }
 
-    public WebElement find(WebDriver driver, String use) {
+    public RenderedWebElement find(RenderingWebDriver driver, String use) {
         String[] parts = use.split(" ");
 
-        List allElements = driver.selectElements("//*[@name='" + parts[0] + "']");
+        List<RenderedWebElement> allElements = driver.selectElements("//*[@name='" + parts[0] + "']");
 
         // For some reason, we sometimes get back elements with a name that doesn't match. Filter those out
-        Iterator iterator = allElements.iterator();
+        Iterator<RenderedWebElement> iterator = allElements.iterator();
         while (iterator.hasNext()) {
-            WebElement element = (WebElement) iterator.next();
+            WebElement element = iterator.next();
             if (!(parts[0].equals(element.getAttribute("name"))))
                 iterator.remove();
         }
@@ -46,7 +48,7 @@ public class NameLookupStrategy implements LookupStrategy {
         }
 
         if (allElements.size() > 0) {
-            return (WebElement) allElements.get(0);
+            return (RenderedWebElement) allElements.get(0);
         }
         throw new SeleniumException(use + " not found");
     }

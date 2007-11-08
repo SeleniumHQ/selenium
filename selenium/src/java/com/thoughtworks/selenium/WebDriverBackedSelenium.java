@@ -4,6 +4,8 @@ import com.thoughtworks.selenium.internal.*;
 import com.thoughtworks.webdriver.NoSuchElementException;
 import com.thoughtworks.webdriver.WebDriver;
 import com.thoughtworks.webdriver.WebElement;
+import com.thoughtworks.webdriver.RenderingWebDriver;
+import com.thoughtworks.webdriver.RenderedWebElement;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -12,13 +14,13 @@ import java.util.regex.Pattern;
 public class WebDriverBackedSelenium implements Selenium {
     private static final Pattern STRATEGY_AND_VALUE_PATTERN = Pattern.compile("^(\\p{Alpha}+)=(.*)");
     private static final Pattern TEXT_MATCHING_STRATEGY_AND_VALUE_PATTERN = Pattern.compile("^(\\p{Alpha}+):(.*)");
-    protected WebDriver driver;
+    protected RenderingWebDriver driver;
     private final String baseUrl;
-    private final Map lookupStrategies = new HashMap();
-    private final Map optionSelectStrategies = new HashMap();
-    private final Map textMatchingStrategies = new HashMap();
+    private final Map<String, LookupStrategy> lookupStrategies = new HashMap<String, LookupStrategy>();
+    private final Map<String, OptionSelectStrategy> optionSelectStrategies = new HashMap<String, OptionSelectStrategy>(); 
+    private final Map<String, TextMatchingStrategy> textMatchingStrategies = new HashMap<String, TextMatchingStrategy>();
 
-    public WebDriverBackedSelenium(WebDriver baseDriver, String baseUrl) {
+    public WebDriverBackedSelenium(RenderingWebDriver baseDriver, String baseUrl) {
         setUpElementFindingStrategies();
         setUpOptionFindingStrategies();
         setUpTextMatchingStrategies();
@@ -158,11 +160,11 @@ public class WebDriverBackedSelenium implements Selenium {
     }
 
     public String[] getAllLinks() {
-        List allLinks = driver.selectElements("//a");
-        Iterator i = allLinks.iterator();
-        List links = new ArrayList();
+        List<RenderedWebElement> allLinks = driver.selectElements("//a");
+        Iterator<RenderedWebElement> i = allLinks.iterator();
+        List<String> links = new ArrayList<String>();
         while (i.hasNext()) {
-            WebElement link = (WebElement) i.next();
+            WebElement link = i.next();
             String id = link.getAttribute("id");
             if (id == null)
                 links.add("");
@@ -170,7 +172,7 @@ public class WebDriverBackedSelenium implements Selenium {
                 links.add(id);
         }
 
-        return (String[]) links.toArray(new String[]{});
+        return links.toArray(new String[]{});
     }
 
     public String[] getAllWindowIds() {
@@ -265,15 +267,15 @@ public class WebDriverBackedSelenium implements Selenium {
 
     public String[] getSelectOptions(String selectLocator) {
         WebElement select = findElement(selectLocator);
-        List options = select.getChildrenOfType("option");
-        List optionValues = new ArrayList();
-        Iterator allOptions = options.iterator();
+        List<WebElement> options = select.getChildrenOfType("option");
+        List<String> optionValues = new ArrayList<String>();
+        Iterator<WebElement> allOptions = options.iterator();
         while (allOptions.hasNext()) {
-            WebElement option = (WebElement) allOptions.next();
+            WebElement option = allOptions.next();
             optionValues.add(option.getText());
         }
 
-        return (String[]) optionValues.toArray(new String[0]);
+        return optionValues.toArray(new String[0]);
     }
 
     public String getSelectedId(String selectLocator) {
@@ -286,9 +288,9 @@ public class WebDriverBackedSelenium implements Selenium {
 
     public String getSelectedIndex(String selectLocator) {
         WebElement select = findElement(selectLocator);
-        List options = select.getChildrenOfType("option");
+        List<WebElement> options = select.getChildrenOfType("option");
         for (int i = 0; i < options.size(); i++) {
-            WebElement option = (WebElement) options.get(i);
+            WebElement option = options.get(i);
             if (option.isSelected())
                 return String.valueOf(i);
         }
@@ -410,7 +412,7 @@ public class WebDriverBackedSelenium implements Selenium {
             strategyName = matcher.group(1);
             use = matcher.group(2);
         }
-        TextMatchingStrategy strategy = (TextMatchingStrategy) textMatchingStrategies.get(strategyName);
+        TextMatchingStrategy strategy = textMatchingStrategies.get(strategyName);
 
         return strategy.isAMatch(use, text);
     }
@@ -490,14 +492,14 @@ public class WebDriverBackedSelenium implements Selenium {
 
     public void removeAllSelections(String locator) {
         WebElement select = findElement(locator);
-        List options = select.getChildrenOfType("option");
+        List<WebElement> options = select.getChildrenOfType("option");
         removeAllSelections(options);
     }
 
-    private void removeAllSelections(List options) {
-        Iterator allOptions = options.iterator();
+    private void removeAllSelections(List<WebElement> options) {
+        Iterator<WebElement> allOptions = options.iterator();
         while (allOptions.hasNext()) {
-            WebElement option = (WebElement) allOptions.next();
+            WebElement option = allOptions.next();
             if (option.isSelected())
                 option.toggle();
         }
@@ -633,7 +635,7 @@ public class WebDriverBackedSelenium implements Selenium {
         throw new UnsupportedOperationException();
     }
 
-    protected WebElement findElement(String locator) {
+    protected RenderedWebElement findElement(String locator) {
         String strategyName = "implicit";
         String use = locator;
 
