@@ -247,9 +247,10 @@ public class FirefoxLauncher {
         try {
             File profileDir = createCopyOfDefaultProfile(profileName);
 
-            ProcessBuilder builder = new ProcessBuilder(binary.getAbsolutePath(), "-profile", profileDir.getAbsolutePath()).redirectErrorStream(true);
+            ProcessBuilder builder = new ProcessBuilder(binary.getAbsolutePath()).redirectErrorStream(true);
             modifyLibraryPath(builder, binary);
             builder.environment().put("MOZ_NO_REMOTE", "1");
+            builder.environment().put("XRE_PROFILE_PATH", profileDir.getAbsolutePath());
             builder.start();
         } catch (IOException e) {
             throw new RuntimeException("Cannot load firefox: " + profileName);
