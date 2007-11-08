@@ -258,6 +258,44 @@ public class LauncherUtils {
         c.execute();
     }
     
+    /**
+     * Copies all files matching the prefix to the destination directory.
+     * 
+     * If no files match, the destination directory is still created,
+     * if possible.
+     * 
+     * @param source the source directory
+     * @param prefix the prefix for all files to be copied.
+     * @param dest the destination directory
+     */
+    protected static boolean copyDirectory(File source, String prefix, File dest) {
+      boolean result = false;
+      try {
+        Project p = new Project();
+        Copy c = new Copy();
+        c.setProject(p);
+        c.setTodir(dest);
+        FileSet fs = new FileSet();
+        fs.setDir(source);
+        if (null != prefix) {
+          fs.setIncludes(prefix + "*"); // add the wildcard.
+        }
+        c.addFileset(fs);
+        c.execute();
+        
+        // handle case where no files match; must create empty directory.
+        if (!dest.exists()) {
+          result = dest.mkdirs();
+        } else {
+          result = true;
+        }
+      } catch (SecurityException se) {
+        log.warn("Could not copy the specified directory files: " + se.getMessage());
+        result = false;
+      }
+      return result;
+    }
+    
     protected enum ProxySetting { NO_PROXY, PROXY_SELENIUM_TRAFFIC_ONLY, PROXY_EVERYTHING };
     
 	protected static void generatePacAndPrefJs(File customProfileDir, int port, ProxySetting proxySetting, String homePage, boolean changeMaxConnections) throws FileNotFoundException {

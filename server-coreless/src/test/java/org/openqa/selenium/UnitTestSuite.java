@@ -14,6 +14,7 @@ import org.openqa.selenium.server.SeleniumDriverResourceHandlerTest;
 import org.openqa.selenium.server.SeleniumServerTest;
 import org.openqa.selenium.server.SingleEntryAsyncQueueTest;
 import org.openqa.selenium.server.StaticContentHandlerTest;
+import org.openqa.selenium.server.browserlaunchers.LauncherUtilsTest;
 import org.openqa.selenium.server.browserlaunchers.MacProxyManagerTest;
 import org.openqa.selenium.server.browserlaunchers.MakeProxyPacTest;
 import org.openqa.selenium.server.browserlaunchers.WindowsProxyManagerTest;
@@ -43,6 +44,7 @@ public class UnitTestSuite extends TestCase {
         suite.addTestSuite(MacProxyManagerTest.class);
         suite.addTestSuite(MakeProxyPacTest.class);
         suite.addTestSuite(WindowsProxyManagerTest.class);
+        suite.addTestSuite(LauncherUtilsTest.class);
         suite.addTestSuite(DefaultRemoteCommandTest.class);
         return suite;
     }

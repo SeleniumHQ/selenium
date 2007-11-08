@@ -17,6 +17,7 @@
 package org.openqa.selenium.server.browserlaunchers;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
@@ -35,11 +36,27 @@ public class WindowsProxyManager {
     static Log log = LogFactory.getLog(WindowsProxyManager.class);
     protected static final String REG_KEY_BACKUP_READY = "BackupReady";
 
-    protected static final File USER_COOKIE_DIR_WINXP = new File(
-      System.getenv("USERPROFILE") + File.separator + "Cookies");
-    protected static final File USER_HIDDEN_COOKIE_DIR = new File(
-      System.getenv("USERPROFILE") + File.separator + "CookiesHiddenBySeleniumRC");
-
+    // WinXP Cookies are kept in "$USERPROFILE\Cookies"
+    protected static final File WINXP_USER_COOKIE_DIR = new File(
+      System.getenv("USERPROFILE") 
+        + File.separator + "Cookies");
+    
+    // Vista Cookies are kept, along with other files, in 
+    // "$USERPROFILE\AppData\Local\Microsoft\Windows\Temporary Internet Files"
+    protected static final File VISTA_USER_COOKIE_DIR = new File(
+        System.getenv("USERPROFILE") 
+          + File.separator + "AppData" 
+          + File.separator + "Local" 
+          + File.separator + "Microsoft"
+          + File.separator + "Windows" 
+          + File.separator + "Temporary Internet Files");
+    protected static final String VISTA_COOKIE_PREFIX = "cookie:";
+    
+    // All cookies hidden by Selenium RC will go here.
+    protected static final File HIDDEN_COOKIE_DIR = new File(
+        System.getenv("USERPROFILE") 
+          + File.separator + "CookiesHiddenBySeleniumRC");
+    
     protected static String REG_KEY_BASE = "HKEY_CURRENT_USER";
     private static final Pattern HUDSUCKR_LINE = Pattern.compile("^([^=]+)=(.*)$");
     private HudsuckrSettings oldSettings;
@@ -194,7 +211,7 @@ public class WindowsProxyManager {
         
         // Hide pre-existing user cookies if -ensureCleanSession is set
         if (SeleniumServer.isEnsureCleanSession()) {
-          hidePreexistingCookies(USER_COOKIE_DIR_WINXP, USER_HIDDEN_COOKIE_DIR);
+          hidePreexistingCookies();
         }
 
         // TODO Do we want to make these preferences configurable somehow?
@@ -218,7 +235,7 @@ public class WindowsProxyManager {
         
         // restore pre-existing user cookies if -ensureCleanSession is set
         if (SeleniumServer.isEnsureCleanSession()) {
-          restorePreexistingCookies(USER_COOKIE_DIR_WINXP, USER_HIDDEN_COOKIE_DIR);
+          restorePreexistingCookies();
         }
       
         // Backup really should be ready, but if not, skip it 
@@ -232,58 +249,131 @@ public class WindowsProxyManager {
     }
     
     /**
-     * Hides all previously existing user cookies by moving them
-     * to a different directory.
+     * Hides pre-existing cookies, if any.  If no cookies can be found
+     * then just exit.
      */
-    protected static void hidePreexistingCookies(File cookieDir, File hiddenCookieDir) {
-      if (hiddenCookieDir.exists()) {
-        log.warn("Target directory for hiding user cookies (" +
-        		hiddenCookieDir.getAbsolutePath() + ") already exists.  " +
-        		"Previously hidden user cookies may be overwritten!");
-        LauncherUtils.recursivelyDeleteDir(hiddenCookieDir);
-      } 
+    private static void hidePreexistingCookies() {
+      boolean done = false;
+      if (isVista()) {
+        done = hideCookies( 
+          VISTA_USER_COOKIE_DIR, VISTA_COOKIE_PREFIX, HIDDEN_COOKIE_DIR);
+      } else {
+        done = hideCookies(
+            WINXP_USER_COOKIE_DIR, null, HIDDEN_COOKIE_DIR);
+      }
       
-      if (cookieDir.exists()) {
-        log.info("Copying cookies from " + cookieDir.getAbsolutePath() +
-            " to " + hiddenCookieDir.getAbsolutePath());
-        LauncherUtils.copyDirectory(cookieDir, hiddenCookieDir);
-        log.info("Deleting original cookies...");
-        deleteFlatDirContents(cookieDir);
+      if (!done) {
+        log.warn("Could not hide pre-existing cookies using either the" +
+      	  "WinXP directory structure or the Vista directory structure");
       }
     }
     
     /**
-     * Restores previously hidden user cookies, if any, back
-     * to the user's Cookie directory.
+     * Hides all previously existing user cookies, found in the
+     * WinXP directory structure, by moving them to a different directory.
      */
-    protected static void restorePreexistingCookies(File cookieDir, File hiddenCookieDir) {
-      //TODO (jbevan): refactor to accept Vista cookie paths.
-      if (cookieDir.exists() && hiddenCookieDir.exists()) {
-        deleteFlatDirContents(cookieDir);
+    protected static boolean hideCookies(File cookieDir, 
+        String cookiePrefix, File hiddenCookieDir) {
+      boolean result = false;
+      LauncherUtils.recursivelyDeleteDir(hiddenCookieDir);
+      if (cookieDir.exists()) {
+        log.info("Copying cookies from " + cookieDir.getAbsolutePath() +
+            " to " + hiddenCookieDir.getAbsolutePath());
+        LauncherUtils.copyDirectory(cookieDir, cookiePrefix, hiddenCookieDir);
+        log.info("Deleting original cookies...");
+        deleteFlatDirContents(cookieDir, cookiePrefix);
+        result = true;
+      }
+      return result;
+    }
+    
+    private static void restorePreexistingCookies() {
+      boolean done = false;
+      if (isVista()) {
+        done = restoreCookies(
+              VISTA_USER_COOKIE_DIR, VISTA_COOKIE_PREFIX, HIDDEN_COOKIE_DIR);
+      } else {
+        done = restoreCookies(
+            WINXP_USER_COOKIE_DIR, null, HIDDEN_COOKIE_DIR);
+      }
+      
+      if (!done) {
+        log.warn("Could not restore pre-existing cookies, using either the" +
+          "WinXp directory structure or the Vista directory structure");
+      }
+    }
+    
+    /**
+     * Restores previously hidden user cookies, if any.
+     */
+    protected static boolean restoreCookies(File cookieDir, 
+        String cookiePrefix, File hiddenCookieDir) {
+      boolean result = false;
+      if (cookieDir.exists()) {
+        log.info("Deleting cookies created during session from " 
+            + cookieDir.getAbsolutePath());
+        deleteFlatDirContents(cookieDir, cookiePrefix);
+      }
+      if (hiddenCookieDir.exists()) {
+        log.info("Copying cookies from " + hiddenCookieDir.getAbsolutePath() +
+            " to " + cookieDir.getAbsolutePath());
         LauncherUtils.copyDirectory(hiddenCookieDir, cookieDir);
         LauncherUtils.recursivelyDeleteDir(hiddenCookieDir);
+        result = true;
       }
+      return result;
     }
     
     /**
      * Deletes all files contained by the given directory.
      * 
-     * We apparently cannot delete all files within the cookie
+     * For WinXP, we cannot delete all files within the cookie
      * dir: specifically, index.dat gives us trouble.  Remove what
      * we can, report what we can't.
      * 
-     * @param dir
+     * @param dir the directory to delete the contents of
+     * @param prefix if not null, only files matching this prefix will be deleted.
      */
-    protected static void deleteFlatDirContents(File dir) {
+    protected static void deleteFlatDirContents(File dir, String prefix) {
       if (dir.exists()) {
-        File[] list = dir.listFiles();
-        for (File file : list) {
-          boolean success = file.delete();
-          if (!success) {
-            log.warn("Could not delete file " + file.getAbsolutePath());
+        log.info("looking for files starting with: " + prefix);
+        File[] list = dir.listFiles(new PrefixFilter(prefix));
+        if (null != list) {
+          for (File file : list) {
+            boolean success = file.delete();
+            if (!success) {
+              log.warn("Could not delete file " + file.getAbsolutePath());
+            }
           }
+        } else {
+          log.info("...no matching files");
         }
       }
+    }
+    
+    /**
+     * Tries to guess if we're on Vista or WinXP.  Defaults
+     * to WinXP.
+     * 
+     * I'm sure there are better ways to do this.  Right now checks
+     * to see if a directory that is not normally used in WinXP, but
+     * is used in Vista regardless of whether or not there have ever
+     * been any Cookies created, exists.
+     * 
+     * @return true if it knows that this is Vista, false otherwise.
+     */
+    private static boolean isVista() {
+      boolean result = false;
+      File oracleDirectory = new File(
+          System.getenv("USERPROFILE") 
+            + File.separator + "AppData" 
+            + File.separator + "Local" 
+            + File.separator + "Microsoft"
+            + File.separator + "Windows");
+      if (oracleDirectory.exists()) {
+        result = true;
+      }
+      return result;
     }
    
     private boolean backupIsReady() {
@@ -504,6 +594,25 @@ public class WindowsProxyManager {
     	public String toString() {
     		return Arrays.toString(toStringArray());
     	}
+    }
+    
+    private static class PrefixFilter implements FileFilter {
+      
+      private final String prefix;
+      
+      public PrefixFilter(String prefix) {
+        this.prefix = prefix;
+      }
+      
+      public boolean accept(File pathname) {
+        boolean result = false;
+        if (null == prefix) {
+          result = true;
+        } else if (pathname.getName().startsWith(prefix)) {
+          result = true;
+        }
+        return result;
+      }
     }
 
 }

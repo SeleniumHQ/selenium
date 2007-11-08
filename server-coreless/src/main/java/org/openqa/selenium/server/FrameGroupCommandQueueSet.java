@@ -664,7 +664,11 @@ public class FrameGroupCommandQueueSet {
     }
 
     private boolean justLoaded(String uniqueId) {
-        return (frameAddressToJustLoaded.containsKey(uniqueId));
+      boolean result = false;
+      if (null != uniqueId) {
+        result = frameAddressToJustLoaded.containsKey(uniqueId);
+      }
+      return result;
     }
 
     private void markWhetherJustLoaded(String frameAddress, boolean justLoaded) {
