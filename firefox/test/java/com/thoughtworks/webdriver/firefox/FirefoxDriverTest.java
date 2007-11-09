@@ -3,6 +3,7 @@ package com.thoughtworks.webdriver.firefox;
 import com.thoughtworks.webdriver.JavascriptEnabledDriverTest;
 import com.thoughtworks.webdriver.NoSuchElementException;
 import com.thoughtworks.webdriver.WebDriver;
+import com.thoughtworks.webdriver.WebElement;
 
 public class FirefoxDriverTest extends JavascriptEnabledDriverTest {
     protected WebDriver getDriver() {
@@ -38,5 +39,24 @@ public class FirefoxDriverTest extends JavascriptEnabledDriverTest {
 
         driver.get(iframePage);
         driver.selectElement("id=iframe_page_heading");
+    }
+
+    public void testShouldWaitUntilBrowserHasClosedProperly() throws Exception {
+      if (isUsingSameDriverInstance()) {
+        // Force the driver to be reopened
+        storedDriver = null;
+      }
+      driver.get(simpleTestPage);
+      driver.close();
+
+      setUp();
+
+      driver.get(formPage);
+      WebElement textarea = driver.selectElement("id=withText");
+      String expectedText = "I like cheese\n\nIt's really nice";
+      textarea.setValue(expectedText);
+
+      String seenText = textarea.getValue();
+      assertEquals(expectedText, seenText);
     }
 }

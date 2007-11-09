@@ -29,7 +29,7 @@ import java.util.List;
  * All drivers should pass these basic tests
  */
 public abstract class BasicDriverTestCase extends TestCase {
-    private static WebDriver storedDriver;
+    protected static WebDriver storedDriver;
 
     protected void setUp() throws Exception {
         super.setUp();
@@ -802,6 +802,11 @@ public abstract class BasicDriverTestCase extends TestCase {
     }
 
     public void testShouldDoNothingIfThereIsNothingToGoBackTo() {
+      if (storedDriver != null) {
+          driver.close();
+          storedDriver = getDriver();
+          driver = storedDriver;
+      }
       driver.get(formPage);
 
       driver.navigate().back();

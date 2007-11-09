@@ -52,13 +52,14 @@ public class FirefoxDriver implements WebDriver {
     }
 
     public WebDriver close() {
-        sendMessage("close", null);
         try {
-            return findActiveDriver();
+            sendMessage("close", null);
         } catch (NullPointerException e) {
             // All good
             return null;
         }
+
+        return findActiveDriver();
     }
 
     public String getPageSource() {

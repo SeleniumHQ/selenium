@@ -43,6 +43,7 @@ FirefoxDriver.prototype.close = function(respond) {
     var allWindows = wm.getEnumerator("navigator:browser");
     if (!allWindows.hasMoreElements()) {
         appService.quit(forceQuit);
+        return;  // The client should catch the fact that the socket suddenly closes
     }
 
     // If we're still running, return
