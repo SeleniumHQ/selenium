@@ -270,8 +270,11 @@ public class FirefoxLauncher {
       String libraryPath = System.getenv(propertyName);
       if (libraryPath == null) {
           libraryPath = "";
-      }
-      libraryPath = binary.getParentFile().getAbsolutePath() + File.pathSeparator + libraryPath;
+      }      
+
+      String firefoxLibraryPath = System.getProperty("webdriver.firefox.library.path", binary.getParentFile().getAbsolutePath());
+
+      libraryPath = firefoxLibraryPath + File.pathSeparator + libraryPath;
 
       builder.environment().put(propertyName, libraryPath);
   }
