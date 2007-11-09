@@ -4,7 +4,6 @@ import com.thoughtworks.selenium.SeleniumException;
 import com.thoughtworks.webdriver.WebDriver;
 import com.thoughtworks.webdriver.WebElement;
 import com.thoughtworks.webdriver.RenderedWebElement;
-import com.thoughtworks.webdriver.RenderingWebDriver;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -23,13 +22,13 @@ public class NameLookupStrategy implements LookupStrategy {
         filterFunctions.put("index", new IndexFilterFunction());
     }
 
-    public RenderedWebElement find(RenderingWebDriver driver, String use) {
+    public WebElement find(WebDriver driver, String use) {
         String[] parts = use.split(" ");
 
-        List<RenderedWebElement> allElements = driver.selectElements("//*[@name='" + parts[0] + "']");
+        List<WebElement> allElements = driver.selectElements("//*[@name='" + parts[0] + "']");
 
         // For some reason, we sometimes get back elements with a name that doesn't match. Filter those out
-        Iterator<RenderedWebElement> iterator = allElements.iterator();
+        Iterator<WebElement> iterator = allElements.iterator();
         while (iterator.hasNext()) {
             WebElement element = iterator.next();
             if (!(parts[0].equals(element.getAttribute("name"))))

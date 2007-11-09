@@ -2,11 +2,14 @@ package com.thoughtworks.webdriver.ie;
 
 import com.thoughtworks.webdriver.WebDriver;
 import com.thoughtworks.webdriver.WebElement;
+import com.thoughtworks.webdriver.RenderedWebElement;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.awt.Dimension;
+import java.awt.Point;
 
-public class InternetExplorerElement implements WebElement {
+public class InternetExplorerElement implements RenderedWebElement {
     @SuppressWarnings("unused")
     private long nodePointer;
 
@@ -47,7 +50,15 @@ public class InternetExplorerElement implements WebElement {
         throw new UnsupportedOperationException("isDisplayed");
     }
 
-    @Override
+    public Point getLocation() {
+        throw new UnsupportedOperationException("getLocation");
+    }
+
+    public Dimension getSize() {
+        throw new UnsupportedOperationException("getSize");
+    }
+
+  @Override
     protected void finalize() throws Throwable {
         deleteStoredObject();
     }

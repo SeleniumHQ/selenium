@@ -18,6 +18,8 @@
 package com.thoughtworks.webdriver;
 
 import java.util.List;
+import java.awt.Dimension;
+import java.awt.Point;
 
 /**
  * Test case for browsers that support using Javascript
@@ -211,9 +213,9 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
     public void testShouldAllowTheUserToTellIfAnElementIsDisplayedOrNot() {
         driver.get(javascriptPage);
 
-        assertTrue(driver.selectElement("id=displayed").isDisplayed());
-        assertFalse(driver.selectElement("id=none").isDisplayed());
-        assertFalse(driver.selectElement("id=hidden").isDisplayed());
+        assertTrue(((RenderedWebElement) driver.selectElement("id=displayed")).isDisplayed());
+        assertFalse(((RenderedWebElement) driver.selectElement("id=none")).isDisplayed());
+        assertFalse(((RenderedWebElement) driver.selectElement("id=hidden")).isDisplayed());
     }
 
     public void testShouldWaitForLoadsToCompleteAfterJavascriptCausesANewPageToLoad() {
@@ -222,5 +224,25 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
         driver.selectElement("id=changeme").setSelected();
 
         assertEquals("Page3", driver.getTitle());
+    }
+
+    public void testShouldBeAbleToDetermineTheLocationOfAnElement() {
+        driver.get(xhtmlTestPage);
+
+        RenderedWebElement element = (RenderedWebElement) driver.selectElement("id=username");
+        Point location = element.getLocation();
+
+        assertTrue(location.getX() > 0);
+        assertTrue(location.getY() > 0);
+    }
+
+    public void testShouldBeAbleToDetermineTheSizeOfAnElement() {
+        driver.get(xhtmlTestPage);
+
+        RenderedWebElement element = (RenderedWebElement) driver.selectElement("id=username");
+        Dimension size = element.getSize();
+
+        assertTrue(size.getWidth() > 0);
+        assertTrue(size.getHeight() > 0);
     }
 }

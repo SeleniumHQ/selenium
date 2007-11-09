@@ -2,11 +2,15 @@ package com.thoughtworks.webdriver.firefox;
 
 import com.thoughtworks.webdriver.WebDriver;
 import com.thoughtworks.webdriver.WebElement;
+import com.thoughtworks.webdriver.RenderedWebElement;
+
+import java.awt.Point;
+import java.awt.Dimension;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class FirefoxWebElement implements WebElement {
+public class FirefoxWebElement implements RenderedWebElement {
     private final FirefoxDriver parent;
     private final String elementId;
 
@@ -103,5 +107,25 @@ public class FirefoxWebElement implements WebElement {
 
     public boolean isDisplayed() {
         return Boolean.parseBoolean(parent.sendMessage("isElementDisplayed", elementId));
+    }
+
+    public Point getLocation() {
+        String result = parent.sendMessage("getElementLocation", elementId);
+
+        String[] parts = result.split(",");
+        int x = Integer.parseInt(parts[0].trim());
+        int y = Integer.parseInt(parts[1].trim());
+
+        return new Point(x, y);
+    }
+
+    public Dimension getSize() {
+        String result = parent.sendMessage("getElementSize", elementId);
+
+        String[] parts = result.split(",");
+        int x = Integer.parseInt(parts[0].trim());
+        int y = Integer.parseInt(parts[1].trim());
+
+        return new Dimension(x, y);
     }
 }

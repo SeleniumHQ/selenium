@@ -3,7 +3,6 @@ package com.thoughtworks.selenium.internal;
 import com.thoughtworks.selenium.SeleniumException;
 import com.thoughtworks.webdriver.WebDriver;
 import com.thoughtworks.webdriver.WebElement;
-import com.thoughtworks.webdriver.RenderingWebDriver;
 import com.thoughtworks.webdriver.RenderedWebElement;
 
 import java.util.HashMap;
@@ -24,8 +23,8 @@ public class LinkLookupStrategy implements LookupStrategy {
         textMatchingStrategies.put("exact", new ExactTextMatchingStrategy());
     }
 
-    public RenderedWebElement find(RenderingWebDriver driver, String use) {
-        List<RenderedWebElement> elements = driver.selectElements("//a");
+    public WebElement find(WebDriver driver, String use) {
+        List<WebElement> elements = driver.selectElements("//a");
 
         String strategyName = "implicit";
         Matcher matcher = TEXT_MATCHING_STRATEGY_AND_VALUE_PATTERN.matcher(use);
@@ -35,9 +34,9 @@ public class LinkLookupStrategy implements LookupStrategy {
         }
         TextMatchingStrategy strategy = (TextMatchingStrategy) textMatchingStrategies.get(strategyName);
 
-        Iterator<RenderedWebElement> allLinks = elements.iterator();
+        Iterator<WebElement> allLinks = elements.iterator();
         while (allLinks.hasNext()) {
-            RenderedWebElement link = allLinks.next();
+            WebElement link = allLinks.next();
             if (!(strategy.isAMatch(use, link.getText())))
                 allLinks.remove();
         }

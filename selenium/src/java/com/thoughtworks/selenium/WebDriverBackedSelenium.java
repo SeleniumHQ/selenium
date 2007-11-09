@@ -4,7 +4,6 @@ import com.thoughtworks.selenium.internal.*;
 import com.thoughtworks.webdriver.NoSuchElementException;
 import com.thoughtworks.webdriver.WebDriver;
 import com.thoughtworks.webdriver.WebElement;
-import com.thoughtworks.webdriver.RenderingWebDriver;
 import com.thoughtworks.webdriver.RenderedWebElement;
 
 import java.util.*;
@@ -14,13 +13,13 @@ import java.util.regex.Pattern;
 public class WebDriverBackedSelenium implements Selenium {
     private static final Pattern STRATEGY_AND_VALUE_PATTERN = Pattern.compile("^(\\p{Alpha}+)=(.*)");
     private static final Pattern TEXT_MATCHING_STRATEGY_AND_VALUE_PATTERN = Pattern.compile("^(\\p{Alpha}+):(.*)");
-    protected RenderingWebDriver driver;
+    protected WebDriver driver;
     private final String baseUrl;
     private final Map<String, LookupStrategy> lookupStrategies = new HashMap<String, LookupStrategy>();
     private final Map<String, OptionSelectStrategy> optionSelectStrategies = new HashMap<String, OptionSelectStrategy>(); 
     private final Map<String, TextMatchingStrategy> textMatchingStrategies = new HashMap<String, TextMatchingStrategy>();
 
-    public WebDriverBackedSelenium(RenderingWebDriver baseDriver, String baseUrl) {
+    public WebDriverBackedSelenium(WebDriver baseDriver, String baseUrl) {
         setUpElementFindingStrategies();
         setUpOptionFindingStrategies();
         setUpTextMatchingStrategies();
@@ -160,8 +159,8 @@ public class WebDriverBackedSelenium implements Selenium {
     }
 
     public String[] getAllLinks() {
-        List<RenderedWebElement> allLinks = driver.selectElements("//a");
-        Iterator<RenderedWebElement> i = allLinks.iterator();
+        List<WebElement> allLinks = driver.selectElements("//a");
+        Iterator<WebElement> i = allLinks.iterator();
         List<String> links = new ArrayList<String>();
         while (i.hasNext()) {
             WebElement link = i.next();
@@ -418,7 +417,7 @@ public class WebDriverBackedSelenium implements Selenium {
     }
 
     public boolean isVisible(String locator) {
-        return findElement(locator).isDisplayed();
+        return ((RenderedWebElement) findElement(locator)).isDisplayed();
     }
 
     public void keyDown(String locator, String keySequence) {
@@ -635,7 +634,7 @@ public class WebDriverBackedSelenium implements Selenium {
         throw new UnsupportedOperationException();
     }
 
-    protected RenderedWebElement findElement(String locator) {
+    protected WebElement findElement(String locator) {
         String strategyName = "implicit";
         String use = locator;
 
