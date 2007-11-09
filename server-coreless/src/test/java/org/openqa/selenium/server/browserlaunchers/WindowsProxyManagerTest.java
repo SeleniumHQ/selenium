@@ -7,16 +7,17 @@ import java.io.IOException;
 
 public class WindowsProxyManagerTest extends TestCase {
   
-  public void deleteFlatDirContentsWithNoPrefix() throws IOException {
+  public void testDeleteFlatDirContentsWithNoPrefix() throws IOException {
     File srcDir = makeSourceDirAndCookie("testcookie");
     WindowsProxyManager.deleteFlatDirContents(srcDir, null);
     assertTrue(srcDir.exists());
     File[] files = srcDir.listFiles();
     assertEquals(0, files.length);
-    srcDir.delete();
+    LauncherUtils.deleteTryTryAgain(srcDir, 1);
+    assertFalse(srcDir.exists());
   }
   
-  public void deleteFlatDirContentsWithPrefix() throws IOException {
+  public void testDeleteFlatDirContentsWithPrefix() throws IOException {
     File srcDir = makeSourceDirAndCookie("testcookie");
     WindowsProxyManager.deleteFlatDirContents(srcDir, "nomatch");
     assertTrue(srcDir.exists());
@@ -26,7 +27,7 @@ public class WindowsProxyManagerTest extends TestCase {
     assertFalse(srcDir.exists());
   }
   
-  public void deleteFlatDirContentsWithNoSuchDir() {
+  public void testDeleteFlatDirContentsWithNoSuchDir() {
     File tempDir = new File(System.getProperty("java.io.tmpdir"));
     File srcDir = new File(tempDir, "rc-wpmt-src");
     assertFalse(srcDir.exists());
