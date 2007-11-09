@@ -29,7 +29,7 @@ public class LauncherUtilsTest extends TestCase {
   
   private File makeSourceDirAndCookie() throws IOException {
     File tempDir = new File(System.getProperty("java.io.tmpdir"));
-    File srcDir = new File(tempDir, "rc-wpmt-src");
+    File srcDir = new File(tempDir, "rc-lut-src");
     srcDir.deleteOnExit();
     assertTrue(srcDir.mkdir());
     File cookieFile = File.createTempFile(COOKIE_PREFIX, "tmp", srcDir);
@@ -40,7 +40,7 @@ public class LauncherUtilsTest extends TestCase {
   
   private File getNonexistentDestDir() {
     File tempDir = new File(System.getProperty("java.io.tmpdir"));
-    File destDir = new File(tempDir, "rc-wpmt-dest");
+    File destDir = new File(tempDir, "rc-lut-dest");
     destDir.deleteOnExit();
     assertFalse(destDir.exists());
     return destDir;
