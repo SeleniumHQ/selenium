@@ -23,7 +23,7 @@ SeleniumIDE.Overlay = {};
 SeleniumIDE.Overlay.NUM_RECENT_COMMANDS = 8;
 
 SeleniumIDE.Overlay.appendCheck = function(event) {
-	var command = event.target._Selenium_IDE_command;
+    var command = event.target._Selenium_IDE_command;
     if (command) {
         if (command.command.match(/^store/)) {
             command[command.valueProperty] = window.prompt(SeleniumIDE.Overlay.getString("askForVariableName"));
@@ -34,12 +34,12 @@ SeleniumIDE.Overlay.appendCheck = function(event) {
 }
 
 SeleniumIDE.Overlay.getRecentCommands = function() {
-	if (SeleniumIDE.Preferences.branch.prefHasUserValue("recentCommands")) {
-		var recentCommands = SeleniumIDE.Preferences.getString("recentCommands");
-		return recentCommands.split(/,/);
-	} else {
-		return ['open', 'verifyTextPresent', 'verifyValue'];
-	}
+    if (SeleniumIDE.Preferences.branch.prefHasUserValue("recentCommands")) {
+        var recentCommands = SeleniumIDE.Preferences.getString("recentCommands");
+        return recentCommands.split(/,/);
+    } else {
+        return ['open', 'verifyTextPresent', 'verifyValue'];
+    }
 }
 
 SeleniumIDE.Overlay.getString = function(key) {
@@ -47,148 +47,148 @@ SeleniumIDE.Overlay.getString = function(key) {
 }
 
 SeleniumIDE.Overlay.addRecentCommand = function(id) {
-	var checks = this.getRecentCommands();
-	var n = checks.indexOf(id);
-	if (n >= 0) {
-		checks.splice(n, 1);
-	}
-	checks.unshift(id);
-	if (checks.length > this.NUM_RECENT_COMMANDS) {
-		checks.pop();
-	}
+    var checks = this.getRecentCommands();
+    var n = checks.indexOf(id);
+    if (n >= 0) {
+        checks.splice(n, 1);
+    }
+    checks.unshift(id);
+    if (checks.length > this.NUM_RECENT_COMMANDS) {
+        checks.pop();
+    }
     SeleniumIDE.Preferences.setString('recentCommands', checks.join(','));
 }
 
 SeleniumIDE.Overlay.testRecorderPopup = function(event) {
-	var showAll;
-	if (event.target.id == "contentAreaContextMenu") {
-		showAll = false;
-	} else if (event.target.id == "selenium-ide-all-checks") {
-		showAll = true;
-	} else {
-		return;
-	}
-	var contextMenu = event.target;
-	var self = SeleniumIDE.Overlay;
+    var showAll;
+    if (event.target.id == "contentAreaContextMenu") {
+        showAll = false;
+    } else if (event.target.id == "selenium-ide-all-checks") {
+        showAll = true;
+    } else {
+        return;
+    }
+    var contextMenu = event.target;
+    var self = SeleniumIDE.Overlay;
 
-	// remove old menu
-	for (var i = contextMenu.childNodes.length - 1; i >= 0; i--) {
-		var item = contextMenu.childNodes[i];
-		if (item.id && /^selenium-ide-/.test(item.id)) {
-			contextMenu.removeChild(item);
-		}
-	}
+    // remove old menu
+    for (var i = contextMenu.childNodes.length - 1; i >= 0; i--) {
+        var item = contextMenu.childNodes[i];
+        if (item.id && /^selenium-ide-/.test(item.id)) {
+            contextMenu.removeChild(item);
+        }
+    }
 
-	var recorder = SeleniumIDE.Loader.getTopEditor();
-	if (recorder) {
-		if (!showAll) {
-			contextMenu.appendChild(self.createMenuSeparator('recent'));
-		}
-		
-		var recentCommands = self.getRecentCommands();
-		var menuitems;
-		var prefixList = ['action', 'assert', 'verify', 'waitFor', 'store'];
+    var recorder = SeleniumIDE.Loader.getTopEditor();
+    if (recorder) {
+        if (!showAll) {
+            contextMenu.appendChild(self.createMenuSeparator('recent'));
+        }
+        
+        var recentCommands = self.getRecentCommands();
+        var menuitems;
+        var prefixList = ['action', 'assert', 'verify', 'waitFor', 'store'];
 
-		if (showAll) {
-			menuitems = {};
-			prefixList.forEach(function(prefix) {
-					menuitems[prefix] = [];
-				});
-		} else {
-			menuitems = [];
-		}
+        if (showAll) {
+            menuitems = {};
+            prefixList.forEach(function(prefix) {
+                    menuitems[prefix] = [];
+                });
+        } else {
+            menuitems = [];
+        }
 
-		function items(prefix) {
-			return showAll ? menuitems[prefix] : menuitems;
-		}
+        function items(prefix) {
+            return showAll ? menuitems[prefix] : menuitems;
+        }
 
-		var CommandBuilders = SeleniumIDE.Loader.getTopEditor().window.CommandBuilders;
-		for (var i = 0; i < CommandBuilders.builders.length; i++) {
-			var builder = CommandBuilders.builders[i];
-			var focusedWindow = contextMenu.ownerDocument.commandDispatcher.focusedWindow;
-			var command = CommandBuilders.callBuilder(builder, focusedWindow);
+        var CommandBuilders = SeleniumIDE.Loader.getTopEditor().window.CommandBuilders;
+        for (var i = 0; i < CommandBuilders.builders.length; i++) {
+            var builder = CommandBuilders.builders[i];
+            var focusedWindow = contextMenu.ownerDocument.commandDispatcher.focusedWindow;
+            var command = CommandBuilders.callBuilder(builder, focusedWindow);
 
-			if (builder.commandType == 'action') {
-				command.builder = builder;
-				if (showAll || recentCommands.indexOf(command.command) >= 0) {
-					items('action').push(self.createCheckMenuItem((showAll ? 'all-' : ''), command));
-				}
-			} else {
-				prefixList.forEach(function(prefix) {
-						if ('action' == prefix) return;
-						var newCommand = {};
-						for (prop in command) {
-							newCommand[prop] = command[prop];
-						}
-						if (prefix == 'store') {
-							if (newCommand.booleanAccessor) {
-								if (newCommand.target == null) {
-									newCommand.valueProperty = 'target';
-								} else {
-									newCommand.valueProperty = 'value';
-								}
-							} else {
-								if (newCommand.value == null) {
-									newCommand.valueProperty = 'target';
-								} else {
-									newCommand.valueProperty = 'value';
-								}
-							}
-						}
-						var accessor = newCommand.accessor.replace(/^[a-z]/, function(str) { return str.toUpperCase() });
-						newCommand.command = prefix + accessor;
-						newCommand.builder = builder;
-						if (showAll || recentCommands.indexOf(newCommand.command) >= 0) {
-							items(prefix).push(self.createCheckMenuItem((showAll ? 'all-' : ''), newCommand));
-						}
-					});
-			}
-		}
-		if (showAll) {
-			var first = true;
-			prefixList.forEach(function(prefix) {
-					if (!first) {
-						contextMenu.appendChild(self.createMenuSeparator(prefix));
-					}
-					menuitems[prefix].forEach(function(item) {
-							contextMenu.appendChild(item);
-					});
-					first = false;
-				});
-		} else {
-			menuitems.forEach(function(item) {
-					contextMenu.appendChild(item);
-				});
-			var menu = document.createElement("menu");
-			menu.setAttribute("id", "selenium-ide-all-checks-menu");
-			menu.setAttribute("label", self.getString("showAllChecks.label"));
-			var popup = document.createElement("menupopup");
-			popup.setAttribute("id", "selenium-ide-all-checks");
-			contextMenu.appendChild(menu);
-			menu.appendChild(popup);
-		}
-	}
+            if (builder.commandType == 'action') {
+                command.builder = builder;
+                if (showAll || recentCommands.indexOf(command.command) >= 0) {
+                    items('action').push(self.createCheckMenuItem((showAll ? 'all-' : ''), command));
+                }
+            } else {
+                prefixList.forEach(function(prefix) {
+                        if ('action' == prefix) return;
+                        var newCommand = {};
+                        for (prop in command) {
+                            newCommand[prop] = command[prop];
+                        }
+                        if (prefix == 'store') {
+                            if (newCommand.booleanAccessor) {
+                                if (newCommand.target == null) {
+                                    newCommand.valueProperty = 'target';
+                                } else {
+                                    newCommand.valueProperty = 'value';
+                                }
+                            } else {
+                                if (newCommand.value == null) {
+                                    newCommand.valueProperty = 'target';
+                                } else {
+                                    newCommand.valueProperty = 'value';
+                                }
+                            }
+                        }
+                        var accessor = newCommand.accessor.replace(/^[a-z]/, function(str) { return str.toUpperCase() });
+                        newCommand.command = prefix + accessor;
+                        newCommand.builder = builder;
+                        if (showAll || recentCommands.indexOf(newCommand.command) >= 0) {
+                            items(prefix).push(self.createCheckMenuItem((showAll ? 'all-' : ''), newCommand));
+                        }
+                    });
+            }
+        }
+        if (showAll) {
+            var first = true;
+            prefixList.forEach(function(prefix) {
+                    if (!first) {
+                        contextMenu.appendChild(self.createMenuSeparator(prefix));
+                    }
+                    menuitems[prefix].forEach(function(item) {
+                            contextMenu.appendChild(item);
+                    });
+                    first = false;
+                });
+        } else {
+            menuitems.forEach(function(item) {
+                    contextMenu.appendChild(item);
+                });
+            var menu = document.createElement("menu");
+            menu.setAttribute("id", "selenium-ide-all-checks-menu");
+            menu.setAttribute("label", self.getString("showAllChecks.label"));
+            var popup = document.createElement("menupopup");
+            popup.setAttribute("id", "selenium-ide-all-checks");
+            contextMenu.appendChild(menu);
+            menu.appendChild(popup);
+        }
+    }
 }
 
 SeleniumIDE.Overlay.createMenuSeparator = function(id) {
-	var menuitem = document.createElement("menuseparator");
-	menuitem.setAttribute("id", "selenium-ide-separator-" + id);
-	return menuitem;
+    var menuitem = document.createElement("menuseparator");
+    menuitem.setAttribute("id", "selenium-ide-separator-" + id);
+    return menuitem;
 }
 
 SeleniumIDE.Overlay.createMenuSeparator = function(id) {
-	var menuitem = document.createElement("menuseparator");
-	menuitem.setAttribute("id", "selenium-ide-separator-" + id);
-	return menuitem;
+    var menuitem = document.createElement("menuseparator");
+    menuitem.setAttribute("id", "selenium-ide-separator-" + id);
+    return menuitem;
 }
 
 SeleniumIDE.Overlay.createCheckMenuItem = function(idPrefix, command) {
-	var menuitem = document.createElement("menuitem");
-	menuitem.setAttribute("id", "selenium-ide-check-" + idPrefix + command.command);
-	menuitem.setAttribute("disabled", command.disabled ? 'true' : 'false');
-	menuitem.setAttribute("label", command.command + ' ' + this._firstTarget(command.target) + ' ' + command.value);
-	menuitem._Selenium_IDE_command = command;
-	return menuitem;
+    var menuitem = document.createElement("menuitem");
+    menuitem.setAttribute("id", "selenium-ide-check-" + idPrefix + command.command);
+    menuitem.setAttribute("disabled", command.disabled ? 'true' : 'false');
+    menuitem.setAttribute("label", command.command + ' ' + this._firstTarget(command.target) + ' ' + command.value);
+    menuitem._Selenium_IDE_command = command;
+    return menuitem;
 }
 
 SeleniumIDE.Overlay._firstTarget = function(target) {
@@ -203,22 +203,22 @@ SeleniumIDE.Overlay._firstTarget = function(target) {
 }
 
 SeleniumIDE.Overlay.onContentLoaded = function(event) {
-	var isRootDocument = false;
-	var browsers = window.getBrowser().browsers;
-	for (var i = 0; i < browsers.length; i++) {
-		var cw = browsers[i].contentWindow;
-		if (cw && cw.document == event.target) {
-			isRootDocument = true;
-		}
-	}
-	//SeleniumIDE.Loader.reloadRecorder(window.getBrowser().contentWindow, isRootDocument);
-	SeleniumIDE.Loader.reloadRecorder(event.target.defaultView, isRootDocument);
-	
-	var contextMenu = window.document.getElementById("contentAreaContextMenu");
-	if (contextMenu) {
-		contextMenu.addEventListener("popupshowing", SeleniumIDE.Overlay.testRecorderPopup, false);
-		contextMenu.addEventListener("command", SeleniumIDE.Overlay.appendCheck, false);
-	}
+    var isRootDocument = false;
+    var browsers = window.getBrowser().browsers;
+    for (var i = 0; i < browsers.length; i++) {
+        var cw = browsers[i].contentWindow;
+        if (cw && cw.document == event.target) {
+            isRootDocument = true;
+        }
+    }
+    //SeleniumIDE.Loader.reloadRecorder(window.getBrowser().contentWindow, isRootDocument);
+    SeleniumIDE.Loader.reloadRecorder(event.target.defaultView, isRootDocument);
+    
+    var contextMenu = window.document.getElementById("contentAreaContextMenu");
+    if (contextMenu) {
+        contextMenu.addEventListener("popupshowing", SeleniumIDE.Overlay.testRecorderPopup, false);
+        contextMenu.addEventListener("command", SeleniumIDE.Overlay.appendCheck, false);
+    }
 }
 
 SeleniumIDE.Overlay.onLoad = function(event) {
@@ -231,23 +231,25 @@ SeleniumIDE.Overlay.onLoad = function(event) {
 }
 
 SeleniumIDE.Overlay.init = function() {
-	var appcontent = window.document.getElementById("appcontent");
-	if (appcontent) {
-		appcontent.addEventListener("DOMContentLoaded", SeleniumIDE.Overlay.onContentLoaded, false);
+    var appcontent = window.document.getElementById("appcontent");
+    if (appcontent) {
+        appcontent.addEventListener("DOMContentLoaded", SeleniumIDE.Overlay.onContentLoaded, false);
         appcontent.addEventListener("load", SeleniumIDE.Overlay.onLoad, true);
-	}
-	window.addEventListener("beforeunload", 
-							function(event) {
-								SeleniumIDE.Loader.getEditors().forEach(function(editor) {
-										var doc;
-										if (event.target.nodeType == 9) { // DOCUMENT_NODE
-											doc = event.target;
-										} else {
-											doc = event.target.ownerDocument;
-										}
-										editor.onUnloadDocument(doc);
-									});
-							}, false);
+    }
+    window.addEventListener("beforeunload", 
+                            function(event) {
+                                SeleniumIDE.Loader.getEditors().forEach(function(editor) {
+                                        if (event.target) {
+                                            var doc;
+                                            if (event.target.nodeType == 9) { // DOCUMENT_NODE
+                                                doc = event.target;
+                                            } else {
+                                                doc = event.target.ownerDocument;
+                                            }
+                                            editor.onUnloadDocument(doc);
+                                        }
+                                    });
+                            }, false);
 }
 
 SeleniumIDE.Overlay.init();
