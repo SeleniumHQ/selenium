@@ -88,11 +88,11 @@ public class WindowsProxyManagerTest extends TestCase {
   }
   
   public void testHidePreexistingCookiesNoDestDirWithPrefix() throws IOException {
-    File srcDir = makeSourceDirAndCookie(WindowsProxyManager.VISTA_COOKIE_PREFIX);
+    String cookiePrefix = "cookie"; // WindowsProxyManager.VISTA_COOKIE_PREFIX contains a ":"
+    File srcDir = makeSourceDirAndCookie(cookiePrefix);
     File destDir = getNonexistentDir();
     
-    WindowsProxyManager.hideCookies(srcDir, 
-        WindowsProxyManager.VISTA_COOKIE_PREFIX, destDir);
+    WindowsProxyManager.hideCookies(srcDir, cookiePrefix, destDir);
     
     assertTrue(srcDir.exists());
     assertTrue(destDir.exists());
@@ -108,7 +108,8 @@ public class WindowsProxyManagerTest extends TestCase {
     File tempDir = new File(System.getProperty("java.io.tmpdir"));
     File srcDir = new File(tempDir, "rc-wpmt-src");
     srcDir.deleteOnExit();
-    assertTrue(srcDir.mkdir());
+    srcDir.mkdir();
+    assertTrue(srcDir.exists());
     File cookieFile = File.createTempFile(cookiePrefix, "tmp", srcDir);
     cookieFile.deleteOnExit();
     assertTrue(cookieFile.exists());
