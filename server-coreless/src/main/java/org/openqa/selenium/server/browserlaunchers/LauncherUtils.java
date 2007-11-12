@@ -327,6 +327,7 @@ public class LauncherUtils {
 
 		// Allow scripts to run as long as the server timeout
 		out.println("user_pref('dom.max_script_run_time', " + SeleniumServer.getTimeoutInSeconds() + ");");
+		out.println("user_pref('dom.max_chrome_script_run_time', " + SeleniumServer.getTimeoutInSeconds() + ");");
 
 		// Open links in new windows (Firefox 2.0)
 		out.println("user_pref('browser.link.open_external', 2);");
