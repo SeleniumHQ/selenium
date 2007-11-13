@@ -10,14 +10,58 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
+/**
+ * Factory class to make using Page Objects simpler and easier.
+ *
+ * @see http://code.google.com/p/webdriver/wiki/PageObjects
+ */
 public class PageFactory {
-    public static <T> T proxyElements(WebDriver driver, Class<T> pageClassToProxy) {
+
+  /**
+   * Instantiate an instance of the given class, and set a lazy proxy for each
+   * of the WebElement fields that have been declared, assuming that the
+   * field name is also the HTML element's "id". This means that for the class:
+   *
+   * <code>
+   * public class Page {
+   *     private WebElement submit;
+   * }
+   * </code>
+   *
+   * there will be an element that can be located using the xpath expression
+   * "//*[@id='submit']"
+   *
+   * By default, the element is looked up each and every time a method is called
+   * upon it. To change this behaviour, simply annnotate the field with the
+   * {@link @com.thoughtworks.webdriver.support.CacheLookup}. To change how the
+   * element is located, use the {@link @com.thoughtworks.webdriver.support.FindBy}
+   * annotation.
+   *
+   * This method will attempt to instantiate the class given to it, preferably
+   * using a constructor which takes a WebDriver instance as its only argument
+   * or falling back on a no-arg constructor. An exception will be thrown if
+   * the class cannot be instantiated.
+   *
+   * @see @com.thoughtworks.webdriver.support.FindBy
+   * @see @com.thoughtworks.webdriver.support.CacheLookup
+   * @param driver The driver that will be used to look up the elements
+   * @param pageClassToProxy A class which will be initialised.
+   * @return An instantiated instance of the class with WebElement fields proxied
+   */
+    public static <T> T initElements(WebDriver driver, Class<T> pageClassToProxy) {
         T page = instantiatePage(driver, pageClassToProxy);
-        proxyElements(driver, page);
+        initElements(driver, page);
         return page;
     }
 
-    public static void proxyElements(WebDriver driver, Object page) {
+  /**
+   * As {@link com.thoughtworks.webdriver.support.PageFactory#initElements(com.thoughtworks.webdriver.WebDriver, Class)}
+   * but will only replace the fields of an already instantiated Page Object.
+   *
+   * @param driver The driver that will be used to look up the elements
+   * @param page The object with WebElement fields that should be proxied.
+   */
+    public static void initElements(WebDriver driver, Object page) {
         Class proxyIn = page.getClass();
         while (proxyIn != Object.class) {
             proxyFields(driver, page, proxyIn);

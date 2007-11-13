@@ -40,7 +40,7 @@ public class LocatingElementHandlerTest extends TestCase {
 
         EasyMock.replay(driver, element);
       
-        Page page = PageFactory.proxyElements(driver, Page.class);
+        Page page = PageFactory.initElements(driver, Page.class);
         page.doQuery("cheese");
 
         EasyMock.verify(driver);

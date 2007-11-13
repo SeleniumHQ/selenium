@@ -13,13 +13,13 @@ public class PageFactoryTest extends TestCase {
 
         assertNull(page.q);
 
-        PageFactory.proxyElements(driver, page);
+        PageFactory.initElements(driver, page);
 
         assertTrue(page.q instanceof WebElement);
     }
 
     public void testShouldInsertProxiesForPublicWebElements() {
-        PublicPage page = PageFactory.proxyElements(driver, PublicPage.class);
+        PublicPage page = PageFactory.initElements(driver, PublicPage.class);
 
         assertTrue(page.q instanceof WebElement);
     }
@@ -27,7 +27,7 @@ public class PageFactoryTest extends TestCase {
     public void testShouldProxyElementsFromParentClassesToo() {
         ChildPage page = new ChildPage();
 
-        PageFactory.proxyElements(driver, page);
+        PageFactory.initElements(driver, page);
 
         assertTrue(page.q instanceof WebElement);
         assertTrue(page.submit instanceof WebElement);
@@ -36,7 +36,7 @@ public class PageFactoryTest extends TestCase {
     public void testShouldProxyPrivateElements() {
         PrivatePage page = new PrivatePage();
 
-        PageFactory.proxyElements(driver, page);
+        PageFactory.initElements(driver, page);
 
         assertNotNull(page.getField());
     }
@@ -44,7 +44,7 @@ public class PageFactoryTest extends TestCase {
     public void testShouldUseAConstructorThatTakesAWebDriverAsAnArgument() {
         driver = EasyMock.createNiceMock(WebDriver.class);
 
-        ConstructedPage page = PageFactory.proxyElements(driver, ConstructedPage.class);
+        ConstructedPage page = PageFactory.initElements(driver, ConstructedPage.class);
 
         assertEquals(driver, page.driver);
     }
