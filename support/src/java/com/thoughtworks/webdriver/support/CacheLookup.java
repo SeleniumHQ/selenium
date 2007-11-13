@@ -1,5 +1,3 @@
-// Copyright 2007 Google Inc. All Rights Reserved.
-
 package com.thoughtworks.webdriver.support;
 
 import java.lang.annotation.Retention;
