@@ -108,6 +108,23 @@ function showFilePicker(window, title, mode, defaultDirPrefName, handler) {
     }
 }
 
+/**
+ * Opens the given URL in a new tab if a browser window is already open, or
+ * a new window otherwise.
+ *
+ * @param url  the URL to open.
+ */
+function openTabOrWindow(url)
+{
+    try {
+        var gBrowser = window.opener.getBrowser();
+        gBrowser.selectedTab = gBrowser.addTab(url);
+    }
+    catch (e) {
+        window.open(url);
+    }
+}
+
 function exactMatchPattern(string) {
 	if (string != null && (string.match(/^\w*:/) || string.indexOf('?') >= 0 || string.indexOf('*') >= 0)) {
 		return "exact:" + string;
@@ -175,6 +192,23 @@ var ExtensionsLoader = {
 				}
 			});
 	}
+};
+
+/**
+ * Returns the string with angle brackets and ampersands escaped as HTML
+ * entities. This is a cleaner implementation than the escapeHTML() methods
+ * defined by both the prototype and scriptaculous frameworks as it does not
+ * rely on the presence of a document object which can be manipulated.
+ */
+String.prototype.escapeHTML2 = function() {
+    return this
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+};
+
+String.prototype.formatAsHTML = function() {
+    return this.replace(/(?:\r\n|\r|\n)/g, '<br />');
 };
 
 Array.prototype.delete = function(value) {

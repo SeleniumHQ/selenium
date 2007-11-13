@@ -2,10 +2,6 @@
 <RDF:RDF xmlns:em="http://www.mozilla.org/2004/em-rdf#"
          xmlns:NC="http://home.netscape.com/NC-rdf#"
          xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <RDF:Description RDF:about="rdf:#$8MZop3"
-                   em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
-                   em:minVersion="1.5"
-                   em:maxVersion="2.0.0.*" />
   <RDF:Description RDF:about="urn:mozilla:install-manifest"
                    em:name="Selenium IDE"
                    em:id="{a6fd85ed-e919-4a43-a5af-8da18bda539f}"
@@ -16,4 +12,8 @@
                    em:optionsURL="chrome://selenium-ide/content/optionsDialog.xul">
     <em:targetApplication RDF:resource="rdf:#$8MZop3"/>
   </RDF:Description>
+  <RDF:Description RDF:about="rdf:#$8MZop3"
+                   em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   em:minVersion="1.5"
+                   em:maxVersion="2.0.0.*" />
 </RDF:RDF>

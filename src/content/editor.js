@@ -160,6 +160,7 @@ Editor.controller = {
 		case "cmd_selenium_pause":
 		case "cmd_selenium_step":
 		case "cmd_selenium_testrunner":
+        case "cmd_selenium_rollup":
 			return true;
 		default:
 			return false;
@@ -178,6 +179,8 @@ Editor.controller = {
 			return true;
 		case "cmd_selenium_testrunner":
 		case "cmd_selenium_play":
+        case "cmd_selenium_rollup":
+		    return editor.app.getCurrentFormat().getFormatter().playable && editor.state != 'playing';
 		case "cmd_selenium_play_suite":
 		    return editor.app.getCurrentFormat().getFormatter().playable && editor.selDebugger.state != Debugger.PLAYING;
 		case "cmd_selenium_pause":
@@ -217,6 +220,17 @@ Editor.controller = {
 		case "cmd_selenium_testrunner":
 			editor.playback();
 			break;
+        case "cmd_selenium_rollup":
+            if (Editor.rollupManager) {
+                try {
+                    Editor.rollupManager.applyRollupRules();
+                }
+                catch (e) { alert('Whoa! ' + e.message) }
+            }
+            else {
+                alert('No rollup rules have been defined.');
+            }
+            break;
 		default:
 		}
 	},
@@ -281,11 +295,15 @@ Editor.prototype.updateState = function() {
 }
 
 Editor.prototype.updateSeleniumCommands = function() {
-	this.log.debug("updateSeleniumCommands");
-	["cmd_selenium_play_suite", "cmd_selenium_play", "cmd_selenium_pause", "cmd_selenium_step", "cmd_selenium_testrunner"].
-		forEach(function(cmd) {
-					goUpdateCommand(cmd);
-				});
+    this.log.debug("updateSeleniumCommands");
+    [ "cmd_selenium_play_suite"
+    , "cmd_selenium_play"
+    , "cmd_selenium_pause"
+    , "cmd_selenium_step"
+    , "cmd_selenium_testrunner"
+    , "cmd_selenium_rollup"].forEach(function(cmd) {
+        goUpdateCommand(cmd);
+    });
 }
 
 Editor.prototype.getOptions = function(options) {
@@ -515,6 +533,10 @@ Editor.prototype.addCommand = function(command,target,value,window,insertBeforeL
     this.clearLastCommand();
 	this.lastWindow = window;
     var command = new Command(command, target, value);
+    // bind to the href attribute instead of to window.document.location, which
+    // is an object reference
+    command.lastURL = window.document.location.href;
+    
     if (insertBeforeLastCommand && this.view.getRecordIndex() > 0) {
         var index = this.view.getRecordIndex() - 1;
         this.getTestCase().commands.splice(index, 0, command);
@@ -772,18 +794,50 @@ Editor.prototype.loadSeleniumAPI = function() {
 		try {
 			ExtensionsLoader.loadSubScript(subScriptLoader, this.getOptions().userExtensionsURL, this.seleniumAPI);
 		} catch (error) {
-			this.showAlert("Failed to load user-extensions.js!\nfiles=" + this.getOptions().userExtensionsURL + "\nerror=" + error);
+            this.showAlert("Failed to load user-extensions.js!"
+                + "\nfiles=" + this.getOptions().userExtensionsURL
+                + "\nlineNumber=" + error.lineNumber
+                + "\nerror=" + error);
 		}
 	}
 }
 
 Editor.prototype.showReference = function(command) {
-	var def = command.getDefinition();
-	if (def) {
+    var def = command.getDefinition();
+    if (def) {
         this.infoPanel.switchView(this.infoPanel.helpView);
-		this.log.debug("showReference: " + def.name);
-		this.reference.show(def, command);
-	}
+        this.log.debug("showReference: " + def.name);
+        this.reference.show(def, command);
+    }
+}
+
+Editor.prototype.showUIReference = function(target) {
+    if (!Editor.uiMap) {
+        return;
+    }
+    var re = new RegExp('^' + Editor.uiMap.prefix + '=');
+    if (re.test(target)) {
+        var uiSpecifierString = target.replace(re, "");
+        var pageset = Editor.uiMap.getPageset(uiSpecifierString);
+        var uiElement = Editor.uiMap.getUIElement(uiSpecifierString);
+        if (pageset != null && uiElement != null) {
+            this.infoPanel.switchView(this.infoPanel.uiView);
+            this.uiReference.show(uiSpecifierString);
+        }
+    }
+};
+
+Editor.prototype.showRollupReference = function(command) {
+    try {
+        if (command.isRollup()) {
+            var rule = Editor.rollupManager.getRollupRule(command.target);
+            if (rule != null) {
+                this.infoPanel.switchView(this.infoPanel.rollupView);
+                this.rollupReference.show(rule, command);
+            }
+        }
+    }
+    catch (e) { alert('Hoo! ' + e.message); }
 }
 
 Editor.prototype.getAutoCompleteSearchParam = function(id) {
@@ -871,15 +925,155 @@ HTMLReference.prototype.doShow = function() {
 	this.frame.contentWindow.location.hash = func;
 }
 
+//******************************************************************************
+
+/**
+ * A reference object must implement the load() and doShow() methods. Since
+ * the load() from the AbstractReference prototype is very specific to the
+ * helpView functionality, we override it here.
+ */
+function UIReference(name) {
+    this.name = name;
+};
+
+UIReference.prototype = new AbstractReference;
+
+UIReference.prototype.load = function() {
+    var self = this;
+    this.frame = document.getElementById('uiView');
+    this.frame.addEventListener('load', function() {
+       if (self.selectedDefinition) {
+           self.doShow();
+       }
+    }, true);
+};
+
+UIReference.prototype.doShow = function() {
+    var uiSpecifierString = this.selectedDefinition;
+    var pageset = Editor.uiMap.getPageset(uiSpecifierString);
+    var uiElement = Editor.uiMap.getUIElement(uiSpecifierString);
+    
+    // name and description
+    var html = '<div><span class="target-pageset-name">'
+        + pageset.name.escapeHTML2() + '::</span>'
+        + '<span class="target-element-name">'
+        + uiElement.name.escapeHTML2() + '</span></div>'
+        + '<div class="target-pageset-description">'
+        + pageset.description.escapeHTML2().formatAsHTML() + '</div>'
+        + '<div class="target-element-description">'
+        + uiElement.description.escapeHTML2().formatAsHTML() + '</div>'
+        + '<dl class="target-arg-list">';
+    // arguments
+    for (i = 0; i < uiElement.args.length; ++i) {
+        var arg = uiElement.args[i];
+        var defaultValues = arg.getDefaultValues();
+        var defaultValuesDisplay = defaultValues.slice(0, 5).join(', ')
+            .escapeHTML2();
+        var defaultValuesHide = defaultValues.slice(5).join(', ');
+        if (defaultValues.length > 5) {
+            defaultValuesDisplay += ', <a onclick="this.innerHTML=\''
+                + defaultValuesHide.escapeHTML2() + '\'">...</a>';
+        }
+        defaultValuesDisplay = '[ ' + defaultValuesDisplay + ' ]';
+        html += '<dt class="target-arg-name">'
+            + arg.name.escapeHTML2() + '</dt><dd class="target-arg-description">'
+            + '<div>' + arg.description.escapeHTML2().formatAsHTML() + '</div>'
+            + '<div class="target-arg-default-values">'
+            + defaultValuesDisplay + '</div></dd>';
+    }
+    html += '</dl>';
+    html += '<dl class="example-list"><dt class="example-title">'
+        + 'current specifier maps to locator:</dt>';
+    html += '<dd class="example-locator">'
+        + Editor.uiMap.getLocator(uiSpecifierString).escapeHTML2()
+            .replace(/undefined/g, '<span class="undefined">undefined</span>')
+        + '</dd></dl>';
+    var uiView = document.getElementById('uiView');
+    uiView.contentDocument.body.innerHTML = html;
+};
+
+function RollupReference(name) {
+    this.name = name;
+};
+
+RollupReference.prototype = new AbstractReference;
+
+RollupReference.prototype.load = function() {
+    var self = this;
+    this.frame = document.getElementById('rollupView');
+    this.frame.addEventListener('load', function() {
+       if (self.selectedDefinition) {
+           self.doShow();
+       }
+    }, true);
+};
+
+RollupReference.prototype.doShow = function() {
+    var rule = this.selectedDefinition;
+    var command = this.selectedCommand;
+    
+    // name and description
+    var html = '<div class="rollup-name">'
+        + rule.name.escapeHTML2() + '</div>'
+        + '<div class="rollup-description">'
+        + rule.description.escapeHTML2().formatAsHTML() + '</div>'
+        + '<div><span class="rollup-pre-header">preconditions</span>: '
+        + '<span class="rollup-pre">'
+        + rule.pre.escapeHTML2().formatAsHTML() + '</span></div>'
+        + '<div><span class="rollup-post-header">postconditions</span>: '
+        + '<span class="rollup-post">'
+        + rule.post.escapeHTML2().formatAsHTML() + '</span></div>'
+        + '<dl class="rollup-arg-list">';
+    // arguments
+    for (i = 0; i < rule.args.length; ++i) {
+        var arg = rule.args[i];
+        var exampleValues = arg.exampleValues || [];
+        var exampleValuesDisplay = exampleValues.slice(0, 5).join(', ')
+            .escapeHTML2();
+        var exampleValuesHide = exampleValues.slice(5).join(', ');
+        if (exampleValues.length > 5) {
+            exampleValuesDisplay += ', <a onclick="this.innerHTML=\''
+                + exampleValuesHide.escapeHTML2() + '\'">...</a>';
+        }
+        exampleValuesDisplay = '[ ' + exampleValuesDisplay + ' ]';
+        html += '<dt class="rollup-arg-name">'
+            + arg.name.escapeHTML2() + '</dt><dd class="rollup-arg-description">'
+            + '<div>' + arg.description.escapeHTML2().formatAsHTML() + '</div>'
+            + '<div class="rollup-arg-example-values">'
+            + exampleValuesDisplay + '</div></dd>';
+    }
+    html += '</dl>';
+    html += '<dl class="example-list"><dt class="example-title">'
+        + 'current rollup expands to:</dt>'
+    var expandedCommands = rule.getExpandedCommands(command.value);
+    for (var i = 0; i < expandedCommands.length; ++i) {
+        html += '<dd class="example-command">'
+            + expandedCommands[i].toString().escapeHTML2().replace(/undefined/g,
+                '<span class="undefined">undefined</span>') + '</dd>';
+    }
+    html += '</dl>';
+    
+    var rollupView = document.getElementById('rollupView');
+    rollupView.contentDocument.body.innerHTML = html;
+};
+
+//******************************************************************************
+
 Editor.references = [];
 
 Editor.prototype.selectDefaultReference = function() {
 	this.reference = Editor.references[0];
 	this.reference.load();
+    this.uiReference = Editor.references[2];
+    this.uiReference.load();
+    this.rollupReference = Editor.references[3];
+    this.rollupReference.load();
 }
 
 Editor.references.push(new GeneratedReference("Generated"));
 Editor.references.push(new HTMLReference("Internal HTML", "chrome://selenium-ide/content/selenium/reference.html"));
+Editor.references.push(new UIReference('UI-Element'));
+Editor.references.push(new RollupReference('Rollup'));
 //Editor.references.push(new HTMLReference("Japanese", "Reference HTML contained in Selenium IDE", "http://wiki.openqa.org/display/SEL/Selenium+0.7+Reference+%28Japanese%29"));
 
 /*
@@ -889,6 +1083,8 @@ Editor.references.push(new HTMLReference("Internal HTML", "chrome://selenium-ide
 Editor.InfoPanel = function(editor) {
     this.logView = new Editor.LogView(this, editor);
     this.helpView = new Editor.HelpView(this);
+    this.uiView = new Editor.UIView(this);
+    this.rollupView = new Editor.RollupView(this);
     this.currentView = this.logView;
 }
 
@@ -1024,3 +1220,15 @@ Editor.HelpView = function() {
 }
 
 Editor.HelpView.prototype = new Editor.InfoView;
+
+Editor.UIView = function() {
+    this.name = 'ui';
+};
+
+Editor.UIView.prototype = new Editor.InfoView;
+
+Editor.RollupView = function() {
+    this.name = 'rollup';
+};
+
+Editor.RollupView.prototype = new Editor.InfoView;

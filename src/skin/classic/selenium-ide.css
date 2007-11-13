@@ -30,6 +30,11 @@ treechildren::-moz-tree-row(commandDone)
   background-color: #EEFFEE;
 }
 
+treechildren::-moz-tree-row(commandSelectedForReplacement)
+{
+  background-color: #cef;
+}
+
 treechildren::-moz-tree-row(debugIndex)
 {
   background-color: #FFFFCC;
@@ -171,6 +176,12 @@ toolbarbutton.icon label {
 #testrunner-button { 
   -moz-image-region: rect(0px 96px 16px 80px);
 }
+#rollup-button:not([disabled="true"]) {
+    list-style-image: url("spiral.png");
+}
+#rollup-button[disabled="true"] {
+    list-style-image: url("spiral_disabled.png");
+}
 
 tab label { 
   font-size: 8.5pt;
@@ -238,3 +249,4 @@ tab label {
   width: 100%;
   text-align: center;
 }
+

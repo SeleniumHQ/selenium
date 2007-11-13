@@ -29,9 +29,10 @@ Object.extend(TestRunnerConfig.prototype, {
 var testRunnerConfig = new TestRunnerConfig();
 
 if (testRunnerConfig.userExtensionsURL) {
-	var urls = testRunnerConfig.userExtensionsURL.split(/,/);
-	for (var i = 0; i < urls.length; i++) {
-		var url = urls[i];
-		document.write('<script src="' + url + '" language="JavaScript" type="text/javascript"></script>');
-	}
+    var urls = testRunnerConfig.userExtensionsURL.split(/,/);
+    for (var i = 0; i < urls.length; i++) {
+        var url = urls[i];
+        document.write('<script src="' + url + '" language="JavaScript" type="text/javascript"></script>');
+    }
 }
+

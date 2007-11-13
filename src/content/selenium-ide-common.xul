@@ -25,6 +25,10 @@ limitations under the License.
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script type="application/x-javascript" src="chrome://global/content/globalOverlay.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/preferences.js"/>
+  <!-- import misc.js before tools.js, because both declare a Log object -->
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/xpath/misc.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/xpath/dom.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/xpath/xpath.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/tools.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/scripts/selenium-browserdetect.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/lib/prototype.js"/>
@@ -67,6 +71,7 @@ limitations under the License.
     <command id="cmd_selenium_breakpoint" oncommand="goDoCommand('cmd_selenium_breakpoint')"/>
     <command id="cmd_selenium_startpoint" oncommand="goDoCommand('cmd_selenium_startpoint')"/>
     <command id="cmd_selenium_exec_command" oncommand="goDoCommand('cmd_selenium_exec_command')"/>
+    <command id="cmd_selenium_rollup" oncommand="goDoCommand('cmd_selenium_rollup')"/>
   </commandset>
 <!--  <commandset id="stateUpdater" commandupdater="true" events="focus,selenium-ide-state" oncommandupdate="alert('commandupdate: window.editor=' + window.editor);if (window.editor) { editor.updateSeleniumCommands() }"/>-->
   <commandset id="seleniumIDEUpdater" commandupdater="true" events="focus,selenium-ide-state" oncommandupdate="if (window.editor) { window.editor.updateSeleniumCommands() }"/>
@@ -196,6 +201,8 @@ limitations under the License.
     <hbox id="logMenu" align="center">
       <toolbarbutton id="logTab" label="&logConsole.label;" onclick="window.editor.infoPanel.switchView(window.editor.infoPanel.logView)" class="console-tab" selected="true"/>
       <toolbarbutton id="helpTab" label="&reference.label;" onclick="window.editor.infoPanel.switchView(window.editor.infoPanel.helpView)" class="console-tab"/>
+      <toolbarbutton id="uiTab" label="&uiReference.label;" onclick="window.editor.infoPanel.switchView(window.editor.infoPanel.uiView)" class="console-tab"/>
+      <toolbarbutton id="rollupTab" label="&rollupReference.label;" onclick="window.editor.infoPanel.switchView(window.editor.infoPanel.rollupView)" class="console-tab"/>
       <spacer flex="1"/>
       <hbox align="center" id="logButtons">
 	<toolbarbutton id="logFilter" label="Debug" type="menu" class="console-button">
@@ -212,6 +219,10 @@ limitations under the License.
     <iframe flex="1" id="logView" src="LogFrame.html">
     </iframe>
     <iframe flex="1" id="helpView" src="HelpView.html" hidden="true">
+    </iframe>
+    <iframe flex="1" id="uiView" src="ui-view.html" hidden="true">
+    </iframe>
+    <iframe flex="1" id="rollupView" src="rollup-view.html" hidden="true">
     </iframe>
   </vbox>
 </overlay>

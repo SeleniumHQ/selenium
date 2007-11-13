@@ -26,7 +26,7 @@ LocatorBuilders.prototype.detach = function() {
 LocatorBuilders.prototype.pageBot = function() {
 	var pageBot = this.window._locator_pageBot;
 	if (pageBot == null) {
-		//pageBot = BrowserBot.createForWindow(this.window);
+        //pageBot = BrowserBot.createForWindow(this.window);
         pageBot = new MozillaBrowserBot(this.window);
         var self = this;
         pageBot.getCurrentWindow = function() {
@@ -65,10 +65,29 @@ LocatorBuilders.prototype.buildAll = function(e) {
 		if (locator) {
 			locator = String(locator);
 			this.log.debug("locator=" + locator);
-			// test the locator
-			if (e == this.findElement(locator)) {
-                locators.push([locator, finderName]);
-			}
+			// test the locator. If a is_fuzzy_match() heuristic function is
+            // defined for the location strategy, use it to determine the
+            // validity of the locator's results. Otherwise, maintain existing
+            // behavior.
+            try {
+                //alert(PageBot.prototype.locateElementByUIElement);
+                var is_fuzzy_match = this.pageBot().locationStrategies[finderName].is_fuzzy_match;
+                if (is_fuzzy_match) {
+                    if (is_fuzzy_match(this.findElement(locator), e)) {
+                        locators.push([ locator, finderName ]);
+                    }
+                }
+                else {
+                    if (e == this.findElement(locator)) {
+                        locators.push([ locator, finderName ]);
+                    }
+                }
+            }
+            catch (exception) {
+                if (e == this.findElement(locator)) {
+                    locators.push([ locator, finderName ]);
+                }
+            }
 		}
 	}
     return locators;

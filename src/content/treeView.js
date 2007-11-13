@@ -180,7 +180,51 @@ objectExtend(TreeView.prototype, {
             Editor.GENERIC_AUTOCOMPLETE.setCandidates(XulUtils.toXPCOMString(this.editor.getAutoCompleteSearchParam("commandAction")),
                                                       XulUtils.toXPCOMArray(commands));
         },
-	
+        
+        /**
+         * Updates the target field auto-population dropdown
+         */
+        updateSeleniumTargets: function() {
+            var command = this.currentCommand;
+            var candidates = [];
+            var targetBox = this.document.getElementById("commandTarget");
+            
+            // various strategies for auto-populating the target field
+            if (command.isRollup() && Editor.rollupManager) {
+                candidates = Editor.rollupManager.getRollupRulesForDropdown();
+            }
+            else {
+                if (command.targetCandidates) {
+                    candidates = candidates.concat(command.targetCandidates);
+                }
+                // if lastURL exists, load only those targets associated with it.
+                // Otherwise, show all possible targets.
+                if (Editor.uiMap) {
+                    candidates = candidates
+                        .concat(Editor.uiMap.getUISpecifierStringStubs(command.lastURL));
+                }
+            }
+            
+            if (candidates.length > 0) {
+                targetBox.setAttribute("enablehistory", "true");
+                targetBox.disableAutoComplete = false;
+                var locators = [candidates.length];
+                var types = [candidates.length];
+                for (var i = 0; i < candidates.length; i++) {
+                    locators[i] = candidates[i][0];
+                    types[i] = candidates[i][1];
+                }
+                Editor.GENERIC_AUTOCOMPLETE.setCandidatesWithComments(XulUtils.toXPCOMString(this.editor.getAutoCompleteSearchParam("commandTarget")),
+                                                                      XulUtils.toXPCOMArray(locators),
+                                                                      XulUtils.toXPCOMArray(types));
+                this.setTextBox("commandTarget", this.encodeText(command.target), false);
+            } else {
+                targetBox.setAttribute("enablehistory", "false");
+                targetBox.disableAutoComplete = true;
+                this.setTextBox("commandTarget", this.encodeText(command.target), false);
+            }
+        },
+        
         /**
          * execute undoable action
          */
@@ -202,7 +246,7 @@ objectExtend(TreeView.prototype, {
             text = text.replace(/\\\\/g, "\\");
             return text;
         },
-
+        
         /*
          * public methods
          */
@@ -236,7 +280,7 @@ objectExtend(TreeView.prototype, {
         // synchronize model from view
         syncModel: function(force) {
         },
-
+        
         // called when the command is selected in the tree view
         selectCommand: function() {
             if (this.tree.currentIndex >= 0) {
@@ -244,25 +288,7 @@ objectExtend(TreeView.prototype, {
                 this.currentCommand = command;
                 if (command.type == 'command') {
                     this.setTextBox("commandAction", command.command, false);
-                    var targetBox = this.document.getElementById("commandTarget");
-                    if (command.targetCandidates) {
-                        targetBox.setAttribute("enablehistory", "true");
-                        targetBox.disableAutoComplete = false;
-                        var locators = [command.targetCandidates.length];
-                        var types = [command.targetCandidates.length];
-                        for (var i = 0; i < command.targetCandidates.length; i++) {
-                            locators[i] = command.targetCandidates[i][0];
-                            types[i] = command.targetCandidates[i][1];
-                        }
-                        Editor.GENERIC_AUTOCOMPLETE.setCandidatesWithComments(XulUtils.toXPCOMString(this.editor.getAutoCompleteSearchParam("commandTarget")),
-                                                                              XulUtils.toXPCOMArray(locators),
-                                                                              XulUtils.toXPCOMArray(types));
-                        this.setTextBox("commandTarget", this.encodeText(command.targetCandidates[0][0]), false);
-                    } else {
-                        targetBox.setAttribute("enablehistory", "false");
-                        targetBox.disableAutoComplete = true;
-                        this.setTextBox("commandTarget", this.encodeText(command.target), false);
-                    }
+                    this.updateSeleniumTargets();
                     this.setTextBox("commandValue", this.encodeText(command.value), false);
                 } else if (command.type == 'comment') {
                     this.setTextBox("commandAction", command.comment, false);
@@ -272,6 +298,8 @@ objectExtend(TreeView.prototype, {
                 
                 this.selectRecordIndex(this.tree.currentIndex);
                 this.editor.showReference(command);
+                this.editor.showUIReference(command.target);
+                this.editor.showRollupReference(command);
             } else {
                 this.setTextBox("commandAction", '', true);
                 this.setTextBox("commandTarget", '', true);
@@ -290,7 +318,17 @@ objectExtend(TreeView.prototype, {
         updateCurrentCommand: function(key, value) {
             if (this.currentCommand != null) {
                 this.executeAction(new TreeView.UpdateCommandAction(this, key, value));
-                this.editor.showReference(this.currentCommand);
+                if (key == 'command') {
+                    this.updateSeleniumTargets();
+                    this.editor.showReference(this.currentCommand);
+                }
+                else if (key == 'target') {
+                    this.editor.showUIReference(value);
+                    this.editor.showRollupReference(this.currentCommand);
+                }
+                else if (key == 'value') {
+                    this.editor.showRollupReference(this.currentCommand);
+                }
             }
         },
         onHide: function() {
@@ -469,6 +507,9 @@ objectExtend(TreeView.prototype, {
                 props.AppendElement(this.atomService.getAtom("commandPassed"));
             } else if (command.result == 'failed') {
                 props.AppendElement(this.atomService.getAtom("commandFailed"));
+            } else if (command.selectedForReplacement) {
+                props.AppendElement(this.atomService.getAtom(
+                    'commandSelectedForReplacement'));
             }
         },
         getCellProperties: function(row, col, props) {

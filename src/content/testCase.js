@@ -217,6 +217,27 @@ Command.prototype.getAPI = function() {
 
 Command.prototype.type = 'command';
 
+/**
+ * The string representation of a command is the command, target, and value
+ * delimited by padded pipes.
+ */
+Command.prototype.toString = function()
+{
+    var s = this.command
+    if (this.target) {
+        s += ' | ' + this.target;
+        if (this.value) {
+            s += ' | ' + this.value;
+        }
+    }
+    return s;
+}
+
+Command.prototype.isRollup = function()
+{
+    return /^rollup(?:AndWait)?$/.test(this.command);
+}
+
 function Comment(comment) {
 	this.comment = comment != null ? comment : '';
 }
