@@ -38,12 +38,16 @@
         </person>
     </owners>
 
-    <!--<developers>-->
+    <developers>
         <!--<person>-->
             <!--<name>Paul Hammant</name>-->
             <!--<email>paul@thoughtworks.com</email>-->
         <!--</person>-->
-    <!--</developers>-->
+        <person>
+            <name>Haw-Bin Chai</name>
+            <email>hbchai at gmail.com</email>
+        </person>
+    </developers>
 
     <releases>
         <release>
