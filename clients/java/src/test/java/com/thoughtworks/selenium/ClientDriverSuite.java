@@ -154,6 +154,8 @@ public class ClientDriverSuite extends TestCase {
             }
             
             if (!isProxyInjectionMode) {
+                // SRC-386, This only works with *chrome mode
+            	suite.addTestSuite(AttachFileTest.class);
                 // SRC-324, TFCJH relies on out-of-frame effects, which are synchronous in JS mode but
                 // asynchronous in PI mode, making this test unreliable
                 suite.addTestSuite(TestFramesClickJavascriptHref.class);

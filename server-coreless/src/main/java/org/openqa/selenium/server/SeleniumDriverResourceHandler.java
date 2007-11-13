@@ -56,6 +56,7 @@ import org.mortbay.http.HttpResponse;
 import org.mortbay.http.handler.ResourceHandler;
 import org.mortbay.log.LogFactory;
 import org.mortbay.util.StringUtil;
+import net.nlanr.dast.advisor.pdc.FileDownloader;
 import org.openqa.selenium.server.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
@@ -74,6 +75,8 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     static Log log = LogFactory.getLog(SeleniumDriverResourceHandler.class);
     static Log browserSideLog = LogFactory.getLog(SeleniumDriverResourceHandler.class.getName()+".browserSideLog");
     private final Map<String, BrowserLauncher> launchers = new HashMap<String, BrowserLauncher>();
+    private final Map<String, List<File>> sessionIdToListOfTempFiles = new HashMap<String, List<File>>();
+
     private SeleniumServer server;
     private static String lastSessionId = null;
     private Map<String, String> domainsBySessionId = new HashMap<String, String>();
@@ -413,6 +416,20 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         } else if ("shutDown".equals(cmd) || "shutDownSeleniumServer".equals(cmd)) {
             results = null;
             shutDown(res);
+        } else if("attachFile".equals(cmd)) {
+          FrameGroupCommandQueueSet queue = FrameGroupCommandQueueSet.getQueueSet(sessionId);
+          String browserString = sessionIdsToBrowserStrings.get(sessionId).toString();
+          try {
+            File downloadedFile = FileDownloader.getFile(values.get(1));
+            List<File> tempFilesForSession = getTempFiles(sessionId);            
+            tempFilesForSession.add(downloadedFile);
+            results = queue.doCommand("type", values.get(0), downloadedFile.getAbsolutePath());
+            if (results.startsWith("OK")) {
+              results = "OK";
+            }
+          } catch (Exception e) {
+            results = e.toString();
+          }
         } else if ("captureScreenshot".equals(cmd)) {
             try {
                 captureScreenshot(values.get(0));
@@ -597,9 +614,13 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         }
         else {
             BrowserLauncher launcher = getLauncher(sessionId);
+            List<File> tempFilesForSession = getTempFiles(sessionId);
             if (launcher == null) {
                 return "ERROR: No launcher found for sessionId " + sessionId;
             } 
+            if (tempFilesForSession == null) {
+                return "ERROR: Can't find temp file storage for sessionId " + sessionId; //TODO invariant violated, never should have null, as we set up a new ArrayList when creating the session
+            }
             try {
                launcher.close(); 
             } catch (RuntimeException re) {
@@ -610,6 +631,19 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                   launchers.remove(sessionId);
               }
               FrameGroupCommandQueueSet.clearQueueSet(sessionId);
+            }
+    
+            try {
+                sessionIdToListOfTempFiles.remove(sessionId);            
+            } catch(RuntimeException re) {
+                throw re;
+            } finally {
+                for (File file : tempFilesForSession) {
+                    boolean deleteSuccessful = file.delete();
+                    if (! deleteSuccessful) {
+                        log.warn("temp file not deleted " + file.getAbsolutePath());
+                    }
+                }
             }
         }
         return "OK";
@@ -729,6 +763,18 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         }
     }
     
+    /** Retrieves the temp files for the specified sessionId, or <code>null</code> if there are no such files. */
+    private List<File> getTempFiles(String sessionId) {
+        synchronized (sessionIdToListOfTempFiles) {
+        	List<File> list = sessionIdToListOfTempFiles.get(sessionId);
+        	if (list == null) { // first time we call it
+        		list = new ArrayList<File>();
+        		sessionIdToListOfTempFiles.put(sessionId, list);
+        	}
+            return sessionIdToListOfTempFiles.get(sessionId);
+        }
+    }
+   
     public void registerBrowserLauncher(String sessionId, BrowserLauncher launcher) {
         synchronized (launchers) {
             launchers.put(sessionId, launcher);
