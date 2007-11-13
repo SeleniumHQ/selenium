@@ -547,6 +547,23 @@ Selenium.prototype.doSetContext = function(context) {
     }
 };
 
+Selenium.prototype.doAttachFile = function(fieldLocator,fileLocator) {
+   /**
+   * Sets a file input (upload) field to the file listed in fileLocator
+   *
+   *  @param fieldLocator an <a href="#locators">element locator</a>
+   *  @param fileLocator a URL pointing to the specified file. Before the file
+   *  can be set in the input field (fieldLocator), Selenium RC may need to transfer the file  
+   *  to the local machine before attaching the file in a web page form. This is common in selenium
+   *  grid configurations where the RC server driving the browser is not the same
+   *  machine that started the test.
+   *
+   *  Supported Browsers: Firefox ("*chrome") only.
+   *   
+   */
+   // This doesn't really do anything on the JS side; we let the Selenium Server take care of this for us! 
+};
+
 Selenium.prototype.doCaptureScreenshot = function(filename) {
     /**
     * Captures a PNG screenshot to the specified file.
