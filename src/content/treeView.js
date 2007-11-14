@@ -201,7 +201,7 @@ objectExtend(TreeView.prototype, {
                 // Otherwise, show all possible targets.
                 if (Editor.uiMap) {
                     candidates = candidates
-                        .concat(Editor.uiMap.getUISpecifierStringStubs(command.lastURL));
+                        .concat(Editor.uiMap.getUISpecifierStringStubs());
                 }
             }
             

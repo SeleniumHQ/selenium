@@ -1378,7 +1378,8 @@ function ParseException(message)
 function parse_url(url)
 {
     url = unescape(url);
-    var matches = /^(http|https):\/\/([^\/]+)\/?([^\?]*)\??(.*)$/.exec(url);
+    var matches =
+        /^(http|https|chrome):\/\/([^\/]+)\/?([^\?]*)\??(.*)$/.exec(url);
     if (matches == null) {
         throw new ParseException('Invalid input to parse_url(): ' + url);
     }
@@ -1955,11 +1956,14 @@ function PagesetException(message)
 function Pageset(pagesetShorthand)
 {
     /**
-     * Returns true if the URL is included in this pageset, and false otherwise.
+     * Returns true if the page is included in this pageset, false otherwise.
+     * The page is specified by a document object.
+     *
+     * @param inDocument  the document object representing the page
      */
-    this.contains = function(url)
+    this.contains = function(inDocument)
     {
-        var urlParts = parse_url(url);
+        var urlParts = parse_url(inDocument.location.href);
         if (!this.pathRegexp.test(urlParts.path)) {
             return false;
         }
@@ -1968,6 +1972,9 @@ function Pageset(pagesetShorthand)
             if (!paramRegexp.test(urlParts.params[paramName])) {
                 return false;
             }
+        }
+        if (!this.pageContent(inDocument)) {
+            return false;
         }
         
         return true;
@@ -2035,6 +2042,8 @@ function Pageset(pagesetShorthand)
             this.paramRegexps[paramName] =
                 new RegExp(pagesetShorthand.paramRegexps[paramName]);
         }
+        this.pageContent = pagesetShorthand.pageContent ||
+            function() { return true; };
         this.uiElements = {};
     };
     
@@ -2169,18 +2178,19 @@ function UIMap()
     
     
     /**
-     * Returns a list of pagesets that "contains" the provided URL.
-     * Containership is defined by the Pageset object's contain() method.
+     * Returns a list of pagesets that "contains" the provided page,
+     * represented as a document object. Containership is defined by the
+     * Pageset object's contain() method.
      *
-     * @param url  the URL to get pagesets for
-     * @return     a list of pagesets
+     * @param inDocument  the page to get pagesets for
+     * @return            a list of pagesets
      */
-    this.getPagesetsByUrl = function(url)
+    this.getPagesetsForPage = function(inDocument)
     {
         var pagesets = [];
         for (var pagesetName in this.pagesets) {
             var pageset = this.pagesets[pagesetName];
-            if (pageset.contains(url)) {
+            if (pageset.contains(inDocument)) {
                 pagesets.push(pageset);
             }
         }
@@ -2269,7 +2279,7 @@ function UIMap()
     {
         var is_fuzzy_match =
             PageBot.prototype.locateElementByUIElement.is_fuzzy_match;
-        var pagesets = this.getPagesetsByUrl(inDocument.location.href);
+        var pagesets = this.getPagesetsForPage(inDocument);
         for (var i = 0; i < pagesets.length; ++i) {
             var pageset = pagesets[i];
             var uiElements = pageset.getUIElements();
@@ -2314,22 +2324,14 @@ function UIMap()
     
     /**
      * Returns a list of UI specifier string stubs representing possible UI
-     * elements for a page. If the URL is not provided, returns a list of all
-     * UI specifier string stubs for all pagesets. Stubs contain all required
-     * arguments, but leave argument values blank.
+     * elements for all pagesets. Stubs contain all required arguments, but
+     * leave argument values blank.
      *
-     * @param    url
      * @return        a list of UI specifier string stubs
      */
-    this.getUISpecifierStringStubs = function(url) {
+    this.getUISpecifierStringStubs = function() {
         var stubs = [];
-        var pagesets;
-        if (typeof(url) != 'undefined') {
-            pagesets = this.getPagesetsByUrl(url);
-        }
-        else {
-            pagesets = this.getPagesets();
-        }
+        var pagesets = this.getPagesets();
         for (var i = 0; i < pagesets.length; ++i) {
             var pageset = pagesets[i];
             var uiElements = pageset.getUIElements();

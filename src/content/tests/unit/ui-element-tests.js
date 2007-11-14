@@ -842,9 +842,13 @@ function test_Pageset_contains()
         , description: 'desc'
         , pathRegexp: '.*(?:foo|bar).*'
     });
-    assertTrue(pageset.contains('http://w3.org/food'));
-    assertTrue(pageset.contains('http://w3.org/beach/sandbar.php'));
-    assertFalse(pageset.contains('http://foo.org/baz.html'));
+    var mockDoc = { location: {} };
+    mockDoc.location.href = 'http://w3.org/food';
+    assertTrue(pageset.contains(mockDoc));
+    mockDoc.location.href = 'http://w3.org/beach/sandbar.php';
+    assertTrue(pageset.contains(mockDoc));
+    mockDoc.location.href = 'http://foo.org/baz.html';
+    assertFalse(pageset.contains(mockDoc));
     
     pageset = new Pageset({
         name: 'name'
@@ -852,10 +856,14 @@ function test_Pageset_contains()
         , pathRegexp: '.*(?:foo|bar).*'
         , paramRegexps: { 'baz': 'yea' }
     });
-    assertTrue(pageset.contains('http://w3.org/food?baz=hellyeah'));
-    assertTrue(pageset.contains('http://w3.org/beach/sandbar.php?lang=zh_CN&baz=yeahbuddy'));
-    assertFalse(pageset.contains('http://w3.org/fool'));
-    assertFalse(pageset.contains('http://w3.org/bar.mitzvah?baz=hag'));
+    mockDoc.location.href = 'http://w3.org/food?baz=hellyeah';
+    assertTrue(pageset.contains(mockDoc));
+    mockDoc.location.href = 'http://w3.org/beach/sandbar.php?lang=zh_CN&baz=yeahbuddy';
+    assertTrue(pageset.contains(mockDoc));
+    mockDoc.location.href = 'http://w3.org/fool';
+    assertFalse(pageset.contains(mockDoc));
+    mockDoc.location.href = 'http://w3.org/bar.mitzvah?baz=hag'
+    assertFalse(pageset.contains(mockDoc));
     
     pageset = new Pageset({
         name: 'name'
@@ -863,10 +871,30 @@ function test_Pageset_contains()
         , pathPrefix: 'prefix/'
         , paths: [ 'onepath', 'twopath' ]
     });
-    assertTrue(pageset.contains('http://w3.org/prefix/onepath'));
-    assertTrue(pageset.contains('http://w3.org/prefix/onepath'));
-    assertFalse(pageset.contains('http://w3.org/prefix/'));
-    assertFalse(pageset.contains('http://w3.org/prefix/foo'));
+    mockDoc.location.href = 'http://w3.org/prefix/onepath';
+    assertTrue(pageset.contains(mockDoc));
+    mockDoc.location.href = 'http://w3.org/prefix/onepath';
+    assertTrue(pageset.contains(mockDoc));
+    mockDoc.location.href = 'http://w3.org/prefix/';
+    assertFalse(pageset.contains(mockDoc));
+    mockDoc.location.href = 'http://w3.org/prefix/foo';
+    assertFalse(pageset.contains(mockDoc));
+    
+    pageset = new Pageset({
+        name: 'name'
+        , description: 'desc'
+        , pathRegexp: '.*'
+        , pageContent: function(inDocument) {
+            var tags = inDocument.getElementsByTagName('script');
+            for (var i = 0; i < tags.length; ++i) {
+                if (/ui-element-tests\.js$/.test(tags[i].src)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    });
+    assertTrue(pageset.contains(document));
 }
 
 

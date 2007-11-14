@@ -215,8 +215,15 @@ map.addPageset({
     , team: 'marketing'
 }</pre></td>
 </tr>
+<tr><td>pageContent</td>
+    <td>No</td>
+    <td>(Function) a function that tests whether a page, represented by its document object, is contained in the pageset, and returns true if and only if this is the case. If specified, the set of pages potentially included in this pageset will be further filtered by content, after URL and URL parameter filtering.</td>
+    <td><pre>pageContent: function(doc) {
+    var tab = 'address-tab';
+    return doc.getElementById(tab) != null;
+}</pre></td>
+</tr>
 </table>
-
 
 <h3><a name="ui-element-shorthand">UI-Element Shorthand</a></h3>
 

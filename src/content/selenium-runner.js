@@ -102,7 +102,6 @@ objectExtend(IDETestLoop.prototype, {
         },
         
         commandStarted: function() {
-            updateLastURL();
             // editor.setState("playing");
             //setState(Debugger.PLAYING);
             LOG.info("commandStarted");
@@ -111,7 +110,6 @@ objectExtend(IDETestLoop.prototype, {
         },
         
         commandComplete: function(result) {
-            updateLastURL(1);
             this._checkExpectedFailure(result);
             if (result.failed) {
                 LOG.error(result.failureMessage);
@@ -277,11 +275,9 @@ function executeCommand(baseURL, command) {
 	}
 	currentTest.firstCommand = currentTest.nextCommand; // Selenium <= 0.6 only
 	currentTest.commandStarted = function() {
-        updateLastURL();
 		editor.view.rowUpdated(i);
 	}
 	currentTest.commandComplete = function(result) {
-        updateLastURL(1);
 		if (result.failed) {
 			command.result = 'failed';
 		} else if (result.passed) {
@@ -362,30 +358,5 @@ function showElement(locator) {
         }
     } catch (error) {
         LOG.error("locator not found: " + locator + ", error = " + error);
-    }
-}
-
-/**
- * Updates the lastURL attribute of a command as attached to the editor object.
- * This is used to populate the locator dropdown. This is typically done either
- * for the current command before its execution, or for the subsequent command
- * after current command execution. This function probably shouldn't be used
- * outside of the context of the runner, as both the debugContext and selenium
- * objects need to be available.
- *
- * @param commandOffset  the offset of the command to update relative to the
- *                       current command, according to the debug context
- */
-function updateLastURL(commandOffset)
-{
-    var i = testCase.debugContext.debugIndex
-        + (arguments.length < 1 ? 0 : commandOffset);
-    LOG.debug('Updating commands[' + i + '].lastURL');
-    try {
-        var doc = selenium.browserbot.getCurrentWindow().document;
-        editor.getTestCase().commands[i].lastURL = doc.location.href;
-    }
-    catch (e) {
-        LOG.info('Failed updating commands[' + i + '].lastURL');
     }
 }
