@@ -10,13 +10,17 @@
         function displayMessage(message) {
             document.getElementById('result').innerHTML = "<p>" + message + "</p>";
         }
+
+        function appendMessage(message) {
+            document.getElementById('result').innerHTML += message + " ";
+        }
     </script>
 </head>
 <body>
 <h1>Type Stuff</h1>
 
 <div id="result">
-    Key up results will appear here
+    
 </div>
 
 <div id="formageddon">
@@ -24,6 +28,7 @@
         Key Up: <input type="text" id="keyUp" onkeyup="javascript:updateContent(this)"/><br/>
         Key Down: <input type="text" id="keyDown" onkeydown="javascript:updateContent(this)"/><br/>
         Key Press: <input type="text" id="keyPress" onkeypress="javascript:updateContent(this)"/><br/>
+        Change: <input type="text" id="change" onkeypress="javascript:displayMessage('change')"/><br/>
         <textarea id="keyDownArea" onkeydown="javascript:updateContent(this)" rows="2" cols="15"></textarea>
         <textarea id="keyPressArea" onkeypress="javascript:updateContent(this)" rows="2" cols="15"></textarea>
         <textarea id="keyUpArea" onkeyup="javascript:updateContent(this)" rows="2" cols="15"></textarea>
@@ -44,7 +49,6 @@
 
 <div id="dynamo">What's for dinner?</div>
 
-
 <div id="mousedown" onmousedown="javascript:displayMessage('mouse down');">
     <p>Click for the mouse down event</p>
     <span><p id="child">Here's some text</p></span>
@@ -56,6 +60,19 @@
 
 <div id="mouseclick" onclick="javascript:displayMessage('mouse click');">
     <p>Click for the mouse click event</p>
+</div>
+
+<div>
+  <form action="#">
+    <input id="theworks"
+           onfocus="appendMessage('focus')"
+           onkeydown="appendMessage('keydown')"
+           onkeypress="appendMessage('keypress')"
+           onkeyup="appendMessage('keyup')"
+           onblur="appendMessage('blur')"
+           onchange="appendMessage('change')"
+    />
+  </form>
 </div>
 
 <div>

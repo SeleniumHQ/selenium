@@ -79,7 +79,9 @@ FirefoxDriver.prototype.setElementValue = function(respond, value) {
     spaceIndex = value.indexOf(" ", spaceIndex);
     var newValue = value.substring(spaceIndex + 1);
 
+    element.focus();
     Utils.type(this.context, element, newValue);
+    element.blur();
 
     respond(this.context, "setElementValue");
 };

@@ -245,4 +245,21 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
         assertTrue(size.getWidth() > 0);
         assertTrue(size.getHeight() > 0);
     }
+
+    public void testShouldFireOnChangeEventWhenSettingAnElementsValue() {
+      driver.get(javascriptPage);
+      driver.selectElement("id=change").setValue("foo");
+      String result = driver.selectElement("id=result").getText();
+
+      assertEquals("change", result);
+    }
+
+    public void testShouldFireFocusKeyBlurAndChangeEventsInTheRightOrder() {
+        driver.get(javascriptPage);
+
+        driver.selectElement("id=theworks").setValue("a");
+        String result = driver.selectElement("id=result").getText();
+
+        assertEquals("focus keydown keypress keyup blur change", result.trim());
+    }
 }
