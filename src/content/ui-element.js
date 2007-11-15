@@ -2230,7 +2230,7 @@ function UIMap()
     
     
     /**
-     * Returns a list of all pagesets. The list is sorted by pageset name.
+     * Returns a list of all pagesets.
      *
      * @return  a list of pagesets
      */
@@ -2240,12 +2240,6 @@ function UIMap()
         for (var pagesetName in this.pagesets) {
             pagesets.push(this.pagesets[pagesetName]);
         }
-        pagesets.sort(function(a, b) {
-            if (a.name < b.name) {
-                return -1;
-            }
-            return a.name == b.name ? 0 : 1;
-        });
         return pagesets;
     };
     
@@ -2359,9 +2353,9 @@ function UIMap()
     
     
     /**
-     * Returns a list of UI specifier string stubs representing possible UI
-     * elements for all pagesets. Stubs contain all required arguments, but
-     * leave argument values blank.
+     * Returns a sorted list of UI specifier string stubs representing possible
+     * UI elements for all pagesets, paired the their descriptions. Stubs
+     * contain all required arguments, but leave argument values blank.
      *
      * @return  a list of UI specifier string stubs
      */
@@ -2371,6 +2365,12 @@ function UIMap()
         for (var i = 0; i < pagesets.length; ++i) {
             stubs = stubs.concat(pagesets[i].getUISpecifierStringStubs());
         }
+        stubs.sort(function(a, b) {
+            if (a[0] < b[0]) {
+                return -1;
+            }
+            return a[0] == b[0] ? 0 : 1;
+        });
         return stubs;
     }
     
