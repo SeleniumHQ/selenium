@@ -27,7 +27,9 @@ WebDriverServer.prototype.onSocketAccepted = function(socket, transport) {
 WebDriverServer.prototype.startListening = function(port) {
     if (!port) {
         var prefs = Utils.getService("@mozilla.org/preferences-service;1", "nsIPrefBranch");
-        port = prefs.getIntPref("webdriver_firefox_port") || 7055;
+
+        port = prefs.prefHasUserValue("webdriver_firefox_port") ?
+                  prefs.getIntPref("webdriver_firefox_port") : 7055; 
     }
 
     if (!this.isListening) {
