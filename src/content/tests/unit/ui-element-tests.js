@@ -899,6 +899,48 @@ function test_Pageset_contains()
 
 
 
+function test_Pageset_validate()
+{
+    // no name
+    try {
+        new Pageset({ description: 'desc', paths: [ 'foo' ] });
+        fail('PagesetException expected but not thrown');
+    }
+    catch (e) {
+        assertEquals('PagesetException', e.name);
+    }
+    
+    // no description
+    try {
+        new Pageset({ name: 'name', paths: [ 'foo' ] });
+        fail('PagesetException expected but not thrown');
+    }
+    catch (e) {
+        assertEquals('PagesetException', e.name);
+    }
+    
+    // no paths, pathRegexp, or pageContent
+    try {
+        new Pageset({ name: 'name', description: 'desc' });
+        fail('PagesetException expected but not thrown');
+    }
+    catch (e) {
+        assertEquals('PagesetException', e.name);
+    }
+    
+    // happy paths
+    try {
+        new Pageset({ name: 'name', description: 'desc', paths: [ 'foo' ] });
+        new Pageset({ name: 'name', description: 'desc', pathRegexp: 'bar' });
+        new Pageset({ name: 'name', description: 'desc', pageContent: function() { return true; } });
+    }
+    catch (e) {
+        fail('Unexpected exception thrown: ' + e.message);
+    }
+}
+
+
+
 function test_UIMap_getUIElementsByUrl()
 {
     var myMap = new UIMap(true);

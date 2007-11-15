@@ -1996,7 +1996,7 @@ function Pageset(pagesetShorthand)
     /**
      * Throws an exception on validation failure. Returns true otherwise.
      */
-    this.validate = function(pagesetShorthand)
+    this._validate = function(pagesetShorthand)
     {
         var msg = "Pageset validation error:\n"
             + print_r(pagesetShorthand);
@@ -2007,9 +2007,10 @@ function Pageset(pagesetShorthand)
             throw new PagesetException(msg + 'no description specified!');
         }
         if (!pagesetShorthand.paths &&
-            !pagesetShorthand.pathRegexp) {
+            !pagesetShorthand.pathRegexp &&
+            !pagesetShorthand.pageContent) {
             throw new PagesetException(msg
-                + 'no path or pathRegexp specified!');
+                + 'no path, pathRegexp, or pageContent specified!');
         }
         
         return true;
@@ -2019,6 +2020,7 @@ function Pageset(pagesetShorthand)
     
     this.init = function(pagesetShorthand)
     {
+        this._validate(pagesetShorthand);
         this.name = pagesetShorthand.name;
         this.description = pagesetShorthand.description;
         this.pathPrefix = pagesetShorthand.pathPrefix || '';

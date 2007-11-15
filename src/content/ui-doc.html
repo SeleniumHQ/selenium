@@ -52,7 +52,7 @@ th, td {
 
 <dl>
 <dt>Page</dt>
-<dd>A unique URL, and the contents available by accessing that URL. A page typically consists of several interactive page elements.</dd>
+<dd>A unique URL, and the contents available by accessing that URL. A page typically consists of several interactive page elements. A page may also be considered a DOM document object, complete with URL information.</dd>
 <dt>Page element</dt>
 <dd>An element on the actual webpage. Generally speaking, an element is anything the user might interact with, or anything that contains meaningful content. More specifically, an element is realized as a <a href="http://en.wikipedia.org/wiki/Document_Object_Model">Document Object Model (DOM)</a> node and its contents. So when we refer to a page element, we mean both of the following, at the same time:
 <ul>
@@ -61,7 +61,7 @@ th, td {
 </ul>
 </dd>
 <dt>Pageset</dt>
-<dd>A set of pages that share some set of common page elements. For example, I might be able to log into my application from several different pages. If certain page elements on each of those pages appear similarly (i.e. their DOM representations are identical), those pages can be grouped into a pageset with respect to these page elements. There is no restriction on how many pagesets a given page can be a member of. Similarly, a UI element belong to multiple pagesets. A pageset is represented by a <a href="http://en.wikipedia.org/wiki/Regular_expression">regular expression</a> which matches the URL's that uniquely identify pages. A pageset also has a name.</dd>
+<dd>A set of pages that share some set of common page elements. For example, I might be able to log into my application from several different pages. If certain page elements on each of those pages appear similarly (i.e. their DOM representations are identical), those pages can be grouped into a pageset with respect to these page elements. There is no restriction on how many pagesets a given page can be a member of. Similarly, a UI element belong to multiple pagesets. A pageset is commonly represented by a <a href="http://en.wikipedia.org/wiki/Regular_expression">regular expression</a> which matches the URL's that uniquely identify pages; however, there are cases when the page content must be considered to determine pageset membership. A pageset also has a name.</dd>
 <dt>UI element</dt>
 <dd>A mapping between a meaningful name for a page element, and the means to locate that page element's DOM node. The page element is located via a locator. UI elements belong to pagesets.</dd>
 <dt>UI argument</dt>
@@ -192,7 +192,7 @@ map.addPageset({
     <td><pre>pathPrefix: 'gallery/'</pre></td>
 </tr>
 <tr><td>paths<br />pathRegexp</td>
-    <td>Yes</td>
+    <td>Conditional</td>
     <td>(Array | String) either a list of path strings, or a string that represents a regular expression. One or the other should be defined, but not both. If an array, it enumerates pages that are included in the pageset. If a regular expression, any pages whose URL paths match the expression are considered part of the pageset. In either case, the part of the URL being matched (called the <em>path</em>) is the part following the domain, less any training slash, and not including the CGI parameters. For example:
     <ul>
     <li>http://www.example.com/<span class="highlight">articles/index.php</span></li>
@@ -216,11 +216,12 @@ map.addPageset({
 }</pre></td>
 </tr>
 <tr><td>pageContent</td>
-    <td>No</td>
-    <td>(Function) a function that tests whether a page, represented by its document object, is contained in the pageset, and returns true if and only if this is the case. If specified, the set of pages potentially included in this pageset will be further filtered by content, after URL and URL parameter filtering.</td>
+    <td>Conditional</td>
+    <td><p>(Function) a function that tests whether a page, represented by its document object, is contained in the pageset, and returns true if and only if this is the case. If specified, the set of pages potentially included in this pageset will be further filtered by content, after URL and URL parameter filtering.</p>
+    <p>Since the URL is available from the document object (<code>document.location.href</code>), you may encode the logic used for the <code>paths</code> and <code>pathRegexp</code> attributes all into the definition of <code>pageContent</code>. Thus, you may choose to omit the former if and only if using <code>pageContent</code>. Of course, you may continue to use them for clarity.</td>
     <td><pre>pageContent: function(doc) {
-    var tab = 'address-tab';
-    return doc.getElementById(tab) != null;
+    var id = 'address-tab';
+    return doc.getElementById(id) != null;
 }</pre></td>
 </tr>
 </table>
