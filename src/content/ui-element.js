@@ -1994,6 +1994,34 @@ function Pageset(pagesetShorthand)
     
     
     /**
+     * Returns a list of UI specifier string stubs representing all UI elements
+     * for this pageset. Stubs contain all required arguments, but leave
+     * argument values blank. Each element stub is paired with the element's
+     * description.
+     *
+     * @return  a list of UI specifier string stubs
+     */
+    this.getUISpecifierStringStubs = function()
+    {
+        var stubs = [];
+        for (var name in this.uiElements) {
+            var uiElement = this.uiElements[name];
+            var args = {};
+            for (var i = 0; i < uiElement.args.length; ++i) {
+                args[uiElement.args[i].name] = '';
+            }
+            var uiSpecifier = new UISpecifier(this.name, uiElement.name, args);
+            stubs.push([
+                GLOBAL.uiMap.prefix + '=' + uiSpecifier.toString()
+                , uiElement.description
+            ]);
+        }
+        return stubs;
+    }
+    
+    
+    
+    /**
      * Throws an exception on validation failure. Returns true otherwise.
      */
     this._validate = function(pagesetShorthand)
@@ -2202,7 +2230,7 @@ function UIMap()
     
     
     /**
-     * Returns a list of all pagesets.
+     * Returns a list of all pagesets. The list is sorted by pageset name.
      *
      * @return  a list of pagesets
      */
@@ -2212,6 +2240,12 @@ function UIMap()
         for (var pagesetName in this.pagesets) {
             pagesets.push(this.pagesets[pagesetName]);
         }
+        pagesets.sort(function(a, b) {
+            if (a.name < b.name) {
+                return -1;
+            }
+            return a.name == b.name ? 0 : 1;
+        });
         return pagesets;
     };
     
@@ -2329,27 +2363,13 @@ function UIMap()
      * elements for all pagesets. Stubs contain all required arguments, but
      * leave argument values blank.
      *
-     * @return        a list of UI specifier string stubs
+     * @return  a list of UI specifier string stubs
      */
     this.getUISpecifierStringStubs = function() {
         var stubs = [];
         var pagesets = this.getPagesets();
         for (var i = 0; i < pagesets.length; ++i) {
-            var pageset = pagesets[i];
-            var uiElements = pageset.getUIElements();
-            for (var j = 0; j < uiElements.length; ++j) {
-                var uiElement = uiElements[j];
-                var args = {};
-                for (var k = 0; k < uiElement.args.length; ++k) {
-                    args[uiElement.args[k].name] = '';
-                }
-                var uiSpecifier = new UISpecifier(pageset.name, uiElement.name,
-                    args);
-                stubs.push([
-                    this.prefix + '=' + uiSpecifier.toString()
-                    , uiElement.description
-                ]);
-            }
+            stubs = stubs.concat(pagesets[i].getUISpecifierStringStubs());
         }
         return stubs;
     }
