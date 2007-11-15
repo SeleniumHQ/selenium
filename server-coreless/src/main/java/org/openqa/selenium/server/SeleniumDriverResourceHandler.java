@@ -31,23 +31,25 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.lang.reflect.Field;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.Vector;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeoutException;
 
 import javax.imageio.ImageIO;
 
 import org.apache.commons.logging.Log;
+import org.apache.tools.ant.Project;
+import org.apache.tools.ant.taskdefs.Get;
+import org.apache.tools.ant.util.FileUtils;
 import org.mortbay.http.HttpConnection;
 import org.mortbay.http.HttpException;
 import org.mortbay.http.HttpFields;
@@ -56,11 +58,11 @@ import org.mortbay.http.HttpResponse;
 import org.mortbay.http.handler.ResourceHandler;
 import org.mortbay.log.LogFactory;
 import org.mortbay.util.StringUtil;
-import net.nlanr.dast.advisor.pdc.FileDownloader;
 import org.openqa.selenium.server.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
 import org.openqa.selenium.server.htmlrunner.HTMLLauncher;
+import org.openqa.selenium.server.log.AntJettyLoggerBuildListener;
 
 /**
  * A Jetty handler that takes care of remote Selenium requests.
@@ -71,6 +73,7 @@ import org.openqa.selenium.server.htmlrunner.HTMLLauncher;
  * @author Paul Hammant
  * @version $Revision: 674 $
  */
+@SuppressWarnings("serial")
 public class SeleniumDriverResourceHandler extends ResourceHandler {
     static Log log = LogFactory.getLog(SeleniumDriverResourceHandler.class);
     static Log browserSideLog = LogFactory.getLog(SeleniumDriverResourceHandler.class.getName()+".browserSideLog");
@@ -97,7 +100,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
      * @return the value of the first HTTP parameter whose name matches <code>name</code>, or <code>null</code> if there is no such parameter
      */
     private String getParam(HttpRequest req, String name) {
-        List parameterValues = req.getParameterValues(name);
+        List<?> parameterValues = req.getParameterValues(name);
         if (parameterValues == null) {
             return null;
         }
@@ -197,7 +200,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
 		if (retrying) {
 			postedData = null; // DGF retries don't really have a result
 		}
-		List jsWindowNameVar = req.getParameterValues("jsWindowNameVar");
+		List<?> jsWindowNameVar = req.getParameterValues("jsWindowNameVar");
 		RemoteCommand sc = queueSet.handleCommandResult(postedData,
 				frameAddress, uniqueId, justLoaded, jsWindowNameVar);
 		if (sc != null) {
@@ -418,15 +421,11 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             shutDown(res);
         } else if("attachFile".equals(cmd)) {
           FrameGroupCommandQueueSet queue = FrameGroupCommandQueueSet.getQueueSet(sessionId);
-          String browserString = sessionIdsToBrowserStrings.get(sessionId).toString();
           try {
-            File downloadedFile = FileDownloader.getFile(values.get(1));
+            File downloadedFile = downloadFile(values.get(1));
             List<File> tempFilesForSession = getTempFiles(sessionId);            
             tempFilesForSession.add(downloadedFile);
             results = queue.doCommand("type", values.get(0), downloadedFile.getAbsolutePath());
-            if (results.startsWith("OK")) {
-              results = "OK";
-            }
           } catch (Exception e) {
             results = e.toString();
           }
@@ -542,6 +541,24 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         return results;
     }
 
+    private File downloadFile(String urlString) {
+        URL url;
+        try {
+            url = new URL(urlString);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException("Malformed URL <" + urlString + ">, " + e.getMessage());
+        }
+        File outputFile = FileUtils.getFileUtils().createTempFile("se-",".file",null);
+        Project p = new Project();
+        p.addBuildListener(new AntJettyLoggerBuildListener(log));
+        Get g = new Get();
+        g.setProject(p);
+        g.setSrc(url);
+        g.setDest(outputFile);
+        g.execute();
+        return outputFile;
+    }
+    
     protected static String getSpeedForSession(String sessionId) {
       String results = null;
       if (null != sessionId) {
