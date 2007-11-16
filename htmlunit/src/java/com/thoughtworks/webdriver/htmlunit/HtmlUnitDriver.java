@@ -24,6 +24,11 @@ import com.thoughtworks.webdriver.Alert;
 import com.thoughtworks.webdriver.NoSuchElementException;
 import com.thoughtworks.webdriver.WebDriver;
 import com.thoughtworks.webdriver.WebElement;
+import com.thoughtworks.webdriver.By;
+import com.thoughtworks.webdriver.internal.FindsById;
+import com.thoughtworks.webdriver.internal.FindsByLinkText;
+import com.thoughtworks.webdriver.internal.FindsByXPath;
+
 import org.jaxen.JaxenException;
 import org.jaxen.XPath;
 
@@ -32,7 +37,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class HtmlUnitDriver implements WebDriver {
+public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText, FindsByXPath {
     private WebClient webClient;
     private WebWindow currentWindow;
 
@@ -114,8 +119,12 @@ public class HtmlUnitDriver implements WebDriver {
         return this;
     }
 
-  @SuppressWarnings("unchecked")
     public List<WebElement> selectElements(String selector) {
+        return findElements(By.deprecatedOldStyleSelector(selector));
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<WebElement> findElementsByXPath(String selector) {
         try {
             HtmlUnitXPath xpath = new HtmlUnitXPath(selector);
             List<HtmlElement> nodes = xpath.selectNodes(lastPage());
@@ -131,14 +140,16 @@ public class HtmlUnitDriver implements WebDriver {
         }
     }
 
+    public WebElement findElement(By by) {
+        return by.findElement(this);
+    }
+
+    public List<WebElement> findElements(By by) {
+        return by.findElements(this);
+    }
+
     public WebElement selectElement(String selector) {
-        if (selector.startsWith("link=")) {
-            return selectLinkWithText(selector);
-        } else if (selector.startsWith("id=")) {
-            return selectElementById(selector);
-        } else {
-            return selectElementUsingXPath(selector);
-        }
+        return findElement(By.deprecatedOldStyleSelector(selector));
     }
 
     public String getPageSource() {
@@ -166,7 +177,7 @@ public class HtmlUnitDriver implements WebDriver {
     }
 
     @SuppressWarnings("unchecked")
-    private WebElement selectLinkWithText(String selector) {
+    public WebElement findElementByLinkText(String selector) {
         int equalsIndex = selector.indexOf('=') + 1;
         String expectedText = selector.substring(equalsIndex).trim();
 
@@ -181,10 +192,24 @@ public class HtmlUnitDriver implements WebDriver {
         throw new NoSuchElementException("No link found with text: " + expectedText);
     }
 
-    private WebElement selectElementById(String selector) {
-        int equalsIndex = selector.indexOf('=') + 1;
-        String id = selector.substring(equalsIndex).trim();
+  @SuppressWarnings("unchecked")
+  public List<WebElement> findElementsByLinkText(String selector) {
+    int equalsIndex = selector.indexOf('=') + 1;
+    String expectedText = selector.substring(equalsIndex).trim();
 
+    List<HtmlAnchor> anchors = lastPage().getAnchors();
+    Iterator<HtmlAnchor> allAnchors = anchors.iterator();
+    List<WebElement> elements = new ArrayList<WebElement>();
+    while (allAnchors.hasNext()) {
+      HtmlAnchor anchor = allAnchors.next();
+      if (expectedText.equals(anchor.asText())) {
+        elements.add(new HtmlUnitWebElement(this, anchor));
+      }
+    }
+    return elements;
+  }
+
+    public WebElement findElementById(String id) {
         try {
             HtmlElement element = lastPage().getHtmlElementById(id);
             return new HtmlUnitWebElement(this, element);
@@ -193,7 +218,11 @@ public class HtmlUnitDriver implements WebDriver {
         }
     }
 
-    private WebElement selectElementUsingXPath(String selector) {
+    public List<WebElement> findElementsById(String id) {
+        return findElementsByXPath("//*[@id='" + id + "']");
+    }
+
+    public WebElement findElementByXPath(String selector) {
         try {
             XPath xpath = new HtmlUnitXPath(selector);
             Object node = xpath.selectSingleNode(lastPage());

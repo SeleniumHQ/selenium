@@ -4,6 +4,10 @@ import com.thoughtworks.webdriver.Alert;
 import com.thoughtworks.webdriver.NoSuchElementException;
 import com.thoughtworks.webdriver.WebDriver;
 import com.thoughtworks.webdriver.WebElement;
+import com.thoughtworks.webdriver.By;
+import com.thoughtworks.webdriver.internal.FindsById;
+import com.thoughtworks.webdriver.internal.FindsByLinkText;
+import com.thoughtworks.webdriver.internal.FindsByXPath;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,7 +24,7 @@ import java.util.List;
  * When the driver starts, it will make a copy of the profile it is using, rather than using that profile directly.
  * This allows multiple instances of firefox to be started.
  */
-public class FirefoxDriver implements WebDriver {
+public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, FindsByXPath {
     private final ExtensionConnection extension;
     private long id;
 
@@ -83,34 +87,64 @@ public class FirefoxDriver implements WebDriver {
         return true;
     }
 
-    public WebElement selectElement(String selector) {
-        String commandName = "selectElementUsingXPath";
-        String argument = selector;
-        if (selector.startsWith("link=")) {
-            commandName = "selectElementUsingLink";
-            argument = selector.substring("link=".length());
-        } else if (selector.startsWith("id=")) {
-            commandName = "selectElementById";
-            argument = selector.substring("id=".length());
-        }
 
-        String elementId = sendMessage(commandName, argument);
-        if (elementId == null || "".equals(elementId)) {
-            throw new NoSuchElementException("Unable to find " + argument);
-        }
+  public List<WebElement> findElements(By by) {
+    return by.findElements(this);
+  }
 
-        return new FirefoxWebElement(this, elementId);
-    }
+  public WebElement findElement(By by) {
+    return by.findElement(this);
+  }
 
-    public List<WebElement> selectElements(String xpath) {
-        String returnedIds = sendMessage("selectElementsUsingXPath", xpath);
+  public WebElement findElementById(String using) {
+      return findElement("selectElementById", using);
+  }
+
+
+  public List<WebElement> findElementsById(String using) {
+      throw new UnsupportedOperationException("findElementsById");
+  }
+
+
+  public List<WebElement> findElementsByLinkText(String using) {
+    throw new UnsupportedOperationException("findElementsByLinkText");
+  }
+
+
+  public List<WebElement> findElementsByXPath(String using) {
+    String returnedIds = sendMessage("selectElementsUsingXPath", using);
         String[] ids = returnedIds.split(",");
         List<WebElement> elements = new ArrayList<WebElement>();
         for (String id : ids) {
             elements.add(new FirefoxWebElement(this, id));
         }
         return elements;
+  }
 
+  public WebElement findElementByLinkText(String using) {
+    return findElement("selectElementUsingLink", using);
+  }
+
+
+  public WebElement findElementByXPath(String using) {
+    return findElement("selectElementUsingXPath", using);
+  }
+
+  private WebElement findElement(String commandName, String argument) {
+    String elementId = sendMessage(commandName, argument);
+    if (elementId == null || "".equals(elementId)) {
+      throw new NoSuchElementException("Unable to find " + argument);
+    }
+
+    return new FirefoxWebElement(this, elementId);
+  }
+
+  public WebElement selectElement(String selector) {
+        return findElement(By.deprecatedOldStyleSelector(selector));
+    }
+
+    public List<WebElement> selectElements(String xpath) {
+        return findElements(By.deprecatedOldStyleSelector(xpath));
     }
 
   public WebDriver setVisible(boolean visible) {

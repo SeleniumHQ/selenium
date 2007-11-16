@@ -21,6 +21,10 @@ import com.thoughtworks.webdriver.Alert;
 import com.thoughtworks.webdriver.NoSuchElementException;
 import com.thoughtworks.webdriver.WebDriver;
 import com.thoughtworks.webdriver.WebElement;
+import com.thoughtworks.webdriver.By;
+import com.thoughtworks.webdriver.internal.FindsById;
+import com.thoughtworks.webdriver.internal.FindsByLinkText;
+import com.thoughtworks.webdriver.internal.FindsByXPath;
 
 import org.jaxen.JaxenException;
 
@@ -28,7 +32,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class InternetExplorerDriver implements WebDriver {
+public class InternetExplorerDriver implements WebDriver, FindsById, FindsByLinkText, FindsByXPath {
     private long iePointer; // Used by the native code to keep track of the IE instance
     private static boolean comStarted;
 
@@ -59,41 +63,67 @@ public class InternetExplorerDriver implements WebDriver {
     public native WebDriver setVisible(boolean visible);
 
     public WebElement selectElement(String selector) {
-        if (selector.startsWith("id=")) {
-            return selectElementById(selector.substring("id=".length()));
-        } else if (selector.startsWith("link=")) {
-            return selectElementByLink(selector.substring("link=".length()));
-        } else {
-            try {
-                Object result = new IeXPath(selector, this).selectSingleNode(getDocument());
-                if (result == null)
-                    throw new NoSuchElementException("Cannot find element: " + selector);
-                return InternetExplorerElement.createInternetExplorerElement(iePointer, ((ElementNode) result));
-            } catch (JaxenException e) {
-                throw new RuntimeException(e);
-            }
-        }
+        return findElement(By.deprecatedOldStyleSelector(selector));
     }
 
+
+    public List<WebElement> findElements(By by) {
+        return by.findElements(this);
+    }
+
+    public WebElement findElement(By by) {
+        return by.findElement(this);
+    }
+
+    public WebElement findElementById(String using) {
+        return selectElementById(using);
+    }
+
+    public WebElement findElementByLinkText(String using) {
+        return selectElementByLink(using);
+    }
+
+    public WebElement findElementByXPath(String using) {
+        try {
+            Object result = new IeXPath(using, this).selectSingleNode(getDocument());
+                if (result == null)
+                    throw new NoSuchElementException("Cannot find element: " + using);
+                return InternetExplorerElement.createInternetExplorerElement(iePointer, ((ElementNode) result));
+        } catch (JaxenException e) {
+            throw new RuntimeException(e);
+        }
+    }
     @SuppressWarnings("unchecked")
     public List<WebElement> selectElements(String selector) {
+        return findElements(By.deprecatedOldStyleSelector(selector));
+    }
+
+
+    public List<WebElement> findElementsByXPath(String using) {
         List<ElementNode> rawElements = new ArrayList<ElementNode>();
-        if (selector.startsWith("link=")) {
-            selectElementsByLink(selector.substring("link".length()), rawElements);
+        try {
+            rawElements = new IeXPath(using, this).selectNodes(getDocument());
+            if (rawElements == null)
+                throw new NoSuchElementException("Cannot find element: " + using);
             return convertRawPointersToElements(rawElements);
-        } else {
-            try {
-                rawElements = new IeXPath(selector, this).selectNodes(getDocument());
-                if (rawElements == null)
-                    throw new NoSuchElementException("Cannot find element: " + selector);
-                return convertRawPointersToElements(rawElements);
-            } catch (JaxenException e) {
-                throw new RuntimeException(e);
-            }
+        } catch (JaxenException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    private List<WebElement> convertRawPointersToElements(List<ElementNode> rawElements) {
+
+    public List<WebElement> findElementsByLinkText(String using) {
+        List<ElementNode> rawElements = new ArrayList<ElementNode>();
+        selectElementsByLink(using, rawElements);
+        return convertRawPointersToElements(rawElements);
+    }
+
+
+  public List<WebElement> findElementsById(String using) {
+    throw new UnsupportedOperationException("findElementsById");
+  }
+
+  private List<WebElement> convertRawPointersToElements(List<ElementNode> rawElements) {
         List<WebElement> elements = new ArrayList<WebElement>();
         Iterator<ElementNode> iterator = rawElements.iterator();
         while (iterator.hasNext()) {

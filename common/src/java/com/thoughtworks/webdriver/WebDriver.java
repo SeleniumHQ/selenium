@@ -101,8 +101,12 @@ public interface WebDriver {
      * @param xpath An XPath expression, selecting elements, to use.
      * @return A list of all {@link WebElement}s matching the XPath, or an
      *         empty list if nothing matches
+     * @deprecated Use {@link com.thoughtworks.webdriver.WebDriver#findElements(By)}
      */
+    @Deprecated
     List<WebElement> selectElements(String xpath);
+    List<WebElement> findElements(By by);
+
 
     /**
      * Select the first {@link WebElement} which matches the given selector. The
@@ -116,8 +120,12 @@ public interface WebDriver {
      *                 selector begins with "link="
      * @return The first matching element on the current page
      * @throws NoSuchElementException If no matching elements are found
+     * @deprecated Use {@link com.thoughtworks.webdriver.WebDriver#findElement(By)}
      */
+    @Deprecated
     WebElement selectElement(String selector);
+
+    WebElement findElement(By by);
 
     // Misc
     /**
