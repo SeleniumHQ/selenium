@@ -97,7 +97,8 @@ public class InjectionHelper {
                 appendFileContent(sb, "/core/scripts/selenium-executionloop.js");
                 appendFileContent(sb, "/core/scripts/selenium-remoterunner.js");
                 appendFileContent(sb, "/core/scripts/selenium-logging.js");
-                appendFileContent(sb, "/core/xpath/misc.js");
+                appendFileContent(sb, "/core/xpath/util.js");
+                appendFileContent(sb, "/core/xpath/xmltoken.js");
                 appendFileContent(sb, "/core/xpath/dom.js");
                 appendFileContent(sb, "/core/xpath/xpath.js");
                 appendFileContent(sb, "/core/scripts/user-extensions.js");
