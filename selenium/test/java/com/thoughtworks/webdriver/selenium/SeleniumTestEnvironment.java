@@ -6,17 +6,38 @@ import com.thoughtworks.webdriver.environment.TestEnvironment;
 import com.thoughtworks.webdriver.environment.webserver.AppServer;
 import com.thoughtworks.webdriver.environment.webserver.Jetty5AppServer;
 
+import junit.framework.Assert;
+
 public class SeleniumTestEnvironment implements TestEnvironment {
 	private AppServer appServer;
 
 	public SeleniumTestEnvironment() {
 		appServer = new Jetty5AppServer();
 
-		appServer.addAdditionalWebApplication("/selenium-server", new File("src/web").getAbsolutePath());
+                File base = findSeleniumWebdir();
+
+                appServer.addAdditionalWebApplication("/selenium-server", base.getAbsolutePath());
 		appServer.start();
 	}
-	
-	public AppServer getAppServer() {
+
+    private File findSeleniumWebdir() {
+      String[] places = new String[] {
+         "selenium/src/web",
+         "src/web",
+      };
+
+      File root = null;
+      for (String place : places) {
+          root = new File(place);
+          if (root.exists())
+            return root;
+      }
+
+      Assert.fail("Cannot find root of selenium web app");
+      return null;
+    }
+
+  public AppServer getAppServer() {
 		return appServer;
 	}
 	

@@ -45,9 +45,18 @@ public class Jetty5AppServer implements AppServer {
     }
 
     private void findRootOfWebApp() {
-        path = new File("../common/src/web");
-        if (!path.exists())
-            path = new File("common/src/web");
+        String[] possiblePaths = {
+            "common/src/web",
+            "../common/src/web",
+          };
+
+        for (String potential : possiblePaths) {
+            path = new File(potential);
+            if (path.exists()) {
+                break;
+            }
+        }
+
         Assert.assertTrue("Unable to find common web files. These are located in the common directory", path.exists());
     }
 

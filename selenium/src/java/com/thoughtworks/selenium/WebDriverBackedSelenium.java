@@ -7,8 +7,10 @@ import com.thoughtworks.webdriver.WebElement;
 import com.thoughtworks.webdriver.RenderedWebElement;
 
 import java.util.*;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.awt.*;
 
 public class WebDriverBackedSelenium implements Selenium {
     private static final Pattern STRATEGY_AND_VALUE_PATTERN = Pattern.compile("^(\\p{Alpha}+)=(.*)");
@@ -201,7 +203,7 @@ public class WebDriverBackedSelenium implements Selenium {
     }
 
     public String getBodyText() {
-        throw new UnsupportedOperationException();
+        return driver.selectElement("//body").getText();
     }
 
     public String getConfirmation() {
@@ -217,7 +219,8 @@ public class WebDriverBackedSelenium implements Selenium {
     }
 
     public Number getElementHeight(String locator) {
-        throw new UnsupportedOperationException();
+      Dimension size = ((RenderedWebElement) findElement(locator)).getSize();
+      return (int) size.getHeight();
     }
 
     public Number getElementIndex(String locator) {
@@ -225,15 +228,18 @@ public class WebDriverBackedSelenium implements Selenium {
     }
 
     public Number getElementPositionLeft(String locator) {
-        throw new UnsupportedOperationException();
+      Point location = ((RenderedWebElement) findElement(locator)).getLocation();
+      return (int) location.getX();
     }
 
     public Number getElementPositionTop(String locator) {
-        throw new UnsupportedOperationException();
+      Point location = ((RenderedWebElement) findElement(locator)).getLocation();
+      return (int) location.getY();
     }
 
     public Number getElementWidth(String locator) {
-        throw new UnsupportedOperationException();
+      Dimension size = ((RenderedWebElement) findElement(locator)).getSize();
+      return (int) size.getWidth();
     }
 
     public String getEval(String script) {
@@ -282,23 +288,32 @@ public class WebDriverBackedSelenium implements Selenium {
     }
 
     public String[] getSelectedIds(String selectLocator) {
-        throw new UnsupportedOperationException();
+        return findSelectedOptionProperties(selectLocator, "id");
     }
 
-    public String getSelectedIndex(String selectLocator) {
-        WebElement select = findElement(selectLocator);
-        List<WebElement> options = select.getChildrenOfType("option");
-        for (int i = 0; i < options.size(); i++) {
-            WebElement option = options.get(i);
-            if (option.isSelected())
-                return String.valueOf(i);
-        }
+  public String getSelectedIndex(String selectLocator) {
+      List<WebElement> options = getOptions(selectLocator);
+
+      for (int i = 0; i < options.size(); i++) {
+          WebElement option = options.get(i);
+          if (option.isSelected())
+              return String.valueOf(i);
+      }
 
         throw new SeleniumException("No option is selected: " + selectLocator);
     }
 
     public String[] getSelectedIndexes(String selectLocator) {
-        return findSelectedOptionProperties(selectLocator, "index");
+        List<WebElement> options = getOptions(selectLocator);
+
+        List<String> selected = new ArrayList<String>();
+        for (int i = 0; i < options.size(); i++) {
+          WebElement option = options.get(i);
+          if (option.isSelected())
+              selected.add(String.valueOf(i));
+      }
+
+      return selected.toArray(new String[] {});
     }
 
     public String getSelectedLabel(String selectLocator) {
@@ -315,7 +330,7 @@ public class WebDriverBackedSelenium implements Selenium {
     }
 
     public String[] getSelectedValues(String selectLocator) {
-        throw new UnsupportedOperationException();
+        return findSelectedOptionProperties(selectLocator, "value");
     }
 
     public void getSpeed() {
@@ -553,7 +568,7 @@ public class WebDriverBackedSelenium implements Selenium {
     }
 
     public void selectWindow(String windowID) {
-        throw new UnsupportedOperationException();
+        driver.switchTo().window(windowID);
     }
 
     public void setContext(String context, String logLevelThreshold) {
@@ -593,7 +608,7 @@ public class WebDriverBackedSelenium implements Selenium {
     }
 
     public void submit(String formLocator) {
-        throw new UnsupportedOperationException();
+        findElement(formLocator).submit();
     }
 
     public void type(String locator, String value) {
@@ -635,18 +650,8 @@ public class WebDriverBackedSelenium implements Selenium {
     }
 
     protected WebElement findElement(String locator) {
-        String strategyName = "implicit";
-        String use = locator;
-
-        Matcher matcher = STRATEGY_AND_VALUE_PATTERN.matcher(locator);
-        if (matcher.matches()) {
-            strategyName = matcher.group(1);
-            use = matcher.group(2);
-        }
-
-        LookupStrategy strategy = (LookupStrategy) lookupStrategies.get(strategyName);
-        if (strategy == null)
-            throw new SeleniumException("No matcher found for " + strategyName);
+        LookupStrategy strategy = findStrategy(locator);
+        String use = determineWebDriverLocator(locator);
 
         try {
             return strategy.find(driver, use);
@@ -655,18 +660,39 @@ public class WebDriverBackedSelenium implements Selenium {
         }
     }
 
-    private String[] findSelectedOptionProperties(String selectLocator, String property) {
-        WebElement element = findElement(selectLocator);
-        List options = element.getChildrenOfType("option");
-        if (options.size() == 0) {
-            throw new SeleniumException("Specified element is not a Select (has no options)");
+    private LookupStrategy findStrategy(String locator) {
+      String strategyName = "implicit";
+
+      Matcher matcher = STRATEGY_AND_VALUE_PATTERN.matcher(locator);
+      if (matcher.matches()) {
+        strategyName = matcher.group(1);
+      }
+
+      LookupStrategy strategy = (LookupStrategy) lookupStrategies.get(strategyName);
+      if (strategy == null)
+        throw new SeleniumException("No matcher found for " + strategyName);
+
+      return strategy;
+    }
+
+    private String determineWebDriverLocator(String locator) {
+        String use = locator;
+
+        Matcher matcher = STRATEGY_AND_VALUE_PATTERN.matcher(locator);
+        if (matcher.matches()) {
+          use = matcher.group(2);
         }
 
-        List selectedOptions = new ArrayList();
+        return use;
+    }
 
-        Iterator allOptions = options.iterator();
-        while (allOptions.hasNext()) {
-            WebElement option = (WebElement) allOptions.next();
+
+    private String[] findSelectedOptionProperties(String selectLocator, String property) {
+      List<WebElement> options = getOptions(selectLocator);
+
+        List<String> selectedOptions = new ArrayList<String>();
+
+        for (WebElement option : options) {
             if (option.isSelected()) {
                 if ("text".equals(property)) {
                     selectedOptions.add(option.getText());
@@ -674,12 +700,24 @@ public class WebDriverBackedSelenium implements Selenium {
                     selectedOptions.add(option.getValue());
                 } else {
                     String propVal = option.getAttribute(property);
-                    selectedOptions.add(propVal);
+                    if (propVal != null)
+                        selectedOptions.add(propVal);
                 }
             }
         }
+
         if (selectedOptions.size() == 0)
             throw new SeleniumException("No option selected");
         return (String[]) selectedOptions.toArray(new String[0]);
     }
+
+    private List<WebElement> getOptions(String selectLocator) {
+        WebElement element = findElement(selectLocator);
+        List<WebElement> options = element.getChildrenOfType("option");
+        if (options.size() == 0) {
+          throw new SeleniumException("Specified element is not a Select (has no options)");
+        }
+        return options;
+    }
+
 }
