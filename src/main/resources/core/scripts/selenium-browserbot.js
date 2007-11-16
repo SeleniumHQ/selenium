@@ -1222,87 +1222,6 @@ BrowserBot.prototype.locateElementByXPath = function(xpath, inDocument, inWindow
     if (xpath.charAt(xpath.length - 1) == '/') {
         xpath = xpath.slice(0, -1);
     }
-
-    // Handle //tag
-    var match = xpath.match(/^\/\/(\w+|\*)$/);
-    if (match) {
-        var elements = inDocument.getElementsByTagName(match[1].toUpperCase());
-        if (elements == null) return null;
-        return elements[0];
-    }
-
-    // Handle //tag[@attr='value']
-    var match = xpath.match(/^\/\/(\w+|\*)\[@(\w+)=('([^\']+)'|"([^\"]+)")\]$/);
-    if (match) {
-        // We don't return the value without checking if it is null first.
-        // This is beacuse in some rare cases, this shortcut actually WONT work
-        // but that the full XPath WILL. A known case, for example, is in IE
-        // when the attribute is onclick/onblur/onsubmit/etc. Due to a bug in IE
-        // this shortcut won't work because the actual function is returned
-        // by getAttribute() rather than the text of the attribute.
-        var val = this._findElementByTagNameAndAttributeValue(
-                inDocument,
-                match[1].toUpperCase(),
-                match[2].toLowerCase(),
-                match[3].slice(1, -1)
-                );
-        if (val) {
-            return val;
-        }
-    }
-
-    // Handle //tag[text()='value']
-    var match = xpath.match(/^\/\/(\w+|\*)\[text\(\)=('([^\']+)'|"([^\"]+)")\]$/);
-    if (match) {
-        return this._findElementByTagNameAndText(
-                inDocument,
-                match[1].toUpperCase(),
-                match[2].slice(1, -1)
-                );
-    }
-
-    return this._findElementUsingFullXPath(xpath, inDocument);
-};
-
-BrowserBot.prototype._findElementByTagNameAndAttributeValue = function(
-        inDocument, tagName, attributeName, attributeValue
-        ) {
-    if (browserVersion.isIE && attributeName == "class") {
-        attributeName = "className";
-    }
-    var elements = inDocument.getElementsByTagName(tagName);
-    for (var i = 0; i < elements.length; i++) {
-        var elementAttr = elements[i].getAttribute(attributeName);
-        if (elementAttr == attributeValue) {
-            return elements[i];
-        }
-    }
-    return null;
-};
-
-BrowserBot.prototype._findElementByTagNameAndText = function(
-        inDocument, tagName, text
-        ) {
-    var elements = inDocument.getElementsByTagName(tagName);
-    for (var i = 0; i < elements.length; i++) {
-        if (getText(elements[i]) == text) {
-            return elements[i];
-        }
-    }
-    return null;
-};
-
-BrowserBot.prototype._namespaceResolver = function(prefix) {
-    if (prefix == 'html' || prefix == 'xhtml' || prefix == 'x') {
-        return 'http://www.w3.org/1999/xhtml';
-    } else if (prefix == 'mathml') {
-        return 'http://www.w3.org/1998/Math/MathML';
-    } else {
-        throw new Error("Unknown namespace: " + prefix + ".");
-    }
-}
-
-BrowserBot.prototype._findElementUsingFullXPath = function(xpath, inDocument, inWindow) {
     // HUGE hack - remove namespace from xpath for IE
     if (browserVersion.isIE) {
         xpath = xpath.replace(/x:/g, '')
@@ -1323,6 +1242,7 @@ BrowserBot.prototype._findElementUsingFullXPath = function(xpath, inDocument, in
     // DGF set xpathdebug = true (using getEval, if you like) to turn on JS XPath debugging
     //xpathdebug = true;
     var context = new ExprContext(inDocument);
+    context.setCaseInsensitive(true);
     var xpathObj;
     try {
         xpathObj = xpathParse(xpath);
@@ -1336,6 +1256,16 @@ BrowserBot.prototype._findElementUsingFullXPath = function(xpath, inDocument, in
     return null;
 
 };
+
+BrowserBot.prototype._namespaceResolver = function(prefix) {
+    if (prefix == 'html' || prefix == 'xhtml' || prefix == 'x') {
+        return 'http://www.w3.org/1999/xhtml';
+    } else if (prefix == 'mathml') {
+        return 'http://www.w3.org/1998/Math/MathML';
+    } else {
+        throw new Error("Unknown namespace: " + prefix + ".");
+    }
+}
 
 // DGF this may LOOK identical to _findElementUsingFullXPath, but 
 // fEUFX pops the first element off the resulting nodelist; this function
@@ -1371,6 +1301,7 @@ BrowserBot.prototype.evaluateXPathCount = function(xpath, inDocument) {
     // DGF set xpathdebug = true (using getEval, if you like) to turn on JS XPath debugging
     //xpathdebug = true;
     var context = new ExprContext(inDocument);
+    context.setCaseInsensitive(true);
     var xpathObj;
     try {
         xpathObj = xpathParse(xpath);
@@ -2034,28 +1965,6 @@ IEBrowserBot.prototype._windowClosed = function(win) {
  */
 IEBrowserBot.prototype.locateElementByIdentifer = function(identifier, inDocument, inWindow) {
     return inDocument.getElementById(identifier);
-};
-
-IEBrowserBot.prototype._findElementByTagNameAndAttributeValue = function(
-        inDocument, tagName, attributeName, attributeValue
-        ) {
-    if (attributeName == "class") {
-        attributeName = "className";
-    }
-    var elements = inDocument.getElementsByTagName(tagName);
-    for (var i = 0; i < elements.length; i++) {
-        var elementAttr = elements[i].getAttribute(attributeName);
-        if (elementAttr == attributeValue) {
-            return elements[i];
-        }
-        // DGF SEL-347, IE6 URL-escapes javascript href attribute
-        if (!elementAttr) continue;
-        elementAttr = unescape(new String(elementAttr));
-        if (elementAttr == attributeValue) {
-            return elements[i];
-        }
-    }
-    return null;
 };
 
 SafariBrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify, browserBot) {
