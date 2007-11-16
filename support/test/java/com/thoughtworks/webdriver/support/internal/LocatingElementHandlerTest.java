@@ -5,6 +5,7 @@ import org.easymock.EasyMock;
 import com.thoughtworks.webdriver.WebDriver;
 import com.thoughtworks.webdriver.WebElement;
 import com.thoughtworks.webdriver.How;
+import com.thoughtworks.webdriver.RenderedWebElement;
 import com.thoughtworks.webdriver.support.FindBy;
 import com.thoughtworks.webdriver.support.PageFactory;
 import com.thoughtworks.webdriver.support.CacheLookup;
@@ -30,6 +31,23 @@ public class LocatingElementHandlerTest extends TestCase {
         proxy.submit();
 
         EasyMock.verify(driver);
+    }
+
+    public void testShouldDelegateToARenderedWebElementIfNecessary() throws NoSuchFieldException {
+      WebDriver driver = EasyMock.createMock(WebDriver.class);
+      RenderedWebElement element = EasyMock.createNiceMock(RenderedWebElement.class);
+
+      EasyMock.expect(driver.selectElement("id=rendered")).andReturn(element);
+
+      EasyMock.replay(driver, element);
+
+      Field staysTheSame = Page.class.getDeclaredField("rendered");
+      LocatingElementHandler handler = new LocatingElementHandler(driver, staysTheSame);
+      RenderedWebElement proxy = (RenderedWebElement) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{RenderedWebElement.class}, handler);
+
+      proxy.getLocation();
+
+      EasyMock.verify(driver);
     }
 
     public void testShouldUseAnnotationsToLookUpByAlternativeMechanisms() {
@@ -73,7 +91,9 @@ public class LocatingElementHandlerTest extends TestCase {
         @CacheLookup
         private WebElement staysTheSame;
 
-        public void doQuery(String foo) {
+        private RenderedWebElement rendered;
+
+      public void doQuery(String foo) {
             query.setValue(foo);
         }
     }

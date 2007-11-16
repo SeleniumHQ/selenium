@@ -3,6 +3,8 @@ package com.thoughtworks.webdriver.support;
 import junit.framework.TestCase;
 import com.thoughtworks.webdriver.WebElement;
 import com.thoughtworks.webdriver.WebDriver;
+import com.thoughtworks.webdriver.RenderedWebElement;
+
 import org.easymock.EasyMock;
 
 public class PageFactoryTest extends TestCase {
@@ -15,13 +17,13 @@ public class PageFactoryTest extends TestCase {
 
         PageFactory.initElements(driver, page);
 
-        assertTrue(page.q instanceof WebElement);
+        assertNotNull(page.q);
     }
 
     public void testShouldInsertProxiesForPublicWebElements() {
         PublicPage page = PageFactory.initElements(driver, PublicPage.class);
 
-        assertTrue(page.q instanceof WebElement);
+        assertNotNull(page.q);
     }
 
     public void testShouldProxyElementsFromParentClassesToo() {
@@ -29,8 +31,14 @@ public class PageFactoryTest extends TestCase {
 
         PageFactory.initElements(driver, page);
 
-        assertTrue(page.q instanceof WebElement);
-        assertTrue(page.submit instanceof WebElement);
+        assertNotNull(page.q);
+        assertNotNull(page.submit);
+    }
+
+    public void testShouldProxyRenderedWebElementFields() {
+      PublicPage page = PageFactory.initElements(driver, PublicPage.class);
+
+      assertNotNull(page.rendered);
     }
 
     public void testShouldProxyPrivateElements() {
@@ -51,6 +59,8 @@ public class PageFactoryTest extends TestCase {
 
     public static class PublicPage {
         public WebElement q;
+
+        public RenderedWebElement rendered;
     }
 
     public static class ChildPage extends PublicPage {

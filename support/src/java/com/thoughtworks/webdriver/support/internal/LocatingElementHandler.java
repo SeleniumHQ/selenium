@@ -3,6 +3,7 @@ package com.thoughtworks.webdriver.support.internal;
 import com.thoughtworks.webdriver.WebDriver;
 import com.thoughtworks.webdriver.WebElement;
 import com.thoughtworks.webdriver.How;
+import com.thoughtworks.webdriver.RenderedWebElement;
 import com.thoughtworks.webdriver.support.FindBy;
 import com.thoughtworks.webdriver.support.CacheLookup;
 

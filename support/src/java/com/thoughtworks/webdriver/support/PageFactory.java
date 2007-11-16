@@ -2,6 +2,7 @@ package com.thoughtworks.webdriver.support;
 
 import com.thoughtworks.webdriver.WebElement;
 import com.thoughtworks.webdriver.WebDriver;
+import com.thoughtworks.webdriver.RenderedWebElement;
 import com.thoughtworks.webdriver.support.internal.LocatingElementHandler;
 
 import java.lang.reflect.Field;
@@ -72,19 +73,24 @@ public class PageFactory {
     private static void proxyFields(WebDriver driver, Object page, Class proxyIn) {
         Field[] fields = proxyIn.getDeclaredFields();
         for (Field field : fields) {
-            field.setAccessible(true);
-            if (!WebElement.class.equals(field.getType()))
-                continue;
+            if (!WebElement.class.isAssignableFrom(field.getType()))
+              continue;
 
+            field.setAccessible(true);
             proxyElement(driver, page, field);
         }
     }
 
     private static void proxyElement(WebDriver driver, Object page, Field field) {
         InvocationHandler handler = new LocatingElementHandler(driver, field);
-
-        WebElement proxy = (WebElement) Proxy.newProxyInstance(
-                page.getClass().getClassLoader(), new Class[]{WebElement.class}, handler);
+        WebElement proxy;
+        if (field.getType().equals(RenderedWebElement.class)){
+          proxy = (RenderedWebElement) Proxy.newProxyInstance(
+              page.getClass().getClassLoader(), new Class[]{RenderedWebElement.class}, handler);
+        } else {
+          proxy = (WebElement) Proxy.newProxyInstance(
+                  page.getClass().getClassLoader(), new Class[]{WebElement.class}, handler);
+        }
         try {
             field.set(page, proxy);
         } catch (IllegalAccessException e) {
