@@ -128,7 +128,8 @@ public class InjectionHelper {
         writeScriptTag(os, "/core/scripts/selenium-executionloop.js");
         writeScriptTag(os, "/core/scripts/selenium-remoterunner.js");
         writeScriptTag(os, "/core/scripts/selenium-logging.js");
-        writeScriptTag(os, "/core/xpath/misc.js");
+        writeScriptTag(os, "/core/xpath/util.js");
+        writeScriptTag(os, "/core/xpath/xmltoken.js");
         writeScriptTag(os, "/core/xpath/dom.js");
         writeScriptTag(os, "/core/xpath/xpath.js");
         writeScriptTag(os, "/core/scripts/user-extensions.js");
