@@ -22,7 +22,12 @@ var GLOBAL = {
 // "if (xpathdebug)" condition; unfortunately there are some notable exceptions.
 // For now, I'm just going to attach a dummy write() method to the Log object
 // as a workaround.
-Log.write = function() { }
+try {
+    Log.write = function() { }
+}
+catch (e) {
+    // no problem
+}
 
 //******************************************************************************
 // modifications to built-in objects
