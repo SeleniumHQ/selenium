@@ -48,6 +48,10 @@
 <!ENTITY contextMenu.startpoint.label "開始位置の指定/解除">
 <!ENTITY contextMenu.execCommand.label "このコマンドを実行">
 
+<!ENTITY uiReference.label "UI-Element">
+<!ENTITY rollupReference.label "Rollup">
+<!ENTITY rollupButton.tooltip "Apply rollup rules">
+
 <!ENTITY suiteTree.testCase.label "テストケース">
 <!ENTITY newSuiteCmd.label "テストスイートを新規作成">
 <!ENTITY openSuiteCmd.label "テストスイートを開く...">

@@ -48,6 +48,10 @@
 <!ENTITY contextMenu.startpoint.label "D&#233;finir / Retirer le point de d&#233;part">
 <!ENTITY contextMenu.execCommand.label "Ex&#233;cuter cette commande">
 
+<!ENTITY uiReference.label "UI-Element">
+<!ENTITY rollupReference.label "Rollup">
+<!ENTITY rollupButton.tooltip "Apply rollup rules">
+
 <!ENTITY suiteTree.testCase.label "Test Case">
 <!ENTITY newSuiteCmd.label "New Test Suite">
 <!ENTITY openSuiteCmd.label "Open Test Suite...">
