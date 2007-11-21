@@ -189,6 +189,40 @@ Recorder.removeEventHandler = function(handlerName) {
 	}
 }
 
+/**
+ * Wraps an existing event handler with a decorator. The decorator is a
+ * function that, given a handler, returns a function that wraps the
+ * handler. You may find this useful in cases where the IDE would normally
+ * record events dispatched by the page itself, i.e. not through user
+ * interaction; you can skip recording under specific conditions. Here's an
+ * example usage:
+ *
+ *  Recorder.decorateEventHandler('type', 'change', function(handler) {
+ *      // the decorator has the same method signature as a handler, and invokes
+ *      // the handler using call(). The event target, as well as its document
+ *      // and window context, should all be available through the event
+ *      // object.
+ *      return function(event) {
+ *          var doc = event.target.ownerDocument;
+ *          if (doc.defaultView && doc.defaultView.isFireEventsComplete()) {
+ *              handler.call(this, event);
+ *          }
+ *      };
+ *  });
+ *
+ */
+Recorder.decorateEventHandler = function(handlerName, eventName, decorator, options) {
+   var eventKey = (options && options.capture)
+       ? ('C_' + eventName) : eventName;
+   var handlers = this.eventHandlers[eventKey];
+   for (var i = 0; i < handlers.length; ++i) {
+       if (handlers[i].handlerName == handlerName) {
+           handlers[i] = decorator(handlers[i]);
+           handlers[i].handlerName = handlerName;
+       }
+   }
+};
+
 Recorder.register = function(observer, window) {
 	var recorder = Recorder.get(window);
 	if (!recorder) {
