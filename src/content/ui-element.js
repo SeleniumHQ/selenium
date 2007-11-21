@@ -1331,7 +1331,16 @@ function range(start, end)
 function parse_kwargs(kwargs)
 {
     var args = new Object();
-    var pairs = kwargs.split(/\s*,\s*/);
+    var pairs = kwargs.split(/,/);
+    for (var i = 0; i < pairs.length;) {
+        if (i > 0 && pairs[i].indexOf('=') == -1) {
+            // the value string contained a comma. Glue the parts back together.
+            pairs[i-1] += ',' + pairs.splice(i, 1)[0];
+        }
+        else {
+            ++i;
+        }
+    }
     for (var i = 0; i < pairs.length; ++i) {
         var splits = pairs[i].split(/=/);
         if (splits.length == 1) {

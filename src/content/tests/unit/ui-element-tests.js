@@ -208,11 +208,12 @@ function test_parse_kwargs()
     assertTrue(are_equal({k1: 'v1', k2: 'v2'}, parse_kwargs('k1=v1, k2=v2')));
     assertTrue(are_equal({k1: 'v 1', 'k  2': 'v    2'}, parse_kwargs('  k1  =  v 1  ,   k  2   =v    2  ')));
     assertTrue(are_equal({k1: 'v1=v1.1', k2: 'v2=v2.2'}, parse_kwargs('k1=v1=v1.1, k2=v2=v2.2')));
+    assertTrue(are_equal({k1: 'v1, v1.1', k2: 'v2'}, parse_kwargs('k1=v1, v1.1, k2=v2')));
     
     // destructive - should be handled gracefully
-    assertTrue(are_equal({k1: 'v1'}, parse_kwargs('k1=v1,,')));
+    assertTrue(are_equal({k1: 'v1,,'}, parse_kwargs('k1=v1,,')));
     assertTrue(are_equal({k1: ''}, parse_kwargs('k1=')));
-    assertTrue(are_equal({k1: ''}, parse_kwargs('k1=,')));
+    assertTrue(are_equal({k1: ','}, parse_kwargs('k1=,')));
     assertTrue(are_equal({k2: 'v2'}, parse_kwargs(',k2=v2')));
     assertTrue(are_equal({'': ''}, parse_kwargs('=')));
     assertTrue(are_equal({}, parse_kwargs(',')));
