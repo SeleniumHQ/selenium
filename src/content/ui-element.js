@@ -1157,7 +1157,10 @@ function eval_locator(locator, inDocument)
     }
     
     // Element was not found by any locator function.
-    throw new SeleniumError("Element " + locator.string + " not found");
+    var msg = 'Element ' + locator.string + ' not found';
+    alert('foo');
+    throw (typeof(SeleniumError) == 'undefined')
+        ? new Exception(msg) : new SeleniumError(msg);
 }
 
 

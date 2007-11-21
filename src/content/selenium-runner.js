@@ -313,14 +313,14 @@ function showElement(locator) {
 	var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
 	var contentWindow = wm.getMostRecentWindow('navigator:browser').getBrowser().contentWindow;
 	
-	var pageBot = contentWindow._test_pageBot;
-	if (pageBot == null) {
-		pageBot = new MozillaBrowserBot(contentWindow);
-        pageBot.getCurrentWindow = function() {
-            return contentWindow;
-        }
-		contentWindow._test_pageBot = pageBot;
-	}
+    //var pageBot = contentWindow._test_pageBot;
+    //if (pageBot == null) {
+    var pageBot = new MozillaBrowserBot(contentWindow);
+    pageBot.getCurrentWindow = function() {
+        return contentWindow;
+    }
+    //contentWindow._test_pageBot = pageBot;
+    //}
 
     try {
         var e = pageBot.findElement(locator);
