@@ -61,6 +61,7 @@ limitations under the License.
       <toolbarbutton id="step-button" label="Step" class="icon" tooltiptext="&stepButton.tooltip;" command="cmd_selenium_step"/>
       <toolbarseparator />
       <toolbarbutton id="testrunner-button" label="&testrunnerButton.tooltip;" class="icon" tooltiptext="&testrunnerButton.tooltip;" command="cmd_selenium_testrunner"/>
+      <toolbarbutton id="rollup-button" label="Rollup" class="icon" tooltiptext="&rollupButton.tooltip;" command="cmd_selenium_rollup"/>
       <toolbarseparator />
       <toolbarbutton id="record-button" label="Record" class="icon" tooltiptext="&recordButton.tooltip;" checked="true" onclick="this.checked = !this.checked" oncommand="window.editor.toggleRecordingEnabled(this.checked)"/>
     </toolbar>

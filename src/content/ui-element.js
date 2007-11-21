@@ -1045,16 +1045,22 @@ function RollupManager()
                         
                         // get confirmation from user
                         if (confirm(msg)) {
-                            // perform rollup: splice out the replaced commands
-                            // starting from the highest index (because we are
-                            // mutating the list), then splice in the rollup at
-                            // the front of the current commands list scope.
-                            var replacementIndexes =
-                                rollup.replacementIndexes.sort();
-                            for (k = replacementIndexes.length-1; k >= 0; --k) {
-                                commands.splice(replacementIndexes[k], 1);
+                            // perform rollup
+                            var deleteRanges = [];
+                            var replacementIndexes = rollup.replacementIndexes;
+                            for (k = 0; k < replacementIndexes.length; ++k) {
+                                // this is expected to be list of ranges. A
+                                // range has a start, and a list of commands.
+                                // The deletion only checks the length of the
+                                // command list.
+                                deleteRanges.push({
+                                    start: replacementIndexes[k]
+                                    , commands: [ 1 ]
+                                });
                             }
-                            commands.splice(i, 0, rollup);
+                            editor.view.executeAction(new TreeView
+                                .DeleteCommandAction(editor.view,deleteRanges));
+                            editor.view.insertAt(i, rollup);
                             
                             performedRollup = true;
                         }
