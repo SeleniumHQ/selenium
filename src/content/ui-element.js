@@ -1122,26 +1122,6 @@ function eval_locator(locator, inDocument)
     
     var element;
     if (typeof(selenium) != 'undefined') {
-        // if the locator is an XPath, uppercase it for IE, and lowercase it
-        // for Safari. We can add more browser-specific casing rules for other
-        // browsers here too.
-        if (locator.type == 'xpath' || (locator.type == 'implicit' &&
-            locator.string.substring(0, 2) == '//')) {
-            if (browserVersion) {
-                if (browserVersion.isIE) {
-                    try {
-                        smart_log('info', 'Locator: ' + locator.string);
-                        locator.string = xpathToUpperCase(locator.string);
-                    }
-                    catch (e) {
-                        smart_log('error', e);
-                    }
-                }
-                else if (browserVersion.isSafari) {
-                    locator.string = xpathToLowerCase(locator.string);
-                }
-            }
-        }
         if (typeof(editor) == 'undefined' || editor.state == 'playing') {
             smart_log('info', 'Trying [' + locator.type + ']: '
                 + locator.string);
