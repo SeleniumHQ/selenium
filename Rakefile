@@ -27,9 +27,12 @@ task :install_firefox => [:firefox] do
       firefox = ENV['firefox']
   end
   
+  extension_loc = File.dirname(__FILE__) + "/firefox/src/extension"
+  extension_loc.tr!("/", "\\") if windows?
+  
   cmd = 'java'
   cmd += ' -cp ' + libs.join(File::PATH_SEPARATOR)
-  cmd += ' -Dwebdriver.firefox.development="' + File.dirname(__FILE__) + '/firefox/src/extension"' 
+  cmd += ' -Dwebdriver.firefox.development="' + extension_loc + '"' 
   cmd += " -Dwebdriver.firefox.bin=\"#{ENV['firefox']}\" " unless ENV['firefox'].nil?
   cmd += ' com.thoughtworks.webdriver.firefox.FirefoxLauncher '
     
