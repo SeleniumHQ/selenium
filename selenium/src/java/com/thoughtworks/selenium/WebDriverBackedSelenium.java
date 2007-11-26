@@ -1,16 +1,38 @@
 package com.thoughtworks.selenium;
 
-import com.thoughtworks.selenium.internal.*;
-import com.thoughtworks.webdriver.NoSuchElementException;
-import com.thoughtworks.webdriver.WebDriver;
-import com.thoughtworks.webdriver.WebElement;
-import com.thoughtworks.webdriver.RenderedWebElement;
-
-import java.util.*;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.awt.*;
+
+import com.thoughtworks.selenium.internal.AltLookupStrategy;
+import com.thoughtworks.selenium.internal.ClassLookupStrategy;
+import com.thoughtworks.selenium.internal.ExactTextMatchingStrategy;
+import com.thoughtworks.selenium.internal.GlobTextMatchingStrategy;
+import com.thoughtworks.selenium.internal.IdLookupStrategy;
+import com.thoughtworks.selenium.internal.IdOptionSelectStrategy;
+import com.thoughtworks.selenium.internal.IdentifierLookupStrategy;
+import com.thoughtworks.selenium.internal.ImplicitLookupStrategy;
+import com.thoughtworks.selenium.internal.IndexOptionSelectStrategy;
+import com.thoughtworks.selenium.internal.LabelOptionSelectStrategy;
+import com.thoughtworks.selenium.internal.LinkLookupStrategy;
+import com.thoughtworks.selenium.internal.LookupStrategy;
+import com.thoughtworks.selenium.internal.NameLookupStrategy;
+import com.thoughtworks.selenium.internal.OptionSelectStrategy;
+import com.thoughtworks.selenium.internal.RegExTextMatchingStrategy;
+import com.thoughtworks.selenium.internal.TextMatchingStrategy;
+import com.thoughtworks.selenium.internal.ValueOptionSelectStrategy;
+import com.thoughtworks.selenium.internal.XPathLookupStrategy;
+import com.thoughtworks.webdriver.By;
+import com.thoughtworks.webdriver.NoSuchElementException;
+import com.thoughtworks.webdriver.RenderedWebElement;
+import com.thoughtworks.webdriver.WebDriver;
+import com.thoughtworks.webdriver.WebElement;
 
 public class WebDriverBackedSelenium implements Selenium {
     private static final Pattern STRATEGY_AND_VALUE_PATTERN = Pattern.compile("^(\\p{Alpha}+)=(.*)");
@@ -161,7 +183,7 @@ public class WebDriverBackedSelenium implements Selenium {
     }
 
     public String[] getAllLinks() {
-        List<WebElement> allLinks = driver.selectElements("//a");
+        List<WebElement> allLinks = driver.findElements(By.xpath("//a"));
         Iterator<WebElement> i = allLinks.iterator();
         List<String> links = new ArrayList<String>();
         while (i.hasNext()) {
@@ -203,7 +225,7 @@ public class WebDriverBackedSelenium implements Selenium {
     }
 
     public String getBodyText() {
-        return driver.selectElement("//body").getText();
+        return driver.findElement(By.xpath("//body")).getText();
     }
 
     public String getConfirmation() {
@@ -416,7 +438,7 @@ public class WebDriverBackedSelenium implements Selenium {
     }
 
     public boolean isTextPresent(String pattern) {
-        String text = driver.selectElement("/html/body").getText();
+        String text = driver.findElement(By.xpath("/html/body")).getText();
         text = text.trim();
 
         String strategyName = "implicit";
@@ -532,7 +554,7 @@ public class WebDriverBackedSelenium implements Selenium {
 
     private void select(String selectLocator, String optionLocator, boolean setSelected, boolean onlyOneOption) {
         WebElement select = findElement(selectLocator);
-        List allOptions = select.getChildrenOfType("option");
+        List<WebElement> allOptions = select.getChildrenOfType("option");
 
         boolean isMultiple = false;
 

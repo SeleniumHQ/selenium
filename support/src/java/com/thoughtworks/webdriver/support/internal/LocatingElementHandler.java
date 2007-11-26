@@ -1,25 +1,25 @@
 package com.thoughtworks.webdriver.support.internal;
 
-import com.thoughtworks.webdriver.WebDriver;
-import com.thoughtworks.webdriver.WebElement;
-import com.thoughtworks.webdriver.How;
-import com.thoughtworks.webdriver.RenderedWebElement;
-import com.thoughtworks.webdriver.support.FindBy;
-import com.thoughtworks.webdriver.support.CacheLookup;
-
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.Field;
+
+import com.thoughtworks.webdriver.By;
+import com.thoughtworks.webdriver.How;
+import com.thoughtworks.webdriver.WebDriver;
+import com.thoughtworks.webdriver.WebElement;
+import com.thoughtworks.webdriver.support.CacheLookup;
+import com.thoughtworks.webdriver.support.FindBy;
 
 public class LocatingElementHandler implements InvocationHandler {
     private final WebDriver driver;
-    private final String locator;
+    private final By by;
     private final boolean cacheLookup;
     private WebElement element;
 
     public LocatingElementHandler(WebDriver driver, Field field) {
         this.driver = driver;
-        this.locator = buildLocator(field);
+        this.by = buildBy(field);
         this.cacheLookup = isLookupCached(field);
     }
 
@@ -27,7 +27,7 @@ public class LocatingElementHandler implements InvocationHandler {
         return field.getAnnotation(CacheLookup.class) == null ? false : true;
     }
 
-  private String buildLocator(Field field) {
+  private By buildBy(Field field) {
       How how = How.ID;
       String using = field.getName();
 
@@ -39,13 +39,13 @@ public class LocatingElementHandler implements InvocationHandler {
 
       switch(how) {
         case ID:
-          return "id=" + using;
+          return By.id(using);
 
         case LINK_TEXT:
-          return "link=" + using;
+          return By.linkText(using);
 
         case XPATH:
-          return using;
+          return By.xpath(using);
 
         default:
           throw new IllegalArgumentException("Cannot determine how to locate element");
@@ -55,11 +55,11 @@ public class LocatingElementHandler implements InvocationHandler {
     public Object invoke(Object object, Method method, Object[] objects) throws Throwable {
         if (cacheLookup) {
             if (element == null)
-                element = driver.selectElement(locator);
+                element = driver.findElement(by);
             return method.invoke(element, objects);
         }
 
-        WebElement use = driver.selectElement(locator);
+        WebElement use = driver.findElement(by);
         return method.invoke(use, objects);
     }
 }

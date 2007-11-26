@@ -1,13 +1,12 @@
 package com.thoughtworks.webdriver;
 
+import java.text.MessageFormat;
+import java.util.Iterator;
+import java.util.List;
+
 import com.thoughtworks.webdriver.internal.FindsById;
 import com.thoughtworks.webdriver.internal.FindsByLinkText;
 import com.thoughtworks.webdriver.internal.FindsByXPath;
-
-import java.util.List;
-import java.util.Iterator;
-import java.util.Collections;
-import java.text.MessageFormat;
 
 public class By {
     private final How how;
@@ -103,9 +102,29 @@ public class By {
 
         case XPATH:
           return ((FindsByXPath) driver).findElementByXPath(using);
-
       }
 
       return null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        By by = (By) o;
+
+        if (how != by.how) return false;
+        if (!using.equals(by.using)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        result = how.hashCode();
+        result = 31 * result + using.hashCode();
+        return result;
     }
 }

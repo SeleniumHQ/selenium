@@ -1,25 +1,30 @@
 package com.thoughtworks.webdriver.support.internal;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Proxy;
+
 import junit.framework.TestCase;
+
 import org.easymock.EasyMock;
-import com.thoughtworks.webdriver.WebDriver;
-import com.thoughtworks.webdriver.WebElement;
+
+import com.thoughtworks.webdriver.By;
 import com.thoughtworks.webdriver.How;
 import com.thoughtworks.webdriver.RenderedWebElement;
+import com.thoughtworks.webdriver.WebDriver;
+import com.thoughtworks.webdriver.WebElement;
+import com.thoughtworks.webdriver.support.CacheLookup;
 import com.thoughtworks.webdriver.support.FindBy;
 import com.thoughtworks.webdriver.support.PageFactory;
-import com.thoughtworks.webdriver.support.CacheLookup;
-
-import java.lang.reflect.Proxy;
-import java.lang.reflect.Field;
 
 public class LocatingElementHandlerTest extends TestCase {
     public void testShouldAlwaysLocateTheElementPerCall() throws NoSuchFieldException {
         WebDriver driver = EasyMock.createMock(WebDriver.class);
         WebElement element = EasyMock.createNiceMock(WebElement.class);
 
-        EasyMock.expect(driver.selectElement("id=q")).andReturn(element);
-        EasyMock.expect(driver.selectElement("id=q")).andReturn(element);
+        By by = By.id("q");
+        
+        EasyMock.expect(driver.findElement(by)).andReturn(element);
+        EasyMock.expect(driver.findElement(by)).andReturn(element);
 
         EasyMock.replay(driver, element);
 
@@ -37,7 +42,9 @@ public class LocatingElementHandlerTest extends TestCase {
       WebDriver driver = EasyMock.createMock(WebDriver.class);
       RenderedWebElement element = EasyMock.createNiceMock(RenderedWebElement.class);
 
-      EasyMock.expect(driver.selectElement("id=rendered")).andReturn(element);
+      By by = By.id("rendered");
+      
+      EasyMock.expect(driver.findElement(by)).andReturn(element);
 
       EasyMock.replay(driver, element);
 
@@ -54,7 +61,9 @@ public class LocatingElementHandlerTest extends TestCase {
         WebDriver driver = EasyMock.createMock(WebDriver.class);
         WebElement element = EasyMock.createNiceMock(WebElement.class);
 
-        EasyMock.expect(driver.selectElement("//input[@name='q']")).andReturn(element);
+        By by = By.xpath("//input[@name='q']");
+        
+        EasyMock.expect(driver.findElement(by)).andReturn(element);
 
         EasyMock.replay(driver, element);
       
@@ -68,7 +77,9 @@ public class LocatingElementHandlerTest extends TestCase {
       WebDriver driver = EasyMock.createMock(WebDriver.class);
       WebElement element = EasyMock.createNiceMock(WebElement.class);
 
-      EasyMock.expect(driver.selectElement("id=staysTheSame")).andReturn(element);
+      By by = By.id("staysTheSame");
+      
+      EasyMock.expect(driver.findElement(by)).andReturn(element);
 
       EasyMock.replay(driver, element);
 
@@ -83,15 +94,18 @@ public class LocatingElementHandlerTest extends TestCase {
     }
 
     public static class Page {
-        private WebElement q;
+        @SuppressWarnings("unused")
+		private WebElement q;
 
         @FindBy(how = How.XPATH, using = "//input[@name='q']")
         private WebElement query;
 
-        @CacheLookup
+        @SuppressWarnings("unused")
+		@CacheLookup
         private WebElement staysTheSame;
 
-        private RenderedWebElement rendered;
+        @SuppressWarnings("unused")
+		private RenderedWebElement rendered;
 
       public void doQuery(String foo) {
             query.setValue(foo);

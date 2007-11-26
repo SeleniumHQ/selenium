@@ -1,5 +1,6 @@
 package com.thoughtworks.webdriver.firefox;
 
+import com.thoughtworks.webdriver.By;
 import com.thoughtworks.webdriver.JavascriptEnabledDriverTest;
 import com.thoughtworks.webdriver.NoSuchElementException;
 import com.thoughtworks.webdriver.WebDriver;
@@ -18,7 +19,7 @@ public class FirefoxDriverTest extends JavascriptEnabledDriverTest {
         driver.get(formPage);
 
         try {
-            driver.selectElement("id=notThere");
+            driver.findElement(By.id("notThere"));
             fail("Should not be able to select element by id here");
         } catch (NoSuchElementException e) {
             // This is expected
@@ -31,14 +32,14 @@ public class FirefoxDriverTest extends JavascriptEnabledDriverTest {
     public void testShouldSwitchFocusToANewWindowWhenItIsOpenedAndNotStopFutureOperations() {
         driver.get(xhtmlTestPage);
 
-        driver.selectElement("link=Open new window").click();
+        driver.findElement(By.linkText("Open new window")).click();
         assertEquals("XHTML Test Page", driver.getTitle());
 
         driver.switchTo().window("result");
         assertEquals("We Arrive Here", driver.getTitle());
 
         driver.get(iframePage);
-        driver.selectElement("id=iframe_page_heading");
+        driver.findElement(By.id("iframe_page_heading"));
     }
 
     public void testShouldWaitUntilBrowserHasClosedProperly() throws Exception {
@@ -52,7 +53,7 @@ public class FirefoxDriverTest extends JavascriptEnabledDriverTest {
       setUp();
 
       driver.get(formPage);
-      WebElement textarea = driver.selectElement("id=withText");
+      WebElement textarea = driver.findElement(By.id("withText"));
       String expectedText = "I like cheese\n\nIt's really nice";
       textarea.setValue(expectedText);
 

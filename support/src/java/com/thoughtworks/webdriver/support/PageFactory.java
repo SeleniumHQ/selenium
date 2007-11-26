@@ -63,14 +63,14 @@ public class PageFactory {
    * @param page The object with WebElement fields that should be proxied.
    */
     public static void initElements(WebDriver driver, Object page) {
-        Class proxyIn = page.getClass();
+        Class<?> proxyIn = page.getClass();
         while (proxyIn != Object.class) {
             proxyFields(driver, page, proxyIn);
             proxyIn = proxyIn.getSuperclass();
         }
     }
 
-    private static void proxyFields(WebDriver driver, Object page, Class proxyIn) {
+    private static void proxyFields(WebDriver driver, Object page, Class<?> proxyIn) {
         Field[] fields = proxyIn.getDeclaredFields();
         for (Field field : fields) {
             if (!WebElement.class.isAssignableFrom(field.getType()))
