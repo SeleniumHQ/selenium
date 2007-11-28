@@ -413,13 +413,48 @@ function xpathSetNamespace(xpath, namespace)
  *              thrown, possibly by native code.
  */
 Selenium.prototype.doTakeScreenshot = function(path) {
-    // can only take screenshots in Mozilla chrome mode
-    if (!browserVersion.isChrome) {
-        throw new SeleniumError('takeScreenshot is only implemented for ' +
-            'chrome browsers, but the current browser is not chrome.');
+    // can only take screenshots in Mozilla chrome mode, IE not in the RC,
+    // or IE multiWindow mode in the RC
+    if (!browserVersion.isChrome && !browserVersion.isIE) {
+        throw new SeleniumError('takeScreenshot is only implemented for '
+            + "chrome and iexplore browsers, but the current browser isn't "
+            + 'one of them');
+    }
+    if (browserVersion.isIE && typeof(runOptions) != 'undefined' &&
+        runOptions.isMultiWindowMode() == false) {
+        throw new SeleniumError('takeScreenshot in the RC is currently only ' +
+            'available for iexplore when in -multiWindow mode'); 
     }
     
     // do or do not ... there is no try
+    
+    if (browserVersion.isIE) {
+        // Snapsie is very picky about the path string. The backslash path
+        // separator must always be properly escaped. It appears to be safe to
+        // over-escape.
+        path = path.replace(/\\/g, '\\\\');
+        
+        // this is sort of hackish and only works in -multiWindow mode when
+        // used within the RC. We insert a script into the document, and remove
+        // it before anyone notices.
+        var doc = selenium.browserbot.getDocument();
+        var script = doc.createElement('script'); 
+        var scriptContent =
+              'try {'
+            + '    var obj = new ActiveXObject("Snapsie.CoSnapsie");'
+            + '    obj.saveSnapshot("' + path + '", "");'
+            + '}'
+            + 'catch (e) {'
+            + '    throw new Error("Snapsie screenshot capture failed "'
+            + '       + "(is it installed?)!\\n"'
+            + '       + "See http://sourceforge.net/projects/snapsie");'
+            + '}';
+        script.language = 'javascript';
+        script.text = scriptContent;
+        doc.body.appendChild(script);
+        script.parentNode.removeChild(script);
+        return;
+    }
     
     var grabber = {
         prepareCanvas: function(width, height) {
