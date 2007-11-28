@@ -429,8 +429,8 @@ Selenium.prototype.doTakeScreenshot = function(path) {
     // do or do not ... there is no try
     
     if (browserVersion.isIE) {
-        // Snapsie is very picky about the path string. The backslash path
-        // separator must always be properly escaped. It appears to be safe to
+        // The backslash path separator must always be properly escaped, since
+        // we're using the path in script text. It appears to be safe to
         // over-escape.
         path = path.replace(/\\/g, '\\\\');
         
@@ -441,18 +441,29 @@ Selenium.prototype.doTakeScreenshot = function(path) {
         var script = doc.createElement('script'); 
         var scriptContent =
               'try {'
-            + '    var obj = new ActiveXObject("Snapsie.CoSnapsie");'
-            + '    obj.saveSnapshot("' + path + '", "");'
+            + '    var snapsie = new ActiveXObject("Snapsie.CoSnapsie");'
+            + '    snapsie.saveSnapshot("' + path + '", "");'
             + '}'
             + 'catch (e) {'
-            + '    throw new Error("Snapsie screenshot capture failed "'
-            + '       + "(is it installed?)!\\n"'
-            + '       + "See http://sourceforge.net/projects/snapsie");'
+            + '    document.getElementById("takeScreenshot").failure ='
+            + '        e.message || "Undocumented error";'
             + '}';
+        script.id = 'takeScreenshot';
         script.language = 'javascript';
         script.text = scriptContent;
         doc.body.appendChild(script);
         script.parentNode.removeChild(script);
+        if (script.failure) {
+            var msg = 'Snapsie failed: ';
+            if (script.failure == "Automation server can't create object") {
+                msg += 'Is it installed? See '
+                    + 'http://sourceforge.net/projects/snapsie';
+            }
+            else {
+                msg += script.failure;
+            }
+            throw new SeleniumError(msg);
+        }
         return;
     }
     
