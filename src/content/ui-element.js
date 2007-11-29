@@ -1167,7 +1167,7 @@ function eval_locator(locator, inDocument)
     locator = parse_locator(locator);
     
     var element;
-    if (typeof(selenium) != 'undefined') {
+    if (typeof(selenium) != 'undefined' && selenium != undefined) {
         if (typeof(editor) == 'undefined' || editor.state == 'playing') {
             smart_log('info', 'Trying [' + locator.type + ']: '
                 + locator.string);
@@ -2438,15 +2438,20 @@ function UIMap()
         // passed to the "locateElementBy..." PageBot method.
         // add the UI element locator, and promote it to top priority
         if (is_IDE()) {
-            LocatorBuilders.add(this.prefix, function(node) {
-                return GLOBAL.uiMap.getUISpecifierString(node, this.window.document);
+            if (LocatorBuilders.order.indexOf(this.prefix) == -1) {
+                LocatorBuilders.add(this.prefix, function(node) {
+                    return GLOBAL.uiMap
+                        .getUISpecifierString(node, this.window.document);
                 });
-            LocatorBuilders.order.unshift(this.prefix);
-            LocatorBuilders.order.pop();
+                LocatorBuilders.order.unshift(this.prefix);
+                LocatorBuilders.order.pop();
+            }
             
             // try to bind to the editor object, which should be available if
             // this is being used in the Selenium IDE extension
-            Editor.uiMap = this;
+            if (Editor.uiMap != this) {
+                Editor.uiMap = this;
+            }
         }
         
         // add the symmetric "locateElementBy..." method to PageBot. This
