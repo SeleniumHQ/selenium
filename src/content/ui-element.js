@@ -1247,7 +1247,7 @@ function eval_xpath(xpath, inDocument, pageBot)
         }
     }
     
-    return results.length > 0 ? results : null;
+    return results;
 }
 
 
@@ -1259,7 +1259,7 @@ function eval_xpath(xpath, inDocument, pageBot)
 function eval_css(css, inDocument)
 {
     var results = cssQuery(css, inDocument);
-    return results.length > 0 ? results : null;
+    return results;
 }
 
 
