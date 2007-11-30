@@ -19,17 +19,14 @@ package org.openqa.selenium.server.browserlaunchers;
 import org.apache.commons.logging.Log;
 import org.mortbay.log.LogFactory;
 import org.openqa.selenium.server.SeleniumServer;
-import org.openqa.selenium.server.browserlaunchers.WindowsUtils.WindowsRegistryException;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher {
 
     static Log log = LogFactory.getLog(InternetExplorerCustomProxyLauncher.class);
 
-    private int port = 8180;
     private File customProxyPACDir;
     private String[] cmdarray;
     private String commandPath;
@@ -47,7 +44,6 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
     public InternetExplorerCustomProxyLauncher(int port, String sessionId, String browserLaunchLocation) {
         super(sessionId);
         commandPath = browserLaunchLocation;
-        this.port = port;
         this.sessionId = sessionId;
         wpm = new WindowsProxyManager(true, sessionId, port);
     }
@@ -73,6 +69,7 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
                 "*iexplore c:\\blah\\iexplore.exe");
     }
 
+    @Override
     public void launch(String url) {
         try {
             if (WindowsUtils.thisIsWindows()) {
@@ -94,8 +91,6 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
             throw new RuntimeException(e);
         }
     }
-
-
 
     public void close() {
         Exception taskKillException = null;

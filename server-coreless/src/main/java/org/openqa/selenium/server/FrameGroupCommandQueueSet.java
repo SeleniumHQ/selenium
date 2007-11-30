@@ -155,7 +155,7 @@ public class FrameGroupCommandQueueSet {
     }
     
 
-    /** Retrieves a FrameGroupCommandQueueSet for the specifed sessionId 
+    /** Retrieves a FrameGroupCommandQueueSet for the specified sessionId 
      */
     static public FrameGroupCommandQueueSet getQueueSet(String sessionId) {
         if (sessionId == null) throw new NullPointerException("sessionId should not be null; has this session been started yet?");

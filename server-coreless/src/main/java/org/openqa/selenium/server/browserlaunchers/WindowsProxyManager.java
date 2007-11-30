@@ -42,15 +42,17 @@ public class WindowsProxyManager {
         + File.separator + "Cookies");
     
     // Vista Cookies are kept, along with other files, in 
-    // "$USERPROFILE\AppData\Local\Microsoft\Windows\Temporary Internet Files"
+    // "$USERPROFILE\AppData\Roaming\Microsoft\Windows\Cookies"
     protected static final File VISTA_USER_COOKIE_DIR = new File(
         System.getenv("USERPROFILE") 
           + File.separator + "AppData" 
-          + File.separator + "Local" 
+          + File.separator + "Roaming" 
           + File.separator + "Microsoft"
           + File.separator + "Windows" 
-          + File.separator + "Temporary Internet Files");
-    protected static final String VISTA_COOKIE_PREFIX = "cookie:";
+          + File.separator + "Cookies");
+    
+    // All Cookies end in ".txt"
+    protected static final String COOKIE_SUFFIX = ".txt";
     
     // All cookies hidden by Selenium RC will go here.
     protected static final File HIDDEN_COOKIE_DIR = new File(
@@ -256,10 +258,10 @@ public class WindowsProxyManager {
       boolean done = false;
       if (isVista()) {
         done = hideCookies( 
-          VISTA_USER_COOKIE_DIR, VISTA_COOKIE_PREFIX, HIDDEN_COOKIE_DIR);
+          VISTA_USER_COOKIE_DIR, COOKIE_SUFFIX, HIDDEN_COOKIE_DIR);
       } else {
         done = hideCookies(
-            WINXP_USER_COOKIE_DIR, null, HIDDEN_COOKIE_DIR);
+          WINXP_USER_COOKIE_DIR, COOKIE_SUFFIX, HIDDEN_COOKIE_DIR);
       }
       
       if (!done) {
@@ -273,15 +275,15 @@ public class WindowsProxyManager {
      * WinXP directory structure, by moving them to a different directory.
      */
     protected static boolean hideCookies(File cookieDir, 
-        String cookiePrefix, File hiddenCookieDir) {
+        String cookieSuffix, File hiddenCookieDir) {
       boolean result = false;
       LauncherUtils.recursivelyDeleteDir(hiddenCookieDir);
       if (cookieDir.exists()) {
         log.info("Copying cookies from " + cookieDir.getAbsolutePath() +
             " to " + hiddenCookieDir.getAbsolutePath());
-        LauncherUtils.copyDirectory(cookieDir, cookiePrefix, hiddenCookieDir);
+        LauncherUtils.copyDirectory(cookieDir, cookieSuffix, hiddenCookieDir);
         log.info("Deleting original cookies...");
-        deleteFlatDirContents(cookieDir, cookiePrefix);
+        deleteFlatDirContents(cookieDir, cookieSuffix);
         result = true;
       }
       return result;
@@ -291,10 +293,10 @@ public class WindowsProxyManager {
       boolean done = false;
       if (isVista()) {
         done = restoreCookies(
-              VISTA_USER_COOKIE_DIR, VISTA_COOKIE_PREFIX, HIDDEN_COOKIE_DIR);
+              VISTA_USER_COOKIE_DIR, COOKIE_SUFFIX, HIDDEN_COOKIE_DIR);
       } else {
         done = restoreCookies(
-            WINXP_USER_COOKIE_DIR, null, HIDDEN_COOKIE_DIR);
+            WINXP_USER_COOKIE_DIR, COOKIE_SUFFIX, HIDDEN_COOKIE_DIR);
       }
       
       if (!done) {
@@ -307,12 +309,12 @@ public class WindowsProxyManager {
      * Restores previously hidden user cookies, if any.
      */
     protected static boolean restoreCookies(File cookieDir, 
-        String cookiePrefix, File hiddenCookieDir) {
+        String cookieSuffix, File hiddenCookieDir) {
       boolean result = false;
       if (cookieDir.exists()) {
         log.info("Deleting cookies created during session from " 
             + cookieDir.getAbsolutePath());
-        deleteFlatDirContents(cookieDir, cookiePrefix);
+        deleteFlatDirContents(cookieDir, cookieSuffix);
       }
       if (hiddenCookieDir.exists()) {
         log.info("Copying cookies from " + hiddenCookieDir.getAbsolutePath() +
@@ -327,17 +329,13 @@ public class WindowsProxyManager {
     /**
      * Deletes all files contained by the given directory.
      * 
-     * For WinXP, we cannot delete all files within the cookie
-     * dir: specifically, index.dat gives us trouble.  Remove what
-     * we can, report what we can't.
-     * 
      * @param dir the directory to delete the contents of
-     * @param prefix if not null, only files matching this prefix will be deleted.
+     * @param suffix if not null, only files with this suffix will be deleted.
      */
-    protected static void deleteFlatDirContents(File dir, String prefix) {
+    protected static void deleteFlatDirContents(File dir, String suffix) {
       if (dir.exists()) {
-        log.info("looking for files starting with: " + prefix);
-        File[] list = dir.listFiles(new PrefixFilter(prefix));
+        log.info("looking for files ending with: " + suffix);
+        File[] list = dir.listFiles(new SuffixFilter(suffix));
         if (null != list) {
           for (File file : list) {
             boolean success = file.delete();
@@ -367,7 +365,7 @@ public class WindowsProxyManager {
       File oracleDirectory = new File(
           System.getenv("USERPROFILE") 
             + File.separator + "AppData" 
-            + File.separator + "Local" 
+            + File.separator + "Roaming" 
             + File.separator + "Microsoft"
             + File.separator + "Windows");
       if (oracleDirectory.exists()) {
@@ -596,19 +594,19 @@ public class WindowsProxyManager {
     	}
     }
     
-    private static class PrefixFilter implements FileFilter {
+    private static class SuffixFilter implements FileFilter {
       
-      private final String prefix;
+      private final String suffix;
       
-      public PrefixFilter(String prefix) {
-        this.prefix = prefix;
+      public SuffixFilter(String suffix) {
+        this.suffix = suffix;
       }
       
       public boolean accept(File pathname) {
         boolean result = false;
-        if (null == prefix) {
+        if (null == suffix) {
           result = true;
-        } else if (pathname.getName().startsWith(prefix)) {
+        } else if (pathname.getName().endsWith(suffix)) {
           result = true;
         }
         return result;

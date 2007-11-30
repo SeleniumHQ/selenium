@@ -259,16 +259,16 @@ public class LauncherUtils {
     }
     
     /**
-     * Copies all files matching the prefix to the destination directory.
+     * Copies all files matching the suffix to the destination directory.
      * 
-     * If no files match, the destination directory is still created,
-     * if possible.
+     * If no files match, and the destination directory did not already
+     * exist, the destination directory is still created, if possible.
      * 
      * @param source the source directory
-     * @param prefix the prefix for all files to be copied.
+     * @param suffix the suffix for all files to be copied.
      * @param dest the destination directory
      */
-    protected static boolean copyDirectory(File source, String prefix, File dest) {
+    protected static boolean copyDirectory(File source, String suffix, File dest) {
       boolean result = false;
       try {
         Project p = new Project();
@@ -277,8 +277,8 @@ public class LauncherUtils {
         c.setTodir(dest);
         FileSet fs = new FileSet();
         fs.setDir(source);
-        if (null != prefix) {
-          fs.setIncludes(prefix + "*"); // add the wildcard.
+        if (null != suffix) {
+          fs.setIncludes("*" + suffix); // add the wildcard.
         }
         c.addFileset(fs);
         c.execute();

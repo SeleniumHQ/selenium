@@ -7,21 +7,21 @@ import java.io.IOException;
 
 public class LauncherUtilsTest extends TestCase {
   
-  private static String COOKIE_PREFIX = "testcookie";
+  private static String COOKIE_SUFFIX = "txt";
   
-  public void testCopyDirectoryWithNonMatchingPrefix() throws IOException {
+  public void testCopyDirectoryWithNonMatchingSuffix() throws IOException {
     File srcDir = makeSourceDirAndCookie();
     File destDir = getNonexistentDestDir();
-    LauncherUtils.copyDirectory(srcDir, COOKIE_PREFIX + "foo", destDir);
+    LauncherUtils.copyDirectory(srcDir, COOKIE_SUFFIX + "foo", destDir);
     assertTrue(destDir.exists());
     assertEquals(0, destDir.listFiles().length);
     copyDirectoryCleanUp(srcDir, destDir);
   }
   
-  public void testCopyDirecotryWithMatchingPrefix() throws IOException {
+  public void testCopyDirectoryWithMatchingSuffix() throws IOException {
     File srcDir = makeSourceDirAndCookie();
     File destDir = getNonexistentDestDir();
-    LauncherUtils.copyDirectory(srcDir, COOKIE_PREFIX, destDir);
+    LauncherUtils.copyDirectory(srcDir, COOKIE_SUFFIX, destDir);
     assertTrue(destDir.exists());
     assertEquals(1, destDir.listFiles().length);
     copyDirectoryCleanUp(srcDir, destDir);
@@ -32,7 +32,7 @@ public class LauncherUtilsTest extends TestCase {
     File srcDir = new File(tempDir, "rc-lut-src");
     srcDir.deleteOnExit();
     assertTrue(srcDir.mkdir());
-    File cookieFile = File.createTempFile(COOKIE_PREFIX, "tmp", srcDir);
+    File cookieFile = File.createTempFile("testcookie", COOKIE_SUFFIX, srcDir);
     cookieFile.deleteOnExit();
     assertTrue(cookieFile.exists());
     return srcDir;
