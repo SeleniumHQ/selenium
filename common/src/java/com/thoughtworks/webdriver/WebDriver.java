@@ -95,36 +95,22 @@ public interface WebDriver {
     WebDriver setVisible(boolean visible);
 
   /**
-     * Find all elements within the current page which match the given XPath
-     * query.
+     * Find all elements within the current page using the given mechanism.
      *
-     * @param xpath An XPath expression, selecting elements, to use.
-     * @return A list of all {@link WebElement}s matching the XPath, or an
-     *         empty list if nothing matches
-     * @deprecated Use {@link com.thoughtworks.webdriver.WebDriver#findElements(By)}
+     * @param by The locating mechanism to use
+     * @return A list of all {@link WebElement}s, or an empty list if nothing matches
+     * @see com.thoughtworks.webdriver.By
      */
-    @Deprecated
-    List<WebElement> selectElements(String xpath);
     List<WebElement> findElements(By by);
 
 
     /**
-     * Select the first {@link WebElement} which matches the given selector. The
-     * selector is assumed to be an XPath expression, unless it begins with
-     * <ul>
-     * <li>"link=" (no spaces!) followed by the link text to look for.</li>
-     * <li>"id=" followed by the ID of the element to locate</li>
-     * </ul>
+     * Find the first {@link WebElement} using the given method.
      *
-     * @param selector An XPath expression to use, or the link text of if the
-     *                 selector begins with "link="
+     * @param by The locating mechanism
      * @return The first matching element on the current page
      * @throws NoSuchElementException If no matching elements are found
-     * @deprecated Use {@link com.thoughtworks.webdriver.WebDriver#findElement(By)}
      */
-    @Deprecated
-    WebElement selectElement(String selector);
-
     WebElement findElement(By by);
 
     // Misc

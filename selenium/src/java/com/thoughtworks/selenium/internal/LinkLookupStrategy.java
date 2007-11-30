@@ -4,6 +4,7 @@ import com.thoughtworks.selenium.SeleniumException;
 import com.thoughtworks.webdriver.WebDriver;
 import com.thoughtworks.webdriver.WebElement;
 import com.thoughtworks.webdriver.RenderedWebElement;
+import com.thoughtworks.webdriver.By;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -14,7 +15,7 @@ import java.util.regex.Pattern;
 
 public class LinkLookupStrategy implements LookupStrategy {
     private static final Pattern TEXT_MATCHING_STRATEGY_AND_VALUE_PATTERN = Pattern.compile("^(\\p{Alpha}+):(.*)");
-    private Map textMatchingStrategies = new HashMap();
+    private Map<String, TextMatchingStrategy> textMatchingStrategies = new HashMap<String, TextMatchingStrategy>();
 
     public LinkLookupStrategy() {
         textMatchingStrategies.put("implicit", new GlobTextMatchingStrategy());
@@ -24,7 +25,7 @@ public class LinkLookupStrategy implements LookupStrategy {
     }
 
     public WebElement find(WebDriver driver, String use) {
-        List<WebElement> elements = driver.selectElements("//a");
+        List<WebElement> elements = driver.findElements(By.xpath("//a"));
 
         String strategyName = "implicit";
         Matcher matcher = TEXT_MATCHING_STRATEGY_AND_VALUE_PATTERN.matcher(use);
@@ -32,7 +33,7 @@ public class LinkLookupStrategy implements LookupStrategy {
             strategyName = matcher.group(1);
             use = matcher.group(2);
         }
-        TextMatchingStrategy strategy = (TextMatchingStrategy) textMatchingStrategies.get(strategyName);
+        TextMatchingStrategy strategy = textMatchingStrategies.get(strategyName);
 
         Iterator<WebElement> allLinks = elements.iterator();
         while (allLinks.hasNext()) {

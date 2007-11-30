@@ -119,10 +119,6 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText, Fi
         return this;
     }
 
-    public List<WebElement> selectElements(String selector) {
-        return findElements(By.deprecatedOldStyleSelector(selector));
-    }
-
     @SuppressWarnings("unchecked")
     public List<WebElement> findElementsByXPath(String selector) {
         try {
@@ -146,10 +142,6 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText, Fi
 
     public List<WebElement> findElements(By by) {
         return by.findElements(this);
-    }
-
-    public WebElement selectElement(String selector) {
-        return findElement(By.deprecatedOldStyleSelector(selector));
     }
 
     public String getPageSource() {

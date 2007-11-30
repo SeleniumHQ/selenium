@@ -62,10 +62,6 @@ public class InternetExplorerDriver implements WebDriver, FindsById, FindsByLink
 
     public native WebDriver setVisible(boolean visible);
 
-    public WebElement selectElement(String selector) {
-        return findElement(By.deprecatedOldStyleSelector(selector));
-    }
-
 
     public List<WebElement> findElements(By by) {
         return by.findElements(this);
@@ -93,11 +89,6 @@ public class InternetExplorerDriver implements WebDriver, FindsById, FindsByLink
             throw new RuntimeException(e);
         }
     }
-    @SuppressWarnings("unchecked")
-    public List<WebElement> selectElements(String selector) {
-        return findElements(By.deprecatedOldStyleSelector(selector));
-    }
-
 
     public List<WebElement> findElementsByXPath(String using) {
         List<ElementNode> rawElements = new ArrayList<ElementNode>();

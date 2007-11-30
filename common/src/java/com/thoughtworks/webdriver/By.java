@@ -8,6 +8,11 @@ import com.thoughtworks.webdriver.internal.FindsById;
 import com.thoughtworks.webdriver.internal.FindsByLinkText;
 import com.thoughtworks.webdriver.internal.FindsByXPath;
 
+/**
+ * Mechanism used to locate elements within a document. In order to create
+ * your own locating mechanisms, it is possible to subclass this class and
+ * override the protected methods as required.
+ */
 public class By {
     private final How how;
     private final String using;
@@ -29,18 +34,7 @@ public class By {
         return new By(How.XPATH, xpathExpression);
     }
 
-    @Deprecated
-    public static By deprecatedOldStyleSelector(String selector) {
-      if (selector.startsWith("id=")) {
-          return By.id(selector.substring("id=".length()));
-      } else if (selector.startsWith("link=")) {
-          return By.linkText(selector.substring("link=".length()));
-      } else {
-          return By.xpath(selector);
-      }
-    }
-
-  public WebElement findElement(WebDriver driver) {
+    public WebElement findElement(WebDriver driver) {
         if (!isFilertingRequired())
             return findASingleElement(driver);
 
@@ -84,10 +78,31 @@ public class By {
         }
     }
 
+  /**
+   * When finding elements and using filtering, this methods determines whether
+   * or not to include the given element the list returned to the user. This
+   * means that a subclass can apply more sophisticated processing than is
+   * possible using just an xpath (for example). Note that if filtering is required
+   * this method will be called even if the user is finding only one element.
+   *
+   * @param element The element being considered for inclusion into the list
+   * @return True if the elemens should be included
+   * @see #isFilertingRequired()
+   */
     protected boolean isElementIncluded(WebElement element) {
         return true;
     }
 
+  /**
+   * Indicates whether this By will apply a filter to determine whether or not
+   * to return a given element to the user when they are searching for something.
+   * This method ultimately gets called when the user calls either
+   * {@link WebDriver#findElement(By)} or {@link WebDriver#findElements(By)} If
+   * filtering is required, the By will always try and get as many elements as
+   * possible, even if {@link WebDriver#findElement(By)} has been called.
+   *
+   * @return True if filtering is required, false if not.
+   */
     protected boolean isFilertingRequired() {
         return false;
     }

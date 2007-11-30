@@ -139,14 +139,6 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
     return new FirefoxWebElement(this, elementId);
   }
 
-  public WebElement selectElement(String selector) {
-        return findElement(By.deprecatedOldStyleSelector(selector));
-    }
-
-    public List<WebElement> selectElements(String xpath) {
-        return findElements(By.deprecatedOldStyleSelector(xpath));
-    }
-
   public WebDriver setVisible(boolean visible) {
         // no-op
         return this;
