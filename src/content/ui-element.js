@@ -9,7 +9,16 @@ var XHTML_XMLNS = 'http://www.w3.org/1999/xhtml';
 // globals
 
 var GLOBAL = {
-    rollupManager: {}
+    NAMESPACE_RESOLVER: function(prefix) {
+        if (prefix == 'html' || prefix == 'xhtml' || prefix == 'x') {
+            return 'http://www.w3.org/1999/xhtml';
+        } else if (prefix == 'mathml') {
+            return 'http://www.w3.org/1998/Math/MathML';
+        } else {
+            throw new Error("Unknown namespace: " + prefix + ".");
+        }
+    }
+    , rollupManager: {}
     , uiMap: {}
 };
 
@@ -1154,26 +1163,136 @@ function parse_locator(locator)
 
 
 /**
+ * Currently a near copy of BrowserBot.prototype._findElementUsingFullXPath()
+ * and BrowserBot.prototype.locateElementByXPath(), only the full resultset is
+ * returned. We'll try to move this into Core at some point. A pageBot object
+ * may optionally be passed in.
+ */
+function eval_xpath(xpath, inDocument, pageBot)
+{
+    // Trim any trailing "/": not valid xpath, and remains from attribute
+    // locator.
+    if (xpath.charAt(xpath.length - 1) == '/') {
+        xpath = xpath.slice(0, -1);
+    }
+    
+    var results = [];
+    
+    // Handle //tag
+    var match = xpath.match(/^\/\/(\w+|\*)$/);
+    if (match) {
+        var elements = inDocument
+            .getElementsByTagName(match[1].toUpperCase());
+        if (elements != null) {
+            for (var i = 0; i < elements.length; ++i) {
+                results.push(elements[i]);
+            }
+        }
+        return results;
+    }
+    
+    if (pageBot) {
+        // Handle //tag[@attr='value']
+        var match = xpath
+            .match(/^\/\/(\w+|\*)\[@(\w+)=('([^\']+)'|"([^\"]+)")\]$/);
+        if (match) {
+            // comments removed
+            var val = pageBot._findElementByTagNameAndAttributeValue(
+                    inDocument,
+                    match[1].toUpperCase(),
+                    match[2].toLowerCase(),
+                    match[3].slice(1, -1)
+                    );
+            if (val) {
+                return [ val ];
+            }
+        }
+        
+        // Handle //tag[text()='value']
+        var match = xpath
+            .match(/^\/\/(\w+|\*)\[text\(\)=('([^\']+)'|"([^\"]+)")\]$/);
+        if (match) {
+            return [ pageBot._findElementByTagNameAndText(
+                inDocument,
+                match[1].toUpperCase(),
+                match[2].slice(1, -1)) ];
+        }
+    }
+    
+    // HUGE hack - remove namespace from xpath for IE
+    if (browserVersion.isIE) {
+        xpath = xpath.replace(/x:/g, '')
+    }
+    
+    var results = [];
+    if (inDocument.evaluate) {
+        // Use document.evaluate() if it's available
+        var xpathResult = inDocument
+            .evaluate(xpath, inDocument, GLOBAL.NAMESPACE_RESOLVER, 0, null);
+        var result = xpathResult.iterateNext();
+        while (result) {
+            results.push(result);
+            result = xpathResult.iterateNext();
+        }
+    }
+    else {
+        // If not, fall back to slower JavaScript implementation
+        var context = new ExprContext(inDocument);
+        var xpathObj = xpathParse(xpath);
+        var xpathResult = xpathObj.evaluate(context);
+        if (xpathResult && xpathResult.value) {
+            for (var i = 0; i < xpathResult.value.length; ++i) {
+                results.push(xpathResult.value[i]);
+            }
+        }
+    }
+    
+    return results.length > 0 ? results : null;
+}
+
+
+
+/**
+ * Currently a near copy of BrowserBot.prototype.locateElementByCss(), only the
+ * full resultset is returned. We'll try to move this into Core at some point.
+ */
+function eval_css(css, inDocument)
+{
+    var results = cssQuery(css, inDocument);
+    return results.length > 0 ? results : null;
+}
+
+
+
+/**
  * This function duplicates part of BrowserBot.findElement() to open up locator
- * evaluation on arbitrary documents. It returns a located element, or throws
- * a SeleniumError if the locator does not evaluate to a document node. This
- * should replace eval_xpath().
+ * evaluation on arbitrary documents. It returns a plain old array of located
+ * elements found by using a Selenium locator.
+ * 
+ * Multiple results may be generated for xpath and CSS locators. Even though a
+ * list could potentially be generated for other locator types, such as link,
+ * we don't try for them, because they aren't very expressive location
+ * strategies; if you want a list, use xpath or CSS. Furthermore, currently the
+ * xpath evaluation optimizations have been kept intact. So in some cases where
+ * you'd expect multiple results, you'll still only get one! For these types of
+ * locators, performance is more important more than ideal behavior.
  *
  * @param locator  a locator string
  * @param inDocument  the document in which to apply the locator
+ *
+ * @return  a list of result elements
  */
 function eval_locator(locator, inDocument)
 {
     locator = parse_locator(locator);
     
-    var element;
+    var pageBot;
     if (typeof(selenium) != 'undefined' && selenium != undefined) {
         if (typeof(editor) == 'undefined' || editor.state == 'playing') {
             smart_log('info', 'Trying [' + locator.type + ']: '
                 + locator.string);
         }
-        element = selenium.browserbot.findElementBy(locator.type,
-            locator.string, inDocument);
+        pageBot = selenium.browserbot
     }
     else {
         if (!GLOBAL.mozillaBrowserBot) {
@@ -1181,15 +1300,27 @@ function eval_locator(locator, inDocument)
             // window as a dummy window.
             GLOBAL.mozillaBrowserBot = new MozillaBrowserBot(window)
         }
-        element = GLOBAL.mozillaBrowserBot
-            .findElementBy(locator.type, locator.string, inDocument);
-    }
-    if (element != null) {
-        return element;
+        pageBot = GLOBAL.mozillaBrowserBot;
     }
     
-    // Element was not found by any locator function.
-    throw new SeleniumError("Element " + locator.string + " not found");
+    var results = [];
+    
+    if (locator.type == 'xpath' || (locator.string.substr(0, 2) == '//' &&
+        locator.type == 'implicit')) {
+        results = eval_xpath(locator.string, inDocument);
+    }
+    else if (locator.type == 'css') {
+        results = eval_css(locator.string, inDocument);
+    }
+    else {
+        var element = pageBot
+            .findElementBy(locator.type, locator.string, inDocument);
+        if (element != null) {
+            results.push(element);
+        }
+    }
+    
+    return results;
 }
 
 
@@ -1525,20 +1656,23 @@ function UIElement(uiElementShorthand)
     //     ]
     //     , getLocator: function(args) {
     //         return this._listXPath +
-    //             "/a[text()='" + args['name'] + "']";
+    //             "/a[text()=" + args.name.quoteForXPath() + "]";
     //     }
-    //     // maintain testcases for getXPath()
+    //     , getGenericLocator: function() {
+    //         return this._listXPath + '/a';
+    //     }
+    //     // maintain testcases for getLocator()
     //     , testcase1: {
     //         // defaultValues used if args not specified
     //         args: { name: 'foo' }
-    //         , xhtml: '<div id=?topiclist>'
-    //             + '<ul><li><a expected-result>foo</a></li></ul>'
+    //         , xhtml: '<div id="topiclist">'
+    //             + '<ul><li><a expected-result="1">foo</a></li></ul>'
     //             + '</div>'
     //     }
     //     // set a local element variable
     //     , _listXPath: "//div[@id='topiclist']/ul/li"
     // }
-    
+    //
     // name cannot be null or an empty string. Enforce the same requirement for
     // the description.
     
@@ -1634,15 +1768,9 @@ function UIElement(uiElementShorthand)
             locator = (locator.type == 'implicit')
                 ? locator.string
                 : locator.type + '=' + locator.string;
-            try {
-                result = eval_locator(locator, doc);
-                if (result != null &&
-                    result.hasAttribute('expected-result')) {
-                    continue testcaseLoop;
-                }
-            }
-            catch (e) {
-                smart_log('debug', e.message);
+            var results = eval_locator(locator, doc);
+            if (results.length && results[0].hasAttribute('expected-result')) {
+                continue testcaseLoop;
             }
             
             // testcase failed
@@ -1756,6 +1884,15 @@ function UIElement(uiElementShorthand)
         }
         else {
             this.getLocator = uiElementShorthand.getXPath;
+        }
+        
+        if (uiElementShorthand.genericLocator) {
+            this.getGenericLocator = function() {
+                return uiElementShorthand.genericLocator;
+            };
+        }
+        else if (uiElementShorthand.getGenericLocator) {
+            this.getGenericLocator = uiElementShorthand.getGenericLocator;
         }
         
         // get the testcases and local variables
@@ -2303,13 +2440,9 @@ function UIMap()
      */
     this.getPageElement = function(uiSpecifierString, inDocument)
     {
-        try {
-            return eval_locator(this.getLocator(uiSpecifierString), inDocument);
-        }
-        catch (e) {
-            smart_log('debug', 'Caught exception: ' + e.message);
-            return null;
-        }
+        var locator = this.getLocator(uiSpecifierString);
+        var results = eval_locator(locator, inDocument);
+        return results.length ? results[0] : null;
     };
     
     
@@ -2361,33 +2494,51 @@ function UIMap()
             var uiElements = pageset.getUIElements();
             for (var j = 0; j < uiElements.length; ++j) {
                 var uiElement = uiElements[j];
-                //smart_alert(print_r(uiElement.defaultLocators));
-                for (var locator in uiElement.defaultLocators) {
-                    try {
-                        var node = eval_locator(locator, inDocument);
-                        
-                        // use a heuristic to determine whether the element
-                        // specified is the "same" as the element we're matching
-                        if (is_fuzzy_match) {
-                            if (is_fuzzy_match(node, pageElement)) {
-                                return this.prefix + '=' +
-                                    new UISpecifier(pageset.name,
-                                        uiElement.name, 
-                                        uiElement.defaultLocators[locator]);
-                            }
-                        }
-                        else {
-                            if (node == pageElement) {
-                                return this.prefix + '=' +
-                                    new UISpecifier(pageset.name,
-                                        uiElement.name, 
-                                        uiElement.defaultLocators[locator]);
-                            }
+                
+                // first test against the generic locator, if there is one.
+                // This should net some performance benefit when recording on
+                // more complicated pages.
+                if (uiElement.getGenericLocator) {
+                    var passedTest = false;
+                    var results =
+                        eval_locator(uiElement.getGenericLocator(), inDocument);
+                    for (var i = 0; i < results.length; ++i) {
+                        if (results[i] == pageElement) {
+                            passedTest = true;
+                            break;
                         }
                     }
-                    catch (e) {
-                        if (!e.isSeleniumError) {
-                            smart_alert(locator + "\n" + e.message);
+                    if (!passedTest) {
+                        continue;
+                    }
+                }
+                
+                //smart_alert(print_r(uiElement.defaultLocators));
+                for (var locator in uiElement.defaultLocators) {
+                    var results = eval_locator(locator, inDocument);
+                    if (results.length) {
+                        node = results[0];
+                    }
+                    else {
+                        continue;
+                    }
+                    
+                    // use a heuristic to determine whether the element
+                    // specified is the "same" as the element we're matching
+                    if (is_fuzzy_match) {
+                        if (is_fuzzy_match(node, pageElement)) {
+                            return this.prefix + '=' +
+                                new UISpecifier(pageset.name,
+                                    uiElement.name, 
+                                    uiElement.defaultLocators[locator]);
+                        }
+                    }
+                    else {
+                        if (node == pageElement) {
+                            return this.prefix + '=' +
+                                new UISpecifier(pageset.name,
+                                    uiElement.name, 
+                                    uiElement.defaultLocators[locator]);
                         }
                     }
                 }

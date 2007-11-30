@@ -280,6 +280,14 @@ map.addElement('allPages', {
     var id = this._idMap[label];
     return '//input[@id=' + id.quoteForXPath() + ']';
 }</pre></td>
+<tr><td>genericLocator<br />getGenericLocator</td>
+    <td>No</td>
+    <td><p>(String | Function) either a fixed locator string, or a function that returns a locator string. If a function, it should take no arguments.</p><p>You may experience some slowdown when recording on pages where individual UI elements have many default locators (due to many permutations of default values over multiple arguments). This is because each default locator is potentially evaluated and matched against the interacted page element. This becomes especially problematic if several UI elements have this characteristic.</p><p>By specifying a generic locator, you give the matching engine a chance to skip over UI elements that definitely don't match. The default locators for skipped elements will not be evaluated unless the generic locator matches the interacted page element..</p></td>
+    <td><pre>genericLocator: "//table[@class='ctrl']"
+    + "/descendant::input"</pre>
+        <pre>getGenericLocator: function() {
+    return this._xpathPrefix + '/descendant::a';
+}</pre>
 </tr>
 <tr><td>testcase*</td>
     <td>No</td>

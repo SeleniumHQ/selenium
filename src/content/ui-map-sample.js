@@ -259,6 +259,7 @@ myMap.addElement('articleListPages', {
     , getLocator: function(args) {
         return "//h2[@class='ishinfo'][" + args.index + ']/a';
     }
+    , genericLocator: "//h2[@class='ishinfo']/a"
 });
 myMap.addElement('articleListPages', {
     name: 'article'
@@ -274,7 +275,7 @@ myMap.addElement('articleListPages', {
             name: 'article_index'
             , description: 'the index of the article within the issue; '
                 + 'typically two per issue'
-            , defaultValues: range(1, 2)//change back to 5
+            , defaultValues: range(1, 5)
         }
     ]
     , getLocator: function(args) {
@@ -283,6 +284,8 @@ myMap.addElement('articleListPages', {
             + '[' + (args.article_index || 1) + "]/h3[@class='title']/a";
         return xpath;
     }
+    , genericLocator: "//h2[@class='ishinfo']"
+        + "/following-sibling::div[@class='item']/h3[@class='title']/a"
 });
 myMap.addElement('articleListPages', {
     name: 'author'
@@ -310,6 +313,8 @@ typically two articles per issue"
             + '[' + (args.article_index || 1) + "]/h4[@class='byline']/a";
         return xpath;
     }
+    , genericLocator: "//h2[@class='ishinfo']"
+        + "/following-sibling::div[@class='item']/h4[@class='byline']/a"
 });
 myMap.addElement('articleListPages', {
     name: 'next_page'
