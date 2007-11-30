@@ -8,12 +8,36 @@ FirefoxDriver.prototype.get = function(respond, url) {
     var self = this;
     this.context.frameId = "?";
 
-    new WebLoadingListener(this, function(event) {
-        // TODO: Rescue the URI and response code from the event
-        var responseText = "";
-        respond(self.context, "get", responseText);
-    });
+    // Check to see if the given url is the same as the current one, but
+    // with a different anchor tag.
+    var current = Utils.getBrowser(this.context).contentWindow.location
+    var ioService = Utils.getService("@mozilla.org/network/io-service;1", "nsIIOService");
+    var currentUri = ioService.newURI(current, "", null);
+    var futureUri = ioService.newURI(url, "", currentUri);
+
+    var loadEventExpected = true;
+
+    if (currentUri && futureUri &&
+        currentUri.prePath == futureUri.prePath &&
+        currentUri.filePath == futureUri.filePath) {
+        // Looks like we're at the same url with a ref
+        // Being clever and checking the ref was causing me headaches. Brute force for now
+        loadEventExpected = futureUri.path.indexOf("#") == -1;
+    }
+
+    if (loadEventExpected) {
+        new WebLoadingListener(this, function(event) {
+            // TODO: Rescue the URI and response code from the event
+            var responseText = "";
+            respond(self.context, "get", responseText);
+        });
+    }
+
     Utils.getBrowser(this.context).loadURI(url);
+
+    if (!loadEventExpected) {
+        respond(self.context, "get", "");
+    }
 }
 
 FirefoxDriver.prototype.quit = function(respond) {
@@ -146,10 +170,7 @@ FirefoxDriver.prototype.switchToDefaultContent = function(respond) {
 FirefoxDriver.prototype.goBack = function(respond) {
     var browser = Utils.getBrowser(this.context);
 
-    dump("Can we go back?\n");
     if (browser.canGoBack) {
-      dump("Yes we can\n");
-      Utils.dump(browser);
       browser.goBack();
     }
 

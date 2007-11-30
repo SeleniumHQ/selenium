@@ -33,6 +33,8 @@ import org.jaxen.JaxenException;
 import org.jaxen.XPath;
 
 import java.net.URL;
+import java.net.UnknownHostException;
+import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -80,16 +82,24 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText, Fi
             URL fullUrl = new URL(url);
             Page page = webClient.getPage(fullUrl);
             page.initialize();
-            pickWindow();
-            return this;
+        } catch (UnknownHostException e) {
+          // This should be fine
+        } catch (ConnectException e) {
+          // This might be expected
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+
+        pickWindow();
+        return this;
     }
 
     private void pickWindow() {
         currentWindow = webClient.getCurrentWindow();
         Page page = webClient.getCurrentWindow().getEnclosedPage();
+
+        if (page == null)
+          return;
 
         if (((HtmlPage) page).getFrames().size() > 0) {
             FrameWindow frame = (FrameWindow) ((HtmlPage) page).getFrames().get(0);

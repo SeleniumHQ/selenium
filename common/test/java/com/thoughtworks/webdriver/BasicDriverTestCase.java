@@ -325,10 +325,11 @@ public abstract class BasicDriverTestCase extends TestCase {
     }
 
     public void testShouldTreatANonBreakingSpaceAsAnyOtherWhitespaceCharacterWhenCollapsingWhitespace() {
-        driver.get(simpleTestPage);
-        String text = driver.findElement(By.id("nbspandspaces")).getText();
+      driver.get(simpleTestPage);
+      WebElement element = driver.findElement(By.id("nbspandspaces"));
+      String text = element.getText();
 
-        assertEquals("This line has a non-breaking space and spaces", text);
+      assertEquals("This line has a non-breaking space and spaces", text);
     }
 
     public void testHavingInlineElementsShouldNotAffectHowTextIsReturned() {
@@ -831,6 +832,21 @@ public abstract class BasicDriverTestCase extends TestCase {
 
       driver.navigate().forward();
       assertEquals("We Arrive Here", driver.getTitle());
+    }
+
+    public void testShouldBeAbleToGetAFragmentOnTheCurrentPage() {
+      driver.get(xhtmlTestPage);
+      driver.get(xhtmlTestPage + "#text");
+    }
+
+    public void testShouldReturnWhenGettingAUrlThatDoesNotResolve() {
+      // Of course, we're up the creek if this ever does get registered
+      driver.get("http://www.thisurldoesnotexist.com/");
+    }
+
+    public void testShouldReturnWhenGettingAUrlThatDoesNotConnect() {
+      // Here's hoping that there's nothing here. There shouldn't be
+      driver.get("http://localhost:3001");
     }
 
     protected WebDriver driver;

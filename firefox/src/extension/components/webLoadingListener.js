@@ -1,38 +1,40 @@
-//var LOAD_EVENT = "DOMContentLoaded";
-var LOAD_EVENT = "load";
-var ORDERED_NODE_ITERATOR_TYPE = Components.interfaces.nsIDOMXPathResult.ORDERED_NODE_ITERATOR_TYPE;
+var STATE_START = Components.interfaces.nsIWebProgressListener.STATE_START;
+var STATE_STOP = Components.interfaces.nsIWebProgressListener.STATE_STOP;
 
 function WebLoadingListener(driver, toCall) {
-    var listener = this;
-    var browser = Utils.getBrowser(driver.context);
+  var listener = this;
+  var browser = Utils.getBrowser(driver.context);
 
-    this.func = function(event) {
-        // Is there a meta refresh?
-        // var doc = Utils.getDocument(driver.context);
-        var doc = event.originalTarget;
-        var result = doc.evaluate("/html/head/meta[@http-equiv]", doc, null, ORDERED_NODE_ITERATOR_TYPE, null);
-        var element = result.iterateNext();
-        while (element) {
-            if ("refresh" == element.getAttribute("http-equiv").toLowerCase()) {
-                var content = element.getAttribute("content");
-                if (content) {
-                    var bits = content.split(';');
-                    if (bits[0] - 0 === 0) {
-                        // We have an instant refresh, so return
-                        return;
-                    }
-                }
-            }
-            element = result.iterateNext();
+  this.handler = {
+    QueryInterface: function(iid) {
+      if (iid.equals(Components.interfaces.nsIWebProgressListener) ||
+          iid.equals(Components.interfaces.nsISupportsWeakReference) ||
+          iid.equals(Components.interfaces.nsISupports))
+        return this;
+      throw Components.results.NS_NOINTERFACE;
+    },
+
+    onStateChange: function(webProgress, request, flags, status) {
+      if (flags & STATE_STOP) {
+        if (request.URI) {
+          WebLoadingListener.removeListener(browser, listener);
+          toCall();
         }
-        WebLoadingListener.removeListener(browser, listener);
+      }
+      return 0;
+    },
 
-        toCall(event);
-    }
+    onLocationChange: function(aProgress, aRequest, aURI) { return 0; },
+    onProgressChange: function() { return 0; },
+    onStatusChange: function() { return 0; },
+    onSecurityChange: function() { return 0; },
+    onLinkIconAvailable: function() { return 0; }
+  }
 
-    browser.addEventListener(LOAD_EVENT, this.func, true);
+  browser.addProgressListener(this.handler,
+      Components.interfaces.nsIWebProgress.NOTIFY_STATE_DOCUMENT);
 }
 
 WebLoadingListener.removeListener = function(browser, listener) {
-    browser.removeEventListener(LOAD_EVENT, listener.func, true);
+  browser.removeProgressListener(listener.handler);
 }
