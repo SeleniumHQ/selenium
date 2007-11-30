@@ -1079,12 +1079,13 @@ BrowserBot.prototype.getTitle = function() {
     return t;
 }
 
-BrowserBot.prototype.getCookieByName = function(cookieName) {
-    var ck = this.getDocument().cookie;
+BrowserBot.prototype.getCookieByName = function(cookieName, doc) {
+    if (!doc) doc = this.getDocument();
+    var ck = doc.cookie;
     if (!ck) return null;
     var ckPairs = ck.split(/;/);
     for (var i = 0; i < ckPairs.length; i++) {
-        var ckPair = ckPairs[i];
+        var ckPair = ckPairs[i].trim();
         var ckNameValue = ckPair.split(/=/);
         var ckName = decodeURIComponent(ckNameValue[0]);
         if (ckName === cookieName) {
@@ -1092,6 +1093,82 @@ BrowserBot.prototype.getCookieByName = function(cookieName) {
         }
     }
     return null;
+}
+
+BrowserBot.prototype.getAllCookieNames = function() {
+    var ck = this.getDocument().cookie;
+    if (!ck) return [];
+    var cookieNames = [];
+    var ckPairs = ck.split(/;/);
+    for (var i = 0; i < ckPairs.length; i++) {
+        var ckPair = ckPairs[i].trim();
+        var ckNameValue = ckPair.split(/=/);
+        var ckName = decodeURIComponent(ckNameValue[0]);
+        cookieNames.push(ckName);
+    }
+    return cookieNames;
+}
+
+BrowserBot.prototype.deleteCookie = function(cookieName, domain, path, doc) {
+    if (!doc) doc = this.getDocument();
+    var expireDateInMilliseconds = (new Date()).getTime() + (-1 * 1000);
+    var cookie = cookieName + "=deleted; ";
+    if (path) {
+        cookie += "path=" + path + "; ";
+    }
+    if (domain) {
+        cookie += "domain=" + domain + "; ";
+    }
+    cookie += "expires=" + new Date(expireDateInMilliseconds).toGMTString();
+    LOG.debug("Setting cookie to: " + cookie);
+    doc.cookie = cookie;
+}
+
+/** Try to delete cookie, return false if it didn't work */
+BrowserBot.prototype._maybeDeleteCookie = function(cookieName, domain, path, doc) {
+    this.deleteCookie(cookieName, domain, path, doc);
+    return (!this.getCookieByName(cookieName));
+}
+    
+
+BrowserBot.prototype._recursivelyDeleteCookieDomains = function(cookieName, domain, path, doc) {
+    var deleted = this._maybeDeleteCookie(cookieName, domain, path, doc);
+    if (deleted) return true;
+    var dotIndex = domain.indexOf(".");
+    if (dotIndex == 0) {
+        return this._recursivelyDeleteCookieDomains(cookieName, domain.substring(1), path, doc);
+    } else if (dotIndex != -1) {
+        return this._recursivelyDeleteCookieDomains(cookieName, domain.substring(dotIndex), path, doc);
+    }
+}
+
+BrowserBot.prototype._recursivelyDeleteCookie = function(cookieName, domain, path, doc) {
+    var deleted = this._maybeDeleteCookie(cookieName, null, path, doc);
+    if (deleted) return true;
+    deleted = this._recursivelyDeleteCookieDomains(cookieName, domain, path, doc);
+    if (deleted) return true;
+    if (deleted) return true;
+    var slashIndex = path.lastIndexOf("/");
+    var finalIndex = path.length-1;
+    if (slashIndex == finalIndex) {
+        slashIndex--;
+    }
+    if (slashIndex == -1) return false;
+    return this._recursivelyDeleteCookie(cookieName, domain, path.substring(0, slashIndex+1), doc);
+}
+
+BrowserBot.prototype.recursivelyDeleteCookie = function(cookieName, domain, path) {
+    var win = this.getCurrentWindow();
+    var doc = win.document;
+    if (this._maybeDeleteCookie(cookieName, domain, path, doc)) return;
+    if (!domain) {
+        domain = doc.domain;
+    }
+    if (!path) {
+        path = win.location.pathname;
+    }
+    var deleted = this._recursivelyDeleteCookie(cookieName, "." + domain, path, doc);
+    if (!deleted) throw new SeleniumError("Couldn't delete cookie " + cookieName);
 }
 
 /*

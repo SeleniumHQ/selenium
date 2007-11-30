@@ -2280,15 +2280,22 @@ Selenium.prototype.doDeleteCookie = function(name,optionsString) {
      * If the path is wrong, or the domain is wrong, the cookie simply won't be deleted.  Also
      * note that specifying a domain that isn't a subset of the current domain will usually fail.
      *
+     * Since there's no way to discover at runtime the original path and domain of a given cookie,
+     * we've added an option called 'recurse' to try all sub-domains of the current domain with
+     * all paths that are a subset of the current path.  Beware; this option can be slow.  In
+     * big-O notation, it operates in O(n*m) time, where n is the number of dots in the domain
+     * name and m is the number of slashes in the path.
+     *
      * @param name the name of the cookie to be deleted
-     * @param optionsString options for the cookie. Currently supported options include 'path' and 'domain'.
-     *      the optionsString's format is "path=/path/, domain=.foo.com". The order of options are irrelevant.
-     *      Note that specifying a domain that isn't a subset of the current domain will
-     *      usually fail.
+     * @param optionsString options for the cookie. Currently supported options include 'path', 'domain'
+     *      and 'recurse.' The optionsString's format is "path=/path/, domain=.foo.com, recurse=true".
+     *      The order of options are irrelevant. Note that specifying a domain that isn't a subset of
+     *      the current domain will usually fail.
      */
     // set the expire time of the cookie to be deleted to one minute before now.
     var path = "";
     var domain = "";
+    var recurse = false;
     var matched = false;
     results = /path=([^\s,]+)[,]?/.exec(optionsString);
     if (results) {
@@ -2299,6 +2306,14 @@ Selenium.prototype.doDeleteCookie = function(name,optionsString) {
     if (results) {
         matched = true;
         domain = results[1];
+    }
+    results = /recurse=([^\s,]+)[,]?/.exec(optionsString);
+    if (results) {
+        matched = true;
+        recurse = results[1];
+        if ("false" == recurse) {
+            recurse = false;
+        }
     }
     // Treat the entire optionsString as a path (for backwards compatibility)
     if (optionsString && !matched) {
@@ -2311,19 +2326,25 @@ Selenium.prototype.doDeleteCookie = function(name,optionsString) {
             path = path.replace(/\/$/, "");
         }
     }    
-    var expireDateInMilliseconds = (new Date()).getTime() + (-1 * 1000);
-    var cookie = name.trim() + "=deleted; ";
     path = path.trim();
     domain = domain.trim();
-    if (path) {
-        cookie += "path=" + path + "; ";
+    var cookieName = name.trim();
+    if (recurse) {
+        this.browserbot.recursivelyDeleteCookie(cookieName, domain, path);
+    } else {
+        this.browserbot.deleteCookie(cookieName, domain, path);
     }
-    if (domain) {
-        cookie += "domain=" + domain + "; ";
+}
+
+Selenium.prototype.doDeleteAllVisibleCookies = function() {
+    /** Calls deleteCookie with recurse=true on all cookies visible to the current page.
+    * As noted on the documentation for deleteCookie, recurse=true can be much slower
+    * than simply deleting the cookies using a known domain/path.
+    */
+    var cookieNames = this.browserbot.getAllCookieNames();
+    for (var i = 0; i < cookieNames.length; i++) {
+        this.browserbot.recursivelyDeleteCookie(cookieNames[i]);
     }
-    cookie += "expires=" + new Date(expireDateInMilliseconds).toGMTString();
-    LOG.debug("Setting cookie to: " + cookie);
-    this.browserbot.getDocument().cookie = cookie;
 }
 
 Selenium.prototype.doSetBrowserLogLevel = function(logLevel) {
