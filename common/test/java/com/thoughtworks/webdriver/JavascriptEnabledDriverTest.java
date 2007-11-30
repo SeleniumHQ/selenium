@@ -153,12 +153,12 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
     public void testShouldEmitOnChangeEventsWhenSelectingElements() {
         driver.get(javascriptPage);
         WebElement select = driver.findElement(By.id("selector"));
-        List allOptions = select.getChildrenOfType("option");
+        List<WebElement> allOptions = select.getChildrenOfType("option");
 
         String initialTextValue = driver.findElement(By.id("result")).getText();
 
-        WebElement foo = (WebElement) allOptions.get(0);
-        WebElement bar = (WebElement) allOptions.get(1);
+        WebElement foo = allOptions.get(0);
+        WebElement bar = allOptions.get(1);
 
         foo.setSelected();
         assertEquals(initialTextValue, driver.findElement(By.id("result")).getText());

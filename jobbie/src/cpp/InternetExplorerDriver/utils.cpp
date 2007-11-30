@@ -92,7 +92,10 @@ const wchar_t* variant2wchar(const VARIANT toConvert)
 wchar_t* bstr2wchar(BSTR from) 
 {
 	if (!from) {
-		return NULL;
+			size_t length = 2;
+			wchar_t* toReturn = new wchar_t[length];
+			wcscpy_s(toReturn, length, L"");
+			return toReturn;
 	}
 
 	size_t length = SysStringLen(from) + 1;

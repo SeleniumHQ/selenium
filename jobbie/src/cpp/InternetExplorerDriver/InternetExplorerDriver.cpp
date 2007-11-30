@@ -19,7 +19,7 @@ long queryCount = 0;
 
 InternetExplorerDriver::InternetExplorerDriver()
 {
-	if (!SUCCEEDED(CoCreateInstance(CLSID_InternetExplorer, NULL, CLSCTX_ALL, IID_IWebBrowser2, (void**)&ie))) 
+	if (!SUCCEEDED(CoCreateInstance(CLSID_InternetExplorer, NULL, CLSCTX_LOCAL_SERVER, IID_IWebBrowser2, (void**)&ie))) 
 	{
 		throw "Cannot create InternetExplorer instance";
 	}
