@@ -101,6 +101,19 @@ if windows? then
   Rake::Task[:jobbie].enhance %w(jobbie/build/webdriver-jobbie.dll)
 end
 
+task :generate_headers => [:jobbie] do
+  cmd = "javah -jni -classpath common\\build\\webdriver-common.jar;jobbie\\build\\webdriver-jobbie.jar -d jobbie\\src\\cpp\\InternetExplorerDriver "
+  tests = FileList.new("jobbie/src/java/**/*.java")
+  tests.each {|f|
+    f = f.to_s
+    f =~ /jobbie\/src\/java\/(.*)\.java/
+    f = $1
+    f.tr! '/', '.'
+    cmd += f + " "
+  }
+  sh cmd, :verbose => true
+end
+
 def javac(args)
   # mandatory args  
   out = (args[:jar] or raise 'javac: please specify the :jar parameter')
