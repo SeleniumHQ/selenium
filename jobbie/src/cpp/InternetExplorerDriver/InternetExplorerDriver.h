@@ -17,6 +17,8 @@ public:
 	InternetExplorerDriver(InternetExplorerDriver* other);
 	~InternetExplorerDriver();
 
+	void close();
+
 	bool getVisible();
 	void setVisible(bool isShown);
 

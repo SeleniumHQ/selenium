@@ -23,6 +23,15 @@ InternetExplorerDriver* getIe(JNIEnv *env, jobject obj)
 	return (InternetExplorerDriver *) value;
 }
 
+JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDriver_close
+(JNIEnv *env, jobject obj) 
+{
+	InternetExplorerDriver* wrapper = getIe(env, obj);
+	wrapper->close();
+
+	return NULL;
+}
+
 JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDriver_startComNatively
   (JNIEnv *env, jobject obj)
 {

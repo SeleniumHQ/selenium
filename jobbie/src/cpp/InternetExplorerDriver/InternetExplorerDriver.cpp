@@ -39,6 +39,11 @@ InternetExplorerDriver::~InternetExplorerDriver()
 //	delete sink;
 }
 
+void InternetExplorerDriver::close()
+{
+	ie->Quit();
+}
+
 bool InternetExplorerDriver::getVisible()
 {
 	VARIANT_BOOL visible;
