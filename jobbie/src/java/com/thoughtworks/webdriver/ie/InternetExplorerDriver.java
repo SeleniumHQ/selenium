@@ -90,7 +90,8 @@ public class InternetExplorerDriver implements WebDriver, FindsById, FindsByLink
         }
     }
 
-    public List<WebElement> findElementsByXPath(String using) {
+    @SuppressWarnings("unchecked")
+	public List<WebElement> findElementsByXPath(String using) {
         List<ElementNode> rawElements = new ArrayList<ElementNode>();
         try {
             rawElements = new IeXPath(using, this).selectNodes(getDocument());

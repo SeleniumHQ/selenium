@@ -145,6 +145,13 @@ JNIEXPORT jboolean JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerEl
 	return wrapper->toggle() ? JNI_TRUE : JNI_FALSE;
 }
 
+JNIEXPORT jboolean JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_isDisplayed
+  (JNIEnv *env, jobject obj)
+{
+	ElementWrapper* wrapper = getWrapper(env, obj);
+	return wrapper->isDisplayed() ? JNI_TRUE : JNI_FALSE;
+}
+
 JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_getChildrenOfTypeNatively
   (JNIEnv *env, jobject obj, jobject list, jstring tagName)
 {

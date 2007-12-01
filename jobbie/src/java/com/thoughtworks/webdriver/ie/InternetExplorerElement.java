@@ -46,9 +46,7 @@ public class InternetExplorerElement implements RenderedWebElement {
 
     public native boolean toggle();
 
-    public boolean isDisplayed() {
-        throw new UnsupportedOperationException("isDisplayed");
-    }
+    public native boolean isDisplayed();
 
     public Point getLocation() {
         throw new UnsupportedOperationException("getLocation");

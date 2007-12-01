@@ -97,6 +97,14 @@ JNIEXPORT jboolean JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerEl
 
 /*
  * Class:     com_thoughtworks_webdriver_ie_InternetExplorerElement
+ * Method:    isDisplayed
+ * Signature: ()Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_isDisplayed
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_thoughtworks_webdriver_ie_InternetExplorerElement
  * Method:    deleteStoredObject
  * Signature: ()V
  */

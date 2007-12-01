@@ -193,6 +193,36 @@ bool ElementWrapper::isEnabled()
 	return isDisabled ? false : true;
 }
 
+bool ElementWrapper::isDisplayed()
+{
+	CComQIPtr<IHTMLElement2, &__uuidof(IHTMLElement2)> elem = element;
+	IHTMLCurrentStyle* style;
+	BSTR display;
+	BSTR visible;
+
+	elem->get_currentStyle(&style);
+	style->get_display(&display);
+	style->get_visibility(&visible);
+
+	const wchar_t *displayValue = bstr2wchar(display);
+	const wchar_t *visibleValue = bstr2wchar(visible);
+
+	int isDisplayed = _wcsicmp(L"none", displayValue);
+	int isVisible = _wcsicmp(L"hidden", visibleValue);
+
+	wcout << "Display: " << displayValue << " (" << isDisplayed << "), visible: " << visibleValue << " (" << isVisible << ")" << endl;
+
+//    respond(this.context, "isElementDisplayed", display != "none" && visible != "hidden");
+
+	delete displayValue;
+	delete visibleValue;
+	SysFreeString(display);
+	SysFreeString(visible);
+	style->Release();
+
+	return isDisplayed != 0 && isVisible != 0;
+}
+
 bool ElementWrapper::toggle()
 {
 	click();

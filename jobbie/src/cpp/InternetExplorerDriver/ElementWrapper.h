@@ -20,6 +20,7 @@ public:
 	bool isSelected();
 	InternetExplorerDriver* setSelected();
 	bool isEnabled();
+	bool isDisplayed();
 	bool toggle();
 	const wchar_t* getText();
 
