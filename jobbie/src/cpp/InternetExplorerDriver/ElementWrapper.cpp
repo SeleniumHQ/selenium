@@ -180,6 +180,8 @@ InternetExplorerDriver* ElementWrapper::setSelected()
 		return new InternetExplorerDriver(ie);
 	}
 
+	if (!this->isEnabled()) 
+		throw "Unable to select a disabled element";
 	throw "Unable to select element.";
 }
 
@@ -209,10 +211,6 @@ bool ElementWrapper::isDisplayed()
 
 	int isDisplayed = _wcsicmp(L"none", displayValue);
 	int isVisible = _wcsicmp(L"hidden", visibleValue);
-
-	wcout << "Display: " << displayValue << " (" << isDisplayed << "), visible: " << visibleValue << " (" << isVisible << ")" << endl;
-
-//    respond(this.context, "isElementDisplayed", display != "none" && visible != "hidden");
 
 	delete displayValue;
 	delete visibleValue;
