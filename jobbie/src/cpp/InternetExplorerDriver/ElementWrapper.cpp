@@ -53,6 +53,8 @@ const wchar_t* ElementWrapper::getValue()
 
 InternetExplorerDriver* ElementWrapper::setValue(wchar_t* newValue)
 {
+	CComQIPtr<IHTMLElement2, &__uuidof(IHTMLElement2)> element2 = element;
+
 	IDispatch* dispatch;
 	element->get_document(&dispatch);
 	CComQIPtr<IHTMLDocument4, &__uuidof(IHTMLDocument4)> doc = dispatch;
@@ -76,6 +78,8 @@ InternetExplorerDriver* ElementWrapper::setValue(wchar_t* newValue)
 	CComBSTR onKeyPress = SysAllocString(L"onkeypress");
 	CComBSTR onKeyUp = SysAllocString(L"onkeyup");
 	VARIANT_BOOL cancellable;
+
+	element2->focus();
 
 	for (size_t i = 0; i < length; i++) {
 		VariantInit(&reallyNewValue);
@@ -104,6 +108,11 @@ InternetExplorerDriver* ElementWrapper::setValue(wchar_t* newValue)
 		VariantClear(&eventref);
 		VariantClear(&reallyNewValue);
 	}
+	element2->blur();
+
+	IHTMLEventObj* eventObj = newEventObject();
+	fireEvent(eventObj, L"onchange");
+	eventObj->Release();
 
 	VariantClear(&reallyNewValue);
 
