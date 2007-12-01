@@ -127,6 +127,22 @@ JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDriver
 JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDriver_setFrameIndex
   (JNIEnv *, jobject, jint);
 
+/*
+ * Class:     com_thoughtworks_webdriver_ie_InternetExplorerDriver
+ * Method:    goBack
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDriver_goBack
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_thoughtworks_webdriver_ie_InternetExplorerDriver
+ * Method:    goForward
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDriver_goForward
+  (JNIEnv *, jobject);
+
 #ifdef __cplusplus
 }
 #endif

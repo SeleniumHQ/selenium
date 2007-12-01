@@ -26,6 +26,8 @@ public:
 
 	const wchar_t* getTitle();
 	void get(const wchar_t* url);
+	void goForward();
+	void goBack();
 
 	ElementWrapper* selectElementById(const wchar_t *elementId);
 	ElementWrapper* selectElementByLink(const wchar_t *elementLink);

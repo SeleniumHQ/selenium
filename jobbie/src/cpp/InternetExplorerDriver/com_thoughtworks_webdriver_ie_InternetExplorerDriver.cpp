@@ -169,6 +169,21 @@ JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDriver
 	ie->switchToFrame((int) frameIndex);
 }
 
+JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDriver_goBack
+  (JNIEnv *env, jobject obj)
+{
+	InternetExplorerDriver* ie = getIe(env, obj);
+	ie->goBack();
+}
+
+JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDriver_goForward
+  (JNIEnv *env, jobject obj)
+{
+	InternetExplorerDriver* ie = getIe(env, obj);
+	ie->goForward();
+}
+
+
 #ifdef __cplusplus
 }
 #endif

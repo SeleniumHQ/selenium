@@ -136,7 +136,7 @@ public class InternetExplorerDriver implements WebDriver, FindsById, FindsByLink
 
 
     public Navigation navigate() {
-        throw new UnsupportedOperationException("navigate"); 
+        return new InternetExplorerNavigation();
     }
 
   protected native void waitForLoadToComplete();
@@ -169,6 +169,9 @@ public class InternetExplorerDriver implements WebDriver, FindsById, FindsByLink
     private native void deleteStoredObject();
 
     private native void setFrameIndex(int frameIndex);
+    
+    private native void goBack();
+	private native void goForward();
 
     private class InternetExplorerTargetLocator implements TargetLocator {
         public WebDriver frame(int frameIndex) {
@@ -191,5 +194,21 @@ public class InternetExplorerDriver implements WebDriver, FindsById, FindsByLink
         public Alert alert() {
             throw new UnsupportedOperationException("alert");
         }
+    }
+    
+    private class InternetExplorerNavigation implements Navigation {
+		public WebDriver back() {
+			goBack();
+			return InternetExplorerDriver.this;
+		}
+		
+		public WebDriver forward() {
+			goForward();
+			return InternetExplorerDriver.this;
+		}
+
+		public WebDriver to(String url) {
+			return get(url);
+		}
     }
 }

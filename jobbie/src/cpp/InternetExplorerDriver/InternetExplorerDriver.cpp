@@ -88,6 +88,16 @@ void InternetExplorerDriver::get(const wchar_t *url)
 	waitForNavigateToFinish();
 }
 
+void InternetExplorerDriver::goForward() 
+{
+	ie->GoForward();
+}
+
+void InternetExplorerDriver::goBack()
+{
+	ie->GoBack();
+}
+
 ElementWrapper* InternetExplorerDriver::selectElementById(const wchar_t *elementId) 
 {
 	IHTMLDocument3 *doc = getDocument3();
