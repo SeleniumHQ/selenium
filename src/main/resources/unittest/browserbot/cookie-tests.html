@@ -72,6 +72,16 @@ function testRecursivelyDeleteCookieNullDomain() {
     browserBot.recursivelyDeleteCookie("foo", "foo.com", "/bar/razzle/dazzle");
 }
 
+function testRecursivelyDeleteCookieNullPath() {
+    browserBot.testCookies = ([{name:"foo", path:null, domain:"foo.com", value:"blah"}]);
+    browserBot.recursivelyDeleteCookie("foo", "my.domain.at.foo.com", "/bar/razzle/dazzle");
+}
+
+function testRecursivelyDeleteCookieNullPathAndDomain() {
+    browserBot.testCookies = ([{name:"foo", path:null, domain:null, value:"blah"}]);
+    browserBot.recursivelyDeleteCookie("foo", "my.domain.at.foo.com", "/bar/razzle/dazzle");
+}
+
 function testRecursivelyDeleteCookieTrailingSlash() {
     browserBot.testCookies = ([{name:"foo", path:"/bar/", domain:".foo.com", value:"blah"}]);
     browserBot.recursivelyDeleteCookie("foo", "my.domain.at.foo.com", "/bar/razzle/dazzle");
@@ -87,6 +97,14 @@ function testRecursivelyDeleteCookieWrongDomain() {
     try {
         browserBot.recursivelyDeleteCookie("foo", "my.domain.at.bar.com", "/bar/razzle/dazzle");
         fail("shouldn't have deleted cookie at wrong domain");
+    } catch (e) {} // as expected
+}
+
+function testRecursivelyDeleteCookieWrongPath() {
+    browserBot.testCookies = ([{name:"foo", path:"/foo", domain:".foo.com", value:"blah"}]);
+    try {
+        browserBot.recursivelyDeleteCookie("foo", "my.domain.at.foo.com", "/bar/razzle/dazzle");
+        fail("shouldn't have deleted cookie with wrong path");
     } catch (e) {} // as expected
 }
 </script>
