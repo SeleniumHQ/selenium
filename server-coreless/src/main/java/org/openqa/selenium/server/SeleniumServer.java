@@ -829,7 +829,7 @@ public class SeleniumServer {
         return ensureCleanSession;
     }
 
-    protected static void setEnsureCleanSession(boolean value) {
+    public static void setEnsureCleanSession(boolean value) {
         ensureCleanSession = value;
     }
 
