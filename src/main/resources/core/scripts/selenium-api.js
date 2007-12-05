@@ -2341,9 +2341,13 @@ Selenium.prototype.doDeleteAllVisibleCookies = function() {
     * As noted on the documentation for deleteCookie, recurse=true can be much slower
     * than simply deleting the cookies using a known domain/path.
     */
-    var cookieNames = this.browserbot.getAllCookieNames();
+    var win = this.browserbot.getCurrentWindow();
+    var doc = win.document;
+    var cookieNames = this.browserbot.getAllCookieNames(doc);
+    var domain = doc.domain;
+    var path = win.location.pathname;
     for (var i = 0; i < cookieNames.length; i++) {
-        this.browserbot.recursivelyDeleteCookie(cookieNames[i]);
+        this.browserbot.recursivelyDeleteCookie(cookieNames[i], domain, path, win);
     }
 }
 

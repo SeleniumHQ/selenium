@@ -1095,8 +1095,9 @@ BrowserBot.prototype.getCookieByName = function(cookieName, doc) {
     return null;
 }
 
-BrowserBot.prototype.getAllCookieNames = function() {
-    var ck = this.getDocument().cookie;
+BrowserBot.prototype.getAllCookieNames = function(doc) {
+    if (!doc) doc = this.getDocument();
+    var ck = doc.cookie;
     if (!ck) return [];
     var cookieNames = [];
     var ckPairs = ck.split(/;/);
@@ -1127,7 +1128,7 @@ BrowserBot.prototype.deleteCookie = function(cookieName, domain, path, doc) {
 /** Try to delete cookie, return false if it didn't work */
 BrowserBot.prototype._maybeDeleteCookie = function(cookieName, domain, path, doc) {
     this.deleteCookie(cookieName, domain, path, doc);
-    return (!this.getCookieByName(cookieName));
+    return (!this.getCookieByName(cookieName, doc));
 }
     
 
@@ -1158,8 +1159,8 @@ BrowserBot.prototype._recursivelyDeleteCookie = function(cookieName, domain, pat
     return this._recursivelyDeleteCookieDomains(cookieName, domain, path, doc);
 }
 
-BrowserBot.prototype.recursivelyDeleteCookie = function(cookieName, domain, path) {
-    var win = this.getCurrentWindow();
+BrowserBot.prototype.recursivelyDeleteCookie = function(cookieName, domain, path, win) {
+    if (!win) win = this.getCurrentWindow();
     var doc = win.document;
     if (!domain) {
         domain = doc.domain;
