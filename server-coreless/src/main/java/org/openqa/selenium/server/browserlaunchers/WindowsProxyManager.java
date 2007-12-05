@@ -25,6 +25,7 @@ import java.util.prefs.Preferences;
 import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
+import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.ExecTask;
 import org.mortbay.log.LogFactory;
@@ -35,21 +36,6 @@ import org.openqa.selenium.server.log.AntJettyLoggerBuildListener;
 public class WindowsProxyManager {
     static Log log = LogFactory.getLog(WindowsProxyManager.class);
     protected static final String REG_KEY_BACKUP_READY = "BackupReady";
-
-    // WinXP Cookies are kept in "$USERPROFILE\Cookies"
-    protected static final File WINXP_USER_COOKIE_DIR = new File(
-      System.getenv("USERPROFILE") 
-        + File.separator + "Cookies");
-    
-    // Vista Cookies are kept, along with other files, in 
-    // "$USERPROFILE\AppData\Roaming\Microsoft\Windows\Cookies"
-    protected static final File VISTA_USER_COOKIE_DIR = new File(
-        System.getenv("USERPROFILE") 
-          + File.separator + "AppData" 
-          + File.separator + "Roaming" 
-          + File.separator + "Microsoft"
-          + File.separator + "Windows" 
-          + File.separator + "Cookies");
     
     // All Cookies end in ".txt"
     protected static final String COOKIE_SUFFIX = ".txt";
@@ -214,11 +200,24 @@ public class WindowsProxyManager {
         // Hide pre-existing user cookies if -ensureCleanSession is set
         if (SeleniumServer.isEnsureCleanSession()) {
           hidePreexistingCookies();
+          deleteTemporaryInternetFiles();
         }
 
         // TODO Do we want to make these preferences configurable somehow?
         // TODO Disable security warnings
         // TODO Disable "do you want to remember this password?"
+    }
+
+    private static void deleteTemporaryInternetFiles() {
+        String cachePath = WindowsUtils.readStringRegistryValue(REG_KEY_BASE + "\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders\\Cache");
+        File globalCacheDir = new File(cachePath);
+        File iexploreCacheDir = new File(globalCacheDir, "Content.IE5");
+        if (iexploreCacheDir.exists()) {
+            try {
+                LauncherUtils.recursivelyDeleteDir(iexploreCacheDir);
+            } catch (BuildException e) {
+            } // Errors are expected here; the index.dat file is undeletable
+        }
     }
 
     public void backupRegistrySettings() {
@@ -256,14 +255,8 @@ public class WindowsProxyManager {
      */
     private static void hidePreexistingCookies() {
       boolean done = false;
-      if (isVista()) {
-        done = hideCookies( 
-          VISTA_USER_COOKIE_DIR, COOKIE_SUFFIX, HIDDEN_COOKIE_DIR);
-      } else {
-        done = hideCookies(
-          WINXP_USER_COOKIE_DIR, COOKIE_SUFFIX, HIDDEN_COOKIE_DIR);
-      }
-      
+      File cookieDir = getCookieDir();
+      done = hideCookies(cookieDir, COOKIE_SUFFIX, HIDDEN_COOKIE_DIR);
       if (!done) {
         log.warn("Could not hide pre-existing cookies using either the" +
       	  "WinXP directory structure or the Vista directory structure");
@@ -289,16 +282,16 @@ public class WindowsProxyManager {
       return result;
     }
     
+    private static File getCookieDir() {
+        String cookiePath = WindowsUtils.readStringRegistryValue(REG_KEY_BASE + "\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders\\Cookies");
+        File cookieDir = new File(cookiePath);
+        return cookieDir;
+    }
+    
     private static void restorePreexistingCookies() {
       boolean done = false;
-      if (isVista()) {
-        done = restoreCookies(
-              VISTA_USER_COOKIE_DIR, COOKIE_SUFFIX, HIDDEN_COOKIE_DIR);
-      } else {
-        done = restoreCookies(
-            WINXP_USER_COOKIE_DIR, COOKIE_SUFFIX, HIDDEN_COOKIE_DIR);
-      }
-      
+      File cookieDir = getCookieDir();
+      done = restoreCookies(cookieDir, COOKIE_SUFFIX, HIDDEN_COOKIE_DIR);
       if (!done) {
         log.warn("Could not restore pre-existing cookies, using either the" +
           "WinXp directory structure or the Vista directory structure");
@@ -347,31 +340,6 @@ public class WindowsProxyManager {
           log.info("...no matching files");
         }
       }
-    }
-    
-    /**
-     * Tries to guess if we're on Vista or WinXP.  Defaults
-     * to WinXP.
-     * 
-     * I'm sure there are better ways to do this.  Right now checks
-     * to see if a directory that is not normally used in WinXP, but
-     * is used in Vista regardless of whether or not there have ever
-     * been any Cookies created, exists.
-     * 
-     * @return true if it knows that this is Vista, false otherwise.
-     */
-    private static boolean isVista() {
-      boolean result = false;
-      File oracleDirectory = new File(
-          System.getenv("USERPROFILE") 
-            + File.separator + "AppData" 
-            + File.separator + "Roaming" 
-            + File.separator + "Microsoft"
-            + File.separator + "Windows");
-      if (oracleDirectory.exists()) {
-        result = true;
-      }
-      return result;
     }
    
     private boolean backupIsReady() {
