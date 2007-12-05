@@ -247,6 +247,17 @@ public class LauncherUtils {
 		}
 	}
 
+    protected static void copySingleFile(File sourceFile, File destFile) {
+        Project p = new Project();
+        Copy c = new Copy();
+        c.setProject(p);
+        c.setTofile(destFile);
+        FileSet fs = new FileSet();
+        fs.setFile(sourceFile);
+        c.addFileset(fs);
+        c.execute();
+    }
+    
     protected static void copyDirectory(File source, File dest) {
         Project p = new Project();
         Copy c = new Copy();

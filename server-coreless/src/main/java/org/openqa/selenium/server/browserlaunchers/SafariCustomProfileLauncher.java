@@ -38,6 +38,8 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
     private Process process;
     protected WindowsProxyManager wpm;
     protected MacProxyManager mpm;
+    private File backedUpCookieFile;
+    private File originalCookieFile;
 
     private static AsyncExecute exe = new AsyncExecute();
 
@@ -119,25 +121,8 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
                 mpm.backupNetworkSettings();
                 mpm.changeNetworkSettings();
             }
-            // before launching, nuke caches and cookies
-            // see: http://www.macosxhints.com/article.php?story=20051107093733174&lsrc=osxh
-            if (Os.isFamily("mac")) {
-                // nuke ~/Library/Caches/Safari ~/Library/Cookies/Cookies.plist
-                String user = System.getenv("USER");
-                File cacheDir = new File("/Users/" + user + "/Library/Caches/Safari");
-                File cookiesFile = new File("/Users/" + user + "/Library/Cookies/Cookies.plist");
-
-                try {
-                    LauncherUtils.deleteTryTryAgain(cacheDir, 6);
-                } catch (RuntimeException e) {
-                    throw e;
-                }
-
-                if (cookiesFile.exists()) {
-                    cookiesFile.delete();
-                }
-            } else {
-                // todo: don't know how to do this on non-Mac platforms (ie: Safari 3 on windows)
+            if (SeleniumServer.isEnsureCleanSession()) {
+                ensureCleanSession();
             }
 
             cmdarray = new String[]{commandPath};
@@ -158,6 +143,36 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
             process = exe.asyncSpawn();
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private void ensureCleanSession() {
+        // see: http://www.macosxhints.com/article.php?story=20051107093733174&lsrc=osxh
+        if (Os.isFamily("mac")) {
+            String user = System.getenv("USER");
+            File cacheDir = new File("/Users/" + user + "/Library/Caches/Safari");
+            originalCookieFile = new File("/Users/" + user + "/Library/Cookies/Cookies.plist");
+            
+            try {
+                LauncherUtils.deleteTryTryAgain(cacheDir, 6);
+            } catch (RuntimeException e) {
+                throw e;
+            }
+        } else {
+            originalCookieFile = new File(System.getenv("APPDATA") + "/Apple Computer/Safari/Cookies/Cookies.plist");
+            String localAppData = System.getenv("LOCALAPPDATA");
+            if (localAppData == null) {
+                localAppData = System.getenv("USERPROFILE") + "/Local Settings/Application Data";
+            }
+            File cacheFile = new File(localAppData + "/Apple Computer/Safari/Cache.db");
+            if (cacheFile.exists()) {
+                cacheFile.delete();
+            }
+        }
+
+        if (originalCookieFile.exists()) {
+            backedUpCookieFile = new File(customProfileDir, "Cookies.plist");
+            LauncherUtils.copySingleFile(originalCookieFile, backedUpCookieFile);
         }
     }
     
@@ -191,6 +206,9 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
             wpm.restoreRegistrySettings();
         } else {
             mpm.restoreNetworkSettings();
+        }
+        if (backedUpCookieFile != null && backedUpCookieFile.exists() && originalCookieFile != null) {
+            LauncherUtils.copySingleFile(backedUpCookieFile, originalCookieFile);
         }
         if (process == null) return;
         log.info("Killing Safari...");
