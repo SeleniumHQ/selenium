@@ -770,6 +770,9 @@ public class SeleniumServer {
 
         postResultsHandler = new SeleniumHTMLRunnerResultsHandler();
         context.addHandler(postResultsHandler);
+        
+        CachedContentTestHandler cachedContentTestHandler = new CachedContentTestHandler();
+        context.addHandler(cachedContentTestHandler);
 
         // Associate the SeleniumDriverResourceHandler with the /selenium-server/driver context
         HttpContext driverContext = new HttpContext();
