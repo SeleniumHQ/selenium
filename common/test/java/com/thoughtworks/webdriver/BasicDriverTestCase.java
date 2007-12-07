@@ -280,7 +280,16 @@ public abstract class BasicDriverTestCase extends TestCase {
     public void testShouldFindElementsByXPath() {
         driver.get(xhtmlTestPage);
         List<WebElement> divs = driver.findElements(By.xpath("//div"));
-        assertEquals(2, divs.size());
+        assertEquals(3, divs.size());
+    }
+
+    public void testShouldBeAbleToFindManyElementsRepeatedlyByXPath() {
+        driver.get(xhtmlTestPage);
+        String xpathString = "//node()[contains(@id,'id')]";
+        assertEquals(3, driver.findElements(By.xpath(xpathString)).size());
+
+        xpathString = "//node()[contains(@id,'nope')]";
+        assertEquals(0, driver.findElements(By.xpath(xpathString)).size());
     }
 
     public void testShouldReturnTheTextContentOfASingleElementWithNoChildren() {

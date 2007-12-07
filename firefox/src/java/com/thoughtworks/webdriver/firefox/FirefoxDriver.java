@@ -12,6 +12,7 @@ import com.thoughtworks.webdriver.internal.FindsByXPath;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Collections;
 
 /**
  * An implementation of the {#link WebDriver} interface that drives Firefox. This works through a firefox extension,
@@ -112,13 +113,17 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
 
 
   public List<WebElement> findElementsByXPath(String using) {
-    String returnedIds = sendMessage("selectElementsUsingXPath", using);
-        String[] ids = returnedIds.split(",");
-        List<WebElement> elements = new ArrayList<WebElement>();
-        for (String id : ids) {
-            elements.add(new FirefoxWebElement(this, id));
-        }
-        return elements;
+      String returnedIds = sendMessage("selectElementsUsingXPath", using);
+      List<WebElement> elements = new ArrayList<WebElement>();
+
+      if (returnedIds.length() == 0)
+          return elements;
+
+      String[] ids = returnedIds.split(",");
+      for (String id : ids) {
+          elements.add(new FirefoxWebElement(this, id));
+      }
+      return elements;
   }
 
   public WebElement findElementByLinkText(String using) {
