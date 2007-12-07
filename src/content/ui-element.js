@@ -1192,30 +1192,34 @@ function eval_xpath(xpath, inDocument, pageBot)
     }
     
     if (pageBot) {
-        // Handle //tag[@attr='value']
-        var match = xpath
-            .match(/^\/\/(\w+|\*)\[@(\w+)=('([^\']+)'|"([^\"]+)")\]$/);
-        if (match) {
-            // comments removed
-            var val = pageBot._findElementByTagNameAndAttributeValue(
-                    inDocument,
-                    match[1].toUpperCase(),
-                    match[2].toLowerCase(),
-                    match[3].slice(1, -1)
-                    );
-            if (val) {
-                return [ val ];
+        if (pageBot._findElementByTagNameAndAttributeValue) {
+            // Handle //tag[@attr='value']
+            var match = xpath
+                .match(/^\/\/(\w+|\*)\[@(\w+)=('([^\']+)'|"([^\"]+)")\]$/);
+            if (match) {
+                // comments removed
+                var val = pageBot._findElementByTagNameAndAttributeValue(
+                        inDocument,
+                        match[1].toUpperCase(),
+                        match[2].toLowerCase(),
+                        match[3].slice(1, -1)
+                        );
+                if (val) {
+                    return [ val ];
+                }
             }
         }
         
-        // Handle //tag[text()='value']
-        var match = xpath
-            .match(/^\/\/(\w+|\*)\[text\(\)=('([^\']+)'|"([^\"]+)")\]$/);
-        if (match) {
-            return [ pageBot._findElementByTagNameAndText(
-                inDocument,
-                match[1].toUpperCase(),
-                match[2].slice(1, -1)) ];
+        if (pageBot._findElementByTagNameAndText) {
+            // Handle //tag[text()='value']
+            var match = xpath
+                .match(/^\/\/(\w+|\*)\[text\(\)=('([^\']+)'|"([^\"]+)")\]$/);
+            if (match) {
+                return [ pageBot._findElementByTagNameAndText(
+                    inDocument,
+                    match[1].toUpperCase(),
+                    match[2].slice(1, -1)) ];
+            }
         }
     }
     
@@ -1224,7 +1228,6 @@ function eval_xpath(xpath, inDocument, pageBot)
         xpath = xpath.replace(/x:/g, '')
     }
     
-    var results = [];
     if (inDocument.evaluate) {
         // Use document.evaluate() if it's available
         var xpathResult = inDocument
@@ -1238,6 +1241,9 @@ function eval_xpath(xpath, inDocument, pageBot)
     else {
         // If not, fall back to slower JavaScript implementation
         var context = new ExprContext(inDocument);
+        if (context.setCaseInsensitive) {
+            context.setCaseInsensitive(true);
+        }
         var xpathObj = xpathParse(xpath);
         var xpathResult = xpathObj.evaluate(context);
         if (xpathResult && xpathResult.value) {
@@ -1292,7 +1298,7 @@ function eval_locator(locator, inDocument)
             smart_log('info', 'Trying [' + locator.type + ']: '
                 + locator.string);
         }
-        pageBot = selenium.browserbot
+        pageBot = selenium.browserbot;
     }
     else {
         if (!GLOBAL.mozillaBrowserBot) {
@@ -1307,7 +1313,7 @@ function eval_locator(locator, inDocument)
     
     if (locator.type == 'xpath' || (locator.string.substr(0, 2) == '//' &&
         locator.type == 'implicit')) {
-        results = eval_xpath(locator.string, inDocument);
+        results = eval_xpath(locator.string, inDocument, pageBot);
     }
     else if (locator.type == 'css') {
         results = eval_css(locator.string, inDocument);
