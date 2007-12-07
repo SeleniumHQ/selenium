@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include "utils.h"
 #include <iostream>
+#include "Node.h"
+#include "ElementNode.h"
+#include "TextNode.h"
 
 using namespace std;
 
@@ -47,6 +50,24 @@ jobject newJavaInternetExplorerDriver(JNIEnv* env, InternetExplorerDriver* drive
 
 	return env->NewObject(clazz, cId, (jlong) driver);
 }
+
+jobject initJavaXPathNode(JNIEnv* env, Node* node) 
+{
+	if (node == NULL)
+		return NULL;
+
+	jclass clazz;
+	if (dynamic_cast<TextNode*>(node)) 
+	{
+		clazz = env->FindClass("com/thoughtworks/webdriver/ie/TextNode");
+	} else 
+	{
+		clazz = env->FindClass("com/thoughtworks/webdriver/ie/ElementNode");
+	}
+	jmethodID cId = env->GetMethodID(clazz, "<init>", "(J)V");
+	return env->NewObject(clazz, cId, (jlong) node);
+}
+
 
 const wchar_t* variant2wchar(const VARIANT toConvert) 
 {

@@ -3,28 +3,16 @@
 
 #include <mshtml.h>
 #include "Node.h"
-#include "DocumentNode.h"
+#include "AbstractNode.h"
 
-class ElementNode : public Node
+class ElementNode : public AbstractNode
 {
 public:
 	ElementNode(IHTMLElement* element);
 	ElementNode(IHTMLDOMNode* element);
 	~ElementNode();
 
-	Node* getDocument();
-	ElementNode* getParent();
-	Node* getFirstChild();
-	Node* getNextSibling();
 	Node* getFirstAttribute();
-
-	const wchar_t* name();
-	const wchar_t* getText();
-
-	IHTMLDOMNode* getDomNode();
-
-private:
-	IHTMLDOMNode* node;
 };
 
 #endif

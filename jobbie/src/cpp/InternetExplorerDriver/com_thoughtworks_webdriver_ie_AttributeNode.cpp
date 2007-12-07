@@ -24,6 +24,9 @@ JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_AttributeNode_getFi
 	AttributeNode* node = getAttributeNode(env, obj);
 	Node* firstAttribute = node->getFirstAttribute();
 
+	if (firstAttribute == NULL)
+		return NULL;
+
 	jclass clazz = env->FindClass("com/thoughtworks/webdriver/ie/AttributeNode");
 	jmethodID cId = env->GetMethodID(clazz, "<init>", "(J)V");
 	return env->NewObject(clazz, cId, (jlong) firstAttribute);

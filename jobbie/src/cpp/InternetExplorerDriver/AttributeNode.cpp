@@ -47,6 +47,7 @@ Node* AttributeNode::getFirstChild()
 
 Node* AttributeNode::getFirstAttribute() 
 {
+	cout << "Returning null. There is no first attribute" << endl;
 	return NULL;
 }
 

@@ -165,14 +165,11 @@ public class IeNavigator extends DefaultNavigator {
     }
 
     public boolean isText(Object object) {
-        // This should really be:
-        // return object instanceof TextNode
-        return object instanceof ElementNode && "#text".equals(((HtmlNode) object).getName());
+        return object instanceof TextNode;
     }
 
-    private static class NodeIterator implements Iterator {
+    private static class NodeIterator implements Iterator<HtmlNode> {
         private HtmlNode node;
-        private static long time;
 
         public NodeIterator(HtmlNode node) {
             this.node = node;
@@ -182,7 +179,7 @@ public class IeNavigator extends DefaultNavigator {
             return node != null;
         }
 
-        public Object next() {
+        public HtmlNode next() {
             HtmlNode toReturn = node;
             node = (HtmlNode) node.getNextSibling();
             return toReturn;

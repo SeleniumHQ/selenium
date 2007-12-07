@@ -9,58 +9,10 @@ extern "C" {
 #endif
 /*
  * Class:     com_thoughtworks_webdriver_ie_ElementNode
- * Method:    getDocument
- * Signature: ()Lcom/thoughtworks/webdriver/ie/DocumentNode;
- */
-JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_getDocument
-  (JNIEnv *, jobject);
-
-/*
- * Class:     com_thoughtworks_webdriver_ie_ElementNode
- * Method:    getParent
- * Signature: ()Lcom/thoughtworks/webdriver/ie/HtmlNode;
- */
-JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_getParent
-  (JNIEnv *, jobject);
-
-/*
- * Class:     com_thoughtworks_webdriver_ie_ElementNode
- * Method:    getFirstChild
- * Signature: ()Lcom/thoughtworks/webdriver/ie/HtmlNode;
- */
-JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_getFirstChild
-  (JNIEnv *, jobject);
-
-/*
- * Class:     com_thoughtworks_webdriver_ie_ElementNode
- * Method:    getNextSibling
- * Signature: ()Lcom/thoughtworks/webdriver/ie/HtmlNode;
- */
-JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_getNextSibling
-  (JNIEnv *, jobject);
-
-/*
- * Class:     com_thoughtworks_webdriver_ie_ElementNode
  * Method:    getFirstAttribute
  * Signature: ()Lcom/thoughtworks/webdriver/ie/AttributeNode;
  */
 JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_getFirstAttribute
-  (JNIEnv *, jobject);
-
-/*
- * Class:     com_thoughtworks_webdriver_ie_ElementNode
- * Method:    getNativeName
- * Signature: ()Ljava/lang/String;
- */
-JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_getNativeName
-  (JNIEnv *, jobject);
-
-/*
- * Class:     com_thoughtworks_webdriver_ie_ElementNode
- * Method:    deleteStoredObject
- * Signature: ()V
- */
-JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_deleteStoredObject
   (JNIEnv *, jobject);
 
 #ifdef __cplusplus

@@ -1,8 +1,7 @@
 package com.thoughtworks.webdriver.ie;
 
-
-public class ElementNode extends AbstractNode {
-    public ElementNode(long nodePointer) {
+public class TextNode extends AbstractNode {
+    public TextNode(long nodePointer) {
         super(nodePointer);
     }
 
