@@ -46,8 +46,8 @@
             $result = $this->doCommand($verb, $args);
         } catch (Testing_Selenium_Exception $e) {
             return $e;
-        }
-        return substr($result, 3);
+            }
+        return (strlen($result) > 3) ? substr($result, 3) : '';
     }
 
     private function getStringArray($verb, $args = array())
