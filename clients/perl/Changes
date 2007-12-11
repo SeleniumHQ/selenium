@@ -1,6 +1,6 @@
 Revision history for Perl extension Test::WWW::Selenium.
 
-1.14 - Not yet released
+1.14 - Tue Dec 11 12:45:34 PST 2007
  - fixed typo in Test::WWW::Selenium SYNOPSIS - thanks, Paul Puse
  - added missing dependency on URI::Escape - thanks, Peter (Stig) Edwards
 
