@@ -6,7 +6,7 @@ use lib 'lib';
 
 BEGIN {
     unless ($ENV{SRC_LIVE_TESTS}) {
-	print "1..0 - not running live interweb tests\n";
+        plan skip_all => 'not running live interweb tests';
 	exit;
     }
 
