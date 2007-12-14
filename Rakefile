@@ -6,13 +6,14 @@ require 'rake/rdoctask'
 
 task :default => [:test]
 
-task :build => [:common, :htmlunit, :firefox, :support]
+task :build => [:common, :htmlunit, :firefox, :safari, :support]
 
 task :clean do
   rm_rf 'common/build'
   rm_rf 'htmlunit/build'
   rm_rf 'jobbie/build'
   rm_rf 'firefox/build'
+  rm_rf 'safari/build'
   rm_rf 'support/build'
 end
 
@@ -43,7 +44,7 @@ file 'common/build/webdriver-common.jar' => FileList['common/src/java/*.java'];
 
 file 'common/build/webdriver-common-test.jar' => FileList['common/test/java/*.java'];
 
-%w(common htmlunit jobbie firefox support).each do |driver|
+%w(common htmlunit jobbie firefox safari support).each do |driver|
   source = FileList["#{driver}/src/java/**/*.java"]
   libs = ["#{driver}/lib/runtime/*.jar", "#{driver}/lib/buildtime/*.jar", "common/build/webdriver-common.jar"]
   deps = Array.new

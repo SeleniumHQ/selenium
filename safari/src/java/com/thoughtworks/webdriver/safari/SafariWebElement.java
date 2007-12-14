@@ -1,0 +1,78 @@
+package com.thoughtworks.webdriver.safari;
+
+import com.thoughtworks.webdriver.WebElement;
+import com.thoughtworks.webdriver.WebDriver;
+
+import java.util.List;
+
+public class SafariWebElement implements WebElement {
+    private final int index;
+    private final AppleScript appleScript;
+    private final SafariDriver parent;
+    private final String locator;
+
+    public SafariWebElement(SafariDriver parent, String elementIndex) {
+        this.parent = parent;
+        index = Integer.parseInt(elementIndex);
+        locator = SafariDriver.ELEMENTS + "[" + index + "]";
+
+        appleScript = new AppleScript();
+    }
+
+    public WebDriver click() {
+        appleScript.executeJavascript(
+                "if (" + locator + "[\"click\"])" +
+                    locator + ".click();\r" +
+                "var event = document.createEvent(\"MouseEvents\");\r" +
+                "event.initMouseEvent(\"click\", true, true, null, 1, 0, 0, 0, 0, false, false, false, false, 0, null);" +
+                locator + ".dispatchEvent(event);\r" 
+        );
+        parent.waitForLoadToComplete();
+        return parent;
+    }
+
+    public WebDriver submit() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public String getValue() {
+        return appleScript.executeJavascript(
+            "if (" + locator + "[\"value\"] !== undefined)\r" +
+            "  return " + locator + ".value;\r" +
+            "if (" + locator + ".hasAttribute(\"value\"))\r" +
+            "  " + locator + ".getAttribute(\"value\");\r");
+    }
+
+    public WebDriver setValue(String value) {
+        appleScript.executeJavascript(locator + ".value = \"" + value + "\"");
+        return parent;
+    }
+
+    public String getAttribute(String name) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public boolean toggle() {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public boolean isSelected() {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public WebDriver setSelected() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public boolean isEnabled() {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public String getText() {
+        return appleScript.executeJavascript("return " + locator + ".innerText");
+    }
+
+    public List<WebElement> getChildrenOfType(String tagName) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+}
