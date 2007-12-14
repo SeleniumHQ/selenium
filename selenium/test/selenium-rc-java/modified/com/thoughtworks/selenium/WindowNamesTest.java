@@ -3,6 +3,7 @@ package com.thoughtworks.selenium;
 import junit.framework.TestCase;
 
 import com.thoughtworks.webdriver.firefox.FirefoxDriver;
+import com.thoughtworks.webdriver.selenium.WebDriverBackedSelenium;
 
 public class WindowNamesTest extends TestCase
 {

@@ -1,9 +1,8 @@
-package com.thoughtworks.selenium.internal;
+package com.thoughtworks.webdriver.selenium;
 
 import com.thoughtworks.selenium.SeleniumException;
 import com.thoughtworks.webdriver.WebDriver;
 import com.thoughtworks.webdriver.WebElement;
-import com.thoughtworks.webdriver.RenderedWebElement;
 import com.thoughtworks.webdriver.By;
 
 import java.util.HashMap;

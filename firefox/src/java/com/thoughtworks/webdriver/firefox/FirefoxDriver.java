@@ -1,10 +1,10 @@
 package com.thoughtworks.webdriver.firefox;
 
 import com.thoughtworks.webdriver.Alert;
+import com.thoughtworks.webdriver.By;
 import com.thoughtworks.webdriver.NoSuchElementException;
 import com.thoughtworks.webdriver.WebDriver;
 import com.thoughtworks.webdriver.WebElement;
-import com.thoughtworks.webdriver.By;
 import com.thoughtworks.webdriver.internal.FindsById;
 import com.thoughtworks.webdriver.internal.FindsByLinkText;
 import com.thoughtworks.webdriver.internal.FindsByXPath;
@@ -12,7 +12,6 @@ import com.thoughtworks.webdriver.internal.FindsByXPath;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Collections;
 
 /**
  * An implementation of the {#link WebDriver} interface that drives Firefox. This works through a firefox extension,

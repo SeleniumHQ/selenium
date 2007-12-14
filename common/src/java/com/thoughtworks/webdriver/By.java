@@ -1,12 +1,12 @@
 package com.thoughtworks.webdriver;
 
-import java.text.MessageFormat;
-import java.util.Iterator;
-import java.util.List;
-
 import com.thoughtworks.webdriver.internal.FindsById;
 import com.thoughtworks.webdriver.internal.FindsByLinkText;
 import com.thoughtworks.webdriver.internal.FindsByXPath;
+
+import java.text.MessageFormat;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Mechanism used to locate elements within a document. In order to create

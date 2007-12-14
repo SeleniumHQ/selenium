@@ -1,4 +1,4 @@
-package com.thoughtworks.selenium;
+package com.thoughtworks.webdriver.selenium;
 
 import java.awt.Dimension;
 import java.awt.Point;
@@ -10,29 +10,29 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.thoughtworks.selenium.internal.AltLookupStrategy;
-import com.thoughtworks.selenium.internal.ClassLookupStrategy;
-import com.thoughtworks.selenium.internal.ExactTextMatchingStrategy;
-import com.thoughtworks.selenium.internal.GlobTextMatchingStrategy;
-import com.thoughtworks.selenium.internal.IdLookupStrategy;
-import com.thoughtworks.selenium.internal.IdOptionSelectStrategy;
-import com.thoughtworks.selenium.internal.IdentifierLookupStrategy;
-import com.thoughtworks.selenium.internal.ImplicitLookupStrategy;
-import com.thoughtworks.selenium.internal.IndexOptionSelectStrategy;
-import com.thoughtworks.selenium.internal.LabelOptionSelectStrategy;
-import com.thoughtworks.selenium.internal.LinkLookupStrategy;
-import com.thoughtworks.selenium.internal.LookupStrategy;
-import com.thoughtworks.selenium.internal.NameLookupStrategy;
-import com.thoughtworks.selenium.internal.OptionSelectStrategy;
-import com.thoughtworks.selenium.internal.RegExTextMatchingStrategy;
-import com.thoughtworks.selenium.internal.TextMatchingStrategy;
-import com.thoughtworks.selenium.internal.ValueOptionSelectStrategy;
-import com.thoughtworks.selenium.internal.XPathLookupStrategy;
+import com.thoughtworks.webdriver.selenium.ClassLookupStrategy;
+import com.thoughtworks.webdriver.selenium.ExactTextMatchingStrategy;
+import com.thoughtworks.webdriver.selenium.IdLookupStrategy;
+import com.thoughtworks.webdriver.selenium.IdOptionSelectStrategy;
+import com.thoughtworks.webdriver.selenium.*;
+import com.thoughtworks.webdriver.selenium.ImplicitLookupStrategy;
+import com.thoughtworks.webdriver.selenium.IndexOptionSelectStrategy;
+import com.thoughtworks.webdriver.selenium.LabelOptionSelectStrategy;
+import com.thoughtworks.webdriver.selenium.LinkLookupStrategy;
+import com.thoughtworks.webdriver.selenium.LookupStrategy;
+import com.thoughtworks.webdriver.selenium.NameLookupStrategy;
+import com.thoughtworks.webdriver.selenium.OptionSelectStrategy;
+import com.thoughtworks.webdriver.selenium.RegExTextMatchingStrategy;
+import com.thoughtworks.webdriver.selenium.TextMatchingStrategy;
+import com.thoughtworks.webdriver.selenium.ValueOptionSelectStrategy;
+import com.thoughtworks.webdriver.selenium.XPathLookupStrategy;
 import com.thoughtworks.webdriver.By;
 import com.thoughtworks.webdriver.NoSuchElementException;
 import com.thoughtworks.webdriver.RenderedWebElement;
 import com.thoughtworks.webdriver.WebDriver;
 import com.thoughtworks.webdriver.WebElement;
+import com.thoughtworks.selenium.Selenium;
+import com.thoughtworks.selenium.SeleniumException;
 
 public class WebDriverBackedSelenium implements Selenium {
     private static final Pattern STRATEGY_AND_VALUE_PATTERN = Pattern.compile("^(\\p{Alpha}+)=(.*)");

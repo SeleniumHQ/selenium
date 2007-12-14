@@ -6,6 +6,7 @@ import org.openqa.selenium.server.browserlaunchers.WindowsUtils;
 
 import com.thoughtworks.webdriver.firefox.FirefoxDriver;
 import com.thoughtworks.webdriver.ie.InternetExplorerDriver;
+import com.thoughtworks.webdriver.selenium.WebDriverBackedSelenium;
 
 /**
  * A test of the Apache MyFaces JSF AJAX auto-suggest sandbox application at www.irian.at.

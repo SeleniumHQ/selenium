@@ -1,8 +1,7 @@
 package com.thoughtworks.selenium;
 
 import com.thoughtworks.webdriver.WebDriver;
-import com.thoughtworks.webdriver.firefox.FirefoxDriver;
-import com.thoughtworks.webdriver.ie.InternetExplorerDriver;
+import com.thoughtworks.webdriver.selenium.WebDriverBackedSelenium;
 
 public class DefaultSelenium extends WebDriverBackedSelenium implements Selenium {
     private final String browserName;
@@ -14,9 +13,9 @@ public class DefaultSelenium extends WebDriverBackedSelenium implements Selenium
 
     private static WebDriver getDriver(String browserName) {
         if (browserName.indexOf("firefox") != -1 || browserName.indexOf("chrome") != -1) {
-            return new FirefoxDriver();
+            return instantiate("com.thoughtworks.webdriver.firefox.FirefoxDriver");
         } else if (browserName.indexOf("iexplore") != -1) {
-            return new InternetExplorerDriver();
+            return instantiate("com.thoughtworks.webdriver.ie.InternetExplorerDriver");
         } else {
             throw new RuntimeException("Unsupported browser version: " + browserName);
         }
@@ -29,6 +28,14 @@ public class DefaultSelenium extends WebDriverBackedSelenium implements Selenium
             // If the user has closed the final window, the driver should be in an inconsistent state
             driver = getDriver(browserName);
             super.open(url);
+        }
+    }
+
+    private static WebDriver instantiate(String className) {
+        try {
+            return (WebDriver) Class.forName(className).newInstance();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 }

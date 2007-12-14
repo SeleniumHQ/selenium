@@ -1,4 +1,4 @@
-package com.thoughtworks.selenium.internal;
+package com.thoughtworks.webdriver.selenium;
 
 import java.util.List;
 

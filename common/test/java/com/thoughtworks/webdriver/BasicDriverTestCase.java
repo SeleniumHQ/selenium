@@ -17,13 +17,12 @@
 
 package com.thoughtworks.webdriver;
 
-import java.util.List;
-
-import junit.framework.TestCase;
-
 import com.thoughtworks.webdriver.environment.GlobalTestEnvironment;
 import com.thoughtworks.webdriver.environment.InProcessTestEnvironment;
 import com.thoughtworks.webdriver.environment.TestEnvironment;
+import junit.framework.TestCase;
+
+import java.util.List;
 
 /**
  * All drivers should pass these basic tests
@@ -134,7 +133,7 @@ public abstract class BasicDriverTestCase extends TestCase {
 
     public void testShouldClickOnButtons() {
         driver.get(formPage);
-        driver.findElement(By.xpath("//input[@id='submitButton']")).click();
+        driver.findElement(By.id("submitButton")).click();
         assertEquals("We Arrive Here", driver.getTitle());
     }
 

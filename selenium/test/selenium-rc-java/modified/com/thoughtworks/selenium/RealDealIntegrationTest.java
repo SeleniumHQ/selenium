@@ -24,6 +24,7 @@ import com.thoughtworks.webdriver.environment.GlobalTestEnvironment;
 import com.thoughtworks.webdriver.environment.TestEnvironment;
 import com.thoughtworks.webdriver.firefox.FirefoxDriver;
 import com.thoughtworks.webdriver.selenium.SeleniumTestEnvironment;
+import com.thoughtworks.webdriver.selenium.WebDriverBackedSelenium;
 
 /**
  * @author Paul Hammant
