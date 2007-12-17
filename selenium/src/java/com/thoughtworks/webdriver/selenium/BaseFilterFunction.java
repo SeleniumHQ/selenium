@@ -7,12 +7,12 @@ import java.util.Iterator;
 import java.util.List;
 
 public abstract class BaseFilterFunction implements FilterFunction {
-    public List filterElements(List allElements, String filterValue) {
-        ArrayList toReturn = new ArrayList();
+    public List<WebElement> filterElements(List<WebElement> allElements, String filterValue) {
+        ArrayList<WebElement> toReturn = new ArrayList<WebElement>();
 
-        Iterator iterator = allElements.iterator();
+        Iterator<WebElement> iterator = allElements.iterator();
         while (iterator.hasNext()) {
-            WebElement element = (WebElement) iterator.next();
+            WebElement element = iterator.next();
             if (shouldAdd(element, filterValue))
                 toReturn.add(element);
         }

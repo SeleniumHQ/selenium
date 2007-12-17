@@ -25,12 +25,12 @@ import java.util.List;
  * Test case for browsers that support using Javascript
  */
 public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
-    private String alertPage;
+    //private String alertPage;
 
     protected void setUp() throws Exception {
         super.setUp();
 
-        alertPage = baseUrl + "alerts.html";
+//        alertPage = baseUrl + "alerts.html";
     }
 
     public void testDocumentShouldReflectLatestTitle() throws Exception {

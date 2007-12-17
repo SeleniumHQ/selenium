@@ -6,11 +6,11 @@ import java.util.Iterator;
 import java.util.List;
 
 public abstract class BaseOptionSelectStrategy implements OptionSelectStrategy {
-    public boolean select(List fromOptions, String selectThis, boolean setSelected, boolean allowMultipleSelect) {
+    public boolean select(List<WebElement> fromOptions, String selectThis, boolean setSelected, boolean allowMultipleSelect) {
         boolean matchMade = false;
-        Iterator allOptions = fromOptions.iterator();
+        Iterator<WebElement> allOptions = fromOptions.iterator();
         while (allOptions.hasNext()) {
-            WebElement option = (WebElement) allOptions.next();
+            WebElement option = allOptions.next();
             boolean matchThisTime = selectOption(option, selectThis);
             if (matchThisTime) {
                 if (setSelected)

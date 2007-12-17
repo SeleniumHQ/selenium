@@ -1,6 +1,5 @@
 package com.thoughtworks.webdriver.selenium;
 
-import com.thoughtworks.webdriver.RenderedWebElement;
 import com.thoughtworks.webdriver.WebDriver;
 import com.thoughtworks.webdriver.WebElement;
 

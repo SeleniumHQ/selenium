@@ -1,12 +1,13 @@
 package com.thoughtworks.webdriver.selenium;
 
 import com.thoughtworks.selenium.SeleniumException;
+import com.thoughtworks.webdriver.WebElement;
 
 import java.util.Collections;
 import java.util.List;
 
 public class IndexFilterFunction implements FilterFunction {
-    public List filterElements(List allElements, String filterValue) {
+    public List<WebElement> filterElements(List<WebElement> allElements, String filterValue) {
         try {
             int index = Integer.parseInt(filterValue);
             if (allElements.size() > index)

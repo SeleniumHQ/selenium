@@ -9,6 +9,7 @@ import org.jaxen.saxpath.SAXPathException;
 import java.util.Collections;
 import java.util.Iterator;
 
+@SuppressWarnings("serial")
 public class IeNavigator extends DefaultNavigator {
     private final InternetExplorerDriver driver;
 
@@ -20,7 +21,8 @@ public class IeNavigator extends DefaultNavigator {
         return ((HtmlNode) context).getDocument();
     }
 
-    public Iterator getAttributeAxisIterator(Object contextNode) throws UnsupportedAxisException {
+    @SuppressWarnings("unchecked")
+	public Iterator getAttributeAxisIterator(Object contextNode) throws UnsupportedAxisException {
         try {
             final HtmlNode firstAttribute = ((HtmlNode) contextNode).getFirstAttribute();
             return new NodeIterator(firstAttribute);
@@ -30,27 +32,32 @@ public class IeNavigator extends DefaultNavigator {
         }
     }
 
-    public Iterator getChildAxisIterator(Object contextNode) throws UnsupportedAxisException {
+    @SuppressWarnings("unchecked")
+	public Iterator getChildAxisIterator(Object contextNode) throws UnsupportedAxisException {
         HtmlNode html = (HtmlNode) contextNode;
 
         return new NodeIterator(html.getFirstChild());
     }
 
-    public Iterator getDescendantAxisIterator(Object contextNode)
+    @SuppressWarnings("unchecked")
+	public Iterator getDescendantAxisIterator(Object contextNode)
             throws UnsupportedAxisException {
         throw new UnsupportedOperationException("getDescendantAxisIterator");
     }
 
-    public Iterator getFollowingAxisIterator(Object contextNode)
+    @SuppressWarnings("unchecked")
+	public Iterator getFollowingAxisIterator(Object contextNode)
             throws UnsupportedAxisException {
         throw new UnsupportedOperationException("getFollowingAxisIterator");
     }
 
-    public Iterator getFollowingSiblingAxisIterator(Object contextNode) throws UnsupportedAxisException {
+    @SuppressWarnings("unchecked")
+	public Iterator getFollowingSiblingAxisIterator(Object contextNode) throws UnsupportedAxisException {
         return new NodeIterator(((ElementNode) contextNode).getNextSibling());
     }
 
-    public Iterator getAncestorAxisIterator(Object contextNode)
+    @SuppressWarnings("unchecked")
+	public Iterator getAncestorAxisIterator(Object contextNode)
             throws UnsupportedAxisException {
         throw new UnsupportedOperationException("getAncestorAxisIterator");
     }
@@ -59,12 +66,14 @@ public class IeNavigator extends DefaultNavigator {
         throw new UnsupportedOperationException("getElementById");
     }
 
-    public Iterator getNamespaceAxisIterator(Object contextNode)
+    @SuppressWarnings("unchecked")
+	public Iterator getNamespaceAxisIterator(Object contextNode)
             throws UnsupportedAxisException {
         throw new UnsupportedOperationException("getNamespaceAxisIterator");
     }
 
-    public Iterator getParentAxisIterator(Object contextNode)
+    @SuppressWarnings("unchecked")
+	public Iterator getParentAxisIterator(Object contextNode)
             throws UnsupportedAxisException {
         throw new UnsupportedOperationException("getParentAxisIterator");
     }
@@ -77,12 +86,14 @@ public class IeNavigator extends DefaultNavigator {
         return ((HtmlNode) contextNode).getParent();
     }
 
-    public Iterator getPrecedingAxisIterator(Object contextNode)
+    @SuppressWarnings("unchecked")
+	public Iterator getPrecedingAxisIterator(Object contextNode)
             throws UnsupportedAxisException {
         throw new UnsupportedOperationException("getPrecedingAxisIterator");
     }
 
-    public Iterator getPrecedingSiblingAxisIterator(Object contextNode)
+    @SuppressWarnings("unchecked")
+	public Iterator getPrecedingSiblingAxisIterator(Object contextNode)
             throws UnsupportedAxisException {
         throw new UnsupportedOperationException(
                 "getPrecedingSiblingAxisIterator");

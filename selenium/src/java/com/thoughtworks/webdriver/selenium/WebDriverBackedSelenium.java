@@ -10,29 +10,13 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.thoughtworks.webdriver.selenium.ClassLookupStrategy;
-import com.thoughtworks.webdriver.selenium.ExactTextMatchingStrategy;
-import com.thoughtworks.webdriver.selenium.IdLookupStrategy;
-import com.thoughtworks.webdriver.selenium.IdOptionSelectStrategy;
-import com.thoughtworks.webdriver.selenium.*;
-import com.thoughtworks.webdriver.selenium.ImplicitLookupStrategy;
-import com.thoughtworks.webdriver.selenium.IndexOptionSelectStrategy;
-import com.thoughtworks.webdriver.selenium.LabelOptionSelectStrategy;
-import com.thoughtworks.webdriver.selenium.LinkLookupStrategy;
-import com.thoughtworks.webdriver.selenium.LookupStrategy;
-import com.thoughtworks.webdriver.selenium.NameLookupStrategy;
-import com.thoughtworks.webdriver.selenium.OptionSelectStrategy;
-import com.thoughtworks.webdriver.selenium.RegExTextMatchingStrategy;
-import com.thoughtworks.webdriver.selenium.TextMatchingStrategy;
-import com.thoughtworks.webdriver.selenium.ValueOptionSelectStrategy;
-import com.thoughtworks.webdriver.selenium.XPathLookupStrategy;
+import com.thoughtworks.selenium.Selenium;
+import com.thoughtworks.selenium.SeleniumException;
 import com.thoughtworks.webdriver.By;
 import com.thoughtworks.webdriver.NoSuchElementException;
 import com.thoughtworks.webdriver.RenderedWebElement;
 import com.thoughtworks.webdriver.WebDriver;
 import com.thoughtworks.webdriver.WebElement;
-import com.thoughtworks.selenium.Selenium;
-import com.thoughtworks.selenium.SeleniumException;
 
 public class WebDriverBackedSelenium implements Selenium {
     private static final Pattern STRATEGY_AND_VALUE_PATTERN = Pattern.compile("^(\\p{Alpha}+)=(.*)");

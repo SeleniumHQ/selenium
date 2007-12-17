@@ -1,7 +1,8 @@
 package com.thoughtworks.webdriver.ie;
 
 public class DocumentNode implements HtmlNode {
-    private long nodePointer;
+    @SuppressWarnings("unused")
+	private long nodePointer;
 
     public DocumentNode(long nodePointer) {
         this.nodePointer = nodePointer;

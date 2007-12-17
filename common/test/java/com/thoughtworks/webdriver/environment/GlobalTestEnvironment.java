@@ -36,10 +36,10 @@ public class GlobalTestEnvironment {
         GlobalTestEnvironment.environment = environment;
     }
 
-    public static TestEnvironment get(Class startThisIfNothingIsAlreadyRunning) {
+    public static TestEnvironment get(Class<? extends TestEnvironment> startThisIfNothingIsAlreadyRunning) {
         if (environment == null) {
             try {
-                environment = (TestEnvironment) startThisIfNothingIsAlreadyRunning.newInstance();
+                environment = startThisIfNothingIsAlreadyRunning.newInstance();
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

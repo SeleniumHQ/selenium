@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 
 public class NameLookupStrategy implements LookupStrategy {
     private static final Pattern NAME_AND_VALUE_PATTERN = Pattern.compile("^(\\p{Alpha}+)=(.+)");
-    Map filterFunctions = new HashMap();
+    Map<String, FilterFunction> filterFunctions = new HashMap<String, FilterFunction>();
 
     public NameLookupStrategy() {
         filterFunctions.put("value", new ValueFilterFunction());
