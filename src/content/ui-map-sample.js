@@ -711,6 +711,22 @@ myMap.addElement('authorPages', {
 
 
 
+// test the offset locator
+myMap.addPageset({
+    name: 'contactPages'
+    , description: 'page for contacting ALA'
+    , pathRegexp: 'contact'
+});
+myMap.addElement('contactPages', {
+    name: 'contact_form'
+    , description: 'base form element containing all inputs'
+    , locator: 'comment'
+    // this wasn't working in Opera for some reason:
+    //     "//form[@action='/notify/contact_response/']"
+});
+
+
+
 //******************************************************************************
 
 var myRollupManager = new RollupManager();

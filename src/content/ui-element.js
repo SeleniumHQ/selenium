@@ -1168,8 +1168,11 @@ function parse_locator(locator)
  * returned. We'll try to move this into Core at some point. A pageBot object
  * may optionally be passed in.
  */
-function eval_xpath(xpath, inDocument, pageBot)
+function eval_xpath(xpath, inDocument, opt_pageBot, opt_contextNode)
 {
+    var pageBot = opt_pageBot || false
+    var contextNode = opt_contextNode || inDocument;
+    
     // Trim any trailing "/": not valid xpath, and remains from attribute
     // locator.
     if (xpath.charAt(xpath.length - 1) == '/') {
@@ -1181,7 +1184,7 @@ function eval_xpath(xpath, inDocument, pageBot)
     // Handle //tag
     var match = xpath.match(/^\/\/(\w+|\*)$/);
     if (match) {
-        var elements = inDocument
+        var elements = contextNode
             .getElementsByTagName(match[1].toUpperCase());
         if (elements != null) {
             for (var i = 0; i < elements.length; ++i) {
@@ -1199,7 +1202,7 @@ function eval_xpath(xpath, inDocument, pageBot)
             if (match) {
                 // comments removed
                 var val = pageBot._findElementByTagNameAndAttributeValue(
-                        inDocument,
+                        contextNode,
                         match[1].toUpperCase(),
                         match[2].toLowerCase(),
                         match[3].slice(1, -1)
@@ -1216,7 +1219,7 @@ function eval_xpath(xpath, inDocument, pageBot)
                 .match(/^\/\/(\w+|\*)\[text\(\)=('([^\']+)'|"([^\"]+)")\]$/);
             if (match) {
                 return [ pageBot._findElementByTagNameAndText(
-                    inDocument,
+                    contextNode,
                     match[1].toUpperCase(),
                     match[2].slice(1, -1)) ];
             }
@@ -1229,9 +1232,12 @@ function eval_xpath(xpath, inDocument, pageBot)
     }
     
     if (inDocument.evaluate) {
-        // Use document.evaluate() if it's available
+        // Use document.evaluate() if it's available.
+        // Regarding use of the second argument to document.evaluate(), see:
+        //     http://groups.google.com/group/comp.lang.javascript/browse_thread/thread/a59ce20639c74ba1/a9d9f53e88e5ebb5
         var xpathResult = inDocument
-            .evaluate(xpath, inDocument, GLOBAL.NAMESPACE_RESOLVER, 0, null);
+            .evaluate((contextNode == inDocument ? xpath : '.' + xpath),
+                contextNode, GLOBAL.NAMESPACE_RESOLVER, 0, null);
         var result = xpathResult.iterateNext();
         while (result) {
             results.push(result);
@@ -1240,7 +1246,15 @@ function eval_xpath(xpath, inDocument, pageBot)
     }
     else {
         // If not, fall back to slower JavaScript implementation
-        var context = new ExprContext(inDocument);
+        var context;
+        if (contextNode == inDocument) {
+            context = new ExprContext(inDocument);
+        }
+        else {
+            // provide false values to get the default constructor values
+            context = new ExprContext(contextNode, false, false,
+                contextNode.parentNode);
+        }
         if (context.setCaseInsensitive) {
             context.setCaseInsensitive(true);
         }
@@ -1283,12 +1297,13 @@ function eval_css(css, inDocument)
  * you'd expect multiple results, you'll still only get one! For these types of
  * locators, performance is more important more than ideal behavior.
  *
- * @param locator  a locator string
- * @param inDocument  the document in which to apply the locator
+ * @param locator           a locator string
+ * @param inDocument       the document in which to apply the locator
+ * @param opt_contextNode  the context within which to evaluate the locator
  *
  * @return  a list of result elements
  */
-function eval_locator(locator, inDocument)
+function eval_locator(locator, inDocument, opt_contextNode)
 {
     locator = parse_locator(locator);
     
@@ -1313,7 +1328,8 @@ function eval_locator(locator, inDocument)
     
     if (locator.type == 'xpath' || (locator.string.substr(0, 2) == '//' &&
         locator.type == 'implicit')) {
-        results = eval_xpath(locator.string, inDocument, pageBot);
+        results = eval_xpath(locator.string, inDocument, pageBot,
+            opt_contextNode);
     }
     else if (locator.type == 'css') {
         results = eval_css(locator.string, inDocument);
@@ -2441,14 +2457,14 @@ function UIMap()
      *                             attendant argument values
      * @param   inDocument         the document object the specified UI element
      *                             appears in
-     * @return                     the element specified by uiSpecifierString,
-     *                             or null if it cannot be found
+     * @return                     a list of elements specified by
+     *                             uiSpecifierString
      */
-    this.getPageElement = function(uiSpecifierString, inDocument)
+    this.getPageElements = function(uiSpecifierString, inDocument)
     {
         var locator = this.getLocator(uiSpecifierString);
         var results = eval_locator(locator, inDocument);
-        return results.length ? results[0] : null;
+        return results;
     };
     
     
@@ -2613,19 +2629,36 @@ function UIMap()
         
         // add the symmetric "locateElementBy..." method to PageBot. This
         // function is responsible for mapping a UI specifier string to an
-        // element on the page, via XPath, and returning it. If the map is
-        // unsuccessful, return null. Returning null on failure to locate the
-        // element is part of the "API" for locators, it appears.
+        // element on the page and returning it. If no element is found null is
+        // returned. Returning null on failure to locate the element is part of
+        // the undocumented API for locator strategies.
         PageBot.prototype.locateElementByUIElement = function(uiSpecifierString, inDocument, inWindow) {
-            try {
-                var element = GLOBAL.uiMap.getPageElement(uiSpecifierString,
-                    inDocument);
+            // we have an offset locator expression if the specifier string
+            // does not end with a close-parenthesis. In this case, no
+            // parentheses are allowed within the arguments portion of the base
+            // specifier string.
+            if (!/\)$/.test(uiSpecifierString)) {
+                var matches = /^([^\)]+\))(.+)$/.exec(uiSpecifierString);
+                uiSpecifierString = matches[1];
+                var offsetLocator = matches[2];
             }
-            catch(e) {
-                LOG.warn("Could not locate element using " +
-                    uiSpecifierString + "; caught exception: " + e);
+            var locatedElement = null;
+            var pageElements = GLOBAL.uiMap
+                .getPageElements(uiSpecifierString, inDocument);
+            if (offsetLocator) {
+                for (var i = 0; i < pageElements.length; ++i) {
+                    var locatedElements = eval_locator(offsetLocator,
+                        inDocument, pageElements[i]);
+                    if (locatedElements.length) {
+                        locatedElement = locatedElements[0];
+                        break;
+                    }
+                }
             }
-            return element;
+            else if (pageElements.length) {
+                locatedElement = pageElements[0];
+            }
+            return locatedElement;
         }
         PageBot.prototype.locateElementByUIElement.prefix = this.prefix;
             
