@@ -2,6 +2,7 @@ package com.thoughtworks.webdriver.firefox;
 
 import com.thoughtworks.webdriver.Alert;
 import com.thoughtworks.webdriver.By;
+import com.thoughtworks.webdriver.Cookie;
 import com.thoughtworks.webdriver.NoSuchElementException;
 import com.thoughtworks.webdriver.WebDriver;
 import com.thoughtworks.webdriver.WebElement;
@@ -10,8 +11,13 @@ import com.thoughtworks.webdriver.internal.FindsByLinkText;
 import com.thoughtworks.webdriver.internal.FindsByXPath;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.HashMap;
+import java.util.Date;
+import java.util.ArrayList;
+
 
 /**
  * An implementation of the {#link WebDriver} interface that drives Firefox. This works through a firefox extension,
@@ -199,6 +205,77 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
             // This is expected. Swallow it.
         }
     }
+    
+    public Options manage() {
+        return new FirefoxOptions();
+    }
+
+    private class FirefoxOptions implements Options {
+        public void addCookie(Cookie cookie) {
+            sendMessage("addCookie", cookie.toString());
+        }
+        
+        public Set<Cookie> getCookies() {
+            String response = sendMessage("getCookie", null).trim();
+            Set<Cookie> cookies = new HashSet<Cookie>();
+            if(!"".equals(response)) {
+                for(String cookieString : response.split("\n")) {
+                    HashMap<String, String> attributesMap = new HashMap<String, String>();
+                    attributesMap.put("name", "");
+                    attributesMap.put("value", "");
+                    attributesMap.put("domain", "");
+                    attributesMap.put("path", "");
+                    attributesMap.put("expires", "");
+                    attributesMap.put("secure", "false");
+
+                    for (String attribute : cookieString.split(";")) {
+                        if(attribute.contains("=")) {
+                            String[] tokens = attribute.trim().split("=");
+                            if(attributesMap.get("name").equals("")) {
+                                attributesMap.put("name", tokens[0]);
+                                attributesMap.put("value", tokens[1]);
+                            } else if("domain".equals(tokens[0])
+                                    && tokens[1].trim().startsWith(".")) {
+                                //convert " .example.com" into "example.com" format
+                                int offset = tokens[1].indexOf(".") + 1;
+                                attributesMap.put("domain", tokens[1].substring(offset));
+                            } else {
+                                attributesMap.put(tokens[0], tokens[1]);
+                            }
+                        } else if (attribute.equals("secure")) {
+                            attributesMap.put("secure", "true");
+                        }
+                    }
+                    Date expires = null;
+                    if (!attributesMap.get("expires").equals("0")) {
+                        //firefox stores expiry as number of seconds
+                        expires = new Date(Long.parseLong(attributesMap.get("expires")) * 1000);
+                    }
+                    cookies.add(new Cookie(attributesMap.get("name"), attributesMap.get("value"), 
+                            attributesMap.get("domain"), attributesMap.get("path"),
+                            expires, Boolean.parseBoolean(attributesMap.get("secure"))));
+                }
+
+            }
+            return cookies;
+        }
+        
+        public void deleteCookieNamed(String name) {
+            sendMessage("deleteCookie", name + ";"); 
+        }
+        
+        public void deleteCookie(Cookie cookie) {
+            sendMessage("deleteCookie", cookie.getName() + ";"
+                    + cookie.getPath());
+        }
+        
+        public void deleteAllCookies() {
+            Set<Cookie> cookies = getCookies();
+            for(Cookie c : cookies) {
+                deleteCookie(c);
+            }
+        }
+    }
 
     private class FirefoxTargetLocator implements TargetLocator {
         public WebDriver frame(int frameIndex) {
@@ -244,7 +321,6 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
         sendMessage("goForward", null);
         return FirefoxDriver.this;
       }
-
 
       public WebDriver to(String url) {
         return get(url);

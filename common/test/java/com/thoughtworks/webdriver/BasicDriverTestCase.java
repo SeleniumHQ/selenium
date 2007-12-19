@@ -17,12 +17,18 @@
 
 package com.thoughtworks.webdriver;
 
+import java.util.List;
+import java.util.Set;
+import java.util.Calendar;
+
+import junit.framework.TestCase;
 import com.thoughtworks.webdriver.environment.GlobalTestEnvironment;
 import com.thoughtworks.webdriver.environment.InProcessTestEnvironment;
 import com.thoughtworks.webdriver.environment.TestEnvironment;
 import junit.framework.TestCase;
 
 import java.util.List;
+import java.util.Iterator;
 
 /**
  * All drivers should pass these basic tests
@@ -830,31 +836,192 @@ public abstract class BasicDriverTestCase extends TestCase {
     }
 
     public void testShouldBeAbleToNavigateForwardsInTheBrowserHistory() {
-      driver.get(formPage);
+        driver.get(formPage);
 
-      driver.findElement(By.id("imageButton")).submit();
-      assertEquals("We Arrive Here", driver.getTitle());
+        driver.findElement(By.id("imageButton")).submit();
+        assertEquals("We Arrive Here", driver.getTitle());
 
-      driver.navigate().back();
-      assertEquals("We Leave From Here", driver.getTitle());
+        driver.navigate().back();
+        assertEquals("We Leave From Here", driver.getTitle());
 
-      driver.navigate().forward();
-      assertEquals("We Arrive Here", driver.getTitle());
+        driver.navigate().forward();
+        assertEquals("We Arrive Here", driver.getTitle());
     }
 
     public void testShouldBeAbleToGetAFragmentOnTheCurrentPage() {
-      driver.get(xhtmlTestPage);
-      driver.get(xhtmlTestPage + "#text");
+        driver.get(xhtmlTestPage);
+        driver.get(xhtmlTestPage + "#text");
     }
 
     public void testShouldReturnWhenGettingAUrlThatDoesNotResolve() {
-      // Of course, we're up the creek if this ever does get registered
-      driver.get("http://www.thisurldoesnotexist.com/");
+        // Of course, we're up the creek if this ever does get registered
+        driver.get("http://www.thisurldoesnotexist.com/");
     }
 
     public void testShouldReturnWhenGettingAUrlThatDoesNotConnect() {
-      // Here's hoping that there's nothing here. There shouldn't be
-      driver.get("http://localhost:3001");
+        // Here's hoping that there's nothing here. There shouldn't be
+        driver.get("http://localhost:3001");
+    }
+
+    public void testAddCookiesWithDifferentPaths() {
+        driver.get(simpleTestPage);
+
+        Cookie cookie1 = new Cookie("fish", "cod", "", "/animals", null, false);
+        Cookie cookie2 = new Cookie("planet", "earth", "", "/galaxy", null, false);
+        WebDriver.Options options = driver.manage();
+        options.addCookie(cookie1);
+        options.addCookie(cookie2);
+
+        driver.get(baseUrl + "animals");
+        Set<Cookie> cookies = options.getCookies();
+
+        assertTrue(cookies.contains(cookie1));
+        assertTrue(cookies.contains(cookie2));
+
+        driver.get(baseUrl + "galaxy");
+        cookies = options.getCookies();
+        assertTrue(cookies.contains(cookie1));
+        assertTrue(cookies.contains(cookie2));
+
+        //clean up
+        options.deleteAllCookies();
+    }
+
+    public void testGetAllCookie() {
+        driver.get(simpleTestPage);
+        Calendar c = Calendar.getInstance();
+        c.set(2009, 0, 1);
+        Cookie cookie1 = new Cookie("fish", "cod", "", "", c.getTime(), false);
+        Cookie cookie2 = new Cookie("planet", "earth", "", "", null, false);
+        WebDriver.Options options = driver.manage();
+        options.addCookie(cookie1);
+        options.addCookie(cookie2);
+
+        Set<Cookie> cookies = options.getCookies();
+
+        assertTrue(cookies.contains(cookie1));
+        assertTrue(cookies.contains(cookie2));
+
+        //clean up
+        options.deleteAllCookies();
+    }
+
+    public void testCookieItegrity() {
+        driver.get("http://www.google.co.uk");
+        Calendar c = Calendar.getInstance();
+        c.set(2009, 0, 1);
+        Cookie cookie1 = new Cookie("fish", "cod", "google.co.uk", "/animals", c.getTime(), false);
+        WebDriver.Options options = driver.manage();
+        options.addCookie(cookie1);
+
+        Set<Cookie> cookies = options.getCookies();
+        Iterator<Cookie> iter = cookies.iterator();
+        Cookie retrievedCookie = null;
+        while(iter.hasNext()) {
+            Cookie temp = iter.next();
+            if (cookie1.equals(temp)) {
+              retrievedCookie = temp;
+            }
+        }
+        assertFalse(retrievedCookie == null);
+        //Cookie.equals only compares name, domain and path
+        assertTrue(retrievedCookie.equals(cookie1));
+        assertTrue(retrievedCookie.getValue().equals(cookie1.getValue()));
+        assertTrue(retrievedCookie.getExpiry().equals(cookie1.getExpiry()));
+        assertTrue(retrievedCookie.isSecure() == cookie1.isSecure());
+    }
+
+    public void testDeleteAllCookies() {
+        driver.get(simpleTestPage);
+        Cookie cookie1 = new Cookie("fish", "cod", "", "", null, false);
+        Cookie cookie2 = new Cookie("planet", "earth", "", "", null, false);
+        WebDriver.Options options = driver.manage();
+        options.addCookie(cookie1);
+        options.addCookie(cookie2);
+        Set<Cookie> cookies = options.getCookies();
+        assertTrue(cookies.contains(cookie1));
+        assertTrue(cookies.contains(cookie2));
+        options.deleteAllCookies();
+        driver.get(simpleTestPage);
+
+        cookies = options.getCookies();
+        assertFalse(cookies.contains(cookie1));
+        assertFalse(cookies.contains(cookie2));
+    }
+
+    public void testDeleteCookie() {
+        driver.get(simpleTestPage);
+        Cookie cookie1 = new Cookie("fish", "cod", "", "", null, false);
+        Cookie cookie2 = new Cookie("planet", "earth", "", "", null, false);
+        WebDriver.Options options = driver.manage();
+        options.addCookie(cookie1);
+        options.addCookie(cookie2);
+
+        options.deleteCookie(cookie1);
+        Set<Cookie> cookies = options.getCookies();
+
+        assertEquals(1, cookies.size());
+        assertTrue(cookies.contains(cookie2));
+
+        //clean up
+        options.deleteAllCookies();
+    }
+
+    public void testDeleteCookieWithName() {
+        driver.get(simpleTestPage);
+        String cookieOneName = "fish";
+        String cookieTwoName = "planet";
+        String cookieThreeName = "three";
+        Cookie cookie1 = new Cookie(cookieOneName, "cod", "", "", null, false);
+        Cookie cookie2 = new Cookie(cookieTwoName, "earth", "localhost", "", null, false);
+        Cookie cookie3 = new Cookie(cookieThreeName, "three", "", "", null, false);
+        WebDriver.Options options = driver.manage();
+        options.addCookie(cookie1);
+        options.addCookie(cookie2);
+        options.addCookie(cookie3);
+
+        options.deleteCookieNamed(cookieOneName);
+        options.deleteCookieNamed(cookieTwoName);
+        Set<Cookie> cookies = options.getCookies();
+        //cookie without domain gets deleted
+        assertFalse(cookies.contains(cookie1));
+        //cookie with domain gets deleted
+        assertFalse(cookies.contains(cookie2));
+        //cookie not deleted
+        assertTrue(cookies.contains(cookie3));
+
+        //clean up
+        options.deleteAllCookies();
+    }
+
+    public void testShouldNotDeleteCookiesWithASimilarName() {
+        driver.get(simpleTestPage);
+        String cookieOneName = "fish";
+        Cookie cookie1 = new Cookie(cookieOneName, "cod", "", "", null, false);
+        Cookie cookie2 = new Cookie(cookieOneName + "x", "earth", "", "", null, false);
+        WebDriver.Options options = driver.manage();
+        options.addCookie(cookie1);
+        options.addCookie(cookie2);
+
+        options.deleteCookieNamed(cookieOneName);
+        Set<Cookie> cookies = options.getCookies();
+
+        assertFalse(cookies.contains(cookie1));
+        assertTrue(cookies.contains(cookie2));
+
+        //clean up
+        options.deleteAllCookies();
+    }
+
+    public void testGetCookieDoesNotRetriveBeyondCurrentDomain() {
+        driver.get(simpleTestPage);
+
+        Cookie cookie1 = new Cookie("fish", "cod", "localhost", "", null, false);
+        WebDriver.Options options = driver.manage();
+        options.addCookie(cookie1);
+        driver.get("http://www.google.com");
+        Set<Cookie> cookies = options.getCookies();
+        assertFalse(cookies.contains(cookie1));
     }
 
     protected WebDriver driver;

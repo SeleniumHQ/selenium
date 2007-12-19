@@ -18,6 +18,7 @@
 package com.thoughtworks.webdriver;
 
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -151,7 +152,26 @@ public interface WebDriver {
    */
     Navigation navigate();
 
-  /**
+    /**
+     * Gets the Option interface
+     *
+     * @return An option interface
+     * @see com.thoughtworks.webdriver.WebDriver.Options
+     */
+    public Options manage();
+    
+    /**
+     * An interface for managing stuff you would do in a browser menu 
+     */
+    public interface Options {
+        void addCookie(Cookie cookie);
+        void deleteCookieNamed(String name);
+        void deleteCookie(Cookie cookie);
+        void deleteAllCookies();
+        Set<Cookie> getCookies();
+    }
+    
+    /**
      * Used to locate a given frame or window.
      */
     public interface TargetLocator {

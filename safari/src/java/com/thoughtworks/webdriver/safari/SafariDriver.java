@@ -69,6 +69,10 @@ public class SafariDriver implements WebDriver, FindsByLinkText, FindsById, Find
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
+    public Options manage() {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
     public void waitForLoadToComplete() {
         while (!"complete".equals(appleScript.executeJavascript("return document.readyState"))) {
             try {

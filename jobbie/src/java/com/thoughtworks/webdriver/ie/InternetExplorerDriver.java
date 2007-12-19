@@ -139,7 +139,11 @@ public class InternetExplorerDriver implements WebDriver, FindsById, FindsByLink
         return new InternetExplorerNavigation();
     }
 
-  protected native void waitForLoadToComplete();
+    public Options manage() {
+        throw new UnsupportedOperationException("Not implemented.");
+    }
+
+    protected native void waitForLoadToComplete();
 
     private void startCom() {
         if (!comStarted) {

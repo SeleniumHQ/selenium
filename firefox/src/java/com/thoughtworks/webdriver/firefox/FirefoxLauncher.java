@@ -469,7 +469,16 @@ public class FirefoxLauncher {
             binary = new File(
                     "/Applications/Firefox.app/Contents/MacOS/firefox");
         } else {
-            binary = shellOutAndFindPathOfFirefox("firefox");
+            String[] binaryNames = new String[] { "firefox3", "firefox2", "firefox" };
+            for (String name : binaryNames) {
+               binary = shellOutAndFindPathOfFirefox(name);
+               if (binary != null)
+                   break;
+            }
+            if (binary == null)  {
+              throw new RuntimeException("Cannot find firefox binary in PATH. Make sure firefox " +
+                      "is installed");
+            }
         }
 
         if (binary.exists())
@@ -509,7 +518,7 @@ public class FirefoxLauncher {
         try {
             Process which = Runtime.getRuntime().exec(new String[] {"which", binaryName});
             String result = getNextLineOfOutputFrom(which);
-            return new File(result);
+            return result == null ? null : new File(result);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

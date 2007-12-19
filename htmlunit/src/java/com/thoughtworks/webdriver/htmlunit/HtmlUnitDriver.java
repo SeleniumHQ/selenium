@@ -20,24 +20,26 @@ package com.thoughtworks.webdriver.htmlunit;
 import com.gargoylesoftware.htmlunit.*;
 import com.gargoylesoftware.htmlunit.html.*;
 import com.gargoylesoftware.htmlunit.html.xpath.HtmlUnitXPath;
-import com.thoughtworks.webdriver.Alert;
+import com.thoughtworks.webdriver.*;
 import com.thoughtworks.webdriver.NoSuchElementException;
-import com.thoughtworks.webdriver.WebDriver;
-import com.thoughtworks.webdriver.WebElement;
-import com.thoughtworks.webdriver.By;
 import com.thoughtworks.webdriver.internal.FindsById;
 import com.thoughtworks.webdriver.internal.FindsByLinkText;
 import com.thoughtworks.webdriver.internal.FindsByXPath;
 
 import org.jaxen.JaxenException;
 import org.jaxen.XPath;
+import org.apache.commons.httpclient.HttpState;
 
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.net.ConnectException;
+
+import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Date;
+import java.util.Set;
+import java.util.HashSet;
 
 public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText, FindsByXPath {
     private WebClient webClient;
@@ -312,5 +314,60 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText, Fi
       public WebDriver to(String url) {
         return get(url);
       }
+    }
+
+    public Options manage() {
+        return new HtmlUnitOptions();
+    }
+
+    private class HtmlUnitOptions implements Options {
+        private HttpState state;
+
+        HtmlUnitOptions() {
+            state = webClient.getWebConnection().getState();
+        }
+
+        public void addCookie(Cookie cookie) {
+            state.addCookie(new org.apache.commons.httpclient.Cookie(cookie.getDomain(),
+                    cookie.getName(), cookie.getValue(), cookie.getPath(), cookie.getExpiry(),
+                    cookie.isSecure()));
+        }
+
+        public void deleteCookieNamed(String name) {
+            //Assume the cookie either doesn't have a domain or has the same domain as the current
+            //page. Delete the cookie for both cases.
+            state.addCookie(new org.apache.commons.httpclient.Cookie(getHostName(), name, "", "",
+                    new Date(0), false));
+            state.addCookie(new org.apache.commons.httpclient.Cookie("", name, "", "", new Date(0),
+                    false));
+        }
+
+        public void deleteCookie(Cookie cookie) {
+            state.addCookie(new org.apache.commons.httpclient.Cookie(cookie.getDomain(),
+                    cookie.getName(), cookie.getValue(), cookie.getPath(), new Date(0),
+                    cookie.isSecure()));
+        }
+
+        public void deleteAllCookies() {
+            state.clearCookies();
+        }
+
+        public Set<Cookie> getCookies() {
+            HttpState state = webClient.getWebConnection().getState();
+            org.apache.commons.httpclient.Cookie[] rawCookies = state.getCookies();
+            
+            Set<Cookie> retCookies = new HashSet<Cookie>();
+            for(org.apache.commons.httpclient.Cookie c : rawCookies) {
+                if("".equals(c.getDomain()) || getHostName().indexOf(c.getDomain()) != -1) {
+                    retCookies.add(new Cookie(c.getName(), c.getValue(), c.getDomain(), c.getPath(),
+                            c.getExpiryDate(), c.getSecure()));
+                }
+            }
+            return retCookies;  
+        }
+
+        private String getHostName() {
+            return lastPage().getWebResponse().getUrl().getHost();
+        }
     }
 }

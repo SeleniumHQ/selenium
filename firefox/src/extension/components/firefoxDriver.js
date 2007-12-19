@@ -186,3 +186,46 @@ FirefoxDriver.prototype.goForward = function(respond) {
 
     respond(this.context, "goForward");
 }
+
+FirefoxDriver.prototype.addCookie = function(respond, cookieString) {
+    var doc = Utils.getDocument(this.context);
+    doc.cookie = cookieString;
+    respond(this.context, "addCookie");
+}
+
+FirefoxDriver.prototype.getCookie = function(respond) {
+    var doc = Utils.getDocument(this.context);
+    var cookieManager = Utils.getService("@mozilla.org/cookiemanager;1", "nsICookieManager2");
+    var toReturn = "";
+    
+    var location = Utils.getBrowser(this.context).contentWindow.location;
+    var isForCurrentHost = function(c) {
+      return location.hostname.indexOf(c.host) != -1;
+    }
+    
+    var cookieToString = function(c) {
+      return c.name + "=" + c.value + ";" + (c.isDomain ? "domain=" + c.host + ";": "")
+          + (c.path == "/" ? "" : "path=" + c.path + ";") + "expires=" + c.expires + ";"
+          +(c.isSecure ? "secure ;" : "");
+    }
+
+    var allCookies = cookieManager.enumerator;
+
+    while (allCookies.hasMoreElements()) {
+      var cookie = allCookies.getNext();
+      cookie = cookie.QueryInterface(Components.interfaces.nsICookie)
+      if (isForCurrentHost(cookie)) {
+        toReturn += cookieToString(cookie) + "\n";
+      }
+    }
+    respond(this.context, "getCookie", toReturn);
+}
+
+FirefoxDriver.prototype.deleteCookie = function(respond, nameAndPath) {
+    var nameAndPathList = nameAndPath.split(";");
+    var name = nameAndPathList[0];
+    var path = nameAndPathList[1];
+    var doc = Utils.getDocument(this.context);
+    doc.cookie = name +"=;expires=Thu, 01-Jan-1970 00:00:01 GMT;path=" + path;
+    respond(this.context, "deleteCookie");
+}
