@@ -107,7 +107,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         return (String) parameterValues.get(0);
     }
 
-    public void handle(String pathInContext, String pathParams, HttpRequest req, HttpResponse res) throws HttpException, IOException {
+    @Override public void handle(String pathInContext, String pathParams, HttpRequest req, HttpResponse res) throws HttpException, IOException {
         try {
         	log.debug("Thread name: " + Thread.currentThread().getName());
             res.setField(HttpFields.__ContentType, "text/plain");
@@ -408,9 +408,13 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         // handle special commands
         if ("getNewBrowserSession".equals(cmd)) {
             String browserString = values.get(0);
-            sessionId = getNewBrowserSession(browserString, values.get(1));
-            setDomain(sessionId, values.get(1));
-            results = "OK," + sessionId;
+            try {
+              sessionId = getNewBrowserSession(browserString, values.get(1));
+              setDomain(sessionId, values.get(1));
+              results = "OK," + sessionId;
+            } catch (RemoteCommandException rce) {
+              results = "Failed to start new browser session: " + rce.getMessage();
+            }
         } else if ("getLogMessages".equals(cmd)) {
             results = "OK," + logMessagesBuffer.toString();
             logMessagesBuffer.setLength(0);
@@ -685,7 +689,8 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         return UUID.randomUUID().toString().replaceAll("-", "");
     }
 
-    private String getNewBrowserSession(String browserString, String startURL) {
+    protected String getNewBrowserSession(String browserString, String startURL) 
+          throws RemoteCommandException {
 
         browserString = validateBrowserString(browserString);
 
@@ -703,13 +708,23 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             
         boolean multiWindow = server.isMultiWindow();
         launcher.launchRemoteSession(startURL, multiWindow);
-        queueSet.waitForLoad((long)SeleniumServer.getTimeoutInSeconds() * 1000l);
-
-        // TODO DGF log4j only
-        // NDC.push("sessionId="+sessionId);
-        FrameGroupCommandQueueSet queue = FrameGroupCommandQueueSet.getQueueSet(sessionId);
-        queue.doCommand("setContext", sessionId, "");
-        return sessionId;
+        
+        try {
+          queueSet.waitForLoad(SeleniumServer.getTimeoutInSeconds() * 1000l);
+  
+          // TODO DGF log4j only
+          // NDC.push("sessionId="+sessionId);
+          FrameGroupCommandQueueSet queue = FrameGroupCommandQueueSet.getQueueSet(sessionId);
+          queue.doCommand("setContext", sessionId, "");
+          return sessionId;
+        } catch (RemoteCommandException rce) {
+          log.debug("Failed to start new browser session: " + rce.getMessage());
+          synchronized(launchers) {
+            endBrowserSession(sessionId, false);
+          }
+          sessionIdsToBrowserStrings.remove(sessionId);
+          throw rce;
+        }
     }
 
     private String validateBrowserString(String inputString) throws IllegalArgumentException {

@@ -390,7 +390,9 @@ public class MockPIFrameTest extends TestCase {
         // send back a "START".  But instead, too much time passes.
         sleepForAtLeast(timeout);
         // 5. server replies to driver with an error message
-        assertEquals("wrong error message on timeout", "timed out waiting for window \"\" to appear", open.getResult());
+        String result = open.getResult();
+        boolean hasTimeoutMessage = result.contains("timed out waiting for window");
+        assertTrue("wrong error message on timeout", hasTimeoutMessage);
     }
     
     /** Open a subWindow, close the subWindow, select the mainWindow, and send it a command. */

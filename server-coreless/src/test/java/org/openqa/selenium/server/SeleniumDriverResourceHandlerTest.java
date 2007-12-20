@@ -33,4 +33,21 @@ public class SeleniumDriverResourceHandlerTest extends TestCase {
     assertEquals(newSpeedString, speed);
     FrameGroupCommandQueueSet.clearQueueSet(firstSessionId);
   }
+  
+  public void testThrowsExceptionOnFailedBrowserLaunch() throws Exception {
+    SeleniumServer server = new SeleniumServer();
+    SeleniumServer.setTimeoutInSeconds(3);
+    server.start();
+    SeleniumDriverResourceHandler sdrh = new SeleniumDriverResourceHandler(server);
+    try {
+      sdrh.getNewBrowserSession("*mock", null);
+      fail("Launch should have failed");
+    } catch (RemoteCommandException rce) {
+      // passes.
+    } finally {
+        if (server != null) {
+            server.stop();
+        }
+    }
+  }
 }

@@ -107,7 +107,13 @@ public class FrameGroupCommandQueueSet {
 
     private String selectWindow(String seleniumWindowName) {
         if (!SeleniumServer.isProxyInjectionMode()) {
-            return doCommand("selectWindow", seleniumWindowName, "");
+          String result;
+          try {
+            result = doCommand("selectWindow", seleniumWindowName, "");
+          } catch (RemoteCommandException rce) {
+            result = rce.getMessage();
+          }
+          return result;
         }
         if ("null".equals(seleniumWindowName)) {
             // this results from only working with strings over the wire
@@ -239,8 +245,10 @@ public class FrameGroupCommandQueueSet {
      * @return - the command result, defined by the remote JavaScript.  "getX" style
      * commands may return data from the browser; other "doX" style commands may just
      * return "OK" or an error message.
+     * @throws RemoteCommandException if a waitForLoad failed.
      */
-    public String doCommand(String command, String arg, String value) {
+    public String doCommand(String command, String arg, String value) 
+        throws RemoteCommandException {
       if (SeleniumServer.isProxyInjectionMode()) {
         if (command.equals("selectFrame")) {
           if ("".equals(arg)) {
@@ -407,7 +415,13 @@ public class FrameGroupCommandQueueSet {
     private String getAttributeFromAllWindows(String attributeName) {
         // If we're not in PI mode, send the command back to the browser.
         if (!SeleniumServer.isProxyInjectionMode()) {  
-            return doCommand("getAttributeFromAllWindows", "", "");
+            String result;
+            try {
+              result = doCommand("getAttributeFromAllWindows", "", "");
+            } catch (RemoteCommandException rce) {
+              result = rce.getMessage();
+            }
+            return result;
         }
         
         Set<String> frameAddressSet = uniqueIdToCommandQueue.keySet();
@@ -459,27 +473,22 @@ public class FrameGroupCommandQueueSet {
         }
     }
         
-    public String waitForLoad(long timeoutInMilliseconds) {
+    public String waitForLoad(long timeoutInMilliseconds) throws RemoteCommandException {
         int timeoutInSeconds = (int)(timeoutInMilliseconds / 1000l);
         if (timeoutInSeconds == 0) {
             timeoutInSeconds = 1;
         }
-        try {
-        	String uniqueId = waitForLoad(currentSeleniumWindowName, currentLocalFrameAddress, timeoutInSeconds);
-        	setCurrentFrameAddress(uniqueId);
-        	if (uniqueId == null) {
-        		throw new RuntimeException("uniqueId is null in waitForLoad...this should not happen.");
-        	}
-        	else {
-        		return "OK";
-        	}
-        }
-        catch (RemoteCommandException se) {
-        	return se.getMessage();
-        }
+      	String uniqueId = waitForLoad(currentSeleniumWindowName, currentLocalFrameAddress, timeoutInSeconds);
+      	setCurrentFrameAddress(uniqueId);
+      	if (uniqueId == null) {
+      		throw new RuntimeException("uniqueId is null in waitForLoad...this should not happen.");
+      	}
+      	else {
+      		return "OK";
+      	}
     }
     
-    private String waitForLoad(String timeoutInMilliseconds) {
+    private String waitForLoad(String timeoutInMilliseconds)  throws RemoteCommandException {
         return waitForLoad(Long.parseLong(timeoutInMilliseconds));
     }
 
@@ -631,7 +640,7 @@ public class FrameGroupCommandQueueSet {
      */
     public RemoteCommand handleCommandResult(
         String commandResult, FrameAddress incomingFrameAddress, 
-        String uniqueId, boolean justLoaded, List jsWindowNameVars) {
+        String uniqueId, boolean justLoaded, List<?> jsWindowNameVars) {
       CommandQueue queue = getCommandQueue(uniqueId);
       queue.setFrameAddress(incomingFrameAddress);
       if (jsWindowNameVars!=null) {
@@ -766,7 +775,11 @@ public class FrameGroupCommandQueueSet {
       selectWindow(DEFAULT_SELENIUM_WINDOW_NAME);
       String defaultUrl = "http://localhost:" + SeleniumServer.getPortDriversShouldContact()
           + "/selenium-server/core/InjectedRemoteRunner.html";
-      doCommand("open", defaultUrl, ""); // will close out subframes
+      try {
+        doCommand("open", defaultUrl, ""); // will close out subframes
+      } catch (RemoteCommandException rce) {  
+        log.debug("RemoteCommandException in reset: " + rce.getMessage());
+      }
     }
 
 	private boolean queueMatchesFrameAddress(CommandQueue queue, String currentLocalFrameAddress, String newFrameAddressExpression) {

@@ -38,12 +38,14 @@ public class MockBrowserLauncher implements BrowserLauncher, Runnable {
         this.sessionId = sessionId;
     }
     
-    
-    
     public void launchRemoteSession(String url, boolean multiWindow) {
-        browser = new Thread(this);
-        browser.setName("mockbrowser");
+      browser = new Thread(this);
+      browser.setName("mockbrowser");
+      if (null != url) {
         browser.start();
+      } else {
+        log.info("launching a mock unresponsive browser");
+      }
     }
 
     public void launchHTMLSuite(String startURL, String suiteUrl,
