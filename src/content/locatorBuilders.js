@@ -37,8 +37,8 @@ LocatorBuilders.prototype.pageBot = function() {
 	return pageBot;
 }
 
-LocatorBuilders.prototype.buildWith = function(name, e) {
-	return LocatorBuilders.builderMap[name].call(this, e);
+LocatorBuilders.prototype.buildWith = function(name, e, opt_contextNode) {
+	return LocatorBuilders.builderMap[name].call(this, e, opt_contextNode);
 }
 
 LocatorBuilders.prototype.build = function(e) {
@@ -316,11 +316,11 @@ LocatorBuilders.add('dom:index', function(e) {
 		return null;
 	});
 
-LocatorBuilders.add('xpath:position', function(e) {
+LocatorBuilders.add('xpath:position', function(e, opt_contextNode) {
 		this.log.debug("positionXPath: e=" + e);
 		var path = '';
 		var current = e;
-		while (current != null) {
+		while (current != null && current != opt_contextNode) {
 			var currentPath = '/' + current.nodeName.toLowerCase();
 			if (current.parentNode != null) {
 				var childNodes = current.parentNode.childNodes;

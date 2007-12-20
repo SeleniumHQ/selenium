@@ -723,6 +723,7 @@ myMap.addElement('contactPages', {
     , locator: 'comment'
     // this wasn't working in Opera for some reason:
     //     "//form[@action='/notify/contact_response/']"
+    , getOffsetLocator: UIElement.defaultOffsetLocatorStrategy
 });
 
 

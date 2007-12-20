@@ -1917,6 +1917,10 @@ function UIElement(uiElementShorthand)
             this.getGenericLocator = uiElementShorthand.getGenericLocator;
         }
         
+        if (uiElementShorthand.getOffsetLocator) {
+            this.getOffsetLocator = uiElementShorthand.getOffsetLocator;
+        }
+        
         // get the testcases and local variables
         this.testcases = [];
         var localVars = {};
@@ -1954,6 +1958,29 @@ function UIElement(uiElementShorthand)
     
     this.init(uiElementShorthand);
 }
+
+// hang this off the UIElement "namespace"
+UIElement.defaultOffsetLocatorStrategy = function(locatedElement, pageElement) {
+    if (is_ancestor(locatedElement, pageElement)) {
+        var offsetLocator;
+        var recorder = Recorder.get(locatedElement.ownerDocument.defaultView);
+        var builderNames = [
+            'xpath:link'
+            , 'xpath:img'
+            , 'xpath:attributes'
+            , 'xpath:href'
+            , 'xpath:position'
+        ];
+        for (var i = 0; i < builderNames.length; ++i) {
+            offsetLocator = recorder.locatorBuilders
+                .buildWith(builderNames[i], pageElement, locatedElement);
+            if (offsetLocator) {
+                return offsetLocator;
+            }
+        }
+    }
+    return null;
+};
 
 
 
@@ -2501,10 +2528,10 @@ function UIMap()
      * Finds and returns a UI specifier string given an element and the page
      * that it appears on.
      *
-     * @param   element     the document element to map to a UI specifier
-     * @param   inDocument  the document the element appears in
-     * @return              a UI specifier string, or false if one cannot be
-     *                      constructed
+     * @param pageElement  the document element to map to a UI specifier
+     * @param inDocument   the document the element appears in
+     * @return             a UI specifier string, or false if one cannot be
+     *                     constructed
      */
     this.getUISpecifierString = function(pageElement, inDocument)
     {
@@ -2537,9 +2564,9 @@ function UIMap()
                 
                 //smart_alert(print_r(uiElement.defaultLocators));
                 for (var locator in uiElement.defaultLocators) {
-                    var results = eval_locator(locator, inDocument);
-                    if (results.length) {
-                        node = results[0];
+                    var locatedElements = eval_locator(locator, inDocument);
+                    if (locatedElements.length) {
+                        var locatedElement = locatedElements[0];
                     }
                     else {
                         continue;
@@ -2548,7 +2575,7 @@ function UIMap()
                     // use a heuristic to determine whether the element
                     // specified is the "same" as the element we're matching
                     if (is_fuzzy_match) {
-                        if (is_fuzzy_match(node, pageElement)) {
+                        if (is_fuzzy_match(locatedElement, pageElement)) {
                             return this.prefix + '=' +
                                 new UISpecifier(pageset.name,
                                     uiElement.name, 
@@ -2556,11 +2583,26 @@ function UIMap()
                         }
                     }
                     else {
-                        if (node == pageElement) {
+                        if (locatedElement == pageElement) {
                             return this.prefix + '=' +
                                 new UISpecifier(pageset.name,
                                     uiElement.name, 
                                     uiElement.defaultLocators[locator]);
+                        }
+                    }
+                    // ok, matching the element failed. See if an offset
+                    // locator can complete the match.
+                    if (uiElement.getOffsetLocator) {
+                        for (var i = 0; i < locatedElements.length; ++i) {
+                            var offsetLocator = uiElement
+                                .getOffsetLocator(locatedElement, pageElement);
+                            if (offsetLocator) {
+                                return this.prefix + '=' +
+                                    new UISpecifier(pageset.name,
+                                        uiElement.name, 
+                                        uiElement.defaultLocators[locator])
+                                    + offsetLocator;
+                            }
                         }
                     }
                 }
@@ -2612,9 +2654,9 @@ function UIMap()
         // add the UI element locator, and promote it to top priority
         if (is_IDE()) {
             if (LocatorBuilders.order.indexOf(this.prefix) == -1) {
-                LocatorBuilders.add(this.prefix, function(node) {
-                    return GLOBAL.uiMap
-                        .getUISpecifierString(node, this.window.document);
+                LocatorBuilders.add(this.prefix, function(pageElement) {
+                    return GLOBAL.uiMap.getUISpecifierString(pageElement,
+                        this.window.document);
                 });
                 LocatorBuilders.order.unshift(this.prefix);
                 LocatorBuilders.order.pop();

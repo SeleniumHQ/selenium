@@ -818,6 +818,11 @@ Editor.prototype.showUIReference = function(target) {
     var re = new RegExp('^' + Editor.uiMap.prefix + '=');
     if (re.test(target)) {
         var uiSpecifierString = target.replace(re, "");
+        // trim the offset locator, if any
+        if (!/\)$/.test(uiSpecifierString)) {
+            var matches = /^([^\)]+\))(.+)$/.exec(uiSpecifierString);
+            uiSpecifierString = matches[1];
+        }
         var pageset = Editor.uiMap.getPageset(uiSpecifierString);
         var uiElement = Editor.uiMap.getUIElement(uiSpecifierString);
         if (pageset != null && uiElement != null) {
