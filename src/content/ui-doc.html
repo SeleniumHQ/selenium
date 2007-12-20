@@ -289,6 +289,17 @@ map.addElement('allPages', {
     return this._xpathPrefix + '/descendant::a';
 }</pre>
 </tr>
+<tr><td>getOffsetLocator</td>
+    <td>No</td>
+    <td><p>(Function) a function that returns an offset locator. The locator is offset from the element identified by a UI specifier string. The function should take this element, and the interacted page element, as arguments, and have the method signature <code>getOffsetLocator(locatedElement, pageElement)</code>. If an offset locator can't be found, a value that evaluates to <code>false</code> must be returned.</p><p>A convenient default function <code>UIElement.defaultOffsetLocatorStrategy</code> is provided so you don't have to define your own. It uses several typical strategies also employed by the IDE recording when recording normally. See the Advanced Topics section below for more information on offset locators.</p></td>
+    <td><pre>getOffsetLocator: <span class="highlight">UIElement.defaultOffsetLocatorStrategy</span></pre>
+        <pre>getOffsetLocator:
+    function(locatedElement, pageElement) {
+    if (pageElement.parentNode == locatedElement) {
+        return 'xpath=/child::' + pageElement.nodeName;
+    }
+    return null;
+}</pre></td>
 <tr><td>testcase*</td>
     <td>No</td>
     <td>(Object) a testcase for testing the implementation of the <code>getLocator()</code> method. As many testcases as desired may be defined for each UI element. They must all start with the string "testcase".</td>
@@ -433,6 +444,18 @@ testcase1: {
 </ul>
 
 <p>This logic may or may not be sufficient for you. The good news is, it's very easy to modify. Look for the definition of <code>PageBot.prototype.locateElementByUIElement.is_fuzzy_match</code> in <code>ui-element.js</code> .</p>
+
+<h3>Offset Locators</h3>
+
+<pre>ui=contactPages::contact_form()<span class="highlight">//input[@id='u_name']</span></pre>
+
+<p>Offset locators are locators that are appended to UI specifier strings to form composite locators. They can be automatically deduced by the IDE recorder for UI elements that have specified a <code>getOffsetLocator</code> function. This feature may be useful if your pages contain too many elements to write UI elements for. In this case, offset locators allow you to define UI elements that "anchor" other elements.</p>
+
+<p>To resolve ambiguity in parsing a UI specifier string, the following rule is introduced: "If the last character in the UI locator string is NOT the close-parenthesis (<code>)</code>), the substring following the first occurrence of the close-parenthesis of the locator string shall be considered an offset locator." This means that when using offset locators, the arguments portion of the UI specifier string cannot contain any close-parentheses. On the other hand, the offset locator can contain parentheses. This may be important if it uses XPath functions like <code>contains()</code>, for example.</p>
+
+<p>In general, no preference is given to matching plain vanilla UI specifier strings over ones that have offset locators. In other words, if a page element could be specified either by a UI specifier string for one UI element, and by one augmented by an offset locator for a different UI element, there is no guarantee that one or the other will be used when recording.</p>
+
+<p>Currently, only XPath is supported as an offset locator type. Other locator strategies may be supported in the future.</p>
 
 <h3>Rollup Rules</h3>
 
