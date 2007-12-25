@@ -18,10 +18,12 @@
 package com.thoughtworks.webdriver.environment.webserver;
 
 public interface AppServer {
+    String getHostName();
+
     String getBaseUrl();
+	String getAlternateBaseUrl();
 
     void start();
-
     void stop();
 
     void addAdditionalWebApplication(String context, String absolutePath);

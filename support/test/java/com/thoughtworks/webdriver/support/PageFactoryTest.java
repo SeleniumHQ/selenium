@@ -1,11 +1,15 @@
 package com.thoughtworks.webdriver.support;
 
+import static org.easymock.EasyMock.createNiceMock;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNull.notNullValue;
 import junit.framework.TestCase;
-import com.thoughtworks.webdriver.WebElement;
-import com.thoughtworks.webdriver.WebDriver;
-import com.thoughtworks.webdriver.RenderedWebElement;
 
-import org.easymock.EasyMock;
+import com.thoughtworks.webdriver.RenderedWebElement;
+import com.thoughtworks.webdriver.WebDriver;
+import com.thoughtworks.webdriver.WebElement;
 
 public class PageFactoryTest extends TestCase {
     private WebDriver driver = null;
@@ -13,17 +17,17 @@ public class PageFactoryTest extends TestCase {
     public void testShouldProxyElementsInAnInstantiatedPage() {
         PublicPage page = new PublicPage();
 
-        assertNull(page.q);
+        assertThat(page.q, is(notNullValue()));
 
         PageFactory.initElements(driver, page);
 
-        assertNotNull(page.q);
+        assertThat(page.q, is(notNullValue()));
     }
 
     public void testShouldInsertProxiesForPublicWebElements() {
         PublicPage page = PageFactory.initElements(driver, PublicPage.class);
 
-        assertNotNull(page.q);
+        assertThat(page.q, is(notNullValue()));
     }
 
     public void testShouldProxyElementsFromParentClassesToo() {
@@ -31,14 +35,14 @@ public class PageFactoryTest extends TestCase {
 
         PageFactory.initElements(driver, page);
 
-        assertNotNull(page.q);
-        assertNotNull(page.submit);
+        assertThat(page.q, is(notNullValue()));
+        assertThat(page.submit, is(notNullValue()));
     }
 
     public void testShouldProxyRenderedWebElementFields() {
       PublicPage page = PageFactory.initElements(driver, PublicPage.class);
 
-      assertNotNull(page.rendered);
+      assertThat(page.rendered, is(notNullValue()));
     }
 
     public void testShouldProxyPrivateElements() {
@@ -46,15 +50,15 @@ public class PageFactoryTest extends TestCase {
 
         PageFactory.initElements(driver, page);
 
-        assertNotNull(page.getField());
+        assertThat(page.getField(), is(notNullValue()));
     }
 
     public void testShouldUseAConstructorThatTakesAWebDriverAsAnArgument() {
-        driver = EasyMock.createNiceMock(WebDriver.class);
+        driver = createNiceMock(WebDriver.class);
 
         ConstructedPage page = PageFactory.initElements(driver, ConstructedPage.class);
 
-        assertEquals(driver, page.driver);
+        assertThat(driver, equalTo(page.driver));
     }
 
     public static class PublicPage {

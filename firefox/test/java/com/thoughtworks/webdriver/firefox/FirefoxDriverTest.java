@@ -1,5 +1,8 @@
 package com.thoughtworks.webdriver.firefox;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+
 import com.thoughtworks.webdriver.By;
 import com.thoughtworks.webdriver.JavascriptEnabledDriverTest;
 import com.thoughtworks.webdriver.NoSuchElementException;
@@ -33,10 +36,10 @@ public class FirefoxDriverTest extends JavascriptEnabledDriverTest {
         driver.get(xhtmlTestPage);
 
         driver.findElement(By.linkText("Open new window")).click();
-        assertEquals("XHTML Test Page", driver.getTitle());
+        assertThat(driver.getTitle(), equalTo("XHTML Test Page"));
 
         driver.switchTo().window("result");
-        assertEquals("We Arrive Here", driver.getTitle());
+        assertThat(driver.getTitle(), equalTo("We Arrive Here"));
 
         driver.get(iframePage);
         driver.findElement(By.id("iframe_page_heading"));
@@ -58,6 +61,6 @@ public class FirefoxDriverTest extends JavascriptEnabledDriverTest {
       textarea.setValue(expectedText);
 
       String seenText = textarea.getValue();
-      assertEquals(expectedText, seenText);
+      assertThat(seenText, equalTo(expectedText));
     }
 }

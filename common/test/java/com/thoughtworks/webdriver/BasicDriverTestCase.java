@@ -17,18 +17,22 @@
 
 package com.thoughtworks.webdriver;
 
-import java.util.List;
-import java.util.Set;
-import java.util.Calendar;
-
-import junit.framework.TestCase;
 import com.thoughtworks.webdriver.environment.GlobalTestEnvironment;
 import com.thoughtworks.webdriver.environment.InProcessTestEnvironment;
 import com.thoughtworks.webdriver.environment.TestEnvironment;
 import junit.framework.TestCase;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.core.IsNot.not;
+import static org.hamcrest.core.IsNull.nullValue;
 
-import java.util.List;
+import java.util.Calendar;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 /**
  * All drivers should pass these basic tests
@@ -37,8 +41,6 @@ public abstract class BasicDriverTestCase extends TestCase {
     protected static WebDriver storedDriver;
 
     protected void setUp() throws Exception {
-        super.setUp();
-
         if (isUsingSameDriverInstance()) {
             if (storedDriver == null) {
                 storedDriver = getDriver();
@@ -58,14 +60,15 @@ public abstract class BasicDriverTestCase extends TestCase {
                 storedDriver = driver;
             }
 
-            assertNotNull("Driver cannot be null", driver);
+            assertThat(driver, is(notNullValue()));
         } else {
             driver = getDriver();
         }
 
         driver.setVisible(true);
+        driver.manage().deleteAllCookies();
 
-        startEnvironmentIfNecessary();
+        TestEnvironment environment = startEnvironmentIfNecessary();
         simpleTestPage = baseUrl + "simpleTest.html";
         xhtmlTestPage = baseUrl + "xhtmlTest.html";
         formPage = baseUrl + "formPage.html";
@@ -74,6 +77,8 @@ public abstract class BasicDriverTestCase extends TestCase {
         javascriptPage = baseUrl + "javascriptPage.html";
         framesetPage = baseUrl + "frameset.html";
         iframePage = baseUrl + "iframes.html";
+
+        hostName = environment.getAppServer().getHostName();
     }
 
     protected abstract WebDriver getDriver();
@@ -82,13 +87,14 @@ public abstract class BasicDriverTestCase extends TestCase {
         return false;
     }
 
-    private void startEnvironmentIfNecessary() {
+    private TestEnvironment startEnvironmentIfNecessary() {
         if (!GlobalTestEnvironment.isSetUp()) {
             GlobalTestEnvironment.set(startTestEnvironment());
         }
 
         TestEnvironment testEnvironment = GlobalTestEnvironment.get();
         baseUrl = testEnvironment.getAppServer().getBaseUrl();
+        return testEnvironment;
     }
 
     protected TestEnvironment startTestEnvironment() {
@@ -101,46 +107,45 @@ public abstract class BasicDriverTestCase extends TestCase {
         else {
             // Close all the windows, expect for one
         }
-        super.tearDown();
     }
 
     public void testShouldWaitForDocumentToBeLoaded() {
         driver.get(simpleTestPage);
 
-        assertEquals("Hello WebDriver", driver.getTitle());
+        assertThat(driver.getTitle(), equalTo("Hello WebDriver"));
     }
 
     public void testShouldReportTheCurrentUrlCorrectly() {
         driver.get(simpleTestPage);
-        assertEquals(simpleTestPage, driver.getCurrentUrl());
+        assertThat(driver.getCurrentUrl(), equalTo(simpleTestPage));
 
         driver.get(javascriptPage);
-        assertEquals(javascriptPage, driver.getCurrentUrl());
+        assertThat(driver.getCurrentUrl(), equalTo(javascriptPage));
     }
 
     public void testShouldReturnTitleOfPageIfSet() {
         driver.get(xhtmlTestPage);
-        assertEquals("XHTML Test Page", driver.getTitle());
+        assertThat(driver.getTitle(), equalTo(("XHTML Test Page")));
 
         driver.get(simpleTestPage);
-        assertEquals("Hello WebDriver", driver.getTitle());
+        assertThat(driver.getTitle(), equalTo("Hello WebDriver"));
     }
 
     public void testShouldFollowRedirectsSentInTheHttpResponseHeaders() {
         driver.get(redirectPage);
 
-        assertEquals("We Arrive Here", driver.getTitle());
+        assertThat(driver.getTitle(), equalTo("We Arrive Here"));
     }
 
     public void testShouldFollowMetaRedirects() throws Exception {
         driver.get(metaRedirectPage);
-        assertEquals("We Arrive Here", driver.getTitle());
+        assertThat(driver.getTitle(), equalTo("We Arrive Here"));
     }
 
     public void testShouldClickOnButtons() {
         driver.get(formPage);
         driver.findElement(By.id("submitButton")).click();
-        assertEquals("We Arrive Here", driver.getTitle());
+        assertThat(driver.getTitle(), equalTo("We Arrive Here"));
     }
 
     public void testClickingOnUnclickableElementsDoesNothing() {
@@ -154,111 +159,122 @@ public abstract class BasicDriverTestCase extends TestCase {
 
     public void testShouldNotBeAbleToLocateASingleElementThatDoesNotExist() {
         driver.get(formPage);
+
         try {
-            driver.findElement(By.id("nonExistantButton"));
-            fail("NoSuchElementException was expected");
+        	driver.findElement(By.id("nonExistantButton"));
+        	fail("Should not have succeeded");
         } catch (NoSuchElementException e) {
-            // This is expected
+        	// this is expected
         }
     }
 
     public void testShouldBeAbleToClickOnLinkIdentifiedByText() {
         driver.get(xhtmlTestPage);
         driver.findElement(By.linkText("click me")).click();
-        assertEquals("We Arrive Here", driver.getTitle());
+        assertThat(driver.getTitle(), equalTo("We Arrive Here"));
     }
 
     public void testDriverShouldBeAbleToFindElementsAfterLoadingMoreThanOnePageAtATime() {
         driver.get(formPage);
         driver.get(xhtmlTestPage);
         driver.findElement(By.linkText("click me")).click();
-        assertEquals("We Arrive Here", driver.getTitle());
+        assertThat(driver.getTitle(), equalTo("We Arrive Here"));
     }
 
-    public void testShouldBeAbleToClickOnLinkIdentifiedById() {
+    public void shouldBeAbleToClickOnLinkIdentifiedById() {
         driver.get(xhtmlTestPage);
         driver.findElement(By.id("linkId")).click();
-        assertEquals("We Arrive Here", driver.getTitle());
+        assertThat(driver.getTitle(), equalTo("We Arrive Here"));
     }
 
     public void testShouldThrowAnExceptionWhenThereIsNoLinkToClickAndItIsFoundWithXPath() {
         driver.get(xhtmlTestPage);
+        
         try {
-            driver.findElement(By.xpath("//a[@id='Not here']"));
-            fail("Test should have failed");
+        	driver.findElement(By.xpath("//a[@id='Not here']"));
+        	fail("Should not have succeeded");
         } catch (NoSuchElementException e) {
-            // this is expected
+        	// this is expected
         }
     }
 
     public void testShouldThrowAnExceptionWhenThereIsNoLinkToClickAndItIsFoundWithLinkText() {
         driver.get(xhtmlTestPage);
+        
         try {
-            driver.findElement(By.linkText("Not here either"));
-            fail("Test should have failed");
+        	driver.findElement(By.linkText("Not here either"));
+        	fail("Should not have succeeded");
         } catch (NoSuchElementException e) {
-            // this is expected
+        	// this is expected
         }
     }
 
     public void testShouldThrowAnExceptionWhenThereIsNoLinkToClick() {
         driver.get(xhtmlTestPage);
+        
         try {
-            driver.findElement(By.xpath("//a[@id='Not here']"));
-            fail("Should not be able to click a link by ID that does not exist");
+        	driver.findElement(By.xpath("//a[@id='Not here']"));
+        	fail("Should not have succeeded");
         } catch (NoSuchElementException e) {
-            // this is expected
+        	// this is expected
         }
+    }
 
+    public void testShouldThrowAnExceptionWhenThereIsNoLinkToClickAndWeUseTheLinkTestToFindIt() {
+        driver.get(xhtmlTestPage);
+        
         try {
-            driver.findElement(By.linkText("Not here either"));
-            fail("Should not be able to click on a link with text that does not exist");
+        	driver.findElement(By.linkText("Not here either"));
+        	fail("Should not have succeeded");
         } catch (NoSuchElementException e) {
-            // This is also expected
+        	// this is expected
         }
     }
 
     public void testShouldBeAbleToClickImageButtons() {
         driver.get(formPage);
         driver.findElement(By.xpath("//input[@id='imageButton']")).click();
-        assertEquals("We Arrive Here", driver.getTitle());
+        assertThat(driver.getTitle(), equalTo("We Arrive Here"));
     }
 
     public void testShouldBeAbleToSubmitForms() {
         driver.get(formPage);
         driver.findElement(By.xpath("//form[@name='login']")).submit();
-        assertEquals("We Arrive Here", driver.getTitle());
+        assertThat(driver.getTitle(), equalTo("We Arrive Here"));
     }
 
     public void testShouldSubmitAFormWhenAnyInputElementWithinThatFormIsSubmitted() {
         driver.get(formPage);
         driver.findElement(By.xpath("//input[@id='checky']")).submit();
-        assertEquals("We Arrive Here", driver.getTitle());
+        assertThat(driver.getTitle(), equalTo("We Arrive Here"));
     }
 
     public void testShouldSubmitAFormWhenAnyElementWihinThatFormIsSubmitted() {
         driver.get(formPage);
         driver.findElement(By.xpath("//form/p")).submit();
-        assertEquals("We Arrive Here", driver.getTitle());
+        assertThat(driver.getTitle(), equalTo("We Arrive Here"));
     }
 
     public void testShouldNotBeAbleToSubmitAFormThatDoesNotExist() {
         driver.get(formPage);
+        
         try {
-            driver.findElement(By.xpath("//form[@name='there is no spoon']")).submit();
-            fail("Not expected");
+        	driver.findElement(By.xpath("//form[@name='there is no spoon']")).submit();
+        	fail("Should not have succeeded");
         } catch (NoSuchElementException e) {
-            // Expected
+        	// this is expected
         }
     }
 
     public void testShouldThrowAnUnsupportedOperationExceptionIfTryingToSetTheValueOfAnElementNotInAForm() {
         driver.get(xhtmlTestPage);
+        
+        WebElement element = driver.findElement(By.xpath("//h1"));
         try {
-            driver.findElement(By.xpath("//h1")).setValue("Fishy");
-            fail("You should not be able to set the value of elements that are not in a form");
+        	element.setValue("Fishy");
+        	fail("SHould not have succeeded");
         } catch (UnsupportedOperationException e) {
-            // this is expected
+        	// this is expected
         }
     }
 
@@ -267,75 +283,75 @@ public abstract class BasicDriverTestCase extends TestCase {
         WebElement textarea = driver.findElement(By.xpath("//textarea[@id='keyUpArea']"));
         String cheesey = "Brie and cheddar";
         textarea.setValue(cheesey);
-        assertEquals(cheesey, textarea.getValue());
+        assertThat(textarea.getValue(), equalTo(cheesey));
     }
 
     public void testShouldEnterDataIntoFormFields() {
         driver.get(xhtmlTestPage);
         WebElement element = driver.findElement(By.xpath("//form[@name='someForm']/input[@id='username']"));
         String originalValue = element.getValue();
-        assertEquals("change", originalValue);
+        assertThat(originalValue, equalTo("change"));
         element.setValue("some text");
 
         element = driver.findElement(By.xpath("//form[@name='someForm']/input[@id='username']"));
         String newFormValue = element.getValue();
-        assertEquals("some text", newFormValue);
+        assertThat(newFormValue, equalTo("some text"));
     }
 
     public void testShouldFindElementsByXPath() {
         driver.get(xhtmlTestPage);
         List<WebElement> divs = driver.findElements(By.xpath("//div"));
-        assertEquals(3, divs.size());
+        assertThat(divs.size(), equalTo(3));
     }
 
     public void testShouldBeAbleToFindManyElementsRepeatedlyByXPath() {
         driver.get(xhtmlTestPage);
         String xpathString = "//node()[contains(@id,'id')]";
-        assertEquals(3, driver.findElements(By.xpath(xpathString)).size());
+        assertThat(driver.findElements(By.xpath(xpathString)).size(), equalTo(3));
 
         xpathString = "//node()[contains(@id,'nope')]";
-        assertEquals(0, driver.findElements(By.xpath(xpathString)).size());
+        assertThat(driver.findElements(By.xpath(xpathString)).size(), equalTo(0));
     }
 
     public void testShouldReturnTheTextContentOfASingleElementWithNoChildren() {
         driver.get(simpleTestPage);
         String selectText = driver.findElement(By.id("oneline")).getText();
-        assertEquals("A single line of text", selectText);
+        assertThat(selectText, equalTo("A single line of text"));
 
         String getText = driver.findElement(By.id("oneline")).getText();
-        assertEquals("A single line of text", getText);
+        assertThat(getText, equalTo("A single line of text"));
     }
 
     public void testShouldReturnTheEntireTextContentOfChildElements() {
         driver.get(simpleTestPage);
         String text = driver.findElement(By.id("multiline")).getText();
 
-        assertTrue(text.contains("A div containing"));
-        assertTrue(text.contains("More than one line of text"));
-        assertTrue(text.contains("and block level elements"));
+        assertThat(text.contains("A div containing"), is(true));
+        assertThat(text.contains("More than one line of text"), is(true));
+        assertThat(text.contains("and block level elements"), is(true));
     }
 
     public void testShouldRepresentABlockLevelElementAsANewline() {
         driver.get(simpleTestPage);
         String text = driver.findElement(By.id("multiline")).getText();
 
-        assertEquals(" A div containing\n" +
+        assertThat(text, equalTo(" A div containing\n" +
                 " More than one line of text\n" +
-                " and block level elements", text);
+                " and block level elements"));
     }
 
     public void testShouldCollapseMultipleWhitespaceCharactersIntoASingleSpace() {
         driver.get(simpleTestPage);
         String text = driver.findElement(By.id("lotsofspaces")).getText();
 
-        assertEquals("This line has lots of spaces.", text);
+        assertThat(text, equalTo("This line has lots of spaces."));
     }
 
     public void testShouldConvertANonBreakingSpaceIntoANormalSpaceCharacter() {
         driver.get(simpleTestPage);
         String text = driver.findElement(By.id("nbsp")).getText();
 
-        assertEquals("This line has a non-breaking space", text);
+        assertThat(text, equalTo("This line has a non-breaking space"));
     }
 
     public void testShouldTreatANonBreakingSpaceAsAnyOtherWhitespaceCharacterWhenCollapsingWhitespace() {
@@ -343,37 +359,37 @@ public abstract class BasicDriverTestCase extends TestCase {
       WebElement element = driver.findElement(By.id("nbspandspaces"));
       String text = element.getText();
 
-      assertEquals("This line has a non-breaking space and spaces", text);
+      assertThat(text, equalTo("This line has a non-breaking space and spaces"));
     }
 
     public void testHavingInlineElementsShouldNotAffectHowTextIsReturned() {
         driver.get(simpleTestPage);
         String text = driver.findElement(By.id("inline")).getText();
 
-        assertEquals("This line has text within elements that are meant to be displayed inline", text);
+        assertThat(text, equalTo("This line has text within elements that are meant to be displayed inline"));
     }
 
     public void testShouldReturnTheEntireTextOfInlineElements() {
         driver.get(simpleTestPage);
         String text = driver.findElement(By.id("span")).getText();
 
-        assertEquals("An inline element", text);
+        assertThat(text, equalTo("An inline element"));
     }
 
-    /*
-    public void testShouldRetainTheFormatingOfTextWithinAPreElement() {
-        driver.get(simpleTestPage);
-        String text = driver.findElement(By.id("preformatted").getText();
+//    public void testShouldRetainTheFormatingOfTextWithinAPreElement() {
+//        driver.get(simpleTestPage);
+//        String text = driver.findElement(By.id("preformatted")).getText();
+//
+//        assertThat(text, equalTo("This section has a\npreformatted\n   text block\n" +
+//                "  within in\n" +
+//                "        "));
+//    }
 
-        assertEquals("This section has a\npreformatted\n   text block\n" +
-                "  within in\n" +
-                "        ", text);
-    }
-    */
+
     public void testShouldFindSingleElementByXPath() {
         driver.get(xhtmlTestPage);
         WebElement element = driver.findElement(By.xpath("//h1"));
-        assertEquals("XHTML Might Be The Future", element.getText());
+        assertThat(element.getText(), equalTo("XHTML Might Be The Future"));
     }
 
     public void testShouldBeAbleToFindChildrenOfANode() {
@@ -381,7 +397,7 @@ public abstract class BasicDriverTestCase extends TestCase {
         List<WebElement> elements = driver.findElements(By.xpath("/html/head"));
         WebElement head = elements.get(0);
         List<WebElement> importedScripts = head.getChildrenOfType("script");
-        assertEquals(2, importedScripts.size());
+        assertThat(importedScripts.size(), equalTo(2));
     }
 
     public void testShouldBeAbleToChangeTheSelectedOptionInASelect() {
@@ -390,12 +406,12 @@ public abstract class BasicDriverTestCase extends TestCase {
         List<WebElement> options = selectBox.getChildrenOfType("option");
         WebElement one = options.get(0);
         WebElement two = options.get(1);
-        assertTrue(one.isSelected());
-        assertFalse(two.isSelected());
+        assertThat(one.isSelected(), is(true));
+        assertThat(two.isSelected(), is(false));
 
         two.setSelected();
-        assertFalse(one.isSelected());
-        assertTrue(two.isSelected());
+        assertThat(one.isSelected(), is(false));
+        assertThat(two.isSelected(), is(true));
     }
 
     public void testShouldBeAbleToSelectMoreThanOneOptionFromASelectWhichAllowsMultipleChoices() {
@@ -408,7 +424,7 @@ public abstract class BasicDriverTestCase extends TestCase {
 
         for (int i = 0; i < options.size(); i++) {
             WebElement option = options.get(i);
-            assertTrue("Option at index is not selected but should be: " + i, option.isSelected());
+            assertThat("Option at index is not selected but should be: " + i, option.isSelected(), is(true));
         }
     }
 
@@ -419,14 +435,14 @@ public abstract class BasicDriverTestCase extends TestCase {
         List<WebElement> options = multiSelect.getChildrenOfType("option");
 
         WebElement option = options.get(0);
-        assertTrue(option.isSelected());
+        assertThat(option.isSelected(), is(true));
         option.toggle();
-        assertFalse(option.isSelected());
+        assertThat(option.isSelected(), is(false));
         option.toggle();
-        assertTrue(option.isSelected());
+        assertThat(option.isSelected(), is(true));
 
         option = options.get(2);
-        assertTrue(option.isSelected());
+        assertThat(option.isSelected(), is(true));
     }
 
     public void testShouldNotBeAbleToDeselectAnOptionFromANormalSelect() {
@@ -437,61 +453,62 @@ public abstract class BasicDriverTestCase extends TestCase {
         WebElement option = options.get(0);
 
         try {
-            option.toggle();
-            fail("You may not toggle an option if the select only allows one thing to be selected");
+        	option.toggle();
+        	fail("Should not have succeeded");
         } catch (RuntimeException e) {
-            // This is expected
+        	// This is expected
         }
     }
 
     public void testShouldBeAbleToSelectACheckBox() {
         driver.get(formPage);
         WebElement checkbox = driver.findElement(By.xpath("//input[@id='checky']"));
-        assertFalse(checkbox.isSelected());
+        assertThat(checkbox.isSelected(), is(false));
         checkbox.setSelected();
-        assertTrue(checkbox.isSelected());
+        assertThat(checkbox.isSelected(), is(true));
         checkbox.setSelected();
-        assertTrue(checkbox.isSelected());
+        assertThat(checkbox.isSelected(), is(true));
     }
 
     public void testShouldToggleTheCheckedStateOfACheckbox() {
         driver.get(formPage);
         WebElement checkbox = driver.findElement(By.xpath("//input[@id='checky']"));
-        assertFalse(checkbox.isSelected());
+        assertThat(checkbox.isSelected(), is(false));
         checkbox.toggle();
-        assertTrue(checkbox.isSelected());
+        assertThat(checkbox.isSelected(), is(true));
         checkbox.toggle();
-        assertFalse(checkbox.isSelected());
+        assertThat(checkbox.isSelected(), is(false));
     }
 
     public void testTogglingACheckboxShouldReturnItsCurrentState() {
         driver.get(formPage);
         WebElement checkbox = driver.findElement(By.xpath("//input[@id='checky']"));
-        assertFalse(checkbox.isSelected());
+        assertThat(checkbox.isSelected(), is(false));
         boolean isChecked = checkbox.toggle();
-        assertTrue(isChecked);
+        assertThat(isChecked, is(true));
         isChecked = checkbox.toggle();
-        assertFalse(isChecked);
+        assertThat(isChecked, is(false));
     }
 
     public void testShouldNotBeAbleToSelectSomethingThatIsDisabled() {
         driver.get(formPage);
         WebElement radioButton = driver.findElement(By.id("nothing"));
-        assertFalse(radioButton.isEnabled());
+        assertThat(radioButton.isEnabled(), is(false));
+
         try {
-            radioButton.setSelected();
-            fail("Should have thrown an exception");
+        	radioButton.setSelected();
+        	fail("Should not have succeeded");
         } catch (UnsupportedOperationException e) {
-            assertTrue("e.getMessage: " + e.getMessage(), e.getMessage().contains("disabled"));
+        	// this is expected
         }
     }
 
     public void testShouldBeAbleToSelectARadioButton() {
         driver.get(formPage);
         WebElement radioButton = driver.findElement(By.id("peas"));
-        assertFalse(radioButton.isSelected());
+        assertThat(radioButton.isSelected(), is(false));
         radioButton.setSelected();
-        assertTrue(radioButton.isSelected());
+        assertThat(radioButton.isSelected(), is(true));
     }
 
     public void testShouldThrowAnExceptionWhenTogglingTheStateOfARadioButton() {
@@ -501,50 +518,50 @@ public abstract class BasicDriverTestCase extends TestCase {
             radioButton.toggle();
             fail("You should not be able to toggle a radio button");
         } catch (UnsupportedOperationException e) {
-            assertTrue(e.getMessage().contains("toggle"));
+            assertThat(e.getMessage().contains("toggle"), is(true));
         }
     }
 
-    public void testShouldReturnNullWhenGettingTheValueOfAnAttributeThatIsNotListed() {
+	public void testShouldReturnNullWhenGettingTheValueOfAnAttributeThatIsNotListed() {
         driver.get(simpleTestPage);
         WebElement head = driver.findElement(By.xpath("/html"));
         String attribute = head.getAttribute("cheese");
-        assertNull(attribute);
+        assertThat(attribute, is(nullValue()));
     }
 
     public void testShouldReturnEmptyAttributeValuesWhenPresentAndTheValueIsActuallyEmpty() {
         driver.get(simpleTestPage);
         WebElement body = driver.findElement(By.xpath("//body"));
-        assertEquals("", body.getAttribute("style"));
+        assertThat(body.getAttribute("style"), equalTo(""));
     }
 
     public void testShouldReturnTheValueOfTheDisabledAttrbuteEvenIfItIsMissing() {
         driver.get(formPage);
         WebElement inputElement = driver.findElement(By.xpath("//input[@id='working']"));
-        assertEquals("false", inputElement.getAttribute("disabled"));
+        assertThat(inputElement.getAttribute("disabled"), equalTo("false"));
     }
 
     public void testShouldIndicateTheElementsThatAreDisabledAreNotEnabled() {
         driver.get(formPage);
         WebElement inputElement = driver.findElement(By.xpath("//input[@id='notWorking']"));
-        assertFalse(inputElement.isEnabled());
+        assertThat(inputElement.isEnabled(), is(false));
 
         inputElement = driver.findElement(By.xpath("//input[@id='working']"));
-        assertTrue(inputElement.isEnabled());
+        assertThat(inputElement.isEnabled(), is(true));
     }
 
     public void testShouldIndicateWhenATextAreaIsDisabled() {
         driver.get(formPage);
         WebElement textArea = driver.findElement(By.xpath("//textarea[@id='notWorkingArea']"));
-        assertFalse(textArea.isEnabled());
+        assertThat(textArea.isEnabled(), is(false));
     }
 
     public void testShouldReturnTheValueOfCheckedForACheckboxEvenIfItLacksThatAttribute() {
         driver.get(formPage);
         WebElement checkbox = driver.findElement(By.xpath("//input[@id='checky']"));
-        assertEquals("false", checkbox.getAttribute("checked"));
+        assertThat(checkbox.getAttribute("checked"), equalTo("false"));
         checkbox.setSelected();
-        assertEquals("true", checkbox.getAttribute("checked"));
+        assertThat(checkbox.getAttribute("checked"), equalTo("true"));
     }
 
     public void testShouldReturnTheValueOfSelectedForRadioButtonsEvenIfTheyLackThatAttribute() {
@@ -557,19 +574,22 @@ public abstract class BasicDriverTestCase extends TestCase {
         List<WebElement> options = selectBox.getChildrenOfType("option");
         WebElement one = options.get(0);
         WebElement two = options.get(1);
-        assertTrue(one.isSelected());
-        assertFalse(two.isSelected());
-        assertEquals("true", one.getAttribute("selected"));
-        assertEquals("false", two.getAttribute("selected"));
+        assertThat(one.isSelected(), is(true));
+        assertThat(two.isSelected(), is(false));
+        assertThat(one.getAttribute("selected"), equalTo("true"));
+        assertThat(two.getAttribute("selected"), equalTo("false"));
     }
 
     public void testShouldThrowAnExceptionWhenSelectingAnUnselectableElement() {
         driver.get(formPage);
+
+        WebElement element = driver.findElement(By.xpath("//title"));
+        
         try {
-            driver.findElement(By.xpath("//title")).setSelected();
-            fail("You should not be able to select an unselectable element");
+        	element.setSelected();
+        	fail("Should not have succeeded");
         } catch (UnsupportedOperationException e) {
-            // This is expected
+        	// this is expected
         }
     }
 
@@ -577,7 +597,7 @@ public abstract class BasicDriverTestCase extends TestCase {
         driver.get(xhtmlTestPage);
 
         String header = driver.findElement(By.xpath("//h1[@class='header']")).getText();
-        assertEquals("XHTML Might Be The Future", header);
+        assertThat(header, equalTo("XHTML Might Be The Future"));
     }
 
     public void testShouldReturnValueOfClassAttributeOfAnElement() {
@@ -586,7 +606,7 @@ public abstract class BasicDriverTestCase extends TestCase {
         WebElement heading = driver.findElement(By.xpath("//h1"));
         String className = heading.getAttribute("class");
 
-        assertEquals("header", className);
+        assertThat(className, equalTo("header"));
     }
 
     public void testShouldReturnTheContentsOfATextAreaAsItsValue() {
@@ -594,7 +614,7 @@ public abstract class BasicDriverTestCase extends TestCase {
 
         String value = driver.findElement(By.id("withText")).getValue();
 
-        assertEquals("Example text", value);
+        assertThat(value, equalTo("Example text"));
     }
 
     public void testShouldReturnTheValueOfTheStyleAttribute() {
@@ -603,7 +623,7 @@ public abstract class BasicDriverTestCase extends TestCase {
         WebElement element = driver.findElement(By.xpath("//form[3]"));
         String style = element.getAttribute("style");
 
-        assertEquals("display: block", style);
+        assertThat(style, equalTo("display: block"));
     }
 
     public void testShouldfindElementsBasedOnId() {
@@ -611,17 +631,17 @@ public abstract class BasicDriverTestCase extends TestCase {
 
         WebElement element = driver.findElement(By.id("checky"));
 
-        assertFalse(element.isSelected());
+        assertThat(element.isSelected(), is(false));
     }
 
     public void testShouldNotBeAbleTofindElementsBasedOnIdIfTheElementIsNotThere() {
         driver.get(formPage);
 
         try {
-            driver.findElement(By.id("notThere"));
-            fail("Should not be able to select element by id here");
+        	driver.findElement(By.id("notThere"));
+        	fail("Should not have succeeded");
         } catch (NoSuchElementException e) {
-            // This is expected
+        	// this is expected
         }
     }
 
@@ -630,12 +650,11 @@ public abstract class BasicDriverTestCase extends TestCase {
 
         driver.switchTo().frame(0);
         WebElement pageNumber = driver.findElement(By.xpath("//span[@id='pageNumber']"));
-        assertEquals("1", pageNumber.getText().trim());
+        assertThat(pageNumber.getText().trim(), equalTo("1"));
 
         driver.switchTo().frame(1);
         pageNumber = driver.findElement(By.xpath("//span[@id='pageNumber']"));
-        assertEquals("2", pageNumber.getText().trim());
-
+        assertThat(pageNumber.getText().trim(), equalTo("2"));
     }
 
     public void testShouldContinueToReferToTheSameFrameOnceItHasBeenSelected() {
@@ -646,7 +665,7 @@ public abstract class BasicDriverTestCase extends TestCase {
         checkbox.toggle();
         checkbox.submit();
 
-        assertEquals("Success!", driver.findElement(By.xpath("//p")).getText());
+        assertThat(driver.findElement(By.xpath("//p")).getText(), equalTo("Success!"));
     }
 
     public void testShouldAutomaticallyUseTheFirstFrameOnAPage() {
@@ -654,14 +673,14 @@ public abstract class BasicDriverTestCase extends TestCase {
 
         // Notice that we've not switched to the 0th frame
         WebElement pageNumber = driver.findElement(By.xpath("//span[@id='pageNumber']"));
-        assertEquals("1", pageNumber.getText().trim());
+        assertThat(pageNumber.getText().trim(), equalTo("1"));
     }
 
     public void testShouldFocusOnTheReplacementWhenAFrameFollowsALinkToA_TopTargettedPage() {
         driver.get(framesetPage);
 
         driver.findElement(By.linkText("top")).click();
-        assertEquals("XHTML Test Page", driver.getTitle());
+        assertThat(driver.getTitle(), equalTo("XHTML Test Page"));
     }
 
     public void testShouldNotAutomaticallySwitchFocusToAnIFrameWhenAPageContainingThemIsLoaded() {
@@ -687,18 +706,18 @@ public abstract class BasicDriverTestCase extends TestCase {
 
         driver.findElement(By.id("submitButton")).click();
         String hello = driver.findElement(By.id("greeting")).getText();
-        assertEquals("Success!", hello);
+        assertThat(hello, equalTo("Success!"));
     }
 
     public void testShouldReturnANewWebDriverWhichSendsCommandsToANewWindowWhenItIsOpened() {
         driver.get(xhtmlTestPage);
 
         WebDriver newWindow = driver.findElement(By.linkText("Open new window")).click();
-        assertEquals("XHTML Test Page", driver.getTitle());
-        assertEquals("We Arrive Here", newWindow.getTitle());
+        assertThat(driver.getTitle(), equalTo("XHTML Test Page"));
+        assertThat(newWindow.getTitle(), equalTo("We Arrive Here"));
 
         driver = driver.switchTo().window("result");
-        assertEquals("We Arrive Here", driver.getTitle());
+        assertThat(driver.getTitle(), equalTo("We Arrive Here"));
 
         driver.switchTo().window("");
     }
@@ -707,21 +726,21 @@ public abstract class BasicDriverTestCase extends TestCase {
         driver.get(framesetPage);
 
         driver.switchTo().frame("second");
-        assertEquals("2", driver.findElement(By.id("pageNumber")).getText());
+        assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("2"));
     }
 
     public void testShouldSelectChildFramesByUsingADotSeparatedString() {
         driver.get(framesetPage);
 
         driver.switchTo().frame("fourth.child2");
-        assertEquals("11", driver.findElement(By.id("pageNumber")).getText());
+        assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("11"));
     }
 
     public void testShouldSwitchToChildFramesTreatingNumbersAsIndex() {
         driver.get(framesetPage);
 
         driver.switchTo().frame("fourth.1");
-        assertEquals("11", driver.findElement(By.id("pageNumber")).getText());
+        assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("11"));
     }
 
     public void testShouldBeAbleToPerformMultipleActionsOnDifferentDrivers() {
@@ -730,16 +749,16 @@ public abstract class BasicDriverTestCase extends TestCase {
 
         driver.findElement(By.id("submitButton")).click();
         String hello = driver.findElement(By.id("greeting")).getText();
-        assertEquals("Success!", hello);
+        assertThat(hello, equalTo("Success!"));
 
         driver.get(xhtmlTestPage);
 
         WebDriver newWindow = driver.findElement(By.linkText("Open new window")).click();
-        assertEquals("XHTML Test Page", driver.getTitle());
-        assertEquals("We Arrive Here", newWindow.getTitle());
+        assertThat(driver.getTitle(), equalTo("XHTML Test Page"));
+        assertThat(newWindow.getTitle(), equalTo("We Arrive Here"));
 
         driver = driver.switchTo().window("result");
-        assertEquals("We Arrive Here", driver.getTitle());
+        assertThat(driver.getTitle(), equalTo("We Arrive Here"));
 
         driver.switchTo().window("");
     }
@@ -760,7 +779,7 @@ public abstract class BasicDriverTestCase extends TestCase {
         textarea.setValue(expectedText);
 
         String seenText = textarea.getValue();
-        assertEquals(expectedText, seenText);
+        assertThat(seenText, equalTo(expectedText));
     }
 
     public void testShouldBeAbleToEnterDatesAfterFillingInOtherValuesFirst() {
@@ -770,15 +789,15 @@ public abstract class BasicDriverTestCase extends TestCase {
         input.setValue(expectedValue);
         String seenValue = input.getValue();
 
-        assertEquals(expectedValue, seenValue);
+        assertThat(seenValue, equalTo(expectedValue));
     }
 
     public void testShouldBeAbleToAlterTheContentsOfAFileUploadInputElement() {
       driver.get(formPage);
       WebElement uploadElement = driver.findElement(By.id("upload"));
-      assertEquals("", uploadElement.getValue());
+      assertThat(uploadElement.getValue(), equalTo(""));
       uploadElement.setValue("Cheese");
-      assertEquals("Cheese", uploadElement.getValue());
+      assertThat(uploadElement.getValue(), equalTo("Cheese"));
     }
 
     public void testShouldReturnTheSourceOfAPage() {
@@ -786,34 +805,34 @@ public abstract class BasicDriverTestCase extends TestCase {
 
         String source = driver.getPageSource().toLowerCase();
 
-        assertTrue(source.contains("<html"));
-        assertTrue(source.contains("</html"));
-        assertTrue(source.contains("an inline element"));
-        assertTrue(source.contains("<p id=\"lotsofspaces\""));
+        assertThat(source.contains("<html"), is(true));
+        assertThat(source.contains("</html"), is(true));
+        assertThat(source.contains("an inline element"), is(true));
+        assertThat(source.contains("<p id=\"lotsofspaces\""), is(true));
     }
 
     public void testShouldReturnEmptyStringWhenTextIsOnlySpaces() {
         driver.get(xhtmlTestPage);
 
         String text = driver.findElement(By.id("spaces")).getText();
-        assertEquals("", text);
+        assertThat(text, equalTo(""));
     }
 
     public void testShouldReturnEmptyStringWhenTextIsEmpty() {
         driver.get(xhtmlTestPage);
 
         String text = driver.findElement(By.id("empty")).getText();
-        assertEquals("", text);
+        assertThat(text, equalTo(""));
     }
 
     public void testShouldReturnEmptyStringWhenTagIsSelfClosing() {
         driver.get(xhtmlTestPage);
 
         String text = driver.findElement(By.id("self-closed")).getText();
-        assertEquals("", text);
+        assertThat(text, equalTo(""));
     }
 
-    public void testShouldDoNothingIfThereIsNothingToGoBackTo() {
+    public void testSouldDoNothingIfThereIsNothingToGoBackTo() {
       if (storedDriver != null) {
           driver.close();
           storedDriver = getDriver();
@@ -822,30 +841,30 @@ public abstract class BasicDriverTestCase extends TestCase {
       driver.get(formPage);
 
       driver.navigate().back();
-      assertEquals("We Leave From Here", driver.getTitle());
+      assertThat(driver.getTitle(), equalTo("We Leave From Here"));
     }
 
     public void testShouldBeAbleToNavigateBackInTheBrowserHistory() {
         driver.get(formPage);
 
         driver.findElement(By.id("imageButton")).submit();
-        assertEquals("We Arrive Here", driver.getTitle());
+        assertThat(driver.getTitle(), equalTo("We Leave From Here"));
 
         driver.navigate().back();
-        assertEquals("We Leave From Here", driver.getTitle());
+        assertThat(driver.getTitle(), equalTo("We Leave From Here"));
     }
 
     public void testShouldBeAbleToNavigateForwardsInTheBrowserHistory() {
         driver.get(formPage);
 
         driver.findElement(By.id("imageButton")).submit();
-        assertEquals("We Arrive Here", driver.getTitle());
+        assertThat(driver.getTitle(), equalTo("We Arrive Here"));
 
         driver.navigate().back();
-        assertEquals("We Leave From Here", driver.getTitle());
+        assertThat(driver.getTitle(), equalTo("We Leave From Here"));
 
         driver.navigate().forward();
-        assertEquals("We Arrive Here", driver.getTitle());
+        assertThat(driver.getTitle(), equalTo("We Arrive Here"));
     }
 
     public void testShouldBeAbleToGetAFragmentOnTheCurrentPage() {
@@ -875,19 +894,16 @@ public abstract class BasicDriverTestCase extends TestCase {
         driver.get(baseUrl + "animals");
         Set<Cookie> cookies = options.getCookies();
 
-        assertTrue(cookies.contains(cookie1));
-        assertTrue(cookies.contains(cookie2));
+        assertThat(cookies.contains(cookie1), is(true));
+        assertThat(cookies.contains(cookie2), is(true));
 
         driver.get(baseUrl + "galaxy");
         cookies = options.getCookies();
-        assertTrue(cookies.contains(cookie1));
-        assertTrue(cookies.contains(cookie2));
-
-        //clean up
-        options.deleteAllCookies();
+        assertThat(cookies.contains(cookie1), is(true));
+        assertThat(cookies.contains(cookie2), is(true));
     }
 
-    public void testGetAllCookie() {
+    public void testGetAllCookies() {
         driver.get(simpleTestPage);
         Calendar c = Calendar.getInstance();
         c.set(2009, 0, 1);
@@ -899,18 +915,15 @@ public abstract class BasicDriverTestCase extends TestCase {
 
         Set<Cookie> cookies = options.getCookies();
 
-        assertTrue(cookies.contains(cookie1));
-        assertTrue(cookies.contains(cookie2));
-
-        //clean up
-        options.deleteAllCookies();
+        assertThat(cookies.contains(cookie1), is(true));
+        assertThat(cookies.contains(cookie2), is(true));
     }
 
-    public void testCookieItegrity() {
-        driver.get("http://www.google.co.uk");
+    public void testCookieIntegrity() {
+        driver.get(GlobalTestEnvironment.get().getAppServer().getAlternateBaseUrl());
         Calendar c = Calendar.getInstance();
         c.set(2009, 0, 1);
-        Cookie cookie1 = new Cookie("fish", "cod", "google.co.uk", "/animals", c.getTime(), false);
+        Cookie cookie1 = new Cookie("fish", "cod", "127.0.0.1", "/animals", c.getTime(), false);
         WebDriver.Options options = driver.manage();
         options.addCookie(cookie1);
 
@@ -923,12 +936,12 @@ public abstract class BasicDriverTestCase extends TestCase {
               retrievedCookie = temp;
             }
         }
-        assertFalse(retrievedCookie == null);
+        assertThat(retrievedCookie, is(notNullValue()));
         //Cookie.equals only compares name, domain and path
-        assertTrue(retrievedCookie.equals(cookie1));
-        assertTrue(retrievedCookie.getValue().equals(cookie1.getValue()));
-        assertTrue(retrievedCookie.getExpiry().equals(cookie1.getExpiry()));
-        assertTrue(retrievedCookie.isSecure() == cookie1.isSecure());
+        assertThat(retrievedCookie, equalTo(cookie1));
+        assertThat(retrievedCookie.getValue(), equalTo(cookie1.getValue()));
+        assertThat(retrievedCookie.getExpiry(), equalTo(cookie1.getExpiry()));
+        assertThat(retrievedCookie.isSecure(), equalTo(cookie1.isSecure()));
     }
 
     public void testDeleteAllCookies() {
@@ -939,14 +952,14 @@ public abstract class BasicDriverTestCase extends TestCase {
         options.addCookie(cookie1);
         options.addCookie(cookie2);
         Set<Cookie> cookies = options.getCookies();
-        assertTrue(cookies.contains(cookie1));
-        assertTrue(cookies.contains(cookie2));
+        assertThat(cookies.contains(cookie1), is(true));
+        assertThat(cookies.contains(cookie2), is(true));
         options.deleteAllCookies();
         driver.get(simpleTestPage);
 
         cookies = options.getCookies();
-        assertFalse(cookies.contains(cookie1));
-        assertFalse(cookies.contains(cookie2));
+        assertThat(cookies.contains(cookie1), is(false));
+        assertThat(cookies.contains(cookie2), is(false));
     }
 
     public void testDeleteCookie() {
@@ -960,11 +973,8 @@ public abstract class BasicDriverTestCase extends TestCase {
         options.deleteCookie(cookie1);
         Set<Cookie> cookies = options.getCookies();
 
-        assertEquals(1, cookies.size());
-        assertTrue(cookies.contains(cookie2));
-
-        //clean up
-        options.deleteAllCookies();
+        assertThat(cookies.size(), equalTo(1));
+        assertThat(cookies, hasItem(cookie2));
     }
 
     public void testDeleteCookieWithName() {
@@ -973,7 +983,7 @@ public abstract class BasicDriverTestCase extends TestCase {
         String cookieTwoName = "planet";
         String cookieThreeName = "three";
         Cookie cookie1 = new Cookie(cookieOneName, "cod", "", "", null, false);
-        Cookie cookie2 = new Cookie(cookieTwoName, "earth", "localhost", "", null, false);
+        Cookie cookie2 = new Cookie(cookieTwoName, "earth", hostName, "", null, false);
         Cookie cookie3 = new Cookie(cookieThreeName, "three", "", "", null, false);
         WebDriver.Options options = driver.manage();
         options.addCookie(cookie1);
@@ -984,14 +994,11 @@ public abstract class BasicDriverTestCase extends TestCase {
         options.deleteCookieNamed(cookieTwoName);
         Set<Cookie> cookies = options.getCookies();
         //cookie without domain gets deleted
-        assertFalse(cookies.contains(cookie1));
+        assertThat(cookies, not(hasItem(cookie1)));
         //cookie with domain gets deleted
-        assertFalse(cookies.contains(cookie2));
+        assertThat(cookies, not(hasItem(cookie2)));
         //cookie not deleted
-        assertTrue(cookies.contains(cookie3));
-
-        //clean up
-        options.deleteAllCookies();
+        assertThat(cookies, hasItem(cookie3));
     }
 
     public void testShouldNotDeleteCookiesWithASimilarName() {
@@ -1006,25 +1013,23 @@ public abstract class BasicDriverTestCase extends TestCase {
         options.deleteCookieNamed(cookieOneName);
         Set<Cookie> cookies = options.getCookies();
 
-        assertFalse(cookies.contains(cookie1));
-        assertTrue(cookies.contains(cookie2));
-
-        //clean up
-        options.deleteAllCookies();
+        assertThat(cookies, not(hasItem(cookie1)));
+        assertThat(cookies, hasItem(cookie2));
     }
 
     public void testGetCookieDoesNotRetriveBeyondCurrentDomain() {
         driver.get(simpleTestPage);
 
-        Cookie cookie1 = new Cookie("fish", "cod", "localhost", "", null, false);
+        Cookie cookie1 = new Cookie("fish", "cod", hostName, "", null, false);
         WebDriver.Options options = driver.manage();
         options.addCookie(cookie1);
-        driver.get("http://www.google.com");
+        driver.get(GlobalTestEnvironment.get().getAppServer().getAlternateBaseUrl());
         Set<Cookie> cookies = options.getCookies();
-        assertFalse(cookies.contains(cookie1));
+        assertThat(cookies, not(hasItem(cookie1)));
     }
 
     protected WebDriver driver;
+    protected String hostName;
     protected String baseUrl;
     protected String simpleTestPage;
     protected String xhtmlTestPage;

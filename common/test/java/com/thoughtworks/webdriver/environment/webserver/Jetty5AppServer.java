@@ -76,10 +76,18 @@ public class Jetty5AppServer implements AppServer {
         }
     }
 
+    public String getHostName() {
+        return "localhost";
+    }
+
     public String getBaseUrl() {
         return "http://localhost:" + port + "/";
     }
 
+    public String getAlternateBaseUrl() {
+    	return "http://127.0.0.1:" + port + "/";
+    }
+    
     public void start() {
         listenOn(port);
 

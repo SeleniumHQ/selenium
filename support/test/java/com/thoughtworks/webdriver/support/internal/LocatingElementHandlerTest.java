@@ -1,11 +1,15 @@
 package com.thoughtworks.webdriver.support.internal;
 
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.createNiceMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Proxy;
 
 import junit.framework.TestCase;
-
-import org.easymock.EasyMock;
 
 import com.thoughtworks.webdriver.By;
 import com.thoughtworks.webdriver.How;
@@ -18,15 +22,15 @@ import com.thoughtworks.webdriver.support.PageFactory;
 
 public class LocatingElementHandlerTest extends TestCase {
     public void testShouldAlwaysLocateTheElementPerCall() throws NoSuchFieldException {
-        WebDriver driver = EasyMock.createMock(WebDriver.class);
-        WebElement element = EasyMock.createNiceMock(WebElement.class);
+        WebDriver driver = createMock(WebDriver.class);
+        WebElement element = createNiceMock(WebElement.class);
 
         By by = By.id("q");
         
-        EasyMock.expect(driver.findElement(by)).andReturn(element);
-        EasyMock.expect(driver.findElement(by)).andReturn(element);
+        expect(driver.findElement(by)).andReturn(element);
+        expect(driver.findElement(by)).andReturn(element);
 
-        EasyMock.replay(driver, element);
+        replay(driver, element);
 
         Field q = Page.class.getDeclaredField("q");
         LocatingElementHandler handler = new LocatingElementHandler(driver, q);
@@ -35,18 +39,18 @@ public class LocatingElementHandlerTest extends TestCase {
         proxy.setValue("Fishy");
         proxy.submit();
 
-        EasyMock.verify(driver);
+        verify(driver);
     }
 
     public void testShouldDelegateToARenderedWebElementIfNecessary() throws NoSuchFieldException {
-      WebDriver driver = EasyMock.createMock(WebDriver.class);
-      RenderedWebElement element = EasyMock.createNiceMock(RenderedWebElement.class);
+      WebDriver driver = createMock(WebDriver.class);
+      RenderedWebElement element = createNiceMock(RenderedWebElement.class);
 
       By by = By.id("rendered");
       
-      EasyMock.expect(driver.findElement(by)).andReturn(element);
+      expect(driver.findElement(by)).andReturn(element);
 
-      EasyMock.replay(driver, element);
+      replay(driver, element);
 
       Field staysTheSame = Page.class.getDeclaredField("rendered");
       LocatingElementHandler handler = new LocatingElementHandler(driver, staysTheSame);
@@ -54,34 +58,34 @@ public class LocatingElementHandlerTest extends TestCase {
 
       proxy.getLocation();
 
-      EasyMock.verify(driver);
+      verify(driver);
     }
 
     public void testShouldUseAnnotationsToLookUpByAlternativeMechanisms() {
-        WebDriver driver = EasyMock.createMock(WebDriver.class);
-        WebElement element = EasyMock.createNiceMock(WebElement.class);
+        WebDriver driver = createMock(WebDriver.class);
+        WebElement element = createNiceMock(WebElement.class);
 
         By by = By.xpath("//input[@name='q']");
         
-        EasyMock.expect(driver.findElement(by)).andReturn(element);
+        expect(driver.findElement(by)).andReturn(element);
 
-        EasyMock.replay(driver, element);
+        replay(driver, element);
       
         Page page = PageFactory.initElements(driver, Page.class);
         page.doQuery("cheese");
 
-        EasyMock.verify(driver);
+        verify(driver);
     }
-  
+
     public void testShouldNotRepeatedlyLookUpElementsMarkedAsNeverChanging() throws Exception {
-      WebDriver driver = EasyMock.createMock(WebDriver.class);
-      WebElement element = EasyMock.createNiceMock(WebElement.class);
+      WebDriver driver = createMock(WebDriver.class);
+      WebElement element = createNiceMock(WebElement.class);
 
       By by = By.id("staysTheSame");
       
-      EasyMock.expect(driver.findElement(by)).andReturn(element);
+      expect(driver.findElement(by)).andReturn(element);
 
-      EasyMock.replay(driver, element);
+      replay(driver, element);
 
       Field staysTheSame = Page.class.getDeclaredField("staysTheSame");
       LocatingElementHandler handler = new LocatingElementHandler(driver, staysTheSame);
@@ -90,7 +94,7 @@ public class LocatingElementHandlerTest extends TestCase {
       proxy.isEnabled();
       proxy.setValue("Cheese");
 
-      EasyMock.verify(driver);
+      verify(driver);
     }
 
     public static class Page {

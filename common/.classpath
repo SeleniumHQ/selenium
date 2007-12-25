@@ -4,10 +4,11 @@
 	<classpathentry kind="src" output="build/test-classes" path="test/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" kind="lib" path="lib/buildtime/org.mortbay.jetty.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/buildtime/junit-3.8.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/buildtime/javax.servlet.jar"/>
 	<classpathentry kind="lib" path="lib/buildtime/jasper-runtime.jar"/>
 	<classpathentry kind="lib" path="lib/buildtime/jasper-compiler.jar"/>
 	<classpathentry kind="lib" path="lib/buildtime/commons-logging.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/buildtime/hamcrest-all-1.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/buildtime/junit-3.8.1.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
