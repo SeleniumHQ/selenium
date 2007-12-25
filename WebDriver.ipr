@@ -848,6 +848,7 @@
         <root url="jar://$PROJECT_DIR$/common/lib/buildtime/jasper-runtime.jar!/" />
         <root url="jar://$PROJECT_DIR$/common/lib/buildtime/jasper-compiler.jar!/" />
         <root url="jar://$PROJECT_DIR$/common/lib/buildtime/commons-logging.jar!/" />
+        <root url="jar://$PROJECT_DIR$/common/lib/buildtime/hamcrest-all-1.1.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
