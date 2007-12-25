@@ -4,9 +4,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.NetworkInterface;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.util.Enumeration;
 
 class ExtensionConnection {
     private Socket socket;
@@ -15,7 +20,39 @@ class ExtensionConnection {
     private BufferedReader in;
 
     public ExtensionConnection(String host, int port) {
-        address = new InetSocketAddress(host, port);
+        InetAddress addr = null;
+
+        if ("localhost".equals(host)) {
+            addr = obtainLoopbackAddress();
+        } else {
+            try {
+                addr = InetAddress.getByName(host);
+            } catch (UnknownHostException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        address = new InetSocketAddress(addr, port);
+    }
+
+    private InetAddress obtainLoopbackAddress() {
+        try {
+            Enumeration<NetworkInterface> allInterfaces = NetworkInterface.getNetworkInterfaces();
+            while (allInterfaces.hasMoreElements()) {
+                NetworkInterface iface = allInterfaces.nextElement();
+                Enumeration<InetAddress> allAddresses = iface.getInetAddresses();
+                while (allAddresses.hasMoreElements()) {
+                    InetAddress addr = allAddresses.nextElement();
+                    if (addr.isLoopbackAddress()) {
+                        return addr;
+                    }
+                }
+            }
+        } catch (SocketException e) {
+            throw new RuntimeException(e);
+        }
+
+        throw new RuntimeException("Unable to find loopback address for localhost");
     }
 
     public void connect() throws IOException {
