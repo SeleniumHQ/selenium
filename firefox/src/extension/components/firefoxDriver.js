@@ -200,7 +200,11 @@ FirefoxDriver.prototype.getCookie = function(respond) {
     
     var location = Utils.getBrowser(this.context).contentWindow.location;
     var isForCurrentHost = function(c) {
-      return location.hostname.indexOf(c.host) != -1;
+        try {
+            return location.hostname.indexOf(c.host) != -1;
+        } catch(e) {
+            return false;
+        }
     }
     
     var cookieToString = function(c) {
