@@ -25,6 +25,8 @@ import org.mortbay.jetty.servlet.WebApplicationContext;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 public class Jetty5AppServer implements AppServer {
     private final int port;
@@ -80,12 +82,20 @@ public class Jetty5AppServer implements AppServer {
         return "localhost";
     }
 
+    public String getAlternateHostName() {
+        try {
+            return InetAddress.getLocalHost().getHostName();
+        } catch (UnknownHostException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public String getBaseUrl() {
-        return "http://localhost:" + port + "/";
+        return "http://" + getHostName() + ":" + port + "/";
     }
 
     public String getAlternateBaseUrl() {
-    	return "http://127.0.0.1:" + port + "/";
+    	return "http://" + getAlternateHostName() + ":" + port + "/";
     }
     
     public void start() {

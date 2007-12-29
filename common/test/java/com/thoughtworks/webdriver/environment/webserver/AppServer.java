@@ -19,6 +19,7 @@ package com.thoughtworks.webdriver.environment.webserver;
 
 public interface AppServer {
     String getHostName();
+    String getAlternateHostName();
 
     String getBaseUrl();
 	String getAlternateBaseUrl();

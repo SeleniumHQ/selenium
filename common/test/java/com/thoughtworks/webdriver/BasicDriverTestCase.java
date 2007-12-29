@@ -79,6 +79,10 @@ public abstract class BasicDriverTestCase extends TestCase {
         iframePage = baseUrl + "iframes.html";
 
         hostName = environment.getAppServer().getHostName();
+        alternateHostName = environment.getAppServer().getAlternateHostName();
+        alternateBaseUrl = environment.getAppServer().getAlternateBaseUrl();
+
+        assertThat(hostName, is(not(equalTo(alternateHostName))));
     }
 
     protected abstract WebDriver getDriver();
@@ -848,7 +852,7 @@ public abstract class BasicDriverTestCase extends TestCase {
         driver.get(formPage);
 
         driver.findElement(By.id("imageButton")).submit();
-        assertThat(driver.getTitle(), equalTo("We Leave From Here"));
+        assertThat(driver.getTitle(), equalTo("We Arrive Here"));
 
         driver.navigate().back();
         assertThat(driver.getTitle(), equalTo("We Leave From Here"));
@@ -885,8 +889,8 @@ public abstract class BasicDriverTestCase extends TestCase {
     public void testAddCookiesWithDifferentPaths() {
         driver.get(simpleTestPage);
 
-        Cookie cookie1 = new Cookie("fish", "cod", "", "/animals", null, false);
-        Cookie cookie2 = new Cookie("planet", "earth", "", "/galaxy", null, false);
+        Cookie cookie1 = new Cookie("fish", "cod", hostName, "/animals", null, false);
+        Cookie cookie2 = new Cookie("planet", "earth", hostName, "/galaxy", null, false);
         WebDriver.Options options = driver.manage();
         options.addCookie(cookie1);
         options.addCookie(cookie2);
@@ -907,8 +911,8 @@ public abstract class BasicDriverTestCase extends TestCase {
         driver.get(simpleTestPage);
         Calendar c = Calendar.getInstance();
         c.set(2009, 0, 1);
-        Cookie cookie1 = new Cookie("fish", "cod", "", "", c.getTime(), false);
-        Cookie cookie2 = new Cookie("planet", "earth", "", "", null, false);
+        Cookie cookie1 = new Cookie("fish", "cod", hostName, "", c.getTime(), false);
+        Cookie cookie2 = new Cookie("planet", "earth", hostName, "", null, false);
         WebDriver.Options options = driver.manage();
         options.addCookie(cookie1);
         options.addCookie(cookie2);
@@ -920,10 +924,10 @@ public abstract class BasicDriverTestCase extends TestCase {
     }
 
     public void testCookieIntegrity() {
-        driver.get(GlobalTestEnvironment.get().getAppServer().getAlternateBaseUrl());
+        driver.get(alternateBaseUrl + "animals");
         Calendar c = Calendar.getInstance();
         c.set(2009, 0, 1);
-        Cookie cookie1 = new Cookie("fish", "cod", "127.0.0.1", "/animals", c.getTime(), false);
+        Cookie cookie1 = new Cookie("fish", "cod", alternateHostName, "/animals", c.getTime(), false);
         WebDriver.Options options = driver.manage();
         options.addCookie(cookie1);
 
@@ -932,10 +936,12 @@ public abstract class BasicDriverTestCase extends TestCase {
         Cookie retrievedCookie = null;
         while(iter.hasNext()) {
             Cookie temp = iter.next();
+
             if (cookie1.equals(temp)) {
               retrievedCookie = temp;
             }
         }
+
         assertThat(retrievedCookie, is(notNullValue()));
         //Cookie.equals only compares name, domain and path
         assertThat(retrievedCookie, equalTo(cookie1));
@@ -946,8 +952,8 @@ public abstract class BasicDriverTestCase extends TestCase {
 
     public void testDeleteAllCookies() {
         driver.get(simpleTestPage);
-        Cookie cookie1 = new Cookie("fish", "cod", "", "", null, false);
-        Cookie cookie2 = new Cookie("planet", "earth", "", "", null, false);
+        Cookie cookie1 = new Cookie("fish", "cod", hostName, "", null, false);
+        Cookie cookie2 = new Cookie("planet", "earth", hostName, "", null, false);
         WebDriver.Options options = driver.manage();
         options.addCookie(cookie1);
         options.addCookie(cookie2);
@@ -964,8 +970,8 @@ public abstract class BasicDriverTestCase extends TestCase {
 
     public void testDeleteCookie() {
         driver.get(simpleTestPage);
-        Cookie cookie1 = new Cookie("fish", "cod", "", "", null, false);
-        Cookie cookie2 = new Cookie("planet", "earth", "", "", null, false);
+        Cookie cookie1 = new Cookie("fish", "cod", hostName, "", null, false);
+        Cookie cookie2 = new Cookie("planet", "earth", hostName, "", null, false);
         WebDriver.Options options = driver.manage();
         options.addCookie(cookie1);
         options.addCookie(cookie2);
@@ -982,9 +988,9 @@ public abstract class BasicDriverTestCase extends TestCase {
         String cookieOneName = "fish";
         String cookieTwoName = "planet";
         String cookieThreeName = "three";
-        Cookie cookie1 = new Cookie(cookieOneName, "cod", "", "", null, false);
+        Cookie cookie1 = new Cookie(cookieOneName, "cod", hostName, "", null, false);
         Cookie cookie2 = new Cookie(cookieTwoName, "earth", hostName, "", null, false);
-        Cookie cookie3 = new Cookie(cookieThreeName, "three", "", "", null, false);
+        Cookie cookie3 = new Cookie(cookieThreeName, "three", hostName, "", null, false);
         WebDriver.Options options = driver.manage();
         options.addCookie(cookie1);
         options.addCookie(cookie2);
@@ -1004,8 +1010,8 @@ public abstract class BasicDriverTestCase extends TestCase {
     public void testShouldNotDeleteCookiesWithASimilarName() {
         driver.get(simpleTestPage);
         String cookieOneName = "fish";
-        Cookie cookie1 = new Cookie(cookieOneName, "cod", "", "", null, false);
-        Cookie cookie2 = new Cookie(cookieOneName + "x", "earth", "", "", null, false);
+        Cookie cookie1 = new Cookie(cookieOneName, "cod", hostName, "", null, false);
+        Cookie cookie2 = new Cookie(cookieOneName + "x", "earth", hostName, "", null, false);
         WebDriver.Options options = driver.manage();
         options.addCookie(cookie1);
         options.addCookie(cookie2);
@@ -1023,14 +1029,17 @@ public abstract class BasicDriverTestCase extends TestCase {
         Cookie cookie1 = new Cookie("fish", "cod", hostName, "", null, false);
         WebDriver.Options options = driver.manage();
         options.addCookie(cookie1);
-        driver.get(GlobalTestEnvironment.get().getAppServer().getAlternateBaseUrl());
+
+        driver.get(alternateBaseUrl);
         Set<Cookie> cookies = options.getCookies();
         assertThat(cookies, not(hasItem(cookie1)));
     }
 
     protected WebDriver driver;
     protected String hostName;
+    protected String alternateHostName;
     protected String baseUrl;
+    protected String alternateBaseUrl;
     protected String simpleTestPage;
     protected String xhtmlTestPage;
     protected String formPage;

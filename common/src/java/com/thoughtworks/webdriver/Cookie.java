@@ -86,11 +86,11 @@ public class Cookie {
 
     @Override
     public String toString() {
-        return name + "=" + value + "; "
-                + (expiry == null ? "" : "expires = " + expiry + "; ")
+        return (expiry == null ? "" : "expires = " + expiry + "; ")
                 + ("".equals(domain) ? "" : "domain = " + domain + "; ")
                 + ("".equals(path) ? "" : "path = " + path + "; ")
-                + (isSecure ? "secure;" : "");
+                + (isSecure ? "secure;" : "; ")
+                + name + " = " + value + "";
     }
 
     /**

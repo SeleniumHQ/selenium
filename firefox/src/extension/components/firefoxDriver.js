@@ -188,13 +188,27 @@ FirefoxDriver.prototype.goForward = function(respond) {
 }
 
 FirefoxDriver.prototype.addCookie = function(respond, cookieString) {
-    var doc = Utils.getDocument(this.context);
-    doc.cookie = cookieString;
+    var cookie = eval('(' + cookieString + ')');
+
+    if (cookie.expiry) {
+        cookie.expiry = new Date(cookie.expiry).getTime();
+    } else {
+        var date = new Date();
+        date.setYear(2030);
+        cookie.expiry = date.getTime();
+    }
+
+    if (!cookie.domain) {
+        var location = Utils.getBrowser(this.context).contentWindow.location
+        cookie.domain = location.hostname; // + ":" + location.port;
+    }
+
+    var cookieManager = Utils.getService("@mozilla.org/cookiemanager;1", "nsICookieManager2");
+    cookieManager.add(cookie.domain, cookie.path, cookie.name, cookie.value, cookie.secure, false, cookie.expiry);
     respond(this.context, "addCookie");
 }
 
 FirefoxDriver.prototype.getCookie = function(respond) {
-    var doc = Utils.getDocument(this.context);
     var cookieManager = Utils.getService("@mozilla.org/cookiemanager;1", "nsICookieManager2");
     var toReturn = "";
     
@@ -208,7 +222,7 @@ FirefoxDriver.prototype.getCookie = function(respond) {
     }
     
     var cookieToString = function(c) {
-      return c.name + "=" + c.value + ";" + (c.isDomain ? "domain=" + c.host + ";": "")
+      return c.name + "=" + c.value + ";" + "domain=" + c.host + ";"
           + (c.path == "/" ? "" : "path=" + c.path + ";") + "expires=" + c.expires + ";"
           +(c.isSecure ? "secure ;" : "");
     }
@@ -217,19 +231,26 @@ FirefoxDriver.prototype.getCookie = function(respond) {
 
     while (allCookies.hasMoreElements()) {
       var cookie = allCookies.getNext();
+
       cookie = cookie.QueryInterface(Components.interfaces.nsICookie)
       if (isForCurrentHost(cookie)) {
         toReturn += cookieToString(cookie) + "\n";
       }
     }
+
     respond(this.context, "getCookie", toReturn);
 }
 
-FirefoxDriver.prototype.deleteCookie = function(respond, nameAndPath) {
-    var nameAndPathList = nameAndPath.split(";");
-    var name = nameAndPathList[0];
-    var path = nameAndPathList[1];
-    var doc = Utils.getDocument(this.context);
-    doc.cookie = name +"=;expires=Thu, 01-Jan-1970 00:00:01 GMT;path=" + path;
+FirefoxDriver.prototype.deleteCookie = function(respond, cookieString) {
+    var cookie = eval('(' + cookieString + ')');
+
+    if (!cookie.domain) {
+        var location = Utils.getBrowser(this.context).contentWindow.location
+        cookie.domain = location.hostname; // + ":" + location.port;
+    }
+
+    var cookieManager = Utils.getService("@mozilla.org/cookiemanager;1", "nsICookieManager");
+    cookieManager.remove(cookie.domain, cookie.name, cookie.path, false);
+
     respond(this.context, "deleteCookie");
 }
