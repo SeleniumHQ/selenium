@@ -164,24 +164,61 @@ public interface WebDriver {
      * An interface for managing stuff you would do in a browser menu 
      */
     public interface Options {
-        void addCookie(Cookie cookie);
-        void deleteCookieNamed(String name);
-        void deleteCookie(Cookie cookie);
-        void deleteAllCookies();
-        Set<Cookie> getCookies();
-    }
+		/**
+		 * Add a specific cookie. If the cookie's domain name is left blank, it
+		 * is assumed that the cookie is meant for the domain of the current
+		 * document.
+		 * 
+		 * @param cookie
+		 *            The cookie to add.
+		 */
+		void addCookie(Cookie cookie);
+
+		/**
+		 * Delete the named cookie from the current domain. This is equivalent
+		 * to setting the named cookie's expiry date to some time in the past.
+		 * 
+		 * @param name
+		 *            The name of the cookie to delete
+		 */
+		void deleteCookieNamed(String name);
+
+		/**
+		 * Delete a cookie from the browser's "cookie jar". The domain of the
+		 * cookie will be ignored.
+		 * 
+		 * @param cookie
+		 */
+		void deleteCookie(Cookie cookie);
+
+		/**
+		 * Delete all the cookies for the current domain.
+		 */
+		void deleteAllCookies();
+
+		/**
+		 * Get all the cookies for the current domain. This is the equivalent of
+		 * calling "document.cookies"
+		 * 
+		 * @return A Set of cookies for the current domain.
+		 */
+		Set<Cookie> getCookies();
+	}
     
     /**
-     * Used to locate a given frame or window.
-     */
+	 * Used to locate a given frame or window.
+	 */
     public interface TargetLocator {
         /**
-         * Select a frame by its (zero-based) index. That is, if a page has three frames, the first frame would be at index "0",
-         * the second at index "1" and the third at index "2". Once the frame has been selected, all subsequent calls on the WebDriver interface are made to that frame.
-         *
-         * @param frameIndex
-         * @return A driver focused on the given frame
-         */
+		 * Select a frame by its (zero-based) index. That is, if a page has
+		 * three frames, the first frame would be at index "0", the second at
+		 * index "1" and the third at index "2". Once the frame has been
+		 * selected, all subsequent calls on the WebDriver interface are made to
+		 * that frame.
+		 * 
+		 * @param frameIndex
+		 * @return A driver focused on the given frame
+		 */
         WebDriver frame(int frameIndex);
 
         /**

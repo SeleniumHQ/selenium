@@ -26,7 +26,7 @@ public class Cookie {
             Date expiry, boolean isSecure) {
         this.name = name;
         this.value = value;
-        this.domain = domain;
+        this.domain = (domain != null ? domain.toLowerCase() : null);
         this.path = path;
 
         if(expiry != null) {
@@ -76,7 +76,7 @@ public class Cookie {
                     "Cookie names cannot contain a ';': " + name);
         if (!"".equals(domain)) {
             try {
-                URL url = new URL("http://" + domain);
+                new URL("http://" + domain);
             } catch (MalformedURLException e) {
                 throw new IllegalArgumentException("Invalid domain");
             }
@@ -86,11 +86,10 @@ public class Cookie {
 
     @Override
     public String toString() {
-        return (expiry == null ? "" : "expires = " + expiry + "; ")
-                + ("".equals(domain) ? "" : "domain = " + domain + "; ")
-                + ("".equals(path) ? "" : "path = " + path + "; ")
-                + (isSecure ? "secure;" : "; ")
-                + name + " = " + value + "";
+        return name + "=" + value 
+        		+ (expiry == null ? "" : ";expires=" + expiry)
+                + ("".equals(path) ? "" : ";path=" + path)
+                + (isSecure ? ";secure;" : "");
     }
 
     /**
@@ -108,8 +107,6 @@ public class Cookie {
             return false;
         if (!name.equals(cookie.name))
             return false;
-        if (!path.equals(cookie.path))
-            return false;
 
         return true;
     }
@@ -119,7 +116,6 @@ public class Cookie {
         int result;
         result = name.hashCode();
         result = 31 * result + domain.hashCode();
-        result = 31 * result + path.hashCode();
         return result;
     }
 }

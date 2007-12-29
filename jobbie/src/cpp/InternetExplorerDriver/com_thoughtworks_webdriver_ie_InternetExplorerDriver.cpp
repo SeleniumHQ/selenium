@@ -183,6 +183,26 @@ JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDriver
 	ie->goForward();
 }
 
+JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDriver_doAddCookie
+  (JNIEnv *env, jobject obj, jstring cookieString)
+{
+	InternetExplorerDriver* ie = getIe(env, obj);
+
+	const wchar_t* converted = (wchar_t *)env->GetStringChars(cookieString, 0);
+	ie->addCookie(converted);
+	env->ReleaseStringChars(cookieString, (jchar*) converted);
+}
+
+JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDriver_doGetCookies
+  (JNIEnv *env, jobject obj)
+{
+	InternetExplorerDriver* ie = getIe(env, obj);
+	const wchar_t* cookies = ie->getCookies();
+
+	jstring cookieString = env->NewString((const jchar*) cookies, (jsize) wcslen(cookies));
+	delete cookies;
+	return cookieString;
+}
 
 #ifdef __cplusplus
 }

@@ -18,6 +18,7 @@
 package com.thoughtworks.webdriver.ie;
 
 import com.thoughtworks.webdriver.Alert;
+import com.thoughtworks.webdriver.Cookie;
 import com.thoughtworks.webdriver.NoSuchElementException;
 import com.thoughtworks.webdriver.WebDriver;
 import com.thoughtworks.webdriver.WebElement;
@@ -28,9 +29,15 @@ import com.thoughtworks.webdriver.internal.FindsByXPath;
 
 import org.jaxen.JaxenException;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 public class InternetExplorerDriver implements WebDriver, FindsById, FindsByLinkText, FindsByXPath {
     private long iePointer; // Used by the native code to keep track of the IE instance
@@ -140,7 +147,7 @@ public class InternetExplorerDriver implements WebDriver, FindsById, FindsByLink
     }
 
     public Options manage() {
-        throw new UnsupportedOperationException("Not implemented.");
+        return new InternetExplorerOptions();
     }
 
     protected native void waitForLoadToComplete();
@@ -177,6 +184,9 @@ public class InternetExplorerDriver implements WebDriver, FindsById, FindsByLink
     private native void goBack();
 	private native void goForward();
 
+	private native void doAddCookie(String cookieString);
+    private native String doGetCookies();
+	
     private class InternetExplorerTargetLocator implements TargetLocator {
         public WebDriver frame(int frameIndex) {
             setFrameIndex(frameIndex);
@@ -213,6 +223,57 @@ public class InternetExplorerDriver implements WebDriver, FindsById, FindsByLink
 
 		public WebDriver to(String url) {
 			return get(url);
+		}
+    }
+    
+    private class InternetExplorerOptions implements Options {
+		public void addCookie(Cookie cookie) {
+			doAddCookie(cookie.toString());
+		}
+
+		public void deleteAllCookies() {
+			Set<Cookie> cookies = getCookies();
+			for (Cookie cookie : cookies) {
+				deleteCookie(cookie);
+			}
+		}
+
+		public void deleteCookie(Cookie cookie) {
+			Date dateInPast = new Date(0);
+			Cookie toDelete = new Cookie(cookie.getName(), cookie.getValue(), cookie.getDomain(), cookie.getPath(), dateInPast, false);
+			addCookie(toDelete);
+		}
+
+		public void deleteCookieNamed(String name) {
+			deleteCookie(new Cookie(name, "", getCurrentHost(), "", null, false));
+		}
+
+		public Set<Cookie> getCookies() {
+			String currentUrl = getCurrentHost();
+			
+			Set<Cookie> toReturn = new HashSet<Cookie>();
+			String allDomainCookies = doGetCookies();
+
+			String[] cookies = allDomainCookies.split("; ");
+			for (String cookie : cookies) {
+				String[] parts = cookie.split("=");
+				if (parts.length != 2) {
+					continue;
+				}
+				
+				toReturn.add(new Cookie(parts[0], parts[1], currentUrl, "", null, false));
+			}
+			
+	        return toReturn;
+		}
+
+		private String getCurrentHost() {
+			try {
+				URL url = new URL(getCurrentUrl());
+				return url.getHost();
+			} catch (MalformedURLException e) {
+				return "";
+			}
 		}
     }
 }

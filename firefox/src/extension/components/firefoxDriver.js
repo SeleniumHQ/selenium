@@ -221,6 +221,14 @@ FirefoxDriver.prototype.getCookie = function(respond) {
         }
     }
     
+    var isForCurrentPath = function(c) {
+        try {
+        	return location.pathname.indexOf(c.path) != -1;
+        } catch(e) {
+        	return false;
+        }
+    }
+    
     var cookieToString = function(c) {
       return c.name + "=" + c.value + ";" + "domain=" + c.host + ";"
           + (c.path == "/" ? "" : "path=" + c.path + ";") + "expires=" + c.expires + ";"
@@ -233,7 +241,7 @@ FirefoxDriver.prototype.getCookie = function(respond) {
       var cookie = allCookies.getNext();
 
       cookie = cookie.QueryInterface(Components.interfaces.nsICookie)
-      if (isForCurrentHost(cookie)) {
+      if (isForCurrentHost(cookie) && isForCurrentPath(cookie)) {
         toReturn += cookieToString(cookie) + "\n";
       }
     }

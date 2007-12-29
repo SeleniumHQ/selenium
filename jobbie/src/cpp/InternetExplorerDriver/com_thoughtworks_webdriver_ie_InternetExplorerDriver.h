@@ -143,6 +143,22 @@ JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDriver
 JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDriver_goForward
   (JNIEnv *, jobject);
 
+/*
+ * Class:     com_thoughtworks_webdriver_ie_InternetExplorerDriver
+ * Method:    doAddCookie
+ * Signature: (Ljava/lang/String;)V
+ */
+JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDriver_doAddCookie
+  (JNIEnv *, jobject, jstring);
+
+/*
+ * Class:     com_thoughtworks_webdriver_ie_InternetExplorerDriver
+ * Method:    doGetCookies
+ * Signature: ()Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDriver_doGetCookies
+  (JNIEnv *, jobject);
+
 #ifdef __cplusplus
 }
 #endif

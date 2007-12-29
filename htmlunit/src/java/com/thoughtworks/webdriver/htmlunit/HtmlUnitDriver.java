@@ -359,15 +359,21 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText, Fi
             Set<Cookie> retCookies = new HashSet<Cookie>();
             for(org.apache.commons.httpclient.Cookie c : rawCookies) {
                 if("".equals(c.getDomain()) || getHostName().indexOf(c.getDomain()) != -1) {
-                    retCookies.add(new Cookie(c.getName(), c.getValue(), c.getDomain(), c.getPath(),
+                	if (c.getPath() != null && getPath().startsWith(c.getPath())) {
+                		retCookies.add(new Cookie(c.getName(), c.getValue(), c.getDomain(), c.getPath(),
                             c.getExpiryDate(), c.getSecure()));
+                	}
                 }
             }
             return retCookies;  
         }
 
         private String getHostName() {
-            return lastPage().getWebResponse().getUrl().getHost();
+            return lastPage().getWebResponse().getUrl().getHost().toLowerCase();
+        }
+        
+        private String getPath() {
+        	return lastPage().getWebResponse().getUrl().getPath();
         }
     }
 }

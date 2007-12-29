@@ -34,8 +34,10 @@ public:
 	IHTMLDocument2* getDocument();
 
 	void waitForNavigateToFinish();
-
 	void switchToFrame(int frameIndex);
+
+	const wchar_t* getCookies();
+	void addCookie(const wchar_t *cookieString);
 
 private:
 	void waitForDocumentToComplete(IHTMLDocument2* doc);

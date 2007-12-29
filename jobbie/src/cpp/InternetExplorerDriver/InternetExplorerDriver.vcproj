@@ -302,10 +302,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\com_thoughtworks_webdriver_ie_InternetExplorerDriver_InternetExplorerTargetLocator.h"
-				>
-			</File>
-			<File
 				RelativePath=".\com_thoughtworks_webdriver_ie_InternetExplorerElement.h"
 				>
 			</File>

@@ -61,9 +61,16 @@ void InternetExplorerDriver::setVisible(bool isVisible)
 
 const wchar_t* InternetExplorerDriver::getCurrentUrl() 
 {
-	CComQIPtr<IHTMLDocument2, &__uuidof(IHTMLDocument2)> doc = getDocument();
+	IHTMLDocument2* doc = getDocument();
+
+	if (!doc) {
+		wchar_t* toReturn = new wchar_t[2];
+		wcscpy_s(toReturn, 1, L"");
+		return toReturn;
+	}
 	CComBSTR url;
 	doc->get_URL(&url);
+	doc->Release();
 
 	return bstr2wchar(url);
 }
@@ -250,12 +257,44 @@ void InternetExplorerDriver::switchToFrame(int frameIndex)
 	currentFrame = frameIndex;
 }
 
+const wchar_t* InternetExplorerDriver::getCookies()
+{
+	IHTMLDocument2 *doc = getDocument();
+
+	if (!doc) {
+		wchar_t* toReturn = new wchar_t[2];
+		wcscpy_s(toReturn, 1, L"");
+		return toReturn;
+	}
+
+	BSTR cookie;
+	doc->get_cookie(&cookie);
+
+	doc->Release();
+	return bstr2wchar(cookie);
+}
+
+void InternetExplorerDriver::addCookie(const wchar_t *cookieString)
+{
+	IHTMLDocument2 *doc = getDocument();
+	BSTR cookie = SysAllocString(cookieString);
+
+	doc->put_cookie(cookie);
+
+	SysFreeString(cookie);
+	doc->Release();
+}
+
 IHTMLDocument2* InternetExplorerDriver::getDocument() 
 {
-	CComPtr<IDispatch> dispatch = NULL;
-	ie->get_Document(&dispatch);
+	IDispatch* dispatch;
+	if (!SUCCEEDED(ie->get_Document(&dispatch))) {
+		return NULL;
+	}
+
 	IHTMLDocument2* doc = NULL;
 	dispatch->QueryInterface(__uuidof(IHTMLDocument2), (void**)&doc);
+	dispatch->Release();
 
 	CComQIPtr<IHTMLFramesCollection2> frames;
 	doc->get_frames(&frames);
