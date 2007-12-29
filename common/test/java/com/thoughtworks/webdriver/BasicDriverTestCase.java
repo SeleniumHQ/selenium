@@ -41,6 +41,12 @@ public abstract class BasicDriverTestCase extends TestCase {
     protected static WebDriver storedDriver;
 
     protected void setUp() throws Exception {
+    	String os = System.getProperty("os.name").toLowerCase();
+    	if (os.indexOf("win") != -1)
+    		newLine = "\r\n";
+    	else 
+    		newLine = "\n";
+    	
         if (isUsingSameDriverInstance()) {
             if (storedDriver == null) {
                 storedDriver = getDriver();
@@ -338,8 +344,8 @@ public abstract class BasicDriverTestCase extends TestCase {
         driver.get(simpleTestPage);
         String text = driver.findElement(By.id("multiline")).getText();
 
-        assertThat(text, equalTo(" A div containing\n" +
-                " More than one line of text\n" +
+        assertThat(text, equalTo(" A div containing" + newLine +
+                " More than one line of text" + newLine +
                 " and block level elements"));
     }
 
@@ -778,7 +784,7 @@ public abstract class BasicDriverTestCase extends TestCase {
     public void testShouldBeAbleToSetMoreThanOneLineOfTextInATextArea() {
         driver.get(formPage);
         WebElement textarea = driver.findElement(By.id("withText"));
-        String expectedText = "I like cheese\n\nIt's really nice";
+        String expectedText = "I like cheese" + newLine + newLine  + "It's really nice";
         textarea.setValue(expectedText);
 
         String seenText = textarea.getValue();
@@ -1045,6 +1051,8 @@ public abstract class BasicDriverTestCase extends TestCase {
         assertThat(cookies, not(hasItem(cookie1)));
     }
 
+    protected String newLine;
+    
     protected WebDriver driver;
     protected String hostName;
     protected String alternateHostName;
