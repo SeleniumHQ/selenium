@@ -24,6 +24,11 @@ public:
 	bool toggle();
 	const wchar_t* getText();
 
+	long getX();
+	long getY();
+	long getWidth();
+	long getHeight();
+
 	InternetExplorerDriver* click();
 	InternetExplorerDriver* submit();
 

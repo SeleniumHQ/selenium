@@ -105,6 +105,22 @@ JNIEXPORT jboolean JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerEl
 
 /*
  * Class:     com_thoughtworks_webdriver_ie_InternetExplorerElement
+ * Method:    getLocation
+ * Signature: ()Ljava/awt/Point;
+ */
+JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_getLocation
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_thoughtworks_webdriver_ie_InternetExplorerElement
+ * Method:    getSize
+ * Signature: ()Ljava/awt/Dimension;
+ */
+JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_getSize
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_thoughtworks_webdriver_ie_InternetExplorerElement
  * Method:    deleteStoredObject
  * Signature: ()V
  */

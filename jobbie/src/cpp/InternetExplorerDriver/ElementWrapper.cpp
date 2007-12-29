@@ -236,6 +236,106 @@ bool ElementWrapper::toggle()
 	return isSelected();
 }
 
+long ElementWrapper::getX() 
+{
+	long totalX = 0;
+	long x;
+
+	element->get_offsetLeft(&x);
+	totalX += x;
+
+	IHTMLElement* parent;
+	element->get_offsetParent(&parent);
+
+	CComBSTR table = CComBSTR(L"TABLE");
+	CComBSTR body = CComBSTR(L"BODY");
+
+	while (parent) 
+	{
+		CComBSTR tagName;
+		parent->get_tagName(&tagName);
+
+		if (table == tagName || body == tagName) 
+		{
+			IHTMLElement2* parent2;
+			parent->QueryInterface(__uuidof(IHTMLElement2), (void**) &parent2);
+				
+			parent2->get_clientLeft(&x);
+			totalX += x;
+
+			parent2->Release();
+		}
+
+		SysFreeString(tagName);
+		parent->get_offsetLeft(&x);
+		totalX += x;
+		IHTMLElement* t;
+		parent->get_offsetParent(&t);
+		parent->Release();
+
+		parent = t;
+	}
+
+	return totalX;
+}
+
+long ElementWrapper::getY() 
+{
+	long totalY = 0;
+	long y;
+
+	element->get_offsetTop(&y);
+	totalY += y;
+
+	IHTMLElement* parent;
+	element->get_offsetParent(&parent);
+
+	CComBSTR table = CComBSTR(L"TABLE");
+	CComBSTR body = CComBSTR(L"BODY");
+
+	while (parent) 
+	{
+		CComBSTR tagName;
+		parent->get_tagName(&tagName);
+
+		if (table == tagName || body == tagName) 
+		{
+			IHTMLElement2* parent2;
+			parent->QueryInterface(__uuidof(IHTMLElement2), (void**) &parent2);
+				
+			parent2->get_clientTop(&y);
+			totalY += y;
+
+			parent2->Release();
+		}
+
+		SysFreeString(tagName);
+		parent->get_offsetLeft(&y);
+		totalY += y;
+		IHTMLElement* t;
+		parent->get_offsetParent(&t);
+		parent->Release();
+
+		parent = t;
+	}
+
+	return totalY;
+}
+
+long ElementWrapper::getWidth() 
+{
+	long width;
+	element->get_offsetWidth(&width);
+	return width;
+}
+
+long ElementWrapper::getHeight() 
+{
+	long height;
+	element->get_offsetHeight(&height);
+	return height;
+}
+
 const wchar_t* ElementWrapper::getText() 
 {
 	BSTR text;

@@ -152,6 +152,32 @@ JNIEXPORT jboolean JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerEl
 	return wrapper->isDisplayed() ? JNI_TRUE : JNI_FALSE;
 }
 
+JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_getLocation
+  (JNIEnv *env, jobject obj)
+{
+	ElementWrapper* wrapper = getWrapper(env, obj);
+	long x = wrapper->getX();
+	long y = wrapper->getY();
+
+	jclass pointClass = env->FindClass("java/awt/Point");
+	jmethodID cId = env->GetMethodID(pointClass, "<init>", "(II)V");
+	
+	return env->NewObject(pointClass, cId, x, y);
+}
+
+JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_getSize
+  (JNIEnv *env, jobject obj) 
+{
+	ElementWrapper* wrapper = getWrapper(env, obj);
+	long width = wrapper->getWidth();
+	long height = wrapper->getHeight();
+
+	jclass pointClass = env->FindClass("java/awt/Dimension");
+	jmethodID cId = env->GetMethodID(pointClass, "<init>", "(II)V");
+
+	return env->NewObject(pointClass, cId, width, height);
+}
+
 JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_getChildrenOfTypeNatively
   (JNIEnv *env, jobject obj, jobject list, jstring tagName)
 {

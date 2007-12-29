@@ -48,13 +48,9 @@ public class InternetExplorerElement implements RenderedWebElement {
 
     public native boolean isDisplayed();
 
-    public Point getLocation() {
-        throw new UnsupportedOperationException("getLocation");
-    }
+    public native Point getLocation();
 
-    public Dimension getSize() {
-        throw new UnsupportedOperationException("getSize");
-    }
+    public native Dimension getSize();
 
   @Override
     protected void finalize() throws Throwable {
