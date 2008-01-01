@@ -54,23 +54,27 @@ public class SafariDriver implements WebDriver, FindsByLinkText, FindsById, Find
     }
 
     public String getPageSource() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        throw new UnsupportedOperationException("getPageSource");
     }
 
     public WebDriver close() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    	throw new UnsupportedOperationException("close");
     }
 
+    public void quit() {
+    	appleScript.executeApplescript("tell application \"" + AppleScript.APP + "\" to quit");
+    }
+    
     public TargetLocator switchTo() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    	throw new UnsupportedOperationException("switchTo");
     }
 
     public Navigation navigate() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    	throw new UnsupportedOperationException("navigate");
     }
 
     public Options manage() {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        throw new UnsupportedOperationException("manage");
     }
 
     public void waitForLoadToComplete() {
@@ -100,7 +104,7 @@ public class SafariDriver implements WebDriver, FindsByLinkText, FindsById, Find
     }
 
     public List<WebElement> findElementsByLinkText(String using) {
-        return null;
+    	throw new UnsupportedOperationException("findElementsByLinkText");
     }
 
 

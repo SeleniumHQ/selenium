@@ -17,7 +17,7 @@ task :clean do
   rm_rf 'support/build'
 end
 
-task :test => [:test_htmlunit, :test_firefox, :test_support] do 
+task :test => [:test_htmlunit, :test_firefox, :test_safari, :test_support] do 
 end
 
 task :install_firefox => [:firefox] do  
@@ -170,7 +170,7 @@ def junit(args)
       classpath.add item
   end
   
-  tests = FileList.new(source_dir + File::SEPARATOR + '**' + File::SEPARATOR + '*Test.java')
+  tests = FileList.new(source_dir + File::SEPARATOR + '**' + File::SEPARATOR + '*Suite.java')
   tests.exclude '**/Abstract*'
   
   test_string = 'java '

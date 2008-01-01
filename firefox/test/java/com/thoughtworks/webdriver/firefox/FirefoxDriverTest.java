@@ -3,21 +3,14 @@ package com.thoughtworks.webdriver.firefox;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
+import com.thoughtworks.webdriver.AbstractDriverTestCase;
 import com.thoughtworks.webdriver.By;
-import com.thoughtworks.webdriver.JavascriptEnabledDriverTest;
+import com.thoughtworks.webdriver.Ignore;
+import com.thoughtworks.webdriver.NeedsFreshDriver;
 import com.thoughtworks.webdriver.NoSuchElementException;
-import com.thoughtworks.webdriver.WebDriver;
 import com.thoughtworks.webdriver.WebElement;
 
-public class FirefoxDriverTest extends JavascriptEnabledDriverTest {
-    protected WebDriver getDriver() {
-        return new FirefoxDriver();
-    }
-
-    protected boolean isUsingSameDriverInstance() {
-        return true;
-    }
-
+public class FirefoxDriverTest extends AbstractDriverTestCase {
     public void testShouldContinueToWorkIfUnableToFindElementById() {
         driver.get(formPage);
 
@@ -45,11 +38,9 @@ public class FirefoxDriverTest extends JavascriptEnabledDriverTest {
         driver.findElement(By.id("iframe_page_heading"));
     }
 
+    @NeedsFreshDriver
+    @Ignore(value = "firefox", reason = "Need to figure out how to open a new browser instance mid-test")
     public void testShouldWaitUntilBrowserHasClosedProperly() throws Exception {
-      if (isUsingSameDriverInstance()) {
-        // Force the driver to be reopened
-        storedDriver = null;
-      }
       driver.get(simpleTestPage);
       driver.close();
 

@@ -58,6 +58,10 @@ public class InternetExplorerDriver implements WebDriver, FindsById, FindsByLink
     }
 
     public native WebDriver close();
+    
+    public void quit() {
+    	close();  // Not a good implementation, but better than nothing
+    }
 
     public native WebDriver get(String url);
 

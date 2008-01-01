@@ -166,6 +166,10 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText, Fi
         return findActiveWindow();
     }
 
+    public void quit() {
+    	webClient = null;
+    	currentWindow = null;
+    }
 
     public TargetLocator switchTo() {
         return new HtmlUnitTargetLocator();

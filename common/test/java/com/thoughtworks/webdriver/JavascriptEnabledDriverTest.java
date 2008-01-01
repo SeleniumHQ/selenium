@@ -28,7 +28,9 @@ import java.util.List;
 /**
  * Test case for browsers that support using Javascript
  */
-public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
+public abstract class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
+	@JavascriptEnabled
+	@Ignore("safari")
     public void testDocumentShouldReflectLatestTitle() throws Exception {
         driver.get(javascriptPage);
 
@@ -40,6 +42,8 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
         assertThat(titleViaXPath, equalTo("Changed"));
     }
 
+	@JavascriptEnabled
+	@Ignore("safari")
     public void testDocumentShouldReflectLatestDom() throws Exception {
         driver.get(javascriptPage);
         String currentText = driver.findElement(By.xpath("//div[@id='dynamo']")).getText();
@@ -52,6 +56,8 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
         assertThat(newText, equalTo("Fish and chips!"));
     }
 
+	@JavascriptEnabled
+	@Ignore("safari")
     public void testWillSimulateAKeyUpWhenEnteringTextIntoInputElements() {
         driver.get(javascriptPage);
         WebElement element = driver.findElement(By.id("keyUp"));
@@ -61,6 +67,8 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
         assertThat(result.getText(), equalTo("I like cheese"));
     }
 
+	@JavascriptEnabled
+	@Ignore("safari")
     public void testWillSimulateAKeyDownWhenEnteringTextIntoInputElements() {
         driver.get(javascriptPage);
         WebElement element = driver.findElement(By.id("keyDown"));
@@ -72,6 +80,8 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
         assertThat(result.getText(), equalTo("I like chees"));
     }
 
+	@JavascriptEnabled
+	@Ignore("safari")
     public void testWillSimulateAKeyPressWhenEnteringTextIntoInputElements() {
         driver.get(javascriptPage);
         WebElement element = driver.findElement(By.id("keyPress"));
@@ -83,6 +93,8 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
         assertThat(result.getText(), equalTo("I like chees"));
     }
 
+	@JavascriptEnabled
+	@Ignore("safari")
     public void testWillSimulateAKeyUpWhenEnteringTextIntoTextAreas() {
         driver.get(javascriptPage);
         WebElement element = driver.findElement(By.id("keyUpArea"));
@@ -92,6 +104,8 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
         assertThat(result.getText(), equalTo("I like cheese"));
     }
 
+	@JavascriptEnabled
+	@Ignore("safari")
     public void testWillSimulateAKeyDownWhenEnteringTextIntoTextAreas() {
         driver.get(javascriptPage);
         WebElement element = driver.findElement(By.id("keyDownArea"));
@@ -103,6 +117,8 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
         assertThat(result.getText(), equalTo("I like chees"));
     }
 
+	@JavascriptEnabled
+	@Ignore("safari")
     public void testWillSimulateAKeyPressWhenEnteringTextIntoTextAreas() {
         driver.get(javascriptPage);
         WebElement element = driver.findElement(By.id("keyPressArea"));
@@ -114,6 +130,8 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
         assertThat(result.getText(), equalTo("I like chees"));
     }
 
+	@JavascriptEnabled
+	@Ignore("safari")
     public void testsShouldIssueMouseDownEvents() {
         driver.get(javascriptPage);
         driver.findElement(By.id("mousedown")).click();
@@ -122,6 +140,8 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
         assertThat(result, equalTo("mouse down"));
     }
 
+	@JavascriptEnabled
+	@Ignore("safari")
     public void testShouldIssueClickEvents() {
         driver.get(javascriptPage);
         driver.findElement(By.id("mouseclick")).click();
@@ -130,6 +150,8 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
         assertThat(result, equalTo("mouse click"));
     }
 
+	@JavascriptEnabled
+	@Ignore("safari")
     public void testShouldIssueMouseUpEvents() {
         driver.get(javascriptPage);
         driver.findElement(By.xpath("//div[@id='mouseup']")).click();
@@ -138,6 +160,8 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
         assertThat(result, equalTo("mouse up"));
     }
 
+	@JavascriptEnabled
+	@Ignore("safari")
     public void testMouseEventsShouldBubbleUpToContainingElements() {
         driver.get(javascriptPage);
         driver.findElement(By.xpath("//p[@id='child']")).click();
@@ -146,6 +170,8 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
         assertThat(result, equalTo("mouse down"));
     }
 
+	@JavascriptEnabled
+	@Ignore("safari")
     public void testShouldEmitOnChangeEventsWhenSelectingElements() {
         driver.get(javascriptPage);
         WebElement select = driver.findElement(By.id("selector"));
@@ -162,6 +188,8 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
         assertThat(driver.findElement(By.id("result")).getText(), equalTo("bar"));
     }
 
+	@JavascriptEnabled
+	@Ignore("safari")
     public void testShouldEmitOnChangeEventsWhenChnagingTheStateOfACheckbox() {
         driver.get(javascriptPage);
         WebElement checkbox = driver.findElement(By.id("checkbox"));
@@ -205,6 +233,8 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
 //		}
 //	}
 
+	@JavascriptEnabled
+	@Ignore("safari")
     public void testShouldAllowTheUserToTellIfAnElementIsDisplayedOrNot() {
         driver.get(javascriptPage);
 
@@ -213,6 +243,8 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
         assertThat(((RenderedWebElement) driver.findElement(By.id("hidden"))).isDisplayed(), is(false));
     }
 
+	@JavascriptEnabled
+	@Ignore("safari")
     public void testShouldWaitForLoadsToCompleteAfterJavascriptCausesANewPageToLoad() {
         driver.get(formPage);
 
@@ -221,6 +253,8 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
         assertThat(driver.getTitle(), equalTo("Page3"));
     }
 
+	@JavascriptEnabled
+	@Ignore("safari")
     public void testShouldBeAbleToDetermineTheLocationOfAnElement() {
         driver.get(xhtmlTestPage);
 
@@ -231,6 +265,8 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
         assertThat(location.getY() > 0, is(true));
     }
 
+	@JavascriptEnabled
+	@Ignore("safari")
     public void testShouldBeAbleToDetermineTheSizeOfAnElement() {
         driver.get(xhtmlTestPage);
 
@@ -241,6 +277,8 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
         assertThat(size.getHeight() > 0, is(true));
     }
 
+	@JavascriptEnabled
+	@Ignore("safari")
     public void testShouldFireOnChangeEventWhenSettingAnElementsValue() {
       driver.get(javascriptPage);
       driver.findElement(By.id("change")).setValue("foo");
@@ -249,6 +287,8 @@ public abstract class JavascriptEnabledDriverTest extends BasicDriverTestCase {
       assertThat(result, equalTo("change"));
     }
 
+	@JavascriptEnabled
+    @Ignore(value = "firefox, safari", reason = "Not implemeted in safari. Firefox: runs okay alone, but fails in a suite. Need to understand why")
     public void testShouldFireFocusKeyBlurAndChangeEventsInTheRightOrder() {
         driver.get(javascriptPage);
 

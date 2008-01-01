@@ -49,23 +49,23 @@ public class SafariWebElement implements WebElement {
     }
 
     public String getAttribute(String name) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        throw new UnsupportedOperationException("getAttribute");
     }
 
     public boolean toggle() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    	throw new UnsupportedOperationException("toggle");
     }
 
     public boolean isSelected() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        throw new UnsupportedOperationException("isSelected");
     }
 
     public WebDriver setSelected() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    	throw new UnsupportedOperationException("setSelected");
     }
 
     public boolean isEnabled() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        throw new UnsupportedOperationException("isEnabled");
     }
 
     public String getText() {
@@ -73,6 +73,6 @@ public class SafariWebElement implements WebElement {
     }
 
     public List<WebElement> getChildrenOfType(String tagName) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        throw new UnsupportedOperationException("getChildrenOfType");
     }
 }

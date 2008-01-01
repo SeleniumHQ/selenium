@@ -134,6 +134,11 @@ public interface WebDriver {
      * @return The currently active WebDriver, or null if there are no windows open
      */
     WebDriver close();
+    
+    /**
+     * Quits this driver, closing every associated window.
+     */
+	void quit();
 
     /**
      * Send future commands to a different frame or window.
