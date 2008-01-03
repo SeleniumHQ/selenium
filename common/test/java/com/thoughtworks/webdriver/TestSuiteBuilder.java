@@ -7,6 +7,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -96,7 +97,7 @@ public class TestSuiteBuilder {
 		Class<?> clazz = getClassFrom(file);
 		if (clazz == null)
 			return;
-
+		
 		int modifiers = clazz.getModifiers();
 
 		if (Modifier.isAbstract(modifiers) || !Modifier.isPublic(modifiers)) {

@@ -44,7 +44,13 @@ public class SafariWebElement implements WebElement {
     }
 
     public WebDriver setValue(String value) {
-        appleScript.executeJavascript(locator + ".value = \"" + value + "\"");
+        appleScript.executeJavascript(locator + ".focus()");
+        appleScript.executeApplescript(
+        		"tell application \"System Events\"\r" + 
+        		"    keystroke (\"" + value + "\")\r" +
+        		"end tell");
+        appleScript.executeJavascript(locator + ".blur()");
+                
         return parent;
     }
 

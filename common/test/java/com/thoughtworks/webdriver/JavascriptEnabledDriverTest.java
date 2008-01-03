@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * Test case for browsers that support using Javascript
  */
-public abstract class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
+public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
 	@JavascriptEnabled
 	@Ignore("safari")
     public void testDocumentShouldReflectLatestTitle() throws Exception {
@@ -57,7 +57,6 @@ public abstract class JavascriptEnabledDriverTest extends AbstractDriverTestCase
     }
 
 	@JavascriptEnabled
-	@Ignore("safari")
     public void testWillSimulateAKeyUpWhenEnteringTextIntoInputElements() {
         driver.get(javascriptPage);
         WebElement element = driver.findElement(By.id("keyUp"));
@@ -68,7 +67,6 @@ public abstract class JavascriptEnabledDriverTest extends AbstractDriverTestCase
     }
 
 	@JavascriptEnabled
-	@Ignore("safari")
     public void testWillSimulateAKeyDownWhenEnteringTextIntoInputElements() {
         driver.get(javascriptPage);
         WebElement element = driver.findElement(By.id("keyDown"));
@@ -81,7 +79,6 @@ public abstract class JavascriptEnabledDriverTest extends AbstractDriverTestCase
     }
 
 	@JavascriptEnabled
-	@Ignore("safari")
     public void testWillSimulateAKeyPressWhenEnteringTextIntoInputElements() {
         driver.get(javascriptPage);
         WebElement element = driver.findElement(By.id("keyPress"));
@@ -94,7 +91,6 @@ public abstract class JavascriptEnabledDriverTest extends AbstractDriverTestCase
     }
 
 	@JavascriptEnabled
-	@Ignore("safari")
     public void testWillSimulateAKeyUpWhenEnteringTextIntoTextAreas() {
         driver.get(javascriptPage);
         WebElement element = driver.findElement(By.id("keyUpArea"));
@@ -105,7 +101,6 @@ public abstract class JavascriptEnabledDriverTest extends AbstractDriverTestCase
     }
 
 	@JavascriptEnabled
-	@Ignore("safari")
     public void testWillSimulateAKeyDownWhenEnteringTextIntoTextAreas() {
         driver.get(javascriptPage);
         WebElement element = driver.findElement(By.id("keyDownArea"));
@@ -118,7 +113,6 @@ public abstract class JavascriptEnabledDriverTest extends AbstractDriverTestCase
     }
 
 	@JavascriptEnabled
-	@Ignore("safari")
     public void testWillSimulateAKeyPressWhenEnteringTextIntoTextAreas() {
         driver.get(javascriptPage);
         WebElement element = driver.findElement(By.id("keyPressArea"));
@@ -278,7 +272,6 @@ public abstract class JavascriptEnabledDriverTest extends AbstractDriverTestCase
     }
 
 	@JavascriptEnabled
-	@Ignore("safari")
     public void testShouldFireOnChangeEventWhenSettingAnElementsValue() {
       driver.get(javascriptPage);
       driver.findElement(By.id("change")).setValue("foo");
