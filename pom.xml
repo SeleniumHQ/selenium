@@ -12,6 +12,7 @@
         <module>selenium-server</module>
         <module>xlator</module>
         <module>clients</module>
+        <module>tests</module>
     </modules>
     <repositories>
         <repository>
@@ -229,6 +230,11 @@
                 <artifactId>selenium-server</artifactId>
                 <version>${project.version}</version>
             </dependency>
+	        <dependency>
+			    <groupId>org.openqa.selenium.client-drivers</groupId>
+			    <artifactId>selenium-java-client-driver</artifactId>
+                <version>${project.version}</version>
+	        </dependency>
             <dependency>
                 <groupId>org.openqa.selenium.core</groupId>
                 <artifactId>selenium-core</artifactId>
