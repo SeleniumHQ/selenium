@@ -23,5 +23,5 @@ protected:
 
 	Node* buildNode(IHTMLDOMNode*);
 
-	IHTMLDOMNode* node;
+	CComPtr<IHTMLDOMNode> node;
 };

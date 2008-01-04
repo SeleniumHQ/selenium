@@ -13,7 +13,7 @@ public class MiscTest extends AbstractDriverTestCase {
         assertThat(driver.getCurrentUrl(), equalTo(javascriptPage));
     }
 
-    @Ignore("safari")
+    @Ignore("ie, safari")
     public void testShouldReturnTheSourceOfAPage() {
         driver.get(simpleTestPage);
 

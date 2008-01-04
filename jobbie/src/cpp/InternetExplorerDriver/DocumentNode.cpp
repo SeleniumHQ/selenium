@@ -35,8 +35,13 @@ Node* DocumentNode::getFirstChild()
 	doc3->get_documentElement(&rootElement);
 	doc3->Release();
 
-	ElementNode* toReturn = new ElementNode(rootElement);
+	IHTMLDOMNode* rootNode;
+	rootElement->QueryInterface(__uuidof(IHTMLDOMNode), (void**)&rootNode);
 	rootElement->Release();
+
+	ElementNode* toReturn = new ElementNode(rootNode);
+	rootNode->Release();
+
 	return toReturn;
 }
 

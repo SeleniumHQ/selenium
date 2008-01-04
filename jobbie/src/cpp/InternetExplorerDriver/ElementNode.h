@@ -8,7 +8,7 @@
 class ElementNode : public AbstractNode
 {
 public:
-	ElementNode(IHTMLElement* element);
+//	ElementNode(IHTMLElement* element);
 	ElementNode(IHTMLDOMNode* element);
 	~ElementNode();
 

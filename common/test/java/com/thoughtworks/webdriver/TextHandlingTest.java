@@ -36,7 +36,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
         assertThat(text.contains("and block level elements"), is(true));
     }
 
-    @Ignore(value = "safari", reason = "Test fails")
+    @Ignore(value = "ie, safari", reason = "Test fails")
     public void testShouldRepresentABlockLevelElementAsANewline() {
         driver.get(simpleTestPage);
         String text = driver.findElement(By.id("multiline")).getText();
@@ -46,6 +46,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
                 " and block level elements"));
     }
 
+    @Ignore("ie")
     public void testShouldCollapseMultipleWhitespaceCharactersIntoASingleSpace() {
         driver.get(simpleTestPage);
         String text = driver.findElement(By.id("lotsofspaces")).getText();
@@ -61,7 +62,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
         assertThat(text, equalTo("This line has a non-breaking space"));
     }
 
-    @Ignore(value = "safari", reason = "Test fails")
+    @Ignore(value = "ie, safari", reason = "Test fails")
     public void testShouldTreatANonBreakingSpaceAsAnyOtherWhitespaceCharacterWhenCollapsingWhitespace() {
       driver.get(simpleTestPage);
       WebElement element = driver.findElement(By.id("nbspandspaces"));

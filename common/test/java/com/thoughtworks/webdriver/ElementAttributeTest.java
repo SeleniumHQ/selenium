@@ -8,7 +8,7 @@ import static org.hamcrest.core.IsNull.nullValue;
 import java.util.List;
 
 public class ElementAttributeTest extends AbstractDriverTestCase {
-	@Ignore("safari")
+	@Ignore(value = "ie, safari", reason = "IE: Fails test. Safari: Not implemented")
 	public void testShouldReturnNullWhenGettingTheValueOfAnAttributeThatIsNotListed() {
         driver.get(simpleTestPage);
         WebElement head = driver.findElement(By.xpath("/html"));

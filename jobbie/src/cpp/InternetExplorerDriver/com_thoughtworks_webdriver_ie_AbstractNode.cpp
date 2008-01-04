@@ -84,7 +84,9 @@ JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_AbstractNode_deleteSto
   (JNIEnv *env, jobject obj)
 {
 	AbstractNode* node = getAbstractNode(env, obj);
-	delete node;
+
+	if (node)
+		delete node;
 }
 
 #ifdef __cplusplus

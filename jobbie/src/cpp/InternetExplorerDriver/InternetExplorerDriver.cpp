@@ -41,7 +41,11 @@ InternetExplorerDriver::~InternetExplorerDriver()
 
 void InternetExplorerDriver::close()
 {
+	if (closeCalled)
+		return;
+
 	ie->Quit();
+	closeCalled = true;
 }
 
 bool InternetExplorerDriver::getVisible()

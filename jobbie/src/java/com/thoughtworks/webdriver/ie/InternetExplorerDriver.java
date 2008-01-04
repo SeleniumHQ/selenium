@@ -17,27 +17,26 @@
 
 package com.thoughtworks.webdriver.ie;
 
-import com.thoughtworks.webdriver.Alert;
-import com.thoughtworks.webdriver.Cookie;
-import com.thoughtworks.webdriver.NoSuchElementException;
-import com.thoughtworks.webdriver.WebDriver;
-import com.thoughtworks.webdriver.WebElement;
-import com.thoughtworks.webdriver.By;
-import com.thoughtworks.webdriver.internal.FindsById;
-import com.thoughtworks.webdriver.internal.FindsByLinkText;
-import com.thoughtworks.webdriver.internal.FindsByXPath;
-
-import org.jaxen.JaxenException;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
+import org.jaxen.JaxenException;
+
+import com.thoughtworks.webdriver.Alert;
+import com.thoughtworks.webdriver.By;
+import com.thoughtworks.webdriver.Cookie;
+import com.thoughtworks.webdriver.NoSuchElementException;
+import com.thoughtworks.webdriver.WebDriver;
+import com.thoughtworks.webdriver.WebElement;
+import com.thoughtworks.webdriver.internal.FindsById;
+import com.thoughtworks.webdriver.internal.FindsByLinkText;
+import com.thoughtworks.webdriver.internal.FindsByXPath;
 
 public class InternetExplorerDriver implements WebDriver, FindsById, FindsByLinkText, FindsByXPath {
     private long iePointer; // Used by the native code to keep track of the IE instance
@@ -178,7 +177,8 @@ public class InternetExplorerDriver implements WebDriver, FindsById, FindsByLink
 
     @Override
     protected void finalize() throws Throwable {
-        deleteStoredObject();
+    	if (iePointer != 0)
+    		deleteStoredObject();
     }
 
     private native void deleteStoredObject();

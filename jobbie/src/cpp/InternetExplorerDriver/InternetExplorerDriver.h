@@ -45,6 +45,8 @@ private:
 	IHTMLDocument3* getDocument3();
 	CComQIPtr<IWebBrowser2, &__uuidof(IWebBrowser2)> ie;
 	long currentFrame;
+
+	bool closeCalled;
 };
 
 class IeEventSink : public IDispatch

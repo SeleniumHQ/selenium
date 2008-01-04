@@ -6,7 +6,7 @@ import static org.hamcrest.Matchers.is;
 import java.util.List;
 
 public class SelectElementHandlingTest extends AbstractDriverTestCase {
-	@Ignore("safari")
+	@Ignore("ie, safari")
 	public void testShouldBePossibleToDeselectASingleOptionFromASelectWhichAllowsMultipleChoices() {
         driver.get(formPage);
 
@@ -24,7 +24,7 @@ public class SelectElementHandlingTest extends AbstractDriverTestCase {
         assertThat(option.isSelected(), is(true));
     }
 	
-	@Ignore("safari")
+	@Ignore("ie, safari")
     public void testShouldNotBeAbleToDeselectAnOptionFromANormalSelect() {
         driver.get(formPage);
 

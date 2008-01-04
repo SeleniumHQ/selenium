@@ -17,7 +17,6 @@ AbstractNode::AbstractNode(IHTMLDOMNode* node)
 
 AbstractNode::~AbstractNode()
 {
-	node->Release();
 }
 
 Node* AbstractNode::getDocument()

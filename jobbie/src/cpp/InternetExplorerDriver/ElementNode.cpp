@@ -6,21 +6,6 @@
 
 using namespace std;
 
-namespace { 
-IHTMLDOMNode* castElement(IHTMLElement* element) 
-{
-	IHTMLDOMNode* n;
-	element->QueryInterface(__uuidof(IHTMLDOMNode), (void**)&n);
-	return n;
-}
-};
-
-ElementNode::ElementNode(IHTMLElement* element) : AbstractNode(castElement(element))
-{
-	// Release the reference made to get the constructor to work
-	node->Release();
-}
-
 ElementNode::ElementNode(IHTMLDOMNode* node) : AbstractNode(node)
 {
 }

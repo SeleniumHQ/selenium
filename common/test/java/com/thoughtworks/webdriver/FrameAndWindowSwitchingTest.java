@@ -4,7 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
 public class FrameAndWindowSwitchingTest extends AbstractDriverTestCase {
-	@Ignore("safari")
+	@Ignore("ie, safari")
     public void testShouldContinueToReferToTheSameFrameOnceItHasBeenSelected() {
         driver.get(framesetPage);
 
@@ -38,7 +38,7 @@ public class FrameAndWindowSwitchingTest extends AbstractDriverTestCase {
         driver.findElement(By.id("iframe_page_heading"));
     }
 
-    @Ignore("safari")
+    @Ignore("ie, safari")
     public void testShouldAllowAUserToSwitchFromAnIframeBackToTheMainContentOfThePage() {
         driver.get(iframePage);
         driver.switchTo().frame(0);
@@ -51,7 +51,7 @@ public class FrameAndWindowSwitchingTest extends AbstractDriverTestCase {
         }
     }
 
-    @Ignore("safari")
+    @Ignore("ie, safari")
     public void testShouldAllowTheUserToSwitchToAnIFrameAndRemainFocusedOnIt() {
         driver.get(iframePage);
         driver.switchTo().frame(0);
@@ -61,7 +61,7 @@ public class FrameAndWindowSwitchingTest extends AbstractDriverTestCase {
         assertThat(hello, equalTo("Success!"));
     }
 
-    @Ignore(value = "firefox, safari", reason = "Firefox: fails on command line for some reason. Safari not implemented required functionality")
+    @Ignore(value = "ie, firefox, safari", reason = "Firefox: fails on command line for some reason. Safari not implemented required functionality")
     public void testShouldReturnANewWebDriverWhichSendsCommandsToANewWindowWhenItIsOpened() {
         driver.get(xhtmlTestPage);
 
@@ -75,7 +75,7 @@ public class FrameAndWindowSwitchingTest extends AbstractDriverTestCase {
         driver.switchTo().window("");
     }
 
-    @Ignore("safari")
+    @Ignore("ie, safari")
     public void testShouldBeAbleToSelectAFrameByName() {
         driver.get(framesetPage);
 
@@ -83,7 +83,7 @@ public class FrameAndWindowSwitchingTest extends AbstractDriverTestCase {
         assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("2"));
     }
 
-    @Ignore("safari")
+    @Ignore("ie, safari")
     public void testShouldSelectChildFramesByUsingADotSeparatedString() {
         driver.get(framesetPage);
 
@@ -91,7 +91,7 @@ public class FrameAndWindowSwitchingTest extends AbstractDriverTestCase {
         assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("11"));
     }
 
-    @Ignore("safari")
+    @Ignore("ie, safari")
     public void testShouldSwitchToChildFramesTreatingNumbersAsIndex() {
         driver.get(framesetPage);
 
@@ -100,7 +100,7 @@ public class FrameAndWindowSwitchingTest extends AbstractDriverTestCase {
     }
 
     @NeedsFreshDriver
-    @Ignore("safari")
+    @Ignore("ie, safari")
     public void testShouldBeAbleToPerformMultipleActionsOnDifferentDrivers() {
         driver.get(iframePage);
         driver.switchTo().frame(0);

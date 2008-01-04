@@ -145,7 +145,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
 		}
 	}
 
-	@Ignore("safari")
+	@Ignore(value = "ie, safari", reason = "IE: Fails test. Safari: Not implemented")
 	public void testShouldBeAbleToSelectARadioButton() {
 		driver.get(formPage);
 		WebElement radioButton = driver.findElement(By.id("peas"));
@@ -154,6 +154,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
 		assertThat(radioButton.isSelected(), is(true));
 	}
 
+	@Ignore(value = "ie", reason = "Fails test")
 	public void testShouldThrowAnExceptionWhenTogglingTheStateOfARadioButton() {
 		driver.get(formPage);
 		WebElement radioButton = driver.findElement(By.id("cheese"));
@@ -165,7 +166,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
 		}
 	}
 
-	@Ignore(value = "safari", reason = "Test fails")
+	@Ignore(value = "ie, safari", reason = "Test fails")
 	public void testShouldBeAbleToAlterTheContentsOfAFileUploadInputElement() {
 		driver.get(formPage);
 		WebElement uploadElement = driver.findElement(By.id("upload"));

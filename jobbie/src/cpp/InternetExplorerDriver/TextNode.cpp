@@ -10,7 +10,6 @@ TextNode::TextNode(IHTMLDOMNode* node) : AbstractNode(node)
 
 TextNode::~TextNode()
 {
-	node->Release();
 }
 
 Node* TextNode::getFirstAttribute() 
