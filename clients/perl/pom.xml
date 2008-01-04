@@ -10,6 +10,41 @@
     <artifactId>selenium-perl-client-driver</artifactId>
     <packaging>pom</packaging>
     <name>Selenium RC Perl Client</name>
+    <repositories>
+        <repository>
+            <id>openqa-releases</id>
+            <name>OpenQA Releases</name>
+            <url>http://archiva.openqa.org/repository/releases/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>openqa-snapshots</id>
+            <name>OpenQA Snapshots</name>
+            <url>http://archiva.openqa.org/repository/snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>openqa-thirdparty</id>
+            <name>OpenQA Third Party</name>
+            <url>http://archiva.openqa.org/repository/thirdparty/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
     <profiles>
         <profile>
             <id>test</id>

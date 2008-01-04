@@ -15,9 +15,37 @@
     </modules>
     <repositories>
         <repository>
-            <id>openqa</id>
-            <name>OpenQA Maven Repository</name>
-            <url>http://maven.openqa.org</url>
+            <id>openqa-releases</id>
+            <name>OpenQA Releases</name>
+            <url>http://archiva.openqa.org/repository/releases/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>openqa-snapshots</id>
+            <name>OpenQA Snapshots</name>
+            <url>http://archiva.openqa.org/repository/snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>openqa-thirdparty</id>
+            <name>OpenQA Third Party</name>
+            <url>http://archiva.openqa.org/repository/thirdparty/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
         <repository>
             <id>apache.snapshots</id>
@@ -51,12 +79,27 @@
     </pluginRepositories>
     <distributionManagement>
         <repository>
-            <id>openqa</id>
-            <name>OpenQA Maven Repository</name>
-            <url>scp://maven.openqa.org/home/maven/maven.openqa.org/htdocs</url>
+            <id>openqa-releases</id>
+            <url>dav:http://archiva.openqa.org/repository/releases/</url>
         </repository>
+        <snapshotRepository>
+            <id>openqa-snapshots</id>
+            <url>dav:http://archiva.openqa.org/repository/snapshots/</url>
+        </snapshotRepository>
     </distributionManagement>
+    <scm>
+        <connection>scm:svn:https://svn.openqa.org/svn/selenium-rc/trunk</connection>
+        <developerConnection>scm:svn:https://svn.openqa.org/svn/selenium-rc/trunk</developerConnection>
+        <url>https://svn.openqa.org/svn/selenium-rc/trunk</url>
+    </scm>
     <build>
+	    <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-webdav</artifactId>
+                <version>1.0-beta-2</version>
+            </extension>
+        </extensions>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -82,6 +125,17 @@
                 </configuration>
             </plugin>
         </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>2.0-beta-7</version>
+                    <configuration>
+                        <preparationGoals>clean install</preparationGoals>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
     <profiles>
         <profile>
