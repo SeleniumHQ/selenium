@@ -58,10 +58,10 @@
     </target>
 
 	<target name="ant-generate-sources">
-        <xslt in="../target/iedoc.xml" out="${maven.src.path}/Selenium.java" style="iedoc2java.xml">
+        <xslt in="target/iedoc.xml" out="${maven.src.path}/Selenium.java" style="iedoc2java.xml">
 			<param name="mode" expression="interface" />
 		</xslt>
-		<xslt in="../target/iedoc.xml" out="${maven.src.path}/DefaultSelenium.java" style="iedoc2java.xml">
+		<xslt in="target/iedoc.xml" out="${maven.src.path}/DefaultSelenium.java" style="iedoc2java.xml">
 			<param name="mode" expression="implementation" />
 		</xslt>
 	</target>
