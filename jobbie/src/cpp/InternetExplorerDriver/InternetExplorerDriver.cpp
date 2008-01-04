@@ -79,14 +79,14 @@ const wchar_t* InternetExplorerDriver::getCurrentUrl()
 	return bstr2wchar(url);
 }
 
-const wchar_t* InternetExplorerDriver::getTitle() 
+const std::wstring InternetExplorerDriver::getTitle() 
 {
 	CComBSTR title;
 	IHTMLDocument2 *doc = getDocument();
 	doc->get_title(&title);
 	doc->Release();
 
-	return bstr2wchar(title);
+	return bstr2wstring(title);
 }
 
 void InternetExplorerDriver::get(const wchar_t *url)

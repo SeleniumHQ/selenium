@@ -3,6 +3,7 @@
 #include "ElementNode.h"
 #include "DocumentNode.h"
 #include "utils.h"
+#include <string>
 #include <iostream>
 
 using namespace std;
@@ -50,17 +51,15 @@ Node* AttributeNode::getFirstAttribute()
 	return NULL;
 }
 
-const wchar_t* AttributeNode::name()
+const std::wstring AttributeNode::name()
 {
 	BSTR name;
 	attribute->get_nodeName(&name);
-	wchar_t* toReturn = bstr2wchar(name);
+	std::wstring toReturn = bstr2wstring(name);
 	SysFreeString(name);
 
-	if (_wcsicmp(L"classname", toReturn) == 0) {
-		delete toReturn;
-		toReturn = new wchar_t[6];
-		wcscpy_s(toReturn, 6, L"class");
+	if (_wcsicmp(L"classname", toReturn.c_str()) == 0) {
+		toReturn = L"class";
 	}
 
 	return toReturn;

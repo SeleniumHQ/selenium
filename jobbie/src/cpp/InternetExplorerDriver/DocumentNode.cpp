@@ -50,11 +50,9 @@ Node* DocumentNode::getFirstAttribute()
 	return NULL;
 }
 
-const wchar_t* DocumentNode::name()
+const std::wstring DocumentNode::name()
 {
-	wchar_t* toReturn = new wchar_t[16];
-	wcscpy_s(toReturn, 16, L"<document node>");
-	return toReturn;
+	return L"<document node>";
 }
 
 const wchar_t* DocumentNode::getText()

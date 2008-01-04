@@ -62,11 +62,9 @@ JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_AbstractNode_getNat
   (JNIEnv *env, jobject obj)
 {
 	AbstractNode* node = getAbstractNode(env, obj);
-	const wchar_t* name = node->name();
+	const std::wstring name = node->name();
 
-	jstring toReturn = env->NewString((const jchar*) name, (jsize) wcslen(name));
-	delete name;
-	return toReturn;
+	return env->NewString((const jchar*) name.c_str(), (jsize) name.length());
 }
 
 JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_AbstractNode_getText

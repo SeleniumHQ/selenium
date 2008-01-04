@@ -4,6 +4,7 @@
 #include "Node.h"
 #include "ElementNode.h"
 #include "TextNode.h"
+#include <string>
 
 using namespace std;
 
@@ -122,5 +123,20 @@ wchar_t* bstr2wchar(BSTR from)
 	size_t length = SysStringLen(from) + 1;
 	wchar_t* toReturn = new wchar_t[length];
 	wcscpy_s(toReturn, length, from);
+	return toReturn;
+}
+
+std::wstring bstr2wstring(BSTR from) 
+{
+	if (!from) {
+		return L"";
+	}
+
+	size_t length = SysStringLen(from) + 1;
+	wchar_t *buf = new wchar_t[length];
+	wcsncpy_s(buf, length, from, length - 1);
+	std::wstring toReturn(buf);
+	delete[] buf;
+
 	return toReturn;
 }

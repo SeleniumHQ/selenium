@@ -18,5 +18,6 @@ jobject initJavaXPathNode(JNIEnv*, Node*);
 
 const wchar_t *variant2wchar(const VARIANT toConvert);
 wchar_t* bstr2wchar(BSTR from);
+std::wstring bstr2wstring(BSTR from);
 
 #endif

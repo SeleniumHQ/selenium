@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 class Node
 {
 public:
@@ -10,6 +12,6 @@ public:
 	virtual Node* getFirstChild() = 0;
 	virtual Node* getFirstAttribute() = 0;
 
-	virtual const wchar_t* name() = 0;
+	virtual const std::wstring name() = 0;
 	virtual const wchar_t* getText() = 0;
 };

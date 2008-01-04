@@ -1,6 +1,7 @@
 #pragma once
 
 #include <mshtml.h>
+#include <string>
 #include "Node.h"
 
 class AttributeNode : public Node
@@ -14,7 +15,7 @@ public:
 	Node* getFirstChild();
 	Node* getFirstAttribute();
 
-	const wchar_t* name();
+	const std::wstring name();
 	const wchar_t* getText();
 
 private:

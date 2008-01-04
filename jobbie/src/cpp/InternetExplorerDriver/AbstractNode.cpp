@@ -77,11 +77,11 @@ Node* AbstractNode::getNextSibling()
 	return toReturn;
 }
 
-const wchar_t* AbstractNode::name()
+const std::wstring AbstractNode::name()
 {
 	BSTR name;
 	node->get_nodeName(&name);
-	const wchar_t* toReturn = bstr2wchar(name);
+	const std::wstring toReturn = bstr2wstring(name);
 	SysFreeString(name);
 	return toReturn;
 }

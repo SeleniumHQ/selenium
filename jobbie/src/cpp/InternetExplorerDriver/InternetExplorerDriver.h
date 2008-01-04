@@ -24,7 +24,7 @@ public:
 
 	const wchar_t* getCurrentUrl();
 
-	const wchar_t* getTitle();
+	const std::wstring getTitle();
 	void get(const wchar_t* url);
 	void goForward();
 	void goBack();

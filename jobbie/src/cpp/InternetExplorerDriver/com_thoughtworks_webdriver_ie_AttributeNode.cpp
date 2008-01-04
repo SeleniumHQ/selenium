@@ -36,10 +36,9 @@ JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_AttributeNode_getNa
   (JNIEnv *env, jobject obj)
 {
 	AttributeNode* node = getAttributeNode(env, obj);
-	const wchar_t* name = node->name();
+	const std::wstring name = node->name();
 
-	jstring toReturn = env->NewString((const jchar*) name, (jsize) wcslen(name));
-	delete name;
+	jstring toReturn = env->NewString((const jchar*) name.c_str(), (jsize) name.length());
 	return toReturn;
 }
 

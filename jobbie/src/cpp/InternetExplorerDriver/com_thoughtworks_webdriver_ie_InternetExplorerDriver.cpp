@@ -90,10 +90,8 @@ JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDri
   (JNIEnv *env, jobject obj)
 {
 	InternetExplorerDriver* ie = getIe(env, obj);
-	const wchar_t* title = ie->getTitle();
-	jstring toReturn = env->NewString((const jchar*) title, (jsize) wcslen(title));
-	delete title;
-	return toReturn;
+	const std::wstring title(ie->getTitle());
+	return env->NewString((const jchar*) title.c_str(), (jsize) title.length());
 }
 
 JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDriver_selectElementById
@@ -158,8 +156,6 @@ JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDriver
 	InternetExplorerDriver* ie = getIe(env, obj);
 	if (ie)
 		delete ie;
-	else
-		cerr << "No instance of IE to delete!" << endl;
 }
 
 JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerDriver_setFrameIndex

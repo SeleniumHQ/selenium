@@ -1,5 +1,6 @@
 #pragma once
 #include <mshtml.h>
+#include <string>
 #include "Node.h"
 
 class AbstractNode : public Node
@@ -14,7 +15,7 @@ public:
 	virtual Node* getParent();
 	virtual Node* getFirstAttribute() = 0;
 
-	virtual const wchar_t* name();
+	virtual const std::wstring name();
 	virtual const wchar_t* getText();
 
 	IHTMLDOMNode* getDomNode();
