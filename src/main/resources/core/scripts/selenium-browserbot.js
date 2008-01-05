@@ -1325,6 +1325,7 @@ BrowserBot.prototype.locateElementByXPath = function(xpath, inDocument, inWindow
     //xpathdebug = true;
     var context = new ExprContext(inDocument);
     context.setCaseInsensitive(true);
+    context.setIgnoreAttributesWithoutValue(true);
     var xpathObj;
     try {
         xpathObj = xpathParse(xpath);

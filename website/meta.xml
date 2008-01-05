@@ -93,6 +93,10 @@
         	<name>Jie Xiong</name>
         	<email>jxiong at thoughtworks.com</email>
         </person>
+        <person>
+            <name>Haw-Bin Chai</name>
+            <email>hbchai at gmail.com</email>
+        </person>
     </developers>
 
     <releases>

@@ -226,6 +226,24 @@ function copyArray(dst, src) {
   }
 }
 
+/**
+ * This is an optimization for copying attribute lists in IE. IE includes many
+ * extraneous properties in its DOM attribute lists, which take require
+ * significant extra processing when evaluating attribute steps. With this
+ * function, we ignore any such attributes that has an empty string value.
+ */
+function copyArrayIgnoringAttributesWithoutValue(dst, src)
+{
+  if (!src) return;
+  for (var i = src.length - 1; i >= 0; --i) {
+    // this test will pass so long as the attribute has a non-empty string
+    // value, even if that value is "false", "0", "undefined", etc.
+    if (src[i].nodeValue) {
+      dst.push(src[i]);
+    }
+  }
+}
+
 // Returns the text value of a node; for nodes without children this
 // is the nodeValue, for nodes with children this is the concatenation
 // of the value of all children.

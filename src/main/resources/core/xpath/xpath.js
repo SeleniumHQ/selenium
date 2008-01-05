@@ -407,13 +407,14 @@ function stackToString(stack) {
 //   XSLT instance, you probably DO want case sensitivity, as per the
 //   XSL spec.
 
-function ExprContext(node, opt_position, opt_nodelist, opt_parent, opt_caseInsensitive) {
+function ExprContext(node, opt_position, opt_nodelist, opt_parent, opt_caseInsensitive, opt_ignoreAttributesWithoutValue) {
   this.node = node;
   this.position = opt_position || 0;
   this.nodelist = opt_nodelist || [ node ];
   this.variables = {};
   this.parent = opt_parent || null;
   this.caseInsensitive = opt_caseInsensitive || false;
+  this.ignoreAttributesWithoutValue = opt_ignoreAttributesWithoutValue || false;
   if (opt_parent) {
     this.root = opt_parent.root;
   } else if (this.node.nodeType == DOM_DOCUMENT_NODE) {
@@ -431,7 +432,8 @@ ExprContext.prototype.clone = function(opt_node, opt_position, opt_nodelist) {
   return new ExprContext(
       opt_node || this.node,
       typeof opt_position != 'undefined' ? opt_position : this.position,
-      opt_nodelist || this.nodelist, this, this.caseInsensitive);
+      opt_nodelist || this.nodelist, this, this.caseInsensitive,
+      this.ignoreAttributesWithoutValue);
 };
 
 ExprContext.prototype.setVariable = function(name, value) {
@@ -479,6 +481,14 @@ ExprContext.prototype.isCaseInsensitive = function() {
 
 ExprContext.prototype.setCaseInsensitive = function(caseInsensitive) {
   return this.caseInsensitive = caseInsensitive;
+};
+
+ExprContext.prototype.isIgnoreAttributesWithoutValue = function() {
+  return this.ignoreAttributesWithoutValue;
+};
+
+ExprContext.prototype.setIgnoreAttributesWithoutValue = function(ignore) {
+  return this.ignoreAttributesWithoutValue = ignore;
 };
 
 // XPath expression values. They are what XPath expressions evaluate
@@ -738,7 +748,12 @@ StepExpr.prototype.evaluate = function(ctx) {
     }
 
   } else if (this.axis == xpathAxis.ATTRIBUTE) {
-    copyArray(nodelist, input.attributes);
+    if (ctx.ignoreAttributesWithoutValue) {
+      copyArrayIgnoringAttributesWithoutValue(nodelist, input.attributes);
+    }
+    else {
+      copyArray(nodelist, input.attributes);
+    }
 
   } else if (this.axis == xpathAxis.CHILD) {
     copyArray(nodelist, input.childNodes);
