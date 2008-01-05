@@ -72,7 +72,7 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText, Fi
         this.currentWindow = currentWindow;
     }
 
-    private void newWebClient() {
+    protected void newWebClient() {
         webClient = new WebClient();
         webClient.setThrowExceptionOnFailingStatusCode(true);
         webClient.setJavaScriptEnabled(false);
