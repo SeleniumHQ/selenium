@@ -301,6 +301,15 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText, Fi
         return new HtmlUnitDriver(window);
     }
 
+
+    protected WebClient getWebClient() {
+        return webClient;
+    }
+
+    protected WebWindow getCurrentWindow() {
+        return currentWindow;
+    }
+
     private class HtmlUnitNavigation implements Navigation {
       public WebDriver back() {
         // This functionality isn't already built into htmlunit. I'm surprised.

@@ -195,6 +195,15 @@ public class HtmlUnitWebElement implements WebElement {
         return text.substring(0, index);
     }
 
+
+    protected HtmlUnitDriver getParent() {
+        return parent;
+    }
+
+    protected HtmlElement getElement() {
+        return element;
+    }
+
     private boolean isWhiteSpace(int lastChar) {
         return lastChar == '\n' || lastChar == ' ' || lastChar == '\t' || lastChar == '\r';
     }
