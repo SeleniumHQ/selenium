@@ -36,17 +36,17 @@ public class TextHandlingTest extends AbstractDriverTestCase {
         assertThat(text.contains("and block level elements"), is(true));
     }
 
-    @Ignore(value = "ie, safari", reason = "Test fails")
+    @Ignore(value = "ie, safari", reason = "Safari: Test fails. IE: Underlying model removes the necessary spaces. Bah!")
     public void testShouldRepresentABlockLevelElementAsANewline() {
         driver.get(simpleTestPage);
         String text = driver.findElement(By.id("multiline")).getText();
 
+        
         assertThat(text, equalTo(" A div containing" + newLine +
                 " More than one line of text" + newLine +
                 " and block level elements"));
     }
 
-    @Ignore("ie")
     public void testShouldCollapseMultipleWhitespaceCharactersIntoASingleSpace() {
         driver.get(simpleTestPage);
         String text = driver.findElement(By.id("lotsofspaces")).getText();

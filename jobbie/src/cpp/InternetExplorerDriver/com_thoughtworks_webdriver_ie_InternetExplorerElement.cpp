@@ -72,13 +72,9 @@ JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerEle
   (JNIEnv *env, jobject obj)
 {
 	ElementWrapper* wrapper = getWrapper(env, obj);
-	const wchar_t* value = wrapper->getText();
+	const std::wstring value = wrapper->getText();
 
-	jstring toReturn = env->NewString((const jchar*) value, (jsize) wcslen(value));
-
-	if (value) delete value;
-
-	return toReturn;
+	return env->NewString((const jchar*) value.c_str(), (jsize) value.length());
 }
 
 JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_getAttribute

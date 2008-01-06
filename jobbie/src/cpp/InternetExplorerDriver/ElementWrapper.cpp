@@ -336,13 +336,137 @@ long ElementWrapper::getHeight()
 	return height;
 }
 
-const wchar_t* ElementWrapper::getText() 
+const std::wstring ElementWrapper::getText() 
 {
-	BSTR text;
-	element->get_innerText(&text);
+	BSTR tagName;
+	element->get_tagName(&tagName);
+	bool isTitle = tagName == L"TITLE";
+	bool isPre = tagName == L"PRE";
+	SysFreeString(tagName);
 
-	const wchar_t* toReturn = bstr2wchar(text);
-	SysFreeString(text);
+	if (isTitle)
+	{
+		return ie->getTitle();
+	}
+
+	std::wstring toReturn(L"");
+	std::wstring textSoFar(L"");
+	CComQIPtr<IHTMLDOMNode, &__uuidof(IHTMLDOMNode)> node(element); 
+
+	getText(toReturn, node, textSoFar, isPre);
+
+	std::wstring text(collapseWhitespace(textSoFar));
+	text += toReturn;
+
+	std::wstring::reverse_iterator from = text.rbegin();
+	std::wstring::reverse_iterator end = text.rend();
+
+	size_t count = text.length();
+	while (from < end && iswspace(*from)) {
+		count--;
+		from++;
+	}
+
+	text.erase(count, text.length());
+
+	return text;
+}
+
+void ElementWrapper::getText(std::wstring& toReturn, IHTMLDOMNode* node, std::wstring& textSoFar, bool isPreformatted)
+{
+	IDispatch* dispatch;
+	node->get_childNodes(&dispatch);
+	CComQIPtr<IHTMLDOMChildrenCollection, &__uuidof(IHTMLDOMChildrenCollection)> children(dispatch);
+	dispatch->Release();
+
+	if (children == NULL)
+		return;
+
+	long length = 0;
+	children->get_length(&length);
+	for (long i = 0; i < length; i++) 
+	{
+		children->item(i, &dispatch);
+		IHTMLDOMNode* child;
+		dispatch->QueryInterface(__uuidof(IHTMLDOMNode), (void**) &child);
+		dispatch->Release();
+
+		BSTR childName;
+		child->get_nodeName(&childName);
+		
+		IHTMLDOMTextNode* textNode;
+		child->QueryInterface(__uuidof(IHTMLDOMTextNode), (void**) &textNode);
+
+		if (textNode) {
+			CComBSTR text;
+			textNode->get_data(&text);
+
+			for (unsigned int i = 0; i < text.Length(); i++) {
+				if (text[i] == 160) {
+					text[i] = L' ';
+				}
+			}
+
+			toReturn += text;
+			SysFreeString(text);
+			textNode->Release();
+		} else if (!wcscmp(childName, L"PRE")) {
+			toReturn += collapseWhitespace(textSoFar);
+			
+			textSoFar.clear();
+			textSoFar += L"";
+
+			getText(toReturn, child, textSoFar, true);
+			toReturn += textSoFar;
+
+			textSoFar.clear();
+			textSoFar += L"";
+		} else {
+			getText(toReturn, child, textSoFar, false);
+		}
+
+		SysFreeString(childName);
+		child->Release();
+	}
+
+	IHTMLElement* e;
+	node->QueryInterface(__uuidof(IHTMLElement), (void**) &e);
+	BSTR nodeName;
+	if (e) {
+		e->get_tagName(&nodeName);
+	}
+
+	if (isBlockLevel(node)) {
+		if (wcscmp(nodeName, L"PRE")) {
+			toReturn += collapseWhitespace(textSoFar);
+			textSoFar.clear();
+			textSoFar += L"";
+		}
+
+		toReturn += L"\r\n";
+	}
+
+	if (e) {
+		SysFreeString(nodeName);
+		e->Release();
+	}
+}
+
+std::wstring ElementWrapper::collapseWhitespace(const std::wstring &text)
+{
+	std::wstring toReturn(L"");
+	int previousWasSpace = false;
+
+	for (unsigned int i = 0; i < text.length(); i++) {
+		wchar_t c = text[i];
+		int currentIsSpace = iswspace(c);
+		if (!(currentIsSpace && previousWasSpace)) {
+			toReturn += c;
+		}
+		
+		previousWasSpace = currentIsSpace;
+	}
+
 	return toReturn;
 }
 
@@ -358,6 +482,50 @@ const wchar_t* ElementWrapper::getTextAreaValue()
 	const wchar_t* toReturn = bstr2wchar(result);
 	SysFreeString(result);
 	return toReturn;
+}
+
+bool ElementWrapper::isBlockLevel(IHTMLDOMNode *node)
+{
+	CComQIPtr<IHTMLElement, &__uuidof(IHTMLElement)> e(node);
+
+	if (e) {
+		BSTR tagName;
+		e->get_tagName(&tagName);
+
+		bool isBreak = false;
+		if (!wcscmp(L"BR", tagName)) {
+			isBreak = true;
+		}
+
+		SysFreeString(tagName);
+		if (isBreak) {
+			return true;
+		}
+	}
+
+	CComQIPtr<IHTMLElement2, &__uuidof(IHTMLElement2)> element2(node);
+	if (!element2) {
+		return false;
+	}
+
+	IHTMLCurrentStyle* style;
+	element2->get_currentStyle(&style);
+
+	if (!style) {
+		return false;
+	}
+
+	CComQIPtr<IHTMLCurrentStyle2, &__uuidof(IHTMLCurrentStyle2)> style2(style);
+	style->Release();
+
+	if (!style2) {
+		return false;
+	}
+
+	VARIANT_BOOL isBlock;
+	style2->get_isBlock(&isBlock);
+
+	return isBlock == VARIANT_TRUE;
 }
 
 InternetExplorerDriver* ElementWrapper::click()

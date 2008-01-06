@@ -2,6 +2,7 @@
 
 #include <Exdisp.h>
 #include <mshtml.h>
+#include <string>
 #include <vector>
 #include "InternetExplorerDriver.h"
 #include "com_thoughtworks_webdriver_ie_InternetExplorerElement.h"
@@ -22,7 +23,7 @@ public:
 	bool isEnabled();
 	bool isDisplayed();
 	bool toggle();
-	const wchar_t* getText();
+	const std::wstring getText();
 
 	long getX();
 	long getY();
@@ -44,6 +45,11 @@ private:
 	void fireEvent(IHTMLEventObj*, const OLECHAR*);
 	void fireEvent(IHTMLDOMNode* fireFrom, IHTMLEventObj*, const OLECHAR*);
 
+	void getText(std::wstring& toReturn, IHTMLDOMNode* node, std::wstring& textSoFar, bool isPreformatted);
+	std::wstring collapseWhitespace(const std::wstring& text);
+	bool isBlockLevel(IHTMLDOMNode *node);
+
 	InternetExplorerDriver* ie;
 	IHTMLElement* element;
 };
+

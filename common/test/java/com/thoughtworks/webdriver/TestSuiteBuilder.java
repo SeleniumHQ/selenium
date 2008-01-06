@@ -7,7 +7,6 @@ import static org.hamcrest.Matchers.notNullValue;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,6 +22,8 @@ public class TestSuiteBuilder {
 	private boolean includeJavascript;
 	private boolean withDriver = true;
 	private boolean withEnvironment = true;
+	private String onlyRun;
+	private String testMethodName;
 
 	public TestSuiteBuilder() {
 		String[] possiblePaths = { "common", "../common", };
@@ -48,9 +49,19 @@ public class TestSuiteBuilder {
 		return this;
 	}
 
-	public TestSuiteBuilder usingDriver(Class<? extends WebDriver> driverClass) {
-		this.driverClass = driverClass;
+	public TestSuiteBuilder usingDriver(Class<? extends WebDriver> ss) {
+		this.driverClass = ss;
 		return this;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public TestSuiteBuilder usingDriver(String driverClassName) {
+		try {
+			Class<?> clazz = Class.forName(driverClassName);
+			return usingDriver((Class<? extends WebDriver>) clazz);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	public TestSuiteBuilder exclude(String tagToIgnore) {
@@ -100,10 +111,12 @@ public class TestSuiteBuilder {
 		
 		int modifiers = clazz.getModifiers();
 
-		if (Modifier.isAbstract(modifiers) || !Modifier.isPublic(modifiers)) {
+		if (Modifier.isAbstract(modifiers) || !Modifier.isPublic(modifiers)) 
 			return;
-		}
 
+		if (onlyRun != null && !clazz.getName().endsWith(onlyRun))
+			return;
+		
 		Method[] methods = clazz.getMethods();
 		for (Method method : methods) {
 			if (isTestMethod(method)) {
@@ -130,6 +143,10 @@ public class TestSuiteBuilder {
 	}
 
 	private boolean isTestMethod(Method method) {
+		if (testMethodName != null)
+			return method.getName().equals(testMethodName);
+			
+			
 		if (!method.getName().startsWith("test"))
 			return false;
 
@@ -187,6 +204,18 @@ public class TestSuiteBuilder {
 
 	public TestSuiteBuilder withoutEnvironment() {
 		withEnvironment  = false;
+		
+		return this;
+	}
+
+	public TestSuiteBuilder onlyRun(String testCaseName) {
+		onlyRun = "." + testCaseName;
+		
+		return this;
+	}
+
+	public TestSuiteBuilder method(String testMethodName) {
+		this.testMethodName = testMethodName;
 		
 		return this;
 	}
