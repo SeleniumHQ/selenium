@@ -447,9 +447,19 @@ testcase1: {
 
 <h3>Offset Locators</h3>
 
-<pre>ui=contactPages::contact_form()<span class="highlight">//input[@id='u_name']</span></pre>
+<p>Offset locators are locators that are appended to UI specifier strings to form composite locators. They can be automatically deduced by the IDE recorder for UI elements that have specified a <code>getOffsetLocator</code> function. This feature may be useful if your pages contain too many elements to write UI elements for. In this case, offset locators allow you to define UI elements that "anchor" other elements. Given the following markup:</p>
 
-<p>Offset locators are locators that are appended to UI specifier strings to form composite locators. They can be automatically deduced by the IDE recorder for UI elements that have specified a <code>getOffsetLocator</code> function. This feature may be useful if your pages contain too many elements to write UI elements for. In this case, offset locators allow you to define UI elements that "anchor" other elements.</p>
+<pre>&lt;form name="contact_info"&gt;
+    &lt;input type="text" name="foo" /&gt;
+    &lt;textarea name="bar"&gt;&lt;/textarea&gt;
+    &lt;input type="submit" value="baz" /&gt;
+&lt;/form&gt;</pre>
+
+<p>Assume that a UI element has been defined for the form element. Then the following locators containing offset locators and "anchored" off this element would be recorded using the default offset locator function (<code>UIElement.defaultOffsetLocatorStrategy</code>):</p>
+
+<pre>ui=contactPages::contact_form()<span class="highlight">//input[@name='foo']</span>
+ui=contactPages::contact_form()<span class="highlight">//textarea[@name='bar']</span>
+ui=contactPages::contact_form()<span class="highlight">//input[@value='baz']</span</pre>
 
 <p>To resolve ambiguity in parsing a UI specifier string, the following rule is introduced: "If the last character in the UI locator string is NOT the close-parenthesis (<code>)</code>), the substring following the first occurrence of the close-parenthesis of the locator string shall be considered an offset locator." This means that when using offset locators, the arguments portion of the UI specifier string cannot contain any close-parentheses. On the other hand, the offset locator can contain parentheses. This may be important if it uses XPath functions like <code>contains()</code>, for example.</p>
 
