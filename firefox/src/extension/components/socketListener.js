@@ -93,7 +93,10 @@ SocketListener.prototype.executeCommand = function() {
         this.driverPrototype = FirefoxDriver.prototype;
 
     // These are used to locate a new driver, and so not having one is a fine thing to do
-    if (this.command == "findActiveDriver" || this.command == "switchToWindow") {
+    if (this.command == "findActiveDriver" ||
+        this.command == "switchToWindow" ||
+        this.command == "quit") {
+
         var bits = this.data.split("\n", 2);
         var command = this.command;
 
@@ -235,7 +238,7 @@ SocketListener.prototype.switchToWindow = function(respond, windowId) {
     }
 
     respond(this.context, "switchToWindow", "No window found");
-}
+};
 
 
 SocketListener.prototype.findActiveDriver = function(respond) {
@@ -247,4 +250,9 @@ SocketListener.prototype.findActiveDriver = function(respond) {
         dump("No drivers associated with the window\n");  // What else can we do?
 
     respond(this.context, "findActiveDriver", driver.id);
-}
+};
+
+SocketListener.prototype.quit = function(respond) {
+  var appService = Utils.getService("@mozilla.org/toolkit/app-startup;1", "nsIAppStartup");
+  appService.quit(Components.interfaces.nsIAppStartup.eForceQuit);
+};

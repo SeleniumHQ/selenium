@@ -11,6 +11,8 @@ import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.net.Inet4Address;
+import java.net.Inet6Address;
 import java.util.Enumeration;
 
 class ExtensionConnection {
@@ -36,6 +38,9 @@ class ExtensionConnection {
     }
 
     private InetAddress obtainLoopbackAddress() {
+        InetAddress localIp4 = null;
+        InetAddress localIp6 = null;
+
         try {
             Enumeration<NetworkInterface> allInterfaces = NetworkInterface.getNetworkInterfaces();
             while (allInterfaces.hasMoreElements()) {
@@ -44,13 +49,23 @@ class ExtensionConnection {
                 while (allAddresses.hasMoreElements()) {
                     InetAddress addr = allAddresses.nextElement();
                     if (addr.isLoopbackAddress()) {
-                        return addr;
+                        if (addr instanceof Inet4Address && localIp4 == null)
+                            localIp4 = addr;
+                        else if (addr instanceof Inet6Address&& localIp6 == null)
+                            localIp6 = addr;
                     }
                 }
             }
         } catch (SocketException e) {
             throw new RuntimeException(e);
         }
+
+        // Firefox binds to the IP4 address by preference
+        if (localIp4 != null)
+            return localIp4;
+
+        if (localIp6 != null)
+            return localIp6;
 
         throw new RuntimeException("Unable to find loopback address for localhost");
     }
