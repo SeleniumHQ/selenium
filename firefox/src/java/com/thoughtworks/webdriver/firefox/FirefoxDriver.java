@@ -44,6 +44,8 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
     }
 
     public FirefoxDriver(String profileName) {
+        prepareEnvironment();
+      
         extension = new ExtensionConnection("localhost", 7055);
 
         if (!(connectToBrowser(1))) {
@@ -59,6 +61,10 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
         }
 
         fixId();
+    }
+
+    protected void prepareEnvironment() {
+      // Does nothing, but provides a hook for subclasses to do "stuff"
     }
 
     private FirefoxDriver(ExtensionConnection extension, long id) {
