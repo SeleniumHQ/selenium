@@ -53,6 +53,11 @@ const wchar_t* ElementWrapper::getValue()
 
 InternetExplorerDriver* ElementWrapper::setValue(wchar_t* newValue)
 {
+	CComQIPtr<IHTMLInputFileElement, &__uuidof(IHTMLInputFileElement)> file(element);
+	if (file) {
+		setInputFileValue(newValue);
+	}
+
 	CComQIPtr<IHTMLElement2, &__uuidof(IHTMLElement2)> element2 = element;
 
 	IDispatch* dispatch;
@@ -728,4 +733,63 @@ void ElementWrapper::fireEvent(IHTMLDOMNode* fireOn, IHTMLEventObj* eventObject,
 	element3->fireEvent(onChange, &eventref, &cancellable);
 
 	SysFreeString(onChange);
+}
+
+void ElementWrapper::setInputFileValue(wchar_t* newValue) 
+{
+	bool initialVis = ie->getVisible();
+	// Bring the IE window to the front.
+	ie->bringToFront();
+
+	CComQIPtr<IHTMLElement2, &__uuidof(IHTMLElement2)> element2(element);
+	element2->focus();
+	
+	wchar_t c;
+	while ((c = *newValue++)) 
+	{
+		short keyCode = VkKeyScan(c); 
+		bool needsShift = (keyCode >> 8) & 1;
+
+		if (needsShift)
+		{
+			keyPress(VK_LSHIFT, false);
+		}
+
+		keyPress(keyCode);
+
+		if(needsShift)
+		{
+			keyPress(VK_SHIFT, true);
+		}
+	}
+
+	ie->setVisible(initialVis);
+}
+
+void ElementWrapper::keyPress(short keyCode) 
+{
+	keyPress(keyCode, false);
+	keyPress(keyCode, true);
+}
+
+void ElementWrapper::keyPress(short keyCode, bool shouldRelease)
+{
+	keybd_event(keyCode, 0, (shouldRelease ? KEYEVENTF_KEYUP : 0), 0);
+/*
+	// This doesn't work as it should. I have no idea why.
+		INPUT input;
+		ZeroMemory(&input, sizeof(input));
+
+		input.type = INPUT_KEYBOARD;
+		input.ki.time = 0;
+		input.ki.wVk = (WORD) keyCode;
+		//input.ki.dwFlags = KEYEVENTF_UNICODE;
+		input.ki.dwFlags = 0;
+		input.ki.dwExtraInfo = 0;
+
+		if (shouldRelease)
+			input.ki.dwFlags &= KEYEVENTF_KEYUP;
+
+		SendInput(1, &input, sizeof(input));
+*/	
 }

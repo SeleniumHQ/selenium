@@ -289,6 +289,28 @@ void InternetExplorerDriver::addCookie(const wchar_t *cookieString)
 	doc->Release();
 }
 
+void InternetExplorerDriver::bringToFront() 
+{
+	setVisible(true);
+	HWND hWnd;
+	ie->get_HWND(reinterpret_cast<SHANDLE_PTR*>(&hWnd));
+
+	DWORD ieWinThreadId = GetWindowThreadProcessId(hWnd, NULL);
+    DWORD currThreadId = GetCurrentThreadId();
+    if( ieWinThreadId != currThreadId )
+    {
+		AttachThreadInput(currThreadId, ieWinThreadId, true);
+    }
+
+	SetActiveWindow(hWnd);
+	SetFocus(hWnd);
+
+	if( ieWinThreadId != currThreadId )
+    {
+		AttachThreadInput(currThreadId, ieWinThreadId, false);
+    }
+}
+
 IHTMLDocument2* InternetExplorerDriver::getDocument() 
 {
 	IDispatch* dispatch;

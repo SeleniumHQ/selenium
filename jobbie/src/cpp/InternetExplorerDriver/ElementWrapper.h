@@ -38,6 +38,7 @@ public:
 	void setNode(IHTMLDOMNode* fromNode);
 
 private:
+	void setInputFileValue(wchar_t* newValue);
 	const wchar_t* getTextAreaValue();
 	bool isCheckbox();
 	IHTMLFormElement* findParentForm();
@@ -48,6 +49,9 @@ private:
 	void getText(std::wstring& toReturn, IHTMLDOMNode* node, std::wstring& textSoFar, bool isPreformatted);
 	std::wstring collapseWhitespace(const std::wstring& text);
 	bool isBlockLevel(IHTMLDOMNode *node);
+
+	void keyPress(short keyCode);
+	void keyPress(short keyCode, bool shouldRelease);
 
 	InternetExplorerDriver* ie;
 	IHTMLElement* element;

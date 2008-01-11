@@ -39,6 +39,8 @@ public:
 	const wchar_t* getCookies();
 	void addCookie(const wchar_t *cookieString);
 
+	void bringToFront();
+
 private:
 	void waitForDocumentToComplete(IHTMLDocument2* doc);
 	IeEventSink* sink;
