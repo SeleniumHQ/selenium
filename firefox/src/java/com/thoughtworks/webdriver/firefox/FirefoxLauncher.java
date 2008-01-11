@@ -119,7 +119,7 @@ public class FirefoxLauncher {
         return false;
     }
 
-    private void connectAndKill() {
+    protected void connectAndKill() {
         ExtensionConnection connection = new ExtensionConnection("localhost", 7055);
         try {
             long tryUntil = System.currentTimeMillis() + (5 * 1000);
@@ -150,7 +150,7 @@ public class FirefoxLauncher {
         }
     }
 
-    private void updateUserPrefsFor(File extensionsDir) {
+    protected void updateUserPrefsFor(File extensionsDir) {
         File userPrefs = new File(extensionsDir, "user.js");
 
         Map<String, String> prefs = new HashMap<String, String>();
@@ -245,7 +245,7 @@ public class FirefoxLauncher {
             cacheFile.delete();
     }
 
-    private void installExtensionInto(File profileDir) {
+    protected void installExtensionInto(File profileDir) {
         File extensionsDir = new File(profileDir, "extensions");
 
         String home = System.getProperty("webdriver.firefox.development");
@@ -304,7 +304,7 @@ public class FirefoxLauncher {
         }
     }
 
-  private void modifyLibraryPath(ProcessBuilder builder, File binary) {
+  protected void modifyLibraryPath(ProcessBuilder builder, File binary) {
       String propertyName;
 
       OperatingSystem os = OperatingSystem.getCurrentPlatform();
@@ -325,7 +325,7 @@ public class FirefoxLauncher {
       String libraryPath = System.getenv(propertyName);
       if (libraryPath == null) {
           libraryPath = "";
-      }      
+      }
 
       String firefoxLibraryPath = System.getProperty("webdriver.firefox.library.path", binary.getParentFile().getAbsolutePath());
 
