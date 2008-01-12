@@ -48,11 +48,15 @@ class Testing_Selenium_Exception extends PEAR_Exception
         <os family="windows" />
       </condition>
       <property name="phpdoc.executable" value="phpdoc" />
+      <property name="Selenium.php" location="PEAR/Testing/Selenium.php" />
+      <property name="Exception.php" location="PEAR/Testing/Selenium/Exception.php" />
+      <property name="phpdoc.files" value="${Selenium.php},${Exception.php}" />
+      <property name="doc.dir" location="doc" />
       <exec executable="${phpdoc.executable}" failonerror="true">
         <arg value="-f" />
-        <arg value="PEAR/Testing/Selenium.php,PEAR/Testing/Selenium/Exception.php" />
+        <arg value="${phpdoc.files}" />
         <arg value="-t" />
-        <arg value="doc" />
+        <arg value="${doc.dir}" />
       </exec>
     </target>
     <target name="all" depends="generate-sources, test, doc"/>
