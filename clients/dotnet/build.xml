@@ -99,10 +99,16 @@
 		<echo>${selenium-server}</echo>
         <java jar="${selenium-server}" fork="true" spawn="true"/>
         <sleep seconds="20"/>
+        <condition property="headless-arg" value="/include=Headless">
+          <istrue value="${headless}" />
+        </condition>
+        <property name="headless-arg" value="" />
+        <echo>headless=${headless-arg}</echo>
 		<exec resultproperty="integration.result"
 		      command="${dotnet.runtime} 
 				${basedir}/tools/nunit/nunit-console.exe 
 				target/${integration.tests.dll} 
+				${headless-arg}
 				/xml:${integration.tests.dll}-results.xml /nologo" />
 		<get taskname="selenium-shutdown" src="http://localhost:4444/selenium-server/driver/?cmd=shutDown" dest="target/shutdown-result.txt" ignoreerrors="true" />
         <sleep seconds="20"/>

@@ -70,8 +70,12 @@ class Testing_Selenium_Exception extends PEAR_Exception
       </condition>
       <property name="phpunit.executable" value="phpunit" />
       <!--<fail message="autofail ${php.executable}" />-->
+      <condition property="Headless" value="Headless">
+        <istrue value="${headless}" />
+      </condition>
+      <property name="Headless" value="" />
       <exec executable="${phpunit.executable}" resultproperty="result">
-        <arg line="TestSuite.php"/>
+        <arg line="TestSuite${Headless}.php"/>
       </exec>
       <get taskname="selenium-shutdown" src="http://localhost:4444/selenium-server/driver/?cmd=shutDown" dest="target/shutdown-result.txt" ignoreerrors="true" />
       <sleep seconds="20"/>

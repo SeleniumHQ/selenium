@@ -15,23 +15,30 @@ public class I18nTest extends TestCase {
     
     private static String startUrl = "http://localhost:" + SeleniumServer.getDefaultPort();
     private static Selenium sel;
-    //private static SeleniumServer server;
     
     public static Test suite() {
-        return new I18nTestSetup(new TestSuite(I18nTest.class));
+        return new I18nTestSetup(new TestSuite(I18nTest.class), "*mock", true);
     }
     
-    private static class I18nTestSetup extends TestSetup {
+    protected static class I18nTestSetup extends TestSetup {
 
-        public I18nTestSetup(Test test) {
+        String browser;
+        boolean launchServer;
+        SeleniumServer server;
+        
+        public I18nTestSetup(Test test, String browser, boolean launchServer) {
             super(test);
+            this.browser = browser;
+            this.launchServer = launchServer;
         }
         
         public void setUp() throws Exception {
-            //server = new SeleniumServer();
-            //server.start();
+            if (launchServer) {
+                server = new SeleniumServer();
+                server.start();
+            }
             try {
-                sel = new DefaultSelenium("localhost", SeleniumServer.getDefaultPort(), "*firefox",
+                sel = new DefaultSelenium("localhost", SeleniumServer.getDefaultPort(), browser,
                         startUrl);
                 sel.start();
                 sel.open(startUrl + "/selenium-server/tests/html/test_i18n.html");
@@ -47,7 +54,7 @@ public class I18nTest extends TestCase {
             } catch (Exception e) {
                 throw e;
             }
-            //server.stop();
+            if (launchServer) server.stop();
         }
         
     }
@@ -83,12 +90,12 @@ public class I18nTest extends TestCase {
         verifyText(expected, id);
     }
     
-    public void testDangerousLinks() throws UnsupportedEncodingException {
-        String[] links = sel.getAllLinks();
-        assertEquals("Wrong number of links", 3, links.length);
-        assertEquals("mangled link", "veni, vidi, vici", links[0]);
-        assertEquals("mangled link", "c:\\foo\\bar", links[1]);
-        assertEquals("mangled link", "c:\\I came, I \\saw\\, I conquered", links[2]);
+    public void testDangerousLabels() throws UnsupportedEncodingException {
+        String[] labels = sel.getSelectOptions("dangerous-labels");
+        assertEquals("Wrong number of labels", 3, labels.length);
+        assertEquals("mangled label", "veni, vidi, vici", labels[0]);
+        assertEquals("mangled label", "c:\\foo\\bar", labels[1]);
+        assertEquals("mangled label", "c:\\I came, I \\saw\\, I conquered", labels[2]);
     }
 
     private void verifyText(String expected, String id) throws UnsupportedEncodingException {

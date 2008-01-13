@@ -20,7 +20,7 @@ import unittest
 class TestI18n(unittest.TestCase):
     def setUp(self):
         self.selenium = selenium("localhost", \
-            4444, "*firefox", "http://localhost:4444")
+            4444, "*mock", "http://localhost:4444")
         self.selenium.start()
         self.selenium.open("http://localhost:4444/selenium-server/tests/html/test_i18n.html")
         

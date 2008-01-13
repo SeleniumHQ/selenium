@@ -22,8 +22,12 @@
         <!--  output="${tmp}/ruby_out.txt" -->
         <property name="ruby.executable" value="ruby"/>
         <!--<fail message="autofail ${ruby.executable}" />-->
+        <condition property="testFile" value="mock">
+            <istrue value="${headless}" />
+        </condition>
+        <property name="testFile" value="example" />
         <exec executable="${ruby.executable}" resultproperty="result">
-            <arg line="selenium_example.rb"/>
+            <arg line="selenium_${testFile}.rb"/>
         </exec>
         <get taskname="selenium-shutdown" src="http://localhost:4444/selenium-server/driver/?cmd=shutDown" dest="target/shutdown-result.txt" ignoreerrors="true" />
         <sleep seconds="20"/>

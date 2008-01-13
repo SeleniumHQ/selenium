@@ -45,6 +45,9 @@
             </snapshots>
         </repository>
     </repositories>
+    <properties>
+        <headless>true</headless>
+    </properties>
     <profiles>
         <profile>
             <id>test</id>
@@ -68,6 +71,7 @@
                                             <property name="selenium-server"
                                                       value="${maven.dependency.org.openqa.selenium.server.selenium-server.standalone.jar.path}"/>
                                             <property name="project.version" value="${project.version}" />
+                                            <property name="headless" value="${headless}" />
                                         </ant>
                                     </tasks>
                                 </configuration>

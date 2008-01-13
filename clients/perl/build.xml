@@ -60,7 +60,23 @@
     	</perl>
     	<make />
     </target>
-    <target name="test" depends="init, make" unless="skiptests">
+    
+    <target name="pre-test">
+        <condition property="skiptests-headless">
+            <or>
+                <isset property="skiptests" />
+                <not><istrue value="${headless}" /></not>
+            </or>
+        </condition>
+        <condition property="skiptests-nonheadless">
+            <or>
+                <istrue value="${headless}" />
+                <isset property="skiptests" />
+            </or>
+        </condition>
+    </target>
+    
+    <target name="test-nonheadless" depends="init, make, pre-test" unless="skiptests-nonheadless">
     	<echo>${selenium-server}</echo>
         <java jar="${selenium-server}" fork="true" spawn="true"/>
         <sleep seconds="20"/>
@@ -74,6 +90,27 @@
         </condition>
         <fail if="build.failed" message="perl tests failed!" />
     </target>
+    
+    <target name="test-headless" depends="init, make, pre-test" unless="skiptests-headless">
+    	<echo>${selenium-server}</echo>
+        <java jar="${selenium-server}" fork="true" spawn="true"/>
+        <sleep seconds="20"/>
+        <property name="lib.dir" location="lib" />
+        <perl failonerror="false" resultproperty="result">
+            <arg value="-MExtUtils::Command::MM" />
+            <arg value="-e" />
+            <arg value="test_harness(0, 'inc', 'blib/lib', 'blib/arch')" />
+            <arg file="t/test_i18n.t" />
+        </perl>
+        <get taskname="selenium-shutdown" src="http://localhost:4444/selenium-server/driver/?cmd=shutDown" dest="target/shutdown-result.txt" ignoreerrors="true" />
+        <sleep seconds="20"/>
+        <condition property="build.failed">
+        	<not><equals arg1="0" arg2="${result}" /></not>
+        </condition>
+        <fail if="build.failed" message="perl tests failed!" />
+    </target>
+    
+    <target name="test" depends="test-headless, test-nonheadless" />
     
     <target name="dist" depends="generate-sources, doc">
         <mkdir dir="target" />

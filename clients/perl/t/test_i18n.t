@@ -15,7 +15,7 @@ else {
 $sel = Test::WWW::Selenium->new(
     host        => $host,
     port        => $port,
-    browser     => "*firefox",
+    browser     => "*mock",
     browser_url => "http://$host:$port",
 );
 $sel->open("/selenium-server/tests/html/test_i18n.html");

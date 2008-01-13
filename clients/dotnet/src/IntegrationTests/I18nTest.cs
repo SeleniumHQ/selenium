@@ -21,6 +21,7 @@ using Selenium;
 namespace ThoughtWorks.Selenium.IntegrationTests
 {
 	[TestFixture]
+	[Category("Headless")]
 	public class I18nTest
 	{
 		private ISelenium selenium;
@@ -29,7 +30,7 @@ namespace ThoughtWorks.Selenium.IntegrationTests
 		[SetUp]
 		public void SetupTest()
 		{
-			selenium = new DefaultSelenium("localhost", 4444, "*firefox", startURL);
+			selenium = new DefaultSelenium("localhost", 4444, "*mock", startURL);
 			selenium.Start();
 			selenium.Open(startURL + "/selenium-server/tests/html/test_i18n.html");
 		}
