@@ -19,6 +19,11 @@ import org.openqa.selenium.server.SeleniumServer;
 
 public class MockBrowserLauncher implements BrowserLauncher, Runnable {
 
+    private static final String DANGEROUS_TEXT = "&%?\\+|,%*";
+    private static final String JAPANESE_TEXT = "\u307E\u3077";
+    private static final String CHINESE_TEXT = "\u4E2D\u6587";
+    private static final String KOREAN_TEXT = "\uC5F4\uC5D0";
+    private static final String ROMANCE_TEXT = "\u00FC\u00F6\u00E4\u00DC\u00D6\u00C4 \u00E7\u00E8\u00E9 \u00BF\u00F1 \u00E8\u00E0\u00F9\u00F2";
     static Log log = LogFactory.getLog(MockBrowserLauncher.class);
     private final int port;
     private final String sessionId;
@@ -90,22 +95,50 @@ public class MockBrowserLauncher implements BrowserLauncher, Runnable {
 
     private String doCommand(RemoteCommand sc) {
         String command = sc.getCommand();
-        String result = "OK";
         if (command.equals("getAllButtons")) {
-            result = "OK,";
+            return "OK,";
         } else if (command.equals("getAllLinks")) {
-            result = "OK,1";
+            return "OK,1";
         } else if (command.equals("getAllFields")) {
-            result = "OK,1,2,3";
+            return "OK,1,2,3";
         } else if (command.equals("getWhetherThisFrameMatchFrameExpression")) {
-            result = "OK,true";
+            return "OK,true";
+        } else if ("dangerous-labels".equals(sc.getField()) && command.equals("getSelectOptions")) {
+            return "OK,veni\\, vidi\\, vici,c:\\\\foo\\\\bar,c:\\\\I came\\, I \\\\saw\\\\\\, I conquered";
+
+        } else if (command.startsWith("getText")) {
+            if ("romance".equals(sc.getField())) {
+                return "OK,"+ROMANCE_TEXT;
+            } else if ("korean".equals(sc.getField())) {
+                return "OK,"+KOREAN_TEXT;
+            } else if ("chinese".equals(sc.getField())) {
+                return "OK,"+CHINESE_TEXT;
+            } else if ("japanese".equals(sc.getField())) {
+                return "OK,"+JAPANESE_TEXT;
+            } else if ("dangerous".equals(sc.getField())) {
+                return "OK,"+DANGEROUS_TEXT;
+            }
         }
-        else if (command.startsWith("get")) {
-            result = "OK,x";
-        } else if (command.startsWith("is")) {
-            result = "OK,true";
+        else if (command.startsWith("get")) {   
+            return "OK,x";
+        } else if (command.startsWith("isTextPresent")) {
+            if (ROMANCE_TEXT.equals(sc.getField())) {
+                return "OK,true";
+            } else if (KOREAN_TEXT.equals(sc.getField())) {
+                return "OK,true";
+            } else if (CHINESE_TEXT.equals(sc.getField())) {
+                return "OK,true";
+            } else if (JAPANESE_TEXT.equals(sc.getField())) {
+                return "OK,true";
+            } else if (DANGEROUS_TEXT.equals(sc.getField())) {
+                return "OK,true";
+            }
+            return "OK,false";
         }
-        return result;
+        else if (command.startsWith("is")) {   
+            return "OK,true";
+        }
+        return "OK";
     }
     
     private String stringContentsOfInputStream(InputStream is) throws IOException {
@@ -126,7 +159,7 @@ public class MockBrowserLauncher implements BrowserLauncher, Runnable {
         conn.setRequestProperty("Content-Type", "application/xml");
         // Send POST output.
         conn.setDoOutput(true);
-        OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+        OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream(), "UTF-8");
         wr.write(body);
         wr.flush();
         wr.close();
