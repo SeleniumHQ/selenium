@@ -159,8 +159,9 @@ SocketListener.prototype.executeCommand = function() {
                           } else {
                               // Fine. Use the name and loop
                               for (var j = 0; j < frame.frames.length; j++) {
-                                  if (frame.frames[j].name == names[i]) {
-                                      frame = frame.frames[j];
+                                  var f = frame.frames[j];
+                                  if (f.name == names[i] || f.frameElement.id == names[i]) {
+                                      frame = f;
                                       break;
                                   }
 

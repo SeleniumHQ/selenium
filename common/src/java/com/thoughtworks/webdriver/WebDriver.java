@@ -227,10 +227,9 @@ public interface WebDriver {
         WebDriver frame(int frameIndex);
 
         /**
-         * Select a frame by its name. To select sub-frames, simply separate the frame names by dots. As an example
+         * Select a frame by its name or ID. To select sub-frames, simply separate the frame names/IDs by dots. As an example
          * "main.child" will select the frame with the name "main" and then it's child "child". If a frame name is a
-         * number, then it will be treated as selecting a frame as if using
-         * {@link com.thoughtworks.webdriver.WebDriver.TargetLocator#frame(int)}
+         * number, then it will be treated as selecting a frame as if using.
          *
          * @param frameName
          * @return A driver focused on the given frame

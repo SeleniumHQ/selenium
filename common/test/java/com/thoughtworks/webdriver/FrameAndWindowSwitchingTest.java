@@ -132,4 +132,17 @@ public class FrameAndWindowSwitchingTest extends AbstractDriverTestCase {
         	fail("This is not expected. " + e.getMessage());
         }
     }
+
+    @Ignore("safari, ie")
+    public void testShouldBeAbleToFlipToAFrameIdentifiedByItsId() {
+        driver.get(framesetPage);
+
+        driver.switchTo().frame("fifth");
+
+        try {
+            driver.findElement(By.id("username"));
+        } catch (NoSuchElementException e) {
+            fail("Driver did not switch by frame id");
+        }
+    }
 }

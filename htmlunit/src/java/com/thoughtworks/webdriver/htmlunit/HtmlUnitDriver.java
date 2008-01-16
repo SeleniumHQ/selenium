@@ -259,7 +259,16 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText, Fi
                     int index = Integer.parseInt(frameName);
                     window = (WebWindow) page.getFrames().get(index);
                 } catch (NumberFormatException e) {
-                    window = page.getFrameByName(frameName);
+                    for (Object frame : page.getFrames()) {
+                        FrameWindow frameWindow = (FrameWindow) frame;
+                        if (name.equals(frameWindow.getFrameElement().getId())) {
+                            window = frameWindow;
+                            break;
+                        } else if (name.equals(frameWindow.getName())) {
+                            window = frameWindow;
+                            break;
+                        }
+                    }
                 }
 
                 page = (HtmlPage) window.getEnclosedPage();
