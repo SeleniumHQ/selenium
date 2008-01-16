@@ -36,6 +36,9 @@ import java.security.*;
 import java.security.cert.CertificateException;
 import java.util.*;
 
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLHandshakeException;
+
 /* ------------------------------------------------------------ */
 
 /**
@@ -59,6 +62,7 @@ public class ProxyHandler extends AbstractHttpHandler {
     private final Map<String,SslRelay> _sslMap = new LinkedHashMap<String, SslRelay>();
     private String sslKeystorePath;
     private boolean useCyberVillains = true;
+    private boolean trustAllSSLCertificates = false;
 
     /* ------------------------------------------------------------ */
     /**
@@ -123,6 +127,10 @@ public class ProxyHandler extends AbstractHttpHandler {
         _allowedConnectPorts.add(8443);
     }
 
+    public ProxyHandler(boolean trustAllSSLCertificates) {
+        super();
+        this.trustAllSSLCertificates = trustAllSSLCertificates;
+    }
 
     /* ------------------------------------------------------------ */
     /*
@@ -295,6 +303,9 @@ public class ProxyHandler extends AbstractHttpHandler {
             http = (HttpURLConnection) connection;
             http.setRequestMethod(request.getMethod());
             http.setInstanceFollowRedirects(false);
+            if (trustAllSSLCertificates && connection instanceof HttpsURLConnection) {
+                TrustEverythingSSLTrustManager.trustAllSSLCertificates((HttpsURLConnection) connection);
+            }
         }
 
         // check connection header
@@ -375,7 +386,11 @@ public class ProxyHandler extends AbstractHttpHandler {
         if (http != null) {
             proxy_in = http.getErrorStream();
 
-            code = http.getResponseCode();
+            try {
+                code = http.getResponseCode();
+            } catch (SSLHandshakeException e) {
+                throw new RuntimeException("Couldn't establish SSL handshake.  Try using trustAllSSLCertificates.\n"+e.getLocalizedMessage(), e);
+            }
             response.setStatus(code);
             response.setReason(http.getResponseMessage());
 
@@ -469,7 +484,7 @@ public class ProxyHandler extends AbstractHttpHandler {
         Server server = new Server();
         HttpContext httpContext = new HttpContext();
         httpContext.setContextPath("/");
-        ProxyHandler proxy = new ProxyHandler();
+        ProxyHandler proxy = new ProxyHandler(true);
         proxy.useCyberVillains = false;
         httpContext.addHandler(proxy);
         server.addContext(httpContext);

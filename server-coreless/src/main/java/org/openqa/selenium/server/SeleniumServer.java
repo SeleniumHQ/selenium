@@ -208,6 +208,7 @@ public class SeleniumServer {
 
     // useful for situations where Selenium is being invoked programatically and the outside container wants to own logging
     private static boolean dontTouchLogging = false;
+    private static boolean trustAllSSLCertificates = false;
 
     private static final int MAX_SHUTDOWN_RETRIES = 8;
     
@@ -288,6 +289,8 @@ public class SeleniumServer {
             	
             	// Set the number of jetty threads before we construct the instance
             	SeleniumServer.setJettyThreads(jettyThreads);
+            } else if ("-trustAllSSLCertificates".equalsIgnoreCase(arg)) {
+                trustAllSSLCertificates = true;
             } else if ("-userJsInjection".equalsIgnoreCase(arg)) {
                 userJsInjection = true;
                 if (!InjectionHelper.addUserJsInjectionFile(getArg(args, ++i))) {
@@ -521,6 +524,7 @@ public class SeleniumServer {
         printWrappedErrorLine(INDENT, "-debug: puts you into debug mode, with more trace information and diagnostics on the console");
         printWrappedErrorLine(INDENT, "-browserSideLog: enables logging on the browser side; logging messages will be transmitted to the server.  This can affect performance.");
         printWrappedErrorLine(INDENT, "-ensureCleanSession: If the browser does not have user profiles, make sure every new session has no artifacts from previous sessions.  For example, enabling this option will cause all user cookies to be archived before launching IE, and restored after IE is closed.");
+        printWrappedErrorLine(INDENT, "-trustAllSSLCertificates: Forces the Selenium proxy to trust all SSL certificates.  This doesn't work in browsers that don't use the Selenium proxy.");
         printWrappedErrorLine(INDENT, "-log <logFileName>: writes lots of debug information out to a log file");
         printWrappedErrorLine(INDENT, "-htmlSuite <browser> <startURL> <suiteFile> <resultFile>: Run a single HTML Selenese (Selenium Core) suite and then exit immediately, using the specified browser (e.g. \"*firefox\") on the specified URL (e.g. \"http://www.google.com\").  You need to specify the absolute path to the HTML test suite as well as the path to the HTML results file we'll generate.");
         printWrappedErrorLine(INDENT, "-proxyInjectionMode: puts you into proxy injection mode, a mode where the selenium server acts as a proxy server " +
@@ -726,7 +730,7 @@ public class SeleniumServer {
 
         ProxyHandler proxyHandler;
         if (customProxyHandler == null) {
-            proxyHandler = new ProxyHandler();
+            proxyHandler = new ProxyHandler(trustAllSSLCertificates);
             root.addHandler(proxyHandler);
         } else {
             proxyHandler = customProxyHandler;
@@ -1160,6 +1164,10 @@ public class SeleniumServer {
     
     public static void setReusingBrowserSessions(boolean reusingBrowserSessions) {
         SeleniumServer.reusingBrowserSessions = reusingBrowserSessions;
+    }
+    
+    public static void setTrustAllSSLCertificates(boolean trustAllSSLCertificates) {
+        SeleniumServer.trustAllSSLCertificates = trustAllSSLCertificates;
     }
     
     public static void setLogFile(File logFile) {
