@@ -6,6 +6,7 @@ import com.thoughtworks.webdriver.Cookie;
 import com.thoughtworks.webdriver.NoSuchElementException;
 import com.thoughtworks.webdriver.WebDriver;
 import com.thoughtworks.webdriver.WebElement;
+import com.thoughtworks.webdriver.NoSuchFrameException;
 import com.thoughtworks.webdriver.internal.FindsById;
 import com.thoughtworks.webdriver.internal.FindsByLinkText;
 import com.thoughtworks.webdriver.internal.FindsByXPath;
@@ -330,12 +331,16 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
 
     private class FirefoxTargetLocator implements TargetLocator {
         public WebDriver frame(int frameIndex) {
-            sendMessage("switchToFrame", String.valueOf(frameIndex));
+            String result = sendMessage("switchToFrame", String.valueOf(frameIndex));
+            if (result.length() != 0) 
+                throw new NoSuchFrameException("Cannot find frame: " + result);
             return FirefoxDriver.this;
         }
 
         public WebDriver frame(String frameName) {
-            sendMessage("switchToNamedFrame", frameName);
+            String result = sendMessage("switchToNamedFrame", frameName);
+            if (result.length() != 0)
+                throw new NoSuchFrameException("Cannot find frame: " + result);
             return FirefoxDriver.this;
         }
 

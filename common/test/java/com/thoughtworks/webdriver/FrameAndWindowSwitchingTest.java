@@ -145,4 +145,29 @@ public class FrameAndWindowSwitchingTest extends AbstractDriverTestCase {
             fail("Driver did not switch by frame id");
         }
     }
+
+    @Ignore("safari, ie")
+    public void testShouldThrowAnExceptionWhenAFrameCannotBeFound() {
+        driver.get(xhtmlTestPage);
+
+        try {
+            driver.switchTo().frame("Nothing here");
+            fail("Should not have been able to switch");
+        } catch (NoSuchFrameException e) {
+            // This is expected
+        }
+    }
+
+    @Ignore("safari, ie")
+    public void testShouldThrowAnExceptionWhenAFrameCannotBeFoundByIndex() {
+        driver.get(xhtmlTestPage);
+
+        try {
+            driver.switchTo().frame(27);
+            fail("Should not have been able to switch");
+        } catch (NoSuchFrameException e) {
+            // This is expected
+        }
+    }
+    
 }

@@ -13,7 +13,7 @@ public class SingleTestSuite {
 					.usingDriver(FIREFOX)
 					.keepDriverInstance()
 					.onlyRun("FrameAndWindowSwitchingTest")
-					.method("testShouldBeAbleToFlipToAFrameIdentifiedByItsId")
+//					.method("testShouldThrowAnExceptionWhenAFrameCannotBeFoundByIndex")
 					.create();
 	}
 }

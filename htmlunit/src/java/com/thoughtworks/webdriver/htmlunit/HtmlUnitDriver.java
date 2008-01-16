@@ -245,7 +245,11 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText, Fi
     private class HtmlUnitTargetLocator implements TargetLocator {
         public WebDriver frame(int frameIndex) {
             HtmlPage page = (HtmlPage) webClient.getCurrentWindow().getEnclosedPage();
-            currentWindow = (WebWindow) page.getFrames().get(frameIndex);
+            try {
+                currentWindow = (WebWindow) page.getFrames().get(frameIndex);
+            } catch (IndexOutOfBoundsException e) {
+                throw new NoSuchFrameException("Cannot find frame: " + frameIndex);
+            }
             return HtmlUnitDriver.this;
         }
 
@@ -259,16 +263,24 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText, Fi
                     int index = Integer.parseInt(frameName);
                     window = (WebWindow) page.getFrames().get(index);
                 } catch (NumberFormatException e) {
+                    window = null;
                     for (Object frame : page.getFrames()) {
                         FrameWindow frameWindow = (FrameWindow) frame;
-                        if (name.equals(frameWindow.getFrameElement().getId())) {
+                        if (frameName.equals(frameWindow.getFrameElement().getId())) {
                             window = frameWindow;
+                            System.out.println("Found: " + name);
                             break;
-                        } else if (name.equals(frameWindow.getName())) {
+                        } else if (frameName.equals(frameWindow.getName())) {
                             window = frameWindow;
+                            System.out.println("Found: " + name);
                             break;
                         }
                     }
+                    if (window == null) {
+                        throw new NoSuchFrameException("Cannot find frame: " + name);
+                    }
+                } catch (IndexOutOfBoundsException e) {
+                    throw new NoSuchFrameException("Cannot find frame: " + name);
                 }
 
                 page = (HtmlPage) window.getEnclosedPage();

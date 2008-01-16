@@ -148,18 +148,33 @@ FirefoxDriver.prototype.selectElementsUsingXPath = function(respond, xpath) {
 FirefoxDriver.prototype.switchToFrame = function(respond, frameId) {
     var browser = Utils.getBrowser(this.context);
 
-    var frames = browser.contentWindow.frames;
+    var frameDoc = Utils.findDocumentInFrame(browser, frameId);
 
-    var index = frameId - 0;
-    if (frames.length > index) {
+    if (frameDoc) {
         this.context = new Context(this.context.windowId, frameId);
+        respond(this.context, "switchToFrame");
+    } else {
+        respond(this.context, "switchToFrame", frameId);
     }
-    respond(this.context, "switchToFrame");
 }
 
 FirefoxDriver.prototype.switchToNamedFrame = function(respond, frameId) {
-	this.context = new Context(this.context.windowId, frameId);
-	respond(this.context, "switchToNamedFrame");
+//	this.context = new Context(this.context.windowId, frameId);
+//
+//    respond(this.context, "switchToNamedFrame");
+
+
+    var browser = Utils.getBrowser(this.context);
+
+    var frameDoc = Utils.findDocumentInFrame(browser, frameId);
+
+    if (frameDoc) {
+        this.context = new Context(this.context.windowId, frameId);
+        respond(this.context, "switchToNamedFrame");
+    } else {
+        respond(this.context, "switchToNamedFrame", frameId);
+    }
+
 }
 
 FirefoxDriver.prototype.switchToDefaultContent = function(respond) {

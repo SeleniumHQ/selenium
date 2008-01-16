@@ -210,6 +210,41 @@ Utils.fireMouseEventOn = function(context, element, eventName) {
     element.dispatchEvent(event);
 }
 
+Utils.findDocumentInFrame = function(browser, frameId) {
+    var stringId = "" + frameId;
+    var names = stringId.split(".");
+    var frame = browser.contentWindow;
+    for (var i = 0; i < names.length; i++) {
+        // Try a numerical index first
+        var index = names[i] - 0;
+        if (!isNaN(index)) {
+            frame = frame.frames[index];
+            if (!frame) {
+                return null;
+            }
+        } else {
+            // Fine. Use the name and loop
+            var found = false;
+            for (var j = 0; j < frame.frames.length; j++) {
+                var f = frame.frames[j];
+                if (f.name == names[i] || f.frameElement.id == names[i]) {
+                    frame = f;
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                return null;
+            }
+        }
+    }
+
+    if (frame)
+        return frame.document;
+    return null;
+}
+
 Utils.dump = function(element) {
     dump("=============\n");
 
