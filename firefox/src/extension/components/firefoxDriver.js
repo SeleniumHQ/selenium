@@ -158,25 +158,6 @@ FirefoxDriver.prototype.switchToFrame = function(respond, frameId) {
     }
 }
 
-FirefoxDriver.prototype.switchToNamedFrame = function(respond, frameId) {
-//	this.context = new Context(this.context.windowId, frameId);
-//
-//    respond(this.context, "switchToNamedFrame");
-
-
-    var browser = Utils.getBrowser(this.context);
-
-    var frameDoc = Utils.findDocumentInFrame(browser, frameId);
-
-    if (frameDoc) {
-        this.context = new Context(this.context.windowId, frameId);
-        respond(this.context, "switchToNamedFrame");
-    } else {
-        respond(this.context, "switchToNamedFrame", frameId);
-    }
-
-}
-
 FirefoxDriver.prototype.switchToDefaultContent = function(respond) {
     this.context.frameId = "?";
     respond(this.context, "switchToDefaultContent");

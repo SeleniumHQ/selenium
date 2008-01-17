@@ -331,14 +331,11 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
 
     private class FirefoxTargetLocator implements TargetLocator {
         public WebDriver frame(int frameIndex) {
-            String result = sendMessage("switchToFrame", String.valueOf(frameIndex));
-            if (result.length() != 0) 
-                throw new NoSuchFrameException("Cannot find frame: " + result);
-            return FirefoxDriver.this;
+            return frame(String.valueOf(frameIndex));
         }
 
         public WebDriver frame(String frameName) {
-            String result = sendMessage("switchToNamedFrame", frameName);
+            String result = sendMessage("switchToFrame", frameName);
             if (result.length() != 0)
                 throw new NoSuchFrameException("Cannot find frame: " + result);
             return FirefoxDriver.this;

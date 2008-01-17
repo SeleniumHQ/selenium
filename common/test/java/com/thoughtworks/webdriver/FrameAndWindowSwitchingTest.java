@@ -158,7 +158,7 @@ public class FrameAndWindowSwitchingTest extends AbstractDriverTestCase {
         }
     }
 
-    @Ignore("safari, ie")
+    @Ignore("safari, ie")   
     public void testShouldThrowAnExceptionWhenAFrameCannotBeFoundByIndex() {
         driver.get(xhtmlTestPage);
 

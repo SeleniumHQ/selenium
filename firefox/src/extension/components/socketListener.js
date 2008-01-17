@@ -132,45 +132,21 @@ SocketListener.prototype.executeCommand = function() {
         driver.context.fxbrowser = fxbrowser;
 
         // Determine whether or not we need to care about frames.
-              var frames = fxbrowser.contentWindow.frames;
-              if ("?" == driver.context.frameId) {
-                  if (frames && frames.length) {
-                      if ("FRAME" == frames[0].frameElement.tagName) {
-                          driver.context.frameId = 0;
-                      } else {
-                          driver.context.frameId = undefined;
-                      }
-                  } else {
-                      driver.context.frameId = undefined;
-                  }
-              }
+        var frames = fxbrowser.contentWindow.frames;
+        if ("?" == driver.context.frameId) {
+            if (frames && frames.length) {
+                if ("FRAME" == frames[0].frameElement.tagName) {
+                    driver.context.frameId = 0;
+                } else {
+                    driver.context.frameId = undefined;
+                }
+            } else {
+                driver.context.frameId = undefined;
+            }
+        }
 
-              if (driver.context.frameId !== undefined) {
-                  if (frames[driver.context.frameId]) {
-                      fxdocument = frames[driver.context.frameId].document;
-                  } else {
-                      var names = driver.context.frameId.split(".");
-                      var frame = fxbrowser.contentWindow;
-                      for (var i = 0; i < names.length; i++) {
-                          // Try a numerical index first
-                          var index = names[i] - 0;
-                          if (index) {
-                              frame = frame.frames[index];
-                          } else {
-                              // Fine. Use the name and loop
-                              for (var j = 0; j < frame.frames.length; j++) {
-                                  var f = frame.frames[j];
-                                  if (f.name == names[i] || f.frameElement.id == names[i]) {
-                                      frame = f;
-                                      break;
-                                  }
-
-                              }
-                          }
-                      }
-
-                      fxdocument = frame.document;
-                  }
+        if (driver.context.frameId !== undefined) {
+            fxdocument = Utils.findDocumentInFrame(fxbrowser, driver.context.frameId);
         } else {
             fxdocument = fxbrowser.contentDocument;
         }
