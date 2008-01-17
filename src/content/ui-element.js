@@ -1537,13 +1537,19 @@ function parse_kwargs(kwargs)
 /**
  * Creates a python-style keyword arguments string from an object.
  *
- * @param args  an associative array mapping strings to strings
- * @return      a kwarg string representation of args
+ * @param args        an associative array mapping strings to strings
+ * @param sortedKeys  (optional) a list of keys of the args parameter that
+ *                    specifies the order in which the arguments will appear in
+ *                    the returned kwargs string
+ *
+ * @return            a kwarg string representation of args
  */
-function to_kwargs(args)
+function to_kwargs(args, sortedKeys)
 {
     var s = '';
-    var sortedKeys = keys(args).sort();
+    if (!sortedKeys) {
+        var sortedKeys = keys(args).sort();
+    }
     for (var i = 0; i < sortedKeys.length; ++i) {
         var k = sortedKeys[i];
         if (s) {
@@ -1944,10 +1950,12 @@ function UIElement(uiElementShorthand)
         
         // create the arguments
         this.args = []
+        this.argsOrder = [];
         if (uiElementShorthand.args) {
             for (var i = 0; i < uiElementShorthand.args.length; ++i) {
-                this.args.push(new UIArgument(uiElementShorthand.args[i],
-                    localVars));
+                var arg = uiElementShorthand.args[i];
+                this.args.push(new UIArgument(arg, localVars));
+                this.argsOrder.push(arg.name);
             }
         }
         
@@ -2083,7 +2091,7 @@ function UISpecifierException(message)
 function UISpecifier(uiSpecifierStringOrPagesetName, elementName, args)
 {
     /**
-     * Splits this.string, a UI specifier string of the form:
+     * Initializes this object from a UI specifier string of the form:
      *
      *     pagesetName::elementName(arg1=value1, arg2=value2, ...)
      *
@@ -2092,40 +2100,31 @@ function UISpecifier(uiSpecifierStringOrPagesetName, elementName, args)
      * @return  an object containing the components of the UI specifier
      * @throws  UISpecifierException
      */
-    this.parse = function() {
-        var matches = /^(.*)::([^\(]+)\(([^\)]*)\)$/.exec(this.string);
+    this._initFromUISpecifierString = function(uiSpecifierString) {
+        var matches = /^(.*)::([^\(]+)\(([^\)]*)\)$/.exec(uiSpecifierString);
         if (matches == null) {
-            throw new UISpecifierException('Error in UISpecifier.parse(): "'
+            throw new UISpecifierException('Error in '
+                + 'UISpecifier._initFromUISpecifierString(): "'
                 + this.string + '" is not a valid UI specifier string');
         }
-        var args = {};
-        if (matches[3]) {
-            args = parse_kwargs(matches[3]);
-        }
-        return {
-            pagesetName: matches[1],
-            elementName: matches[2],
-            args: args
-        };
+        this.pagesetName = matches[1];
+        this.elementName = matches[2];
+        this.args = (matches[3]) ? parse_kwargs(matches[3]) : {};
     };
     
     
     
     /**
-     * Combines the UI specifier components into a canonical UI specifier
-     * string and returns it. Throws an exception if any of the components
-     * are invalid.
+     * Override the toString() method to return the UI specifier string when
+     * evaluated in a string context. Combines the UI specifier components into
+     * a canonical UI specifier string and returns it.
      *
-     * @param pagesetName
-     * @param elementName
-     * @param kwargs
-     * @return             a UI specifier string
-     * @throws             UISpecifierException
+     * @return   a UI specifier string
      */
-    this.unparse = function() {
+    this.toString = function() {
         // empty string is acceptable for the path, but it must be defined
         if (this.pagesetName == undefined) {
-            throw new UISpecifierException('Error in UISpecifier.unparse(): "'
+            throw new UISpecifierException('Error in UISpecifier.toString(): "'
                 + this.pagesetName + '" is not a valid UI specifier pageset '
                 + 'name');
         }
@@ -2138,40 +2137,30 @@ function UISpecifier(uiSpecifierStringOrPagesetName, elementName, args)
             throw new UISpecifierException('Error in UISpecifier.unparse(): "'
                 + this.args + '" are not valid UI specifier args');
         }
-        return this.pagesetName + '::' + this.elementName + '(' +
-            to_kwargs(this.args) + ')';
+        
+        var kwargs;
+        try {
+            uiElement = GLOBAL.uiMap
+                .getUIElement(this.pagesetName, this.elementName);
+            kwargs = to_kwargs(this.args, uiElement.argsOrder);
+        }
+        catch (e) {
+            // probably under unit test
+            kwargs = to_kwargs(this.args);
+        }
+        return this.pagesetName + '::' + this.elementName + '(' + kwargs + ')';
     };
-    
-    
-    
-    /*
-     * Override the toString() method to return the UI specifier string when
-     * evaluated in a string context.
-     *
-     * @return   a UI specifier string
-     */
-    this.toString = function() { return this.string; };
     
     
     
     // construct the object
     if (arguments.length < 2) {
-        this.string = uiSpecifierStringOrPagesetName;
-        var parsed = this.parse();
-        this.pagesetName = parsed.pagesetName;
-        this.elementName = parsed.elementName;
-        this.args = parsed.args;
+        this._initFromUISpecifierString(uiSpecifierStringOrPagesetName);
     }
     else {
         this.pagesetName = uiSpecifierStringOrPagesetName;
         this.elementName = elementName;
-        if (args) {
-            this.args = clone(args);
-        }
-        else {
-            this.args = {};
-        }
-        this.string = this.unparse();
+        this.args = (args) ? clone(args) : {};
     }
 }
 

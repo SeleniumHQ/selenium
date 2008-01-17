@@ -237,10 +237,15 @@ function test_to_kwargs()
         assertTrue(are_equal(inputs[i], parse_kwargs(to_kwargs(inputs[i]))));
     }
     
-    // test the sorting
+    // test the default sorting
     var kwargs1 = {aleph: 'foo', booster: 'kick', tamarind: 42, z: '5'};
     var kwargs2 = {z: '5', aleph: 'foo', tamarind: 42, booster: 'kick'};
     assertTrue(are_equal(to_kwargs(kwargs1), to_kwargs(kwargs2)));
+    
+    // test the explicit sorting
+    var argsOrder = [ 'tamarind', 'booster', 'aleph', 'z' ];
+    var re = /tamarind.+booster.+aleph.+z/;
+    assertTrue(re.test(to_kwargs(kwargs1, argsOrder)));
 }
 
 
@@ -697,44 +702,48 @@ function test_UISpecifier()
 
 
 
-function test_UISpecifier_parse()
+function test_UISpecifier__initFromUISpecifierString()
 {
     var testUISpecifier = new UISpecifier('pagesetName::elementName()');
-    assertTrue(are_equal({pagesetName: 'pagesetName', elementName: 'elementName', args: {}}, testUISpecifier.parse()));
-    testUISpecifier.string = 'pagesetName::elementName(k1=v1, k2=v2)';
-    assertTrue(are_equal({pagesetName: 'pagesetName', elementName: 'elementName', args: {k1: 'v1', k2: 'v2'}}, testUISpecifier.parse()));
-    testUISpecifier.string = 'complex:. pagesetName  ::# elementName:*@  ( k1 = v1 ,  k  2=v2   )';
-    assertTrue(are_equal({pagesetName: 'complex:. pagesetName  ', elementName: '# elementName:*@  ', args: {k1: 'v1', 'k  2': 'v2'}}, testUISpecifier.parse()));
+    assertEquals('pagesetName', testUISpecifier.pagesetName);
+    assertEquals('elementName', testUISpecifier.elementName);
+    assertTrue(are_equal({}, testUISpecifier.args));
+    
+    testUISpecifier._initFromUISpecifierString('pagesetName::elementName(k1=v1, k2=v2)');
+    assertEquals('pagesetName', testUISpecifier.pagesetName);
+    assertEquals('elementName', testUISpecifier.elementName);
+    assertTrue(are_equal({k1: 'v1', k2: 'v2'}, testUISpecifier.args));
+    
+    testUISpecifier._initFromUISpecifierString('complex:. pagesetName  ::# elementName:*@  ( k1 = v1 ,  k  2=v2   )');
+    assertEquals('complex:. pagesetName  ', testUISpecifier.pagesetName);
+    assertEquals('# elementName:*@  ', testUISpecifier.elementName);
+    assertTrue(are_equal({k1: 'v1', 'k  2': 'v2'}, testUISpecifier.args));
     
     // destructive
     try {
-        testUISpecifier.string = 'pagesetName::()';
-        testUISpecifier.parse();
-        assertTrue(false);
+        testUISpecifier._initFromUISpecifierString('pagesetName::()');
+        fail('Expected exception but none was thrown: missing element name');
     }
     catch (e) {
         assertEquals('UISpecifierException', e.name);
     }
     try {
-        testUISpecifier.string = 'elementName()';
-        testUISpecifier.parse();
-        assertTrue(false);
+        testUISpecifier._initFromUISpecifierString('elementName()');
+        fail('Expected exception but none was thrown: missing pageset name');
     }
     catch (e) {
         assertEquals('UISpecifierException', e.name);
     }
     try {
-        testUISpecifier.string = 'pagesetName::elementName';
-        testUISpecifier.parse();
-        assertTrue(false);
+        testUISpecifier._initFromUISpecifierString('pagesetName::elementName');
+        fail('Expected exception but none was thrown: missing arguments');
     }
     catch (e) {
         assertEquals('UISpecifierException', e.name);
     }
     try {
-        testUISpecifier.string = 'pagesetName::elementName(k1=v1, k2=v2';
-        testUISpecifier.parse();
-        assertTrue(false);
+        testUISpecifier._initFromUISpecifierString('pagesetName::elementName(k1=v1, k2=v2');
+        fail('Expected exception but none was thrown: missing close parenthesis for arguments');
     }
     catch (e) {
         assertEquals('UISpecifierException', e.name);
@@ -743,11 +752,11 @@ function test_UISpecifier_parse()
 
 
 
-function test_UISpecifier_unparse()
+function test_UISpecifier_toString()
 {
     var testUISpecifier = new UISpecifier('pagesetName::elementName()');
 
-    // round-tripping the unique test_UISpecifier_parse() cases
+    // round-tripping the unique test_UISpecifier__initFromUISpecifierString() cases
     var inputs = [
         {pagesetName: 'pagesetName', elementName: 'elementName', args: {}},
         {pagesetName: 'pagesetName', elementName: 'elementName', args: {k1: 'v1', k2: 'v2'}},
@@ -758,8 +767,10 @@ function test_UISpecifier_unparse()
         testUISpecifier.pagesetName = inputs[i].pagesetName;
         testUISpecifier.elementName = inputs[i].elementName;
         testUISpecifier.args = inputs[i].args;
-        testUISpecifier.string = testUISpecifier.unparse();
-        assertTrue(are_equal(inputs[i], testUISpecifier.parse()));
+        var testUISpecifier2 = new UISpecifier(testUISpecifier.toString());
+        assertEquals(inputs[i].pagesetName, testUISpecifier2.pagesetName);
+        assertEquals(inputs[i].elementName, testUISpecifier2.elementName);
+        assertTrue(are_equal(inputs[i].args, testUISpecifier2.args));
     }
     
     // destructive
@@ -767,8 +778,8 @@ function test_UISpecifier_unparse()
         testUISpecifier.pagesetName = undefined;
         testUISpecifier.elementName = 'elementName';
         testUISpecifier.args = {};
-        testUISpecifier.unparse();
-        assertTrue(false);
+        testUISpecifier.toString();
+        fail('Expected exception but none was thrown: undefined pageset name');
     }
     catch (e) {
         assertEquals('UISpecifierException', e.name);
@@ -777,8 +788,8 @@ function test_UISpecifier_unparse()
         testUISpecifier.pagesetName = 'pagesetName';
         testUISpecifier.elementName = '';
         testUISpecifier.args = {};
-        testUISpecifier.unparse();
-        assertTrue(false);
+        testUISpecifier.toString();
+        fail('Expected exception but none was thrown: empty element name');
     }
     catch (e) {
         assertEquals('UISpecifierException', e.name);
@@ -787,8 +798,8 @@ function test_UISpecifier_unparse()
         testUISpecifier.pagesetName = 'pagesetName';
         testUISpecifier.elementName = 'elementName';
         testUISpecifier.args = null;
-        testUISpecifier.unparse();
-        assertTrue(false);
+        testUISpecifier.toString();
+        fail('Expected exception but none was thrown: empty arguments array');
     }
     catch (e) {
         assertEquals('UISpecifierException', e.name);
