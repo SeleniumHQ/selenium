@@ -63,12 +63,12 @@
 
 	<target name="generate-sources">
 		<mkdir dir="target" />
-    	<xslt in="../target/iedoc.xml" out="src/Core/ISelenium.cs" style="iedoc2csharp.xml" force="true">
+    	<xslt in="target/iedoc.xml" out="src/Core/ISelenium.cs" style="iedoc2csharp.xml" force="true">
 			<param name="mode" expression="interface" />
 		</xslt>
 		<replaceregexp file="src/Core/ISelenium.cs" match="(&#xa;|&#xd;)" replace="" flags="g" />
 		<replaceregexp file="src/Core/ISelenium.cs" match="THISISAFAKENEWLINE" replace="&#xd;&#xa;" flags="g" />
-		<xslt in="../target/iedoc.xml" out="src/Core/DefaultSelenium.cs" style="iedoc2csharp.xml" force="true">
+		<xslt in="target/iedoc.xml" out="src/Core/DefaultSelenium.cs" style="iedoc2csharp.xml" force="true">
 			<param name="mode" expression="implementation" />
 		</xslt>
 		<replaceregexp file="src/Core/DefaultSelenium.cs" match="(&#xa;|&#xd;)" replace="" flags="g" />

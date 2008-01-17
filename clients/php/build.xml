@@ -1,7 +1,7 @@
 <project name="selenium" default="all">
     <target name="generate-sources">
       <mkdir dir="PEAR/Testing/Selenium" />
-      <xslt in="../target/iedoc.xml" out="PEAR/Testing/Selenium.php" style="iedoc2php.xml"/>
+      <xslt in="target/iedoc.xml" out="PEAR/Testing/Selenium.php" style="iedoc2php.xml"/>
       <echo file="PEAR/Testing/Selenium/Exception.php"><![CDATA[<?php
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 

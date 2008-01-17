@@ -24,7 +24,6 @@
 		</perl>-->
 	</target>
 	<target name="generate-sources" depends="init">
-    	<copy file="../target/iedoc.xml" tofile="iedoc.xml" />
     	<perl>
     	    <arg value="util/create_www_selenium.pl" />
     	</perl>

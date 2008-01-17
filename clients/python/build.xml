@@ -1,7 +1,7 @@
 <project name="selenium" default="all">
 	<target name="generate-sources">
     	<mkdir dir="target" />
-    	<xslt in="../target/iedoc.xml" out="selenium.py" style="iedoc2python.xml"/>
+    	<xslt in="target/iedoc.xml" out="selenium.py" style="iedoc2python.xml"/>
     </target>
     <target name="pydoc" depends="generate-sources" if="use.pydoc">
     	<property name="python.executable" value="python" />

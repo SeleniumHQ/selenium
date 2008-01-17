@@ -1,7 +1,7 @@
 <project name="selenium">
     <target name="generate-sources">
         <mkdir dir="target"/>
-        <xslt in="../target/iedoc.xml" out="selenium.rb" style="iedoc2ruby.xml"/>
+        <xslt in="target/iedoc.xml" out="selenium.rb" style="iedoc2ruby.xml"/>
     </target>
 
     <target name="doc">

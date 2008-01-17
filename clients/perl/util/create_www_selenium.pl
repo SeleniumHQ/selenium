@@ -594,7 +594,7 @@ sub test_functions {
 }
 
 sub read_iedoc_xml {
-    my $iedoc_file = 'iedoc.xml';
+    my $iedoc_file = 'target/iedoc.xml';
     die "Can't find iedoc.xml" unless -e $iedoc_file;
     open (my $fh, $iedoc_file) or die "Can't open $iedoc_file: $!";
     {
