@@ -300,6 +300,21 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText, Fi
             return HtmlUnitDriver.this;
         }
 
+
+        public WebElement activeElement() {
+            Page page = currentWindow.getEnclosedPage();
+            if (page instanceof HtmlPage) {
+                HtmlElement element = ((HtmlPage) page).getElementWithFocus();
+                if (element == null) {
+                    List allBodies = ((HtmlPage) page).getDocumentElement().getHtmlElementsByTagName("body");
+                    if (allBodies.size() > 0)
+                        return new HtmlUnitWebElement(HtmlUnitDriver.this, (HtmlElement) allBodies.get(0));
+                }
+            }
+
+            throw new NoSuchElementException("Unable to locate element with focus or body tag");
+        }
+
         public Alert alert() {
             return null;
         }

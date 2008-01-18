@@ -206,7 +206,9 @@ Utils.findForm = function(element) {
 
 Utils.fireMouseEventOn = function(context, element, eventName) {
     var event = Utils.getDocument(context).createEvent("MouseEvents");
-    event.initMouseEvent(eventName, true, true, null, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
+    var view = Utils.getDocument(context).defaultView;
+//    dump("View is: " + view + "\n");
+    event.initMouseEvent(eventName, true, true, null, 1, 0, 0, 0, 0, false, false, false, false, 0, element);
     element.dispatchEvent(event);
 }
 

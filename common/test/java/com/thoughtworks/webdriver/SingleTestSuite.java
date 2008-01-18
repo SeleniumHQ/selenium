@@ -12,8 +12,10 @@ public class SingleTestSuite {
 					.addSourceDir("common")
 					.usingDriver(FIREFOX)
 					.keepDriverInstance()
-					.onlyRun("FrameAndWindowSwitchingTest")
-//					.method("testShouldThrowAnExceptionWhenAFrameCannotBeFoundByIndex")
-					.create();
+                    .includeJavascriptTests()
+                    .onlyRun("JavascriptEnabledDriverTest")
+					.method("testShouldBeAbleToSwitchToFocusedElement")
+                    .leaveRunningAfterTest()
+                    .create();
 	}
 }

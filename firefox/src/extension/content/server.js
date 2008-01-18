@@ -38,3 +38,11 @@ window.addEventListener("load", function(e) {
         }
     }
 }, true);
+
+window.addEventListener("focus", function(e) {
+    var active = e.originalTarget;
+    var doc = gBrowser.selectedBrowser.contentDocument;
+    if (active.ownerDocument == doc) {
+        driver.activeElement = active;
+    }
+}, true);

@@ -362,6 +362,11 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
             return FirefoxDriver.this;
         }
 
+
+        public WebElement activeElement() {
+            return findElement("switchToActiveElement", "active element");
+        }
+
         public Alert alert() {
             throw new UnsupportedOperationException("alert");
         }

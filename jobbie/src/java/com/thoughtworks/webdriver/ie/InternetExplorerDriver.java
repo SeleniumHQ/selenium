@@ -209,6 +209,11 @@ public class InternetExplorerDriver implements WebDriver, FindsById, FindsByLink
             throw new UnsupportedOperationException("defaultContent");
         }
 
+
+        public WebElement activeElement() {
+            throw new UnsupportedOperationException("activeElement");
+        }
+
         public Alert alert() {
             throw new UnsupportedOperationException("alert");
         }

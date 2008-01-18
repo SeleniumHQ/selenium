@@ -163,6 +163,20 @@ FirefoxDriver.prototype.switchToDefaultContent = function(respond) {
     respond(this.context, "switchToDefaultContent");
 }
 
+
+FirefoxDriver.prototype.switchToActiveElement = function(respond) {
+    var doc = Utils.getDocument(this.context);
+
+    var active = null;
+    if (doc["activeElement"]) {
+        active = doc.activeElement;
+    } else {
+        active = this.activeElement;
+    }
+
+    respond(this.context, "switchToActiveElement");
+}
+
 FirefoxDriver.prototype.goBack = function(respond) {
     var browser = Utils.getBrowser(this.context);
 

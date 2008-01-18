@@ -223,6 +223,7 @@ public interface WebDriver {
 		 * 
 		 * @param frameIndex
 		 * @return A driver focused on the given frame
+         * @throws NoSuchFrameException If the frame cannot be found
 		 */
         WebDriver frame(int frameIndex);
 
@@ -233,6 +234,7 @@ public interface WebDriver {
          *
          * @param frameName
          * @return A driver focused on the given frame
+         * @throws NoSuchFrameException If the frame cannot be found
          */
         WebDriver frame(String frameName);
 
@@ -249,7 +251,14 @@ public interface WebDriver {
          */
 		WebDriver defaultContent();
 
-		Alert alert();
+        /**
+         * Switches to the element that currently has focus, or the body element if this cannot be detected.
+         *
+         * @return The WebElement with focus, or the body element if no element with focus can be detected.
+         */
+        WebElement activeElement();
+
+        Alert alert();
     }
 
     public interface Navigation {
