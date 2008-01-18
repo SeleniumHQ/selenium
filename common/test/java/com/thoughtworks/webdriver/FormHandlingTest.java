@@ -166,13 +166,13 @@ public class FormHandlingTest extends AbstractDriverTestCase {
 		}
 	}
 
-	@Ignore(value = "ie, safari", reason = "Test fails")
+	@Ignore(value = "safari", reason = "Test fails")
 	public void testShouldBeAbleToAlterTheContentsOfAFileUploadInputElement() {
 		driver.get(formPage);
 		WebElement uploadElement = driver.findElement(By.id("upload"));
 		assertThat(uploadElement.getValue(), equalTo(""));
-		uploadElement.setValue("Cheese");
-		assertThat(uploadElement.getValue(), equalTo("Cheese"));
+		uploadElement.setValue("Cheese/\\/");
+		assertThat(uploadElement.getValue(), equalTo("Cheese/\\/"));
 	}
 
 	public void testShouldThrowAnExceptionWhenSelectingAnUnselectableElement() {

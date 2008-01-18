@@ -54,7 +54,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
         assertThat(cookies.contains(cookie2), is(true));
     }
 	
-	@Ignore("safari")
+	@Ignore("ie, safari")
     public void testCookieIntegrity() {
         driver.get(alternateBaseUrl + "animals");
         driver.manage().deleteAllCookies();

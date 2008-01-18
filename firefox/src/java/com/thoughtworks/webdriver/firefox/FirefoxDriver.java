@@ -10,6 +10,7 @@ import com.thoughtworks.webdriver.NoSuchFrameException;
 import com.thoughtworks.webdriver.internal.FindsById;
 import com.thoughtworks.webdriver.internal.FindsByLinkText;
 import com.thoughtworks.webdriver.internal.FindsByXPath;
+import com.thoughtworks.webdriver.internal.OperatingSystem;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -56,9 +57,11 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
 
         if (!extension.isConnected()) {
             throw new RuntimeException(
-                    "Unable to connect to Firefox. Is the WebDriver extension installed, and is there a profile called WebDriver?\n" +
-                            "To set up a profile for WebDriver, simply start firefox from the command line with the \"ProfileManager\" switch\n" +
-                            "This will look like: firefox -ProfileManager. Alternatively, use the FirefoxLauncher support class from this project");
+                    "Unable to connect to Firefox. Is the WebDriver extension installed, and is there a profile called WebDriver?" + 
+                    OperatingSystem.getCurrentPlatform().getLineEnding() +
+                    "To set up a profile for WebDriver, simply start firefox from the command line with the \"ProfileManager\" switch" + 
+                    OperatingSystem.getCurrentPlatform().getLineEnding() +
+                    "This will look like: firefox -ProfileManager. Alternatively, use the FirefoxLauncher support class from this project");
         }
 
         fixId();

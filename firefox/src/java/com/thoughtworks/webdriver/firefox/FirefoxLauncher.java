@@ -19,6 +19,8 @@ import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.thoughtworks.webdriver.internal.OperatingSystem;
+
 public class FirefoxLauncher {
     public static void main(String[] args) {
         FirefoxLauncher launcher = new FirefoxLauncher();

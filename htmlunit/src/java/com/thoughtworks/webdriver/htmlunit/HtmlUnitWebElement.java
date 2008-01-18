@@ -21,6 +21,7 @@ import com.gargoylesoftware.htmlunit.html.*;
 import com.thoughtworks.webdriver.NoSuchElementException;
 import com.thoughtworks.webdriver.WebDriver;
 import com.thoughtworks.webdriver.WebElement;
+import com.thoughtworks.webdriver.internal.OperatingSystem;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,6 +40,8 @@ public class HtmlUnitWebElement implements WebElement {
     public HtmlUnitWebElement(HtmlUnitDriver parent, HtmlElement element) {
         this.parent = parent;
         this.element = element;
+        
+        
     }
 
     public WebDriver click() {
@@ -239,7 +242,7 @@ public class HtmlUnitWebElement implements WebElement {
         }
 
         if (isBlockLevel(node)) {
-            toReturn.append(collapseWhitespace(textSoFar)).append("\n");
+            toReturn.append(collapseWhitespace(textSoFar)).append(OperatingSystem.getCurrentPlatform().getLineEnding());
             textSoFar.delete(0, textSoFar.length());
         }
     }

@@ -4,6 +4,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
+import com.thoughtworks.webdriver.internal.OperatingSystem;
+
 public class TextHandlingTest extends AbstractDriverTestCase {
 	private String newLine;
 	
@@ -11,11 +13,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		
-		String os = System.getProperty("os.name").toLowerCase();
-    	if (os.indexOf("win") != -1)
-    		newLine = "\r\n";
-    	else 
-    		newLine = "\n";
+		newLine = OperatingSystem.getCurrentPlatform().getLineEnding();
 	}
 	
     public void testShouldReturnTheTextContentOfASingleElementWithNoChildren() {

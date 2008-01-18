@@ -3,6 +3,7 @@ package com.thoughtworks.webdriver.firefox;
 import com.thoughtworks.webdriver.WebDriver;
 import com.thoughtworks.webdriver.WebElement;
 import com.thoughtworks.webdriver.RenderedWebElement;
+import com.thoughtworks.webdriver.internal.OperatingSystem;
 
 import java.awt.Point;
 import java.awt.Dimension;
@@ -45,7 +46,7 @@ public class FirefoxWebElement implements RenderedWebElement {
         if (!"OK".equals(status))
             return null;
 
-        return remainder;
+        return remainder.replace("\n", OperatingSystem.getCurrentPlatform().getLineEnding());
     }
 
     public WebDriver setValue(String value) {
@@ -91,7 +92,8 @@ public class FirefoxWebElement implements RenderedWebElement {
     }
 
     public String getText() {
-        return parent.sendMessage("getElementText", elementId);
+    	String toReturn = parent.sendMessage("getElementText", elementId);
+        return toReturn.replace("\n", OperatingSystem.getCurrentPlatform().getLineEnding());
     }
 
     public List<WebElement> getChildrenOfType(String tagName) {
