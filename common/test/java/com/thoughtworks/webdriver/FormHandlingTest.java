@@ -5,7 +5,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
 public class FormHandlingTest extends AbstractDriverTestCase {
-	public void testShouldClickOnButtons() {
+	public void testShouldClickOnSubmitInputElements() {
 		driver.get(formPage);
 		driver.findElement(By.id("submitButton")).click();
 		assertThat(driver.getTitle(), equalTo("We Arrive Here"));
@@ -187,5 +187,4 @@ public class FormHandlingTest extends AbstractDriverTestCase {
 			// this is expected
 		}
 	}
-
 }

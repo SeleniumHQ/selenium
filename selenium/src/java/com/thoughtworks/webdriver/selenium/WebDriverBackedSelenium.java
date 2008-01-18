@@ -374,7 +374,7 @@ public class WebDriverBackedSelenium implements Selenium {
     }
 
     public void goBack() {
-        throw new UnsupportedOperationException();
+        driver.navigate().back();
     }
 
     public void highlight(String locator) {
@@ -462,7 +462,7 @@ public class WebDriverBackedSelenium implements Selenium {
     }
 
     public void mouseDown(String locator) {
-        throw new UnsupportedOperationException();
+        findElement(locator).click();
     }
 
     public void mouseDownAt(String locator, String coordString) {
@@ -486,7 +486,7 @@ public class WebDriverBackedSelenium implements Selenium {
     }
 
     public void mouseUp(String locator) {
-        throw new UnsupportedOperationException();
+      findElement(locator).click();
     }
 
     public void mouseUpAt(String locator, String coordString) {
@@ -725,5 +725,4 @@ public class WebDriverBackedSelenium implements Selenium {
         }
         return options;
     }
-
 }

@@ -19,6 +19,8 @@ FirefoxDriver.prototype.click = function(respond, position) {
     element.focus();
     Utils.fireMouseEventOn(this.context, element, "mousedown");
 
+    Utils.fireMouseEventOn(this.context, element, "mouseup");
+  
     // Now do the click
     if (element["click"]) {
         element.click();
@@ -26,8 +28,6 @@ FirefoxDriver.prototype.click = function(respond, position) {
         // Send the mouse event too. Not sure if this will cause the thing to be double clicked....
         Utils.fireMouseEventOn(this.context, element, "click");
     }
-
-    Utils.fireMouseEventOn(this.context, element, "mouseup");
     var browser = Utils.getBrowser(this.context);
 
     var checkForLoad = function() {

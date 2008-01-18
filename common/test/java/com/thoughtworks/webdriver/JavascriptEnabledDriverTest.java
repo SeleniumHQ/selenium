@@ -20,6 +20,7 @@ package com.thoughtworks.webdriver;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.Is.is;
+import org.hamcrest.Matchers;
 
 import java.awt.Dimension;
 import java.awt.Point;
@@ -290,4 +291,35 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
 
         assertThat(result.trim(), equalTo("focus keydown keypress keyup blur change"));
     }
+
+  @JavascriptEnabled
+  @Ignore("ie, safari")
+  public void testShouldBeAbleToClickOnNormalButtons() {
+    driver.get(javascriptPage);
+    WebElement element = driver.findElement(By.id("plainButton"));
+    element.click();
+
+    String result = driver.findElement(By.id("result")).getText().trim();
+    assertThat(result, is("mousedown mouseup click"));
+  }
+
+  @JavascriptEnabled
+  @Ignore("ie, safari")
+  public void testShouldBeAbleToSubmitFormsByCausingTheOnClickEventToFire() {
+    driver.get(javascriptPage);
+    WebElement element = driver.findElement(By.id("jsSubmitButton"));
+    element.click();
+
+    assertThat(driver.getTitle(), Matchers.is("We Arrive Here"));
+  }
+
+  @JavascriptEnabled
+  @Ignore("ie, safari")
+  public void testShouldBeAbleToClickOnSubmitButtons() {
+    driver.get(javascriptPage);
+    WebElement element = driver.findElement(By.id("submittingButton"));
+    element.click();
+
+    assertThat(driver.getTitle(), Matchers.is("We Arrive Here"));
+  }
 }

@@ -268,11 +268,9 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText, Fi
                         FrameWindow frameWindow = (FrameWindow) frame;
                         if (frameName.equals(frameWindow.getFrameElement().getId())) {
                             window = frameWindow;
-                            System.out.println("Found: " + name);
                             break;
                         } else if (frameName.equals(frameWindow.getName())) {
                             window = frameWindow;
-                            System.out.println("Found: " + name);
                             break;
                         }
                     }
