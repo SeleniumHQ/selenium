@@ -173,7 +173,7 @@ public class GoogleTest extends AbstractTest {
         TestReporter.report("GoogleTest.maps", true);
     }
 
-    @Test
+    @Test(groups = {"skip-SAFARI3"})
     public void finance() throws InterruptedException {
         try {
             selenium.open("http://finance.google.com");
