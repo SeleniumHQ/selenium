@@ -17,7 +17,7 @@ public class GoogleTest extends AbstractTest {
         TestReporter.report("GoogleTest.homepage", true);
     }
 
-    @Test(groups = {"skip-*safari"})
+    @Test(groups = {"skip-SAFARI3"})
     public void simpleSearch() {
         try {
             s.open("http://www.google.com");

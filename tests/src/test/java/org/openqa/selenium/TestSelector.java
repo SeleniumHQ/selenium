@@ -7,12 +7,17 @@ import java.util.List;
 
 public class TestSelector {
     public static boolean select(ITestNGMethod testNGMethod) {
-        String browserLauncher = System.getProperty("browserLauncher", "*firefox");
+        String browser = System.getProperty("browser", "FIREFOX2");
         boolean multiWindow = Boolean.parseBoolean(System.getProperty("multiWindow", "false"));
         boolean proxyInjection = Boolean.parseBoolean(System.getProperty("proxyInjection", "true"));
         List<String> methodGroups = Arrays.asList(testNGMethod.getGroups());
+        String os = TestReporter.getOs();
 
-        if (methodGroups.contains("skip-" + browserLauncher)) {
+        if (methodGroups.contains("skip-" + browser)) {
+            return false;
+        }
+
+        if (methodGroups.contains("skip-" + os)) {
             return false;
         }
 

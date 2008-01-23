@@ -4,13 +4,6 @@ import java.io.InputStream;
 import java.net.URL;
 
 public class TestReporter {
-    public static void main(String[] args) {
-        System.out.println(System.getProperty("os.name"));
-        System.out.println(System.getProperty("os.version"));
-
-
-    }
-
     public static String getOs() {
         String name = System.getProperty("os.name");
         String version = System.getProperty("os.version");
