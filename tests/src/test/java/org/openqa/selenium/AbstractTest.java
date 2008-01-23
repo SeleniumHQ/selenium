@@ -25,7 +25,11 @@ public class AbstractTest {
     @BeforeMethod
     public void beforeMethod() throws Exception {
         String browser = System.getProperty("browser", "FIREFOX2");
-        String browserLauncher = System.getProperty("browser." + browser, "*firefox");
+        String browserLauncher = System.getProperty("browsers." + browser);
+        if (browserLauncher == null && browser.equals("FIREFOX2")) {
+            // simple default which helps when running tests outside of maven
+            browserLauncher = "*firefox";
+        }
 
         s = new DefaultSelenium("localhost", 4444, browserLauncher, "http://localhost:4444");
         s.start();
