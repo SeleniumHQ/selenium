@@ -8,8 +8,8 @@ public class GoogleTest extends AbstractTest {
     public void homepage() {
         try {
             selenium.open("http://www.google.com");
-        } catch (Exception e) {
-            failAndRethrow("GoogleTest.homepage", e);
+        } catch (Throwable t) {
+            failAndRethrow("GoogleTest.homepage", t);
         }
 
         TestReporter.report("GoogleTest.homepage", true);
@@ -23,8 +23,8 @@ public class GoogleTest extends AbstractTest {
             selenium.click("btnG");
             selenium.waitForPageToLoad("30000");
             assertTrue(selenium.getBodyText().contains("premier source for quality open source QA projects"));
-        } catch (Exception e) {
-            failAndRethrow("GoogleTest.simple", e);
+        } catch (Throwable t) {
+            failAndRethrow("GoogleTest.simple", t);
         }
 
         TestReporter.report("GoogleTest.simple", true);
@@ -167,8 +167,8 @@ public class GoogleTest extends AbstractTest {
 
             Thread.sleep(2000);
             selenium.dragAndDrop("//img[contains(@src, 'v=w2t.66&x=37495&s=&y=50144')]", "-600,0");
-        } catch (Exception e) {
-            failAndRethrow("GoogleTest.maps", e);
+        } catch (Throwable t) {
+            failAndRethrow("GoogleTest.maps", t);
         }
         TestReporter.report("GoogleTest.maps", true);
     }
@@ -183,18 +183,18 @@ public class GoogleTest extends AbstractTest {
             selenium.click("//input[@value = 'Search Finance']");
             selenium.waitForPageToLoad("30000");
             assertTrue(selenium.isTextPresent("Cisco Systems, Inc"));
-        } catch (Exception e) {
-            failAndRethrow("GoogleTest.finance", e);
+        } catch (Throwable t) {
+            failAndRethrow("GoogleTest.finance", t);
         }
         TestReporter.report("GoogleTest.finance", true);
     }
 
-    private void failAndRethrow(String name, Exception e) {
+    private void failAndRethrow(String name, Throwable t) {
         TestReporter.report(name, false);
-        if (e instanceof RuntimeException) {
-            throw (RuntimeException) e;
+        if (t instanceof RuntimeException) {
+            throw (RuntimeException) t;
         } else {
-            throw new RuntimeException(e);
+            throw new RuntimeException(t);
         }
     }
 }
