@@ -10,7 +10,7 @@ import org.testng.annotations.AfterTest;
 
 public class AbstractTest {
     private SeleniumServer ss;
-    protected Selenium s;
+    protected Selenium selenium;
 
     @BeforeTest
     public void beforeTest() throws Exception {
@@ -31,8 +31,8 @@ public class AbstractTest {
             browserLauncher = "*firefox";
         }
 
-        s = new DefaultSelenium("localhost", 4444, browserLauncher, "http://localhost:4444");
-        s.start();
+        selenium = new DefaultSelenium("localhost", 4444, browserLauncher, "http://localhost:4444");
+        selenium.start();
     }
 
     @AfterTest
@@ -42,6 +42,6 @@ public class AbstractTest {
 
     @AfterMethod
     public void afterMethod() {
-        s.stop();
+        selenium.stop();
     }
 }
