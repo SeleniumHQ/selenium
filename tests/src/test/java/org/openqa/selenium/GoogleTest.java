@@ -5,8 +5,20 @@ import org.testng.Assert;
 import com.thoughtworks.selenium.DefaultSelenium;
 
 public class GoogleTest extends AbstractTest {
+    @Test
+    public void homepage() {
+        try {
+            s.open("http://www.google.com");
+        } catch (Exception e) {
+            TestReporter.report("GoogleTest.homepage", false);
+            throw new RuntimeException(e);
+        }
+
+        TestReporter.report("GoogleTest.homepage", true);
+    }
+
     @Test(groups = {"skip-*safari"})
-    public void simple() {
+    public void simpleSearch() {
         try {
             s.open("http://www.google.com");
             s.type("q", "OpenQA");

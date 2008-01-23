@@ -24,7 +24,8 @@ public class AbstractTest {
 
     @BeforeMethod
     public void beforeMethod() throws Exception {
-        String browserLauncher = System.getProperty("browserLauncher", "*firefox");
+        String browser = System.getProperty("browser", "FIREFOX2");
+        String browserLauncher = System.getProperty("browser." + browser, "*firefox");
 
         s = new DefaultSelenium("localhost", 4444, browserLauncher, "http://localhost:4444");
         s.start();

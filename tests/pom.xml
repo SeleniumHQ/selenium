@@ -11,9 +11,15 @@
     <packaging>jar</packaging>
     <name>Selenium Tests</name>
     <properties>
-        <browserLauncher>*firefox</browserLauncher>
+        <browser>FIREFOX2</browser>
         <multiWindow>false</multiWindow>
         <proxyInjection>true</proxyInjection>
+        <browsers.FIREFOX2>*firefox</browsers.FIREFOX2>
+        <browsers.FIREFOX3>*firefox</browsers.FIREFOX3>
+        <browsers.SAFARI2>*safari</browsers.SAFARI2>
+        <browsers.SAFARI3>*safari</browsers.SAFARI3>
+        <browsers.IE6>*iexplore</browsers.IE6>
+        <browsers.IE7>*iexplore</browsers.IE7>
     </properties>
     <repositories>
         <repository>
@@ -63,8 +69,8 @@
                     </suiteXmlFiles>
                     <systemProperties>
                         <property>
-                            <name>browserLauncher</name>
-                            <value>${browserLauncher}</value>
+                            <name>browser</name>
+                            <value>${browser}</value>
                         </property>
                         <property>
                             <name>multiWindow</name>
@@ -73,6 +79,30 @@
                         <property>
                             <name>proxyInjection</name>
                             <value>${proxyInjection}</value>
+                        </property>
+                        <property>
+                            <name>browsers.FIREFOX2</name>
+                            <value>${browsers.FIREFOX2}</value>
+                        </property>
+                        <property>
+                            <name>browsers.FIREFOX3</name>
+                            <value>${browsers.FIREFOX3}</value>
+                        </property>
+                        <property>
+                            <name>browsers.SAFARI2</name>
+                            <value>${browsers.SAFARI2}</value>
+                        </property>
+                        <property>
+                            <name>browsers.SAFARI3</name>
+                            <value>${browsers.SAFARI3}</value>
+                        </property>
+                        <property>
+                            <name>browsers.IE6</name>
+                            <value>${browsers.IE6}</value>
+                        </property>
+                        <property>
+                            <name>browsers.IE7</name>
+                            <value>${browsers.IE7}</value>
                         </property>
                     </systemProperties>
                 </configuration>

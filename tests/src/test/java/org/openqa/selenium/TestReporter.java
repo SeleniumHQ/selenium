@@ -4,9 +4,41 @@ import java.io.InputStream;
 import java.net.URL;
 
 public class TestReporter {
+    public static void main(String[] args) {
+        System.out.println(System.getProperty("os.name"));
+        System.out.println(System.getProperty("os.version"));
+
+
+    }
+
+    public static String getOs() {
+        String name = System.getProperty("os.name");
+        String version = System.getProperty("os.version");
+
+        if (name.equals("Windows XP")) {
+            return "XP";
+        }
+
+        if (name.equals("Windows Vista")) {
+            return "VISTA";
+        }
+
+        if (name.equals("Mac OS X")) {
+            if (version.startsWith("10.5")) {
+                return "LEOPARD";
+            }
+
+            if (version.startsWith("10.4")) {
+                return "TIGER";
+            }
+        }
+
+        return "UNKNOWN";
+    }
+
     public static void report(String name, boolean pass) {
-        String os = "LEOPARD";
-        String browser = "FIREFOX2";
+        String os = getOs();
+        String browser = System.getProperty("browser", "FIREFOX2");
 
         name = name.replaceAll(" ", "+");
 
