@@ -189,6 +189,61 @@ public class GoogleTest extends AbstractTest {
         TestReporter.report("GoogleTest.finance", true);
     }
 
+    @Test
+    public void suggest() throws InterruptedException {
+        try {
+            selenium.open("http://www.google.com/webhp?complete=1&hl=en");
+            selenium.typeKeys("q", "g");
+            Thread.sleep(1000);
+            selenium.typeKeys("q", "o");
+            Thread.sleep(1000);
+            selenium.typeKeys("q", "m");
+            Thread.sleep(1000);
+            selenium.typeKeys("q", "e");
+            Thread.sleep(1000);
+            selenium.fireEvent("q", "blur");
+            selenium.type("q", "");
+            selenium.typeKeys("q", "o");
+            Thread.sleep(1000);
+            selenium.typeKeys("q", "p");
+            Thread.sleep(1000);
+            selenium.typeKeys("q", "e");
+            Thread.sleep(1000);
+            selenium.typeKeys("q", "n");
+            Thread.sleep(1000);
+            selenium.typeKeys("q", "q");
+            Thread.sleep(1000);
+            selenium.typeKeys("q", "a");
+            Thread.sleep(1000);
+            selenium.keyPress("q", "\\40");
+            Thread.sleep(500);
+            selenium.keyPress("q", "\\40");
+            Thread.sleep(500);
+            selenium.keyPress("q", "\\40");
+            Thread.sleep(500);
+            selenium.keyPress("q", "\\40");
+            Thread.sleep(500);
+            selenium.keyPress("q", "\\40");
+            Thread.sleep(500);
+            selenium.keyPress("q", "\\40");
+            Thread.sleep(500);
+            selenium.keyPress("q", "\\40");
+            Thread.sleep(500);
+            selenium.keyPress("q", "\\40");
+            Thread.sleep(500);
+            selenium.keyPress("q", "\\40");
+            Thread.sleep(500);
+            selenium.keyPress("q", "\\40");
+            selenium.click("btnG");
+            selenium.waitForPageToLoad("30000");
+            assertTrue(selenium.isTextPresent("Open source test automation tool for executing"));
+        } catch (Throwable t) {
+            failAndRethrow("GoogleTest.suggest", t);
+        }
+
+        TestReporter.report("GoogleTest.suggest", true);
+    }
+
     private void failAndRethrow(String name, Throwable t) {
         TestReporter.report(name, false);
         if (t instanceof RuntimeException) {
