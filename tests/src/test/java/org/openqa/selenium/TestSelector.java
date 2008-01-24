@@ -29,6 +29,10 @@ public class TestSelector {
             return false;
         }
 
+        if (!proxyInjection && !multiWindow && methodGroups.contains("skip-normal")) {
+            return false;
+        }
+
         return true;
     }
 }

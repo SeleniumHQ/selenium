@@ -243,13 +243,4 @@ public class GoogleTest extends AbstractTest {
 
         TestReporter.report("GoogleTest.suggest", true);
     }
-
-    private void failAndRethrow(String name, Throwable t) {
-        TestReporter.report(name, false);
-        if (t instanceof RuntimeException) {
-            throw (RuntimeException) t;
-        } else {
-            throw new RuntimeException(t);
-        }
-    }
 }

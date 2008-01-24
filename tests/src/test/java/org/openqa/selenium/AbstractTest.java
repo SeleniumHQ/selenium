@@ -44,4 +44,13 @@ public class AbstractTest {
     public void afterMethod() {
         selenium.stop();
     }
+
+    protected void failAndRethrow(String name, Throwable t) {
+        TestReporter.report(name, false);
+        if (t instanceof RuntimeException) {
+            throw (RuntimeException) t;
+        } else {
+            throw new RuntimeException(t);
+        }
+    }
 }
