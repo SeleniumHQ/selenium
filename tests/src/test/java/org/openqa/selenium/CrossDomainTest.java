@@ -5,6 +5,10 @@ import org.testng.annotations.Test;
 public class CrossDomainTest extends AbstractTest {
     @Test(groups = {"skip-multiWindow", "skip-normal"})
     public void crossDomain() {
+        if (isBrowser("SAFARI3")) {
+            skip("CrossDomainTest.crossDomain");
+        }
+
         try {
             selenium.open("http://www.yahoo.com");
             selenium.open("http://www.google.com");

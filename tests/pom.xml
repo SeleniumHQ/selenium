@@ -15,11 +15,14 @@
         <multiWindow>false</multiWindow>
         <proxyInjection>true</proxyInjection>
         <browsers.FIREFOX2>*firefox</browsers.FIREFOX2>
+        <browsers.FIREFOX2CHROME>*firefox</browsers.FIREFOX2CHROME>
         <browsers.FIREFOX3>*firefox</browsers.FIREFOX3>
+        <browsers.FIREFOX3CHROME>*firefox</browsers.FIREFOX3CHROME>
         <browsers.SAFARI2>*safari</browsers.SAFARI2>
         <browsers.SAFARI3>*safari</browsers.SAFARI3>
         <browsers.IE6>*iexplore</browsers.IE6>
         <browsers.IE7>*iexplore</browsers.IE7>
+        <browsers.OPERA92>*opera</browsers.OPERA92>
     </properties>
     <repositories>
         <repository>
@@ -85,8 +88,16 @@
                             <value>${browsers.FIREFOX2}</value>
                         </property>
                         <property>
+                            <name>browsers.FIREFOX2CHROME</name>
+                            <value>${browsers.FIREFOX2CHROME}</value>
+                        </property>
+                        <property>
                             <name>browsers.FIREFOX3</name>
                             <value>${browsers.FIREFOX3}</value>
+                        </property>
+                        <property>
+                            <name>browsers.FIREFOX3CHROME</name>
+                            <value>${browsers.FIREFOX3CHROME}</value>
                         </property>
                         <property>
                             <name>browsers.SAFARI2</name>
@@ -103,6 +114,10 @@
                         <property>
                             <name>browsers.IE7</name>
                             <value>${browsers.IE7}</value>
+                        </property>
+                        <property>
+                            <name>browsers.OPERA92</name>
+                            <value>${browsers.OPERA92}</value>
                         </property>
                     </systemProperties>
                 </configuration>
