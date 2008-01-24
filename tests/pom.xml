@@ -15,9 +15,9 @@
         <multiWindow>false</multiWindow>
         <proxyInjection>true</proxyInjection>
         <browsers.FIREFOX2>*firefox</browsers.FIREFOX2>
-        <browsers.FIREFOX2CHROME>*firefox</browsers.FIREFOX2CHROME>
+        <browsers.FIREFOX2CHROME>*chrome</browsers.FIREFOX2CHROME>
         <browsers.FIREFOX3>*firefox</browsers.FIREFOX3>
-        <browsers.FIREFOX3CHROME>*firefox</browsers.FIREFOX3CHROME>
+        <browsers.FIREFOX3CHROME>*chrome</browsers.FIREFOX3CHROME>
         <browsers.SAFARI2>*safari</browsers.SAFARI2>
         <browsers.SAFARI3>*safari</browsers.SAFARI3>
         <browsers.IE6>*iexplore</browsers.IE6>

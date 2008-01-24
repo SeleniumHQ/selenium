@@ -3,7 +3,7 @@ package org.openqa.selenium;
 import org.testng.annotations.Test;
 
 public class CrossDomainTest extends AbstractTest {
-    @Test(groups = {"skip-multiWindow", "skip-normal"})
+    @Test
     public void crossDomain() {
         if (isBrowser("SAFARI3")) {
             skip("CrossDomainTest.crossDomain");

@@ -38,6 +38,9 @@ public class GoogleTest extends AbstractTest {
     public void testMaps() throws InterruptedException {
         try {
             selenium.open("http://maps.google.com");
+            selenium.getEval("window.moveTo(0, 0)");
+            selenium.getEval("window.resizeTo(800, 600)");
+
             selenium.type("q_d", "1600 pennsylvania, washington dc");
             selenium.click("q_sub");
             for (int second = 0;; second++) {
@@ -198,6 +201,7 @@ public class GoogleTest extends AbstractTest {
         pass("GoogleTest.finance");
     }
 
+    @Test
     public void suggest() throws InterruptedException {
         if (isBrowser("SAFARI3")) {
             skip("GoogleTest.suggest");

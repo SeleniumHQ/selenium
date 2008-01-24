@@ -1,16 +1,11 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 <suite name="selenium-tests" verbose="1">
     <test name="selenium-tests">
-        <method-selectors>
-            <method-selector>
-                <script language="beanshell"><![CDATA[
-                  return org.openqa.selenium.TestSelector.select(testngMethod);
-                ]]></script>
-            </method-selector>
-        </method-selectors>
-        <groups>
-            <define name="base"/>
-        </groups>
+        <!--<groups>-->
+            <!--<run>-->
+                <!--<include name="single"/>-->
+            <!--</run>-->
+        <!--</groups>-->
         <packages>
             <package name="org.openqa.selenium"/>
         </packages>

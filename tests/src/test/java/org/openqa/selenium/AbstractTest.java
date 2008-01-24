@@ -11,20 +11,28 @@ import org.testng.Assert;
 import org.testng.SkipException;
 
 public class AbstractTest {
-    private SeleniumServer ss;
+    protected SeleniumServer ss;
     protected Selenium selenium;
 
-    @BeforeTest
+    @BeforeTest(groups = {"single"})
     public void beforeTest() throws Exception {
-        boolean multiWindow = Boolean.parseBoolean(System.getProperty("multiWindow", "false"));
-        boolean proxyInjection = Boolean.parseBoolean(System.getProperty("proxyInjection", "true"));
+        boolean multiWindow = isMultiWindow();
+        boolean proxyInjection = isProxyInjection();
 
         SeleniumServer.setProxyInjectionMode(proxyInjection);
         ss = new SeleniumServer(4444, false, multiWindow);
         ss.start();
     }
 
-    @BeforeMethod
+    public static boolean isProxyInjection() {
+        return Boolean.parseBoolean(System.getProperty("proxyInjection", "true"));
+    }
+
+    public static boolean isMultiWindow() {
+        return Boolean.parseBoolean(System.getProperty("multiWindow", "false"));
+    }
+
+    @BeforeMethod(groups = {"single"})
     public void beforeMethod() throws Exception {
         String browser = System.getProperty("browser", "FIREFOX2");
         String browserLauncher = System.getProperty("browsers." + browser);
@@ -37,12 +45,12 @@ public class AbstractTest {
         selenium.start();
     }
 
-    @AfterTest
+    @AfterTest(groups = {"single"})
     public void afterTest() {
         ss.stop();
     }
 
-    @AfterMethod
+    @AfterMethod(groups = {"single"})
     public void afterMethod() {
         selenium.stop();
     }
