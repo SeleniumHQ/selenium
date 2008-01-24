@@ -8,7 +8,7 @@ public class HttpsTest extends AbstractTest {
         try {
             selenium.open("https://www.fidelity.com");
         } catch (Throwable t) {
-            failAndRethrow("HttpsTest.fidelity", t);
+            fail("HttpsTest.fidelity", t);
         }
 
         TestReporter.report("HttpsTest.fidelity", true);

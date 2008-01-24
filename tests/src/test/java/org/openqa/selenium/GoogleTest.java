@@ -9,14 +9,18 @@ public class GoogleTest extends AbstractTest {
         try {
             selenium.open("http://www.google.com");
         } catch (Throwable t) {
-            failAndRethrow("GoogleTest.homepage", t);
+            fail("GoogleTest.homepage", t);
         }
 
-        TestReporter.report("GoogleTest.homepage", true);
+        pass("GoogleTest.homepage");
     }
 
-    @Test(groups = {"skip-SAFARI3" /* times out! */})
+    @Test
     public void simpleSearch() {
+        if (isBrowser("SAFARI3")) {
+            skip("GoogleTest.simple");
+        }
+
         try {
             selenium.open("http://www.google.com");
             selenium.type("q", "OpenQA");
@@ -24,10 +28,10 @@ public class GoogleTest extends AbstractTest {
             selenium.waitForPageToLoad("30000");
             assertTrue(selenium.getBodyText().contains("premier source for quality open source QA projects"));
         } catch (Throwable t) {
-            failAndRethrow("GoogleTest.simple", t);
+            fail("GoogleTest.simple", t);
         }
 
-        TestReporter.report("GoogleTest.simple", true);
+        pass("GoogleTest.simple");
     }
 
     @Test
@@ -168,13 +172,17 @@ public class GoogleTest extends AbstractTest {
             Thread.sleep(2000);
             selenium.dragAndDrop("//img[contains(@src, 'v=w2t.66&x=37495&s=&y=50144')]", "-600,0");
         } catch (Throwable t) {
-            failAndRethrow("GoogleTest.maps", t);
+            fail("GoogleTest.maps", t);
         }
         TestReporter.report("GoogleTest.maps", true);
     }
 
-    @Test(groups = {"skip-SAFARI3"})
+    @Test
     public void finance() throws InterruptedException {
+        if (isBrowser("SAFARI3")) {
+            skip("GoogleTest.finance");
+        }
+
         try {
             selenium.open("http://finance.google.com");
             selenium.typeKeys("searchbox", "Cis");
@@ -184,13 +192,17 @@ public class GoogleTest extends AbstractTest {
             selenium.waitForPageToLoad("30000");
             assertTrue(selenium.isTextPresent("Cisco Systems, Inc"));
         } catch (Throwable t) {
-            failAndRethrow("GoogleTest.finance", t);
+            fail("GoogleTest.finance", t);
         }
-        TestReporter.report("GoogleTest.finance", true);
+
+        pass("GoogleTest.finance");
     }
 
-    @Test(groups = {"skip-SAFARI3" /* times out! */})
     public void suggest() throws InterruptedException {
+        if (isBrowser("SAFARI3")) {
+            skip("GoogleTest.suggest");
+        }
+
         try {
             selenium.open("http://www.google.com/webhp?complete=1&hl=en");
             selenium.typeKeys("q", "g");
@@ -238,9 +250,9 @@ public class GoogleTest extends AbstractTest {
             selenium.waitForPageToLoad("30000");
             assertTrue(selenium.isTextPresent("Open source test automation tool for executing"));
         } catch (Throwable t) {
-            failAndRethrow("GoogleTest.suggest", t);
+            fail("GoogleTest.suggest", t);
         }
 
-        TestReporter.report("GoogleTest.suggest", true);
+        pass("GoogleTest.suggest");
     }
 }

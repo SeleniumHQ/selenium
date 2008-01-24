@@ -29,7 +29,23 @@ public class TestReporter {
         return "UNKNOWN";
     }
 
+    public static void pass(String name) {
+        report(name, "pass");
+    }
+
+    public static void fail(String name) {
+        report(name, "fail");
+    }
+
+    public static void skip(String name) {
+        report(name, "slip");
+    }
+
     public static void report(String name, boolean pass) {
+        report(name, pass ? "pass" : "fail");
+    }
+
+    public static void report(String name, String result) {
         String os = getOs();
         String browser = System.getProperty("browser", "FIREFOX2");
 
@@ -41,7 +57,7 @@ public class TestReporter {
             sb.append("os=").append(os);
             sb.append("&browser=").append(browser);
             sb.append("&name=").append(name);
-            sb.append("&pass=").append(pass);
+            sb.append("&result=").append(result);
 
             URL url = new URL(sb.toString());
             InputStream is = url.openStream();

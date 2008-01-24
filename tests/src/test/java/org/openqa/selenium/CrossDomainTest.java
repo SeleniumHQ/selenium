@@ -10,7 +10,7 @@ public class CrossDomainTest extends AbstractTest {
             selenium.open("http://www.google.com");
             selenium.open("http://www.msn.com");
         } catch (Throwable t) {
-            failAndRethrow("CrossDomainTest.crossDomain", t);
+            fail("CrossDomainTest.crossDomain", t);
         }
 
         TestReporter.report("CrossDomainTest.crossDomain", true);

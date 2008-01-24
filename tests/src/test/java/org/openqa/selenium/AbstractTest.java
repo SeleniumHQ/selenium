@@ -7,6 +7,8 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.AfterTest;
+import org.testng.Assert;
+import org.testng.SkipException;
 
 public class AbstractTest {
     private SeleniumServer ss;
@@ -45,12 +47,29 @@ public class AbstractTest {
         selenium.stop();
     }
 
-    protected void failAndRethrow(String name, Throwable t) {
+    protected void pass(String name) {
+        TestReporter.pass(name);
+    }
+
+    protected void skip(String name) {
+        TestReporter.skip(name);
+        throw new SkipException("Skipping " + name);
+    }
+
+    protected void fail(String name) {
+        Assert.fail(name);
+    }
+
+    protected void fail(String name, Throwable t) {
         TestReporter.report(name, false);
         if (t instanceof RuntimeException) {
             throw (RuntimeException) t;
         } else {
             throw new RuntimeException(t);
         }
+    }
+
+    protected boolean isBrowser(String browser) {
+        return System.getProperty("browser", "FIREFOX2").equals(browser);
     }
 }
