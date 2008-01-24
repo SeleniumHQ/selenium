@@ -7,7 +7,6 @@ public class CrossDomainTest extends AbstractTest {
     public void crossDomain() {
         try {
             selenium.open("http://www.yahoo.com");
-            selenium.open("http://mail.yahoo.com");
             selenium.open("http://www.google.com");
             selenium.open("http://www.msn.com");
         } catch (Throwable t) {

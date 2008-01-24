@@ -15,7 +15,7 @@ public class GoogleTest extends AbstractTest {
         TestReporter.report("GoogleTest.homepage", true);
     }
 
-    @Test(groups = {"skip-SAFARI3"})
+    @Test(groups = {"skip-SAFARI3" /* times out! */})
     public void simpleSearch() {
         try {
             selenium.open("http://www.google.com");
@@ -189,7 +189,7 @@ public class GoogleTest extends AbstractTest {
         TestReporter.report("GoogleTest.finance", true);
     }
 
-    @Test
+    @Test(groups = {"skip-SAFARI3" /* times out! */})
     public void suggest() throws InterruptedException {
         try {
             selenium.open("http://www.google.com/webhp?complete=1&hl=en");
