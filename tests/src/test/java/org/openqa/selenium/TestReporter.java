@@ -38,7 +38,7 @@ public class TestReporter {
     }
 
     public static void skip(String name) {
-        report(name, "slip");
+        report(name, "skip");
     }
 
     public static void report(String name, boolean pass) {
