@@ -971,15 +971,20 @@ UIReference.prototype.doShow = function() {
     // arguments
     for (i = 0; i < uiElement.args.length; ++i) {
         var arg = uiElement.args[i];
-        var defaultValues = arg.getDefaultValues();
-        var defaultValuesDisplay = defaultValues.slice(0, 5).join(', ')
-            .escapeHTML2();
-        var defaultValuesHide = defaultValues.slice(5).join(', ');
-        if (defaultValues.length > 5) {
-            defaultValuesDisplay += ', <a onclick="this.innerHTML=\''
-                + defaultValuesHide.escapeHTML2() + '\'">...</a>';
+        try {
+            var defaultValues = arg.getDefaultValues();
+            var defaultValuesDisplay = defaultValues.slice(0, 5).join(', ')
+                .escapeHTML2();
+            var defaultValuesHide = defaultValues.slice(5).join(', ');
+            if (defaultValues.length > 5) {
+                defaultValuesDisplay += ', <a onclick="this.innerHTML=\''
+                    + defaultValuesHide.escapeHTML2() + '\'">...</a>';
+            }
+            defaultValuesDisplay = '[ ' + defaultValuesDisplay + ' ]';
         }
-        defaultValuesDisplay = '[ ' + defaultValuesDisplay + ' ]';
+        catch (e) {
+            var defaultValuesDisplay = 'default values dynamically constructed';
+        }
         html += '<dt class="target-arg-name">'
             + arg.name.escapeHTML2() + '</dt><dd class="target-arg-description">'
             + '<div>' + arg.description.escapeHTML2().formatAsHTML() + '</div>'

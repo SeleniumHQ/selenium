@@ -607,18 +607,39 @@ myMap.addElement('searchResultsPages', {
         {
             name: 'direction'
             , description: 'next or previous results page'
-            , defaultValues: ['next', 'prev']
-        },
-        {
+            // demonstrate a method which acquires default values from the
+            // document object. Such default values may contain EITHER commas
+            // OR equals signs, but NOT BOTH.
+            , getDefaultValues: function(inDocument) {
+                var defaultValues = [];
+                var divs = inDocument.getElementsByTagName('div');
+                for (var i = 0; i < divs.length; ++i) {
+                    if (divs[i].className == 'pages') {
+                        break;
+                    }
+                }
+                var links = divs[i].getElementsByTagName('a');
+                for (i = 0; i < links.length; ++i) {
+                    defaultValues.push(links[i].innerHTML
+                        .replace(/^«\s*/, "")
+                        .replace(/\s*»$/, "")
+                        .replace(/\s*\d+$/, ""));
+                }
+                return defaultValues;
+            }
+        }
+        , {
             name: 'position'
             , description: 'position of the link'
             , defaultValues: ['top', 'bottom']
         }
     ]
     , getLocator: function(args) {
-        return "//div[@id='content']/div[@class='pages'][" +
-            (args.position == 'top' ? '1' : '2') + ']' +
-            "/a[contains(text(), " + args.direction.quoteForXPath() + ")]";
+        return "//div[@id='content']/div[@class='pages']["
+            + (args.position == 'top' ? '1' : '2') + ']'
+            + "/a[contains(text(), "
+            + (args.direction ? args.direction.quoteForXPath() : undefined)
+            + ")]";
     }
 });
     

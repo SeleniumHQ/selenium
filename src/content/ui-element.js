@@ -1713,15 +1713,19 @@ function UIElement(uiElementShorthand)
      * has no default values defined, it will not be included among the
      * permutations.
      *
-     * @param args  a list of UIArguments
+     * @param args            a list of UIArguments
+     * @param opt_inDocument  (optional)
      * @return      a list of associative arrays containing key value pairs
      */
-    this.permuteArgs = function(args) {
+    this.permuteArgs = function(args, opt_inDocument) {
         var permutations = [];
         for (var i = 0; i < args.length; ++i) {
             var arg = args[i];
+            var defaultValues = (arguments.length > 1)
+                ? arg.getDefaultValues(opt_inDocument)
+                : arg.getDefaultValues();
+            
             // skip arguments for which no default values are defined
-            var defaultValues = arg.getDefaultValues();
             if (defaultValues.length == 0) {
                 continue;
             }
@@ -1817,18 +1821,25 @@ function UIElement(uiElementShorthand)
     
     /**
      * Creates a set of locators using permutations of default values for
-     * arguments used in the locator construction.
+     * arguments used in the locator construction. The set is returned as an
+     * object mapping locators to key-value arguments objects containing the
+     * values passed to getLocator() to create the locator.
+     *
+     * @param opt_inDocument (optional) the document object of the "current"
+     *                       page when this method is invoked. Some arguments
+     *                       may have default value lists that are calculated
+     *                       based on the contents of the page.
      *
      * @return  a list of locator strings
      * @throws  UIElementException
      */
-    this.getDefaultLocators = function() {
+    this.getDefaultLocators = function(opt_inDocument) {
         var defaultLocators = {};
         if (this.args.length == 0) {
             defaultLocators[this.getLocator({})] = {};
         }
         else {
-            var permutations = this.permuteArgs(this.args);
+            var permutations = this.permuteArgs(this.args, opt_inDocument);
             if (permutations.length != 0) {
                 for (var i = 0; i < permutations.length; ++i) {
                     var args = permutations[i];
@@ -1955,13 +1966,27 @@ function UIElement(uiElementShorthand)
         this.argsOrder = [];
         if (uiElementShorthand.args) {
             for (var i = 0; i < uiElementShorthand.args.length; ++i) {
-                var arg = uiElementShorthand.args[i];
-                this.args.push(new UIArgument(arg, localVars));
+                var arg = new UIArgument(uiElementShorthand.args[i], localVars);
+                this.args.push(arg);
                 this.argsOrder.push(arg.name);
+
+                // if an exception is thrown when invoking getDefaultValues()
+                // with no parameters passed in, assume the method requires an
+                // inDocument parameter, and thus may only be invoked at run
+                // time. Mark the UI element object accordingly.
+                try {
+                    arg.getDefaultValues();
+                }
+                catch (e) {
+                    this.isDefaultLocatorConstructionDeferred = true;
+                }
             }
+            
         }
         
-        this.defaultLocators = this.getDefaultLocators();
+        if (!this.isDefaultLocatorConstructionDeferred) {
+            this.defaultLocators = this.getDefaultLocators();
+        }
     }
     
     
@@ -2557,8 +2582,16 @@ function UIMap()
                     }
                 }
                 
+                var defaultLocators;
+                if (uiElement.isDefaultLocatorConstructionDeferred) {
+                    defaultLocators = uiElement.getDefaultLocators(inDocument);
+                }
+                else {
+                    defaultLocators = uiElement.defaultLocators;
+                }
+                
                 //smart_alert(print_r(uiElement.defaultLocators));
-                for (var locator in uiElement.defaultLocators) {
+                for (var locator in defaultLocators) {
                     var locatedElements = eval_locator(locator, inDocument);
                     if (locatedElements.length) {
                         var locatedElement = locatedElements[0];
@@ -2572,17 +2605,15 @@ function UIMap()
                     if (is_fuzzy_match) {
                         if (is_fuzzy_match(locatedElement, pageElement)) {
                             return this.prefix + '=' +
-                                new UISpecifier(pageset.name,
-                                    uiElement.name, 
-                                    uiElement.defaultLocators[locator]);
+                                new UISpecifier(pageset.name, uiElement.name,
+                                    defaultLocators[locator]);
                         }
                     }
                     else {
                         if (locatedElement == pageElement) {
                             return this.prefix + '=' +
-                                new UISpecifier(pageset.name,
-                                    uiElement.name, 
-                                    uiElement.defaultLocators[locator]);
+                                new UISpecifier(pageset.name, uiElement.name,
+                                    defaultLocators[locator]);
                         }
                     }
                     // ok, matching the element failed. See if an offset
@@ -2594,8 +2625,8 @@ function UIMap()
                             if (offsetLocator) {
                                 return this.prefix + '=' +
                                     new UISpecifier(pageset.name,
-                                        uiElement.name, 
-                                        uiElement.defaultLocators[locator])
+                                        uiElement.name,
+                                        defaultLocators[locator])
                                     + offsetLocator;
                             }
                         }
