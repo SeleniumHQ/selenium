@@ -246,6 +246,13 @@ function test_to_kwargs()
     var argsOrder = [ 'tamarind', 'booster', 'aleph', 'z' ];
     var re = /tamarind.+booster.+aleph.+z/;
     assertTrue(re.test(to_kwargs(kwargs1, argsOrder)));
+    
+    // test the case where an argument in the sort list is missing
+    delete(kwargs1['booster']);
+    re = /tamarind.+aleph.+z/;
+    var result = to_kwargs(kwargs1, argsOrder);
+    assertTrue(re.test(result));
+    assertTrue(result.indexOf('booster') == -1);
 }
 
 

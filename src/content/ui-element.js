@@ -1552,10 +1552,12 @@ function to_kwargs(args, sortedKeys)
     }
     for (var i = 0; i < sortedKeys.length; ++i) {
         var k = sortedKeys[i];
-        if (s) {
-            s += ', ';
+        if (args[k] != undefined) {
+            if (s) {
+                s += ', ';
+            }
+            s += k + '=' + args[k];
         }
-        s += k + '=' + args[k];
     }
     return s;
 }
@@ -2138,15 +2140,14 @@ function UISpecifier(uiSpecifierStringOrPagesetName, elementName, args)
                 + this.args + '" are not valid UI specifier args');
         }
         
-        var kwargs;
-        try {
-            uiElement = GLOBAL.uiMap
-                .getUIElement(this.pagesetName, this.elementName);
-            kwargs = to_kwargs(this.args, uiElement.argsOrder);
+        uiElement = GLOBAL.uiMap
+            .getUIElement(this.pagesetName, this.elementName);
+        if (uiElement != null) {
+            var kwargs = to_kwargs(this.args, uiElement.argsOrder);
         }
-        catch (e) {
+        else {
             // probably under unit test
-            kwargs = to_kwargs(this.args);
+            var kwargs = to_kwargs(this.args);
         }
         return this.pagesetName + '::' + this.elementName + '(' + kwargs + ')';
     };
@@ -2423,7 +2424,12 @@ function UIMap()
                 return null;
             }
         }
-        return this.pagesets[pagesetName].uiElements[uiElementName] || null;
+        try {
+            return this.pagesets[pagesetName].uiElements[uiElementName];
+        }
+        catch (e) {
+            return null;
+        }
     };
     
     
