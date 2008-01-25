@@ -203,7 +203,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
 		assertThat(value, is("Some text"));
 	}
 	
-	@Ignore(value="ie", reason="Not implemented going to the end of the line first")
+	@Ignore(value="ie, safari", reason="Not implemented going to the end of the line first")
 	public void testSendingKeyboardEventsShouldAppendTextinTextAreas() {
 		driver.get(formPage);
 		WebElement element = driver.findElement(By.id("withText"));

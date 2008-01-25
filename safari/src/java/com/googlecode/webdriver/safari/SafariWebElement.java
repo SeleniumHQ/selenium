@@ -51,7 +51,10 @@ public class SafariWebElement implements WebElement {
     }
 
     public void clear() {
-    	// no-op
+    	appleScript.executeJavascript(
+                "if (" + locator + "['value']) { " + locator + ".value = ''; }\r" +
+                "else { " + locator + ".setAttribute('value', ''); }"
+        );
     }
     
     public String getAttribute(String name) {
