@@ -52,6 +52,7 @@
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
+				CallingConvention="2"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -267,6 +268,10 @@
 				RelativePath=".\utils.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\webdriver.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -339,6 +344,10 @@
 			</File>
 			<File
 				RelativePath=".\utils.h"
+				>
+			</File>
+			<File
+				RelativePath=".\webdriver.h"
 				>
 			</File>
 		</Filter>
