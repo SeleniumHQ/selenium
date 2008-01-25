@@ -92,18 +92,33 @@ FirefoxDriver.prototype.getElementValue = function(respond, value) {
     respond(this.context, "getElementValue", "No match\n");
 };
 
-FirefoxDriver.prototype.setElementValue = function(respond, value) {
+FirefoxDriver.prototype.sendKeys = function(respond, value) {
     var spaceIndex = value.indexOf(" ");
     var element = Utils.getElementAt(value.substring(0, spaceIndex), this.context);
     spaceIndex = value.indexOf(" ", spaceIndex);
     var newValue = value.substring(spaceIndex + 1);
 
+
     element.focus();
     Utils.type(this.context, element, newValue);
     element.blur();
 
-    respond(this.context, "setElementValue");
+    respond(this.context, "sendKeys");
 };
+
+FirefoxDriver.prototype.clear = function(respond, elementId) {
+   var element = Utils.getElementAt(elementId, this.context);
+   
+   var isTextField = element["value"] !== undefined;
+
+   if (isTextField) {
+     element.value = "";
+   } else {
+     element.setAttribute("value", "");
+   }
+   
+   respond(this.context, "clear");
+}
 
 FirefoxDriver.prototype.getElementAttribute = function(respond, value) {
     var spaceIndex = value.indexOf(" ");

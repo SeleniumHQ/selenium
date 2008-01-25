@@ -17,9 +17,10 @@ public:
 
 	const wchar_t* getAttribute(const wchar_t* name);
 	const wchar_t* getValue();
-	InternetExplorerDriver* setValue(wchar_t* newValue);
+	void sendKeys(wchar_t* newValue);
+	void clear();
 	bool isSelected();
-	InternetExplorerDriver* setSelected();
+	void setSelected();
 	bool isEnabled();
 	bool isDisplayed();
 	bool toggle();
@@ -30,15 +31,14 @@ public:
 	long getWidth();
 	long getHeight();
 
-	InternetExplorerDriver* click();
-	InternetExplorerDriver* submit();
+	void click();
+	void submit();
 
 	std::vector<ElementWrapper*>* getChildrenWithTagName(const wchar_t* tagName);
 
 	void setNode(IHTMLDOMNode* fromNode);
 
 private:
-	void setInputFileValue(wchar_t* newValue);
 	const wchar_t* getTextAreaValue();
 	bool isCheckbox();
 	IHTMLFormElement* findParentForm();

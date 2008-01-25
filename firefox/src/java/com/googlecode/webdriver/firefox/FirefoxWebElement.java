@@ -46,8 +46,12 @@ public class FirefoxWebElement implements RenderedWebElement {
         return remainder.replace("\n", OperatingSystem.getCurrentPlatform().getLineEnding());
     }
 
-    public void setValue(String value) {
-        parent.sendMessage("setElementValue", elementId + " " + value);
+    public void clear() {
+    	parent.sendMessage("clear", elementId);
+    }
+    
+    public void sendKeys(String value) {
+        parent.sendMessage("sendKeys", elementId + " " + value);
     }
 
     public String getAttribute(String name) {

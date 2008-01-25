@@ -636,11 +636,13 @@ public class WebDriverBackedSelenium implements Selenium {
     }
 
     public void type(String locator, String value) {
-        findElement(locator).setValue(value);
+    	WebElement element = findElement(locator);
+    	element.clear();
+        element.sendKeys(value);
     }
 
     public void typeKeys(String locator, String value) {
-        findElement(locator).setValue(value);
+        findElement(locator).sendKeys(value);
     }
 
     public void uncheck(String locator) {

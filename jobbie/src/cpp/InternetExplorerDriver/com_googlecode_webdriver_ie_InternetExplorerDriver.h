@@ -10,17 +10,17 @@ extern "C" {
 /*
  * Class:     com_googlecode_webdriver_ie_InternetExplorerDriver
  * Method:    close
- * Signature: ()Lcom/googlecode/webdriver/WebDriver;
+ * Signature: ()V
  */
-JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_close
+JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_close
   (JNIEnv *, jobject);
 
 /*
  * Class:     com_googlecode_webdriver_ie_InternetExplorerDriver
  * Method:    get
- * Signature: (Ljava/lang/String;)Lcom/googlecode/webdriver/WebDriver;
+ * Signature: (Ljava/lang/String;)V
  */
-JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_get
+JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_get
   (JNIEnv *, jobject, jstring);
 
 /*
@@ -50,9 +50,9 @@ JNIEXPORT jboolean JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriv
 /*
  * Class:     com_googlecode_webdriver_ie_InternetExplorerDriver
  * Method:    setVisible
- * Signature: (Z)Lcom/googlecode/webdriver/WebDriver;
+ * Signature: (Z)V
  */
-JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_setVisible
+JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_setVisible
   (JNIEnv *, jobject, jboolean);
 
 /*

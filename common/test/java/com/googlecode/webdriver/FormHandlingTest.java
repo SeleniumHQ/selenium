@@ -2,6 +2,7 @@ package com.googlecode.webdriver;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 
 public class FormHandlingTest extends AbstractDriverTestCase {
@@ -65,7 +66,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
 
 		WebElement element = driver.findElement(By.xpath("//h1"));
 		try {
-			element.setValue("Fishy");
+			element.sendKeys("Fishy");
 			fail("Should not have succeeded");
 		} catch (UnsupportedOperationException e) {
 			// this is expected
@@ -77,7 +78,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
 		WebElement textarea = driver.findElement(By
 				.xpath("//textarea[@id='keyUpArea']"));
 		String cheesey = "Brie and cheddar";
-		textarea.setValue(cheesey);
+		textarea.sendKeys(cheesey);
 		assertThat(textarea.getValue(), equalTo(cheesey));
 	}
 
@@ -87,7 +88,9 @@ public class FormHandlingTest extends AbstractDriverTestCase {
 				.xpath("//form[@name='someForm']/input[@id='username']"));
 		String originalValue = element.getValue();
 		assertThat(originalValue, equalTo("change"));
-		element.setValue("some text");
+		
+		element.clear();
+		element.sendKeys("some text");
 
 		element = driver.findElement(By
 				.xpath("//form[@name='someForm']/input[@id='username']"));
@@ -171,7 +174,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
 		driver.get(formPage);
 		WebElement uploadElement = driver.findElement(By.id("upload"));
 		assertThat(uploadElement.getValue(), equalTo(""));
-		uploadElement.setValue("Cheese/\\/");
+		uploadElement.sendKeys("Cheese/\\/");
 		assertThat(uploadElement.getValue(), equalTo("Cheese/\\/"));
 	}
 
@@ -186,5 +189,54 @@ public class FormHandlingTest extends AbstractDriverTestCase {
 		} catch (UnsupportedOperationException e) {
 			// this is expected
 		}
+	}
+	
+	public void testSendingKeyboardEventsShouldAppendTextInInputs() {
+		driver.get(formPage);
+		WebElement element = driver.findElement(By.id("working"));
+		element.sendKeys("Some");
+		String value = element.getValue();
+		assertThat(value, is("Some"));
+		
+		element.sendKeys(" text");
+		value = element.getValue();
+		assertThat(value, is("Some text"));
+	}
+	
+	@Ignore(value="ie", reason="Not implemented going to the end of the line first")
+	public void testSendingKeyboardEventsShouldAppendTextinTextAreas() {
+		driver.get(formPage);
+		WebElement element = driver.findElement(By.id("withText"));
+		
+		element.sendKeys(". Some text");
+		String value = element.getValue();
+		
+		assertThat(value, is("Example text. Some text"));
+	}
+	
+	public void testShouldBeAbleToClearTextFromInputElements() {
+		driver.get(formPage);
+		WebElement element = driver.findElement(By.id("working"));
+		element.sendKeys("Some text");
+		String value = element.getValue();
+		assertThat(value.length(), is(greaterThan(0)));
+		
+		element.clear();
+		value = element.getValue();
+		
+		assertThat(value.length(), is(0));
+	}
+	
+	public void testShouldBeAbleToClearTextFromTextAreas() {
+		driver.get(formPage);
+		WebElement element = driver.findElement(By.id("withText"));
+		element.sendKeys("Some text");
+		String value = element.getValue();
+		assertThat(value.length(), is(greaterThan(0)));
+		
+		element.clear();
+		value = element.getValue();
+		
+		assertThat(value.length(), is(0));
 	}
 }

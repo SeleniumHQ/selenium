@@ -26,6 +26,7 @@ InternetExplorerDriver::InternetExplorerDriver()
 
 	currentFrame = -1;
 
+	bringToFront();
 //	sink = new IeEventSink(ie);
 }
 

@@ -33,8 +33,10 @@ public class InternetExplorerElement implements RenderedWebElement {
 
     public native String getValue();
 
-    public native void setValue(String value);
+    public native void sendKeys(String value);
 
+    public native void clear();
+    
     public native boolean isEnabled();
 
     public native boolean isSelected();

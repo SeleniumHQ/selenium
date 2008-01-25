@@ -41,7 +41,7 @@ public class SafariWebElement implements WebElement {
             "  " + locator + ".getAttribute(\"value\");\r");
     }
 
-    public void setValue(String value) {
+    public void sendKeys(String value) {
         appleScript.executeJavascript(locator + ".focus()");
         appleScript.executeApplescript(
         		"tell application \"System Events\"\r" + 
@@ -50,6 +50,10 @@ public class SafariWebElement implements WebElement {
         appleScript.executeJavascript(locator + ".blur()");
     }
 
+    public void clear() {
+    	// no-op
+    }
+    
     public String getAttribute(String name) {
         throw new UnsupportedOperationException("getAttribute");
     }

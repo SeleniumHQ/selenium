@@ -51,77 +51,93 @@ const wchar_t* ElementWrapper::getValue()
 	return this->getAttribute(L"value");
 }
 
-InternetExplorerDriver* ElementWrapper::setValue(wchar_t* newValue)
+void ElementWrapper::sendKeys(wchar_t* newValue) 
 {
-	CComQIPtr<IHTMLInputFileElement, &__uuidof(IHTMLInputFileElement)> file(element);
-	if (file) {
-		setInputFileValue(newValue);
-	}
+	bool initialVis = ie->getVisible();
+	// Bring the IE window to the front.
+	ie->bringToFront();
 
-	CComQIPtr<IHTMLElement2, &__uuidof(IHTMLElement2)> element2 = element;
+	VARIANT top;
+	VariantClear(&top);
+	top.vt = VT_BOOL;
+	top.boolVal = VARIANT_TRUE;
 
-	IDispatch* dispatch;
-	element->get_document(&dispatch);
-	CComQIPtr<IHTMLDocument4, &__uuidof(IHTMLDocument4)> doc = dispatch;
-	dispatch->Release();
-	CComQIPtr<IHTMLElement3, &__uuidof(IHTMLElement3)> element3 = element;
+	element->scrollIntoView(top);
 
-	VARIANT empty;
-	VariantInit(&empty);
+	CComQIPtr<IHTMLElement2, &__uuidof(IHTMLElement2)> element2(element);
+	element2->focus();
+	
+	// Allow the element to actually get the focus
+	Sleep(10);
 
 	size_t length = wcslen(newValue);
+	for (size_t i = 0; i < length; i++)
+	{		
+		wchar_t c = newValue[i];
 
-	CComBSTR valueAttributeName = SysAllocString(L"value");
-	VARIANT reallyNewValue;
-	VariantInit(&reallyNewValue);
-	reallyNewValue.vt = VT_BSTR;
-	reallyNewValue.bstrVal = SysAllocString(L"");
-	element->setAttribute(valueAttributeName, reallyNewValue, 0);
-	VariantClear(&reallyNewValue);
+		if (c == '\r')
+			continue;
 
-	CComBSTR onKeyDown = SysAllocString(L"onkeydown");
-	CComBSTR onKeyPress = SysAllocString(L"onkeypress");
-	CComBSTR onKeyUp = SysAllocString(L"onkeyup");
-	VARIANT_BOOL cancellable;
+		WORD keyCode = 0;
+	
+		bool needsShift = false;
+		
+			keyCode = VkKeyScan(c);
+			needsShift = (keyCode & (1 << 8));  // VK_LSHIFT
 
-	element2->focus();
+			INPUT input;
+			input.type = INPUT_KEYBOARD;
+			input.ki.time = 0;
+			input.ki.wScan = 0;
+			input.ki.dwFlags = KEYEVENTF_EXTENDEDKEY;
+			input.ki.dwExtraInfo = 0;
+			input.ki.wVk = keyCode;
 
-	for (size_t i = 0; i < length; i++) {
-		VariantInit(&reallyNewValue);
-		reallyNewValue.vt = VT_BSTR;
-		wchar_t* t = new wchar_t[i+2];
-		wcsncpy_s(t, i+2, newValue, i+1);
-		t[i+1] = '\0';
-		reallyNewValue.bstrVal = SysAllocString(t);
+			if (needsShift) 
+			{
+				input.ki.wVk = VK_LSHIFT;
+				SendInput(1, &input, sizeof(INPUT));
+				Sleep(5);
+			}
 
-		IHTMLEventObj* eventObject;
-		doc->createEventObject(&empty, &eventObject);
-		eventObject->put_keyCode((long) newValue[i]);
+			input.ki.wVk = keyCode;
+			SendInput(1, &input, sizeof(INPUT));
 
-		VARIANT eventref;
-		VariantInit(&eventref);
-		V_VT(&eventref) = VT_DISPATCH;
-		V_DISPATCH(&eventref) = eventObject;
+			input.ki.dwFlags = KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP;
+			SendInput(1, &input, sizeof(INPUT));
 
+			if (needsShift) 
+			{
+				input.ki.wVk = VK_LSHIFT;
+				SendInput(1, &input, sizeof(INPUT));
+			}
+			Sleep(5);
 
-        element3->fireEvent(onKeyDown, &eventref, &cancellable);
-        element3->fireEvent(onKeyPress, &eventref, &cancellable);
-		element->setAttribute(valueAttributeName, reallyNewValue, 0);
-        element3->fireEvent(onKeyUp, &eventref, &cancellable);
-
-		delete t;
-		VariantClear(&eventref);
-		VariantClear(&reallyNewValue);
 	}
+
 	element2->blur();
 
 	IHTMLEventObj* eventObj = newEventObject();
 	fireEvent(eventObj, L"onchange");
 	eventObj->Release();
 
-	VariantClear(&reallyNewValue);
 
-	return new InternetExplorerDriver(ie);
+	ie->setVisible(initialVis);
+}
+
+void ElementWrapper::clear()
+{
+	CComQIPtr<IHTMLElement2, &__uuidof(IHTMLElement2)> element2 = element;
+	VARIANT empty;
+	VariantInit(&empty);
+
+	CComBSTR valueAttributeName = SysAllocString(L"value");
+	empty.vt = VT_BSTR;
+	empty.bstrVal = SysAllocString(L"");
+	element->setAttribute(valueAttributeName, empty, 0);
+	VariantClear(&empty);
+
+	Sleep(5);
 }
 
 bool ElementWrapper::isSelected()
@@ -148,7 +164,7 @@ bool ElementWrapper::isSelected()
 	return false;
 }
 
-InternetExplorerDriver* ElementWrapper::setSelected()
+void ElementWrapper::setSelected()
 {
 	bool currentlySelected = isSelected();
 
@@ -169,7 +185,7 @@ InternetExplorerDriver* ElementWrapper::setSelected()
 			fireEvent(eventObj, L"onchange");
 		}
 
-		return new InternetExplorerDriver(ie);
+		return;
     }
 
 	IHTMLOptionElement* option = NULL;
@@ -191,7 +207,7 @@ InternetExplorerDriver* ElementWrapper::setSelected()
 		}
 		parent->Release();
 		
-		return new InternetExplorerDriver(ie);
+		return;
 	}
 
 	if (!this->isEnabled()) 
@@ -533,7 +549,7 @@ bool ElementWrapper::isBlockLevel(IHTMLDOMNode *node)
 	return isBlock == VARIANT_TRUE;
 }
 
-InternetExplorerDriver* ElementWrapper::click()
+void ElementWrapper::click()
 {
 	CComQIPtr<IHTMLDOMNode2, &__uuidof(IHTMLDOMNode2)> node = element;
 	CComQIPtr<IHTMLDocument4, &__uuidof(IHTMLDocument4)> doc;
@@ -569,11 +585,9 @@ InternetExplorerDriver* ElementWrapper::click()
 	VariantClear(&eventref);
 
 	ie->waitForNavigateToFinish();
-
-	return new InternetExplorerDriver(ie);
 }
 
-InternetExplorerDriver* ElementWrapper::submit()
+void ElementWrapper::submit()
 {
 	IHTMLFormElement* form = NULL;
 	element->QueryInterface(__uuidof(IHTMLFormElement), (void**)&form);
@@ -610,7 +624,6 @@ InternetExplorerDriver* ElementWrapper::submit()
 	}
 
 	ie->waitForNavigateToFinish();
-	return new InternetExplorerDriver(ie);
 }
 
 void ElementWrapper::setNode(IHTMLDOMNode* fromNode)
@@ -735,37 +748,6 @@ void ElementWrapper::fireEvent(IHTMLDOMNode* fireOn, IHTMLEventObj* eventObject,
 	SysFreeString(onChange);
 }
 
-void ElementWrapper::setInputFileValue(wchar_t* newValue) 
-{
-	bool initialVis = ie->getVisible();
-	// Bring the IE window to the front.
-	ie->bringToFront();
-
-	CComQIPtr<IHTMLElement2, &__uuidof(IHTMLElement2)> element2(element);
-	element2->focus();
-	
-	wchar_t c;
-	while ((c = *newValue++)) 
-	{
-		short keyCode = VkKeyScan(c); 
-		bool needsShift = (keyCode >> 8) & 1;
-
-		if (needsShift)
-		{
-			keyPress(VK_LSHIFT, false);
-		}
-
-		keyPress(keyCode);
-
-		if(needsShift)
-		{
-			keyPress(VK_SHIFT, true);
-		}
-	}
-
-	ie->setVisible(initialVis);
-}
-
 void ElementWrapper::keyPress(short keyCode) 
 {
 	keyPress(keyCode, false);
@@ -774,8 +756,8 @@ void ElementWrapper::keyPress(short keyCode)
 
 void ElementWrapper::keyPress(short keyCode, bool shouldRelease)
 {
-	keybd_event(keyCode, 0, (shouldRelease ? KEYEVENTF_KEYUP : 0), 0);
-/*
+//	keybd_event(keyCode, 0, (shouldRelease ? KEYEVENTF_KEYUP : 0), 0);
+
 	// This doesn't work as it should. I have no idea why.
 		INPUT input;
 		ZeroMemory(&input, sizeof(input));
@@ -791,5 +773,4 @@ void ElementWrapper::keyPress(short keyCode, bool shouldRelease)
 			input.ki.dwFlags &= KEYEVENTF_KEYUP;
 
 		SendInput(1, &input, sizeof(input));
-*/	
 }

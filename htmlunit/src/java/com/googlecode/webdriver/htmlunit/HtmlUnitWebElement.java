@@ -35,7 +35,6 @@ public class HtmlUnitWebElement implements WebElement {
             {"p", "h1", "h2", "h3", "h4", "h5", "h6", "dl", "div", "noscript",
                     "blockquote", "form", "hr", "table", "fieldset", "address", "ul", "ol", "pre", "br"};
 
-
     public HtmlUnitWebElement(HtmlUnitDriver parent, HtmlElement element) {
         this.parent = parent;
         this.element = element;
@@ -87,12 +86,22 @@ public class HtmlUnitWebElement implements WebElement {
         return getAttribute("value");
     }
 
-    public void setValue(String value) {
-        if (element instanceof HtmlInput)
-            element.setAttributeValue("value", value);
-        else if (element instanceof HtmlTextArea)
-            ((HtmlTextArea) element).setText(value);
-        else
+    public void clear() {
+    	if (element instanceof HtmlInput) {
+            element.setAttributeValue("value", "");
+        } else if (element instanceof HtmlTextArea) {
+            ((HtmlTextArea) element).setText("");
+        }
+    }
+    
+    public void sendKeys(String value) {
+        if (element instanceof HtmlInput) {
+        	String currentValue = getValue();
+            element.setAttributeValue("value", (currentValue == null ? "" : currentValue) + value);
+        } else if (element instanceof HtmlTextArea) {
+        	String currentValue = getValue();
+            ((HtmlTextArea) element).setText((currentValue == null ? "" : currentValue) + value);
+        } else
             throw new UnsupportedOperationException("You may only set the value of elements that are input elements");
     }
 

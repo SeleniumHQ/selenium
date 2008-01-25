@@ -10,11 +10,11 @@ public class SingleTestSuite {
 	public static Test suite() {
 		return new TestSuiteBuilder()
 					.addSourceDir("common")
-					.usingDriver(FIREFOX)
+					.usingDriver(IE)
 					.keepDriverInstance()
                     .includeJavascriptTests()
-                    .onlyRun("JavascriptEnabledDriverTest")
-//					.method("testShouldBeAbleToClickOnNormalButtons")
+                    .onlyRun("TextHandlingTest")
+					.method("testShouldBeAbleToSetMoreThanOneLineOfTextInATextArea")
 //                    .leaveRunningAfterTest()
                     .create();
 	}

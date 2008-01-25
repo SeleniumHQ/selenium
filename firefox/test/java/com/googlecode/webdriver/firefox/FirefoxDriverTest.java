@@ -49,7 +49,7 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
       driver.get(formPage);
       WebElement textarea = driver.findElement(By.id("withText"));
       String expectedText = "I like cheese\n\nIt's really nice";
-      textarea.setValue(expectedText);
+      textarea.sendKeys(expectedText);
 
       String seenText = textarea.getValue();
       assertThat(seenText, equalTo(expectedText));

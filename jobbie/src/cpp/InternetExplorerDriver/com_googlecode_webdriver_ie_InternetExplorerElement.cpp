@@ -38,13 +38,11 @@ JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerEleme
 	return env->NewObject(clazz, cId, (jlong) wrapper);
 }
 
-JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_click
+JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_click
   (JNIEnv *env, jobject obj) 
 {
 	ElementWrapper* wrapper = getWrapper(env, obj);
-	InternetExplorerDriver* driver = wrapper->click();
-
-	return newJavaInternetExplorerDriver(env, driver);
+	wrapper->click();
 }
 
 JNIEXPORT jstring JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_getValue
@@ -58,14 +56,19 @@ JNIEXPORT jstring JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerEleme
 	return toReturn;
 }
 
-JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_setValue
+JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_sendKeys
   (JNIEnv *env, jobject obj, jstring newValue)
 {
 	ElementWrapper* wrapper = getWrapper(env, obj);
 	wchar_t* converted = (wchar_t*) env->GetStringChars(newValue, NULL);
-	InternetExplorerDriver* driver = wrapper->setValue(converted);
+	wrapper->sendKeys(converted);
+}
 
-	return newJavaInternetExplorerDriver(env, driver);
+JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_clear
+  (JNIEnv *env, jobject obj)
+{
+	ElementWrapper* wrapper = getWrapper(env, obj);
+	wrapper->clear();
 }
 
 JNIEXPORT jstring JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_getText
@@ -110,25 +113,23 @@ JNIEXPORT jboolean JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElem
 	return wrapper->isSelected() ? JNI_TRUE : JNI_FALSE;
 }
 
-JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_setSelected
+JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_setSelected
   (JNIEnv *env, jobject obj)
 {
 	ElementWrapper* wrapper = getWrapper(env, obj);
 	try {
-		InternetExplorerDriver* driver = wrapper->setSelected();
-		return newJavaInternetExplorerDriver(env, driver);
+		wrapper->setSelected();
 	} catch (const char *message) {
 		throwUnsupportedOperationException(env, message);
 	}
 }
 
-JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_submit
+JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_submit
   (JNIEnv *env, jobject obj)
 {
 	ElementWrapper* wrapper = getWrapper(env, obj);
 	try {
-		InternetExplorerDriver* driver = wrapper->submit();
-		return newJavaInternetExplorerDriver(env, driver);
+		wrapper->submit();
 	} catch (const char* message) {
 		throwNoSuchElementException(env, message);
 	}

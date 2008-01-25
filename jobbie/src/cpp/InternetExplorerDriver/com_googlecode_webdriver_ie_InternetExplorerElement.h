@@ -18,9 +18,9 @@ JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerEleme
 /*
  * Class:     com_googlecode_webdriver_ie_InternetExplorerElement
  * Method:    click
- * Signature: ()Lcom/googlecode/webdriver/WebDriver;
+ * Signature: ()V
  */
-JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_click
+JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_click
   (JNIEnv *, jobject);
 
 /*
@@ -49,11 +49,19 @@ JNIEXPORT jstring JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerEleme
 
 /*
  * Class:     com_googlecode_webdriver_ie_InternetExplorerElement
- * Method:    setValue
- * Signature: (Ljava/lang/String;)Lcom/googlecode/webdriver/WebDriver;
+ * Method:    sendKeys
+ * Signature: (Ljava/lang/String;)V
  */
-JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_setValue
+JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_sendKeys
   (JNIEnv *, jobject, jstring);
+
+/*
+ * Class:     com_googlecode_webdriver_ie_InternetExplorerElement
+ * Method:    clear
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_clear
+  (JNIEnv *, jobject);
 
 /*
  * Class:     com_googlecode_webdriver_ie_InternetExplorerElement
@@ -74,17 +82,17 @@ JNIEXPORT jboolean JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElem
 /*
  * Class:     com_googlecode_webdriver_ie_InternetExplorerElement
  * Method:    setSelected
- * Signature: ()Lcom/googlecode/webdriver/WebDriver;
+ * Signature: ()V
  */
-JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_setSelected
+JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_setSelected
   (JNIEnv *, jobject);
 
 /*
  * Class:     com_googlecode_webdriver_ie_InternetExplorerElement
  * Method:    submit
- * Signature: ()Lcom/googlecode/webdriver/WebDriver;
+ * Signature: ()V
  */
-JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_submit
+JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_submit
   (JNIEnv *, jobject);
 
 /*

@@ -36,7 +36,7 @@ public class LocatingElementHandlerTest extends TestCase {
         LocatingElementHandler handler = new LocatingElementHandler(driver, q);
         WebElement proxy = (WebElement) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{WebElement.class}, handler);
 
-        proxy.setValue("Fishy");
+        proxy.sendKeys("Fishy");
         proxy.submit();
 
         verify(driver);
@@ -92,7 +92,7 @@ public class LocatingElementHandlerTest extends TestCase {
       WebElement proxy = (WebElement) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{WebElement.class}, handler);
 
       proxy.isEnabled();
-      proxy.setValue("Cheese");
+      proxy.sendKeys("Cheese");
 
       verify(driver);
     }
@@ -112,7 +112,8 @@ public class LocatingElementHandlerTest extends TestCase {
 		private RenderedWebElement rendered;
 
       public void doQuery(String foo) {
-            query.setValue(foo);
+    	  	query.clear();
+            query.sendKeys(foo);
         }
     }
 }

@@ -97,8 +97,9 @@ public class TextHandlingTest extends AbstractDriverTestCase {
     public void testShouldBeAbleToSetMoreThanOneLineOfTextInATextArea() {
         driver.get(formPage);
         WebElement textarea = driver.findElement(By.id("withText"));
+        textarea.clear();
         String expectedText = "I like cheese" + newLine + newLine  + "It's really nice";
-        textarea.setValue(expectedText);
+        textarea.sendKeys(expectedText);
 
         String seenText = textarea.getValue();
         assertThat(seenText, equalTo(expectedText));
@@ -108,7 +109,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
         driver.get(formPage);
         WebElement input = driver.findElement(By.id("working"));
         String expectedValue = "10/03/2007 to 30/07/1993";
-        input.setValue(expectedValue);
+        input.sendKeys(expectedValue);
         String seenValue = input.getValue();
 
         assertThat(seenValue, equalTo(expectedValue));

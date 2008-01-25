@@ -135,14 +135,14 @@ Utils.getElementAt = function(index, context) {
 
 Utils.type = function(context, element, text) {
     var isTextField = element["value"] !== undefined;
-
     var value = "";
+    
     if (isTextField) {
-        element.value = value;
-    } else {
-        element.setAttribute("value", value);
+        value = element.value;
+    } else if (element.hasAttribute("value")) {
+        value = element.getAttribute("value");
     }
-
+    
     for (var i = 0; i < text.length; i++) {
         var character = text.charAt(i);
         value += character;

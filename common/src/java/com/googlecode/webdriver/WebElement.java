@@ -57,13 +57,20 @@ public interface WebElement {
     String getValue();
 
     /**
-     * Set the element's "value" attribute.
-     *
-     * @param value The new value of the element's "value" attribute.
-     * @throws UnsupportedOperationException If the given element may not have its value set
+     * Use this method to simulate typing into an element, which may set its value.
+     *  
+     * @param keysToSend
      */
-    void setValue(String value);
+    void sendKeys(String keysToSend);
 
+    /**
+     * If this element is a text entry element, this will clear the value. Has no
+     * effect on other elements. Text entry elements are INPUT and TEXTAREA elements.
+     */
+    void clear();
+
+    
+    
     /**
      * Get the value of a the given attribute of the element. Will return the
      * current value, even if this has been modified after the page has been

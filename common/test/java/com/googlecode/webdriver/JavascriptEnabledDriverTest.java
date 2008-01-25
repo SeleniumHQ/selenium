@@ -61,7 +61,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     public void testWillSimulateAKeyUpWhenEnteringTextIntoInputElements() {
         driver.get(javascriptPage);
         WebElement element = driver.findElement(By.id("keyUp"));
-        element.setValue("I like cheese");
+        element.sendKeys("I like cheese");
 
         WebElement result = driver.findElement(By.id("result"));
         assertThat(result.getText(), equalTo("I like cheese"));
@@ -71,7 +71,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     public void testWillSimulateAKeyDownWhenEnteringTextIntoInputElements() {
         driver.get(javascriptPage);
         WebElement element = driver.findElement(By.id("keyDown"));
-        element.setValue("I like cheese");
+        element.sendKeys("I like cheese");
 
         WebElement result = driver.findElement(By.id("result"));
         // Because the key down gets the result before the input element is
@@ -83,7 +83,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     public void testWillSimulateAKeyPressWhenEnteringTextIntoInputElements() {
         driver.get(javascriptPage);
         WebElement element = driver.findElement(By.id("keyPress"));
-        element.setValue("I like cheese");
+        element.sendKeys("I like cheese");
 
         WebElement result = driver.findElement(By.id("result"));
         // Because the key down gets the result before the input element is
@@ -95,7 +95,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     public void testWillSimulateAKeyUpWhenEnteringTextIntoTextAreas() {
         driver.get(javascriptPage);
         WebElement element = driver.findElement(By.id("keyUpArea"));
-        element.setValue("I like cheese");
+        element.sendKeys("I like cheese");
 
         WebElement result = driver.findElement(By.id("result"));
         assertThat(result.getText(), equalTo("I like cheese"));
@@ -105,7 +105,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     public void testWillSimulateAKeyDownWhenEnteringTextIntoTextAreas() {
         driver.get(javascriptPage);
         WebElement element = driver.findElement(By.id("keyDownArea"));
-        element.setValue("I like cheese");
+        element.sendKeys("I like cheese");
 
         WebElement result = driver.findElement(By.id("result"));
         // Because the key down gets the result before the input element is
@@ -117,7 +117,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     public void testWillSimulateAKeyPressWhenEnteringTextIntoTextAreas() {
         driver.get(javascriptPage);
         WebElement element = driver.findElement(By.id("keyPressArea"));
-        element.setValue("I like cheese");
+        element.sendKeys("I like cheese");
 
         WebElement result = driver.findElement(By.id("result"));
         // Because the key down gets the result before the input element is
@@ -275,7 +275,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
 	@JavascriptEnabled
     public void testShouldFireOnChangeEventWhenSettingAnElementsValue() {
       driver.get(javascriptPage);
-      driver.findElement(By.id("change")).setValue("foo");
+      driver.findElement(By.id("change")).sendKeys("foo");
       String result = driver.findElement(By.id("result")).getText();
 
       assertThat(result, equalTo("change"));
@@ -286,7 +286,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     public void testShouldFireFocusKeyBlurAndChangeEventsInTheRightOrder() {
         driver.get(javascriptPage);
 
-        driver.findElement(By.id("theworks")).setValue("a");
+        driver.findElement(By.id("theworks")).sendKeys("a");
         String result = driver.findElement(By.id("result")).getText();
 
         assertThat(result.trim(), equalTo("focus keydown keypress keyup blur change"));
