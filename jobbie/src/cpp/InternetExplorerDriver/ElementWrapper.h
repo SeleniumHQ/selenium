@@ -50,9 +50,6 @@ private:
 	std::wstring collapseWhitespace(const std::wstring& text);
 	bool isBlockLevel(IHTMLDOMNode *node);
 
-	void keyPress(short keyCode);
-	void keyPress(short keyCode, bool shouldRelease);
-
 	InternetExplorerDriver* ie;
 	IHTMLElement* element;
 };

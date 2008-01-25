@@ -82,36 +82,36 @@ void ElementWrapper::sendKeys(wchar_t* newValue)
 	
 		bool needsShift = false;
 		
-			keyCode = VkKeyScan(c);
-			needsShift = (keyCode & (1 << 8));  // VK_LSHIFT
+		keyCode = VkKeyScan(c);
+		needsShift = (keyCode & (1 << 8)) ? true : false;  // VK_LSHIFT
 
-			INPUT input;
-			input.type = INPUT_KEYBOARD;
-			input.ki.time = 0;
-			input.ki.wScan = 0;
-			input.ki.dwFlags = KEYEVENTF_EXTENDEDKEY;
-			input.ki.dwExtraInfo = 0;
-			input.ki.wVk = keyCode;
+		INPUT input;
+		input.type = INPUT_KEYBOARD;
+		input.ki.time = 0;
+		input.ki.wScan = 0;
+		input.ki.dwFlags = KEYEVENTF_EXTENDEDKEY;
+		input.ki.dwExtraInfo = 0;
+		input.ki.wVk = keyCode;
 
-			if (needsShift) 
-			{
-				input.ki.wVk = VK_LSHIFT;
-				SendInput(1, &input, sizeof(INPUT));
-				Sleep(5);
-			}
-
-			input.ki.wVk = keyCode;
+		if (needsShift) 
+		{
+			input.ki.wVk = VK_LSHIFT;
 			SendInput(1, &input, sizeof(INPUT));
-
-			input.ki.dwFlags = KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP;
-			SendInput(1, &input, sizeof(INPUT));
-
-			if (needsShift) 
-			{
-				input.ki.wVk = VK_LSHIFT;
-				SendInput(1, &input, sizeof(INPUT));
-			}
 			Sleep(5);
+		}
+
+		input.ki.wVk = keyCode;
+		SendInput(1, &input, sizeof(INPUT));
+
+		input.ki.dwFlags = KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP;
+		SendInput(1, &input, sizeof(INPUT));
+
+		if (needsShift) 
+		{
+			input.ki.wVk = VK_LSHIFT;
+			SendInput(1, &input, sizeof(INPUT));
+		}
+		Sleep(5);
 
 	}
 
@@ -120,7 +120,6 @@ void ElementWrapper::sendKeys(wchar_t* newValue)
 	IHTMLEventObj* eventObj = newEventObject();
 	fireEvent(eventObj, L"onchange");
 	eventObj->Release();
-
 
 	ie->setVisible(initialVis);
 }
@@ -746,31 +745,4 @@ void ElementWrapper::fireEvent(IHTMLDOMNode* fireOn, IHTMLEventObj* eventObject,
 	element3->fireEvent(onChange, &eventref, &cancellable);
 
 	SysFreeString(onChange);
-}
-
-void ElementWrapper::keyPress(short keyCode) 
-{
-	keyPress(keyCode, false);
-	keyPress(keyCode, true);
-}
-
-void ElementWrapper::keyPress(short keyCode, bool shouldRelease)
-{
-//	keybd_event(keyCode, 0, (shouldRelease ? KEYEVENTF_KEYUP : 0), 0);
-
-	// This doesn't work as it should. I have no idea why.
-		INPUT input;
-		ZeroMemory(&input, sizeof(input));
-
-		input.type = INPUT_KEYBOARD;
-		input.ki.time = 0;
-		input.ki.wVk = (WORD) keyCode;
-		//input.ki.dwFlags = KEYEVENTF_UNICODE;
-		input.ki.dwFlags = 0;
-		input.ki.dwExtraInfo = 0;
-
-		if (shouldRelease)
-			input.ki.dwFlags &= KEYEVENTF_KEYUP;
-
-		SendInput(1, &input, sizeof(input));
 }
