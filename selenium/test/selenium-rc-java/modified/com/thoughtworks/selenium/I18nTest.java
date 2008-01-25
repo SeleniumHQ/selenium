@@ -4,16 +4,18 @@
  */
 package com.thoughtworks.selenium;
 
-import com.thoughtworks.webdriver.environment.GlobalTestEnvironment;
-import com.thoughtworks.webdriver.environment.TestEnvironment;
-import com.googlecode.webdriver.selenium.SeleniumTestEnvironment;
+import java.io.UnsupportedEncodingException;
+
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
 import org.openqa.selenium.server.SeleniumServer;
 
-import java.io.UnsupportedEncodingException;
+import com.googlecode.webdriver.environment.GlobalTestEnvironment;
+import com.googlecode.webdriver.environment.TestEnvironment;
+import com.googlecode.webdriver.selenium.SeleniumTestEnvironment;
 
 public class I18nTest extends TestCase {
     private static Selenium sel;

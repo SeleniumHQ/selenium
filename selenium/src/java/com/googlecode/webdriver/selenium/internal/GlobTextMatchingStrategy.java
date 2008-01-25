@@ -1,4 +1,4 @@
-package com.googlecode.webdriver.selenium;
+package com.googlecode.webdriver.selenium.internal;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

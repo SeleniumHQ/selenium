@@ -34,12 +34,8 @@ public interface WebElement {
      * If this element is not clickable, then this operation is a no-op since
      * it's pretty common for someone to accidentally miss the target when
      * clicking in Real Life
-     *
-     * @return A WebDriver pointing at the currently active window. If the click
-     *         does not open a new window, this will be the same as the current WebDriver,
-     *         but if a new window is opened, the returned WedDriver will be focused on that.
      */
-    WebDriver click();
+    void click();
 
     /**
      * If this current element is a form, or an element within a form, then this
@@ -48,7 +44,7 @@ public interface WebElement {
      *
      * @throws NoSuchElementException If the given element is not within a form
      */
-    WebDriver submit();
+    void submit();
 
     /**
      * Get the value of the element's "value" attribute. If this value has been
@@ -66,7 +62,7 @@ public interface WebElement {
      * @param value The new value of the element's "value" attribute.
      * @throws UnsupportedOperationException If the given element may not have its value set
      */
-    WebDriver setValue(String value);
+    void setValue(String value);
 
     /**
      * Get the value of a the given attribute of the element. Will return the
@@ -104,7 +100,7 @@ public interface WebElement {
      * Select an element. This method will work against radio buttons, "option"
      * elements within a "select" and checkboxes
      */
-    WebDriver setSelected();
+    void setSelected();
 
     /**
      * Is the element currently enabled or not? This will generally return true

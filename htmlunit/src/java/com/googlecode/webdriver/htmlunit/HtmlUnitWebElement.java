@@ -19,7 +19,6 @@ package com.googlecode.webdriver.htmlunit;
 
 import com.gargoylesoftware.htmlunit.html.*;
 import com.googlecode.webdriver.NoSuchElementException;
-import com.googlecode.webdriver.WebDriver;
 import com.googlecode.webdriver.WebElement;
 import com.googlecode.webdriver.internal.OperatingSystem;
 
@@ -44,39 +43,39 @@ public class HtmlUnitWebElement implements WebElement {
         
     }
 
-    public WebDriver click() {
+    public void click() {
         if (!(element instanceof ClickableElement))
-            return parent;
+            return;
 
         ClickableElement clickableElement = ((ClickableElement) element);
         try {
             clickableElement.click();
-            return parent.findActiveWindow();
+            return;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public WebDriver submit() {
+    public void submit() {
         try {
             if (element instanceof HtmlForm) {
                 ((HtmlForm) element).submit();
-                return parent.findActiveWindow();
+                return;
             } else if (element instanceof HtmlSubmitInput) {
                 ((HtmlSubmitInput) element).click();
-                return parent.findActiveWindow();
+                return;
             } else if (element instanceof HtmlImageInput) {
                 ((HtmlImageInput) element).click();
-                return parent.findActiveWindow();
+                return;
             } else if (element instanceof HtmlInput) {
                 ((HtmlInput) element).getEnclosingForm().submit();
-                return parent.findActiveWindow();
+                return;
             }
 
             WebElement form = findParentForm();
             if (form == null)
                 throw new NoSuchElementException("Unable to find the containing form");
-            return form.submit();
+            form.submit();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -88,15 +87,13 @@ public class HtmlUnitWebElement implements WebElement {
         return getAttribute("value");
     }
 
-    public WebDriver setValue(String value) {
+    public void setValue(String value) {
         if (element instanceof HtmlInput)
             element.setAttributeValue("value", value);
         else if (element instanceof HtmlTextArea)
             ((HtmlTextArea) element).setText(value);
         else
             throw new UnsupportedOperationException("You may only set the value of elements that are input elements");
-
-        return parent.findActiveWindow();
     }
 
     public String getAttribute(String name) {
@@ -155,7 +152,7 @@ public class HtmlUnitWebElement implements WebElement {
         throw new UnsupportedOperationException("Unable to determine if element is selected. Tag name is: " + element.getTagName());
     }
 
-    public WebDriver setSelected() {
+    public void setSelected() {
         String disabledValue = element.getAttributeValue("disabled");
         if (disabledValue.length() > 0) {
             throw new UnsupportedOperationException("You may not select a disabled element");
@@ -167,8 +164,6 @@ public class HtmlUnitWebElement implements WebElement {
             ((HtmlOption) element).setSelected(true);
         else
             throw new UnsupportedOperationException("Unable to select element. Tag name is: " + element.getTagName());
-
-        return parent.findActiveWindow();
     }
 
     public boolean isEnabled() {

@@ -76,24 +76,20 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
         this.id = id;
     }
 
-    public WebDriver close() {
+    public void close() {
         try {
             sendMessage("close", null);
         } catch (NullPointerException e) {
             // All good
-            return null;
         }
-
-        return findActiveDriver();
     }
 
     public String getPageSource() {
         return sendMessage("getPageSource", null);
     }
 
-    public WebDriver get(String url) {
+    public void get(String url) {
         sendMessage("get", url);
-        return this;
     }
 
     public String getCurrentUrl() {
@@ -164,9 +160,8 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
     return new FirefoxWebElement(this, elementId);
   }
 
-  public WebDriver setVisible(boolean visible) {
+  public void setVisible(boolean visible) {
         // no-op
-        return this;
     }
 
     public TargetLocator switchTo() {
@@ -373,18 +368,16 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
     }
 
     private class FirefoxNavigation implements Navigation {
-      public WebDriver back() {
+      public void back() {
         sendMessage("goBack", null);
-        return FirefoxDriver.this;
       }
 
-      public WebDriver forward() {
+      public void forward() {
         sendMessage("goForward", null);
-        return FirefoxDriver.this;
       }
 
-      public WebDriver to(String url) {
-        return get(url);
+      public void to(String url) {
+        get(url);
       }
     }
 }

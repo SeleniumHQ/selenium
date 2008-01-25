@@ -56,13 +56,13 @@ public class InternetExplorerDriver implements WebDriver, FindsById, FindsByLink
         throw new UnsupportedOperationException("getPageSource");
     }
 
-    public native WebDriver close();
+    public native void close();
     
     public void quit() {
     	close();  // Not a good implementation, but better than nothing
     }
 
-    public native WebDriver get(String url);
+    public native void get(String url);
 
     public native String getCurrentUrl();
 
@@ -70,7 +70,7 @@ public class InternetExplorerDriver implements WebDriver, FindsById, FindsByLink
 
     public native boolean getVisible();
 
-    public native WebDriver setVisible(boolean visible);
+    public native void setVisible(boolean visible);
 
 
     public List<WebElement> findElements(By by) {
@@ -220,18 +220,16 @@ public class InternetExplorerDriver implements WebDriver, FindsById, FindsByLink
     }
     
     private class InternetExplorerNavigation implements Navigation {
-		public WebDriver back() {
+		public void back() {
 			goBack();
-			return InternetExplorerDriver.this;
 		}
 		
-		public WebDriver forward() {
+		public void forward() {
 			goForward();
-			return InternetExplorerDriver.this;
 		}
 
-		public WebDriver to(String url) {
-			return get(url);
+		public void to(String url) {
+			get(url);
 		}
     }
     

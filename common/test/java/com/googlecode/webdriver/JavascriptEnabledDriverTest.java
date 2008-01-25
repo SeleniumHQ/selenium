@@ -299,6 +299,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     WebElement element = driver.findElement(By.id("plainButton"));
     element.click();
 
+    System.out.println("Getting text");
     String result = driver.findElement(By.id("result")).getText().trim();
     assertThat(result, is("mousedown mouseup click"));
   }
@@ -323,14 +324,14 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     assertThat(driver.getTitle(), Matchers.is("We Arrive Here"));
   }
 
-    @JavascriptEnabled
-    @Ignore
-  public void testShouldBeAbleToSwitchToFocusedElement() {
-      driver.get(javascriptPage);
-
-      driver.findElement(By.id("switchFocus")).click();
-
-      WebElement element = driver.switchTo().activeElement();
-      assertThat(element.getAttribute("id"), is("theworks"));
-  }
+//    @JavascriptEnabled
+//    @Ignore
+//  public void testShouldBeAbleToSwitchToFocusedElement() {
+//      driver.get(javascriptPage);
+//
+//      driver.findElement(By.id("switchFocus")).click();
+//
+//      WebElement element = driver.switchTo().activeElement();
+//      assertThat(element.getAttribute("id"), is("theworks"));
+//  }
 }

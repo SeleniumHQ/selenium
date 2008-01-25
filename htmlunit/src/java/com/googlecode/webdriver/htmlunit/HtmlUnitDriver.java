@@ -17,45 +17,43 @@
 
 package com.googlecode.webdriver.htmlunit;
 
-import com.gargoylesoftware.htmlunit.html.xpath.HtmlUnitXPath;
-import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlInlineFrame;
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import com.gargoylesoftware.htmlunit.html.FrameWindow;
-import com.gargoylesoftware.htmlunit.WebWindowEvent;
-import com.gargoylesoftware.htmlunit.WebWindowListener;
-import com.gargoylesoftware.htmlunit.WebWindow;
+import java.net.ConnectException;
+import java.net.URL;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import org.apache.commons.httpclient.HttpState;
+import org.jaxen.JaxenException;
+import org.jaxen.XPath;
+
+import com.gargoylesoftware.htmlunit.ElementNotFoundException;
+import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebResponse;
-import com.gargoylesoftware.htmlunit.Page;
-import com.gargoylesoftware.htmlunit.ElementNotFoundException;
+import com.gargoylesoftware.htmlunit.WebWindow;
+import com.gargoylesoftware.htmlunit.WebWindowEvent;
+import com.gargoylesoftware.htmlunit.WebWindowListener;
+import com.gargoylesoftware.htmlunit.html.FrameWindow;
+import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
+import com.gargoylesoftware.htmlunit.html.HtmlElement;
+import com.gargoylesoftware.htmlunit.html.HtmlInlineFrame;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.xpath.HtmlUnitXPath;
+import com.googlecode.webdriver.Alert;
+import com.googlecode.webdriver.By;
+import com.googlecode.webdriver.Cookie;
 import com.googlecode.webdriver.NoSuchElementException;
+import com.googlecode.webdriver.NoSuchFrameException;
 import com.googlecode.webdriver.WebDriver;
 import com.googlecode.webdriver.WebElement;
-import com.googlecode.webdriver.By;
-import com.googlecode.webdriver.NoSuchFrameException;
-import com.googlecode.webdriver.Alert;
-import com.googlecode.webdriver.Cookie;
 import com.googlecode.webdriver.internal.FindsById;
 import com.googlecode.webdriver.internal.FindsByLinkText;
 import com.googlecode.webdriver.internal.FindsByXPath;
-import com.googlecode.webdriver.htmlunit.HtmlUnitWebElement;
-
-import org.jaxen.JaxenException;
-import org.jaxen.XPath;
-import org.apache.commons.httpclient.HttpState;
-
-import java.net.URL;
-import java.net.UnknownHostException;
-import java.net.ConnectException;
-
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Date;
-import java.util.Set;
-import java.util.HashSet;
 
 public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText, FindsByXPath {
     private WebClient webClient;
@@ -95,7 +93,7 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText, Fi
         webClient.setRedirectEnabled(true);
     }
 
-    public WebDriver get(String url) {
+    public void get(String url) {
         try {
             URL fullUrl = new URL(url);
             Page page = webClient.getPage(fullUrl);
@@ -109,7 +107,6 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText, Fi
         }
 
         pickWindow();
-        return this;
     }
 
     private void pickWindow() {
@@ -142,9 +139,8 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText, Fi
         return false;
     }
 
-    public WebDriver setVisible(boolean visible) {
+    public void setVisible(boolean visible) {
         // no-op
-        return this;
     }
 
     @SuppressWarnings("unchecked")
@@ -177,9 +173,8 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText, Fi
         return webResponse.getContentAsString();
     }
 
-    public WebDriver close() {
+    public void close() {
         newWebClient();
-        return findActiveWindow();
     }
 
     public void quit() {
@@ -361,7 +356,7 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText, Fi
     }
 
     private class HtmlUnitNavigation implements Navigation {
-      public WebDriver back() {
+      public void back() {
         // This functionality isn't already built into htmlunit. I'm surprised.
         // https://sourceforge.net/tracker/index.php?func=detail&aid=1337174&group_id=47038&atid=448269
         // for more the HtmlUnit feature request.
@@ -369,13 +364,13 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText, Fi
       }
 
 
-      public WebDriver forward() {
+      public void forward() {
         throw new UnsupportedOperationException("forward");
       }
 
 
-      public WebDriver to(String url) {
-        return get(url);
+      public void to(String url) {
+        get(url);
       }
     }
 

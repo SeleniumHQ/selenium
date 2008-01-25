@@ -63,7 +63,7 @@ public interface WebDriver {
      *
      * @param url The URL to load. It is best to use a fully qualified URL
      */
-    WebDriver get(String url);
+    void get(String url);
 
     /**
      * Get a string representing the current URL that the browser is looking at.
@@ -93,7 +93,7 @@ public interface WebDriver {
      *
      * @param visible Set whether or not the browser is visible
      */
-    WebDriver setVisible(boolean visible);
+    void setVisible(boolean visible);
 
   /**
      * Find all elements within the current page using the given mechanism.
@@ -130,10 +130,8 @@ public interface WebDriver {
     /**
      * Close the current window, quitting the browser if it's the last window
      * currently open.
-     *
-     * @return The currently active WebDriver, or null if there are no windows open
      */
-    WebDriver close();
+    void close();
     
     /**
      * Quits this driver, closing every associated window.
@@ -256,25 +254,22 @@ public interface WebDriver {
          *
          * @return The WebElement with focus, or the body element if no element with focus can be detected.
          */
-        WebElement activeElement();
+        //WebElement activeElement();
 
-        Alert alert();
+//        Alert alert();
     }
 
     public interface Navigation {
       /**
        * Move back a single "item" in the browser's history.
-       *@return The driver, on the previous page (or the same one if there is no history)
        */
-      WebDriver back();
+      void back();
 
       /**
        * Move a single "item" forward in the browser's history. Does nothing if
        * we are on the latest page viewed.
-       *
-       * @return The driver, on the next page (or the same one if there is no history)
        */
-      WebDriver forward();
+      void forward();
 
 
       /**
@@ -288,8 +283,7 @@ public interface WebDriver {
        * against the freshly loaded page.
        *
        * @param url The URL to load. It is best to use a fully qualified URL
-       * @return The driver, pointing at the loaded page
        */
-      WebDriver to(String url);
+      void to(String url);
     }
 }

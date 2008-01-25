@@ -1,4 +1,4 @@
-package com.googlecode.webdriver.selenium;
+package com.googlecode.webdriver.selenium.internal;
 
 import com.googlecode.webdriver.WebElement;
 

@@ -20,11 +20,9 @@ package com.thoughtworks.selenium;
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 
-import com.thoughtworks.webdriver.environment.GlobalTestEnvironment;
-import com.thoughtworks.webdriver.environment.TestEnvironment;
-import com.thoughtworks.webdriver.firefox.FirefoxDriver;
+import com.googlecode.webdriver.environment.GlobalTestEnvironment;
+import com.googlecode.webdriver.environment.TestEnvironment;
 import com.googlecode.webdriver.selenium.SeleniumTestEnvironment;
-import com.thoughtworks.webdriver.selenium.WebDriverBackedSelenium;
 
 /**
  * @author Paul Hammant
@@ -37,7 +35,7 @@ public class RealDealIntegrationTest extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         TestEnvironment testEnvironment = GlobalTestEnvironment.get(SeleniumTestEnvironment.class);
-        selenium = new WebDriverBackedSelenium(new FirefoxDriver(), testEnvironment.getAppServer().getBaseUrl());
+        selenium = new DefaultSelenium("", 0, "*chrome", testEnvironment.getAppServer().getBaseUrl());
         selenium.start();
     }
 

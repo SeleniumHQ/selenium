@@ -1,6 +1,5 @@
 package com.googlecode.webdriver.firefox;
 
-import com.googlecode.webdriver.WebDriver;
 import com.googlecode.webdriver.WebElement;
 import com.googlecode.webdriver.RenderedWebElement;
 import com.googlecode.webdriver.internal.OperatingSystem;
@@ -20,14 +19,12 @@ public class FirefoxWebElement implements RenderedWebElement {
         this.elementId = elementId;
     }
 
-    public WebDriver click() {
+    public void click() {
         parent.sendMessage("click", elementId);
-        return parent.findActiveDriver();
     }
 
-    public WebDriver submit() {
+    public void submit() {
         parent.sendMessage("submitElement", elementId);
-        return parent.findActiveDriver();
     }
 
     public String getValue() {
@@ -49,9 +46,8 @@ public class FirefoxWebElement implements RenderedWebElement {
         return remainder.replace("\n", OperatingSystem.getCurrentPlatform().getLineEnding());
     }
 
-    public WebDriver setValue(String value) {
+    public void setValue(String value) {
         parent.sendMessage("setElementValue", elementId + " " + value);
-        return parent.findActiveDriver();
     }
 
     public String getAttribute(String name) {
@@ -78,12 +74,11 @@ public class FirefoxWebElement implements RenderedWebElement {
         return Boolean.parseBoolean(value);
     }
 
-    public WebDriver setSelected() {
+    public void setSelected() {
         String response = parent.sendMessage("setElementSelected", elementId);
         if (!"".equals(response)) {
             throw new UnsupportedOperationException(response);
         }
-        return parent.findActiveDriver();
     }
 
     public boolean isEnabled() {

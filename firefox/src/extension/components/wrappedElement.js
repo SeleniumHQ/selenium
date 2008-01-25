@@ -14,7 +14,7 @@ FirefoxDriver.prototype.click = function(respond, position) {
     var fireMouseEventOn = Utils.fireMouseEventOn;
 
 
-    Utils.dump(browser.contentWindow.controllers);
+//    Utils.dump(browser.contentWindow.controllers);
 //    var allController = Utils.getBrowser(driver.context).controllers;
 //    for (var h in allController.commandDispatcher.focusedElement) {
 //        dump(h + "\n");

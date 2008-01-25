@@ -61,20 +61,6 @@ public class FrameAndWindowSwitchingTest extends AbstractDriverTestCase {
         assertThat(hello, equalTo("Success!"));
     }
 
-    @Ignore(value = "ie, firefox, safari", reason = "Firefox: fails on command line for some reason. Safari not implemented required functionality")
-    public void testShouldReturnANewWebDriverWhichSendsCommandsToANewWindowWhenItIsOpened() {
-        driver.get(xhtmlTestPage);
-
-        WebDriver newWindow = driver.findElement(By.linkText("Open new window")).click();
-        assertThat(driver.getTitle(), equalTo("XHTML Test Page"));
-        assertThat(newWindow.getTitle(), equalTo("We Arrive Here"));
-
-        driver = driver.switchTo().window("result");
-        assertThat(driver.getTitle(), equalTo("We Arrive Here"));
-
-        driver.switchTo().window("");
-    }
-
     @Ignore("ie, safari")
     public void testShouldBeAbleToSelectAFrameByName() {
         driver.get(framesetPage);
@@ -98,29 +84,6 @@ public class FrameAndWindowSwitchingTest extends AbstractDriverTestCase {
         driver.switchTo().frame("fourth.1");
         assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("11"));
     }
-
-    @NeedsFreshDriver
-    @Ignore("ie, safari")
-    public void testShouldBeAbleToPerformMultipleActionsOnDifferentDrivers() {
-        driver.get(iframePage);
-        driver.switchTo().frame(0);
-
-        driver.findElement(By.id("submitButton")).click();
-        String hello = driver.findElement(By.id("greeting")).getText();
-        assertThat(hello, equalTo("Success!"));
-
-        driver.get(xhtmlTestPage);
-
-        WebDriver newWindow = driver.findElement(By.linkText("Open new window")).click();
-        assertThat(driver.getTitle(), equalTo("XHTML Test Page"));
-        assertThat(newWindow.getTitle(), equalTo("We Arrive Here"));
-
-        driver = driver.switchTo().window("result");
-        assertThat(driver.getTitle(), equalTo("We Arrive Here"));
-
-        driver.switchTo().window("");
-    }
-
 
     @NoDriverAfterTest
     @Ignore("safari")

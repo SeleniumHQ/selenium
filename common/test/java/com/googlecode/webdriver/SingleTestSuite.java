@@ -14,7 +14,7 @@ public class SingleTestSuite {
 					.keepDriverInstance()
                     .includeJavascriptTests()
                     .onlyRun("JavascriptEnabledDriverTest")
-					.method("testShouldBeAbleToSwitchToFocusedElement")
+//					.method("testShouldBeAbleToClickOnNormalButtons")
 //                    .leaveRunningAfterTest()
                     .create();
 	}

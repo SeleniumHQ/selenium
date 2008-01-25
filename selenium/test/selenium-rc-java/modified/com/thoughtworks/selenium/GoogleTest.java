@@ -2,15 +2,12 @@ package com.thoughtworks.selenium;
 
 import junit.framework.TestCase;
 
-import com.thoughtworks.webdriver.firefox.FirefoxDriver;
-import com.thoughtworks.webdriver.selenium.WebDriverBackedSelenium;
-
 public class GoogleTest extends TestCase {
     private Selenium selenium;
 
     public void setUp() throws Exception {
         String url = "http://www.google.com";
-        selenium = new WebDriverBackedSelenium(new FirefoxDriver(), url);
+        selenium = new DefaultSelenium("", 0, "*chrome", url);
         selenium.start();
     }
 

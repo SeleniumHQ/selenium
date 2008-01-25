@@ -1,6 +1,5 @@
 package com.googlecode.webdriver.ie;
 
-import com.googlecode.webdriver.WebDriver;
 import com.googlecode.webdriver.WebElement;
 import com.googlecode.webdriver.RenderedWebElement;
 
@@ -20,7 +19,7 @@ public class InternetExplorerElement implements RenderedWebElement {
 
     protected static native InternetExplorerElement createInternetExplorerElement(long ieWrapper, ElementNode node);
 
-    public native WebDriver click();
+    public native void click();
 
     public native String getAttribute(String name);
 
@@ -34,15 +33,15 @@ public class InternetExplorerElement implements RenderedWebElement {
 
     public native String getValue();
 
-    public native WebDriver setValue(String value);
+    public native void setValue(String value);
 
     public native boolean isEnabled();
 
     public native boolean isSelected();
 
-    public native WebDriver setSelected();
+    public native void setSelected();
 
-    public native WebDriver submit();
+    public native void submit();
 
     public native boolean toggle();
 

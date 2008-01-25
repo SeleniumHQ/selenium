@@ -1,7 +1,6 @@
 package com.googlecode.webdriver.safari;
 
 import com.googlecode.webdriver.WebElement;
-import com.googlecode.webdriver.WebDriver;
 
 import java.util.List;
 
@@ -19,7 +18,7 @@ public class SafariWebElement implements WebElement {
         appleScript = new AppleScript();
     }
 
-    public WebDriver click() {
+    public void click() {
         appleScript.executeJavascript(
                 "if (" + locator + "[\"click\"])" +
                     locator + ".click();\r" +
@@ -28,11 +27,10 @@ public class SafariWebElement implements WebElement {
                 locator + ".dispatchEvent(event);\r" 
         );
         parent.waitForLoadToComplete();
-        return parent;
     }
 
-    public WebDriver submit() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public void submit() {
+        throw new UnsupportedOperationException("submit");
     }
 
     public String getValue() {
@@ -43,15 +41,13 @@ public class SafariWebElement implements WebElement {
             "  " + locator + ".getAttribute(\"value\");\r");
     }
 
-    public WebDriver setValue(String value) {
+    public void setValue(String value) {
         appleScript.executeJavascript(locator + ".focus()");
         appleScript.executeApplescript(
         		"tell application \"System Events\"\r" + 
         		"    keystroke (\"" + value + "\")\r" +
         		"end tell");
         appleScript.executeJavascript(locator + ".blur()");
-                
-        return parent;
     }
 
     public String getAttribute(String name) {
@@ -66,7 +62,7 @@ public class SafariWebElement implements WebElement {
         throw new UnsupportedOperationException("isSelected");
     }
 
-    public WebDriver setSelected() {
+    public void setSelected() {
     	throw new UnsupportedOperationException("setSelected");
     }
 

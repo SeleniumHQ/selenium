@@ -4,10 +4,6 @@ import junit.framework.TestCase;
 
 import org.openqa.selenium.server.browserlaunchers.WindowsUtils;
 
-import com.thoughtworks.webdriver.firefox.FirefoxDriver;
-import com.thoughtworks.webdriver.ie.InternetExplorerDriver;
-import com.thoughtworks.webdriver.selenium.WebDriverBackedSelenium;
-
 /**
  * A test of the Apache MyFaces JSF AJAX auto-suggest sandbox application at www.irian.at.
  *  
@@ -49,7 +45,7 @@ public class ApacheMyFacesSuggestTest extends TestCase {
     
     public void testAJAXFirefox() throws Throwable {
         if (shouldSkip()) return;
-        selenium = new WebDriverBackedSelenium(new FirefoxDriver(), "http://www.irian.at");
+        selenium = new DefaultSelenium("", 0, "*chrome", "http://www.irian.at");
         selenium.start();
 
         selenium.open("http://www.irian.at/selenium-server/tests/html/ajax/ajax_autocompleter2_test.html");
@@ -74,7 +70,7 @@ public class ApacheMyFacesSuggestTest extends TestCase {
     public void testAJAXIExplore() throws Throwable {
         if (!WindowsUtils.thisIsWindows()) return;
         if (shouldSkip()) return;
-        selenium = new WebDriverBackedSelenium(new InternetExplorerDriver(), "http://www.irian.at");
+        selenium = new DefaultSelenium("", 0, "*iexplore", "http://www.irian.at");
         selenium.start();
 
         selenium.open("http://www.irian.at/selenium-server/tests/html/ajax/ajax_autocompleter2_test.html");

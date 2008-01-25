@@ -22,11 +22,9 @@ public class SafariDriver implements WebDriver, FindsByLinkText, FindsById, Find
     }
 
     // Navigation
-    public WebDriver get(String url) {
+    public void get(String url) {
         appleScript.executeApplescript("tell application \"" + AppleScript.APP + "\"\rset URL in document 1 to \"" + url + "\"\rend tell");
         waitForLoadToComplete();
-        
-        return this;
     }
 
     public String getCurrentUrl() {
@@ -41,8 +39,8 @@ public class SafariDriver implements WebDriver, FindsByLinkText, FindsById, Find
         return true;
     }
 
-    public WebDriver setVisible(boolean visible) {
-        return this;
+    public void setVisible(boolean visible) {
+    	// no-op
     }
 
     public List<WebElement> findElements(By by) {
@@ -57,7 +55,7 @@ public class SafariDriver implements WebDriver, FindsByLinkText, FindsById, Find
         throw new UnsupportedOperationException("getPageSource");
     }
 
-    public WebDriver close() {
+    public void close() {
     	throw new UnsupportedOperationException("close");
     }
 
