@@ -13,7 +13,7 @@ AbstractNode* getAbstractNode(JNIEnv *env, jobject obj);
 extern "C" {
 #endif
 
-JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_getFirstAttribute
+JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_ElementNode_getFirstAttribute
   (JNIEnv *env, jobject obj)
 {
 	Node* node = getAbstractNode(env, obj);
@@ -22,7 +22,7 @@ JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_ElementNode_getFirs
 		if (attribute == NULL) 
 			return NULL;
 
-		jclass clazz = env->FindClass("com/thoughtworks/webdriver/ie/AttributeNode");
+		jclass clazz = env->FindClass("com/googlecode/webdriver/ie/AttributeNode");
 		jmethodID cId = env->GetMethodID(clazz, "<init>", "(J)V");
 		return env->NewObject(clazz, cId, (jlong) attribute);
 	} catch (const char* message) {

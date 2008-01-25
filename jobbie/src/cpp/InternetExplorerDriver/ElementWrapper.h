@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 #include "InternetExplorerDriver.h"
-#include "com_thoughtworks_webdriver_ie_InternetExplorerElement.h"
+#include "com_googlecode_webdriver_ie_InternetExplorerElement.h"
 
 class InternetExplorerDriver;
 

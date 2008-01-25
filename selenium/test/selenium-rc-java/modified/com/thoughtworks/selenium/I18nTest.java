@@ -6,7 +6,7 @@ package com.thoughtworks.selenium;
 
 import com.thoughtworks.webdriver.environment.GlobalTestEnvironment;
 import com.thoughtworks.webdriver.environment.TestEnvironment;
-import com.thoughtworks.webdriver.selenium.SeleniumTestEnvironment;
+import com.googlecode.webdriver.selenium.SeleniumTestEnvironment;
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestCase;

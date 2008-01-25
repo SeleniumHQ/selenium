@@ -24,11 +24,9 @@ import junit.framework.Assert;
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 
-import com.thoughtworks.webdriver.WebDriver;
-import com.thoughtworks.webdriver.environment.GlobalTestEnvironment;
-import com.thoughtworks.webdriver.environment.TestEnvironment;
-import com.thoughtworks.webdriver.selenium.SeleniumTestEnvironment;
-import com.thoughtworks.webdriver.selenium.WebDriverBackedSelenium;
+import com.googlecode.webdriver.selenium.SeleniumTestEnvironment;
+import com.googlecode.webdriver.environment.GlobalTestEnvironment;
+import com.googlecode.webdriver.environment.TestEnvironment;
 
 /**
  * Provides a JUnit TestCase base class that implements some handy functionality 
@@ -73,9 +71,9 @@ public class SeleneseTestCase extends TestCase {
      */
     public void setUp(String url) throws Exception {
       if(THIS_IS_WINDOWS){
-         setUp(url, "com.thoughtworks.webdriver.ie.InternetExplorerDriver");
+         setUp(url, "*iexplore");
       }else{
-	     setUp(url, "com.thoughtworks.webdriver.firefox.FirefoxDriver");
+	     setUp(url, "*chrome");
       }
     }
     
@@ -85,10 +83,10 @@ public class SeleneseTestCase extends TestCase {
      * @param browserString the browser to use, e.g. *firefox
      * @throws Exception
      */
-    public void setUp(String url, WebDriver baseDriver) throws Exception {
+    public void setUp(String url, String baseDriver) throws Exception {
         super.setUp();
 
-        selenium = new WebDriverBackedSelenium(baseDriver, url);
+        selenium = new DefaultSelenium("", 0, baseDriver, url);
         selenium.start();
     }
 

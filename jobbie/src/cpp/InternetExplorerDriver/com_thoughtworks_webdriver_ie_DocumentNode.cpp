@@ -19,18 +19,18 @@ DocumentNode* getDocumentNode(JNIEnv *env, jobject obj)
 extern "C" {
 #endif
 
-JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_DocumentNode_getFirstChild
+JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_DocumentNode_getFirstChild
   (JNIEnv *env, jobject obj)
 {
 	DocumentNode* doc = getDocumentNode(env, obj);
 	Node* child = doc->getFirstChild();
 
-	jclass clazz = env->FindClass("com/thoughtworks/webdriver/ie/ElementNode");
+	jclass clazz = env->FindClass("com/googlecode/webdriver/ie/ElementNode");
 	jmethodID cId = env->GetMethodID(clazz, "<init>", "(J)V");
 	return env->NewObject(clazz, cId, (jlong) child);
 }
 
-JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_DocumentNode_deleteStoredObject
+JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_DocumentNode_deleteStoredObject
   (JNIEnv *env, jobject obj)
 {
 	DocumentNode* doc = getDocumentNode(env, obj);

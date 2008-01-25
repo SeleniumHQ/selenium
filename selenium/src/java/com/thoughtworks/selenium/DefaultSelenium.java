@@ -1,7 +1,7 @@
 package com.thoughtworks.selenium;
 
-import com.thoughtworks.webdriver.WebDriver;
-import com.thoughtworks.webdriver.selenium.WebDriverBackedSelenium;
+import com.googlecode.webdriver.WebDriver;
+import com.googlecode.webdriver.selenium.WebDriverBackedSelenium;
 
 public class DefaultSelenium extends WebDriverBackedSelenium implements Selenium {
     private final String browserName;

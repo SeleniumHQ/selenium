@@ -24,7 +24,7 @@ void throwException(JNIEnv *env, const char* className, const char *message)
 
 void throwNoSuchElementException(JNIEnv *env, const char *message)
 {
-	throwException(env, "com/thoughtworks/webdriver/NoSuchElementException", message);
+	throwException(env, "com/googlecode/webdriver/NoSuchElementException", message);
 }
 
 void throwRunTimeException(JNIEnv *env, const char *message)
@@ -46,7 +46,7 @@ void startCom()
 
 jobject newJavaInternetExplorerDriver(JNIEnv* env, InternetExplorerDriver* driver) 
 {
-	jclass clazz = env->FindClass("com/thoughtworks/webdriver/ie/InternetExplorerDriver");
+	jclass clazz = env->FindClass("com/googlecode/webdriver/ie/InternetExplorerDriver");
 	jmethodID cId = env->GetMethodID(clazz, "<init>", "(J)V");
 
 	return env->NewObject(clazz, cId, (jlong) driver);
@@ -60,10 +60,10 @@ jobject initJavaXPathNode(JNIEnv* env, Node* node)
 	jclass clazz;
 	if (dynamic_cast<TextNode*>(node)) 
 	{
-		clazz = env->FindClass("com/thoughtworks/webdriver/ie/TextNode");
+		clazz = env->FindClass("com/googlecode/webdriver/ie/TextNode");
 	} else 
 	{
-		clazz = env->FindClass("com/thoughtworks/webdriver/ie/ElementNode");
+		clazz = env->FindClass("com/googlecode/webdriver/ie/ElementNode");
 	}
 	jmethodID cId = env->GetMethodID(clazz, "<init>", "(J)V");
 	return env->NewObject(clazz, cId, (jlong) node);

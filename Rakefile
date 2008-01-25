@@ -36,7 +36,7 @@ task :install_firefox => [:firefox] do
   cmd += ' -cp ' + libs.join(File::PATH_SEPARATOR)
   cmd += ' -Dwebdriver.firefox.development="' + extension_loc + '"' 
   cmd += " -Dwebdriver.firefox.bin=\"#{ENV['firefox']}\" " unless ENV['firefox'].nil?
-  cmd += ' com.thoughtworks.webdriver.firefox.FirefoxLauncher '
+  cmd += ' com.googlecode.webdriver.firefox.FirefoxLauncher '
     
   sh cmd, :verbose => true
 end

@@ -22,7 +22,7 @@ ElementWrapper* getWrapper(JNIEnv *env, jobject obj)
 extern "C" {
 #endif
 
-JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_createInternetExplorerElement
+JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_createInternetExplorerElement
   (JNIEnv *env, jclass clazz, jlong driverPointer, jobject elementNode)
 {
 	jclass cls = env->GetObjectClass(elementNode);
@@ -32,13 +32,13 @@ JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerEle
 	ElementNode* rawNode = (ElementNode*) value;
 
 	ElementWrapper* wrapper = new ElementWrapper((InternetExplorerDriver*) driverPointer, rawNode->getDomNode());
-	clazz = env->FindClass("com/thoughtworks/webdriver/ie/InternetExplorerElement");
+	clazz = env->FindClass("com/googlecode/webdriver/ie/InternetExplorerElement");
 	jmethodID cId = env->GetMethodID(clazz, "<init>", "(J)V");
 
 	return env->NewObject(clazz, cId, (jlong) wrapper);
 }
 
-JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_click
+JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_click
   (JNIEnv *env, jobject obj) 
 {
 	ElementWrapper* wrapper = getWrapper(env, obj);
@@ -47,7 +47,7 @@ JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerEle
 	return newJavaInternetExplorerDriver(env, driver);
 }
 
-JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_getValue
+JNIEXPORT jstring JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_getValue
   (JNIEnv *env, jobject obj)
 {
 	ElementWrapper* wrapper = getWrapper(env, obj);
@@ -58,7 +58,7 @@ JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerEle
 	return toReturn;
 }
 
-JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_setValue
+JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_setValue
   (JNIEnv *env, jobject obj, jstring newValue)
 {
 	ElementWrapper* wrapper = getWrapper(env, obj);
@@ -68,7 +68,7 @@ JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerEle
 	return newJavaInternetExplorerDriver(env, driver);
 }
 
-JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_getText
+JNIEXPORT jstring JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_getText
   (JNIEnv *env, jobject obj)
 {
 	ElementWrapper* wrapper = getWrapper(env, obj);
@@ -77,7 +77,7 @@ JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerEle
 	return env->NewString((const jchar*) value.c_str(), (jsize) value.length());
 }
 
-JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_getAttribute
+JNIEXPORT jstring JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_getAttribute
   (JNIEnv *env, jobject obj, jstring attributeName)
 {
 	ElementWrapper* wrapper = getWrapper(env, obj);
@@ -96,21 +96,21 @@ JNIEXPORT jstring JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerEle
 	return toReturn2;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_isEnabled
+JNIEXPORT jboolean JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_isEnabled
   (JNIEnv *env, jobject obj)
 {
 	ElementWrapper* wrapper = getWrapper(env, obj);
 	return wrapper->isEnabled() ? JNI_TRUE : JNI_FALSE;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_isSelected
+JNIEXPORT jboolean JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_isSelected
   (JNIEnv *env, jobject obj)
 {
 	ElementWrapper* wrapper = getWrapper(env, obj);
 	return wrapper->isSelected() ? JNI_TRUE : JNI_FALSE;
 }
 
-JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_setSelected
+JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_setSelected
   (JNIEnv *env, jobject obj)
 {
 	ElementWrapper* wrapper = getWrapper(env, obj);
@@ -122,7 +122,7 @@ JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerEle
 	}
 }
 
-JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_submit
+JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_submit
   (JNIEnv *env, jobject obj)
 {
 	ElementWrapper* wrapper = getWrapper(env, obj);
@@ -134,21 +134,21 @@ JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerEle
 	}
 }
 
-JNIEXPORT jboolean JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_toggle
+JNIEXPORT jboolean JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_toggle
   (JNIEnv *env, jobject obj)
 {
 	ElementWrapper* wrapper = getWrapper(env, obj);
 	return wrapper->toggle() ? JNI_TRUE : JNI_FALSE;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_isDisplayed
+JNIEXPORT jboolean JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_isDisplayed
   (JNIEnv *env, jobject obj)
 {
 	ElementWrapper* wrapper = getWrapper(env, obj);
 	return wrapper->isDisplayed() ? JNI_TRUE : JNI_FALSE;
 }
 
-JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_getLocation
+JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_getLocation
   (JNIEnv *env, jobject obj)
 {
 	ElementWrapper* wrapper = getWrapper(env, obj);
@@ -161,7 +161,7 @@ JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerEle
 	return env->NewObject(pointClass, cId, x, y);
 }
 
-JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_getSize
+JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_getSize
   (JNIEnv *env, jobject obj) 
 {
 	ElementWrapper* wrapper = getWrapper(env, obj);
@@ -174,13 +174,13 @@ JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerEle
 	return env->NewObject(pointClass, cId, width, height);
 }
 
-JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_getChildrenOfTypeNatively
+JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_getChildrenOfTypeNatively
   (JNIEnv *env, jobject obj, jobject list, jstring tagName)
 {
 	jclass listClass = env->FindClass("java/util/List");
 	jmethodID addId = env->GetMethodID(listClass, "add", "(Ljava/lang/Object;)Z");
 
-	jclass ieeClass = env->FindClass("com/thoughtworks/webdriver/ie/InternetExplorerElement");
+	jclass ieeClass = env->FindClass("com/googlecode/webdriver/ie/InternetExplorerElement");
 	jmethodID cId = env->GetMethodID(ieeClass, "<init>", "(J)V");
 
 	const wchar_t* converted = (wchar_t*) env->GetStringChars(tagName, NULL);
@@ -199,7 +199,7 @@ JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElemen
 	}
 }
 
-JNIEXPORT void JNICALL Java_com_thoughtworks_webdriver_ie_InternetExplorerElement_deleteStoredObject
+JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_deleteStoredObject
   (JNIEnv *env, jobject obj)
 {
 	ElementWrapper* wrapper = getWrapper(env, obj);

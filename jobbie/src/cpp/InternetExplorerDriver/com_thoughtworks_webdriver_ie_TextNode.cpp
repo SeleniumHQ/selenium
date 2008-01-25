@@ -13,7 +13,7 @@ AbstractNode* getAbstractNode(JNIEnv *env, jobject obj);
 extern "C" {
 #endif
 
-JNIEXPORT jobject JNICALL Java_com_thoughtworks_webdriver_ie_TextNode_getFirstAttribute
+JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_TextNode_getFirstAttribute
   (JNIEnv *env, jobject obj)
 {
 	return NULL;

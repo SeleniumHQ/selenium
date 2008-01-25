@@ -192,31 +192,31 @@
 				>
 			</File>
 			<File
-				RelativePath=".\com_thoughtworks_webdriver_ie_AbstractNode.cpp"
+				RelativePath=".\com_googlecode_webdriver_ie_AbstractNode.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\com_thoughtworks_webdriver_ie_AttributeNode.cpp"
+				RelativePath=".\com_googlecode_webdriver_ie_AttributeNode.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\com_thoughtworks_webdriver_ie_DocumentNode.cpp"
+				RelativePath=".\com_googlecode_webdriver_ie_DocumentNode.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\com_thoughtworks_webdriver_ie_ElementNode.cpp"
+				RelativePath=".\com_googlecode_webdriver_ie_ElementNode.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\com_thoughtworks_webdriver_ie_InternetExplorerDriver.cpp"
+				RelativePath=".\com_googlecode_webdriver_ie_InternetExplorerDriver.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\com_thoughtworks_webdriver_ie_InternetExplorerElement.cpp"
+				RelativePath=".\com_googlecode_webdriver_ie_InternetExplorerElement.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\com_thoughtworks_webdriver_ie_TextNode.cpp"
+				RelativePath=".\com_googlecode_webdriver_ie_TextNode.cpp"
 				>
 			</File>
 			<File
@@ -282,31 +282,31 @@
 				>
 			</File>
 			<File
-				RelativePath=".\com_thoughtworks_webdriver_ie_AbstractNode.h"
+				RelativePath=".\com_googlecode_webdriver_ie_AbstractNode.h"
 				>
 			</File>
 			<File
-				RelativePath=".\com_thoughtworks_webdriver_ie_AttributeNode.h"
+				RelativePath=".\com_googlecode_webdriver_ie_AttributeNode.h"
 				>
 			</File>
 			<File
-				RelativePath=".\com_thoughtworks_webdriver_ie_DocumentNode.h"
+				RelativePath=".\com_googlecode_webdriver_ie_DocumentNode.h"
 				>
 			</File>
 			<File
-				RelativePath=".\com_thoughtworks_webdriver_ie_ElementNode.h"
+				RelativePath=".\com_googlecode_webdriver_ie_ElementNode.h"
 				>
 			</File>
 			<File
-				RelativePath=".\com_thoughtworks_webdriver_ie_InternetExplorerDriver.h"
+				RelativePath=".\com_googlecode_webdriver_ie_InternetExplorerDriver.h"
 				>
 			</File>
 			<File
-				RelativePath=".\com_thoughtworks_webdriver_ie_InternetExplorerElement.h"
+				RelativePath=".\com_googlecode_webdriver_ie_InternetExplorerElement.h"
 				>
 			</File>
 			<File
-				RelativePath=".\com_thoughtworks_webdriver_ie_TextNode.h"
+				RelativePath=".\com_googlecode_webdriver_ie_TextNode.h"
 				>
 			</File>
 			<File

@@ -2,9 +2,9 @@
 <RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:em="http://www.mozilla.org/2004/em-rdf#">
 
     <Description about="urn:mozilla:install-manifest">
-        <em:id>fxdriver@thoughtworks.com</em:id>
+        <em:id>fxdriver@googlecode.com</em:id>
         <em:name>Firefox WebDriver</em:name>
-        <em:version>0.3</em:version>
+        <em:version>0.4</em:version>
         <em:description>WebDriver implementation for Firefox</em:description>
         <em:creator>Simon Stewart</em:creator>
 

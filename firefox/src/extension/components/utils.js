@@ -17,7 +17,7 @@ Utils.getService = function(className, serviceName) {
 };
 
 Utils.getServer = function() {
-    var handle = Utils.newInstance("@thoughtworks.com/webdriver/fxdriver;1", "nsISupports");
+    var handle = Utils.newInstance("@googlecode.com/webdriver/fxdriver;1", "nsISupports");
     return handle.wrappedJSObject;
 }
 
