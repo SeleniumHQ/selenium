@@ -1295,49 +1295,97 @@ BrowserBot.prototype.locateElementByDomTraversal = function(domTraversal, docume
 BrowserBot.prototype.locateElementByDomTraversal.prefix = "dom";
 
 /**
- * Finds an element identified by the xpath expression. Expressions _must_
- * begin with "//".
+ * Evaluates an xpath on a document, and returns a list containing nodes in the
+ * resulting nodeset. The browserbot xpath methods are now backed by this
+ * function. A context node may optionally be provided, and the xpath will be
+ * evaluated from that context.
+ *
+ * @param xpath                  the xpath to evaluate
+ * @param inDocument             the document in which to evaluate the xpath.
+ * @param opt_allowNativeXpath   (optional) whether to allow native evaluate().
+ *                               Defaults to true.
+ * @param opt_namespaceResolver  (optional) the namespace resolver function.
+ *                               Defaults to null.
+ * @param opt_contextNode        (optional) the context node from which to
+ *                               evaluate the xpath. If unspecified, the context
+ *                               will be the root document element.
  */
-BrowserBot.prototype.locateElementByXPath = function(xpath, inDocument, inWindow) {
+function eval_xpath(xpath, inDocument, opt_allowNativeXpath, opt_namespaceResolver, opt_contextNode)
+{
+    if (arguments.length < 5) { var opt_contextNode = inDocument; }
+    if (arguments.length < 4) { var opt_namespaceResolver = null; }
+    if (arguments.length < 3) { var opt_allowNativeXpath = true; }
+
     // Trim any trailing "/": not valid xpath, and remains from attribute
     // locator.
     if (xpath.charAt(xpath.length - 1) == '/') {
         xpath = xpath.slice(0, -1);
     }
     // HUGE hack - remove namespace from xpath for IE
-    if (browserVersion.isIE) {
+    if (browserVersion && browserVersion.isIE) {
         xpath = xpath.replace(/x:/g, '')
     }
 
+    var results = [];
+    
     // Use document.evaluate() if it's available
-    if (this.allowNativeXpath && inDocument.evaluate) {
-        var result;
+    if (opt_allowNativeXpath && inDocument.evaluate) {
         try {
-            result = inDocument.evaluate(xpath, inDocument, this._namespaceResolver, 0, null);
-        } catch (e) {
+            // Regarding use of the second argument to document.evaluate():
+            // http://groups.google.com/group/comp.lang.javascript/browse_thread/thread/a59ce20639c74ba1/a9d9f53e88e5ebb5
+            var xpathResult = inDocument
+                .evaluate((opt_contextNode == inDocument ? xpath : '.' + xpath),
+                    opt_contextNode, opt_namespaceResolver, 0, null);
+        }
+        catch (e) {
             throw new SeleniumError("Invalid xpath: " + extractExceptionMessage(e));
         }
-        return result.iterateNext();
+        var result = xpathResult.iterateNext();
+        while (result) {
+            results.push(result);
+            result = xpathResult.iterateNext();
+        }
+        return results;
     }
 
     // If not, fall back to slower JavaScript implementation
     // DGF set xpathdebug = true (using getEval, if you like) to turn on JS XPath debugging
     //xpathdebug = true;
-    var context = new ExprContext(inDocument);
+    var context;
+    if (opt_contextNode == inDocument) {
+        context = new ExprContext(inDocument);
+    }
+    else {
+        // provide false values to get the default constructor values
+        context = new ExprContext(opt_contextNode, false, false,
+            opt_contextNode.parentNode);
+    }
     context.setCaseInsensitive(true);
     context.setIgnoreAttributesWithoutValue(true);
     var xpathObj;
     try {
         xpathObj = xpathParse(xpath);
-    } catch (e) {
+    }
+    catch (e) {
         throw new SeleniumError("Invalid xpath: " + extractExceptionMessage(e));
     }
     var xpathResult = xpathObj.evaluate(context);
     if (xpathResult && xpathResult.value) {
-        return xpathResult.value[0];
+        for (var i = 0; i < xpathResult.value.length; ++i) {
+            results.push(xpathResult.value[i]);
+        }
     }
-    return null;
+    return results;
+}
 
+/**
+ * Finds an element identified by the xpath expression. Expressions _must_
+ * begin with "//".
+ */
+BrowserBot.prototype.locateElementByXPath = function(xpath, inDocument, inWindow) {
+    var results = eval_xpath(xpath, inDocument, this.allowNativeXpath,
+        this._namespaceResolver);
+    return (results.length > 0) ? results[0] : null;
 };
 
 BrowserBot.prototype._namespaceResolver = function(prefix) {
@@ -1350,52 +1398,13 @@ BrowserBot.prototype._namespaceResolver = function(prefix) {
     }
 }
 
-// DGF this may LOOK identical to _findElementUsingFullXPath, but 
-// fEUFX pops the first element off the resulting nodelist; this function
-// wraps the xpath in a count() operator and returns the numeric value directly
+/**
+ * Returns the number of xpath results.
+ */
 BrowserBot.prototype.evaluateXPathCount = function(xpath, inDocument) {
-    // HUGE hack - remove namespace from xpath for IE
-    if (browserVersion.isIE) {
-        xpath = xpath.replace(/x:/g, '')
-    }
-    xpath = new String(xpath);
-    if (xpath.indexOf("xpath=") == 0) {
-        xpath = xpath.substring(6); 
-    }
-    if (xpath.indexOf("count(") == 0) {
-        // DGF we COULD just fix this up for the user, but we might get it wrong (parens?)
-        throw new SeleniumError("XPath count expressions must not be wrapped in count() function: " + xpath);
-    }
-    
-    xpath="count("+xpath+")";
-
-    // Use document.evaluate() if it's available
-    if (this.allowNativeXpath && inDocument.evaluate) {
-        var result;
-        try {
-            result = inDocument.evaluate(xpath, inDocument, this._namespaceResolver, XPathResult.NUMBER_TYPE, null);
-        } catch (e) {
-            throw new SeleniumError("Invalid xpath: " + extractExceptionMessage(e));
-        }
-        return result.numberValue;
-    }
-
-    // If not, fall back to slower JavaScript implementation
-    // DGF set xpathdebug = true (using getEval, if you like) to turn on JS XPath debugging
-    //xpathdebug = true;
-    var context = new ExprContext(inDocument);
-    context.setCaseInsensitive(true);
-    var xpathObj;
-    try {
-        xpathObj = xpathParse(xpath);
-    } catch (e) {
-        throw new SeleniumError("Invalid xpath: " + extractExceptionMessage(e));
-    }
-    var xpathResult = xpathObj.evaluate(context);
-    if (xpathResult && xpathResult.value) {
-        return xpathResult.value;
-    }
-    return 0;
+    var results = eval_xpath(xpath, inDocument, this.allowNativeXpath,
+        this._namespaceResolver);
+    return results.length;
 };
 
 /**
