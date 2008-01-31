@@ -1,6 +1,6 @@
 package com.googlecode.webdriver.firefox;
 
-class Response {
+public class Response {
     private final String methodName;
     private final Context context;
     private final String responseText;

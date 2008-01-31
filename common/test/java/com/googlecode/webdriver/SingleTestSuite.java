@@ -11,11 +11,12 @@ public class SingleTestSuite {
     public static Test suite() {
 		return new TestSuiteBuilder()
 					.addSourceDir("common")
-					.usingDriver(SAFARI)
+                    .addSourceDir("firefox")
+                    .usingDriver(FIREFOX)
 					.keepDriverInstance()
                     .includeJavascriptTests()
-                    .onlyRun("FormHandlingTest")
-					.method("testShouldBeAbleToClearTextFromInputElements")
+                    .onlyRun("FirefoxDriverTest")
+//					.method("testShouldBeAbleToClearTextFromInputElements")
 //                    .leaveRunningAfterTest()
                     .create();
 	}

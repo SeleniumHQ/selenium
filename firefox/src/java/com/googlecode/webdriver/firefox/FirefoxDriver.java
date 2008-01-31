@@ -7,6 +7,7 @@ import com.googlecode.webdriver.NoSuchElementException;
 import com.googlecode.webdriver.WebDriver;
 import com.googlecode.webdriver.WebElement;
 import com.googlecode.webdriver.NoSuchFrameException;
+import com.googlecode.webdriver.firefox.internal.ExtensionConnectionFactory;
 import com.googlecode.webdriver.internal.FindsById;
 import com.googlecode.webdriver.internal.FindsByLinkText;
 import com.googlecode.webdriver.internal.FindsByXPath;
@@ -47,13 +48,8 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
 
     public FirefoxDriver(String profileName) {
         prepareEnvironment();
-      
-        extension = new ExtensionConnection("localhost", 7055);
 
-        if (!(connectToBrowser(1))) {
-            new FirefoxLauncher().startProfile(profileName);
-            connectToBrowser(10);
-        }
+        extension = connectTo(profileName, "localhost", 7055);
 
         if (!extension.isConnected()) {
             throw new RuntimeException(
@@ -65,6 +61,10 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
         }
 
         fixId();
+    }
+
+    protected ExtensionConnection connectTo(String profileName, String host, int port) {
+        return ExtensionConnectionFactory.connectTo(profileName, host, port);
     }
 
     protected void prepareEnvironment() {
@@ -173,22 +173,6 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
         return new FirefoxNavigation();  
     }
 
-  private boolean connectToBrowser(int timeToWaitInSeconds) {
-        long waitUntil = System.currentTimeMillis() + timeToWaitInSeconds * 1000;
-        while (!extension.isConnected() && waitUntil > System.currentTimeMillis()) {
-            try {
-                extension.connect();
-            } catch (IOException e) {
-                try {
-                    Thread.sleep(250);
-                } catch (InterruptedException ie) {
-                    throw new RuntimeException(ie);
-                }
-            }
-        }
-        return extension.isConnected();
-    }
-
     protected WebDriver findActiveDriver() {
         String response = sendMessage("findActiveDriver", null);
         long newId = Long.parseLong(response);
@@ -209,11 +193,7 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
     }
 
     public void quit() {
-        try {
-            sendMessage("quit", null);
-        } catch (NullPointerException e) {
-            // This is expected. Swallow it.
-        }
+        extension.quit();
     }
     
     public Options manage() {

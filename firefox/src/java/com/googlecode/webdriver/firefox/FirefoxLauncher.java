@@ -1,5 +1,8 @@
 package com.googlecode.webdriver.firefox;
 
+import com.googlecode.webdriver.firefox.internal.RunningInstanceConnection;
+import com.googlecode.webdriver.internal.OperatingSystem;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -14,12 +17,10 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
-import java.net.ConnectException;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.googlecode.webdriver.internal.OperatingSystem;
+import java.net.ConnectException;
 
 public class FirefoxLauncher {
     public static void main(String[] args) {
@@ -69,31 +70,21 @@ public class FirefoxLauncher {
         System.out.println("Firefox should now start and quit");
 
         startFirefox(firefox, profileName);
-        watchForParentLockFile(extensionsDir);
+        connectAndWaitForConnectionToDrop();
         connectAndKill();
     }
 
-    private void watchForParentLockFile(File extensionsDir) {
-        // Take a look at: http://kb.mozillazine.org/Profile_in_use
-
-        String parentLockName;
-        switch (OperatingSystem.getCurrentPlatform()) {
-            case WINDOWS:
-              parentLockName = "parent.lock";
-              break;
-
-            default:
-              parentLockName = ".parentlock";
-              break;
-        }
-
-        File parentLock = new File(extensionsDir, parentLockName);
-        long until = System.currentTimeMillis() + 2000;
-        while (System.currentTimeMillis() < until) {
-            // Lifted from Selenium RC's FirefoxLauncher
-            if (!parentLock.exists() && makeSureFileLockRemainsGone(parentLock))
-                return;
-            sleep(250);
+    private void connectAndWaitForConnectionToDrop() {
+        while (true) {
+            try {
+                new RunningInstanceConnection("localhost", 7055, 1000);
+                sleep(2000);
+            } catch (ConnectException e) {
+                // Expected
+                break;
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -105,38 +96,14 @@ public class FirefoxLauncher {
         }
     }
 
-  // Lifted from Selenium RC's FirefoxLauncher
-    private boolean makeSureFileLockRemainsGone(File lock) {
-        long until = System.currentTimeMillis() + 500;
-        while (System.currentTimeMillis() < until) {
-            sleep(500);
-            if (lock.exists())
-                return false;
-        }
-
-        if (!lock.exists()) {
-            return true;
-        }
-
-        return false;
-    }
-
     protected void connectAndKill() {
-        ExtensionConnection connection = new ExtensionConnection("localhost", 7055);
         try {
-            long tryUntil = System.currentTimeMillis() + (5 * 1000);
-            while (!connection.isConnected() && System.currentTimeMillis() < tryUntil) {
-                try {
-                    wait(2);
-                    connection.connect();
-                } catch (ConnectException e) {
-                    // This is fine. It may just happen
-                }
-            }
+            ExtensionConnection connection = new RunningInstanceConnection("localhost", 7055, 5000);
             connection.sendMessageAndWaitForResponse("quit", 0, "");
         } catch (NullPointerException e) {
             // Expected. Swallow it.
-            return;
+        } catch (ConnectException e) {
+            // This is fine. It just means that Firefox isn't running with the webdriver extension installed already
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -280,11 +247,11 @@ public class FirefoxLauncher {
         }
     }
 
-    public void startProfile(String profileName) {
-        startProfile(profileName, null);
+    public Process startProfile(String profileName) {
+        return startProfile(profileName, null);
     }
 
-    public void startProfile(String profileName, File firefoxBinary) {
+    public Process startProfile(String profileName, File firefoxBinary) {
         File binary = locateFirefoxBinary(firefoxBinary);
 
         profileName = profileName == null ? System.getProperty("webdriver.firefox.profile") : profileName;
@@ -300,7 +267,7 @@ public class FirefoxLauncher {
             modifyLibraryPath(builder, binary);
             builder.environment().put("MOZ_NO_REMOTE", "1");
             builder.environment().put("XRE_PROFILE_PATH", profileDir.getAbsolutePath());
-            builder.start();
+            return builder.start();
         } catch (IOException e) {
             throw new RuntimeException("Cannot load firefox: " + profileName);
         }
@@ -603,13 +570,5 @@ public class FirefoxLauncher {
        } finally {
            closeCleanly(reader);
        }
-    }
-
-    private void wait(int seconds) {
-        try {
-            Thread.sleep(seconds * 1000);
-        } catch (InterruptedException e) {
-            // Nothing to do. Swallow it
-        }
     }
 }
