@@ -67,7 +67,7 @@ public class LocatingElementHandlerTest extends TestCase {
 
         By by = By.xpath("//input[@name='q']");
         
-        expect(driver.findElement(by)).andReturn(element);
+        expect(driver.findElement(by)).andReturn(element).atLeastOnce();
 
         replay(driver, element);
       
