@@ -4,6 +4,7 @@ import java.awt.Point;
 
 public class DragAndDropTest extends AbstractDriverTestCase {
     
+    @Ignore("ie, safari, htmlunit")
     public void testDragAndDrop() throws Exception {
         driver.get(dragAndDropPage);
         RenderedWebElement img = (RenderedWebElement) driver.findElement(By.id("test1"));
@@ -21,6 +22,7 @@ public class DragAndDropTest extends AbstractDriverTestCase {
         assertEquals(expectedLocation, img.getLocation());
     }
     
+    @Ignore("ie, safari, htmlunit")
     public void testDragAndDropToElement() {
         driver.get(dragAndDropPage);
         RenderedWebElement img1 = (RenderedWebElement) driver.findElement(By.id("test1"));
@@ -30,6 +32,7 @@ public class DragAndDropTest extends AbstractDriverTestCase {
         assertEquals(img1.getLocation(), img2.getLocation());
     }
     
+    @Ignore("ie, safari, htmlunit")
     public void testElementInDiv() {
         driver.get(dragAndDropPage);
         RenderedWebElement img = (RenderedWebElement) driver.findElement(By.id("test3"));
@@ -38,6 +41,7 @@ public class DragAndDropTest extends AbstractDriverTestCase {
         assertEquals(expectedLocation, img.getLocation());
     }
     
+    @Ignore("ie, safari, htmlunit" )
     public void testDragTooFar() {
         driver.get(dragAndDropPage);
         RenderedWebElement img = (RenderedWebElement) driver.findElement(By.id("test1"));
@@ -51,6 +55,7 @@ public class DragAndDropTest extends AbstractDriverTestCase {
         //far, otherwise this function will not return for a long long time
     }
     
+    @Ignore("ie, safari, htmlunit")
     public void testMouseSpeed() throws Exception {
         driver.get(dragAndDropPage);
         driver.manage().setMouseSpeed(Speed.SLOW);
