@@ -18,7 +18,6 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -79,26 +78,26 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
 
     public void close() {
         try {
-            sendMessage("close", null);
+            sendMessage(RuntimeException.class, "close");
         } catch (NullPointerException e) {
             // All good
         }
     }
 
     public String getPageSource() {
-        return sendMessage("getPageSource", null);
+        return sendMessage(RuntimeException.class, "getPageSource");
     }
 
     public void get(String url) {
-        sendMessage("get", url);
+        sendMessage(RuntimeException.class, "get", url);
     }
 
     public String getCurrentUrl() {
-        return sendMessage("getCurrentUrl", null);
+        return sendMessage(RuntimeException.class, "getCurrentUrl");
     }
 
     public String getTitle() {
-        return sendMessage("title", null);
+        return sendMessage(RuntimeException.class, "title");
     }
 
     public boolean getVisible() {
@@ -130,7 +129,7 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
 
 
   public List<WebElement> findElementsByXPath(String using) {
-      String returnedIds = sendMessage("selectElementsUsingXPath", using);
+      String returnedIds = sendMessage(RuntimeException.class, "selectElementsUsingXPath", using);
       List<WebElement> elements = new ArrayList<WebElement>();
 
       if (returnedIds.length() == 0)
@@ -153,10 +152,7 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
   }
 
   private WebElement findElement(String commandName, String argument) {
-    String elementId = sendMessage(commandName, argument);
-    if (elementId == null || "".equals(elementId)) {
-      throw new NoSuchElementException("Unable to find " + argument);
-    }
+    String elementId = sendMessage(NoSuchElementException.class, commandName, argument);
 
     return new FirefoxWebElement(this, elementId);
   }
@@ -175,7 +171,8 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
     }
 
     protected WebDriver findActiveDriver() {
-        String response = sendMessage("findActiveDriver", null);
+        String response = sendMessage(RuntimeException.class, "findActiveDriver");
+
         long newId = Long.parseLong(response);
         if (newId == id) {
             return this;
@@ -183,13 +180,14 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
         return new FirefoxDriver(extension, newId);
     }
 
-    protected String sendMessage(String methodName, String argument) {
-        Response response = extension.sendMessageAndWaitForResponse(methodName, id, argument);
+    protected String sendMessage(Class<? extends RuntimeException> throwOnFailure, String methodName, String... argument) {
+        Response response = extension.sendMessageAndWaitForResponse(throwOnFailure, methodName, id, argument);
+        response.ifNecessaryThrow(throwOnFailure);
         return response.getResponseText();
     }
 
     private void fixId() {
-        String response = sendMessage("findActiveDriver", null);
+        String response = sendMessage(RuntimeException.class, "findActiveDriver");
         id = Long.parseLong(response);
     }
 
@@ -209,7 +207,7 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
         private final int FAST_SPEED = 100;
         
         public void addCookie(Cookie cookie) {
-            sendMessage("addCookie", convertToJson(cookie));
+            sendMessage(RuntimeException.class, "addCookie", convertToJson(cookie));
         }
 
         private String convertToJson(Cookie cookie) {
@@ -250,7 +248,7 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
         }
 
         public Set<Cookie> getCookies() {
-            String response = sendMessage("getCookie", null).trim();
+            String response = sendMessage(RuntimeException.class, "getCookie").trim();
             Set<Cookie> cookies = new HashSet<Cookie>();
 
             if(!"".equals(response)) {
@@ -297,11 +295,11 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
         
         public void deleteCookieNamed(String name) {
             Cookie toDelete = new Cookie(name, "", "", "", null, false);
-            sendMessage("deleteCookie", convertToJson(toDelete));
+            sendMessage(RuntimeException.class, "deleteCookie", convertToJson(toDelete));
         }
         
         public void deleteCookie(Cookie cookie) {
-            sendMessage("deleteCookie", convertToJson(cookie));
+            sendMessage(RuntimeException.class, "deleteCookie", convertToJson(cookie));
         }
         
         public void deleteAllCookies() {
@@ -312,8 +310,10 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
         }
         
         public Speed getMouseSpeed() {
-            int pixelSpeed = Integer.parseInt(sendMessage("getMouseSpeed", ""));
+            int pixelSpeed = Integer.parseInt(sendMessage(RuntimeException.class, "getMouseSpeed"));
             Speed speed;
+
+            // TODO: simon 2007-02-01; Delegate to the enum
             switch (pixelSpeed) {
                 case SLOW_SPEED:
                     speed = Speed.SLOW;
@@ -334,6 +334,7 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
         
         public void setMouseSpeed(Speed speed) {
             int pixelSpeed = 0;
+            // TODO: simon 2007-02-01; Delegate to the enum
             switch(speed) {
                 case SLOW:
                     pixelSpeed = SLOW_SPEED;
@@ -347,7 +348,7 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
                 default:
                     throw new IllegalArgumentException();
             }
-            sendMessage("setMouseSpeed", "" + pixelSpeed);
+            sendMessage(RuntimeException.class, "setMouseSpeed", "" + pixelSpeed);
         }
     }
 
@@ -357,14 +358,13 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
         }
 
         public WebDriver frame(String frameName) {
-            String result = sendMessage("switchToFrame", frameName);
-            if (result.length() != 0)
-                throw new NoSuchFrameException("Cannot find frame: " + result);
+            sendMessage(NoSuchFrameException.class, "switchToFrame", frameName);
             return FirefoxDriver.this;
         }
 
         public WebDriver window(String windowName) {
-            String response = sendMessage("switchToWindow", String.valueOf(windowName));
+            // TODO: simon: 2007-02-01 This should also throw an exception
+            String response = sendMessage(RuntimeException.class, "switchToWindow", String.valueOf(windowName));
             if (response == null || "No window found".equals(response)) {
                 return null;
             }
@@ -377,7 +377,7 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
         }
 
         public WebDriver defaultContent() {
-            sendMessage("switchToDefaultContent", null);
+            sendMessage(RuntimeException.class, "switchToDefaultContent");
             return FirefoxDriver.this;
         }
 
@@ -393,11 +393,11 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
 
     private class FirefoxNavigation implements Navigation {
       public void back() {
-        sendMessage("goBack", null);
+        sendMessage(RuntimeException.class, "goBack");
       }
 
       public void forward() {
-        sendMessage("goForward", null);
+        sendMessage(RuntimeException.class, "goForward");
       }
 
       public void to(String url) {

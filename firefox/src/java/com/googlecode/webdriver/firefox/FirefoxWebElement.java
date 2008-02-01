@@ -20,69 +20,49 @@ public class FirefoxWebElement implements RenderedWebElement {
     }
 
     public void click() {
-        parent.sendMessage("click", elementId);
+        parent.sendMessage(RuntimeException.class, "click", elementId);
     }
 
     public void submit() {
-        parent.sendMessage("submitElement", elementId);
+        parent.sendMessage(RuntimeException.class, "submitElement", elementId);
     }
 
     public String getValue() {
-        String result = parent.sendMessage("getElementValue", elementId);
-
-        int newlineIndex = result.indexOf('\n');
-
-        String status = result;
-        String remainder = "";
-
-        if (newlineIndex != -1) {
-            status = result.substring(0, newlineIndex);
-            remainder = result.substring(newlineIndex + 1);
-        }
-
-        if (!"OK".equals(status))
+        try {
+            return parent.sendMessage(RuntimeException.class, "getElementValue", elementId);
+        } catch (RuntimeException e) {
             return null;
-
-        return remainder.replace("\n", OperatingSystem.getCurrentPlatform().getLineEnding());
+        }
     }
 
     public void clear() {
-    	parent.sendMessage("clear", elementId);
+    	parent.sendMessage(RuntimeException.class, "clear", elementId);
     }
     
     public void sendKeys(String value) {
-        parent.sendMessage("sendKeys", elementId + " " + value);
+        parent.sendMessage(RuntimeException.class, "sendKeys", elementId + " " + value);
     }
 
     public String getAttribute(String name) {
-        String result = parent.sendMessage("getElementAttribute", elementId + " " + name);
-        String[] parts = result.split("\n");
-        if (!"OK".equals(parts[0]))
+        try {
+            return parent.sendMessage(RuntimeException.class, "getElementAttribute", elementId + " " + name);
+        } catch (RuntimeException e) {
             return null;
-
-        if (parts.length > 1)
-            return parts[1];
-        return "";
+        }
     }
 
     public boolean toggle() {
-        String response = parent.sendMessage("toggleElement", elementId);
-        if (response.length() != 0) {
-            throw new UnsupportedOperationException(response);
-        }
+        parent.sendMessage(UnsupportedOperationException.class, "toggleElement", elementId);
         return isSelected();
     }
 
     public boolean isSelected() {
-        String value = parent.sendMessage("getElementSelected", elementId);
+        String value = parent.sendMessage(RuntimeException.class, "getElementSelected", elementId);
         return Boolean.parseBoolean(value);
     }
 
     public void setSelected() {
-        String response = parent.sendMessage("setElementSelected", elementId);
-        if (!"".equals(response)) {
-            throw new UnsupportedOperationException(response);
-        }
+        parent.sendMessage(UnsupportedOperationException.class, "setElementSelected", elementId);
     }
 
     public boolean isEnabled() {
@@ -91,27 +71,27 @@ public class FirefoxWebElement implements RenderedWebElement {
     }
 
     public String getText() {
-    	String toReturn = parent.sendMessage("getElementText", elementId);
+    	String toReturn = parent.sendMessage(RuntimeException.class, "getElementText", elementId);
         return toReturn.replace("\n", OperatingSystem.getCurrentPlatform().getLineEnding());
     }
 
     public List<WebElement> getChildrenOfType(String tagName) {
-        String response = parent.sendMessage("getElementChildren", elementId + " " + tagName);
+        String response = parent.sendMessage(RuntimeException.class, "getElementChildren", elementId + " " + tagName);
         String[] ids = response.split(" ");
 
         ArrayList<WebElement> children = new ArrayList<WebElement>();
-        for (int i = 0; i < ids.length; i++)
-            children.add(new FirefoxWebElement(parent, ids[i]));
+        for (String id : ids)
+            children.add(new FirefoxWebElement(parent, id));
 
         return children;
     }
 
     public boolean isDisplayed() {
-        return Boolean.parseBoolean(parent.sendMessage("isElementDisplayed", elementId));
+        return Boolean.parseBoolean(parent.sendMessage(RuntimeException.class, "isElementDisplayed", elementId));
     }
 
     public Point getLocation() {
-        String result = parent.sendMessage("getElementLocation", elementId);
+        String result = parent.sendMessage(RuntimeException.class, "getElementLocation", elementId);
 
         String[] parts = result.split(",");
         int x = Integer.parseInt(parts[0].trim());
@@ -121,7 +101,7 @@ public class FirefoxWebElement implements RenderedWebElement {
     }
 
     public Dimension getSize() {
-        String result = parent.sendMessage("getElementSize", elementId);
+        String result = parent.sendMessage(RuntimeException.class, "getElementSize", elementId);
 
         String[] parts = result.split(",");
         int x = Integer.parseInt(parts[0].trim());
@@ -131,8 +111,8 @@ public class FirefoxWebElement implements RenderedWebElement {
     }
     
     public void dragAndDropBy(int moveRight, int moveDown) {
-        String result = parent.sendMessage(
-                "dragAndDrop", elementId+" " + moveRight + "," + moveDown);
+        parent.sendMessage(RuntimeException.class,
+                "dragAndDrop", elementId, moveRight + "," + moveDown);
     }
 
     public void dragAndDropOn(RenderedWebElement element) {

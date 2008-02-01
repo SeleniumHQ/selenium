@@ -102,16 +102,18 @@ public abstract class AbstractExtensionConnection implements ExtensionConnection
         return socket != null && socket.isConnected();
     }
 
-    public Response sendMessageAndWaitForResponse(String methodName, long driverId, String argument) {
-        int lines = countLines(argument) + 1;
+    public Response sendMessageAndWaitForResponse(Class<? extends RuntimeException> throwOnFailure, String methodName,
+                                                  long driverId, String... arguments) {
+        int lines = countLines(arguments) + 1;
 
         StringBuffer message = new StringBuffer(methodName);
         message.append(" ").append(lines).append("\n");
 
         message.append(driverId).append("\n");
 
-        if (argument != null)
-            message.append(argument).append("\n");
+        for (String arg : arguments) {
+            message.append(arg).append("\n");
+        }
 
         out.print(message.toString());
         out.flush();
@@ -119,11 +121,13 @@ public abstract class AbstractExtensionConnection implements ExtensionConnection
         return waitForResponseFor(methodName);
     }
 
-    private int countLines(String argument) {
+    private int countLines(String... arguments) {
         int lines = 0;
 
-        if (argument != null)
-            lines = argument.split("\n").length;
+        for (String arg : arguments) {
+            lines += arg.split("\n").length;
+        }
+
         return lines;
     }
 
@@ -136,13 +140,11 @@ public abstract class AbstractExtensionConnection implements ExtensionConnection
     }
 
     private Response readLoop(String command) throws IOException {
-        while (true) {
-            Response response = nextResponse();
+        Response response = nextResponse();
 
-            if (command.equals(response.getCommand()))
-                return response;
-            throw new RuntimeException("Expected response to " + command + " but actually got: " + response.getCommand() + " (" + response.getCommand() + ")");
-        }
+        if (command.equals(response.getCommand()))
+            return response;
+        throw new RuntimeException("Expected response to " + command + " but actually got: " + response.getCommand() + " (" + response.getCommand() + ")");
     }
 
     private Response nextResponse() throws IOException {
@@ -150,7 +152,8 @@ public abstract class AbstractExtensionConnection implements ExtensionConnection
 
         // Expected input will be of the form:
         // CommandName NumberOfLinesRemaining
-        // Identifier
+        // context
+        // Status
         // ResponseText
 
         int spaceIndex = line.indexOf(' ');

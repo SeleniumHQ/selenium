@@ -60,19 +60,6 @@ public class FormHandlingTest extends AbstractDriverTestCase {
 		}
 	}
 
-	@Ignore(value = "firefox, safari, ie", reason = "Typing text into a random element should be allowed")
-	public void testShouldThrowAnUnsupportedOperationExceptionIfTryingToSetTheValueOfAnElementNotInAForm() {
-		driver.get(xhtmlTestPage);
-
-		WebElement element = driver.findElement(By.xpath("//h1"));
-		try {
-			element.sendKeys("Fishy");
-			fail("Should not have succeeded");
-		} catch (UnsupportedOperationException e) {
-			// this is expected
-		}
-	}
-
 	public void testShouldBeAbleToEnterTextIntoATextAreaBySettingItsValue() {
 		driver.get(javascriptPage);
 		WebElement textarea = driver.findElement(By

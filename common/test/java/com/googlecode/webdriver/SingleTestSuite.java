@@ -15,8 +15,8 @@ public class SingleTestSuite {
                     .usingDriver(FIREFOX)
 					.keepDriverInstance()
                     .includeJavascriptTests()
-                    .onlyRun("FirefoxDriverTest")
-//					.method("testShouldBeAbleToClearTextFromInputElements")
+                    .onlyRun("DragAndDropTest")
+//                    .method("testDragAndDrop")
 //                    .leaveRunningAfterTest()
                     .create();
 	}

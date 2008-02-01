@@ -8,7 +8,7 @@ public class DisconnectedExtension implements ExtensionConnection {
         return false;
     }
 
-    public Response sendMessageAndWaitForResponse(String methodName, long id, String argument) {
+    public Response sendMessageAndWaitForResponse(Class<? extends RuntimeException> throwOnFailure, String methodName, long id, String... argument) {
         throw new UnsupportedOperationException("Cannot execute " + methodName + " on a disconnected extension");
     }
 

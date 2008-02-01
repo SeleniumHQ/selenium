@@ -99,7 +99,7 @@ public class FirefoxLauncher {
     protected void connectAndKill() {
         try {
             ExtensionConnection connection = new RunningInstanceConnection("localhost", 7055, 5000);
-            connection.sendMessageAndWaitForResponse("quit", 0, "");
+            connection.sendMessageAndWaitForResponse(RuntimeException.class, "quit", 0, "");
         } catch (NullPointerException e) {
             // Expected. Swallow it.
         } catch (ConnectException e) {

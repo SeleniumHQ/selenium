@@ -30,20 +30,18 @@ FirefoxDriver.prototype.get = function(respond, url) {
         new WebLoadingListener(this, function(event) {
             // TODO: Rescue the URI and response code from the event
             var responseText = "";
-            respond(self.context, "get", responseText);
+            respond.context = self.context;
+            respond.response = responseText;
+            respond.send();
         });
     }
 
     Utils.getBrowser(this.context).loadURI(url);
 
     if (!loadEventExpected) {
-        respond(self.context, "get", "");
+        respond.context = self.context;
+        respond.send();
     }
-}
-
-FirefoxDriver.prototype.quit = function(respond) {
-    var appService = Utils.getService("@mozilla.org/toolkit/app-startup;1", "nsIAppStartup");
-    appService.quit(Components.interfaces.nsIAppStartup.eForceQuit);
 }
 
 FirefoxDriver.prototype.close = function(respond) {
@@ -72,33 +70,46 @@ FirefoxDriver.prototype.close = function(respond) {
     }
 
     // If we're still running, return
-    respond(this.context, "close");
+    respond.context = this.context;
+    respond.send();
 }
 
 FirefoxDriver.prototype.getCurrentUrl = function(respond) {
-    respond(this.context, "getCurrentUrl", Utils.getBrowser(this.context).contentWindow.location);
+    respond.context = this.context;
+    respond.response = Utils.getBrowser(this.context).contentWindow.location;
+    respond.send();
 }
 
 FirefoxDriver.prototype.title = function(respond) {
     var browser = Utils.getBrowser(this.context);
-    respond(this.context, "title", browser.contentTitle);
+    respond.context = this.context;
+    respond.response = browser.contentTitle;
+    respond.send();
 };
 
 FirefoxDriver.prototype.getPageSource = function(respond) {
     var source = Utils.getDocument(this.context).getElementsByTagName("html")[0].innerHTML;
-    respond(this.context, "getPageSource", "<html>" + source + "</html>");
+
+    respond.context = this.context;
+    respond.response = "<html>" + source + "</html>";
+    respond.send();
 };
 
 
 FirefoxDriver.prototype.selectElementUsingXPath = function(respond, xpath) {
     var doc = Utils.getDocument(this.context);
     var result = doc.evaluate(xpath, doc, null, Components.interfaces.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+
+    respond.context = this.context;
+
     if (result) {
-        var index = Utils.addToKnownElements(result, this.context);
-        respond(this.context, "selectElementUsingXPath", index);
+        respond.response = Utils.addToKnownElements(result, this.context);
     } else {
-        respond(this.context, "selectElementUsingXPath");
+        respond.isError = true;
+        respond.response = "Unable to locate element using " + xpath;
     }
+
+    respond.send();
 };
 
 FirefoxDriver.prototype.selectElementUsingLink = function(respond, linkText) {
@@ -110,25 +121,33 @@ FirefoxDriver.prototype.selectElementUsingLink = function(respond, linkText) {
             index = Utils.addToKnownElements(allLinks[i], this.context);
         }
     }
+
+    respond.context = this.context;
+
     if (index !== undefined) {
-        respond(this.context, "selectElementUsingLink", index);
+        respond.response = index;
     } else {
-        respond(this.context, "selectElementUsingLink");
+        respond.isError = true;
+        respond.response = "Unable to find element with link text '" + linkText + "'";
     }
+
+    respond.send();
 };
 
 FirefoxDriver.prototype.selectElementById = function(respond, id) {
     var doc = Utils.getDocument(this.context);
     var element = doc.getElementById(id);
 
-    if (element == null || !element) {
-        respond(this.context, "selectElementById");
-        return;
+    respond.context = this.context;
+
+    if (element) {
+        respond.response = Utils.addToKnownElements(element, this.context);
+    } else {
+        respond.isError = true;
+        respond.response = "Unable to find element with id '" + id + "'";
     }
 
-    var index = Utils.addToKnownElements(element, this.context);
-
-    respond(this.context, "selectElementById", index);
+    respond.send();
 }
 
 FirefoxDriver.prototype.selectElementsUsingXPath = function(respond, xpath) {
@@ -143,7 +162,10 @@ FirefoxDriver.prototype.selectElementsUsingXPath = function(respond, xpath) {
     }
     // Strip the trailing comma
     response = response.substring(0, response.length - 1);
-    respond(this.context, "selectElementsUsingXPath", response);
+
+    respond.context = this.context;
+    respond.response = response;
+    respond.send();
 };
 
 FirefoxDriver.prototype.switchToFrame = function(respond, frameId) {
@@ -153,30 +175,35 @@ FirefoxDriver.prototype.switchToFrame = function(respond, frameId) {
 
     if (frameDoc) {
         this.context = new Context(this.context.windowId, frameId);
-        respond(this.context, "switchToFrame");
+        respond.context = this.context;
+        respond.send();
     } else {
-        respond(this.context, "switchToFrame", frameId);
+        respond.isError = true;
+        respond.context = this.context;
+        respond.response = "Cannot find frame with id: " + frameId;
+        respond.send();
     }
 }
 
 FirefoxDriver.prototype.switchToDefaultContent = function(respond) {
     this.context.frameId = "?";
-    respond(this.context, "switchToDefaultContent");
+    respond.context = this.context;
+    respond.send();
 }
 
 
-FirefoxDriver.prototype.switchToActiveElement = function(respond) {
-    var doc = Utils.getDocument(this.context);
-
-    var active = null;
-    if (doc["activeElement"]) {
-        active = doc.activeElement;
-    } else {
-        active = this.activeElement;
-    }
-
-    respond(this.context, "switchToActiveElement");
-}
+//FirefoxDriver.prototype.switchToActiveElement = function(respond) {
+//    var doc = Utils.getDocument(this.context);
+//
+//    var active = null;
+//    if (doc["activeElement"]) {
+//        active = doc.activeElement;
+//    } else {
+//        active = this.activeElement;
+//    }
+//
+//    respond(this.context, "switchToActiveElement");
+//}
 
 FirefoxDriver.prototype.goBack = function(respond) {
     var browser = Utils.getBrowser(this.context);
@@ -185,7 +212,8 @@ FirefoxDriver.prototype.goBack = function(respond) {
       browser.goBack();
     }
 
-    respond(this.context, "goBack");
+    respond.context = this.context;
+    respond.send();
 }
 
 FirefoxDriver.prototype.goForward = function(respond) {
@@ -195,7 +223,8 @@ FirefoxDriver.prototype.goForward = function(respond) {
       browser.goForward();
     }
 
-    respond(this.context, "goForward");
+    respond.context = this.context;
+    respond.send();
 }
 
 FirefoxDriver.prototype.addCookie = function(respond, cookieString) {
@@ -216,7 +245,9 @@ FirefoxDriver.prototype.addCookie = function(respond, cookieString) {
 
     var cookieManager = Utils.getService("@mozilla.org/cookiemanager;1", "nsICookieManager2");
     cookieManager.add(cookie.domain, cookie.path, cookie.name, cookie.value, cookie.secure, false, cookie.expiry);
-    respond(this.context, "addCookie");
+
+    respond.context = this.context;
+    respond.send();
 }
 
 FirefoxDriver.prototype.getCookie = function(respond) {
@@ -257,7 +288,9 @@ FirefoxDriver.prototype.getCookie = function(respond) {
       }
     }
 
-    respond(this.context, "getCookie", toReturn);
+    respond.context = this.context;
+    respond.response = toReturn;
+    respond.send();
 }
 
 FirefoxDriver.prototype.deleteCookie = function(respond, cookieString) {
@@ -271,5 +304,19 @@ FirefoxDriver.prototype.deleteCookie = function(respond, cookieString) {
     var cookieManager = Utils.getService("@mozilla.org/cookiemanager;1", "nsICookieManager");
     cookieManager.remove(cookie.domain, cookie.name, cookie.path, false);
 
-    respond(this.context, "deleteCookie");
+    respond.context = this.context;
+    respond.send();
 }
+
+
+FirefoxDriver.prototype.setMouseSpeed = function(respond, speed) {
+    this.mouseSpeed = speed;
+    respond.context = this.context;
+    respond.send();
+};
+
+FirefoxDriver.prototype.getMouseSpeed = function(respond, speed) {
+    respond.context = this.context;
+    respond.response = "" + this.mouseSpeed;
+    respond.send();
+};

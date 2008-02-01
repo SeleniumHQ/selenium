@@ -70,23 +70,41 @@ SocketListener.prototype.executeCommand = function() {
     var fxbrowser, fxdocument;
     var self = this;
 
-    var respond = function(context, method, response) {
-        var output = method + " ";
+    var respond = {
+        send : function() {
+            var output = this.commandName + " ";
 
-        if (response == undefined) {
-            output += "1\n" + context + "\n";
-        } else {
-            var length = response["split"] ? response.split("\n").length + 1 : 2;
-            output += length + "\n" + context + "\n" + response + "\n";
-        }
+            var remainder = this.context + "\n";
+            remainder += (this.isError ? "ERROR" : "OK") + "\n";
 
-        var slices = output.length / 256 + 1;
+            remainder += this.elementId + "\n";
+
+            remainder += this.response + "\n";
+
+            var lines = remainder.split("\n").length - 1;
+            output += lines + "\n" + remainder;
+//        var output = method + " ";
+            //
+            //
+            //
+            //        if (response == undefined) {
+            //            output += "1\n" + context + "\n";
+            //        } else {
+            //            var length = response["split"] ? response.split("\n").length + 1 : 2;
+            //            output += length + "\n" + context + "\n" + response + "\n";
+            //        }
+
+            var slices = output.length / 256 + 1;
         // Fail on powers of 2 :)
-        for (var i = 0; i < slices; i++) {
-            var slice = output.slice(i * 256, (i + 1) * 256);
-            self.outstream.writeString(slice, slice.length);
-            self.outstream.flush();
-        }
+            for (var i = 0; i < slices; i++) {
+                var slice = output.slice(i * 256, (i + 1) * 256);
+                self.outstream.writeString(slice, slice.length);
+                self.outstream.flush();
+            }
+        },
+        commandName : undefined,
+        isError : false,
+        responseText : ""
     };
 
     if (!this.driverPrototype)
@@ -105,6 +123,7 @@ SocketListener.prototype.executeCommand = function() {
         this.linesLeft = 0;
         this.step = 0;
 
+        respond.commandName = command;
         this[command](respond, bits[1]);
     } else if (this.driverPrototype[this.command]) {
         var bits = this.data.split("\n");
@@ -171,11 +190,14 @@ SocketListener.prototype.executeCommand = function() {
                 info.driver.window.setTimeout(wait, 10, info);
             } else {
                 try {
+                    respond.commandName = info.command;
                     info.driver[info.command](respond, info.bits);
                 } catch (e) {
                     info.driver.window.dump("Exception caught: " + info.command + "(" + info.data + ")\n");
                     info.driver.window.dump(e + "\n");
-                    respond(info.driver.context, info.command);
+                    respond.isError = true;
+                    respond.context = info.driver.context;
+                    respond.send();
                 }
             }
         }
@@ -186,7 +208,10 @@ SocketListener.prototype.executeCommand = function() {
         this.data = "";
         this.linesLeft = 0;
         this.step = 0;
-        respond(new Context(), this.command);
+        respond.isError = true;
+        respond.response = "Unrecognised command: " + this.command;
+        respond.context = new Context();
+        respond.send();
     }
 };
 
@@ -207,26 +232,40 @@ SocketListener.prototype.switchToWindow = function(respond, windowId) {
         if (win.content.name == windowId) {
             win.focus();
             var driver = win.top.fxdriver;
-            if (!driver)
-                respond(this.context, "switchToWindow", "No driver found attached to top window!");
-            respond(this.context, "switchToWindow", driver.id);
+            if (!driver) {
+                respond.context = this.context;
+                respond.isError = true;
+                respond.response = "No driver found attached to top window!";
+                respond.send();
+            }
+
+            respond.context = this.context;
+            respond.response = driver.id;
+            respond.send();
             return;
         }
     }
 
-    respond(this.context, "switchToWindow", "No window found");
+    respond.context = this.context;
+    respond.isError = true;
+    respond.resposne = "No window found";
+    respond.send();
 };
 
 
 SocketListener.prototype.findActiveDriver = function(respond) {
     var win = this.wm.getMostRecentWindow("navigator:browser");
-
     var driver = win.fxdriver;
 
-    if (!driver)
-        dump("No drivers associated with the window\n");  // What else can we do?
+    if (!driver) {
+        respond.isError = true;
+        respond.response = "No drivers associated with the window\n";
+    }
 
-    respond(this.context, "findActiveDriver", driver.id);
+    respond.context = this.context;
+    respond.response = driver.id;
+
+    respond.send();
 };
 
 SocketListener.prototype.quit = function(respond) {

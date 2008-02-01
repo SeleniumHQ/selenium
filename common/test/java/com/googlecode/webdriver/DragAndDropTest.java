@@ -3,8 +3,9 @@ package com.googlecode.webdriver;
 import java.awt.Point;
 
 public class DragAndDropTest extends AbstractDriverTestCase {
-    
-    @Ignore("ie, safari, htmlunit")
+
+    @JavascriptEnabled
+    @Ignore("ie, safari")
     public void testDragAndDrop() throws Exception {
         driver.get(dragAndDropPage);
         RenderedWebElement img = (RenderedWebElement) driver.findElement(By.id("test1"));
@@ -21,8 +22,9 @@ public class DragAndDropTest extends AbstractDriverTestCase {
         drag(img, expectedLocation, 1, -1);
         assertEquals(expectedLocation, img.getLocation());
     }
-    
-    @Ignore("ie, safari, htmlunit")
+
+    @JavascriptEnabled
+    @Ignore("ie, safari")
     public void testDragAndDropToElement() {
         driver.get(dragAndDropPage);
         RenderedWebElement img1 = (RenderedWebElement) driver.findElement(By.id("test1"));
@@ -31,8 +33,9 @@ public class DragAndDropTest extends AbstractDriverTestCase {
         img2.dragAndDropOn(img1);
         assertEquals(img1.getLocation(), img2.getLocation());
     }
-    
-    @Ignore("ie, safari, htmlunit")
+
+    @JavascriptEnabled
+    @Ignore("ie, safari")
     public void testElementInDiv() {
         driver.get(dragAndDropPage);
         RenderedWebElement img = (RenderedWebElement) driver.findElement(By.id("test3"));
@@ -40,8 +43,9 @@ public class DragAndDropTest extends AbstractDriverTestCase {
         drag(img, expectedLocation, 100, 100);
         assertEquals(expectedLocation, img.getLocation());
     }
-    
-    @Ignore("ie, safari, htmlunit" )
+
+    @JavascriptEnabled
+    @Ignore("ie, safari" )
     public void testDragTooFar() {
         driver.get(dragAndDropPage);
         RenderedWebElement img = (RenderedWebElement) driver.findElement(By.id("test1"));
@@ -54,8 +58,9 @@ public class DragAndDropTest extends AbstractDriverTestCase {
         //We don't know where the img is dragged to , but we know it's not too
         //far, otherwise this function will not return for a long long time
     }
-    
-    @Ignore("ie, safari, htmlunit")
+
+    @JavascriptEnabled
+    @Ignore("ie, safari")
     public void testMouseSpeed() throws Exception {
         driver.get(dragAndDropPage);
         driver.manage().setMouseSpeed(Speed.SLOW);

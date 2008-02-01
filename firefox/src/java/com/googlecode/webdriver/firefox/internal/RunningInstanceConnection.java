@@ -16,7 +16,7 @@ public class RunningInstanceConnection extends AbstractExtensionConnection {
 
     public void quit() {
         try {
-            sendMessageAndWaitForResponse("quit", 0, null);
+            sendMessageAndWaitForResponse(RuntimeException.class, "quit", 0);
         } catch (NullPointerException e) {
             // Expected
         }

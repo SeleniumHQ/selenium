@@ -299,7 +299,6 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     WebElement element = driver.findElement(By.id("plainButton"));
     element.click();
 
-    System.out.println("Getting text");
     String result = driver.findElement(By.id("result")).getText().trim();
     assertThat(result, is("mousedown mouseup click"));
   }
