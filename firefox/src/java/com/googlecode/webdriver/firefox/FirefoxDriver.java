@@ -4,6 +4,7 @@ import com.googlecode.webdriver.Alert;
 import com.googlecode.webdriver.By;
 import com.googlecode.webdriver.Cookie;
 import com.googlecode.webdriver.NoSuchElementException;
+import com.googlecode.webdriver.Speed;
 import com.googlecode.webdriver.WebDriver;
 import com.googlecode.webdriver.WebElement;
 import com.googlecode.webdriver.NoSuchFrameException;
@@ -202,7 +203,11 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
 
     private class FirefoxOptions implements Options {
         private final List<String> fieldNames = Arrays.asList("domain", "expiry", "name", "path", "value", "secure");
-
+        //TODO: need to refine the values here
+        private final int SLOW_SPEED = 1;
+        private final int MEDIUM_SPEED = 10;
+        private final int FAST_SPEED = 100;
+        
         public void addCookie(Cookie cookie) {
             sendMessage("addCookie", convertToJson(cookie));
         }
@@ -304,6 +309,45 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
             for(Cookie c : cookies) {
                 deleteCookie(c);
             }
+        }
+        
+        public Speed getMouseSpeed() {
+            int pixelSpeed = Integer.parseInt(sendMessage("getMouseSpeed", ""));
+            Speed speed;
+            switch (pixelSpeed) {
+                case SLOW_SPEED:
+                    speed = Speed.SLOW;
+                    break;
+                case MEDIUM_SPEED:
+                    speed = Speed.MEDIUM;
+                    break;
+                case FAST_SPEED:
+                    speed = Speed.FAST;
+                    break;
+                default:
+                    //TODO: log a warning here
+                    speed = Speed.FAST;
+                    break;
+            }
+            return speed;
+        }
+        
+        public void setMouseSpeed(Speed speed) {
+            int pixelSpeed = 0;
+            switch(speed) {
+                case SLOW:
+                    pixelSpeed = SLOW_SPEED;
+                    break;
+                case MEDIUM:
+                    pixelSpeed = MEDIUM_SPEED;
+                    break;
+                case FAST:
+                    pixelSpeed = FAST_SPEED;
+                    break;
+                default:
+                    throw new IllegalArgumentException();
+            }
+            sendMessage("setMouseSpeed", "" + pixelSpeed);
         }
     }
 

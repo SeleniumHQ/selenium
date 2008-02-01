@@ -49,6 +49,7 @@ import com.googlecode.webdriver.By;
 import com.googlecode.webdriver.Cookie;
 import com.googlecode.webdriver.NoSuchElementException;
 import com.googlecode.webdriver.NoSuchFrameException;
+import com.googlecode.webdriver.Speed;
 import com.googlecode.webdriver.WebDriver;
 import com.googlecode.webdriver.WebElement;
 import com.googlecode.webdriver.internal.FindsById;
@@ -432,6 +433,14 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText, Fi
         
         private String getPath() {
         	return lastPage().getWebResponse().getUrl().getPath();
+        }
+
+        public Speed getMouseSpeed() {
+            throw new UnsupportedOperationException();
+        }
+
+        public void setMouseSpeed(Speed speed) {
+            throw new UnsupportedOperationException();
         }
     }
 }

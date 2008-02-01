@@ -24,6 +24,7 @@ public class AbstractDriverTestCase extends TestCase implements NeedsDriver {
 	protected String javascriptPage;
 	protected String framesetPage;
 	protected String iframePage;
+	protected String dragAndDropPage;
 	
 	public void setDriver(WebDriver driver) {
 		this.driver = driver;
@@ -46,7 +47,8 @@ public class AbstractDriverTestCase extends TestCase implements NeedsDriver {
         javascriptPage = baseUrl + "javascriptPage.html";
         framesetPage = baseUrl + "frameset.html";
         iframePage = baseUrl + "iframes.html";
-
+        dragAndDropPage = baseUrl + "dragAndDropTest.html";
+        
         hostName = environment.getAppServer().getHostName();
         alternateHostName = environment.getAppServer().getAlternateHostName();
         alternateBaseUrl = environment.getAppServer().getAlternateBaseUrl();

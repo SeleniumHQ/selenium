@@ -212,6 +212,12 @@ Utils.fireMouseEventOn = function(context, element, eventName) {
     element.dispatchEvent(event);
 }
 
+Utils.triggerMouseEvent = function(element, eventType, clientX, clientY) {
+    var event = element.ownerDocument.createEvent("MouseEvents");
+    event.initMouseEvent(eventType, true, true, null, 1, 0, 0, clientX, clientY, false, false, false, false, 0, element);
+    element.dispatchEvent(event);
+}
+
 Utils.findDocumentInFrame = function(browser, frameId) {
     var stringId = "" + frameId;
     var names = stringId.split(".");
@@ -300,3 +306,45 @@ Utils.stackTrace = function() {
         dump(stack + "\n");
     }
 }
+
+Utils.getElementLocation = function(element, context) {		
+    var x = element.offsetLeft;
+    var y = element.offsetTop;
+    var elementParent = element.offsetParent;
+  dump("1: "+x + ", " + y + "\n");
+  dump("style: "+element.style.left + ", " + element.style.top + "\n");
+    while (elementParent != null) {
+        if(elementParent.tagName == "TABLE") {
+            var parentBorder = parseInt(elementParent.border);
+            if(isNaN(parentBorder)) {
+                var parentFrame = elementParent.getAttribute('frame');
+                if(parentFrame != null) {
+                    x += 1;
+                    y += 1;
+                }
+            } else if(parentBorder > 0) {
+                x += parentBorder;
+                y += parentBorder;
+            }
+        }
+        x += elementParent.offsetLeft;
+        y += elementParent.offsetTop;
+        elementParent = elementParent.offsetParent;
+    }
+
+    // Netscape can get confused in some cases, such that the height of the parent is smaller
+    // than that of the element (which it shouldn't really be). If this is the case, we need to
+    // exclude this element, since it will result in too large a 'top' return value.
+    if (element.offsetParent && element.offsetParent.offsetHeight && element.offsetParent.offsetHeight < element.offsetHeight) {
+        // skip the parent that's too small
+        element = element.offsetParent.offsetParent;
+    } else {
+        // Next up...
+        element = element.offsetParent;
+    }
+    var location = new Object();
+    location.x = x;
+    location.y = y;
+    dump("2: "+x + ", " + y + "\n");
+    return location;
+};

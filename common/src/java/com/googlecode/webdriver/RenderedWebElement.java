@@ -25,4 +25,19 @@ public interface RenderedWebElement extends WebElement {
      * @return The size of the element on the page.
      */
       public Dimension getSize();
+      
+      /**
+       * Drag and drop
+       * 
+       * @param moveRightBy how much to move to the right (negative for moving left)
+       * @param moveDownBy how much to move to the bottom (negative for moving up)
+       */
+      void dragAndDropBy(int moveRightBy, int moveDownBy);
+      
+      /**
+       * Drag and drop this element on top of the specified element 
+       * 
+       * @param element element to be dropped on. Only RenderedElement is supported
+       */
+      void dragAndDropOn(RenderedWebElement element);
 }

@@ -167,46 +167,60 @@ public interface WebDriver {
      * An interface for managing stuff you would do in a browser menu 
      */
     public interface Options {
-		/**
-		 * Add a specific cookie. If the cookie's domain name is left blank, it
-		 * is assumed that the cookie is meant for the domain of the current
-		 * document.
-		 * 
-		 * @param cookie
-		 *            The cookie to add.
-		 */
-		void addCookie(Cookie cookie);
 
-		/**
-		 * Delete the named cookie from the current domain. This is equivalent
-		 * to setting the named cookie's expiry date to some time in the past.
-		 * 
-		 * @param name
-		 *            The name of the cookie to delete
-		 */
-		void deleteCookieNamed(String name);
+        /**
+         * Add a specific cookie. If the cookie's domain name is left blank, it
+         * is assumed that the cookie is meant for the domain of the current
+         * document.
+         * 
+         * @param cookie
+         *                The cookie to add.
+         */
+        void addCookie(Cookie cookie);
 
-		/**
-		 * Delete a cookie from the browser's "cookie jar". The domain of the
-		 * cookie will be ignored.
-		 * 
-		 * @param cookie
-		 */
-		void deleteCookie(Cookie cookie);
+        /**
+         * Delete the named cookie from the current domain. This is equivalent
+         * to setting the named cookie's expiry date to some time in the past.
+         * 
+         * @param name
+         *                The name of the cookie to delete
+         */
+        void deleteCookieNamed(String name);
 
-		/**
-		 * Delete all the cookies for the current domain.
-		 */
-		void deleteAllCookies();
+        /**
+         * Delete a cookie from the browser's "cookie jar". The domain of the
+         * cookie will be ignored.
+         * 
+         * @param cookie
+         */
+        void deleteCookie(Cookie cookie);
 
-		/**
-		 * Get all the cookies for the current domain. This is the equivalent of
-		 * calling "document.cookies"
-		 * 
-		 * @return A Set of cookies for the current domain.
-		 */
-		Set<Cookie> getCookies();
-	}
+        /**
+         * Delete all the cookies for the current domain.
+         */
+        void deleteAllCookies();
+
+        /**
+         * Get all the cookies for the current domain. This is the equivalent of
+         * calling "document.cookies"
+         * 
+         * @return A Set of cookies for the current domain.
+         */
+        Set<Cookie> getCookies();
+
+        /**
+         * Gets the mouse speed for drag and drop
+         * 
+         */
+        Speed getMouseSpeed();
+
+        /**
+         * Sets the mouse speed for drag and drop
+         * 
+         * @param speed
+         */
+        void setMouseSpeed(Speed speed);
+    }
     
     /**
 	 * Used to locate a given frame or window.

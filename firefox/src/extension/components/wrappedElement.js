@@ -290,43 +290,8 @@ FirefoxDriver.prototype.isElementDisplayed = function(respond, elementId) {
 };
 
 FirefoxDriver.prototype.getElementLocation = function(respond, elementId) {
-    var element = Utils.getElementAt(elementId, this.context);
-
-    var x = element.offsetLeft;
-    var y = element.offsetTop;
-    var elementParent = element.offsetParent;
-
-    while (elementParent != null) {
-        if(elementParent.tagName == "TABLE") {
-            var parentBorder = parseInt(elementParent.border);
-            if(isNaN(parentBorder)) {
-                var parentFrame = elementParent.getAttribute('frame');
-                if(parentFrame != null) {
-                    x += 1;
-                    y += 1;
-                }
-            } else if(parentBorder > 0) {
-                x += parentBorder;
-                y += parentBorder;
-            }
-        }
-        x += elementParent.offsetLeft;
-        y += elementParent.offsetTop;
-        elementParent = elementParent.offsetParent;
-    }
-
-    // Netscape can get confused in some cases, such that the height of the parent is smaller
-    // than that of the element (which it shouldn't really be). If this is the case, we need to
-    // exclude this element, since it will result in too large a 'top' return value.
-    if (element.offsetParent && element.offsetParent.offsetHeight && element.offsetParent.offsetHeight < element.offsetHeight) {
-        // skip the parent that's too small
-        element = element.offsetParent.offsetParent;
-    } else {
-        // Next up...
-        element = element.offsetParent;
-    }
-
-    respond(this.context, "getElementLocation", x + ", " + y);
+    var location = Utils.getElementLocation(Utils.getElementAt(elementId, this.context), this.context);
+    respond(this.context, "getElementLocation", location.x + ", " + location.y);
 };
 
 FirefoxDriver.prototype.getElementSize = function(respond, elementId) {
@@ -336,4 +301,62 @@ FirefoxDriver.prototype.getElementSize = function(respond, elementId) {
     var height = element.offsetHeight;
 
     respond(this.context, "getElementSize", width + ", " + height);
-}
+};
+
+FirefoxDriver.prototype.dragAndDrop = function(respond, elementIdAndMovementString) {
+    
+    var parts = elementIdAndMovementString.split(" ");
+    var element = Utils.getElementAt(parts[0], this.context);
+    
+    var clientStartXY = Utils.getElementLocation(element, this.context);
+    
+    var clientStartX = clientStartXY.x;
+    var clientStartY = clientStartXY.y;
+    
+    var movementX = parseInt(parts[1].split(",")[0]);
+    var movementY = parseInt(parts[1].split(",")[1]);
+    
+    
+    var clientFinishX = ((clientStartX + movementX) < 0) ? 0 : (clientStartX + movementX);
+    var clientFinishY = ((clientStartY + movementY) < 0) ? 0 : (clientStartY + movementY);
+    // Restrict the desitnation into the sensible dimension
+    var window = Utils.getBrowser(this.context).contentWindow;
+    if (clientFinishX > window.innerWidth)
+        clientFinishX = window.innerWidth;
+    if (clientFinishY > window.innerHeight)
+        clientFinishY = window.innerHeight;
+    
+    var mouseSpeed = this.mouseSpeed;
+    var move = function(current, dest) {
+        if (current == dest) return current;
+        if (Math.abs(current - dest) < mouseSpeed) return dest;
+        return (current < dest) ? current + mouseSpeed : current - mouseSpeed;
+    }
+    
+    Utils.triggerMouseEvent(element, 'mousedown', clientStartX, clientStartY);
+    Utils.triggerMouseEvent(element, 'mousemove', clientStartX, clientStartY);
+    var clientX = clientStartX;
+    var clientY = clientStartY;
+  
+    while ((clientX != clientFinishX) || (clientY != clientFinishY)) {
+        clientX = move(clientX, clientFinishX);
+        clientY = move(clientY, clientFinishY);
+        
+        Utils.triggerMouseEvent(element, 'mousemove', clientX, clientY);
+    }
+    
+    Utils.triggerMouseEvent(element, 'mousemove', clientFinishX, clientFinishY);
+    Utils.triggerMouseEvent(element, 'mouseup',  clientFinishX, clientFinishY);
+    
+    var finalLoc = Utils.getElementLocation(element, this.context)
+    respond(this.context, "dragAndDrop", finalLoc.x + "," + finalLoc.y);
+};
+
+FirefoxDriver.prototype.setMouseSpeed = function(respond, speed) {
+    this.mouseSpeed = speed;
+    respond(this.context, "setMouseSpeed", "");
+};
+
+FirefoxDriver.prototype.getMouseSpeed = function(respond, speed) {
+    respond(this.context, "getMouseSpeed", "" + this.mouseSpeed);
+};

@@ -2,6 +2,7 @@ function FirefoxDriver(server, id) {
     this.server = server;
     this.context = new Context();
     this.id = id;
+    this.mouseSpeed = 1; 
 }
 
 FirefoxDriver.prototype.get = function(respond, url) {

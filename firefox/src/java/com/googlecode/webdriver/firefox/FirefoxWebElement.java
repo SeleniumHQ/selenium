@@ -129,4 +129,15 @@ public class FirefoxWebElement implements RenderedWebElement {
 
         return new Dimension(x, y);
     }
+    
+    public void dragAndDropBy(int moveRight, int moveDown) {
+        String result = parent.sendMessage(
+                "dragAndDrop", elementId+" " + moveRight + "," + moveDown);
+    }
+
+    public void dragAndDropOn(RenderedWebElement element) {
+        Point currentLocation = getLocation();
+        Point destination = element.getLocation();
+        dragAndDropBy(destination.x - currentLocation.x, destination.y - currentLocation.y);
+    }
 }

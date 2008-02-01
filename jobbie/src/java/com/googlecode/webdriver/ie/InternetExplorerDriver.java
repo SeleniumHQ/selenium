@@ -32,6 +32,7 @@ import com.googlecode.webdriver.Alert;
 import com.googlecode.webdriver.By;
 import com.googlecode.webdriver.Cookie;
 import com.googlecode.webdriver.NoSuchElementException;
+import com.googlecode.webdriver.Speed;
 import com.googlecode.webdriver.WebDriver;
 import com.googlecode.webdriver.WebElement;
 import com.googlecode.webdriver.internal.FindsById;
@@ -282,5 +283,13 @@ public class InternetExplorerDriver implements WebDriver, FindsById, FindsByLink
 				return "";
 			}
 		}
+
+        public Speed getMouseSpeed() {
+            throw new UnsupportedOperationException();
+        }
+
+        public void setMouseSpeed(Speed speed) {
+            throw new UnsupportedOperationException();
+        }
     }
 }

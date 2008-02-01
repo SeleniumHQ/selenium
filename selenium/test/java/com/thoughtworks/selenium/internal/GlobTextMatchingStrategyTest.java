@@ -1,7 +1,9 @@
 package com.thoughtworks.selenium.internal;
 
+import com.googlecode.webdriver.selenium.internal.GlobTextMatchingStrategy;
+
 import junit.framework.TestCase;
-import com.thoughtworks.webdriver.selenium.GlobTextMatchingStrategy;
+
 
 public class GlobTextMatchingStrategyTest extends TestCase {
 	public void testShouldMatchAgainstASimplePattern() {

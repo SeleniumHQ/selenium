@@ -61,4 +61,12 @@ public class InternetExplorerElement implements RenderedWebElement {
     private native void deleteStoredObject();
 
     private native void getChildrenOfTypeNatively(List<WebElement> toReturn, String tagName);
+
+    public void dragAndDropBy(int moveRightBy, int moveDownBy) {
+        throw new UnsupportedOperationException();
+    }
+
+    public void dragAndDropOn(RenderedWebElement element) {
+        throw new UnsupportedOperationException();
+    }
 }
