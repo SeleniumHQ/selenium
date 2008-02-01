@@ -37,6 +37,7 @@ var BrowserBot = function(topLevelApplicationWindow) {
     this.currentWindow = this.topWindow;
     this.currentWindowName = null;
     this.allowNativeXpath = true;
+    this.xpathLibrary = 'ajaxslt' // change to "javascript-xpath" for the newer, faster engine
 
     // We need to know this in advance, in case the frame closes unexpectedly
     this.isSubFrameSelected = false;
@@ -1304,16 +1305,20 @@ BrowserBot.prototype.locateElementByDomTraversal.prefix = "dom";
  * @param inDocument             the document in which to evaluate the xpath.
  * @param opt_allowNativeXpath   (optional) whether to allow native evaluate().
  *                               Defaults to true.
+ * @param opt_xpathLibrary       (optional) the javascript library to use for
+ *                               XPath. "ajaxslt" is the default. "javascript-xpath"
+ *                               is newer and faster, but needs more testing.
  * @param opt_namespaceResolver  (optional) the namespace resolver function.
  *                               Defaults to null.
  * @param opt_contextNode        (optional) the context node from which to
  *                               evaluate the xpath. If unspecified, the context
  *                               will be the root document element.
  */
-function eval_xpath(xpath, inDocument, opt_allowNativeXpath, opt_namespaceResolver, opt_contextNode)
+function eval_xpath(xpath, inDocument, opt_allowNativeXpath, opt_xpathLibrary, opt_namespaceResolver, opt_contextNode)
 {
-    if (arguments.length < 5) { var opt_contextNode = inDocument; }
-    if (arguments.length < 4) { var opt_namespaceResolver = null; }
+    if (arguments.length < 6) { var opt_contextNode = inDocument; }
+    if (arguments.length < 5) { var opt_namespaceResolver = null; }
+    if (arguments.length < 4) { var opt_xpathLibrary = null; }
     if (arguments.length < 3) { var opt_allowNativeXpath = true; }
 
     // Trim any trailing "/": not valid xpath, and remains from attribute
@@ -1326,19 +1331,35 @@ function eval_xpath(xpath, inDocument, opt_allowNativeXpath, opt_namespaceResolv
         xpath = xpath.replace(/x:/g, '')
     }
 
+
+    // When using the new and faster javascript-xpath library,
+    // we'll use the TestRunner's document object, not the App-Under-Test's document.
+    // The new library only modifies the TestRunner document with the new 
+    // functionality.
+    if (opt_xpathLibrary == 'javascript-xpath') {
+        documentForXpath = document;
+    } else {
+        documentForXpath = inDocument;
+    }
     var results = [];
     
     // Use document.evaluate() if it's available
-    if (opt_allowNativeXpath && inDocument.evaluate) {
+    if (opt_allowNativeXpath && documentForXpath.evaluate) {
         try {
             // Regarding use of the second argument to document.evaluate():
             // http://groups.google.com/group/comp.lang.javascript/browse_thread/thread/a59ce20639c74ba1/a9d9f53e88e5ebb5
-            var xpathResult = inDocument
+            var xpathResult = documentForXpath
                 .evaluate((opt_contextNode == inDocument ? xpath : '.' + xpath),
                     opt_contextNode, opt_namespaceResolver, 0, null);
         }
         catch (e) {
             throw new SeleniumError("Invalid xpath: " + extractExceptionMessage(e));
+        }
+        finally{
+            if (xpathResult == null) {
+                // If the result is null, we should still throw an Error.
+                throw new SeleniumError("Invalid xpath: *"); 
+            }
         }
         var result = xpathResult.iterateNext();
         while (result) {
@@ -1384,7 +1405,7 @@ function eval_xpath(xpath, inDocument, opt_allowNativeXpath, opt_namespaceResolv
  */
 BrowserBot.prototype.locateElementByXPath = function(xpath, inDocument, inWindow) {
     var results = eval_xpath(xpath, inDocument, this.allowNativeXpath,
-        this._namespaceResolver);
+        this.xpathLibrary, this._namespaceResolver);
     return (results.length > 0) ? results[0] : null;
 };
 
@@ -1403,7 +1424,7 @@ BrowserBot.prototype._namespaceResolver = function(prefix) {
  */
 BrowserBot.prototype.evaluateXPathCount = function(xpath, inDocument) {
     var results = eval_xpath(xpath, inDocument, this.allowNativeXpath,
-        this._namespaceResolver);
+        this.xpathLibrary, this._namespaceResolver);
     return results.length;
 };
 
