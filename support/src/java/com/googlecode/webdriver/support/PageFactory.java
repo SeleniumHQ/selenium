@@ -1,15 +1,15 @@
 package com.googlecode.webdriver.support;
 
-import com.googlecode.webdriver.WebElement;
-import com.googlecode.webdriver.WebDriver;
-import com.googlecode.webdriver.RenderedWebElement;
-import com.googlecode.webdriver.support.internal.LocatingElementHandler;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Proxy;
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Proxy;
+
+import com.googlecode.webdriver.RenderedWebElement;
+import com.googlecode.webdriver.WebDriver;
+import com.googlecode.webdriver.WebElement;
+import com.googlecode.webdriver.support.internal.LocatingElementHandler;
 
 /**
  * Factory class to make using Page Objects simpler and easier.

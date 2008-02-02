@@ -6,11 +6,18 @@ import java.util.Collection;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 
+/**
+ * Base class for {@link Finder}s. These allow the creation of a specification
+ * to be applied to objects of type T, to identify and return a Collection of
+ * any contained objects of type S.
+ *  
+ * @author rchatley (Robert Chatley)
+ */
 public abstract class BaseFinder<S,T> implements Finder<S, T> {
 
 	protected Matcher<S> matcher;
 	
-	public Collection<S> findFrom(T context, Matcher<Integer> cardinalityConstraint) {
+	public Collection<S> findFrom(T context) {
 		
 		Collection<S> found = extractFrom(context);		
 		

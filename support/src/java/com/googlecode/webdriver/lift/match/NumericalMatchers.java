@@ -6,6 +6,11 @@ import static org.hamcrest.Matchers.greaterThan;
 import org.hamcrest.Factory;
 import org.hamcrest.Matcher;
 
+/**
+ * Various numerical hamcrest {@link Matcher}s.
+ * @author rchatley (Robert Chatley)
+ *
+ */
 public class NumericalMatchers {
 
 	@Factory

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.googlecode.webdriver.lift.match;
 
 import org.hamcrest.Description;
@@ -10,6 +7,11 @@ import org.hamcrest.TypeSafeMatcher;
 
 import com.googlecode.webdriver.WebElement;
 
+/**
+ * {@link Matcher} for matching text content within {@link WebElement}s.
+ * @author rchatley (Robert Chatley)
+ *
+ */
 public class TextMatcher extends TypeSafeMatcher<WebElement> {
 	
 	private final Matcher<String> matcher;

@@ -7,8 +7,8 @@ public class Finders {
     return com.googlecode.webdriver.lift.find.LinkFinder.link();
   }
 
-  public static com.googlecode.webdriver.lift.find.HtmlTagFinder link(java.lang.String param1) {
-    return com.googlecode.webdriver.lift.find.LinkFinder.link(param1);
+  public static com.googlecode.webdriver.lift.find.HtmlTagFinder link(java.lang.String anchorText) {
+    return com.googlecode.webdriver.lift.find.LinkFinder.link(anchorText);
   }
 
   public static com.googlecode.webdriver.lift.find.HtmlTagFinder links() {
@@ -21,6 +21,10 @@ public class Finders {
 
   public static com.googlecode.webdriver.lift.find.HtmlTagFinder title() {
     return com.googlecode.webdriver.lift.find.PageTitleFinder.title();
+  }
+  
+  public static com.googlecode.webdriver.lift.find.HtmlTagFinder title(String title) {
+	return com.googlecode.webdriver.lift.find.PageTitleFinder.title(title);
   }
 
   public static com.googlecode.webdriver.lift.find.HtmlTagFinder images() {
@@ -47,4 +51,15 @@ public class Finders {
     return com.googlecode.webdriver.lift.find.TableCellFinder.cells();
   }
 
+  public static com.googlecode.webdriver.lift.find.HtmlTagFinder textbox() {
+	return com.googlecode.webdriver.lift.find.InputFinder.textbox();
+  }
+  
+  public static com.googlecode.webdriver.lift.find.HtmlTagFinder button() {
+    return com.googlecode.webdriver.lift.find.InputFinder.submitButton();
+  }
+  
+  public static com.googlecode.webdriver.lift.find.HtmlTagFinder button(String label) {
+	 return com.googlecode.webdriver.lift.find.InputFinder.submitButton(label);
+  }
 }

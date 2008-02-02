@@ -1,11 +1,11 @@
 package com.googlecode.webdriver.support;
 
-import com.googlecode.webdriver.How;
-
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.lang.annotation.ElementType;
+
+import com.googlecode.webdriver.How;
 
 /**
  * Used to mark a field on a Page Object to indicate an alternative mechanism

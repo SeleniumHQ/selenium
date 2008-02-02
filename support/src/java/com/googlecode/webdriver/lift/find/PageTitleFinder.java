@@ -3,9 +3,16 @@
  */
 package com.googlecode.webdriver.lift.find;
 
+import static com.googlecode.webdriver.lift.match.TextMatcher.text;
+import static org.hamcrest.Matchers.equalTo;
+
 import org.hamcrest.Factory;
 
-
+/**
+ * A {@link Finder} for HTML title tags.
+ * @author rchatley (Robert Chatley)
+ *
+ */
 public class PageTitleFinder extends HtmlTagFinder {
 	
 	private PageTitleFinder() {};
@@ -23,6 +30,11 @@ public class PageTitleFinder extends HtmlTagFinder {
 	@Factory
 	public static HtmlTagFinder title() {
 		return new PageTitleFinder();
+	}
+	
+	@Factory
+	public static HtmlTagFinder title(String title) {
+		return new PageTitleFinder().with(text(equalTo(title)));
 	}
 	
 	@Factory

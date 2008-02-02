@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.googlecode.webdriver.lift.find;
 
 import java.util.Collection;
@@ -12,6 +9,13 @@ import com.googlecode.webdriver.By;
 import com.googlecode.webdriver.WebDriver;
 import com.googlecode.webdriver.WebElement;
 
+/**
+ * Base {@link Finder} for all types of HTML tags. Subclasses should be created
+ * for each specific tag, specifying the tag name (e.g. "a" in the case or an anchor
+ * tag), and a description.
+ *  
+ * @author rchatley (Robert Chatley)
+ */
 public abstract class HtmlTagFinder extends BaseFinder<WebElement, WebDriver> {
 	
 	@SuppressWarnings("unchecked")

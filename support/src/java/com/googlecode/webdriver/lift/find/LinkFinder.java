@@ -1,8 +1,10 @@
-/**
- * A {@link Finder} for anchor tags, "links".
- */
 package com.googlecode.webdriver.lift.find;
 
+/**
+ * A {@link Finder} for HTML anchor tags, "links".
+ * @author rchatley (Robert Chatley)
+ *
+ */
 import static com.googlecode.webdriver.lift.match.TextMatcher.text;
 import static org.hamcrest.Matchers.equalTo;
 

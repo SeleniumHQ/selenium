@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.googlecode.webdriver.lift.match;
 
 import org.hamcrest.Description;
@@ -10,6 +7,11 @@ import org.hamcrest.TypeSafeMatcher;
 
 import com.googlecode.webdriver.WebElement;
 
+/**
+ * hamcrest matcher for attributes of {@link WebElement}s.
+ * @author rchatley (Robert Chatley)
+ *
+ */
 public class AttributeMatcher extends TypeSafeMatcher<WebElement> {
 	
 	private final Matcher<String> matcher;
@@ -26,7 +28,7 @@ public class AttributeMatcher extends TypeSafeMatcher<WebElement> {
 	}
 
 	public void describeTo(Description description) {
-		description.appendText("text ");
+		description.appendText("attribute ").appendValue(name);
 		matcher.describeTo(description);
 	}
 	

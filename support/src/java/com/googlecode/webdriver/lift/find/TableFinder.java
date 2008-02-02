@@ -1,10 +1,12 @@
-/**
- * A {@link Finder} for anchor tags, "links".
- */
 package com.googlecode.webdriver.lift.find;
 
 import org.hamcrest.Factory;
 
+/**
+ * A {@link Finder} for HTML table tags.
+ * @author rchatley (Robert Chatley)
+ *
+ */
 public class TableFinder extends HtmlTagFinder {
 	
 	private TableFinder() {};

@@ -2,6 +2,11 @@ package com.googlecode.webdriver.lift.find;
 
 import org.hamcrest.Factory;
 
+/**
+ * {@link Finder} for HTML image tags.
+ * @author rchatley (Robert Chatley)
+ *
+ */
 public class ImageFinder extends HtmlTagFinder {
 
 	@Override
