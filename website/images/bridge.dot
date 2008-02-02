@@ -1,7 +1,0 @@
-digraph G {
-	CommandBridgeClient -> "CommandBridge Servlet" -> Browser [style="invis"];
-	CommandBridgeClient -> "CommandBridge Servlet" [label=" 1"];
-	Browser -> "CommandBridge Servlet" [label=" 2"];
-	Browser -> "CommandBridge Servlet" [label=" 3"];
-}
-	

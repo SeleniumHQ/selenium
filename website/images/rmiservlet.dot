@@ -1,5 +1,0 @@
-digraph G {
-	Browser -> SeleneseRMIProxyServlet [label=" HTTP"];
-	SeleneseRMIProxyServlet -> RmiCommandProcessor [label=" RMI"];
-}
-	
