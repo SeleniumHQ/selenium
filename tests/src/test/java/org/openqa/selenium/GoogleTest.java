@@ -3,6 +3,9 @@ package org.openqa.selenium;
 import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
+import java.awt.*;
+import java.awt.event.KeyEvent;
+
 public class GoogleTest extends AbstractTest {
     @Test
     public void homepage() {
@@ -201,55 +204,61 @@ public class GoogleTest extends AbstractTest {
         pass("GoogleTest.finance");
     }
 
-    @Test
+    @Test(groups = {"single"})
     public void suggest() throws InterruptedException {
         if (isBrowser("SAFARI3")) {
             skip("GoogleTest.suggest");
         }
 
+        Robot robot = null;
+        try {
+            robot = new Robot();
+        } catch (AWTException e) {
+            e.printStackTrace();
+        }
         try {
             selenium.open("http://www.google.com/webhp?complete=1&hl=en");
-            selenium.typeKeys("q", "g");
+            selenium.getEval("window.focus()");
+            Thread.sleep(5000);
+            selenium.getEval("window.focus()");
+            selenium.getEval("window.focus()");
+            selenium.getEval("window.focus()");
+            Thread.sleep(5000);
+            selenium.getEval("window.focus()");
+            selenium.getEval("window.focus()");
+            selenium.getEval("window.focus()");
+
+            selenium.focus("q");
+            selenium.click("q");
+            robot.keyPress(Character.getNumericValue('o') + 55);
+            robot.keyRelease(Character.getNumericValue('o') + 55);
             Thread.sleep(1000);
-            selenium.typeKeys("q", "o");
+            robot.keyPress(Character.getNumericValue('p') + 55);
+            robot.keyRelease(Character.getNumericValue('p') + 55);
             Thread.sleep(1000);
-            selenium.typeKeys("q", "m");
+            robot.keyPress(Character.getNumericValue('e') + 55);
+            robot.keyRelease(Character.getNumericValue('e') + 55);
             Thread.sleep(1000);
-            selenium.typeKeys("q", "e");
+            robot.keyPress(Character.getNumericValue('n') + 55);
+            robot.keyRelease(Character.getNumericValue('n') + 55);
             Thread.sleep(1000);
-            selenium.fireEvent("q", "blur");
-            selenium.type("q", "");
-            selenium.typeKeys("q", "o");
+            robot.keyPress(Character.getNumericValue('q') + 55);
+            robot.keyRelease(Character.getNumericValue('q') + 55);
             Thread.sleep(1000);
-            selenium.typeKeys("q", "p");
+            robot.keyPress(Character.getNumericValue('a') + 55);
+            robot.keyRelease(Character.getNumericValue('a') + 55);
             Thread.sleep(1000);
-            selenium.typeKeys("q", "e");
-            Thread.sleep(1000);
-            selenium.typeKeys("q", "n");
-            Thread.sleep(1000);
-            selenium.typeKeys("q", "q");
-            Thread.sleep(1000);
-            selenium.typeKeys("q", "a");
-            Thread.sleep(1000);
-            selenium.keyPress("q", "\\40");
+
+            robot.keyPress(KeyEvent.VK_KP_DOWN);
+            robot.keyRelease(KeyEvent.VK_KP_DOWN);
             Thread.sleep(500);
-            selenium.keyPress("q", "\\40");
+            robot.keyPress(KeyEvent.VK_KP_DOWN);
+            robot.keyRelease(KeyEvent.VK_KP_DOWN);
             Thread.sleep(500);
-            selenium.keyPress("q", "\\40");
+            robot.keyPress(KeyEvent.VK_KP_DOWN);
+            robot.keyRelease(KeyEvent.VK_KP_DOWN);
             Thread.sleep(500);
-            selenium.keyPress("q", "\\40");
-            Thread.sleep(500);
-            selenium.keyPress("q", "\\40");
-            Thread.sleep(500);
-            selenium.keyPress("q", "\\40");
-            Thread.sleep(500);
-            selenium.keyPress("q", "\\40");
-            Thread.sleep(500);
-            selenium.keyPress("q", "\\40");
-            Thread.sleep(500);
-            selenium.keyPress("q", "\\40");
-            Thread.sleep(500);
-            selenium.keyPress("q", "\\40");
+
             selenium.click("btnG");
             selenium.waitForPageToLoad("30000");
             assertTrue(selenium.isTextPresent("Open source test automation tool for executing"));

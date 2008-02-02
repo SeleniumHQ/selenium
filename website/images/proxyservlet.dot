@@ -1,4 +1,0 @@
-digraph G {
-	Browser -> SeleneseProxyServlet -> "Selenium Server";
-}
-	
