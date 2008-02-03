@@ -1,18 +1,18 @@
 package com.googlecode.webdriver.support;
 
-import static org.easymock.EasyMock.createNiceMock;
+import com.googlecode.webdriver.RenderedWebElement;
+import com.googlecode.webdriver.WebDriver;
+import com.googlecode.webdriver.WebElement;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
-import junit.framework.TestCase;
 
-import com.googlecode.webdriver.RenderedWebElement;
-import com.googlecode.webdriver.WebDriver;
-import com.googlecode.webdriver.WebElement;
+import org.jmock.integration.junit3.MockObjectTestCase;
 
-public class PageFactoryTest extends TestCase {
+public class PageFactoryTest extends MockObjectTestCase {
     private WebDriver driver = null;
 
     public void testShouldProxyElementsInAnInstantiatedPage() {
@@ -55,7 +55,7 @@ public class PageFactoryTest extends TestCase {
     }
 
     public void testShouldUseAConstructorThatTakesAWebDriverAsAnArgument() {
-        driver = createNiceMock(WebDriver.class);
+        driver = mock(WebDriver.class);
 
         ConstructedPage page = PageFactory.initElements(driver, ConstructedPage.class);
 
