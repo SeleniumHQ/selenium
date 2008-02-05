@@ -2082,6 +2082,28 @@ Selenium.prototype.doAllowNativeXpath = function(allow) {
     this.browserbot.allowNativeXpath = allow;
 }
 
+Selenium.prototype.doIgnoreAttributesWithoutValue = function(ignore) {
+    /**
+    * Specifies whether Selenium will ignore xpath attributes that have no
+    * value, i.e. are the empty string, when using the non-native xpath
+    * evaluation engine. You'd want to do this for performance reasons in IE.
+    * However, this could break certain xpaths, for example an xpath that looks
+    * for an attribute whose value is NOT the empty string.
+    *
+    * The hope is that such xpaths are relatively rare, but the user should
+    * have the option of using them. Note that this only influences xpath
+    * evaluation when using the ajaxslt engine (i.e. not "javascript-xpath").
+    *
+    * @param ignore boolean, true means we'll ignore attributes without value
+    *                        at the expense of xpath "correctness"; false means
+    *                        we'll sacrifice speed for correctness.
+    */
+    if ('false' == ignore || '0' == ignore) {
+        ignore = false;
+    }
+    this.browserbot.ignoreAttributesWithoutValue = ignore;
+}
+
 Selenium.prototype.doWaitForCondition = function(script, timeout) {
     /**
    * Runs the specified JavaScript snippet repeatedly until it evaluates to "true".

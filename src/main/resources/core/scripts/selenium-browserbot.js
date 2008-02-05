@@ -1301,25 +1301,50 @@ BrowserBot.prototype.locateElementByDomTraversal.prefix = "dom";
  * function. A context node may optionally be provided, and the xpath will be
  * evaluated from that context.
  *
- * @param xpath                  the xpath to evaluate
- * @param inDocument             the document in which to evaluate the xpath.
- * @param opt_allowNativeXpath   (optional) whether to allow native evaluate().
- *                               Defaults to true.
- * @param opt_xpathLibrary       (optional) the javascript library to use for
- *                               XPath. "ajaxslt" is the default. "javascript-xpath"
- *                               is newer and faster, but needs more testing.
- * @param opt_namespaceResolver  (optional) the namespace resolver function.
- *                               Defaults to null.
- * @param opt_contextNode        (optional) the context node from which to
- *                               evaluate the xpath. If unspecified, the context
- *                               will be the root document element.
+ * @param xpath       the xpath to evaluate
+ * @param inDocument  the document in which to evaluate the xpath.
+ * @param opts        (optional) An object containing various flags that can
+ *                    modify how the xpath is evaluated. Here's a listing of
+ *                    the meaningful keys:
+ *
+ *                     contextNode: 
+ *                       the context node from which to evaluate the xpath. If
+ *                       unspecified, the context will be the root document
+ *                       element.
+ *
+ *                     namespaceResolver:
+ *                       the namespace resolver function. Defaults to null.
+ *
+ *                     xpathLibrary:
+ *                       the javascript library to use for XPath. "ajaxslt" is
+ *                       the default. "javascript-xpath" is newer and faster,
+ *                       but needs more testing.
+ *
+ *                     allowNativeXpath:
+ *                       whether to allow native evaluate(). Defaults to true.
+ *
+ *                     ignoreAttributesWithoutValue:
+ *                       whether it's ok to ignore attributes without value
+ *                       when evaluating the xpath. This can greatly improve
+ *                       performance in IE; however, if your xpaths depend on
+ *                       such attributes, you can't ignore them! Defaults to
+ *                       true.
  */
-function eval_xpath(xpath, inDocument, opt_allowNativeXpath, opt_xpathLibrary, opt_namespaceResolver, opt_contextNode)
+function eval_xpath(xpath, inDocument, opts)
 {
-    if (arguments.length < 6) { var opt_contextNode = inDocument; }
-    if (arguments.length < 5) { var opt_namespaceResolver = null; }
-    if (arguments.length < 4) { var opt_xpathLibrary = null; }
-    if (arguments.length < 3) { var opt_allowNativeXpath = true; }
+    if (!opts) {
+        var opts = {};
+    }
+    var contextNode = opts.contextNode
+        ? opts.contextNode : inDocument;
+    var namespaceResolver = opts.namespaceResolver
+        ? opts.namespaceResolver : null;
+    var xpathLibrary = opts.xpathLibrary
+        ? opts.xpathLibrary : null;
+    var allowNativeXpath = (opts.allowNativeXpath != undefined)
+        ? opts.allowNativeXpath : true;
+    var ignoreAttributesWithoutValue = (opts.ignoreAttributesWithoutValue != undefined)
+        ? opts.ignoreAttributesWithoutValue : true;
 
     // Trim any trailing "/": not valid xpath, and remains from attribute
     // locator.
@@ -1336,7 +1361,7 @@ function eval_xpath(xpath, inDocument, opt_allowNativeXpath, opt_xpathLibrary, o
     // we'll use the TestRunner's document object, not the App-Under-Test's document.
     // The new library only modifies the TestRunner document with the new 
     // functionality.
-    if (opt_xpathLibrary == 'javascript-xpath') {
+    if (xpathLibrary == 'javascript-xpath') {
         documentForXpath = document;
     } else {
         documentForXpath = inDocument;
@@ -1344,13 +1369,13 @@ function eval_xpath(xpath, inDocument, opt_allowNativeXpath, opt_xpathLibrary, o
     var results = [];
     
     // Use document.evaluate() if it's available
-    if (opt_allowNativeXpath && documentForXpath.evaluate) {
+    if (allowNativeXpath && documentForXpath.evaluate) {
         try {
             // Regarding use of the second argument to document.evaluate():
             // http://groups.google.com/group/comp.lang.javascript/browse_thread/thread/a59ce20639c74ba1/a9d9f53e88e5ebb5
             var xpathResult = documentForXpath
-                .evaluate((opt_contextNode == inDocument ? xpath : '.' + xpath),
-                    opt_contextNode, opt_namespaceResolver, 0, null);
+                .evaluate((contextNode == inDocument ? xpath : '.' + xpath),
+                    contextNode, namespaceResolver, 0, null);
         }
         catch (e) {
             throw new SeleniumError("Invalid xpath: " + extractExceptionMessage(e));
@@ -1373,16 +1398,16 @@ function eval_xpath(xpath, inDocument, opt_allowNativeXpath, opt_xpathLibrary, o
     // DGF set xpathdebug = true (using getEval, if you like) to turn on JS XPath debugging
     //xpathdebug = true;
     var context;
-    if (opt_contextNode == inDocument) {
+    if (contextNode == inDocument) {
         context = new ExprContext(inDocument);
     }
     else {
         // provide false values to get the default constructor values
-        context = new ExprContext(opt_contextNode, false, false,
-            opt_contextNode.parentNode);
+        context = new ExprContext(contextNode, false, false,
+            contextNode.parentNode);
     }
     context.setCaseInsensitive(true);
-    context.setIgnoreAttributesWithoutValue(true);
+    context.setIgnoreAttributesWithoutValue(ignoreAttributesWithoutValue);
     var xpathObj;
     try {
         xpathObj = xpathParse(xpath);
@@ -1404,8 +1429,12 @@ function eval_xpath(xpath, inDocument, opt_allowNativeXpath, opt_xpathLibrary, o
  * begin with "//".
  */
 BrowserBot.prototype.locateElementByXPath = function(xpath, inDocument, inWindow) {
-    var results = eval_xpath(xpath, inDocument, this.allowNativeXpath,
-        this.xpathLibrary, this._namespaceResolver);
+    var results = eval_xpath(xpath, inDocument, {
+        ignoreAttributesWithoutValue: this.ignoreAttributesWithoutValue,
+        allowNativeXpath            : this.allowNativeXpath,
+        xpathLibrary                : this.xpathLibrary,
+        namespaceResolver           : this._namespaceResolver
+    });
     return (results.length > 0) ? results[0] : null;
 };
 
@@ -1423,8 +1452,12 @@ BrowserBot.prototype._namespaceResolver = function(prefix) {
  * Returns the number of xpath results.
  */
 BrowserBot.prototype.evaluateXPathCount = function(xpath, inDocument) {
-    var results = eval_xpath(xpath, inDocument, this.allowNativeXpath,
-        this.xpathLibrary, this._namespaceResolver);
+    var results = eval_xpath(xpath, inDocument, {
+        ignoreAttributesWithoutValue: this.ignoreAttributesWithoutValue,
+        allowNativeXpath            : this.allowNativeXpath,
+        xpathLibrary                : this.xpathLibrary,
+        namespaceResolver           : this._namespaceResolver
+    });
     return results.length;
 };
 

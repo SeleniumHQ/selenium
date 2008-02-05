@@ -196,6 +196,75 @@ Copyright 2004 ThoughtWorks, Inc
             <td>xpath=//a[</td>
             <td>&nbsp;</td>
         </tr>
+    
+    </tbody>
+</table>
+
+<p>Test toggling of ignoreAttributesWithoutValue. The test must be performed using the non-native ajaxslt engine. After the test, native xpaths are re-enabled.</p>
+<table cellpadding="1" cellspacing="1" border="1">
+    <tbody>
+
+        <tr>
+            <td>allowNativeXpath</td>
+            <td>false</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td>ignoreAttributesWithoutValue</td>
+            <td>false</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td>verifyXpathCount</td>
+            <td>//div[@id='ignore']/a[@class]</td>
+            <td>2</td>
+        </tr>
+        <tr>
+            <td>verifyText</td>
+            <td>//div[@id='ignore']/a[@class][1]</td>
+            <td>over the rainbow</td>
+        </tr>
+        <tr>
+            <td>verifyText</td>
+            <td>//div[@id='ignore']/a[@class][2]</td>
+            <td>skies are blue</td>
+        </tr>
+        <tr>
+            <td>verifyXpathCount</td>
+            <td>//div[@id='ignore']/a[@class='']</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td>verifyText</td>
+            <td>//div[@id='ignore']/a[@class='']</td>
+            <td>skies are blue</td>
+        </tr>
+        <tr>
+            <td>ignoreAttributesWithoutValue</td>
+            <td>true</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td>verifyXpathCount</td>
+            <td>//div[@id='ignore']/a[@class]</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td>verifyText</td>
+            <td>//div[@id='ignore']/a[@class]</td>
+            <td>over the rainbow</td>
+        </tr>
+        <tr>
+            <td>verifyXpathCount</td>
+            <td>//div[@id='ignore']/a[@class='']</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <td>allowNativeXpath</td>
+            <td>true</td>
+            <td>&nbsp;</td>
+        </tr>
+        
     </tbody>
 </table>
 </body>
