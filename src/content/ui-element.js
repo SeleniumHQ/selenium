@@ -1809,8 +1809,15 @@ function UIElement(uiElementShorthand)
             
             // testcase failed
             if (is_IDE()) {
-                smart_alert('Testcase "' + testcase.name
-                    + '" failed for UI element "' + this.name + '"!');
+                var msg = 'Testcase "' + testcase.name
+                    + '" failed for UI element "' + this.name + '":';
+                if (!results.length) {
+                    msg += '\n"' + locator + '" did not match any elements!';
+                }
+                else {
+                    msg += '\n' + results[0] + ' was not the expected result!';
+                }
+                smart_alert(msg);
             }
             return false;
         }
