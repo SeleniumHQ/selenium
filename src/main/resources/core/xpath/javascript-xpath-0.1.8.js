@@ -212,6 +212,18 @@ var uai = new function() {
         } else if (ua.indexOf("SunOS") >= 0) {
             this.sunos = true;
         }
+
+        // jrh - 6 Feb 2008 - begin
+        /* For Internet Explorer 6 */
+        if (ua.match(/MSIE 6/)){
+            this.ie6 = true
+        }
+				
+        /* For Internet Explorer 7 */
+        if (ua.match(/MSIE 7/)){
+            this.ie7 = true
+        }
+        // jrh - end
     }
 };
 
@@ -985,8 +997,29 @@ NodeUtil = {
         name: 'name',
         title: 'title'
     },
+    // jrh - 6 Feb 2008 - begin 
+    getNodeAttribute: function(node, attrName, attrValue){
+        var retrievedValue = node.getAttribute(attrName);
+        if (uai.ie6) {
+            if (attrName.length != 4) return retrievedValue;
+            if (!/^href$/i.test(attrName)) return retrievedValue;       
+            if (!/^javascript:/.test(retrievedValue)) return retrievedValue;
+            // fix for "xpath href with spaces" (http://jira.openqa.org/browse/SEL-347)   
+            return unescape(retrievedValue)
+        } else {
+            return retrievedValue;
+        }
+    },
+    // jrh - end
     attrMatch: function(node, attrName, attrValue) {
 /*@cc_on @if (@_jscript)
+        // jrh - 6 Feb 2008 - begin
+        try {
+            retrievedAttrValue = NodeUtil.getNodeAttribute(node, attrName, attrValue);
+        } catch(e) {
+            var retrievedAttrValue = null;
+        }
+        // jrh - end
         var propName = NodeUtil.attrPropMap[attrName];
         if (!attrName ||
             attrValue == null && (
@@ -995,7 +1028,12 @@ NodeUtil = {
             ) ||
             attrValue != null && (
                 propName && node[propName] == attrValue ||
-                !propName && node.getAttribute && node.getAttribute(attrName) == attrValue
+                // jrh - 6 Feb 2008 - begin
+                // changed the next line from:
+                // !propName && node.getAttribute && node.getAttribute(attrName) == attrValue
+                // to the following:
+                !propName && node.getAttribute && retrievedAttrValue == attrValue
+                // jrh - end
             )) {
 @else @*/
         if (!attrName ||
