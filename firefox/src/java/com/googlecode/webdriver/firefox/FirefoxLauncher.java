@@ -17,10 +17,10 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
+import java.net.ConnectException;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
-import java.net.ConnectException;
 
 public class FirefoxLauncher {
     public static void main(String[] args) {
@@ -53,7 +53,7 @@ public class FirefoxLauncher {
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (InterruptedException e) {
-        	throw new RuntimeException(e);
+            throw new RuntimeException(e);
         }
 
         File extensionsDir = locateWebDriverProfile(profileName);
@@ -278,39 +278,37 @@ public class FirefoxLauncher {
         }
     }
 
-  protected void modifyLibraryPath(ProcessBuilder builder, File binary) {
-      String propertyName;
+    protected void modifyLibraryPath(ProcessBuilder builder, File binary) {
+        String propertyName;
 
-      OperatingSystem os = OperatingSystem.getCurrentPlatform();
-      switch (os) {
-          case MAC:
-            propertyName = "DYLD_LIBRARY_PATH";
-            break;
+        OperatingSystem os = OperatingSystem.getCurrentPlatform();
+        switch (os) {
+            case MAC:
+                propertyName = "DYLD_LIBRARY_PATH";
+                break;
 
-          case WINDOWS:
-            propertyName = "PATH";
-            break;
+            case WINDOWS:
+                propertyName = "PATH";
+                break;
 
-          default:
-            propertyName = "LD_LIBRARY_PATH";
-            break;
-      }
+            default:
+                propertyName = "LD_LIBRARY_PATH";
+                break;
+        }
 
-      String libraryPath = System.getenv(propertyName);
-      if (libraryPath == null) {
-          libraryPath = "";
-      }
+        String libraryPath = System.getenv(propertyName);
+        if (libraryPath == null) {
+            libraryPath = "";
+        }
 
-      String firefoxLibraryPath = System.getProperty("webdriver.firefox.library.path", binary.getParentFile().getAbsolutePath());
+        String firefoxLibraryPath = System.getProperty("webdriver.firefox.library.path", binary.getParentFile().getAbsolutePath());
 
-      libraryPath = firefoxLibraryPath + File.pathSeparator + libraryPath;
+        libraryPath = firefoxLibraryPath + File.pathSeparator + libraryPath;
 
-      builder.environment().put(propertyName, libraryPath);
-  }
+        builder.environment().put(propertyName, libraryPath);
+    }
 
-  protected File createCopyOfProfile(File from) {
-
-
+    protected File createCopyOfProfile(File from) {
         File tmpDir = new File(System.getProperty("java.io.tmpdir"));
         File to = new File(tmpDir, "webdriver-" + System.currentTimeMillis());
         to.mkdirs();
@@ -449,17 +447,17 @@ public class FirefoxLauncher {
     private File locateUserDataDirectory(OperatingSystem os) {
         File appData;
         switch (os) {
-          case WINDOWS:
-            appData = new File(MessageFormat.format("{0}\\Mozilla\\Firefox", System.getenv("APPDATA")));
-            break;
+            case WINDOWS:
+                appData = new File(MessageFormat.format("{0}\\Mozilla\\Firefox", System.getenv("APPDATA")));
+                break;
 
-          case MAC:
-            appData = new File(MessageFormat.format("{0}/Library/Application Support/Firefox", System.getenv("HOME")));
-            break;
+            case MAC:
+                appData = new File(MessageFormat.format("{0}/Library/Application Support/Firefox", System.getenv("HOME")));
+                break;
 
-          default:
-            appData = new File(MessageFormat.format("{0}/.mozilla/firefox", System.getenv("HOME")));
-            break;
+            default:
+                appData = new File(MessageFormat.format("{0}/.mozilla/firefox", System.getenv("HOME")));
+                break;
         }
 
         if (!appData.exists()) {
@@ -486,35 +484,35 @@ public class FirefoxLauncher {
 
         File binary = locateFirefoxBinaryFromSystemProperty();
         if (binary != null)
-          return binary;
+            return binary;
 
         OperatingSystem os = OperatingSystem.getCurrentPlatform();
         switch (os) {
-          case WINDOWS:
-            String programFiles = System.getenv("PROGRAMFILES");
-            if (programFiles == null)
-              programFiles = "\\Program Files";
-            binary = new File(
-                programFiles + "\\Mozilla Firefox\\firefox.exe");
-            break;
+            case WINDOWS:
+                String programFiles = System.getenv("PROGRAMFILES");
+                if (programFiles == null)
+                    programFiles = "\\Program Files";
+                binary = new File(
+                        programFiles + "\\Mozilla Firefox\\firefox.exe");
+                break;
 
-          case MAC:
-            binary = new File("/Applications/Firefox.app/Contents/MacOS/firefox");
-            break;
+            case MAC:
+                binary = new File("/Applications/Firefox.app/Contents/MacOS/firefox");
+                break;
 
-          default:
-            String[] binaryNames = new String[] { "firefox3", "firefox2", "firefox" };
-            for (String name : binaryNames) {
-               binary = shellOutAndFindPathOfFirefox(name);
-               if (binary != null)
-                   break;
-            }
-            break;
+            default:
+                String[] binaryNames = new String[]{"firefox3", "firefox2", "firefox"};
+                for (String name : binaryNames) {
+                    binary = shellOutAndFindPathOfFirefox(name);
+                    if (binary != null)
+                        break;
+                }
+                break;
         }
 
-        if (binary == null)  {
-          throw new RuntimeException("Cannot find firefox binary in PATH. Make sure firefox " +
-                  "is installed");
+        if (binary == null) {
+            throw new RuntimeException("Cannot find firefox binary in PATH. Make sure firefox " +
+                    "is installed");
         }
 
         if (binary.exists())
@@ -524,34 +522,34 @@ public class FirefoxLauncher {
                 "or the path given points to the firefox binary. I would have used: " + binary.getPath());
     }
 
-  private File locateFirefoxBinaryFromSystemProperty() {
-    String binaryName = System.getProperty("webdriver.firefox.bin");
-    if (binaryName == null)
-      return null;
+    private File locateFirefoxBinaryFromSystemProperty() {
+        String binaryName = System.getProperty("webdriver.firefox.bin");
+        if (binaryName == null)
+            return null;
 
-    File binary = new File(binaryName);
-    if (binary.exists())
-      return binary;
+        File binary = new File(binaryName);
+        if (binary.exists())
+            return binary;
 
-    switch (OperatingSystem.getCurrentPlatform()) {
-      case WINDOWS:
-        return null;
+        switch (OperatingSystem.getCurrentPlatform()) {
+            case WINDOWS:
+                return null;
 
-      case MAC:
-        if (!binaryName.endsWith(".app"))
-            binaryName += ".app";
-        binaryName += "/Contents/MacOS/firefox";
-        return new File(binaryName);
+            case MAC:
+                if (!binaryName.endsWith(".app"))
+                    binaryName += ".app";
+                binaryName += "/Contents/MacOS/firefox";
+                return new File(binaryName);
 
-      default:
-        return shellOutAndFindPathOfFirefox(binaryName);
+            default:
+                return shellOutAndFindPathOfFirefox(binaryName);
+        }
     }
-  }
 
-  private File shellOutAndFindPathOfFirefox(String binaryName) {
+    private File shellOutAndFindPathOfFirefox(String binaryName) {
         // Assume that we're on a unix of some kind. We're going to cheat
         try {
-            Process which = Runtime.getRuntime().exec(new String[] {"which", binaryName});
+            Process which = Runtime.getRuntime().exec(new String[]{"which", binaryName});
             String result = getNextLineOfOutputFrom(which);
             return result == null ? null : new File(result);
         } catch (IOException e) {
@@ -560,16 +558,16 @@ public class FirefoxLauncher {
     }
 
 
-   // Assumes that the process has exited
+    // Assumes that the process has exited
     private String getNextLineOfOutputFrom(Process process) {
-       BufferedReader reader = null;
-       try {
-        reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-        return reader.readLine();
-       } catch (IOException e) {
-           throw new RuntimeException(e);
-       } finally {
-           closeCleanly(reader);
-       }
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            return reader.readLine();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            closeCleanly(reader);
+        }
     }
 }
