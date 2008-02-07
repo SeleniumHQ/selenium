@@ -1,8 +1,7 @@
-FirefoxDriver.prototype.click = function(respond, position) {
+FirefoxDriver.prototype.click = function(respond) {
     respond.context = this.context;
-    respond.elementId = position;
 
-    var element = Utils.getElementAt(position, this.context);
+    var element = Utils.getElementAt(respond.elementId, this.context);
     if (!element) {
         respond.send();
         return;
@@ -57,11 +56,10 @@ FirefoxDriver.prototype.click = function(respond, position) {
     contentWindow.setTimeout(clickEvents, 50);
 };
 
-FirefoxDriver.prototype.getElementText = function(respond, elementId) {
+FirefoxDriver.prototype.getElementText = function(respond) {
     respond.context = this.context;
-    respond.elementId = elementId;
 
-    var element = Utils.getElementAt(elementId, this.context);
+    var element = Utils.getElementAt(respond.elementId, this.context);
     if (element.tagName == "TITLE") {
         respond.response = Utils.getBrowser(this.context).contentTitle;
     } else {
@@ -71,11 +69,10 @@ FirefoxDriver.prototype.getElementText = function(respond, elementId) {
     respond.send();
 }
 
-FirefoxDriver.prototype.getElementValue = function(respond, value) {
+FirefoxDriver.prototype.getElementValue = function(respond) {
     respond.context = this.context;
-    respond.elementId = value;
 
-    var element = Utils.getElementAt(value, this.context);
+    var element = Utils.getElementAt(respond.elementId, this.context);
 
     if (element["value"] !== undefined) {
         respond.response = element.value;
@@ -96,26 +93,21 @@ FirefoxDriver.prototype.getElementValue = function(respond, value) {
 
 FirefoxDriver.prototype.sendKeys = function(respond, value) {
     respond.context = this.context;
-    var spaceIndex = value.indexOf(" ");
-    respond.elementId = value.substring(0, spaceIndex);
 
     var element = Utils.getElementAt(respond.elementId, this.context);
-    spaceIndex = value.indexOf(" ", spaceIndex);
-    var newValue = value.substring(spaceIndex + 1);
 
     element.focus();
-    Utils.type(this.context, element, newValue);
+    Utils.type(this.context, element, value[0]);
     element.blur();
 
     respond.context = this.context;
     respond.send();
 };
 
-FirefoxDriver.prototype.clear = function(respond, elementId) {
+FirefoxDriver.prototype.clear = function(respond) {
    respond.context = this.context;
-   respond.elementId = elementId;
 
-   var element = Utils.getElementAt(elementId, this.context);
+   var element = Utils.getElementAt(respond.elementId, this.context);
    var isTextField = element["value"] !== undefined;
 
    if (isTextField) {
@@ -128,13 +120,8 @@ FirefoxDriver.prototype.clear = function(respond, elementId) {
 }
 
 FirefoxDriver.prototype.getElementAttribute = function(respond, value) {
-    respond.context = this.context;
-
-    var spaceIndex = value.indexOf(" ");
-    respond.elementId = value.substring(0, spaceIndex);
     var element = Utils.getElementAt(respond.elementId, this.context);
-    spaceIndex = value.indexOf(" ", spaceIndex);
-    var attributeName = value.substring(spaceIndex + 1);
+    var attributeName = value[0];
 
     if (element.hasAttribute(attributeName)) {
         respond.response = element.getAttribute(attributeName);
@@ -172,9 +159,8 @@ FirefoxDriver.prototype.getElementAttribute = function(respond, value) {
     respond.send();
 }
 
-FirefoxDriver.prototype.submitElement = function(respond, elementId) {
-    var element = Utils.getElementAt(elementId, this.context);
-    respond.elementId = elementId;
+FirefoxDriver.prototype.submitElement = function(respond) {
+    var element = Utils.getElementAt(respond.elementId, this.context);
 
     var submitElement = Utils.findForm(element);
     if (submitElement) {
@@ -193,12 +179,10 @@ FirefoxDriver.prototype.submitElement = function(respond, elementId) {
     }
 }
 
-FirefoxDriver.prototype.getElementChildren = function(respond, elementIdAndTagName) {
-    var parts = elementIdAndTagName.split(" ");
-    respond.elementId = parts[0];
-    var element = Utils.getElementAt(parts[0], this.context);
+FirefoxDriver.prototype.getElementChildren = function(respond, name) {
+    var element = Utils.getElementAt(respond.elementId, this.context);
 
-    var children = element.getElementsByTagName(parts[1]);
+    var children = element.getElementsByTagName(name[0]);
     var response = "";
     for (var i = 0; i < children.length; i++) {
         response += Utils.addToKnownElements(children[i], this.context) + " ";
@@ -209,8 +193,8 @@ FirefoxDriver.prototype.getElementChildren = function(respond, elementIdAndTagNa
     respond.send();
 }
 
-FirefoxDriver.prototype.getElementSelected = function(respond, elementId) {
-    var element = Utils.getElementAt(elementId, this.context);
+FirefoxDriver.prototype.getElementSelected = function(respond) {
+    var element = Utils.getElementAt(respond.elementId, this.context);
     var selected = false;
 
     try {
@@ -228,18 +212,16 @@ FirefoxDriver.prototype.getElementSelected = function(respond, elementId) {
     }
 
     respond.context = this.context;
-    respond.elementId = elementId;
     respond.response = selected;
     respond.send();
 }
 
-FirefoxDriver.prototype.setElementSelected = function(respond, elementId) {
-    var element = Utils.getElementAt(elementId, this.context);
+FirefoxDriver.prototype.setElementSelected = function(respond) {
+    var element = Utils.getElementAt(respond.elementId, this.context);
 
     var wasSet = "You may not select an unselectable element";
     respond.context = this.context;
     respond.isError = true;
-    respond.elementId = elementId;
 
     try {
         var inputElement = element.QueryInterface(Components.interfaces.nsIDOMHTMLInputElement)
@@ -279,11 +261,10 @@ FirefoxDriver.prototype.setElementSelected = function(respond, elementId) {
     respond.send();
 }
 
-FirefoxDriver.prototype.toggleElement = function(respond, elementId) {
+FirefoxDriver.prototype.toggleElement = function(respond) {
     respond.context = this.context;
-    respond.elementId = elementId;
 
-    var element = Utils.getElementAt(elementId, this.context);
+    var element = Utils.getElementAt(respond.elementId, this.context);
 
     try {
         var checkbox = element.QueryInterface(Components.interfaces.nsIDOMHTMLInputElement);
@@ -319,53 +300,48 @@ FirefoxDriver.prototype.toggleElement = function(respond, elementId) {
     respond.send();
 };
 
-FirefoxDriver.prototype.isElementDisplayed = function(respond, elementId) {
-    var element = Utils.getElementAt(elementId, this.context);
+FirefoxDriver.prototype.isElementDisplayed = function(respond) {
+    var element = Utils.getElementAt(respond.elementId, this.context);
 
     var display = Utils.getStyleProperty(element, "display");
     var visible = Utils.getStyleProperty(element, "visibility");
 
-    respond.elementId = elementId;
     respond.context = this.context;
     respond.response = display != "none" && visible != "hidden";
     respond.send();
 };
 
-FirefoxDriver.prototype.getElementLocation = function(respond, elementId) {
-    var location = Utils.getElementLocation(Utils.getElementAt(elementId, this.context), this.context);
+FirefoxDriver.prototype.getElementLocation = function(respond) {
+    var element = Utils.getElementAt(respond.elementId, this.context);
+    var location = Utils.getElementLocation(element, this.context);
 
-    respond.elementId = elementId;
     respond.context = this.context;
     respond.response = location.x + ", " + location.y;
     respond.send();
 };
 
-FirefoxDriver.prototype.getElementSize = function(respond, elementId) {
-    var element = Utils.getElementAt(elementId, this.context);
+FirefoxDriver.prototype.getElementSize = function(respond) {
+    var element = Utils.getElementAt(respond.elementId, this.context);
 
     var width = element.offsetWidth;
     var height = element.offsetHeight;
 
-    respond.elementId = elementId;
     respond.context = this.context;
     respond.response = width + ", " + height;
     respond.send();
 };
 
-FirefoxDriver.prototype.dragAndDrop = function(respond, elementIdAndMovementString) {
-    var parts = elementIdAndMovementString.split("\n");
-    respond.elementId = parts[0];
-    var element = Utils.getElementAt(parts[0], this.context);
+FirefoxDriver.prototype.dragAndDrop = function(respond, movementString) {
+    var element = Utils.getElementAt(respond.elementId, this.context);
     
     var clientStartXY = Utils.getElementLocation(element, this.context);
     
     var clientStartX = clientStartXY.x;
     var clientStartY = clientStartXY.y;
     
-    var movementX = parseInt(parts[1].split(",")[0]);
-    var movementY = parseInt(parts[1].split(",")[1]);
-    
-    
+    var movementX = movementString[0];
+    var movementY = movementString[1];
+
     var clientFinishX = ((clientStartX + movementX) < 0) ? 0 : (clientStartX + movementX);
     var clientFinishY = ((clientStartY + movementY) < 0) ? 0 : (clientStartY + movementY);
     // Restrict the desitnation into the sensible dimension
@@ -374,30 +350,31 @@ FirefoxDriver.prototype.dragAndDrop = function(respond, elementIdAndMovementStri
         clientFinishX = window.innerWidth;
     if (clientFinishY > window.innerHeight)
         clientFinishY = window.innerHeight;
-    
+
     var mouseSpeed = this.mouseSpeed;
     var move = function(current, dest) {
         if (current == dest) return current;
         if (Math.abs(current - dest) < mouseSpeed) return dest;
         return (current < dest) ? current + mouseSpeed : current - mouseSpeed;
     }
-    
+
     Utils.triggerMouseEvent(element, 'mousedown', clientStartX, clientStartY);
     Utils.triggerMouseEvent(element, 'mousemove', clientStartX, clientStartY);
     var clientX = clientStartX;
     var clientY = clientStartY;
-  
+
     while ((clientX != clientFinishX) || (clientY != clientFinishY)) {
         clientX = move(clientX, clientFinishX);
         clientY = move(clientY, clientFinishY);
         
         Utils.triggerMouseEvent(element, 'mousemove', clientX, clientY);
     }
-    
+
     Utils.triggerMouseEvent(element, 'mousemove', clientFinishX, clientFinishY);
     Utils.triggerMouseEvent(element, 'mouseup',  clientFinishX, clientFinishY);
-    
+
     var finalLoc = Utils.getElementLocation(element, this.context)
+
     respond.context = this.context;
     respond.response = finalLoc.x + "," + finalLoc.y;
     respond.send();

@@ -1,6 +1,7 @@
 package com.googlecode.webdriver.firefox.internal;
 
 import com.googlecode.webdriver.firefox.FirefoxLauncher;
+import com.googlecode.webdriver.firefox.Command;
 
 import java.io.IOException;
 
@@ -18,7 +19,7 @@ public class NewProfileExtensionConnection extends AbstractExtensionConnection {
 
     public void quit() {
         try {
-            sendMessageAndWaitForResponse(RuntimeException.class, "quit", 0);
+            sendMessageAndWaitForResponse(RuntimeException.class, new Command(null, "quit"));
         } catch (NullPointerException e) {
             // this is expected
         }

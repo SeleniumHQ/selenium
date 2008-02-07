@@ -1,6 +1,10 @@
 package com.googlecode.webdriver.firefox;
 
+import org.json.simple.parser.JSONParser;
+import org.json.simple.JSONObject;
+
 import java.lang.reflect.Constructor;
+import java.io.StringReader;
 
 public class Response {
     private final String methodName;
@@ -8,15 +12,22 @@ public class Response {
     private final String responseText;
     private boolean isError;
 
-    public Response(String methodName, String remainderOfResult) {
-        this.methodName = methodName;
-        String[] bits = remainderOfResult.split("\n", 4);
-        context = new Context(bits[0]);
-        isError = "ERROR".equals(bits[1]);
-        if (bits.length > 3)
-            responseText = bits[3];
-        else
-            responseText = "";
+    public Response(String json) {
+        try {
+            JSONObject result = (JSONObject) new JSONParser().parse(new StringReader(json.trim()));
+
+            methodName = (String) result.get("commandName");
+            String contextAsString = (String) result.get("context");
+            if (contextAsString != null)
+                context = new Context(contextAsString);
+            else
+                context = null;
+            responseText = String.valueOf(result.get("response"));
+
+            isError = (Boolean) result.get("isError");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public String getCommand() {
@@ -44,6 +55,7 @@ public class Response {
             Constructor<? extends RuntimeException> constructor = exceptionClass.getConstructor(String.class);
             toThrow = constructor.newInstance(getResponseText());
         } catch (Exception e) {
+            e.printStackTrace();
             throw new RuntimeException(getResponseText());
         }
 

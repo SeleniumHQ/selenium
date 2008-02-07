@@ -10,6 +10,12 @@ class Context {
             this.fromExtension = "0 ?";
     }
 
+    public String getDriverId() {
+        if (fromExtension == null)
+            return null;
+        return this.fromExtension.split(" ")[0];
+    }
+
     public String toString() {
         return fromExtension;
     }

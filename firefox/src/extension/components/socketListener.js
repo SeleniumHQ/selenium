@@ -33,28 +33,26 @@ SocketListener.prototype.onStopRequest = function(request, context, status)
 SocketListener.prototype.onDataAvailable = function(request, context, inputStream, offset, count)
 {
     var incoming = this.inputStream.read(count);
+    var header = "";
 
     for (var i = 0; i < count; i++) {
-        if (this.isReadingCommand()) {
-            if (incoming[i] != ' ') {
-                this.command += incoming[i];
+        if (this.isReadingHeaders()) {
+            if (incoming[i] != '\n') {
+                header += incoming[i];
             } else {
-                this.step++;
-            }
-        } else if (this.isReadingLineCount()) {
-            if (incoming[i] != "\n") {
-                this.linesLeft += incoming[i];
-            } else {
-                this.step++;
-                // Convert it to a number
-                this.linesLeft = this.linesLeft - 0;
+                if (header == "") {
+                    this.step++;
+                    continue;
+                }
 
-                if (this.linesLeft == 0) {
-                    this.executeCommand();
+                var head = header.split(": ", 2);
+                if (head[0] == "Length") {
+                    this.linesLeft = head[1] - 0;
+                    header = "";
                 }
             }
         } else {
-            if (this.linesLeft == 1 && incoming[i] == "\n") {
+            if (this.linesLeft == 0 && incoming[i] == "\n") {
                 this.executeCommand();
             } else {
                 this.data += incoming[i];
@@ -64,77 +62,84 @@ SocketListener.prototype.onDataAvailable = function(request, context, inputStrea
             }
         }
     }
+
+    if (this.linesLeft == 0 && this.data) {
+        this.executeCommand();
+    }
 }
 
 SocketListener.prototype.executeCommand = function() {
     var fxbrowser, fxdocument;
     var self = this;
 
+    var command = JSON.parse(this.data);
+
+    var sendBack = {
+        commandName : command.commandName,
+        isError : false,
+        response : "",
+        elementId : command.elementId
+    };
+
     var respond = {
         send : function() {
-            var output = this.commandName + " ";
+            var output = "Length: ";
 
-            var remainder = this.context + "\n";
-            remainder += (this.isError ? "ERROR" : "OK") + "\n";
-
-            remainder += this.elementId + "\n";
-
-            remainder += this.response + "\n";
-
+            sendBack.context = "" + sendBack.context;
+            var remainder = JSON.stringify(sendBack) + "\n";
             var lines = remainder.split("\n").length - 1;
-            output += lines + "\n" + remainder;
-//        var output = method + " ";
-            //
-            //
-            //
-            //        if (response == undefined) {
-            //            output += "1\n" + context + "\n";
-            //        } else {
-            //            var length = response["split"] ? response.split("\n").length + 1 : 2;
-            //            output += length + "\n" + context + "\n" + response + "\n";
-            //        }
+            output += lines + "\n\n" + remainder;
 
             var slices = output.length / 256 + 1;
-        // Fail on powers of 2 :)
+
+            // Fail on powers of 2 :)
             for (var i = 0; i < slices; i++) {
                 var slice = output.slice(i * 256, (i + 1) * 256);
                 self.outstream.writeString(slice, slice.length);
                 self.outstream.flush();
             }
         },
-        commandName : undefined,
-        isError : false,
-        responseText : ""
+
+        set commandName(name) { sendBack.commandName = name; },
+        get commandName()     { return sendBack.commandName; },
+        set elementId(id)     { sendBack.elementId = id; },
+        get elementId()       { return sendBack.elementId; },
+        set isError(error)    { sendBack.isError = error; },
+        get isError()         { return sendBack.isError; },
+        set response(res)     { sendBack.response = res; },
+        get response()        { return sendBack.response; },
+        set context(c)        { sendBack.context = c; },
+        get context()         { return sendBack.context; }
     };
+
+    respond.context = command.context;
 
     if (!this.driverPrototype)
         this.driverPrototype = FirefoxDriver.prototype;
 
     // These are used to locate a new driver, and so not having one is a fine thing to do
-    if (this.command == "findActiveDriver" ||
-        this.command == "switchToWindow" ||
-        this.command == "quit") {
+    if (command.commandName == "findActiveDriver" ||
+        command.commandName == "switchToWindow" ||
+        command.commandName == "quit") {
 
-        var bits = this.data.split("\n", 2);
-        var command = this.command;
-
-        this.command = "";
         this.data = "";
         this.linesLeft = 0;
         this.step = 0;
 
-        respond.commandName = command;
-        this[command](respond, bits[1]);
-    } else if (this.driverPrototype[this.command]) {
-        var bits = this.data.split("\n");
-        var id = bits.shift() - 0;
-        var remainder = bits.join("\n");
+        respond.commandName = command.commandName;
+        this[command.commandName](respond, command.parameters);
+    } else if (this.driverPrototype[command.commandName]) {
         var driver;
+
+        var res = command.context.split(" ", 2);
+        var context = new Context(res[0], res[1]);
+
+        command.context = command.context.toString();
 
         var allWindows = this.wm.getEnumerator(null);
         while (allWindows.hasMoreElements()) {
             var win = allWindows.getNext();
-            if (win["fxdriver"] && win.fxdriver.id == id) {
+            if (win["fxdriver"] && win.fxdriver.id == context.windowId) {
                 fxbrowser = win.getBrowser();
                 driver = win.fxdriver;
                 break;
@@ -142,12 +147,13 @@ SocketListener.prototype.executeCommand = function() {
         }
 
         if (!fxbrowser) {
-            dump("Unable to find browser with id " + id + "\n");
+            dump("Unable to find browser with id " + context.windowId + "\n");
         }
         if (!driver) {
             dump("Unable to find the driver\n");
         }
 
+        driver.context = context;
         driver.context.fxbrowser = fxbrowser;
 
         // Determine whether or not we need to care about frames.
@@ -174,13 +180,10 @@ SocketListener.prototype.executeCommand = function() {
 
         var info = {
             webProgress: fxbrowser.webProgress,
-            command: this.command,
-            data: this.data,
-            driver: driver,
-            bits: remainder
+            command: command,
+            driver: driver
         };
 
-        this.command = "";
         this.data = "";
         this.linesLeft = 0;
         this.step = 0;
@@ -190,10 +193,10 @@ SocketListener.prototype.executeCommand = function() {
                 info.driver.window.setTimeout(wait, 10, info);
             } else {
                 try {
-                    respond.commandName = info.command;
-                    info.driver[info.command](respond, info.bits);
+                    respond.commandName = info.command.commandName;
+                    info.driver[info.command.commandName](respond, info.command.parameters);
                 } catch (e) {
-                    info.driver.window.dump("Exception caught: " + info.command + "(" + info.data + ")\n");
+                    info.driver.window.dump("Exception caught: " + info.command.commandName + "(" + info.command.parameters + ")\n");
                     info.driver.window.dump(e + "\n");
                     respond.isError = true;
                     respond.context = info.driver.context;
@@ -204,18 +207,16 @@ SocketListener.prototype.executeCommand = function() {
         driver.window.setTimeout(wait, 0, info);
     } else {
         dump("Unrecognised command: " + this.command + "\n");
-        this.command = "";
-        this.data = "";
         this.linesLeft = 0;
         this.step = 0;
         respond.isError = true;
-        respond.response = "Unrecognised command: " + this.command;
-        respond.context = new Context();
+        respond.response = "Unrecognised command: " + command.commandName;
+        respond.context = new Context(driver.window);
         respond.send();
     }
 };
 
-SocketListener.prototype.isReadingCommand = function() {
+SocketListener.prototype.isReadingHeaders = function() {
     return this.step == 0;
 };
 
@@ -224,23 +225,22 @@ SocketListener.prototype.isReadingLineCount = function() {
 };
 
 SocketListener.prototype.switchToWindow = function(respond, windowId) {
+    var lookFor = windowId[0];
     var wm = Utils.getService("@mozilla.org/appshell/window-mediator;1", "nsIWindowMediator");
     var allWindows = wm.getEnumerator(null);
 
     while (allWindows.hasMoreElements()) {
         var win = allWindows.getNext();
-        if (win.content.name == windowId) {
+        if (win.content.name == lookFor) {
             win.focus();
             var driver = win.top.fxdriver;
             if (!driver) {
-                respond.context = this.context;
                 respond.isError = true;
                 respond.response = "No driver found attached to top window!";
                 respond.send();
             }
 
-            respond.context = this.context;
-            respond.response = driver.id;
+            respond.response = new Context(win.fxdriver.id).toString();
             respond.send();
             return;
         }
@@ -248,7 +248,7 @@ SocketListener.prototype.switchToWindow = function(respond, windowId) {
 
     respond.context = this.context;
     respond.isError = true;
-    respond.resposne = "No window found";
+    respond.response = "No window found";
     respond.send();
 };
 

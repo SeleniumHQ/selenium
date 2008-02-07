@@ -1,5 +1,7 @@
 package com.googlecode.webdriver.firefox.internal;
 
+import com.googlecode.webdriver.firefox.Command;
+
 import java.io.IOException;
 import java.net.ConnectException;
 
@@ -16,7 +18,7 @@ public class RunningInstanceConnection extends AbstractExtensionConnection {
 
     public void quit() {
         try {
-            sendMessageAndWaitForResponse(RuntimeException.class, "quit", 0);
+            sendMessageAndWaitForResponse(RuntimeException.class, new Command(null, "quit"));
         } catch (NullPointerException e) {
             // Expected
         }

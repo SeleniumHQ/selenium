@@ -40,7 +40,7 @@ import java.util.Set;
  */
 public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, FindsByXPath {
     private final ExtensionConnection extension;
-    private long id;
+    protected Context context;
 
     public FirefoxDriver() {
         this(null);
@@ -71,9 +71,9 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
       // Does nothing, but provides a hook for subclasses to do "stuff"
     }
 
-    private FirefoxDriver(ExtensionConnection extension, long id) {
+    private FirefoxDriver(ExtensionConnection extension, Context context) {
         this.extension = extension;
-        this.id = id;
+        this.context = context;
     }
 
     public void close() {
@@ -173,22 +173,27 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
     protected WebDriver findActiveDriver() {
         String response = sendMessage(RuntimeException.class, "findActiveDriver");
 
-        long newId = Long.parseLong(response);
-        if (newId == id) {
+        Context newContext = new Context(response);
+        if (newContext.getDriverId() == newContext.getDriverId()) {
             return this;
         }
-        return new FirefoxDriver(extension, newId);
+        return new FirefoxDriver(extension, newContext);
     }
 
-    protected String sendMessage(Class<? extends RuntimeException> throwOnFailure, String methodName, String... argument) {
-        Response response = extension.sendMessageAndWaitForResponse(throwOnFailure, methodName, id, argument);
+    private String sendMessage(Class<? extends RuntimeException> throwOnFailure, String methodName, Object... parameters) {
+        return sendMessage(throwOnFailure, new Command(context, methodName, parameters));
+    }
+
+    protected String sendMessage(Class<? extends RuntimeException> throwOnFailure, Command command) {
+        Response response = extension.sendMessageAndWaitForResponse(throwOnFailure, command);
+        context = response.getContext();
         response.ifNecessaryThrow(throwOnFailure);
         return response.getResponseText();
     }
 
     private void fixId() {
         String response = sendMessage(RuntimeException.class, "findActiveDriver");
-        id = Long.parseLong(response);
+        this.context = new Context(response);
     }
 
     public void quit() {
@@ -369,7 +374,7 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
                 return null;
             }
             try {
-                FirefoxDriver.this.id = Long.parseLong(response);
+                FirefoxDriver.this.context = new Context(response);
             } catch (NumberFormatException e) {
                 throw new RuntimeException("When switching to window: " + windowName + " ---- " + response);
             }

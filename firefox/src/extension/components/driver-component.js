@@ -10,6 +10,7 @@ const CONTRACT_ID = "@googlecode.com/webdriver/fxdriver;1";
 var ExternalScripts = [
         "context.js",
         "firefoxDriver.js",
+        "json2.js",
         "socketListener.js",
         "utils.js",
         "webdriverserver.js",

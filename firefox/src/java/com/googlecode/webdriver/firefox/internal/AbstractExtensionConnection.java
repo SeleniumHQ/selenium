@@ -2,6 +2,7 @@ package com.googlecode.webdriver.firefox.internal;
 
 import com.googlecode.webdriver.firefox.ExtensionConnection;
 import com.googlecode.webdriver.firefox.Response;
+import com.googlecode.webdriver.firefox.Command;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -18,6 +19,9 @@ import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+
+import org.json.simple.JSONObject;
+import org.json.simple.JSONArray;
 
 public abstract class AbstractExtensionConnection implements ExtensionConnection {
     private Socket socket;
@@ -102,33 +106,41 @@ public abstract class AbstractExtensionConnection implements ExtensionConnection
         return socket != null && socket.isConnected();
     }
 
-    public Response sendMessageAndWaitForResponse(Class<? extends RuntimeException> throwOnFailure, String methodName,
-                                                  long driverId, String... arguments) {
-        int lines = countLines(arguments) + 1;
+    public Response sendMessageAndWaitForResponse(Class<? extends RuntimeException> throwOnFailure,
+                                                  Command command) {
+        String converted = convert(command);
+        int lines = countLines(converted);
 
-        StringBuffer message = new StringBuffer(methodName);
-        message.append(" ").append(lines).append("\n");
+        StringBuffer message = new StringBuffer("Length: ");
+        message.append(lines).append("\n\n");
 
-        message.append(driverId).append("\n");
-
-        for (String arg : arguments) {
-            message.append(arg).append("\n");
-        }
+        message.append(converted).append("\n");
 
         out.print(message.toString());
         out.flush();
 
-        return waitForResponseFor(methodName);
+        return waitForResponseFor(command.getCommandName());
     }
 
-    private int countLines(String... arguments) {
-        int lines = 0;
+    @SuppressWarnings({"unchecked"})
+    private String convert(Command command) {
+        JSONObject json = new JSONObject();
+        json.put("commandName", command.getCommandName());
+        json.put("context", String.valueOf(command.getContext()));
+        json.put("elementId", command.getElementId());
 
-        for (String arg : arguments) {
-            lines += arg.split("\n").length;
+        JSONArray params = new JSONArray();
+        for (Object o : command.getParameters()) {
+            params.add(o);
         }
 
-        return lines;
+        json.put("parameters", params);
+
+        return json.toString();
+    }
+
+    private int countLines(String response) {
+        return response.split("\n").length;
     }
 
     private Response waitForResponseFor(String command) {
@@ -151,16 +163,25 @@ public abstract class AbstractExtensionConnection implements ExtensionConnection
         String line = in.readLine();
 
         // Expected input will be of the form:
-        // CommandName NumberOfLinesRemaining
-        // context
-        // Status
-        // ResponseText
+        // Header: Value
+        // \n
+        // JSON object
+        //
+        // The only expected header is "Length"
 
-        int spaceIndex = line.indexOf(' ');
-        String methodName = line.substring(0, spaceIndex);
-        String remainingResponse = line.substring(spaceIndex + 1);
-        long count = Long.parseLong(remainingResponse);
+        // Read headers
+        long count = 0;
+        String[] parts = line.split(":", 2);
+        if ("Length".equals(parts[0])) {
+            count = Long.parseLong(parts[1].trim());
+        }
 
+        // Wait for the blank line
+        while (!line.equals("") && line != null) {
+            line = in.readLine();
+        }
+
+        // Read the rest of the response.
         StringBuffer result = new StringBuffer();
         for (int i = 0; i < count; i++) {
             String read = in.readLine();
@@ -169,6 +190,6 @@ public abstract class AbstractExtensionConnection implements ExtensionConnection
                 result.append("\n");
         }
 
-        return new Response(methodName, result.toString());
+        return new Response(result.toString());
     }
 }

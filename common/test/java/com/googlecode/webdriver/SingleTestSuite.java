@@ -15,8 +15,8 @@ public class SingleTestSuite {
                     .usingDriver(FIREFOX)
 					.keepDriverInstance()
                     .includeJavascriptTests()
-                    .onlyRun("DragAndDropTest")
-//                    .method("testDragAndDrop")
+                    .onlyRun("TextHandlingTest")
+//                    .method("testDocumentShouldReflectLatestTitle")
 //                    .leaveRunningAfterTest()
                     .create();
 	}

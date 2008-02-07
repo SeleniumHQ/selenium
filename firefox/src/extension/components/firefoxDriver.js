@@ -76,7 +76,7 @@ FirefoxDriver.prototype.close = function(respond) {
 
 FirefoxDriver.prototype.getCurrentUrl = function(respond) {
     respond.context = this.context;
-    respond.response = Utils.getBrowser(this.context).contentWindow.location;
+    respond.response = "" + Utils.getBrowser(this.context).contentWindow.location;
     respond.send();
 }
 
@@ -170,16 +170,14 @@ FirefoxDriver.prototype.selectElementsUsingXPath = function(respond, xpath) {
 
 FirefoxDriver.prototype.switchToFrame = function(respond, frameId) {
     var browser = Utils.getBrowser(this.context);
-
-    var frameDoc = Utils.findDocumentInFrame(browser, frameId);
+    var frameDoc = Utils.findDocumentInFrame(browser, frameId[0]);
 
     if (frameDoc) {
-        this.context = new Context(this.context.windowId, frameId);
-        respond.context = this.context;
+        this.context = new Context(this.context.windowId, frameId[0]);
+        respond.context = this.context.toString();
         respond.send();
     } else {
         respond.isError = true;
-        respond.context = this.context;
         respond.response = "Cannot find frame with id: " + frameId;
         respond.send();
     }
@@ -187,7 +185,7 @@ FirefoxDriver.prototype.switchToFrame = function(respond, frameId) {
 
 FirefoxDriver.prototype.switchToDefaultContent = function(respond) {
     this.context.frameId = "?";
-    respond.context = this.context;
+    respond.context = this.context.toString();
     respond.send();
 }
 
