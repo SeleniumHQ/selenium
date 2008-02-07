@@ -1000,6 +1000,12 @@ NodeUtil = {
     // jrh - 6 Feb 2008 - begin 
     getNodeAttribute: function(node, attrName, attrValue){
         var retrievedValue = node.getAttribute(attrName);
+        
+        // Reapplying a fix for a bug similar to http://svn.openqa.org/fisheye/changelog/selenium?cs=1523
+        if ("function anonymous()\n{\n" + attrValue + "\n}") == retrievedValue) {
+            retrievedValue = attrValue;
+        }    
+        
         if (uai.ie6) {
             if (attrName.length != 4) return retrievedValue;
             if (!/^href$/i.test(attrName)) return retrievedValue;       
