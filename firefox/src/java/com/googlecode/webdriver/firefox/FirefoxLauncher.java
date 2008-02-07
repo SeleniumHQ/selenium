@@ -261,7 +261,12 @@ public class FirefoxLauncher {
         }
 
         try {
-            File profileDir = createCopyOfDefaultProfile(profileName);
+            // Find the "normal" WebDriver profile, and make a copy of it
+            File from = locateWebDriverProfile(profileName);
+            if (!from.exists())
+                throw new RuntimeException(MessageFormat.format("Found the {0} profile directory, but it does not exist: {1}",
+                        profileName, from.getAbsolutePath()));
+            File profileDir = createCopyOfProfile(from);
 
             ProcessBuilder builder = new ProcessBuilder(binary.getAbsolutePath()).redirectErrorStream(true);
             modifyLibraryPath(builder, binary);
@@ -303,12 +308,8 @@ public class FirefoxLauncher {
       builder.environment().put(propertyName, libraryPath);
   }
 
-  private File createCopyOfDefaultProfile(String profileName) {
-        // Find the "normal" WebDriver profile, and make a copy of it
-        File from = locateWebDriverProfile(profileName);
-        if (!from.exists())
-            throw new RuntimeException(MessageFormat.format("Found the {0} profile directory, but it does not exist: {1}",
-                    profileName, from.getAbsolutePath()));
+  protected File createCopyOfProfile(File from) {
+
 
         File tmpDir = new File(System.getProperty("java.io.tmpdir"));
         File to = new File(tmpDir, "webdriver-" + System.currentTimeMillis());
@@ -319,7 +320,7 @@ public class FirefoxLauncher {
         return to;
     }
 
-    private void copy(File from, File to) {
+    protected void copy(File from, File to) {
         String[] contents = from.list();
         for (String child : contents) {
             File toCopy = new File(from, child);
