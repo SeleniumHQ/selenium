@@ -12,7 +12,6 @@ import java.util.Iterator;
 import java.util.Set;
 
 public class CookieImplementationTest extends AbstractDriverTestCase {
-	@Ignore("safari")
     public void testAddCookiesWithDifferentPaths() {
         driver.get(simpleTestPage);
         driver.manage().deleteAllCookies();
@@ -35,7 +34,6 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
         assertThat(cookies.contains(cookie2), is(true));
     }
 
-	@Ignore("safari")
     public void testGetAllCookies() {
         driver.get(simpleTestPage);
         driver.manage().deleteAllCookies();
@@ -54,7 +52,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
         assertThat(cookies.contains(cookie2), is(true));
     }
 	
-	@Ignore("ie, safari")
+	@Ignore("ie")
     public void testCookieIntegrity() {
         driver.get(alternateBaseUrl + "animals");
         driver.manage().deleteAllCookies();
@@ -85,7 +83,6 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
         assertThat(retrievedCookie.isSecure(), equalTo(cookie1.isSecure()));
     }
 
-	@Ignore("safari")
     public void testDeleteAllCookies() {
         driver.get(simpleTestPage);
         Cookie cookie1 = new Cookie("fish", "cod", hostName, "", null, false);
@@ -104,7 +101,6 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
         assertThat(cookies.contains(cookie2), is(false));
     }
 
-	@Ignore("safari")
     public void testDeleteCookie() {
         driver.get(simpleTestPage);
         Cookie cookie1 = new Cookie("fish", "cod", hostName, "", null, false);
@@ -120,7 +116,6 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
         assertThat(cookies, hasItem(cookie2));
     }
 
-	@Ignore("safari")
     public void testDeleteCookieWithName() {
         driver.get(simpleTestPage);
         driver.manage().deleteAllCookies();
@@ -147,7 +142,6 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
         assertThat(cookies, hasItem(cookie3));
     }
 
-	@Ignore("safari")
     public void testShouldNotDeleteCookiesWithASimilarName() {
         driver.get(simpleTestPage);
         driver.manage().deleteAllCookies();
@@ -166,7 +160,6 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
         assertThat(cookies, hasItem(cookie2));
     }
 
-	@Ignore("safari")
     public void testGetCookieDoesNotRetriveBeyondCurrentDomain() {
         driver.get(simpleTestPage);
         driver.manage().deleteAllCookies();

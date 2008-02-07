@@ -4,12 +4,19 @@ import com.googlecode.webdriver.By;
 import com.googlecode.webdriver.WebDriver;
 import com.googlecode.webdriver.WebElement;
 import com.googlecode.webdriver.NoSuchElementException;
+import com.googlecode.webdriver.Cookie;
+import com.googlecode.webdriver.Speed;
 import com.googlecode.webdriver.internal.FindsByLinkText;
 import com.googlecode.webdriver.internal.FindsById;
 import com.googlecode.webdriver.internal.FindsByXPath;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Set;
+import java.util.Date;
+import java.util.HashSet;
+import java.net.URL;
+import java.net.MalformedURLException;
 
 public class SafariDriver implements WebDriver, FindsByLinkText, FindsById, FindsByXPath {
     protected final static String ELEMENTS = "document.webdriverElements";
@@ -72,7 +79,7 @@ public class SafariDriver implements WebDriver, FindsByLinkText, FindsById, Find
     }
 
     public Options manage() {
-        throw new UnsupportedOperationException("manage");
+        return new SafariOptions();
     }
 
     public void waitForLoadToComplete() {
@@ -170,6 +177,65 @@ public class SafariDriver implements WebDriver, FindsByLinkText, FindsById, Find
         "  toReturn += (" + ELEMENTS + ".push(elements[i]) - 1) + \" \"\r" +
         "}\r" +
         "return toReturn;";
+    }
 
+    private class SafariOptions implements Options {
+        public void addCookie(Cookie cookie) {
+            appleScript.executeJavascript("document.cookie = \"" + cookie.toString() + "\"");
+        }
+
+        public void deleteCookieNamed(String name) {
+            deleteCookie(new Cookie(name, "", getCurrentHost(), "", null, false));
+        }
+
+        public void deleteCookie(Cookie cookie) {
+            Date dateInPast = new Date(0);
+			Cookie toDelete = new Cookie(cookie.getName(), cookie.getValue(), cookie.getDomain(), cookie.getPath(), dateInPast, false);
+			addCookie(toDelete);
+        }
+
+        public void deleteAllCookies() {
+            Set<Cookie> cookies = getCookies();
+			for (Cookie cookie : cookies) {
+				deleteCookie(cookie);
+			}
+        }
+
+        public Set<Cookie> getCookies() {
+            String currentUrl = getCurrentHost();
+
+			Set<Cookie> toReturn = new HashSet<Cookie>();
+			String allDomainCookies = appleScript.executeJavascript("return document.cookie");
+            System.out.println("allDomainCookies = " + allDomainCookies);
+
+            String[] cookies = allDomainCookies.split("; ");
+			for (String cookie : cookies) {
+				String[] parts = cookie.split("=");
+				if (parts.length != 2) {
+					continue;
+				}
+
+				toReturn.add(new Cookie(parts[0], parts[1], currentUrl, "", null, false));
+			}
+
+	        return toReturn;
+        }
+
+        public Speed getMouseSpeed() {
+            throw new UnsupportedOperationException("getMouseSpeed");
+        }
+
+        public void setMouseSpeed(Speed speed) {
+            throw new UnsupportedOperationException("setMouseSpeed");
+        }
+
+        private String getCurrentHost() {
+			try {
+				URL url = new URL(getCurrentUrl());
+				return url.getHost();
+			} catch (MalformedURLException e) {
+				return "";
+			}
+		}
     }
 }

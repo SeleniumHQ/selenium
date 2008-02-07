@@ -810,7 +810,7 @@
   <component name="ProjectRunConfigurationManager">
     <configuration default="false" name="SingleTestSuite" type="JUnit" factoryName="JUnit" enabled="false" merge="false">
       <pattern value="com.googlecode.webdriver.*" />
-      <module name="firefox" />
+      <module name="safari" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" value="" />
       <option name="PACKAGE_NAME" value="com.googlecode.webdriver" />

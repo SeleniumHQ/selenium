@@ -11,12 +11,12 @@ public class SingleTestSuite {
     public static Test suite() {
 		return new TestSuiteBuilder()
 					.addSourceDir("common")
-                    .addSourceDir("firefox")
-                    .usingDriver(FIREFOX)
+//                    .addSourceDir("firefox")
+                    .usingDriver(SAFARI)
 					.keepDriverInstance()
                     .includeJavascriptTests()
-                    .onlyRun("TextHandlingTest")
-//                    .method("testDocumentShouldReflectLatestTitle")
+                    .onlyRun("CookieImplementationTest")
+//                    .method("testAddCookiesWithDifferentPaths")
 //                    .leaveRunningAfterTest()
                     .create();
 	}
