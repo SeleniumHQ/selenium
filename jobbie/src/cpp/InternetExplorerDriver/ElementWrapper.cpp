@@ -117,10 +117,6 @@ void ElementWrapper::sendKeys(wchar_t* newValue)
 
 	element2->blur();
 
-	IHTMLEventObj* eventObj = newEventObject();
-	fireEvent(eventObj, L"onchange");
-	eventObj->Release();
-
 	ie->setVisible(initialVis);
 }
 
@@ -226,28 +222,42 @@ bool ElementWrapper::isEnabled()
 
 bool ElementWrapper::isDisplayed()
 {
-	CComQIPtr<IHTMLElement2, &__uuidof(IHTMLElement2)> elem = element;
-	IHTMLCurrentStyle* style;
-	BSTR display;
-	BSTR visible;
+	bool toReturn = true;
 
-	elem->get_currentStyle(&style);
-	style->get_display(&display);
-	style->get_visibility(&visible);
+	CComPtr<IHTMLElement> e = element;
+	do {
+		IHTMLElement2* e2;
+		e->QueryInterface(__uuidof(IHTMLElement2), (void**)&e2);
 
-	const wchar_t *displayValue = bstr2wchar(display);
-	const wchar_t *visibleValue = bstr2wchar(visible);
+		IHTMLCurrentStyle* style;
+		BSTR display;
+		BSTR visible;
 
-	int isDisplayed = _wcsicmp(L"none", displayValue);
-	int isVisible = _wcsicmp(L"hidden", visibleValue);
+		e2->get_currentStyle(&style);
+		style->get_display(&display);
+		style->get_visibility(&visible);
 
-	delete displayValue;
-	delete visibleValue;
-	SysFreeString(display);
-	SysFreeString(visible);
-	style->Release();
+		const wchar_t *displayValue = bstr2wchar(display);
+		const wchar_t *visibleValue = bstr2wchar(visible);
 
-	return isDisplayed != 0 && isVisible != 0;
+		int isDisplayed = _wcsicmp(L"none", displayValue);
+		int isVisible = _wcsicmp(L"hidden", visibleValue);
+
+		delete displayValue;
+		delete visibleValue;
+		SysFreeString(display);
+		SysFreeString(visible);
+		style->Release();
+
+		toReturn &= isDisplayed != 0 && isVisible != 0;
+
+		e2->Release();
+		CComPtr<IHTMLElement> parent;
+		e->get_parentElement(&parent);
+		e = parent;
+	} while (e && toReturn);
+
+	return toReturn;
 }
 
 bool ElementWrapper::toggle()
