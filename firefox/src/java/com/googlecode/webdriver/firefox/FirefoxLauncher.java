@@ -397,7 +397,7 @@ public class FirefoxLauncher {
         }
     }
 
-    private File locateWebDriverProfile(String profileName) {
+    protected File locateWebDriverProfile(String profileName) {
         String profileNameLine = "Name=" + profileName;
         File appData = locateUserDataDirectory(OperatingSystem.getCurrentPlatform());
 
@@ -444,7 +444,7 @@ public class FirefoxLauncher {
         throw new RuntimeException("Unable to locate the " + profileName + " profile. Exiting");
     }
 
-    private File locateUserDataDirectory(OperatingSystem os) {
+    protected File locateUserDataDirectory(OperatingSystem os) {
         File appData;
         switch (os) {
             case WINDOWS:
@@ -474,7 +474,7 @@ public class FirefoxLauncher {
     }
 
 
-    private File locateFirefoxBinary(File suggestedLocation) {
+    protected File locateFirefoxBinary(File suggestedLocation) {
         if (suggestedLocation != null) {
             if (suggestedLocation.exists() && suggestedLocation.isFile())
                 return suggestedLocation;
@@ -522,7 +522,7 @@ public class FirefoxLauncher {
                 "or the path given points to the firefox binary. I would have used: " + binary.getPath());
     }
 
-    private File locateFirefoxBinaryFromSystemProperty() {
+    protected File locateFirefoxBinaryFromSystemProperty() {
         String binaryName = System.getProperty("webdriver.firefox.bin");
         if (binaryName == null)
             return null;
