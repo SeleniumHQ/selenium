@@ -1,9 +1,10 @@
 package com.googlecode.webdriver.firefox.internal;
 
-import com.googlecode.webdriver.firefox.FirefoxLauncher;
-import com.googlecode.webdriver.firefox.Command;
-
 import java.io.IOException;
+
+import com.googlecode.webdriver.firefox.Command;
+import com.googlecode.webdriver.firefox.FirefoxLauncher;
+import com.googlecode.webdriver.internal.OperatingSystem;
 
 public class NewProfileExtensionConnection extends AbstractExtensionConnection {
     private static long TIMEOUT_IN_SECONDS = 20;
@@ -24,12 +25,30 @@ public class NewProfileExtensionConnection extends AbstractExtensionConnection {
             // this is expected
         }
 
-        // Wait for process to die and return
-        try {
-            process.waitFor();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        if (OperatingSystem.WINDOWS.equals(OperatingSystem.getCurrentPlatform())) {
+        	quitOnWindows();
+        } else {
+            quitOnOtherPlatforms();        	
         }
     }
+
+	private void quitOnOtherPlatforms() {
+		// Wait for process to die and return
+		try {
+		    process.waitFor();
+		} catch (InterruptedException e) {
+		    throw new RuntimeException(e);
+		}
+	}
+
+	private void quitOnWindows() {
+		try {
+			Thread.sleep(200);
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+		
+		return;
+	}
 
 }
