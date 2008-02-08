@@ -303,8 +303,14 @@ FirefoxDriver.prototype.toggleElement = function(respond) {
 FirefoxDriver.prototype.isElementDisplayed = function(respond) {
     var element = Utils.getElementAt(respond.elementId, this.context);
 
-    var display = Utils.getStyleProperty(element, "display");
-    var visible = Utils.getStyleProperty(element, "visibility");
+    var isDisplayed = true;
+    do {
+        var display = Utils.getStyleProperty(element, "display");
+        var visible = Utils.getStyleProperty(element, "visibility");
+        isDisplayed &= display != "none" && visible != "hidden";
+
+        element = element.parentNode;
+    } while (element.tagName.toLowerCase() != "body" && isDisplayed);
 
     respond.context = this.context;
     respond.response = display != "none" && visible != "hidden";

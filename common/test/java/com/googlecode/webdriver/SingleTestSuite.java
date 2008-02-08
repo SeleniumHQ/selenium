@@ -12,10 +12,10 @@ public class SingleTestSuite {
 		return new TestSuiteBuilder()
 					.addSourceDir("common")
 //                    .addSourceDir("firefox")
-                    .usingDriver(SAFARI)
+                    .usingDriver(FIREFOX)
 					.keepDriverInstance()
                     .includeJavascriptTests()
-                    .onlyRun("CookieImplementationTest")
+                    .onlyRun("JavascriptEnabledDriverTest")
 //                    .method("testAddCookiesWithDifferentPaths")
 //                    .leaveRunningAfterTest()
                     .create();

@@ -238,7 +238,19 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
         assertThat(((RenderedWebElement) driver.findElement(By.id("hidden"))).isDisplayed(), is(false));
     }
 
-	@JavascriptEnabled
+    @JavascriptEnabled
+    @Ignore("safari")
+    public void testVisibilityShouldTakeIntoAccountParentVisibility() {
+        driver.get(javascriptPage);
+
+        RenderedWebElement childDiv =  (RenderedWebElement) driver.findElement(By.id("hiddenchild"));
+        RenderedWebElement hiddenLink = (RenderedWebElement) driver.findElement(By.id("hiddenlink"));
+
+        assertFalse(childDiv.isDisplayed());
+        assertFalse(hiddenLink.isDisplayed());
+    }
+
+    @JavascriptEnabled
 	@Ignore("safari")
     public void testShouldWaitForLoadsToCompleteAfterJavascriptCausesANewPageToLoad() {
         driver.get(formPage);
