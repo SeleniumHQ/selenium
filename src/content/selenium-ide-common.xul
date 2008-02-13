@@ -42,6 +42,8 @@ limitations under the License.
   <script type="application/x-javascript" src="chrome://selenium-ide/content/locatorBuilders.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/application.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/editor.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/sidebar-editor.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/standalone-editor.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/commandBuilders.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/file-utils.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/xul-utils.js"/>
@@ -130,8 +132,8 @@ limitations under the License.
       <menu label="&recentSuiteCmd.label;">
         <menupopup id="popup_recent_suites" onpopupshowing="window.editor.populateRecentTestSuites(this)" oncommand="window.editor.app.loadTestSuite(event.target.getAttribute('value'))" />
       </menu>
-      <menuseparator/>
-      <menuitem label="&closeCmd.label;" command="cmd_close" key="close-key" accesskey="X"/>
+      <menuseparator id="closeMenuSeparator"/>
+      <menuitem label="&closeCmd.label;" command="cmd_close" key="close-key" accesskey="X" id="closeMenuItem"/>
     </menupopup>
   </menu>
   <menu id="menu_edit">

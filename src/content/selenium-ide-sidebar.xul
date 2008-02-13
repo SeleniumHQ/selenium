@@ -33,7 +33,7 @@ limitations under the License.
   id="selenium-ide-sidebar"
   xmlns:html="http://www.w3.org/1999/xhtml"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-  onload="new Editor(window, true)"
+  onload="new SidebarEditor(window)"
   onunload="window.editor.unload()">
   <stringbundle id="strings" />
 

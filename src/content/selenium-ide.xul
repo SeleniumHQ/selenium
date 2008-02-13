@@ -36,7 +36,7 @@ limitations under the License.
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
   width="400"
   height="520"
-  onload="new Editor(window, false)"
+  onload="new StandaloneEditor(window)"
   onunload="window.editor.unload()"
   onclose="return window.editor.confirmClose()">
   <stringbundle id="strings" />

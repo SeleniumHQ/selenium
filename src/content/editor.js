@@ -17,12 +17,11 @@
 /*
  * An UI of Selenium IDE.
  */
-function Editor(window, isSidebar) {
+function Editor(window) {
 	this.log.debug("initializing");
 	this.window = window;
 	window.editor = this;
 	var self = this;
-	this.isSidebar = isSidebar;
 	this.recordFrameTitle = false;
     this.app = new Application();
     this.app.addObserver({
@@ -80,6 +79,7 @@ function Editor(window, isSidebar) {
         });
 
 	this.document = document;
+    this.initMenus();
 	this.app.initOptions();
 	this.loadExtensions();
 	this.loadSeleniumAPI();
@@ -121,11 +121,7 @@ function Editor(window, isSidebar) {
 	
 	setTimeout("editor.showLoadErrors()", 500);
 	
-	if (isSidebar) {
-		Recorder.registerForWindow(window.parent, this);
-	} else {
-		Recorder.registerAll(this);
-	}
+    this.registerRecorder();
 }
 
 Editor.checkTimestamp = function() {
@@ -277,12 +273,7 @@ Editor.prototype.log = Editor.log = new Log("Editor");
 Editor.prototype.unload = function() {
     this.app.saveState();
 
-	if (this.isSidebar) {
-		//this.log.debug("deregister: window=" + window + ", getBrowser=" + window.getBrowser);
-		Recorder.deregisterForWindow(window.parent, this);
-	} else {
-		Recorder.deregisterAll(this);
-	}
+    this.deregisterRecorder();
 	top.controllers.removeController(Editor.controller);
 
     this.cleanupAutoComplete();
@@ -872,6 +863,9 @@ Editor.prototype.cleanupAutoComplete = function() {
 
 Editor.prototype.getInterval = function() {
     return parseInt(document.getElementById("speedSlider").getAttribute("curpos")) * 10;
+}
+
+Editor.prototype.initMenus = function() {
 }
 
 Editor.GENERIC_AUTOCOMPLETE = Components.classes["@mozilla.org/autocomplete/search;1?name=selenium-ide-generic"].getService(Components.interfaces.nsISeleniumIDEGenericAutoCompleteSearch);
