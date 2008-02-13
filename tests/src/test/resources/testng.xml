@@ -2,9 +2,9 @@
 <suite name="selenium-tests" verbose="1">
     <test name="selenium-tests">
         <groups>
-            <run>
-                <include name="single"/>
-            </run>
+            <!--<run>-->
+                <!--<include name="single"/>-->
+            <!--</run>-->
         </groups>
         <packages>
             <package name="org.openqa.selenium"/>

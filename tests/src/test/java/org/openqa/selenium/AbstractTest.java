@@ -20,6 +20,7 @@ public class AbstractTest {
         boolean proxyInjection = isProxyInjection();
 
         SeleniumServer.setProxyInjectionMode(proxyInjection);
+        SeleniumServer.setTrustAllSSLCertificates(true);
         ss = new SeleniumServer(4444, false, multiWindow);
         ss.start();
     }
