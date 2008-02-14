@@ -44,8 +44,13 @@ MozillaBrowserBot.prototype.setIFrameLocation = function(iframe, location) {
 };
 
 MozillaBrowserBot.prototype.getReadyState = function(windowObject, currentDocument) {
-    if (currentDocument.readyState) {
-        return currentDocument.readyState;
+    var doc = currentDocument;
+    if (doc.wrappedJSObject) {
+        // document may be wrapped with XPCNativeWrapper, which doesn't allow access to readyState property
+        doc = doc.wrappedJSObject;
+    }
+    if (doc.readyState) {
+        return doc.readyState;
     } else {
         return null;
     }
