@@ -25,7 +25,7 @@
 
 <p id="nbspandspaces">This line has a &nbsp; non-breaking space and spaces</p>
 
-<p id="inline">This <span>    line has <em>text</em>	</span> within elements that are meant to be displayed
+<p id="inline">This <span id="inlinespan">    line has <em>text</em>	</span> within elements that are meant to be displayed
     <!-- not as a block but --> inline</p>
 
 <p id="preformatted">This section has a <pre>preformatted
@@ -33,5 +33,12 @@
   within in
         </pre>
 </p>
+
+<div id="twoblocks"><p>Some text</p><p>Some more text</p></div>
+
+<div id="nestedblocks">Cheese <div><p>Some text</p><div><p>Some more text</p><p>and also</p></div></div>Brie</div>
+
+<div id="collapsingtext"><span></span><div>Hello, world</div><span></span></div>
+
 </body>
 </html>

@@ -11,13 +11,13 @@ public:
 	DocumentNode(IHTMLDocument2* doc);
 	~DocumentNode();
 
-	Node* getDocument();
-	Node* getNextSibling();
-	Node* getFirstChild();
-	Node* getFirstAttribute();
+	virtual Node* getDocument() const;
+	virtual Node* getNextSibling() const;
+	virtual Node* getFirstChild() const;
+	virtual Node* getFirstAttribute() const;
 
-	const std::wstring name();
-	const wchar_t* getText();
+	std::wstring name() const;
+	std::wstring getText() const;
 
 private:
 	IHTMLDocument2* doc;

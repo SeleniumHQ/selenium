@@ -8,11 +8,10 @@
 class ElementNode : public AbstractNode
 {
 public:
-//	ElementNode(IHTMLElement* element);
 	ElementNode(IHTMLDOMNode* element);
 	~ElementNode();
 
-	Node* getFirstAttribute();
+	Node* getFirstAttribute() const;
 };
 
 #endif

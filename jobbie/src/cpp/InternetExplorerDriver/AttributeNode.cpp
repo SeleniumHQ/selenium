@@ -8,31 +8,26 @@
 
 using namespace std;
 
-AttributeNode::AttributeNode(IEnumVARIANT* enumerator)
+AttributeNode::AttributeNode(IEnumVARIANT* allAttributes)
+	: enumerator(allAttributes), attribute(NULL)
 {
-	this->enumerator = enumerator;
-	this->enumerator->AddRef();
-
 	moveToNextSpecifiedIndex();
 
 	if (this->attribute == NULL) {
-		this->enumerator->Release();
 		throw "No declared attributes";
 	}
 }
 
 AttributeNode::~AttributeNode()
 {
-	attribute->Release();
-	enumerator->Release();
 }
 
-Node* AttributeNode::getDocument() 
+Node* AttributeNode::getDocument() const
 {
 	return NULL;
 }
 
-Node* AttributeNode::getNextSibling()
+Node* AttributeNode::getNextSibling() const
 {
 	try {
 		return new AttributeNode(enumerator);
@@ -41,17 +36,17 @@ Node* AttributeNode::getNextSibling()
 	}
 }
 
-Node* AttributeNode::getFirstChild() 
+Node* AttributeNode::getFirstChild() const
 {
 	return NULL;
 }
 
-Node* AttributeNode::getFirstAttribute() 
+Node* AttributeNode::getFirstAttribute() const
 {
 	return NULL;
 }
 
-const std::wstring AttributeNode::name()
+std::wstring AttributeNode::name() const
 {
 	BSTR name;
 	attribute->get_nodeName(&name);
@@ -65,11 +60,11 @@ const std::wstring AttributeNode::name()
 	return toReturn;
 }
 
-const wchar_t* AttributeNode::getText()
+std::wstring AttributeNode::getText() const
 {
 	VARIANT value;
 	attribute->get_nodeValue(&value);
-	const wchar_t* toReturn = variant2wchar(value);
+	std::wstring toReturn = variant2wchar(value);
 	VariantClear(&value);
 	return toReturn;
 }
@@ -85,8 +80,7 @@ void AttributeNode::moveToNextSpecifiedIndex()
 		if (nextAttribute == NULL)
 			return;
 
-		IHTMLDOMAttribute* attr;
-		nextAttribute->QueryInterface(__uuidof(IHTMLDOMAttribute), (void**)&attr);
+		CComQIPtr<IHTMLDOMAttribute> attr(nextAttribute);
 
 		VARIANT_BOOL specified;
 		attr->get_specified(&specified);
@@ -94,6 +88,5 @@ void AttributeNode::moveToNextSpecifiedIndex()
 			this->attribute = attr;
 			return;
 		}
-		attr->Release();
 	}
 }

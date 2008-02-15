@@ -70,11 +70,7 @@ JNIEXPORT jstring JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDrive
   (JNIEnv *env, jobject obj)
 {
 	InternetExplorerDriver* ie = getIe(env, obj);
-	const wchar_t* url = ie->getCurrentUrl();
-
-	jstring toReturn = env->NewString((const jchar*) url, (jsize) wcslen(url));
-	delete url;
-	return toReturn;
+	return wstring2jstring(env, ie->getCurrentUrl());
 }
 
 JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_get
@@ -90,8 +86,7 @@ JNIEXPORT jstring JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDrive
   (JNIEnv *env, jobject obj)
 {
 	InternetExplorerDriver* ie = getIe(env, obj);
-	const std::wstring title(ie->getTitle());
-	return env->NewString((const jchar*) title.c_str(), (jsize) title.length());
+	return wstring2jstring(env, ie->getTitle());
 }
 
 JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_selectElementById
@@ -141,7 +136,8 @@ JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDrive
   (JNIEnv *env, jobject obj)
 {
 	InternetExplorerDriver *ie = getIe(env, obj);
-	IHTMLDocument2 *doc = ie->getDocument();
+	CComPtr<IHTMLDocument2> doc;
+	ie->getDocument(&doc);
 
 	DocumentNode *node = new DocumentNode(doc);
 	jclass clazz = env->FindClass("com/googlecode/webdriver/ie/DocumentNode");
@@ -193,11 +189,7 @@ JNIEXPORT jstring JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDrive
   (JNIEnv *env, jobject obj)
 {
 	InternetExplorerDriver* ie = getIe(env, obj);
-	const wchar_t* cookies = ie->getCookies();
-
-	jstring cookieString = env->NewString((const jchar*) cookies, (jsize) wcslen(cookies));
-	delete cookies;
-	return cookieString;
+	return wstring2jstring(env, ie->getCookies());
 }
 
 #ifdef __cplusplus

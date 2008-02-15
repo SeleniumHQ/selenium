@@ -7,11 +7,11 @@ class Node
 public:
 	virtual ~Node();
 
-	virtual Node* getDocument() = 0;
-	virtual Node* getNextSibling() = 0;
-	virtual Node* getFirstChild() = 0;
-	virtual Node* getFirstAttribute() = 0;
+	virtual Node* getDocument() const = 0;
+	virtual Node* getNextSibling() const = 0;
+	virtual Node* getFirstChild() const = 0;
+	virtual Node* getFirstAttribute() const = 0;
 
-	virtual const std::wstring name() = 0;
-	virtual const wchar_t* getText() = 0;
+	virtual std::wstring name() const = 0;
+	virtual std::wstring getText() const = 0;
 };

@@ -1,9 +1,11 @@
 #ifndef utils_h
 #define utils_h
 
-#include <jni.h>
 #include <iostream>
 #include <string>
+
+#include <jni.h>
+
 #include "InternetExplorerDriver.h"
 #include "Node.h"
 
@@ -16,8 +18,8 @@ void startCom();
 jobject newJavaInternetExplorerDriver(JNIEnv *, InternetExplorerDriver* driver);
 jobject initJavaXPathNode(JNIEnv*, Node*);
 
-const wchar_t *variant2wchar(const VARIANT toConvert);
-wchar_t* bstr2wchar(BSTR from);
+std::wstring variant2wchar(const VARIANT toConvert);
 std::wstring bstr2wstring(BSTR from);
+jstring wstring2jstring(JNIEnv *env, const std::wstring& text);
 
 #endif

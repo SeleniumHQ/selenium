@@ -12,7 +12,7 @@ TextNode::~TextNode()
 {
 }
 
-Node* TextNode::getFirstAttribute() 
+Node* TextNode::getFirstAttribute() const
 {
 	return NULL;
 }

@@ -60,13 +60,9 @@ JNIEXPORT jstring JNICALL Java_com_googlecode_webdriver_ie_AttributeNode_getText
   (JNIEnv *env, jobject obj)
 {
 	AttributeNode* node = getAttributeNode(env, obj);
-	const wchar_t* text = node->getText();
-	if (text == NULL)
-		return NULL;
+	std::wstring text = node->getText();
 
-	jstring toReturn = env->NewString((const  jchar*) text, (jsize) wcslen(text));
-	delete text;
-	return toReturn;
+	return env->NewString((const  jchar*) text.c_str(), (jsize) text.length());
 }
 
 JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_AttributeNode_deleteStoredObject

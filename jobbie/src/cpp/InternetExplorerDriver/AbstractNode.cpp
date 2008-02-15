@@ -19,25 +19,20 @@ AbstractNode::~AbstractNode()
 {
 }
 
-Node* AbstractNode::getDocument()
+Node* AbstractNode::getDocument() const
 {
-	IHTMLDOMNode2 *node2;
-	node->QueryInterface(__uuidof(IHTMLDOMNode2), (void**)&node2);
+	CComQIPtr<IHTMLDOMNode2> node2(node);
 
 	IDispatch* dispatch;
 	node2->get_ownerDocument(&dispatch);
-	node2->Release();
 
-	IHTMLDocument2 *doc;
-	dispatch->QueryInterface(__uuidof(IHTMLDocument2), (void**)&doc);
+	CComQIPtr<IHTMLDocument2> doc(dispatch);
 	dispatch->Release();
 
-	DocumentNode* toReturn = new DocumentNode(doc);
-	doc->Release();
-	return toReturn;
+	return new DocumentNode(doc);
 }
 
-Node* AbstractNode::getParent()
+Node* AbstractNode::getParent() const
 {
 	IHTMLDOMNode* parent = NULL;
 	node->get_parentNode(&parent);
@@ -45,12 +40,12 @@ Node* AbstractNode::getParent()
 	if (parent == NULL)
 		return NULL;
 
-	Node* toReturn = buildNode(parent);
+	Node* toReturn = AbstractNode::buildNode(parent);
 	parent->Release();
 	return toReturn;
 }
 
-Node* AbstractNode::getFirstChild()
+Node* AbstractNode::getFirstChild() const
 {
 	IHTMLDOMNode* child = NULL;
 	node->get_firstChild(&child);
@@ -58,12 +53,12 @@ Node* AbstractNode::getFirstChild()
 	if (child == NULL)
 		return NULL;
 
-	Node* toReturn = buildNode(child);
+	Node* toReturn = AbstractNode::buildNode(child);
 	child->Release();
 	return toReturn;
 }
 
-Node* AbstractNode::getNextSibling() 
+Node* AbstractNode::getNextSibling() const
 {
 	IHTMLDOMNode* sibling = NULL;
 	node->get_nextSibling(&sibling);
@@ -72,39 +67,33 @@ Node* AbstractNode::getNextSibling()
 		return NULL;
 	}
 
-	Node* toReturn = buildNode(sibling);
+	Node* toReturn = AbstractNode::buildNode(sibling);
 	sibling->Release();
 	return toReturn;
 }
 
-const std::wstring AbstractNode::name()
+std::wstring AbstractNode::name() const
 {
-	BSTR name;
+	CComBSTR name;
 	node->get_nodeName(&name);
-	const std::wstring toReturn = bstr2wstring(name);
-	SysFreeString(name);
-	return toReturn;
+	return bstr2wstring(name);
 }
 
-const wchar_t* AbstractNode::getText()
+std::wstring AbstractNode::getText() const
 {
-	IHTMLElement* element;
-	node->QueryInterface(__uuidof(element), (void**)&element);
+	CComQIPtr<IHTMLElement> element(node);
 
-	BSTR text;
+	CComBSTR text;
 	element->get_innerText(&text);
-	element->Release();
-	const wchar_t* toReturn = bstr2wchar(text);
-	SysFreeString(text);
-	return toReturn;
+	return bstr2wstring(text);
 }
 
-IHTMLDOMNode* AbstractNode::getDomNode()
+IHTMLDOMNode* AbstractNode::getDomNode() const
 {
 	return node;
 }
 
-Node* AbstractNode::buildNode(IHTMLDOMNode* from) 
+Node* AbstractNode::buildNode(IHTMLDOMNode *from) 
 {
 	long type = 0;
 	from->get_nodeType(&type);

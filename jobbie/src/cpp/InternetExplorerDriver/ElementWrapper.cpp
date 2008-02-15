@@ -1,79 +1,70 @@
-
 #include "StdAfx.h"
-#include "ElementWrapper.h"
-#include "utils.h"
-#include <iostream>
 
-using namespace std;
+#include <iostream>
 
 #include <comutil.h>
 #include <comdef.h>
 
+#include "ElementWrapper.h"
+#include "utils.h"
+
 ElementWrapper::ElementWrapper(InternetExplorerDriver* ie, IHTMLDOMNode* node)
+	: element(node)
 {
-	node->QueryInterface(__uuidof(IHTMLElement), (void**)&element);
 	this->ie = ie;
 }
 
 ElementWrapper::~ElementWrapper()
 {
-	element->Release();
 }
 
-const wchar_t* ElementWrapper::getAttribute(const wchar_t* name) 
+std::wstring ElementWrapper::getAttribute(const std::wstring& name) 
 {
-	wchar_t *lookFor = (wchar_t *)name;
-
-	if (_wcsicmp(L"class", name) == 0) {
-		lookFor = L"className";
+	CComBSTR attributeName;
+	if (_wcsicmp(L"class", name.c_str()) == 0) {
+		attributeName = L"className";
+	} else {
+		attributeName = name.c_str();
 	}
 
-	BSTR attributeName = SysAllocString(lookFor);
-	VARIANT value;
+	CComVariant value;
 	element->getAttribute(attributeName, 0, &value);
-	const wchar_t* toReturn = variant2wchar(value);
-	VariantClear(&value);
-	return toReturn;
+	return variant2wchar(value);
 }
 
-const wchar_t* ElementWrapper::getValue()
+std::wstring ElementWrapper::getValue()
 {
-	BSTR temp;
+	CComBSTR temp;
 	element->get_tagName(&temp);
-	const wchar_t *name = bstr2wchar(temp);
-	SysFreeString(temp);
+	std::wstring name(bstr2wstring(temp));
 
-	int value = _wcsicmp(L"textarea", name);
-	delete name;
+	if (_wcsicmp(L"textarea", name.c_str()) == 0)
+		return getTextAreaValue();
 
-	if (value == 0) 
-		return this->getTextAreaValue();
-	return this->getAttribute(L"value");
+	return getAttribute(L"value");
 }
 
-void ElementWrapper::sendKeys(wchar_t* newValue) 
+void ElementWrapper::sendKeys(const std::wstring& newValue)
 {
 	bool initialVis = ie->getVisible();
 	// Bring the IE window to the front.
 	ie->bringToFront();
 
 	VARIANT top;
-	VariantClear(&top);
 	top.vt = VT_BOOL;
 	top.boolVal = VARIANT_TRUE;
 
 	element->scrollIntoView(top);
 
-	CComQIPtr<IHTMLElement2, &__uuidof(IHTMLElement2)> element2(element);
+	CComQIPtr<IHTMLElement2> element2(element);
 	element2->focus();
 	
 	// Allow the element to actually get the focus
 	Sleep(10);
 
-	size_t length = wcslen(newValue);
-	for (size_t i = 0; i < length; i++)
-	{		
-		wchar_t c = newValue[i];
+	for (const wchar_t *p = newValue.c_str(); *p; ++p)
+	{
+		wchar_t c = *p;
 
 		if (c == '\r')
 			continue;
@@ -122,37 +113,32 @@ void ElementWrapper::sendKeys(wchar_t* newValue)
 
 void ElementWrapper::clear()
 {
-	CComQIPtr<IHTMLElement2, &__uuidof(IHTMLElement2)> element2 = element;
-	VARIANT empty;
-	VariantInit(&empty);
+	CComQIPtr<IHTMLElement2> element2(element);
 
-	CComBSTR valueAttributeName = SysAllocString(L"value");
+	CComBSTR valueAttributeName(L"value");
+	VARIANT empty;
+	CComBSTR emptyBstr(L"");
 	empty.vt = VT_BSTR;
-	empty.bstrVal = SysAllocString(L"");
+	empty.bstrVal = (BSTR)emptyBstr;
 	element->setAttribute(valueAttributeName, empty, 0);
-	VariantClear(&empty);
 
 	Sleep(5);
 }
 
 bool ElementWrapper::isSelected()
 {
-	IHTMLOptionElement* option = NULL;
-	element->QueryInterface(__uuidof(IHTMLOptionElement), (void**)&option);
-	if (option != NULL) {
+	CComQIPtr<IHTMLOptionElement> option(element);
+	if (option) {
 		VARIANT_BOOL isSelected;
 		option->get_selected(&isSelected);
-		option->Release();
 		return isSelected == VARIANT_TRUE;
 	}
 
 	if (isCheckbox()) {
-		IHTMLInputElement* input;
-		element->QueryInterface(__uuidof(IHTMLInputElement), (void**)&input);
+		CComQIPtr<IHTMLInputElement> input(element);
+
 		VARIANT_BOOL isChecked;
 		input->get_checked(&isChecked);
-		input->Release();
-
 		return isChecked == VARIANT_TRUE;
 	}
 
@@ -163,44 +149,43 @@ void ElementWrapper::setSelected()
 {
 	bool currentlySelected = isSelected();
 
+	/* TODO(malcolmr): Why not: if (isSelected()) return; ? Do we really need to re-set 'checked=true' for checkbox and do effectively nothing for select?
+	   Maybe we should check for disabled elements first? */
+
 	if (isCheckbox()) {
+
 		if (!isSelected()) {
 			click();
 		}
 
-		BSTR checked = SysAllocString(L"checked");
+		CComBSTR checked(L"checked");
 		VARIANT isChecked;
+		CComBSTR isTrue(L"true");
 		isChecked.vt = VT_BSTR;
-		isChecked.bstrVal = SysAllocString(L"true");
+		isChecked.bstrVal = (BSTR)isTrue;
 		element->setAttribute(checked, isChecked, 0);
-		VariantClear(&isChecked);
 
 		if (currentlySelected != isSelected()) {
-			IHTMLEventObj* eventObj = newEventObject();
+			CComPtr<IHTMLEventObj> eventObj(newEventObject());
 			fireEvent(eventObj, L"onchange");
 		}
 
 		return;
     }
 
-	IHTMLOptionElement* option = NULL;
-	element->QueryInterface(__uuidof(IHTMLOptionElement), (void**)&option);
-	if (option != NULL) {
+	CComQIPtr<IHTMLOptionElement> option(element);
+	if (option) {
 		option->put_selected(VARIANT_TRUE);
-		option->Release();
 		
 		// Looks like we'll need to fire the event on the select element and not the option. Assume for now that the parent node is a select. Which is dumb
-		IHTMLDOMNode* node;
-		IHTMLDOMNode* parent;
-		element->QueryInterface(__uuidof(IHTMLDOMNode), (void**)&node);
+		CComQIPtr<IHTMLDOMNode> node(element);
+		CComPtr<IHTMLDOMNode> parent;
 		node->get_parentNode(&parent);
-		node->Release();
 
 		if (currentlySelected != isSelected()) {
-			IHTMLEventObj* eventObj = newEventObject();
+			CComPtr<IHTMLEventObj> eventObj(newEventObject());
 			fireEvent(parent, eventObj, L"onchange");
 		}
-		parent->Release();
 		
 		return;
 	}
@@ -212,46 +197,36 @@ void ElementWrapper::setSelected()
 
 bool ElementWrapper::isEnabled() 
 {
-	IHTMLElement3* elem;
-	element->QueryInterface(__uuidof(IHTMLElement3), (void**)&elem);
+	CComQIPtr<IHTMLElement3> elem3(element);
 	VARIANT_BOOL isDisabled;
-	elem->get_disabled(&isDisabled);
-	elem->Release();
-	return isDisabled ? false : true;
+	elem3->get_disabled(&isDisabled);
+	return !isDisabled;
 }
 
 bool ElementWrapper::isDisplayed()
 {
 	bool toReturn = true;
 
-	CComPtr<IHTMLElement> e = element;
+	CComPtr<IHTMLElement> e(element);
 	do {
-		IHTMLElement2* e2;
-		e->QueryInterface(__uuidof(IHTMLElement2), (void**)&e2);
+		CComQIPtr<IHTMLElement2> e2(e);
 
-		IHTMLCurrentStyle* style;
-		BSTR display;
-		BSTR visible;
+		CComPtr<IHTMLCurrentStyle> style;
+		CComBSTR display;
+		CComBSTR visible;
 
 		e2->get_currentStyle(&style);
 		style->get_display(&display);
 		style->get_visibility(&visible);
 
-		const wchar_t *displayValue = bstr2wchar(display);
-		const wchar_t *visibleValue = bstr2wchar(visible);
+		std::wstring displayValue = bstr2wstring(display);
+		std::wstring visibleValue = bstr2wstring(visible);
 
-		int isDisplayed = _wcsicmp(L"none", displayValue);
-		int isVisible = _wcsicmp(L"hidden", visibleValue);
-
-		delete displayValue;
-		delete visibleValue;
-		SysFreeString(display);
-		SysFreeString(visible);
-		style->Release();
+		int isDisplayed = _wcsicmp(L"none", displayValue.c_str());
+		int isVisible = _wcsicmp(L"hidden", visibleValue.c_str());
 
 		toReturn &= isDisplayed != 0 && isVisible != 0;
 
-		e2->Release();
 		CComPtr<IHTMLElement> parent;
 		e->get_parentElement(&parent);
 		e = parent;
@@ -277,8 +252,8 @@ long ElementWrapper::getX()
 	IHTMLElement* parent;
 	element->get_offsetParent(&parent);
 
-	CComBSTR table = CComBSTR(L"TABLE");
-	CComBSTR body = CComBSTR(L"BODY");
+	CComBSTR table(L"TABLE");
+	CComBSTR body(L"BODY");
 
 	while (parent) 
 	{
@@ -287,22 +262,17 @@ long ElementWrapper::getX()
 
 		if (table == tagName || body == tagName) 
 		{
-			IHTMLElement2* parent2;
-			parent->QueryInterface(__uuidof(IHTMLElement2), (void**) &parent2);
+			CComQIPtr<IHTMLElement2> parent2(parent);
 				
 			parent2->get_clientLeft(&x);
 			totalX += x;
-
-			parent2->Release();
 		}
 
-		SysFreeString(tagName);
 		parent->get_offsetLeft(&x);
 		totalX += x;
-		IHTMLElement* t;
-		parent->get_offsetParent(&t);
-		parent->Release();
 
+		CComPtr<IHTMLElement> t;
+		parent->get_offsetParent(&t);
 		parent = t;
 	}
 
@@ -320,8 +290,8 @@ long ElementWrapper::getY()
 	IHTMLElement* parent;
 	element->get_offsetParent(&parent);
 
-	CComBSTR table = CComBSTR(L"TABLE");
-	CComBSTR body = CComBSTR(L"BODY");
+	CComBSTR table(L"TABLE");
+	CComBSTR body(L"BODY");
 
 	while (parent) 
 	{
@@ -330,22 +300,17 @@ long ElementWrapper::getY()
 
 		if (table == tagName || body == tagName) 
 		{
-			IHTMLElement2* parent2;
-			parent->QueryInterface(__uuidof(IHTMLElement2), (void**) &parent2);
+			CComQIPtr<IHTMLElement2> parent2(parent);
 				
 			parent2->get_clientTop(&y);
 			totalY += y;
-
-			parent2->Release();
 		}
 
-		SysFreeString(tagName);
 		parent->get_offsetLeft(&y);
 		totalY += y;
-		IHTMLElement* t;
-		parent->get_offsetParent(&t);
-		parent->Release();
 
+		CComPtr<IHTMLElement> t;
+		parent->get_offsetParent(&t);
 		parent = t;
 	}
 
@@ -366,67 +331,65 @@ long ElementWrapper::getHeight()
 	return height;
 }
 
-const std::wstring ElementWrapper::getText() 
+std::wstring ElementWrapper::getText() 
 {
-	BSTR tagName;
+	CComBSTR tagName;
 	element->get_tagName(&tagName);
 	bool isTitle = tagName == L"TITLE";
 	bool isPre = tagName == L"PRE";
-	SysFreeString(tagName);
 
 	if (isTitle)
 	{
 		return ie->getTitle();
 	}
 
+	CComQIPtr<IHTMLDOMNode> node(element); 
 	std::wstring toReturn(L"");
-	std::wstring textSoFar(L"");
-	CComQIPtr<IHTMLDOMNode, &__uuidof(IHTMLDOMNode)> node(element); 
+	getText(toReturn, node, isPre);
 
-	getText(toReturn, node, textSoFar, isPre);
-
-	std::wstring text(collapseWhitespace(textSoFar));
-	text += toReturn;
-
-	std::wstring::reverse_iterator from = text.rbegin();
-	std::wstring::reverse_iterator end = text.rend();
-
-	size_t count = text.length();
-	while (from < end && iswspace(*from)) {
-		count--;
-		from++;
+	/* Trim leading and trailing whitespace and line breaks. */
+	std::wstring::const_iterator itStart = toReturn.begin();
+	while (itStart != toReturn.end() && iswspace(*itStart)) {
+		++itStart;
 	}
 
-	text.erase(count, text.length());
+	std::wstring::const_iterator itEnd = toReturn.end();
+	while (itStart < itEnd) {
+		--itEnd;
+		if (!iswspace(*itEnd)) {
+			++itEnd;
+			break;
+		}
+	}
 
-	return text;
+	return std::wstring(itStart, itEnd);
 }
 
-void ElementWrapper::getText(std::wstring& toReturn, IHTMLDOMNode* node, std::wstring& textSoFar, bool isPreformatted)
+/* static */ void ElementWrapper::getText(std::wstring& toReturn, IHTMLDOMNode* node, bool isPreformatted)
 {
-	IDispatch* dispatch;
-	node->get_childNodes(&dispatch);
-	CComQIPtr<IHTMLDOMChildrenCollection, &__uuidof(IHTMLDOMChildrenCollection)> children(dispatch);
-	dispatch->Release();
+	if (isBlockLevel(node)) {
+		collapsingAppend(toReturn, L"\r\n");
+	}
 
-	if (children == NULL)
+	CComPtr<IDispatch> dispatch;
+	node->get_childNodes(&dispatch);
+	CComQIPtr<IHTMLDOMChildrenCollection> children(dispatch);
+
+	if (!children)
 		return;
 
 	long length = 0;
 	children->get_length(&length);
 	for (long i = 0; i < length; i++) 
 	{
-		children->item(i, &dispatch);
-		IHTMLDOMNode* child;
-		dispatch->QueryInterface(__uuidof(IHTMLDOMNode), (void**) &child);
-		dispatch->Release();
+		CComPtr<IDispatch> dispatch2;
+		children->item(i, &dispatch2);
+		CComQIPtr<IHTMLDOMNode> child(dispatch2);
 
-		BSTR childName;
+		CComBSTR childName;
 		child->get_nodeName(&childName);
 		
-		IHTMLDOMTextNode* textNode;
-		child->QueryInterface(__uuidof(IHTMLDOMTextNode), (void**) &textNode);
-
+		CComQIPtr<IHTMLDOMTextNode> textNode(child);
 		if (textNode) {
 			CComBSTR text;
 			textNode->get_data(&text);
@@ -437,86 +400,92 @@ void ElementWrapper::getText(std::wstring& toReturn, IHTMLDOMNode* node, std::ws
 				}
 			}
 
-			toReturn += text;
-			SysFreeString(text);
-			textNode->Release();
-		} else if (!wcscmp(childName, L"PRE")) {
-			toReturn += collapseWhitespace(textSoFar);
-			
-			textSoFar.clear();
-			textSoFar += L"";
-
-			getText(toReturn, child, textSoFar, true);
-			toReturn += textSoFar;
-
-			textSoFar.clear();
-			textSoFar += L"";
+			collapsingAppend(toReturn, isPreformatted ? bstr2wstring(text) : collapseWhitespace(text));
+		} else if (wcscmp(childName, L"PRE") == 0) {
+			getText(toReturn, child, true);
 		} else {
-			getText(toReturn, child, textSoFar, false);
+			getText(toReturn, child, false);
 		}
-
-		SysFreeString(childName);
-		child->Release();
-	}
-
-	IHTMLElement* e;
-	node->QueryInterface(__uuidof(IHTMLElement), (void**) &e);
-	BSTR nodeName;
-	if (e) {
-		e->get_tagName(&nodeName);
 	}
 
 	if (isBlockLevel(node)) {
-		if (wcscmp(nodeName, L"PRE")) {
-			toReturn += collapseWhitespace(textSoFar);
-			textSoFar.clear();
-			textSoFar += L"";
-		}
-
-		toReturn += L"\r\n";
-	}
-
-	if (e) {
-		SysFreeString(nodeName);
-		e->Release();
+		collapsingAppend(toReturn, L"\r\n");
 	}
 }
 
-std::wstring ElementWrapper::collapseWhitespace(const std::wstring &text)
+// Append s2 to s, collapsing intervening whitespace.
+// Assumes that s and s2 have already been internally collapsed.
+/*static*/ void ElementWrapper::collapsingAppend(std::wstring& s, const std::wstring& s2)
+{
+	if (s.empty() || s2.empty()) {
+		s += s2;
+		return;
+	}
+
+	// \r\n abutting \r\n collapses.
+	if (s.length() >= 2 && s2.length() >= 2) {
+		if (s[s.length() - 2] == '\r' && s[s.length() - 1] == '\n' &&
+			s2[0] == '\r' && s2[1] == '\n') {
+			s += s2.substr(2);
+			return;
+		}
+	}
+
+	// wspace abutting wspace collapses into a space character.
+	if ((iswspace(s[s.length() - 1]) && s[s.length() - 1] != '\n') &&
+		(iswspace(s2[0]) && s[0] != '\r')) {
+		s += s2.substr(1);
+		return;
+	}
+
+	s += s2;
+}
+
+/*static*/ std::wstring ElementWrapper::collapseWhitespace(const wchar_t *text)
 {
 	std::wstring toReturn(L"");
 	int previousWasSpace = false;
+	wchar_t previous = 'X';
+	bool newlineAlreadyAppended = false;
 
-	for (unsigned int i = 0; i < text.length(); i++) {
+	// Need to keep an eye out for '\r\n'
+	for (unsigned int i = 0; i < wcslen(text); i++) {
 		wchar_t c = text[i];
 		int currentIsSpace = iswspace(c);
+
+		// Append the character if the previous was not whitespace
 		if (!(currentIsSpace && previousWasSpace)) {
 			toReturn += c;
+			newlineAlreadyAppended = false;
+		} else if (previous == '\r' && c == '\n' && !newlineAlreadyAppended) {
+			// If the previous char was '\r' and current is '\n' 
+			// and we've not already appended '\r\n' append '\r\n'.
+
+			// The previous char was '\r' and has already been appended and 
+			// the current character is '\n'. Just appended that.
+			toReturn += c; 
+			newlineAlreadyAppended = true;
 		}
 		
 		previousWasSpace = currentIsSpace;
+		previous = c;
 	}
 
 	return toReturn;
 }
 
-const wchar_t* ElementWrapper::getTextAreaValue() 
+std::wstring ElementWrapper::getTextAreaValue() 
 {
-	IHTMLTextAreaElement* textarea;
-	element->QueryInterface(__uuidof(IHTMLTextAreaElement), (void**)&textarea);
-
-	BSTR result;
+	CComQIPtr<IHTMLTextAreaElement> textarea(element);
+	CComBSTR result;
 	textarea->get_value(&result);
-	textarea->Release();
 
-	const wchar_t* toReturn = bstr2wchar(result);
-	SysFreeString(result);
-	return toReturn;
+	return bstr2wstring(result);
 }
 
-bool ElementWrapper::isBlockLevel(IHTMLDOMNode *node)
+/*static */ bool ElementWrapper::isBlockLevel(IHTMLDOMNode *node)
 {
-	CComQIPtr<IHTMLElement, &__uuidof(IHTMLElement)> e(node);
+	CComQIPtr<IHTMLElement> e(node);
 
 	if (e) {
 		BSTR tagName;
@@ -598,126 +567,92 @@ void ElementWrapper::click()
 
 void ElementWrapper::submit()
 {
-	IHTMLFormElement* form = NULL;
-	element->QueryInterface(__uuidof(IHTMLFormElement), (void**)&form);
-	if (form != NULL) {
+	CComQIPtr<IHTMLFormElement> form(element);
+	if (form) {
 		form->submit();
-		form->Release();
 	} else {
-		IHTMLInputElement* input = NULL;
-		element->QueryInterface(__uuidof(IHTMLInputElement), (void**)&input);
-		if (input != NULL) {
-			BSTR typeName;
+		CComQIPtr<IHTMLInputElement> input(element);
+		if (input) {
+			CComBSTR typeName;
 			input->get_type(&typeName);
-			const wchar_t* type = bstr2wchar(typeName);
+			std::wstring type = bstr2wstring(typeName);
 
-			if (type != NULL && (_wcsicmp(L"submit", type) == 0 || _wcsicmp(L"image", type) == 0)) {
+			if (_wcsicmp(L"submit", type.c_str()) == 0 || _wcsicmp(L"image", type.c_str()) == 0) {
 				click();
 			} else {
-				input->get_form(&form);
-				form->submit();
-				form->Release();
+				CComPtr<IHTMLFormElement> form2;
+				input->get_form(&form2);
+				form2->submit();
 			}
-
-			delete type;
-			SysFreeString(typeName);
-			input->Release();
 		} else {
-			form = findParentForm();
-			if (form == NULL) {
+			findParentForm(&form);
+			if (!form) {
 				throw "Unable to find the containing form";
 			} 
 			form->submit();
-			form->Release();
 		}
 	}
 
 	ie->waitForNavigateToFinish();
 }
 
-void ElementWrapper::setNode(IHTMLDOMNode* fromNode)
-{
-	if (element != NULL)
-		element->Release();
-	fromNode->QueryInterface(__uuidof(IHTMLElement), (void**)&element);
-}
-
 bool ElementWrapper::isCheckbox()
 {
-	BSTR tagName;
-	element->get_tagName(&tagName);
-	const wchar_t* name = bstr2wchar(tagName);
-	SysFreeString(tagName);
-
-	bool isCheckbox = false;
-	if (_wcsicmp(name, L"input") == 0) {
-		IHTMLInputElement* input;
-		element->QueryInterface(__uuidof(IHTMLInputElement), (void**)&input);
-		BSTR typeName;
-		input->get_type(&typeName);
-		const wchar_t* type = bstr2wchar(typeName);
-		isCheckbox = type != NULL && _wcsicmp(type, L"checkbox") == 0;
-		delete type;
-		SysFreeString(typeName);
-		input->Release();
+	CComQIPtr<IHTMLInputElement> input(element);
+	if (!input) {
+		return false;
 	}
 
-	delete name;
-	return isCheckbox;
+	CComBSTR typeName;
+	input->get_type(&typeName);
+	std::wstring type = bstr2wstring(typeName);
+	return _wcsicmp(type.c_str(), L"checkbox") == 0;
 }
 
-IHTMLFormElement* ElementWrapper::findParentForm() 
+void ElementWrapper::findParentForm(IHTMLFormElement **pform)
 {
-	IHTMLElement* current = element;
-	IHTMLFormElement* form = NULL;
-	current->QueryInterface(__uuidof(IHTMLFormElement), (void**)&form);
-    while (!(current == NULL || form != NULL)) {
-		IHTMLElement* temp;
-		current->get_parentElement(&temp);
-		if (current != element) {
-			current->Release();
+	CComPtr<IHTMLElement> current(element);
+
+	while (current) {
+		CComQIPtr<IHTMLFormElement> form(current);
+		if (form) {
+			*pform = form.Detach();
+			return;
 		}
+
+		CComPtr<IHTMLElement> temp;
+		current->get_parentElement(&temp);
 		current = temp;
-		current->QueryInterface(__uuidof(IHTMLFormElement), (void**)&form);
     }
-	if (current != element)
-		current->Release();
-	return form;
 }
 
-std::vector<ElementWrapper*>* ElementWrapper::getChildrenWithTagName(const wchar_t* tagName) 
+std::vector<ElementWrapper*>* ElementWrapper::getChildrenWithTagName(const std::wstring& tagName) 
 {
-	CComQIPtr<IHTMLElement2, &__uuidof(IHTMLElement2)> element2 = element;
-	CComBSTR name = SysAllocString(tagName);
-	IHTMLElementCollection* elementCollection;
+	CComQIPtr<IHTMLElement2> element2(element);
+	CComBSTR name(tagName.c_str());
+	CComPtr<IHTMLElementCollection> elementCollection;
 	element2->getElementsByTagName(name, &elementCollection);
 
 	long length = 0;
 	elementCollection->get_length(&length);
 
-	std::vector<ElementWrapper*>* toReturn = new std::vector<ElementWrapper*>();
+	std::vector<ElementWrapper*> *toReturn = new std::vector<ElementWrapper*>();
 
 	for (int i = 0; i < length; i++) {
 		VARIANT idx;
 		idx.vt = VT_I4;
 		idx.lVal = i;
-		IDispatch* dispatch;
 		VARIANT zero;
 		zero.vt = VT_I4;
 		zero.lVal = 0;
-		elementCollection->item(idx, zero, &dispatch);
-		VariantClear(&idx);
-		VariantClear(&zero);
 
-		IHTMLDOMNode* node;
-		dispatch->QueryInterface(__uuidof(IHTMLDOMNode), (void**)&node);
-		dispatch->Release();
+		CComPtr<IDispatch> dispatch;
+		elementCollection->item(idx, zero, &dispatch);
+		CComQIPtr<IHTMLDOMNode> node(dispatch);
 
 		toReturn->push_back(new ElementWrapper(ie, node));
-		node->Release();
 	}
 
-	elementCollection->Release();
 	return toReturn;
 }
 
@@ -725,7 +660,7 @@ IHTMLEventObj* ElementWrapper::newEventObject()
 {
 	IDispatch* dispatch;
 	element->get_document(&dispatch);
-	CComQIPtr<IHTMLDocument4, &__uuidof(IHTMLDocument4)> doc = dispatch;
+	CComQIPtr<IHTMLDocument4> doc(dispatch);
 	dispatch->Release();
 		
 	VARIANT empty;
@@ -737,7 +672,7 @@ IHTMLEventObj* ElementWrapper::newEventObject()
 
 void ElementWrapper::fireEvent(IHTMLEventObj* eventObject, const OLECHAR* eventName) 
 {
-	CComQIPtr<IHTMLDOMNode, &__uuidof(IHTMLDOMNode)> node = element;
+	CComQIPtr<IHTMLDOMNode> node = element;
 	fireEvent(node, eventObject, eventName);
 }
 

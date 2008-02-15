@@ -9,20 +9,20 @@ public:
 	AbstractNode(IHTMLDOMNode*);
 	virtual ~AbstractNode(void);
 
-	virtual Node* getDocument();
-	virtual Node* getNextSibling();
-	virtual Node* getFirstChild();
-	virtual Node* getParent();
-	virtual Node* getFirstAttribute() = 0;
+	virtual Node* getDocument() const;
+	virtual Node* getNextSibling() const;
+	virtual Node* getFirstChild() const;
+	virtual Node* getParent() const;
+	virtual Node* getFirstAttribute() const = 0;
 
-	virtual const std::wstring name();
-	virtual const wchar_t* getText();
+	virtual std::wstring name() const;
+	virtual std::wstring getText() const;
 
-	IHTMLDOMNode* getDomNode();
+	IHTMLDOMNode* getDomNode() const;
 
 protected:
 
-	Node* buildNode(IHTMLDOMNode*);
+	static Node* buildNode(IHTMLDOMNode *from);
 
 	CComPtr<IHTMLDOMNode> node;
 };

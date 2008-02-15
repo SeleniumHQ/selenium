@@ -62,20 +62,14 @@ JNIEXPORT jstring JNICALL Java_com_googlecode_webdriver_ie_AbstractNode_getNativ
   (JNIEnv *env, jobject obj)
 {
 	AbstractNode* node = getAbstractNode(env, obj);
-	const std::wstring name = node->name();
-
-	return env->NewString((const jchar*) name.c_str(), (jsize) name.length());
+	return wstring2jstring(env, node->name());
 }
 
 JNIEXPORT jstring JNICALL Java_com_googlecode_webdriver_ie_AbstractNode_getText
   (JNIEnv *env, jobject obj)
 {
 	AbstractNode* node = getAbstractNode(env, obj);
-	const wchar_t* text = node->getText();
-
-	jstring toReturn = env->NewString((const jchar*) text, (jsize) wcslen(text));
-	delete text;
-	return toReturn;
+	return wstring2jstring(env, node->getText());
 }
 
 JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_AbstractNode_deleteStoredObject

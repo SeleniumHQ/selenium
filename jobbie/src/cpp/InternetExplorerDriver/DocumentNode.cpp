@@ -16,46 +16,40 @@ DocumentNode::~DocumentNode()
 	doc->Release();
 }
 
-Node* DocumentNode::getDocument()
+Node* DocumentNode::getDocument() const
 {
 	return new DocumentNode(doc);
 }
 
-Node* DocumentNode::getNextSibling()
+Node* DocumentNode::getNextSibling() const
 {
 	return NULL;
 }
 
-Node* DocumentNode::getFirstChild() 
+Node* DocumentNode::getFirstChild() const
 {
-	IHTMLDocument3* doc3;
-	doc->QueryInterface(__uuidof(IHTMLDocument3), (void**)&doc3);
+	CComQIPtr<IHTMLDocument3> doc3(doc);
 
 	IHTMLElement* rootElement;
 	doc3->get_documentElement(&rootElement);
-	doc3->Release();
 
-	IHTMLDOMNode* rootNode;
-	rootElement->QueryInterface(__uuidof(IHTMLDOMNode), (void**)&rootNode);
+	CComQIPtr<IHTMLDOMNode> rootNode(rootElement);
 	rootElement->Release();
 
-	ElementNode* toReturn = new ElementNode(rootNode);
-	rootNode->Release();
-
-	return toReturn;
+	return new ElementNode(rootNode);
 }
 
-Node* DocumentNode::getFirstAttribute() 
+Node* DocumentNode::getFirstAttribute() const
 {
 	return NULL;
 }
 
-const std::wstring DocumentNode::name()
+std::wstring DocumentNode::name() const
 {
 	return L"<document node>";
 }
 
-const wchar_t* DocumentNode::getText()
+std::wstring DocumentNode::getText() const
 {
-	return NULL;
+	return L"";
 }

@@ -49,11 +49,9 @@ JNIEXPORT jstring JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerEleme
   (JNIEnv *env, jobject obj)
 {
 	ElementWrapper* wrapper = getWrapper(env, obj);
-	const wchar_t* value = wrapper->getValue();
+	std::wstring value = wrapper->getValue();
 
-	jstring toReturn = env->NewString((const jchar*) value, (jsize) wcslen(value));
-	delete value;
-	return toReturn;
+	return env->NewString((const jchar*) value.c_str(), (jsize) value.length());
 }
 
 JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_sendKeys
@@ -86,17 +84,10 @@ JNIEXPORT jstring JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerEleme
 	ElementWrapper* wrapper = getWrapper(env, obj);
 
 	const wchar_t* converted = (wchar_t*) env->GetStringChars(attributeName, NULL);
-	const wchar_t* value = wrapper->getAttribute(converted);
+	std::wstring value = wrapper->getAttribute(converted);
 	env->ReleaseStringChars(attributeName, (const jchar*) converted);
-	wchar_t* toReturn = (wchar_t*) value;
-	if (value == NULL) {
-		toReturn = new wchar_t[1];
-		wcscpy_s(toReturn, 1, L"");
-	}
 
-	jstring toReturn2 = env->NewString((const jchar*) toReturn, (jsize) wcslen(toReturn));
-	delete toReturn;
-	return toReturn2;
+	return env->NewString((const jchar*) value.c_str(), (jsize) value.length());
 }
 
 JNIEXPORT jboolean JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_isEnabled

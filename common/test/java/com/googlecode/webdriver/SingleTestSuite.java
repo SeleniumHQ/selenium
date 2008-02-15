@@ -12,11 +12,11 @@ public class SingleTestSuite {
 		return new TestSuiteBuilder()
 					.addSourceDir("common")
 //                    .addSourceDir("firefox")
-                    .usingDriver(FIREFOX)
+                    .usingDriver(IE)
 					.keepDriverInstance()
                     .includeJavascriptTests()
-                    .onlyRun("FrameAndWindowSwitchingTest")
-//                    .method("testShouldFireFocusKeyBlurAndChangeEventsInTheRightOrderOnIe")
+                    .onlyRun("TextHandlingTest")
+                    //.method("testHavingInlineElementsShouldNotAffectHowTextIsReturned")
 //                    .leaveRunningAfterTest()
                     .create();
 	}

@@ -12,7 +12,7 @@ public:
 	TextNode(IHTMLDOMNode* element);
 	~TextNode();
 
-	Node* getFirstAttribute();
+	virtual Node* getFirstAttribute() const;
 };
 
 #endif

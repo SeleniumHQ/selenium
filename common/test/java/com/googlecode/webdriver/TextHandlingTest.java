@@ -60,7 +60,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
         assertThat(text, equalTo("This line has a non-breaking space"));
     }
 
-    @Ignore(value = "ie, safari", reason = "Test fails")
+    @Ignore(value = "safari", reason = "Test fails")
     public void testShouldTreatANonBreakingSpaceAsAnyOtherWhitespaceCharacterWhenCollapsingWhitespace() {
       driver.get(simpleTestPage);
       WebElement element = driver.findElement(By.id("nbspandspaces"));
@@ -135,4 +135,29 @@ public class TextHandlingTest extends AbstractDriverTestCase {
         String text = driver.findElement(By.id("self-closed")).getText();
         assertThat(text, equalTo(""));
     }
+    
+    public void testShouldHandleSiblingBlockLevelElements() {
+    	driver.get(simpleTestPage);
+    	
+    	String text = driver.findElement(By.id("twoblocks")).getText();
+    	
+    	assertThat(text, is("Some text" + newLine + "Some more text"));
+    }
+    
+    public void testShouldHandleNestedBlockLevelElements() {
+    	driver.get(simpleTestPage);
+    	
+    	String text = driver.findElement(By.id("nestedblocks")).getText();
+    	
+    	assertThat(text, is("Cheese " + newLine + "Some text" + newLine + "Some more text" + newLine + "and also" + newLine + "Brie"));
+    }
+
+    public void testShouldHandleWhitespaceInInlineElements() {
+    	driver.get(simpleTestPage);
+    	
+    	String text = driver.findElement(By.id("inlinespan")).getText();
+    	
+    	assertThat(text, is("line has text"));
+    }
+
 }
