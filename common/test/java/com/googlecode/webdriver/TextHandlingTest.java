@@ -135,7 +135,8 @@ public class TextHandlingTest extends AbstractDriverTestCase {
         String text = driver.findElement(By.id("self-closed")).getText();
         assertThat(text, equalTo(""));
     }
-    
+
+    @Ignore("safari")
     public void testShouldHandleSiblingBlockLevelElements() {
     	driver.get(simpleTestPage);
     	
@@ -143,7 +144,8 @@ public class TextHandlingTest extends AbstractDriverTestCase {
     	
     	assertThat(text, is("Some text" + newLine + "Some more text"));
     }
-    
+
+    @Ignore("htmlunit, firefox, safari")
     public void testShouldHandleNestedBlockLevelElements() {
     	driver.get(simpleTestPage);
     	
@@ -152,6 +154,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
     	assertThat(text, is("Cheese " + newLine + "Some text" + newLine + "Some more text" + newLine + "and also" + newLine + "Brie"));
     }
 
+    @Ignore("htmlunit, firefox, safari")
     public void testShouldHandleWhitespaceInInlineElements() {
     	driver.get(simpleTestPage);
     	
