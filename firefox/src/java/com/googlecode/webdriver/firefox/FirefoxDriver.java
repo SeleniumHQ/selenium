@@ -25,6 +25,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Locale;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 
 /**
@@ -206,6 +209,7 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
 
     private class FirefoxOptions implements Options {
         private final List<String> fieldNames = Arrays.asList("domain", "expiry", "name", "path", "value", "secure");
+        private final DateFormat RFC_1123_DATE_FORMAT = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'Z", Locale.US);
         //TODO: need to refine the values here
         private final int SLOW_SPEED = 1;
         private final int MEDIUM_SPEED = 10;
@@ -233,6 +237,10 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
                         result = property.getReadMethod().invoke(cookie, new Object[0]);
                     } catch (Exception e) {
                         throw new RuntimeException(e);
+                    }
+
+                    if (result instanceof Date) {
+                        result = RFC_1123_DATE_FORMAT.format(result);
                     }
 
                     if (result != null) {
