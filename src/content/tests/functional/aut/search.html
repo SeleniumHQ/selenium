@@ -1,5 +1,16 @@
 <html>
 	<title>Bogus Search Engine</title>
+  <script>
+    document.addEventListener("click", function(e) {
+      if (e.target.id) {
+        if ("tab1" == e.target.id) {
+          document.getElementById("tabContent").innerHTML = "tab1 is selected";
+        } else if ("tab2" == e.target.id) {
+          document.getElementById("tabContent").innerHTML = "tab2 is selected";
+        }
+      }
+    }, false);
+  </script>
 	<body>
     <!-- image link without alt attribute -->
     <a href="search.html"><img src="chrome://selenium-ide/content/selenium/selenium-logo.png"></a>
@@ -22,6 +33,12 @@
 			</div>
 			<div>
         <textarea name="comment"></textarea>
+			</div>
+			<div>
+        <span id="tab1">tab 1</span>
+        <span id="tab2">tab 2</span>
+			</div>
+			<div id="tabContent">
 			</div>
 			<div>
 				<input type="submit" name="search" value="Search" />

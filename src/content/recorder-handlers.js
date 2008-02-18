@@ -130,7 +130,12 @@ Recorder.addEventHandler('clickLocator', 'click', function(event) {
                     delete this.mouseoverLocator;
                 }
                 this.record("click", this.findLocators(event.target), '');
-			}
+            } else {
+                var target = event.target;
+                this.callIfMeaningfulEvent(function() {
+                        this.record("click", this.findLocators(target), '');
+                    });
+            }
 		}
 	}, { capture: true });
 
@@ -156,3 +161,39 @@ Recorder.addEventHandler('rememberClickedElement', 'mousedown', function(event) 
 		this.clickedElement = event.target;
 		this.clickedElementLocators = this.findLocators(event.target);
 	}, { alwaysRecord: true, capture: true });
+
+Recorder.addEventHandler('attrModified', 'DOMAttrModified', function(event) {
+        this.log.debug('attrModified');
+        this.domModified();
+    }, {capture: true});
+
+Recorder.addEventHandler('nodeInserted', 'DOMNodeInserted', function(event) {
+        this.log.debug('nodeInserted');
+        this.domModified();
+    }, {capture: true});
+
+Recorder.addEventHandler('nodeRemoved', 'DOMNodeRemoved', function(event) {
+        this.log.debug('nodeRemoved');
+        this.domModified();
+    }, {capture: true});
+
+Recorder.prototype.domModified = function() {
+    if (this.delayedRecorder) {
+        this.delayedRecorder.apply(this);
+        this.delayedRecorder = null;
+        if (this.domModifiedTimeout) {
+            clearTimeout(this.domModifiedTimeout);
+        }
+    }
+}
+
+Recorder.prototype.callIfMeaningfulEvent = function(handler) {
+    this.log.debug("callIfMeaningfulEvent");
+    this.delayedRecorder = handler;
+    var self = this;
+    this.domModifiedTimeout = setTimeout(function() {
+            self.log.debug("clear event");
+            self.delayedRecorder = null;
+            self.domModifiedTimeout = null;
+        }, 50);
+}
