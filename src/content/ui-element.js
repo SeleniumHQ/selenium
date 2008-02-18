@@ -2319,7 +2319,7 @@ function Pageset(pagesetShorthand)
         }
         else {
             this.pathRegexp = new RegExp('^' + RegExp.escape(this.pathPrefix)
-                + '(?:' + pagesetShorthand.pathRegexp + ')$');
+                + '(?:' + (pagesetShorthand.pathRegexp || "") + ')$');
         }
         this.paramRegexps = {};
         for (var paramName in pagesetShorthand.paramRegexps) {
