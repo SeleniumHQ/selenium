@@ -12,7 +12,6 @@
         <module>selenium-server</module>
         <module>xlator</module>
         <module>clients</module>
-        <module>tests</module>
     </modules>
     <repositories>
         <repository>
