@@ -1002,7 +1002,7 @@ NodeUtil = {
         var retrievedValue = node.getAttribute(attrName);
         
         // Reapplying a fix for a bug similar to http://svn.openqa.org/fisheye/changelog/selenium?cs=1523
-        if ("function anonymous()\n{\n" + attrValue + "\n}") == retrievedValue) {
+        if ("function anonymous()\n{\n" + attrValue + "\n}" == retrievedValue) {
             retrievedValue = attrValue;
         }    
         
