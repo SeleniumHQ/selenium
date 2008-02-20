@@ -7,7 +7,6 @@ import org.hamcrest.Matcher;
 import com.googlecode.webdriver.WebDriver;
 import com.googlecode.webdriver.WebElement;
 import com.googlecode.webdriver.lift.find.Finder;
-import com.googlecode.webdriver.lift.find.HtmlTagFinder;
 
 /**
  * Base class for tests using the LiFT style API to driver WebDriver.

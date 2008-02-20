@@ -18,7 +18,6 @@ import com.googlecode.webdriver.WebElement;
  */
 public abstract class HtmlTagFinder extends BaseFinder<WebElement, WebDriver> {
 	
-	@SuppressWarnings("unchecked")
 	protected Collection<WebElement> extractFrom(WebDriver context) {
 		return context.findElements(By.xpath("//" + tagName()));
 	}

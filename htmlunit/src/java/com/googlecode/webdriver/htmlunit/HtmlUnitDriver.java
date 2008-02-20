@@ -313,12 +313,13 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText, Fi
         }
 
 
-        public WebElement activeElement() {
+        @SuppressWarnings("unchecked")
+		public WebElement activeElement() {
             Page page = currentWindow.getEnclosedPage();
             if (page instanceof HtmlPage) {
                 HtmlElement element = ((HtmlPage) page).getElementWithFocus();
                 if (element == null) {
-                    List allBodies = ((HtmlPage) page).getDocumentElement().getHtmlElementsByTagName("body");
+                    List<HtmlElement> allBodies = ((HtmlPage) page).getDocumentElement().getHtmlElementsByTagName("body");
                     if (allBodies.size() > 0)
                         return new HtmlUnitWebElement(HtmlUnitDriver.this, (HtmlElement) allBodies.get(0));
                 }

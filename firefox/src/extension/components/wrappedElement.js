@@ -313,7 +313,7 @@ FirefoxDriver.prototype.isElementDisplayed = function(respond) {
     } while (element.tagName.toLowerCase() != "body" && isDisplayed);
 
     respond.context = this.context;
-    respond.response = display != "none" && visible != "hidden";
+    respond.response = isDisplayed ? "true" : "false";
     respond.send();
 };
 

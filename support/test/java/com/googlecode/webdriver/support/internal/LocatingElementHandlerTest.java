@@ -1,12 +1,10 @@
 package com.googlecode.webdriver.support.internal;
 
-import org.jmock.integration.junit3.MockObjectTestCase;
-import org.jmock.Expectations;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Proxy;
 
-import junit.framework.TestCase;
+import org.jmock.Expectations;
+import org.jmock.integration.junit3.MockObjectTestCase;
 
 import com.googlecode.webdriver.By;
 import com.googlecode.webdriver.How;

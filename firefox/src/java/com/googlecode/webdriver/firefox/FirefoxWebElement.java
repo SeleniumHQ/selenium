@@ -88,7 +88,7 @@ public class FirefoxWebElement implements RenderedWebElement {
     }
 
     public boolean isDisplayed() {
-        return Boolean.parseBoolean(sendMessage(RuntimeException.class, "isElementDisplayed"));
+    	return Boolean.parseBoolean(sendMessage(RuntimeException.class, "isElementDisplayed"));
     }
 
     public Point getLocation() {

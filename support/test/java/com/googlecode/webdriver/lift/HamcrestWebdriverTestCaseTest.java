@@ -17,6 +17,7 @@ import com.googlecode.webdriver.lift.find.Finder;
  * @author rchatley (Robert Chatley)
  *
  */
+@SuppressWarnings("unchecked")
 public class HamcrestWebdriverTestCaseTest extends MockObjectTestCase {
 
 	final String text = "abcde";

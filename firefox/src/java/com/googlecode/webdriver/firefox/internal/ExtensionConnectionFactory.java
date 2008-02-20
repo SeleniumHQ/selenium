@@ -1,12 +1,9 @@
 package com.googlecode.webdriver.firefox.internal;
 
+import java.io.IOException;
+
 import com.googlecode.webdriver.firefox.ExtensionConnection;
 
-import java.io.IOException;
-import java.net.ConnectException;
-
-/**
- */
 public class ExtensionConnectionFactory {
     public static ExtensionConnection connectTo(String profileName, String host, int port) {
         try {

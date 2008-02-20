@@ -49,7 +49,7 @@ public class DragAndDropTest extends AbstractDriverTestCase {
     public void testDragTooFar() {
         driver.get(dragAndDropPage);
         RenderedWebElement img = (RenderedWebElement) driver.findElement(By.id("test1"));
-        Point expectedLocation = img.getLocation();
+//        Point expectedLocation = img.getLocation();
         
         img.dragAndDropBy(Integer.MIN_VALUE, Integer.MIN_VALUE);
         assertEquals (new Point(0, 0), img.getLocation());

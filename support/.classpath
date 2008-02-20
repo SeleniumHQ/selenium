@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry kind="src" output="build/classes" path="src/java"/>
 	<classpathentry kind="src" output="build/test-classes" path="test/java"/>
-	<classpathentry kind="lib" path="lib/buildtime/easymock.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-common"/>
 	<classpathentry kind="lib" path="lib/buildtime/jmock-2.4.0.jar"/>
