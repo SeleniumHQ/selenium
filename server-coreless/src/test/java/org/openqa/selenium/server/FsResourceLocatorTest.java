@@ -40,7 +40,7 @@ public class FsResourceLocatorTest extends TestCase {
 	}
 
 	public void testHackForJsUserExtensionsLocating() throws Exception {
-		File extension = new File("user-extensions.js");
+		File extension = new File("user-extensions.js").getAbsoluteFile();
 		extension.createNewFile();
 		extension.deleteOnExit();
 		FsResourceLocator extensionLocator = new FsResourceLocator(extension.getParentFile());
