@@ -185,7 +185,7 @@ public class TestSuiteBuilder {
 
 		try {
 			return Class.forName(path);
-		} catch (ClassNotFoundException e) {
+		} catch (Throwable e) {
 			return null;
 		}
 	}
