@@ -11,11 +11,12 @@
 		<script type="text/javascript" src="chrome://selenium-ide/content/preferences.js"></script>
 		<script type="text/javascript" src="chrome://selenium-ide/content/tools.js"></script>
 		<script type="text/javascript" src="chrome://selenium-ide/content/application.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/storedHistory.js"></script>
 		<script type="text/javascript">
 function setUp() {
     Preferences.useTestBranch();
     this.app = new Application();
-    app.clearOptions();
+    app.baseURLHistory.clear();
 }
 
 function testExactMatchPattern() {

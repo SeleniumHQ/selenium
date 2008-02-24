@@ -56,7 +56,8 @@
 <!ENTITY newSuiteCmd.label "テストスイートを新規作成">
 <!ENTITY openSuiteCmd.label "テストスイートを開く...">
 <!ENTITY saveSuiteCmd.label "テストスイートを保存">
-<!ENTITY saveSuiteAsCmd.label "Save Test Suite As...">
+<!ENTITY saveSuiteAsCmd.label "テストスイートに名前を付けて保存...">
 <!ENTITY recentSuiteCmd.label "最近開いたテストスイート">
+<!ENTITY recentTestCmd.label "最近開いたテストケース">
 
 <!ENTITY testCaseProperties.label "プロパティ...">

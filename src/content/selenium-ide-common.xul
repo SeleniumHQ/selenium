@@ -41,6 +41,7 @@ limitations under the License.
   <script type="application/x-javascript" src="chrome://selenium-ide/content/recorder-handlers.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/locatorBuilders.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/application.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/storedHistory.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/editor.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/sidebar-editor.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/standalone-editor.js"/>
@@ -124,13 +125,16 @@ limitations under the License.
 	<menupopup id="popup_export_formats" onpopupshowing="window.editor.populateFormatsPopup(this)" oncommand="window.editor.exportTestCaseWithFormat(window.editor.app.getFormats().selectFormat(event.target.getAttribute('value')))">
 	</menupopup>
       </menu>
+      <menu label="&recentTestCmd.label;">
+        <menupopup id="popup_recent_tests" onpopupshowing="window.editor.app.recentTestCases.populateMenu(this)" oncommand="window.editor.app.loadTestCaseWithNewSuite(event.target.getAttribute('value'))" />
+      </menu>
       <menuseparator/>
       <menuitem label="&newSuiteCmd.label;" command="cmd_new_suite" />
       <menuitem label="&openSuiteCmd.label;" command="cmd_open_suite" />
       <menuitem label="&saveSuiteCmd.label;" command="cmd_save_suite" />
       <menuitem label="&saveSuiteAsCmd.label;" command="cmd_save_suite_as" />
       <menu label="&recentSuiteCmd.label;">
-        <menupopup id="popup_recent_suites" onpopupshowing="window.editor.populateRecentTestSuites(this)" oncommand="window.editor.app.loadTestSuite(event.target.getAttribute('value'))" />
+        <menupopup id="popup_recent_suites" onpopupshowing="window.editor.app.recentTestSuites.populateMenu(this)" oncommand="window.editor.app.loadTestSuite(event.target.getAttribute('value'))" />
       </menu>
       <menuseparator id="closeMenuSeparator"/>
       <menuitem label="&closeCmd.label;" command="cmd_close" key="close-key" accesskey="X" id="closeMenuItem"/>

@@ -301,27 +301,6 @@ Editor.prototype.getOptions = function(options) {
     return this.app.getOptions();
 }
 
-Editor.prototype.populateRecentTestSuites = function(e) {
-    XulUtils.clearChildren(e);
-    var files = Preferences.getArray("recentTestSuites");
-    for (var i = 0; i < files.length; i++) {
-        var file = FileUtils.getFile(files[i]);
-        XulUtils.appendMenuItem(e, {
-                label: shortenPath(file),
-                value: file.path
-            });
-    }
-
-    function shortenPath(file) {
-        var nodes = FileUtils.splitPath(file.parent);
-        if (nodes.length > 2) {
-            nodes.splice(0, nodes.length - 2);
-            nodes.unshift("...");
-        }
-        return file.leafName + " [" + nodes.join("/") + "]";
-    }
-}
-
 Editor.prototype.updateTitle = function() {
 	var title;
     var testCase = this.getTestCase();

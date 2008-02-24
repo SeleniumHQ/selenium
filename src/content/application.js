@@ -23,19 +23,17 @@ this.Preferences = SeleniumIDE.Preferences;
 function Application() {
     this.baseURL = "";
     this.options = Preferences.load();
-    this.baseURLHistory = Preferences.getArray("baseURLHistory");
+    this.baseURLHistory = new StoredHistory("baseURLHistory", 20);
     this.testCase = null;
     this.testSuite = null;
     this.formats = null;
     this.currentFormat = null;
     this.clipboardFormat = null;
+    this.recentTestSuites = new StoredHistory("recentTestSuites");
+    this.recentTestCases = new StoredHistory("recentTestCases");
 }
 
 Application.prototype = {
-    clearOptions: function() {
-        this.baseURLHistory = [];
-    },
-    
     saveState: function() {
         if (this.options.rememberBaseURL == 'true'){
             this.options.baseURL = this.baseURL;
@@ -49,16 +47,12 @@ Application.prototype = {
 
     setBaseURL: function(baseURL) {
         this.baseURL = baseURL;
-        if (baseURL.length > 0) {
-            this.baseURLHistory.delete(baseURL);
-            this.baseURLHistory.unshift(baseURL);
-            Preferences.setArray("baseURLHistory", this.baseURLHistory);
-        }
+        this.baseURLHistory.add(baseURL);
         this.notify("baseURLChanged");
     },
 
     getBaseURLHistory: function() {
-        return this.baseURLHistory;
+        return this.baseURLHistory.list();
     },
 
     initOptions: function() {
@@ -129,11 +123,7 @@ Application.prototype = {
     },
 
     addRecentTestSuite: function(testSuite) {
-        var recent = Preferences.getArray("recentTestSuites");
-        var path = testSuite.file.path;
-        recent.delete(path);
-        recent.unshift(path);
-        Preferences.setArray("recentTestSuites", recent);
+        this.recentTestSuites.add(testSuite.file.path);
     },
 
     setTestCase: function(testCase) {
@@ -155,7 +145,11 @@ Application.prototype = {
         this.setTestCase(testCase);
     },
 
-    loadTestCaseWithNewSuite: function(file) {
+    loadTestCaseWithNewSuite: function(path) {
+        var file = null;
+        if (path) {
+            file = FileUtils.getFile(path);
+        }
         if (this._loadTestCase(file)) {
             this.setTestCaseWithNewSuite(this.getTestCase());
         }
@@ -189,6 +183,7 @@ Application.prototype = {
             if (testCase != null) {
                 if (testCaseHandler) testCaseHandler(testCase);
                 this.setTestCase(testCase);
+                this.recentTestCases.add(testCase.file.path);
                 return true;
             }
             return false;
@@ -251,11 +246,18 @@ Application.prototype = {
     },
 
     saveTestCase: function() {
-        return this.getCurrentFormat().save(this.getTestCase());
+        var result = this.getCurrentFormat().save(this.getTestCase());
+        if (result) {
+            this.recentTestCases.add(this.getTestCase().file.path);
+        }
+        return result;
     },
 
     saveNewTestCase: function() {
-        return this.getCurrentFormat().saveAsNew(this.getTestCase());
+        var result = this.getCurrentFormat().saveAsNew(this.getTestCase());
+        if (result) {
+            this.recentTestCases.add(this.getTestCase().file.path);
+        }
     }
 }
 
