@@ -280,7 +280,7 @@ function executeCommand(baseURL, command) {
 	}
 	currentTest.firstCommand = currentTest.nextCommand; // Selenium <= 0.6 only
 	currentTest.commandStarted = function() {
-		editor.view.rowUpdated(i);
+		editor.view.rowUpdated(testCase.commands.indexOf(command));
 	}
 	currentTest.commandComplete = function(result) {
 		if (result.failed) {
