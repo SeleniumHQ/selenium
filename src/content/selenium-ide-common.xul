@@ -175,7 +175,7 @@ limitations under the License.
       <label value="Fast" />
       <hbox flex="1" />
       <label value="Slow" />
-    </hbox>step
+    </hbox>
     <vbox>
       <vbox class="spacer" />
       <stack class="slider-box" flex="1" >
