@@ -1,4 +1,4 @@
-package org.openqa.selenium;
+package org.openqa.selenium.utils;
 
 import java.io.InputStream;
 import java.net.URL;

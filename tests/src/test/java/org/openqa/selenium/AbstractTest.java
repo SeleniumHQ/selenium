@@ -3,6 +3,7 @@ package org.openqa.selenium;
 import com.thoughtworks.selenium.DefaultSelenium;
 import com.thoughtworks.selenium.Selenium;
 import org.openqa.selenium.server.SeleniumServer;
+import org.openqa.selenium.utils.TestReporter;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
