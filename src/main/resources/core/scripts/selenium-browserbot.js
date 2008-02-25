@@ -1751,9 +1751,9 @@ BrowserBot.prototype.goForward = function() {
 
 BrowserBot.prototype.close = function() {
     if (browserVersion.isChrome || browserVersion.isSafari || browserVersion.isOpera) {
-        this.getCurrentWindow().close();
+        this.topFrame.close();
     } else {
-        this.getCurrentWindow().eval("window.close();");
+        this.getCurrentWindow().eval("window.top.close();");
     }
 };
 
