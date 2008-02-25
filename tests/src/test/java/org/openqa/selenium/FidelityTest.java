@@ -2,6 +2,8 @@ package org.openqa.selenium;
 
 import org.testng.annotations.Test;
 
+import com.thoughtworks.selenium.Wait;
+
 public class FidelityTest extends AbstractTest {
     @Test
     public void stockSearch() {
@@ -16,15 +18,14 @@ public class FidelityTest extends AbstractTest {
             selenium.click("submit");
             selenium.waitForPageToLoad("30000");
             selenium.select("research_option0", "label=Charts");
+            new Wait() {
+                @Override
+                public boolean until() {
+                    return selenium.isElementPresent("//img[contains(@src,'https://scs.fidelity.com/research/images/go.gif')]");
+                }
+            }.wait("couldn't find go button");
             selenium.click("//img[contains(@src,'https://scs.fidelity.com/research/images/go.gif')]");
             selenium.waitForPageToLoad("30000");
-            selenium.waitForPopUp("_top", "30000");
-            Thread.sleep(5000);
-            selenium.selectWindow("body");
-            selenium.click("link=Advanced Chart");
-            selenium.waitForPageToLoad("30000");
-            selenium.click("trendline");
-            selenium.click("//input[@value='Erase Trendlines']");
         } catch (Throwable t) {
             fail("FidelityTest.stockSearch", t);
         }
