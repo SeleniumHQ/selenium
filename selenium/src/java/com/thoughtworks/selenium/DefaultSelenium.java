@@ -13,9 +13,15 @@ public class DefaultSelenium extends WebDriverBackedSelenium implements Selenium
 
     private static WebDriver getDriver(String browserName) {
         if (browserName.indexOf("firefox") != -1 || browserName.indexOf("chrome") != -1) {
-            return instantiate("com.thoughtworks.webdriver.firefox.FirefoxDriver");
+            return instantiate("com.googlecode.webdriver.firefox.FirefoxDriver");
+            } else if (browserName.indexOf("htmlunit") != -1) {
+            return instantiate("com.googlecode.webdriver.htmlunit.HtmlUnitDriver");
         } else if (browserName.indexOf("iexplore") != -1) {
-            return instantiate("com.thoughtworks.webdriver.ie.InternetExplorerDriver");
+            return instantiate("com.googlecode.webdriver.ie.InternetExplorerDriver");
+        } else if (browserName.indexOf("htmlunit") != -1) {
+            return instantiate("com.googlecode.webdriver.htmlunit.HtmlUnitDriver");
+        } else if (browserName.indexOf("safari") != -1) {
+            return instantiate("com.googlecode.webdriver.safari.SafariDriver");
         } else {
             throw new RuntimeException("Unsupported browser version: " + browserName);
         }

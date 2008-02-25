@@ -1,14 +1,14 @@
 package org.openqa.selenium.server;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Map;
-
 import org.mortbay.http.handler.ProxyHandler;
 import org.mortbay.jetty.Server;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.server.htmlrunner.HTMLResultsListener;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Map;
 
 // Stub selenium server so that everything looks the same
 public class SeleniumServer {
@@ -158,8 +158,8 @@ public class SeleniumServer {
 		throw new UnsupportedOperationException("getPortDriversShouldContact");
 	}
 
-	public void setProxyInjectionMode(boolean proxyInjectionMode) {
-		throw new UnsupportedOperationException("setProxyInjectionMode");
+	public static void setProxyInjectionMode(boolean proxyInjectionMode) {
+		// no-op
 	}
 
 	public static String getForcedBrowserMode() {
@@ -197,4 +197,8 @@ public class SeleniumServer {
 	public static void main(String[] args) {
 		// Does nothing
 	}
+
+    public static void setTrustAllSSLCertificates(boolean trust) {
+        // Does nothing
+    }
 }

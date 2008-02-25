@@ -18,15 +18,11 @@
 package com.thoughtworks.selenium;
 
 
-import java.io.File;
+import java.io.*;
+import java.lang.reflect.*;
+import java.util.regex.Pattern;
 
-import junit.framework.Assert;
-import junit.framework.AssertionFailedError;
-import junit.framework.TestCase;
-
-import com.googlecode.webdriver.selenium.SeleniumTestEnvironment;
-import com.googlecode.webdriver.environment.GlobalTestEnvironment;
-import com.googlecode.webdriver.environment.TestEnvironment;
+import junit.framework.*;
 
 /**
  * Provides a JUnit TestCase base class that implements some handy functionality 
@@ -42,26 +38,61 @@ public class SeleneseTestCase extends TestCase {
 
     private static final boolean THIS_IS_WINDOWS = File.pathSeparator.equals(";");
     
+    private boolean captureScreetShotOnFailure = false;
+    
     /** Use this object to run all of your selenium tests */
     protected Selenium selenium;
     
     private StringBuffer verificationErrors = new StringBuffer();
+    
+    public SeleneseTestCase() {
+        super();
+    }
+    
+	public SeleneseTestCase(String name) {
+        super(name);
+    }
 
-	/** Calls this.setUp(null)
+    /** Calls this.setUp(null)
 	 * @see #setUp(String)
 	 */
     public void setUp() throws Exception {
         super.setUp();
-        
-        TestEnvironment testEnvironment = GlobalTestEnvironment.get();
-        if (testEnvironment == null) {
-        	testEnvironment = new SeleniumTestEnvironment();
-        	GlobalTestEnvironment.set(testEnvironment);
-        }
-        
-        this.setUp(GlobalTestEnvironment.get().getAppServer().getBaseUrl());
+        this.setUp(null);
     }
 
+    /**
+     * Runs the bare test sequence, capturing a screenshot if a test fails
+     * @exception Throwable if any exception is thrown
+     */
+    // @Override
+    public void runBare() throws Throwable {
+        if (!isCaptureScreetShotOnFailure()) {
+            super.runBare();
+            return;
+        }
+        setUp();
+        try {
+            runTest();
+        } catch (Throwable t) {
+            if (selenium != null) {
+                String filename = getName() + ".png";
+                try {
+                    selenium.captureScreenshot(filename);
+                    System.err.println("Saved screenshot " + filename);
+                } catch (Exception e) {
+                    System.err.println("Couldn't save screenshot " + filename + ": " + e.getMessage());
+                    e.printStackTrace();
+                }
+                throw t;
+            }
+        }
+        finally {
+            tearDown();
+        }
+    }
+    
+    
     /**
      * Calls this.setUp with the specified url and a default browser.  On Windows, the default browser is *iexplore; otherwise, the default browser is *firefox.
      * @see #setUp(String, String)
@@ -71,10 +102,10 @@ public class SeleneseTestCase extends TestCase {
      */
     public void setUp(String url) throws Exception {
       if(THIS_IS_WINDOWS){
-         setUp(url, "*iexplore");
+	     setUp(url, "*iexplore");
       }else{
-	     setUp(url, "*chrome");
-      }
+	     setUp(url, "*firefox");
+      } 
     }
     
     /**
@@ -83,11 +114,27 @@ public class SeleneseTestCase extends TestCase {
      * @param browserString the browser to use, e.g. *firefox
      * @throws Exception
      */
-    public void setUp(String url, String baseDriver) throws Exception {
+    public void setUp(String url, String browserString) throws Exception {
         super.setUp();
-
-        selenium = new DefaultSelenium("", 0, baseDriver, url);
+        int port = getDefaultPort();
+        if (url==null) {
+            url = "http://localhost:" + port;
+;
+        }
+        selenium = new DefaultSelenium("localhost", port, browserString, url);
         selenium.start();
+        selenium.setContext(this.getClass().getSimpleName() + "." + getName());
+    }
+
+    private int getDefaultPort() {
+        try {
+            Class c = Class.forName("org.openqa.selenium.server.SeleniumServer");
+            Method getDefaultPort = c.getMethod("getDefaultPort", new Class[0]);
+            Integer portNumber = (Integer)getDefaultPort.invoke(null, new Object[0]);
+            return portNumber.intValue();
+        } catch (Exception e) {
+            return 4444;
+        }
     }
 
     /** Like assertTrue, but fails at the end of the test (during tearDown) */
@@ -110,7 +157,7 @@ public class SeleneseTestCase extends TestCase {
     
     /** Returns the body text of the current page */
     public String getText() {
-    	return selenium.getText("xpath=/html/body");
+        return selenium.getEval("this.page().bodyText()");
     }
 
     /** Like assertEquals, but fails at the end of the test (during tearDown) */
@@ -174,28 +221,21 @@ public class SeleneseTestCase extends TestCase {
      * @return true if actual matches the expectedPattern, or false otherwise
      */
     public static boolean seleniumEquals(String expectedPattern, String actual) {
-        if (actual.startsWith("regexp:") || actual.startsWith("regex:")) {
+        if (actual.startsWith("regexp:") || actual.startsWith("regex:") || actual.startsWith("regexpi:") || actual.startsWith("regexi:")) {
             // swap 'em
         	String tmp = actual;
             actual = expectedPattern;
             expectedPattern = tmp;
         }
-        if (expectedPattern.startsWith("regexp:")) {
-            String expectedRegEx = expectedPattern.replaceFirst("regexp:", ".*") + ".*";
-            if (!actual.matches(expectedRegEx)) {
-                System.out.println("expected " + actual + " to match regexp " + expectedPattern);
-                return false;                    
-            }
-            return true;
-        }
-        if (expectedPattern.startsWith("regex:")) {
-            String expectedRegEx = expectedPattern.replaceFirst("regex:", ".*") + ".*";
-            if (!actual.matches(expectedRegEx)) {
-                System.out.println("expected " + actual + " to match regex " + expectedPattern);
-                return false;
-            }
-            return true;
-        }
+        Boolean b;
+        b = handleRegex("regexp:", expectedPattern, actual, 0);
+        if (b != null) { return b.booleanValue(); }
+        b = handleRegex("regex:", expectedPattern, actual, 0);
+        if (b != null) { return b.booleanValue(); }
+        b = handleRegex("regexpi:", expectedPattern, actual, Pattern.CASE_INSENSITIVE);
+        if (b != null) { return b.booleanValue(); }
+        b = handleRegex("regexi:", expectedPattern, actual, Pattern.CASE_INSENSITIVE);
+        if (b != null) { return b.booleanValue(); }
         
         if (expectedPattern.startsWith("exact:")) {
             String expectedExact = expectedPattern.replaceFirst("exact:", "");
@@ -209,13 +249,26 @@ public class SeleneseTestCase extends TestCase {
         String expectedGlob = expectedPattern.replaceFirst("glob:", "");
         expectedGlob = expectedGlob.replaceAll("([\\]\\[\\\\{\\}$\\(\\)\\|\\^\\+.])", "\\\\$1");
 
-        expectedGlob = expectedGlob.replaceAll("\\*", "(.|[\r\n])*");
-        expectedGlob = expectedGlob.replaceAll("\\?", "(.|[\r\n])");
-        if (!actual.matches(expectedGlob)) {
+        expectedGlob = expectedGlob.replaceAll("\\*", ".*");
+        expectedGlob = expectedGlob.replaceAll("\\?", ".");
+        if (!Pattern.compile(expectedGlob, Pattern.DOTALL).matcher(actual).matches()) {
             System.out.println("expected \"" + actual + "\" to match glob \"" + expectedPattern + "\" (had transformed the glob into regexp \"" + expectedGlob + "\"");
             return false;
         }
         return true;
+    }
+
+    private static Boolean handleRegex(String prefix, String expectedPattern, String actual, int flags) {
+        if (expectedPattern.startsWith(prefix)) {
+            String expectedRegEx = expectedPattern.replaceFirst(prefix, ".*") + ".*";
+            Pattern p = Pattern.compile(expectedRegEx, flags);
+            if (!p.matcher(actual).matches()) {
+                System.out.println("expected " + actual + " to match regexp " + expectedPattern);
+                return Boolean.FALSE;                    
+            }
+            return Boolean.TRUE;
+        }
+        return null;
     }
     
     /** Compares two objects, but handles "regexp:" strings like HTML Selenese
@@ -341,5 +394,13 @@ public class SeleneseTestCase extends TestCase {
     	} finally {
     		selenium.stop();
     	}
+    }
+
+    protected boolean isCaptureScreetShotOnFailure() {
+        return captureScreetShotOnFailure;
+    }
+
+    protected void setCaptureScreetShotOnFailure(boolean captureScreetShotOnFailure) {
+        this.captureScreetShotOnFailure = captureScreetShotOnFailure;
     }
 }

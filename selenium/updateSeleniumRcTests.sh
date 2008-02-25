@@ -27,4 +27,4 @@ cd "$HOLDING" && echo "In $HOLDING"
 find com -type f -print | grep -v .java | xargs rm
 find org -type f -print | grep -v .java | xargs rm
 
-cp -r "$HOLDING" "$TO/test/java"
+cp -r "$HOLDING/" "$TO/test/java"

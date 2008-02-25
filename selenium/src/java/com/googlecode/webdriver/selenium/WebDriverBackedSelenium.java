@@ -1,15 +1,5 @@
 package com.googlecode.webdriver.selenium;
 
-import java.awt.Dimension;
-import java.awt.Point;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import com.googlecode.webdriver.By;
 import com.googlecode.webdriver.NoSuchElementException;
 import com.googlecode.webdriver.RenderedWebElement;
@@ -35,6 +25,15 @@ import com.googlecode.webdriver.selenium.internal.ValueOptionSelectStrategy;
 import com.googlecode.webdriver.selenium.internal.XPathLookupStrategy;
 import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.SeleniumException;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class WebDriverBackedSelenium implements Selenium {
     private static final Pattern STRATEGY_AND_VALUE_PATTERN = Pattern.compile("^(\\p{Alpha}+)=(.*)");
@@ -144,14 +143,46 @@ public class WebDriverBackedSelenium implements Selenium {
         throw new UnsupportedOperationException();
     }
 
+    public void deleteAllVisibleCookies() {
+        throw new UnsupportedOperationException("deleteAllVisibleCookies");
+    }
+
+    public void setBrowserLogLevel(String logLevel) {
+        throw new UnsupportedOperationException("setBrowserLogLevel");
+    }
+
+    public void runScript(String script) {
+        throw new UnsupportedOperationException("runScript");
+    }
+
+    public void addLocationStrategy(String strategyName, String functionDefinition) {
+        throw new UnsupportedOperationException("addLocationStrategy");
+    }
+
+    public void setContext(String context) {
+        throw new UnsupportedOperationException("setContext");
+    }
+
+    public void attachFile(String fieldLocator, String fileLocator) {
+        throw new UnsupportedOperationException("attachFile");
+    }
+
     public void doubleClick(String locator) {
         WebElement element = findElement(locator);
         element.click();
         element.click();
     }
 
+    public void contextMenu(String locator) {
+        throw new UnsupportedOperationException("contextMenu");
+    }
+
     public void doubleClickAt(String locator, String coordString) {
         throw new UnsupportedOperationException();
+    }
+
+    public void contextMenuAt(String locator, String coordString) {
+        throw new UnsupportedOperationException("contextMenuAt");
     }
 
     public void dragAndDrop(String locator, String movementsString) {
@@ -170,6 +201,10 @@ public class WebDriverBackedSelenium implements Selenium {
     public void fireEvent(String locator, String eventName) {
         // no-op
         System.err.println("Fire event is not supported by WebDriver. Doing nothing");
+    }
+
+    public void focus(String locator) {
+        throw new UnsupportedOperationException("focus");
     }
 
     public String getAlert() {
@@ -197,7 +232,7 @@ public class WebDriverBackedSelenium implements Selenium {
                 links.add(id);
         }
 
-        return links.toArray(new String[]{});
+        return links.toArray(new String[links.size()]);
     }
 
     public String[] getAllWindowIds() {
@@ -238,6 +273,14 @@ public class WebDriverBackedSelenium implements Selenium {
         throw new UnsupportedOperationException();
     }
 
+    public String getCookieByName(String name) {
+        throw new UnsupportedOperationException("getCookieByName");
+    }
+
+    public boolean isCookiePresent(String name) {
+        throw new UnsupportedOperationException("isCookiePresent");
+    }
+
     public Number getCursorPosition(String locator) {
         throw new UnsupportedOperationException();
     }
@@ -274,6 +317,22 @@ public class WebDriverBackedSelenium implements Selenium {
         throw new UnsupportedOperationException();
     }
 
+    public Number getXpathCount(String xpath) {
+        throw new UnsupportedOperationException("getXpathCount");
+    }
+
+    public void assignId(String locator, String identifier) {
+        throw new UnsupportedOperationException("assignId");
+    }
+
+    public void allowNativeXpath(String allow) {
+        throw new UnsupportedOperationException("allowNativeXpath");
+    }
+
+    public void ignoreAttributesWithoutValue(String ignore) {
+        throw new UnsupportedOperationException("ignoreAttributesWithoutValue");
+    }
+
     public String getHtmlSource() {
         return driver.getPageSource();
     }
@@ -298,13 +357,11 @@ public class WebDriverBackedSelenium implements Selenium {
         WebElement select = findElement(selectLocator);
         List<WebElement> options = select.getChildrenOfType("option");
         List<String> optionValues = new ArrayList<String>();
-        Iterator<WebElement> allOptions = options.iterator();
-        while (allOptions.hasNext()) {
-            WebElement option = allOptions.next();
+        for (WebElement option : options) {
             optionValues.add(option.getText());
         }
 
-        return optionValues.toArray(new String[0]);
+        return optionValues.toArray(new String[optionValues.size()]);
     }
 
     public String getSelectedId(String selectLocator) {
@@ -337,7 +394,7 @@ public class WebDriverBackedSelenium implements Selenium {
               selected.add(String.valueOf(i));
       }
 
-      return selected.toArray(new String[] {});
+      return selected.toArray(new String[selected.size()]);
     }
 
     public String getSelectedLabel(String selectLocator) {
@@ -535,9 +592,7 @@ public class WebDriverBackedSelenium implements Selenium {
     }
 
     private void removeAllSelections(List<WebElement> options) {
-        Iterator<WebElement> allOptions = options.iterator();
-        while (allOptions.hasNext()) {
-            WebElement option = allOptions.next();
+        for (WebElement option : options) {
             if (option.isSelected())
                 option.toggle();
         }
@@ -579,7 +634,7 @@ public class WebDriverBackedSelenium implements Selenium {
         if (use == null)
             use = "";
 
-        OptionSelectStrategy strategy = (OptionSelectStrategy) optionSelectStrategies.get(strategyName);
+        OptionSelectStrategy strategy = optionSelectStrategies.get(strategyName);
         if (strategy == null)
             throw new SeleniumException(strategyName + " (from " + optionLocator + ") is not a method for selecting options");
 
@@ -675,6 +730,26 @@ public class WebDriverBackedSelenium implements Selenium {
         throw new UnsupportedOperationException();
     }
 
+    public void captureScreenshot(String filename) {
+        throw new UnsupportedOperationException("captureScreenshot");
+    }
+
+    public void shutDownSeleniumServer() {
+        throw new UnsupportedOperationException("shutDownSeleniumServer");
+    }
+
+    public void keyDownNative(String keycode) {
+        throw new UnsupportedOperationException("keyDownNative");
+    }
+
+    public void keyUpNative(String keycode) {
+        throw new UnsupportedOperationException("keyUpNative");
+    }
+
+    public void keyPressNative(String keycode) {
+        throw new UnsupportedOperationException("keyPressNative");
+    }
+
     protected WebElement findElement(String locator) {
         LookupStrategy strategy = findStrategy(locator);
         String use = determineWebDriverLocator(locator);
@@ -694,7 +769,7 @@ public class WebDriverBackedSelenium implements Selenium {
         strategyName = matcher.group(1);
       }
 
-      LookupStrategy strategy = (LookupStrategy) lookupStrategies.get(strategyName);
+      LookupStrategy strategy = lookupStrategies.get(strategyName);
       if (strategy == null)
         throw new SeleniumException("No matcher found for " + strategyName);
 
@@ -734,7 +809,7 @@ public class WebDriverBackedSelenium implements Selenium {
 
         if (selectedOptions.size() == 0)
             throw new SeleniumException("No option selected");
-        return (String[]) selectedOptions.toArray(new String[0]);
+        return selectedOptions.toArray(new String[selectedOptions.size()]);
     }
 
     private List<WebElement> getOptions(String selectLocator) {
