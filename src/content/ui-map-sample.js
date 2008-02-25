@@ -478,8 +478,8 @@ myMap.addElement('subtopicArticleListingPages', {
         }
     ]
     , getLocator: function(args) {
-        return "//DIV[@id='content']/DIV[@class='item']"
-            + "[" + args.index + "]/H3/A";
+        return "//div[@id='content']/div[@class='item']"
+            + "[" + args.index + "]/h3/a";
     }
     , testcase1: {
         args: { index: 2 }

@@ -424,7 +424,7 @@ testcase1: {
 
 <p>The <code>args</code> property specifies the object to be passed into the UI element's <code>getLocator()</code> method to generate the test locator, which is then applied to the <code>xhtml</code>. If evaluating the locator on the XHTML document returns a DOM node with the <code>expected-result</code> attribute, the testcase is considered to have passed.</p>
 
-<p>The <code>xhtml</code> property must represent a complete XML document, sans <code>&lt;html&gt;</code> tags, which are automatically added. The reason this is necessary is that the text is being converted into an XPath evaluable DOM tree via Mozilla's native XML parser. Unfortunately, there is no way to generate a simple HTML document, only XML documents. This means that the content of the <code>xhtml</code> must be well-formed. Tags should also be specified in lowercase.</p>
+<p>The <code>xhtml</code> property must represent a complete XML document, sans <code>&lt;html&gt;</code> tags, which are automatically added. The reason this is necessary is that the text is being converted into an XPath evaluable DOM tree via Mozilla's native XML parser. Unfortunately, there is no way to generate a simple HTML document, only XML documents. This means that the content of the <code>xhtml</code> must be well-formed. <span class="highlight">Tags should also be specified in lowercase.</span></p>
 
 <h3>Fuzzy Matching</h3>
 

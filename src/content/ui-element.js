@@ -1,25 +1,13 @@
 //******************************************************************************
-// contants
-
-var XHTML_DOCTYPE = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" '
-    + '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">';
-var XHTML_XMLNS = 'http://www.w3.org/1999/xhtml';
-
-//******************************************************************************
-// globals
+// globals, including constants
 
 var GLOBAL = {
-    NAMESPACE_RESOLVER: function(prefix) {
-        if (prefix == 'html' || prefix == 'xhtml' || prefix == 'x') {
-            return 'http://www.w3.org/1999/xhtml';
-        } else if (prefix == 'mathml') {
-            return 'http://www.w3.org/1998/Math/MathML';
-        } else {
-            throw new Error("Unknown namespace: " + prefix + ".");
-        }
-    }
-    , rollupManager: {}
+    rollupManager: {}
     , uiMap: {}
+    , XHTML_DOCTYPE: '<!DOCTYPE html PUBLIC '
+        + '"-//W3C//DTD XHTML 1.0 Strict//EN" '
+        + '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">'
+    , XHTML_XMLNS: 'http://www.w3.org/1999/xhtml'
 };
 
 //******************************************************************************
@@ -31,12 +19,14 @@ var GLOBAL = {
 // "if (xpathdebug)" condition; unfortunately there are some notable exceptions.
 // For now, I'm just going to attach a dummy write() method to the Log object
 // as a workaround.
+/*
 try {
     Log.write = function() { }
 }
 catch (e) {
     // no problem
 }
+*/
 
 //******************************************************************************
 // modifications to built-in objects
@@ -136,275 +126,6 @@ function smart_log(level, msg)
     catch (e) {
         // couldn't log!
     }
-}
-
-//******************************************************************************
-// xpath functionality ... modified from ajaxslt
-
-TokenExpr.prototype.toString = function(infoObj) {
-  return this.value;
-}
-
-LocationExpr.prototype.toString = function(infoObj) {
-  var ret = "";
-  for (var i = 0; i < this.steps.length; ++i) {
-    ret += this.steps[i].toString(infoObj || {});
-  }
-  return ret;
-}
-
-StepExpr.prototype.toString = function(infoObj) {
-  var ret;
-  if (this.axis == xpathAxis.DESCENDANT_OR_SELF) {
-    if (infoObj.isTopStepInPredicate) {
-      infoObj.isTopStepInPredicate = false;
-    }
-    ret = '//';
-  }
-  else if (this.axis == xpathAxis.CHILD) {
-    if (infoObj.isTopStepInPredicate) {
-      infoObj.isTopStepInPredicate = false;
-      ret = "";
-    }
-    else {
-      ret = '/';
-    }
-  }
-  else if (this.axis == xpathAxis.ATTRIBUTE) {
-    if (infoObj.isTopStepInPredicate) {
-      infoObj.isTopStepInPredicate = false;
-      ret = "";
-    }
-    else {
-      ret = '/';
-    }
-    ret += '@';
-  }
-  else {
-    if (infoObj.isTopStepInPredicate) {
-      infoObj.isTopStepInPredicate = false;
-      ret = ""
-    }
-    else {
-      ret = '/';
-    }
-    ret += this.axis + '::';
-  }
-  infoObj.axis = this.axis;
-  var infoObj2 = clone(infoObj);
-  ret += this.nodetest.toString(infoObj2)
-    
-  for (var i = 0; i < this.predicate.length; ++i) {
-    infoObj2 = clone(infoObj);
-    ret += this.predicate[i].toString(infoObj2);
-  }
-  return ret;
-}
-
-NodeTestAny.prototype.toString = function(infoObj) {
-  return 'node()';
-}
-
-// this is changed between ajaxslt 0.6 and 0.7 . Since the version used by the
-// IDE and by the RC may be different, try to accommodate either.
-try {
-    NodeTestElement.prototype.toString = function(infoObj) {
-      return '*';
-    }
-}
-catch (e) {
-    NodeTestElementOrAttribute.prototype.toString = function(infoObj) {
-      return '*';
-    }
-}
-
-NodeTestText.prototype.toString = function(infoObj) {
-  return 'text()';
-}
-
-NodeTestComment.prototype.toString = function(infoObj) {
-  return 'comment()';
-}
-
-NodeTestPI.prototype.toString = function(infoObj) {
-  return 'processing-instruction()';
-}
-
-NodeTestNC.prototype.toString = function(infoObj) {
-  return this.nsprefix + ':*';
-}
-
-NodeTestName.prototype.toString = function(infoObj) {
-    var ret = "";
-    if (infoObj.axis != xpathAxis.ATTRIBUTE) {
-        var matches = /^(?:([^:]+):)?(.+)$/.exec(this.name);
-        if (matches) {
-            var ns =
-                (infoObj.transform && infoObj.transform.NodeTestNameNamespace)
-                ? infoObj.transform.NodeTestNameNamespace(matches[1])
-                : matches[1];
-            if (ns) {
-                ret += ns + ':';
-            }
-            ret += (
-                (infoObj.transform && infoObj.transform.NodeTestNameElement)
-                ? infoObj.transform.NodeTestNameElement(matches[2])
-                : matches[2]);
-        }
-        else {
-            ret += (
-                (infoObj.transform && infoObj.transform.NodeTestNameElement)
-                ? infoObj.transform.NodeTestNameElement(this.name)
-                : this.name);
-        }
-    }
-    return ret || this.name;
-}
-
-PredicateExpr.prototype.toString = function(infoObj) {
-  // needed to add special isTopStepInPredicate logic, because the syntax of
-  // the top step expression within a predicate is a little tricky.
-  infoObj.isTopStepInPredicate = true;
-  var ret = '[' + this.expr.toString(infoObj) + ']';
-  return ret;
-}
-
-FunctionCallExpr.prototype.toString = function(infoObj) {
-  var ret = this.name.value + '(';
-  for (var i = 0; i < this.args.length; ++i) {
-    if (i > 0) {
-      ret += ', ';
-    }
-    var infoObj2 = clone(infoObj);
-    ret += this.args[i].toString(infoObj2);
-  }
-  ret += ')';
-  return ret;
-}
-
-UnionExpr.prototype.toString = function(infoObj) {
-  var infoObj2 = clone(infoObj);
-  return this.expr1.toString(infoObj) + ' | ' + this.expr2.toString(infoObj2);
-}
-
-PathExpr.prototype.toString = function(infoObj) {
-  var infoObj2 = clone(infoObj);
-  var ret = this.filter.toString(infoObj) + this.rel.toString(infoObj2);
-  return ret;
-}
-
-FilterExpr.prototype.toString = function(infoObj) {
-  var infoObj2 = clone(infoObj);
-  var ret = this.expr.toString(infoObj2);
-  for (var i = 0; i < this.predicate.length; ++i) {
-    infoObj2 = clone(infoObj);
-    ret += this.predicate[i].toString(infoObj2);
-  }
-  return ret;
-}
-
-UnaryMinusExpr.prototype.toString = function(infoObj) {
-  return '-' + this.expr.toString(infoObj);
-}
-
-BinaryExpr.prototype.toString = function(infoObj) {
-  var space = (this.op.value == '=' ? "" : ' ');
-  var infoObj2 = clone(infoObj);
-  return this.expr1.toString(infoObj) + space + this.op.value + space
-    + this.expr2.toString(infoObj2);
-}
-
-LiteralExpr.prototype.toString = function(infoObj) {
-  return this.value.quoteForXPath();
-}
-
-NumberExpr.prototype.toString = function(infoObj) {
-  return '' + this.value;
-}
-
-VariableExpr.prototype.toString = function(infoObj) {
-  return '$' + this.name;
-}
-
-XNode.prototype.toString = function(infoObj) {
-  return this.nodeName;
-}
-
-ExprContext.prototype.toString = function(infoObj) {
-  return '[' + this.position + '/' + this.nodelist.length + '] ' + 
-  this.node.nodeName;
-}
-
-function Value_toString(infoObj) {
-  return this.type + ': ' + this.value;
-}
-
-StringValue.prototype.toString = Value_toString;
-NumberValue.prototype.toString = Value_toString;
-BooleanValue.prototype.toString = Value_toString;
-NodeSetValue.prototype.toString = Value_toString;
-
-/**
- * Wrapper around the XPath expressions' toString() functions for implementing
- * syntax simplifications.
- *
- * @param xpath      the XPath string to transform
- * @param transform  an object mapping names of XPath expression types to their
- *                   transformation functions, if any
- */
-function xpathTransform(xpath, transform)
-{
-    var xpathObj = xpathParse(xpath);
-    xpath = xpathObj.toString({
-        transform: transform
-    });
-    xpath = xpath.replace(/\/\/(?:\/)?node\(\)\//g, '//');
-    xpath = xpath.replace(/parent::node\(\)/g, '..');
-    return xpath;
-}
-
-/**
- * Converts all element node test names in an XPath to uppercase.
- *
- * @param xpath  the XPath whose element names to convert to uppercase
- * @throws       parse error if the XPath is malformed
- * @return       the uppercased XPath
- */
-function xpathToUpperCase(xpath)
-{
-    // String.toUpperCase is not defined for IE, so wrap the function
-    return xpathTransform(xpath, { NodeTestNameElement:
-        function(s) { return s.toUpperCase(); }
-    });
-}
-
-/**
- * The symmetric lowercase function for xpathToUpperCase().
- *
- * @param xpath  the XPath whose element names to convert to lowercase
- * @throws       parse error if the XPath is malformed
- * @return       the lowercased XPath
- */
-function xpathToLowerCase(xpath)
-{
-    return xpathTransform(xpath, { NodeTestNameElement:
-        function(s) { return s.toLowerCase(); }
-    });
-}
- 
-/**
- * Adds a namespace prefix to all element node test name in an XPath expression.
- *
- * @param xpath      XPath expression
- * @param namespace  namespace to add
- * @throws           parse error if the XPath is malformed
- * @return           the modified XPath
- */
-function xpathSetNamespace(xpath, namespace)
-{
-    return xpathTransform(xpath, { NodeTestNameNamespace:
-        function(ns) { return namespace; }
-    });
 }
 
 //******************************************************************************
@@ -1163,116 +884,6 @@ function parse_locator(locator)
 
 
 /**
- * Currently a near copy of BrowserBot.prototype._findElementUsingFullXPath()
- * and BrowserBot.prototype.locateElementByXPath(), only the full resultset is
- * returned. We'll try to move this into Core at some point. A pageBot object
- * may optionally be passed in.
- */
-function eval_xpath(xpath, inDocument, opt_pageBot, opt_contextNode)
-{
-    var pageBot = opt_pageBot || false
-    var contextNode = opt_contextNode || inDocument;
-    
-    // Trim any trailing "/": not valid xpath, and remains from attribute
-    // locator.
-    if (xpath.charAt(xpath.length - 1) == '/') {
-        xpath = xpath.slice(0, -1);
-    }
-    
-    var results = [];
-    
-    // Handle //tag
-    var match = xpath.match(/^\/\/(\w+|\*)$/);
-    if (match) {
-        var elements = contextNode
-            .getElementsByTagName(match[1].toUpperCase());
-        if (elements != null) {
-            for (var i = 0; i < elements.length; ++i) {
-                results.push(elements[i]);
-            }
-        }
-        return results;
-    }
-    
-    if (pageBot) {
-        if (pageBot._findElementByTagNameAndAttributeValue) {
-            // Handle //tag[@attr='value']
-            var match = xpath
-                .match(/^\/\/(\w+|\*)\[@(\w+)=('([^\']+)'|"([^\"]+)")\]$/);
-            if (match) {
-                // comments removed
-                var val = pageBot._findElementByTagNameAndAttributeValue(
-                        contextNode,
-                        match[1].toUpperCase(),
-                        match[2].toLowerCase(),
-                        match[3].slice(1, -1)
-                        );
-                if (val) {
-                    return [ val ];
-                }
-            }
-        }
-        
-        if (pageBot._findElementByTagNameAndText) {
-            // Handle //tag[text()='value']
-            var match = xpath
-                .match(/^\/\/(\w+|\*)\[text\(\)=('([^\']+)'|"([^\"]+)")\]$/);
-            if (match) {
-                return [ pageBot._findElementByTagNameAndText(
-                    contextNode,
-                    match[1].toUpperCase(),
-                    match[2].slice(1, -1)) ];
-            }
-        }
-    }
-    
-    // HUGE hack - remove namespace from xpath for IE
-    if (browserVersion.isIE) {
-        xpath = xpath.replace(/x:/g, '')
-    }
-    
-    if (inDocument.evaluate) {
-        // Use document.evaluate() if it's available.
-        // Regarding use of the second argument to document.evaluate(), see:
-        //     http://groups.google.com/group/comp.lang.javascript/browse_thread/thread/a59ce20639c74ba1/a9d9f53e88e5ebb5
-        var xpathResult = inDocument
-            .evaluate((contextNode == inDocument ? xpath : '.' + xpath),
-                contextNode, GLOBAL.NAMESPACE_RESOLVER, 0, null);
-        var result = xpathResult.iterateNext();
-        while (result) {
-            results.push(result);
-            result = xpathResult.iterateNext();
-        }
-    }
-    else {
-        // If not, fall back to slower JavaScript implementation
-        var context;
-        if (contextNode == inDocument) {
-            context = new ExprContext(inDocument);
-        }
-        else {
-            // provide false values to get the default constructor values
-            context = new ExprContext(contextNode, false, false,
-                contextNode.parentNode);
-        }
-        if (context.setCaseInsensitive) {
-            context.setCaseInsensitive(true);
-        }
-        var xpathObj = xpathParse(xpath);
-        var xpathResult = xpathObj.evaluate(context);
-        if (xpathResult && xpathResult.value) {
-            for (var i = 0; i < xpathResult.value.length; ++i) {
-                results.push(xpathResult.value[i]);
-            }
-        }
-    }
-    
-    return results;
-}
-
-
-
-/**
  * Currently a near copy of BrowserBot.prototype.locateElementByCss(), only the
  * full resultset is returned. We'll try to move this into Core at some point.
  */
@@ -1328,8 +939,8 @@ function eval_locator(locator, inDocument, opt_contextNode)
     
     if (locator.type == 'xpath' || (locator.string.substr(0, 2) == '//' &&
         locator.type == 'implicit')) {
-        results = eval_xpath(locator.string, inDocument, pageBot,
-            opt_contextNode);
+        results = eval_xpath(locator.string, inDocument,
+            { contextNode: opt_contextNode });
     }
     else if (locator.type == 'css') {
         results = eval_css(locator.string, inDocument);
@@ -1775,8 +1386,8 @@ function UIElement(uiElementShorthand)
         var testcases = this.getTestcases();
         testcaseLoop: for (var i = 0; i < testcases.length; ++i) {
             var testcase = testcases[i];
-            var xhtml = XHTML_DOCTYPE + '<html xmlns="' + XHTML_XMLNS + '">'
-                + testcase.xhtml + '</html>';
+            var xhtml = GLOBAL.XHTML_DOCTYPE + '<html xmlns="'
+                + GLOBAL.XHTML_XMLNS + '">' + testcase.xhtml + '</html>';
             var doc = parser.parseFromString(xhtml, "text/xml");
             if (doc.firstChild.nodeName == 'parsererror') {
                 smart_alert('Error parsing XHTML in testcase "' + testcase.name
@@ -1787,22 +1398,22 @@ function UIElement(uiElementShorthand)
             // we're no longer using the default locators when testing, because
             // args is now required
             var locator = parse_locator(this.getLocator(testcase.args));
+            var results;
             if (locator.type == 'xpath' || (locator.type == 'implicit' &&
                 locator.string.substring(0, 2) == '//')) {
-                // set the XHTML namespace on the XPath elements, and lowercase
-                // them. Do both in one step for efficiency.
-                locator.string = xpathTransform(locator.string, {
-                    NodeTestNameNamespace: function(ns) { return 'xhtml'; }
-                    , NodeTestNameElement: function(name) {
-                        return name.toLowerCase();
-                    }
-                });
+                // try using the javascript xpath engine to avoid namespace
+                // issues. The xpath does have to be lowercase however, it
+                // seems. 
+                results = eval_xpath(locator.string, doc,
+                    { allowNativeXpath: false });
             }
-            // piece the locator back together
-            locator = (locator.type == 'implicit')
-                ? locator.string
-                : locator.type + '=' + locator.string;
-            var results = eval_locator(locator, doc);
+            else {
+                // piece the locator back together
+                locator = (locator.type == 'implicit')
+                    ? locator.string
+                    : locator.type + '=' + locator.string;
+                results = eval_locator(locator, doc);
+            }
             if (results.length && results[0].hasAttribute('expected-result')) {
                 continue testcaseLoop;
             }
