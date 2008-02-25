@@ -1,6 +1,4 @@
-package com.thoughtworks.selenium.internal;
-
-import com.googlecode.webdriver.selenium.internal.GlobTextMatchingStrategy;
+package com.googlecode.webdriver.selenium.internal;
 
 import junit.framework.TestCase;
 
