@@ -3,25 +3,27 @@ package org.openqa.selenium;
 import org.testng.annotations.Test;
 
 public class VerizonTest extends AbstractTest {
+    private static final String TIMEOUT = "60000";
+
     @Test
     public void signUp() {
         try {
-            selenium.setTimeout("60000");
+            selenium.setTimeout(TIMEOUT);
             selenium.open("http://www22.verizon.com/");
             selenium.click("link=Set Up New Phone Service");
-            selenium.waitForPageToLoad("30000");
+            selenium.waitForPageToLoad(TIMEOUT);
             selenium.click("//a[@href=\"/ForYourHome/NewConnect/OrderWelcomeSignin.aspx\"]");
-            selenium.waitForPageToLoad("30000");
+            selenium.waitForPageToLoad(TIMEOUT);
             selenium.type("txtSTREET_ADDRESS1", "49 Bonnie Lane");
             selenium.type("txtCITY", "Dedham");
             selenium.select("lstSTATE", "label=MA");
             selenium.type("txtZIP_CODE", "02026");
             selenium.click("imgNext");
-            selenium.waitForPageToLoad("30000");
+            selenium.waitForPageToLoad(TIMEOUT);
             selenium.click("//img[@alt='next']");
-            selenium.waitForPageToLoad("30000");
+            selenium.waitForPageToLoad(TIMEOUT);
             selenium.click("btnGetItNow");
-            selenium.waitForPageToLoad("30000");
+            selenium.waitForPageToLoad(TIMEOUT);
         } catch (Throwable t) {
             fail("VerizonTest.signUp", t);
         }
