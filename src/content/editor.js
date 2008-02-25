@@ -50,6 +50,7 @@ function Editor(window) {
                     self.view.refresh();
                     self.updateTitle();
                 }
+                self.toggleRecordingEnabled(false);
                 testCase.addObserver(this._testCaseObserver);
             },
 
@@ -84,7 +85,6 @@ function Editor(window) {
 	this.loadExtensions();
 	this.loadSeleniumAPI();
 	this.selectDefaultReference();
-    this.toggleRecordingEnabled(true);
 	this.treeView = new TreeView(this, document, document.getElementById("commands"));
 	this.sourceView = new SourceView(this, document.getElementById("source"));
     this.suiteTreeView = new SuiteTreeView(this, document.getElementById("suiteTree"));
@@ -110,6 +110,7 @@ function Editor(window) {
 	//window.controllers.appendController(controller);
 
     this.app.newTestSuite();
+    this.toggleRecordingEnabled(true);
 	this.updateViewTabs();
     this.infoPanel = new Editor.InfoPanel(this);
     
@@ -361,6 +362,7 @@ Editor.prototype.loadRecorderFor = function(contentWindow, isRootDocument) {
 
 Editor.prototype.toggleRecordingEnabled = function(enabled) {
 	this.recordingEnabled = enabled;
+    $("record-button").checked = enabled;
     var tooltip = Editor.getString("recordButton.tooltip." + (enabled ? "on" : "off"));
     document.getElementById("record-button").setAttribute("tooltiptext", tooltip);
 }
