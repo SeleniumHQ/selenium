@@ -246,7 +246,7 @@ function getInputValue(inputElement) {
 /* Fire an event in a browser-compatible manner */
 function triggerEvent(element, eventType, canBubble, controlKeyDown, altKeyDown, shiftKeyDown, metaKeyDown) {
     canBubble = (typeof(canBubble) == undefined) ? true : canBubble;
-    if (element.fireEvent) {
+    if (element.fireEvent && element.ownerDocument && element.ownerDocument.createEventObject) { // IE
         var evt = createEventObject(element, controlKeyDown, altKeyDown, shiftKeyDown, metaKeyDown);        
         element.fireEvent('on' + eventType, evt);
     }
@@ -299,7 +299,7 @@ function createEventObject(element, controlKeyDown, altKeyDown, shiftKeyDown, me
 function triggerKeyEvent(element, eventType, keySequence, canBubble, controlKeyDown, altKeyDown, shiftKeyDown, metaKeyDown) {
     var keycode = getKeyCodeFromKeySequence(keySequence);
     canBubble = (typeof(canBubble) == undefined) ? true : canBubble;
-    if (element.fireEvent) {
+    if (element.fireEvent && element.ownerDocument && element.ownerDocument.createEventObject) { // IE
         var keyEvent = createEventObject(element, controlKeyDown, altKeyDown, shiftKeyDown, metaKeyDown);
         keyEvent.keyCode = keycode;
         element.fireEvent('on' + eventType, keyEvent);

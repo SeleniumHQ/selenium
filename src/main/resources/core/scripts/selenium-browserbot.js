@@ -212,7 +212,7 @@ BrowserBot.prototype.triggerMouseEvent = function(element, eventType, canBubble,
     var screenY = 0;
 
     canBubble = (typeof(canBubble) == undefined) ? true : canBubble;
-    if (element.fireEvent) {
+    if (element.fireEvent && element.ownerDocument && element.ownerDocument.createEventObject) { //IE
         var evt = createEventObject(element, this.controlKeyDown, this.altKeyDown, this.shiftKeyDown, this.metaKeyDown);
         evt.detail = 0;
         evt.button = 1;
