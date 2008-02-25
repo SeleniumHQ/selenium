@@ -4,21 +4,28 @@ import org.testng.annotations.Test;
 import static org.testng.Assert.*;
 
 public class BestBuyTest extends AbstractTest {
+
+    public static String TIMEOUT = "30000";
+
     @Test
     public void searchAndSignup() {
         try {
             selenium.open("http://www.bestbuy.com/");
-            selenium.click("st");
+            selenium.type("st", "Wii");
+            selenium.click("goButton");
+            selenium.waitForPageToLoad(TIMEOUT);
             selenium.click("link=Nintendo - Wii");
-            selenium.waitForPageToLoad("30000");
+            selenium.waitForPageToLoad(TIMEOUT);
             selenium.click("&lid=accessories");
-            selenium.waitForPageToLoad("30000");
+            selenium.waitForPageToLoad(TIMEOUT);
             selenium.click("addtowishlist");
-            selenium.waitForPageToLoad("30000");
+            selenium.waitForPageToLoad(TIMEOUT);
             selenium.click("link=create one now");
+            selenium.waitForPageToLoad(TIMEOUT);
             selenium.type("TxtFirstName", "Patrick");
             selenium.type("TxtLastName", "Lightbody");
             selenium.click("CmdCreate");
+            selenium.waitForPageToLoad(TIMEOUT);
             assertTrue(selenium.isTextPresent("Please enter your e-mail address"));
             assertTrue(selenium.isTextPresent("Please enter your password"));
             assertTrue(selenium.isTextPresent("Please enter a 5-digit ZIP code"));
