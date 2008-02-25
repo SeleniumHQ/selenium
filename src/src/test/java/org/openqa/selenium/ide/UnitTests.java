@@ -30,7 +30,7 @@ public class UnitTests extends TestCase {
     @Override
     protected void setUp() throws Exception {
         SeleniumServer.setFirefoxProfileTemplate(new File(PROFILE_TEMPLATE_DIR));
-        SeleniumServer.setCustomProxyHandler(new ProxyHandler() {
+        SeleniumServer.setCustomProxyHandler(new ProxyHandler(false) {
             @SuppressWarnings("unchecked")
             @Override
             public void handle(String pathInContext, String pathParams, HttpRequest request, HttpResponse response) throws HttpException, IOException {

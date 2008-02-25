@@ -27,6 +27,8 @@ limitations under the License.
   <script type="application/x-javascript" src="chrome://selenium-ide/content/preferences.js"/>
   <!-- import misc.js before tools.js, because both declare a Log object -->
   <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/xpath/misc.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/xpath/util.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/xpath/xmltoken.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/xpath/dom.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/selenium/xpath/xpath.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/tools.js"/>
