@@ -2452,6 +2452,175 @@ Selenium.prototype.doAddLocationStrategy = function(strategyName, functionDefini
     this.browserbot.locationStrategies[strategyName] = safeStrategyFunction;
 }
 
+Selenium.prototype.doCaptureEntirePageScreenshot = function(filename) {
+    /**
+     * Saves the entire contents of the current window canvas to a PNG file.
+     * Currently this only works in Mozilla and when running in chrome mode.
+     * Contrast this with the captureScreenshot command, which captures the
+     * contents of the OS viewport (i.e. whatever is currently being displayed
+     * on the monitor), and is implemented in the RC only. Implementation
+     * mostly borrowed from the Screengrab! Firefox extension. Please see
+     * http://www.screengrab.org for details.
+     *
+     * @param filename  the path to the file to persist the screenshot as. No
+     *                  filename extension will be appended by default.
+     *                  Directories will not be created if they do not exist,  
+     *                  and an exception will be thrown, possibly by native
+     *                  code.
+     */
+    // can only take screenshots in Mozilla chrome mode, IE not in the RC,
+    // or IE multiWindow mode in the RC
+    if (!browserVersion.isChrome && !browserVersion.isIE) {
+        throw new SeleniumError('takeScreenshot is only implemented for '
+            + "chrome and iexplore browsers, but the current browser isn't "
+            + 'one of them');
+    }
+    if (browserVersion.isIE && typeof(runOptions) != 'undefined' &&
+        runOptions.isMultiWindowMode() == false) {
+        throw new SeleniumError('takeScreenshot in the RC is currently only ' +
+            'available for iexplore when in -multiWindow mode'); 
+    }
+    
+    // do or do not ... there is no try
+    
+    if (browserVersion.isIE) {
+        // The backslash path separator must always be properly escaped, since
+        // we're using the path in script text. It appears to be safe to
+        // over-escape.
+        filename = filename.replace(/\\/g, '\\\\');
+        
+        // this is sort of hackish and only works in -multiWindow mode when
+        // used within the RC. We insert a script into the document, and remove
+        // it before anyone notices.
+        var doc = selenium.browserbot.getDocument();
+        var script = doc.createElement('script'); 
+        var scriptContent =
+              'try {'
+            + '    var snapsie = new ActiveXObject("Snapsie.CoSnapsie");'
+            + '    snapsie.saveSnapshot("' + filename + '", "");'
+            + '}'
+            + 'catch (e) {'
+            + '    document.getElementById("takeScreenshot").failure ='
+            + '        e.message || "Undocumented error";'
+            + '}';
+        script.id = 'takeScreenshot';
+        script.language = 'javascript';
+        script.text = scriptContent;
+        doc.body.appendChild(script);
+        script.parentNode.removeChild(script);
+        if (script.failure) {
+            var msg = 'Snapsie failed: ';
+            if (script.failure == "Automation server can't create object") {
+                msg += 'Is it installed? See '
+                    + 'http://sourceforge.net/projects/snapsie';
+            }
+            else {
+                msg += script.failure;
+            }
+            throw new SeleniumError(msg);
+        }
+        return;
+    }
+    
+    var grabber = {
+        prepareCanvas: function(width, height) {
+            var styleWidth = width + 'px';
+            var styleHeight = height + 'px';
+            
+            var grabCanvas = document.getElementById('screenshot_canvas');
+            if (!grabCanvas) {
+                // create the canvas
+                var ns = 'http://www.w3.org/1999/xhtml';
+                grabCanvas = document.createElementNS(ns, 'html:canvas');
+                grabCanvas.id = 'screenshot_canvas';
+                grabCanvas.style.display = 'none';
+                document.documentElement.appendChild(grabCanvas);
+            }
+            
+            grabCanvas.width = width;
+            grabCanvas.style.width = styleWidth;
+            grabCanvas.style.maxWidth = styleWidth;
+            grabCanvas.height = height;
+            grabCanvas.style.height = styleHeight;
+            grabCanvas.style.maxHeight = styleHeight;
+        
+            return grabCanvas;
+        },
+        
+        prepareContext: function(canvas, box) {
+            var context = canvas.getContext('2d');
+            context.clearRect(box.x, box.y, box.width, box.height);
+            context.save();
+            return context;
+        }
+    };
+    
+    var SGNsUtils = {
+        dataUrlToBinaryInputStream: function(dataUrl) {
+            var nsIoService = Components.classes["@mozilla.org/network/io-service;1"]
+                .getService(Components.interfaces.nsIIOService);
+            var channel = nsIoService
+                .newChannelFromURI(nsIoService.newURI(dataUrl, null, null));
+            var binaryInputStream = Components.classes["@mozilla.org/binaryinputstream;1"]
+                .createInstance(Components.interfaces.nsIBinaryInputStream);
+            
+            binaryInputStream.setInputStream(channel.open());
+            return binaryInputStream;
+        },
+        
+        newFileOutputStream: function(nsFile) {
+            var writeFlag = 0x02; // write only
+            var createFlag = 0x08; // create
+            var truncateFlag = 0x20; // truncate
+            var fileOutputStream = Components.classes["@mozilla.org/network/file-output-stream;1"]
+                .createInstance(Components.interfaces.nsIFileOutputStream);
+                
+            fileOutputStream.init(nsFile,
+                writeFlag | createFlag | truncateFlag, 0664, null);
+            return fileOutputStream;
+        },
+        
+        writeBinaryInputStreamToFileOutputStream:
+        function(binaryInputStream, fileOutputStream) {
+            var numBytes = binaryInputStream.available();
+            var bytes = binaryInputStream.readBytes(numBytes);
+            fileOutputStream.write(bytes, numBytes);
+        }
+    };
+    
+    // compute dimensions
+    var window = this.browserbot.getCurrentWindow();
+    var doc = window.document.documentElement;
+    var box = {
+        x: 0,
+        y: 0,
+        width: doc.scrollWidth,
+        height: doc.scrollHeight
+    };
+    LOG.debug('computed dimensions');
+    
+    // grab
+    var format = 'png';
+    var canvas = grabber.prepareCanvas(box.width, box.height);
+    var context = grabber.prepareContext(canvas, box);
+    context.drawWindow(window, box.x, box.y, box.width, box.height,
+        'rgb(0, 0, 0)');
+    context.restore();
+    var dataUrl = canvas.toDataURL("image/" + format);
+    LOG.debug('grabbed to canvas');
+    
+    // save to file
+    var nsFile = Components.classes["@mozilla.org/file/local;1"]
+        .createInstance(Components.interfaces.nsILocalFile);
+    nsFile.initWithPath(filename);
+    var binaryInputStream = SGNsUtils.dataUrlToBinaryInputStream(dataUrl);
+    var fileOutputStream = SGNsUtils.newFileOutputStream(nsFile);
+    SGNsUtils.writeBinaryInputStreamToFileOutputStream(binaryInputStream,
+        fileOutputStream);
+    fileOutputStream.close();
+    LOG.debug('saved to file');
+};
+
 /**
  *  Factory for creating "Option Locators".
  *  An OptionLocator is an object for dealing with Select options (e.g. for
