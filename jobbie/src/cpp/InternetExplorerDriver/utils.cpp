@@ -40,9 +40,7 @@ void throwUnsupportedOperationException(JNIEnv *env, const char *message)
 
 void startCom() 
 {
-	if (!SUCCEEDED(CoInitialize(NULL))) {
-		throw "Cannot initialize COM";
-	}
+	CoInitialize(NULL);
 }
 
 jobject newJavaInternetExplorerDriver(JNIEnv* env, InternetExplorerDriver* driver) 

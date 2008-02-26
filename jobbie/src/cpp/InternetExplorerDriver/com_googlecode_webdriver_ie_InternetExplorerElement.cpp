@@ -54,7 +54,7 @@ JNIEXPORT jstring JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerEleme
 	return env->NewString((const jchar*) value.c_str(), (jsize) value.length());
 }
 
-JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_sendKeys
+JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_doSendKeys
   (JNIEnv *env, jobject obj, jstring newValue)
 {
 	ElementWrapper* wrapper = getWrapper(env, obj);

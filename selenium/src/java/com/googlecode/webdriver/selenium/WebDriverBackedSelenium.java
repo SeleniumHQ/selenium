@@ -1,6 +1,7 @@
 package com.googlecode.webdriver.selenium;
 
 import com.googlecode.webdriver.By;
+import com.googlecode.webdriver.Keys;
 import com.googlecode.webdriver.NoSuchElementException;
 import com.googlecode.webdriver.RenderedWebElement;
 import com.googlecode.webdriver.WebDriver;
@@ -160,7 +161,7 @@ public class WebDriverBackedSelenium implements Selenium {
     }
 
     public void setContext(String context) {
-        throw new UnsupportedOperationException("setContext");
+    	// no-op
     }
 
     public void attachFile(String fieldLocator, String fileLocator) {
@@ -310,7 +311,8 @@ public class WebDriverBackedSelenium implements Selenium {
     }
 
     public String getEval(String script) {
-        throw new UnsupportedOperationException();
+    	// no-op. I'll have to come up with a better answer than this
+    	return null;
     }
 
     public String getExpression(String expression) {
@@ -697,6 +699,11 @@ public class WebDriverBackedSelenium implements Selenium {
     }
 
     public void typeKeys(String locator, String value) {
+    	value = value.replace("\\38", Keys.ARROW_UP);
+    	value = value.replace("\\40", Keys.ARROW_DOWN);
+    	value = value.replace("\\37", Keys.ARROW_LEFT);
+    	value = value.replace("\\39", Keys.ARROW_RIGHT);
+    	
         findElement(locator).sendKeys(value);
     }
 

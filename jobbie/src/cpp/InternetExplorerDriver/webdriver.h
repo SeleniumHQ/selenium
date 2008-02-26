@@ -18,6 +18,9 @@ EXPORT WebDriver* webdriver_newDriverInstance();
 EXPORT void webdriver_deleteDriverInstance(WebDriver* handle);
 
 EXPORT void webdriver_get(WebDriver* driver, wchar_t* url);
+EXPORT void webdriver_close(WebDriver* driver);
+
+EXPORT const wchar_t* webdriver_getCurrentUrl(WebDriver* driver);
 
 #ifdef __cplusplus
 }

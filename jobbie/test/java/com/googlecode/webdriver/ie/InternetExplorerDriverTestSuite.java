@@ -1,7 +1,6 @@
 package com.googlecode.webdriver.ie;
 
 import junit.framework.Test;
-
 import com.googlecode.webdriver.TestSuiteBuilder;
 
 public class InternetExplorerDriverTestSuite {

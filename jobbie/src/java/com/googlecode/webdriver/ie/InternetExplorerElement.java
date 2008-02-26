@@ -33,8 +33,17 @@ public class InternetExplorerElement implements RenderedWebElement {
 
     public native String getValue();
 
-    public native void sendKeys(CharSequence... value);
+    public void sendKeys(CharSequence... value) {
+    	StringBuilder builder = new StringBuilder();
+    	for (CharSequence seq : value) {
+    		builder.append(seq);
+    	}
+    	
+    	doSendKeys(builder.toString());
+    }
 
+    private native void doSendKeys(String string);
+    
     public native void clear();
     
     public native boolean isEnabled();

@@ -24,6 +24,7 @@ InternetExplorerDriver::InternetExplorerDriver()
 		throw "Cannot create InternetExplorer instance";
 	}
 
+	closeCalled = false;
 	currentFrame = -1;
 
 	bringToFront();
@@ -300,6 +301,11 @@ void InternetExplorerDriver::getDocument(IHTMLDocument2 **pdoc)
 	CComQIPtr<IHTMLDocument2> doc(dispatch);
 	CComQIPtr<IHTMLFramesCollection2> frames;
 	doc->get_frames(&frames);
+
+	if (frames == NULL) {
+		*pdoc = doc.Detach();
+		return;
+	}
 
 	long length = 0;
 	frames->get_length(&length);

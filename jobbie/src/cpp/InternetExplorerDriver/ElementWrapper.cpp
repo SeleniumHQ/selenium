@@ -73,8 +73,26 @@ void ElementWrapper::sendKeys(const std::wstring& newValue)
 	
 		bool needsShift = false;
 		
-		keyCode = VkKeyScan(c);
-		needsShift = (keyCode & (1 << 8)) ? true : false;  // VK_LSHIFT
+/*
+	ARROW_LEFT('\uE001'),
+	ARROW_UP('\uE002'),
+	ARROW_RIGHT('\uE003'),
+	ARROW_DOWN('\uE004')
+*/
+		int k = (int)c;
+
+		if (k == 0xE001) {
+			keyCode = VK_LEFT;
+		} else if (c == 0xE002) {
+			keyCode = VK_UP;
+		} else if (c == 0xE003) {
+			keyCode = VK_RIGHT;
+		} else if (k == 0xE004) {
+			keyCode = VK_DOWN;
+		} else {
+			keyCode = VkKeyScan(c);
+			needsShift = (keyCode & (1 << 8)) ? true : false;  // VK_LSHIFT
+		}
 
 		INPUT input;
 		input.type = INPUT_KEYBOARD;

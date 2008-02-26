@@ -52,7 +52,7 @@ JNIEXPORT jstring JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerEleme
  * Method:    sendKeys
  * Signature: (Ljava/lang/String;)V
  */
-JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_sendKeys
+JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_doSendKeys
   (JNIEnv *, jobject, jstring);
 
 /*
