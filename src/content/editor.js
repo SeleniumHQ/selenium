@@ -585,7 +585,7 @@ Editor.prototype.showInBrowser = function(url, newWindow) {
     }
 }
 
-Editor.prototype.playCurrentTestCase = function(next) {
+Editor.prototype.playCurrentTestCase = function(next, index) {
     var self = this;
     this.selDebugger.start(function(failed) {
             self.log.debug("finished execution of test case: failed=" + failed);
@@ -597,7 +597,7 @@ Editor.prototype.playCurrentTestCase = function(next) {
             }
             self.suiteTreeView.currentRowUpdated();
             if (next) next();
-        });
+    }, index > 0);
 }
 
 Editor.prototype.playTestSuite = function() {
@@ -613,7 +613,7 @@ Editor.prototype.playTestSuite = function() {
         if (++index < self.app.getTestSuite().tests.length) {
             self.suiteTreeView.scrollToRow(index);
             self.app.showTestCaseFromSuite(self.app.getTestSuite().tests[index]);
-            self.playCurrentTestCase(arguments.callee);
+            self.playCurrentTestCase(arguments.callee, index);
         }
     })();
 }

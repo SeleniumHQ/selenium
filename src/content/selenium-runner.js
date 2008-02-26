@@ -78,6 +78,9 @@ Selenium.prototype.doStore = function(value, varName) {
     storedVars[varName] = value;
 };
 
+storedVars.nbsp = String.fromCharCode(160);
+storedVars.space = ' ';
+
 var IDETestLoop = classCreate();
 objectExtend(IDETestLoop.prototype, TestLoop.prototype);
 objectExtend(IDETestLoop.prototype, {
@@ -228,10 +231,18 @@ function resetCurrentTest() {
 	}
 }
 
-function createSelenium(baseURL) {
-	var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
-	var window = wm.getMostRecentWindow('navigator:browser');
+function createSelenium(baseURL, useLastWindow) {
+    var window;
+    if (useLastWindow) {
+        window = this.lastWindow;
+    }
+    if (!window) {
+	    var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
+	    window = wm.getMostRecentWindow('navigator:browser');
+    }
 	
+    this.lastWindow = window;
+
     var contentWindow = window.getBrowser().selectedBrowser.contentWindow;
 	var selenium = Selenium.createForWindow(contentWindow);
 	selenium.browserbot.getCurrentPage();
@@ -239,11 +250,12 @@ function createSelenium(baseURL) {
     return selenium;
 }
 
-function start(baseURL, handler) {
+function start(baseURL, handler, useLastWindow) {
 	//if (!stopAndDo("start", baseURL)) return;
     resetCurrentTest();
 	
-    selenium = createSelenium(baseURL);
+    selenium = createSelenium(baseURL, useLastWindow);
+    selenium.browserbot.selectWindow(null);
 
 	commandFactory = new CommandHandlerFactory();
 	commandFactory.registerAll(selenium);

@@ -99,13 +99,13 @@ Debugger.prototype.setState = function(state) {
     this.notify("stateUpdated", state);
 }
 
-Debugger.prototype.start = function(complete) {
+Debugger.prototype.start = function(complete, useLastWindow) {
 	document.getElementById("record-button").checked = false;
 	this.editor.toggleRecordingEnabled(false);
 
 	this.log.debug("start");
 
-	this.init();
+    this.init();
     var self = this;
     this.setState(Debugger.PLAYING);
 	this.runner.start(this.editor.getBaseURL(), {
@@ -120,7 +120,7 @@ Debugger.prototype.start = function(complete) {
                     }
                 }
             }
-        });
+        }, useLastWindow);
 };
 
 Debugger.prototype.executeCommand = function(command) {
