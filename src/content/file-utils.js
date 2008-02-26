@@ -85,10 +85,13 @@ var FileUtils = {
 	},
 
     splitPath: function(file) {
+        var max = 100;
         var result = [];
-        while (file && file.path != "/" && !file.path.match(/^[a-z]:$/i)) {
+        var i = 0;
+        while (i < max && file && file.path != "/" && !file.path.match(/^[a-z]:$/i)) {
             result.unshift(file.leafName);
             file = file.parent;
+            i++;
         }
         return result;
     }

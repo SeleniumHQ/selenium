@@ -25,43 +25,44 @@ StoredHistory.prototype = {
     },
     
     list: function() {
-	return Preferences.getArray(this.id);
+	    return Preferences.getArray(this.id);
     },
     
     add: function(item) {
-	if (item.trim().length == 0) return;
-	var list = this.list();
+	    if (item.trim().length == 0) return;
+	    var list = this.list();
         list.delete(item);
-	list.unshift(item);
-	if (list.length > this.max) {
-	    list.pop();
-	}
-	Preferences.setArray(this.id, list);
+	    list.unshift(item);
+	    if (list.length > this.max) {
+	        list.pop();
+	    }
+	    Preferences.setArray(this.id, list);
     },
     
     mapMenuItem: function(callback) {
-	var list = this.list();
-	for (var i = 0; i < list.length; i++) {
+	    var list = this.list();
+	    for (var i = 0; i < list.length; i++) {
             var file = FileUtils.getFile(list[i]);
-	    callback.call(this, {
+            shortenPath(file);
+	        callback.call(this, {
                 label: shortenPath(file),
                 value: file.path
-	    });
-	}
-
-	function shortenPath(file) {
+	        });
+	    }
+        
+	    function shortenPath(file) {
             var nodes = FileUtils.splitPath(file.parent);
             if (nodes.length > 2) {
-		nodes.splice(0, nodes.length - 2);
-		nodes.unshift("...");
+		        nodes.splice(0, nodes.length - 2);
+		        nodes.unshift("...");
             }
             return file.leafName + " [" + nodes.join("/") + "]";
-	}
+	    }
     },
 
     populateMenu: function(e) {
-	XulUtils.clearChildren(e);
-	this.mapMenuItem(function(item) {
+	    XulUtils.clearChildren(e);
+	    this.mapMenuItem(function(item) {
             XulUtils.appendMenuItem(e, item);
         });
     }
