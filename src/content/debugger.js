@@ -51,6 +51,10 @@ function Debugger(editor) {
 		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/scripts/selenium-executionloop.js', this.runner);
 		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/scripts/selenium-browserbot.js', this.runner);
 		subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/scripts/selenium-testrunner.js', this.runner);
+    	if (this.editor.getOptions().enableUIElement == 'true') {
+            ExtensionsLoader.loadSubScript(subScriptLoader,
+                'chrome://selenium-ide/content/ui-element.js', this.runner);
+        }
 		if (this.editor.getOptions().userExtensionsURL) {
 			try {
 				ExtensionsLoader.loadSubScript(subScriptLoader, this.editor.getOptions().userExtensionsURL, this.runner);

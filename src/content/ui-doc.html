@@ -114,17 +114,13 @@ th, td {
 
 <h3>Including the Right Files</h3>
 
-<p>While the Selenium IDE + UI-Element distribution does contain other modifications, the crux of the extension is implemented in a single javascript file, <code>ui-element.js</code> . This file is normally contained within the extension JAR file; however you may view it at any time by accessing the following special URL in Firefox (granted you've installed the extension):</p>
+<p>While the Selenium IDE + UI-Element distribution does contain other modifications, the crux of the extension is implemented in a single javascript file, <code>ui-element.js</code> . This file must be loaded by the IDE and/or Selenium server in order for any mapping to happen. <span class="highlight">Check the <em>Enable UI-Element</em> checkbox in the IDE options dialog</span> to do so.
 
-<pre><a href="chrome://selenium-ide/content/ui-element.js">chrome://selenium-ide/content/ui-element.js</a></pre>
-
-<p>This file must be loaded by the IDE and/or Selenium server in order for any mapping to happen. In the IDE, <span class="highlight">include the above path in the <em>Selenium Core extensions</em> options</span>. For the Selenium server, it will need to be included as part of the <code>user-extensions.js</code> file specified at startup for the <code>-userExtensions</code> switch.</p>
-
-<p>In addition to this file, your map definitions file must be loaded. A sample definition file created for the website <a href="http://alistapart.com">alistapart.com</a> is included in the distribution and is available here:</p>
+<p>In addition to this file, your map definitions file must be loaded, by being specified in the <em>Selenium Core extensions</em> field of the IDE options. A sample definition file created for the website <a href="http://alistapart.com">alistapart.com</a> is included in the distribution and is available here:</p>
 
 <pre><a href="chrome://selenium-ide/content/ui-map-sample.js">chrome://selenium-ide/content/ui-map-sample.js</a></pre>
 
-<p>The map definitions file is included into the IDE the same way as <code>ui-element.js</code>, <span class="highlight">following it in the <em>Selenium Core extensions</em> options</span>. You might want to experiment with the sample map to get a feel for UI-Element. For the Selenium server, both <code>ui-element.js</code> and the map file must be present in the <code>user-extensions.js</code>, the former appearing before the latter. The easiest way to do this is to concatenate the two files using the Unix <code>cat</code> command:
+<p>You might want to experiment with the sample map to get a feel for UI-Element. For the Selenium server, both <code>ui-element.js</code> (<a href="chrome://selenium-ide/content/ui-map-sample.js">chrome://selenium-ide/content/ui-map-sample.js</a>) and the map file must be present in the <code>user-extensions.js</code> file specified at startup with the <code>-userExtensions</code> switch, the former appearing before the latter. The easiest way to do this is to concatenate the two files using the Unix <code>cat</code> command:
 
 <pre>cat ui-element.js ui-map-sample.js > user-extensions.js</pre>
 

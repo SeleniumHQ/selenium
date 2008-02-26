@@ -626,8 +626,12 @@ Editor.prototype.playback = function(newWindow, resultCallback) {
     this.testRunnerResultCallback = resultCallback;
     var auto = resultCallback != null;
 
+    var extensionsURLs = ExtensionsLoader.getURLs(
+        (this.getOptions().enableUIElement == 'true'
+        ? 'chrome://selenium-ide/content/ui-element.js,' : "")
+        + this.getOptions().userExtensionsURL);
     this.showInBrowser('chrome://selenium-ide/content/selenium/TestRunner.html?test=/content/PlayerTestSuite.html' + 
-                       '&userExtensionsURL=' + encodeURI(ExtensionsLoader.getURLs(this.getOptions().userExtensionsURL).join(',')) +
+                       '&userExtensionsURL=' + encodeURI(extensionsURLs.join()) +
                        '&baseUrl=' + this.app.getBaseURL() +
                        (auto ? "&auto=true" : ""), 
                        newWindow);
@@ -762,6 +766,10 @@ Editor.prototype.loadSeleniumAPI = function() {
 		.getService(Components.interfaces.mozIJSSubScriptLoader);
 	
 	subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/scripts/selenium-api.js', this.seleniumAPI);
+	if (this.getOptions().enableUIElement == 'true') {
+        ExtensionsLoader.loadSubScript(subScriptLoader,
+            'chrome://selenium-ide/content/ui-element.js', this.seleniumAPI);
+    }
 	if (this.getOptions().userExtensionsURL) {
 		try {
 			ExtensionsLoader.loadSubScript(subScriptLoader, this.getOptions().userExtensionsURL, this.seleniumAPI);
