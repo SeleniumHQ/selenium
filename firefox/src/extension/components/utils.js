@@ -142,34 +142,46 @@ Utils.type = function(context, element, text) {
     } else if (element.hasAttribute("value")) {
         value = element.getAttribute("value");
     }
-    
+
     for (var i = 0; i < text.length; i++) {
         var character = text.charAt(i);
+        var keyCode = character;
         value += character;
 
-        Utils.keyDownOrUp(context, element, true, character);
-        Utils.keyPress(context, element, character);
+        if (text.charAt(i) == '\uE002') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_UP;
+            character = 0;
+        } else if (text.charAt(i) == '\uE004') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_DOWN;
+            character = 0;
+        } else if (text.charAt(i) == '\uE001') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_LEFT;
+            character = 0;
+        } else if (text.charAt(i) == '\uE003') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_RIGHT;
+            character = 0;
+        }
+
+        Utils.keyDownOrUp(context, element, true, keyCode, character);
+        Utils.keyPress(context, element, keyCode, character);
         if (isTextField) {
             element.value = value;
         } else {
             element.setAttribute("value", value);
         }
-        Utils.keyDownOrUp(context, element, false, character);
+        Utils.keyDownOrUp(context, element, false, keyCode, character);
     }
 };
 
-Utils.keyPress = function(context, element, text) {
+Utils.keyPress = function(context, element, keyCode, charCode) {
     var event = Utils.getDocument(context).createEvent('KeyEvents');
-    event.initKeyEvent('keypress', true, true, Utils.getBrowser(context).contentWindow, 0, 0, 0, 0, 0, text.charCodeAt(0));
+    event.initKeyEvent('keypress', true, true, Utils.getBrowser(context).contentWindow, 0, 0, 0, 0, keyCode, charCode);
     element.dispatchEvent(event);
 };
 
-Utils.keyDownOrUp = function(context, element, down, text) {
-    var keyCode = text;
-    // We should do something clever with non-text characters
-
+Utils.keyDownOrUp = function(context, element, down, keyCode, charCode) {
     var event = Utils.getDocument(context).createEvent('KeyEvents');
-    event.initKeyEvent(down ? 'keydown' : 'keyup', true, true, Utils.getBrowser(context).contentWindow, 0, 0, 0, 0, keyCode, 0);
+    event.initKeyEvent(down ? 'keydown' : 'keyup', true, true, Utils.getBrowser(context).contentWindow, 0, 0, 0, 0, keyCode, charCode);
     element.dispatchEvent(event);
 };
 

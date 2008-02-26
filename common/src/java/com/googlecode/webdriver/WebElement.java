@@ -58,10 +58,8 @@ public interface WebElement {
 
     /**
      * Use this method to simulate typing into an element, which may set its value.
-     *  
-     * @param keysToSend
      */
-    void sendKeys(String keysToSend);
+    void sendKeys(CharSequence... keysToSend);
 
     /**
      * If this element is a text entry element, this will clear the value. Has no

@@ -33,7 +33,7 @@ public class InternetExplorerElement implements RenderedWebElement {
 
     public native String getValue();
 
-    public native void sendKeys(String value);
+    public native void sendKeys(CharSequence... value);
 
     public native void clear();
     

@@ -346,6 +346,46 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     assertThat(driver.getTitle(), Matchers.is("We Arrive Here"));
   }
 
+  @JavascriptEnabled
+  @Ignore("ie, safari")
+  public void testShouldReportKeyCodeOfArrowKeys() {
+	  driver.get(javascriptPage);
+	  
+	  WebElement result = driver.findElement(By.id("result"));
+	  WebElement element = driver.findElement(By.id("keyReporter"));
+	  element.sendKeys(Keys.ARROW_DOWN);
+	  assertThat(result.getText().trim(), is("down: 40 press: 40 up: 40"));
+	  
+	  element.sendKeys(Keys.ARROW_UP);
+	  assertThat(result.getText().trim(), is("down: 38 press: 38 up: 38"));
+	  
+	  element.sendKeys(Keys.ARROW_LEFT);
+	  assertThat(result.getText().trim(), is("down: 37 press: 37 up: 37"));
+	  
+	  element.sendKeys(Keys.ARROW_RIGHT);
+	  assertThat(result.getText().trim(), is("down: 39 press: 39 up: 39"));
+  }
+  
+  @JavascriptEnabled
+  @Ignore("firefox, safari, ie")
+  public void testShouldReportKeyCodeOfArrowKeysWhenPressEventNotFiredByBrowser() {
+	  driver.get(javascriptPage);
+	  
+	  WebElement result = driver.findElement(By.id("result"));
+	  WebElement element = driver.findElement(By.id("keyReporter"));
+	  element.sendKeys(Keys.ARROW_DOWN);
+	  assertThat(result.getText().trim(), is("down: 40 up: 40"));
+	  
+	  element.sendKeys(Keys.ARROW_UP);
+	  assertThat(result.getText().trim(), is("down: 38 up: 38"));
+	  
+	  element.sendKeys(Keys.ARROW_LEFT);
+	  assertThat(result.getText().trim(), is("down: 37 up: 37"));
+	  
+	  element.sendKeys(Keys.ARROW_RIGHT);
+	  assertThat(result.getText().trim(), is("down: 39 up: 39"));
+  }
+  
 //    @JavascriptEnabled
 //    @Ignore
 //  public void testShouldBeAbleToSwitchToFocusedElement() {

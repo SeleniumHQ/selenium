@@ -1,10 +1,10 @@
 package com.googlecode.webdriver.firefox.internal;
 
-import java.io.IOException;
-
 import com.googlecode.webdriver.firefox.Command;
 import com.googlecode.webdriver.firefox.FirefoxLauncher;
 import com.googlecode.webdriver.internal.OperatingSystem;
+
+import java.io.IOException;
 
 public class NewProfileExtensionConnection extends AbstractExtensionConnection {
     private static long TIMEOUT_IN_SECONDS = 20;
@@ -28,7 +28,7 @@ public class NewProfileExtensionConnection extends AbstractExtensionConnection {
         if (OperatingSystem.WINDOWS.equals(OperatingSystem.getCurrentPlatform())) {
         	quitOnWindows();
         } else {
-            quitOnOtherPlatforms();        	
+            quitOnOtherPlatforms();
         }
     }
 

@@ -1,32 +1,31 @@
 package com.googlecode.webdriver.firefox.internal;
 
+import com.googlecode.webdriver.firefox.Command;
 import com.googlecode.webdriver.firefox.ExtensionConnection;
 import com.googlecode.webdriver.firefox.Response;
-import com.googlecode.webdriver.firefox.Command;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
-import java.net.InetAddress;
-import java.net.NetworkInterface;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.ConnectException;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
-import java.net.SocketException;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.NetworkInterface;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.net.InetSocketAddress;
-import java.net.ConnectException;
 import java.util.Enumeration;
-import java.io.IOException;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-
-import org.json.simple.JSONObject;
-import org.json.simple.JSONArray;
 
 public abstract class AbstractExtensionConnection implements ExtensionConnection {
     private Socket socket;
     protected SocketAddress address;
-    private PrintWriter out;
+    private OutputStreamWriter out;
     private BufferedReader in;
 
     protected void setAddress(String host, int port) {
@@ -98,8 +97,8 @@ public abstract class AbstractExtensionConnection implements ExtensionConnection
         socket = new Socket();
 
         socket.connect(address);
-        in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
-        out = new PrintWriter(socket.getOutputStream(), true);
+        in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-16"));
+        out = new OutputStreamWriter(socket.getOutputStream(), "UTF-16");
     }
 
     public boolean isConnected() {
@@ -116,8 +115,12 @@ public abstract class AbstractExtensionConnection implements ExtensionConnection
 
         message.append(converted).append("\n");
 
-        out.print(message.toString());
-        out.flush();
+        try {
+            out.write(message.toString());
+            out.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         return waitForResponseFor(command.getCommandName());
     }

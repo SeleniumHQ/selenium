@@ -2,13 +2,15 @@ function SocketListener(server, transport)
 {
     var rawOutStream = transport.openOutputStream(0, 0, 0);
 
-    var charset = "UTF-8";
+    var charset = "UTF-16";
     this.outstream = Components.classes["@mozilla.org/intl/converter-output-stream;1"].createInstance(Components.interfaces.nsIConverterOutputStream);
     this.outstream.init(rawOutStream, charset, 0, 0x0000);
 
     this.stream = transport.openInputStream(0, 0, 0);
-    this.inputStream = Components.classes["@mozilla.org/scriptableinputstream;1"].createInstance(Components.interfaces.nsIScriptableInputStream);
-    this.inputStream.init(this.stream);
+    var cin = Components.classes["@mozilla.org/intl/converter-input-stream;1"].createInstance(Components.interfaces.nsIConverterInputStream);
+    cin.init(this.stream, charset, 0, 0x0000);
+
+    this.inputStream = cin;
 
     var pump = Components.classes["@mozilla.org/network/input-stream-pump;1"].createInstance(Components.interfaces.nsIInputStreamPump);
     pump.init(this.stream, -1, -1, 0, 0, false);
@@ -18,6 +20,7 @@ function SocketListener(server, transport)
     this.data = "";
     this.command = "";
     this.step = 0;
+    this.readLength = false;
     this.wm = Utils.getService("@mozilla.org/appshell/window-mediator;1", "nsIWindowMediator");
     this.server = server;
 }
@@ -32,33 +35,26 @@ SocketListener.prototype.onStopRequest = function(request, context, status)
 
 SocketListener.prototype.onDataAvailable = function(request, context, inputStream, offset, count)
 {
-    var incoming = this.inputStream.read(count);
-    var header = "";
+    var incoming = {}
+    this.inputStream.readString(count, incoming);
 
-    for (var i = 0; i < count; i++) {
+    var lines = incoming.value.split('\n');
+    for (var j = 0; j < lines.length; j++) {
         if (this.isReadingHeaders()) {
-            if (incoming[i] != '\n') {
-                header += incoming[i];
-            } else {
-                if (header == "") {
-                    this.step++;
-                    continue;
-                }
-
-                var head = header.split(": ", 2);
-                if (head[0] == "Length") {
-                    this.linesLeft = head[1] - 0;
-                    header = "";
-                }
+            var head = lines[j].split(": ", 2);
+            if (head[0] == "Length") {
+                this.linesLeft = head[1] - 0;
+                this.readLength = true;
+            } else if (lines[j].length == 0 && this.readLength) {
+                this.step++;
             }
         } else {
-            if (this.linesLeft == 0 && incoming[i] == "\n") {
+            this.data += lines[j] + "\n";
+            this.linesLeft--;
+
+            if (this.linesLeft == 0) {
                 this.executeCommand();
-            } else {
-                this.data += incoming[i];
-                if (incoming[i] == "\n") {
-                    this.linesLeft--;
-                }
+                j++;  // Consume the empty line
             }
         }
     }
@@ -125,6 +121,7 @@ SocketListener.prototype.executeCommand = function() {
         this.data = "";
         this.linesLeft = 0;
         this.step = 0;
+        this.readLength = false;
 
         respond.commandName = command.commandName;
         this[command.commandName](respond, command.parameters);
@@ -187,6 +184,7 @@ SocketListener.prototype.executeCommand = function() {
         this.data = "";
         this.linesLeft = 0;
         this.step = 0;
+        this.readLength = 0;
 
         var wait = function(info) {
             if (info.webProgress.isLoadingDocument) {
@@ -209,6 +207,7 @@ SocketListener.prototype.executeCommand = function() {
         dump("Unrecognised command: " + this.command + "\n");
         this.linesLeft = 0;
         this.step = 0;
+        this.readLength = false;
         respond.isError = true;
         respond.response = "Unrecognised command: " + command.commandName;
         respond.context = new Context(driver.window);

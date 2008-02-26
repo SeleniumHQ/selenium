@@ -40,8 +40,12 @@ public class FirefoxWebElement implements RenderedWebElement {
     	sendMessage(RuntimeException.class, "clear");
     }
     
-    public void sendKeys(String value) {
-        sendMessage(RuntimeException.class, "sendKeys", value);
+    public void sendKeys(CharSequence... value) {
+    	StringBuilder builder = new StringBuilder();
+    	for (CharSequence seq : value) {
+    		builder.append(seq);
+    	}
+        sendMessage(RuntimeException.class, "sendKeys", builder.toString());
     }
 
     public String getAttribute(String name) {

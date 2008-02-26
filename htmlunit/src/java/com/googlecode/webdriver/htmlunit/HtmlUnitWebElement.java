@@ -94,13 +94,18 @@ public class HtmlUnitWebElement implements WebElement {
         }
     }
     
-    public void sendKeys(String value) {
+    public void sendKeys(CharSequence... value) {
+        StringBuilder builder = new StringBuilder();
+        for (CharSequence seq : value) {
+            builder.append(seq);
+        }
+
         if (element instanceof HtmlInput) {
         	String currentValue = getValue();
-            element.setAttributeValue("value", (currentValue == null ? "" : currentValue) + value);
+            element.setAttributeValue("value", (currentValue == null ? "" : currentValue) + builder.toString());
         } else if (element instanceof HtmlTextArea) {
         	String currentValue = getValue();
-            ((HtmlTextArea) element).setText((currentValue == null ? "" : currentValue) + value);
+            ((HtmlTextArea) element).setText((currentValue == null ? "" : currentValue) + builder.toString());
         } else
             throw new UnsupportedOperationException("You may only set the value of elements that are input elements");
     }

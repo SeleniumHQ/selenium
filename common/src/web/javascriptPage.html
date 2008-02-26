@@ -96,5 +96,15 @@
     </div>
 </div>
 
+<div>
+    <form>
+        <input type="text" id="keyReporter"
+               onkeyup="appendMessage('up: ' + event.keyCode)"
+               onkeypress="appendMessage('press: ' + event.keyCode)"
+               onkeydown="displayMessage(''); appendMessage('down: ' + event.keyCode)" />
+    </form>
+</div>
+
+
 </body>
 </html>

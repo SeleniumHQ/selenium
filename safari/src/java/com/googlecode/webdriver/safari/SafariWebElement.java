@@ -41,11 +41,15 @@ public class SafariWebElement implements WebElement {
             "  " + locator + ".getAttribute(\"value\");\r");
     }
 
-    public void sendKeys(String value) {
+    public void sendKeys(CharSequence... value) {
+        StringBuilder builder = new StringBuilder();
+        for (CharSequence seq : value)
+            builder.append(seq);
+
         appleScript.executeJavascript(locator + ".focus()");
         appleScript.executeApplescript(
         		"tell application \"System Events\"\r" + 
-        		"    keystroke (\"" + value + "\")\r" +
+        		"    keystroke (\"" + builder.toString() + "\")\r" +
         		"end tell");
         appleScript.executeJavascript(locator + ".blur()");
     }
