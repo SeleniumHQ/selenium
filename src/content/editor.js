@@ -175,20 +175,20 @@ Editor.controller = {
 		case "cmd_save_suite_as":
 			return true;
 		case "cmd_selenium_testrunner":
-		case "cmd_selenium_play":
-            return editor.app.getCurrentFormat().getFormatter().playable && editor.state != 'playing';
+        case "cmd_selenium_play":
+            return editor.app.isPlayable() && editor.selDebugger.state != Debugger.PLAYING;
         case "cmd_selenium_rollup":
             if (Editor.rollupManager) {
-		        return editor.app.getCurrentFormat().getFormatter().playable && editor.state != 'playing';
+                return app.isPlayable() && editor.selDebugger.state != Debugger.PLAYING;
             } else {
                 return false;
             }
 		case "cmd_selenium_play_suite":
-		    return editor.app.getCurrentFormat().getFormatter().playable && editor.selDebugger.state != Debugger.PLAYING;
+            return editor.app.isPlayable() && editor.selDebugger.state != Debugger.PLAYING;
 		case "cmd_selenium_pause":
-		    return editor.app.getCurrentFormat().getFormatter().playable && (editor.selDebugger.state == Debugger.PLAYING || editor.selDebugger.state == Debugger.PAUSED);
+            return editor.app.isPlayable() && (editor.selDebugger.state == Debugger.PLAYING || editor.selDebugger.state == Debugger.PAUSED);
 		case "cmd_selenium_step":
-			return editor.app.getCurrentFormat().getFormatter().playable && editor.selDebugger.state == Debugger.PAUSED;
+            return editor.app.isPlayable() && editor.selDebugger.state == Debugger.PAUSED;
 		default:
 			return false;
 		}
@@ -673,7 +673,7 @@ Editor.prototype.openLogWindow = function() {
 }
 
 Editor.prototype.onPopupOptions = function() {
-	document.getElementById("clipboardFormatMenu").setAttribute("disabled", !editor.app.getCurrentFormat().getFormatter().playable);
+	document.getElementById("clipboardFormatMenu").setAttribute("disabled", !editor.app.isPlayable());
 	document.getElementById("internalTestsMenu").setAttribute("hidden", this.getOptions().showInternalTestsMenu == null);
 }
 
@@ -694,7 +694,7 @@ Editor.prototype.updateViewTabs = function() {
 	var editorTab = $('editorTab');
 	var tabs = $('viewTabs');
     var tableViewUnavailable = $('tableViewUnavailable');
-	if (this.app.getCurrentFormat().getFormatter().playable) {
+	if (this.app.isPlayable()) {
 		editorTab.setAttribute("disabled", false);
         tableViewUnavailable.setAttribute("hidden", true);
 		this.toggleView(this.view || this.treeView);

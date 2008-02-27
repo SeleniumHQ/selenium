@@ -86,6 +86,10 @@ Application.prototype = {
         return this.currentFormat;
     },
 
+    isPlayable: function() {
+        return this.getCurrentFormat().getFormatter().playable;
+    },
+
     setClipboardFormat: function(format) {
         this.clipboardFormat = format;
         this.options.clipboardFormat = format.id;
