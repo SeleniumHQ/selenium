@@ -1271,16 +1271,23 @@ Selenium.prototype.doEcho = function(message) {
     currentTest.currentRow.setMessage(message);
 }
 
-Selenium.prototype.doSetSpeed = function(speed) {
-    var milliseconds = parseInt(speed);
+/*
+ * doSetSpeed and getSpeed are already defined in selenium-api.js,
+ * so we're defining these functions in a tricky way so that doc.js doesn't
+ * try to read API doc from the function definitions here.
+ */
+Selenium.prototype._doSetSpeed = function(value) {
+    var milliseconds = parseInt(value);
     if (milliseconds < 0) milliseconds = 0;
     htmlTestRunner.controlPanel.speedController.setValue(milliseconds);
     htmlTestRunner.controlPanel.setRunInterval(milliseconds);
 }
+Selenium.prototype.doSetSpeed = Selenium.prototype._doSetSpeed;
 
-Selenium.prototype.getSpeed = function() {
+Selenium.prototype._getSpeed = function() {
     return htmlTestRunner.controlPanel.runInterval;
 }
+Selenium.prototype.getSpeed = Selenium.prototype._getSpeed;
 
 Selenium.prototype.assertSelected = function(selectLocator, optionLocator) {
     /**

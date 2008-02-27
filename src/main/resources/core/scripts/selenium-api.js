@@ -597,12 +597,14 @@ Selenium.prototype.doSetSpeed = function(value) {
    throw new SeleniumError("this operation is only implemented in selenium-rc, and should never result in a request making it across the wire");
 };
 
-Selenium.prototype.doGetSpeed = function() {
+Selenium.prototype.getSpeed = function() {
  /**
  * Get execution speed (i.e., get the millisecond length of the delay following each selenium operation).  By default, there is no such delay, i.e.,
  * the delay is 0 milliseconds.
    *
    * See also setSpeed.
+   *
+   * @return string the execution speed in milliseconds.
    */
    throw new SeleniumError("this operation is only implemented in selenium-rc, and should never result in a request making it across the wire");
 };
