@@ -15,3 +15,6 @@
 <!ENTITY options.formats.rename-button.label "Renomear">
 <!ENTITY options.formats.delete-button.label "Excluir">
 <!ENTITY options.formats.source-button.label "Código-Fonte">
+
+<!ENTITY options.enableUIElement.description "Enable UI-Element (experimental, requires IDE restart)">
+<!ENTITY options.enableUIElement.about "About UI-Element">

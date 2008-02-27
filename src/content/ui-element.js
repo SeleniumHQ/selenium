@@ -1180,8 +1180,6 @@ function ParseException(message)
     this.name = 'ParseException';
 }
 
-
-
 /**
  * Given a full URL string, returns the base URL and the relative path in a new
  * object. Any trailing forward slash is stripped from the path. If we can find
@@ -1828,7 +1826,13 @@ function Pageset(pagesetShorthand)
      */
     this.contains = function(inDocument)
     {
-        var urlParts = parse_url(inDocument.location.href);
+        var urlParts;
+        try {
+            urlParts = parse_url(inDocument.location.href);
+        } catch (e) {
+            LOG.warn("Failed to parse url: " + (e.message || e));
+            return false;
+        }
         if (!this.pathRegexp.test(urlParts.path)) {
             return false;
         }

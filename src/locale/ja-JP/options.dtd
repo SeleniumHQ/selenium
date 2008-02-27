@@ -15,3 +15,6 @@
 <!ENTITY options.formats.rename-button.label "名前変更">
 <!ENTITY options.formats.delete-button.label "削除">
 <!ENTITY options.formats.source-button.label "ソース">
+
+<!ENTITY options.enableUIElement.description "UI-Element を有効にする (試験的 / 変更後は IDE の再起動が必要です)">
+<!ENTITY options.enableUIElement.about "UI-Element について">

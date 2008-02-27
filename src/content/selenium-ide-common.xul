@@ -185,7 +185,7 @@ limitations under the License.
 	  <hbox class="slider-middle" flex="1" />
 	  <hbox class="slider-right" />
 	</hbox>
-	<slider id="speedSlider" width="80" curpos="0" maxpos="100">
+	<slider id="speedSlider" width="80" curpos="0" maxpos="1000">
 	  <thumb />
 	</slider>
       </stack>

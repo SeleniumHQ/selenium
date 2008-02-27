@@ -88,8 +88,13 @@ var FileUtils = {
         var max = 100;
         var result = [];
         var i = 0;
-        while (i < max && file && file.path != "/" && !file.path.match(/^[a-z]:$/i)) {
+        while (i < max && file && 
+               file.path != "/" &&
+               !file.path.match(/^[a-z]:$/i)) {
             result.unshift(file.leafName);
+            if ("." == file.leafName || ".." == file.leafName) {
+                break;
+            }
             file = file.parent;
             i++;
         }

@@ -79,10 +79,10 @@ limitations under the License.
       <checkbox id="rememberBaseURL" label="&options.rememberBaseURL.description;"/>
       <checkbox id="recordAssertTitle" label="&options.recordAssertTitle.description;"/>
       <checkbox id="recordAbsoluteURL" label="&options.recordAbsoluteURL.description;"/>
-      <hbox align="center">
-	<checkbox id="enableUIElement" label="Enable UI-Element (experimental, requires IDE restart)" />
-	<label value="About UI-Element" class="text-link" onclick="openTabOrWindow('chrome://selenium-ide/content/ui-doc.html')" />
-      </hbox>
+      <vbox>
+	<checkbox id="enableUIElement" label="&options.enableUIElement.description;" />
+	<label value="&options.enableUIElement.about;" class="text-link" onclick="openTabOrWindow('chrome://selenium-ide/content/ui-doc.html')" />
+      </vbox>
     </tabpanel>
     <tabpanel orient="vertical">
       <hbox flex="1">

@@ -64,6 +64,16 @@ Selenium.prototype.doEcho = function(message) {
     LOG.info("echo: " + message);
 };
 
+Selenium.prototype.doSetSpeed = function(speed) {
+    var milliseconds = parseInt(speed);
+    if (milliseconds < 0) milliseconds = 0;
+    editor.setInterval(milliseconds);
+};
+
+Selenium.prototype.getSpeed = function() {
+    return editor.getInterval();
+};
+
 // doStore* methods are copied from selenium-testrunner.js
 Selenium.prototype.doStoreText = function(target, varName) {
     var element = this.page().findElement(target);
@@ -219,8 +229,8 @@ var LOG = new Logger();
 // runner functions
 //
 
-currentTest = null;
-stopping = false;
+this.currentTest = null;
+this.stopping = false;
 
 function resetCurrentTest() {
 	currentTest = null;

@@ -16,3 +16,5 @@
 <!ENTITY options.formats.delete-button.label "Supprimer">
 <!ENTITY options.formats.source-button.label "Source">
 
+<!ENTITY options.enableUIElement.description "Enable UI-Element (experimental, requires IDE restart)">
+<!ENTITY options.enableUIElement.about "About UI-Element">

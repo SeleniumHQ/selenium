@@ -177,7 +177,11 @@ Editor.controller = {
 		case "cmd_selenium_testrunner":
 		case "cmd_selenium_play":
         case "cmd_selenium_rollup":
-		    return editor.app.getCurrentFormat().getFormatter().playable && editor.state != 'playing';
+            if (Editor.rollupManager) {
+		        return editor.app.getCurrentFormat().getFormatter().playable && editor.state != 'playing';
+            } else {
+                return false;
+            }
 		case "cmd_selenium_play_suite":
 		    return editor.app.getCurrentFormat().getFormatter().playable && editor.selDebugger.state != Debugger.PLAYING;
 		case "cmd_selenium_pause":
@@ -850,8 +854,12 @@ Editor.prototype.cleanupAutoComplete = function() {
     }
 }
 
+Editor.prototype.setInterval = function(milliseconds) {
+    document.getElementById("speedSlider").setAttribute("curpos", milliseconds);
+}
+
 Editor.prototype.getInterval = function() {
-    return parseInt(document.getElementById("speedSlider").getAttribute("curpos")) * 10;
+    return parseInt(document.getElementById("speedSlider").getAttribute("curpos"));
 }
 
 Editor.prototype.initMenus = function() {
