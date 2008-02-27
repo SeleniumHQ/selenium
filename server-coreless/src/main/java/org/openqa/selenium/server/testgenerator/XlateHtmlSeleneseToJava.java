@@ -553,7 +553,8 @@ public class XlateHtmlSeleneseToJava {
             }
             else if (op.equals("Confirmation")
                     || op.equals("HtmlSource")
-                    || op.equals("Location")) {
+                    || op.equals("Location")
+                    || op.equals("Speed")) {
                 middle = XlateSeleneseArgument(tokens[1]) + ", selenium.get" + op + "()";
             }
             else if (op.equals("Title")) {
