@@ -1271,6 +1271,17 @@ Selenium.prototype.doEcho = function(message) {
     currentTest.currentRow.setMessage(message);
 }
 
+Selenium.prototype.doSetSpeed = function(speed) {
+    var milliseconds = parseInt(speed);
+    if (milliseconds < 0) milliseconds = 0;
+    htmlTestRunner.controlPanel.speedController.setValue(milliseconds);
+    htmlTestRunner.controlPanel.setRunInterval(milliseconds);
+}
+
+Selenium.prototype.getSpeed = function() {
+    return htmlTestRunner.controlPanel.runInterval;
+}
+
 Selenium.prototype.assertSelected = function(selectLocator, optionLocator) {
     /**
      * Verifies that the selected option of a drop-down satisfies the optionSpecifier.  <i>Note that this command is deprecated; you should use assertSelectedLabel, assertSelectedValue, assertSelectedIndex, or assertSelectedId instead.</i>
