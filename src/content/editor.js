@@ -176,6 +176,7 @@ Editor.controller = {
 			return true;
 		case "cmd_selenium_testrunner":
 		case "cmd_selenium_play":
+            return editor.app.getCurrentFormat().getFormatter().playable && editor.state != 'playing';
         case "cmd_selenium_rollup":
             if (Editor.rollupManager) {
 		        return editor.app.getCurrentFormat().getFormatter().playable && editor.state != 'playing';
