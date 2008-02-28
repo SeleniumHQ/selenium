@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.openqa.selenium</groupId>
-        <version>0.9.3-SNAPSHOT</version>
+        <version>1.0-beta-SNAPSHOT</version>
         <artifactId>selenium-rc</artifactId>
     </parent>
     <groupId>org.openqa.selenium.server</groupId>
