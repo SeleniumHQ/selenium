@@ -1174,56 +1174,53 @@ function to_kwargs(args, sortedKeys)
 }
 
 
-function ParseException(message)
-{
-    this.message = message;
-    this.name = 'ParseException';
-}
 
-/**
- * Given a full URL string, returns the base URL and the relative path in a new
- * object. Any trailing forward slash is stripped from the path. If we can find
- * a mozilla built-in that implements this function I'm fine with removing it.
- *
- * @param url  the URL to parse
- * @return     an object with the components of the URL broken out into
- *             <tt>protocol</tt>, <tt>domain</tt>, <tt>path</tt>, and an
- *             associative array containing any <tt>params</tt>.
- * @throws     ParseException
- */
-function parse_url(url)
-{
-    url = unescape(url);
-    var matches =
-        /^(http|https|chrome):\/\/([^\/]+)\/?([^\?]*)\??(.*)$/.exec(url);
-    if (matches == null) {
-        throw new ParseException('Invalid input to parse_url(): ' + url);
-    }
-    
-    // parse the cgi parameters
-    var params = {};
-    if (matches[4]) {
-        var pairs = matches[4].split(/&/);
-        for (var i = 0; i < pairs.length; ++i) {
-            var splits = pairs[i].split('=');
-            if (splits.length == 1) {
-                continue;
-            }
-            var key = splits.shift();
-            var value = splits.join('=');
-            params[key] = value;
-        }
-    }
-    
-    return {
-        'protocol': matches[1],
-        'domain': matches[2],
-        'path': matches[3].replace(/\/$/, ''),
-        'params': params
-    };
-}
+//******************************************************************************
+// parseUri 1.2.1
+// MIT License
 
+/*
+Copyright (c) 2007 Steven Levithan <stevenlevithan.com>
 
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+*/
+
+function parseUri (str) {
+	var	o   = parseUri.options,
+		m   = o.parser[o.strictMode ? "strict" : "loose"].exec(str),
+		uri = {},
+		i   = 14;
+
+	while (i--) uri[o.key[i]] = m[i] || "";
+
+	uri[o.q.name] = {};
+	uri[o.key[12]].replace(o.q.parser, function ($0, $1, $2) {
+		if ($1) uri[o.q.name][$1] = $2;
+	});
+
+	return uri;
+};
+
+parseUri.options = {
+	strictMode: false,
+	key: ["source","protocol","authority","userInfo","user","password","host","port","relative","path","directory","file","query","anchor"],
+	q:   {
+		name:   "queryKey",
+		parser: /(?:^|&)([^&=]*)=?([^&]*)/g
+	},
+	parser: {
+		strict: /^(?:([^:\/?#]+):)?(?:\/\/((?:(([^:@]*):?([^:@]*))?@)?([^:\/?#]*)(?::(\d*))?))?((((?:[^?#\/]*\/)*)([^?#]*))(?:\?([^#]*))?(?:#(.*))?)/,
+		loose:  /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@]*):?([^:@]*))?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/
+	}
+};
 
 //******************************************************************************
 
@@ -1826,19 +1823,16 @@ function Pageset(pagesetShorthand)
      */
     this.contains = function(inDocument)
     {
-        var urlParts;
-        try {
-            urlParts = parse_url(inDocument.location.href);
-        } catch (e) {
-            LOG.warn("Failed to parse url: " + (e.message || e));
-            return false;
-        }
-        if (!this.pathRegexp.test(urlParts.path)) {
+        var urlParts = parseUri(unescape(inDocument.location.href));
+		var path = urlParts.path
+			.replace(/^\//, "")
+			.replace(/\/$/, "");
+        if (!this.pathRegexp.test(path)) {
             return false;
         }
         for (var paramName in this.paramRegexps) {
             var paramRegexp = this.paramRegexps[paramName];
-            if (!paramRegexp.test(urlParts.params[paramName])) {
+            if (!paramRegexp.test(urlParts.queryKey[paramName])) {
                 return false;
             }
         }
