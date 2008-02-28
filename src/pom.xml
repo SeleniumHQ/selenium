@@ -159,7 +159,7 @@
     </dependency>
   </dependencies>
   <properties>
-    <seleniumCoreVersion>0.8.4-SNAPSHOT</seleniumCoreVersion>
-    <seleniumRCVersion>0.9.3-SNAPSHOT</seleniumRCVersion>
+    <seleniumCoreVersion>1.0-beta-SNAPSHOT</seleniumCoreVersion>
+    <seleniumRCVersion>1.0-beta-SNAPSHOT</seleniumRCVersion>
   </properties>
 </project>
