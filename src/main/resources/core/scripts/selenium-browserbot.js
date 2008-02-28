@@ -1978,7 +1978,7 @@ IEBrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModif
         var runInterval = '';
         
         // Only set run interval if options is defined
-        if (typeof(window.runOptions) != undefined) {
+        if (typeof(window.runOptions) != 'undefined') {
             runInterval = "&runInterval=" + runOptions.runInterval;
         }
             
