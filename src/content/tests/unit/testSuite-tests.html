@@ -26,6 +26,8 @@ function testLoad() {
     assertEquals(3, testSuite.tests.length);
     assertEquals("./Test1.html", testSuite.tests[0].filename);
     assertEquals("Test1", testSuite.tests[0].title);
+    assertEquals("./Test3.html", testSuite.tests[2].filename);
+    assertEquals("Test3", testSuite.tests[2].title);
 }
 
 function testSave() {

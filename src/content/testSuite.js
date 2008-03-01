@@ -46,7 +46,7 @@ TestSuite.loadInputStream = function(input) {
         while ((r = pattern.exec(rest)) != null) {
             var row = r[0];
             if (linkPattern.test(row)) {
-                var filename = RegExp.$1;
+                var filename = decodeURIComponent(RegExp.$1);
                 var title = RegExp.$2;
                 suite.tests.push(new TestSuite.TestCase(suite, filename, title));
             }
