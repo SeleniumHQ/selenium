@@ -866,6 +866,13 @@ Editor.prototype.getInterval = function() {
 Editor.prototype.initMenus = function() {
 }
 
+/*
+ * A logger that is shown to user. (i.e. not internal log used with this.log)
+ */
+Editor.prototype.getUserLog = function() {
+    return this.selDebugger.getLog();
+}
+
 Editor.GENERIC_AUTOCOMPLETE = Components.classes["@mozilla.org/autocomplete/search;1?name=selenium-ide-generic"].getService(Components.interfaces.nsISeleniumIDEGenericAutoCompleteSearch);
 
 //

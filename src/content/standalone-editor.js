@@ -31,3 +31,7 @@ StandaloneEditor.prototype.registerRecorder = function() {
 StandaloneEditor.prototype.deregisterRecorder = function() {
     Recorder.deregisterAll(this);
 }
+
+SidebarEditor.prototype.isSidebar = function() {
+    return false;
+}

@@ -62,6 +62,11 @@ Recorder.prototype.reattachWindowMethods = function() {
 			var result = self.windowMethods['open'].call(self.window, url, windowName, windowFeatures, replaceFlag);
 			self.openCalled = false;
 			setTimeout(Recorder.record, 0, self, 'waitForPopUp', windowName, "30000");
+            for (var i = 0; i < self.observers.length; i++) {
+                if (self.observers[i].isSidebar) {
+                    self.observers[i].getUserLog().warn("Actions in popup window cannot be recorded with Selenium IDE in sidebar. Please open Selenium IDE as standalone window instead to record them.");
+                }
+            }
 			return result;
 		}
 	}

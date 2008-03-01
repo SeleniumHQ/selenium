@@ -36,3 +36,7 @@ SidebarEditor.prototype.initMenus = function() {
     $('closeMenuSeparator').style.display = "none";
     $('closeMenuItem').style.display = "none";
 }
+
+SidebarEditor.prototype.isSidebar = function() {
+    return true;
+}

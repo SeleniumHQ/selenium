@@ -99,6 +99,11 @@ Debugger.prototype.setState = function(state) {
     this.notify("stateUpdated", state);
 }
 
+Debugger.prototype.getLog = function() {
+    this.init();
+    return this.runner.LOG;
+}
+
 Debugger.prototype.start = function(complete, useLastWindow) {
 	document.getElementById("record-button").checked = false;
 	this.editor.toggleRecordingEnabled(false);
