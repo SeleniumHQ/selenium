@@ -233,8 +233,8 @@ this.options = {
 		'\n' +
 		'my $sel = Test::WWW::Selenium->new( host => "localhost", \n' +
 		'                                    port => 4444, \n' +
-		'                                    browser => "*firefox", \n' +
-		'                                    browser_url => "http://localhost:4444" );\n' +
+		'                                    browser => "*chrome", \n' +
+		'                                    browser_url => "${baseURL}" );\n' +
 		'\n',
 	footer: "",
 	indent: "4",

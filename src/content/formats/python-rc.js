@@ -170,7 +170,7 @@ this.options = {
 	'class ${className}(unittest.TestCase):\n' +
 	'    def setUp(self):\n' +
 	'        self.verificationErrors = []\n' +
-	'        self.selenium = selenium("localhost", 4444, "*firefox", "http://localhost:4444")\n' +
+	'        self.selenium = selenium("localhost", 4444, "*chrome", "${baseURL}")\n' +
 	'        self.selenium.start()\n' +
 	'    \n' +
 	'    def ${methodName}(self):\n' +

@@ -159,10 +159,10 @@ this.options = {
 		'    if $selenium\n' +
 		'      @selenium = $selenium\n' +
 		'    else\n' +
-		'      @selenium = Selenium::SeleneseInterpreter.new("localhost", 4444, "*firefox", "http://localhost:4444", 10000);\n' +
+		'      @selenium = Selenium::SeleneseInterpreter.new("localhost", 4444, "*chrome", "${baseURL}", 10000);\n' +
 		'      @selenium.start\n' +
 		'    end\n' +
-		'    @selenium.set_context("${methodName}", "info")\n' +
+		'    @selenium.set_context("${methodName}")\n' +
 		'  end\n' +
 		'  \n' +
 		'  def teardown\n' +

@@ -177,7 +177,7 @@ options.header =
 	indents(2) + '[SetUp]\n' +
 	indents(2) + 'public void SetupTest()\n' +
 	indents(2) + '{\n' +
-	indents(3) + 'selenium = new DefaultSelenium("localhost", 4444, "*firefox", "http://localhost:4444");\n' +
+	indents(3) + 'selenium = new DefaultSelenium("localhost", 4444, "*chrome", "${baseURL}");\n' +
 	indents(3) + 'selenium.Start();\n' +
 	indents(3) + 'verificationErrors = new StringBuilder();\n' +
 	indents(2) + '}\n' +

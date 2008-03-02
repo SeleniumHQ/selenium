@@ -153,6 +153,9 @@ options.header =
 	"import java.util.regex.Pattern;\n" +
 	"\n" +
     "public class ${className} extends ${superClass} {\n" + 
+    "\tpublic void setUp() throws Exception {\n" +
+    '\t\tsetUp("${baseURL}", "*chrome");\n' +
+    "\t}\n" +
     "\tpublic void ${methodName}() throws Exception {\n";
 
 options.footer =

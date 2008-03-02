@@ -158,8 +158,8 @@ this.options = {
         '{\n' +
         '  function setUp()\n' +
         '  {\n' +
-        '    $this->setBrowser("*firefox");\n' +
-        '    $this->setBrowserUrl("http://localhost/");\n' +
+        '    $this->setBrowser("*chrome");\n' +
+        '    $this->setBrowserUrl("${baseURL}");\n' +
         '  }\n' +
         '\n' +
         '  function testMyTestCase()\n' +
