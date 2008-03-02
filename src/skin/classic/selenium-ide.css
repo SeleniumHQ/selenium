@@ -250,3 +250,32 @@ tab label {
   text-align: center;
 }
 
+#suiteProgressBar {
+  background: url("progress-background.png");
+  height: 16px;
+  width: 100%;
+  margin: 3px 3px 3px 4px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #444444 #eeeeee #eeeeee #444444;
+}
+
+#suiteProgressIndicator.success {
+  background: url("progress-success.png");
+}
+
+#suiteProgressIndicator.failure {
+  background: url("progress-failure.png");
+}
+
+#suiteProgressRuns {
+  font-weight: bold;
+  color: #008800;
+  text-align: right;
+}
+
+#suiteProgressFailures {
+  font-weight: bold;
+  color: #ee0000;
+  text-align: right;
+}

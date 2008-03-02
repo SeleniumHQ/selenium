@@ -142,7 +142,7 @@ Application.prototype = {
         if (testCase.baseURL) {
             this.setBaseURL(testCase.baseURL);
         } else {
-            testCase.setBaseURL(this.baseURL);
+            //testCase.setBaseURL(this.baseURL);
         }
         this.notify("testCaseChanged", this.testCase);
     },

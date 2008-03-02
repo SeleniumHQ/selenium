@@ -88,6 +88,7 @@ function Editor(window) {
 	this.treeView = new TreeView(this, document, document.getElementById("commands"));
 	this.sourceView = new SourceView(this, document.getElementById("source"));
     this.suiteTreeView = new SuiteTreeView(this, document.getElementById("suiteTree"));
+    this.testSuiteProgress = new TestSuiteProgress("suiteProgress");
 	//this.toggleView(this.treeView);
 	
 	// "debugger" cannot be used since it is a reserved word in JS
@@ -204,7 +205,8 @@ Editor.controller = {
 		case "cmd_save_suite": editor.app.saveTestSuite(); break;
 		case "cmd_save_suite_as": editor.app.saveNewTestSuite(); break;
 		case "cmd_selenium_play":
-            editor.playCurrentTestCase();
+            editor.testSuiteProgress.reset();
+            editor.playCurrentTestCase(null, 0, 1);
 			break;
 		case "cmd_selenium_play_suite":
 			editor.playTestSuite();
@@ -590,7 +592,7 @@ Editor.prototype.showInBrowser = function(url, newWindow) {
     }
 }
 
-Editor.prototype.playCurrentTestCase = function(next, index) {
+Editor.prototype.playCurrentTestCase = function(next, index, total) {
     var self = this;
     this.selDebugger.start(function(failed) {
             self.log.debug("finished execution of test case: failed=" + failed);
@@ -601,8 +603,9 @@ Editor.prototype.playCurrentTestCase = function(next, index) {
                 self.log.error("current test case not found");
             }
             self.suiteTreeView.currentRowUpdated();
+            self.testSuiteProgress.update(index + 1, total, failed);
             if (next) next();
-    }, index > 0);
+        }, index > 0 /* reuse last window if index > 0 */);
 }
 
 Editor.prototype.playTestSuite = function() {
@@ -613,12 +616,14 @@ Editor.prototype.playTestSuite = function() {
             }
         });
     this.suiteTreeView.refresh();
+    this.testSuiteProgress.reset();
     var self = this;
+    var total = this.app.getTestSuite().tests.length;
     (function() {
         if (++index < self.app.getTestSuite().tests.length) {
             self.suiteTreeView.scrollToRow(index);
             self.app.showTestCaseFromSuite(self.app.getTestSuite().tests[index]);
-            self.playCurrentTestCase(arguments.callee, index);
+            self.playCurrentTestCase(arguments.callee, index, total);
         }
     })();
 }

@@ -58,6 +58,7 @@ limitations under the License.
   <script type="application/x-javascript" src="chrome://selenium-ide/content/treeView.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/sourceView.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/suiteTreeView.js"/>
+  <script type="application/x-javascript" src="chrome://selenium-ide/content/testSuiteProgress.js"/>
   <script type="application/x-javascript" src="chrome://selenium-ide/content/debugger.js"/>
   
   <stringbundle id="strings" src="chrome://selenium-ide/locale/selenium-ide.properties" />
@@ -193,13 +194,27 @@ limitations under the License.
     </vbox>
   </stack>
   
-  <tree id="suiteTree" flex="1" enableColumnDrag="false" hidecolumnpicker="true" width="80"
-        context="suiteContextMenu">
-    <treecols>
-      <treecol label="&suiteTree.testCase.label;" flex="1" />
-    </treecols>
-    <treechildren />
-  </tree>
+  <vbox id="suitePane">
+    <tree id="suiteTree" flex="1" enableColumnDrag="false" hidecolumnpicker="true" width="80"
+          context="suiteContextMenu">
+      <treecols>
+	<treecol label="&suiteTree.testCase.label;" flex="1" />
+      </treecols>
+      <treechildren />
+    </tree>
+    <hbox id="suiteProgressBar">
+      <box id="suiteProgressIndicator" height="16" class="success" />
+      <box id="suiteProgressIndicator2" height="16" class="success" />
+    </hbox>
+    <hbox>
+      <label value="Runs:" flex="1"/>
+      <label id="suiteProgressRuns" value="0" flex="1"/>
+    </hbox>
+    <hbox>
+      <label value="Failures:" flex="1"/>
+      <label id="suiteProgressFailures" value="0" flex="1"/>
+    </hbox>
+  </vbox>
   
   <vbox id="tableViewUnavailable">
     <spacer flex="1" />

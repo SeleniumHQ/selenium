@@ -72,7 +72,7 @@ limitations under the License.
 
   <vbox flex="1">
     <hbox width="100">
-      <tree id="suiteTree" />
+      <vbox id="suitePane" />
       <splitter id="suiteTreeSplitter" collapse="before" state="collapsed">
 	<grippy/>
       </splitter>
