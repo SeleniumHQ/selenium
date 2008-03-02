@@ -49,7 +49,7 @@ function loadFromOptions(options) {
 
 function loadDefaultOptions() {
 	if (confirm(Message("options.confirmLoadDefaultOptions"))) {
-		loadFromOptions(OPTIONS);
+		loadFromOptions(Preferences.DEFAULT_OPTIONS);
 		for (name in this.options) {
 			if (/^formats\./.test(name)) {
 				delete this.options[name]
@@ -139,11 +139,14 @@ function showFormatDialog() {
 	document.getElementById("rename-button").disabled = formatInfo.saveFormat ? false : true;
 
 	var configBox = document.getElementById("format-config");
+    var format;
 	try {
-		var format = formatInfo.loadFormatter();
+		format = formatInfo.loadFormatter();
 	} catch (error) {
-		alert("an error occured: " + error + ", file=" + formatInfo.getFormatFile().path);
-		var format = {};
+        setTimeout(function() {
+                alert("an error occured: " + error + ", file=" + formatInfo.getFormatURI());
+            }, 50);
+		format = {};
 	}
 	var newConfigBox;
 	if (format.createConfigForm) {
@@ -178,12 +181,6 @@ function showFormatDialog() {
 	this.formatInfo = formatInfo;
 	configBox.addEventListener("blur", function(event) {
 								   self.updateFormatOptions();
-								   /*
-								   var e = event.target;
-								   var r;
-								   if (formatInfo && (r = /^options_(.*)$/.exec(e.id)) != null) {
-									   self.options["formats." + formatInfo.id + "." + r[1]] = e.value;
-									   }*/
 							   }, true);
 }
 

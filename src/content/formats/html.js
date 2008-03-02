@@ -1,75 +1,77 @@
+// Characters that should be escaped when saving.
+var EncodeToXhtmlEntity = ["amp", "gt", "lt", "quot", "nbsp"];
+
+var XhtmlEntityFromChars = {};
+for (var i = 0; i < EncodeToXhtmlEntity.length; i++) {
+    var entity = EncodeToXhtmlEntity[i];
+    XhtmlEntityFromChars[XhtmlEntities[entity]] = entity;
+}
+
+// A regular expression that matches characters that can be converted to entities.
+var XhtmlEntityChars = "[";
+for (var code in XhtmlEntityFromChars) {
+    var c = parseInt(code).toString(16);
+    while (c.length < 4) {
+        c = "0" + c;
+    }
+    XhtmlEntityChars += "\\u" + c;
+}
+XhtmlEntityChars += "]";
+
 function decodeText(text) {
-	var escapeXml = options.escapeXmlEntities;
-	var r;
 	text = text.replace(/<br\s*\/?>/gi, "\n");
-	if (escapeXml == 'always' || escapeXml == 'partial' || escapeXml == 'html') {
-		text = text.replace(/&lt;/g, '<');
-		text = text.replace(/&gt;/g, '>');
-	}
-	if (escapeXml == 'html') {
-		text = text.replace(/&nbsp;/g, "\xA0");
-		text = text.replace(/&#(\d+);/g, function(str, p1) { 
-								 return String.fromCharCode(parseInt(p1));
-							 });
-		text = text.replace(/&#x([0-9a-f]+);/gi, function(str, p1) { 
-								 return String.fromCharCode(parseInt(p1, 16));
-							 });
-		text = text.replace(/ +/g, " "); // truncate multiple spaces to single space
-		text = text.replace(/\xA0/g, " ");
-	}
-	if (escapeXml == 'always' || escapeXml == 'html') {
-		text = text.replace(/&apos;/g, "'");
-		text = text.replace(/&quot;/g, '"');
-		text = text.replace(/&amp;/g, '&');
-	}
+    text = text.replace(/&(\w+);/g, function(str, p1) {
+            var c = XhtmlEntities[p1];
+            if (c) {
+                return String.fromCharCode(c);
+            } else {
+                return str;
+            }
+        });
+    text = text.replace(/&#(\d+);/g, function(str, p1) { 
+            return String.fromCharCode(parseInt(p1));
+        });
+    text = text.replace(/&#x([0-9a-f]+);/gi, function(str, p1) { 
+            return String.fromCharCode(parseInt(p1, 16));
+        });
+    text = text.replace(/ +/g, " "); // truncate multiple spaces to single space
+    text = text.replace(/\xA0/g, " "); // treat nbsp as space
 	if ('true' == options.escapeDollar) {
-		text = text.replace(/([^\\])\$\{/g, '$1$$$${'); // replace ${...} to $${...}
-		text = text.replace(/^\$\{/g, '$$$${'); // replace ${...} to $${...}
-		text = text.replace(/\\\$\{/g, '$${'); // replace \${...} to ${...}
+		text = text.replace(/([^\\])\$\{/g, '$1$$$${'); // replace [^\]${...} with $${...}
+		text = text.replace(/^\$\{/g, '$$$${'); // replace ^${...} with $${...}
+		text = text.replace(/\\\$\{/g, '$${'); // replace \${...} with ${...}
 	}
+    // trim spaces
 	text = text.replace(/^\s+/, "");
 	text = text.replace(/\s+$/, "");
 	return text;
 }
 
 function encodeText(text) {
-	var escapeXml = options.escapeXmlEntities;
-	if (escapeXml == 'always') {
-		// & -> &amp;
-		// &amp; -> &amp;amp;
-		// &quot; -> &amp;quot;
-		// &nbsp; -> &nbsp;
-		text = text.replace(/&(\w+);/g, '%%tmp_entity%%$1%%');
-		text = text.replace(/%%tmp_entity%%(amp|apos|quot|lt|gt)%%/g, '&$1;');
-		text = text.replace(/&/g, '&amp;');
-		text = text.replace(/%%tmp_entity%%(\w+)%%/g, '&$1;');
-		text = text.replace(/\'/g, '&apos;');
-		text = text.replace(/\"/g, '&quot;');
-	} else if (escapeXml == 'html') {
-		// & -> &
-		// ' -> '
-		// \xA0 -> &nbsp;
-		// &amp; -> &amp;amp;
-		// &quot; -> &amp;quot;
-		// &nbsp; -> &amp;nbsp;
-		text = text.replace(/&(nbsp|amp|quot|apos|lt|gt|\d+|x\d+)(;|\W)/g, '&amp;$1$2');
-		text = text.replace(/\xA0/g, '&nbsp;');
-		text = text.replace(/ {2,}/g, function(str) {
-				var result = '';
-				for (var i = 0; i < str.length; i++) {
-					result += '&nbsp;';
-				}
-				return result;
-			}); // convert multiple spaces to nbsp
-	}
-	if (escapeXml == 'always' || escapeXml == 'partial' || escapeXml == 'html') {
-		text = text.replace(/</g, '&lt;');
-		text = text.replace(/>/g, '&gt;');
-	}
+    // & -> &amp;
+    // &amp; -> &amp;amp;
+    // &quot; -> &amp;quot;
+    // \xA0 -> &nbsp;
+    text = text.replace(new RegExp(XhtmlEntityChars, "g"),
+                        function(c) {
+            var entity = XhtmlEntityFromChars[c.charCodeAt(c)];
+            if (entity) {
+                return "&" + entity + ";";
+            } else {
+                throw "Failed to encode entity: " + c;
+            }
+        });
+    text = text.replace(/ {2,}/g, function(str) {
+            var result = '';
+            for (var i = 0; i < str.length; i++) {
+                result += '&nbsp;';
+            }
+            return result;
+        }); // convert multiple spaces to nbsp
 	if ('true' == options.escapeDollar) {
-		text = text.replace(/([^\$])\$\{/g, '$1\\${'); // replace ${...} to \${...}
-		text = text.replace(/^\$\{/g, '\\${'); // replace ${...} to \${...}
-		text = text.replace(/\$\$\{/g, '${'); // replace $${...} to ${...}
+		text = text.replace(/([^\$])\$\{/g, '$1\\${'); // replace [^$]${...} with \${...}
+		text = text.replace(/^\$\{/g, '\\${'); // replace ^${...} with \${...}
+		text = text.replace(/\$\$\{/g, '${'); // replace $${...} with ${...}
 	}
     text = text.replace(/\n/g, "<br />");
 	return text;
@@ -137,6 +139,10 @@ function parse(testCase, source) {
 		testCase.footer = doc.substring(lastIndex);
 		log.debug("header=" + testCase.header);
 		log.debug("footer=" + testCase.footer);
+        if (testCase.header &&
+            /<link\s+rel="selenium\.base"\s+href="(.*)"/.test(testCase.header)) {
+            testCase.baseURL = decodeURI(RegExp.$1);
+        }
 		//log.debug("commands.length=" + commands.length);
 		testCase.commands = commands;
 	} else {
@@ -208,6 +214,7 @@ function format(testCase, name, saveHeaderAndFooter, useDefaultHeaderAndFooter) 
 		var encoding = options["global.encoding"];
 		if (!encoding) encoding = "UTF-8";
 		testText = testText.replace(/\$\{encoding\}/g, encoding);
+		testText = testText.replace(/\$\{baseURL\}/g, encodeURI(testCase.baseURL));
 		var commandsIndex = testText.indexOf("${commands}");
 		if (commandsIndex >= 0) {
 			var header = testText.substr(0, commandsIndex);
@@ -249,9 +256,12 @@ this.options = {
 	"comment.comment = result[1];\n",
 
 	testTemplate:
-	"<html>\n" +
-	"<head>\n" +
+    '<?xml version="1.0" encoding="${encoding}"?>\n' +
+    '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">\n' +
+	'<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">\n' +
+	'<head profile="http://selenium-ide.openqa.org/profiles/test-case">\n' +
 	'<meta http-equiv="Content-Type" content="text/html; charset=${encoding}" />\n' +
+    '<link rel="selenium.base" href="${baseURL}" />\n' +
 	"<title>${name}</title>\n" +
 	"</head>\n" +
 	"<body>\n" +
@@ -274,9 +284,6 @@ this.options = {
 	commentTemplate:
 	"<!--${comment.comment}-->\n",
 	
-	escapeXmlEntities:
-	"html",
-
 	escapeDollar:
 	"false"
 };
@@ -309,16 +316,7 @@ this.configForm =
 	'<description>Template for command entries in the test html file</description>' +
 	'<textbox id="options_commandTemplate" multiline="true" flex="1" rows="3"/>' +
 	'<separator class="groove"/>' +
-	'<hbox align="center"><description>Escape XML / HTML entities?</description>' +
-	'<menulist id="options_escapeXmlEntities">' +
-	'<menupopup>' +
-	'<menuitem label="HTML" value="html"/>' +
-	'<menuitem label="XML - always: &amp; &quot; &apos; &lt; &gt;" value="always"/>' +
-	'<menuitem label="XML - partially: &lt; &gt;" value="partial"/>' +
-	'<menuitem label="never" value="never"/>' +
-	'</menupopup>' +
-	'</menulist></hbox>' +
-	'<checkbox id="options_escapeDollar" label="Escape \'${\' as \'\${\' (useful for JSP 2.0)"/>';
+	'<checkbox id="options_escapeDollar" label="Escape \'${\' as \'\\${\' (useful for JSP 2.0)"/>';
 	//'<separator class="thin"/>' +
 	//'<description>Template for comment entries in the test html file</description>' +
 	//'<textbox id="options_commentTemplate" multiline="true" flex="1"/>' +

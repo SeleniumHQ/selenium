@@ -331,6 +331,9 @@ InternalFormat.prototype.getSource = function() {
 	return FileUtils.readURL(this.url);
 }
 
+InternalFormat.prototype.getFormatURI = function() {
+    return this.url;
+}
 
 /**
  * Format created by users
@@ -380,6 +383,10 @@ UserFormat.prototype.getFormatFile = function() {
 	var formatFile = formatDir.clone();
 	formatFile.append(this.id + ".js");
 	return formatFile;
+}
+
+UserFormat.prototype.getFormatURI = function() {
+    return FileUtils.fileURI(this.getFormatFile());
 }
 
 UserFormat.prototype.loadFormatter = function() {

@@ -10,6 +10,7 @@
 		<script type="text/javascript" src="chrome://selenium-ide/content/jsunit/app/jsUnitCore.js"></script>
 		<script type="text/javascript" src="chrome://selenium-ide/content/preferences.js"></script>
 		<script type="text/javascript" src="chrome://selenium-ide/content/tools.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/testCase.js"></script>
 		<script type="text/javascript" src="chrome://selenium-ide/content/application.js"></script>
 		<script type="text/javascript" src="chrome://selenium-ide/content/storedHistory.js"></script>
 		<script type="text/javascript">
@@ -47,6 +48,13 @@ function testAddBaseURLHistory() {
     app.setBaseURL("http://www.msn.com/");
     app.setBaseURL("http://www.google.com/");
     assertEquals(["http://www.google.com/", "http://www.msn.com/", "http://www.yahoo.com/"].join(","), Preferences.getArray("baseURLHistory").join(","));
+}
+
+function testSetTestCaseShouldChangeBaseURL() {
+    var testCase = new TestCase();
+    testCase.setBaseURL("http://slashdot.org");
+    app.setTestCase(testCase);
+    assertEquals("http://slashdot.org", app.baseURL);
 }
     </script>
   </head>

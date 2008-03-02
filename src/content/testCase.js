@@ -265,6 +265,7 @@ function TestCase(title) {
 	this.formatLocalMap = {};
     this.commands = [];
     this.recordModifiedInCommands();
+    this.baseURL = "";
 
 	var testCase = this;
 
@@ -288,7 +289,6 @@ function TestCase(title) {
 					return command;
 				}
 			}
-			this.reset();
 			return null;
 		},
 
@@ -417,6 +417,10 @@ TestCase.prototype.getTitle = function() {
     } else {
         return null;
     }
+}
+
+TestCase.prototype.setBaseURL = function(baseURL) {
+    this.baseURL = baseURL;
 }
 
 observable(TestCase);

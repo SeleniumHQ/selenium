@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+   PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>XHTML test case</title>
+  <link rel="selenium.base" href="http://www.yahoo.com/" />
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td rowspan="1" colspan="3">XHTML test case</td>
+    </tr>
+    <tr class="row">
+      <td class="command">open</td>
+      <td class="target">../tests/html/test_select_window.html</td>
+      <td class="value">&nbsp;</td>
+    </tr>
+    <tr>
+      <td>click</td>
+      <td>popupPage</td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>

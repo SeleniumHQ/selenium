@@ -122,7 +122,6 @@ objectExtend(IDETestLoop.prototype, {
         commandStarted: function() {
             // editor.setState("playing");
             //setState(Debugger.PLAYING);
-            LOG.info("commandStarted");
             editor.view.rowUpdated(testCase.debugContext.debugIndex);
             editor.view.scrollToRow(testCase.debugContext.debugIndex);
         },
@@ -168,7 +167,7 @@ objectExtend(IDETestLoop.prototype, {
         },
 
         testComplete: function() {
-            LOG.debug("testComplete");
+            LOG.debug("testComplete: failed=" + testCase.debugContext.failed);
             currentTest = null;
             //editor.setState(null);
             //editor.view.rowUpdated(testCase.debugContext.debugIndex);

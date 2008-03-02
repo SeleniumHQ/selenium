@@ -48,6 +48,9 @@ Application.prototype = {
     setBaseURL: function(baseURL) {
         this.baseURL = baseURL;
         this.baseURLHistory.add(baseURL);
+        if (this.testCase) {
+            this.testCase.setBaseURL(baseURL);
+        }
         this.notify("baseURLChanged");
     },
 
@@ -136,6 +139,11 @@ Application.prototype = {
             this.notify("testCaseUnloaded", this.testCase);
         }
         this.testCase = testCase;
+        if (testCase.baseURL) {
+            this.setBaseURL(testCase.baseURL);
+        } else {
+            testCase.setBaseURL(this.baseURL);
+        }
         this.notify("testCaseChanged", this.testCase);
     },
 
