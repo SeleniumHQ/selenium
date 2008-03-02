@@ -151,6 +151,26 @@ LocatorBuilders.prototype.attributeValue = function(value) {
 	}
 }
 
+LocatorBuilders.prototype.relativeXPathFromParent = function(current) {
+    var childNodes = current.parentNode.childNodes;
+    var total = 0;
+    var index = -1;
+    for (var i = 0; i < childNodes.length; i++) {
+        var child = childNodes[i];
+        if (child.nodeName == current.nodeName) {
+            if (child == current) {
+                index = total;
+            }
+            total++;
+        }
+    }
+    var currentPath = '/' + current.nodeName.toLowerCase();
+    if (total > 1 && index >= 0) {
+        currentPath += '[' + (index + 1) + ']';
+    }
+    return currentPath;
+}
+
 /*
  * ===== builders =====
  */
@@ -290,6 +310,25 @@ LocatorBuilders.add('xpath:attributes', function(e) {
 		return null;
 	});
 
+LocatorBuilders.add('xpath:idRelative', function(e) {
+		var path = '';
+		var current = e;
+		while (current != null) {
+			if (current.parentNode != null) {
+                path = this.relativeXPathFromParent(current) + path;
+                if (current.parentNode.getAttribute("id")) {
+                    return "//" + current.parentNode.nodeName.toLowerCase() + 
+                        "[@id=" + this.attributeValue(current.parentNode.id) + "]" +
+                        path;
+                }
+			} else {
+                return null;
+            }
+			current = current.parentNode;
+		}
+		return null;
+	});
+
 LocatorBuilders.add('xpath:href', function(e) {
 		if (e.attributes && e.hasAttribute("href")) {
 			href = e.getAttribute("href");
@@ -321,24 +360,12 @@ LocatorBuilders.add('xpath:position', function(e, opt_contextNode) {
 		var path = '';
 		var current = e;
 		while (current != null && current != opt_contextNode) {
-			var currentPath = '/' + current.nodeName.toLowerCase();
+            var currentPath;
 			if (current.parentNode != null) {
-				var childNodes = current.parentNode.childNodes;
-				var total = 0;
-				var index = -1;
-				for (var i = 0; i < childNodes.length; i++) {
-					var child = childNodes[i];
-					if (child.nodeName == current.nodeName) {
-						if (child == current) {
-							index = total;
-						}
-						total++;
-					}
-				}
-				if (total > 1 && index >= 0) {
-					currentPath += '[' + (index + 1) + ']';
-				}
-			}
+                currentPath = this.relativeXPathFromParent(current);
+			} else {
+                currentPath = '/' + current.nodeName.toLowerCase();
+            }
 			path = currentPath + path;
 			var locator = '/' + path;
 			if (e == this.findElement(locator)) {

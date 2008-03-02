@@ -95,6 +95,10 @@ function testIdLocator() {
 	assertLocator("test4-input", builders.buildWith("id", input), input);
 }
 
+function testXpathIdRelativeLocator() {
+	var elements = document.getElementById("test1").getElementsByTagName("input");
+	assertEquals("//div[@id='test1']/form/input[1]", builders.buildWith('xpath:idRelative', elements[0]));
+}
 
 function assertLocator(expected, locator, element) {
 	assertEquals(expected, locator);
