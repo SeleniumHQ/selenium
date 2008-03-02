@@ -11,6 +11,7 @@
 		<script type="text/javascript" src="chrome://selenium-ide/content/preferences.js"></script>
 		<script type="text/javascript" src="chrome://selenium-ide/content/tools.js"></script>
 		<script type="text/javascript" src="chrome://selenium-ide/content/testCase.js"></script>
+		<script type="text/javascript" src="chrome://selenium-ide/content/testSuite.js"></script>
 		<script type="text/javascript" src="chrome://selenium-ide/content/application.js"></script>
 		<script type="text/javascript" src="chrome://selenium-ide/content/storedHistory.js"></script>
 		<script type="text/javascript">
@@ -56,6 +57,15 @@ function testSetTestCaseShouldChangeBaseURL() {
     app.setTestCase(testCase);
     assertEquals("http://slashdot.org", app.baseURL);
 }
+
+function testFirstTestCaseShouldHaveTemporaryTitle() {
+    app.newTestSuite();
+    assertEquals("Untitled", app.testCase.tempTitle);
+    assert(!app.testCase.title);
+    assert(!app.testCase.file);
+    assertEquals("Untitled", app.testCase.getTitle());
+}
+
     </script>
   </head>
 

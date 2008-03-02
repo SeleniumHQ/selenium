@@ -39,12 +39,12 @@ limitations under the License.
     function load() {
         this.testCase = window.arguments[0];
         this.updateView = window.arguments[1];
-        document.getElementById("title").value = this.testCase.title;
+        document.getElementById("title").value = this.testCase.getTitle();
         document.getElementById("file").value = this.testCase.getRelativeFilePath();
     }
 
     function save() {
-        this.testCase.title = document.getElementById("title").value;
+        this.testCase.setTitle(document.getElementById("title").value);
         this.updateView();
     }
   </script>

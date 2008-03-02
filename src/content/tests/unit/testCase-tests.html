@@ -19,6 +19,11 @@
 function setUp() {
 }
 
+function testNewTestCaseShouldHaveUntitledTitle() {
+	var testCase = new TestCase();
+  assertEquals("Untitled", testCase.getTitle());
+}
+
 function testGetCommandIndexByTextIndex() {
 	var formats = new FormatCollection(OPTIONS);
 	var testCase = new TestCase();

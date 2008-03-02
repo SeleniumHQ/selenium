@@ -179,7 +179,10 @@ Application.prototype = {
         if (testCase.content) {
             this.setTestCase(testCase.content);
         } else {
-            this._loadTestCase(testCase.getFile(), function(test) { testCase.content = test });
+            this._loadTestCase(testCase.getFile(), function(test) {
+                    test.title = testCase.getTitle(); // load title from suite
+                    testCase.content = test;
+                });
         }
     },
 

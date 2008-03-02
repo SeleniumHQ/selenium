@@ -60,9 +60,11 @@ TestSuite.loadInputStream = function(input) {
 
 // TODO make this configurable
 TestSuite.header = 
-    "<html>\n" +
+    '<?xml version="1.0" encoding="UTF-8"?>\n' +
+    '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">\n' +
+	'<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">\n' +
     "<head>\n" +
-    '  <meta content="text/html; charset=UTF-8" http-equiv="content-type">' + "\n" +
+    '  <meta content="text/html; charset=UTF-8" http-equiv="content-type" />' + "\n" +
     "  <title>Test Suite</title>\n" +
     "</head>\n" +
     "<body>\n";
@@ -74,7 +76,6 @@ TestSuite.prototype = {
     addTestCaseFromContent: function(content) {
         var testCase = new TestSuite.TestCase(this);
         testCase.content = content;
-        testCase.title = content.getTitle();
         this.tests.push(testCase);
         this.notify("testCaseAdded", testCase);
     },
@@ -193,8 +194,20 @@ TestSuite.TestCase.prototype = {
         }
     },
 
+    setTitle: function(title) {
+        if (this.content) {
+            this.content.title = title;
+        } else {
+            this.title = title;
+        }
+    },
+
     getTitle: function() {
-        return this.title;
+        if (this.content) {
+            return this.content.getTitle();
+        } else {
+            return this.title;
+        }
     },
     
     format: function() {

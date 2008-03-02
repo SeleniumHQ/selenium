@@ -258,10 +258,10 @@ Comment.prototype.createCopy = function() {
 	return copy;
 };
 
-function TestCase(title) {
-    if (!title) title = "Untitled";
+function TestCase(tempTitle) {
+    if (!tempTitle) tempTitle = "Untitled";
 	this.log = new Log("TestCase");
-    this.title = title;
+    this.tempTitle = tempTitle;
 	this.formatLocalMap = {};
     this.commands = [];
     this.recordModifiedInCommands();
@@ -410,10 +410,12 @@ TestCase.prototype.getCommandIndexByTextIndex = function(text, index, formatter)
 }
 
 TestCase.prototype.getTitle = function() {
-    if (this.file && this.file.leafName) {
-        return this.file.leafName.replace(/\.\w+$/,'');
-    } else if (this.title) {
+    if (this.title) {
         return this.title;
+    } else if (this.file && this.file.leafName) {
+        return this.file.leafName.replace(/\.\w+$/,'');
+    } else if (this.tempTitle) {
+        return this.tempTitle;
     } else {
         return null;
     }
