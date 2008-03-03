@@ -302,16 +302,32 @@ BrowserBot.prototype._modifyWindow = function(win) {
 };
 
 BrowserBot.prototype.selectWindow = function(target) {
-    // TODO implement a locator syntax here
-    if (target && target != "null") {
+    if (!target || target == "null") {
+        this._selectTopWindow();
+        return;
+    }
+    var result = target.match(/^([a-zA-Z]+)=(.*)/);
+    if (!result) {
         try {
             this._selectWindowByName(target);
         }
         catch (e) {
             this._selectWindowByTitle(target);
         }
+        return;
+    }
+    locatorType = result[1];
+    locatorValue = result[2];
+    if (locatorType == "title") {
+        this._selectWindowByTitle(locatorValue);
+    }
+    // TODO separate name and var into separate functions
+    else if (locatorType == "name") {
+        this._selectWindowByName(locatorValue);
+    } else if (locatorType == "var") {
+        this._selectWindowByName(locatorValue);
     } else {
-        this._selectTopWindow();
+        throw new SeleniumError("Window locator not recognized: " + locatorType);
     }
 };
 

@@ -805,27 +805,43 @@ Selenium.prototype.doOpenWindow = function(url, windowID) {
 
 Selenium.prototype.doSelectWindow = function(windowID) {
     /**
-   * Selects a popup window; once a popup window has been selected, all
+   * Selects a popup window using a window locator; once a popup window has been selected, all
    * commands go to that window. To select the main window again, use null
    * as the target.
    *
-   * <p>Note that there is a big difference between a window's internal JavaScript "name" property
-   * and the "title" of a given window's document (which is normally what you actually see, as an end user,
-   * in the title bar of the window).  The "name" is normally invisible to the end-user; it's the second 
-   * parameter "windowName" passed to the JavaScript method window.open(url, windowName, windowFeatures, replaceFlag)
-   * (which selenium intercepts).</p>
-   *
-   * <p>Selenium has several strategies for finding the window object referred to by the "windowID" parameter.</p>
+   * <p>
    * 
+   * Window locators provide different ways of specifying the window object:
+   * by title, by internal JavaScript "name," or by JavaScript variable.
+   * </p>
+   * <ul>
+   * <li><strong>title</strong>=<em>My Special Window</em>:
+   * Finds the window using the text that appears in the title bar.  Be careful;
+   * two windows can share the same title.  If that happens, this locator will
+   * just pick one.
+   * </li>
+   * <li><strong>name</strong>=<em>myWindow</em>:
+   * Finds the window using its internal JavaScript "name" property.  This is the second 
+   * parameter "windowName" passed to the JavaScript method window.open(url, windowName, windowFeatures, replaceFlag)
+   * (which Selenium intercepts).
+   * </li>
+   * <li><strong>var</strong>=<em>variableName</em>:
+   * Some pop-up windows are unnamed (anonymous), but are associated with a JavaScript variable name in the current
+   * application window, e.g. "window.foo = window.open(url);".  In those cases, you can open the window using
+   * "var=foo".
+   * </li>
+   * </ul>
+   * <p>
+   * If no window locator prefix is provided, we'll try to guess what you mean like this:</p>
    * <p>1.) if windowID is null, (or the string "null") then it is assumed the user is referring to the original window instantiated by the browser).</p>
    * <p>2.) if the value of the "windowID" parameter is a JavaScript variable name in the current application window, then it is assumed
    * that this variable contains the return value from a call to the JavaScript window.open() method.</p>
    * <p>3.) Otherwise, selenium looks in a hash it maintains that maps string names to window "names".</p>
-   * <p>4.) If <i>that</i> fails, we'll try looping over all of the known windows to try to find the appropriate "title".
+   * <p>4.) If <em>that</em> fails, we'll try looping over all of the known windows to try to find the appropriate "title".
    * Since "title" is not necessarily unique, this may have unexpected behavior.</p>
-   *
-   * <p>If you're having trouble figuring out what is the name of a window that you want to manipulate, look at the selenium log messages
-   * which identify the names of windows created via window.open (and therefore intercepted by selenium).  You will see messages
+   * 
+   * <p>If you're having trouble figuring out the name of a window that you want to manipulate, look at the Selenium log messages
+   * which identify the names of windows created via window.open (and therefore intercepted by Selenium).  You will see messages
    * like the following for each window as it is opened:</p>
    * 
    * <p><code>debug: window.open call intercepted; window ID (which you can use with selectWindow()) is "myNewWindow"</code></p>
@@ -896,7 +912,7 @@ Selenium.prototype.doWaitForPopUp = function(windowID, timeout) {
     /**
     * Waits for a popup window to appear and load up.
     *
-    * @param windowID the JavaScript window ID of the window that will appear
+    * @param windowID the JavaScript window "name" of the window that will appear (not the text of the title bar)
     * @param timeout a timeout in milliseconds, after which the action will return with an error
     */
     var popupLoadedPredicate = function () {
