@@ -1399,7 +1399,9 @@ Selenium.prototype.getSelectOptions = function(selectLocator) {
 
 Selenium.prototype.getAttribute = function(attributeLocator) {
     /**
-   * Gets the value of an element attribute.
+   * Gets the value of an element attribute. The value of the attribute may
+   * differ across browsers (this is the case for the "style" attribute, for
+   * example).
    *
    * @param attributeLocator an element locator followed by an &#064; sign and then the name of the attribute, e.g. "foo&#064;bar"
    * @return string the value of the specified attribute

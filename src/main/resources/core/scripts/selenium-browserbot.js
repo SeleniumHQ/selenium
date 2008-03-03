@@ -1497,6 +1497,11 @@ BrowserBot.prototype.findAttribute = function(locator) {
 
     // Get the attribute value.
     var attributeValue = element.getAttribute(attributeName);
+    
+    // IE returns an object for the "style" attribute
+    if (attributeName == 'style' && typeof(attributeValue) != 'string') {
+        attributeValue = attributeValue.cssText;
+    }
 
     return attributeValue ? attributeValue.toString() : null;
 };
