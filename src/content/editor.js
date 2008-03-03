@@ -504,7 +504,7 @@ Editor.prototype.addCommand = function(command,target,value,window,insertBeforeL
                 if (window.name == '') {
                     windowName = 'null';
                 }
-                this.addCommand('selectWindow', windowName, '', window);
+                this.addCommand('selectWindow', "name=" + windowName, '', window);
             }
         }
 	}

@@ -52,7 +52,7 @@ function verifyCommands() {
 				command.command != 'close') { // these commands are currently not recorded by Selenium IDE
 				if (command.command == 'selectWindow' && command.target == 'null') {
 					// This is frame for application. Selenium IDE should record this window as 'selenium_myiframe'.
-					command.target = 'selenium_myiframe';
+					command.target = 'name=selenium_myiframe';
 				}
 				if (recordedCommands.length <= recordedIndex || 
 					!sameCommand(command, recordedCommands[recordedIndex])) {
