@@ -316,7 +316,8 @@ LocatorBuilders.add('xpath:idRelative', function(e) {
 		while (current != null) {
 			if (current.parentNode != null) {
                 path = this.relativeXPathFromParent(current) + path;
-                if (current.parentNode.getAttribute("id")) {
+                if (1 == current.parentNode.nodeType && // ELEMENT_NODE
+                    current.parentNode.getAttribute("id")) {
                     return "//" + current.parentNode.nodeName.toLowerCase() + 
                         "[@id=" + this.attributeValue(current.parentNode.id) + "]" +
                         path;
