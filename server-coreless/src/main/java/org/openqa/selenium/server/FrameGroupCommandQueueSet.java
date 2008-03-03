@@ -115,42 +115,68 @@ public class FrameGroupCommandQueueSet {
           }
           return result;
         }
-        if ("null".equals(seleniumWindowName)) {
-            // this results from only working with strings over the wire
-            currentSeleniumWindowName = DEFAULT_SELENIUM_WINDOW_NAME;
+        if (seleniumWindowName == null) {
+            seleniumWindowName = DEFAULT_SELENIUM_WINDOW_NAME;
+        }        
+        if (seleniumWindowName.startsWith("title=")) {
+            return selectWindowByRemoteTitle(seleniumWindowName.substring(6));
         }
+        // TODO separate name and var into separate functions
+        if (seleniumWindowName.startsWith("name=")) {
+            seleniumWindowName = seleniumWindowName.substring(5);
+            return selectWindowByNameOrVar(seleniumWindowName);
+        }
+        if (seleniumWindowName.startsWith("var=")) {
+            seleniumWindowName = seleniumWindowName.substring(4);
+            return selectWindowByNameOrVar(seleniumWindowName);
+        }
+        // no locator prefix; try the default strategies
         String match = findMatchingFrameAddress(uniqueIdToCommandQueue.keySet(),
                     seleniumWindowName, DEFAULT_LOCAL_FRAME_ADDRESS);
         
         // If we didn't find a match, try finding the frame address by window title
         if (match == null) {
-	        boolean windowFound = false;
-	        for (String uniqueId : uniqueIdToCommandQueue.keySet()) {
-		        CommandQueue commandQueue = uniqueIdToCommandQueue.get(uniqueId);
-        		// Following logic is when it would freeze when it would hit WindowName::top frame
-        		// if (frameAddress.getWindowName().equals("WindowName") && !seleniumWindowName.equals("WindowName")) {
-        		//	continue;
-        		// }
-        	
-        		String windowName;
-        		try {
-        			windowName = getRemoteWindowTitle(commandQueue);
-        		} catch (WindowClosedException e) {
-        			// If the window is closed, then it can't be the window we're looking for
-        			continue;
-        		}
-        		
-        		if (windowName.equals(seleniumWindowName)) {
-			        windowFound = true;
-			        match = uniqueId;
-			        break;
-		        }
-	        }
+	        return selectWindowByRemoteTitle(seleniumWindowName);
+        }
         
-        	// Return with an error if we didn't find the window
-	        if (!windowFound) {
-	        	return "ERROR: could not find window " + seleniumWindowName;
-	        }
+        // we found a match
+        setCurrentFrameAddress(match);
+        return "OK";
+    }
+    
+    private String selectWindowByNameOrVar(String seleniumWindowName) {
+        String match = findMatchingFrameAddress(uniqueIdToCommandQueue.keySet(),
+                seleniumWindowName, DEFAULT_LOCAL_FRAME_ADDRESS);
+        if (match == null) {
+            return "ERROR: could not find window " + seleniumWindowName;
+        }
+        setCurrentFrameAddress(match);
+        return "OK";
+    }
+    
+    private String selectWindowByRemoteTitle(String title) {
+        String match = null;
+        boolean windowFound = false;
+        for (String uniqueId : uniqueIdToCommandQueue.keySet()) {
+            CommandQueue commandQueue = uniqueIdToCommandQueue.get(uniqueId);
+        
+            String windowName;
+            try {
+                windowName = getRemoteWindowTitle(commandQueue);
+            } catch (WindowClosedException e) {
+                // If the window is closed, then it can't be the window we're looking for
+                continue;
+            }
+            
+            if (windowName.equals(title)) {
+                windowFound = true;
+                match = uniqueId;
+                break;
+            }
+        }
+        // Return with an error if we didn't find the window
+        if (!windowFound) {
+            return "ERROR: could not find window " + title;
         }
         setCurrentFrameAddress(match);
         return "OK";
