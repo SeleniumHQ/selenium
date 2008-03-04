@@ -153,6 +153,14 @@ function Selenium(browserbot) {
      * If no pattern prefix is specified, Selenium assumes that it's a "glob"
      * pattern.
      * </p>
+     * <p>
+     * For commands that return multiple values (such as verifySelectOptions),
+     * the string being matched is a comma-separated list of the return values,
+     * where both commas and backslashes in the values are backslash-escaped.
+     * When providing a pattern, the optional matching syntax (i.e. glob,
+     * regexp, etc.) is specified once, as usual, at the beginning of the
+     * pattern.
+     * </p>
      */
     this.browserbot = browserbot;
     this.optionLocatorFactory = new OptionLocatorFactory();

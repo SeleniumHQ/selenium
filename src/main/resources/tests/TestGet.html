@@ -31,7 +31,7 @@ Copyright 2007 ThoughtWorks, Inc
     
     <tr>
       <td>open</td>
-      <td>../tests/html/test_click_page1.html</td>
+      <td>../tests/html/test_get.html</td>
       <td>&nbsp;</td>
     </tr>
 
@@ -42,6 +42,24 @@ Copyright 2007 ThoughtWorks, Inc
       <td>verifyAttribute</td>
       <td>//img[@alt='banner']@style</td>
       <td>regexp:(width|WIDTH): 644px; (height|HEIGHT): 41px(;?)</td>
+    </tr>
+    
+    <!-- This asserts on the current behavior of selArrayToString(). Commas and
+         backslashes are escaped in array values. Backslash-craziness!! -->
+    <tr>
+      <td>verifySelectOptions</td>
+      <td>selectWithFunkyValues</td>
+      <td>foo*</td>
+    </tr>
+    <tr>
+      <td>verifySelectOptions</td>
+      <td>selectWithFunkyValues</td>
+      <td>javascript{ [ 'foo', '\\,\\\\bar\\\\\\,', '*baz*' ].join(',') }</td>
+    </tr>
+    <tr>
+      <td>verifySelectOptions</td>
+      <td>selectWithFunkyValues</td>
+      <td>javascript{ 'regexp:' + [ 'foo', '\\\\,\\\\\\\\bar\\\\\\\\\\\\,', '\\s{2}baz\\s{2}' ].join(',') }</td>
     </tr>
   </tbody>
 </table>
