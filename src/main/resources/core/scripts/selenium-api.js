@@ -1140,7 +1140,7 @@ Selenium.prototype.getLocation = function() {
    *
    * @return string the absolute URL of the current page
    */
-    return this.browserbot.getCurrentWindow().location;
+    return this.browserbot.getCurrentWindow().location.href;
 };
 
 Selenium.prototype.getTitle = function() {
