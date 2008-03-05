@@ -5,7 +5,7 @@
   <RDF:Description RDF:about="urn:mozilla:install-manifest"
                    em:name="Selenium IDE"
                    em:id="{a6fd85ed-e919-4a43-a5af-8da18bda539f}"
-                   em:version="1.0b"
+                   em:version="1.0b1"
                    em:description="Record, edit and play Selenium tests"
                    em:creator="Shinya Kasatani"
                    em:homepageURL="http://www.openqa.org/selenium-ide/"
