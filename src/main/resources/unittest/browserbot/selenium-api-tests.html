@@ -98,7 +98,8 @@ function testSelectWindow() {
 
 function testGetLocation() {
     var mockWindow = new Object();
-    mockWindow.location = "http://page/path?foo=bar";
+    mockWindow.location = new Object();
+    mockWindow.location.href = "http://page/path?foo=bar";
     mockPageBot.getCurrentWindow = function() {
         return mockWindow;
     }
