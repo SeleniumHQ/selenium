@@ -129,10 +129,13 @@
   </repositories>
   <distributionManagement>
     <repository>
-      <id>openqa</id>
-      <name>OpenQA Maven Repository</name>
-      <url>scp://maven.openqa.org/home/maven/maven.openqa.org/htdocs</url>
+      <id>openqa-releases</id>
+      <url>dav:http://archiva.openqa.org/repository/releases/</url>
     </repository>
+    <snapshotRepository>
+      <id>openqa-snapshots</id>
+      <url>dav:http://archiva.openqa.org/repository/snapshots/</url>
+    </snapshotRepository>
   </distributionManagement>
   <dependencies>
     <dependency>
