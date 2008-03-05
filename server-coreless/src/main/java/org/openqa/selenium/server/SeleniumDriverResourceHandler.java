@@ -34,8 +34,6 @@ import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,6 +56,7 @@ import org.mortbay.http.HttpResponse;
 import org.mortbay.http.handler.ResourceHandler;
 import org.mortbay.log.LogFactory;
 import org.mortbay.util.StringUtil;
+import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
 import org.openqa.selenium.server.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
@@ -77,17 +76,16 @@ import org.openqa.selenium.server.log.AntJettyLoggerBuildListener;
 public class SeleniumDriverResourceHandler extends ResourceHandler {
     static Log log = LogFactory.getLog(SeleniumDriverResourceHandler.class);
     static Log browserSideLog = LogFactory.getLog(SeleniumDriverResourceHandler.class.getName()+".browserSideLog");
-    private final Map<String, BrowserLauncher> launchers = new HashMap<String, BrowserLauncher>();
-    private final Map<String, List<File>> sessionIdToListOfTempFiles = new HashMap<String, List<File>>();
-
+    
     private SeleniumServer server;
     private static String lastSessionId = null;
     private Map<String, String> domainsBySessionId = new HashMap<String, String>();
-    private Map<String, String> sessionIdsToBrowserStrings =
-        Collections.synchronizedMap(new HashMap<String, String>());
     private StringBuffer logMessagesBuffer = new StringBuffer();
+    
     private BrowserLauncherFactory browserLauncherFactory = new BrowserLauncherFactory();
-
+    private final BrowserSessionFactory browserSessionFactory = 
+      new BrowserSessionFactory(browserLauncherFactory);
+    
     public SeleniumDriverResourceHandler(SeleniumServer server) {
         this.server = server;
         
@@ -419,7 +417,8 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             results = "OK," + logMessagesBuffer.toString();
             logMessagesBuffer.setLength(0);
         } else if ("testComplete".equals(cmd)) {
-            results = endBrowserSession(sessionId, SeleniumServer.reusingBrowserSessions());
+            browserSessionFactory.endBrowserSession(sessionId);
+            results = "OK";
         } else if ("shutDown".equals(cmd) || "shutDownSeleniumServer".equals(cmd)) {
             results = null;
             shutDown(res);
@@ -427,8 +426,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
           FrameGroupCommandQueueSet queue = FrameGroupCommandQueueSet.getQueueSet(sessionId);
           try {
             File downloadedFile = downloadFile(values.get(1));
-            List<File> tempFilesForSession = getTempFiles(sessionId);            
-            tempFilesForSession.add(downloadedFile);
+            queue.addTemporaryFile(downloadedFile);
             results = queue.doCommand("type", values.get(0), downloadedFile.getAbsolutePath());
           } catch (Exception e) {
             results = e.toString();
@@ -515,8 +513,9 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             	String browser = values.get(0);
                 String newSessionId = generateNewSessionId();
                 BrowserLauncher simpleLauncher = browserLauncherFactory.getBrowserLauncher(browser, newSessionId);
-                server.registerBrowserLauncher(newSessionId, simpleLauncher);
                 String baseUrl = "http://localhost:" + server.getPort();
+                server.registerBrowserSession(new BrowserSessionInfo(
+                    newSessionId, browser, baseUrl, simpleLauncher, null));
                 simpleLauncher.launchHTMLSuite("TestPrompt.html?thisIsSeleniumServer=true", baseUrl, false, "info");
                 results = "OK";
             }
@@ -553,6 +552,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             throw new RuntimeException("Malformed URL <" + urlString + ">, " + e.getMessage());
         }
         File outputFile = FileUtils.getFileUtils().createTempFile("se-",".file",null);
+        outputFile.deleteOnExit(); // to be on the safe side.
         Project p = new Project();
         p.addBuildListener(new AntJettyLoggerBuildListener(log));
         Get g = new Get();
@@ -629,47 +629,6 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         
     }
 
-    private String endBrowserSession(String sessionId, boolean cacheUnused) {
-        if (cacheUnused) {
-          FrameGroupCommandQueueSet.getQueueSet(sessionId).reset();
-        }
-        else {
-            BrowserLauncher launcher = getLauncher(sessionId);
-            List<File> tempFilesForSession = getTempFiles(sessionId);
-            if (launcher == null) {
-                return "ERROR: No launcher found for sessionId " + sessionId;
-            } 
-            if (tempFilesForSession == null) {
-                return "ERROR: Can't find temp file storage for sessionId " + sessionId; //TODO invariant violated, never should have null, as we set up a new ArrayList when creating the session
-            }
-            try {
-               launcher.close(); 
-            } catch (RuntimeException re) {
-              throw re;
-            } finally {
-              // recover memory
-              synchronized(launchers) {
-                  launchers.remove(sessionId);
-              }
-              FrameGroupCommandQueueSet.clearQueueSet(sessionId);
-            }
-    
-            try {
-                sessionIdToListOfTempFiles.remove(sessionId);            
-            } catch(RuntimeException re) {
-                throw re;
-            } finally {
-                for (File file : tempFilesForSession) {
-                    boolean deleteSuccessful = file.delete();
-                    if (! deleteSuccessful) {
-                        log.warn("temp file not deleted " + file.getAbsolutePath());
-                    }
-                }
-            }
-        }
-        return "OK";
-    }
-
     private void warnIfApparentDomainChange(String sessionId, String url) {
         if (url.startsWith("http://")) {
             String urlDomain = url.replaceFirst("^(http://[^/]+, url)/.*", "$1");
@@ -691,63 +650,11 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
 
     protected String getNewBrowserSession(String browserString, String startURL) 
           throws RemoteCommandException {
-
-        browserString = validateBrowserString(browserString);
-
-        if (SeleniumServer.isProxyInjectionMode()) {
-            InjectionHelper.init();
-        }
-
-        String sessionId = UUID.randomUUID().toString().replace("-", "");
-        setLastSessionId(sessionId); 
-        FrameGroupCommandQueueSet queueSet = FrameGroupCommandQueueSet.makeQueueSet(sessionId);
-        BrowserLauncher launcher = browserLauncherFactory.getBrowserLauncher(browserString, sessionId);
-        registerBrowserLauncher(sessionId, launcher);
-        sessionIdsToBrowserStrings.put(sessionId, browserString);
-        log.info("Allocated session " + sessionId + " for " + startURL + ", launching...");
-            
-        boolean multiWindow = server.isMultiWindow();
-        launcher.launchRemoteSession(startURL, multiWindow);
-        
-        try {
-          queueSet.waitForLoad(SeleniumServer.getTimeoutInSeconds() * 1000l);
-  
-          // TODO DGF log4j only
-          // NDC.push("sessionId="+sessionId);
-          FrameGroupCommandQueueSet queue = FrameGroupCommandQueueSet.getQueueSet(sessionId);
-          queue.doCommand("setContext", sessionId, "");
-          return sessionId;
-        } catch (RemoteCommandException rce) {
-          log.debug("Failed to start new browser session: " + rce.getMessage());
-          synchronized(launchers) {
-            endBrowserSession(sessionId, false);
-          }
-          sessionIdsToBrowserStrings.remove(sessionId);
-          throw rce;
-        }
-    }
-
-    private String validateBrowserString(String inputString) throws IllegalArgumentException {
-        String browserString = inputString;
-        if (SeleniumServer.getForcedBrowserMode()!=null) {
-            browserString = SeleniumServer.getForcedBrowserMode(); 
-            log.info("overriding browser mode w/ forced browser mode setting: " + browserString);
-        }
-        if (SeleniumServer.isProxyInjectionMode() && browserString.equals("*iexplore")) {
-            log.warn("running in proxy injection mode, but you used a *iexplore browser string; this is " +
-                    "almost surely inappropriate, so I'm changing it to *piiexplore...");
-            browserString = "*piiexplore";
-        }
-        else if (SeleniumServer.isProxyInjectionMode() && browserString.equals("*firefox")) {
-            log.warn("running in proxy injection mode, but you used a *firefox browser string; this is " +
-                    "almost surely inappropriate, so I'm changing it to *pifirefox...");
-            browserString = "*pifirefox";
-        }
-
-        if (null == browserString) {
-            throw new IllegalArgumentException("browser string may not be null");
-        }
-        return browserString;
+        BrowserSessionInfo sessionInfo = 
+            browserSessionFactory.getNewBrowserSession(
+            browserString, startURL, server.isMultiWindow());
+        setLastSessionId(sessionInfo.sessionId); 
+        return sessionInfo.sessionId;
     }
 
     /** Perl and Ruby hang forever when they see "Connection: close" in the HTTP headers.
@@ -787,44 +694,36 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             }
         }
     }
-
-    /** Retrieves a launcher for the specified sessionId, or <code>null</code> if there is no such launcher. */
-    private BrowserLauncher getLauncher(String sessionId) {
-        synchronized (launchers) {
-            return launchers.get(sessionId);
-        }
+    
+    /**
+     * Registers the given browser session among the active sessions
+     * to handle.
+     * 
+     * Usually externally created browser sessions are managed themselves,
+     * but registering them allows the shutdown procedures to be simpler.
+     * 
+     * @param sessionInfo the externally created browser session to register.
+     */
+    public void registerBrowserSession(BrowserSessionInfo sessionInfo) {
+      browserSessionFactory.registerExternalSession(sessionInfo);
     }
     
-    /** Retrieves the temp files for the specified sessionId, or <code>null</code> if there are no such files. */
-    private List<File> getTempFiles(String sessionId) {
-        synchronized (sessionIdToListOfTempFiles) {
-        	List<File> list = sessionIdToListOfTempFiles.get(sessionId);
-        	if (list == null) { // first time we call it
-        		list = new ArrayList<File>();
-        		sessionIdToListOfTempFiles.put(sessionId, list);
-        	}
-            return sessionIdToListOfTempFiles.get(sessionId);
-        }
-    }
-   
-    public void registerBrowserLauncher(String sessionId, BrowserLauncher launcher) {
-        synchronized (launchers) {
-            launchers.put(sessionId, launcher);
-        }
+    /**
+     * De-registers the given browser session from among the active sessions.
+     * 
+     * When an externally managed but registered session is closed, 
+     * this method should be called to keep the set of active sessions 
+     * up to date.
+     * 
+     * @param sessionInfo the session to deregister.
+     */
+    public void deregisterBrowserSession(BrowserSessionInfo sessionInfo) {
+      browserSessionFactory.deregisterExternalSession(sessionInfo);
     }
     
     /** Kills all running browsers */
     public void stopAllBrowsers() {
-      synchronized(launchers) {
-          List<String> sessions = new ArrayList<String>(launchers.keySet());
-        for (String sessionId : sessions) {
-          endBrowserSession(sessionId, false);
-        }
-      }
-    }
-
-    public Map<String, BrowserLauncher> getLaunchers() {
-        return launchers;
+      browserSessionFactory.endAllBrowserSessions();
     }
 
     /** Sets all the don't-cache headers on the HttpResponse */

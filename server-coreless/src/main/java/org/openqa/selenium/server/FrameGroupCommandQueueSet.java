@@ -17,8 +17,10 @@ package org.openqa.selenium.server;
  */
 
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,6 +35,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.logging.Log;
 import org.mortbay.log.LogFactory;
+import org.openqa.selenium.server.browserlaunchers.LauncherUtils;
 
 
 /**
@@ -61,6 +64,7 @@ public class FrameGroupCommandQueueSet {
     private FrameAddress currentFrameAddress = null;
     private String currentUniqueId = null;
     
+    private final Set<File> tempFilesForSession = Collections.synchronizedSet(new HashSet<File>());
     private Map<String, CommandQueue> uniqueIdToCommandQueue = new ConcurrentHashMap<String, CommandQueue>();
     static private final Map<String, FrameGroupCommandQueueSet> queueSets = new ConcurrentHashMap<String, FrameGroupCommandQueueSet>();
     
@@ -72,9 +76,11 @@ public class FrameGroupCommandQueueSet {
     private AtomicInteger millisecondDelayBetweenOperations;
     
     /**
-     * A unique string denoting a session with a browser.  In most cases this session begins with the
-     * selenium server configuring and starting a browser process, and ends with a selenium server killing 
-     * that process.
+     * A unique string denoting a session with a browser.  
+     * 
+     * In most cases this session begins with the
+     * selenium server configuring and starting a browser process, and ends 
+     * with a selenium server killing that process.
      */
     private final String sessionId;
     /**
@@ -693,6 +699,7 @@ public class FrameGroupCommandQueueSet {
      *
      */
     public void endOfLife() {
+      removeTemporaryFiles();
       for (CommandQueue frameQ : uniqueIdToCommandQueue.values()) {
           frameQ.endOfLife();
       }
@@ -769,7 +776,7 @@ public class FrameGroupCommandQueueSet {
 //        orphanedQueues.clear();
 //    }
 
-    public void reset() {
+    public void reset(String baseUrl) {
       log.debug("resetting frame group");
       if (SeleniumServer.isProxyInjectionMode()) {
         // shut down all but the primary top level connection
@@ -798,14 +805,38 @@ public class FrameGroupCommandQueueSet {
             uniqueIdToCommandQueue.remove(frameAddress);
         }
       }
+      removeTemporaryFiles();
       selectWindow(DEFAULT_SELENIUM_WINDOW_NAME);
-      String defaultUrl = "http://localhost:" + SeleniumServer.getPortDriversShouldContact()
-          + "/selenium-server/core/InjectedRemoteRunner.html";
+      // String defaultUrl = "http://localhost:" 
+      StringBuilder openUrl = new StringBuilder();
+      if (SeleniumServer.isProxyInjectionMode()) {
+        openUrl.append("http://localhost:");
+        openUrl.append(SeleniumServer.getPortDriversShouldContact());
+        openUrl.append("/selenium-server/core/InjectedRemoteRunner.html");
+      } else {
+        openUrl.append(LauncherUtils.stripStartURL(baseUrl));
+        openUrl.append("/selenium-server/core/Blank.html");
+      }
       try {
-        doCommand("open", defaultUrl, ""); // will close out subframes
+        doCommand("open", openUrl.toString(), ""); // will close out subframes
       } catch (RemoteCommandException rce) {  
         log.debug("RemoteCommandException in reset: " + rce.getMessage());
       }
+    }
+    
+    protected void removeTemporaryFiles() {
+      for (File file : tempFilesForSession) {
+        boolean deleteSuccessful = file.delete();
+        if (!deleteSuccessful) {
+            log.warn("temp file for session " + sessionId 
+                + " not deleted " + file.getAbsolutePath());
+        }
+      }
+      tempFilesForSession.clear();
+    }
+    
+    protected void addTemporaryFile(File tf) {
+      tempFilesForSession.add(tf);   
     }
 
 	private boolean queueMatchesFrameAddress(CommandQueue queue, String currentLocalFrameAddress, String newFrameAddressExpression) {

@@ -19,6 +19,7 @@ import org.mortbay.log.LogFactory;
 import org.openqa.selenium.server.SeleniumCommandTimedOutException;
 import org.openqa.selenium.server.SeleniumServer;
 import org.openqa.selenium.server.StaticContentHandler;
+import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
 import org.openqa.selenium.server.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
@@ -48,7 +49,7 @@ public class HTMLLauncher implements HTMLResultsListener {
      * @param browserURL - the start URL for the browser
      * @param suiteURL - the relative URL to the HTML suite
      * @param outputFile - The file to which we'll output the HTML results
-     * @param timeoutInMs - the amount of time (in milliseconds) to wait for the browser to finish
+     * @param timeoutInSeconds - the amount of time (in seconds) to wait for the browser to finish
      * @param multiWindow TODO
      * @return PASS or FAIL
      * @throws IOException if we can't write the output file
@@ -66,7 +67,7 @@ public class HTMLLauncher implements HTMLResultsListener {
      * @param outputFile - The file to which we'll output the HTML results
      * @param multiWindow TODO
      * @param defaultLogLevel TODO
-     * @param timeoutInMs - the amount of time (in milliseconds) to wait for the browser to finish
+     * @param timeoutInSeconds - the amount of time (in seconds) to wait for the browser to finish
      * @return PASS or FAIL
      * @throws IOException if we can't write the output file
      */
@@ -84,7 +85,11 @@ public class HTMLLauncher implements HTMLResultsListener {
         BrowserLauncherFactory blf = new BrowserLauncherFactory();
         String sessionId = Long.toString(System.currentTimeMillis() % 1000000);
         BrowserLauncher launcher = blf.getBrowserLauncher(browser, sessionId);
-        server.registerBrowserLauncher(sessionId, launcher);
+        BrowserSessionInfo sessionInfo = new BrowserSessionInfo(sessionId, 
+            browser, browserURL, launcher, null);
+        server.registerBrowserSession(sessionInfo);
+        
+        // JB: -- aren't these URLs in the wrong order according to declaration?
         launcher.launchHTMLSuite(suiteURL, browserURL, multiWindow, defaultLogLevel);
         long now = System.currentTimeMillis();
         long end = now + timeoutInMs;
@@ -92,6 +97,7 @@ public class HTMLLauncher implements HTMLResultsListener {
             AsyncExecute.sleepTight(500);
         }
         launcher.close();
+        server.deregisterBrowserSession(sessionInfo);
         if (results == null) {
             throw new SeleniumCommandTimedOutException();
         }
@@ -110,7 +116,7 @@ public class HTMLLauncher implements HTMLResultsListener {
      * @param browserURL - the start URL for the browser
      * @param suiteFile - a file containing the HTML suite to run
      * @param outputFile - The file to which we'll output the HTML results
-     * @param timeoutInMs - the amount of time (in milliseconds) to wait for the browser to finish
+     * @param timeoutInSeconds - the amount of time (in seconds) to wait for the browser to finish
      * @param multiWindow - whether to run the browser in multiWindow or else framed mode
      * @return PASSED or FAIL
      * @throws IOException if we can't write the output file

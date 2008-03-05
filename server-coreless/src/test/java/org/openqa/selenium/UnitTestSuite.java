@@ -3,6 +3,8 @@ package org.openqa.selenium;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
+import org.openqa.selenium.server.BrowserSessionFactoryTest;
 import org.openqa.selenium.server.ClasspathResourceLocatorTest;
 import org.openqa.selenium.server.CommandHolderTest;
 import org.openqa.selenium.server.CommandQueueTest;
@@ -30,6 +32,7 @@ public class UnitTestSuite extends TestCase {
         suite.addTestSuite(CommandHolderTest.class);
         suite.addTestSuite(CommandResultHolderTest.class);
         suite.addTestSuite(CommandQueueTest.class);
+        suite.addTestSuite(BrowserSessionFactoryTest.class);
         suite.addTestSuite(SeleniumServerTest.class);
         suite.addTestSuite(ClasspathResourceLocatorTest.class);
         suite.addTestSuite(FrameGroupCommandQueueTest.class);

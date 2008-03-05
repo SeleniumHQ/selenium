@@ -44,8 +44,8 @@ import org.mortbay.http.SocketListener;
 import org.mortbay.http.handler.SecurityHandler;
 import org.mortbay.jetty.Server;
 import org.mortbay.log.LogFactory;
+import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
 import org.openqa.selenium.server.browserlaunchers.AsyncExecute;
-import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.server.htmlrunner.HTMLLauncher;
 import org.openqa.selenium.server.htmlrunner.HTMLResultsListener;
 import org.openqa.selenium.server.htmlrunner.SeleniumHTMLRunnerResultsHandler;
@@ -476,12 +476,6 @@ public class SeleniumServer {
                         InjectionHelper.userJsInjectionsExist())) {
             usage("-userJsInjection and -userContentTransformation are only " +
                     "valid in combination with -proxyInjectionMode");
-            System.exit(1);
-        }
-        if (!isProxyInjectionMode() && reusingBrowserSessions()) {
-            usage("-reusingBrowserSessions only valid in combination with -proxyInjectionMode" +
-                    " (because of the need for multiple domain support, which only -proxyInjectionMode" +
-                    " provides).");
             System.exit(1);
         }
     }
@@ -935,15 +929,7 @@ public class SeleniumServer {
             }
         }
     }
-
-    /**
-     * Returns a map of session IDs and their associated browser launchers for all active sessions.
-     * @return
-     */
-    public Map<String, BrowserLauncher> getBrowserLaunchers() {
-        return driver.getLaunchers();
-    }
-
+    
     public int getPort() {
         return port;
     }
@@ -969,9 +955,14 @@ public class SeleniumServer {
     	return staticContentHandler.getResource(path).getInputStream();
     }
     
-    /** Registers a running browser with a specific sessionID */
-    public void registerBrowserLauncher(String sessionId, BrowserLauncher launcher) {
-    	driver.registerBrowserLauncher(sessionId, launcher);
+    /** Registers a running browser session */
+    public void registerBrowserSession(BrowserSessionInfo sessionInfo) {
+    	driver.registerBrowserSession(sessionInfo);
+    }
+    
+    /** De-registers a previously registered running browser session */
+    public void deregisterBrowserSession(BrowserSessionInfo sessionInfo) {
+        driver.deregisterBrowserSession(sessionInfo);
     }
     
     /**
