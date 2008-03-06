@@ -680,7 +680,6 @@ function test_Pageset_init()
     });
     assertEquals('name', pageset.name);
     assertEquals('desc', pageset.description);
-    assertEquals('foo/', pageset.pathPrefix);
     assertEquals('^foo\\/(?:bar|baz|shizzle\\.py)$', pageset.pathRegexp.source);
     assertTrue(are_equal({}, pageset.paramRegexps));
     
@@ -694,7 +693,6 @@ function test_Pageset_init()
     });
     assertEquals('name', pageset.name);
     assertEquals('desc', pageset.description);
-    assertEquals('no.way.', pageset.pathPrefix);
     assertEquals('^no\\.way\\.(?:to.e)$', pageset.pathRegexp.source);
     assertEquals('wallabee', pageset.paramRegexps.id.source);
     assertEquals('(?:medium|large)', pageset.paramRegexps.type.source);

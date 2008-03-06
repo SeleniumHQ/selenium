@@ -195,7 +195,7 @@ map.addPageset({
     <li>http://www.example.com/<span class="highlight">articles/2579</span>?lang=en_US</li>
     <li>http://www.example.com/<span class="highlight">articles/selenium</span>/</li>
     </ul>
-     The entire path must match. If specified as a regular expression, the two regular expression characters <code>^</code> and <code>$</code> marking the start and end of the matched string are included implicitly, and should not be specified in this string. Please notice too that backslashes must be backslash-escaped in javascript strings.</td>
+     The entire path must match (however, <code>pathPrefix</code> is taken into account if specified). If specified as a regular expression, the two regular expression characters <code>^</code> and <code>$</code> marking the start and end of the matched string are included implicitly, and should not be specified in this string. Please notice too that backslashes must be backslash-escaped in javascript strings.</td>
     <td><pre>paths: [
     'gotoHome.do'
     , 'gotoAbout.do'

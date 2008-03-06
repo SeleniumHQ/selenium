@@ -1030,32 +1030,32 @@ all copies or substantial portions of the Software.
 */
 
 function parseUri (str) {
-	var	o   = parseUri.options,
-		m   = o.parser[o.strictMode ? "strict" : "loose"].exec(str),
-		uri = {},
-		i   = 14;
+    var o   = parseUri.options,
+        m   = o.parser[o.strictMode ? "strict" : "loose"].exec(str),
+        uri = {},
+        i   = 14;
 
-	while (i--) uri[o.key[i]] = m[i] || "";
+    while (i--) uri[o.key[i]] = m[i] || "";
 
-	uri[o.q.name] = {};
-	uri[o.key[12]].replace(o.q.parser, function ($0, $1, $2) {
-		if ($1) uri[o.q.name][$1] = $2;
-	});
+    uri[o.q.name] = {};
+    uri[o.key[12]].replace(o.q.parser, function ($0, $1, $2) {
+        if ($1) uri[o.q.name][$1] = $2;
+    });
 
-	return uri;
+    return uri;
 };
 
 parseUri.options = {
-	strictMode: false,
-	key: ["source","protocol","authority","userInfo","user","password","host","port","relative","path","directory","file","query","anchor"],
-	q:   {
-		name:   "queryKey",
-		parser: /(?:^|&)([^&=]*)=?([^&]*)/g
-	},
-	parser: {
-		strict: /^(?:([^:\/?#]+):)?(?:\/\/((?:(([^:@]*):?([^:@]*))?@)?([^:\/?#]*)(?::(\d*))?))?((((?:[^?#\/]*\/)*)([^?#]*))(?:\?([^#]*))?(?:#(.*))?)/,
-		loose:  /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@]*):?([^:@]*))?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/
-	}
+    strictMode: false,
+    key: ["source","protocol","authority","userInfo","user","password","host","port","relative","path","directory","file","query","anchor"],
+    q:   {
+        name:   "queryKey",
+        parser: /(?:^|&)([^&=]*)=?([^&]*)/g
+    },
+    parser: {
+        strict: /^(?:([^:\/?#]+):)?(?:\/\/((?:(([^:@]*):?([^:@]*))?@)?([^:\/?#]*)(?::(\d*))?))?((((?:[^?#\/]*\/)*)([^?#]*))(?:\?([^#]*))?(?:#(.*))?)/,
+        loose:  /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@]*):?([^:@]*))?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/
+    }
 };
 
 //******************************************************************************
@@ -1660,9 +1660,9 @@ function Pageset(pagesetShorthand)
     this.contains = function(inDocument)
     {
         var urlParts = parseUri(unescape(inDocument.location.href));
-		var path = urlParts.path
-			.replace(/^\//, "")
-			.replace(/\/$/, "");
+        var path = urlParts.path
+            .replace(/^\//, "")
+            .replace(/\/$/, "");
         if (!this.pathRegexp.test(path)) {
             return false;
         }
@@ -1750,9 +1750,12 @@ function Pageset(pagesetShorthand)
         this._validate(pagesetShorthand);
         this.name = pagesetShorthand.name;
         this.description = pagesetShorthand.description;
-        this.pathPrefix = pagesetShorthand.pathPrefix || '';
+        var pathPrefixRegexp = pagesetShorthand.pathPrefix
+            ? RegExp.escape(pagesetShorthand.pathPrefix) : "";
+        var pathRegexp = '^' + pathPrefixRegexp;
+        
         if (pagesetShorthand.paths != undefined) {
-            var pathRegexp = '^' + RegExp.escape(this.pathPrefix) + '(?:';
+            pathRegexp += '(?:';
             for (var i = 0; i < pagesetShorthand.paths.length; ++i) {
                 if (i > 0) {
                     pathRegexp += '|';
@@ -1760,12 +1763,12 @@ function Pageset(pagesetShorthand)
                 pathRegexp += RegExp.escape(pagesetShorthand.paths[i]);
             }
             pathRegexp += ')$';
-            this.pathRegexp = new RegExp(pathRegexp);
         }
-        else {
-            this.pathRegexp = new RegExp('^' + RegExp.escape(this.pathPrefix)
-                + '(?:' + (pagesetShorthand.pathRegexp || "") + ')$');
+        else if (pagesetShorthand.pathRegexp) {
+            pathRegexp += '(?:' + pagesetShorthand.pathRegexp + ')$';
         }
+
+        this.pathRegexp = new RegExp(pathRegexp);
         this.paramRegexps = {};
         for (var paramName in pagesetShorthand.paramRegexps) {
             this.paramRegexps[paramName] =
