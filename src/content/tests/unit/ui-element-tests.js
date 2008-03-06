@@ -696,6 +696,41 @@ function test_Pageset_init()
     assertEquals('^no\\.way\\.(?:to.e)$', pageset.pathRegexp.source);
     assertEquals('wallabee', pageset.paramRegexps.id.source);
     assertEquals('(?:medium|large)', pageset.paramRegexps.type.source);
+
+    // happy path: paths only
+    pageset.init({
+        name: 'name'
+        , description: 'desc'
+        , paths: [ 'just.html', 'do.html', 'it.html' ]
+    });
+    assertEquals('name', pageset.name);
+    assertEquals('desc', pageset.description);
+    assertEquals('^(?:just\\.html|do\\.html|it\\.html)$',
+        pageset.pathRegexp.source);
+    
+    // happy path: pathRegexp only
+    pageset.init({
+        name: 'name'
+        , description: 'desc'
+        , pathRegexp: '.+\\.rb'
+    });
+    assertEquals('name', pageset.name);
+    assertEquals('desc', pageset.description);
+    assertEquals('^(?:.+\\.rb)$', pageset.pathRegexp.source);
+    
+    // omitting both paths and pathRegexp isn't allowed now, but we might allow
+    // it in the future
+    try {
+        pageset.init({
+            name: 'name'
+            , description: 'desc'
+            , pathPrefix: 'helloWorld'
+        });
+        fail('PagesetException expected but not thrown');
+    }
+    catch (e) {
+        assertEquals('PagesetException', e.name);
+    }
 }
 
 
