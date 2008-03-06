@@ -1,7 +1,7 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openqa.selenium.ide</groupId>
-  <version>1.0-beta-1</version>
+  <version>1.0-SNAPSHOT</version>
   <artifactId>selenium-ide</artifactId>
   <packaging>jar</packaging>
   <name>Selenium IDE</name>
@@ -162,7 +162,7 @@
     </dependency>
   </dependencies>
   <properties>
-    <seleniumCoreVersion>1.0-beta-1</seleniumCoreVersion>
-    <seleniumRCVersion>1.0-beta-1</seleniumRCVersion>
+    <seleniumCoreVersion>1.0-SNAPSHOT</seleniumCoreVersion>
+    <seleniumRCVersion>1.0-SNAPSHOT</seleniumRCVersion>
   </properties>
 </project>
