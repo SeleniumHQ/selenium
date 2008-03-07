@@ -3,6 +3,7 @@ package com.googlecode.webdriver;
 import com.googlecode.webdriver.internal.FindsById;
 import com.googlecode.webdriver.internal.FindsByLinkText;
 import com.googlecode.webdriver.internal.FindsByXPath;
+import com.googlecode.webdriver.internal.FindsByName;
 
 import java.text.MessageFormat;
 import java.util.Iterator;
@@ -28,6 +29,10 @@ public class By {
 
     public static By linkText(String linkText) {
         return new By(How.LINK_TEXT, linkText);
+    }
+
+    public static By name(String name) {
+        return new By(How.NAME, name);
     }
 
     public static By xpath(String xpathExpression) {
@@ -56,6 +61,12 @@ public class By {
 
           case LINK_TEXT:
             elements = ((FindsByLinkText) driver).findElementsByLinkText(using);
+            break;
+
+          case NAME:
+            if (driver instanceof FindsByName)
+              return ((FindsByName) driver).findElementsByName(using);
+            elements = ((FindsByXPath) driver).findElementsByXPath("//*[@name = '" + using + "']");
             break;
 
           case XPATH:
@@ -116,6 +127,11 @@ public class By {
 
         case LINK_TEXT:
           return ((FindsByLinkText) driver).findElementByLinkText(using);
+
+        case NAME:
+          if (driver instanceof FindsByName)
+            return ((FindsByName) driver).findElementByName(using);
+          return ((FindsByXPath) driver).findElementByXPath("//*[@name = '" + using + "']");
 
         case XPATH:
           return ((FindsByXPath) driver).findElementByXPath(using);

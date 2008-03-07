@@ -44,6 +44,9 @@ public class LocatingElementHandler implements InvocationHandler {
         case LINK_TEXT:
           return By.linkText(using);
 
+        case NAME:
+          return By.name(using);
+
         case XPATH:
           return By.xpath(using);
 

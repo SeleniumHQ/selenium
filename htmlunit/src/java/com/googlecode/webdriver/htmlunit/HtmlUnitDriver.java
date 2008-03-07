@@ -55,8 +55,9 @@ import com.googlecode.webdriver.WebElement;
 import com.googlecode.webdriver.internal.FindsById;
 import com.googlecode.webdriver.internal.FindsByLinkText;
 import com.googlecode.webdriver.internal.FindsByXPath;
+import com.googlecode.webdriver.internal.FindsByName;
 
-public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText, FindsByXPath {
+public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText, FindsByXPath, FindsByName {
     private WebClient webClient;
     private WebWindow currentWindow;
 
@@ -144,23 +145,6 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText, Fi
         // no-op
     }
 
-    @SuppressWarnings("unchecked")
-    public List<WebElement> findElementsByXPath(String selector) {
-        try {
-            HtmlUnitXPath xpath = new HtmlUnitXPath(selector);
-            List<HtmlElement> nodes = xpath.selectNodes(lastPage());
-            List<WebElement> elements = new ArrayList<WebElement>();
-
-            for (int i = 0; i < nodes.size(); i++) {
-                elements.add(new HtmlUnitWebElement(this, nodes.get(i)));
-            }
-
-            return elements;
-        } catch (JaxenException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     public WebElement findElement(By by) {
         return by.findElement(this);
     }
@@ -242,7 +226,23 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText, Fi
         return findElementsByXPath("//*[@id='" + id + "']");
     }
 
-    public WebElement findElementByXPath(String selector) {
+  @SuppressWarnings("unchecked")
+  public WebElement findElementByName(String name) {
+    List<HtmlElement> allElements = lastPage().getHtmlElementsByName(name);
+    if (allElements.size() > 0) {
+        return new HtmlUnitWebElement(this, allElements.get(0));
+    }
+
+    throw new NoSuchElementException("Cannot find element with name: " + name);
+  }
+
+  @SuppressWarnings("unchecked")
+  public List<WebElement> findElementsByName(String using) {
+    List allElements = lastPage().getHtmlElementsByName(using);
+    return convertRawHtmlElementsToWebElements(allElements);
+  }
+
+  public WebElement findElementByXPath(String selector) {
         try {
             XPath xpath = new HtmlUnitXPath(selector);
             Object node = xpath.selectSingleNode(lastPage());
@@ -254,7 +254,30 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText, Fi
         }
     }
 
-    private class HtmlUnitTargetLocator implements TargetLocator {
+    @SuppressWarnings("unchecked")
+    public List<WebElement> findElementsByXPath(String selector) {
+        try {
+            HtmlUnitXPath xpath = new HtmlUnitXPath(selector);
+            List<HtmlElement> nodes = xpath.selectNodes(lastPage());
+
+            return convertRawHtmlElementsToWebElements(nodes);
+        } catch (JaxenException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private List<WebElement> convertRawHtmlElementsToWebElements(List<HtmlElement> nodes) {
+        List<WebElement> elements = new ArrayList<WebElement>();
+
+      for (HtmlElement node : nodes) {
+        elements.add(new HtmlUnitWebElement(this, node));
+      }
+
+        return elements;
+    }
+
+
+  private class HtmlUnitTargetLocator implements TargetLocator {
         public WebDriver frame(int frameIndex) {
             HtmlPage page = (HtmlPage) webClient.getCurrentWindow().getEnclosedPage();
             try {

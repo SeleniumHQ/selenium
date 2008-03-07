@@ -84,4 +84,29 @@ public class ElementFindingTest extends AbstractDriverTestCase {
         List<WebElement> importedScripts = head.getChildrenOfType("script");
         assertThat(importedScripts.size(), equalTo(2));
     }
+
+    public void testShouldFindElementsByName() {
+        driver.get(formPage);
+
+        WebElement element = driver.findElement(By.name("checky"));
+
+        assertThat(element.getValue(), is("furrfu"));
+    }
+
+    // You don't want to ask why this is here
+    public void testWhenFindingByNameShouldNotReturnById() {
+        driver.get(formPage);
+
+        WebElement element = driver.findElement(By.name("id-name1"));
+        assertThat(element.getValue(), is("name"));
+
+        element = driver.findElement(By.id("id-name1"));
+        assertThat(element.getValue(), is("id"));
+
+        element = driver.findElement(By.name("id-name2"));
+        assertThat(element.getValue(), is("name"));
+
+        element = driver.findElement(By.id("id-name2"));      
+        assertThat(element.getValue(), is("id"));
+    }
 }
