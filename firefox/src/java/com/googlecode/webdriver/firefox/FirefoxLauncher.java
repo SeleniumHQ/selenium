@@ -28,24 +28,32 @@ public class FirefoxLauncher {
 
         if (args.length == 0)
             launcher.createBaseWebDriverProfile();
-        else
+        else if (args.length == 1)
             launcher.createBaseWebDriverProfile(args[0]);
+        else
+        	launcher.createBaseWebDriverProfile(args[0], Integer.parseInt(args[1]));
     }
 
     public void createBaseWebDriverProfile() {
-        createBaseWebDriverProfile("WebDriver");
+        createBaseWebDriverProfile(FirefoxDriver.DEFAULT_PROFILE);
     }
 
     public void createBaseWebDriverProfile(String profileName) {
+        createBaseWebDriverProfile(profileName, FirefoxDriver.DEFAULT_PORT);
+    }
+
+    public void createBaseWebDriverProfile(String profileName, int port) {
         // If there's a browser already running
-        connectAndKill();
+        connectAndKill(port);
 
         File firefox = locateFirefoxBinary(null);
 
         System.out.println(MessageFormat.format("Creating {0}", profileName));
         Process process;
         try {
-            process = new ProcessBuilder(firefox.getAbsolutePath(), "-CreateProfile", profileName).redirectErrorStream(true).start();
+            ProcessBuilder builder = new ProcessBuilder(firefox.getAbsolutePath(), "-CreateProfile", profileName).redirectErrorStream(true);
+            builder.environment().put("MOZ_NO_REMOTE", "1");
+            process = builder.start();
 
             process.waitFor();
 
@@ -62,7 +70,7 @@ public class FirefoxLauncher {
         installExtensionInto(extensionsDir);
 
         System.out.println("Updating user preferences with common, useful settings");
-        updateUserPrefsFor(extensionsDir);
+        updateUserPrefsFor(extensionsDir, port);
 
         System.out.println("Deleting existing extensions cache (if it already exists)");
         deleteExtensionsCacheIfItExists(extensionsDir);
@@ -70,14 +78,14 @@ public class FirefoxLauncher {
         System.out.println("Firefox should now start and quit");
 
         startFirefox(firefox, profileName);
-        connectAndWaitForConnectionToDrop();
-        connectAndKill();
+        connectAndWaitForConnectionToDrop(port);
+        connectAndKill(port);
     }
 
-    private void connectAndWaitForConnectionToDrop() {
+    private void connectAndWaitForConnectionToDrop(int port) {
         while (true) {
             try {
-                new RunningInstanceConnection("localhost", 7055, 1000);
+                new RunningInstanceConnection("localhost", port, 1000);
                 sleep(2000);
             } catch (ConnectException e) {
                 // Expected
@@ -96,9 +104,9 @@ public class FirefoxLauncher {
         }
     }
 
-    protected void connectAndKill() {
+    protected void connectAndKill(int port) {
         try {
-            ExtensionConnection connection = new RunningInstanceConnection("localhost", 7055, 5000);
+            ExtensionConnection connection = new RunningInstanceConnection("localhost", port, 5000);
             connection.sendMessageAndWaitForResponse(RuntimeException.class, new Command(null, "quit"));
         } catch (NullPointerException e) {
             // Expected. Swallow it.
@@ -119,7 +127,7 @@ public class FirefoxLauncher {
         }
     }
 
-    protected void updateUserPrefsFor(File extensionsDir) {
+    protected void updateUserPrefsFor(File extensionsDir, int port) {
         File userPrefs = new File(extensionsDir, "user.js");
 
         Map<String, String> prefs = new HashMap<String, String>();
@@ -155,7 +163,7 @@ public class FirefoxLauncher {
         prefs.put("signon.rememberSignons", "false");
 
         // Which port should we listen on?
-        prefs.put("webdriver_firefox_port", "7055");
+        prefs.put("webdriver_firefox_port", Integer.toString(port));
 
         // Settings to facilitate debugging the driver
         prefs.put("javascript.options.showInConsole", "true"); // Logs errors in chrome files to the Error Console.
@@ -257,7 +265,7 @@ public class FirefoxLauncher {
         profileName = profileName == null ? System.getProperty("webdriver.firefox.profile") : profileName;
 
         if (profileName == null) {
-            profileName = "WebDriver";
+            profileName = FirefoxDriver.DEFAULT_PROFILE;
         }
 
         try {

@@ -42,6 +42,10 @@ import java.text.SimpleDateFormat;
  * This allows multiple instances of firefox to be started.
  */
 public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, FindsByXPath {
+
+	public static final String DEFAULT_PROFILE = "WebDriver";
+	public static final int DEFAULT_PORT = 7055;
+
     private final ExtensionConnection extension;
     protected Context context;
 
@@ -50,9 +54,13 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
     }
 
     public FirefoxDriver(String profileName) {
+    	this(profileName, DEFAULT_PORT);
+    }
+
+    public FirefoxDriver(String profileName, int port) {
         prepareEnvironment();
 
-        extension = connectTo(profileName, "localhost", 7055);
+        extension = connectTo(profileName, "localhost", port);
 
         if (!extension.isConnected()) {
             throw new RuntimeException(
