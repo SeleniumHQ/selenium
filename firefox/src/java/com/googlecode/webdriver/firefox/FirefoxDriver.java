@@ -42,7 +42,6 @@ import java.text.SimpleDateFormat;
  * This allows multiple instances of firefox to be started.
  */
 public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, FindsByXPath {
-
 	public static final String DEFAULT_PROFILE = "WebDriver";
 	public static final int DEFAULT_PORT = 7055;
 

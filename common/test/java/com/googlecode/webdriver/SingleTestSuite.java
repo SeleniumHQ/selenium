@@ -10,14 +10,14 @@ public class SingleTestSuite {
 
     public static Test suite() {
 		return new TestSuiteBuilder()
-					.addSourceDir("common")
-//                    .addSourceDir("firefox")
-                    .usingDriver(IE)
-					.keepDriverInstance()
-                    .includeJavascriptTests()
-                    .onlyRun("JavascriptEnabledDriverTest")
-                    .method("testShouldReportKeyCodeOfArrowKeysWhenPressEventNotFiredByBrowser")
-//                    .leaveRunningAfterTest()
-                    .create();
+				    	.addSourceDir("common")
+              .addSourceDir("firefox")
+              .usingDriver(FIREFOX)
+              .keepDriverInstance()
+              .includeJavascriptTests()
+              .onlyRun("FirefoxDriverTest")
+              .method("testShouldBeAbleToStartMoreThanOneInstanceOfTheFirefoxDriverSimultaneously")
+    //                    .leaveRunningAfterTest()
+              .create();
 	}
 }

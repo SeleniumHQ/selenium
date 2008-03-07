@@ -8,7 +8,7 @@ import org.jmock.Expectations;
 import org.jmock.integration.junit3.MockObjectTestCase;
 
 public class ByTest extends MockObjectTestCase {
-  public void xtestShouldUseFindsByNameToLocateElementsByName() {
+  public void testShouldUseFindsByNameToLocateElementsByName() {
     final AllDriver driver = mock(AllDriver.class);
 
     checking(new Expectations() {{

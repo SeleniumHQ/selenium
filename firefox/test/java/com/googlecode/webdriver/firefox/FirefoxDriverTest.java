@@ -1,7 +1,7 @@
 package com.googlecode.webdriver.firefox;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.equalTo;import static org.hamcrest.Matchers.is;
 
 import com.googlecode.webdriver.AbstractDriverTestCase;
 import com.googlecode.webdriver.By;
@@ -9,6 +9,8 @@ import com.googlecode.webdriver.Ignore;
 import com.googlecode.webdriver.NeedsFreshDriver;
 import com.googlecode.webdriver.NoSuchElementException;
 import com.googlecode.webdriver.WebElement;
+import com.googlecode.webdriver.NoDriverAfterTest;
+import com.googlecode.webdriver.WebDriver;
 
 public class FirefoxDriverTest extends AbstractDriverTestCase {
     public void testShouldContinueToWorkIfUnableToFindElementById() {
@@ -53,5 +55,18 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
 
       String seenText = textarea.getValue();
       assertThat(seenText, equalTo(expectedText));
+    }
+
+    public void testShouldBeAbleToStartMoreThanOneInstanceOfTheFirefoxDriverSimultaneously() {
+      WebDriver secondDriver = new FirefoxDriver();
+
+      driver.get(xhtmlTestPage);
+      secondDriver.get(formPage);
+
+      assertThat(driver.getTitle(), is("XHTML Test Page"));
+      assertThat(secondDriver.getTitle(), is("We Leave From Here"));
+
+      // We only need to quit the second driver if the test passes
+      secondDriver.quit();
     }
 }

@@ -255,11 +255,11 @@ public class FirefoxLauncher {
         }
     }
 
-    public Process startProfile(String profileName) {
-        return startProfile(profileName, null);
+    public Process startProfile(String profileName, int port) {
+        return startProfile(profileName, null, port);
     }
 
-    public Process startProfile(String profileName, File firefoxBinary) {
+    public Process startProfile(String profileName, File firefoxBinary, int port) {
         File binary = locateFirefoxBinary(firefoxBinary);
 
         profileName = profileName == null ? System.getProperty("webdriver.firefox.profile") : profileName;
@@ -274,7 +274,7 @@ public class FirefoxLauncher {
             if (!from.exists())
                 throw new RuntimeException(MessageFormat.format("Found the {0} profile directory, but it does not exist: {1}",
                         profileName, from.getAbsolutePath()));
-            File profileDir = createCopyOfProfile(from);
+            File profileDir = createCopyOfProfile(from, port);
 
             ProcessBuilder builder = new ProcessBuilder(binary.getAbsolutePath()).redirectErrorStream(true);
             modifyLibraryPath(builder, binary);
@@ -316,17 +316,18 @@ public class FirefoxLauncher {
         builder.environment().put(propertyName, libraryPath);
     }
 
-    protected File createCopyOfProfile(File from) {
+    protected File createCopyOfProfile(File from, int port) {
         File tmpDir = new File(System.getProperty("java.io.tmpdir"));
         File to = new File(tmpDir, "webdriver-" + System.currentTimeMillis());
         to.mkdirs();
 
         copy(from, to);
+        updateUserPrefsFor(to, port);
 
         return to;
     }
 
-    protected void copy(File from, File to) {
+  protected void copy(File from, File to) {
         String[] contents = from.list();
         for (String child : contents) {
             File toCopy = new File(from, child);
