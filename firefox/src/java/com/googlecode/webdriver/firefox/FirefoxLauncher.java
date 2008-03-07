@@ -1,5 +1,8 @@
 package com.googlecode.webdriver.firefox;
 
+import com.googlecode.webdriver.firefox.internal.Cleanly;
+import com.googlecode.webdriver.firefox.internal.FirefoxProfile;
+import com.googlecode.webdriver.firefox.internal.ProfilesIni;
 import com.googlecode.webdriver.firefox.internal.RunningInstanceConnection;
 import com.googlecode.webdriver.internal.OperatingSystem;
 
@@ -9,18 +12,11 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.io.Writer;
 import java.net.ConnectException;
 import java.text.MessageFormat;
-import java.util.HashMap;
-import java.util.Map;
 
 public class FirefoxLauncher {
     public static void main(String[] args) {
@@ -64,34 +60,45 @@ public class FirefoxLauncher {
             throw new RuntimeException(e);
         }
 
-        File extensionsDir = locateWebDriverProfile(profileName);
+        ProfilesIni allProfiles = new ProfilesIni();
+        FirefoxProfile profile = allProfiles.getProfile(profileName);
+        File extensionsDir = profile.getExtensionsDir();
 
         System.out.println("Attempting to install the WebDriver extension");
         installExtensionInto(extensionsDir);
 
         System.out.println("Updating user preferences with common, useful settings");
-        updateUserPrefsFor(extensionsDir, port);
+        profile.setPort(port);
+        profile.updateUserPrefs();
 
         System.out.println("Deleting existing extensions cache (if it already exists)");
-        deleteExtensionsCacheIfItExists(extensionsDir);
+        profile.deleteExtensionsCacheIfItExists();
 
         System.out.println("Firefox should now start and quit");
 
+        // These next two lines are a race condition. On a fast system, firefox
+        // might be able to sort itself and restart before we attempt the first
+        // connect
         startFirefox(firefox, profileName);
-        connectAndWaitForConnectionToDrop(port);
-        connectAndKill(port);
+        
+        repeatedlyConnectUntilFirefoxAppearsStable(port);
     }
 
-    private void connectAndWaitForConnectionToDrop(int port) {
-        while (true) {
+    private void repeatedlyConnectUntilFirefoxAppearsStable(int port) {
+      ExtensionConnection connection = null;
+      // maximum wait time is a minute
+      long maxWaitTime = System.currentTimeMillis() + 60000;
+      
+        while (System.currentTimeMillis() < maxWaitTime) {
             try {
-                new RunningInstanceConnection("localhost", port, 1000);
-                sleep(2000);
+                connection = new RunningInstanceConnection("localhost", port, 1000);
+                sleep(4000);
+                connection.quit();
+                return;
             } catch (ConnectException e) {
-                // Expected
-                break;
+                // Fine. Nothing listening. Perhaps in a restart?
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                // Expected. It'll do that
             }
         }
     }
@@ -107,9 +114,7 @@ public class FirefoxLauncher {
     protected void connectAndKill(int port) {
         try {
             ExtensionConnection connection = new RunningInstanceConnection("localhost", port, 5000);
-            connection.sendMessageAndWaitForResponse(RuntimeException.class, new Command(null, "quit"));
-        } catch (NullPointerException e) {
-            // Expected. Swallow it.
+            connection.quit();
         } catch (ConnectException e) {
             // This is fine. It just means that Firefox isn't running with the webdriver extension installed already
         } catch (IOException e) {
@@ -127,104 +132,7 @@ public class FirefoxLauncher {
         }
     }
 
-    protected void updateUserPrefsFor(File extensionsDir, int port) {
-        File userPrefs = new File(extensionsDir, "user.js");
-
-        Map<String, String> prefs = new HashMap<String, String>();
-        if (userPrefs.exists()) {
-            prefs = readExistingPrefs(userPrefs);
-            if (!userPrefs.delete())
-                throw new RuntimeException("Cannot delete existing user preferences");
-        }
-
-        // Normal settings to facilitate testing
-        prefs.put("app.update.enabled", "false");
-        prefs.put("browser.download.manager.showWhenStarting", "false");
-        prefs.put("browser.link.open_external", "2");
-        prefs.put("browser.link.open_newwindow", "2");
-        prefs.put("browser.search.update", "false");
-        prefs.put("browser.shell.checkDefaultBrowser", "false");
-        prefs.put("browser.startup.page", "0");
-        prefs.put("browser.tabs.warnOnClose", "false");
-        prefs.put("browser.tabs.warnOnOpen", "false");
-        prefs.put("dom.disable_open_during_load", "false");
-        prefs.put("extensions.update.enabled", "false");
-        prefs.put("extensions.update.notifyUser", "false");
-        prefs.put("security.warn_entering_secure", "false");
-        prefs.put("security.warn_submit_insecure", "false");
-        prefs.put("security.warn_entering_secure.show_once", "false");
-        prefs.put("security.warn_entering_weak", "false");
-        prefs.put("security.warn_entering_weak.show_once", "false");
-        prefs.put("security.warn_leaving_secure", "false");
-        prefs.put("security.warn_leaving_secure.show_once", "false");
-        prefs.put("security.warn_submit_insecure", "false");
-        prefs.put("security.warn_viewing_mixed", "false");
-        prefs.put("security.warn_viewing_mixed.show_once", "false");
-        prefs.put("signon.rememberSignons", "false");
-
-        // Which port should we listen on?
-        prefs.put("webdriver_firefox_port", Integer.toString(port));
-
-        // Settings to facilitate debugging the driver
-        prefs.put("javascript.options.showInConsole", "true"); // Logs errors in chrome files to the Error Console.
-        prefs.put("browser.dom.window.dump.enabled", "true");  // Enables the use of the dump() statement 
-
-        writeNewPrefs(userPrefs, prefs);
-    }
-
-    private void writeNewPrefs(File userPrefs, Map<String, String> prefs) {
-        Writer writer = null;
-        try {
-            writer = new FileWriter(userPrefs);
-            for (Map.Entry<String, String> entry : prefs.entrySet()) {
-                writer.append("user_pref(\"").append(entry.getKey()).append("\", ").append(entry.getValue()).append(");\n");
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } finally {
-            closeCleanly(writer);
-        }
-    }
-
-    // Assumes that we only really care about the preferences, not the comments
-    private Map<String, String> readExistingPrefs(File userPrefs) {
-        Map<String, String> prefs = new HashMap<String, String>();
-
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new FileReader(userPrefs));
-            String line = reader.readLine();
-            while (line != null) {
-                if (!line.startsWith("user_pref(\"")) {
-                    line = reader.readLine();
-                    continue;
-                }
-                line = line.substring("user_pref(\"".length());
-                line = line.substring(0, line.length() - ");".length());
-                String[] parts = line.split(",");
-                parts[0] = parts[0].substring(0, parts[0].length() - 1);
-                prefs.put(parts[0].trim(), parts[1].trim());
-
-                line = reader.readLine();
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } finally {
-            closeCleanly(reader);
-        }
-
-        return prefs;
-    }
-
-    private void deleteExtensionsCacheIfItExists(File extensionsDir) {
-        File cacheFile = new File(extensionsDir, "extensions.cache");
-        if (cacheFile.exists())
-            cacheFile.delete();
-    }
-
-    protected void installExtensionInto(File profileDir) {
-        File extensionsDir = new File(profileDir, "extensions");
-
+    protected void installExtensionInto(File extensionsDir) {
         String home = System.getProperty("webdriver.firefox.development");
         if (home != null) {
             installDevelopmentExtension(extensionsDir, home);
@@ -239,6 +147,7 @@ public class FirefoxLauncher {
                     "directory for the extension: " + home);
 
         extensionsDir.mkdirs();
+        
         File writeTo = new File(extensionsDir, "fxdriver@googlecode.com");
         if (writeTo.exists()) {
             writeTo.delete();
@@ -251,30 +160,23 @@ public class FirefoxLauncher {
         } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {
-            closeCleanly(writer);
+            Cleanly.close(writer);
         }
     }
 
-    public Process startProfile(String profileName, int port) {
-        return startProfile(profileName, null, port);
+    public Process startProfile(File profileDir, int port) {
+        return startProfile(profileDir, null, port);
     }
 
-    public Process startProfile(String profileName, File firefoxBinary, int port) {
+    public Process startProfile(File originalProfileDir, File firefoxBinary, int port) {
         File binary = locateFirefoxBinary(firefoxBinary);
-
-        profileName = profileName == null ? System.getProperty("webdriver.firefox.profile") : profileName;
-
-        if (profileName == null) {
-            profileName = FirefoxDriver.DEFAULT_PROFILE;
-        }
 
         try {
             // Find the "normal" WebDriver profile, and make a copy of it
-            File from = locateWebDriverProfile(profileName);
-            if (!from.exists())
-                throw new RuntimeException(MessageFormat.format("Found the {0} profile directory, but it does not exist: {1}",
-                        profileName, from.getAbsolutePath()));
-            File profileDir = createCopyOfProfile(from, port);
+            if (!originalProfileDir.exists())
+                throw new RuntimeException(MessageFormat.format("Found the profile directory does not exist: {0}",
+                        originalProfileDir.getAbsolutePath()));
+            File profileDir = createCopyOfProfile(originalProfileDir, port);
 
             ProcessBuilder builder = new ProcessBuilder(binary.getAbsolutePath()).redirectErrorStream(true);
             modifyLibraryPath(builder, binary);
@@ -282,7 +184,7 @@ public class FirefoxLauncher {
             builder.environment().put("XRE_PROFILE_PATH", profileDir.getAbsolutePath());
             return builder.start();
         } catch (IOException e) {
-            throw new RuntimeException("Cannot load firefox: " + profileName);
+            throw new RuntimeException("Cannot load firefox: " + originalProfileDir);
         }
     }
 
@@ -322,7 +224,9 @@ public class FirefoxLauncher {
         to.mkdirs();
 
         copy(from, to);
-        updateUserPrefsFor(to, port);
+        FirefoxProfile profile = new FirefoxProfile(to);
+        profile.setPort(port);
+        profile.updateUserPrefs();
 
         return to;
     }
@@ -357,131 +261,10 @@ public class FirefoxLauncher {
         } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {
-            closeCleanly(out);
-            closeCleanly(in);
+            Cleanly.close(out);
+            Cleanly.close(in);
         }
     }
-
-    private void closeCleanly(InputStream toClose) {
-        if (toClose == null)
-            return;
-
-        try {
-            toClose.close();
-        } catch (IOException e) {
-            // nothing that can done. Ignoring.
-        }
-    }
-
-    private void closeCleanly(OutputStream toClose) {
-        if (toClose == null)
-            return;
-
-        try {
-            toClose.close();
-        } catch (IOException e) {
-            // nothing that can done. Ignoring.
-        }
-    }
-
-    private void closeCleanly(Reader reader) {
-        if (reader == null)
-            return;
-
-        try {
-            reader.close();
-        } catch (IOException e) {
-            // nothing that can done. Ignoring.
-        }
-    }
-
-    private void closeCleanly(Writer reader) {
-        if (reader == null)
-            return;
-
-        try {
-            reader.close();
-        } catch (IOException e) {
-            // nothing that can done. Ignoring.
-        }
-    }
-
-    protected File locateWebDriverProfile(String profileName) {
-        String profileNameLine = "Name=" + profileName;
-        File appData = locateUserDataDirectory(OperatingSystem.getCurrentPlatform());
-
-        File profilesIni = new File(appData, "profiles.ini");
-        if (!profilesIni.exists()) {
-            throw new RuntimeException("Unable to locate the profiles.ini file, which contains information about where to locate the profiles");
-        }
-
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new FileReader(profilesIni));
-            boolean isRelative = true;
-            String line = reader.readLine();
-            boolean inProfile = false;
-            while (line != null) {
-                if (inProfile && line.startsWith("IsRelative="))
-                    isRelative = line.endsWith("1");
-                if (inProfile && line.startsWith("Name")) {
-                    // We've left the webdriver profile and should have returned. Run away! Run away!
-                    throw new RuntimeException("Found the " + profileName + " profile declaration, but cannot locate the path. Exiting");
-                }
-                if (inProfile && line.startsWith("Path=")) {
-                    String path = line.substring("Path=".length());
-                    if (isRelative)
-                        return new File(appData, path);
-                    return new File(path);
-                }
-                if (profileNameLine.equals(line.trim()))
-                    inProfile = true;
-
-                line = reader.readLine();
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } finally {
-            try {
-                if (reader != null)
-                    reader.close();
-            } catch (IOException e) {
-                // Nothing that can be done sensibly. Swallowing.
-            }
-        }
-
-        throw new RuntimeException("Unable to locate the " + profileName + " profile. Exiting");
-    }
-
-    protected File locateUserDataDirectory(OperatingSystem os) {
-        File appData;
-        switch (os) {
-            case WINDOWS:
-                appData = new File(MessageFormat.format("{0}\\Mozilla\\Firefox", System.getenv("APPDATA")));
-                break;
-
-            case MAC:
-                appData = new File(MessageFormat.format("{0}/Library/Application Support/Firefox", System.getenv("HOME")));
-                break;
-
-            default:
-                appData = new File(MessageFormat.format("{0}/.mozilla/firefox", System.getenv("HOME")));
-                break;
-        }
-
-        if (!appData.exists()) {
-            throw new RuntimeException("Unable to locate directory which should contain the information about Firefox profiles.\n" +
-                    "Tried looking in: " + appData.getAbsolutePath());
-        }
-
-        if (!appData.isDirectory()) {
-            throw new RuntimeException("The discovered user firefox data directory " +
-                    "(which normally contains the profiles) isn't a directory: " + appData.getAbsolutePath());
-        }
-
-        return appData;
-    }
-
 
     protected File locateFirefoxBinary(File suggestedLocation) {
         if (suggestedLocation != null) {
@@ -576,7 +359,7 @@ public class FirefoxLauncher {
         } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {
-            closeCleanly(reader);
+            Cleanly.close(reader);
         }
     }
 }

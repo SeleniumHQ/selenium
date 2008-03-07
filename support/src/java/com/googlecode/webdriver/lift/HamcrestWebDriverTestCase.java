@@ -41,7 +41,7 @@ public abstract class HamcrestWebDriverTestCase extends TestCase {
 	
 	/**
 	 * Type characters into an element of the page, typically an input field
-	 * @param string - characters to type
+	 * @param text - characters to type
 	 * @param inputFinder - specification for the page element
 	 */
 	protected void type(String text, Finder<WebElement, WebDriver> inputFinder) {

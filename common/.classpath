@@ -10,5 +10,7 @@
 	<classpathentry kind="lib" path="lib/buildtime/commons-logging.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/buildtime/hamcrest-all-1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/buildtime/junit-3.8.1.jar"/>
+	<classpathentry kind="lib" path="lib/buildtime/jmock-2.4.0.jar"/>
+	<classpathentry kind="lib" path="lib/buildtime/jmock-junit3-2.4.0.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

@@ -9,6 +9,7 @@ import com.googlecode.webdriver.WebDriver;
 import com.googlecode.webdriver.WebElement;
 import com.googlecode.webdriver.NoSuchFrameException;
 import com.googlecode.webdriver.firefox.internal.ExtensionConnectionFactory;
+import com.googlecode.webdriver.firefox.internal.ProfilesIni;
 import com.googlecode.webdriver.internal.FindsById;
 import com.googlecode.webdriver.internal.FindsByLinkText;
 import com.googlecode.webdriver.internal.FindsByXPath;
@@ -18,6 +19,7 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -49,17 +51,25 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
     protected Context context;
 
     public FirefoxDriver() {
-        this(null);
+        this(getProfileName(), DEFAULT_PORT);
     }
 
     public FirefoxDriver(String profileName) {
-    	this(profileName, DEFAULT_PORT);
+    	this(findProfileDir(profileName), DEFAULT_PORT);
     }
 
     public FirefoxDriver(String profileName, int port) {
+        this(findProfileDir(profileName), port);
+    }
+    
+    public FirefoxDriver(File profileDir) {
+      this (profileDir, DEFAULT_PORT);
+    }
+    
+    public FirefoxDriver(File profileDir, int port) {
         prepareEnvironment();
-
-        extension = connectTo(profileName, "localhost", port);
+        
+        extension = connectTo(profileDir, "localhost", port);
 
         if (!extension.isConnected()) {
             throw new RuntimeException(
@@ -73,8 +83,16 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
         fixId();
     }
 
-    protected ExtensionConnection connectTo(String profileName, String host, int port) {
-        return ExtensionConnectionFactory.connectTo(profileName, host, port);
+    private static String getProfileName() {
+      return System.getProperty("webdriver.firefox.profile", DEFAULT_PROFILE);
+    }
+    
+    private static File findProfileDir(String profileName) {
+      return new ProfilesIni().getProfile(profileName).getProfileDir();
+    }
+    
+    protected ExtensionConnection connectTo(File profileDir, String host, int port) {
+        return ExtensionConnectionFactory.connectTo(profileDir, host, port);
     }
 
     protected void prepareEnvironment() {
