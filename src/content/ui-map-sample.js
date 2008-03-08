@@ -732,19 +732,27 @@ myMap.addElement('authorPages', {
 
 
 
-// test the offset locator
+// test the offset locator. Something like the following can be recorded:
+// ui=qaPages::content()//a[contains(text(),'May I quote from your articles?')]
 myMap.addPageset({
-    name: 'contactPages'
-    , description: 'page for contacting ALA'
-    , pathRegexp: 'contact'
+    name: 'qaPages'
+    , description: 'question and answer pages'
+    , pathRegexp: 'qa'
 });
-myMap.addElement('contactPages', {
-    name: 'contact_form'
-    , description: 'base form element containing all inputs'
-    , locator: 'comment'
-    // this wasn't working in Opera for some reason:
-    //     "//form[@action='/notify/contact_response/']"
+myMap.addElement('qaPages', {
+    name: 'content'
+    , description: 'the content pane containing the q&a entries'
+    , locator: "//div[@id='content' and "
+        + "child::h1[text()='Questions and Answers']]"
     , getOffsetLocator: UIElement.defaultOffsetLocatorStrategy
+});
+myMap.addElement('qaPages', {
+    name: 'last_updated'
+    , description: 'displays the last update date'
+    // demonstrate calling getLocator() for another UI element within a
+    // getLocator(). The former must have already been added to the map. And
+    // obviously, you can't randomly combine different locator types!
+    , locator: myMap.getUIElement('qaPages', 'content').getLocator() + '/p/em'
 });
 
 

@@ -11,29 +11,7 @@ var GLOBAL = {
 };
 
 //******************************************************************************
-// hacks
-
-// we use ajaxslt in UI-Element, whose Log object creates a conflict with the
-// one defined in the IDE's tools.js . Actually, there would be no conflict if
-// every call to Log.write() in xpath.js were couched within an
-// "if (xpathdebug)" condition; unfortunately there are some notable exceptions.
-// For now, I'm just going to attach a dummy write() method to the Log object
-// as a workaround.
-/*
-try {
-    Log.write = function() { }
-}
-catch (e) {
-    // no problem
-}
-*/
-
-//******************************************************************************
 // modifications to built-in objects
-
-String.prototype.trim = function() {
-    return this.replace(/^\s+|\s+$/g, '');
-};
 
 /**
  * Given a string literal that would appear in an XPath, puts it in quotes and
@@ -1452,6 +1430,7 @@ UIElement.defaultOffsetLocatorStrategy = function(locatedElement, pageElement) {
             'xpath:link'
             , 'xpath:img'
             , 'xpath:attributes'
+            , 'xpath:idRelative'
             , 'xpath:href'
             , 'xpath:position'
         ];
