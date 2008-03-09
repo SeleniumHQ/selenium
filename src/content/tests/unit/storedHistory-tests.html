@@ -48,16 +48,24 @@ function testAddDuplicateItemAndMakeThemUnique() {
     assertArrayEquals(["/tmp/foobar", "/tmp/foobarbaz"], this.storedHistory.list());
 }
 
+function nativePath(path) {
+    if (navigator.platform.match(/^Win/)) {
+        return "C:" + path.replace(/\//g, '\\');
+    } else {
+        return path;
+    }
+}
+
 function testShouldMapMenuItem() {
-    this.storedHistory.add("/tmp/foobar.txt");
-    this.storedHistory.add("/baz");
+    this.storedHistory.add(nativePath("/tmp/foobar.txt"));
+    this.storedHistory.add(nativePath("/baz"));
     var list = [];
     this.storedHistory.mapMenuItem(function(item) {
 	list.push(item);
     });
     assertArrayEquals([
-	{label: "baz []", value: "/baz"},
-	{label: "foobar.txt [tmp]", value: "/tmp/foobar.txt"}
+        {label: "baz []", value: nativePath("/baz")},
+        {label: "foobar.txt [tmp]", value: nativePath("/tmp/foobar.txt")}
     ],
 		      list);
 }
