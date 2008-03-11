@@ -1524,9 +1524,10 @@ Selenium.prototype.findEffectiveStyle = function(element) {
     if (element.style == undefined) {
         return undefined; // not a styled element
     }
+    var window = this.browserbot.getCurrentWindow();
     if (window.getComputedStyle) {
         // DOM-Level-2-CSS
-        return this.browserbot.getCurrentWindow().getComputedStyle(element, null);
+        return window.getComputedStyle(element, null);
     }
     if (element.currentStyle) {
         // non-standard IE alternative
@@ -1535,6 +1536,12 @@ Selenium.prototype.findEffectiveStyle = function(element) {
         //   currentStyle is not identical to getComputedStyle()
         //   ... but it's good enough for "visibility"
     }
+
+    if (window.document.defaultView && window.document.defaultView.getComputedStyle) {
+        return window.document.defaultView.getComputedStyle(element, null);
+    }
+
+
     throw new SeleniumError("cannot determine effective stylesheet in this browser");
 };
 
