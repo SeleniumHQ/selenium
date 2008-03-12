@@ -103,7 +103,11 @@ objectExtend(HtmlTestRunner.prototype, {
             this._getApplicationWindow().src = this.controlPanel.getAutoUrl();
         } else {
             var testCaseLoaded = fnBind(function(){this.testCaseLoaded=true;},this);
-            this.getTestSuite().getSuiteRows()[0].loadTestCase(testCaseLoaded);
+            var testNumber = 0;
+            if (this.controlPanel.getTestNumber() != null){
+                var testNumber = this.controlPanel.getTestNumber() - 1; 
+            }
+            this.getTestSuite().getSuiteRows()[testNumber].loadTestCase(testCaseLoaded);
         }
     },
 
@@ -386,6 +390,10 @@ objectExtend(HtmlTestRunnerControlPanel.prototype, {
 
     getTestSuiteName: function() {
         return this._getQueryParameter("test");
+    },
+
+    getTestNumber: function() {
+        return this._getQueryParameter("testNumber");
     },
 
     getSingleTestName: function() {
