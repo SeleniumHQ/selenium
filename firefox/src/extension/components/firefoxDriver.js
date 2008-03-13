@@ -226,7 +226,7 @@ FirefoxDriver.prototype.goForward = function(respond) {
 }
 
 FirefoxDriver.prototype.addCookie = function(respond, cookieString) {
-    var cookie = eval('(' + cookieString + ')');
+    var cookie = eval('(' + cookieString[0] + ')');
 
     if (cookie.expiry) {
         cookie.expiry = new Date(cookie.expiry).getTime();
@@ -242,7 +242,14 @@ FirefoxDriver.prototype.addCookie = function(respond, cookieString) {
     }
 
     var cookieManager = Utils.getService("@mozilla.org/cookiemanager;1", "nsICookieManager2");
-    cookieManager.add(cookie.domain, cookie.path, cookie.name, cookie.value, cookie.secure, false, cookie.expiry);
+
+    // The signature for "add" is different in firefox 3 and 2. We should sniff the browser version and call the right
+    // version of the method, but for now we'll use brute-force.
+    try {
+      cookieManager.add(cookie.domain, cookie.path, cookie.name, cookie.value, cookie.secure, false, cookie.expiry);
+    } catch(e) {
+      cookieManager.add(cookie.domain, cookie.path, cookie.name, cookie.value, cookie.secure, false, false, cookie.expiry);  
+    }
 
     respond.context = this.context;
     respond.send();
