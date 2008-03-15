@@ -39,7 +39,9 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
     protected WindowsProxyManager wpm;
     protected MacProxyManager mpm;
     private File backedUpCookieFile;
+    private String backedUpCookieFilePath;
     private File originalCookieFile;
+    private String originalCookieFilePath;
 
     private static AsyncExecute exe = new AsyncExecute();
 
@@ -151,7 +153,8 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
         if (Os.isFamily("mac")) {
             String user = System.getenv("USER");
             File cacheDir = new File("/Users/" + user + "/Library/Caches/Safari");
-            originalCookieFile = new File("/Users/" + user + "/Library/Cookies/Cookies.plist");
+            originalCookieFilePath = "/Users/" + user + "/Library/Cookies" + "/Cookies.plist";
+            originalCookieFile = new File(originalCookieFilePath);
             
             try {
                 LauncherUtils.deleteTryTryAgain(cacheDir, 6);
@@ -159,7 +162,8 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
                 throw e;
             }
         } else {
-            originalCookieFile = new File(System.getenv("APPDATA") + "/Apple Computer/Safari/Cookies/Cookies.plist");
+            originalCookieFilePath = System.getenv("APPDATA") + "/Apple Computer/Safari/Cookies/Cookies.plist";
+            originalCookieFile = new File(originalCookieFilePath);
             String localAppData = System.getenv("LOCALAPPDATA");
             if (localAppData == null) {
                 localAppData = System.getenv("USERPROFILE") + "/Local Settings/Application Data";
@@ -169,10 +173,16 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
                 cacheFile.delete();
             }
         }
-
+        
+        log.info("originalCookieFilePath: " + originalCookieFilePath);
+        
+        backedUpCookieFilePath = customProfileDir.toString() + "/Cookies.plist";
+        backedUpCookieFile = new File(backedUpCookieFilePath);
+        log.info("backedUpCookieFilePath: " + backedUpCookieFilePath);
+    	
         if (originalCookieFile.exists()) {
-            backedUpCookieFile = new File(customProfileDir, "Cookies.plist");
             LauncherUtils.copySingleFile(originalCookieFile, backedUpCookieFile);
+            originalCookieFile.delete();
         }
     }
     
@@ -207,9 +217,7 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
         } else {
             mpm.restoreNetworkSettings();
         }
-        if (backedUpCookieFile != null && backedUpCookieFile.exists() && originalCookieFile != null) {
-            LauncherUtils.copySingleFile(backedUpCookieFile, originalCookieFile);
-        }
+
         if (process == null) return;
         log.info("Killing Safari...");
         int exitValue = AsyncExecute.killProcess(process);
@@ -217,6 +225,19 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
             log.warn("Safari seems to have ended on its own (did we kill the real browser???)");
         }
         closed = true;
+        
+        if (backedUpCookieFile != null && backedUpCookieFile.exists()) {
+            File sessionCookieFile = new File(originalCookieFilePath);
+            boolean success = sessionCookieFile.delete();
+            if (success){
+                log.info("Session's cookie file deleted.");
+            } else {
+                log.info("Session's cookie *not* deleted.");
+            }
+            log.info("Trying to restore originalCookieFile...");
+            originalCookieFile = new File(originalCookieFilePath);
+            LauncherUtils.copySingleFile(backedUpCookieFile, originalCookieFile);
+        }
     }
 
     public Process getProcess() {
