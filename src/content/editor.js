@@ -180,7 +180,7 @@ Editor.controller = {
             return editor.app.isPlayable() && editor.selDebugger.state != Debugger.PLAYING;
         case "cmd_selenium_rollup":
             if (Editor.rollupManager) {
-                return app.isPlayable() && editor.selDebugger.state != Debugger.PLAYING;
+                return editor.app.isPlayable() && editor.selDebugger.state != Debugger.PLAYING;
             } else {
                 return false;
             }

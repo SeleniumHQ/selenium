@@ -292,7 +292,7 @@ map.addElement('allPages', {
         <pre>getOffsetLocator:
     function(locatedElement, pageElement) {
     if (pageElement.parentNode == locatedElement) {
-        return 'xpath=/child::' + pageElement.nodeName;
+        return '/child::' + pageElement.nodeName;
     }
     return null;
 }</pre></td>
@@ -473,7 +473,7 @@ ui=contactPages::contact_form()<span class="highlight">//input[@value='baz']</sp
 
 <p>In general, no preference is given to matching plain vanilla UI specifier strings over ones that have offset locators. In other words, if a page element could be specified either by a UI specifier string for one UI element, and by one augmented by an offset locator for a different UI element, there is no guarantee that one or the other will be used when recording.</p>
 
-<p>Currently, only XPath is supported as an offset locator type. Other locator strategies may be supported in the future.</p>
+<p>Currently, <span class="highlight">only XPath is supported as an offset locator type</span>, as it is the only locator for which a context node can be specified at evaluation time. Other locator strategies may be supported in the future.</p>
 
 <h3>Rollup Rules</h3>
 

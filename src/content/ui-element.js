@@ -751,7 +751,7 @@ function eval_locator(locator, inDocument, opt_contextNode)
     
     var results = [];
     
-    if (locator.type == 'xpath' || (locator.string.substr(0, 2) == '//' &&
+    if (locator.type == 'xpath' || (locator.string.charAt(0) == '/' &&
         locator.type == 'implicit')) {
         results = eval_xpath(locator.string, inDocument,
             { contextNode: opt_contextNode });
