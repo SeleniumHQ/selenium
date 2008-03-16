@@ -130,6 +130,10 @@ public class FirefoxProfile {
         return extensionsDir;
     }
 
+    public void addAdditionalPreference(String key, String value) {
+        this.additionalPrefs.put(key, value);
+    }
+
     public void addAdditionalPreferences(Map<String, String> additionalPrefs) {
         this.additionalPrefs.putAll(additionalPrefs);
     }
