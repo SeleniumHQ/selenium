@@ -4,10 +4,10 @@ import com.googlecode.webdriver.Alert;
 import com.googlecode.webdriver.By;
 import com.googlecode.webdriver.Cookie;
 import com.googlecode.webdriver.NoSuchElementException;
+import com.googlecode.webdriver.NoSuchFrameException;
 import com.googlecode.webdriver.Speed;
 import com.googlecode.webdriver.WebDriver;
 import com.googlecode.webdriver.WebElement;
-import com.googlecode.webdriver.NoSuchFrameException;
 import com.googlecode.webdriver.firefox.internal.ExtensionConnectionFactory;
 import com.googlecode.webdriver.firefox.internal.ProfilesIni;
 import com.googlecode.webdriver.internal.FindsById;
@@ -20,16 +20,16 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.Locale;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.util.Set;
 
 
 /**
@@ -55,21 +55,36 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
     }
 
     public FirefoxDriver(String profileName) {
-    	this(findProfileDir(profileName), DEFAULT_PORT);
+    	this(findProfile(profileName), DEFAULT_PORT);
     }
 
     public FirefoxDriver(String profileName, int port) {
-        this(findProfileDir(profileName), port);
+        this(findProfile(profileName), port);
     }
-    
+
+    /**
+     * @deprecated Use FirefoxDriver(new FirefoxProfile(profileDir)) instead
+     */
     public FirefoxDriver(File profileDir) {
       this (profileDir, DEFAULT_PORT);
     }
-    
+
+    /**
+     * @deprecated Use FirefoxDriver(new FirefoxProfile(profileDir), port) instead
+     */    
     public FirefoxDriver(File profileDir, int port) {
+      this(new FirefoxProfile(profileDir), port);
+    }
+
+    public FirefoxDriver(FirefoxProfile profile) {
+      this(profile, DEFAULT_PORT);
+    }
+
+    public FirefoxDriver(FirefoxProfile profile, int port) {
+        profile.init();
         prepareEnvironment();
-        
-        extension = connectTo(profileDir, "localhost", port);
+
+        extension = connectTo(profile, "localhost", port);
 
         if (!extension.isConnected()) {
             throw new RuntimeException(
@@ -83,25 +98,25 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
         fixId();
     }
 
+    private FirefoxDriver(ExtensionConnection extension, Context context) {
+      this.extension = extension;
+      this.context = context;
+    }
+
     private static String getProfileName() {
       return System.getProperty("webdriver.firefox.profile", DEFAULT_PROFILE);
     }
     
-    private static File findProfileDir(String profileName) {
-      return new ProfilesIni().getProfile(profileName).getProfileDir();
+    private static FirefoxProfile findProfile(String profileName) {
+      return new ProfilesIni().getProfile(profileName);
     }
     
-    protected ExtensionConnection connectTo(File profileDir, String host, int port) {
-        return ExtensionConnectionFactory.connectTo(profileDir, host, port);
+    protected ExtensionConnection connectTo(FirefoxProfile profile, String host, int port) {
+        return ExtensionConnectionFactory.connectTo(profile, host, port);
     }
 
     protected void prepareEnvironment() {
       // Does nothing, but provides a hook for subclasses to do "stuff"
-    }
-
-    private FirefoxDriver(ExtensionConnection extension, Context context) {
-        this.extension = extension;
-        this.context = context;
     }
 
     public void close() {
@@ -202,7 +217,7 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
         String response = sendMessage(RuntimeException.class, "findActiveDriver");
 
         Context newContext = new Context(response);
-        if (newContext.getDriverId() == newContext.getDriverId()) {
+        if (newContext.getDriverId().equals(newContext.getDriverId())) {
             return this;
         }
         return new FirefoxDriver(extension, newContext);
@@ -245,7 +260,7 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
         }
 
         private String convertToJson(Cookie cookie) {
-            BeanInfo info = null;
+            BeanInfo info;
             try {
                 info = Introspector.getBeanInfo(Cookie.class);
             } catch (IntrospectionException e) {
@@ -257,9 +272,9 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
 
             for (PropertyDescriptor property : properties) {
                 if (fieldNames.contains(property.getName())) {
-                    Object result = null;
+                    Object result;
                     try {
-                        result = property.getReadMethod().invoke(cookie, new Object[0]);
+                        result = property.getReadMethod().invoke(cookie);
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
@@ -371,7 +386,7 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
         }
         
         public void setMouseSpeed(Speed speed) {
-            int pixelSpeed = 0;
+            int pixelSpeed;
             // TODO: simon 2007-02-01; Delegate to the enum
             switch(speed) {
                 case SLOW:

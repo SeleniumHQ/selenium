@@ -2,31 +2,32 @@ package com.googlecode.webdriver.firefox.internal;
 
 import com.googlecode.webdriver.firefox.Command;
 import com.googlecode.webdriver.firefox.FirefoxLauncher;
+import com.googlecode.webdriver.firefox.FirefoxProfile;
 import com.googlecode.webdriver.internal.OperatingSystem;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.Socket;
-import java.net.InetSocketAddress;
 import java.net.ConnectException;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.net.SocketTimeoutException;
 
 public class NewProfileExtensionConnection extends AbstractExtensionConnection {
   private static int SOCKET_CONNECT_TIMEOUT = 250;
   private static long TIMEOUT_IN_SECONDS = 20;
   private static long MILLIS_IN_SECONDS = 1000;
-  private Process process;
+  private FirefoxBinary process;
 
-  public NewProfileExtensionConnection(File profileDir, String host, int port) throws IOException {
-    int portToUse = determineNextFreePort(host, port);
+    public NewProfileExtensionConnection(FirefoxProfile profile, String host, int port) throws IOException {
+        int portToUse = determineNextFreePort(host, port);
 
-    process = new FirefoxLauncher().startProfile(profileDir, portToUse);
+        process = new FirefoxLauncher().startProfile(profile, portToUse);
 
-    setAddress(host, portToUse);
-    connectToBrowser(TIMEOUT_IN_SECONDS * MILLIS_IN_SECONDS);
-  }
+        setAddress(host, portToUse);
 
-  protected int determineNextFreePort(String host, int port) throws IOException {
+        connectToBrowser(TIMEOUT_IN_SECONDS * MILLIS_IN_SECONDS);
+    }
+
+    protected int determineNextFreePort(String host, int port) throws IOException {
     // Attempt to connect to the given port on the host
     // If we can't connect, then we're good to use it
     int newport;
@@ -67,8 +68,10 @@ public class NewProfileExtensionConnection extends AbstractExtensionConnection {
 		    process.waitFor();
 		} catch (InterruptedException e) {
 		    throw new RuntimeException(e);
-		}
-	}
+		} catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 	private void quitOnWindows() {
 		try {

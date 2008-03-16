@@ -1,5 +1,6 @@
 package com.googlecode.webdriver.firefox.internal;
 
+import com.googlecode.webdriver.firefox.FirefoxProfile;
 import com.googlecode.webdriver.internal.OperatingSystem;
 
 import java.io.BufferedReader;
@@ -36,7 +37,7 @@ public class ProfilesIni {
         reader = new BufferedReader(new FileReader(profilesIni));
 
         String line = reader.readLine();
-        boolean inProfile = false;
+
         while (line != null) {
           if (line.startsWith("[Profile")) {
             FirefoxProfile profile = newProfile(name, appData, path, isRelative);

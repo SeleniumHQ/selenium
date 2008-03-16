@@ -81,6 +81,7 @@ public abstract class AbstractExtensionConnection implements ExtensionConnection
         long waitUntil = System.currentTimeMillis() + timeToWaitInMilliSeconds;
         while (!isConnected() && waitUntil > System.currentTimeMillis()) {
             try {
+//                System.out.println("Attempting to connect");
                 connect();
             } catch (ConnectException e) {
                 try {

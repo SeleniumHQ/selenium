@@ -1,16 +1,16 @@
 package com.googlecode.webdriver.firefox;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 
 import com.googlecode.webdriver.AbstractDriverTestCase;
 import com.googlecode.webdriver.By;
 import com.googlecode.webdriver.Ignore;
 import com.googlecode.webdriver.NeedsFreshDriver;
 import com.googlecode.webdriver.NoSuchElementException;
-import com.googlecode.webdriver.WebElement;
-import com.googlecode.webdriver.NoDriverAfterTest;
 import com.googlecode.webdriver.WebDriver;
+import com.googlecode.webdriver.WebElement;
 
 public class FirefoxDriverTest extends AbstractDriverTestCase {
     public void testShouldContinueToWorkIfUnableToFindElementById() {
@@ -68,5 +68,18 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
 
       // We only need to quit the second driver if the test passes
       secondDriver.quit();
+    }
+    
+    @Ignore(value="firefox", reason="Until we package the extension this will fail on the command line")
+    public void testShouldBeAbleToStartFromAUniqueProfile() {
+      FirefoxProfile profile = new FirefoxProfile();
+      
+      try {
+        WebDriver secondDriver = new FirefoxDriver(profile);
+        secondDriver.quit();
+      } catch (Exception e) {
+        e.printStackTrace();
+        fail("Expected driver to be created succesfully");
+      }
     }
 }
