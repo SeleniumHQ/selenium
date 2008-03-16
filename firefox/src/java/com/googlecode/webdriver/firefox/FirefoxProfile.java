@@ -92,10 +92,6 @@ public class FirefoxProfile {
         return profileDir;
     }
 
-    public Map<String, Object> getUserPrefs() {
-        return null;
-    }
-
     //Assumes that we only really care about the preferences, not the comments
     private Map<String, String> readExistingPrefs(File userPrefs) {
         Map<String, String> prefs = new HashMap<String, String>();
