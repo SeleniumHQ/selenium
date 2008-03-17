@@ -99,7 +99,6 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText, Fi
         try {
             URL fullUrl = new URL(url);
             Page page = webClient.getPage(fullUrl);
-            page.initialize();
         } catch (UnknownHostException e) {
           // This should be fine
         } catch (ConnectException e) {
