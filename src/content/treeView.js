@@ -175,6 +175,7 @@ objectExtend(TreeView.prototype, {
             
             commands.push("pause");
             commands.push("store");
+            commands.push("echo");
             
             commands.sort();
             Editor.GENERIC_AUTOCOMPLETE.setCandidates(XulUtils.toXPCOMString(this.editor.getAutoCompleteSearchParam("commandAction")),
