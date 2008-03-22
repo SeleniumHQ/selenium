@@ -218,16 +218,16 @@ public class MacProxyManager {
         boolean enabled = isTrueOrSomething(strEnabled);
         String server = verifyKey("Server", dictionary, "networksetup", output);
         String strPort = verifyKey("Port", dictionary, "networksetup", output);
-        int port;
+        int port1;
         try {
-            port = Integer.parseInt(strPort);
+            port1 = Integer.parseInt(strPort);
         } catch (NumberFormatException e) {
             throw new MacNetworkSetupException("Port didn't look right: " + output, e);
         }
         String strAuth = verifyKey("Authenticated Proxy Enabled", dictionary, "networksetup", output);
         boolean auth = isTrueOrSomething(strAuth);
         String[] bypassDomains = getCurrentProxyBypassDomains();
-        MacNetworkSettings networkSettings = new MacNetworkSettings(networkService, enabled, server, port, auth, bypassDomains);
+        MacNetworkSettings networkSettings = new MacNetworkSettings(networkService, enabled, server, port1, auth, bypassDomains);
         return networkSettings;
     }
     
@@ -273,7 +273,7 @@ public class MacProxyManager {
         return dictionary.get(key);
     }
     
-    private String getPrimaryNetworkServiceName() throws IOException {
+    private String getPrimaryNetworkServiceName() {
         // TODO This would be faster (but harder to test?) if we just launched scutil once
         // and communicated with it line-by-line using stdin/stdout
         String output = runScutil("show State:/Network/Global/IPv4");
@@ -429,10 +429,10 @@ public class MacProxyManager {
             }
         }
         
-        int port = prefsGetIntOrFail("port");
+        int port1 = prefsGetIntOrFail("port");
         boolean enabled = prefsGetBooleanOrFail("enabled");
         boolean authenticated = prefsGetBooleanOrFail("authenticated");
-        return new MacNetworkSettings(serviceName, enabled, proxyServer, port, authenticated, bypass);
+        return new MacNetworkSettings(serviceName, enabled, proxyServer, port1, authenticated, bypass);
     }
     
     private String prefsGetStringOrFail(String key) {

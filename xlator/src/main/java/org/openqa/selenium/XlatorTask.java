@@ -98,7 +98,7 @@ public class XlatorTask extends Task {
         
         // Loop through all nested filesets, looking for files to translate
         for (int i = 0; i < _filesets.size(); i++) {
-            FileSet fs = (FileSet) _filesets.elementAt(i);
+            FileSet fs = _filesets.elementAt(i);
             DirectoryScanner ds = fs.getDirectoryScanner(getProject());
             String[] files = ds.getIncludedFiles();
             File d = fs.getDir(getProject());

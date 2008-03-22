@@ -17,11 +17,7 @@
 
 package org.openqa.selenium.server;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.regex.*;
 
 import org.openqa.selenium.server.browserlaunchers.*;
 
@@ -80,12 +76,12 @@ public class DefaultRemoteCommand implements RemoteCommand {
         if (result) {
             StringBuffer sb = new StringBuffer();
             do {
-                String value = m.group(1);
-                if (value.length() != 1) {
+                String val = m.group(1);
+                if (val.length() != 1) {
                     throw new RuntimeException("Bug! matcher matched >1 char: <" +
-                    		value + ">: " + s);
+                    		val + ">: " + s);
                 }
-                char c = value.charAt(0);
+                char c = val.charAt(0);
                 switch (c) {
                     case '\\':
                         m.appendReplacement(sb, "\\\\\\\\");

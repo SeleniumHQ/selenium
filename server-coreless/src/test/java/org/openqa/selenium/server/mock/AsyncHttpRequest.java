@@ -1,16 +1,10 @@
 package org.openqa.selenium.server.mock;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.io.*;
+import java.net.*;
 
-import org.apache.commons.logging.Log;
+import org.apache.commons.logging.*;
 import org.mortbay.log.LogFactory;
-import org.openqa.selenium.server.DefaultRemoteCommand;
-import org.openqa.selenium.server.RemoteCommand;
 
 /**
  * Base class to perform out-of-thread HTTP requests.  We use these to start a request X,
@@ -82,9 +76,9 @@ public abstract class AsyncHttpRequest {
             
         }
         
-        private String doBrowserRequest(String url, String body) throws IOException {
+        private String doBrowserRequest(String urlString, String body) throws IOException {
             int responsecode = 200;
-            URL result = new URL(url);
+            URL result = new URL(urlString);
             HttpURLConnection conn = (HttpURLConnection) result.openConnection();
             
             conn.setConnectTimeout(timeoutInMillis);

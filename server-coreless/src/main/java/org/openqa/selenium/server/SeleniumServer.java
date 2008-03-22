@@ -285,10 +285,10 @@ public class SeleniumServer {
             } else if ("-timeout".equalsIgnoreCase(arg)) {
                 timeoutInSeconds = Integer.parseInt(getArg(args, ++i));
             } else if ("-jettyThreads".equalsIgnoreCase(arg)) {
-            	int jettyThreads = Integer.parseInt(getArg(args, ++i));
+            	int jettyThreadsCount = Integer.parseInt(getArg(args, ++i));
             	
             	// Set the number of jetty threads before we construct the instance
-            	SeleniumServer.setJettyThreads(jettyThreads);
+            	SeleniumServer.setJettyThreads(jettyThreadsCount);
             } else if ("-trustAllSSLCertificates".equalsIgnoreCase(arg)) {
                 trustAllSSLCertificates = true;
             } else if ("-userJsInjection".equalsIgnoreCase(arg)) {

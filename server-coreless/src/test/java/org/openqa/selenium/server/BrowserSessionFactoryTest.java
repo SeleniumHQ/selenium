@@ -22,6 +22,7 @@ public class BrowserSessionFactoryTest extends TestCase {
   public void testIsValidWithInvalidSessionInfo() {
     BrowserSessionInfo info = new BrowserSessionInfo("id1", "*firefox",
         null, null, null);
+    assertNotNull(info);
   }
   
   public void testLookupByBrowserAndUrl() {

@@ -607,13 +607,13 @@ public class MockPIFrameTest extends TestCase {
             finish = Long.MAX_VALUE;
         }
         sleepForAtLeast(10);
-        String sessionId;
+        String sessionId1;
         String result = null;
         while (System.currentTimeMillis() < finish) {
             // DummyBrowserLauncher records its sessionId in a static variable; extract it here
-            sessionId = DummyBrowserLauncher.getSessionId();
-            if (sessionId != null) {
-                return sessionId;
+            sessionId1 = DummyBrowserLauncher.getSessionId();
+            if (sessionId1 != null) {
+                return sessionId1;
             }
             if (!getNewBrowserSession.isAlive()) {
                 // something must have gone wrong 
@@ -627,9 +627,9 @@ public class MockPIFrameTest extends TestCase {
             // The DBL must not have been launched yet; keep waiting 
             sleepForAtLeast(10);
         }
-        sessionId = DummyBrowserLauncher.getSessionId();
-        if (sessionId != null) {
-            return sessionId;
+        sessionId1 = DummyBrowserLauncher.getSessionId();
+        if (sessionId1 != null) {
+            return sessionId1;
         }
         // sessionId never appeared; something must have gone wrong
         try {

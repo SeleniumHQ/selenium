@@ -216,7 +216,7 @@ public class MacProxyManagerTest extends TestCase {
         assertEquals("wrong backupready", "false", mmpm.mockPrefs.internalPrefs.get("backupready"));
     }
     
-    public void testRestoreProxyDisabled() throws IOException {
+    public void testRestoreProxyDisabled() {
         preparePrefsProxyDisabled();
         mmpm.restoreNetworkSettings();
         List<String> setwebproxy = assertNetworkSetupCall("-setwebproxy");
@@ -239,7 +239,7 @@ public class MacProxyManagerTest extends TestCase {
         mmpm.mockPrefs.put("bypass", "0\t");
     }
     
-    public void testRestoreBackupNotReady() throws IOException {
+    public void testRestoreBackupNotReady() {
         mmpm.restoreNetworkSettings();
         assertTrue("Not supposed to call networksetup when the backup isn't ready: " + mmpm.networkSetupCalls, mmpm.networkSetupCalls.size() == 0);
         assertEquals("wrong backupready", null, mmpm.mockPrefs.internalPrefs.get("backupready"));

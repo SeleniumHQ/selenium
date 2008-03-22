@@ -28,6 +28,7 @@ public class SeleniumDriverResourceHandlerTest extends TestCase {
     assertEquals(defaultSpeed, CommandQueue.getSpeed());
     FrameGroupCommandQueueSet session1 = 
       FrameGroupCommandQueueSet.makeQueueSet(firstSessionId);
+    assertNotNull(session1);
     SeleniumDriverResourceHandler.setSpeedForSession(firstSessionId, newSpeed);
     String speed = SeleniumDriverResourceHandler.getSpeedForSession(firstSessionId);
     assertEquals(newSpeedString, speed);

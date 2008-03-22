@@ -1,15 +1,8 @@
 package com.thoughtworks.selenium;
 
-import java.util.*;
-import java.util.logging.Logger;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-
-import junit.extensions.*;
 import junit.framework.*;
 
 import org.openqa.selenium.server.browserlaunchers.*;
-import org.openqa.selenium.server.log.TerseFormatter;
 
 /**
  * This class executes the same tests that ClientDriverSuite does, but it does

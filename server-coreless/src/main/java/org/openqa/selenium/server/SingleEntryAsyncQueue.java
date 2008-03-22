@@ -71,7 +71,7 @@ public class SingleEntryAsyncQueue<T> {
 	  
 	  if (timeoutInSeconds > 0 && null == result) {
 	    long now = System.currentTimeMillis();
-		long deadline = now + ((long)timeoutInSeconds * 1000L);
+		long deadline = now + (timeoutInSeconds * 1000L);
 		while (now < deadline) {
     	  try {
     	    log.debug("waiting for data for at most " + (deadline - now) + " more ms");

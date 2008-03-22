@@ -409,10 +409,6 @@ public class FrameGroupCommandQueueSet {
       return getCommandQueue().doCommand(command, arg, value);
     }
     
-    private void handleInvalidQueue() {
-        
-    }
-    
     /**
      * Generates a CSV string from the given string array.
      * 

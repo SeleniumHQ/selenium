@@ -64,7 +64,7 @@ public class SeleniumHTMLRunnerResultsHandler implements HttpHandler {
         String numCommandFailures = request.getParameter("numCommandFailures");
         String numCommandErrors = request.getParameter("numCommandErrors");
         String suite = request.getParameter("suite");
-        String log = request.getParameter("log");
+        String postedLog = request.getParameter("log");
         
         int numTotalTests = Integer.parseInt(numTestTotal);
         
@@ -73,7 +73,7 @@ public class SeleniumHTMLRunnerResultsHandler implements HttpHandler {
         
         HTMLTestResults results = new HTMLTestResults(seleniumVersion, seleniumRevision,
                 result, totalTime, numTestTotal,
-                numTestPasses, numTestFailures, numCommandPasses, numCommandFailures, numCommandErrors, suite, testTables, log);
+                numTestPasses, numTestFailures, numCommandPasses, numCommandFailures, numCommandErrors, suite, testTables, postedLog);
         
         for (Iterator<HTMLResultsListener> i = listeners.iterator(); i.hasNext();) {
             HTMLResultsListener listener = i.next();

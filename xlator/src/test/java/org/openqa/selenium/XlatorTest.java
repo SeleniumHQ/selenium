@@ -38,7 +38,7 @@ public class XlatorTest
 
     public void testJava() throws Exception
     {
-        String content = Xlator.xlateTestCase("TestClick", "java-rc", Xlator.loadResource("/tests/TestClick.html"), options);
+        Xlator.xlateTestCase("TestClick", "java-rc", Xlator.loadResource("/tests/TestClick.html"), options);
     }
     
     public void testCsharp() throws Exception

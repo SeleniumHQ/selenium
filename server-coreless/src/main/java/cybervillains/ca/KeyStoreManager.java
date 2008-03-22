@@ -340,7 +340,7 @@ public class KeyStoreManager {
 	public synchronized void addCertAndPrivateKey(String hostname, final X509Certificate cert, final PrivateKey privKey)
 	throws KeyStoreException, CertificateException, NoSuchAlgorithmException
 	{
-		String alias = ThumbprintUtil.getThumbprint(cert);
+//		String alias = ThumbprintUtil.getThumbprint(cert);
 		
 		_ks.deleteEntry(hostname);
 

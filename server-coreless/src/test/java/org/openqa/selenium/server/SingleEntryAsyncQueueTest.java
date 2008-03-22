@@ -96,6 +96,7 @@ public class SingleEntryAsyncQueueTest extends TestCase {
 
   public void testRealSimple() throws Throwable {
     TrackableThread sender = launchSender(testCommand);
+    assertNotNull(sender);
     expectContent(testCommand);
     assertNull(holder.peek());
   }
@@ -120,6 +121,7 @@ public class SingleEntryAsyncQueueTest extends TestCase {
   public void testRealTwoRounds() throws Throwable {
     // send "something"
     TrackableThread sender = launchSender(testCommand);
+    assertNotNull(sender);
     // try to get "something"
     TrackableThread getter = launchGetter();
     expectContent(getter, testCommand);
