@@ -1,11 +1,12 @@
 <projectDescription>
   <name>selenium-server</name>
   <comment/>
-  <projects/>
+  <projects>
+    <project>selenium-server-coreless</project>
+  </projects>
   <buildSpec>
     <buildCommand>
       <name>org.eclipse.jdt.core.javabuilder</name>
-      <arguments/>
     </buildCommand>
   </buildSpec>
   <natures>

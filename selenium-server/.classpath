@@ -1,8 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry sourcepath="M2_REPO/junit/junit/3.8.1/junit-3.8.1-sources.jar" kind="var" path="M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/selenium-core"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/selenium-server-coreless"/>
-	<classpathentry kind="output" path="target/classes"/>
+  <classpathentry kind="src" path="src/main/resources" excluding="**/*.java"/>
+  <classpathentry kind="output" path="target/classes"/>
+  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+  <classpathentry kind="var" path="M2_REPO/org/openqa/selenium/core/selenium-core/1.0-SNAPSHOT/selenium-core-1.0-SNAPSHOT.jar"/>
+  <classpathentry kind="var" path="M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar"/>
+  <classpathentry kind="src" path="/selenium-server-coreless"/>
+  <classpathentry kind="var" path="M2_REPO/ant/ant/1.6.5/ant-1.6.5.jar"/>
+  <classpathentry kind="var" path="M2_REPO/jetty/org.mortbay.jetty/5.1.10/org.mortbay.jetty-5.1.10.jar"/>
+  <classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging/1.0.4/commons-logging-1.0.4.jar"/>
+  <classpathentry kind="var" path="M2_REPO/javax/servlet/servlet-api/2.4/servlet-api-2.4.jar"/>
+  <classpathentry kind="var" path="M2_REPO/bouncycastle/bcprov-jdk15/135/bcprov-jdk15-135.jar"/>
 </classpath>
