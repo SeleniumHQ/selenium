@@ -25,6 +25,18 @@ public class WaitTest extends TestCase {
         assertTrue("didn't try enough times: " + tries, tries > 1);
     }
     
+    
+    public void testUntilWithWaitTakingString() {
+        finished = now + 500l;
+        new Wait("a message to be shown if wait times out") {
+            public boolean until() {
+                tries++;
+                return System.currentTimeMillis() > finished;
+            }
+        };
+        assertTrue("didn't try enough times: " + tries, tries > 1);
+    }
+    
     public void testTimedOut() {
         finished = now + 5000l;
         try {

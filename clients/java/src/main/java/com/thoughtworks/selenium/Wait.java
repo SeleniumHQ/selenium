@@ -4,8 +4,6 @@
  */
 package com.thoughtworks.selenium;
 
-//import junit.framework.*;
-
 /**
  * A utility class, designed to help the user automatically wait until a
  * condition turns true.
@@ -23,6 +21,12 @@ package com.thoughtworks.selenium;
  * 
  */
 public abstract class Wait {
+    public Wait() {
+    }
+
+    public Wait(String messageToShowIfTimeout) {
+        wait(messageToShowIfTimeout, DEFAULT_TIMEOUT, DEFAULT_INTERVAL);
+    }
 
     /** Returns true when it's time to stop waiting */
     public abstract boolean until();
@@ -32,7 +36,7 @@ public abstract class Wait {
     
     /** The interval to pause between checking; the default is 500 milliseconds */ 
     public static final long DEFAULT_INTERVAL = 500l;
-    
+            
     /** Wait until the "until" condition returns true or time runs out.
      * 
      * @param message the failure message
