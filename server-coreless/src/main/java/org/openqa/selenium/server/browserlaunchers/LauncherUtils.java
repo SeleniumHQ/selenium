@@ -100,7 +100,7 @@ public class LauncherUtils {
 	}
 	
 	
-	protected static File makeProxyPAC(File parentDir, int port, boolean proxySeleniumTrafficOnly, String configuredProxy, String proxyPort, String nonProxyHosts, boolean avoidProxy) throws FileNotFoundException {
+	public static File makeProxyPAC(File parentDir, int port, boolean proxySeleniumTrafficOnly, String configuredProxy, String proxyPort, String nonProxyHosts, boolean avoidProxy) throws FileNotFoundException {
 		if (!avoidProxy) {
             proxySeleniumTrafficOnly = false;
         }

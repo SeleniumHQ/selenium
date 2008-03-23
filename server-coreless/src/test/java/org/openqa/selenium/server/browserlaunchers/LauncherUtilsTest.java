@@ -2,8 +2,7 @@ package org.openqa.selenium.server.browserlaunchers;
 
 import junit.framework.TestCase;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 
 public class LauncherUtilsTest extends TestCase {
   
@@ -38,19 +37,292 @@ public class LauncherUtilsTest extends TestCase {
     return srcDir;
   }
   
-  private File getNonexistentDestDir() {
-    File tempDir = new File(System.getProperty("java.io.tmpdir"));
-    File destDir = new File(tempDir, "rc-lut-dest");
-    destDir.deleteOnExit();
-    assertFalse(destDir.exists());
-    return destDir;
+	private File getNonexistentDestDir() {
+        File tempDir = new File(System.getProperty("java.io.tmpdir"));
+        File destDir = new File(tempDir, "rc-lut-dest");
+        destDir.deleteOnExit();
+        assertFalse(destDir.exists());
+        return destDir;
+    }
+
+	public void copyDirectoryCleanUp(File srcDir, File destDir) {
+        LauncherUtils.deleteTryTryAgain(srcDir, 1);
+        LauncherUtils.deleteTryTryAgain(destDir, 1);
+        assertFalse(srcDir.exists());
+        assertFalse(destDir.exists());
+    }
+
+	public void testProxyPacMaking() {
+        doProxyPacTest(true, null, "448", "confProxy", true, 999, "function FindProxyForURL(url, host) {\n" + 
+                "    if(shExpMatch(url, \'*/selenium-server/*\')) {\n" + 
+                "        return \'PROXY localhost:999; PROXY confProxy:448\';\n" + 
+                "    } else {\n" + 
+                "        return \'PROXY confProxy:448\';\n" + 
+                "    }\n" + 
+                "}\n" + 
+                "");
+        doProxyPacTest(false, null, "448", "confProxy", true, 999, "function FindProxyForURL(url, host) {\n" + 
+                "        return \'PROXY localhost:999; PROXY confProxy:448\';\n" + 
+                "}\n" + 
+                "");
+        doProxyPacTest(true, null, "448", "confProxy", false, 999, "function FindProxyForURL(url, host) {\n" + 
+                "        return \'PROXY localhost:999; PROXY confProxy:448\';\n" + 
+                "}\n" + 
+                "");
+        doProxyPacTest(false, null, "448", "confProxy", false, 999, "function FindProxyForURL(url, host) {\n" + 
+                "        return \'PROXY localhost:999; PROXY confProxy:448\';\n" + 
+                "}\n" + 
+                "");
+        doProxyPacTest(true, "someHost", "448", "confProxy", true, 999, "function FindProxyForURL(url, host) {\n" + 
+                "    if(shExpMatch(url, \'*/selenium-server/*\')) {\n" + 
+                "        return \'PROXY localhost:999; PROXY confProxy:448\';\n" + 
+                "    } else if (shExpMatch(host, \'someHost\')) {\n" + 
+                "        return \'DIRECT\';\n" + 
+                "    } else {\n" + 
+                "        return \'PROXY confProxy:448\';\n" + 
+                "    }\n" + 
+                "}\n" + 
+                "");
+        doProxyPacTest(false, "someHost", "448", "confProxy", true, 999, "function FindProxyForURL(url, host) {\n" + 
+                "        return \'PROXY localhost:999; PROXY confProxy:448\';\n" + 
+                "}\n" + 
+                "");
+        doProxyPacTest(true, "someHost", "448", "confProxy", false, 999, "function FindProxyForURL(url, host) {\n" + 
+                "        return \'PROXY localhost:999; PROXY confProxy:448\';\n" + 
+                "}\n" + 
+                "");
+        doProxyPacTest(false, "someHost", "448", "confProxy", false, 999, "function FindProxyForURL(url, host) {\n" + 
+                "        return \'PROXY localhost:999; PROXY confProxy:448\';\n" + 
+                "}\n" + 
+                "");
+        doProxyPacTest(true, "   ", "448", "confProxy", true, 999, "function FindProxyForURL(url, host) {\n" + 
+                "    if(shExpMatch(url, \'*/selenium-server/*\')) {\n" + 
+                "        return \'PROXY localhost:999; PROXY confProxy:448\';\n" + 
+                "    } else {\n" + 
+                "        return \'PROXY confProxy:448\';\n" + 
+                "    }\n" + 
+                "}\n" + 
+                "");
+        doProxyPacTest(false, "   ", "448", "confProxy", true, 999, "function FindProxyForURL(url, host) {\n" + 
+                "        return \'PROXY localhost:999; PROXY confProxy:448\';\n" + 
+                "}\n" + 
+                "");
+        doProxyPacTest(true, "   ", "448", "confProxy", false, 999, "function FindProxyForURL(url, host) {\n" + 
+                "        return \'PROXY localhost:999; PROXY confProxy:448\';\n" + 
+                "}\n" + 
+                "");
+        doProxyPacTest(false, "   ", "448", "confProxy", false, 999, "function FindProxyForURL(url, host) {\n" + 
+                "        return \'PROXY localhost:999; PROXY confProxy:448\';\n" + 
+                "}\n" + 
+                "");
+        doProxyPacTest(true, null, "448", null, true, 999, "function FindProxyForURL(url, host) {\n" + 
+                "    if(shExpMatch(url, \'*/selenium-server/*\')) {\n" + 
+                "        return \'PROXY localhost:999; DIRECT\';\n" + 
+                "    }\n" + 
+                "}\n" + 
+                "");
+        doProxyPacTest(false, null, "448", null, true, 999, "function FindProxyForURL(url, host) {\n" + 
+                "        return \'PROXY localhost:999; DIRECT\';\n" + 
+                "}\n" + 
+                "");
+        doProxyPacTest(true, null, "448", null, false, 999, "function FindProxyForURL(url, host) {\n" + 
+                "        return \'PROXY localhost:999; DIRECT\';\n" + 
+                "}\n" + 
+                "");
+        doProxyPacTest(false, null, "448", null, false, 999, "function FindProxyForURL(url, host) {\n" + 
+                "        return \'PROXY localhost:999; DIRECT\';\n" + 
+                "}\n" + 
+                "");
+        doProxyPacTest(true, "someHost", "448", null, true, 999, "function FindProxyForURL(url, host) {\n" + 
+                "    if(shExpMatch(url, \'*/selenium-server/*\')) {\n" + 
+                "        return \'PROXY localhost:999; DIRECT\';\n" + 
+                "    } else if (shExpMatch(host, \'someHost\')) {\n" + 
+                "        return \'DIRECT\';\n" + 
+                "    }\n" + 
+                "}\n" + 
+                "");
+        doProxyPacTest(false, "someHost", "448", null, true, 999, "function FindProxyForURL(url, host) {\n" + 
+                "        return \'PROXY localhost:999; DIRECT\';\n" + 
+                "}\n" + 
+                "");
+        doProxyPacTest(true, "someHost", "448", null, false, 999, "function FindProxyForURL(url, host) {\n" + 
+                "        return \'PROXY localhost:999; DIRECT\';\n" + 
+                "}\n" + 
+                "");
+        doProxyPacTest(false, "someHost", "448", null, false, 999, "function FindProxyForURL(url, host) {\n" + 
+                "        return \'PROXY localhost:999; DIRECT\';\n" + 
+                "}\n" + 
+                "");
+        doProxyPacTest(true, "   ", "448", null, true, 999, "function FindProxyForURL(url, host) {\n" + 
+                "    if(shExpMatch(url, \'*/selenium-server/*\')) {\n" + 
+                "        return \'PROXY localhost:999; DIRECT\';\n" + 
+                "    }\n" + 
+                "}\n" + 
+                "");
+        doProxyPacTest(false, "   ", "448", null, true, 999, "function FindProxyForURL(url, host) {\n" + 
+                "        return \'PROXY localhost:999; DIRECT\';\n" + 
+                "}\n" + 
+                "");
+        doProxyPacTest(true, "   ", "448", null, false, 999, "function FindProxyForURL(url, host) {\n" + 
+                "        return \'PROXY localhost:999; DIRECT\';\n" + 
+                "}\n" + 
+                "");
+        doProxyPacTest(false, "   ", "448", null, false, 999, "function FindProxyForURL(url, host) {\n" + 
+                "        return \'PROXY localhost:999; DIRECT\';\n" + 
+                "}\n" + 
+                "");
+        doProxyPacTest(true, null, null, "confProxy", true, 999, "function FindProxyForURL(url, host) {\n" + 
+                "    if(shExpMatch(url, \'*/selenium-server/*\')) {\n" + 
+                "        return \'PROXY localhost:999; PROXY confProxy\';\n" + 
+                "    } else {\n" + 
+                "        return \'PROXY confProxy\';\n" + 
+                "    }\n" + 
+                "}\n" + 
+                "");
+        doProxyPacTest(false, null, null, "confProxy", true, 999, "function FindProxyForURL(url, host) {\n" + 
+                "        return \'PROXY localhost:999; PROXY confProxy\';\n" + 
+                "}\n" + 
+                "");
+        doProxyPacTest(true, null, null, "confProxy", false, 999, "function FindProxyForURL(url, host) {\n" + 
+                "        return \'PROXY localhost:999; PROXY confProxy\';\n" + 
+                "}\n" + 
+                "");
+        doProxyPacTest(false, null, null, "confProxy", false, 999, "function FindProxyForURL(url, host) {\n" + 
+                "        return \'PROXY localhost:999; PROXY confProxy\';\n" + 
+                "}\n" + 
+                "");
+        doProxyPacTest(true, "someHost", null, "confProxy", true, 999, "function FindProxyForURL(url, host) {\n" + 
+                "    if(shExpMatch(url, \'*/selenium-server/*\')) {\n" + 
+                "        return \'PROXY localhost:999; PROXY confProxy\';\n" + 
+                "    } else if (shExpMatch(host, \'someHost\')) {\n" + 
+                "        return \'DIRECT\';\n" + 
+                "    } else {\n" + 
+                "        return \'PROXY confProxy\';\n" + 
+                "    }\n" + 
+                "}\n" + 
+                "");
+        doProxyPacTest(false, "someHost", null, "confProxy", true, 999, "function FindProxyForURL(url, host) {\n" + 
+                "        return \'PROXY localhost:999; PROXY confProxy\';\n" + 
+                "}\n" + 
+                "");
+        doProxyPacTest(true, "someHost", null, "confProxy", false, 999, "function FindProxyForURL(url, host) {\n" + 
+                "        return \'PROXY localhost:999; PROXY confProxy\';\n" + 
+                "}\n" + 
+                "");
+        doProxyPacTest(false, "someHost", null, "confProxy", false, 999, "function FindProxyForURL(url, host) {\n" + 
+                "        return \'PROXY localhost:999; PROXY confProxy\';\n" + 
+                "}\n" + 
+                "");
+        doProxyPacTest(true, "   ", null, "confProxy", true, 999, "function FindProxyForURL(url, host) {\n" + 
+                "    if(shExpMatch(url, \'*/selenium-server/*\')) {\n" + 
+                "        return \'PROXY localhost:999; PROXY confProxy\';\n" + 
+                "    } else {\n" + 
+                "        return \'PROXY confProxy\';\n" + 
+                "    }\n" + 
+                "}\n" + 
+                "");
+        doProxyPacTest(false, "   ", null, "confProxy", true, 999, "function FindProxyForURL(url, host) {\n" + 
+                "        return \'PROXY localhost:999; PROXY confProxy\';\n" + 
+                "}\n" + 
+                "");
+        doProxyPacTest(true, "   ", null, "confProxy", false, 999, "function FindProxyForURL(url, host) {\n" + 
+                "        return \'PROXY localhost:999; PROXY confProxy\';\n" + 
+                "}\n" + 
+                "");
+        doProxyPacTest(false, "   ", null, "confProxy", false, 999, "function FindProxyForURL(url, host) {\n" + 
+                "        return \'PROXY localhost:999; PROXY confProxy\';\n" + 
+                "}\n" + 
+                "");
+        doProxyPacTest(true, null, null, null, true, 999, "function FindProxyForURL(url, host) {\n" + 
+                "    if(shExpMatch(url, \'*/selenium-server/*\')) {\n" + 
+                "        return \'PROXY localhost:999; DIRECT\';\n" + 
+                "    }\n" + 
+                "}\n" + 
+                "");
+        doProxyPacTest(false, null, null, null, true, 999, "function FindProxyForURL(url, host) {\n" + 
+                "        return \'PROXY localhost:999; DIRECT\';\n" + 
+                "}\n" + 
+                "");
+        doProxyPacTest(true, null, null, null, false, 999, "function FindProxyForURL(url, host) {\n" + 
+                "        return \'PROXY localhost:999; DIRECT\';\n" + 
+                "}\n" + 
+                "");
+        doProxyPacTest(false, null, null, null, false, 999, "function FindProxyForURL(url, host) {\n" + 
+                "        return \'PROXY localhost:999; DIRECT\';\n" + 
+                "}\n" + 
+                "");
+        doProxyPacTest(true, "someHost", null, null, true, 999, "function FindProxyForURL(url, host) {\n" + 
+                "    if(shExpMatch(url, \'*/selenium-server/*\')) {\n" + 
+                "        return \'PROXY localhost:999; DIRECT\';\n" + 
+                "    } else if (shExpMatch(host, \'someHost\')) {\n" + 
+                "        return \'DIRECT\';\n" + 
+                "    }\n" + 
+                "}\n" + 
+                "");
+        doProxyPacTest(false, "someHost", null, null, true, 999, "function FindProxyForURL(url, host) {\n" + 
+                "        return \'PROXY localhost:999; DIRECT\';\n" + 
+                "}\n" + 
+                "");
+        doProxyPacTest(true, "someHost", null, null, false, 999, "function FindProxyForURL(url, host) {\n" + 
+                "        return \'PROXY localhost:999; DIRECT\';\n" + 
+                "}\n" + 
+                "");
+        doProxyPacTest(false, "someHost", null, null, false, 999, "function FindProxyForURL(url, host) {\n" + 
+                "        return \'PROXY localhost:999; DIRECT\';\n" + 
+                "}\n" + 
+                "");
+        doProxyPacTest(true, "   ", null, null, true, 999, "function FindProxyForURL(url, host) {\n" + 
+                "    if(shExpMatch(url, \'*/selenium-server/*\')) {\n" + 
+                "        return \'PROXY localhost:999; DIRECT\';\n" + 
+                "    }\n" + 
+                "}\n" + 
+                "");
+        doProxyPacTest(false, "   ", null, null, true, 999, "function FindProxyForURL(url, host) {\n" + 
+                "        return \'PROXY localhost:999; DIRECT\';\n" + 
+                "}\n" + 
+                "");
+        doProxyPacTest(true, "   ", null, null, false, 999, "function FindProxyForURL(url, host) {\n" + 
+                "        return \'PROXY localhost:999; DIRECT\';\n" + 
+                "}\n" + 
+                "");
+        doProxyPacTest(false, "   ", null, null, false, 999, "function FindProxyForURL(url, host) {\n" + 
+                "        return \'PROXY localhost:999; DIRECT\';\n" + 
+                "}\n" + 
+                "");
+    }
+
+	private void doProxyPacTest(boolean avoidProxy, String nonProxyHosts, String proxyPort, String configuredProxy,
+                                boolean proxySeleniumTrafficOnly, int port, String expectedProxyPac) {
+        File parentDir = new File(System.getProperty("java.io.tmpdir"));
+       
+        String proxyPacPath = parentDir.getAbsolutePath() + "/proxy.pac";
+        File proxyPacFile = new File(proxyPacPath);
+        if (proxyPacFile.exists()) {
+            proxyPacFile.delete();
+        }
+        try {
+            LauncherUtils.makeProxyPAC(parentDir, port, proxySeleniumTrafficOnly, configuredProxy, proxyPort, nonProxyHosts, avoidProxy);
+        } catch (FileNotFoundException e) {
+            fail();
+        }
+        String actualContent = getFileContent(proxyPacPath);
+        assertNotNull(actualContent);
+        if (!"".equals(expectedProxyPac)) {
+            actualContent = actualContent.replaceAll("\r\n", "\n"); // resolve win32 CR nonsense
+            assertEquals(expectedProxyPac, actualContent);
+        }
+    }
+    
+	private String getFileContent(String path) {
+        File f = new File(path);
+        FileInputStream input;
+        try {
+            input = new FileInputStream(f);
+            byte buf[] = new byte[2048];
+            int len = input.read(buf);
+            return new String(buf, 0, len);
+        } catch (Exception e) {
+          throw new RuntimeException(e);
+      }
   }
-  
-  public void copyDirectoryCleanUp(File srcDir, File destDir) {
-    LauncherUtils.deleteTryTryAgain(srcDir, 1);
-    LauncherUtils.deleteTryTryAgain(destDir, 1);
-    assertFalse(srcDir.exists());
-    assertFalse(destDir.exists());
-  }
-  
 }
