@@ -241,6 +241,11 @@ public class SeleniumServer {
             } else if ("-defaultBrowserString".equalsIgnoreCase(arg)) {
                 usage("-defaultBrowserString has been renamed -forcedBrowserMode");
             } else if ("-forcedBrowserMode".equalsIgnoreCase(arg)) {
+                SeleniumServer.forcedBrowserMode = getArg(args, ++i);
+                if (i < args.length) {
+                    System.err.println("Warning: -forcedBrowserMode no longer consumes all remaining arguments on line (use -forcedBrowserModeRestOfLine for that)");
+                }
+            } else if ("-forcedBrowserModeRestOfLine".equalsIgnoreCase(arg)) {
                 for (i++; i < args.length; i++) {
                     if (SeleniumServer.forcedBrowserMode == null)
                         SeleniumServer.forcedBrowserMode = "";
@@ -510,7 +515,10 @@ public class SeleniumServer {
         printWrappedErrorLine(INDENT, "-timeout <nnnn>: an integer number of seconds before we should give up");
         printWrappedErrorLine(INDENT, "-interactive: puts you into interactive mode.  See the tutorial for more details");
         printWrappedErrorLine(INDENT, "-multiWindow: puts you into a mode where the test web site executes in a separate window, and selenium supports frames");
-        printWrappedErrorLine(INDENT, "-forcedBrowserMode <browser>: sets the browser mode (e.g. \"*iexplore\" for all sessions, no matter what is passed to getNewBrowserSession");
+        printWrappedErrorLine(INDENT, "-forcedBrowserMode <browser>: sets the browser mode to a single argument (e.g. \"*iexplore\") for all sessions, no matter what is passed to getNewBrowserSession");
+        
+
+        printWrappedErrorLine(INDENT, "-forcedBrowserModeRestOfLine <browser>: sets the browser mode to all the remaining tokens on the line (e.g. \"*custom /some/random/place/iexplore.exe\") for all sessions, no matter what is passed to getNewBrowserSession");
         printWrappedErrorLine(INDENT, "-userExtensions <file>: indicates a JavaScript file that will be loaded into selenium");
         printWrappedErrorLine(INDENT, "-browserSessionReuse: stops re-initialization and spawning of the browser between tests");
         printWrappedErrorLine(INDENT, "-avoidProxy: By default, we proxy every browser request; set this flag to make the browser use our proxy only for URLs containing '/selenium-server'");
