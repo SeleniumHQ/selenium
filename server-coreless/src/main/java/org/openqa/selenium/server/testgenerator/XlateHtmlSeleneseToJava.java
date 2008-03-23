@@ -300,6 +300,7 @@ public class XlateHtmlSeleneseToJava {
         body = body.replaceAll("\\\\", "\\\\\\\\"); // double the backslashes to avoid invalid escape sequences
         body = body.replaceAll(">\\s*<", "><");
         body = body.replaceAll("</?tbody>", "");
+        body = body.replaceAll("</?thead>", "");
         body = body.replaceAll("<tr><t[dh]\\s+(rowspan=\"1\"\\s+)?colspan=\"3\">([^<]+)</t[dh]></tr>", 
                 "\n/* $2 */\n");
         if (!silentMode) {
