@@ -50,13 +50,9 @@
         return $result;
     }
 
-    private function getString($verb, $args = array())
+    protected function getString($verb, $args = array())
     {
-        try {
-            $result = $this->doCommand($verb, $args);
-        } catch (Testing_Selenium_Exception $e) {
-            return $e;
-        }
+        $result = $this->doCommand($verb, $args);
         return (strlen($result) > 3) ? substr($result, 3) : '';
     }
 
