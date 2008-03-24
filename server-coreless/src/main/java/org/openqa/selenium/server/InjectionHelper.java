@@ -20,6 +20,7 @@ public class InjectionHelper {
     static Log log = LogFactory.getLog(InjectionHelper.class);
     private static boolean failOnError = true;
     private static boolean INJECT_SCRIPT_TAGS = true;
+    private static boolean tryToInjectInHead = false;
     private static HashMap<String, HashMap<String, String>> jsStateInitializersBySessionId = new HashMap<String, HashMap<String,String>>();
     private static HashMap<String, String> sessionIdToUniqueId = new HashMap<String, String>();
     
@@ -28,6 +29,10 @@ public class InjectionHelper {
     
     public static void setInjectScriptTags(boolean injectScriptTags) {
 	    InjectionHelper.INJECT_SCRIPT_TAGS = injectScriptTags;
+    }
+
+    public static void setTryToInjectInHead(boolean tryToInjectInHead) {
+        InjectionHelper.tryToInjectInHead = tryToInjectInHead;
     }
 
     public static void saveJsStateInitializer(String sessionId, String uniqueId, String jsVarName, String jsStateInitializer) {
@@ -218,7 +223,13 @@ public class InjectionHelper {
                 IO.copy(jsIn, baos); 
             }
 
-            int headIndex = -1; //data.toLowerCase().indexOf("<head>");
+            int headIndex;
+            if (tryToInjectInHead) {
+                headIndex = data.toLowerCase().indexOf("<head>");
+            } else {
+                headIndex = -1;
+            }
+
             if (headIndex != -1) {
                 data = data.substring(0, headIndex + 6) + baos.toString() + data.substring(headIndex + 6);
             } else {
