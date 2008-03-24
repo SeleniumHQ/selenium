@@ -146,9 +146,8 @@ public class Xlator
         Object fObj = scope.get(functionName, scope);
         if (!(fObj instanceof Function)) {
             throw new RuntimeException(functionName + " is undefined or not a function.");
-        } else {
-            return (Function) fObj;
         }
+        return (Function) fObj;
     }
 
     static String loadResource(String resourceName) throws IOException {

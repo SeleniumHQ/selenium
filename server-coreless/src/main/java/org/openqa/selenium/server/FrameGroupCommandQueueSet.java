@@ -493,12 +493,11 @@ public class FrameGroupCommandQueueSet {
         	// Parse out and remove the OK, from the command result
         	cmdResult = cmdResult.substring(3);
         	return cmdResult;
-        } else {
-        	if (WindowClosedException.WINDOW_CLOSED_ERROR.equals(cmdResult)) {
-        		throw new WindowClosedException();
-        	}
-        	throw new RuntimeException("unexpected browser error from getTitle: " + cmdResult);
         }
+        if (WindowClosedException.WINDOW_CLOSED_ERROR.equals(cmdResult)) {
+        	throw new WindowClosedException();
+        }
+        throw new RuntimeException("unexpected browser error from getTitle: " + cmdResult);
     }
         
     public String waitForLoad(long timeoutInMilliseconds) throws RemoteCommandException {
@@ -511,9 +510,7 @@ public class FrameGroupCommandQueueSet {
       	if (uniqueId == null) {
       		throw new RuntimeException("uniqueId is null in waitForLoad...this should not happen.");
       	}
-      	else {
-      		return "OK";
-      	}
+        return "OK";
     }
     
     private String waitForLoad(String timeoutInMilliseconds)  throws RemoteCommandException {
@@ -835,10 +832,10 @@ public class FrameGroupCommandQueueSet {
       tempFilesForSession.add(tf);   
     }
 
-	private boolean queueMatchesFrameAddress(CommandQueue queue, String currentLocalFrameAddress, String newFrameAddressExpression) {
+	private boolean queueMatchesFrameAddress(CommandQueue queue, String localFrameAddress, String newFrameAddressExpression) {
 		boolean result;
 		try {
-			result = doBooleanCommand(queue, "getWhetherThisFrameMatchFrameExpression", currentLocalFrameAddress, newFrameAddressExpression);
+			result = doBooleanCommand(queue, "getWhetherThisFrameMatchFrameExpression", localFrameAddress, newFrameAddressExpression);
 		} catch (WindowClosedException e) {
 			return false;
 		}

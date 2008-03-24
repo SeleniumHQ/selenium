@@ -111,7 +111,8 @@ public class CertificateCreator {
 	 * @throws NoSuchAlgorithmException
 	 * @throws NoSuchProviderException
 	 */
-	public static X509Certificate generateStdSSLServerCertificate(
+	@SuppressWarnings({ "deprecation", "unused" })
+    public static X509Certificate generateStdSSLServerCertificate(
 			final PublicKey newPubKey,
 			final X509Certificate caCert,
 			final PrivateKey caPrivateKey,
@@ -365,7 +366,8 @@ public class CertificateCreator {
 	 * @throws NoSuchAlgorithmException 
 	 * @throws CertificateException 
 	 */
-	public static X509Certificate createTypicalMasterCert(final KeyPair keyPair)
+	@SuppressWarnings("deprecation")
+    public static X509Certificate createTypicalMasterCert(final KeyPair keyPair)
 	throws SignatureException, InvalidKeyException, SecurityException, CertificateException, NoSuchAlgorithmException, NoSuchProviderException
 	{
 		

@@ -398,9 +398,8 @@ public class WindowsProxyManager {
                     return;
                 }
                 throw new RuntimeException("Bad type: " + type.getName());
-            } else {
-                prefs.remove(name());
             }
+            prefs.remove(name());
         }
 
         private void restore() {
@@ -419,10 +418,9 @@ public class WindowsProxyManager {
                     return;
                 }
                 throw new RuntimeException("Bad type: " + type.getName());
-            } else {
-                if (WindowsUtils.doesRegistryValueExist(key)) {
-                    WindowsUtils.deleteRegistryValue(key);
-                }
+            }
+            if (WindowsUtils.doesRegistryValueExist(key)) {
+                WindowsUtils.deleteRegistryValue(key);
             }
         }
 

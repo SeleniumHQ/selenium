@@ -17,51 +17,29 @@
 
 package org.openqa.selenium.server;
 
-import java.awt.AWTException;
-import java.awt.Rectangle;
-import java.awt.Robot;
-import java.awt.Toolkit;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.lang.reflect.Field;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.util.HashMap;
+import java.awt.*;
+import java.awt.image.*;
+import java.io.*;
+import java.lang.reflect.*;
+import java.net.*;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.Vector;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.*;
 
-import javax.imageio.ImageIO;
+import javax.imageio.*;
 
-import org.apache.commons.logging.Log;
-import org.apache.tools.ant.Project;
-import org.apache.tools.ant.taskdefs.Get;
-import org.apache.tools.ant.util.FileUtils;
-import org.mortbay.http.HttpConnection;
-import org.mortbay.http.HttpException;
-import org.mortbay.http.HttpFields;
-import org.mortbay.http.HttpRequest;
-import org.mortbay.http.HttpResponse;
-import org.mortbay.http.handler.ResourceHandler;
+import org.apache.commons.logging.*;
+import org.apache.tools.ant.*;
+import org.apache.tools.ant.taskdefs.*;
+import org.apache.tools.ant.util.*;
+import org.mortbay.http.*;
+import org.mortbay.http.handler.*;
 import org.mortbay.log.LogFactory;
-import org.mortbay.util.StringUtil;
-import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
-import org.openqa.selenium.server.browserlaunchers.AsyncExecute;
-import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
-import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
-import org.openqa.selenium.server.htmlrunner.HTMLLauncher;
-import org.openqa.selenium.server.log.AntJettyLoggerBuildListener;
+import org.mortbay.util.*;
+import org.openqa.selenium.server.BrowserSessionFactory.*;
+import org.openqa.selenium.server.browserlaunchers.*;
+import org.openqa.selenium.server.htmlrunner.*;
+import org.openqa.selenium.server.log.*;
 
 /**
  * A Jetty handler that takes care of remote Selenium requests.
@@ -594,7 +572,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
        }
     }
 
-    private void captureScreenshot(String fileName) throws AWTException, IOException, InterruptedException, ExecutionException, TimeoutException {
+    private void captureScreenshot(String fileName) throws IOException, InterruptedException, ExecutionException, TimeoutException {
         Robot robot = RobotRetriever.getRobot();
         Rectangle captureSize = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
         BufferedImage bufferedImage = robot.createScreenCapture(captureSize);

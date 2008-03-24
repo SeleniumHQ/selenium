@@ -41,9 +41,8 @@ public class ModifiedIO {
 
                 if (len == -1) {
                     break;
-                } else {
-                    returnVal += len;
                 }
+                returnVal += len;
 
                 byteCount -= len;
                 out.write(buffer, 0, len);
@@ -53,9 +52,8 @@ public class ModifiedIO {
                 len = in.read(buffer, 0, IO.bufferSize);
                 if (len < 0) {
                     break;
-                } else {
-                    returnVal += len;
                 }
+                returnVal += len;
                 out.write(buffer, 0, len);
             }
         }
@@ -84,9 +82,8 @@ public class ModifiedIO {
 
                 if (len == -1) {
                     break;
-                } else {
-                    returnVal += len;
                 }
+                returnVal += len;
 
                 byteCount -= len;
                 out.write(buffer, 0, len);
@@ -96,9 +93,8 @@ public class ModifiedIO {
                 len = in.read(buffer, 0, IO.bufferSize);
                 if (len == -1) {
                     break;
-                } else {
-                    returnVal += len;
                 }
+                returnVal += len;
                 out.write(buffer, 0, len);
             }
         }

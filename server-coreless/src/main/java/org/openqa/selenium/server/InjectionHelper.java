@@ -115,11 +115,10 @@ public class InjectionHelper {
             } catch (Exception e) {
                 if (failOnError) {
                     throw new RuntimeException(e);
-                } else {
-                    log.info("failOnError is false, ignoring problems: "
-                            + e.getMessage());
-                    log.debug("Ignored exception", e);
                 }
+                log.info("failOnError is false, ignoring problems: "
+                        + e.getMessage());
+                log.debug("Ignored exception", e);
             }
         }
         contentTransformations.put(key, sb.toString());
@@ -216,8 +215,7 @@ public class InjectionHelper {
             if (INJECT_SCRIPT_TAGS) {
             	writeScriptTags(baos);
             }
-            String injectionHtml = InjectionHelper.injectionHtml;
-            InputStream jsIn = new ClassPathResource(injectionHtml).getInputStream();
+            InputStream jsIn = new ClassPathResource(InjectionHelper.injectionHtml).getInputStream();
             contentTransformations.put("@SESSION_ID@", sessionId);
             
             writeDataWithUserTransformations("", jsIn, baos);
@@ -326,9 +324,8 @@ public class InjectionHelper {
             int len = in.read(buf);
             if (len == -1) {
                 break;
-            } else {
-                bytesWritten += len;
             }
+            bytesWritten += len;
             data = new String(buf, 0, len);
         }
 

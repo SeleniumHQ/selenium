@@ -43,9 +43,9 @@ public class MockPIFrameTest extends TestCase {
     @Override
     public void setUp() throws Exception {
       configureLogging();
-      server.setProxyInjectionMode(true);
-      server.setTimeoutInSeconds(timeoutInSeconds);
-      server.setRetryTimeoutInSeconds(retryTimeoutInSeconds);
+      SeleniumServer.setProxyInjectionMode(true);
+      SeleniumServer.setTimeoutInSeconds(timeoutInSeconds);
+      SeleniumServer.setRetryTimeoutInSeconds(retryTimeoutInSeconds);
       server = new SeleniumServer();
       server.start();
       BrowserLauncherFactory.addBrowserLauncher("dummy", DummyBrowserLauncher.class);
@@ -83,7 +83,7 @@ public class MockPIFrameTest extends TestCase {
         SeleniumServer.configureLogging();
         DummyBrowserLauncher.clearSessionId();
         InjectionHelper.setFailOnError(true);
-        server.setProxyInjectionMode(false);
+        SeleniumServer.setProxyInjectionMode(false);
     }
     
     /** start a basic browser session */
@@ -223,6 +223,7 @@ public class MockPIFrameTest extends TestCase {
     }
     
     /** click, then wait for page to load, but frame1 may send close before sending OK result */
+    @SuppressWarnings("unused")
     public void testEvilClickThenWaitRaceCondition() throws InterruptedException {
     	MockPIFrame frame1 = startSession();
         BrowserRequest browserRequest = frame1.getMostRecentRequest();

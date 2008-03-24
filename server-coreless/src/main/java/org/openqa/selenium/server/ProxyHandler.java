@@ -16,28 +16,22 @@
 
 package org.openqa.selenium.server;
 
-import cybervillains.ca.KeyStoreManager;
-import org.apache.commons.logging.Log;
+import java.io.*;
+import java.net.*;
+import java.util.*;
+
+import javax.net.ssl.*;
+
+import org.apache.commons.logging.*;
 import org.mortbay.http.*;
-import org.mortbay.http.handler.AbstractHttpHandler;
-import org.mortbay.jetty.Server;
+import org.mortbay.http.handler.*;
+import org.mortbay.jetty.*;
 import org.mortbay.log.LogFactory;
 import org.mortbay.util.*;
 import org.mortbay.util.URI;
-import org.openqa.selenium.server.browserlaunchers.LauncherUtils;
-import org.openqa.selenium.server.browserlaunchers.ResourceExtractor;
+import org.openqa.selenium.server.browserlaunchers.*;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.*;
-import java.security.*;
-import java.security.cert.CertificateException;
-import java.util.*;
-
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLHandshakeException;
+import cybervillains.ca.*;
 
 /* ------------------------------------------------------------ */
 
@@ -60,6 +54,7 @@ public class ProxyHandler extends AbstractHttpHandler {
     private boolean _anonymous = false;
     private transient boolean _chained = false;
     private final Map<String,SslRelay> _sslMap = new LinkedHashMap<String, SslRelay>();
+    @SuppressWarnings("unused")
     private String sslKeystorePath;
     private boolean useCyberVillains = true;
     private boolean trustAllSSLCertificates = false;
@@ -631,7 +626,7 @@ public class ProxyHandler extends AbstractHttpHandler {
         listener.setNukeDirOrFile(keystore);
     }
 
-    private void wireUpSslWithCyberVilliansCA(String host, SslRelay listener) throws KeyStoreException, InvalidKeyException, SignatureException, CertificateException, NoSuchAlgorithmException, NoSuchProviderException, UnrecoverableKeyException {
+    private void wireUpSslWithCyberVilliansCA(String host, SslRelay listener) {
         try {
             File root = File.createTempFile("seleniumSslSupport", host);
             root.delete();

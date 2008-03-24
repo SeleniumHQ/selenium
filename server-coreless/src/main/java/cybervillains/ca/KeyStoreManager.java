@@ -97,6 +97,7 @@ public class KeyStoreManager {
 	private boolean persistImmediately = true;
     private File root;
 
+    @SuppressWarnings("unchecked")
     public KeyStoreManager(File root) {
         this.root = root;
 
@@ -412,9 +413,7 @@ public class KeyStoreManager {
 		if(alias != null) {
 			return (X509Certificate)_ks.getCertificate(alias);
 		}
-		else {
-			return getMappedCertificateForHostname(hostname);
-		}
+        return getMappedCertificateForHostname(hostname);
 	}
 	
 	/**
@@ -422,7 +421,8 @@ public class KeyStoreManager {
 	 * @return
 	 * @throws KeyStoreException
 	 */
-	public synchronized X509Certificate getSigningCert() throws KeyStoreException {
+	@SuppressWarnings("unused")
+    public synchronized X509Certificate getSigningCert() throws KeyStoreException {
 		return _caCert;
 	}
 	
@@ -433,7 +433,8 @@ public class KeyStoreManager {
 	 * @throws NoSuchAlgorithmException
 	 * @throws UnrecoverableKeyException
 	 */
-	public synchronized PrivateKey getSigningPrivateKey() throws KeyStoreException, NoSuchAlgorithmException, UnrecoverableKeyException {
+	@SuppressWarnings("unused")
+    public synchronized PrivateKey getSigningPrivateKey() throws KeyStoreException, NoSuchAlgorithmException, UnrecoverableKeyException {
 		return _caPrivKey;
 	}
 	
@@ -542,10 +543,7 @@ public class KeyStoreManager {
 			}
 			return replacementCert;
 		}
-		else
-		{
-			return getCertificateByAlias(mappedCertThumbprint);
-		}
+        return getCertificateByAlias(mappedCertThumbprint);
 		
 	}
 	
@@ -596,9 +594,7 @@ public class KeyStoreManager {
 			return newCert;
 			
 		}
-		else {
-			return getCertificateByAlias(thumbprint);
-		}
+        return getCertificateByAlias(thumbprint);
 		
 		
 	}

@@ -32,7 +32,7 @@ public class MacProxyManagerTest extends TestCase {
         assertEquals("wrong serviceName", "foo bar", networkSettings.serviceName);
         assertEquals("wrong enabled", true, networkSettings.enabled);
         assertEquals("wrong proxyServer", "foo", networkSettings.proxyServer);
-        assertEquals("wrong port", 123, networkSettings.port);
+        assertEquals("wrong port", 123, networkSettings.port1);
         assertEquals("wrong authenticated", true, networkSettings.authenticated);
         assertEquals("wrong bypass length", 3, networkSettings.bypass.length);
         // DGF do we really want that final \t?
@@ -45,7 +45,7 @@ public class MacProxyManagerTest extends TestCase {
         assertEquals("wrong serviceName", "foo bar", networkSettings.serviceName);
         assertEquals("wrong enabled", false, networkSettings.enabled);
         assertEquals("wrong proxyServer", "", networkSettings.proxyServer);
-        assertEquals("wrong port", 80, networkSettings.port);
+        assertEquals("wrong port", 80, networkSettings.port1);
         assertEquals("wrong authenticated", false, networkSettings.authenticated);
         assertEquals("wrong bypass length", 0, networkSettings.bypass.length);
         assertEquals("wrong bypass", "0\t", networkSettings.bypassAsString());
@@ -134,7 +134,7 @@ public class MacProxyManagerTest extends TestCase {
         assertEquals("wrong serviceName", "foo bar", networkSettings.serviceName);
         assertEquals("wrong enabled", false, networkSettings.enabled);
         assertEquals("wrong proxyServer", "", networkSettings.proxyServer);
-        assertEquals("wrong port", 80, networkSettings.port);
+        assertEquals("wrong port", 80, networkSettings.port1);
         assertEquals("wrong authenticated", false, networkSettings.authenticated);
         assertEquals("wrong bypass length", 0, networkSettings.bypass.length);
         assertEquals("wrong bypass", "0\t", networkSettings.bypassAsString());
@@ -157,7 +157,7 @@ public class MacProxyManagerTest extends TestCase {
         assertEquals("wrong serviceName", "foo bar", networkSettings.serviceName);
         assertEquals("wrong enabled", true, networkSettings.enabled);
         assertEquals("wrong proxyServer", "foo", networkSettings.proxyServer);
-        assertEquals("wrong port", 123, networkSettings.port);
+        assertEquals("wrong port", 123, networkSettings.port1);
         assertEquals("wrong authenticated", true, networkSettings.authenticated);
         assertEquals("wrong bypass length", 3, networkSettings.bypass.length);
         // DGF do we really want that final \t?
@@ -198,7 +198,7 @@ public class MacProxyManagerTest extends TestCase {
         assertStringListEquals("setproxybypassdomains was wrong", Arrays.asList("-setproxybypassdomains", "foo bar", "Empty"), setproxybypassdomains);
     }
     
-    public void testRestoreProxyEnabled() throws IOException {
+    public void testRestoreProxyEnabled() {
         mmpm.mockPrefs.put("backupready", "true");
         mmpm.mockPrefs.put("serviceName", "foo bar");
         mmpm.mockPrefs.put("enabled", "true");
@@ -498,9 +498,8 @@ public class MacProxyManagerTest extends TestCase {
             } catch (InvocationTargetException ite) {
                 if (ite.getCause() instanceof Exception) {
                     throw (Exception) ite.getCause();
-                } else {
-                    throw ite;
                 }
+                throw ite;
             }
             
         }
@@ -513,9 +512,8 @@ public class MacProxyManagerTest extends TestCase {
             } catch (InvocationTargetException ite) {
                 if (ite.getCause() instanceof Exception) {
                     throw (Exception) ite.getCause();
-                } else {
-                    throw ite;
                 }
+                throw ite;
             }
         }
     }

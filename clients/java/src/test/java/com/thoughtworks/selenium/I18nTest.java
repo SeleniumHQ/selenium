@@ -90,7 +90,7 @@ public class I18nTest extends TestCase {
         verifyText(expected, id);
     }
     
-    public void testDangerousLabels() throws UnsupportedEncodingException {
+    public void testDangerousLabels() {
         String[] labels = sel.getSelectOptions("dangerous-labels");
         assertEquals("Wrong number of labels", 3, labels.length);
         assertEquals("mangled label", "veni, vidi, vici", labels[0]);

@@ -474,7 +474,7 @@ public class SeleniumServer {
         }
         CommandQueue.setDefaultTimeout(timeoutInSeconds);
         CommandQueue.setRetryTimeout(retryTimeoutInSeconds);
-        seleniumProxy.setProxyInjectionMode(proxyInjectionModeArg);
+        SeleniumServer.setProxyInjectionMode(proxyInjectionModeArg);
         
         if (!isProxyInjectionMode() &&
                 (InjectionHelper.userContentTransformationsExist() ||

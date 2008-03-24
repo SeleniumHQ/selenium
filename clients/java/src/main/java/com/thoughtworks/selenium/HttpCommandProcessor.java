@@ -18,12 +18,9 @@
 package com.thoughtworks.selenium;
 
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.NumberFormat;
-import java.text.ParseException;
-import java.util.ArrayList;
+import java.net.*;
+import java.text.*;
+import java.util.*;
 
 /**
  * Sends commands and retrieves results via HTTP.
@@ -129,7 +126,7 @@ public class HttpCommandProcessor implements CommandProcessor {
         return is;
     }
 
-    private String buildCommandBody(String command) throws MalformedURLException {
+    private String buildCommandBody(String command) {
         StringBuffer sb = new StringBuffer();
         sb.append(command);
         if (sessionId != null) {

@@ -133,11 +133,6 @@ public class SingleEntryAsyncQueueTest extends TestCase {
     expectContent(getter2, completeCommand);
   }
 
-  private void injectContent(TrackableThread commandSender, String content, boolean expected) throws Throwable {
-		Boolean actual = (Boolean) commandSender.getResult();
-		assertEquals(content + "content got sent", expected, actual.booleanValue());
-  }
-
   private void injectContent(String content, boolean expected) throws Throwable {
 		boolean actual = holder.putContent(content);
 		assertEquals(content + "content got sent", expected, actual);

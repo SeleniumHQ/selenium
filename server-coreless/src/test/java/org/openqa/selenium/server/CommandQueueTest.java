@@ -54,17 +54,17 @@ public class CommandQueueTest extends TestCase {
   }
   
   public void testQueueDelayInitializedAtDefault() {
-    assertEquals(cq.getSpeed(), cq.getQueueDelay());
+    assertEquals(CommandQueue.getSpeed(), cq.getQueueDelay());
   }
   
   public void testQueueDelayChangedAsSetNoCrosstalk() {
-    int defaultSpeed = cq.getSpeed();
+    int defaultSpeed = CommandQueue.getSpeed();
     int newSpeed = cq.getQueueDelay() + 42;
     int newGlobalSpeed = defaultSpeed + 21;
     cq.setQueueDelay(newSpeed);
-    cq.setSpeed(newGlobalSpeed);
+    CommandQueue.setSpeed(newGlobalSpeed);
     assertEquals(newSpeed, cq.getQueueDelay());
-    assertEquals(newGlobalSpeed, cq.getSpeed());
+    assertEquals(newGlobalSpeed, CommandQueue.getSpeed());
     
     CommandQueue cq2 = new CommandQueue(sessionId, getName() + "2");
     assertEquals(newGlobalSpeed, cq2.getQueueDelay());
@@ -72,14 +72,14 @@ public class CommandQueueTest extends TestCase {
     CommandQueue cq3 = new CommandQueue(sessionId, getName() + "3", newSpeed);
     assertEquals(newSpeed, cq3.getQueueDelay());
     
-    cq.setSpeed(defaultSpeed);
+    CommandQueue.setSpeed(defaultSpeed);
   }
 
   public void testAssertStartingState() {
     assertNull(cq.peekAtCommand());
     assertNull(cq.peekAtResult());
     assertFalse(SeleniumServer.isProxyInjectionMode());
-    assertEquals(defaultTimeout, cq.getDefaultTimeout());
+    assertEquals(defaultTimeout, CommandQueue.getDefaultTimeout());
   }
   
   public void testBasicDoCommandWithoutWaiting() throws WindowClosedException {

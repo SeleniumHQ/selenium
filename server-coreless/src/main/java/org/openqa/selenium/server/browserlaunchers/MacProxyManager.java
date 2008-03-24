@@ -76,6 +76,7 @@ public class MacProxyManager {
     }
     
     /** change the network settings to enable use of our proxy */
+    @SuppressWarnings("unused")
     public void changeNetworkSettings() throws IOException {
         if (networkService == null) {
             getCurrentNetworkSettings();
@@ -209,7 +210,7 @@ public class MacProxyManager {
     }
     
     /** Acquire current network settings using scutil/networksetup */
-    private MacNetworkSettings getCurrentNetworkSettings() throws IOException {
+    private MacNetworkSettings getCurrentNetworkSettings() {
         getPrimaryNetworkServiceName();
         String output = runNetworkSetup("-getwebproxy", networkService);
         log.debug(output);
@@ -357,6 +358,7 @@ public class MacProxyManager {
     /** Copy OS X network settings into Java's per-user persistent preference store 
      * @see Preferences
      * */
+    @SuppressWarnings("unused")
     public void backupNetworkSettings() throws IOException {
         // Don't clobber our old backup if we 
         // never got the chance to restore for some reason 
@@ -374,7 +376,7 @@ public class MacProxyManager {
         log.info("Restoring OS X global network settings...");
         MacNetworkSettings networkSettings = retrieveFromPrefs();
         
-        runNetworkSetup("-setwebproxy", networkSettings.serviceName, networkSettings.proxyServer, ""+networkSettings.port);
+        runNetworkSetup("-setwebproxy", networkSettings.serviceName, networkSettings.proxyServer, ""+networkSettings.port1);
         // DGF Do we need to do anything with authentication?  Let's just leave it alone and hope it doesn't bite us
         
         if (networkSettings.bypass.length > 0) {
@@ -457,7 +459,7 @@ public class MacProxyManager {
         prefs.put("serviceName", networkSettings.serviceName);
         prefs.putBoolean("enabled", networkSettings.enabled);
         prefs.put("proxyServer", networkSettings.proxyServer);
-        prefs.putInt("port", networkSettings.port);
+        prefs.putInt("port", networkSettings.port1);
         prefs.putBoolean("authenticated", networkSettings.authenticated);
         prefs.put("bypass", networkSettings.bypassAsString());
     }
@@ -476,14 +478,14 @@ public class MacProxyManager {
         final String serviceName;
         final boolean enabled;
         final String proxyServer;
-        final int port;
+        final int port1;
         final boolean authenticated;
         final String[] bypass;
         public MacNetworkSettings(String serviceName, boolean enabled, String server, int port, boolean authenticated, String[] bypass) {
             this.serviceName = serviceName;
             this.enabled = enabled;
             this.proxyServer = server;
-            this.port = port;
+            this.port1 = port;
             this.authenticated = authenticated;
             this.bypass = bypass;
         }
@@ -505,7 +507,7 @@ public class MacProxyManager {
             sb.append(serviceName)
                 .append(", enabled=").append(enabled)
                 .append(", proxyServer=").append(proxyServer)
-                .append(", port=").append(port)
+                .append(", port=").append(port1)
                 .append(", authenticated=").append(authenticated)
                 .append(", bypass=").append(Arrays.toString(bypass))
                 .append("}");

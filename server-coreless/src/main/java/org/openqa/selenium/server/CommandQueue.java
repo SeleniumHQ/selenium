@@ -131,28 +131,26 @@ public class CommandQueue {
         if (!SeleniumServer.isProxyInjectionMode()) {
           throw new IllegalStateException(
               "A result was unexpectedly found in the result holder");
-        } else {
-          if (!"OK".equals(prevResult)) {
+        }
+        if (!"OK".equals(prevResult)) {
             if (WindowClosedException.WINDOW_CLOSED_ERROR.equals(prevResult)) {
               throw new WindowClosedException();
             }
             throw new IllegalStateException("unexpected result " + prevResult);
-          } else {
-            if (command.startsWith("wait")) {
-              if (log.isDebugEnabled()) {
-                  log.debug("Page load beat the wait command.  Leave the result to be picked up below");
-              }
-            } else {
-              if (log.isDebugEnabled()) {
-                // In proxy injection mode, a single command could cause multiple pages to
-                // reload.  Each of these reloads causes a result.  This means that the usual one-to-one
-                // relationship between commands and results can go out of whack.  To avoid this, we
-                // discard results for which no thread is waiting:
-                log.debug("Apparently a page load result preceded the command; will ignore it...");
-              }
-              resultHolder.poisonPollers(); // overwrite result
-            }
           }
+        if (command.startsWith("wait")) {
+          if (log.isDebugEnabled()) {
+              log.debug("Page load beat the wait command.  Leave the result to be picked up below");
+          }
+        } else {
+          if (log.isDebugEnabled()) {
+            // In proxy injection mode, a single command could cause multiple pages to
+            // reload.  Each of these reloads causes a result.  This means that the usual one-to-one
+            // relationship between commands and results can go out of whack.  To avoid this, we
+            // discard results for which no thread is waiting:
+            log.debug("Apparently a page load result preceded the command; will ignore it...");
+          }
+          resultHolder.poisonPollers(); // overwrite result
         }
       }
 
