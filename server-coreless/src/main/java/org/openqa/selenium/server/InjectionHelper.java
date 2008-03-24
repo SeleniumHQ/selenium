@@ -21,18 +21,23 @@ public class InjectionHelper {
     private static boolean failOnError = true;
     private static boolean INJECT_SCRIPT_TAGS = true;
     private static boolean tryToInjectInHead = false;
+    private static String injectionHtml = "/core/scripts/injection.html";
     private static HashMap<String, HashMap<String, String>> jsStateInitializersBySessionId = new HashMap<String, HashMap<String,String>>();
     private static HashMap<String, String> sessionIdToUniqueId = new HashMap<String, String>();
     
     private static HashMap<String, String> contentTransformations = new HashMap<String, String>();
-    private static List<String> userJsInjectionFiles = new LinkedList<String>(); 
-    
+    private static List<String> userJsInjectionFiles = new LinkedList<String>();
+
     public static void setInjectScriptTags(boolean injectScriptTags) {
 	    InjectionHelper.INJECT_SCRIPT_TAGS = injectScriptTags;
     }
 
     public static void setTryToInjectInHead(boolean tryToInjectInHead) {
         InjectionHelper.tryToInjectInHead = tryToInjectInHead;
+    }
+
+    public static void setInjectionHtml(String injectionHtml) {
+        InjectionHelper.injectionHtml = injectionHtml;
     }
 
     public static void saveJsStateInitializer(String sessionId, String uniqueId, String jsVarName, String jsStateInitializer) {
@@ -211,7 +216,7 @@ public class InjectionHelper {
             if (INJECT_SCRIPT_TAGS) {
             	writeScriptTags(baos);
             }
-            String injectionHtml = "/core/scripts/injection.html";
+            String injectionHtml = InjectionHelper.injectionHtml;
             InputStream jsIn = new ClassPathResource(injectionHtml).getInputStream();
             contentTransformations.put("@SESSION_ID@", sessionId);
             
