@@ -58,10 +58,14 @@ public class FirefoxProfile {
         if (home != null) {
             installDevelopmentExtension(home);
         } else {
-            throw new UnsupportedOperationException("We do not currently support a prepackaged webdriver extension");
+            installPrepackagedExtension(null);
         }
 
         deleteExtensionsCacheIfItExists();
+    }
+
+    public void installPrepackagedExtension(File extensionToInstall) {
+        throw new UnsupportedOperationException("We do not currently support installing extensions (including the WebDriver extension)");
     }
 
     public void installDevelopmentExtension(String home) {
