@@ -2503,18 +2503,17 @@ Selenium.prototype.doCaptureEntirePageScreenshot = function(filename, kwargs) {
      *                  and an exception will be thrown, possibly by native
      *                  code.
      * @param kwargs    a kwargs string that modifies the way the screenshot
-     *                  is captured. Example: "bgImageURL=file:///C:/my.png" .
+     *                  is captured. Example: "background=#CCFFDD" .
      *                  Currently valid options:
-     *
-     *                   bgImageURL
-     *                     the URL for an image to use as the background image
-     *                     of the HTML document. This may be useful for
-     *                     capturing screenshots of less-than-ideal layouts,
-     *                     for example where absolute positioning causes the
-     *                     calculation of the canvas dimension to fail and a
-     *                     black background is exposed (possibly obscuring
-     *                     black text). No image is used if unspecified.
-     *                     
+     *                  <dl>
+     *                   <dt>background</dt>
+     *                     <dd>the background CSS for the HTML document. This
+     *                     may be useful to set for capturing screenshots of
+     *                     less-than-ideal layouts, for example where absolute
+     *                     positioning causes the calculation of the canvas
+     *                     dimension to fail and a black background is exposed
+     *                     (possibly obscuring black text).</dd>
+     *                  </dl>
      */
     // can only take screenshots in Mozilla chrome mode, IE not in the RC,
     // or IE multiWindow mode in the RC
@@ -2647,13 +2646,12 @@ Selenium.prototype.doCaptureEntirePageScreenshot = function(filename, kwargs) {
     };
     LOG.debug('computed dimensions');
     
-    var originalBgImage = doc.style.backgroundImage;
+    var originalBackground = doc.style.background;
     if (kwargs) {
         // TODO - replace with parse_kwargs() when it makes it into Core
-        var matches = /bgImageURL\s*=([^,]+)/.exec(kwargs);
+        var matches = /background\s*=([^,]+)/.exec(kwargs);
         if (matches) {
-            var bgImageURL = matches[1].trim();
-            doc.style.backgroundImage = 'url(' + bgImageURL + ')';
+            doc.style.background = matches[1].trim();
         }
     }
     
@@ -2667,7 +2665,7 @@ Selenium.prototype.doCaptureEntirePageScreenshot = function(filename, kwargs) {
     var dataUrl = canvas.toDataURL("image/" + format);
     LOG.debug('grabbed to canvas');
     
-    doc.style.backgroundImage = originalBgImage;
+    doc.style.background = originalBackground;
     
     // save to file
     var nsFile = Components.classes["@mozilla.org/file/local;1"]
