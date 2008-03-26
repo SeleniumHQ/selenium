@@ -3,6 +3,8 @@ package com.googlecode.webdriver.support.internal;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.List;
+import java.util.ArrayList;
 
 import com.googlecode.webdriver.By;
 import com.googlecode.webdriver.How;
@@ -10,6 +12,7 @@ import com.googlecode.webdriver.WebDriver;
 import com.googlecode.webdriver.WebElement;
 import com.googlecode.webdriver.support.CacheLookup;
 import com.googlecode.webdriver.support.FindBy;
+import com.googlecode.webdriver.support.ByIdOrName;
 
 public class LocatingElementHandler implements InvocationHandler {
     private final WebDriver driver;
@@ -24,11 +27,11 @@ public class LocatingElementHandler implements InvocationHandler {
     }
 
     private boolean isLookupCached(Field field) {
-        return field.getAnnotation(CacheLookup.class) == null ? false : true;
+        return (field.getAnnotation(CacheLookup.class) != null);
     }
 
   private By buildBy(Field field) {
-      How how = How.ID;
+      How how = How.ID_OR_NAME;
       String using = field.getName();
 
       FindBy findBy = field.getAnnotation(FindBy.class);
@@ -40,6 +43,9 @@ public class LocatingElementHandler implements InvocationHandler {
       switch(how) {
         case ID:
           return By.id(using);
+
+        case ID_OR_NAME:
+          return new ByIdOrName(using);
 
         case LINK_TEXT:
           return By.linkText(using);

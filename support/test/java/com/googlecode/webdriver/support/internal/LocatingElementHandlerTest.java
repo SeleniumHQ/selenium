@@ -14,13 +14,14 @@ import com.googlecode.webdriver.WebElement;
 import com.googlecode.webdriver.support.CacheLookup;
 import com.googlecode.webdriver.support.FindBy;
 import com.googlecode.webdriver.support.PageFactory;
+import com.googlecode.webdriver.support.ByIdOrName;
 
 public class LocatingElementHandlerTest extends MockObjectTestCase {
     public void testShouldAlwaysLocateTheElementPerCall() throws NoSuchFieldException {
         final WebDriver driver = mock(WebDriver.class);
         final WebElement element = mock(WebElement.class);
 
-        final By by = By.id("q");
+        final By by = new ByIdOrName("q");
 
         checking(new Expectations() {{
                 exactly(2).of(driver).findElement(by); will(returnValue(element));
@@ -40,7 +41,7 @@ public class LocatingElementHandlerTest extends MockObjectTestCase {
       final WebDriver driver = mock(WebDriver.class);
       final RenderedWebElement element = mock(RenderedWebElement.class);
 
-      final By by = By.id("rendered");
+      final By by = new ByIdOrName("rendered");
 
       checking(new Expectations() {{
             allowing(driver).findElement(by); will(returnValue(element));
@@ -74,7 +75,7 @@ public class LocatingElementHandlerTest extends MockObjectTestCase {
       final WebDriver driver = mock(WebDriver.class);
       final WebElement element = mock(WebElement.class);
 
-      final By by = By.id("staysTheSame");
+      final By by = new ByIdOrName("staysTheSame");
 
       checking(new Expectations() {{
         allowing(driver).findElement(by); will(returnValue(element));
