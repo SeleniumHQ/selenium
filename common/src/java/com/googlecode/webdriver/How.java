@@ -5,5 +5,5 @@ public enum How {
   ID_OR_NAME,
   LINK_TEXT,
   NAME,
-  XPATH
+  XPATH,
 }

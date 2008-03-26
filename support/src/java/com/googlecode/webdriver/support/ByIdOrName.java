@@ -13,7 +13,7 @@ public class ByIdOrName extends By {
   private By nameFinder;
 
   public ByIdOrName(String idOrName) {
-    super(How.ID_OR_NAME, idOrName);
+    super(idOrName);
     idFinder = By.id(idOrName);
     nameFinder = By.name(idOrName);
   }
@@ -40,7 +40,7 @@ public class ByIdOrName extends By {
   }
 
   public String toString() {
-    return "by id or name \"" + using + '"';
+    return "by id or name \"" + getSelector() + '"';
   }
 
 }
