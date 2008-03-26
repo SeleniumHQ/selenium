@@ -82,4 +82,21 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
         fail("Expected driver to be created succesfully");
       }
     }
+
+    @Ignore(value="firefox", reason="Until we package the extension this will fail on the command line")
+    public void testANewProfileShouldAllowSettingAdditionalParameters() {
+      FirefoxProfile profile = new FirefoxProfile();
+      profile.addAdditionalPreference("browser.startup.homepage", "\"" + formPage + "\"");
+
+      try {
+        WebDriver secondDriver = new FirefoxDriver(profile);
+        String title = secondDriver.getTitle();
+        secondDriver.quit();
+
+        assertThat(title, is("We Leave From Here"));
+      } catch (Exception e) {
+        e.printStackTrace();
+        fail("Expected driver to be created succesfully");
+      }
+    }
 }
