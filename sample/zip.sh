@@ -6,5 +6,5 @@ echo "-------------------------------"
 echo "This script zips up your source + libs"
 echo
 
-jar -cMvf selenium-rc-bug-report.zip java-test-src/*.java java-lib/*.jar 
+jar -cMvf selenium-rc-bug-report.zip java-test-src/*.java java-lib/*.jar *.sh *.bat readme.txt
 
