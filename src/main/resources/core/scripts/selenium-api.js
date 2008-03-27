@@ -260,6 +260,18 @@ Selenium.prototype.doClickAt = function(locator, coordString) {
     this.browserbot.clickElement(element, clientXY[0], clientXY[1]);
 };
 
+Selenium.prototype.doFullClick = function(locator) {
+  /**
+  * Move to an element, do a mouseDown, and then do a mouseUp.
+   *
+   * @param locator an <a href="#locators">element locator</a>
+   *
+   */
+   this.doMouseMove(locator);
+   this.doMouseDown(locator);
+   this.doMouseUp(locator);
+};
+
 Selenium.prototype.doDoubleClickAt = function(locator, coordString) {
     /**
    * Doubleclicks on a link, button, checkbox or radio button. If the action
