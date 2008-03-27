@@ -1431,6 +1431,7 @@ function eval_xpath(xpath, inDocument, opts)
     catch (e) {
         throw new SeleniumError("Invalid xpath: " + extractExceptionMessage(e));
     }
+    context.setInPlayAttributes(getAttributeNodeTestNames(xpathObj));
     var xpathResult = xpathObj.evaluate(context);
     if (xpathResult && xpathResult.value) {
         for (var i = 0; i < xpathResult.value.length; ++i) {

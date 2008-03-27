@@ -227,6 +227,19 @@ function copyArray(dst, src) {
 }
 
 /**
+ * This is an optimization for copying attribute lists in IE. Only those
+ * attributes in the given set of names will be copied to the destination list.
+ */
+function copyArrayOfNamedAttributes(dst, src, names) {
+  if (!src) return;
+  for (var name in names) {
+    if (src[name]) {
+      dst.push(src[name]);
+    }
+  }
+}
+
+/**
  * This is an optimization for copying attribute lists in IE. IE includes many
  * extraneous properties in its DOM attribute lists, which take require
  * significant extra processing when evaluating attribute steps. With this
@@ -447,3 +460,50 @@ function windowSetInterval(win, fun, time) {
 function windowClearInterval(win, id) {
   return win.clearInterval(id);
 }
+
+/**
+ * Escape the special regular expression characters when the regular expression
+ * is specified as a string.
+ *
+ * Based on: http://simonwillison.net/2006/Jan/20/escape/
+ */
+RegExp.escape = (function() {
+  var specials = [
+    '/', '.', '*', '+', '?', '|', '^', '$',
+    '(', ')', '[', ']', '{', '}', '\\'
+  ];
+    
+  var sRE = new RegExp(
+    '(\\' + specials.join('|\\') + ')', 'g'
+  );
+    
+  return function(text) {
+    return text.replace(sRE, '\\$1');
+  }
+})();
+
+/**
+ * Traverses a LocationExpr object tree, returning a set of NodeTest names for
+ * any attribute steps encountered. This is basically a listing of all unique
+ * attribute names referenced in the XPath, and may contain "*". We want to
+ * get this from the XPath expression so we can avoid copying unnecessary
+ * attributes at evaluation time, because reading the DOM is very expensive in
+ * IE.
+ */
+function getAttributeNodeTestNames(object, names) {
+  if (names == undefined) {
+    var names = {};
+  }
+  if (typeof(object) == 'object') {
+    if (object.axis == 'attribute') {
+      names[object.nodetest.name] = true;
+    }
+    for (var attr in object) {
+      getAttributeNodeTestNames(object[attr], names);
+    }
+  }
+  return names;
+}
+
+
+
