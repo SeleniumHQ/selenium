@@ -278,7 +278,7 @@ FirefoxDriver.prototype.getCookie = function(respond) {
     
     var cookieToString = function(c) {
       return c.name + "=" + c.value + ";" + "domain=" + c.host + ";"
-          + (c.path == "/" ? "" : "path=" + c.path + ";") + "expires=" + c.expires + ";"
+          + "path=" + c.path + ";" + "expires=" + c.expires + ";"
           +(c.isSecure ? "secure ;" : "");
     }
 
@@ -304,6 +304,10 @@ FirefoxDriver.prototype.deleteCookie = function(respond, cookieString) {
     if (!cookie.domain) {
         var location = Utils.getBrowser(this.context).contentWindow.location
         cookie.domain = location.hostname; // + ":" + location.port;
+    }
+
+    if (!cookie.path) {
+        cookie.path = "/";
     }
 
     var cookieManager = Utils.getService("@mozilla.org/cookiemanager;1", "nsICookieManager");

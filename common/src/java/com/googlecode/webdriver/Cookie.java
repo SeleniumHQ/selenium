@@ -2,6 +2,8 @@ package com.googlecode.webdriver;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.Inet4Address;
+import java.net.UnknownHostException;
 import java.util.Date;
 
 public class Cookie {
@@ -27,7 +29,7 @@ public class Cookie {
         this.name = name;
         this.value = value;
         this.domain = (domain != null ? domain.toLowerCase() : null);
-        this.path = path;
+        this.path = path == null || "".equals(path) ? "/" : path;
 
         if(expiry != null) {
             //igonre the milliseconds because firefox only keeps the seconds
@@ -74,11 +76,16 @@ public class Cookie {
         if (name.indexOf(';') != -1)
             throw new IllegalArgumentException(
                     "Cookie names cannot contain a ';': " + name);
+
         if (!"".equals(domain)) {
             try {
-                new URL("http://" + domain);
+                String domainToUse = domain.startsWith("http") ? domain : "http://" + domain;
+                URL url = new URL(domainToUse);
+                Inet4Address.getByName(url.getHost());
             } catch (MalformedURLException e) {
-                throw new IllegalArgumentException("Invalid domain");
+                throw new IllegalArgumentException(String.format("URL not valid: %s", domain));
+            } catch (UnknownHostException e) {
+                throw new IllegalArgumentException(String.format("Domain does not exist: %s", domain));
             }
         }
 

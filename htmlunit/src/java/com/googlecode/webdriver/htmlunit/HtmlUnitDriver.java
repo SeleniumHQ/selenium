@@ -418,9 +418,9 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText, Fi
         public void deleteCookieNamed(String name) {
             //Assume the cookie either doesn't have a domain or has the same domain as the current
             //page. Delete the cookie for both cases.
-            state.addCookie(new org.apache.commons.httpclient.Cookie(getHostName(), name, "", "",
+            state.addCookie(new org.apache.commons.httpclient.Cookie(getHostName(), name, "", "/",
                     new Date(0), false));
-            state.addCookie(new org.apache.commons.httpclient.Cookie("", name, "", "", new Date(0),
+            state.addCookie(new org.apache.commons.httpclient.Cookie("", name, "", "/", new Date(0),
                     false));
         }
 
