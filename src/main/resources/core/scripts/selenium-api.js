@@ -257,19 +257,10 @@ Selenium.prototype.doClickAt = function(locator, coordString) {
    */
     var element = this.browserbot.findElement(locator);
     var clientXY = getClientXY(element, coordString)
+    this.doMouseMove(locator);
+    this.doMouseDown(locator);
     this.browserbot.clickElement(element, clientXY[0], clientXY[1]);
-};
-
-Selenium.prototype.doFullClick = function(locator) {
-  /**
-  * Move to an element, do a mouseDown, and then do a mouseUp.
-   *
-   * @param locator an <a href="#locators">element locator</a>
-   *
-   */
-   this.doMouseMove(locator);
-   this.doMouseDown(locator);
-   this.doMouseUp(locator);
+    this.doMouseUp(locator);
 };
 
 Selenium.prototype.doDoubleClickAt = function(locator, coordString) {
@@ -285,7 +276,10 @@ Selenium.prototype.doDoubleClickAt = function(locator, coordString) {
    */
     var element = this.browserbot.findElement(locator);
     var clientXY = getClientXY(element, coordString)
+    this.doMouseMove(locator);
+    this.doMouseDown(locator);
     this.browserbot.doubleClickElement(element, clientXY[0], clientXY[1]);
+    this.doMouseUp(locator);
 };
 
 Selenium.prototype.doContextMenuAt = function(locator, coordString) {
