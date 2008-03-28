@@ -23,21 +23,21 @@ public class FormHandlingTest extends AbstractDriverTestCase {
 
 	public void testShouldBeAbleToClickImageButtons() {
 		driver.get(formPage);
-		driver.findElement(By.xpath("//input[@id='imageButton']")).click();
+		driver.findElement(By.id("imageButton")).click();
 		assertThat(driver.getTitle(), equalTo("We Arrive Here"));
 	}
 
 	@Ignore(value = "safari", reason = "Test fails")
 	public void testShouldBeAbleToSubmitForms() {
 		driver.get(formPage);
-		driver.findElement(By.xpath("//form[@name='login']")).submit();
+		driver.findElement(By.name("login")).submit();
 		assertThat(driver.getTitle(), equalTo("We Arrive Here"));
 	}
 
 	@Ignore(value = "safari", reason = "Test fails")
 	public void testShouldSubmitAFormWhenAnyInputElementWithinThatFormIsSubmitted() {
 		driver.get(formPage);
-		driver.findElement(By.xpath("//input[@id='checky']")).submit();
+		driver.findElement(By.id("checky")).submit();
 		assertThat(driver.getTitle(), equalTo("We Arrive Here"));
 	}
 
@@ -52,7 +52,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
 		driver.get(formPage);
 
 		try {
-			driver.findElement(By.xpath("//form[@name='there is no spoon']"))
+			driver.findElement(By.name("there is no spoon"))
 					.submit();
 			fail("Should not have succeeded");
 		} catch (NoSuchElementException e) {
@@ -63,7 +63,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
 	public void testShouldBeAbleToEnterTextIntoATextAreaBySettingItsValue() {
 		driver.get(javascriptPage);
 		WebElement textarea = driver.findElement(By
-				.xpath("//textarea[@id='keyUpArea']"));
+				.id("keyUpArea"));
 		String cheesey = "Brie and cheddar";
 		textarea.sendKeys(cheesey);
 		assertThat(textarea.getValue(), equalTo(cheesey));
@@ -89,7 +89,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
 	public void testShouldBeAbleToSelectACheckBox() {
 		driver.get(formPage);
 		WebElement checkbox = driver.findElement(By
-				.xpath("//input[@id='checky']"));
+				.id("checky"));
 		assertThat(checkbox.isSelected(), is(false));
 		checkbox.setSelected();
 		assertThat(checkbox.isSelected(), is(true));
@@ -101,7 +101,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
 	public void testShouldToggleTheCheckedStateOfACheckbox() {
 		driver.get(formPage);
 		WebElement checkbox = driver.findElement(By
-				.xpath("//input[@id='checky']"));
+				.id("checky"));
 		assertThat(checkbox.isSelected(), is(false));
 		checkbox.toggle();
 		assertThat(checkbox.isSelected(), is(true));
@@ -113,7 +113,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
 	public void testTogglingACheckboxShouldReturnItsCurrentState() {
 		driver.get(formPage);
 		WebElement checkbox = driver.findElement(By
-				.xpath("//input[@id='checky']"));
+				.id("checky"));
 		assertThat(checkbox.isSelected(), is(false));
 		boolean isChecked = checkbox.toggle();
 		assertThat(isChecked, is(true));

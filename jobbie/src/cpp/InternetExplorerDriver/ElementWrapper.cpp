@@ -8,6 +8,8 @@
 #include "ElementWrapper.h"
 #include "utils.h"
 
+using namespace std;
+
 ElementWrapper::ElementWrapper(InternetExplorerDriver* ie, IHTMLDOMNode* node)
 	: element(node)
 {
@@ -48,7 +50,7 @@ void ElementWrapper::sendKeys(const std::wstring& newValue)
 {
 	bool initialVis = ie->getVisible();
 	// Bring the IE window to the front.
-	ie->bringToFront();
+	HWND hWnd = ie->bringToFront();
 
 	VARIANT top;
 	top.vt = VT_BOOL;
@@ -60,7 +62,7 @@ void ElementWrapper::sendKeys(const std::wstring& newValue)
 	element2->focus();
 	
 	// Allow the element to actually get the focus
-	Sleep(10);
+	Sleep(100);
 
 	for (const wchar_t *p = newValue.c_str(); *p; ++p)
 	{
@@ -94,34 +96,17 @@ void ElementWrapper::sendKeys(const std::wstring& newValue)
 			needsShift = (keyCode & (1 << 8)) ? true : false;  // VK_LSHIFT
 		}
 
-		INPUT input;
-		input.type = INPUT_KEYBOARD;
-		input.ki.time = 0;
-		input.ki.wScan = 0;
-		input.ki.dwFlags = KEYEVENTF_EXTENDEDKEY;
-		input.ki.dwExtraInfo = 0;
-		input.ki.wVk = keyCode;
+		UINT mapped = MapVirtualKeyW(keyCode, 0);
 
-		if (needsShift) 
-		{
-			input.ki.wVk = VK_LSHIFT;
-			SendInput(1, &input, sizeof(INPUT));
-			Sleep(5);
-		}
+		if (needsShift)
+			keybd_event(VK_SHIFT, MapVirtualKey(VK_LSHIFT, 0), 0, 0);
 
-		input.ki.wVk = keyCode;
-		SendInput(1, &input, sizeof(INPUT));
+		keybd_event((BYTE) keyCode, mapped, 0, 0);
+		Sleep(10);
+		keybd_event((BYTE) keyCode, mapped, KEYEVENTF_KEYUP, 0);
 
-		input.ki.dwFlags = KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP;
-		SendInput(1, &input, sizeof(INPUT));
-
-		if (needsShift) 
-		{
-			input.ki.wVk = VK_LSHIFT;
-			SendInput(1, &input, sizeof(INPUT));
-		}
-		Sleep(5);
-
+		if (needsShift)
+			keybd_event(VK_SHIFT, MapVirtualKey(VK_LSHIFT, 0), KEYEVENTF_KEYUP, 0);
 	}
 
 	element2->blur();
@@ -140,7 +125,12 @@ void ElementWrapper::clear()
 	empty.bstrVal = (BSTR)emptyBstr;
 	element->setAttribute(valueAttributeName, empty, 0);
 
-	Sleep(5);
+	bool initialVis = ie->getVisible();
+	// Bring the IE window to the front.
+	HWND hWnd = ie->bringToFront();
+	LRESULT lr;
+	SendMessageTimeoutW(hWnd, WM_SETTEXT, 0, (LPARAM) L"", SMTO_ABORTIFHUNG, 3000, (DWORD*)&lr);
+	ie->setVisible(initialVis);
 }
 
 bool ElementWrapper::isSelected()

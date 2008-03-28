@@ -348,7 +348,7 @@ void InternetExplorerDriver::addCookie(const wchar_t *cookieString)
 	doc->put_cookie(cookie);
 }
 
-void InternetExplorerDriver::bringToFront() 
+HWND InternetExplorerDriver::bringToFront() 
 {
 	setVisible(true);
 	HWND hWnd;
@@ -368,6 +368,8 @@ void InternetExplorerDriver::bringToFront()
     {
 		AttachThreadInput(currThreadId, ieWinThreadId, false);
     }
+
+	return hWnd;
 }
 
 void InternetExplorerDriver::getDocument(IHTMLDocument2 **pdoc)

@@ -40,7 +40,7 @@ public:
 	std::wstring getCookies();
 	void addCookie(const wchar_t *cookieString);
 
-	void bringToFront();
+	HWND bringToFront();
 
 private:
 	void waitForDocumentToComplete(IHTMLDocument2* doc);

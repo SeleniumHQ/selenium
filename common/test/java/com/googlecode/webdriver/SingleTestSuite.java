@@ -12,11 +12,11 @@ public class SingleTestSuite {
 		return new TestSuiteBuilder()
 				    	.addSourceDir("common")
 //              .addSourceDir("firefox")
-              .usingDriver(HTML_UNIT)
+              .usingDriver(IE)
               .keepDriverInstance()
               .includeJavascriptTests()
-              .onlyRun("CookieImplementationTest")
-              .method("testDeleteCookie")
+              .onlyRun("FormHandlingTest")
+//              .method("testShouldBeAbleToEnterTextIntoATextAreaBySettingItsValue")
     //                    .leaveRunningAfterTest()
               .create();
 	}
