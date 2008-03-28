@@ -120,12 +120,56 @@ ElementWrapper* InternetExplorerDriver::selectElementById(const wchar_t *element
 	SysFreeString(id);
 	
 	if (element != NULL) {
-		IHTMLDOMNode* node = NULL;
-		element->QueryInterface(__uuidof(IHTMLDOMNode), (void **)&node);
-		element->Release();
-		ElementWrapper* toReturn = new ElementWrapper(this, node);
-		node->Release();
-		return toReturn;
+		CComVariant value;
+		element->getAttribute(CComBSTR(L"id"), 0, &value);
+		std::wstring converted = variant2wchar(value);
+		if (converted == elementId)
+		{
+			IHTMLDOMNode* node = NULL;
+			element->QueryInterface(__uuidof(IHTMLDOMNode), (void **)&node);
+			element->Release();
+			ElementWrapper* toReturn = new ElementWrapper(this, node);
+			node->Release();
+
+			return toReturn;
+		}
+
+		CComPtr<IHTMLDocument2> doc2;
+		getDocument(&doc2);
+
+		CComPtr<IHTMLElementCollection> allNodes;
+		doc2->get_all(&allNodes);
+		long length = 0;
+		CComPtr<IUnknown> unknown;
+		allNodes->get__newEnum(&unknown);
+		CComQIPtr<IEnumVARIANT> enumerator(unknown);
+
+		VARIANT var;
+		VariantInit(&var);
+		enumerator->Next(1, &var, NULL);
+		IDispatch *disp;
+		disp = V_DISPATCH(&var);
+
+		while (disp) 
+		{
+			CComQIPtr<IHTMLElement> curr(disp);
+			disp->Release();
+			if (curr) 
+			{
+				CComVariant value;
+				curr->getAttribute(CComBSTR(L"id"), 0, &value);
+				std::wstring converted = variant2wchar(value);
+				if (elementId == converted) 
+				{
+					CComQIPtr<IHTMLDOMNode> node(curr);
+					return new ElementWrapper(this, node);
+				}
+			}
+
+			VariantInit(&var);
+			enumerator->Next(1, &var, NULL);
+			disp = V_DISPATCH(&var);
+		}
 	}
 
 	throw "Cannot find element";
@@ -160,6 +204,43 @@ ElementWrapper* InternetExplorerDriver::selectElementByLink(const wchar_t *eleme
 		if (converted == elementLink) {
 			CComQIPtr<IHTMLDOMNode> linkNode(element);
 			return new ElementWrapper(this, linkNode);
+		}
+	}
+
+	throw "Cannot find element";
+}
+
+ElementWrapper* InternetExplorerDriver::selectElementByName(const wchar_t *elementName) 
+{
+	CComPtr<IHTMLDocument3> doc;
+	getDocument3(&doc);
+
+	CComPtr<IHTMLElementCollection> elementCollection;
+	CComBSTR name = SysAllocString(elementName);
+	doc->getElementsByName(name, &elementCollection);
+	
+	long elementsLength;
+	elementCollection->get_length(&elementsLength);
+
+	for (int i = 0; i < elementsLength; i++) {
+		VARIANT idx;
+		idx.vt = VT_I4;
+		idx.lVal = i;
+		VARIANT zero;
+		zero.vt = VT_I4;
+		zero.lVal = 0;
+		CComPtr<IDispatch> dispatch;
+		elementCollection->item(idx, zero, &dispatch);
+
+		CComQIPtr<IHTMLElement> element(dispatch);
+
+		CComBSTR nameText;
+		CComVariant value;
+		element->getAttribute(CComBSTR(L"name"), 0, &value);
+		std::wstring converted = variant2wchar(value);
+		if (converted == elementName) {
+			CComQIPtr<IHTMLDOMNode> elementNode(element);
+			return new ElementWrapper(this, elementNode);
 		}
 	}
 

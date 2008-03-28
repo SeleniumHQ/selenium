@@ -6,6 +6,7 @@
 
 #include <jni.h>
 
+#include "CommentNode.h"
 #include "ElementNode.h"
 #include "Node.h"
 #include "TextNode.h"
@@ -60,7 +61,10 @@ jobject initJavaXPathNode(JNIEnv* env, Node* node)
 	if (dynamic_cast<TextNode*>(node)) 
 	{
 		clazz = env->FindClass("com/googlecode/webdriver/ie/TextNode");
-	} else 
+	} else if (dynamic_cast<CommentNode*>(node))
+	{
+		clazz = env->FindClass("com/googlecode/webdriver/ie/CommentNode");
+	} else
 	{
 		clazz = env->FindClass("com/googlecode/webdriver/ie/ElementNode");
 	}

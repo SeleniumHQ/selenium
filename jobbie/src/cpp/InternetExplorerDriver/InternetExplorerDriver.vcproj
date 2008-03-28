@@ -221,6 +221,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CommentNode.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\DocumentNode.cpp"
 				>
 			</File>
@@ -312,6 +316,10 @@
 			</File>
 			<File
 				RelativePath=".\com_googlecode_webdriver_ie_TextNode.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CommentNode.h"
 				>
 			</File>
 			<File

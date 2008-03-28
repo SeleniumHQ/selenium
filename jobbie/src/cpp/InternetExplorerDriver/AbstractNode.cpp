@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "AbstractNode.h"
 #include "AttributeNode.h"
+#include "CommentNode.h"
 #include "ElementNode.h"
 #include "TextNode.h"
 #include "DocumentNode.h"
@@ -101,6 +102,9 @@ Node* AbstractNode::buildNode(IHTMLDOMNode *from)
 	if (type == 3)
 	{
 		return new TextNode(from);
+	} else if (type == 8) 
+	{
+		return new CommentNode(from);
 	}
 
 	return new ElementNode(from);

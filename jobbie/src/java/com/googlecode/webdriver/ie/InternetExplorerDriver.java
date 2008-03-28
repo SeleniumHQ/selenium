@@ -37,10 +37,11 @@ import com.googlecode.webdriver.WebDriver;
 import com.googlecode.webdriver.WebElement;
 import com.googlecode.webdriver.internal.FindsById;
 import com.googlecode.webdriver.internal.FindsByLinkText;
+import com.googlecode.webdriver.internal.FindsByName;
 import com.googlecode.webdriver.internal.FindsByXPath;
 import com.googlecode.webdriver.internal.ReturnedCookie;
 
-public class InternetExplorerDriver implements WebDriver, FindsById, FindsByLinkText, FindsByXPath {
+public class InternetExplorerDriver implements WebDriver, FindsById, FindsByLinkText, FindsByName, FindsByXPath {
     private long iePointer; // Used by the native code to keep track of the IE instance
     private static boolean comStarted;
 
@@ -91,7 +92,15 @@ public class InternetExplorerDriver implements WebDriver, FindsById, FindsByLink
         return selectElementByLink(using);
     }
 
-    public WebElement findElementByXPath(String using) {
+    public WebElement findElementByName(String using) {
+    	return selectElementByName(using);
+    }
+
+	public List<WebElement> findElementsByName(String using) {
+    	return selectElementsByName(using);
+    }
+
+	public WebElement findElementByXPath(String using) {
         try {
             Object result = new IeXPath(using, this).selectSingleNode(getDocument());
                 if (result == null)
@@ -175,6 +184,10 @@ public class InternetExplorerDriver implements WebDriver, FindsById, FindsByLink
 
     private native void selectElementsByLink(String linkText, List<ElementNode> rawElements);
 
+    private native WebElement selectElementByName(String using);
+
+    private native List<WebElement> selectElementsByName(String using);
+    
     private native DocumentNode getDocument();
 
     @Override

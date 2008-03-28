@@ -31,6 +31,7 @@ public:
 
 	ElementWrapper* selectElementById(const wchar_t *elementId);
 	ElementWrapper* selectElementByLink(const wchar_t *elementLink);
+	ElementWrapper* selectElementByName(const wchar_t *elementName);
 	void getDocument(IHTMLDocument2 **pdoc);
 
 	void waitForNavigateToFinish();

@@ -156,6 +156,7 @@ public class IeNavigator extends DefaultNavigator {
     }
 
     public boolean isComment(Object object) {
+    	
         return false;
     }
 
