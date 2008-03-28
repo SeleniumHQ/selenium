@@ -6,13 +6,11 @@ import com.googlecode.webdriver.firefox.FirefoxProfile;
 import com.googlecode.webdriver.internal.OperatingSystem;
 
 import java.io.IOException;
-import java.net.ConnectException;
+import java.net.BindException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.SocketTimeoutException;
 
 public class NewProfileExtensionConnection extends AbstractExtensionConnection {
-  private static int SOCKET_CONNECT_TIMEOUT = 250;
   private static long TIMEOUT_IN_SECONDS = 20;
   private static long MILLIS_IN_SECONDS = 1000;
   private FirefoxBinary process;
@@ -33,15 +31,16 @@ public class NewProfileExtensionConnection extends AbstractExtensionConnection {
     int newport;
 
     for (newport = port; newport < port + 200; newport++) {
+      Socket socket = new Socket();
+      InetSocketAddress address = new InetSocketAddress(host, newport);
+
       try {
-        Socket socket = new Socket();
-        InetSocketAddress address = new InetSocketAddress(host, newport);
-        socket.connect(address, SOCKET_CONNECT_TIMEOUT);
-        socket.close();
-      } catch (ConnectException e) {
+        socket.bind(address);
         return newport;
-      } catch (SocketTimeoutException e) {
-        // We can't determine what the problem is, so assume something's listening
+      } catch (BindException e) {
+        // Port is already bound. Skip it and continue
+      } finally {
+        socket.close();
       }
     }
 
