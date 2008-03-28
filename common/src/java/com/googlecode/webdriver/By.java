@@ -24,72 +24,93 @@ import java.util.List;
  * </code>
  */
 public abstract class By {
-    private String using;
-
-    protected By(String selector) {
-        this.using = selector;
-    }
-
-    public static By id(String id) {
+    public static By id(final String id) {
       if (id == null)
         throw new IllegalArgumentException("Cannot find elements with a null id attribute.");
 
-      return new By(id) {
+      return new By() {
+        @Override
         public List<WebElement> findElements(WebDriver driver) {
-          return ((FindsById) driver).findElementsById(getSelector());
+          return ((FindsById) driver).findElementsById(id);
         }
 
+        @Override
         public WebElement findElement(WebDriver driver) {
-          return ((FindsById) driver).findElementById(getSelector());
+          return ((FindsById) driver).findElementById(id);
+        }
+
+        public String toString() {
+          return "By.id: " + id;
         }
       };
     }
 
-    public static By linkText(String linkText) {
+    public static By linkText(final String linkText) {
       if (linkText == null)
         throw new IllegalArgumentException("Cannot find elements when link text is null.");
 
-      return new By(linkText) {
+      return new By() {
+        @Override
         public List<WebElement> findElements(WebDriver driver) {
-          return ((FindsByLinkText) driver).findElementsByLinkText(getSelector());
+          return ((FindsByLinkText) driver).findElementsByLinkText(linkText);
         }
 
+        @Override
         public WebElement findElement(WebDriver driver) {
-          return ((FindsByLinkText) driver).findElementByLinkText(getSelector());
+          return ((FindsByLinkText) driver).findElementByLinkText(linkText);
+        }
+
+        @Override
+        public String toString() {
+          return "By.linkText: " + linkText;
         }
       };
     }
 
-    public static By name(String name) {
+    public static By name(final String name) {
       if (name == null)
         throw new IllegalArgumentException("Cannot find elements when name text is null.");
 
-      return new By(name) {
+      return new By() {
+        @Override
         public List<WebElement> findElements(WebDriver driver) {
             if (driver instanceof FindsByName)
-              return ((FindsByName) driver).findElementsByName(getSelector());
-            return ((FindsByXPath) driver).findElementsByXPath("//*[@name = '" + getSelector() + "']");
+              return ((FindsByName) driver).findElementsByName(name);
+            return ((FindsByXPath) driver).findElementsByXPath("//*[@name = '" + name + "']");
         }
 
+        @Override
         public WebElement findElement(WebDriver driver) {
           if (driver instanceof FindsByName)
-            return ((FindsByName) driver).findElementByName(getSelector());
-          return ((FindsByXPath) driver).findElementByXPath("//*[@name = '" + getSelector() + "']");
+            return ((FindsByName) driver).findElementByName(name);
+          return ((FindsByXPath) driver).findElementByXPath("//*[@name = '" + name + "']");
+        }
+
+        @Override
+        public String toString() {
+          return "By.name: " + name;
         }
       };
     }
 
-    public static By xpath(String xpathExpression) {
+    public static By xpath(final String xpathExpression) {
        if (xpathExpression == null)
         throw new IllegalArgumentException("Cannot find elements when the XPath expression is null.");
 
-      return new By(xpathExpression) {
+      return new By() {
+        @Override
         public List<WebElement> findElements(WebDriver driver) {
-          return ((FindsByXPath) driver).findElementsByXPath(getSelector());
+          return ((FindsByXPath) driver).findElementsByXPath(xpathExpression);
         }
 
+        @Override
         public WebElement findElement(WebDriver driver) {
-          return ((FindsByXPath) driver).findElementByXPath(getSelector());
+          return ((FindsByXPath) driver).findElementByXPath(xpathExpression);
+        }
+
+        @Override
+        public String toString() {
+          return "By.xpath: " + xpathExpression;
         }
       };
     }
@@ -102,7 +123,7 @@ public abstract class By {
     public WebElement findElement(WebDriver driver) {
         List<WebElement> allElements = findElements(driver);
         if (allElements == null || allElements.size() == 0)
-            throw new NoSuchElementException("Cannot locate an element matching: " + using);
+            throw new NoSuchElementException("Cannot locate an element using " + toString());
         return allElements.get(0);
     }
 
@@ -114,16 +135,6 @@ public abstract class By {
      */
     public abstract List<WebElement> findElements(WebDriver driver);
 
-    /**
-     * Get the argument passed to the By in the constructor. Typically, this is used
-     * to select which element or elements should be returned.
-     *
-     * @return The selector provided in the constructor
-     */
-    protected String getSelector() {
-        return using;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -131,11 +142,11 @@ public abstract class By {
 
         By by = (By) o;
 
-        return using.equals(by.using);
+        return toString().equals(by.toString());
     }
 
     @Override
     public int hashCode() {
-        return using.hashCode();
+        return toString().hashCode();
     }
 }

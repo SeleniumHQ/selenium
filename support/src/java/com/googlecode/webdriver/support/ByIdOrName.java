@@ -11,13 +11,15 @@ import java.util.ArrayList;
 public class ByIdOrName extends By {
   private By idFinder;
   private By nameFinder;
+  private String idOrName;
 
   public ByIdOrName(String idOrName) {
-    super(idOrName);
+    this.idOrName = idOrName;
     idFinder = By.id(idOrName);
     nameFinder = By.name(idOrName);
   }
 
+  @Override
   public WebElement findElement(WebDriver driver) {
     // First, try to locate by id
     WebElement toReturn = idFinder.findElement(driver);
@@ -28,6 +30,7 @@ public class ByIdOrName extends By {
     return nameFinder.findElement(driver);
   }
 
+  @Override
   public List<WebElement> findElements(WebDriver driver) {
     List<WebElement> elements = new ArrayList<WebElement>();
 
@@ -39,8 +42,8 @@ public class ByIdOrName extends By {
     return elements;
   }
 
+  @Override
   public String toString() {
-    return "by id or name \"" + getSelector() + '"';
+    return "by id or name \"" + idOrName + '"';
   }
-
 }
