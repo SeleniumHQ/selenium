@@ -9,6 +9,7 @@ import com.googlecode.webdriver.Speed;
 import com.googlecode.webdriver.internal.FindsByLinkText;
 import com.googlecode.webdriver.internal.FindsById;
 import com.googlecode.webdriver.internal.FindsByXPath;
+import com.googlecode.webdriver.internal.ReturnedCookie;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -185,12 +186,12 @@ public class SafariDriver implements WebDriver, FindsByLinkText, FindsById, Find
         }
 
         public void deleteCookieNamed(String name) {
-            deleteCookie(new Cookie(name, "", getCurrentHost(), "", null, false));
+            deleteCookie(new ReturnedCookie(name, "", getCurrentHost(), "", null, false));
         }
 
         public void deleteCookie(Cookie cookie) {
             Date dateInPast = new Date(0);
-			Cookie toDelete = new Cookie(cookie.getName(), cookie.getValue(), cookie.getDomain(), cookie.getPath(), dateInPast, false);
+			Cookie toDelete = new ReturnedCookie(cookie.getName(), cookie.getValue(), cookie.getDomain(), cookie.getPath(), dateInPast, false);
 			addCookie(toDelete);
         }
 
@@ -215,7 +216,7 @@ public class SafariDriver implements WebDriver, FindsByLinkText, FindsById, Find
 					continue;
 				}
 
-				toReturn.add(new Cookie(parts[0], parts[1], currentUrl, "", null, false));
+				toReturn.add(new ReturnedCookie(parts[0], parts[1], currentUrl, "", null, false));
 			}
 
 	        return toReturn;

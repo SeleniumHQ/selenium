@@ -14,6 +14,7 @@ import com.googlecode.webdriver.internal.FindsById;
 import com.googlecode.webdriver.internal.FindsByLinkText;
 import com.googlecode.webdriver.internal.FindsByXPath;
 import com.googlecode.webdriver.internal.OperatingSystem;
+import com.googlecode.webdriver.internal.ReturnedCookie;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -314,6 +315,8 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
                     attributesMap.put("expires", "");
                     attributesMap.put("secure", "false");
 
+                  System.out.println("cookieString = " + cookieString);
+
                     for (String attribute : cookieString.split(";")) {
                         if(attribute.contains("=")) {
                             String[] tokens = attribute.trim().split("=");
@@ -337,7 +340,7 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
                         //firefox stores expiry as number of seconds
                         expires = new Date(Long.parseLong(attributesMap.get("expires")));
                     }
-                    cookies.add(new Cookie(attributesMap.get("name"), attributesMap.get("value"), 
+                    cookies.add(new ReturnedCookie(attributesMap.get("name"), attributesMap.get("value"),
                             attributesMap.get("domain"), attributesMap.get("path"),
                             expires, Boolean.parseBoolean(attributesMap.get("secure"))));
                 }
@@ -347,7 +350,7 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
         }
         
         public void deleteCookieNamed(String name) {
-            Cookie toDelete = new Cookie(name, "", "", "", null, false);
+            Cookie toDelete = new Cookie(name, "");
             sendMessage(RuntimeException.class, "deleteCookie", convertToJson(toDelete));
         }
         

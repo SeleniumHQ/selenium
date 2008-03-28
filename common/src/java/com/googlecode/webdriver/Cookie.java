@@ -9,26 +9,21 @@ import java.util.Date;
 public class Cookie {
     private final String name;
     private final String value;
-    private final String domain;
     private final String path;
     private final Date expiry;
-    private final boolean isSecure;
 
     /**
-     * Creates a cookie
+     * Creates a cookie. If the path is left blank or set to null it will be
+     * set to "/"
      *
      * @param name name cannot be null or empty string
      * @param value value can be an empty string but not be null
-     * @param domain Domain can be an empty string but not be null.  Donot start with "." .
-     * @param path path can be an empty string but not be null
+     * @param path The path to use. Will default to "/"
      * @param expiry expiry can be null
-     * @param isSecure
      */
-    public Cookie(String name, String value, String domain, String path,
-            Date expiry, boolean isSecure) {
+    public Cookie(String name, String value, String path, Date expiry) {
         this.name = name;
         this.value = value;
-        this.domain = (domain != null ? domain.toLowerCase() : null);
         this.path = path == null || "".equals(path) ? "/" : path;
 
         if(expiry != null) {
@@ -37,9 +32,30 @@ public class Cookie {
         } else {
             this.expiry = null;
         }
-        this.isSecure = isSecure;
 
         validate();
+    }
+
+  /**
+   * Create a cookie for the default path with the given name and value with
+   * no expiry set.
+   *
+   * @param name The cookie's name
+   * @param value The cookie's value
+   */
+    public Cookie(String name, String value) {
+        this(name, value, "/", null);
+    }
+
+  /**
+   * Create a cookie.
+   *
+   * @param name The cookie's name
+   * @param value The cookie's value
+   * @param path The path the cookie is for
+   */
+    public Cookie(String name, String value, String path) {
+        this(name, value, path, null);
     }
 
     public String getName() {
@@ -51,7 +67,7 @@ public class Cookie {
     }
 
     public String getDomain() {
-        return domain;
+        return null;
     }
 
     public String getPath() {
@@ -59,44 +75,29 @@ public class Cookie {
     }
 
     public boolean isSecure() {
-        return isSecure;
+        return false;
     }
 
     public Date getExpiry() {
         return expiry;
     }
 
-    // public static void parse(String )
-
-    private void validate() {
-        if (name == null || "".equals(name) || value == null || domain == null || path == null)
+    protected void validate() {
+        if (name == null || "".equals(name) || value == null || path == null)
             throw new IllegalArgumentException("Required attribuets are not set or " +
                     "any non-null attribute set to null");
 
         if (name.indexOf(';') != -1)
             throw new IllegalArgumentException(
                     "Cookie names cannot contain a ';': " + name);
-
-        if (!"".equals(domain)) {
-            try {
-                String domainToUse = domain.startsWith("http") ? domain : "http://" + domain;
-                URL url = new URL(domainToUse);
-                Inet4Address.getByName(url.getHost());
-            } catch (MalformedURLException e) {
-                throw new IllegalArgumentException(String.format("URL not valid: %s", domain));
-            } catch (UnknownHostException e) {
-                throw new IllegalArgumentException(String.format("Domain does not exist: %s", domain));
-            }
-        }
-
     }
 
     @Override
     public String toString() {
         return name + "=" + value 
         		+ (expiry == null ? "" : ";expires=" + expiry)
-                + ("".equals(path) ? "" : ";path=" + path)
-                + (isSecure ? ";secure;" : "");
+                + ("".equals(path) ? "" : ";path=" + path);
+//                + (isSecure ? ";secure;" : "");
     }
 
     /**
@@ -106,23 +107,21 @@ public class Cookie {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (o == null || getClass() != o.getClass())
+
+        if (o == null || (!(o instanceof Cookie)))
             return false;
 
         Cookie cookie = (Cookie) o;
-        if (!domain.equals(cookie.domain))
-            return false;
-        if (!name.equals(cookie.name))
-            return false;
-
-        return true;
+//        if (!domain.equals(cookie.domain))
+//            return false;
+      return name.equals(cookie.name);
     }
 
     @Override
     public int hashCode() {
         int result;
         result = name.hashCode();
-        result = 31 * result + domain.hashCode();
+//        result = 31 * result + domain.hashCode();
         return result;
     }
 }

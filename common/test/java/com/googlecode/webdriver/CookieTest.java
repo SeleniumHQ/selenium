@@ -4,15 +4,17 @@ import junit.framework.TestCase;
 
 import java.util.Date;
 
+import com.googlecode.webdriver.internal.ReturnedCookie;
+
 public class CookieTest extends TestCase {
     
     public void testCanCreateAWellFormedCookie() {
-        new Cookie("Fish", "cod", "", "", null, false);
+        new ReturnedCookie("Fish", "cod", "", "", null, false);
     }
     
     public void testShouldThrowAnExceptionWhenTheDomainIsBad() {
         try {
-            new Cookie("Fish", "cod", "127.0.0.0.1", null, null, false);
+            new ReturnedCookie("Fish", "cod", "127.0.0.0.1", null, null, false);
             fail();
         } catch (IllegalArgumentException e) {
             // This is expected
@@ -21,7 +23,7 @@ public class CookieTest extends TestCase {
     
     public void testShouldThrowAnExceptionWhenSemiColonExistsInTheCookieAttribute() {
         try {
-            new Cookie("hi;hi", "value", null, null, null, false);
+            new ReturnedCookie("hi;hi", "value", null, null, null, false);
             fail();
         } catch (IllegalArgumentException e) {
             //Expected
@@ -30,7 +32,7 @@ public class CookieTest extends TestCase {
     
     public void testShouldThrowAnExceptionTheNameIsNull() {
         try {
-            new Cookie(null, "value", null, null, null, false);
+            new ReturnedCookie(null, "value", null, null, null, false);
             fail();
         } catch(IllegalArgumentException e) {
             //expected
@@ -39,33 +41,38 @@ public class CookieTest extends TestCase {
 
     @Ignore(value = "all", reason = "Weakened constraints to allow IE driver to be implemented")
     public void testEquals() {
-        Cookie cookie1 = new Cookie("Fish", "cod", "", "", null, false);
-        Cookie cookie2 = new Cookie("Fish", "", "", "", new Date(0), true);
+        Cookie cookie1 = new ReturnedCookie("Fish", "cod", "", "", null, false);
+        Cookie cookie2 = new ReturnedCookie("Fish", "", "", "", new Date(0), true);
         assertEquals(cookie1, cookie2);
 
-        cookie2 = new Cookie("Fish", "cod", "", "/", null, false);
+        cookie2 = new ReturnedCookie("Fish", "cod", "", "/", null, false);
         assertFalse(cookie1.equals(cookie2));
 
-        cookie2 = new Cookie("fish", "cod", "", "", null, false);
+        cookie2 = new ReturnedCookie("fish", "cod", "", "", null, false);
         assertFalse(cookie1.equals(cookie2));
 
-        cookie2 = new Cookie("Fish", "cod", "example.com", "", null, false);
+        cookie2 = new ReturnedCookie("Fish", "cod", "example.com", "", null, false);
         assertFalse(cookie1.equals(cookie2));
     }
 
     @Ignore(value = "all", reason = "Weakened constraints to allow IE driver to be implemented")
     public void testHashCode() {
-        Cookie cookie1 = new Cookie("Fish", "cod", "", "", null, false);
-        Cookie cookie2 = new Cookie("Fish", "", "", "", new Date(0), true);
+        Cookie cookie1 = new ReturnedCookie("Fish", "cod", "", "", null, false);
+        Cookie cookie2 = new ReturnedCookie("Fish", "", "", "", new Date(0), true);
         assertEquals(cookie1.hashCode(), cookie2.hashCode());
 
-        cookie2 = new Cookie("Fish", "cod", "", "/", null, false);
+        cookie2 = new ReturnedCookie("Fish", "cod", "", "/", null, false);
         assertFalse(cookie1.hashCode() == cookie2.hashCode());
 
-        cookie2 = new Cookie("fish", "cod", "", "", null, false);
+        cookie2 = new ReturnedCookie("fish", "cod", "", "", null, false);
         assertFalse(cookie1.hashCode() == cookie2.hashCode());
 
-        cookie2 = new Cookie("Fish", "cod", "example.com", "", null, false);
+        cookie2 = new ReturnedCookie("Fish", "cod", "example.com", "", null, false);
         assertFalse(cookie1.hashCode() == cookie2.hashCode());
+    }
+
+    public void testCookiesShouldAllowSecureToBeSet() {
+      Cookie cookie = new ReturnedCookie("name", "value", "", "/", new Date(), true);
+      assertTrue(cookie.isSecure());
     }
 }

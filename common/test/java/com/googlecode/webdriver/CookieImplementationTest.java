@@ -16,8 +16,8 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
         driver.get(simpleTestPage);
         driver.manage().deleteAllCookies();
 
-        Cookie cookie1 = new Cookie("fish", "cod", hostName, "/animals", null, false);
-        Cookie cookie2 = new Cookie("planet", "earth", hostName, "/galaxy", null, false);
+        Cookie cookie1 = new Cookie("fish", "cod", "/animals");
+        Cookie cookie2 = new Cookie("planet", "earth", "/galaxy");
         WebDriver.Options options = driver.manage();
         options.addCookie(cookie1);
         options.addCookie(cookie2);
@@ -40,8 +40,8 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
         
         Calendar c = Calendar.getInstance();
         c.set(2009, 0, 1);
-        Cookie cookie1 = new Cookie("fish", "cod", hostName, "", c.getTime(), false);
-        Cookie cookie2 = new Cookie("planet", "earth", hostName, "", null, false);
+        Cookie cookie1 = new Cookie("fish", "cod", "", c.getTime());
+        Cookie cookie2 = new Cookie("planet", "earth");
         WebDriver.Options options = driver.manage();
         options.addCookie(cookie1);
         options.addCookie(cookie2);
@@ -59,7 +59,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
         
         Calendar c = Calendar.getInstance();
         c.set(2009, 0, 1);
-        Cookie cookie1 = new Cookie("fish", "cod", alternateHostName, "/animals", c.getTime(), false);
+        Cookie cookie1 = new Cookie("fish", "cod", "/animals", c.getTime());
         WebDriver.Options options = driver.manage();
         options.addCookie(cookie1);
 
@@ -86,8 +86,8 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     @Ignore("safari")
     public void testDeleteAllCookies() {
         driver.get(simpleTestPage);
-        Cookie cookie1 = new Cookie("fish", "cod", hostName, "", null, false);
-        Cookie cookie2 = new Cookie("planet", "earth", hostName, "", null, false);
+        Cookie cookie1 = new Cookie("fish", "cod");
+        Cookie cookie2 = new Cookie("planet", "earth");
         WebDriver.Options options = driver.manage();
         options.addCookie(cookie1);
         options.addCookie(cookie2);
@@ -105,8 +105,8 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     @Ignore("safari")
     public void testDeleteCookie() {
         driver.get(simpleTestPage);
-        Cookie cookie1 = new Cookie("fish", "cod", hostName, "", null, false);
-        Cookie cookie2 = new Cookie("planet", "earth", hostName, "", null, false);
+        Cookie cookie1 = new Cookie("fish", "cod");
+        Cookie cookie2 = new Cookie("planet", "earth");
         WebDriver.Options options = driver.manage();
         options.addCookie(cookie1);
         options.addCookie(cookie2);
@@ -125,9 +125,9 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
         String cookieOneName = "fish";
         String cookieTwoName = "planet";
         String cookieThreeName = "three";
-        Cookie cookie1 = new Cookie(cookieOneName, "cod", hostName, "", null, false);
-        Cookie cookie2 = new Cookie(cookieTwoName, "earth", hostName, "", null, false);
-        Cookie cookie3 = new Cookie(cookieThreeName, "three", hostName, "", null, false);
+        Cookie cookie1 = new Cookie(cookieOneName, "cod");
+        Cookie cookie2 = new Cookie(cookieTwoName, "earth");
+        Cookie cookie3 = new Cookie(cookieThreeName, "three");
         WebDriver.Options options = driver.manage();
         options.addCookie(cookie1);
         options.addCookie(cookie2);
@@ -149,8 +149,8 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
         driver.manage().deleteAllCookies();
         
         String cookieOneName = "fish";
-        Cookie cookie1 = new Cookie(cookieOneName, "cod", hostName, "", null, false);
-        Cookie cookie2 = new Cookie(cookieOneName + "x", "earth", hostName, "", null, false);
+        Cookie cookie1 = new Cookie(cookieOneName, "cod");
+        Cookie cookie2 = new Cookie(cookieOneName + "x", "earth");
         WebDriver.Options options = driver.manage();
         options.addCookie(cookie1);
         options.addCookie(cookie2);
@@ -166,7 +166,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
         driver.get(simpleTestPage);
         driver.manage().deleteAllCookies();
 
-        Cookie cookie1 = new Cookie("fish", "cod", hostName, "", null, false);
+        Cookie cookie1 = new Cookie("fish", "cod");
         WebDriver.Options options = driver.manage();
         options.addCookie(cookie1);
 

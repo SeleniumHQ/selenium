@@ -38,6 +38,7 @@ import com.googlecode.webdriver.WebElement;
 import com.googlecode.webdriver.internal.FindsById;
 import com.googlecode.webdriver.internal.FindsByLinkText;
 import com.googlecode.webdriver.internal.FindsByXPath;
+import com.googlecode.webdriver.internal.ReturnedCookie;
 
 public class InternetExplorerDriver implements WebDriver, FindsById, FindsByLinkText, FindsByXPath {
     private long iePointer; // Used by the native code to keep track of the IE instance
@@ -248,12 +249,12 @@ public class InternetExplorerDriver implements WebDriver, FindsById, FindsByLink
 
 		public void deleteCookie(Cookie cookie) {
 			Date dateInPast = new Date(0);
-			Cookie toDelete = new Cookie(cookie.getName(), cookie.getValue(), cookie.getDomain(), cookie.getPath(), dateInPast, false);
+			Cookie toDelete = new ReturnedCookie(cookie.getName(), cookie.getValue(), cookie.getDomain(), cookie.getPath(), dateInPast, false);
 			addCookie(toDelete);
 		}
 
 		public void deleteCookieNamed(String name) {
-			deleteCookie(new Cookie(name, "", getCurrentHost(), "", null, false));
+			deleteCookie(new ReturnedCookie(name, "", getCurrentHost(), "", null, false));
 		}
 
 		public Set<Cookie> getCookies() {
@@ -269,7 +270,7 @@ public class InternetExplorerDriver implements WebDriver, FindsById, FindsByLink
 					continue;
 				}
 				
-				toReturn.add(new Cookie(parts[0], parts[1], currentUrl, "", null, false));
+				toReturn.add(new ReturnedCookie(parts[0], parts[1], currentUrl, "", null, false));
 			}
 			
 	        return toReturn;

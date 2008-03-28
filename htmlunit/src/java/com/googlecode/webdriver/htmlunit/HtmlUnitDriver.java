@@ -56,6 +56,7 @@ import com.googlecode.webdriver.internal.FindsById;
 import com.googlecode.webdriver.internal.FindsByLinkText;
 import com.googlecode.webdriver.internal.FindsByXPath;
 import com.googlecode.webdriver.internal.FindsByName;
+import com.googlecode.webdriver.internal.ReturnedCookie;
 
 public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText, FindsByXPath, FindsByName {
     private WebClient webClient;
@@ -410,7 +411,9 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText, Fi
         }
 
         public void addCookie(Cookie cookie) {
-            state.addCookie(new org.apache.commons.httpclient.Cookie(cookie.getDomain(),
+          String domain = getDomainForCookie(cookie);
+
+            state.addCookie(new org.apache.commons.httpclient.Cookie(domain,
                     cookie.getName(), cookie.getValue(), cookie.getPath(), cookie.getExpiry(),
                     cookie.isSecure()));
         }
@@ -425,7 +428,9 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText, Fi
         }
 
         public void deleteCookie(Cookie cookie) {
-            state.addCookie(new org.apache.commons.httpclient.Cookie(cookie.getDomain(),
+            String domain = getDomainForCookie(cookie);
+
+            state.addCookie(new org.apache.commons.httpclient.Cookie(domain,
                     cookie.getName(), cookie.getValue(), cookie.getPath(), new Date(0),
                     cookie.isSecure()));
         }
@@ -442,7 +447,7 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText, Fi
             for(org.apache.commons.httpclient.Cookie c : rawCookies) {
                 if("".equals(c.getDomain()) || getHostName().indexOf(c.getDomain()) != -1) {
                 	if (c.getPath() != null && getPath().startsWith(c.getPath())) {
-                		retCookies.add(new Cookie(c.getName(), c.getValue(), c.getDomain(), c.getPath(),
+                		retCookies.add(new ReturnedCookie(c.getName(), c.getValue(), c.getDomain(), c.getPath(),
                             c.getExpiryDate(), c.getSecure()));
                 	}
                 }
@@ -465,5 +470,15 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText, Fi
         public void setMouseSpeed(Speed speed) {
             throw new UnsupportedOperationException();
         }
+
+        private String getDomainForCookie(Cookie cookie) {
+            URL current = lastPage().getWebResponse().getUrl();
+            String hostName = cookie.getDomain();
+            if (hostName == null || "".equals(hostName)) {
+                hostName = String.format("%s:%s", current.getHost(), current.getPort());
+            }
+            return hostName;
+        }
+
     }
 }

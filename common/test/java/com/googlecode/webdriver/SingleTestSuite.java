@@ -16,7 +16,7 @@ public class SingleTestSuite {
               .keepDriverInstance()
               .includeJavascriptTests()
               .onlyRun("CookieImplementationTest")
-//              .method("testShouldBeAbleToStartMoreThanOneInstanceOfTheFirefoxDriverSimultaneously")
+              .method("testDeleteCookie")
     //                    .leaveRunningAfterTest()
               .create();
 	}
