@@ -254,7 +254,6 @@ FirefoxDriver.prototype.addCookie = function(respond, cookieString) {
     var i = cookieManager.enumerator
     while (i.hasMoreElements()) {
       var loaded = i.getNext().QueryInterface(Components.interfaces.nsICookie);
-      dump(loaded.name)
     }
 
     respond.context = this.context;
@@ -283,8 +282,6 @@ FirefoxDriver.prototype.getCookie = function(respond) {
     }
     
     var cookieToString = function(c) {
-      Utils.dump(c);
-
       return c.name + "=" + c.value + ";" + "domain=" + c.host + ";"
           + "path=" + c.path + ";" + "expires=" + c.expires + ";"
           +(c.isSecure ? "secure ;" : "");

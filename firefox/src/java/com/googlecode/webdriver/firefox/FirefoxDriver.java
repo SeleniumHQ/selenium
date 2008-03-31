@@ -315,8 +315,6 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
                     attributesMap.put("expires", "");
                     attributesMap.put("secure", "false");
 
-                  System.out.println("cookieString = " + cookieString);
-
                     for (String attribute : cookieString.split(";")) {
                         if(attribute.contains("=")) {
                             String[] tokens = attribute.trim().split("=");
