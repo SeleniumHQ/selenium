@@ -523,6 +523,10 @@ ExprContext.prototype.setInPlayAttributes = function(inPlayAttributes) {
   return this.inPlayAttributes = inPlayAttributes;
 };
 
+ExprContext.prototype.optimizeFor = function(xpathObj) {
+  this.setInPlayAttributes(getAttributeNodeTestNames(xpathObj));
+};
+
 // XPath expression values. They are what XPath expressions evaluate
 // to. Strangely, the different value types are not specified in the
 // XPath syntax, but only in the semantics, so they don't show up as
