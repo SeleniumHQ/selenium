@@ -119,6 +119,27 @@ function testCurrentPageIsLazyCreatedBasedOnNamedWindowWhenCurrentWindowNameIsSe
 
     mockLocation.verify();
 }
+
+function testSelectedWindowIsUsedToFindElement() {
+    mockDocument = new Object();
+    mockWindow.document = mockDocument;
+    mockWindow.frames = [];
+    
+    var originalFindElementBy = browserBot.findElementBy;
+    var original_ModifyWindow = browserBot._modifyWindow;
+    browserBot.findElementBy = function(locatorType, locator, inDocument, inWindow) {
+        assertEquals(mockWindow.document, inDocument);
+        return 'someElement';
+    };
+    browserBot._modifyWindow = function() {};
+    browserBot.openedWindows['someName'] = mockWindow;
+    
+    browserBot.selectWindow('someName');
+    assertEquals('someElement', browserBot.findElement('someLocator'));
+    
+    browserBot.findElementBy = originalFindElementBy;
+    browserBot._modifyWindow = original_ModifyWindow;
+}
 </script>
   </head>
   <body>Selenium BrowserBot Tests</body>
