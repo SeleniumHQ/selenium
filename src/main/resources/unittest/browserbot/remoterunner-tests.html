@@ -66,7 +66,7 @@ function setUp() {
             getContinue: function() { return null; },
             getDriverUrl: function() { return "http://localhost:4444/selenium-server/driver/";},
             getBaseUrl: function() { return "http://localhost:4444/";},
-            getSessionId: function() { return "123456"; },
+            getSessionId: function() { return "123456"; }
         }
     }
     
@@ -128,7 +128,7 @@ function setUp() {
     
     __originalSetTimeout = window.setTimeout;
     timeouts = [];
-    setTimeout = function(arg) {
+    window.setTimeout = function(arg) {
         timeouts.push(arg);
     }
 }
