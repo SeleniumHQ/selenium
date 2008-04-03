@@ -359,24 +359,8 @@ public class SeleniumServer {
         seleniumProxy.multiWindow = multiWindow;
         checkArgsSanity(port, interactive, htmlSuite, selfTest,
                 proxyInjectionModeArg, portDriversShouldContactArg, seleniumProxy);
-        Thread jetty = new Thread(new Runnable() {
-            public void run() {
-                try {
-                    seleniumProxy.start();
-                }
-                catch (Exception e) {
-                    log.error("jetty run exception seen", e);
-                }
-            }
-        });
-
-        if (interactive) {
-            jetty.setDaemon(true);
-        }
 
         seleniumProxy.start();
-
-        
 
         if (userExtensions != null) {
             seleniumProxy.addNewStaticContent(userExtensions.getParentFile());
