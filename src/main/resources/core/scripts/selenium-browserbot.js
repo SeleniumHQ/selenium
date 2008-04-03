@@ -203,7 +203,7 @@ BrowserBot.prototype.getNextPrompt = function() {
 
 /* Fire a mouse event in a browser-compatible manner */
 
-BrowserBot.prototype.triggerMouseEvent = function(element, eventType, canBubble, clientX, clientY) {
+BrowserBot.prototype.triggerMouseEvent = function(element, eventType, canBubble, clientX, clientY, button) {
     clientX = clientX ? clientX : 0;
     clientY = clientY ? clientY : 0;
 
@@ -215,7 +215,7 @@ BrowserBot.prototype.triggerMouseEvent = function(element, eventType, canBubble,
     if (element.fireEvent && element.ownerDocument && element.ownerDocument.createEventObject) { //IE
         var evt = createEventObject(element, this.controlKeyDown, this.altKeyDown, this.shiftKeyDown, this.metaKeyDown);
         evt.detail = 0;
-        evt.button = 1;
+        evt.button = button ? button : 1; // default will be the left mouse click ( http://www.javascriptkit.com/jsref/event.shtml )
         evt.relatedTarget = null;
         if (!screenX && !screenY && !clientX && !clientY && !this.controlKeyDown && !this.altKeyDown && !this.shiftKeyDown && !this.metaKeyDown) {
             element.fireEvent('on' + eventType);
@@ -248,9 +248,11 @@ BrowserBot.prototype.triggerMouseEvent = function(element, eventType, canBubble,
         var evt = document.createEvent('MouseEvents');
         if (evt.initMouseEvent)
         {
+            // see http://developer.mozilla.org/en/docs/DOM:event.button and
+            // http://developer.mozilla.org/en/docs/DOM:event.initMouseEvent for button ternary logic logic
             //Safari
             evt.initMouseEvent(eventType, canBubble, true, document.defaultView, 1, screenX, screenY, clientX, clientY,
-                this.controlKeyDown, this.altKeyDown, this.shiftKeyDown, this.metaKeyDown, 0, null);
+                this.controlKeyDown, this.altKeyDown, this.shiftKeyDown, this.metaKeyDown, button ? button : 0, null);
         }
         else {
             LOG.warn("element doesn't have initMouseEvent; firing an event which should -- but doesn't -- have other mouse-event related attributes here, as well as controlKeyDown, altKeyDown, shiftKeyDown, metaKeyDown");
@@ -260,7 +262,10 @@ BrowserBot.prototype.triggerMouseEvent = function(element, eventType, canBubble,
             evt.metaKey = this.metaKeyDown;
             evt.altKey = this.altKeyDown;
             evt.ctrlKey = this.controlKeyDown;
-
+            if(button)
+            {
+              evt.button = button;
+            }
         }
         element.dispatchEvent(evt);
     }

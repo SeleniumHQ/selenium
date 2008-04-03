@@ -174,6 +174,7 @@ function Selenium(browserbot) {
 
 Selenium.DEFAULT_TIMEOUT = 30 * 1000;
 Selenium.DEFAULT_MOUSE_SPEED = 10;
+Selenium.RIGHT_MOUSE_CLICK = 2;
 
 Selenium.decorateFunctionWithTimeout = function(f, timeout) {
     if (f == null) {
@@ -477,7 +478,7 @@ Selenium.prototype.doMouseOut = function(locator) {
 
 Selenium.prototype.doMouseDown = function(locator) {
     /**
-   * Simulates a user pressing the mouse button (without releasing it yet) on
+   * Simulates a user pressing the left mouse button (without releasing it yet) on
    * the specified element.
    *
    * @param locator an <a href="#locators">element locator</a>
@@ -486,9 +487,20 @@ Selenium.prototype.doMouseDown = function(locator) {
    this.browserbot.triggerMouseEvent(element, 'mousedown', true);
 };
 
+Selenium.prototype.doMouseDownRight = function(locator) {
+    /**
+   * Simulates a user pressing the right mouse button (without releasing it yet) on
+   * the specified element.
+   *
+   * @param locator an <a href="#locators">element locator</a>
+   */
+   var element = this.browserbot.findElement(locator);
+   this.browserbot.triggerMouseEvent(element, 'mousedown', true, undefined, undefined, Selenium.RIGHT_MOUSE_CLICK);
+};
+
 Selenium.prototype.doMouseDownAt = function(locator, coordString) {
     /**
-   * Simulates a user pressing the mouse button (without releasing it yet) at
+   * Simulates a user pressing the left mouse button (without releasing it yet) at
    * the specified location.
    *
    * @param locator an <a href="#locators">element locator</a>
@@ -501,6 +513,21 @@ Selenium.prototype.doMouseDownAt = function(locator, coordString) {
     this.browserbot.triggerMouseEvent(element, 'mousedown', true, clientXY[0], clientXY[1]);
 };
 
+Selenium.prototype.doMouseDownRightAt = function(locator, coordString) {
+    /**
+   * Simulates a user pressing the right mouse button (without releasing it yet) at
+   * the specified location.
+   *
+   * @param locator an <a href="#locators">element locator</a>
+   * @param coordString specifies the x,y position (i.e. - 10,20) of the mouse
+   *      event relative to the element returned by the locator.
+   */
+    var element = this.browserbot.findElement(locator);
+    var clientXY = getClientXY(element, coordString)
+
+    this.browserbot.triggerMouseEvent(element, 'mousedown', true, clientXY[0], clientXY[1], Selenium.RIGHT_MOUSE_CLICK);
+};
+
 Selenium.prototype.doMouseUp = function(locator) {
     /**
    * Simulates the event that occurs when the user releases the mouse button (i.e., stops
@@ -510,6 +537,17 @@ Selenium.prototype.doMouseUp = function(locator) {
    */
    var element = this.browserbot.findElement(locator);
    this.browserbot.triggerMouseEvent(element, 'mouseup', true);
+};
+
+Selenium.prototype.doMouseUpRight = function(locator) {
+    /**
+   * Simulates the event that occurs when the user releases the right mouse button (i.e., stops
+   * holding the button down) on the specified element.
+   *
+   * @param locator an <a href="#locators">element locator</a>
+   */
+   var element = this.browserbot.findElement(locator);
+   this.browserbot.triggerMouseEvent(element, 'mouseup', true, undefined, undefined, Selenium.RIGHT_MOUSE_CLICK);
 };
 
 Selenium.prototype.doMouseUpAt = function(locator, coordString) {
@@ -525,6 +563,21 @@ Selenium.prototype.doMouseUpAt = function(locator, coordString) {
     var clientXY = getClientXY(element, coordString)
 
     this.browserbot.triggerMouseEvent(element, 'mouseup', true, clientXY[0], clientXY[1]);
+};
+
+Selenium.prototype.doMouseUpRightAt = function(locator, coordString) {
+    /**
+   * Simulates the event that occurs when the user releases the right mouse button (i.e., stops
+   * holding the button down) at the specified location.
+   *
+   * @param locator an <a href="#locators">element locator</a>
+   * @param coordString specifies the x,y position (i.e. - 10,20) of the mouse
+   *      event relative to the element returned by the locator.
+   */
+    var element = this.browserbot.findElement(locator);
+    var clientXY = getClientXY(element, coordString)
+
+    this.browserbot.triggerMouseEvent(element, 'mouseup', true, clientXY[0], clientXY[1], Selenium.RIGHT_MOUSE_CLICK);
 };
 
 Selenium.prototype.doMouseMove = function(locator) {
