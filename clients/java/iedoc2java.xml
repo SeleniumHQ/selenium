@@ -132,6 +132,7 @@ public class DefaultSelenium implements Selenium {
             if (e.getMessage().indexOf("Connection refused: connect") != -1) {
                 throw new RuntimeException("Could not contact Selenium Server; have you started it?\n" + e.getMessage());
             }
+            throw new RuntimeException("Could not start Selenium session: " + e.getMessage(), e);
         }
     }
 
