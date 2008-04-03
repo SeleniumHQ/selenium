@@ -93,7 +93,7 @@
         <url>https://svn.openqa.org/svn/selenium-rc/trunk</url>
     </scm>
     <build>
-	    <extensions>
+        <extensions>
             <extension>
                 <groupId>org.apache.maven.wagon</groupId>
                 <artifactId>wagon-webdav</artifactId>
@@ -229,11 +229,11 @@
                 <artifactId>selenium-server</artifactId>
                 <version>${project.version}</version>
             </dependency>
-	        <dependency>
-			    <groupId>org.openqa.selenium.client-drivers</groupId>
-			    <artifactId>selenium-java-client-driver</artifactId>
+            <dependency>
+                <groupId>org.openqa.selenium.client-drivers</groupId>
+                <artifactId>selenium-java-client-driver</artifactId>
                 <version>${project.version}</version>
-	        </dependency>
+            </dependency>
             <dependency>
                 <groupId>org.openqa.selenium.core</groupId>
                 <artifactId>selenium-core</artifactId>
@@ -282,4 +282,16 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jxr-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </reporting>
 </project>
