@@ -1399,7 +1399,7 @@ function eval_xpath(xpath, inDocument, opts)
         finally{
             if (xpathResult == null) {
                 // If the result is null, we should still throw an Error.
-                throw new SeleniumError("Invalid xpath: *"); 
+                throw new SeleniumError("Invalid xpath: " + xpath); 
             }
         }
         var result = xpathResult.iterateNext();
