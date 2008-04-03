@@ -43,5 +43,66 @@ public class DefaultRemoteCommandTest extends TestCase {
         RemoteCommand parsed = DefaultRemoteCommand.parse(drc.toString());
         assertEquals(drc, parsed);
     }
-    
+
+    public void testEqualReturnsFalseWhenComparedWithNull() {
+        assertFalse(new DefaultRemoteCommand("", "", "").equals(null));
+    }
+
+    public void testEqualReturnsFalseWhenCommandsDoNotMatch() {
+        assertFalse(
+            new DefaultRemoteCommand("a command", "", "").equals(
+            new DefaultRemoteCommand("another command", "", "")
+        ));
+    }
+
+    public void testEqualReturnsFalseWhenFieldsDoNotMatch() {
+        assertFalse(
+            new DefaultRemoteCommand("", "a field", "").equals(
+            new DefaultRemoteCommand("", "another field", "")
+        ));
+    }
+
+    public void testEqualReturnsFalseWhenValuesDoNotMatch() {
+        assertFalse(
+            new DefaultRemoteCommand("", "", "a value").equals(
+            new DefaultRemoteCommand("", "", "another value")
+        ));
+    }
+
+    public void testEqualReturnsTrueWhenCommandsFieldsAndValuesDoMatch() {
+        assertEquals(
+            new DefaultRemoteCommand("a command", "a field", "a value"),
+            new DefaultRemoteCommand("a command", "a field", "a value")
+        );
+    }
+
+    public void testHascodeIsDifferentWhenCommandsDoNotMatch() {
+        assertFalse(
+            new DefaultRemoteCommand("a command", "", "").hashCode()
+            == new DefaultRemoteCommand("another command", "", "").hashCode()
+        );
+    }
+
+    public void testHascodeIsDifferentWhenFieldsDoNotMatch() {
+        assertFalse(
+            new DefaultRemoteCommand("", "a field", "").hashCode()
+            == new DefaultRemoteCommand("", "another field", "").hashCode()
+        );
+    }
+
+    public void testHascodeIsDifferentWhenValuesDoNotMatch() {
+        assertFalse(
+            new DefaultRemoteCommand("", "", "a value").hashCode()
+            == new DefaultRemoteCommand("", "", "another value").hashCode()
+        );
+    }
+
+    public void testHascodeIsIdenticalWhenCommandsFieldsAndValuesDoMatch() {
+        assertEquals(
+            new DefaultRemoteCommand("a command", "a field", "a value").hashCode(),
+            new DefaultRemoteCommand("a command", "a field", "a value").hashCode()
+        );
+    }
+
+
 }

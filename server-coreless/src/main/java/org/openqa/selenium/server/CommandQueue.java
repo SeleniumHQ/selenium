@@ -177,12 +177,12 @@ public class CommandQueue {
         sb.append("{ commandHolder=");
         sb.append("commandHolder/" + uniqueId + "-" 
             + idGenerator.get() + " " + (commandHolder.isEmpty() 
-                ? "null" : commandHolder.peek().toString()))
+                ? "null" : commandHolder.peek()))
         .append(", ")
         .append(" resultHolder=")
         .append("resultHolder/" + uniqueId + "-" 
             + idGenerator.get() + " " + (resultHolder.isEmpty() 
-                ? "null" : resultHolder.peek().toString()))
+                ? "null" : resultHolder.peek()))
         .append(" }");
 
         return sb.toString();

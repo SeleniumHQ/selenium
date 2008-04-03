@@ -71,7 +71,7 @@ public class CommandResultHolder {
       }
 
       if (log.isDebugEnabled()) {
-        StringBuilder msg = new StringBuilder(hdr + "-> " + result.toString());
+        StringBuilder msg = new StringBuilder(hdr + "-> " + result);
         if (CMD_TIMED_OUT_MSG.equals(result)) {
           msg.append(" after " + holder.getTimeoutInSeconds() + " seconds.");
         }

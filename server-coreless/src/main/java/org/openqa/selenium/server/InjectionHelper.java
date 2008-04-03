@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.mortbay.http.HttpRequest;
@@ -71,8 +72,9 @@ public class InjectionHelper {
             return "";
         }
         StringBuffer sb = new StringBuffer();
-        for (String jsVarName: h.keySet()) {
-            String jsStateInitializer = h.get(jsVarName);
+        for (Map.Entry<String,String> entry: h.entrySet()) {
+            final String jsVarName = entry.getKey();
+            final String jsStateInitializer = entry.getValue();
             sb.append(jsStateInitializer)
             .append('\n');
             if (log.isDebugEnabled()) {
@@ -86,8 +88,6 @@ public class InjectionHelper {
     /**
      * re-read selenium js.  Don't maintain it indefinitely for now since then we would need to
      * restart the server to see changes.  Once the selenium js is firm, this should change.
-     * @throws IOException 
-     *
      */
     public static void init() {
         String key = "__SELENIUM_JS__";

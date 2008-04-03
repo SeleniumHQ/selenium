@@ -136,10 +136,16 @@ public class DefaultRemoteCommand implements RemoteCommand {
     }
     
     @Override public boolean equals(Object obj) {
-        if (!(obj instanceof RemoteCommand)) return false;
-        if (obj == null) return false;
-        return this.toString().equals(obj.toString());
-    };
+        if (!(obj instanceof RemoteCommand)) {
+            return false;
+        }
+        return toString().equals(obj.toString());
+    }
+
+
+    @Override public int hashCode() {
+        return toString().hashCode();
+    }
 
     /** Factory method to create a RemoteCommand from a wiki-style input string */
     public static RemoteCommand parse(String inputLine) {
