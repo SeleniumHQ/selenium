@@ -105,8 +105,7 @@ public class XlatorTask extends Task {
             if (files.length > 0) {
                 log("Handling " + files.length + " files from "
                     + d.getAbsolutePath());
-                for (int j = 0; j < files.length; j++) {
-                    String fileName = files[j];
+                for (String fileName : files) {
                     translateFile(mapper, d, fileName);
                 }
             }
@@ -142,8 +141,8 @@ public class XlatorTask extends Task {
             throw new BuildException(e);
         }
         String[] outputFileNames = mapper.mapFileName(fileName);
-        for (int i = 0; i < outputFileNames.length; i++) {
-            File outputFile = new File(destDir, outputFileNames[i]);
+        for (String outputFileName : outputFileNames) {
+            File outputFile = new File(destDir, outputFileName);
             try {
                 log("Writing " + outputFile.getAbsolutePath(), Project.MSG_DEBUG);
                 writeFile(outputFile, output);
@@ -154,9 +153,12 @@ public class XlatorTask extends Task {
     }
     
     static void writeFile(File outputFile, String text) throws IOException {
-        FileWriter out = new FileWriter(outputFile);
-        out.write(text);
-        out.close();
+        final FileWriter out = new FileWriter(outputFile);
+        try {
+            out.write(text);
+        } finally {
+            out.close();
+        }
     }
     
     /*
@@ -181,10 +183,10 @@ public class XlatorTask extends Task {
             formatters.put("ruby-rc",
                                 "rb");
             Vector<String> keys = new Vector<String>();
-            for (Iterator i = formatters.keySet().iterator(); i.hasNext();) {
-                keys.add((String) i.next());
+            for (Object o : formatters.keySet()) {
+                keys.add((String) o);
             }
-            values = keys.toArray(new String[0]);
+            values = keys.toArray(new String[keys.size()]);
         }
         
         public FormatterType() {}

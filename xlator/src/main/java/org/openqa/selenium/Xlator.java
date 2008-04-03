@@ -46,8 +46,8 @@ public class Xlator
     
     public static HashMap<String, String> extractOptions() {
         HashMap<String, String> options = new HashMap<String, String>();
-        for (Iterator i = System.getProperties().keySet().iterator(); i.hasNext();) {
-            String key = (String) i.next();
+        for (Object o : System.getProperties().keySet()) {
+            String key = (String) o;
             if (key.startsWith(PROPERTY_PREFIX)) {
                 String optionName = key.substring(PROPERTY_PREFIX.length());
                 options.put(optionName, System.getProperty(key));
@@ -100,10 +100,9 @@ public class Xlator
             loadJSSource(cx, scope, "/content/formats/" + outputFormat + ".js");
             
             if (options != null) {
-                for (Iterator<String> i = options.keySet().iterator(); i.hasNext();) {
-                    String optionName = i.next();
+                for (Map.Entry<String,String> option : options.entrySet()) {
                     Scriptable jsOptions = (Scriptable) scope.get("options", scope);
-                    ScriptableObject.putProperty(jsOptions, optionName, options.get(optionName));
+                    ScriptableObject.putProperty(jsOptions, option.getKey(), option.getValue());
                 }
             }
             

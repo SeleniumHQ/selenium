@@ -111,9 +111,12 @@ public class HttpCommandProcessor implements CommandProcessor {
             uc.setInstanceFollowRedirects(false);
             uc.setDoOutput(true);
             OutputStreamWriter wr = new OutputStreamWriter(uc.getOutputStream());
-            wr.write(body);
-            wr.flush();
-            wr.close();
+            try {
+                wr.write(body);
+                wr.flush();
+            } finally {
+                wr.close();
+            }
             responsecode = uc.getResponseCode();
             if (responsecode == HttpURLConnection.HTTP_MOVED_PERM) {
                 pathToServlet = uc.getRequestProperty("Location");
@@ -187,7 +190,7 @@ public class HttpCommandProcessor implements CommandProcessor {
             }  
         }
         output.add(sb.toString());
-        return (String[]) output.toArray(new String[0]);
+        return (String[]) output.toArray(new String[output.size()]);
     }
     
     public Number getNumber(String commandName, String[] args) {
@@ -246,7 +249,7 @@ public class HttpCommandProcessor implements CommandProcessor {
                 b[i] = false;
                 continue;
             }
-            throw new RuntimeException("result was neither 'true' nor 'false': " + result);
+            throw new RuntimeException("result was neither 'true' nor 'false': " + Arrays.toString(result));
         }
         return b;
     }
