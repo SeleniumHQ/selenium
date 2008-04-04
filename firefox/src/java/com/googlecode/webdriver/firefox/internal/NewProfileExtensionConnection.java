@@ -37,13 +37,17 @@ public class NewProfileExtensionConnection extends AbstractExtensionConnection {
     lockSocket = new Socket();
     long maxWait = System.currentTimeMillis() + 45000;  // 45 seconds
 
-    while (System.currentTimeMillis() < maxWait && isLockTaken(address)) {
+    while (System.currentTimeMillis() < maxWait) {
       try {
+        if (isLockFree(address))
+          return;
         Thread.sleep(500);
       } catch (InterruptedException e) {
         throw new RuntimeException(e);
       }
     }
+
+    throw new IOException("Unable to bind to locking port");
   }
 
   protected InetSocketAddress getAddressForLock(int port) {
@@ -51,12 +55,12 @@ public class NewProfileExtensionConnection extends AbstractExtensionConnection {
     return new InetSocketAddress("localhost", lockPort);
   }
 
-  private boolean isLockTaken(InetSocketAddress address) throws IOException {
+  private boolean isLockFree(InetSocketAddress address) throws IOException {
     try {
       lockSocket.bind(address);
-      return false;
-    } catch (BindException e) {
       return true;
+    } catch (BindException e) {
+      return false;
     }
   }
 
