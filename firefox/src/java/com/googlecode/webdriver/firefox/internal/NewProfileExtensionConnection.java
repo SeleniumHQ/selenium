@@ -14,18 +14,54 @@ public class NewProfileExtensionConnection extends AbstractExtensionConnection {
   private static long TIMEOUT_IN_SECONDS = 20;
   private static long MILLIS_IN_SECONDS = 1000;
   private FirefoxBinary process;
+  private Socket lockSocket;
 
     public NewProfileExtensionConnection(FirefoxProfile profile, String host, int port) throws IOException {
-        int portToUse = determineNextFreePort(host, port);
+        getLock(port);
+        try {
+          int portToUse = determineNextFreePort(host, port);
 
-        process = new FirefoxLauncher().startProfile(profile, portToUse);
+          process = new FirefoxLauncher().startProfile(profile, portToUse);
 
-        setAddress(host, portToUse);
+          setAddress(host, portToUse);
 
-        connectToBrowser(TIMEOUT_IN_SECONDS * MILLIS_IN_SECONDS);
+          connectToBrowser(TIMEOUT_IN_SECONDS * MILLIS_IN_SECONDS);
+        } finally {
+          releaseLock();
+        }
     }
 
-    protected int determineNextFreePort(String host, int port) throws IOException {
+  protected void getLock(int port) throws IOException {
+    int lockPort = port - 1;
+    lockSocket = new Socket();
+    InetSocketAddress address = new InetSocketAddress("localhost", lockPort);
+
+    long maxWait = System.currentTimeMillis() + 45000;  // 45 seconds
+
+    while (System.currentTimeMillis() < maxWait && isLockTaken(address)) {
+      try {
+        Thread.sleep(500);
+      } catch (InterruptedException e) {
+        throw new RuntimeException(e);
+      }
+    }
+  }
+
+  private boolean isLockTaken(InetSocketAddress address) throws IOException {
+    try {
+      lockSocket.bind(address);
+      return false;
+    } catch (BindException e) {
+      return true;
+    }
+  }
+
+  private void releaseLock() throws IOException {
+    if (lockSocket != null && lockSocket.isBound())
+      lockSocket.close();
+  }  
+
+  protected int determineNextFreePort(String host, int port) throws IOException {
     // Attempt to connect to the given port on the host
     // If we can't connect, then we're good to use it
     int newport;
