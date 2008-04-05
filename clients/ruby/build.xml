@@ -1,4 +1,5 @@
 <project name="selenium">
+	
     <target name="generate-sources">
         <mkdir dir="target"/>
         <xslt in="target/iedoc.xml" out="selenium.rb" style="iedoc2ruby.xml"/>
@@ -22,12 +23,12 @@
         <!--  output="${tmp}/ruby_out.txt" -->
         <property name="ruby.executable" value="ruby"/>
         <!--<fail message="autofail ${ruby.executable}" />-->
-        <condition property="testFile" value="mock">
+        <condition property="testFile" value="test/unit/selenium_mock.rb">
             <istrue value="${headless}" />
         </condition>
-        <property name="testFile" value="example" />
+        <property name="testFile" value="test/integration/selenium_example.rb" />
         <exec executable="${ruby.executable}" resultproperty="result">
-            <arg line="selenium_${testFile}.rb"/>
+            <arg line="${testFile}"/>
         </exec>
         <get taskname="selenium-shutdown" src="http://localhost:4444/selenium-server/driver/?cmd=shutDown" dest="target/shutdown-result.txt" ignoreerrors="true" />
         <sleep seconds="20"/>
