@@ -63,7 +63,7 @@ public class BrowserLauncherFactory {
      * @param sessionId the sessionId to launch
      * @return the BrowserLauncher ready to launch
      */
-    public BrowserLauncher getBrowserLauncher(String browser, String sessionId) {
+    public BrowserLauncher getBrowserLauncher(String browser, String sessionId, int portDriversShouldContact) {
         if (browser == null) throw new IllegalArgumentException("browser may not be null");
 
         for (Iterator<String> iterator = supportedBrowsers.keySet().iterator(); iterator.hasNext();) {
@@ -78,7 +78,7 @@ public class BrowserLauncherFactory {
                 } else {
                     browserStartCommand = mat.group(1).substring(1);
                 }
-                return createBrowserLauncher(c, browserStartCommand, sessionId);
+                return createBrowserLauncher(c, browserStartCommand, sessionId, portDriversShouldContact);
             }
         }
         Matcher CustomMatcher = CUSTOM_PATTERN.matcher(browser);
@@ -113,18 +113,18 @@ public class BrowserLauncherFactory {
         return new RuntimeException(errorMessage.toString());
     }
 
-    private BrowserLauncher createBrowserLauncher(Class<? extends BrowserLauncher> c, String browserStartCommand, String sessionId) {
+    private BrowserLauncher createBrowserLauncher(Class<? extends BrowserLauncher> c, String browserStartCommand,
+                                                  String sessionId, int portDriversShouldContact) {
         try {
             try {
                 BrowserLauncher browserLauncher;
                 Constructor<? extends BrowserLauncher> ctor;
-                int port = SeleniumServer.getPortDriversShouldContact();
                 if (null == browserStartCommand) {
                     ctor = c.getConstructor(int.class, String.class);
-                    browserLauncher = ctor.newInstance(port, sessionId);
+                    browserLauncher = ctor.newInstance(portDriversShouldContact, sessionId);
                 } else {
                     ctor = c.getConstructor(int.class, String.class, String.class);
-                    browserLauncher = ctor.newInstance(port, sessionId, browserStartCommand);
+                    browserLauncher = ctor.newInstance(portDriversShouldContact, sessionId, browserStartCommand);
                 }
 
                 return browserLauncher;

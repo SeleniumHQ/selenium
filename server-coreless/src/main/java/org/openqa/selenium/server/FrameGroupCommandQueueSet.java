@@ -96,10 +96,12 @@ public class FrameGroupCommandQueueSet {
      * window.opener==null.  Any window for whom window.opener!=null is a "pop-up".
      */
     public static final String DEFAULT_SELENIUM_WINDOW_NAME = "";
+    private int portDriversShouldContact;
 
-    public FrameGroupCommandQueueSet(String sessionId) {
+    public FrameGroupCommandQueueSet(String sessionId, int portDriversShouldContact) {
         this.sessionId = sessionId;
-        
+        this.portDriversShouldContact = portDriversShouldContact;
+
         /*
          * Initialize delay, using the static CommandQueue getSpeed
          * in order to imitate previous behavior, wherein that static
@@ -206,13 +208,13 @@ public class FrameGroupCommandQueueSet {
     
     /** Creates a FrameGroupCommandQueueSet for the specifed sessionId 
      */
-    static public FrameGroupCommandQueueSet makeQueueSet(String sessionId) {
+    static public FrameGroupCommandQueueSet makeQueueSet(String sessionId, int portDriversShouldContact) {
       synchronized (queueSets) {
         FrameGroupCommandQueueSet queueSet = FrameGroupCommandQueueSet.queueSets.get(sessionId);
         if (queueSet != null) {
           throw new RuntimeException("sessionId " + sessionId + " already exists");
         }
-        queueSet = new FrameGroupCommandQueueSet(sessionId);
+        queueSet = new FrameGroupCommandQueueSet(sessionId, portDriversShouldContact);
         FrameGroupCommandQueueSet.queueSets.put(sessionId, queueSet);
         return queueSet;
       }
@@ -783,12 +785,12 @@ public class FrameGroupCommandQueueSet {
             }
             if (frameAddress.getLocalFrameAddress().equals(DEFAULT_LOCAL_FRAME_ADDRESS)) {
               if (log.isDebugEnabled()) {
-                log.debug("Trying to close " + frameAddress);
+                  log.debug("Trying to close " + frameAddress);
               }
               try {
-                q.doCommandWithoutWaitingForAResponse("close", "", "");
+                  q.doCommandWithoutWaitingForAResponse("close", "", "");
               } catch (WindowClosedException e) {
-				log.debug("Window was already closed");
+                  log.debug("Window was already closed");
               }
             }
             orphanedQueues.add(q);
@@ -804,7 +806,7 @@ public class FrameGroupCommandQueueSet {
       StringBuilder openUrl = new StringBuilder();
       if (SeleniumServer.isProxyInjectionMode()) {
         openUrl.append("http://localhost:");
-        openUrl.append(SeleniumServer.getPortDriversShouldContact());
+        openUrl.append(portDriversShouldContact);
         openUrl.append("/selenium-server/core/InjectedRemoteRunner.html");
       } else {
         openUrl.append(LauncherUtils.stripStartURL(baseUrl));

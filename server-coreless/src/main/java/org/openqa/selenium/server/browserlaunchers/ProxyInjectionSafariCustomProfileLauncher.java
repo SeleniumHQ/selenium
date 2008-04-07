@@ -18,12 +18,12 @@ import java.io.IOException;
 public class ProxyInjectionSafariCustomProfileLauncher extends SafariCustomProfileLauncher {
     private static boolean alwaysChangeMaxConnections = true;
 
-	public ProxyInjectionSafariCustomProfileLauncher(int port, String sessionId) {
-        super(port, sessionId);
+	public ProxyInjectionSafariCustomProfileLauncher(int port, String sessionId, int portDriversShouldContact) {
+        super(port, sessionId, portDriversShouldContact);
     }
     
-    public ProxyInjectionSafariCustomProfileLauncher(int port, String sessionId, String browserLaunchLocation) {
-        super(port, sessionId, browserLaunchLocation);
+    public ProxyInjectionSafariCustomProfileLauncher(int port, String sessionId, String browserLaunchLocation, int portDriversShouldContact) {
+        super(port, sessionId, browserLaunchLocation, portDriversShouldContact);
     }
     
     @Override

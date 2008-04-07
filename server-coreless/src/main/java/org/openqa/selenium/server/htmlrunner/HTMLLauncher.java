@@ -36,11 +36,11 @@ import org.openqa.selenium.server.browserlaunchers.WindowsUtils;
 public class HTMLLauncher implements HTMLResultsListener {
 
     static Log log = LogFactory.getLog(HTMLLauncher.class);
-    private SeleniumServer server;
+    private SeleniumServer remoteControl;
     private HTMLTestResults results;
     
-    public HTMLLauncher(SeleniumServer server) {
-        this.server = server;
+    public HTMLLauncher(SeleniumServer remoteControl) {
+        this.remoteControl = remoteControl;
     }
     
     /** Launches a single HTML Selenium test suite.
@@ -81,13 +81,13 @@ public class HTMLLauncher implements HTMLResultsListener {
             log.warn("Looks like the timeout overflowed, so resetting it to the maximum.");
             timeoutInMs = Long.MAX_VALUE;
         }
-        server.handleHTMLRunnerResults(this);
+        remoteControl.handleHTMLRunnerResults(this);
         BrowserLauncherFactory blf = new BrowserLauncherFactory();
         String sessionId = Long.toString(System.currentTimeMillis() % 1000000);
-        BrowserLauncher launcher = blf.getBrowserLauncher(browser, sessionId);
+        BrowserLauncher launcher = blf.getBrowserLauncher(browser, sessionId, remoteControl.getConfiguration().getPortDriversShouldContact());
         BrowserSessionInfo sessionInfo = new BrowserSessionInfo(sessionId, 
             browser, browserURL, launcher, null);
-        server.registerBrowserSession(sessionInfo);
+        remoteControl.registerBrowserSession(sessionInfo);
         
         // JB: -- aren't these URLs in the wrong order according to declaration?
         launcher.launchHTMLSuite(suiteURL, browserURL, multiWindow, defaultLogLevel);
@@ -97,7 +97,7 @@ public class HTMLLauncher implements HTMLResultsListener {
             AsyncExecute.sleepTight(500);
         }
         launcher.close();
-        server.deregisterBrowserSession(sessionInfo);
+        remoteControl.deregisterBrowserSession(sessionInfo);
         if (results == null) {
             throw new SeleniumCommandTimedOutException();
         }
@@ -129,12 +129,12 @@ public class HTMLLauncher implements HTMLResultsListener {
     	if (!suiteFile.canRead()) {
     		throw new IOException("Can't read HTML Suite file: " + suiteFile.getAbsolutePath());
     	}
-    	server.addNewStaticContent(suiteFile.getParentFile());
+    	remoteControl.addNewStaticContent(suiteFile.getParentFile());
         
         // DGF this is a hack, but I can't find a better place to put it
         String suiteURL;
         if (browser.startsWith("*chrome") || browser.startsWith("*iehta")) {
-            suiteURL = "http://localhost:" + SeleniumServer.getPortDriversShouldContact() + "/selenium-server/tests/" + suiteFile.getName();
+            suiteURL = "http://localhost:" + remoteControl.getConfiguration().getPortDriversShouldContact() + "/selenium-server/tests/" + suiteFile.getName();
         } else {
             suiteURL = LauncherUtils.stripStartURL(browserURL) + "/selenium-server/tests/" + suiteFile.getName();
         }
@@ -206,7 +206,7 @@ public class HTMLLauncher implements HTMLResultsListener {
         String options = (multiWindow ? "multiWindow-" : "") + (slowResources ? "slowResources-" : "");
         String name = "results-" + browser + '-' + options + "TestSuite.html";
         File resultsFile = new File(dir, name);
-        String baseUrl = "http://localhost:" + server.getPort();
+        String baseUrl = "http://localhost:" + remoteControl.getPort();
         String suiteUrl = baseUrl + "/selenium-server/tests/TestSuite.html";
         StaticContentHandler.setSlowResources(slowResources);
         String result = null;

@@ -51,10 +51,12 @@ public class WindowsProxyManager {
     private boolean customPACappropriate;
     private File customProxyPACDir;
     private int port;
+    private int portDriversShouldContact;
     private boolean changeMaxConnections;
     private static final Preferences prefs = Preferences.userNodeForPackage(WindowsProxyManager.class);
 
-    public WindowsProxyManager(boolean customPACappropriate, String sessionId, int port) {
+    public WindowsProxyManager(boolean customPACappropriate, String sessionId, int port, int portDriversShouldContact) {
+        this.portDriversShouldContact = portDriversShouldContact;
         this.customPACappropriate = customPACappropriate;
         this.port = port;
         customProxyPACDir = LauncherUtils.createCustomProfileDir(sessionId);
@@ -146,7 +148,7 @@ public class WindowsProxyManager {
     		backupHudsuckrSettings();
     	}
     	if (!customPACappropriate) {
-    		String proxyServer = "127.0.0.1:" + SeleniumServer.getPortDriversShouldContact();
+    		String proxyServer = "127.0.0.1:" + portDriversShouldContact;
             settings = new HudsuckrSettings(oldSettings.connection, true, true, false, false, proxyServer, "(null)", "(null)");
         } else {
             File proxyPAC = LauncherUtils.makeProxyPAC(customProxyPACDir, port);

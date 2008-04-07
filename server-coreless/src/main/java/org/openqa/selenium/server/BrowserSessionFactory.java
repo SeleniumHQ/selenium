@@ -74,10 +74,10 @@ public class BrowserSessionFactory {
    * @throws RemoteCommandException
    */
   public BrowserSessionInfo getNewBrowserSession(String browserString, String startURL, 
-      boolean multiWindow) throws RemoteCommandException {
+      boolean multiWindow, int portDriversShouldContact) throws RemoteCommandException {
     return getNewBrowserSession(browserString, startURL, multiWindow,
         SeleniumServer.reusingBrowserSessions(),
-        SeleniumServer.isEnsureCleanSession());
+        SeleniumServer.isEnsureCleanSession(), portDriversShouldContact);
   }
   
   /**
@@ -92,8 +92,8 @@ public class BrowserSessionFactory {
    * @throws RemoteCommandException
    */
   protected BrowserSessionInfo getNewBrowserSession(String browserString, 
-      String startURL, boolean multiWindow, boolean useCached, boolean ensureClean) 
-      throws RemoteCommandException {
+      String startURL, boolean multiWindow, boolean useCached, boolean ensureClean,
+      int portDriversShouldContact) throws RemoteCommandException {
   
     BrowserSessionInfo sessionInfo = null;
     browserString = validateBrowserString(browserString);
@@ -110,8 +110,7 @@ public class BrowserSessionFactory {
     // couldn't find one in the cache, or not reusing sessions.
     if (null == sessionInfo) {
       log.info("creating new remote session");
-      sessionInfo = createNewRemoteSession(browserString, startURL, 
-          multiWindow, ensureClean);
+      sessionInfo = createNewRemoteSession(browserString, startURL, multiWindow, ensureClean, portDriversShouldContact);
     }
     
     assert null != sessionInfo;
@@ -300,11 +299,11 @@ public class BrowserSessionFactory {
    *                        request work in the required amount of time.
    */
   protected BrowserSessionInfo createNewRemoteSession(String browserString, 
-      String startURL, boolean multiWindow, boolean ensureClean) 
+      String startURL, boolean multiWindow, boolean ensureClean, int portDriversShouldContact)
       throws RemoteCommandException {
     String sessionId = UUID.randomUUID().toString().replace("-", "");
-    FrameGroupCommandQueueSet queueSet = FrameGroupCommandQueueSet.makeQueueSet(sessionId);
-    BrowserLauncher launcher = browserLauncherFactory.getBrowserLauncher(browserString, sessionId);
+    FrameGroupCommandQueueSet queueSet = FrameGroupCommandQueueSet.makeQueueSet(sessionId, portDriversShouldContact);
+    BrowserLauncher launcher = browserLauncherFactory.getBrowserLauncher(browserString, sessionId, portDriversShouldContact);
     BrowserSessionInfo sessionInfo = new BrowserSessionInfo(sessionId,
         browserString, startURL, launcher, queueSet);
     log.info("Allocated session " + sessionId + " for " + startURL + ", launching...");

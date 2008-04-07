@@ -46,8 +46,12 @@ public class RemoteControlConfigurationTest extends TestCase {
     }
 
 
-    public void testPortDriversShouldContactIs0ByDefault() {
-        assertEquals(0, new RemoteControlConfiguration().getPortDriversShouldContact());
+    public void testPortDriversShouldContactIsSamePortByDefault() {
+        final RemoteControlConfiguration configuration;
+
+        configuration = new RemoteControlConfiguration();
+        configuration.setPort(1515);
+        assertEquals(1515, configuration.getPortDriversShouldContact());
     }
 
     public void testPortDriversShouldContactCanBeSet() {

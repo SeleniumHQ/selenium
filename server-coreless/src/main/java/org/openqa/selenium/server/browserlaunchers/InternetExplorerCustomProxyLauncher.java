@@ -37,15 +37,15 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
     private static boolean alwaysChangeMaxConnections = false;
     protected boolean changeMaxConnections = alwaysChangeMaxConnections;
 
-    public InternetExplorerCustomProxyLauncher(int port, String sessionId) {
-        this(port, sessionId, findBrowserLaunchLocation());
+    public InternetExplorerCustomProxyLauncher(int port, String sessionId, int portDriversShouldContact) {
+        this(port, sessionId, findBrowserLaunchLocation(), portDriversShouldContact);
     }
 
-    public InternetExplorerCustomProxyLauncher(int port, String sessionId, String browserLaunchLocation) {
+    public InternetExplorerCustomProxyLauncher(int port, String sessionId, String browserLaunchLocation, int portDriversShouldContact) {
         super(sessionId);
         commandPath = browserLaunchLocation;
         this.sessionId = sessionId;
-        wpm = new WindowsProxyManager(true, sessionId, port);
+        wpm = new WindowsProxyManager(true, sessionId, port, portDriversShouldContact);
     }
 
     protected void changeRegistrySettings() throws IOException {
@@ -133,7 +133,7 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
     }
 
     public static void main(String[] args) {
-        InternetExplorerCustomProxyLauncher l = new InternetExplorerCustomProxyLauncher(SeleniumServer.DEFAULT_PORT, "CUSTIE");
+        InternetExplorerCustomProxyLauncher l = new InternetExplorerCustomProxyLauncher(SeleniumServer.DEFAULT_PORT, "CUSTIE", SeleniumServer.DEFAULT_PORT);
         l.launch("http://www.google.com/");
         int seconds = 5;
         System.out.println("Killing browser in " + Integer.toString(seconds) + " seconds");

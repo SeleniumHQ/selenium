@@ -45,17 +45,17 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
 
     private static AsyncExecute exe = new AsyncExecute();
 
-    public SafariCustomProfileLauncher(int port, String sessionId) {
-        this(port, sessionId, findBrowserLaunchLocation());
+    public SafariCustomProfileLauncher(int port, String sessionId, int portDriversShouldContact) {
+        this(port, sessionId, findBrowserLaunchLocation(), portDriversShouldContact);
     }
 
-    public SafariCustomProfileLauncher(int port, String sessionId, String browserLaunchLocation) {
+    public SafariCustomProfileLauncher(int port, String sessionId, String browserLaunchLocation, int portDriversShouldContact) {
         super(sessionId);
         commandPath = findBrowserLaunchLocation();
 //        this.port = port;
         this.sessionId = sessionId;
         if (WindowsUtils.thisIsWindows()) {
-            wpm = new WindowsProxyManager(true, sessionId, port);
+            wpm = new WindowsProxyManager(true, sessionId, port, portDriversShouldContact);
         } else {
             mpm = new MacProxyManager(sessionId, port);
             // On unix, add command's directory to LD_LIBRARY_PATH
@@ -245,7 +245,7 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
     }
 
     public static void main(String[] args) throws Exception {
-        SafariCustomProfileLauncher l = new SafariCustomProfileLauncher(SeleniumServer.DEFAULT_PORT, "CUST");
+        SafariCustomProfileLauncher l = new SafariCustomProfileLauncher(SeleniumServer.DEFAULT_PORT, "CUST", SeleniumServer.DEFAULT_PORT);
         l.launch("http://www.google.com");
         int seconds = 15;
         System.out.println("Killing browser in " + Integer.toString(seconds) + " seconds");

@@ -13,7 +13,7 @@ public class FrameGroupCommandQueueTest extends TestCase {
   public void testGetGlobalQueueSpeed() {
     assertEquals(defaultSpeed, CommandQueue.getSpeed());
     FrameGroupCommandQueueSet session1 = 
-      FrameGroupCommandQueueSet.makeQueueSet(firstSessionId);
+      FrameGroupCommandQueueSet.makeQueueSet(firstSessionId, SeleniumServer.DEFAULT_PORT);
     int sessionSpeedOnInit = session1.getSpeed();
     assertEquals(defaultSpeed, sessionSpeedOnInit);
     FrameGroupCommandQueueSet.clearQueueSet(firstSessionId);
@@ -23,7 +23,7 @@ public class FrameGroupCommandQueueTest extends TestCase {
     assertEquals(defaultSpeed, CommandQueue.getSpeed());
     CommandQueue.setSpeed(newSpeed);
     FrameGroupCommandQueueSet session1 = 
-      FrameGroupCommandQueueSet.makeQueueSet(firstSessionId);
+      FrameGroupCommandQueueSet.makeQueueSet(firstSessionId, SeleniumServer.DEFAULT_PORT);
     int sessionSpeedOnInit = session1.getSpeed();
     assertEquals(newSpeed, sessionSpeedOnInit);
     CommandQueue.setSpeed(defaultSpeed);
@@ -33,13 +33,13 @@ public class FrameGroupCommandQueueTest extends TestCase {
   public void testSetSessionSpeedNotGlobalSpeed() {
     assertEquals(defaultSpeed, CommandQueue.getSpeed());
     FrameGroupCommandQueueSet session1 = 
-      FrameGroupCommandQueueSet.makeQueueSet(firstSessionId);
+      FrameGroupCommandQueueSet.makeQueueSet(firstSessionId, SeleniumServer.DEFAULT_PORT);
     session1.setSpeed(newSpeed);
     int sessionSpeedOnInit = session1.getSpeed();
     assertEquals(newSpeed, sessionSpeedOnInit);
     
     FrameGroupCommandQueueSet session2 = 
-      FrameGroupCommandQueueSet.makeQueueSet(secondSessionId);
+      FrameGroupCommandQueueSet.makeQueueSet(secondSessionId, SeleniumServer.DEFAULT_PORT);
     int session2SpeedOnInit = session2.getSpeed();
     assertEquals(defaultSpeed, session2SpeedOnInit);
     
@@ -50,7 +50,7 @@ public class FrameGroupCommandQueueTest extends TestCase {
   public void testCommandQueueInitSpeedMatchesSessionSpeed() {
     assertEquals(defaultSpeed, CommandQueue.getSpeed());
     FrameGroupCommandQueueSet session1 = 
-      FrameGroupCommandQueueSet.makeQueueSet(firstSessionId);
+      FrameGroupCommandQueueSet.makeQueueSet(firstSessionId, SeleniumServer.DEFAULT_PORT);
     session1.setSpeed(newSpeed);
     
     CommandQueue queue1 = session1.getCommandQueue(firstQueueId);

@@ -17,29 +17,33 @@
 
 package org.openqa.selenium.server;
 
+import org.apache.commons.logging.Log;
+import org.apache.tools.ant.Project;
+import org.apache.tools.ant.taskdefs.Get;
+import org.apache.tools.ant.util.FileUtils;
+import org.mortbay.http.*;
+import org.mortbay.http.handler.ResourceHandler;
+import org.mortbay.log.LogFactory;
+import org.mortbay.util.StringUtil;
+import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
+import org.openqa.selenium.server.browserlaunchers.AsyncExecute;
+import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
+import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
+import org.openqa.selenium.server.htmlrunner.HTMLLauncher;
+import org.openqa.selenium.server.log.AntJettyLoggerBuildListener;
+
+import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.image.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
-import java.lang.reflect.*;
-import java.net.*;
+import java.lang.reflect.Field;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.util.*;
 import java.util.List;
-import java.util.concurrent.*;
-
-import javax.imageio.*;
-
-import org.apache.commons.logging.*;
-import org.apache.tools.ant.*;
-import org.apache.tools.ant.taskdefs.*;
-import org.apache.tools.ant.util.*;
-import org.mortbay.http.*;
-import org.mortbay.http.handler.*;
-import org.mortbay.log.LogFactory;
-import org.mortbay.util.*;
-import org.openqa.selenium.server.BrowserSessionFactory.*;
-import org.openqa.selenium.server.browserlaunchers.*;
-import org.openqa.selenium.server.htmlrunner.*;
-import org.openqa.selenium.server.log.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 /**
  * A Jetty handler that takes care of remote Selenium requests.
@@ -55,7 +59,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     static Log log = LogFactory.getLog(SeleniumDriverResourceHandler.class);
     static Log browserSideLog = LogFactory.getLog(SeleniumDriverResourceHandler.class.getName()+".browserSideLog");
     
-    private SeleniumServer server;
+    private SeleniumServer remoteControl;
     private static String lastSessionId = null;
     private Map<String, String> domainsBySessionId = new HashMap<String, String>();
     private StringBuffer logMessagesBuffer = new StringBuffer();
@@ -64,8 +68,8 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     private final BrowserSessionFactory browserSessionFactory = 
       new BrowserSessionFactory(browserLauncherFactory);
     
-    public SeleniumDriverResourceHandler(SeleniumServer server) {
-        this.server = server;
+    public SeleniumDriverResourceHandler(SeleniumServer remoteControl) {
+        this.remoteControl = remoteControl;
         
     }
 
@@ -462,13 +466,13 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         } else if ("addStaticContent".equals(cmd)) {
             File dir = new File( values.get(0));
             if (dir.exists()) {
-                server.addNewStaticContent(dir);
+                remoteControl.addNewStaticContent(dir);
                 results = "OK";
             } else {
                 results = "ERROR: dir does not exist - " + dir.getAbsolutePath();
             }
         } else if ("runHTMLSuite".equals(cmd)) {
-            HTMLLauncher launcher = new HTMLLauncher(server);
+            HTMLLauncher launcher = new HTMLLauncher(remoteControl);
             File output = null;
             if (values.size() < 4) {
                 results = "ERROR: Not enough arguments (browser, browserURL, suiteURL, multiWindow, [outputFile])";
@@ -490,9 +494,9 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             } else {
             	String browser = values.get(0);
                 String newSessionId = generateNewSessionId();
-                BrowserLauncher simpleLauncher = browserLauncherFactory.getBrowserLauncher(browser, newSessionId);
-                String baseUrl = "http://localhost:" + server.getPort();
-                server.registerBrowserSession(new BrowserSessionInfo(
+                BrowserLauncher simpleLauncher = browserLauncherFactory.getBrowserLauncher(browser, newSessionId, remoteControl.getConfiguration().getPortDriversShouldContact());
+                String baseUrl = "http://localhost:" + remoteControl.getPort();
+                remoteControl.registerBrowserSession(new BrowserSessionInfo(
                     newSessionId, browser, baseUrl, simpleLauncher, null));
                 simpleLauncher.launchHTMLSuite("TestPrompt.html?thisIsSeleniumServer=true", baseUrl, false, "info");
                 results = "OK";
@@ -629,8 +633,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     protected String getNewBrowserSession(String browserString, String startURL) 
           throws RemoteCommandException {
         BrowserSessionInfo sessionInfo = 
-            browserSessionFactory.getNewBrowserSession(
-            browserString, startURL, server.isMultiWindow());
+            browserSessionFactory.getNewBrowserSession(browserString, startURL, remoteControl.isMultiWindow(), remoteControl.getConfiguration().getPortDriversShouldContact());
         setLastSessionId(sessionInfo.sessionId); 
         return sessionInfo.sessionId;
     }

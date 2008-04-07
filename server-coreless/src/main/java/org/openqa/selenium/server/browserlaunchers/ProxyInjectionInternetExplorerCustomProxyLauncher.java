@@ -18,12 +18,14 @@ import java.io.*;
 public class ProxyInjectionInternetExplorerCustomProxyLauncher extends InternetExplorerCustomProxyLauncher {
     private static boolean alwaysChangeMaxConnections = true;
 
-	public ProxyInjectionInternetExplorerCustomProxyLauncher(int port, String sessionId) {
-        super(port, sessionId);
+	public ProxyInjectionInternetExplorerCustomProxyLauncher(int port, String sessionId, int portDriversShouldContact) {
+        super(port, sessionId, portDriversShouldContact);
     }
     
-    public ProxyInjectionInternetExplorerCustomProxyLauncher(int port, String sessionId, String browserLaunchLocation) {
-        super(port, sessionId, browserLaunchLocation);
+    public ProxyInjectionInternetExplorerCustomProxyLauncher(int port, String sessionId,
+            String browserLaunchLocation, int portDriversShouldContact) {
+        
+        super(port, sessionId, browserLaunchLocation, portDriversShouldContact);
     }
     
     @Override

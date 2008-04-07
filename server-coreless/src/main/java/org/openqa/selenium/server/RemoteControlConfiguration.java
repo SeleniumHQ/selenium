@@ -8,9 +8,22 @@ import java.io.File;
 public class RemoteControlConfiguration {
 
     private static final int DEFAULT_PORT = 4444;
+    private static final int USE_SAME_PORT = -1;
     private int port;
     private boolean multiWindow;
     private boolean proxyInjectionModeArg;
+    /**
+     * The following port is the one which drivers and browsers should use when they contact the selenium server.
+     * Under normal circumstances, this port will be the same as the port which the selenium server listens on.
+     * But if a developer wants to monitor traffic into and out of the selenium server, he can set this port from
+     * the command line to be a different value and then use a tool like tcptrace to link this port with the
+     * server listening port, thereby opening a window into the raw HTTP traffic.
+     *
+     * For example, if the selenium server is invoked with  -portDriversShouldContact 4445, then traffic going
+     * into the selenium server will be routed to port 4445, although the selenium server will still be listening
+     * to the default port 4444.  At this point, you would open tcptrace to bridge the gap and be able to watch
+     * all the data coming in and out:     
+     */
     private int portDriversShouldContact;
     private boolean htmlSuite;
     private boolean selfTest;
@@ -29,7 +42,7 @@ public class RemoteControlConfiguration {
         this.port = DEFAULT_PORT;
         this.multiWindow = false;
         this.proxyInjectionModeArg = false;
-        this.portDriversShouldContact = 0;
+        this.portDriversShouldContact = USE_SAME_PORT;
         this.debugURL = "";
         this.dontInjectRegex = null;
     }
@@ -63,6 +76,9 @@ public class RemoteControlConfiguration {
     }
 
     public int getPortDriversShouldContact() {
+        if (USE_SAME_PORT == portDriversShouldContact) {
+            return port;
+        }
         return portDriversShouldContact;
     }
 
