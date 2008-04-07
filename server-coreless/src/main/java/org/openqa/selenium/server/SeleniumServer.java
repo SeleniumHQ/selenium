@@ -186,7 +186,7 @@ public class SeleniumServer {
     // all the data coming in and out:
     private static int portDriversShouldContact = 0;
     private static String logOutFileName = null;
-    private static String forcedBrowserMode = null; 
+    private static String forcedBrowserMode = null;
 
     public static final int DEFAULT_TIMEOUT = (30 * 60);
     public static int timeoutInSeconds = DEFAULT_TIMEOUT;
@@ -220,19 +220,10 @@ public class SeleniumServer {
      * @throws Exception - you know, just in case.
      */
     public static void main(String[] args) throws Exception {
+        final RemoteControlConfiguration configuration;
         
-        int port = SeleniumServer.getDefaultPort();
-        boolean interactive = false;
-
-        boolean htmlSuite = false;
-        boolean selfTest = false;
-        File selfTestDir = null;
-        boolean multiWindow = false;
-        File userExtensions = null;
-        boolean proxyInjectionModeArg = false;
-        int portDriversShouldContactArg = 0;
-        boolean userJsInjection = false;
-
+        configuration = new RemoteControlConfiguration();
+        configuration.setPort(SeleniumServer.getDefaultPort());
         for (int i = 0; i < args.length; i++) {
             String arg = args[i];
             if ("-help".equalsIgnoreCase(arg)) {
@@ -256,17 +247,17 @@ public class SeleniumServer {
             } else if ("-log".equalsIgnoreCase(arg)) {
                 logOutFileName = getArg(args, ++i);
             } else if ("-port".equalsIgnoreCase(arg)) {
-                port = Integer.parseInt(getArg(args, ++i));
+                configuration.setPort(Integer.parseInt(getArg(args, ++i)));
             } else if ("-multiWindow".equalsIgnoreCase(arg)) {
-                multiWindow = true;
+                configuration.setMultiWindow(true);
             } else if ("-avoidProxy".equalsIgnoreCase(arg)) {
                 setAvoidProxy(true);
             } else if ("-proxyInjectionMode".equalsIgnoreCase(arg)) {
-                proxyInjectionModeArg = true;
+                configuration.setProxyInjectionModeArg(true);
             } else if ("-portDriversShouldContact".equalsIgnoreCase(arg)) {
                 // to facilitate tcptrace interception of interaction between 
                 // injected js and the selenium server
-                portDriversShouldContactArg = Integer.parseInt(getArg(args, ++i));
+                configuration.setPortDriversShouldContact(Integer.parseInt(getArg(args, ++i)));
             } else if ("-noBrowserSessionReuse".equalsIgnoreCase(arg)) {
                 SeleniumServer.reusingBrowserSessions = Boolean.FALSE;
             } else if ("-browserSessionReuse".equalsIgnoreCase(arg)) {
@@ -297,7 +288,7 @@ public class SeleniumServer {
             } else if ("-trustAllSSLCertificates".equalsIgnoreCase(arg)) {
                 trustAllSSLCertificates = true;
             } else if ("-userJsInjection".equalsIgnoreCase(arg)) {
-                userJsInjection = true;
+                configuration.setUserJSInjection(true);
                 if (!InjectionHelper.addUserJsInjectionFile(getArg(args, ++i))) {
                     usage(null);
                     System.exit(1);
@@ -308,19 +299,19 @@ public class SeleniumServer {
                     System.exit(1);
                 }
             } else if ("-userExtensions".equalsIgnoreCase(arg)) {
-                userExtensions = new File(getArg(args, ++i));
-                if (!userExtensions.exists()) {
-                    System.err.println("User Extensions file doesn't exist: " + userExtensions.getAbsolutePath());
+                configuration.setUserExtensions(new File(getArg(args, ++i)));
+                if (!configuration.getUserExtensions().exists()) {
+                    System.err.println("User Extensions file doesn't exist: " + configuration.getUserExtensions().getAbsolutePath());
                     System.exit(1);
                 }
-                if (!"user-extensions.js".equalsIgnoreCase(userExtensions.getName())) {
-                    System.err.println("User extensions file MUST be called \"user-extensions.js\": " + userExtensions.getAbsolutePath());
+                if (!"user-extensions.js".equalsIgnoreCase(configuration.getUserExtensions().getName())) {
+                    System.err.println("User extensions file MUST be called \"user-extensions.js\": " + configuration.getUserExtensions().getAbsolutePath());
                     System.exit(1);
                 }
             } else if ("-selfTest".equalsIgnoreCase(arg)) {
-                selfTest = true;
-                selfTestDir = new File(getArg(args, ++i));
-                selfTestDir.mkdirs();
+                configuration.setSelfTest(true);
+                configuration.setSelfTestDir(new File(getArg(args, ++i)));
+                configuration.getSelfTestDir().mkdirs();
             } else if ("-htmlSuite".equalsIgnoreCase(arg)) {
                 try {
                     System.setProperty("htmlSuite.browserString", args[++i]);
@@ -336,10 +327,10 @@ public class SeleniumServer {
                     System.err.println("* resultFile (e.g. \"c:\\absolute\\path\\to\\my\\results.html\")");
                     System.exit(1);
                 }
-                htmlSuite = true;
+                configuration.setHTMLSuite(true);
             } else if ("-interactive".equalsIgnoreCase(arg)) {
                 timeoutInSeconds = Integer.MAX_VALUE;
-                interactive = true;
+                configuration.setInteractive(true);
             } else if (arg.startsWith("-D")) {
                 setSystemProperty(arg);
             } else {
@@ -347,36 +338,37 @@ public class SeleniumServer {
                 System.exit(1);
             }
         }
-        if (userJsInjection && !proxyInjectionModeArg) {
+        if (configuration.userJSInjection() && !configuration.getProxyInjectionModeArg()) {
             System.err.println("User js injection can only be used w/ -proxyInjectionMode");
             System.exit(1);
         }
-        if (portDriversShouldContactArg == 0) {
-            portDriversShouldContactArg = port;
+        if (0 == configuration.getPortDriversShouldContact()) {
+            configuration.setPortDriversShouldContact(configuration.getPort());
         }
         System.setProperty("org.mortbay.http.HttpRequest.maxFormContentSize", "0"); // default max is 200k; zero is infinite
-        final SeleniumServer seleniumProxy = new SeleniumServer(port);
-        seleniumProxy.multiWindow = multiWindow;
-        checkArgsSanity(port, interactive, htmlSuite, selfTest,
-                proxyInjectionModeArg, portDriversShouldContactArg, seleniumProxy);
+        final SeleniumServer seleniumProxy = new SeleniumServer(configuration.getPort());
+        seleniumProxy.multiWindow = configuration.isMultiWindow();
+        checkArgsSanity(configuration.getPort(), configuration.isInteractive(), configuration.isHTMLSuite(), configuration.isSelfTest(),
+                configuration.getProxyInjectionModeArg(), configuration.getPortDriversShouldContact(),
+                seleniumProxy);
 
         seleniumProxy.start();
 
-        if (userExtensions != null) {
-            seleniumProxy.addNewStaticContent(userExtensions.getParentFile());
+        if (null != configuration.getUserExtensions()) {
+            seleniumProxy.addNewStaticContent(configuration.getUserExtensions().getParentFile());
         }
         
-        if (selfTest) {
-            boolean result = new HTMLLauncher(seleniumProxy).runSelfTests(selfTestDir);
+        if (configuration.isSelfTest()) {
+            boolean result = new HTMLLauncher(seleniumProxy).runSelfTests(configuration.getSelfTestDir());
             System.exit(result ? 0 : 1);
         }
 
-        if (htmlSuite) {
+        if (configuration.isHTMLSuite()) {
             runHtmlSuite(seleniumProxy);
             return;
         }
         
-        if (interactive) {
+        if (configuration.isInteractive()) {
             AsyncExecute.sleepTight(500);
             System.out.println("Entering interactive mode... type Selenium commands here (e.g: cmd=open&1=http://www.yahoo.com)");
             BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
@@ -404,7 +396,7 @@ public class SeleniumServer {
                     userInput = userInput + "&sessionId=" + lastSessionId[0];
                 }
 
-                final URL url = new URL("http://localhost:" + port + "/selenium-server/driver?" + userInput);
+                final URL url = new URL("http://localhost:" + configuration.getPort() + "/selenium-server/driver?" + userInput);
                 Thread t = new Thread(new Runnable() {
                     public void run() {
                         try {
@@ -1160,4 +1152,5 @@ public class SeleniumServer {
             logOutFileName = logFile.getAbsolutePath();
         }
     }
+
 }

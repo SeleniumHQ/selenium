@@ -4,18 +4,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.openqa.selenium.server.BrowserSessionFactoryTest;
-import org.openqa.selenium.server.ClasspathResourceLocatorTest;
-import org.openqa.selenium.server.CommandHolderTest;
-import org.openqa.selenium.server.CommandQueueTest;
-import org.openqa.selenium.server.CommandResultHolderTest;
-import org.openqa.selenium.server.DefaultRemoteCommandTest;
-import org.openqa.selenium.server.FrameGroupCommandQueueTest;
-import org.openqa.selenium.server.FsResourceLocatorTest;
-import org.openqa.selenium.server.SeleniumDriverResourceHandlerTest;
-import org.openqa.selenium.server.SeleniumServerTest;
-import org.openqa.selenium.server.SingleEntryAsyncQueueTest;
-import org.openqa.selenium.server.StaticContentHandlerTest;
+import org.openqa.selenium.server.*;
 import org.openqa.selenium.server.browserlaunchers.LauncherUtilsTest;
 import org.openqa.selenium.server.browserlaunchers.MacProxyManagerTest;
 import org.openqa.selenium.server.browserlaunchers.MakeProxyPacTest;
@@ -49,6 +38,7 @@ public class UnitTestSuite extends TestCase {
         suite.addTestSuite(WindowsProxyManagerTest.class);
         suite.addTestSuite(LauncherUtilsTest.class);
         suite.addTestSuite(DefaultRemoteCommandTest.class);
+        suite.addTestSuite(RemoteControlConfigurationTest.class);
         return suite;
     }
 }
