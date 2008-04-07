@@ -18,6 +18,11 @@ public class RemoteControlConfiguration {
     private boolean interactive;
     private File userExtensions;
     private boolean userJSInjection;
+    private boolean trustAllSSLCertificates;
+    /** add special tracing for debug when this URL is requested */
+    private String debugURL;
+    private String dontInjectRegex;
+    
 
 
     public RemoteControlConfiguration() {
@@ -25,6 +30,8 @@ public class RemoteControlConfiguration {
         this.multiWindow = false;
         this.proxyInjectionModeArg = false;
         this.portDriversShouldContact = 0;
+        this.debugURL = "";
+        this.dontInjectRegex = null;
     }
 
     public int getPort() {
@@ -105,5 +112,29 @@ public class RemoteControlConfiguration {
 
     public void setUserJSInjection(boolean useUserJSInjection) {
         this.userJSInjection = useUserJSInjection;
+    }
+
+    public void setTrustAllSSLCertificates(boolean trustAllSSLCertificates) {
+        this.trustAllSSLCertificates = trustAllSSLCertificates;
+    }
+
+    public boolean trustAllSSLCertificates() {
+        return trustAllSSLCertificates;
+    }
+
+    public String getDebugURL() {
+        return debugURL;
+    }
+
+    public void setDebugURL(String newDebugURL) {
+        this.debugURL = newDebugURL;
+    }
+
+    public void setDontInjectRegex(String newdontInjectRegex) {
+        this.dontInjectRegex = newdontInjectRegex;
+    }
+
+    public String getDontInjectRegex() {
+        return dontInjectRegex;
     }
 }

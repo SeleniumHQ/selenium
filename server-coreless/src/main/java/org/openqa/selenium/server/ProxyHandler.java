@@ -58,6 +58,8 @@ public class ProxyHandler extends AbstractHttpHandler {
     private String sslKeystorePath;
     private boolean useCyberVillains = true;
     private boolean trustAllSSLCertificates = false;
+    private final String dontInjectRegex;
+    private final String debugURL;
 
     /* ------------------------------------------------------------ */
     /**
@@ -122,9 +124,11 @@ public class ProxyHandler extends AbstractHttpHandler {
         _allowedConnectPorts.add(8443);
     }
 
-    public ProxyHandler(boolean trustAllSSLCertificates) {
+    public ProxyHandler(boolean trustAllSSLCertificates, String dontInjectRegex, String debugURL) {
         super();
         this.trustAllSSLCertificates = trustAllSSLCertificates;
+        this.dontInjectRegex = dontInjectRegex;
+        this.debugURL = debugURL;
     }
 
     /* ------------------------------------------------------------ */
@@ -434,8 +438,8 @@ public class ProxyHandler extends AbstractHttpHandler {
                     (http.getResponseCode() >= 400 && http.getResponseCode() < 600);
             if (isProxyInjectionMode() && injectableResponse) {
                 // check if we should proxy this path based on the dontProxyRegex that can be user-specified
-                if (SeleniumServer.shouldInject(request.getPath())) {
-                    bytesCopied = InjectionHelper.injectJavaScript(request, response, proxy_in, response.getOutputStream());
+                if (shouldInject(request.getPath())) {
+                    bytesCopied = InjectionHelper.injectJavaScript(request, response, proxy_in, response.getOutputStream(), debugURL);
                 } else {
                     bytesCopied = ModifiedIO.copy(proxy_in, response.getOutputStream());
                 }
@@ -446,6 +450,14 @@ public class ProxyHandler extends AbstractHttpHandler {
         }
 
         return bytesCopied;
+    }
+
+
+    public boolean shouldInject(String path) {
+        if (dontInjectRegex == null) {
+            return true;
+        }
+        return !path.matches(dontInjectRegex);
     }
 
     /**
@@ -479,7 +491,7 @@ public class ProxyHandler extends AbstractHttpHandler {
         Server server = new Server();
         HttpContext httpContext = new HttpContext();
         httpContext.setContextPath("/");
-        ProxyHandler proxy = new ProxyHandler(true);
+        ProxyHandler proxy = new ProxyHandler(true, "", "");
         proxy.useCyberVillains = false;
         httpContext.addHandler(proxy);
         server.addContext(httpContext);

@@ -134,4 +134,42 @@ public class RemoteControlConfigurationTest extends TestCase {
         assertTrue(configuration.userJSInjection());
     }
 
+    public void testTrustAllSSLCertificatesIsFalseByDefault() {
+        assertFalse(new RemoteControlConfiguration().trustAllSSLCertificates());
+    }
+
+    public void testTrustAllSSLCertificatesCanBeSet() {
+        final RemoteControlConfiguration configuration;
+        configuration = new RemoteControlConfiguration();
+
+        configuration.setTrustAllSSLCertificates(true);
+        assertTrue(configuration.trustAllSSLCertificates());
+    }
+
+    public void testDebugURLIsEmptyByDefault() {
+        assertEquals("", new RemoteControlConfiguration().getDebugURL());
+    }
+
+
+    public void testDebugURLCanBeSet() {
+        final RemoteControlConfiguration configuration;
+        configuration = new RemoteControlConfiguration();
+
+        configuration.setDebugURL("A URL");
+        assertEquals("A URL", configuration.getDebugURL());
+    }
+
+    public void testDontInjectRegexIsNullByDefault() {
+        assertNull(new RemoteControlConfiguration().getDontInjectRegex());
+    }
+
+
+    public void testDontInjectRegexCanBeSet() {
+        final RemoteControlConfiguration configuration;
+        configuration = new RemoteControlConfiguration();
+
+        configuration.setDontInjectRegex("A Regex");
+        assertEquals("A Regex", configuration.getDontInjectRegex());
+    }
+
 }

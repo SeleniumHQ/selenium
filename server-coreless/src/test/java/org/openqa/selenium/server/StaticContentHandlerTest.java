@@ -16,7 +16,7 @@ public class StaticContentHandlerTest extends TestCase {
 
     public void setUp() throws Exception {
         super.setUp();
-        handler = new StaticContentHandler();
+        handler = new StaticContentHandler("");
         slowResourcesInitially = StaticContentHandler.getSlowResources();
     }
     

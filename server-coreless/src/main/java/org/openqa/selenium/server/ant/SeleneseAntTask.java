@@ -126,7 +126,7 @@ public class SeleneseAntTask extends Task {
 		checkForJavaScriptCoreDir();
 		SeleniumServer server = null;
 		try {
-			server = new SeleniumServer(port, slowResources, multiWindow);
+			server = new SeleniumServer(port, slowResources, new RemoteControlConfiguration());
 			server.start();
 			HTMLLauncher launcher = new HTMLLauncher(server);
 			String result = launcher.runHTMLSuite(browser, startURL, suite, results, timeoutInSeconds, multiWindow);

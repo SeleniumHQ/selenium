@@ -13,8 +13,10 @@ public class StaticContentHandler extends ResourceHandler {
 	private static boolean slowResources;
     private List<ResourceLocator> resourceLocators = new ArrayList<ResourceLocator>();
     public static final int SERVER_DELAY = 1000;
+    private final String debugURL;
 
-    public StaticContentHandler() {
+    public StaticContentHandler(String debugURL) {
+        this.debugURL = debugURL;
     }
 
     public void handle(String pathInContext, String pathParams, HttpRequest httpRequest, HttpResponse httpResponse) throws HttpException, IOException {
@@ -99,7 +101,7 @@ public class StaticContentHandler extends ResourceHandler {
         if (resource.length() != -1) {
             response.setField(HttpFields.__ContentLength, metaData.getLength());
         }
-        InjectionHelper.injectJavaScript(request, response, resource.getInputStream(), response.getOutputStream());
+        InjectionHelper.injectJavaScript(request, response, resource.getInputStream(), response.getOutputStream(), debugURL);
         request.setHandled(true);
     }
     

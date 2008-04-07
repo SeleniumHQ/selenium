@@ -53,6 +53,8 @@ import org.openqa.selenium.server.htmlrunner.SingleTestSuiteResourceHandler;
 import org.openqa.selenium.server.log.MaxLevelFilter;
 import org.openqa.selenium.server.log.StdOutHandler;
 import org.openqa.selenium.server.log.TerseFormatter;
+import org.openqa.selenium.server.cli.RemoteControlLauncher;
+import static org.openqa.selenium.server.cli.RemoteControlLauncher.getArg;
 
 /**
  * Provides a server that can launch/terminate browsers and can receive remote Selenium commands
@@ -157,11 +159,10 @@ public class SeleniumServer {
     private SeleniumHTMLRunnerResultsHandler postResultsHandler;
     private StaticContentHandler staticContentHandler;
     private int port;
-    private boolean multiWindow = false;
+    private final boolean multiWindow;
     private Thread shutDownHook;
 
     private static ProxyHandler customProxyHandler;
-    private static String debugURL = "";  // add special tracing for debug when this URL is requested
     private static boolean browserSideLogEnabled = false;
     private static boolean avoidProxy = false;
     private static boolean proxyInjectionMode = false;
@@ -202,13 +203,11 @@ public class SeleniumServer {
     
     private static Boolean reusingBrowserSessions = null;
 
-    private static String dontInjectRegex = null;
     private static boolean FORCE_PROXY_CHAIN = false;
     private static boolean debugMode = false;
 
     // useful for situations where Selenium is being invoked programatically and the outside container wants to own logging
     private static boolean dontTouchLogging = false;
-    private static boolean trustAllSSLCertificates = false;
 
     private static final int MAX_SHUTDOWN_RETRIES = 8;
     
@@ -227,8 +226,7 @@ public class SeleniumServer {
         checkArgsSanity(configuration);
 
         System.setProperty("org.mortbay.http.HttpRequest.maxFormContentSize", "0"); // default max is 200k; zero is infinite
-        seleniumProxy = new SeleniumServer(configuration.getPort());
-        seleniumProxy.multiWindow = configuration.isMultiWindow();
+        seleniumProxy = new SeleniumServer(configuration.getPort(), slowResourceProperty(), configuration);
 
         seleniumProxy.start();
         if (null != configuration.getUserExtensions()) {
@@ -249,84 +247,16 @@ public class SeleniumServer {
         }
     }
 
-    private static String getArg(String[] args, int i) {
-        if (i >= args.length) {
-            usage("expected at least one more argument");
-            System.exit(-1);
-        }
-        return args[i];
+    public SeleniumServer() throws Exception {
+        this(SeleniumServer.getDefaultPort());
     }
 
-    private static void setSystemProperty(String arg) {
-        if (arg.indexOf('=') == -1) {
-            usage("poorly formatted Java property setting (I expect to see '=') " + arg);
-            System.exit(1);
-        }
-        String property = arg.replaceFirst("-D", "").replaceFirst("=.*", "");
-        String value = arg.replaceFirst("[^=]*=", "");
-        System.err.println("Setting system property " + property + " to " + value);
-        System.setProperty(property, value);
+    public SeleniumServer(int port) throws Exception {
+        this(port, slowResourceProperty(), new RemoteControlConfiguration());
     }
 
-    private static void usage(String msg) {
-        if (msg != null) {
-            System.err.println(msg + ":");
-        }
-        String INDENT = "  ";
-        String INDENT2X = INDENT+INDENT;
-        printWrappedErrorLine("", "Usage: java -jar selenium-server.jar [-interactive] [options]\n");
-        printWrappedErrorLine(INDENT, "-port <nnnn>: the port number the selenium server should use (default 4444)");
-        printWrappedErrorLine(INDENT, "-timeout <nnnn>: an integer number of seconds before we should give up");
-        printWrappedErrorLine(INDENT, "-interactive: puts you into interactive mode.  See the tutorial for more details");
-        printWrappedErrorLine(INDENT, "-multiWindow: puts you into a mode where the test web site executes in a separate window, and selenium supports frames");
-        printWrappedErrorLine(INDENT, "-forcedBrowserMode <browser>: sets the browser mode to a single argument (e.g. \"*iexplore\") for all sessions, no matter what is passed to getNewBrowserSession");
-        
-
-        printWrappedErrorLine(INDENT, "-forcedBrowserModeRestOfLine <browser>: sets the browser mode to all the remaining tokens on the line (e.g. \"*custom /some/random/place/iexplore.exe\") for all sessions, no matter what is passed to getNewBrowserSession");
-        printWrappedErrorLine(INDENT, "-userExtensions <file>: indicates a JavaScript file that will be loaded into selenium");
-        printWrappedErrorLine(INDENT, "-browserSessionReuse: stops re-initialization and spawning of the browser between tests");
-        printWrappedErrorLine(INDENT, "-avoidProxy: By default, we proxy every browser request; set this flag to make the browser use our proxy only for URLs containing '/selenium-server'");
-        printWrappedErrorLine(INDENT, "-firefoxProfileTemplate <dir>: normally, we generate a fresh empty Firefox profile every time we launch.  You can specify a directory to make us copy your profile directory instead.");
-        printWrappedErrorLine(INDENT, "-debug: puts you into debug mode, with more trace information and diagnostics on the console");
-        printWrappedErrorLine(INDENT, "-browserSideLog: enables logging on the browser side; logging messages will be transmitted to the server.  This can affect performance.");
-        printWrappedErrorLine(INDENT, "-ensureCleanSession: If the browser does not have user profiles, make sure every new session has no artifacts from previous sessions.  For example, enabling this option will cause all user cookies to be archived before launching IE, and restored after IE is closed.");
-        printWrappedErrorLine(INDENT, "-trustAllSSLCertificates: Forces the Selenium proxy to trust all SSL certificates.  This doesn't work in browsers that don't use the Selenium proxy.");
-        printWrappedErrorLine(INDENT, "-log <logFileName>: writes lots of debug information out to a log file");
-        printWrappedErrorLine(INDENT, "-htmlSuite <browser> <startURL> <suiteFile> <resultFile>: Run a single HTML Selenese (Selenium Core) suite and then exit immediately, using the specified browser (e.g. \"*firefox\") on the specified URL (e.g. \"http://www.google.com\").  You need to specify the absolute path to the HTML test suite as well as the path to the HTML results file we'll generate.");
-        printWrappedErrorLine(INDENT, "-proxyInjectionMode: puts you into proxy injection mode, a mode where the selenium server acts as a proxy server " +
-                "for all content going to the test application.  Under this mode, multiple domains can be visited, and the " +
-                "following additional flags are supported:\n");
-        printWrappedErrorLine(INDENT2X, "-dontInjectRegex <regex>: an optional regular expression that proxy injection mode can use to know when to bypss injection");
-        printWrappedErrorLine(INDENT2X, "-userJsInjection <file>: specifies a JavaScript file which will then be injected into all pages");
-        printWrappedErrorLine(INDENT2X, "-userContentTransformation <regex> <replacement>: a regular expression which is matched " +
-                "against all test HTML content; the second is a string which will replace matches.  These flags can be used any " +
-                "number of times.  A simple example of how this could be useful: if you add \"-userContentTransformation https http\" " +
-                "then all \"https\" strings in the HTML of the test application will be changed to be \"http\".");        
-    }
-    
-    private static void printWrappedErrorLine(String prefix, String msg) {
-        printWrappedErrorLine(prefix, msg, true);
-    }
-    
-    private static void printWrappedErrorLine(String prefix, String msg, boolean first) {
-        System.err.print(prefix);
-        if (!first) {
-            System.err.print("  ");
-        }
-        int defaultWrap = 70;
-        int wrap = defaultWrap - prefix.length();
-        if (wrap > msg.length()) {
-            System.err.println(msg);
-            return;
-        }
-        String lineRaw = msg.substring(0, wrap);
-        int spaceIndex = lineRaw.lastIndexOf(' ');
-        if (spaceIndex == -1) {
-            spaceIndex = lineRaw.length();
-        }
-        String line = lineRaw.substring(0, spaceIndex);
-        System.err.println(line);
-        printWrappedErrorLine(prefix, msg.substring(spaceIndex+1), false);
+    public SeleniumServer(int port, boolean slowResources) throws Exception {
+        this(port, slowResources,  new RemoteControlConfiguration());
     }
 
     /**
@@ -334,10 +264,9 @@ public class SeleniumServer {
      *
      * @param port          the port to start on
      * @param slowResources should the webserver return static resources more slowly?  (Note that this will not slow down ordinary RC test runs; this setting is used to debug Selenese HTML tests.)
-     * @param multiWindow   run the tests in the "multi-Window" layout, without using the embedded iframe
      * @throws Exception you know, just in case
      */
-    public SeleniumServer(int port, boolean slowResources, boolean multiWindow) throws Exception {
+    public SeleniumServer(int port, boolean slowResources, RemoteControlConfiguration configuration) throws Exception {
         configureLogging();
         log.info("Java: " + System.getProperty("java.vm.vendor") + ' ' + System.getProperty("java.vm.version"));
         log.info("OS: " + System.getProperty("os.name") + ' ' + System.getProperty("os.version") + ' ' + System.getProperty("os.arch"));
@@ -357,19 +286,19 @@ public class SeleniumServer {
         }
         this.port = port;
         String proxyHost = System.getProperty("http.proxyHost");
-		String proxyPort = System.getProperty("http.proxyPort");
-		if (Integer.toString(port).equals(proxyPort)) {
-			log.debug("http.proxyPort is the same as the Selenium Server port " + port);
-			log.debug("http.proxyHost="+proxyHost);
-			if ("localhost".equals(proxyHost) || "127.0.0.1".equals(proxyHost)) {
-				log.info("Forcing http.proxyHost to '' to avoid infinite loop");
-				System.setProperty("http.proxyHost", "");
-			}
-		}
+        String proxyPort = System.getProperty("http.proxyPort");
+        if (Integer.toString(port).equals(proxyPort)) {
+            log.debug("http.proxyPort is the same as the Selenium Server port " + port);
+            log.debug("http.proxyHost=" + proxyHost);
+            if ("localhost".equals(proxyHost) || "127.0.0.1".equals(proxyHost)) {
+                log.info("Forcing http.proxyHost to '' to avoid infinite loop");
+                System.setProperty("http.proxyHost", "");
+            }
+        }
         if (portDriversShouldContact==0) {
             SeleniumServer.setPortDriversShouldContact(port);
         }
-        this.multiWindow = multiWindow;
+        this.multiWindow = configuration.isMultiWindow();
         server = new Server();
 
         SocketListener socketListener = new SocketListener();
@@ -378,8 +307,22 @@ public class SeleniumServer {
         socketListener.setPort(port);
         server.addListener(socketListener);
         configServer();
-        assembleHandlers(slowResources);
+        assembleHandlers(slowResources, configuration);
     }
+
+
+
+    private static void setSystemProperty(String arg) {
+        if (arg.indexOf('=') == -1) {
+            RemoteControlLauncher.usage("poorly formatted Java property setting (I expect to see '=') " + arg);
+            System.exit(1);
+        }
+        String property = arg.replaceFirst("-D", "").replaceFirst("=.*", "");
+        String value = arg.replaceFirst("[^=]*=", "");
+        System.err.println("Setting system property " + property + " to " + value);
+        System.setProperty(property, value);
+    }
+
 
     public synchronized static void configureLogging() {
         if (dontTouchLogging) {
@@ -486,17 +429,13 @@ public class SeleniumServer {
     	
     }
 
-    public SeleniumServer(int port, boolean slowResources) throws Exception {
-        this(port, slowResources, false);
-    }
-
-    private void assembleHandlers(boolean slowResources) {
+    private void assembleHandlers(boolean slowResources, RemoteControlConfiguration configuration) {
         HttpContext root = new HttpContext();
         root.setContextPath("/");
 
         ProxyHandler proxyHandler;
         if (customProxyHandler == null) {
-            proxyHandler = new ProxyHandler(trustAllSSLCertificates);
+            proxyHandler = new ProxyHandler(configuration.trustAllSSLCertificates(), configuration.getDontInjectRegex(), configuration.getDebugURL());
             root.addHandler(proxyHandler);
         } else {
             proxyHandler = customProxyHandler;
@@ -528,7 +467,7 @@ public class SeleniumServer {
         context.addHandler(sh);
 
         StaticContentHandler.setSlowResources(slowResources);
-        staticContentHandler = new StaticContentHandler();
+        staticContentHandler = new StaticContentHandler(configuration.getDebugURL());
         String overrideJavascriptDir = System.getProperty("selenium.javascript.dir");
         if (overrideJavascriptDir != null) {
             staticContentHandler.addStaticContent(new FsResourceLocator(new File(overrideJavascriptDir)));
@@ -573,14 +512,6 @@ public class SeleniumServer {
         }
     }
 
-
-    public SeleniumServer(int port) throws Exception {
-        this(port, slowResourceProperty());
-    }
-
-    public SeleniumServer() throws Exception {
-        this(SeleniumServer.getDefaultPort(), slowResourceProperty());
-    }
 
     public static int getDefaultPort() {
         String portString = System.getProperty("selenium.port", ""+SeleniumServer.DEFAULT_PORT);
@@ -846,10 +777,6 @@ public class SeleniumServer {
         SeleniumServer.forcedBrowserMode = s;
     }
 
-    public static void setDontInjectRegex(String dontInjectRegex) {
-        SeleniumServer.dontInjectRegex = dontInjectRegex;
-    }
-
     public static void setDontTouchLogging(boolean dontTouchLogging) {
         SeleniumServer.dontTouchLogging = dontTouchLogging;
     }
@@ -866,33 +793,23 @@ public class SeleniumServer {
         return reusingBrowserSessions;
     }
 
-    public static boolean shouldInject(String path) {
-        if (dontInjectRegex == null) {
-            return true;
-        }
-        return !path.matches(dontInjectRegex);
-    }
 
-    public static String getDebugURL() {
-        return debugURL;
-    }
-
-	private static String getRequiredSystemProperty(String name) {
+    private static String getRequiredSystemProperty(String name) {
         String value = System.getProperty(name);
         if (value==null) {
-            usage("expected property " + name + " to be defined");
+            RemoteControlLauncher.usage("expected property " + name + " to be defined");
             System.exit(1);
         }
         return value;
     }
     
-	private static void runHtmlSuite(SeleniumServer seleniumProxy) {
+    private static void runHtmlSuite(SeleniumServer seleniumProxy) {
         String result = null;
         try {
             String suiteFilePath = getRequiredSystemProperty("htmlSuite.suiteFilePath");
                 File suiteFile = new File(suiteFilePath);
             if (!suiteFile.exists()) {
-                usage("Can't find HTML Suite file:" + suiteFile.getAbsolutePath());
+                RemoteControlLauncher.usage("Can't find HTML Suite file:" + suiteFile.getAbsolutePath());
                 System.exit(1);
             }
             seleniumProxy.addNewStaticContent(suiteFile.getParentFile());
@@ -903,7 +820,7 @@ public class SeleniumServer {
             resultFile.createNewFile();
             
             if (!resultFile.canWrite()) {
-                usage("can't write to result file " + resultFilePath);
+                RemoteControlLauncher.usage("can't write to result file " + resultFilePath);
                 System.exit(1);
             }
             
@@ -927,10 +844,6 @@ public class SeleniumServer {
     
     public static void setReusingBrowserSessions(boolean reusingBrowserSessions) {
         SeleniumServer.reusingBrowserSessions = reusingBrowserSessions;
-    }
-    
-    public static void setTrustAllSSLCertificates(boolean trustAllSSLCertificates) {
-        SeleniumServer.trustAllSSLCertificates = trustAllSSLCertificates;
     }
     
     public static void setLogFile(File logFile) {
@@ -1004,6 +917,7 @@ public class SeleniumServer {
         }
     }
 
+
     private static boolean runSelfTests(SeleniumServer seleniumProxy, RemoteControlConfiguration configuration) throws IOException {
         return new HTMLLauncher(seleniumProxy).runSelfTests(configuration.getSelfTestDir());
     }
@@ -1015,10 +929,10 @@ public class SeleniumServer {
         for (int i = 0; i < args.length; i++) {
             String arg = args[i];
             if ("-help".equalsIgnoreCase(arg)) {
-                usage(null);
+                RemoteControlLauncher.usage(null);
                 System.exit(1);
             } else if ("-defaultBrowserString".equalsIgnoreCase(arg)) {
-                usage("-defaultBrowserString has been renamed -forcedBrowserMode");
+                RemoteControlLauncher.usage("-defaultBrowserString has been renamed -forcedBrowserMode");
             } else if ("-forcedBrowserMode".equalsIgnoreCase(arg)) {
                 SeleniumServer.forcedBrowserMode = getArg(args, ++i);
                 if (i < args.length) {
@@ -1059,13 +973,13 @@ public class SeleniumServer {
             } else if ("-ensureCleanSession".equalsIgnoreCase(arg)) {
                 SeleniumServer.setEnsureCleanSession(true);
             } else if ("-dontInjectRegex".equalsIgnoreCase(arg)) {
-                dontInjectRegex = getArg(args, ++i);
+                configuration.setDontInjectRegex(getArg(args, ++i));
             } else if ("-browserSideLog".equalsIgnoreCase(arg)) {
                 SeleniumServer.setBrowserSideLogEnabled(true);
             } else if ("-debug".equalsIgnoreCase(arg)) {
                 SeleniumServer.setDebugMode(true);
             } else if ("-debugURL".equalsIgnoreCase(arg)) {
-                debugURL = getArg(args, ++i);
+                configuration.setDebugURL(getArg(args, ++i));
             } else if ("-timeout".equalsIgnoreCase(arg)) {
                 timeoutInSeconds = Integer.parseInt(getArg(args, ++i));
             } else if ("-jettyThreads".equalsIgnoreCase(arg)) {
@@ -1074,16 +988,16 @@ public class SeleniumServer {
             	// Set the number of jetty threads before we construct the instance
             	SeleniumServer.setJettyThreads(jettyThreadsCount);
             } else if ("-trustAllSSLCertificates".equalsIgnoreCase(arg)) {
-                trustAllSSLCertificates = true;
+                configuration.setTrustAllSSLCertificates(true);
             } else if ("-userJsInjection".equalsIgnoreCase(arg)) {
                 configuration.setUserJSInjection(true);
                 if (!InjectionHelper.addUserJsInjectionFile(getArg(args, ++i))) {
-                    usage(null);
+                    RemoteControlLauncher.usage(null);
                     System.exit(1);
                 }
             } else if ("-userContentTransformation".equalsIgnoreCase(arg)) {
                 if (!InjectionHelper.addUserContentTransformation(getArg(args, ++i), getArg(args, ++i))) {
-                    usage(null);
+                    RemoteControlLauncher.usage(null);
                     System.exit(1);
                 }
             } else if ("-userExtensions".equalsIgnoreCase(arg)) {
@@ -1122,7 +1036,7 @@ public class SeleniumServer {
             } else if (arg.startsWith("-D")) {
                 setSystemProperty(arg);
             } else {
-                usage("unrecognized argument " + arg);
+                RemoteControlLauncher.usage("unrecognized argument " + arg);
                 System.exit(1);
             }
         }
@@ -1159,7 +1073,7 @@ public class SeleniumServer {
         if (!isProxyInjectionMode() &&
                 (InjectionHelper.userContentTransformationsExist() ||
                         InjectionHelper.userJsInjectionsExist())) {
-            usage("-userJsInjection and -userContentTransformation are only " +
+            RemoteControlLauncher.usage("-userJsInjection and -userContentTransformation are only " +
                     "valid in combination with -proxyInjectionMode");
             System.exit(1);
         }

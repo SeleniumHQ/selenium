@@ -169,7 +169,7 @@ public class InjectionHelper {
         }
     }
 
-    public static long injectJavaScript(HttpRequest request, HttpResponse response, InputStream in, OutputStream out) throws IOException {
+    public static long injectJavaScript(HttpRequest request, HttpResponse response, InputStream in, OutputStream out, String debugURL) throws IOException {
 	    if (!contentTransformations.containsKey("__SELENIUM_JS__")) {
 	        init();   
         }
@@ -186,7 +186,7 @@ public class InjectionHelper {
         boolean isKnownToBeHtml = HtmlIdentifier.shouldBeInjected(request.getPath(), response.getContentType(), data);
 
         String url = response.getHttpRequest().getRequestURL().toString();
-        if (SeleniumServer.getDebugURL().equals(url)) {
+        if (debugURL.equals(url)) {
             log.info("debug URL seen");
         }
        
