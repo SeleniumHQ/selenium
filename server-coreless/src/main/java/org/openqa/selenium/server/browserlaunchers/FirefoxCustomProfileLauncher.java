@@ -160,7 +160,7 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
             return;
         }
 
-        File firefoxProfileTemplate = SeleniumServer.getFirefoxProfileTemplate(); 
+        File firefoxProfileTemplate = getConfiguration().getFirefoxProfileTemplate(); 
         if (firefoxProfileTemplate != null) {
             LauncherUtils.copyDirectory(firefoxProfileTemplate, customProfileDir);
         }

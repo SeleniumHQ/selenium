@@ -167,7 +167,6 @@ public class SeleniumServer {
     private static boolean browserSideLogEnabled = false;
     private static boolean avoidProxy = false;
     private static boolean proxyInjectionMode = false;
-    private static File firefoxProfileTemplate = null;
     private static boolean ensureCleanSession = false;
     private static Handler[] defaultHandlers;
     private static Map<Handler, Formatter> defaultFormatters;
@@ -254,6 +253,7 @@ public class SeleniumServer {
      *
      * @param port          the port to start on
      * @param slowResources should the webserver return static resources more slowly?  (Note that this will not slow down ordinary RC test runs; this setting is used to debug Selenese HTML tests.)
+     * @param configuration  Remote Control configuration. Cannot be null.
      * @throws Exception you know, just in case
      */
     public SeleniumServer(int port, boolean slowResources, RemoteControlConfiguration configuration) throws Exception {
@@ -504,11 +504,6 @@ public class SeleniumServer {
         String portString = System.getProperty("selenium.port", "" + SeleniumServer.DEFAULT_PORT);
         return Integer.parseInt(portString);
     }
-
-    public static File getFirefoxProfileTemplate() {
-        return firefoxProfileTemplate;
-    }
-
 
     public static boolean isEnsureCleanSession() {
         return ensureCleanSession;
@@ -960,7 +955,6 @@ public class SeleniumServer {
                     System.err.println("Firefox profile template doesn't exist: " + configuration.getFirefoxProfileTemplate().getAbsolutePath());
                     System.exit(1);
                 }
-                firefoxProfileTemplate = configuration.getFirefoxProfileTemplate();
             } else if ("-ensureCleanSession".equalsIgnoreCase(arg)) {
                 SeleniumServer.setEnsureCleanSession(true);
             } else if ("-dontInjectRegex".equalsIgnoreCase(arg)) {

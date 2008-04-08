@@ -157,7 +157,7 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
         if (simple) return customProfileDir.getAbsolutePath();
 
         String sourceLocationName = "/customProfileDirCUSTFFCHROME";
-        File firefoxProfileTemplate = SeleniumServer.getFirefoxProfileTemplate(); 
+        File firefoxProfileTemplate = getConfiguration().getFirefoxProfileTemplate(); 
         if (firefoxProfileTemplate != null) {
             LauncherUtils.copyDirectory(firefoxProfileTemplate, customProfileDir);
         }
