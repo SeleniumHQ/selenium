@@ -177,7 +177,9 @@ BrowserBot.prototype.resetPopups = function() {
 
 BrowserBot.prototype.getNextAlert = function() {
     var t = this.recordedAlerts.shift();
-    t = t.replace(/\n/g, " ");  // because Selenese loses \n's when retrieving text from HTML table
+    if (t) { 
+        t = t.replace(/\n/g, " ");  // because Selenese loses \n's when retrieving text from HTML table
+    }
     this.relayBotToRC("browserbot.recordedAlerts");
     return t;
 };
