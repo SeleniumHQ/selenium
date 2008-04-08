@@ -36,6 +36,7 @@ public class RemoteControlConfiguration {
     private String debugURL;
     private String dontInjectRegex;
     private File firefoxProfileTemplate;
+    private boolean reuseBrowserSessions;
 
 
     public RemoteControlConfiguration() {
@@ -162,4 +163,13 @@ public class RemoteControlConfiguration {
     public void setFirefoxProfileTemplate(File newFirefoxProfileTemplate) {
         this.firefoxProfileTemplate = newFirefoxProfileTemplate;
     }
+
+    public void setReuseBrowserSessions(boolean reuseBrowserSessions) {
+        this.reuseBrowserSessions = reuseBrowserSessions;
+    }
+
+    public boolean reuseBrowserSessions() {
+        return this.reuseBrowserSessions;
+    }
+
 }

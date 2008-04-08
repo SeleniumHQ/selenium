@@ -89,7 +89,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
 
     @Override public void handle(String pathInContext, String pathParams, HttpRequest req, HttpResponse res) throws HttpException, IOException {
         try {
-        	log.debug("Thread name: " + Thread.currentThread().getName());
+            log.debug("Thread name: " + Thread.currentThread().getName());
             res.setField(HttpFields.__ContentType, "text/plain");
             setNoCacheHeaders(res);
 
@@ -117,7 +117,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 handleCommandRequest(req, res, cmd, sessionId);
             } else if ("POST".equalsIgnoreCase(method) || justLoaded || logging) {
                 handleBrowserResponse(req, res, sessionId, logging, jsState,
-						justLoaded, retrying, closing);
+                        justLoaded, retrying, closing);
             } else if (-1 != req.getRequestURL().indexOf("selenium-server/core/scripts/user-extensions.js") 
                     || -1 != req.getRequestURL().indexOf("selenium-server/tests/html/tw.jpg")){
                 // ignore failure to find these items...
@@ -141,54 +141,54 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         }
     }
 
-	private void handleBrowserResponse(HttpRequest req, HttpResponse res,
-			String sessionId, boolean logging, boolean jsState,
-			boolean justLoaded, boolean retrying, boolean closing)
-			throws IOException {
-		String seleniumWindowName = getParam(req, "seleniumWindowName");
-		String localFrameAddress = getParam(req, "localFrameAddress");
-		FrameAddress frameAddress = FrameGroupCommandQueueSet.makeFrameAddress(seleniumWindowName, 
-		        localFrameAddress);
-		String uniqueId = getParam(req, "uniqueId");
-		String sequenceNumberString = getParam(req, "sequenceNumber");
-		int sequenceNumber = -1;
-		FrameGroupCommandQueueSet queueSet = FrameGroupCommandQueueSet.getQueueSet(sessionId);
+    private void handleBrowserResponse(HttpRequest req, HttpResponse res,
+            String sessionId, boolean logging, boolean jsState,
+            boolean justLoaded, boolean retrying, boolean closing)
+            throws IOException {
+        String seleniumWindowName = getParam(req, "seleniumWindowName");
+        String localFrameAddress = getParam(req, "localFrameAddress");
+        FrameAddress frameAddress = FrameGroupCommandQueueSet.makeFrameAddress(seleniumWindowName,
+                localFrameAddress);
+        String uniqueId = getParam(req, "uniqueId");
+        String sequenceNumberString = getParam(req, "sequenceNumber");
+        int sequenceNumber = -1;
+        FrameGroupCommandQueueSet queueSet = FrameGroupCommandQueueSet.getQueueSet(sessionId);
         BrowserResponseSequencer browserResponseSequencer = queueSet.getCommandQueue(uniqueId).getBrowserResponseSequencer();
-		if (sequenceNumberString != null && sequenceNumberString.length() > 0) {
-		    sequenceNumber = Integer.parseInt(sequenceNumberString);
-	        browserResponseSequencer.waitUntilNumIsAtLeast(sequenceNumber);
-		}
-		
-		
-		String postedData = readPostedData(req, sessionId, uniqueId);
-		if (logging) {
-			handleLogMessages(postedData);
-		} else if (jsState) {
-			handleJsState(sessionId, uniqueId, postedData);
-		}
-		if (postedData == null || postedData.equals("") || logging
-				|| jsState) {
-			if (sequenceNumber != -1) {
-			    browserResponseSequencer.increaseNum();
-			}
-			res.getOutputStream().write("\r\n\r\n".getBytes());
-			req.setHandled(true);
-			return;
-		}
-		logPostedData(frameAddress, justLoaded, sessionId, postedData,
-				uniqueId);
-		if (retrying) {
-			postedData = null; // DGF retries don't really have a result
-		}
-		List<?> jsWindowNameVar = req.getParameterValues("jsWindowNameVar");
-		RemoteCommand sc = queueSet.handleCommandResult(postedData,
-				frameAddress, uniqueId, justLoaded, jsWindowNameVar);
-		if (sc != null) {
-			respond(res, sc, uniqueId);
-		}
-		req.setHandled(true);
-	}
-	
+        if (sequenceNumberString != null && sequenceNumberString.length() > 0) {
+            sequenceNumber = Integer.parseInt(sequenceNumberString);
+            browserResponseSequencer.waitUntilNumIsAtLeast(sequenceNumber);
+        }
+
+
+        String postedData = readPostedData(req, sessionId, uniqueId);
+        if (logging) {
+            handleLogMessages(postedData);
+        } else if (jsState) {
+            handleJsState(sessionId, uniqueId, postedData);
+        }
+        if (postedData == null || postedData.equals("") || logging
+                || jsState) {
+            if (sequenceNumber != -1) {
+                browserResponseSequencer.increaseNum();
+            }
+            res.getOutputStream().write("\r\n\r\n".getBytes());
+            req.setHandled(true);
+            return;
+        }
+        logPostedData(frameAddress, justLoaded, sessionId, postedData,
+                uniqueId);
+        if (retrying) {
+            postedData = null; // DGF retries don't really have a result
+        }
+        List<?> jsWindowNameVar = req.getParameterValues("jsWindowNameVar");
+        RemoteCommand sc = queueSet.handleCommandResult(postedData,
+                frameAddress, uniqueId, justLoaded, jsWindowNameVar);
+        if (sc != null) {
+            respond(res, sc, uniqueId);
+        }
+        req.setHandled(true);
+    }
+
     private void logPostedData(FrameAddress frameAddress, boolean justLoaded, String sessionId, String postedData, String uniqueId) {
         StringBuffer sb = new StringBuffer();
         sb.append("Browser " + sessionId + "/" + frameAddress + " " + uniqueId + " posted " + postedData);
@@ -207,7 +207,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         if (sc!=null) {
             writer.write(sc.toString());
             log.debug("res to " + uniqueId +
-            		": " + sc.toString());
+                    ": " + sc.toString());
         } else {
             log.debug("res empty");
         }
@@ -399,7 +399,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             results = "OK," + logMessagesBuffer.toString();
             logMessagesBuffer.setLength(0);
         } else if ("testComplete".equals(cmd)) {
-            browserSessionFactory.endBrowserSession(sessionId);
+            browserSessionFactory.endBrowserSession(sessionId, remoteControl.getConfiguration());
             results = "OK";
         } else if ("shutDown".equals(cmd) || "shutDownSeleniumServer".equals(cmd)) {
             results = null;
@@ -492,7 +492,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             if (values.size() < 1) {
                 results = "ERROR: You must specify a browser";
             } else {
-            	String browser = values.get(0);
+                String browser = values.get(0);
                 String newSessionId = generateNewSessionId();
                 BrowserLauncher simpleLauncher = browserLauncherFactory.getBrowserLauncher(browser, newSessionId, remoteControl.getConfiguration());
                 String baseUrl = "http://localhost:" + remoteControl.getPort();
@@ -704,7 +704,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     
     /** Kills all running browsers */
     public void stopAllBrowsers() {
-      browserSessionFactory.endAllBrowserSessions();
+      browserSessionFactory.endAllBrowserSessions(remoteControl.getConfiguration());
     }
 
     /** Sets all the don't-cache headers on the HttpResponse */

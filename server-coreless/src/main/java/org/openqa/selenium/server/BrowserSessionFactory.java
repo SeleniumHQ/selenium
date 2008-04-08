@@ -77,7 +77,7 @@ public class BrowserSessionFactory {
             RemoteControlConfiguration configuration) throws RemoteCommandException {
 
         return getNewBrowserSession(browserString, startURL,
-                SeleniumServer.reusingBrowserSessions(),
+                configuration.reuseBrowserSessions(),
                 SeleniumServer.isEnsureCleanSession(), configuration);
     }
 
@@ -126,7 +126,7 @@ public class BrowserSessionFactory {
      * <p/>
      * Active and available but inactive sessions are ended.
      */
-    protected void endAllBrowserSessions() {
+    protected void endAllBrowserSessions(RemoteControlConfiguration configuration) {
         boolean done = false;
         Set<BrowserSessionInfo> allSessions = new HashSet<BrowserSessionInfo>();
         while (!done) {
@@ -142,7 +142,7 @@ public class BrowserSessionFactory {
                 }
             }
             for (BrowserSessionInfo sessionInfo : allSessions) {
-                endBrowserSession(sessionInfo.sessionId, false);
+                endBrowserSession(true, sessionInfo.sessionId, configuration);
             }
             done = (0 == activeSessions.size() && 0 == availableSessions.size());
             allSessions.clear();
@@ -153,12 +153,11 @@ public class BrowserSessionFactory {
      * Ends a browser session, using SeleniumServer static fields to populate
      * parameters.
      *
-     * @param sessionId the id of the session to be ended
+     * @param sessionId   the id of the session to be ended
+     * @param configuration Remote Control configuration. Cannot be null.
      */
-    public void endBrowserSession(String sessionId) {
-        endBrowserSession(sessionId,
-                SeleniumServer.reusingBrowserSessions(),
-                SeleniumServer.isEnsureCleanSession());
+    public void endBrowserSession(String sessionId, RemoteControlConfiguration configuration) {
+        endBrowserSession(false, sessionId, configuration, SeleniumServer.isEnsureCleanSession());
     }
 
     /**
@@ -166,35 +165,34 @@ public class BrowserSessionFactory {
      * parameters.
      *
      * @param sessionId   the id of the session to be ended
-     * @param cacheUnused if the session should be made available for reuse.
+     * @param configuration Remote Control configuration. Cannot be null.
      */
-    public void endBrowserSession(String sessionId, boolean cacheUnused) {
-        endBrowserSession(sessionId, cacheUnused,
-                SeleniumServer.isEnsureCleanSession());
+    public void endBrowserSession(boolean forceClose, String sessionId, RemoteControlConfiguration configuration) {
+        endBrowserSession(forceClose, sessionId, configuration, SeleniumServer.isEnsureCleanSession());
     }
 
     /**
      * Ends a browser session.
      *
      * @param sessionId   the id of the session to be ended
-     * @param cacheUnused if this session should be made available for reuse
+     * @param configuration Remote Control configuration. Cannot be null.
      * @param ensureClean if clean sessions (e.g. no leftover cookies) are required.
      */
-    protected void endBrowserSession(String sessionId, boolean cacheUnused,
+    protected void endBrowserSession(boolean forceClose, String sessionId, RemoteControlConfiguration configuration,
                                      boolean ensureClean) {
         BrowserSessionInfo sessionInfo = lookupInfoBySessionId(sessionId, activeSessions);
         if (null != sessionInfo) {
             activeSessions.remove(sessionInfo);
             try {
-                if (cacheUnused) {
+                if (forceClose || !configuration.reuseBrowserSessions()) {
+                    endBrowserSession(sessionInfo);
+                } else {
                     if (null != sessionInfo.session) { // optional field
                         sessionInfo.session.reset(sessionInfo.baseUrl);
                     }
                     // mark what time this session was ended
                     sessionInfo.lastClosedAt = System.currentTimeMillis();
                     availableSessions.add(sessionInfo);
-                } else {
-                    endBrowserSession(sessionInfo);
                 }
             } finally {
                 if (ensureClean) {
@@ -205,7 +203,7 @@ public class BrowserSessionFactory {
         } else {
             // look for it in the available sessions.
             sessionInfo = lookupInfoBySessionId(sessionId, availableSessions);
-            if (null != sessionInfo && !cacheUnused) {
+            if (null != sessionInfo && (forceClose || !configuration.reuseBrowserSessions())) {
                 try {
                     availableSessions.remove(sessionInfo);
                     endBrowserSession(sessionInfo);
@@ -320,7 +318,7 @@ public class BrowserSessionFactory {
             return sessionInfo;
         } catch (RemoteCommandException rce) {
             log.debug("Failed to start new browser session: " + rce.getMessage());
-            endBrowserSession(sessionId, false, ensureClean);
+            endBrowserSession(true, sessionId, configuration, ensureClean);
             throw rce;
         }
     }

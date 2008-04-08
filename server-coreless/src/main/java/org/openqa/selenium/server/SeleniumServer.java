@@ -17,25 +17,6 @@
 
 package org.openqa.selenium.server;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.FileHandler;
-import java.util.logging.Formatter;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
-
 import org.apache.commons.logging.Log;
 import org.mortbay.http.HashUserRealm;
 import org.mortbay.http.HttpContext;
@@ -46,6 +27,8 @@ import org.mortbay.jetty.Server;
 import org.mortbay.log.LogFactory;
 import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
 import org.openqa.selenium.server.browserlaunchers.AsyncExecute;
+import org.openqa.selenium.server.cli.RemoteControlLauncher;
+import static org.openqa.selenium.server.cli.RemoteControlLauncher.getArg;
 import org.openqa.selenium.server.htmlrunner.HTMLLauncher;
 import org.openqa.selenium.server.htmlrunner.HTMLResultsListener;
 import org.openqa.selenium.server.htmlrunner.SeleniumHTMLRunnerResultsHandler;
@@ -53,8 +36,14 @@ import org.openqa.selenium.server.htmlrunner.SingleTestSuiteResourceHandler;
 import org.openqa.selenium.server.log.MaxLevelFilter;
 import org.openqa.selenium.server.log.StdOutHandler;
 import org.openqa.selenium.server.log.TerseFormatter;
-import org.openqa.selenium.server.cli.RemoteControlLauncher;
-import static org.openqa.selenium.server.cli.RemoteControlLauncher.getArg;
+
+import java.io.*;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+import java.util.logging.*;
 
 /**
  * Provides a server that can launch/terminate browsers and can receive remote Selenium commands
@@ -190,7 +179,6 @@ public class SeleniumServer {
     // Number of jetty threads for the server
     private static int jettyThreads = DEFAULT_JETTY_THREADS;
 
-    private static Boolean reusingBrowserSessions = null;
 
     private static boolean FORCE_PROXY_CHAIN = false;
     private static boolean debugMode = false;
@@ -268,7 +256,7 @@ public class SeleniumServer {
         if (proxyInjectionMode) {
             logger.info("The selenium server will execute in proxyInjection mode.");
         }
-        if (reusingBrowserSessions()) {
+        if (configuration.reuseBrowserSessions()) {
             logger.info("Will recycle browser sessions when possible.");
         }
         if (forcedBrowserMode != null) {
@@ -440,7 +428,7 @@ public class SeleniumServer {
 
         SecurityConstraint constraint = new SecurityConstraint();
         constraint.setName(SecurityConstraint.__BASIC_AUTH);
-        ;
+
         constraint.addRole("user");
         constraint.setAuthenticate(true);
 
@@ -766,19 +754,6 @@ public class SeleniumServer {
         SeleniumServer.dontTouchLogging = dontTouchLogging;
     }
 
-    public static boolean reusingBrowserSessions() {
-        if (reusingBrowserSessions == null) {
-//            if (isProxyInjectionMode()) {     turn off this default until we are stable.  Too many variables spoils the soup.
-//                reusingBrowserSessions = Boolean.TRUE; // default in pi mode
-//            }
-//            else {
-            reusingBrowserSessions = Boolean.FALSE; // default in non-pi mode
-//            }
-        }
-        return reusingBrowserSessions;
-    }
-
-
     private static String getRequiredSystemProperty(String name) {
         String value = System.getProperty(name);
         if (value == null) {
@@ -824,11 +799,6 @@ public class SeleniumServer {
             System.exit(1);
         }
 
-    }
-
-
-    public static void setReusingBrowserSessions(boolean reusingBrowserSessions) {
-        SeleniumServer.reusingBrowserSessions = reusingBrowserSessions;
     }
 
     public static void setLogFile(File logFile) {
@@ -946,9 +916,9 @@ public class SeleniumServer {
                 // injected js and the selenium server
                 configuration.setPortDriversShouldContact(Integer.parseInt(getArg(args, ++i)));
             } else if ("-noBrowserSessionReuse".equalsIgnoreCase(arg)) {
-                SeleniumServer.reusingBrowserSessions = Boolean.FALSE;
+                configuration.setReuseBrowserSessions(false);
             } else if ("-browserSessionReuse".equalsIgnoreCase(arg)) {
-                SeleniumServer.reusingBrowserSessions = Boolean.TRUE;
+                configuration.setReuseBrowserSessions(true);
             } else if ("-firefoxProfileTemplate".equalsIgnoreCase(arg)) {
                 configuration.setFirefoxProfileTemplate(new File(getArg(args, ++i)));
                 if (!configuration.getFirefoxProfileTemplate().exists()) {

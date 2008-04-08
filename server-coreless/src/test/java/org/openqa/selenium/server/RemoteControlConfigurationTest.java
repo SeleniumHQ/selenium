@@ -189,4 +189,17 @@ public class RemoteControlConfigurationTest extends TestCase {
         configuration.setFirefoxProfileTemplate(aDirectory);
         assertEquals(aDirectory, configuration.getFirefoxProfileTemplate());
     }
+
+    public void testReuseBrowserSessionsIsFalseByDefault() {
+        assertFalse(new RemoteControlConfiguration().reuseBrowserSessions());
+    }
+
+    public void testReuseBrowserSessionsCanBeSet() {
+        final RemoteControlConfiguration configuration;
+        configuration = new RemoteControlConfiguration();
+
+        configuration.setReuseBrowserSessions(true);
+        assertTrue(configuration.reuseBrowserSessions());
+    }
+
 }

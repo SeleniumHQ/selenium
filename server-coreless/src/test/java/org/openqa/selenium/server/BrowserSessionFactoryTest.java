@@ -85,7 +85,7 @@ public class BrowserSessionFactoryTest extends TestCase {
         BrowserSessionFactory factory = getTestSessionFactory();
         factory.registerExternalSession(getTestSession1());
         assertTrue(factory.hasActiveSession(SESSION_ID_1));
-        factory.endBrowserSession(SESSION_ID_1, false);
+        factory.endBrowserSession(SESSION_ID_1, new RemoteControlConfiguration());
         assertFalse(factory.hasActiveSession(SESSION_ID_1));
         assertFalse(factory.hasAvailableSession(SESSION_ID_1));
     }
@@ -95,7 +95,9 @@ public class BrowserSessionFactoryTest extends TestCase {
         factory.registerExternalSession(getTestSession1());
         assertTrue(factory.hasActiveSession(SESSION_ID_1));
         long closingTime = System.currentTimeMillis();
-        factory.endBrowserSession(SESSION_ID_1, true);
+        RemoteControlConfiguration configuration = new RemoteControlConfiguration();
+        configuration.setReuseBrowserSessions(true);
+        factory.endBrowserSession(SESSION_ID_1, configuration);
         assertFalse(factory.hasActiveSession(SESSION_ID_1));
         assertTrue(factory.hasAvailableSession(SESSION_ID_1));
         BrowserSessionInfo info = factory.lookupInfoBySessionId(SESSION_ID_1,
@@ -107,7 +109,7 @@ public class BrowserSessionFactoryTest extends TestCase {
         BrowserSessionFactory factory = getTestSessionFactory();
         factory.registerExternalSession(getTestSession1());
         factory.addToAvailableSessions(getTestSession2());
-        factory.endAllBrowserSessions();
+        factory.endAllBrowserSessions(new RemoteControlConfiguration());
         assertFalse(factory.hasActiveSession(SESSION_ID_1));
         assertFalse(factory.hasAvailableSession(SESSION_ID_2));
         assertFalse(factory.hasAvailableSession(SESSION_ID_1));
