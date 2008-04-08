@@ -15,472 +15,477 @@ import java.util.UUID;
 
 /**
  * Manages browser sessions, their creation, and their closure.
- * 
+ * <p/>
  * Maintains a cache of unused and available browser sessions in case
  * the server is reusing sessions.  Also manages the creation and
  * finalization of all browser sessions.
- * 
+ *
  * @author jbevan@google.com (Jennifer Bevan)
  */
 public class BrowserSessionFactory {
-  
-  private static final long DEFAULT_CLEANUP_INTERVAL = 300000; // 5 minutes.
-  private static final long DEFAULT_MAX_IDLE_SESSION_TIME = 600000; // 10 minutes
-  
-  static Log log = LogFactory.getLog(BrowserSessionFactory.class);
-  
-  // cached, unused, already-launched browser sessions.
-  protected final Set<BrowserSessionInfo> availableSessions = 
-    Collections.synchronizedSet(new HashSet<BrowserSessionInfo>());
-  
-  // active browser sessions.
-  protected final Set<BrowserSessionInfo> activeSessions = 
-    Collections.synchronizedSet(new HashSet<BrowserSessionInfo>());
 
-  private final BrowserLauncherFactory browserLauncherFactory;
-  private final Timer cleanupTimer;
-  private final long maxIdleSessionTime;
-  
-  public BrowserSessionFactory(BrowserLauncherFactory blf) {
-    this(blf, DEFAULT_CLEANUP_INTERVAL, DEFAULT_MAX_IDLE_SESSION_TIME, true);
-  }
-  
-  /**
-   * Constructor for testing purposes.
-   *
-   * @param blf an injected BrowserLauncherFactory.
-   * @param cleanupInterval the time between idle available session cleaning sweeps.
-   * @param maxIdleSessionTime the max time in ms for an available session to be idle.
-   * @param doCleanup whether or not the idle session cleanup thread should run.
-   */
-  protected BrowserSessionFactory(BrowserLauncherFactory blf,
-      long cleanupInterval, long maxIdleSessionTime, boolean doCleanup) {
-    browserLauncherFactory = blf;
-    this.maxIdleSessionTime = maxIdleSessionTime;
-    cleanupTimer = new Timer(/* daemon= */true);
-    if (doCleanup) {
-      cleanupTimer.schedule(new CleanupTask(), 0, cleanupInterval);
-    }
-  }
-  
-  /**
-   * Gets a new browser session, using the SeleniumServer static fields
-   * to populate parameters.
-   * 
-   * @param browserString
-   * @param startURL
-   * @param multiWindow if a new session should be started in multiWindow mode
-   * @return the BrowserSessionInfo for the new browser session.
-   * @throws RemoteCommandException
-   */
-  public BrowserSessionInfo getNewBrowserSession(String browserString, String startURL, 
-      boolean multiWindow, int portDriversShouldContact) throws RemoteCommandException {
-    return getNewBrowserSession(browserString, startURL, multiWindow,
-        SeleniumServer.reusingBrowserSessions(),
-        SeleniumServer.isEnsureCleanSession(), portDriversShouldContact);
-  }
-  
-  /**
-   * Gets a new browser session 
-   * 
-   * @param browserString
-   * @param startURL
-   * @param multiWindow if a new session should be started in multiWindow mode
-   * @param useCached if a cached session should be used if one is available
-   * @param ensureClean if a clean session (e.g. no previous cookies) is required.
-   * @return the BrowserSessionInfo for the new browser session.
-   * @throws RemoteCommandException
-   */
-  protected BrowserSessionInfo getNewBrowserSession(String browserString, 
-      String startURL, boolean multiWindow, boolean useCached, boolean ensureClean,
-      int portDriversShouldContact) throws RemoteCommandException {
-  
-    BrowserSessionInfo sessionInfo = null;
-    browserString = validateBrowserString(browserString);
-    
-    if (SeleniumServer.isProxyInjectionMode()) {
-        InjectionHelper.init();
-    }
-    
-    if (useCached) {
-      log.info("grabbing available session...");
-      sessionInfo = grabAvailableSession(browserString, startURL);
-    }
-    
-    // couldn't find one in the cache, or not reusing sessions.
-    if (null == sessionInfo) {
-      log.info("creating new remote session");
-      sessionInfo = createNewRemoteSession(browserString, startURL, multiWindow, ensureClean, portDriversShouldContact);
-    }
-    
-    assert null != sessionInfo;
-    if (ensureClean) {
-      // need to add this to the launcher API.
-      // sessionInfo.launcher.hideCurrentSessionData();
-    }
-    return sessionInfo;
-  }
-  
-  /**
-   * Ends all browser sessions.
-   * 
-   * Active and available but inactive sessions are ended.
-   */
-  protected void endAllBrowserSessions() {
-    boolean done = false;
-    Set<BrowserSessionInfo> allSessions = new HashSet<BrowserSessionInfo>();
-    while (!done) {
-      // to avoid concurrent modification exceptions...
-      synchronized(activeSessions) {
-        for (BrowserSessionInfo sessionInfo : activeSessions) {
-          allSessions.add(sessionInfo);
-        }
-      }
-      synchronized(availableSessions) {
-        for (BrowserSessionInfo sessionInfo : availableSessions) {
-          allSessions.add(sessionInfo);
-        }
-      }
-      for (BrowserSessionInfo sessionInfo : allSessions) {
-        endBrowserSession(sessionInfo.sessionId, false);
-      }
-      done = (0 == activeSessions.size() && 0 == availableSessions.size());
-      allSessions.clear();
-    }
-  }
-  
-  /**
-   * Ends a browser session, using SeleniumServer static fields to populate
-   * parameters.
-   * 
-   * @param sessionId the id of the session to be ended
-   */
-  public void endBrowserSession(String sessionId) {
-    endBrowserSession(sessionId,
-      SeleniumServer.reusingBrowserSessions(),
-      SeleniumServer.isEnsureCleanSession());
-  }
-  
-  /**
-   * Ends a browser session, using SeleniumServer static fields to populate
-   * parameters.
-   * 
-   * @param sessionId the id of the session to be ended
-   * @param cacheUnused if the session should be made available for reuse.
-   */
-  public void endBrowserSession(String sessionId, boolean cacheUnused) {
-    endBrowserSession(sessionId, cacheUnused,
-        SeleniumServer.isEnsureCleanSession());
-  }
-  
-  /**
-   * Ends a browser session.
-   * 
-   * @param sessionId the id of the session to be ended
-   * @param cacheUnused if this session should be made available for reuse
-   * @param ensureClean if clean sessions (e.g. no leftover cookies) are required.
-   */
-  protected void endBrowserSession(String sessionId, boolean cacheUnused,
-      boolean ensureClean) {
-    BrowserSessionInfo sessionInfo = lookupInfoBySessionId(sessionId, activeSessions);
-    if (null != sessionInfo) {
-      activeSessions.remove(sessionInfo);
-      try {
-        if (cacheUnused) {
-          if (null != sessionInfo.session) { // optional field
-            sessionInfo.session.reset(sessionInfo.baseUrl);
-          }
-          // mark what time this session was ended
-          sessionInfo.lastClosedAt = System.currentTimeMillis();
-          availableSessions.add(sessionInfo);
-        } else {
-          endBrowserSession(sessionInfo);
-        }
-      } finally {
-        if (ensureClean) {
-          // need to add this to the launcher API.
-          // sessionInfo.launcher.restoreOriginalSessionData();
-        }
-      }
-    } else {
-      // look for it in the available sessions.
-      sessionInfo = lookupInfoBySessionId(sessionId, availableSessions);
-      if (null != sessionInfo && !cacheUnused) {
-        try {
-          availableSessions.remove(sessionInfo);
-          endBrowserSession(sessionInfo);
-        } finally {
-          if (ensureClean) {
-            // sessionInfo.launcher.restoreOriginalSessionData();
-          }
-        }
-      }
-    }
-  }
-  
-  /**
-   * Shuts down this browser session's launcher and clears out its session
-   * data (if session is not null).
-   * 
-   * @param sessionInfo the browser session to end.
-   */
-  protected void endBrowserSession(BrowserSessionInfo sessionInfo) {
-    try {
-      sessionInfo.launcher.close(); // can throw RuntimeException
-    } finally {
-      if (null != sessionInfo.session) {
-        FrameGroupCommandQueueSet.clearQueueSet(sessionInfo.sessionId);
-      }
-    }
-  }
-  
-  /**
-   * Rewrites the given browser string based on server settings.
-   * 
-   * @param inputString the input browser string
-   * @return a possibly-modified browser string.
-   * @throws IllegalArgumentException if inputString is null.
-   */
-  private String validateBrowserString(String inputString) throws IllegalArgumentException {
-    String browserString = inputString;
-    if (SeleniumServer.getForcedBrowserMode()!=null) {
-        browserString = SeleniumServer.getForcedBrowserMode(); 
-        log.info("overriding browser mode w/ forced browser mode setting: " + browserString);
-    }
-    if (SeleniumServer.isProxyInjectionMode() && browserString.equals("*iexplore")) {
-        log.warn("running in proxy injection mode, but you used a *iexplore browser string; this is " +
-                "almost surely inappropriate, so I'm changing it to *piiexplore...");
-        browserString = "*piiexplore";
-    }
-    else if (SeleniumServer.isProxyInjectionMode() && browserString.equals("*firefox")) {
-        log.warn("running in proxy injection mode, but you used a *firefox browser string; this is " +
-                "almost surely inappropriate, so I'm changing it to *pifirefox...");
-        browserString = "*pifirefox";
+    private static final long DEFAULT_CLEANUP_INTERVAL = 300000; // 5 minutes.
+    private static final long DEFAULT_MAX_IDLE_SESSION_TIME = 600000; // 10 minutes
+
+    static Log log = LogFactory.getLog(BrowserSessionFactory.class);
+
+    // cached, unused, already-launched browser sessions.
+    protected final Set<BrowserSessionInfo> availableSessions =
+            Collections.synchronizedSet(new HashSet<BrowserSessionInfo>());
+
+    // active browser sessions.
+    protected final Set<BrowserSessionInfo> activeSessions =
+            Collections.synchronizedSet(new HashSet<BrowserSessionInfo>());
+
+    private final BrowserLauncherFactory browserLauncherFactory;
+    private final Timer cleanupTimer;
+    private final long maxIdleSessionTime;
+
+    public BrowserSessionFactory(BrowserLauncherFactory blf) {
+        this(blf, DEFAULT_CLEANUP_INTERVAL, DEFAULT_MAX_IDLE_SESSION_TIME, true);
     }
 
-    if (null == browserString) {
-        throw new IllegalArgumentException("browser string may not be null");
-    }
-    return browserString;
-  }
-  
-  /**
-   * Retrieves an available, unused session from the cache.
-   * 
-   * @param browserString the necessary browser for a suitable session
-   * @param baseUrl the necessary baseUrl for a suitable session
-   * @return the session info of the cached session, null if none found.
-   */
-  protected BrowserSessionInfo grabAvailableSession(String browserString, 
-      String baseUrl) {
-    BrowserSessionInfo sessionInfo = null;
-    synchronized (availableSessions) {
-      sessionInfo = lookupInfoByBrowserAndUrl(browserString, baseUrl, 
-          availableSessions);
-      if (null != sessionInfo) {
-        availableSessions.remove(sessionInfo);
-      }
-    } 
-    if (null != sessionInfo) {
-      activeSessions.add(sessionInfo);
-    }
-    return sessionInfo;
-  }
-  
-  /**
-   * Creates and tries to open a new session.  
-   * 
-   * @param browserString
-   * @param startURL
-   * @param multiWindow if new session should be opened -multiWindow
-   * @param ensureClean if a clean session is required
-   * @return the BrowserSessionInfo of the new session.
-   * @throws RemoteCommandException if the browser failed to launch and
-   *                        request work in the required amount of time.
-   */
-  protected BrowserSessionInfo createNewRemoteSession(String browserString, 
-      String startURL, boolean multiWindow, boolean ensureClean, int portDriversShouldContact)
-      throws RemoteCommandException {
-    String sessionId = UUID.randomUUID().toString().replace("-", "");
-    FrameGroupCommandQueueSet queueSet = FrameGroupCommandQueueSet.makeQueueSet(sessionId, portDriversShouldContact);
-    BrowserLauncher launcher = browserLauncherFactory.getBrowserLauncher(browserString, sessionId, portDriversShouldContact);
-    BrowserSessionInfo sessionInfo = new BrowserSessionInfo(sessionId,
-        browserString, startURL, launcher, queueSet);
-    log.info("Allocated session " + sessionId + " for " + startURL + ", launching...");
-    
-    launcher.launchRemoteSession(startURL, multiWindow);
-    try {
-      queueSet.waitForLoad(SeleniumServer.getTimeoutInSeconds() * 1000l);
-    
-      // TODO DGF log4j only
-      // NDC.push("sessionId="+sessionId);
-      FrameGroupCommandQueueSet queue = FrameGroupCommandQueueSet.getQueueSet(sessionId);
-      queue.doCommand("setContext", sessionId, "");
-      
-      activeSessions.add(sessionInfo);
-      return sessionInfo;
-    } catch (RemoteCommandException rce) {
-      log.debug("Failed to start new browser session: " + rce.getMessage());
-      endBrowserSession(sessionId, false, ensureClean);
-      throw rce;
-    }    
-  }
-  
-  /**
-   * Adds a browser session that was not created by this factory to the
-   * set of active sessions.
-   * 
-   * Allows for creation of unmanaged sessions (i.e. no FrameGroupCommandQueueSet)
-   * for task such as running the HTML tests (see HTMLLauncher.java).  All 
-   * fields other than session are required to be non-null.
-   * 
-   * @param sessionInfo  the session info to register.
-   */
-  protected boolean registerExternalSession(BrowserSessionInfo sessionInfo) {
-    boolean result = false;
-    if (BrowserSessionInfo.isValid(sessionInfo)) {
-      activeSessions.add(sessionInfo);
-      result = true;
-    }
-    return result;
-  }
-  
-  /**
-   * Removes a previously registered external browser session from the
-   * list of active sessions.
-   * 
-   * @param sessionInfo the session to remove.
-   */
-  protected void deregisterExternalSession(BrowserSessionInfo sessionInfo) {
-    activeSessions.remove(sessionInfo);
-  }
-  
-  /**
-   * Looks up a session in the named set by session id
-   * 
-   * @param sessionId the session id to find
-   * @param set the Set to inspect
-   * @return the matching BrowserSessionInfo or null if not found.
-   */
-  protected BrowserSessionInfo lookupInfoBySessionId(String sessionId,
-      Set<BrowserSessionInfo> set) {
-    BrowserSessionInfo result = null;
-    synchronized (set) {
-      for (BrowserSessionInfo info : set) {
-        if (info.sessionId.equals(sessionId)) {
-          result = info;
-          break;
-        }
-      }
-    }
-    return result;
-  }
-  
-  /**
-   * Looks up a session in the named set by browser string and base URL
-   * 
-   * @param browserString the browser string to match
-   * @param baseUrl the base URL to match.
-   * @param set the Set to inspect
-   * @return the matching BrowserSessionInfo or null if not found.
-   */
-  protected BrowserSessionInfo lookupInfoByBrowserAndUrl(String browserString,
-      String baseUrl, Set<BrowserSessionInfo> set) {
-    BrowserSessionInfo result = null;
-    synchronized (set) {
-      for (BrowserSessionInfo info : set) {
-        if (info.browserString.equals(browserString)
-            && info.baseUrl.equals(baseUrl)) {
-          result = info;
-          break;
-        }
-      }
-    }
-    return result;
-  }
-  
-  protected void removeIdleAvailableSessions() {
-    long now = System.currentTimeMillis();
-    synchronized (availableSessions) {
-      Iterator<BrowserSessionInfo> iter = availableSessions.iterator();
-      while (iter.hasNext()) {
-        BrowserSessionInfo info = iter.next();
-        if (now - info.lastClosedAt > maxIdleSessionTime) {
-          iter.remove();
-        }
-      }
-    }
-  }
-  
-  /** for testing only */
-  protected boolean hasActiveSession(String sessionId) {
-    BrowserSessionInfo info = lookupInfoBySessionId(sessionId, activeSessions);
-    return (null != info);
-  }
-  
-  /** for testing only */
-  protected boolean hasAvailableSession(String sessionId) {
-    BrowserSessionInfo info = lookupInfoBySessionId(sessionId, availableSessions);
-    return (null != info);
-  }
-  
-  /** for testing only */
-  protected void addToAvailableSessions(BrowserSessionInfo sessionInfo) {
-    availableSessions.add(sessionInfo);
-  }
-  
-  /**
-   * Collection class to hold the objects associated with a browser session.
-   * 
-   * @author jbevan@google.com (Jennifer Bevan)
-   */
-  public static class BrowserSessionInfo {
-    
-    public BrowserSessionInfo(String sessionId, String browserString, 
-        String baseUrl, BrowserLauncher launcher, 
-        FrameGroupCommandQueueSet session) {
-      this.sessionId = sessionId;
-      this.browserString = browserString;
-      this.baseUrl = baseUrl;
-      this.launcher = launcher;
-      this.session = session; // optional field; may be null.
-      lastClosedAt = 0;
-    }
-    
-    public final String sessionId;
-    public final String browserString;
-    public final String baseUrl;
-    public final BrowserLauncher launcher;
-    public final FrameGroupCommandQueueSet session;
-    public long lastClosedAt;
-    
     /**
-     * Browser sessions require the session id, the browser, the base URL,
-     * and the launcher.  They don't actually require the session to be set
-     * up as a FrameGroupCommandQueueSet.
-     * 
-     * @param sessionInfo the sessionInfo to validate.
-     * @return true if all fields excepting session are non-null.
+     * Constructor for testing purposes.
+     *
+     * @param blf                an injected BrowserLauncherFactory.
+     * @param cleanupInterval    the time between idle available session cleaning sweeps.
+     * @param maxIdleSessionTime the max time in ms for an available session to be idle.
+     * @param doCleanup          whether or not the idle session cleanup thread should run.
      */
-    protected static boolean isValid(BrowserSessionInfo sessionInfo) {
-      boolean result = (null != sessionInfo.sessionId 
-          && null != sessionInfo.browserString
-          && null != sessionInfo.baseUrl 
-          && null != sessionInfo.launcher);
-      return result;
+    protected BrowserSessionFactory(BrowserLauncherFactory blf,
+                                    long cleanupInterval, long maxIdleSessionTime, boolean doCleanup) {
+        browserLauncherFactory = blf;
+        this.maxIdleSessionTime = maxIdleSessionTime;
+        cleanupTimer = new Timer(/* daemon= */true);
+        if (doCleanup) {
+            cleanupTimer.schedule(new CleanupTask(), 0, cleanupInterval);
+        }
     }
-  }
-  
-  /**
-   * TimerTask that looks for unused sessions in the availableSessions collection.
-   *
-   * @author jbevan@google.com (Jennifer Bevan)
-   */
-  protected class CleanupTask extends TimerTask {
-    @Override
-    public void run() {
-      removeIdleAvailableSessions();
+
+    /**
+     * Gets a new browser session, using the SeleniumServer static fields
+     * to populate parameters.
+     *
+     * @param browserString
+     * @param startURL
+     * @param configuration   Remote Control configuration. Cannot be null.
+     * @return the BrowserSessionInfo for the new browser session.
+     * @throws RemoteCommandException
+     */
+    public BrowserSessionInfo getNewBrowserSession(String browserString, String startURL,
+            RemoteControlConfiguration configuration) throws RemoteCommandException {
+
+        return getNewBrowserSession(browserString, startURL,
+                SeleniumServer.reusingBrowserSessions(),
+                SeleniumServer.isEnsureCleanSession(), configuration);
     }
-  }
+
+    /**
+     * Gets a new browser session
+     *
+     * @param browserString
+     * @param startURL
+     * @param configuration   Remote Control configuration. Cannot be null.
+     * @param useCached     if a cached session should be used if one is available
+     * @param ensureClean   if a clean session (e.g. no previous cookies) is required.
+     * @return the BrowserSessionInfo for the new browser session.
+     * @throws RemoteCommandException
+     */
+    protected BrowserSessionInfo getNewBrowserSession(String browserString, String startURL, boolean useCached,
+            boolean ensureClean, RemoteControlConfiguration configuration) throws RemoteCommandException {
+
+        BrowserSessionInfo sessionInfo = null;
+        browserString = validateBrowserString(browserString);
+
+        if (SeleniumServer.isProxyInjectionMode()) {
+            InjectionHelper.init();
+        }
+
+        if (useCached) {
+            log.info("grabbing available session...");
+            sessionInfo = grabAvailableSession(browserString, startURL);
+        }
+
+        // couldn't find one in the cache, or not reusing sessions.
+        if (null == sessionInfo) {
+            log.info("creating new remote session");
+            sessionInfo = createNewRemoteSession(browserString, startURL, ensureClean, configuration);
+        }
+
+        assert null != sessionInfo;
+        if (ensureClean) {
+            // need to add this to the launcher API.
+            // sessionInfo.launcher.hideCurrentSessionData();
+        }
+        return sessionInfo;
+    }
+
+    /**
+     * Ends all browser sessions.
+     * <p/>
+     * Active and available but inactive sessions are ended.
+     */
+    protected void endAllBrowserSessions() {
+        boolean done = false;
+        Set<BrowserSessionInfo> allSessions = new HashSet<BrowserSessionInfo>();
+        while (!done) {
+            // to avoid concurrent modification exceptions...
+            synchronized (activeSessions) {
+                for (BrowserSessionInfo sessionInfo : activeSessions) {
+                    allSessions.add(sessionInfo);
+                }
+            }
+            synchronized (availableSessions) {
+                for (BrowserSessionInfo sessionInfo : availableSessions) {
+                    allSessions.add(sessionInfo);
+                }
+            }
+            for (BrowserSessionInfo sessionInfo : allSessions) {
+                endBrowserSession(sessionInfo.sessionId, false);
+            }
+            done = (0 == activeSessions.size() && 0 == availableSessions.size());
+            allSessions.clear();
+        }
+    }
+
+    /**
+     * Ends a browser session, using SeleniumServer static fields to populate
+     * parameters.
+     *
+     * @param sessionId the id of the session to be ended
+     */
+    public void endBrowserSession(String sessionId) {
+        endBrowserSession(sessionId,
+                SeleniumServer.reusingBrowserSessions(),
+                SeleniumServer.isEnsureCleanSession());
+    }
+
+    /**
+     * Ends a browser session, using SeleniumServer static fields to populate
+     * parameters.
+     *
+     * @param sessionId   the id of the session to be ended
+     * @param cacheUnused if the session should be made available for reuse.
+     */
+    public void endBrowserSession(String sessionId, boolean cacheUnused) {
+        endBrowserSession(sessionId, cacheUnused,
+                SeleniumServer.isEnsureCleanSession());
+    }
+
+    /**
+     * Ends a browser session.
+     *
+     * @param sessionId   the id of the session to be ended
+     * @param cacheUnused if this session should be made available for reuse
+     * @param ensureClean if clean sessions (e.g. no leftover cookies) are required.
+     */
+    protected void endBrowserSession(String sessionId, boolean cacheUnused,
+                                     boolean ensureClean) {
+        BrowserSessionInfo sessionInfo = lookupInfoBySessionId(sessionId, activeSessions);
+        if (null != sessionInfo) {
+            activeSessions.remove(sessionInfo);
+            try {
+                if (cacheUnused) {
+                    if (null != sessionInfo.session) { // optional field
+                        sessionInfo.session.reset(sessionInfo.baseUrl);
+                    }
+                    // mark what time this session was ended
+                    sessionInfo.lastClosedAt = System.currentTimeMillis();
+                    availableSessions.add(sessionInfo);
+                } else {
+                    endBrowserSession(sessionInfo);
+                }
+            } finally {
+                if (ensureClean) {
+                    // need to add this to the launcher API.
+                    // sessionInfo.launcher.restoreOriginalSessionData();
+                }
+            }
+        } else {
+            // look for it in the available sessions.
+            sessionInfo = lookupInfoBySessionId(sessionId, availableSessions);
+            if (null != sessionInfo && !cacheUnused) {
+                try {
+                    availableSessions.remove(sessionInfo);
+                    endBrowserSession(sessionInfo);
+                } finally {
+                    if (ensureClean) {
+                        // sessionInfo.launcher.restoreOriginalSessionData();
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Shuts down this browser session's launcher and clears out its session
+     * data (if session is not null).
+     *
+     * @param sessionInfo the browser session to end.
+     */
+    protected void endBrowserSession(BrowserSessionInfo sessionInfo) {
+        try {
+            sessionInfo.launcher.close(); // can throw RuntimeException
+        } finally {
+            if (null != sessionInfo.session) {
+                FrameGroupCommandQueueSet.clearQueueSet(sessionInfo.sessionId);
+            }
+        }
+    }
+
+    /**
+     * Rewrites the given browser string based on server settings.
+     *
+     * @param inputString the input browser string
+     * @return a possibly-modified browser string.
+     * @throws IllegalArgumentException if inputString is null.
+     */
+    private String validateBrowserString(String inputString) throws IllegalArgumentException {
+        String browserString = inputString;
+        if (SeleniumServer.getForcedBrowserMode() != null) {
+            browserString = SeleniumServer.getForcedBrowserMode();
+            log.info("overriding browser mode w/ forced browser mode setting: " + browserString);
+        }
+        if (SeleniumServer.isProxyInjectionMode() && browserString.equals("*iexplore")) {
+            log.warn("running in proxy injection mode, but you used a *iexplore browser string; this is " +
+                    "almost surely inappropriate, so I'm changing it to *piiexplore...");
+            browserString = "*piiexplore";
+        } else if (SeleniumServer.isProxyInjectionMode() && browserString.equals("*firefox")) {
+            log.warn("running in proxy injection mode, but you used a *firefox browser string; this is " +
+                    "almost surely inappropriate, so I'm changing it to *pifirefox...");
+            browserString = "*pifirefox";
+        }
+
+        if (null == browserString) {
+            throw new IllegalArgumentException("browser string may not be null");
+        }
+        return browserString;
+    }
+
+    /**
+     * Retrieves an available, unused session from the cache.
+     *
+     * @param browserString the necessary browser for a suitable session
+     * @param baseUrl       the necessary baseUrl for a suitable session
+     * @return the session info of the cached session, null if none found.
+     */
+    protected BrowserSessionInfo grabAvailableSession(String browserString,
+                                                      String baseUrl) {
+        BrowserSessionInfo sessionInfo = null;
+        synchronized (availableSessions) {
+            sessionInfo = lookupInfoByBrowserAndUrl(browserString, baseUrl,
+                    availableSessions);
+            if (null != sessionInfo) {
+                availableSessions.remove(sessionInfo);
+            }
+        }
+        if (null != sessionInfo) {
+            activeSessions.add(sessionInfo);
+        }
+        return sessionInfo;
+    }
+
+    /**
+     * Creates and tries to open a new session.
+     *
+     * @param browserString
+     * @param startURL
+     * @param configuration  Remote Control configuration. Cannot be null.
+     * @param ensureClean   if a clean session is required
+     * @return the BrowserSessionInfo of the new session.
+     * @throws RemoteCommandException if the browser failed to launch and
+     *                                request work in the required amount of time.
+     */
+    protected BrowserSessionInfo createNewRemoteSession(String browserString, String startURL,
+            boolean ensureClean, RemoteControlConfiguration configuration) throws RemoteCommandException {
+
+        String sessionId = UUID.randomUUID().toString().replace("-", "");
+        FrameGroupCommandQueueSet queueSet = FrameGroupCommandQueueSet.makeQueueSet(sessionId, configuration.getPortDriversShouldContact());
+        BrowserLauncher launcher = browserLauncherFactory.getBrowserLauncher(browserString, sessionId, configuration.getPortDriversShouldContact());
+        BrowserSessionInfo sessionInfo = new BrowserSessionInfo(sessionId,
+                browserString, startURL, launcher, queueSet);
+        log.info("Allocated session " + sessionId + " for " + startURL + ", launching...");
+
+        launcher.launchRemoteSession(startURL, configuration.isMultiWindow());
+        try {
+            queueSet.waitForLoad(SeleniumServer.getTimeoutInSeconds() * 1000l);
+
+            // TODO DGF log4j only
+            // NDC.push("sessionId="+sessionId);
+            FrameGroupCommandQueueSet queue = FrameGroupCommandQueueSet.getQueueSet(sessionId);
+            queue.doCommand("setContext", sessionId, "");
+
+            activeSessions.add(sessionInfo);
+            return sessionInfo;
+        } catch (RemoteCommandException rce) {
+            log.debug("Failed to start new browser session: " + rce.getMessage());
+            endBrowserSession(sessionId, false, ensureClean);
+            throw rce;
+        }
+    }
+
+    /**
+     * Adds a browser session that was not created by this factory to the
+     * set of active sessions.
+     * <p/>
+     * Allows for creation of unmanaged sessions (i.e. no FrameGroupCommandQueueSet)
+     * for task such as running the HTML tests (see HTMLLauncher.java).  All
+     * fields other than session are required to be non-null.
+     *
+     * @param sessionInfo the session info to register.
+     */
+    protected boolean registerExternalSession(BrowserSessionInfo sessionInfo) {
+        boolean result = false;
+        if (BrowserSessionInfo.isValid(sessionInfo)) {
+            activeSessions.add(sessionInfo);
+            result = true;
+        }
+        return result;
+    }
+
+    /**
+     * Removes a previously registered external browser session from the
+     * list of active sessions.
+     *
+     * @param sessionInfo the session to remove.
+     */
+    protected void deregisterExternalSession(BrowserSessionInfo sessionInfo) {
+        activeSessions.remove(sessionInfo);
+    }
+
+    /**
+     * Looks up a session in the named set by session id
+     *
+     * @param sessionId the session id to find
+     * @param set       the Set to inspect
+     * @return the matching BrowserSessionInfo or null if not found.
+     */
+    protected BrowserSessionInfo lookupInfoBySessionId(String sessionId,
+                                                       Set<BrowserSessionInfo> set) {
+        BrowserSessionInfo result = null;
+        synchronized (set) {
+            for (BrowserSessionInfo info : set) {
+                if (info.sessionId.equals(sessionId)) {
+                    result = info;
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Looks up a session in the named set by browser string and base URL
+     *
+     * @param browserString the browser string to match
+     * @param baseUrl       the base URL to match.
+     * @param set           the Set to inspect
+     * @return the matching BrowserSessionInfo or null if not found.
+     */
+    protected BrowserSessionInfo lookupInfoByBrowserAndUrl(String browserString,
+                                                           String baseUrl, Set<BrowserSessionInfo> set) {
+        BrowserSessionInfo result = null;
+        synchronized (set) {
+            for (BrowserSessionInfo info : set) {
+                if (info.browserString.equals(browserString)
+                        && info.baseUrl.equals(baseUrl)) {
+                    result = info;
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
+    protected void removeIdleAvailableSessions() {
+        long now = System.currentTimeMillis();
+        synchronized (availableSessions) {
+            Iterator<BrowserSessionInfo> iter = availableSessions.iterator();
+            while (iter.hasNext()) {
+                BrowserSessionInfo info = iter.next();
+                if (now - info.lastClosedAt > maxIdleSessionTime) {
+                    iter.remove();
+                }
+            }
+        }
+    }
+
+    /**
+     * for testing only
+     */
+    protected boolean hasActiveSession(String sessionId) {
+        BrowserSessionInfo info = lookupInfoBySessionId(sessionId, activeSessions);
+        return (null != info);
+    }
+
+    /**
+     * for testing only
+     */
+    protected boolean hasAvailableSession(String sessionId) {
+        BrowserSessionInfo info = lookupInfoBySessionId(sessionId, availableSessions);
+        return (null != info);
+    }
+
+    /**
+     * for testing only
+     */
+    protected void addToAvailableSessions(BrowserSessionInfo sessionInfo) {
+        availableSessions.add(sessionInfo);
+    }
+
+    /**
+     * Collection class to hold the objects associated with a browser session.
+     *
+     * @author jbevan@google.com (Jennifer Bevan)
+     */
+    public static class BrowserSessionInfo {
+
+        public BrowserSessionInfo(String sessionId, String browserString,
+                                  String baseUrl, BrowserLauncher launcher,
+                                  FrameGroupCommandQueueSet session) {
+            this.sessionId = sessionId;
+            this.browserString = browserString;
+            this.baseUrl = baseUrl;
+            this.launcher = launcher;
+            this.session = session; // optional field; may be null.
+            lastClosedAt = 0;
+        }
+
+        public final String sessionId;
+        public final String browserString;
+        public final String baseUrl;
+        public final BrowserLauncher launcher;
+        public final FrameGroupCommandQueueSet session;
+        public long lastClosedAt;
+
+        /**
+         * Browser sessions require the session id, the browser, the base URL,
+         * and the launcher.  They don't actually require the session to be set
+         * up as a FrameGroupCommandQueueSet.
+         *
+         * @param sessionInfo the sessionInfo to validate.
+         * @return true if all fields excepting session are non-null.
+         */
+        protected static boolean isValid(BrowserSessionInfo sessionInfo) {
+            boolean result = (null != sessionInfo.sessionId
+                    && null != sessionInfo.browserString
+                    && null != sessionInfo.baseUrl
+                    && null != sessionInfo.launcher);
+            return result;
+        }
+    }
+
+    /**
+     * TimerTask that looks for unused sessions in the availableSessions collection.
+     *
+     * @author jbevan@google.com (Jennifer Bevan)
+     */
+    protected class CleanupTask extends TimerTask {
+        @Override
+        public void run() {
+            removeIdleAvailableSessions();
+        }
+    }
 
 }

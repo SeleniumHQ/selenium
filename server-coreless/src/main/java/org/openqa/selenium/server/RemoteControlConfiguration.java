@@ -35,7 +35,7 @@ public class RemoteControlConfiguration {
     /** add special tracing for debug when this URL is requested */
     private String debugURL;
     private String dontInjectRegex;
-    
+    private File firefoxProfileTemplate;
 
 
     public RemoteControlConfiguration() {
@@ -45,6 +45,7 @@ public class RemoteControlConfiguration {
         this.portDriversShouldContact = USE_SAME_PORT;
         this.debugURL = "";
         this.dontInjectRegex = null;
+        this.firefoxProfileTemplate = null;
     }
 
     public int getPort() {
@@ -152,5 +153,13 @@ public class RemoteControlConfiguration {
 
     public String getDontInjectRegex() {
         return dontInjectRegex;
+    }
+
+    public File getFirefoxProfileTemplate() {
+        return firefoxProfileTemplate;
+    }
+
+    public void setFirefoxProfileTemplate(File newFirefoxProfileTemplate) {
+        this.firefoxProfileTemplate = newFirefoxProfileTemplate;
     }
 }

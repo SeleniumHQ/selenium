@@ -176,4 +176,17 @@ public class RemoteControlConfigurationTest extends TestCase {
         assertEquals("A Regex", configuration.getDontInjectRegex());
     }
 
+    public void testFirefoxProfileTemplateIsNullByDefault() {
+        assertNull(new RemoteControlConfiguration().getFirefoxProfileTemplate());
+    }
+
+    public void testFirefoxProfileTemplateCanBeSet() {
+        final RemoteControlConfiguration configuration;
+        final File aDirectory;
+
+        configuration = new RemoteControlConfiguration();
+        aDirectory = new File("\"A Directory Path\"");
+        configuration.setFirefoxProfileTemplate(aDirectory);
+        assertEquals(aDirectory, configuration.getFirefoxProfileTemplate());
+    }
 }

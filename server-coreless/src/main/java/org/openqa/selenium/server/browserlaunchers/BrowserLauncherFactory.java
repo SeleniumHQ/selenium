@@ -66,19 +66,17 @@ public class BrowserLauncherFactory {
     public BrowserLauncher getBrowserLauncher(String browser, String sessionId, int portDriversShouldContact) {
         if (browser == null) throw new IllegalArgumentException("browser may not be null");
 
-        for (Iterator<String> iterator = supportedBrowsers.keySet().iterator(); iterator.hasNext();) {
-            String name = iterator.next();
-            Class<? extends BrowserLauncher> c = supportedBrowsers.get(name);
-            Pattern pat = Pattern.compile("^\\*" + name + "( .*)?$");
+        for (Map.Entry<String,Class<? extends BrowserLauncher>> entry : supportedBrowsers.entrySet()) {
+            Pattern pat = Pattern.compile("^\\*" + entry.getKey() + "( .*)?$");
             Matcher mat = pat.matcher(browser);
             if (mat.find()) {
                 String browserStartCommand;
-                if (browser.equals("*" + name)) {
+                if (browser.equals("*" + entry.getKey())) {
                     browserStartCommand = null;
                 } else {
                     browserStartCommand = mat.group(1).substring(1);
                 }
-                return createBrowserLauncher(c, browserStartCommand, sessionId, portDriversShouldContact);
+                return createBrowserLauncher(entry.getValue(), browserStartCommand, sessionId, portDriversShouldContact);
             }
         }
         Matcher CustomMatcher = CUSTOM_PATTERN.matcher(browser);
@@ -117,8 +115,8 @@ public class BrowserLauncherFactory {
                                                   String sessionId, int portDriversShouldContact) {
         try {
             try {
-                BrowserLauncher browserLauncher;
-                Constructor<? extends BrowserLauncher> ctor;
+                final BrowserLauncher browserLauncher;
+                final Constructor<? extends BrowserLauncher> ctor;
                 if (null == browserStartCommand) {
                     ctor = c.getConstructor(int.class, String.class);
                     browserLauncher = ctor.newInstance(portDriversShouldContact, sessionId);
@@ -131,8 +129,6 @@ public class BrowserLauncherFactory {
             } catch (InvocationTargetException e) {
                 throw e.getTargetException();
             }
-        } catch (RuntimeException e) {
-            throw e;
         } catch (Throwable e) {
             throw new RuntimeException(e);
         }

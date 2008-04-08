@@ -153,7 +153,8 @@ import static org.openqa.selenium.server.cli.RemoteControlLauncher.getArg;
  * @author plightbo
  */
 public class SeleniumServer {
-    private static Log log;
+    private static Log logger;
+
     private Server server;
     private SeleniumDriverResourceHandler driver;
     private SeleniumHTMLRunnerResultsHandler postResultsHandler;
@@ -258,30 +259,30 @@ public class SeleniumServer {
     public SeleniumServer(int port, boolean slowResources, RemoteControlConfiguration configuration) throws Exception {
         this.configuration = configuration;
         configureLogging();
-        log.info("Java: " + System.getProperty("java.vm.vendor") + ' ' + System.getProperty("java.vm.version"));
-        log.info("OS: " + System.getProperty("os.name") + ' ' + System.getProperty("os.version") + ' ' + System.getProperty("os.arch"));
+        logger.info("Java: " + System.getProperty("java.vm.vendor") + ' ' + System.getProperty("java.vm.version"));
+        logger.info("OS: " + System.getProperty("os.name") + ' ' + System.getProperty("os.version") + ' ' + System.getProperty("os.arch"));
         logVersionNumber();
         if (debugMode) {
-            log.info("Selenium server running in debug mode.");
+            logger.info("Selenium server running in debug mode.");
         }
         if (proxyInjectionMode) {
-            log.info("The selenium server will execute in proxyInjection mode.");
+            logger.info("The selenium server will execute in proxyInjection mode.");
         }
         if (reusingBrowserSessions()) {
-            log.info("Will recycle browser sessions when possible.");
+            logger.info("Will recycle browser sessions when possible.");
         }
         if (forcedBrowserMode != null) {
-            log.info("\"" + forcedBrowserMode + "\" will be used as the browser " +
+            logger.info("\"" + forcedBrowserMode + "\" will be used as the browser " +
                     "mode for all sessions, no matter what is passed to getNewBrowserSession.");
         }
         this.port = port;
         String proxyHost = System.getProperty("http.proxyHost");
         String proxyPort = System.getProperty("http.proxyPort");
         if (Integer.toString(port).equals(proxyPort)) {
-            log.debug("http.proxyPort is the same as the Selenium Server port " + port);
-            log.debug("http.proxyHost=" + proxyHost);
+            logger.debug("http.proxyPort is the same as the Selenium Server port " + port);
+            logger.debug("http.proxyHost=" + proxyHost);
             if ("localhost".equals(proxyHost) || "127.0.0.1".equals(proxyHost)) {
-                log.info("Forcing http.proxyHost to '' to avoid infinite loop");
+                logger.info("Forcing http.proxyHost to '' to avoid infinite loop");
                 System.setProperty("http.proxyHost", "");
             }
         }
@@ -311,7 +312,7 @@ public class SeleniumServer {
 
     public synchronized static void configureLogging() {
         if (dontTouchLogging) {
-            log = LogFactory.getLog(SeleniumServer.class);
+            logger = LogFactory.getLog(SeleniumServer.class);
             return;
         }
 
@@ -346,7 +347,7 @@ public class SeleniumServer {
             logger.setLevel(Level.FINE);
         }
 
-        log = LogFactory.getLog(SeleniumServer.class);
+        SeleniumServer.logger = LogFactory.getLog(SeleniumServer.class);
         if (logOutFileName == null && System.getProperty("selenium.log") != null) {
             logOutFileName = System.getProperty("selenium.log");
         }
@@ -362,7 +363,7 @@ public class SeleniumServer {
                 logger.setLevel(Level.FINE);
                 fileHandler.setLevel(Level.FINE);
                 logger.addHandler(fileHandler);
-                log.info("Writing debug logs to " + logFile.getAbsolutePath());
+                SeleniumServer.logger.info("Writing debug logs to " + logFile.getAbsolutePath());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -372,7 +373,7 @@ public class SeleniumServer {
     private static void logVersionNumber() throws IOException {
         InputStream stream = SeleniumServer.class.getResourceAsStream("/VERSION.txt");
         if (stream == null) {
-            log.error("Couldn't determine version number");
+            logger.error("Couldn't determine version number");
             return;
         }
 //    	BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
@@ -388,7 +389,7 @@ public class SeleniumServer {
         String rcRevision = p.getProperty("selenium.rc.revision");
         String coreVersion = p.getProperty("selenium.core.version");
         String coreRevision = p.getProperty("selenium.core.revision");
-        log.info("v" + rcVersion + " [" + rcRevision + "], with Core v" + coreVersion + " [" + coreRevision + "]");
+        logger.info("v" + rcVersion + " [" + rcRevision + "], with Core v" + coreVersion + " [" + coreRevision + "]");
     }
 
     private static void resetLogger() {
@@ -508,9 +509,6 @@ public class SeleniumServer {
         return firefoxProfileTemplate;
     }
 
-    public static void setFirefoxProfileTemplate(File template) {
-        firefoxProfileTemplate = template;
-    }
 
     public static boolean isEnsureCleanSession() {
         return ensureCleanSession;
@@ -576,7 +574,7 @@ public class SeleniumServer {
         }
 
         public void run() {
-            log.info("Shutting down...");
+            logger.info("Shutting down...");
             selenium.stop();
         }
     }
@@ -608,7 +606,7 @@ public class SeleniumServer {
                 // So we assume it was successful.
                 break;
             } catch (Exception ex) { // org.mortbay.jetty.Server.stop() throws Exception
-                log.error(ex);
+                logger.error(ex);
                 shutDownException = ex;
                 // If Exception is thrown we try to stop the jetty server again
             }
@@ -878,7 +876,7 @@ public class SeleniumServer {
             Thread t = new Thread(new Runnable() {
                 public void run() {
                     try {
-                        log.info("---> Requesting " + url.toString());
+                        logger.info("---> Requesting " + url.toString());
                         URLConnection conn = url.openConnection();
                         conn.connect();
                         InputStream is = conn.getInputStream();
@@ -957,11 +955,12 @@ public class SeleniumServer {
             } else if ("-browserSessionReuse".equalsIgnoreCase(arg)) {
                 SeleniumServer.reusingBrowserSessions = Boolean.TRUE;
             } else if ("-firefoxProfileTemplate".equalsIgnoreCase(arg)) {
-                firefoxProfileTemplate = new File(getArg(args, ++i));
-                if (!firefoxProfileTemplate.exists()) {
-                    System.err.println("Firefox profile template doesn't exist: " + firefoxProfileTemplate.getAbsolutePath());
+                configuration.setFirefoxProfileTemplate(new File(getArg(args, ++i)));
+                if (!configuration.getFirefoxProfileTemplate().exists()) {
+                    System.err.println("Firefox profile template doesn't exist: " + configuration.getFirefoxProfileTemplate().getAbsolutePath());
                     System.exit(1);
                 }
+                firefoxProfileTemplate = configuration.getFirefoxProfileTemplate();
             } else if ("-ensureCleanSession".equalsIgnoreCase(arg)) {
                 SeleniumServer.setEnsureCleanSession(true);
             } else if ("-dontInjectRegex".equalsIgnoreCase(arg)) {

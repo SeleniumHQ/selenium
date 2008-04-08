@@ -633,7 +633,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     protected String getNewBrowserSession(String browserString, String startURL) 
           throws RemoteCommandException {
         BrowserSessionInfo sessionInfo = 
-            browserSessionFactory.getNewBrowserSession(browserString, startURL, remoteControl.isMultiWindow(), remoteControl.getConfiguration().getPortDriversShouldContact());
+            browserSessionFactory.getNewBrowserSession(browserString, startURL, remoteControl.getConfiguration());
         setLastSessionId(sessionInfo.sessionId); 
         return sessionInfo.sessionId;
     }
