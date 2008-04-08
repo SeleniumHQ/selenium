@@ -9,31 +9,33 @@ import java.io.*;
 import org.apache.commons.logging.Log;
 import org.apache.tools.ant.util.*;
 import org.mortbay.log.LogFactory;
+import org.openqa.selenium.server.RemoteControlConfiguration;
 
 public class HTABrowserLauncher implements BrowserLauncher {
 
     static Log log = LogFactory.getLog(HTABrowserLauncher.class);
-    private int port;
     private String sessionId;
     private File dir;
     private String htaCommandPath;
     private Process htaProcess;
     private Process iexploreProcess;
+    private RemoteControlConfiguration configuration;
 
     public HTABrowserLauncher() {
         htaCommandPath = findHTALaunchLocation();
     }
     
-    public HTABrowserLauncher(int port, String sessionId) {
+    public HTABrowserLauncher(RemoteControlConfiguration configuration, String sessionId) {
         htaCommandPath = findHTALaunchLocation();
-        this.port = port;
         this.sessionId = sessionId;
+        this.configuration = configuration;
     }
     
-    public HTABrowserLauncher(int port, String sessionId, String browserLaunchLocation) {
+    public HTABrowserLauncher(RemoteControlConfiguration configuration, String sessionId,
+                              String browserLaunchLocation) {
         htaCommandPath = browserLaunchLocation;
-        this.port = port;
         this.sessionId = sessionId;
+        this.configuration = configuration;
     }
     
     private static String findHTALaunchLocation() {
@@ -55,7 +57,7 @@ public class HTABrowserLauncher implements BrowserLauncher {
 
     private void launch(String url, String htaName) {
         String query = LauncherUtils.getQueryString(url);
-        query += "&baseUrl=http://localhost:" + port + "/selenium-server/";
+        query += "&baseUrl=http://localhost:" + getPort() + "/selenium-server/";
         createHTAFiles();
         String hta = (new File(dir, "core/" + htaName)).getAbsolutePath();
         log.info("Launching Embedded Internet Explorer...");
@@ -113,11 +115,15 @@ public class HTABrowserLauncher implements BrowserLauncher {
     }
 
     public void launchHTMLSuite(String suiteUrl, String browserURL, boolean multiWindow, String defaultLogLevel) {
-        launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl, multiWindow, port, defaultLogLevel), "TestRunner.hta");
+        launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl, multiWindow, getPort(), defaultLogLevel), "TestRunner.hta");
     }
-    
+
     public void launchRemoteSession(String browserURL, boolean multiWindow) {
-        launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId, multiWindow, port), "RemoteRunner.hta");
+        launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId, multiWindow, getPort()), "RemoteRunner.hta");
+    }
+
+    private int getPort() {
+        return configuration.getPortDriversShouldContact();
     }
 
 }

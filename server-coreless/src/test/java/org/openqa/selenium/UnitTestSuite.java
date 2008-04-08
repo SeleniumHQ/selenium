@@ -5,12 +5,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.openqa.selenium.server.*;
-import org.openqa.selenium.server.browserlaunchers.LauncherUtilsTest;
-import org.openqa.selenium.server.browserlaunchers.MacProxyManagerTest;
-import org.openqa.selenium.server.browserlaunchers.MakeProxyPacTest;
-import org.openqa.selenium.server.browserlaunchers.WindowsProxyManagerTest;
-import org.openqa.selenium.server.browserlaunchers.WindowsUtilsTest;
-import org.openqa.selenium.server.browserlaunchers.FirefoxChromeLauncherTest;
+import org.openqa.selenium.server.browserlaunchers.*;
 import org.openqa.selenium.server.mock.MockPIFrameTest;
 
 public class UnitTestSuite extends TestCase {
@@ -39,6 +34,8 @@ public class UnitTestSuite extends TestCase {
         suite.addTestSuite(LauncherUtilsTest.class);
         suite.addTestSuite(DefaultRemoteCommandTest.class);
         suite.addTestSuite(RemoteControlConfigurationTest.class);
+        suite.addTestSuite(BrowserLauncherFactoryTest.class);
+        suite.addTestSuite(AbstractBrowserLauncherTest.class);
         return suite;
     }
 }

@@ -19,7 +19,7 @@ package org.openqa.selenium.server.browserlaunchers;
 import org.apache.commons.logging.Log;
 import org.apache.tools.ant.taskdefs.condition.Os;
 import org.mortbay.log.LogFactory;
-import org.openqa.selenium.server.SeleniumServer;
+import org.openqa.selenium.server.RemoteControlConfiguration;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -35,7 +35,6 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
 
     private static boolean simple = false;
 
-    private int port;
     private File customProfileDir;
     private String[] cmdarray;
     private boolean closed = false;
@@ -50,14 +49,13 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
     // has a regression in which window.resizeTo() and window.moveTo() simply do not work!
     private static String additionalSettings = "";
 
-    public OperaCustomProfileLauncher(int port, String sessionId) {
-        this(port, sessionId, findBrowserLaunchLocation());
+    public OperaCustomProfileLauncher(RemoteControlConfiguration configuration, String sessionId) {
+        this(configuration, sessionId, findBrowserLaunchLocation());
     }
 
-    public OperaCustomProfileLauncher(int port, String sessionId, String browserLaunchLocation) {
-        super(sessionId);
+    public OperaCustomProfileLauncher(RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
+        super(sessionId, configuration);
         commandPath = browserLaunchLocation;
-        this.port = port;
         this.sessionId = sessionId;
         if (!WindowsUtils.thisIsWindows()) {
             // On unix, add command's directory to LD_LIBRARY_PATH
@@ -150,7 +148,7 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
 
         if (simple) return customProfileDir;
 
-        File proxyPAC = LauncherUtils.makeProxyPAC(customProfileDir, port);
+        File proxyPAC = LauncherUtils.makeProxyPAC(customProfileDir, getPort());
 
         // TODO Do we want to make these preferences configurable somehow?
         File opera6ini = new File(customProfileDir, "opera6.ini");
@@ -161,7 +159,7 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
         // browser starts and just sits there on a blank page!
 
         out.println("[Proxy]");
-        out.println("HTTP server=localhost:" + port);
+        out.println("HTTP server=localhost:" + getPort());
         out.println("Enable HTTP 1.1 for proxy=1");
         out.println("Use Proxy On Local Names Check=1");
         out.println("Use HTTP=1"); //TODO This forces the proxy to be used all the time!
@@ -170,9 +168,9 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
         out.println("Use GOPHER=0");
         out.println("Use WAIS=0");
         out.println("Use Automatic Proxy Configuration=0");
-        out.println("HTTPS server=localhost:" + port);
-        out.println("FTP server=localhost:" + port);
-        out.println("Gopher server=localhost:" + port);
+        out.println("HTTPS server=localhost:" + getPort());
+        out.println("FTP server=localhost:" + getPort());
+        out.println("Gopher server=localhost:" + getPort());
         out.println("WAIS server");
         out.println("Automatic Proxy Configuration URL=" + proxyPAC.getAbsolutePath());
         out.println("No Proxy Servers");
@@ -317,12 +315,11 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
             AsyncExecute.sleepTight(500);
             if (lock.exists()) return false;
         }
-        if (!lock.exists()) return true;
-        return false;
+        return !lock.exists();
     }
 
     public static void main(String[] args) throws Exception {
-        OperaCustomProfileLauncher l = new OperaCustomProfileLauncher(SeleniumServer.DEFAULT_PORT, "CUSTFF");
+        OperaCustomProfileLauncher l = new OperaCustomProfileLauncher(new RemoteControlConfiguration(), "CUSTFF");
         l.launch("http://www.google.com");
         int seconds = 15;
         System.out.println("Killing browser in " + Integer.toString(seconds) + " seconds");

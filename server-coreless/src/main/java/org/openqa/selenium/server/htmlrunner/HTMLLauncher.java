@@ -84,7 +84,7 @@ public class HTMLLauncher implements HTMLResultsListener {
         remoteControl.handleHTMLRunnerResults(this);
         BrowserLauncherFactory blf = new BrowserLauncherFactory();
         String sessionId = Long.toString(System.currentTimeMillis() % 1000000);
-        BrowserLauncher launcher = blf.getBrowserLauncher(browser, sessionId, remoteControl.getConfiguration().getPortDriversShouldContact());
+        BrowserLauncher launcher = blf.getBrowserLauncher(browser, sessionId, remoteControl.getConfiguration());
         BrowserSessionInfo sessionInfo = new BrowserSessionInfo(sessionId, 
             browser, browserURL, launcher, null);
         remoteControl.registerBrowserSession(sessionInfo);

@@ -1,6 +1,7 @@
 package org.openqa.selenium.server.mock;
 
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
+import org.openqa.selenium.server.RemoteControlConfiguration;
 
 /** Unlike the MockBrowserLauncher which acts like a real canned browser,
  * the DummyBrowserLauncher does nothing at all.  Someone else should issue
@@ -14,7 +15,7 @@ public class DummyBrowserLauncher implements BrowserLauncher {
 
     private static String sessionId;
     
-    public DummyBrowserLauncher(int port, String sessionId) {
+    public DummyBrowserLauncher(RemoteControlConfiguration configuration, String sessionId) {
         DummyBrowserLauncher.sessionId = sessionId;
     }
    

@@ -25,6 +25,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.openqa.selenium.server.SeleniumServer;
+import org.openqa.selenium.server.RemoteControlConfiguration;
 
 /**
  * Returns BrowserLaunchers based on simple strings given by the user
@@ -63,7 +64,7 @@ public class BrowserLauncherFactory {
      * @param sessionId the sessionId to launch
      * @return the BrowserLauncher ready to launch
      */
-    public BrowserLauncher getBrowserLauncher(String browser, String sessionId, int portDriversShouldContact) {
+    public BrowserLauncher getBrowserLauncher(String browser, String sessionId, RemoteControlConfiguration configuration) {
         if (browser == null) throw new IllegalArgumentException("browser may not be null");
 
         for (Map.Entry<String,Class<? extends BrowserLauncher>> entry : supportedBrowsers.entrySet()) {
@@ -76,7 +77,7 @@ public class BrowserLauncherFactory {
                 } else {
                     browserStartCommand = mat.group(1).substring(1);
                 }
-                return createBrowserLauncher(entry.getValue(), browserStartCommand, sessionId, portDriversShouldContact);
+                return createBrowserLauncher(entry.getValue(), browserStartCommand, sessionId, configuration);
             }
         }
         Matcher CustomMatcher = CUSTOM_PATTERN.matcher(browser);
@@ -89,6 +90,10 @@ public class BrowserLauncherFactory {
             return new DestroyableRuntimeExecutingBrowserLauncher(browserStartCommand, sessionId);
         }
         throw browserNotSupported(browser);
+    }
+
+    public static Map<String, Class<? extends BrowserLauncher>> getSupportedLaunchers() {
+        return supportedBrowsers;
     }
 
     public static void addBrowserLauncher(String browser, Class<? extends BrowserLauncher> clazz) {
@@ -112,17 +117,17 @@ public class BrowserLauncherFactory {
     }
 
     private BrowserLauncher createBrowserLauncher(Class<? extends BrowserLauncher> c, String browserStartCommand,
-                                                  String sessionId, int portDriversShouldContact) {
+                                                  String sessionId, RemoteControlConfiguration configuration) {
         try {
             try {
                 final BrowserLauncher browserLauncher;
                 final Constructor<? extends BrowserLauncher> ctor;
                 if (null == browserStartCommand) {
-                    ctor = c.getConstructor(int.class, String.class);
-                    browserLauncher = ctor.newInstance(portDriversShouldContact, sessionId);
+                    ctor = c.getConstructor(RemoteControlConfiguration.class, String.class);
+                    browserLauncher = ctor.newInstance(configuration, sessionId);
                 } else {
-                    ctor = c.getConstructor(int.class, String.class, String.class);
-                    browserLauncher = ctor.newInstance(portDriversShouldContact, sessionId, browserStartCommand);
+                    ctor = c.getConstructor(RemoteControlConfiguration.class, String.class, String.class);
+                    browserLauncher = ctor.newInstance(configuration, sessionId, browserStartCommand);
                 }
 
                 return browserLauncher;

@@ -302,7 +302,7 @@ public class BrowserSessionFactory {
 
         String sessionId = UUID.randomUUID().toString().replace("-", "");
         FrameGroupCommandQueueSet queueSet = FrameGroupCommandQueueSet.makeQueueSet(sessionId, configuration.getPortDriversShouldContact());
-        BrowserLauncher launcher = browserLauncherFactory.getBrowserLauncher(browserString, sessionId, configuration.getPortDriversShouldContact());
+        BrowserLauncher launcher = browserLauncherFactory.getBrowserLauncher(browserString, sessionId, configuration);
         BrowserSessionInfo sessionInfo = new BrowserSessionInfo(sessionId,
                 browserString, startURL, launcher, queueSet);
         log.info("Allocated session " + sessionId + " for " + startURL + ", launching...");

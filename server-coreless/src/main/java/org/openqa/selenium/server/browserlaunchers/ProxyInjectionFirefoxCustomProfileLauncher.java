@@ -1,5 +1,7 @@
 package org.openqa.selenium.server.browserlaunchers;
 
+import org.openqa.selenium.server.RemoteControlConfiguration;
+
 /**
  * launcher for Firefox under proxy injection mode
  * 
@@ -17,13 +19,13 @@ public class ProxyInjectionFirefoxCustomProfileLauncher extends
 
     private static boolean alwaysChangeMaxConnections = true;
 
-	public ProxyInjectionFirefoxCustomProfileLauncher(int port, String sessionId) {
-        super(port, sessionId);
+	public ProxyInjectionFirefoxCustomProfileLauncher(RemoteControlConfiguration configuration, String sessionId) {
+        super(configuration, sessionId);
     }
 
-    public ProxyInjectionFirefoxCustomProfileLauncher(int port,
+    public ProxyInjectionFirefoxCustomProfileLauncher(RemoteControlConfiguration configuration,
             String sessionId, String browserLaunchLocation) {
-        super(port, sessionId, browserLaunchLocation);
+        super(configuration, sessionId, browserLaunchLocation);
     }
 
     @Override

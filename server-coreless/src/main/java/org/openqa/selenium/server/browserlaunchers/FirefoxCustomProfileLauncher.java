@@ -42,17 +42,15 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
     protected boolean changeMaxConnections = alwaysChangeMaxConnections;
 
     private static AsyncExecute exe = new AsyncExecute();
-    private int port;
 
-    public FirefoxCustomProfileLauncher(int port, String sessionId) {
-        this(port, sessionId, findBrowserLaunchLocation());
+    public FirefoxCustomProfileLauncher(RemoteControlConfiguration configuration, String sessionId) {
+        this(configuration, sessionId, findBrowserLaunchLocation());
     }
 
-    public FirefoxCustomProfileLauncher(int port, String sessionId, String browserLaunchLocation) {
-        super(sessionId);
+    public FirefoxCustomProfileLauncher(RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
+        super(sessionId, configuration);
         init();
         commandPath = browserLaunchLocation;
-        this.port = port;
         this.sessionId = sessionId;
         // Set MOZ_NO_REMOTE in order to ensure we always get a new Firefox process
         // http://blog.dojotoolkit.org/2005/12/01/running-multiple-versions-of-firefox-side-by-side
@@ -92,11 +90,11 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
             if (WindowsUtils.thisIsWindows()) {
                 defaultPath = WindowsUtils.getProgramFilesPath() + "\\Mozilla Firefox\\firefox.exe";
             } else {
-                for(int x = 0; x < DEFAULT_NONWINDOWS_LOCATIONS.length; x++) {
-                    defaultPath = DEFAULT_NONWINDOWS_LOCATIONS[x];
+                for (String aDEFAULT_NONWINDOWS_LOCATIONS : DEFAULT_NONWINDOWS_LOCATIONS) {
+                    defaultPath = aDEFAULT_NONWINDOWS_LOCATIONS;
                     if (new File(defaultPath).exists()) {
                         break;
-                    } 
+                    }
                 }
             }
         }
@@ -168,7 +166,7 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
         }
         ResourceExtractor.extractResourcePath(getClass(), "/customProfileDirCUSTFF", customProfileDir);
 
-        LauncherUtils.generatePacAndPrefJs(customProfileDirectory, port, proxySetting, null, changeMaxConnections);
+        LauncherUtils.generatePacAndPrefJs(customProfileDirectory, getPort(), proxySetting, null, changeMaxConnections);
     }
 
     public void close() {
@@ -279,7 +277,7 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
     }
 
     public static void main(String[] args) throws Exception {
-        FirefoxCustomProfileLauncher l = new FirefoxCustomProfileLauncher(4444, "CUSTFF");
+        FirefoxCustomProfileLauncher l = new FirefoxCustomProfileLauncher(new RemoteControlConfiguration(), "CUSTFF");
         l.launch("http://www.google.com");
         int seconds = 15000;
         System.out.println("Killing browser in " + Integer.toString(seconds) + " seconds");

@@ -25,6 +25,7 @@ import org.apache.commons.logging.Log;
 import org.apache.tools.ant.taskdefs.condition.Os;
 import org.mortbay.log.LogFactory;
 import org.openqa.selenium.server.SeleniumServer;
+import org.openqa.selenium.server.RemoteControlConfiguration;
 
 public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
 
@@ -35,7 +36,6 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
 
     private static boolean simple = false;
 
-    private int port;
     private File customProfileDir;
     private String[] cmdarray;
     private boolean closed = false;
@@ -46,14 +46,13 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
 
     private static boolean changeMaxConnections = false;
 
-    public FirefoxChromeLauncher(int port, String sessionId) {
-        this(port, sessionId, findBrowserLaunchLocation());
+    public FirefoxChromeLauncher(RemoteControlConfiguration configuration, String sessionId) {
+        this(configuration, sessionId, findBrowserLaunchLocation());
     }
 
-    public FirefoxChromeLauncher(int port, String sessionId, String browserLaunchLocation) {
-        super(sessionId);
+    public FirefoxChromeLauncher(RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
+        super(sessionId, configuration);
         commandPath = browserLaunchLocation;
-        this.port = port;
         this.sessionId = sessionId;
         // Set MOZ_NO_REMOTE in order to ensure we always get a new Firefox process
         // http://blog.dojotoolkit.org/2005/12/01/running-multiple-versions-of-firefox-side-by-side
@@ -90,11 +89,11 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
             if (WindowsUtils.thisIsWindows()) {
                 defaultPath = WindowsUtils.getProgramFilesPath() + "\\Mozilla Firefox\\firefox.exe";
             } else {
-                for(int x = 0; x < DEFAULT_NONWINDOWS_LOCATIONS.length; x++) {
-                    defaultPath = DEFAULT_NONWINDOWS_LOCATIONS[x];
+                for (String aDEFAULT_NONWINDOWS_LOCATIONS : DEFAULT_NONWINDOWS_LOCATIONS) {
+                    defaultPath = aDEFAULT_NONWINDOWS_LOCATIONS;
                     if (new File(defaultPath).exists()) {
                         break;
-                    } 
+                    }
                 }
             }
         }
@@ -123,7 +122,7 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
 
     protected void launch(String url) {
         try {        
-            String homePage = new ChromeUrlConvert().convert(url, port);
+            String homePage = new ChromeUrlConvert().convert(url, getPort());
             String profilePath = makeCustomProfile(homePage);
 
             String chromeURL = "chrome://killff/content/kill.html";
@@ -166,7 +165,7 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
 
         copyRunnerHtmlFiles();
 
-        LauncherUtils.generatePacAndPrefJs(customProfileDir, port, LauncherUtils.ProxySetting.NO_PROXY, homePage, changeMaxConnections);
+        LauncherUtils.generatePacAndPrefJs(customProfileDir, getPort(), LauncherUtils.ProxySetting.NO_PROXY, homePage, changeMaxConnections);
 
         return customProfileDir.getAbsolutePath();
     }
@@ -178,8 +177,8 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
         File htmlDir = new File(extensionDir, "chrome");
         htmlDir.mkdirs();
 
-        LauncherUtils.extractHTAFile(htmlDir, port, "/core/TestRunner.html", "TestRunner.html");
-        LauncherUtils.extractHTAFile(htmlDir, port, "/core/RemoteRunner.html", "RemoteRunner.html");
+        LauncherUtils.extractHTAFile(htmlDir, getPort(), "/core/TestRunner.html", "TestRunner.html");
+        LauncherUtils.extractHTAFile(htmlDir, getPort(), "/core/RemoteRunner.html", "RemoteRunner.html");
 
     }
 
@@ -262,8 +261,7 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
             AsyncExecute.sleepTight(500);
             if (lock.exists()) return false;
         }
-        if (!lock.exists()) return true;
-        return false;
+        return !lock.exists();
     }
 
     /**
@@ -310,7 +308,7 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
     }
 
     public static void main(String[] args) throws Exception {
-        FirefoxChromeLauncher l = new FirefoxChromeLauncher(4444, "CUSTFFCHROME");
+        FirefoxChromeLauncher l = new FirefoxChromeLauncher(new RemoteControlConfiguration(), "CUSTFFCHROME");
         l.launch("http://www.google.com");
         int seconds = 15000;
         System.out.println("Killing browser in " + Integer.toString(seconds) + " seconds");
@@ -321,12 +319,12 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
 
     @Override // need to specify an absolute resultsUrl
     public void launchHTMLSuite(String suiteUrl, String browserURL, boolean multiWindow, String defaultLogLevel) {
-        launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl, multiWindow, port, defaultLogLevel));
+        launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl, multiWindow, getPort(), defaultLogLevel));
     }
     
     @Override // need to specify an absolute driverUrl
     public void launchRemoteSession(String browserURL, boolean multiWindow) { 
-        launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId, multiWindow, port));
+        launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId, multiWindow, getPort()));
     }
 
 }

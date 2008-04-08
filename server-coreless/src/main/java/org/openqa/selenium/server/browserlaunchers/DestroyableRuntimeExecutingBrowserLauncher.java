@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.server.browserlaunchers;
 
-import java.io.*;
+import java.io.IOException;
 
 
 
@@ -33,7 +33,7 @@ public class DestroyableRuntimeExecutingBrowserLauncher extends AbstractBrowserL
     
     /** Specifies a command path to run */
     public DestroyableRuntimeExecutingBrowserLauncher(String commandPath, String sessionId) {
-        super(sessionId);
+        super(sessionId, null);
         this.commandPath = commandPath;
         this.sessionId = sessionId;
     }
@@ -53,11 +53,11 @@ public class DestroyableRuntimeExecutingBrowserLauncher extends AbstractBrowserL
     }
 
     protected void exec(String command) {
-
         try {
             process = Runtime.getRuntime().exec(command);
         } catch (IOException e) {
             throw new RuntimeException("Error starting browser by executing command " + command + ": " + e);
         }
     }
+    
 }

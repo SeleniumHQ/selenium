@@ -16,6 +16,7 @@ import org.mortbay.log.LogFactory;
 import org.openqa.selenium.server.DefaultRemoteCommand;
 import org.openqa.selenium.server.RemoteCommand;
 import org.openqa.selenium.server.SeleniumServer;
+import org.openqa.selenium.server.RemoteControlConfiguration;
 
 public class MockBrowserLauncher implements BrowserLauncher, Runnable {
 
@@ -25,22 +26,22 @@ public class MockBrowserLauncher implements BrowserLauncher, Runnable {
     private static final String KOREAN_TEXT = "\uC5F4\uC5D0";
     private static final String ROMANCE_TEXT = "\u00FC\u00F6\u00E4\u00DC\u00D6\u00C4 \u00E7\u00E8\u00E9 \u00BF\u00F1 \u00E8\u00E0\u00F9\u00F2";
     static Log log = LogFactory.getLog(MockBrowserLauncher.class);
-    private final int port;
     private final String sessionId;
     private Thread browser;
     private boolean interrupted = false;
     private String uniqueId;
     private int sequenceNumber = 0;
+    private final RemoteControlConfiguration configuration;
     
-    public MockBrowserLauncher(int port, String sessionId) {
-        this.port = port;
+    public MockBrowserLauncher(RemoteControlConfiguration configuration, String sessionId) {
         this.sessionId = sessionId;
         this.uniqueId = "mock";
+        this.configuration = configuration;
     }
     
-    public MockBrowserLauncher(int port, String sessionId, String command) {
-        this.port = port;
+    public MockBrowserLauncher(RemoteControlConfiguration configuration, String sessionId, String command) {
         this.sessionId = sessionId;
+        this.configuration = configuration;
     }
     
     public void launchRemoteSession(String url, boolean multiWindow) {
@@ -70,7 +71,7 @@ public class MockBrowserLauncher implements BrowserLauncher, Runnable {
 
     public void run() {
         try {
-            String startURL = "http://localhost:" + port+"/selenium-server/driver/?sessionId=" + sessionId + "&uniqueId=" + uniqueId;
+            String startURL = "http://localhost:" + configuration.getPortDriversShouldContact() +"/selenium-server/driver/?sessionId=" + sessionId + "&uniqueId=" + uniqueId;
             String commandLine = doBrowserRequest(startURL+"&seleniumStart=true&sequenceNumber="+sequenceNumber++, "START");
             while (!interrupted) {
                 log.info("MOCK: " + commandLine);

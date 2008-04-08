@@ -1,6 +1,8 @@
 package org.openqa.selenium.server.browserlaunchers;
 
-import java.io.*;
+import org.openqa.selenium.server.RemoteControlConfiguration;
+
+import java.io.IOException;
 
 
 /**
@@ -18,14 +20,14 @@ import java.io.*;
 public class ProxyInjectionInternetExplorerCustomProxyLauncher extends InternetExplorerCustomProxyLauncher {
     private static boolean alwaysChangeMaxConnections = true;
 
-	public ProxyInjectionInternetExplorerCustomProxyLauncher(int port, String sessionId, int portDriversShouldContact) {
-        super(port, sessionId, portDriversShouldContact);
+	public ProxyInjectionInternetExplorerCustomProxyLauncher(RemoteControlConfiguration configuration, String sessionId) {
+        super(configuration, sessionId);
     }
     
-    public ProxyInjectionInternetExplorerCustomProxyLauncher(int port, String sessionId,
-            String browserLaunchLocation, int portDriversShouldContact) {
+    public ProxyInjectionInternetExplorerCustomProxyLauncher(RemoteControlConfiguration configuration,
+            String sessionId, String browserLaunchLocation) {
         
-        super(port, sessionId, browserLaunchLocation, portDriversShouldContact);
+        super(configuration, sessionId, browserLaunchLocation);
     }
     
     @Override

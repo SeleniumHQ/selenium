@@ -20,6 +20,7 @@ import org.apache.commons.logging.Log;
 import org.apache.tools.ant.taskdefs.condition.Os;
 import org.mortbay.log.LogFactory;
 import org.openqa.selenium.server.SeleniumServer;
+import org.openqa.selenium.server.RemoteControlConfiguration;
 
 import java.io.*;
 
@@ -30,7 +31,7 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
 
     private static final String REDIRECT_TO_GO_TO_SELENIUM = "redirect_to_go_to_selenium.htm";
 
-//    private int port;
+    //    private int port;
     private File customProfileDir;
     private String[] cmdarray;
     private boolean closed = false;
@@ -39,25 +40,24 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
     protected WindowsProxyManager wpm;
     protected MacProxyManager mpm;
     private File backedUpCookieFile;
-    private String backedUpCookieFilePath;
     private File originalCookieFile;
     private String originalCookieFilePath;
 
     private static AsyncExecute exe = new AsyncExecute();
 
-    public SafariCustomProfileLauncher(int port, String sessionId, int portDriversShouldContact) {
-        this(port, sessionId, findBrowserLaunchLocation(), portDriversShouldContact);
+    public SafariCustomProfileLauncher(RemoteControlConfiguration configuration, String sessionId) {
+        this(configuration, sessionId, findBrowserLaunchLocation());
     }
 
-    public SafariCustomProfileLauncher(int port, String sessionId, String browserLaunchLocation, int portDriversShouldContact) {
-        super(sessionId);
+    public SafariCustomProfileLauncher(RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
+        super(sessionId, configuration);
         commandPath = findBrowserLaunchLocation();
 //        this.port = port;
         this.sessionId = sessionId;
         if (WindowsUtils.thisIsWindows()) {
-            wpm = new WindowsProxyManager(true, sessionId, port, portDriversShouldContact);
+            wpm = new WindowsProxyManager(true, sessionId, getPort(), getPort());
         } else {
-            mpm = new MacProxyManager(sessionId, port);
+            mpm = new MacProxyManager(sessionId, getPort());
             // On unix, add command's directory to LD_LIBRARY_PATH
             File SafariBin = AsyncExecute.whichExec(commandPath);
             if (SafariBin == null) {
@@ -85,11 +85,11 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
     private static String findBrowserLaunchLocation() {
         String defaultPath = System.getProperty("SafariDefaultPath");
         if (defaultPath == null) {
-        	if (WindowsUtils.thisIsWindows()) {
-        		defaultPath = WindowsUtils.getProgramFilesPath() + "\\Safari\\Safari.exe";
-        	} else {
-        		defaultPath = DEFAULT_LOCATION;
-        	}
+            if (WindowsUtils.thisIsWindows()) {
+                defaultPath = WindowsUtils.getProgramFilesPath() + "\\Safari\\Safari.exe";
+            } else {
+                defaultPath = DEFAULT_LOCATION;
+            }
         }
         File defaultLocation = new File(defaultPath);
         if (defaultLocation.exists()) {
@@ -130,15 +130,15 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
             cmdarray = new String[]{commandPath};
 
             if (Os.isFamily("mac")) {
-            	String redirectHtmlFileName = makeRedirectionHtml(customProfileDir, url);
+                String redirectHtmlFileName = makeRedirectionHtml(customProfileDir, url);
 
                 log.info("Launching Safari to visit " + url + " via " + redirectHtmlFileName + "...");
                 cmdarray = new String[]{commandPath, redirectHtmlFileName};
             } else {
-            	log.info("Launching Safari ...");
-            	cmdarray = new String[]{commandPath, "-url", url};
+                log.info("Launching Safari ...");
+                cmdarray = new String[]{commandPath, "-url", url};
             }
-            
+
 
             exe.setCommandline(cmdarray);
 
@@ -155,12 +155,8 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
             File cacheDir = new File("/Users/" + user + "/Library/Caches/Safari");
             originalCookieFilePath = "/Users/" + user + "/Library/Cookies" + "/Cookies.plist";
             originalCookieFile = new File(originalCookieFilePath);
-            
-            try {
-                LauncherUtils.deleteTryTryAgain(cacheDir, 6);
-            } catch (RuntimeException e) {
-                throw e;
-            }
+
+            LauncherUtils.deleteTryTryAgain(cacheDir, 6);
         } else {
             originalCookieFilePath = System.getenv("APPDATA") + "/Apple Computer/Safari/Cookies/Cookies.plist";
             originalCookieFile = new File(originalCookieFilePath);
@@ -173,19 +169,19 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
                 cacheFile.delete();
             }
         }
-        
+
         log.info("originalCookieFilePath: " + originalCookieFilePath);
-        
-        backedUpCookieFilePath = customProfileDir.toString() + "/Cookies.plist";
+
+        String backedUpCookieFilePath = customProfileDir.toString() + "/Cookies.plist";
         backedUpCookieFile = new File(backedUpCookieFilePath);
         log.info("backedUpCookieFilePath: " + backedUpCookieFilePath);
-    	
+
         if (originalCookieFile.exists()) {
             LauncherUtils.copySingleFile(originalCookieFile, backedUpCookieFile);
             originalCookieFile.delete();
         }
     }
-    
+
     protected void changeRegistrySettings() throws IOException {
         wpm.changeRegistrySettings();
     }
@@ -225,11 +221,11 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
             log.warn("Safari seems to have ended on its own (did we kill the real browser???)");
         }
         closed = true;
-        
+
         if (backedUpCookieFile != null && backedUpCookieFile.exists()) {
             File sessionCookieFile = new File(originalCookieFilePath);
             boolean success = sessionCookieFile.delete();
-            if (success){
+            if (success) {
                 log.info("Session's cookie file deleted.");
             } else {
                 log.info("Session's cookie *not* deleted.");
@@ -245,7 +241,7 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
     }
 
     public static void main(String[] args) throws Exception {
-        SafariCustomProfileLauncher l = new SafariCustomProfileLauncher(SeleniumServer.DEFAULT_PORT, "CUST", SeleniumServer.DEFAULT_PORT);
+        SafariCustomProfileLauncher l = new SafariCustomProfileLauncher(new RemoteControlConfiguration(), "CUST");
         l.launch("http://www.google.com");
         int seconds = 15;
         System.out.println("Killing browser in " + Integer.toString(seconds) + " seconds");
