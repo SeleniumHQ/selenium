@@ -1017,6 +1017,7 @@ Selenium.prototype.doWaitForPopUp.dontCheckAlertsAndConfirms = true;
 
 Selenium.prototype.doChooseCancelOnNextConfirmation = function() {
     /**
+   * <p>
    * By default, Selenium's overridden window.confirm() function will
    * return true, as if the user had manually clicked OK; after running
    * this command, the next call to confirm() will return false, as if
@@ -1024,13 +1025,19 @@ Selenium.prototype.doChooseCancelOnNextConfirmation = function() {
    * default behavior for future confirmations, automatically returning 
    * true (OK) unless/until you explicitly call this command for each
    * confirmation.
-   *
+   * </p>
+   * <p>
+   * Take note - every time a confirmation comes up, you must
+   * consume it with a corresponding getConfirmation, or else
+   * the next selenium operation will fail.
+   * </p>
    */
     this.browserbot.cancelNextConfirmation(false);
 };
 
 Selenium.prototype.doChooseOkOnNextConfirmation = function() {
     /**
+   * <p>
    * Undo the effect of calling chooseCancelOnNextConfirmation.  Note
    * that Selenium's overridden window.confirm() function will normally automatically
    * return true, as if the user had manually clicked OK, so you shouldn't
@@ -1039,6 +1046,12 @@ Selenium.prototype.doChooseOkOnNextConfirmation = function() {
    * default behavior for future confirmations, automatically returning 
    * true (OK) unless/until you explicitly call chooseCancelOnNextConfirmation for each
    * confirmation.
+   * </p>
+   * <p>
+   * Take note - every time a confirmation comes up, you must
+   * consume it with a corresponding getConfirmation, or else
+   * the next selenium operation will fail.
+   * </p>
    *
    */
     this.browserbot.cancelNextConfirmation(true);
@@ -1128,16 +1141,17 @@ Selenium.prototype.getAlert = function() {
    * Retrieves the message of a JavaScript alert generated during the previous action, or fail if there were no alerts.
    *
    * <p>Getting an alert has the same effect as manually clicking OK. If an
-   * alert is generated but you do not get/verify it, the next Selenium action
+   * alert is generated but you do not consume it with getAlert, the next Selenium action
    * will fail.</p>
    *
-   * <p>NOTE: under Selenium, JavaScript alerts will NOT pop up a visible alert
+   * <p>Under Selenium, JavaScript alerts will NOT pop up a visible alert
    * dialog.</p>
    *
-   * <p>NOTE: Selenium does NOT support JavaScript alerts that are generated in a
+   * <p>Selenium does NOT support JavaScript alerts that are generated in a
    * page's onload() event handler. In this case a visible dialog WILL be
    * generated and Selenium will hang until someone manually clicks OK.</p>
    * @return string The message of the most recent JavaScript alert
+
    */
     if (!this.browserbot.hasAlerts()) {
         Assert.fail("There were no alerts");
@@ -1154,8 +1168,11 @@ Selenium.prototype.getConfirmation = function() {
    * <p>
    * By default, the confirm function will return true, having the same effect
    * as manually clicking OK. This can be changed by prior execution of the
-   * chooseCancelOnNextConfirmation command. If an confirmation is generated
-   * but you do not get/verify it, the next Selenium action will fail.
+   * chooseCancelOnNextConfirmation command. 
+   * </p>
+   * <p>
+   * If an confirmation is generated but you do not consume it with getConfirmation,
+   * the next Selenium action will fail.
    * </p>
    *
    * <p>
