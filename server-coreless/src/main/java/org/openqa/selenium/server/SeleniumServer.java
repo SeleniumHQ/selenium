@@ -164,7 +164,6 @@ public class SeleniumServer {
 
     public static final int DEFAULT_PORT = 4444;
 
-    private static String logOutFileName = null;
     private static String forcedBrowserMode = null;
 
     public static final int DEFAULT_TIMEOUT = (30 * 60);
@@ -246,7 +245,7 @@ public class SeleniumServer {
      */
     public SeleniumServer(int port, boolean slowResources, RemoteControlConfiguration configuration) throws Exception {
         this.configuration = configuration;
-        configureLogging();
+        configureLogging(configuration);
         logger.info("Java: " + System.getProperty("java.vm.vendor") + ' ' + System.getProperty("java.vm.version"));
         logger.info("OS: " + System.getProperty("os.name") + ' ' + System.getProperty("os.version") + ' ' + System.getProperty("os.arch"));
         logVersionNumber();
@@ -298,7 +297,7 @@ public class SeleniumServer {
     }
 
 
-    public synchronized static void configureLogging() {
+    public static synchronized void configureLogging(RemoteControlConfiguration configuration) {
         if (dontTouchLogging) {
             logger = LogFactory.getLog(SeleniumServer.class);
             return;
@@ -336,12 +335,12 @@ public class SeleniumServer {
         }
 
         SeleniumServer.logger = LogFactory.getLog(SeleniumServer.class);
-        if (logOutFileName == null && System.getProperty("selenium.log") != null) {
-            logOutFileName = System.getProperty("selenium.log");
+        if (null == configuration.getLogOutFileName() && System.getProperty("selenium.log") != null) {
+            configuration.setLogOutFileName(System.getProperty("selenium.log"));
         }
-        if (logOutFileName != null) {
+        if (null != configuration.getLogOutFile()) {
             try {
-                File logFile = new File(logOutFileName);
+                File logFile = configuration.getLogOutFile();
                 FileHandler fileHandler = seleniumFileHandlers.get(logFile);
                 if (fileHandler == null) {
                     fileHandler = new FileHandler(logFile.getAbsolutePath());
@@ -801,14 +800,6 @@ public class SeleniumServer {
 
     }
 
-    public static void setLogFile(File logFile) {
-        if (logFile == null) {
-            logOutFileName = null;
-        } else {
-            logOutFileName = logFile.getAbsolutePath();
-        }
-    }
-
     private static void readUserCommands(SeleniumServer seleniumProxy, RemoteControlConfiguration configuration) throws IOException {
         AsyncExecute.sleepTight(500);
         System.out.println("Entering interactive mode... type Selenium commands here (e.g: cmd=open&1=http://www.yahoo.com)");
@@ -902,7 +893,7 @@ public class SeleniumServer {
                     SeleniumServer.forcedBrowserMode += args[i];
                 }
             } else if ("-log".equalsIgnoreCase(arg)) {
-                logOutFileName = getArg(args, ++i);
+                configuration.setLogOutFileName(getArg(args, ++i));
             } else if ("-port".equalsIgnoreCase(arg)) {
                 configuration.setPort(Integer.parseInt(getArg(args, ++i)));
             } else if ("-multiWindow".equalsIgnoreCase(arg)) {

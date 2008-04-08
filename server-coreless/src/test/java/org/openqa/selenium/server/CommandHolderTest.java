@@ -14,53 +14,53 @@ import java.util.logging.Logger;
 
 public class CommandHolderTest extends TestCase {
 
-  private static Log log = LogFactory.getLog(CommandHolderTest.class);
+    private static Log log = LogFactory.getLog(CommandHolderTest.class);
 
-  private static final String sessionId = "1";
-  private static final String testCommand = "testCommand";
-  private static final String testArg1 = "arg1";
-  private static final String testArg2 = "arg2";
-	private static final RemoteCommand testRemoteCommand =
-		new DefaultRemoteCommand(testCommand, testArg1, testArg2);
-  
-	private static final int retryTimeout = 2;
-  private CommandHolder holder;
-  
-  @Override
-  public void setUp() {
-    configureLogging();
-    holder = new CommandHolder(sessionId, retryTimeout);
-    log.info("Start test: " + getName());
-  }
-  
-  private void configureLogging() {
-      SeleniumServer.setDebugMode(true);
-      SeleniumServer.configureLogging();
-      Logger logger = Logger.getLogger("");
-      for (Handler handler : logger.getHandlers()) {
-          if (handler instanceof StdOutHandler) {
-              handler.setFormatter(new TerseFormatter(true));
-              break;
-          }
-      }
-  }
-  
-  @Override
-  public void tearDown() {
-    SeleniumServer.setDebugMode(false);
-    SeleniumServer.configureLogging();
-  }
+    private static final String sessionId = "1";
+    private static final String testCommand = "testCommand";
+    private static final String testArg1 = "arg1";
+    private static final String testArg2 = "arg2";
+    private static final RemoteCommand testRemoteCommand =
+            new DefaultRemoteCommand(testCommand, testArg1, testArg2);
 
-  public void testGetCommandGeneratesRetryWhenNoCommand() {
-    long now = System.currentTimeMillis();
-	RemoteCommand nextCmd = holder.getCommand();
-	long after = System.currentTimeMillis();
-	assertNotNull(nextCmd);
-	assertEquals(CommandHolder.RETRY_CMD_STRING, nextCmd.getCommand());
-	assertTrue(after - now >= (retryTimeout*999)); // at least retry seconds
-	assertNull(holder.peek());
-  }
-	
+    private static final int retryTimeout = 2;
+    private CommandHolder holder;
+
+    @Override
+    public void setUp() throws Exception {
+        configureLogging();
+        holder = new CommandHolder(sessionId, retryTimeout);
+        log.info("Start test: " + getName());
+    }
+
+    private void configureLogging() throws Exception {
+        SeleniumServer.setDebugMode(true);
+        SeleniumServer.configureLogging(new RemoteControlConfiguration());
+        Logger logger = Logger.getLogger("");
+        for (Handler handler : logger.getHandlers()) {
+            if (handler instanceof StdOutHandler) {
+                handler.setFormatter(new TerseFormatter(true));
+                break;
+            }
+        }
+    }
+
+    @Override
+    public void tearDown() throws Exception {
+        SeleniumServer.setDebugMode(false);
+        SeleniumServer.configureLogging(new RemoteControlConfiguration());
+    }
+
+    public void testGetCommandGeneratesRetryWhenNoCommand() {
+        long now = System.currentTimeMillis();
+        RemoteCommand nextCmd = holder.getCommand();
+        long after = System.currentTimeMillis();
+        assertNotNull(nextCmd);
+        assertEquals(CommandHolder.RETRY_CMD_STRING, nextCmd.getCommand());
+        assertTrue(after - now >= (retryTimeout * 999)); // at least retry seconds
+        assertNull(holder.peek());
+    }
+
     public void testGetCommandGeneratesNullWhenPoisoned() throws Throwable {
         TrackableRunnable internalGetter = new TrackableRunnable() {
             @Override
@@ -77,20 +77,20 @@ public class CommandHolderTest extends TestCase {
         assertNull(t.getResult());
     }
 
-  public void testSimpleSingleThreaded() throws Throwable {
-    injectCommand(testRemoteCommand, true);
-    expectCommand(testRemoteCommand);
-    assertTrue(holder.isEmpty()); // command got picked up.
-  }
+    public void testSimpleSingleThreaded() throws Throwable {
+        injectCommand(testRemoteCommand, true);
+        expectCommand(testRemoteCommand);
+        assertTrue(holder.isEmpty()); // command got picked up.
+    }
 
-  private void injectCommand(RemoteCommand cmd, boolean expected) throws Throwable {
-		boolean actual = holder.putCommand(cmd);
-		assertEquals(cmd + "command got sent", expected, actual);
-  }
+    private void injectCommand(RemoteCommand cmd, boolean expected) throws Throwable {
+        boolean actual = holder.putCommand(cmd);
+        assertEquals(cmd + "command got sent", expected, actual);
+    }
 
-  private void expectCommand(RemoteCommand expected) throws Throwable {
-    RemoteCommand actual = holder.getCommand();
-    assertEquals(expected + " command retrieved", expected, actual);
-  }
-  
+    private void expectCommand(RemoteCommand expected) throws Throwable {
+        RemoteCommand actual = holder.getCommand();
+        assertEquals(expected + " command retrieved", expected, actual);
+    }
+
 }

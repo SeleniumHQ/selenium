@@ -167,7 +167,6 @@ public class RemoteControlConfigurationTest extends TestCase {
         assertNull(new RemoteControlConfiguration().getDontInjectRegex());
     }
 
-
     public void testDontInjectRegexCanBeSet() {
         final RemoteControlConfiguration configuration;
         configuration = new RemoteControlConfiguration();
@@ -200,6 +199,18 @@ public class RemoteControlConfigurationTest extends TestCase {
 
         configuration.setReuseBrowserSessions(true);
         assertTrue(configuration.reuseBrowserSessions());
+    }
+
+    public void testLogoutFileNameIsNullByDefault() {
+        assertNull(new RemoteControlConfiguration().getLogOutFileName());
+    }
+
+    public void testLogoutFileNameCanBeSet() {
+        final RemoteControlConfiguration configuration;
+        configuration = new RemoteControlConfiguration();
+
+        configuration.setLogOutFileName("A File Name");
+        assertEquals("A File Name", configuration.getLogOutFileName());
     }
 
 }

@@ -18,11 +18,11 @@ public class RemoteControlConfiguration {
      * But if a developer wants to monitor traffic into and out of the selenium server, he can set this port from
      * the command line to be a different value and then use a tool like tcptrace to link this port with the
      * server listening port, thereby opening a window into the raw HTTP traffic.
-     *
+     * <p/>
      * For example, if the selenium server is invoked with  -portDriversShouldContact 4445, then traffic going
      * into the selenium server will be routed to port 4445, although the selenium server will still be listening
      * to the default port 4444.  At this point, you would open tcptrace to bridge the gap and be able to watch
-     * all the data coming in and out:     
+     * all the data coming in and out:
      */
     private int portDriversShouldContact;
     private boolean htmlSuite;
@@ -32,11 +32,14 @@ public class RemoteControlConfiguration {
     private File userExtensions;
     private boolean userJSInjection;
     private boolean trustAllSSLCertificates;
-    /** add special tracing for debug when this URL is requested */
+    /**
+     * add special tracing for debug when this URL is requested
+     */
     private String debugURL;
     private String dontInjectRegex;
     private File firefoxProfileTemplate;
     private boolean reuseBrowserSessions;
+    private String logOutFileName;
 
 
     public RemoteControlConfiguration() {
@@ -170,6 +173,22 @@ public class RemoteControlConfiguration {
 
     public boolean reuseBrowserSessions() {
         return this.reuseBrowserSessions;
+    }
+
+    public void setLogOutFileName(String newLogOutFileName) {
+        this.logOutFileName = newLogOutFileName;
+    }
+
+    public String getLogOutFileName() {
+        return logOutFileName;
+    }
+
+    public void setLogOutFile(File newLogOutFile) {
+        logOutFileName = (null == newLogOutFile) ? null : newLogOutFile.getAbsolutePath();
+    }
+
+    public File getLogOutFile() {
+        return (null == logOutFileName) ? null : new File(logOutFileName);
     }
 
 }

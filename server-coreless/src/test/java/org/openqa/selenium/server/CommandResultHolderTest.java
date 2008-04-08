@@ -23,15 +23,15 @@ public class CommandResultHolderTest extends TestCase {
   private CommandResultHolder holder;
   
   @Override
-  public void setUp() {
+  public void setUp() throws Exception {
     configureLogging();
     holder = new CommandResultHolder(sessionId, cmdTimeout);
     log.info("Start test: " + getName());
   }
   
-  private void configureLogging() {
+  private void configureLogging() throws Exception {
       SeleniumServer.setDebugMode(true);
-      SeleniumServer.configureLogging();
+      SeleniumServer.configureLogging(new RemoteControlConfiguration());
       Logger logger = Logger.getLogger("");
       for (Handler handler : logger.getHandlers()) {
           if (handler instanceof StdOutHandler) {
@@ -42,9 +42,9 @@ public class CommandResultHolderTest extends TestCase {
   }
   
   @Override
-  public void tearDown() {
+  public void tearDown() throws Exception {
       SeleniumServer.setDebugMode(false);
-      SeleniumServer.configureLogging();
+      SeleniumServer.configureLogging(new RemoteControlConfiguration());
   }
 
   public void testGetCommandGeneratesTimeoutStringWhenNoResult() {

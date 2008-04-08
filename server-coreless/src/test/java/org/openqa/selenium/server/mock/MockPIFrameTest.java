@@ -10,18 +10,14 @@ import junit.framework.TestSuite;
 
 import org.apache.commons.logging.Log;
 import org.mortbay.log.LogFactory;
-import org.openqa.selenium.server.DefaultRemoteCommand;
-import org.openqa.selenium.server.InjectionHelper;
-import org.openqa.selenium.server.RemoteCommand;
-import org.openqa.selenium.server.SeleniumServer;
-import org.openqa.selenium.server.WindowClosedException;
+import org.openqa.selenium.server.*;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
 import org.openqa.selenium.server.log.StdOutHandler;
 import org.openqa.selenium.server.log.TerseFormatter;
 
 public class MockPIFrameTest extends TestCase {
 
-    static Log log = LogFactory.getLog(MockPIFrameTest.class);
+    static final Log LOGGER = LogFactory.getLog(MockPIFrameTest.class);
 
     private static final String DRIVER_URL = "http://localhost:4444/selenium-server/driver/";
     private static int timeoutInSeconds = 10;
@@ -50,13 +46,19 @@ public class MockPIFrameTest extends TestCase {
         server.start();
         BrowserLauncherFactory.addBrowserLauncher("dummy", DummyBrowserLauncher.class);
         InjectionHelper.setFailOnError(false);
-        log.info("Starting " + getName());
+        LOGGER.info("Starting " + getName());
     }
 
-    private void configureLogging() {
+    private RemoteControlConfiguration configureLogging() throws Exception {
         //SeleniumServer.setDebugMode(true);
-        setLogProperty();
-        SeleniumServer.configureLogging();
+        RemoteControlConfiguration configuration = new RemoteControlConfiguration();
+        File target = new File("target");
+        if (target.exists() && target.isDirectory()) {
+            configuration.setLogOutFile(new File(target, "mockpiframe.log"));
+        } else {
+            configuration.setLogOutFile(new File("mockpiframe.log"));
+        }
+        SeleniumServer.configureLogging(configuration);
         Logger logger = Logger.getLogger("");
         for (Handler handler : logger.getHandlers()) {
             if (handler instanceof StdOutHandler) {
@@ -64,23 +66,15 @@ public class MockPIFrameTest extends TestCase {
                 break;
             }
         }
+        return configuration;
     }
 
-    private void setLogProperty() {
-        File target = new File("target");
-        if (target.exists() && target.isDirectory()) {
-            SeleniumServer.setLogFile(new File(target, "mockpiframe.log"));
-        } else {
-            SeleniumServer.setLogFile(new File("mockpiframe.log"));
-        }
-    }
 
     @Override
     public void tearDown() {
         server.stop();
         SeleniumServer.setDebugMode(false);
-        SeleniumServer.setLogFile(null);
-        SeleniumServer.configureLogging();
+        SeleniumServer.configureLogging(new RemoteControlConfiguration());
         DummyBrowserLauncher.clearSessionId();
         InjectionHelper.setFailOnError(true);
         SeleniumServer.setProxyInjectionMode(false);
@@ -103,13 +97,13 @@ public class MockPIFrameTest extends TestCase {
         DriverRequest driverRequest = sendCommand("getNewBrowserSession", "*dummy", "http://x");
         // 2. server generates new session, awaits browser launch
         sessionId = waitForSessionId(driverRequest);
-        log.debug("browser starting session " + sessionId);
+        LOGGER.debug("browser starting session " + sessionId);
         // 3. browser starts, requests work
         MockPIFrame frame = new MockPIFrame(DRIVER_URL, sessionId, "frame1");
-        log.debug("browser sending start message");
+        LOGGER.debug("browser sending start message");
         frame.seleniumStart();
         // 4. server requests identification, asks for "getTitle"
-        log.debug("browser expecting getTitle command, blocking..");
+        LOGGER.debug("browser expecting getTitle command, blocking..");
         frame.expectCommand("getTitle", "", "");
         // 5. browser replies "selenium remote runner" to getTitle
         frame.sendResult("OK,selenium remote runner");
@@ -680,7 +674,7 @@ public class MockPIFrameTest extends TestCase {
     }
 
     private DriverRequest sendCommand(RemoteCommand cmd, int timeoutInMillis) {
-        log.info("Driver sends " + cmd + " on session " + sessionId);
+        LOGGER.info("Driver sends " + cmd + " on session " + sessionId);
         return DriverRequest.request(DRIVER_URL, cmd, sessionId, timeoutInMillis);
     }
 }
