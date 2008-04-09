@@ -807,10 +807,17 @@ StepExpr.prototype.evaluate = function(ctx) {
     }
 
   } else if (this.axis == xpathAxis.ATTRIBUTE) {
-    if (false) {
-    //if (this.nodetest.name != undefined) {
+    if (this.nodetest.name != undefined) {
       // single-attribute step
-      nodelist.push(input.attributes[this.nodetest.name]);
+      if (input.attributes) {
+        if (input.attributes instanceof Array) {
+          // probably evaluating on document created by xmlParse()
+          copyArray(nodelist, input.attributes);
+        }
+        else {
+          nodelist.push(input.attributes[this.nodetest.name]);
+        }
+      }
     }
     else {
       // all-attributes step
