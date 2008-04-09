@@ -1353,6 +1353,11 @@ BrowserBot.prototype.locateElementByDomTraversal.prefix = "dom";
  *                       performance in IE; however, if your xpaths depend on
  *                       such attributes, you can't ignore them! Defaults to
  *                       true.
+ *
+ *                     returnOnFirstMatch:
+ *                       whether to optimize the XPath evaluation to only
+ *                       return the first match. The match, if any, will still
+ *                       be returned in a list. Defaults to false.
  */
 function eval_xpath(xpath, inDocument, opts)
 {
@@ -1369,6 +1374,8 @@ function eval_xpath(xpath, inDocument, opts)
         ? opts.allowNativeXpath : true;
     var ignoreAttributesWithoutValue = (opts.ignoreAttributesWithoutValue != undefined)
         ? opts.ignoreAttributesWithoutValue : true;
+    var returnOnFirstMatch = (opts.returnOnFirstMatch != undefined)
+        ? opts.returnOnFirstMatch : false;
 
     // Trim any trailing "/": not valid xpath, and remains from attribute
     // locator.
@@ -1432,6 +1439,7 @@ function eval_xpath(xpath, inDocument, opts)
     }
     context.setCaseInsensitive(true);
     context.setIgnoreAttributesWithoutValue(ignoreAttributesWithoutValue);
+    context.setReturnOnFirstMatch(returnOnFirstMatch);
     var xpathObj;
     try {
         xpathObj = xpathParse(xpath);
@@ -1439,7 +1447,6 @@ function eval_xpath(xpath, inDocument, opts)
     catch (e) {
         throw new SeleniumError("Invalid xpath: " + extractExceptionMessage(e));
     }
-    context.optimizeFor(xpathObj);
     var xpathResult = xpathObj.evaluate(context);
     if (xpathResult && xpathResult.value) {
         for (var i = 0; i < xpathResult.value.length; ++i) {
@@ -1455,6 +1462,7 @@ function eval_xpath(xpath, inDocument, opts)
  */
 BrowserBot.prototype.locateElementByXPath = function(xpath, inDocument, inWindow) {
     var results = eval_xpath(xpath, inDocument, {
+        returnOnFirstMatch          : true,
         ignoreAttributesWithoutValue: this.ignoreAttributesWithoutValue,
         allowNativeXpath            : this.allowNativeXpath,
         xpathLibrary                : this.xpathLibrary,

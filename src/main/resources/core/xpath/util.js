@@ -227,19 +227,6 @@ function copyArray(dst, src) {
 }
 
 /**
- * This is an optimization for copying attribute lists in IE. Only those
- * attributes in the given set of names will be copied to the destination list.
- */
-function copyArrayOfNamedAttributes(dst, src, names) {
-  if (!src) return;
-  for (var name in names) {
-    if (src[name]) {
-      dst.push(src[name]);
-    }
-  }
-}
-
-/**
  * This is an optimization for copying attribute lists in IE. IE includes many
  * extraneous properties in its DOM attribute lists, which take require
  * significant extra processing when evaluating attribute steps. With this
@@ -498,33 +485,31 @@ RegExp.escape = (function() {
 })();
 
 /**
- * Traverses a LocationExpr object tree, returning a set of NodeTest names for
- * any attribute steps encountered. This is basically a listing of all unique
- * attribute names referenced in the XPath, and may contain "*". We want to
- * get this from the XPath expression so we can avoid copying unnecessary
- * attributes at evaluation time, because reading the DOM is very expensive in
- * IE.
+ * Determines whether a predicate expression contains a "positional selector".
+ * A positional selector filters nodes from the nodelist input based on their
+ * position within that list. When such selectors are encountered, the
+ * evaluation of the predicate cannot be depth-first, because the positional
+ * selector may be based on the result of evaluating predicates that precede
+ * it.
  */
-function getAttributeNodeTestNames(object, names) {
-  if (names == undefined) {
-    var names = {};
+function predicateExprHasPositionalSelector(expr, isRecursiveCall) {
+  if (!expr) {
+    return false;
   }
-  if (typeof(object) == 'object') {
-    if (object.axis == 'attribute') {
-      // the node test name is not defined for the all attributes selector
-      if (object.nodetest.name == undefined) {
-        names['*'] = true;
-      }
-      else {
-        names[object.nodetest.name] = true;
-      }
-    }
-    for (var attr in object) {
-      getAttributeNodeTestNames(object[attr], names);
-    }
+  if (expr instanceof NumberExpr && !isRecursiveCall) {
+    // this is an indexing predicate
+    return true;
   }
-  return names;
+  if (expr instanceof FunctionCallExpr) {
+    var value = expr.name.value;
+    return (value == 'last' || value == 'position');
+  }
+  if (expr instanceof BinaryExpr) {
+    return (
+      predicateExprHasPositionalSelector(expr.expr1, true) ||
+      predicateExprHasPositionalSelector(expr.expr2, true));
+  }
+  return false;
 }
-
 
 

@@ -409,7 +409,7 @@ function stackToString(stack) {
 
 function ExprContext(node, opt_position, opt_nodelist, opt_parent,
   opt_caseInsensitive, opt_ignoreAttributesWithoutValue,
-  opt_returnOnFirstMatch, opt_inPlayAttributes)
+  opt_returnOnFirstMatch)
 {
   this.node = node;
   this.position = opt_position || 0;
@@ -419,7 +419,6 @@ function ExprContext(node, opt_position, opt_nodelist, opt_parent,
   this.caseInsensitive = opt_caseInsensitive || false;
   this.ignoreAttributesWithoutValue = opt_ignoreAttributesWithoutValue || false;
   this.returnOnFirstMatch = opt_returnOnFirstMatch || false;
-  this.inPlayAttributes = opt_inPlayAttributes;
   if (opt_parent) {
     this.root = opt_parent.root;
   } else if (this.node.nodeType == DOM_DOCUMENT_NODE) {
@@ -438,7 +437,7 @@ ExprContext.prototype.clone = function(opt_node, opt_position, opt_nodelist) {
       opt_node || this.node,
       typeof opt_position != 'undefined' ? opt_position : this.position,
       opt_nodelist || this.nodelist, this, this.caseInsensitive,
-      this.ignoreAttributesWithoutValue, this.returnOnFirstMatch, this.inPlayAttributes);
+      this.ignoreAttributesWithoutValue, this.returnOnFirstMatch);
 };
 
 ExprContext.prototype.setVariable = function(name, value) {
@@ -502,29 +501,6 @@ ExprContext.prototype.isReturnOnFirstMatch = function() {
 
 ExprContext.prototype.setReturnOnFirstMatch = function(returnOnFirstMatch) {
   return this.returnOnFirstMatch = returnOnFirstMatch;
-};
-
-ExprContext.prototype.getInPlayAttributes = function(inPlayAttributes) {
-  return this.inPlayAttributes;
-};
-
-/**
- * "In play attributes" are the attributes that will be copied for nodes in
- * XPath node sets. It should probably be set to the return value of the
- * getAttributeNodeTestNames() function, having passed in the parsed XPath
- * object as its parameter. If in play attributes are not specified, all
- * attributes are copied (with the possible exception of "attributes without
- * value").
- *
- * @param inPlayAttributes  the set of attribute names to be referenced when
- *                          copying attributes as part of XPath evaluation
- */
-ExprContext.prototype.setInPlayAttributes = function(inPlayAttributes) {
-  return this.inPlayAttributes = inPlayAttributes;
-};
-
-ExprContext.prototype.optimizeFor = function(xpathObj) {
-  this.setInPlayAttributes(getAttributeNodeTestNames(xpathObj));
 };
 
 // XPath expression values. They are what XPath expressions evaluate
@@ -738,16 +714,50 @@ LocationExpr.prototype.evaluate = function(ctx) {
 function xPathStep(nodes, steps, step, input, ctx) {
   var s = steps[step];
   var ctx2 = ctx.clone(input);
-  var nodelist = s.evaluate(ctx2).nodeSetValue();
-
-  for (var i = 0; i < nodelist.length; ++i) {
-    if (step == steps.length - 1) {
-      nodes.push(nodelist[i]);
-    } else {
-      xPathStep(nodes, steps, step + 1, nodelist[i], ctx);
+  
+  if (ctx.returnOnFirstMatch && !s.hasPositionalPredicate) {
+    var nodelist = s.evaluate(ctx2).nodeSetValue();
+    // the predicates were not processed in the last evaluate(), so that we can
+    // process them here with the returnOnFirstMatch optimization. We do a
+    // depth-first grab at any nodes that pass the predicate tests. There is no
+    // way to optimize when predicates contain positional selectors, including
+    // indexes or uses of the last() or position() functions, because they
+    // typically require the entire nodelist for context. Process without
+    // optimization if we encounter such selectors.
+    var nLength = nodelist.length;
+    var pLength = s.predicate.length;
+    nodelistLoop:
+    for (var i = 0; i < nLength; ++i) {
+      var n = nodelist[i];
+      for (var j = 0; j < pLength; ++j) {
+        if (!s.predicate[j].evaluate(ctx.clone(n, i, nodelist)).booleanValue()) {
+          continue nodelistLoop;
+        }
+      }
+      // n survived the predicate tests!
+      if (step == steps.length - 1) {
+        nodes.push(n);
+      }
+      else {
+        xPathStep(nodes, steps, step + 1, n, ctx);
+      }
+      if (nodes.length > 0) {
+        break;
+      }
     }
-    if (ctx.returnOnFirstMatch && nodes.length) {
-      break;
+  }
+  else {
+    // set returnOnFirstMatch to false for the cloned ExprContext, because
+    // behavior in StepExpr.prototype.evaluate is driven off its value. Note
+    // that the original context may still have true for this value.
+    ctx2.returnOnFirstMatch = false;
+    var nodelist = s.evaluate(ctx2).nodeSetValue();
+    for (var i = 0; i < nodelist.length; ++i) {
+      if (step == steps.length - 1) {
+        nodes.push(nodelist[i]);
+      } else {
+        xPathStep(nodes, steps, step + 1, nodelist[i], ctx);
+      }
     }
   }
 }
@@ -756,10 +766,20 @@ function StepExpr(axis, nodetest, opt_predicate) {
   this.axis = axis;
   this.nodetest = nodetest;
   this.predicate = opt_predicate || [];
+  this.hasPositionalPredicate = false;
+  for (var i = 0; i < this.predicate.length; ++i) {
+    if (predicateExprHasPositionalSelector(this.predicate[i].expr)) {
+      this.hasPositionalPredicate = true;
+      break;
+    }
+  }
 }
 
 StepExpr.prototype.appendPredicate = function(p) {
   this.predicate.push(p);
+  if (!this.hasPositionalPredicate) {
+    this.hasPositionalPredicate = predicateExprHasPositionalSelector(p.expr);
+  }
 }
 
 StepExpr.prototype.evaluate = function(ctx) {
@@ -787,10 +807,13 @@ StepExpr.prototype.evaluate = function(ctx) {
     }
 
   } else if (this.axis == xpathAxis.ATTRIBUTE) {
-    if (ctx.inPlayAttributes && !ctx.inPlayAttributes['*']) {
-      copyArrayOfNamedAttributes(nodelist, input.attributes, ctx.inPlayAttributes);
+    if (false) {
+    //if (this.nodetest.name != undefined) {
+      // single-attribute step
+      nodelist.push(input.attributes[this.nodetest.name]);
     }
     else {
+      // all-attributes step
       if (ctx.ignoreAttributesWithoutValue) {
         copyArrayIgnoringAttributesWithoutValue(nodelist, input.attributes);
       }
@@ -869,13 +892,15 @@ StepExpr.prototype.evaluate = function(ctx) {
   }
 
   // process predicates
-  for (var i = 0; i < this.predicate.length; ++i) {
-    var nodelist0 = nodelist;
-    nodelist = [];
-    for (var ii = 0; ii < nodelist0.length; ++ii) {
-      var n = nodelist0[ii];
-      if (this.predicate[i].evaluate(ctx.clone(n, ii, nodelist0)).booleanValue()) {
-        nodelist.push(n);
+  if (!ctx.returnOnFirstMatch) {
+    for (var i = 0; i < this.predicate.length; ++i) {
+      var nodelist0 = nodelist;
+      nodelist = [];
+      for (var ii = 0; ii < nodelist0.length; ++ii) {
+        var n = nodelist0[ii];
+        if (this.predicate[i].evaluate(ctx.clone(n, ii, nodelist0)).booleanValue()) {
+          nodelist.push(n);
+        }
       }
     }
   }
