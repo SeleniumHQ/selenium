@@ -19,7 +19,9 @@ public class StaticContentHandler extends ResourceHandler {
         this.debugURL = debugURL;
     }
 
-    public void handle(String pathInContext, String pathParams, HttpRequest httpRequest, HttpResponse httpResponse) throws HttpException, IOException {
+    public void handle(String pathInContext, String pathParams, HttpRequest httpRequest, HttpResponse httpResponse)
+            throws IOException {
+
         hackRemoveLastModifiedSince(httpRequest);
         setNoCacheHeaders(httpResponse);
         if (pathInContext.equals("/core/RemoteRunner.html") && SeleniumServer.isProxyInjectionMode()) {
@@ -60,7 +62,9 @@ public class StaticContentHandler extends ResourceHandler {
         for (int i = resourceLocators.size()-1; i >= 0; i--) {
             ResourceLocator resourceLocator = resourceLocators.get(i);
             Resource resource = resourceLocator.getResource(getHttpContext(), pathInContext);
-            if (resource.exists()) return resource;
+            if (resource.exists()) {
+                return resource;
+            }
         }
         return Resource.newResource("MISSING RESOURCE");
     }

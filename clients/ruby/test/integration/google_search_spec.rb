@@ -12,5 +12,11 @@ describe "Google Search" do
     is_text_present("openqa.org").should be_true
     get_title.should eql("Selenium OpenQA - Google Search")
   end
-  
+
+  it "can search videos" do
+    open "http://video.google.com"
+    type "q", "hello world"
+    click "button-search"
+  end
+    
 end
