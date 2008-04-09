@@ -7,4 +7,9 @@ public class ElementNode extends AbstractNode {
     }
 
     public native AttributeNode getFirstAttribute();
+    
+    @Override
+    public String toString() {
+    	return String.format("%s", getName());
+    }
 }

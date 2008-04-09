@@ -31,4 +31,9 @@ public class AttributeNode implements HtmlNode {
     }
 
     private native void deleteStoredObject();
+    
+    @Override
+    public String toString() {
+    	return String.format("%s - %s", getName(), getText());
+    }
 }

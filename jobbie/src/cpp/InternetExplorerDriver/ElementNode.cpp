@@ -34,5 +34,5 @@ Node* ElementNode::getFirstAttribute() const
 	CComQIPtr<IEnumVARIANT> enumerator(unknown);
 	unknown->Release();
 
-	return new AttributeNode(enumerator);
+	return new AttributeNode(allAttributes, -1);
 }

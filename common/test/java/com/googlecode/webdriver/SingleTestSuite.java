@@ -15,8 +15,8 @@ public class SingleTestSuite {
               .usingDriver(IE)
               .keepDriverInstance()
               .includeJavascriptTests()
-              .onlyRun("FormHandlingTest")
-//              .method("testShouldBeAbleToEnterTextIntoATextAreaBySettingItsValue")
+              .onlyRun("XPathElementFindingTest")
+              .method("testShouldBeAbleToSearchForMultipleAttributes")
     //                    .leaveRunningAfterTest()
               .create();
 	}

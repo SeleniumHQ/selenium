@@ -8,9 +8,11 @@
 
 using namespace std;
 
-AttributeNode::AttributeNode(IEnumVARIANT* allAttributes)
-	: enumerator(allAttributes), attribute(NULL)
+AttributeNode::AttributeNode(IHTMLAttributeCollection* allAttributes, long currentIndex)
+	: allAttributes(allAttributes), currentIndex(currentIndex), attribute(NULL)
 {
+	allAttributes->get_length(&length);
+
 	moveToNextSpecifiedIndex();
 
 	if (this->attribute == NULL) {
@@ -30,7 +32,7 @@ Node* AttributeNode::getDocument() const
 Node* AttributeNode::getNextSibling() const
 {
 	try {
-		return new AttributeNode(enumerator);
+		return new AttributeNode(allAttributes, currentIndex);
 	} catch (const char*) {
 		return NULL;
 	}
@@ -73,20 +75,32 @@ void AttributeNode::moveToNextSpecifiedIndex()
 {
 	this->attribute = NULL;
 
-	while (true) {
-		VARIANT* results = new VARIANT[1];
-		enumerator->Next(1, results, NULL);
-		IDispatch* nextAttribute = results[0].pdispVal;
-		if (nextAttribute == NULL)
-			return;
+	while (currentIndex < length) {
+		currentIndex++;
 
-		CComQIPtr<IHTMLDOMAttribute> attr(nextAttribute);
+		IDispatch* nextAttrDispatch;
+		VARIANT idx;
+		idx.vt = VT_I4;
+		idx.lVal = currentIndex;
+		allAttributes->item(&idx, &nextAttrDispatch);
+		CComQIPtr<IHTMLDOMAttribute> attr(nextAttrDispatch);
+
+		if (!attr) {
+			continue;
+		}
 
 		VARIANT_BOOL specified;
 		attr->get_specified(&specified);
-		if (specified == VARIANT_TRUE) {
+		
+		BSTR plainName;
+		attr->get_nodeName(&plainName);
+		std::wstring name = bstr2wstring(plainName);
+		
+		if (specified == VARIANT_TRUE || name == L"value") {
+			SysFreeString(plainName);
 			this->attribute = attr;
 			return;
 		}
+		SysFreeString(plainName);
 	}
 }

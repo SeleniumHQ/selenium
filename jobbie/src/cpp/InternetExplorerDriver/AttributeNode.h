@@ -7,7 +7,7 @@
 class AttributeNode : public Node
 {
 public:
-	AttributeNode(IEnumVARIANT* enumerator);
+	AttributeNode(IHTMLAttributeCollection* allAttributes, long currentIndex);
 	~AttributeNode();
 
 	virtual Node* getDocument() const;
@@ -21,6 +21,8 @@ public:
 private:
 	void moveToNextSpecifiedIndex();
 
-	CComPtr<IEnumVARIANT> enumerator;
+	long length;
+	long currentIndex;
+	CComPtr<IHTMLAttributeCollection> allAttributes;
 	CComPtr<IHTMLDOMAttribute> attribute;
 };
