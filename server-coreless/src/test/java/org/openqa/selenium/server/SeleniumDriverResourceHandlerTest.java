@@ -27,7 +27,7 @@ public class SeleniumDriverResourceHandlerTest extends TestCase {
   public void testGetPresetSpeedValidSession() {
     assertEquals(defaultSpeed, CommandQueue.getSpeed());
     FrameGroupCommandQueueSet session1 = 
-      FrameGroupCommandQueueSet.makeQueueSet(firstSessionId, SeleniumServer.DEFAULT_PORT);
+      FrameGroupCommandQueueSet.makeQueueSet(firstSessionId, RemoteControlConfiguration.DEFAULT_PORT);
     assertNotNull(session1);
     SeleniumDriverResourceHandler.setSpeedForSession(firstSessionId, newSpeed);
     String speed = SeleniumDriverResourceHandler.getSpeedForSession(firstSessionId);

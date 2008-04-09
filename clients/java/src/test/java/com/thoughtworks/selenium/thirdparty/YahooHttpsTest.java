@@ -10,7 +10,7 @@ public class YahooHttpsTest extends SeleneseTestCase {
     public void setUp() throws Exception {
         boolean pi = true;
         SeleniumServer.setAvoidProxy(!pi);
-        ss = new SeleniumServer(4444, false);
+        ss = new SeleniumServer(false);
         SeleniumServer.setProxyInjectionMode(pi);
         ss.start();
         super.setUp("http://login11.marketingsolutions.yahoo.com");

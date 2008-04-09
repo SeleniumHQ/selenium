@@ -2,7 +2,7 @@ package com.thoughtworks.selenium.thirdparty;
 
 import junit.framework.TestCase;
 
-import org.openqa.selenium.server.SeleniumServer;
+import org.openqa.selenium.server.RemoteControlConfiguration;
 
 import com.thoughtworks.selenium.DefaultSelenium;
 import com.thoughtworks.selenium.Selenium;
@@ -13,7 +13,7 @@ public class DomainTourTest extends TestCase
     
     public void setUp() throws Exception {
         String url = "http://www.google.com";
-        selenium = new DefaultSelenium("localhost", SeleniumServer.getDefaultPort(), "*iexplore", url);
+        selenium = new DefaultSelenium("localhost", RemoteControlConfiguration.getDefaultPort(), "*iexplore", url);
         selenium.start();
     }
     

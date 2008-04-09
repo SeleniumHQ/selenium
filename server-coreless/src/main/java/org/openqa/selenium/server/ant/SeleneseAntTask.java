@@ -105,7 +105,7 @@ import org.openqa.selenium.server.htmlrunner.*;
 public class SeleneseAntTask extends Task {
 
 	private static final String SELENIUM_JAVASCRIPT_DIR = "selenium.javascript.dir";
-	private int port = SeleniumServer.DEFAULT_PORT;
+	private int port = RemoteControlConfiguration.DEFAULT_PORT;
 	private int timeoutInSeconds = SeleniumServer.DEFAULT_TIMEOUT;
 	private boolean slowResources, multiWindow;
 	private String browser, startURL;
@@ -126,7 +126,7 @@ public class SeleneseAntTask extends Task {
 		checkForJavaScriptCoreDir();
 		SeleniumServer server = null;
 		try {
-			server = new SeleniumServer(port, slowResources, new RemoteControlConfiguration());
+			server = new SeleniumServer(slowResources, new RemoteControlConfiguration());
 			server.start();
 			HTMLLauncher launcher = new HTMLLauncher(server);
 			String result = launcher.runHTMLSuite(browser, startURL, suite, results, timeoutInSeconds, multiWindow);

@@ -9,7 +9,7 @@ public class AttachFileTest extends TestCase {
 
     public void setUp() throws Exception {
         String url = "http://www.snipshot.com";
-        selenium = new DefaultSelenium("localhost", SeleniumServer.getDefaultPort(), "*chrome", url);
+        selenium = new DefaultSelenium("localhost", RemoteControlConfiguration.getDefaultPort(), "*chrome", url);
         selenium.start();
     }
 

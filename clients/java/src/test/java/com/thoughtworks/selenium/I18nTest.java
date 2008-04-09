@@ -13,7 +13,7 @@ import org.openqa.selenium.server.*;
 
 public class I18nTest extends TestCase {
     
-    private static String startUrl = "http://localhost:" + SeleniumServer.getDefaultPort();
+    private static String startUrl = "http://localhost:" + RemoteControlConfiguration.getDefaultPort();
     private static Selenium sel;
     
     public static Test suite() {
@@ -38,7 +38,7 @@ public class I18nTest extends TestCase {
                 server.start();
             }
             try {
-                sel = new DefaultSelenium("localhost", SeleniumServer.getDefaultPort(), browser,
+                sel = new DefaultSelenium("localhost", RemoteControlConfiguration.getDefaultPort(), browser,
                         startUrl);
                 sel.start();
                 sel.open(startUrl + "/selenium-server/tests/html/test_i18n.html");

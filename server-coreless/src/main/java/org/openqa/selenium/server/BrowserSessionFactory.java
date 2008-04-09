@@ -96,7 +96,7 @@ public class BrowserSessionFactory {
             boolean ensureClean, RemoteControlConfiguration configuration) throws RemoteCommandException {
 
         BrowserSessionInfo sessionInfo = null;
-        browserString = validateBrowserString(browserString);
+        browserString = validateBrowserString(browserString, configuration);
 
         if (SeleniumServer.isProxyInjectionMode()) {
             InjectionHelper.init();
@@ -239,10 +239,10 @@ public class BrowserSessionFactory {
      * @return a possibly-modified browser string.
      * @throws IllegalArgumentException if inputString is null.
      */
-    private String validateBrowserString(String inputString) throws IllegalArgumentException {
+    private String validateBrowserString(String inputString, RemoteControlConfiguration configuration) throws IllegalArgumentException {
         String browserString = inputString;
-        if (SeleniumServer.getForcedBrowserMode() != null) {
-            browserString = SeleniumServer.getForcedBrowserMode();
+        if (configuration.getForcedBrowserMode() != null) {
+            browserString = configuration.getForcedBrowserMode();
             log.info("overriding browser mode w/ forced browser mode setting: " + browserString);
         }
         if (SeleniumServer.isProxyInjectionMode() && browserString.equals("*iexplore")) {

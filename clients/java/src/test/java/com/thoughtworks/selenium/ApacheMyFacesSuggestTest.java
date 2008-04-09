@@ -52,7 +52,7 @@ public class ApacheMyFacesSuggestTest extends TestCase {
     
     public void testAJAXFirefox() throws Throwable {
         if (shouldSkip()) return;
-        selenium = new DefaultSelenium("localhost", SeleniumServer.getDefaultPort(), "*firefox", "http://www.irian.at");
+        selenium = new DefaultSelenium("localhost", RemoteControlConfiguration.getDefaultPort(), "*firefox", "http://www.irian.at");
         selenium.start();
 
         selenium.open("http://www.irian.at/selenium-server/tests/html/ajax/ajax_autocompleter2_test.html");
@@ -77,7 +77,7 @@ public class ApacheMyFacesSuggestTest extends TestCase {
     public void testAJAXIExplore() throws Throwable {
         if (!WindowsUtils.thisIsWindows()) return;
         if (shouldSkip()) return;
-        selenium = new DefaultSelenium("localhost", SeleniumServer.getDefaultPort(), "*iexplore", "http://www.irian.at");
+        selenium = new DefaultSelenium("localhost", RemoteControlConfiguration.getDefaultPort(), "*iexplore", "http://www.irian.at");
         selenium.start();
 
         selenium.open("http://www.irian.at/selenium-server/tests/html/ajax/ajax_autocompleter2_test.html");

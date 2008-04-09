@@ -28,7 +28,6 @@ import org.mortbay.log.LogFactory;
 import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
 import org.openqa.selenium.server.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.server.cli.RemoteControlLauncher;
-import static org.openqa.selenium.server.cli.RemoteControlLauncher.getArg;
 import org.openqa.selenium.server.htmlrunner.HTMLLauncher;
 import org.openqa.selenium.server.htmlrunner.HTMLResultsListener;
 import org.openqa.selenium.server.htmlrunner.SeleniumHTMLRunnerResultsHandler;
@@ -148,7 +147,6 @@ public class SeleniumServer {
     private SeleniumDriverResourceHandler driver;
     private SeleniumHTMLRunnerResultsHandler postResultsHandler;
     private StaticContentHandler staticContentHandler;
-    private int port;
     private final RemoteControlConfiguration configuration;
     private Thread shutDownHook;
 
@@ -161,10 +159,6 @@ public class SeleniumServer {
     private static Map<Handler, Formatter> defaultFormatters;
     private static Map<Handler, Level> defaultLevels;
     private static Map<File, FileHandler> seleniumFileHandlers = new HashMap<File, FileHandler>();
-
-    public static final int DEFAULT_PORT = 4444;
-
-    private static String forcedBrowserMode = null;
 
     public static final int DEFAULT_TIMEOUT = (30 * 60);
     public static int timeoutInSeconds = DEFAULT_TIMEOUT;
@@ -198,54 +192,56 @@ public class SeleniumServer {
         final RemoteControlConfiguration configuration;
         final SeleniumServer seleniumProxy;
 
-        configuration = parseLauncherOptions(args);
+        configuration = RemoteControlLauncher.parseLauncherOptions(args);
         checkArgsSanity(configuration);
 
         System.setProperty("org.mortbay.http.HttpRequest.maxFormContentSize", "0"); // default max is 200k; zero is infinite
-        seleniumProxy = new SeleniumServer(configuration.getPort(), slowResourceProperty(), configuration);
-
-        seleniumProxy.start();
-        if (null != configuration.getUserExtensions()) {
-            seleniumProxy.addNewStaticContent(configuration.getUserExtensions().getParentFile());
-        }
-
-        if (configuration.isSelfTest()) {
-            System.exit(runSelfTests(seleniumProxy, configuration) ? 0 : 1);
-        }
-
-        if (configuration.isHTMLSuite()) {
-            runHtmlSuite(seleniumProxy);
-            return;
-        }
-
-        if (configuration.isInteractive()) {
-            readUserCommands(seleniumProxy, configuration);
-        }
+        seleniumProxy = new SeleniumServer(slowResourceProperty(), configuration);
+        seleniumProxy.boot();
     }
+
 
     public SeleniumServer() throws Exception {
-        this(SeleniumServer.getDefaultPort());
+        this(slowResourceProperty(), new RemoteControlConfiguration());
     }
 
-    public SeleniumServer(int port) throws Exception {
-        this(port, slowResourceProperty(), new RemoteControlConfiguration());
-    }
-
-    public SeleniumServer(int port, boolean slowResources) throws Exception {
-        this(port, slowResources, new RemoteControlConfiguration());
+    public SeleniumServer(boolean slowResources) throws Exception {
+        this(slowResources, new RemoteControlConfiguration());
     }
 
     /**
      * Prepares a Jetty server with its HTTP handlers.
      *
-     * @param port          the port to start on
      * @param slowResources should the webserver return static resources more slowly?  (Note that this will not slow down ordinary RC test runs; this setting is used to debug Selenese HTML tests.)
      * @param configuration  Remote Control configuration. Cannot be null.
      * @throws Exception you know, just in case
      */
-    public SeleniumServer(int port, boolean slowResources, RemoteControlConfiguration configuration) throws Exception {
+    public SeleniumServer(boolean slowResources, RemoteControlConfiguration configuration) throws Exception {
         this.configuration = configuration;
         configureLogging(configuration);
+        logStartupInfo();
+        String proxyHost = System.getProperty("http.proxyHost");
+        String proxyPort = System.getProperty("http.proxyPort");
+        if (Integer.toString(getPort()).equals(proxyPort)) {
+            logger.debug("http.proxyPort is the same as the Selenium Server port " + getPort());
+            logger.debug("http.proxyHost=" + proxyHost);
+            if ("localhost".equals(proxyHost) || "127.0.0.1".equals(proxyHost)) {
+                logger.info("Forcing http.proxyHost to '' to avoid infinite loop");
+                System.setProperty("http.proxyHost", "");
+            }
+        }
+        server = new Server();
+
+        SocketListener socketListener = new SocketListener();
+        socketListener.setMaxIdleTimeMs(60000);
+        socketListener.setMaxThreads(jettyThreads);
+        socketListener.setPort(getPort());
+        server.addListener(socketListener);
+        configServer();
+        assembleHandlers(slowResources, configuration);
+    }
+
+    private void logStartupInfo() throws IOException {
         logger.info("Java: " + System.getProperty("java.vm.vendor") + ' ' + System.getProperty("java.vm.version"));
         logger.info("OS: " + System.getProperty("os.name") + ' ' + System.getProperty("os.version") + ' ' + System.getProperty("os.arch"));
         logVersionNumber();
@@ -258,42 +254,31 @@ public class SeleniumServer {
         if (configuration.reuseBrowserSessions()) {
             logger.info("Will recycle browser sessions when possible.");
         }
-        if (forcedBrowserMode != null) {
-            logger.info("\"" + forcedBrowserMode + "\" will be used as the browser " +
+        if (null != configuration.getForcedBrowserMode()) {
+            logger.info("\"" + configuration.getForcedBrowserMode() + "\" will be used as the browser " +
                     "mode for all sessions, no matter what is passed to getNewBrowserSession.");
         }
-        this.port = port;
-        String proxyHost = System.getProperty("http.proxyHost");
-        String proxyPort = System.getProperty("http.proxyPort");
-        if (Integer.toString(port).equals(proxyPort)) {
-            logger.debug("http.proxyPort is the same as the Selenium Server port " + port);
-            logger.debug("http.proxyHost=" + proxyHost);
-            if ("localhost".equals(proxyHost) || "127.0.0.1".equals(proxyHost)) {
-                logger.info("Forcing http.proxyHost to '' to avoid infinite loop");
-                System.setProperty("http.proxyHost", "");
-            }
-        }
-        server = new Server();
-
-        SocketListener socketListener = new SocketListener();
-        socketListener.setMaxIdleTimeMs(60000);
-        socketListener.setMaxThreads(jettyThreads);
-        socketListener.setPort(port);
-        server.addListener(socketListener);
-        configServer();
-        assembleHandlers(slowResources, configuration);
     }
 
 
-    private static void setSystemProperty(String arg) {
-        if (arg.indexOf('=') == -1) {
-            RemoteControlLauncher.usage("poorly formatted Java property setting (I expect to see '=') " + arg);
-            System.exit(1);
+    public void boot() throws Exception {
+        start();
+        if (null != configuration.getUserExtensions()) {
+            addNewStaticContent(configuration.getUserExtensions().getParentFile());
         }
-        String property = arg.replaceFirst("-D", "").replaceFirst("=.*", "");
-        String value = arg.replaceFirst("[^=]*=", "");
-        System.err.println("Setting system property " + property + " to " + value);
-        System.setProperty(property, value);
+
+        if (configuration.isSelfTest()) {
+            System.exit(runSelfTests() ? 0 : 1);
+        }
+
+        if (configuration.isHTMLSuite()) {
+            runHtmlSuite();
+            return;
+        }
+
+        if (configuration.isInteractive()) {
+            readUserCommands();
+        }
     }
 
 
@@ -468,12 +453,12 @@ public class SeleniumServer {
     }
 
     private void configServer() {
-        if (getForcedBrowserMode() == null) {
+        if (null == configuration.getForcedBrowserMode()) {
             if (null != System.getProperty("selenium.defaultBrowserString")) {
                 System.err.println("The selenium.defaultBrowserString property is no longer supported; use selenium.forcedBrowserMode instead.");
                 System.exit(-1);
             }
-            SeleniumServer.setForcedBrowserMode(System.getProperty("selenium.forcedBrowserMode"));
+            configuration.setForcedBrowserMode(System.getProperty("selenium.forcedBrowserMode"));
         }
         if (!isProxyInjectionMode() && System.getProperty("selenium.proxyInjectionMode") != null) {
             setProxyInjectionMode("true".equals(System.getProperty("selenium.proxyInjectionMode")));
@@ -486,11 +471,6 @@ public class SeleniumServer {
         }
     }
 
-
-    public static int getDefaultPort() {
-        String portString = System.getProperty("selenium.port", "" + SeleniumServer.DEFAULT_PORT);
-        return Integer.parseInt(portString);
-    }
 
     public static boolean isEnsureCleanSession() {
         return ensureCleanSession;
@@ -522,6 +502,8 @@ public class SeleniumServer {
 
     /**
      * Starts the Jetty server
+     * 
+     * @throws Exception on error.
      */
     public void start() throws Exception {
         System.setProperty("org.mortbay.http.HttpRequest.maxFormContentSize", "0"); // default max is 200k; zero is infinite
@@ -609,11 +591,7 @@ public class SeleniumServer {
     }
 
     public int getPort() {
-        return port;
-    }
-
-    public boolean isMultiWindow() {
-        return configuration.isMultiWindow();
+        return configuration.getPort();
     }
 
     /**
@@ -717,17 +695,10 @@ public class SeleniumServer {
     }
 
     /**
-     * By default, we proxy every browser request; if this flag is false, we make the browser use our proxy only for URLs containing '/selenium-server'
+     * By default, we proxy every browser request; if this flag is set, we make the browser use our
+     * proxy only for URLs containing '/selenium-server'
      *
-     * @deprecated use isAvoidProxy instaed (note that avoidProxy is th opposite of alwaysProxy)
-     */
-    @Deprecated
-    public static boolean isAlwaysProxy() {
-        return !isAvoidProxy();
-    }
-
-    /**
-     * By default, we proxy every browser request; if this flag is set, we make the browser use our proxy only for URLs containing '/selenium-server'
+     * @return Whether only URLs containing '/selenium-server' should be proxied.
      */
     public static boolean isAvoidProxy() {
         return avoidProxy;
@@ -737,16 +708,8 @@ public class SeleniumServer {
         SeleniumServer.proxyInjectionMode = proxyInjectionMode;
     }
 
-    public static String getForcedBrowserMode() {
-        return forcedBrowserMode;
-    }
-
     public static int getTimeoutInSeconds() {
         return timeoutInSeconds;
-    }
-
-    public static void setForcedBrowserMode(String s) {
-        SeleniumServer.forcedBrowserMode = s;
     }
 
     public static void setDontTouchLogging(boolean dontTouchLogging) {
@@ -762,8 +725,8 @@ public class SeleniumServer {
         return value;
     }
 
-    private static void runHtmlSuite(SeleniumServer seleniumProxy) {
-        String result = null;
+    private void runHtmlSuite() {
+        final String result;
         try {
             String suiteFilePath = getRequiredSystemProperty("htmlSuite.suiteFilePath");
             File suiteFile = new File(suiteFilePath);
@@ -771,9 +734,9 @@ public class SeleniumServer {
                 RemoteControlLauncher.usage("Can't find HTML Suite file:" + suiteFile.getAbsolutePath());
                 System.exit(1);
             }
-            seleniumProxy.addNewStaticContent(suiteFile.getParentFile());
+            addNewStaticContent(suiteFile.getParentFile());
             String startURL = getRequiredSystemProperty("htmlSuite.startURL");
-            HTMLLauncher launcher = new HTMLLauncher(seleniumProxy);
+            HTMLLauncher launcher = new HTMLLauncher(this);
             String resultFilePath = getRequiredSystemProperty("htmlSuite.resultFilePath");
             File resultFile = new File(resultFilePath);
             resultFile.createNewFile();
@@ -784,7 +747,7 @@ public class SeleniumServer {
             }
 
             result = launcher.runHTMLSuite(getRequiredSystemProperty("htmlSuite.browserString"), startURL, suiteFile, resultFile,
-                    timeoutInSeconds, seleniumProxy.isMultiWindow());
+                    timeoutInSeconds, configuration.isMultiWindow());
 
             if (!"PASSED".equals(result)) {
                 System.err.println("Tests failed, see result file for details: " + resultFile.getAbsolutePath());
@@ -800,7 +763,7 @@ public class SeleniumServer {
 
     }
 
-    private static void readUserCommands(SeleniumServer seleniumProxy, RemoteControlConfiguration configuration) throws IOException {
+    private void readUserCommands() throws IOException {
         AsyncExecute.sleepTight(500);
         System.out.println("Entering interactive mode... type Selenium commands here (e.g: cmd=open&1=http://www.yahoo.com)");
         BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
@@ -812,7 +775,7 @@ public class SeleniumServer {
             userInput = userInput.trim();
             if ("exit".equals(userInput) || "quit".equals(userInput)) {
                 System.out.println("Stopping...");
-                seleniumProxy.stop();
+                stop();
                 System.exit(0);
             }
 
@@ -838,7 +801,7 @@ public class SeleniumServer {
                         InputStream is = conn.getInputStream();
                         ByteArrayOutputStream out = new ByteArrayOutputStream();
                         byte[] buffer = new byte[2048];
-                        int length = -1;
+                        int length;
                         while ((length = is.read(buffer)) != -1) {
                             out.write(buffer, 0, length);
                         }
@@ -864,133 +827,8 @@ public class SeleniumServer {
     }
 
 
-    private static boolean runSelfTests(SeleniumServer seleniumProxy, RemoteControlConfiguration configuration) throws IOException {
-        return new HTMLLauncher(seleniumProxy).runSelfTests(configuration.getSelfTestDir());
-    }
-
-    private static RemoteControlConfiguration parseLauncherOptions(String[] args) {
-        RemoteControlConfiguration configuration;
-        configuration = new RemoteControlConfiguration();
-        configuration.setPort(SeleniumServer.getDefaultPort());
-        for (int i = 0; i < args.length; i++) {
-            String arg = args[i];
-            if ("-help".equalsIgnoreCase(arg)) {
-                RemoteControlLauncher.usage(null);
-                System.exit(1);
-            } else if ("-defaultBrowserString".equalsIgnoreCase(arg)) {
-                RemoteControlLauncher.usage("-defaultBrowserString has been renamed -forcedBrowserMode");
-            } else if ("-forcedBrowserMode".equalsIgnoreCase(arg)) {
-                SeleniumServer.forcedBrowserMode = getArg(args, ++i);
-                if (i < args.length) {
-                    System.err.println("Warning: -forcedBrowserMode no longer consumes all remaining arguments on line (use -forcedBrowserModeRestOfLine for that)");
-                }
-            } else if ("-forcedBrowserModeRestOfLine".equalsIgnoreCase(arg)) {
-                for (i++; i < args.length; i++) {
-                    if (SeleniumServer.forcedBrowserMode == null)
-                        SeleniumServer.forcedBrowserMode = "";
-                    else
-                        SeleniumServer.forcedBrowserMode += " ";
-                    SeleniumServer.forcedBrowserMode += args[i];
-                }
-            } else if ("-log".equalsIgnoreCase(arg)) {
-                configuration.setLogOutFileName(getArg(args, ++i));
-            } else if ("-port".equalsIgnoreCase(arg)) {
-                configuration.setPort(Integer.parseInt(getArg(args, ++i)));
-            } else if ("-multiWindow".equalsIgnoreCase(arg)) {
-                configuration.setMultiWindow(true);
-            } else if ("-avoidProxy".equalsIgnoreCase(arg)) {
-                setAvoidProxy(true);
-            } else if ("-proxyInjectionMode".equalsIgnoreCase(arg)) {
-                configuration.setProxyInjectionModeArg(true);
-            } else if ("-portDriversShouldContact".equalsIgnoreCase(arg)) {
-                // to facilitate tcptrace interception of interaction between
-                // injected js and the selenium server
-                configuration.setPortDriversShouldContact(Integer.parseInt(getArg(args, ++i)));
-            } else if ("-noBrowserSessionReuse".equalsIgnoreCase(arg)) {
-                configuration.setReuseBrowserSessions(false);
-            } else if ("-browserSessionReuse".equalsIgnoreCase(arg)) {
-                configuration.setReuseBrowserSessions(true);
-            } else if ("-firefoxProfileTemplate".equalsIgnoreCase(arg)) {
-                configuration.setFirefoxProfileTemplate(new File(getArg(args, ++i)));
-                if (!configuration.getFirefoxProfileTemplate().exists()) {
-                    System.err.println("Firefox profile template doesn't exist: " + configuration.getFirefoxProfileTemplate().getAbsolutePath());
-                    System.exit(1);
-                }
-            } else if ("-ensureCleanSession".equalsIgnoreCase(arg)) {
-                SeleniumServer.setEnsureCleanSession(true);
-            } else if ("-dontInjectRegex".equalsIgnoreCase(arg)) {
-                configuration.setDontInjectRegex(getArg(args, ++i));
-            } else if ("-browserSideLog".equalsIgnoreCase(arg)) {
-                SeleniumServer.setBrowserSideLogEnabled(true);
-            } else if ("-debug".equalsIgnoreCase(arg)) {
-                SeleniumServer.setDebugMode(true);
-            } else if ("-debugURL".equalsIgnoreCase(arg)) {
-                configuration.setDebugURL(getArg(args, ++i));
-            } else if ("-timeout".equalsIgnoreCase(arg)) {
-                timeoutInSeconds = Integer.parseInt(getArg(args, ++i));
-            } else if ("-jettyThreads".equalsIgnoreCase(arg)) {
-                int jettyThreadsCount = Integer.parseInt(getArg(args, ++i));
-
-                // Set the number of jetty threads before we construct the instance
-                SeleniumServer.setJettyThreads(jettyThreadsCount);
-            } else if ("-trustAllSSLCertificates".equalsIgnoreCase(arg)) {
-                configuration.setTrustAllSSLCertificates(true);
-            } else if ("-userJsInjection".equalsIgnoreCase(arg)) {
-                configuration.setUserJSInjection(true);
-                if (!InjectionHelper.addUserJsInjectionFile(getArg(args, ++i))) {
-                    RemoteControlLauncher.usage(null);
-                    System.exit(1);
-                }
-            } else if ("-userContentTransformation".equalsIgnoreCase(arg)) {
-                if (!InjectionHelper.addUserContentTransformation(getArg(args, ++i), getArg(args, ++i))) {
-                    RemoteControlLauncher.usage(null);
-                    System.exit(1);
-                }
-            } else if ("-userExtensions".equalsIgnoreCase(arg)) {
-                configuration.setUserExtensions(new File(getArg(args, ++i)));
-                if (!configuration.getUserExtensions().exists()) {
-                    System.err.println("User Extensions file doesn't exist: " + configuration.getUserExtensions().getAbsolutePath());
-                    System.exit(1);
-                }
-                if (!"user-extensions.js".equalsIgnoreCase(configuration.getUserExtensions().getName())) {
-                    System.err.println("User extensions file MUST be called \"user-extensions.js\": " + configuration.getUserExtensions().getAbsolutePath());
-                    System.exit(1);
-                }
-            } else if ("-selfTest".equalsIgnoreCase(arg)) {
-                configuration.setSelfTest(true);
-                configuration.setSelfTestDir(new File(getArg(args, ++i)));
-                configuration.getSelfTestDir().mkdirs();
-            } else if ("-htmlSuite".equalsIgnoreCase(arg)) {
-                try {
-                    System.setProperty("htmlSuite.browserString", args[++i]);
-                    System.setProperty("htmlSuite.startURL", args[++i]);
-                    System.setProperty("htmlSuite.suiteFilePath", args[++i]);
-                    System.setProperty("htmlSuite.resultFilePath", args[++i]);
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    System.err.println("Not enough command line arguments for -htmlSuite");
-                    System.err.println("-htmlSuite requires you to specify:");
-                    System.err.println("* browserString (e.g. \"*firefox\")");
-                    System.err.println("* startURL (e.g. \"http://www.google.com\")");
-                    System.err.println("* suiteFile (e.g. \"c:\\absolute\\path\\to\\my\\HTMLSuite.html\")");
-                    System.err.println("* resultFile (e.g. \"c:\\absolute\\path\\to\\my\\results.html\")");
-                    System.exit(1);
-                }
-                configuration.setHTMLSuite(true);
-            } else if ("-interactive".equalsIgnoreCase(arg)) {
-                timeoutInSeconds = Integer.MAX_VALUE;
-                configuration.setInteractive(true);
-            } else if (arg.startsWith("-D")) {
-                setSystemProperty(arg);
-            } else {
-                RemoteControlLauncher.usage("unrecognized argument " + arg);
-                System.exit(1);
-            }
-        }
-        if (configuration.userJSInjection() && !configuration.getProxyInjectionModeArg()) {
-            System.err.println("User js injection can only be used w/ -proxyInjectionMode");
-            System.exit(1);
-        }
-        return configuration;
+    private boolean runSelfTests() throws IOException {
+        return new HTMLLauncher(this).runSelfTests(configuration.getSelfTestDir());
     }
 
     private static void checkArgsSanity(RemoteControlConfiguration configuration) throws Exception {

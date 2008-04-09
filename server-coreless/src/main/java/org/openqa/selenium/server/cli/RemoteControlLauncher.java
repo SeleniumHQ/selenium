@@ -1,5 +1,11 @@
 package org.openqa.selenium.server.cli;
 
+import org.openqa.selenium.server.RemoteControlConfiguration;
+import org.openqa.selenium.server.SeleniumServer;
+import org.openqa.selenium.server.InjectionHelper;
+
+import java.io.File;
+
 /**
  * Parse Remote Control Launcher Options
  */
@@ -72,5 +78,142 @@ public class RemoteControlLauncher {
         String line = lineRaw.substring(0, spaceIndex);
         System.err.println(line);
         printWrappedErrorLine(prefix, msg.substring(spaceIndex+1), false);
+    }
+
+    public static void setSystemProperty(String arg) {
+        if (arg.indexOf('=') == -1) {
+            usage("poorly formatted Java property setting (I expect to see '=') " + arg);
+            System.exit(1);
+        }
+        String property = arg.replaceFirst("-D", "").replaceFirst("=.*", "");
+        String value = arg.replaceFirst("[^=]*=", "");
+        System.err.println("Setting system property " + property + " to " + value);
+        System.setProperty(property, value);
+    }
+
+    public static RemoteControlConfiguration parseLauncherOptions(String[] args) {
+        RemoteControlConfiguration configuration;
+        configuration = new RemoteControlConfiguration();
+        configuration.setPort(RemoteControlConfiguration.getDefaultPort());
+        for (int i = 0; i < args.length; i++) {
+            String arg = args[i];
+            if ("-help".equalsIgnoreCase(arg)) {
+                usage(null);
+                System.exit(1);
+            } else if ("-defaultBrowserString".equalsIgnoreCase(arg)) {
+                usage("-defaultBrowserString has been renamed -forcedBrowserMode");
+            } else if ("-forcedBrowserMode".equalsIgnoreCase(arg)) {
+                configuration.setForcedBrowserMode(getArg(args, ++i));
+                if (i < args.length) {
+                    System.err.println("Warning: -forcedBrowserMode no longer consumes all remaining arguments on line (use -forcedBrowserModeRestOfLine for that)");
+                }
+            } else if ("-forcedBrowserModeRestOfLine".equalsIgnoreCase(arg)) {
+                for (i++; i < args.length; i++) {
+                    if (null == configuration.getForcedBrowserMode()) {
+                        configuration.setForcedBrowserMode("");
+                    } else {
+                        configuration.setForcedBrowserMode(configuration.getForcedBrowserMode() + " ");
+                    }
+                    configuration.setForcedBrowserMode(configuration.getForcedBrowserMode() + args[i]);
+                }
+            } else if ("-log".equalsIgnoreCase(arg)) {
+                configuration.setLogOutFileName(getArg(args, ++i));
+            } else if ("-port".equalsIgnoreCase(arg)) {
+                configuration.setPort(Integer.parseInt(getArg(args, ++i)));
+            } else if ("-multiWindow".equalsIgnoreCase(arg)) {
+                configuration.setMultiWindow(true);
+            } else if ("-avoidProxy".equalsIgnoreCase(arg)) {
+                SeleniumServer.setAvoidProxy(true);
+            } else if ("-proxyInjectionMode".equalsIgnoreCase(arg)) {
+                configuration.setProxyInjectionModeArg(true);
+            } else if ("-portDriversShouldContact".equalsIgnoreCase(arg)) {
+                // to facilitate tcptrace interception of interaction between
+                // injected js and the selenium server
+                configuration.setPortDriversShouldContact(Integer.parseInt(getArg(args, ++i)));
+            } else if ("-noBrowserSessionReuse".equalsIgnoreCase(arg)) {
+                configuration.setReuseBrowserSessions(false);
+            } else if ("-browserSessionReuse".equalsIgnoreCase(arg)) {
+                configuration.setReuseBrowserSessions(true);
+            } else if ("-firefoxProfileTemplate".equalsIgnoreCase(arg)) {
+                configuration.setFirefoxProfileTemplate(new File(getArg(args, ++i)));
+                if (!configuration.getFirefoxProfileTemplate().exists()) {
+                    System.err.println("Firefox profile template doesn't exist: " + configuration.getFirefoxProfileTemplate().getAbsolutePath());
+                    System.exit(1);
+                }
+            } else if ("-ensureCleanSession".equalsIgnoreCase(arg)) {
+                SeleniumServer.setEnsureCleanSession(true);
+            } else if ("-dontInjectRegex".equalsIgnoreCase(arg)) {
+                configuration.setDontInjectRegex(getArg(args, ++i));
+            } else if ("-browserSideLog".equalsIgnoreCase(arg)) {
+                SeleniumServer.setBrowserSideLogEnabled(true);
+            } else if ("-debug".equalsIgnoreCase(arg)) {
+                SeleniumServer.setDebugMode(true);
+            } else if ("-debugURL".equalsIgnoreCase(arg)) {
+                configuration.setDebugURL(getArg(args, ++i));
+            } else if ("-timeout".equalsIgnoreCase(arg)) {
+                SeleniumServer.timeoutInSeconds = Integer.parseInt(getArg(args, ++i));
+            } else if ("-jettyThreads".equalsIgnoreCase(arg)) {
+                int jettyThreadsCount = Integer.parseInt(getArg(args, ++i));
+
+                // Set the number of jetty threads before we construct the instance
+                SeleniumServer.setJettyThreads(jettyThreadsCount);
+            } else if ("-trustAllSSLCertificates".equalsIgnoreCase(arg)) {
+                configuration.setTrustAllSSLCertificates(true);
+            } else if ("-userJsInjection".equalsIgnoreCase(arg)) {
+                configuration.setUserJSInjection(true);
+                if (!InjectionHelper.addUserJsInjectionFile(getArg(args, ++i))) {
+                    usage(null);
+                    System.exit(1);
+                }
+            } else if ("-userContentTransformation".equalsIgnoreCase(arg)) {
+                if (!InjectionHelper.addUserContentTransformation(getArg(args, ++i), getArg(args, ++i))) {
+                    usage(null);
+                    System.exit(1);
+                }
+            } else if ("-userExtensions".equalsIgnoreCase(arg)) {
+                configuration.setUserExtensions(new File(getArg(args, ++i)));
+                if (!configuration.getUserExtensions().exists()) {
+                    System.err.println("User Extensions file doesn't exist: " + configuration.getUserExtensions().getAbsolutePath());
+                    System.exit(1);
+                }
+                if (!"user-extensions.js".equalsIgnoreCase(configuration.getUserExtensions().getName())) {
+                    System.err.println("User extensions file MUST be called \"user-extensions.js\": " + configuration.getUserExtensions().getAbsolutePath());
+                    System.exit(1);
+                }
+            } else if ("-selfTest".equalsIgnoreCase(arg)) {
+                configuration.setSelfTest(true);
+                configuration.setSelfTestDir(new File(getArg(args, ++i)));
+                configuration.getSelfTestDir().mkdirs();
+            } else if ("-htmlSuite".equalsIgnoreCase(arg)) {
+                try {
+                    System.setProperty("htmlSuite.browserString", args[++i]);
+                    System.setProperty("htmlSuite.startURL", args[++i]);
+                    System.setProperty("htmlSuite.suiteFilePath", args[++i]);
+                    System.setProperty("htmlSuite.resultFilePath", args[++i]);
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    System.err.println("Not enough command line arguments for -htmlSuite");
+                    System.err.println("-htmlSuite requires you to specify:");
+                    System.err.println("* browserString (e.g. \"*firefox\")");
+                    System.err.println("* startURL (e.g. \"http://www.google.com\")");
+                    System.err.println("* suiteFile (e.g. \"c:\\absolute\\path\\to\\my\\HTMLSuite.html\")");
+                    System.err.println("* resultFile (e.g. \"c:\\absolute\\path\\to\\my\\results.html\")");
+                    System.exit(1);
+                }
+                configuration.setHTMLSuite(true);
+            } else if ("-interactive".equalsIgnoreCase(arg)) {
+                SeleniumServer.timeoutInSeconds = Integer.MAX_VALUE;
+                configuration.setInteractive(true);
+            } else if (arg.startsWith("-D")) {
+                setSystemProperty(arg);
+            } else {
+                usage("unrecognized argument " + arg);
+                System.exit(1);
+            }
+        }
+        if (configuration.userJSInjection() && !configuration.getProxyInjectionModeArg()) {
+            System.err.println("User js injection can only be used w/ -proxyInjectionMode");
+            System.exit(1);
+        }
+        return configuration;
     }
 }

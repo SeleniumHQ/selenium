@@ -213,4 +213,16 @@ public class RemoteControlConfigurationTest extends TestCase {
         assertEquals("A File Name", configuration.getLogOutFileName());
     }
 
+    public void testForcedBrowserModeIsNullByDefault() {
+        assertNull(new RemoteControlConfiguration().getForcedBrowserMode());
+    }
+
+    public void testForcedBrowserModeCanBeSet() {
+        final RemoteControlConfiguration configuration;
+
+        configuration = new RemoteControlConfiguration();
+        configuration.setForcedBrowserMode("A Mode");
+        assertEquals("A Mode", configuration.getForcedBrowserMode());
+    }
+
 }

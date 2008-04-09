@@ -31,7 +31,7 @@ public class RealDealIntegrationTest extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
-        selenium = new DefaultSelenium("localhost", SeleniumServer.getDefaultPort(), "*firefox", "http://localhost:" + SeleniumServer.getDefaultPort());
+        selenium = new DefaultSelenium("localhost", RemoteControlConfiguration.getDefaultPort(), "*firefox", "http://localhost:" + RemoteControlConfiguration.getDefaultPort());
         selenium.start();
     }
 

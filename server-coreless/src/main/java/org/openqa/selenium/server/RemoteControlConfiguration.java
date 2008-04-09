@@ -7,7 +7,7 @@ import java.io.File;
  */
 public class RemoteControlConfiguration {
 
-    private static final int DEFAULT_PORT = 4444;
+    public static final int DEFAULT_PORT = 4444;
     private static final int USE_SAME_PORT = -1;
     private int port;
     private boolean multiWindow;
@@ -40,10 +40,11 @@ public class RemoteControlConfiguration {
     private File firefoxProfileTemplate;
     private boolean reuseBrowserSessions;
     private String logOutFileName;
+    private String forcedBrowserMode;
 
 
     public RemoteControlConfiguration() {
-        this.port = DEFAULT_PORT;
+        this.port = getDefaultPort();
         this.multiWindow = false;
         this.proxyInjectionModeArg = false;
         this.portDriversShouldContact = USE_SAME_PORT;
@@ -191,4 +192,21 @@ public class RemoteControlConfiguration {
         return (null == logOutFileName) ? null : new File(logOutFileName);
     }
 
+    public void setForcedBrowserMode(String newForcedBrowserMode) {
+        this.forcedBrowserMode = newForcedBrowserMode;
+    }
+
+    public String getForcedBrowserMode() {
+        return forcedBrowserMode;
+    }
+
+    public static int getDefaultPort() {
+        final String portProperty;
+
+        portProperty = System.getProperty("selenium.port", "" + DEFAULT_PORT);
+        if (null == portProperty) {
+            return DEFAULT_PORT;
+        }
+        return Integer.parseInt(portProperty);
+    }
 }

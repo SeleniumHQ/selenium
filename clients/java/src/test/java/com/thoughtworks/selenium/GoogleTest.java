@@ -9,7 +9,7 @@ public class GoogleTest extends TestCase {
 
     public void setUp() throws Exception {
         String url = "http://www.google.com";
-        selenium = new DefaultSelenium("localhost", SeleniumServer.getDefaultPort(), "*firefox", url);
+        selenium = new DefaultSelenium("localhost", RemoteControlConfiguration.getDefaultPort(), "*firefox", url);
         selenium.start();
     }
 

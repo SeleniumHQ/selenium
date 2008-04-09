@@ -79,7 +79,7 @@ public class HttpCommandProcessor implements CommandProcessor {
             is = getCommandResponse(command, is);
             return stringContentsOfInputStream(is);
         } catch (IOException e) {
-            throw new UnsupportedOperationException("Catch body broken: IOException from " + command + " -> " + e);
+            throw new UnsupportedOperationException("Catch body broken: IOException from " + command + " -> " + e, e);
         } finally {
             if (is != null) {
                 try {
