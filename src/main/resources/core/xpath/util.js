@@ -496,18 +496,52 @@ function predicateExprHasPositionalSelector(expr, isRecursiveCall) {
   if (!expr) {
     return false;
   }
-  if (expr instanceof NumberExpr && !isRecursiveCall) {
-    // this is an indexing predicate
+  if (!isRecursiveCall && exprReturnsNumberValue(expr)) {
+    // this is a "proximity position"-based predicate
     return true;
   }
   if (expr instanceof FunctionCallExpr) {
     var value = expr.name.value;
-    return (value == 'last' || value == 'position');
+    return (value == 'position');
   }
   if (expr instanceof BinaryExpr) {
     return (
       predicateExprHasPositionalSelector(expr.expr1, true) ||
       predicateExprHasPositionalSelector(expr.expr2, true));
+  }
+  return false;
+}
+
+function exprReturnsNumberValue(expr) {
+  if (expr instanceof FunctionCallExpr) {
+    var isMember = {
+      last: true
+      , position: true
+      , count: true
+      , 'string-length': true
+      , number: true
+      , sum: true
+      , floor: true
+      , ceiling: true
+      , round: true
+    };
+    return isMember[expr.name.value];
+  }
+  else if (expr instanceof UnaryMinusExpr) {
+    return true;
+  }
+  else if (expr instanceof BinaryExpr) {
+    var isMember = {
+      '+': true
+      , '-': true
+      , '*': true
+      , mod: true
+      , div: true
+    };
+    return isMember[expr.op.value];
+  }
+  else if (expr instanceof NumberExpr) {
+    return true;
   }
   return false;
 }
