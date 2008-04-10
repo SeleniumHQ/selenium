@@ -502,7 +502,7 @@ function predicateExprHasPositionalSelector(expr, isRecursiveCall) {
   }
   if (expr instanceof FunctionCallExpr) {
     var value = expr.name.value;
-    return (value == 'position');
+    return (value == 'last' || value == 'position');
   }
   if (expr instanceof BinaryExpr) {
     return (

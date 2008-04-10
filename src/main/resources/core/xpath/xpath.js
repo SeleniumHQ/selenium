@@ -1382,7 +1382,10 @@ function PathExpr(filter, rel) {
 }
 
 PathExpr.prototype.evaluate = function(ctx) {
+  var returnOnFirstMatch = ctx.returnOnFirstMatch;
+  ctx.setReturnOnFirstMatch(false);
   var nodes = this.filter.evaluate(ctx).nodeSetValue();
+  ctx.setReturnOnFirstMatch(returnOnFirstMatch);
   var nodes1 = [];
   for (var i = 0; i < nodes.length; ++i) {
     var nodes0 = this.rel.evaluate(ctx.clone(nodes[i], i, nodes)).nodeSetValue();
