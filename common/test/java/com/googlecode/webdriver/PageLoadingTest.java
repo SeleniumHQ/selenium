@@ -49,7 +49,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
         assertThat(pageNumber.getText().trim(), equalTo("2"));
     }
 
-    @Ignore("htmlunit, safari")
+    @Ignore("safari")
     @NeedsFreshDriver
     public void testSouldDoNothingIfThereIsNothingToGoBackTo() {
         driver.get(formPage);
@@ -58,7 +58,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
         assertThat(driver.getTitle(), equalTo("We Leave From Here"));
       }
 
-    @Ignore("htmlunit, safari")
+    @Ignore("safari")
       public void testShouldBeAbleToNavigateBackInTheBrowserHistory() {
           driver.get(formPage);
 
@@ -69,7 +69,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
           assertThat(driver.getTitle(), equalTo("We Leave From Here"));
       }
 
-    @Ignore("htmlunit, safari")
+    @Ignore("safari")
       public void testShouldBeAbleToNavigateForwardsInTheBrowserHistory() {
           driver.get(formPage);
 

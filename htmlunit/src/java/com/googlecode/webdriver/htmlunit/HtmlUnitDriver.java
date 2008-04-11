@@ -22,9 +22,11 @@ import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.httpclient.HttpState;
@@ -54,13 +56,15 @@ import com.googlecode.webdriver.WebDriver;
 import com.googlecode.webdriver.WebElement;
 import com.googlecode.webdriver.internal.FindsById;
 import com.googlecode.webdriver.internal.FindsByLinkText;
-import com.googlecode.webdriver.internal.FindsByXPath;
 import com.googlecode.webdriver.internal.FindsByName;
+import com.googlecode.webdriver.internal.FindsByXPath;
 import com.googlecode.webdriver.internal.ReturnedCookie;
 
 public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText, FindsByXPath, FindsByName {
     private WebClient webClient;
     private WebWindow currentWindow;
+    /** window name => history. */
+    private Map<String, History> histories = new HashMap<String, History>();
 
     public HtmlUnitDriver() {
         newWebClient();
@@ -72,13 +76,24 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText, Fi
             }
 
             public void webWindowContentChanged(WebWindowEvent webWindowEvent) {
+                WebWindow window = webWindowEvent.getWebWindow();
                 if (waitingToLoad) {
                     waitingToLoad = false;
-                    webClient.setCurrentWindow(webWindowEvent.getWebWindow());
+                    webClient.setCurrentWindow(window);
                 }
+                String windowName = window.getName();
+                History history = histories.get(windowName);
+                if (history == null) {
+                    history = new History(window);
+                    histories.put(windowName, history);
+                }
+                history.addNewPage(webWindowEvent.getNewPage());
             }
 
             public void webWindowClosed(WebWindowEvent webWindowEvent) {
+                WebWindow window = webWindowEvent.getWebWindow();
+                String windowName = window.getName();
+                histories.remove(windowName);
                 pickWindow();
             }
         });
@@ -99,7 +114,7 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText, Fi
     public void get(String url) {
         try {
             URL fullUrl = new URL(url);
-            Page page = webClient.getPage(fullUrl);
+            webClient.getPage(fullUrl);
         } catch (UnknownHostException e) {
           // This should be fine
         } catch (ConnectException e) {
@@ -380,17 +395,50 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText, Fi
         return currentWindow;
     }
 
+    private class History {
+        private final WebWindow window;
+        private List<Page> history = new ArrayList<Page>();
+        private int index = -1;
+
+        private History(WebWindow window) {
+            this.window = window;
+        }
+
+        public void addNewPage(Page newPage) {
+            ++index;
+            while (history.size() > index) {
+                history.remove(index);
+            }
+            history.add(newPage);
+        }
+
+        public void goBack() {
+            if (index > 0) {
+                --index;
+                window.setEnclosedPage(history.get(index));
+            }
+        }
+
+        public void goForward() {
+            if (index < history.size() - 1) {
+                ++index;
+                window.setEnclosedPage(history.get(index));
+            }
+        }
+    }
+
     private class HtmlUnitNavigation implements Navigation {
       public void back() {
-        // This functionality isn't already built into htmlunit. I'm surprised.
-        // https://sourceforge.net/tracker/index.php?func=detail&aid=1337174&group_id=47038&atid=448269
-        // for more the HtmlUnit feature request.
-        throw new UnsupportedOperationException("back");
+        String windowName = currentWindow.getName();
+        History history = histories.get(windowName);
+        history.goBack();
       }
 
 
       public void forward() {
-        throw new UnsupportedOperationException("forward");
+          String windowName = currentWindow.getName();
+          History history = histories.get(windowName);
+          history.goForward();
       }
 
 
