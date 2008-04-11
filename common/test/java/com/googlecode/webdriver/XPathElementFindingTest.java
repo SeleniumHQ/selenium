@@ -62,7 +62,6 @@ public class XPathElementFindingTest extends AbstractDriverTestCase {
     	driver.get(formPage);
     	
     	try {
-    		
     		driver.findElement(By.xpath("//form[@name='optional']/input[@type='submit' and @value='Click!']")).click();
     	} catch (NoSuchElementException e) {
     		fail("Should be able to find the submit button");

@@ -54,6 +54,10 @@ public class FirefoxBinary {
         } finally {
             reader.close();
         }
+        
+        if (OperatingSystem.getCurrentPlatform().equals(OperatingSystem.WINDOWS)) {
+        	sleep(500);
+        }
     }
 
     protected void modifyLibraryPath(ProcessBuilder builder) {

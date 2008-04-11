@@ -72,7 +72,7 @@ public class FirefoxLauncher {
         while (System.currentTimeMillis() < maxWaitTime) {
             try {
                 connection = new RunningInstanceConnection("localhost", port, 1000);
-                Thread.sleep(4000);
+                Thread.sleep(2000);
                 connection.quit();
                 return;
             } catch (ConnectException e) {
