@@ -58,7 +58,7 @@ public class HtmlUnitWebElement implements WebElement {
     public void submit() {
         try {
             if (element instanceof HtmlForm) {
-                ((HtmlForm) element).submit();
+                submitForm((HtmlForm) element);
                 return;
             } else if (element instanceof HtmlSubmitInput) {
                 ((HtmlSubmitInput) element).click();
@@ -67,7 +67,7 @@ public class HtmlUnitWebElement implements WebElement {
                 ((HtmlImageInput) element).click();
                 return;
             } else if (element instanceof HtmlInput) {
-                ((HtmlInput) element).getEnclosingForm().submit();
+                submitForm(((HtmlInput) element).getEnclosingForm());
                 return;
             }
 
@@ -80,7 +80,54 @@ public class HtmlUnitWebElement implements WebElement {
         }
     }
 
-    public String getValue() {
+    private void submitForm(HtmlForm form) {
+    	List<String> names = new ArrayList<String>();
+    	names.add("input");
+    	names.add("button");
+    	List<? extends HtmlElement> allElements = form.getHtmlElementsByTagNames(names);
+    	
+    	HtmlElement submit = null;
+    	for (HtmlElement element : allElements) {
+    		if (!isSubmitElement(element))
+    			continue;
+    		
+    		if (isBefore(submit, element))
+    			submit = element;
+    	}
+    	
+    	if (submit == null)
+    		throw new RuntimeException("Cannot locate element used to submit form");
+    	try {
+			((ClickableElement) submit).click();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private boolean isSubmitElement(HtmlElement element) {
+		HtmlElement candidate = null;
+		
+		if (element instanceof HtmlSubmitInput && !((HtmlSubmitInput)element).isDisabled())
+			candidate = element;
+		else if (element instanceof HtmlImageInput && !((HtmlImageInput)element).isDisabled())
+			candidate = element;
+		else if (element instanceof HtmlButton) {
+			HtmlButton button = (HtmlButton) element;
+			if ("submit".equalsIgnoreCase(button.getTypeAttribute()) && !button.isDisabled()) 
+				candidate = element;
+		}
+		
+		return candidate != null;
+	}
+
+	private boolean isBefore(HtmlElement submit, HtmlElement element) {
+		if (submit == null)
+			return true;
+		
+		return false;
+	}
+
+	public String getValue() {
         if (element instanceof HtmlTextArea)
             return ((HtmlTextArea) element).getText();
         return getAttribute("value");
@@ -286,10 +333,9 @@ public class HtmlUnitWebElement implements WebElement {
 
     @SuppressWarnings("unchecked")
     public List<WebElement> getChildrenOfType(String tagName) {
-        Iterator<HtmlElement> allChildren = element.getAllHtmlChildElements();
+        Iterable<HtmlElement> allChildren = element.getAllHtmlChildElements();
         List<WebElement> elements = new ArrayList<WebElement>();
-        while (allChildren.hasNext()) {
-            HtmlElement child = allChildren.next();
+        for (HtmlElement child : allChildren) {
             if (tagName.equals(child.getTagName())) {
                 elements.add(new HtmlUnitWebElement(parent, child));
             }

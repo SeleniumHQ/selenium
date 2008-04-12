@@ -30,8 +30,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.httpclient.HttpState;
-import org.jaxen.JaxenException;
-import org.jaxen.XPath;
 
 import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 import com.gargoylesoftware.htmlunit.Page;
@@ -45,7 +43,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlInlineFrame;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.xpath.HtmlUnitXPath;
 import com.googlecode.webdriver.Alert;
 import com.googlecode.webdriver.By;
 import com.googlecode.webdriver.Cookie;
@@ -258,34 +255,26 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText, Fi
   }
 
   public WebElement findElementByXPath(String selector) {
-        try {
-            XPath xpath = new HtmlUnitXPath(selector);
-            Object node = xpath.selectSingleNode(lastPage());
-            if (node == null)
-                throw new NoSuchElementException("Cannot locate a node using " + selector);
-            return new HtmlUnitWebElement(this, (HtmlElement) node);
-        } catch (JaxenException e) {
-            throw new RuntimeException(e);
-        }
+    	Object node = lastPage().getFirstByXPath(selector);
+        if (node == null)
+            throw new NoSuchElementException("Cannot locate a node using " + selector);
+        if (node instanceof HtmlElement)
+        	return new HtmlUnitWebElement(this, (HtmlElement) node);
+        throw new NoSuchElementException(String.format("Cannot find element with xpath %s", selector));
     }
 
     @SuppressWarnings("unchecked")
     public List<WebElement> findElementsByXPath(String selector) {
-        try {
-            HtmlUnitXPath xpath = new HtmlUnitXPath(selector);
-            List<HtmlElement> nodes = xpath.selectNodes(lastPage());
-
-            return convertRawHtmlElementsToWebElements(nodes);
-        } catch (JaxenException e) {
-            throw new RuntimeException(e);
-        }
+    	List<? extends Object> nodes = lastPage().getByXPath(selector);
+        return convertRawHtmlElementsToWebElements(nodes);
     }
 
-    private List<WebElement> convertRawHtmlElementsToWebElements(List<HtmlElement> nodes) {
+    private List<WebElement> convertRawHtmlElementsToWebElements(List<? extends Object> nodes) {
         List<WebElement> elements = new ArrayList<WebElement>();
 
-      for (HtmlElement node : nodes) {
-        elements.add(new HtmlUnitWebElement(this, node));
+      for (Object node : nodes) {
+    	if (node instanceof HtmlElement)
+    		elements.add(new HtmlUnitWebElement(this, (HtmlElement) node));
       }
 
         return elements;
@@ -355,9 +344,9 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText, Fi
 		public WebElement activeElement() {
             Page page = currentWindow.getEnclosedPage();
             if (page instanceof HtmlPage) {
-                HtmlElement element = ((HtmlPage) page).getElementWithFocus();
+                HtmlElement element = ((HtmlPage) page).getFocusedElement();
                 if (element == null) {
-                    List<HtmlElement> allBodies = ((HtmlPage) page).getDocumentHtmlElement().getHtmlElementsByTagName("body");
+                    List<? extends HtmlElement> allBodies = ((HtmlPage) page).getDocumentHtmlElement().getHtmlElementsByTagName("body");
                     if (allBodies.size() > 0)
                         return new HtmlUnitWebElement(HtmlUnitDriver.this, allBodies.get(0));
                 }
