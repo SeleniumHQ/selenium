@@ -113,10 +113,21 @@ module Selenium
             result = get_string("getNewBrowserSession", [@browserStartCommand, @browserURL])
             @session_id = result
         end
-        
+
+        def session?
+          @session_id != nil
+        end
+
+        def session_reset
+          @session_id = nil
+        end
+
         def stop()
+          if session?
             do_command("testComplete", [])
-            @session_id = nil
+          end
+        ensure
+          session_reset
         end
 
         def do_command(verb, args)
@@ -127,7 +138,7 @@ module Selenium
                     arg_num = (i+1).to_s
                     command_string = command_string + "&" + arg_num + "=" + CGI::escape(args[i].to_s)
                 end
-                if @session_id != nil
+                if session?
                     command_string = command_string + "&sessionId=" + @session_id.to_s
                 end
                 #print "Requesting --->" + command_string + "\n"
