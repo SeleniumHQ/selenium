@@ -10,6 +10,7 @@ public class ClientUnitTestSuite extends TestCase {
         TestSuite suite = new TestSuite(ClientUnitTestSuite.class.getName());
         suite.addTestSuite(CSVTest.class);
         suite.addTestSuite(WaitTest.class);
+        suite.addTestSuite(HttpCommandProcessorUnitTest.class);
         suite.addTestSuite(DefaultSeleniumStartErrorHandlingTest.class);
         return suite;
     }

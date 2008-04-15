@@ -309,8 +309,8 @@ public class BrowserSessionFactory {
         sessionInfo = new BrowserSessionInfo(sessionId, browserString, startURL, launcher, queueSet);
         log.info("Allocated session " + sessionId + " for " + startURL + ", launching...");
 
-        launcher.launchRemoteSession(startURL, configuration.isMultiWindow());
         try {
+            launcher.launchRemoteSession(startURL, configuration.isMultiWindow());
             queueSet.waitForLoad(SeleniumServer.getTimeoutInSeconds() * 1000l);
 
             // TODO DGF log4j only

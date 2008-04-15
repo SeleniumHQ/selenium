@@ -17,10 +17,16 @@
 
 package com.thoughtworks.selenium;
 
-import java.io.*;
-import java.net.*;
-import java.text.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Sends commands and retrieves results via HTTP.
@@ -141,13 +147,22 @@ public class HttpCommandProcessor implements CommandProcessor {
 
     public void start() {
         String result = getString("getNewBrowserSession", new String[]{browserStartCommand, browserURL});
+        setSessionInProgress(result);
+    }
+
+    protected void setSessionInProgress(String result) {
         sessionId = result;
-        
     }
 
     public void stop() {
-        doCommand("testComplete", null);
-        sessionId = null;
+        if (hasSessionInProgress()) {
+          doCommand("testComplete", null);
+        }
+        setSessionInProgress(null);
+    }
+
+    public boolean hasSessionInProgress() {
+        return null != sessionId;
     }
 
     public String getString(String commandName, String[] args) {
