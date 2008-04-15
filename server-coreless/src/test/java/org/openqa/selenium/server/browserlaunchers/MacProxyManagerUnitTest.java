@@ -18,7 +18,7 @@ import org.openqa.selenium.server.browserlaunchers.MacProxyManager.MacNetworkSet
 
 import junit.framework.TestCase;
 
-public class MacProxyManagerTest extends TestCase {
+public class MacProxyManagerUnitTest extends TestCase {
     
     MockableMacProxyManager mmpm;
     public void setUp() {

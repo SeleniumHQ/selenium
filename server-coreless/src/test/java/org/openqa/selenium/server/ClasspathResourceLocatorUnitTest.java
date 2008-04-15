@@ -6,9 +6,9 @@ import org.mortbay.util.Resource;
 
 import java.io.IOException;
 
-public class ClasspathResourceLocatorTest extends TestCase {
+public class ClasspathResourceLocatorUnitTest extends TestCase {
     public void testShouldGetResourceFromClasspath() throws Exception {
-        Resource resource = getResourceFromClasspath("ClasspathResourceLocatorTest.class");
+        Resource resource = getResourceFromClasspath("ClasspathResourceLocatorUnitTest.class");
         assertNotNull(resource.getInputStream());
     }
 
@@ -19,7 +19,7 @@ public class ClasspathResourceLocatorTest extends TestCase {
     }
 
     public void testShouldStoreFileNameInMetaData() throws Exception {
-    	String filename = "ClasspathResourceLocatorTest.class";
+    	String filename = "ClasspathResourceLocatorUnitTest.class";
         Resource resource = getResourceFromClasspath(filename);
         assertEquals("toString() must end with filename, because Jetty used this method to determine file type",
         		filename, resource.toString());		

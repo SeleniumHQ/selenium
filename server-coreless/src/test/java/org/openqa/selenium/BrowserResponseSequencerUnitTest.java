@@ -10,12 +10,12 @@ import junit.framework.TestCase;
 
 import org.openqa.selenium.server.BrowserResponseSequencer;
 
-public class BrowserResponseSequencerTest extends TestCase {
+public class BrowserResponseSequencerUnitTest extends TestCase {
 
 	private BrowserResponseSequencer seq;
 	private List<Integer> numbers;
 
-	public BrowserResponseSequencerTest(String name) {
+	public BrowserResponseSequencerUnitTest(String name) {
 		super(name);
 	}
 	

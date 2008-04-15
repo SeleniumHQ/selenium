@@ -2,7 +2,7 @@ package org.openqa.selenium.server;
 
 import junit.framework.TestCase;
 
-public class FrameGroupCommandQueueTest extends TestCase {
+public class FrameGroupCommandQueueUnitTest extends TestCase {
   
   private static String firstSessionId = "session 1";
   private static String firstQueueId = "queue 1";

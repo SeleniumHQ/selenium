@@ -12,9 +12,9 @@ import org.openqa.selenium.testworker.TrackableThread;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
 
-public class SingleEntryAsyncQueueTest extends TestCase {
+public class SingleEntryAsyncQueueUnitTest extends TestCase {
 
-  private static Log log = LogFactory.getLog(SingleEntryAsyncQueueTest.class);
+  private static Log log = LogFactory.getLog(SingleEntryAsyncQueueUnitTest.class);
 
   private static final String testCommand = "testCommand";
   private static final String completeCommand = "testComplete";

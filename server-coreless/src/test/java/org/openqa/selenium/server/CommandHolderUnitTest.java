@@ -12,9 +12,9 @@ import org.openqa.selenium.testworker.TrackableThread;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
 
-public class CommandHolderTest extends TestCase {
+public class CommandHolderUnitTest extends TestCase {
 
-    private static Log log = LogFactory.getLog(CommandHolderTest.class);
+    private static Log log = LogFactory.getLog(CommandHolderUnitTest.class);
 
     private static final String sessionId = "1";
     private static final String testCommand = "testCommand";

@@ -6,7 +6,7 @@ import org.mortbay.util.Resource;
 
 import java.io.File;
 
-public class FsResourceLocatorTest extends TestCase {
+public class FsResourceLocatorUnitTest extends TestCase {
 	private File tempFile;
 
 	private FsResourceLocator resourceLocator;

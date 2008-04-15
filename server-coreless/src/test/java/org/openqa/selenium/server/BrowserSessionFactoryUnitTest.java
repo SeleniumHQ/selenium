@@ -7,7 +7,7 @@ import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
 import java.util.HashSet;
 import java.util.Set;
 
-public class BrowserSessionFactoryTest extends TestCase {
+public class BrowserSessionFactoryUnitTest extends TestCase {
 
     private static final String SESSION_ID_1 = "testLookupByBrowserAndUrl1";
     private static final String BROWSER_1 = "*firefox";

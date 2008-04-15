@@ -21,7 +21,7 @@ import java.util.regex.*;
 
 import junit.framework.*;
 
-public class WindowsUtilsTest extends TestCase {
+public class WindowsUtilsUnitTest extends TestCase {
 
     int majorVersion;
     int minorVersion;

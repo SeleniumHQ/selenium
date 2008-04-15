@@ -10,7 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 
-public class StaticContentHandlerTest extends TestCase {
+public class StaticContentHandlerUnitTest extends TestCase {
     private StaticContentHandler handler;
     private boolean slowResourcesInitially;
 

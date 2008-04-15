@@ -4,7 +4,7 @@ import junit.framework.TestCase;
 
 import java.io.*;
 
-public class LauncherUtilsTest extends TestCase {
+public class LauncherUtilsUnitTest extends TestCase {
   
   private static String COOKIE_SUFFIX = "txt";
   

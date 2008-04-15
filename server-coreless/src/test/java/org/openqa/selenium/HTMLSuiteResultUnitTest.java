@@ -8,7 +8,7 @@ import org.openqa.selenium.server.htmlrunner.*;
 
 import junit.framework.*;
 
-public class HTMLSuiteResultTest extends TestCase {
+public class HTMLSuiteResultUnitTest extends TestCase {
 
     public void testBasic() {
         String input = "\r\n" + 

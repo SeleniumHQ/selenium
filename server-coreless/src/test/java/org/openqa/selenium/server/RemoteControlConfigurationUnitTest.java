@@ -7,7 +7,7 @@ import java.io.File;
 /**
  * #{@link org.openqa.selenium.server.RemoteControlConfiguration} unit test class.
  */
-public class RemoteControlConfigurationTest extends TestCase {
+public class RemoteControlConfigurationUnitTest extends TestCase {
     
     public void testPortIs4444ByDefault() {
         assertEquals(4444, new RemoteControlConfiguration().getPort());

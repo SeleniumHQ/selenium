@@ -2,9 +2,9 @@ package org.openqa.selenium.server;
 
 import junit.framework.TestCase;
 
-public class DefaultRemoteCommandTest extends TestCase {
+public class DefaultRemoteCommandUnitTest extends TestCase {
 
-    public DefaultRemoteCommandTest(String name) {
+    public DefaultRemoteCommandUnitTest(String name) {
         super(name);
     }
 

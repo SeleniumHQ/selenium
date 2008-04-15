@@ -5,7 +5,7 @@ import junit.framework.TestCase;
 import java.io.File;
 import java.io.IOException;
 
-public class WindowsProxyManagerTest extends TestCase {
+public class WindowsProxyManagerUnitTest extends TestCase {
   
   public void testDeleteFlatDirContentsWithNoSuffix() throws IOException {
     File srcDir = makeSourceDirAndCookie("testcookie");

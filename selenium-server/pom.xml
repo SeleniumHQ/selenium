@@ -76,9 +76,7 @@
                         <phase>compile</phase>
                         <configuration>
                             <tasks>
-                                <exec executable="svnversion" outputProperty="svn-revision" failOnError="true">
-                                    <arg value="."/>
-                                </exec>
+                                <property name="svn-revision" value="1123" />
                                 
                                 <unzip src="${maven.dependency.org.openqa.selenium.core.selenium-core.jar.path}" dest="target/classes">
                                     <patternset>

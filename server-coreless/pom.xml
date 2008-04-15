@@ -63,7 +63,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <includes>
-                        <include>**/UnitTestSuite.java</include>
+                        <include>**/*UnitTest.java</include>
                         <!--<include>**/ServerTestSuite.java</include>-->
                     </includes>
                     <forkMode>never</forkMode>

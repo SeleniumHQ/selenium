@@ -8,8 +8,8 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
-public class MakeProxyPacTest extends TestCase {
-    public MakeProxyPacTest(String name) {
+public class MakeProxyPacUnitTest extends TestCase {
+    public MakeProxyPacUnitTest(String name) {
         super(name);
     }
     private File parentDir, pacFile;
@@ -20,7 +20,7 @@ public class MakeProxyPacTest extends TestCase {
     private String httpNonProxyHosts = null;
     
     public void setUp() {
-        parentDir = LauncherUtils.createCustomProfileDir("LauncherUtilsTest");
+        parentDir = LauncherUtils.createCustomProfileDir("LauncherUtilsUnitTest");
         pacFile = new File(parentDir, "proxy.pac");
     }
     

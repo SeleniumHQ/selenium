@@ -7,7 +7,7 @@ import org.openqa.selenium.server.RemoteControlConfiguration;
 /**
  * {@link org.openqa.selenium.server.browserlaunchers.AbstractBrowserLauncher} unit test class.
  */
-public class AbstractBrowserLauncherTest extends TestCase {
+public class AbstractBrowserLauncherUnitTest extends TestCase {
 
     public void testGetConfigurationReturnsConfigurationProvidedInConstructor() {
         final RemoteControlConfiguration theConfiguration;

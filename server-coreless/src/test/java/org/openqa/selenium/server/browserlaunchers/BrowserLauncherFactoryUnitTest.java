@@ -6,7 +6,7 @@ import org.openqa.selenium.server.RemoteControlConfiguration;
 /**
  * {@link org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory} unit test class
  */
-public class BrowserLauncherFactoryTest extends TestCase {
+public class BrowserLauncherFactoryUnitTest extends TestCase {
 
     public void testAllSupportedBrowsersDefineAppropriateConstructor() {
         for (String browser : BrowserLauncherFactory.getSupportedLaunchers().keySet()) {

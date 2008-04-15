@@ -12,7 +12,7 @@ import org.openqa.selenium.testworker.TrackableThread;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
 
-public class CommandQueueTest extends TestCase {
+public class CommandQueueUnitTest extends TestCase {
 
     private static final String sessionId = "1";
     private static final String testCommand = "testCommand";
@@ -21,7 +21,7 @@ public class CommandQueueTest extends TestCase {
     private static final int defaultTimeout = 7;
     private static final int retryTimeout = 5;
 
-    private static Log log = LogFactory.getLog(CommandQueueTest.class);
+    private static Log log = LogFactory.getLog(CommandQueueUnitTest.class);
 
     private CommandQueue cq;
 

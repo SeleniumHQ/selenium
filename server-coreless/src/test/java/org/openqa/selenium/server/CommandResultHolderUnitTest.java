@@ -12,9 +12,9 @@ import org.openqa.selenium.server.log.TerseFormatter;
 import org.openqa.selenium.testworker.TrackableRunnable;
 import org.openqa.selenium.testworker.TrackableThread;
 
-public class CommandResultHolderTest extends TestCase {
+public class CommandResultHolderUnitTest extends TestCase {
 
-  private static Log log = LogFactory.getLog(CommandResultHolderTest.class);
+  private static Log log = LogFactory.getLog(CommandResultHolderUnitTest.class);
 
   private static final String sessionId = "1";
   private static final String testResult = "OK";

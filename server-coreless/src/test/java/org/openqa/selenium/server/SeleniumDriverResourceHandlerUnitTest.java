@@ -2,7 +2,7 @@ package org.openqa.selenium.server;
 
 import junit.framework.TestCase;
 
-public class SeleniumDriverResourceHandlerTest extends TestCase {
+public class SeleniumDriverResourceHandlerUnitTest extends TestCase {
 
   private static String firstSessionId = "session 1";
   private static int defaultSpeed = CommandQueue.getSpeed();

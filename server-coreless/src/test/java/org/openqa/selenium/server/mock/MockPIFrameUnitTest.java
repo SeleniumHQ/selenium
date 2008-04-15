@@ -15,9 +15,9 @@ import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
 import org.openqa.selenium.server.log.StdOutHandler;
 import org.openqa.selenium.server.log.TerseFormatter;
 
-public class MockPIFrameTest extends TestCase {
+public class MockPIFrameUnitTest extends TestCase {
 
-    static final Log LOGGER = LogFactory.getLog(MockPIFrameTest.class);
+    static final Log LOGGER = LogFactory.getLog(MockPIFrameUnitTest.class);
 
     private static final String DRIVER_URL = "http://localhost:4444/selenium-server/driver/";
     private static int timeoutInSeconds = 10;
@@ -25,14 +25,14 @@ public class MockPIFrameTest extends TestCase {
     private String sessionId;
     private SeleniumServer server;
 
-    public MockPIFrameTest(String name) {
+    public MockPIFrameUnitTest(String name) {
         super(name);
     }
 
     public static Test suitex() {
         TestSuite suite = new TestSuite();
         //for (int i= 0; i < 100; i++)
-        suite.addTest(new MockPIFrameTest("testClickAndPause"));
+        suite.addTest(new MockPIFrameUnitTest("testClickAndPause"));
         return suite;
     }
 
@@ -448,7 +448,7 @@ public class MockPIFrameTest extends TestCase {
      * Open a subWindow, close the subWindow, and send a command to the closed subWindow.
      * This will fail; then we select the main window and send commands to it.
      * <p/>
-     * This test passes when run singly or as part of the MockPIFrameTest,
+     * This test passes when run singly or as part of the MockPIFrameUnitTest,
      * but does not pass when run in Eclipse as part of the UnitTestSuite.
      * Raising the timeout does not necessarily help.
      * test.

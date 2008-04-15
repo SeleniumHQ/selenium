@@ -7,7 +7,7 @@ import junit.framework.TestCase;
  * 
  * @author Matthew Purland
  */
-public class SeleniumServerTest extends TestCase {
+public class SeleniumServerUnitTest extends TestCase {
 
 	// Number of jetty threads to positively test for
 	private int positiveJettyThreads = SeleniumServer.DEFAULT_JETTY_THREADS;
