@@ -1,11 +1,11 @@
 package org.openqa.selenium.server;
 
-public class WindowsHTMLRunnerMultiWindowTest extends HTMLRunnerTestBase {
-    public WindowsHTMLRunnerMultiWindowTest() {
+public class WindowsHTMLRunnerMultiWindowFunctionalTest extends HTMLRunnerTestBase {
+    public WindowsHTMLRunnerMultiWindowFunctionalTest() {
         super.multiWindow = true;
     }
     
-    public WindowsHTMLRunnerMultiWindowTest(String name) {
+    public WindowsHTMLRunnerMultiWindowFunctionalTest(String name) {
         super(name);
         super.multiWindow = true;
     }

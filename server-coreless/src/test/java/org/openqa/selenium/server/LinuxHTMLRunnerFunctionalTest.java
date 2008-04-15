@@ -1,7 +1,7 @@
 package org.openqa.selenium.server;
 
 
-public class LinuxHTMLRunnerTest extends HTMLRunnerTestBase {
+public class LinuxHTMLRunnerFunctionalTest extends HTMLRunnerTestBase {
     public void testFirefox() throws Exception{
         runHTMLSuite("*firefox", false);
     }

@@ -1,6 +1,6 @@
 package org.openqa.selenium.server;
 
-public class WindowsHTMLRunnerTest extends HTMLRunnerTestBase {
+public class WindowsHTMLRunnerFunctionalTest extends HTMLRunnerTestBase {
 
     public void testFirefox() throws Exception {
         runHTMLSuite("*firefox", false);

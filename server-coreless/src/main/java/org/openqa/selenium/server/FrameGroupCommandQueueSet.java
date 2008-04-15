@@ -521,59 +521,59 @@ public class FrameGroupCommandQueueSet {
         return waitForLoad(Long.parseLong(timeoutInMilliseconds));
     }
 
-    private String waitForLoad(String waitingForThisWindowName,
-            String waitingForThisLocalFrame, int timeoutInSeconds)
-            throws RemoteCommandException {
-      for (String matchingFrameAddress = null; timeoutInSeconds >= 0; timeoutInSeconds--) {
-        dataLock.lock();
-        try {
-          log.debug("waiting for window \"" + waitingForThisWindowName
-              + "\"" + " local frame \"" + waitingForThisLocalFrame
-              + "\" for " + timeoutInSeconds + " more secs");
-          matchingFrameAddress = findMatchingFrameAddress(
-              frameAddressToJustLoaded.keySet(),
-              waitingForThisWindowName, waitingForThisLocalFrame);
-          if (matchingFrameAddress != null) {
-            log.debug("wait is over: window \""
-                 + waitingForThisWindowName
-                 + "\" was seen at last (" + matchingFrameAddress
-                 + ")");
-            // Remove it from the list of matching frame addresses
-            // since it just loaded. Mark whether just loaded
-            // to aid debugging.
-            markWhetherJustLoaded(matchingFrameAddress, false);
-            return matchingFrameAddress;
-          }
+    private String waitForLoad(String waitingForThisWindowName, String waitingForThisLocalFrame,
+                               int timeoutInSeconds) throws RemoteCommandException {
 
-          waitUntilSignalOrNumSecondsPassed(resultArrivedOnAnyQueue, 1);
-        } finally {
-          dataLock.unlock();
+        for (String matchingFrameAddress = null; timeoutInSeconds >= 0; timeoutInSeconds--) {
+            dataLock.lock();
+            try {
+                log.debug("waiting for window '" + waitingForThisWindowName
+                        + "' local frame '" + waitingForThisLocalFrame
+                        + "' for " + timeoutInSeconds + " more secs");
+
+                matchingFrameAddress = findMatchingFrameAddress(
+                        frameAddressToJustLoaded.keySet(),
+                        waitingForThisWindowName, waitingForThisLocalFrame);
+                if (null != matchingFrameAddress) {
+                    log.debug("wait is over: window '" + waitingForThisWindowName
+                            + "' was seen at last (" + matchingFrameAddress + ")");
+                    /*
+                     * Remove it from the list of matching frame addresses
+                     * since it just loaded. Mark whether just loaded
+                     * to aid debugging.
+                     */
+                    markWhetherJustLoaded(matchingFrameAddress, false);
+                    return matchingFrameAddress;
+                }
+
+                waitUntilSignalOrNumSecondsPassed(resultArrivedOnAnyQueue, 1);
+            } finally {
+                dataLock.unlock();
+            }
         }
-      }
-      String result = "timed out waiting for window \""
-          + waitingForThisWindowName + "\" to appear";
-      throw new RemoteCommandException(result, result);
+        String result = "timed out waiting for window '" + waitingForThisWindowName + "' to appear";
+        throw new RemoteCommandException(result, result);
     }
 
-	/**
-	 *  Waits on the condition, making sure to wait at least as
-	 *  many seconds as specified, unless the condition is signaled
-	 *  first. 
-	 *  
-	 *@param condition
-	 *@param numSeconds
-	 **/
-	protected static boolean waitUntilSignalOrNumSecondsPassed(Condition condition, int numSeconds) {
-	  boolean result = false;
+    /**
+     *  Waits on the condition, making sure to wait at least as
+     *  many seconds as specified, unless the condition is signaled
+     *  first.
+     *
+     *@param condition
+     *@param numSeconds
+     **/
+    protected static boolean waitUntilSignalOrNumSecondsPassed(Condition condition, int numSeconds) {
+      boolean result = false;
       if (numSeconds > 0) {
         long now = System.currentTimeMillis();
         long deadline = now + (numSeconds * 1000);
         while(now < deadline) {
           try {
-			log.debug("waiting for condition for " + (deadline-now) + " more ms");
+            log.debug("waiting for condition for " + (deadline-now) + " more ms");
             result = condition.await(deadline - now, TimeUnit.MILLISECONDS);
-			log.debug("got condition? : " + result);
-			now = deadline;
+            log.debug("got condition? : " + result);
+            now = deadline;
           } catch (InterruptedException ie) {
             now = System.currentTimeMillis();
           }
@@ -633,16 +633,16 @@ public class FrameGroupCommandQueueSet {
         }
         // DGF Windows that have just loaded may not know their true identity
         if (windowJustLoaded) {
-    	    String title;
-			try {
-				title = getRemoteWindowTitle(queue);
-			} catch (WindowClosedException e) {
-				return false;
-			}
-    		markWhetherJustLoaded(uniqueId, true);  
-    		if (title.equals(windowName) ) {
-    			return true;
-    		}
+            String title;
+            try {
+                title = getRemoteWindowTitle(queue);
+            } catch (WindowClosedException e) {
+                return false;
+            }
+            markWhetherJustLoaded(uniqueId, true);
+            if (title.equals(windowName) ) {
+                return true;
+            }
 
         }
         String actualWindowName = frameAddress.getWindowName();
@@ -680,7 +680,7 @@ public class FrameGroupCommandQueueSet {
       
       if (justLoaded) {
         markWhetherJustLoaded(uniqueId, true);
-      	commandResult = null;
+          commandResult = null;
       }
       
       if (WindowClosedException.WINDOW_CLOSED_ERROR.equals(commandResult)) {
@@ -836,34 +836,34 @@ public class FrameGroupCommandQueueSet {
       tempFilesForSession.add(tf);   
     }
 
-	private boolean queueMatchesFrameAddress(CommandQueue queue, String localFrameAddress, String newFrameAddressExpression) {
-		boolean result;
-		try {
-			result = doBooleanCommand(queue, "getWhetherThisFrameMatchFrameExpression", localFrameAddress, newFrameAddressExpression);
-		} catch (WindowClosedException e) {
-			return false;
-		}
-		return result;
-	}
+    private boolean queueMatchesFrameAddress(CommandQueue queue, String localFrameAddress, String newFrameAddressExpression) {
+        boolean result;
+        try {
+            result = doBooleanCommand(queue, "getWhetherThisFrameMatchFrameExpression", localFrameAddress, newFrameAddressExpression);
+        } catch (WindowClosedException e) {
+            return false;
+        }
+        return result;
+    }
 
-	private boolean doBooleanCommand(CommandQueue queue, String command, String arg1, String arg2) throws WindowClosedException {
-		String booleanResult = queue.doCommand(command, arg1, arg2);
-		boolean result;
-		if ("OK,true".equals(booleanResult)) {
-		    result = true;
-		}
-		else if ("OK,false".equals(booleanResult)) {
-		    result = false;
-		}
-		else {
-			if (WindowClosedException.WINDOW_CLOSED_ERROR.equals(booleanResult)) {
-				throw new WindowClosedException();
-			}
-		    throw new RuntimeException("unexpected return " + booleanResult + " from boolean command " + command);
-		}
-		log.debug("doBooleancommand(" + command + "(" + arg1 + ", " + arg2 + ") -> " + result);
-		return result;
-	}
+    private boolean doBooleanCommand(CommandQueue queue, String command, String arg1, String arg2) throws WindowClosedException {
+        String booleanResult = queue.doCommand(command, arg1, arg2);
+        boolean result;
+        if ("OK,true".equals(booleanResult)) {
+            result = true;
+        }
+        else if ("OK,false".equals(booleanResult)) {
+            result = false;
+        }
+        else {
+            if (WindowClosedException.WINDOW_CLOSED_ERROR.equals(booleanResult)) {
+                throw new WindowClosedException();
+            }
+            throw new RuntimeException("unexpected return " + booleanResult + " from boolean command " + command);
+        }
+        log.debug("doBooleancommand(" + command + "(" + arg1 + ", " + arg2 + ") -> " + result);
+        return result;
+    }
 }
 
 

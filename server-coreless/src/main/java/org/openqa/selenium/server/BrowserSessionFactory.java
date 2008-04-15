@@ -185,7 +185,7 @@ public class BrowserSessionFactory {
             activeSessions.remove(sessionInfo);
             try {
                 if (forceClose || !configuration.reuseBrowserSessions()) {
-                    endBrowserSession(sessionInfo);
+                    shutdownBrowserAndClearSessionData(sessionInfo);
                 } else {
                     if (null != sessionInfo.session) { // optional field
                         sessionInfo.session.reset(sessionInfo.baseUrl);
@@ -206,7 +206,7 @@ public class BrowserSessionFactory {
             if (null != sessionInfo && (forceClose || !configuration.reuseBrowserSessions())) {
                 try {
                     availableSessions.remove(sessionInfo);
-                    endBrowserSession(sessionInfo);
+                    shutdownBrowserAndClearSessionData(sessionInfo);
                 } finally {
                     if (ensureClean) {
                         // sessionInfo.launcher.restoreOriginalSessionData();
@@ -222,7 +222,7 @@ public class BrowserSessionFactory {
      *
      * @param sessionInfo the browser session to end.
      */
-    protected void endBrowserSession(BrowserSessionInfo sessionInfo) {
+    protected void shutdownBrowserAndClearSessionData(BrowserSessionInfo sessionInfo) {
         try {
             sessionInfo.launcher.close(); // can throw RuntimeException
         } finally {
@@ -298,11 +298,15 @@ public class BrowserSessionFactory {
     protected BrowserSessionInfo createNewRemoteSession(String browserString, String startURL,
             boolean ensureClean, RemoteControlConfiguration configuration) throws RemoteCommandException {
 
-        String sessionId = UUID.randomUUID().toString().replace("-", "");
-        FrameGroupCommandQueueSet queueSet = FrameGroupCommandQueueSet.makeQueueSet(sessionId, configuration.getPortDriversShouldContact());
-        BrowserLauncher launcher = browserLauncherFactory.getBrowserLauncher(browserString, sessionId, configuration);
-        BrowserSessionInfo sessionInfo = new BrowserSessionInfo(sessionId,
-                browserString, startURL, launcher, queueSet);
+        final FrameGroupCommandQueueSet queueSet;
+        final BrowserSessionInfo sessionInfo;
+        final BrowserLauncher launcher;
+        final String sessionId;
+
+        sessionId = UUID.randomUUID().toString().replace("-", "");
+        queueSet = FrameGroupCommandQueueSet.makeQueueSet(sessionId, configuration.getPortDriversShouldContact());
+        launcher = browserLauncherFactory.getBrowserLauncher(browserString, sessionId, configuration);
+        sessionInfo = new BrowserSessionInfo(sessionId, browserString, startURL, launcher, queueSet);
         log.info("Allocated session " + sessionId + " for " + startURL + ", launching...");
 
         launcher.launchRemoteSession(startURL, configuration.isMultiWindow());
@@ -316,10 +320,15 @@ public class BrowserSessionFactory {
 
             activeSessions.add(sessionInfo);
             return sessionInfo;
-        } catch (RemoteCommandException rce) {
-            log.debug("Failed to start new browser session: " + rce.getMessage());
-            endBrowserSession(true, sessionId, configuration, ensureClean);
-            throw rce;
+        } catch (Exception e) {
+            /*
+             * At this point the session might not have been added to neither available nor active sessions.
+             * This session is unlikely to be of any practical use so we need to make sure we close the browser
+             * and clear all session data.
+             */
+            log.error("Failed to start new browser session, shutdown browser an clear all session data: " + e.getMessage());
+            shutdownBrowserAndClearSessionData(sessionInfo);
+            throw new RemoteCommandException("Error while launching browser", "", e);
         }
     }
 
