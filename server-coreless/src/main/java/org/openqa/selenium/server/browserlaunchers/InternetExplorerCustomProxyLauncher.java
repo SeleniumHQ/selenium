@@ -75,8 +75,9 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
     public void launch(String url) {
         try {
             if (WindowsUtils.thisIsWindows()) {
-                wpm.backupRegistrySettings();
-                changeRegistrySettings();
+                if (getConfiguration().shouldOverrideSystemProxy()) {
+                  setupSystemProxy();
+                }
                 customProxyPACDir = wpm.getCustomProxyPACDir();
                 File killableProcessWrapper = new File(customProxyPACDir, "killableprocess.exe");
                 ResourceExtractor.extractResourcePath(InternetExplorerCustomProxyLauncher.class, "/killableprocess/killableprocess.exe", killableProcessWrapper);
@@ -97,7 +98,9 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
     public void close() {
         Exception taskKillException = null;
         if (WindowsUtils.thisIsWindows()) {
-            wpm.restoreRegistrySettings();
+            if (getConfiguration().shouldOverrideSystemProxy()) {
+                restoreSystemProxy();
+            }
         }
         if (process == null) return;
         if (false) {
@@ -130,6 +133,10 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
         }
     }
 
+    private void restoreSystemProxy() {
+        wpm.restoreRegistrySettings();
+    }
+
     public Process getProcess() {
         return process;
     }
@@ -148,4 +155,11 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
     public static void setChangeMaxConnections(boolean changeMaxConnections) {
         InternetExplorerCustomProxyLauncher.alwaysChangeMaxConnections = changeMaxConnections;
     }
+
+    private void setupSystemProxy() throws IOException {
+        wpm.backupRegistrySettings();
+        changeRegistrySettings();
+    }
+
+
 }

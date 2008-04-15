@@ -225,4 +225,30 @@ public class RemoteControlConfigurationUnitTest extends TestCase {
         assertEquals("A Mode", configuration.getForcedBrowserMode());
     }
 
+    public void testHonorSystemProxyIsFalseByDefault() {
+        assertFalse(new RemoteControlConfiguration().honorSystemProxy());
+
+    }
+
+    public void testHonorSystemProxyCanBeSet() {
+        final RemoteControlConfiguration configuration;
+
+        configuration = new RemoteControlConfiguration();
+        configuration.setHonorSystemProxy(true);
+        assertTrue(configuration.honorSystemProxy());
+
+    }
+
+    public void testShouldOverrideSystemProxyIsTrueByDefault() {
+        assertTrue(new RemoteControlConfiguration().shouldOverrideSystemProxy());
+
+    }
+
+    public void testShouldOverrideSystemProxyIsFalseIfHonorSystemProxyIsSet() {
+        final RemoteControlConfiguration configuration;
+
+        configuration = new RemoteControlConfiguration();
+        configuration.setHonorSystemProxy(true);
+        assertFalse(configuration.shouldOverrideSystemProxy());
+    }
 }

@@ -41,6 +41,7 @@ public class RemoteControlConfiguration {
     private boolean reuseBrowserSessions;
     private String logOutFileName;
     private String forcedBrowserMode;
+    private boolean honorSystemProxy;
 
 
     public RemoteControlConfiguration() {
@@ -149,11 +150,11 @@ public class RemoteControlConfiguration {
     }
 
     public void setDebugURL(String newDebugURL) {
-        this.debugURL = newDebugURL;
+        debugURL = newDebugURL;
     }
 
     public void setDontInjectRegex(String newdontInjectRegex) {
-        this.dontInjectRegex = newdontInjectRegex;
+        dontInjectRegex = newdontInjectRegex;
     }
 
     public String getDontInjectRegex() {
@@ -165,7 +166,7 @@ public class RemoteControlConfiguration {
     }
 
     public void setFirefoxProfileTemplate(File newFirefoxProfileTemplate) {
-        this.firefoxProfileTemplate = newFirefoxProfileTemplate;
+        firefoxProfileTemplate = newFirefoxProfileTemplate;
     }
 
     public void setReuseBrowserSessions(boolean reuseBrowserSessions) {
@@ -173,11 +174,11 @@ public class RemoteControlConfiguration {
     }
 
     public boolean reuseBrowserSessions() {
-        return this.reuseBrowserSessions;
+        return reuseBrowserSessions;
     }
 
     public void setLogOutFileName(String newLogOutFileName) {
-        this.logOutFileName = newLogOutFileName;
+        logOutFileName = newLogOutFileName;
     }
 
     public String getLogOutFileName() {
@@ -208,5 +209,17 @@ public class RemoteControlConfiguration {
             return DEFAULT_PORT;
         }
         return Integer.parseInt(portProperty);
+    }
+
+    public boolean honorSystemProxy() {
+        return honorSystemProxy;
+    }
+
+    public void setHonorSystemProxy(boolean willHonorSystemProxy) {
+        honorSystemProxy = willHonorSystemProxy;
+    }
+
+    public boolean shouldOverrideSystemProxy() {
+        return !honorSystemProxy;
     }
 }

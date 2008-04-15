@@ -11,14 +11,6 @@ import java.io.File;
  */
 public class RemoteControlLauncher {
 
-    public static String getArg(String[] args, int i) {
-        if (i >= args.length) {
-            usage("expected at least one more argument");
-            System.exit(-1);
-        }
-        return args[i];
-    }
-
     public static void usage(String msg) {
         if (msg != null) {
             System.err.println(msg + ":");
@@ -53,42 +45,6 @@ public class RemoteControlLauncher {
                 "against all test HTML content; the second is a string which will replace matches.  These flags can be used any " +
                 "number of times.  A simple example of how this could be useful: if you add \"-userContentTransformation https http\" " +
                 "then all \"https\" strings in the HTML of the test application will be changed to be \"http\".");
-    }
-
-    public static void printWrappedErrorLine(String prefix, String msg) {
-        printWrappedErrorLine(prefix, msg, true);
-    }
-
-    public static void printWrappedErrorLine(String prefix, String msg, boolean first) {
-        System.err.print(prefix);
-        if (!first) {
-            System.err.print("  ");
-        }
-        int defaultWrap = 70;
-        int wrap = defaultWrap - prefix.length();
-        if (wrap > msg.length()) {
-            System.err.println(msg);
-            return;
-        }
-        String lineRaw = msg.substring(0, wrap);
-        int spaceIndex = lineRaw.lastIndexOf(' ');
-        if (spaceIndex == -1) {
-            spaceIndex = lineRaw.length();
-        }
-        String line = lineRaw.substring(0, spaceIndex);
-        System.err.println(line);
-        printWrappedErrorLine(prefix, msg.substring(spaceIndex+1), false);
-    }
-
-    public static void setSystemProperty(String arg) {
-        if (arg.indexOf('=') == -1) {
-            usage("poorly formatted Java property setting (I expect to see '=') " + arg);
-            System.exit(1);
-        }
-        String property = arg.replaceFirst("-D", "").replaceFirst("=.*", "");
-        String value = arg.replaceFirst("[^=]*=", "");
-        System.err.println("Setting system property " + property + " to " + value);
-        System.setProperty(property, value);
     }
 
     public static RemoteControlConfiguration parseLauncherOptions(String[] args) {
@@ -203,6 +159,8 @@ public class RemoteControlLauncher {
             } else if ("-interactive".equalsIgnoreCase(arg)) {
                 SeleniumServer.timeoutInSeconds = Integer.MAX_VALUE;
                 configuration.setInteractive(true);
+            } else if ("-honor-system-proxy".equals(arg)) {
+                configuration.setHonorSystemProxy(true);
             } else if (arg.startsWith("-D")) {
                 setSystemProperty(arg);
             } else {
@@ -216,4 +174,49 @@ public class RemoteControlLauncher {
         }
         return configuration;
     }
+
+    public static String getArg(String[] args, int i) {
+        if (i >= args.length) {
+            usage("expected at least one more argument");
+            System.exit(-1);
+        }
+        return args[i];
+    }
+
+    public static void printWrappedErrorLine(String prefix, String msg) {
+        printWrappedErrorLine(prefix, msg, true);
+    }
+
+        public static void printWrappedErrorLine(String prefix, String msg, boolean first) {
+        System.err.print(prefix);
+        if (!first) {
+            System.err.print("  ");
+        }
+        int defaultWrap = 70;
+        int wrap = defaultWrap - prefix.length();
+        if (wrap > msg.length()) {
+            System.err.println(msg);
+            return;
+        }
+        String lineRaw = msg.substring(0, wrap);
+        int spaceIndex = lineRaw.lastIndexOf(' ');
+        if (spaceIndex == -1) {
+            spaceIndex = lineRaw.length();
+        }
+        String line = lineRaw.substring(0, spaceIndex);
+        System.err.println(line);
+        printWrappedErrorLine(prefix, msg.substring(spaceIndex+1), false);
+    }
+
+    public static void setSystemProperty(String arg) {
+        if (arg.indexOf('=') == -1) {
+            usage("poorly formatted Java property setting (I expect to see '=') " + arg);
+            System.exit(1);
+        }
+        String property = arg.replaceFirst("-D", "").replaceFirst("=.*", "");
+        String value = arg.replaceFirst("[^=]*=", "");
+        System.err.println("Setting system property " + property + " to " + value);
+        System.setProperty(property, value);
+    }
+
 }
