@@ -1382,18 +1382,33 @@ function PathExpr(filter, rel) {
 }
 
 PathExpr.prototype.evaluate = function(ctx) {
-  var returnOnFirstMatch = ctx.returnOnFirstMatch;
+  // the filter expression should be evaluated in its entirety with no
+  // optimization, as we can't backtrack to it after having moved on to
+  // evaluating the relative location path
+  var flag = ctx.returnOnFirstMatch;
   ctx.setReturnOnFirstMatch(false);
   var nodes = this.filter.evaluate(ctx).nodeSetValue();
-  ctx.setReturnOnFirstMatch(returnOnFirstMatch);
+  ctx.setReturnOnFirstMatch(flag);
+  
   var nodes1 = [];
-  for (var i = 0; i < nodes.length; ++i) {
-    var nodes0 = this.rel.evaluate(ctx.clone(nodes[i], i, nodes)).nodeSetValue();
-    for (var ii = 0; ii < nodes0.length; ++ii) {
-      nodes1.push(nodes0[ii]);
+  if (ctx.returnOnFirstMatch) {
+    for (var i = 0; i < nodes.length; ++i) {
+      nodes1 = this.rel.evaluate(ctx.clone(nodes[i], i, nodes)).nodeSetValue();
+      if (nodes1.length > 0) {
+        break;
+      }
     }
+    return new NodeSetValue(nodes1);
   }
-  return new NodeSetValue(nodes1);
+  else {
+    for (var i = 0; i < nodes.length; ++i) {
+      var nodes0 = this.rel.evaluate(ctx.clone(nodes[i], i, nodes)).nodeSetValue();
+      for (var ii = 0; ii < nodes0.length; ++ii) {
+        nodes1.push(nodes0[ii]);
+      }
+    }
+    return new NodeSetValue(nodes1);
+  }
 };
 
 function FilterExpr(expr, predicate) {
