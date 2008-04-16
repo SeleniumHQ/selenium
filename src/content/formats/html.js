@@ -19,6 +19,7 @@ for (var code in XhtmlEntityFromChars) {
 XhtmlEntityChars += "]";
 
 function decodeText(text) {
+    if (text == null) return "";
 	text = text.replace(/<br\s*\/?>/gi, "\n");
     text = text.replace(/&(\w+);/g, function(str, p1) {
             var c = XhtmlEntities[p1];
@@ -48,6 +49,7 @@ function decodeText(text) {
 }
 
 function encodeText(text) {
+    if (text == null) return "";
     // & -> &amp;
     // &amp; -> &amp;amp;
     // &quot; -> &amp;quot;
