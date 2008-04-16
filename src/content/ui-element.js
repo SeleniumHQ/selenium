@@ -13,6 +13,8 @@ var GLOBAL = {
 //******************************************************************************
 // modifications to built-in objects
 
+// TODO - quoteForXPath() has been committed to Core. Remove from ui-element.js
+//        when the pom pulls a Core version containing it.
 /**
  * Given a string literal that would appear in an XPath, puts it in quotes and
  * returns it. Special consideration is given to literals who themselves
@@ -26,7 +28,7 @@ String.prototype.quoteForXPath = function()
             var pieces = [];
             var a = "'", b = '"', c;
             for (var i = 0, j = 0; i < this.length;) {
-                if (this[i] == a) {
+                if (this.charAt(i) == a) {
                     // encountered a quote that cannot be contained in current
                     // quote, so need to flip-flop quoting scheme
                     if (j < i) {
