@@ -18,13 +18,13 @@
 package com.googlecode.webdriver.environment;
 
 import com.googlecode.webdriver.environment.webserver.AppServer;
-import com.googlecode.webdriver.environment.webserver.Jetty5AppServer;
+import com.googlecode.webdriver.environment.webserver.Jetty6AppServer;
 
 public class InProcessTestEnvironment implements TestEnvironment {
     private AppServer appServer;
 
     public InProcessTestEnvironment() {
-        appServer = new Jetty5AppServer();
+        appServer = new Jetty6AppServer();
         appServer.start();
     }
 

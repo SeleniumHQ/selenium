@@ -17,33 +17,31 @@
 
 package com.googlecode.webdriver.environment.webserver;
 
-import junit.framework.Assert;
-import org.mortbay.http.HttpListener;
-import org.mortbay.http.SocketListener;
-import org.mortbay.jetty.Server;
-import org.mortbay.jetty.servlet.WebApplicationContext;
-
 import java.io.File;
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-public class Jetty5AppServer implements AppServer {
+import junit.framework.Assert;
+
+import org.mortbay.jetty.Connector;
+import org.mortbay.jetty.Server;
+import org.mortbay.jetty.nio.SelectChannelConnector;
+import org.mortbay.jetty.webapp.WebAppContext;
+
+public class Jetty6AppServer implements AppServer {
     private final int port;
     private File path;
     private final Server server = new Server();
 
-    public Jetty5AppServer() {
+    public Jetty6AppServer() {
         port = 3000;
         findRootOfWebApp();
 
-        WebApplicationContext context = addWebApplication("", path.getAbsolutePath());
+        WebAppContext context = addWebApplication("", path.getAbsolutePath());
 
         addRedirectorServlet(context);
 
         addInfinitePagesServlet(context);
-
-        context.setClassLoaderJava2Compliant(true);
     }
 
     private void findRootOfWebApp() {
@@ -62,17 +60,17 @@ public class Jetty5AppServer implements AppServer {
         Assert.assertTrue("Unable to find common web files. These are located in the common directory", path.exists());
     }
 
-    private void addRedirectorServlet(WebApplicationContext context) {
+    private void addRedirectorServlet(WebAppContext context) {
         try {
-            context.addServlet("Redirect", "/redirect", RedirectServlet.class.getName());
+            context.addServlet(RedirectServlet.class, "/redirect");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void addInfinitePagesServlet(WebApplicationContext context) {
+    private void addInfinitePagesServlet(WebAppContext context) {
         try {
-            context.addServlet("Pages", "/page/*", PageServlet.class.getName());
+            context.addServlet(PageServlet.class, "/page/*");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -109,34 +107,32 @@ public class Jetty5AppServer implements AppServer {
     }
 
     protected void listenOn(int thisPort) {
-        SocketListener listener = new SocketListener();
-        listener.setPort(port);
-        addListener(listener);
+    	SelectChannelConnector connector = new SelectChannelConnector();
+        connector.setPort(port);
+        server.addConnector(connector);
     }
 
-    protected void addListener(HttpListener listener) {
-        server.addListener(listener);
+    protected void addListener(Connector listener) {
+        server.addConnector(listener);
     }
 
     public void stop() {
         try {
             server.stop();
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
     }
 
     public void addAdditionalWebApplication(String context, String absolutePath) {
         addWebApplication(context, absolutePath);
     }
 
-    private WebApplicationContext addWebApplication(String contextPath,
-                                                    String absolutePath) {
-        try {
-            return server.addWebApplication(contextPath, absolutePath);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    private WebAppContext addWebApplication(String contextPath, String absolutePath) {
+    	WebAppContext app = new WebAppContext();
+    	app.setContextPath(contextPath);
+    	app.setWar(absolutePath);
+		server.addHandler(app);
+		return app;
     }
 }

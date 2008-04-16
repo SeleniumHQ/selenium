@@ -1,6 +1,5 @@
 package org.openqa.selenium.server;
 
-import org.mortbay.http.handler.ProxyHandler;
 import org.mortbay.jetty.Server;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.server.htmlrunner.HTMLResultsListener;
@@ -69,9 +68,9 @@ public class SeleniumServer {
 		// no-op
 	}
 
-	public static void setCustomProxyHandler(ProxyHandler customProxyHandler) {
-		throw new UnsupportedOperationException("setCustomProxyHandler");
-	}
+//	public static void setCustomProxyHandler(ProxyHandler customProxyHandler) {
+//		throw new UnsupportedOperationException("setCustomProxyHandler");
+//	}
 
 	public void stop() {
 		// Does nothing

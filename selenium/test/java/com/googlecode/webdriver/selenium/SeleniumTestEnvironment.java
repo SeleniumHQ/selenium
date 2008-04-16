@@ -2,7 +2,7 @@ package com.googlecode.webdriver.selenium;
 
 import com.googlecode.webdriver.environment.TestEnvironment;
 import com.googlecode.webdriver.environment.webserver.AppServer;
-import com.googlecode.webdriver.environment.webserver.Jetty5AppServer;
+import com.googlecode.webdriver.environment.webserver.Jetty6AppServer;
 import junit.framework.Assert;
 
 import java.io.File;
@@ -11,7 +11,7 @@ public class SeleniumTestEnvironment implements TestEnvironment {
 	private AppServer appServer;
 
 	public SeleniumTestEnvironment() {
-		appServer = new Jetty5AppServer();
+		appServer = new Jetty6AppServer();
 
                 File base = findSeleniumWebdir();
 
