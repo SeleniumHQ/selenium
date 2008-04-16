@@ -2,14 +2,15 @@ package org.openqa.selenium;
 
 import com.thoughtworks.selenium.DefaultSelenium;
 import com.thoughtworks.selenium.Selenium;
+import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.SeleniumServer;
 import org.openqa.selenium.utils.TestReporter;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.AfterTest;
 import org.testng.Assert;
 import org.testng.SkipException;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeTest;
 
 public class AbstractTest {
     protected SeleniumServer ss;
@@ -17,12 +18,16 @@ public class AbstractTest {
 
     @BeforeTest(groups = {"single"})
     public void beforeTest() throws Exception {
+        final RemoteControlConfiguration configuration;
         boolean multiWindow = isMultiWindow();
         boolean proxyInjection = isProxyInjection();
 
         SeleniumServer.setProxyInjectionMode(proxyInjection);
-        SeleniumServer.setTrustAllSSLCertificates(true);
-        ss = new SeleniumServer(4444, false, multiWindow);
+        configuration = new RemoteControlConfiguration();
+        configuration.setPort(4444);
+        configuration.setTrustAllSSLCertificates(true);
+        configuration.setMultiWindow(multiWindow);
+        ss = new SeleniumServer(false, configuration);
         ss.start();
     }
 

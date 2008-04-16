@@ -7,7 +7,7 @@ public class BBCTest extends AbstractTest {
     @Test
     public void haveYourSaySignup() {
         selenium.open("http://www.bbc.co.uk/?ok");
-        selenium.type("document.forms[2].q", "iraq");
+        selenium.type("searchfield", "iraq");
         selenium.click("Search");
         selenium.waitForPageToLoad("30000");
         assertTrue(selenium.isTextPresent("Results from All of the BBC"));

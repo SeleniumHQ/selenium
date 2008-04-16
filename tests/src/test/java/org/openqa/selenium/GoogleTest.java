@@ -15,7 +15,7 @@ public class GoogleTest extends AbstractTest {
         selenium.type("q", "OpenQA");
         selenium.click("btnG");
         selenium.waitForPageToLoad("30000");
-        assertTrue(selenium.getBodyText().contains("premier source for quality open source QA projects"));
+        assertTrue(selenium.getBodyText().contains("Open source test automation tool for executing scenarios against web applications to validate browser compatibility and system functionality."));
     }
 
     @Test(enabled = false)
@@ -214,7 +214,7 @@ public class GoogleTest extends AbstractTest {
         selenium.typeKeys("searchbox", "Cis");
         Thread.sleep(2000);
         selenium.typeKeys("searchbox", "co");
-        selenium.click("//input[@value = 'Search Finance']");
+        selenium.click("//input[@value = 'Get quotes']");
         selenium.waitForPageToLoad("30000");
         assertTrue(selenium.isTextPresent("Cisco Systems, Inc"));
     }
