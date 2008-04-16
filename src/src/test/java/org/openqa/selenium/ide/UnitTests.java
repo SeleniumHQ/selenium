@@ -12,6 +12,7 @@ import org.mortbay.http.HttpException;
 import org.mortbay.http.HttpRequest;
 import org.mortbay.http.HttpResponse;
 import org.openqa.selenium.server.ProxyHandler;
+import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.SeleniumServer;
 
 import com.thoughtworks.selenium.DefaultSelenium;
@@ -19,7 +20,7 @@ import com.thoughtworks.selenium.Selenium;
 
 public class UnitTests extends TestCase {
     private static final String TEST_URL = "chrome://selenium-ide/content/jsunit/testRunner.html?testPage=selenium-ide/content/tests/unit/TestSuite.html" +
-        "&autoRun=true&submitresults=http://localhost:" + SeleniumServer.getDefaultPort() + "/jsunit/acceptor";
+        "&autoRun=true&submitresults=http://localhost:" + RemoteControlConfiguration.getDefaultPort() + "/jsunit/acceptor";
     private static final String PROFILE_TEMPLATE_DIR = "target/profile-template";
 
     private SeleniumServer seleniumServer;
@@ -29,8 +30,10 @@ public class UnitTests extends TestCase {
     @SuppressWarnings("serial")
     @Override
     protected void setUp() throws Exception {
-        SeleniumServer.setFirefoxProfileTemplate(new File(PROFILE_TEMPLATE_DIR));
-        SeleniumServer.setCustomProxyHandler(new ProxyHandler(false) {
+        RemoteControlConfiguration configuration = new RemoteControlConfiguration();
+        configuration.setFirefoxProfileTemplate(new File(PROFILE_TEMPLATE_DIR));
+        configuration.setMultiWindow(true);
+        SeleniumServer.setCustomProxyHandler(new ProxyHandler(false, "", "") {
             @SuppressWarnings("unchecked")
             @Override
             public void handle(String pathInContext, String pathParams, HttpRequest request, HttpResponse response) throws HttpException, IOException {
@@ -46,9 +49,9 @@ public class UnitTests extends TestCase {
                 }
             }
         });
-        seleniumServer = new SeleniumServer(SeleniumServer.getDefaultPort(), false, true); // multiWindow
+        seleniumServer = new SeleniumServer(false, configuration);
         seleniumServer.start();
-        selenium = new DefaultSelenium("localhost", SeleniumServer.getDefaultPort(), "*chrome", "http://localhost/");
+        selenium = new DefaultSelenium("localhost", configuration.getPort(), "*chrome", "http://localhost/");
         selenium.start();
     }
     
