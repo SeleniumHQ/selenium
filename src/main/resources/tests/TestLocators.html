@@ -180,6 +180,19 @@ Copyright 2004 ThoughtWorks, Inc
       <td>link=this is not an element</td>
       <td></td>
     </tr>
+    
+    <!-- SEL-484:  IE: Can't select element by ID when there's another earlier element whose "name" matches the ID -->
+    <tr>
+      <td>verifyElementPresent</td>
+      <td>name=foobar</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyElementPresent</td>
+      <td>id=foobar</td>
+      <td></td>
+    </tr>
+
   </tbody>
 </table>
 </body>

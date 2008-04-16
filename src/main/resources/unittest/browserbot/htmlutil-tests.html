@@ -120,6 +120,17 @@ Copyright 2004 ThoughtWorks, Inc
                 assertEquals("invalid keySequence", e.message);
             }
         }
+        
+        function testString_quoteForXPath() {
+            assertEquals('\'foo\'', 'foo'.quoteForXPath());
+            assertEquals('\'13" TV\'', '13" TV'.quoteForXPath());
+            assertEquals("\"'chief' and 'best'\"",
+                "'chief' and 'best'".quoteForXPath());
+            // the string to quote is '"'foo"'
+            assertEquals('concat("\'", \'"\', "\'foo", \'"\', "\'")',
+                '\'"\'foo"\''.quoteForXPath());
+        }
+        
     </script>
 </head>
 

@@ -121,6 +121,46 @@ String.prototype.startsWith = function(str) {
     return this.indexOf(str) == 0;
 };
 
+/**
+ * Given a string literal that would appear in an XPath, puts it in quotes and
+ * returns it. Special consideration is given to literals who themselves
+ * contain quotes. It's possible for a concat() expression to be returned.
+ */
+String.prototype.quoteForXPath = function()
+{
+    if (/\'/.test(this)) {
+        if (/\"/.test(this)) {
+            // concat scenario
+            var pieces = [];
+            var a = "'", b = '"', c;
+            for (var i = 0, j = 0; i < this.length;) {
+                if (this.charAt(i) == a) {
+                    // encountered a quote that cannot be contained in current
+                    // quote, so need to flip-flop quoting scheme
+                    if (j < i) {
+                        pieces.push(a + this.substring(j, i) + a);
+                        j = i;
+                    }
+                    c = a;
+                    a = b;
+                    b = c;
+                }
+                else {
+                    ++i;
+                }
+            }
+            pieces.push(a + this.substring(j) + a);
+            return 'concat(' + pieces.join(', ') + ')';
+        }
+        else {
+            // quote with doubles
+            return '"' + this + '"';
+        }
+    }
+    // quote with singles
+    return "'" + this + "'";
+};
+
 // Returns the text in this element
 function getText(element) {
     var text = "";
@@ -171,7 +211,7 @@ function getTextContent(element, preformatted) {
 }
 
 /**
- * Convert all newlines to \m
+ * Convert all newlines to \n
  */
 function normalizeNewlines(text)
 {
@@ -906,3 +946,4 @@ function safeScrollIntoView(element) {
     // TODO: work out how to scroll browsers that don't support
     // scrollIntoView (like Konqueror)
 }
+
