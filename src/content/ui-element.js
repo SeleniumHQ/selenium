@@ -13,48 +13,6 @@ var GLOBAL = {
 //******************************************************************************
 // modifications to built-in objects
 
-// TODO - quoteForXPath() has been committed to Core. Remove from ui-element.js
-//        when the pom pulls a Core version containing it.
-/**
- * Given a string literal that would appear in an XPath, puts it in quotes and
- * returns it. Special consideration is given to literals who themselves
- * contain quotes. It's possible for a concat() expression to be returned.
- */
-String.prototype.quoteForXPath = function()
-{
-    if (/\'/.test(this)) {
-        if (/\"/.test(this)) {
-            // concat scenario
-            var pieces = [];
-            var a = "'", b = '"', c;
-            for (var i = 0, j = 0; i < this.length;) {
-                if (this.charAt(i) == a) {
-                    // encountered a quote that cannot be contained in current
-                    // quote, so need to flip-flop quoting scheme
-                    if (j < i) {
-                        pieces.push(a + this.substring(j, i) + a);
-                        j = i;
-                    }
-                    c = a;
-                    a = b;
-                    b = c;
-                }
-                else {
-                    ++i;
-                }
-            }
-            pieces.push(a + this.substring(j) + a);
-            return 'concat(' + pieces.join(', ') + ')';
-        }
-        else {
-            // quote with doubles
-            return '"' + this + '"';
-        }
-    }
-    // quote with singles
-    return "'" + this + "'";
-};
-
 /**
  * Escape the special regular expression characters when the regular expression
  * is specified as a string.

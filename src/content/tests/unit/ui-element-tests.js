@@ -43,19 +43,6 @@ function are_equal(a1, a2)
 
 
 
-function test_String_quoteForXPath()
-{
-    assertEquals('\'foo\'', 'foo'.quoteForXPath());
-    assertEquals('\'13" TV\'', '13" TV'.quoteForXPath());
-    assertEquals("\"'chief' and 'best'\"",
-        "'chief' and 'best'".quoteForXPath());
-    // the string to quote is '"'foo"'
-    assertEquals('concat("\'", \'"\', "\'foo", \'"\', "\'")',
-        '\'"\'foo"\''.quoteForXPath());
-}
-
-
-
 // assert on absolute equality for simple literals, but content equality only
 // for complex values; the object references should be different. Functions
 // are copied by reference only (not a true copy).
