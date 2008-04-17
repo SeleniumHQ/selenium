@@ -89,6 +89,12 @@ public class HTABrowserLauncher implements BrowserLauncher {
             File selRunnerDest = new File(coreDir, "RemoteRunner.hta");
             File testRunnerSrc = new File(coreDir, "TestRunner.html");
             File testRunnerDest = new File(coreDir, "TestRunner.hta");
+            // custom user-extensions
+            File userExt = this.configuration.getUserExtensions();
+            if (userExt != null) {
+                File selUserExt = new File(coreDir, "scripts/user-extensions.js");
+                f.copyFile(userExt, selUserExt, null, true);
+            }
             f.copyFile(selRunnerSrc, selRunnerDest);
             f.copyFile(testRunnerSrc, testRunnerDest);
         } catch (IOException e) {
