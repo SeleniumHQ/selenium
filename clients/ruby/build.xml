@@ -9,13 +9,9 @@
         <condition property="rdoc.executable" value="rdoc.bat">
             <os family="windows"/>
         </condition>
-        <property name="rdoc.executable" value="rdoc"/>
-        <exec dir="." executable="${rdoc.executable}" failonerror="true">
-            <arg value="lib/selenium.rb"/>
-            <arg value="lib/selenium/command_error.rb"/>
-            <arg value="lib/selenium/driver.rb"/>
-            <arg value="lib/selenium/client/generated_driver.rb"/>
-            <arg value="lib/selenium/selenium_helper.rb"/>
+        <property name="rake.executable" value="rake"/>
+        <exec dir="." executable="${rake.executable}" failonerror="true">
+            <arg value="rdoc"/>
         </exec>
     </target>
 

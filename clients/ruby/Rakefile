@@ -37,12 +37,13 @@ Rake::TestTask.new(:'test:integration') do |t|
 end
 
 desc "Generate documentation"
-Rake::RDocTask.new("rdoc") { |rdoc|
-  rdoc.rdoc_dir = 'html'
+Rake::RDocTask.new("rdoc") do |rdoc|
   rdoc.title    = "Selenium Client"
-  rdoc.options << '--line-numbers' << '--inline-source' << '--main' << 'README'
+  rdoc.main = "README"
+  rdoc.rdoc_dir = "doc"
   rdoc.rdoc_files.include('README')
   rdoc.rdoc_files.include('lib/**/*.rb')
   rdoc.rdoc_files.include('doc/**/*.rdoc')
-}
+  rdoc.options << '--line-numbers' << '--inline-source' 
+end
 
