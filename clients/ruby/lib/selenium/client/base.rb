@@ -12,38 +12,36 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 #
-
-# -----------------
+#
+#
 # Original code by Aslak Hellesoy and Darren Hobbs
-# This file has been automatically generated via XSL
-# -----------------
-
+#
 module Selenium
-
-  class Driver
-    include SeleneseClient
+  module Client
+    
+    module Base
+      include Selenium::Client::SeleneseClient
+      include Selenium::Client::GeneratedDriver
   
-    def initialize(server_host, server_port, browserStartCommand, browserURL, timeout=30000)
-      @server_host = server_host
-      @server_port = server_port
-      @browserStartCommand = browserStartCommand
-      @browserURL = browserURL
-      @timeout = timeout
-    end
+      def initialize(server_host, server_port, browserStartCommand, browserURL, timeout=30000)
+        @server_host = server_host
+        @server_port = server_port
+        @browserStartCommand = browserStartCommand
+        @browserURL = browserURL
+        @timeout = timeout
+      end
       
-    def to_s
-      "Selenium Driver"
-    end
-
-    def start()
-      result = get_string("getNewBrowserSession", [@browserStartCommand, @browserURL])
-      @session_id = result
-    end
+      def start()
+        result = get_string("getNewBrowserSession", [@browserStartCommand, @browserURL])
+        @session_id = result
+      end
       
-    def stop()
-      do_command("testComplete", [])
-      @session_id = nil
-    end
+      def stop()
+        do_command("testComplete", [])
+        @session_id = nil
+      end
 
+    end
+  
   end
 end

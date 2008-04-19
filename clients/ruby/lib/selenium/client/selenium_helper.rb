@@ -3,6 +3,8 @@
 # call to a missing method will be automatically sent to the @selenium
 # object.
 module Selenium
+  module Client
+    
   module SeleniumHelper
     
       # Overrides standard "open" method with @selenium.open
@@ -27,6 +29,8 @@ module Selenium
           else
               @selenium.send(method_name, *args)
           end
-      end
+      end      
+    end
+    
   end
 end

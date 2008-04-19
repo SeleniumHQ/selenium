@@ -15,8 +15,9 @@
 	<xsl:apply-templates select="//top" />
 	<xsl:apply-templates select="//function" />
 	<xsl:text disable-output-escaping="yes">
-    end
-end
+    end        # GeneratedDriver
+  end          # Client 
+end            # Selenium
 </xsl:text>
 </xsl:template>
 
@@ -52,8 +53,8 @@ TOP
 	</xsl:apply-templates>
 	<xsl:text disable-output-escaping="yes"><![CDATA[
 module Selenium
-
-    class Driver
+  module Client
+    module GeneratedDriver
 
 ]]>
 </xsl:text>

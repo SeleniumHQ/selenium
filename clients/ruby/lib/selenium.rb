@@ -22,13 +22,14 @@ require 'net/http'
 require 'uri'
 require 'cgi'
 require File.expand_path(File.dirname(__FILE__) + '/selenium/command_error')
-require File.expand_path(File.dirname(__FILE__) + '/selenium/selenese_client')
-require File.expand_path(File.dirname(__FILE__) + '/selenium/driver')
-require File.expand_path(File.dirname(__FILE__) + '/selenium/generated_driver')
-require File.expand_path(File.dirname(__FILE__) + '/selenium/selenium_helper')
+require File.expand_path(File.dirname(__FILE__) + '/selenium/client/selenese_client')
+require File.expand_path(File.dirname(__FILE__) + '/selenium/client/generated_driver')
+require File.expand_path(File.dirname(__FILE__) + '/selenium/client/base')
+require File.expand_path(File.dirname(__FILE__) + '/selenium/client/driver')
+require File.expand_path(File.dirname(__FILE__) + '/selenium/client/selenium_helper')
 
 # Backward compatibility
 
-SeleniumHelper = Selenium::SeleniumHelper
+SeleniumHelper = Selenium::Client::SeleniumHelper
 SeleniumCommandError = Selenium::CommandError
-Selenium::SeleniumDriver = Selenium::Driver
+Selenium::SeleniumDriver = Selenium::Client::Driver
