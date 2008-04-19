@@ -1,4 +1,4 @@
-require File.expand_path(__FILE__ + '/../spec_helper')
+require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe "Google Search" do
   
@@ -16,7 +16,7 @@ describe "Google Search" do
   it "can search videos" do
     open "http://video.google.com"
     type "q", "hello world"
-    click "button-search"
+    click "//input[@value='Search Video']"
   end
     
 end

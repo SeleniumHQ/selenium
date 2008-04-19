@@ -172,7 +172,7 @@
                         <fileset>
                             <directory>.</directory>
                             <includes>
-                                <include>selenium.rb</include>
+                                <include>lib/selenium/generated_driver.rb</include>
                             </includes>
                         </fileset>
                         <fileset>

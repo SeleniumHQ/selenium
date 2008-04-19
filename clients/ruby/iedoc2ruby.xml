@@ -16,43 +16,6 @@
 	<xsl:apply-templates select="//function" />
 	<xsl:text disable-output-escaping="yes">
     end
-
-    SeleneseInterpreter = SeleniumDriver # for backward compatibility
-
-end
-
-class SeleniumCommandError &lt; RuntimeError 
-end
-
-# Defines a mixin module that you can use to write Selenium tests
-# without typing "@selenium." in front of every command.  Every
-# call to a missing method will be automatically sent to the @selenium
-# object.
-module SeleniumHelper
-    
-    # Overrides standard "open" method with @selenium.open
-    def open(addr)
-      @selenium.open(addr)
-    end
-    
-    # Overrides standard "type" method with @selenium.type
-    def type(inputLocator, value)
-      @selenium.type(inputLocator, value)
-    end
-    
-    # Overrides standard "select" method with @selenium.select
-    def select(inputLocator, optionLocator)
-      @selenium.select(inputLocator, optionLocator)
-    end
-
-    # Passes all calls to missing methods to @selenium
-    def method_missing(method_name, *args)
-        if args.empty?
-            @selenium.send(method_name)
-        else
-            @selenium.send(method_name, *args)
-        end
-    end
 end
 </xsl:text>
 </xsl:template>
@@ -83,10 +46,6 @@ TOP
 # This file has been automatically generated via XSL
 # -----------------
 
-require 'net/http'
-require 'uri'
-require 'cgi'
-
 # </xsl:text>
 	<xsl:apply-templates>
 		<xsl:with-param name="replace-string">&nl;# </xsl:with-param>
@@ -94,128 +53,7 @@ require 'cgi'
 	<xsl:text disable-output-escaping="yes"><![CDATA[
 module Selenium
 
-    class SeleniumDriver
-        include Selenium
-    
-        def initialize(server_host, server_port, browserStartCommand, browserURL, timeout=30000)
-            @server_host = server_host
-            @server_port = server_port
-            @browserStartCommand = browserStartCommand
-            @browserURL = browserURL
-            @timeout = timeout
-        end
-        
-        def to_s
-            "SeleniumDriver"
-        end
-
-        def start()
-            result = get_string("getNewBrowserSession", [@browserStartCommand, @browserURL])
-            @session_id = result
-        end
-
-        def session?
-          @session_id != nil
-        end
-
-        def session_reset
-          @session_id = nil
-        end
-
-        def stop()
-          if session?
-            do_command("testComplete", [])
-          end
-        ensure
-          session_reset
-        end
-
-        def do_command(verb, args)
-            timeout(@timeout) do
-                http = Net::HTTP.new(@server_host, @server_port)
-                command_string = '/selenium-server/driver/?cmd=' + CGI::escape(verb)
-                args.length.times do |i|
-                    arg_num = (i+1).to_s
-                    command_string = command_string + "&" + arg_num + "=" + CGI::escape(args[i].to_s)
-                end
-                if session?
-                    command_string = command_string + "&sessionId=" + @session_id.to_s
-                end
-                #print "Requesting --->" + command_string + "\n"
-                response = http.get(command_string)
-                #print "RESULT: " + response.body + "\n\n"
-                if (response.body[0..1] != "OK")
-                    raise SeleniumCommandError, response.body
-                end
-                return response.body
-            end
-        end
-        
-        def get_string(verb, args)
-            result = do_command(verb, args)
-            return result[3..result.length]
-        end
-        
-        def get_string_array(verb, args)
-            csv = get_string(verb, args)
-            token = ""
-            tokens = []
-            escape = false
-            csv.split(//).each do |letter|
-                if escape
-                    token = token + letter
-                    escape = false
-                    next
-                end
-                if (letter == '\\')
-                    escape = true
-                elsif (letter == ',')
-                    tokens.push(token)
-                    token = ""
-                else
-                    token = token + letter
-                end
-            end
-            tokens.push(token)
-            return tokens
-        end
-    
-        def get_number(verb, args)
-            # Is there something I need to do here?
-            return get_string(verb, args)
-        end
-        
-        def get_number_array(verb, args)
-            # Is there something I need to do here?
-            return get_string_array(verb, args)
-        end
-    
-        def get_boolean(verb, args)
-            boolstr = get_string(verb, args)
-            if ("true" == boolstr)
-                return true
-            end
-            if ("false" == boolstr)
-                return false
-            end
-            raise ValueError, "result is neither 'true' nor 'false': " + boolstr
-        end
-        
-        def get_boolean_array(verb, args)
-            boolarr = get_string_array(verb, args)
-            boolarr.length.times do |i|
-                if ("true" == boolstr)
-                    boolarr[i] = true
-                    next
-                end
-                if ("false" == boolstr)
-                    boolarr[i] = false
-                    next
-                end
-                raise ValueError, "result is neither 'true' nor 'false': " + boolarr[i]
-            end
-            return boolarr
-        end
+    class Driver
 
 ]]>
 </xsl:text>

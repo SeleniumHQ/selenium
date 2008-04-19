@@ -15,36 +15,34 @@
 #  limitations under the License.
 #
 
-
-require 'test/unit'
-require 'selenium'
+require File.expand_path(File.dirname(__FILE__) + "/test_helper")
 
 class ExampleTest < Test::Unit::TestCase
-    include SeleniumHelper
+  include SeleniumHelper
     
-    def setup
-        @selenium = Selenium::SeleniumDriver.new("localhost", 4444, "*firefox", "http://www.irian.at", 10000);
-        @selenium.start
-    end
+  def setup
+    @selenium = Selenium::SeleniumDriver.new("localhost", 4444, "*firefox", "http://www.irian.at", 10000);
+    @selenium.start
+  end
     
-    def teardown
-        @selenium.stop
-    end
+  def teardown
+    @selenium.stop
+  end
 
-    def test_something
-        input_id = 'ac4'
-        update_id = 'ac4update'
-        
-        open "http://www.irian.at/selenium-server/tests/html/ajax/ajax_autocompleter2_test.html"
-        key_press input_id, 74
-        sleep 0.5
-        key_press input_id, 97
-        key_press input_id, 110
-        sleep 0.5
-        assert_equal('Jane Agnews', get_text(update_id))
-        key_press input_id, '\9'
-        sleep 0.5
-        assert_equal('Jane Agnews', get_value(input_id))
-    end
+  def test_something
+    input_id = 'ac4'
+    update_id = 'ac4update'
+    
+    open "http://www.irian.at/selenium-server/tests/html/ajax/ajax_autocompleter2_test.html"
+    key_press input_id, 74
+    sleep 0.5
+    key_press input_id, 97
+    key_press input_id, 110
+    sleep 0.5
+    assert_equal('Jane Agnews', get_text(update_id))
+    key_press input_id, '\9'
+    sleep 0.5
+    assert_equal('Jane Agnews', get_value(input_id))
+  end
     
 end

@@ -16,21 +16,20 @@
 #
 
 
-require 'test/unit'
-require 'selenium'
+require File.expand_path(File.dirname(__FILE__) + "/test_helper")
 
 class ExampleTest < Test::Unit::TestCase
 
 	def setup
-        @selenium = Selenium::SeleniumDriver.new("localhost", 4444, "*firefox", "http://localhost:4444", 10000);
-        @selenium.start
-    end
+    @selenium = Selenium::SeleniumDriver.new("localhost", 4444, "*firefox", "http://localhost:4444", 10000);
+    @selenium.start
+  end
     
-    def teardown
-        @selenium.stop
-    end
+  def teardown
+    @selenium.stop
+  end
 
-    def test_something
+  def test_something
 		@selenium.open("/selenium-server/tests/html/test_click_page1.html")
 		assert(@selenium.get_text("link").index("Click here for next page") != nil, "link 'link' doesn't contain expected text")
 		links = @selenium.get_all_links()
@@ -42,5 +41,6 @@ class ExampleTest < Test::Unit::TestCase
 		@selenium.click("previousPage")
 		@selenium.wait_for_page_to_load(5000)
 		assert(@selenium.get_location =~ %r"/selenium-server/tests/html/test_click_page1.html")
-    end
+  end
+  
 end

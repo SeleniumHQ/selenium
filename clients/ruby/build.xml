@@ -2,7 +2,7 @@
 	
     <target name="generate-sources">
         <mkdir dir="target"/>
-        <xslt in="target/iedoc.xml" out="selenium.rb" style="iedoc2ruby.xml"/>
+        <xslt in="target/iedoc.xml" out="lib/selenium/generated_driver.rb" style="iedoc2ruby.xml"/>
     </target>
 
     <target name="doc">
@@ -11,7 +11,11 @@
         </condition>
         <property name="rdoc.executable" value="rdoc"/>
         <exec dir="." executable="${rdoc.executable}" failonerror="true">
-            <arg value="selenium.rb"/>
+            <arg value="lib/selenium.rb"/>
+            <arg value="lib/selenium/command_error.rb"/>
+            <arg value="lib/selenium/driver.rb"/>
+            <arg value="lib/selenium/generated_driver.rb"/>
+            <arg value="lib/selenium/selenium_helper.rb"/>
         </exec>
     </target>
 

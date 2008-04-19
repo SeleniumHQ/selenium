@@ -16,21 +16,20 @@
 #
 
 
-require 'test/unit'
-require 'selenium'
+require File.expand_path(File.dirname(__FILE__) + "/test_helper")
 
 class MockTest < Test::Unit::TestCase
 
 	def setup
-        @selenium = Selenium::SeleniumDriver.new("localhost", 4444, "*mock", "http://localhost:4444", 10000);
-        @selenium.start
-    end
+    @selenium = Selenium::SeleniumDriver.new("localhost", 4444, "*mock", "http://localhost:4444", 10000);
+    @selenium.start
+  end
     
-    def teardown
-        @selenium.stop
-    end
+  def teardown
+    @selenium.stop
+  end
 
-    def test_something
+  def test_something
 		@selenium.open("/selenium-server/tests/html/test_i18n.html")
 		@selenium.click("foo")
 		assert_equal("x", @selenium.get_title())
@@ -43,5 +42,6 @@ class MockTest < Test::Unit::TestCase
 		assert_equal("1", fields[0])
 		assert_equal("2", fields[1])
 		assert_equal("3", fields[2])
-    end
+  end
+  
 end
