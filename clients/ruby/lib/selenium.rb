@@ -22,6 +22,7 @@ require 'net/http'
 require 'uri'
 require 'cgi'
 require File.expand_path(File.dirname(__FILE__) + '/selenium/command_error')
+require File.expand_path(File.dirname(__FILE__) + '/selenium/selenese_client')
 require File.expand_path(File.dirname(__FILE__) + '/selenium/driver')
 require File.expand_path(File.dirname(__FILE__) + '/selenium/generated_driver')
 require File.expand_path(File.dirname(__FILE__) + '/selenium/selenium_helper')
