@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
 import com.googlecode.webdriver.internal.OperatingSystem;
+import com.googlecode.webdriver.environment.GlobalTestEnvironment;
 
 public class TextHandlingTest extends AbstractDriverTestCase {
 	private String newLine;
@@ -161,6 +162,14 @@ public class TextHandlingTest extends AbstractDriverTestCase {
     	String text = driver.findElement(By.id("inlinespan")).getText();
     	
     	assertThat(text, is("line has text"));
+    }
+
+    @Ignore("firefox, ie, safari")
+    public void testReadALargeAmountOfData() {
+        driver.get(GlobalTestEnvironment.get().getAppServer().getBaseUrl() + "macbeth.html");
+        String source = driver.getPageSource().trim();
+
+        assertThat(source.endsWith("</html>"), is(true));
     }
 
 }
