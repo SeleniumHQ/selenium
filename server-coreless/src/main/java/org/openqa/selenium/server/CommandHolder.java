@@ -27,75 +27,76 @@ import org.mortbay.log.LogFactory;
  * @version $Revision: 734 $
  */
 public class CommandHolder {
-	private static final int defaultTimeout = 10; // seconds
-	private static final RemoteCommand poisonCommand 
-	    = new DefaultRemoteCommand("CommandHolder.POISION", "", "");
-	protected static final String RETRY_CMD_STRING = "retryLast";
-	protected static final RemoteCommand retryCommand
-        = new DefaultRemoteCommand(RETRY_CMD_STRING, "", "", "");
 
-    private static Log log = LogFactory.getLog(CommandHolder.class);
-    
-	private final String queueId;
-	private final SingleEntryAsyncQueue<RemoteCommand> holder;
-    
-    public CommandHolder(String queueId, int timeoutInSeconds) {
-      holder = new SingleEntryAsyncQueue<RemoteCommand>(timeoutInSeconds);
-      holder.setPoison(poisonCommand);
-      this.queueId = queueId;
+    private static final Log logger = LogFactory.getLog(CommandHolder.class);
+    private static final int defaultTimeout = 10; // seconds
+    private static final RemoteCommand poisonCommand
+            = new DefaultRemoteCommand("CommandHolder.POISION", "", "");
+    protected static final String RETRY_CMD_STRING = "retryLast";
+    protected static final RemoteCommand retryCommand
+            = new DefaultRemoteCommand(RETRY_CMD_STRING, "", "", "");
+
+    private final String queueId;
+    private final SingleEntryAsyncQueue<RemoteCommand> queue;
+
+
+    public CommandHolder(String queueId) {
+        this(queueId, defaultTimeout);
     }
 
-	public CommandHolder(String queueId) {
-	  this(queueId, defaultTimeout);
-	}
+    public CommandHolder(String queueId, int timeoutInSeconds) {
+        this.queueId = queueId;
+        queue = new SingleEntryAsyncQueue<RemoteCommand>(timeoutInSeconds);
+        queue.setPoison(poisonCommand);
+    }
 
     /**
      * Get, and remove from the holder, the next command to run.
      * If the next command doesn't show up within timeoutInSeconds seconds,
      * then return a "retry" command.
-     * 
+     *
      * @return the next command to execute.
      */
     public RemoteCommand getCommand() {
-      RemoteCommand sc = null;
-      String hdr = "\t" + CommandQueue.getIdentification("commandHolder", queueId) + " getCommand() ";
-      log.debug(hdr + "called");
-      
-      // wait until data arrives before the timeout
-      sc = holder.pollToGetContentUntilTimeout();
-      
-      if (null == sc) {
-        // if there is no new command, send a retryLast. 
-        // Purpose: to get around the 2-connections per host issue
-        // by sending a request in response to the frame's looking for
-        // work -- this allows frame to close the connection.
-        sc = retryCommand;
-      } else if (holder.isPoison(sc)) {
-        // if the queue was poisoned, just exit with a null command.
-        sc = null;
-      }
+        RemoteCommand command;
 
-      log.debug(hdr + "-> " + ((null == sc) ? "null" : sc.toString())); 
-      
-      return sc;
+        logger.debug(hdr() + "called");
+        command = queue.pollToGetContentUntilTimeout();
+        if (null == command) {
+            // if there is no new command, send a retryLast.
+            // Purpose: to get around the 2-connections per host issue
+            // by sending a request in response to the frame's looking for
+            // work -- this allows frame to close the connection.
+            command = retryCommand;
+        } else if (queue.isPoison(command)) {
+            // if the queue was poisoned, just exit with a null command.
+            command = null;
+        }
+        logger.debug(hdr() + "-> " + ((null == command) ? "null" : command.toString()));
+
+        return command;
     }
-    
+
     public boolean putCommand(RemoteCommand cmd) {
-      log.debug("\t" + CommandQueue.getIdentification("commandHolder", queueId) + " putCommand() ");
-      return holder.putContent(cmd);
+        logger.debug(hdr());
+        return queue.putContent(cmd);
     }
 
     public boolean isEmpty() {
-      return holder.isEmpty();
+        return queue.isEmpty();
     }
 
     public RemoteCommand peek() {
-      return holder.peek();
+        return queue.peek();
     }
 
     public void poisonPollers() {
-      String hdr = "\t" + CommandQueue.getIdentification("commandHolder", queueId) + " poisonPollers() ";
-      log.debug(hdr + " poisoning pollers");
-      holder.poisonPollers();
+        logger.debug(hdr() + " poisoning pollers");
+        queue.poisonPollers();
     }
+
+    private String hdr() {
+        return "\t" + CommandQueue.getIdentification("commandHolder", queueId) + " getCommand() ";
+    }
+
 }

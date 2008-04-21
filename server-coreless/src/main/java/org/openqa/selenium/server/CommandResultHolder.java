@@ -27,6 +27,7 @@ import org.mortbay.log.LogFactory;
  * @version $Revision: 734 $
  */
 public class CommandResultHolder {
+
     private static final Log logger = LogFactory.getLog(CommandResultHolder.class);
 	private static final String poisonResult = "CommandResultHolder.POISON";
 	protected static final String CMD_TIMED_OUT_MSG = "ERROR: Command timed out";
@@ -48,10 +49,9 @@ public class CommandResultHolder {
      * @return the result from the result holder
      */
     public String getResult() {
-      String result = null;
-      String hdr = "\t" + CommandQueue.getIdentification("commandResultHolder", queueId) + " getResult() ";
+      String result;
       if (logger.isDebugEnabled()) {
-        logger.debug(hdr + "called");
+        logger.debug(hdr() + "called");
       }
 
       // wait until data arrives before the timeout
@@ -66,16 +66,16 @@ public class CommandResultHolder {
       }
 
       if (logger.isDebugEnabled()) {
-        StringBuilder msg = new StringBuilder(hdr + "-> " + result);
+        StringBuilder msg = new StringBuilder(hdr() + "-> " + result);
         if (CMD_TIMED_OUT_MSG.equals(result)) {
-          msg.append(" after " + holder.getTimeoutInSeconds() + " seconds.");
+            msg.append(" after ").append(holder.getTimeoutInSeconds()).append(" seconds.");
         }
         logger.debug(msg.toString());
       }
       
       return result;
     }
-    
+
     public boolean putResult(String res) {
       return holder.putContent(res);
     }
@@ -90,6 +90,10 @@ public class CommandResultHolder {
 
     public void poisonPollers() {
       holder.poisonPollers();
+    }
+
+    private String hdr() {
+        return "\t" + CommandQueue.getIdentification("commandResultHolder", queueId) + " getResult() ";
     }
     
 }

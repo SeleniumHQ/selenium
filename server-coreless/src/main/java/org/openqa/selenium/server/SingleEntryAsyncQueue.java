@@ -20,6 +20,7 @@ package org.openqa.selenium.server;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+import static java.lang.System.*;
 
 import org.apache.commons.logging.Log;
 import org.mortbay.log.LogFactory;
@@ -35,7 +36,8 @@ import org.mortbay.log.LogFactory;
  * @version $Revision: 734 $
  */
 public class SingleEntryAsyncQueue<T> {
-    private static Log log = LogFactory.getLog(SingleEntryAsyncQueue.class);
+    public static final long MILLISECONDS = 1000L;
+    private static final Log logger = LogFactory.getLog(SingleEntryAsyncQueue.class);
     private final AtomicReference<T> poisonData;
     private final int timeoutInSeconds;
     private final ArrayBlockingQueue<T> holder;
@@ -55,43 +57,43 @@ public class SingleEntryAsyncQueue<T> {
     }
 
     protected boolean isPoison(T poisonSample) {
-        boolean result = false;
         T poison = poisonData.get();
-        if (null != poison && poison.equals(poisonSample)) {
-            result = true;
-        }
-        return result;
+        return null != poison && poison.equals(poisonSample);
     }
 
     protected T pollToGetContentUntilTimeout() {
         T result = holder.poll(); // in case it's already there
         if (null != result) {
-            log.debug("data was waiting: " + result);
+            logger.debug("data was waiting: " + result);
+            return result;
         }
 
-        if (timeoutInSeconds > 0 && null == result) {
-            long now = System.currentTimeMillis();
-            long deadline = now + (timeoutInSeconds * 1000L);
-            while (now < deadline) {
-                try {
-                    log.debug("waiting for data for at most " + (deadline - now) + " more ms");
-                    result = holder.poll(deadline - now, TimeUnit.MILLISECONDS);
-                    log.debug("data from polling: " + result);
-                    now = deadline;
-                } catch (InterruptedException ie) {
-                    now = System.currentTimeMillis();
-                    log.debug("was interrupted; resuming wait");
-                }
+        if (timeoutInSeconds <= 0) {
+            return null;
+        }
+
+        long deadline = currentTimeMillis() + (timeoutInSeconds * MILLISECONDS);
+        for(long now = currentTimeMillis(); now < deadline; now = currentTimeMillis()) {
+            try {
+                logger.debug("waiting for data for at most " + timeoutInSeconds + " more s");
+                result = holder.poll(deadline - now, TimeUnit.MILLISECONDS);
+                logger.debug("data from polling: " + result);
+                return result;
+            } catch (InterruptedException ie) {
+                logger.debug("was interrupted; resuming wait");
+                continue;
             }
         }
-        return result;
+
+        return null;
     }
 
     protected boolean putContent(T thing) {
-        log.debug("putting command: " + thing);
-        boolean res = holder.offer(thing);
-        log.debug("..command put?: " + res);
-        return res;
+        final boolean result;
+        logger.debug("putting command: " + thing);
+        result = holder.offer(thing);
+        logger.debug("..command put?: " + result);
+        return result;
     }
 
     protected boolean isEmpty() {
@@ -118,4 +120,5 @@ public class SingleEntryAsyncQueue<T> {
         putContent(poisonData.get());
         return true;
     }
+    
 }
