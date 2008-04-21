@@ -151,6 +151,15 @@ LocatorBuilders.prototype.attributeValue = function(value) {
 	}
 }
 
+LocatorBuilders.prototype.xpathHtmlElement = function(name) {
+    if (this.window.document.contentType == 'application/xhtml+xml') {
+        // "x:" prefix is required when testing XHTML pages
+        return "x:" + name;
+    } else {
+        return name;
+    }
+}
+
 LocatorBuilders.prototype.relativeXPathFromParent = function(current) {
     var childNodes = current.parentNode.childNodes;
     var total = 0;
@@ -164,7 +173,7 @@ LocatorBuilders.prototype.relativeXPathFromParent = function(current) {
             total++;
         }
     }
-    var currentPath = '/' + current.nodeName.toLowerCase();
+    var currentPath = '/' + this.xpathHtmlElement(current.nodeName.toLowerCase());
     if (total > 1 && index >= 0) {
         currentPath += '[' + (index + 1) + ']';
     }
@@ -252,7 +261,7 @@ LocatorBuilders.add('xpath:link', function(e) {
 		if (e.nodeName == 'A') {
 			var text = e.textContent;
 			if (!text.match(/^\s*$/)) {
-				return "//a[contains(text(),'" + text.replace(/^\s+/,'').replace(/\s+$/,'') + "')]";
+				return "//" + this.xpathHtmlElement("a") + "[contains(text(),'" + text.replace(/^\s+/,'').replace(/\s+$/,'') + "')]";
 			}
 		}
 		return null;
@@ -261,11 +270,11 @@ LocatorBuilders.add('xpath:link', function(e) {
 LocatorBuilders.add('xpath:img', function(e) {
         if (e.nodeName == 'IMG') {
             if (e.alt != '') {
-                return "//img[@alt=" + this.attributeValue(e.alt) + "]";
+                return "//" + this.xpathHtmlElement("img") + "[@alt=" + this.attributeValue(e.alt) + "]";
             } else if (e.title != '') {
-                return "//img[@title=" + this.attributeValue(e.title) + "]";
+                return "//" + this.xpathHtmlElement("img") + "[@title=" + this.attributeValue(e.title) + "]";
             } else if (e.src != '') {
-				return "//img[contains(@src," + this.attributeValue(e.src) + ")]";
+				return "//" + this.xpathHtmlElement("img") + "[contains(@src," + this.attributeValue(e.src) + ")]";
             }
         }
 		return null;
@@ -275,7 +284,7 @@ LocatorBuilders.add('xpath:attributes', function(e) {
 		const PREFERRED_ATTRIBUTES = ['id','name','value','type','action','onclick'];
 		
 		function attributesXPath(name, attNames, attributes) {
-			var locator = "//" + name + "[";
+			var locator = "//" + this.xpathHtmlElement(name) + "[";
 			for (var i = 0; i < attNames.length; i++) {
 				if (i > 0) {
 					locator += " and ";
@@ -318,7 +327,7 @@ LocatorBuilders.add('xpath:idRelative', function(e) {
                 path = this.relativeXPathFromParent(current) + path;
                 if (1 == current.parentNode.nodeType && // ELEMENT_NODE
                     current.parentNode.getAttribute("id")) {
-                    return "//" + current.parentNode.nodeName.toLowerCase() + 
+                    return "//" + this.xpathHtmlElement(current.parentNode.nodeName.toLowerCase()) + 
                         "[@id=" + this.attributeValue(current.parentNode.id) + "]" +
                         path;
                 }
@@ -334,10 +343,10 @@ LocatorBuilders.add('xpath:href', function(e) {
 		if (e.attributes && e.hasAttribute("href")) {
 			href = e.getAttribute("href");
 			if (href.search(/^http?:\/\//) >= 0) {
-				return "//a[@href=" + this.attributeValue(href) + "]";
+				return "//" + this.xpathHtmlElement("a") + "[@href=" + this.attributeValue(href) + "]";
 			} else {
 				// use contains(), because in IE getAttribute("href") will return absolute path
-				return "//a[contains(@href, " + this.attributeValue(href) + ")]";
+				return "//" + this.xpathHtmlElement("a") + "[contains(@href, " + this.attributeValue(href) + ")]";
 			}
 		}
 		return null;
@@ -365,7 +374,7 @@ LocatorBuilders.add('xpath:position', function(e, opt_contextNode) {
 			if (current.parentNode != null) {
                 currentPath = this.relativeXPathFromParent(current);
 			} else {
-                currentPath = '/' + current.nodeName.toLowerCase();
+                currentPath = '/' + this.xpathHtmlElement(current.nodeName.toLowerCase());
             }
 			path = currentPath + path;
 			var locator = '/' + path;

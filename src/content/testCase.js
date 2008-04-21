@@ -17,8 +17,12 @@
 function Command(command, target, value) {
 	this.command = command != null ? command : '';
     if (target != null && target instanceof Array) {
-        this.target = target[0][0];
-        this.targetCandidates = target;
+        if (target[0]) {
+            this.target = target[0][0];
+            this.targetCandidates = target;
+        } else {
+            this.target = "LOCATOR_DETECTION_FAILED";
+        }
     } else {
         this.target = target != null ? target : '';
     }
