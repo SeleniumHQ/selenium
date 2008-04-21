@@ -293,8 +293,9 @@ public class ProxyHandler extends AbstractHttpHandler {
         URLConnection connection = url.openConnection();
         connection.setAllowUserInteraction(false);
 
-        if (isProxyInjectionMode())
+        if (isProxyInjectionMode()) {
             adjustRequestForProxyInjection(request, connection);
+        }
 
         // Set method
         HttpURLConnection http = null;

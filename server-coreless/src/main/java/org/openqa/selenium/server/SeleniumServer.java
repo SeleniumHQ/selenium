@@ -160,9 +160,6 @@ public class SeleniumServer {
     private static Map<Handler, Level> defaultLevels;
     private static Map<File, FileHandler> seleniumFileHandlers = new HashMap<File, FileHandler>();
 
-    public static final int DEFAULT_TIMEOUT = (30 * 60);
-    public static int timeoutInSeconds = DEFAULT_TIMEOUT;
-    public static int retryTimeoutInSeconds = 10;
 
     // Minimum and maximum number of jetty threads
     public static final int MIN_JETTY_THREADS = 1;
@@ -294,8 +291,8 @@ public class SeleniumServer {
         }
 
         SeleniumServer.logger = LogFactory.getLog(SeleniumServer.class);
-        if (null == configuration.getLogOutFileName() && System.getProperty("selenium.log") != null) {
-            configuration.setLogOutFileName(System.getProperty("selenium.log"));
+        if (null == configuration.getLogOutFileName() && System.getProperty("selenium.logger") != null) {
+            configuration.setLogOutFileName(System.getProperty("selenium.logger"));
         }
         if (null != configuration.getLogOutFile()) {
             try {
@@ -465,14 +462,6 @@ public class SeleniumServer {
 
     private static boolean slowResourceProperty() {
         return ("true".equals(System.getProperty("slowResources")));
-    }
-
-    public static void setTimeoutInSeconds(int timeoutInSeconds) {
-        SeleniumServer.timeoutInSeconds = timeoutInSeconds;
-    }
-
-    public static void setRetryTimeoutInSeconds(int timeoutInSeconds) {
-        SeleniumServer.retryTimeoutInSeconds = timeoutInSeconds;
     }
 
     public void addNewStaticContent(File directory) {
@@ -691,9 +680,6 @@ public class SeleniumServer {
         SeleniumServer.proxyInjectionMode = proxyInjectionMode;
     }
 
-    public static int getTimeoutInSeconds() {
-        return timeoutInSeconds;
-    }
 
     public static void setDontTouchLogging(boolean dontTouchLogging) {
         SeleniumServer.dontTouchLogging = dontTouchLogging;
@@ -721,7 +707,7 @@ public class SeleniumServer {
             }
 
             result = launcher.runHTMLSuite(getRequiredSystemProperty("htmlSuite.browserString"), startURL, suiteFile, resultFile,
-                    timeoutInSeconds, configuration.isMultiWindow());
+                    configuration.getTimeoutInSeconds(), configuration.isMultiWindow());
 
             if (!"PASSED".equals(result)) {
                 System.err.println("Tests failed, see result file for details: " + resultFile.getAbsolutePath());
@@ -821,8 +807,6 @@ public class SeleniumServer {
                 System.exit(1);
             }
         }
-        CommandQueue.setDefaultTimeout(timeoutInSeconds);
-        CommandQueue.setRetryTimeout(retryTimeoutInSeconds);
         SeleniumServer.setProxyInjectionMode(configuration.getProxyInjectionModeArg());
 
         if (!isProxyInjectionMode() &&

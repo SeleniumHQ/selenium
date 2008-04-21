@@ -56,7 +56,7 @@ import java.util.concurrent.TimeoutException;
  */
 @SuppressWarnings("serial")
 public class SeleniumDriverResourceHandler extends ResourceHandler {
-    static Log log = LogFactory.getLog(SeleniumDriverResourceHandler.class);
+    static final Log logger = LogFactory.getLog(SeleniumDriverResourceHandler.class);
     static Log browserSideLog = LogFactory.getLog(SeleniumDriverResourceHandler.class.getName()+".browserSideLog");
     
     private SeleniumServer remoteControl;
@@ -89,7 +89,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
 
     @Override public void handle(String pathInContext, String pathParams, HttpRequest req, HttpResponse res) throws HttpException, IOException {
         try {
-            log.debug("Thread name: " + Thread.currentThread().getName());
+            logger.debug("Thread name: " + Thread.currentThread().getName());
             res.setField(HttpFields.__ContentType, "text/plain");
             setNoCacheHeaders(res);
 
@@ -107,11 +107,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             boolean retrying = "true".equals(retry);
             boolean closing = "true".equals(closingParam);
 
-            if (sessionId != null) {
-                //TODO DGF log4j only
-                //NDC.push("sessionId="+sessionId);
-            }
-            log.debug("req: "+req);
+            logger.debug("req: "+req);
             // If this is a browser requesting work for the first time...
             if (cmd != null) {
                 handleCommandRequest(req, res, cmd, sessionId);
@@ -123,21 +119,17 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 // ignore failure to find these items...
             }
             else {
-                log.debug("Not handling: " + req.getRequestURL() + "?" + req.getQuery());
+                logger.debug("Not handling: " + req.getRequestURL() + "?" + req.getQuery());
                 req.setHandled(false);
             }
-        }
-        catch (RuntimeException e) {
+        } catch (RuntimeException e) {
             if (looksLikeBrowserLaunchFailedBecauseFileNotFound(e)) {
                 String apparentFile = extractNameOfFileThatCouldntBeFound(e);
                 if (apparentFile!=null) {
-                    log.error("Could not start browser; it appears that " + apparentFile + " is missing or inaccessible");
+                    logger.error("Could not start browser; it appears that " + apparentFile + " is missing or inaccessible");
                 }
             }
             throw e;
-        } finally {
-            //TODO DGF log4j only
-            //NDC.remove();
         }
     }
 
@@ -198,7 +190,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         if (justLoaded) {
             sb.append(" NEW");
         }
-        log.debug(sb.toString());
+        logger.debug(sb.toString());
     }
 
     private void respond(HttpResponse res, RemoteCommand sc, String uniqueId) throws IOException {
@@ -206,10 +198,10 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         Writer writer = new OutputStreamWriter(buf, StringUtil.__UTF_8);
         if (sc!=null) {
             writer.write(sc.toString());
-            log.debug("res to " + uniqueId +
+            logger.debug("res to " + uniqueId +
                     ": " + sc.toString());
         } else {
-            log.debug("res empty");
+            logger.debug("res empty");
         }
         for (int pad = 998 - buf.size(); pad-- > 0;) {
             writer.write(" ");
@@ -350,23 +342,13 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     }
 
     private void handleCommandRequest(HttpRequest req, HttpResponse res, String cmd, String sessionId) {
+        final String results;
         // If this a Driver Client sending a new command...
         res.setContentType("text/plain");
         hackRemoveConnectionCloseHeader(res);
 
-        Vector<String> values = new Vector<String>();
+        Vector<String> values = parseSeleneseParameters(req);
 
-        for (int i = 1; req.getParameter(Integer.toString(i)) != null; i++) {
-            values.add(req.getParameter(Integer.toString(i)));
-        }
-        if (values.size() < 1) {
-            values.add("");
-        }
-        if (values.size() < 2) {
-            values.add("");
-        }
-
-        String results;
         results = doCommand(cmd, values, sessionId, res);
 
         // under some conditions, the results variable will be null
@@ -383,7 +365,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     }
 
     public String doCommand(String cmd, Vector<String> values, String sessionId, HttpResponse res) {
-        log.info("Command request: " + cmd + values.toString() + " on session " + sessionId);
+        logger.info("Command request: " + cmd + values.toString() + " on session " + sessionId);
         String results = null;
         // handle special commands
         if ("getNewBrowserSession".equals(cmd)) {
@@ -418,7 +400,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 captureScreenshot(values.get(0));
                 results = "OK";
             } catch (Exception e) {
-                log.error("Problem capturing screenshot", e);
+                logger.error("Problem capturing screenshot", e);
                 results = "ERROR: Problem capturing screenshot: " + e.getMessage();
             }
         } else if ("keyDownNative".equals(cmd)) {
@@ -426,7 +408,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 RobotRetriever.getRobot().keyPress(Integer.parseInt(values.get(0)));
                 results = "OK";
             } catch (Exception e) {
-                log.error("Problem during keyDown: ", e);
+                logger.error("Problem during keyDown: ", e);
                 results = "ERROR: Problem during keyDown: " + e.getMessage();
             }
         } else if ("keyUpNative".equals(cmd)) {
@@ -434,7 +416,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 RobotRetriever.getRobot().keyRelease(Integer.parseInt(values.get(0)));
                 results = "OK";
             } catch (Exception e) {
-                log.error("Problem during keyUp: ", e);
+                logger.error("Problem during keyUp: ", e);
                 results = "ERROR: Problem during keyUp: " + e.getMessage();
             }
         } else if ("keyPressNative".equals(cmd)) {
@@ -446,7 +428,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 r.keyRelease(keycode);
                 results = "OK";
             } catch (Exception e) {
-                log.error("Problem during keyDown: ", e);
+                logger.error("Problem during keyDown: ", e);
                 results = "ERROR: Problem during keyDown: " + e.getMessage();
             }
         // TODO typeKeysNative.  Requires converting String to array of keycodes.
@@ -482,7 +464,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 }
                 
                 try {
-                    results = launcher.runHTMLSuite( values.get(0),  values.get(1),  values.get(2), output, SeleniumServer.getTimeoutInSeconds(), "true".equals(values.get(3)));
+                    results = launcher.runHTMLSuite( values.get(0),  values.get(1),  values.get(2), output, remoteControl.getConfiguration().getTimeoutInSeconds(), "true".equals(values.get(3)));
                 } catch (IOException e) {
                     e.printStackTrace();
                     results = e.toString();
@@ -515,16 +497,32 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             }
             try {
                 FrameGroupCommandQueueSet queue = FrameGroupCommandQueueSet.getQueueSet(sessionId);
-                log.debug("Session "+sessionId+" going to doCommand("+cmd+','+values.get(0)+','+values.get(1) + ")");
+                logger.debug("Session "+sessionId+" going to doCommand("+cmd+','+values.get(0)+','+values.get(1) + ")");
                 results = queue.doCommand(cmd, values.get(0), values.get(1));
             } catch (Exception e) {
-                log.error("Exception running command", e);
+                logger.error("Exception running command", e);
                 results = "ERROR Server Exception: " + e.getMessage();
             }
         }
-        log.info("Got result: " + results + " on session " + sessionId);
+        logger.info("Got result: " + results + " on session " + sessionId);
         return results;
     }
+
+    private Vector<String> parseSeleneseParameters(HttpRequest req) {
+        Vector<String> values = new Vector<String>();
+
+        for (int i = 1; req.getParameter(Integer.toString(i)) != null; i++) {
+            values.add(req.getParameter(Integer.toString(i)));
+        }
+        if (values.size() < 1) {
+            values.add("");
+        }
+        if (values.size() < 2) {
+            values.add("");
+        }
+        return values;
+    }
+
 
     private File downloadFile(String urlString) {
         URL url;
@@ -536,7 +534,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         File outputFile = FileUtils.getFileUtils().createTempFile("se-",".file",null);
         outputFile.deleteOnExit(); // to be on the safe side.
         Project p = new Project();
-        p.addBuildListener(new AntJettyLoggerBuildListener(log));
+        p.addBuildListener(new AntJettyLoggerBuildListener(logger));
         Get g = new Get();
         g.setProject(p);
         g.setSrc(url);
@@ -586,11 +584,11 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     }
 
     private void shutDown(HttpResponse res) {
-        log.info("Shutdown command received");
+        logger.info("Shutdown command received");
         
         Runnable initiateShutDown = new Runnable() {
             public void run() {
-                log.info("initiating shutdown");
+                logger.info("initiating shutdown");
                 AsyncExecute.sleepTight(500);
                 System.exit(0);
             }
@@ -619,7 +617,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 setDomain(sessionId, urlDomain);
             }
             else if (!url.startsWith(domain)) {
-                log.warn("you appear to be changing domains from " + domain + " to " + urlDomain + "\n"
+                logger.warn("you appear to be changing domains from " + domain + " to " + urlDomain + "\n"
                                    + "this may lead to a 'Permission denied' from the browser (unless it is running as *iehta or *chrome,\n"
                                    + "or alternatively the selenium server is running in proxy injection mode)");
             }

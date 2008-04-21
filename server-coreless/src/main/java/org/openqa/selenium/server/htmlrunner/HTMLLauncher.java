@@ -210,8 +210,9 @@ public class HTMLLauncher implements HTMLResultsListener {
         String suiteUrl = baseUrl + "/selenium-server/tests/TestSuite.html";
         StaticContentHandler.setSlowResources(slowResources);
         String result = null;
+        int timeoutInSeconds = remoteControl.getConfiguration().getTimeoutInSeconds();
         try {
-            result = runHTMLSuite("*"+browser, baseUrl, suiteUrl, resultsFile, SeleniumServer.timeoutInSeconds, multiWindow, "info");
+            result = runHTMLSuite("*"+browser, baseUrl, suiteUrl, resultsFile, timeoutInSeconds, multiWindow, "info");
             if ("PASSED".equals(result)) {
                 log.info(result + ' ' + resultsFile.getAbsolutePath());
             } else {
@@ -222,7 +223,7 @@ public class HTMLLauncher implements HTMLResultsListener {
             result = "FAIL (timed out)";
             log.error(result + ' ' + resultsFile.getAbsolutePath());
             FileWriter fw = new FileWriter(resultsFile);
-            fw.write("<html><head><title>Error</title></head><body>Error: timed out after " + SeleniumServer.timeoutInSeconds + " seconds</body></html>");
+            fw.write("<html><head><title>Error</title></head><body>Error: timed out after " + timeoutInSeconds + " seconds</body></html>");
             fw.close();
         } catch (Exception e) {
             result = "ERROR";

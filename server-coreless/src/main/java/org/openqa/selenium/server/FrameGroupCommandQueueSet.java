@@ -98,7 +98,9 @@ public class FrameGroupCommandQueueSet {
     public static final String DEFAULT_SELENIUM_WINDOW_NAME = "";
     private int portDriversShouldContact;
 
-    public FrameGroupCommandQueueSet(String sessionId, int portDriversShouldContact) {
+    public FrameGroupCommandQueueSet(String sessionId, int portDriversShouldContact,
+                                     RemoteControlConfiguration configuration) {
+
         this.sessionId = sessionId;
         this.portDriversShouldContact = portDriversShouldContact;
 
@@ -210,13 +212,13 @@ public class FrameGroupCommandQueueSet {
     
     /** Creates a FrameGroupCommandQueueSet for the specifed sessionId 
      */
-    static public FrameGroupCommandQueueSet makeQueueSet(String sessionId, int portDriversShouldContact) {
+    static public FrameGroupCommandQueueSet makeQueueSet(String sessionId, int portDriversShouldContact, RemoteControlConfiguration configuration) {
       synchronized (queueSets) {
         FrameGroupCommandQueueSet queueSet = FrameGroupCommandQueueSet.queueSets.get(sessionId);
         if (queueSet != null) {
           throw new RuntimeException("sessionId " + sessionId + " already exists");
         }
-        queueSet = new FrameGroupCommandQueueSet(sessionId, portDriversShouldContact);
+        queueSet = new FrameGroupCommandQueueSet(sessionId, portDriversShouldContact, configuration);
         FrameGroupCommandQueueSet.queueSets.put(sessionId, queueSet);
         return queueSet;
       }
@@ -239,8 +241,7 @@ public class FrameGroupCommandQueueSet {
           log.debug("---------allocating new CommandQueue for " + uniqueId);
         }            
          
-		q = new CommandQueue(sessionId, uniqueId,
-		    millisecondDelayBetweenOperations.get());
+		q = new CommandQueue(sessionId, uniqueId, millisecondDelayBetweenOperations.get(), new RemoteControlConfiguration());
         uniqueIdToCommandQueue.put(uniqueId, q);
       } else {
           if (log.isDebugEnabled()) {

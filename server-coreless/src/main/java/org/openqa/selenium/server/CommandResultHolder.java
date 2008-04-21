@@ -27,8 +27,7 @@ import org.mortbay.log.LogFactory;
  * @version $Revision: 734 $
  */
 public class CommandResultHolder {
-    private static Log log = LogFactory.getLog(CommandResultHolder.class);
-	private static final int defaultTimeout = SeleniumServer.timeoutInSeconds;
+    private static final Log logger = LogFactory.getLog(CommandResultHolder.class);
 	private static final String poisonResult = "CommandResultHolder.POISON";
 	protected static final String CMD_TIMED_OUT_MSG = "ERROR: Command timed out";
 	protected static final String CMD_NULL_RESULT_MSG = "ERROR: Got a null result";
@@ -42,10 +41,6 @@ public class CommandResultHolder {
       this.queueId = queueId;
     }
 
-	public CommandResultHolder(String queueId) {
-	  this(queueId, defaultTimeout);
-	}
-
     /**
      * Get a result out of the result holder (from the browser), waiting no
      * longer than the timeout.  
@@ -55,8 +50,8 @@ public class CommandResultHolder {
     public String getResult() {
       String result = null;
       String hdr = "\t" + CommandQueue.getIdentification("commandResultHolder", queueId) + " getResult() ";
-      if (log.isDebugEnabled()) {
-        log.debug(hdr + "called");
+      if (logger.isDebugEnabled()) {
+        logger.debug(hdr + "called");
       }
 
       // wait until data arrives before the timeout
@@ -70,12 +65,12 @@ public class CommandResultHolder {
         result = CMD_NULL_RESULT_MSG;
       }
 
-      if (log.isDebugEnabled()) {
+      if (logger.isDebugEnabled()) {
         StringBuilder msg = new StringBuilder(hdr + "-> " + result);
         if (CMD_TIMED_OUT_MSG.equals(result)) {
           msg.append(" after " + holder.getTimeoutInSeconds() + " seconds.");
         }
-        log.debug(msg.toString());
+        logger.debug(msg.toString());
       }
       
       return result;

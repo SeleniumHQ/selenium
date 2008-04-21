@@ -106,7 +106,7 @@ public class SeleneseAntTask extends Task {
 
 	private static final String SELENIUM_JAVASCRIPT_DIR = "selenium.javascript.dir";
 	private int port = RemoteControlConfiguration.DEFAULT_PORT;
-	private int timeoutInSeconds = SeleniumServer.DEFAULT_TIMEOUT;
+	private int timeoutInSeconds = RemoteControlConfiguration.DEFAULT_TIMEOUT_IN_SECONDS;
 	private boolean slowResources, multiWindow;
 	private String browser, startURL;
 	private File suite, results, outputDir;

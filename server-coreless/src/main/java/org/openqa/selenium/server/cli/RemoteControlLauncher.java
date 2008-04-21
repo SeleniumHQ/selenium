@@ -107,7 +107,7 @@ public class RemoteControlLauncher {
             } else if ("-debugURL".equalsIgnoreCase(arg)) {
                 configuration.setDebugURL(getArg(args, ++i));
             } else if ("-timeout".equalsIgnoreCase(arg)) {
-                SeleniumServer.timeoutInSeconds = Integer.parseInt(getArg(args, ++i));
+                configuration.setTimeoutInSeconds(Integer.parseInt(getArg(args, ++i)));
             } else if ("-jettyThreads".equalsIgnoreCase(arg)) {
                 int jettyThreadsCount = Integer.parseInt(getArg(args, ++i));
 
@@ -157,7 +157,7 @@ public class RemoteControlLauncher {
                 }
                 configuration.setHTMLSuite(true);
             } else if ("-interactive".equalsIgnoreCase(arg)) {
-                SeleniumServer.timeoutInSeconds = Integer.MAX_VALUE;
+                configuration.setTimeoutInSeconds(Integer.MAX_VALUE);
                 configuration.setInteractive(true);
             } else if ("-honor-system-proxy".equals(arg)) {
                 configuration.setHonorSystemProxy(true);

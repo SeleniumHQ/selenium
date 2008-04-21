@@ -27,6 +27,7 @@ import org.apache.tools.ant.taskdefs.Delete;
 import org.apache.tools.ant.types.FileSet;
 import org.mortbay.log.LogFactory;
 import org.openqa.selenium.server.SeleniumServer;
+import org.openqa.selenium.server.RemoteControlConfiguration;
 
 /**
  * Various static utility functions used to launch browsers
@@ -309,7 +310,7 @@ public class LauncherUtils {
     
     protected enum ProxySetting { NO_PROXY, PROXY_SELENIUM_TRAFFIC_ONLY, PROXY_EVERYTHING };
     
-	protected static void generatePacAndPrefJs(File customProfileDir, int port, ProxySetting proxySetting, String homePage, boolean changeMaxConnections) throws FileNotFoundException {
+	protected static void generatePacAndPrefJs(File customProfileDir, int port, ProxySetting proxySetting, String homePage, boolean changeMaxConnections, RemoteControlConfiguration configuration) throws FileNotFoundException {
 		// We treat PROXY_SELENIUM_TRAFFIC_ONLY as a suggestion; if the user didn't explicitly
 		// allow us to proxy selenium traffic only, then we'll proxy everything
         if (proxySetting == ProxySetting.PROXY_SELENIUM_TRAFFIC_ONLY && !SeleniumServer.isAvoidProxy()) {
@@ -337,8 +338,9 @@ public class LauncherUtils {
 		out.println("user_pref('dom.disable_open_during_load', false);");
 
 		// Allow scripts to run as long as the server timeout
-		out.println("user_pref('dom.max_script_run_time', " + SeleniumServer.getTimeoutInSeconds() + ");");
-		out.println("user_pref('dom.max_chrome_script_run_time', " + SeleniumServer.getTimeoutInSeconds() + ");");
+
+        out.println("user_pref('dom.max_script_run_time', " + configuration.getTimeoutInSeconds() + ");");
+		out.println("user_pref('dom.max_chrome_script_run_time', " + configuration.getTimeoutInSeconds() + ");");
 
 		// Open links in new windows (Firefox 2.0)
 		out.println("user_pref('browser.link.open_external', 2);");

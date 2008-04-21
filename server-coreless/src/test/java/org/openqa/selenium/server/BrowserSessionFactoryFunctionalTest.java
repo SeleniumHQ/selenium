@@ -11,7 +11,7 @@ public class BrowserSessionFactoryFunctionalTest extends TestCase {
 
         factory = new BrowserSessionFactory(new BrowserLauncherFactory());
         configuration = new RemoteControlConfiguration();
-        SeleniumServer.timeoutInSeconds = 1;
+        configuration.setTimeoutInSeconds(1);
         try {
           factory.createNewRemoteSession("*chrome", "http://amazon.com", false, configuration);
           fail("Did not catch a RemoteCommandException when timing out on browser launch.");

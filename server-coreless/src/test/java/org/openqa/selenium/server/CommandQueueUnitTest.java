@@ -24,14 +24,15 @@ public class CommandQueueUnitTest extends TestCase {
     private static Log log = LogFactory.getLog(CommandQueueUnitTest.class);
 
     private CommandQueue cq;
+    private RemoteControlConfiguration configuration;
 
     @Override
     public void setUp() throws Exception {
+        configuration = new RemoteControlConfiguration();
+        configuration.setTimeoutInSeconds(defaultTimeout);
         SeleniumServer.setProxyInjectionMode(false);
-        CommandQueue.setDefaultTimeout(defaultTimeout);
-        CommandQueue.setRetryTimeout(retryTimeout);
         configureLogging();
-        cq = new CommandQueue(sessionId, getName());
+        cq = new CommandQueue(sessionId, getName(), configuration);
         log.info("Start test: " + getName());
     }
 
@@ -66,10 +67,10 @@ public class CommandQueueUnitTest extends TestCase {
         assertEquals(newSpeed, cq.getQueueDelay());
         assertEquals(newGlobalSpeed, CommandQueue.getSpeed());
 
-        CommandQueue cq2 = new CommandQueue(sessionId, getName() + "2");
+        CommandQueue cq2 = new CommandQueue(sessionId, getName() + "2", new RemoteControlConfiguration());
         assertEquals(newGlobalSpeed, cq2.getQueueDelay());
 
-        CommandQueue cq3 = new CommandQueue(sessionId, getName() + "3", newSpeed);
+        CommandQueue cq3 = new CommandQueue(sessionId, getName() + "3", newSpeed, new RemoteControlConfiguration());
         assertEquals(newSpeed, cq3.getQueueDelay());
 
         CommandQueue.setSpeed(defaultSpeed);
@@ -79,7 +80,6 @@ public class CommandQueueUnitTest extends TestCase {
         assertNull(cq.peekAtCommand());
         assertNull(cq.peekAtResult());
         assertFalse(SeleniumServer.isProxyInjectionMode());
-        assertEquals(defaultTimeout, CommandQueue.getDefaultTimeout());
     }
 
     public void testBasicDoCommandWithoutWaiting() throws WindowClosedException {

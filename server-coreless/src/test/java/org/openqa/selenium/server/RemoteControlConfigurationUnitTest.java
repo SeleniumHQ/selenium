@@ -251,4 +251,29 @@ public class RemoteControlConfigurationUnitTest extends TestCase {
         configuration.setHonorSystemProxy(true);
         assertFalse(configuration.shouldOverrideSystemProxy());
     }
+
+    public void testTimeoutInSecondsIs30MinutesByDefault() {
+        assertEquals(30 * 60, new RemoteControlConfiguration().getTimeoutInSeconds());
+    }
+
+    public void testTimeoutInSecondsCanBeSet() {
+        final RemoteControlConfiguration configuration;
+
+        configuration = new RemoteControlConfiguration();
+        configuration.setTimeoutInSeconds(123);
+        assertEquals(123, configuration.getTimeoutInSeconds());
+    }
+
+    public void testRetryTimeoutInSecondsIs10SecondsByDefault() {
+        assertEquals(10, new RemoteControlConfiguration().getRetryTimeoutInSeconds());
+    }
+
+    public void testRetryTimeoutInSecondsCanBeSet() {
+        final RemoteControlConfiguration configuration;
+
+        configuration = new RemoteControlConfiguration();
+        configuration.setRetryTimeoutInSeconds(123);
+        assertEquals(123, configuration.getRetryTimeoutInSeconds());
+    }
+
 }

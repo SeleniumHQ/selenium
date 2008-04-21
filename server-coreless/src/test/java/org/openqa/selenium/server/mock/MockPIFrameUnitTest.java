@@ -21,7 +21,6 @@ public class MockPIFrameUnitTest extends TestCase {
 
     private static final String DRIVER_URL = "http://localhost:4444/selenium-server/driver/";
     private static int timeoutInSeconds = 10;
-    private static int retryTimeoutInSeconds = 10;
     private String sessionId;
     private SeleniumServer server;
 
@@ -35,14 +34,15 @@ public class MockPIFrameUnitTest extends TestCase {
         suite.addTest(new MockPIFrameUnitTest("testClickAndPause"));
         return suite;
     }
-
+                                 
     @Override
     public void setUp() throws Exception {
         configureLogging();
+        RemoteControlConfiguration configuration = new RemoteControlConfiguration();
+        configuration.setTimeoutInSeconds(timeoutInSeconds);
         SeleniumServer.setProxyInjectionMode(true);
-        SeleniumServer.setTimeoutInSeconds(timeoutInSeconds);
-        SeleniumServer.setRetryTimeoutInSeconds(retryTimeoutInSeconds);
-        server = new SeleniumServer();
+        
+        server = new SeleniumServer(false, configuration);
         server.start();
         BrowserLauncherFactory.addBrowserLauncher("dummy", DummyBrowserLauncher.class);
         InjectionHelper.setFailOnError(false);
@@ -474,7 +474,7 @@ public class MockPIFrameUnitTest extends TestCase {
         sendCommand("selectWindow", "null", "").expectResult("OK");
 
         // sleep for a while.  for evilness.
-        Thread.sleep(retryTimeoutInSeconds / 2);
+        Thread.sleep(RemoteControlConfiguration.DEFAULT_RETRY_TIMEOUT_IN_SECONDS / 2);
         mainBrowserRequest.expectCommand("retryLast", "", "");
         mainBrowserRequest = frame.sendRetry();
         // send a new command

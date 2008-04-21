@@ -9,6 +9,10 @@ public class RemoteControlConfiguration {
 
     public static final int DEFAULT_PORT = 4444;
     private static final int USE_SAME_PORT = -1;
+    public static final int MINUTES = 60;
+    public static final int DEFAULT_TIMEOUT_IN_SECONDS = 30 * MINUTES;
+    public static final int DEFAULT_RETRY_TIMEOUT_IN_SECONDS = 10;
+
     private int port;
     private boolean multiWindow;
     private boolean proxyInjectionModeArg;
@@ -42,6 +46,8 @@ public class RemoteControlConfiguration {
     private String logOutFileName;
     private String forcedBrowserMode;
     private boolean honorSystemProxy;
+    private int timeoutInSeconds;
+    private int retryTimeoutInSeconds;
 
 
     public RemoteControlConfiguration() {
@@ -49,6 +55,8 @@ public class RemoteControlConfiguration {
         this.multiWindow = false;
         this.proxyInjectionModeArg = false;
         this.portDriversShouldContact = USE_SAME_PORT;
+        this.timeoutInSeconds = DEFAULT_TIMEOUT_IN_SECONDS;
+        this.retryTimeoutInSeconds = DEFAULT_RETRY_TIMEOUT_IN_SECONDS;
         this.debugURL = "";
         this.dontInjectRegex = null;
         this.firefoxProfileTemplate = null;
@@ -221,5 +229,21 @@ public class RemoteControlConfiguration {
 
     public boolean shouldOverrideSystemProxy() {
         return !honorSystemProxy;
+    }
+
+    public int getTimeoutInSeconds() {
+        return timeoutInSeconds;
+    }
+
+    public void setTimeoutInSeconds(int newTimeoutInSeconds) {
+        timeoutInSeconds = newTimeoutInSeconds;
+    }
+
+    public int getRetryTimeoutInSeconds() {
+        return retryTimeoutInSeconds;
+    }
+
+    public void setRetryTimeoutInSeconds(int newRetryTimeoutInSeconds) {
+        retryTimeoutInSeconds = newRetryTimeoutInSeconds;
     }
 }

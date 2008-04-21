@@ -37,8 +37,7 @@ public class CommandQueue {
             ? 0 : Integer.parseInt(System.getProperty("selenium.slowMode")));
     private static AtomicInteger idGenerator = new AtomicInteger(0);
     
-    private static AtomicInteger defaultTimeout = 
-        new AtomicInteger(SeleniumServer.timeoutInSeconds);
+    private final AtomicInteger defaultTimeout;
     private static AtomicInteger retryTimeout = new AtomicInteger(10);;
 
     private final BrowserResponseSequencer browserResponseSequencer;
@@ -53,7 +52,7 @@ public class CommandQueue {
     private AtomicBoolean closed;
     private AtomicInteger queueDelay;
 
-    public CommandQueue(String newSessionId, String newUniqueId) {
+    public CommandQueue(String newSessionId, String newUniqueId, RemoteControlConfiguration configuration) {
         sessionId = newSessionId;
         uniqueId = newUniqueId;
         browserResponseSequencer = new BrowserResponseSequencer(newUniqueId);
@@ -63,12 +62,15 @@ public class CommandQueue {
             = new ConcurrentHashMap<String, Boolean>();
         idGenerator.incrementAndGet();
         commandHolder = new CommandHolder(uniqueId, retryTimeout.get());
+        defaultTimeout = new AtomicInteger(configuration.getTimeoutInSeconds());
+        retryTimeout.set(configuration.getRetryTimeoutInSeconds());
+
         resultHolder = new CommandResultHolder(uniqueId, defaultTimeout.get());
         queueDelay = new AtomicInteger(millisecondDelayBetweenOperations.get());
     }
     
-    public CommandQueue(String newSessionId, String newUniqueId, int opDelay) {
-      this(newSessionId, newUniqueId);
+    public CommandQueue(String newSessionId, String newUniqueId, int opDelay, RemoteControlConfiguration configuration) {
+      this(newSessionId, newUniqueId, configuration);
       setQueueDelay(opDelay);
     }
         
@@ -305,18 +307,6 @@ public class CommandQueue {
     
     public static int getSpeed() {
         return millisecondDelayBetweenOperations.get();
-    }
-
-    public static void setDefaultTimeout(int timeout) {
-      defaultTimeout.set(timeout);        
-    }
-
-	public static int getDefaultTimeout() {
-	  return defaultTimeout.get();
-	}
-
-    public static void setRetryTimeout(int timeout) {
-      retryTimeout.set(timeout);        
     }
 
     public boolean isWindowPointedToByJsVariable(String jsVariableName) {

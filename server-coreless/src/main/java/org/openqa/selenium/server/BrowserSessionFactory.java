@@ -304,14 +304,14 @@ public class BrowserSessionFactory {
         final String sessionId;
 
         sessionId = UUID.randomUUID().toString().replace("-", "");
-        queueSet = FrameGroupCommandQueueSet.makeQueueSet(sessionId, configuration.getPortDriversShouldContact());
+        queueSet = FrameGroupCommandQueueSet.makeQueueSet(sessionId, configuration.getPortDriversShouldContact(), configuration);
         launcher = browserLauncherFactory.getBrowserLauncher(browserString, sessionId, configuration);
         sessionInfo = new BrowserSessionInfo(sessionId, browserString, startURL, launcher, queueSet);
         log.info("Allocated session " + sessionId + " for " + startURL + ", launching...");
 
         try {
             launcher.launchRemoteSession(startURL, configuration.isMultiWindow());
-            queueSet.waitForLoad(SeleniumServer.getTimeoutInSeconds() * 1000l);
+            queueSet.waitForLoad(configuration.getTimeoutInSeconds() * 1000l);
 
             // TODO DGF log4j only
             // NDC.push("sessionId="+sessionId);

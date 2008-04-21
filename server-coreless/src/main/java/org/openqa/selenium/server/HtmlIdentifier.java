@@ -13,7 +13,7 @@ package org.openqa.selenium.server;
  * So if you find that proxy injection mode is inappropriately injecting JavaScript into content, or
  * not injecting JavaScript into content which needs it, then it is likely that HtmlIdentifier's rules
  * need to be adjusted.  First, you can diagnose the logic by running the selenium server in
- * debug mode, and looking at the log output.  In this output you can see how any particular
+ * debug mode, and looking at the logger output.  In this output you can see how any particular
  * content's score was arrived at.  For example:
  * 
  * HtmlIdentifier.shouldBeInjected("http://www.google.com/webhp", "text/html; charset=UTF-8", "...")
