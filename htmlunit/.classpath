@@ -11,12 +11,12 @@
 	<classpathentry kind="lib" path="lib/runtime/commons-lang-2.4.jar"/>
 	<classpathentry kind="lib" path="lib/runtime/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/runtime/cssparser-0.9.5.jar"/>
-	<classpathentry kind="lib" path="lib/runtime/htmlunit-2.0.jar"/>
 	<classpathentry kind="lib" path="lib/runtime/js-1.7R1.jar"/>
 	<classpathentry kind="lib" path="lib/runtime/nekohtml-1.9.7.jar"/>
 	<classpathentry kind="lib" path="lib/runtime/sac-1.3.jar"/>
 	<classpathentry kind="lib" path="lib/runtime/xalan-2.7.0.jar"/>
 	<classpathentry kind="lib" path="lib/runtime/xercesImpl-2.8.1.jar"/>
 	<classpathentry kind="lib" path="lib/runtime/xml-apis-1.0.b2.jar"/>
+	<classpathentry kind="lib" path="lib/runtime/htmlunit-2.1.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
