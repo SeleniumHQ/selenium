@@ -67,6 +67,19 @@ body, html {
     font-size: 90%;
 }
 
+.remoterunner {
+	font-size: 10pt;
+}
+
+.remoterunner fieldset {
+	padding: 0.25em;
+}
+
+.remoterunner button, .remoterunner label {
+	margin-right: 1em;
+}
+
+
 #controlPanel {
     padding: 0.5ex;
     background: #eee;

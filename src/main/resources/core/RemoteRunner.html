@@ -61,28 +61,23 @@ http-equiv="content-type">
 
 <table border="1" style="height: 100%;">
   <tr>
-    <td width="50%" height="30%">
+    <td width="50%">
       <table>
       <tr>
-        <td>
-          <img src="selenium-logo.png">
-        </td>
-        <td>
-          <h1><a href="http://selenium.thoughtworks.com" >Selenium</a> Functional Testing for Web Apps</h1>
+        <td class="remoterunner">
+          <h4><a href="http://selenium.thoughtworks.com" >Selenium</a> Functional Testing for Web Apps</h4>
           Open Source From <a href="http://www.thoughtworks.com">ThoughtWorks, Inc</a> and Friends
           <form action="">
-          <br/>Slow Mode:<INPUT TYPE="CHECKBOX" NAME="FASTMODE" VALUE="YES" onmouseup="slowClicked()">
-
+          <br/>
           <iframe id="seleniumLoggingFrame" name="seleniumLoggingFrame" src="Blank.html" style="border: 0; height: 0; width: 0; "></iframe>
           <fieldset>
-            <legend>Tools</legend>
-
             <button type="button" id="domViewer1" onclick="openDomViewer();">
               View DOM
             </button>
             <button type="button" onclick="LOG.show();">
               Show Log
             </button>
+            <label><INPUT TYPE="CHECKBOX" NAME="FASTMODE" VALUE="YES" onmouseup="slowClicked()"> Slow Mode</label>			
           </fieldset>
 
           </form>
@@ -94,13 +89,13 @@ http-equiv="content-type">
         <label id="context" name="context"></label>
       </form>
     </td>
-    <td width="50%" height="30%">
-      <b>Last Four Test Commands:</b><br/>
+    <td width="50%" class="remoterunner">
+      <h4>Last Four Test Commands:</h4>
       <div id="commandList"></div>
     </td>
   </tr>
     <tr>
-    <td colspan="2" height="70%">
+    <td colspan="2" height="100%">
       <iframe name="selenium_myiframe" id="selenium_myiframe" src="Blank.html" height="100%" width="100%"></iframe>
     </td>
   </tr>
