@@ -326,7 +326,7 @@ public class BrowserSessionFactory {
              * This session is unlikely to be of any practical use so we need to make sure we close the browser
              * and clear all session data.
              */
-            log.error("Failed to start new browser session, shutdown browser an clear all session data: " + e.getMessage());
+            log.error("Failed to start new browser session, shutdown browser an clear all session data", e);
             shutdownBrowserAndClearSessionData(sessionInfo);
             throw new RemoteCommandException("Error while launching browser", "", e);
         }

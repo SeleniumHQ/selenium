@@ -529,7 +529,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         try {
             url = new URL(urlString);
         } catch (MalformedURLException e) {
-            throw new RuntimeException("Malformed URL <" + urlString + ">, " + e.getMessage());
+            throw new RuntimeException("Malformed URL <" + urlString + ">, ", e);
         }
         File outputFile = FileUtils.getFileUtils().createTempFile("se-",".file",null);
         outputFile.deleteOnExit(); // to be on the safe side.

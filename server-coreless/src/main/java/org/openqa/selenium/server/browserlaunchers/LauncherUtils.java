@@ -302,7 +302,7 @@ public class LauncherUtils {
           result = true;
         }
       } catch (SecurityException se) {
-        log.warn("Could not copy the specified directory files: " + se.getMessage());
+        log.warn("Could not copy the specified directory files", se);
         result = false;
       }
       return result;
