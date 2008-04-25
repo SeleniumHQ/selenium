@@ -98,13 +98,12 @@
             <classifier>tests</classifier>
             <version>${project.version}</version>
         </dependency>
-        <!-- DGF TODO put these back in when archiva bug is fixed http://jira.codehaus.org/browse/MRM-674
         <dependency>
             <groupId>org.openqa.selenium.server</groupId>
             <artifactId>selenium-server-coreless</artifactId>
             <classifier>test-sources</classifier>
             <version>${project.version}</version>
-        </dependency> -->
+        </dependency>
         
         <!-- Java Client Driver, plus its javadoc, sources, tests, and test sources -->
         <dependency>
@@ -130,13 +129,12 @@
             <classifier>tests</classifier>
             <version>${project.version}</version>
         </dependency>
-        <!-- DGF TODO put these back in when archiva bug is fixed http://jira.codehaus.org/browse/MRM-674
         <dependency>
             <groupId>org.openqa.selenium.client-drivers</groupId>
             <artifactId>selenium-java-client-driver</artifactId>
             <classifier>test-sources</classifier>
             <version>${project.version}</version>
-        </dependency> -->
+        </dependency>
         
         <!-- ... and the rest! -->
         <dependency>
