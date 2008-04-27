@@ -110,12 +110,12 @@ public class FirefoxLauncher {
             binary.startProfile(profile, "-silent");
             binary.waitFor();
 
-            while (profile.isRunning()) {
-            	Thread.sleep(500);
-            }
-             
             if (OperatingSystem.WINDOWS.equals(OperatingSystem.getCurrentPlatform())) {
-            	do {
+                while (profile.isRunning()) {
+            	    Thread.sleep(500);
+                }
+
+                do {
             		Thread.sleep(500);
             	} while (profile.isRunning());
             }
