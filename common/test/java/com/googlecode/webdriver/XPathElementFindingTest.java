@@ -58,13 +58,24 @@ public class XPathElementFindingTest extends AbstractDriverTestCase {
         assertThat(header, equalTo("XHTML Might Be The Future"));
     }
     
-    public void testShouldBeAbleToSearchForMultipleAttributes() throws Exception {
+    public void testShouldBeAbleToSearchForMultipleAttributes() {
     	driver.get(formPage);
     	
     	try {
     		driver.findElement(By.xpath("//form[@name='optional']/input[@type='submit' and @value='Click!']")).click();
     	} catch (NoSuchElementException e) {
     		fail("Should be able to find the submit button");
+    	}
+    }
+    
+    public void testShouldLocateElementsWithGivenText() {
+    	driver.get(xhtmlTestPage);
+
+    	try {
+    		driver.findElement(By.xpath("//a[text()='click me']"));
+    	} catch (NoSuchElementException e) {
+    		e.printStackTrace();
+    		fail("Cannot find the element");
     	}
     }
 }

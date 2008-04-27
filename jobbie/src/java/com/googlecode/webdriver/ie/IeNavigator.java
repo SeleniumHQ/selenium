@@ -148,7 +148,9 @@ public class IeNavigator extends DefaultNavigator {
     }
 
     public String getTextStringValue(Object text) {
-        throw new UnsupportedOperationException("getTextStringValue");
+    	if (text instanceof TextNode)
+    		return ((TextNode) text).getText();
+    	throw new UnsupportedOperationException("Can only get text value of text nodes");
     }
 
     public boolean isAttribute(Object object) {

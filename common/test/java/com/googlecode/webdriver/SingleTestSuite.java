@@ -16,7 +16,7 @@ public class SingleTestSuite {
               .keepDriverInstance()
               .includeJavascriptTests()
               .onlyRun("XPathElementFindingTest")
-              .method("testShouldBeAbleToSearchForMultipleAttributes")
+              .method("testShouldLocateElementsWithGivenText")
     //                    .leaveRunningAfterTest()
               .create();
 	}

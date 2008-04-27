@@ -16,6 +16,8 @@ public abstract class AbstractNode implements HtmlNode {
 
     public native HtmlNode getNextSibling();
 
+    public native String getText();
+    
     public abstract AttributeNode getFirstAttribute();
 
     public String getName() {

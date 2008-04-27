@@ -30,6 +30,10 @@ public class DocumentNode implements HtmlNode {
         throw new UnsupportedOperationException("getName");
     }
 
+    public String getText() {
+    	throw new UnsupportedOperationException("getText");
+    }
+    
     protected void finalize() throws Throwable {
         deleteStoredObject();
     }

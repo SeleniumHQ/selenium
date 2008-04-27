@@ -11,5 +11,7 @@ interface HtmlNode {
 
     String getName();
 
+    String getText();
+    
     AttributeNode getFirstAttribute();
 }
