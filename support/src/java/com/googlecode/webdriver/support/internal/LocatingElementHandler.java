@@ -3,16 +3,14 @@ package com.googlecode.webdriver.support.internal;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.util.List;
-import java.util.ArrayList;
 
 import com.googlecode.webdriver.By;
 import com.googlecode.webdriver.How;
 import com.googlecode.webdriver.WebDriver;
 import com.googlecode.webdriver.WebElement;
+import com.googlecode.webdriver.support.ByIdOrName;
 import com.googlecode.webdriver.support.CacheLookup;
 import com.googlecode.webdriver.support.FindBy;
-import com.googlecode.webdriver.support.ByIdOrName;
 
 public class LocatingElementHandler implements InvocationHandler {
     private final WebDriver driver;

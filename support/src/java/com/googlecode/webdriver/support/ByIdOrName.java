@@ -1,12 +1,11 @@
 package com.googlecode.webdriver.support;
 
-import com.googlecode.webdriver.By;
-import com.googlecode.webdriver.How;
-import com.googlecode.webdriver.WebElement;
-import com.googlecode.webdriver.WebDriver;
-
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+
+import com.googlecode.webdriver.By;
+import com.googlecode.webdriver.WebDriver;
+import com.googlecode.webdriver.WebElement;
 
 public class ByIdOrName extends By {
   private By idFinder;

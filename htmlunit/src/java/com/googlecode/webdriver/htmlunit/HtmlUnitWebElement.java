@@ -17,15 +17,27 @@
 
 package com.googlecode.webdriver.htmlunit;
 
-import com.gargoylesoftware.htmlunit.html.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.gargoylesoftware.htmlunit.html.ClickableElement;
+import com.gargoylesoftware.htmlunit.html.DomNode;
+import com.gargoylesoftware.htmlunit.html.DomText;
+import com.gargoylesoftware.htmlunit.html.HtmlButton;
+import com.gargoylesoftware.htmlunit.html.HtmlCheckBoxInput;
+import com.gargoylesoftware.htmlunit.html.HtmlElement;
+import com.gargoylesoftware.htmlunit.html.HtmlForm;
+import com.gargoylesoftware.htmlunit.html.HtmlImageInput;
+import com.gargoylesoftware.htmlunit.html.HtmlInput;
+import com.gargoylesoftware.htmlunit.html.HtmlOption;
+import com.gargoylesoftware.htmlunit.html.HtmlPreformattedText;
+import com.gargoylesoftware.htmlunit.html.HtmlSelect;
+import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
+import com.gargoylesoftware.htmlunit.html.HtmlTextArea;
 import com.googlecode.webdriver.NoSuchElementException;
 import com.googlecode.webdriver.WebElement;
 import com.googlecode.webdriver.internal.OperatingSystem;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 public class HtmlUnitWebElement implements WebElement {
     private final HtmlUnitDriver parent;
@@ -273,10 +285,7 @@ public class HtmlUnitWebElement implements WebElement {
             getPreformattedText(node, toReturn);
         }
 
-        Iterator<DomNode> children = node.getChildIterator();
-        while (children.hasNext()) {
-            DomNode child = children.next();
-
+        for (DomNode child : node.getChildren()) {
             // Do we need to collapse the text so far?
             if (child instanceof HtmlPreformattedText) {
                 toReturn.append(collapseWhitespace(textSoFar));

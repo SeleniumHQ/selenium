@@ -1,9 +1,5 @@
 package com.googlecode.webdriver;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.Inet4Address;
-import java.net.UnknownHostException;
 import java.util.Date;
 
 public class Cookie {

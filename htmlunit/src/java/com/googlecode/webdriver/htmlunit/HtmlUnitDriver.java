@@ -346,7 +346,7 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText, Fi
             if (page instanceof HtmlPage) {
                 HtmlElement element = ((HtmlPage) page).getFocusedElement();
                 if (element == null) {
-                    List<? extends HtmlElement> allBodies = ((HtmlPage) page).getDocumentHtmlElement().getHtmlElementsByTagName("body");
+                    List<? extends HtmlElement> allBodies = ((HtmlPage) page).getDocumentElement().getHtmlElementsByTagName("body");
                     if (allBodies.size() > 0)
                         return new HtmlUnitWebElement(HtmlUnitDriver.this, allBodies.get(0));
                 }
