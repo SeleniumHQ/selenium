@@ -159,6 +159,7 @@ public class FirefoxProfile {
         prefs.put("browser.link.open_external", "2");
         prefs.put("browser.link.open_newwindow", "2");
         prefs.put("browser.search.update", "false");
+        prefs.put("browser.sessionstore.resume_from_crash", "false");
         prefs.put("browser.shell.checkDefaultBrowser", "false");
         prefs.put("browser.startup.page", "0");
         prefs.put("browser.tabs.warnOnClose", "false");
@@ -247,7 +248,7 @@ public class FirefoxProfile {
             if (toCopy.isDirectory()) {
                 target.mkdir();
                 copy(toCopy, target);
-            } else if (!".parentlock".equals(child)) {
+            } else if (!".parentlock".equals(child) && !"parent.lock".equals(child)) {
                 copyFile(toCopy, target);
             }
         }

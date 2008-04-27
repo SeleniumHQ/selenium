@@ -1,8 +1,5 @@
 package com.googlecode.webdriver.firefox.internal;
 
-import com.googlecode.webdriver.internal.OperatingSystem;
-import com.googlecode.webdriver.firefox.FirefoxProfile;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -10,6 +7,9 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import com.googlecode.webdriver.firefox.FirefoxProfile;
+import com.googlecode.webdriver.internal.OperatingSystem;
 
 public class FirefoxBinary {
     private final File actualBinary;
@@ -53,11 +53,7 @@ public class FirefoxBinary {
                 sleep(100);
         } finally {
             reader.close();
-        }
-        
-        if (OperatingSystem.getCurrentPlatform().equals(OperatingSystem.WINDOWS)) {
-        	sleep(500);
-        }
+        }        
     }
 
     protected void modifyLibraryPath(ProcessBuilder builder) {

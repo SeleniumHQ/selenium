@@ -1,12 +1,13 @@
 package com.googlecode.webdriver.firefox;
 
-import com.googlecode.webdriver.firefox.internal.FirefoxBinary;
-import com.googlecode.webdriver.firefox.internal.ProfilesIni;
-import com.googlecode.webdriver.firefox.internal.RunningInstanceConnection;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.ConnectException;
+
+import com.googlecode.webdriver.firefox.internal.FirefoxBinary;
+import com.googlecode.webdriver.firefox.internal.ProfilesIni;
+import com.googlecode.webdriver.firefox.internal.RunningInstanceConnection;
+import com.googlecode.webdriver.internal.OperatingSystem;
 
 public class FirefoxLauncher {
     public static void main(String[] args) throws IOException {
@@ -109,6 +110,16 @@ public class FirefoxLauncher {
             binary.startProfile(profile, "-silent");
             binary.waitFor();
 
+            while (profile.isRunning()) {
+            	Thread.sleep(500);
+            }
+             
+            if (OperatingSystem.WINDOWS.equals(OperatingSystem.getCurrentPlatform())) {
+            	do {
+            		Thread.sleep(500);
+            	} while (profile.isRunning());
+            }
+            
             binary.startProfile(profile);
             return binary;
         } catch (IOException e) {
