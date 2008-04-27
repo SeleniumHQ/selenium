@@ -207,7 +207,6 @@ public class SafariDriver implements WebDriver, FindsByLinkText, FindsById, Find
 
 			Set<Cookie> toReturn = new HashSet<Cookie>();
 			String allDomainCookies = appleScript.executeJavascript("return document.cookie");
-            System.out.println("allDomainCookies = " + allDomainCookies);
 
             String[] cookies = allDomainCookies.split("; ");
 			for (String cookie : cookies) {
