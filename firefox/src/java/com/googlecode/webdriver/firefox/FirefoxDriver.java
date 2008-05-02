@@ -246,10 +246,6 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
         extension.quit();
     }
 
-    public void setOffline(boolean isOffline) {
-        sendMessage(RuntimeException.class, "setOffline", isOffline);
-    }
-    
     public Options manage() {
         return new FirefoxOptions();
     }
