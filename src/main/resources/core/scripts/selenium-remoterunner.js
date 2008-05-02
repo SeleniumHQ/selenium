@@ -201,6 +201,7 @@ objectExtend(RemoteRunner.prototype, {
         cmdText += ")";
         var commandList = document.commands.commandList;
         commandList.value += cmdText + "\n";
+        commandList.scrollTop = commandList.scrollHeight;
 
     },
 
@@ -231,7 +232,7 @@ objectExtend(RemoteRunner.prototype, {
     commandError : function(message) {
         postResult = "ERROR: " + message;
         this.commandNode.style.backgroundColor = errorColor;
-        this.commandNode.title = message;
+        this.commandNode.titcle = message;
     },
 
     testComplete : function() {
