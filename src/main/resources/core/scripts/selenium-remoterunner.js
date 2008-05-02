@@ -22,10 +22,6 @@ workingColor = "#DEE7EC";
 doneColor = "#FFFFCC";
 
 var injectedSessionId;
-var cmd1 = document.createElement("div");
-var cmd2 = document.createElement("div");
-var cmd3 = document.createElement("div");
-var cmd4 = document.createElement("div");
 
 var postResult = "START";
 var debugMode = false;
@@ -108,13 +104,6 @@ function runSeleniumTest() {
     commandFactory.registerAll(selenium);
 
     currentTest = new RemoteRunner(commandFactory);
-
-    if (document.getElementById("commandList") != null) {
-        document.getElementById("commandList").appendChild(cmd4);
-        document.getElementById("commandList").appendChild(cmd3);
-        document.getElementById("commandList").appendChild(cmd2);
-        document.getElementById("commandList").appendChild(cmd1);
-    }
 
     var doContinue = runOptions.getContinue();
     if (doContinue != null) postResult = "OK";
@@ -210,26 +199,9 @@ objectExtend(RemoteRunner.prototype, {
             }
         }
         cmdText += ")";
-        if (cmdText.length >40) {
-            cmdText = cmdText.substring(0,40);
-            cmdText += "...";
-        }
-        this.commandNode.appendChild(document.createTextNode(cmdText));
-        this.commandNode.style.backgroundColor = workingColor;
-        if (document.getElementById("commandList") != null) {
-            document.getElementById("commandList").removeChild(cmd1);
-            document.getElementById("commandList").removeChild(cmd2);
-            document.getElementById("commandList").removeChild(cmd3);
-            document.getElementById("commandList").removeChild(cmd4);
-            cmd4 = cmd3;
-            cmd3 = cmd2;
-            cmd2 = cmd1;
-            cmd1 = this.commandNode;
-            document.getElementById("commandList").appendChild(cmd4);
-            document.getElementById("commandList").appendChild(cmd3);
-            document.getElementById("commandList").appendChild(cmd2);
-            document.getElementById("commandList").appendChild(cmd1);
-        }
+        var commandList = document.commands.commandList;
+        commandList.value += cmdText + "\n";
+
     },
 
     commandComplete : function(result) {

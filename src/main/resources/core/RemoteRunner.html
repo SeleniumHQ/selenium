@@ -59,7 +59,7 @@ http-equiv="content-type">
 
 <body onLoad="setTimeout(function(){runSeleniumTest();},1000)" onUnload="cleanUp()">
 
-<table border="1" style="height: 100%;">
+<table border="1" style="height: 100%;">               
   <tr>
     <td width="50%">
       <table>
@@ -90,8 +90,10 @@ http-equiv="content-type">
       </form>
     </td>
     <td width="50%" class="remoterunner">
-      <h4>Last Four Test Commands:</h4>
-      <div id="commandList"></div>
+      <h4>All Commands:</h4>
+      <form name="commands">
+        <textarea style="overflow:auto; height:8em; width:100%" wrap="off" id="commandList"></textarea>
+      </form>
     </td>
   </tr>
     <tr>
