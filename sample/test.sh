@@ -4,7 +4,7 @@ ALL_TESTS_CLASS="AllTests"
 
 CLASSPATH=build/test-classes
 
-CLASSPATH=`echo java-lib/*.jar | tr ' ' ':'`:$CLASSPATH
+CLASSPATH=`echo lib/*.jar | tr ' ' ':'`:$CLASSPATH
  
 CMD="java -cp $CLASSPATH $ALL_TESTS_CLASS"
 
