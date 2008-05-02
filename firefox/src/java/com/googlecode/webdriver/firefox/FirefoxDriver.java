@@ -16,6 +16,8 @@ import com.googlecode.webdriver.internal.FindsByXPath;
 import com.googlecode.webdriver.internal.OperatingSystem;
 import com.googlecode.webdriver.internal.ReturnedCookie;
 
+import org.json.simple.JSONObject;
+
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -243,6 +245,10 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
     public void quit() {
         extension.quit();
     }
+
+    public void setOffline(boolean isOffline) {
+        sendMessage(RuntimeException.class, "setOffline", isOffline);
+    }
     
     public Options manage() {
         return new FirefoxOptions();
@@ -261,7 +267,9 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
         }
 
         private String convertToJson(Cookie cookie) {
-            BeanInfo info;
+          JSONObject json = new JSONObject();
+
+          BeanInfo info;
             try {
                 info = Introspector.getBeanInfo(Cookie.class);
             } catch (IntrospectionException e) {
@@ -269,36 +277,22 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
             }
             PropertyDescriptor[] properties = info.getPropertyDescriptors();
 
-            StringBuilder toReturn = new StringBuilder("{");
-
             for (PropertyDescriptor property : properties) {
                 if (fieldNames.contains(property.getName())) {
                     Object result;
                     try {
                         result = property.getReadMethod().invoke(cookie);
+                        json.put(property.getName(), result);
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
-
-                    if (result instanceof Date) {
-                        result = RFC_1123_DATE_FORMAT.format(result);
-                    }
-
-                    if (result != null) {
-                        toReturn.append("\"")
-                                .append(property.getName())
-                                .append("\": \"")
-                                .append(String.valueOf(result))
-                                .append("\"")
-                                .append(", ");
-                    }
-
                 }
             }
 
-            toReturn.append("}");
+            if (cookie.getExpiry() != null)
+              json.put("expiry",  RFC_1123_DATE_FORMAT.format(cookie.getExpiry()));
 
-            return toReturn.toString();
+            return json.toString();
         }
 
         public Set<Cookie> getCookies() {

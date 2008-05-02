@@ -226,15 +226,18 @@ FirefoxDriver.prototype.goForward = function(respond) {
 }
 
 FirefoxDriver.prototype.addCookie = function(respond, cookieString) {
-    var cookie = eval('(' + cookieString[0] + ')');
+    var cookie;
+    cookie = eval('(' + cookieString[0] + ')');
 
     if (cookie.expiry) {
-        cookie.expiry = new Date(cookie.expiry).getTime();
+        cookie.expiry = new Date(cookie.expiry);
     } else {
         var date = new Date();
         date.setYear(2030);
-        cookie.expiry = date.getTime();
+        cookie.expiry = date;
     }
+
+    cookie.expiry = cookie.expiry.getTime() / 1000; // Stored in seconds
 
     if (!cookie.domain) {
         var location = Utils.getBrowser(this.context).contentWindow.location
@@ -249,11 +252,6 @@ FirefoxDriver.prototype.addCookie = function(respond, cookieString) {
       cookieManager.add(cookie.domain, cookie.path, cookie.name, cookie.value, cookie.secure, false, cookie.expiry);
     } catch(e) {
       cookieManager.add(cookie.domain, cookie.path, cookie.name, cookie.value, cookie.secure, false, false, cookie.expiry);  
-    }
-
-    var i = cookieManager.enumerator
-    while (i.hasMoreElements()) {
-      var loaded = i.getNext().QueryInterface(Components.interfaces.nsICookie);
     }
 
     respond.context = this.context;
