@@ -9,14 +9,16 @@ public class SingleTestSuite {
     private final static String SAFARI = "com.googlecode.webdriver.safari.SafariDriver";
 
     public static Test suite() {
-		return new TestSuiteBuilder()
+//        System.setProperty("webdriver.firefox.useExisting", "true");
+
+        return new TestSuiteBuilder()
 				    	.addSourceDir("common")
-//              .addSourceDir("firefox")
-              .usingDriver(IE)
+              .addSourceDir("firefox")
+              .usingDriver(FIREFOX)
               .keepDriverInstance()
               .includeJavascriptTests()
-              .onlyRun("XPathElementFindingTest")
-              .method("testShouldLocateElementsWithGivenText")
+              .onlyRun("FirefoxDriverTest")
+              .method("testShouldBeAbleToStartMoreThanOneInstanceOfTheFirefoxDriverSimultaneously")
     //                    .leaveRunningAfterTest()
               .create();
 	}

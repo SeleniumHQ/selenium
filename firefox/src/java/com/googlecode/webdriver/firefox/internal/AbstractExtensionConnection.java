@@ -7,9 +7,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONException;
 
-import java.io.BufferedReader;
+import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.ConnectException;
 import java.net.Inet4Address;
@@ -27,7 +26,7 @@ public abstract class AbstractExtensionConnection implements ExtensionConnection
     private Socket socket;
     protected SocketAddress address;
     private OutputStreamWriter out;
-    private BufferedReader in;
+    private BufferedInputStream in;
 
     protected void setAddress(String host, int port) {
         InetAddress addr;
@@ -99,8 +98,8 @@ public abstract class AbstractExtensionConnection implements ExtensionConnection
         socket = new Socket();
 
         socket.connect(address);
-        in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-16"));
-        out = new OutputStreamWriter(socket.getOutputStream(), "UTF-16");
+        in = new BufferedInputStream(socket.getInputStream());
+        out = new OutputStreamWriter(socket.getOutputStream(), "UTF-8");
     }
 
     public boolean isConnected() {
@@ -169,7 +168,7 @@ public abstract class AbstractExtensionConnection implements ExtensionConnection
     }
 
     private Response nextResponse() throws IOException {
-        String line = in.readLine();
+        String line = readLine();
 
         // Expected input will be of the form:
         // Header: Value
@@ -179,26 +178,46 @@ public abstract class AbstractExtensionConnection implements ExtensionConnection
         // The only expected header is "Length"
 
         // Read headers
-        long count = 0;
+        int count = 0;
         String[] parts = line.split(":", 2);
         if ("Length".equals(parts[0])) {
-            count = Long.parseLong(parts[1].trim());
+            count = Integer.parseInt(parts[1].trim());
         }
 
         // Wait for the blank line
-        while (!line.equals("") && line != null) {
-            line = in.readLine();
+        while (line.length() != 0) {
+            line = readLine();
         }
 
         // Read the rest of the response.
-        StringBuffer result = new StringBuffer();
+        byte[] remaining = new byte[count];
         for (int i = 0; i < count; i++) {
-            String read = in.readLine();
-            result.append(read);
-            if (i != count - 1)
-                result.append("\n");
+            remaining[i] = (byte) in.read();
         }
 
-        return new Response(result.toString());
+        return new Response(new String(remaining, "UTF-8"));
+    }
+
+    private String readLine() throws IOException {
+        int size = 4096;
+        int growBy = 1024;
+        byte[] raw = new byte[size];
+        int count = 0;
+
+        for (;;) {
+            int b = in.read();
+
+            if (b == -1 || (char) b == '\n')
+                break;
+            raw[count++] = (byte) b;
+            if (count == size) {
+                size += growBy;
+                byte[] temp = new byte[size];
+                System.arraycopy(raw, 0, temp, 0, count);
+                raw = temp;
+            }
+        }
+
+        return new String(raw, 0, count, "UTF-8");
     }
 }

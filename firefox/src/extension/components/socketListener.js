@@ -1,10 +1,11 @@
 function SocketListener(server, transport)
 {
-    var rawOutStream = transport.openOutputStream(0, 0, 0);
+    var rawOutStream = transport.openOutputStream(Components.interfaces.nsITransport.OPEN_BLOCKING, 0, 0);
+    this.outstream = rawOutStream;
 
-    var charset = "UTF-16";
-    this.outstream = Components.classes["@mozilla.org/intl/converter-output-stream;1"].createInstance(Components.interfaces.nsIConverterOutputStream);
-    this.outstream.init(rawOutStream, charset, 0, 0x0000);
+    var charset = "UTF-8";
+//    this.outstream = Components.classes["@mozilla.org/intl/converter-output-stream;1"].createInstance(Components.interfaces.nsIConverterOutputStream);
+//    this.outstream.init(rawOutStream, charset, 0, 0x0000);
 
     this.stream = transport.openInputStream(0, 0, 0);
     var cin = Components.classes["@mozilla.org/intl/converter-input-stream;1"].createInstance(Components.interfaces.nsIConverterInputStream);
@@ -79,21 +80,23 @@ SocketListener.prototype.executeCommand = function() {
 
     var respond = {
         send : function() {
-            var output = "Length: ";
-
             sendBack.context = "" + sendBack.context;
             var remainder = JSON.stringify(sendBack) + "\n";
-            var lines = remainder.split("\n").length - 1;
-            output += lines + "\n\n" + remainder;
 
-            var slices = output.length / 256 + 1;
+            dump("Yo!\n");
 
-            // Fail on powers of 2 :)
-            for (var i = 0; i < slices; i++) {
-                var slice = output.slice(i * 256, (i + 1) * 256);
-                self.outstream.writeString(slice, slice.length);
-                self.outstream.flush();
-            }
+            var converter = Utils.newInstance("@mozilla.org/intl/scriptableunicodeconverter", "nsIScriptableUnicodeConverter");
+            converter.charset = "UTF-8";
+
+            var data = converter.convertToByteArray(remainder, {});
+            var header = "Length: " + data.length + "\n\n";
+            self.outstream.write(header, header.length);
+            self.outstream.flush();
+
+            var stream = converter.convertToInputStream(remainder);
+            self.outstream.writeFrom(stream, data.length);
+            self.outstream.flush();
+            stream.close();
         },
 
         set commandName(name) { sendBack.commandName = name; },

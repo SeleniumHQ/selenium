@@ -94,7 +94,7 @@ public class NewProfileExtensionConnection extends AbstractExtensionConnection {
   public void quit() {
         try {
             sendMessageAndWaitForResponse(RuntimeException.class, new Command(null, "quit"));
-        } catch (NullPointerException e) {
+        } catch (Exception e) {
             // this is expected
         }
 
