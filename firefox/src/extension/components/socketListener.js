@@ -1,11 +1,8 @@
+var charset = "UTF-8";
+
 function SocketListener(server, transport)
 {
-    var rawOutStream = transport.openOutputStream(Components.interfaces.nsITransport.OPEN_BLOCKING, 0, 0);
-    this.outstream = rawOutStream;
-
-    var charset = "UTF-8";
-//    this.outstream = Components.classes["@mozilla.org/intl/converter-output-stream;1"].createInstance(Components.interfaces.nsIConverterOutputStream);
-//    this.outstream.init(rawOutStream, charset, 0, 0x0000);
+    this.outstream = transport.openOutputStream(Components.interfaces.nsITransport.OPEN_BLOCKING, 0, 0);
 
     this.stream = transport.openInputStream(0, 0, 0);
     var cin = Components.classes["@mozilla.org/intl/converter-input-stream;1"].createInstance(Components.interfaces.nsIConverterInputStream);
@@ -81,12 +78,10 @@ SocketListener.prototype.executeCommand = function() {
     var respond = {
         send : function() {
             sendBack.context = "" + sendBack.context;
-            var remainder = JSON.stringify(sendBack) + "\n";
-
-            dump("Yo!\n");
+            var remainder = JSON.stringify(sendBack);
 
             var converter = Utils.newInstance("@mozilla.org/intl/scriptableunicodeconverter", "nsIScriptableUnicodeConverter");
-            converter.charset = "UTF-8";
+            converter.charset = charset;
 
             var data = converter.convertToByteArray(remainder, {});
             var header = "Length: " + data.length + "\n\n";
