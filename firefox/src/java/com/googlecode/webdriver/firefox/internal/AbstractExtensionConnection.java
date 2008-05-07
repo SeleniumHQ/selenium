@@ -3,8 +3,9 @@ package com.googlecode.webdriver.firefox.internal;
 import com.googlecode.webdriver.firefox.Command;
 import com.googlecode.webdriver.firefox.ExtensionConnection;
 import com.googlecode.webdriver.firefox.Response;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -129,16 +130,20 @@ public abstract class AbstractExtensionConnection implements ExtensionConnection
     @SuppressWarnings({"unchecked"})
     private String convert(Command command) {
         JSONObject json = new JSONObject();
-        json.put("commandName", command.getCommandName());
-        json.put("context", String.valueOf(command.getContext()));
-        json.put("elementId", command.getElementId());
+        try {
+            json.put("commandName", command.getCommandName());
+            json.put("context", String.valueOf(command.getContext()));
+            json.put("elementId", command.getElementId());
 
-        JSONArray params = new JSONArray();
-        for (Object o : command.getParameters()) {
-            params.add(o);
+            JSONArray params = new JSONArray();
+            for (Object o : command.getParameters()) {
+                params.put(o);
+            }
+
+            json.put("parameters", params);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
         }
-
-        json.put("parameters", params);
 
         return json.toString();
     }

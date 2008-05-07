@@ -22,7 +22,7 @@ task :test => [:test_htmlunit, :test_firefox, :test_support] do
 end
 
 task :install_firefox => [:firefox] do  
-  libs = %w(common/build/webdriver-common.jar firefox/build/webdriver-firefox.jar firefox/lib/runtime/json_simple-2008-02-08.jar)
+  libs = %w(common/build/webdriver-common.jar firefox/build/webdriver-firefox.jar firefox/lib/runtime/json-20070829.jar)
 
   firefox = "firefox"
   if ENV['firefox'] then

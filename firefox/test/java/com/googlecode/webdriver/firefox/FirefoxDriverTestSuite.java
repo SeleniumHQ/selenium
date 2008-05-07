@@ -1,10 +1,11 @@
 package com.googlecode.webdriver.firefox;
 
-import junit.framework.Test;
-
 import com.googlecode.webdriver.TestSuiteBuilder;
 
-public class FirefoxDriverTestSuite {
+import junit.framework.Test;
+import junit.framework.TestCase;
+
+public class FirefoxDriverTestSuite extends TestCase {
 	public static Test suite() {
 		return new TestSuiteBuilder()
 					.addSourceDir("firefox")

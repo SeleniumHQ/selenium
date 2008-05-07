@@ -1,10 +1,11 @@
 package com.googlecode.webdriver.safari;
 
-import junit.framework.Test;
-
 import com.googlecode.webdriver.TestSuiteBuilder;
 
-public class SafariDriverTestSuite {
+import junit.framework.Test;
+import junit.framework.TestCase;
+
+public class SafariDriverTestSuite extends TestCase {
 	public static Test suite() {
 		return new TestSuiteBuilder()
 					.addSourceDir("common")

@@ -16,7 +16,8 @@ import com.googlecode.webdriver.internal.FindsByXPath;
 import com.googlecode.webdriver.internal.OperatingSystem;
 import com.googlecode.webdriver.internal.ReturnedCookie;
 
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
+import org.json.JSONException;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -74,7 +75,7 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
 
     /**
      * @deprecated Use FirefoxDriver(new FirefoxProfile(profileDir), port) instead
-     */    
+     */
     public FirefoxDriver(File profileDir, int port) {
       this(new FirefoxProfile(profileDir), port);
     }
@@ -91,9 +92,9 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
 
         if (!extension.isConnected()) {
             throw new RuntimeException(
-                    "Unable to connect to Firefox. Is the WebDriver extension installed, and is there a profile called WebDriver?" + 
+                    "Unable to connect to Firefox. Is the WebDriver extension installed, and is there a profile called WebDriver?" +
                     OperatingSystem.getCurrentPlatform().getLineEnding() +
-                    "To set up a profile for WebDriver, simply start firefox from the command line with the \"ProfileManager\" switch" + 
+                    "To set up a profile for WebDriver, simply start firefox from the command line with the \"ProfileManager\" switch" +
                     OperatingSystem.getCurrentPlatform().getLineEnding() +
                     "This will look like: firefox -ProfileManager. Alternatively, use the FirefoxLauncher support class from this project");
         }
@@ -109,11 +110,11 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
     private static String getProfileName() {
       return System.getProperty("webdriver.firefox.profile", DEFAULT_PROFILE);
     }
-    
+
     private static FirefoxProfile findProfile(String profileName) {
       return new ProfilesIni().getProfile(profileName);
     }
-    
+
     protected ExtensionConnection connectTo(FirefoxProfile profile, String host, int port) {
         return ExtensionConnectionFactory.connectTo(profile, host, port);
     }
@@ -213,7 +214,7 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
 
 
     public Navigation navigate() {
-        return new FirefoxNavigation();  
+        return new FirefoxNavigation();
     }
 
     protected WebDriver findActiveDriver() {
@@ -257,7 +258,7 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
         private final int SLOW_SPEED = 1;
         private final int MEDIUM_SPEED = 10;
         private final int FAST_SPEED = 100;
-        
+
         public void addCookie(Cookie cookie) {
             sendMessage(RuntimeException.class, "addCookie", convertToJson(cookie));
         }
@@ -286,7 +287,11 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
             }
 
             if (cookie.getExpiry() != null)
-              json.put("expiry",  RFC_1123_DATE_FORMAT.format(cookie.getExpiry()));
+                try {
+                    json.put("expiry",  RFC_1123_DATE_FORMAT.format(cookie.getExpiry()));
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
 
             return json.toString();
         }
@@ -336,23 +341,23 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
             }
             return cookies;
         }
-        
+
         public void deleteCookieNamed(String name) {
             Cookie toDelete = new Cookie(name, "");
             sendMessage(RuntimeException.class, "deleteCookie", convertToJson(toDelete));
         }
-        
+
         public void deleteCookie(Cookie cookie) {
             sendMessage(RuntimeException.class, "deleteCookie", convertToJson(cookie));
         }
-        
+
         public void deleteAllCookies() {
             Set<Cookie> cookies = getCookies();
             for(Cookie c : cookies) {
                 deleteCookie(c);
             }
         }
-        
+
         public Speed getMouseSpeed() {
             int pixelSpeed = Integer.parseInt(sendMessage(RuntimeException.class, "getMouseSpeed"));
             Speed speed;
@@ -375,7 +380,7 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
             }
             return speed;
         }
-        
+
         public void setMouseSpeed(Speed speed) {
             int pixelSpeed;
             // TODO: simon 2007-02-01; Delegate to the enum

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.googlecode.webdriver</groupId>
+		<artifactId>webdriver-parent</artifactId>
+		<version>0.5-SNAPSHOT</version>
+	</parent>
+	<artifactId>webdriver-htmlunit</artifactId>
+	<name>webdriver-htmlunit</name>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.googlecode.webdriver</groupId>
+			<artifactId>webdriver-common</artifactId>
+			<version>0.5-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sourceforge.htmlunit</groupId>
+			<artifactId>htmlunit</artifactId>
+			<version>2.1</version>
+		</dependency>
+		<!-- Test dependencies ... -->
+		<dependency>
+			<groupId>com.googlecode.webdriver</groupId>
+			<artifactId>webdriver-common</artifactId>
+			<version>0.5-SNAPSHOT</version>
+			<classifier>tests</classifier>
+			<scope>test</scope>
+		</dependency>
+    </dependencies>
+
+	<build>
+		<sourceDirectory>src/java</sourceDirectory>
+		<testSourceDirectory>test/java</testSourceDirectory>
+	</build>
+
+</project>

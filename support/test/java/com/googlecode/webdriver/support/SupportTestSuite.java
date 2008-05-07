@@ -1,10 +1,11 @@
 package com.googlecode.webdriver.support;
 
-import junit.framework.Test;
-
 import com.googlecode.webdriver.TestSuiteBuilder;
 
-public class SupportTestSuite {
+import junit.framework.Test;
+import junit.framework.TestCase;
+
+public class SupportTestSuite extends TestCase {
 	public static Test suite() {
 		return new TestSuiteBuilder()
 					.addSourceDir("support")
