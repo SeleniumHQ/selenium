@@ -1,16 +1,17 @@
-var charset = "UTF-8";
+const charset = "UTF-8";
+const CI = Components.interfaces;
 
 function SocketListener(server, transport)
 {
     this.outstream = transport.openOutputStream(Components.interfaces.nsITransport.OPEN_BLOCKING, 0, 0);
 
     this.stream = transport.openInputStream(0, 0, 0);
-    var cin = Components.classes["@mozilla.org/intl/converter-input-stream;1"].createInstance(Components.interfaces.nsIConverterInputStream);
+    var cin = Components.classes["@mozilla.org/intl/converter-input-stream;1"].createInstance(CI.nsIConverterInputStream);
     cin.init(this.stream, charset, 0, 0x0000);
 
     this.inputStream = cin;
 
-    var pump = Components.classes["@mozilla.org/network/input-stream-pump;1"].createInstance(Components.interfaces.nsIInputStreamPump);
+    var pump = Components.classes["@mozilla.org/network/input-stream-pump;1"].createInstance(CI.nsIInputStreamPump);
     pump.init(this.stream, -1, -1, 0, 0, false);
     pump.asyncRead(this, null);
 
@@ -165,16 +166,26 @@ SocketListener.prototype.executeCommand = function() {
             }
         }
 
+        var frame = fxbrowser.contentWindow;
         if (driver.context.frameId !== undefined) {
-            fxdocument = Utils.findDocumentInFrame(fxbrowser, driver.context.frameId);
+            frame = Utils.findFrame(fxbrowser, driver.context.frameId);
+            if (!frame) {
+                frame = fxbrowser.contentWindow;
+                fxdocument = fxbrowser.contextDocument;
+            } else {
+                fxdocument = frame.document;
+            }
         } else {
             fxdocument = fxbrowser.contentDocument;
         }
 
         driver.context.fxdocument = fxdocument;
 
+        var webNav = frame.QueryInterface(CI.nsIInterfaceRequestor).getInterface(CI.nsIWebNavigation);
+        var loadGroup = webNav.QueryInterface(CI.nsIInterfaceRequestor).getInterface(CI.nsILoadGroup);
+
         var info = {
-            webProgress: fxbrowser.webProgress,
+            webProgress: loadGroup,
             command: command,
             driver: driver
         };
@@ -185,7 +196,7 @@ SocketListener.prototype.executeCommand = function() {
         this.readLength = 0;
 
         var wait = function(info) {
-            if (info.webProgress.isLoadingDocument) {
+            if (info.webProgress.isPending()) {
                 info.driver.window.setTimeout(wait, 10, info);
             } else {
                 try {
@@ -267,5 +278,5 @@ SocketListener.prototype.findActiveDriver = function(respond) {
 
 SocketListener.prototype.quit = function(respond) {
   var appService = Utils.getService("@mozilla.org/toolkit/app-startup;1", "nsIAppStartup");
-  appService.quit(Components.interfaces.nsIAppStartup.eForceQuit);
+  appService.quit(CI.nsIAppStartup.eForceQuit);
 };

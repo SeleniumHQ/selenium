@@ -231,6 +231,11 @@ Utils.triggerMouseEvent = function(element, eventType, clientX, clientY) {
 }
 
 Utils.findDocumentInFrame = function(browser, frameId) {
+    var frame = Utils.findFrame(browser, frameId);
+    return frame ? frame.document : null;
+};
+
+Utils.findFrame = function(browser, frameId) {
     var stringId = "" + frameId;
     var names = stringId.split(".");
     var frame = browser.contentWindow;
@@ -260,10 +265,8 @@ Utils.findDocumentInFrame = function(browser, frameId) {
         }
     }
 
-    if (frame)
-        return frame.document;
-    return null;
-}
+    return frame;
+};
 
 Utils.dump = function(element) {
     dump("=============\n");

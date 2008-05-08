@@ -126,7 +126,7 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
     public void close() {
         try {
             sendMessage(RuntimeException.class, "close");
-        } catch (NullPointerException e) {
+        } catch (Exception e) {
             // All good
         }
     }
