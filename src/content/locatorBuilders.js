@@ -20,7 +20,12 @@ function LocatorBuilders(window) {
 }
 
 LocatorBuilders.prototype.detach = function() {
-	delete this.window._locator_pageBot;
+    if (this.window._locator_pageBot) {
+        this.log.debug(this.window);
+        this.window._locator_pageBot = undefined;
+        // Firefox 3 (beta 5) throws "Security Manager vetoed action" when we use delete operator like this:
+        // delete this.window._locator_pageBot;
+    }
 }
 
 LocatorBuilders.prototype.pageBot = function() {

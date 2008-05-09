@@ -364,7 +364,7 @@ Editor.prototype.loadRecorderFor = function(contentWindow, isRootDocument) {
 		this.recordTitle(contentWindow);
 	}
 	Recorder.register(this, contentWindow);
-	this.checkForTestRunner(contentWindow);
+	this.exposeEditorToTestRunner(contentWindow);
 }
 
 Editor.prototype.toggleRecordingEnabled = function(enabled) {
@@ -565,16 +565,20 @@ Editor.prototype.openSeleniumIDEPreferences = function() {
 	window.openDialog("chrome://selenium-ide/content/optionsDialog.xul", "options", "chrome,modal,resizable", null);
 }
 
-Editor.prototype.checkForTestRunner = function(contentWindow) {
+Editor.prototype.exposeEditorToTestRunner = function(contentWindow) {
 	if (this.loadTestRunner && contentWindow.location && contentWindow.location.href) {
 		var location = contentWindow.location.href;
 		var n = location.indexOf('?');
 		if (n >= 0) {
 			location = location.substring(0, n);
 		}
-		if ('chrome://selenium-ide/content/PlayerTestSuite.html' == location) {
-			this.log.debug('setting editor to TestRunner window ' + contentWindow.top);
-			contentWindow.top.editor = this;
+		if ('chrome://selenium-ide-testrunner/content/PlayerTestSuite.html' == location) {
+            var window = contentWindow.top;
+            if (window) {
+                window = window.wrappedJSObject;
+            }
+			this.log.debug('setting editor to TestRunner window ' + window);
+			window.editor = this;
 			this.loadTestRunner = false;
 		}
 	}
@@ -640,7 +644,9 @@ Editor.prototype.playback = function(newWindow, resultCallback) {
         (this.getOptions().enableUIElement == 'true'
         ? 'chrome://selenium-ide/content/ui-element.js,' : "")
         + this.getOptions().userExtensionsURL);
-    this.showInBrowser('chrome://selenium-ide/content/selenium/TestRunner.html?test=/content/PlayerTestSuite.html' + 
+    // Using chrome://selenium-ide-testrunner instead of chrome://selenium-ide because
+    // we need to disable implicit XPCNativeWrapper to make TestRunner work
+    this.showInBrowser('chrome://selenium-ide-testrunner/content/selenium/TestRunner.html?test=/content/PlayerTestSuite.html' + 
                        '&userExtensionsURL=' + encodeURI(extensionsURLs.join()) +
                        '&baseUrl=' + this.app.getBaseURL() +
                        (auto ? "&auto=true" : ""), 

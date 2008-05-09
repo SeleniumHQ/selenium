@@ -203,6 +203,7 @@ SeleniumIDE.Overlay._firstTarget = function(target) {
 }
 
 SeleniumIDE.Overlay.onContentLoaded = function(event) {
+    //this.debug("onContentLoaded: target=" + event.target);
     var isRootDocument = false;
     var browsers = window.getBrowser().browsers;
     for (var i = 0; i < browsers.length; i++) {
@@ -222,34 +223,35 @@ SeleniumIDE.Overlay.onContentLoaded = function(event) {
 }
 
 SeleniumIDE.Overlay.onLoad = function(event) {
+    //this.debug("onLoad: target=" + event.target);
     var doc = event.originalTarget;
     if (doc.defaultView) {
         doc.defaultView.setTimeout(function() {
+                if (doc.wrappedJSObject) {
+                    doc = doc.wrappedJSObject;
+                }
                 doc.readyState = "complete";
             }, 0);
     }
 }
 
+SeleniumIDE.Overlay.debug = function(msg) {
+    var consoleService = Components.classes["@mozilla.org/consoleservice;1"]
+        .getService(Components.interfaces.nsIConsoleService);
+    consoleService.logStringMessage("Selenium IDE Overlay [DEBUG] " + msg);
+}
+
 SeleniumIDE.Overlay.init = function() {
     var appcontent = window.document.getElementById("appcontent");
+    var self = this;
     if (appcontent) {
-        appcontent.addEventListener("DOMContentLoaded", SeleniumIDE.Overlay.onContentLoaded, false);
-        appcontent.addEventListener("load", SeleniumIDE.Overlay.onLoad, true);
+        appcontent.addEventListener("DOMContentLoaded", function(event) {
+                SeleniumIDE.Overlay.onContentLoaded(event);
+            }, false);
+        appcontent.addEventListener("load", function(event) {
+                SeleniumIDE.Overlay.onLoad(event);
+            }, true);
     }
-    window.addEventListener("beforeunload", 
-                            function(event) {
-                                SeleniumIDE.Loader.getEditors().forEach(function(editor) {
-                                        if (event.target) {
-                                            var doc;
-                                            if (event.target.nodeType == 9) { // DOCUMENT_NODE
-                                                doc = event.target;
-                                            } else {
-                                                doc = event.target.ownerDocument;
-                                            }
-                                            editor.onUnloadDocument(doc);
-                                        }
-                                    });
-                            }, false);
 }
 
 SeleniumIDE.Overlay.init();

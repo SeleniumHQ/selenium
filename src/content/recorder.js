@@ -19,6 +19,7 @@ function Recorder(window) {
 	this.window = window;
 	this.observers = [];
 	this.attach();
+    this.registerUnloadListener();
 }
 
 Recorder.WINDOW_RECORDER_PROPERTY = "_Selenium_IDE_Recorder";
@@ -78,6 +79,15 @@ Recorder.prototype.parseEventKey = function(eventKey) {
 	} else {
 		return { eventName: eventKey, capture: false };
 	}
+}
+
+Recorder.prototype.registerUnloadListener = function() {
+    var self = this;
+    this.window.addEventListener("beforeunload", function() {
+            for (var i = 0; i < self.observers.length; i++) {
+                self.observers[i].onUnloadDocument(self.window.document);
+            }
+        }, false);
 }
 
 Recorder.prototype.attach = function() {
@@ -163,7 +173,10 @@ Recorder.prototype.deregister = function(observer) {
 	}
 	if (this.observers.length == 0) {
 		this.detach();
-		delete this.window[Recorder.WINDOW_RECORDER_PROPERTY];
+        this.log.info("p=" + this.window[Recorder.WINDOW_RECORDER_PROPERTY]);
+        this.window[Recorder.WINDOW_RECORDER_PROPERTY] = undefined;
+        // Firefox 3 (beta 5) throws "Security Manager vetoed action" when we use delete operator like this:
+		//delete this.window[Recorder.WINDOW_RECORDER_PROPERTY];
 	}
 }
 
@@ -229,6 +242,7 @@ Recorder.decorateEventHandler = function(handlerName, eventName, decorator, opti
 };
 
 Recorder.register = function(observer, window) {
+    this.log.debug("register: window=" + window);
 	var recorder = Recorder.get(window);
 	if (!recorder) {
 		recorder = new Recorder(window);
@@ -240,6 +254,7 @@ Recorder.register = function(observer, window) {
 }
 
 Recorder.deregister = function(observer, window) {
+    this.log.debug("deregister: window=" + window);
 	var recorder = Recorder.get(window);
 	if (recorder) {
 		recorder.deregister(observer);
