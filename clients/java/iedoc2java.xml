@@ -75,6 +75,9 @@ TOP
 
     /** Ends the test session, killing the browser */
     void stop();
+
+    /** Shows in the RemoteRunner a banner for the current test */
+    void showContextualBanner();
 </xsl:text>
 </xsl:template>
 
@@ -138,6 +141,48 @@ public class DefaultSelenium implements Selenium {
 
     public void stop() {
         commandProcessor.stop();
+    }
+
+    public void showContextualBanner() {
+
+        try {
+            StackTraceElement e[]=Thread.currentThread().getStackTrace();
+
+            String className = null;
+            String methodName = null;
+
+            for (int i = 0; i < e.length; i++) {
+                if(e[i].getClassName().equals("java.lang.Thread")) {
+                    continue;
+                }
+                className = e[i+1].getClassName();
+                methodName = e[i+1].getMethodName();
+                break;
+            }
+
+            StringBuilder context = new StringBuilder().append(className).append(": ");
+        
+            boolean lastOneWasUpperCase = false;
+            boolean nextOneIsUpperCase = false;
+            int len = methodName.length();
+            for (int i = 0; i < len; i++) {
+                char ch = methodName.charAt(i);
+                nextOneIsUpperCase = i < len-1 ? Character.isUpperCase(methodName.charAt(i+1)) : true;
+
+                if ((Character.isUpperCase(ch) && (!lastOneWasUpperCase || !nextOneIsUpperCase))) {
+                    context.append(" ");
+                    lastOneWasUpperCase = true;
+                }
+                if (!Character.isUpperCase(ch)) {
+                    lastOneWasUpperCase = false;
+                }
+                context.append(ch);
+            }
+           this.setContext(context.toString());
+ 
+        } catch (Exception e) {
+           this.setContext("<unknown context>");
+        }       
     }
 
 	// From here on, everything in this file has been auto-generated
