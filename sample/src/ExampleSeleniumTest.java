@@ -10,7 +10,8 @@ public class ExampleSeleniumTest extends TestCase {
 	        browser.start();
 	    }
 
-	    public void testGoogle() throws InterruptedException {
+	    public void testGoogleForSomeThings() throws InterruptedException {
+	        browser.showContextualBanner();
 	        browser.open("/webhp?hl=en");
 	        browser.type("name=q", "hello world");
 	        browser.click("btnG");
@@ -29,9 +30,8 @@ public class ExampleSeleniumTest extends TestCase {
 	        browser.type("name=q", "seven");
 	        browser.click("btnG");
 	
+			// no need for you to keep this sleep. Delete it to speed things up
 			Thread.sleep(10 * 1000);
-
-	
 	    }
 
 	    public void tearDown() {
