@@ -63,7 +63,7 @@ public class FrameGroupCommandQueueSet {
      */
     private FrameAddress currentFrameAddress = null;
     private String currentUniqueId = null;
-    
+    	
     private final Set<File> tempFilesForSession = Collections.synchronizedSet(new HashSet<File>());
     private Map<String, CommandQueue> uniqueIdToCommandQueue = new ConcurrentHashMap<String, CommandQueue>();
     static private final Map<String, FrameGroupCommandQueueSet> queueSets = new ConcurrentHashMap<String, FrameGroupCommandQueueSet>();
@@ -97,12 +97,18 @@ public class FrameGroupCommandQueueSet {
      */
     public static final String DEFAULT_SELENIUM_WINDOW_NAME = "";
     private int portDriversShouldContact;
+    
+    /**
+     * The extension Javascript particular to this session.
+     */
+    private String extensionJs;
 
     public FrameGroupCommandQueueSet(String sessionId, int portDriversShouldContact,
                                      RemoteControlConfiguration configuration) {
 
         this.sessionId = sessionId;
         this.portDriversShouldContact = portDriversShouldContact;
+        this.extensionJs = "";
 
         /*
          * Initialize delay, using the static CommandQueue getSpeed
@@ -398,7 +404,6 @@ public class FrameGroupCommandQueueSet {
           }
           return waitForLoad(pageLoadTimeoutInMilliseconds);
         }
-        
         // strip off AndWait - in PI mode we handle this in the server rather than in core...
         if (command.endsWith("AndWait")) {
           markWhetherJustLoaded(currentUniqueId, false);
@@ -864,6 +869,14 @@ public class FrameGroupCommandQueueSet {
         }
         log.debug("doBooleancommand(" + command + "(" + arg1 + ", " + arg2 + ") -> " + result);
         return result;
+    }
+    
+    public void setExtensionJs(String extensionJs) {
+        this.extensionJs = extensionJs;
+    }
+    
+    public String getExtensionJs() {
+        return extensionJs;
     }
 }
 

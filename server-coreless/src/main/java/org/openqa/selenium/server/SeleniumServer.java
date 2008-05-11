@@ -367,6 +367,7 @@ public class SeleniumServer {
 
         addSecurityHandler(context);
         addStaticContentHandler(slowResources, configuration, context);
+        context.addHandler(new SessionExtensionJsHandler());
         context.addHandler(new SingleTestSuiteResourceHandler());
         postResultsHandler = new SeleniumHTMLRunnerResultsHandler();
         context.addHandler(postResultsHandler);
@@ -393,7 +394,7 @@ public class SeleniumServer {
             staticContentHandler.addStaticContent(new FsResourceLocator(new File(overrideJavascriptDir)));
         }
         staticContentHandler.addStaticContent(new ClasspathResourceLocator());
-
+        
         context.addHandler(staticContentHandler);
     }
 

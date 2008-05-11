@@ -127,6 +127,10 @@ public class DefaultSelenium implements Selenium {
         this.commandProcessor = processor;
     }
     
+    public void setExtensionJs(String extensionJs) {
+        commandProcessor.setExtensionJs(extensionJs);
+    }
+    
     public void start() {
 		try {
             commandProcessor.start();

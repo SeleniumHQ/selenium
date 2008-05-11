@@ -38,6 +38,7 @@ public class HttpCommandProcessor implements CommandProcessor {
     private String browserStartCommand;
     private String browserURL;
     private String sessionId;
+    private String extensionJs;
     
     /** Specifies a server host/port, a command to launch the browser, and a starting URL for the browser.
      * 
@@ -45,6 +46,7 @@ public class HttpCommandProcessor implements CommandProcessor {
      * @param serverPort - the port on which the Selenium Server is listening
      * @param browserStartCommand - the command string used to launch the browser, e.g. "*firefox" or "c:\\program files\\internet explorer\\iexplore.exe"
      * @param browserURL - the starting URL including just a domain name.  We'll start the browser pointing at the Selenium resources on this URL,
+     * @param extensionJs - extension Javascript for this session
      * e.g. "http://www.google.com" would send the browser to "http://www.google.com/selenium-server/core/RemoteRunner.html"
      */
     public HttpCommandProcessor(String serverHost, int serverPort, String browserStartCommand, String browserURL) {
@@ -52,6 +54,7 @@ public class HttpCommandProcessor implements CommandProcessor {
         ":"+ Integer.toString(serverPort) + "/selenium-server/driver/";
         this.browserStartCommand = browserStartCommand;
         this.browserURL = browserURL;
+        this.extensionJs = "";
     }
     
     /** Specifies the URL to the CommandBridge servlet, a command to launch the browser, and a starting URL for the browser.
@@ -59,11 +62,13 @@ public class HttpCommandProcessor implements CommandProcessor {
      * @param pathToServlet - the URL of the Selenium Server Driver, e.g. "http://localhost:4444/selenium-server/driver/" (don't forget the final slash!)
      * @param browserStartCommand - the command string used to launch the browser, e.g. "*firefox" or "c:\\program files\\internet explorer\\iexplore.exe"
      * @param browserURL - the starting URL including just a domain name.  We'll start the browser pointing at the Selenium resources on this URL,
+     * @param extensionJs - extension Javascript for this session
      */
     public HttpCommandProcessor(String pathToServlet, String browserStartCommand, String browserURL) {
         this.pathToServlet = pathToServlet;
         this.browserStartCommand = browserStartCommand;
         this.browserURL = browserURL;
+        this.extensionJs = "";
     }
 
     public String doCommand(String commandName, String[] args) {
@@ -145,8 +150,19 @@ public class HttpCommandProcessor implements CommandProcessor {
         return sb.toString();
     }
 
+    /**
+     * This should be invoked before start().
+     *
+     * @param extensionJs  the extra extension Javascript to include in this
+     *                     browser session.
+     */
+    public void setExtensionJs(String extensionJs) {
+        this.extensionJs = extensionJs;
+    }
+    
     public void start() {
-        String result = getString("getNewBrowserSession", new String[]{browserStartCommand, browserURL});
+        String result = getString("getNewBrowserSession",
+            new String[]{browserStartCommand, browserURL, extensionJs});
         setSessionInProgress(result);
     }
 

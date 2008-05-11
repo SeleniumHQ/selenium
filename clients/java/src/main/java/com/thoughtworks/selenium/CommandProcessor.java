@@ -37,6 +37,9 @@ public interface CommandProcessor {
      */
     String doCommand(String command, String[] args);
 
+    /** Sets extension Javascript for the session */
+    public void setExtensionJs(String extensionJs);
+    
     /** Starts a new Selenium testing session */
     public void start();
     

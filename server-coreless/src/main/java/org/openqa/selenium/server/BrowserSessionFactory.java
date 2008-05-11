@@ -69,16 +69,17 @@ public class BrowserSessionFactory {
      *
      * @param browserString
      * @param startURL
+     * @param extensionJs  per-session user extension Javascript
      * @param configuration   Remote Control configuration. Cannot be null.
      * @return the BrowserSessionInfo for the new browser session.
      * @throws RemoteCommandException
      */
     public BrowserSessionInfo getNewBrowserSession(String browserString, String startURL,
-            RemoteControlConfiguration configuration) throws RemoteCommandException {
-
-        return getNewBrowserSession(browserString, startURL,
-                configuration.reuseBrowserSessions(),
-                SeleniumServer.isEnsureCleanSession(), configuration);
+        String extensionJs, RemoteControlConfiguration configuration)
+        throws RemoteCommandException {
+        return getNewBrowserSession(browserString, startURL, extensionJs,
+            configuration.reuseBrowserSessions(),
+            SeleniumServer.isEnsureCleanSession(), configuration);
     }
 
     /**
@@ -86,14 +87,15 @@ public class BrowserSessionFactory {
      *
      * @param browserString
      * @param startURL
+     * @param extensionJs  per-session user extension Javascript
      * @param configuration   Remote Control configuration. Cannot be null.
      * @param useCached     if a cached session should be used if one is available
      * @param ensureClean   if a clean session (e.g. no previous cookies) is required.
      * @return the BrowserSessionInfo for the new browser session.
      * @throws RemoteCommandException
      */
-    protected BrowserSessionInfo getNewBrowserSession(String browserString, String startURL, boolean useCached,
-            boolean ensureClean, RemoteControlConfiguration configuration) throws RemoteCommandException {
+    protected BrowserSessionInfo getNewBrowserSession(String browserString, String startURL,
+        String extensionJs, boolean useCached, boolean ensureClean, RemoteControlConfiguration configuration) throws RemoteCommandException {
 
         BrowserSessionInfo sessionInfo = null;
         browserString = validateBrowserString(browserString, configuration);
@@ -110,7 +112,7 @@ public class BrowserSessionFactory {
         // couldn't find one in the cache, or not reusing sessions.
         if (null == sessionInfo) {
             log.info("creating new remote session");
-            sessionInfo = createNewRemoteSession(browserString, startURL, ensureClean, configuration);
+            sessionInfo = createNewRemoteSession(browserString, startURL, extensionJs, ensureClean, configuration);
         }
 
         assert null != sessionInfo;
@@ -289,6 +291,7 @@ public class BrowserSessionFactory {
      *
      * @param browserString
      * @param startURL
+     * @param extensionJs
      * @param configuration  Remote Control configuration. Cannot be null.
      * @param ensureClean   if a clean session is required
      * @return the BrowserSessionInfo of the new session.
@@ -296,7 +299,8 @@ public class BrowserSessionFactory {
      *                                request work in the required amount of time.
      */
     protected BrowserSessionInfo createNewRemoteSession(String browserString, String startURL,
-            boolean ensureClean, RemoteControlConfiguration configuration) throws RemoteCommandException {
+        String extensionJs, boolean ensureClean, RemoteControlConfiguration configuration)
+        throws RemoteCommandException {
 
         final FrameGroupCommandQueueSet queueSet;
         final BrowserSessionInfo sessionInfo;
@@ -305,6 +309,7 @@ public class BrowserSessionFactory {
 
         sessionId = UUID.randomUUID().toString().replace("-", "");
         queueSet = FrameGroupCommandQueueSet.makeQueueSet(sessionId, configuration.getPortDriversShouldContact(), configuration);
+        queueSet.setExtensionJs(extensionJs);
         launcher = browserLauncherFactory.getBrowserLauncher(browserString, sessionId, configuration);
         sessionInfo = new BrowserSessionInfo(sessionId, browserString, startURL, launcher, queueSet);
         log.info("Allocated session " + sessionId + " for " + startURL + ", launching...");

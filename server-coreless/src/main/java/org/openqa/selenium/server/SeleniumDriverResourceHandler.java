@@ -370,12 +370,13 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         // handle special commands
         if ("getNewBrowserSession".equals(cmd)) {
             String browserString = values.get(0);
+            String extensionJs = values.size() > 2 ? values.get(2) : "";
             try {
-              sessionId = getNewBrowserSession(browserString, values.get(1));
-              setDomain(sessionId, values.get(1));
-              results = "OK," + sessionId;
+                sessionId = getNewBrowserSession(browserString, values.get(1), extensionJs);
+                setDomain(sessionId, values.get(1));
+                results = "OK," + sessionId;
             } catch (RemoteCommandException rce) {
-              results = "Failed to start new browser session: " + rce.getMessage();
+                results = "Failed to start new browser session: " + rce.getMessage();
             }
         } else if ("getLogMessages".equals(cmd)) {
             results = "OK," + logMessagesBuffer.toString();
@@ -628,10 +629,10 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         return UUID.randomUUID().toString().replaceAll("-", "");
     }
 
-    protected String getNewBrowserSession(String browserString, String startURL) 
-          throws RemoteCommandException {
-        BrowserSessionInfo sessionInfo = 
-            browserSessionFactory.getNewBrowserSession(browserString, startURL, remoteControl.getConfiguration());
+    protected String getNewBrowserSession(String browserString, String startURL, String extensionJs)
+        throws RemoteCommandException {
+        BrowserSessionInfo sessionInfo =  browserSessionFactory
+            .getNewBrowserSession(browserString, startURL, extensionJs, remoteControl.getConfiguration());
         setLastSessionId(sessionInfo.sessionId); 
         return sessionInfo.sessionId;
     }
