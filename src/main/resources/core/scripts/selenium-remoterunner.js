@@ -48,8 +48,12 @@ objectExtend(RemoteRunnerOptions.prototype, {
         return this._getQueryParameter("driverUrl");
     },
 
+    // requires per-session extension Javascript as soon as this Selenium
+    // instance becomes aware of the session identifier
     getSessionId: function() {
-        return this._getQueryParameter("sessionId");
+        var sessionId = this._getQueryParameter("sessionId");
+        requireExtensionJs(sessionId);
+        return sessionId;
     },
 
     _acquireQueryString: function () {
@@ -520,6 +524,27 @@ Selenium.prototype.doSetContext = function(context) {
     }
 };
 
+/**
+ * Adds a script tag referencing a specially-named user extensions "file". The
+ * resource handler for this special file (which won't actually exist) will use
+ * the session ID embedded in its name to retrieve per-session specified user
+ * extension javascript.
+ *
+ * @param sessionId
+ */
+function requireExtensionJs(sessionId) {
+    var src = 'scripts/user-extensions.js[' + sessionId + ']';
+    if (document.getElementById(src) == null) {
+        var scriptTag = document.createElement('script');
+        scriptTag.language = 'JavaScript';
+        scriptTag.type = 'text/javascript';
+        scriptTag.src = src;
+        scriptTag.id = src;
+        var headTag = document.getElementsByTagName('head')[0];
+        headTag.appendChild(scriptTag);
+    }
+}
+
 Selenium.prototype.doAttachFile = function(fieldLocator,fileLocator) {
    /**
    * Sets a file input (upload) field to the file listed in fileLocator
@@ -592,6 +617,20 @@ Selenium.prototype.doKeyPressNative = function(keycode) {
     * element, focus on the element first before running this command.
     *
     * @param keycode an integer keycode number corresponding to a java.awt.event.KeyEvent; note that Java keycodes are NOT the same thing as JavaScript keycodes!
+    */
+    // This doesn't really do anything on the JS side; we let the Selenium Server take care of this for us!
+};
+
+Selenium.prototype.doAddUserExtensionJs = function(extensionJs) {
+    /**
+    * This adds the contents of extensionJs to the user extension javascript
+    * for this browser session. The new javascript will take effect the next
+    * time Selenium javascript is injected into the page, most likely when
+    * there is a page load. If adding multiple scripts to the session, note
+    * that the scripts will be executed in the order they were added.
+    *
+    * @param extensionJs  a String representing valid javascript to be inserted
+    *                     into every page of this session.
     */
     // This doesn't really do anything on the JS side; we let the Selenium Server take care of this for us!
 };
