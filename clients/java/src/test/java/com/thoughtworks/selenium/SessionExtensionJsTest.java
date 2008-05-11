@@ -21,22 +21,28 @@ public class SessionExtensionJsTest extends TestCase {
     }
     
     public void testLoadSimpleExtensionJs() {
-    	// expect failure when the extension set
+        // expect failure when the extension isn't set
         Selenium selenium = getNewSelenium();
         try {
-        	runCommands(selenium);
-        	fail("Expected SeleniumException but none was encountered");
+            runCommands(selenium);
+            fail("Expected SeleniumException but none was encountered");
         }
         catch (SeleniumException se) {
-        	assertTrue(se.getMessage().endsWith("comeGetSome is not defined"));
+            assertTrue(se.getMessage().endsWith("comeGetSome is not defined"));
         }
         finally {
-        	selenium.stop();
+            selenium.stop();
         }
 
         // everything is peachy when the extension is set
         selenium = getNewSelenium();
         selenium.setExtensionJs("var comeGetSome = 'tn';");
+        runCommands(selenium);
+        assertEquals("Klaatu barada nikto - Google Search",
+            selenium.getTitle());
+        selenium.stop();
+        
+        // reusing the session ... extension should still be available
         runCommands(selenium);
         assertEquals("Klaatu barada nikto - Google Search",
             selenium.getTitle());
