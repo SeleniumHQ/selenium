@@ -621,16 +621,3 @@ Selenium.prototype.doKeyPressNative = function(keycode) {
     // This doesn't really do anything on the JS side; we let the Selenium Server take care of this for us!
 };
 
-Selenium.prototype.doAddUserExtensionJs = function(extensionJs) {
-    /**
-    * This adds the contents of extensionJs to the user extension javascript
-    * for this browser session. The new javascript will take effect the next
-    * time Selenium javascript is injected into the page, most likely when
-    * there is a page load. If adding multiple scripts to the session, note
-    * that the scripts will be executed in the order they were added.
-    *
-    * @param extensionJs  a String representing valid javascript to be inserted
-    *                     into every page of this session.
-    */
-    // This doesn't really do anything on the JS side; we let the Selenium Server take care of this for us!
-};
