@@ -70,6 +70,9 @@ TOP
 	<xsl:apply-templates />
 	<xsl:text>*/&nl;public interface Selenium {
 
+    /** Sets the per-session extension Javascript */
+    void setExtensionJs(String extensionJs);
+
 	/** Launches the browser with a new Selenium session */
     void start();
 
