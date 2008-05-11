@@ -42,6 +42,10 @@ public class DefaultSeleniumTestCase extends TestCase {
             return null;
         }
 
+        public void setExtensionJs(String extensionJs) {
+        }
+
+        
         public void start() {
         }
 

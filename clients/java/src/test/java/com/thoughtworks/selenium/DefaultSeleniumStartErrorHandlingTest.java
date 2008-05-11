@@ -39,6 +39,10 @@ public class DefaultSeleniumStartErrorHandlingTest extends TestCase {
             this.message = message;
         }
 
+        public void setExtensionJs(String extensionJs) {
+            throw new UnsupportedOperationException();
+        }
+        
         public void start() {
             throw new SeleniumException(message);
         }
