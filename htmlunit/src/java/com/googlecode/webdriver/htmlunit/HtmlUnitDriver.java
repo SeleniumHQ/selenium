@@ -172,7 +172,7 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText, Fi
     }
 
     public void close() {
-        newWebClient();
+        webClient = newWebClient();
     }
 
     public void quit() {
