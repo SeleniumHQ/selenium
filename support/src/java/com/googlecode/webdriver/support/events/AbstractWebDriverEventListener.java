@@ -2,6 +2,7 @@ package com.googlecode.webdriver.support.events;
 
 import com.googlecode.webdriver.WebDriver;
 import com.googlecode.webdriver.WebElement;
+import com.googlecode.webdriver.By;
 
 /**
  * Use this class as base class, if you want to implement
@@ -11,7 +12,7 @@ import com.googlecode.webdriver.WebElement;
  *
  * @author Michael Tamm
  */
-public class AbstractWebDriverEventListener implements WebDriverEventListener {
+public abstract class AbstractWebDriverEventListener implements WebDriverEventListener {
 
     public void beforeNavigateTo(String url, WebDriver driver) {
         // Do nothing.
@@ -34,6 +35,14 @@ public class AbstractWebDriverEventListener implements WebDriverEventListener {
     }
 
     public void afterNavigateForward(WebDriver driver) {
+        // Do nothing.
+    }
+
+    public void beforeFindBy(By by, WebDriver driver) {
+        // Do nothing.
+    }
+
+    public void afterFindBy(By by, WebDriver driver) {
         // Do nothing.
     }
 

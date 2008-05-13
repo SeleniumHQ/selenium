@@ -108,6 +108,31 @@ public class EventFiringWebDriverTest extends MockObjectTestCase {
             "afterChangeValueOf\n",
             log.toString()
         );
+    }
 
+    public void testFindByEvent() {
+        final WebDriver mockedDriver = mock(WebDriver.class);
+        final StringBuilder log = new StringBuilder();
+
+        checking(new Expectations() {{
+            one(mockedDriver).findElement(By.id("foo"));
+            one(mockedDriver).findElements(By.xpath("//link[@type = 'text/css']"));
+        }});
+
+        EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver).register(new AbstractWebDriverEventListener() {
+            public void beforeFindBy(By by, WebDriver driver) { log.append("beforeFindBy ").append(by).append("\n"); }
+            public void afterFindBy(By by, WebDriver driver) { log.append("afterFindBy ").append(by).append("\n"); }
+        });
+
+        testedDriver.findElement(By.id("foo"));
+        testedDriver.findElements(By.xpath("//link[@type = 'text/css']"));
+
+        assertEquals(
+            "beforeFindBy By.id: foo\n" +
+            "afterFindBy By.id: foo\n" +
+            "beforeFindBy By.xpath: //link[@type = 'text/css']\n" +
+            "afterFindBy By.xpath: //link[@type = 'text/css']\n",
+            log.toString()
+        );
     }
 }

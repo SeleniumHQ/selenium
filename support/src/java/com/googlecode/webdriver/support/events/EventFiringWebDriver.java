@@ -75,16 +75,22 @@ public class EventFiringWebDriver implements WebDriver {
     }
 
     public List<WebElement> findElements(By by) {
-        List<WebElement> elements = driver.findElements(by);
-        List<WebElement> result = new ArrayList<WebElement>(elements.size());
-        for (WebElement element : elements) {
+        dispatcher.beforeFindBy(by, driver);
+        List<WebElement> temp = driver.findElements(by);
+        dispatcher.afterFindBy(by, driver);
+        List<WebElement> result = new ArrayList<WebElement>(temp.size());
+        for (WebElement element : temp) {
             result.add(new EventFiringWebElement(element));
         }
         return result;
     }
 
     public WebElement findElement(By by) {
-        return new EventFiringWebElement(driver.findElement(by));
+        dispatcher.beforeFindBy(by, driver);
+        WebElement temp = driver.findElement(by);
+        dispatcher.afterFindBy(by, driver);
+        EventFiringWebElement result = new EventFiringWebElement(temp);
+        return result;
     }
 
     public String getPageSource() {

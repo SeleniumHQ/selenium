@@ -2,6 +2,7 @@ package com.googlecode.webdriver.support.events;
 
 import com.googlecode.webdriver.WebElement;
 import com.googlecode.webdriver.WebDriver;
+import com.googlecode.webdriver.By;
 
 /**
  * @author Michael Tamm
@@ -44,12 +45,26 @@ public interface WebDriverEventListener {
     void afterNavigateForward(WebDriver driver);
 
     /**
+     * Called before {@link WebDriver#findElement WebDriver.findElement(...)}
+     * or {@link WebDriver#findElements WebDriver.findElements(...)}.
+     */
+    void beforeFindBy(By by, WebDriver driver);
+
+    /**
+     * Called after {@link WebDriver#findElement WebDriver.findElement(...)}
+     * or {@link WebDriver#findElements WebDriver.findElements(...)}.
+     * Not called, if an exception is thrown.
+     */
+    void afterFindBy(By by, WebDriver driver);
+
+    /**
      * Called before {@link WebElement#click WebElement.click()}.
      */
     void beforeClickOn(WebElement element, WebDriver driver);
 
     /**
      * Called after {@link WebElement#click WebElement.click()}.
+     * Not called, if an exception is thrown.
      */
     void afterClickOn(WebElement element, WebDriver driver);
 
@@ -64,6 +79,7 @@ public interface WebDriverEventListener {
      * Called after {@link WebElement#clear WebElement.clear()},
      * {@link WebElement#sendKeys WebElement.sendKeys(...)}, or
      * {@link WebElement#toggle WebElement.toggle()}.
+     * Not called, if an exception is thrown.
      */
     void afterChangeValueOf(WebElement element, WebDriver driver);
 
