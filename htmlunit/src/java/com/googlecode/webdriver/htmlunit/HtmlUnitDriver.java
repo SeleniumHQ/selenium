@@ -64,7 +64,7 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText, Fi
     private Map<String, History> histories = new HashMap<String, History>();
 
     public HtmlUnitDriver() {
-        newWebClient();
+        webClient = newWebClient();
         webClient.addWebWindowListener(new WebWindowListener() {
             private boolean waitingToLoad;
 
@@ -101,11 +101,12 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText, Fi
         this.currentWindow = currentWindow;
     }
 
-    protected void newWebClient() {
-        webClient = new WebClient();
-        webClient.setThrowExceptionOnFailingStatusCode(true);
-        webClient.setJavaScriptEnabled(false);
-        webClient.setRedirectEnabled(true);
+    protected WebClient newWebClient() {
+        WebClient client = new WebClient();
+        client.setThrowExceptionOnFailingStatusCode(true);
+        client.setJavaScriptEnabled(false);
+        client.setRedirectEnabled(true);
+        return client;
     }
 
     public void get(String url) {
