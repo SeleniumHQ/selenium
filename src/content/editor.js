@@ -811,7 +811,7 @@ Editor.prototype.showUIReference = function(target) {
     if (!Editor.uiMap) {
         return;
     }
-    var re = new RegExp('^' + Editor.uiMap.prefix + '=');
+    var re = new RegExp('^' + Editor.UI_PREFIX + '=');
     if (re.test(target)) {
         var uiSpecifierString = target.replace(re, "");
         // trim the offset locator, if any

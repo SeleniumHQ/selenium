@@ -1,9 +1,8 @@
 //******************************************************************************
 // globals, including constants
 
-var GLOBAL = {
-    rollupManager: {}
-    , uiMap: {}
+var UI_GLOBAL = {
+    UI_PREFIX: 'ui'
     , XHTML_DOCTYPE: '<!DOCTYPE html PUBLIC '
         + '"-//W3C//DTD XHTML 1.0 Strict//EN" '
         + '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">'
@@ -111,7 +110,7 @@ Selenium.prototype.doRollup = function(rollupName, kwargs) {
         }
     };
     
-    var rule = GLOBAL.rollupManager.getRollupRule(rollupName);
+    var rule = RollupManager.getInstance().getRollupRule(rollupName);
     var expandedCommands = rule.getExpandedCommands(kwargs);
     
     // hold your breath ...
@@ -469,6 +468,12 @@ function RollupRule(rollupRuleShorthand)
  */
 function RollupManager()
 {
+    // singleton pattern
+    var self = this;
+    RollupManager.getInstance = function() {
+        return self;
+    };
+    
     this.init = function()
     {
         this.rollupRules = {};
@@ -634,9 +639,6 @@ function RollupManager()
         return commands;
     };
     
-    
-    
-    GLOBAL.rollupManager = this;
     this.init();
 }
 
@@ -701,12 +703,12 @@ function eval_locator(locator, inDocument, opt_contextNode)
         pageBot = selenium.browserbot;
     }
     else {
-        if (!GLOBAL.mozillaBrowserBot) {
+        if (!UI_GLOBAL.mozillaBrowserBot) {
             // create a browser bot to evaluate the locator. Hand it the IDE
             // window as a dummy window.
-            GLOBAL.mozillaBrowserBot = new MozillaBrowserBot(window)
+            UI_GLOBAL.mozillaBrowserBot = new MozillaBrowserBot(window)
         }
-        pageBot = GLOBAL.mozillaBrowserBot;
+        pageBot = UI_GLOBAL.mozillaBrowserBot;
     }
     
     var results = [];
@@ -1155,8 +1157,8 @@ function UIElement(uiElementShorthand)
         var testcases = this.getTestcases();
         testcaseLoop: for (var i = 0; i < testcases.length; ++i) {
             var testcase = testcases[i];
-            var xhtml = GLOBAL.XHTML_DOCTYPE + '<html xmlns="'
-                + GLOBAL.XHTML_XMLNS + '">' + testcase.xhtml + '</html>';
+            var xhtml = UI_GLOBAL.XHTML_DOCTYPE + '<html xmlns="'
+                + UI_GLOBAL.XHTML_XMLNS + '">' + testcase.xhtml + '</html>';
             var doc = parser.parseFromString(xhtml, "text/xml");
             if (doc.firstChild.nodeName == 'parsererror') {
                 smart_alert('Error parsing XHTML in testcase "' + testcase.name
@@ -1553,7 +1555,7 @@ function UISpecifier(uiSpecifierStringOrPagesetName, elementName, args)
                 + this.args + '" are not valid UI specifier args');
         }
         
-        uiElement = GLOBAL.uiMap
+        uiElement = UIMap.getInstance()
             .getUIElement(this.pagesetName, this.elementName);
         if (uiElement != null) {
             var kwargs = to_kwargs(this.args, uiElement.argsOrder);
@@ -1650,7 +1652,7 @@ function Pageset(pagesetShorthand)
             }
             var uiSpecifier = new UISpecifier(this.name, uiElement.name, args);
             stubs.push([
-                GLOBAL.uiMap.prefix + '=' + uiSpecifier.toString()
+                UI_GLOBAL.UI_PREFIX + '=' + uiSpecifier.toString()
                 , uiElement.description
             ]);
         }
@@ -1733,7 +1735,19 @@ function Pageset(pagesetShorthand)
  */
 function UIMap()
 {
-    this.prefix = 'ui';
+    // singleton pattern
+    var self = this;
+    UIMap.getInstance = function() {
+        return self;
+    }
+    
+    // need to attach variables directly to the Editor object in order for them
+    // to be in scope for Editor methods
+    if (is_IDE()) {
+        Editor.uiMap = this;
+        Editor.UI_PREFIX = UI_GLOBAL.UI_PREFIX;
+    }
+    
     this.pagesets = new Object();
     
     
@@ -1998,14 +2012,14 @@ function UIMap()
                     // specified is the "same" as the element we're matching
                     if (is_fuzzy_match) {
                         if (is_fuzzy_match(locatedElement, pageElement)) {
-                            return this.prefix + '=' +
+                            return UI_GLOBAL.UI_PREFIX + '=' +
                                 new UISpecifier(pageset.name, uiElement.name,
                                     defaultLocators[locator]);
                         }
                     }
                     else {
                         if (locatedElement == pageElement) {
-                            return this.prefix + '=' +
+                            return UI_GLOBAL.UI_PREFIX + '=' +
                                 new UISpecifier(pageset.name, uiElement.name,
                                     defaultLocators[locator]);
                         }
@@ -2017,7 +2031,7 @@ function UIMap()
                             var offsetLocator = uiElement
                                 .getOffsetLocator(locatedElement, pageElement);
                             if (offsetLocator) {
-                                return this.prefix + '=' +
+                                return UI_GLOBAL.UI_PREFIX + '=' +
                                     new UISpecifier(pageset.name,
                                         uiElement.name,
                                         defaultLocators[locator])
@@ -2054,119 +2068,98 @@ function UIMap()
         });
         return stubs;
     }
-    
-    
-    
-    /**
-     * Initialize the external objects required for the UI element locator to
-     * work. This allows us to create a unit test for this module without
-     * importing lots of unnecessary javascript code.
-     */
-    this.init = function() {
-        if (PageBot.prototype.locateElementByUIElement != undefined)
-            return;
-        
-        // add a locator builder for UI elements. This is used to create a
-        // locator string (in this case a UI specifier) identifying a page
-        // element when it is clicked (or otherwise interacted with) in the
-        // IDE. The locator string is later used to find the element when
-        // passed to the "locateElementBy..." PageBot method.
-        // add the UI element locator, and promote it to top priority
-        if (is_IDE()) {
-            if (LocatorBuilders.order.indexOf(this.prefix) == -1) {
-                LocatorBuilders.add(this.prefix, function(pageElement) {
-                    return GLOBAL.uiMap.getUISpecifierString(pageElement,
-                        this.window.document);
-                });
-                LocatorBuilders.order.unshift(this.prefix);
-                LocatorBuilders.order.pop();
-            }
-            
-            // try to bind to the editor object, which should be available if
-            // this is being used in the Selenium IDE extension
-            if (Editor.uiMap != this) {
-                Editor.uiMap = this;
-            }
-        }
-        
-        // add the symmetric "locateElementBy..." method to PageBot. This
-        // function is responsible for mapping a UI specifier string to an
-        // element on the page and returning it. If no element is found null is
-        // returned. Returning null on failure to locate the element is part of
-        // the undocumented API for locator strategies.
-        PageBot.prototype.locateElementByUIElement = function(uiSpecifierString, inDocument, inWindow) {
-            // we have an offset locator expression if the specifier string
-            // does not end with a close-parenthesis. In this case, no
-            // parentheses are allowed within the arguments portion of the base
-            // specifier string.
-            if (!/\)$/.test(uiSpecifierString)) {
-                var matches = /^([^\)]+\))(.+)$/.exec(uiSpecifierString);
-                uiSpecifierString = matches[1];
-                var offsetLocator = matches[2];
-            }
-            var locatedElement = null;
-            var pageElements = GLOBAL.uiMap
-                .getPageElements(uiSpecifierString, inDocument);
-            if (offsetLocator) {
-                for (var i = 0; i < pageElements.length; ++i) {
-                    var locatedElements = eval_locator(offsetLocator,
-                        inDocument, pageElements[i]);
-                    if (locatedElements.length) {
-                        locatedElement = locatedElements[0];
-                        break;
-                    }
-                }
-            }
-            else if (pageElements.length) {
-                locatedElement = pageElements[0];
-            }
-            return locatedElement;
-        }
-        PageBot.prototype.locateElementByUIElement.prefix = this.prefix;
-            
-        // define a function used to compare the result of a close UI element
-        // match with the actual interacted element. If they are close enough
-        // according to the heuristic, consider them a match.
-        /**
-         * A heuristic function for comparing a node with a target node.
-         * Typically the node is specified in a UI element definition, while
-         * the target node is returned by the recorder as the leaf element which
-         * had some event enacted upon it. This particular heuristic covers the
-         * case where the <a> element contains other inline tags, such as
-         * &lt;em&gt; or &lt;img&gt;.
-         *
-         * @param node    the node being compared to the target node
-         * @param target  the target node
-         * @return        true if node equals target, or if node is a link
-         *                element and target is its descendant, or if node has
-         *                an onclick attribute and target is its descendant.
-         *                False otherwise.
-         */
-        PageBot.prototype.locateElementByUIElement.is_fuzzy_match = function(node, target) {
-            try {
-                var isMatch = (
-                    (node == target) ||
-                    ((node.nodeName == 'A' || node.onclick) && is_ancestor(node, target))
-                );
-                return isMatch;
-            }
-            catch (e) {
-                return false;
-            }
-        };
-    };
-    
-    
-    
-    // bind to the global variable
-    GLOBAL.uiMap = this;
-    try {
-        this.init();
-    }
-    catch (e) {
-        // must be unit testing
-    }
 }
 
 
 
+function extendPageBotWithUIElement() {
+    if (PageBot.prototype.locateElementByUIElement != undefined)
+        return;
+    
+    // add a locator builder for UI elements. This is used to create a
+    // locator string (in this case a UI specifier) identifying a page
+    // element when it is clicked (or otherwise interacted with) in the
+    // IDE. The locator string is later used to find the element when
+    // passed to the "locateElementBy..." PageBot method.
+    // add the UI element locator, and promote it to top priority
+    if (is_IDE()) {
+        if (LocatorBuilders.order.indexOf(UI_GLOBAL.UI_PREFIX) == -1) {
+            LocatorBuilders.add(UI_GLOBAL.UI_PREFIX, function(pageElement) {
+                return UIMap.getInstance().getUISpecifierString(pageElement,
+                    this.window.document);
+            });
+            LocatorBuilders.order.unshift(UI_GLOBAL.UI_PREFIX);
+            LocatorBuilders.order.pop();
+        }
+    }
+    
+    // add the symmetric "locateElementBy..." method to PageBot. This
+    // function is responsible for mapping a UI specifier string to an
+    // element on the page and returning it. If no element is found null is
+    // returned. Returning null on failure to locate the element is part of
+    // the undocumented API for locator strategies.
+    PageBot.prototype.locateElementByUIElement = function(uiSpecifierString, inDocument, inWindow) {
+        // we have an offset locator expression if the specifier string
+        // does not end with a close-parenthesis. In this case, no
+        // parentheses are allowed within the arguments portion of the base
+        // specifier string.
+        if (!/\)$/.test(uiSpecifierString)) {
+            var matches = /^([^\)]+\))(.+)$/.exec(uiSpecifierString);
+            uiSpecifierString = matches[1];
+            var offsetLocator = matches[2];
+        }
+        var locatedElement = null;
+        var pageElements = UIMap.getInstance()
+            .getPageElements(uiSpecifierString, inDocument);
+        if (offsetLocator) {
+            for (var i = 0; i < pageElements.length; ++i) {
+                var locatedElements = eval_locator(offsetLocator,
+                    inDocument, pageElements[i]);
+                if (locatedElements.length) {
+                    locatedElement = locatedElements[0];
+                    break;
+                }
+            }
+        }
+        else if (pageElements.length) {
+            locatedElement = pageElements[0];
+        }
+        return locatedElement;
+    }
+    PageBot.prototype.locateElementByUIElement.prefix = UI_GLOBAL.UI_PREFIX;
+        
+    // define a function used to compare the result of a close UI element
+    // match with the actual interacted element. If they are close enough
+    // according to the heuristic, consider them a match.
+    /**
+     * A heuristic function for comparing a node with a target node.
+     * Typically the node is specified in a UI element definition, while
+     * the target node is returned by the recorder as the leaf element which
+     * had some event enacted upon it. This particular heuristic covers the
+     * case where the <a> element contains other inline tags, such as
+     * &lt;em&gt; or &lt;img&gt;.
+     *
+     * @param node    the node being compared to the target node
+     * @param target  the target node
+     * @return        true if node equals target, or if node is a link
+     *                element and target is its descendant, or if node has
+     *                an onclick attribute and target is its descendant.
+     *                False otherwise.
+     */
+    PageBot.prototype.locateElementByUIElement.is_fuzzy_match = function(node, target) {
+        try {
+            var isMatch = (
+                (node == target) ||
+                ((node.nodeName == 'A' || node.onclick) && is_ancestor(node, target))
+            );
+            return isMatch;
+        }
+        catch (e) {
+            return false;
+        }
+    };
+};
+
+
+
+extendPageBotWithUIElement();
