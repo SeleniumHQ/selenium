@@ -78,9 +78,13 @@ class selenium:
         self.browserStartCommand = browserStartCommand
         self.browserURL = browserURL
         self.sessionId = None
+        self.extensionJs = ""
 
+    def setExtensionJs(self, extensionJs):
+        self.extensionJs = extensionJs
+        
     def start(self):
-        result = self.get_string("getNewBrowserSession", [self.browserStartCommand, self.browserURL])
+        result = self.get_string("getNewBrowserSession", [self.browserStartCommand, self.browserURL, self.extensionJs])
         try:
             self.sessionId = result
         except ValueError:

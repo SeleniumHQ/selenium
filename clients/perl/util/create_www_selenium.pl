@@ -240,6 +240,7 @@ sub new {
                  port => 4444,
                  auto_stop => 1,
                  browser_start_command => delete $args{browser} || '*firefox',
+                 extension_js => "",
                  %args,
                };
     croak 'browser_url is mandatory!' unless $self->{browser_url};
@@ -247,12 +248,18 @@ sub new {
     return $self;
 }
 
+sub set_extension_js {
+    my $self = shift;
+    $self->{extension_js} = shift;
+}
+
 sub start {
     my $self = shift;
     return if $self->{session_id};
     $self->{session_id} = $self->get_string("getNewBrowserSession", 
                                             $self->{browser_start_command}, 
-                                            $self->{browser_url});
+                                            $self->{browser_url},
+                                            $self->{extension_js});
 }
 
 sub stop {

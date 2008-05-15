@@ -29,10 +29,15 @@ module Selenium
         @browserStartCommand = browserStartCommand
         @browserURL = browserURL
         @timeout = timeout
+        @extension_js = ""
+      end
+      
+      def set_extension_js(extension_js)
+        @extension_js = extension_js
       end
       
       def start()
-        result = get_string("getNewBrowserSession", [@browserStartCommand, @browserURL])
+        result = get_string("getNewBrowserSession", [@browserStartCommand, @browserURL, @extension_js])
         @session_id = result
       end
       
