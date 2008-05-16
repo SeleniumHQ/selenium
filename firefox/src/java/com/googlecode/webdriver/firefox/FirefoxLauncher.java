@@ -7,7 +7,6 @@ import java.net.ConnectException;
 import com.googlecode.webdriver.firefox.internal.FirefoxBinary;
 import com.googlecode.webdriver.firefox.internal.ProfilesIni;
 import com.googlecode.webdriver.firefox.internal.RunningInstanceConnection;
-import com.googlecode.webdriver.internal.OperatingSystem;
 
 public class FirefoxLauncher {
     public static void main(String[] args) throws IOException {
@@ -18,7 +17,7 @@ public class FirefoxLauncher {
         else if (args.length == 1)
             launcher.createBaseWebDriverProfile(args[0]);
         else
-            launcher.createBaseWebDriverProfile(args[0], Integer.parseInt(args[1]));
+        	launcher.createBaseWebDriverProfile(args[0], Integer.parseInt(args[1]));
     }
 
     public void createBaseWebDriverProfile() throws IOException {
@@ -98,35 +97,16 @@ public class FirefoxLauncher {
         }
     }
 
-    public FirefoxBinary startProfile(FirefoxProfile profile, int port) {
+    public FirefoxBinary startProfile(FirefoxProfile profile, int port) throws IOException {
         return startProfile(profile, null, port);
     }
 
-    public FirefoxBinary startProfile(FirefoxProfile originalProfile, File firefoxBinary, int port) {
+    public FirefoxBinary startProfile(FirefoxProfile originalProfile, File firefoxBinary, int port) throws IOException {
         FirefoxBinary binary = new FirefoxBinary(firefoxBinary);
 
-        try {
-            FirefoxProfile profile = originalProfile.createCopy(port);
-            binary.startProfile(profile, "-silent");
-            binary.waitFor();
-
-            if (OperatingSystem.WINDOWS.equals(OperatingSystem.getCurrentPlatform())) {
-                while (profile.isRunning()) {
-            	    Thread.sleep(500);
-                }
-
-                do {
-            		Thread.sleep(500);
-            	} while (profile.isRunning());
-            }
-            
-            binary.startProfile(profile);
-            return binary;
-        } catch (IOException e) {
-            throw new RuntimeException("Cannot load firefox: " + originalProfile);
-        } catch (InterruptedException e) {
-            throw new RuntimeException("Cannot load firefox: " + originalProfile);
-        }
+        FirefoxProfile profile = originalProfile.createCopy(port);
+        binary.clean(profile);
+        binary.startProfile(profile);
+        return binary;
     }
-
 }

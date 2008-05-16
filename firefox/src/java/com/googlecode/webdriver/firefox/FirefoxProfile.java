@@ -233,7 +233,7 @@ public class FirefoxProfile {
     }
 
     public void deleteExtensionsCacheIfItExists() {
-        File cacheFile = new File(extensionsDir, "extensions.cache");
+        File cacheFile = new File(extensionsDir, "../extensions.cache");
         if (cacheFile.exists())
             cacheFile.delete();
     }

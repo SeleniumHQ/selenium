@@ -190,4 +190,23 @@ public class FirefoxBinary {
             throw new RuntimeException(e);
         }
     }
+
+	public void clean(FirefoxProfile profile) throws IOException {
+		startProfile(profile, "-silent");
+		try {
+			waitFor();
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+
+		if (OperatingSystem.WINDOWS.equals(OperatingSystem.getCurrentPlatform())) {
+		    while (profile.isRunning()) {
+			    sleep(500);
+		    }
+
+		    do {
+				sleep(500);
+			} while (profile.isRunning());
+		}
+	}
 }
