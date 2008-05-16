@@ -35,11 +35,19 @@ import com.gargoylesoftware.htmlunit.html.HtmlPreformattedText;
 import com.gargoylesoftware.htmlunit.html.HtmlSelect;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextArea;
+import com.gargoylesoftware.htmlunit.html.xpath.HtmlUnitXPath;
+import com.googlecode.webdriver.By;
 import com.googlecode.webdriver.NoSuchElementException;
+import com.googlecode.webdriver.SearchContext;
 import com.googlecode.webdriver.WebElement;
+import com.googlecode.webdriver.internal.FindsById;
+import com.googlecode.webdriver.internal.FindsByLinkText;
+import com.googlecode.webdriver.internal.FindsByName;
+import com.googlecode.webdriver.internal.FindsByXPath;
 import com.googlecode.webdriver.internal.OperatingSystem;
 
-public class HtmlUnitWebElement implements WebElement {
+public class HtmlUnitWebElement implements WebElement,
+    FindsById, FindsByLinkText, FindsByXPath, FindsByName, SearchContext {
     private final HtmlUnitDriver parent;
     private final HtmlElement element;
     private final static char nbspChar = (char) 160;
@@ -354,6 +362,72 @@ public class HtmlUnitWebElement implements WebElement {
 
     public boolean isDisplayed() {
         return true; // Always assume that the element is displayed
+    }
+    
+    public WebElement findElement(By by) {
+        return by.findElement(this);
+    }
+    
+    public List<WebElement> findElements(By by) {
+        return by.findElements(this);
+    }
+    
+    public WebElement findElementById(String id) {
+        return findElementByXPath("*[@id = '" + id + "']");
+    }
+    
+    public List<WebElement> findElementsById(String id) {
+        return findElementsByXPath("*[@id = '" + id + "']");
+    }
+    
+    public WebElement findElementByXPath(String xpathExpr) {
+        HtmlElement match = (HtmlElement) element.getFirstByXPath(xpathExpr);
+        if (match == null) {
+            throw new NoSuchElementException("Unable to find element with xpath"
+                    + xpathExpr);
+        }
+        return new HtmlUnitWebElement(getParent(), match);
+    }
+    
+    public List<WebElement> findElementsByXPath(String xpathExpr) {
+        List<WebElement> webElements = new ArrayList<WebElement>();
+        List<?> htmlElements = element.getByXPath(xpathExpr);
+        for (Object e : htmlElements) {
+            webElements.add(new HtmlUnitWebElement(getParent(), 
+                    (HtmlElement) e));
+        }
+        return webElements;
+    }
+    
+    public WebElement findElementByLinkText(String linkText) {
+        List<WebElement> elements = findElementsByLinkText(linkText);
+        if (elements.size() == 0) {
+            throw new NoSuchElementException(
+                    "Unable to find element with linkText" + linkText);
+        }
+        return elements.size() > 0 ? elements.get(0) : null;
+    }
+    
+    @SuppressWarnings("unchecked")
+    public List<WebElement> findElementsByLinkText(String linkText) {
+        List<HtmlElement> htmlElements = 
+            (List<HtmlElement>) element.getHtmlElementsByTagName("a");
+        List<WebElement> webElements = new ArrayList<WebElement>();
+        for (HtmlElement e : htmlElements) {
+            if (e.getTextContent().equals(linkText) 
+                    && e.getAttribute("href") != null) {
+                webElements.add(new HtmlUnitWebElement(getParent(), e));
+            }
+        }
+        return webElements;
+    }
+    
+    public WebElement findElementByName(String name) {
+        return findElementByXPath("*[@name = '" + name + "']");
+    }
+
+    public List<WebElement> findElementsByName(String name) {
+        return findElementsByXPath("*[@name = '" + name + "']");
     }
 
     private WebElement findParentForm() {

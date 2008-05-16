@@ -1,7 +1,14 @@
 package com.googlecode.webdriver.firefox;
 
+import com.googlecode.webdriver.By;
+import com.googlecode.webdriver.NoSuchElementException;
+import com.googlecode.webdriver.SearchContext;
 import com.googlecode.webdriver.WebElement;
 import com.googlecode.webdriver.RenderedWebElement;
+import com.googlecode.webdriver.internal.FindsById;
+import com.googlecode.webdriver.internal.FindsByLinkText;
+import com.googlecode.webdriver.internal.FindsByName;
+import com.googlecode.webdriver.internal.FindsByXPath;
 import com.googlecode.webdriver.internal.OperatingSystem;
 
 import java.awt.Point;
@@ -10,7 +17,8 @@ import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FirefoxWebElement implements RenderedWebElement {
+public class FirefoxWebElement implements RenderedWebElement, FindsByXPath,
+        FindsByLinkText, FindsById, FindsByName, SearchContext {
     private final FirefoxDriver parent;
     private final String elementId;
 
@@ -124,7 +132,77 @@ public class FirefoxWebElement implements RenderedWebElement {
         Point destination = element.getLocation();
         dragAndDropBy(destination.x - currentLocation.x, destination.y - currentLocation.y);
     }
+ 
+    public WebElement findElement(By by) {
+        return by.findElement(this);
+    }
 
+    public List<WebElement> findElements(By by) {
+        return by.findElements(this);
+    }
+    
+    public WebElement findElementByXPath(String xpath) {
+        List<WebElement> elements = findElementsByXPath(xpath);
+        if (elements.size() == 0) {
+            throw new NoSuchElementException(
+                    "Unable to find element with xpath " + xpath);
+        }
+        return elements.get(0);
+    }
+    
+    public List<WebElement> findElementsByXPath(String xpath) {
+        String indices = sendMessage(RuntimeException.class, 
+                "findElementsByXPath", xpath);
+        return getElementsFromIndices(indices);
+    }
+
+    public WebElement findElementByLinkText(String linkText) {
+        List<WebElement> elements = findElementsByLinkText(linkText);
+        if (elements.size() == 0) {
+            throw new NoSuchElementException(
+                    "Unable to find element with linkText" + linkText);
+        }
+        return elements.get(0);
+    }
+
+    public List<WebElement> findElementsByLinkText(String linkText) {
+        String indices = sendMessage(RuntimeException.class, 
+                "findElementsByLinkText", linkText);
+        return getElementsFromIndices(indices);
+    }
+    
+    private List<WebElement> getElementsFromIndices(String indices) {
+        List<WebElement> elements = new ArrayList<WebElement>();
+
+        if (indices.length() == 0)
+            return elements;
+
+        String[] ids = indices.split(",");
+        for (String id : ids) {
+            elements.add(new FirefoxWebElement(parent, id));
+        }
+        return elements;
+    }
+    
+    public WebElement findElementById(String id) {
+    	String response = sendMessage(RuntimeException.class, "findElementById", id);
+    	if (response.equals("-1"))
+    		throw new NoSuchElementException("Unable to find element with id" + id);
+    	return new FirefoxWebElement(parent, response);
+    }
+
+    public List<WebElement> findElementsById(String id) {
+    	return findElementsByXPath("*[@id = '" + id + "']");  
+    }
+
+    public WebElement findElementByName(String name) {
+        return findElementByXPath("*[@name = '" + name + "']");
+    }
+
+    public List<WebElement> findElementsByName(String name) {
+        return findElementsByXPath("*[@name = '" + name + "']");
+    }
+    
     private String sendMessage(Class<? extends RuntimeException> throwOnFailure, String methodName, Object... parameters) {
         return parent.sendMessage(throwOnFailure, new Command(parent.context, elementId, methodName, parameters));
     }

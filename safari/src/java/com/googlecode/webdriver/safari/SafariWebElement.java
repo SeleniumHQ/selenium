@@ -1,5 +1,6 @@
 package com.googlecode.webdriver.safari;
 
+import com.googlecode.webdriver.By;
 import com.googlecode.webdriver.WebElement;
 
 import java.util.List;
@@ -87,5 +88,13 @@ public class SafariWebElement implements WebElement {
 
     public List<WebElement> getChildrenOfType(String tagName) {
         throw new UnsupportedOperationException("getChildrenOfType");
+    }
+
+    public WebElement findElement(By by) {
+        throw new UnsupportedOperationException("To be implemented");
+    }
+
+    public List<WebElement> findElements(By by) {
+        throw new UnsupportedOperationException("To be implemented");
     }
 }

@@ -385,3 +385,66 @@ FirefoxDriver.prototype.dragAndDrop = function(respond, movementString) {
     respond.response = finalLoc.x + "," + finalLoc.y;
     respond.send();
 };
+
+FirefoxDriver.prototype.findElementsByXPath = function (respond, xpath) {
+    var element = Utils.getElementAt(respond.elementId, this.context);
+    var indices = Utils.findElementsByXPath(xpath, element, this.context)
+    var response = ""
+    for (var i = 0; i < indices.length; i++) {
+      response += indices[i] + ",";
+    }
+    response = response.substring(0, response.length - 1);
+
+    respond.context = this.context;
+    respond.response = response;
+    respond.send();
+};
+
+FirefoxDriver.prototype.findElementsByLinkText = function (respond, linkText) {
+    var element = Utils.getElementAt(respond.elementId, this.context);
+    var children = element.getElementsByTagName("a");
+    var response = "";
+    for (var i = 0; i < children.length; i++) {
+      if (linkText == Utils.getText(children[i])) {
+        response += Utils.addToKnownElements(children[i], this.context) + ",";
+      }
+    }
+    response = response.substring(0, response.length - 1);
+    
+    respond.context = this.context;
+    respond.response = response;
+    respond.send();
+};
+
+FirefoxDriver.prototype.findElementById = function(respond, id) {
+	var doc = Utils.getDocument(this.context);
+	var parentElement = Utils.getElementAt(respond.elementId, this.context);
+    var element = doc.getElementById(id);
+    var isChild = false;
+    
+    if (element) {
+    	var tmp = element;
+    	while (tmp != null) {
+    		if (tmp == parentElement) {
+    			isChild = true;
+	    		break;
+	    	}
+	    	tmp = tmp.parentNode	
+	    }
+		if (isChild) {
+	        respond.response = Utils.addToKnownElements(element, this.context);
+		} else {
+			//The first match is not a child of the current node, fall back
+			//to xpath to see if there are any children nodes with that id
+			elements = Utils.findElementsByXPath("*[@id = '" + id + "']", parentElement, this.context)
+			if (elements.length > 0) {
+				respond.response = elements[0];
+			} else {
+    			respond.response = "-1";
+			}
+		}
+    } else {
+    	respond.response = "-1";
+    }
+    respond.send();
+};

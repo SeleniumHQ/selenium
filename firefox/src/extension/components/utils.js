@@ -363,3 +363,16 @@ Utils.getElementLocation = function(element, context) {
     dump("2: "+x + ", " + y + "\n");
     return location;
 };
+
+Utils.findElementsByXPath = function (xpath, contextNode, context) {
+    var doc = Utils.getDocument(context);
+    var result = doc.evaluate(xpath, contextNode, null, Components.interfaces.nsIDOMXPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
+    var indices = [];
+    var element = result.iterateNext();
+    while (element) {
+        var index = Utils.addToKnownElements(element, context);
+        indices.push(index);
+        element = result.iterateNext();
+    }
+    return indices;
+};

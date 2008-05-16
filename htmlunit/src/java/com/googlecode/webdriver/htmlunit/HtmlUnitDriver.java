@@ -48,6 +48,7 @@ import com.googlecode.webdriver.By;
 import com.googlecode.webdriver.Cookie;
 import com.googlecode.webdriver.NoSuchElementException;
 import com.googlecode.webdriver.NoSuchFrameException;
+import com.googlecode.webdriver.SearchContext;
 import com.googlecode.webdriver.Speed;
 import com.googlecode.webdriver.WebDriver;
 import com.googlecode.webdriver.WebElement;
@@ -57,7 +58,8 @@ import com.googlecode.webdriver.internal.FindsByName;
 import com.googlecode.webdriver.internal.FindsByXPath;
 import com.googlecode.webdriver.internal.ReturnedCookie;
 
-public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText, FindsByXPath, FindsByName {
+public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText, 
+		FindsByXPath, FindsByName, SearchContext {
     private WebClient webClient;
     private WebWindow currentWindow;
     /** window name => history. */
@@ -159,11 +161,11 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText, Fi
     }
 
     public WebElement findElement(By by) {
-        return by.findElement(this);
+        return by.findElement((SearchContext)this);
     }
 
     public List<WebElement> findElements(By by) {
-        return by.findElements(this);
+        return by.findElements((SearchContext)this);
     }
 
     public String getPageSource() {

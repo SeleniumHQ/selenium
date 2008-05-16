@@ -5,6 +5,7 @@ import com.googlecode.webdriver.By;
 import com.googlecode.webdriver.Cookie;
 import com.googlecode.webdriver.NoSuchElementException;
 import com.googlecode.webdriver.NoSuchFrameException;
+import com.googlecode.webdriver.SearchContext;
 import com.googlecode.webdriver.Speed;
 import com.googlecode.webdriver.WebDriver;
 import com.googlecode.webdriver.WebElement;
@@ -47,7 +48,7 @@ import java.util.Set;
  * When the driver starts, it will make a copy of the profile it is using, rather than using that profile directly.
  * This allows multiple instances of firefox to be started.
  */
-public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, FindsByXPath {
+public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, FindsByXPath, SearchContext {
 	public static final String DEFAULT_PROFILE = "WebDriver";
 	public static final int DEFAULT_PORT = 7055;
 
@@ -151,13 +152,12 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
         return true;
     }
 
-
   public List<WebElement> findElements(By by) {
-    return by.findElements(this);
+    return by.findElements((SearchContext)this);
   }
 
   public WebElement findElement(By by) {
-    return by.findElement(this);
+    return by.findElement((SearchContext)this);
   }
 
   public WebElement findElementById(String using) {

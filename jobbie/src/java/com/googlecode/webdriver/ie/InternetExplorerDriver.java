@@ -32,6 +32,7 @@ import com.googlecode.webdriver.Alert;
 import com.googlecode.webdriver.By;
 import com.googlecode.webdriver.Cookie;
 import com.googlecode.webdriver.NoSuchElementException;
+import com.googlecode.webdriver.SearchContext;
 import com.googlecode.webdriver.Speed;
 import com.googlecode.webdriver.WebDriver;
 import com.googlecode.webdriver.WebElement;
@@ -41,7 +42,8 @@ import com.googlecode.webdriver.internal.FindsByName;
 import com.googlecode.webdriver.internal.FindsByXPath;
 import com.googlecode.webdriver.internal.ReturnedCookie;
 
-public class InternetExplorerDriver implements WebDriver, FindsById, FindsByLinkText, FindsByName, FindsByXPath {
+public class InternetExplorerDriver implements WebDriver, FindsById, 
+		FindsByLinkText, FindsByName, FindsByXPath, SearchContext {
     private long iePointer; // Used by the native code to keep track of the IE instance
     private static boolean comStarted;
 
@@ -77,11 +79,11 @@ public class InternetExplorerDriver implements WebDriver, FindsById, FindsByLink
 
 
     public List<WebElement> findElements(By by) {
-        return by.findElements(this);
+        return by.findElements((SearchContext)this);
     }
 
     public WebElement findElement(By by) {
-        return by.findElement(this);
+        return by.findElement((SearchContext)this);
     }
 
     public WebElement findElementById(String using) {

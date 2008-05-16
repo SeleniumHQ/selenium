@@ -1,5 +1,6 @@
 package com.googlecode.webdriver.ie;
 
+import com.googlecode.webdriver.By;
 import com.googlecode.webdriver.WebElement;
 import com.googlecode.webdriver.RenderedWebElement;
 
@@ -78,4 +79,13 @@ public class InternetExplorerElement implements RenderedWebElement {
     public void dragAndDropOn(RenderedWebElement element) {
         throw new UnsupportedOperationException();
     }
+
+    public WebElement findElement(By by) {
+        throw new UnsupportedOperationException();
+    }
+
+    public List<WebElement> findElements(By by) {
+        throw new UnsupportedOperationException();
+    }
+
 }

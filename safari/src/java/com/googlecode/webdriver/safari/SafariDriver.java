@@ -1,6 +1,7 @@
 package com.googlecode.webdriver.safari;
 
 import com.googlecode.webdriver.By;
+import com.googlecode.webdriver.SearchContext;
 import com.googlecode.webdriver.WebDriver;
 import com.googlecode.webdriver.WebElement;
 import com.googlecode.webdriver.NoSuchElementException;
@@ -19,7 +20,8 @@ import java.util.HashSet;
 import java.net.URL;
 import java.net.MalformedURLException;
 
-public class SafariDriver implements WebDriver, FindsByLinkText, FindsById, FindsByXPath {
+public class SafariDriver implements WebDriver, FindsByLinkText, FindsById, 
+		FindsByXPath, SearchContext {
     protected final static String ELEMENTS = "document.webdriverElements";
     private AppleScript appleScript;
 
@@ -52,11 +54,11 @@ public class SafariDriver implements WebDriver, FindsByLinkText, FindsById, Find
     }
 
     public List<WebElement> findElements(By by) {
-        return by.findElements(this);
+        return by.findElements((SearchContext)this);
     }
 
     public WebElement findElement(By by) {
-        return by.findElement(this);
+        return by.findElement((SearchContext)this);
     }
 
     public String getPageSource() {
