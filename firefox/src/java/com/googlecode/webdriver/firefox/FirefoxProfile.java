@@ -15,6 +15,7 @@ import java.io.Writer;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
+import java.lang.reflect.Method;
 
 public class FirefoxProfile {
     private static final String EXTENSION_NAME = "fxdriver@googlecode.com";
@@ -49,9 +50,9 @@ public class FirefoxProfile {
             throw new RuntimeException(String.format("Cannot create custom profile extensions directory: %s", extensionsDir));
     }
 
-    public void addWebDriverExtensionIfNeeded() {
+    public void addWebDriverExtensionIfNeeded(boolean forceCreation) throws IOException {
         File extensionLocation = new File(extensionsDir, EXTENSION_NAME);
-        if (extensionLocation.exists())
+        if (!forceCreation && extensionLocation.exists())
             return;
 
         String home = System.getProperty("webdriver.firefox.development");
@@ -68,16 +69,18 @@ public class FirefoxProfile {
         throw new UnsupportedOperationException("We do not currently support installing extensions (including the WebDriver extension)");
     }
 
-    public void installDevelopmentExtension(String home) {
+    public void installDevelopmentExtension(String home) throws IOException {
         if (!home.endsWith("extension"))
             throw new RuntimeException("The given source directory does not look like a source " +
                     "directory for the extension: " + home);
 
-        extensionsDir.mkdirs();
+      if (!createDir(extensionsDir))
+        throw new IOException("Cannot create extensions directory: " + extensionsDir.getAbsolutePath());
 
-        File writeTo = new File(extensionsDir, EXTENSION_NAME);
-        if (writeTo.exists()) {
-            writeTo.delete();
+      File writeTo = new File(extensionsDir, EXTENSION_NAME);
+        if (writeTo.exists() && !delete(writeTo)) {
+            throw new IOException("Cannot delete existing extensions directory: " +
+                                  extensionsDir.getAbsolutePath());
         }
 
         FileWriter writer = null;
@@ -91,8 +94,47 @@ public class FirefoxProfile {
         }
     }
 
+  protected boolean delete(File deleteMe) {
+    boolean deleted = true;
 
-    public File getProfileDir() {
+    if (deleteMe.isDirectory()) {
+      for (File child : deleteMe.listFiles()) {
+        deleted &= delete(child);
+      }
+    }
+
+    return deleted && deleteMe.delete();
+  }
+
+  protected boolean createDir(File dir) throws IOException {
+    if ((dir.exists() || dir.mkdirs()) && dir.canWrite())
+      return true;
+
+    if (dir.exists()) {
+      setWritable(dir);
+      return dir.canWrite();
+    }
+
+    // Iterate through the parent directories until we find that exists,
+    // then sink down.
+    return createDir(dir.getParentFile());
+  }
+
+  protected void setWritable(File dir) throws IOException {
+    // This will work on Java 6+
+    Method setWritable = null;
+    try {
+      setWritable = File.class.getMethod("setWritable", Boolean.class);
+      setWritable.invoke(dir, Boolean.TRUE);
+    } catch (NoSuchMethodException e) {
+      throw new IOException("Cannot make directory writable: " + dir.getAbsolutePath());
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+
+  public File getProfileDir() {
         return profileDir;
     }
 
@@ -221,8 +263,8 @@ public class FirefoxProfile {
         return macAndLinuxLockFile.exists() || windowsLockFile.exists();
     }
 
-    public File init() {
-        addWebDriverExtensionIfNeeded();
+    public File init() throws IOException {
+        addWebDriverExtensionIfNeeded(false);
         return profileDir;
     }
 

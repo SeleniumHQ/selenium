@@ -25,6 +25,7 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.File;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -86,8 +87,12 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
     }
 
     public FirefoxDriver(FirefoxProfile profile, int port) {
+      try {
         profile.init();
-        prepareEnvironment();
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+      prepareEnvironment();
 
         extension = connectTo(profile, "localhost", port);
 

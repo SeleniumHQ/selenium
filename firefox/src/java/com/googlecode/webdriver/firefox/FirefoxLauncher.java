@@ -18,7 +18,7 @@ public class FirefoxLauncher {
         else if (args.length == 1)
             launcher.createBaseWebDriverProfile(args[0]);
         else
-        	launcher.createBaseWebDriverProfile(args[0], Integer.parseInt(args[1]));
+            launcher.createBaseWebDriverProfile(args[0], Integer.parseInt(args[1]));
     }
 
     public void createBaseWebDriverProfile() throws IOException {
@@ -50,7 +50,7 @@ public class FirefoxLauncher {
         FirefoxProfile profile = allProfiles.getProfile(profileName);
 
         System.out.println("Attempting to install the WebDriver extension");
-        profile.addWebDriverExtensionIfNeeded();
+        profile.addWebDriverExtensionIfNeeded(true);
 
         System.out.println("Updating user preferences with common, useful settings");
         profile.setPort(port);
