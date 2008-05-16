@@ -532,7 +532,12 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         } catch (MalformedURLException e) {
             throw new RuntimeException("Malformed URL <" + urlString + ">, ", e);
         }
-        File outputFile = FileUtils.getFileUtils().createTempFile("se-",".file",null);
+        String fileType = ".file";
+        int fileTypeIndex = url.getFile().lastIndexOf(".");
+        if (fileTypeIndex != -1) {
+          fileType = url.getFile().substring(fileTypeIndex);
+        }
+        File outputFile = FileUtils.getFileUtils().createTempFile("se-", fileType, null);
         outputFile.deleteOnExit(); // to be on the safe side.
         Project p = new Project();
         p.addBuildListener(new AntJettyLoggerBuildListener(logger));
