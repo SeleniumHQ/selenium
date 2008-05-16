@@ -35,11 +35,11 @@ public class ByTest extends MockObjectTestCase {
     // TODO: why does jmock choke on these tests?
   }
 
-  private interface AllDriver extends WebDriver, FindsById, FindsByLinkText, FindsByName, FindsByXPath {
+  private interface AllDriver extends FindsById, FindsByLinkText, FindsByName, FindsByXPath, SearchContext {
     // Place holder
   }
 
-  private interface OnlyXPath extends WebDriver, FindsByXPath {
+  private interface OnlyXPath extends FindsByXPath, SearchContext {
     // Place holder
   }
 }

@@ -1,6 +1,7 @@
 package com.googlecode.webdriver.support.events;
 
 import com.googlecode.webdriver.*;
+
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Set;
@@ -185,6 +186,16 @@ public class EventFiringWebDriver implements WebDriver {
             }
             return result;
         }
+
+        public WebElement findElement(By by) {
+            throw new UnsupportedOperationException();
+        }
+
+        public List<WebElement> findElements(By by) {
+            throw new UnsupportedOperationException();
+        }
+        
+        
     }
 
     private class EventFiringNavigation implements Navigation {
