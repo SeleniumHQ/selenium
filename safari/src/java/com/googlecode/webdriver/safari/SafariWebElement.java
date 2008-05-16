@@ -2,10 +2,11 @@ package com.googlecode.webdriver.safari;
 
 import com.googlecode.webdriver.By;
 import com.googlecode.webdriver.WebElement;
+import com.googlecode.webdriver.SearchContext;
 
 import java.util.List;
 
-public class SafariWebElement implements WebElement {
+public class SafariWebElement implements WebElement, SearchContext {
     private final int index;
     private final AppleScript appleScript;
     private final SafariDriver parent;

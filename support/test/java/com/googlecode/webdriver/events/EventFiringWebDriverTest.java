@@ -4,6 +4,7 @@ import com.googlecode.webdriver.By;
 import com.googlecode.webdriver.WebDriver;
 import com.googlecode.webdriver.WebDriver.Navigation;
 import com.googlecode.webdriver.WebElement;
+import com.googlecode.webdriver.SearchContext;
 import com.googlecode.webdriver.support.events.AbstractWebDriverEventListener;
 import com.googlecode.webdriver.support.events.EventFiringWebDriver;
 import org.jmock.Expectations;
@@ -120,8 +121,8 @@ public class EventFiringWebDriverTest extends MockObjectTestCase {
         }});
 
         EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver).register(new AbstractWebDriverEventListener() {
-            public void beforeFindBy(By by, WebDriver driver) { log.append("beforeFindBy ").append(by).append("\n"); }
-            public void afterFindBy(By by, WebDriver driver) { log.append("afterFindBy ").append(by).append("\n"); }
+            public void beforeFindBy(By by, WebDriver context) { log.append("beforeFindBy ").append(by).append("\n"); }
+            public void afterFindBy(By by, WebDriver context) { log.append("afterFindBy ").append(by).append("\n"); }
         });
 
         testedDriver.findElement(By.id("foo"));

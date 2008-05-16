@@ -3,13 +3,14 @@ package com.googlecode.webdriver.ie;
 import com.googlecode.webdriver.By;
 import com.googlecode.webdriver.WebElement;
 import com.googlecode.webdriver.RenderedWebElement;
+import com.googlecode.webdriver.SearchContext;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.awt.Dimension;
 import java.awt.Point;
 
-public class InternetExplorerElement implements RenderedWebElement {
+public class InternetExplorerElement implements RenderedWebElement, SearchContext {
     @SuppressWarnings("unused")
     private long nodePointer;
 

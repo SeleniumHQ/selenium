@@ -16,7 +16,7 @@ public class ByTest extends MockObjectTestCase {
     }});
 
     By by = By.name("cheese");
-    by.findElement(driver);
+    by.findElement((SearchContext) driver);
   }
 
   public void xtestShouldUseXPathToFindByNameIfDriverDoesNotImplementFindsByName() {
@@ -28,11 +28,7 @@ public class ByTest extends MockObjectTestCase {
 
     By by = By.name("cheese");
 
-    by.findElement(driver);
-  }
-
-  public void testNothing() {
-    // TODO: why does jmock choke on these tests?
+    by.findElement((SearchContext) driver);
   }
 
   private interface AllDriver extends FindsById, FindsByLinkText, FindsByName, FindsByXPath, SearchContext {
@@ -40,6 +36,5 @@ public class ByTest extends MockObjectTestCase {
   }
 
   private interface OnlyXPath extends FindsByXPath, SearchContext {
-    // Place holder
   }
 }

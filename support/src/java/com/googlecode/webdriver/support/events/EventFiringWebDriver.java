@@ -188,14 +188,22 @@ public class EventFiringWebDriver implements WebDriver {
         }
 
         public WebElement findElement(By by) {
-            throw new UnsupportedOperationException();
+            dispatcher.beforeFindBy(by, element);
+            WebElement temp = driver.findElement(by);
+            dispatcher.afterFindBy(by, element);
+            return new EventFiringWebElement(temp);
         }
 
         public List<WebElement> findElements(By by) {
-            throw new UnsupportedOperationException();
+            dispatcher.beforeFindBy(by, element);
+            List<WebElement> temp = element.findElements(by);
+            dispatcher.afterFindBy(by, element);
+            List<WebElement> result = new ArrayList<WebElement>(temp.size());
+            for (WebElement element : temp) {
+                result.add(new EventFiringWebElement(element));
+            }
+            return result;
         }
-        
-        
     }
 
     private class EventFiringNavigation implements Navigation {
