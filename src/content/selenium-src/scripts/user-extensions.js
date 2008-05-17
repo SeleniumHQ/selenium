@@ -35,4 +35,3 @@ if (testRunnerConfig.userExtensionsURL) {
         document.write('<script src="' + url + '" language="JavaScript" type="text/javascript"></script>');
     }
 }
-

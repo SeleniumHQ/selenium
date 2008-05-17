@@ -14,7 +14,7 @@
           setTimeout(initEditor, 100);
           return;
         }
-	      var MozillaBrowserBot = window.top.MozillaBrowserBot;
+	      var MozillaBrowserBot = window.top.MozillaBrowserBot || window.top.wrappedJSObject.MozillaBrowserBot;
 	      var originalModify = MozillaBrowserBot.prototype.modifyWindowToRecordPopUpDialogs;
         MozillaBrowserBot.SeleniumIDE = SeleniumIDE;
 	      MozillaBrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify, browserBot) {

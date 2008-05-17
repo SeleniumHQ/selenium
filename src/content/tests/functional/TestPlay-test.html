@@ -38,14 +38,17 @@ new Test.Unit.Runner({
     editor.app.setTestCaseWithNewSuite(testCase);
     editor.app.setBaseURL("http://www.openqa.org/");
     var testWindow = editor.showInBrowser("about:blank", true);
+    var complete = false;
     wait(1000, function() {
-    editor.selDebugger.start();
+            editor.selDebugger.start(function(failed) {
+                    assert(!failed);
+                    complete = true;
+                });
     waitFor(function() {
-            return !editor.getTestCase().debugContext.started;
+            return complete;
         }.bind(this),
         function() {
             testWindow.close();
-            assert(!editor.getTestCase().debugContext.failed);
         }.bind(this));
     });
   }}

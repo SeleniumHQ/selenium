@@ -26,21 +26,30 @@ Recorder.WINDOW_RECORDER_PROPERTY = "_Selenium_IDE_Recorder";
 
 Recorder.log = new Log("Recorder");
 
+Recorder.prototype.getWrappedWindow = function() {
+    if (this.window.wrappedJSObject) {
+        return this.window.wrappedJSObject;
+    } else {
+        return this.window;
+    }
+}
+
 Recorder.prototype.reattachWindowMethods = function() {
+    var window = this.getWrappedWindow();
 	//this.log.debug("reattach");
 	if (!this.windowMethods) {
-		this.originalOpen = this.window.open;
+		this.originalOpen = window.open;
 	}
 	this.windowMethods = {};
 	['alert', 'confirm', 'prompt', 'open'].forEach(function(method) {
-			this.windowMethods[method] = this.window[method];
+			this.windowMethods[method] = window[method];
 		}, this);
 	var self = this;
-	this.window.alert = function(alert) {
+	window.alert = function(alert) {
 		self.windowMethods['alert'].call(self.window, alert);
         self.record('assertAlert', alert);
 	}
-	this.window.confirm = function(message) {
+	window.confirm = function(message) {
 		var result = self.windowMethods['confirm'].call(self.window, message);
 		if (!result) {
 			self.record('chooseCancelOnNextConfirmation', null, null, true);
@@ -48,13 +57,13 @@ Recorder.prototype.reattachWindowMethods = function() {
         self.record('assertConfirmation', message);
 		return result;
 	}
-	this.window.prompt = function(message) {
+	window.prompt = function(message) {
 		var result = self.windowMethods['prompt'].call(self.window, message);
 		self.record('answerOnNextPrompt', result, null, true);
         self.record('assertPrompt', message);
 		return result;
 	}
-	this.window.open = function(url, windowName, windowFeatures, replaceFlag) {
+	window.open = function(url, windowName, windowFeatures, replaceFlag) {
 		if (self.openCalled) {
 			// stop the recursion called by modifyWindowToRecordPopUpDialogs
 			return self.originalOpen.call(self.window, url, windowName, windowFeatures, replaceFlag);
@@ -134,7 +143,7 @@ Recorder.prototype.detach = function() {
 	}
 	delete this.eventListeners;
 	for (method in this.windowMethods) {
-		this.window[method] = this.windowMethods[method];
+		this.getWrappedWindow()[method] = this.windowMethods[method];
 	}
 }
 
@@ -175,6 +184,9 @@ Recorder.prototype.deregister = function(observer) {
 		this.detach();
         this.log.info("p=" + this.window[Recorder.WINDOW_RECORDER_PROPERTY]);
         this.window[Recorder.WINDOW_RECORDER_PROPERTY] = undefined;
+        if (this.window.wrappedJSObject) {
+            this.window.wrappedJSObject[Recorder.WINDOW_RECORDER_PROPERTY] = undefined;
+        }
         // Firefox 3 (beta 5) throws "Security Manager vetoed action" when we use delete operator like this:
 		//delete this.window[Recorder.WINDOW_RECORDER_PROPERTY];
 	}
@@ -247,6 +259,10 @@ Recorder.register = function(observer, window) {
 	if (!recorder) {
 		recorder = new Recorder(window);
 		window[Recorder.WINDOW_RECORDER_PROPERTY] = recorder;
+        if (window.wrappedJSObject) {
+            // adding recorder to wrappedJSObject to make it visible from functional test of Selenium IDE itself
+            window.wrappedJSObject[Recorder.WINDOW_RECORDER_PROPERTY] = recorder;
+        }
 	}
 	recorder.observers.push(observer);
 	this.log.debug("register: observers.length=" + recorder.observers.length);

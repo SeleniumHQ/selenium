@@ -19,7 +19,7 @@ import com.thoughtworks.selenium.DefaultSelenium;
 import com.thoughtworks.selenium.Selenium;
 
 public class UnitTests extends TestCase {
-    private static final String TEST_URL = "chrome://selenium-ide/content/jsunit/testRunner.html?testPage=selenium-ide/content/tests/unit/TestSuite.html" +
+    private static final String TEST_URL = "chrome://selenium-ide-testrunner/content/jsunit/testRunner.html?testPage=selenium-ide-testrunner/content/tests/unit/TestSuite.html" +
         "&autoRun=true&submitresults=http://localhost:" + RemoteControlConfiguration.getDefaultPort() + "/jsunit/acceptor";
     private static final String PROFILE_TEMPLATE_DIR = "target/profile-template";
 
