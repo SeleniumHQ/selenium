@@ -6,7 +6,7 @@
     </target>
 
     <target name="doc">
-        <condition property="rdoc.executable" value="rdoc.bat">
+        <condition property="rake.executable" value="rake.bat">
             <os family="windows"/>
         </condition>
         <property name="rake.executable" value="rake"/>

@@ -120,9 +120,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
+                <version>2.4.3</version>
             </plugin>
         </plugins>
         <pluginManagement>
@@ -138,24 +136,6 @@
         </pluginManagement>
     </build>
     <profiles>
-        <profile>
-            <id>test</id>
-            <activation>
-                <property>
-                    <name>!notest</name>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <skip>false</skip>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
         <profile>
             <id>core</id>
             <properties>

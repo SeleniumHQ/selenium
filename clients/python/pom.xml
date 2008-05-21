@@ -53,7 +53,7 @@
             <id>test</id>
             <activation>
                 <property>
-                    <name>!notest</name>
+                    <name>!skipTests</name>
                 </property>
             </activation>
             <build>
