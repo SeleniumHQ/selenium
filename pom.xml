@@ -161,7 +161,7 @@
             <id>test</id>
             <activation>
                 <property>
-                    <name>!notest</name>
+                    <name>!skipTests</name>
                 </property>
             </activation>
             <build>
@@ -247,7 +247,7 @@
             <id>integration-test-firefox</id>
             <activation>
                 <property>
-                    <name>!notest</name>
+                    <name>!skipTests</name>
                 </property>
             </activation>
             <properties>
