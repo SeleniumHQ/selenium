@@ -35,3 +35,27 @@ if (testRunnerConfig.userExtensionsURL) {
         document.write('<script src="' + url + '" language="JavaScript" type="text/javascript"></script>');
     }
 }
+
+HtmlTestSuiteFrame.prototype._setLocation =
+HtmlTestFrame.prototype._setLocation =
+SeleniumFrame.prototype._setLocation = function(location) {
+    // Using frame.src because location.replace fails in Firefox 3 chrome
+    var isChrome = browserVersion.isChrome || false;
+    var isHTA = browserVersion.isHTA || false;
+    location += (location.indexOf("?") == -1 ? "?" : "&");
+    location += "thisIsChrome=" + isChrome + "&thisIsHTA=" + isHTA; 
+    this.frame.src = location;
+}
+
+MozillaBrowserBot.prototype.modifyWindowToRecordPopUpDialogsWithoutRecorder = MozillaBrowserBot.prototype.modifyWindowToRecordPopUpDialogs;
+
+MozillaBrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify, browserBot) {
+    this.modifyWindowToRecordPopUpDialogsWithoutRecorder(windowToModify, browserBot);
+
+    // modifyWindowToRecordPopUpDialogs may overwrite functions registered by the recorder,
+    // so we are registering them again here
+    var recorder = SeleniumIDE.Loader.getRecorder(windowToModify);
+    if (recorder) {
+        recorder.reattachWindowMethods();
+    }
+}

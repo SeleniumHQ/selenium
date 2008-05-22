@@ -9,19 +9,11 @@
       }
 
       function initEditor() {
-	      var editor = SeleniumIDE.Loader.getTopEditor();
+        var editor = SeleniumIDE.Loader.getTopEditor();
         if (!editor) {
           setTimeout(initEditor, 100);
           return;
         }
-	      var MozillaBrowserBot = window.top.MozillaBrowserBot || window.top.wrappedJSObject.MozillaBrowserBot;
-	      var originalModify = MozillaBrowserBot.prototype.modifyWindowToRecordPopUpDialogs;
-        MozillaBrowserBot.SeleniumIDE = SeleniumIDE;
-	      MozillaBrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify, browserBot) {
-		      originalModify.call(this, windowToModify, browserBot);
-		      MozillaBrowserBot.SeleniumIDE.Loader.getRecorder(windowToModify).reattachWindowMethods();
-	      }
-//        window.top.SeleniumIDE = SeleniumIDE;
         document.getElementById("status").innerHTML = "OK";
       }
     </script>

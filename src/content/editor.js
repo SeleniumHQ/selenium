@@ -637,7 +637,15 @@ Editor.prototype.playback = function(newWindow, resultCallback) {
 	this.setRecordingEnabled(false);
 
 	this.loadTestRunner = true;
-    this.testRunnerResultCallback = resultCallback;
+    if (resultCallback) {
+        var self = this;
+        this.testRunnerResultCallback = function(result, window) {
+            self.testRunnerResultCallback = null;
+            return resultCallback.call(self, result, window);
+        }
+    } else {
+        this.testRunnerResultCallback = null;
+    }
     var auto = resultCallback != null;
 
     var extensionsURLs = ExtensionsLoader.getURLs(

@@ -89,6 +89,8 @@
       <arg value="${build}/results.html" />
       <arg value="-firefoxProfileTemplate" />
       <arg value="${profile.template.dir}" />
+      <arg value="-userExtensions" />
+      <arg value="content/selenium-src/scripts/user-extensions.js" />
     </java>
   </target>
 
