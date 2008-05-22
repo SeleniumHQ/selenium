@@ -642,6 +642,8 @@ function RollupManager()
     this.init();
 }
 
+RollupManager.getInstance = function() { return new RollupManager(); }
+
 
 
 /**
@@ -2069,6 +2071,8 @@ function UIMap()
         return stubs;
     }
 }
+
+UIMap.getInstance = function() { return new UIMap(); }
 
 
 
