@@ -24,21 +24,22 @@ module Selenium
         tokens = []
         escape = false
         csv.split(//).each do |letter|
-            if escape
-                token = token + letter
-                escape = false
-                next
-            end
-            if (letter == '\\')
-                escape = true
-            elsif (letter == ',')
-                tokens.push(token)
-                token = ""
+          if escape
+            token += letter
+            escape = false
+            next
+          end
+          case letter
+            when '\\'
+              escape = true
+            when ','
+              tokens << token
+              token = ""
             else
-                token = token + letter
-            end
+              token += letter
+          end
         end
-        tokens.push(token)
+        tokens << token
         return tokens
       end
 

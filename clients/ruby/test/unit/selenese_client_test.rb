@@ -7,7 +7,25 @@ unit_tests do
     client.expects(:do_command).with(:a_verb, :some_args).returns("A String")
     assert_equal "A String", client.get_string(:a_verb, :some_args)
   end
-  
+
+  test "get_string_parses the command response as a CSV row" do
+    client = Class.new { include Selenium::Client::SeleneseClient }.new
+    client.expects(:do_command).with(:a_verb, :some_args).returns("One,Two,Three")
+    assert_equal ["One", "Two", "Three"], client.get_string_array(:a_verb, :some_args)
+  end
+
+  test "get_string_parses the command response preserve spaces" do
+    client = Class.new { include Selenium::Client::SeleneseClient }.new
+    client.expects(:do_command).with(:a_verb, :some_args).returns(" One , Two & Three ")
+    assert_equal [" One ", " Two & Three "], client.get_string_array(:a_verb, :some_args)
+  end
+
+  test "get_string_parses ignore commas escaped with a backspace" do
+    client = Class.new { include Selenium::Client::SeleneseClient }.new
+    client.expects(:do_command).with(:a_verb, :some_args).returns("One,Two\\,Three")
+    assert_equal ["One", "Two,Three"], client.get_string_array(:a_verb, :some_args)
+  end
+    
   test "parse_boolean_value returns true when string is true" do
     client = Class.new { include Selenium::Client::SeleneseClient }.new
     assert_equal true, client.send(:parse_boolean_value, "true")
