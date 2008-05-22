@@ -68,7 +68,21 @@
 	</dependencies>
 
 	<build>
-		<pluginManagement>
+        <plugins>
+            <!-- See http://maven.apache.org/plugins/maven-source-plugin -->
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+        <pluginManagement>
 			<plugins>
 				<!-- See http://maven.apache.org/plugins/maven-compiler-plugin -->
 				<plugin>
