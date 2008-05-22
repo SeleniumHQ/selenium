@@ -96,12 +96,13 @@ class selenium:
 
     def do_command(self, verb, args):
         conn = httplib.HTTPConnection(self.host, self.port)
-        commandString = u'/selenium-server/driver/?cmd=' + urllib.quote_plus(unicode(verb).encode('utf-8'))
+        body = u'cmd=' + urllib.quote_plus(unicode(verb).encode('utf-8'))
         for i in range(len(args)):
-            commandString = commandString + '&' + unicode(i+1) + '=' + urllib.quote_plus(unicode(args[i]).encode('utf-8'))
+            body += '&' + unicode(i+1) + '=' + urllib.quote_plus(unicode(args[i]).encode('utf-8'))
         if (None != self.sessionId):
-            commandString = commandString + "&sessionId=" + unicode(self.sessionId)
-        conn.request("GET", commandString)
+            body += "&sessionId=" + unicode(self.sessionId)
+        headers = {"Content-Type": "application/x-www-form-urlencoded; charset=utf-8"}
+        conn.request("POST", "/selenium-server/driver/", body, headers)
     
         response = conn.getresponse()
         #print response.status, response.reason
