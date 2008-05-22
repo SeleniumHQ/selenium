@@ -1,33 +1,21 @@
 module Selenium
   module Client
 
+    HTTP_HEADERS = { 'Content-Type' => 'application/x-www-form-urlencoded; charset=utf-8' }
+    
     module SeleneseClient
+      attr_reader :session_id
   
       def do_command(verb, args)
         timeout(@timeout) do
-          http = Net::HTTP.new(@server_host, @server_port)
-          data = 'cmd=' + CGI::escape(verb)
-          args.length.times do |i|
-              arg_num = (i+1).to_s
-              data += '&' + arg_num + '=' + CGI::escape(args[i].to_s)
-          end
-          if @session_id != nil
-              data += '&sessionId=' + @session_id.to_s
-          end
-          #print "Requesting --->" + command_string + "\n"
-          headers = { 'Content-Type' => 'application/x-www-form-urlencoded; charset=utf-8' }
-          response = http.post('/selenium-server/driver/', data, headers)
-          #print "RESULT: " + response.body + "\n\n"
-          if (response.body[0..1] != "OK")
-              raise SeleniumCommandError, response.body
-          end
-          return response.body
+          status, response = http_post(http_request_for(verb, args))
+          raise SeleniumCommandError, response.body unless status == "OK"          
+          response
         end
       end
       
       def get_string(verb, args)
-        result = do_command(verb, args)
-        return result[3..result.length]
+        do_command(verb, args)
       end
     
       def get_string_array(verb, args)
@@ -65,32 +53,42 @@ module Selenium
       end
 
       def get_boolean(verb, args)
-        boolstr = get_string(verb, args)
-        if ("true" == boolstr)
-            return true
-        end
-        if ("false" == boolstr)
-            return false
-        end
-        raise ValueError, "result is neither 'true' nor 'false': " + boolstr
+        parse_boolean_value get_string(verb, args)
       end
     
       def get_boolean_array(verb, args)
-        boolarr = get_string_array(verb, args)
-        boolarr.length.times do |i|
-          if ("true" == boolstr)
-            boolarr[i] = true
-            next
-          end
-          if ("false" == boolstr)
-            boolarr[i] = false
-            next
-          end
-          raise ValueError, "result is neither 'true' nor 'false': " + boolarr[i]
-        end
-        return boolarr
+        get_string_array(verb, args).collect {|value| parse_boolean_value(value)}
       end
+      
+      protected
+
+      def parse_boolean_value(value)
+        if ("true" == value)
+            return true
+        elsif ("false" == value)
+            return false
+        end
+        raise ProtocolError, "Invalid Selenese boolean value that is neither 'true' nor 'false': got '#{value}'"
+      end
+
+      def http_request_for(verb, args)
+        data = "cmd=#{CGI::escape(verb)}"
+        args.each_with_index do |arg, index|
+          data << "&#{index.succ}=#{CGI::escape(arg.to_s)}"
+        end
+        data << "&sessionId=#{session_id}" unless session_id.nil?
+        data
+      end
+            
+      def http_post(data)
+        #print "Requesting --->" + command_string + "\n"
+        http = Net::HTTP.new(@server_host, @server_port)
+        response = http.post('/selenium-server/driver/', data, HTTP_HEADERS)
+        #print "RESULT: " + response.body + "\n\n"å          
+        [ response.body[0..1], response.body[3..-1] ]
+      end
+      
     end
-    
+
   end
 end
