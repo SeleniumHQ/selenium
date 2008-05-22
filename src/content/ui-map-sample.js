@@ -621,8 +621,8 @@ myMap.addElement('searchResultsPages', {
                 var links = divs[i].getElementsByTagName('a');
                 for (i = 0; i < links.length; ++i) {
                     defaultValues.push(links[i].innerHTML
-                        .replace(/^«\s*/, "")
-                        .replace(/\s*»$/, "")
+                        .replace(/^\xab\s*/, "")
+                        .replace(/\s*\bb$/, "")
                         .replace(/\s*\d+$/, ""));
                 }
                 return defaultValues;
