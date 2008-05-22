@@ -6,16 +6,17 @@ module Selenium
       def do_command(verb, args)
         timeout(@timeout) do
           http = Net::HTTP.new(@server_host, @server_port)
-          command_string = '/selenium-server/driver/?cmd=' + CGI::escape(verb)
+          data = 'cmd=' + CGI::escape(verb)
           args.length.times do |i|
               arg_num = (i+1).to_s
-              command_string = command_string + "&" + arg_num + "=" + CGI::escape(args[i].to_s)
+              data += '&' + arg_num + '=' + CGI::escape(args[i].to_s)
           end
           if @session_id != nil
-              command_string = command_string + "&sessionId=" + @session_id.to_s
+              data += '&sessionId=' + @session_id.to_s
           end
           #print "Requesting --->" + command_string + "\n"
-          response = http.get(command_string)
+          headers = { 'Content-Type' => 'application/x-www-form-urlencoded; charset=utf-8' }
+          response = http.post('/selenium-server/driver/', data, headers)
           #print "RESULT: " + response.body + "\n\n"
           if (response.body[0..1] != "OK")
               raise SeleniumCommandError, response.body
