@@ -284,23 +284,24 @@ sub do_command {
     }
 
     $command = uri_escape($command);
-    my $fullurl = "http://$self->{host}:$self->{port}/selenium-server/driver/"
-                  . "\?cmd=$command";
+    my $fullurl = "http://$self->{host}:$self->{port}/selenium-server/driver/";
+    my $content = "cmd=$command";
     my $i = 1;
     @args = grep defined, @args;
     while (@args) {
-        $fullurl .= "&$i=" . URI::Escape::uri_escape_utf8(shift @args);
+        $content .= "&$i=" . URI::Escape::uri_escape_utf8(shift @args);
         $i++;
     }
     if (defined $self->{session_id}) {
-        $fullurl .= "&sessionId=$self->{session_id}";
+        $content .= "&sessionId=$self->{session_id}";
     }
     print "---> Requesting $fullurl\n" if $self->{verbose};
 
     # We use the full version of LWP to make sure we issue an 
     # HTTP 1.1 request (SRC-25)
     my $ua = LWP::UserAgent->new;
-    my $response = $ua->request( HTTP::Request->new(GET => $fullurl) );
+    my $header = HTTP::Headers->new( Content_Type => 'application/x-www-form-urlencoded; charset=utf-8' );
+    my $response = $ua->request( HTTP::Request->new( 'POST', $fullurl, $header, $content ) );
     my $result;
     if ($response->is_success) {
         $result = $response->content;
