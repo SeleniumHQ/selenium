@@ -3,7 +3,6 @@ package com.googlecode.webdriver.support.events;
 import com.googlecode.webdriver.WebElement;
 import com.googlecode.webdriver.WebDriver;
 import com.googlecode.webdriver.By;
-import com.googlecode.webdriver.SearchContext;
 
 /**
  * @author Michael Tamm
@@ -46,29 +45,24 @@ public interface WebDriverEventListener {
     void afterNavigateForward(WebDriver driver);
 
     /**
-     * Called before {@link WebDriver#findElement WebDriver.findElement(...)}
-     * or {@link WebDriver#findElements WebDriver.findElements(...)}.
+     * Called before {@link WebDriver#findElement WebDriver.findElement(...)},
+     * or {@link WebDriver#findElements WebDriver.findElements(...)},
+     * or {@link WebElement#findElement WebElement.findElement(...)},
+     * or {@link WebElement#findElement WebElement.findElements(...)}.
+     *
+     * @param element will be <code>null</code>, if a find method of <code>WebDriver</code> is called.
      */
-    void beforeFindBy(By by, WebDriver driver);
+    void beforeFindBy(By by, WebElement element, WebDriver driver);
 
     /**
-     * Called before {@link WebElement#findElement(com.googlecode.webdriver.By)}
-     * or {@link WebElement#findElements(com.googlecode.webdriver.By)} }.
+     * Called after {@link WebDriver#findElement WebDriver.findElement(...)},
+     * or {@link WebDriver#findElements WebDriver.findElements(...)},
+     * or {@link WebElement#findElement WebElement.findElement(...)},
+     * or {@link WebElement#findElement WebElement.findElements(...)}.
+     *
+     * @param element will be <code>null</code>, if a find method of <code>WebDriver</code> is called.
      */
-    void beforeFindBy(By by, WebElement element);
-
-    /**
-     * Called after {@link WebDriver#findElement WebDriver.findElement(...)}
-     * or {@link WebDriver#findElements WebDriver.findElements(...)}.
-     * Not called, if an exception is thrown.
-     */
-    void afterFindBy(By by, WebDriver driver);
-
-    /**
-     * Called after {@link WebElement#findElement(com.googlecode.webdriver.By)}
-     * or {@link WebElement#findElements(com.googlecode.webdriver.By)} }.
-     */
-    void afterFindBy(By by, WebElement element);
+    void afterFindBy(By by, WebElement element, WebDriver driver);
 
     /**
      * Called before {@link WebElement#click WebElement.click()}.

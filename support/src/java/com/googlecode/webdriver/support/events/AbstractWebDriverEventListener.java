@@ -3,7 +3,6 @@ package com.googlecode.webdriver.support.events;
 import com.googlecode.webdriver.WebDriver;
 import com.googlecode.webdriver.WebElement;
 import com.googlecode.webdriver.By;
-import com.googlecode.webdriver.SearchContext;
 
 /**
  * Use this class as base class, if you want to implement
@@ -39,19 +38,11 @@ public abstract class AbstractWebDriverEventListener implements WebDriverEventLi
         // Do nothing.
     }
 
-    public void beforeFindBy(By by, WebDriver driver) {
+    public void beforeFindBy(By by, WebElement element, WebDriver driver) {
         // Do nothing.
     }
 
-    public void beforeFindBy(By by, WebElement element) {
-        // Do nothing.
-    }
-
-    public void afterFindBy(By by, WebDriver driver) {
-        // Do nothing.
-    }
-
-    public void afterFindBy(By by, WebElement element) {
+    public void afterFindBy(By by, WebElement element, WebDriver driver) {
         // Do nothing.
     }
 

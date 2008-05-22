@@ -1,10 +1,9 @@
-package com.googlecode.webdriver.events;
+package com.googlecode.webdriver.support.events;
 
 import com.googlecode.webdriver.By;
 import com.googlecode.webdriver.WebDriver;
 import com.googlecode.webdriver.WebDriver.Navigation;
 import com.googlecode.webdriver.WebElement;
-import com.googlecode.webdriver.SearchContext;
 import com.googlecode.webdriver.support.events.AbstractWebDriverEventListener;
 import com.googlecode.webdriver.support.events.EventFiringWebDriver;
 import org.jmock.Expectations;
@@ -113,26 +112,35 @@ public class EventFiringWebDriverTest extends MockObjectTestCase {
 
     public void testFindByEvent() {
         final WebDriver mockedDriver = mock(WebDriver.class);
+        final WebElement mockedElement = mock(WebElement.class);
         final StringBuilder log = new StringBuilder();
 
         checking(new Expectations() {{
-            one(mockedDriver).findElement(By.id("foo"));
+            one(mockedDriver).findElement(By.id("foo")); will(returnValue(mockedElement));
+            one(mockedElement).findElement(By.linkText("bar"));
+            one(mockedElement).findElements(By.name("xyz"));
             one(mockedDriver).findElements(By.xpath("//link[@type = 'text/css']"));
         }});
 
         EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver).register(new AbstractWebDriverEventListener() {
-            public void beforeFindBy(By by, WebDriver context) { log.append("beforeFindBy ").append(by).append("\n"); }
-            public void afterFindBy(By by, WebDriver context) { log.append("afterFindBy ").append(by).append("\n"); }
+            public void beforeFindBy(By by, WebElement element, WebDriver driver) { log.append("beforeFindBy from ").append(element == null ? "WebDriver" : "WebElement").append(" ").append(by).append("\n"); }
+            public void afterFindBy(By by, WebElement element, WebDriver driver) { log.append("afterFindBy from ").append(element == null ? "WebDriver" : "WebElement").append(" ").append(by).append("\n"); }
         });
 
-        testedDriver.findElement(By.id("foo"));
+        WebElement element = testedDriver.findElement(By.id("foo"));
+        element.findElement(By.linkText("bar"));
+        element.findElements(By.name("xyz"));
         testedDriver.findElements(By.xpath("//link[@type = 'text/css']"));
 
         assertEquals(
-            "beforeFindBy By.id: foo\n" +
-            "afterFindBy By.id: foo\n" +
-            "beforeFindBy By.xpath: //link[@type = 'text/css']\n" +
-            "afterFindBy By.xpath: //link[@type = 'text/css']\n",
+            "beforeFindBy from WebDriver By.id: foo\n" +
+            "afterFindBy from WebDriver By.id: foo\n" +
+            "beforeFindBy from WebElement By.linkText: bar\n" +
+            "afterFindBy from WebElement By.linkText: bar\n" +
+            "beforeFindBy from WebElement By.name: xyz\n" +
+            "afterFindBy from WebElement By.name: xyz\n" +
+            "beforeFindBy from WebDriver By.xpath: //link[@type = 'text/css']\n" +
+            "afterFindBy from WebDriver By.xpath: //link[@type = 'text/css']\n",
             log.toString()
         );
     }

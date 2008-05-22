@@ -76,9 +76,9 @@ public class EventFiringWebDriver implements WebDriver {
     }
 
     public List<WebElement> findElements(By by) {
-        dispatcher.beforeFindBy(by, driver);
+        dispatcher.beforeFindBy(by, null, driver);
         List<WebElement> temp = driver.findElements(by);
-        dispatcher.afterFindBy(by, driver);
+        dispatcher.afterFindBy(by, null, driver);
         List<WebElement> result = new ArrayList<WebElement>(temp.size());
         for (WebElement element : temp) {
             result.add(new EventFiringWebElement(element));
@@ -87,9 +87,9 @@ public class EventFiringWebDriver implements WebDriver {
     }
 
     public WebElement findElement(By by) {
-        dispatcher.beforeFindBy(by, driver);
+        dispatcher.beforeFindBy(by, null, driver);
         WebElement temp = driver.findElement(by);
-        dispatcher.afterFindBy(by, driver);
+        dispatcher.afterFindBy(by, null, driver);
         EventFiringWebElement result = new EventFiringWebElement(temp);
         return result;
     }
@@ -188,16 +188,16 @@ public class EventFiringWebDriver implements WebDriver {
         }
 
         public WebElement findElement(By by) {
-            dispatcher.beforeFindBy(by, element);
-            WebElement temp = driver.findElement(by);
-            dispatcher.afterFindBy(by, element);
+            dispatcher.beforeFindBy(by, element, driver);
+            WebElement temp = element.findElement(by);
+            dispatcher.afterFindBy(by, element, driver);
             return new EventFiringWebElement(temp);
         }
 
         public List<WebElement> findElements(By by) {
-            dispatcher.beforeFindBy(by, element);
+            dispatcher.beforeFindBy(by, element, driver);
             List<WebElement> temp = element.findElements(by);
-            dispatcher.afterFindBy(by, element);
+            dispatcher.afterFindBy(by, element, driver);
             List<WebElement> result = new ArrayList<WebElement>(temp.size());
             for (WebElement element : temp) {
                 result.add(new EventFiringWebElement(element));
