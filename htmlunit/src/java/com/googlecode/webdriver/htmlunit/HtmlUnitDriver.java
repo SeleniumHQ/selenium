@@ -20,6 +20,7 @@ package com.googlecode.webdriver.htmlunit;
 import java.net.ConnectException;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -108,6 +109,11 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText,
         client.setThrowExceptionOnFailingStatusCode(true);
         client.setJavaScriptEnabled(false);
         client.setRedirectEnabled(true);
+        try {
+			client.setUseInsecureSSL(true);
+		} catch (GeneralSecurityException e) {
+			throw new RuntimeException(e);
+		}
         return client;
     }
 
@@ -195,7 +201,6 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText,
         return (HtmlPage) currentWindow.getEnclosedPage();
     }
 
-    @SuppressWarnings("unchecked")
     public WebElement findElementByLinkText(String selector) {
         int equalsIndex = selector.indexOf('=') + 1;
         String expectedText = selector.substring(equalsIndex).trim();
@@ -211,7 +216,6 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText,
         throw new NoSuchElementException("No link found with text: " + expectedText);
     }
 
-  @SuppressWarnings("unchecked")
   public List<WebElement> findElementsByLinkText(String selector) {
     int equalsIndex = selector.indexOf('=') + 1;
     String expectedText = selector.substring(equalsIndex).trim();
@@ -241,7 +245,6 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText,
         return findElementsByXPath("//*[@id='" + id + "']");
     }
 
-  @SuppressWarnings("unchecked")
   public WebElement findElementByName(String name) {
     List<HtmlElement> allElements = lastPage().getHtmlElementsByName(name);
     if (allElements.size() > 0) {
@@ -266,7 +269,6 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText,
         throw new NoSuchElementException(String.format("Cannot find element with xpath %s", selector));
     }
 
-    @SuppressWarnings("unchecked")
     public List<WebElement> findElementsByXPath(String selector) {
     	List<? extends Object> nodes = lastPage().getByXPath(selector);
         return convertRawHtmlElementsToWebElements(nodes);
@@ -342,8 +344,6 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText,
             return HtmlUnitDriver.this;
         }
 
-
-        @SuppressWarnings("unchecked")
 		public WebElement activeElement() {
             Page page = currentWindow.getEnclosedPage();
             if (page instanceof HtmlPage) {

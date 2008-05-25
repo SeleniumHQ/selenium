@@ -35,7 +35,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlPreformattedText;
 import com.gargoylesoftware.htmlunit.html.HtmlSelect;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextArea;
-import com.gargoylesoftware.htmlunit.html.xpath.HtmlUnitXPath;
 import com.googlecode.webdriver.By;
 import com.googlecode.webdriver.NoSuchElementException;
 import com.googlecode.webdriver.SearchContext;
@@ -287,7 +286,6 @@ public class HtmlUnitWebElement implements WebElement,
         return lastChar == '\n' || lastChar == ' ' || lastChar == '\t' || lastChar == '\r';
     }
 
-    @SuppressWarnings("unchecked")
     private void getTextFromNode(DomNode node, StringBuffer toReturn, StringBuffer textSoFar, boolean isPreformatted) {
         if (isPreformatted) {
             getPreformattedText(node, toReturn);
@@ -348,7 +346,6 @@ public class HtmlUnitWebElement implements WebElement,
         toReturn.append(xmlText.replaceAll("^<pre.*?>", "").replaceAll("</pre.*>$", ""));
     }
 
-    @SuppressWarnings("unchecked")
     public List<WebElement> getChildrenOfType(String tagName) {
         Iterable<HtmlElement> allChildren = element.getAllHtmlChildElements();
         List<WebElement> elements = new ArrayList<WebElement>();
