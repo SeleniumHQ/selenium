@@ -19,7 +19,7 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
         driver.get(nestedPage);
         WebElement element = driver.findElement(By.name("form2"));
         try {
-        	WebElement child = element.findElement(By.xpath("select/x"));
+        	element.findElement(By.xpath("select/x"));
         } catch (NoSuchElementException e) {
         	return;
         }
@@ -81,7 +81,7 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
         driver.get(nestedPage);
         WebElement element = driver.findElement(By.id("test_id_div"));
         try {
-        	WebElement child = element.findElement(By.id("test_id_out"));
+        	element.findElement(By.id("test_id_out"));
         } catch (NoSuchElementException e) {
         	return;
         }

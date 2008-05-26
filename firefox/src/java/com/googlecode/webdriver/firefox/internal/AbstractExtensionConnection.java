@@ -126,7 +126,6 @@ public abstract class AbstractExtensionConnection implements ExtensionConnection
         return waitForResponseFor(command.getCommandName());
     }
 
-    @SuppressWarnings({"unchecked"})
     private String convert(Command command) {
         JSONObject json = new JSONObject();
         try {
