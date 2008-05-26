@@ -10,7 +10,7 @@ public class SingleTestSuite {
     private final static String SAFARI = "com.googlecode.webdriver.safari.SafariDriver";
 
     public static Test suite() {
-//        System.setProperty("webdriver.firefox.useExisting", "true");
+        System.setProperty("webdriver.firefox.useExisting", "true");
 
         return new TestSuiteBuilder()
 				    	.addSourceDir("common")
@@ -18,8 +18,8 @@ public class SingleTestSuite {
               .usingDriver(FIREFOX)
               .keepDriverInstance()
               .includeJavascriptTests()
-              .onlyRun("FirefoxDriverTest")
-              .method("testShouldBeAbleToStartMoreThanOneInstanceOfTheFirefoxDriverSimultaneously")
+              .onlyRun("RenderedWebElementTest")
+//              .method("testShouldBeAbleToStartMoreThanOneInstanceOfTheFirefoxDriverSimultaneously")
     //                    .leaveRunningAfterTest()
               .create();
 	}

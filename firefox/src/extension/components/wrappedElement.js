@@ -448,3 +448,9 @@ FirefoxDriver.prototype.findElementById = function(respond, id) {
     }
     respond.send();
 };
+
+FirefoxDriver.prototype.getElementCssProperty = function(respond, propertyName) {
+    var element = Utils.getElementAt(respond.elementId, this.context);
+    respond.response = Utils.getStyleProperty(element, propertyName); // Coeerce to a string
+    respond.send();
+};

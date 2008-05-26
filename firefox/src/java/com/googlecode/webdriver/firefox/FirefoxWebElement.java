@@ -203,6 +203,10 @@ public class FirefoxWebElement implements RenderedWebElement, FindsByXPath,
         return findElementsByXPath("*[@name = '" + name + "']");
     }
     
+    public String getValueOfCssProperty(String propertyName) {
+    	return sendMessage(RuntimeException.class,"getElementCssProperty", propertyName);
+    }
+    
     private String sendMessage(Class<? extends RuntimeException> throwOnFailure, String methodName, Object... parameters) {
         return parent.sendMessage(throwOnFailure, new Command(parent.context, elementId, methodName, parameters));
     }

@@ -89,4 +89,7 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
         throw new UnsupportedOperationException();
     }
 
+    public String getValueOfCssProperty(String propertyName) {
+            throw new UnsupportedOperationException("getValueOfCssProperty");
+    }
 }

@@ -83,7 +83,25 @@ function isBlockLevel(node) {
 }
 
 Utils.getStyleProperty = function(node, propertyName) {
-    return node.ownerDocument.defaultView.getComputedStyle(node, null).getPropertyValue(propertyName);
+    var value = node.ownerDocument.defaultView.getComputedStyle(node, null).getPropertyValue(propertyName);
+
+    // Convert colours to hex if possible
+    var raw = /rgb\((\d{1,3}),\s(\d{1,3}),\s(\d{1,3})\)/.exec(value);
+    if (raw) {
+        var temp = value.substr(0, raw.index);
+
+        var hex = "#";
+        for (var i = 1; i <= 3; i++) {
+            var colour = (raw[i] - 0).toString(16);
+            if (colour.length == 1)
+                colour = "0" + colour;
+            hex += colour
+        }
+        hex = hex.toLowerCase();
+        value = temp + hex + value.substr(raw.index + raw[0].length);
+    }
+
+    return value;
 };
 
 function collapseWhitespace(textSoFar) {
