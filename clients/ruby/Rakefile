@@ -15,12 +15,14 @@ CLOBBER.include(
   '**/*.log'
 )
 
+task :default => :"test:unit"
+
 file "target/iedoc.xml" do
-  # todo
+  cp "iedoc.xml", "target/iedoc.xml"
 end
 
 desc "Generate driver from iedoc.xml"
-file "lib/selenium/client/generated_driver" => [ "target/iedoc.xml" ] do
+file "lib/selenium/client/generated_driver.rb" => [ "target/iedoc.xml" ] do
   sh "ant generate-sources"
 end
 
@@ -36,6 +38,9 @@ Rake::TestTask.new(:'test:integration') do |t|
   t.warning = true
 end
 
+task :"test:unit" => "lib/selenium/client/generated_driver.rb"
+task :"test:integration" => "lib/selenium/client/generated_driver.rb"
+ 
 desc "Generate documentation"
 Rake::RDocTask.new("rdoc") do |rdoc|
   rdoc.title    = "Selenium Client"
