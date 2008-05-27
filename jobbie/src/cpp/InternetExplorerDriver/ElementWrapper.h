@@ -27,6 +27,7 @@ public:
 	bool isDisplayed();
 	bool toggle();
 	std::wstring getText();
+	std::wstring getValueOfCssProperty(const std::wstring& propertyName);
 
 	long getX();
 	long getY();

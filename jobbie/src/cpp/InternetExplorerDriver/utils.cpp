@@ -79,35 +79,33 @@ static std::wstring stringify(int number)
 	return o.str();
 }
 
-std::wstring variant2wchar(const VARIANT toConvert) 
+std::wstring variant2wchar(VARIANT toConvert) 
 {
 	VARTYPE type = toConvert.vt;
 
-	switch (type) {
+	switch(type) {
 		case VT_BOOL:
-			return (toConvert.boolVal) ? L"true" : L"false";
+			return toConvert.boolVal == VARIANT_TRUE ? L"true" : L"false";
 
-		case VT_BSTR: 
+		case VT_BSTR:
 			return bstr2wstring(toConvert.bstrVal);
 
 		case VT_EMPTY:
-		case VT_NULL:
 			return L"";
-/*
-		case VT_I4:
-			long value = toConvert.lVal;
-			int length = value / 10;
-			toReturn = new wchar_t[length + 1];
-			swprintf(toReturn, length, L"%l", value);
-			return toReturn;
-*/
 
-		default:
-			std::wstring msg(L"Unknown variant type: ");
-			msg += stringify(type);
-			OutputDebugString(msg.c_str());
+		case VT_NULL:
+			// TODO(shs96c): This should really return NULL.
 			return L"";
 	}
+
+	// Fine. Attempt to coerce to a string
+	VARIANT dest;
+	HRESULT res = VariantChangeType(&toConvert, &toConvert, VARIANT_ALPHABOOL, VT_BSTR);
+	if (!SUCCEEDED(res)) {
+		return L"";
+	}
+	
+	return bstr2wstring(dest.bstrVal);
 }
 
 std::wstring bstr2wstring(BSTR from) 
@@ -127,5 +125,7 @@ std::wstring bstr2wstring(BSTR from)
 
 jstring wstring2jstring(JNIEnv *env, const std::wstring& text)
 {
+	if (!text.c_str())
+		return NULL;
 	return env->NewString((const jchar*) text.c_str(), (jsize) text.length());
 }

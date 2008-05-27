@@ -49,7 +49,7 @@ JNIEXPORT jstring JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerEleme
 
 /*
  * Class:     com_googlecode_webdriver_ie_InternetExplorerElement
- * Method:    sendKeys
+ * Method:    doSendKeys
  * Signature: (Ljava/lang/String;)V
  */
 JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_doSendKeys
@@ -142,6 +142,14 @@ JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_
  */
 JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_getChildrenOfTypeNatively
   (JNIEnv *, jobject, jobject, jstring);
+
+/*
+ * Class:     com_googlecode_webdriver_ie_InternetExplorerElement
+ * Method:    getValueOfCssProperty
+ * Signature: (Ljava/lang/String;)Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_getValueOfCssProperty
+  (JNIEnv *, jobject, jstring);
 
 #ifdef __cplusplus
 }

@@ -339,6 +339,148 @@ long ElementWrapper::getHeight()
 	return height;
 }
 
+const wchar_t* colourNames2hex[][2] = {
+	{ L"aqua",		L"#00ffff" },
+	{ L"black",		L"#000000" },
+	{ L"blue",		L"#0000ff" },
+	{ L"fuchsia",	L"#ff00ff" },
+	{ L"gray",		L"#808080" },
+	{ L"green",		L"#008000" },
+	{ L"lime",		L"#00ff00" },
+	{ L"maroon",	L"#800000" },
+	{ L"navy",		L"#000080" },
+	{ L"olive",		L"#808000" },
+	{ L"purple",	L"#800080" },
+	{ L"red",		L"#ff0000" },
+	{ L"silver",	L"#c0c0c0" },
+	{ L"teal",		L"#008080" },
+	{ L"white",		L"#ffffff" },
+	{ L"yellow",	L"#ffff00" },
+	{ NULL,			NULL }
+};
+
+std::wstring mangleColour(const std::wstring& propertyName, std::wstring& toMangle) 
+{
+	if (wcsstr(propertyName.c_str(), L"color") == NULL)
+		return toMangle;
+
+	// Look for each of the named colours and mangle them.
+	for (int i = 0; colourNames2hex[i][0]; i++) {
+		if (_wcsicmp(colourNames2hex[i][0], toMangle.c_str()) == 0) 
+			return std::wstring(colourNames2hex[i][1]);
+	}
+
+	return toMangle;
+}
+
+#define BSTR_VALUE(method, cssName)     if (_wcsicmp(cssName, propertyName.c_str()) == 0) { CComBSTR bstr; method(&bstr); return bstr2wstring(bstr);}
+#define VARIANT_VALUE(method, cssName)  if (_wcsicmp(cssName, propertyName.c_str()) == 0) { VARIANT var; method(&var); return mangleColour(propertyName.c_str(), variant2wchar(var));}
+
+std::wstring ElementWrapper::getValueOfCssProperty(const std::wstring& propertyName)
+{
+	CComQIPtr<IHTMLElement2> styled(element);
+	CComBSTR name(propertyName.c_str());
+
+	CComPtr<IHTMLCurrentStyle> style;
+	styled->get_currentStyle(&style);
+	
+	/*
+	// This is what I'd like to write.
+
+	VARIANT value;
+	style->getAttribute(name, 0, &value);
+	return variant2wchar(value);
+	*/
+
+	// So the way we've done this strikes me as a remarkably poor idea.
+	
+	/*
+    Not implemented
+		background-position
+		clip
+		column-count
+        column-gap
+        column-width
+		float
+		marker-offset
+		opacity
+		outline-top-width
+        outline-right-width
+        outline-bottom-width
+        outline-left-width
+        outline-top-color
+        outline-right-color
+        outline-bottom-color
+        outline-left-color
+        outline-top-style
+        outline-right-style
+        outline-bottom-style
+        outline-left-style
+		user-focus
+        user-select
+        user-modify
+        user-input
+		white-space
+		word-spacing
+	*/
+	BSTR_VALUE(		style->get_backgroundAttachment,		L"background-attachment");
+	VARIANT_VALUE(	style->get_backgroundColor,				L"background-color");
+	BSTR_VALUE(		style->get_backgroundImage,				L"background-image");
+	BSTR_VALUE(		style->get_backgroundRepeat,			L"background-repeat");
+	VARIANT_VALUE(	style->get_borderBottomColor,			L"border-bottom-color");
+	BSTR_VALUE(		style->get_borderBottomStyle,			L"border-bottom-style");
+	VARIANT_VALUE(	style->get_borderBottomWidth,			L"border-bottom-width");
+	VARIANT_VALUE(	style->get_borderLeftColor,				L"border-left-color");
+	BSTR_VALUE(		style->get_borderLeftStyle,				L"border-left-style");
+	VARIANT_VALUE(	style->get_borderLeftWidth,				L"border-left-width");
+	VARIANT_VALUE(	style->get_borderRightColor,			L"border-right-color");
+	BSTR_VALUE(		style->get_borderRightStyle,			L"border-right-style");
+	VARIANT_VALUE(	style->get_borderRightWidth,			L"border-right-width");
+	VARIANT_VALUE(	style->get_borderTopColor,				L"border-top-color");
+	BSTR_VALUE(		style->get_borderTopStyle,				L"border-top-style");
+	VARIANT_VALUE(	style->get_borderTopWidth,				L"border-top-width");
+	VARIANT_VALUE(	style->get_bottom,						L"bottom");
+	BSTR_VALUE(		style->get_clear,						L"clear");
+	VARIANT_VALUE(	style->get_color,						L"color");
+	BSTR_VALUE(		style->get_cursor,						L"cursor");
+	BSTR_VALUE(		style->get_direction,					L"direction");
+	BSTR_VALUE(		style->get_display,						L"display");
+	BSTR_VALUE(		style->get_fontFamily,					L"font-family");
+	VARIANT_VALUE(	style->get_fontSize,					L"font-size");
+	BSTR_VALUE(		style->get_fontStyle,					L"font-style");
+	VARIANT_VALUE(	style->get_fontWeight,					L"font-weight");
+	VARIANT_VALUE(	style->get_height,						L"height");
+	VARIANT_VALUE(	style->get_left,						L"left");
+	VARIANT_VALUE(	style->get_letterSpacing,				L"letter-spacing");
+	VARIANT_VALUE(	style->get_lineHeight,					L"line-height");
+	BSTR_VALUE(		style->get_listStyleImage,				L"list-style-image");
+	BSTR_VALUE(		style->get_listStylePosition,			L"list-style-position");
+	BSTR_VALUE(		style->get_listStyleType,				L"list-style-type");
+	BSTR_VALUE(		style->get_margin, 						L"margin");
+	VARIANT_VALUE(	style->get_marginBottom, 				L"margin-bottom");
+	VARIANT_VALUE(	style->get_marginRight, 				L"margin-right");
+	VARIANT_VALUE(	style->get_marginTop, 					L"margin-top");
+	VARIANT_VALUE(	style->get_marginLeft, 					L"margin-left");
+	BSTR_VALUE(		style->get_overflow, 					L"overflow");
+	BSTR_VALUE(		style->get_padding, 					L"padding");
+	VARIANT_VALUE(	style->get_paddingBottom, 				L"padding-bottom");
+	VARIANT_VALUE(	style->get_paddingLeft, 				L"padding-left");
+	VARIANT_VALUE(	style->get_paddingRight, 				L"padding-right");
+	VARIANT_VALUE(	style->get_paddingTop, 					L"padding-top");
+	BSTR_VALUE(		style->get_position, 					L"position");
+	VARIANT_VALUE(	style->get_right, 						L"right");
+	BSTR_VALUE(		style->get_textAlign, 					L"text-align");
+	BSTR_VALUE(		style->get_textDecoration, 				L"text-decoration");
+	BSTR_VALUE(		style->get_textTransform, 				L"text-transform");
+	VARIANT_VALUE(	style->get_top, 						L"top");
+	VARIANT_VALUE(	style->get_verticalAlign,				L"vertical-align");
+	BSTR_VALUE(		style->get_visibility,					L"visibility");
+	VARIANT_VALUE(	style->get_width,						L"width");
+	VARIANT_VALUE(	style->get_zIndex,						L"z-index");
+
+	return NULL;
+}
+
 std::wstring ElementWrapper::getText() 
 {
 	CComBSTR tagName;

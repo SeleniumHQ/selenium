@@ -49,9 +49,8 @@ JNIEXPORT jstring JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerEleme
   (JNIEnv *env, jobject obj)
 {
 	ElementWrapper* wrapper = getWrapper(env, obj);
-	std::wstring value = wrapper->getValue();
 
-	return env->NewString((const jchar*) value.c_str(), (jsize) value.length());
+	return wstring2jstring(env, wrapper->getValue());
 }
 
 JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_doSendKeys
@@ -73,9 +72,7 @@ JNIEXPORT jstring JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerEleme
   (JNIEnv *env, jobject obj)
 {
 	ElementWrapper* wrapper = getWrapper(env, obj);
-	const std::wstring value = wrapper->getText();
-
-	return env->NewString((const jchar*) value.c_str(), (jsize) value.length());
+	return wstring2jstring(env, wrapper->getText());
 }
 
 JNIEXPORT jstring JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_getAttribute
@@ -84,10 +81,7 @@ JNIEXPORT jstring JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerEleme
 	ElementWrapper* wrapper = getWrapper(env, obj);
 
 	const wchar_t* converted = (wchar_t*) env->GetStringChars(attributeName, NULL);
-	std::wstring value = wrapper->getAttribute(converted);
-	env->ReleaseStringChars(attributeName, (const jchar*) converted);
-
-	return env->NewString((const jchar*) value.c_str(), (jsize) value.length());
+	return wstring2jstring(env, wrapper->getAttribute(converted));
 }
 
 JNIEXPORT jboolean JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_isEnabled
@@ -196,6 +190,15 @@ JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_
 {
 	ElementWrapper* wrapper = getWrapper(env, obj);
 	delete wrapper;
+}
+
+JNIEXPORT jstring JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_getValueOfCssProperty
+  (JNIEnv *env, jobject obj, jstring propertyName)
+{
+	ElementWrapper* wrapper = getWrapper(env, obj);
+
+	const wchar_t* converted = (wchar_t*) env->GetStringChars(propertyName, NULL);
+	return wstring2jstring(env, wrapper->getValueOfCssProperty(converted));
 }
 
 #ifdef __cplusplus
