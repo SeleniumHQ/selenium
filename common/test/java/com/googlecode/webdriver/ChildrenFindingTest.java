@@ -112,5 +112,4 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
                 By.linkText("hello world"));
         assertThat(children.size(), is(2));
     }
-
 }

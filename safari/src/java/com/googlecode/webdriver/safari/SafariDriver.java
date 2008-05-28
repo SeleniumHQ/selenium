@@ -166,6 +166,14 @@ public class SafariDriver implements WebDriver, FindsByLinkText, FindsById,
         return toReturn;
     }
 
+    public List<WebElement> findElementsByClassName(String using) {
+    	throw new UnsupportedOperationException("findElementsByClassName");
+    }
+      
+    public WebElement findElementByClassName(String using) {
+    	throw new UnsupportedOperationException("findElementByClassName");
+    }
+      
     private String addToElements()  {
         return "if (element) { " +
                "    if (!" + ELEMENTS + ")\r" +

@@ -1,11 +1,12 @@
 package com.googlecode.webdriver;
 
+import java.util.List;
+
+import com.googlecode.webdriver.internal.FindsByClassName;
 import com.googlecode.webdriver.internal.FindsById;
 import com.googlecode.webdriver.internal.FindsByLinkText;
 import com.googlecode.webdriver.internal.FindsByName;
 import com.googlecode.webdriver.internal.FindsByXPath;
-
-import java.util.List;
 
 /**
  * Mechanism used to locate elements within a document. In order to create
@@ -114,6 +115,45 @@ public abstract class By {
         }
       };
     }
+
+    public static By className(final String className) {
+        if (className == null)
+         throw new IllegalArgumentException("Cannot find elements when the class name expression is null.");
+
+       return new By() {
+         @Override
+         public List<WebElement> findElements(SearchContext context) {
+             if (context instanceof FindsByClassName)
+               return ((FindsByClassName) context).findElementsByClassName(className);
+             return ((FindsByXPath) context).findElementsByXPath("//*[" + containingWord("class", className) + "]");
+         }
+
+         @Override
+         public WebElement findElement(SearchContext context) {
+             if (context instanceof FindsByClassName)
+               return ((FindsByClassName) context).findElementByClassName(className);
+             return ((FindsByXPath) context).findElementByXPath("//*[" + containingWord("class", className) + "]");
+         }
+
+         /**
+          * Generates a partial xpath expression that matches an element whose specified attribute
+          * contains the given CSS word. So to match &lt;div class='foo bar'&gt; you would
+          * say "//div[" + containingWord("class", "foo") + "]".
+          *
+          * @param attribute name
+          * @param word name
+          * @return XPath fragment
+          */
+         private String containingWord(String attribute, String word) {
+           return "contains(concat(' ',normalize-space(@" + attribute + "),' '),' " + word + " ')";
+         }
+         
+         @Override
+         public String toString() {
+           return "By.className: " + className;
+         }
+       };
+     }
 
     /**
      * Find a single element. Override this method if necessary.

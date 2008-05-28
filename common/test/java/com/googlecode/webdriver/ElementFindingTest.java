@@ -93,6 +93,45 @@ public class ElementFindingTest extends AbstractDriverTestCase {
         assertThat(element.getValue(), is("furrfu"));
     }
 
+    public void testShouldFindElementsByClass() {
+        driver.get(xhtmlTestPage);
+
+        WebElement element = driver.findElement(By.className("extraDiv"));
+        assertTrue(element.getText().startsWith("Another div starts here."));
+    }
+
+    public void testShouldFindElementsByClassWhenItIsTheFirstNameAmongMany() {
+        driver.get(xhtmlTestPage);
+
+        WebElement element = driver.findElement(By.className("nameA"));
+        assertThat(element.getText(), equalTo("An H2 title"));
+    }
+
+    public void testShouldFindElementsByClassWhenItIsTheLastNameAmongMany() {
+        driver.get(xhtmlTestPage);
+
+        WebElement element = driver.findElement(By.className("nameC"));
+        assertThat(element.getText(), equalTo("An H2 title"));
+    }
+
+    public void testShouldFindElementsByClassWhenItIsInTheMiddleAmongMany() {
+        driver.get(xhtmlTestPage);
+
+        WebElement element = driver.findElement(By.className("nameBnoise"));
+        assertThat(element.getText(), equalTo("An H2 title"));
+    }
+
+    public void testShouldNotFindElementsByClassWhenTheNameQueriedIsShorterThanCandidateName() {
+        driver.get(xhtmlTestPage);
+
+        try {
+            driver.findElement(By.className("nameB"));
+            fail("Should not have succeeded");
+        } catch (NoSuchElementException e) {
+        	// this is expected
+        }
+    }
+
     // You don't want to ask why this is here
     public void testWhenFindingByNameShouldNotReturnById() {
         driver.get(formPage);

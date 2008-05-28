@@ -194,6 +194,10 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
       return elements;
   }
 
+  public List<WebElement> findElementsByClassName(String using) {
+	throw new UnsupportedOperationException("findElementsByClassName");
+  }
+  
   public WebElement findElementByLinkText(String using) {
     return findElement("selectElementUsingLink", using);
   }
@@ -203,6 +207,10 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
     return findElement("selectElementUsingXPath", using);
   }
 
+  public WebElement findElementByClassName(String using) {
+	throw new UnsupportedOperationException("findElementByClassName");
+  }
+  
   private WebElement findElement(String commandName, String argument) {
     String elementId = sendMessage(NoSuchElementException.class, commandName, argument);
 

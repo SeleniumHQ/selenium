@@ -247,6 +247,52 @@ ElementWrapper* InternetExplorerDriver::selectElementByName(const wchar_t *eleme
 	throw "Cannot find element";
 }
 
+ElementWrapper* InternetExplorerDriver::selectElementByClassName(const wchar_t *elementClassName) 
+{
+	CComPtr<IHTMLDocument2> doc2;
+	getDocument(&doc2);
+
+	CComPtr<IHTMLElementCollection> allNodes;
+	doc2->get_all(&allNodes);
+
+	CComPtr<IUnknown> unknown;
+	allNodes->get__newEnum(&unknown);
+	CComQIPtr<IEnumVARIANT> enumerator(unknown);
+
+	CComVariant var;
+	CComBSTR nameRead;
+	enumerator->Next(1, &var, NULL);
+
+	const int exactLength = (int) wcslen(elementClassName);
+	wchar_t *next_token, seps[] = L" ";
+
+	for (CComPtr<IDispatch> disp;
+		 disp = V_DISPATCH(&var); 
+		 enumerator->Next(1, &var, NULL)) 
+	{ // We are iterating through all the DOM elements
+		CComQIPtr<IHTMLElement> curr(disp);
+		if (!curr) continue;
+
+		curr->get_className(&nameRead);
+		if(!nameRead) continue;
+
+		for ( wchar_t *token = wcstok_s(nameRead, seps, &next_token);
+			  token;
+			  token = wcstok_s( NULL, seps, &next_token) )
+		{
+			int lengthRead = next_token - token;
+			if(*next_token!=NULL) lengthRead--;
+			if(exactLength != lengthRead) continue;
+			if(0!=wcscmp(elementClassName, token)) continue;
+			// Woohoo, we found it
+			CComQIPtr<IHTMLDOMNode> node(curr);
+			return new ElementWrapper(this, node);	
+		}
+	}
+
+	throw "Cannot find element by ClassName";
+}
+
 void InternetExplorerDriver::waitForNavigateToFinish() 
 {
 	VARIANT_BOOL busy;

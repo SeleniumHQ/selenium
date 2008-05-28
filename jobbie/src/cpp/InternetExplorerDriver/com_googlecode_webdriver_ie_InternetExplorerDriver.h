@@ -114,10 +114,26 @@ JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDrive
 /*
  * Class:     com_googlecode_webdriver_ie_InternetExplorerDriver
  * Method:    selectElementsByName
- * Signature: (Ljava/lang/String;Ljava/util/List;)V
+ * Signature: (Ljava/lang/String;)Ljava/util/List;
  */
-JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_selectElementsByName
-  (JNIEnv *, jobject, jstring, jobject);
+JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_selectElementsByName
+  (JNIEnv *, jobject, jstring);
+
+/*
+ * Class:     com_googlecode_webdriver_ie_InternetExplorerDriver
+ * Method:    selectElementByClassName
+ * Signature: (Ljava/lang/String;)Lcom/googlecode/webdriver/WebElement;
+ */
+JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_selectElementByClassName
+  (JNIEnv *, jobject, jstring);
+
+/*
+ * Class:     com_googlecode_webdriver_ie_InternetExplorerDriver
+ * Method:    selectElementsByClassName
+ * Signature: (Ljava/lang/String;)Ljava/util/List;
+ */
+JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_selectElementsByClassName
+  (JNIEnv *, jobject, jstring);
 
 /*
  * Class:     com_googlecode_webdriver_ie_InternetExplorerDriver

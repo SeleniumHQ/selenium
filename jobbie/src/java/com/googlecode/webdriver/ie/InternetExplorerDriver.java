@@ -36,14 +36,15 @@ import com.googlecode.webdriver.SearchContext;
 import com.googlecode.webdriver.Speed;
 import com.googlecode.webdriver.WebDriver;
 import com.googlecode.webdriver.WebElement;
+import com.googlecode.webdriver.internal.FindsByClassName;
 import com.googlecode.webdriver.internal.FindsById;
 import com.googlecode.webdriver.internal.FindsByLinkText;
 import com.googlecode.webdriver.internal.FindsByName;
 import com.googlecode.webdriver.internal.FindsByXPath;
 import com.googlecode.webdriver.internal.ReturnedCookie;
 
-public class InternetExplorerDriver implements WebDriver, FindsById, 
-		FindsByLinkText, FindsByName, FindsByXPath, SearchContext {
+public class InternetExplorerDriver implements WebDriver, SearchContext,
+	FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByXPath {
     private long iePointer; // Used by the native code to keep track of the IE instance
     private static boolean comStarted;
 
@@ -101,6 +102,16 @@ public class InternetExplorerDriver implements WebDriver, FindsById,
 	public List<WebElement> findElementsByName(String using) {
     	return selectElementsByName(using);
     }
+	
+	public WebElement findElementByClassName(String using) {
+		return selectElementByClassName(using);
+	}
+	private native WebElement selectElementByClassName(String using);
+		  
+	public List<WebElement> findElementsByClassName(String using) {
+		return selectElementsByClassName(using);
+	}
+	private native List<WebElement> selectElementsByClassName(String using);
 
 	public WebElement findElementByXPath(String using) {
         try {

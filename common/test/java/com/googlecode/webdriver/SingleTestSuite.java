@@ -18,9 +18,10 @@ public class SingleTestSuite {
               .usingDriver(IE)
               .keepDriverInstance()
               .includeJavascriptTests()
-              .onlyRun("RenderedWebElementTest")
-//              .method("testShouldReturnTheValueOfTheDisabledAttrbuteEvenIfItIsMissing")
-    //                    .leaveRunningAfterTest()
+              .onlyRun("ElementAttributeTest")
+              .method("testShouldReturnValueOfClassAttributeOfAnElement")
+  //            .method("testShouldFindElementsByClass")
+//                        .leaveRunningAfterTest()
               .create();
 	}
 }

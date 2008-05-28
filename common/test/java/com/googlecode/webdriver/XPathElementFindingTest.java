@@ -38,7 +38,7 @@ public class XPathElementFindingTest extends AbstractDriverTestCase {
     public void testShouldFindElementsByXPath() {
         driver.get(xhtmlTestPage);
         List<WebElement> divs = driver.findElements(By.xpath("//div"));
-        assertThat(divs.size(), equalTo(3));
+        assertThat(divs.size(), equalTo(4));
     }
 
     @Ignore(value = "safari", reason = "Test fails")

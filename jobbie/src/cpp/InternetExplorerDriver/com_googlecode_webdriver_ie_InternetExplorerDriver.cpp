@@ -153,6 +153,26 @@ JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDrive
 	} 
 }
 
+JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_selectElementByClassName
+  (JNIEnv *env, jobject obj, jstring name)
+{
+	InternetExplorerDriver* ie = getIe(env, obj);
+	const wchar_t* converted = (const wchar_t*)env->GetStringChars(name, 0);
+
+	try {
+		ElementWrapper* wrapper = ie->selectElementByClassName(converted);
+		env->ReleaseStringChars(name, (jchar*) converted);
+
+		jclass clazz = env->FindClass("com/googlecode/webdriver/ie/InternetExplorerElement");
+		jmethodID cId = env->GetMethodID(clazz, "<init>", "(J)V");
+
+		return env->NewObject(clazz, cId, (jlong) wrapper);
+	} catch (const char *message) {
+		env->ReleaseStringChars(name, (jchar*) converted);
+		throwNoSuchElementException(env, message);
+		return NULL;
+	} 
+}
 
 JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_getDocument
   (JNIEnv *env, jobject obj)
