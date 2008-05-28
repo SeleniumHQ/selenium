@@ -169,6 +169,7 @@ toolbarbutton.icon label {
 }
 #record-button[checked="true"] {
   -moz-image-region: rect(16px 48px 32px 32px);
+  background-color: rgba(225, 225, 225, 0.3);
 }
 #step-button { 
   -moz-image-region: rect(0px 64px 16px 48px);

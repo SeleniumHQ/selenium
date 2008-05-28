@@ -18,6 +18,7 @@ limitations under the License.
 <?xml-stylesheet href="chrome://global/skin" type="text/css"?>
 <?xml-stylesheet href="chrome://global/content/xul.css" type="text/css"?>
 <?xml-stylesheet href="chrome://selenium-ide/skin/selenium-ide.css" type="text/css"?>
+<?xml-stylesheet href="chrome://selenium-ide-platform/skin/selenium-ide-platform.css" type="text/css"?>
 <?xul-overlay href="chrome://global/content/editMenuOverlay.xul"?>
 <?xul-overlay href="chrome://browser/content/baseMenuOverlay.xul"?>
 <?xul-overlay href="chrome://selenium-ide/content/selenium-ide-common.xul"?>
@@ -61,7 +62,7 @@ limitations under the License.
       </menu>
       <menupopup id="menu_ToolsPopup"/> <!-- for Mac -->
     </menubar>
-    <toolbar>
+    <toolbar id="toolbar1">
       <hbox align="center" flex="1">
 	<label value="&baseURL.label;"/>
 	<textbox id="baseURL" flex="1" tooltiptext="&baseURLTextbox.tooltip;" 
@@ -70,7 +71,7 @@ limitations under the License.
                  type="autocomplete" autocompletesearch="selenium-ide-generic" enablehistory="true" focecomplete="true" tabscrolling="true"/>
       </hbox>
     </toolbar>
-    <toolbar>
+    <toolbar id="toolbar2">
       <stack id="speedSliderBox" />
       <!--
       <radiogroup id="runInterval" orient="horizontal">
