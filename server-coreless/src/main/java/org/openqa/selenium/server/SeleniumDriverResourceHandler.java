@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.server;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.Get;
@@ -403,7 +404,14 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             } catch (Exception e) {
                 logger.error("Problem capturing screenshot", e);
                 results = "ERROR: Problem capturing screenshot: " + e.getMessage();
-            }
+            } 
+        } else if ("captureScreenshotToString".equals(cmd)) {
+            try {
+                results = captureScreenshotToString();
+            } catch (Exception e) {
+                logger.error("Problem capturing a screenshot to string", e);
+                results = "ERROR: Problem capturing a screenshot to string: " + e.getMessage();
+            }  
         } else if ("keyDownNative".equals(cmd)) {
             try {
                 RobotRetriever.getRobot().keyPress(Integer.parseInt(values.get(0)));
@@ -505,8 +513,14 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 results = "ERROR Server Exception: " + e.getMessage();
             }
         }
-        logger.info("Got result: " + results + " on session " + sessionId);
+
+        if ("captureScreenshotToString".equals(cmd)) {
+            logger.info("Got result: [base64 encoded PNG] on session " + sessionId);
+        } else {
+            logger.info("Got result: " + results + " on session " + sessionId);
+        }
         return results;
+
     }
 
     private Vector<String> parseSeleneseParameters(HttpRequest req) {
@@ -587,6 +601,26 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         File outFile = new File(fileName);
         ImageIO.write(bufferedImage, "png", outFile);
         
+    }
+
+    /**
+     *  This method captures a full screen shot of the current screen using the 
+     *  Robot class.  
+     *  
+     * @return a base 64 encoded string of the screenshot (a png image file)
+     * @throws InterruptedException
+     * @throws ExecutionException
+     * @throws TimeoutException
+     * @throws IOException
+     */
+    private String captureScreenshotToString() throws InterruptedException, ExecutionException, TimeoutException, IOException {  
+        Robot robot = RobotRetriever.getRobot();
+        Rectangle captureSize = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
+        BufferedImage bufferedImage = robot.createScreenCapture(captureSize);
+        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+        ImageIO.write(bufferedImage, "png", outStream);
+        byte[] encodedData = Base64.encodeBase64(outStream.toByteArray());
+        return "OK," + new String(encodedData);
     }
 
     private void shutDown(HttpResponse res) {
