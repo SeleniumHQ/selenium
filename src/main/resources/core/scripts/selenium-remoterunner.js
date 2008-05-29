@@ -571,6 +571,15 @@ Selenium.prototype.doCaptureScreenshot = function(filename) {
     // This doesn't really do anything on the JS side; we let the Selenium Server take care of this for us!
 };
 
+Selenium.prototype.doCaptureScreenshotToString = function() {
+    /**
+    * Capture a PNG screenshot.  It then returns the file as a base 64 encoded string. 
+    * 
+    * @return string The base 64 encoded string of the screen shot (PNG file)
+    */
+    // This doesn't really do anything on the JS side; we let the Selenium Server take care of this for us!
+};
+
 Selenium.prototype.doShutDownSeleniumServer = function(keycode) {
     /**
     * Kills the running Selenium Server and all browser sessions.  After you run this command, you will no longer be able to send
