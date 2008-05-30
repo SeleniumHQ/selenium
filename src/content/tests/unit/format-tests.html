@@ -139,7 +139,7 @@ function testJavaRCFormat() {
 	assertEquals("// line 1\n// line 2", f.formatComment(this.commands.shift()));
     assertEquals('String[] array2 = selenium.getSelectOptions("theSelect");\n' +
                  'if (3 == array2.length) {\n' +
-                 '\tverifyFalse("".equals(array2[0]) && "abc".equals(array2[1]) && "ab,c".equals(array2[2]));\n' +
+                 '\tassertFalse("".equals(array2[0]) && "abc".equals(array2[1]) && "ab,c".equals(array2[2]));\n' +
                  '}', nextCommand());
 }
 
