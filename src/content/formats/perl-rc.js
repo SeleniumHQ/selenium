@@ -160,6 +160,10 @@ EqualsArray.prototype.item = function(index) {
 	return "$" + this.variableName + "[" + index + "]";
 }
 
+function ifCondition(expression, callback) {
+    return "if (" + expression.toString() + ") {\n" + callback() + "}";
+}
+
 function pause(milliseconds) {
 	return "sleep(" + (parseInt(milliseconds) / 1000) + ");";
 }

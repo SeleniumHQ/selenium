@@ -1,7 +1,5 @@
 /*
- * An adapter that lets you use format() function with the format
- * that only defines formatCommand() function.
- *
+ * Common classes / functions for Selenium RC format.
  */
 
 load('formatCommandOnlyAdapter.js');
@@ -61,6 +59,10 @@ function underscore(text) {
 
 function notOperator() {
 	return "!";
+}
+
+function logicalAnd(conditions) {
+    return conditions.join(" && ");
 }
 
 function equals(e1, e2) {
@@ -125,9 +127,10 @@ RegexpNotMatch.prototype.verify = function() {
 	return verifyFalse(this.invert());
 }
 
-function EqualsArray(expression) {
+function EqualsArray(expression, matcher, values) {
 	this.expression = expression;
-	this.conditions = [];
+    this.matcher = matcher;
+    this.values = values;
 }
 
 EqualsArray.prototype.setup = function(unique) {
@@ -136,18 +139,26 @@ EqualsArray.prototype.setup = function(unique) {
 }
 
 EqualsArray.prototype.toString = function() {
-	return this.conditions.join(" && ");
+	return logicalAnd(this.conditions);
 }
 
 EqualsArray.useUniqueVariableForAssertion = true;
 
 EqualsArray.prototype.assertOrVerify = function(method) {
 	var str = this.setup(EqualsArray.useUniqueVariableForAssertion);
-	for (var i = 0; i < this.conditions.length; i++) {
-		str += "\n";
-		str += this.conditions[i][method]();
-	}
-	return str;
+    str += "\n";
+    var self = this;
+    var lengthCondition = new Equals(this.values.length, 
+        { toString: function() { return self.length() }});
+    str += lengthCondition[method]();
+	for (var i = 0; i < this.values.length; i++) {
+		var condition = seleniumEquals('String', 
+            this.matcher + ':' + this.values[i], 
+            { toString: function() { return self.item(i) }});
+        str += "\n";
+        str += condition[method]();
+    }
+    return str;
 }
 
 EqualsArray.prototype.assert = function() {
@@ -158,6 +169,65 @@ EqualsArray.prototype.verify = function() {
 	return this.assertOrVerify('verify');
 }
 
+EqualsArray.prototype.invert = function() {
+    return new NotEqualsArray(this);
+}
+
+EqualsArray.prototype.length = function() {
+    throw "not implemented";
+}
+
+EqualsArray.prototype.item = function(i) {
+    throw "not implemented";
+}
+
+function NotEqualsArray(base) {
+    this.expression = base.expression;
+    this.matcher = base.matcher;
+    this.values = base.values;
+}
+
+(function() {
+    // delegate all methods to EqualsArray
+    for (var prop in EqualsArray.prototype) {
+        (function() {
+            var methodName = prop;
+            NotEqualsArray.prototype[methodName] = function() {
+                var args = [];
+                for (var i = 0; i < arguments.length; i++) {
+                    args.push(arguments[i]);
+                }
+                return EqualsArray.prototype[methodName].apply(this, args);
+            }
+        })();
+    }
+})();
+
+NotEqualsArray.prototype.assertOrVerify = function(method) {
+    var str = this.setup(EqualsArray.useUniqueVariableForAssertion);
+    str += "\n";
+    var self = this;
+    var lengthCondition = new Equals(this.values.length, 
+        { toString: function() { return self.length() }});
+    str += ifCondition(lengthCondition.toString(), function() {
+        var conditions = [];
+        for (var i = 0; i < self.values.length; i++) {
+            (function() {
+                var index = i;
+                var condition = seleniumEquals('String', 
+                    self.matcher + ':' + self.values[index], 
+                    { toString: function() { return self.item(index) }});
+                conditions.push(condition);
+            })();
+        }
+        if ("assert" == method) {
+            return "\t" + assertFalse(logicalAnd(conditions)) + "\n";
+        } else {
+            return "\t" + verifyFalse(logicalAnd(conditions)) + "\n";
+        }
+    });
+    return str;
+}
 
 function seleniumEquals(type, pattern, expression) {
 	if (type == 'String[]') {
@@ -172,13 +242,7 @@ function seleniumEquals(type, pattern, expression) {
 		var separateEquals = 'exact' != matcher || (this.useSeparateEqualsForArray && this.useSeparateEqualsForArray());
 		var list = parseArray(pattern);
 		if (separateEquals) {
-			var result = new EqualsArray(expression);
-			result.conditions.push(new Equals(list.length, { toString: function() { return result.length() }}));
-			for (var i = 0; i < list.length; i++) {
-				result.conditions.push(seleniumEquals('String', matcher + ':' + list[i], 
-													  { index: i, toString: function() { return result.item(this.index) }}));
-			}
-			return result;
+			return new EqualsArray(expression, matcher, list);
 		} else {
 			return new Equals(xlateValue(type, pattern), expression);
 		}

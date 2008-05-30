@@ -34,6 +34,10 @@ function assignToVariable(type, variable, expression) {
 	return type + " " + variable + " = " + expression.toString();
 }
 
+function ifCondition(expression, callback) {
+    return "if (" + expression.toString() + ") {\n" + callback() + "}";
+}
+
 function waitFor(expression) {
 	return "for (int second = 0;; second++) {\n" +
 		"\tif (second >= 60) fail(\"timeout\");\n" +
@@ -51,7 +55,13 @@ function assertOrVerifyFailure(line, isAssert) {
 }
 
 Equals.prototype.toString = function() {
-	return this.e1.toString() + ".equals(" + this.e2.toString() + ")";
+    if (this.e1.toString().match(/^\d+$/)) {
+        // int
+	    return this.e1.toString() + " == " + this.e2.toString();
+    } else {
+        // string
+	    return this.e1.toString() + ".equals(" + this.e2.toString() + ")";
+    }
 }
 
 Equals.prototype.assert = function() {
