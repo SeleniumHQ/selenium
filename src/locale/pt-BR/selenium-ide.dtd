@@ -11,6 +11,7 @@
 <!ENTITY runRadio.label "Executar">
 <!ENTITY walkRadio.label "Caminhar">
 <!ENTITY stepRadio.label "Iterar">
+<!ENTITY playSuiteButton.tooltip "Play entire test suite">
 <!ENTITY playButton.tooltip "Executar do começo ou do ponto de início">
 <!ENTITY pauseButton.tooltip "Pausar / Reiniciar">
 <!ENTITY stepButton.tooltip "Iterar">

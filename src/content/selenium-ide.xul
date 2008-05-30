@@ -73,18 +73,7 @@ limitations under the License.
     </toolbar>
     <toolbar id="toolbar2">
       <stack id="speedSliderBox" />
-      <!--
-      <radiogroup id="runInterval" orient="horizontal">
-	<radio id="run" label="&runRadio.label;" selected="true" value="0"/>
-	<radio id="walk" label="&walkRadio.label;" value="500"/>
-	<radio id="step" label="&stepRadio.label;" value="-1"/>
-      </radiogroup>
-      -->
-      <!--
-      <toolbarbutton id="toggle-all-button" label="Play TestSuite" class="icon" tooltiptext="&playButton.tooltip;" command="cmd_selenium_play_suite"/>
-      <toolbarbutton id="toggle-selected-button" label="Play TestSuite" class="icon" tooltiptext="&playButton.tooltip;" command="cmd_selenium_play_suite"/>
-      -->
-      <toolbarbutton id="play-suite-button" label="Play TestSuite" class="icon" tooltiptext="&playButton.tooltip;" command="cmd_selenium_play_suite"/>
+      <toolbarbutton id="play-suite-button" label="Play TestSuite" class="icon" tooltiptext="&playSuiteButton.tooltip;" command="cmd_selenium_play_suite"/>
       <toolbarbutton id="play-button" label="Play" class="icon" tooltiptext="&playButton.tooltip;" command="cmd_selenium_play"/>
       <toolbarbutton id="pause-button" label="Pause" class="icon pause" tooltiptext="&pauseButton.tooltip;" command="cmd_selenium_pause"/>
       <toolbarbutton id="step-button" label="Step" class="icon" tooltiptext="&stepButton.tooltip;" command="cmd_selenium_step"/>

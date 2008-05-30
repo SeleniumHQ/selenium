@@ -11,7 +11,8 @@
 <!ENTITY runRadio.label "速く">
 <!ENTITY walkRadio.label "ゆっくり">
 <!ENTITY stepRadio.label "ステップ">
-<!ENTITY playButton.tooltip "はじめまたは開始位置から実行">
+<!ENTITY playSuiteButton.tooltip "テストスイート全体を実行">
+<!ENTITY playButton.tooltip "現在のテストケースを実行">
 <!ENTITY pauseButton.tooltip "一時停止/再開">
 <!ENTITY stepButton.tooltip "1ステップ実行">
 <!ENTITY testrunnerButton.tooltip "Selenium TestRunner で実行">

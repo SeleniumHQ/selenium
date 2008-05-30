@@ -11,6 +11,7 @@
 <!ENTITY runRadio.label "Lancer">
 <!ENTITY walkRadio.label "Pas-&#224;-pas">
 <!ENTITY stepRadio.label "Faire un pas">
+<!ENTITY playSuiteButton.tooltip "Play entire test suite">
 <!ENTITY playButton.tooltip "Lancer depuis le d&#233;but ou depuis le point de d&#233;part">
 <!ENTITY pauseButton.tooltip "Pause / Relance">
 <!ENTITY stepButton.tooltip "Faire un pas">

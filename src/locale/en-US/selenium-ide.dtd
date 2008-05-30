@@ -11,7 +11,8 @@
 <!ENTITY runRadio.label "Run">
 <!ENTITY walkRadio.label "Walk">
 <!ENTITY stepRadio.label "Step">
-<!ENTITY playButton.tooltip "Play from the beginning or start point">
+<!ENTITY playSuiteButton.tooltip "Play entire test suite">
+<!ENTITY playButton.tooltip "Play current test case">
 <!ENTITY pauseButton.tooltip "Pause / Resume">
 <!ENTITY stepButton.tooltip "Step">
 <!ENTITY testrunnerButton.tooltip "Play with Selenium TestRunner">
