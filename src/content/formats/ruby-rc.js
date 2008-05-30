@@ -159,7 +159,7 @@ this.options = {
 		'    if $selenium\n' +
 		'      @selenium = $selenium\n' +
 		'    else\n' +
-		'      @selenium = Selenium::SeleneseInterpreter.new("localhost", 4444, "*chrome", "${baseURL}", 10000);\n' +
+		'      @selenium = Selenium::SeleniumDriver.new("localhost", 4444, "*chrome", "${baseURL}", 10000);\n' +
 		'      @selenium.start\n' +
 		'    end\n' +
 		'    @selenium.set_context("${methodName}")\n' +

@@ -4,11 +4,12 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Selenium IDE Test Suite</title>
     <link rel="stylesheet" type="text/css" href="chrome://selenium-ide/content/jsunit/css/jsUnitStyle.css">
+		<script type="text/javascript" src="chrome://selenium-ide/content/jsunit/app/xbDebug.js"></script>
 		<script type="text/javascript" src="chrome://selenium-ide/content/jsunit/app/jsUnitCore.js"></script>
 		<script type="text/javascript" src="chrome://selenium-ide/content/jsunit/app/jsUnitTestSuite.js"></script>
     <script language="Javascript" type="text/javascript">
        function suite() {
-           var testSuite = new top.jsUnitTestSuite();
+           var testSuite = new jsUnitTestSuite();
            testSuite.addTestPage("chrome://selenium-ide/content/tests/unit/testSuiteProgress-tests.html");
            testSuite.addTestPage("chrome://selenium-ide/content/tests/unit/storedHistory-tests.html");
            testSuite.addTestPage("chrome://selenium-ide/content/tests/unit/application-tests.html");
