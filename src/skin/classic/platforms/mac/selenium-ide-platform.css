@@ -34,6 +34,10 @@ window:not([active="true"]) > toolbox > #toolbar1 {
   padding: 0 4px;
 }
 
+.sidebarToolbar {
+  background-color: transparent;
+}
+
 window:not([active="true"]) > toolbox > #toolbar2 {
   background-image: url(chrome://browser/skin/bookmark_toolbar_background-inactive.png);
 }

@@ -18,6 +18,7 @@ limitations under the License.
 <?xml-stylesheet href="chrome://global/skin" type="text/css"?>
 <?xml-stylesheet href="chrome://global/content/xul.css" type="text/css"?>
 <?xml-stylesheet href="chrome://selenium-ide/skin/selenium-ide.css" type="text/css"?>
+<?xml-stylesheet href="chrome://selenium-ide-platform/skin/selenium-ide-platform.css" type="text/css"?>
 <?xul-overlay href="chrome://global/content/editMenuOverlay.xul"?>
 <?xul-overlay href="chrome://browser/content/baseMenuOverlay.xul"?>
 <?xul-overlay href="chrome://selenium-ide/content/selenium-ide-common.xul"?>
@@ -51,10 +52,10 @@ limitations under the License.
       <menu id="menu_edit" />
       <menu id="optionsMenu" />
     </menubar>
-    <toolbar>
+    <toolbar class="sidebarToolbar">
       <textbox id="baseURL" flex="1" tooltiptext="&baseURLTextbox.tooltip;"/>
     </toolbar>
-    <toolbar>
+    <toolbar class="sidebarToolbar">
       <toolbarbutton id="play-suite-button" label="Play TestSuite" class="icon" tooltiptext="&playButton.tooltip;" command="cmd_selenium_play_suite"/>
       <toolbarbutton id="play-button" label="Play" class="icon" tooltiptext="&playButton.tooltip;" command="cmd_selenium_play"/>
       <toolbarbutton id="pause-button" label="Pause" class="icon pause" tooltiptext="&pauseButton.tooltip;" command="cmd_selenium_pause"/>
@@ -65,7 +66,7 @@ limitations under the License.
       <toolbarseparator />
       <toolbarbutton id="record-button" label="Record" class="icon" tooltiptext="&recordButton.tooltip;" checked="true" onclick="this.checked = !this.checked" oncommand="window.editor.toggleRecordingEnabled(this.checked)"/>
     </toolbar>
-    <toolbar>
+    <toolbar class="sidebarToolbar">
       <stack id="speedSliderBox" />
     </toolbar>
   </toolbox>
