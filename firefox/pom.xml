@@ -46,7 +46,7 @@
                         <configuration>
                             <tasks>
                                 <mkdir dir="target/classes" />
-                                <zip destfile="target/classes/fxdriver.xpi" basedir="src/extension" excludes="**/.svn/**" />
+                                <zip destfile="target/classes/webdriver-extension.zip" basedir="src/extension" excludes="**/.svn/**" />
                             </tasks>
                         </configuration>
                         <goals>
