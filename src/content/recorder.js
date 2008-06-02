@@ -185,7 +185,6 @@ Recorder.prototype.deregister = function(observer) {
 	}
 	if (this.observers.length == 0) {
 		this.detach();
-        this.log.info("p=" + this.window[Recorder.WINDOW_RECORDER_PROPERTY]);
         this.window[Recorder.WINDOW_RECORDER_PROPERTY] = undefined;
         if (this.window.wrappedJSObject) {
             this.window.wrappedJSObject[Recorder.WINDOW_RECORDER_PROPERTY] = undefined;
