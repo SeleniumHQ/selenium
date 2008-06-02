@@ -64,7 +64,6 @@ Recorder.prototype.reattachWindowMethods = function() {
 		return result;
 	}
 	window.open = function(url, windowName, windowFeatures, replaceFlag) {
-        dump("window.open: " + self.openCalled + " originalOpen: " + self.originalOpen + " window: " + window + " url: " + url + "\n");
 		if (self.openCalled) {
 			// stop the recursion called by modifyWindowToRecordPopUpDialogs
 			return self.originalOpen.call(window, url, windowName, windowFeatures, replaceFlag);
