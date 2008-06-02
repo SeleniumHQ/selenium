@@ -17,6 +17,10 @@
 
 package com.googlecode.webdriver.ie;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -181,11 +185,50 @@ public class InternetExplorerDriver implements WebDriver, SearchContext,
 
     private void startCom() {
         if (!comStarted) {
-            System.loadLibrary("InternetExplorerDriver");
+            loadLibrary();
             startComNatively();
             comStarted = true;
         }
     }
+
+	private void loadLibrary() {
+		try {
+			System.loadLibrary("InternetExplorerDriver");
+		} catch (UnsatisfiedLinkError e) {
+            File dll = writeResourceToDisk("InternetExplorerDriver.dll");
+            System.load(dll.getAbsolutePath());
+        }
+	}
+
+	private File writeResourceToDisk(String resourceName) throws UnsatisfiedLinkError {
+		InputStream is = InternetExplorerDriver.class.getResourceAsStream(resourceName);
+		if (is == null) 
+			is = InternetExplorerDriver.class.getResourceAsStream("/" + resourceName);
+		
+        FileOutputStream fos = null;
+        
+		try {
+		    File dll = File.createTempFile("webdriver", null);
+		    dll.deleteOnExit();
+		    fos = new FileOutputStream(dll);
+		    
+		    int count;
+		    byte[] buf = new byte[4096];
+		    while ((count = is.read(buf, 0, buf.length)) > 0) {
+		        fos.write(buf, 0, count);
+		    }
+		    
+		    return dll;
+		} catch(IOException e2) {
+		    throw new UnsatisfiedLinkError("Cannot create temporary DLL: " + e2.getMessage());
+		}
+		finally {
+		    try { is.close(); } catch(IOException e2) { }
+		    if (fos != null) {
+		        try { fos.close(); } catch(IOException e2) { }
+		    }
+		}
+	}
 
     private native void startComNatively();
 

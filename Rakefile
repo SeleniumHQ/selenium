@@ -100,7 +100,9 @@ if windows? then
   Rake::Task[:build].enhance([:jobbie])
   Rake::Task[:test].enhance([:test_jobbie])
   Rake::Task[:test_jobbie].enhance([:jobbie])
-  Rake::Task[:jobbie].enhance %w(jobbie/build/webdriver-jobbie.dll)
+  Rake::Task['jobbie/build/webdriver-jobbie.jar'].enhance %w(jobbie/build/webdriver-jobbie.dll) do
+	sh "cd jobbie/build && jar uvf webdriver-jobbie.jar InternetExplorerDriver.dll"
+  end
 end
 
 if mac? then
@@ -122,12 +124,35 @@ task :generate_headers => [:jobbie] do
   sh cmd, :verbose => true
 end
 
+file 'firefox/build/webdriver-extension.zip' => FileList['firefox/src/extension/**'] do
+  begin
+	mkdir_p 'firefox/build'
+  rescue
+  end
+
+  if windows? then
+    sh "cd firefox/src/extension && jar cMvf ../../build/webdriver-extension.zip *"
+  else
+	sh "cd firefox/src/extension && zip -0r ../../build/webdriver-extension.zip * -x \*.svn\*"
+  end
+end
+
+task 'firefox/build/webdriver-firefox.jar' => 'firefox/build/webdriver-extension.zip'
+
+task :firefox do
+  sh "cd firefox/build && jar uvf webdriver-firefox.jar webdriver-extension.zip"
+end
+
+
 def javac(args)
   # mandatory args  
   out = (args[:jar] or raise 'javac: please specify the :jar parameter')
   source_patterns = (args[:sources] or raise 'javac: please specify the :sources parameter')
   sources = FileList.new(source_patterns)
   raise("No source files found at #{sources.join(', ')}") if sources.empty?
+  
+  # We'll start with just one thing now
+  extra_resource = args[:resources]
   
   puts "Building: #{out}"
   
@@ -158,6 +183,11 @@ def javac(args)
   end
   
   sh compile_string, :verbose => false
+  
+  # Copy the resource to the target_dir
+  if extra_resource then
+    cp extra_resource, target_dir
+  end
   
   jar_string = "jar cf #{out} -C #{target_dir} ."
   sh jar_string, :verbose => false
