@@ -242,6 +242,11 @@ tab label {
   min-width: 13px;
 }
 
+#speedSliderBox thumb > gripper {
+  /* hide gripper image on Windows */
+  -moz-appearance: none;
+}
+
 #tableViewUnavailable {
   -moz-opacity:0.8;
 }

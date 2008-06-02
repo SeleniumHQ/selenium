@@ -56,8 +56,9 @@ limitations under the License.
       <menu id="optionsMenu" />
       <menu id="windowMenu"/>
       <menu id="helpMenu">
-        <menupopup>
+        <menupopup id="menu_HelpPopup">
           <menuitem label="UI-Element Documentation" oncommand="openTabOrWindow('chrome://selenium-ide/content/ui-doc.html')" />
+	  <menuseparator/>
         </menupopup>
       </menu>
       <menupopup id="menu_ToolsPopup"/> <!-- for Mac -->
