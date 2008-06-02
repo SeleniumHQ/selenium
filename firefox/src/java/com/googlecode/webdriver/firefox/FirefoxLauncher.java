@@ -17,7 +17,7 @@ public class FirefoxLauncher {
         else if (args.length == 1)
             launcher.createBaseWebDriverProfile(args[0]);
         else
-        	launcher.createBaseWebDriverProfile(args[0], Integer.parseInt(args[1]));
+            launcher.createBaseWebDriverProfile(args[0], Integer.parseInt(args[1]));
     }
 
     public void createBaseWebDriverProfile() throws IOException {

@@ -1,21 +1,34 @@
 package com.googlecode.webdriver.firefox;
 
 import com.googlecode.webdriver.firefox.internal.Cleanly;
+import com.googlecode.webdriver.firefox.internal.FileHandler;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Writer;
 import java.text.MessageFormat;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
-import java.lang.reflect.Method;
+import java.util.zip.ZipInputStream;
+
+import javax.xml.XMLConstants;
+import javax.xml.namespace.NamespaceContext;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
 
 public class FirefoxProfile {
     private static final String EXTENSION_NAME = "fxdriver@googlecode.com";
@@ -50,35 +63,152 @@ public class FirefoxProfile {
             throw new RuntimeException(String.format("Cannot create custom profile extensions directory: %s", extensionsDir));
     }
 
-    public void addWebDriverExtensionIfNeeded(boolean forceCreation) throws IOException {
+    protected void addWebDriverExtensionIfNeeded(boolean forceCreation) throws IOException {
         File extensionLocation = new File(extensionsDir, EXTENSION_NAME);
         if (!forceCreation && extensionLocation.exists())
             return;
 
         String home = System.getProperty("webdriver.firefox.development");
         if (home != null) {
+            System.out.println("Installing developer version");
             installDevelopmentExtension(home);
         } else {
-            installPrepackagedExtension(null);
+            addExtension(FirefoxProfile.class, "webdriver-extension.zip");
         }
 
         deleteExtensionsCacheIfItExists();
     }
 
-    public void installPrepackagedExtension(File extensionToInstall) {
-        throw new UnsupportedOperationException("We do not currently support installing extensions (including the WebDriver extension)");
+    public void addExtension(Class loadResourcesUsing, String loadFrom) throws IOException {
+      // Is loadFrom a file?
+      File file = new File(loadFrom);
+      if (file.exists()) {
+        addExtension(file);
+        return;
+      }
+
+      // Try and load it from the classpath
+      InputStream resource = loadResourcesUsing.getResourceAsStream(loadFrom);
+      if (resource == null && !loadFrom.startsWith("/")) {
+        resource = loadResourcesUsing.getResourceAsStream("/" + loadFrom);
+      }
+      if (resource == null) {
+        resource = FirefoxProfile.class.getResourceAsStream(loadFrom);
+      }
+      if (resource == null && !loadFrom.startsWith("/")) {
+        resource = FirefoxProfile.class.getResourceAsStream("/" + loadFrom);
+      }
+      if (resource == null) {
+        throw new FileNotFoundException("Cannot locate resource with name: " + loadFrom);
+      }
+
+      File root;
+      if (FileHandler.isZipped(loadFrom)) {
+        root = FileHandler.unzip(resource);
+      } else {
+        throw new RuntimeException("Will only install zipped extensions for now");
+      }
+
+      addExtension(root);
     }
 
-    public void installDevelopmentExtension(String home) throws IOException {
+  /**
+   * Attempt to add an extension to install into this instance.
+   *
+   * @param extensionToInstall
+   * @throws IOException
+   */
+  public void addExtension(File extensionToInstall) throws IOException {
+    if (!extensionToInstall.isDirectory() &&
+        !FileHandler.isZipped(extensionToInstall.getAbsolutePath())) {
+      throw new IOException("Can only install from a zip file, an XPI or a directory");
+    }
+
+    File root = obtainRootDirectory(extensionToInstall);
+
+    String id = readIdFromInstallRdf(root);
+
+    File extensionDirectory = new File(extensionsDir, id);
+
+    if (extensionDirectory.exists() && !FileHandler.delete(extensionDirectory)) {
+      throw new IOException("Unable to delete existing extension directory: " + extensionDirectory);
+    }
+
+    FileHandler.createDir(extensionDirectory);
+    FileHandler.makeWritable(extensionDirectory);
+    FileHandler.copyDir(root, extensionDirectory);
+  }
+
+  private String readIdFromInstallRdf(File root) {
+    try {
+      File installRdf = new File(root, "install.rdf");
+
+      DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+      factory.setNamespaceAware(true);
+      DocumentBuilder builder = factory.newDocumentBuilder();
+      Document doc = builder.parse(installRdf);
+
+      XPath xpath = XPathFactory.newInstance().newXPath();
+      xpath.setNamespaceContext(new NamespaceContext() {
+        public String getNamespaceURI(String prefix) {
+          if ("em".equals(prefix)) {
+            return "http://www.mozilla.org/2004/em-rdf#";
+          }
+
+          return XMLConstants.NULL_NS_URI;
+        }
+
+        public String getPrefix(String uri) {
+          throw new UnsupportedOperationException("getPrefix");
+        }
+
+        public Iterator getPrefixes(String uri) {
+          throw new UnsupportedOperationException("getPrefixes");
+        }
+      });
+
+      Node idNode = (Node) xpath.compile("//em:id").evaluate(doc, XPathConstants.NODE);
+
+      if (idNode == null) {
+        throw new RuntimeException(
+            "Cannot locate node containing extension id: " + installRdf.getAbsolutePath());
+      }
+
+      String id = idNode.getTextContent();
+
+      if (id == null || "".equals(id.trim())) {
+        throw new FileNotFoundException("Cannot install extension with ID: " + id);
+      }
+      return id;
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  private File obtainRootDirectory(File extensionToInstall) throws IOException {
+    File root = extensionToInstall;
+    if (!extensionToInstall.isDirectory()) {
+      BufferedInputStream bis =
+          new BufferedInputStream(new FileInputStream(extensionToInstall));
+      try {
+        root = FileHandler.unzip(bis);
+      } finally {
+        bis.close();
+      }
+    }
+    return root;
+  }
+
+  public void installDevelopmentExtension(String home) throws IOException {
         if (!home.endsWith("extension"))
             throw new RuntimeException("The given source directory does not look like a source " +
                     "directory for the extension: " + home);
 
-      if (!createDir(extensionsDir))
+      if (!FileHandler.createDir(extensionsDir))
         throw new IOException("Cannot create extensions directory: " + extensionsDir.getAbsolutePath());
 
       File writeTo = new File(extensionsDir, EXTENSION_NAME);
-        if (writeTo.exists() && !delete(writeTo)) {
+        if (writeTo.exists() && !FileHandler.delete(writeTo)) {
             throw new IOException("Cannot delete existing extensions directory: " +
                                   extensionsDir.getAbsolutePath());
         }
@@ -93,46 +223,6 @@ public class FirefoxProfile {
             Cleanly.close(writer);
         }
     }
-
-  protected boolean delete(File deleteMe) {
-    boolean deleted = true;
-
-    if (deleteMe.isDirectory()) {
-      for (File child : deleteMe.listFiles()) {
-        deleted &= delete(child);
-      }
-    }
-
-    return deleted && deleteMe.delete();
-  }
-
-  protected boolean createDir(File dir) throws IOException {
-    if ((dir.exists() || dir.mkdirs()) && dir.canWrite())
-      return true;
-
-    if (dir.exists()) {
-      setWritable(dir);
-      return dir.canWrite();
-    }
-
-    // Iterate through the parent directories until we find that exists,
-    // then sink down.
-    return createDir(dir.getParentFile());
-  }
-
-  protected void setWritable(File dir) throws IOException {
-    // This will work on Java 6+
-    Method setWritable = null;
-    try {
-      setWritable = File.class.getMethod("setWritable", Boolean.class);
-      setWritable.invoke(dir, Boolean.TRUE);
-    } catch (NoSuchMethodException e) {
-      throw new IOException("Cannot make directory writable: " + dir.getAbsolutePath());
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-  }
-
 
   public File getProfileDir() {
         return profileDir;
@@ -198,6 +288,7 @@ public class FirefoxProfile {
         // Normal settings to facilitate testing
         prefs.put("app.update.enabled", "false");
         prefs.put("browser.download.manager.showWhenStarting", "false");
+        prefs.put("browser.EULA.override", "true");
         prefs.put("browser.link.open_external", "2");
         prefs.put("browser.link.open_newwindow", "2");
         prefs.put("browser.search.update", "false");
@@ -273,46 +364,11 @@ public class FirefoxProfile {
         File to = new File(tmpDir, "webdriver-" + System.currentTimeMillis());
         to.mkdirs();
 
-        copy(profileDir, to);
+        FileHandler.copyDir(profileDir, to);
         FirefoxProfile profile = new FirefoxProfile(to);
         profile.setPort(port);
         profile.updateUserPrefs();
 
         return new FirefoxProfile(to);
-    }
-
-    protected void copy(File from, File to) {
-        String[] contents = from.list();
-        for (String child : contents) {
-            File toCopy = new File(from, child);
-            File target = new File(to, child);
-
-            if (toCopy.isDirectory()) {
-                target.mkdir();
-                copy(toCopy, target);
-            } else if (!".parentlock".equals(child) && !"parent.lock".equals(child)) {
-                copyFile(toCopy, target);
-            }
-        }
-    }
-
-    private void copyFile(File from, File to) {
-        BufferedOutputStream out = null;
-        BufferedInputStream in = null;
-        try {
-            out = new BufferedOutputStream(new FileOutputStream(to));
-            in = new BufferedInputStream(new FileInputStream(from));
-
-            int read = in.read();
-            while (read != -1) {
-                out.write(read);
-                read = in.read();
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } finally {
-            Cleanly.close(out);
-            Cleanly.close(in);
-        }
     }
 }

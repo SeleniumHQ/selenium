@@ -128,7 +128,7 @@ FirefoxDriver.prototype.selectElementUsingClassName = function(respond, name) {
 
       respond.send();
     } else {
-      this.selectElementUsingXPath(respond, "//*[contains(concat(' ',normalize-space(@" + attribute + "),' '),' " + name + " ')]");
+      this.selectElementUsingXPath(respond, "//*[contains(concat(' ',normalize-space(@class),' '),' " + name + " ')]");
     }
 };
 
@@ -152,7 +152,7 @@ FirefoxDriver.prototype.selectElementsUsingClassName = function(respond, name) {
       respond.response = response;
       respond.send();
     } else {
-      this.selectElementsUsingXPath(respond, "//*[contains(concat(' ',normalize-space(@" + attribute + "),' '),' " + name + " ')]");
+      this.selectElementsUsingXPath(respond, "//*[contains(concat(' ',normalize-space(@class),' '),' " + name + " ')]");
     }
 };
 

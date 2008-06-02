@@ -88,6 +88,10 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByClassName, Fi
     }
 
     public FirefoxDriver(FirefoxProfile profile, int port) {
+      if (profile == null) {
+        profile = new FirefoxProfile();
+      }
+
       try {
         profile.init();
       } catch (IOException e) {

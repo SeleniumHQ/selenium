@@ -34,7 +34,7 @@ task :install_firefox => [:firefox] do
   
   cmd = 'java'
   cmd += ' -cp ' + libs.join(File::PATH_SEPARATOR)
-  cmd += ' -Dwebdriver.firefox.development="' + extension_loc + '"' 
+  cmd += ' -Dwebdriver.firefox.development="' + extension_loc + '"'
   cmd += " -Dwebdriver.firefox.bin=\"#{ENV['firefox']}\" " unless ENV['firefox'].nil?
   cmd += ' com.googlecode.webdriver.firefox.FirefoxLauncher '
     
@@ -83,6 +83,9 @@ file 'jobbie/build/webdriver-jobbie.dll' => FileList['jobbie/src/csharp/**/*.cs'
 
   File.copy('jobbie/build/InternetExplorerDriver.dll', 'jobbie/lib/runtime')
 end
+
+task :test_firefox => :firefox
+
 
 def windows?
   RUBY_PLATFORM =~ /win32/i
