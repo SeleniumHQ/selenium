@@ -112,6 +112,50 @@ FirefoxDriver.prototype.selectElementUsingXPath = function(respond, xpath) {
     respond.send();
 };
 
+FirefoxDriver.prototype.selectElementUsingClassName = function(respond, name) {
+    var doc = Utils.getDocument(this.context);
+
+    if (doc["getElementsByClassName"]) {
+      var elements = doc.getElementsByClassName(name);
+      respond.context = this.context;
+
+      if (elements.length) {
+        respond.response = Utils.addToKnownElements(elements[0], this.context);
+      } else {
+        respond.isError = true;
+        respond.response = "Unable to find element with id '" + id + "'";
+      }
+
+      respond.send();
+    } else {
+      this.selectElementUsingXPath(respond, "//*[contains(concat(' ',normalize-space(@" + attribute + "),' '),' " + name + " ')]");
+    }
+};
+
+FirefoxDriver.prototype.selectElementsUsingClassName = function(respond, name) {
+    var doc = Utils.getDocument(this.context)
+
+    if (doc["getElementsByClassName"]) {
+      var result = doc.getElementsByClassName(name);
+
+      var response = "";
+      var element = result.iterateNext();
+      while (element) {
+          var index = Utils.addToKnownElements(element, this.context);
+          response += index + ",";
+          element = result.iterateNext();
+      }
+      // Strip the trailing comma
+      response = response.substring(0, response.length - 1);
+
+      respond.context = this.context;
+      respond.response = response;
+      respond.send();
+    } else {
+      this.selectElementsUsingXPath(respond, "//*[contains(concat(' ',normalize-space(@" + attribute + "),' '),' " + name + " ')]");
+    }
+};
+
 FirefoxDriver.prototype.selectElementUsingLink = function(respond, linkText) {
     var allLinks = Utils.getDocument(this.context).getElementsByTagName("A");
     var index;

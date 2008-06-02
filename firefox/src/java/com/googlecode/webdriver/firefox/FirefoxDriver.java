@@ -16,6 +16,7 @@ import com.googlecode.webdriver.internal.FindsByLinkText;
 import com.googlecode.webdriver.internal.FindsByXPath;
 import com.googlecode.webdriver.internal.OperatingSystem;
 import com.googlecode.webdriver.internal.ReturnedCookie;
+import com.googlecode.webdriver.internal.FindsByClassName;
 
 import org.json.JSONObject;
 import org.json.JSONException;
@@ -49,7 +50,7 @@ import java.util.Set;
  * When the driver starts, it will make a copy of the profile it is using, rather than using that profile directly.
  * This allows multiple instances of firefox to be started.
  */
-public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, FindsByXPath, SearchContext {
+public class FirefoxDriver implements WebDriver, FindsById, FindsByClassName, FindsByLinkText, FindsByXPath, SearchContext {
 	public static final String DEFAULT_PROFILE = "WebDriver";
 	public static final int DEFAULT_PORT = 7055;
 
@@ -181,21 +182,15 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
 
 
   public List<WebElement> findElementsByXPath(String using) {
-      String returnedIds = sendMessage(RuntimeException.class, "selectElementsUsingXPath", using);
-      List<WebElement> elements = new ArrayList<WebElement>();
-
-      if (returnedIds.length() == 0)
-          return elements;
-
-      String[] ids = returnedIds.split(",");
-      for (String id : ids) {
-          elements.add(new FirefoxWebElement(this, id));
-      }
-      return elements;
+      return findElements("selectElementsUsingXPath", using);
   }
 
   public List<WebElement> findElementsByClassName(String using) {
-	throw new UnsupportedOperationException("findElementsByClassName");
+    return findElements("selectElementsUsingClassName", using);
+  }
+
+  public WebElement findElementByClassName(String using) {
+    return findElement("selectElementUsingClassName", using);
   }
   
   public WebElement findElementByLinkText(String using) {
@@ -207,14 +202,24 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByLinkText, Fin
     return findElement("selectElementUsingXPath", using);
   }
 
-  public WebElement findElementByClassName(String using) {
-	throw new UnsupportedOperationException("findElementByClassName");
-  }
-  
   private WebElement findElement(String commandName, String argument) {
     String elementId = sendMessage(NoSuchElementException.class, commandName, argument);
 
     return new FirefoxWebElement(this, elementId);
+  }
+
+  private List<WebElement> findElements(String commandName, String argument) {
+    String returnedIds = sendMessage(RuntimeException.class, commandName, argument);
+    List<WebElement> elements = new ArrayList<WebElement>();
+
+    if (returnedIds.length() == 0)
+        return elements;
+
+    String[] ids = returnedIds.split(",");
+    for (String id : ids) {
+        elements.add(new FirefoxWebElement(this, id));
+    }
+    return elements;
   }
 
   public void setVisible(boolean visible) {

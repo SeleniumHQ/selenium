@@ -32,12 +32,16 @@ public abstract class By {
       return new By() {
         @Override
         public List<WebElement> findElements(SearchContext context) {
-          return ((FindsById) context).findElementsById(id);
+          if (context instanceof FindsById)
+        	return ((FindsById) context).findElementsById(id);
+          return ((FindsByXPath) context).findElementsByXPath("*[@id = '" + id + "']");
         }
 
         @Override
         public WebElement findElement(SearchContext context) {
-          return ((FindsById) context).findElementById(id);
+          if (context instanceof FindsById)
+            return ((FindsById) context).findElementById(id);
+          return ((FindsByXPath) context).findElementByXPath("*[@id = '" + id + "']");
         }
        
         public String toString() {
