@@ -56,6 +56,13 @@ MozillaBrowserBot.prototype.getReadyState = function(windowObject, currentDocume
     }
 };
 
+MozillaBrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify, browserBot) {
+    if (windowToModify.wrappedJSObject) {
+        windowToModify = windowToModify.wrappedJSObject;
+    }
+    return BrowserBot.prototype.modifyWindowToRecordPopUpDialogs.call(this, windowToModify, browserBot);
+}
+
 Selenium.prototype.doPause = function(waitTime) {
     currentTest.pauseInterval = waitTime;
 };

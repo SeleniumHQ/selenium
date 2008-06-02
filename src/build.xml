@@ -40,7 +40,7 @@
     <copy todir="content/selenium" overwrite="true">
       <fileset dir="content/selenium-src"/>
     </copy>
-    <copy todir="content/selenium-tests">
+    <copy todir="content/selenium-tests/tests">
       <fileset dir="${selenium.core.dir}/tests">
 	<include name="**"/>
       </fileset>

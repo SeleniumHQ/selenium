@@ -64,13 +64,17 @@ Recorder.prototype.reattachWindowMethods = function() {
 		return result;
 	}
 	window.open = function(url, windowName, windowFeatures, replaceFlag) {
+        dump("window.open: " + self.openCalled + " originalOpen: " + self.originalOpen + " window: " + window + " url: " + url + "\n");
 		if (self.openCalled) {
 			// stop the recursion called by modifyWindowToRecordPopUpDialogs
-			return self.originalOpen.call(self.window, url, windowName, windowFeatures, replaceFlag);
+			return self.originalOpen.call(window, url, windowName, windowFeatures, replaceFlag);
 		} else {
 			self.openCalled = true;
-			var result = self.windowMethods['open'].call(self.window, url, windowName, windowFeatures, replaceFlag);
+			var result = self.windowMethods['open'].call(window, url, windowName, windowFeatures, replaceFlag);
 			self.openCalled = false;
+            if (result.wrappedJSObject) {
+                result = result.wrappedJSObject;
+            }
 			setTimeout(Recorder.record, 0, self, 'waitForPopUp', windowName, "30000");
             for (var i = 0; i < self.observers.length; i++) {
                 if (self.observers[i].isSidebar) {
