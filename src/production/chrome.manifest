@@ -8,4 +8,4 @@ locale selenium-ide fr-FR jar:chrome/selenium-ide.jar!/locale/fr-FR/
 locale selenium-ide ja-JP jar:chrome/selenium-ide.jar!/locale/ja-JP/
 locale selenium-ide pt-BR jar:chrome/selenium-ide.jar!/locale/pt-BR/
 skin selenium-ide classic/1.0 jar:chrome/selenium-ide.jar!/skin/classic/
-skin selenium-ide-platform classic/1.0 skin/classic/platforms/ appversion>=3.0
+skin selenium-ide-platform classic/1.0 jar:chrome/selenium-ide.jar!/skin/classic/platforms/ appversion>=3.0
