@@ -8,7 +8,6 @@
 #include <comdef.h>
 #include <stdlib.h>
 #include <string>
-#include <dispex.h>
 #include <activscp.h>
 #include "jsxpath.h"
 #include "atlbase.h"
@@ -399,7 +398,7 @@ ElementWrapper* InternetExplorerDriver::selectElementByClassName(const wchar_t *
 			  token;
 			  token = wcstok_s( NULL, seps, &next_token) )
 		{
-			int lengthRead = next_token - token;
+			__w64 int lengthRead = next_token - token;
 			if(*next_token!=NULL) lengthRead--;
 			if(exactLength != lengthRead) continue;
 			if(0!=wcscmp(elementClassName, token)) continue;
@@ -417,14 +416,14 @@ void InternetExplorerDriver::waitForNavigateToFinish()
 	VARIANT_BOOL busy;
 	ie->get_Busy(&busy);
 	while (busy == VARIANT_TRUE) {
-		Sleep(100);
+		wait(100);
 		ie->get_Busy(&busy);
 	}
 
 	READYSTATE readyState;
 	ie->get_ReadyState(&readyState);
 	while (readyState != READYSTATE_COMPLETE) {
-		Sleep(50);
+		wait(50);
 		ie->get_ReadyState(&readyState);
 	}
 
@@ -478,7 +477,7 @@ void InternetExplorerDriver::waitForDocumentToComplete(IHTMLDocument2* doc)
 	std::wstring currentState = bstr2wstring(state);
 
 	while (currentState != L"complete") {
-		Sleep(50);
+		wait(50);
 		state.Empty();
 		doc->get_readyState(&state);
 		currentState = bstr2wstring(state);

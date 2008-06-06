@@ -62,7 +62,7 @@ void ElementWrapper::sendKeys(const std::wstring& newValue)
 	element2->focus();
 	
 	// Allow the element to actually get the focus
-	Sleep(100);
+	wait(100);
 
 	for (const wchar_t *p = newValue.c_str(); *p; ++p)
 	{
@@ -102,7 +102,7 @@ void ElementWrapper::sendKeys(const std::wstring& newValue)
 			keybd_event(VK_SHIFT, MapVirtualKey(VK_LSHIFT, 0), 0, 0);
 
 		keybd_event((BYTE) keyCode, mapped, 0, 0);
-		Sleep(10);
+		wait(10);
 		keybd_event((BYTE) keyCode, mapped, KEYEVENTF_KEYUP, 0);
 
 		if (needsShift)

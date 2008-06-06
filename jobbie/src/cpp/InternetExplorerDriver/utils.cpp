@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#include <ctime>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -46,6 +47,18 @@ jobject newJavaInternetExplorerDriver(JNIEnv* env, InternetExplorerDriver* drive
 	jmethodID cId = env->GetMethodID(clazz, "<init>", "(J)V");
 
 	return env->NewObject(clazz, cId, (jlong) driver);
+}
+
+void wait(long millis)
+{
+	clock_t end = clock() + millis;
+	while (clock() < end) 
+	{
+		MSG msg;
+		PeekMessage( &msg, NULL, 0, 0, PM_REMOVE );
+		TranslateMessage(&msg); 
+		DispatchMessage(&msg); 
+	}
 }
 
 static std::wstring stringify(int number)
