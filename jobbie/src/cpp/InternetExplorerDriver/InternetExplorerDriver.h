@@ -5,6 +5,7 @@
 #include <Exdisp.h>
 #include <mshtml.h>
 #include <string>
+#include <vector>
 #include "ElementWrapper.h"
 
 class ElementWrapper;
@@ -29,6 +30,8 @@ public:
 	void goForward();
 	void goBack();
 
+	ElementWrapper* selectElementByXPath(const wchar_t *xpath);
+	std::vector<ElementWrapper*>* selectElementsByXPath(const wchar_t *xpath);
 	ElementWrapper* selectElementById(const wchar_t *elementId);
 	ElementWrapper* selectElementByLink(const wchar_t *elementLink);
 	ElementWrapper* selectElementByName(const wchar_t *elementName);
@@ -43,10 +46,14 @@ public:
 
 	HWND bringToFront();
 
+	void executeScript(const wchar_t *script, VARIANT *result, bool tryAgain = true);
+
 private:
+	bool addEvaluateToDocument(int count);
 	void waitForDocumentToComplete(IHTMLDocument2* doc);
-	IeEventSink* sink;
 	void getDocument3(IHTMLDocument3 **pdoc);
+
+	IeEventSink* sink;
 	CComQIPtr<IWebBrowser2, &__uuidof(IWebBrowser2)> ie;
 	long currentFrame;
 
@@ -74,7 +81,7 @@ public:
 	STDMETHODIMP GetTypeInfo(UINT typeInfoId, LCID localeContextId, ITypeInfo** pointerToTypeInfo);
 
 private:
-	IWebBrowser2* ie;
+	CComPtr<IWebBrowser2> ie;
 	DWORD eventSinkCookie;
 };
 

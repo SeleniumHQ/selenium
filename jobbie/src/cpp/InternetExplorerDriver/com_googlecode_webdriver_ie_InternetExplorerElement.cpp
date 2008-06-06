@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include <ExDisp.h>
 #include "utils.h"
-#include "ElementNode.h"
 #include "ElementWrapper.h"
 #include <iostream>
 #include <vector>
@@ -21,22 +20,6 @@ ElementWrapper* getWrapper(JNIEnv *env, jobject obj)
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_createInternetExplorerElement
-  (JNIEnv *env, jclass clazz, jlong driverPointer, jobject elementNode)
-{
-	jclass cls = env->GetObjectClass(elementNode);
-	jfieldID fid = env->GetFieldID(cls, "nodePointer", "J");
-	jlong value = env->GetLongField(elementNode, fid);
-
-	ElementNode* rawNode = (ElementNode*) value;
-
-	ElementWrapper* wrapper = new ElementWrapper((InternetExplorerDriver*) driverPointer, rawNode->getDomNode());
-	clazz = env->FindClass("com/googlecode/webdriver/ie/InternetExplorerElement");
-	jmethodID cId = env->GetMethodID(clazz, "<init>", "(J)V");
-
-	return env->NewObject(clazz, cId, (jlong) wrapper);
-}
 
 JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_click
   (JNIEnv *env, jobject obj) 

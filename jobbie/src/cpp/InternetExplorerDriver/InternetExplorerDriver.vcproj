@@ -185,30 +185,6 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\AbstractNode.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\AttributeNode.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\com_googlecode_webdriver_ie_AbstractNode.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\com_googlecode_webdriver_ie_AttributeNode.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\com_googlecode_webdriver_ie_DocumentNode.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\com_googlecode_webdriver_ie_ElementNode.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\com_googlecode_webdriver_ie_InternetExplorerDriver.cpp"
 				>
 			</File>
@@ -217,31 +193,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\com_googlecode_webdriver_ie_TextNode.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\CommentNode.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\DocumentNode.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ElementNode.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\ElementWrapper.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\InternetExplorerDriver.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Node.cpp"
 				>
 			</File>
 			<File
@@ -265,10 +221,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\TextNode.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\utils.cpp"
 				>
 			</File>
@@ -283,51 +235,11 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\AbstractNode.h"
-				>
-			</File>
-			<File
-				RelativePath=".\AttributeNode.h"
-				>
-			</File>
-			<File
-				RelativePath=".\com_googlecode_webdriver_ie_AbstractNode.h"
-				>
-			</File>
-			<File
-				RelativePath=".\com_googlecode_webdriver_ie_AttributeNode.h"
-				>
-			</File>
-			<File
-				RelativePath=".\com_googlecode_webdriver_ie_DocumentNode.h"
-				>
-			</File>
-			<File
-				RelativePath=".\com_googlecode_webdriver_ie_ElementNode.h"
-				>
-			</File>
-			<File
 				RelativePath=".\com_googlecode_webdriver_ie_InternetExplorerDriver.h"
 				>
 			</File>
 			<File
 				RelativePath=".\com_googlecode_webdriver_ie_InternetExplorerElement.h"
-				>
-			</File>
-			<File
-				RelativePath=".\com_googlecode_webdriver_ie_TextNode.h"
-				>
-			</File>
-			<File
-				RelativePath=".\CommentNode.h"
-				>
-			</File>
-			<File
-				RelativePath=".\DocumentNode.h"
-				>
-			</File>
-			<File
-				RelativePath=".\ElementNode.h"
 				>
 			</File>
 			<File
@@ -339,15 +251,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Node.h"
-				>
-			</File>
-			<File
 				RelativePath=".\stdafx.h"
-				>
-			</File>
-			<File
-				RelativePath=".\TextNode.h"
 				>
 			</File>
 			<File

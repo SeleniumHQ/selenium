@@ -1,11 +1,9 @@
 // This is the main DLL file.
 
 #include "stdafx.h"
-#include <ExDisp.h>
 #include "utils.h"
 #include "InternetExplorerDriver.h"
 #include "ElementWrapper.h"
-#include "DocumentNode.h"
 #include <iostream>
 
 using namespace std;
@@ -87,6 +85,57 @@ JNIEXPORT jstring JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDrive
 {
 	InternetExplorerDriver* ie = getIe(env, obj);
 	return wstring2jstring(env, ie->getTitle());
+}
+
+JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_selectElementByXPath
+  (JNIEnv *env, jobject obj, jstring xpath)
+{
+	InternetExplorerDriver *ie = getIe(env, obj);
+	wchar_t* converted = (wchar_t *)env->GetStringChars(xpath, 0);
+
+	try {
+		ElementWrapper* wrapper = ie->selectElementByXPath(converted);
+		env->ReleaseStringChars(xpath, (const jchar*) converted);	
+
+		if (!wrapper)
+			throwNoSuchElementException(env, "Cannot find element by XPath");
+
+		jclass clazz = env->FindClass("com/googlecode/webdriver/ie/InternetExplorerElement");
+		jmethodID cId = env->GetMethodID(clazz, "<init>", "(J)V");
+
+		return env->NewObject(clazz, cId, (jlong) wrapper);
+	} catch (const char *message) {
+		throwNoSuchElementException(env, message);
+		return NULL;
+	} 
+	env->ReleaseStringChars(xpath, (const jchar*) converted);
+}
+
+JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_selectElementsByXPath
+  (JNIEnv *env, jobject obj, jstring xpath, jobject list)
+{
+	jclass listClass = env->FindClass("java/util/List");
+	jmethodID addId = env->GetMethodID(listClass, "add", "(Ljava/lang/Object;)Z");
+
+	jclass ieeClass = env->FindClass("com/googlecode/webdriver/ie/InternetExplorerElement");
+	jmethodID cId = env->GetMethodID(ieeClass, "<init>", "(J)V");
+
+	InternetExplorerDriver *ie = getIe(env, obj);
+	wchar_t* converted = (wchar_t *)env->GetStringChars(xpath, 0);
+
+	const std::vector<ElementWrapper*>* elements = ie->selectElementsByXPath(converted);
+	env->ReleaseStringChars(xpath, (const jchar*) converted);
+
+	std::vector<ElementWrapper*>::const_iterator end = elements->end();
+	std::vector<ElementWrapper*>::const_iterator cur = elements->begin();
+
+	while(cur < end)
+	{
+		ElementWrapper* wrapper = *cur;
+		jobject wrapped = env->NewObject(ieeClass, cId, wrapper);
+		env->CallVoidMethod(list, addId, wrapped);
+		cur++;
+	}
 }
 
 JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_selectElementById
@@ -172,20 +221,6 @@ JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDrive
 		throwNoSuchElementException(env, message);
 		return NULL;
 	} 
-}
-
-JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_getDocument
-  (JNIEnv *env, jobject obj)
-{
-	InternetExplorerDriver *ie = getIe(env, obj);
-	CComPtr<IHTMLDocument2> doc;
-	ie->getDocument(&doc);
-
-	DocumentNode *node = new DocumentNode(doc);
-	jclass clazz = env->FindClass("com/googlecode/webdriver/ie/DocumentNode");
-	jmethodID cId = env->GetMethodID(clazz, "<init>", "(J)V");
-
-	return env->NewObject(clazz, cId, (jlong) node);
 }
 
 JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_deleteStoredObject

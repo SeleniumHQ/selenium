@@ -1,14 +1,14 @@
 package com.googlecode.webdriver.ie;
 
-import com.googlecode.webdriver.By;
-import com.googlecode.webdriver.WebElement;
-import com.googlecode.webdriver.RenderedWebElement;
-import com.googlecode.webdriver.SearchContext;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.awt.Dimension;
 import java.awt.Point;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.googlecode.webdriver.By;
+import com.googlecode.webdriver.RenderedWebElement;
+import com.googlecode.webdriver.SearchContext;
+import com.googlecode.webdriver.WebElement;
 
 public class InternetExplorerElement implements RenderedWebElement, SearchContext {
     @SuppressWarnings("unused")
@@ -18,8 +18,6 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
     private InternetExplorerElement(long nodePointer) {
         this.nodePointer = nodePointer;
     }
-
-    protected static native InternetExplorerElement createInternetExplorerElement(long ieWrapper, ElementNode node);
 
     public native void click();
 

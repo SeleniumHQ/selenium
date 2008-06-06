@@ -6,10 +6,6 @@
 
 #include <jni.h>
 
-#include "CommentNode.h"
-#include "ElementNode.h"
-#include "Node.h"
-#include "TextNode.h"
 #include "utils.h"
 
 void throwException(JNIEnv *env, const char* className, const char *message)
@@ -52,26 +48,6 @@ jobject newJavaInternetExplorerDriver(JNIEnv* env, InternetExplorerDriver* drive
 	return env->NewObject(clazz, cId, (jlong) driver);
 }
 
-jobject initJavaXPathNode(JNIEnv* env, Node* node) 
-{
-	if (node == NULL)
-		return NULL;
-
-	jclass clazz;
-	if (dynamic_cast<TextNode*>(node)) 
-	{
-		clazz = env->FindClass("com/googlecode/webdriver/ie/TextNode");
-	} else if (dynamic_cast<CommentNode*>(node))
-	{
-		clazz = env->FindClass("com/googlecode/webdriver/ie/CommentNode");
-	} else
-	{
-		clazz = env->FindClass("com/googlecode/webdriver/ie/ElementNode");
-	}
-	jmethodID cId = env->GetMethodID(clazz, "<init>", "(J)V");
-	return env->NewObject(clazz, cId, (jlong) node);
-}
-
 static std::wstring stringify(int number)
 {
 	std::wostringstream o;
@@ -96,16 +72,19 @@ std::wstring variant2wchar(VARIANT toConvert)
 		case VT_NULL:
 			// TODO(shs96c): This should really return NULL.
 			return L"";
+
+		// This is lame
+		case VT_DISPATCH:
+			return L"";
 	}
 
 	// Fine. Attempt to coerce to a string
-	VARIANT dest;
 	HRESULT res = VariantChangeType(&toConvert, &toConvert, VARIANT_ALPHABOOL, VT_BSTR);
 	if (!SUCCEEDED(res)) {
 		return L"";
 	}
 	
-	return bstr2wstring(dest.bstrVal);
+	return bstr2wstring(toConvert.bstrVal);
 }
 
 std::wstring bstr2wstring(BSTR from) 

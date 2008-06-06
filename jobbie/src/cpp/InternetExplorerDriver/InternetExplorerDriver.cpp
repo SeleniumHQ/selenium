@@ -8,7 +8,9 @@
 #include <comdef.h>
 #include <stdlib.h>
 #include <string>
-
+#include <dispex.h>
+#include <activscp.h>
+#include "jsxpath.h"
 #include "atlbase.h"
 #include "atlstr.h"
 
@@ -19,7 +21,7 @@ long queryCount = 0;
 
 InternetExplorerDriver::InternetExplorerDriver()
 {
-	if (!SUCCEEDED(CoCreateInstance(CLSID_InternetExplorer, NULL, CLSCTX_LOCAL_SERVER, IID_IWebBrowser2, (void**)&ie))) 
+	if (!SUCCEEDED(ie.CoCreateInstance(CLSID_InternetExplorer))) 
 	{
 		throw "Cannot create InternetExplorer instance";
 	}
@@ -107,6 +109,123 @@ void InternetExplorerDriver::goForward()
 void InternetExplorerDriver::goBack()
 {
 	ie->GoBack();
+}
+
+bool InternetExplorerDriver::addEvaluateToDocument(int count)
+{
+	// Is there an evaluate method on the document?
+	CComPtr<IHTMLDocument2> doc;
+	getDocument(&doc);
+
+	if (!doc) {
+		return false;
+	}
+
+	CComPtr<IDispatch> evaluate;
+	DISPID dispid;
+	OLECHAR FAR* szMember = L"__webdriver_evaluate";
+    HRESULT hr = doc->GetIDsOfNames(IID_NULL, &szMember, 1, LOCALE_USER_DEFAULT, &dispid);
+	if (SUCCEEDED(hr)) {
+		return true;
+	}
+
+	// Create it if necessary
+	CComPtr<IHTMLWindow2> win;
+	doc->get_parentWindow(&win);
+	
+	std::wstring script;
+	for (int i = 0; XPATHJS[i]; i++) {
+		script += XPATHJS[i];
+	}
+	executeScript(script.c_str(), NULL);
+	
+	hr = doc->GetIDsOfNames(IID_NULL, &szMember, 1, LOCALE_USER_DEFAULT, &dispid);
+	if (FAILED(hr)) {
+		if (count < 1) {
+			return addEvaluateToDocument(++count);
+		}
+	
+		return false;
+	}
+	return true;
+}
+
+ElementWrapper* InternetExplorerDriver::selectElementByXPath(const wchar_t *xpath)
+{
+	if (!addEvaluateToDocument(0))
+		return NULL;
+
+	std::wstring expr(L"var path = \"");
+	expr += xpath;
+	expr += L"\"; function __webdriver_private() { var res = document.__webdriver_evaluate(path, document, null, 7, null); return res.snapshotItem(0); }; __webdriver_private();";
+
+	CComVariant result;
+	executeScript(expr.c_str(), &result);
+
+	if (result.vt == VT_DISPATCH) {
+		CComQIPtr<IHTMLDOMNode> e(result.pdispVal);
+		
+		if (e) {
+			return new ElementWrapper(this, e);
+		}
+	}
+
+	throw "Cannot find element";
+}
+
+std::vector<ElementWrapper*>* InternetExplorerDriver::selectElementsByXPath(const wchar_t *xpath)
+{
+	std::vector<ElementWrapper*> *toReturn = new std::vector<ElementWrapper*>();
+
+	if (!addEvaluateToDocument(0))
+		return toReturn;
+	
+	std::wstring expr(L"var path = \"");
+	expr += xpath;
+	expr += L"\"; function __webdriver_private() { var res = document.__webdriver_evaluate(path, document, null, 7, null); return res; }; __webdriver_private();";
+
+	CComVariant result;
+	executeScript(expr.c_str(), &result);
+
+	// At this point, the result should contain a JS array of nodes.
+	if (result.vt != VT_DISPATCH) {
+		return toReturn;
+	}
+
+	CComPtr<IHTMLDocument2> doc;
+	getDocument(&doc);
+
+	CComPtr<IDispatch> scriptEngine;
+	doc->get_Script(&scriptEngine);
+
+	CComPtr<IDispatch> jsArray = result.pdispVal;
+	DISPID shiftId;
+	OLECHAR FAR* szMember = L"iterateNext";
+	result.pdispVal->GetIDsOfNames(IID_NULL, &szMember, 1, LOCALE_USER_DEFAULT, &shiftId);
+
+	DISPID lengthId;
+	szMember = L"snapshotLength";
+	result.pdispVal->GetIDsOfNames(IID_NULL, &szMember, 1, LOCALE_USER_DEFAULT, &lengthId);
+
+	DISPPARAMS parameters = {0};
+    parameters.cArgs = 0;
+	EXCEPINFO exception;
+
+	CComVariant lengthResult;
+	result.pdispVal->Invoke(lengthId, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_PROPERTYGET, &parameters, &lengthResult, &exception, 0);
+
+	long length = lengthResult.lVal;
+
+	for (int i = 0; i < length; i++) {
+		CComVariant shiftResult;
+		result.pdispVal->Invoke(shiftId, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &parameters, &shiftResult, &exception, 0);
+		if (shiftResult.vt == VT_DISPATCH) {
+			CComQIPtr<IHTMLDOMNode> node(shiftResult.pdispVal);
+			toReturn->push_back(new ElementWrapper(this, node));
+		}
+	}
+
+	return toReturn;
 }
 
 ElementWrapper* InternetExplorerDriver::selectElementById(const wchar_t *elementId) 
@@ -486,10 +605,71 @@ void InternetExplorerDriver::getDocument3(IHTMLDocument3 **pdoc)
 	*pdoc = doc.Detach();
 }
 
+void InternetExplorerDriver::executeScript(const wchar_t *script, VARIANT *result, bool tryAgain)
+{
+	CComPtr<IHTMLDocument2> doc;
+	getDocument(&doc);
+
+	CComPtr<IDispatch> scriptEngine;
+	doc->get_Script(&scriptEngine);
+
+	bool added = false;
+
+	DISPID dispid;
+	OLECHAR FAR* szMember = L"eval";
+    HRESULT hr = scriptEngine->GetIDsOfNames(IID_NULL, &szMember, 1, LOCALE_USER_DEFAULT, &dispid);
+	if (FAILED(hr)) { 
+		added = true;
+		// Start the script engine by adding a script tag to the page
+		CComPtr<IHTMLElement> scriptTag;
+		doc->createElement(L"<span>", &scriptTag);
+		CComBSTR addMe(L"<span id='__webdriver_private_span'>&nbsp;<script defer></script></span>");
+		scriptTag->put_innerHTML(addMe);
+
+		CComPtr<IHTMLElement> body;
+		doc->get_body(&body);
+		CComQIPtr<IHTMLDOMNode> node(body);
+		CComQIPtr<IHTMLDOMNode> scriptNode(scriptTag);
+
+		CComPtr<IHTMLDOMNode> generatedChild;
+		node->appendChild(scriptNode, &generatedChild);
+
+		scriptEngine.Release();
+		doc->get_Script(&scriptEngine);
+		hr = scriptEngine->GetIDsOfNames(IID_NULL, &szMember, 1, LOCALE_USER_DEFAULT, &dispid);
+
+		if (FAILED(hr)) {
+			// Now remove the temporary tag from the document, leaving it unsullied
+			if (tryAgain)
+				executeScript(L"var s = document.getElementById('__webdriver_private_span'); s.outerHTML=''", NULL, false);
+			return;
+		}
+	}
+
+	CComVariant script_variant(script);
+	DISPPARAMS parameters = {0};
+    parameters.cArgs = 1;
+    parameters.rgvarg = &script_variant;
+	EXCEPINFO exception;
+
+	hr = scriptEngine->Invoke(dispid, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &parameters, result, &exception, 0);
+	if (FAILED(hr)) {
+	  if (DISP_E_EXCEPTION == hr) {
+		  wcerr << "Exception message was: " << exception.bstrDescription << endl;
+	  }
+	  
+	  if (result)
+		  result->vt = VT_EMPTY;
+	}
+
+	if (added) {
+		executeScript(L"var s = document.getElementById('__webdriver_private_span'); s.outerHTML=''", NULL, false);
+	}
+}
+
 IeEventSink::IeEventSink(IWebBrowser2* ie) 
 {
 	this->ie = ie;
-	this->ie->AddRef();
 
 //	HRESULT hr = AtlAdvise(this->ie, (IUnknown*) this, DIID_DWebBrowserEvents2, &eventSinkCookie);
 }
