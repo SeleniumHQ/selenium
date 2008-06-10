@@ -44,7 +44,7 @@ public:
 	std::wstring getCookies();
 	void addCookie(const wchar_t *cookieString);
 
-	HWND bringToFront();
+	HWND getHwnd();
 
 	void executeScript(const wchar_t *script, VARIANT *result, bool tryAgain = true);
 

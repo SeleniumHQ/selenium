@@ -28,7 +28,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
 
     public void testShouldReturnWhenGettingAUrlThatDoesNotResolve() {
         // Of course, we're up the creek if this ever does get registered
-        driver.get("http://www.thisurldoesnotexist.com/");
+        driver.get("http://www.thisurldoesnotexist.comx/");
     }
 
     public void testShouldReturnWhenGettingAUrlThatDoesNotConnect() {

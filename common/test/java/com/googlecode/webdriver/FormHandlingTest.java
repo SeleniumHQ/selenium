@@ -5,6 +5,8 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 
+import java.io.File;
+
 public class FormHandlingTest extends AbstractDriverTestCase {
 	public void testShouldClickOnSubmitInputElements() {
 		driver.get(formPage);
@@ -157,12 +159,18 @@ public class FormHandlingTest extends AbstractDriverTestCase {
 	}
 
 	@Ignore(value = "safari", reason = "Test fails")
-	public void testShouldBeAbleToAlterTheContentsOfAFileUploadInputElement() {
+	public void testShouldBeAbleToAlterTheContentsOfAFileUploadInputElement() throws Exception {
 		driver.get(formPage);
 		WebElement uploadElement = driver.findElement(By.id("upload"));
 		assertThat(uploadElement.getValue(), equalTo(""));
-		uploadElement.sendKeys("Cheese/\\/");
-		assertThat(uploadElement.getValue(), equalTo("Cheese/\\/"));
+		
+		File file = File.createTempFile("test", "txt");
+		file.deleteOnExit();
+		
+		uploadElement.sendKeys(file.getAbsolutePath());
+		
+		File value = new File(uploadElement.getValue());
+		assertThat(value.getCanonicalPath(), equalTo(file.getCanonicalPath()));
 	}
 
 	public void testShouldThrowAnExceptionWhenSelectingAnUnselectableElement() {

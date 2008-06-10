@@ -8,7 +8,8 @@ public enum Keys implements CharSequence {
 	ARROW_LEFT('\uE001'),
 	ARROW_UP('\uE002'),
 	ARROW_RIGHT('\uE003'),
-	ARROW_DOWN('\uE004')
+	ARROW_DOWN('\uE004'),
+	DELETE('\uE005'),
 	;
 
     private Keys(char keyCode) {

@@ -18,9 +18,8 @@ public class SingleTestSuite {
               .usingDriver(IE)
               .keepDriverInstance()
               .includeJavascriptTests()
-              .onlyRun("ElementAttributeTest")
-              .method("testShouldReturnValueOfClassAttributeOfAnElement")
-  //            .method("testShouldFindElementsByClass")
+              .onlyRun("FormHandlingTest")
+              .method("testShouldBeAbleToEnterTextIntoATextAreaBySettingItsValue")
 //                        .leaveRunningAfterTest()
               .create();
 	}

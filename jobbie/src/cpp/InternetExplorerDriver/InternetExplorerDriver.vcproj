@@ -251,6 +251,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\jsxpath.h"
+				>
+			</File>
+			<File
 				RelativePath=".\stdafx.h"
 				>
 			</File>

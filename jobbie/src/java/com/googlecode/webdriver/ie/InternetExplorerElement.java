@@ -27,7 +27,7 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
         List<WebElement> toReturn = new ArrayList<WebElement>();
         getChildrenOfTypeNatively(toReturn, tagName);
         return toReturn;
-    }
+    }	
 
     public native String getText();
 

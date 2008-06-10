@@ -28,7 +28,6 @@ InternetExplorerDriver::InternetExplorerDriver()
 	closeCalled = false;
 	currentFrame = -1;
 
-	bringToFront();
 //	sink = new IeEventSink(ie);
 }
 
@@ -156,7 +155,7 @@ ElementWrapper* InternetExplorerDriver::selectElementByXPath(const wchar_t *xpat
 
 	std::wstring expr(L"var path = \"");
 	expr += xpath;
-	expr += L"\"; function __webdriver_private() { var res = document.__webdriver_evaluate(path, document, null, 7, null); return res.snapshotItem(0); }; __webdriver_private();";
+	expr += L"\"; (function() { var res = document.__webdriver_evaluate(path, document, null, 7, null); return res.snapshotItem(0); })()";
 
 	CComVariant result;
 	executeScript(expr.c_str(), &result);
@@ -181,7 +180,7 @@ std::vector<ElementWrapper*>* InternetExplorerDriver::selectElementsByXPath(cons
 	
 	std::wstring expr(L"var path = \"");
 	expr += xpath;
-	expr += L"\"; function __webdriver_private() { var res = document.__webdriver_evaluate(path, document, null, 7, null); return res; }; __webdriver_private();";
+	expr += L"\"; (function () { var res = document.__webdriver_evaluate(path, document, null, 7, null); return res; })();";
 
 	CComVariant result;
 	executeScript(expr.c_str(), &result);
@@ -512,9 +511,8 @@ void InternetExplorerDriver::addCookie(const wchar_t *cookieString)
 	doc->put_cookie(cookie);
 }
 
-HWND InternetExplorerDriver::bringToFront() 
+HWND InternetExplorerDriver::getHwnd() 
 {
-	setVisible(true);
 	HWND hWnd;
 	ie->get_HWND(reinterpret_cast<SHANDLE_PTR*>(&hWnd));
 
@@ -670,12 +668,12 @@ IeEventSink::IeEventSink(IWebBrowser2* ie)
 {
 	this->ie = ie;
 
-//	HRESULT hr = AtlAdvise(this->ie, (IUnknown*) this, DIID_DWebBrowserEvents2, &eventSinkCookie);
+	AtlAdvise(this->ie, (IUnknown*) this, DIID_DWebBrowserEvents2, &eventSinkCookie);
 }
 
 IeEventSink::~IeEventSink() 
 {
-//	AtlUnadvise(ie, DIID_DWebBrowserEvents2, eventSinkCookie);
+	AtlUnadvise(ie, DIID_DWebBrowserEvents2, eventSinkCookie);
 }
 
 // IUnknown methods

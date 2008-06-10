@@ -46,17 +46,127 @@ std::wstring ElementWrapper::getValue()
 	return getAttribute(L"value");
 }
 
+const LPCTSTR windowNames[] = {
+	_T("TabWindowClass"),
+	_T("Shell DocObject View"),
+	_T("Internet Explorer_Server"),
+	NULL
+};
+
+// "Internet Explorer_Server" + 1
+#define LONGEST_NAME 25
+
+HWND getChildWindow(HWND hwnd, LPCTSTR name)
+{
+	TCHAR pszClassName[LONGEST_NAME]; 
+	HWND hwndtmp = GetWindow(hwnd, GW_CHILD);
+	while(hwndtmp != NULL) {
+		::GetClassName(hwndtmp, pszClassName, LONGEST_NAME);
+		if (lstrcmp(pszClassName, name) == 0)
+			return hwndtmp;
+		hwndtmp = GetWindow(hwndtmp, GW_HWNDNEXT);
+	}
+	return NULL;
+}
+
+HWND getIeServerWindow(HWND hwnd) 
+{
+  HWND iehwnd = hwnd;
+
+ for (int i = 0; windowNames[i] && iehwnd; i++) {
+	 iehwnd = getChildWindow(iehwnd, windowNames[i]);
+ }
+
+ return iehwnd;
+}
+
+const LPCTSTR fileDialogNames[] = {
+	_T("#32770"),
+	_T("ComboBoxEx32"),
+	_T("ComboBox"),
+	_T("Edit"),
+	NULL
+};
+
+struct fileData {
+	HWND hwnd;
+	const wchar_t* filename;
+};
+
+WORD WINAPI setFileValue(fileData* data) {
+	HWND parentWindow = data->hwnd;
+	const wchar_t* filename = data->filename;
+	HWND dialogHwnd = FindWindowW(fileDialogNames[0], NULL);
+
+	int lookFor = 5;
+	while (!dialogHwnd && lookFor) {
+		Sleep(200);
+		--lookFor;
+		dialogHwnd = FindWindowW(fileDialogNames[0], NULL);
+	}
+
+	if (!dialogHwnd) {
+		cout << "No dialog found" << endl;
+		return false;
+	}
+
+	wait(200);
+
+	HWND editHwnd = dialogHwnd;
+	for (int i = 1; fileDialogNames[i] && dialogHwnd; i++) {
+		editHwnd = getChildWindow(editHwnd, fileDialogNames[i]);
+	}
+
+	if (editHwnd) {
+		// Attempt to set the value, looping until we succeed.
+		size_t expected = wcslen(filename);
+		size_t curr = 0;
+
+		while (expected != curr) {
+			SendMessage(editHwnd, WM_SETTEXT, 0, (LPARAM) filename);
+			wait(1000);
+			curr = SendMessage(editHwnd, WM_GETTEXTLENGTH, 0, 0);
+		}
+
+		HWND openHwnd = FindWindowExW(dialogHwnd, NULL, L"Button", L"&Open");
+		if (openHwnd) {
+			SendMessage(openHwnd, WM_LBUTTONDOWN, 0, 0);
+			SendMessage(openHwnd, WM_LBUTTONUP, 0, 0);
+		}
+
+		return true;
+	} 
+
+	cout << "No edit found" << endl;
+	return false;
+}
+
 void ElementWrapper::sendKeys(const std::wstring& newValue)
 {
 	bool initialVis = ie->getVisible();
 	// Bring the IE window to the front.
-	HWND hWnd = ie->bringToFront();
+	HWND hWnd = ie->getHwnd();
+	HWND ieWindow = getIeServerWindow(hWnd);
 
 	VARIANT top;
 	top.vt = VT_BOOL;
 	top.boolVal = VARIANT_TRUE;
 
 	element->scrollIntoView(top);
+
+	CComQIPtr<IHTMLInputFileElement> file(element);
+	if (file) {
+		fileData d;
+		d.hwnd = ieWindow;
+		d.filename = newValue.c_str();
+
+		DWORD threadId;
+        CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)setFileValue, (void *)(&d), 0, &threadId);
+
+		element->click();
+		// We're now blocked until the dialog closes.
+		return;
+	}
 
 	CComQIPtr<IHTMLElement2> element2(element);
 	element2->focus();
@@ -82,36 +192,46 @@ void ElementWrapper::sendKeys(const std::wstring& newValue)
 	ARROW_DOWN('\uE004')
 */
 		int k = (int)c;
+		UINT scanCode;
 
 		if (k == 0xE001) {
 			keyCode = VK_LEFT;
+			scanCode = keyCode;
+			c = keyCode;
 		} else if (c == 0xE002) {
 			keyCode = VK_UP;
+			scanCode = keyCode;
+			c = keyCode;
 		} else if (c == 0xE003) {
 			keyCode = VK_RIGHT;
+			scanCode = keyCode;
+			c = keyCode;
 		} else if (k == 0xE004) {
 			keyCode = VK_DOWN;
+			scanCode = keyCode;
+			c = keyCode;
+		} else if (k == 0xE005) {
+			keyCode = VK_BACK;
+			scanCode = keyCode;
+			c = keyCode;
+		} else if (c == '\n') {
+			keyCode = VK_RETURN;
+			scanCode = keyCode;
+			c = keyCode;
 		} else {
 			keyCode = VkKeyScan(c);
 			needsShift = (keyCode & (1 << 8)) ? true : false;  // VK_LSHIFT
+			UINT scanCode = MapVirtualKeyW(c, 0);
 		}
 
-		UINT mapped = MapVirtualKeyW(keyCode, 0);
-
-		if (needsShift)
-			keybd_event(VK_SHIFT, MapVirtualKey(VK_LSHIFT, 0), 0, 0);
-
-		keybd_event((BYTE) keyCode, mapped, 0, 0);
-		wait(10);
-		keybd_event((BYTE) keyCode, mapped, KEYEVENTF_KEYUP, 0);
-
-		if (needsShift)
-			keybd_event(VK_SHIFT, MapVirtualKey(VK_LSHIFT, 0), KEYEVENTF_KEYUP, 0);
+		SendMessage(ieWindow, WM_KEYDOWN, scanCode, 0);
+		SendMessage(ieWindow, WM_CHAR, c, 0);
+		SendMessage(ieWindow, WM_KEYUP, scanCode, 0);
 	}
 
 	element2->blur();
 
-	ie->setVisible(initialVis);
+//	ie->setVisible(initialVis);
 }
 
 void ElementWrapper::clear()
@@ -125,12 +245,9 @@ void ElementWrapper::clear()
 	empty.bstrVal = (BSTR)emptyBstr;
 	element->setAttribute(valueAttributeName, empty, 0);
 
-	bool initialVis = ie->getVisible();
-	// Bring the IE window to the front.
-	HWND hWnd = ie->bringToFront();
+	HWND hWnd = ie->getHwnd();
 	LRESULT lr;
 	SendMessageTimeoutW(hWnd, WM_SETTEXT, 0, (LPARAM) L"", SMTO_ABORTIFHUNG, 3000, (DWORD*)&lr);
-	ie->setVisible(initialVis);
 }
 
 bool ElementWrapper::isSelected()
