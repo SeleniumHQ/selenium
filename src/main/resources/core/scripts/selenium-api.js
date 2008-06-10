@@ -1308,7 +1308,7 @@ Selenium.prototype.getEval = function(script) {
         if (null == result) return "null";
         return result;
     } catch (e) {
-        throw new SeleniumError("Threw an exception: " + e.message);
+        throw new SeleniumError("Threw an exception: " + extractExceptionMessage(e));
     }
 };
 
