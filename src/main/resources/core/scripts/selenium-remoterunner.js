@@ -202,9 +202,14 @@ objectExtend(RemoteRunner.prototype, {
                 cmdText += ', ' + command.value;
             }
         }
-        cmdText += ")";
+        cmdText += ")\n";
         var commandList = document.commands.commandList;
-        commandList.value += cmdText + "\n";
+        // DGF flush commandList on "open"
+        if (command.command == "open") {
+            commandList.value = cmdText;
+        } else {
+            commandList.value += cmdText;
+        }
         commandList.scrollTop = commandList.scrollHeight;
 
     },
