@@ -372,6 +372,10 @@ public class LauncherUtils {
 		// Disable "do you want to remember this password?"
 		out.println("user_pref('signon.rememberSignons', false);");
 
+        // Disable re-asking for license agreement (Firefox 3)
+        out.println("user_pref('browser.EULA.3.accepted', true);");
+        out.println("user_pref('browser.EULA.override', true);");
+
         // Disable any of the random self-updating crap
         out.println("user_pref('app.update.auto', false);");
         out.println("user_pref('app.update.enabled', false);");
