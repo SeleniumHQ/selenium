@@ -28,6 +28,7 @@ InternetExplorerDriver::InternetExplorerDriver()
 	closeCalled = false;
 	currentFrame = -1;
 
+	setVisible(true);
 //	sink = new IeEventSink(ie);
 }
 
@@ -428,12 +429,19 @@ void InternetExplorerDriver::waitForNavigateToFinish()
 
 	CComPtr<IDispatch> dispatch = NULL;
 	ie->get_Document(&dispatch);
-	IHTMLDocument2* doc = NULL;
-	dispatch->QueryInterface(__uuidof(IHTMLDocument2), (void**)&doc);
+
+	CComQIPtr<IHTMLDocument2> doc(dispatch);
 	
+	if (!doc) {
+		// Perhaps it's not an HTML page. Wait a tiny bit and return
+		wait(200);
+		return;
+	}
+
 	waitForDocumentToComplete(doc);
 
-	IHTMLFramesCollection2* frames = NULL;
+
+	CComPtr<IHTMLFramesCollection2> frames;
 	doc->get_frames(&frames);
 
 	if (frames != NULL) {
@@ -449,24 +457,33 @@ void InternetExplorerDriver::waitForNavigateToFinish()
 			VARIANT result;
 			frames->item(&index, &result);
 
-			IHTMLWindow2* window;
-			result.pdispVal->QueryInterface(__uuidof(IHTMLWindow2), (void**)&window);
+			if (result.vt != VT_DISPATCH) {
+				// We should really use an event-based model
+				wait(100);
+				continue;
+			}
+				 
+			CComQIPtr<IHTMLWindow2> window(result.pdispVal);
+			VariantClear(&result);
 
-			IHTMLDocument2* frameDoc;
+			if (!window) {
+				wait(150);
+				continue;
+			}
+
+			CComPtr<IHTMLDocument2> frameDoc;
 			window->get_document(&frameDoc);
 
-			waitForDocumentToComplete(frameDoc);
+			if (!frameDoc) {
+				wait(150);
+				continue;
+			}
 
-			frameDoc->Release();
-			window->Release();
-			VariantClear(&result);
+			waitForDocumentToComplete(frameDoc);
 		}
 
 		VariantClear(&index);
-		frames->Release();
 	}
-
-	doc->Release();
 }
 
 void InternetExplorerDriver::waitForDocumentToComplete(IHTMLDocument2* doc)

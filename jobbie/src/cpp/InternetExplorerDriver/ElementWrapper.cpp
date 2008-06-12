@@ -796,17 +796,20 @@ std::wstring ElementWrapper::getTextAreaValue()
 
 void ElementWrapper::click()
 {
-	CComQIPtr<IHTMLDOMNode2, &__uuidof(IHTMLDOMNode2)> node = element;
-	CComQIPtr<IHTMLDocument4, &__uuidof(IHTMLDocument4)> doc;
+	CComQIPtr<IHTMLDOMNode2> node(element);
+	
+	if (!node) {
+		cerr << "No node to click on" << endl;
+		return;
+	}
 
 	IDispatch* dispatch;
 	node->get_ownerDocument(&dispatch);
-	doc = dispatch;
+	CComQIPtr<IHTMLDocument4> doc(dispatch);
 	dispatch->Release();
 
-	CComQIPtr<IHTMLElement3, &__uuidof(IHTMLElement3)> element3;
-	element3 = element;
-
+	CComQIPtr<IHTMLElement3> element3(element);
+	
 	IHTMLEventObj* eventObject;
 	VARIANT empty;
 	VariantInit(&empty);
@@ -820,6 +823,7 @@ void ElementWrapper::click()
 	VARIANT_BOOL cancellable;
 	BSTR mouseDown = SysAllocString(L"onmousedown");
 	BSTR mouseUp = SysAllocString(L"onmouseup");
+
 	element3->fireEvent(mouseDown, &eventref, &cancellable);
 	element3->fireEvent(mouseUp, &eventref, &cancellable);
 	SysFreeString(mouseDown);
