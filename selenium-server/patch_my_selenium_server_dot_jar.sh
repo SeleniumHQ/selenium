@@ -1,10 +1,9 @@
 #!/bin/bash
 
 echo You must install FireBug and XPath Checker in the default profile of your local Firefox before running this script
+echo Pass in the relative path to your selenium-server.jar as the first argument
 
 this_dir=`pwd`
-
-
 
 ff=$HOME/.mozilla/firefox/*.default/extensions
 if [ -e $ff ] ; then
@@ -17,9 +16,9 @@ fi
 
 echo Found extensions in $ff
 
-selenium_dir="$this_dir/target"
-normal_jar="$selenium_dir/selenium-server.jar"
-extended_jar="$selenium_dir/selenium-server-with-FF-extensions.jar"
+selenium_dir="$this_dir"
+normal_jar=$this_dir/${1}
+extended_jar=$this_dir/$(echo ${1} | sed 's/\.jar$/-with-FF-extensions\.jar/')
 
 if [ -e $extended_jar ] ; then
     echo "$extended_jar already exists. Please delete it first."
