@@ -4,7 +4,17 @@ echo You must install FireBug and XPath Checker in the default profile of your l
 
 this_dir=`pwd`
 
+
+
 ff=$HOME/.mozilla/firefox/*.default/extensions
+if [ -e $ff ] ; then
+	echo Linux..
+else
+    IFS=$'\n'
+    echo Mac..
+	ff=$HOME/Library/Application\ Support/Firefox/Profiles/*.default/extensions/
+fi
+
 echo Found extensions in $ff
 
 selenium_dir="$this_dir/target"
