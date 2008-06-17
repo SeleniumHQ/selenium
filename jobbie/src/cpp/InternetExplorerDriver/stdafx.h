@@ -31,6 +31,7 @@
 
 #include <atlbase.h>
 #include <atlstr.h>
+#include <atlwin.h>
 
 // TODO: reference additional headers your program requires here
 #include <atlcom.h>

@@ -13,13 +13,14 @@ public class SingleTestSuite {
         System.setProperty("webdriver.firefox.useExisting", "true");
 
         return new TestSuiteBuilder()
-				    	.addSourceDir("common")
+              .addSourceDir("common")
               .addSourceDir("firefox")
+              .addSourceDir("jobbie")
               .usingDriver(IE)
               .keepDriverInstance()
               .includeJavascriptTests()
               .onlyRun("FormHandlingTest")
-              .method("testShouldBeAbleToEnterTextIntoATextAreaBySettingItsValue")
+              .method("testSendingKeyboardEventsShouldAppendTextInInputs")
 //                        .leaveRunningAfterTest()
               .create();
 	}

@@ -9,7 +9,7 @@ public enum Keys implements CharSequence {
 	ARROW_UP('\uE002'),
 	ARROW_RIGHT('\uE003'),
 	ARROW_DOWN('\uE004'),
-	DELETE('\uE005'),
+	BACK_SPACE('\uE005'),
 	;
 
     private Keys(char keyCode) {

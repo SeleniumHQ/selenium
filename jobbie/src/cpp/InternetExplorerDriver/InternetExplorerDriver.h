@@ -60,9 +60,8 @@ private:
 	bool closeCalled;
 };
 
-class IeEventSink : public IDispatch
-{
-public:
+class IeEventSink : public IDispatch {
+ public:
 	IeEventSink(IWebBrowser2* ie);
 	~IeEventSink();
 
@@ -80,7 +79,7 @@ public:
 	STDMETHODIMP GetTypeInfoCount(UINT* pctinfo);
 	STDMETHODIMP GetTypeInfo(UINT typeInfoId, LCID localeContextId, ITypeInfo** pointerToTypeInfo);
 
-private:
+ private:
 	CComPtr<IWebBrowser2> ie;
 	DWORD eventSinkCookie;
 };

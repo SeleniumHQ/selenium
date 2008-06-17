@@ -232,6 +232,9 @@ ElementWrapper* InternetExplorerDriver::selectElementById(const wchar_t *element
 	CComPtr<IHTMLDocument3> doc;
 	getDocument3(&doc);
 
+	if (!doc) 
+		throw "Cannot find element";
+
 	IHTMLElement* element = NULL;
 	BSTR id = SysAllocString(elementId);
 	doc->getElementById(id, &element);
@@ -297,6 +300,10 @@ ElementWrapper* InternetExplorerDriver::selectElementByLink(const wchar_t *eleme
 {
 	CComPtr<IHTMLDocument2> doc;
 	getDocument(&doc);
+
+	if (!doc) 
+		throw "Cannot find element";
+
 	CComPtr<IHTMLElementCollection> linkCollection;
 	doc->get_links(&linkCollection);
 	
@@ -332,6 +339,10 @@ ElementWrapper* InternetExplorerDriver::selectElementByName(const wchar_t *eleme
 {
 	CComPtr<IHTMLDocument3> doc;
 	getDocument3(&doc);
+
+	if (!doc) 
+		throw "Cannot find element";
+
 
 	CComPtr<IHTMLElementCollection> elementCollection;
 	CComBSTR name = SysAllocString(elementName);
@@ -369,6 +380,9 @@ ElementWrapper* InternetExplorerDriver::selectElementByClassName(const wchar_t *
 {
 	CComPtr<IHTMLDocument2> doc2;
 	getDocument(&doc2);
+
+	if (!doc2) 
+		throw "Cannot find element";
 
 	CComPtr<IHTMLElementCollection> allNodes;
 	doc2->get_all(&allNodes);

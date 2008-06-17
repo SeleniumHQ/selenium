@@ -52,13 +52,15 @@ jobject newJavaInternetExplorerDriver(JNIEnv* env, InternetExplorerDriver* drive
 void wait(long millis)
 {
 	clock_t end = clock() + millis;
-	while (clock() < end) 
+	do
 	{
 		MSG msg;
-		PeekMessage( &msg, NULL, 0, 0, PM_REMOVE );
-		TranslateMessage(&msg); 
-		DispatchMessage(&msg); 
-	}
+		if (PeekMessage( &msg, NULL, 0, 0, PM_REMOVE)) {
+			TranslateMessage(&msg); 
+			DispatchMessage(&msg); 
+		}
+		Sleep(0);
+	} while (clock() < end);
 }
 
 static std::wstring stringify(int number)

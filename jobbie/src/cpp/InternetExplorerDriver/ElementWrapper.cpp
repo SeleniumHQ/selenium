@@ -10,6 +10,58 @@
 
 using namespace std;
 
+class KeyPressListener : public IDispatch {
+public:
+	KeyPressListener() :  references(0), pressed(false) {}
+
+	STDMETHODIMP QueryInterface(REFIID riid, void **object) {
+		*object = NULL;
+		if ((riid == IID_IUnknown) || (riid == IID_IDispatch)) {
+			static_cast<IUnknown*>(*object = this)->AddRef();
+			return S_OK;
+		} else {
+			return E_NOINTERFACE;
+		}
+	}
+
+	STDMETHODIMP_(ULONG) AddRef() {
+		++references;
+		return references;
+	}	
+
+	STDMETHODIMP_(ULONG) Release() {
+		--references;
+		if (!references) {
+			delete this;
+			return 0;
+		}
+
+		return references;
+	}
+
+	STDMETHOD(GetTypeInfoCount)(unsigned int FAR* pctinfo) { return E_NOTIMPL; }
+	STDMETHOD(GetTypeInfo)(unsigned int iTInfo, LCID  lcid, ITypeInfo FAR* FAR*  ppTInfo) { return E_NOTIMPL; }
+	STDMETHOD(GetIDsOfNames)(REFIID riid, OLECHAR FAR* FAR* rgszNames, unsigned int cNames, LCID lcid, DISPID FAR* rgDispId) { return S_OK; }
+
+	STDMETHOD(Invoke)(DISPID dispIdMember, REFIID riid, LCID lcid,
+		WORD wFlags, DISPPARAMS* pDispParams, VARIANT* pVarResult,
+		EXCEPINFO * pExcepInfo, UINT * puArgErr)
+	{
+		pressed = true;
+
+		return S_OK;
+	}
+
+	volatile bool isPressed() { return pressed; }
+	void reset() { pressed = false; }
+
+	~KeyPressListener() {}
+
+private:
+	int  references;
+	bool pressed;
+};
+
 ElementWrapper::ElementWrapper(InternetExplorerDriver* ie, IHTMLDOMNode* node)
 	: element(node)
 {
@@ -46,8 +98,14 @@ std::wstring ElementWrapper::getValue()
 	return getAttribute(L"value");
 }
 
-const LPCTSTR windowNames[] = {
+const LPCTSTR ie7WindowNames[] = {
 	_T("TabWindowClass"),
+	_T("Shell DocObject View"),
+	_T("Internet Explorer_Server"),
+	NULL
+};
+
+const LPCTSTR ie6WindowNames[] = {
 	_T("Shell DocObject View"),
 	_T("Internet Explorer_Server"),
 	NULL
@@ -61,7 +119,7 @@ HWND getChildWindow(HWND hwnd, LPCTSTR name)
 	TCHAR pszClassName[LONGEST_NAME]; 
 	HWND hwndtmp = GetWindow(hwnd, GW_CHILD);
 	while(hwndtmp != NULL) {
-		::GetClassName(hwndtmp, pszClassName, LONGEST_NAME);
+		GetClassName(hwndtmp, pszClassName, LONGEST_NAME);
 		if (lstrcmp(pszClassName, name) == 0)
 			return hwndtmp;
 		hwndtmp = GetWindow(hwndtmp, GW_HWNDNEXT);
@@ -71,13 +129,19 @@ HWND getChildWindow(HWND hwnd, LPCTSTR name)
 
 HWND getIeServerWindow(HWND hwnd) 
 {
-  HWND iehwnd = hwnd;
+	HWND iehwnd = hwnd;
 
- for (int i = 0; windowNames[i] && iehwnd; i++) {
-	 iehwnd = getChildWindow(iehwnd, windowNames[i]);
- }
+	for (int i = 0; ie7WindowNames[i] && iehwnd; i++) {
+		iehwnd = getChildWindow(iehwnd, ie7WindowNames[i]);
+	}
 
- return iehwnd;
+	if (!iehwnd) {
+		for (int i = 0; ie6WindowNames[i] && iehwnd; i++) {
+			iehwnd = getChildWindow(iehwnd, ie6WindowNames[i]);
+		}
+	}
+
+	return iehwnd;
 }
 
 const LPCTSTR fileDialogNames[] = {
@@ -88,14 +152,14 @@ const LPCTSTR fileDialogNames[] = {
 	NULL
 };
 
-struct fileData {
+struct keyboardData {
 	HWND hwnd;
-	const wchar_t* filename;
+	const wchar_t* text;
 };
 
-WORD WINAPI setFileValue(fileData* data) {
+WORD WINAPI setFileValue(keyboardData* data) {
 	HWND parentWindow = data->hwnd;
-	const wchar_t* filename = data->filename;
+	const wchar_t* filename = data->text;
 	HWND dialogHwnd = FindWindowW(fileDialogNames[0], NULL);
 
 	int lookFor = 5;
@@ -110,11 +174,16 @@ WORD WINAPI setFileValue(fileData* data) {
 		return false;
 	}
 
-	wait(200);
 
-	HWND editHwnd = dialogHwnd;
-	for (int i = 1; fileDialogNames[i] && dialogHwnd; i++) {
-		editHwnd = getChildWindow(editHwnd, fileDialogNames[i]);
+
+	HWND editHwnd = NULL;
+	int max_count = 10;
+	for (int max_count = 10; max_count && !editHwnd; --max_count) {
+		wait(200);
+		editHwnd = dialogHwnd;
+		for (int i = 1; fileDialogNames[i] && dialogHwnd; i++) {
+			editHwnd = getChildWindow(editHwnd, fileDialogNames[i]);
+		}
 	}
 
 	if (editHwnd) {
@@ -139,12 +208,75 @@ WORD WINAPI setFileValue(fileData* data) {
 
 	cout << "No edit found" << endl;
 	return false;
+} 
+
+#define PAUSE 0
+
+void backgroundKeyPress(HWND hwnd, HKL layout, WORD keyCode, UINT scanCode, bool extended, bool printable, KeyPressListener* listener)
+{
+	BYTE keyboardState[256] = {0};
+	bool needsShift = (keyCode >> 8) & 1;
+	keyCode = LOBYTE(keyCode);
+
+	LPARAM shiftKey = 1;
+		if (needsShift) {
+			keyboardState[VK_SHIFT] |= 0x80;
+			SetKeyboardState((LPBYTE) &keyboardState);
+
+			shiftKey += MapVirtualKeyEx(VK_SHIFT, 0, layout) << 16;
+			if (!PostMessage(hwnd, WM_KEYDOWN, VK_SHIFT, shiftKey))
+				cerr << "Shift down failed: " << GetLastError << endl;
+			wait(PAUSE);
+		}
+
+		LPARAM lparam = 1;
+		lparam += scanCode << 16;
+		if (extended) {
+			lparam += 1 << 24;
+		}
+
+		keyboardState[keyCode] |= 0x80;
+		SetKeyboardState(keyboardState);
+
+		if (!PostMessage(hwnd, WM_KEYDOWN, keyCode, lparam))
+			cerr << "Key down failed: " << GetLastError << endl;
+
+		// Listen out for the keypress event which is synthesized
+		// when IE processes the keydown message
+		int max_count = 500;
+		while (max_count && !listener->isPressed() && printable) {
+			--max_count;
+			wait(PAUSE);
+		}
+		listener->reset();
+
+		keyboardState[keyCode] &= ~0x80;
+		SetKeyboardState(keyboardState);
+
+		lparam += 1 << 30;
+		lparam += 1 << 31;
+		if (!PostMessage(hwnd, WM_KEYUP, keyCode, lparam))
+			cerr << "Key up failed: " << GetLastError << endl;
+		wait(PAUSE);
+
+		if (needsShift) {
+			shiftKey += 1 << 30;
+			shiftKey += 1 << 31;
+			if (!PostMessage(hwnd, WM_KEYUP, VK_SHIFT, shiftKey))
+				cerr << "Shift up failed: " << GetLastError << endl;
+			wait(PAUSE);
+
+			keyboardState[VK_SHIFT] &= ~0x80;
+			SetKeyboardState((LPBYTE) &keyboardState);
+		}
+
+		wait(PAUSE);
 }
 
 void ElementWrapper::sendKeys(const std::wstring& newValue)
 {
 	bool initialVis = ie->getVisible();
-	// Bring the IE window to the front.
+
 	HWND hWnd = ie->getHwnd();
 	HWND ieWindow = getIeServerWindow(hWnd);
 
@@ -154,19 +286,19 @@ void ElementWrapper::sendKeys(const std::wstring& newValue)
 
 	element->scrollIntoView(top);
 
+	keyboardData d;
+	d.hwnd = ieWindow;
+	d.text = newValue.c_str();
+	DWORD threadId;
+
 	CComQIPtr<IHTMLInputFileElement> file(element);
 	if (file) {
-		fileData d;
-		d.hwnd = ieWindow;
-		d.filename = newValue.c_str();
-
-		DWORD threadId;
         CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)setFileValue, (void *)(&d), 0, &threadId);
 
 		element->click();
 		// We're now blocked until the dialog closes.
 		return;
-	}
+	} 
 
 	CComQIPtr<IHTMLElement2> element2(element);
 	element2->focus();
@@ -174,23 +306,46 @@ void ElementWrapper::sendKeys(const std::wstring& newValue)
 	// Allow the element to actually get the focus
 	wait(100);
 
-	for (const wchar_t *p = newValue.c_str(); *p; ++p)
+	DWORD ieWinThreadId = GetWindowThreadProcessId(hWnd, NULL);
+    DWORD currThreadId = GetCurrentThreadId();
+
+	// Attaching to the thread so that we can send control keys (in particular shift)
+    if( ieWinThreadId != currThreadId )
+    {
+		AttachThreadInput(currThreadId, ieWinThreadId, true);
+    }
+
+	wait(100);
+
+	HKL layout = GetKeyboardLayout(GetCurrentThreadId());
+
+	BYTE originalKeyboardState[256] = {0};
+	GetKeyboardState((LPBYTE) &originalKeyboardState);
+
+	CComQIPtr<IHTMLElement2> e2(element);
+	VARIANT_BOOL attached;
+
+	CComPtr<KeyPressListener> listener = new KeyPressListener();
+	CComQIPtr<IDispatch> listenerDispatch(listener);
+	e2->attachEvent(L"onkeypress", listenerDispatch, &attached);
+
+	for (const wchar_t *p = d.text; *p; ++p)
 	{
 		wchar_t c = *p;
 
-		if (c == '\r')
+		if (c == L'\r')
 			continue;
 
 		WORD keyCode = 0;
 	
-		bool needsShift = false;
+		bool extended = false;
+		bool printable = false;
 		
-/*
-	ARROW_LEFT('\uE001'),
-	ARROW_UP('\uE002'),
-	ARROW_RIGHT('\uE003'),
-	ARROW_DOWN('\uE004')
-*/
+//	ARROW_LEFT('\uE001'),
+//	ARROW_UP('\uE002'),
+//	ARROW_RIGHT('\uE003'),
+//	ARROW_DOWN('\uE004')
+
 		int k = (int)c;
 		UINT scanCode;
 
@@ -198,40 +353,51 @@ void ElementWrapper::sendKeys(const std::wstring& newValue)
 			keyCode = VK_LEFT;
 			scanCode = keyCode;
 			c = keyCode;
+			extended = true;
 		} else if (c == 0xE002) {
 			keyCode = VK_UP;
 			scanCode = keyCode;
 			c = keyCode;
+			extended = true;
 		} else if (c == 0xE003) {
 			keyCode = VK_RIGHT;
 			scanCode = keyCode;
 			c = keyCode;
+			extended = true;
 		} else if (k == 0xE004) {
 			keyCode = VK_DOWN;
 			scanCode = keyCode;
 			c = keyCode;
+			extended = true;
 		} else if (k == 0xE005) {
 			keyCode = VK_BACK;
 			scanCode = keyCode;
 			c = keyCode;
-		} else if (c == '\n') {
+			extended = true;
+		} else if (c == L'\n') {
 			keyCode = VK_RETURN;
 			scanCode = keyCode;
 			c = keyCode;
+			printable = true;
 		} else {
-			keyCode = VkKeyScan(c);
-			needsShift = (keyCode & (1 << 8)) ? true : false;  // VK_LSHIFT
-			UINT scanCode = MapVirtualKeyW(c, 0);
+			keyCode = VkKeyScanExW(c, layout);
+			scanCode = MapVirtualKeyExW(LOBYTE(keyCode), 0, layout);
+			printable = true;
 		}
 
-		SendMessage(ieWindow, WM_KEYDOWN, scanCode, 0);
-		SendMessage(ieWindow, WM_CHAR, c, 0);
-		SendMessage(ieWindow, WM_KEYUP, scanCode, 0);
+		backgroundKeyPress(ieWindow, layout, keyCode, scanCode, extended, printable, listener);
 	}
 
-	element2->blur();
+	SetKeyboardState((LPBYTE) &originalKeyboardState);
+	if (attached == VARIANT_TRUE)
+		e2->detachEvent(L"onkeypress", listenerDispatch);
 
-//	ie->setVisible(initialVis);
+	if( ieWinThreadId != currThreadId )
+    {
+		AttachThreadInput(currThreadId, ieWinThreadId, false);
+    }
+
+	element2->blur();
 }
 
 void ElementWrapper::clear()
