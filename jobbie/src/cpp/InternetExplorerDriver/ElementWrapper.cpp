@@ -4,6 +4,7 @@
 
 #include <comutil.h>
 #include <comdef.h>
+#include <ctime>
 
 #include "ElementWrapper.h"
 #include "utils.h"
@@ -174,8 +175,6 @@ WORD WINAPI setFileValue(keyboardData* data) {
 		return false;
 	}
 
-
-
 	HWND editHwnd = NULL;
 	int max_count = 10;
 	for (int max_count = 10; max_count && !editHwnd; --max_count) {
@@ -219,58 +218,58 @@ void backgroundKeyPress(HWND hwnd, HKL layout, WORD keyCode, UINT scanCode, bool
 	keyCode = LOBYTE(keyCode);
 
 	LPARAM shiftKey = 1;
-		if (needsShift) {
-			keyboardState[VK_SHIFT] |= 0x80;
-			SetKeyboardState((LPBYTE) &keyboardState);
+	if (needsShift) {
+		keyboardState[VK_SHIFT] |= 0x80;
+		SetKeyboardState((LPBYTE) &keyboardState);
 
-			shiftKey += MapVirtualKeyEx(VK_SHIFT, 0, layout) << 16;
-			if (!PostMessage(hwnd, WM_KEYDOWN, VK_SHIFT, shiftKey))
-				cerr << "Shift down failed: " << GetLastError << endl;
-			wait(PAUSE);
-		}
+		shiftKey += MapVirtualKeyEx(VK_SHIFT, 0, layout) << 16;
+		if (!PostMessage(hwnd, WM_KEYDOWN, VK_SHIFT, shiftKey))
+			cerr << "Shift down failed: " << GetLastError << endl;
+		wait(PAUSE);
+	}
 
-		LPARAM lparam = 1;
-		lparam += scanCode << 16;
-		if (extended) {
-			lparam += 1 << 24;
-		}
+	LPARAM lparam = 1;
+	lparam += scanCode << 16;
+	if (extended) {
+		lparam += 1 << 24;
+	}
 
-		keyboardState[keyCode] |= 0x80;
-		SetKeyboardState(keyboardState);
+	keyboardState[keyCode] |= 0x80;
+	SetKeyboardState(keyboardState);
 
-		if (!PostMessage(hwnd, WM_KEYDOWN, keyCode, lparam))
-			cerr << "Key down failed: " << GetLastError << endl;
+	if (!PostMessage(hwnd, WM_KEYDOWN, keyCode, lparam))
+		cerr << "Key down failed: " << GetLastError << endl;
 
-		// Listen out for the keypress event which is synthesized
-		// when IE processes the keydown message
-		int max_count = 500;
-		while (max_count && !listener->isPressed() && printable) {
-			--max_count;
-			wait(PAUSE);
-		}
-		listener->reset();
+	// Listen out for the keypress event which is synthesized
+	// when IE processes the keydown message. Put a time out,
+	// just in case we've not got "printable" right. :)
+	clock_t maxWait = clock() + 2000; 
+	while (clock() < maxWait && !listener->isPressed() && printable) {
+		wait(PAUSE);
+	}
+	listener->reset();
 
-		keyboardState[keyCode] &= ~0x80;
-		SetKeyboardState(keyboardState);
+	keyboardState[keyCode] &= ~0x80;
+	SetKeyboardState(keyboardState);
 
-		lparam += 1 << 30;
-		lparam += 1 << 31;
-		if (!PostMessage(hwnd, WM_KEYUP, keyCode, lparam))
-			cerr << "Key up failed: " << GetLastError << endl;
+	lparam += 1 << 30;
+	lparam += 1 << 31;
+	if (!PostMessage(hwnd, WM_KEYUP, keyCode, lparam))
+		cerr << "Key up failed: " << GetLastError << endl;
+	wait(PAUSE);
+
+	if (needsShift) {
+		shiftKey += 1 << 30;
+		shiftKey += 1 << 31;
+		if (!PostMessage(hwnd, WM_KEYUP, VK_SHIFT, shiftKey))
+			cerr << "Shift up failed: " << GetLastError << endl;
 		wait(PAUSE);
 
-		if (needsShift) {
-			shiftKey += 1 << 30;
-			shiftKey += 1 << 31;
-			if (!PostMessage(hwnd, WM_KEYUP, VK_SHIFT, shiftKey))
-				cerr << "Shift up failed: " << GetLastError << endl;
-			wait(PAUSE);
+		keyboardState[VK_SHIFT] &= ~0x80;
+		SetKeyboardState((LPBYTE) &keyboardState);
+	}
 
-			keyboardState[VK_SHIFT] &= ~0x80;
-			SetKeyboardState((LPBYTE) &keyboardState);
-		}
-
-		wait(PAUSE);
+	wait(PAUSE);
 }
 
 void ElementWrapper::sendKeys(const std::wstring& newValue)
