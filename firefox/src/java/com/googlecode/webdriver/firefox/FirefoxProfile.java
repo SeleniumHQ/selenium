@@ -2,10 +2,16 @@ package com.googlecode.webdriver.firefox;
 
 import com.googlecode.webdriver.firefox.internal.Cleanly;
 import com.googlecode.webdriver.firefox.internal.FileHandler;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
+import javax.xml.XMLConstants;
+import javax.xml.namespace.NamespaceContext;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
@@ -20,15 +26,6 @@ import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.zip.ZipInputStream;
-
-import javax.xml.XMLConstants;
-import javax.xml.namespace.NamespaceContext;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathFactory;
 
 public class FirefoxProfile {
     private static final String EXTENSION_NAME = "fxdriver@googlecode.com";
@@ -366,9 +363,10 @@ public class FirefoxProfile {
 
         FileHandler.copyDir(profileDir, to);
         FirefoxProfile profile = new FirefoxProfile(to);
+        profile.addAdditionalPreferences(additionalPrefs);
         profile.setPort(port);
         profile.updateUserPrefs();
 
-        return new FirefoxProfile(to);
+        return profile;
     }
 }
