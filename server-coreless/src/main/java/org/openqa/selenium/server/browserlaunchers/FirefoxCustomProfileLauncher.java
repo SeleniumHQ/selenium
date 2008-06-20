@@ -16,12 +16,13 @@
  */
 package org.openqa.selenium.server.browserlaunchers;
 
-import java.io.*;
-
 import org.apache.commons.logging.Log;
-import org.apache.tools.ant.taskdefs.condition.*;
+import org.apache.tools.ant.taskdefs.condition.Os;
 import org.mortbay.log.LogFactory;
-import org.openqa.selenium.server.*;
+import org.openqa.selenium.server.RemoteControlConfiguration;
+
+import java.io.File;
+import java.io.IOException;
 
 public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
 
@@ -44,7 +45,7 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
     private static AsyncExecute exe = new AsyncExecute();
 
     public FirefoxCustomProfileLauncher(RemoteControlConfiguration configuration, String sessionId) {
-        this(configuration, sessionId, findBrowserLaunchLocation());
+        this(configuration, sessionId, new Firefox2or3Locator().findBrowserLaunchLocationOrFail());
     }
 
     public FirefoxCustomProfileLauncher(RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
@@ -82,43 +83,6 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
         if (Os.isFamily("mac")) return "DYLD_LIBRARY_PATH";
         // TODO other linux?
         return "LD_LIBRARY_PATH";
-    }
-
-    private static String findBrowserLaunchLocation() {
-        String defaultPath = System.getProperty("firefoxDefaultPath");
-        if (defaultPath == null) {
-            if (WindowsUtils.thisIsWindows()) {
-                defaultPath = WindowsUtils.getProgramFilesPath() + "\\Mozilla Firefox\\firefox.exe";
-            } else {
-                for (String aDEFAULT_NONWINDOWS_LOCATIONS : DEFAULT_NONWINDOWS_LOCATIONS) {
-                    defaultPath = aDEFAULT_NONWINDOWS_LOCATIONS;
-                    if (new File(defaultPath).exists()) {
-                        break;
-                    }
-                }
-            }
-        }
-        File defaultLocation = new File(defaultPath);
-        if (defaultLocation.exists()) {
-            return defaultLocation.getAbsolutePath();
-        }
-        if (WindowsUtils.thisIsWindows()) {
-            File firefoxEXE = AsyncExecute.whichExec("firefox.exe");
-            if (firefoxEXE != null) return firefoxEXE.getAbsolutePath();
-            throw new RuntimeException("Firefox couldn't be found in the path!\n" +
-                    "Please add the directory containing firefox.exe to your PATH environment\n" +
-                    "variable, or explicitly specify a path to Firefox like this:\n" +
-                    "*firefox c:\\blah\\firefox.exe");
-        }
-        // On unix, prefer firefoxBin if it's on the path
-        File firefoxBin = AsyncExecute.whichExec("firefox-bin");
-        if (firefoxBin != null) {
-            return firefoxBin.getAbsolutePath();
-        }
-        throw new RuntimeException("Firefox couldn't be found in the path!\n" +
-                "Please add the directory containing 'firefox-bin' to your PATH environment\n" +
-                "variable, or explicitly specify a path to Firefox like this:\n" +
-                "*firefox /blah/blah/firefox-bin");
     }
 
     protected void launch(String url) {

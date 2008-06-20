@@ -193,11 +193,13 @@ public class AsyncExecute extends Execute {
     public static File whichExec(String exec) {
         Path p = null;
         String pathStr = WindowsUtils.getPath();
-        if (pathStr != null) p = new Path(new Project(), pathStr);
+        if (pathStr != null) {
+            p = new Path(new Project(), pathStr);
+        }
         if (p != null) {
             String[] dirs = p.list();
-            for (int i = 0; i < dirs.length; i++) {
-                File executableFile = new File(dirs[i], exec);
+            for (String dir : dirs) {
+                File executableFile = new File(dir, exec);
                 if (executableFile.exists()) {
                     return executableFile;
                 }

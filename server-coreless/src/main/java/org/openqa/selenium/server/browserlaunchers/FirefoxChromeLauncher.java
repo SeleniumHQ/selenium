@@ -24,15 +24,12 @@ import java.net.URL;
 import org.apache.commons.logging.Log;
 import org.apache.tools.ant.taskdefs.condition.Os;
 import org.mortbay.log.LogFactory;
-import org.openqa.selenium.server.SeleniumServer;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
 public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
 
-    static Log log = LogFactory.getLog(FirefoxChromeLauncher.class);
-    private static final String DEFAULT_NONWINDOWS_LOCATIONS[] = {
-        "/usr/lib/firefox/firefox-bin", // Ubuntu 7.04 default location
-        "/Applications/Firefox.app/Contents/MacOS/firefox-bin"};
+    public static final String CHROME_URL = "chrome://killff/content/kill.html";
+    private static Log LOGGER = LogFactory.getLog(FirefoxChromeLauncher.class);
 
     private static boolean simple = false;
 
@@ -42,115 +39,55 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
     private String commandPath;
     private Process process;
 
-    private static AsyncExecute exe = new AsyncExecute();
+    private static AsyncExecute shell = new AsyncExecute();
 
     private static boolean changeMaxConnections = false;
 
     public FirefoxChromeLauncher(RemoteControlConfiguration configuration, String sessionId) {
-        this(configuration, sessionId, findBrowserLaunchLocation());
+        this(configuration, sessionId, new Firefox2or3Locator().findBrowserLaunchLocationOrFail());
     }
 
     public FirefoxChromeLauncher(RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
         super(sessionId, configuration);
-        commandPath = browserLaunchLocation;
         this.sessionId = sessionId;
-        // Set MOZ_NO_REMOTE in order to ensure we always get a new Firefox process
-        // http://blog.dojotoolkit.org/2005/12/01/running-multiple-versions-of-firefox-side-by-side
-        exe.setEnvironment(new String[]{"MOZ_NO_REMOTE=1"});
-        if (!WindowsUtils.thisIsWindows()) {
-            // On unix, add command's directory to LD_LIBRARY_PATH
-            File firefoxBin = AsyncExecute.whichExec(commandPath);
-            if (firefoxBin == null) {
-                File execDirect = new File(commandPath);
-                if (execDirect.isAbsolute() && execDirect.exists()) firefoxBin = execDirect;
-            }
-            if (firefoxBin != null) {
-                LauncherUtils.assertNotScriptFile(firefoxBin);
-                String libPathKey = getLibPathKey();
-                String libPath = WindowsUtils.loadEnvironment().getProperty(libPathKey);
-                exe.setEnvironment(new String[]{
-                        "MOZ_NO_REMOTE=1",
-                        libPathKey + "=" + libPath + ":" + firefoxBin.getParent(),
-                });
-            }
-        }
-    }
+        this.commandPath = browserLaunchLocation;
 
-    private static String getLibPathKey() {
-        if (WindowsUtils.thisIsWindows()) return WindowsUtils.getExactPathEnvKey();
-        if (Os.isFamily("mac")) return "DYLD_LIBRARY_PATH";
-        // TODO other linux?
-        return "LD_LIBRARY_PATH";
-    }
-
-    private static String findBrowserLaunchLocation() {
-        String defaultPath = System.getProperty("firefoxDefaultPath");
-        if (defaultPath == null) {
-            if (WindowsUtils.thisIsWindows()) {
-                defaultPath = WindowsUtils.getProgramFilesPath() + "\\Mozilla Firefox\\firefox.exe";
-            } else {
-                for (String aDEFAULT_NONWINDOWS_LOCATIONS : DEFAULT_NONWINDOWS_LOCATIONS) {
-                    defaultPath = aDEFAULT_NONWINDOWS_LOCATIONS;
-                    if (new File(defaultPath).exists()) {
-                        break;
-                    }
-                }
-            }
-        }
-        File defaultLocation = new File(defaultPath);
-        if (defaultLocation.exists()) {
-            return defaultLocation.getAbsolutePath();
-        }
-        if (WindowsUtils.thisIsWindows()) {
-            File firefoxEXE = AsyncExecute.whichExec("firefox.exe");
-            if (firefoxEXE != null) return firefoxEXE.getAbsolutePath();
-            throw new RuntimeException("Firefox couldn't be found in the path!\n" +
-                    "Please add the directory containing firefox.exe to your PATH environment\n" +
-                    "variable, or explicitly specify a path to Firefox like this:\n" +
-                    "*firefox c:\\blah\\firefox.exe");
-        }
-        // On unix, prefer firefoxBin if it's on the path
-        File firefoxBin = AsyncExecute.whichExec("firefox-bin");
-        if (firefoxBin != null) {
-            return firefoxBin.getAbsolutePath();
-        }
-        throw new RuntimeException("Firefox couldn't be found in the path!\n" +
-                "Please add the directory containing 'firefox-bin' to your PATH environment\n" +
-                "variable, or explicitly specify a path to Firefox like this:\n" +
-                "*firefox /blah/blah/firefox-bin");
+        setMozNoRemote();
+        setLibraryPath();
     }
 
     protected void launch(String url) {
-        try {        
-            String homePage = new ChromeUrlConvert().convert(url, getPort());
-            String profilePath = makeCustomProfile(homePage);
+        final String profilePath;
+        final String homePage;
 
-            String chromeURL = "chrome://killff/content/kill.html";
+        try {
+            homePage = new ChromeUrlConvert().convert(url, getPort());
+            profilePath = makeCustomProfile(homePage);
+            populateCustomProfileDirectory(profilePath);
 
-            cmdarray = new String[]{commandPath, "-profile", profilePath, "-chrome", chromeURL};
-
-            /* The first time we launch Firefox with an empty profile directory,
-     * Firefox will launch itself, populate the profile directory, then
-     * kill/relaunch itself, so our process handle goes out of date.
-     * So, the first time we launch Firefox, we'll start it up at an URL
-     * that will immediately shut itself down. */
-            log.info("Preparing Firefox profile...");
-
-            exe.setCommandline(cmdarray);
-            exe.execute();
-
-            waitForFullProfileToBeCreated(20 * 1000);
-
-            log.info("Launching Firefox...");
-
+            LOGGER.info("Launching Firefox...");
             cmdarray = new String[]{commandPath, "-profile", profilePath};
-            exe.setCommandline(cmdarray);
-            process = exe.asyncSpawn();
+            shell.setCommandline(cmdarray);
+            process = shell.asyncSpawn();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
+    private void populateCustomProfileDirectory(String profilePath) throws IOException {
+        /*
+        * The first time we launch Firefox with an empty profile directory,
+    * Firefox will launch itself, populate the profile directory, then
+    * kill/relaunch itself, so our process handle goes out of date.
+    * So, the first time we launch Firefox, we'll start it up at an URL
+    * that will immediately shut itself down.
+    */
+        cmdarray = new String[]{commandPath, "-profile", profilePath, "-chrome", CHROME_URL};
+        LOGGER.info("Preparing Firefox profile...");
+        shell.setCommandline(cmdarray);
+        shell.execute();
+        waitForFullProfileToBeCreated(20 * 1000);
+    }
 
     private String makeCustomProfile(String homePage) throws IOException {
         customProfileDir = LauncherUtils.createCustomProfileDir(sessionId);
@@ -186,7 +123,7 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
     public void close() {
         if (closed) return;
         if (process == null) return;
-        log.info("Killing Firefox...");
+        LOGGER.info("Killing Firefox...");
         Exception taskKillException = null;
         Exception fileLockException = null;
         if (false) {
@@ -199,7 +136,7 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
         }
         int exitValue = AsyncExecute.killProcess(process);
         if (exitValue == 0) {
-            log.warn("Firefox seems to have ended on its own (did we kill the real browser???)");
+            LOGGER.warn("Firefox seems to have ended on its own (did we kill the real browser???)");
         }
         try {
             waitForFileLockToGoAway(5 * 000, 500);
@@ -212,13 +149,13 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
             LauncherUtils.deleteTryTryAgain(customProfileDir, 6);
         } catch (RuntimeException e) {
             if (taskKillException != null || fileLockException != null) {
-                log.error("Couldn't delete custom Firefox profile directory", e);
-                log.error("Perhaps caused by this exception:");
-                if (taskKillException != null) log.error("Perhaps caused by this exception:", taskKillException);
-                if (fileLockException != null) log.error("Perhaps caused by this exception:", fileLockException);
+                LOGGER.error("Couldn't delete custom Firefox profile directory", e);
+                LOGGER.error("Perhaps caused by this exception:");
+                if (taskKillException != null) LOGGER.error("Perhaps caused by this exception:", taskKillException);
+                if (fileLockException != null) LOGGER.error("Perhaps caused by this exception:", fileLockException);
                 throw new RuntimeException("Couldn't delete custom Firefox " +
                         "profile directory, presumably because task kill failed; " +
-                        "see error log!", e);
+                        "see error LOGGER!", e);
             }
             throw e;
         }
@@ -325,6 +262,47 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
     @Override // need to specify an absolute driverUrl
     public void launchRemoteSession(String browserURL, boolean multiWindow) { 
         launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId, multiWindow, getPort()));
+    }
+
+    private void setMozNoRemote() {
+        // Set MOZ_NO_REMOTE in order to ensure we always get a new Firefox process
+        // http://blog.dojotoolkit.org/2005/12/01/running-multiple-versions-of-firefox-side-by-side
+        shell.setEnvironment(new String[]{"MOZ_NO_REMOTE=1"});
+    }
+
+    private void setLibraryPath() {
+        if (WindowsUtils.thisIsWindows()) {
+            return;
+        }
+
+        // On Unix, add command's directory to LD_LIBRARY_PATH
+        File firefoxBin = AsyncExecute.whichExec(commandPath);
+        if (firefoxBin == null) {
+            final File execDirect = new File(commandPath);
+            if (execDirect.isAbsolute() && execDirect.exists()) {
+                firefoxBin = execDirect;
+            }
+        }
+        if (firefoxBin != null) {
+            LauncherUtils.assertNotScriptFile(firefoxBin);
+            String libPathKey = getLibPathKey();
+            String libPath = WindowsUtils.loadEnvironment().getProperty(libPathKey);
+            shell.setEnvironment(new String[]{
+                    "MOZ_NO_REMOTE=1",
+                    libPathKey + "=" + libPath + ":" + firefoxBin.getParent(),
+            });
+        }
+    }
+
+    private static String getLibPathKey() {
+        if (WindowsUtils.thisIsWindows()) {
+            return WindowsUtils.getExactPathEnvKey();
+        }
+        if (Os.isFamily("mac")) {
+            return "DYLD_LIBRARY_PATH";
+        }
+        // TODO other linux?
+        return "LD_LIBRARY_PATH";
     }
 
 }

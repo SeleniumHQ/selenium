@@ -26,6 +26,8 @@ import java.util.regex.Pattern;
 
 import org.openqa.selenium.server.SeleniumServer;
 import org.openqa.selenium.server.RemoteControlConfiguration;
+import org.apache.commons.logging.Log;
+import org.mortbay.log.LogFactory;
 
 /**
  * Returns BrowserLaunchers based on simple strings given by the user
@@ -36,16 +38,20 @@ import org.openqa.selenium.server.RemoteControlConfiguration;
  */
 public class BrowserLauncherFactory {
 
+    private static Log LOGGER = LogFactory.getLog(BrowserLauncherFactory.class);
+
     private static final Pattern CUSTOM_PATTERN = Pattern.compile("^\\*custom( .*)?$");
     
     private static final Map<String, Class<? extends BrowserLauncher>> supportedBrowsers = new HashMap<String, Class<? extends BrowserLauncher>>();
 
     static {
         supportedBrowsers.put("firefox", FirefoxCustomProfileLauncher.class);
+        supportedBrowsers.put("chrome", FirefoxChromeLauncher.class);
+        supportedBrowsers.put("firefox2", Firefox2Launcher.class);
+        supportedBrowsers.put("firefox3", Firefox3Launcher.class);
         supportedBrowsers.put("iexplore", InternetExplorerCustomProxyLauncher.class);
         supportedBrowsers.put("safari", SafariCustomProfileLauncher.class);
         supportedBrowsers.put("iehta", HTABrowserLauncher.class);
-        supportedBrowsers.put("chrome", FirefoxChromeLauncher.class);
         supportedBrowsers.put("opera", OperaCustomProfileLauncher.class);
         supportedBrowsers.put("piiexplore", ProxyInjectionInternetExplorerCustomProxyLauncher.class);
         supportedBrowsers.put("pifirefox", ProxyInjectionFirefoxCustomProfileLauncher.class);
@@ -65,21 +71,27 @@ public class BrowserLauncherFactory {
      * @return the BrowserLauncher ready to launch
      */
     public BrowserLauncher getBrowserLauncher(String browser, String sessionId, RemoteControlConfiguration configuration) {
-        if (browser == null) throw new IllegalArgumentException("browser may not be null");
+        if (browser == null) {
+            throw new IllegalArgumentException("browser may not be null");
+        }
 
         for (Map.Entry<String,Class<? extends BrowserLauncher>> entry : supportedBrowsers.entrySet()) {
-            Pattern pat = Pattern.compile("^\\*" + entry.getKey() + "( .*)?$");
-            Matcher mat = pat.matcher(browser);
-            if (mat.find()) {
-                String browserStartCommand;
+            final Pattern pattern = Pattern.compile("^\\*" + entry.getKey() + "( .*)?$");
+            Matcher matcher = pattern.matcher(browser);
+            if (matcher.find()) {
+                final String browserStartCommand;
+
                 if (browser.equals("*" + entry.getKey())) {
                     browserStartCommand = null;
                 } else {
-                    browserStartCommand = mat.group(1).substring(1);
+                    browserStartCommand = matcher.group(1).substring(1);
                 }
+                LOGGER.debug("Requested browser string '" + browser + "' matches *" + entry + " ");
                 return createBrowserLauncher(entry.getValue(), browserStartCommand, sessionId, configuration);
             }
         }
+        
+        LOGGER.debug("Requested browser string '" + browser + "' does not match any known browser, treating is as a custom browser...");
         Matcher CustomMatcher = CUSTOM_PATTERN.matcher(browser);
         if (CustomMatcher.find()) {
             String browserStartCommand = CustomMatcher.group(1);
