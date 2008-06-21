@@ -16,12 +16,11 @@ public class BrowserLauncherFactoryUnitTest extends TestCase {
                 if (e.getCause() instanceof NoSuchMethodException) {
                     fail(browser + " browser does not define appropriate constructor: " + e.getMessage());
                 }
-                if (-1 != e.getMessage().indexOf("couldn't be found in the path")) {
+                if (-1 != e.getMessage().indexOf("couldn't be found in the path")
+                    || -1 != e.getMessage().indexOf("SystemRoot apparently not set")
+                    || -1 != e.getMessage().indexOf("File was a script file, not a real executable")) {
                     System.out.println("Ignoring problem with getting launcher for '" + browser
-                            + "', as browser might not be installed on this machine");
-                } else if (-1 != e.getMessage().indexOf("SystemRoot apparently not set")) {
-                    System.out.println("Ignoring problem with getting launcher for '" + browser
-                            + "', as browser might not be installed on this machine");
+                                       + "', as browser might not be installed on this machine");
                 } else {
                     throw e;
                 }
