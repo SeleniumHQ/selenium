@@ -162,51 +162,74 @@ Utils.type = function(context, element, text) {
     }
 
     for (var i = 0; i < text.length; i++) {
-        var character = text.charAt(i);
+        var character = text.charCodeAt(i);
+        var c = text.charAt(i);
         var keyCode = character;
-        value += character;
+        value += c;
 
-        if (text.charAt(i) == '\uE002') {
+        if (c == '\uE002') {
             keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_UP;
-            character = 0;
-        } else if (text.charAt(i) == '\uE004') {
+            character = keyCode;
+        } else if (c == '\uE004') {
             keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_DOWN;
-            character = 0;
-        } else if (text.charAt(i) == '\uE001') {
+            character = keyCode;
+        } else if (c == '\uE001') {
             keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_LEFT;
-            character = 0;
-        } else if (text.charAt(i) == '\uE003') {
+            character = keyCode;
+        } else if (c == '\uE003') {
             keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_RIGHT;
-            character = 0;
+            character = keyCode;
+        } else if (c == "\n") {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_RETURN;
+            character = keyCode;
+        }
+
+//        var isShift = (character >= 65 && character <= 122 && c.toUpperCase() == c);
+        var isShift = /A-Z/.test(c);
+        if (isShift) {
+            Utils.keyDownOrUp(context, element, true, Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT, Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT);
+            Utils.keyPress(context, element, Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT, Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT);
         }
 
         Utils.keyDownOrUp(context, element, true, keyCode, character);
         Utils.keyPress(context, element, keyCode, character);
+
+        // Strictly speaking, we should be able to get the same effect
+        // without needing this piece of logic. We can for normal characters,
+        // but not for characters such as '. Most odd. Leaving this in for now
         if (isTextField) {
             element.value = value;
         } else {
             element.setAttribute("value", value);
         }
         Utils.keyDownOrUp(context, element, false, keyCode, character);
+
+        if (isShift) {
+            Utils.keyDownOrUp(context, element, false, Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT, Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT);
+        }
     }
 };
 
 Utils.keyPress = function(context, element, keyCode, charCode) {
     var event = Utils.getDocument(context).createEvent('KeyEvents');
-    event.initKeyEvent('keypress', true, true, Utils.getBrowser(context).contentWindow, 0, 0, 0, 0, keyCode, charCode);
+    var c = String.fromCharCode(charCode);
+    var isShift = /A-Z/.test(c);
+    event.initKeyEvent('keypress', true, true, Utils.getBrowser(context).contentWindow, 0, 0, isShift, 0, keyCode, charCode);
     element.dispatchEvent(event);
 };
 
 Utils.keyDownOrUp = function(context, element, down, keyCode, charCode) {
     var event = Utils.getDocument(context).createEvent('KeyEvents');
-    event.initKeyEvent(down ? 'keydown' : 'keyup', true, true, Utils.getBrowser(context).contentWindow, 0, 0, 0, 0, keyCode, charCode);
+    var c = String.fromCharCode(charCode);
+    var isShift = /A-Z/.test(c);
+    event.initKeyEvent(down ? 'keydown' : 'keyup', true, true, Utils.getBrowser(context).contentWindow, 0, 0, isShift, 0, keyCode, charCode);
     element.dispatchEvent(event);
 };
 
 Utils.fireHtmlEvent = function(context, element, eventName) {
     var doc = Utils.getDocument(context);
     var e = doc.createEvent("HTMLEvents");
-    e.initEvent("change", true, true);
+    e.initEvent(eventName, true, true);
     element.dispatchEvent(e);
 }
 

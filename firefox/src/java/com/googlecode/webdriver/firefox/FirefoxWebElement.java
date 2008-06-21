@@ -5,6 +5,7 @@ import com.googlecode.webdriver.NoSuchElementException;
 import com.googlecode.webdriver.SearchContext;
 import com.googlecode.webdriver.WebElement;
 import com.googlecode.webdriver.RenderedWebElement;
+import com.googlecode.webdriver.internal.FindsByClassName;
 import com.googlecode.webdriver.internal.FindsById;
 import com.googlecode.webdriver.internal.FindsByLinkText;
 import com.googlecode.webdriver.internal.FindsByName;
@@ -18,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FirefoxWebElement implements RenderedWebElement, FindsByXPath,
-        FindsByLinkText, FindsById, FindsByName, SearchContext {
+        FindsByLinkText, FindsById, FindsByName, FindsByClassName, SearchContext {
     private final FirefoxDriver parent;
     private final String elementId;
 
@@ -201,6 +202,20 @@ public class FirefoxWebElement implements RenderedWebElement, FindsByXPath,
 
     public List<WebElement> findElementsByName(String name) {
         return findElementsByXPath("*[@name = '" + name + "']");
+    }
+    
+    public WebElement findElementByClassName(String using) {
+        List<WebElement> elements = findElementsByClassName(using);
+        if (elements.size() == 0) {
+            throw new NoSuchElementException(
+                    "Unable to find element by class name " + using);
+        }
+        return elements.get(0);
+    }
+    
+    public List<WebElement> findElementsByClassName(String using) {
+    	String indices = sendMessage(RuntimeException.class, "findElementsByClassName", using);
+        return getElementsFromIndices(indices);
     }
     
     public String getValueOfCssProperty(String propertyName) {
