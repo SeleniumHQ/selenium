@@ -31,6 +31,10 @@ namespace Selenium
 		/// <returns>the command result, defined by the remote JavaScript.  "getX" style
 		///		commands may return data from the browser</returns>
 		string DoCommand(string command, string[] args);
+        /// <summary>
+        /// Sets the extension Javascript to be used in the created session
+        /// </summary>
+        void SetExtensionJs(string extensionJs) ;
 		/// <summary>
 		/// Starts a new Selenium testing session
 		/// </summary>

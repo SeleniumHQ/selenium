@@ -34,6 +34,7 @@ namespace Selenium
 		private string sessionId;
 		private string browserStartCommand;
 		private string browserURL;
+        private string extensionJs;
 		
 		/// <summary>
 		/// The server URL, to whom we send command requests
@@ -57,6 +58,7 @@ namespace Selenium
 				":"+ serverPort + "/selenium-server/driver/";
 			this.browserStartCommand = browserStartCommand;
 			this.browserURL = browserURL;
+			this.extensionJs = "";
 		}
 
 		/// <summary>
@@ -71,6 +73,7 @@ namespace Selenium
 			this.url = serverURL;
 			this.browserStartCommand = browserStartCommand;
 			this.browserURL = browserURL;
+			this.extensionJs = "";
 		}
 
 		/// <summary>
@@ -112,36 +115,52 @@ namespace Selenium
 			}
 		}
 
-		/// <summary>
-		/// Builds an HTTP request based on the specified remote Command
-		/// </summary>
-		/// <param name="command">the command we'll send to the server</param>
-		/// <returns>an HTTP request, which will perform this command</returns>
-		public virtual WebRequest CreateWebRequest(IRemoteCommand command)
-		{
-			WebRequest request = WebRequest.Create(BuildCommandString(command.CommandString));
-			request.Timeout = Timeout.Infinite;
-			return request;
-		}
+        /// <summary>
+        /// Builds an HTTP request based on the specified remote Command
+        /// </summary>
+        /// <param name="command">the command we'll send to the server</param>
+        /// <returns>an HTTP request, which will perform this command</returns>
+        public virtual WebRequest CreateWebRequest(IRemoteCommand command)
+        {
+            byte[] data = BuildCommandPostData(command.CommandString);
+            
+            HttpWebRequest request = (HttpWebRequest) WebRequest.Create(url);
+            request.Method = "POST";
+            request.ContentType = "application/x-www-form-urlencoded; charset=utf-8";
+            request.Timeout = Timeout.Infinite;
+            
+            Stream rs = request.GetRequestStream();
+            rs.Write(data, 0, data.Length);
+            rs.Close();
+            
+            return request;
+        }
 
-		private string BuildCommandString(string commandString)
-		{
-			string result = url + "?" + commandString;
-			if (sessionId != null)
-			{
-				result += "&sessionId=" + sessionId;
-			}
-			return result;
-		}
+        private byte[] BuildCommandPostData(string commandString)
+        {
+            string data = commandString;
+            if (sessionId != null)
+            {
+                data += "&sessionId=" + sessionId;
+            }
+            return (new UTF8Encoding()).GetBytes(data);
+        }
+
+        /// <summary>
+        /// Sets the extension Javascript to be used in the created session
+        /// </summary>
+        public void SetExtensionJs(string extensionJs) 
+        {
+            this.extensionJs = extensionJs;
+        }
 
 		/// <summary>
 		/// Creates a new browser session
 		/// </summary>
 		public void Start() 
 		{
-			string result = GetString("getNewBrowserSession", new String[] {browserStartCommand, browserURL});
+			string result = GetString("getNewBrowserSession", new String[] {browserStartCommand, browserURL, extensionJs});
 			sessionId = result;
-        
 		}
 
 		/// <summary>

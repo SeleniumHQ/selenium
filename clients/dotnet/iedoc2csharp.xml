@@ -78,6 +78,11 @@ TOP
 THISISAFAKENEWLINE	public interface ISelenium
 THISISAFAKENEWLINE	{
 THISISAFAKENEWLINE		/// <summary>
+THISISAFAKENEWLINE		/// Sets the extension Javascript for the session
+THISISAFAKENEWLINE		/// </summary>
+THISISAFAKENEWLINE		void SetExtensionJs(string extensionJs);
+THISISAFAKENEWLINE		
+THISISAFAKENEWLINE		/// <summary>
 THISISAFAKENEWLINE		/// Launches the browser with a new Selenium session
 THISISAFAKENEWLINE		/// </summary>
 THISISAFAKENEWLINE		void Start();
@@ -156,6 +161,14 @@ THISISAFAKENEWLINE	    /// </summary>
 THISISAFAKENEWLINE	    public ICommandProcessor Processor
 THISISAFAKENEWLINE		{
 THISISAFAKENEWLINE	        get { return this.commandProcessor; }
+THISISAFAKENEWLINE		}
+THISISAFAKENEWLINE		
+THISISAFAKENEWLINE		/// <summary>
+THISISAFAKENEWLINE		/// Sets the extension Javascript for the session
+THISISAFAKENEWLINE		/// </summary>
+THISISAFAKENEWLINE		public void SetExtensionJs(string extensionJs)
+THISISAFAKENEWLINE		{
+THISISAFAKENEWLINE			commandProcessor.SetExtensionJs(extensionJs);
 THISISAFAKENEWLINE		}
 THISISAFAKENEWLINE		
 THISISAFAKENEWLINE		/// <summary>
