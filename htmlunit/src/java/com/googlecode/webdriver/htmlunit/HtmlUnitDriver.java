@@ -503,11 +503,11 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText,
         	return lastPage().getWebResponse().getUrl().getPath();
         }
 
-        public Speed getMouseSpeed() {
+        public Speed getSpeed() {
             throw new UnsupportedOperationException();
         }
 
-        public void setMouseSpeed(Speed speed) {
+        public void setSpeed(Speed speed) {
             throw new UnsupportedOperationException();
         }
 

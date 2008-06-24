@@ -110,6 +110,16 @@ void InternetExplorerDriver::goBack()
 	ie->GoBack();
 }
 
+void InternetExplorerDriver::setSpeed(int speed)
+{
+	this->speed = speed;
+}
+
+int InternetExplorerDriver::getSpeed()
+{
+	return speed;
+}
+
 bool InternetExplorerDriver::addEvaluateToDocument(int count)
 {
 	// Is there an evaluate method on the document?

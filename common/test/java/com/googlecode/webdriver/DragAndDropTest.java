@@ -12,13 +12,13 @@ public class DragAndDropTest extends AbstractDriverTestCase {
         Point expectedLocation = img.getLocation();
         drag(img, expectedLocation, 500, 300);
         assertEquals(expectedLocation, img.getLocation());
-        driver.manage().setMouseSpeed(Speed.SLOW);
+        driver.manage().setSpeed(Speed.SLOW);
         drag(img, expectedLocation, -100, -50);
         assertEquals(expectedLocation, img.getLocation());
-        driver.manage().setMouseSpeed(Speed.MEDIUM);
+        driver.manage().setSpeed(Speed.MEDIUM);
         drag(img, expectedLocation, 0, 0);
         assertEquals(expectedLocation, img.getLocation());
-        driver.manage().setMouseSpeed(Speed.FAST);
+        driver.manage().setSpeed(Speed.FAST);
         drag(img, expectedLocation, 1, -1);
         assertEquals(expectedLocation, img.getLocation());
     }
@@ -63,12 +63,12 @@ public class DragAndDropTest extends AbstractDriverTestCase {
     @Ignore("ie, safari")
     public void testMouseSpeed() throws Exception {
         driver.get(dragAndDropPage);
-        driver.manage().setMouseSpeed(Speed.SLOW);
-        assertEquals(Speed.SLOW, driver.manage().getMouseSpeed());
-        driver.manage().setMouseSpeed(Speed.MEDIUM);
-        assertEquals(Speed.MEDIUM, driver.manage().getMouseSpeed());
-        driver.manage().setMouseSpeed(Speed.FAST);
-        assertEquals(Speed.FAST, driver.manage().getMouseSpeed());
+        driver.manage().setSpeed(Speed.SLOW);
+        assertEquals(Speed.SLOW, driver.manage().getSpeed());
+        driver.manage().setSpeed(Speed.MEDIUM);
+        assertEquals(Speed.MEDIUM, driver.manage().getSpeed());
+        driver.manage().setSpeed(Speed.FAST);
+        assertEquals(Speed.FAST, driver.manage().getSpeed());
     }
     
     private void drag(RenderedWebElement elem, Point expectedLocation, 

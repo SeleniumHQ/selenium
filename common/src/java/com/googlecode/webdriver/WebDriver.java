@@ -212,14 +212,14 @@ public interface WebDriver {
          * Gets the mouse speed for drag and drop
          * 
          */
-        Speed getMouseSpeed();
+        Speed getSpeed();
 
         /**
-         * Sets the mouse speed for drag and drop
+         * Sets the speed for user input
          * 
          * @param speed
          */
-        void setMouseSpeed(Speed speed);
+        void setSpeed(Speed speed);
     }
     
     /**

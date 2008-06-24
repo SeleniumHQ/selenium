@@ -209,9 +209,7 @@ WORD WINAPI setFileValue(keyboardData* data) {
 	return false;
 } 
 
-#define PAUSE 0
-
-void backgroundKeyPress(HWND hwnd, HKL layout, WORD keyCode, UINT scanCode, bool extended, bool printable, KeyPressListener* listener)
+void backgroundKeyPress(HWND hwnd, HKL layout, WORD keyCode, UINT scanCode, bool extended, bool printable, KeyPressListener* listener, int PAUSE)
 {
 	BYTE keyboardState[256] = {0};
 	bool needsShift = (keyCode >> 8) & 1;
@@ -384,7 +382,7 @@ void ElementWrapper::sendKeys(const std::wstring& newValue)
 			printable = true;
 		}
 
-		backgroundKeyPress(ieWindow, layout, keyCode, scanCode, extended, printable, listener);
+		backgroundKeyPress(ieWindow, layout, keyCode, scanCode, extended, printable, listener, ie->getSpeed());
 	}
 
 	SetKeyboardState((LPBYTE) &originalKeyboardState);

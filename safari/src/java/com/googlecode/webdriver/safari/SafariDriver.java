@@ -231,11 +231,11 @@ public class SafariDriver implements WebDriver, FindsByLinkText, FindsById,
 	        return toReturn;
         }
 
-        public Speed getMouseSpeed() {
+        public Speed getSpeed() {
             throw new UnsupportedOperationException("getMouseSpeed");
         }
 
-        public void setMouseSpeed(Speed speed) {
+        public void setSpeed(Speed speed) {
             throw new UnsupportedOperationException("setMouseSpeed");
         }
 

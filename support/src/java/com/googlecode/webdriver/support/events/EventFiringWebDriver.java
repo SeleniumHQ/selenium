@@ -259,12 +259,12 @@ public class EventFiringWebDriver implements WebDriver {
             return options.getCookies();
         }
 
-        public Speed getMouseSpeed() {
-            return options.getMouseSpeed();
+        public Speed getSpeed() {
+            return options.getSpeed();
         }
 
-        public void setMouseSpeed(Speed speed) {
-            options.setMouseSpeed(speed);
+        public void setSpeed(Speed speed) {
+            options.setSpeed(speed);
         }
     }
 

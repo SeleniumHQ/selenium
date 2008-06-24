@@ -30,6 +30,9 @@ public:
 	void goForward();
 	void goBack();
 
+	void setSpeed(int speed);
+	int getSpeed();
+
 	ElementWrapper* selectElementByXPath(const wchar_t *xpath);
 	std::vector<ElementWrapper*>* selectElementsByXPath(const wchar_t *xpath);
 	ElementWrapper* selectElementById(const wchar_t *elementId);
@@ -56,6 +59,7 @@ private:
 	IeEventSink* sink;
 	CComQIPtr<IWebBrowser2, &__uuidof(IWebBrowser2)> ie;
 	long currentFrame;
+	int speed;
 
 	bool closeCalled;
 };

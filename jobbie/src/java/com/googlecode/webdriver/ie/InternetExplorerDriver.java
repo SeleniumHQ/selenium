@@ -235,6 +235,8 @@ public class InternetExplorerDriver implements WebDriver, SearchContext,
 
 	private native void doAddCookie(String cookieString);
     private native String doGetCookies();
+    
+    private native void doSetMouseSpeed(int timeOut);
 	
     private class InternetExplorerTargetLocator implements TargetLocator {
         public WebDriver frame(int frameIndex) {
@@ -328,12 +330,12 @@ public class InternetExplorerDriver implements WebDriver, SearchContext,
 			}
 		}
 
-        public Speed getMouseSpeed() {
+        public Speed getSpeed() {
             throw new UnsupportedOperationException();
         }
 
-        public void setMouseSpeed(Speed speed) {
-            throw new UnsupportedOperationException();
+        public void setSpeed(Speed speed) {
+            doSetMouseSpeed(speed.getTimeOut());
         }
     }
 }

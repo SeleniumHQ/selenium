@@ -380,7 +380,7 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByClassName, Fi
             }
         }
 
-        public Speed getMouseSpeed() {
+        public Speed getSpeed() {
             int pixelSpeed = Integer.parseInt(sendMessage(RuntimeException.class, "getMouseSpeed"));
             Speed speed;
 
@@ -403,7 +403,7 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByClassName, Fi
             return speed;
         }
 
-        public void setMouseSpeed(Speed speed) {
+        public void setSpeed(Speed speed) {
             int pixelSpeed;
             // TODO: simon 2007-02-01; Delegate to the enum
             switch(speed) {

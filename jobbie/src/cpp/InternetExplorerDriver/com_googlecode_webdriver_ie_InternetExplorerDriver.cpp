@@ -269,6 +269,14 @@ JNIEXPORT jstring JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDrive
 	return wstring2jstring(env, ie->getCookies());
 }
 
+JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_doSetMouseSpeed
+  (JNIEnv *env, jobject obj, jint speed) 
+{
+	InternetExplorerDriver* ie = getIe(env, obj);
+	ie->setSpeed((int) speed);
+}
+
+
 #ifdef __cplusplus
 }
 #endif

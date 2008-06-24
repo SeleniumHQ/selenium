@@ -9,14 +9,6 @@ extern "C" {
 #endif
 /*
  * Class:     com_googlecode_webdriver_ie_InternetExplorerElement
- * Method:    createInternetExplorerElement
- * Signature: (JLcom/googlecode/webdriver/ie/ElementNode;)Lcom/googlecode/webdriver/ie/InternetExplorerElement;
- */
-JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_createInternetExplorerElement
-  (JNIEnv *, jclass, jlong, jobject);
-
-/*
- * Class:     com_googlecode_webdriver_ie_InternetExplorerElement
  * Method:    click
  * Signature: ()V
  */

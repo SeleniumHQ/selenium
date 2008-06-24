@@ -57,6 +57,38 @@ JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_s
 
 /*
  * Class:     com_googlecode_webdriver_ie_InternetExplorerDriver
+ * Method:    selectElementByClassName
+ * Signature: (Ljava/lang/String;)Lcom/googlecode/webdriver/WebElement;
+ */
+JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_selectElementByClassName
+  (JNIEnv *, jobject, jstring);
+
+/*
+ * Class:     com_googlecode_webdriver_ie_InternetExplorerDriver
+ * Method:    selectElementsByClassName
+ * Signature: (Ljava/lang/String;)Ljava/util/List;
+ */
+JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_selectElementsByClassName
+  (JNIEnv *, jobject, jstring);
+
+/*
+ * Class:     com_googlecode_webdriver_ie_InternetExplorerDriver
+ * Method:    selectElementByXPath
+ * Signature: (Ljava/lang/String;)Lcom/googlecode/webdriver/WebElement;
+ */
+JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_selectElementByXPath
+  (JNIEnv *, jobject, jstring);
+
+/*
+ * Class:     com_googlecode_webdriver_ie_InternetExplorerDriver
+ * Method:    selectElementsByXPath
+ * Signature: (Ljava/lang/String;Ljava/util/List;)V
+ */
+JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_selectElementsByXPath
+  (JNIEnv *, jobject, jstring, jobject);
+
+/*
+ * Class:     com_googlecode_webdriver_ie_InternetExplorerDriver
  * Method:    waitForLoadToComplete
  * Signature: ()V
  */
@@ -78,22 +110,6 @@ JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_s
  */
 JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_openIe
   (JNIEnv *, jobject);
-
-/*
- * Class:     com_googlecode_webdriver_ie_InternetExplorerDriver
- * Method:    selectElementByXPath
- * Signature: (Ljava/lang/String;)Lcom/googlecode/webdriver/WebElement;
- */
-JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_selectElementByXPath
-  (JNIEnv *, jobject, jstring);
-
-/*
- * Class:     com_googlecode_webdriver_ie_InternetExplorerDriver
- * Method:    selectElementsByXPath
- * Signature: (Ljava/lang/String;Ljava/util/List;)V
- */
-JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_selectElementsByXPath
-  (JNIEnv *, jobject, jstring, jobject);
 
 /*
  * Class:     com_googlecode_webdriver_ie_InternetExplorerDriver
@@ -134,30 +150,6 @@ JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDrive
  */
 JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_selectElementsByName
   (JNIEnv *, jobject, jstring);
-
-/*
- * Class:     com_googlecode_webdriver_ie_InternetExplorerDriver
- * Method:    selectElementByClassName
- * Signature: (Ljava/lang/String;)Lcom/googlecode/webdriver/WebElement;
- */
-JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_selectElementByClassName
-  (JNIEnv *, jobject, jstring);
-
-/*
- * Class:     com_googlecode_webdriver_ie_InternetExplorerDriver
- * Method:    selectElementsByClassName
- * Signature: (Ljava/lang/String;)Ljava/util/List;
- */
-JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_selectElementsByClassName
-  (JNIEnv *, jobject, jstring);
-
-/*
- * Class:     com_googlecode_webdriver_ie_InternetExplorerDriver
- * Method:    getDocument
- * Signature: ()Lcom/googlecode/webdriver/ie/DocumentNode;
- */
-JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_getDocument
-  (JNIEnv *, jobject);
 
 /*
  * Class:     com_googlecode_webdriver_ie_InternetExplorerDriver
@@ -206,6 +198,14 @@ JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_d
  */
 JNIEXPORT jstring JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_doGetCookies
   (JNIEnv *, jobject);
+
+/*
+ * Class:     com_googlecode_webdriver_ie_InternetExplorerDriver
+ * Method:    doSetMouseSpeed
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_doSetMouseSpeed
+  (JNIEnv *, jobject, jint);
 
 #ifdef __cplusplus
 }
