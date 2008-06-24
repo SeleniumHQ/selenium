@@ -681,8 +681,9 @@ LocationExpr.prototype._combineSteps = function(prevStep, nextStep) {
     // maybe suitable to be combined
     if (prevStep.axis == xpathAxis.DESCENDANT_OR_SELF) {
       if (nextStep.axis == xpathAxis.CHILD) {
-        nextStep.axis = xpathAxis.DESCENDANT;
-        return nextStep;
+        // HBC - commenting out, because this is not a valid reduction
+        //nextStep.axis = xpathAxis.DESCENDANT;
+        //return nextStep;
       } else if (nextStep.axis == xpathAxis.SELF) {
         nextStep.axis = xpathAxis.DESCENDANT_OR_SELF;
         return nextStep;
@@ -815,7 +816,22 @@ StepExpr.prototype.evaluate = function(ctx) {
           copyArray(nodelist, input.attributes);
         }
         else {
-          nodelist.push(input.attributes[this.nodetest.name]);
+          if (this.nodetest.name == 'style') {
+            var value = input.getAttribute('style');
+            if (value && typeof(value) != 'string') {
+              // this is the case where indexing into the attributes array
+              // doesn't give us the attribute node in IE - we create our own
+              // node instead
+              nodelist.push(XNode.create(DOM_ATTRIBUTE_NODE, 'style',
+                value.cssText, document));
+            }
+            else {
+              nodelist.push(input.attributes[this.nodetest.name]);
+            }
+          }
+          else {
+            nodelist.push(input.attributes[this.nodetest.name]);
+          }
         }
       }
     }
@@ -2331,7 +2347,10 @@ function xpathCollectDescendants(nodelist, node, opt_tagName) {
 function xpathExtractTagNameFromNodeTest(nodetest) {
   if (nodetest instanceof NodeTestName) {
     return nodetest.name;
-  } else if (nodetest instanceof NodeTestAny || nodetest instanceof NodeTestElementOrAttribute) {
+  } else if (/* nodetest instanceof NodeTestAny || */ nodetest instanceof NodeTestElementOrAttribute) {
+    // HBC - commented out the NodeTestAny in the above condition; it causes
+    // non-element nodes to be excluded! The XPath spec says "node()" must
+    // match all node types.
     return "*";
   }
 }
