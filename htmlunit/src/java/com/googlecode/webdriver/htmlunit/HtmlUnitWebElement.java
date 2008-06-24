@@ -380,7 +380,7 @@ public class HtmlUnitWebElement implements WebElement,
     public WebElement findElementByXPath(String xpathExpr) {
         HtmlElement match = (HtmlElement) element.getFirstByXPath(xpathExpr);
         if (match == null) {
-            throw new NoSuchElementException("Unable to find element with xpath"
+            throw new NoSuchElementException("Unable to find element with xpath "
                     + xpathExpr);
         }
         return new HtmlUnitWebElement(getParent(), match);
@@ -400,7 +400,7 @@ public class HtmlUnitWebElement implements WebElement,
         List<WebElement> elements = findElementsByLinkText(linkText);
         if (elements.size() == 0) {
             throw new NoSuchElementException(
-                    "Unable to find element with linkText" + linkText);
+                    "Unable to find element with linkText " + linkText);
         }
         return elements.size() > 0 ? elements.get(0) : null;
     }
