@@ -17,9 +17,9 @@
 package org.openqa.selenium.server.browserlaunchers;
 
 import org.apache.commons.logging.Log;
-import org.apache.tools.ant.taskdefs.condition.Os;
 import org.mortbay.log.LogFactory;
 import org.openqa.selenium.server.RemoteControlConfiguration;
+import org.openqa.selenium.server.browserlaunchers.SystemUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -65,7 +65,7 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
                 if (execDirect.isAbsolute() && execDirect.exists()) operaBin = execDirect;
             }
             if (operaBin != null) {
-                String libPathKey = getLibPathKey();
+                String libPathKey = SystemUtils.libraryPathEnvironmentVariable();
                 String libPath = WindowsUtils.loadEnvironment().getProperty(libPathKey);
                 exe.setEnvironment(new String[]{
                         "MOZ_NO_REMOTE=1",
@@ -78,13 +78,6 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
 
     public static void setAdditionalSettings(String additionalSettings) {
         OperaCustomProfileLauncher.additionalSettings = additionalSettings;
-    }
-
-    private static String getLibPathKey() {
-        if (WindowsUtils.thisIsWindows()) return WindowsUtils.getExactPathEnvKey();
-        if (Os.isFamily("mac")) return "DYLD_LIBRARY_PATH";
-        // TODO other linux?
-        return "LD_LIBRARY_PATH";
     }
 
     private static String findBrowserLaunchLocation() {

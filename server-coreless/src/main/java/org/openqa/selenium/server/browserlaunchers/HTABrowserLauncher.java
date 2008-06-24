@@ -62,7 +62,7 @@ public class HTABrowserLauncher implements BrowserLauncher {
         String hta = (new File(dir, "core/" + htaName)).getAbsolutePath();
         log.info("Launching Embedded Internet Explorer...");
         AsyncExecute exe = new AsyncExecute();
-        exe.setCommandline(new String[] {InternetExplorerCustomProxyLauncher.findBrowserLaunchLocation(), "-Embedding"});
+        exe.setCommandline(new String[] {InternetExplorerLocator.findBrowserLaunchLocation(), "-Embedding"});
         try {
             iexploreProcess = exe.asyncSpawn();
         } catch (IOException e) {

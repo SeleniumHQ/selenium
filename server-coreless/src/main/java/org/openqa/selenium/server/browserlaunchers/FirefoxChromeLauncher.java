@@ -22,9 +22,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.apache.commons.logging.Log;
-import org.apache.tools.ant.taskdefs.condition.Os;
 import org.mortbay.log.LogFactory;
 import org.openqa.selenium.server.RemoteControlConfiguration;
+import org.openqa.selenium.server.browserlaunchers.SystemUtils;
 
 public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
 
@@ -285,24 +285,13 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
         }
         if (firefoxBin != null) {
             LauncherUtils.assertNotScriptFile(firefoxBin);
-            String libPathKey = getLibPathKey();
+            String libPathKey = SystemUtils.libraryPathEnvironmentVariable();
             String libPath = WindowsUtils.loadEnvironment().getProperty(libPathKey);
             shell.setEnvironment(new String[]{
                     "MOZ_NO_REMOTE=1",
                     libPathKey + "=" + libPath + ":" + firefoxBin.getParent(),
             });
         }
-    }
-
-    private static String getLibPathKey() {
-        if (WindowsUtils.thisIsWindows()) {
-            return WindowsUtils.getExactPathEnvKey();
-        }
-        if (Os.isFamily("mac")) {
-            return "DYLD_LIBRARY_PATH";
-        }
-        // TODO other linux?
-        return "LD_LIBRARY_PATH";
     }
 
 }

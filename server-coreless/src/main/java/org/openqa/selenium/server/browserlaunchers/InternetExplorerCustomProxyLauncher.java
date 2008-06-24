@@ -37,61 +37,52 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
     private static boolean alwaysChangeMaxConnections = false;
     protected boolean changeMaxConnections = alwaysChangeMaxConnections;
 
-    public InternetExplorerCustomProxyLauncher(RemoteControlConfiguration configuration, String sessionId) {
-        this(configuration, sessionId, findBrowserLaunchLocation());
+    public InternetExplorerCustomProxyLauncher(RemoteControlConfiguration configuration,
+                                               String sessionId) {
+        this(configuration, sessionId, InternetExplorerLocator.findBrowserLaunchLocation());
     }
 
-    public InternetExplorerCustomProxyLauncher(RemoteControlConfiguration configuration, String sessionId,
-            String browserLaunchLocation) {
-
+    public InternetExplorerCustomProxyLauncher(RemoteControlConfiguration configuration,
+                                               String sessionId, String browserLaunchLocation) {
         super(sessionId, configuration);
-        commandPath = browserLaunchLocation;
+        this.commandPath = browserLaunchLocation;
         this.sessionId = sessionId;
-        wpm = new WindowsProxyManager(true, sessionId, getPort(), getPort());
+        this.wpm = new WindowsProxyManager(true, sessionId, getPort(), getPort());
     }
 
     protected void changeRegistrySettings() throws IOException {
         wpm.changeRegistrySettings();
     }
     
-    protected static String findBrowserLaunchLocation() {
-        String defaultPath = System.getProperty("internetExplorerDefaultPath");
-        if (defaultPath == null) {
-            defaultPath = WindowsUtils.getProgramFilesPath() + "\\Internet Explorer\\iexplore.exe";
-        }
-        File defaultLocation = new File(defaultPath);
-        if (defaultLocation.exists()) {
-            return defaultLocation.getAbsolutePath();
-        }
-        File iexploreEXE = AsyncExecute.whichExec("iexplore.exe");
-        if (iexploreEXE != null) return iexploreEXE.getAbsolutePath();
-        throw new RuntimeException("Internet Explorer couldn't be found in the path!\n" +
-                "Please add the directory containing iexplore.exe to your PATH environment\n" +
-                "variable, or explicitly specify a path to IE like this:\n" +
-                "*iexplore c:\\blah\\iexplore.exe");
-    }
-
     @Override
     public void launch(String url) {
+        final AsyncExecute exe;
+
         try {
-            if (WindowsUtils.thisIsWindows()) {
-                if (getConfiguration().shouldOverrideSystemProxy()) {
-                  setupSystemProxy();
-                }
-                customProxyPACDir = wpm.getCustomProxyPACDir();
-                File killableProcessWrapper = new File(customProxyPACDir, "killableprocess.exe");
-                ResourceExtractor.extractResourcePath(InternetExplorerCustomProxyLauncher.class, "/killableprocess/killableprocess.exe", killableProcessWrapper);
-                cmdarray = new String[]{killableProcessWrapper.getAbsolutePath(), commandPath, "-new", url};
-            } else {
-                // DGF IEs4Linux, perhaps?  It could happen!
-                cmdarray = new String[]{commandPath, url};
-            }
+            setupSystem(url);
             log.info("Launching Internet Explorer...");
-            AsyncExecute exe = new AsyncExecute();
+            exe = new AsyncExecute();
             exe.setCommandline(cmdarray);
             process = exe.asyncSpawn();
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private void setupSystem(String url) throws IOException {
+        if (WindowsUtils.thisIsWindows()) {
+            final File killableProcessWrapper;
+
+            if (getConfiguration().shouldOverrideSystemProxy()) {
+              setupSystemProxy();
+            }
+            customProxyPACDir = wpm.getCustomProxyPACDir();
+            killableProcessWrapper = new File(customProxyPACDir, "killableprocess.exe");
+            ResourceExtractor.extractResourcePath(InternetExplorerCustomProxyLauncher.class, "/killableprocess/killableprocess.exe", killableProcessWrapper);
+            cmdarray = new String[]{killableProcessWrapper.getAbsolutePath(), commandPath, "-new", url};
+        } else {
+            // DGF IEs4Linux, perhaps?  It could happen!
+            cmdarray = new String[]{commandPath, url};
         }
     }
 

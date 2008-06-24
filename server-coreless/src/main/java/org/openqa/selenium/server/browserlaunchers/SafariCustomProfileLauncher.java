@@ -19,15 +19,15 @@ package org.openqa.selenium.server.browserlaunchers;
 import org.apache.commons.logging.Log;
 import org.apache.tools.ant.taskdefs.condition.Os;
 import org.mortbay.log.LogFactory;
-import org.openqa.selenium.server.SeleniumServer;
 import org.openqa.selenium.server.RemoteControlConfiguration;
+import org.openqa.selenium.server.SeleniumServer;
 
 import java.io.*;
+
 
 public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
 
     static Log log = LogFactory.getLog(SafariCustomProfileLauncher.class);
-    private static final String DEFAULT_LOCATION = "/Applications/Safari.app/Contents/MacOS/Safari";
 
     private static final String REDIRECT_TO_GO_TO_SELENIUM = "redirect_to_go_to_selenium.htm";
 
@@ -46,105 +46,81 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
     private static AsyncExecute exe = new AsyncExecute();
 
     public SafariCustomProfileLauncher(RemoteControlConfiguration configuration, String sessionId) {
-        this(configuration, sessionId, findBrowserLaunchLocation());
+        this(configuration, sessionId, SafariLocator.findBrowserLaunchLocation());
     }
 
     public SafariCustomProfileLauncher(RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
         super(sessionId, configuration);
-        commandPath = findBrowserLaunchLocation();
-//        this.port = port;
         this.sessionId = sessionId;
-        if (WindowsUtils.thisIsWindows()) {
-            wpm = new WindowsProxyManager(true, sessionId, getPort(), getPort());
-        } else {
-            mpm = new MacProxyManager(sessionId, getPort());
-            // On unix, add command's directory to LD_LIBRARY_PATH
-            File SafariBin = AsyncExecute.whichExec(commandPath);
-            if (SafariBin == null) {
-                File execDirect = new File(commandPath);
-                if (execDirect.isAbsolute() && execDirect.exists()) SafariBin = execDirect;
-            }
-            if (SafariBin != null) {
-                String libPathKey = getLibPathKey();
-                String libPath = WindowsUtils.loadEnvironment().getProperty(libPathKey);
-                exe.setEnvironment(new String[]{
-                        libPathKey + "=" + libPath + ":" + SafariBin.getParent(),
-                });
-            }
+        commandPath = browserLaunchLocation;
+
+        if (configuration.shouldOverrideSystemProxy()) {
+            createSystemProxyManager(sessionId);
         }
+        setLibraryPath();
+
         customProfileDir = LauncherUtils.createCustomProfileDir(sessionId);
-    }
-
-    private static String getLibPathKey() {
-        if (WindowsUtils.thisIsWindows()) return WindowsUtils.getExactPathEnvKey();
-        if (Os.isFamily("mac")) return "DYLD_LIBRARY_PATH";
-        // TODO other linux?
-        return "LD_LIBRARY_PATH";
-    }
-
-    private static String findBrowserLaunchLocation() {
-        String defaultPath = System.getProperty("SafariDefaultPath");
-        if (defaultPath == null) {
-            if (WindowsUtils.thisIsWindows()) {
-                defaultPath = WindowsUtils.getProgramFilesPath() + "\\Safari\\Safari.exe";
-            } else {
-                defaultPath = DEFAULT_LOCATION;
-            }
-        }
-        File defaultLocation = new File(defaultPath);
-        if (defaultLocation.exists()) {
-            return defaultLocation.getAbsolutePath();
-        }
-        if (WindowsUtils.thisIsWindows()) {
-            File safariEXE = AsyncExecute.whichExec("Safari.exe");
-            if (safariEXE != null) return safariEXE.getAbsolutePath();
-            throw new RuntimeException("Safari couldn't be found in the path!\n" +
-                    "Please add the directory containing Safari.exe to your PATH environment\n" +
-                    "variable, or explicitly specify a path to Safari like this:\n" +
-                    "*safari c:\\blah\\safari.exe");
-        }
-        // On unix, prefer SafariBin if it's on the path
-        File SafariBin = AsyncExecute.whichExec("Safari");
-        if (SafariBin != null) {
-            return SafariBin.getAbsolutePath();
-        }
-        throw new RuntimeException("Safari couldn't be found in the path!\n" +
-                "Please add the directory containing 'Safari' to your PATH environment\n" +
-                "variable, or explicitly specify a path to Safari like this:\n" +
-                "*Safari /blah/blah/Safari");
     }
 
     protected void launch(String url) {
         try {
-            if (WindowsUtils.thisIsWindows()) {
-                wpm.backupRegistrySettings();
-                changeRegistrySettings();
-            } else {
-                mpm.backupNetworkSettings();
-                mpm.changeNetworkSettings();
+            if (getConfiguration().shouldOverrideSystemProxy()) {
+                setupSystemProxy();
             }
             if (SeleniumServer.isEnsureCleanSession()) {
                 ensureCleanSession();
             }
 
             cmdarray = new String[]{commandPath};
-
             if (Os.isFamily("mac")) {
-                String redirectHtmlFileName = makeRedirectionHtml(customProfileDir, url);
+                final String redirectHtmlFileName;
 
-                log.info("Launching Safari to visit " + url + " via " + redirectHtmlFileName + "...");
+                redirectHtmlFileName = makeRedirectionHtml(customProfileDir, url);
+                log.info("Launching Safari to visit '" + url + "' via '" + redirectHtmlFileName + "'...");
                 cmdarray = new String[]{commandPath, redirectHtmlFileName};
             } else {
                 log.info("Launching Safari ...");
                 cmdarray = new String[]{commandPath, "-url", url};
             }
 
-
             exe.setCommandline(cmdarray);
-
             process = exe.asyncSpawn();
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public void close() {
+        final int exitValue;
+
+        if (closed) {
+            return;
+        }
+        if (getConfiguration().shouldOverrideSystemProxy()) {
+          restoreSystemProxy();
+        }
+        
+        if (process == null) {
+            return;
+        }
+        log.info("Killing Safari...");
+        exitValue = AsyncExecute.killProcess(process);
+        if (exitValue == 0) {
+            log.warn("Safari seems to have ended on its own (did we kill the real browser???)");
+        }
+        closed = true;
+
+        if (backedUpCookieFile != null && backedUpCookieFile.exists()) {
+            File sessionCookieFile = new File(originalCookieFilePath);
+            boolean success = sessionCookieFile.delete();
+            if (success) {
+                log.info("Session's cookie file deleted.");
+            } else {
+                log.info("Session's cookie *not* deleted.");
+            }
+            log.info("Trying to restore originalCookieFile...");
+            originalCookieFile = new File(originalCookieFilePath);
+            LauncherUtils.copySingleFile(backedUpCookieFile, originalCookieFile);
         }
     }
 
@@ -182,10 +158,6 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
         }
     }
 
-    protected void changeRegistrySettings() throws IOException {
-        wpm.changeRegistrySettings();
-    }
-
 
     protected String makeRedirectionHtml(File parentDir, String url) {
         File f = new File(parentDir, REDIRECT_TO_GO_TO_SELENIUM);
@@ -206,47 +178,58 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
     }
 
 
-    public void close() {
-        if (closed) return;
+    public Process getProcess() {
+        return process;
+    }
+
+    private void setupSystemProxy() throws IOException {
+        if (WindowsUtils.thisIsWindows()) {
+            wpm.backupRegistrySettings();
+            changeRegistrySettings();
+        } else {
+            mpm.backupNetworkSettings();
+            mpm.changeNetworkSettings();
+        }
+    }
+
+    private void restoreSystemProxy() {
         if (WindowsUtils.thisIsWindows()) {
             wpm.restoreRegistrySettings();
         } else {
             mpm.restoreNetworkSettings();
         }
+    }
 
-        if (process == null) return;
-        log.info("Killing Safari...");
-        int exitValue = AsyncExecute.killProcess(process);
-        if (exitValue == 0) {
-            log.warn("Safari seems to have ended on its own (did we kill the real browser???)");
+    protected void changeRegistrySettings() throws IOException {
+        wpm.changeRegistrySettings();
+    }
+
+    private void createSystemProxyManager(String sessionId) {
+        if (WindowsUtils.thisIsWindows()) {
+            wpm = new WindowsProxyManager(true, sessionId, getPort(), getPort());
+        } else {
+            mpm = new MacProxyManager(sessionId, getPort());
         }
-        closed = true;
+    }
 
-        if (backedUpCookieFile != null && backedUpCookieFile.exists()) {
-            File sessionCookieFile = new File(originalCookieFilePath);
-            boolean success = sessionCookieFile.delete();
-            if (success) {
-                log.info("Session's cookie file deleted.");
-            } else {
-                log.info("Session's cookie *not* deleted.");
+    private void setLibraryPath() {
+        if (!WindowsUtils.thisIsWindows()) {
+            // On unix, add command's directory to LD_LIBRARY_PATH
+            File SafariBin = AsyncExecute.whichExec(commandPath);
+            if (SafariBin == null) {
+                File execDirect = new File(commandPath);
+                if (execDirect.isAbsolute() && execDirect.exists()) {
+                    SafariBin = execDirect;
+                }
             }
-            log.info("Trying to restore originalCookieFile...");
-            originalCookieFile = new File(originalCookieFilePath);
-            LauncherUtils.copySingleFile(backedUpCookieFile, originalCookieFile);
+            if (SafariBin != null) {
+                String libPathKey = SystemUtils.libraryPathEnvironmentVariable();
+                String libPath = WindowsUtils.loadEnvironment().getProperty(libPathKey);
+                exe.setEnvironment(new String[]{
+                        libPathKey + "=" + libPath + ":" + SafariBin.getParent(),
+                });
+            }
         }
     }
-
-    public Process getProcess() {
-        return process;
-    }
-
-    public static void main(String[] args) throws Exception {
-        SafariCustomProfileLauncher l = new SafariCustomProfileLauncher(new RemoteControlConfiguration(), "CUST");
-        l.launch("http://www.google.com");
-        int seconds = 15;
-        System.out.println("Killing browser in " + Integer.toString(seconds) + " seconds");
-        AsyncExecute.sleepTight(seconds * 1000);
-        l.close();
-        System.out.println("He's dead now, right?");
-    }
+    
 }
