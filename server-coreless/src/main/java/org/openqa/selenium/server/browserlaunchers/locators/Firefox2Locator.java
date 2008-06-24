@@ -1,4 +1,6 @@
-package org.openqa.selenium.server.browserlaunchers;
+package org.openqa.selenium.server.browserlaunchers.locators;
+
+import org.openqa.selenium.server.browserlaunchers.WindowsUtils;
 
 /**
  * Discovers a valid Firefox 2.x installation on local system.

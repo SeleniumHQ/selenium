@@ -16,15 +16,15 @@
  */
 package org.openqa.selenium.server.browserlaunchers;
 
+import org.apache.commons.logging.Log;
+import org.mortbay.log.LogFactory;
+import org.openqa.selenium.server.RemoteControlConfiguration;
+import org.openqa.selenium.server.browserlaunchers.locators.Firefox2or3Locator;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-
-import org.apache.commons.logging.Log;
-import org.mortbay.log.LogFactory;
-import org.openqa.selenium.server.RemoteControlConfiguration;
-import org.openqa.selenium.server.browserlaunchers.SystemUtils;
 
 public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
 
@@ -244,16 +244,6 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
         }
     }
 
-    public static void main(String[] args) throws Exception {
-        FirefoxChromeLauncher l = new FirefoxChromeLauncher(new RemoteControlConfiguration(), "CUSTFFCHROME");
-        l.launch("http://www.google.com");
-        int seconds = 15000;
-        System.out.println("Killing browser in " + Integer.toString(seconds) + " seconds");
-        AsyncExecute.sleepTight(seconds * 1000);
-        l.close();
-        System.out.println("He's dead now, right?");
-    }
-
     @Override // need to specify an absolute resultsUrl
     public void launchHTMLSuite(String suiteUrl, String browserURL, boolean multiWindow, String defaultLogLevel) {
         launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl, multiWindow, getPort(), defaultLogLevel));
@@ -294,5 +284,6 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
         }
     }
 
+    
 }
 

@@ -10,6 +10,7 @@ import org.apache.commons.logging.Log;
 import org.apache.tools.ant.util.*;
 import org.mortbay.log.LogFactory;
 import org.openqa.selenium.server.RemoteControlConfiguration;
+import org.openqa.selenium.server.browserlaunchers.locators.InternetExplorerLocator;
 
 public class HTABrowserLauncher implements BrowserLauncher {
 
@@ -62,7 +63,7 @@ public class HTABrowserLauncher implements BrowserLauncher {
         String hta = (new File(dir, "core/" + htaName)).getAbsolutePath();
         log.info("Launching Embedded Internet Explorer...");
         AsyncExecute exe = new AsyncExecute();
-        exe.setCommandline(new String[] {InternetExplorerLocator.findBrowserLaunchLocation(), "-Embedding"});
+        exe.setCommandline(new String[] {new InternetExplorerLocator().findBrowserLocationOrFail(), "-Embedding"});
         try {
             iexploreProcess = exe.asyncSpawn();
         } catch (IOException e) {

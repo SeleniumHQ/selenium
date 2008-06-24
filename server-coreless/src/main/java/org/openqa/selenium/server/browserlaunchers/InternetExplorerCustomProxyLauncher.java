@@ -19,6 +19,7 @@ package org.openqa.selenium.server.browserlaunchers;
 import org.apache.commons.logging.Log;
 import org.mortbay.log.LogFactory;
 import org.openqa.selenium.server.RemoteControlConfiguration;
+import org.openqa.selenium.server.browserlaunchers.locators.InternetExplorerLocator;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,7 +40,7 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
 
     public InternetExplorerCustomProxyLauncher(RemoteControlConfiguration configuration,
                                                String sessionId) {
-        this(configuration, sessionId, InternetExplorerLocator.findBrowserLaunchLocation());
+        this(configuration, sessionId, new InternetExplorerLocator().findBrowserLocationOrFail());
     }
 
     public InternetExplorerCustomProxyLauncher(RemoteControlConfiguration configuration,

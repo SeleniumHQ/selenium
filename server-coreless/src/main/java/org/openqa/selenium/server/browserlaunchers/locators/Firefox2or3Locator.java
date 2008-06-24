@@ -1,4 +1,4 @@
-package org.openqa.selenium.server.browserlaunchers;
+package org.openqa.selenium.server.browserlaunchers.locators;
 
 import org.apache.commons.logging.Log;
 import org.mortbay.log.LogFactory;

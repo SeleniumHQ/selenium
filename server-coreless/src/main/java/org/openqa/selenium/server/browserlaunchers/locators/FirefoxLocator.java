@@ -1,7 +1,9 @@
-package org.openqa.selenium.server.browserlaunchers;
+package org.openqa.selenium.server.browserlaunchers.locators;
 
 import org.apache.commons.logging.Log;
 import org.mortbay.log.LogFactory;
+import org.openqa.selenium.server.browserlaunchers.WindowsUtils;
+import org.openqa.selenium.server.browserlaunchers.AsyncExecute;
 
 import java.io.File;
 
@@ -10,7 +12,7 @@ import java.io.File;
  */
 public abstract class FirefoxLocator {
 
-    private static Log LOGGER = LogFactory.getLog(FirefoxLocator.class);
+    private static final Log LOGGER = LogFactory.getLog(FirefoxLocator.class);
 
     public abstract String[] usualUNIXLauncherLocations();
 
