@@ -163,7 +163,7 @@ WORD WINAPI setFileValue(keyboardData* data) {
 	const wchar_t* filename = data->text;
 	HWND dialogHwnd = FindWindowW(fileDialogNames[0], NULL);
 
-	int lookFor = 5;
+	int lookFor = 30;
 	while (!dialogHwnd && lookFor) {
 		Sleep(200);
 		--lookFor;
