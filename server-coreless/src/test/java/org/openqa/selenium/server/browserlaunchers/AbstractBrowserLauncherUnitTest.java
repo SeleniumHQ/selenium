@@ -2,6 +2,7 @@ package org.openqa.selenium.server.browserlaunchers;
 
 import junit.framework.TestCase;
 import junit.framework.Assert;
+import static junit.framework.Assert.assertEquals;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
 /**
@@ -26,6 +27,6 @@ public class AbstractBrowserLauncherUnitTest extends TestCase {
                 throw new UnsupportedOperationException("Should never be called");
             }
         };
-        Assert.assertEquals(theConfiguration, launcher.getConfiguration());
+        assertEquals(theConfiguration, launcher.getConfiguration());
     }
 }

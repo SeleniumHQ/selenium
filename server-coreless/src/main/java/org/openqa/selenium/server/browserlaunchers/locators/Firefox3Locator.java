@@ -8,9 +8,9 @@ import org.openqa.selenium.server.browserlaunchers.WindowsUtils;
 public class Firefox3Locator extends FirefoxLocator {
 
     private static final String[] USUAL_UNIX_LAUNCHER_LOCATIONS = {
+            "/Applications/Firefox-3.app/Contents/MacOS",
             "/Applications/Firefox.app/Contents/MacOS",
             "/usr/lib/firefox-3.0", /* Ubuntu 8.x default location */
-            "/Applications/Firefox-3.app/Contents/MacOS",
     };
 
     private static final String[] USUAL_WINDOWS_LAUNCHER_LOCATIONS = {
@@ -19,16 +19,24 @@ public class Firefox3Locator extends FirefoxLocator {
             WindowsUtils.getProgramFilesPath() + "\\Firefox-3",
     };
 
-    public String unixProgramName() {
-        return "firefox";
+    protected String browserName() {
+        return "Firefox 3";
     }
 
-    public String[] usualUNIXLauncherLocations() {
-        return USUAL_UNIX_LAUNCHER_LOCATIONS;
+    protected String seleniumBrowserName() {
+        return "firefox3";
     }
 
-    public String[] usualWindowsLauncherLocations() {
-        return USUAL_WINDOWS_LAUNCHER_LOCATIONS;
+    protected String[] standardlauncherFilenames() {
+        if (WindowsUtils.thisIsWindows()) {
+            return new String[]{"firefox.exe"};
+        } else {
+            return new String[]{"firefox-bin", "firefox"};
+        }
+    }
+    
+    protected String[] usualLauncherLocations() {
+        return WindowsUtils.thisIsWindows() ? USUAL_WINDOWS_LAUNCHER_LOCATIONS : USUAL_UNIX_LAUNCHER_LOCATIONS;
     }
 
 }

@@ -274,7 +274,6 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
             }
         }
         if (firefoxBin != null) {
-            LauncherUtils.assertNotScriptFile(firefoxBin);
             String libPathKey = SystemUtils.libraryPathEnvironmentVariable();
             String libPath = WindowsUtils.loadEnvironment().getProperty(libPathKey);
             shell.setEnvironment(new String[]{

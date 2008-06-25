@@ -27,12 +27,7 @@ public class Firefox2or3Locator {
     }
 
     private String couldNotFindFirefoxMessage() {
-        return "Firefox couldn't be found in the path!\n"
-          + "Please add the directory containing '" + new Firefox2Locator().unixProgramName()
-          + "' (Firefox 2) or '" + new Firefox2Locator().unixProgramName()
-          + "' (Firefox 3) to your PATH environment\n"
-          + "variable, or explicitly specify a path to Firefox like this:\n"
-          + "*firefox /blah/blah/firefox-bin";
+        return new Firefox3Locator().couldNotFindAnyInstallationMessage();
     }
 
 }

@@ -17,7 +17,23 @@ public class SafariCustomProfileLauncherIntegrationTest extends TestCase {
     public void testLauncherWithDefaultConfiguration() throws Exception {
         final SafariCustomProfileLauncher launcher;
 
-        launcher = new SafariCustomProfileLauncher(new RemoteControlConfiguration(), "CUSTFFCHROME");
+        launcher = new SafariCustomProfileLauncher(new RemoteControlConfiguration(), "CUST");
+        launcher.launch("http://www.google.com");
+        int seconds = 15;
+        LOGGER.info("Killing browser in " + Integer.toString(seconds) + " seconds");
+        AsyncExecute.sleepTight(WAIT_TIME);
+        launcher.close();
+        LOGGER.info("He's dead now, right?");
+    }
+
+    public void testLauncherWithHonorSystemProxyEnabled() throws Exception {
+        final SafariCustomProfileLauncher launcher;
+        final RemoteControlConfiguration configuration;
+
+        configuration = new RemoteControlConfiguration();
+        configuration.setHonorSystemProxy(true);
+
+        launcher = new SafariCustomProfileLauncher(configuration, "CUST");
         launcher.launch("http://www.google.com");
         int seconds = 15;
         LOGGER.info("Killing browser in " + Integer.toString(seconds) + " seconds");

@@ -1,24 +1,5 @@
 package org.openqa.selenium.server.browserlaunchers;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.apache.commons.logging.Log;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
@@ -26,8 +7,17 @@ import org.apache.tools.ant.taskdefs.Copy;
 import org.apache.tools.ant.taskdefs.Delete;
 import org.apache.tools.ant.types.FileSet;
 import org.mortbay.log.LogFactory;
-import org.openqa.selenium.server.SeleniumServer;
 import org.openqa.selenium.server.RemoteControlConfiguration;
+import org.openqa.selenium.server.SeleniumServer;
+
+import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Various static utility functions used to launch browsers
@@ -233,20 +223,22 @@ public class LauncherUtils {
 		return hta;
 	}
 
-	protected static void assertNotScriptFile(File f) {
-		try {
-			FileReader r = new FileReader(f);
-			char firstTwoChars[] = new char[2];
-			int charsRead = r.read(firstTwoChars);
-			if (charsRead != 2)
-				return;
-			if (firstTwoChars[0] == '#' && firstTwoChars[1] == '!') {
-				throw new RuntimeException("File was a script file, not a real executable: " + f.getAbsolutePath());
-			}
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-	}
+    public static boolean isScriptFile(File aFile) {
+        final char firstTwoChars[] = new char[2];
+        final FileReader reader;
+        int charsRead;
+
+        try {
+            reader = new FileReader(aFile);
+            charsRead = reader.read(firstTwoChars);
+            if (2 != charsRead) {
+                return false;
+            }
+            return (firstTwoChars[0] == '#' && firstTwoChars[1] == '!');
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     protected static void copySingleFile(File sourceFile, File destFile) {
         Project p = new Project();

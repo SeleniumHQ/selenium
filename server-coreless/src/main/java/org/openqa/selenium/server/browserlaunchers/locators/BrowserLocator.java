@@ -3,6 +3,8 @@ package org.openqa.selenium.server.browserlaunchers.locators;
 import org.apache.commons.logging.Log;
 import org.mortbay.log.LogFactory;
 import org.openqa.selenium.server.browserlaunchers.AsyncExecute;
+import org.openqa.selenium.server.browserlaunchers.WindowsUtils;
+import org.openqa.selenium.server.browserlaunchers.LauncherUtils;
 
 import java.io.File;
 
@@ -27,7 +29,9 @@ public abstract class BrowserLocator {
     public String findBrowserLocation() {
         final String defaultPath;
 
-        LOGGER.debug("Discovering " + browserName() + "...");
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Discovering " + browserName() + "...");
+        }
         defaultPath = findAtADefaultLocation();
         if (null != defaultPath) {
             return defaultPath;
@@ -36,42 +40,121 @@ public abstract class BrowserLocator {
         return findInPath();
     }
 
+    protected abstract String browserName();
+    protected abstract String[] standardlauncherFilenames();
+    protected abstract String seleniumBrowserName();
+    protected abstract String browserPathOverridePropertyName();
+    protected abstract String[] usualLauncherLocations();
+
     protected String findInPath() {
-        return findFileInPath(launcherFilename());
+        for(String launcherFilename : standardlauncherFilenames()) {
+            final String launcherPath;
+
+            launcherPath = findFileInPath(launcherFilename);
+            if (null != launcherPath) {
+                return launcherPath; 
+            }
+        }
+        return null;
+    }
+
+    protected String findAtADefaultLocation() {
+        return retrieveValidInstallationPath(browserDefaultPath());
     }
 
 
-    protected String findAtADefaultLocation() {
-        final File defaultLocation;
-        final String defaultPath;
+    protected String browserDefaultPath() {
+        final String userProvidedDefaultPath;
 
-        defaultPath = browserDefaultPath();
-        if (null == defaultPath) {
+        userProvidedDefaultPath = System.getProperty(browserPathOverridePropertyName());
+        if (null != userProvidedDefaultPath) {
+            return userProvidedDefaultPath;
+        }
+
+        for (String location : usualLauncherLocations()) {
+            for (String fileName : standardlauncherFilenames()) {
+                final String validInstallationPath;
+
+                validInstallationPath = retrieveValidInstallationPath(location, fileName);
+                if (null != validInstallationPath) {
+                    return validInstallationPath;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public String findFileInPath(String fileName) {
+        return retrieveValidInstallationPath(AsyncExecute.whichExec(fileName));
+    }
+
+    protected String couldNotFindAnyInstallationMessage() {
+        return browserName() + "couldn't be found in the path!\n" +
+                "Please add the directory containing '" + humanFriendlyLauncherFileNames() + "' to your PATH environment\n" +
+                "variable, or explicitly specify a path to " + browserName() + " like this:\n" +
+                "*" + seleniumBrowserName() + fakeLauncherPath();
+    }
+
+    protected String fakeLauncherPath() {
+        if (WindowsUtils.thisIsWindows()) {
+            return "c:\\blah\\" + standardlauncherFilenames()[0];
+        }
+        return "/blah/blah/" + standardlauncherFilenames()[0];
+    }
+
+    protected String humanFriendlyLauncherFileNames() {
+        final String[] fileNames;
+        final StringBuffer buffer;
+
+        fileNames = standardlauncherFilenames();
+        if (0 == fileNames.length) {
+          return "";
+        } else if (1 == fileNames.length) {
+            return "'" + fileNames[0] + "'";
+        }
+
+        buffer = new StringBuffer();
+        for (String filename : fileNames) {
+          buffer.append("'").append(filename).append("'");
+          buffer.append(" or "); 
+        }
+
+        return buffer.substring(0, buffer.lastIndexOf(" or "));
+    }
+
+    protected String retrieveValidInstallationPath(String dirname, String fileName) {
+        return retrieveValidInstallationPath(new File(dirname, fileName));
+    }
+
+    protected String retrieveValidInstallationPath(String launcher) {
+        if (null == launcher) {
+            return  null;
+        }
+        return retrieveValidInstallationPath(new File(launcher));
+    }
+
+    protected String retrieveValidInstallationPath(File launcher) {
+        if (null == launcher) {
+            return  null;
+        }
+        if (LOGGER.isDebugEnabled()) {
+          LOGGER.debug("Checking whether " + browserName() + " launcher at :'" + launcher + "' is valid...");
+        }
+        if (!launcher.exists()) {
             return null;
         }
 
-        defaultLocation = new File(defaultPath);
-        if (defaultLocation.exists()) {
-            return defaultLocation.getAbsolutePath();
+        if (LauncherUtils.isScriptFile(launcher)) {
+            LOGGER.warn("Ignoring '" + launcher.getAbsolutePath() +"': file is a script file, not a real executable");
+            return null;
+        }
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Discovered valid " + browserName() + " launcher  : '" + launcher + "'");
         }
 
-        return null;
+        return launcher.getAbsolutePath();
     }
 
-    
-    public String findFileInPath(String fileName) {
-        final File theFile;
 
-        theFile = AsyncExecute.whichExec(fileName);
-        if (null != theFile) {
-            return theFile.getAbsolutePath();
-        }
-
-        return null;
-    }
-    
-    protected abstract String browserName();
-    protected abstract String launcherFilename();
-    protected abstract String browserDefaultPath();
-    protected abstract String couldNotFindAnyInstallationMessage();
 }

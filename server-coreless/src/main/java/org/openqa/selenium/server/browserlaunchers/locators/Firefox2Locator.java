@@ -8,9 +8,9 @@ import org.openqa.selenium.server.browserlaunchers.WindowsUtils;
 public class Firefox2Locator extends FirefoxLocator {
 
     private static final String[] USUAL_UNIX_LAUNCHER_LOCATIONS = {
+            "/Applications/Firefox-2.app/Contents/MacOS",
             "/Applications/Firefox.app/Contents/MacOS",
             "/usr/lib/firefox", /* Ubuntu 7.x default location */
-            "/Applications/Firefox-2.app/Contents/MacOS"
     };
 
     private static final String[] USUAL_WINDOWS_LAUNCHER_LOCATIONS = {
@@ -19,16 +19,25 @@ public class Firefox2Locator extends FirefoxLocator {
             WindowsUtils.getProgramFilesPath() + "\\Firefox-2",
     };
 
-    public String unixProgramName() {
-        return "firefox-bin";
-    }
-    
-    public String[] usualUNIXLauncherLocations() {
-        return USUAL_UNIX_LAUNCHER_LOCATIONS;
+
+    protected String browserName() {
+        return "Firefox 2";
     }
 
-    public String[] usualWindowsLauncherLocations() {
-        return USUAL_WINDOWS_LAUNCHER_LOCATIONS;
+    protected String seleniumBrowserName() {
+        return "*firefox2";
+    }
+
+    protected String[] standardlauncherFilenames() {
+        if (WindowsUtils.thisIsWindows()) {
+            return new String[]{"firefox.exe"};
+        } else {
+            return new String[]{"firefox-bin"};
+        }
+    }
+
+    protected String[] usualLauncherLocations() {
+        return WindowsUtils.thisIsWindows() ? USUAL_WINDOWS_LAUNCHER_LOCATIONS : USUAL_UNIX_LAUNCHER_LOCATIONS;
     }
 
 }

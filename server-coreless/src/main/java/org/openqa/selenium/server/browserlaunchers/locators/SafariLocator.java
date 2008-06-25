@@ -7,36 +7,36 @@ import org.openqa.selenium.server.browserlaunchers.WindowsUtils;
  */
 public class SafariLocator extends BrowserLocator {
 
-    private static final String DEFAULT_LOCATION = "/Applications/Safari.app/Contents/MacOS/Safari";
+    private static final String[] USUAL_UNIX_LAUNCHER_LOCATIONS = {
+            "/Applications/Safari.app/Contents/MacOS",
+    };
+
+    private static final String[] USUAL_WINDOWS_LAUNCHER_LOCATIONS = {
+            WindowsUtils.getProgramFilesPath() + "\\Safari"
+    };
 
     protected String browserName() {
         return "Safari";
     }
 
-    protected String launcherFilename() {
-        return WindowsUtils.thisIsWindows()? "Safari.exe": "Safari";
+    protected String seleniumBrowserName() {
+        return "safari";
     }
-    
-    protected String browserDefaultPath() {
-        final String userProvidedDefaultPath;
 
-        userProvidedDefaultPath = System.getProperty("SafariDefaultPath");
-        if (null != userProvidedDefaultPath) {
-            return userProvidedDefaultPath;
-        }
-
+    protected String[] standardlauncherFilenames() {
         if (WindowsUtils.thisIsWindows()) {
-            return WindowsUtils.getProgramFilesPath() + "\\Safari\\Safari.exe";
+            return new String[]{"Safari.exe"};
+        } else {
+            return new String[]{"Safari"};
         }
-
-        return DEFAULT_LOCATION;
-    }    
-
-    protected String couldNotFindAnyInstallationMessage() {
-        return "Safari couldn't be found in the path!\n" +
-                "Please add the directory containing 'Safari' to your PATH environment\n" +
-                "variable, or explicitly specify a path to Safari like this:\n" +
-                "*Safari /blah/blah/Safari";
     }
-    
+
+    protected String browserPathOverridePropertyName() {
+        return "SafariDefaultPath";
+    }
+
+    protected String[] usualLauncherLocations() {
+        return WindowsUtils.thisIsWindows() ? USUAL_WINDOWS_LAUNCHER_LOCATIONS : USUAL_UNIX_LAUNCHER_LOCATIONS;
+    }
+
 }
