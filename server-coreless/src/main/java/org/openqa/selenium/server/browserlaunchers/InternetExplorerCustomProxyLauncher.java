@@ -26,7 +26,7 @@ import java.io.IOException;
 
 public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher {
 
-    static Log log = LogFactory.getLog(InternetExplorerCustomProxyLauncher.class);
+    private static final Log LOGGER = LogFactory.getLog(InternetExplorerCustomProxyLauncher.class);
 
     private File customProxyPACDir;
     private String[] cmdarray;
@@ -61,7 +61,7 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
 
         try {
             setupSystem(url);
-            log.info("Launching Internet Explorer...");
+            LOGGER.info("Launching Internet Explorer...");
             exe = new AsyncExecute();
             exe.setCommandline(cmdarray);
             process = exe.asyncSpawn();
@@ -114,8 +114,8 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
                 LauncherUtils.recursivelyDeleteDir(customProxyPACDir);
             } catch (RuntimeException e) {
                 if (taskKillException != null) {
-                    log.error("Couldn't delete custom IE proxy directory", e);
-                    log.error("Perhaps IE proxy delete error was caused by this exception", taskKillException);
+                    LOGGER.error("Couldn't delete custom IE proxy directory", e);
+                    LOGGER.error("Perhaps IE proxy delete error was caused by this exception", taskKillException);
                     throw new RuntimeException("Couldn't delete custom IE " +
                             "proxy directory, presumably because task kill failed; " +
                             "see error log!", e);

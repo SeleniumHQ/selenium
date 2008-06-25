@@ -8,7 +8,7 @@ import org.openqa.selenium.server.browserlaunchers.WindowsUtils;
 public class InternetExplorerLocator extends BrowserLocator{
 
     private static final String[] USUAL_WINDOWS_LAUNCHER_LOCATIONS = {
-            WindowsUtils.getProgramFilesPath() + "\\Safari"
+            WindowsUtils.getProgramFilesPath() + "\\Internet Explorer"
     };
 
     protected String browserName() {

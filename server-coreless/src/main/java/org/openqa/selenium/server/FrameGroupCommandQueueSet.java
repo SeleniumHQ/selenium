@@ -44,7 +44,12 @@ import org.openqa.selenium.server.browserlaunchers.LauncherUtils;
  * @author nelsons
  */
 public class FrameGroupCommandQueueSet {
-    static Log log = LogFactory.getLog(FrameGroupCommandQueueSet.class);
+    private static final Log LOGGER = LogFactory.getLog(FrameGroupCommandQueueSet.class);
+
+    static private final Map<String, FrameGroupCommandQueueSet> queueSets = new ConcurrentHashMap<String, FrameGroupCommandQueueSet>();
+    static private Lock dataLock = new ReentrantLock(); //
+    static private Condition resultArrivedOnAnyQueue = dataLock.newCondition();
+
     /**
      * JavaScript expression telling where the frame is within the current window (i.e., "local"
      * to the current window).
@@ -66,12 +71,9 @@ public class FrameGroupCommandQueueSet {
     	
     private final Set<File> tempFilesForSession = Collections.synchronizedSet(new HashSet<File>());
     private Map<String, CommandQueue> uniqueIdToCommandQueue = new ConcurrentHashMap<String, CommandQueue>();
-    static private final Map<String, FrameGroupCommandQueueSet> queueSets = new ConcurrentHashMap<String, FrameGroupCommandQueueSet>();
-    
+
     private Map<String, Boolean> frameAddressToJustLoaded = new ConcurrentHashMap<String, Boolean>();
-    static private Lock dataLock = new ReentrantLock(); // 
-    static private Condition resultArrivedOnAnyQueue = dataLock.newCondition();
-    
+
     private int pageLoadTimeoutInMilliseconds = 30000;
     private AtomicInteger millisecondDelayBetweenOperations;
     
@@ -232,7 +234,7 @@ public class FrameGroupCommandQueueSet {
 
     /** Deletes the specified FrameGroupCommandQueueSet */
     static public void clearQueueSet(String sessionId) {
-      log.debug("clearing queue set");
+      LOGGER.debug("clearing queue set");
       FrameGroupCommandQueueSet queue = FrameGroupCommandQueueSet.queueSets.get(sessionId);
       if (null != queue) {
         queue.endOfLife();
@@ -243,15 +245,15 @@ public class FrameGroupCommandQueueSet {
     public CommandQueue getCommandQueue(String uniqueId) {
       CommandQueue q = uniqueIdToCommandQueue.get(uniqueId);
       if (q==null) {
-		if (log.isDebugEnabled()) {
-          log.debug("---------allocating new CommandQueue for " + uniqueId);
+		if (LOGGER.isDebugEnabled()) {
+          LOGGER.debug("---------allocating new CommandQueue for " + uniqueId);
         }            
          
 		q = new CommandQueue(sessionId, uniqueId, millisecondDelayBetweenOperations.get(), new RemoteControlConfiguration());
         uniqueIdToCommandQueue.put(uniqueId, q);
       } else {
-          if (log.isDebugEnabled()) {
-            log.debug("---------retrieving CommandQueue for " + uniqueId);
+          if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("---------retrieving CommandQueue for " + uniqueId);
           }
       }
       return uniqueIdToCommandQueue.get(uniqueId);
@@ -511,12 +513,16 @@ public class FrameGroupCommandQueueSet {
     }
         
     public String waitForLoad(long timeoutInMilliseconds) throws RemoteCommandException {
+        final String uniqueId;
+
         int timeoutInSeconds = (int)(timeoutInMilliseconds / 1000l);
         if (timeoutInSeconds == 0) {
             timeoutInSeconds = 1;
         }
-      	String uniqueId = waitForLoad(currentSeleniumWindowName, currentLocalFrameAddress, timeoutInSeconds);
-      	setCurrentFrameAddress(uniqueId);
+        LOGGER.info(">>>>>>>>>>> waitForLoad for window '" + currentSeleniumWindowName + "' frame '" +currentFrameAddress + "' on queueSet " + this);
+        uniqueId = waitForLoad(currentSeleniumWindowName, currentLocalFrameAddress, timeoutInSeconds);
+        LOGGER.info(">>>>>>>>>>> waitForLoad got unique Id + '" + uniqueId + "' on queueSet " + this);
+        setCurrentFrameAddress(uniqueId);
       	if (uniqueId == null) {
       		throw new RuntimeException("uniqueId is null in waitForLoad...this should not happen.");
       	}
@@ -533,7 +539,7 @@ public class FrameGroupCommandQueueSet {
         for (String matchingFrameAddress = null; timeoutInSeconds >= 0; timeoutInSeconds--) {
             dataLock.lock();
             try {
-                log.debug("waiting for window '" + waitingForThisWindowName
+                LOGGER.debug("waiting for window '" + waitingForThisWindowName
                         + "' local frame '" + waitingForThisLocalFrame
                         + "' for " + timeoutInSeconds + " more secs");
 
@@ -541,7 +547,7 @@ public class FrameGroupCommandQueueSet {
                         frameAddressToJustLoaded.keySet(),
                         waitingForThisWindowName, waitingForThisLocalFrame);
                 if (null != matchingFrameAddress) {
-                    log.debug("wait is over: window '" + waitingForThisWindowName
+                    LOGGER.debug("wait is over: window '" + waitingForThisWindowName
                             + "' was seen at last (" + matchingFrameAddress + ")");
                     /*
                      * Remove it from the list of matching frame addresses
@@ -576,9 +582,9 @@ public class FrameGroupCommandQueueSet {
         long deadline = now + (numSeconds * 1000);
         while(now < deadline) {
           try {
-            log.debug("waiting for condition for " + (deadline-now) + " more ms");
+            LOGGER.debug("waiting for condition for " + (deadline-now) + " more ms");
             result = condition.await(deadline - now, TimeUnit.MILLISECONDS);
-            log.debug("got condition? : " + result);
+            LOGGER.debug("got condition? : " + result);
             now = deadline;
           } catch (InterruptedException ie) {
             now = System.currentTimeMillis();
@@ -722,14 +728,14 @@ public class FrameGroupCommandQueueSet {
         dataLock.lock();
         try {       
           if (justLoaded) {
-            if (log.isDebugEnabled()) {
-              log.debug(frameAddress + " marked as just loaded");
+            if (LOGGER.isDebugEnabled()) {
+              LOGGER.debug(frameAddress + " marked as just loaded");
             }
             frameAddressToJustLoaded.put(frameAddress, true);
           }
           else {
-            if (log.isDebugEnabled()) {
-              log.debug(frameAddress + " marked as NOT just loaded");
+            if (LOGGER.isDebugEnabled()) {
+              LOGGER.debug(frameAddress + " marked as NOT just loaded");
             }
             frameAddressToJustLoaded.remove(frameAddress);
           }
@@ -749,8 +755,8 @@ public class FrameGroupCommandQueueSet {
       this.currentSeleniumWindowName = frameAddress.getWindowName();
       this.currentLocalFrameAddress = frameAddress.getLocalFrameAddress();
       markWhetherJustLoaded(uniqueId, false);
-      if (log.isDebugEnabled()) {
-        log.debug("Current uniqueId set to " + uniqueId + ", frameAddress = " + frameAddress);
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug("Current uniqueId set to " + uniqueId + ", frameAddress = " + frameAddress);
       }
     }
 
@@ -780,7 +786,7 @@ public class FrameGroupCommandQueueSet {
 //    }
 
     public void reset(String baseUrl) {
-      log.debug("resetting frame group");
+      LOGGER.debug("resetting frame group");
       if (SeleniumServer.isProxyInjectionMode()) {
         // shut down all but the primary top level connection
         List<FrameAddress> newOrphans = new LinkedList<FrameAddress>(); 
@@ -792,13 +798,13 @@ public class FrameGroupCommandQueueSet {
               continue;
             }
             if (frameAddress.getLocalFrameAddress().equals(DEFAULT_LOCAL_FRAME_ADDRESS)) {
-              if (log.isDebugEnabled()) {
-                  log.debug("Trying to close " + frameAddress);
+              if (LOGGER.isDebugEnabled()) {
+                  LOGGER.debug("Trying to close " + frameAddress);
               }
               try {
                   q.doCommandWithoutWaitingForAResponse("close", "", "");
               } catch (WindowClosedException e) {
-                  log.debug("Window was already closed");
+                  LOGGER.debug("Window was already closed");
               }
             }
             orphanedQueues.add(q);
@@ -823,7 +829,7 @@ public class FrameGroupCommandQueueSet {
       try {
         doCommand("open", openUrl.toString(), ""); // will close out subframes
       } catch (RemoteCommandException rce) {  
-        log.debug("RemoteCommandException in reset: " + rce.getMessage());
+        LOGGER.debug("RemoteCommandException in reset: " + rce.getMessage());
       }
     }
     
@@ -831,7 +837,7 @@ public class FrameGroupCommandQueueSet {
       for (File file : tempFilesForSession) {
         boolean deleteSuccessful = file.delete();
         if (!deleteSuccessful) {
-            log.warn("temp file for session " + sessionId 
+            LOGGER.warn("temp file for session " + sessionId
                 + " not deleted " + file.getAbsolutePath());
         }
       }
@@ -867,7 +873,7 @@ public class FrameGroupCommandQueueSet {
             }
             throw new RuntimeException("unexpected return " + booleanResult + " from boolean command " + command);
         }
-        log.debug("doBooleancommand(" + command + "(" + arg1 + ", " + arg2 + ") -> " + result);
+        LOGGER.debug("doBooleancommand(" + command + "(" + arg1 + ", " + arg2 + ") -> " + result);
         return result;
     }
     

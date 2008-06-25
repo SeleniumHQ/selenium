@@ -14,9 +14,9 @@ public class Firefox3Locator extends FirefoxLocator {
     };
 
     private static final String[] USUAL_WINDOWS_LAUNCHER_LOCATIONS = {
+            WindowsUtils.getProgramFilesPath() + "\\Firefox-3",
             WindowsUtils.getProgramFilesPath() + "\\Mozilla Firefox",
             WindowsUtils.getProgramFilesPath() + "\\Firefox",
-            WindowsUtils.getProgramFilesPath() + "\\Firefox-3",
     };
 
     protected String browserName() {

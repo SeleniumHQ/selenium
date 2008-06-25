@@ -43,9 +43,19 @@ public class AsyncExecute extends Execute {
         project = new Project();
         project.addBuildListener(new AntJettyLoggerBuildListener(log));
     }
-    
-    /** Sleeps without explicitly throwing an InterruptedException
-     * 
+
+    /**
+     * Sleeps without explicitly throwing an InterruptedException
+     *
+     * @param timeoutInSeconds  Sleep time in seconds.
+     * @throws RuntimeException wrapping an InterruptedException if one gets thrown
+     */
+    public static void sleepTightInSeconds(long timeoutInSeconds) {
+        sleepTight(timeoutInSeconds * 1000);
+    }
+    /**
+     * Sleeps without explicitly throwing an InterruptedException
+     *
      * @param timeout the amout of time to sleep
      * @throws RuntimeException wrapping an InterruptedException if one gets thrown
      */
