@@ -11,58 +11,6 @@
 
 using namespace std;
 
-class KeyPressListener : public IDispatch {
-public:
-	KeyPressListener() :  references(0), pressed(false) {}
-
-	STDMETHODIMP QueryInterface(REFIID riid, void **object) {
-		*object = NULL;
-		if ((riid == IID_IUnknown) || (riid == IID_IDispatch)) {
-			static_cast<IUnknown*>(*object = this)->AddRef();
-			return S_OK;
-		} else {
-			return E_NOINTERFACE;
-		}
-	}
-
-	STDMETHODIMP_(ULONG) AddRef() {
-		++references;
-		return references;
-	}	
-
-	STDMETHODIMP_(ULONG) Release() {
-		--references;
-		if (!references) {
-			delete this;
-			return 0;
-		}
-
-		return references;
-	}
-
-	STDMETHOD(GetTypeInfoCount)(unsigned int FAR* pctinfo) { return E_NOTIMPL; }
-	STDMETHOD(GetTypeInfo)(unsigned int iTInfo, LCID  lcid, ITypeInfo FAR* FAR*  ppTInfo) { return E_NOTIMPL; }
-	STDMETHOD(GetIDsOfNames)(REFIID riid, OLECHAR FAR* FAR* rgszNames, unsigned int cNames, LCID lcid, DISPID FAR* rgDispId) { return S_OK; }
-
-	STDMETHOD(Invoke)(DISPID dispIdMember, REFIID riid, LCID lcid,
-		WORD wFlags, DISPPARAMS* pDispParams, VARIANT* pVarResult,
-		EXCEPINFO * pExcepInfo, UINT * puArgErr)
-	{
-		pressed = true;
-
-		return S_OK;
-	}
-
-	volatile bool isPressed() { return pressed; }
-	void reset() { pressed = false; }
-
-	~KeyPressListener() {}
-
-private:
-	int  references;
-	bool pressed;
-};
-
 ElementWrapper::ElementWrapper(InternetExplorerDriver* ie, IHTMLDOMNode* node)
 	: element(node)
 {
@@ -209,8 +157,23 @@ WORD WINAPI setFileValue(keyboardData* data) {
 	return false;
 } 
 
-void backgroundKeyPress(HWND hwnd, HKL layout, WORD keyCode, UINT scanCode, bool extended, bool printable, KeyPressListener* listener, int PAUSE)
+extern "C"
 {
+#pragma data_seg(".LISTENER")
+bool pressed = false;
+static HHOOK hook = 0;
+#pragma data_seg()
+#pragma comment(linker, "/section:.LISTENER,rws")
+
+static FARPROC hookProc = 0;
+
+__declspec(dllexport) LRESULT CALLBACK GetMessageProc(int nCode, WPARAM wParam, LPARAM lParam);
+}
+
+void backgroundKeyPress(HWND hwnd, HKL layout, WORD keyCode, UINT scanCode, bool extended, bool printable, int totalPause)
+{
+	int pause = totalPause / 3;
+
 	BYTE keyboardState[256] = {0};
 	bool needsShift = (keyCode >> 8) & 1;
 	keyCode = LOBYTE(keyCode);
@@ -223,7 +186,7 @@ void backgroundKeyPress(HWND hwnd, HKL layout, WORD keyCode, UINT scanCode, bool
 		shiftKey += MapVirtualKeyEx(VK_SHIFT, 0, layout) << 16;
 		if (!PostMessage(hwnd, WM_KEYDOWN, VK_SHIFT, shiftKey))
 			cerr << "Shift down failed: " << GetLastError << endl;
-		wait(PAUSE);
+		wait(pause);
 	}
 
 	LPARAM lparam = 1;
@@ -242,10 +205,10 @@ void backgroundKeyPress(HWND hwnd, HKL layout, WORD keyCode, UINT scanCode, bool
 	// when IE processes the keydown message. Put a time out,
 	// just in case we've not got "printable" right. :)
 	clock_t maxWait = clock() + 2000; 
-	while (clock() < maxWait && !listener->isPressed() && printable) {
-		wait(PAUSE);
+	while (clock() < maxWait && !pressed && printable) {
+		wait(pause);
 	}
-	listener->reset();
+	pressed = false;
 
 	keyboardState[keyCode] &= ~0x80;
 	SetKeyboardState(keyboardState);
@@ -254,20 +217,32 @@ void backgroundKeyPress(HWND hwnd, HKL layout, WORD keyCode, UINT scanCode, bool
 	lparam += 1 << 31;
 	if (!PostMessage(hwnd, WM_KEYUP, keyCode, lparam))
 		cerr << "Key up failed: " << GetLastError << endl;
-	wait(PAUSE);
+	wait(pause);
 
 	if (needsShift) {
 		shiftKey += 1 << 30;
 		shiftKey += 1 << 31;
 		if (!PostMessage(hwnd, WM_KEYUP, VK_SHIFT, shiftKey))
 			cerr << "Shift up failed: " << GetLastError << endl;
-		wait(PAUSE);
+		wait(pause);
 
 		keyboardState[VK_SHIFT] &= ~0x80;
 		SetKeyboardState((LPBYTE) &keyboardState);
 	}
 
-	wait(PAUSE);
+	wait(pause);
+}
+
+LRESULT CALLBACK GetMessageProc(int nCode, WPARAM wParam, LPARAM lParam)
+{
+	if (nCode == HC_ACTION && wParam == PM_REMOVE) {		
+		MSG* msg = (MSG*) lParam;
+
+		if (msg->message == WM_CHAR)
+			pressed = true;
+	}
+
+	return CallNextHookEx(hook, nCode, wParam, lParam);
 }
 
 void ElementWrapper::sendKeys(const std::wstring& newValue)
@@ -303,8 +278,12 @@ void ElementWrapper::sendKeys(const std::wstring& newValue)
 	// Allow the element to actually get the focus
 	wait(100);
 
-	DWORD ieWinThreadId = GetWindowThreadProcessId(hWnd, NULL);
+
+	DWORD ieWinThreadId = GetWindowThreadProcessId(ieWindow, NULL);
     DWORD currThreadId = GetCurrentThreadId();
+
+	HINSTANCE moduleHandle = GetModuleHandle(L"InternetExplorerDriver");
+	hook = SetWindowsHookEx(WH_GETMESSAGE, (HOOKPROC) GetMessageProc, moduleHandle, ieWinThreadId);
 
 	// Attaching to the thread so that we can send control keys (in particular shift)
     if( ieWinThreadId != currThreadId )
@@ -318,13 +297,6 @@ void ElementWrapper::sendKeys(const std::wstring& newValue)
 
 	BYTE originalKeyboardState[256] = {0};
 	GetKeyboardState((LPBYTE) &originalKeyboardState);
-
-	CComQIPtr<IHTMLElement2> e2(element);
-	VARIANT_BOOL attached;
-
-	CComPtr<KeyPressListener> listener = new KeyPressListener();
-	CComQIPtr<IDispatch> listenerDispatch(listener);
-	e2->attachEvent(L"onkeypress", listenerDispatch, &attached);
 
 	for (const wchar_t *p = d.text; *p; ++p)
 	{
@@ -382,12 +354,14 @@ void ElementWrapper::sendKeys(const std::wstring& newValue)
 			printable = true;
 		}
 
-		backgroundKeyPress(ieWindow, layout, keyCode, scanCode, extended, printable, listener, ie->getSpeed());
+		backgroundKeyPress(ieWindow, layout, keyCode, scanCode, extended, printable, ie->getSpeed());
 	}
 
 	SetKeyboardState((LPBYTE) &originalKeyboardState);
-	if (attached == VARIANT_TRUE)
-		e2->detachEvent(L"onkeypress", listenerDispatch);
+
+	if (hook) {
+		UnhookWindowsHookEx(hook);
+	}
 
 	if( ieWinThreadId != currThreadId )
     {

@@ -1,11 +1,12 @@
 package com.googlecode.webdriver;
 
 public enum Speed {
-    SLOW(250), 
-    MEDIUM(150), 
-    FAST(0);
+    SLOW(1000), 
+    MEDIUM(500), 
+    FAST(0),
+    ;
     
-    private int timeOut;
+    protected int timeOut;
     
     private Speed(int timeOut) {
     	this.timeOut = timeOut;
