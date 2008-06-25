@@ -202,7 +202,11 @@ objectExtend(RemoteRunner.prototype, {
                 cmdText += ', ' + command.value;
             }
         }
-        cmdText += ")\n";
+        if (cmdText.length > 70) {
+            cmdText = cmdText.substring(0, 70) + "...\n";
+        } else {
+            cmdText += ")\n";
+        }
         var commandList = document.commands.commandList;
         // DGF flush commandList on "open"
         if (command.command == "open") {
