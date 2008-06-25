@@ -1274,7 +1274,7 @@ BrowserBot.prototype.locateElementById = function(identifier, inDocument, inWind
     }
     else if (browserVersion.isIE || browserVersion.isOpera) {
         // SEL-484
-        var xpath = '//*[@id=' + identifier.quoteForXPath() + ']';
+        var xpath = '/descendant::*[@id=' + identifier.quoteForXPath() + ']';
         return BrowserBot.prototype
             .locateElementByXPath(xpath, inDocument, inWindow);
     }
