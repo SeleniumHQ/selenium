@@ -19,6 +19,7 @@ package org.openqa.selenium.server.browserlaunchers;
 import org.apache.commons.logging.Log;
 import org.mortbay.log.LogFactory;
 import org.openqa.selenium.server.RemoteControlConfiguration;
+import org.openqa.selenium.server.browserlaunchers.locators.Firefox2Locator;
 import org.openqa.selenium.server.browserlaunchers.locators.Firefox2or3Locator;
 
 import java.io.File;
@@ -36,7 +37,7 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
     private File customProfileDir;
     private String[] cmdarray;
     private boolean closed = false;
-    private String commandPath;
+    private BrowserInstallation browserInstallation;
     private Process process;
 
     private static AsyncExecute shell = new AsyncExecute();
@@ -48,12 +49,19 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
     }
 
     public FirefoxChromeLauncher(RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
-        super(sessionId, configuration);
-        this.sessionId = sessionId;
-        this.commandPath = browserLaunchLocation;
+        this(configuration, sessionId, new Firefox2Locator().retrieveValidInstallationPath(browserLaunchLocation));
 
-        setMozNoRemote();
-        setLibraryPath();
+    }
+
+    public FirefoxChromeLauncher(RemoteControlConfiguration configuration, String sessionId, BrowserInstallation browserInstallation) {
+        super(sessionId, configuration);
+
+        this.browserInstallation = browserInstallation;
+
+        shell.setLibraryPath(browserInstallation.libraryPath());
+        // Set MOZ_NO_REMOTE in order to ensure we always get a new Firefox process
+        // http://blog.dojotoolkit.org/2005/12/01/running-multiple-versions-of-firefox-side-by-side
+        shell.setEnvironmentVariable("MOZ_NO_REMOTE", "1");
     }
 
     protected void launch(String url) {
@@ -66,7 +74,7 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
             populateCustomProfileDirectory(profilePath);
 
             LOGGER.info("Launching Firefox...");
-            cmdarray = new String[]{commandPath, "-profile", profilePath};
+            cmdarray = new String[]{browserInstallation.launcherFilePath(), "-profile", profilePath};
             shell.setCommandline(cmdarray);
             process = shell.asyncSpawn();
         } catch (IOException e) {
@@ -82,7 +90,7 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
     * So, the first time we launch Firefox, we'll start it up at an URL
     * that will immediately shut itself down.
     */
-        cmdarray = new String[]{commandPath, "-profile", profilePath, "-chrome", CHROME_URL};
+        cmdarray = new String[]{browserInstallation.launcherFilePath(), "-profile", profilePath, "-chrome", CHROME_URL};
         LOGGER.info("Preparing Firefox profile...");
         shell.setCommandline(cmdarray);
         shell.execute();
@@ -253,36 +261,6 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
     public void launchRemoteSession(String browserURL, boolean multiWindow) { 
         launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId, multiWindow, getPort()));
     }
-
-    private void setMozNoRemote() {
-        // Set MOZ_NO_REMOTE in order to ensure we always get a new Firefox process
-        // http://blog.dojotoolkit.org/2005/12/01/running-multiple-versions-of-firefox-side-by-side
-        shell.setEnvironment(new String[]{"MOZ_NO_REMOTE=1"});
-    }
-
-    private void setLibraryPath() {
-        if (WindowsUtils.thisIsWindows()) {
-            return;
-        }
-
-        // On Unix, add command's directory to LD_LIBRARY_PATH
-        File firefoxBin = AsyncExecute.whichExec(commandPath);
-        if (firefoxBin == null) {
-            final File execDirect = new File(commandPath);
-            if (execDirect.isAbsolute() && execDirect.exists()) {
-                firefoxBin = execDirect;
-            }
-        }
-        if (firefoxBin != null) {
-            String libPathKey = SystemUtils.libraryPathEnvironmentVariable();
-            String libPath = WindowsUtils.loadEnvironment().getProperty(libPathKey);
-            shell.setEnvironment(new String[]{
-                    "MOZ_NO_REMOTE=1",
-                    libPathKey + "=" + libPath + ":" + firefoxBin.getParent(),
-            });
-        }
-    }
-
     
 }
 

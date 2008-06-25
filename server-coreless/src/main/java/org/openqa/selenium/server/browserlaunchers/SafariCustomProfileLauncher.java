@@ -36,7 +36,7 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
     private File customProfileDir;
     private String[] cmdarray;
     private boolean closed = false;
-    private String commandPath;
+    private BrowserInstallation browserInstallation;
     private Process process;
     protected WindowsProxyManager wpm;
     protected MacProxyManager mpm;
@@ -51,15 +51,17 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
     }
 
     public SafariCustomProfileLauncher(RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
+        this(configuration, sessionId, new SafariLocator().retrieveValidInstallationPath(browserLaunchLocation));
+    }
+
+    public SafariCustomProfileLauncher(RemoteControlConfiguration configuration, String sessionId, BrowserInstallation browserInstallation) {
         super(sessionId, configuration);
-        this.sessionId = sessionId;
-        commandPath = browserLaunchLocation;
+        this.browserInstallation = browserInstallation;
 
         if (configuration.shouldOverrideSystemProxy()) {
             createSystemProxyManager(sessionId);
         }
-        setLibraryPath();
-
+        exe.setLibraryPath(browserInstallation.libraryPath());
         customProfileDir = LauncherUtils.createCustomProfileDir(sessionId);
     }
 
@@ -72,16 +74,16 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
                 ensureCleanSession();
             }
 
-            cmdarray = new String[]{commandPath};
+            cmdarray = new String[]{browserInstallation.launcherFilePath()};
             if (Os.isFamily("mac")) {
                 final String redirectHtmlFileName;
 
                 redirectHtmlFileName = makeRedirectionHtml(customProfileDir, url);
                 log.info("Launching Safari to visit '" + url + "' via '" + redirectHtmlFileName + "'...");
-                cmdarray = new String[]{commandPath, redirectHtmlFileName};
+                cmdarray = new String[]{browserInstallation.launcherFilePath(), redirectHtmlFileName};
             } else {
                 log.info("Launching Safari ...");
-                cmdarray = new String[]{commandPath, "-url", url};
+                cmdarray = new String[]{browserInstallation.launcherFilePath(), "-url", url};
             }
 
             exe.setCommandline(cmdarray);
@@ -213,24 +215,4 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
         }
     }
 
-    private void setLibraryPath() {
-        if (!WindowsUtils.thisIsWindows()) {
-            // On unix, add command's directory to LD_LIBRARY_PATH
-            File SafariBin = AsyncExecute.whichExec(commandPath);
-            if (SafariBin == null) {
-                File execDirect = new File(commandPath);
-                if (execDirect.isAbsolute() && execDirect.exists()) {
-                    SafariBin = execDirect;
-                }
-            }
-            if (SafariBin != null) {
-                String libPathKey = SystemUtils.libraryPathEnvironmentVariable();
-                String libPath = WindowsUtils.loadEnvironment().getProperty(libPathKey);
-                exe.setEnvironment(new String[]{
-                        libPathKey + "=" + libPath + ":" + SafariBin.getParent(),
-                });
-            }
-        }
-    }
-    
 }

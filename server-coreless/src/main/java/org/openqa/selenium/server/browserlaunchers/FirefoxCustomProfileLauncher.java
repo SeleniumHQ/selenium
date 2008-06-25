@@ -46,7 +46,7 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
     private static AsyncExecute exe = new AsyncExecute();
 
     public FirefoxCustomProfileLauncher(RemoteControlConfiguration configuration, String sessionId) {
-        this(configuration, sessionId, new Firefox2or3Locator().findBrowserLaunchLocationOrFail());
+        this(configuration, sessionId, new Firefox2or3Locator().findBrowserLaunchLocationOrFail().launcherFilePath());
     }
 
     public FirefoxCustomProfileLauncher(RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {

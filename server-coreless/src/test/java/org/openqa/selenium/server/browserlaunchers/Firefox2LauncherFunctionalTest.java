@@ -8,7 +8,7 @@ import junit.framework.TestCase;
 /**
  * {@link Firefox2Launcher} integration test class.
  */
-public class Firefox2LauncherIntegrationTest extends TestCase {
+public class Firefox2LauncherFunctionalTest extends TestCase {
 
     private static final Log LOGGER = LogFactory.getLog(SafariLauncherIntegrationTest.class);
     private static final int SECONDS = 1000;

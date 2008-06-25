@@ -30,7 +30,7 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
 
     private File customProxyPACDir;
     private String[] cmdarray;
-    private String commandPath;
+    private BrowserInstallation browserInstallation;
     private Process process;
     protected boolean customPACappropriate = true;
     protected WindowsProxyManager wpm;
@@ -45,9 +45,13 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
 
     public InternetExplorerCustomProxyLauncher(RemoteControlConfiguration configuration,
                                                String sessionId, String browserLaunchLocation) {
+        this(configuration, sessionId, new InternetExplorerLocator().retrieveValidInstallationPath(browserLaunchLocation));
+    }
+
+    public InternetExplorerCustomProxyLauncher(RemoteControlConfiguration configuration,
+                                               String sessionId, BrowserInstallation browserInstallation) {
         super(sessionId, configuration);
-        this.commandPath = browserLaunchLocation;
-        this.sessionId = sessionId;
+        this.browserInstallation = browserInstallation;
         this.wpm = new WindowsProxyManager(true, sessionId, getPort(), getPort());
     }
 
@@ -80,10 +84,10 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
             customProxyPACDir = wpm.getCustomProxyPACDir();
             killableProcessWrapper = new File(customProxyPACDir, "killableprocess.exe");
             ResourceExtractor.extractResourcePath(InternetExplorerCustomProxyLauncher.class, "/killableprocess/killableprocess.exe", killableProcessWrapper);
-            cmdarray = new String[]{killableProcessWrapper.getAbsolutePath(), commandPath, "-new", url};
+            cmdarray = new String[]{killableProcessWrapper.getAbsolutePath(), browserInstallation.launcherFilePath(), "-new", url};
         } else {
             // DGF IEs4Linux, perhaps?  It could happen!
-            cmdarray = new String[]{commandPath, url};
+            cmdarray = new String[]{browserInstallation.launcherFilePath(), url};
         }
     }
 

@@ -519,9 +519,7 @@ public class FrameGroupCommandQueueSet {
         if (timeoutInSeconds == 0) {
             timeoutInSeconds = 1;
         }
-        LOGGER.info(">>>>>>>>>>> waitForLoad for window '" + currentSeleniumWindowName + "' frame '" +currentFrameAddress + "' on queueSet " + this);
         uniqueId = waitForLoad(currentSeleniumWindowName, currentLocalFrameAddress, timeoutInSeconds);
-        LOGGER.info(">>>>>>>>>>> waitForLoad got unique Id + '" + uniqueId + "' on queueSet " + this);
         setCurrentFrameAddress(uniqueId);
       	if (uniqueId == null) {
       		throw new RuntimeException("uniqueId is null in waitForLoad...this should not happen.");

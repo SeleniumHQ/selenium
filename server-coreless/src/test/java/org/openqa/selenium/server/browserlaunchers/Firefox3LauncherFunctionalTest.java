@@ -8,7 +8,7 @@ import junit.framework.TestCase;
 /**
  * {@link org.openqa.selenium.server.browserlaunchers.Firefox3Launcher} integration test class.
  */
-public class Firefox3LauncherIntegrationTest extends TestCase {
+public class Firefox3LauncherFunctionalTest extends TestCase {
 
     private static final Log LOGGER = LogFactory.getLog(SafariLauncherIntegrationTest.class);
     private static final int SECONDS = 1000;

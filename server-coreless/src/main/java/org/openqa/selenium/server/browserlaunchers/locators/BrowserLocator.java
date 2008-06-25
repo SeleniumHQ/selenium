@@ -2,9 +2,7 @@ package org.openqa.selenium.server.browserlaunchers.locators;
 
 import org.apache.commons.logging.Log;
 import org.mortbay.log.LogFactory;
-import org.openqa.selenium.server.browserlaunchers.AsyncExecute;
-import org.openqa.selenium.server.browserlaunchers.WindowsUtils;
-import org.openqa.selenium.server.browserlaunchers.LauncherUtils;
+import org.openqa.selenium.server.browserlaunchers.*;
 
 import java.io.File;
 
@@ -15,8 +13,8 @@ public abstract class BrowserLocator {
 
     private static final Log LOGGER = LogFactory.getLog(BrowserLocator.class);
 
-    public String findBrowserLocationOrFail() {
-        final String location;
+    public BrowserInstallation findBrowserLocationOrFail() {
+        final BrowserInstallation location;
 
         location = findBrowserLocation();
         if (null == location) {
@@ -26,8 +24,8 @@ public abstract class BrowserLocator {
         return location;
     }
 
-    public String findBrowserLocation() {
-        final String defaultPath;
+    public BrowserInstallation findBrowserLocation() {
+        final BrowserInstallation defaultPath;
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Discovering " + browserName() + "...");
@@ -46,9 +44,9 @@ public abstract class BrowserLocator {
     protected abstract String browserPathOverridePropertyName();
     protected abstract String[] usualLauncherLocations();
 
-    protected String findInPath() {
+    protected BrowserInstallation findInPath() {
         for(String launcherFilename : standardlauncherFilenames()) {
-            final String launcherPath;
+            final BrowserInstallation launcherPath;
 
             launcherPath = findFileInPath(launcherFilename);
             if (null != launcherPath) {
@@ -58,22 +56,22 @@ public abstract class BrowserLocator {
         return null;
     }
 
-    protected String findAtADefaultLocation() {
-        return retrieveValidInstallationPath(browserDefaultPath());
+    protected BrowserInstallation findAtADefaultLocation() {
+        return browserDefaultPath();
     }
 
 
-    protected String browserDefaultPath() {
+    protected BrowserInstallation browserDefaultPath() {
         final String userProvidedDefaultPath;
 
         userProvidedDefaultPath = System.getProperty(browserPathOverridePropertyName());
         if (null != userProvidedDefaultPath) {
-            return userProvidedDefaultPath;
+            return retrieveValidInstallationPath(userProvidedDefaultPath);
         }
 
         for (String location : usualLauncherLocations()) {
             for (String fileName : standardlauncherFilenames()) {
-                final String validInstallationPath;
+                final BrowserInstallation validInstallationPath;
 
                 validInstallationPath = retrieveValidInstallationPath(location, fileName);
                 if (null != validInstallationPath) {
@@ -85,7 +83,7 @@ public abstract class BrowserLocator {
         return null;
     }
 
-    public String findFileInPath(String fileName) {
+    public BrowserInstallation findFileInPath(String fileName) {
         return retrieveValidInstallationPath(AsyncExecute.whichExec(fileName));
     }
 
@@ -123,18 +121,18 @@ public abstract class BrowserLocator {
         return buffer.substring(0, buffer.lastIndexOf(" or "));
     }
 
-    protected String retrieveValidInstallationPath(String dirname, String fileName) {
+    protected BrowserInstallation retrieveValidInstallationPath(String dirname, String fileName) {
         return retrieveValidInstallationPath(new File(dirname, fileName));
     }
 
-    protected String retrieveValidInstallationPath(String launcher) {
+    public BrowserInstallation retrieveValidInstallationPath(String launcher) {
         if (null == launcher) {
             return  null;
         }
         return retrieveValidInstallationPath(new File(launcher));
     }
 
-    protected String retrieveValidInstallationPath(File launcher) {
+    protected BrowserInstallation retrieveValidInstallationPath(File launcher) {
         if (null == launcher) {
             return  null;
         }
@@ -153,8 +151,22 @@ public abstract class BrowserLocator {
             LOGGER.debug("Discovered valid " + browserName() + " launcher  : '" + launcher + "'");
         }
 
-        return launcher.getAbsolutePath();
+
+        return new BrowserInstallation(launcher.getAbsolutePath(), computeLibraryPath(launcher));
     }
 
+
+    public String computeLibraryPath(File launcherPath) {
+        final String libraryPathEnvironmentVariable;
+        final String currentLibraryPath;
+
+        if (WindowsUtils.thisIsWindows()) {
+            return null;
+        }
+        libraryPathEnvironmentVariable = SystemUtils.libraryPathEnvironmentVariable();
+        currentLibraryPath = WindowsUtils.loadEnvironment().getProperty(libraryPathEnvironmentVariable);
+
+        return currentLibraryPath + File.pathSeparator + launcherPath.getParent();
+    }
 
 }

@@ -8,7 +8,7 @@ import junit.framework.TestCase;
 /**
  * {@link SafariCustomProfileLauncher} integration test class.
  */
-public class SafariCustomProfileLauncherIntegrationTest extends TestCase {
+public class SafariCustomProfileLauncherFunctionalTest extends TestCase {
 
     private static final Log LOGGER = LogFactory.getLog(SafariLauncherIntegrationTest.class);
     private static final int SECONDS = 1000;

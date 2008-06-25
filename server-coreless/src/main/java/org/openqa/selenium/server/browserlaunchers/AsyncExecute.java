@@ -18,6 +18,9 @@
 package org.openqa.selenium.server.browserlaunchers;
 
 import java.io.*;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.ArrayList;
 
 import org.apache.commons.logging.*;
 import org.apache.tools.ant.*;
@@ -37,11 +40,13 @@ public class AsyncExecute extends Execute {
     static Log log = LogFactory.getLog(AsyncExecute.class);
     File workingDirectory ;
     Project project;
-    boolean useVMLauncher = true; 
+    boolean useVMLauncher = true;
+    private final Map<String, String> environmentBuilder;
     
     public AsyncExecute() {
         project = new Project();
         project.addBuildListener(new AntJettyLoggerBuildListener(log));
+        environmentBuilder = new HashMap<String, String>(2);
     }
 
     /**
@@ -72,6 +77,9 @@ public class AsyncExecute extends Execute {
      * @return the spawned process handle
      */
     public Process asyncSpawn() throws IOException {
+        if (!environmentBuilder.isEmpty()) {
+            setActualExecuteEnvironment();
+        }
         if (workingDirectory != null && !workingDirectory.exists()) {
             throw new BuildException(workingDirectory + " doesn't exist.");
         }
@@ -217,4 +225,30 @@ public class AsyncExecute extends Execute {
         }
         return null;
     }
+
+    public void setLibraryPath(String newLibraryPath) {
+        if (WindowsUtils.thisIsWindows()) {
+            return;
+        }
+
+        environmentBuilder.put(SystemUtils.libraryPathEnvironmentVariable(), newLibraryPath);
+    }
+
+    public void setEnvironmentVariable(String name, String value) {
+        environmentBuilder.put(name, value);
+    }
+
+    protected void setActualExecuteEnvironment() {
+        final ArrayList<String> env;
+
+        if (environmentBuilder.isEmpty()) {
+            return;
+        }
+        env = new ArrayList<String>(environmentBuilder.size());
+        for (Map.Entry<String, String> variable : environmentBuilder.entrySet()) {
+            env.add(variable.getKey() + "=" + variable.getValue());
+        }
+        setEnvironment(env.toArray(new String[env.size()]));
+    }
+
 }
