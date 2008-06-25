@@ -18,8 +18,8 @@ package org.openqa.selenium.server.browserlaunchers;
 
 import org.apache.commons.logging.Log;
 import org.mortbay.log.LogFactory;
+import org.openqa.selenium.server.ApplicationRegistry;
 import org.openqa.selenium.server.RemoteControlConfiguration;
-import org.openqa.selenium.server.browserlaunchers.locators.Firefox2Locator;
 import org.openqa.selenium.server.browserlaunchers.locators.Firefox2or3Locator;
 
 import java.io.File;
@@ -45,12 +45,11 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
     private static boolean changeMaxConnections = false;
 
     public FirefoxChromeLauncher(RemoteControlConfiguration configuration, String sessionId) {
-        this(configuration, sessionId, new Firefox2or3Locator().findBrowserLaunchLocationOrFail());
+        this(configuration, sessionId, (String) null);
     }
 
     public FirefoxChromeLauncher(RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
-        this(configuration, sessionId, new Firefox2Locator().retrieveValidInstallationPath(browserLaunchLocation));
-
+        this(configuration, sessionId, ApplicationRegistry.instance().browserInstallationCache().locateBrowserInstallation("firefox", browserLaunchLocation, new Firefox2or3Locator()));
     }
 
     public FirefoxChromeLauncher(RemoteControlConfiguration configuration, String sessionId, BrowserInstallation browserInstallation) {
@@ -261,6 +260,6 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
     public void launchRemoteSession(String browserURL, boolean multiWindow) { 
         launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId, multiWindow, getPort()));
     }
-    
+
 }
 

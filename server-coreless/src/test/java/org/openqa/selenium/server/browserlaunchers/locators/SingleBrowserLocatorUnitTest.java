@@ -1,20 +1,16 @@
 package org.openqa.selenium.server.browserlaunchers.locators;
 
 import junit.framework.TestCase;
-import junit.framework.Assert;
-import static junit.framework.Assert.assertEquals;
-import org.openqa.selenium.server.RemoteControlConfiguration;
-import org.openqa.selenium.server.browserlaunchers.AbstractBrowserLauncher;
 
 /**
  * {@link org.openqa.selenium.server.browserlaunchers.AbstractBrowserLauncher} unit test class.
  */
-public class BrowserLocatorUnitTest extends TestCase {
+public class SingleBrowserLocatorUnitTest extends TestCase {
 
     public void testHumanFriendlyLauncherFileNamesReturnsEmptyStringWhenThereIsNoStandardFileNames() {
-        final BrowserLocator locator;
+        final SingleBrowserLocator locator;
 
-        locator = new BrowserLocator() {
+        locator = new SingleBrowserLocator() {
             protected String[] standardlauncherFilenames() {
                 return new String[0];
             }
@@ -40,9 +36,9 @@ public class BrowserLocatorUnitTest extends TestCase {
     }
 
     public void testHumanFriendlyLauncherFileNamesReturnsQuotedFileNameWhenThereIsASingleFileName() {
-        final BrowserLocator locator;
+        final SingleBrowserLocator locator;
 
-        locator = new BrowserLocator() {
+        locator = new SingleBrowserLocator() {
 
             protected String[] standardlauncherFilenames() {
                 return new String[] { "a-single-browser"};
@@ -69,9 +65,9 @@ public class BrowserLocatorUnitTest extends TestCase {
     }
 
     public void testHumanFriendlyLauncherFileNamesReturnsAllFileNamesOrSeperatedWhenThereIsMoreThanOneFileName() {
-        final BrowserLocator locator;
+        final SingleBrowserLocator locator;
 
-        locator = new BrowserLocator() {
+        locator = new SingleBrowserLocator() {
 
             protected String[] standardlauncherFilenames() {
                 return new String[] { "a-browser", "another-one"};

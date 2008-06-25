@@ -5,7 +5,7 @@ import org.openqa.selenium.server.browserlaunchers.WindowsUtils;
 /**
  * Discovers a valid Internet Explorer installation on local system.
  */
-public class SafariLocator extends BrowserLocator {
+public class SafariLocator extends SingleBrowserLocator {
 
     private static final String[] USUAL_UNIX_LAUNCHER_LOCATIONS = {
             "/Applications/Safari.app/Contents/MacOS",

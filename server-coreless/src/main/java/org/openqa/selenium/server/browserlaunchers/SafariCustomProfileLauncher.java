@@ -19,6 +19,7 @@ package org.openqa.selenium.server.browserlaunchers;
 import org.apache.commons.logging.Log;
 import org.apache.tools.ant.taskdefs.condition.Os;
 import org.mortbay.log.LogFactory;
+import org.openqa.selenium.server.ApplicationRegistry;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.SeleniumServer;
 import org.openqa.selenium.server.browserlaunchers.locators.SafariLocator;
@@ -47,11 +48,11 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
     private static AsyncExecute exe = new AsyncExecute();
 
     public SafariCustomProfileLauncher(RemoteControlConfiguration configuration, String sessionId) {
-        this(configuration, sessionId, new SafariLocator().findBrowserLocationOrFail());
+        this(configuration, sessionId, (String) null);
     }
 
     public SafariCustomProfileLauncher(RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
-        this(configuration, sessionId, new SafariLocator().retrieveValidInstallationPath(browserLaunchLocation));
+        this(configuration, sessionId, ApplicationRegistry.instance().browserInstallationCache().locateBrowserInstallation("safari", browserLaunchLocation, new SafariLocator()));
     }
 
     public SafariCustomProfileLauncher(RemoteControlConfiguration configuration, String sessionId, BrowserInstallation browserInstallation) {

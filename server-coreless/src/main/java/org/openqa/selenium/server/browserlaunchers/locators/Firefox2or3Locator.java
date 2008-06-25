@@ -7,11 +7,11 @@ import org.openqa.selenium.server.browserlaunchers.BrowserInstallation;
 /**
  * Discovers a valid Firefox installation on local system.
  */
-public class Firefox2or3Locator {
+public class Firefox2or3Locator implements BrowserLocator {
 
     private static Log LOGGER = LogFactory.getLog(Firefox2or3Locator.class);
 
-    public BrowserInstallation findBrowserLaunchLocationOrFail() {
+    public BrowserInstallation findBrowserLocationOrFail() {
         LOGGER.debug("Dicovering Firefox 2...");
         final BrowserInstallation firefox2Location = new Firefox2Locator().findBrowserLocation();
         if (null != firefox2Location) {
@@ -25,6 +25,10 @@ public class Firefox2or3Locator {
         }
 
         throw new RuntimeException(couldNotFindFirefoxMessage());
+    }
+
+    public BrowserInstallation retrieveValidInstallationPath(String customLauncherPath) {
+        return new Firefox3Locator().retrieveValidInstallationPath(customLauncherPath);
     }
 
     private String couldNotFindFirefoxMessage() {

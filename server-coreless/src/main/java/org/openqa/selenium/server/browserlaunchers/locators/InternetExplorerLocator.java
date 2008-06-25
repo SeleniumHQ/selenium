@@ -5,7 +5,7 @@ import org.openqa.selenium.server.browserlaunchers.WindowsUtils;
 /**
  * Discovers a valid Internet Explorer installation on local system.
  */
-public class InternetExplorerLocator extends BrowserLocator{
+public class InternetExplorerLocator extends SingleBrowserLocator{
 
     private static final String[] USUAL_WINDOWS_LAUNCHER_LOCATIONS = {
             WindowsUtils.getProgramFilesPath() + "\\Internet Explorer"

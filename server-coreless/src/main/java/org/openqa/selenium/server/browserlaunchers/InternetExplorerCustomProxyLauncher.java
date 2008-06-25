@@ -18,6 +18,7 @@ package org.openqa.selenium.server.browserlaunchers;
 
 import org.apache.commons.logging.Log;
 import org.mortbay.log.LogFactory;
+import org.openqa.selenium.server.ApplicationRegistry;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.browserlaunchers.locators.InternetExplorerLocator;
 
@@ -38,14 +39,12 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
     private static boolean alwaysChangeMaxConnections = false;
     protected boolean changeMaxConnections = alwaysChangeMaxConnections;
 
-    public InternetExplorerCustomProxyLauncher(RemoteControlConfiguration configuration,
-                                               String sessionId) {
-        this(configuration, sessionId, new InternetExplorerLocator().findBrowserLocationOrFail());
+    public InternetExplorerCustomProxyLauncher(RemoteControlConfiguration configuration, String sessionId) {
+        this(configuration, sessionId, (String) null);
     }
 
-    public InternetExplorerCustomProxyLauncher(RemoteControlConfiguration configuration,
-                                               String sessionId, String browserLaunchLocation) {
-        this(configuration, sessionId, new InternetExplorerLocator().retrieveValidInstallationPath(browserLaunchLocation));
+    public InternetExplorerCustomProxyLauncher(RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
+        this(configuration, sessionId, ApplicationRegistry.instance().browserInstallationCache().locateBrowserInstallation("iexplore", browserLaunchLocation, new InternetExplorerLocator()));
     }
 
     public InternetExplorerCustomProxyLauncher(RemoteControlConfiguration configuration,
