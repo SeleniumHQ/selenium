@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>com.googlecode.webdriver</groupId>
+		<groupId>org.openqa.selenium</groupId>
 		<artifactId>webdriver-parent</artifactId>
 		<version>0.5-SNAPSHOT</version>
 	</parent>

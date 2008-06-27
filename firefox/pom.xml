@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>com.googlecode.webdriver</groupId>
+		<groupId>org.openqa.selenium</groupId>
 		<artifactId>webdriver-parent</artifactId>
 		<version>0.5-SNAPSHOT</version>
 	</parent>
@@ -13,7 +13,7 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>com.googlecode.webdriver</groupId>
+			<groupId>org.openqa.selenium</groupId>
 			<artifactId>webdriver-common</artifactId>
 			<version>0.5-SNAPSHOT</version>
 		</dependency>
@@ -24,7 +24,7 @@
         </dependency>
         <!-- Test dependencies ... -->
         <dependency>
-            <groupId>com.googlecode.webdriver</groupId>
+            <groupId>org.openqa.selenium</groupId>
             <artifactId>webdriver-common</artifactId>
             <version>0.5-SNAPSHOT</version>
             <classifier>tests</classifier>
