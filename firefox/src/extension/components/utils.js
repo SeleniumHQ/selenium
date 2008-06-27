@@ -122,7 +122,7 @@ function isWhiteSpace(character) {
 Utils.getText = function(element) {
     var bits = getTextFromNode(element, "", "", element.tagName == "PRE");
 
-    var text = collapseWhitespace(bits[1]) + bits[0];
+    var text = bits[0] + collapseWhitespace(bits[1]);
     var index = text.length - 1;
     while (isWhiteSpace(text[index])) {
         index--;

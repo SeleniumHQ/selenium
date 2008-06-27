@@ -57,8 +57,6 @@ public class HtmlUnitWebElement implements WebElement,
     public HtmlUnitWebElement(HtmlUnitDriver parent, HtmlElement element) {
         this.parent = parent;
         this.element = element;
-        
-        
     }
 
     public void click() {
@@ -263,7 +261,7 @@ public class HtmlUnitWebElement implements WebElement,
 
         getTextFromNode(element, toReturn, textSoFar, element instanceof HtmlPreformattedText);
 
-        String text = collapseWhitespace(textSoFar) + toReturn.toString();
+        String text = toReturn.toString() + collapseWhitespace(textSoFar);
 
         int index = text.length();
         while (index > 0 && isWhiteSpace(text.charAt(index - 1))) {

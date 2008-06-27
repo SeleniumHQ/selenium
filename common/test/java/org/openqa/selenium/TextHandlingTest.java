@@ -4,8 +4,14 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
+import org.hamcrest.Matcher;
+import org.hamcrest.Description;
+import org.hamcrest.TypeSafeMatcher;
+
 import org.openqa.selenium.internal.OperatingSystem;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
+
+import java.util.regex.Pattern;
 
 public class TextHandlingTest extends AbstractDriverTestCase {
 	private String newLine;
@@ -172,4 +178,26 @@ public class TextHandlingTest extends AbstractDriverTestCase {
         assertThat(source.endsWith("</html>"), is(true));
     }
 
+    public void testGetTextWithLineBreakForInlineElement() {
+        driver.get(simpleTestPage);
+
+        WebElement label = driver.findElement(By.id("label1"));
+        String labelText = label.getText();
+
+        assertThat(labelText, matchesPattern("foo[\\n\\r]+bar"));
+    }
+
+    private Matcher<String> matchesPattern(String javaRegex) {
+        final Pattern pattern = Pattern.compile(javaRegex);
+
+        return new TypeSafeMatcher<String>() {
+            public boolean matchesSafely(String s) {
+                return pattern.matcher(s).matches();
+            }
+
+            public void describeTo(Description description) {
+                description.appendText("a string matching the pattern " + pattern);
+            }
+        };
+    }
 }
