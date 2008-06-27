@@ -57,7 +57,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     }
 
     @Ignore("safari")
-    public void testShouldfindElementsBasedOnId() {
+    public void testShouldfindAnElementBasedOnId() {
         driver.get(formPage);
 
         WebElement element = driver.findElement(By.id("checky"));
@@ -131,7 +131,52 @@ public class ElementFindingTest extends AbstractDriverTestCase {
         	// this is expected
         }
     }
+    
+    @Ignore("safari")
+    public void testShouldBeAbleToFindMultipleElementsByXPath() {
+    	driver.get(xhtmlTestPage);
+    	
+    	List<WebElement> elements = driver.findElements(By.xpath("//div"));
+    	
+    	assertTrue(elements.size() > 1);
+    }
+    
+    @Ignore("safari, firefox")
+    public void testShouldBeAbleToFindMultipleElementsByLinkText() {
+    	driver.get(xhtmlTestPage);
+    	
+    	List<WebElement> elements = driver.findElements(By.linkText("click me"));
+    	
+    	assertTrue(elements.size() == 2);
+    }
+    
+    @Ignore("safari")
+    public void testShouldBeAbleToFindMultipleElementsByName() {
+    	driver.get(nestedPage);
+    	
+    	List<WebElement> elements = driver.findElements(By.name("checky"));
+    	
+    	assertTrue(elements.size() > 1);
+    }
 
+    @Ignore("safari, firefox")
+    public void testShouldBeAbleToFindMultipleElementsById() {
+    	driver.get(nestedPage);
+    	
+    	List<WebElement> elements = driver.findElements(By.id("2"));
+    	
+    	assertTrue(elements.size() > 1);
+    }
+    
+    @Ignore("safari")
+    public void testShouldBeAbleToFindMultipleElementsByClassName() {
+    	driver.get(xhtmlTestPage);
+    	
+    	List<WebElement> elements = driver.findElements(By.className("nameC"));
+    	
+    	assertTrue(elements.size() > 1);
+    }
+    
     // You don't want to ask why this is here
     public void testWhenFindingByNameShouldNotReturnById() {
         driver.get(formPage);

@@ -57,8 +57,40 @@ JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_setVis
 
 /*
  * Class:     org_openqa_selenium_ie_InternetExplorerDriver
+ * Method:    selectElementById
+ * Signature: (Ljava/lang/String;)Lorg/openqa/selenium/WebElement;
+ */
+JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_selectElementById
+  (JNIEnv *, jobject, jstring);
+
+/*
+ * Class:     org_openqa_selenium_ie_InternetExplorerDriver
+ * Method:    selectElementsById
+ * Signature: (Ljava/lang/String;Ljava/util/List;)Ljava/util/List;
+ */
+JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_selectElementsById
+  (JNIEnv *, jobject, jstring, jobject);
+
+/*
+ * Class:     org_openqa_selenium_ie_InternetExplorerDriver
+ * Method:    selectElementByName
+ * Signature: (Ljava/lang/String;)Lorg/openqa/selenium/WebElement;
+ */
+JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_selectElementByName
+  (JNIEnv *, jobject, jstring);
+
+/*
+ * Class:     org_openqa_selenium_ie_InternetExplorerDriver
+ * Method:    selectElementsByName
+ * Signature: (Ljava/lang/String;Ljava/util/List;)Ljava/util/List;
+ */
+JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_selectElementsByName
+  (JNIEnv *, jobject, jstring, jobject);
+
+/*
+ * Class:     org_openqa_selenium_ie_InternetExplorerDriver
  * Method:    selectElementByClassName
- * Signature: (Ljava/lang/String;)Lcom/googlecode/webdriver/WebElement;
+ * Signature: (Ljava/lang/String;)Lorg/openqa/selenium/WebElement;
  */
 JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_selectElementByClassName
   (JNIEnv *, jobject, jstring);
@@ -66,15 +98,15 @@ JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_sel
 /*
  * Class:     org_openqa_selenium_ie_InternetExplorerDriver
  * Method:    selectElementsByClassName
- * Signature: (Ljava/lang/String;)Ljava/util/List;
+ * Signature: (Ljava/lang/String;Ljava/util/List;)Ljava/util/List;
  */
 JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_selectElementsByClassName
-  (JNIEnv *, jobject, jstring);
+  (JNIEnv *, jobject, jstring, jobject);
 
 /*
  * Class:     org_openqa_selenium_ie_InternetExplorerDriver
  * Method:    selectElementByXPath
- * Signature: (Ljava/lang/String;)Lcom/googlecode/webdriver/WebElement;
+ * Signature: (Ljava/lang/String;)Lorg/openqa/selenium/WebElement;
  */
 JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_selectElementByXPath
   (JNIEnv *, jobject, jstring);
@@ -85,6 +117,22 @@ JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_sel
  * Signature: (Ljava/lang/String;Ljava/util/List;)V
  */
 JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_selectElementsByXPath
+  (JNIEnv *, jobject, jstring, jobject);
+
+/*
+ * Class:     org_openqa_selenium_ie_InternetExplorerDriver
+ * Method:    selectElementByLink
+ * Signature: (Ljava/lang/String;)Lorg/openqa/selenium/WebElement;
+ */
+JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_selectElementByLink
+  (JNIEnv *, jobject, jstring);
+
+/*
+ * Class:     org_openqa_selenium_ie_InternetExplorerDriver
+ * Method:    selectElementsByLink
+ * Signature: (Ljava/lang/String;Ljava/util/List;)V
+ */
+JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_selectElementsByLink
   (JNIEnv *, jobject, jstring, jobject);
 
 /*
@@ -110,46 +158,6 @@ JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_startC
  */
 JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_openIe
   (JNIEnv *, jobject);
-
-/*
- * Class:     org_openqa_selenium_ie_InternetExplorerDriver
- * Method:    selectElementById
- * Signature: (Ljava/lang/String;)Lcom/googlecode/webdriver/WebElement;
- */
-JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_selectElementById
-  (JNIEnv *, jobject, jstring);
-
-/*
- * Class:     org_openqa_selenium_ie_InternetExplorerDriver
- * Method:    selectElementByLink
- * Signature: (Ljava/lang/String;)Lcom/googlecode/webdriver/WebElement;
- */
-JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_selectElementByLink
-  (JNIEnv *, jobject, jstring);
-
-/*
- * Class:     org_openqa_selenium_ie_InternetExplorerDriver
- * Method:    selectElementsByLink
- * Signature: (Ljava/lang/String;Ljava/util/List;)V
- */
-JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_selectElementsByLink
-  (JNIEnv *, jobject, jstring, jobject);
-
-/*
- * Class:     org_openqa_selenium_ie_InternetExplorerDriver
- * Method:    selectElementByName
- * Signature: (Ljava/lang/String;)Lcom/googlecode/webdriver/WebElement;
- */
-JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_selectElementByName
-  (JNIEnv *, jobject, jstring);
-
-/*
- * Class:     org_openqa_selenium_ie_InternetExplorerDriver
- * Method:    selectElementsByName
- * Signature: (Ljava/lang/String;)Ljava/util/List;
- */
-JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_selectElementsByName
-  (JNIEnv *, jobject, jstring);
 
 /*
  * Class:     org_openqa_selenium_ie_InternetExplorerDriver

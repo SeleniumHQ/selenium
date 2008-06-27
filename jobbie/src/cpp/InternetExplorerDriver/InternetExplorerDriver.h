@@ -36,9 +36,13 @@ public:
 	ElementWrapper* selectElementByXPath(const wchar_t *xpath);
 	std::vector<ElementWrapper*>* selectElementsByXPath(const wchar_t *xpath);
 	ElementWrapper* selectElementById(const wchar_t *elementId);
+	std::vector<ElementWrapper*>* selectElementsById(const wchar_t *id);
 	ElementWrapper* selectElementByLink(const wchar_t *elementLink);
+	std::vector<ElementWrapper*>* selectElementsByLink(const wchar_t *linkText);
 	ElementWrapper* selectElementByName(const wchar_t *elementName);
+	std::vector<ElementWrapper*>* selectElementsByName(const wchar_t *name);
 	ElementWrapper* selectElementByClassName(const wchar_t *elementClassName);
+	std::vector<ElementWrapper*>* selectElementsByClassName(const wchar_t *name);
 	void getDocument(IHTMLDocument2 **pdoc);
 
 	void waitForNavigateToFinish();

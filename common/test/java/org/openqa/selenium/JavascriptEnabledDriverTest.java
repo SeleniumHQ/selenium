@@ -31,7 +31,7 @@ import java.util.List;
  */
 public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
 	@JavascriptEnabled
-	@Ignore(value = "safari, ie", reason = "safari: not implemented, ie: fails for some reason.")
+	@Ignore(value = "safari", reason = "safari: not implemented, ie: fails for some reason.")
     public void testDocumentShouldReflectLatestTitle() throws Exception {
         driver.get(javascriptPage);
 
@@ -367,7 +367,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
   
   @JavascriptEnabled
-  @Ignore("firefox, safari, ie")
+  @Ignore("firefox, safari")
   public void testShouldReportKeyCodeOfArrowKeysWhenPressEventNotFiredByBrowser() {
 	  driver.get(javascriptPage);
 	  

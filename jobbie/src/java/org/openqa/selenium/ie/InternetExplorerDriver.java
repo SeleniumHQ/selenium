@@ -90,18 +90,26 @@ public class InternetExplorerDriver implements WebDriver, SearchContext,
     public WebElement findElementById(String using) {
         return selectElementById(using);
     }
+    private native WebElement selectElementById(String elementId);
 
-    public WebElement findElementByLinkText(String using) {
-        return selectElementByLink(using);
+    public List<WebElement> findElementsById(String using) {
+		List<WebElement> rawElements = new ArrayList<WebElement>();
+		selectElementsById(using, rawElements);
+        return rawElements;
     }
-
+    private native List<WebElement> selectElementsById(String using, List<WebElement> rawElements);
+    
     public WebElement findElementByName(String using) {
     	return selectElementByName(using);
     }
-
+    private native WebElement selectElementByName(String using);
+    
 	public List<WebElement> findElementsByName(String using) {
-    	return selectElementsByName(using);
+		List<WebElement> rawElements = new ArrayList<WebElement>();
+		selectElementsByName(using, rawElements);
+        return rawElements;
     }
+    private native List<WebElement> selectElementsByName(String using, List<WebElement> rawElements);
 	
 	public WebElement findElementByClassName(String using) {
 		return selectElementByClassName(using);
@@ -109,35 +117,36 @@ public class InternetExplorerDriver implements WebDriver, SearchContext,
 	private native WebElement selectElementByClassName(String using);
 		  
 	public List<WebElement> findElementsByClassName(String using) {
-		return selectElementsByClassName(using);
+		List<WebElement> rawElements = new ArrayList<WebElement>();
+		selectElementsByClassName(using, rawElements);
+        return rawElements;
 	}
-	private native List<WebElement> selectElementsByClassName(String using);
+	private native List<WebElement> selectElementsByClassName(String using, List<WebElement> rawElements);
 
 	private native WebElement selectElementByXPath(String using);
 	
 	public WebElement findElementByXPath(String using) {
 		return selectElementByXPath(using);
     }
-
-	private native void selectElementsByXPath(String linkText, List<WebElement> rawElements);
 	
 	public List<WebElement> findElementsByXPath(String using) {
         List<WebElement> rawElements = new ArrayList<WebElement>();
         selectElementsByXPath(using, rawElements);
         return rawElements;
     }
+	private native void selectElementsByXPath(String linkText, List<WebElement> rawElements);
 
+    public WebElement findElementByLinkText(String using) {
+        return selectElementByLink(using);
+    }
+    private native WebElement selectElementByLink(String linkText);
     
     public List<WebElement> findElementsByLinkText(String using) {
         List<WebElement> rawElements = new ArrayList<WebElement>();
         selectElementsByLink(using, rawElements);
         return rawElements;
     }
-
-
-  public List<WebElement> findElementsById(String using) {
-    throw new UnsupportedOperationException("findElementsById");
-  }
+    private native void selectElementsByLink(String linkText, List<WebElement> rawElements);
 
   @Override
     public String toString() {
@@ -210,16 +219,6 @@ public class InternetExplorerDriver implements WebDriver, SearchContext,
 
     private native void openIe();
 
-    private native WebElement selectElementById(String elementId);
-
-    private native WebElement selectElementByLink(String linkText);
-
-    private native void selectElementsByLink(String linkText, List<WebElement> rawElements);
-
-    private native WebElement selectElementByName(String using);
-
-    private native List<WebElement> selectElementsByName(String using);
-    
     @Override
     protected void finalize() throws Throwable {
     	if (iePointer != 0)

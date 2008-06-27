@@ -159,6 +159,33 @@ JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_sel
 	env->ReleaseStringChars(elementId, (const jchar*) converted);	
 }
 
+JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_selectElementsById
+  (JNIEnv *env, jobject obj, jstring elementId, jobject list)
+{
+	jclass listClass = env->FindClass("java/util/List");
+	jmethodID addId = env->GetMethodID(listClass, "add", "(Ljava/lang/Object;)Z");
+
+	jclass ieeClass = env->FindClass("org/openqa/selenium/ie/InternetExplorerElement");
+	jmethodID cId = env->GetMethodID(ieeClass, "<init>", "(J)V");
+
+	InternetExplorerDriver *ie = getIe(env, obj);
+	wchar_t* converted = (wchar_t *)env->GetStringChars(elementId, 0);
+
+	const std::vector<ElementWrapper*>* elements = ie->selectElementsById(converted);
+	env->ReleaseStringChars(elementId, (const jchar*) converted);
+
+	std::vector<ElementWrapper*>::const_iterator end = elements->end();
+	std::vector<ElementWrapper*>::const_iterator cur = elements->begin();
+
+	while(cur < end)
+	{
+		ElementWrapper* wrapper = *cur;
+		jobject wrapped = env->NewObject(ieeClass, cId, wrapper);
+		env->CallVoidMethod(list, addId, wrapped);
+		cur++;
+	}
+}
+
 JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_selectElementByLink
   (JNIEnv *env, jobject obj, jstring linkText)
 {
@@ -179,6 +206,33 @@ JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_sel
 		return NULL;
 	} 
 
+}
+
+JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_selectElementsByLink
+  (JNIEnv *env, jobject obj, jstring linkText, jobject list)
+{
+	jclass listClass = env->FindClass("java/util/List");
+	jmethodID addId = env->GetMethodID(listClass, "add", "(Ljava/lang/Object;)Z");
+
+	jclass ieeClass = env->FindClass("org/openqa/selenium/ie/InternetExplorerElement");
+	jmethodID cId = env->GetMethodID(ieeClass, "<init>", "(J)V");
+
+	InternetExplorerDriver *ie = getIe(env, obj);
+	wchar_t* converted = (wchar_t *)env->GetStringChars(linkText, 0);
+
+	const std::vector<ElementWrapper*>* elements = ie->selectElementsByLink(converted);
+	env->ReleaseStringChars(linkText, (const jchar*) converted);
+
+	std::vector<ElementWrapper*>::const_iterator end = elements->end();
+	std::vector<ElementWrapper*>::const_iterator cur = elements->begin();
+
+	while(cur < end)
+	{
+		ElementWrapper* wrapper = *cur;
+		jobject wrapped = env->NewObject(ieeClass, cId, wrapper);
+		env->CallVoidMethod(list, addId, wrapped);
+		cur++;
+	}
 }
 
 JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_selectElementByName
@@ -202,6 +256,33 @@ JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_sel
 	} 
 }
 
+JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_selectElementsByName
+  (JNIEnv *env, jobject obj, jstring name, jobject list)
+{
+	jclass listClass = env->FindClass("java/util/List");
+	jmethodID addId = env->GetMethodID(listClass, "add", "(Ljava/lang/Object;)Z");
+
+	jclass ieeClass = env->FindClass("org/openqa/selenium/ie/InternetExplorerElement");
+	jmethodID cId = env->GetMethodID(ieeClass, "<init>", "(J)V");
+
+	InternetExplorerDriver *ie = getIe(env, obj);
+	wchar_t* converted = (wchar_t *)env->GetStringChars(name, 0);
+
+	const std::vector<ElementWrapper*>* elements = ie->selectElementsByName(converted);
+	env->ReleaseStringChars(name, (const jchar*) converted);
+
+	std::vector<ElementWrapper*>::const_iterator end = elements->end();
+	std::vector<ElementWrapper*>::const_iterator cur = elements->begin();
+
+	while(cur < end)
+	{
+		ElementWrapper* wrapper = *cur;
+		jobject wrapped = env->NewObject(ieeClass, cId, wrapper);
+		env->CallVoidMethod(list, addId, wrapped);
+		cur++;
+	}
+}
+
 JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_selectElementByClassName
   (JNIEnv *env, jobject obj, jstring name)
 {
@@ -221,6 +302,33 @@ JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_sel
 		throwNoSuchElementException(env, message);
 		return NULL;
 	} 
+}
+
+JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_selectElementsByClassName
+  (JNIEnv *env, jobject obj, jstring name, jobject list)
+{
+	jclass listClass = env->FindClass("java/util/List");
+	jmethodID addId = env->GetMethodID(listClass, "add", "(Ljava/lang/Object;)Z");
+
+	jclass ieeClass = env->FindClass("org/openqa/selenium/ie/InternetExplorerElement");
+	jmethodID cId = env->GetMethodID(ieeClass, "<init>", "(J)V");
+
+	InternetExplorerDriver *ie = getIe(env, obj);
+	wchar_t* converted = (wchar_t *)env->GetStringChars(name, 0);
+
+	const std::vector<ElementWrapper*>* elements = ie->selectElementsByClassName(converted);
+	env->ReleaseStringChars(name, (const jchar*) converted);
+
+	std::vector<ElementWrapper*>::const_iterator end = elements->end();
+	std::vector<ElementWrapper*>::const_iterator cur = elements->begin();
+
+	while(cur < end)
+	{
+		ElementWrapper* wrapper = *cur;
+		jobject wrapped = env->NewObject(ieeClass, cId, wrapper);
+		env->CallVoidMethod(list, addId, wrapped);
+		cur++;
+	}
 }
 
 JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_deleteStoredObject
