@@ -1,8 +1,8 @@
-package com.googlecode.webdriver.selenium;
+package org.openqa.selenium;
 
-import com.googlecode.webdriver.environment.TestEnvironment;
-import com.googlecode.webdriver.environment.webserver.AppServer;
-import com.googlecode.webdriver.environment.webserver.Jetty6AppServer;
+import org.openqa.selenium.environment.TestEnvironment;
+import org.openqa.selenium.environment.webserver.AppServer;
+import org.openqa.selenium.environment.webserver.Jetty6AppServer;
 import junit.framework.Assert;
 
 import java.io.File;

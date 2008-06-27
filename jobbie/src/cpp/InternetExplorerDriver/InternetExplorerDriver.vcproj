@@ -185,19 +185,19 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\com_googlecode_webdriver_ie_InternetExplorerDriver.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\com_googlecode_webdriver_ie_InternetExplorerElement.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\ElementWrapper.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\InternetExplorerDriver.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\org_openqa_selenium_ie_InternetExplorerDriver.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\org_openqa_selenium_ie_InternetExplorerElement.cpp"
 				>
 			</File>
 			<File
@@ -235,14 +235,6 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\com_googlecode_webdriver_ie_InternetExplorerDriver.h"
-				>
-			</File>
-			<File
-				RelativePath=".\com_googlecode_webdriver_ie_InternetExplorerElement.h"
-				>
-			</File>
-			<File
 				RelativePath=".\ElementWrapper.h"
 				>
 			</File>
@@ -252,6 +244,14 @@
 			</File>
 			<File
 				RelativePath=".\jsxpath.h"
+				>
+			</File>
+			<File
+				RelativePath=".\org_openqa_selenium_ie_InternetExplorerDriver.h"
+				>
+			</File>
+			<File
+				RelativePath=".\org_openqa_selenium_ie_InternetExplorerElement.h"
 				>
 			</File>
 			<File

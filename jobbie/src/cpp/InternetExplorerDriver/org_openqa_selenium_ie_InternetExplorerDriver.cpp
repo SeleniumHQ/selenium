@@ -21,7 +21,7 @@ InternetExplorerDriver* getIe(JNIEnv *env, jobject obj)
 	return (InternetExplorerDriver *) value;
 }
 
-JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_close
+JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_close
 (JNIEnv *env, jobject obj) 
 {
 	InternetExplorerDriver* wrapper = getIe(env, obj);
@@ -30,13 +30,13 @@ JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDrive
 	return NULL;
 }
 
-JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_startComNatively
+JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_startComNatively
   (JNIEnv *env, jobject obj)
 {
 	startCom();
 }
 
-JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_openIe
+JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_openIe
   (JNIEnv *env, jobject obj)
 {
 	try {
@@ -50,28 +50,28 @@ JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_o
 	}
 }
 
-JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_setVisible
+JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_setVisible
   (JNIEnv *env, jobject obj, jboolean isVisible)
 {
 	InternetExplorerDriver* ie = getIe(env, obj);
 	ie->setVisible(isVisible == JNI_TRUE);
 }
 
-JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_waitForLoadToComplete
+JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_waitForLoadToComplete
   (JNIEnv *env, jobject obj)
 {
 	InternetExplorerDriver* ie = getIe(env, obj);
 	ie->waitForNavigateToFinish();
 }
 
-JNIEXPORT jstring JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_getCurrentUrl
+JNIEXPORT jstring JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_getCurrentUrl
   (JNIEnv *env, jobject obj)
 {
 	InternetExplorerDriver* ie = getIe(env, obj);
 	return wstring2jstring(env, ie->getCurrentUrl());
 }
 
-JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_get
+JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_get
   (JNIEnv *env, jobject obj, jstring url)
 {
 	InternetExplorerDriver* ie = getIe(env, obj);
@@ -80,14 +80,14 @@ JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_g
 	env->ReleaseStringChars(url, (jchar*) converted);
 }
 
-JNIEXPORT jstring JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_getTitle
+JNIEXPORT jstring JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_getTitle
   (JNIEnv *env, jobject obj)
 {
 	InternetExplorerDriver* ie = getIe(env, obj);
 	return wstring2jstring(env, ie->getTitle());
 }
 
-JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_selectElementByXPath
+JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_selectElementByXPath
   (JNIEnv *env, jobject obj, jstring xpath)
 {
 	InternetExplorerDriver *ie = getIe(env, obj);
@@ -100,7 +100,7 @@ JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDrive
 		if (!wrapper)
 			throwNoSuchElementException(env, "Cannot find element by XPath");
 
-		jclass clazz = env->FindClass("com/googlecode/webdriver/ie/InternetExplorerElement");
+		jclass clazz = env->FindClass("org/openqa/selenium/ie/InternetExplorerElement");
 		jmethodID cId = env->GetMethodID(clazz, "<init>", "(J)V");
 
 		return env->NewObject(clazz, cId, (jlong) wrapper);
@@ -111,13 +111,13 @@ JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDrive
 	env->ReleaseStringChars(xpath, (const jchar*) converted);
 }
 
-JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_selectElementsByXPath
+JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_selectElementsByXPath
   (JNIEnv *env, jobject obj, jstring xpath, jobject list)
 {
 	jclass listClass = env->FindClass("java/util/List");
 	jmethodID addId = env->GetMethodID(listClass, "add", "(Ljava/lang/Object;)Z");
 
-	jclass ieeClass = env->FindClass("com/googlecode/webdriver/ie/InternetExplorerElement");
+	jclass ieeClass = env->FindClass("org/openqa/selenium/ie/InternetExplorerElement");
 	jmethodID cId = env->GetMethodID(ieeClass, "<init>", "(J)V");
 
 	InternetExplorerDriver *ie = getIe(env, obj);
@@ -138,7 +138,7 @@ JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_s
 	}
 }
 
-JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_selectElementById
+JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_selectElementById
   (JNIEnv *env, jobject obj, jstring elementId)
 {
 	InternetExplorerDriver *ie = getIe(env, obj);
@@ -148,7 +148,7 @@ JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDrive
 		ElementWrapper* wrapper = ie->selectElementById(converted);
 		env->ReleaseStringChars(elementId, (const jchar*) converted);	
 
-		jclass clazz = env->FindClass("com/googlecode/webdriver/ie/InternetExplorerElement");
+		jclass clazz = env->FindClass("org/openqa/selenium/ie/InternetExplorerElement");
 		jmethodID cId = env->GetMethodID(clazz, "<init>", "(J)V");
 
 		return env->NewObject(clazz, cId, (jlong) wrapper);
@@ -159,7 +159,7 @@ JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDrive
 	env->ReleaseStringChars(elementId, (const jchar*) converted);	
 }
 
-JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_selectElementByLink
+JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_selectElementByLink
   (JNIEnv *env, jobject obj, jstring linkText)
 {
 	InternetExplorerDriver* ie = getIe(env, obj);
@@ -169,7 +169,7 @@ JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDrive
 		ElementWrapper* wrapper = ie->selectElementByLink(converted);
 		env->ReleaseStringChars(linkText, (jchar*) converted);
 
-		jclass clazz = env->FindClass("com/googlecode/webdriver/ie/InternetExplorerElement");
+		jclass clazz = env->FindClass("org/openqa/selenium/ie/InternetExplorerElement");
 		jmethodID cId = env->GetMethodID(clazz, "<init>", "(J)V");
 
 		return env->NewObject(clazz, cId, (jlong) wrapper);
@@ -181,7 +181,7 @@ JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDrive
 
 }
 
-JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_selectElementByName
+JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_selectElementByName
   (JNIEnv *env, jobject obj, jstring name)
 {
 	InternetExplorerDriver* ie = getIe(env, obj);
@@ -191,7 +191,7 @@ JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDrive
 		ElementWrapper* wrapper = ie->selectElementByName(converted);
 		env->ReleaseStringChars(name, (jchar*) converted);
 
-		jclass clazz = env->FindClass("com/googlecode/webdriver/ie/InternetExplorerElement");
+		jclass clazz = env->FindClass("org/openqa/selenium/ie/InternetExplorerElement");
 		jmethodID cId = env->GetMethodID(clazz, "<init>", "(J)V");
 
 		return env->NewObject(clazz, cId, (jlong) wrapper);
@@ -202,7 +202,7 @@ JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDrive
 	} 
 }
 
-JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_selectElementByClassName
+JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_selectElementByClassName
   (JNIEnv *env, jobject obj, jstring name)
 {
 	InternetExplorerDriver* ie = getIe(env, obj);
@@ -212,7 +212,7 @@ JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDrive
 		ElementWrapper* wrapper = ie->selectElementByClassName(converted);
 		env->ReleaseStringChars(name, (jchar*) converted);
 
-		jclass clazz = env->FindClass("com/googlecode/webdriver/ie/InternetExplorerElement");
+		jclass clazz = env->FindClass("org/openqa/selenium/ie/InternetExplorerElement");
 		jmethodID cId = env->GetMethodID(clazz, "<init>", "(J)V");
 
 		return env->NewObject(clazz, cId, (jlong) wrapper);
@@ -223,7 +223,7 @@ JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDrive
 	} 
 }
 
-JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_deleteStoredObject
+JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_deleteStoredObject
   (JNIEnv *env, jobject obj)
 {
 	InternetExplorerDriver* ie = getIe(env, obj);
@@ -231,28 +231,28 @@ JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_d
 		delete ie;
 }
 
-JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_setFrameIndex
+JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_setFrameIndex
   (JNIEnv *env, jobject obj, jint frameIndex)
 {
 	InternetExplorerDriver* ie = getIe(env, obj);
 	ie->switchToFrame((int) frameIndex);
 }
 
-JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_goBack
+JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_goBack
   (JNIEnv *env, jobject obj)
 {
 	InternetExplorerDriver* ie = getIe(env, obj);
 	ie->goBack();
 }
 
-JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_goForward
+JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_goForward
   (JNIEnv *env, jobject obj)
 {
 	InternetExplorerDriver* ie = getIe(env, obj);
 	ie->goForward();
 }
 
-JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_doAddCookie
+JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_doAddCookie
   (JNIEnv *env, jobject obj, jstring cookieString)
 {
 	InternetExplorerDriver* ie = getIe(env, obj);
@@ -262,14 +262,14 @@ JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_d
 	env->ReleaseStringChars(cookieString, (jchar*) converted);
 }
 
-JNIEXPORT jstring JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_doGetCookies
+JNIEXPORT jstring JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_doGetCookies
   (JNIEnv *env, jobject obj)
 {
 	InternetExplorerDriver* ie = getIe(env, obj);
 	return wstring2jstring(env, ie->getCookies());
 }
 
-JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerDriver_doSetMouseSpeed
+JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_doSetMouseSpeed
   (JNIEnv *env, jobject obj, jint speed) 
 {
 	InternetExplorerDriver* ie = getIe(env, obj);

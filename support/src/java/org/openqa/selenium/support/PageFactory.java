@@ -57,7 +57,7 @@ public class PageFactory {
     }
 
   /**
-   * As {@link org.openqa.selenium.support.PageFactory#initElements(com.googlecode.webdriver.WebDriver, Class)}
+   * As {@link org.openqa.selenium.support.PageFactory#initElements(org.openqa.selenium.WebDriver, Class)}
    * but will only replace the fields of an already instantiated Page Object.
    *
    * @param driver The driver that will be used to look up the elements

@@ -1,9 +1,9 @@
-package com.googlecode.webdriver.selenium.internal;
+package org.openqa.selenium.internal;
 
 import com.thoughtworks.selenium.SeleniumException;
-import com.googlecode.webdriver.WebDriver;
-import com.googlecode.webdriver.WebElement;
-import com.googlecode.webdriver.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.By;
 
 import java.util.HashMap;
 import java.util.Iterator;

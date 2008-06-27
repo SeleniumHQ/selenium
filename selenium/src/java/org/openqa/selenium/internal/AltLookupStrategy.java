@@ -1,8 +1,8 @@
-package com.googlecode.webdriver.selenium.internal;
+package org.openqa.selenium.internal;
 
-import com.googlecode.webdriver.WebDriver;
-import com.googlecode.webdriver.By;
-import com.googlecode.webdriver.WebElement;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 
 public class AltLookupStrategy implements LookupStrategy {
     public WebElement find(WebDriver driver, String use) {

@@ -1,6 +1,6 @@
-package com.googlecode.webdriver.selenium.internal;
+package org.openqa.selenium.internal;
 
-import com.googlecode.webdriver.WebElement;
+import org.openqa.selenium.WebElement;
 
 import java.util.ArrayList;
 import java.util.Iterator;

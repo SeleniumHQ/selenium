@@ -21,14 +21,14 @@ ElementWrapper* getWrapper(JNIEnv *env, jobject obj)
 extern "C" {
 #endif
 
-JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_click
+JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_click
   (JNIEnv *env, jobject obj) 
 {
 	ElementWrapper* wrapper = getWrapper(env, obj);
 	wrapper->click();
 }
 
-JNIEXPORT jstring JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_getValue
+JNIEXPORT jstring JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_getValue
   (JNIEnv *env, jobject obj)
 {
 	ElementWrapper* wrapper = getWrapper(env, obj);
@@ -36,7 +36,7 @@ JNIEXPORT jstring JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerEleme
 	return wstring2jstring(env, wrapper->getValue());
 }
 
-JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_doSendKeys
+JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_doSendKeys
   (JNIEnv *env, jobject obj, jstring newValue)
 {
 	ElementWrapper* wrapper = getWrapper(env, obj);
@@ -44,21 +44,21 @@ JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_
 	wrapper->sendKeys(converted);
 }
 
-JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_clear
+JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_clear
   (JNIEnv *env, jobject obj)
 {
 	ElementWrapper* wrapper = getWrapper(env, obj);
 	wrapper->clear();
 }
 
-JNIEXPORT jstring JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_getText
+JNIEXPORT jstring JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_getText
   (JNIEnv *env, jobject obj)
 {
 	ElementWrapper* wrapper = getWrapper(env, obj);
 	return wstring2jstring(env, wrapper->getText());
 }
 
-JNIEXPORT jstring JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_getAttribute
+JNIEXPORT jstring JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_getAttribute
   (JNIEnv *env, jobject obj, jstring attributeName)
 {
 	ElementWrapper* wrapper = getWrapper(env, obj);
@@ -67,21 +67,21 @@ JNIEXPORT jstring JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerEleme
 	return wstring2jstring(env, wrapper->getAttribute(converted));
 }
 
-JNIEXPORT jboolean JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_isEnabled
+JNIEXPORT jboolean JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_isEnabled
   (JNIEnv *env, jobject obj)
 {
 	ElementWrapper* wrapper = getWrapper(env, obj);
 	return wrapper->isEnabled() ? JNI_TRUE : JNI_FALSE;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_isSelected
+JNIEXPORT jboolean JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_isSelected
   (JNIEnv *env, jobject obj)
 {
 	ElementWrapper* wrapper = getWrapper(env, obj);
 	return wrapper->isSelected() ? JNI_TRUE : JNI_FALSE;
 }
 
-JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_setSelected
+JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_setSelected
   (JNIEnv *env, jobject obj)
 {
 	ElementWrapper* wrapper = getWrapper(env, obj);
@@ -92,7 +92,7 @@ JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_
 	}
 }
 
-JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_submit
+JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_submit
   (JNIEnv *env, jobject obj)
 {
 	ElementWrapper* wrapper = getWrapper(env, obj);
@@ -103,21 +103,21 @@ JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_
 	}
 }
 
-JNIEXPORT jboolean JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_toggle
+JNIEXPORT jboolean JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_toggle
   (JNIEnv *env, jobject obj)
 {
 	ElementWrapper* wrapper = getWrapper(env, obj);
 	return wrapper->toggle() ? JNI_TRUE : JNI_FALSE;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_isDisplayed
+JNIEXPORT jboolean JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_isDisplayed
   (JNIEnv *env, jobject obj)
 {
 	ElementWrapper* wrapper = getWrapper(env, obj);
 	return wrapper->isDisplayed() ? JNI_TRUE : JNI_FALSE;
 }
 
-JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_getLocation
+JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_getLocation
   (JNIEnv *env, jobject obj)
 {
 	ElementWrapper* wrapper = getWrapper(env, obj);
@@ -130,7 +130,7 @@ JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerEleme
 	return env->NewObject(pointClass, cId, x, y);
 }
 
-JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_getSize
+JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_getSize
   (JNIEnv *env, jobject obj) 
 {
 	ElementWrapper* wrapper = getWrapper(env, obj);
@@ -143,13 +143,13 @@ JNIEXPORT jobject JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerEleme
 	return env->NewObject(pointClass, cId, width, height);
 }
 
-JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_getChildrenOfTypeNatively
+JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_getChildrenOfTypeNatively
   (JNIEnv *env, jobject obj, jobject list, jstring tagName)
 {
 	jclass listClass = env->FindClass("java/util/List");
 	jmethodID addId = env->GetMethodID(listClass, "add", "(Ljava/lang/Object;)Z");
 
-	jclass ieeClass = env->FindClass("com/googlecode/webdriver/ie/InternetExplorerElement");
+	jclass ieeClass = env->FindClass("org/openqa/selenium/ie/InternetExplorerElement");
 	jmethodID cId = env->GetMethodID(ieeClass, "<init>", "(J)V");
 
 	const wchar_t* converted = (wchar_t*) env->GetStringChars(tagName, NULL);
@@ -168,14 +168,14 @@ JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_
 	}
 }
 
-JNIEXPORT void JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_deleteStoredObject
+JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_deleteStoredObject
   (JNIEnv *env, jobject obj)
 {
 	ElementWrapper* wrapper = getWrapper(env, obj);
 	delete wrapper;
 }
 
-JNIEXPORT jstring JNICALL Java_com_googlecode_webdriver_ie_InternetExplorerElement_getValueOfCssProperty
+JNIEXPORT jstring JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_getValueOfCssProperty
   (JNIEnv *env, jobject obj, jstring propertyName)
 {
 	ElementWrapper* wrapper = getWrapper(env, obj);

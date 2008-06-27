@@ -19,8 +19,8 @@ public class SingleTestSuite {
               .usingDriver(IE)
               .keepDriverInstance()
               .includeJavascriptTests()
-              .onlyRun("FormHandlingTest")
-              .method("testSendingKeyboardEventsShouldAppendTextInInputs")
+              .onlyRun("ElementAttributeTest")
+              .method("testShouldReturnEmptyAttributeValuesWhenPresentAndTheValueIsActuallyEmpty")
 //                        .leaveRunningAfterTest()
               .create();
 	}

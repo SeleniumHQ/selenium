@@ -1,7 +1,7 @@
-package com.googlecode.webdriver.selenium.internal;
+package org.openqa.selenium.internal;
 
 import com.thoughtworks.selenium.SeleniumException;
-import com.googlecode.webdriver.WebElement;
+import org.openqa.selenium.WebElement;
 
 import java.util.Collections;
 import java.util.List;

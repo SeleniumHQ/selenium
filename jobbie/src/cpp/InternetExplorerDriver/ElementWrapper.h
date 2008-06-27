@@ -7,7 +7,7 @@
 #include <mshtml.h>
 
 #include "InternetExplorerDriver.h"
-#include "com_googlecode_webdriver_ie_InternetExplorerElement.h"
+#include "org_openqa_selenium_ie_InternetExplorerElement.h"
 
 class InternetExplorerDriver;
 

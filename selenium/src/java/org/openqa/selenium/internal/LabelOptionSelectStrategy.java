@@ -1,6 +1,6 @@
-package com.googlecode.webdriver.selenium.internal;
+package org.openqa.selenium.internal;
 
-import com.googlecode.webdriver.WebElement;
+import org.openqa.selenium.WebElement;
 
 public class LabelOptionSelectStrategy extends BaseOptionSelectStrategy {
     protected boolean selectOption(WebElement option, String selectThis) {

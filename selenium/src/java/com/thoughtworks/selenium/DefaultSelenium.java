@@ -1,7 +1,7 @@
 package com.thoughtworks.selenium;
 
-import com.googlecode.webdriver.WebDriver;
-import com.googlecode.webdriver.selenium.WebDriverBackedSelenium;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverBackedSelenium;
 
 public class DefaultSelenium extends WebDriverBackedSelenium implements Selenium {
     private final String browserName;
@@ -13,15 +13,15 @@ public class DefaultSelenium extends WebDriverBackedSelenium implements Selenium
 
     private static WebDriver getDriver(String browserName) {
         if (browserName.indexOf("firefox") != -1 || browserName.indexOf("chrome") != -1) {
-            return instantiate("com.googlecode.webdriver.firefox.FirefoxDriver");
+            return instantiate("org.openqa.selenium.firefox.FirefoxDriver");
             } else if (browserName.indexOf("htmlunit") != -1) {
-            return instantiate("com.googlecode.webdriver.htmlunit.HtmlUnitDriver");
+            return instantiate("org.openqa.selenium.htmlunit.HtmlUnitDriver");
         } else if (browserName.indexOf("iexplore") != -1) {
-            return instantiate("com.googlecode.webdriver.ie.InternetExplorerDriver");
+            return instantiate("org.openqa.selenium.ie.InternetExplorerDriver");
         } else if (browserName.indexOf("htmlunit") != -1) {
-            return instantiate("com.googlecode.webdriver.htmlunit.HtmlUnitDriver");
+            return instantiate("org.openqa.selenium.htmlunit.HtmlUnitDriver");
         } else if (browserName.indexOf("safari") != -1) {
-            return instantiate("com.googlecode.webdriver.safari.SafariDriver");
+            return instantiate("org.openqa.selenium.safari.SafariDriver");
         } else {
             throw new RuntimeException("Unsupported browser version: " + browserName);
         }

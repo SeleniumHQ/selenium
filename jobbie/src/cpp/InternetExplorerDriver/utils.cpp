@@ -23,7 +23,7 @@ void throwException(JNIEnv *env, const char* className, const char *message)
 
 void throwNoSuchElementException(JNIEnv *env, const char *message)
 {
-	throwException(env, "com/googlecode/webdriver/NoSuchElementException", message);
+	throwException(env, "org/openqa/selenium/NoSuchElementException", message);
 }
 
 void throwRunTimeException(JNIEnv *env, const char *message)
@@ -43,7 +43,7 @@ void startCom()
 
 jobject newJavaInternetExplorerDriver(JNIEnv* env, InternetExplorerDriver* driver) 
 {
-	jclass clazz = env->FindClass("com/googlecode/webdriver/ie/InternetExplorerDriver");
+	jclass clazz = env->FindClass("org/openqa/selenium/ie/InternetExplorerDriver");
 	jmethodID cId = env->GetMethodID(clazz, "<init>", "(J)V");
 
 	return env->NewObject(clazz, cId, (jlong) driver);

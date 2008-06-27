@@ -10,7 +10,7 @@ import org.openqa.selenium.How;
 /**
  * Used to mark a field on a Page Object to indicate an alternative mechanism
  * for locating the element. Used in conjunction with
- * {@link org.openqa.selenium.support.PageFactory#proxyElement(com.googlecode.webdriver.WebDriver, Object, java.lang.reflect.Field)}
+ * {@link org.openqa.selenium.support.PageFactory#proxyElement(org.openqa.selenium.WebDriver, Object, java.lang.reflect.Field)}
  * this allows users to quickly and easily create PageObjects
  */
 @Retention(RetentionPolicy.RUNTIME)

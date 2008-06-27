@@ -1,4 +1,4 @@
-package com.googlecode.webdriver.selenium.internal;
+package org.openqa.selenium.internal;
 
 import junit.framework.TestCase;
 
