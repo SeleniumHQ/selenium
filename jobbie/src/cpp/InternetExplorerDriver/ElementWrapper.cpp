@@ -343,6 +343,11 @@ void ElementWrapper::sendKeys(const std::wstring& newValue)
 			scanCode = keyCode;
 			c = keyCode;
 			extended = true;
+		} else if (k == 0xE006) {
+			keyCode = VK_DELETE;
+			scanCode = keyCode;
+			c = keyCode;
+			extended = true;
 		} else if (c == L'\n') {
 			keyCode = VK_RETURN;
 			scanCode = keyCode;

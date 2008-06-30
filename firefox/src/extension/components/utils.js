@@ -179,6 +179,12 @@ Utils.type = function(context, element, text) {
         } else if (c == '\uE003') {
             keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_RIGHT;
             character = keyCode;
+        } else if (c == '\uE005') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_BACK_SPACE;
+            character = keyCode;
+        } else if (c == '\uE006') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_DELETE;
+            character = keyCode;
         } else if (c == "\n") {
             keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_RETURN;
             character = keyCode;
