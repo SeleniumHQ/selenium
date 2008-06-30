@@ -74,6 +74,34 @@ FirefoxDriver.prototype.close = function(respond) {
     respond.send();
 }
 
+FirefoxDriver.prototype.executeScript = function(respond, script) {
+	var doc = Utils.getDocument(this.context);
+
+        var window = Utils.getBrowser(this.context).contentWindow;
+
+        script = "(function(){" + script + "})();"
+	try {
+                var window = window;
+                var document = doc;
+                var result = eval(script);
+
+		// Sophisticated.
+		if (result['tagName']) {
+		  respond.setField('resultType', "ELEMENT");
+                  respond.response = Utils.addToKnownElements(result, this.context);
+                } else {
+		  respond.setField('resultType', "OTHER");
+                  respond.response = result;
+                }
+
+
+        } catch (e) {
+		respond.isError = true;
+		respond.response = e;
+	}
+	respond.send();
+};
+
 FirefoxDriver.prototype.getCurrentUrl = function(respond) {
     respond.context = this.context;
     respond.response = "" + Utils.getBrowser(this.context).contentWindow.location;

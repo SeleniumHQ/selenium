@@ -21,6 +21,72 @@ InternetExplorerDriver* getIe(JNIEnv *env, jobject obj)
 	return (InternetExplorerDriver *) value;
 }
 
+JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_doExecuteScript
+  (JNIEnv *env, jobject obj, jstring script)
+{
+	InternetExplorerDriver* wrapper = getIe(env, obj);
+
+	const wchar_t* converted = (wchar_t *)env->GetStringChars(script, 0);
+	VARIANT result;
+	VariantInit(&result);
+	wrapper->executeScript(converted, &result);
+	env->ReleaseStringChars(script, (jchar*) converted);
+
+	if (result.vt == VT_BSTR) {
+		return wstring2jstring(env, bstr2wstring(result.bstrVal));
+	} else if (result.vt == VT_DISPATCH) {
+		// Attempt to create a new webelement
+		CComQIPtr<IHTMLDOMNode> node(result.pdispVal);
+		if (!node) {
+			cerr << "Cannot convert response to node. Attempting to convert to string" << endl;
+			return wstring2jstring(env, variant2wchar(result));
+		}
+
+		ElementWrapper* element = new ElementWrapper(wrapper, node);
+
+		jclass clazz = env->FindClass("org/openqa/selenium/ie/InternetExplorerElement");
+		jmethodID cId = env->GetMethodID(clazz, "<init>", "(J)V");
+
+		return env->NewObject(clazz, cId, (jlong) element);
+	} else if (result.vt == VT_BOOL) {
+		jclass clazz = env->FindClass("java/lang/Boolean");
+		jmethodID cId = env->GetMethodID(clazz, "<init>", "(Z)V");
+
+		return env->NewObject(clazz, cId, (jboolean) (result.boolVal == VARIANT_TRUE));
+	} else if (result.vt == VT_I4) {
+		jclass clazz = env->FindClass("java/lang/Long");
+		jmethodID cId = env->GetMethodID(clazz, "<init>", "(J)V");
+		return env->NewObject(clazz, cId, (jlong) result.lVal);
+	} else if (result.vt == VT_I8) {
+		jclass clazz = env->FindClass("java/lang/Long");
+		jmethodID cId = env->GetMethodID(clazz, "<init>", "(J)V");
+		return env->NewObject(clazz, cId, (jlong) result.dblVal);
+	} else if (result.vt == VT_USERDEFINED) {
+		jclass newExcCls;
+		env->ExceptionDescribe();
+		env->ExceptionClear();
+		newExcCls = env->FindClass("java/lang/RuntimeException");
+		jmethodID cId = env->GetMethodID(newExcCls, "<init>", "(Ljava/lang/String;)V");
+
+		jstring message = wstring2jstring(env, bstr2wstring(result.bstrVal));
+
+		jobject exception;
+		if (message) {
+			exception = env->NewObject(newExcCls, cId, message);
+		} else {
+			cout << "Falling back" << endl;
+			exception = env->NewObject(newExcCls, cId, (jstring) "Cannot extract cause of error");
+		}
+
+		env->Throw((jthrowable) exception);
+		return NULL;
+	}
+
+	cerr << "Unknown variant type. Will attempt to coerce to string: " << result.vt << endl;
+
+	return wstring2jstring(env, variant2wchar(result));
+}
+
 JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_close
 (JNIEnv *env, jobject obj) 
 {

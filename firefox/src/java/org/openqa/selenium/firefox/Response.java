@@ -1,10 +1,12 @@
 package org.openqa.selenium.firefox;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Constructor;
 
 public class Response {
+	private final JSONObject result;
     private final String methodName;
     private final Context context;
     private final String responseText;
@@ -12,7 +14,7 @@ public class Response {
 
     public Response(String json) {
         try {
-            JSONObject result = new JSONObject(json.trim());
+            result = new JSONObject(json.trim());
 
             methodName = (String) result.get("commandName");
             String contextAsString = (String) result.get("context");
@@ -42,6 +44,18 @@ public class Response {
 
     public boolean isError() {
         return isError;
+    }
+
+  public String toString() {
+    return result.toString();
+  }
+
+  public Object getExtraResult(String fieldName) {
+    	try {
+			return result.get(fieldName);
+		} catch (JSONException e) {
+			throw new RuntimeException(e);
+		}
     }
 
     public void ifNecessaryThrow(Class<? extends RuntimeException> exceptionClass) {

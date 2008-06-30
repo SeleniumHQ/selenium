@@ -62,4 +62,11 @@ public abstract class AbstractWebDriverEventListener implements WebDriverEventLi
         // Do nothing.
     }
 
+    public void beforeScript(String script, WebDriver driver) {
+        // Do nothing
+    }
+
+    public void afterScript(String script, WebDriver driver) {
+        // Do nothing
+    }
 }

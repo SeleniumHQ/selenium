@@ -879,8 +879,10 @@ void InternetExplorerDriver::executeScript(const wchar_t *script, VARIANT *resul
 		  wcerr << "Exception message was: " << exception.bstrDescription << endl;
 	  }
 	  
-	  if (result)
-		  result->vt = VT_EMPTY;
+	  if (result) {
+		  result->vt = VT_USERDEFINED;
+		  result->bstrVal = exception.bstrDescription;
+	  }
 	}
 
 	if (added) {

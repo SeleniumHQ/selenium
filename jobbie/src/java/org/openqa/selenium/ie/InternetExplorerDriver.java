@@ -68,6 +68,14 @@ public class InternetExplorerDriver implements WebDriver, SearchContext,
     	close();  // Not a good implementation, but better than nothing
     }
 
+    private native Object doExecuteScript(String script);
+    public Object executeScript(String script) {
+    	script = script.replace("\"", "\\\"");
+    	script = "(function(){" + script + "})();";
+    	return doExecuteScript(script);
+    }
+    
+    
     public native void get(String url);
 
     public native String getCurrentUrl();

@@ -373,8 +373,6 @@ Utils.getElementLocation = function(element, context) {
     var x = element.offsetLeft;
     var y = element.offsetTop;
     var elementParent = element.offsetParent;
-  dump("1: "+x + ", " + y + "\n");
-  dump("style: "+element.style.left + ", " + element.style.top + "\n");
     while (elementParent != null) {
         if(elementParent.tagName == "TABLE") {
             var parentBorder = parseInt(elementParent.border);
@@ -407,7 +405,6 @@ Utils.getElementLocation = function(element, context) {
     var location = new Object();
     location.x = x;
     location.y = y;
-    dump("2: "+x + ", " + y + "\n");
     return location;
 };
 

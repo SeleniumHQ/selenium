@@ -95,6 +95,8 @@ SocketListener.prototype.executeCommand = function() {
             stream.close();
         },
 
+        setField : function(name, value) { sendBack[name] = value; },
+
         set commandName(name) { sendBack.commandName = name; },
         get commandName()     { return sendBack.commandName; },
         set elementId(id)     { sendBack.elementId = id; },

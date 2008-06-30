@@ -269,6 +269,24 @@ public class FirefoxDriver implements WebDriver, FindsById, FindsByClassName, Fi
         extension.quit();
     }
 
+    public Object executeScript(String script) {
+        // Escape the quote marks
+        script = script.replaceAll("\"", "\\\"");
+        Command command = new Command(context, null, "executeScript", script);
+    	Response response = extension.sendMessageAndWaitForResponse(RuntimeException.class, command);
+        context = response.getContext();
+        response.ifNecessaryThrow(RuntimeException.class);
+    	
+        String resultType = (String) response.getExtraResult("resultType");
+        if ("ELEMENT".equals(resultType))
+        	return new FirefoxWebElement(this, response.getResponseText());
+
+        Object result = response.getExtraResult("response");
+        if (result instanceof Integer)
+          return new Long((String) response.getResponseText());
+        return result;
+    }
+    
     public Options manage() {
         return new FirefoxOptions();
     }

@@ -19,8 +19,8 @@ public class SingleTestSuite {
               .usingDriver(IE)
               .keepDriverInstance()
               .includeJavascriptTests()
-              .onlyRun("ElementFindingTest")
-//              .method("testShouldReturnEmptyAttributeValuesWhenPresentAndTheValueIsActuallyEmpty")
+              .onlyRun("JavascriptEnabledDriverTest")
+              .method("testShouldThrowAnExceptionWhenTheJavascriptIsBad")
 //                        .leaveRunningAfterTest()
               .create();
 	}

@@ -90,4 +90,15 @@ public interface WebDriverEventListener {
      */
     void afterChangeValueOf(WebElement element, WebDriver driver);
 
+  /**
+   * Called before {@link WebDriver#executeScript(String)}
+   */
+    void beforeScript(String script, WebDriver driver);
+
+  /**
+   * Called after {@link WebDriver#executeScript(String)}. Not called
+   * if an exception is thrown
+   */
+    void afterScript(String script, WebDriver driver);
+
 }

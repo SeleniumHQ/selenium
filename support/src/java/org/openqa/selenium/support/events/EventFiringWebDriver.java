@@ -106,6 +106,13 @@ public class EventFiringWebDriver implements WebDriver {
         driver.quit();
     }
 
+    public Object executeScript(String script) {
+        dispatcher.beforeScript(script, driver);
+        Object result = driver.executeScript(script);
+        dispatcher.afterScript(script, driver);
+        return result;
+    }
+
     public TargetLocator switchTo() {
         return new EventFiringTargetLocator(driver.switchTo());
     }
