@@ -9,6 +9,7 @@ import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.Speed;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.firefox.internal.ExtensionConnectionFactory;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.internal.FindsById;
@@ -50,7 +51,8 @@ import java.util.Set;
  * When the driver starts, it will make a copy of the profile it is using, rather than using that profile directly.
  * This allows multiple instances of firefox to be started.
  */
-public class FirefoxDriver implements WebDriver, FindsById, FindsByClassName, FindsByLinkText, FindsByXPath, SearchContext {
+public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecutor,
+        FindsById, FindsByClassName, FindsByLinkText, FindsByXPath {
 	public static final String DEFAULT_PROFILE = "WebDriver";
 	public static final int DEFAULT_PORT = 7055;
 

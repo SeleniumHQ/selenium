@@ -810,14 +810,14 @@
   <component name="ProjectRunConfigurationManager">
     <configuration default="false" name="SingleTestSuite" type="JUnit" factoryName="JUnit" enabled="false" merge="false">
       <pattern value="com.googlecode.webdriver.*" />
-      <module name="firefox" />
+      <module name="safari" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" value="" />
       <option name="PACKAGE_NAME" value="com.googlecode.webdriver" />
       <option name="MAIN_CLASS_NAME" value="com.googlecode.webdriver.SingleTestSuite" />
       <option name="METHOD_NAME" value="" />
       <option name="TEST_OBJECT" value="class" />
-      <option name="VM_PARAMETERS" value="" />
+      <option name="VM_PARAMETERS" value="-Dwebdriver.firefox.useExisting=true" />
       <option name="PARAMETERS" value="" />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
       <option name="ADDITIONAL_CLASS_PATH" />

@@ -1,13 +1,18 @@
 package org.openqa.selenium.support.events;
 
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Cookie;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Speed;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Set;
-import java.lang.reflect.Proxy;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * A wrapper around an arbitrary {@link WebDriver} instance
@@ -16,7 +21,7 @@ import java.lang.reflect.Method;
  *
  * @author Michael Tamm
  */
-public class EventFiringWebDriver implements WebDriver {
+public class EventFiringWebDriver implements WebDriver, JavascriptExecutor {
 
     private final WebDriver driver;
     private final List<WebDriverEventListener> eventListeners = new ArrayList<WebDriverEventListener>();
@@ -90,8 +95,7 @@ public class EventFiringWebDriver implements WebDriver {
         dispatcher.beforeFindBy(by, null, driver);
         WebElement temp = driver.findElement(by);
         dispatcher.afterFindBy(by, null, driver);
-        EventFiringWebElement result = new EventFiringWebElement(temp);
-        return result;
+        return new EventFiringWebElement(temp);
     }
 
     public String getPageSource() {
@@ -107,10 +111,13 @@ public class EventFiringWebDriver implements WebDriver {
     }
 
     public Object executeScript(String script) {
-        dispatcher.beforeScript(script, driver);
-        Object result = driver.executeScript(script);
-        dispatcher.afterScript(script, driver);
-        return result;
+        if (driver instanceof JavascriptExecutor) {
+            dispatcher.beforeScript(script, driver);
+            Object result = ((JavascriptExecutor) driver).executeScript(script);
+            dispatcher.afterScript(script, driver);
+            return result;
+        }
+        throw new UnsupportedOperationException("Underlying driver instance does not support executing javascript");
     }
 
     public TargetLocator switchTo() {

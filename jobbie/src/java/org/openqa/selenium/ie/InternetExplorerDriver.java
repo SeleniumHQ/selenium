@@ -36,6 +36,7 @@ import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.Speed;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
@@ -43,8 +44,8 @@ import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.internal.ReturnedCookie;
 
-public class InternetExplorerDriver implements WebDriver, SearchContext,
-	FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByXPath {
+public class InternetExplorerDriver implements WebDriver, SearchContext, JavascriptExecutor,
+        FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByXPath {
     private long iePointer; // Used by the native code to keep track of the IE instance
     private static boolean comStarted;
 

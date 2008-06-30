@@ -188,10 +188,6 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText,
     	currentWindow = null;
     }
 
-  public Object executeScript(String script) {
-    throw new UnsupportedOperationException("executeScript");
-  }
-
   public TargetLocator switchTo() {
         return new HtmlUnitTargetLocator();
     }
