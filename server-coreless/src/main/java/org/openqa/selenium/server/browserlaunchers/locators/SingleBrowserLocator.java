@@ -88,7 +88,7 @@ public abstract class SingleBrowserLocator implements BrowserLocator {
     }
 
     protected String couldNotFindAnyInstallationMessage() {
-        return browserName() + "couldn't be found in the path!\n" +
+        return browserName() + " could not be found in the path!\n" +
                 "Please add the directory containing '" + humanFriendlyLauncherFileNames() + "' to your PATH environment\n" +
                 "variable, or explicitly specify a path to " + browserName() + " like this:\n" +
                 "*" + seleniumBrowserName() + fakeLauncherPath();

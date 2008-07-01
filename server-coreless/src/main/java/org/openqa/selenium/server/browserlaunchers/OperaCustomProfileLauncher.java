@@ -19,7 +19,6 @@ package org.openqa.selenium.server.browserlaunchers;
 import org.apache.commons.logging.Log;
 import org.mortbay.log.LogFactory;
 import org.openqa.selenium.server.RemoteControlConfiguration;
-import org.openqa.selenium.server.browserlaunchers.SystemUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -96,7 +95,7 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
         if (WindowsUtils.thisIsWindows()) {
             File operaEXE = AsyncExecute.whichExec("opera.exe");
             if (operaEXE != null) return operaEXE.getAbsolutePath();
-            throw new RuntimeException("Opera couldn't be found in the path!\n" +
+            throw new RuntimeException("Opera could not be found in the path!\n" +
                     "Please add the directory containing opera.exe to your PATH environment\n" +
                     "variable, or explicitly specify a path to Opera like this:\n" +
                     "*opera c:\\blah\\opera.exe");
@@ -106,7 +105,7 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
         if (operaBin != null) {
             return operaBin.getAbsolutePath();
         }
-        throw new RuntimeException("Opera couldn't be found in the path!\n" +
+        throw new RuntimeException("Opera could not be found in the path!\n" +
                 "Please add the directory containing 'opera' to your PATH environment\n" +
                 "variable, or explicitly specify a path to Opera like this:\n" +
                 "*opera /blah/blah/opera");
