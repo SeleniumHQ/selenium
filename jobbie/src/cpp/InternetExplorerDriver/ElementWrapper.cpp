@@ -11,6 +11,59 @@
 
 using namespace std;
 
+class KeyPressListener : public IDispatch {
+public:
+        KeyPressListener() :  references(0), pressed(false) {}
+
+        STDMETHODIMP QueryInterface(REFIID riid, void **object) {
+                *object = NULL;
+                if ((riid == IID_IUnknown) || (riid == IID_IDispatch)) {
+                        static_cast<IUnknown*>(*object = this)->AddRef();
+                        return S_OK;
+                } else {
+                        return E_NOINTERFACE;
+                }
+        }
+
+        STDMETHODIMP_(ULONG) AddRef() {
+                ++references;
+                return references;
+        }       
+
+        STDMETHODIMP_(ULONG) Release() {
+                --references;
+                if (!references) {
+                        delete this;
+                        return 0;
+                }
+
+                return references;
+        }
+
+        STDMETHOD(GetTypeInfoCount)(unsigned int FAR* pctinfo) { return E_NOTIMPL; }
+        STDMETHOD(GetTypeInfo)(unsigned int iTInfo, LCID  lcid, ITypeInfo FAR* FAR*  ppTInfo) { return E_NOTIMPL; }
+        STDMETHOD(GetIDsOfNames)(REFIID riid, OLECHAR FAR* FAR* rgszNames, unsigned int cNames, LCID lcid, DISPID FAR* rgDispId) { return S_OK; }
+
+        STDMETHOD(Invoke)(DISPID dispIdMember, REFIID riid, LCID lcid,
+                WORD wFlags, DISPPARAMS* pDispParams, VARIANT* pVarResult,
+                EXCEPINFO * pExcepInfo, UINT * puArgErr)
+        {
+                pressed = true;
+
+                return S_OK;
+        }
+
+        volatile bool isPressed() { return pressed; }
+        void reset() { pressed = false; }
+
+        ~KeyPressListener() {}
+
+private:
+        int  references;
+        bool pressed;
+};
+
+
 ElementWrapper::ElementWrapper(InternetExplorerDriver* ie, IHTMLDOMNode* node)
 	: element(node)
 {
@@ -170,7 +223,7 @@ static FARPROC hookProc = 0;
 __declspec(dllexport) LRESULT CALLBACK GetMessageProc(int nCode, WPARAM wParam, LPARAM lParam);
 }
 
-void backgroundKeyPress(HWND hwnd, HKL layout, WORD keyCode, UINT scanCode, bool extended, bool printable, int totalPause)
+void backgroundKeyPress(HWND hwnd, HKL layout, WORD keyCode, UINT scanCode, bool extended, bool printable, int totalPause, KeyPressListener* listener)
 {
 	int pause = totalPause / 3;
 
@@ -198,6 +251,9 @@ void backgroundKeyPress(HWND hwnd, HKL layout, WORD keyCode, UINT scanCode, bool
 	keyboardState[keyCode] |= 0x80;
 	SetKeyboardState(keyboardState);
 
+	pressed = false;
+	listener->reset();
+
 	if (!PostMessage(hwnd, WM_KEYDOWN, keyCode, lparam))
 		cerr << "Key down failed: " << GetLastError << endl;
 
@@ -205,10 +261,9 @@ void backgroundKeyPress(HWND hwnd, HKL layout, WORD keyCode, UINT scanCode, bool
 	// when IE processes the keydown message. Put a time out,
 	// just in case we've not got "printable" right. :)
 	clock_t maxWait = clock() + 2000; 
-	while (clock() < maxWait && !pressed && printable) {
+	while (clock() < maxWait && (!pressed && !listener->isPressed()) && printable) {
 		wait(pause);
 	}
-	pressed = false;
 
 	keyboardState[keyCode] &= ~0x80;
 	SetKeyboardState(keyboardState);
@@ -298,6 +353,16 @@ void ElementWrapper::sendKeys(const std::wstring& newValue)
 	BYTE originalKeyboardState[256] = {0};
 	GetKeyboardState((LPBYTE) &originalKeyboardState);
 
+	CComQIPtr<IHTMLElement2> e2(element);
+    VARIANT_BOOL attached;
+
+	CComPtr<KeyPressListener> listener = new KeyPressListener();
+    CComQIPtr<IDispatch> listenerDispatch(listener);
+    e2->attachEvent(L"onkeypress", listenerDispatch, &attached);
+
+	if (attached == VARIANT_FALSE)
+		cerr << "Unable to attach listener" << endl;
+
 	for (const wchar_t *p = d.text; *p; ++p)
 	{
 		wchar_t c = *p;
@@ -359,8 +424,11 @@ void ElementWrapper::sendKeys(const std::wstring& newValue)
 			printable = true;
 		}
 
-		backgroundKeyPress(ieWindow, layout, keyCode, scanCode, extended, printable, ie->getSpeed());
+		backgroundKeyPress(ieWindow, layout, keyCode, scanCode, extended, printable, ie->getSpeed(), listener);
 	}
+
+	if (attached == VARIANT_TRUE)
+		e2->detachEvent(L"onkeypress", listenerDispatch);
 
 	SetKeyboardState((LPBYTE) &originalKeyboardState);
 
