@@ -103,7 +103,15 @@ public class AsyncExecute extends Execute {
         project.log("spawned process " + process.toString(), Project.MSG_VERBOSE);
         return process;
     }
-    
+
+    @Override
+    public int execute() throws IOException {
+        if (!environmentBuilder.isEmpty()) {
+            setActualExecuteEnvironment();
+        }
+        return super.execute();
+    }
+
     /** Is this process still running ? */
     public static boolean isAlive(Process p) {
         try {
