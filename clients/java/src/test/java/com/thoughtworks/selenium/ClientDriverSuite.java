@@ -48,11 +48,11 @@ public class ClientDriverSuite extends TestCase {
      * @return a test suite containing tests to run
      */
     public static Test suite() {
-        boolean isProxyInjectionMode = System.getProperty("selenium.proxyInjectionMode") != null
-        && System.getProperty("selenium.proxyInjectionMode").equals("true");
+        final boolean isProxyInjectionMode;
+        final String forcedBrowserMode;
 
-        String forcedBrowserMode = System.getProperty("selenium.forcedBrowserMode");
-        
+        isProxyInjectionMode = "true".equals(System.getProperty("selenium.proxyInjectionMode"));
+        forcedBrowserMode = System.getProperty("selenium.forcedBrowserMode");
         TestSuite supersuite = new TestSuite(ClientDriverSuite.class.getName());
         TestSuite suite = generateSuite(isProxyInjectionMode, forcedBrowserMode);
         // Left here to be able to run non proxy injection mode tests in a PI mode server 
