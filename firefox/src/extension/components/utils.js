@@ -161,10 +161,12 @@ Utils.type = function(context, element, text) {
         value = element.getAttribute("value");
     }
 
+    var upper = text.toUpperCase();
+
     for (var i = 0; i < text.length; i++) {
         var character = text.charCodeAt(i);
         var c = text.charAt(i);
-        var keyCode = character;
+        var keyCode = upper.charCodeAt(i);
         value += c;
 
         if (c == '\uE002') {
