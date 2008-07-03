@@ -2727,11 +2727,11 @@ Selenium.prototype.doCaptureEntirePageScreenshot = function(filename, kwargs) {
     LOG.debug('computed dimensions');
     
     var originalBackground = doc.style.background;
+    
     if (kwargs) {
-        // TODO - replace with parse_kwargs() when it makes it into Core
-        var matches = /background\s*=([^,]+)/.exec(kwargs);
-        if (matches) {
-            doc.style.background = matches[1].trim();
+        var args = parse_kwargs(kwargs);
+        if (args.background) {
+            doc.style.background = args.background;
         }
     }
     
@@ -2757,6 +2757,93 @@ Selenium.prototype.doCaptureEntirePageScreenshot = function(filename, kwargs) {
         fileOutputStream);
     fileOutputStream.close();
     LOG.debug('saved to file');
+};
+
+/**
+ * Executes a command rollup, which is a set of commands with a unique name,
+ * and optionally arguments that control the generation of the set of commands.
+ * If any one of the rolled-up commands fails, the rollup is considered to have
+ * failed. Rollups may also contain nested rollups.
+ *
+ * @param rollupName  the name of the rollup command
+ * @param kwargs      keyword arguments string that influences how the rollup
+ *                    expands into commands
+ */
+Selenium.prototype.doRollup = function(rollupName, kwargs) {
+    // we have to temporarily hijack the commandStarted, nextCommand(),
+    // commandComplete(), and commandError() methods of the TestLoop object.
+    // When the expanded rollup commands are done executing (or an error has
+    // occurred), we'll restore them to their original values.
+    var loop = currentTest || htmlTestRunner.currentTest;
+    var backupManager = {
+        backup: function() {
+            for (var item in this.data) {
+                this.data[item] = loop[item];
+            }
+        }
+        , restore: function() {
+            for (var item in this.data) {
+                loop[item] = this.data[item];
+            }
+        }
+        , data: {
+            requiresCallBack: null
+            , commandStarted: null
+            , nextCommand: null
+            , commandComplete: null
+            , commandError: null
+            , pendingRollupCommands: null
+            , rollupFailed: null
+            , rollupFailedMessage: null
+        }
+    };
+    
+    var rule = RollupManager.getInstance().getRollupRule(rollupName);
+    var expandedCommands = rule.getExpandedCommands(kwargs);
+    
+    // hold your breath ...
+    try {
+        backupManager.backup();
+        loop.requiresCallBack = false;
+        loop.commandStarted = function() {};
+        loop.nextCommand = function() {
+            if (this.pendingRollupCommands.length == 0) {
+                return null;
+            }
+            var command = this.pendingRollupCommands.shift();
+            return command;
+        };
+        loop.commandComplete = function(result) {
+            if (result.failed) {
+                this.rollupFailed = true;
+                this.rollupFailureMessages.push(result.failureMessage);
+            }
+            
+            if (this.pendingRollupCommands.length == 0) {
+                result = {
+                    failed: this.rollupFailed
+                    , failureMessage: this.rollupFailureMessages.join('; ')
+                };
+                LOG.info('Rollup execution complete: ' + (result.failed
+                    ? 'failed! (see error messages below)' : 'ok'));
+                backupManager.restore();
+                this.commandComplete(result);
+            }
+        };
+        loop.commandError = function(errorMessage) {
+            LOG.info('Rollup execution complete: bombed!');
+            backupManager.restore();
+            this.commandError(errorMessage);
+        };
+        
+        loop.pendingRollupCommands = expandedCommands;
+        loop.rollupFailed = false;
+        loop.rollupFailureMessages = [];
+    }
+    catch (e) {
+        LOG.error('Rollup error: ' + e);
+        backupManager.restore();
+    }
 };
 
 /**
@@ -2892,3 +2979,4 @@ OptionLocatorFactory.prototype.OptionLocatorById = function(id) {
         Assert.matches(this.id, selectedId)
     };
 };
+

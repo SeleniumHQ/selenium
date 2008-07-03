@@ -947,3 +947,603 @@ function safeScrollIntoView(element) {
     // scrollIntoView (like Konqueror)
 }
 
+/**
+ * Returns true iff the current environment is the IDE.
+ */
+function is_IDE()
+{
+    return (typeof(SeleniumIDE) != 'undefined');
+}
+
+/**
+ * Logs a message if the Logger exists, and does nothing if it doesn't exist.
+ *
+ * @param level  the level to log at
+ * @param msg    the message to log
+ */
+function safe_log(level, msg)
+{
+    try {
+        LOG[level](msg);
+    }
+    catch (e) {
+        // couldn't log!
+    }
+}
+
+/**
+ * Displays a warning message to the user appropriate to the context under
+ * which the issue is encountered. This is primarily used to avoid popping up
+ * alert dialogs that might pause an automated test suite.
+ *
+ * @param msg  the warning message to display
+ */
+function safe_alert(msg)
+{
+    if (is_IDE()) {
+        alert(msg);
+    }
+}
+
+//******************************************************************************
+// Locator evaluation support
+
+/**
+ * Parses a Selenium locator, returning its type and the unprefixed locator
+ * string as an object.
+ *
+ * @param locator  the locator to parse
+ */
+function parse_locator(locator)
+{
+    var result = locator.match(/^([A-Za-z]+)=(.+)/);
+    if (result) {
+        return { type: result[1].toLowerCase(), string: result[2] };
+    }
+    return { type: 'implicit', string: locator };
+}
+
+/**
+ * Evaluates an xpath on a document, and returns a list containing nodes in the
+ * resulting nodeset. The browserbot xpath methods are now backed by this
+ * function. A context node may optionally be provided, and the xpath will be
+ * evaluated from that context.
+ *
+ * @param xpath       the xpath to evaluate
+ * @param inDocument  the document in which to evaluate the xpath.
+ * @param opts        (optional) An object containing various flags that can
+ *                    modify how the xpath is evaluated. Here's a listing of
+ *                    the meaningful keys:
+ *
+ *                     contextNode: 
+ *                       the context node from which to evaluate the xpath. If
+ *                       unspecified, the context will be the root document
+ *                       element.
+ *
+ *                     namespaceResolver:
+ *                       the namespace resolver function. Defaults to null.
+ *
+ *                     xpathLibrary:
+ *                       the javascript library to use for XPath. "ajaxslt" is
+ *                       the default. "javascript-xpath" is newer and faster,
+ *                       but needs more testing.
+ *
+ *                     allowNativeXpath:
+ *                       whether to allow native evaluate(). Defaults to true.
+ *
+ *                     ignoreAttributesWithoutValue:
+ *                       whether it's ok to ignore attributes without value
+ *                       when evaluating the xpath. This can greatly improve
+ *                       performance in IE; however, if your xpaths depend on
+ *                       such attributes, you can't ignore them! Defaults to
+ *                       true.
+ *
+ *                     returnOnFirstMatch:
+ *                       whether to optimize the XPath evaluation to only
+ *                       return the first match. The match, if any, will still
+ *                       be returned in a list. Defaults to false.
+ */
+function eval_xpath(xpath, inDocument, opts)
+{
+    if (!opts) {
+        var opts = {};
+    }
+    var contextNode = opts.contextNode
+        ? opts.contextNode : inDocument;
+    var namespaceResolver = opts.namespaceResolver
+        ? opts.namespaceResolver : null;
+    var xpathLibrary = opts.xpathLibrary
+        ? opts.xpathLibrary : null;
+    var allowNativeXpath = (opts.allowNativeXpath != undefined)
+        ? opts.allowNativeXpath : true;
+    var ignoreAttributesWithoutValue = (opts.ignoreAttributesWithoutValue != undefined)
+        ? opts.ignoreAttributesWithoutValue : true;
+    var returnOnFirstMatch = (opts.returnOnFirstMatch != undefined)
+        ? opts.returnOnFirstMatch : false;
+
+    // Trim any trailing "/": not valid xpath, and remains from attribute
+    // locator.
+    if (xpath.charAt(xpath.length - 1) == '/') {
+        xpath = xpath.slice(0, -1);
+    }
+    // HUGE hack - remove namespace from xpath for IE
+    if (browserVersion && browserVersion.isIE) {
+        xpath = xpath.replace(/x:/g, '')
+    }
+
+    // When using the new and faster javascript-xpath library,
+    // we'll use the TestRunner's document object, not the App-Under-Test's document.
+    // The new library only modifies the TestRunner document with the new 
+    // functionality.
+    if (xpathLibrary == 'javascript-xpath') {
+        documentForXpath = document;
+    } else {
+        documentForXpath = inDocument;
+    }
+    var results = [];
+    
+    // Use document.evaluate() if it's available
+    if (allowNativeXpath && documentForXpath.evaluate) {
+        try {
+            // Regarding use of the second argument to document.evaluate():
+            // http://groups.google.com/group/comp.lang.javascript/browse_thread/thread/a59ce20639c74ba1/a9d9f53e88e5ebb5
+            var xpathResult = documentForXpath
+                .evaluate((contextNode == inDocument ? xpath : '.' + xpath),
+                    contextNode, namespaceResolver, 0, null);
+        }
+        catch (e) {
+            throw new SeleniumError("Invalid xpath: " + extractExceptionMessage(e));
+        }
+        finally{
+            if (xpathResult == null) {
+                // If the result is null, we should still throw an Error.
+                throw new SeleniumError("Invalid xpath: " + xpath); 
+            }
+        }
+        var result = xpathResult.iterateNext();
+        while (result) {
+            results.push(result);
+            result = xpathResult.iterateNext();
+        }
+        return results;
+    }
+
+    // If not, fall back to slower JavaScript implementation
+    // DGF set xpathdebug = true (using getEval, if you like) to turn on JS XPath debugging
+    //xpathdebug = true;
+    var context;
+    if (contextNode == inDocument) {
+        context = new ExprContext(inDocument);
+    }
+    else {
+        // provide false values to get the default constructor values
+        context = new ExprContext(contextNode, false, false,
+            contextNode.parentNode);
+    }
+    context.setCaseInsensitive(true);
+    context.setIgnoreAttributesWithoutValue(ignoreAttributesWithoutValue);
+    context.setReturnOnFirstMatch(returnOnFirstMatch);
+    var xpathObj;
+    try {
+        xpathObj = xpathParse(xpath);
+    }
+    catch (e) {
+        throw new SeleniumError("Invalid xpath: " + extractExceptionMessage(e));
+    }
+    var xpathResult = xpathObj.evaluate(context);
+    if (xpathResult && xpathResult.value) {
+        for (var i = 0; i < xpathResult.value.length; ++i) {
+            results.push(xpathResult.value[i]);
+        }
+    }
+    return results;
+}
+
+/**
+ * Returns the full resultset of a CSS selector evaluation.
+ */
+function eval_css(locator, inDocument)
+{
+    return cssQuery(locator, inDocument);
+}
+
+/**
+ * This function duplicates part of BrowserBot.findElement() to open up locator
+ * evaluation on arbitrary documents. It returns a plain old array of located
+ * elements found by using a Selenium locator.
+ * 
+ * Multiple results may be generated for xpath and CSS locators. Even though a
+ * list could potentially be generated for other locator types, such as link,
+ * we don't try for them, because they aren't very expressive location
+ * strategies; if you want a list, use xpath or CSS. Furthermore, strategies
+ * for these locators have been optimized to only return the first result. For
+ * these types of locators, performance is more important than ideal behavior.
+ * 
+ * @param locator          a locator string
+ * @param inDocument       the document in which to apply the locator
+ * @param opt_contextNode  the context within which to evaluate the locator
+ *
+ * @return  a list of result elements
+ */
+function eval_locator(locator, inDocument, opt_contextNode)
+{
+    locator = parse_locator(locator);
+    
+    var pageBot;
+    if (typeof(selenium) != 'undefined' && selenium != undefined) {
+        if (typeof(editor) == 'undefined' || editor.state == 'playing') {
+            safe_log('info', 'Trying [' + locator.type + ']: '
+                + locator.string);
+        }
+        pageBot = selenium.browserbot;
+    }
+    else {
+        if (!UI_GLOBAL.mozillaBrowserBot) {
+            // create a browser bot to evaluate the locator. Hand it the IDE
+            // window as a dummy window, and cache it for future use.
+            UI_GLOBAL.mozillaBrowserBot = new MozillaBrowserBot(window)
+        }
+        pageBot = UI_GLOBAL.mozillaBrowserBot;
+    }
+    
+    var results = [];
+    
+    if (locator.type == 'xpath' || (locator.string.charAt(0) == '/' &&
+        locator.type == 'implicit')) {
+        results = eval_xpath(locator.string, inDocument,
+            { contextNode: opt_contextNode });
+    }
+    else if (locator.type == 'css') {
+        results = eval_css(locator.string, inDocument);
+    }
+    else {
+        var element = pageBot
+            .findElementBy(locator.type, locator.string, inDocument);
+        if (element != null) {
+            results.push(element);
+        }
+    }
+    
+    return results;
+}
+
+//******************************************************************************
+// UI-Element
+
+/**
+ * Escapes the special regular expression characters in a string intended to be
+ * used as a regular expression.
+ *
+ * Based on: http://simonwillison.net/2006/Jan/20/escape/
+ */
+RegExp.escape = (function() {
+    var specials = [
+        '/', '.', '*', '+', '?', '|', '^', '$',
+        '(', ')', '[', ']', '{', '}', '\\'
+    ];
+    
+    var sRE = new RegExp(
+        '(\\' + specials.join('|\\') + ')', 'g'
+    );
+  
+    return function(text) {
+        return text.replace(sRE, '\\$1');
+    }
+})();
+
+/**
+ * Returns true if two arrays are identical, and false otherwise.
+ *
+ * @param a1  the first array, may only contain simple values (strings or
+ *            numbers)
+ * @param a2  the second array, same restricts on data as for a1
+ * @return    true if the arrays are equivalent, false otherwise.
+ */
+function are_equal(a1, a2)
+{
+    if (typeof(a1) != typeof(a2))
+        return false;
+    
+    switch(typeof(a1)) {
+        case 'object':
+            // arrays
+            if (a1.length) {
+                if (a1.length != a2.length)
+                    return false;
+                for (var i = 0; i < a1.length; ++i) {
+                    if (!are_equal(a1[i], a2[i]))
+                        return false
+                }
+            }
+            // associative arrays
+            else {
+                var keys = {};
+                for (var key in a1) {
+                    keys[key] = true;
+                }
+                for (var key in a2) {
+                    keys[key] = true;
+                }
+                for (var key in keys) {
+                    if (!are_equal(a1[key], a2[key]))
+                        return false;
+                }
+            }
+            return true;
+            
+        default:
+            return a1 == a2;
+    }
+}
+
+
+/**
+ * Create a clone of an object and return it. This is a deep copy of everything
+ * but functions, whose references are copied. You shouldn't expect a deep copy
+ * of functions anyway.
+ *
+ * @param orig  the original object to copy
+ * @return      a deep copy of the original object. Any functions attached,
+ *              however, will have their references copied only.
+ */
+function clone(orig) {
+    var copy;
+    switch(typeof(orig)) {
+        case 'object':
+            copy = (orig.length) ? [] : {};
+            for (var attr in orig) {
+                copy[attr] = clone(orig[attr]);
+            }
+            break;
+        default:
+            copy = orig;
+            break;
+    }
+    return copy;
+}
+
+/**
+ * Emulates php's print_r() functionality. Returns a nicely formatted string
+ * representation of an object. Very useful for debugging.
+ *
+ * @param object    the object to dump
+ * @param maxDepth  the maximum depth to recurse into the object. Ellipses will
+ *                  be shown for objects whose depth exceeds the maximum.
+ * @param indent    the string to use for indenting progressively deeper levels
+ *                  of the dump.
+ * @return          a string representing a dump of the object
+ */
+function print_r(object, maxDepth, indent)
+{
+    var parentIndent, attr, str = "";
+    if (arguments.length == 1) {
+        var maxDepth = Number.MAX_VALUE;
+    } else {
+        maxDepth--;
+    }
+    if (arguments.length < 3) {
+        parentIndent = ''
+        var indent = '    ';
+    } else {
+        parentIndent = indent;
+        indent += '    ';
+    }
+
+    switch(typeof(object)) {
+    case 'object':
+        if (object.length != undefined) {
+            if (object.length == 0) {
+                str += "Array ()\r\n";
+            }
+            else {
+                str += "Array (\r\n";
+                for (var i = 0; i < object.length; ++i) {
+                    str += indent + '[' + i + '] => ';
+                    if (maxDepth == 0)
+                        str += "...\r\n";
+                    else
+                        str += print_r(object[i], maxDepth, indent);
+                }
+                str += parentIndent + ")\r\n";
+            }
+        }
+        else {
+            str += "Object (\r\n";
+            for (attr in object) {
+                str += indent + "[" + attr + "] => ";
+                if (maxDepth == 0)
+                    str += "...\r\n";
+                else
+                    str += print_r(object[attr], maxDepth, indent);
+            }
+            str += parentIndent + ")\r\n";
+        }
+        break;
+    case 'boolean':
+        str += (object ? 'true' : 'false') + "\r\n";
+        break;
+    case 'function':
+        str += "Function\r\n";
+        break;
+    default:
+        str += object + "\r\n";
+        break;
+
+    }
+    return str;
+}
+
+/**
+ * Return an array containing all properties of an object. Perl-style.
+ *
+ * @param object  the object whose keys to return
+ * @return        array of object keys, as strings
+ */
+function keys(object)
+{
+    var keys = [];
+    for (var k in object) {
+        keys.push(k);
+    }
+    return keys;
+}
+
+/**
+ * Emulates python's range() built-in. Returns an array of integers, counting
+ * up (or down) from start to end. Note that the range returned is up to, but
+ * NOT INCLUDING, end.
+ *.
+ * @param start  integer from which to start counting. If the end parameter is
+ *               not provided, this value is considered the end and start will
+ *               be zero.
+ * @param end    integer to which to count. If omitted, the function will count
+ *               up from zero to the value of the start parameter. Note that
+ *               the array returned will count up to but will not include this
+ *               value.
+ * @return       an array of consecutive integers. 
+ */
+function range(start, end)
+{
+    if (arguments.length == 1) {
+        var end = start;
+        start = 0;
+    }
+    
+    var r = [];
+    if (start < end) {
+        while (start != end)
+            r.push(start++);
+    }
+    else {
+        while (start != end)
+            r.push(start--);
+    }
+    return r;
+}
+
+/**
+ * Parses a python-style keyword arguments string and returns the pairs in a
+ * new object.
+ *
+ * @param  kwargs  a string representing a set of keyword arguments. It should
+ *                 look like <tt>keyword1=value1, keyword2=value2, ...</tt>
+ * @return         an object mapping strings to strings
+ */
+function parse_kwargs(kwargs)
+{
+    var args = new Object();
+    var pairs = kwargs.split(/,/);
+    for (var i = 0; i < pairs.length;) {
+        if (i > 0 && pairs[i].indexOf('=') == -1) {
+            // the value string contained a comma. Glue the parts back together.
+            pairs[i-1] += ',' + pairs.splice(i, 1)[0];
+        }
+        else {
+            ++i;
+        }
+    }
+    for (var i = 0; i < pairs.length; ++i) {
+        var splits = pairs[i].split(/=/);
+        if (splits.length == 1) {
+            continue;
+        }
+        var key = splits.shift();
+        var value = splits.join('=');
+        args[key.trim()] = value.trim();
+    }
+    return args;
+}
+
+/**
+ * Creates a python-style keyword arguments string from an object.
+ *
+ * @param args        an associative array mapping strings to strings
+ * @param sortedKeys  (optional) a list of keys of the args parameter that
+ *                    specifies the order in which the arguments will appear in
+ *                    the returned kwargs string
+ *
+ * @return            a kwarg string representation of args
+ */
+function to_kwargs(args, sortedKeys)
+{
+    var s = '';
+    if (!sortedKeys) {
+        var sortedKeys = keys(args).sort();
+    }
+    for (var i = 0; i < sortedKeys.length; ++i) {
+        var k = sortedKeys[i];
+        if (args[k] != undefined) {
+            if (s) {
+                s += ', ';
+            }
+            s += k + '=' + args[k];
+        }
+    }
+    return s;
+}
+
+/**
+ * Returns true if a node is an ancestor node of a target node, and false
+ * otherwise.
+ *
+ * @param node    the node being compared to the target node
+ * @param target  the target node
+ * @return        true if node is an ancestor node of target, false otherwise.
+ */
+function is_ancestor(node, target)
+{
+    while (target.parentNode) {
+        target = target.parentNode;
+        if (node == target)
+            return true;
+    }
+    return false;
+}
+
+//******************************************************************************
+// parseUri 1.2.1
+// MIT License
+
+/*
+Copyright (c) 2007 Steven Levithan <stevenlevithan.com>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+*/
+
+function parseUri (str) {
+    var o   = parseUri.options,
+        m   = o.parser[o.strictMode ? "strict" : "loose"].exec(str),
+        uri = {},
+        i   = 14;
+
+    while (i--) uri[o.key[i]] = m[i] || "";
+
+    uri[o.q.name] = {};
+    uri[o.key[12]].replace(o.q.parser, function ($0, $1, $2) {
+        if ($1) uri[o.q.name][$1] = $2;
+    });
+
+    return uri;
+};
+
+parseUri.options = {
+    strictMode: false,
+    key: ["source","protocol","authority","userInfo","user","password","host","port","relative","path","directory","file","query","anchor"],
+    q:   {
+        name:   "queryKey",
+        parser: /(?:^|&)([^&=]*)=?([^&]*)/g
+    },
+    parser: {
+        strict: /^(?:([^:\/?#]+):)?(?:\/\/((?:(([^:@]*):?([^:@]*))?@)?([^:\/?#]*)(?::(\d*))?))?((((?:[^?#\/]*\/)*)([^?#]*))(?:\?([^#]*))?(?:#(.*))?)/,
+        loose:  /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@]*):?([^:@]*))?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/
+    }
+};
+

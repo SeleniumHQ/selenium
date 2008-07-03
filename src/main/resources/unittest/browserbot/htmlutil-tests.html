@@ -131,6 +131,115 @@ Copyright 2004 ThoughtWorks, Inc
                 '\'"\'foo"\''.quoteForXPath());
         }
         
+// assert on absolute equality for simple literals, but content equality only
+// for complex values; the object references should be different. Functions
+// are copied by reference only (not a true copy).
+function test_clone()
+{
+    var orig, copy;
+    orig = 2;
+    assertEquals(orig, clone(orig));
+    orig = 'dolly';
+    assertEquals(orig, clone(orig));
+    
+    orig = [2, 6, 0, -439, 10539];
+    copy = clone(orig);
+    assertNotEquals(orig, copy);
+    assertTrue(are_equal(orig, copy));
+    orig = {a: 1, b: 'man', 'cd': ['minty', 'fresh'], e: {'taste': [3, 2, 1]}};
+    copy = clone(orig);
+    assertNotEquals(orig, copy);
+    assertTrue(are_equal(orig, copy));
+    orig = {};
+    copy = clone(orig);
+    assertNotEquals(orig, copy);
+    assertTrue(are_equal(orig, copy));
+    
+    orig = function(x) { return x * x; };
+    copy = clone(orig);
+    assertEquals(orig, copy);
+}
+
+function test_keys()
+{
+    var dict = {
+        'doe': 'a deer',
+        1: 'female deer',
+        '_ray': [1, 'drop of golden sun']
+    };
+    assertTrue(are_equal(['doe', '1', '_ray'], keys(dict)));
+    assertTrue(are_equal([], keys({})));
+}
+
+function test_range()
+{
+    assertTrue(are_equal([0, 1, 2, 3, 4]     , range( 5)));
+    assertTrue(are_equal([0, -1, -2, -3, -4] , range(-5)));
+    assertTrue(are_equal([0, 1, 2, 3, 4]     , range( 0,  5)));
+    assertTrue(are_equal([5, 4, 3, 2, 1]     , range( 5,  0)));
+    assertTrue(are_equal([2, 3, 4]           , range( 2,  5)));
+    assertTrue(are_equal([]                  , range( 2,  2)));
+    assertTrue(are_equal([5, 4, 3]           , range( 5,  2)));
+    assertTrue(are_equal([0, -1, -2, -3, -4] , range( 0, -5)));
+    assertTrue(are_equal([-5, -4, -3, -2, -1], range(-5,  0)));
+    assertTrue(are_equal([-2, -3, -4]        , range(-2, -5)));
+    assertTrue(are_equal([]                  , range(-2, -2)));
+    assertTrue(are_equal([-5, -4, -3]        , range(-5, -2)));
+    assertTrue(are_equal([2, 1, 0, -1]       , range( 2, -2)));
+    assertTrue(are_equal([-2, -1, 0, 1]      , range(-2,  2)));
+}
+
+function test_parse_kwargs()
+{
+    assertTrue(are_equal({k1: 'v1'}, parse_kwargs('k1=v1')));
+    assertTrue(are_equal({k1: 'v1', k2: 'v2'}, parse_kwargs('k1=v1, k2=v2')));
+    assertTrue(are_equal({k1: 'v 1', 'k  2': 'v    2'}, parse_kwargs('  k1  =  v 1  ,   k  2   =v    2  ')));
+    assertTrue(are_equal({k1: 'v1=v1.1', k2: 'v2=v2.2'}, parse_kwargs('k1=v1=v1.1, k2=v2=v2.2')));
+    assertTrue(are_equal({k1: 'v1, v1.1', k2: 'v2'}, parse_kwargs('k1=v1, v1.1, k2=v2')));
+    
+    // destructive - should be handled gracefully
+    assertTrue(are_equal({k1: 'v1,,'}, parse_kwargs('k1=v1,,')));
+    assertTrue(are_equal({k1: ''}, parse_kwargs('k1=')));
+    assertTrue(are_equal({k1: ','}, parse_kwargs('k1=,')));
+    assertTrue(are_equal({k2: 'v2'}, parse_kwargs(',k2=v2')));
+    assertTrue(are_equal({'': ''}, parse_kwargs('=')));
+    assertTrue(are_equal({}, parse_kwargs(',')));
+}
+
+function test_to_kwargs()
+{
+    // round-tripping the unique test_parse_kwargs() cases
+    var inputs = [
+        {k1: 'v1'},
+        {k1: 'v1', k2: 'v2'},
+        {k1: 'v 1', 'k  2': 'v    2'},
+        {k1: 'v1=v1.1', k2: 'v2=v2.2'},
+        {k1: ''},
+        {'': ''},
+        {}
+    ];
+    for (var i = 0; i < inputs.length; ++i) {
+        assertTrue(are_equal(inputs[i], parse_kwargs(to_kwargs(inputs[i]))));
+    }
+    
+    // test the default sorting
+    var kwargs1 = {aleph: 'foo', booster: 'kick', tamarind: 42, z: '5'};
+    var kwargs2 = {z: '5', aleph: 'foo', tamarind: 42, booster: 'kick'};
+    assertTrue(are_equal(to_kwargs(kwargs1), to_kwargs(kwargs2)));
+    
+    // test the explicit sorting
+    var argsOrder = [ 'tamarind', 'booster', 'aleph', 'z' ];
+    var re = /tamarind.+booster.+aleph.+z/;
+    assertTrue(re.test(to_kwargs(kwargs1, argsOrder)));
+    
+    // test the case where an argument in the sort list is missing
+    delete(kwargs1['booster']);
+    re = /tamarind.+aleph.+z/;
+    var result = to_kwargs(kwargs1, argsOrder);
+    assertTrue(re.test(result));
+    assertTrue(result.indexOf('booster') == -1);
+}
+
     </script>
 </head>
 

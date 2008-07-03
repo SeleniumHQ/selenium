@@ -1225,20 +1225,12 @@ BrowserBot.prototype.findElementRecursive = function(locatorType, locatorString,
 * Finds an element on the current page, using various lookup protocols
 */
 BrowserBot.prototype.findElementOrNull = function(locator, win) {
-    var locatorType = 'implicit';
-    var locatorString = locator;
-
-    // If there is a locator prefix, use the specified strategy
-    var result = locator.match(/^([A-Za-z]+)=(.+)/);
-    if (result) {
-        locatorType = result[1].toLowerCase();
-        locatorString = result[2];
-    }
+    locator = parse_locator(locator);
 
     if (win == null) {
         win = this.getCurrentWindow();
     }
-    var element = this.findElementRecursive(locatorType, locatorString, win.document, win);
+    var element = this.findElementRecursive(locator.type, locator.string, win.document, win);
 
     if (element != null) {
         return this.browserbot.highlight(element);
@@ -1324,143 +1316,6 @@ BrowserBot.prototype.locateElementByDomTraversal = function(domTraversal, docume
     return element;
 };
 BrowserBot.prototype.locateElementByDomTraversal.prefix = "dom";
-
-/**
- * Evaluates an xpath on a document, and returns a list containing nodes in the
- * resulting nodeset. The browserbot xpath methods are now backed by this
- * function. A context node may optionally be provided, and the xpath will be
- * evaluated from that context.
- *
- * @param xpath       the xpath to evaluate
- * @param inDocument  the document in which to evaluate the xpath.
- * @param opts        (optional) An object containing various flags that can
- *                    modify how the xpath is evaluated. Here's a listing of
- *                    the meaningful keys:
- *
- *                     contextNode: 
- *                       the context node from which to evaluate the xpath. If
- *                       unspecified, the context will be the root document
- *                       element.
- *
- *                     namespaceResolver:
- *                       the namespace resolver function. Defaults to null.
- *
- *                     xpathLibrary:
- *                       the javascript library to use for XPath. "ajaxslt" is
- *                       the default. "javascript-xpath" is newer and faster,
- *                       but needs more testing.
- *
- *                     allowNativeXpath:
- *                       whether to allow native evaluate(). Defaults to true.
- *
- *                     ignoreAttributesWithoutValue:
- *                       whether it's ok to ignore attributes without value
- *                       when evaluating the xpath. This can greatly improve
- *                       performance in IE; however, if your xpaths depend on
- *                       such attributes, you can't ignore them! Defaults to
- *                       true.
- *
- *                     returnOnFirstMatch:
- *                       whether to optimize the XPath evaluation to only
- *                       return the first match. The match, if any, will still
- *                       be returned in a list. Defaults to false.
- */
-function eval_xpath(xpath, inDocument, opts)
-{
-    if (!opts) {
-        var opts = {};
-    }
-    var contextNode = opts.contextNode
-        ? opts.contextNode : inDocument;
-    var namespaceResolver = opts.namespaceResolver
-        ? opts.namespaceResolver : null;
-    var xpathLibrary = opts.xpathLibrary
-        ? opts.xpathLibrary : null;
-    var allowNativeXpath = (opts.allowNativeXpath != undefined)
-        ? opts.allowNativeXpath : true;
-    var ignoreAttributesWithoutValue = (opts.ignoreAttributesWithoutValue != undefined)
-        ? opts.ignoreAttributesWithoutValue : true;
-    var returnOnFirstMatch = (opts.returnOnFirstMatch != undefined)
-        ? opts.returnOnFirstMatch : false;
-
-    // Trim any trailing "/": not valid xpath, and remains from attribute
-    // locator.
-    if (xpath.charAt(xpath.length - 1) == '/') {
-        xpath = xpath.slice(0, -1);
-    }
-    // HUGE hack - remove namespace from xpath for IE
-    if (browserVersion && browserVersion.isIE) {
-        xpath = xpath.replace(/x:/g, '')
-    }
-
-
-    // When using the new and faster javascript-xpath library,
-    // we'll use the TestRunner's document object, not the App-Under-Test's document.
-    // The new library only modifies the TestRunner document with the new 
-    // functionality.
-    if (xpathLibrary == 'javascript-xpath') {
-        documentForXpath = document;
-    } else {
-        documentForXpath = inDocument;
-    }
-    var results = [];
-    
-    // Use document.evaluate() if it's available
-    if (allowNativeXpath && documentForXpath.evaluate) {
-        try {
-            // Regarding use of the second argument to document.evaluate():
-            // http://groups.google.com/group/comp.lang.javascript/browse_thread/thread/a59ce20639c74ba1/a9d9f53e88e5ebb5
-            var xpathResult = documentForXpath
-                .evaluate((contextNode == inDocument ? xpath : '.' + xpath),
-                    contextNode, namespaceResolver, 0, null);
-        }
-        catch (e) {
-            throw new SeleniumError("Invalid xpath: " + extractExceptionMessage(e));
-        }
-        finally{
-            if (xpathResult == null) {
-                // If the result is null, we should still throw an Error.
-                throw new SeleniumError("Invalid xpath: " + xpath); 
-            }
-        }
-        var result = xpathResult.iterateNext();
-        while (result) {
-            results.push(result);
-            result = xpathResult.iterateNext();
-        }
-        return results;
-    }
-
-    // If not, fall back to slower JavaScript implementation
-    // DGF set xpathdebug = true (using getEval, if you like) to turn on JS XPath debugging
-    //xpathdebug = true;
-    var context;
-    if (contextNode == inDocument) {
-        context = new ExprContext(inDocument);
-    }
-    else {
-        // provide false values to get the default constructor values
-        context = new ExprContext(contextNode, false, false,
-            contextNode.parentNode);
-    }
-    context.setCaseInsensitive(true);
-    context.setIgnoreAttributesWithoutValue(ignoreAttributesWithoutValue);
-    context.setReturnOnFirstMatch(returnOnFirstMatch);
-    var xpathObj;
-    try {
-        xpathObj = xpathParse(xpath);
-    }
-    catch (e) {
-        throw new SeleniumError("Invalid xpath: " + extractExceptionMessage(e));
-    }
-    var xpathResult = xpathObj.evaluate(context);
-    if (xpathResult && xpathResult.value) {
-        for (var i = 0; i < xpathResult.value.length; ++i) {
-            results.push(xpathResult.value[i]);
-        }
-    }
-    return results;
-}
 
 /**
  * Finds an element identified by the xpath expression. Expressions _must_
@@ -1890,12 +1745,77 @@ BrowserBot.prototype.locateElementByAlt = function(locator, document) {
  * Find an element by css selector
  */
 BrowserBot.prototype.locateElementByCss = function(locator, document) {
-    var elements = cssQuery(locator, document);
+    var elements = eval_css(locator, document);
     if (elements.length != 0)
         return elements[0];
     return null;
 }
 
+/**
+ * This function is responsible for mapping a UI specifier string to an element
+ * on the page, and returning it. If no element is found, null is returned.
+ * Returning null on failure to locate the element is part of the undocumented
+ * API for locator strategies.
+ */
+BrowserBot.prototype.locateElementByUIElement = function(locator, inDocument) {
+    // we have an offset locator expression if the specifier string
+    // does not end with a close-parenthesis. In this case, no
+    // parentheses are allowed within the arguments portion of the base
+    // specifier string.
+    if (!/\)$/.test(locator)) {
+        var matches = /^([^\)]+\))(.+)$/.exec(locator);
+        locator = matches[1];
+        var offsetLocator = matches[2];
+    }
+    var locatedElement = null;
+    var pageElements = UIMap.getInstance().getPageElements(locator, inDocument);
+    if (offsetLocator) {
+        for (var i = 0; i < pageElements.length; ++i) {
+            var locatedElements = eval_locator(offsetLocator, inDocument,
+                pageElements[i]);
+            if (locatedElements.length) {
+                locatedElement = locatedElements[0];
+                break;
+            }
+        }
+    }
+    else if (pageElements.length) {
+        locatedElement = pageElements[0];
+    }
+    return locatedElement;
+}
+
+BrowserBot.prototype.locateElementByUIElement.prefix = 'ui';
+
+// define a function used to compare the result of a close UI element
+// match with the actual interacted element. If they are close enough
+// according to the heuristic, consider them a match.
+/**
+ * A heuristic function for comparing a node with a target node. Typically the
+ * node is specified in a UI element definition, while the target node is
+ * returned by the recorder as the leaf element which had some event enacted
+ * upon it. This particular heuristic covers the case where the anchor element
+ * contains other inline tags, such as "em" or "img".
+ *
+ * @param node    the node being compared to the target node
+ * @param target  the target node
+ * @return        true if node equals target, or if node is a link
+ *                element and target is its descendant, or if node has
+ *                an onclick attribute and target is its descendant.
+ *                False otherwise.
+ */
+BrowserBot.prototype.locateElementByUIElement.is_fuzzy_match = function(node, target) {
+    try {
+        var isMatch = (
+            (node == target) ||
+            ((node.nodeName == 'A' || node.onclick) && is_ancestor(node, target))
+        );
+        return isMatch;
+    }
+    catch (e) {
+        return false;
+    }
+};
 
 /*****************************************************************/
 /* BROWSER-SPECIFIC FUNCTIONS ONLY AFTER THIS LINE */
