@@ -447,7 +447,7 @@ testcase1: {
 <li>the reference element has an <code>onclick</code> attribute, and the target element is a descendant of it.</li>
 </ul>
 
-<p>This logic may or may not be sufficient for you. The good news is, it's very easy to modify. Look for the definition of <code>PageBot.prototype.locateElementByUIElement.is_fuzzy_match</code> in <code>ui-element.js</code> .</p>
+<p>This logic may or may not be sufficient for you. The good news is, it's very easy to modify. Look for the definition of <code>BrowserBot.prototype.locateElementByUIElement.is_fuzzy_match</code> in <code>ui-element.js</code> .</p>
 
 <h3>Offset Locators</h3>
 
@@ -463,7 +463,7 @@ testcase1: {
 
 <pre>ui=contactPages::contact_form()<span class="highlight">//input[@name='foo']</span>
 ui=contactPages::contact_form()<span class="highlight">//textarea[@name='bar']</span>
-ui=contactPages::contact_form()<span class="highlight">//input[@value='baz']</span</pre>
+ui=contactPages::contact_form()<span class="highlight">//input[@value='baz']</span></pre>
 
 <p>To resolve ambiguity in parsing a UI specifier string, the following rule is introduced: "If the last character in the UI locator string is NOT the close-parenthesis (<code>)</code>), the substring following the first occurrence of the close-parenthesis of the locator string shall be considered an offset locator." This means that when using offset locators, the arguments portion of the UI specifier string cannot contain any close-parentheses. On the other hand, the offset locator can contain parentheses. This may be important if it uses XPath functions like <code>contains()</code>, for example.</p>
 

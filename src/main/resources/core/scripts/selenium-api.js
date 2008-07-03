@@ -98,8 +98,18 @@ function Selenium(browserbot) {
      * </ul>
      * <p>Currently the css selector locator supports all css1, css2 and css3 selectors except namespace in css3, some pseudo classes(:nth-of-type, :nth-last-of-type, :first-of-type, :last-of-type, :only-of-type, :visited, :hover, :active, :focus, :indeterminate) and pseudo elements(::first-line, ::first-letter, ::selection, ::before, ::after). </p>
      * </li>
-     * </ul>
      * 
+     * <li><strong>ui</strong>=<em>uiSpecifierString</em>:
+     * Locate an element by resolving the UI specifier string to another locator, and evaluating it. See the <a href="http://svn.openqa.org/fisheye/browse/~raw,r=trunk/selenium/trunk/src/main/resources/core/scripts/ui-doc.html">Selenium UI-Element Reference</a> for more details.
+     * <ul class="first last simple">
+     * <li>ui=loginPages::loginButton()</li>
+     * <li>ui=settingsPages::toggle(label=Hide Email)</li>
+     * <li>ui=forumPages::postBody(index=2)//a[2]</li>
+     * </ul>
+     * </li>
+     *
+     * </ul>
+     *
      * <p>
      * Without an explicit locator prefix, Selenium uses the following default
      * strategies:
