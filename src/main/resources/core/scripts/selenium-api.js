@@ -2759,17 +2759,17 @@ Selenium.prototype.doCaptureEntirePageScreenshot = function(filename, kwargs) {
     LOG.debug('saved to file');
 };
 
-/**
- * Executes a command rollup, which is a set of commands with a unique name,
- * and optionally arguments that control the generation of the set of commands.
- * If any one of the rolled-up commands fails, the rollup is considered to have
- * failed. Rollups may also contain nested rollups.
- *
- * @param rollupName  the name of the rollup command
- * @param kwargs      keyword arguments string that influences how the rollup
- *                    expands into commands
- */
 Selenium.prototype.doRollup = function(rollupName, kwargs) {
+    /**
+     * Executes a command rollup, which is a series of commands with a unique
+     * name, and optionally arguments that control the generation of the set of
+     * commands. If any one of the rolled-up commands fails, the rollup is
+     * considered to have failed. Rollups may also contain nested rollups.
+     *
+     * @param rollupName  the name of the rollup command
+     * @param kwargs      keyword arguments string that influences how the
+     *                    rollup expands into commands
+     */
     // we have to temporarily hijack the commandStarted, nextCommand(),
     // commandComplete(), and commandError() methods of the TestLoop object.
     // When the expanded rollup commands are done executing (or an error has
