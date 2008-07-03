@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>Selenium IDE + UI-Element Reference</title>
+<title>Selenium UI-Element Reference</title>
 <style type="text/css">
 body {
     margin-left: 5%;
@@ -42,11 +42,11 @@ th, td {
 
 <body>
 
-<h1>Selenium IDE + UI-Element Reference</h1>
+<h1>Selenium UI-Element Reference</h1>
 
 <h2>Introduction</h2>
 
-<p>UI-Element is an extension for the Selenium IDE and Remote Control that makes it possible to define a mapping between semantically meaningful names of elements on webpages, and the elements themselves. The mapping is stored in a file using <a href="http://en.wikipedia.org/wiki/JSON">JavaScript Object Notation</a>. The file may be shared by the IDE and driven tests running via the Selenium server. It also offers a single point of update should the user interface of the application under test change. UI-Element is available under your choice of the <a href="http://www.gnu.org/licenses/old-licenses/gpl-2.0.html">GNU General Public License</a>, or the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License</a> .</p>
+<p>UI-Element is a Selenium feature that makes it possible to define a mapping between semantically meaningful names of elements on webpages, and the elements themselves. The mapping is defined using <a href="http://en.wikipedia.org/wiki/JSON">JavaScript Object Notation</a>, and may be shared both by the IDE and tests run via Selenium RC. It also offers a single point of update should the user interface of the application under test change.</p>
 
 <h2>Terminology</h2>
 
@@ -114,19 +114,15 @@ th, td {
 
 <h3>Including the Right Files</h3>
 
-<p>While the Selenium IDE + UI-Element distribution does contain other modifications, the crux of the extension is implemented in a single javascript file, <code>ui-element.js</code> . This file must be loaded by the IDE and/or Selenium server in order for any mapping to happen. <span class="highlight">Check the <em>Enable UI-Element</em> checkbox in the IDE options dialog</span> to do so.
+<p>UI-Element is now fully integrated with Selenium. The only additional file that needs to be specified is your map definitions file. In the IDE, add it to the comma-delimited <em>Selenium Core extensions</em> field of the IDE options. A sample definition file created for the website <a href="http://alistapart.com">alistapart.com</a> is included in the distribution and is available here:</p>
 
-<p>In addition to this file, your map definitions file must be loaded, by being specified in the <em>Selenium Core extensions</em> field of the IDE options. A sample definition file created for the website <a href="http://alistapart.com">alistapart.com</a> is included in the distribution and is available here:</p>
+<pre><a href="chrome://selenium-ide/content/selenium/scripts/ui-map-sample.js">chrome://selenium-ide/content/selenium/scripts/ui-map-sample.js</a></pre>
 
-<pre><a href="chrome://selenium-ide/content/ui-map-sample.js">chrome://selenium-ide/content/ui-map-sample.js</a></pre>
+<p>You might want to experiment with the sample map to get a feel for UI-Element. For the Selenium RC, you have two options. The map file may be included in the <code>user-extensions.js</code> file specified at startup with the <code>-userExtensions</code> switch. Or, you may load it dynamically with the variant of the <code>setUserExtensionJs</code> command in your driver language, before the browser is started.</p>
 
-<p>You might want to experiment with the sample map to get a feel for UI-Element. For the Selenium server, both <code>ui-element.js</code> (<a href="chrome://selenium-ide/content/ui-map-sample.js">chrome://selenium-ide/content/ui-map-sample.js</a>) and the map file must be present in the <code>user-extensions.js</code> file specified at startup with the <code>-userExtensions</code> switch, the former appearing before the latter. The easiest way to do this is to concatenate the two files using the Unix <code>cat</code> command:
+<p>It's worth noting that the Selenium RC client drivers may not have complete support the Selenium commands introduced in UI-Element. For example, the Perl client driver module <code>Test::WWW::Selenium</code> does not contain a <code>rollup_ok()</code> method. However, you could use <code>WWW::Selenium</code> like this:</p>
 
-<pre>cat ui-element.js ui-map-sample.js > user-extensions.js</pre>
-
-<p>It's worth noting that the Selenium RC client drivers may not have complete support the Selenium commands introduced in UI-Element. For example, the Perl client driver module <code>Test::WWW::Selenium</code> does not contain a <code>take_screenshot_ok()</code> method. However, you could use <code>WWW::Selenium</code> like this:
-
-<pre>$sel->do_command('takeScreenshot', '/home/chai/foo.png');</pre>
+<pre>$sel->do_command('rollup', 'foo', 'bar=baz');</pre>
 
 <h3>Map Definitions File Syntax</h3>
 
@@ -164,7 +160,7 @@ map.addPageset({
 });
 </pre>
     
-<p>Here's a table containing information about the attributes of the Pageset object.</p>
+<p>Here's a table containing information about the attributes of the Pageset object. The conditionally required or unrequired items are for IDE recording support only.</p>
 
 <table>
 <tr><th>Name</th>
@@ -346,7 +342,7 @@ map.addElement('searchPages', {
 
 <p>In the above example, two arguments are defined, <code>index</code> and <code>type</code>. Metadata is provided to describe them, and default values are also specified. FInally, the <code>getLocator()</code> method is defined. The behavior of the method depends on the values of the arguments that are passed in.</p>
 
-<p>Default values come into play when recording tests using the Selenium IDE. When you interact with a page element in recording mode, the IDE uses all the locator strategies at its disposal to deduce an appropriate locator string for that element. UI-Element introduces a new <code>ui</code> locator strategy. When applying this strategy using a particular UI element, Selenium generates a list of XPaths to try by permuting the arguments of that UI element over all default values. Here, the default values <em>{ 1, 2, 3, 4 .. 20 }</em> are given for the <code>index</code> argument using the special <code>range()</code> function, and the values <em>{ summary, detail }</em> are given for the <code>type</code> argument in standard javascript array notation.</p>
+<p>Default values come into play when recording tests using the Selenium IDE. When you interact with a page element in recording mode, the IDE uses all the locator strategies at its disposal to deduce an appropriate locator string for that element. UI-Element introduces a new <code>ui</code> locator strategy. When applying this strategy using a particular UI element, Selenium generates a list of XPaths to try by permuting the arguments of that UI element over all default values. Here, the default values <em>{ 1, 2, 3, 4 .. 20 }</em> are given for the <code>index</code> argument using the special <code>range()</code> function, and the values <em>{ summary, detail }</em> are given for the <code>type</code> argument in standard javascript array notation. If you don't intend to use the IDE, go ahead and set the default values to the empty array <code>[]</code>.</p>
 
 <p>Here's a table containing information about the attributes of the UI argument object.</p>
 
@@ -406,7 +402,7 @@ map.addElement('searchPages', {
 
 <p>You can write testcases for your UI element implementations that are run every time the Selenium IDE is started. Any testcases that fail are reported on. The dual purpose of writing testcases is to both validate the <code>getLocator()</code> method against a representation of the real page under test, and to give a visual example of what the DOM context of a page element is expected to be.</p>
 
-<p>A testcase is an object with a required <code>xhtml</code> property (String), and a required (as of ui0.7) <code>args</code> property (Object). An example is due:</p>
+<p>A testcase is an object with a required <code>xhtml</code> property (String), and a required <code>args</code> property (Object). An example is due:</p>
 
 <pre>
 testcase1: {
@@ -600,7 +596,8 @@ directed to a login error page'</pre></td>
 </tr>
 <tr><td>commandMatchers<br />getRollup()</td>
     <td>Yes</td>
-    <td>(Array | Function) a list of command matcher definitions, or a function that, given a list of commands, returns either 1) a rollup command if the rule is considered to match the commands (starting at the first command); or 2) false. If a function, it should have the method signature <code>getRollup(commands)</code>, and the returned rollup command (if any) must have the <code>replacementIndexes</code> attribute, which is a list of array indexes indicating which commands in the <code>commands</code> parameter are to be replaced.</td>
+    <td><p>(Array | Function) a list of command matcher definitions, or a function that, given a list of commands, returns either 1) a rollup command if the rule is considered to match the commands (starting at the first command); or 2) false. If a function, it should have the method signature <code>getRollup(commands)</code>, and the returned rollup command (if any) must have the <code>replacementIndexes</code> attribute, which is a list of array indexes indicating which commands in the <code>commands</code> parameter are to be replaced.</p>
+    <p>If you don't intend on using the IDE with your rollups, go ahead and set this to the empty array <code>[]</code>.</p></td>
     <td><pre>commandMatchers: [
     {
         command: 'type'
@@ -769,6 +766,18 @@ updateArgs: function(command, args) {
 
 <h2>Release Notes</h2>
 
+<h3>Core-1.0</h3>
+
+<ul>
+<li>UI-Element is now completely integrated into Selenium Core.</li>
+<li>Added offset locators.</li>
+<li><code>getDefaultValues()</code> can dynamically construct a list of values and assume that a <code>document</code> object is being passed in.</li>
+<li>Arguments in UI specifier strings are presented in the same order as they are defined in the mapping file (no longer alphabetically).</li>
+<li>Allow generic locators to be specified, potentially improving recording performance when there are many UI arguments.</li>
+<li>Updated documentation.</li>
+<li>Many other fixes.</li>
+</ul>
+
 <h3>ui0.7</h3>
 
 <ul>
@@ -790,7 +799,7 @@ updateArgs: function(command, args) {
 
 <h2>Final Thoughts</h2>
 
-<p>Catch UI-Element news in the <a href="http://ttwhy.org/home/blog/category/selenium/">Selenium category of my blog</a>. You can also find me on the <a href="http://forums.openqa.org/profile.jspa?userID=615">OpenQA Forums</a>.</p>
+<p>Catch UI-Element news in the <a href="http://ttwhy.org/home/blog/category/selenium/">Selenium category of my blog</a>. You can also find me on the <a href="http://clearspace.openqa.org/people/gyrm">OpenQA Forums</a>.</p>
 
 <p><em>- Haw-Bin Chai</em></p>
 
