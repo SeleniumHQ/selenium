@@ -107,8 +107,5 @@ SeleniumIDE.Preferences.DEFAULT_OPTIONS = {
 
     recordAbsoluteURL:
     "false",
-    
-    enableUIElement:
-    "false"
 };
 

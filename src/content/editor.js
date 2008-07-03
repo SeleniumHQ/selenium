@@ -648,10 +648,7 @@ Editor.prototype.playback = function(newWindow, resultCallback) {
     }
     var auto = resultCallback != null;
 
-    var extensionsURLs = ExtensionsLoader.getURLs(
-        (this.getOptions().enableUIElement == 'true'
-        ? 'chrome://selenium-ide/content/ui-element.js,' : "")
-        + this.getOptions().userExtensionsURL);
+    var extensionsURLs = ExtensionsLoader.getURLs(this.getOptions().userExtensionsURL);
     // Using chrome://selenium-ide-testrunner instead of chrome://selenium-ide because
     // we need to disable implicit XPCNativeWrapper to make TestRunner work
     this.showInBrowser('chrome://selenium-ide-testrunner/content/selenium/TestRunner.html?test=/content/PlayerTestSuite.html' + 
@@ -790,10 +787,6 @@ Editor.prototype.loadSeleniumAPI = function() {
 		.getService(Components.interfaces.mozIJSSubScriptLoader);
 	
 	subScriptLoader.loadSubScript('chrome://selenium-ide/content/selenium/scripts/selenium-api.js', this.seleniumAPI);
-	if (this.getOptions().enableUIElement == 'true') {
-        ExtensionsLoader.loadSubScript(subScriptLoader,
-            'chrome://selenium-ide/content/ui-element.js', this.seleniumAPI);
-    }
 	if (this.getOptions().userExtensionsURL) {
 		try {
 			ExtensionsLoader.loadSubScript(subScriptLoader, this.getOptions().userExtensionsURL, this.seleniumAPI);

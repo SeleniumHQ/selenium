@@ -189,6 +189,11 @@ LocatorBuilders.prototype.relativeXPathFromParent = function(current) {
  * ===== builders =====
  */
 
+LocatorBuilders.add('ui', function(pageElement) {
+    return UIMap.getInstance().getUISpecifierString(pageElement,
+        this.window.document);
+    });
+    
 LocatorBuilders.add('id', function(e) {
 		if (e.id) {
 			return e.id;
