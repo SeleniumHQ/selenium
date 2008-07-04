@@ -3,13 +3,21 @@
 package org.openqa.selenium.remote;
 
 import org.openqa.selenium.RenderedWebElement;
+import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.By;
+import org.openqa.selenium.internal.FindsByXPath;
+import org.openqa.selenium.internal.FindsByLinkText;
+import org.openqa.selenium.internal.FindsById;
+import org.openqa.selenium.internal.FindsByName;
+import org.openqa.selenium.internal.FindsByClassName;
 import static org.openqa.selenium.remote.MapMaker.map;
 
 import java.awt.*;
-import java.util.Map;
+import java.util.*;
+import java.util.List;
 
 public class RenderedRemoteWebElement extends RemoteWebElement implements RenderedWebElement {
-
   public boolean isDisplayed() {
     Response response = parent.execute("isElementDisplayed", map("id", id));
     return (Boolean) response.getValue();
@@ -44,6 +52,7 @@ public class RenderedRemoteWebElement extends RemoteWebElement implements Render
   }
 
   public String getValueOfCssProperty(String propertyName) {
-    throw new UnsupportedOperationException("getValueOfCssProperty");
+    Response response = parent.execute("getValueOfCssProperty", map("id", id, "propertyName", propertyName));
+    return (String) response.getValue();
   }
 }

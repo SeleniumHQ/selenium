@@ -5,22 +5,18 @@ package org.openqa.selenium.remote.server.handler;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.rest.ResultType;
-import org.openqa.selenium.remote.Response;
-import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 import java.util.List;
-import java.util.Set;
-import java.util.LinkedHashSet;
 import java.util.Map;
 
-public class FindChildElements extends WebDriverHandler implements JsonParametersAware {
+public class FindChildElement extends WebDriverHandler implements JsonParametersAware {
   private String id;
   private By by;
-  private Response response;
+  private String elementId;
 
-  public FindChildElements(DriverSessions sessions) {
+  public FindChildElement(DriverSessions sessions) {
     super(sessions);
   }
 
@@ -28,7 +24,7 @@ public class FindChildElements extends WebDriverHandler implements JsonParameter
     Map params = (Map) allParameters.get(0);
     String method = (String) params.get("using");
     String selector = (String) params.get("value");
-    
+
     by = new BySelector().pickFrom(method, selector);
   }
 
@@ -37,22 +33,13 @@ public class FindChildElements extends WebDriverHandler implements JsonParameter
   }
 
   public ResultType handle() throws Exception {
-    response = newResponse();
+    WebElement element = getKnownElements().get(id).findElement(by);
+    elementId = getKnownElements().add(element);
 
-    Set<String> urls = new LinkedHashSet<String>();
-    List<WebElement> elements = getKnownElements().get(id).findElements(by);
-    for (WebElement element : elements) {
-      String elementId = getKnownElements().add(element);
-
-      // URL will be relative to the current one.
-      urls.add(String.format("element/%s", elementId));
-    }
-
-    response.setValue(urls);
     return ResultType.SUCCESS;
   }
 
-  public Response getResponse() {
-    return response;
+  public String getElement() {
+    return elementId;
   }
 }

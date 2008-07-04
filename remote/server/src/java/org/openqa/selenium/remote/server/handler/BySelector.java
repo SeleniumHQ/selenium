@@ -7,7 +7,9 @@ import org.openqa.selenium.By;
 public class BySelector {
 
   public By pickFrom(String method, String selector) {
-    if ("id".equals(method)) {
+    if ("class name".equals(method)) {
+      return By.className(selector);
+    } else if ("id".equals(method)) {
       return By.id(selector);
     } else if ("link text".equals(method)) {
       return By.linkText(selector);

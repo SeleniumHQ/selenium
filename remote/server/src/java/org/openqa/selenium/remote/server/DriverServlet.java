@@ -10,7 +10,7 @@ import org.openqa.selenium.remote.server.handler.DeleteNamedCookie;
 import org.openqa.selenium.remote.server.handler.DeleteSession;
 import org.openqa.selenium.remote.server.handler.DescribeElement;
 import org.openqa.selenium.remote.server.handler.DragElement;
-import org.openqa.selenium.remote.server.handler.FindChildElements;
+import org.openqa.selenium.remote.server.handler.FindElementChildren;
 import org.openqa.selenium.remote.server.handler.FindElement;
 import org.openqa.selenium.remote.server.handler.FindElements;
 import org.openqa.selenium.remote.server.handler.GetAllCookies;
@@ -39,6 +39,9 @@ import org.openqa.selenium.remote.server.handler.SubmitElement;
 import org.openqa.selenium.remote.server.handler.SwitchToFrame;
 import org.openqa.selenium.remote.server.handler.SwitchToWindow;
 import org.openqa.selenium.remote.server.handler.ToggleElement;
+import org.openqa.selenium.remote.server.handler.GetCssProperty;
+import org.openqa.selenium.remote.server.handler.FindChildElement;
+import org.openqa.selenium.remote.server.handler.FindChildElements;
 import org.openqa.selenium.remote.server.renderer.EmptyResult;
 import org.openqa.selenium.remote.server.renderer.ForwardResult;
 import org.openqa.selenium.remote.server.renderer.JsonErrorExceptionResult;
@@ -116,8 +119,14 @@ public class DriverServlet extends HttpServlet {
     postMapper.bind("/session/:sessionId/:context/elements", FindElements.class)
         .on(ResultType.SUCCESS, new JsonResult(":response"));
     postMapper
-        .bind("/session/:sessionId/:context/element/:id/children/:name", FindChildElements.class)
+        .bind("/session/:sessionId/:context/element/:id/children/:name", FindElementChildren.class)
         .on(ResultType.SUCCESS, new JsonResult(":response"));
+
+    postMapper.bind("/session/:sessionId/:context/element/:id/element/:using", FindChildElement.class).on(
+        ResultType.SUCCESS, new RedirectResult("/session/:sessionId/:context/element/:element"));
+    postMapper.bind("/session/:sessionId/:context/element/:id/elements/:using", FindChildElements.class)
+        .on(ResultType.SUCCESS, new JsonResult(":response"));
+
 
     postMapper.bind("/session/:sessionId/:context/element/:id/click", ClickElement.class)
         .on(ResultType.SUCCESS, new EmptyResult());
@@ -147,6 +156,8 @@ public class DriverServlet extends HttpServlet {
         .on(ResultType.SUCCESS, new JsonResult(":response"));
     getMapper.bind("/session/:sessionId/:context/element/:id/size", GetElementSize.class)
         .on(ResultType.SUCCESS, new JsonResult(":response"));
+    getMapper.bind("/session/:sessionId/:context/element/:id/css/:propertyName", GetCssProperty.class)
+        .on(ResultType.SUCCESS, new JsonResult(":response"));
 
     postMapper.bind("/session/:sessionId/:context/element/:id/drag", DragElement.class)
         .on(ResultType.SUCCESS, new EmptyResult());
@@ -172,9 +183,9 @@ public class DriverServlet extends HttpServlet {
     deleteMapper.bind("/session/:sessionId/:context/window", CloseWindow.class)
         .on(ResultType.SUCCESS, new EmptyResult());
 
-    getMapper.bind("/session/:sessionId/:context/speed/mouse", GetMouseSpeed.class)
+    getMapper.bind("/session/:sessionId/:context/speed", GetMouseSpeed.class)
         .on(ResultType.SUCCESS, new JsonResult(":response"));
-    postMapper.bind("/session/:sessionId/:context/speed/mouse", SetMouseSpeed.class)
+    postMapper.bind("/session/:sessionId/:context/speed", SetMouseSpeed.class)
         .on(ResultType.SUCCESS, new EmptyResult());
   }
 

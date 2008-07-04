@@ -13,7 +13,6 @@ import java.io.File;
 import java.net.URL;
 
 public class RemoteWebDriverTestSuite {
-
   public static Test suite() throws Exception {
     Test rawSuite =
         new TestSuiteBuilder()
@@ -32,14 +31,12 @@ public class RemoteWebDriverTestSuite {
   }
 
   public static class RemoteWebDriverForTest extends RemoteWebDriver {
-
     public RemoteWebDriverForTest() throws Exception {
       super(new URL("http://localhost:7055/hub"), DesiredCapabilities.firefox());
     }
   }
 
   public static class RemoteDriverServerStarter extends TestSetup {
-
     private AppServer appServer;
 
     public RemoteDriverServerStarter(Test test) {

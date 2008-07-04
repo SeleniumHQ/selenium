@@ -2,11 +2,19 @@ package org.openqa.selenium.remote;
 
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.By;
+import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.internal.FindsByLinkText;
+import org.openqa.selenium.internal.FindsById;
+import org.openqa.selenium.internal.FindsByName;
+import org.openqa.selenium.internal.FindsByClassName;
+import org.openqa.selenium.internal.FindsByXPath;
 import static org.openqa.selenium.remote.MapMaker.map;
 
 import java.util.List;
 
-public class RemoteWebElement implements WebElement {
+public class RemoteWebElement implements WebElement, SearchContext,
+    FindsByLinkText, FindsById, FindsByName, FindsByClassName, FindsByXPath
+ {
 
   protected String id;
   protected RemoteWebDriver parent;
@@ -78,10 +86,60 @@ public class RemoteWebElement implements WebElement {
   }
 
   public List<WebElement> findElements(By by) {
-    throw new UnsupportedOperationException("findElements");
+    return by.findElements(this);
   }
 
   public WebElement findElement(By by) {
-    throw new UnsupportedOperationException("findElement");
+    return by.findElement(this);
   }
-}
+
+ public WebElement findElementById(String using) {
+    Response response = parent.execute("findElementUsingElement", map("id", id, "using", "id", "value", using));
+    return parent.getElementFrom(response);
+  }
+
+  public List<WebElement> findElementsById(String using) {
+    Response response = parent.execute("findElementsUsingElement", map("id", id, "using", "id", "value", using));
+    return parent.getElementsFrom(response);
+  }
+
+  public WebElement findElementByLinkText(String using) {
+    Response response = parent.execute("findElementUsingElement", map("id", id, "using", "link text", "value", using));
+    return parent.getElementFrom(response);
+  }
+
+  public List<WebElement> findElementsByLinkText(String using) {
+    Response response = parent.execute("findElementsUsingElement", map("id", id, "using", "link text", "value", using));
+    return parent.getElementsFrom(response);
+  }
+
+  public WebElement findElementByName(String using) {
+    Response response = parent.execute("findElementUsingElement", map("id", id, "using", "name", "value", using));
+    return parent.getElementFrom(response);
+  }
+
+  public List<WebElement> findElementsByName(String using) {
+    Response response = parent.execute("findElementsUsingElement", map("id", id, "using", "name", "value", using));
+    return parent.getElementsFrom(response);
+  }
+
+  public WebElement findElementByClassName(String using) {
+    Response response = parent.execute("findElementUsingElement", map("id", id, "using", "class name", "value", using));
+    return parent.getElementFrom(response);
+  }
+
+  public List<WebElement> findElementsByClassName(String using) {
+    Response response = parent.execute("findElementsUsingElement", map("id", id, "using", "class name", "value", using));
+    return parent.getElementsFrom(response);
+  }
+
+  public WebElement findElementByXPath(String using) {
+    Response response = parent.execute("findElementUsingElement", map("id", id, "using", "xpath", "value", using));
+    return parent.getElementFrom(response);
+  }
+
+  public List<WebElement> findElementsByXPath(String using) {
+    Response response = parent.execute("findElementsUsingElement", map("id", id, "using", "xpath", "value", using));
+    return parent.getElementsFrom(response);
+  }
+ }

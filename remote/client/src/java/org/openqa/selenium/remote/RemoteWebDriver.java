@@ -12,6 +12,7 @@ import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.internal.OperatingSystem;
 import org.openqa.selenium.internal.ReturnedCookie;
+import org.openqa.selenium.internal.FindsByClassName;
 import static org.openqa.selenium.remote.MapMaker.map;
 
 import java.lang.reflect.Constructor;
@@ -23,7 +24,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class RemoteWebDriver implements WebDriver, SearchContext,
-    FindsById, FindsByLinkText, FindsByName, FindsByXPath {
+    FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByXPath {
 
   private CommandExecutor executor;
   private Capabilities capabilities;
@@ -123,6 +124,16 @@ public class RemoteWebDriver implements WebDriver, SearchContext,
     return getElementsFrom(response);
   }
 
+  public WebElement findElementByClassName(String using) {
+    Response response = execute("findElement", "class name", using);
+    return getElementFrom(response);
+  }
+
+  public List<WebElement> findElementsByClassName(String using) {
+    Response response = execute("findElements", "class name", using);
+    return getElementsFrom(response);
+  }
+
   public WebElement findElementByXPath(String using) {
     Response response = execute("findElement", "xpath", using);
     return getElementFrom(response);
@@ -160,7 +171,7 @@ public class RemoteWebDriver implements WebDriver, SearchContext,
   }
 
   @SuppressWarnings("unchecked")
-  private WebElement getElementFrom(Response response) {
+  protected WebElement getElementFrom(Response response) {
     try {
       Map<Object, Object> rawResponse = (Map<Object, Object>) response.getValue();
       RemoteWebElement toReturn = newRemoteWebElement();
@@ -308,18 +319,14 @@ public class RemoteWebDriver implements WebDriver, SearchContext,
 
     }
 
-    public Speed getMouseSpeed() {
-      Response response = execute("getMouseSpeed");
+    public Speed getSpeed() {
+      Response response = execute("getSpeed");
 
       return Speed.valueOf((String) response.getValue());
     }
 
-    public Speed getSpeed() {
-      throw new UnsupportedOperationException("getSpeed");
-    }
-
     public void setSpeed(Speed speed) {
-      execute("setMouseSpeed", speed);
+      execute("setSpeed", speed);
     }
   }
 

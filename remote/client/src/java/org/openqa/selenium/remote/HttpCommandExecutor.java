@@ -78,6 +78,10 @@ public class HttpCommandExecutor implements CommandExecutor {
     nameToUrl.put("getChildrenOfType", new CommandInfo(
         "/session/:sessionId/:context/element/:id/children/:name", HttpVerb.POST));
 
+    nameToUrl
+        .put("findElementUsingElement", new CommandInfo("/session/:sessionId/:context/element/:id/element/:using", HttpVerb.POST));
+    nameToUrl.put("findElementsUsingElement",
+                  new CommandInfo("/session/:sessionId/:context/element/:id/elements/:using", HttpVerb.POST));
     nameToUrl.put("clickElement",
                   new CommandInfo("/session/:sessionId/:context/element/:id/click", HttpVerb.POST));
     nameToUrl.put("clearElement",
@@ -126,10 +130,13 @@ public class HttpCommandExecutor implements CommandExecutor {
     nameToUrl.put("dragElement",
                   new CommandInfo("/session/:sessionId/:context/element/:id/drag", HttpVerb.POST));
 
-    nameToUrl.put("getMouseSpeed",
-                  new CommandInfo("/session/:sessionId/:context/speed/mouse", HttpVerb.GET));
-    nameToUrl.put("setMouseSpeed",
-                  new CommandInfo("/session/:sessionId/:context/speed/mouse", HttpVerb.POST));
+    nameToUrl.put("getSpeed",
+                  new CommandInfo("/session/:sessionId/:context/speed", HttpVerb.GET));
+    nameToUrl.put("setSpeed",
+                  new CommandInfo("/session/:sessionId/:context/speed", HttpVerb.POST));
+
+    nameToUrl.put("getValueOfCssProperty",
+                  new CommandInfo("/session/:sessionId/:context/element/:id/css/:propertyName", HttpVerb.GET));
   }
 
   public Response execute(Command command) throws Exception {
