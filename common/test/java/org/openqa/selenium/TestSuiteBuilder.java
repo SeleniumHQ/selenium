@@ -43,9 +43,9 @@ public class TestSuiteBuilder {
 
 	public TestSuiteBuilder addSourceDir(String dirName) {
 		File dir = new File(baseDir, dirName + "/test/java");
-		assertThat("Cannot find directory: " + dirName, dir.exists(), is(true));
 
-		sourceDirs.add(dir);
+                if (dir.exists())
+                    sourceDirs.add(dir);
 		return this;
 	}
 

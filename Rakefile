@@ -22,7 +22,7 @@ task :test => [:test_htmlunit, :test_firefox, :test_support] do
 end
 
 task :install_firefox => [:firefox] do  
-  libs = %w(common/build/webdriver-common.jar firefox/build/webdriver-firefox.jar firefox/lib/runtime/json-20070829.jar)
+  libs = %w(common/build/webdriver-common.jar firefox/build/webdriver-firefox.jar firefox/lib/runtime/json-20080703.jar)
 
   firefox = "firefox"
   if ENV['firefox'] then
@@ -144,6 +144,15 @@ task 'firefox/build/webdriver-firefox.jar' => 'firefox/build/webdriver-extension
 
 task :firefox do
   sh "cd firefox/build && jar uvf webdriver-firefox.jar webdriver-extension.zip"
+end
+
+task :release => [:common, :firefox, :jobbie, :support] do
+  %w(common firefox jobbie support).each do |driver|
+    mkdir_p "build/dist/#{driver}"
+    cp 'common/build/webdriver-common.jar', "build/dist/#{driver}"
+    cp "#{driver}/build/webdriver-#{driver}.jar", "build/dist/#{driver}"
+    cp Dir.glob("#{driver}/lib/runtime/*"), "build/dist/#{driver}" if File.exists?("#{driver}/lib/runtime")
+  end
 end
 
 

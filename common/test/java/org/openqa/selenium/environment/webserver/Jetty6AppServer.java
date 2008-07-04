@@ -17,10 +17,6 @@
 
 package org.openqa.selenium.environment.webserver;
 
-import java.io.File;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-
 import junit.framework.Assert;
 
 import org.mortbay.jetty.Connector;
@@ -28,55 +24,51 @@ import org.mortbay.jetty.Server;
 import org.mortbay.jetty.nio.SelectChannelConnector;
 import org.mortbay.jetty.webapp.WebAppContext;
 
+import java.io.File;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
+import javax.servlet.Servlet;
+
 public class Jetty6AppServer implements AppServer {
-    private final int port;
+    private int port;
     private File path;
     private final Server server = new Server();
+    private WebAppContext context;
 
-    public Jetty6AppServer() {
-        port = 3000;
-        findRootOfWebApp();
 
-        WebAppContext context = addWebApplication("", path.getAbsolutePath());
+  public Jetty6AppServer() {
+    path = findRootOfWebApp();
 
-        addRedirectorServlet(context);
+    context = addWebApplication("", path.getAbsolutePath());
 
-        addInfinitePagesServlet(context);
+    addServlet("Redirecter", "/redirect", RedirectServlet.class);
+    addServlet("InfinitePagerServer", "/page/*", PageServlet.class);
+
+    listenOn(3000);
+  }
+
+
+  protected File findRootOfWebApp() {
+    String[] possiblePaths = {
+        "common/src/web",
+        "../common/src/web",
+    };
+
+    File current;
+    for (String potential : possiblePaths) {
+      current = new File(potential);
+      if (current.exists()) {
+        return current;
+      }
     }
 
-    private void findRootOfWebApp() {
-        String[] possiblePaths = {
-            "common/src/web",
-            "../common/src/web",
-          };
+    Assert.assertTrue("Unable to find common web files. These are located in the common directory",
+                      path.exists());
+    return null;
+  }
 
-        for (String potential : possiblePaths) {
-            path = new File(potential);
-            if (path.exists()) {
-                break;
-            }
-        }
-
-        Assert.assertTrue("Unable to find common web files. These are located in the common directory", path.exists());
-    }
-
-    private void addRedirectorServlet(WebAppContext context) {
-        try {
-            context.addServlet(RedirectServlet.class, "/redirect");
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void addInfinitePagesServlet(WebAppContext context) {
-        try {
-            context.addServlet(PageServlet.class, "/page/*");
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public String getHostName() {
+  public String getHostName() {
         return "localhost";
     }
 
@@ -95,24 +87,25 @@ public class Jetty6AppServer implements AppServer {
     public String getAlternateBaseUrl() {
     	return "http://" + getAlternateHostName() + ":" + port + "/";
     }
-    
-    public void start() {
-        listenOn(port);
 
-        try {
-            server.start();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+  public void start() {
+    SelectChannelConnector connector = new SelectChannelConnector();
+    connector.setPort(port);
+    server.addConnector(connector);
+
+    try {
+      server.start();
+    } catch (Exception e) {
+      throw new RuntimeException(e);
     }
+  }
 
-    protected void listenOn(int thisPort) {
-    	SelectChannelConnector connector = new SelectChannelConnector();
-        connector.setPort(port);
-        server.addConnector(connector);
-    }
+  public void listenOn(int port) {
+    this.port = port;
+  }
 
-    protected void addListener(Connector listener) {
+
+  protected void addListener(Connector listener) {
         server.addConnector(listener);
     }
 
@@ -124,7 +117,16 @@ public class Jetty6AppServer implements AppServer {
         }
     }
 
-    public void addAdditionalWebApplication(String context, String absolutePath) {
+  public void addServlet(String name, String url, Class<? extends Servlet> servletClass) {
+    try {
+      context.addServlet(servletClass, url);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+
+  public void addAdditionalWebApplication(String context, String absolutePath) {
         addWebApplication(context, absolutePath);
     }
 

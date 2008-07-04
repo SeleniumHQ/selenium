@@ -20,7 +20,13 @@ public enum OperatingSystem {
 		public String getLineEnding() {
 			return "\n";
 		}
-	};
+        },
+        ANY(null) {
+               @Override
+               public String getLineEnding() {
+                   throw new UnsupportedOperationException("getLineEnding");
+               }
+        };
 
 	private static OperatingSystem currentOs;
 	private final String partOfOsName;

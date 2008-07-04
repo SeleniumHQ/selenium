@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project version="4" relativePaths="true">
+<project relativePaths="true" version="4">
   <component name="AntConfiguration">
     <defaultAnt bundledAnt="true" />
   </component>
@@ -33,11 +33,12 @@
       <entry name="?*.jpg" />
     </wildcardResourcePatterns>
   </component>
-  <component name="DataSourceManagerImpl" />
   <component name="DependenciesAnalyzeManager">
     <option name="myForwardDirection" value="false" />
   </component>
-  <component name="DependencyValidationManager" />
+  <component name="DependencyValidationManager">
+    <option name="SKIP_IMPORT_STATEMENTS" value="false" />
+  </component>
   <component name="EclipseCompilerSettings">
     <option name="DEBUGGING_INFO" value="true" />
     <option name="GENERATE_NO_WARNINGS" value="true" />
@@ -53,14 +54,22 @@
     <option name="MAXIMUM_HEAP_SIZE" value="128" />
   </component>
   <component name="EntryPointsManager">
-    <entry_points />
+    <entry_points version="2.0" />
   </component>
   <component name="ExportToHTMLSettings">
     <option name="PRINT_LINE_NUMBERS" value="false" />
     <option name="OPEN_IN_BROWSER" value="false" />
     <option name="OUTPUT_DIRECTORY" />
   </component>
-  <component name="GUI Designer component loader factory" />
+  <component name="FacetAutodetectingManager">
+    <autodetection-disabled>
+      <facet-type id="web">
+        <modules>
+          <module name="remote" />
+        </modules>
+      </facet-type>
+    </autodetection-disabled>
+  </component>
   <component name="IdProvider" IDEtalkID="9607147E7FEC5358F7E4A12AAC506390" />
   <component name="InspectionProjectProfileManager">
     <option name="PROJECT_PROFILE" value="Project Default" />
@@ -70,24 +79,6 @@
       <profile version="1.0" is_locked="false">
         <option name="myName" value="Project Default" />
         <option name="myLocal" value="false" />
-        <used_levels>
-          <error>
-            <option name="myName" value="ERROR" />
-            <option name="myVal" value="400" />
-          </error>
-          <warning>
-            <option name="myName" value="WARNING" />
-            <option name="myVal" value="300" />
-          </warning>
-          <information>
-            <option name="myName" value="INFO" />
-            <option name="myVal" value="200" />
-          </information>
-          <server>
-            <option name="myName" value="SERVER PROBLEM" />
-            <option name="myVal" value="100" />
-          </server>
-        </used_levels>
         <inspection_tool class="FinalizeNotProtected" level="WARNING" enabled="true" />
         <inspection_tool class="NonProtectedConstructorInAbstractClass" level="WARNING" enabled="false">
           <option name="m_ignoreNonPublicClasses" value="false" />
@@ -129,6 +120,8 @@
           <option name="m_ignoreStaticMethods" value="true" />
         </inspection_tool>
         <inspection_tool class="MultipleReturnPointsPerMethod" level="WARNING" enabled="false">
+          <option name="ignoreGuardClauses" value="false" />
+          <option name="ignoreEqualsMethod" value="false" />
           <option name="m_limit" value="1" />
         </inspection_tool>
         <inspection_tool class="BreakStatementWithLabel" level="ERROR" enabled="true" />
@@ -236,13 +229,16 @@
         <inspection_tool class="JavaLangReflect" level="WARNING" enabled="false" />
         <inspection_tool class="NestedAssignment" level="WARNING" enabled="false" />
         <inspection_tool class="InfiniteRecursion" level="ERROR" enabled="true" />
-        <inspection_tool class="MultiplyOrDivideByPowerOfTwo" level="WARNING" enabled="false" />
+        <inspection_tool class="MultiplyOrDivideByPowerOfTwo" level="WARNING" enabled="false">
+          <option name="checkDivision" value="false" />
+        </inspection_tool>
         <inspection_tool class="RuntimeExec" level="WARNING" enabled="false" />
         <inspection_tool class="ThisEscapedInConstructor" level="WARNING" enabled="true" />
         <inspection_tool class="SerializableWithUnconstructableAncestor" level="WARNING" enabled="false" />
         <inspection_tool class="AssertStatement" level="WARNING" enabled="false" />
         <inspection_tool class="ConstantConditions" level="WARNING" enabled="false">
           <option name="SUGGEST_NULLABLE_ANNOTATIONS" value="false" />
+          <option name="DONT_REPORT_TRUE_ASSERT_STATEMENTS" value="false" />
         </inspection_tool>
         <inspection_tool class="MissortedModifiers" level="WARNING" enabled="true">
           <option name="m_requireAnnotationsFirst" value="true" />
@@ -256,10 +252,13 @@
         <inspection_tool class="FieldRepeatedlyAccessed" level="WARNING" enabled="false">
           <option name="m_ignoreFinalFields" value="false" />
         </inspection_tool>
-        <inspection_tool class="UnnecessaryFinalOnParameter" level="WARNING" enabled="false" />
+        <inspection_tool class="UnnecessaryFinalOnParameter" level="WARNING" enabled="false">
+          <option name="onlyWarnOnAbstractMethods" value="false" />
+        </inspection_tool>
         <inspection_tool class="EmptyCatchBlock" level="WARNING" enabled="true">
           <option name="m_includeComments" value="true" />
           <option name="m_ignoreTestCases" value="true" />
+          <option name="m_ignoreIgnoreParameter" value="true" />
         </inspection_tool>
         <inspection_tool class="UnqualifiedStaticUsage" level="WARNING" enabled="false">
           <option name="m_ignoreStaticFieldAccesses" value="false" />
@@ -284,14 +283,16 @@
         <inspection_tool class="BusyWait" level="ERROR" enabled="true" />
         <inspection_tool class="MisspelledCompareTo" level="WARNING" enabled="false" />
         <inspection_tool class="SerializableHasSerialVersionUIDField" level="WARNING" enabled="false">
-          <option name="m_ignoreSerializableDueToInheritance" value="true" />
+          <option name="superClassString" value="java.awt.Component" />
         </inspection_tool>
         <inspection_tool class="UtilityClass" level="WARNING" enabled="true" />
         <inspection_tool class="AbstractClassExtendsConcreteClass" level="WARNING" enabled="false" />
         <inspection_tool class="ChainedMethodCall" level="WARNING" enabled="false">
           <option name="m_ignoreFieldInitializations" value="true" />
         </inspection_tool>
-        <inspection_tool class="PublicInnerClass" level="WARNING" enabled="false" />
+        <inspection_tool class="PublicInnerClass" level="WARNING" enabled="false">
+          <option name="ignoreEnums" value="false" />
+        </inspection_tool>
         <inspection_tool class="InstanceVariableOfConcreteClass" level="WARNING" enabled="false" />
         <inspection_tool class="UnusedAssignment" level="WARNING" enabled="false">
           <option name="REPORT_PREFIX_EXPRESSIONS" value="false" />
@@ -307,7 +308,9 @@
         <inspection_tool class="StaticCollection" level="WARNING" enabled="false">
           <option name="m_ignoreWeakCollections" value="false" />
         </inspection_tool>
-        <inspection_tool class="ForCanBeForeach" level="WARNING" enabled="false" />
+        <inspection_tool class="ForCanBeForeach" level="WARNING" enabled="false">
+          <option name="REPORT_INDEXED_LOOP" value="true" />
+        </inspection_tool>
         <inspection_tool class="PackageVisibleInnerClass" level="WARNING" enabled="false" />
         <inspection_tool class="IntegerDivisionInFloatingPointContext" level="WARNING" enabled="false" />
         <inspection_tool class="SwitchStatementsWithoutDefault" level="WARNING" enabled="false">
@@ -338,13 +341,16 @@
         </inspection_tool>
         <inspection_tool class="ConfusingFloatingPointLiteral" level="WARNING" enabled="false" />
         <inspection_tool class="WaitNotInLoop" level="ERROR" enabled="true" />
-        <inspection_tool class="DoubleCheckedLocking" level="ERROR" enabled="true" />
+        <inspection_tool class="DoubleCheckedLocking" level="ERROR" enabled="true">
+          <option name="ignoreOnVolatileVariables" value="false" />
+        </inspection_tool>
         <inspection_tool class="UNUSED_SYMBOL" level="WARNING" enabled="true">
           <option name="LOCAL_VARIABLE" value="true" />
           <option name="FIELD" value="true" />
           <option name="METHOD" value="true" />
           <option name="CLASS" value="true" />
           <option name="PARAMETER" value="true" />
+          <option name="REPORT_PARAMETER_FOR_PUBLIC_METHODS" value="true" />
           <option name="INJECTION_ANNOS">
             <value>
               <list size="0" />
@@ -365,7 +371,7 @@
         </inspection_tool>
         <inspection_tool class="UnnecessarySemicolon" level="WARNING" enabled="true" />
         <inspection_tool class="SerializableHasSerializationMethods" level="WARNING" enabled="false">
-          <option name="m_ignoreSerializableDueToInheritance" value="true" />
+          <option name="superClassString" value="java.awt.Component" />
         </inspection_tool>
         <inspection_tool class="MisspelledSetUp" level="WARNING" enabled="false" />
         <inspection_tool class="FallthruInSwitchStatement" level="WARNING" enabled="false" />
@@ -494,6 +500,7 @@
         <inspection_tool class="UnusedCatchParameter" level="WARNING" enabled="false">
           <option name="m_ignoreCatchBlocksWithComments" value="false" />
           <option name="m_ignoreTestCases" value="false" />
+          <option name="m_ignoreIgnoreParameter" value="true" />
         </inspection_tool>
         <inspection_tool class="ClassInTopLevelPackage" level="WARNING" enabled="false" />
         <inspection_tool class="FieldAccessedSynchronizedAndUnsynchronized" level="ERROR" enabled="true">
@@ -521,7 +528,9 @@
         <inspection_tool class="StaticNonFinalField" level="WARNING" enabled="true" />
         <inspection_tool class="StaticVariableOfConcreteClass" level="WARNING" enabled="false" />
         <inspection_tool class="TimeToString" level="WARNING" enabled="false" />
-        <inspection_tool class="ObsoleteCollection" level="WARNING" enabled="true" />
+        <inspection_tool class="ObsoleteCollection" level="WARNING" enabled="true">
+          <option name="ignoreLibraryArguments" value="false" />
+        </inspection_tool>
         <inspection_tool class="ReadObjectInitialization" level="WARNING" enabled="false" />
         <inspection_tool class="ClassNestingDepth" level="WARNING" enabled="false">
           <option name="m_limit" value="1" />
@@ -535,9 +544,13 @@
           <option name="m_recognizeExampleMediaType" value="false" />
         </inspection_tool>
         <inspection_tool class="EnumClass" level="WARNING" enabled="false" />
-        <inspection_tool class="PublicField" level="WARNING" enabled="false" />
+        <inspection_tool class="PublicField" level="WARNING" enabled="false">
+          <option name="ignoreEnums" value="false" />
+        </inspection_tool>
         <inspection_tool class="FinalStaticMethod" level="WARNING" enabled="true" />
-        <inspection_tool class="FeatureEnvy" level="WARNING" enabled="false" />
+        <inspection_tool class="FeatureEnvy" level="WARNING" enabled="false">
+          <option name="ignoreTestCases" value="false" />
+        </inspection_tool>
         <inspection_tool class="ConstantDeclaredInAbstractClass" level="WARNING" enabled="false" />
         <inspection_tool class="TooBroadCatch" level="WARNING" enabled="true" />
         <inspection_tool class="FloatingPointEquality" level="ERROR" enabled="true" />
@@ -558,7 +571,9 @@
           <option name="m_limit" value="80" />
         </inspection_tool>
         <inspection_tool class="EqualsBetweenInconvertibleTypes" level="ERROR" enabled="true" />
-        <inspection_tool class="AutoBoxing" level="WARNING" enabled="false" />
+        <inspection_tool class="AutoBoxing" level="WARNING" enabled="false">
+          <option name="ignoreAddedToCollection" value="false" />
+        </inspection_tool>
         <inspection_tool class="InstanceofInterfaces" level="WARNING" enabled="false" />
         <inspection_tool class="StringEquals" level="WARNING" enabled="false" />
         <inspection_tool class="NonStaticInnerClassInSecureContext" level="WARNING" enabled="false" />
@@ -632,6 +647,7 @@
         <inspection_tool class="NestedTryStatement" level="ERROR" enabled="true" />
       </profile>
     </profiles>
+    <list size="0" />
   </component>
   <component name="JavacSettings">
     <option name="DEBUGGING_INFO" value="true" />
@@ -799,6 +815,7 @@
       <module fileurl="file://$PROJECT_DIR$/firefox/firefox.iml" filepath="$PROJECT_DIR$/firefox/firefox.iml" />
       <module fileurl="file://$PROJECT_DIR$/htmlunit/htmlunit.iml" filepath="$PROJECT_DIR$/htmlunit/htmlunit.iml" />
       <module fileurl="file://$PROJECT_DIR$/jobbie/jobbie.iml" filepath="$PROJECT_DIR$/jobbie/jobbie.iml" />
+      <module fileurl="file://$PROJECT_DIR$/remote/remote.iml" filepath="$PROJECT_DIR$/remote/remote.iml" />
       <module fileurl="file://$PROJECT_DIR$/safari/safari.iml" filepath="$PROJECT_DIR$/safari/safari.iml" />
       <module fileurl="file://$PROJECT_DIR$/selenium/selenium.iml" filepath="$PROJECT_DIR$/selenium/selenium.iml" />
       <module fileurl="file://$PROJECT_DIR$/support/support.iml" filepath="$PROJECT_DIR$/support/support.iml" />
@@ -820,10 +837,13 @@
       <option name="VM_PARAMETERS" value="-Dwebdriver.firefox.useExisting=true" />
       <option name="PARAMETERS" value="" />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
       <option name="ADDITIONAL_CLASS_PATH" />
       <option name="TEST_SEARCH_SCOPE">
         <value defaultName="wholeProject" />
       </option>
+      <envs />
       <RunnerSettings RunnerId="Debug">
         <option name="DEBUG_PORT" value="62649" />
         <option name="TRANSPORT" value="0" />
@@ -851,11 +871,9 @@
     <option name="GENERATE_IIOP_STUBS" value="false" />
     <option name="ADDITIONAL_OPTIONS_STRING" value="" />
   </component>
-  <component name="StarteamVcsAdapter" />
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="svn" />
   </component>
-  <component name="VssVcs" />
   <component name="WebServicesPlugin" addRequiredLibraries="true" />
   <component name="com.intellij.jsf.UserDefinedFacesConfigs">
     <option name="USER_DEFINED_CONFIGS">
@@ -887,11 +905,5 @@
       <SOURCES />
     </library>
   </component>
-  <component name="uidesigner-configuration">
-    <option name="INSTRUMENT_CLASSES" value="true" />
-    <option name="COPY_FORMS_RUNTIME_TO_OUTPUT" value="true" />
-    <option name="DEFAULT_LAYOUT_MANAGER" value="GridLayoutManager" />
-  </component>
-  <UsedPathMacros />
 </project>
 
