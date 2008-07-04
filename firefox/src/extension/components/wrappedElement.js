@@ -22,19 +22,9 @@ FirefoxDriver.prototype.click = function(respond) {
     });
 
     var clickEvents = function() {
-        element.focus();
-
         fireMouseEventOn(driver.context, element, "mousedown");
+        element.focus();
         fireMouseEventOn(driver.context, element, "mouseup");
-
-        // Now do the click. I'm a little surprised that this works as often as it does:
-        // http://developer.mozilla.org/en/docs/DOM:element.click#Notes
-        if (element["click"]) {
-            element.click();
-        } else {
-            // Send the mouse event too. Not sure if this will cause the thing to be double clicked....
-            fireMouseEventOn(driver.context, element, "click");
-        }
 
         var checkForLoad = function() {
             // Returning should be handled by the click listener, unless we're not actually loading something. Do a check and return if we are.
@@ -49,8 +39,22 @@ FirefoxDriver.prototype.click = function(respond) {
                     respond.send();
                 }
             }
-        }
-        contentWindow.setTimeout(checkForLoad, 50);
+        };
+        
+        var doClick = function() {
+	        // Now do the click. I'm a little surprised that this works as often as it does:
+	        // http://developer.mozilla.org/en/docs/DOM:element.click#Notes
+	        if (element["click"]) {
+	            element.click();
+	        } else {
+	            // Or just send the click event.
+	            fireMouseEventOn(driver.context, element, "click");
+	        }
+	        
+	        contentWindow.setTimeout(checkForLoad, 50);
+        };
+        
+        contentWindow.setTimeout(doClick, 50);
     }
 
     contentWindow.setTimeout(clickEvents, 50);

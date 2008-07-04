@@ -16,11 +16,11 @@ public class SingleTestSuite {
               .addSourceDir("common")
               .addSourceDir("firefox")
               .addSourceDir("jobbie")
-              .usingDriver(IE)
+              .usingDriver(FIREFOX)
               .keepDriverInstance()
               .includeJavascriptTests()
-              .onlyRun("JavascriptEnabledDriverTest")
-              .method("testShouldThrowAnExceptionWhenTheJavascriptIsBad")
+              .onlyRun("CorrectEventFiringTest")
+//              .method("testShouldThrowAnExceptionWhenTheJavascriptIsBad")
 //                        .leaveRunningAfterTest()
               .create();
 	}

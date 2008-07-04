@@ -967,6 +967,7 @@ void ElementWrapper::click()
 	dispatch->Release();
 
 	CComQIPtr<IHTMLElement3> element3(element);
+	CComQIPtr<IHTMLElement2> element2(element);
 	
 	IHTMLEventObj* eventObject;
 	VARIANT empty;
@@ -983,6 +984,7 @@ void ElementWrapper::click()
 	BSTR mouseUp = SysAllocString(L"onmouseup");
 
 	element3->fireEvent(mouseDown, &eventref, &cancellable);
+	element2->focus();
 	element3->fireEvent(mouseUp, &eventref, &cancellable);
 	SysFreeString(mouseDown);
 	SysFreeString(mouseUp);

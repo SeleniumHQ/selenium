@@ -20,7 +20,7 @@
 <h1>Type Stuff</h1>
 
 <div id="result">
-    
+	&nbsp;
 </div>
 
 <div id="formageddon">
@@ -71,9 +71,20 @@
            onkeyup="appendMessage('keyup')"
            onblur="appendMessage('blur')"
            onchange="appendMessage('change')"
-    />
-
-    <button type="button" id="plainButton" onclick="javascript:appendMessage('click ')" onmousedown="javascript:appendMessage('mousedown ')" onmouseup="javascript:appendMessage('mouseup ')"><b>Go somewhere</b></button>
+           />
+           
+    <button type="button" id="plainButton" 
+    		onfocus="appendMessage('focus')"
+           	onkeydown="appendMessage('keydown')"
+           	onkeypress="appendMessage('keypress')"
+           	onkeyup="appendMessage('keyup')"
+           	onblur="appendMessage('blur')"
+           	onclick="appendMessage('click')"
+           	onmousedown="appendMessage('mousedown ')" 
+           	onmouseup="appendMessage('mouseup ')"
+    >
+        <b>Go somewhere</b>
+    </button>
     <button type="submit" id="submittingButton"><emph>submit</emph></button>
     <button type="button" id="jsSubmitButton" onclick="javascript:document.getElementById('on-form').submit();">Submitomatic</button>
 
