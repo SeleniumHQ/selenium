@@ -6,7 +6,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 
 public class FirefoxDriverTestSuite extends TestCase {
-	public static Test suite() {
+	public static Test suite() throws Exception {
 		return new TestSuiteBuilder()
 					.addSourceDir("firefox")
 					.addSourceDir("common")
