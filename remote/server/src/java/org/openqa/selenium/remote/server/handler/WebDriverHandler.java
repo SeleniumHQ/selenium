@@ -8,8 +8,13 @@ import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.KnownElements;
 import org.openqa.selenium.remote.server.Session;
 import org.openqa.selenium.remote.server.rest.Handler;
+import org.openqa.selenium.remote.server.rest.ResultType;
 
-public abstract class WebDriverHandler implements Handler {
+import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.ExecutionException;
+
+public abstract class WebDriverHandler implements Handler, Callable<ResultType> {
 
   protected final DriverSessions sessions;
   protected SessionId sessionId;
@@ -17,6 +22,18 @@ public abstract class WebDriverHandler implements Handler {
 
   public WebDriverHandler(DriverSessions sessions) {
     this.sessions = sessions;
+  }
+
+  public final ResultType handle() throws Exception {
+    FutureTask<ResultType> future = new FutureTask<ResultType>(this);
+    try {
+      return sessions.execute(sessionId, future);
+    } catch (ExecutionException e) {
+      Throwable cause = e.getCause();
+      if (cause instanceof Exception)
+        throw (Exception) cause;
+      throw e;
+    }
   }
 
   public void setSessionId(String sessionId) {

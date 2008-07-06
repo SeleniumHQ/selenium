@@ -6,9 +6,6 @@ import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
-/**
- * @author simonstewart@google.com (Simon Stewart)
- */
 public class GetElementEnabled extends WebDriverHandler {
 
   private String elementId;
@@ -22,7 +19,7 @@ public class GetElementEnabled extends WebDriverHandler {
     this.elementId = elementId;
   }
 
-  public ResultType handle() throws Exception {
+  public ResultType call() throws Exception {
     response = newResponse();
     response.setValue(getKnownElements().get(elementId).isEnabled());
 

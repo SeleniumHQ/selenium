@@ -14,7 +14,7 @@ public class GetMouseSpeed extends WebDriverHandler {
     super(sessions);
   }
 
-  public ResultType handle() throws Exception {
+  public ResultType call() throws Exception {
     response = newResponse();
     response.setValue(getDriver().manage().getSpeed());
 

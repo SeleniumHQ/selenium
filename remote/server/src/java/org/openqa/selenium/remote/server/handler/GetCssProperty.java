@@ -2,11 +2,10 @@
 
 package org.openqa.selenium.remote.server.handler;
 
-import org.openqa.selenium.remote.server.rest.ResultType;
-import org.openqa.selenium.remote.server.DriverSessions;
-import org.openqa.selenium.remote.Response;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.RenderedWebElement;
+import org.openqa.selenium.remote.Response;
+import org.openqa.selenium.remote.server.DriverSessions;
+import org.openqa.selenium.remote.server.rest.ResultType;
 
 public class GetCssProperty extends WebDriverHandler {
   private String propertyName;
@@ -25,7 +24,7 @@ public class GetCssProperty extends WebDriverHandler {
     this.id = id;
   }
 
-  public ResultType handle() throws Exception {
+  public ResultType call() throws Exception {
     response = new Response();
 
     RenderedWebElement element = (RenderedWebElement) getKnownElements().get(id);

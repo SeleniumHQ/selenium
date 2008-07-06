@@ -11,7 +11,7 @@ public class DeleteCookie extends CookieHandler {
     super(sessions);
   }
 
-  public ResultType handle() throws Exception {
+  public ResultType call() throws Exception {
     getDriver().manage().deleteAllCookies();
 
     return ResultType.SUCCESS;

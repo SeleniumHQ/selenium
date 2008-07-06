@@ -15,7 +15,7 @@ public class GetSessionCapabilities extends WebDriverHandler {
     super(sessions);
   }
 
-  public ResultType handle() {
+  public ResultType call() {
     Session session = sessions.get(sessionId);
 
     response = newResponse();

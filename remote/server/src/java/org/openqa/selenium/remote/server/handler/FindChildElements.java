@@ -2,18 +2,17 @@
 
 package org.openqa.selenium.remote.server.handler;
 
-import org.openqa.selenium.remote.server.JsonParametersAware;
-import org.openqa.selenium.remote.server.DriverSessions;
-import org.openqa.selenium.remote.server.rest.ResultType;
-import org.openqa.selenium.remote.Response;
-import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.Response;
+import org.openqa.selenium.remote.server.DriverSessions;
+import org.openqa.selenium.remote.server.JsonParametersAware;
+import org.openqa.selenium.remote.server.rest.ResultType;
 
-import java.util.List;
-import java.util.Set;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class FindChildElements extends WebDriverHandler implements JsonParametersAware {
   private String id;
@@ -36,7 +35,7 @@ public class FindChildElements extends WebDriverHandler implements JsonParameter
     this.id = id;
   }
 
-  public ResultType handle() throws Exception {
+  public ResultType call() throws Exception {
     response = newResponse();
 
     Set<String> urls = new LinkedHashSet<String>();

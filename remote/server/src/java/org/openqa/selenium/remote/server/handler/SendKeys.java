@@ -1,8 +1,5 @@
 package org.openqa.selenium.remote.server.handler;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.rest.ResultType;
@@ -32,7 +29,7 @@ public class SendKeys extends WebDriverHandler implements JsonParametersAware {
     }
   }
 
-  public ResultType handle() throws Exception {
+  public ResultType call() throws Exception {
     String[] keysToSend = keys.toArray(new String[0]);
     getKnownElements().get(elementId).sendKeys(keysToSend);
 

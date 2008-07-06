@@ -16,9 +16,8 @@ public class ClickElement extends WebDriverHandler {
   }
 
 
-  public ResultType handle() throws Exception {
+  public ResultType call() throws Exception {
     getKnownElements().get(elementId).click();
-
     return ResultType.SUCCESS;
   }
 }

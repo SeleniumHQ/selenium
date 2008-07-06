@@ -14,7 +14,7 @@ public class DeleteSession extends WebDriverHandler {
     this.sessions = sessions;
   }
 
-  public ResultType handle() throws Exception {
+  public ResultType call() throws Exception {
     getDriver().quit();
     sessions.deleteSession(getRealSessionId());
 

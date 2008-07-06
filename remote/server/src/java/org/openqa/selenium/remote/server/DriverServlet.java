@@ -1,5 +1,12 @@
 package org.openqa.selenium.remote.server;
 
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.openqa.selenium.remote.server.handler.AddCookie;
 import org.openqa.selenium.remote.server.handler.ChangeUrl;
 import org.openqa.selenium.remote.server.handler.ClearElement;
@@ -10,10 +17,13 @@ import org.openqa.selenium.remote.server.handler.DeleteNamedCookie;
 import org.openqa.selenium.remote.server.handler.DeleteSession;
 import org.openqa.selenium.remote.server.handler.DescribeElement;
 import org.openqa.selenium.remote.server.handler.DragElement;
-import org.openqa.selenium.remote.server.handler.FindElementChildren;
+import org.openqa.selenium.remote.server.handler.FindChildElement;
+import org.openqa.selenium.remote.server.handler.FindChildElements;
 import org.openqa.selenium.remote.server.handler.FindElement;
+import org.openqa.selenium.remote.server.handler.FindElementChildren;
 import org.openqa.selenium.remote.server.handler.FindElements;
 import org.openqa.selenium.remote.server.handler.GetAllCookies;
+import org.openqa.selenium.remote.server.handler.GetCssProperty;
 import org.openqa.selenium.remote.server.handler.GetCurrentUrl;
 import org.openqa.selenium.remote.server.handler.GetElementAttribute;
 import org.openqa.selenium.remote.server.handler.GetElementDisplayed;
@@ -39,9 +49,6 @@ import org.openqa.selenium.remote.server.handler.SubmitElement;
 import org.openqa.selenium.remote.server.handler.SwitchToFrame;
 import org.openqa.selenium.remote.server.handler.SwitchToWindow;
 import org.openqa.selenium.remote.server.handler.ToggleElement;
-import org.openqa.selenium.remote.server.handler.GetCssProperty;
-import org.openqa.selenium.remote.server.handler.FindChildElement;
-import org.openqa.selenium.remote.server.handler.FindChildElements;
 import org.openqa.selenium.remote.server.renderer.EmptyResult;
 import org.openqa.selenium.remote.server.renderer.ForwardResult;
 import org.openqa.selenium.remote.server.renderer.JsonErrorExceptionResult;
@@ -51,15 +58,7 @@ import org.openqa.selenium.remote.server.rest.ResultConfig;
 import org.openqa.selenium.remote.server.rest.ResultType;
 import org.openqa.selenium.remote.server.rest.UrlMapper;
 
-import java.io.IOException;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 public class DriverServlet extends HttpServlet {
-
   private UrlMapper getMapper;
   private UrlMapper postMapper;
   private UrlMapper deleteMapper;

@@ -1,9 +1,7 @@
 package org.openqa.selenium.remote.server.handler;
 
-import org.json.JSONArray;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.rest.ResultType;
@@ -26,7 +24,7 @@ public class FindElement extends WebDriverHandler implements JsonParametersAware
     by = new BySelector().pickFrom(method, selector);
   }
 
-  public ResultType handle() throws Exception {
+  public ResultType call() throws Exception {
     WebElement element = getDriver().findElement(by);
     elementId = getKnownElements().add(element);
 

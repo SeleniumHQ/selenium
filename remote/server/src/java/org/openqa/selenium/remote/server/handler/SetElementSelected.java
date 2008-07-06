@@ -16,7 +16,7 @@ public class SetElementSelected extends WebDriverHandler {
   }
 
 
-  public ResultType handle() throws Exception {
+  public ResultType call() throws Exception {
     try {
       getKnownElements().get(elementId).setSelected();
     } catch (Exception e) {

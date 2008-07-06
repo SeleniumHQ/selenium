@@ -2,7 +2,6 @@
 
 package org.openqa.selenium.remote.server.handler;
 
-import org.json.JSONArray;
 import org.openqa.selenium.Speed;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
@@ -21,7 +20,7 @@ public class SetMouseSpeed extends WebDriverHandler implements JsonParametersAwa
     speed = Speed.valueOf((String) allParameters.get(0));
   }
 
-  public ResultType handle() throws Exception {
+  public ResultType call() throws Exception {
     getDriver().manage().setSpeed(speed);
 
     return ResultType.SUCCESS;

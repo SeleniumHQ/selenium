@@ -17,7 +17,7 @@ public class SwitchToWindow extends WebDriverHandler {
     this.name = name;
   }
 
-  public ResultType handle() throws Exception {
+  public ResultType call() throws Exception {
     getDriver().switchTo().window(name);
 
     return ResultType.SUCCESS;

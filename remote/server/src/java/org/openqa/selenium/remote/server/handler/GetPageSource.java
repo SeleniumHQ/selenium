@@ -12,7 +12,7 @@ public class GetPageSource extends WebDriverHandler {
     super(sessions);
   }
 
-  public ResultType handle() throws Exception {
+  public ResultType call() throws Exception {
     response = newResponse();
     response.setValue(getDriver().getPageSource());
     return ResultType.SUCCESS;

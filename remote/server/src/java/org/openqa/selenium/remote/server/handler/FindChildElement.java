@@ -20,6 +20,7 @@ public class FindChildElement extends WebDriverHandler implements JsonParameters
     super(sessions);
   }
 
+  @SuppressWarnings("unchecked")
   public void setJsonParameters(List<Object> allParameters) throws Exception {
     Map params = (Map) allParameters.get(0);
     String method = (String) params.get("using");
@@ -32,7 +33,7 @@ public class FindChildElement extends WebDriverHandler implements JsonParameters
     this.id = id;
   }
 
-  public ResultType handle() throws Exception {
+  public ResultType call() throws Exception {
     WebElement element = getKnownElements().get(id).findElement(by);
     elementId = getKnownElements().add(element);
 

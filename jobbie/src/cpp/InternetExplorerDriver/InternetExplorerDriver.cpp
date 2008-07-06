@@ -22,6 +22,7 @@ InternetExplorerDriver::InternetExplorerDriver()
 {
 	if (!SUCCEEDED(ie.CoCreateInstance(CLSID_InternetExplorer))) 
 	{
+		cerr << "Cannot create InternetExplorer instance" << endl;
 		throw "Cannot create InternetExplorer instance";
 	}
 

@@ -22,7 +22,7 @@ public class GetElementAttribute extends WebDriverHandler {
     this.name = name;
   }
 
-  public ResultType handle() throws Exception {
+  public ResultType call() throws Exception {
     response = newResponse();
     response.setValue(getKnownElements().get(elementId).getAttribute(name));
 

@@ -16,7 +16,7 @@ public class SubmitElement extends WebDriverHandler {
   }
 
 
-  public ResultType handle() throws Exception {
+  public ResultType call() throws Exception {
     getKnownElements().get(elementId).submit();
 
     return ResultType.SUCCESS;

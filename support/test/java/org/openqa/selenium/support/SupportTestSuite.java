@@ -6,7 +6,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 
 public class SupportTestSuite extends TestCase {
-	public static Test suite() {
+	public static Test suite() throws Exception {
 		return new TestSuiteBuilder()
 					.addSourceDir("support")
 					.usingNoDriver()

@@ -12,7 +12,7 @@ public class CloseWindow extends WebDriverHandler {
     super(sessions);
   }
 
-  public ResultType handle() throws Exception {
+  public ResultType call() throws Exception {
     WebDriver driver = getDriver();
     driver.close();
 

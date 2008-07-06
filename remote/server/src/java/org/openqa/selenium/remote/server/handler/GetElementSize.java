@@ -21,7 +21,7 @@ public class GetElementSize extends WebDriverHandler {
     this.id = id;
   }
 
-  public ResultType handle() throws Exception {
+  public ResultType call() throws Exception {
     response = newResponse();
 
     WebElement element = getKnownElements().get(id);

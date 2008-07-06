@@ -12,7 +12,7 @@ public class AddCookie extends CookieHandler {
     super(sessions);
   }
 
-  public ResultType handle() throws Exception {
+  public ResultType call() throws Exception {
     ReturnedCookie cookie = createCookie();
 
     getDriver().manage().addCookie(cookie);

@@ -20,7 +20,7 @@ public class GetElementDisplayed extends WebDriverHandler {
     this.id = id;
   }
 
-  public ResultType handle() throws Exception {
+  public ResultType call() throws Exception {
     response = newResponse();
     RenderedWebElement element = (RenderedWebElement) getKnownElements().get(id);
     response.setValue(element.isDisplayed());

@@ -16,7 +16,7 @@ public class ClearElement extends WebDriverHandler {
   }
 
 
-  public ResultType handle() throws Exception {
+  public ResultType call() throws Exception {
     getKnownElements().get(elementId).clear();
 
     return ResultType.SUCCESS;

@@ -96,6 +96,8 @@ public class TestSuiteBuilder {
       toReturn.addTest(suite);
     }
 
+    if (suite.countTestCases() == 0)
+    	System.err.println("No test cases found");
     return decorate(toReturn);
   }
 

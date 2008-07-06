@@ -17,7 +17,7 @@ public class ToggleElement extends WebDriverHandler {
     this.elementId = elementId;
   }
 
-  public ResultType handle() throws Exception {
+  public ResultType call() throws Exception {
     response = newResponse();
     response.setValue(getKnownElements().get(elementId).toggle());
 

@@ -22,7 +22,7 @@ public class RemoteWebDriverTestSuite {
             .keepDriverInstance()
             .includeJavascriptTests()
             .usingDriver(RemoteWebDriverForTest.class)
-            .exclude("firefox")
+            .exclude("ie")
             .create();
 
     TestSuite toReturn = new TestSuite();
@@ -32,7 +32,7 @@ public class RemoteWebDriverTestSuite {
 
   public static class RemoteWebDriverForTest extends RemoteWebDriver {
     public RemoteWebDriverForTest() throws Exception {
-      super(new URL("http://localhost:7055/hub"), DesiredCapabilities.firefox());
+      super(new URL("http://localhost:7055/hub"), DesiredCapabilities.internetExplorer());
     }
   }
 

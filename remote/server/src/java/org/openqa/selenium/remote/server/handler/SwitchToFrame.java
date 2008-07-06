@@ -17,7 +17,7 @@ public class SwitchToFrame extends WebDriverHandler {
     this.id = id;
   }
 
-  public ResultType handle() throws Exception {
+  public ResultType call() throws Exception {
     if (id == null) {
       getDriver().switchTo().defaultContent();
     } else {

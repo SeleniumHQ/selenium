@@ -1,29 +1,31 @@
 package org.openqa.selenium.remote.server.rest;
 
-import org.json.JSONArray;
-import org.json.JSONStringer;
-import org.json.JSONTokener;
-import org.openqa.selenium.remote.PropertyMunger;
-import org.openqa.selenium.remote.JsonToBeanConverter;
-import org.openqa.selenium.remote.server.DriverSessions;
-import org.openqa.selenium.remote.server.JsonParametersAware;
-
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.io.BufferedReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.List;
-import java.io.Reader;
-import java.io.BufferedReader;
+import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.openqa.selenium.remote.JsonToBeanConverter;
+import org.openqa.selenium.remote.PropertyMunger;
+import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.server.DriverSessions;
+import org.openqa.selenium.remote.server.JsonParametersAware;
+import org.openqa.selenium.remote.server.handler.WebDriverHandler;
+import org.openqa.selenium.remote.server.renderer.EmptyResult;
+import org.openqa.selenium.remote.server.renderer.JsonResult;
 
 public class ResultConfig {
 
@@ -109,9 +111,10 @@ public class ResultConfig {
   }
 
 
-  public void handle(String pathInfo, HttpServletRequest request, HttpServletResponse response)
+  @SuppressWarnings("unchecked")
+public void handle(String pathInfo, final HttpServletRequest request, final HttpServletResponse response)
       throws Exception {
-    Handler handler = getHandler(pathInfo);
+    final Handler handler = getHandler(pathInfo);
 
     if (handler instanceof JsonParametersAware) {
       BufferedReader reader = new BufferedReader(request.getReader());
@@ -147,13 +150,31 @@ public class ResultConfig {
     }
 
     Set<Result> results = resultToRender.get(result);
-    Result toUse = null;
+    Result tempToUse = null;
     for (Result res : results) {
-      if (toUse == null || res.isExactMimeTypeMatch(request.getHeader("Accept"))) {
-        toUse = res;
+      if (tempToUse == null || res.isExactMimeTypeMatch(request.getHeader("Accept"))) {
+        tempToUse = res;
       }
     }
-    toUse.getRenderer().render(request, response, handler);
+    final Result toUse = tempToUse;
+    
+    if (handler instanceof Callable && !(toUse.getRenderer() instanceof EmptyResult)) {
+    	SessionId sessionId = null;
+    	
+    	if (handler instanceof WebDriverHandler)
+    		sessionId = new SessionId(((WebDriverHandler) handler).getSessionId());
+    	else
+    		System.out.println(handler.getClass().getName());
+    	
+    	sessions.execute(sessionId, new FutureTask<ResultType>(new Callable<ResultType>() {
+			public ResultType call() throws Exception {
+				toUse.getRenderer().render(request, response, handler);
+				return null;
+			}
+    	}));
+    } else {
+    	toUse.getRenderer().render(request, response, handler);
+    }
   }
 
   protected void addHandlerAttributesToRequest(HttpServletRequest request, Handler handler)

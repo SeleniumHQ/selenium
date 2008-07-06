@@ -11,7 +11,7 @@ public class GoForward extends WebDriverHandler {
     super(sessions);
   }
 
-  public ResultType handle() throws Exception {
+  public ResultType call() throws Exception {
     getDriver().navigate().forward();
 
     return ResultType.SUCCESS;

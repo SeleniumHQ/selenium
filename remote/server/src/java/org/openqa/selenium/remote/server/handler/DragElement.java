@@ -28,7 +28,7 @@ public class DragElement extends WebDriverHandler implements JsonParametersAware
     y = (Integer) allParameters.get(2);
   }
 
-  public ResultType handle() throws Exception {
+  public ResultType call() throws Exception {
     RenderedWebElement element = (RenderedWebElement) getKnownElements().get(id);
     element.dragAndDropBy(x, y);
     return ResultType.SUCCESS;

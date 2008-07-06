@@ -11,7 +11,7 @@ public class GoBack extends WebDriverHandler {
     super(sessions);
   }
 
-  public ResultType handle() throws Exception {
+  public ResultType call() throws Exception {
     getDriver().navigate().back();
 
     return ResultType.SUCCESS;

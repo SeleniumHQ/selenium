@@ -1,8 +1,8 @@
 package org.openqa.selenium;
 
-import junit.framework.Test;
-
 import java.io.File;
+
+import junit.framework.Test;
 
 public class SingleTestSuite {
 
@@ -15,13 +15,16 @@ public class SingleTestSuite {
   public static Test suite() throws Exception {
     String driver = REMOTE;
 
+    System.out.println(new File(".").getAbsolutePath());
+    
     TestSuiteBuilder builder = new TestSuiteBuilder()
+    	.addSourceDir("../common")
         .addSourceDir("common")
         .addSourceDir("firefox")
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("ChildrenFindingTest")
+        .onlyRun("FormHandlingTest")
 //              .method("testShouldBeAbleToFlipToAFrameIdentifiedByItsId")
         ;  // Yeah, this look strange :)
 

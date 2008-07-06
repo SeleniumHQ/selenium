@@ -29,7 +29,7 @@ public class FindElementChildren extends WebDriverHandler {
     this.id = id;
   }
 
-  public ResultType handle() throws Exception {
+  public ResultType call() throws Exception {
     response = newResponse();
 
     Set<String> urls = new LinkedHashSet<String>();

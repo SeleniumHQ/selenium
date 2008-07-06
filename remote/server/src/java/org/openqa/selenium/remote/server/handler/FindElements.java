@@ -2,7 +2,6 @@
 
 package org.openqa.selenium.remote.server.handler;
 
-import org.json.JSONArray;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.JsonToBeanConverter;
@@ -32,7 +31,7 @@ public class FindElements extends WebDriverHandler implements JsonParametersAwar
     by = new BySelector().pickFrom(method, selector);
   }
 
-  public ResultType handle() throws Exception {
+  public ResultType call() throws Exception {
     response = newResponse();
 
     Set<String> urls = new LinkedHashSet<String>();

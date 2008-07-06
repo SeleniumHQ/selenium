@@ -17,7 +17,7 @@ public class GetAllCookies extends WebDriverHandler {
     super(sessions);
   }
 
-  public ResultType handle() throws Exception {
+  public ResultType call() throws Exception {
     response = newResponse();
     Set<Cookie> cookies = getDriver().manage().getCookies();
     response.setValue(cookies);
