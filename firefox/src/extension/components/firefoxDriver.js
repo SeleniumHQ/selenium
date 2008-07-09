@@ -151,7 +151,7 @@ FirefoxDriver.prototype.selectElementUsingClassName = function(respond, name) {
         respond.response = Utils.addToKnownElements(elements[0], this.context);
       } else {
         respond.isError = true;
-        respond.response = "Unable to find element with id '" + id + "'";
+        respond.response = "Unable to find element with class name '" + name + "'";
       }
 
       respond.send();
@@ -167,11 +167,10 @@ FirefoxDriver.prototype.selectElementsUsingClassName = function(respond, name) {
       var result = doc.getElementsByClassName(name);
 
       var response = "";
-      var element = result.iterateNext();
-      while (element) {
+      for (var i = 0; i < result.length; i++) {
+          var element = result[i];
           var index = Utils.addToKnownElements(element, this.context);
           response += index + ",";
-          element = result.iterateNext();
       }
       // Strip the trailing comma
       response = response.substring(0, response.length - 1);
