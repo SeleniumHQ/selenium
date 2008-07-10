@@ -31,7 +31,7 @@ task :clean do
   rm_rf 'build/'
 end
 
-task :test => [:test_htmlunit, :test_firefox, :test_jobbie, :test_safari, :test_support] do 
+task :test => [:test_htmlunit, :test_firefox, :test_jobbie, :test_safari, :test_support, :test_remote] do 
 end
 
 task :install_firefox => [:firefox] do  
@@ -138,6 +138,15 @@ simple_jars = {
     'classpath' => ["remote/common/lib/runtime/**/*.jar", "remote/client/lib/runtime/**/*.jar", "remote/build/webdriver-remote-common.jar"] + common_libs,
     'test_on'   => false,
   },
+  "test_remote_client" => {
+    'src'       => "remote/client/test/java/**/*.java",
+    'deps'      => [:test_common, :firefox, :remote_client, :remote_server],
+    'jar'       => "remote/build/webdriver-remote-common-test.jar",
+    'resources' => nil,
+    'classpath' => ["remote/build/*.jar", "remote/client/lib/**/*.jar", "remote/common/lib/**/*.jar", "firefox/lib/**/*.jar", "firefox/build/webdriver-firefox.jar"] + common_test_libs,
+    'test_on'   => all?,
+    'test_in'   => 'remote/client',
+  },
   "remote_server" => {
     'src'       => "remote/server/src/java/**/*.java",
     'deps'      => [:remote_common],
@@ -192,7 +201,8 @@ simple_jars.each do |name, details|
           :classpath => classpath
 
     if details['test_on'] then
-      root = details['src'].split("/")[0]
+      root = details['test_in'].nil? ? details['src'].split("/")[0] : details['test_in']
+      puts "Root: #{root}"
       junit :in => root, :classpath =>  classpath + [details['jar']]
     end
   end
@@ -200,7 +210,7 @@ simple_jars.each do |name, details|
 end
 
 task :remote => [:remote_client, :remote_server]
-
+task :test_remote => [:test_remote_client]
 
 
 #### Internet Explorer ####
