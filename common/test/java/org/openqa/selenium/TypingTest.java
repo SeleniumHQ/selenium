@@ -57,7 +57,8 @@ public class TypingTest extends AbstractDriverTestCase {
 		assertThat(keyReporter.getValue(), is("ABC DEF"));
 	}
 
-	public void testShouldBeAbleToTypeQuoteMarks() {
+  @Ignore("safari")
+  public void testShouldBeAbleToTypeQuoteMarks() {
 		driver.get(javascriptPage);
 
 		WebElement keyReporter = driver.findElement(By.id("keyReporter"));

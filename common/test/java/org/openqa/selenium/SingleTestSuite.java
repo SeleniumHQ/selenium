@@ -1,8 +1,8 @@
 package org.openqa.selenium;
 
-import java.io.File;
-
 import junit.framework.Test;
+
+import java.io.File;
 
 public class SingleTestSuite {
 
@@ -24,8 +24,8 @@ public class SingleTestSuite {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("ElementHandlingTest")
-//              .method("testShouldBeAbleToFlipToAFrameIdentifiedByItsId")
+        .onlyRun("JavascriptEnabledDriverTest")
+              .method("testShouldBeAbleToSwitchToFocusedElement")
         ;  // Yeah, this look strange :)
 
     if (REMOTE.equals(driver)) {

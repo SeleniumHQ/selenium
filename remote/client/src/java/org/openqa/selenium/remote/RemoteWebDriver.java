@@ -2,17 +2,17 @@ package org.openqa.selenium.remote;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
+import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.Speed;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.internal.OperatingSystem;
 import org.openqa.selenium.internal.ReturnedCookie;
-import org.openqa.selenium.internal.FindsByClassName;
 import static org.openqa.selenium.remote.MapMaker.map;
 
 import java.lang.reflect.Constructor;
@@ -22,7 +22,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Arrays;
 
 public class RemoteWebDriver implements WebDriver, SearchContext,
     FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByXPath {
@@ -365,6 +364,10 @@ public class RemoteWebDriver implements WebDriver, SearchContext,
     public WebDriver defaultContent() {
       execute("switchToFrame", map("id", null));
       return RemoteWebDriver.this;
+    }
+
+    public WebElement activeElement() {
+      throw new UnsupportedOperationException("activeElement");
     }
   }
 }

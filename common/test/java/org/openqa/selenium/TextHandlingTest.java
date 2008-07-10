@@ -178,6 +178,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
         assertThat(source.endsWith("</html>"), is(true));
     }
 
+    @Ignore("safari")
     public void testGetTextWithLineBreakForInlineElement() {
         driver.get(simpleTestPage);
 

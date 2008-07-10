@@ -268,7 +268,7 @@ public interface WebDriver {
          *
          * @return The WebElement with focus, or the body element if no element with focus can be detected.
          */
-        //WebElement activeElement();
+        WebElement activeElement();
 
 //        Alert alert();
     }

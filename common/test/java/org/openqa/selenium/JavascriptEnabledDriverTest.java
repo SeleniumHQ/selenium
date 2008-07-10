@@ -18,13 +18,11 @@
 package org.openqa.selenium;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import org.hamcrest.Matchers;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.Is.is;
 
-import java.awt.Dimension;
-import java.awt.Point;
-
-import org.hamcrest.Matchers;
+import java.awt.*;
 
 /**
  * Test case for browsers that support using Javascript
@@ -177,14 +175,14 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     assertThat(driver.getTitle(), Matchers.is("We Arrive Here"));
   }
 
-//    @JavascriptEnabled
-//    @Ignore
-//  public void testShouldBeAbleToSwitchToFocusedElement() {
-//      driver.get(javascriptPage);
-//
-//      driver.findElement(By.id("switchFocus")).click();
-//
-//      WebElement element = driver.switchTo().activeElement();
-//      assertThat(element.getAttribute("id"), is("theworks"));
-//  }
+  @JavascriptEnabled
+  @Ignore("safari")
+  public void testShouldBeAbleToSwitchToFocusedElement() {
+    driver.get(javascriptPage);
+
+    driver.findElement(By.id("switchFocus")).click();
+
+    WebElement element = driver.switchTo().activeElement();
+    assertThat(element.getAttribute("id"), is("theworks"));
+  }
 }

@@ -260,19 +260,35 @@ FirefoxDriver.prototype.switchToDefaultContent = function(respond) {
     respond.send();
 }
 
+FirefoxDriver.prototype.switchToActiveElement = function(respond) {
+  var doc = Utils.getDocument(this.context);
 
-//FirefoxDriver.prototype.switchToActiveElement = function(respond) {
-//    var doc = Utils.getDocument(this.context);
-//
-//    var active = null;
-//    if (doc["activeElement"]) {
-//        active = doc.activeElement;
-//    } else {
-//        active = this.activeElement;
-//    }
-//
-//    respond(this.context, "switchToActiveElement");
-//}
+  var element;
+  if (doc["activeElement"]) {
+    dump("Active element is present\n");
+    element = doc.activeElement;
+  } else {
+    var commandDispatcher = Utils.getBrowser(this.context).ownerDocument.commandDispatcher;
+
+    doc = Utils.getDocument(this.context);
+    element = commandDispatcher.focusedElement;
+  }
+
+  // Default to the body
+  if (!element) {
+    element = Utils.getDocument(this.context).body;
+  }
+
+  // We need to switch to the correct window and frame too.
+  // This is not trivial, so let's hope that the user has
+  // not done anything wacky.
+
+  // TODO (simon): Set the context correctly.
+
+  respond.response = Utils.addToKnownElements(element, this.context);
+  respond.send();
+};
+
 
 FirefoxDriver.prototype.goBack = function(respond) {
     var browser = Utils.getBrowser(this.context);

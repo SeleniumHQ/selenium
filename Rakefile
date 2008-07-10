@@ -31,7 +31,7 @@ task :clean do
   rm_rf 'build/'
 end
 
-task :test => [:test_htmlunit, :test_firefox, :test_support] do 
+task :test => [:test_htmlunit, :test_firefox, :test_jobbie, :test_safari, :test_support] do 
 end
 
 task :install_firefox => [:firefox] do  

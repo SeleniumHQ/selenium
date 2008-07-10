@@ -304,6 +304,10 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor {
         public WebDriver defaultContent() {
             return targetLocator.defaultContent();
         }
+
+        public WebElement activeElement() {
+            return targetLocator.activeElement();
+        }
     }
 
 }
