@@ -223,6 +223,14 @@ JNIEXPORT jstring JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_doG
 JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_doSetMouseSpeed
   (JNIEnv *, jobject, jint);
 
+/*
+ * Class:     org_openqa_selenium_ie_InternetExplorerDriver
+ * Method:    doSwitchToActiveElement
+ * Signature: ()Lorg/openqa/selenium/WebElement;
+ */
+JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_doSwitchToActiveElement
+  (JNIEnv *, jobject);
+
 #ifdef __cplusplus
 }
 #endif

@@ -246,6 +246,8 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
     
     private native void doSetMouseSpeed(int timeOut);
 	
+    private native WebElement doSwitchToActiveElement();
+    
     private class InternetExplorerTargetLocator implements TargetLocator {
         public WebDriver frame(int frameIndex) {
             setFrameIndex(frameIndex);
@@ -266,7 +268,7 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
 
 
         public WebElement activeElement() {
-            throw new UnsupportedOperationException("activeElement");
+            return doSwitchToActiveElement();
         }
 
         public Alert alert() {

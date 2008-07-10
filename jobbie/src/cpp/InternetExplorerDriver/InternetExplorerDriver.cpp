@@ -160,6 +160,26 @@ bool InternetExplorerDriver::addEvaluateToDocument(int count)
 	return true;
 }
 
+ElementWrapper* InternetExplorerDriver::getActiveElement() 
+{
+	CComPtr<IHTMLDocument2> doc;
+	getDocument(&doc);
+
+	CComPtr<IHTMLElement> element;
+	doc->get_activeElement(&element);
+
+	if (!element) {
+		// Grab the body instead
+		doc->get_body(&element);
+	}
+
+	if (!element)
+		return NULL;  // Should never happen
+
+	CComQIPtr<IHTMLDOMNode> node(element);
+	return new ElementWrapper(this, node);
+}
+
 ElementWrapper* InternetExplorerDriver::selectElementByXPath(const wchar_t *xpath)
 {
 	if (!addEvaluateToDocument(0))

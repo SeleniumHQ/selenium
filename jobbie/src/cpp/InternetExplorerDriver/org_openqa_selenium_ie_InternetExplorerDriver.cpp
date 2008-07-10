@@ -450,6 +450,20 @@ JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_doSetM
 	ie->setSpeed((int) speed);
 }
 
+JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_doSwitchToActiveElement
+  (JNIEnv *env, jobject obj)
+{
+	InternetExplorerDriver* ie = getIe(env, obj);
+	ElementWrapper* element = ie->getActiveElement();
+
+	if (!element)
+		return NULL;
+
+    jclass clazz = env->FindClass("org/openqa/selenium/ie/InternetExplorerElement");
+	jmethodID cId = env->GetMethodID(clazz, "<init>", "(J)V");
+
+	return env->NewObject(clazz, cId, (jlong) element);
+}
 
 #ifdef __cplusplus
 }

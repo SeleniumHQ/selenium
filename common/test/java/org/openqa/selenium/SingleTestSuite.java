@@ -13,7 +13,7 @@ public class SingleTestSuite {
   private final static String SAFARI = "org.openqa.selenium.safari.SafariDriver";
 
   public static Test suite() throws Exception {
-    String driver = FIREFOX;
+    String driver = IE;
 
     System.out.println(new File(".").getAbsolutePath());
     

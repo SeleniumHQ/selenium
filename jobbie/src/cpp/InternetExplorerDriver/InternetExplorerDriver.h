@@ -33,6 +33,7 @@ public:
 	void setSpeed(int speed);
 	int getSpeed();
 
+	ElementWrapper* getActiveElement();
 	ElementWrapper* selectElementByXPath(const wchar_t *xpath);
 	std::vector<ElementWrapper*>* selectElementsByXPath(const wchar_t *xpath);
 	ElementWrapper* selectElementById(const wchar_t *elementId);
