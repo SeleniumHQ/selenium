@@ -185,4 +185,14 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     WebElement element = driver.switchTo().activeElement();
     assertThat(element.getAttribute("id"), is("theworks"));
   }
+
+  @JavascriptEnabled
+  @Ignore("safari")
+  public void testIfNoElementHasFocusTheActiveElementIsTheBody() {
+    driver.get(simpleTestPage);
+
+    WebElement element = driver.switchTo().activeElement();
+
+    assertThat(element.getAttribute("name"), is("body"));
+  }
 }
