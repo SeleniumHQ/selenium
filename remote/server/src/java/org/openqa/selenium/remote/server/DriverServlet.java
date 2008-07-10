@@ -111,7 +111,7 @@ public class DriverServlet extends HttpServlet {
         .on(ResultType.SUCCESS, new JsonResult(":response"));
 
     postMapper.bind("/session/:sessionId/:context/element", FindElement.class).on(
-        ResultType.SUCCESS, new RedirectResult("/session/:sessionId/:context/element/:element"));
+        ResultType.SUCCESS, new JsonResult(":response"));
     getMapper.bind("/session/:sessionId/:context/element/:elementId", DescribeElement.class)
         .on(ResultType.SUCCESS, new JsonResult(":response"));
 
@@ -122,7 +122,7 @@ public class DriverServlet extends HttpServlet {
         .on(ResultType.SUCCESS, new JsonResult(":response"));
 
     postMapper.bind("/session/:sessionId/:context/element/:id/element/:using", FindChildElement.class).on(
-        ResultType.SUCCESS, new RedirectResult("/session/:sessionId/:context/element/:element"));
+        ResultType.SUCCESS, new JsonResult(":response"));
     postMapper.bind("/session/:sessionId/:context/element/:id/elements/:using", FindChildElements.class)
         .on(ResultType.SUCCESS, new JsonResult(":response"));
 

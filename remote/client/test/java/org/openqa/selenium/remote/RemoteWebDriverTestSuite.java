@@ -20,9 +20,9 @@ public class RemoteWebDriverTestSuite {
             .addSourceDir("../common")
             .addSourceDir("remote/client")
             .keepDriverInstance()
-//            .includeJavascriptTests()
+            .includeJavascriptTests()
             .usingDriver(RemoteWebDriverForTest.class)
-            .exclude("htmlunit")
+            .exclude("firefox")
             .create();
 
     TestSuite toReturn = new TestSuite();
@@ -32,7 +32,7 @@ public class RemoteWebDriverTestSuite {
 
   public static class RemoteWebDriverForTest extends RemoteWebDriver {
     public RemoteWebDriverForTest() throws Exception {
-      super(new URL("http://localhost:7055/hub"), DesiredCapabilities.htmlUnit());
+      super(new URL("http://localhost:7055/hub"), DesiredCapabilities.firefox());
     }
   }
 

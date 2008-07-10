@@ -5,13 +5,14 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.rest.ResultType;
+import org.openqa.selenium.remote.Response;
 
 import java.util.List;
+import java.util.Collections;
 
 public class FindElement extends WebDriverHandler implements JsonParametersAware {
-
   private By by;
-  private String elementId;
+  private Response response;
 
   public FindElement(DriverSessions sessions) {
     super(sessions);
@@ -25,13 +26,16 @@ public class FindElement extends WebDriverHandler implements JsonParametersAware
   }
 
   public ResultType call() throws Exception {
+    response = newResponse();
+
     WebElement element = getDriver().findElement(by);
-    elementId = getKnownElements().add(element);
+    String elementId = getKnownElements().add(element);
+    response.setValue(Collections.singletonList(String.format("element/%s", elementId)));
 
     return ResultType.SUCCESS;
   }
 
-  public String getElement() {
-    return elementId;
+  public Response getResponse() {
+    return response;
   }
 }

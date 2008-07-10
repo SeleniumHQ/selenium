@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Arrays;
 
 public class RemoteWebDriver implements WebDriver, SearchContext,
     FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByXPath {
@@ -170,16 +171,9 @@ public class RemoteWebDriver implements WebDriver, SearchContext,
     return new RemoteWebDriverOptions();
   }
 
-  @SuppressWarnings("unchecked")
   protected WebElement getElementFrom(Response response) {
-    try {
-      Map<Object, Object> rawResponse = (Map<Object, Object>) response.getValue();
-      RemoteWebElement toReturn = newRemoteWebElement();
-      toReturn.setId(String.valueOf(rawResponse.get("id")));
-      return toReturn;
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
+    List<WebElement> elements = getElementsFrom(response);
+    return elements.get(0);
   }
 
   private RemoteWebElement newRemoteWebElement() {
@@ -222,6 +216,12 @@ public class RemoteWebDriver implements WebDriver, SearchContext,
     }
 
     if (response.isError()) {
+      if (response.getValue() instanceof StackTraceElement[]) {
+        RuntimeException runtimeException = new RuntimeException();
+        runtimeException.setStackTrace((StackTraceElement[]) response.getValue());
+        throw runtimeException;
+      }
+
       Map rawException = (Map) response.getValue();
 
       String message = (String) rawException.get("message");

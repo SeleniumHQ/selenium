@@ -5,16 +5,18 @@ package org.openqa.selenium.remote.server.handler;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.rest.ResultType;
+import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Collections;
 
 public class FindChildElement extends WebDriverHandler implements JsonParametersAware {
   private String id;
   private By by;
-  private String elementId;
+  private Response response;
 
   public FindChildElement(DriverSessions sessions) {
     super(sessions);
@@ -34,13 +36,17 @@ public class FindChildElement extends WebDriverHandler implements JsonParameters
   }
 
   public ResultType call() throws Exception {
+    response = newResponse();
+
     WebElement element = getKnownElements().get(id).findElement(by);
-    elementId = getKnownElements().add(element);
+    String elementId = getKnownElements().add(element);
+
+    response.setValue(Collections.singletonList(String.format("element/%s", elementId)));
 
     return ResultType.SUCCESS;
   }
 
-  public String getElement() {
-    return elementId;
+  public Response getResponse() {
+    return response;
   }
 }
