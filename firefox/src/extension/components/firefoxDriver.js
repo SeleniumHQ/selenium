@@ -272,18 +272,15 @@ FirefoxDriver.prototype.switchToActiveElement = function(respond) {
 
     doc = Utils.getDocument(this.context);
     element = commandDispatcher.focusedElement;
+
+    if (element && Utils.getDocument(this.context) != element.ownerDocument)
+      element = null;
   }
 
   // Default to the body
   if (!element) {
     element = Utils.getDocument(this.context).body;
   }
-
-  // We need to switch to the correct window and frame too.
-  // This is not trivial, so let's hope that the user has
-  // not done anything wacky.
-
-  // TODO (simon): Set the context correctly.
 
   respond.response = Utils.addToKnownElements(element, this.context);
   respond.send();
