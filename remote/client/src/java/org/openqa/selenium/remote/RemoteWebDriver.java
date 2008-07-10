@@ -367,7 +367,8 @@ public class RemoteWebDriver implements WebDriver, SearchContext,
     }
 
     public WebElement activeElement() {
-      throw new UnsupportedOperationException("activeElement");
+      Response response = execute("getActiveElement");
+      return getElementFrom(response);
     }
   }
 }
