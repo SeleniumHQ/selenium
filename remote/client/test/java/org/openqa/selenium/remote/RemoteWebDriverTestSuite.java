@@ -20,7 +20,7 @@ public class RemoteWebDriverTestSuite {
             .addSourceDir("../common")
             .addSourceDir("remote/client")
             .keepDriverInstance()
-            .includeJavascriptTests()
+//            .includeJavascriptTests()
             .usingDriver(RemoteWebDriverForTest.class)
             .exclude("ie")
             .create();

@@ -3,7 +3,6 @@ package org.openqa.selenium.remote.server;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
-import java.util.concurrent.FutureTask;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -30,8 +29,7 @@ public class DriverSessions {
     sessionIdToDriver.remove(sessionId);
   }
 
-  public <X> X execute(SessionId sessionId, FutureTask<X> future) throws Exception {
-    executor.execute(future);
-    return future.get();
+  public Executor getExecutor() {
+    return executor;
   }
 }

@@ -20,12 +20,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.PropertyMunger;
-import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
-import org.openqa.selenium.remote.server.handler.WebDriverHandler;
 import org.openqa.selenium.remote.server.renderer.EmptyResult;
-import org.openqa.selenium.remote.server.renderer.JsonResult;
 
 public class ResultConfig {
 
@@ -110,24 +107,12 @@ public class ResultConfig {
     return this;
   }
 
-
-  @SuppressWarnings("unchecked")
-public void handle(String pathInfo, final HttpServletRequest request, final HttpServletResponse response)
+  public void handle(String pathInfo, final HttpServletRequest request, final HttpServletResponse response)
       throws Exception {
     final Handler handler = getHandler(pathInfo);
 
     if (handler instanceof JsonParametersAware) {
-      BufferedReader reader = new BufferedReader(request.getReader());
-      StringBuilder builder = new StringBuilder();
-      for (String line = reader.readLine(); line != null; line=reader.readLine())
-        builder.append(line);
-
-      String raw = builder.toString();
-      if (raw.startsWith("[")) {
-        List parameters = new JsonToBeanConverter().convert(List.class, builder.toString());
-
-        ((JsonParametersAware) handler).setJsonParameters(parameters);
-      }
+      setJsonParameters(request, handler);
     }
 
     request.setAttribute("handler", handler);
@@ -157,23 +142,34 @@ public void handle(String pathInfo, final HttpServletRequest request, final Http
       }
     }
     final Result toUse = tempToUse;
-    
+
     if (handler instanceof Callable && !(toUse.getRenderer() instanceof EmptyResult)) {
-    	SessionId sessionId = null;
-    	
-    	if (handler instanceof WebDriverHandler)
-    		sessionId = new SessionId(((WebDriverHandler) handler).getSessionId());
-    	else
-    		System.out.println(handler.getClass().getName());
-    	
-    	sessions.execute(sessionId, new FutureTask<ResultType>(new Callable<ResultType>() {
+    	FutureTask<ResultType> task = new FutureTask<ResultType>(new Callable<ResultType>() {
 			public ResultType call() throws Exception {
 				toUse.getRenderer().render(request, response, handler);
 				return null;
 			}
-    	}));
+    	});
+    	
+    	sessions.getExecutor().execute(task);
+    	task.get();
     } else {
     	toUse.getRenderer().render(request, response, handler);
+    }    
+  }
+
+  @SuppressWarnings("unchecked")
+  private void setJsonParameters(HttpServletRequest request, Handler handler) throws Exception {
+    BufferedReader reader = new BufferedReader(request.getReader());
+    StringBuilder builder = new StringBuilder();
+    for (String line = reader.readLine(); line != null; line=reader.readLine())
+      builder.append(line);
+
+    String raw = builder.toString();
+    if (raw.startsWith("[")) {
+      List<Object> parameters = new JsonToBeanConverter().convert(List.class, builder.toString());
+
+      ((JsonParametersAware) handler).setJsonParameters(parameters);
     }
   }
 

@@ -1,6 +1,8 @@
 package org.openqa.selenium.remote.server;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 
 import org.openqa.selenium.WebDriver;
@@ -13,17 +15,24 @@ public class Session {
   private final WebDriver driver;
   private KnownElements knownElements = new KnownElements();
   private Capabilities capabilities;
+  private Executor executor;
 
   public Session(DriverSessions parent, final Capabilities capabilities) throws Exception {
-	// Ensure that the browser is created on the single thread.
-	FutureTask<WebDriver> createBrowser = new FutureTask<WebDriver>(new Callable<WebDriver>() {
-		public WebDriver call() throws Exception {
-			return createNewDriverMatching(capabilities);
-		}
-	});
-	parent.execute(null, createBrowser);
+    if (isDriverRequiringGlobalThread(capabilities)) {
+      this.executor = parent.getExecutor();
+    } else {
+      this.executor = Executors.newSingleThreadExecutor();
+    }
+
+    // Ensure that the browser is created on the single thread.
+    FutureTask<WebDriver> createBrowser = new FutureTask<WebDriver>(new Callable<WebDriver>() {
+      public WebDriver call() throws Exception {
+        return createNewDriverMatching(capabilities);
+      }
+    });
+    execute(createBrowser);
     this.driver = createBrowser.get();
-    
+
     boolean isRendered = isRenderingDriver(capabilities);
     DesiredCapabilities desiredCapabilities =
         new DesiredCapabilities(capabilities.getBrowserName(), capabilities.getVersion(),
@@ -31,6 +40,15 @@ public class Session {
     desiredCapabilities.setJavascriptEnabled(isRendered);
 
     this.capabilities = desiredCapabilities;
+  }
+
+  private boolean isDriverRequiringGlobalThread(Capabilities capabilities) {
+    return "internet explorer".equals(capabilities.getBrowserName());
+  }
+
+  public <X> X execute(FutureTask<X> future) throws Exception {
+    executor.execute(future);
+    return future.get();
   }
 
   public WebDriver getDriver(Context context) {
@@ -44,7 +62,7 @@ public class Session {
   public Capabilities getCapabilities() {
     return capabilities;
   }
-  
+
   private boolean isRenderingDriver(Capabilities capabilities) {
     String browser = capabilities.getBrowserName();
 

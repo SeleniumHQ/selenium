@@ -13,7 +13,7 @@ public class SingleTestSuite {
   private final static String SAFARI = "org.openqa.selenium.safari.SafariDriver";
 
   public static Test suite() throws Exception {
-    String driver = REMOTE;
+    String driver = FIREFOX;
 
     System.out.println(new File(".").getAbsolutePath());
     
@@ -24,7 +24,7 @@ public class SingleTestSuite {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("FormHandlingTest")
+        .onlyRun("ElementHandlingTest")
 //              .method("testShouldBeAbleToFlipToAFrameIdentifiedByItsId")
         ;  // Yeah, this look strange :)
 

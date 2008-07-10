@@ -27,7 +27,7 @@ public abstract class WebDriverHandler implements Handler, Callable<ResultType> 
   public final ResultType handle() throws Exception {
     FutureTask<ResultType> future = new FutureTask<ResultType>(this);
     try {
-      return sessions.execute(sessionId, future);
+      return sessions.get(sessionId).execute(future);
     } catch (ExecutionException e) {
       Throwable cause = e.getCause();
       if (cause instanceof Exception)
