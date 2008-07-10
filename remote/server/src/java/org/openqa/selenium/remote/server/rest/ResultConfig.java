@@ -22,6 +22,7 @@ import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.PropertyMunger;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
+import org.openqa.selenium.remote.server.handler.WebDriverHandler;
 import org.openqa.selenium.remote.server.renderer.EmptyResult;
 
 public class ResultConfig {
@@ -143,7 +144,7 @@ public class ResultConfig {
     }
     final Result toUse = tempToUse;
 
-    if (handler instanceof Callable && !(toUse.getRenderer() instanceof EmptyResult)) {
+    if (handler instanceof WebDriverHandler) {
     	FutureTask<ResultType> task = new FutureTask<ResultType>(new Callable<ResultType>() {
 			public ResultType call() throws Exception {
 				toUse.getRenderer().render(request, response, handler);
@@ -151,7 +152,7 @@ public class ResultConfig {
 			}
     	});
     	
-    	sessions.getExecutor().execute(task);
+    	((WebDriverHandler) handler).execute(task);
     	task.get();
     } else {
     	toUse.getRenderer().render(request, response, handler);
