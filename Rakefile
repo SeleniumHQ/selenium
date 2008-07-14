@@ -198,7 +198,8 @@ simple_jars.each do |name, details|
 
     javac :jar => details['jar'],
           :sources => FileList[details['src']],
-          :classpath => classpath
+          :classpath => classpath,
+	  :resources => details['resources']
 
     if details['test_on'] then
       root = details['test_in'].nil? ? details['src'].split("/")[0] : details['test_in']
@@ -216,7 +217,7 @@ task :test_remote => [:test_remote_client]
 #### Internet Explorer ####
 file 'jobbie/build/InternetExplorerDriver.dll' => FileList['jobbie/src/csharp/**/*.cs'] do
   if windows? then
-    sh "MSBuild.exeif WebDriver.sln /verbosity:q /target:Rebuild /property:Configuration=Debug", :verbose => false
+    sh "MSBuild.exe WebDriver.sln /verbosity:q /target:Rebuild /property:Configuration=Debug", :verbose => false
   else
     puts "Not compiling DLL. Do not try and run the IE tests!"
     begin
