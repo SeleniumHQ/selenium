@@ -270,7 +270,7 @@ void ElementWrapper::sendKeys(const std::wstring& newValue)
 		element->click();
 		// We're now blocked until the dialog closes.
 		return;
-	} 
+	}
 
 	CComQIPtr<IHTMLElement2> element2(element);
 	element2->focus();
@@ -279,7 +279,7 @@ void ElementWrapper::sendKeys(const std::wstring& newValue)
 	CComPtr<IDispatch> dispatch;
 	element->get_document(&dispatch);
 	CComQIPtr<IHTMLDocument2> doc(dispatch);
-	clock_t maxWait = clock() + 5000;
+	clock_t maxWait = clock() + 1000;
 	bool hasFocus = false;
 	for (int i = clock(); i < maxWait; i = clock()) 
 	{
@@ -297,7 +297,7 @@ void ElementWrapper::sendKeys(const std::wstring& newValue)
 	}
 	
 	if (!hasFocus) {
-		cerr << "We have focus: " << hasFocus << endl;
+		cerr << "We don't have focus on element." << endl;
 	}
 
 	DWORD ieProcessId;
@@ -388,8 +388,6 @@ void ElementWrapper::sendKeys(const std::wstring& newValue)
     {
 		AttachThreadInput(currThreadId, ieWinThreadId, false);
     }
-
-	element2->blur();
 }
 
 void ElementWrapper::clear()
