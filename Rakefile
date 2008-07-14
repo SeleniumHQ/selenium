@@ -18,7 +18,7 @@ end
 
 task :default => [:test]
 
-task :build => [:common, :htmlunit, :firefox, :jobbie, :safari, :support, :remote]
+task :build => [:common, :htmlunit, :firefox, :jobbie, :safari, :support, :remote, :selenium]
 
 task :clean do
   rm_rf 'common/build'
@@ -186,7 +186,15 @@ simple_jars = {
     'resources' => nil,
     'classpath' => ["support/lib/**/*.jar", "support/build/webdriver-support.jar"] + common_test_libs,
     'test_on'   => all?,
-  },                              
+  },    
+  "selenium" => {
+    'src'       => "selenium/src/java/**/*.java",
+    'deps'      => [:common],
+    'jar'       => "selenium/build/webdriver-selenium.jar",
+    'resources' => nil,
+    'classpath' => ["selenium/lib/runtime/**/*.jar"] + common_libs,
+    'test_on'   => false,
+  },                         
 }
 
 simple_jars.each do |name, details|
@@ -199,7 +207,7 @@ simple_jars.each do |name, details|
     javac :jar => details['jar'],
           :sources => FileList[details['src']],
           :classpath => classpath,
-	  :resources => details['resources']
+          :resources => details['resources']
 
     if details['test_on'] then
       root = details['test_in'].nil? ? details['src'].split("/")[0] : details['test_in']

@@ -186,6 +186,7 @@ public class RemoteWebDriver implements WebDriver, SearchContext,
     return toReturn;
   }
 
+  @SuppressWarnings({"unchecked"})
   protected List<WebElement> getElementsFrom(Response response) {
     List<WebElement> toReturn = new ArrayList<WebElement>();
     List<String> urls = (List<String>) response.getValue();
@@ -250,9 +251,7 @@ public class RemoteWebDriver implements WebDriver, SearchContext,
         StackTraceElement[] trace = new StackTraceElement[elements.size()];
 
         int lastInsert = 0;
-        for (int i = 0; i < elements.size(); i++) {
-          Map values = (Map) elements.get(i);
-
+        for (Map values : elements) {
           // I'm so sorry.
           Long lineNumber = (Long) values.get("lineNumber");
           if (lineNumber == null) {
@@ -260,12 +259,12 @@ public class RemoteWebDriver implements WebDriver, SearchContext,
           }
 
           trace[lastInsert++] = new StackTraceElement((String) values.get("className"),
-                                                      (String) values.get("methodName"),
-                                                      (String) values.get("fileName"),
-                                                      (int) (long) lineNumber);
-        }
+                  (String) values.get("methodName"),
+                  (String) values.get("fileName"),
+                  (int) (long) lineNumber);
+          }
 
-        if (lastInsert == elements.size()) {
+          if (lastInsert == elements.size()) {
           toThrow.setStackTrace(trace);
         }
       } catch (Exception e) {
@@ -295,6 +294,7 @@ public class RemoteWebDriver implements WebDriver, SearchContext,
       execute("deleteAllCookies");
     }
 
+    @SuppressWarnings({"unchecked"})
     public Set<Cookie> getCookies() {
       Object returned = execute("getAllCookies").getValue();
 
