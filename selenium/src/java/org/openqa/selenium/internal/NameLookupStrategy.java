@@ -26,7 +26,7 @@ public class NameLookupStrategy implements LookupStrategy {
     public WebElement find(WebDriver driver, String use) {
         String[] parts = use.split(" ");
 
-        List<WebElement> allElements = driver.findElements(By.xpath("//*[@name='" + parts[0] + "']"));
+        List<WebElement> allElements = driver.findElements(By.name(parts[0]));
 
         // For some reason, we sometimes get back elements with a name that doesn't match. Filter those out
         Iterator<WebElement> iterator = allElements.iterator();

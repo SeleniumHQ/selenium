@@ -153,7 +153,12 @@ public class WebDriverBackedSelenium implements Selenium {
     }
 
     public void runScript(String script) {
-        throw new UnsupportedOperationException("runScript");
+        if (driver instanceof JavascriptExecutor) {
+            ((JavascriptExecutor) driver).executeScript(script);
+        }
+
+        throw new UnsupportedOperationException(
+                "The underlying WebDriver instance does not support executing javascript");
     }
 
     public void addLocationStrategy(String strategyName, String functionDefinition) {
@@ -768,7 +773,7 @@ public class WebDriverBackedSelenium implements Selenium {
         }
     }
 
-    private LookupStrategy findStrategy(String locator) {
+    protected LookupStrategy findStrategy(String locator) {
       String strategyName = "implicit";
 
       Matcher matcher = STRATEGY_AND_VALUE_PATTERN.matcher(locator);
@@ -783,7 +788,7 @@ public class WebDriverBackedSelenium implements Selenium {
       return strategy;
     }
 
-    private String determineWebDriverLocator(String locator) {
+    protected String determineWebDriverLocator(String locator) {
         String use = locator;
 
         Matcher matcher = STRATEGY_AND_VALUE_PATTERN.matcher(locator);
