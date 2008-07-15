@@ -33,10 +33,6 @@
         $response = stream_get_contents($handle);
         fclose($handle);
 
-        if (!preg_match('/^OK/', $response)) {
-            throw new Testing_Selenium_Exception('The Response of the Selenium RC is invalid: ' . $response);
-        }
-
         return $response;
     }
 
