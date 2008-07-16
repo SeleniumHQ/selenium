@@ -13,7 +13,7 @@ public class SingleTestSuite {
   private final static String SAFARI = "org.openqa.selenium.safari.SafariDriver";
 
   public static Test suite() throws Exception {
-    String driver = REMOTE;
+    String driver = IE;
 
     System.out.println(new File(".").getAbsolutePath());
     
@@ -24,8 +24,8 @@ public class SingleTestSuite {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("JavascriptEnabledDriverTest")
-        .method("testIfNoElementHasFocusTheActiveElementIsTheBody")
+        .onlyRun("FormHandlingTest")
+//        .method("testIfNoElementHasFocusTheActiveElementIsTheBody")
         ;  // Yeah, this look strange :)
 
     if (REMOTE.equals(driver)) {

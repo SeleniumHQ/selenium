@@ -423,18 +423,28 @@ bool ElementWrapper::isSelected()
 		return isChecked == VARIANT_TRUE;
 	}
 
+	if (isRadio()) {
+		std::wstring value(getAttribute(L"selected"));
+		if (!value.c_str())
+			return false;
+
+		return _wcsicmp(value.c_str(), L"selected") == 0 || _wcsicmp(value.c_str(), L"true") == 0;
+	}
+
 	return false;
 }
 
 void ElementWrapper::setSelected()
 {
+	if (!this->isEnabled()) 
+		throw "Unable to select a disabled element";
+
 	bool currentlySelected = isSelected();
 
 	/* TODO(malcolmr): Why not: if (isSelected()) return; ? Do we really need to re-set 'checked=true' for checkbox and do effectively nothing for select?
 	   Maybe we should check for disabled elements first? */
 
 	if (isCheckbox()) {
-
 		if (!isSelected()) {
 			click();
 		}
@@ -445,6 +455,26 @@ void ElementWrapper::setSelected()
 		isChecked.vt = VT_BSTR;
 		isChecked.bstrVal = (BSTR)isTrue;
 		element->setAttribute(checked, isChecked, 0);
+
+		if (currentlySelected != isSelected()) {
+			CComPtr<IHTMLEventObj> eventObj(newEventObject());
+			fireEvent(eventObj, L"onchange");
+		}
+
+		return;
+    }
+
+	if (isRadio()) {
+		if (!isSelected()) {
+			click();
+		}
+
+		CComBSTR selected(L"selected");
+		VARIANT select;
+		CComBSTR isTrue(L"true");
+		select.vt = VT_BSTR;
+		select.bstrVal = (BSTR)isTrue;
+		element->setAttribute(selected, select, 0);
 
 		if (currentlySelected != isSelected()) {
 			CComPtr<IHTMLEventObj> eventObj(newEventObject());
@@ -471,8 +501,6 @@ void ElementWrapper::setSelected()
 		return;
 	}
 
-	if (!this->isEnabled()) 
-		throw "Unable to select a disabled element";
 	throw "Unable to select element.";
 }
 
@@ -1036,6 +1064,19 @@ bool ElementWrapper::isCheckbox()
 	input->get_type(&typeName);
 	std::wstring type = bstr2wstring(typeName);
 	return _wcsicmp(type.c_str(), L"checkbox") == 0;
+}
+
+bool ElementWrapper::isRadio()
+{
+	CComQIPtr<IHTMLInputElement> input(element);
+	if (!input) {
+		return false;
+	}
+
+	CComBSTR typeName;
+	input->get_type(&typeName);
+	std::wstring type = bstr2wstring(typeName);
+	return _wcsicmp(type.c_str(), L"radio") == 0;
 }
 
 void ElementWrapper::findParentForm(IHTMLFormElement **pform)

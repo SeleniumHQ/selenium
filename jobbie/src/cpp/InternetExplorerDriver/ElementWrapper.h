@@ -42,6 +42,7 @@ public:
 private:
 	std::wstring getTextAreaValue();
 	bool isCheckbox();
+	bool isRadio();
 	void findParentForm(IHTMLFormElement **pform);
 	IHTMLEventObj* newEventObject();
 	void fireEvent(IHTMLEventObj*, const OLECHAR*);

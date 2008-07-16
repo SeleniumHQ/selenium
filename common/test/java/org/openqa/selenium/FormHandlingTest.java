@@ -137,7 +137,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
 		}
 	}
 
-	@Ignore(value = "ie, safari", reason = "IE: Fails test. Safari: Not implemented")
+	@Ignore(value = "safari", reason = "IE: Fails test. Safari: Not implemented")
 	public void testShouldBeAbleToSelectARadioButton() {
 		driver.get(formPage);
 		WebElement radioButton = driver.findElement(By.id("peas"));
