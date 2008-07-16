@@ -97,7 +97,8 @@ public class TypingTest extends AbstractDriverTestCase {
 	}
 
 	@JavascriptEnabled
-	public void testWillSimulateAKeyUpWhenEnteringTextIntoInputElements() {
+        @Ignore("htmlunit")
+        public void testWillSimulateAKeyUpWhenEnteringTextIntoInputElements() {
 		driver.get(javascriptPage);
 		WebElement element = driver.findElement(By.id("keyUp"));
 		element.sendKeys("I like cheese");
@@ -131,7 +132,8 @@ public class TypingTest extends AbstractDriverTestCase {
 	}
 
 	@JavascriptEnabled
-	public void testWillSimulateAKeyUpWhenEnteringTextIntoTextAreas() {
+        @Ignore("htmlunit")
+        public void testWillSimulateAKeyUpWhenEnteringTextIntoTextAreas() {
 		driver.get(javascriptPage);
 		WebElement element = driver.findElement(By.id("keyUpArea"));
 		element.sendKeys("I like cheese");
@@ -165,7 +167,7 @@ public class TypingTest extends AbstractDriverTestCase {
 	}
 
 	@JavascriptEnabled
-	@Ignore(value = "firefox, safari", reason = "Not implemeted in safari. Firefox: only passes if firefox window has focus")
+	@Ignore(value = "firefox, safari, htmlunit", reason = "Not implemeted in safari. Firefox: only passes if firefox window has focus")
 	public void testShouldFireFocusKeyBlurAndChangeEventsInTheRightOrder() {
 		driver.get(javascriptPage);
 
@@ -177,7 +179,7 @@ public class TypingTest extends AbstractDriverTestCase {
 	}
 
 	@JavascriptEnabled
-	@Ignore(value = "firefox, safari", reason = "IE specific test")
+	@Ignore(value = "firefox, safari, htmlunit", reason = "IE specific test")
 	public void testShouldFireFocusKeyBlurAndChangeEventsInTheRightOrderOnIe() {
 		driver.get(javascriptPage);
 
@@ -189,7 +191,7 @@ public class TypingTest extends AbstractDriverTestCase {
 	}
 
 	@JavascriptEnabled
-	@Ignore("ie, safari")
+	@Ignore("ie, safari, htmlunit")
 	public void testShouldReportKeyCodeOfArrowKeys() {
 		driver.get(javascriptPage);
 
@@ -209,7 +211,7 @@ public class TypingTest extends AbstractDriverTestCase {
 	}
 
 	@JavascriptEnabled
-	@Ignore("firefox, safari")
+	@Ignore("firefox, safari, htmlunit")
 	public void testShouldReportKeyCodeOfArrowKeysWhenPressEventNotFiredByBrowser() {
 		driver.get(javascriptPage);
 

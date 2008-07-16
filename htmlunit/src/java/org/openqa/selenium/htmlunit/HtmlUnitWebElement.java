@@ -35,10 +35,13 @@ import com.gargoylesoftware.htmlunit.html.HtmlPreformattedText;
 import com.gargoylesoftware.htmlunit.html.HtmlSelect;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextArea;
+import com.gargoylesoftware.htmlunit.html.HtmlFileInput;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
@@ -65,8 +68,12 @@ public class HtmlUnitWebElement implements WebElement,
 
         ClickableElement clickableElement = ((ClickableElement) element);
         try {
+            if (parent.isJavascriptEnabled()) {
+              clickableElement.focus();
+              clickableElement.mouseDown();
+              clickableElement.mouseUp();
+            }
             clickableElement.click();
-            return;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -84,7 +91,7 @@ public class HtmlUnitWebElement implements WebElement,
                 ((HtmlImageInput) element).click();
                 return;
             } else if (element instanceof HtmlInput) {
-                submitForm(((HtmlInput) element).getEnclosingForm());
+                submitForm(element.getEnclosingForm());
                 return;
             }
 
@@ -137,12 +144,10 @@ public class HtmlUnitWebElement implements WebElement,
 		return candidate != null;
 	}
 
-	private boolean isBefore(HtmlElement submit, HtmlElement element) {
-		if (submit == null)
-			return true;
-		
-		return false;
-	}
+	@SuppressWarnings({"UnusedDeclaration"})
+        private boolean isBefore(HtmlElement submit, HtmlElement element) {
+          return submit == null;
+        }
 
 	public String getValue() {
         if (element instanceof HtmlTextArea)
@@ -164,17 +169,27 @@ public class HtmlUnitWebElement implements WebElement,
             builder.append(seq);
         }
 
+        if (parent.isJavascriptEnabled() && !(element instanceof HtmlFileInput)) {
+          try {
+            element.type(builder.toString());
+            return;
+          } catch (IOException e) {
+            throw new RuntimeException(e);
+          }
+        }
+
         if (element instanceof HtmlInput) {
-        	String currentValue = getValue();
+            String currentValue = getValue();
             element.setAttributeValue("value", (currentValue == null ? "" : currentValue) + builder.toString());
         } else if (element instanceof HtmlTextArea) {
-        	String currentValue = getValue();
+            String currentValue = getValue();
             ((HtmlTextArea) element).setText((currentValue == null ? "" : currentValue) + builder.toString());
-        } else
+        } else {
             throw new UnsupportedOperationException("You may only set the value of elements that are input elements");
+        }
     }
 
-    public String getAttribute(String name) {
+  public String getAttribute(String name) {
         final String lowerName = name.toLowerCase();
 
         String value = element.getAttributeValue(name);
@@ -244,6 +259,7 @@ public class HtmlUnitWebElement implements WebElement,
             throw new UnsupportedOperationException("Unable to select element. Tag name is: " + element.getTagName());
     }
 
+    @SuppressWarnings({"SimplifiableIfStatement"})
     public boolean isEnabled() {
         if (element instanceof HtmlInput)
             return !((HtmlInput) element).isDisabled();
@@ -327,10 +343,11 @@ public class HtmlUnitWebElement implements WebElement,
             return false;
 
         String tagName = ((HtmlElement) node).getTagName().toLowerCase();
-        for (int i = 0; i < blockLevelsTagNames.length; i++) {
-            if (blockLevelsTagNames[i].equals(tagName))
-                return true;
+      for (String blockLevelsTagName : blockLevelsTagNames) {
+        if (blockLevelsTagName.equals(tagName)) {
+          return true;
         }
+      }
         return false;
     }
 
@@ -349,16 +366,12 @@ public class HtmlUnitWebElement implements WebElement,
         List<WebElement> elements = new ArrayList<WebElement>();
         for (HtmlElement child : allChildren) {
             if (tagName.equals(child.getTagName())) {
-                elements.add(new HtmlUnitWebElement(parent, child));
+                elements.add(getParent().newHtmlUnitWebElement(child));
             }
         }
         return elements;
     }
 
-    public boolean isDisplayed() {
-        return true; // Always assume that the element is displayed
-    }
-    
     public WebElement findElement(By by) {
         return by.findElement(this);
     }
@@ -381,15 +394,14 @@ public class HtmlUnitWebElement implements WebElement,
             throw new NoSuchElementException("Unable to find element with xpath "
                     + xpathExpr);
         }
-        return new HtmlUnitWebElement(getParent(), match);
+        return getParent().newHtmlUnitWebElement(match);
     }
     
     public List<WebElement> findElementsByXPath(String xpathExpr) {
         List<WebElement> webElements = new ArrayList<WebElement>();
         List<?> htmlElements = element.getByXPath(xpathExpr);
         for (Object e : htmlElements) {
-            webElements.add(new HtmlUnitWebElement(getParent(), 
-                    (HtmlElement) e));
+            webElements.add(getParent().newHtmlUnitWebElement((HtmlElement) e));
         }
         return webElements;
     }
@@ -411,7 +423,7 @@ public class HtmlUnitWebElement implements WebElement,
         for (HtmlElement e : htmlElements) {
             if (e.getTextContent().equals(linkText) 
                     && e.getAttribute("href") != null) {
-                webElements.add(new HtmlUnitWebElement(getParent(), e));
+                webElements.add(getParent().newHtmlUnitWebElement(e));
             }
         }
         return webElements;
@@ -430,6 +442,6 @@ public class HtmlUnitWebElement implements WebElement,
         while (!(current == null || current instanceof HtmlForm)) {
             current = current.getParentNode();
         }
-        return new HtmlUnitWebElement(parent, (HtmlForm) current);
+        return getParent().newHtmlUnitWebElement((HtmlForm) current);
     }
 }

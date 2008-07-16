@@ -91,7 +91,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
 //	}
 
 	@JavascriptEnabled
-	@Ignore("safari")
+	@Ignore("safari, htmlunit")
     public void testShouldAllowTheUserToTellIfAnElementIsDisplayedOrNot() {
         driver.get(javascriptPage);
 
@@ -123,7 +123,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     }
 
 	@JavascriptEnabled
-	@Ignore("safari")
+	@Ignore("safari, htmlunit")
     public void testShouldBeAbleToDetermineTheLocationOfAnElement() {
         driver.get(xhtmlTestPage);
 
@@ -135,7 +135,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     }
 
 	@JavascriptEnabled
-	@Ignore("safari")
+	@Ignore("safari, htmlunit")
     public void testShouldBeAbleToDetermineTheSizeOfAnElement() {
         driver.get(xhtmlTestPage);
 
@@ -176,7 +176,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore("safari")
+  @Ignore("safari, htmlunit")
   public void testShouldBeAbleToSwitchToFocusedElement() {
     driver.get(javascriptPage);
 
