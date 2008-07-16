@@ -9,9 +9,11 @@ import java.io.*;
 import org.apache.commons.logging.Log;
 import org.apache.tools.ant.util.*;
 import org.mortbay.log.LogFactory;
+import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.browserlaunchers.locators.InternetExplorerLocator;
 
+//TODO:  EB - Why doesn't this class extend AbstractBrowserLauncher
 public class HTABrowserLauncher implements BrowserLauncher {
 
     static Log log = LogFactory.getLog(HTABrowserLauncher.class);
@@ -131,6 +133,14 @@ public class HTABrowserLauncher implements BrowserLauncher {
 
     private int getPort() {
         return configuration.getPortDriversShouldContact();
+    }
+
+    /**
+     * Note that the browserConfigurationOptions object is ignored; This browser configuration is not supported for IE
+     */
+    public void launchRemoteSession(String url, boolean multiWindow,
+            BrowserConfigurationOptions browserConfigurationOptions) {
+        launchRemoteSession(url, multiWindow);
     }
 
 }

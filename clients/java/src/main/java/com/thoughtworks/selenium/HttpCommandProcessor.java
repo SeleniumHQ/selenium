@@ -17,6 +17,8 @@
 
 package com.thoughtworks.selenium;
 
+import org.openqa.selenium.server.BrowserConfigurationOptions;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -165,6 +167,13 @@ public class HttpCommandProcessor implements CommandProcessor {
             new String[]{browserStartCommand, browserURL, extensionJs});
         setSessionInProgress(result);
     }
+    
+    public void start(BrowserConfigurationOptions browserConfigOptions){
+        String result = getString("getNewBrowserSession",
+                new String[]{browserStartCommand, browserURL, 
+                             extensionJs, browserConfigOptions.serialize()});
+            setSessionInProgress(result);
+    }
 
     protected void setSessionInProgress(String result) {
         sessionId = result;
@@ -284,4 +293,5 @@ public class HttpCommandProcessor implements CommandProcessor {
         }
         return b;
     }
+
 }

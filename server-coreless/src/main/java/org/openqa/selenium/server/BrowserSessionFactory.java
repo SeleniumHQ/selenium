@@ -1,5 +1,6 @@
 package org.openqa.selenium.server;
 
+
 import org.apache.commons.logging.Log;
 import org.mortbay.log.LogFactory;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
@@ -75,11 +76,12 @@ public class BrowserSessionFactory {
      * @throws RemoteCommandException
      */
     public BrowserSessionInfo getNewBrowserSession(String browserString, String startURL,
-        String extensionJs, RemoteControlConfiguration configuration)
+        String extensionJs, BrowserConfigurationOptions browserConfigurations, RemoteControlConfiguration configuration)
         throws RemoteCommandException {
         return getNewBrowserSession(browserString, startURL, extensionJs,
-            configuration.reuseBrowserSessions(),
-            SeleniumServer.isEnsureCleanSession(), configuration);
+                browserConfigurations, 
+                configuration.reuseBrowserSessions(),
+                SeleniumServer.isEnsureCleanSession(), configuration);
     }
 
     /**
@@ -95,7 +97,8 @@ public class BrowserSessionFactory {
      * @throws RemoteCommandException
      */
     protected BrowserSessionInfo getNewBrowserSession(String browserString, String startURL,
-        String extensionJs, boolean useCached, boolean ensureClean, RemoteControlConfiguration configuration) throws RemoteCommandException {
+        String extensionJs, BrowserConfigurationOptions browserConfigurations, 
+        boolean useCached, boolean ensureClean, RemoteControlConfiguration configuration) throws RemoteCommandException {
 
         BrowserSessionInfo sessionInfo = null;
         browserString = validateBrowserString(browserString, configuration);
@@ -112,7 +115,8 @@ public class BrowserSessionFactory {
         // couldn't find one in the cache, or not reusing sessions.
         if (null == sessionInfo) {
             log.info("creating new remote session");
-            sessionInfo = createNewRemoteSession(browserString, startURL, extensionJs, ensureClean, configuration);
+            sessionInfo = createNewRemoteSession(browserString, startURL, extensionJs,
+                    browserConfigurations, ensureClean, configuration);
         }
 
         assert null != sessionInfo;
@@ -299,7 +303,7 @@ public class BrowserSessionFactory {
      *                                request work in the required amount of time.
      */
     protected BrowserSessionInfo createNewRemoteSession(String browserString, String startURL,
-        String extensionJs, boolean ensureClean, RemoteControlConfiguration configuration)
+        String extensionJs, BrowserConfigurationOptions browserConfiguration, boolean ensureClean, RemoteControlConfiguration configuration)
         throws RemoteCommandException {
 
         final FrameGroupCommandQueueSet queueSet;
@@ -315,7 +319,7 @@ public class BrowserSessionFactory {
         log.info("Allocated session " + sessionId + " for " + startURL + ", launching...");
 
         try {
-            launcher.launchRemoteSession(startURL, configuration.isMultiWindow());
+            launcher.launchRemoteSession(startURL, configuration.isMultiWindow(), browserConfiguration);
             queueSet.waitForLoad(configuration.getTimeoutInSeconds() * 1000l);
 
             // TODO DGF log4j only

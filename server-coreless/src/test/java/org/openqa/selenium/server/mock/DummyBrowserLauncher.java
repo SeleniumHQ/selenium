@@ -1,6 +1,7 @@
 package org.openqa.selenium.server.mock;
 
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
+import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
 /** Unlike the MockBrowserLauncher which acts like a real canned browser,
@@ -48,6 +49,12 @@ public class DummyBrowserLauncher implements BrowserLauncher {
     /** noop */
     public void launchRemoteSession(String url, boolean multiWindow) {
 
+    }
+
+    /** noop */
+    public void launchRemoteSession(String url, boolean multiWindow,
+            BrowserConfigurationOptions browserConfigurationOptions) {
+        
     }
 
 }

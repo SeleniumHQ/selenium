@@ -343,6 +343,9 @@ public class LauncherUtils {
 			// for Firefox 2.0
 			out.println("user_pref('browser.startup.homepage', '" + homePage + "');");
             out.println("user_pref('startup.homepage_welcome_url', '');");
+            
+            // This handles known RC problems when the startup page is a blank page or when the previous session has been restored 
+            out.println("user_pref('browser.startup.page', 1);");
 		}
 
 		// Disable security warnings

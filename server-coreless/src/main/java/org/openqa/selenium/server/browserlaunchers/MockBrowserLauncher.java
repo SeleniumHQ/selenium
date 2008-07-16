@@ -13,6 +13,7 @@ import java.net.URL;
 
 import org.apache.commons.logging.Log;
 import org.mortbay.log.LogFactory;
+import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.DefaultRemoteCommand;
 import org.openqa.selenium.server.RemoteCommand;
 import org.openqa.selenium.server.SeleniumServer;
@@ -175,6 +176,14 @@ public class MockBrowserLauncher implements BrowserLauncher, Runnable {
             InputStream is = conn.getInputStream();
             return stringContentsOfInputStream(is);
         }
+    }
+
+    /**
+     * Note that the browserConfigurationOptions object is ignored; This browser configuration is not supported for IE
+     */
+    public void launchRemoteSession(String url, boolean multiWindow,
+            BrowserConfigurationOptions browserConfigurationOptions) {
+        launchRemoteSession(url, multiWindow);
     }
 
 }

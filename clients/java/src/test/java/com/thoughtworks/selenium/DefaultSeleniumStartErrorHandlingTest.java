@@ -2,6 +2,8 @@ package com.thoughtworks.selenium;
 
 import junit.framework.TestCase;
 
+import org.openqa.selenium.server.BrowserConfigurationOptions;
+
 public class DefaultSeleniumStartErrorHandlingTest extends TestCase {
 
     public void testWrapsConnectionRefusedWithUserFriendlyExceptionMessage() {
@@ -46,6 +48,10 @@ public class DefaultSeleniumStartErrorHandlingTest extends TestCase {
         public void start() {
             throw new SeleniumException(message);
         }
+        
+        public void start(BrowserConfigurationOptions browserConfigurationOptions) {
+            throw new UnsupportedOperationException();
+        }
 
         public String doCommand(String command, String[] args) {
             throw new UnsupportedOperationException();
@@ -78,5 +84,6 @@ public class DefaultSeleniumStartErrorHandlingTest extends TestCase {
         public void stop() {
             throw new UnsupportedOperationException();
         }
+
     }
 }

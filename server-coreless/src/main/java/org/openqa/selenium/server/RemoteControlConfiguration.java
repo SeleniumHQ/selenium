@@ -15,6 +15,7 @@ public class RemoteControlConfiguration {
 
     private int port;
     private boolean multiWindow;
+    private File profilesLocation;
     private boolean proxyInjectionModeArg;
     /**
      * The following port is the one which drivers and browsers should use when they contact the selenium server.
@@ -53,6 +54,7 @@ public class RemoteControlConfiguration {
     public RemoteControlConfiguration() {
         this.port = getDefaultPort();
         this.multiWindow = false;
+        this.profilesLocation = null;
         this.proxyInjectionModeArg = false;
         this.portDriversShouldContact = USE_SAME_PORT;
         this.timeoutInSeconds = DEFAULT_TIMEOUT_IN_SECONDS;
@@ -76,6 +78,14 @@ public class RemoteControlConfiguration {
 
     public void setMultiWindow(boolean useMultiWindow) {
         this.multiWindow = useMultiWindow;
+    }
+    
+    public File getProfilesLocation() {
+        return profilesLocation;
+    }
+
+    public void setProfilesLocation(File profilesLocation) {
+        this.profilesLocation = profilesLocation;
     }
 
     public void setProxyInjectionModeArg(boolean proxyInjectionModeArg) {

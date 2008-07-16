@@ -22,6 +22,7 @@ public class RemoteControlLauncher {
         printWrappedErrorLine(INDENT, "-timeout <nnnn>: an integer number of seconds before we should give up");
         printWrappedErrorLine(INDENT, "-interactive: puts you into interactive mode.  See the tutorial for more details");
         printWrappedErrorLine(INDENT, "-multiWindow: puts you into a mode where the test web site executes in a separate window, and selenium supports frames");
+        printWrappedErrorLine(INDENT, "-profilesLocation: Specifies the directory that holds the profiles that java clients can use to start up selenium.  Currently supported for Firefox only.");
         printWrappedErrorLine(INDENT, "-forcedBrowserMode <browser>: sets the browser mode to a single argument (e.g. \"*iexplore\") for all sessions, no matter what is passed to getNewBrowserSession");
 
 
@@ -78,6 +79,13 @@ public class RemoteControlLauncher {
                 configuration.setPort(Integer.parseInt(getArg(args, ++i)));
             } else if ("-multiWindow".equalsIgnoreCase(arg)) {
                 configuration.setMultiWindow(true);
+            } else if ("-profilesLocation".equalsIgnoreCase(arg)) {
+                File profilesLocation = new File(getArg(args, ++i));
+                if (!profilesLocation.exists()) {
+                    System.err.println("Specified profile location directory does not exist: " + profilesLocation);
+                    System.exit(1);
+                }
+                configuration.setProfilesLocation(profilesLocation);
             } else if ("-avoidProxy".equalsIgnoreCase(arg)) {
                 SeleniumServer.setAvoidProxy(true);
             } else if ("-proxyInjectionMode".equalsIgnoreCase(arg)) {
@@ -170,6 +178,10 @@ public class RemoteControlLauncher {
         }
         if (configuration.userJSInjection() && !configuration.getProxyInjectionModeArg()) {
             System.err.println("User js injection can only be used w/ -proxyInjectionMode");
+            System.exit(1);
+        }
+        if (configuration.getProfilesLocation() != null && configuration.getFirefoxProfileTemplate() != null) {
+            System.err.println("Cannot specify both a profileDirectory and a firefoxProfileTemplate");
             System.exit(1);
         }
         return configuration;

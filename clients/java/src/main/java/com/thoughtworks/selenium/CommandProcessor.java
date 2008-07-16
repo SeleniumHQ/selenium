@@ -17,6 +17,8 @@
 
 package com.thoughtworks.selenium;
 
+import org.openqa.selenium.server.BrowserConfigurationOptions;
+
 /**
  * <p>Provides a <code>doCommand</code> method, which sends the command to the browser
  * to be performed.</p>
@@ -42,6 +44,9 @@ public interface CommandProcessor {
     
     /** Starts a new Selenium testing session */
     public void start();
+    
+    /** Starts a new Selenium testing session with a configuration options object */
+    public void start(BrowserConfigurationOptions browserConfigurationOptions);
     
     /** Ends the current Selenium testing session (normally killing the browser) */
     public void stop();

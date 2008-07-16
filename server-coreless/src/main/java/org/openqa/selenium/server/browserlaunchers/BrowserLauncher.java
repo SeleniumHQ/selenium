@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.server.browserlaunchers;
 
+import org.openqa.selenium.server.BrowserConfigurationOptions;
+
 /**
  * The launcher interface for classes that will start/stop the browser process.
  *
@@ -30,6 +32,14 @@ public interface BrowserLauncher {
      * @param multiWindow TODO
      */
     void launchRemoteSession(String url, boolean multiWindow);
+    
+    /**
+     * Start the browser and navigate directly to the specified URL using the supplied browser configurations
+     *
+     * @param multiWindow a flag to specify multiWindow mode
+     * @param browserConfigurationOptions Test level browser configuration object
+     */
+    void launchRemoteSession(String url, boolean multiWindow, BrowserConfigurationOptions browserConfigurationOptions);
 
     /**
      * Start the browser in Selenese mode, auto-running the specified HTML suite
@@ -52,4 +62,5 @@ public interface BrowserLauncher {
      * @return a handle to a process if one is available, or null if one is not available or if no browser is running
      */
     Process getProcess();
+
 }

@@ -16,9 +16,11 @@
  */
 package org.openqa.selenium.server.browserlaunchers;
 
+
 import org.apache.commons.logging.Log;
 import org.mortbay.log.LogFactory;
 import org.openqa.selenium.server.ApplicationRegistry;
+import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.browserlaunchers.locators.Firefox2or3Locator;
 
@@ -63,13 +65,26 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
         shell.setEnvironmentVariable("MOZ_NO_REMOTE", "1");
     }
 
+    
+    /* (non-Javadoc)
+     * @see org.openqa.selenium.server.browserlaunchers.AbstractBrowserLauncher#launch(java.lang.String)
+     */
+    @Override
     protected void launch(String url) {
+        launch(url, null);       
+    }
+
+    protected void launch(String url, BrowserConfigurationOptions config) {
         final String profilePath;
         final String homePage;
+        String profile = "";
 
         try {
             homePage = new ChromeUrlConvert().convert(url, getPort());
-            profilePath = makeCustomProfile(homePage);
+            if (config != null) {
+                profile = config.getProfile();
+            } 
+            profilePath = makeCustomProfile(homePage, profile);
             populateCustomProfileDirectory(profilePath);
 
             LOGGER.info("Launching Firefox...");
@@ -96,12 +111,23 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
         waitForFullProfileToBeCreated(20 * 1000);
     }
 
-    private String makeCustomProfile(String homePage) throws IOException {
+    private String makeCustomProfile(String homePage, String profile) throws IOException {
         customProfileDir = LauncherUtils.createCustomProfileDir(sessionId);
         if (simple) return customProfileDir.getAbsolutePath();
 
         String sourceLocationName = "/customProfileDirCUSTFFCHROME";
-        File firefoxProfileTemplate = getConfiguration().getFirefoxProfileTemplate(); 
+
+        File firefoxProfileTemplate = null;
+        if (!"".equals(getConfiguration().getProfilesLocation()) && !"".equals(profile)) {
+            File profileDirectory = getConfiguration().getProfilesLocation();
+            firefoxProfileTemplate = new File(profileDirectory + "/" + profile);
+            if (!firefoxProfileTemplate.exists()) {
+                throw new RuntimeException("The profile specified '" + firefoxProfileTemplate.getAbsolutePath() + "' does not exist");
+            }
+        } else  {
+            firefoxProfileTemplate = getConfiguration().getFirefoxProfileTemplate();
+        }
+        
         if (firefoxProfileTemplate != null) {
             LauncherUtils.copyDirectory(firefoxProfileTemplate, customProfileDir);
         }
@@ -253,12 +279,12 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
 
     @Override // need to specify an absolute resultsUrl
     public void launchHTMLSuite(String suiteUrl, String browserURL, boolean multiWindow, String defaultLogLevel) {
-        launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl, multiWindow, getPort(), defaultLogLevel));
+        launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl, multiWindow, getPort(), defaultLogLevel), null);
     }
     
     @Override // need to specify an absolute driverUrl
-    public void launchRemoteSession(String browserURL, boolean multiWindow) { 
-        launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId, multiWindow, getPort()));
+    public void launchRemoteSession(String browserURL, boolean multiWindow, BrowserConfigurationOptions config) { 
+        launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId, multiWindow, getPort()), config);
     }
 
 }

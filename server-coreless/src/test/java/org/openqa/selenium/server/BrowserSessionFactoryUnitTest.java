@@ -206,6 +206,11 @@ public class BrowserSessionFactoryUnitTest extends TestCase {
         protected void setOpen() {
             closed = false;
         }
+
+        public void launchRemoteSession(String url, boolean multiWindow,
+                BrowserConfigurationOptions browserConfigurationOptions) {
+           closed = false;
+        }
     }
 
 }

@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.server;
 
+
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.tools.ant.Project;
@@ -372,8 +373,9 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         if ("getNewBrowserSession".equals(cmd)) {
             String browserString = values.get(0);
             String extensionJs = values.size() > 2 ? values.get(2) : "";
+            String browserConfigurations = values.size() > 3 ? values.get(3) : "";
             try {
-                sessionId = getNewBrowserSession(browserString, values.get(1), extensionJs);
+                sessionId = getNewBrowserSession(browserString, values.get(1), extensionJs, new BrowserConfigurationOptions(browserConfigurations));
                 setDomain(sessionId, values.get(1));
                 results = "OK," + sessionId;
             } catch (RemoteCommandException rce) {
@@ -668,10 +670,12 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         return UUID.randomUUID().toString().replaceAll("-", "");
     }
 
-    protected String getNewBrowserSession(String browserString, String startURL, String extensionJs)
+    protected String getNewBrowserSession(String browserString, String startURL, String extensionJs,
+            BrowserConfigurationOptions browserConfigurations)
         throws RemoteCommandException {
         BrowserSessionInfo sessionInfo =  browserSessionFactory
-            .getNewBrowserSession(browserString, startURL, extensionJs, remoteControl.getConfiguration());
+            .getNewBrowserSession(browserString, startURL, extensionJs, 
+                    browserConfigurations, remoteControl.getConfiguration());
         setLastSessionId(sessionInfo.sessionId); 
         return sessionInfo.sessionId;
     }
