@@ -9,7 +9,7 @@ module Selenium
       def do_command(verb, args)
         timeout(@timeout) do
           status, response = http_post(http_request_for(verb, args))
-          raise SeleniumCommandError, response.body unless status == "OK"          
+          raise SeleniumCommandError, response unless status == "OK"          
           response
         end
       end

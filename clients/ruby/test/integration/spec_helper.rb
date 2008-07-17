@@ -1,5 +1,7 @@
 require 'rubygems'
 require 'spec'
+require 'base64'
+require 'fileutils'
 require File.expand_path(File.dirname(__FILE__) + "/../../lib/selenium")
 
 Spec::Runner.configure do |config|
@@ -20,6 +22,9 @@ Spec::Runner.configure do |config|
     @selenium.stop
   end
   
+  config.after(:each) do
+    # Selenium::RSpec::ScreenshotFormatter.capture_html @selenium, self
+  end
   
 end
 

@@ -90,5 +90,5 @@ unit_tests do
     client = Class.new { include Selenium::Client::SeleneseClient }.new
     assert_equal "cmd=aCommand&1=This+%26+That", client.send(:http_request_for, "aCommand", [ "This & That" ])
   end
-    
+  
 end
