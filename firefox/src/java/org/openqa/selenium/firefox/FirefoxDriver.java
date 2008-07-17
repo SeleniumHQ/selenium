@@ -278,7 +278,10 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
     	Response response = extension.sendMessageAndWaitForResponse(RuntimeException.class, command);
         context = response.getContext();
         response.ifNecessaryThrow(RuntimeException.class);
-    	
+
+        if ("NULL".equals(response.getExtraResult("resultType")))
+          return null;
+
         String resultType = (String) response.getExtraResult("resultType");
         if ("ELEMENT".equals(resultType))
         	return new FirefoxWebElement(this, response.getResponseText());

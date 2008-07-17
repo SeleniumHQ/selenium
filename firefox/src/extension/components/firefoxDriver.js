@@ -75,23 +75,27 @@ FirefoxDriver.prototype.close = function(respond) {
 }
 
 FirefoxDriver.prototype.executeScript = function(respond, script) {
-	var doc = Utils.getDocument(this.context);
-
+	var document = Utils.getDocument(this.context);
         var window = Utils.getBrowser(this.context).contentWindow;
 
         script = "(function(){" + script + "})();"
 	try {
-                var window = window;
-                var document = doc;
-                var result = eval(script);
+                var result;
+                var e = eval;
 
-		// Sophisticated.
-		if (result['tagName']) {
+                with (window) {
+                  result = e(script);
+                }
+          
+                // Sophisticated.
+		if (result && result['tagName']) {
 		  respond.setField('resultType', "ELEMENT");
                   respond.response = Utils.addToKnownElements(result, this.context);
-                } else {
+                } else if (result) {
 		  respond.setField('resultType', "OTHER");
                   respond.response = result;
+                } else {
+                  respond.setField('resultType', "NULL");
                 }
 
 

@@ -74,6 +74,19 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
         }
     }
 
+    @JavascriptEnabled
+    @Ignore("safari")
+    public void testShouldBeAbleToCallFunctionsDefinedOnThePage() {
+        if (!(driver instanceof JavascriptExecutor))
+          return;
+
+        driver.get(javascriptPage);
+        executeScript("displayMessage('I like cheese');");
+        String text = driver.findElement(By.id("result")).getText();
+
+        assertEquals("I like cheese", text.trim());
+    }
+
     private Object executeScript(String script) {
         return ((JavascriptExecutor) driver).executeScript(script);
     }

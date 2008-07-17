@@ -13,10 +13,8 @@ public class SingleTestSuite {
   private final static String SAFARI = "org.openqa.selenium.safari.SafariDriver";
 
   public static Test suite() throws Exception {
-    String driver = IE;
+    String driver = FIREFOX;
 
-    System.out.println(new File(".").getAbsolutePath());
-    
     TestSuiteBuilder builder = new TestSuiteBuilder()
     	.addSourceDir("../common")
         .addSourceDir("common")
@@ -24,7 +22,7 @@ public class SingleTestSuite {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("FormHandlingTest")
+        .onlyRun("ExecutingJavascriptTest")
 //        .method("testIfNoElementHasFocusTheActiveElementIsTheBody")
         ;  // Yeah, this look strange :)
 
