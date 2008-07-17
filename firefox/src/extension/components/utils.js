@@ -317,32 +317,45 @@ Utils.findFrame = function(browser, frameId) {
     return frame;
 };
 
-Utils.dump = function(element) {
-    dump("=============\n");
+Utils.dumpText = function(text) {
+	var consoleService = Utils.getService("@mozilla.org/consoleservice;1", "nsIConsoleService");
+	if (consoleService)
+		consoleService.logStringMessage(text);
+	else
+		dump(text);
+}
 
-    dump("Supported interfaces: ");
+Utils.dumpn = function(text) {
+	Utils.dumpText(text + "\n");
+}
+
+Utils.dump = function(element) {
+	var dump = "=============\n";
+
+    dump += "Supported interfaces: ";
     for (var i in Components.interfaces) {
         try {
             var view = element.QueryInterface(Components.interfaces[i]);
-            dump(i + ", ");
+            dump += i + ", ";
         } catch (e) {
             // Doesn't support the interface
         }
     }
-    dump("\n------------\n");
+    dump += "\n------------\n";
     var rows = [];
     try {
         Utils.dumpProperties(element, rows);
     } catch (e) {
-        dump("caught an exception: " + e);
+        Utils.dumpText("caught an exception: " + e);
     }
 
     rows.sort();
     for (var i in rows) {
-        dump(rows[i] + "\n");
+        dump += rows[i] + "\n";
     }
 
-    dump("=============\n\n\n");
+    dump += "=============\n\n\n";
+    Utils.dumpText(dump);
 }
 
 Utils.dumpProperties = function(view, rows) {
@@ -365,10 +378,13 @@ Utils.dumpProperties = function(view, rows) {
 Utils.stackTrace = function() {
     var stack = Components.stack;
     var i = 5;
+    var dump = "";
     while (i && stack.caller) {
         stack = stack.caller;
-        dump(stack + "\n");
+        dump += stack + "\n";
     }
+    
+    Utils.dumpText(dump);
 }
 
 Utils.getElementLocation = function(element, context) {		

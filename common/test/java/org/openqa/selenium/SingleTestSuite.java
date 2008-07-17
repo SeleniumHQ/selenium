@@ -23,7 +23,7 @@ public class SingleTestSuite {
         .keepDriverInstance()
         .includeJavascriptTests()
         .onlyRun("ExecutingJavascriptTest")
-//        .method("testIfNoElementHasFocusTheActiveElementIsTheBody")
+        .method("testShouldBeAbleToCallFunctionsDefinedOnThePage")
         ;  // Yeah, this look strange :)
 
     if (REMOTE.equals(driver)) {

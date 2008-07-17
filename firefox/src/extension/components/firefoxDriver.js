@@ -76,30 +76,36 @@ FirefoxDriver.prototype.close = function(respond) {
 
 FirefoxDriver.prototype.executeScript = function(respond, script) {
 	var document = Utils.getDocument(this.context);
-        var window = Utils.getBrowser(this.context).contentWindow;
+	var window = Utils.getBrowser(this.context).contentWindow;
+	
+	// Post 2.0.0.14
+	if (window.wrappedJSObject) {
+		window = window.wrappedJSObject;
+	}
+	
+	var sandbox = new Components.utils.Sandbox(window);
+	sandbox.window = window;
+    sandbox.document = sandbox.window.document;
+    sandbox.unsafeWindow = window;
+    sandbox.__proto__ = window;
 
-        script = "(function(){" + script + "})();"
+    var scriptSrc = "(function(){" + script + "})();";
+
 	try {
-                var result;
-                var e = eval;
+		var result = Components.utils.evalInSandbox(scriptSrc, sandbox);
 
-                with (window) {
-                  result = e(script);
-                }
-          
-                // Sophisticated.
+		// Sophisticated.
 		if (result && result['tagName']) {
-		  respond.setField('resultType', "ELEMENT");
-                  respond.response = Utils.addToKnownElements(result, this.context);
-                } else if (result) {
-		  respond.setField('resultType', "OTHER");
-                  respond.response = result;
-                } else {
-                  respond.setField('resultType', "NULL");
-                }
+			respond.setField('resultType', "ELEMENT");
+			respond.response = Utils.addToKnownElements(result, this.context);
+		} else if (result) {
+			respond.setField('resultType', "OTHER");
+			respond.response = result;
+		} else {
+			respond.setField('resultType', "NULL");
+		}
 
-
-        } catch (e) {
+	} catch (e) {
 		respond.isError = true;
 		respond.response = e;
 	}
