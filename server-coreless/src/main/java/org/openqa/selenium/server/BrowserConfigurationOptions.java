@@ -9,10 +9,12 @@ public class BrowserConfigurationOptions {
         String[] optionsPairList = browserConfiguration.split(";");
         for (int i = 0; i < optionsPairList.length; i++) {
             String[] option = optionsPairList[i].split(":", 2);
-            String optionsName = option[0].trim();
-            String optionValue = option[1].trim();
-            if ("profile".equalsIgnoreCase(optionsName)) {
-                this.profile = optionValue;
+            if (2 == option.length) {
+              String optionsName = option[0].trim();
+              String optionValue = option[1].trim();
+              if ("profile".equalsIgnoreCase(optionsName)) {
+                  this.profile = optionValue;
+              }
             }
         }
     }
