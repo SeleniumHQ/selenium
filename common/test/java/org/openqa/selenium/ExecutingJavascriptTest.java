@@ -87,7 +87,56 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
         assertEquals("I like cheese", text.trim());
     }
 
-    private Object executeScript(String script) {
-        return ((JavascriptExecutor) driver).executeScript(script);
+    private Object executeScript(String script, Object... args) {
+        return ((JavascriptExecutor) driver).executeScript(script, args);
+    }
+
+  @JavascriptEnabled
+  @Ignore("safari, jobbie")
+    public void testShouldBeAbleToPassAStringAnAsArgument() {
+      if (!(driver instanceof JavascriptExecutor))
+          return;
+
+        driver.get(javascriptPage);
+        String value = (String) executeScript("return parameters[0];", "fish");
+
+        assertEquals("fish", value);
+    }
+
+    @JavascriptEnabled
+  @Ignore("safari, jobbie")
+    public void testShouldBeAbleToPassABooleanAnAsArgument() {
+      if (!(driver instanceof JavascriptExecutor))
+          return;
+
+        driver.get(javascriptPage);
+        boolean value = (Boolean) executeScript("return parameters[0];", true);
+
+        assertTrue(value);
+    }
+
+    @JavascriptEnabled
+  @Ignore("safari, jobbie")
+    public void testShouldBeAbleToPassANumberAnAsArgument() {
+      if (!(driver instanceof JavascriptExecutor))
+          return;
+
+        driver.get(javascriptPage);
+        long value = (Long) executeScript("return parameters[0];", 1);
+
+        assertEquals(1, value);
+    }
+
+    @JavascriptEnabled
+  @Ignore("safari, jobbie")
+    public void testShouldBeAbleToPassAWebElementAsArgument() {
+      if (!(driver instanceof JavascriptExecutor))
+          return;
+
+        driver.get(javascriptPage);
+      WebElement button = driver.findElement(By.id("plainButton"));
+      String value = (String) executeScript("return parameters[0].getAttribute('id');", button);
+
+      assertEquals("plainButton", value);
     }
 }

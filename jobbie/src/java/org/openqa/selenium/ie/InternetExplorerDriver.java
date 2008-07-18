@@ -70,7 +70,7 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
     }
 
     private native Object doExecuteScript(String script);
-    public Object executeScript(String script) {
+    public Object executeScript(String script, Object... args) {
     	script = script.replace("\"", "\\\"");
     	script = "(function(){" + script + "})();";
     	return doExecuteScript(script);

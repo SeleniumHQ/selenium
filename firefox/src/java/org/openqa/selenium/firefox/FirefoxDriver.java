@@ -38,6 +38,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.Map;
 
 
 /**
@@ -271,10 +272,13 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
         extension.quit();
     }
 
-    public Object executeScript(String script) {
+    public Object executeScript(String script, Object... args) {
         // Escape the quote marks
         script = script.replaceAll("\"", "\\\"");
-        Command command = new Command(context, null, "executeScript", script);
+
+        Object[] convertedArgs = convertToJsObjects(args);
+
+        Command command = new Command(context, null, "executeScript", script, convertedArgs);
     	Response response = extension.sendMessageAndWaitForResponse(RuntimeException.class, command);
         context = response.getContext();
         response.ifNecessaryThrow(RuntimeException.class);
@@ -291,8 +295,62 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
           return new Long((String) response.getResponseText());
         return result;
     }
+
+  private Object[] convertToJsObjects(Object[] args) {
+    if (args.length == 0)
+      return null;
+
+    Object[] converted = new Object[args.length];
+    for (int i = 0; i < args.length; i++) {
+      converted[i] = convertToJsObject(args[i]);
+    }
     
-    public Options manage() {
+    return converted;
+  }
+
+  private Object convertToJsObject(Object arg) {
+    Map<String, Object> converted = new HashMap<String, Object>();
+
+    if (arg instanceof String) {
+      converted.put("type", "STRING");
+      converted.put("value", arg);
+    } else if (arg instanceof Number) {
+      converted.put("type", "NUMBER");
+      converted.put("value", ((Number) arg).longValue());
+    } else if (isPrimitiveNumberType(arg)) {
+      converted.put("type", "NUMBER");
+      converted.put("value", getPrimitiveTypeAsLong(arg));
+    } else if (arg instanceof Boolean) {
+      converted.put("type", "BOOLEAN");
+      converted.put("value", ((Boolean) arg).booleanValue());
+    } else if (arg.getClass() == boolean.class) {
+      converted.put("type", "BOOLEAN");
+      converted.put("value", arg);
+    } else if (arg instanceof FirefoxWebElement) {
+      converted.put("type", "ELEMENT");
+      converted.put("value", ((FirefoxWebElement) arg).getElementId());
+    } else {
+      throw new IllegalArgumentException("Argument is of an illegal type: " + arg);
+    }
+
+    return converted;
+  }
+
+  private Long getPrimitiveTypeAsLong(Object arg) {
+    return Long.valueOf(String.valueOf(arg)); // Clever
+  }
+
+  private boolean isPrimitiveNumberType(Object arg) {
+    if (!arg.getClass().isPrimitive()) {
+      return false;
+    }
+
+    return arg.getClass() == long.class ||
+           arg.getClass() == int.class ||
+           arg.getClass() == short.class; // And so on. That's the common case done :)
+  }
+
+  public Options manage() {
         return new FirefoxOptions();
     }
 

@@ -15,7 +15,13 @@ public interface JavascriptExecutor {
      * that type, following the rules above. We do not support nested lists.</li> <li>Unless the value
      * is null or there is no return value</li> </ul>
      *
+     * <p>Arguments must be a number (which will be converted to a Long), a boolean, String or
+     * WebElement. An exception will be thrown if the arguments do not meet these criteria. The
+     * arguments will be made available to the javascript via the "parameters" magic variable.
+     *
+     * @param script The javascript to execute
+     * @param args The arguments to the script. May be empty
      * @return One of Boolean, Long, String, List or WebElement. Or null.
      */
-    Object executeScript(String script);
+    Object executeScript(String script, Object... args);
 }

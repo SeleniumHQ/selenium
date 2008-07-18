@@ -2,7 +2,7 @@ function FirefoxDriver(server, id) {
     this.server = server;
     this.context = new Context();
     this.id = id;
-    this.mouseSpeed = 1; 
+    this.mouseSpeed = 1;
 }
 
 FirefoxDriver.prototype.get = function(respond, url) {
@@ -75,13 +75,16 @@ FirefoxDriver.prototype.close = function(respond) {
 }
 
 FirefoxDriver.prototype.executeScript = function(respond, script) {
+  var context = this.context;
   var window = Utils.getBrowser(this.context).contentWindow;
 
+  var parameters = [];
   var runScript;
   // Pre 2.0.0.15
   if (window['alert'] && !window.wrappedJSObject) {
     runScript = function(scriptSrc) {
       var document = window.document;
+
       var e = eval;
       with (window) {
         return e(scriptSrc);
@@ -95,14 +98,27 @@ FirefoxDriver.prototype.executeScript = function(respond, script) {
       sandbox.document = sandbox.window.document;
       sandbox.unsafeWindow = window;
       sandbox.__proto__ = window;
+      sandbox.parameters = parameters;
 
       return Components.utils.evalInSandbox(scriptSrc, sandbox);
     };
   }
 
   try {
-    var scriptSrc = "(function(){" + script + "})();";
-    var result = runScript(scriptSrc);
+    var scriptSrc = "(function(){" + script.shift() + "})()";
+
+    var convert = script.shift();
+    while (convert && convert.length > 0) {
+      var t = convert.shift();
+
+      if (t['type'] == "ELEMENT") {
+        t['value'] = Utils.getElementAt(t['value'], context);
+      }
+      
+      parameters.push(t['value']);
+    }
+
+    var result = runScript(scriptSrc, parameters);
 
     // Sophisticated.
     if (result && result['tagName']) {
@@ -355,7 +371,7 @@ FirefoxDriver.prototype.addCookie = function(respond, cookieString) {
     try {
       cookieManager.add(cookie.domain, cookie.path, cookie.name, cookie.value, cookie.secure, false, cookie.expiry);
     } catch(e) {
-      cookieManager.add(cookie.domain, cookie.path, cookie.name, cookie.value, cookie.secure, false, false, cookie.expiry);  
+      cookieManager.add(cookie.domain, cookie.path, cookie.name, cookie.value, cookie.secure, false, false, cookie.expiry);
     }
 
     respond.context = this.context;
@@ -365,7 +381,7 @@ FirefoxDriver.prototype.addCookie = function(respond, cookieString) {
 FirefoxDriver.prototype.getCookie = function(respond) {
     var cookieManager = Utils.getService("@mozilla.org/cookiemanager;1", "nsICookieManager2");
     var toReturn = "";
-    
+
     var location = Utils.getBrowser(this.context).contentWindow.location;
     var isForCurrentHost = function(c) {
         try {
@@ -374,7 +390,7 @@ FirefoxDriver.prototype.getCookie = function(respond) {
             return false;
         }
     }
-    
+
     var isForCurrentPath = function(c) {
         try {
         	return location.pathname.indexOf(c.path) != -1;
@@ -382,7 +398,7 @@ FirefoxDriver.prototype.getCookie = function(respond) {
         	return false;
         }
     }
-    
+
     var cookieToString = function(c) {
       return c.name + "=" + c.value + ";" + "domain=" + c.host + ";"
           + "path=" + c.path + ";" + "expires=" + c.expires + ";"

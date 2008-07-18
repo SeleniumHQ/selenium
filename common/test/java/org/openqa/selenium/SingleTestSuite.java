@@ -23,7 +23,7 @@ public class SingleTestSuite {
         .keepDriverInstance()
         .includeJavascriptTests()
         .onlyRun("ExecutingJavascriptTest")
-        .method("testShouldBeAbleToCallFunctionsDefinedOnThePage")
+//        .method("testShouldBeAbleToPassANumberAnAsArgument")
         ;  // Yeah, this look strange :)
 
     if (REMOTE.equals(driver)) {

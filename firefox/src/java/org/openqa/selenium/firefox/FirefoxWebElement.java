@@ -225,4 +225,8 @@ public class FirefoxWebElement implements RenderedWebElement, FindsByXPath,
     private String sendMessage(Class<? extends RuntimeException> throwOnFailure, String methodName, Object... parameters) {
         return parent.sendMessage(throwOnFailure, new Command(parent.context, elementId, methodName, parameters));
     }
+
+  public String getElementId() {
+    return elementId;
+  }
 }

@@ -109,6 +109,7 @@ public abstract class AbstractExtensionConnection implements ExtensionConnection
     public Response sendMessageAndWaitForResponse(Class<? extends RuntimeException> throwOnFailure,
                                                   Command command) {
         String converted = convert(command);
+
         int lines = countLines(converted);
 
         StringBuffer message = new StringBuffer("Length: ");
