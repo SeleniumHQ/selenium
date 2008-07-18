@@ -19,10 +19,13 @@ package com.thoughtworks.selenium;
 
 import org.openqa.selenium.server.BrowserConfigurationOptions;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.NumberFormat;
@@ -89,57 +92,99 @@ public class HttpCommandProcessor implements CommandProcessor {
     public String executeCommandOnServlet(String command) {
         InputStream is = null;
         try {
-            is = getCommandResponse(command, is);
-            return stringContentsOfInputStream(is);
+            return getCommandResponseAsString(command);
         } catch (IOException e) {
+            e.printStackTrace();
             throw new UnsupportedOperationException("Catch body broken: IOException from " + command + " -> " + e, e);
-        } finally {
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
     }
 
-    private String stringContentsOfInputStream(InputStream is) throws IOException {
+    private String stringContentsOfInputStream(Reader rdr) throws IOException {
         StringBuffer sb = new StringBuffer();
-        InputStreamReader r = new InputStreamReader(is, "UTF-8");
         int c;
-        while ((c = r.read()) != -1) {
-            sb.append((char) c);
+        try {
+          while ((c = rdr.read()) != -1) {
+              sb.append((char) c);
+          }
+          return sb.toString();
+        } finally {
+          rdr.close();
         }
-        return sb.toString();
+    }
+    
+    // for testing
+    protected HttpURLConnection getHttpUrlConnection(URL urlForServlet) throws IOException {
+      return (HttpURLConnection) urlForServlet.openConnection();
+    }
+    
+    // for testing
+    protected Writer getOutputStreamWriter(HttpURLConnection conn) throws IOException {
+      return new BufferedWriter(new OutputStreamWriter(conn.getOutputStream())); 
+    }
+    
+    // for testing
+    protected Reader getInputStreamReader(HttpURLConnection conn) throws IOException {
+      return new InputStreamReader(conn.getInputStream(), "UTF-8");
+    }
+    
+    // for testing
+    protected int getResponseCode(HttpURLConnection conn) throws IOException {
+      return conn.getResponseCode();
     }
 
-    private InputStream getCommandResponse(String command, InputStream is) throws IOException {
+    protected String getCommandResponseAsString(String command) throws IOException {
+        String responseString = null;
         int responsecode = HttpURLConnection.HTTP_MOVED_PERM;
+        HttpURLConnection uc = null;
+        Writer wr = null;
+        Reader rdr = null;
         while (responsecode == HttpURLConnection.HTTP_MOVED_PERM) {
             URL result = new URL(pathToServlet); 
             String body = buildCommandBody(command);
-            HttpURLConnection uc = (HttpURLConnection) result.openConnection();
-            uc.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
-            uc.setInstanceFollowRedirects(false);
-            uc.setDoOutput(true);
-            OutputStreamWriter wr = new OutputStreamWriter(uc.getOutputStream());
             try {
+                uc = getHttpUrlConnection(result);
+                uc.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
+                uc.setInstanceFollowRedirects(false);
+                uc.setDoOutput(true);
+                wr = getOutputStreamWriter(uc);;
                 wr.write(body);
                 wr.flush();
+                responsecode = getResponseCode(uc);
+                if (responsecode == HttpURLConnection.HTTP_MOVED_PERM) {
+                    pathToServlet = uc.getRequestProperty("Location");
+                } else if (responsecode != HttpURLConnection.HTTP_OK) {
+                    throw new SeleniumException(uc.getResponseMessage());
+                } else {
+                    rdr = getInputStreamReader(uc);
+                    responseString = stringContentsOfInputStream(rdr);
+                }
             } finally {
-                wr.close();
-            }
-            responsecode = uc.getResponseCode();
-            if (responsecode == HttpURLConnection.HTTP_MOVED_PERM) {
-                pathToServlet = uc.getRequestProperty("Location");
-            } else if (responsecode != HttpURLConnection.HTTP_OK) {
-                throw new SeleniumException(uc.getResponseMessage());
-            } else {
-                is = uc.getInputStream();
+              closeResources(uc, wr, rdr);
             }
         }
-        return is;
+        return responseString;
+    }
+    
+    protected void closeResources(HttpURLConnection conn, Writer wr, Reader rdr) {
+      try {
+        if (null != wr) {
+          wr.close();
+        }
+      } catch (IOException ioe) {
+        // ignore
+      }
+      
+      try {
+        if (null != rdr) {
+          rdr.close();
+        }
+      } catch (IOException ioe) {
+        // ignore
+      }
+      
+      if (null != conn) {
+        conn.disconnect();
+      }
     }
 
     private String buildCommandBody(String command) {
