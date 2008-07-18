@@ -16,6 +16,7 @@ public class UnitTestSuite extends TestCase {
         suite.addTestSuite(CommandHolderUnitTest.class);
         suite.addTestSuite(CommandResultHolderUnitTest.class);
         suite.addTestSuite(CommandQueueUnitTest.class);
+        suite.addTestSuite(BrowserConfigurationOptionsTest.class);
         suite.addTestSuite(BrowserSessionFactoryUnitTest.class);
         suite.addTestSuite(SeleniumServerUnitTest.class);
         suite.addTestSuite(ClasspathResourceLocatorUnitTest.class);
