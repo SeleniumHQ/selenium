@@ -38,11 +38,19 @@ public abstract class AbstractBrowserLauncher implements BrowserLauncher {
     
     /**
      * This is a default method and browser launchers should override this launch method to support per-test browserConfigurations
+     * 
+     * If the browser configuration options object has no options, however, this
+     * method redirects to the launch(url) method.
+     * 
      * @param url The base url for starting selenium
      * @param browserConfigurationOptions The browser configuration object
      */
     protected void launch(String url, BrowserConfigurationOptions browserConfigurationOptions) {
+      if (!browserConfigurationOptions.hasOptions()) {  
+        launch(url);
+      } else {
         throw new IllegalArgumentException("This browser does not support overriding the default browser configuration");
+      }
     }
     
     public RemoteControlConfiguration getConfiguration() {

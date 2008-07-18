@@ -3,6 +3,7 @@ package org.openqa.selenium.server;
 public class BrowserConfigurationOptions {
 
     private String profile = "";
+    private boolean hasOptions = false;
     
     public BrowserConfigurationOptions(String browserConfiguration) {
         //"name:value;name:value"
@@ -13,7 +14,8 @@ public class BrowserConfigurationOptions {
               String optionsName = option[0].trim();
               String optionValue = option[1].trim();
               if ("profile".equalsIgnoreCase(optionsName)) {
-                  this.profile = optionValue;
+                  setProfile(optionValue);
+                  hasOptions = true;
               }
             }
         }
@@ -36,6 +38,10 @@ public class BrowserConfigurationOptions {
 
     public String getProfile() {
         return profile;
+    }
+    
+    public boolean hasOptions() {
+      return hasOptions;
     }
 
 }
