@@ -75,41 +75,51 @@ FirefoxDriver.prototype.close = function(respond) {
 }
 
 FirefoxDriver.prototype.executeScript = function(respond, script) {
-	var document = Utils.getDocument(this.context);
-	var window = Utils.getBrowser(this.context).contentWindow;
-	
-	// Post 2.0.0.14
-	if (window.wrappedJSObject) {
-		window = window.wrappedJSObject;
-	}
-	
-	var sandbox = new Components.utils.Sandbox(window);
-	sandbox.window = window;
-    sandbox.document = sandbox.window.document;
-    sandbox.unsafeWindow = window;
-    sandbox.__proto__ = window;
+  var window = Utils.getBrowser(this.context).contentWindow;
 
+  var runScript;
+  // Pre 2.0.0.15
+  if (window['alert'] && !window.wrappedJSObject) {
+    runScript = function(scriptSrc) {
+      var document = window.document;
+      var e = eval;
+      with (window) {
+        return e(scriptSrc);
+      }
+    };
+  } else {
+    runScript = function(scriptSrc) {
+      window = window.wrappedJSObject;
+      var sandbox = new Components.utils.Sandbox(window);
+      sandbox.window = window;
+      sandbox.document = sandbox.window.document;
+      sandbox.unsafeWindow = window;
+      sandbox.__proto__ = window;
+
+      return Components.utils.evalInSandbox(scriptSrc, sandbox);
+    };
+  }
+
+  try {
     var scriptSrc = "(function(){" + script + "})();";
+    var result = runScript(scriptSrc);
 
-	try {
-		var result = Components.utils.evalInSandbox(scriptSrc, sandbox);
+    // Sophisticated.
+    if (result && result['tagName']) {
+      respond.setField('resultType', "ELEMENT");
+      respond.response = Utils.addToKnownElements(result, this.context);
+    } else if (result) {
+      respond.setField('resultType', "OTHER");
+      respond.response = result;
+    } else {
+      respond.setField('resultType', "NULL");
+    }
 
-		// Sophisticated.
-		if (result && result['tagName']) {
-			respond.setField('resultType', "ELEMENT");
-			respond.response = Utils.addToKnownElements(result, this.context);
-		} else if (result) {
-			respond.setField('resultType', "OTHER");
-			respond.response = result;
-		} else {
-			respond.setField('resultType', "NULL");
-		}
-
-	} catch (e) {
-		respond.isError = true;
-		respond.response = e;
-	}
-	respond.send();
+  } catch (e) {
+    respond.isError = true;
+    respond.response = e;
+  }
+  respond.send();
 };
 
 FirefoxDriver.prototype.getCurrentUrl = function(respond) {
