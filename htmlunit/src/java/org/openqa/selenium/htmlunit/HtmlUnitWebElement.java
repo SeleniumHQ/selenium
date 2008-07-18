@@ -381,11 +381,11 @@ public class HtmlUnitWebElement implements WebElement,
     }
     
     public WebElement findElementById(String id) {
-        return findElementByXPath("//*[@id = '" + id + "']");
+        return findElementByXPath(".//*[@id = '" + id + "']");
     }
     
     public List<WebElement> findElementsById(String id) {
-        return findElementsByXPath("//*[@id = '" + id + "']");
+        return findElementsByXPath(".//*[@id = '" + id + "']");
     }
     
     public WebElement findElementByXPath(String xpathExpr) {
@@ -430,11 +430,11 @@ public class HtmlUnitWebElement implements WebElement,
     }
     
     public WebElement findElementByName(String name) {
-        return findElementByXPath("//*[@name = '" + name + "']");
+        return findElementByXPath(".//*[@name = '" + name + "']");
     }
 
     public List<WebElement> findElementsByName(String name) {
-        return findElementsByXPath("//*[@name = '" + name + "']");
+        return findElementsByXPath(".//*[@name = '" + name + "']");
     }
 
     private WebElement findParentForm() {
