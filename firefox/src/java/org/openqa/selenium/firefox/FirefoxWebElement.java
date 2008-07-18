@@ -193,15 +193,15 @@ public class FirefoxWebElement implements RenderedWebElement, FindsByXPath,
     }
 
     public List<WebElement> findElementsById(String id) {
-    	return findElementsByXPath("*[@id = '" + id + "']");  
+    	return findElementsByXPath("//*[@id = '" + id + "']");  
     }
 
     public WebElement findElementByName(String name) {
-        return findElementByXPath("*[@name = '" + name + "']");
+        return findElementByXPath("//*[@name = '" + name + "']");
     }
 
     public List<WebElement> findElementsByName(String name) {
-        return findElementsByXPath("*[@name = '" + name + "']");
+        return findElementsByXPath("//*[@name = '" + name + "']");
     }
     
     public WebElement findElementByClassName(String using) {

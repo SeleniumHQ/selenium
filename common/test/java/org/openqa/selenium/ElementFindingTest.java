@@ -193,4 +193,21 @@ public class ElementFindingTest extends AbstractDriverTestCase {
         element = driver.findElement(By.id("id-name2"));      
         assertThat(element.getValue(), is("id"));
     }
+
+    public void testShouldFindGrandChildren() {
+        driver.get(formPage);
+        WebElement form = driver.findElement(By.id("nested_form"));
+        form.findElement(By.name("x"));
+    }
+
+
+    public void testShouldNotFindElementOutSideTree() {
+        driver.get(formPage);
+        WebElement element = driver.findElement(By.name("login"));
+        try {
+            element.findElement(By.name("x"));
+        } catch (NoSuchElementException e) {
+            // this is expected
+        }
+    }
 }
