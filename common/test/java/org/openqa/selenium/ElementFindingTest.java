@@ -176,7 +176,8 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     	
     	assertTrue(elements.size() > 1);
     }
-    
+
+    @Ignore("safari")
     // You don't want to ask why this is here
     public void testWhenFindingByNameShouldNotReturnById() {
         driver.get(formPage);
@@ -194,6 +195,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
         assertThat(element.getValue(), is("id"));
     }
 
+    @Ignore("safari")
     public void testShouldFindGrandChildren() {
         driver.get(formPage);
         WebElement form = driver.findElement(By.id("nested_form"));

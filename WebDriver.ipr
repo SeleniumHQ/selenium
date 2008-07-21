@@ -820,11 +820,11 @@
   <component name="ProjectRunConfigurationManager">
     <configuration default="false" name="SingleTestSuite" type="JUnit" factoryName="JUnit" enabled="false" merge="false">
       <pattern value="com.googlecode.webdriver.*" />
-      <module name="safari" />
+      <module name="htmlunit" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" value="" />
-      <option name="PACKAGE_NAME" value="com.googlecode.webdriver" />
-      <option name="MAIN_CLASS_NAME" value="com.googlecode.webdriver.SingleTestSuite" />
+      <option name="PACKAGE_NAME" value="org.openqa.selenium" />
+      <option name="MAIN_CLASS_NAME" value="org.openqa.selenium.SingleTestSuite" />
       <option name="METHOD_NAME" value="" />
       <option name="TEST_OBJECT" value="class" />
       <option name="VM_PARAMETERS" value="-Dwebdriver.firefox.useExisting=true" />

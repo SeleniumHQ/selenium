@@ -39,6 +39,8 @@ import com.gargoylesoftware.htmlunit.WebResponse;
 import com.gargoylesoftware.htmlunit.WebWindow;
 import com.gargoylesoftware.htmlunit.WebWindowEvent;
 import com.gargoylesoftware.htmlunit.WebWindowListener;
+import com.gargoylesoftware.htmlunit.ScriptResult;
+import com.gargoylesoftware.htmlunit.javascript.host.HTMLElement;
 import com.gargoylesoftware.htmlunit.html.FrameWindow;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
@@ -53,14 +55,16 @@ import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.Speed;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.internal.ReturnedCookie;
+import org.mozilla.javascript.NativeArray;
 
-public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText, 
-		FindsByXPath, FindsByName, SearchContext {
+public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecutor,
+        FindsById, FindsByLinkText, FindsByXPath, FindsByName {
     private WebClient webClient;
     private WebWindow currentWindow;
     /** window name => history. */
@@ -114,6 +118,7 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText,
     protected WebClient newWebClient() {
         WebClient client = new WebClient();
         client.setThrowExceptionOnFailingStatusCode(false);
+        client.setPrintContentOnFailingStatusCode(false);
         client.setJavaScriptEnabled(javascriptEnabled);
         client.setRedirectEnabled(true);
         try {
@@ -147,7 +152,7 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText,
           return;
 
         if (((HtmlPage) page).getFrames().size() > 0) {
-            FrameWindow frame = (FrameWindow) ((HtmlPage) page).getFrames().get(0);
+            FrameWindow frame = ((HtmlPage) page).getFrames().get(0);
             if (!(frame.getFrameElement() instanceof HtmlInlineFrame))
                 switchTo().frame(0);
         }
@@ -195,6 +200,37 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText,
     	currentWindow = null;
     }
 
+    public Object executeScript(String script, Object... args) {
+        if (!javascriptEnabled)
+            throw new UnsupportedOperationException("Javascript is enabled for this HtmlUnitDriver instance");
+
+        ScriptResult paramHolder = lastPage().executeJavaScript("(function(){window.parameters = []; return window.parameters})()");
+        NativeArray parameters = (NativeArray) paramHolder.getJavaScriptResult();
+
+        for (int i = 0; i < args.length; i++) {
+            if (args[i] instanceof HtmlUnitWebElement) {
+                HtmlElement element = ((HtmlUnitWebElement) args[i]).getElement();
+                parameters.put(i, parameters, element);
+            } else {
+                parameters.put(i, parameters, args[i]);
+            }
+        }
+
+        script = "(function() {" + script + "})();";
+        ScriptResult result = lastPage().executeJavaScript(script);
+
+        Object value = result.getJavaScriptResult();
+        if (value instanceof HTMLElement) {
+            return new HtmlUnitWebElement(this, ((HTMLElement) value).getHtmlElementOrDie());
+        }
+
+        if (value instanceof Number) {
+            return ((Number) value).longValue();
+        }
+
+        return result.getJavaScriptResult();
+    }
+
   public TargetLocator switchTo() {
         return new HtmlUnitTargetLocator();
     }
@@ -213,8 +249,7 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText,
     String expectedText = selector.substring(equalsIndex).trim();
 
     List<HtmlAnchor> anchors = lastPage().getAnchors();
-    for (HtmlAnchor anchor1 : anchors) {
-      HtmlAnchor anchor = anchor1;
+    for (HtmlAnchor anchor : anchors) {
       if (expectedText.equals(anchor.asText())) {
         return newHtmlUnitWebElement(anchor);
       }
@@ -306,7 +341,7 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText,
         public WebDriver frame(int frameIndex) {
             HtmlPage page = (HtmlPage) webClient.getCurrentWindow().getEnclosedPage();
             try {
-                currentWindow = (WebWindow) page.getFrames().get(frameIndex);
+                currentWindow = page.getFrames().get(frameIndex);
             } catch (IndexOutOfBoundsException e) {
                 throw new NoSuchFrameException("Cannot find frame: " + frameIndex);
             }
@@ -321,7 +356,7 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText,
             for (String frameName : names) {
                 try {
                     int index = Integer.parseInt(frameName);
-                    window = (WebWindow) page.getFrames().get(index);
+                    window = page.getFrames().get(index);
                 } catch (NumberFormatException e) {
                     window = null;
                     for (Object frame : page.getFrames()) {
@@ -386,7 +421,7 @@ public class HtmlUnitDriver implements WebDriver, FindsById, FindsByLinkText,
         HtmlPage page = (HtmlPage) window.getEnclosedPage();
 
         if (page != null && page.getFrames().size() > 0) {
-            FrameWindow frame = (FrameWindow) page.getFrames().get(0);
+            FrameWindow frame = page.getFrames().get(0);
             if (!(frame.getFrameElement() instanceof HtmlInlineFrame))
                 return new HtmlUnitDriver(frame);
         }
