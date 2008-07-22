@@ -203,6 +203,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     }
 
 
+    @Ignore("safari")
     public void testShouldNotFindElementOutSideTree() {
         driver.get(formPage);
         WebElement element = driver.findElement(By.name("login"));

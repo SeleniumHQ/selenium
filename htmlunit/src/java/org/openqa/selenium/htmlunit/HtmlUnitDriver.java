@@ -17,6 +17,38 @@
 
 package org.openqa.selenium.htmlunit;
 
+import com.gargoylesoftware.htmlunit.ElementNotFoundException;
+import com.gargoylesoftware.htmlunit.Page;
+import com.gargoylesoftware.htmlunit.ScriptResult;
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.WebResponse;
+import com.gargoylesoftware.htmlunit.WebWindow;
+import com.gargoylesoftware.htmlunit.WebWindowEvent;
+import com.gargoylesoftware.htmlunit.WebWindowListener;
+import com.gargoylesoftware.htmlunit.html.FrameWindow;
+import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
+import com.gargoylesoftware.htmlunit.html.HtmlElement;
+import com.gargoylesoftware.htmlunit.html.HtmlInlineFrame;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.javascript.host.HTMLElement;
+import org.apache.commons.httpclient.HttpState;
+import org.mozilla.javascript.NativeArray;
+import org.openqa.selenium.Alert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Cookie;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.NoSuchFrameException;
+import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.Speed;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.internal.FindsById;
+import org.openqa.selenium.internal.FindsByLinkText;
+import org.openqa.selenium.internal.FindsByName;
+import org.openqa.selenium.internal.FindsByXPath;
+import org.openqa.selenium.internal.ReturnedCookie;
+
 import java.net.ConnectException;
 import java.net.URL;
 import java.net.UnknownHostException;
@@ -29,39 +61,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.apache.commons.httpclient.HttpState;
-
-import com.gargoylesoftware.htmlunit.ElementNotFoundException;
-import com.gargoylesoftware.htmlunit.Page;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.WebResponse;
-import com.gargoylesoftware.htmlunit.WebWindow;
-import com.gargoylesoftware.htmlunit.WebWindowEvent;
-import com.gargoylesoftware.htmlunit.WebWindowListener;
-import com.gargoylesoftware.htmlunit.ScriptResult;
-import com.gargoylesoftware.htmlunit.javascript.host.HTMLElement;
-import com.gargoylesoftware.htmlunit.html.FrameWindow;
-import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import com.gargoylesoftware.htmlunit.html.HtmlInlineFrame;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import org.openqa.selenium.Alert;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Cookie;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.NoSuchFrameException;
-import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.Speed;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.internal.FindsById;
-import org.openqa.selenium.internal.FindsByLinkText;
-import org.openqa.selenium.internal.FindsByName;
-import org.openqa.selenium.internal.FindsByXPath;
-import org.openqa.selenium.internal.ReturnedCookie;
-import org.mozilla.javascript.NativeArray;
 
 public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecutor,
         FindsById, FindsByLinkText, FindsByXPath, FindsByName {
@@ -202,15 +201,24 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
 
     public Object executeScript(String script, Object... args) {
         if (!javascriptEnabled)
-            throw new UnsupportedOperationException("Javascript is enabled for this HtmlUnitDriver instance");
+            throw new UnsupportedOperationException("Javascript is not enabled for this HtmlUnitDriver instance");
 
         ScriptResult paramHolder = lastPage().executeJavaScript("(function(){window.parameters = []; return window.parameters})()");
         NativeArray parameters = (NativeArray) paramHolder.getJavaScriptResult();
 
         for (int i = 0; i < args.length; i++) {
+            if (!(args[i] instanceof HtmlUnitWebElement ||
+                  args[i] instanceof Number ||
+                  args[i] instanceof String ||
+                  args[i] instanceof Boolean)) {
+              throw new IllegalArgumentException(
+                  "Argument must be a string, number, boolean or WebElement: " +
+                      args[i] + " (" + args[i].getClass() + ")");                                  
+            }
+
             if (args[i] instanceof HtmlUnitWebElement) {
                 HtmlElement element = ((HtmlUnitWebElement) args[i]).getElement();
-                parameters.put(i, parameters, element);
+                parameters.put(i, parameters, element.getScriptObject());
             } else {
                 parameters.put(i, parameters, args[i]);
             }

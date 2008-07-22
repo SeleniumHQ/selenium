@@ -1,5 +1,7 @@
 package org.openqa.selenium;
 
+import java.util.ArrayList;
+
 public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     @JavascriptEnabled
     @Ignore("safari")
@@ -128,15 +130,31 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     }
 
     @JavascriptEnabled
-  @Ignore("safari, jobbie, htmlunit")
+    @Ignore("safari, jobbie")
     public void testShouldBeAbleToPassAWebElementAsArgument() {
       if (!(driver instanceof JavascriptExecutor))
           return;
 
-        driver.get(javascriptPage);
+      driver.get(javascriptPage);
       WebElement button = driver.findElement(By.id("plainButton"));
       String value = (String) executeScript("parameters[0]['flibble'] = parameters[0].getAttribute('id'); return parameters[0]['flibble'];", button);
 
       assertEquals("plainButton", value);
+    }
+
+    @JavascriptEnabled
+    @Ignore("safari, jobbie")
+    public void testShouldThrowAnExceptionIfAnArgumentIsNotValid() {
+      if (!(driver instanceof JavascriptExecutor))
+        return;
+
+      driver.get(javascriptPage);
+      try {
+        executeScript("return parameters[0];", new ArrayList<WebElement>());
+        fail("Exception should have been thrown");
+      } catch (IllegalArgumentException e) {
+        // this is expected
+      }
+
     }
 }
