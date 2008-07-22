@@ -75,7 +75,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/common/lib/runtime/json-20080703.jar!/" />
+          <root url="jar://$MODULE_DIR$/common/lib/runtime/json-20080701.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

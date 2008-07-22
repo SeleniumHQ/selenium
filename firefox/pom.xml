@@ -17,44 +17,44 @@
 			<artifactId>webdriver-common</artifactId>
 			<version>0.5-SNAPSHOT</version>
 		</dependency>
-        <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>20070829</version>
-        </dependency>
-        <!-- Test dependencies ... -->
-        <dependency>
-            <groupId>org.openqa.selenium</groupId>
-            <artifactId>webdriver-common</artifactId>
-            <version>0.5-SNAPSHOT</version>
-            <classifier>tests</classifier>
-            <scope>test</scope>
-        </dependency>
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20080701</version>
+		</dependency>
+		<!-- Test dependencies ... -->
+		<dependency>
+			<groupId>org.openqa.selenium</groupId>
+			<artifactId>webdriver-common</artifactId>
+			<version>0.5-SNAPSHOT</version>
+			<classifier>tests</classifier>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
 		<sourceDirectory>src/java</sourceDirectory>
 		<testSourceDirectory>test/java</testSourceDirectory>
 		<plugins>
-            <!-- See http://maven.apache.org/plugins/maven-antrun-plugin -->
-            <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>create_fxdriver_xpi</id>
-                        <phase>generate-resources</phase>
-                        <configuration>
-                            <tasks>
-                                <mkdir dir="target/classes" />
-                                <zip destfile="target/classes/webdriver-extension.zip" basedir="src/extension" excludes="**/.svn/**" />
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+			<!-- See http://maven.apache.org/plugins/maven-antrun-plugin -->
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>create_fxdriver_xpi</id>
+						<phase>generate-resources</phase>
+						<configuration>
+							<tasks>
+								<mkdir dir="target/classes" />
+								<zip destfile="target/classes/webdriver-extension.zip" basedir="src/extension" excludes="**/.svn/**" />
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 

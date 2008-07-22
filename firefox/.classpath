@@ -4,6 +4,6 @@
 	<classpathentry kind="src" output="build/classes" path="src/java"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-common"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/runtime/json-20080703.jar"/>
+	<classpathentry kind="lib" path="lib/runtime/json-20080701.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

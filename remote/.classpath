@@ -20,6 +20,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-safari"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-selenium"/>
 	<classpathentry kind="lib" path="/webdriver-common/lib/buildtime/servlet-api-2.5-6.1.9.jar"/>
-	<classpathentry kind="lib" path="common/lib/runtime/json-20080703.jar"/>
+	<classpathentry kind="lib" path="common/lib/runtime/json-20080701.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
