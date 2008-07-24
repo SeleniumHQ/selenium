@@ -5,7 +5,7 @@ package org.openqa.selenium;
  */
 public interface JavascriptExecutor {
     /**
-   * Execute javascript in the context of the currently selected frame or window. This means that
+     * Execute javascript in the context of the currently selected frame or window. This means that
      * "document" will refer to the current document. If the script has a return value, then the
      * following steps will be taken:
      *

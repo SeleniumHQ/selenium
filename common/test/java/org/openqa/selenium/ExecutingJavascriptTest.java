@@ -94,63 +94,63 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     }
 
   @JavascriptEnabled
-  @Ignore("safari, jobbie")
+  @Ignore("safari, jobbie, firefox")
     public void testShouldBeAbleToPassAStringAnAsArgument() {
       if (!(driver instanceof JavascriptExecutor))
           return;
 
         driver.get(javascriptPage);
-        String value = (String) executeScript("return parameters[0] == 'fish' ? 'fish' : 'not fish';", "fish");
+        String value = (String) executeScript("return arguments[0] == 'fish' ? 'fish' : 'not fish';", "fish");
 
         assertEquals("fish", value);
     }
 
     @JavascriptEnabled
-  @Ignore("safari, jobbie")
+  @Ignore("safari, jobbie, firefox")
     public void testShouldBeAbleToPassABooleanAnAsArgument() {
       if (!(driver instanceof JavascriptExecutor))
           return;
 
         driver.get(javascriptPage);
-        boolean value = (Boolean) executeScript("return parameters[0] == true;", true);
+        boolean value = (Boolean) executeScript("return arguments[0] == true;", true);
 
         assertTrue(value);
     }
 
     @JavascriptEnabled
-  @Ignore("safari, jobbie")
+  @Ignore("safari, jobbie, firefox")
     public void testShouldBeAbleToPassANumberAnAsArgument() {
       if (!(driver instanceof JavascriptExecutor))
           return;
 
         driver.get(javascriptPage);
-        long value = (Long) executeScript("return parameters[0] == 1 ? 1 : 0;", 1);
+        long value = (Long) executeScript("return arguments[0] == 1 ? 1 : 0;", 1);
 
         assertEquals(1, value);
     }
 
     @JavascriptEnabled
-    @Ignore("safari, jobbie")
+    @Ignore("safari, jobbie, firefox")
     public void testShouldBeAbleToPassAWebElementAsArgument() {
       if (!(driver instanceof JavascriptExecutor))
           return;
 
       driver.get(javascriptPage);
       WebElement button = driver.findElement(By.id("plainButton"));
-      String value = (String) executeScript("parameters[0]['flibble'] = parameters[0].getAttribute('id'); return parameters[0]['flibble'];", button);
+      String value = (String) executeScript("arguments[0]['flibble'] = arguments[0].getAttribute('id'); return arguments[0]['flibble'];", button);
 
       assertEquals("plainButton", value);
     }
 
     @JavascriptEnabled
-    @Ignore("safari, jobbie")
+    @Ignore("safari, jobbie, firefox")
     public void testShouldThrowAnExceptionIfAnArgumentIsNotValid() {
       if (!(driver instanceof JavascriptExecutor))
         return;
 
       driver.get(javascriptPage);
       try {
-        executeScript("return parameters[0];", new ArrayList<WebElement>());
+        executeScript("return arguments[0];", new ArrayList<WebElement>());
         fail("Exception should have been thrown");
       } catch (IllegalArgumentException e) {
         // this is expected

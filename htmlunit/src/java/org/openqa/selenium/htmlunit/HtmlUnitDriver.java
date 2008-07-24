@@ -17,22 +17,22 @@
 
 package org.openqa.selenium.htmlunit;
 
-import com.gargoylesoftware.htmlunit.ElementNotFoundException;
-import com.gargoylesoftware.htmlunit.Page;
-import com.gargoylesoftware.htmlunit.ScriptResult;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.WebResponse;
-import com.gargoylesoftware.htmlunit.WebWindow;
-import com.gargoylesoftware.htmlunit.WebWindowEvent;
-import com.gargoylesoftware.htmlunit.WebWindowListener;
-import com.gargoylesoftware.htmlunit.html.FrameWindow;
-import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import com.gargoylesoftware.htmlunit.html.HtmlInlineFrame;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.javascript.host.HTMLElement;
+import java.net.ConnectException;
+import java.net.URL;
+import java.net.UnknownHostException;
+import java.security.GeneralSecurityException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.commons.httpclient.HttpState;
-import org.mozilla.javascript.NativeArray;
+import org.mozilla.javascript.Function;
+import org.mozilla.javascript.ScriptableObject;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
@@ -49,18 +49,20 @@ import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.internal.ReturnedCookie;
 
-import java.net.ConnectException;
-import java.net.URL;
-import java.net.UnknownHostException;
-import java.security.GeneralSecurityException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import com.gargoylesoftware.htmlunit.ElementNotFoundException;
+import com.gargoylesoftware.htmlunit.Page;
+import com.gargoylesoftware.htmlunit.ScriptResult;
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.WebResponse;
+import com.gargoylesoftware.htmlunit.WebWindow;
+import com.gargoylesoftware.htmlunit.WebWindowEvent;
+import com.gargoylesoftware.htmlunit.WebWindowListener;
+import com.gargoylesoftware.htmlunit.html.FrameWindow;
+import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
+import com.gargoylesoftware.htmlunit.html.HtmlElement;
+import com.gargoylesoftware.htmlunit.html.HtmlInlineFrame;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.javascript.host.HTMLElement;
 
 public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecutor,
         FindsById, FindsByLinkText, FindsByXPath, FindsByName {
@@ -203,8 +205,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
         if (!javascriptEnabled)
             throw new UnsupportedOperationException("Javascript is not enabled for this HtmlUnitDriver instance");
 
-        ScriptResult paramHolder = lastPage().executeJavaScript("(function(){window.parameters = []; return window.parameters})()");
-        NativeArray parameters = (NativeArray) paramHolder.getJavaScriptResult();
+        Object[] parameters = new Object[args.length];
 
         for (int i = 0; i < args.length; i++) {
             if (!(args[i] instanceof HtmlUnitWebElement ||
@@ -218,16 +219,24 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
 
             if (args[i] instanceof HtmlUnitWebElement) {
                 HtmlElement element = ((HtmlUnitWebElement) args[i]).getElement();
-                parameters.put(i, parameters, element.getScriptObject());
+                parameters[i] = element.getScriptObject();
             } else {
-                parameters.put(i, parameters, args[i]);
+                parameters[i] = args[i];
             }
         }
 
-        script = "(function() {" + script + "})();";
+        script = "function() {" + script + "};";
         ScriptResult result = lastPage().executeJavaScript(script);
-
+        Function func = (Function) result.getJavaScriptResult();
+        
+        result = lastPage().executeJavaScriptFunctionIfPossible(
+        		func, 
+        		(ScriptableObject) currentWindow.getScriptObject(), 
+        		parameters, 
+        		lastPage().getDocumentElement());
+        
         Object value = result.getJavaScriptResult();
+
         if (value instanceof HTMLElement) {
             return new HtmlUnitWebElement(this, ((HTMLElement) value).getHtmlElementOrDie());
         }
