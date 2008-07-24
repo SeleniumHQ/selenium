@@ -84,11 +84,13 @@ FirefoxDriver.prototype.executeScript = function(respond, script) {
   if (window['alert'] && !window.wrappedJSObject) {
     runScript = function(scriptSrc) {
       var document = window.document;
+      var __webdriverParams = parameters;
 
-      var __webdriverFunction = eval(script);
-      
+      scriptSrc = "var __webdriverFunc = " + scriptSrc + "; __webdriverFunc.apply(window, __webdriverParams);";
+      var __webdriverEval = eval;
+
       with (window) {
-        return __webdriverFunction.apply(window, parameters);
+        return __webdriverEval(scriptSrc);
       }
     };
   } else {
