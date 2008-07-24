@@ -85,9 +85,10 @@ FirefoxDriver.prototype.executeScript = function(respond, script) {
     runScript = function(scriptSrc) {
       var document = window.document;
 
-      var e = eval;
+      var __webdriverFunction = eval(script);
+      
       with (window) {
-        return e(scriptSrc);
+        return __webdriverFunction.apply(window, parameters);
       }
     };
   } else {
@@ -95,17 +96,18 @@ FirefoxDriver.prototype.executeScript = function(respond, script) {
       window = window.wrappedJSObject;
       var sandbox = new Components.utils.Sandbox(window);
       sandbox.window = window;
+      sandbox.window.__webdriverParams = parameters;
       sandbox.document = sandbox.window.document;
       sandbox.unsafeWindow = window;
       sandbox.__proto__ = window;
-      sandbox.parameters = parameters;
 
+      scriptSrc = "var __webdriverFunc = " + scriptSrc + "; __webdriverFunc.apply(window, __webdriverParams);";
       return Components.utils.evalInSandbox(scriptSrc, sandbox);
     };
   }
 
   try {
-    var scriptSrc = "(function(){" + script.shift() + "})()";
+    var scriptSrc = "function(){" + script.shift() + "}";
 
     var convert = script.shift();
     while (convert && convert.length > 0) {
@@ -120,6 +122,8 @@ FirefoxDriver.prototype.executeScript = function(respond, script) {
 
     var result = runScript(scriptSrc, parameters);
 
+    Utils.dumpn("Result is: " + result);
+    
     // Sophisticated.
     if (result && result['tagName']) {
       respond.setField('resultType', "ELEMENT");

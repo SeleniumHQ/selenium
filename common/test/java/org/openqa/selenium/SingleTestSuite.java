@@ -12,7 +12,7 @@ public class SingleTestSuite {
   private final static String SAFARI = "org.openqa.selenium.safari.SafariDriver";
 
   public static Test suite() throws Exception {
-    String driver = HTML_UNIT_JS;
+    String driver = FIREFOX;
 
     TestSuiteBuilder builder = new TestSuiteBuilder()
     	.addSourceDir("../common")
@@ -22,7 +22,8 @@ public class SingleTestSuite {
         .keepDriverInstance()
         .includeJavascriptTests()
         .onlyRun("ExecutingJavascriptTest")
-//        .method("testShouldBeAbleToPassAWebElementAsArgument")
+//        .method("testShouldBeAbleToPassABooleanAnAsArgument")
+        .leaveRunning()
         ;  // Yeah, this look strange :)
 
     if (REMOTE.equals(driver)) {

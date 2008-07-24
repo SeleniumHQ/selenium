@@ -25,10 +25,11 @@ public class EnvironmentStarter extends TestSetup {
 	@Override
 	protected void tearDown() throws Exception {
 		WebDriver driver = DriverTestDecorator.getDriver();
-		if (driver != null) {
+		if (driver != null && !Boolean.getBoolean("webdriver.singletestsuite.leaverunning")) {
 			driver.quit();
 		}
-		environment.stop();
+		
+	    environment.stop();
 		GlobalTestEnvironment.set(null);
 		
 		super.tearDown();

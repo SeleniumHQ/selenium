@@ -94,7 +94,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     }
 
   @JavascriptEnabled
-  @Ignore("safari, jobbie, firefox")
+  @Ignore("safari, jobbie")
     public void testShouldBeAbleToPassAStringAnAsArgument() {
       if (!(driver instanceof JavascriptExecutor))
           return;
@@ -106,7 +106,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     }
 
     @JavascriptEnabled
-  @Ignore("safari, jobbie, firefox")
+  @Ignore("safari, jobbie")
     public void testShouldBeAbleToPassABooleanAnAsArgument() {
       if (!(driver instanceof JavascriptExecutor))
           return;
@@ -118,7 +118,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     }
 
     @JavascriptEnabled
-  @Ignore("safari, jobbie, firefox")
+  @Ignore("safari, jobbie")
     public void testShouldBeAbleToPassANumberAnAsArgument() {
       if (!(driver instanceof JavascriptExecutor))
           return;
@@ -130,7 +130,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     }
 
     @JavascriptEnabled
-    @Ignore("safari, jobbie, firefox")
+    @Ignore("safari, jobbie")
     public void testShouldBeAbleToPassAWebElementAsArgument() {
       if (!(driver instanceof JavascriptExecutor))
           return;
@@ -143,7 +143,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     }
 
     @JavascriptEnabled
-    @Ignore("safari, jobbie, firefox")
+    @Ignore("safari, jobbie")
     public void testShouldThrowAnExceptionIfAnArgumentIsNotValid() {
       if (!(driver instanceof JavascriptExecutor))
         return;
@@ -155,6 +155,5 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
       } catch (IllegalArgumentException e) {
         // this is expected
       }
-
     }
 }

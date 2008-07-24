@@ -252,4 +252,9 @@ public class TestSuiteBuilder {
     decorators.add(decoratorClassName);
     return this;
   }
+
+	public TestSuiteBuilder leaveRunning() {
+	  System.setProperty("webdriver.singletestsuite.leaverunning", "true");
+	  return this;
+	}
 }

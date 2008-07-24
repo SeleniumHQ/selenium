@@ -17,7 +17,8 @@ public interface JavascriptExecutor {
      *
      * <p>Arguments must be a number (which will be converted to a Long), a boolean, String or
      * WebElement. An exception will be thrown if the arguments do not meet these criteria. The
-     * arguments will be made available to the javascript via the "parameters" magic variable.
+     * arguments will be made available to the javascript via the "arguments" magic variable, as if
+     * the function were called via "Function.apply"
      *
      * @param script The javascript to execute
      * @param args The arguments to the script. May be empty
