@@ -859,21 +859,15 @@ void InternetExplorerDriver::getDocument3(IHTMLDocument3 **pdoc)
 	*pdoc = doc.Detach();
 }
 
-void InternetExplorerDriver::executeScript(const wchar_t *script, SAFEARRAY* args, VARIANT *result, bool tryAgain)
+bool InternetExplorerDriver::getEval(IHTMLDocument2* doc, DISPID* evalId, bool* added) 
 {
-	CComPtr<IHTMLDocument2> doc;
-	getDocument(&doc);
-
 	CComPtr<IDispatch> scriptEngine;
 	doc->get_Script(&scriptEngine);
 
-	bool added = false;
-
-	DISPID dispid;
-	OLECHAR FAR* szMember = L"eval";
-    HRESULT hr = scriptEngine->GetIDsOfNames(IID_NULL, &szMember, 1, LOCALE_USER_DEFAULT, &dispid);
+	OLECHAR FAR* evalName = L"eval";
+    HRESULT hr = scriptEngine->GetIDsOfNames(IID_NULL, &evalName, 1, LOCALE_USER_DEFAULT, evalId);
 	if (FAILED(hr)) { 
-		added = true;
+		*added = true;
 		// Start the script engine by adding a script tag to the page
 		CComPtr<IHTMLElement> scriptTag;
 		doc->createElement(L"<span>", &scriptTag);
@@ -890,49 +884,91 @@ void InternetExplorerDriver::executeScript(const wchar_t *script, SAFEARRAY* arg
 
 		scriptEngine.Release();
 		doc->get_Script(&scriptEngine);
-		hr = scriptEngine->GetIDsOfNames(IID_NULL, &szMember, 1, LOCALE_USER_DEFAULT, &dispid);
+		hr = scriptEngine->GetIDsOfNames(IID_NULL, &evalName, 1, LOCALE_USER_DEFAULT, evalId);
 
 		if (FAILED(hr)) {
-			// Now remove the temporary tag from the document, leaving it unsullied
-			if (tryAgain)
-				executeScript(L"var s = document.getElementById('__webdriver_private_span'); s.outerHTML=''", NULL, false);
-			return;
+			removeScript(doc);
+			return false;
 		}
 	}
+
+	return true;
+}
+
+void InternetExplorerDriver::removeScript(IHTMLDocument2* doc)
+{
+	CComQIPtr<IHTMLDocument3> doc3(doc);
+
+	if (!doc3)
+		return;
+
+	CComPtr<IHTMLElement> element;
+	CComBSTR id(L"__webdriver_private_span");
+	doc3->getElementById(id, &element);
 	
-	// If there are no args, then just evaluate immediately. 
-	int nargs = getLengthOf(args);
+	CComQIPtr<IHTMLDOMNode> elementNode(element);
 
-	// Otherwise, create an anonymous function and then call that
+	if (elementNode) {
+		CComPtr<IHTMLElement> body;
+		doc->get_body(&body);
+		CComQIPtr<IHTMLDOMNode> bodyNode(body);
+		bodyNode->removeChild(elementNode, NULL);
+	}
+}
 
-	// Create the webdriver function
+bool InternetExplorerDriver::createAnonymousFunction(IDispatch* scriptEngine, DISPID evalId, const wchar_t *script, VARIANT* result)
+{
 	CComVariant script_variant(script);
 	DISPPARAMS parameters = {0};
     parameters.cArgs = 1;
     parameters.rgvarg = &script_variant;
 	EXCEPINFO exception;
-	VARIANT tempFunction;
 
-	hr = scriptEngine->Invoke(dispid, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &parameters, &tempFunction, &exception, 0);
+	HRESULT hr = scriptEngine->Invoke(evalId, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &parameters, result, &exception, 0);
 	if (FAILED(hr)) {
 	  if (DISP_E_EXCEPTION == hr) {
 		  wcerr << "Exception message was: " << exception.bstrDescription << endl;
 	  } else {
 		  wcerr << "Error code: " << GetLastError() << ". Failed to compile: " << script << endl;
 	  }
-	  
-	  if (result) {
+
+  	  if (result) {
 		  result->vt = VT_USERDEFINED;
 		  result->bstrVal = exception.bstrDescription;
 	  }
 
-	  // TODO (simon): Remove added element if necessary
-	  return;
+	  return false;
 	}
 
-	// Was "call" the right type? Return if it's not a method
+	return true;
+}
+
+void InternetExplorerDriver::executeScript(const wchar_t *script, SAFEARRAY* args, VARIANT *result, bool tryAgain)
+{
+	CComPtr<IHTMLDocument2> doc;
+	getDocument(&doc);
+
+	CComPtr<IDispatch> scriptEngine;
+	doc->get_Script(&scriptEngine);
+
+	DISPID evalId;
+	bool added;
+	bool ok = getEval(doc, &evalId, &added);
+	
+	if (!ok) {
+		wcerr << "Unable to locate eval method" << endl;
+		return;
+	}
+
+	CComVariant tempFunction;
+	if (!createAnonymousFunction(scriptEngine, evalId, script, &tempFunction)) {
+		wcerr << "Cannot create anonymous function: " << script << endl;
+		if (added) { removeScript(doc); }
+		return;
+	}
+
 	if (tempFunction.vt != VT_DISPATCH) {
-		// TODO (simon): Remove added element if necessary
+		if (added) { removeScript(doc); }
 		return;
 	}
 
@@ -940,27 +976,31 @@ void InternetExplorerDriver::executeScript(const wchar_t *script, SAFEARRAY* arg
 	DISPID callid;
 	OLECHAR FAR* szCallMember = L"call";
     HRESULT hr3 = tempFunction.pdispVal->GetIDsOfNames(IID_NULL, &szCallMember, 1, LOCALE_USER_DEFAULT, &callid);
+	if (FAILED(hr3)) {
+		wcerr << "Cannot locate call method on anonymous function: " << script << endl;
+	}
 
 	DISPPARAMS callParameters = { 0 };
+	int nargs = getLengthOf(args);	  
 	callParameters.cArgs = nargs + 1;
 
 	CComPtr<IHTMLWindow2> win;
 	doc->get_parentWindow(&win);
-
 	_variant_t *vargs = new _variant_t[nargs + 1];
-	vargs[nargs] = new _variant_t(win);
+	vargs[nargs] = CComVariant(win);
 
 	long index;
     for (int i = 0; i < nargs; i++)
     {
 		index = i;
-		VARIANT v;
+		CComVariant v;
 		SafeArrayGetElement(args, &index, (void*) &v);
 		vargs[nargs - 1 - i] = new _variant_t(v);
     }
 
 	callParameters.rgvarg = vargs;
 
+	EXCEPINFO exception;
 	HRESULT hr4 = tempFunction.pdispVal->Invoke(callid, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &callParameters, result, &exception, 0);
 	if (FAILED(hr4)) {
 	  if (DISP_E_EXCEPTION == hr4) {
@@ -975,12 +1015,9 @@ void InternetExplorerDriver::executeScript(const wchar_t *script, SAFEARRAY* arg
 	  }
 	}
 
+	if (added) { removeScript(doc); }
 
-	if (added) {
-		// executeScript(L"var s = document.getElementById('__webdriver_private_span'); s.outerHTML=''", NULL, false);
-	}
-
-	
+	delete[] vargs;
 }
 
 IeEventSink::IeEventSink(IWebBrowser2* ie) 

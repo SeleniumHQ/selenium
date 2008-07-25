@@ -57,7 +57,10 @@ public:
 	void executeScript(const wchar_t *script, SAFEARRAY* args, VARIANT *result, bool tryAgain = true);
 
 private:
+	bool getEval(IHTMLDocument2* doc, DISPID* evalId, bool* added);
+	void removeScript(IHTMLDocument2* doc);
 	bool addEvaluateToDocument(int count);
+	bool createAnonymousFunction(IDispatch* scriptEngine, DISPID evalId, const wchar_t *script, VARIANT* result);
 	void waitForDocumentToComplete(IHTMLDocument2* doc);
 	void getDocument3(IHTMLDocument3 **pdoc);
 
