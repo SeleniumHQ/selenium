@@ -60,15 +60,6 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/runtime/js-1.7R1.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
           <root url="jar://$MODULE_DIR$/lib/runtime/cssparser-0.9.5.jar!/" />
         </CLASSES>
         <JAVADOC />
@@ -114,7 +105,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/runtime/nekohtml-1.9.7.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/runtime/nekohtml-1.9.8.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -132,7 +123,16 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/runtime/htmlunit-2.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/runtime/htmlunit-2.2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/runtime/htmlunit-core-js-2.2.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
