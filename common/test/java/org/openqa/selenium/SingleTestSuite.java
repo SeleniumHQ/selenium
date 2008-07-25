@@ -21,8 +21,8 @@ public class SingleTestSuite {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("ElementFindingTest")
-        .method("testShouldBeAbleToFindChildrenOfANode")
+        .onlyRun("ExecutingJavascriptTest")
+//        .method("testShouldBeAbleToFindChildrenOfANode")
 //        .leaveRunning()
         ;  // Yeah, this look strange :)
 

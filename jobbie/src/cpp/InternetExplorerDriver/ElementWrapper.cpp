@@ -151,11 +151,11 @@ WORD WINAPI setFileValue(keyboardData* data) {
 		}
 
 		return true;
-	} 
+	}
 
 	cout << "No edit found" << endl;
 	return false;
-} 
+}
 
 #pragma data_seg(".LISTENER")
 bool pressed = false;
@@ -163,83 +163,116 @@ static HHOOK hook = 0;
 #pragma data_seg()
 #pragma comment(linker, "/section:.LISTENER,rws")
 
-static FARPROC hookProc = 0;
-
-void backgroundKeyPress(HWND hwnd, HKL layout, WORD keyCode, UINT scanCode, bool extended, bool printable, int totalPause)
+void backgroundKeyPress(HWND hwnd, HKL layout, BYTE keyboardState[256],
+		WORD keyCode, UINT scanCode, bool extended, bool printable, int pause)
 {
-	int pause = totalPause / 3;
+	pause = pause / 3;
 
-	BYTE keyboardState[256] = {0};
-	bool needsShift = (keyCode >> 8) & 1;
-	keyCode = LOBYTE(keyCode);
+	const int needsShift = (keyCode & 0x0100);
+	const int needsControl = (keyCode & 0x0200);
+	const int needsAlt = (keyCode & 0x0400);
 
 	LPARAM shiftKey = 1;
 	if (needsShift) {
 		keyboardState[VK_SHIFT] |= 0x80;
-		SetKeyboardState((LPBYTE) &keyboardState);
 
-		shiftKey += MapVirtualKeyEx(VK_SHIFT, 0, layout) << 16;
+		shiftKey |= MapVirtualKeyEx(VK_SHIFT, 0, layout) << 16;
 		if (!PostMessage(hwnd, WM_KEYDOWN, VK_SHIFT, shiftKey))
-			cerr << "Shift down failed: " << GetLastError << endl;
+			cerr << "Shift down failed: " << GetLastError() << endl;
 		wait(pause);
 	}
 
-	LPARAM lparam = 1;
-	lparam += scanCode << 16;
-	if (extended) {
-		lparam += 1 << 24;
+	LPARAM controlKey = 1;
+	if (needsControl) {
+		keyboardState[VK_CONTROL] |= 0x80;
+
+		controlKey |= MapVirtualKeyEx(VK_CONTROL, 0, layout) << 16;
+		if (!PostMessage(hwnd, WM_KEYDOWN, VK_CONTROL, controlKey))
+			cerr << "Control down failed: " << GetLastError() << endl;
+		wait(pause);
 	}
 
+	LPARAM altKey = 1;
+	if (needsAlt) {
+		keyboardState[VK_MENU] |= 0x80;
+
+		altKey |= MapVirtualKeyEx(VK_MENU, 0, layout) << 16;
+		if (!PostMessage(hwnd, WM_KEYDOWN, VK_MENU, altKey))
+			cerr << "Alt down failed: " << GetLastError() << endl;
+		wait(pause);
+	}
+
+	keyCode = LOBYTE(keyCode);
 	keyboardState[keyCode] |= 0x80;
+
 	SetKeyboardState(keyboardState);
 
+	LPARAM lparam = 1;
+	lparam |= scanCode << 16;
+	if (extended) {
+		lparam |= 1 << 24;
+	}
+
 	pressed = false;
-
 	if (!PostMessage(hwnd, WM_KEYDOWN, keyCode, lparam))
-		cerr << "Key down failed: " << GetLastError << endl;
+		cerr << "Key down failed: " << GetLastError() << endl;
 
-	// Listen out for the keypress event which is synthesized
-	// when IE processes the keydown message. Put a time out,
-	// just in case we've not got "printable" right. :)
-	clock_t maxWait = clock() + 5000; 
+	// Listen out for the keypress event which IE synthesizes when IE
+	// processes the keydown message. Use a time out, just in case we
+	// have not got "printable" right. :)
+
+	clock_t maxWait = clock() + 5000;
 	while (printable && !pressed) {
 		wait(5);
 		if (clock() >= maxWait) {
-			cerr << "timeout waiting for keypress" << endl;
+			cerr << "Timeout awaiting keypress: " << keyCode << endl;
 			break;
 		}
 	}
 
 	keyboardState[keyCode] &= ~0x80;
-	SetKeyboardState(keyboardState);
 
-	lparam += 1 << 30;
-	lparam += 1 << 31;
+	lparam |= 0x3 << 30;
 	if (!PostMessage(hwnd, WM_KEYUP, keyCode, lparam))
-		cerr << "Key up failed: " << GetLastError << endl;
+		cerr << "Key up failed: " << GetLastError() << endl;
 	wait(pause);
 
 	if (needsShift) {
-		shiftKey += 1 << 30;
-		shiftKey += 1 << 31;
-		if (!PostMessage(hwnd, WM_KEYUP, VK_SHIFT, shiftKey))
-			cerr << "Shift up failed: " << GetLastError << endl;
-		wait(pause);
-
 		keyboardState[VK_SHIFT] &= ~0x80;
-		SetKeyboardState((LPBYTE) &keyboardState);
+
+		shiftKey |= 0x3 << 30;
+		if (!PostMessage(hwnd, WM_KEYUP, VK_SHIFT, shiftKey))
+			cerr << "Shift up failed: " << GetLastError() << endl;
+		wait(pause);
 	}
 
-	wait(pause);
+	if (needsControl) {
+		keyboardState[VK_CONTROL] &= ~0x80;
+
+		controlKey |= 0x3 << 30;
+		if (!PostMessage(hwnd, WM_KEYUP, VK_CONTROL, controlKey))
+			cerr << "Control up failed: " << GetLastError() << endl;
+		wait(pause);
+	}
+
+	if (needsAlt) {
+		keyboardState[VK_MENU] &= ~0x80;
+
+		altKey |= 0x3 << 30;
+		if (!PostMessage(hwnd, WM_KEYUP, VK_MENU, altKey))
+			cerr << "Alt up failed: " << GetLastError() << endl;
+		wait(pause);
+	}
+
+	SetKeyboardState(keyboardState);
 }
 
 LRESULT CALLBACK GetMessageProc(int nCode, WPARAM wParam, LPARAM lParam)
 {
-	if (nCode == HC_ACTION && wParam == PM_REMOVE) {		
-		MSG* msg = (MSG*) lParam;
-
-		if (msg->message == WM_CHAR)
+	if ((nCode == HC_ACTION) && (wParam == PM_REMOVE)) {
+		if (reinterpret_cast<MSG*>(lParam)->message == WM_CHAR) {
 			pressed = true;
+		}
 	}
 
 	return CallNextHookEx(hook, nCode, wParam, lParam);
@@ -247,26 +280,19 @@ LRESULT CALLBACK GetMessageProc(int nCode, WPARAM wParam, LPARAM lParam)
 
 void ElementWrapper::sendKeys(const std::wstring& newValue)
 {
-	bool initialVis = ie->getVisible();
+	const HWND hWnd = ie->getHwnd();
+	const HWND ieWindow = getIeServerWindow(hWnd);
 
-	HWND hWnd = ie->getHwnd();
-	HWND ieWindow = getIeServerWindow(hWnd);
+	keyboardData keyData;
+	keyData.hwnd = ieWindow;
+	keyData.text = newValue.c_str();
 
-	VARIANT top;
-	top.vt = VT_BOOL;
-	top.boolVal = VARIANT_TRUE;
-
-	element->scrollIntoView(top);
-
-	keyboardData d;
-	d.hwnd = ieWindow;
-	d.text = newValue.c_str();
-	DWORD threadId;
+	element->scrollIntoView(CComVariant(VARIANT_TRUE));
 
 	CComQIPtr<IHTMLInputFileElement> file(element);
 	if (file) {
-        CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)setFileValue, (void *)(&d), 0, &threadId);
-
+		DWORD threadId;
+		CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE) &setFileValue, &keyData, 0, &threadId);
 		element->click();
 		// We're now blocked until the dialog closes.
 		return;
@@ -275,21 +301,19 @@ void ElementWrapper::sendKeys(const std::wstring& newValue)
 	CComQIPtr<IHTMLElement2> element2(element);
 	element2->focus();
 
-	// check if we have focused on the element.
+	// Check we have focused the element.
 	CComPtr<IDispatch> dispatch;
 	element->get_document(&dispatch);
-	CComQIPtr<IHTMLDocument2> doc(dispatch);
-	clock_t maxWait = clock() + 1000;
+	CComQIPtr<IHTMLDocument2> document(dispatch);
+
 	bool hasFocus = false;
-	for (int i = clock(); i < maxWait; i = clock()) 
-	{
+	clock_t maxWait = clock() + 1000;
+	for (int i = clock(); i < maxWait; i = clock()) {
 		wait(1);
-		CComQIPtr<IHTMLElement> activeElement;
-		if (doc->get_activeElement(&activeElement) == S_OK) 
-		{
+		CComPtr<IHTMLElement> activeElement;
+		if (document->get_activeElement(&activeElement) == S_OK) {
 			CComQIPtr<IHTMLElement2> activeElement2(activeElement);
-			if (activeElement2.IsEqualObject(element2)) 
-			{				
+			if (element2.IsEqualObject(activeElement2)) {
 				hasFocus = true;
 				break;
 			}
@@ -300,94 +324,164 @@ void ElementWrapper::sendKeys(const std::wstring& newValue)
 		cerr << "We don't have focus on element." << endl;
 	}
 
-	DWORD ieProcessId;
-	DWORD ieWinThreadId = GetWindowThreadProcessId(ieWindow, &ieProcessId);
-    DWORD currThreadId = GetCurrentThreadId();
+	DWORD currThreadId = GetCurrentThreadId();
+	DWORD ieWinThreadId = GetWindowThreadProcessId(ieWindow, NULL);
+
 	HINSTANCE moduleHandle;
-	GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS,
-		(LPCTSTR) &getChildWindow, &moduleHandle);
+	GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, (LPCTSTR)
+			&getChildWindow, &moduleHandle);
 
-	hook = SetWindowsHookEx(WH_GETMESSAGE, (HOOKPROC) &GetMessageProc, moduleHandle, ieWinThreadId);
+	hook = SetWindowsHookEx(WH_GETMESSAGE, (HOOKPROC) &GetMessageProc,
+			moduleHandle, ieWinThreadId);
 
-	// Attaching to the thread so that we can send control keys (in particular shift)
-    if( ieWinThreadId != currThreadId )
-    {
+	// Attach to the IE thread so we can send keys to it.
+	if (ieWinThreadId != currThreadId) {
 		AttachThreadInput(currThreadId, ieWinThreadId, true);
-    }
-
-	HKL layout = GetKeyboardLayout(GetCurrentThreadId());
-
-	BYTE originalKeyboardState[256] = {0};
-	GetKeyboardState((LPBYTE) &originalKeyboardState);
-
-	for (const wchar_t *p = d.text; *p; ++p)
-	{
-		wchar_t c = *p;
-
-		if (c == L'\r')
-			continue;
-
-		WORD keyCode = 0;
-	
-		bool extended = false;
-		bool printable = false;
-
-		int k = (int)c;
-		UINT scanCode;
-
-		if (k == 0xE001) {
-			keyCode = VK_LEFT;
-			scanCode = keyCode;
-			c = keyCode;
-			extended = true;
-		} else if (c == 0xE002) {
-			keyCode = VK_UP;
-			scanCode = keyCode;
-			c = keyCode;
-			extended = true;
-		} else if (c == 0xE003) {
-			keyCode = VK_RIGHT;
-			scanCode = keyCode;
-			c = keyCode;
-			extended = true;
-		} else if (k == 0xE004) {
-			keyCode = VK_DOWN;
-			scanCode = keyCode;
-			c = keyCode;
-			extended = true;
-		} else if (k == 0xE005) {
-			keyCode = VK_BACK;
-			scanCode = keyCode;
-			c = keyCode;
-			extended = true;
-		} else if (k == 0xE006) {
-			keyCode = VK_DELETE;
-			scanCode = keyCode;
-			c = keyCode;
-			extended = true;
-		} else if (c == L'\n') {
-			keyCode = VK_RETURN;
-			scanCode = keyCode;
-			c = keyCode;
-		} else {
-			keyCode = VkKeyScanExW(c, layout);
-			scanCode = MapVirtualKeyExW(LOBYTE(keyCode), 0, layout);
-			printable = true;
-		}
-
-		backgroundKeyPress(ieWindow, layout, keyCode, scanCode, extended, printable, ie->getSpeed());
 	}
 
-	SetKeyboardState((LPBYTE) &originalKeyboardState);
+	HKL layout = GetKeyboardLayout(GetCurrentThreadId());
+	BYTE keyboardState[256];
+	::ZeroMemory(keyboardState, sizeof(keyboardState));
+
+	bool controlKey = false;
+	bool shiftKey = false;
+	bool altKey = false;
+
+	for (const wchar_t *p = keyData.text; *p; ++p) {
+		const wchar_t c = *p;
+
+		bool printable = false;
+		bool extended = false;
+
+		UINT scanCode = 0;
+		WORD keyCode = 0;
+
+		if (c == 0xE000U) {
+			shiftKey = controlKey = altKey = false;
+			continue;
+		} else if (c == 0xE001U) {  // ^break
+			keyCode = VK_CANCEL;
+			scanCode = keyCode;
+			printable = true;
+			extended = true;
+		} else if (c == 0xE002U) {  // help
+			keyCode = VK_HELP;
+			scanCode = keyCode;
+			extended = false;
+		} else if (c == 0xE003U) {  // back space
+			keyCode = VK_BACK;
+			scanCode = keyCode;
+			extended = false;
+		} else if (c == 0xE004U) {  // tab
+			keyCode = VK_TAB;
+			scanCode = keyCode;
+			extended = false;
+		} else if (c == 0xE005U) {  // clear
+			keyCode = VK_CLEAR;
+			scanCode = keyCode;
+			extended = false;
+		} else if (c == 0xE006U) {  // return
+			keyCode = VK_RETURN;
+			scanCode = keyCode;
+			extended = false;
+		} else if (c == 0xE007U) {  // enter
+			keyCode = VK_RETURN;
+			scanCode = keyCode;
+			extended = true;
+		} else if (c == 0xE008U) {  // shift (left)
+			shiftKey = !shiftKey;
+			continue;
+		} else if (c == 0xE009U) {  // control (left)
+			controlKey = !controlKey;
+			continue;
+		} else if (c == 0xE00AU) {  // alt (left)
+			altKey = !altKey;
+			continue;
+		} else if (c == 0xE00BU) {  // pause
+			keyCode = VK_PAUSE;
+			scanCode = keyCode;
+			extended = true;
+		} else if (c == 0xE00CU) {  // escape
+			keyCode = VK_ESCAPE;
+			scanCode = keyCode;
+			printable = true;
+		} else if (c == 0xE00DU) {  // space
+			keyCode = VK_SPACE;
+			scanCode = keyCode;
+			printable = true;
+		} else if (c == 0xE00EU) {  // page up
+			keyCode = VK_PRIOR;
+			scanCode = keyCode;
+			extended = true;
+		} else if (c == 0xE00FU) {  // page down
+			keyCode = VK_NEXT;
+			scanCode = keyCode;
+			extended = true;
+		} else if (c == 0xE010U) {  // end
+			keyCode = VK_END;
+			scanCode = keyCode;
+			extended = true;
+		} else if (c == 0xE011U) {  // home
+			keyCode = VK_HOME;
+			scanCode = keyCode;
+			extended = true;
+		} else if (c == 0xE012U) {  // left arrow
+			keyCode = VK_LEFT;
+			scanCode = keyCode;
+			extended = true;
+		} else if (c == 0xE013U) {  // up arrow
+			keyCode = VK_UP;
+			scanCode = keyCode;
+			extended = true;
+		} else if (c == 0xE014U) {  // right arrow
+			keyCode = VK_RIGHT;
+			scanCode = keyCode;
+			extended = true;
+		} else if (c == 0xE015U) {  // down arrow
+			keyCode = VK_DOWN;
+			scanCode = keyCode;
+			extended = true;
+		} else if (c == 0xE016U) {  // insert
+			keyCode = VK_INSERT;
+			scanCode = keyCode;
+			extended = true;
+		} else if (c == 0xE017U) {  // delete
+			keyCode = VK_DELETE;
+			scanCode = keyCode;
+			extended = true;
+		} else if (c == L'\n') {    // line feed
+			keyCode = VK_RETURN;
+			scanCode = keyCode;
+		} else if (c == L'\r') {    // carriage return
+			continue;  // skip it
+		} else {
+			printable = true;
+			keyCode = VkKeyScanExW(c, layout);
+			scanCode = MapVirtualKeyExW(LOBYTE(keyCode), 0, layout);
+			if (!scanCode || (keyCode == 0xFFFFU)) {
+				cerr << "No translation for key: " << c << endl;
+				continue;  // bogus
+			}
+		}
+
+		if (shiftKey)
+			keyCode |= static_cast<WORD>(0x0100);
+		if (controlKey)
+			keyCode |= static_cast<WORD>(0x0200);
+		if (altKey)
+			keyCode |= static_cast<WORD>(0x0400);
+
+		backgroundKeyPress(ieWindow, layout, keyboardState, keyCode, scanCode,
+				extended, printable, ie->getSpeed());
+	}
 
 	if (hook) {
 		UnhookWindowsHookEx(hook);
 	}
 
-	if( ieWinThreadId != currThreadId )
-    {
+	if (ieWinThreadId != currThreadId) {
 		AttachThreadInput(currThreadId, ieWinThreadId, false);
-    }
+	}
 }
 
 void ElementWrapper::clear()

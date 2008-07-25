@@ -1,4 +1,5 @@
 function Utils() {
+    netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
 }
 
 Utils.newInstance = function(className, interfaceName) {
@@ -142,7 +143,7 @@ Utils.addToKnownElements = function(element, context) {
 };
 
 Utils.getElementAt = function(index, context) {
-    // Convert to a number if we're dealing with a string....
+    // Convert to a number if we're dealing with a string...
     index = index - 0;
 
     var doc = Utils.getDocument(context);
@@ -151,71 +152,233 @@ Utils.getElementAt = function(index, context) {
     return undefined;
 };
 
+Utils.shiftCount = 0;
+
 Utils.type = function(context, element, text) {
-    var isTextField = element["value"] !== undefined;
+    // Foo for typing into form field, textarea "value"s (see below)
     var value = "";
-    
+    var isTextField = element["value"] !== undefined;
     if (isTextField) {
         value = element.value;
     } else if (element.hasAttribute("value")) {
         value = element.getAttribute("value");
     }
 
+    var controlKey = false;
+    var shiftKey = false;
+    var altKey = false;
+
+    Utils.shiftCount = 0;
+
     var upper = text.toUpperCase();
 
     for (var i = 0; i < text.length; i++) {
-        var character = text.charCodeAt(i);
+        var charCode = 0;
+        var keyCode = 0;
+
         var c = text.charAt(i);
-        var keyCode = upper.charCodeAt(i);
-        value += c;
-
-        if (c == '\uE002') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_UP;
-            character = keyCode;
-        } else if (c == '\uE004') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_DOWN;
-            character = keyCode;
+        if (c == '\uE000') {      // null key, reset modifier key state
+            shiftKey = controlKey = altKey = false;
+            continue;
         } else if (c == '\uE001') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_LEFT;
-            character = keyCode;
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_CANCEL;
+        } else if (c == '\uE002') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_HELP;
         } else if (c == '\uE003') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_RIGHT;
-            character = keyCode;
-        } else if (c == '\uE005') {
             keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_BACK_SPACE;
-            character = keyCode;
+        } else if (c == '\uE004') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_TAB;
+        } else if (c == '\uE005') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_CLEAR;
         } else if (c == '\uE006') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_DELETE;
-            character = keyCode;
-        } else if (c == "\n") {
             keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_RETURN;
-            character = keyCode;
+        } else if (c == '\uE007') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_ENTER;
+        } else if (c == '\uE008') {
+            shiftKey = !shiftKey;
+            continue;
+        } else if (c == '\uE009') {
+            controlKey = !controlKey;
+            continue;
+        } else if (c == '\uE00A') {
+            altKey = !altKey;
+            continue;
+        } else if (c == '\uE00B') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_PAUSE;
+        } else if (c == '\uE00C') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_ESCAPE;
+        } else if (c == '\uE00D') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SPACE;
+        } else if (c == '\uE00E') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_PAGE_UP;
+        } else if (c == '\uE00F') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_PAGE_DOWN;
+        } else if (c == '\uE010') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_END;
+        } else if (c == '\uE011') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_HOME;
+        } else if (c == '\uE012') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_LEFT;
+        } else if (c == '\uE013') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_UP;
+        } else if (c == '\uE014') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_RIGHT;
+        } else if (c == '\uE015') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_DOWN;
+        } else if (c == '\uE016') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_INSERT;
+        } else if (c == '\uE017') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_DELETE;
+        } else if (c == '\n') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_RETURN;
+        } else if (c == ',') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_COMMA;
+            charCode = text.charCodeAt(i);
+        } else if (c == '.') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_PERIOD;
+            charCode = text.charCodeAt(i);
+        } else if (c == '/') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SLASH;
+            charCode = text.charCodeAt(i);
+        } else if (c == '`') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_BACK_QUOTE;
+            charCode = text.charCodeAt(i);
+        } else if (c == '{') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_OPEN_BRACKET;
+            charCode = text.charCodeAt(i);
+        } else if (c == '\\') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_BACK_SLASH;
+            charCode = text.charCodeAt(i);
+        } else if (c == '}') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_CLOSE_BRACKET;
+            charCode = text.charCodeAt(i);
+        } else if (c == '\'') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_QUOTE;
+            charCode = text.charCodeAt(i);
+        } else {
+            keyCode = upper.charCodeAt(i);
+            charCode = text.charCodeAt(i);
         }
 
-//        var isShift = (character >= 65 && character <= 122 && c.toUpperCase() == c);
-        var isShift = /A-Z/.test(c);
-        if (isShift) {
-            Utils.keyDownOrUp(context, element, true, Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT, Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT);
-            Utils.keyPress(context, element, Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT, Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT);
+        var needsShift = false;
+        if (!charCode) {
+          needsShift = shiftKey;
+        } else {
+          needsShift = /[A-Z\!\$\^\*\(\)\+\{\}\:\?\|"#%&<>@_~]/.test(c);
         }
 
-        Utils.keyDownOrUp(context, element, true, keyCode, character);
-        Utils.keyPress(context, element, keyCode, character);
+        // modifiers down
+
+        if (needsShift) {
+          var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT;
+          Utils.keyEvent(context, element, "keydown", kCode, 0,
+              controlKey, true, altKey);
+          Utils.shiftCount += 1;
+        }
+
+        if (controlKey) {
+          var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_CONTROL;
+          Utils.keyEvent(context, element, "keydown", kCode, 0,
+              true, needsShift, altKey);
+        }
+
+        if (altKey) {
+          var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_ALT;
+          Utils.keyEvent(context, element, "keydown", kCode, 0,
+              controlKey, needsShift, true);
+        }
+
+        // generate key[down/press/up] for key
+
+        var pressCode = keyCode;
+        if (charCode >= 32 && charCode < 127)
+          pressCode = 0;
+
+        Utils.keyEvent(context, element, "keydown", keyCode, 0,
+            controlKey, needsShift, altKey);
+        Utils.keyEvent(context, element, "keypress", pressCode, charCode,
+            controlKey, needsShift, altKey);
+        Utils.keyEvent(context, element, "keyup", keyCode, 0,
+            controlKey, needsShift, altKey);
 
         // Strictly speaking, we should be able to get the same effect
         // without needing this piece of logic. We can for normal characters,
         // but not for characters such as '. Most odd. Leaving this in for now
-        if (isTextField) {
-            element.value = value;
-        } else {
-            element.setAttribute("value", value);
+        // 
+        // Update: works fine for all chars now we have better keyCode and
+        // charCode generation without this logic, but two Firefox testSuite
+        // tests fail if I remove this code.
+        //
+        //  FirefoxDriverTestSuite::TextHandlingTest
+        //    testShouldBeAbleToSetMoreThanOneLineOfTextInATextArea()
+        //      *) some OS line-endings mismatch problem.
+        //
+        //  FirefoxDriverTestSuite::TextHandlingTest
+        //    testShouldBeAbleToAlterTheContentsOfAFileUploadInputElement()
+        //      *) can't write filename into <input type=file> value
+        //
+        if (charCode) {
+          value += c;
+          if (isTextField) {
+              element.value = value;
+          } else {
+              element.setAttribute("value", value);
+          }
         }
-        Utils.keyDownOrUp(context, element, false, keyCode, character);
 
-        if (isShift) {
-            Utils.keyDownOrUp(context, element, false, Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT, Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT);
+        // modifiers up
+
+        var shiftKeyState = needsShift;
+        if (shiftKeyState) {
+          var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT;
+          Utils.keyEvent(context, element, "keyup", kCode, 0,
+              controlKey, shiftKeyState = false, altKey);
         }
+
+        var controlKeyState = controlKey;
+        if (controlKeyState) {
+          var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_CONTROL;
+          Utils.keyEvent(context, element, "keyup", kCode, 0,
+              controlKeyState = false, shiftKeyState, altKey);
+        }
+
+        var altKeyState = altKey;
+        if (altKeyState) {
+          var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_ALT;
+          Utils.keyEvent(context, element, "keyup", kCode, 0,
+              controlKeyState, shiftKeyState, altKeyState = false);
+        }
+
+    }  // for text.length
+};
+
+Utils.keyEvent = function(context, element, type, keyCode, charCode,
+    controlState, shiftState, altState) {
+
+    // var c = String.fromCharCode(charCode);
+    // dump(type + " " + c + " : " + keyCode + "/" + charCode + "\n");
+    // dump(controlState + " " + shiftState + " " + altState + "\n");
+
+    var event;
+    if (context) {
+      event = Utils.getDocument(context).createEvent('KeyEvents');
+    } else {
+      event = document.createEvent('KeyEvents');
     }
+
+    event.initKeyEvent(
+      type,         //  in DOMString typeArg,
+      true,         //  in boolean canBubbleArg
+      true,         //  in boolean cancelableArg
+      context,      //  in nsIDOMAbstractView viewArg
+      controlState, //  in boolean ctrlKeyArg
+      altState,     //  in boolean altKeyArg
+      shiftState,   //  in boolean shiftKeyArg
+      false,        //  in boolean metaKeyArg
+      keyCode,      //  in unsigned long keyCodeArg
+      charCode);    //  in unsigned long charCodeArg
+
+    element.dispatchEvent(event);
 };
 
 Utils.keyPress = function(context, element, keyCode, charCode) {
@@ -383,11 +546,11 @@ Utils.stackTrace = function() {
         stack = stack.caller;
         dump += stack + "\n";
     }
-    
+
     Utils.dumpText(dump);
 }
 
-Utils.getElementLocation = function(element, context) {		
+Utils.getElementLocation = function(element, context) {
     var x = element.offsetLeft;
     var y = element.offsetTop;
     var elementParent = element.offsetParent;

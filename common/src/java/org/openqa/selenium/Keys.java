@@ -5,16 +5,42 @@ package org.openqa.selenium;
  * as elements in the Unicode PUA.
  */
 public enum Keys implements CharSequence {
-	ARROW_LEFT('\uE001'),
-	ARROW_UP('\uE002'),
-	ARROW_RIGHT('\uE003'),
-	ARROW_DOWN('\uE004'),
-	BACK_SPACE('\uE005'),
-	DELETE('\uE006'),
+
+	NULL         ('\uE000'),
+	CANCEL       ('\uE001'), // ^break
+	HELP         ('\uE002'),
+	BACK_SPACE   ('\uE003'),
+	TAB          ('\uE004'),
+	CLEAR        ('\uE005'),
+	RETURN       ('\uE006'),
+	ENTER        ('\uE007'),
+	SHIFT        ('\uE008'),
+	LEFT_SHIFT   ('\uE008'), // alias
+	CONTROL      ('\uE009'),
+	LEFT_CONTROL ('\uE009'), // alias
+	ALT          ('\uE00A'),
+	LEFT_ALT     ('\uE00A'), // alias
+	PAUSE        ('\uE00B'),
+	ESCAPE       ('\uE00C'),
+	SPACE        ('\uE00D'),
+	PAGE_UP      ('\uE00E'),
+	PAGE_DOWN    ('\uE00F'),
+	END          ('\uE010'),
+	HOME         ('\uE011'),
+	LEFT         ('\uE012'),
+	ARROW_LEFT   ('\uE012'), // alias
+	UP           ('\uE013'),
+	ARROW_UP     ('\uE013'), // alias
+	RIGHT        ('\uE014'),
+	ARROW_RIGHT  ('\uE014'), // alias
+	DOWN         ('\uE015'),
+	ARROW_DOWN   ('\uE015'), // alias
+	INSERT       ('\uE016'),
+	DELETE       ('\uE017'),
 	;
 
-    private Keys(char keyCode) {
-        this.keyCode = keyCode;
+	private Keys(char keyCode) {
+		this.keyCode = keyCode;
 	}
 	
 	public char charAt(int index) {

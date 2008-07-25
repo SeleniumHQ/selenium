@@ -190,25 +190,29 @@ public class TypingTest extends AbstractDriverTestCase {
 				equalTo("focus keydown keypress keyup change blur"));
 	}
 
-	@JavascriptEnabled
-	@Ignore("ie, safari, htmlunit")
-	public void testShouldReportKeyCodeOfArrowKeys() {
-		driver.get(javascriptPage);
+    @JavascriptEnabled
+    @Ignore("ie, safari, htmlunit")
+    public void testShouldReportKeyCodeOfArrowKeys() {
+        driver.get(javascriptPage);
 
-		WebElement result = driver.findElement(By.id("result"));
-		WebElement element = driver.findElement(By.id("keyReporter"));
-		element.sendKeys(Keys.ARROW_DOWN);
-		assertThat(result.getText().trim(), is("down: 40 press: 40 up: 40"));
+        WebElement result = driver.findElement(By.id("result"));
+        WebElement element = driver.findElement(By.id("keyReporter"));
 
-		element.sendKeys(Keys.ARROW_UP);
-		assertThat(result.getText().trim(), is("down: 38 press: 38 up: 38"));
+        element.sendKeys(Keys.ARROW_DOWN);
+        assertThat(result.getText().trim(), is("down: 40 press: 40 up: 40"));
 
-		element.sendKeys(Keys.ARROW_LEFT);
-		assertThat(result.getText().trim(), is("down: 37 press: 37 up: 37"));
+        element.sendKeys(Keys.ARROW_UP);
+        assertThat(result.getText().trim(), is("down: 38 press: 38 up: 38"));
 
-		element.sendKeys(Keys.ARROW_RIGHT);
-		assertThat(result.getText().trim(), is("down: 39 press: 39 up: 39"));
-	}
+        element.sendKeys(Keys.ARROW_LEFT);
+        assertThat(result.getText().trim(), is("down: 37 press: 37 up: 37"));
+
+        element.sendKeys(Keys.ARROW_RIGHT);
+        assertThat(result.getText().trim(), is("down: 39 press: 39 up: 39"));
+
+        // And leave no rubbish/printable keys in the "keyReporter"
+        assertThat(element.getValue(), equalTo(""));
+    }
 
 	@JavascriptEnabled
 	@Ignore("firefox, safari, htmlunit")
@@ -217,6 +221,7 @@ public class TypingTest extends AbstractDriverTestCase {
 
 		WebElement result = driver.findElement(By.id("result"));
 		WebElement element = driver.findElement(By.id("keyReporter"));
+
 		element.sendKeys(Keys.ARROW_DOWN);
 		assertThat(result.getText().trim(), is("down: 40 up: 40"));
 
@@ -228,5 +233,91 @@ public class TypingTest extends AbstractDriverTestCase {
 
 		element.sendKeys(Keys.ARROW_RIGHT);
 		assertThat(result.getText().trim(), is("down: 39 up: 39"));
+
+        // And leave no rubbish/printable keys in the "keyReporter"
+        assertThat(element.getValue(), equalTo(""));
 	}
+
+    @JavascriptEnabled
+    @Ignore("ie, safari, htmlunit")
+    public void testFireFoxShouldHandleNumericNonShiftKeys() {
+        driver.get(javascriptPage);
+
+        WebElement result = driver.findElement(By.id("result"));
+        WebElement element = driver.findElement(By.id("keyReporter"));
+
+        String numericLineCharsNonShifted = "`1234567890-=[]\\;,.'/42";
+        element.sendKeys(numericLineCharsNonShifted);
+        assertThat(
+          element.getValue(), equalTo(numericLineCharsNonShifted));
+        assertThat(
+          result.getText().trim(), is("down: 50 press: 0 up: 50"));
+    }
+
+    @JavascriptEnabled
+    @Ignore("ie, safari, htmlunit")
+    public void testFireFoxShouldHandleNumericShiftKeys() {
+        driver.get(javascriptPage);
+
+        WebElement result = driver.findElement(By.id("result"));
+        WebElement element = driver.findElement(By.id("keyReporter"));
+
+        String numericShiftsEtc = "~!@#$%^&*()_+{}:\"<>?|END~";
+        element.sendKeys(numericShiftsEtc);
+        assertThat(
+          element.getValue(), equalTo(numericShiftsEtc));
+        assertThat(  // Note: the trailing SHIFT up (~ key shift)
+          result.getText().trim(), is("down: 126 press: 0 up: 126 up: 16"));
+    }
+
+    @JavascriptEnabled
+    @Ignore("ie, safari, htmlunit")
+    public void testFireFoxShouldHandleLowerAlphaKeys() {
+        driver.get(javascriptPage);
+
+        WebElement result = driver.findElement(By.id("result"));
+        WebElement element = driver.findElement(By.id("keyReporter"));
+
+        String lowerAlphas = "abcdefghijklmnopqrstuvwxyz";
+        element.sendKeys(lowerAlphas);
+        assertThat(
+          element.getValue(), equalTo(lowerAlphas));
+        assertThat(
+          result.getText().trim(), is("down: 90 press: 0 up: 90"));
+    }
+
+    @JavascriptEnabled
+    @Ignore("ie, safari, htmlunit")
+    public void testFireFoxShouldHandleUpperAlphaKeys() {
+        driver.get(javascriptPage);
+
+        WebElement result = driver.findElement(By.id("result"));
+        WebElement element = driver.findElement(By.id("keyReporter"));
+
+        String upperAlphas = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        element.sendKeys(upperAlphas);
+        assertThat(
+          element.getValue(), equalTo(upperAlphas));
+        assertThat(  // Note: observe the trailing SHIFT up (Z key shift)
+          result.getText().trim(), is("down: 90 press: 0 up: 90 up: 16"));
+    }
+
+    @JavascriptEnabled
+    @Ignore("ie, safari, htmlunit")
+    public void testFireFoxShouldHandleAllPrintableKeys() {
+        driver.get(javascriptPage);
+
+        WebElement result = driver.findElement(By.id("result"));
+        WebElement element = driver.findElement(By.id("keyReporter"));
+
+        String allPrintable =
+             "!\"#$%&'()*+,-./0123456789:;<=>?@ ABCDEFGHIJKLMNO" +
+             "PQRSTUVWXYZ [\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
+        element.sendKeys(allPrintable);
+
+        assertThat(
+          element.getValue(), equalTo(allPrintable));
+        assertThat(  // Note: the trailing SHIFT up (~ key shift)
+          result.getText().trim(), is("down: 126 press: 0 up: 126 up: 16"));
+    }
 }

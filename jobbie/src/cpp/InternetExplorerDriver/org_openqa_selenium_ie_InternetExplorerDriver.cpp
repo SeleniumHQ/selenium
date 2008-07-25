@@ -39,7 +39,6 @@ JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_doE
 	jsize length = env->GetArrayLength(args);
 
 	SAFEARRAY* convertedItems = SafeArrayCreateVector(VT_VARIANT, 0, length);
-	cerr << "Length of array is: " << length << endl;
 	
 	LONG index[1];
 	for (jsize i = 0; i < length; i++) {

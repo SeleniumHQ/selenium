@@ -1,0 +1,233 @@
+<html>
+
+<head>
+ <title>Key Test</title>
+
+ <script>
+   // Derived from javascript for http://unixpapa.com/js/testkey.html by
+   // Jan Wolter and modified to test drive WebDriver's utils.js code in
+   // situ on FireFox to test the keyboard event generation code - noel
+
+   var lines = 0;
+   var maxlines = 35 - 1;
+
+   function initPage() {
+     if (document.addEventListener) {
+       var elem = document.createElement('script');
+       elem.src = "utils.js";
+       var body = document.getElementById('body');
+       body.appendChild(elem);
+       document.addEventListener("keydown", keydown, false);
+       document.addEventListener("keypress", keypress, false);
+       document.addEventListener("keyup", keyup, false);
+     } else if (document.attachEvent) {
+       document.attachEvent("onkeydown", keydown);
+       document.attachEvent("onkeypress", keypress);
+       document.attachEvent("onkeyup", keyup);
+     } else {
+       document.onkeydown= keydown;
+       document.onkeypress= keypress;
+       document.onkeyup= keyup;
+     }
+
+     document.testform.t.value += '';
+     resetlines();
+   }
+
+   function showmesg(t) {
+     var old = document.testform.t.value;
+
+     if (lines >= maxlines) {
+       var i = old.indexOf('\n');
+       if (i >= 0) {
+	       old = old.substr(i+1);
+	     }
+     } else {
+   	   ++lines;
+   	 }
+
+     document.testform.t.value = old + t + '\n';
+   }
+
+   function keyval(n) {
+     if (n == null)
+       return 'undefined';
+     var s = '' + n;
+     if (n >= 32 && n < 127)
+       s += ' (' + String.fromCharCode(n) + ')';
+     while (s.length < 9)
+       s += ' ';
+     return s;
+   }
+
+   function pressmesg(w,e) {
+     showmesg(w + '  keyCode=' + keyval(e.keyCode) +
+       ' which=' + keyval(e.which) +
+       ' charCode=' + keyval(e.charCode));
+     showmesg('          shiftKey=' + e.shiftKey +
+	     ' ctrlKey=' + e.ctrlKey +
+	     ' altKey=' + e.altKey +
+	     ' metaKey=' + e.metaKey);
+    }
+
+    function keymesg(w,e) {
+      showmesg(w + '  keyCode=' + keyval(e.keyCode) +
+        ' which=' + keyval(e.which) +
+        ' charCode=' + keyval(e.charCode));
+      showmesg('          keyIdentifier=' + e.keyIdentifier +
+        ' keyLocation=' + e.keyLocation);
+      showmesg('          shiftKey=' + e.shiftKey +
+        ' ctrlKey=' + e.ctrlKey +
+        ' altKey=' + e.altKey +
+        ' metaKey=' + e.metaKey);
+    }
+
+    function keydown(e) {
+      if (!e)
+        e = event;
+      if (document.testform.keydown.checked)
+        keymesg('keydown ', e);
+    }
+
+    function keyup(e) {
+      if (!e)
+        e = event;
+      if (document.testform.keyup.checked)
+        keymesg('keyup   ', e);
+    }
+
+    function keypress(e) {
+      if (!e)
+        e = event;
+      if (document.testform.keypress.checked)
+        pressmesg('keypress', e);
+    }
+
+    function resetlines() {
+      lines = 0;
+      var elem = document.getElementById('typer');
+      elem.onclick = cleartype;
+      return true;
+    }
+
+    function cleartype() {
+      var elem = document.getElementById('typer');
+      elem.value = '';
+      elem.onclick = null;
+    }
+
+    function trytype() {
+
+      /*
+       * we could just generate key tables one day ...
+      var elem = document.getElementById('typer');
+      elem.focus();
+      elem.value = '';
+      elem.blur();
+      var charCode = 0;
+      while (charCode != 127) {
+        Utils.type(null, elem, String.fromCharCode(charCode));
+        ++charCode;
+      }
+      return;
+      */
+
+     window.setTimeout(function () {
+       var elem = document.getElementById('typer');
+
+       /*
+        * numeric line chars, non shifted
+        */
+       elem.focus();
+       elem.value = '';
+       elem.blur();
+       Utils.type(null, elem, "`1234567890-=[]\\;,.\'");
+       if (elem.value != "`1234567890-=[]\\;,.\'")
+         alert("[" + elem.value + "]");
+       if (Utils.shiftCount != 0)
+         alert("[" + elem.value + "] zero shifts expected");
+
+       /*
+        * alpha chars non shifted
+        */
+       elem.focus();
+       elem.value = '';
+       elem.blur();
+       Utils.type(null, elem, "abcdefghijklmnopqrstuvwxyz");
+       if (elem.value != "abcdefghijklmnopqrstuvwxyz")
+         alert("[" + elem.value + "]");
+       if (Utils.shiftCount != 0)
+         alert("[" + elem.value + "] wrong shift count");
+
+       /*
+        * alpha chars that need a shift key
+        */
+       elem.focus();
+       elem.value = '';
+       elem.blur();
+       Utils.type(null, elem, "ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+       if (elem.value != "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+         alert("[" + elem.value + "]");
+       if (Utils.shiftCount != 26)
+         alert("[" + elem.value + "] wrong shift count");
+
+       /*
+        * special chars that need a shift key
+        */
+       elem.focus();
+       elem.value = '';
+       elem.blur();
+       Utils.type(null, elem, '~!@#$%^&*()_+{}:"<>?|END~');
+       if (elem.value != '~!@#$%^&*()_+{}:"<>?|END~')
+         alert("[" + elem.value + "]");
+       var expect = '~!@#$%^&*()_+{}:"<>?|END~'.length;
+       if (Utils.shiftCount != expect)
+         alert("[" + elem.value + "] wrong shift count: " +
+           Utils.shiftCount + " expected " + expect);
+
+       /*
+        * the lot: max printables
+        */
+       elem.focus();
+       elem.value = '';
+       elem.blur();
+       var printables = "!\"#$%&'()*+,-./0123456789:;<=>?@ ABCDEFG" +
+         "HIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
+       Utils.type(null, elem, printables);
+       if (elem.value != printables)
+         alert("[" + elem.value + "]");
+
+      }, 250);
+    }
+
+ </script>
+
+</head>
+
+<body id="body" onload="initPage();" topmargin="20" leftmargin="40">
+
+<form name="testform">
+  <h2>KeyEvent Test</h2><p>
+  Hit keys to see the Javascript events triggered and the values
+  returned.
+
+  <p>
+  Show event handling for ... &nbsp;
+  <input type="checkbox" name="keydown" value="1" checked> keydown
+  &nbsp;&nbsp;&nbsp;
+  <input type="checkbox" name="keypress" value="1" checked> keypress
+  &nbsp;&nbsp;&nbsp;
+  <input type="checkbox" name="keyup" value="1" checked> keyup
+  <br>
+
+  <textarea id="testarea" name="t" rows="35" cols="90"></textarea>
+  <p>
+    <input type="input" id="typer" value="Type here ..." size="120">
+  </p>
+  <input type="reset" onclick="resetlines();">
+  <input type="button" value="Type" onclick="trytype();">
+</form>
+
+</body>
+</html>
+
