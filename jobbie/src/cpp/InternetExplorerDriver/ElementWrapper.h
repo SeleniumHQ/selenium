@@ -38,6 +38,7 @@ public:
 	void submit();
 
 	std::vector<ElementWrapper*>* getChildrenWithTagName(const std::wstring& tagName);
+	IHTMLElement* getWrappedElement();
 
 private:
 	std::wstring getTextAreaValue();

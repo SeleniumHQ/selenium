@@ -1126,6 +1126,11 @@ std::vector<ElementWrapper*>* ElementWrapper::getChildrenWithTagName(const std::
 	return toReturn;
 }
 
+IHTMLElement* ElementWrapper::getWrappedElement() 
+{
+	return element;
+}
+
 IHTMLEventObj* ElementWrapper::newEventObject() 
 {
 	IDispatch* dispatch;

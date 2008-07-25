@@ -18,10 +18,10 @@ JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_close
 /*
  * Class:     org_openqa_selenium_ie_InternetExplorerDriver
  * Method:    doExecuteScript
- * Signature: (Ljava/lang/String;)Ljava/lang/Object;
+ * Signature: (Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/Object;
  */
 JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_doExecuteScript
-  (JNIEnv *, jobject, jstring);
+  (JNIEnv *, jobject, jstring, jobjectArray);
 
 /*
  * Class:     org_openqa_selenium_ie_InternetExplorerDriver

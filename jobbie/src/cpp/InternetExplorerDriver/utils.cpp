@@ -123,3 +123,15 @@ jstring wstring2jstring(JNIEnv *env, const std::wstring& text)
 		return NULL;
 	return env->NewString((const jchar*) text.c_str(), (jsize) text.length());
 }
+
+long getLengthOf(SAFEARRAY* ary)
+{
+	if (!ary)
+		return 0;
+
+	long lower = 0;
+	SafeArrayGetLBound(ary, 1, &lower);
+	long upper = 0;
+	SafeArrayGetUBound(ary, 1, &upper);
+	return 1 + upper - lower;
+}

@@ -22,15 +22,69 @@ InternetExplorerDriver* getIe(JNIEnv *env, jobject obj)
 }
 
 JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_doExecuteScript
-  (JNIEnv *env, jobject obj, jstring script)
+  (JNIEnv *env, jobject obj, jstring script, jobjectArray args)
 {
 	InternetExplorerDriver* wrapper = getIe(env, obj);
+
+	// Convert the args into something we can use elsewhere.
+	jclass numberClazz = env->FindClass("java/lang/Number");
+	jclass booleanClazz = env->FindClass("java/lang/Boolean");
+	jclass stringClazz = env->FindClass("java/lang/String");
+	jclass elementClazz = env->FindClass("org/openqa/selenium/ie/InternetExplorerElement");
+
+	jmethodID longValue = env->GetMethodID(numberClazz, "longValue", "()J");
+	jmethodID booleanValue = env->GetMethodID(booleanClazz, "booleanValue", "()Z");
+	jfieldID elementPointer = env->GetFieldID(elementClazz, "nodePointer", "J");
+
+	jsize length = env->GetArrayLength(args);
+
+	SAFEARRAY* convertedItems = SafeArrayCreateVector(VT_VARIANT, 0, length);
+	cerr << "Length of array is: " << length << endl;
+	
+	LONG index[1];
+	for (jsize i = 0; i < length; i++) {
+		index[0] = i;
+		VARIANT *dest;
+		SafeArrayAccessData(convertedItems, (void**) &dest);
+
+		jobject arrayObject = env->GetObjectArrayElement(args, i);
+		jclass objClazz = env->GetObjectClass(arrayObject);
+		
+		if (env->IsInstanceOf(arrayObject, numberClazz)) {
+			jlong value = env->CallLongMethod(arrayObject, longValue);
+
+			dest->vt = VT_I4;
+			dest->lVal = (LONG) value;
+		} else if (env->IsInstanceOf(arrayObject, stringClazz)) {
+			wchar_t *converted = (wchar_t *)env->GetStringChars((jstring) arrayObject, 0);
+			std::wstring value(converted);
+			env->ReleaseStringChars((jstring) arrayObject, (jchar*) converted);
+
+			dest->vt = VT_BSTR;
+			dest->bstrVal = SysAllocString(value.c_str());
+		} else if (env->IsInstanceOf(arrayObject, booleanClazz)) {
+			bool value = env->CallBooleanMethod(arrayObject, booleanValue) == JNI_TRUE;
+
+			dest->vt = VT_BOOL;
+			dest->boolVal = value;
+		} else if (env->IsInstanceOf(arrayObject, elementClazz)) {
+			ElementWrapper* element = (ElementWrapper*) env->GetLongField(arrayObject, elementPointer);
+			
+			dest->vt = VT_DISPATCH;
+			dest->pdispVal = element->getWrappedElement();
+		}
+
+		SafeArrayUnaccessData(convertedItems);
+	}
 
 	const wchar_t* converted = (wchar_t *)env->GetStringChars(script, 0);
 	VARIANT result;
 	VariantInit(&result);
-	wrapper->executeScript(converted, &result);
+	wrapper->executeScript(converted, convertedItems, &result);
 	env->ReleaseStringChars(script, (jchar*) converted);
+
+	// TODO (simon): Does this clear everything properly?
+	SafeArrayDestroy(convertedItems);
 
 	if (result.vt == VT_BSTR) {
 		return wstring2jstring(env, bstr2wstring(result.bstrVal));
@@ -83,7 +137,6 @@ JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_doE
 	}
 
 	cerr << "Unknown variant type. Will attempt to coerce to string: " << result.vt << endl;
-
 	return wstring2jstring(env, variant2wchar(result));
 }
 

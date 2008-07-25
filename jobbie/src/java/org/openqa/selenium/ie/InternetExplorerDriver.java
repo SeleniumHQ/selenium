@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -69,11 +70,19 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
     	close();  // Not a good implementation, but better than nothing
     }
 
-    private native Object doExecuteScript(String script);
+    private native Object doExecuteScript(String script, Object[] args);
     public Object executeScript(String script, Object... args) {
+    	for (Object arg : args) {
+    		if (!(arg instanceof String || 
+    			  arg instanceof Boolean || 
+    			  arg instanceof Number || 
+    			  arg instanceof InternetExplorerElement))
+    			throw new IllegalArgumentException("Parameter is not of recognized type: " + arg);
+    	}
+    	
     	script = script.replace("\"", "\\\"");
-    	script = "(function(){" + script + "})();";
-    	return doExecuteScript(script);
+    	script = "(function() { return function(){" + script + "};})();";
+    	return doExecuteScript(script, args);
     }
     
     

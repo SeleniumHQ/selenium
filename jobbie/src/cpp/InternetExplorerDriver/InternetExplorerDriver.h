@@ -54,7 +54,7 @@ public:
 
 	HWND getHwnd();
 
-	void executeScript(const wchar_t *script, VARIANT *result, bool tryAgain = true);
+	void executeScript(const wchar_t *script, SAFEARRAY* args, VARIANT *result, bool tryAgain = true);
 
 private:
 	bool addEvaluateToDocument(int count);

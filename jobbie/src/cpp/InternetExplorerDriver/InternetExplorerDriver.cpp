@@ -147,7 +147,8 @@ bool InternetExplorerDriver::addEvaluateToDocument(int count)
 	for (int i = 0; XPATHJS[i]; i++) {
 		script += XPATHJS[i];
 	}
-	executeScript(script.c_str(), NULL);
+	
+	executeScript(script.c_str(), NULL, NULL);
 	
 	hr = doc->GetIDsOfNames(IID_NULL, &szMember, 1, LOCALE_USER_DEFAULT, &dispid);
 	if (FAILED(hr)) {
@@ -185,12 +186,18 @@ ElementWrapper* InternetExplorerDriver::selectElementByXPath(const wchar_t *xpat
 	if (!addEvaluateToDocument(0))
 		return NULL;
 
-	std::wstring expr(L"var path = \"");
-	expr += xpath;
-	expr += L"\"; (function() { var res = document.__webdriver_evaluate(path, document, null, 7, null); return res.snapshotItem(0); })()";
+	std::wstring expr(L"(function() { return function() {var res = document.__webdriver_evaluate(arguments[0], document, null, 7, null); return res.snapshotItem(0);};})();");
 
 	CComVariant result;
-	executeScript(expr.c_str(), &result);
+	CComBSTR expression = CComBSTR(xpath);
+	SAFEARRAY* args = SafeArrayCreateVector(VT_VARIANT, 0, 1);
+	VARIANT *dest;
+	SafeArrayAccessData(args, (void**) &dest);
+	dest->vt = VT_BSTR;
+	dest->bstrVal = expression;
+	SafeArrayUnaccessData(args);
+
+	executeScript(expr.c_str(), args, &result);
 
 	if (result.vt == VT_DISPATCH) {
 		CComQIPtr<IHTMLDOMNode> e(result.pdispVal);
@@ -209,13 +216,18 @@ std::vector<ElementWrapper*>* InternetExplorerDriver::selectElementsByXPath(cons
 
 	if (!addEvaluateToDocument(0))
 		return toReturn;
-	
-	std::wstring expr(L"var path = \"");
-	expr += xpath;
-	expr += L"\"; (function () { var res = document.__webdriver_evaluate(path, document, null, 7, null); return res; })();";
+	std::wstring expr(L"(function() { return function() {var res = document.__webdriver_evaluate(arguments[0], document, null, 7, null); return res;};})();");
 
 	CComVariant result;
-	executeScript(expr.c_str(), &result);
+	CComBSTR expression = CComBSTR(xpath);
+	SAFEARRAY* args = SafeArrayCreateVector(VT_VARIANT, 0, 1);
+	VARIANT *dest;
+	SafeArrayAccessData(args, (void**) &dest);
+	dest->vt = VT_BSTR;
+	dest->bstrVal = expression;
+	SafeArrayUnaccessData(args);
+	
+	executeScript(expr.c_str(), args, &result);
 
 	// At this point, the result should contain a JS array of nodes.
 	if (result.vt != VT_DISPATCH) {
@@ -847,7 +859,7 @@ void InternetExplorerDriver::getDocument3(IHTMLDocument3 **pdoc)
 	*pdoc = doc.Detach();
 }
 
-void InternetExplorerDriver::executeScript(const wchar_t *script, VARIANT *result, bool tryAgain)
+void InternetExplorerDriver::executeScript(const wchar_t *script, SAFEARRAY* args, VARIANT *result, bool tryAgain)
 {
 	CComPtr<IHTMLDocument2> doc;
 	getDocument(&doc);
@@ -887,17 +899,74 @@ void InternetExplorerDriver::executeScript(const wchar_t *script, VARIANT *resul
 			return;
 		}
 	}
+	
+	// If there are no args, then just evaluate immediately. 
+	int nargs = getLengthOf(args);
 
+	// Otherwise, create an anonymous function and then call that
+
+	// Create the webdriver function
 	CComVariant script_variant(script);
 	DISPPARAMS parameters = {0};
     parameters.cArgs = 1;
     parameters.rgvarg = &script_variant;
 	EXCEPINFO exception;
+	VARIANT tempFunction;
 
-	hr = scriptEngine->Invoke(dispid, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &parameters, result, &exception, 0);
+	hr = scriptEngine->Invoke(dispid, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &parameters, &tempFunction, &exception, 0);
 	if (FAILED(hr)) {
 	  if (DISP_E_EXCEPTION == hr) {
 		  wcerr << "Exception message was: " << exception.bstrDescription << endl;
+	  } else {
+		  wcerr << "Error code: " << GetLastError() << ". Failed to compile: " << script << endl;
+	  }
+	  
+	  if (result) {
+		  result->vt = VT_USERDEFINED;
+		  result->bstrVal = exception.bstrDescription;
+	  }
+
+	  // TODO (simon): Remove added element if necessary
+	  return;
+	}
+
+	// Was "call" the right type? Return if it's not a method
+	if (tempFunction.vt != VT_DISPATCH) {
+		// TODO (simon): Remove added element if necessary
+		return;
+	}
+
+	// Grab the "call" method out of the returned function
+	DISPID callid;
+	OLECHAR FAR* szCallMember = L"call";
+    HRESULT hr3 = tempFunction.pdispVal->GetIDsOfNames(IID_NULL, &szCallMember, 1, LOCALE_USER_DEFAULT, &callid);
+
+	DISPPARAMS callParameters = { 0 };
+	callParameters.cArgs = nargs + 1;
+
+	CComPtr<IHTMLWindow2> win;
+	doc->get_parentWindow(&win);
+
+	_variant_t *vargs = new _variant_t[nargs + 1];
+	vargs[nargs] = new _variant_t(win);
+
+	long index;
+    for (int i = 0; i < nargs; i++)
+    {
+		index = i;
+		VARIANT v;
+		SafeArrayGetElement(args, &index, (void*) &v);
+		vargs[nargs - 1 - i] = new _variant_t(v);
+    }
+
+	callParameters.rgvarg = vargs;
+
+	HRESULT hr4 = tempFunction.pdispVal->Invoke(callid, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &callParameters, result, &exception, 0);
+	if (FAILED(hr4)) {
+	  if (DISP_E_EXCEPTION == hr4) {
+		  wcerr << "Exception message was: " << exception.bstrDescription << endl;
+	  } else {
+		  wcerr << "Failed to execute: " << script << endl;
 	  }
 	  
 	  if (result) {
@@ -906,9 +975,12 @@ void InternetExplorerDriver::executeScript(const wchar_t *script, VARIANT *resul
 	  }
 	}
 
+
 	if (added) {
-		executeScript(L"var s = document.getElementById('__webdriver_private_span'); s.outerHTML=''", NULL, false);
+		// executeScript(L"var s = document.getElementById('__webdriver_private_span'); s.outerHTML=''", NULL, false);
 	}
+
+	
 }
 
 IeEventSink::IeEventSink(IWebBrowser2* ie) 

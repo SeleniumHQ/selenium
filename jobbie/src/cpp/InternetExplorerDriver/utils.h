@@ -21,4 +21,7 @@ std::wstring variant2wchar(const VARIANT toConvert);
 std::wstring bstr2wstring(BSTR from);
 jstring wstring2jstring(JNIEnv *env, const std::wstring& text);
 
+long getLengthOf(SAFEARRAY* ary);
+void evaluateXPath();
+
 #endif
