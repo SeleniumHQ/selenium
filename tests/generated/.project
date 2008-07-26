@@ -1,10 +1,7 @@
 <projectDescription>
-  <name>selenium-java-client-driver</name>
+  <name>selenium-generated-tests</name>
   <comment/>
-  <projects>
-    <project>selenium-server-coreless</project>
-    <project>selenium-server</project>
-  </projects>
+  <projects/>
   <buildSpec>
     <buildCommand>
       <name>org.eclipse.jdt.core.javabuilder</name>
