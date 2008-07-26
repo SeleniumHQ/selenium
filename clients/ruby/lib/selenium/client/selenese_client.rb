@@ -82,10 +82,10 @@ module Selenium
       end
             
       def http_post(data)
-        puts "Requesting ---> #{data.inspect}"
+        # puts "Requesting ---> #{data.inspect}"
         http = Net::HTTP.new(@server_host, @server_port)
         response = http.post('/selenium-server/driver/', data, HTTP_HEADERS)
-        puts "RESULT: #{response.inspect}\n"       
+        # puts "RESULT: #{response.inspect}\n"       
         [ response.body[0..1], response.body[3..-1] ]
       end
       
