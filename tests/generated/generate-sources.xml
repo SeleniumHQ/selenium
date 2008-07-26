@@ -1,0 +1,68 @@
+<project name="java-client-driver-generate-sources">
+
+    <property name="maven.src.path" location="target/generated-sources/main/java/com/thoughtworks/selenium" />
+	
+	<property name="dir.java.tests.based.on.core.javascript" location="target/generated-sources/test/java/com/thoughtworks/selenium/corebased" />
+	<property name="dir.java.tests.based.on.core.javascript.later.modified.by.hand" location="src/test/java/com/thoughtworks/selenium/corebasedhandmodified" />
+	
+	
+    <target name="ant-generate-tests" depends="ant-convert-selenese">
+        <copy overwrite="true" todir="${dir.java.tests.based.on.core.javascript}" preservelastmodified="true">
+            <fileset dir="${dir.java.tests.based.on.core.javascript.later.modified.by.hand}">
+                <include name="**/*.java.txt"/>
+            </fileset>
+            <mapper>
+                <globmapper from="*.java.txt" to="*.java"/>
+            </mapper>
+        </copy>
+	</target>
+
+    <target name="ant-convert-selenese" depends="ant-check-conversion-needed" unless="conversion.notNeeded">
+        <touch file="target/selenium-server.txt" />
+        <mkdir dir="target/selenium-server"/>
+        <unzip src="${selenium-server}" dest="target/selenium-server" />
+
+		<property name="dir.core.tests" location="target/selenium-server/tests" />
+        <mkdir  dir="${dir.java.tests.based.on.core.javascript}" />
+        <java classname="org.openqa.selenium.server.testgenerator.XlateHtmlSeleneseToJava" fork="true" failonerror="true">
+            <arg value="${dir.java.tests.based.on.core.javascript}"/>
+            <arg value="-silent"/>
+            <arg value="-dontThrowOnTranslationDifficulties"/>
+            <arg value="-dir"/>
+            <arg value="${dir.core.tests}"/>
+
+            <arg value="-skip"/>
+            <arg value="TestErrorChecking.html"/>
+
+            <arg value="-skip"/>
+            <arg value="TestJS-for-loops.html"/>
+
+
+            <arg value="-skip"/>
+            <arg value="TestJS-functions.html"/>
+
+
+            <arg value="-skip"/>
+            <arg value="TestJS-if-then-else.html"/>
+
+            <arg value="-skip"/>
+            <arg value="TestOpen_SSV_syntax.html"/>
+
+            <classpath path="${selenium-server}"/>
+        </java>
+    </target>
+
+    <target name="ant-check-conversion-needed">
+        <uptodate property="conversion.notNeeded" targetfile="target/selenium-server.txt" srcfile="${selenium-server}"/>
+        <echo>conversion.notNeeded=${conversion.notNeeded}</echo>
+    </target>
+
+	<target name="ant-generate-sources">
+        <xslt in="target/iedoc.xml" out="${maven.src.path}/Selenium.java" style="iedoc2java.xml">
+			<param name="mode" expression="interface" />
+		</xslt>
+		<xslt in="target/iedoc.xml" out="${maven.src.path}/DefaultSelenium.java" style="iedoc2java.xml">
+			<param name="mode" expression="implementation" />
+		</xslt>
+	</target>
+</project>
