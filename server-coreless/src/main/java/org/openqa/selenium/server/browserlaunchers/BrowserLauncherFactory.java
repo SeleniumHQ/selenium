@@ -50,7 +50,7 @@ public class BrowserLauncherFactory {
         supportedBrowsers.put("firefox2", Firefox2Launcher.class);
         supportedBrowsers.put("firefox3", Firefox3Launcher.class);
         supportedBrowsers.put("iexplore", InternetExplorerCustomProxyLauncher.class);
-        supportedBrowsers.put("safari", SafariCustomProfileLauncher.class);
+        supportedBrowsers.put("safari", SafariFileBasedLauncher.class);
         supportedBrowsers.put("iehta", HTABrowserLauncher.class);
         supportedBrowsers.put("opera", OperaCustomProfileLauncher.class);
         supportedBrowsers.put("piiexplore", ProxyInjectionInternetExplorerCustomProxyLauncher.class);

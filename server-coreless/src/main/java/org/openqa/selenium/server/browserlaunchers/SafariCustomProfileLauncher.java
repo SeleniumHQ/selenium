@@ -34,18 +34,18 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
     private static final String REDIRECT_TO_GO_TO_SELENIUM = "redirect_to_go_to_selenium.htm";
 
     //    private int port;
-    private File customProfileDir;
-    private String[] cmdarray;
+    protected File customProfileDir;
+    protected String[] cmdarray;
     private boolean closed = false;
-    private BrowserInstallation browserInstallation;
-    private Process process;
+    protected BrowserInstallation browserInstallation;
+    protected Process process;
     protected WindowsProxyManager wpm;
     protected MacProxyManager mpm;
     private File backedUpCookieFile;
     private File originalCookieFile;
     private String originalCookieFilePath;
 
-    private static AsyncExecute exe = new AsyncExecute();
+    protected static AsyncExecute exe = new AsyncExecute();
 
     public SafariCustomProfileLauncher(RemoteControlConfiguration configuration, String sessionId) {
         this(configuration, sessionId, (String) null);
@@ -128,7 +128,7 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
         }
     }
 
-    private void ensureCleanSession() {
+    protected void ensureCleanSession() {
         // see: http://www.macosxhints.com/article.php?story=20051107093733174&lsrc=osxh
         if (Os.isFamily("mac")) {
             String user = System.getenv("USER");
