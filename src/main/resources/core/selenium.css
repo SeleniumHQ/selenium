@@ -48,7 +48,11 @@ iframe {
     width: 100%;
     height: 100%;
     background: white;
-    overflow: auto;
+    /*  HBC - this particular property seems to be causing an issue in
+        conjunction with the native Draw() method in Snapsie. I don't really
+        see a visual difference from commenting this out, so I'm going ahead
+        with it.
+    overflow: auto; */
 }
 
 /*---( Style )---*/
