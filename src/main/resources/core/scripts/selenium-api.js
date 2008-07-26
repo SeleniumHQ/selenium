@@ -2605,56 +2605,90 @@ Selenium.prototype.doCaptureEntirePageScreenshot = function(filename, kwargs) {
      *                     (possibly obscuring black text).</dd>
      *                  </dl>
      */
-    // can only take screenshots in Mozilla chrome mode, IE not in the RC,
-    // or IE multiWindow mode in the RC
+    // can only take screenshots in Mozilla chrome mode or IE (non-PI). But
+    // since IE support is HIGHLY EXPERIMENTAL, don't advertise it in the doc.
     if (!browserVersion.isChrome && !browserVersion.isIE) {
         throw new SeleniumError('takeScreenshot is only implemented for '
             + "chrome and iexplore browsers, but the current browser isn't "
             + 'one of them');
     }
-    if (browserVersion.isIE && typeof(runOptions) != 'undefined' &&
-        runOptions.isMultiWindowMode() == false) {
-        throw new SeleniumError('takeScreenshot in the RC is currently only ' +
-            'available for iexplore when in -multiWindow mode'); 
-    }
     
     // do or do not ... there is no try
     
     if (browserVersion.isIE) {
-        // The backslash path separator must always be properly escaped, since
-        // we're using the path in script text. It appears to be safe to
-        // over-escape.
-        filename = filename.replace(/\\/g, '\\\\');
-        
-        // this is sort of hackish and only works in -multiWindow mode when
-        // used within the RC. We insert a script into the document, and remove
-        // it before anyone notices.
-        var doc = selenium.browserbot.getDocument();
-        var script = doc.createElement('script'); 
-        var scriptContent =
-              'try {'
-            + '    var snapsie = new ActiveXObject("Snapsie.CoSnapsie");'
-            + '    snapsie.saveSnapshot("' + filename + '", "");'
-            + '}'
-            + 'catch (e) {'
-            + '    document.getElementById("takeScreenshot").failure ='
-            + '        e.message || "Undocumented error";'
-            + '}';
-        script.id = 'takeScreenshot';
-        script.language = 'javascript';
-        script.text = scriptContent;
-        doc.body.appendChild(script);
-        script.parentNode.removeChild(script);
-        if (script.failure) {
+        // targeting snapsIE >= 0.2
+        function getFailureMessage(exceptionMessage) {
             var msg = 'Snapsie failed: ';
-            if (script.failure == "Automation server can't create object") {
-                msg += 'Is it installed? See '
-                    + 'http://sourceforge.net/projects/snapsie';
+            if (exceptionMessage) {
+                if (exceptionMessage ==
+                    "Automation server can't create object") {
+                    msg += 'Is it installed? Does it have permission to run '
+                        'as an add-on? See http://snapsie.sourceforge.net/';
+                }
+                else {
+                    msg += exceptionMessage;
+                }
             }
             else {
-                msg += script.failure;
+                msg += 'Undocumented error';
             }
-            throw new SeleniumError(msg);
+            return msg;
+        }
+    
+        if (typeof(runOptions) != 'undefined' &&
+            runOptions.isMultiWindowMode() == false) {
+            // framed mode
+            try {
+                new Snapsie().saveSnapshot(filename, 'selenium_myiframe');
+            }
+            catch (e) {
+                throw new SeleniumError(getFailureMessage(e.message));
+            }
+        }
+        else {
+            // multi-window mode
+            if (!this.snapsieSrc) {
+                // XXX - cache snapsie, and capture the screenshot as a
+                // callback. Definitely a hack, because we may be late taking
+                // the first screenshot, but saves us from polluting other code
+                // for now. I wish there were an easier way to get at the
+                // contents of a referenced script!
+                var snapsieUrl = (this.browserbot.buttonWindow.location.href)
+                    .replace(/(Test|Remote)Runner\.html/, 'lib/snapsie.js');
+                var self = this;
+                new Ajax.Request(snapsieUrl, {
+                    method: 'get'
+                    , onSuccess: function(transport) {
+                        self.snapsieSrc = transport.responseText;
+                        self.doCaptureEntirePageScreenshot(filename, kwargs);
+                    }
+                });
+                return;
+            }
+
+            // it's going into a string, so escape the backslashes
+            filename = filename.replace(/\\/g, '\\\\');
+            
+            // this is sort of hackish. We insert a script into the document,
+            // and remove it before anyone notices.
+            var doc = selenium.browserbot.getDocument();
+            var script = doc.createElement('script'); 
+            var scriptContent = this.snapsieSrc 
+                + 'try {'
+                + '    new Snapsie().saveSnapshot("' + filename + '");'
+                + '}'
+                + 'catch (e) {'
+                + '    document.getElementById("takeScreenshot").failure ='
+                + '        e.message;'
+                + '}';
+            script.id = 'takeScreenshot';
+            script.language = 'javascript';
+            script.text = scriptContent;
+            doc.body.appendChild(script);
+            script.parentNode.removeChild(script);
+            if (script.failure) {
+                throw new SeleniumError(getFailureMessage(script.failure));
+            }
         }
         return;
     }
