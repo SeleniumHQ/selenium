@@ -18,8 +18,8 @@
 	</target>
 
     <target name="ant-convert-selenese" depends="ant-check-conversion-needed" unless="conversion.notNeeded">
-        <touch file="target/selenium-server.txt" />
         <mkdir dir="target/selenium-server"/>
+        <touch file="target/selenium-server.txt" />
         <unzip src="${selenium-server}" dest="target/selenium-server" />
 
 		<property name="dir.core.tests" location="target/selenium-server/tests" />
