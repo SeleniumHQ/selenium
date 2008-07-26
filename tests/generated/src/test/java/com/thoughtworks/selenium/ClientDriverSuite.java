@@ -77,7 +77,6 @@ public class ClientDriverSuite extends TestCase {
             TestSuite suite = new TestSuite(ClientDriverSuite.class.getName());
            
             suite.addTestSuite(ApacheMyFacesSuggestTest.class);
-            suite.addTest(I18nIntegrationTest.suite());
             suite.addTestSuite(TestBasicAuth.class);
             suite.addTestSuite(TestErrorChecking.class);
             suite.addTestSuite(TestJavascriptParameters.class);
