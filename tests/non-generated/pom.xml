@@ -7,9 +7,9 @@
         <artifactId>selenium-rc</artifactId>
     </parent>
     <groupId>org.openqa.selenium.tests</groupId>
-    <artifactId>selenium-tests</artifactId>
+    <artifactId>selenium-non-generated-tests</artifactId>
     <packaging>jar</packaging>
-    <name>Selenium Tests</name>
+    <name>Selenium Non Generated Tests</name>
     <properties>
         <browser>FIREFOX2</browser>
         <multiWindow>false</multiWindow>

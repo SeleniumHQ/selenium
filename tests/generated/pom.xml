@@ -2,14 +2,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.openqa.selenium.client-drivers</groupId>
+        <groupId>org.openqa.selenium</groupId>
         <version>1.0-SNAPSHOT</version>
-        <artifactId>selenium-client-drivers</artifactId>
+        <artifactId>selenium-rc</artifactId>
     </parent>
-    <groupId>org.openqa.selenium.client-drivers</groupId>
-    <artifactId>selenium-java-client-driver</artifactId>
+    <groupId>org.openqa.selenium.tests</groupId>
+    <artifactId>selenium-generated-tests</artifactId>
     <packaging>jar</packaging>
-    <name>Selenium RC Java Client Driver</name>
+    <name>Selenium Generated Tests</name>
     <repositories>
         <repository>
             <id>openqa-releases</id>
@@ -60,8 +60,6 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <includes>
-                        <include>**/ClientUnitTestSuite.java</include>
-                        <include>**/I18nTest.java</include>
                         <include>**/ClientDriverSuite.java</include>
                         <!--<include>**/ClientDriverPISuite.java</include-->
                     </includes>
@@ -71,24 +69,8 @@
             </plugin>
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.2-SNAPSHOT</version>
                 <executions>
-                    <execution>
-                        <id>generate-sources</id>
-                        <phase>generate-sources</phase>
-                        <configuration>
-                            <tasks>
-                                <ant antfile="generate-sources.xml" target="ant-generate-sources" inheritrefs="true">
-                                    <property name="selenium-server"
-                                              value="${maven.dependency.org.openqa.selenium.server.selenium-server.standalone.jar.path}"/>
-                                </ant>
-                            </tasks>
-                            <sourceRoot>${project.build.directory}/generated-sources/main/java</sourceRoot>
-                            <testSourceRoot>${project.build.directory}/generated-sources/test/java</testSourceRoot>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
                     <execution>
                         <id>generate-test-sources</id>
                         <phase>generate-test-sources</phase>
@@ -129,9 +111,15 @@
     </build>
     <dependencies>
         <dependency>
-            <groupId>org.openqa.selenium.server</groupId>
-            <artifactId>selenium-server</artifactId>
+            <groupId>org.openqa.selenium.client-drivers</groupId>
+            <artifactId>selenium-java-client-driver</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+		    <groupId>org.openqa.selenium.server</groupId>
+		    <artifactId>selenium-server</artifactId>
+		    <classifier>standalone</classifier>
+		    <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
