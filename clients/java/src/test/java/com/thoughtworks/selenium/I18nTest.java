@@ -4,12 +4,14 @@
  */
 package com.thoughtworks.selenium;
 
-import java.io.*;
+import junit.extensions.TestSetup;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+import org.openqa.selenium.server.RemoteControlConfiguration;
+import org.openqa.selenium.server.SeleniumServer;
 
-import junit.extensions.*;
-import junit.framework.*;
-
-import org.openqa.selenium.server.*;
+import java.io.UnsupportedEncodingException;
 
 public class I18nTest extends TestCase {
     
@@ -49,11 +51,7 @@ public class I18nTest extends TestCase {
         }
         
         public void tearDown() throws Exception {
-            try {
-                sel.stop();
-            } catch (Exception e) {
-                throw e;
-            }
+            sel.stop();
             if (launchServer) server.stop();
         }
         

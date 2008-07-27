@@ -1,12 +1,11 @@
 package com.thoughtworks.selenium;
 
-import junit.framework.*;
+import junit.framework.TestCase;
+import org.openqa.selenium.server.BrowserConfigurationOptions;
 
-import org.openqa.selenium.server.*;
+public class DefaultSeleniumTest extends TestCase {
 
-public class DefaultSeleniumTestCase extends TestCase {
-
-    private static final String prefix = "setContext,com.thoughtworks.selenium.DefaultSeleniumTestCase: ";
+    private static final String prefix = "setContext,com.thoughtworks.selenium.DefaultSeleniumTest: ";
 
     public void testBannerSimple() throws Throwable {
         MyCommandProcessor cp = new MyCommandProcessor();

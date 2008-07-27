@@ -4,10 +4,10 @@
  */
 package com.thoughtworks.selenium;
 
-import java.lang.reflect.*;
-import java.util.*;
+import junit.framework.TestCase;
 
-import junit.framework.*;
+import java.lang.reflect.Method;
+import java.util.Arrays;
 
 public class CSVTest extends TestCase {
 
