@@ -135,6 +135,17 @@ public class DefaultSelenium implements Selenium {
         this.commandProcessor = processor;
     }
     
+    /**
+     * Allows javascript to be specified for the test on a per-browser session
+     * basis. The javascript will be in-play the next time a session is created;
+     * that is, typically the next time <code>start()</code> is invoked (and
+     * <code>getNewBrowserSession</code> is sent to the RC under the sheets).
+     *
+     * @param extensionJs  a string representing the extra extension javascript
+     *                     to include in the browser session. This is in
+     *                     addition to any specified via the -userExtensions
+     *                     switch when starting the RC.
+     */
     public void setExtensionJs(String extensionJs) {
         commandProcessor.setExtensionJs(extensionJs);
     }
