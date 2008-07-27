@@ -101,20 +101,24 @@ public class SeleneseTestCase extends TestCase {
      * 
      */
     public void setUp(String url) throws Exception {
-      String defaultBrowser = System.getProperty("selenium.defaultBrowser");
-      if (null != defaultBrowser && defaultBrowser.startsWith("${")) {
-          defaultBrowser = null;
-      }
-      if (defaultBrowser == null) {
-          if(THIS_IS_WINDOWS){
-              defaultBrowser = "*iexplore";
-          }else{
-               defaultBrowser = "*firefox";
-          }
-      }
-      setUp(url, defaultBrowser);
+        setUp(url, runtimeBrowserString());
     }
-    
+
+    private String runtimeBrowserString() {
+        String defaultBrowser = System.getProperty("selenium.defaultBrowser");
+        if (null != defaultBrowser && defaultBrowser.startsWith("${")) {
+            defaultBrowser = null;
+        }
+        if (defaultBrowser == null) {
+            if(THIS_IS_WINDOWS){
+                defaultBrowser = "*iexplore";
+            } else{
+                 defaultBrowser = "*firefox";
+            }
+        }
+        return defaultBrowser;
+    }
+
     /**
      * Creates a new DefaultSelenium object and starts it using the specified baseUrl and browser string
      * @param url the baseUrl for your tests
@@ -130,6 +134,10 @@ public class SeleneseTestCase extends TestCase {
         }
         selenium = new DefaultSelenium("localhost", port, browserString, url);
         selenium.start();
+        setTestContext();
+    }
+
+    private void setTestContext() {
         selenium.setContext(this.getClass().getSimpleName() + "." + getName());
     }
 
