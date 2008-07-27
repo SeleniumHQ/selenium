@@ -1,8 +1,11 @@
-package com.thoughtworks.selenium;
+package com.thoughtworks.selenium.thirdparty;
 
 import junit.framework.*;
 
 import org.openqa.selenium.server.*;
+
+import com.thoughtworks.selenium.DefaultSelenium;
+import com.thoughtworks.selenium.Selenium;
 
 public class AttachFileTest extends TestCase {
     private Selenium selenium;
