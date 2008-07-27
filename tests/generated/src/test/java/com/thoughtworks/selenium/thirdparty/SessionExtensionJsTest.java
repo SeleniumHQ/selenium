@@ -4,22 +4,19 @@ import org.openqa.selenium.server.RemoteControlConfiguration;
 
 import junit.framework.TestCase;
 
-public class SessionExtensionJsTest extends TestCase {
+public class SessionExtensionJsTest extends SeleneseTestCase {
+
     private static final String TEST_URL = "http://www.google.com";
-    
-    private Selenium getNewSelenium() {
-        return new DefaultSelenium("localhost",
-            RemoteControlConfiguration.getDefaultPort(), "*firefox", TEST_URL);
+
+    @Override
+    public void setUp(String url, String browserString) throws Exception {
+       setTestContext();
     }
-    
-    private void runCommands(Selenium selenium) {
-        selenium.start();
-        selenium.open(TEST_URL);
-        selenium.type("q", "Klaatu barada nikto");
-        selenium.click("javascript{ 'b' + comeGetSome + 'G' }");
-        selenium.waitForPageToLoad("5000");
+
+    @Override
+    public void tearDown() throws Exception {    
     }
-    
+
     public void testLoadSimpleExtensionJs() {
         // expect failure when the extension isn't set
         Selenium selenium = getNewSelenium();
@@ -48,4 +45,18 @@ public class SessionExtensionJsTest extends TestCase {
             selenium.getTitle());
         selenium.stop();
     }
+
+    private Selenium getNewSelenium() {
+        return new DefaultSelenium("localhost",
+            RemoteControlConfiguration.getDefaultPort(), runtimeBrowserString(), TEST_URL);
+    }
+
+    private void runCommands(Selenium selenium) {
+        selenium.start();
+        selenium.open(TEST_URL);
+        selenium.type("q", "Klaatu barada nikto");
+        selenium.click("javascript{ 'b' + comeGetSome + 'G' }");
+        selenium.waitForPageToLoad("5000");
+    }
+
 }

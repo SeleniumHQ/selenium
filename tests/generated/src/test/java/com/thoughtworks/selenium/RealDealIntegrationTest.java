@@ -25,19 +25,7 @@ import org.openqa.selenium.server.*;
  * @author Paul Hammant
  * @version $Revision: 131 $
  */
-public class RealDealIntegrationTest extends TestCase {
-
-    Selenium selenium;
-
-    protected void setUp() throws Exception {
-        super.setUp();
-        selenium = new DefaultSelenium("localhost", RemoteControlConfiguration.getDefaultPort(), "*firefox", "http://localhost:" + RemoteControlConfiguration.getDefaultPort());
-        selenium.start();
-    }
-
-    protected void tearDown() throws Exception {
-        selenium.stop();
-    }
+public class RealDealIntegrationTest extends SeleneseTestCase {
 
     public void testWithJavaScript() {
         selenium.setContext("A real test, using the real Selenium on the browser side served by Jetty, driven from Java");

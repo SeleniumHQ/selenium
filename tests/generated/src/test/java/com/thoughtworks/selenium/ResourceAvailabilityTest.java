@@ -8,7 +8,7 @@ import java.io.*;
 
 import junit.framework.*;
 
-public class ResourceAvailabilityTest extends TestCase {
+public class ResourceAvailabilityTest extends SeleneseTestCase {
 
     public void testResourceAvailable() {
         InputStream s = ResourceAvailabilityTest.class.getResourceAsStream("/core/RemoteRunner.html");

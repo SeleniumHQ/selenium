@@ -7,6 +7,7 @@ public class CacheBlockTest extends SeleneseTestCase {
         String text = selenium.getBodyText();
         assertNotNull("body text should not be null", text);
         selenium.stop();
+        
         setUp();
         selenium.open("/selenium-server/cachedContentTest");
         String text2 = selenium.getBodyText();
