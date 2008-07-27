@@ -1,3 +1,0 @@
-There is a set of tests of the core selenium functionality which live in javascript-core/src/selenium/tests/*.html.  As part of the selenium-rc build, these tests are translated by XlateHtmlSeleneseToJava and the resulting Java classes are copied into clients/java/src/test/java/com/thoughtworks/selenium/corebased.  Several tests, however, either had idiosyncrasies which the translator was not intelligent enough to handle, or contained elements which made them invalid as Java tests; these tests I translated by hand, storing a result in this directory.
-
-During the build when it comes time to generate the translated classes, these classes are simply copied into place in corebased.
