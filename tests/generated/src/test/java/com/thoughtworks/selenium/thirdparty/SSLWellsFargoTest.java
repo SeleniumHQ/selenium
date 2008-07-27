@@ -1,20 +1,11 @@
 package com.thoughtworks.selenium.thirdparty;
 
-import com.thoughtworks.selenium.SSLOpenTest;
+import com.thoughtworks.selenium.SeleneseTestCase;
 
-public class SSLWellsFargoTest extends SSLOpenTest {
+public class SSLWellsFargoTest extends SeleneseTestCase {
     
-    public SSLWellsFargoTest(String name) {
-        super(name);
-        url = "https://www.wellsfargo.com";
-        title = "Wells Fargo Home Page";
-    }
-    
-    public void testChrome() {
-        doTest();
-    }
-    
-    public void testIehta() {
-        doTest();
+    public void testWellsFargo() {
+        selenium.open("https://www.wellsfargo.com");
+        assertEquals("Wells Fargo Home Page", selenium.getTitle());
     }
 }
