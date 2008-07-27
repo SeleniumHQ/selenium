@@ -45,13 +45,16 @@ public class BrowserLauncherFactory {
     private static final Map<String, Class<? extends BrowserLauncher>> supportedBrowsers = new HashMap<String, Class<? extends BrowserLauncher>>();
 
     static {
-        supportedBrowsers.put("firefox", FirefoxCustomProfileLauncher.class);
+        supportedBrowsers.put("firefoxproxy", FirefoxCustomProfileLauncher.class);
+        supportedBrowsers.put("firefox", FirefoxChromeLauncher.class);
         supportedBrowsers.put("chrome", FirefoxChromeLauncher.class);
         supportedBrowsers.put("firefox2", Firefox2Launcher.class);
         supportedBrowsers.put("firefox3", Firefox3Launcher.class);
-        supportedBrowsers.put("iexplore", InternetExplorerCustomProxyLauncher.class);
+        supportedBrowsers.put("iexploreproxy", InternetExplorerCustomProxyLauncher.class);
         supportedBrowsers.put("safari", SafariFileBasedLauncher.class);
+        supportedBrowsers.put("safariproxy", SafariCustomProfileLauncher.class);
         supportedBrowsers.put("iehta", HTABrowserLauncher.class);
+        supportedBrowsers.put("iexplore", HTABrowserLauncher.class);
         supportedBrowsers.put("opera", OperaCustomProfileLauncher.class);
         supportedBrowsers.put("piiexplore", ProxyInjectionInternetExplorerCustomProxyLauncher.class);
         supportedBrowsers.put("pifirefox", ProxyInjectionFirefoxCustomProfileLauncher.class);

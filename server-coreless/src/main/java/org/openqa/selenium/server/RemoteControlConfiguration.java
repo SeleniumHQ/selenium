@@ -53,7 +53,7 @@ public class RemoteControlConfiguration {
 
     public RemoteControlConfiguration() {
         this.port = getDefaultPort();
-        this.multiWindow = false;
+        this.multiWindow = true;
         this.profilesLocation = null;
         this.proxyInjectionModeArg = false;
         this.portDriversShouldContact = USE_SAME_PORT;
