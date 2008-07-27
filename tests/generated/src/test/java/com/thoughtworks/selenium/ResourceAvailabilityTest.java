@@ -11,7 +11,7 @@ import junit.framework.*;
 public class ResourceAvailabilityTest extends TestCase {
 
     public void testResourceAvailable() {
-        InputStream s = ResourceAvailabilityTest.class.getResourceAsStream("/core/SeleneseRunner.html");
-        assertNotNull("SeleneseRunner can't be found!", s);
+        InputStream s = ResourceAvailabilityTest.class.getResourceAsStream("/core/RemoteRunner.html");
+        assertNotNull("RemoteRunner can't be found!", s);
     }
 }
