@@ -110,6 +110,8 @@
                                     <exclude name="**/TestCursorPosition.class" /> <!-- frequently fails on FF (only succeeds if the window has focus -->
                                     <exclude name="**/TestUserExtensions.class" /> <!-- tests sample user extensions -->
                                     
+                                    <!-- Tests Hanging the Build -->
+                                    <exclude name="**/TestBrowser.class" />
                                   </fileset>
                                 </batchtest>
                               </junit>
