@@ -37,7 +37,8 @@ public class SafariFileBasedLauncher extends SafariCustomProfileLauncher {
 
             cmdarray = new String[]{browserInstallation.launcherFilePath()};
             if (Os.isFamily("mac")) {
-                cmdarray = new String[]{browserInstallation.launcherFilePath(), fileUrl};
+            	String redirectHtmlFileName = makeRedirectionHtml(customProfileDir, fileUrl);
+                cmdarray = new String[]{browserInstallation.launcherFilePath(), redirectHtmlFileName};
             } else {
                 cmdarray = new String[]{browserInstallation.launcherFilePath(), "-url", fileUrl};
             }
