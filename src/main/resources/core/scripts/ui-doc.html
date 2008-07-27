@@ -120,10 +120,6 @@ th, td {
 
 <p>You might want to experiment with the sample map to get a feel for UI-Element. For the Selenium RC, you have two options. The map file may be included in the <code>user-extensions.js</code> file specified at startup with the <code>-userExtensions</code> switch. Or, you may load it dynamically with the variant of the <code>setUserExtensionJs</code> command in your driver language, before the browser is started.</p>
 
-<p>It's worth noting that the Selenium RC client drivers may not have complete support the Selenium commands introduced in UI-Element. For example, the Perl client driver module <code>Test::WWW::Selenium</code> does not contain a <code>rollup_ok()</code> method. However, you could use <code>WWW::Selenium</code> like this:</p>
-
-<pre>$sel->do_command('rollup', 'foo', 'bar=baz');</pre>
-
 <h3>Map Definitions File Syntax</h3>
 
 <p>This is the general format of a map file:</p>
