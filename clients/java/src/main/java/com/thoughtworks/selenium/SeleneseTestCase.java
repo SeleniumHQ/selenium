@@ -101,11 +101,18 @@ public class SeleneseTestCase extends TestCase {
      * 
      */
     public void setUp(String url) throws Exception {
-      if(THIS_IS_WINDOWS){
-	     setUp(url, "*iexplore");
-      }else{
-	     setUp(url, "*firefox");
-      } 
+      String defaultBrowser = System.getProperty("selenium.defaultBrowser");
+      if (null != defaultBrowser && defaultBrowser.startsWith("${")) {
+          defaultBrowser = null;
+      }
+      if (defaultBrowser == null) {
+          if(THIS_IS_WINDOWS){
+              defaultBrowser = "*iexplore";
+          }else{
+               defaultBrowser = "*firefox";
+          }
+      }
+      setUp(url, defaultBrowser);
     }
     
     /**
