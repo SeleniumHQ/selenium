@@ -1,4 +1,6 @@
-package com.thoughtworks.selenium;
+package com.thoughtworks.selenium.thirdparty;
+
+import com.thoughtworks.selenium.SeleneseTestCase;
 
 public class MultiDomainTest extends SeleneseTestCase {
 
