@@ -21,8 +21,8 @@ public class RemoteControlConfigurationUnitTest extends TestCase {
         assertEquals(1234, configuration.getPort());
     }
 
-    public void testMultiWindowIsFalseByDefault() {
-        assertFalse(new RemoteControlConfiguration().isMultiWindow());
+    public void testMultiWindowIsTrueByDefault() {
+        assertTrue(new RemoteControlConfiguration().isMultiWindow());
     }
 
     public void testMultiWindowCanBeSet() {
