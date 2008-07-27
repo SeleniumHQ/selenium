@@ -111,7 +111,7 @@
                                     <exclude name="**/TestUserExtensions.class" /> <!-- tests sample user extensions -->
                                     
                                     <!-- Tests Hanging the Build -->
-                                    <exclude name="**/TestBrowser.class" />
+                                    <exclude name="**/TestProxy.class" />
                                   </fileset>
                                 </batchtest>
                               </junit>
