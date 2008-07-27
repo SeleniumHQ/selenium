@@ -104,7 +104,7 @@ public class SeleneseTestCase extends TestCase {
         setUp(url, runtimeBrowserString());
     }
 
-    private String runtimeBrowserString() {
+    protected String runtimeBrowserString() {
         String defaultBrowser = System.getProperty("selenium.defaultBrowser");
         if (null != defaultBrowser && defaultBrowser.startsWith("${")) {
             defaultBrowser = null;
@@ -137,7 +137,7 @@ public class SeleneseTestCase extends TestCase {
         setTestContext();
     }
 
-    private void setTestContext() {
+    protected void setTestContext() {
         selenium.setContext(this.getClass().getSimpleName() + "." + getName());
     }
 
