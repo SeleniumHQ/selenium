@@ -2794,7 +2794,24 @@ Selenium.prototype.doCaptureEntirePageScreenshot = function(filename, kwargs) {
     // save to file
     var nsFile = Components.classes["@mozilla.org/file/local;1"]
         .createInstance(Components.interfaces.nsILocalFile);
-    nsFile.initWithPath(filename);
+    try {
+        nsFile.initWithPath(filename);
+    }
+    catch (e) {
+        if (/NS_ERROR_FILE_UNRECOGNIZED_PATH/.test(e.message)) {
+            // try using the opposite file separator
+            if (filename.indexOf('/') != -1) {
+                filename = filename.replace(/\//g, '\\');
+            }
+            else {
+                filename = filename.replace(/\\/g, '/');
+            }
+            nsFile.initWithPath(filename);
+        }
+        else {
+            throw e;
+        }
+    }
     var binaryInputStream = SGNsUtils.dataUrlToBinaryInputStream(dataUrl);
     var fileOutputStream = SGNsUtils.newFileOutputStream(nsFile);
     SGNsUtils.writeBinaryInputStreamToFileOutputStream(binaryInputStream,
