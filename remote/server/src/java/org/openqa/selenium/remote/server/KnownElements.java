@@ -34,6 +34,8 @@ public class KnownElements {
       public Object invoke(Object object, Method method, Object[] objects) throws Throwable {
         if ("getId".equals(method.getName())) {
           return id;
+        } else if ("getWrappedElement".equals(method.getName())) {
+          return element;
         } else {
           return method.invoke(element, objects);
         }
@@ -42,9 +44,9 @@ public class KnownElements {
 
     Class[] proxyThese;
     if (element instanceof RenderedWebElement) {
-      proxyThese = new Class[]{RenderedWebElement.class, HasId.class};
+      proxyThese = new Class[]{RenderedWebElement.class, ProxiedElement.class};
     } else {
-      proxyThese = new Class[]{WebElement.class, HasId.class};
+      proxyThese = new Class[]{WebElement.class, ProxiedElement.class};
     }
 
     return (WebElement) Proxy.newProxyInstance(element.getClass().getClassLoader(),
@@ -52,8 +54,8 @@ public class KnownElements {
                                                handler);
   }
 
-  private static interface HasId {
-
+  public interface ProxiedElement {
     String getId();
+    WebElement getWrappedElement();
   }
 }

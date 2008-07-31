@@ -25,7 +25,7 @@ public class GetCssProperty extends WebDriverHandler {
   }
 
   public ResultType call() throws Exception {
-    response = new Response();
+    response = newResponse();
 
     RenderedWebElement element = (RenderedWebElement) getKnownElements().get(id);
     response.setValue(element.getValueOfCssProperty(propertyName));

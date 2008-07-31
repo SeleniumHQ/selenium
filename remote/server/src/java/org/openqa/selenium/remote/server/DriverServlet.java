@@ -43,6 +43,7 @@ import org.openqa.selenium.remote.server.handler.SubmitElement;
 import org.openqa.selenium.remote.server.handler.SwitchToFrame;
 import org.openqa.selenium.remote.server.handler.SwitchToWindow;
 import org.openqa.selenium.remote.server.handler.ToggleElement;
+import org.openqa.selenium.remote.server.handler.ExecuteScript;
 import org.openqa.selenium.remote.server.renderer.EmptyResult;
 import org.openqa.selenium.remote.server.renderer.ForwardResult;
 import org.openqa.selenium.remote.server.renderer.JsonErrorExceptionResult;
@@ -98,6 +99,9 @@ public class DriverServlet extends HttpServlet {
         .on(ResultType.SUCCESS, new EmptyResult());
     postMapper.bind("/session/:sessionId/:context/back", GoBack.class)
         .on(ResultType.SUCCESS, new EmptyResult());
+
+    postMapper.bind("/session/:sessionId/:context/execute", ExecuteScript.class)
+        .on(ResultType.SUCCESS, new JsonResult(":response"));
 
     getMapper.bind("/session/:sessionId/:context/source", GetPageSource.class)
         .on(ResultType.SUCCESS, new JsonResult(":response"));

@@ -6,6 +6,7 @@ import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.Speed;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
@@ -22,8 +23,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.HashMap;
 
-public class RemoteWebDriver implements WebDriver, SearchContext,
+public class RemoteWebDriver implements WebDriver, SearchContext, JavascriptExecutor,
     FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByXPath {
 
   private CommandExecutor executor;
@@ -158,6 +160,83 @@ public class RemoteWebDriver implements WebDriver, SearchContext,
     execute("quit");
   }
 
+  public Object executeScript(String script, Object... args) {
+    if (!capabilities.isJavascriptEnabled()) {
+      throw new UnsupportedOperationException("You must be using an underlying instance of WebDriver that supports executing javascript");
+    }
+
+    // Escape the quote marks
+    script = script.replaceAll("\"", "\\\"");
+
+    Object[] convertedArgs = convertToJsObjects(args);
+
+    Command command;
+    if (convertedArgs != null && convertedArgs.length > 0)
+      command = new Command(sessionId, new Context("foo"), "executeScript", script, convertedArgs);
+    else
+      command = new Command(sessionId, new Context("foo"), "executeScript", script);
+    Response response = null;
+    try {
+      response = executor.execute(command);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+    if (response.isError())
+      throwIfResponseFailed(response);
+
+    Map<String, Object> result = (Map<String, Object>) response.getValue();
+
+    String type = (String) result.get("type");
+    if ("NULL".equals(type))
+      return null;
+
+    if ("ELEMENT".equals(type)) {
+      String[] parts = ((String) result.get("value")).split("/");
+      RemoteWebElement element = newRemoteWebElement();
+      element.setId(parts[parts.length - 1]);
+      return element;
+    } else if (result.get("value") instanceof Number) {
+      return ((Number) result.get("value")).longValue();
+    }
+
+    return result.get("value");
+  }
+
+  private Object[] convertToJsObjects(Object[] args) {
+    if (args.length == 0)
+      return null;
+
+    Object[] converted = new Object[args.length];
+    for (int i = 0; i < args.length; i++) {
+      converted[i] = convertToJsObject(args[i]);
+    }
+
+    return converted;
+  }
+
+  private Object convertToJsObject(Object arg) {
+    Map<String, Object> converted = new HashMap<String, Object>();
+
+    if (arg instanceof String) {
+      converted.put("type", "STRING");
+      converted.put("value", arg);
+    } else if (arg instanceof Number) {
+      converted.put("type", "NUMBER");
+      converted.put("value", ((Number) arg).longValue());
+    } else if (arg instanceof Boolean) {
+      converted.put("type", "BOOLEAN");
+      converted.put("value", arg);
+    } else if (arg instanceof RemoteWebElement) {
+      converted.put("type", "ELEMENT");
+      converted.put("value", ((RemoteWebElement) arg).getId());
+    } else {
+      throw new IllegalArgumentException("Argument is of an illegal type: " + arg);
+    }
+
+    return converted;
+  }
+
+
   public TargetLocator switchTo() {
     return new RemoteTargetLocator();
   }
@@ -216,64 +295,68 @@ public class RemoteWebDriver implements WebDriver, SearchContext,
     }
 
     if (response.isError()) {
-      if (response.getValue() instanceof StackTraceElement[]) {
-        RuntimeException runtimeException = new RuntimeException();
-        runtimeException.setStackTrace((StackTraceElement[]) response.getValue());
-        throw runtimeException;
-      }
-
-      Map rawException = (Map) response.getValue();
-
-      String message = (String) rawException.get("message");
-      String className = (String) rawException.get("class");
-
-      RuntimeException toThrow;
-      try {
-        Class<?> aClass;
-        try {
-          aClass = Class.forName(className);
-          if (!RuntimeException.class.isAssignableFrom(aClass)) {
-            aClass = RuntimeException.class;
-          }
-        } catch (ClassNotFoundException e) {
-          aClass = RuntimeException.class;
-        }
-
-        try {
-          Constructor<? extends RuntimeException> constructor =
-              (Constructor<? extends RuntimeException>) aClass.getConstructor(String.class);
-          toThrow = constructor.newInstance(message);
-        } catch (NoSuchMethodException e) {
-          toThrow = (RuntimeException) aClass.newInstance();
-        }
-
-        List<Map> elements = (List<Map>) rawException.get("stackTrace");
-        StackTraceElement[] trace = new StackTraceElement[elements.size()];
-
-        int lastInsert = 0;
-        for (Map values : elements) {
-          // I'm so sorry.
-          Long lineNumber = (Long) values.get("lineNumber");
-          if (lineNumber == null) {
-            continue;
-          }
-
-          trace[lastInsert++] = new StackTraceElement((String) values.get("className"),
-                  (String) values.get("methodName"),
-                  (String) values.get("fileName"),
-                  (int) (long) lineNumber);
-          }
-
-          if (lastInsert == elements.size()) {
-          toThrow.setStackTrace(trace);
-        }
-      } catch (Exception e) {
-        toThrow = new RuntimeException(e);
-      }
-      throw toThrow;
+      return throwIfResponseFailed(response);
     }
 
     return response;
+  }
+
+  private Response throwIfResponseFailed(Response response) {
+    if (response.getValue() instanceof StackTraceElement[]) {
+      RuntimeException runtimeException = new RuntimeException();
+      runtimeException.setStackTrace((StackTraceElement[]) response.getValue());
+      throw runtimeException;
+    }
+
+    Map rawException = (Map) response.getValue();
+
+    String message = (String) rawException.get("message");
+    String className = (String) rawException.get("class");
+
+    RuntimeException toThrow;
+    try {
+      Class<?> aClass;
+      try {
+        aClass = Class.forName(className);
+        if (!RuntimeException.class.isAssignableFrom(aClass)) {
+          aClass = RuntimeException.class;
+        }
+      } catch (ClassNotFoundException e) {
+        aClass = RuntimeException.class;
+      }
+
+      try {
+        Constructor<? extends RuntimeException> constructor =
+            (Constructor<? extends RuntimeException>) aClass.getConstructor(String.class);
+        toThrow = constructor.newInstance(message);
+      } catch (NoSuchMethodException e) {
+        toThrow = (RuntimeException) aClass.newInstance();
+      }
+
+      List<Map> elements = (List<Map>) rawException.get("stackTrace");
+      StackTraceElement[] trace = new StackTraceElement[elements.size()];
+
+      int lastInsert = 0;
+      for (Map values : elements) {
+        // I'm so sorry.
+        Long lineNumber = (Long) values.get("lineNumber");
+        if (lineNumber == null) {
+          continue;
+        }
+
+        trace[lastInsert++] = new StackTraceElement((String) values.get("className"),
+                (String) values.get("methodName"),
+                (String) values.get("fileName"),
+                (int) (long) lineNumber);
+        }
+
+        if (lastInsert == elements.size()) {
+        toThrow.setStackTrace(trace);
+      }
+    } catch (Exception e) {
+      toThrow = new RuntimeException(e);
+    }
+    throw toThrow;
   }
 
   private class RemoteWebDriverOptions implements Options {
