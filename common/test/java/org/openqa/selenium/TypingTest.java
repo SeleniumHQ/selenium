@@ -76,7 +76,7 @@ public class TypingTest extends AbstractDriverTestCase {
 		assertThat(keyReporter.getValue(), is("me@eXample.com"));
 	}
 
-	@Ignore("htmlunit, firefox, safari")
+	@Ignore("htmlunit, safari")
 	public void testArrowKeysShouldNotBePrintable() {
 		driver.get(javascriptPage);
 
@@ -86,14 +86,14 @@ public class TypingTest extends AbstractDriverTestCase {
 		assertThat(keyReporter.getValue(), is(""));
 	}
 
-	@Ignore("htmlunit, firefox, safari")
+	@Ignore("htmlunit, safari")
 	public void testShouldBeAbleToUseArrowKeys() {
 		driver.get(javascriptPage);
 
 		WebElement keyReporter = driver.findElement(By.id("keyReporter"));
 		keyReporter.sendKeys("Tet", Keys.ARROW_LEFT, "s");
 
-		assertThat(keyReporter.getValue(), is("Test"));
+                assertThat(keyReporter.getValue(), is("Test"));
 	}
 
 	@JavascriptEnabled

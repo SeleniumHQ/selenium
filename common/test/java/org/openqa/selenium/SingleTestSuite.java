@@ -21,9 +21,9 @@ public class SingleTestSuite {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("TextHandlingTest")
-//        .method("testShouldBeAbleToExecuteSimpleJavascriptAndReturnAString")
-//        .leaveRunning()
+        .onlyRun("FormHandlingTest")
+//        .method("testShouldBeAbleToUseArrowKeys")
+        .leaveRunning()
         ;  // Yeah, this look strange :)
 
     if (REMOTE.equals(driver)) {

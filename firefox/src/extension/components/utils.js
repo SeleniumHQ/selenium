@@ -1,5 +1,4 @@
 function Utils() {
-    netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
 }
 
 Utils.newInstance = function(className, interfaceName) {
@@ -155,13 +154,10 @@ Utils.getElementAt = function(index, context) {
 Utils.shiftCount = 0;
 
 Utils.type = function(context, element, text) {
-    // Foo for typing into form field, textarea "value"s (see below)
-    var value = "";
-    var isTextField = element["value"] !== undefined;
-    if (isTextField) {
-        value = element.value;
-    } else if (element.hasAttribute("value")) {
-        value = element.getAttribute("value");
+    // Special-case file input elements. This is ugly, but should be okay
+    if (element.tagName == "INPUT" && element.getAttribute("type").toLowerCase() == "file") {
+      element.value = text;
+      return;
     }
 
     var controlKey = false;
@@ -302,31 +298,6 @@ Utils.type = function(context, element, text) {
         Utils.keyEvent(context, element, "keyup", keyCode, 0,
             controlKey, needsShift, altKey);
 
-        // Strictly speaking, we should be able to get the same effect
-        // without needing this piece of logic. We can for normal characters,
-        // but not for characters such as '. Most odd. Leaving this in for now
-        // 
-        // Update: works fine for all chars now we have better keyCode and
-        // charCode generation without this logic, but two Firefox testSuite
-        // tests fail if I remove this code.
-        //
-        //  FirefoxDriverTestSuite::TextHandlingTest
-        //    testShouldBeAbleToSetMoreThanOneLineOfTextInATextArea()
-        //      *) some OS line-endings mismatch problem.
-        //
-        //  FirefoxDriverTestSuite::TextHandlingTest
-        //    testShouldBeAbleToAlterTheContentsOfAFileUploadInputElement()
-        //      *) can't write filename into <input type=file> value
-        //
-        if (charCode) {
-          value += c;
-          if (isTextField) {
-              element.value = value;
-          } else {
-              element.setAttribute("value", value);
-          }
-        }
-
         // modifiers up
 
         var shiftKeyState = needsShift;
@@ -356,47 +327,25 @@ Utils.type = function(context, element, text) {
 Utils.keyEvent = function(context, element, type, keyCode, charCode,
     controlState, shiftState, altState) {
 
-    // var c = String.fromCharCode(charCode);
-    // dump(type + " " + c + " : " + keyCode + "/" + charCode + "\n");
-    // dump(controlState + " " + shiftState + " " + altState + "\n");
+  var document = Utils.getDocument(context);
+  var view = Utils.getDocument(context).defaultView;
 
-    var event;
-    if (context) {
-      event = Utils.getDocument(context).createEvent('KeyEvents');
-    } else {
-      event = document.createEvent('KeyEvents');
-    }
+  var evt = document.createEvent('KeyEvents');
+  evt.initKeyEvent(
+    type,         //  in DOMString typeArg,
+    true,         //  in boolean canBubbleArg
+    true,         //  in boolean cancelableArg
+    view,      //  in nsIDOMAbstractView viewArg
+    controlState, //  in boolean ctrlKeyArg
+    altState,     //  in boolean altKeyArg
+    shiftState,   //  in boolean shiftKeyArg
+    false,        //  in boolean metaKeyArg
+    keyCode,      //  in unsigned long keyCodeArg
+    charCode);    //  in unsigned long charCodeArg
 
-    event.initKeyEvent(
-      type,         //  in DOMString typeArg,
-      true,         //  in boolean canBubbleArg
-      true,         //  in boolean cancelableArg
-      context,      //  in nsIDOMAbstractView viewArg
-      controlState, //  in boolean ctrlKeyArg
-      altState,     //  in boolean altKeyArg
-      shiftState,   //  in boolean shiftKeyArg
-      false,        //  in boolean metaKeyArg
-      keyCode,      //  in unsigned long keyCodeArg
-      charCode);    //  in unsigned long charCodeArg
-
-    element.dispatchEvent(event);
+  element.dispatchEvent(evt);
 };
 
-Utils.keyPress = function(context, element, keyCode, charCode) {
-    var event = Utils.getDocument(context).createEvent('KeyEvents');
-    var c = String.fromCharCode(charCode);
-    var isShift = /A-Z/.test(c);
-    event.initKeyEvent('keypress', true, true, Utils.getBrowser(context).contentWindow, 0, 0, isShift, 0, keyCode, charCode);
-    element.dispatchEvent(event);
-};
-
-Utils.keyDownOrUp = function(context, element, down, keyCode, charCode) {
-    var event = Utils.getDocument(context).createEvent('KeyEvents');
-    var c = String.fromCharCode(charCode);
-    var isShift = /A-Z/.test(c);
-    event.initKeyEvent(down ? 'keydown' : 'keyup', true, true, Utils.getBrowser(context).contentWindow, 0, 0, isShift, 0, keyCode, charCode);
-    element.dispatchEvent(event);
-};
 
 Utils.fireHtmlEvent = function(context, element, eventName) {
     var doc = Utils.getDocument(context);
@@ -432,14 +381,16 @@ Utils.findForm = function(element) {
 Utils.fireMouseEventOn = function(context, element, eventName) {
     var event = Utils.getDocument(context).createEvent("MouseEvents");
     var view = Utils.getDocument(context).defaultView;
-//    dump("View is: " + view + "\n");
-    event.initMouseEvent(eventName, true, true, null, 1, 0, 0, 0, 0, false, false, false, false, 0, element);
+
+    event.initMouseEvent(eventName, true, true, view, 1, 0, 0, 0, 0, false, false, false, false, 0, element);
     element.dispatchEvent(event);
 }
 
 Utils.triggerMouseEvent = function(element, eventType, clientX, clientY) {
     var event = element.ownerDocument.createEvent("MouseEvents");
-    event.initMouseEvent(eventType, true, true, null, 1, 0, 0, clientX, clientY, false, false, false, false, 0, element);
+    var view = element.ownerDocument.defaultView;
+
+    event.initMouseEvent(eventType, true, true, view, 1, 0, 0, clientX, clientY, false, false, false, false, 0, element);
     element.dispatchEvent(event);
 }
 
@@ -494,7 +445,9 @@ Utils.dumpn = function(text) {
 }
 
 Utils.dump = function(element) {
-	var dump = "=============\n";
+    var dump = "=============\n";
+
+    var rows = [];
 
     dump += "Supported interfaces: ";
     for (var i in Components.interfaces) {
@@ -506,7 +459,7 @@ Utils.dump = function(element) {
         }
     }
     dump += "\n------------\n";
-    var rows = [];
+
     try {
         Utils.dumpProperties(element, rows);
     } catch (e) {
@@ -526,7 +479,6 @@ Utils.dumpProperties = function(view, rows) {
     for (var i in view) {
         var value = "\t" + i + ": ";
         try {
-
             if (typeof(view[i]) == typeof(Function)) {
                 value += " function()";
             } else {
@@ -535,6 +487,7 @@ Utils.dumpProperties = function(view, rows) {
         } catch (e) {
             value += " Cannot obtain value";
         }
+
         rows.push(value);
     }
 }
