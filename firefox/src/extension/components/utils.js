@@ -231,6 +231,7 @@ Utils.type = function(context, element, text) {
             keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_DELETE;
         } else if (c == '\n') {
             keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_RETURN;
+            charCode = text.charCodeAt(i);
         } else if (c == ',') {
             keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_COMMA;
             charCode = text.charCodeAt(i);

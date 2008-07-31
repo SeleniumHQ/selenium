@@ -100,7 +100,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
 //                "        "));
 //    }
 
-    @Ignore(value = "safari,htmlunit", reason = "Test fails")
+    @Ignore(value = "safari", reason = "Test fails")
     public void testShouldBeAbleToSetMoreThanOneLineOfTextInATextArea() {
         driver.get(formPage);
         WebElement textarea = driver.findElement(By.id("withText"));

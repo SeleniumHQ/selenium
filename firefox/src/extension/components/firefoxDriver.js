@@ -78,7 +78,7 @@ FirefoxDriver.prototype.executeScript = function(respond, script) {
   var context = this.context;
   var window = Utils.getBrowser(this.context).contentWindow;
 
-  var parameters = [];
+  var parameters = new Array();
   var runScript;
   // Pre 2.0.0.15
   if (window['alert'] && !window.wrappedJSObject) {
@@ -96,8 +96,8 @@ FirefoxDriver.prototype.executeScript = function(respond, script) {
       window = window.wrappedJSObject;
       var sandbox = new Components.utils.Sandbox(window);
       sandbox.window = window;
-      sandbox.window.__webdriverParams = parameters;
-      sandbox.document = sandbox.window.document;
+      sandbox.__webdriverParams = parameters;
+      sandbox.document = window.document;
       sandbox.unsafeWindow = window;
       sandbox.__proto__ = window;
 
@@ -106,23 +106,22 @@ FirefoxDriver.prototype.executeScript = function(respond, script) {
   }
 
   try {
-	scriptSrc = "var __webdriverFunc = function(){" + script.shift() + "}; __webdriverFunc.apply(window, __webdriverParams);";
+	scriptSrc = "var __webdriverFunc = function(){" + script.shift() + "};  __webdriverFunc.apply(window, __webdriverParams);";
 
     var convert = script.shift();
     while (convert && convert.length > 0) {
       var t = convert.shift();
 
       if (t['type'] == "ELEMENT") {
-        t['value'] = Utils.getElementAt(t['value'], context);
+        var element = Utils.getElementAt(t['value'], context);
+        t['value'] = element.wrappedJSObject ? element.wrappedJSObject : element;
       }
-      
+
       parameters.push(t['value']);
     }
 
     var result = runScript(scriptSrc, parameters);
 
-    Utils.dumpn("Result is: " + result);
-    
     // Sophisticated.
     if (result && result['tagName']) {
       respond.setField('resultType', "ELEMENT");
