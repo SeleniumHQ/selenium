@@ -5,7 +5,7 @@
 load('formatCommandOnlyAdapter.js');
 
 function formatHeader(testCase) {
-	var className = testCase.name;
+    var className = testCase.getTitle();
 	if (!className) {
 		className = "NewTest";
 	}
