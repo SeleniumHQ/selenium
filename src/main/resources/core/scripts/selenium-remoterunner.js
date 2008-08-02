@@ -220,7 +220,12 @@ objectExtend(RemoteRunner.prototype, {
 
         if (cmdText == lastCmd) {
 	        var rightNow = new Date();
-            cmd1 = "Same command (" + (rightNow.getTime() - lastCmdTime.getTime()) + "ms): " + lastCmd;
+	        var msSinceStart = rightNow.getTime() - lastCmdTime.getTime();
+	        var sinceStart = msSinceStart + "ms";
+	        if (msSinceStart > 1000) {
+		        sinceStart = Math.round(msSinceStart / 1000) + "s";
+		    }
+            cmd1 = "Same command (" + sinceStart + "): " + lastCmd;
         } else {
 	        lastCmdTime = new Date();
             cmd8 = cmd7;
