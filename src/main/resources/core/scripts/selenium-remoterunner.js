@@ -37,6 +37,8 @@ var cmd4 = "";
 var cmd3 = "";
 var cmd2 = "";
 var cmd1 = "";
+var lastCmd = "";
+var lastCmdTime = new Date();
 
 var RemoteRunnerOptions = classCreate();
 objectExtend(RemoteRunnerOptions.prototype, URLConfiguration.prototype);
@@ -215,14 +217,22 @@ objectExtend(RemoteRunner.prototype, {
         } else {
             cmdText += ")\n";
         }
-        cmd8 = cmd7;
-        cmd7 = cmd6;
-        cmd6 = cmd5;
-        cmd5 = cmd4;
-        cmd4 = cmd3;
-        cmd3 = cmd2;
-        cmd2 = cmd1;
-        cmd1 = cmdText;
+
+        if (cmdText == lastCmd) {
+	        var rightNow = new Date();
+            cmd1 = "Same command (" + (rightNow.getTime() - lastCmdTime.getTime()) + "ms): " + lastCmd;
+        } else {
+	        lastCmdTime = new Date();
+            cmd8 = cmd7;
+            cmd7 = cmd6;
+            cmd6 = cmd5;
+            cmd5 = cmd4;
+            cmd4 = cmd3;
+            cmd3 = cmd2;
+            cmd2 = cmd1;
+            cmd1 = cmdText;
+        }
+        lastCmd = cmdText;
         var commandList = document.commands.commandList;
         commandList.value = cmd8 + cmd7 + cmd6 + cmd5 + cmd4 + cmd3 + cmd2 + cmd1;
         commandList.scrollTop = commandList.scrollHeight;
