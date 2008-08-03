@@ -155,7 +155,8 @@ Utils.shiftCount = 0;
 
 Utils.type = function(context, element, text) {
     // Special-case file input elements. This is ugly, but should be okay
-    if (element.tagName == "INPUT" && element.getAttribute("type").toLowerCase() == "file") {
+    var inputtype = element.getAttribute("type");
+    if (element.tagName == "INPUT" && inputtype && inputtype.toLowerCase() == "file") {
       element.value = text;
       return;
     }

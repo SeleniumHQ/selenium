@@ -320,4 +320,15 @@ public class TypingTest extends AbstractDriverTestCase {
         assertThat(  // Note: the trailing SHIFT up (~ key shift)
           result.getText().trim(), is("down: 126 press: 0 up: 126 up: 16"));
     }
+
+    public void testShouldBeAbleToTypeIntoAnInputElementThatDoesNotHaveATypeAttribute() {
+        driver.get(formPage);
+
+        WebElement element = driver.findElement(By.id("no-type"));
+
+        element.sendKeys("Cheese");
+        // No exception is a Good Thing
+
+        assertThat(element.getValue(), is("Cheese"));
+    }
 }

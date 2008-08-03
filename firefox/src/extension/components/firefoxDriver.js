@@ -303,7 +303,6 @@ FirefoxDriver.prototype.switchToActiveElement = function(respond) {
 
   var element;
   if (doc["activeElement"]) {
-    dump("Active element is present\n");
     element = doc.activeElement;
   } else {
     var commandDispatcher = Utils.getBrowser(this.context).ownerDocument.commandDispatcher;
