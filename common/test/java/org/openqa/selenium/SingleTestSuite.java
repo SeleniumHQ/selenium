@@ -21,8 +21,8 @@ public class SingleTestSuite {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("FormHandlingTest")
-//        .method("testShouldBeAbleToUseArrowKeys")
+        .onlyRun("FrameAndWindowSwitchingTest")
+        .method("testShouldBeAbleToFindElementsInIframesByXPath")
         .leaveRunning()
         ;  // Yeah, this look strange :)
 

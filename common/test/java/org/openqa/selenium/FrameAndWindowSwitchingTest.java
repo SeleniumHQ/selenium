@@ -132,5 +132,25 @@ public class FrameAndWindowSwitchingTest extends AbstractDriverTestCase {
             // This is expected
         }
     }
-    
+
+    @Ignore("safari, ie")
+    public void testShouldBeAbleToFindElementsInIframesByName() {
+        driver.get(iframePage);
+
+        driver.switchTo().frame("iframe1");
+        WebElement element = driver.findElement(By.name("id-name1"));
+
+        assertNotNull(element);
+    }
+
+    @Ignore("safari, ie")
+    public void testShouldBeAbleToFindElementsInIframesByXPath() {
+        driver.get(iframePage);
+
+        driver.switchTo().frame("iframe1");
+
+        WebElement element = driver.findElement(By.xpath("//*[@id = 'changeme']"));
+
+        assertNotNull(element);
+    }
 }
