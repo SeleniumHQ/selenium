@@ -102,7 +102,6 @@ FirefoxDriver.prototype.sendKeys = function(respond, value) {
 
     element.focus();
     Utils.type(this.context, element, value[0]);
-    element.blur();
 
     respond.context = this.context;
     respond.send();
