@@ -292,10 +292,14 @@ Utils.type = function(context, element, text) {
         if (charCode >= 32 && charCode < 127)
           pressCode = 0;
 
-        Utils.keyEvent(context, element, "keydown", keyCode, 0,
+        var accepted = Utils.keyEvent(context, element, "keydown", keyCode, 0,
             controlKey, needsShift, altKey);
-        Utils.keyEvent(context, element, "keypress", pressCode, charCode,
-            controlKey, needsShift, altKey);
+        
+        if (accepted) {
+            Utils.keyEvent(context, element, "keypress", pressCode, charCode,
+                controlKey, needsShift, altKey);
+        }
+        
         Utils.keyEvent(context, element, "keyup", keyCode, 0,
             controlKey, needsShift, altKey);
 
@@ -344,7 +348,7 @@ Utils.keyEvent = function(context, element, type, keyCode, charCode,
     keyCode,      //  in unsigned long keyCodeArg
     charCode);    //  in unsigned long charCodeArg
 
-  element.dispatchEvent(evt);
+  return element.dispatchEvent(evt);
 };
 
 

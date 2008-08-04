@@ -331,4 +331,15 @@ public class TypingTest extends AbstractDriverTestCase {
 
         assertThat(element.getValue(), is("Cheese"));
     }
+    
+    @JavascriptEnabled
+    @Ignore("ie, safari, htmlunit")
+    public void testShouldNotEnterTextIntoAnElementThatHasStifledTheKeyDownEvent() {
+    	driver.get(javascriptPage);
+    	
+    	WebElement silent = driver.findElement(By.name("suppress"));
+		silent.sendKeys("Cheese!");
+    	
+    	assertThat(silent.getValue(), is(""));
+    }
 }

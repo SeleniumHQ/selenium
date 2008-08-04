@@ -21,8 +21,8 @@ public class SingleTestSuite {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("FrameAndWindowSwitchingTest")
-        .method("testShouldBeAbleToFindElementsInIframesByXPath")
+        .onlyRun("TypingTest")
+        .method("testShouldNotEnterTextIntoAnElementThatHasStifledTheKeyDownEvent")
         .leaveRunning()
         ;  // Yeah, this look strange :)
 
