@@ -7,5 +7,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-firefox"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-internet-explorer"/>
 	<classpathentry kind="lib" path="lib/buildtime/testng-5.7-jdk15.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-htmlunit"/>
+	<classpathentry kind="lib" path="lib/runtime/jetty-6.1.9.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
