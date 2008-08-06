@@ -93,13 +93,14 @@ public class TypingTest extends AbstractDriverTestCase {
 		WebElement keyReporter = driver.findElement(By.id("keyReporter"));
 		keyReporter.sendKeys("Tet", Keys.ARROW_LEFT, "s");
 
-                assertThat(keyReporter.getValue(), is("Test"));
+        assertThat(keyReporter.getValue(), is("Test"));
 	}
 
 	@JavascriptEnabled
-        @Ignore("htmlunit")
-        public void testWillSimulateAKeyUpWhenEnteringTextIntoInputElements() {
+	@Ignore("htmlunit")
+	public void testWillSimulateAKeyUpWhenEnteringTextIntoInputElements() {
 		driver.get(javascriptPage);
+
 		WebElement element = driver.findElement(By.id("keyUp"));
 		element.sendKeys("I like cheese");
 
@@ -110,6 +111,7 @@ public class TypingTest extends AbstractDriverTestCase {
 	@JavascriptEnabled
 	public void testWillSimulateAKeyDownWhenEnteringTextIntoInputElements() {
 		driver.get(javascriptPage);
+
 		WebElement element = driver.findElement(By.id("keyDown"));
 		element.sendKeys("I like cheese");
 
@@ -122,6 +124,7 @@ public class TypingTest extends AbstractDriverTestCase {
 	@JavascriptEnabled
 	public void testWillSimulateAKeyPressWhenEnteringTextIntoInputElements() {
 		driver.get(javascriptPage);
+
 		WebElement element = driver.findElement(By.id("keyPress"));
 		element.sendKeys("I like cheese");
 
@@ -132,9 +135,10 @@ public class TypingTest extends AbstractDriverTestCase {
 	}
 
 	@JavascriptEnabled
-        @Ignore("htmlunit")
-        public void testWillSimulateAKeyUpWhenEnteringTextIntoTextAreas() {
+    @Ignore("htmlunit")
+    public void testWillSimulateAKeyUpWhenEnteringTextIntoTextAreas() {
 		driver.get(javascriptPage);
+
 		WebElement element = driver.findElement(By.id("keyUpArea"));
 		element.sendKeys("I like cheese");
 
@@ -145,6 +149,7 @@ public class TypingTest extends AbstractDriverTestCase {
 	@JavascriptEnabled
 	public void testWillSimulateAKeyDownWhenEnteringTextIntoTextAreas() {
 		driver.get(javascriptPage);
+
 		WebElement element = driver.findElement(By.id("keyDownArea"));
 		element.sendKeys("I like cheese");
 
@@ -157,6 +162,7 @@ public class TypingTest extends AbstractDriverTestCase {
 	@JavascriptEnabled
 	public void testWillSimulateAKeyPressWhenEnteringTextIntoTextAreas() {
 		driver.get(javascriptPage);
+
 		WebElement element = driver.findElement(By.id("keyPressArea"));
 		element.sendKeys("I like cheese");
 
@@ -167,27 +173,15 @@ public class TypingTest extends AbstractDriverTestCase {
 	}
 
 	@JavascriptEnabled
-	@Ignore(value = "firefox, safari, htmlunit", reason = "Not implemeted in safari. Firefox: only passes if firefox window has focus")
-	public void testShouldFireFocusKeyBlurAndChangeEventsInTheRightOrder() {
+	@Ignore(value = "safari, htmlunit", reason = "not implemeted in safari," +
+	    " not yet tested in htmlunit.")
+	public void testShouldFireFocusKeyEventsInTheRightOrder() {
 		driver.get(javascriptPage);
 
 		driver.findElement(By.id("theworks")).sendKeys("a");
 		String result = driver.findElement(By.id("result")).getText();
 
-		assertThat(result.trim(),
-				equalTo("focus keydown keypress keyup blur change"));
-	}
-
-	@JavascriptEnabled
-	@Ignore(value = "firefox, safari, htmlunit", reason = "IE specific test")
-	public void testShouldFireFocusKeyBlurAndChangeEventsInTheRightOrderOnIe() {
-		driver.get(javascriptPage);
-
-		driver.findElement(By.id("theworks")).sendKeys("a");
-		String result = driver.findElement(By.id("result")).getText();
-
-		assertThat(result.trim(),
-				equalTo("focus keydown keypress keyup change blur"));
+		assertThat(result.trim(), is("focus keydown keypress keyup"));
 	}
 
     @JavascriptEnabled
@@ -211,36 +205,40 @@ public class TypingTest extends AbstractDriverTestCase {
         assertThat(result.getText().trim(), is("down: 39 press: 39 up: 39"));
 
         // And leave no rubbish/printable keys in the "keyReporter"
-        assertThat(element.getValue(), equalTo(""));
+        assertThat(element.getValue(), is(""));
     }
 
 	@JavascriptEnabled
-	@Ignore("firefox, safari, htmlunit")
-	public void testShouldReportKeyCodeOfArrowKeysWhenPressEventNotFiredByBrowser() {
+    @Ignore(value= "safari, htmlunit", reason = "untested user agents")
+	public void testShouldReportKeyCodeOfArrowKeysUpDownEvents() {
 		driver.get(javascriptPage);
 
 		WebElement result = driver.findElement(By.id("result"));
 		WebElement element = driver.findElement(By.id("keyReporter"));
 
 		element.sendKeys(Keys.ARROW_DOWN);
-		assertThat(result.getText().trim(), is("down: 40 up: 40"));
+        assertThat(result.getText().trim(), containsString("down: 40"));
+        assertThat(result.getText().trim(), containsString("up: 40"));
 
 		element.sendKeys(Keys.ARROW_UP);
-		assertThat(result.getText().trim(), is("down: 38 up: 38"));
+        assertThat(result.getText().trim(), containsString("down: 38"));
+        assertThat(result.getText().trim(), containsString("up: 38"));
 
 		element.sendKeys(Keys.ARROW_LEFT);
-		assertThat(result.getText().trim(), is("down: 37 up: 37"));
+        assertThat(result.getText().trim(), containsString("down: 37"));
+        assertThat(result.getText().trim(), containsString("up: 37"));
 
 		element.sendKeys(Keys.ARROW_RIGHT);
-		assertThat(result.getText().trim(), is("down: 39 up: 39"));
+        assertThat(result.getText().trim(), containsString("down: 39"));
+        assertThat(result.getText().trim(), containsString("up: 39"));
 
         // And leave no rubbish/printable keys in the "keyReporter"
-        assertThat(element.getValue(), equalTo(""));
+        assertThat(element.getValue(), is(""));
 	}
 
     @JavascriptEnabled
-    @Ignore("ie, safari, htmlunit")
-    public void testFireFoxShouldHandleNumericNonShiftKeys() {
+    @Ignore(value= "safari, htmlunit", reason = "untested user agents")
+    public void testNumericNonShiftKeys() {
         driver.get(javascriptPage);
 
         WebElement result = driver.findElement(By.id("result"));
@@ -248,15 +246,13 @@ public class TypingTest extends AbstractDriverTestCase {
 
         String numericLineCharsNonShifted = "`1234567890-=[]\\;,.'/42";
         element.sendKeys(numericLineCharsNonShifted);
-        assertThat(
-          element.getValue(), equalTo(numericLineCharsNonShifted));
-        assertThat(
-          result.getText().trim(), is("down: 50 press: 0 up: 50"));
+
+        assertThat(element.getValue(), is(numericLineCharsNonShifted));
     }
 
     @JavascriptEnabled
     @Ignore("ie, safari, htmlunit")
-    public void testFireFoxShouldHandleNumericShiftKeys() {
+    public void testNumericShiftKeys() {
         driver.get(javascriptPage);
 
         WebElement result = driver.findElement(By.id("result"));
@@ -264,15 +260,14 @@ public class TypingTest extends AbstractDriverTestCase {
 
         String numericShiftsEtc = "~!@#$%^&*()_+{}:\"<>?|END~";
         element.sendKeys(numericShiftsEtc);
-        assertThat(
-          element.getValue(), equalTo(numericShiftsEtc));
-        assertThat(  // Note: the trailing SHIFT up (~ key shift)
-          result.getText().trim(), is("down: 126 press: 0 up: 126 up: 16"));
+
+        assertThat(element.getValue(), is(numericShiftsEtc));
+        assertThat(result.getText().trim(), containsString(" up: 16"));
     }
 
     @JavascriptEnabled
-    @Ignore("ie, safari, htmlunit")
-    public void testFireFoxShouldHandleLowerAlphaKeys() {
+    @Ignore(value= "safari, htmlunit", reason = "untested user agents")
+    public void testLowerCaseAlphaKeys() {
         driver.get(javascriptPage);
 
         WebElement result = driver.findElement(By.id("result"));
@@ -280,15 +275,13 @@ public class TypingTest extends AbstractDriverTestCase {
 
         String lowerAlphas = "abcdefghijklmnopqrstuvwxyz";
         element.sendKeys(lowerAlphas);
-        assertThat(
-          element.getValue(), equalTo(lowerAlphas));
-        assertThat(
-          result.getText().trim(), is("down: 90 press: 0 up: 90"));
+
+        assertThat(element.getValue(), is(lowerAlphas));
     }
 
     @JavascriptEnabled
-    @Ignore("ie, safari, htmlunit")
-    public void testFireFoxShouldHandleUpperAlphaKeys() {
+    @Ignore(value= "safari, htmlunit", reason = "untested user agents")
+    public void testUppercaseAlphaKeys() {
         driver.get(javascriptPage);
 
         WebElement result = driver.findElement(By.id("result"));
@@ -296,15 +289,14 @@ public class TypingTest extends AbstractDriverTestCase {
 
         String upperAlphas = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         element.sendKeys(upperAlphas);
-        assertThat(
-          element.getValue(), equalTo(upperAlphas));
-        assertThat(  // Note: observe the trailing SHIFT up (Z key shift)
-          result.getText().trim(), is("down: 90 press: 0 up: 90 up: 16"));
+
+        assertThat(element.getValue(), is(upperAlphas));
+        assertThat(result.getText().trim(), containsString(" up: 16"));
     }
 
     @JavascriptEnabled
-    @Ignore("ie, safari, htmlunit")
-    public void testFireFoxShouldHandleAllPrintableKeys() {
+    @Ignore(value= "safari, htmlunit", reason = "untested user agents")
+    public void testAllPrintableKeys() {
         driver.get(javascriptPage);
 
         WebElement result = driver.findElement(By.id("result"));
@@ -315,31 +307,270 @@ public class TypingTest extends AbstractDriverTestCase {
              "PQRSTUVWXYZ [\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
         element.sendKeys(allPrintable);
 
-        assertThat(
-          element.getValue(), equalTo(allPrintable));
-        assertThat(  // Note: the trailing SHIFT up (~ key shift)
-          result.getText().trim(), is("down: 126 press: 0 up: 126 up: 16"));
+        assertThat(element.getValue(), is(allPrintable));
+        assertThat(result.getText().trim(), containsString(" up: 16"));
     }
 
-    public void testShouldBeAbleToTypeIntoAnInputElementThatDoesNotHaveATypeAttribute() {
+    @JavascriptEnabled
+    @Ignore(value= "ie, safari, htmlunit", reason = "untested user agents")
+    public void testAllMovementKeys() {
+        driver.get(javascriptPage);
+
+        WebElement result = driver.findElement(By.id("result"));
+        WebElement element = driver.findElement(By.id("keyReporter"));
+
+        element.sendKeys("abc" + Keys.HOME + "0" + Keys.LEFT + Keys.RIGHT +
+            Keys.PAGE_UP + Keys.PAGE_DOWN + Keys.END + "1" + Keys.HOME +
+            "0" + Keys.PAGE_UP + Keys.END + "111" + Keys.HOME + "00");
+
+        assertThat(element.getValue(), is("0000abc1111"));
+    }
+
+    @JavascriptEnabled
+    @Ignore(value= "safari, htmlunit", reason = "untested user agents")
+    public void testDeleteAndBackspaceKeys() {
+        driver.get(javascriptPage);
+
+        WebElement result = driver.findElement(By.id("result"));
+        WebElement element = driver.findElement(By.id("keyReporter"));
+
+        element.sendKeys("abcdefghi");
+        assertThat(element.getValue(), is("abcdefghi"));
+
+        element.sendKeys("" + Keys.HOME + Keys.DELETE);
+        assertThat(element.getValue(), is("bcdefghi"));
+
+        element.sendKeys("" + Keys.END + Keys.BACK_SPACE);
+        assertThat(element.getValue(), is("bcdefgh"));
+
+        element.sendKeys("" + Keys.LEFT + Keys.LEFT + Keys.BACK_SPACE);
+        assertThat(element.getValue(), is("bcdegh"));
+
+        element.sendKeys("" + Keys.DELETE + Keys.DELETE);
+        assertThat(element.getValue(), is("bcde"));
+
+        element.sendKeys("0");
+        assertThat(element.getValue(), is("bcde0"));
+
+        element.sendKeys("" + Keys.BACK_SPACE);
+        assertThat(element.getValue(), is("bcde"));
+
+        element.sendKeys("" + Keys.HOME);
+        assertThat(element.getValue(), is("bcde"));
+
+        element.sendKeys("0");
+        assertThat(element.getValue(), is("0bcde"));
+
+        element.sendKeys("" + Keys.DELETE);
+        assertThat(element.getValue(), is("0cde"));
+
+        element.sendKeys("" + Keys.BACK_SPACE + "E");
+        assertThat(element.getValue(), is("Ecde"));
+
+        element.sendKeys("" + Keys.DELETE + Keys.HOME + Keys.NULL + "C");
+        assertThat(element.getValue(), is("CEde"));
+    }
+
+    @JavascriptEnabled
+    @Ignore(value= "ie, safari, htmlunit", reason = "untested user agents")
+    public void testSpecialSpaceKeys() {
+        driver.get(javascriptPage);
+
+        WebElement result = driver.findElement(By.id("result"));
+        WebElement element = driver.findElement(By.id("keyReporter"));
+
+        element.sendKeys("abcd" + Keys.SPACE + "fgh" + Keys.SPACE + "ij");
+        assertThat(element.getValue(), is("abcd fgh ij"));
+    }
+
+    @JavascriptEnabled
+    @Ignore(value= "ie, safari, htmlunit", reason = "untested user agents")
+    public void testNumberpadAndFunctionKeys() {
+        driver.get(javascriptPage);
+
+        WebElement result = driver.findElement(By.id("result"));
+        WebElement element = driver.findElement(By.id("keyReporter"));
+
+        element.sendKeys("abcd" + Keys.MULTIPLY + Keys.SUBTRACT + Keys.ADD +
+            Keys.DECIMAL + Keys.SEPARATOR + Keys.NUMPAD0 + Keys.NUMPAD9 +
+            Keys.ADD + Keys.SEMICOLON + Keys.EQUALS + Keys.DIVIDE +
+            Keys.NUMPAD3 + "abcd");
+
+        assertThat(element.getValue(), is("abcd*-+.,09+;=/3abcd"));
+
+        element.clear();
+        element.sendKeys("FUNCTION" + Keys.F2 + "-KEYS" + Keys.F2);
+        element.sendKeys("" + Keys.F2 + "-TOO" + Keys.F2);
+
+        assertThat(element.getValue(), is("FUNCTION-KEYS-TOO"));
+    }
+
+    @JavascriptEnabled
+    @Ignore(value= "ie, safari, htmlunit", reason = "untested user agents, " +
+        "broken in ie")
+    public void testShiftSelectionDeletes() {
+        driver.get(javascriptPage);
+
+        WebElement result = driver.findElement(By.id("result"));
+        WebElement element = driver.findElement(By.id("keyReporter"));
+
+        element.sendKeys("abcd efgh");
+        assertThat(element.getValue(), is("abcd efgh"));
+
+        element.sendKeys("" + Keys.HOME);
+        assertThat(element.getValue(), is("abcd efgh"));
+
+        element.sendKeys("" + Keys.SHIFT + Keys.END);
+        element.sendKeys("" + Keys.DELETE);
+
+        assertThat(element.getValue(), is(""));
+    }
+
+    @JavascriptEnabled
+    @Ignore(value= "ie, safari, htmlunit", reason = "untested user agents, " +
+        "broken in ie")
+    public void testPartialShiftSelectionDeletes() {
+        driver.get(javascriptPage);
+
+        WebElement result = driver.findElement(By.id("result"));
+        WebElement element = driver.findElement(By.id("keyReporter"));
+
+        element.sendKeys("abcd efgh ijkl mnop qrst uvw xyz");
+
+        element.sendKeys("" + Keys.HOME + Keys.SHIFT + Keys.RIGHT +
+            Keys.RIGHT + Keys.RIGHT + Keys.RIGHT + Keys.RIGHT);
+        element.sendKeys("" + Keys.DELETE);
+        assertThat(element.getValue(), is("efgh ijkl mnop qrst uvw xyz"));
+
+        element.sendKeys("" + Keys.END + Keys.LEFT + Keys.LEFT +
+            Keys.LEFT + Keys.LEFT + Keys.SHIFT + Keys.END);
+        element.sendKeys("" + Keys.DELETE);
+        assertThat(element.getValue(), is("efgh ijkl mnop qrst uvw"));
+
+        element.sendKeys("" + Keys.LEFT + Keys.LEFT + Keys.LEFT +
+            Keys.LEFT + Keys.SHIFT + Keys.END + Keys.DELETE);
+        assertThat(element.getValue(), is("efgh ijkl mnop qrst"));
+
+        element.sendKeys("" + Keys.HOME + Keys.RIGHT + Keys.RIGHT +
+            Keys.RIGHT + Keys.RIGHT + Keys.RIGHT + Keys.SHIFT + Keys.HOME);
+        element.sendKeys("" + Keys.DELETE);
+        assertThat(element.getValue(), is("ijkl mnop qrst"));
+    }
+
+    @JavascriptEnabled
+    @Ignore(value= "safari, htmlunit", reason = "untested user agents, " +
+        "broken in ie")
+    public void testChordControlHomeShiftEndDelete() {
+        driver.get(javascriptPage);
+
+        WebElement result = driver.findElement(By.id("result"));
+        WebElement element = driver.findElement(By.id("keyReporter"));
+
+        element.sendKeys("!\"#$%&'()*+,-./0123456789:;<=>?@ ABCDEFG");
+
+        element.sendKeys("" + Keys.CONTROL + Keys.HOME);
+        element.sendKeys("" +  Keys.SHIFT + Keys.END + Keys.HOME + Keys.END +
+            Keys.HOME + Keys.END + Keys.HOME + Keys.END + Keys.DELETE);
+
+        assertThat(element.getValue(), is(""));
+        assertThat(result.getText(), containsString(" up: 16"));
+    }
+
+    @JavascriptEnabled
+    @Ignore(value= "ie, safari, htmlunit", reason = "untested user agents, " +
+        "broken in ie")
+    public void testChordReveseShiftHomeSelectionDeletes() {
+        driver.get(javascriptPage);
+
+        WebElement result = driver.findElement(By.id("result"));
+        WebElement element = driver.findElement(By.id("keyReporter"));
+
+        element.sendKeys("done" + Keys.HOME);
+        assertThat(element.getValue(), is("done"));
+
+        element.sendKeys("" + Keys.SHIFT + "ALL " + Keys.HOME);
+        assertThat(element.getValue(), is("ALL done"));
+
+        element.sendKeys("" + Keys.DELETE);
+        assertThat(element.getValue(), is("done"));
+
+        element.sendKeys("" + Keys.END + Keys.SHIFT + Keys.HOME);
+        assertThat(element.getValue(), is("done"));
+        assertThat(  // Note: trailing SHIFT up here
+            result.getText().trim(), containsString(" up: 16"));
+
+        element.sendKeys("" + Keys.DELETE);
+        assertThat(element.getValue(), is(""));
+    }
+
+    // win32-specific control-x control-v here for cut & paste tests, and so
+    // a TODO: methods for per OS platform cut and paste key sequences.
+
+    @JavascriptEnabled
+    @Ignore(value= "ie, safari, htmlunit", reason = "untested user agents, " +
+        "broken in ie")
+    public void testChordControlCutAndPaste() {
+        driver.get(javascriptPage);
+
+        WebElement result = driver.findElement(By.id("result"));
+        WebElement element = driver.findElement(By.id("keyReporter"));
+
+        String paste = "!\"#$%&'()*+,-./0123456789:;<=>?@ ABCDEFG";
+        element.sendKeys(paste);
+        assertThat(element.getValue(), is(paste));
+
+        element.sendKeys("" + Keys.CONTROL + Keys.HOME + Keys.NULL +
+            Keys.SHIFT + Keys.END);
+
+        element.sendKeys("" +  Keys.CONTROL + "x");
+        assertThat(element.getValue(), is(""));
+
+        element.sendKeys("" +  Keys.CONTROL + "v");
+        assertThat(element.getValue(), is(paste));
+
+        element.sendKeys("" + Keys.LEFT + Keys.LEFT + Keys.LEFT +
+            Keys.SHIFT + Keys.END);
+        element.sendKeys("" +  Keys.CONTROL + "x" + "v");
+        assertThat(element.getValue(), is(paste));
+
+        element.sendKeys("" +  Keys.HOME);
+        element.sendKeys("" +  Keys.CONTROL + "v");
+        element.sendKeys("" +  Keys.CONTROL + "v" + "v");
+        element.sendKeys("" +  Keys.CONTROL + "v" + "v" + "v");
+        assertThat(element.getValue(), is("EFGEFGEFGEFGEFGEFG" + paste));
+
+        element.sendKeys("" + Keys.END + Keys.SHIFT + Keys.HOME +
+            Keys.NULL + Keys.DELETE);
+        assertThat(element.getValue(), is(""));
+    }
+
+    @JavascriptEnabled
+    public void testShouldTypeIntoInputElementsThatHaveNoTypeAttribute() {
         driver.get(formPage);
 
         WebElement element = driver.findElement(By.id("no-type"));
+        element.sendKeys("Should Say Cheese");
 
-        element.sendKeys("Cheese");
-        // No exception is a Good Thing
-
-        assertThat(element.getValue(), is("Cheese"));
+        assertThat(element.getValue(), is("Should Say Cheese"));
     }
-    
+
     @JavascriptEnabled
     @Ignore("ie, safari, htmlunit")
-    public void testShouldNotEnterTextIntoAnElementThatHasStifledTheKeyDownEvent() {
+    public void testShouldNotTypeIntoElementsThatPreventKeyDownEvents() {
     	driver.get(javascriptPage);
-    	
+
     	WebElement silent = driver.findElement(By.name("suppress"));
-		silent.sendKeys("Cheese!");
-    	
+
+		silent.sendKeys("Should not see me at all");
     	assertThat(silent.getValue(), is(""));
+
+        silent.sendKeys("Should\not\nsee me\r\nat all\r\n");
+        assertThat(silent.getValue(), is(""));
+
+        silent.sendKeys("Should not see" + Keys.RETURN + "me at all");
+        assertThat(silent.getValue(), is(""));
+
+        silent.sendKeys("Should not see" + Keys.ENTER + "me at all");
+        assertThat(silent.getValue(), is(""));
     }
 }

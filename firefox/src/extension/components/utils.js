@@ -151,14 +151,34 @@ Utils.getElementAt = function(index, context) {
     return undefined;
 };
 
+Utils.currentDocument = function(context) {
+  if (context) {
+    return Utils.getDocument(context);
+  } else {
+    return document;
+  }
+};
+
+Utils.platform = function(context) {
+  if (!this.userAgentPlatformLowercase) {
+    var currentWindow = Utils.currentDocument(context).defaultView;
+    this.userAgentPlatformLowercase =
+        currentWindow.navigator.platform.toLowerCase();
+  }
+
+  return this.userAgentPlatformLowercase;
+};
+
 Utils.shiftCount = 0;
 
 Utils.type = function(context, element, text) {
     // Special-case file input elements. This is ugly, but should be okay
-    var inputtype = element.getAttribute("type");
-    if (element.tagName == "INPUT" && inputtype && inputtype.toLowerCase() == "file") {
-      element.value = text;
-      return;
+    if (element.tagName == "INPUT") {
+      var inputtype = element.getAttribute("type");
+      if (inputtype && inputtype.toLowerCase() == "file") {
+        element.value = text;
+        return;
+      }
     }
 
     var controlKey = false;
@@ -170,14 +190,39 @@ Utils.type = function(context, element, text) {
     var upper = text.toUpperCase();
 
     for (var i = 0; i < text.length; i++) {
+        var c = text.charAt(i);
+
+        // NULL key: reset modifier key states, and continue
+
+        if (c == '\uE000') {
+          if (controlKey) {
+            var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_CONTROL;
+            Utils.keyEvent(context, element, "keyup", kCode, 0,
+              controlKey = false, shiftKey, altKey);
+          }
+
+          if (shiftKey) {
+            var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT;
+            Utils.keyEvent(context, element, "keyup", kCode, 0,
+              controlKey, shiftKey = false, altKey);
+          }
+
+          if (altKey) {
+            var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_ALT;
+            Utils.keyEvent(context, element, "keyup", kCode, 0,
+              controlKey, shiftKey, altKey = false);
+          }
+
+          continue;
+        }
+
+        // otherwise decode keyCode, charCode, modifiers ...
+
+        var modifierEvent = "";
         var charCode = 0;
         var keyCode = 0;
 
-        var c = text.charAt(i);
-        if (c == '\uE000') {      // null key, reset modifier key state
-            shiftKey = controlKey = altKey = false;
-            continue;
-        } else if (c == '\uE001') {
+        if (c == '\uE001') {
             keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_CANCEL;
         } else if (c == '\uE002') {
             keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_HELP;
@@ -192,20 +237,24 @@ Utils.type = function(context, element, text) {
         } else if (c == '\uE007') {
             keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_ENTER;
         } else if (c == '\uE008') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT;
             shiftKey = !shiftKey;
-            continue;
+            modifierEvent = shiftKey ? "keydown" : "keyup";
         } else if (c == '\uE009') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_CONTROL;
             controlKey = !controlKey;
-            continue;
+            modifierEvent = controlKey ? "keydown" : "keyup";
         } else if (c == '\uE00A') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_ALT;
             altKey = !altKey;
-            continue;
+            modifierEvent = altKey ? "keydown" : "keyup";
         } else if (c == '\uE00B') {
             keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_PAUSE;
         } else if (c == '\uE00C') {
             keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_ESCAPE;
         } else if (c == '\uE00D') {
             keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SPACE;
+            keyCode = charCode = ' '.charCodeAt(0);  // printable
         } else if (c == '\uE00E') {
             keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_PAGE_UP;
         } else if (c == '\uE00F') {
@@ -226,6 +275,88 @@ Utils.type = function(context, element, text) {
             keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_INSERT;
         } else if (c == '\uE017') {
             keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_DELETE;
+        } else if (c == '\uE018') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SEMICOLON;
+            charCode = ';'.charCodeAt(0);
+        } else if (c == '\uE019') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_EQUALS;
+            charCode = '='.charCodeAt(0);
+        } else if (c == '\uE01A') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_NUMPAD0;
+            charCode = '0'.charCodeAt(0);
+        } else if (c == '\uE01B') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_NUMPAD1;
+            charCode = '1'.charCodeAt(0);
+        } else if (c == '\uE01C') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_NUMPAD2;
+            charCode = '2'.charCodeAt(0);
+        } else if (c == '\uE01D') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_NUMPAD3;
+            charCode = '3'.charCodeAt(0);
+        } else if (c == '\uE01E') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_NUMPAD4;
+            charCode = '4'.charCodeAt(0);
+        } else if (c == '\uE01F') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_NUMPAD5;
+            charCode = '5'.charCodeAt(0);
+        } else if (c == '\uE020') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_NUMPAD6;
+            charCode = '6'.charCodeAt(0);
+        } else if (c == '\uE021') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_NUMPAD7;
+            charCode = '7'.charCodeAt(0);
+        } else if (c == '\uE022') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_NUMPAD8;
+            charCode = '8'.charCodeAt(0);
+        } else if (c == '\uE023') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_NUMPAD9;
+            charCode = '9'.charCodeAt(0);
+        } else if (c == '\uE024') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_MULTIPLY;
+            charCode = '*'.charCodeAt(0);
+        } else if (c == '\uE025') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_ADD;
+            charCode = '+'.charCodeAt(0);
+        } else if (c == '\uE026') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SEPARATOR;
+            charCode = ','.charCodeAt(0);
+        } else if (c == '\uE027') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SUBTRACT;
+            charCode = '-'.charCodeAt(0);
+        } else if (c == '\uE028') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_DECIMAL;
+            charCode = '.'.charCodeAt(0);
+        } else if (c == '\uE029') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_DIVIDE;
+            charCode = '/'.charCodeAt(0);
+        } else if (c == '\uE031') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_F1;
+        } else if (c == '\uE032') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_F2;
+        } else if (c == '\uE033') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_F3;
+        } else if (c == '\uE034') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_F4;
+        } else if (c == '\uE035') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_F5;
+        } else if (c == '\uE036') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_F6;
+        } else if (c == '\uE037') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_F7;
+        } else if (c == '\uE038') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_F8;
+        } else if (c == '\uE039') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_F9;
+        } else if (c == '\uE03A') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_F10;
+        } else if (c == '\uE03B') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_F11;
+        } else if (c == '\uE03C') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_F12;
+        } else if (c == '\r') {
+            if (Utils.platform(context) == "win32")
+              continue;  // skip it
+            keycode = charCode = '\r'.charCodeAt(i);
         } else if (c == '\n') {
             keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_RETURN;
             charCode = text.charCodeAt(i);
@@ -258,32 +389,26 @@ Utils.type = function(context, element, text) {
             charCode = text.charCodeAt(i);
         }
 
-        var needsShift = false;
-        if (!charCode) {
-          needsShift = shiftKey;
-        } else {
-          needsShift = /[A-Z\!\$\^\*\(\)\+\{\}\:\?\|"#%&<>@_~]/.test(c);
+        // generate modifier key event if needed, and continue
+
+        if (modifierEvent) {
+          Utils.keyEvent(context, element, modifierEvent, keyCode, 0,
+              controlKey, shiftKey, altKey);
+          continue;
         }
 
-        // modifiers down
+        // otherwise, shift down if needed
 
-        if (needsShift) {
+        var needsShift = false;
+        if (charCode) {
+          needsShift = /[A-Z\!\$\^\*\(\)\+\{\}\:\?\|~@#%&_"<>]/.test(c);
+        }
+
+        if (needsShift && !shiftKey) {
           var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT;
           Utils.keyEvent(context, element, "keydown", kCode, 0,
               controlKey, true, altKey);
           Utils.shiftCount += 1;
-        }
-
-        if (controlKey) {
-          var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_CONTROL;
-          Utils.keyEvent(context, element, "keydown", kCode, 0,
-              true, needsShift, altKey);
-        }
-
-        if (altKey) {
-          var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_ALT;
-          Utils.keyEvent(context, element, "keydown", kCode, 0,
-              controlKey, needsShift, true);
         }
 
         // generate key[down/press/up] for key
@@ -292,55 +417,61 @@ Utils.type = function(context, element, text) {
         if (charCode >= 32 && charCode < 127)
           pressCode = 0;
 
-        var accepted = Utils.keyEvent(context, element, "keydown", keyCode, 0,
-            controlKey, needsShift, altKey);
-        
+        var accepted =
+          Utils.keyEvent(context, element, "keydown", keyCode, 0,
+              controlKey, needsShift || shiftKey, altKey);
+
         if (accepted) {
-            Utils.keyEvent(context, element, "keypress", pressCode, charCode,
-                controlKey, needsShift, altKey);
+          Utils.keyEvent(context, element, "keypress", pressCode, charCode,
+              controlKey, needsShift || shiftKey, altKey);
         }
-        
+
         Utils.keyEvent(context, element, "keyup", keyCode, 0,
-            controlKey, needsShift, altKey);
+            controlKey, needsShift || shiftKey, altKey);
 
-        // modifiers up
+        // shift up if needed
 
-        var shiftKeyState = needsShift;
-        if (shiftKeyState) {
+        if (needsShift && !shiftKey) {
           var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT;
           Utils.keyEvent(context, element, "keyup", kCode, 0,
-              controlKey, shiftKeyState = false, altKey);
+              controlKey, false, altKey);
         }
+    }
 
-        var controlKeyState = controlKey;
-        if (controlKeyState) {
-          var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_CONTROL;
-          Utils.keyEvent(context, element, "keyup", kCode, 0,
-              controlKeyState = false, shiftKeyState, altKey);
-        }
+    // exit cleanup: keyup active modifier keys
 
-        var altKeyState = altKey;
-        if (altKeyState) {
-          var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_ALT;
-          Utils.keyEvent(context, element, "keyup", kCode, 0,
-              controlKeyState, shiftKeyState, altKeyState = false);
-        }
+    if (controlKey) {
+      var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_CONTROL;
+      Utils.keyEvent(context, element, "keyup", kCode, 0,
+        controlKey = false, shiftKey, altKey);
+    }
 
-    }  // for text.length
+    if (shiftKey) {
+      var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT;
+      Utils.keyEvent(context, element, "keyup", kCode, 0,
+        controlKey, shiftKey = false, altKey);
+    }
+
+    if (altKey) {
+      var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_ALT;
+      Utils.keyEvent(context, element, "keyup", kCode, 0,
+        controlKey, shiftKey, altKey = false);
+    }
 };
 
 Utils.keyEvent = function(context, element, type, keyCode, charCode,
     controlState, shiftState, altState) {
 
-  var document = Utils.getDocument(context);
-  var view = Utils.getDocument(context).defaultView;
+  var keyboardEvent =
+     Utils.currentDocument(context).createEvent("KeyEvents");
+  var currentView =
+     Utils.currentDocument(context).defaultView;
 
-  var evt = document.createEvent('KeyEvents');
-  evt.initKeyEvent(
+  keyboardEvent.initKeyEvent(
     type,         //  in DOMString typeArg,
     true,         //  in boolean canBubbleArg
     true,         //  in boolean cancelableArg
-    view,      //  in nsIDOMAbstractView viewArg
+    currentView,  //  in nsIDOMAbstractView viewArg
     controlState, //  in boolean ctrlKeyArg
     altState,     //  in boolean altKeyArg
     shiftState,   //  in boolean shiftKeyArg
@@ -348,9 +479,8 @@ Utils.keyEvent = function(context, element, type, keyCode, charCode,
     keyCode,      //  in unsigned long keyCodeArg
     charCode);    //  in unsigned long charCodeArg
 
-  return element.dispatchEvent(evt);
+  return element.dispatchEvent(keyboardEvent);
 };
-
 
 Utils.fireHtmlEvent = function(context, element, eventName) {
     var doc = Utils.getDocument(context);

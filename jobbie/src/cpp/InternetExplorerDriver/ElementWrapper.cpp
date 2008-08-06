@@ -424,7 +424,7 @@ void ElementWrapper::sendKeys(const std::wstring& newValue)
 		} else if (c == 0xE011U) {  // home
 			keyCode = VK_HOME;
 			scanCode = keyCode;
-			extended = true;
+			// extended = true;
 		} else if (c == 0xE012U) {  // left arrow
 			keyCode = VK_LEFT;
 			scanCode = keyCode;
@@ -449,6 +449,114 @@ void ElementWrapper::sendKeys(const std::wstring& newValue)
 			keyCode = VK_DELETE;
 			scanCode = keyCode;
 			extended = true;
+		} else if (c == 0xE018U) {  // semicolon
+			keyCode = VkKeyScanExW(L';', layout);
+			scanCode = MapVirtualKeyExW(LOBYTE(keyCode), 0, layout);
+			printable = true;
+		} else if (c == 0xE019U) {  // equals
+			keyCode = VkKeyScanExW(L'=', layout);
+			scanCode = MapVirtualKeyExW(LOBYTE(keyCode), 0, layout);
+			printable = true;
+		} else if (c == 0xE01AU) {  // numpad0
+			keyCode = VK_NUMPAD0;
+			scanCode = keyCode;
+			extended = true;
+		} else if (c == 0xE01BU) {  // numpad1
+			keyCode = VK_NUMPAD1;
+			scanCode = keyCode;
+			extended = true;
+		} else if (c == 0xE01CU) {  // numpad2
+			keyCode = VK_NUMPAD2;
+			scanCode = keyCode;
+			extended = true;
+		} else if (c == 0xE01DU) {  // numpad3
+			keyCode = VK_NUMPAD3;
+			scanCode = keyCode;
+			extended = true;
+		} else if (c == 0xE01EU) {  // numpad4
+			keyCode = VK_NUMPAD4;
+			scanCode = keyCode;
+			extended = true;
+		} else if (c == 0xE01FU) {  // numpad5
+			keyCode = VK_NUMPAD5;
+			scanCode = keyCode;
+			extended = true;
+		} else if (c == 0xE020U) {  // numpad6
+			keyCode = VK_NUMPAD5;
+			scanCode = keyCode;
+			extended = true;
+		} else if (c == 0xE021U) {  // numpad7
+			keyCode = VK_NUMPAD7;
+			scanCode = keyCode;
+			extended = true;
+		} else if (c == 0xE022U) {  // numpad8
+			keyCode = VK_NUMPAD8;
+			scanCode = keyCode;
+			extended = true;
+		} else if (c == 0xE023U) {  // numpad9
+			keyCode = VK_NUMPAD9;
+			scanCode = keyCode;
+			extended = true;
+		} else if (c == 0xE024U) {  // multiply
+			keyCode = VK_MULTIPLY;
+			scanCode = keyCode;
+			extended = true;
+		} else if (c == 0xE025U) {  // add
+			keyCode = VK_ADD;
+			scanCode = keyCode;
+			extended = true;
+		} else if (c == 0xE026U) {  // separator
+			keyCode = VkKeyScanExW(L',', layout);
+			scanCode = MapVirtualKeyExW(LOBYTE(keyCode), 0, layout);
+			printable = true;
+		} else if (c == 0xE027U) {  // subtract
+			keyCode = VK_SUBTRACT;
+			scanCode = keyCode;
+			extended = true;
+		} else if (c == 0xE028U) {  // decimal
+			keyCode = VK_DECIMAL;
+			scanCode = keyCode;
+			extended = true;
+		} else if (c == 0xE029U) {  // divide
+			keyCode = VK_DIVIDE;
+			scanCode = keyCode;
+			extended = true;
+		} else if (c == 0xE031U) {  // F1
+			keyCode = VK_F1;
+			scanCode = keyCode;
+		} else if (c == 0xE032U) {  // F2
+			keyCode = VK_F2;
+			scanCode = keyCode;
+		} else if (c == 0xE033U) {  // F3
+			keyCode = VK_F3;
+			scanCode = keyCode;
+		} else if (c == 0xE034U) {  // F4
+			keyCode = VK_F4;
+			scanCode = keyCode;
+		} else if (c == 0xE035U) {  // F5
+			keyCode = VK_F5;
+			scanCode = keyCode;
+		} else if (c == 0xE036U) {  // F6
+			keyCode = VK_F6;
+			scanCode = keyCode;
+		} else if (c == 0xE037U) {  // F7
+			keyCode = VK_F7;
+			scanCode = keyCode;
+		} else if (c == 0xE038U) {  // F8
+			keyCode = VK_F8;
+			scanCode = keyCode;
+		} else if (c == 0xE039U) {  // F9
+			keyCode = VK_F9;
+			scanCode = keyCode;
+		} else if (c == 0xE03AU) {  // F10
+			keyCode = VK_F10;
+			scanCode = keyCode;
+		} else if (c == 0xE03BU) {  // F11
+			keyCode = VK_F11;
+			scanCode = keyCode;
+		} else if (c == 0xE03CU) {  // F12
+			keyCode = VK_F12;
+			scanCode = keyCode;
 		} else if (c == L'\n') {    // line feed
 			keyCode = VK_RETURN;
 			scanCode = keyCode;
