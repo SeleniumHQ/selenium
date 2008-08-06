@@ -21,12 +21,23 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.internal.FindsById;
+import org.openqa.selenium.internal.FindsByLinkText;
+import org.openqa.selenium.internal.FindsByName;
+import org.openqa.selenium.internal.FindsByXPath;
+import org.openqa.selenium.internal.OperatingSystem;
+
 import com.gargoylesoftware.htmlunit.html.ClickableElement;
 import com.gargoylesoftware.htmlunit.html.DomNode;
 import com.gargoylesoftware.htmlunit.html.DomText;
 import com.gargoylesoftware.htmlunit.html.HtmlButton;
 import com.gargoylesoftware.htmlunit.html.HtmlCheckBoxInput;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
+import com.gargoylesoftware.htmlunit.html.HtmlFileInput;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlImageInput;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
@@ -35,18 +46,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlPreformattedText;
 import com.gargoylesoftware.htmlunit.html.HtmlSelect;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextArea;
-import com.gargoylesoftware.htmlunit.html.HtmlFileInput;
-
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.internal.FindsById;
-import org.openqa.selenium.internal.FindsByLinkText;
-import org.openqa.selenium.internal.FindsByName;
-import org.openqa.selenium.internal.FindsByXPath;
-import org.openqa.selenium.internal.OperatingSystem;
 
 public class HtmlUnitWebElement implements WebElement,
     FindsById, FindsByLinkText, FindsByXPath, FindsByName, SearchContext {
@@ -144,10 +143,9 @@ public class HtmlUnitWebElement implements WebElement,
 		return candidate != null;
 	}
 
-	@SuppressWarnings({"UnusedDeclaration"})
-        private boolean isBefore(HtmlElement submit, HtmlElement element) {
-          return submit == null;
-        }
+    private boolean isBefore(HtmlElement submit, HtmlElement element) {
+      return submit == null;
+    }
 
 	public String getValue() {
         if (element instanceof HtmlTextArea)
@@ -259,7 +257,6 @@ public class HtmlUnitWebElement implements WebElement,
             throw new UnsupportedOperationException("Unable to select element. Tag name is: " + element.getTagName());
     }
 
-    @SuppressWarnings({"SimplifiableIfStatement"})
     public boolean isEnabled() {
         if (element instanceof HtmlInput)
             return !((HtmlInput) element).isDisabled();

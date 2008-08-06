@@ -76,7 +76,7 @@ public class FirefoxProfile {
         deleteExtensionsCacheIfItExists();
     }
 
-    public void addExtension(Class loadResourcesUsing, String loadFrom) throws IOException {
+    public void addExtension(Class<?> loadResourcesUsing, String loadFrom) throws IOException {
       // Is loadFrom a file?
       File file = new File(loadFrom);
       if (file.exists()) {
@@ -159,7 +159,7 @@ public class FirefoxProfile {
           throw new UnsupportedOperationException("getPrefix");
         }
 
-        public Iterator getPrefixes(String uri) {
+        public Iterator<?> getPrefixes(String uri) {
           throw new UnsupportedOperationException("getPrefixes");
         }
       });
