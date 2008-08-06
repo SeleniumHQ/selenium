@@ -426,10 +426,8 @@ Utils.type = function(context, element, text) {
           Utils.keyEvent(context, element, "keydown", keyCode, 0,
               controlKey, needsShift || shiftKey, altKey);
 
-        if (accepted) {
-          Utils.keyEvent(context, element, "keypress", pressCode, charCode,
-              controlKey, needsShift || shiftKey, altKey);
-        }
+        Utils.keyEvent(context, element, "keypress", pressCode, charCode,
+            controlKey, needsShift || shiftKey, altKey, !accepted);
 
         Utils.keyEvent(context, element, "keyup", keyCode, 0,
             controlKey, needsShift || shiftKey, altKey);
@@ -465,7 +463,8 @@ Utils.type = function(context, element, text) {
 };
 
 Utils.keyEvent = function(context, element, type, keyCode, charCode,
-    controlState, shiftState, altState) {
+    controlState, shiftState, altState, shouldPreventDefault) {
+  var preventDefault = shouldPreventDefault == undefined ? false : shouldPreventDefault;
 
   var keyboardEvent =
      Utils.currentDocument(context).createEvent("KeyEvents");
@@ -483,6 +482,10 @@ Utils.keyEvent = function(context, element, type, keyCode, charCode,
     false,        //  in boolean metaKeyArg
     keyCode,      //  in unsigned long keyCodeArg
     charCode);    //  in unsigned long charCodeArg
+
+  if (preventDefault) {
+    keyboardEvent.preventDefault();
+  }
 
   return element.dispatchEvent(keyboardEvent);
 };
