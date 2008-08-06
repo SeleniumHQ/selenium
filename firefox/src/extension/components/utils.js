@@ -356,7 +356,12 @@ Utils.type = function(context, element, text) {
         } else if (c == '\r') {
             if (Utils.platform(context) == "win32")
               continue;  // skip it
-            keycode = charCode = '\r'.charCodeAt(i);
+            if (/mac/.test(Utils.platform(context))) {
+              keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_RETURN;
+              charCode = '\n'.charCodeAt(0);
+            } else {
+              keycode = charCode = '\r'.charCodeAt(i);
+            }
         } else if (c == '\n') {
             keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_RETURN;
             charCode = text.charCodeAt(i);

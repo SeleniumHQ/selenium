@@ -21,8 +21,8 @@ public class SingleTestSuite {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("TypingTest")
-        // .method("testShouldNotEnterTextIntoAnElementThatHasStifledTheKeyDownEvent")
+        .onlyRun("TextHandlingTest")
+         .method("testShouldBeAbleToSetMoreThanOneLineOfTextInATextArea")
         .leaveRunning()
         ;  // Yeah, this look strange :)
 
