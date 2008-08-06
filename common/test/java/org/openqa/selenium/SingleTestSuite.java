@@ -2,6 +2,7 @@ package org.openqa.selenium;
 
 import junit.framework.Test;
 
+@SuppressWarnings("unused")
 public class SingleTestSuite {
 
   private final static String FIREFOX = "org.openqa.selenium.firefox.FirefoxDriver";
@@ -21,8 +22,8 @@ public class SingleTestSuite {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("TextHandlingTest")
-         .method("testShouldBeAbleToSetMoreThanOneLineOfTextInATextArea")
+        .onlyRun("TypingTest")
+         .method("testGenerateKeyPressEventEvenWhenElementPreventsDefault")
         .leaveRunning()
         ;  // Yeah, this look strange :)
 

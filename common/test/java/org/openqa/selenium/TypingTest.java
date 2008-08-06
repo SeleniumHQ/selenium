@@ -519,14 +519,17 @@ public class TypingTest extends AbstractDriverTestCase {
 
 		silent.sendKeys("Should not see me at all");
     	assertThat(silent.getValue(), is(""));
+    }
+    
+    @JavascriptEnabled
+    @Ignore("ie, safari, htmlunit")
+    public void testGenerateKeyPressEventEvenWhenElementPreventsDefault() {
+    	driver.get(javascriptPage);
 
-        silent.sendKeys("Should\not\nsee me\r\nat all\r\n");
-        assertThat(silent.getValue(), is(""));
+    	WebElement silent = driver.findElement(By.name("suppress"));
+    	WebElement result = driver.findElement(By.id("result"));
 
-        silent.sendKeys("Should not see" + Keys.RETURN + "me at all");
-        assertThat(silent.getValue(), is(""));
-
-        silent.sendKeys("Should not see" + Keys.ENTER + "me at all");
-        assertThat(silent.getValue(), is(""));
+		silent.sendKeys("s");
+    	assertThat(result.getText(), containsString("press"));
     }
 }
