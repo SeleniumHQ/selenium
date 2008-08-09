@@ -17,19 +17,20 @@
 
 package org.openqa.selenium.htmlunit;
 
-import java.net.ConnectException;
-import java.net.URL;
-import java.net.UnknownHostException;
-import java.security.GeneralSecurityException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import com.gargoylesoftware.htmlunit.ElementNotFoundException;
+import com.gargoylesoftware.htmlunit.Page;
+import com.gargoylesoftware.htmlunit.ScriptResult;
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.WebResponse;
+import com.gargoylesoftware.htmlunit.WebWindow;
+import com.gargoylesoftware.htmlunit.WebWindowEvent;
+import com.gargoylesoftware.htmlunit.WebWindowListener;
+import com.gargoylesoftware.htmlunit.html.FrameWindow;
+import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
+import com.gargoylesoftware.htmlunit.html.HtmlElement;
+import com.gargoylesoftware.htmlunit.html.HtmlInlineFrame;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.javascript.host.HTMLElement;
 import org.apache.commons.httpclient.HttpState;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.ScriptableObject;
@@ -49,20 +50,18 @@ import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.internal.ReturnedCookie;
 
-import com.gargoylesoftware.htmlunit.ElementNotFoundException;
-import com.gargoylesoftware.htmlunit.Page;
-import com.gargoylesoftware.htmlunit.ScriptResult;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.WebResponse;
-import com.gargoylesoftware.htmlunit.WebWindow;
-import com.gargoylesoftware.htmlunit.WebWindowEvent;
-import com.gargoylesoftware.htmlunit.WebWindowListener;
-import com.gargoylesoftware.htmlunit.html.FrameWindow;
-import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import com.gargoylesoftware.htmlunit.html.HtmlInlineFrame;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.javascript.host.HTMLElement;
+import java.net.ConnectException;
+import java.net.URL;
+import java.net.UnknownHostException;
+import java.security.GeneralSecurityException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecutor,
         FindsById, FindsByLinkText, FindsByXPath, FindsByName {
@@ -70,12 +69,12 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     private WebWindow currentWindow;
     /** window name => history. */
     private Map<String, History> histories = new HashMap<String, History>();
-    private boolean javascriptEnabled;
+    private boolean enableJavascript;
 
-    public HtmlUnitDriver(boolean enableJavascript) {
-        javascriptEnabled = enableJavascript;
+  public HtmlUnitDriver(boolean enableJavascript) {
+    this.enableJavascript = enableJavascript;
 
-        webClient = newWebClient();
+    webClient = newWebClient();
         webClient.addWebWindowListener(new WebWindowListener() {
             private boolean waitingToLoad;
 
@@ -111,8 +110,8 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
       this(false);
     }
 
-    private HtmlUnitDriver(WebWindow currentWindow) {
-        this();
+    private HtmlUnitDriver(boolean enableJavascript, WebWindow currentWindow) {
+        this(enableJavascript);
         this.currentWindow = currentWindow;
     }
 
@@ -120,7 +119,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
         WebClient client = new WebClient();
         client.setThrowExceptionOnFailingStatusCode(false);
         client.setPrintContentOnFailingStatusCode(false);
-        client.setJavaScriptEnabled(javascriptEnabled);
+        client.setJavaScriptEnabled(enableJavascript);
         client.setRedirectEnabled(true);
         try {
 			client.setUseInsecureSSL(true);
@@ -202,7 +201,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     }
 
     public Object executeScript(String script, Object... args) {
-        if (!javascriptEnabled)
+        if (!isJavascriptEnabled())
             throw new UnsupportedOperationException("Javascript is not enabled for this HtmlUnitDriver instance");
 
         Object[] parameters = new Object[args.length];
@@ -275,7 +274,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
   }
 
   protected WebElement newHtmlUnitWebElement(HtmlElement element) {
-    if (javascriptEnabled) {
+    if (isJavascriptEnabled()) {
       return new RenderedHtmlUnitDriverWebElement(this, element);
     }
     return new HtmlUnitWebElement(this, element);
@@ -351,7 +350,12 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     }
 
   public boolean isJavascriptEnabled() {
-    return javascriptEnabled;
+    return webClient.isJavaScriptEnabled();
+  }
+
+  public void setJavascriptEnabled(boolean enableJavascript) {
+    this.enableJavascript = enableJavascript;
+    webClient.setJavaScriptEnabled(enableJavascript);
   }
 
   private class HtmlUnitTargetLocator implements TargetLocator {
@@ -440,12 +444,12 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
         if (page != null && page.getFrames().size() > 0) {
             FrameWindow frame = page.getFrames().get(0);
             if (!(frame.getFrameElement() instanceof HtmlInlineFrame))
-                return new HtmlUnitDriver(frame);
+                return new HtmlUnitDriver(isJavascriptEnabled(), frame);
         }
 
         if (currentWindow != null && currentWindow.equals(window))
             return this;
-        return new HtmlUnitDriver(window);
+        return new HtmlUnitDriver(isJavascriptEnabled(), window);
     }
 
 
