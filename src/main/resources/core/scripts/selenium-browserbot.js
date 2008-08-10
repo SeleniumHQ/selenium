@@ -1758,20 +1758,17 @@ BrowserBot.prototype.locateElementByCss = function(locator, document) {
  * API for locator strategies.
  */
 BrowserBot.prototype.locateElementByUIElement = function(locator, inDocument) {
-    // we have an offset locator expression if the specifier string
-    // does not end with a close-parenthesis. In this case, no
-    // parentheses are allowed within the arguments portion of the base
-    // specifier string.
-    if (!/\)$/.test(locator)) {
-        var matches = /^([^\)]+\))(.+)$/.exec(locator);
-        locator = matches[1];
-        var offsetLocator = matches[2];
-    }
+    // offset locators are delimited by "->", which is much simpler than the
+    // previous scheme involving detecting the close-paren.
+    var locators = locator.split(/->/, 2);
+    
     var locatedElement = null;
-    var pageElements = UIMap.getInstance().getPageElements(locator, inDocument);
-    if (offsetLocator) {
+    var pageElements = UIMap.getInstance()
+        .getPageElements(locators[0], inDocument);
+    
+    if (locators.length > 1) {
         for (var i = 0; i < pageElements.length; ++i) {
-            var locatedElements = eval_locator(offsetLocator, inDocument,
+            var locatedElements = eval_locator(locators[1], inDocument,
                 pageElements[i]);
             if (locatedElements.length) {
                 locatedElement = locatedElements[0];
@@ -1782,6 +1779,7 @@ BrowserBot.prototype.locateElementByUIElement = function(locator, inDocument) {
     else if (pageElements.length) {
         locatedElement = pageElements[0];
     }
+    
     return locatedElement;
 }
 

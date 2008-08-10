@@ -1018,7 +1018,7 @@ function UIMap()
                                     new UISpecifier(pageset.name,
                                         uiElement.name,
                                         defaultLocators[locator])
-                                    + offsetLocator;
+                                    + '->' + offsetLocator;
                             }
                         }
                     }

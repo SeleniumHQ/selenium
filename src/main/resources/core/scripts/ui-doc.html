@@ -457,13 +457,13 @@ testcase1: {
 
 <p>Assume that a UI element has been defined for the form element. Then the following locators containing offset locators and "anchored" off this element would be recorded using the default offset locator function (<code>UIElement.defaultOffsetLocatorStrategy</code>):</p>
 
-<pre>ui=contactPages::contact_form()<span class="highlight">//input[@name='foo']</span>
-ui=contactPages::contact_form()<span class="highlight">//textarea[@name='bar']</span>
-ui=contactPages::contact_form()<span class="highlight">//input[@value='baz']</span></pre>
+<pre>ui=contactPages::contact_form()<span class="highlight">->//input[@name='foo']</span>
+ui=contactPages::contact_form()<span class="highlight">->//textarea[@name='bar']</span>
+ui=contactPages::contact_form()<span class="highlight">->//input[@value='baz']</span></pre>
 
-<p>To resolve ambiguity in parsing a UI specifier string, the following rule is introduced: "If the last character in the UI locator string is NOT the close-parenthesis (<code>)</code>), the substring following the first occurrence of the close-parenthesis of the locator string shall be considered an offset locator." This means that when using offset locators, the arguments portion of the UI specifier string cannot contain any close-parentheses. On the other hand, the offset locator can contain parentheses. This may be important if it uses XPath functions like <code>contains()</code>, for example.</p>
+<p>The character sequence <code>-&gt;</code> serves to delimit the offset locator from the main locator. For this reason, the sequence should not appear in the main locator, or else ambiguity will result.</p>
 
-<p>In general, no preference is given to matching plain vanilla UI specifier strings over ones that have offset locators. In other words, if a page element could be specified either by a UI specifier string for one UI element, and by one augmented by an offset locator for a different UI element, there is no guarantee that one or the other will be used when recording.</p>
+<p>When recording with the IDE, no preference is given to matching plain vanilla UI specifier strings over ones that have offset locators. In other words, if a page element could be specified both by a UI specifier string for one UI element, and by one augmented by an offset locator for a different UI element, there is no guarantee that one or the other locator will be recorded.</p>
 
 <p>Currently, <span class="highlight">only XPath is supported as an offset locator type</span>, as it is the only locator for which a context node can be specified at evaluation time. Other locator strategies may be supported in the future.</p>
 
@@ -766,7 +766,7 @@ updateArgs: function(command, args) {
 
 <ul>
 <li>UI-Element is now completely integrated into Selenium Core.</li>
-<li>Added offset locators.</li>
+<li>Added offset locators. Modified the delimiter to be <code>-&gt;</code>.</li>
 <li><code>getDefaultValues()</code> can dynamically construct a list of values and assume that a <code>document</code> object is being passed in.</li>
 <li>Arguments in UI specifier strings are presented in the same order as they are defined in the mapping file (no longer alphabetically).</li>
 <li>Allow generic locators to be specified, potentially improving recording performance when there are many UI arguments.</li>
