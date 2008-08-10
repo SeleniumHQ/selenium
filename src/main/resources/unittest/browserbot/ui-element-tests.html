@@ -418,6 +418,9 @@ function test_UISpecifier__initFromUISpecifierString()
     assertEquals('# elementName:*@  ', testUISpecifier.elementName);
     assertTrue(are_equal({k1: 'v1', 'k  2': 'v2'}, testUISpecifier.args));
     
+    testUISpecifier._initFromUISpecifierString('a::b(k1=v1())');
+    assertTrue(are_equal({k1: 'v1()'}, testUISpecifier.args));
+    
     // destructive
     try {
         testUISpecifier._initFromUISpecifierString('pagesetName::()');
@@ -439,7 +442,7 @@ function test_UISpecifier__initFromUISpecifierString()
     }
     catch (e) {
         assertEquals('UISpecifierException', e.name);
-    }
+    }	
     try {
         testUISpecifier._initFromUISpecifierString('pagesetName::elementName(k1=v1, k2=v2');
         fail('Expected UISpecifierException, but none was thrown: missing close parenthesis for arguments');

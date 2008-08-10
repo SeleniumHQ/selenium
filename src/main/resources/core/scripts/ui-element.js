@@ -506,7 +506,7 @@ function UISpecifier(uiSpecifierStringOrPagesetName, elementName, args)
      * @throws  UISpecifierException
      */
     this._initFromUISpecifierString = function(uiSpecifierString) {
-        var matches = /^(.*)::([^\(]+)\(([^\)]*)\)$/.exec(uiSpecifierString);
+        var matches = /^(.*)::([^\(]+)\((.*)\)$/.exec(uiSpecifierString);
         if (matches == null) {
             throw new UISpecifierException('Error in '
                 + 'UISpecifier._initFromUISpecifierString(): "'
