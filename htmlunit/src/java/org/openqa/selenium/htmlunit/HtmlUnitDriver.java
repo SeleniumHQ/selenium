@@ -144,7 +144,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
         pickWindow();
     }
 
-    private void pickWindow() {
+    protected void pickWindow() {
         currentWindow = webClient.getCurrentWindow();
         Page page = webClient.getCurrentWindow().getEnclosedPage();
 
