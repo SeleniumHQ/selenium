@@ -113,7 +113,7 @@
                onkeyup="appendMessage('up: ' + event.keyCode)"
                onkeypress="appendMessage('press: ' + event.keyCode)"
                onkeydown="displayMessage(''); appendMessage('down: ' + event.keyCode)" />
-        <input name="suppress" onkeydown="event.preventDefault(); return false;" onkeypress="appendMessage('press');"/>
+        <input name="suppress" onkeydown="if (event.preventDefault) event.preventDefault(); event.returnValue = false; return false;" onkeypress="appendMessage('press');"/>
     </form>
 </div>
 
@@ -128,4 +128,5 @@
 
 </body>
 </html>
+
 

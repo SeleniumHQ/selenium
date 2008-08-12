@@ -367,27 +367,21 @@ void ElementWrapper::sendKeys(const std::wstring& newValue)
 		} else if (c == 0xE002U) {  // help
 			keyCode = VK_HELP;
 			scanCode = keyCode;
-			extended = false;
 		} else if (c == 0xE003U) {  // back space
 			keyCode = VK_BACK;
 			scanCode = keyCode;
-			extended = false;
 		} else if (c == 0xE004U) {  // tab
 			keyCode = VK_TAB;
 			scanCode = keyCode;
-			extended = false;
 		} else if (c == 0xE005U) {  // clear
 			keyCode = VK_CLEAR;
 			scanCode = keyCode;
-			extended = false;
 		} else if (c == 0xE006U) {  // return
 			keyCode = VK_RETURN;
 			scanCode = keyCode;
-			extended = false;
 		} else if (c == 0xE007U) {  // enter
 			keyCode = VK_RETURN;
 			scanCode = keyCode;
-			extended = true;
 		} else if (c == 0xE008U) {  // shift (left)
 			shiftKey = !shiftKey;
 			continue;
@@ -424,7 +418,7 @@ void ElementWrapper::sendKeys(const std::wstring& newValue)
 		} else if (c == 0xE011U) {  // home
 			keyCode = VK_HOME;
 			scanCode = keyCode;
-			// extended = true;
+			extended = true;
 		} else if (c == 0xE012U) {  // left arrow
 			keyCode = VK_LEFT;
 			scanCode = keyCode;
@@ -572,6 +566,7 @@ void ElementWrapper::sendKeys(const std::wstring& newValue)
 			}
 		}
 
+		keyCode &= 0x01ff;
 		if (shiftKey)
 			keyCode |= static_cast<WORD>(0x0100);
 		if (controlKey)
@@ -579,8 +574,15 @@ void ElementWrapper::sendKeys(const std::wstring& newValue)
 		if (altKey)
 			keyCode |= static_cast<WORD>(0x0400);
 
+		if (controlKey || altKey)
+			printable = false;
+
+		int pause = ie->getSpeed();
+		if (shiftKey || controlKey || altKey)
+			pause = (25 * 3);
+
 		backgroundKeyPress(ieWindow, layout, keyboardState, keyCode, scanCode,
-				extended, printable, ie->getSpeed());
+				extended, printable, pause);
 	}
 
 	if (hook) {

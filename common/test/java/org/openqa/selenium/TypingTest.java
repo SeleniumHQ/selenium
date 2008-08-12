@@ -175,19 +175,20 @@ public class TypingTest extends AbstractDriverTestCase {
 	}
 
 	@JavascriptEnabled
-	@Ignore(value = "safari, htmlunit, firefox", reason = "not implemeted in safari," +
+	@Ignore(value = "ie, safari, htmlunit", reason = "firefox specific" +
 	    " not yet tested in htmlunit. Firefox demands to have the focus on the window already")
 	public void testShouldFireFocusKeyEventsInTheRightOrder() {
 		driver.get(javascriptPage);
 
-		driver.findElement(By.id("theworks")).sendKeys("a");
-		String result = driver.findElement(By.id("result")).getText();
+        WebElement result = driver.findElement(By.id("result"));
+        WebElement element = driver.findElement(By.id("theworks"));
 
-		assertThat(result.trim(), is("focus keydown keypress keyup"));
+		element.sendKeys("a");
+		assertThat(result.getText().trim(), is("focus keydown keypress keyup"));
 	}
 
     @JavascriptEnabled
-    @Ignore("ie, safari, htmlunit")
+    @Ignore(value = "ie, safari, htmlunit", reason = "firefox-specific")
     public void testShouldReportKeyCodeOfArrowKeys() {
         driver.get(javascriptPage);
 
@@ -252,7 +253,7 @@ public class TypingTest extends AbstractDriverTestCase {
     }
 
     @JavascriptEnabled
-    @Ignore("ie, safari, htmlunit")
+    @Ignore(value= "safari, htmlunit", reason = "untested user agents")
     public void testNumericShiftKeys() {
         driver.get(javascriptPage);
 
@@ -311,24 +312,23 @@ public class TypingTest extends AbstractDriverTestCase {
         assertThat(result.getText().trim(), containsString(" up: 16"));
     }
 
-    @Ignore(value= "ie, safari, htmlunit", reason = "untested user agents")
+    @Ignore(value= "safari, htmlunit", reason = "untested user agents")
     public void testArrowKeysAndPageUpAndDown() {
     	driver.get(javascriptPage);
-    	
+
         WebElement element = driver.findElement(By.id("keyReporter"));
 
         element.sendKeys("a" + Keys.LEFT + "b" + Keys.RIGHT +
-            Keys.PAGE_UP + Keys.PAGE_DOWN +"1");
-
+            Keys.UP + Keys.DOWN + Keys.PAGE_UP + Keys.PAGE_DOWN + "1");
         assertThat(element.getValue(), is("ba1"));
     }
-    
+
     @JavascriptEnabled
-    @Ignore(value= "ie, safari, htmlunit", reason = "untested user agents")
+    @Ignore(value= "safari, htmlunit", reason = "untested user agents")
     public void testHomeAndEndAndPageUpAndPageDownKeys() {
-    	// Home keys only work on Windows
-    	if (OperatingSystem.getCurrentPlatform() != OperatingSystem.WINDOWS)
-    		return;
+        // FIXME: macs don't have HOME keys, would PGUP work?
+        if (OperatingSystem.getCurrentPlatform() == OperatingSystem.MAC)
+            return;
 
         driver.get(javascriptPage);
 
@@ -337,7 +337,6 @@ public class TypingTest extends AbstractDriverTestCase {
         element.sendKeys("abc" + Keys.HOME + "0" + Keys.LEFT + Keys.RIGHT +
             Keys.PAGE_UP + Keys.PAGE_DOWN + Keys.END + "1" + Keys.HOME +
             "0" + Keys.PAGE_UP + Keys.END + "111" + Keys.HOME + "00");
-
         assertThat(element.getValue(), is("0000abc1111"));
     }
 
@@ -359,7 +358,7 @@ public class TypingTest extends AbstractDriverTestCase {
     }
 
     @JavascriptEnabled
-    @Ignore(value= "ie, safari, htmlunit", reason = "untested user agents")
+    @Ignore(value= "safari, htmlunit", reason = "untested user agents")
     public void testSpecialSpaceKeys() {
         driver.get(javascriptPage);
 
@@ -370,7 +369,7 @@ public class TypingTest extends AbstractDriverTestCase {
     }
 
     @JavascriptEnabled
-    @Ignore(value= "ie, safari, htmlunit", reason = "untested user agents")
+    @Ignore(value= "safari, htmlunit", reason = "untested user agents")
     public void testNumberpadAndFunctionKeys() {
         driver.get(javascriptPage);
 
@@ -380,18 +379,16 @@ public class TypingTest extends AbstractDriverTestCase {
             Keys.DECIMAL + Keys.SEPARATOR + Keys.NUMPAD0 + Keys.NUMPAD9 +
             Keys.ADD + Keys.SEMICOLON + Keys.EQUALS + Keys.DIVIDE +
             Keys.NUMPAD3 + "abcd");
-
         assertThat(element.getValue(), is("abcd*-+.,09+;=/3abcd"));
 
         element.clear();
         element.sendKeys("FUNCTION" + Keys.F2 + "-KEYS" + Keys.F2);
         element.sendKeys("" + Keys.F2 + "-TOO" + Keys.F2);
-
         assertThat(element.getValue(), is("FUNCTION-KEYS-TOO"));
     }
 
     @JavascriptEnabled
-    @Ignore(value= "ie, safari, htmlunit", reason = "untested user agents, broken in ie")
+    @Ignore(value= "safari, htmlunit", reason = "untested user agents")
     public void testShiftSelectionDeletes() {
         driver.get(javascriptPage);
 
@@ -400,18 +397,18 @@ public class TypingTest extends AbstractDriverTestCase {
         element.sendKeys("abcd efgh");
         assertThat(element.getValue(), is("abcd efgh"));
 
-        element.sendKeys(Keys.SHIFT, Keys.LEFT, Keys.LEFT, Keys.LEFT, Keys.BACK_SPACE);
-
+        element.sendKeys(Keys.SHIFT, Keys.LEFT, Keys.LEFT, Keys.LEFT);
+        element.sendKeys(Keys.DELETE);
         assertThat(element.getValue(), is("abcd e"));
     }
 
     @JavascriptEnabled
     @Ignore(value= "safari, htmlunit", reason = "untested user agents")
     public void testChordControlHomeShiftEndDelete() {
-    	// The home and end keys only work this way on Windows
-    	if (OperatingSystem.getCurrentPlatform() != OperatingSystem.WINDOWS)
-    		return;
-    	
+        // FIXME: macs don't have HOME keys, would PGUP work?
+        if (OperatingSystem.getCurrentPlatform() == OperatingSystem.MAC)
+            return;
+
         driver.get(javascriptPage);
 
         WebElement result = driver.findElement(By.id("result"));
@@ -419,19 +416,18 @@ public class TypingTest extends AbstractDriverTestCase {
 
         element.sendKeys("!\"#$%&'()*+,-./0123456789:;<=>?@ ABCDEFG");
 
-        element.sendKeys("" + Keys.CONTROL + Keys.HOME);
-        element.sendKeys("" +  Keys.SHIFT + Keys.END + Keys.HOME + Keys.END +
-            Keys.HOME + Keys.END + Keys.HOME + Keys.END + Keys.DELETE);
+        element.sendKeys(Keys.HOME);
+        element.sendKeys("" + Keys.SHIFT + Keys.END + Keys.DELETE);
 
         assertThat(element.getValue(), is(""));
         assertThat(result.getText(), containsString(" up: 16"));
     }
 
     @JavascriptEnabled
-    @Ignore(value= "ie, safari, htmlunit", reason = "untested user agents, broken in ie")
+    @Ignore(value= "safari, htmlunit", reason = "untested user agents")
     public void testChordReveseShiftHomeSelectionDeletes() {
-    	// The home and end keys only work this way on Windows
-    	if (OperatingSystem.getCurrentPlatform() != OperatingSystem.WINDOWS)
+        // FIXME: macs don't have HOME keys, would PGUP work?
+    	if (OperatingSystem.getCurrentPlatform() == OperatingSystem.MAC)
     		return;
 
         driver.get(javascriptPage);
@@ -445,7 +441,7 @@ public class TypingTest extends AbstractDriverTestCase {
         element.sendKeys("" + Keys.SHIFT + "ALL " + Keys.HOME);
         assertThat(element.getValue(), is("ALL done"));
 
-        element.sendKeys("" + Keys.DELETE);
+        element.sendKeys(Keys.DELETE);
         assertThat(element.getValue(), is("done"));
 
         element.sendKeys("" + Keys.END + Keys.SHIFT + Keys.HOME);
@@ -457,42 +453,43 @@ public class TypingTest extends AbstractDriverTestCase {
         assertThat(element.getValue(), is(""));
     }
 
-    // win32-specific control-x control-v here for cut & paste tests, and so
-    // a TODO: methods for per OS platform cut and paste key sequences.
+    // control-x control-v here for cut & paste tests, these work on windows
+    // and linux, but not on the MAC.
 
     @JavascriptEnabled
-    @Ignore(value= "ie, safari, htmlunit", reason = "untested user agents, " +
-        "broken in ie")
+    @Ignore(value= "safari, htmlunit", reason = "untested user agents")
     public void testChordControlCutAndPaste() {
-    	if (OperatingSystem.getCurrentPlatform() != OperatingSystem.WINDOWS)
-    		return;
-    	
+        // FIXME: macs don't have HOME keys, would PGUP work?
+        if (OperatingSystem.getCurrentPlatform() == OperatingSystem.MAC)
+            return;
+
         driver.get(javascriptPage);
 
         WebElement element = driver.findElement(By.id("keyReporter"));
+        WebElement result = driver.findElement(By.id("result"));
 
         String paste = "!\"#$%&'()*+,-./0123456789:;<=>?@ ABCDEFG";
         element.sendKeys(paste);
         assertThat(element.getValue(), is(paste));
 
-        element.sendKeys("" + Keys.CONTROL + Keys.HOME + Keys.NULL +
-            Keys.SHIFT + Keys.END);
+        element.sendKeys("" + Keys.HOME + Keys.SHIFT + Keys.END);
+        assertThat(result.getText().trim(), containsString(" up: 16"));
 
-        element.sendKeys("" +  Keys.CONTROL + "x");
+        element.sendKeys(Keys.CONTROL, "x");
         assertThat(element.getValue(), is(""));
 
-        element.sendKeys("" +  Keys.CONTROL + "v");
+        element.sendKeys(Keys.CONTROL, "v");
         assertThat(element.getValue(), is(paste));
 
         element.sendKeys("" + Keys.LEFT + Keys.LEFT + Keys.LEFT +
             Keys.SHIFT + Keys.END);
-        element.sendKeys("" +  Keys.CONTROL + "x" + "v");
+        element.sendKeys(Keys.CONTROL, "x" + "v");
         assertThat(element.getValue(), is(paste));
 
-        element.sendKeys("" +  Keys.HOME);
-        element.sendKeys("" +  Keys.CONTROL + "v");
-        element.sendKeys("" +  Keys.CONTROL + "v" + "v");
-        element.sendKeys("" +  Keys.CONTROL + "v" + "v" + "v");
+        element.sendKeys(Keys.HOME);
+        element.sendKeys(Keys.CONTROL, "v");
+        element.sendKeys(Keys.CONTROL, "v" + "v");
+        element.sendKeys(Keys.CONTROL, "v" + "v" + "v");
         assertThat(element.getValue(), is("EFGEFGEFGEFGEFGEFG" + paste));
 
         element.sendKeys("" + Keys.END + Keys.SHIFT + Keys.HOME +
@@ -505,24 +502,24 @@ public class TypingTest extends AbstractDriverTestCase {
         driver.get(formPage);
 
         WebElement element = driver.findElement(By.id("no-type"));
-        element.sendKeys("Should Say Cheese");
 
+        element.sendKeys("Should Say Cheese");
         assertThat(element.getValue(), is("Should Say Cheese"));
     }
 
     @JavascriptEnabled
-    @Ignore("ie, safari, htmlunit")
+    @Ignore(value = "safari, htmlunit", reason = "untested user agents")
     public void testShouldNotTypeIntoElementsThatPreventKeyDownEvents() {
     	driver.get(javascriptPage);
 
     	WebElement silent = driver.findElement(By.name("suppress"));
 
-		silent.sendKeys("Should not see me at all");
+		silent.sendKeys("s");
     	assertThat(silent.getValue(), is(""));
     }
-    
+
     @JavascriptEnabled
-    @Ignore("ie, safari, htmlunit")
+    @Ignore(value = "ie, safari, htmlunit", reason = "firefox-specific")
     public void testGenerateKeyPressEventEvenWhenElementPreventsDefault() {
     	driver.get(javascriptPage);
 

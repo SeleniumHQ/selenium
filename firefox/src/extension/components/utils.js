@@ -360,7 +360,7 @@ Utils.type = function(context, element, text) {
               keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_RETURN;
               charCode = '\n'.charCodeAt(0);
             } else {
-              keycode = charCode = '\r'.charCodeAt(i);
+              keycode = charCode = '\r'.charCodeAt(0);
             }
         } else if (c == '\n') {
             keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_RETURN;
