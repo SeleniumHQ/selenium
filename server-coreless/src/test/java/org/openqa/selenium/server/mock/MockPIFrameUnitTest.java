@@ -14,6 +14,7 @@ import org.openqa.selenium.server.*;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
 import org.openqa.selenium.server.log.StdOutHandler;
 import org.openqa.selenium.server.log.TerseFormatter;
+import org.openqa.selenium.server.log.LoggingManager;
 
 public class MockPIFrameUnitTest extends TestCase {
 
@@ -58,7 +59,7 @@ public class MockPIFrameUnitTest extends TestCase {
         } else {
             configuration.setLogOutFile(new File("mockpiframe.log"));
         }
-        SeleniumServer.configureLogging(configuration);
+        LoggingManager.configureLogging(configuration, false);
         Logger logger = Logger.getLogger("");
         for (Handler handler : logger.getHandlers()) {
             if (handler instanceof StdOutHandler) {
@@ -74,7 +75,7 @@ public class MockPIFrameUnitTest extends TestCase {
     public void tearDown() {
         server.stop();
         SeleniumServer.setDebugMode(false);
-        SeleniumServer.configureLogging(new RemoteControlConfiguration());
+        LoggingManager.configureLogging(new RemoteControlConfiguration(), false);
         DummyBrowserLauncher.clearSessionId();
         InjectionHelper.setFailOnError(true);
         SeleniumServer.setProxyInjectionMode(false);

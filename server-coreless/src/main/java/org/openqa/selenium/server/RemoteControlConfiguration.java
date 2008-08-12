@@ -49,6 +49,9 @@ public class RemoteControlConfiguration {
     private boolean honorSystemProxy;
     private int timeoutInSeconds;
     private int retryTimeoutInSeconds;
+    // useful for situations where Selenium is being invoked programatically and the outside container wants to own logging
+    private static boolean dontTouchLogging = false;
+    
 
 
     public RemoteControlConfiguration() {
@@ -62,6 +65,7 @@ public class RemoteControlConfiguration {
         this.debugURL = "";
         this.dontInjectRegex = null;
         this.firefoxProfileTemplate = null;
+        this.dontTouchLogging = false;
     }
 
     public int getPort() {
@@ -255,5 +259,13 @@ public class RemoteControlConfiguration {
 
     public void setRetryTimeoutInSeconds(int newRetryTimeoutInSeconds) {
         retryTimeoutInSeconds = newRetryTimeoutInSeconds;
+    }
+
+    public boolean dontTouchLogging() {
+        return dontTouchLogging;
+    }
+
+    public void setDontTouchLogging(boolean newValue) {
+        this.dontTouchLogging = newValue;
     }
 }

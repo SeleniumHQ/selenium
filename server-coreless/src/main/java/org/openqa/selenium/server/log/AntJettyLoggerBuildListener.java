@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.openqa.selenium.server.log;
 
 import org.apache.commons.logging.Log;
@@ -8,33 +5,18 @@ import org.apache.tools.ant.BuildEvent;
 import org.apache.tools.ant.BuildListener;
 import org.apache.tools.ant.Project;
 
+/**
+ * Listener that can be registered to be notified when things happened during a Ant task/build.
+ * Used in SeleniumDriverResourceHander and browser launchers.
+ */
 public class AntJettyLoggerBuildListener implements BuildListener {
-    final Log log;
     
-    public AntJettyLoggerBuildListener(Log log) {
-        this.log = log;
+    private final Log logger;
+    
+    public AntJettyLoggerBuildListener(Log logger) {
+        this.logger = logger;
     }
-    
-    public void messageLogged(BuildEvent event) {
-        int priority = event.getPriority();
-        switch (priority) {
-            case Project.MSG_INFO:
-                log.info(event.getMessage(), event.getException());
-                break;
-            case Project.MSG_WARN:
-                log.warn(event.getMessage(), event.getException());
-                break;
-            case Project.MSG_ERR:
-                log.error(event.getMessage(), event.getException());
-                break;
-            case Project.MSG_DEBUG:
-            case Project.MSG_VERBOSE:
-            default:
-                log.debug(event.getMessage(), event.getException());
-        }
-        
-    }
-    
+
     public void buildFinished(BuildEvent event) {
         messageLogged(event);
     }
@@ -58,5 +40,31 @@ public class AntJettyLoggerBuildListener implements BuildListener {
     public void taskStarted(BuildEvent event) {
         messageLogged(event);
     }
+
+    /**
+     * Signals a message logging event.
+     */
+    public void messageLogged(BuildEvent event) {
+        final int priority;
+
+        priority = event.getPriority();
+        switch (priority) {
+            case Project.MSG_INFO:
+                logger.info(event.getMessage(), event.getException());
+                break;
+            case Project.MSG_WARN:
+                logger.warn(event.getMessage(), event.getException());
+                break;
+            case Project.MSG_ERR:
+                logger.error(event.getMessage(), event.getException());
+                break;
+            case Project.MSG_DEBUG:
+            case Project.MSG_VERBOSE:
+            default:
+                logger.debug(event.getMessage(), event.getException());
+        }
+        
+    }
     
+
 }

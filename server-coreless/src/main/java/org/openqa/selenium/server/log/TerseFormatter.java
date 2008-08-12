@@ -8,11 +8,12 @@ import java.util.logging.Formatter;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
+/**
+ * Custom java.util.logging formatter providing compact output.
+ */
 public class TerseFormatter extends Formatter {
 
-    /**
-     * The string to write at the beginning of all log headers (e.g. "[FINE core]")
-     */
+    /** The string to write at the beginning of all log headers (e.g. "[FINE core]") */
     private static final String PREFIX = "";
 
     /**
@@ -21,28 +22,28 @@ public class TerseFormatter extends Formatter {
      */
     private static final String SUFFIX = " - ";
 
+    /*
+     * DGF - These have to be compile time constants to be used with switch
+     */
+    private static final int FINE = 500;    /* Derived from Level.FINE.intValue(); */
+    private static final int INFO = 800;    /* Derived from Level.INFO.intValue(); */
+    private static final int WARNING = 900; /* Derived from Level.WARNING.intValue(); */
+    private static final int SEVERE = 1000; /* Derived from Level.SEVERE.intValue(); */
+
     /**
-     * Buffer for formatting messages. We will reuse this
-     * buffer in order to reduce memory allocations.
+     * Buffer for formatting messages. We will reuse this buffer in order to reduce memory allocations.
      */
     private final StringBuffer buffer;
-    private SimpleDateFormat format;
+    private SimpleDateFormat timestampFormatter;
 
     private boolean longForm;
 
     public TerseFormatter(boolean longForm) {
         buffer = new StringBuffer();
         buffer.append(PREFIX);
-        format = new SimpleDateFormat("HH:mm:ss.SSS");
+        timestampFormatter = new SimpleDateFormat("HH:mm:ss.SSS");
         this.longForm = longForm;
     }
-    
-    // DGF these have to be compile time constants to be used with switch
-    private static final int FINE = 500;//Level.FINE.intValue();
-    private static final int INFO = 800;//Level.INFO.intValue();
-    private static final int WARNING = 900;//Level.WARNING.intValue();
-    private static final int SEVERE = 1000;//Level.SEVERE.intValue();
-
 
     /**
      * Format the given log record and return the formatted string.
@@ -52,9 +53,9 @@ public class TerseFormatter extends Formatter {
      */
     public synchronized String format(final LogRecord record) {
         buffer.setLength(PREFIX.length());
-        buffer.append(format.format(new Date(record.getMillis())));
+        buffer.append(timestampFormatter.format(new Date(record.getMillis())));
         buffer.append(' ');
-        buffer.append(levelToCommonsLevelName(record.getLevel()));
+        buffer.append(levelNumberToCommonsLevelName(record.getLevel()));
         if (longForm) {
             buffer.append(" [");
             buffer.append(record.getThreadID());
@@ -64,15 +65,16 @@ public class TerseFormatter extends Formatter {
         buffer.append(SUFFIX);
         buffer.append(formatMessage(record)).append('\n');
         if (record.getThrown() != null) {
-            StringWriter trace = new StringWriter();
+            final StringWriter trace = new StringWriter();
             record.getThrown().printStackTrace(new PrintWriter(trace));
             buffer.append(trace);
         }
 
         return buffer.toString();
     }
-    
-    private String levelToCommonsLevelName(Level level) {
+
+
+    private String levelNumberToCommonsLevelName(Level level) {
         switch (level.intValue()) {
             case FINE:
                 return "DEBUG";

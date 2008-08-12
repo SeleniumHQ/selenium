@@ -276,4 +276,16 @@ public class RemoteControlConfigurationUnitTest extends TestCase {
         assertEquals(123, configuration.getRetryTimeoutInSeconds());
     }
 
+    public void testDontTouchLoggingIsFalseByDefault() {
+        assertFalse(new RemoteControlConfiguration().dontTouchLogging());
+    }
+
+    public void testDontTouchLoggingCanBeSet() {
+        final RemoteControlConfiguration configuration;
+        configuration = new RemoteControlConfiguration();
+
+        configuration.setDontTouchLogging(true);
+        assertTrue(configuration.dontTouchLogging());
+    }
+
 }

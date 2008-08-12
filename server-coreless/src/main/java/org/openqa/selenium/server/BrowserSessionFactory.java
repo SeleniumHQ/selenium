@@ -28,7 +28,7 @@ public class BrowserSessionFactory {
     private static final long DEFAULT_CLEANUP_INTERVAL = 300000; // 5 minutes.
     private static final long DEFAULT_MAX_IDLE_SESSION_TIME = 600000; // 10 minutes
 
-    static Log log = LogFactory.getLog(BrowserSessionFactory.class);
+    private static Log LOGGER = LogFactory.getLog(BrowserSessionFactory.class);
 
     // cached, unused, already-launched browser sessions.
     protected final Set<BrowserSessionInfo> availableSessions =
@@ -108,13 +108,13 @@ public class BrowserSessionFactory {
         }
 
         if (useCached) {
-            log.info("grabbing available session...");
+            LOGGER.info("grabbing available session...");
             sessionInfo = grabAvailableSession(browserString, startURL);
         }
 
         // couldn't find one in the cache, or not reusing sessions.
         if (null == sessionInfo) {
-            log.info("creating new remote session");
+            LOGGER.info("creating new remote session");
             sessionInfo = createNewRemoteSession(browserString, startURL, extensionJs,
                     browserConfigurations, ensureClean, configuration);
         }
@@ -249,14 +249,14 @@ public class BrowserSessionFactory {
         String browserString = inputString;
         if (configuration.getForcedBrowserMode() != null) {
             browserString = configuration.getForcedBrowserMode();
-            log.info("overriding browser mode w/ forced browser mode setting: " + browserString);
+            LOGGER.info("overriding browser mode w/ forced browser mode setting: " + browserString);
         }
         if (SeleniumServer.isProxyInjectionMode() && browserString.equals("*iexplore")) {
-            log.warn("running in proxy injection mode, but you used a *iexplore browser string; this is " +
+            LOGGER.warn("running in proxy injection mode, but you used a *iexplore browser string; this is " +
                     "almost surely inappropriate, so I'm changing it to *piiexplore...");
             browserString = "*piiexplore";
         } else if (SeleniumServer.isProxyInjectionMode() && browserString.equals("*firefox")) {
-            log.warn("running in proxy injection mode, but you used a *firefox browser string; this is " +
+            LOGGER.warn("running in proxy injection mode, but you used a *firefox browser string; this is " +
                     "almost surely inappropriate, so I'm changing it to *pifirefox...");
             browserString = "*pifirefox";
         }
@@ -316,7 +316,7 @@ public class BrowserSessionFactory {
         queueSet.setExtensionJs(extensionJs);
         launcher = browserLauncherFactory.getBrowserLauncher(browserString, sessionId, configuration);
         sessionInfo = new BrowserSessionInfo(sessionId, browserString, startURL, launcher, queueSet);
-        log.info("Allocated session " + sessionId + " for " + startURL + ", launching...");
+        LOGGER.info("Allocated session " + sessionId + " for " + startURL + ", launching...");
 
         try {
             launcher.launchRemoteSession(startURL, configuration.isMultiWindow(), browserConfiguration);
@@ -335,7 +335,7 @@ public class BrowserSessionFactory {
              * This session is unlikely to be of any practical use so we need to make sure we close the browser
              * and clear all session data.
              */
-            log.error("Failed to start new browser session, shutdown browser an clear all session data", e);
+            LOGGER.error("Failed to start new browser session, shutdown browser an clear all session data", e);
             shutdownBrowserAndClearSessionData(sessionInfo);
             throw new RemoteCommandException("Error while launching browser", "", e);
         }

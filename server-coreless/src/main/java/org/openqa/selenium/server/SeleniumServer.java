@@ -24,7 +24,6 @@ import org.mortbay.http.SecurityConstraint;
 import org.mortbay.http.SocketListener;
 import org.mortbay.http.handler.SecurityHandler;
 import org.mortbay.jetty.Server;
-import org.mortbay.log.LogFactory;
 import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
 import org.openqa.selenium.server.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.server.cli.RemoteControlLauncher;
@@ -32,17 +31,12 @@ import org.openqa.selenium.server.htmlrunner.HTMLLauncher;
 import org.openqa.selenium.server.htmlrunner.HTMLResultsListener;
 import org.openqa.selenium.server.htmlrunner.SeleniumHTMLRunnerResultsHandler;
 import org.openqa.selenium.server.htmlrunner.SingleTestSuiteResourceHandler;
-import org.openqa.selenium.server.log.MaxLevelFilter;
-import org.openqa.selenium.server.log.StdOutHandler;
-import org.openqa.selenium.server.log.TerseFormatter;
+import org.openqa.selenium.server.log.LoggingManager;
 
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
-import java.util.logging.*;
 
 /**
  * Provides a server that can launch/terminate browsers and can receive remote Selenium commands
@@ -141,7 +135,8 @@ import java.util.logging.*;
  * @author plightbo
  */
 public class SeleniumServer {
-    private static Log logger;
+
+    private Log LOGGER;
 
     private Server server;
     private SeleniumDriverResourceHandler driver;
@@ -155,10 +150,6 @@ public class SeleniumServer {
     private static boolean avoidProxy = false;
     private static boolean proxyInjectionMode = false;
     private static boolean ensureCleanSession = false;
-    private static Handler[] defaultHandlers;
-    private static Map<Handler, Formatter> defaultFormatters;
-    private static Map<Handler, Level> defaultLevels;
-    private static Map<File, FileHandler> seleniumFileHandlers = new HashMap<File, FileHandler>();
 
 
     // Minimum and maximum number of jetty threads
@@ -173,8 +164,6 @@ public class SeleniumServer {
     private static boolean FORCE_PROXY_CHAIN = false;
     private static boolean debugMode = false;
 
-    // useful for situations where Selenium is being invoked programatically and the outside container wants to own logging
-    private static boolean dontTouchLogging = false;
 
     private static final int MAX_SHUTDOWN_RETRIES = 8;
 
@@ -216,8 +205,8 @@ public class SeleniumServer {
      */
     public SeleniumServer(boolean slowResources, RemoteControlConfiguration configuration) throws Exception {
         this.configuration = configuration;
-
-        configureLogging(configuration);
+        
+        LOGGER = LoggingManager.configureLogging(configuration, isDebugMode());
         logStartupInfo();
         sanitizeProxyConfiguration();
         createJettyServer(slowResources);
@@ -253,110 +242,23 @@ public class SeleniumServer {
         assembleHandlers(slowResources, configuration);
     }
 
-    public static synchronized void configureLogging(RemoteControlConfiguration configuration) {
-        if (dontTouchLogging) {
-            logger = LogFactory.getLog(SeleniumServer.class);
-            return;
-        }
 
-        Logger logger = Logger.getLogger("");
-        resetLogger();
-        // configure console logger
-        for (Handler handler : logger.getHandlers()) {
-            if (handler instanceof ConsoleHandler) {
-                Formatter formatter = handler.getFormatter();
-                if (formatter instanceof SimpleFormatter) {
-                    /* DGF Nobody likes the SimpleFormatter; surely they
-                     * wanted our terse formatter instead.
-                     * Furthermore, we all want DEBUG/INFO on stdout and WARN/ERROR on stderr */
-                    Level originalLevel = handler.getLevel();
-                    handler.setFormatter(new TerseFormatter(false));
-                    handler.setLevel(Level.WARNING);
-                    StdOutHandler stdOutHandler = new StdOutHandler();
-                    stdOutHandler.setFormatter(new TerseFormatter(false));
-                    stdOutHandler.setFilter(new MaxLevelFilter(Level.INFO));
-                    stdOutHandler.setLevel(originalLevel);
-                    logger.addHandler(stdOutHandler);
-                    if (isDebugMode()) {
-                        if (originalLevel.intValue() > Level.FINE.intValue()) {
-                            stdOutHandler.setLevel(Level.FINE);
-                        }
-                    }
-                }
-            }
-        }
+    private void logVersionNumber() throws IOException {
+        final Properties p = new Properties();
 
-        if (isDebugMode()) {
-            logger.setLevel(Level.FINE);
-        }
-
-        SeleniumServer.logger = LogFactory.getLog(SeleniumServer.class);
-        if (null == configuration.getLogOutFileName() && System.getProperty("selenium.logger") != null) {
-            configuration.setLogOutFileName(System.getProperty("selenium.logger"));
-        }
-        if (null != configuration.getLogOutFile()) {
-            try {
-                File logFile = configuration.getLogOutFile();
-                FileHandler fileHandler = seleniumFileHandlers.get(logFile);
-                if (fileHandler == null) {
-                    fileHandler = new FileHandler(logFile.getAbsolutePath());
-                    seleniumFileHandlers.put(logFile, fileHandler);
-                }
-                fileHandler.setFormatter(new TerseFormatter(true));
-                logger.setLevel(Level.FINE);
-                fileHandler.setLevel(Level.FINE);
-                logger.addHandler(fileHandler);
-                SeleniumServer.logger.info("Writing debug logs to " + logFile.getAbsolutePath());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }
-
-    private static void logVersionNumber() throws IOException {
         InputStream stream = SeleniumServer.class.getResourceAsStream("/VERSION.txt");
         if (stream == null) {
-            logger.error("Couldn't determine version number");
+            LOGGER.error("Couldn't determine version number");
             return;
         }
-//    	BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-//    	StringBuffer sb = new StringBuffer();
-//        String line;
-//        while ((line = reader.readLine()) != null) {
-//            sb.append(line);
-//        }
-//        String pac = sb.toString();
-        Properties p = new Properties();
         p.load(stream);
         String rcVersion = p.getProperty("selenium.rc.version");
         String rcRevision = p.getProperty("selenium.rc.revision");
         String coreVersion = p.getProperty("selenium.core.version");
         String coreRevision = p.getProperty("selenium.core.revision");
-        logger.info("v" + rcVersion + " [" + rcRevision + "], with Core v" + coreVersion + " [" + coreRevision + "]");
+        LOGGER.info("v" + rcVersion + " [" + rcRevision + "], with Core v" + coreVersion + " [" + coreRevision + "]");
     }
 
-    private static void resetLogger() {
-        Logger logger = Logger.getLogger("");
-        if (defaultHandlers == null) {
-            defaultHandlers = logger.getHandlers();
-            defaultFormatters = new HashMap<Handler, Formatter>();
-            defaultLevels = new HashMap<Handler, Level>();
-            for (Handler handler : defaultHandlers) {
-                defaultFormatters.put(handler, handler.getFormatter());
-                defaultLevels.put(handler, handler.getLevel());
-            }
-        } else {
-            for (Handler handler : logger.getHandlers()) {
-                logger.removeHandler(handler);
-            }
-            for (Handler handler : defaultHandlers) {
-                logger.addHandler(handler);
-                handler.setFormatter(defaultFormatters.get(handler));
-                handler.setLevel(defaultLevels.get(handler));
-            }
-        }
-
-    }
 
     private void assembleHandlers(boolean slowResources, RemoteControlConfiguration configuration) {
         server.addContext(createRootContextWithProxyHandler(configuration));
@@ -511,7 +413,7 @@ public class SeleniumServer {
         }
 
         public void run() {
-            logger.info("Shutting down...");
+            LOGGER.info("Shutting down...");
             selenium.stop();
         }
     }
@@ -543,7 +445,7 @@ public class SeleniumServer {
                 // So we assume it was successful.
                 break;
             } catch (Exception ex) { // org.mortbay.jetty.Server.stop() throws Exception
-                logger.error(ex);
+                LOGGER.error(ex);
                 shutDownException = ex;
                 // If Exception is thrown we try to stop the jetty server again
             }
@@ -681,11 +583,6 @@ public class SeleniumServer {
         SeleniumServer.proxyInjectionMode = proxyInjectionMode;
     }
 
-
-    public static void setDontTouchLogging(boolean dontTouchLogging) {
-        SeleniumServer.dontTouchLogging = dontTouchLogging;
-    }
-
     protected void runHtmlSuite() {
         final String result;
         try {
@@ -756,7 +653,7 @@ public class SeleniumServer {
             Thread t = new Thread(new Runnable() {
                 public void run() {
                     try {
-                        logger.info("---> Requesting " + url.toString());
+                        LOGGER.info("---> Requesting " + url.toString());
                         URLConnection conn = url.openConnection();
                         conn.connect();
                         InputStream is = conn.getInputStream();
@@ -823,30 +720,30 @@ public class SeleniumServer {
         String proxyHost = System.getProperty("http.proxyHost");
         String proxyPort = System.getProperty("http.proxyPort");
         if (Integer.toString(getPort()).equals(proxyPort)) {
-            logger.debug("http.proxyPort is the same as the Selenium Server port " + getPort());
-            logger.debug("http.proxyHost=" + proxyHost);
+            LOGGER.debug("http.proxyPort is the same as the Selenium Server port " + getPort());
+            LOGGER.debug("http.proxyHost=" + proxyHost);
             if ("localhost".equals(proxyHost) || "127.0.0.1".equals(proxyHost)) {
-                logger.info("Forcing http.proxyHost to '' to avoid infinite loop");
+                LOGGER.info("Forcing http.proxyHost to '' to avoid infinite loop");
                 System.setProperty("http.proxyHost", "");
             }
         }
     }
 
     private void logStartupInfo() throws IOException {
-        logger.info("Java: " + System.getProperty("java.vm.vendor") + ' ' + System.getProperty("java.vm.version"));
-        logger.info("OS: " + System.getProperty("os.name") + ' ' + System.getProperty("os.version") + ' ' + System.getProperty("os.arch"));
+        LOGGER.info("Java: " + System.getProperty("java.vm.vendor") + ' ' + System.getProperty("java.vm.version"));
+        LOGGER.info("OS: " + System.getProperty("os.name") + ' ' + System.getProperty("os.version") + ' ' + System.getProperty("os.arch"));
         logVersionNumber();
         if (debugMode) {
-            logger.info("Selenium server running in debug mode.");
+            LOGGER.info("Selenium server running in debug mode.");
         }
         if (proxyInjectionMode) {
-            logger.info("The selenium server will execute in proxyInjection mode.");
+            LOGGER.info("The selenium server will execute in proxyInjection mode.");
         }
         if (configuration.reuseBrowserSessions()) {
-            logger.info("Will recycle browser sessions when possible.");
+            LOGGER.info("Will recycle browser sessions when possible.");
         }
         if (null != configuration.getForcedBrowserMode()) {
-            logger.info("\"" + configuration.getForcedBrowserMode() + "\" will be used as the browser " +
+            LOGGER.info("\"" + configuration.getForcedBrowserMode() + "\" will be used as the browser " +
                     "mode for all sessions, no matter what is passed to getNewBrowserSession.");
         }
     }

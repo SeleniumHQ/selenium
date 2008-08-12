@@ -1,12 +1,13 @@
 package org.openqa.selenium.server;
 
 import junit.framework.TestCase;
+import org.openqa.selenium.server.log.LoggingManager;
 
 public class HtmlIdentifierTest extends TestCase {
     
     public void setUp() throws Exception {
         SeleniumServer.setBrowserSideLogEnabled(true);
-        SeleniumServer.configureLogging(new RemoteControlConfiguration());
+        LoggingManager.configureLogging(new RemoteControlConfiguration(), true);
     }
     
     public void testMetaEquiv() {

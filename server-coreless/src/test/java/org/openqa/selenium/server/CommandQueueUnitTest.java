@@ -1,9 +1,9 @@
 package org.openqa.selenium.server;
 
 import junit.framework.TestCase;
-
 import org.apache.commons.logging.Log;
 import org.mortbay.log.LogFactory;
+import org.openqa.selenium.server.log.LoggingManager;
 import org.openqa.selenium.server.log.StdOutHandler;
 import org.openqa.selenium.server.log.TerseFormatter;
 import org.openqa.selenium.testworker.TrackableRunnable;
@@ -38,7 +38,7 @@ public class CommandQueueUnitTest extends TestCase {
 
     private void configureLogging() throws Exception {
         SeleniumServer.setDebugMode(true);
-        SeleniumServer.configureLogging(new RemoteControlConfiguration());
+        LoggingManager.configureLogging(new RemoteControlConfiguration(), true);
         Logger logger = Logger.getLogger("");
         for (Handler handler : logger.getHandlers()) {
             if (handler instanceof StdOutHandler) {
@@ -51,7 +51,7 @@ public class CommandQueueUnitTest extends TestCase {
     @Override
     public void tearDown() throws Exception {
         SeleniumServer.setDebugMode(false);
-        SeleniumServer.configureLogging(new RemoteControlConfiguration());
+        LoggingManager.configureLogging(new RemoteControlConfiguration(), false);
     }
 
     public void testQueueDelayInitializedAtDefault() {
