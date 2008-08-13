@@ -255,8 +255,9 @@ public class BrowserSessionFactory {
             LOGGER.warn("running in proxy injection mode, but you used a *iexplore browser string; this is " +
                     "almost surely inappropriate, so I'm changing it to *piiexplore...");
             browserString = "*piiexplore";
-        } else if (SeleniumServer.isProxyInjectionMode() && browserString.equals("*firefox")) {
-            LOGGER.warn("running in proxy injection mode, but you used a *firefox browser string; this is " +
+        } else if (SeleniumServer.isProxyInjectionMode() && (browserString.equals("*firefox")
+                || browserString.equals("*firefox2") || browserString.equals("*firefox3"))) {
+            LOGGER.warn("running in proxy injection mode, but you used a " + browserString + " browser string; this is " +
                     "almost surely inappropriate, so I'm changing it to *pifirefox...");
             browserString = "*pifirefox";
         }
