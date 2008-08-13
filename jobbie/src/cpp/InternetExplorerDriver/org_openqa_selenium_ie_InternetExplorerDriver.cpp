@@ -182,6 +182,31 @@ JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_waitFo
 	ie->waitForNavigateToFinish();
 }
 
+JNIEXPORT jlong JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_getDocumentNode
+  (JNIEnv *env, jobject obj)
+{
+	InternetExplorerDriver* ie = getIe(env, obj);
+	CComPtr<IHTMLDocument3> doc;
+	ie->getDocument3(&doc);
+
+	CComPtr<IHTMLElement> element;
+	doc->get_documentElement(&element);
+
+	IHTMLDOMNode *toReturn;
+	element.QueryInterface(&toReturn);
+
+	return (jlong) toReturn;
+}
+
+JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_releaseDocumentNode
+  (JNIEnv *env, jobject obj, jlong releaseMe)
+{
+	if (!releaseMe)
+		return;
+
+	((IHTMLDOMNode*) releaseMe)->Release();
+}
+
 JNIEXPORT jstring JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_getCurrentUrl
   (JNIEnv *env, jobject obj)
 {

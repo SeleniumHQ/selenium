@@ -65,14 +65,6 @@ JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_setVis
 
 /*
  * Class:     org_openqa_selenium_ie_InternetExplorerDriver
- * Method:    selectElementById
- * Signature: (Ljava/lang/String;)Lorg/openqa/selenium/WebElement;
- */
-JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_selectElementById
-  (JNIEnv *, jobject, jstring);
-
-/*
- * Class:     org_openqa_selenium_ie_InternetExplorerDriver
  * Method:    selectElementsById
  * Signature: (Ljava/lang/String;Ljava/util/List;)Ljava/util/List;
  */
@@ -150,6 +142,22 @@ JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_select
  */
 JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_waitForLoadToComplete
   (JNIEnv *, jobject);
+
+/*
+ * Class:     org_openqa_selenium_ie_InternetExplorerDriver
+ * Method:    getDocumentNode
+ * Signature: ()J
+ */
+JNIEXPORT jlong JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_getDocumentNode
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     org_openqa_selenium_ie_InternetExplorerDriver
+ * Method:    releaseDocumentNode
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_releaseDocumentNode
+  (JNIEnv *, jobject, jlong);
 
 /*
  * Class:     org_openqa_selenium_ie_InternetExplorerDriver

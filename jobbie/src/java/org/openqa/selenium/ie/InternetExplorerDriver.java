@@ -105,9 +105,13 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
     }
 
     public WebElement findElementById(String using) {
-        return selectElementById(using);
+    	long node = getDocumentNode();
+    	try {
+    		return Finder.findElementById(iePointer, node, using);
+    	} finally {
+    		releaseDocumentNode(node);
+    	}
     }
-    private native WebElement selectElementById(String elementId);
 
     public List<WebElement> findElementsById(String using) {
 		List<WebElement> rawElements = new ArrayList<WebElement>();
@@ -185,6 +189,9 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
 
     protected native void waitForLoadToComplete();
 
+    private native long getDocumentNode();
+    private native void releaseDocumentNode(long documentNode);
+    
     private void startCom() {
         if (!comStarted) {
             loadLibrary();

@@ -680,7 +680,6 @@ void InternetExplorerDriver::waitForNavigateToFinish()
 
 	waitForDocumentToComplete(doc);
 
-
 	CComPtr<IHTMLFramesCollection2> frames;
 	doc->get_frames(&frames);
 

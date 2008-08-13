@@ -45,6 +45,7 @@ public:
 	ElementWrapper* selectElementByClassName(const wchar_t *elementClassName);
 	std::vector<ElementWrapper*>* selectElementsByClassName(const wchar_t *name);
 	void getDocument(IHTMLDocument2 **pdoc);
+	void getDocument3(IHTMLDocument3 **pdoc);
 
 	void waitForNavigateToFinish();
 	void switchToFrame(int frameIndex);
@@ -62,7 +63,6 @@ private:
 	bool addEvaluateToDocument(int count);
 	bool createAnonymousFunction(IDispatch* scriptEngine, DISPID evalId, const wchar_t *script, VARIANT* result);
 	void waitForDocumentToComplete(IHTMLDocument2* doc);
-	void getDocument3(IHTMLDocument3 **pdoc);
 
 	IeEventSink* sink;
 	CComQIPtr<IWebBrowser2, &__uuidof(IWebBrowser2)> ie;

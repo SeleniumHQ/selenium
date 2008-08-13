@@ -9,8 +9,14 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.internal.FindsByClassName;
+import org.openqa.selenium.internal.FindsById;
+import org.openqa.selenium.internal.FindsByLinkText;
+import org.openqa.selenium.internal.FindsByName;
+import org.openqa.selenium.internal.FindsByXPath;
 
-public class InternetExplorerElement implements RenderedWebElement, SearchContext {
+public class InternetExplorerElement implements RenderedWebElement, FindsByXPath,
+	FindsByLinkText, FindsById, FindsByName, FindsByClassName, SearchContext {
     @SuppressWarnings("unused")
     private long nodePointer;
 
@@ -61,6 +67,11 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
     public native Point getLocation();
 
     public native Dimension getSize();
+    
+    private native long getElementNode();
+    private native void releaseElementNode(long node);
+    private native long getIePointer();
+    private native void releaseIePointer(long pointer);
 
   @Override
     protected void finalize() throws Throwable {
@@ -80,12 +91,68 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
     }
 
     public WebElement findElement(By by) {
-        throw new UnsupportedOperationException();
+    	return by.findElement((SearchContext)this);
     }
 
     public List<WebElement> findElements(By by) {
         throw new UnsupportedOperationException();
     }
+    
+    public WebElement findElementByLinkText(String using) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-    public native String getValueOfCssProperty(String propertyName);
+	public List<WebElement> findElementsByLinkText(String using) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public WebElement findElementByXPath(String using) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public List<WebElement> findElementsByXPath(String using) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public WebElement findElementByClassName(String using) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public List<WebElement> findElementsByClassName(String using) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public WebElement findElementByName(String using) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public List<WebElement> findElementsByName(String using) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public WebElement findElementById(String using) {
+    	long node = getElementNode();
+    	long iePointer = getIePointer();
+    	try {
+    		return Finder.findElementById(iePointer, node, using);
+    	} finally {
+    		releaseIePointer(iePointer);
+    		releaseElementNode(node);
+    	}
+	}
+
+	public List<WebElement> findElementsById(String using) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public native String getValueOfCssProperty(String propertyName);
 }

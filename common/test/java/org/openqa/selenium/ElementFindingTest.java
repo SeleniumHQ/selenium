@@ -195,7 +195,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
         assertThat(element.getValue(), is("id"));
     }
 
-    @Ignore("safari, jobbie")
+    @Ignore("ie, safari, jobbie")
     public void testShouldFindGrandChildren() {
         driver.get(formPage);
         WebElement form = driver.findElement(By.id("nested_form"));
@@ -203,7 +203,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     }
 
 
-    @Ignore("safari, jobbie")
+    @Ignore("ie, safari, jobbie")
     public void testShouldNotFindElementOutSideTree() {
         driver.get(formPage);
         WebElement element = driver.findElement(By.name("login"));

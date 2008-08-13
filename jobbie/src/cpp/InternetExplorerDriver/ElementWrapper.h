@@ -39,6 +39,7 @@ public:
 
 	std::vector<ElementWrapper*>* getChildrenWithTagName(const std::wstring& tagName);
 	IHTMLElement* getWrappedElement();
+	InternetExplorerDriver* getParent();
 
 private:
 	std::wstring getTextAreaValue();

@@ -189,7 +189,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\finder.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\InternetExplorerDriver.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\org_openqa_selenium_ie_Finder.cpp"
 				>
 			</File>
 			<File
@@ -239,11 +247,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\finder.h"
+				>
+			</File>
+			<File
 				RelativePath=".\InternetExplorerDriver.h"
 				>
 			</File>
 			<File
 				RelativePath=".\jsxpath.h"
+				>
+			</File>
+			<File
+				RelativePath=".\org_openqa_selenium_ie_Finder.h"
 				>
 			</File>
 			<File

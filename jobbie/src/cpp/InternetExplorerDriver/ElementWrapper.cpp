@@ -1335,6 +1335,11 @@ IHTMLElement* ElementWrapper::getWrappedElement()
 	return element;
 }
 
+InternetExplorerDriver* ElementWrapper::getParent()
+{
+	return ie;
+}
+
 IHTMLEventObj* ElementWrapper::newEventObject() 
 {
 	IDispatch* dispatch;

@@ -143,6 +143,38 @@ JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_ge
 	return env->NewObject(pointClass, cId, width, height);
 }
 
+JNIEXPORT jlong JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_getElementNode
+  (JNIEnv *env, jobject obj) 
+{
+	ElementWrapper* wrapper = getWrapper(env, obj);
+
+	IHTMLDOMNode* node;
+	CComPtr<IHTMLElement> element(wrapper->getWrappedElement());
+	element.QueryInterface(&node);
+
+	return (jlong) node;
+}
+
+JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_releaseElementNode
+  (JNIEnv *env, jobject obj, jlong freeMe) 
+{
+	((IHTMLDOMNode*) freeMe)->Release(); 
+}
+
+JNIEXPORT jlong JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_getIePointer
+  (JNIEnv *env, jobject obj)
+{
+	ElementWrapper* wrapper = getWrapper(env, obj);
+
+	return (jlong) wrapper->getParent();
+}
+
+JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_releaseIePointer
+  (JNIEnv *, jobject, jlong)
+{
+	// No-op, but here to mirror behaviour of accessing other nodes
+}
+
 JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_getChildrenOfTypeNatively
   (JNIEnv *env, jobject obj, jobject list, jstring tagName)
 {

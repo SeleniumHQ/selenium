@@ -17,6 +17,9 @@
 	SOFTWARE.
 */
 
+#ifndef jsxpath_h
+#define jsxpath_h
+
 // The JS XPath library from http://coderepos.org/share/wiki/JavaScript-XPath
 
 wchar_t* XPATHJS[] = {L"(function(){var ca=void(0);var da={targetFrame:ca,exportInstaller:false,useNative:true,useInnerText:true};var ea;if(window.jsxpath){ea=window.jsxpath;}\n",
@@ -309,3 +312,5 @@ L"if(ea.exportInstaller){window.install=cg;}\n",
 L"if(!ea.hasNative||!ea.useNative){cg(pg||window);}})();",
 NULL
 };
+
+#endif

@@ -26,6 +26,16 @@ void throwNoSuchElementException(JNIEnv *env, const char *message)
 	throwException(env, "org/openqa/selenium/NoSuchElementException", message);
 }
 
+void throwNoSuchElementException(JNIEnv *env, const wchar_t *message) 
+{
+	size_t origsize = wcslen(message) + 1;
+    size_t convertedChars = 0;
+    char* nstring = new char[origsize];
+    wcstombs_s(&convertedChars, nstring, origsize, message, _TRUNCATE);
+	throwNoSuchElementException(env, nstring);
+	delete[] nstring;
+}
+
 void throwRunTimeException(JNIEnv *env, const char *message)
 {
 	throwException(env, "java/lang/RuntimeException", message);

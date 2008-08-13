@@ -60,7 +60,7 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
         assertThat(children.size(),  is(2));
     }
 
-    @Ignore("ie, safari")
+    @Ignore("safari")
     public void testfindElementById() {
         driver.get(nestedPage);
         WebElement element = driver.findElement(By.name("form2"));
@@ -68,15 +68,15 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
         assertThat(child.getAttribute("name"),  is("selectomatic"));
     }
     
-    @Ignore("ie, safari")
-    public void testfindElementByIdWhenMultipleMatchExist() {
+    @Ignore("safari")
+    public void testfindElementByIdWhenMultipleMatchesExist() {
         driver.get(nestedPage);
         WebElement element = driver.findElement(By.id("test_id_div"));
         WebElement child = element.findElement(By.id("test_id"));
         assertThat(child.getText(),  is("inside"));
     }
     
-    @Ignore("ie, safari")
+    @Ignore("safari")
     public void testfindElementByIdWhenNoMatchInContext() {
         driver.get(nestedPage);
         WebElement element = driver.findElement(By.id("test_id_div"));

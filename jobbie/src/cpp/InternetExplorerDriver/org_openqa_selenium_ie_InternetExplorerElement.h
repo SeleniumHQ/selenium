@@ -121,6 +121,38 @@ JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_ge
 
 /*
  * Class:     org_openqa_selenium_ie_InternetExplorerElement
+ * Method:    getElementNode
+ * Signature: ()J
+ */
+JNIEXPORT jlong JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_getElementNode
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     org_openqa_selenium_ie_InternetExplorerElement
+ * Method:    releaseElementNode
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_releaseElementNode
+  (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     org_openqa_selenium_ie_InternetExplorerElement
+ * Method:    getIePointer
+ * Signature: ()J
+ */
+JNIEXPORT jlong JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_getIePointer
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     org_openqa_selenium_ie_InternetExplorerElement
+ * Method:    releaseIePointer
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_releaseIePointer
+  (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     org_openqa_selenium_ie_InternetExplorerElement
  * Method:    deleteStoredObject
  * Signature: ()V
  */
