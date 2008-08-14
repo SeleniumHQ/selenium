@@ -13,7 +13,7 @@ public class ShortTermMemoryHandlerUnitTest extends TestCase {
     public void testRecordsReturnsAnEmptyArrayWhenNoRecordHasBeenAdded() {
         final ShortTermMemoryHandler handler;
 
-        handler = new ShortTermMemoryHandler(1);
+        handler = new ShortTermMemoryHandler(1, Level.FINEST);
         assertNotNull(handler.records());
         assertEquals(0, handler.records().length);
     }
@@ -22,7 +22,30 @@ public class ShortTermMemoryHandlerUnitTest extends TestCase {
         final ShortTermMemoryHandler handler;
         final LogRecord theLogRecord;
 
-        handler = new ShortTermMemoryHandler(1);
+        handler = new ShortTermMemoryHandler(1, Level.FINEST);
+        theLogRecord = new LogRecord(Level.INFO, "");
+        handler.publish(theLogRecord);
+        assertNotNull(handler.records());
+        assertEquals(1, handler.records().length);
+        assertEquals(theLogRecord, handler.records()[0]);
+    }
+
+    public void testRecordsIsEmptyWhenAddedRecordIsLowerThanTheMinimumLevel() {
+        final ShortTermMemoryHandler handler;
+        final LogRecord theLogRecord;
+
+        handler = new ShortTermMemoryHandler(1, Level.INFO);
+        theLogRecord = new LogRecord(Level.FINE, "");
+        handler.publish(theLogRecord);
+        assertNotNull(handler.records());
+        assertEquals(0, handler.records().length);
+    }
+
+    public void testRecordsIsEmptyWhenAddedRecordIsEqualToTheMinimumLevel() {
+        final ShortTermMemoryHandler handler;
+        final LogRecord theLogRecord;
+
+        handler = new ShortTermMemoryHandler(1, Level.INFO);
         theLogRecord = new LogRecord(Level.INFO, "");
         handler.publish(theLogRecord);
         assertNotNull(handler.records());
@@ -35,7 +58,7 @@ public class ShortTermMemoryHandlerUnitTest extends TestCase {
         final LogRecord firstLogRecord;
         final LogRecord secondLogRecord;
 
-        handler = new ShortTermMemoryHandler(2);
+        handler = new ShortTermMemoryHandler(2, Level.FINEST);
         firstLogRecord = new LogRecord(Level.INFO, "");
         secondLogRecord = new LogRecord(Level.INFO, "");
         handler.publish(firstLogRecord);
@@ -51,7 +74,7 @@ public class ShortTermMemoryHandlerUnitTest extends TestCase {
         final LogRecord firstLogRecord;
         final LogRecord secondLogRecord;
 
-        handler = new ShortTermMemoryHandler(1);
+        handler = new ShortTermMemoryHandler(1, Level.FINEST);
         firstLogRecord = new LogRecord(Level.INFO, "");
         secondLogRecord = new LogRecord(Level.INFO, "");
         handler.publish(firstLogRecord);
@@ -67,7 +90,7 @@ public class ShortTermMemoryHandlerUnitTest extends TestCase {
         final LogRecord secondLogRecord;
         final LogRecord thirdLogRecord;
 
-        handler = new ShortTermMemoryHandler(2);
+        handler = new ShortTermMemoryHandler(2, Level.FINEST);
         firstLogRecord = new LogRecord(Level.INFO, "");
         secondLogRecord = new LogRecord(Level.INFO, "");
         thirdLogRecord = new LogRecord(Level.INFO, "");
@@ -86,7 +109,7 @@ public class ShortTermMemoryHandlerUnitTest extends TestCase {
         final LogRecord secondLogRecord;
         final LogRecord thirdLogRecord;
 
-        handler = new ShortTermMemoryHandler(1);
+        handler = new ShortTermMemoryHandler(1, Level.FINEST);
         firstLogRecord = new LogRecord(Level.INFO, "");
         secondLogRecord = new LogRecord(Level.INFO, "");
         thirdLogRecord = new LogRecord(Level.INFO, "");
@@ -103,7 +126,7 @@ public class ShortTermMemoryHandlerUnitTest extends TestCase {
         final LogRecord firstLogRecord;
         final LogRecord secondLogRecord;
 
-        handler = new ShortTermMemoryHandler(2);
+        handler = new ShortTermMemoryHandler(2, Level.FINEST);
         firstLogRecord = new LogRecord(Level.INFO, "");
         secondLogRecord = new LogRecord(Level.INFO, "");
         handler.publish(firstLogRecord);

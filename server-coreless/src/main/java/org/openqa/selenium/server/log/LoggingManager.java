@@ -53,7 +53,7 @@ public class LoggingManager {
     }
     
     private static void addInMemoryLogger(Logger logger, RemoteControlConfiguration configuration) {
-        shortTermMemoryHandler = new ShortTermMemoryHandler(configuration.shortTermMemoryLoggerCapacity());
+        shortTermMemoryHandler = new ShortTermMemoryHandler(configuration.shortTermMemoryLoggerCapacity(), Level.INFO);
         logger.addHandler(shortTermMemoryHandler);
     }
 
