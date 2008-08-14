@@ -49,13 +49,13 @@ public class RemoteControlConfiguration {
     private boolean honorSystemProxy;
     private int timeoutInSeconds;
     private int retryTimeoutInSeconds;
-    // useful for situations where Selenium is being invoked programatically and the outside container wants to own logging
-    private static boolean dontTouchLogging = false;
+    /** useful for situations where Selenium is being invoked programatically and the outside container wants to own logging */
+    private boolean dontTouchLogging = false;
     
-
 
     public RemoteControlConfiguration() {
         this.port = getDefaultPort();
+        this.logOutFileName = getDefaultLogOutFile();
         this.multiWindow = true;
         this.profilesLocation = null;
         this.proxyInjectionModeArg = false;
@@ -215,6 +215,16 @@ public class RemoteControlConfiguration {
         return (null == logOutFileName) ? null : new File(logOutFileName);
     }
 
+    public static String getDefaultLogOutFile() {
+        final String logOutFileProperty;
+
+        logOutFileProperty = System.getProperty("selenium.LOGGER");
+        if (null == logOutFileProperty) {
+            return null;
+        }
+        return new File(logOutFileProperty).getAbsolutePath();
+    }
+
     public void setForcedBrowserMode(String newForcedBrowserMode) {
         this.forcedBrowserMode = newForcedBrowserMode;
     }
@@ -268,4 +278,9 @@ public class RemoteControlConfiguration {
     public void setDontTouchLogging(boolean newValue) {
         this.dontTouchLogging = newValue;
     }
+
+    public int shortTermMemoryLoggerCapacity() {
+        return 50;
+    }
+    
 }
