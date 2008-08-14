@@ -626,6 +626,17 @@ Selenium.prototype.doShutDownSeleniumServer = function(keycode) {
     // This doesn't really do anything on the JS side; we let the Selenium Server take care of this for us!
 };
 
+Selenium.prototype.doRetrieveLastRemoteControlLogs = function() {
+    /**
+    * Retrieve the last messages logged on a specific remote control. Useful for error reports, especially
+    * when running multiple remote controls in a distributed environment. The maximum number of log messages
+    * that can be retrieve is configured on remote control startup.
+    *
+    * @return string The last N log messages as a multi-line string.
+    */
+    // This doesn't really do anything on the JS side; we let the Selenium Server take care of this for us!
+};
+
 Selenium.prototype.doKeyDownNative = function(keycode) {
     /**
     * Simulates a user pressing a key (without releasing it yet) by sending a native operating system keystroke.
