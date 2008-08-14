@@ -33,6 +33,7 @@ import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
 import org.openqa.selenium.server.htmlrunner.HTMLLauncher;
 import org.openqa.selenium.server.log.AntJettyLoggerBuildListener;
+import org.openqa.selenium.server.log.LoggingManager;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -390,6 +391,9 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         } else if ("shutDown".equals(cmd) || "shutDownSeleniumServer".equals(cmd)) {
             results = null;
             shutDown(res);
+        } else if ("retrieveLastRemoteControlLogs".equals(cmd)) {
+            // Philippe - Proof of concept, records formatting is not done yet.
+            results = "OK," + LoggingManager.shortTermMemoryHandler().records();
         } else if("attachFile".equals(cmd)) {
           FrameGroupCommandQueueSet queue = FrameGroupCommandQueueSet.getQueueSet(sessionId);
           try {
