@@ -155,7 +155,8 @@ public class DefaultSelenium implements Selenium {
             commandProcessor.start();
         }
         catch (Exception e) {
-            if (e.getMessage().indexOf("Connection refused: connect") != -1) {
+            final String message = e.getMessage();
+            if (message != null && message.indexOf("Connection refused: connect") != -1) {
                 throw new RuntimeException("Could not contact Selenium Server; have you started it?\n" + e.getMessage());
             }
             throw new RuntimeException("Could not start Selenium session: " + e.getMessage(), e);
@@ -168,7 +169,8 @@ public class DefaultSelenium implements Selenium {
         }
         //TODO: EB Add exception catching for bad browserConfigurationOptions (i.e. Extention Not Found)
         catch (Exception e) {
-            if (e.getMessage().indexOf("Connection refused: connect") != -1) {
+            final String message = e.getMessage();
+            if (message != null && message.indexOf("Connection refused: connect") != -1) {
                 throw new RuntimeException("Could not contact Selenium Server; have you started it?\n" + e.getMessage());
             }
             throw new RuntimeException("Could not start Selenium session: " + e.getMessage(), e);
