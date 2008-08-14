@@ -22,8 +22,9 @@ public class SingleTestSuite {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("ChildrenFindingTest")
-         .method("testfindElementByIdWhenMultipleMatchesExist")
+        .onlyRun("ElementFindingTest")
+//        .onlyRun("FrameAndWindowSwitchingTest")
+//         .method("testShouldAutomaticallyUseTheFirstFrameOnAPage")
         .leaveRunning()
         ;  // Yeah, this look strange :)
 

@@ -156,4 +156,16 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
         // this is expected
       }
     }
+    
+    @JavascriptEnabled
+    @Ignore("safari")
+    public void testShouldBeAbleToPassInMoreThanOneArgument() {
+    	if (!(driver instanceof JavascriptExecutor))
+            return;
+
+        driver.get(javascriptPage);
+        String result = (String) executeScript("return arguments[0] + arguments[1];", "one", "two");
+        
+        assertEquals("onetwo", result);
+    }
 }

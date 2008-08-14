@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -37,15 +36,9 @@ import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.Speed;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.internal.FindsByClassName;
-import org.openqa.selenium.internal.FindsById;
-import org.openqa.selenium.internal.FindsByLinkText;
-import org.openqa.selenium.internal.FindsByName;
-import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.internal.ReturnedCookie;
 
-public class InternetExplorerDriver implements WebDriver, SearchContext, JavascriptExecutor,
-        FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByXPath {
+public class InternetExplorerDriver implements WebDriver, SearchContext, JavascriptExecutor {
     private long iePointer; // Used by the native code to keep track of the IE instance
     private static boolean comStarted;
 
@@ -95,81 +88,15 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
 
     public native void setVisible(boolean visible);
 
-
     public List<WebElement> findElements(By by) {
-        return by.findElements((SearchContext)this);
+    	return new Finder(iePointer, 0).findElements(by);
     }
 
     public WebElement findElement(By by) {
-        return by.findElement((SearchContext)this);
+        return new Finder(iePointer, 0).findElement(by);
     }
 
-    public WebElement findElementById(String using) {
-    	long node = getDocumentNode();
-    	try {
-    		return Finder.findElementById(iePointer, node, using);
-    	} finally {
-    		releaseDocumentNode(node);
-    	}
-    }
-
-    public List<WebElement> findElementsById(String using) {
-		List<WebElement> rawElements = new ArrayList<WebElement>();
-		selectElementsById(using, rawElements);
-        return rawElements;
-    }
-    private native List<WebElement> selectElementsById(String using, List<WebElement> rawElements);
-    
-    public WebElement findElementByName(String using) {
-    	return selectElementByName(using);
-    }
-    private native WebElement selectElementByName(String using);
-    
-	public List<WebElement> findElementsByName(String using) {
-		List<WebElement> rawElements = new ArrayList<WebElement>();
-		selectElementsByName(using, rawElements);
-        return rawElements;
-    }
-    private native List<WebElement> selectElementsByName(String using, List<WebElement> rawElements);
-	
-	public WebElement findElementByClassName(String using) {
-		return selectElementByClassName(using);
-	}
-	private native WebElement selectElementByClassName(String using);
-		  
-	public List<WebElement> findElementsByClassName(String using) {
-		List<WebElement> rawElements = new ArrayList<WebElement>();
-		selectElementsByClassName(using, rawElements);
-        return rawElements;
-	}
-	private native List<WebElement> selectElementsByClassName(String using, List<WebElement> rawElements);
-
-	private native WebElement selectElementByXPath(String using);
-	
-	public WebElement findElementByXPath(String using) {
-		return selectElementByXPath(using);
-    }
-	
-	public List<WebElement> findElementsByXPath(String using) {
-        List<WebElement> rawElements = new ArrayList<WebElement>();
-        selectElementsByXPath(using, rawElements);
-        return rawElements;
-    }
-	private native void selectElementsByXPath(String linkText, List<WebElement> rawElements);
-
-    public WebElement findElementByLinkText(String using) {
-        return selectElementByLink(using);
-    }
-    private native WebElement selectElementByLink(String linkText);
-    
-    public List<WebElement> findElementsByLinkText(String using) {
-        List<WebElement> rawElements = new ArrayList<WebElement>();
-        selectElementsByLink(using, rawElements);
-        return rawElements;
-    }
-    private native void selectElementsByLink(String linkText, List<WebElement> rawElements);
-
-  @Override
+    @Override
     public String toString() {
         return getClass().getName() + ":" + iePointer;
     }
@@ -189,9 +116,6 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
 
     protected native void waitForLoadToComplete();
 
-    private native long getDocumentNode();
-    private native void releaseDocumentNode(long documentNode);
-    
     private void startCom() {
         if (!comStarted) {
             loadLibrary();

@@ -34,16 +34,6 @@ public:
 	int getSpeed();
 
 	ElementWrapper* getActiveElement();
-	ElementWrapper* selectElementByXPath(const wchar_t *xpath);
-	std::vector<ElementWrapper*>* selectElementsByXPath(const wchar_t *xpath);
-	ElementWrapper* selectElementById(const wchar_t *elementId);
-	std::vector<ElementWrapper*>* selectElementsById(const wchar_t *id);
-	ElementWrapper* selectElementByLink(const wchar_t *elementLink);
-	std::vector<ElementWrapper*>* selectElementsByLink(const wchar_t *linkText);
-	ElementWrapper* selectElementByName(const wchar_t *elementName);
-	std::vector<ElementWrapper*>* selectElementsByName(const wchar_t *name);
-	ElementWrapper* selectElementByClassName(const wchar_t *elementClassName);
-	std::vector<ElementWrapper*>* selectElementsByClassName(const wchar_t *name);
 	void getDocument(IHTMLDocument2 **pdoc);
 	void getDocument3(IHTMLDocument3 **pdoc);
 
@@ -60,7 +50,6 @@ public:
 private:
 	bool getEval(IHTMLDocument2* doc, DISPID* evalId, bool* added);
 	void removeScript(IHTMLDocument2* doc);
-	bool addEvaluateToDocument(int count);
 	bool createAnonymousFunction(IDispatch* scriptEngine, DISPID evalId, const wchar_t *script, VARIANT* result);
 	void waitForDocumentToComplete(IHTMLDocument2* doc);
 

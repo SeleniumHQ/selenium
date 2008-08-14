@@ -44,7 +44,7 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
         assertEquals(0, children.size());
     }
 
-    @Ignore("ie, safari")
+    @Ignore("safari")
     public void testfindElementByName() {
         driver.get(nestedPage);
         WebElement element = driver.findElement(By.name("form2"));
@@ -52,7 +52,7 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
         assertThat(child.getAttribute("id"),  is("2"));
     }
 
-    @Ignore("ie, safari")
+    @Ignore("safari")
     public void testfindElementsByName() {
         driver.get(nestedPage);
         WebElement element = driver.findElement(By.name("form2"));
@@ -88,7 +88,7 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
         fail();
     }
 
-    @Ignore("ie, safari")
+    @Ignore("safari")
     public void testfindElementsById() {
         driver.get(nestedPage);
         WebElement element = driver.findElement(By.name("form2"));
@@ -96,15 +96,26 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
         assertThat(children.size(), is(2));
     }
 
-    @Ignore("ie, safari")
-    public void testfindElementByLinkText() {
+    @Ignore("safari")
+    public void testFindElementByLinkText() {
         driver.get(nestedPage);
         WebElement element = driver.findElement(By.name("div1"));
         WebElement child = element.findElement(By.linkText("hello world"));
-        assertThat(child.getAttribute("href"),  is("2.html"));
+        assertThat(child.getAttribute("name"),  is("link1"));
     }
 
-    @Ignore("ie, safari")
+    @Ignore("safari")
+    public void testFindElementsByLinkTest() {
+    	driver.get(nestedPage);
+        WebElement element = driver.findElement(By.name("div1"));
+        List<WebElement> elements = element.findElements(By.linkText("hello world"));
+        
+        assertEquals(2, elements.size());
+        assertThat(elements.get(0).getAttribute("name"),  is("link1"));
+        assertThat(elements.get(1).getAttribute("name"),  is("link2"));
+    }
+    
+    @Ignore("safari")
     public void testfindElementsByLinkText() {
         driver.get(nestedPage);
         WebElement element = driver.findElement(By.name("div1"));

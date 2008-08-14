@@ -195,7 +195,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
         assertThat(element.getValue(), is("id"));
     }
 
-    @Ignore("ie, safari, jobbie")
+    @Ignore("safari")
     public void testShouldFindGrandChildren() {
         driver.get(formPage);
         WebElement form = driver.findElement(By.id("nested_form"));
@@ -203,7 +203,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     }
 
 
-    @Ignore("ie, safari, jobbie")
+    @Ignore("safari")
     public void testShouldNotFindElementOutSideTree() {
         driver.get(formPage);
         WebElement element = driver.findElement(By.name("login"));
@@ -212,5 +212,13 @@ public class ElementFindingTest extends AbstractDriverTestCase {
         } catch (NoSuchElementException e) {
             // this is expected
         }
+    }
+    
+    @Ignore("safari")
+    public void testShouldReturnElementsThatDoNotSupportTheNameProperty() {
+    	driver.get(nestedPage);
+    	
+    	driver.findElement(By.name("div1"));
+    	// If this works, we're all good
     }
 }

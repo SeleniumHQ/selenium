@@ -13,15 +13,79 @@ extern "C" {
  * Signature: (JJLjava/lang/String;)Lorg/openqa/selenium/WebElement;
  */
 JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_Finder_selectElementById
-  (JNIEnv *, jclass, jlong, jlong, jstring);
+  (JNIEnv *, jobject, jlong, jlong, jstring);
 
 /*
  * Class:     org_openqa_selenium_ie_Finder
  * Method:    selectElementsById
- * Signature: (JLjava/lang/String;Ljava/util/List;)Ljava/util/List;
+ * Signature: (JJLjava/lang/String;Ljava/util/List;)V
  */
-JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_Finder_selectElementsById
-  (JNIEnv *, jclass, jlong, jstring, jobject);
+JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_Finder_selectElementsById
+  (JNIEnv *, jobject, jlong, jlong, jstring, jobject);
+
+/*
+ * Class:     org_openqa_selenium_ie_Finder
+ * Method:    selectElementByName
+ * Signature: (JJLjava/lang/String;)Lorg/openqa/selenium/WebElement;
+ */
+JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_Finder_selectElementByName
+  (JNIEnv *, jobject, jlong, jlong, jstring);
+
+/*
+ * Class:     org_openqa_selenium_ie_Finder
+ * Method:    selectElementsByName
+ * Signature: (JJLjava/lang/String;Ljava/util/List;)V
+ */
+JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_Finder_selectElementsByName
+  (JNIEnv *, jobject, jlong, jlong, jstring, jobject);
+
+/*
+ * Class:     org_openqa_selenium_ie_Finder
+ * Method:    selectElementByClassName
+ * Signature: (JJLjava/lang/String;)Lorg/openqa/selenium/WebElement;
+ */
+JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_Finder_selectElementByClassName
+  (JNIEnv *, jobject, jlong, jlong, jstring);
+
+/*
+ * Class:     org_openqa_selenium_ie_Finder
+ * Method:    selectElementsByClassName
+ * Signature: (JJLjava/lang/String;Ljava/util/List;)V
+ */
+JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_Finder_selectElementsByClassName
+  (JNIEnv *, jobject, jlong, jlong, jstring, jobject);
+
+/*
+ * Class:     org_openqa_selenium_ie_Finder
+ * Method:    selectElementByLinkText
+ * Signature: (JJLjava/lang/String;)Lorg/openqa/selenium/WebElement;
+ */
+JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_Finder_selectElementByLinkText
+  (JNIEnv *, jobject, jlong, jlong, jstring);
+
+/*
+ * Class:     org_openqa_selenium_ie_Finder
+ * Method:    selectElementsByLinkText
+ * Signature: (JJLjava/lang/String;Ljava/util/List;)V
+ */
+JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_Finder_selectElementsByLinkText
+  (JNIEnv *, jobject, jlong, jlong, jstring, jobject);
+
+/*
+ * Class:     org_openqa_selenium_ie_Finder
+ * Method:    selectElementByXPath
+ * Signature: (JJLjava/lang/String;)Lorg/openqa/selenium/WebElement;
+ */
+JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_Finder_selectElementByXPath
+  (JNIEnv *, jobject, jlong, jlong, jstring);
+
+/*
+ * Class:     org_openqa_selenium_ie_Finder
+ * Method:    selectElementsByXPath
+ * Signature: (JJLjava/lang/String;Ljava/util/List;)V
+ */
+JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_Finder_selectElementsByXPath
+  (JNIEnv *, jobject, jlong, jlong, jstring, jobject);
 
 #ifdef __cplusplus
 }

@@ -38,13 +38,17 @@ JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_doE
 
 	jsize length = env->GetArrayLength(args);
 
-	SAFEARRAY* convertedItems = SafeArrayCreateVector(VT_VARIANT, 0, length);
+
+	SAFEARRAYBOUND bounds;
+	bounds.cElements = length;
+	bounds.lLbound = 0;
+	SAFEARRAY* convertedItems = SafeArrayCreate(VT_VARIANT, 1, &bounds);
 	
 	LONG index[1];
 	for (jsize i = 0; i < length; i++) {
 		index[0] = i;
-		VARIANT *dest;
-		SafeArrayAccessData(convertedItems, (void**) &dest);
+		VARIANT dest;
+		VariantInit(&dest);
 
 		jobject arrayObject = env->GetObjectArrayElement(args, i);
 		jclass objClazz = env->GetObjectClass(arrayObject);
@@ -52,28 +56,28 @@ JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_doE
 		if (env->IsInstanceOf(arrayObject, numberClazz)) {
 			jlong value = env->CallLongMethod(arrayObject, longValue);
 
-			dest->vt = VT_I4;
-			dest->lVal = (LONG) value;
+			dest.vt = VT_I4;
+			dest.lVal = (LONG) value;
 		} else if (env->IsInstanceOf(arrayObject, stringClazz)) {
 			wchar_t *converted = (wchar_t *)env->GetStringChars((jstring) arrayObject, 0);
 			std::wstring value(converted);
 			env->ReleaseStringChars((jstring) arrayObject, (jchar*) converted);
 
-			dest->vt = VT_BSTR;
-			dest->bstrVal = SysAllocString(value.c_str());
+			dest.vt = VT_BSTR;
+			dest.bstrVal = SysAllocString(value.c_str());
 		} else if (env->IsInstanceOf(arrayObject, booleanClazz)) {
 			bool value = env->CallBooleanMethod(arrayObject, booleanValue) == JNI_TRUE;
 
-			dest->vt = VT_BOOL;
-			dest->boolVal = value;
+			dest.vt = VT_BOOL;
+			dest.boolVal = value;
 		} else if (env->IsInstanceOf(arrayObject, elementClazz)) {
 			ElementWrapper* element = (ElementWrapper*) env->GetLongField(arrayObject, elementPointer);
 			
-			dest->vt = VT_DISPATCH;
-			dest->pdispVal = element->getWrappedElement();
+			dest.vt = VT_DISPATCH;
+			dest.pdispVal = element->getWrappedElement();
 		}
 
-		SafeArrayUnaccessData(convertedItems);
+		SafeArrayPutElement(convertedItems, &i, &dest);
 	}
 
 	const wchar_t* converted = (wchar_t *)env->GetStringChars(script, 0);
@@ -182,31 +186,6 @@ JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_waitFo
 	ie->waitForNavigateToFinish();
 }
 
-JNIEXPORT jlong JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_getDocumentNode
-  (JNIEnv *env, jobject obj)
-{
-	InternetExplorerDriver* ie = getIe(env, obj);
-	CComPtr<IHTMLDocument3> doc;
-	ie->getDocument3(&doc);
-
-	CComPtr<IHTMLElement> element;
-	doc->get_documentElement(&element);
-
-	IHTMLDOMNode *toReturn;
-	element.QueryInterface(&toReturn);
-
-	return (jlong) toReturn;
-}
-
-JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_releaseDocumentNode
-  (JNIEnv *env, jobject obj, jlong releaseMe)
-{
-	if (!releaseMe)
-		return;
-
-	((IHTMLDOMNode*) releaseMe)->Release();
-}
-
 JNIEXPORT jstring JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_getCurrentUrl
   (JNIEnv *env, jobject obj)
 {
@@ -228,250 +207,6 @@ JNIEXPORT jstring JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_get
 {
 	InternetExplorerDriver* ie = getIe(env, obj);
 	return wstring2jstring(env, ie->getTitle());
-}
-
-JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_selectElementByXPath
-  (JNIEnv *env, jobject obj, jstring xpath)
-{
-	InternetExplorerDriver *ie = getIe(env, obj);
-	wchar_t* converted = (wchar_t *)env->GetStringChars(xpath, 0);
-
-	try {
-		ElementWrapper* wrapper = ie->selectElementByXPath(converted);
-		env->ReleaseStringChars(xpath, (const jchar*) converted);	
-
-		if (!wrapper)
-			throwNoSuchElementException(env, "Cannot find element by XPath");
-
-		jclass clazz = env->FindClass("org/openqa/selenium/ie/InternetExplorerElement");
-		jmethodID cId = env->GetMethodID(clazz, "<init>", "(J)V");
-
-		return env->NewObject(clazz, cId, (jlong) wrapper);
-	} catch (const char *message) {
-		throwNoSuchElementException(env, message);
-		return NULL;
-	} 
-	env->ReleaseStringChars(xpath, (const jchar*) converted);
-}
-
-JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_selectElementsByXPath
-  (JNIEnv *env, jobject obj, jstring xpath, jobject list)
-{
-	jclass listClass = env->FindClass("java/util/List");
-	jmethodID addId = env->GetMethodID(listClass, "add", "(Ljava/lang/Object;)Z");
-
-	jclass ieeClass = env->FindClass("org/openqa/selenium/ie/InternetExplorerElement");
-	jmethodID cId = env->GetMethodID(ieeClass, "<init>", "(J)V");
-
-	InternetExplorerDriver *ie = getIe(env, obj);
-	wchar_t* converted = (wchar_t *)env->GetStringChars(xpath, 0);
-
-	const std::vector<ElementWrapper*>* elements = ie->selectElementsByXPath(converted);
-	env->ReleaseStringChars(xpath, (const jchar*) converted);
-
-	std::vector<ElementWrapper*>::const_iterator end = elements->end();
-	std::vector<ElementWrapper*>::const_iterator cur = elements->begin();
-
-	while(cur < end)
-	{
-		ElementWrapper* wrapper = *cur;
-		jobject wrapped = env->NewObject(ieeClass, cId, wrapper);
-		env->CallVoidMethod(list, addId, wrapped);
-		cur++;
-	}
-}
-
-JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_selectElementById
-  (JNIEnv *env, jobject obj, jstring elementId)
-{
-	InternetExplorerDriver *ie = getIe(env, obj);
-	wchar_t* converted = (wchar_t *)env->GetStringChars(elementId, 0);
-
-	try {
-		ElementWrapper* wrapper = ie->selectElementById(converted);
-		env->ReleaseStringChars(elementId, (const jchar*) converted);	
-
-		jclass clazz = env->FindClass("org/openqa/selenium/ie/InternetExplorerElement");
-		jmethodID cId = env->GetMethodID(clazz, "<init>", "(J)V");
-
-		return env->NewObject(clazz, cId, (jlong) wrapper);
-	} catch (const char *message) {
-		throwNoSuchElementException(env, message);
-		return NULL;
-	} 
-	env->ReleaseStringChars(elementId, (const jchar*) converted);	
-}
-
-JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_selectElementsById
-  (JNIEnv *env, jobject obj, jstring elementId, jobject list)
-{
-	jclass listClass = env->FindClass("java/util/List");
-	jmethodID addId = env->GetMethodID(listClass, "add", "(Ljava/lang/Object;)Z");
-
-	jclass ieeClass = env->FindClass("org/openqa/selenium/ie/InternetExplorerElement");
-	jmethodID cId = env->GetMethodID(ieeClass, "<init>", "(J)V");
-
-	InternetExplorerDriver *ie = getIe(env, obj);
-	wchar_t* converted = (wchar_t *)env->GetStringChars(elementId, 0);
-
-	const std::vector<ElementWrapper*>* elements = ie->selectElementsById(converted);
-	env->ReleaseStringChars(elementId, (const jchar*) converted);
-
-	std::vector<ElementWrapper*>::const_iterator end = elements->end();
-	std::vector<ElementWrapper*>::const_iterator cur = elements->begin();
-
-	while(cur < end)
-	{
-		ElementWrapper* wrapper = *cur;
-		jobject wrapped = env->NewObject(ieeClass, cId, wrapper);
-		env->CallVoidMethod(list, addId, wrapped);
-		cur++;
-	}
-}
-
-JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_selectElementByLink
-  (JNIEnv *env, jobject obj, jstring linkText)
-{
-	InternetExplorerDriver* ie = getIe(env, obj);
-	const wchar_t* converted = (const wchar_t*)env->GetStringChars(linkText, 0);
-
-	try {
-		ElementWrapper* wrapper = ie->selectElementByLink(converted);
-		env->ReleaseStringChars(linkText, (jchar*) converted);
-
-		jclass clazz = env->FindClass("org/openqa/selenium/ie/InternetExplorerElement");
-		jmethodID cId = env->GetMethodID(clazz, "<init>", "(J)V");
-
-		return env->NewObject(clazz, cId, (jlong) wrapper);
-	} catch (const char *message) {
-		env->ReleaseStringChars(linkText, (jchar*) converted);
-		throwNoSuchElementException(env, message);
-		return NULL;
-	} 
-
-}
-
-JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_selectElementsByLink
-  (JNIEnv *env, jobject obj, jstring linkText, jobject list)
-{
-	jclass listClass = env->FindClass("java/util/List");
-	jmethodID addId = env->GetMethodID(listClass, "add", "(Ljava/lang/Object;)Z");
-
-	jclass ieeClass = env->FindClass("org/openqa/selenium/ie/InternetExplorerElement");
-	jmethodID cId = env->GetMethodID(ieeClass, "<init>", "(J)V");
-
-	InternetExplorerDriver *ie = getIe(env, obj);
-	wchar_t* converted = (wchar_t *)env->GetStringChars(linkText, 0);
-
-	const std::vector<ElementWrapper*>* elements = ie->selectElementsByLink(converted);
-	env->ReleaseStringChars(linkText, (const jchar*) converted);
-
-	std::vector<ElementWrapper*>::const_iterator end = elements->end();
-	std::vector<ElementWrapper*>::const_iterator cur = elements->begin();
-
-	while(cur < end)
-	{
-		ElementWrapper* wrapper = *cur;
-		jobject wrapped = env->NewObject(ieeClass, cId, wrapper);
-		env->CallVoidMethod(list, addId, wrapped);
-		cur++;
-	}
-}
-
-JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_selectElementByName
-  (JNIEnv *env, jobject obj, jstring name)
-{
-	InternetExplorerDriver* ie = getIe(env, obj);
-	const wchar_t* converted = (const wchar_t*)env->GetStringChars(name, 0);
-
-	try {
-		ElementWrapper* wrapper = ie->selectElementByName(converted);
-		env->ReleaseStringChars(name, (jchar*) converted);
-
-		jclass clazz = env->FindClass("org/openqa/selenium/ie/InternetExplorerElement");
-		jmethodID cId = env->GetMethodID(clazz, "<init>", "(J)V");
-
-		return env->NewObject(clazz, cId, (jlong) wrapper);
-	} catch (const char *message) {
-		env->ReleaseStringChars(name, (jchar*) converted);
-		throwNoSuchElementException(env, message);
-		return NULL;
-	} 
-}
-
-JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_selectElementsByName
-  (JNIEnv *env, jobject obj, jstring name, jobject list)
-{
-	jclass listClass = env->FindClass("java/util/List");
-	jmethodID addId = env->GetMethodID(listClass, "add", "(Ljava/lang/Object;)Z");
-
-	jclass ieeClass = env->FindClass("org/openqa/selenium/ie/InternetExplorerElement");
-	jmethodID cId = env->GetMethodID(ieeClass, "<init>", "(J)V");
-
-	InternetExplorerDriver *ie = getIe(env, obj);
-	wchar_t* converted = (wchar_t *)env->GetStringChars(name, 0);
-
-	const std::vector<ElementWrapper*>* elements = ie->selectElementsByName(converted);
-	env->ReleaseStringChars(name, (const jchar*) converted);
-
-	std::vector<ElementWrapper*>::const_iterator end = elements->end();
-	std::vector<ElementWrapper*>::const_iterator cur = elements->begin();
-
-	while(cur < end)
-	{
-		ElementWrapper* wrapper = *cur;
-		jobject wrapped = env->NewObject(ieeClass, cId, wrapper);
-		env->CallVoidMethod(list, addId, wrapped);
-		cur++;
-	}
-}
-
-JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_selectElementByClassName
-  (JNIEnv *env, jobject obj, jstring name)
-{
-	InternetExplorerDriver* ie = getIe(env, obj);
-	const wchar_t* converted = (const wchar_t*)env->GetStringChars(name, 0);
-
-	try {
-		ElementWrapper* wrapper = ie->selectElementByClassName(converted);
-		env->ReleaseStringChars(name, (jchar*) converted);
-
-		jclass clazz = env->FindClass("org/openqa/selenium/ie/InternetExplorerElement");
-		jmethodID cId = env->GetMethodID(clazz, "<init>", "(J)V");
-
-		return env->NewObject(clazz, cId, (jlong) wrapper);
-	} catch (const char *message) {
-		env->ReleaseStringChars(name, (jchar*) converted);
-		throwNoSuchElementException(env, message);
-		return NULL;
-	} 
-}
-
-JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_selectElementsByClassName
-  (JNIEnv *env, jobject obj, jstring name, jobject list)
-{
-	jclass listClass = env->FindClass("java/util/List");
-	jmethodID addId = env->GetMethodID(listClass, "add", "(Ljava/lang/Object;)Z");
-
-	jclass ieeClass = env->FindClass("org/openqa/selenium/ie/InternetExplorerElement");
-	jmethodID cId = env->GetMethodID(ieeClass, "<init>", "(J)V");
-
-	InternetExplorerDriver *ie = getIe(env, obj);
-	wchar_t* converted = (wchar_t *)env->GetStringChars(name, 0);
-
-	const std::vector<ElementWrapper*>* elements = ie->selectElementsByClassName(converted);
-	env->ReleaseStringChars(name, (const jchar*) converted);
-
-	std::vector<ElementWrapper*>::const_iterator end = elements->end();
-	std::vector<ElementWrapper*>::const_iterator cur = elements->begin();
-
-	while(cur < end)
-	{
-		ElementWrapper* wrapper = *cur;
-		jobject wrapped = env->NewObject(ieeClass, cId, wrapper);
-		env->CallVoidMethod(list, addId, wrapped);
-		cur++;
-	}
 }
 
 JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_deleteStoredObject
