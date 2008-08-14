@@ -1,8 +1,11 @@
 package org.openqa.selenium.server.log;
 
 import java.util.logging.LogRecord;
+import java.util.logging.Formatter;
 import java.util.logging.Level;
 import java.util.ArrayList;
+import java.io.StringWriter;
+
 
 /**
  * Handler who keeps in memory the last N records as is so that then
@@ -12,6 +15,7 @@ public class ShortTermMemoryHandler extends java.util.logging.Handler {
 
     private final LogRecord[] lastRecords;
     private final int capacity;
+    private final Formatter formatter;
     private int minimumLevel;
     private int currentIndex;
 
@@ -20,9 +24,11 @@ public class ShortTermMemoryHandler extends java.util.logging.Handler {
      *
      * @param capacity        Maximum number of records to keep in memory (i.e. N).
      * @param minimumLevel    Only keep track of records whose level is equal or greater than minimumLevel.
+     * @param formatter       Formmatter to use when retrieving log messages.
      */
-    public ShortTermMemoryHandler(int capacity, Level minimumLevel) {
+    public ShortTermMemoryHandler(int capacity, Level minimumLevel, Formatter formatter) {
         this.capacity = capacity;
+        this.formatter = formatter;
         this.minimumLevel = minimumLevel.intValue();
         this.lastRecords = new LogRecord[capacity];
         this.currentIndex = 0;
@@ -50,7 +56,7 @@ public class ShortTermMemoryHandler extends java.util.logging.Handler {
         }
     }
 
-    public LogRecord[] records() {
+    public synchronized LogRecord[] records() {
         final ArrayList<LogRecord> validRecords;
 
         validRecords = new ArrayList<LogRecord>(capacity);
@@ -65,6 +71,17 @@ public class ShortTermMemoryHandler extends java.util.logging.Handler {
             }
         }
         return validRecords.toArray(new LogRecord[validRecords.size()]);
+    }
+
+    public String formattedRecords() {
+        final StringWriter writer;
+
+        writer = new StringWriter();
+        for (LogRecord record : records()) {
+            writer.append(formatter.format(record));
+            writer.append("\n");
+        }
+        return writer.toString();
     }
     
 }

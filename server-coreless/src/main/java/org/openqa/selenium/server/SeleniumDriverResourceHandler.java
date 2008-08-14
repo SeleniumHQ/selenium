@@ -392,8 +392,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             results = null;
             shutDown(res);
         } else if ("retrieveLastRemoteControlLogs".equals(cmd)) {
-            // Philippe - Proof of concept, records formatting is not done yet.
-            results = "OK," + LoggingManager.shortTermMemoryHandler().records();
+            results = "OK," + LoggingManager.shortTermMemoryHandler().formattedRecords();
         } else if("attachFile".equals(cmd)) {
           FrameGroupCommandQueueSet queue = FrameGroupCommandQueueSet.getQueueSet(sessionId);
           try {
