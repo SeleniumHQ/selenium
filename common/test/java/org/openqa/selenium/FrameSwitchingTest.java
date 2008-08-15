@@ -3,8 +3,8 @@ package org.openqa.selenium;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
-public class FrameAndWindowSwitchingTest extends AbstractDriverTestCase {
-	@Ignore("ie, safari")
+public class FrameSwitchingTest extends AbstractDriverTestCase {
+	@Ignore("safari")
     public void testShouldContinueToReferToTheSameFrameOnceItHasBeenSelected() {
         driver.get(framesetPage);
 
@@ -30,6 +30,7 @@ public class FrameAndWindowSwitchingTest extends AbstractDriverTestCase {
         driver.get(framesetPage);
 
         driver.findElement(By.linkText("top")).click();
+        
         assertThat(driver.getTitle(), equalTo("XHTML Test Page"));
     }
 
@@ -38,7 +39,7 @@ public class FrameAndWindowSwitchingTest extends AbstractDriverTestCase {
         driver.findElement(By.id("iframe_page_heading"));
     }
 
-    @Ignore("ie, safari")
+    @Ignore("safari")
     public void testShouldAllowAUserToSwitchFromAnIframeBackToTheMainContentOfThePage() {
         driver.get(iframePage);
         driver.switchTo().frame(0);
@@ -51,7 +52,7 @@ public class FrameAndWindowSwitchingTest extends AbstractDriverTestCase {
         }
     }
 
-    @Ignore("ie, safari")
+    @Ignore("safari")
     public void testShouldAllowTheUserToSwitchToAnIFrameAndRemainFocusedOnIt() {
         driver.get(iframePage);
         driver.switchTo().frame(0);
@@ -61,7 +62,7 @@ public class FrameAndWindowSwitchingTest extends AbstractDriverTestCase {
         assertThat(hello, equalTo("Success!"));
     }
 
-    @Ignore("ie, safari")
+    @Ignore("safari")
     public void testShouldBeAbleToSelectAFrameByName() {
         driver.get(framesetPage);
 
@@ -69,7 +70,7 @@ public class FrameAndWindowSwitchingTest extends AbstractDriverTestCase {
         assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("2"));
     }
 
-    @Ignore("ie, safari")
+    @Ignore("safari")
     public void testShouldSelectChildFramesByUsingADotSeparatedString() {
         driver.get(framesetPage);
 
@@ -77,7 +78,7 @@ public class FrameAndWindowSwitchingTest extends AbstractDriverTestCase {
         assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("11"));
     }
 
-    @Ignore("ie, safari")
+    @Ignore("safari")
     public void testShouldSwitchToChildFramesTreatingNumbersAsIndex() {
         driver.get(framesetPage);
 
@@ -96,7 +97,7 @@ public class FrameAndWindowSwitchingTest extends AbstractDriverTestCase {
         }
     }
 
-    @Ignore("safari, ie")
+    @Ignore("ie, safari")
     public void testShouldBeAbleToFlipToAFrameIdentifiedByItsId() {
         driver.get(framesetPage);
 
@@ -109,7 +110,7 @@ public class FrameAndWindowSwitchingTest extends AbstractDriverTestCase {
         }
     }
 
-    @Ignore("safari, ie")
+    @Ignore("ie, safari")
     public void testShouldThrowAnExceptionWhenAFrameCannotBeFound() {
         driver.get(xhtmlTestPage);
 
@@ -121,7 +122,7 @@ public class FrameAndWindowSwitchingTest extends AbstractDriverTestCase {
         }
     }
 
-    @Ignore("safari, ie")   
+    @Ignore("ie, safari")   
     public void testShouldThrowAnExceptionWhenAFrameCannotBeFoundByIndex() {
         driver.get(xhtmlTestPage);
 
@@ -133,7 +134,7 @@ public class FrameAndWindowSwitchingTest extends AbstractDriverTestCase {
         }
     }
 
-    @Ignore("safari, ie")
+    @Ignore("ie, safari")
     public void testShouldBeAbleToFindElementsInIframesByName() {
         driver.get(iframePage);
 
@@ -143,7 +144,7 @@ public class FrameAndWindowSwitchingTest extends AbstractDriverTestCase {
         assertNotNull(element);
     }
 
-    @Ignore("safari, ie")
+    @Ignore("ie, safari")
     public void testShouldBeAbleToFindElementsInIframesByXPath() {
         driver.get(iframePage);
 

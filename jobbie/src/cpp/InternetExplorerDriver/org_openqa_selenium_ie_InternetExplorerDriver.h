@@ -98,10 +98,10 @@ JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_delete
 /*
  * Class:     org_openqa_selenium_ie_InternetExplorerDriver
  * Method:    setFrameIndex
- * Signature: (I)V
+ * Signature: (Ljava/lang/String;)V
  */
 JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_setFrameIndex
-  (JNIEnv *, jobject, jint);
+  (JNIEnv *, jobject, jstring);
 
 /*
  * Class:     org_openqa_selenium_ie_InternetExplorerDriver

@@ -26,7 +26,7 @@ InternetExplorerDriver::InternetExplorerDriver()
 	}
 
 	closeCalled = false;
-	currentFrame = -1;
+	pathToFrame = L"";
 
 	setVisible(true);
 //	sink = new IeEventSink(ie);
@@ -96,7 +96,7 @@ void InternetExplorerDriver::get(const wchar_t *url)
 	CComVariant dummy;
 
 	ie->Navigate2(&spec, &dummy, &dummy, &dummy, &dummy);
-	currentFrame = -1;
+	pathToFrame = L"";
 	waitForNavigateToFinish();
 }
 
@@ -228,9 +228,17 @@ void InternetExplorerDriver::waitForDocumentToComplete(IHTMLDocument2* doc)
 	}
 }
 
-void InternetExplorerDriver::switchToFrame(int frameIndex) 
+bool InternetExplorerDriver::switchToFrame(const wchar_t *pathToFrame) 
 {
-	currentFrame = frameIndex;
+	this->pathToFrame = pathToFrame;
+
+	CComPtr<IHTMLDocument2> doc;
+	getDocument(&doc);
+
+	if (!doc)
+		this->pathToFrame = L"";
+	
+	return doc != NULL;
 }
 
 std::wstring InternetExplorerDriver::getCookies()
@@ -279,21 +287,13 @@ HWND InternetExplorerDriver::getHwnd()
 	return hWnd;
 }
 
-void InternetExplorerDriver::getDocument(IHTMLDocument2 **pdoc)
+void InternetExplorerDriver::getDefaultContentFromDoc(IHTMLWindow2 **result, IHTMLDocument2* doc)
 {
-	CComPtr<IDispatch> dispatch;
-	ie->get_Document(&dispatch);
-	
-	if (!dispatch) {
-		return;
-	}
-
-	CComQIPtr<IHTMLDocument2> doc(dispatch);
 	CComQIPtr<IHTMLFramesCollection2> frames;
 	doc->get_frames(&frames);
 
 	if (frames == NULL) {
-		*pdoc = doc.Detach();
+		doc->get_parentWindow(result);
 		return;
 	}
 
@@ -301,49 +301,135 @@ void InternetExplorerDriver::getDocument(IHTMLDocument2 **pdoc)
 	frames->get_length(&length);
 
 	if (!length) {
-		currentFrame = -1;
-		*pdoc = doc.Detach();
+		doc->get_parentWindow(result);
 		return;
 	}
 
-	if (currentFrame == -1) {
-		CComPtr<IHTMLDocument3> doc3;
-		getDocument3(&doc3);
+	CComQIPtr<IHTMLDocument3> doc3(doc);
 
-		CComPtr<IHTMLElementCollection> bodyTags;
-		CComBSTR bodyTagName(L"BODY");
-		doc3->getElementsByTagName(bodyTagName, &bodyTags);
+	CComPtr<IHTMLElementCollection> bodyTags;
+	CComBSTR bodyTagName(L"BODY");
+	doc3->getElementsByTagName(bodyTagName, &bodyTags);
 
-		long numberOfBodyTags = 0;
-		bodyTags->get_length(&numberOfBodyTags);
-	
-		if (numberOfBodyTags) {
-			*pdoc = doc.Detach();
-			return;
-		}
+	long numberOfBodyTags = 0;
+	bodyTags->get_length(&numberOfBodyTags);
 
-		currentFrame = 0;
+	if (numberOfBodyTags) {
+		// Not in a frameset. Return the current window
+		doc->get_parentWindow(result);
+		return;
 	}
 
 	VARIANT index;
 	index.vt = VT_I4;
-	index.lVal = currentFrame;
-	CComVariant result;
-	frames->item(&index, &result);
+	index.lVal = 0;
+	
+	CComVariant frameHolder;
+	frames->item(&index, &frameHolder);
 
-	CComQIPtr<IHTMLWindow2> win(result.pdispVal);
-	// Clear the reference to the top frame's doc reference and return the frame's
-	doc.Release();
-	win->get_document(&doc);
-	*pdoc = doc.Detach();
+	frameHolder.pdispVal->QueryInterface(__uuidof(IHTMLWindow2), (void**) result);
+}
+
+void InternetExplorerDriver::findCurrentFrame(IHTMLWindow2 **result)
+{
+	// Frame location is from _top. This is a good start
+	CComPtr<IDispatch> dispatch;
+	ie->get_Document(&dispatch);
+	if (!dispatch)
+		return;
+
+	CComQIPtr<IHTMLDocument2> doc(dispatch);
+
+	// If the current frame path is null or empty, find the default content
+	// The default content is either the first frame in a frameset or the body
+	// of the current _top doc, even if there are iframes.
+
+	if (pathToFrame == L"")
+	{
+		getDefaultContentFromDoc(result, doc);
+		if (result) {
+			return;
+		} else {
+			cerr << "Cannot locate default content." << endl;
+			// What can we do here?
+			return;
+		}
+	}
+
+	// Otherwise, tokenize the current frame and loop, finding the 
+	// child frame in turn
+	size_t len = pathToFrame.length() + 1;
+	wchar_t *path = new wchar_t[len];
+	wcscpy_s(path, len, pathToFrame.c_str());
+	wchar_t *next_token;
+	CComQIPtr<IHTMLWindow2> interimResult;
+	for (wchar_t* fragment = wcstok_s(path, L".", &next_token);
+		 fragment;
+		 fragment = wcstok_s(NULL, L".", &next_token))
+	{
+		if (!doc) { break; } // This is seriously Not Good but what can you do?
+
+		CComQIPtr<IHTMLFramesCollection2> frames;
+		doc->get_frames(&frames);
+
+		if (frames == NULL) { break; } // pathToFrame does not match. Exit.
+
+		long length = 0;
+		frames->get_length(&length);
+		if (!length) { break; } // pathToFrame does not match. Exit.
+
+		CComBSTR frameName(fragment);
+		VARIANT index;
+		// Is this fragment a number? If so, the index will be a VT_I4
+		int frameIndex = _wtoi(fragment);
+		if (frameIndex > 0 || wcscmp(L"0", fragment) == 0) {
+			index.vt = VT_I4;
+			index.lVal = frameIndex;
+		} else {
+			// Alternatively, it's a name
+			index.vt = VT_BSTR;
+			index.bstrVal = frameName;
+		}
+		
+		// Find the frame
+		CComVariant frameHolder;
+		frames->item(&index, &frameHolder);
+
+		interimResult.Release();
+		interimResult = frameHolder.pdispVal;
+
+		if (!interimResult) { break; } // pathToFrame does not match. Exit.
+
+		// TODO: Check to see if a collection of frames were returned. Grab the 0th element if there was. 
+
+		// Was there only one result? Next time round, please.
+		CComQIPtr<IHTMLWindow2> window(interimResult);
+		if (!window) { break; } // pathToFrame does not match. Exit.
+		
+		doc.Detach();
+		window->get_document(&doc);
+	}
+
+	if (interimResult)
+		*result = interimResult.Detach();
+	delete[] path;
+}
+
+void InternetExplorerDriver::getDocument(IHTMLDocument2 **pdoc)
+{
+	CComPtr<IHTMLWindow2> window;
+	findCurrentFrame(&window);
+
+	if (window)
+		window->get_document(pdoc);
 }
 
 void InternetExplorerDriver::getDocument3(IHTMLDocument3 **pdoc)
 {
-	CComPtr<IDispatch> dispatch;
-	ie->get_Document(&dispatch);
-
-	CComQIPtr<IHTMLDocument3> doc(dispatch);
+	CComPtr<IHTMLDocument2> doc2;
+	getDocument(&doc2);
+	
+	CComQIPtr<IHTMLDocument3> doc(doc2);
 	*pdoc = doc.Detach();
 }
 

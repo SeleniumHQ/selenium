@@ -11,6 +11,7 @@
 void throwRunTimeException(JNIEnv *, const char *message);
 void throwNoSuchElementException(JNIEnv *, const char *message);
 void throwNoSuchElementException(JNIEnv *, const wchar_t *message);
+void throwNoSuchFrameException(JNIEnv *, const wchar_t *message);
 void throwUnsupportedOperationException(JNIEnv *, const char *message);
 
 void startCom();

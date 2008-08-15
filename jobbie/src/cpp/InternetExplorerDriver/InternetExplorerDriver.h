@@ -38,7 +38,7 @@ public:
 	void getDocument3(IHTMLDocument3 **pdoc);
 
 	void waitForNavigateToFinish();
-	void switchToFrame(int frameIndex);
+	bool switchToFrame(const wchar_t *pathToFrame);
 
 	std::wstring getCookies();
 	void addCookie(const wchar_t *cookieString);
@@ -52,10 +52,12 @@ private:
 	void removeScript(IHTMLDocument2* doc);
 	bool createAnonymousFunction(IDispatch* scriptEngine, DISPID evalId, const wchar_t *script, VARIANT* result);
 	void waitForDocumentToComplete(IHTMLDocument2* doc);
+	void getDefaultContentFromDoc(IHTMLWindow2 **result, IHTMLDocument2* doc);
+	void findCurrentFrame(IHTMLWindow2 **result);
 
 	IeEventSink* sink;
 	CComQIPtr<IWebBrowser2, &__uuidof(IWebBrowser2)> ie;
-	long currentFrame;
+	std::wstring pathToFrame;
 	int speed;
 
 	bool closeCalled;

@@ -218,10 +218,16 @@ JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_delete
 }
 
 JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_setFrameIndex
-  (JNIEnv *env, jobject obj, jint frameIndex)
+  (JNIEnv *env, jobject obj, jstring pathToFrame)
 {
+	const wchar_t* path = (wchar_t *)env->GetStringChars(pathToFrame, 0);
 	InternetExplorerDriver* ie = getIe(env, obj);
-	ie->switchToFrame((int) frameIndex);
+	if (!ie->switchToFrame(path)) {
+		std::wstring msg(L"Cannot locate frame using path: ");
+		msg += path;
+		throwNoSuchFrameException(env, msg.c_str());
+	}
+	env->ReleaseStringChars(pathToFrame, (jchar*) path);
 }
 
 JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_goBack

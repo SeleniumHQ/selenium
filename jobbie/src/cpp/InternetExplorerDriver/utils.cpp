@@ -9,6 +9,16 @@
 
 #include "utils.h"
 
+// Caller frees memory
+char* convertFromWideToAscii(const wchar_t* message) 
+{
+	size_t origsize = wcslen(message) + 1;
+    size_t convertedChars = 0;
+    char* converted = new char[origsize];
+    wcstombs_s(&convertedChars, converted, origsize, message, _TRUNCATE);
+	return converted;
+}
+
 void throwException(JNIEnv *env, const char* className, const char *message)
 {
 	jclass newExcCls;
@@ -28,12 +38,16 @@ void throwNoSuchElementException(JNIEnv *env, const char *message)
 
 void throwNoSuchElementException(JNIEnv *env, const wchar_t *message) 
 {
-	size_t origsize = wcslen(message) + 1;
-    size_t convertedChars = 0;
-    char* nstring = new char[origsize];
-    wcstombs_s(&convertedChars, nstring, origsize, message, _TRUNCATE);
-	throwNoSuchElementException(env, nstring);
-	delete[] nstring;
+	char* converted = convertFromWideToAscii(message);
+	throwNoSuchElementException(env, converted);
+	delete[] converted;
+}
+
+void throwNoSuchFrameException(JNIEnv *env, const wchar_t *message) 
+{
+	char* converted = convertFromWideToAscii(message);
+	throwException(env, "org/openqa/selenium/NoSuchFrameException", converted);
+	delete[] converted;
 }
 
 void throwRunTimeException(JNIEnv *env, const char *message)

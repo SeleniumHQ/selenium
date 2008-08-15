@@ -175,7 +175,7 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
 
     private native void deleteStoredObject();
 
-    private native void setFrameIndex(int frameIndex);
+    private native void setFrameIndex(String pathToFrame);
     
     private native void goBack();
 	private native void goForward();
@@ -189,12 +189,12 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
     
     private class InternetExplorerTargetLocator implements TargetLocator {
         public WebDriver frame(int frameIndex) {
-            setFrameIndex(frameIndex);
-            return InternetExplorerDriver.this;
+            return frame(String.valueOf(frameIndex));
         }
 
         public WebDriver frame(String frameName) {
-            throw new UnsupportedOperationException("frame");
+        	setFrameIndex(frameName);
+        	return InternetExplorerDriver.this;
         }
 
         public WebDriver window(String windowName) {
@@ -202,7 +202,7 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
         }
 
         public WebDriver defaultContent() {
-            throw new UnsupportedOperationException("defaultContent");
+            return frame("");
         }
 
 

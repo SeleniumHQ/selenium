@@ -22,10 +22,10 @@ public class SingleTestSuite {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("ElementFindingTest")
-//        .onlyRun("FrameAndWindowSwitchingTest")
-//         .method("testShouldAutomaticallyUseTheFirstFrameOnAPage")
-        .leaveRunning()
+        .onlyRun("FrameSwitchingTest")
+//         .method("testShouldSelectChildFramesByUsingADotSeparatedString")
+//        .exclude("ie")
+//        .leaveRunning()
         ;  // Yeah, this look strange :)
 
     if (REMOTE.equals(driver)) {
