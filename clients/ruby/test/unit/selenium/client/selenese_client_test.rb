@@ -1,4 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/unit_test_helper')
+require File.expand_path(File.dirname(__FILE__) + '/../../unit_test_helper')
 
 unit_tests do
   

@@ -20,9 +20,9 @@
         <java jar="${selenium-server}" fork="true" spawn="true"/>
         <sleep seconds="20"/>
 
-        <property name="ruby.executable" value="ruby"/>
-        <exec executable="${ruby.executable}" resultproperty="result">
-            <arg value="test/integration/all_build_tests.rb"/>
+        <property name="rake.executable" value="rake"/>
+        <exec dir="." executable="${rake.executable}" failonerror="true">
+            <arg value="test:maven_build"/>
             <env key="HEADLESS_TEST_MODE" value="${headless}"/>
         </exec>
 

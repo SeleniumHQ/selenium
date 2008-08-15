@@ -21,6 +21,8 @@
 require 'net/http'
 require 'uri'
 require 'cgi'
+require "digest/md5"
+require "fileutils"
 require File.expand_path(File.dirname(__FILE__) + '/selenium/command_error')
 require File.expand_path(File.dirname(__FILE__) + '/selenium/protocol_error')
 require File.expand_path(File.dirname(__FILE__) + '/selenium/client/selenese_client')

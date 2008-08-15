@@ -8,6 +8,7 @@ require 'rake/testtask'
 require 'rake/packagetask'
 require 'rake/gempackagetask'
 require 'rake/rdoctask'
+require 'spec/rake/spectask'
 
 CLEAN.include("COMMENTS")
 CLOBBER.include(
@@ -28,28 +29,69 @@ end
 
 desc "Run unit tests"
 Rake::TestTask.new(:'test:unit') do |t|
-  t.test_files = FileList['test/unit/*.rb']
+  t.test_files = FileList['test/unit/**/*_test.rb']
+  t.warning = true
+end
+task :"test:unit" => "lib/selenium/client/generated_driver.rb"
+
+desc "Run all integration tests"
+Spec::Rake::SpecTask.new("test:integration") do |t|
+    t.spec_files = FileList['test/integration/**/*_spec.rb']
+    t.spec_opts << '--color'
+    t.spec_opts << "--require 'lib/selenium/rspec/screenshot_formatter'"
+    t.spec_opts << "--format=Selenium::RSpec::SeleniumTestReportFormatter:./target/integration_tests_report.html"
+    t.spec_opts << "--format=progress"                
+end
+task :"test:integration" => ["lib/selenium/client/generated_driver.rb", :'test:integration:headless']
+
+desc "Run headless integration tests"
+Rake::TestTask.new(:'test:integration:headless') do |t|
+  t.test_files = FileList['test/integration/headless/**/*.rb']
   t.warning = true
 end
 
-desc "Run integration tests"
-Rake::TestTask.new(:'test:integration') do |t|
-  t.test_files = FileList['test/integration/*.rb']
-  t.warning = true
+desc "Run API integration tests"
+Spec::Rake::SpecTask.new("test:integration:api") do |t|
+    t.spec_files = FileList['test/integration/api/**/*_spec.rb']
+    t.spec_opts << '--color'
+    t.spec_opts << "--require 'lib/selenium/rspec/screenshot_formatter'"
+    t.spec_opts << "--format=Selenium::RSpec::SeleniumTestReportFormatter:./target/api_integration_tests_report.html"
+    t.spec_opts << "--format=progress"                
 end
 
-require 'spec/rake/spectask'
+desc "Run API integration tests"
+Spec::Rake::SpecTask.new("test:integration:smoke") do |t|
+    t.spec_files = FileList['test/integration/smoke/**/*deal.rb']
+    t.spec_opts << '--color'
+    t.spec_opts << "--require 'lib/selenium/rspec/screenshot_formatter'"
+    t.spec_opts << "--format=Selenium::RSpec::SeleniumTestReportFormatter:./target/smoke_tests_report.html"
+    t.spec_opts << "--format=progress"                
+end
+
+desc "Run tests that are part of Selenium RC maven build (When Selenium Client is part of Selenium RC Workspace)."
+task :'test:maven_build' do |t|
+  Rake::Task[:"test:unit"].invoke
+  
+  if (ENV['HEADLESS_TEST_MODE'] || "").downcase == "true"
+    puts "Headless test mode detected"
+    # Rake::Task[:"test:integration:headless"].invoke
+  else
+    # Rake::Task[:"test:integration:headless"].invoke
+    # Rake::Task[:"test:integration:api"].invoke
+    # Rake::Task[:"test:integration:smoke"].invoke
+  end
+
+end
+
 desc "Run tests in parallel"
 Spec::Rake::SpecTask.new("test:parallel") do |t|
     t.spec_files = FileList['test/integration/*_spec.rb']
     t.spec_opts << '--color'
     t.spec_opts << "--require 'lib/selenium/rspec/screenshot_formatter'"
-    t.spec_opts << "--format=Selenium::RSpec::ScreenshotFormatter:./target/report.html"
+    t.spec_opts << "--format=Selenium::RSpec::SeleniumTestReportFormatter:./target/report.html"
     t.spec_opts << "--format=progress"                
 end
 
-task :"test:unit" => "lib/selenium/client/generated_driver.rb"
-task :"test:integration" => "lib/selenium/client/generated_driver.rb"
 
 specification = Gem::Specification.new do |s|
   s.name = "selenium-client"

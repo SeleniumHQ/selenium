@@ -1,8 +1,9 @@
-require File.expand_path(__FILE__ + '/../spec_helper')
+require File.expand_path(__FILE__ + '/../../spec_helper')
 
 describe "Click Instrumentation" do
 
   it "clicks" do
+    start    
     open "http://localhost:4444/selenium-server/tests/html/test_click_page1.html"
     get_text("link").should eql("Click here for next page")
     click "link"

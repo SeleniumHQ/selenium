@@ -1,15 +1,26 @@
+#
+# Explicit requires in this file so that we can invoke RSpec runner with a
+# single:
+#   --require 'lib/selenium/rspec/screenshot_formatter'
+#
 require "digest/md5"
 require "base64"
 require "rubygems"
 require "spec"
 require 'spec/runner/formatter/html_formatter'
+require File.expand_path(File.dirname(__FILE__) + "/reporting/file_path_strategy")
+require File.expand_path(File.dirname(__FILE__) + "/reporting/system_capture")
 
 module Selenium
   module RSpec
-    class ScreenshotFormatter < Spec::Runner::Formatter::HtmlFormatter
+    
+      
+    class SeleniumTestReportFormatter < Spec::Runner::Formatter::HtmlFormatter
       PLACEHOLDER = "<<placeholder>>"
 
-      ################### Hooks? ########
+      #
+      # Hooks?
+      #
   
       def start(example_count)
         super
@@ -18,6 +29,7 @@ module Selenium
         example_group = Object.new
         def example_group.description; ""; end
         add_example_group(example_group)
+        @@file_path_strategy = Selenium::RSpec::Reporting::FilePathStrategy.new(@where)
       end  
   
       def move_progress
@@ -51,36 +63,26 @@ module Selenium
         @output = old_output
       end
   
+      # Should be called from config.after(:each) in spec helper
+      def self.capture_system_state(selenium_driver, example)
+        puts ">>>> formatter : capture_system_state"
 
-      ###### Called from After each ####
-
-      def self.capture_browser_state(selenium_driver, example)
-        # Selenium RC seems to 'freeze' every so often when calling getHTMLSource, especially when DeepTest timeout is low, I need to investigate...
-        # Set deeptest :timeout_in_seconds => 30 to see it happen
-        capture_html_snapshot selenium_driver, example  
-        capture_screenshot selenium_driver, example
+        puts @@file_path_strategy.inspect
+        system_capture = Selenium::RSpec::Reporting::SystemCapture.new(
+                               selenium_driver, example, @@file_path_strategy)
+        system_capture.capture_system_state                      
       end
   
-      def self.capture_html_snapshot(selenium_driver, example)
-        html = selenium_driver.get_html_source
-        File.open(file_for_html_capture(example), "w") { |f| f.write html }
-      end
-
-      def self.capture_screenshot(selenium_driver, example)
-        selenium_driver.window_maximize
-        encodedImage = selenium_driver.capture_screenshot_to_string
-        pngImage = Base64.decode64(encodedImage)
-        File.open(file_for_screenshot_capture(example), "w") { |f| f.write pngImage }
-      end
   
       ################### Instrumentation ########
   
       def html_capture(example)
-        dom_id = "example_" + self.class.hash_for_example(example)
-        screenshot_url = self.class.relative_file_for_png_capture(example)
-        snapshot_url = self.class.relative_file_for_html_capture(example)
+        dom_id = "example_" + @@file_path_strategy.example_hash(example)
+        screenshot_url = @@file_path_strategy.relative_file_path_for_png_capture(example)
+        snapshot_url = @@file_path_strategy.relative_file_path_for_html_capture(example)
+        remote_control_logs_url = @@file_path_strategy.relative_file_path_for_remote_control_logs(example)
         <<-EOS
-          <div>[<a id="#{dom_id}_screenshot_link" href="javascript:toggleVisilibility('#{dom_id}_screenshot', 'Screenshot');">Show screenshot</a>]</div>
+          <div>[<a id="#{dom_id}_screenshot_link" href="javascript:toggleVisilibility('#{dom_id}_screenshot', 'Screenshot');">Show system screenshot</a>]</div>
           <br/>      
           <div id="#{dom_id}_screenshot" style="display: none">
             <a href="#{screenshot_url}">
@@ -89,62 +91,31 @@ module Selenium
           </div>
           <br/>
       
-          <div>[<a id="#{dom_id}_snapshot_link" href=\"javascript:toggleVisilibility('#{dom_id}_snapshot', 'Snapshot')\">Show snapshot</a>]</div>
+          <div>[<a id="#{dom_id}_snapshot_link" href=\"javascript:toggleVisilibility('#{dom_id}_snapshot', 'HTML Snapshot')\">Show HTML snapshot</a>]</div>
           <br/><br/>
           <div id="#{dom_id}_snapshot" class="dyn-source">
             <a href="#{snapshot_url}">Full screen</a><br/><br/>
             <iframe src="#{snapshot_url}" width="100%" height="600px" ></iframe>
           </div>
+
+          <div>[<a id="#{dom_id}_rc_logs_link" href=\"javascript:toggleVisilibility('#{dom_id}_rc_logs', 'Remote Control Logs')\">Show Remote Control Logs</a>]</div>
+          <br/><br/>
+          <div id="#{dom_id}_rc_logs" class="dyn-source">
+            <a href="#{remote_control_logs_url}">Full screen</a><br/><br/>
+            <iframe src="#{remote_control_logs_url}" width="100%" height="600px" ></iframe>
+          </div>
         EOS
       end
-  
-  
-      def self.relative_file_for_html_capture(example)
-        "resources/example_#{hash_for_example(example)}.html"
-      end
-
-      def self.relative_file_for_png_capture(example)
-        "resources/example_#{hash_for_example(example)}.png"
-      end
-  
-      def self.file_for_html_capture(example)
-        file_name = capture_root_dir + "/example_#{hash_for_example(example)}.html"
-        FileUtils.mkdir_p(capture_root_dir) unless File.directory?(capture_root_dir)
-        file_name    
-      end
-
-      def self.file_for_screenshot_capture(example)
-        file_name = capture_root_dir + "/example_#{hash_for_example(example)}.png"
-        FileUtils.mkdir_p(capture_root_dir) unless File.directory?(capture_root_dir)
-        file_name    
-      end
-  
-      def self.hash_for_example(example)
-        Digest::MD5.hexdigest example.implementation_backtrace.first
-      end
-  
-  
-      def self.capture_root_dir
-        root_dir + "/resources"
-      end
-
-      def self.root_dir
-        (ENV['CC_BUILD_ARTIFACTS'] || './tmp/rspec_report')
-      end
-  
-  
+    
       def include_example_group_description(example)
         def example.description
           self.class.description.to_s + " :: " + super
         end
       end
   
-  
       def report_header
         super + "\n<script type=\"text/javascript\">moveProgressBar('100.0');</script>"
       end
-  
-
 
       def global_scripts
         super + <<-EOF
