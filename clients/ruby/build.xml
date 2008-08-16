@@ -21,18 +21,19 @@
         <sleep seconds="20"/>
 
         <property name="rake.executable" value="rake"/>
-        <exec dir="." executable="${rake.executable}" failonerror="true">
+        <exec dir="." executable="${rake.executable}" resultproperty="test.command.result" failonerror="false">
             <arg value="test:maven_build"/>
             <env key="HEADLESS_TEST_MODE" value="${headless}"/>
         </exec>
+        <echo>++++++++Result ${test.condition.result}</echo>
+        <condition property="build.failed">
+            <not>
+                <equals arg1="0" arg2="${test.command.result}"/>
+            </not>
+        </condition>
 
         <get taskname="selenium-shutdown" src="http://localhost:4444/selenium-server/driver/?cmd=shutDown" dest="target/shutdown-result.txt" ignoreerrors="true" />
         <sleep seconds="20"/>
-        <condition property="build.failed">
-            <not>
-                <equals arg1="0" arg2="${result}"/>
-            </not>
-        </condition>
         <fail if="build.failed" message="ruby tests failed!"/>
     </target>
     

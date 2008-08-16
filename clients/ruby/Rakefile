@@ -38,11 +38,28 @@ desc "Run all integration tests"
 Spec::Rake::SpecTask.new("test:integration") do |t|
     t.spec_files = FileList['test/integration/**/*_spec.rb']
     t.spec_opts << '--color'
-    # t.spec_opts << "--require 'lib/selenium/rspec/reporting/selenium_test_report_formatter'"
-    # t.spec_opts << "--format=Selenium::RSpec::SeleniumTestReportFormatter:./target/integration_tests_report.html"
+    t.spec_opts << "--require 'lib/selenium/rspec/reporting/selenium_test_report_formatter'"
+    t.spec_opts << "--format=Selenium::RSpec::SeleniumTestReportFormatter:./target/integration_tests_report.html"
     t.spec_opts << "--format=progress"                
 end
 task :"test:integration" => ["lib/selenium/client/generated_driver.rb", :'test:integration:headless']
+
+begin
+  require "deep_test/rake_tasks"
+
+  desc "Run all integration tests in parallel"
+  Spec::Rake::SpecTask.new("test:integration:parallel") do |t|
+      t.spec_files = FileList['test/integration/**/*.rb']
+      t.spec_opts << '--color'
+      t.spec_opts << "--require 'lib/selenium/rspec/reporting/selenium_test_report_formatter'"
+      t.spec_opts << "--format=Selenium::RSpec::SeleniumTestReportFormatter:./target/integration_tests_report.html"
+      t.spec_opts << "--format=progress"                
+      t.deep_test :number_of_workers => 5,
+                  :timeout_in_seconds => 180
+  end
+rescue Exception
+  puts "Could not find DeepTest, disbal parallel run"
+end
 
 desc "Run headless integration tests"
 Rake::TestTask.new(:'test:integration:headless') do |t|
@@ -54,17 +71,17 @@ desc "Run API integration tests"
 Spec::Rake::SpecTask.new("test:integration:api") do |t|
     t.spec_files = FileList['test/integration/api/**/*_spec.rb']
     t.spec_opts << '--color'
-    # t.spec_opts << "--require 'lib/selenium/rspec/reporting/selenium_test_report_formatter'"
-    # t.spec_opts << "--format=Selenium::RSpec::SeleniumTestReportFormatter:./target/api_integration_tests_report.html"
+    t.spec_opts << "--require 'lib/selenium/rspec/reporting/selenium_test_report_formatter'"
+    t.spec_opts << "--format=Selenium::RSpec::SeleniumTestReportFormatter:./target/api_integration_tests_report.html"
     t.spec_opts << "--format=progress"                
 end
 
 desc "Run API integration tests"
 Spec::Rake::SpecTask.new("test:integration:smoke") do |t|
-    t.spec_files = FileList['test/integration/smoke/**/*deal.rb']
+    t.spec_files = FileList['test/integration/smoke/**/*backward*.rb']
     t.spec_opts << '--color'
-    # t.spec_opts << "--require 'lib/selenium/rspec/reporting/selenium_test_report_formatter'"
-    # t.spec_opts << "--format=Selenium::RSpec::SeleniumTestReportFormatter:./target/smoke_tests_report.html"
+    t.spec_opts << "--require 'lib/selenium/rspec/reporting/selenium_test_report_formatter'"
+    t.spec_opts << "--format=Selenium::RSpec::SeleniumTestReportFormatter:./target/smoke_tests_report.html"
     t.spec_opts << "--format=progress"                
 end
 
@@ -87,8 +104,8 @@ desc "Run tests in parallel"
 Spec::Rake::SpecTask.new("test:parallel") do |t|
     t.spec_files = FileList['test/integration/*_spec.rb']
     t.spec_opts << '--color'
-    # t.spec_opts << "--require 'lib/selenium/rspec/reporting/selenium_test_report_formatter'"
-    # t.spec_opts << "--format=Selenium::RSpec::SeleniumTestReportFormatter:./target/report.html"
+    t.spec_opts << "--require 'lib/selenium/rspec/reporting/selenium_test_report_formatter'"
+    t.spec_opts << "--format=Selenium::RSpec::SeleniumTestReportFormatter:./target/report.html"
     t.spec_opts << "--format=progress"                
 end
 

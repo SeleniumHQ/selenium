@@ -1,7 +1,7 @@
 #
 # Explicit requires in this file so that we can invoke RSpec runner with a
 # single:
-#   --require 'lib/selenium/rspec/screenshot_formatter'
+#   --require 'lib/selenium/rspec/reporting/selenium_test_report_formatter'
 #
 require "digest/md5"
 require "base64"
@@ -10,18 +10,13 @@ require "spec"
 require 'spec/runner/formatter/html_formatter'
 require File.expand_path(File.dirname(__FILE__) + "/file_path_strategy")
 require File.expand_path(File.dirname(__FILE__) + "/system_capture")
+require File.expand_path(File.dirname(__FILE__) + "/html_report")
 
 module Selenium
-  module RSpec
-    
+  module RSpec    
       
     class SeleniumTestReportFormatter < Spec::Runner::Formatter::HtmlFormatter
-      PLACEHOLDER = "<<placeholder>>"
 
-      #
-      # Hooks?
-      #
-  
       def start(example_count)
         super
         # ensure there's at least 1 example group header (normally 0 with deep_test)
@@ -37,7 +32,7 @@ module Selenium
       end  
   
       def extra_failure_content(failure)
-        super + PLACEHOLDER
+        Selenium::RSpec::Reporting::HtmlReport::inject_placeholder(super)
       end
   
       def example_passed(example)
@@ -52,11 +47,14 @@ module Selenium
   
       def example_failed(example, counter, failure)
         include_example_group_description example
+        
         old_output = @output
         @output = StringIO.new
         super
+        
         result = @output.string
-        result.gsub! PLACEHOLDER, html_capture(example)
+        report = Selenium::RSpec::Reporting::HtmlReport.new(@@file_path_strategy)
+        report.replace_placeholder_with_system_state_content(result, example)
         old_output.puts result
         old_output.flush
       ensure
@@ -68,87 +66,15 @@ module Selenium
         system_capture = Selenium::RSpec::Reporting::SystemCapture.new(selenium_driver, example, @@file_path_strategy)
         system_capture.capture_system_state                      
       end
-  
-  
-      ################### Instrumentation ########
-  
-      def html_capture(example)
-        dom_id = "example_" + @@file_path_strategy.example_hash(example)
-        screenshot_url = @@file_path_strategy.relative_file_path_for_png_capture(example)
-        snapshot_url = @@file_path_strategy.relative_file_path_for_html_capture(example)
-        remote_control_logs_url = @@file_path_strategy.relative_file_path_for_remote_control_logs(example)
-        <<-EOS
-          <div>[<a id="#{dom_id}_screenshot_link" href="javascript:toggleVisilibility('#{dom_id}_screenshot', 'Screenshot');">Show system screenshot</a>]</div>
-          <br/>      
-          <div id="#{dom_id}_screenshot" style="display: none">
-            <a href="#{screenshot_url}">
-              <img width="80%" src="#{screenshot_url}" />
-            </a>
-          </div>
-          <br/>
-      
-          <div>[<a id="#{dom_id}_snapshot_link" href=\"javascript:toggleVisilibility('#{dom_id}_snapshot', 'HTML Snapshot')\">Show HTML snapshot</a>]</div>
-          <br/><br/>
-          <div id="#{dom_id}_snapshot" class="dyn-source">
-            <a href="#{snapshot_url}">Full screen</a><br/><br/>
-            <iframe src="#{snapshot_url}" width="100%" height="600px" ></iframe>
-          </div>
 
-          <div>[<a id="#{dom_id}_rc_logs_link" href=\"javascript:toggleVisilibility('#{dom_id}_rc_logs', 'Remote Control Logs')\">Show Remote Control Logs</a>]</div>
-          <br/><br/>
-          <div id="#{dom_id}_rc_logs" class="dyn-source">
-            <a href="#{remote_control_logs_url}">Full screen</a><br/><br/>
-            <iframe src="#{remote_control_logs_url}" width="100%" height="600px" ></iframe>
-          </div>
-        EOS
-      end
-    
+      protected
+        
       def include_example_group_description(example)
         def example.description
           self.class.description.to_s + " :: " + super
         end
       end
   
-      def report_header
-        super + "\n<script type=\"text/javascript\">moveProgressBar('100.0');</script>"
-      end
-
-      def global_scripts
-        super + <<-EOF
-    function toggleVisilibility(id, description) {
-      var section;
-      var link;
-
-      section = document.getElementById(id);
-      link = document.getElementById(id + "_link");
-
-      if (section.style.display == "block") {
-        section.style.display = "none"
-        link.innerHTML = description
-      } else {
-        section.style.display = "block"
-        link.innerHTML = "Hide " + description
-      }
-    }
-    EOF
-      end
-
-      def global_styles
-        super + <<-EOF
-    div.rspec-report textarea {
-      width: 100%;
-    }
-
-    div.rspec-report .dyn-source {
-      background: #FFFFEE none repeat scroll 0%;
-      border:1px dotted black;
-      color: #000000;
-      display: none;
-      margin: 0.5em 2em;
-      padding: 0.5em;
-    }
-    EOF
-      end
     end
   end
 end
