@@ -280,7 +280,7 @@ public class RemoteControlConfiguration {
     }
 
     public int shortTermMemoryLoggerCapacity() {
-        return 50;
+        return 20;
     }
     
 }

@@ -23,7 +23,11 @@ import org.apache.commons.logging.Log;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.Get;
 import org.apache.tools.ant.util.FileUtils;
-import org.mortbay.http.*;
+import org.mortbay.http.HttpConnection;
+import org.mortbay.http.HttpException;
+import org.mortbay.http.HttpFields;
+import org.mortbay.http.HttpRequest;
+import org.mortbay.http.HttpResponse;
 import org.mortbay.http.handler.ResourceHandler;
 import org.mortbay.log.LogFactory;
 import org.mortbay.util.StringUtil;
@@ -38,13 +42,23 @@ import org.openqa.selenium.server.log.LoggingManager;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.util.*;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.Vector;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
@@ -391,7 +405,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         } else if ("shutDown".equals(cmd) || "shutDownSeleniumServer".equals(cmd)) {
             results = null;
             shutDown(res);
-        } else if ("retrieveLastRemoteControlLogs".equals(cmd)) {
+        } else if (Command.RETRIEVE_LAST_REMOTE_CONTROL_LOGS.equals(cmd)) {
             results = "OK," + LoggingManager.shortTermMemoryHandler().formattedRecords();
         } else if("attachFile".equals(cmd)) {
           FrameGroupCommandQueueSet queue = FrameGroupCommandQueueSet.getQueueSet(sessionId);
@@ -410,7 +424,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 logger.error("Problem capturing screenshot", e);
                 results = "ERROR: Problem capturing screenshot: " + e.getMessage();
             } 
-        } else if ("captureScreenshotToString".equals(cmd)) {
+        } else if (Command.CAPTURE_SCREENSHOT_TO_STRING.equals(cmd)) {
             try {
                 results = captureScreenshotToString();
             } catch (Exception e) {
@@ -519,8 +533,11 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             }
         }
 
-        if ("captureScreenshotToString".equals(cmd)) {
+        if (Command.CAPTURE_SCREENSHOT_TO_STRING.equals(cmd)) {
             logger.info("Got result: [base64 encoded PNG] on session " + sessionId);
+        } else if (Command.RETRIEVE_LAST_REMOTE_CONTROL_LOGS.equals(cmd)) {
+            /* Trim logs to avoid Larsen effect (see remote control stability tests) */
+            logger.info("Got result:" + results.substring(0, 30) + "... on session " + sessionId);
         } else {
             logger.info("Got result: " + results + " on session " + sessionId);
         }
@@ -618,7 +635,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
      * @throws TimeoutException
      * @throws IOException
      */
-    private String captureScreenshotToString() throws InterruptedException, ExecutionException, TimeoutException, IOException {  
+    private String captureScreenshotToString() throws InterruptedException, ExecutionException, TimeoutException, IOException {
         Robot robot = RobotRetriever.getRobot();
         Rectangle captureSize = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
         BufferedImage bufferedImage = robot.createScreenCapture(captureSize);

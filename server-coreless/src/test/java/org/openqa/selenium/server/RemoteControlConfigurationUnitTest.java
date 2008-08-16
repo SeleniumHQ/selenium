@@ -289,7 +289,7 @@ public class RemoteControlConfigurationUnitTest extends TestCase {
     }
 
     public void testShortTermMemoryLoggerCapacityIs50Bydefault() {
-        assertEquals(50, new RemoteControlConfiguration().shortTermMemoryLoggerCapacity());
+        assertEquals(20, new RemoteControlConfiguration().shortTermMemoryLoggerCapacity());
     }
 
 }
