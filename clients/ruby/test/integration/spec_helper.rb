@@ -4,10 +4,9 @@ require 'base64'
 require 'fileutils'
 require File.expand_path(File.dirname(__FILE__) + "/../../lib/selenium")
 require File.expand_path(File.dirname(__FILE__) + "/../../lib/selenium/rspec/rspec_extensions")
-require File.expand_path(File.dirname(__FILE__) + "/../../lib/selenium/rspec/screenshot_formatter")
+require File.expand_path(File.dirname(__FILE__) + "/../../lib/selenium/rspec/reporting/selenium_test_report_formatter")
 
 Spec::Runner.configure do |config|
-  include SeleniumHelper
 
   config.before(:each) do
     remote_control_server = ENV['SELENIUM_REMOTE_CONTROL'] || "localhost"
@@ -16,14 +15,21 @@ Spec::Runner.configure do |config|
     application_host = ENV['SELENIUM_APPLICATION_HOST'] || "google.com"
     application_port = ENV['SELENIUM_APPLICATION_PORT'] || "80"
     timeout = 60
-    @selenium = Selenium::SeleniumDriver.new(remote_control_server, port, browser, "http://#{application_host}:#{application_port}", timeout)
+    @selenium_driver = Selenium::SeleniumDriver.new(remote_control_server, port, browser, "http://#{application_host}:#{application_port}", timeout)
   end
 
   config.after(:each) do
-    puts ">>>> spec helper : capture_system_state"
-    Selenium::RSpec::SeleniumTestReportFormatter.capture_system_state(@selenium, self) #if execution_error
-    @selenium.stop
+    # Selenium::RSpec::SeleniumTestReportFormatter.capture_system_state(@selenium, self) if execution_error
+    @selenium_driver.stop
   end
-      
+
+  def selenium_driver
+    @selenium_driver
+  end
+    
+  def page
+    @selenium_driver
+  end
+  
 end
 

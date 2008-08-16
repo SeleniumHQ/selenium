@@ -46,6 +46,18 @@ module Selenium
         @session_id = nil
       end
 
+      def start_new_browser_session
+        start
+      end
+      
+      def close_current_browser_session
+        stop
+      end
+      
+      def session_started?
+        not @session_id.nil?
+      end
+      
     end
   
   end

@@ -4,14 +4,14 @@ unit_tests do
   
   test "base_report_dir is resource/<name of the report> under the final report base directory" do
     strategy = Selenium::RSpec::Reporting::FilePathStrategy.new "/some/dir/a_final_report.html"
-    assert_equal "/some/dir/resources/a_final_report", strategy.base_report_dir
+    assert_equal "/some/dir", strategy.base_report_dir
   end
   
   test "base_report_dir is distinct when the only the report name changes" do
     first_strategy = Selenium::RSpec::Reporting::FilePathStrategy.new "/some/dir/a_final_report.html"
-    second_strategy = Selenium::RSpec::Reporting::FilePathStrategy.new "/some/dir/another_final_report.html"
-    assert_equal "/some/dir/resources/a_final_report", first_strategy.base_report_dir
-    assert_equal "/some/dir/resources/another_final_report", second_strategy.base_report_dir
+    second_strategy = Selenium::RSpec::Reporting::FilePathStrategy.new "/another/dir/another_final_report.html"
+    assert_equal "/some/dir", first_strategy.base_report_dir
+    assert_equal "/another/dir", second_strategy.base_report_dir
   end
   
   test "example_hash is distinct when examples first backtrace entry is different" do
@@ -51,25 +51,25 @@ unit_tests do
   test "file_path concatenate the base_report_dir and the relative path" do
     strategy = Selenium::RSpec::Reporting::FilePathStrategy.new "report.html"
     strategy.stubs(:base_report_dir).returns("/base/report/dir")
-    assert_equal "/base/report/dir/relative_path", strategy.file_path("relative_path")
+    assert_equal "/base/report/dir/relative/path/file.html", strategy.file_path("relative/path/file.html")
   end
 
   test "file_path create the base_report_dir directory if it does not exists" do
     strategy = Selenium::RSpec::Reporting::FilePathStrategy.new "report.html"
     strategy.stubs(:base_report_dir).returns("/base/report/dir")
-    File.stubs(:directory?).with("/base/report/dir").returns(false)
+    File.stubs(:directory?).with("/base/report/dir/relative/path").returns(false)
     
-    FileUtils.expects(:mkdir_p).with("/base/report/dir")
-    strategy.file_path ""
+    FileUtils.expects(:mkdir_p).with("/base/report/dir/relative/path")
+    strategy.file_path "relative/path/file.html"
   end
 
   test "file_path does not create the base_report_dir directory if it does exists" do
     strategy = Selenium::RSpec::Reporting::FilePathStrategy.new "report.html"
     strategy.stubs(:base_report_dir).returns("/base/report/dir")
-    File.stubs(:directory?).with("/base/report/dir").returns(true)
+    File.stubs(:directory?).with("/base/report/dir/relative/path").returns(true)
     
     FileUtils.expects(:mkdir_p).never
-    strategy.file_path ""
+    strategy.file_path "relative/path/file.html"
   end
 
   test "file_path_for_html_capture return the absolute file path for the html file" do

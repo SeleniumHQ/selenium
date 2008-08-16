@@ -38,8 +38,8 @@ desc "Run all integration tests"
 Spec::Rake::SpecTask.new("test:integration") do |t|
     t.spec_files = FileList['test/integration/**/*_spec.rb']
     t.spec_opts << '--color'
-    t.spec_opts << "--require 'lib/selenium/rspec/screenshot_formatter'"
-    t.spec_opts << "--format=Selenium::RSpec::SeleniumTestReportFormatter:./target/integration_tests_report.html"
+    # t.spec_opts << "--require 'lib/selenium/rspec/reporting/selenium_test_report_formatter'"
+    # t.spec_opts << "--format=Selenium::RSpec::SeleniumTestReportFormatter:./target/integration_tests_report.html"
     t.spec_opts << "--format=progress"                
 end
 task :"test:integration" => ["lib/selenium/client/generated_driver.rb", :'test:integration:headless']
@@ -54,8 +54,8 @@ desc "Run API integration tests"
 Spec::Rake::SpecTask.new("test:integration:api") do |t|
     t.spec_files = FileList['test/integration/api/**/*_spec.rb']
     t.spec_opts << '--color'
-    t.spec_opts << "--require 'lib/selenium/rspec/screenshot_formatter'"
-    t.spec_opts << "--format=Selenium::RSpec::SeleniumTestReportFormatter:./target/api_integration_tests_report.html"
+    # t.spec_opts << "--require 'lib/selenium/rspec/reporting/selenium_test_report_formatter'"
+    # t.spec_opts << "--format=Selenium::RSpec::SeleniumTestReportFormatter:./target/api_integration_tests_report.html"
     t.spec_opts << "--format=progress"                
 end
 
@@ -63,8 +63,8 @@ desc "Run API integration tests"
 Spec::Rake::SpecTask.new("test:integration:smoke") do |t|
     t.spec_files = FileList['test/integration/smoke/**/*deal.rb']
     t.spec_opts << '--color'
-    t.spec_opts << "--require 'lib/selenium/rspec/screenshot_formatter'"
-    t.spec_opts << "--format=Selenium::RSpec::SeleniumTestReportFormatter:./target/smoke_tests_report.html"
+    # t.spec_opts << "--require 'lib/selenium/rspec/reporting/selenium_test_report_formatter'"
+    # t.spec_opts << "--format=Selenium::RSpec::SeleniumTestReportFormatter:./target/smoke_tests_report.html"
     t.spec_opts << "--format=progress"                
 end
 
@@ -74,11 +74,11 @@ task :'test:maven_build' do |t|
   
   if (ENV['HEADLESS_TEST_MODE'] || "").downcase == "true"
     puts "Headless test mode detected"
-    # Rake::Task[:"test:integration:headless"].invoke
+    Rake::Task[:"test:integration:headless"].invoke
   else
-    # Rake::Task[:"test:integration:headless"].invoke
-    # Rake::Task[:"test:integration:api"].invoke
-    # Rake::Task[:"test:integration:smoke"].invoke
+    Rake::Task[:"test:integration:headless"].invoke
+    Rake::Task[:"test:integration:api"].invoke
+    Rake::Task[:"test:integration:smoke"].invoke
   end
 
 end
@@ -87,8 +87,8 @@ desc "Run tests in parallel"
 Spec::Rake::SpecTask.new("test:parallel") do |t|
     t.spec_files = FileList['test/integration/*_spec.rb']
     t.spec_opts << '--color'
-    t.spec_opts << "--require 'lib/selenium/rspec/screenshot_formatter'"
-    t.spec_opts << "--format=Selenium::RSpec::SeleniumTestReportFormatter:./target/report.html"
+    # t.spec_opts << "--require 'lib/selenium/rspec/reporting/selenium_test_report_formatter'"
+    # t.spec_opts << "--format=Selenium::RSpec::SeleniumTestReportFormatter:./target/report.html"
     t.spec_opts << "--format=progress"                
 end
 

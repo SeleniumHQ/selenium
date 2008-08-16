@@ -9,10 +9,7 @@ module Selenium
         end
 
         def base_report_dir
-          return @base_report_dir if @base_report_dir
-
-          parent = File.dirname(File.expand_path(@final_report_file_path))
-          @base_report_dir =  parent + "/" + relative_dir
+          @base_report_dir ||= File.dirname(File.expand_path(@final_report_file_path))
         end
 
         def relative_dir
@@ -35,7 +32,6 @@ module Selenium
         end
 
         def file_path_for_html_capture(example)
-          puts ">>>>>>>>> file_path_for_html_capture"
           file_path relative_file_path_for_html_capture(example)
         end
 
@@ -48,9 +44,10 @@ module Selenium
         end
 
         def file_path(relative_file_path)
-          puts ">>>>>>>>> file_path : #{base_report_dir.inspect}"
-          FileUtils.mkdir_p(base_report_dir) unless File.directory?(base_report_dir)
-          base_report_dir + "/" + relative_file_path
+          the_file_path = base_report_dir + "/" + relative_file_path
+          parent_dir = File.dirname(the_file_path)
+          FileUtils.mkdir_p(parent_dir) unless File.directory?(parent_dir)
+          the_file_path
         end
 
         def example_hash(example)

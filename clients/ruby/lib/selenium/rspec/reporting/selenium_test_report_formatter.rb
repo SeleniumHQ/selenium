@@ -8,8 +8,8 @@ require "base64"
 require "rubygems"
 require "spec"
 require 'spec/runner/formatter/html_formatter'
-require File.expand_path(File.dirname(__FILE__) + "/reporting/file_path_strategy")
-require File.expand_path(File.dirname(__FILE__) + "/reporting/system_capture")
+require File.expand_path(File.dirname(__FILE__) + "/file_path_strategy")
+require File.expand_path(File.dirname(__FILE__) + "/system_capture")
 
 module Selenium
   module RSpec
@@ -65,11 +65,7 @@ module Selenium
   
       # Should be called from config.after(:each) in spec helper
       def self.capture_system_state(selenium_driver, example)
-        puts ">>>> formatter : capture_system_state"
-
-        puts @@file_path_strategy.inspect
-        system_capture = Selenium::RSpec::Reporting::SystemCapture.new(
-                               selenium_driver, example, @@file_path_strategy)
+        system_capture = Selenium::RSpec::Reporting::SystemCapture.new(selenium_driver, example, @@file_path_strategy)
         system_capture.capture_system_state                      
       end
   
