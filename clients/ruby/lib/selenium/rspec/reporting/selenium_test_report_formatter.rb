@@ -32,7 +32,7 @@ module Selenium
       end  
   
       def extra_failure_content(failure)
-        Selenium::RSpec::Reporting::HtmlReport::inject_placeholder(super)
+        Selenium::RSpec::Reporting::HtmlReport.inject_placeholder(super)
       end
   
       def example_passed(example)
@@ -66,6 +66,43 @@ module Selenium
         system_capture = Selenium::RSpec::Reporting::SystemCapture.new(selenium_driver, example, @@file_path_strategy)
         system_capture.capture_system_state                      
       end
+
+        def global_scripts
+          super + <<-EOF
+      function toggleVisilibility(id, description) {
+        var section;
+        var link;
+
+        section = document.getElementById(id);
+        link = document.getElementById(id + "_link");
+
+        if (section.style.display == "block") {
+          section.style.display = "none"
+          link.innerHTML = "Show " + description
+        } else {
+          section.style.display = "block"
+          link.innerHTML = "Hide " + description
+        }
+      }
+      EOF
+        end
+
+        def global_styles
+          super + <<-EOF
+      div.rspec-report textarea {
+        width: 100%;
+      }
+
+      div.rspec-report .dyn-source {
+        background: #FFFFEE none repeat scroll 0%;
+        border:1px dotted black;
+        color: #000000;
+        display: none;
+        margin: 0.5em 2em;
+        padding: 0.5em;
+      }
+      EOF
+        end
 
       protected
         
