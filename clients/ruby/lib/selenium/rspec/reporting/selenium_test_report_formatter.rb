@@ -68,40 +68,11 @@ module Selenium
       end
 
         def global_scripts
-          super + <<-EOF
-      function toggleVisilibility(id, description) {
-        var section;
-        var link;
-
-        section = document.getElementById(id);
-        link = document.getElementById(id + "_link");
-
-        if (section.style.display == "block") {
-          section.style.display = "none"
-          link.innerHTML = "Show " + description
-        } else {
-          section.style.display = "block"
-          link.innerHTML = "Hide " + description
-        }
-      }
-      EOF
+          Selenium::RSpec::Reporting::HtmlReport.append_javascript(super)
         end
 
         def global_styles
-          super + <<-EOF
-      div.rspec-report textarea {
-        width: 100%;
-      }
-
-      div.rspec-report .dyn-source {
-        background: #FFFFEE none repeat scroll 0%;
-        border:1px dotted black;
-        color: #000000;
-        display: none;
-        margin: 0.5em 2em;
-        padding: 0.5em;
-      }
-      EOF
+          Selenium::RSpec::Reporting::HtmlReport.append_css(super)
         end
 
       protected

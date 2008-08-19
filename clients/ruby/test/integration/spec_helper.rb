@@ -20,6 +20,9 @@ Spec::Runner.configure do |config|
 
   config.after(:each) do
     Selenium::RSpec::SeleniumTestReportFormatter.capture_system_state(@selenium_driver, self) if execution_error
+    if @selenium_driver.session_started?
+      selenium_driver.set_context "Ending example '#{self.description}'"
+    end    
     @selenium_driver.stop
   end
 
