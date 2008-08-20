@@ -102,39 +102,40 @@ const LPCTSTR fileDialogNames[] = {
 };
 
 struct keyboardData {
+	HWND main;
 	HWND hwnd;
 	const wchar_t* text;
 };
 
 WORD WINAPI setFileValue(keyboardData* data) {
-	HWND parentWindow = data->hwnd;
-	const wchar_t* filename = data->text;
-	HWND dialogHwnd = FindWindowW(fileDialogNames[0], NULL);
+	Sleep(200);
+	HWND ieMain = data->main;
+	HWND dialogHwnd = ::GetLastActivePopup(ieMain);
 
-	int lookFor = 30;
-	while (!dialogHwnd && lookFor) {
+	int maxWait = 10;
+	while ((dialogHwnd == ieMain) && --maxWait) {
 		Sleep(200);
-		--lookFor;
-		dialogHwnd = FindWindowW(fileDialogNames[0], NULL);
+		dialogHwnd = ::GetLastActivePopup(ieMain);
 	}
 
-	if (!dialogHwnd) {
+	if (!dialogHwnd || (dialogHwnd == ieMain)) {
 		cout << "No dialog found" << endl;
 		return false;
 	}
 
 	HWND editHwnd = NULL;
-	int max_count = 10;
-	for (int max_count = 10; max_count && !editHwnd; --max_count) {
+	maxWait = 10;
+	while (!editHwnd && --maxWait) {
 		wait(200);
 		editHwnd = dialogHwnd;
-		for (int i = 1; fileDialogNames[i] && dialogHwnd; i++) {
+		for (int i = 1; fileDialogNames[i]; ++i) {
 			editHwnd = getChildWindow(editHwnd, fileDialogNames[i]);
 		}
 	}
 
 	if (editHwnd) {
 		// Attempt to set the value, looping until we succeed.
+		const wchar_t* filename = data->text;
 		size_t expected = wcslen(filename);
 		size_t curr = 0;
 
@@ -284,6 +285,7 @@ void ElementWrapper::sendKeys(const std::wstring& newValue)
 	const HWND ieWindow = getIeServerWindow(hWnd);
 
 	keyboardData keyData;
+	keyData.main = hWnd;  // IE's main window
 	keyData.hwnd = ieWindow;
 	keyData.text = newValue.c_str();
 
