@@ -259,6 +259,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\logging.h"
+				>
+			</File>
+			<File
 				RelativePath=".\org_openqa_selenium_ie_Finder.h"
 				>
 			</File>
