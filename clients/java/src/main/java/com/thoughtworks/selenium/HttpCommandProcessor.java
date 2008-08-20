@@ -83,9 +83,13 @@ public class HttpCommandProcessor implements CommandProcessor {
             throw new NullPointerException("Selenium Bug! result must not be null");
         }
         if (!result.startsWith("OK")) {
-            throw new SeleniumException(result);
+            return throwAssertionFailureExceptionOrError(result);
         }
         return result;
+    }
+
+    protected String throwAssertionFailureExceptionOrError(String message) {
+        throw new SeleniumException(message);
     }
 
     /** Sends the specified command string to the bridge servlet */  
@@ -153,7 +157,7 @@ public class HttpCommandProcessor implements CommandProcessor {
                 if (responsecode == HttpURLConnection.HTTP_MOVED_PERM) {
                     pathToServlet = uc.getRequestProperty("Location");
                 } else if (responsecode != HttpURLConnection.HTTP_OK) {
-                    throw new SeleniumException(uc.getResponseMessage());
+                    throwAssertionFailureExceptionOrError(uc.getResponseMessage());
                 } else {
                     rdr = getInputStreamReader(uc);
                     responseString = stringContentsOfInputStream(rdr);
