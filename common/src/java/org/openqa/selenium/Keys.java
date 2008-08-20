@@ -1,8 +1,9 @@
 package org.openqa.selenium;
 
 /**
- * Representations of pressable keys that aren't text. These are stored
- * as elements in the Unicode PUA.
+ * Representations of pressable keys that aren't text.  These are stored in
+ * the Unicode PUA (Private Use Area) code points, 0xE000-0xF8FF.  Refer to
+ * http://www.google.com.au/search?&q=unicode+pua&btnG=Search
  */
 public enum Keys implements CharSequence {
 
@@ -73,6 +74,26 @@ public enum Keys implements CharSequence {
 
 	private Keys(char keyCode) {
 		this.keyCode = keyCode;
+	}
+
+      /**
+  	* Simulate pressing many keys at once in a "chord". Takes a sequence of 
+      * Keys.XXXX or strings; appends each of the values to a string, and adds the 
+      * chord termination key (Keys.NULL) and returns the resultant string.
+	*
+	* Note: when the low-level webdriver key handlers see Keys.NULL, active
+	* modifier keys (CTRL/ALT/SHIFT/etc) release via a keyup event.
+	*
+	* issue: http://code.google.com/p/webdriver/issues/detail?id=79
+	*/
+	public static String chord(CharSequence... value) {
+		StringBuilder builder = new StringBuilder();
+
+		for (CharSequence seq : value)
+			builder.append(seq);
+
+		builder.append(Keys.NULL);
+		return builder.toString();
 	}
 
 	public char charAt(int index) {
