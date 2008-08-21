@@ -25,6 +25,7 @@ import com.gargoylesoftware.htmlunit.WebResponse;
 import com.gargoylesoftware.htmlunit.WebWindow;
 import com.gargoylesoftware.htmlunit.WebWindowEvent;
 import com.gargoylesoftware.htmlunit.WebWindowListener;
+import com.gargoylesoftware.htmlunit.ProxyConfig;
 import com.gargoylesoftware.htmlunit.html.FrameWindow;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
@@ -70,8 +71,9 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     /** window name => history. */
     private Map<String, History> histories = new HashMap<String, History>();
     private boolean enableJavascript;
+    private ProxyConfig proxyConfig;
 
-  public HtmlUnitDriver(boolean enableJavascript) {
+    public HtmlUnitDriver(boolean enableJavascript) {
     this.enableJavascript = enableJavascript;
 
     webClient = newWebClient();
@@ -115,6 +117,11 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
         this.currentWindow = currentWindow;
     }
 
+    /**
+     * @return WebClient to use
+     * @deprecated Please override modifyWebClient. This method will become private
+     */
+    @Deprecated
     protected WebClient newWebClient() {
         WebClient client = new WebClient();
         client.setThrowExceptionOnFailingStatusCode(false);
@@ -126,7 +133,29 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
 		} catch (GeneralSecurityException e) {
 			throw new RuntimeException(e);
 		}
+
+        // Ensure that we've set the proxy if necessary
+        if (proxyConfig != null)
+            client.setProxyConfig(proxyConfig);
+
+        return modifyWebClient(client);
+    }
+
+    /**
+     * Child classes can override this method to customise the webclient that
+     * the HtmlUnit driver uses.
+     *
+     * @param client The client to modify
+     * @return The modified client
+     */
+    protected WebClient modifyWebClient(WebClient client) {
+        // Does nothing here to be overridden.
         return client;
+    }
+
+    public void setProxy(String host, int port) {
+        proxyConfig = new ProxyConfig(host, port);
+        webClient.setProxyConfig(proxyConfig);
     }
 
     public void get(String url) {
