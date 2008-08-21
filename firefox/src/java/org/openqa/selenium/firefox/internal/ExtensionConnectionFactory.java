@@ -19,7 +19,8 @@ public class ExtensionConnectionFactory {
         try {
           return new NewProfileExtensionConnection(profile, host, port);
         } catch (Exception e) {
-            // Then we can't connect
+          // Tell the world what went wrong
+          e.printStackTrace();
         }
 
         return new DisconnectedExtension();

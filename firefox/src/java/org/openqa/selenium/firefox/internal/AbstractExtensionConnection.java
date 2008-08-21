@@ -74,6 +74,21 @@ public abstract class AbstractExtensionConnection implements ExtensionConnection
         if (localIp6 != null)
             return localIp6;
 
+        // Nothing found. Grab the first address we can find
+        NetworkInterface firstInterface = null;
+        try {
+            firstInterface = NetworkInterface.getNetworkInterfaces().nextElement();
+        } catch (SocketException e) {
+            throw new RuntimeException(e);
+        }
+        InetAddress firstAddress = null;
+        if (firstInterface != null) {
+            firstAddress = firstInterface.getInetAddresses().nextElement();
+        }
+
+        if (firstAddress != null)
+            return firstAddress;
+
         throw new RuntimeException("Unable to find loopback address for localhost");
     }
 
