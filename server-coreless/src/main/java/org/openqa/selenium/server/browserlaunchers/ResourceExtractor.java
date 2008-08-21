@@ -34,14 +34,18 @@ public class ResourceExtractor {
             throws IOException {
         boolean alwaysExtract = true;
         URL url = cl.getResource(resourcePath);
-        if (url == null) throw new IllegalArgumentException("Resource not found: " + resourcePath);
+        if (url == null) {
+            throw new IllegalArgumentException("Resource not found: " + resourcePath);
+        }
         if ("jar".equalsIgnoreCase(url.getProtocol())) {
             File jarFile = getJarFileFromUrl(url);
             extractResourcePathFromJar(cl, jarFile, resourcePath, dest);
         } else {
             try {
                 File resourceFile = new File(new URI(url.toExternalForm()));
-                if (!alwaysExtract) return resourceFile;
+                if (!alwaysExtract) {
+                    return resourceFile;
+                }
                 if (resourceFile.isDirectory()) {
                     LauncherUtils.copyDirectory(resourceFile, dest);
                 } else {

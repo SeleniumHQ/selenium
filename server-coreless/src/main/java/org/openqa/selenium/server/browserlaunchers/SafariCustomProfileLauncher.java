@@ -29,11 +29,10 @@ import java.io.*;
 
 public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
 
-    static Log log = LogFactory.getLog(SafariCustomProfileLauncher.class);
+    private final static Log LOGGER = LogFactory.getLog(SafariCustomProfileLauncher.class);
 
     private static final String REDIRECT_TO_GO_TO_SELENIUM = "redirect_to_go_to_selenium.htm";
 
-    //    private int port;
     protected File customProfileDir;
     protected String[] cmdarray;
     private boolean closed = false;
@@ -47,15 +46,22 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
 
     protected static AsyncExecute exe = new AsyncExecute();
 
+
     public SafariCustomProfileLauncher(RemoteControlConfiguration configuration, String sessionId) {
         this(configuration, sessionId, (String) null);
     }
 
+
     public SafariCustomProfileLauncher(RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
-        this(configuration, sessionId, ApplicationRegistry.instance().browserInstallationCache().locateBrowserInstallation("safari", browserLaunchLocation, new SafariLocator()));
+        this(configuration, sessionId,
+             ApplicationRegistry.instance().browserInstallationCache().locateBrowserInstallation(
+                     "safari", browserLaunchLocation, new SafariLocator()));
     }
 
-    public SafariCustomProfileLauncher(RemoteControlConfiguration configuration, String sessionId, BrowserInstallation browserInstallation) {
+    
+    public SafariCustomProfileLauncher(RemoteControlConfiguration configuration, String sessionId,
+                                       BrowserInstallation browserInstallation) {
+        
         super(sessionId, configuration);
         this.browserInstallation = browserInstallation;
 
@@ -66,32 +72,38 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
         customProfileDir = LauncherUtils.createCustomProfileDir(sessionId);
     }
 
+    
     protected void launch(String url) {
         try {
             if (getConfiguration().shouldOverrideSystemProxy()) {
                 setupSystemProxy();
             }
+
             if (SeleniumServer.isEnsureCleanSession()) {
                 ensureCleanSession();
             }
 
-            cmdarray = new String[]{browserInstallation.launcherFilePath()};
-            if (Os.isFamily("mac")) {
-                final String redirectHtmlFileName;
-
-                redirectHtmlFileName = makeRedirectionHtml(customProfileDir, url);
-                log.info("Launching Safari to visit '" + url + "' via '" + redirectHtmlFileName + "'...");
-                cmdarray = new String[]{browserInstallation.launcherFilePath(), redirectHtmlFileName};
-            } else {
-                log.info("Launching Safari ...");
-                cmdarray = new String[]{browserInstallation.launcherFilePath(), "-url", url};
-            }
-
-            exe.setCommandline(cmdarray);
-            process = exe.asyncSpawn();
+            launchSafari(url);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    protected void launchSafari(String url) throws IOException {
+        cmdarray = new String[]{browserInstallation.launcherFilePath()};
+        if (Os.isFamily("mac")) {
+            final String redirectHtmlFileName;
+
+            redirectHtmlFileName = makeRedirectionHtml(customProfileDir, url);
+            LOGGER.info("Launching Safari to visit '" + url + "' via '" + redirectHtmlFileName + "'...");
+            cmdarray = new String[]{browserInstallation.launcherFilePath(), redirectHtmlFileName};
+        } else {
+            LOGGER.info("Launching Safari ...");
+            cmdarray = new String[]{browserInstallation.launcherFilePath(), "-url", url};
+        }
+
+        exe.setCommandline(cmdarray);
+        process = exe.asyncSpawn();
     }
 
     public void close() {
@@ -107,10 +119,10 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
         if (process == null) {
             return;
         }
-        log.info("Killing Safari...");
+        LOGGER.info("Killing Safari...");
         exitValue = AsyncExecute.killProcess(process);
         if (exitValue == 0) {
-            log.warn("Safari seems to have ended on its own (did we kill the real browser???)");
+            LOGGER.warn("Safari seems to have ended on its own (did we kill the real browser???)");
         }
         closed = true;
 
@@ -118,11 +130,11 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
             File sessionCookieFile = new File(originalCookieFilePath);
             boolean success = sessionCookieFile.delete();
             if (success) {
-                log.info("Session's cookie file deleted.");
+                LOGGER.info("Session's cookie file deleted.");
             } else {
-                log.info("Session's cookie *not* deleted.");
+                LOGGER.info("Session's cookie *not* deleted.");
             }
-            log.info("Trying to restore originalCookieFile...");
+            LOGGER.info("Trying to restore originalCookieFile...");
             originalCookieFile = new File(originalCookieFilePath);
             LauncherUtils.copySingleFile(backedUpCookieFile, originalCookieFile);
         }
@@ -150,11 +162,11 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
             }
         }
 
-        log.info("originalCookieFilePath: " + originalCookieFilePath);
+        LOGGER.info("originalCookieFilePath: " + originalCookieFilePath);
 
         String backedUpCookieFilePath = customProfileDir.toString() + "/Cookies.plist";
         backedUpCookieFile = new File(backedUpCookieFilePath);
-        log.info("backedUpCookieFilePath: " + backedUpCookieFilePath);
+        LOGGER.info("backedUpCookieFilePath: " + backedUpCookieFilePath);
 
         if (originalCookieFile.exists()) {
             LauncherUtils.copySingleFile(originalCookieFile, backedUpCookieFile);
@@ -165,19 +177,29 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
 
     protected String makeRedirectionHtml(File parentDir, String url) {
         File f = new File(parentDir, REDIRECT_TO_GO_TO_SELENIUM);
-        PrintStream out;
+        PrintStream out = null;
+        FileOutputStream fileOutputStream = null;
+        
         try {
-            out = new PrintStream(new FileOutputStream(f));
+            fileOutputStream = new FileOutputStream(f);
+            out = new PrintStream(fileOutputStream);
+            out.println("<script language=\"JavaScript\">\n" +
+                        "    location = \"" + url + "\"\n" +
+                        "</script>\n");            
         } catch (FileNotFoundException e) {
             throw new RuntimeException("troublemaking redirection HTML: " + e);
+        } finally {
+            if (null != out) {
+                out.close();
+            }
+            if (null != fileOutputStream) {
+                try {
+                    fileOutputStream.close();
+                } catch (IOException e) {
+                    LOGGER.warn("Ignoring exception while closing HTML redirection stream", e);
+                }
+            }
         }
-        out.println("<script language=\"JavaScript\">\n" +
-                "    location = \"" +
-                url +
-                "\"\n" +
-                "</script>\n" +
-                "");
-        out.close();
         return f.getAbsolutePath();
     }
 

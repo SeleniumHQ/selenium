@@ -148,10 +148,11 @@ public class LauncherUtils {
 	}
 
 	protected static String getQueryString(String url) {
+        final String query;
+
 		try {
-			URL u = new URL(url);
-			String query = u.getQuery();
-			return query == null ? "" : query;
+            query = new URL(url).getQuery();
+            return query == null ? "" : query;
 		} catch (MalformedURLException e) {
 			throw new RuntimeException(e);
 		}
