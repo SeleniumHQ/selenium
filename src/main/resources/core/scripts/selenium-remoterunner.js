@@ -615,6 +615,21 @@ Selenium.prototype.doCaptureScreenshotToString = function() {
     // This doesn't really do anything on the JS side; we let the Selenium Server take care of this for us!
 };
 
+Selenium.prototype.doCaptureEntirePageScreenshotToString = function(kwargs) {
+    /**
+    * Downloads a screenshot of the browser current window canvas to a 
+    * based 64 encoded PNG file. The <em>entire</em> windows canvas is captured,
+    * including parts rendered outside of the current view port.
+    *
+	* Currently this only works in Mozilla and when running in chrome mode. 
+    * 
+    * @param kwargs  A kwargs string that modifies the way the screenshot is captured. Example: "background=#CCFFDD". This may be useful to set for capturing screenshots of less-than-ideal layouts, for example where absolute positioning causes the calculation of the canvas dimension to fail and a black background is exposed  (possibly obscuring black text).
+    *
+    * @return string The base 64 encoded string of the page screenshot (PNG file)
+    */
+    // This doesn't really do anything on the JS side; we let the Selenium Server take care of this for us!
+};
+
 Selenium.prototype.doShutDownSeleniumServer = function(keycode) {
     /**
     * Kills the running Selenium Server and all browser sessions.  After you run this command, you will no longer be able to send
