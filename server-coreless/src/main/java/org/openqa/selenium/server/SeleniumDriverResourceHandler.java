@@ -18,7 +18,6 @@
 package org.openqa.selenium.server;
 
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.Get;
@@ -35,13 +34,15 @@ import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
 import org.openqa.selenium.server.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
+import org.openqa.selenium.server.commands.CaptureScreenshotCommand;
+import org.openqa.selenium.server.commands.CaptureScreenshotToStringCommand;
+import org.openqa.selenium.server.commands.RetrieveLastRemoteControlLogsCommand;
+import org.openqa.selenium.server.commands.CaptureEntirePageScreenshotToStringCommand;
+import org.openqa.selenium.server.commands.SeleniumCoreCommand;
 import org.openqa.selenium.server.htmlrunner.HTMLLauncher;
 import org.openqa.selenium.server.log.AntJettyLoggerBuildListener;
-import org.openqa.selenium.server.log.LoggingManager;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -59,8 +60,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.Vector;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
 
 /**
  * A Jetty handler that takes care of remote Selenium requests.
@@ -73,7 +72,7 @@ import java.util.concurrent.TimeoutException;
  */
 @SuppressWarnings("serial")
 public class SeleniumDriverResourceHandler extends ResourceHandler {
-    static final Log logger = LogFactory.getLog(SeleniumDriverResourceHandler.class);
+    static final Log LOGGER = LogFactory.getLog(SeleniumDriverResourceHandler.class);
     static Log browserSideLog = LogFactory.getLog(SeleniumDriverResourceHandler.class.getName()+".browserSideLog");
     
     private SeleniumServer remoteControl;
@@ -106,7 +105,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
 
     @Override public void handle(String pathInContext, String pathParams, HttpRequest req, HttpResponse res) throws HttpException, IOException {
         try {
-            logger.debug("Thread name: " + Thread.currentThread().getName());
+            LOGGER.debug("Thread name: " + Thread.currentThread().getName());
             res.setField(HttpFields.__ContentType, "text/plain");
             setNoCacheHeaders(res);
 
@@ -124,7 +123,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             boolean retrying = "true".equals(retry);
             boolean closing = "true".equals(closingParam);
 
-            logger.debug("req: "+req);
+            LOGGER.debug("req: "+req);
             // If this is a browser requesting work for the first time...
             if (cmd != null) {
                 handleCommandRequest(req, res, cmd, sessionId);
@@ -136,14 +135,14 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 // ignore failure to find these items...
             }
             else {
-                logger.debug("Not handling: " + req.getRequestURL() + "?" + req.getQuery());
+                LOGGER.debug("Not handling: " + req.getRequestURL() + "?" + req.getQuery());
                 req.setHandled(false);
             }
         } catch (RuntimeException e) {
             if (looksLikeBrowserLaunchFailedBecauseFileNotFound(e)) {
                 String apparentFile = extractNameOfFileThatCouldntBeFound(e);
                 if (apparentFile!=null) {
-                    logger.error("Could not start browser; it appears that " + apparentFile + " is missing or inaccessible");
+                    LOGGER.error("Could not start browser; it appears that " + apparentFile + " is missing or inaccessible");
                 }
             }
             throw e;
@@ -207,7 +206,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         if (justLoaded) {
             sb.append(" NEW");
         }
-        logger.debug(sb.toString());
+        LOGGER.debug(sb.toString());
     }
 
     private void respond(HttpResponse res, RemoteCommand sc, String uniqueId) throws IOException {
@@ -215,10 +214,10 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         Writer writer = new OutputStreamWriter(buf, StringUtil.__UTF_8);
         if (sc!=null) {
             writer.write(sc.toString());
-            logger.debug("res to " + uniqueId +
+            LOGGER.debug("res to " + uniqueId +
                     ": " + sc.toString());
         } else {
-            logger.debug("res empty");
+            LOGGER.debug("res empty");
         }
         for (int pad = 998 - buf.size(); pad-- > 0;) {
             writer.write(" ");
@@ -382,7 +381,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     }
 
     public String doCommand(String cmd, Vector<String> values, String sessionId, HttpResponse res) {
-        logger.info("Command request: " + cmd + values.toString() + " on session " + sessionId);
+        LOGGER.info("Command request: " + cmd + values.toString() + " on session " + sessionId);
         String results = null;
         // handle special commands
         if ("getNewBrowserSession".equals(cmd)) {
@@ -396,17 +395,19 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             } catch (RemoteCommandException rce) {
                 results = "Failed to start new browser session: " + rce.getMessage();
             }
-        } else if ("getLogMessages".equals(cmd)) {
-            results = "OK," + logMessagesBuffer.toString();
-            logMessagesBuffer.setLength(0);
         } else if ("testComplete".equals(cmd)) {
             browserSessionFactory.endBrowserSession(sessionId, remoteControl.getConfiguration());
             results = "OK";
         } else if ("shutDown".equals(cmd) || "shutDownSeleniumServer".equals(cmd)) {
             results = null;
             shutDown(res);
-        } else if (Command.RETRIEVE_LAST_REMOTE_CONTROL_LOGS.equals(cmd)) {
-            results = "OK," + LoggingManager.shortTermMemoryHandler().formattedRecords();
+        } else if ("getLogMessages".equals(cmd)) {
+            results = "OK," + logMessagesBuffer.toString();
+            logMessagesBuffer.setLength(0);
+        } else if (RetrieveLastRemoteControlLogsCommand.ID.equals(cmd)) {
+            results = new RetrieveLastRemoteControlLogsCommand().execute();
+        } else if (CaptureEntirePageScreenshotToStringCommand.ID.equals(cmd)) {
+            results = new CaptureEntirePageScreenshotToStringCommand(values.get(0), sessionId).execute();
         } else if("attachFile".equals(cmd)) {
           FrameGroupCommandQueueSet queue = FrameGroupCommandQueueSet.getQueueSet(sessionId);
           try {
@@ -416,27 +417,16 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
           } catch (Exception e) {
             results = e.toString();
           }
-        } else if ("captureScreenshot".equals(cmd)) {
-            try {
-                captureScreenshot(values.get(0));
-                results = "OK";
-            } catch (Exception e) {
-                logger.error("Problem capturing screenshot", e);
-                results = "ERROR: Problem capturing screenshot: " + e.getMessage();
-            } 
-        } else if (Command.CAPTURE_SCREENSHOT_TO_STRING.equals(cmd)) {
-            try {
-                results = captureScreenshotToString();
-            } catch (Exception e) {
-                logger.error("Problem capturing a screenshot to string", e);
-                results = "ERROR: Problem capturing a screenshot to string: " + e.getMessage();
-            }  
+        } else if (CaptureScreenshotCommand.ID.equals(cmd)) {
+            results = new CaptureScreenshotCommand(values.get(0)).execute();
+        } else if (CaptureScreenshotToStringCommand.ID.equals(cmd)) {
+                results = new CaptureScreenshotToStringCommand().execute();
         } else if ("keyDownNative".equals(cmd)) {
             try {
                 RobotRetriever.getRobot().keyPress(Integer.parseInt(values.get(0)));
                 results = "OK";
             } catch (Exception e) {
-                logger.error("Problem during keyDown: ", e);
+                LOGGER.error("Problem during keyDown: ", e);
                 results = "ERROR: Problem during keyDown: " + e.getMessage();
             }
         } else if ("keyUpNative".equals(cmd)) {
@@ -444,7 +434,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 RobotRetriever.getRobot().keyRelease(Integer.parseInt(values.get(0)));
                 results = "OK";
             } catch (Exception e) {
-                logger.error("Problem during keyUp: ", e);
+                LOGGER.error("Problem during keyUp: ", e);
                 results = "ERROR: Problem during keyUp: " + e.getMessage();
             }
         } else if ("keyPressNative".equals(cmd)) {
@@ -456,7 +446,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 r.keyRelease(keycode);
                 results = "OK";
             } catch (Exception e) {
-                logger.error("Problem during keyDown: ", e);
+                LOGGER.error("Problem during keyDown: ", e);
                 results = "ERROR: Problem during keyDown: " + e.getMessage();
             }
         // TODO typeKeysNative.  Requires converting String to array of keycodes.
@@ -522,28 +512,41 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         } else {
             if ("open".equals(cmd)) {
                 warnIfApparentDomainChange(sessionId, values.get(0));
-            }
-            try {
-                FrameGroupCommandQueueSet queue = FrameGroupCommandQueueSet.getQueueSet(sessionId);
-                logger.debug("Session "+sessionId+" going to doCommand("+cmd+','+values.get(0)+','+values.get(1) + ")");
-                results = queue.doCommand(cmd, values.get(0), values.get(1));
-            } catch (Exception e) {
-                logger.error("Exception running command", e);
-                results = "ERROR Server Exception: " + e.getMessage();
-            }
+            }            
+            results = new SeleniumCoreCommand(cmd, values, sessionId).execute();
         }
 
-        if (Command.CAPTURE_SCREENSHOT_TO_STRING.equals(cmd)) {
-            logger.info("Got result: [base64 encoded PNG] on session " + sessionId);
-        } else if (Command.RETRIEVE_LAST_REMOTE_CONTROL_LOGS.equals(cmd)) {
+        if (CaptureScreenshotToStringCommand.ID.equals(cmd)) {
+            LOGGER.info("Got result: [base64 encoded PNG] on session " + sessionId);
+        } else if (RetrieveLastRemoteControlLogsCommand.ID.equals(cmd)) {
             /* Trim logs to avoid Larsen effect (see remote control stability tests) */
-            logger.info("Got result:" + results.substring(0, 30) + "... on session " + sessionId);
+            LOGGER.info("Got result:" + results.substring(0, 30) + "... on session " + sessionId);
         } else {
-            logger.info("Got result: " + results + " on session " + sessionId);
+            LOGGER.info("Got result: " + results + " on session " + sessionId);
         }
         return results;
 
     }
+
+    private void warnIfApparentDomainChange(String sessionId, String url) {
+        if (url.startsWith("http://")) {
+            String urlDomain = url.replaceFirst("^(http://[^/]+, url)/.*", "$1");
+            String domain = getDomain(sessionId);
+            if (domain==null) {
+                setDomain(sessionId, urlDomain);
+            }
+            else if (!url.startsWith(domain)) {
+                LOGGER.warn("you appear to be changing domains from " + domain + " to " + urlDomain + "\n"
+                                   + "this may lead to a 'Permission denied' from the browser (unless it is running as *iehta or *chrome,\n"
+                                   + "or alternatively the selenium server is running in proxy injection mode)");
+            }
+        }
+    }
+
+    private String getDomain(String sessionId) {
+        return domainsBySessionId.get(sessionId);
+    }
+    
 
     private Vector<String> parseSeleneseParameters(HttpRequest req) {
         Vector<String> values = new Vector<String>();
@@ -576,7 +579,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         File outputFile = FileUtils.getFileUtils().createTempFile("se-", fileType, null);
         outputFile.deleteOnExit(); // to be on the safe side.
         Project p = new Project();
-        p.addBuildListener(new AntJettyLoggerBuildListener(logger));
+        p.addBuildListener(new AntJettyLoggerBuildListener(LOGGER));
         Get g = new Get();
         g.setProject(p);
         g.setSrc(url);
@@ -616,41 +619,12 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
        }
     }
 
-    private void captureScreenshot(String fileName) throws IOException, InterruptedException, ExecutionException, TimeoutException {
-        Robot robot = RobotRetriever.getRobot();
-        Rectangle captureSize = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
-        BufferedImage bufferedImage = robot.createScreenCapture(captureSize);
-        File outFile = new File(fileName);
-        ImageIO.write(bufferedImage, "png", outFile);
-        
-    }
-
-    /**
-     *  This method captures a full screen shot of the current screen using the 
-     *  Robot class.  
-     *  
-     * @return a base 64 encoded string of the screenshot (a png image file)
-     * @throws InterruptedException
-     * @throws ExecutionException
-     * @throws TimeoutException
-     * @throws IOException
-     */
-    private String captureScreenshotToString() throws InterruptedException, ExecutionException, TimeoutException, IOException {
-        Robot robot = RobotRetriever.getRobot();
-        Rectangle captureSize = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
-        BufferedImage bufferedImage = robot.createScreenCapture(captureSize);
-        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-        ImageIO.write(bufferedImage, "png", outStream);
-        byte[] encodedData = Base64.encodeBase64(outStream.toByteArray());
-        return "OK," + new String(encodedData);
-    }
-
     private void shutDown(HttpResponse res) {
-        logger.info("Shutdown command received");
+        LOGGER.info("Shutdown command received");
         
         Runnable initiateShutDown = new Runnable() {
             public void run() {
-                logger.info("initiating shutdown");
+                LOGGER.info("initiating shutdown");
                 AsyncExecute.sleepTight(500);
                 System.exit(0);
             }
@@ -669,21 +643,6 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             }
         }
         
-    }
-
-    private void warnIfApparentDomainChange(String sessionId, String url) {
-        if (url.startsWith("http://")) {
-            String urlDomain = url.replaceFirst("^(http://[^/]+, url)/.*", "$1");
-            String domain = getDomain(sessionId);
-            if (domain==null) {
-                setDomain(sessionId, urlDomain);
-            }
-            else if (!url.startsWith(domain)) {
-                logger.warn("you appear to be changing domains from " + domain + " to " + urlDomain + "\n"
-                                   + "this may lead to a 'Permission denied' from the browser (unless it is running as *iehta or *chrome,\n"
-                                   + "or alternatively the selenium server is running in proxy injection mode)");
-            }
-        }
     }
 
     private String generateNewSessionId() {
@@ -778,10 +737,6 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
 
     private void setDomain(String sessionId, String domain) {
         domainsBySessionId.put(sessionId, domain);
-    }
-
-    private String getDomain(String sessionId) {
-        return domainsBySessionId.get(sessionId);
     }
 
     public static String getLastSessionId() {

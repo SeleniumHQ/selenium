@@ -30,17 +30,35 @@ public class LauncherUtils {
 	 * creates an empty temp directory for managing a browser profile
 	 */
 	protected static File createCustomProfileDir(String sessionId) {
-		File tmpDir = new File(System.getProperty("java.io.tmpdir"));
-		String customProfileDirParent = ((tmpDir.exists() && tmpDir.isDirectory()) ? tmpDir.getAbsolutePath() : ".");
-		File customProfileDir = new File(customProfileDirParent + "/customProfileDir" + sessionId);
-		if (customProfileDir.exists()) {
+        final File customProfileDir;
+
+        customProfileDir = customProfileDir(sessionId);
+        if (customProfileDir.exists()) {
 			LauncherUtils.recursivelyDeleteDir(customProfileDir);
 		}
 		customProfileDir.mkdir();
 		return customProfileDir;
 	}
 
-	/**
+    /**
+     * Return the name of the custom profile directory for a specific seleniumm session
+     *
+     * @param sessionId  Current selenium sesssion id. Cannot be null.
+     * @return file path of the custom profile directory for this session.
+     */
+    public static File customProfileDir(String sessionId) {
+        final File tmpDir;
+        final String customProfileDirParent;
+        final File customProfileDir;
+
+        tmpDir = new File(System.getProperty("java.io.tmpdir"));
+        customProfileDirParent = ((tmpDir.exists() && tmpDir.isDirectory()) ? tmpDir.getAbsolutePath() : ".");
+        customProfileDir = new File(customProfileDirParent + "/customProfileDir" + sessionId);
+        
+        return customProfileDir;
+    }
+
+    /**
 	 * Delete a directory and all subdirectories
 	 */
 	public static void recursivelyDeleteDir(File customProfileDir) {
