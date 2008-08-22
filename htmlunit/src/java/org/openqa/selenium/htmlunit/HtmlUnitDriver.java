@@ -440,6 +440,14 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
             return HtmlUnitDriver.this;
         }
 
+        public Iterable<WebDriver> windowIterable() {
+            return new Iterable<WebDriver>() {
+              public Iterator<WebDriver> iterator() {
+                return new HtmlUnitDriverIterator();
+              }
+            };
+        }
+
         public WebDriver defaultContent() {
             pickWindow();
             return HtmlUnitDriver.this;
@@ -622,6 +630,33 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
             }
             return hostName;
         }
+    }
 
+    private class HtmlUnitDriverIterator implements Iterator<WebDriver> {
+      private Iterator<WebWindow> underlyingIterator;
+
+      public HtmlUnitDriverIterator() {
+        List<WebWindow> allWindows = new ArrayList<WebWindow>();
+        for (WebWindow window : webClient.getWebWindows()) {
+          WebWindow top = window.getTopWindow();
+          if (!allWindows.contains(top))
+            allWindows.add(top);
+        }
+
+        underlyingIterator = allWindows.iterator();
+      }
+
+      public boolean hasNext() {
+        return underlyingIterator.hasNext();
+      }
+
+      public WebDriver next() {
+        WebWindow window = underlyingIterator.next();
+        return new HtmlUnitDriver(isJavascriptEnabled(), window);
+      }
+
+      public void remove() {
+        throw new UnsupportedOperationException("remove");
+      }
     }
 }
