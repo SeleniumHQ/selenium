@@ -27,19 +27,6 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
         driver.get(xhtmlTestPage);
     }
 
-    public void testShouldSwitchFocusToANewWindowWhenItIsOpenedAndNotStopFutureOperations() {
-        driver.get(xhtmlTestPage);
-
-        driver.findElement(By.linkText("Open new window")).click();
-        assertThat(driver.getTitle(), equalTo("XHTML Test Page"));
-
-        driver.switchTo().window("result");
-        assertThat(driver.getTitle(), equalTo("We Arrive Here"));
-
-        driver.get(iframePage);
-        driver.findElement(By.id("iframe_page_heading"));
-    }
-
     @NeedsFreshDriver
     @Ignore(value = "firefox", reason = "Need to figure out how to open a new browser instance mid-test")
     public void testShouldWaitUntilBrowserHasClosedProperly() throws Exception {

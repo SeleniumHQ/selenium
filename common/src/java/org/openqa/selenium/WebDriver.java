@@ -261,7 +261,7 @@ public interface WebDriver {
         /**
          * Selects either the first frame on the page, or the main document when a page contains iframes.
          */
-		WebDriver defaultContent();
+          WebDriver defaultContent();
 
         /**
          * Switches to the element that currently has focus, or the body element if this cannot be detected.
