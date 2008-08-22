@@ -18,7 +18,34 @@ end
 
 task :default => [:test]
 
-task :build => [:common, :htmlunit, :firefox, :jobbie, :safari, :support, :remote, :selenium]
+def present?(arg)
+  prefixes = ENV['PATH'].split(File::PATH_SEPARATOR)
+
+  matches = prefixes.select do |prefix|
+    File.exists?(prefix + File::SEPARATOR + arg)
+  end
+  
+  matches.length > 0
+end
+
+task :prebuild do
+  # Check that common tools are available
+  %w(java jar).each do |exe|
+    if (!present?(exe) && !present?(exe + ".exe")) then
+      puts "Cannot locate '#{exe}' which is required for the build"
+      exit -1
+    end
+  end
+
+  if windows? then
+    if (!present?("msbuild.exe")) then
+      puts "Cannot locate '#{exe}' which is required for the build"
+      exit -1
+    end
+  end
+end
+
+task :build => [:prebuild, :common, :htmlunit, :firefox, :jobbie, :safari, :support, :remote, :selenium]
 
 task :clean do
   rm_rf 'common/build'
@@ -31,7 +58,7 @@ task :clean do
   rm_rf 'build/'
 end
 
-task :test => [:test_htmlunit, :test_firefox, :test_jobbie, :test_safari, :test_support, :test_remote] do 
+task :test => [:prebuild, :test_htmlunit, :test_firefox, :test_jobbie, :test_safari, :test_support, :test_remote] do 
 end
 
 task :install_firefox => [:firefox] do  
