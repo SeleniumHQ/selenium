@@ -176,6 +176,18 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Ignore("safari")
+  public void testIssue80ClickShouldGenerateClickEvent() {
+    driver.get(javascriptPage);
+    WebElement element = driver.findElement(By.id("clickField"));
+    assertEquals("Hello", element.getValue());
+
+    element.click();
+
+    assertEquals("Clicked", element.getValue());
+  }
+
+  @JavascriptEnabled
   @Ignore("safari, htmlunit")
   public void testShouldBeAbleToSwitchToFocusedElement() {
     driver.get(javascriptPage);

@@ -44,12 +44,11 @@ FirefoxDriver.prototype.click = function(respond) {
         var doClick = function() {
 	        // Now do the click. I'm a little surprised that this works as often as it does:
 	        // http://developer.mozilla.org/en/docs/DOM:element.click#Notes
-	        if (element["click"]) {
-	            element.click();
-	        } else {
+//	        if (element["click"]) {
+//	            element.click();
+//	        }
 	            // Or just send the click event.
 	            fireMouseEventOn(driver.context, element, "click");
-	        }
 	        
 	        contentWindow.setTimeout(checkForLoad, 50);
         };

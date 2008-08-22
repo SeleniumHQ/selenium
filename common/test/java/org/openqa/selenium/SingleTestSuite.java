@@ -13,7 +13,9 @@ public class SingleTestSuite {
   private final static String SAFARI = "org.openqa.selenium.safari.SafariDriver";
 
   public static Test suite() throws Exception {
-    String driver = IE;
+    String driver = FIREFOX;
+
+    System.setProperty("webdriver.firefox.useExisting", "true");
 
     TestSuiteBuilder builder = new TestSuiteBuilder()
     	.addSourceDir("../common")
@@ -22,7 +24,7 @@ public class SingleTestSuite {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("FrameSwitchingTest")
+        .onlyRun("JavascriptEnabledDriverTest")
 //         .method("testShouldSelectChildFramesByUsingADotSeparatedString")
 //        .exclude("ie")
 //        .leaveRunning()
