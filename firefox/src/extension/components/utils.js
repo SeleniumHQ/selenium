@@ -29,6 +29,30 @@ Utils.getDocument = function(context) {
     return context.fxdocument;
 };
 
+Utils.getActiveElement = function(context) {
+  var doc = Utils.getDocument(context);
+
+  var element;
+  if (doc["activeElement"]) {
+    element = doc.activeElement;
+  } else {
+    var commandDispatcher = Utils.getBrowser(context).ownerDocument.commandDispatcher;
+
+    doc = Utils.getDocument(context);
+    element = commandDispatcher.focusedElement;
+
+    if (element && Utils.getDocument(context) != element.ownerDocument)
+      element = null;
+  }
+
+  // Default to the body
+  if (!element) {
+    element = Utils.getDocument(context).body;
+  }
+
+  return element;
+}
+
 function getTextFromNode(node, toReturn, textSoFar, isPreformatted) {
     var children = node.childNodes;
 

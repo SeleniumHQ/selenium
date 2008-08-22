@@ -207,4 +207,20 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
 
     assertThat(element.getAttribute("name"), is("body"));
   }
+
+  @JavascriptEnabled
+  @Ignore("safari, htmlunit, ie")
+  public void testChangeEventIsFiredAppropriatelyWhenFocusIsLost() {
+    driver.get(javascriptPage);
+
+    WebElement input = driver.findElement(By.id("changeable"));
+    input.sendKeys("test");
+    driver.findElement(By.id("clickField")).click(); // move focus
+    assertThat(driver.findElement(By.id("result")).getText().trim(), is("focus change blur"));
+
+    input.sendKeys(Keys.BACK_SPACE, "t");
+    driver.findElement(By.xpath("//body")).click();  // move focus
+
+    assertThat(driver.findElement(By.id("result")).getText().trim(), is("focus change blur focus blur"));
+  }
 }

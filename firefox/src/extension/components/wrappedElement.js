@@ -1,6 +1,8 @@
 FirefoxDriver.prototype.click = function(respond) {
     respond.context = this.context;
 
+    var currentlyActive = Utils.getActiveElement(this.context);
+
     var element = Utils.getElementAt(respond.elementId, this.context);
     if (!element) {
         respond.send();
@@ -23,7 +25,11 @@ FirefoxDriver.prototype.click = function(respond) {
 
     var clickEvents = function() {
         fireMouseEventOn(driver.context, element, "mousedown");
-        element.focus();
+        if (element != currentlyActive) {
+          currentlyActive.blur();
+          element.focus();
+        }
+        
         fireMouseEventOn(driver.context, element, "mouseup");
 
         var checkForLoad = function() {
@@ -99,7 +105,11 @@ FirefoxDriver.prototype.sendKeys = function(respond, value) {
 
     var element = Utils.getElementAt(respond.elementId, this.context);
 
-    element.focus();
+  var currentlyActive = Utils.getActiveElement(this.context);
+  if (currentlyActive != element) {
+      currentlyActive.blur();
+      element.focus();
+  }
     Utils.type(this.context, element, value[0]);
 
     respond.context = this.context;

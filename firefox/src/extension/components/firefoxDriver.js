@@ -299,26 +299,8 @@ FirefoxDriver.prototype.switchToDefaultContent = function(respond) {
 }
 
 FirefoxDriver.prototype.switchToActiveElement = function(respond) {
-  var doc = Utils.getDocument(this.context);
-
-  var element;
-  if (doc["activeElement"]) {
-    element = doc.activeElement;
-  } else {
-    var commandDispatcher = Utils.getBrowser(this.context).ownerDocument.commandDispatcher;
-
-    doc = Utils.getDocument(this.context);
-    element = commandDispatcher.focusedElement;
-
-    if (element && Utils.getDocument(this.context) != element.ownerDocument)
-      element = null;
-  }
-
-  // Default to the body
-  if (!element) {
-    element = Utils.getDocument(this.context).body;
-  }
-
+  var element = Utils.getActiveElement(this.context);
+  
   respond.response = Utils.addToKnownElements(element, this.context);
   respond.send();
 };
