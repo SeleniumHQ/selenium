@@ -201,6 +201,10 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
             return null; // For the sake of getting us off the ground
         }
 
+        public Iterable<WebDriver> windowIterable() {
+            throw new UnsupportedOperationException("windowIterable");
+        }
+
         public WebDriver defaultContent() {
             return frame("");
         }

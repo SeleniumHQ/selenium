@@ -227,16 +227,16 @@ public interface WebDriver {
 	 */
     public interface TargetLocator {
         /**
-		 * Select a frame by its (zero-based) index. That is, if a page has
-		 * three frames, the first frame would be at index "0", the second at
-		 * index "1" and the third at index "2". Once the frame has been
-		 * selected, all subsequent calls on the WebDriver interface are made to
-		 * that frame.
-		 * 
-		 * @param frameIndex
-		 * @return A driver focused on the given frame
+         * Select a frame by its (zero-based) index. That is, if a page has
+         * three frames, the first frame would be at index "0", the second at
+         * index "1" and the third at index "2". Once the frame has been
+         * selected, all subsequent calls on the WebDriver interface are made to
+         * that frame.
+         *
+         * @param frameIndex
+         * @return A driver focused on the given frame
          * @throws NoSuchFrameException If the frame cannot be found
-		 */
+         */
         WebDriver frame(int frameIndex);
 
         /**
@@ -257,6 +257,13 @@ public interface WebDriver {
          * @return A driver focused on the given window
          */
         WebDriver window(String windowName);
+
+      /**
+       * Provides a mechanism to iterate over every open browser window.  
+       *
+       * @return An iterable of current open windows.
+       */
+        Iterable<WebDriver> windowIterable();
 
         /**
          * Selects either the first frame on the page, or the main document when a page contains iframes.

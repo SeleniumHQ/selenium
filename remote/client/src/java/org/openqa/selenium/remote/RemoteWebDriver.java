@@ -444,6 +444,10 @@ public class RemoteWebDriver implements WebDriver, SearchContext, JavascriptExec
       return RemoteWebDriver.this;
     }
 
+    public Iterable<WebDriver> windowIterable() {
+      throw new UnsupportedOperationException("windowIterable");
+    }
+
     public WebDriver defaultContent() {
       execute("switchToFrame", map("id", null));
       return RemoteWebDriver.this;

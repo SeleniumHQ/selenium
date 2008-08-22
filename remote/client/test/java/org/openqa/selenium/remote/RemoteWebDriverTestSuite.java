@@ -23,6 +23,7 @@ public class RemoteWebDriverTestSuite {
             .includeJavascriptTests()
             .usingDriver(RemoteWebDriverForTest.class)
             .exclude("firefox")
+            .exclude("remote")
             .create();
 
     TestSuite toReturn = new TestSuite();

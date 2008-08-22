@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.Map;
+import java.util.Iterator;
 
 
 /**
@@ -528,7 +529,16 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
             return FirefoxDriver.this;
         }
 
-        public WebDriver defaultContent() {
+      public Iterable<WebDriver> windowIterable() {
+        final String handles = sendMessage(RuntimeException.class, "getAllWindowHandles");
+        return new Iterable<WebDriver>() {
+          public Iterator<WebDriver> iterator() {
+            return new FirefoxDriverIterator(handles);
+          }
+        };
+      }
+
+      public WebDriver defaultContent() {
             sendMessage(RuntimeException.class, "switchToDefaultContent");
             return FirefoxDriver.this;
         }
@@ -556,4 +566,26 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
         get(url);
       }
     }
+
+  private class FirefoxDriverIterator implements Iterator<WebDriver> {
+    private String[] allHandles;
+    private int index = 0;
+
+    public FirefoxDriverIterator(String handlesString) {
+      allHandles = handlesString.split(",");
+    }
+
+    public boolean hasNext() {
+      return allHandles.length > index;
+    }
+
+    public WebDriver next() {
+      // Ugh. The context needs some reworking.
+      return new FirefoxDriver(extension, new Context(allHandles[index++] + " ?"));
+    }
+
+    public void remove() {
+      throw new UnsupportedOperationException("remove");
+    }
+  }
 }

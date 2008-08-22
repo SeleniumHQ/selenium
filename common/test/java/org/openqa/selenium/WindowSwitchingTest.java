@@ -20,18 +20,45 @@ package org.openqa.selenium;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
+import java.util.Iterator;
+
 public class WindowSwitchingTest extends AbstractDriverTestCase {
+
   @Ignore("ie")
   public void testShouldSwitchFocusToANewWindowWhenItIsOpenedAndNotStopFutureOperations() {
-      driver.get(xhtmlTestPage);
+    driver.get(xhtmlTestPage);
 
-      driver.findElement(By.linkText("Open new window")).click();
-      assertThat(driver.getTitle(), equalTo("XHTML Test Page"));
+    driver.findElement(By.linkText("Open new window")).click();
+    assertThat(driver.getTitle(), equalTo("XHTML Test Page"));
 
-      driver.switchTo().window("result");
-      assertThat(driver.getTitle(), equalTo("We Arrive Here"));
+    driver.switchTo().window("result");
+    assertThat(driver.getTitle(), equalTo("We Arrive Here"));
 
-      driver.get(iframePage);
-      driver.findElement(By.id("iframe_page_heading"));
+    driver.get(iframePage);
+    driver.findElement(By.id("iframe_page_heading"));
+  }
+
+  @NeedsFreshDriver
+  @NoDriverAfterTest
+  @Ignore("ie, remote")
+  public void testShouldBeAbleToIterateOverAllOpenWindows() {
+    driver.get(xhtmlTestPage);
+    driver.findElement(By.name("windowOne")).click();
+    driver.findElement(By.name("windowTwo")).click();
+
+    Iterator<WebDriver> allWindows = driver.switchTo().windowIterable().iterator();
+
+    // There should be three windows. We should also see each of the window titles at least once.
+    //
+    allWindows.next();
+    allWindows.next();
+    allWindows.next();
+
+    assertFalse(allWindows.hasNext());
+  }
+
+
+  public void testRemovingDriversFromTheWindowIteratorShouldCloseTheUnderlyingWindow() {
+    // Not implemented yet  
   }
 }
