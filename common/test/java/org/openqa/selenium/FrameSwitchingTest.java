@@ -97,7 +97,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
         }
     }
 
-    @Ignore("ie, safari")
+    @Ignore("safari")
     public void testShouldBeAbleToFlipToAFrameIdentifiedByItsId() {
         driver.get(framesetPage);
 
@@ -110,7 +110,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
         }
     }
 
-    @Ignore("ie, safari")
+    @Ignore("safari")
     public void testShouldThrowAnExceptionWhenAFrameCannotBeFound() {
         driver.get(xhtmlTestPage);
 
@@ -122,7 +122,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
         }
     }
 
-    @Ignore("ie, safari")   
+    @Ignore("safari")   
     public void testShouldThrowAnExceptionWhenAFrameCannotBeFoundByIndex() {
         driver.get(xhtmlTestPage);
 
@@ -134,7 +134,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
         }
     }
 
-    @Ignore("ie, safari")
+    @Ignore("safari")
     public void testShouldBeAbleToFindElementsInIframesByName() {
         driver.get(iframePage);
 
@@ -144,7 +144,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
         assertNotNull(element);
     }
 
-    @Ignore("ie, safari")
+    @Ignore("safari")
     public void testShouldBeAbleToFindElementsInIframesByXPath() {
         driver.get(iframePage);
 

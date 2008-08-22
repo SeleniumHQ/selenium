@@ -12,6 +12,7 @@ public class InternetExplorerDriverTestSuite extends TestCase {
 					.addSourceDir("jobbie")
 					.usingDriver(InternetExplorerDriver.class)
 					.exclude("ie")
+					.includeJavascriptTests()
 					.keepDriverInstance()
 					.create();
 	}

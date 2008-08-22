@@ -6,7 +6,7 @@ import static org.hamcrest.Matchers.is;
 import java.util.List;
 
 public class ChildrenFindingTest extends AbstractDriverTestCase {
-    @Ignore("ie, safari")
+    @Ignore("safari")
     public void testFindElementByXPath() {
         driver.get(nestedPage);
         WebElement element = driver.findElement(By.name("form2"));
@@ -14,7 +14,7 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
         assertThat(child.getAttribute("id"),  is("2"));
     }
     
-    @Ignore("ie, safari")
+    @Ignore("safari")
     public void testFindElementByXPathWhenNoMatch() {
         driver.get(nestedPage);
         WebElement element = driver.findElement(By.name("form2"));
@@ -26,7 +26,7 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
         fail();
     }
 
-    @Ignore("ie, safari")
+    @Ignore("safari")
     public void testfindElementsByXPath() {
         driver.get(nestedPage);
         WebElement element = driver.findElement(By.name("form2"));
@@ -36,7 +36,7 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
         assertThat(children.get(1).getText(), is("Two"));
     }
     
-    @Ignore("ie, safari")
+    @Ignore("safari")
     public void testfindElementsByXPathWhenNoMatch() {
         driver.get(nestedPage);
         WebElement element = driver.findElement(By.name("form2"));

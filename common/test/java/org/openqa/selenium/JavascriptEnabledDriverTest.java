@@ -113,7 +113,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     }
 
     @JavascriptEnabled
-	@Ignore(value = "safari, ie", reason="safari: not implemented, ie: Fails")
+	@Ignore(value = "ie, safari", reason="safari: not implemented, ie: Fails")
     public void testShouldWaitForLoadsToCompleteAfterJavascriptCausesANewPageToLoad() {
         driver.get(formPage);
 
@@ -156,7 +156,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     }
 
   @JavascriptEnabled
-  @Ignore("ie, safari")
+  @Ignore("safari")
   public void testShouldBeAbleToSubmitFormsByCausingTheOnClickEventToFire() {
     driver.get(javascriptPage);
     WebElement element = driver.findElement(By.id("jsSubmitButton"));
@@ -166,7 +166,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore("ie, safari")
+  @Ignore("safari")
   public void testShouldBeAbleToClickOnSubmitButtons() {
     driver.get(javascriptPage);
     WebElement element = driver.findElement(By.id("submittingButton"));
