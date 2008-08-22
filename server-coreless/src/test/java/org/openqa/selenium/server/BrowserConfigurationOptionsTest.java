@@ -33,4 +33,25 @@ public class BrowserConfigurationOptionsTest extends TestCase {
       assertEquals("foo", options.getProfile());
       assertTrue(options.hasOptions());
     }
+    
+    public void testSettingProfileWithNull() {
+        BrowserConfigurationOptions options = new BrowserConfigurationOptions();
+        options.setProfile(null);
+        assertEquals("", options.getProfile());
+        assertFalse(options.hasOptions());
+    }
+
+    public void testSettingProfileWithEmptyString() {
+        BrowserConfigurationOptions options = new BrowserConfigurationOptions();
+        options.setProfile("");
+        assertEquals("", options.getProfile());
+        assertFalse(options.hasOptions());
+    }
+
+    public void testHasOptionsAfterSettingProfile() {
+        BrowserConfigurationOptions options = new BrowserConfigurationOptions();
+        options.setProfile("test");
+        assertEquals("test", options.getProfile());
+        assertTrue(options.hasOptions());
+    }
 }

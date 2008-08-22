@@ -15,7 +15,6 @@ public class BrowserConfigurationOptions {
               String optionValue = option[1].trim();
               if ("profile".equalsIgnoreCase(optionsName)) {
                   setProfile(optionValue);
-                  hasOptions = true;
               }
             }
         }
@@ -28,7 +27,10 @@ public class BrowserConfigurationOptions {
      * @param profile_name  The name of the profile to use
      */
     public void setProfile(String profile_name) {
-        this.profile = profile_name;
+        this.profile = (null == profile_name) ? "" : profile_name;
+        if (this.profile.length() != 0) {
+            hasOptions = true;    
+        }
     }
     
     public String serialize() {
