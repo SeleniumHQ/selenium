@@ -409,14 +409,14 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         } else if (CaptureEntirePageScreenshotToStringCommand.ID.equals(cmd)) {
             results = new CaptureEntirePageScreenshotToStringCommand(values.get(0), sessionId).execute();
         } else if("attachFile".equals(cmd)) {
-          FrameGroupCommandQueueSet queue = FrameGroupCommandQueueSet.getQueueSet(sessionId);
-          try {
-            File downloadedFile = downloadFile(values.get(1));
-            queue.addTemporaryFile(downloadedFile);
-            results = queue.doCommand("type", values.get(0), downloadedFile.getAbsolutePath());
-          } catch (Exception e) {
-            results = e.toString();
-          }
+            FrameGroupCommandQueueSet queue = FrameGroupCommandQueueSet.getQueueSet(sessionId);
+            try {
+                File downloadedFile = downloadFile(values.get(1));
+                queue.addTemporaryFile(downloadedFile);
+                results = queue.doCommand("type", values.get(0), downloadedFile.getAbsolutePath());
+            } catch (Exception e) {
+                results = e.toString();
+            }
         } else if (CaptureScreenshotCommand.ID.equals(cmd)) {
             results = new CaptureScreenshotCommand(values.get(0)).execute();
         } else if (CaptureScreenshotToStringCommand.ID.equals(cmd)) {
@@ -516,7 +516,8 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             results = new SeleniumCoreCommand(cmd, values, sessionId).execute();
         }
 
-        if (CaptureScreenshotToStringCommand.ID.equals(cmd)) {
+        if (CaptureScreenshotToStringCommand.ID.equals(cmd)
+            || SeleniumCoreCommand.CAPTURE_ENTIRE_PAGE_SCREENSHOT_ID.equals(cmd)) {
             LOGGER.info("Got result: [base64 encoded PNG] on session " + sessionId);
         } else if (RetrieveLastRemoteControlLogsCommand.ID.equals(cmd)) {
             /* Trim logs to avoid Larsen effect (see remote control stability tests) */

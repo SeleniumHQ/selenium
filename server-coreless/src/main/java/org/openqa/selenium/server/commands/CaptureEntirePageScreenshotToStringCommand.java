@@ -80,13 +80,14 @@ public class CaptureEntirePageScreenshotToStringCommand extends Command {
         final File screenshotDir;
 
         screenshotDir = screenshotDirectory();
-        return screenshotDir + "page-screenshot-" + sessionId + ".png";
+        return screenshotDir + "/page-screenshot-" + sessionId + ".png";
     }
 
 
     public File screenshotDirectory() {
-        File screenshotDir;
-        screenshotDir = new File(LauncherUtils.customProfileDir(sessionId), "screeshots");
+        final File screenshotDir;
+
+        screenshotDir = new File(LauncherUtils.customProfileDir(sessionId), "screenshots");
         if (!screenshotDir.exists()) {
             screenshotDir.mkdirs();
         }

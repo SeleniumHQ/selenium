@@ -12,7 +12,7 @@ import java.util.List;
 public class SeleniumCoreCommand extends Command {
 
 
-    public static final String CAPTURE_ENTIRE_PAGE_SCREENSHOT_ID = "captureEntirePageScreenshotToString";
+    public static final String CAPTURE_ENTIRE_PAGE_SCREENSHOT_ID = "captureEntirePageScreenshot";
     private static final Log LOGGER = LogFactory.getLog(SeleniumCoreCommand.class);
     private final String id;
     private final List<String> values;
@@ -25,16 +25,21 @@ public class SeleniumCoreCommand extends Command {
     }
 
     public String execute() {
-        String results;
+        final FrameGroupCommandQueueSet queue;
+        final String response;
+
+        LOGGER.info("Executing '" + id + "' selenium core command on session " + sessionId);
         try {
-            FrameGroupCommandQueueSet queue = FrameGroupCommandQueueSet.getQueueSet(sessionId);
-            LOGGER.debug("Session "+sessionId+" going to doCommand("+ id +','+values.get(0)+','+values.get(1) + ")");
-            results = queue.doCommand(id, values.get(0), values.get(1));
+            LOGGER.debug("Session " + sessionId + " going to doCommand(" + id + ','+ values.get(0) + ','+ values.get(1) + ")");
+            queue = FrameGroupCommandQueueSet.getQueueSet(sessionId);
+            response =  queue.doCommand(id, values.get(0), values.get(1));
+            LOGGER.debug("Got result: " + response + " on session " + sessionId);
+            
+            return response;
         } catch (Exception e) {
-            LOGGER.error("Exception running command", e);
-            results = "ERROR Server Exception: " + e.getMessage();
+            LOGGER.error("Exception running '" + id + " 'command on session " + sessionId, e);
+            return "ERROR Server Exception: " + e.getMessage();
         }
-        return results;
     }
     
 }

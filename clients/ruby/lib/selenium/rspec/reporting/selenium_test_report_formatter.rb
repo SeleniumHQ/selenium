@@ -67,13 +67,13 @@ module Selenium
         system_capture.capture_system_state                      
       end
 
-        def global_scripts
-          Selenium::RSpec::Reporting::HtmlReport.append_javascript(super)
-        end
-
-        def global_styles
-          Selenium::RSpec::Reporting::HtmlReport.append_css(super)
-        end
+      def global_scripts
+        Selenium::RSpec::Reporting::HtmlReport.append_javascript(super)
+      end
+      
+      def global_styles
+        Selenium::RSpec::Reporting::HtmlReport.append_css(super)
+      end
 
       protected
         

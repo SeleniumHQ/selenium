@@ -23,8 +23,12 @@ module Selenium
           "#{relative_dir}/example_#{example_hash(example)}.html"
         end
 
-        def relative_file_path_for_png_capture(example)
-          "#{relative_dir}/example_#{example_hash(example)}.png"
+        def relative_file_path_for_system_screenshot(example)
+          "#{relative_dir}/example_#{example_hash(example)}_system_screenshot.png"
+        end
+
+        def relative_file_path_for_page_screenshot(example)
+          "#{relative_dir}/example_#{example_hash(example)}_page_screenshot.png"
         end
 
         def relative_file_path_for_remote_control_logs(example)
@@ -35,8 +39,12 @@ module Selenium
           file_path relative_file_path_for_html_capture(example)
         end
 
-        def file_path_for_png_capture(example)
-          file_path relative_file_path_for_png_capture(example)
+        def file_path_for_system_screenshot(example)
+          file_path relative_file_path_for_system_screenshot(example)
+        end
+
+        def file_path_for_page_screenshot(example)
+          file_path relative_file_path_for_page_screenshot(example)
         end
 
         def file_path_for_remote_control_logs(example)
