@@ -29,12 +29,12 @@ public class CaptureEntirePageScreenshotToStringCommand extends Command {
     private final String sessionId;
 
 
-
     public CaptureEntirePageScreenshotToStringCommand(String kwargs, String sessionId) {
         this.kwargs = kwargs;
         this.sessionId = sessionId;
     }
 
+    
     /**
      * Capture a screenshot of the in-browser canvas. The entire web page is rendered not
      * just the current viewport.

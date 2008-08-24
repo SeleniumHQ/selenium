@@ -5,7 +5,9 @@ import org.mortbay.log.LogFactory;
 import org.openqa.selenium.server.RobotRetriever;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.Rectangle;
+import java.awt.Robot;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;

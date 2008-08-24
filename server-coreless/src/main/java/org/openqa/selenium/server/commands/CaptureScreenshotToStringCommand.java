@@ -2,15 +2,16 @@ package org.openqa.selenium.server.commands;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
-import org.openqa.selenium.server.RobotRetriever;
 import org.mortbay.log.LogFactory;
+import org.openqa.selenium.server.RobotRetriever;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.Rectangle;
+import java.awt.Robot;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.File;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 

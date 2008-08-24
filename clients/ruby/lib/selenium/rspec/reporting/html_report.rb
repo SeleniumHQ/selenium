@@ -26,12 +26,20 @@ module Selenium
           remote_control_logs_url = @file_path_strategy.relative_file_path_for_remote_control_logs(example)
           
           html = ""
-          html << toggable_section(dom_id, :id => "snapshot", :url=> snapshot_url, :name => "Dynamic HTML Snapshot")
-          html << toggable_section(dom_id, :id => "rc_logs", :url=> remote_control_logs_url, :name => "Remote Control Logs")
+          if File.exists? @file_path_strategy.file_path_for_html_capture(example)
+            html << toggable_section(dom_id, :id => "snapshot", :url=> snapshot_url, :name => "Dynamic HTML Snapshot")
+          end
+          if File.exists? @file_path_strategy.file_path_for_remote_control_logs(example)          
+            html << toggable_section(dom_id, :id => "rc_logs", :url=> remote_control_logs_url, :name => "Remote Control Logs")
+          end
           if File.exists? @file_path_strategy.file_path_for_page_screenshot(example)
             html << toggable_image_section(dom_id, :id => "page_screenshot", :name => "Page Screenshot", :url => page_screenshot_url)
           end
-          html << toggable_image_section(dom_id, :id => "system_screenshot", :name => "System Screenshot", :url => system_screenshot_url)
+          if File.exists? @file_path_strategy.file_path_for_system_screenshot(example)
+            html << toggable_image_section(dom_id, :id => "system_screenshot", :name => "System Screenshot", :url => system_screenshot_url)
+          end
+          
+          return html
         end
 
         def self.append_javascript(global_scripts)
