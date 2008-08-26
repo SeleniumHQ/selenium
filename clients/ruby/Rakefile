@@ -9,7 +9,7 @@ require 'rake/packagetask'
 require 'rake/gempackagetask'
 require 'rake/rdoctask'
 require 'spec/rake/spectask'
-require 'selenium'
+require 'selenium/rake/tasks'
 
 CLEAN.include("COMMENTS")
 CLOBBER.include(
@@ -114,19 +114,11 @@ end
 desc "Run tests that are part of Selenium RC maven build (When Selenium Client is part of Selenium RC Workspace)."
 task :'test:maven_build' do |t|
   Rake::Task[:"test:unit"].invoke
-
-  Rake::Task[:"selenium:rc:stop"].invoke rescue nil
-  begin
-    Rake::Task[:"selenium:rc:start"].invoke
-    
-    if (ENV['HEADLESS_TEST_MODE'] || "").downcase == "true"
-      puts "Headless test mode detected"
-      Rake::Task[:"test:integration:headless"].invoke
-    else
-      Rake::Task[:"test:integration"].invoke
-    end
-  ensure
-    Rake::Task[:"selenium:rc:stop"].invoke
+  if (ENV['HEADLESS_TEST_MODE'] || "").downcase == "true"
+    puts "Headless test mode detected"
+    Rake::Task[:"test:integration:headless"].invoke
+  else
+    Rake::Task[:"test:integration"].invoke
   end
 end
 
@@ -143,7 +135,7 @@ end
 specification = Gem::Specification.new do |s|
   s.name = "selenium-client"
   s.summary = "Official Ruby Client for Selenium RC."
-  s.version = "1.1"
+  s.version = "1.2"
   s.author = "OpenQA"
 	s.email = 'selenium-client@rubyforge.org'
   s.homepage = "http://selenium-client.rubyforge.com"

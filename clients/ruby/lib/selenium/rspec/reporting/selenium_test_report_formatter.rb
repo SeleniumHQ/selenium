@@ -40,7 +40,7 @@ module Selenium
         super
       end
   
-      def example_pending(example_group_description, example, message)
+      def example_pending(example, message)
         include_example_group_description example
         super
       end
