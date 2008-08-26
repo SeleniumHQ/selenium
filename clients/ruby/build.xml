@@ -25,7 +25,6 @@
             <arg value="test:maven_build"/>
             <env key="HEADLESS_TEST_MODE" value="${headless}"/>
         </exec>
-        <echo>++++++++Result ${test.condition.result}</echo>
         <condition property="build.failed">
             <not>
                 <equals arg1="0" arg2="${test.command.result}"/>

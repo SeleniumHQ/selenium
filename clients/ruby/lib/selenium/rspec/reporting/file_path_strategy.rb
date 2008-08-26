@@ -6,6 +6,7 @@ module Selenium
       
         def initialize(final_report_file_path)
           @final_report_file_path = final_report_file_path
+          @relative_dir = nil
         end
 
         def base_report_dir
@@ -15,7 +16,7 @@ module Selenium
         def relative_dir
           return @relative_dir if @relative_dir
           
-          file_name_without_extension = File.basename(@final_report_file_path).sub /\.[^\.]*$/, ""
+          file_name_without_extension = File.basename(@final_report_file_path).sub(/\.[^\.]*$/, "")
           @relative_dir ||=  "resources/" + file_name_without_extension
         end
 

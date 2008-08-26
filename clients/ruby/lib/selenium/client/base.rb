@@ -30,6 +30,7 @@ module Selenium
         @browser_url = browser_url
         @timeout = timeout
         @extension_js = ""
+        @session_id = nil
       end
       
       def set_extension_js(extension_js)

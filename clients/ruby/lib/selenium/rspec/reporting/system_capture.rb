@@ -53,9 +53,8 @@ module Selenium
         end
 
         def capture_page_screenshot
-          return unless @selenium_driver.chrome_backend?
+          return unless @selenium_driver.chrome_backend? && @selenium_driver.session_started?
           
-          @selenium_driver.window_maximize if @selenium_driver.session_started?
           encodedImage = @selenium_driver.capture_entire_page_screenshot_to_string("")
           pngImage = Base64.decode64(encodedImage)
           File.open(@file_path_strategy.file_path_for_page_screenshot(@example), "w") { |f| f.write pngImage }

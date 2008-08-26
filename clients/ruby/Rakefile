@@ -9,6 +9,7 @@ require 'rake/packagetask'
 require 'rake/gempackagetask'
 require 'rake/rdoctask'
 require 'spec/rake/spectask'
+require 'selenium'
 
 CLEAN.include("COMMENTS")
 CLOBBER.include(
@@ -17,6 +18,31 @@ CLOBBER.include(
 )
 
 task :default => :"test:unit"
+
+task :'ci:integration' do
+  Rake::Task[:"selenium:rc:stop"].invoke rescue nil
+  begin
+    Rake::Task[:"selenium:rc:start"].invoke
+    Rake::Task[:"test:integration"].invoke
+  ensure
+    Rake::Task[:"selenium:rc:stop"].invoke
+  end
+end
+
+Selenium::Rake::RemoteControlStartTask.new do |rc|
+  rc.port = 4444
+  rc.timeout_in_seconds = 3 * 60
+  rc.background = true
+  rc.wait_until_up_and_running = true
+  rc.jar_file = ENV["SELENIUM_RC_JAR"] || Dir[File.dirname(__FILE__) + "/../../selenium-server/target/selenium-server-*-standalone.jar"].first
+  rc.additional_args << "-singleWindow"
+end
+
+Selenium::Rake::RemoteControlStopTask.new do |rc|
+  rc.host = "localhost"
+  rc.port = 4444
+  rc.timeout_in_seconds = 3 * 60
+end
 
 file "target/iedoc.xml" do
   cp "iedoc.xml", "target/iedoc.xml"
@@ -36,7 +62,7 @@ task :"test:unit" => "lib/selenium/client/generated_driver.rb"
 
 desc "Run all integration tests"
 Spec::Rake::SpecTask.new("test:integration") do |t|
-    t.spec_files = FileList['test/integration/**/*_spec.rb']
+    t.spec_files = FileList['test/integration/**/*_spec.rb'] - FileList['test/integration/**/dummy_project/*_spec.rb']
     t.spec_opts << '--color'
     t.spec_opts << "--require 'lib/selenium/rspec/reporting/selenium_test_report_formatter'"
     t.spec_opts << "--format=Selenium::RSpec::SeleniumTestReportFormatter:./target/integration_tests_report.html"
@@ -88,16 +114,20 @@ end
 desc "Run tests that are part of Selenium RC maven build (When Selenium Client is part of Selenium RC Workspace)."
 task :'test:maven_build' do |t|
   Rake::Task[:"test:unit"].invoke
-  
-  if (ENV['HEADLESS_TEST_MODE'] || "").downcase == "true"
-    puts "Headless test mode detected"
-    Rake::Task[:"test:integration:headless"].invoke
-  else
-    Rake::Task[:"test:integration:headless"].invoke
-    Rake::Task[:"test:integration:api"].invoke
-    Rake::Task[:"test:integration:smoke"].invoke
-  end
 
+  Rake::Task[:"selenium:rc:stop"].invoke rescue nil
+  begin
+    Rake::Task[:"selenium:rc:start"].invoke
+    
+    if (ENV['HEADLESS_TEST_MODE'] || "").downcase == "true"
+      puts "Headless test mode detected"
+      Rake::Task[:"test:integration:headless"].invoke
+    else
+      Rake::Task[:"test:integration"].invoke
+    end
+  ensure
+    Rake::Task[:"selenium:rc:stop"].invoke
+  end
 end
 
 desc "Run tests in parallel"

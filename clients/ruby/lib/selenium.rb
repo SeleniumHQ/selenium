@@ -23,6 +23,8 @@ require 'uri'
 require 'cgi'
 require "digest/md5"
 require "fileutils"
+require File.expand_path(File.dirname(__FILE__) + '/tcp_socket_extension')
+require File.expand_path(File.dirname(__FILE__) + '/nautilus/shell')
 require File.expand_path(File.dirname(__FILE__) + '/selenium/command_error')
 require File.expand_path(File.dirname(__FILE__) + '/selenium/protocol_error')
 require File.expand_path(File.dirname(__FILE__) + '/selenium/client/selenese_client')
@@ -30,6 +32,9 @@ require File.expand_path(File.dirname(__FILE__) + '/selenium/client/generated_dr
 require File.expand_path(File.dirname(__FILE__) + '/selenium/client/base')
 require File.expand_path(File.dirname(__FILE__) + '/selenium/client/driver')
 require File.expand_path(File.dirname(__FILE__) + '/selenium/client/selenium_helper')
+require File.expand_path(File.dirname(__FILE__) + '/selenium/remote_control/remote_control')
+require File.expand_path(File.dirname(__FILE__) + '/selenium/rake/remote_control_start_task')
+require File.expand_path(File.dirname(__FILE__) + '/selenium/rake/remote_control_stop_task')
 
 # Backward compatibility
 
