@@ -3,10 +3,11 @@
 package org.openqa.selenium.htmlunit;
 
 import junit.framework.Test;
+import junit.framework.TestCase;
 
 import org.openqa.selenium.TestSuiteBuilder;
 
-public class JavascriptEnabledHtmlUnitDriverTestSuite {
+public class JavascriptEnabledHtmlUnitDriverTestSuite extends TestCase {
 
   public static Test suite() throws Exception {
     return new TestSuiteBuilder()

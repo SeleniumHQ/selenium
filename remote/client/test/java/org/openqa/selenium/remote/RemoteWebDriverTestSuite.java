@@ -3,6 +3,7 @@ package org.openqa.selenium.remote;
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import junit.framework.TestCase;
 
 import org.openqa.selenium.TestSuiteBuilder;
 import org.openqa.selenium.environment.webserver.AppServer;
@@ -12,7 +13,7 @@ import org.openqa.selenium.remote.server.DriverServlet;
 import java.io.File;
 import java.net.URL;
 
-public class RemoteWebDriverTestSuite {
+public class RemoteWebDriverTestSuite extends TestCase {
   public static Test suite() throws Exception {
     Test rawSuite =
         new TestSuiteBuilder()

@@ -1,6 +1,7 @@
 package org.openqa.selenium;
 
 import junit.framework.Test;
+import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -49,7 +50,7 @@ public class TestSuiteBuilder {
 
     if (dir.exists())
       sourceDirs.add(dir);
-    
+
     return this;
   }
 
@@ -126,7 +127,8 @@ public class TestSuiteBuilder {
   }
 
   private void addTestsFromFile(TestSuite suite, File file) {
-    Class<?> clazz = getClassFrom(file);
+    @SuppressWarnings("unchecked")
+    Class<? extends TestCase> clazz = (Class<? extends TestCase>) getClassFrom(file);
     if (clazz == null) {
       return;
     }

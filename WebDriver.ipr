@@ -877,7 +877,7 @@
   <component name="libraryTable">
     <library name="common-buildtime">
       <CLASSES>
-        <root url="jar://$PROJECT_DIR$/common/lib/buildtime/junit-3.8.1.jar!/" />
+        <root url="jar://$PROJECT_DIR$/common/lib/buildtime/junit-dep-4.4.jar!/" />
         <root url="jar://$PROJECT_DIR$/common/lib/buildtime/hamcrest-all-1.1.jar!/" />
         <root url="jar://$PROJECT_DIR$/common/lib/buildtime/jmock-2.4.0.jar!/" />
         <root url="jar://$PROJECT_DIR$/common/lib/buildtime/jmock-junit3-2.4.0.jar!/" />

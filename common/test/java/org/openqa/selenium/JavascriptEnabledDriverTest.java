@@ -21,6 +21,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import org.hamcrest.Matchers;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.Is.is;
+import static org.junit.matchers.JUnitMatchers.either;
 
 import java.awt.*;
 
@@ -54,7 +55,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
         String newText = driver.findElement(By.xpath("//div[@id='dynamo']")).getText();
         assertThat(newText, equalTo("Fish and chips!"));
     }
-	
+
 //    public void testShouldAllowTheUserToOkayConfirmAlerts() {
 //		driver.get(alertPage);
 //		driver.findElement(By.id("confirm").click();
@@ -216,11 +217,11 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     WebElement input = driver.findElement(By.id("changeable"));
     input.sendKeys("test");
     driver.findElement(By.id("clickField")).click(); // move focus
-    assertThat(driver.findElement(By.id("result")).getText().trim(), is("focus change blur"));
+    assertThat(driver.findElement(By.id("result")).getText().trim(), either(is("focus change blur")).or(is("focus blur change")));
 
     input.sendKeys(Keys.BACK_SPACE, "t");
     driver.findElement(By.xpath("//body")).click();  // move focus
 
-    assertThat(driver.findElement(By.id("result")).getText().trim(), is("focus change blur focus blur"));
+    assertThat(driver.findElement(By.id("result")).getText().trim(), either(is("focus change blur focus blur")).or(is("focus blur change focus blur")));
   }
 }

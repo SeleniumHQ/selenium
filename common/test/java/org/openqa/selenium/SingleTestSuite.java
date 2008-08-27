@@ -1,9 +1,10 @@
 package org.openqa.selenium;
 
 import junit.framework.Test;
+import junit.framework.TestCase;
 
 @SuppressWarnings("unused")
-public class SingleTestSuite {
+public class SingleTestSuite extends TestCase {
 
   private final static String FIREFOX = "org.openqa.selenium.firefox.FirefoxDriver";
   private final static String HTML_UNIT = "org.openqa.selenium.htmlunit.HtmlUnitDriver";
