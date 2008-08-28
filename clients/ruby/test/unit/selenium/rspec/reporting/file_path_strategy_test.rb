@@ -61,6 +61,7 @@ unit_tests do
   
   test "file_path concatenate the base_report_dir and the relative path" do
     strategy = Selenium::RSpec::Reporting::FilePathStrategy.new "report.html"
+    FileUtils.stubs(:mkdir_p)
     strategy.stubs(:base_report_dir).returns("/base/report/dir")
     assert_equal "/base/report/dir/relative/path/file.html", 
                  strategy.file_path("relative/path/file.html")
