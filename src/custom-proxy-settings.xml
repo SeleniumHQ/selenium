@@ -1,0 +1,9 @@
+<settings>
+  <proxies>
+    <proxy>
+      <host>localhost</host>
+      <port>9999</port>
+      <nonProxyHosts>archiva.openqa.org</nonProxyHosts>
+    </proxy>
+  </proxies>
+</settings>
