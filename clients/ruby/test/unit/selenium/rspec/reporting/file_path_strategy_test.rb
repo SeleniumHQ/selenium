@@ -4,14 +4,14 @@ unit_tests do
   
   test "base_report_dir is resource/<name of the report> under the final report base directory" do
     strategy = Selenium::RSpec::Reporting::FilePathStrategy.new "/some/dir/a_final_report.html"
-    assert_equal "/some/dir", strategy.base_report_dir
+    assert_equal File.expand_path("/some/dir"), strategy.base_report_dir
   end
   
   test "base_report_dir is distinct when the only the report name changes" do
     first_strategy = Selenium::RSpec::Reporting::FilePathStrategy.new "/some/dir/a_final_report.html"
     second_strategy = Selenium::RSpec::Reporting::FilePathStrategy.new "/another/dir/another_final_report.html"
-    assert_equal "/some/dir", first_strategy.base_report_dir
-    assert_equal "/another/dir", second_strategy.base_report_dir
+    assert_equal File.expand_path("/some/dir"), first_strategy.base_report_dir
+    assert_equal File.expand_path("/another/dir"), second_strategy.base_report_dir
   end
   
   test "example_hash is distinct when examples first backtrace entry is different" do
