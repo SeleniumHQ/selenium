@@ -3,7 +3,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.openqa.selenium</groupId>
+	<groupId>org.openqa.selenium.webdriver</groupId>
 	<artifactId>webdriver-parent</artifactId>
 	<version>0.5-SNAPSHOT</version>
 
@@ -68,21 +68,21 @@
 	</dependencies>
 
 	<build>
-        <plugins>
-            <!-- See http://maven.apache.org/plugins/maven-source-plugin -->
-            <plugin>
-                <artifactId>maven-source-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-        <pluginManagement>
+		<plugins>
+			<!-- See http://maven.apache.org/plugins/maven-source-plugin -->
+			<plugin>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+		<pluginManagement>
 			<plugins>
 				<!-- See http://maven.apache.org/plugins/maven-compiler-plugin -->
 				<plugin>
@@ -106,5 +106,41 @@
 			</plugins>
 		</pluginManagement>
 	</build>
+
+	<repositories>
+		<repository>
+			<id>openqa-releases</id>
+			<name>OpenQA Releases</name>
+			<url>http://archiva.openqa.org/repository/releases/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>openqa-snapshots</id>
+			<name>OpenQA Snapshots</name>
+			<url>http://archiva.openqa.org/repository/snapshots/</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
+	<distributionManagement>
+		<repository>
+			<id>openqa-releases</id>
+			<url>dav:http://archiva.openqa.org/repository/releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>openqa-snapshots</id>
+			<url>dav:http://archiva.openqa.org/repository/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
 
 </project>

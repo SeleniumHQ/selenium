@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.openqa.selenium</groupId>
+		<groupId>org.openqa.selenium.webdriver</groupId>
 		<artifactId>webdriver-parent</artifactId>
 		<version>0.5-SNAPSHOT</version>
 	</parent>
@@ -13,23 +13,48 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.openqa.selenium</groupId>
+			<groupId>org.openqa.selenium.webdriver</groupId>
 			<artifactId>webdriver-common</artifactId>
 			<version>0.5-SNAPSHOT</version>
 		</dependency>
 		<!-- Test dependencies ... -->
 		<dependency>
-			<groupId>org.openqa.selenium</groupId>
+			<groupId>org.openqa.selenium.webdriver</groupId>
 			<artifactId>webdriver-common</artifactId>
 			<version>0.5-SNAPSHOT</version>
 			<classifier>tests</classifier>
 			<scope>test</scope>
 		</dependency>
-    </dependencies>
+	</dependencies>
 
 	<build>
 		<sourceDirectory>src/java</sourceDirectory>
 		<testSourceDirectory>test/java</testSourceDirectory>
 	</build>
+
+	<repositories>
+		<repository>
+			<id>openqa-releases</id>
+			<name>OpenQA Releases</name>
+			<url>http://archiva.openqa.org/repository/releases/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>openqa-snapshots</id>
+			<name>OpenQA Snapshots</name>
+			<url>http://archiva.openqa.org/repository/snapshots/</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
 
 </project>
