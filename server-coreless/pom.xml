@@ -68,6 +68,11 @@
                     </includes>
                     <forkMode>never</forkMode>
                     <useFile>false</useFile>
+                    <systemProperties>
+                      <property>
+                        <name>java.awt.headless</name><value>true</value>
+                      </property>
+                    </systemProperties>
                 </configuration>
             </plugin>
         </plugins>
