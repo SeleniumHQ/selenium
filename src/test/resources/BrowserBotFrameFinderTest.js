@@ -11,12 +11,14 @@ BrowserBotFrameFinderTest.prototype.setUp = function() {
         if (id == "testIframe-name") {
             return {
                 id:"testIframe-name"
-                ,name:"testIframe-name"
+                ,contentWindow: {
+                    name:"testIframe-name"
+                }
             }
         }
     };
 }
 BrowserBotFrameFinderTest.prototype.testShouldAbleToGetFirstLevelFrameAccordingNameGiven = function(){
     var frame = browserbot._getFrameFromGlobal("testIframe-name");
-    assertEquals("testIframe-name", frame.name)
+    this.assertEquals("testIframe-name", frame.name)
 }

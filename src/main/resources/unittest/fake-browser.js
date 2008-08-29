@@ -28,5 +28,3 @@ if (!this["print"]) {
         java.lang.System.out.println(msg);
     }
 }
-
-if (!this["assertEquals"]) assertEquals = Assert.assertEquals;
