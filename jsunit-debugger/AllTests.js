@@ -20,14 +20,15 @@ load("src/main/resources/core/xpath/util.js");
 load("src/main/resources/core/xpath/dom.js");
 load("src/main/resources/core/xpath/xpath.js");
 
-load("src/test/resources/AlertHandlingTest.js");
+/*load("src/test/resources/AlertHandlingTest.js");
 load("src/test/resources/BrowserBotTest.js");
 load("src/test/resources/BrowserBotFrameFinderTest.js");
 load("src/test/resources/CommandFactoryTest.js");
 load("src/test/resources/CommandHandlerTest.js");
 load("src/test/resources/ConfirmHandlingTest.js");
 load("src/test/resources/ErrorCheckingCommandTest.js");
-load("src/test/resources/PatternMatcherTest.js");
+load("src/test/resources/PatternMatcherTest.js");*/
+load("src/test/resources/AssertTest.js");
 load("src/test/resources/SampleTest.js");
 
 var stringWriter = new StringWriter();
