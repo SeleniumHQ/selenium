@@ -37,9 +37,11 @@ load("src/test/resources/TestLoopHandleErrorTest.js");
 load("src/test/resources/SampleTest.js");
 load("src/test/resources/HtmlUtilTest.js");
 load("src/test/resources/UIElementTest.js");
+load("src/test/resources/RemoteRunnerTest.js");
 */
 
-load("src/test/resources/RemoteRunnerTest.js");
+load("src/test/resources/CookieTest.js");
+
 
 
 
