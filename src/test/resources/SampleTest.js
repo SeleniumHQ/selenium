@@ -3,6 +3,9 @@ function SampleTest(name) {
 }
 
 SampleTest.prototype = new TestCase();
+SampleTest.prototype.setUp = function() {
+}
+
 SampleTest.prototype.testSample = function() {
     this.assertTrue(true);
 }
