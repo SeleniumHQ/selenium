@@ -27,9 +27,10 @@ load("src/test/resources/CommandFactoryTest.js");
 load("src/test/resources/CommandHandlerTest.js");
 load("src/test/resources/ConfirmHandlingTest.js");
 load("src/test/resources/ErrorCheckingCommandTest.js");
-load("src/test/resources/PatternMatcherTest.js");*/
+load("src/test/resources/PatternMatcherTest.js");
 load("src/test/resources/AssertTest.js");
-load("src/test/resources/OptionLocatorTest.js");
+load("src/test/resources/OptionLocatorTest.js");*/
+load("src/test/resources/PageBotAccessorTest.js");
 load("src/test/resources/SampleTest.js");
 
 var stringWriter = new StringWriter();
