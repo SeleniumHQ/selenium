@@ -51,9 +51,9 @@ Mock.prototype._executeMethod = function() {
     if (!methodInvocation) {
         fail("No more expected method invocations.")
     }
-    assertEquals(methodInvocation.functionName + ": Wrong number of arguments.", methodInvocation.expectedArgs.length, arguments.length);
+    Assert.assertEquals(methodInvocation.functionName + ": Wrong number of arguments.", methodInvocation.expectedArgs.length, arguments.length);
     for (var i = 0; i < arguments.length; i++) {
-        assertEquals(methodInvocation.expectedArgs[i], arguments[i]);
+        Assert.assertEquals(methodInvocation.expectedArgs[i], arguments[i]);
     }
     var returnValue = methodInvocation.returnValue;
     if (returnValue && returnValue.isMockError) {
