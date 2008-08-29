@@ -29,10 +29,11 @@ load("src/test/resources/ConfirmHandlingTest.js");
 load("src/test/resources/ErrorCheckingCommandTest.js");
 load("src/test/resources/PatternMatcherTest.js");
 load("src/test/resources/AssertTest.js");
-load("src/test/resources/OptionLocatorTest.js");*/
+load("src/test/resources/OptionLocatorTest.js");
 load("src/test/resources/PageBotAccessorTest.js");
 load("src/test/resources/SampleTest.js");
-load("src/test/resources/SeleniumApiTest.js");
+load("src/test/resources/SeleniumApiTest.js");*/
+load("src/test/resources/SeleniumParameterTest.js");
 
 var stringWriter = new StringWriter();
 var runner = new EmbeddedTextTestRunner(new XMLResultPrinter(stringWriter));
