@@ -32,6 +32,7 @@ load("src/test/resources/AssertTest.js");
 load("src/test/resources/OptionLocatorTest.js");*/
 load("src/test/resources/PageBotAccessorTest.js");
 load("src/test/resources/SampleTest.js");
+load("src/test/resources/SeleniumApiTest.js");
 
 var stringWriter = new StringWriter();
 var runner = new EmbeddedTextTestRunner(new XMLResultPrinter(stringWriter));
