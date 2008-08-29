@@ -200,8 +200,7 @@
                                         <source>core/xpath/xmltoken.js</source>
                                         <source>core/xpath/util.js</source>
                                         <source>core/xpath/dom.js</source>
-                                        <source>core/xpath/xpath.js</source>
-                                        
+                                        <source>core/xpath/xpath.js</source> 
                                     </sources>
                                     <testSourceDirectory>src/test/resources</testSourceDirectory>
                                     <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
@@ -221,89 +220,17 @@
                             </execution>
                         </executions>
                     </plugin>
-
-                    <!--plugin>
-                        <artifactId>maven-antrun-plugin</artifactId>
-                        <version>1.2-SNAPSHOT</version>
-                        <executions>
-                            <execution>
-                                <id>test</id>
-                                <phase>test</phase>
-                                <configuration>
-                                    <tasks>
-                                        <condition property="browserFileNames" value="${firefox}">
-                                            <available file="${firefox}"/>
-                                        </condition>
-                                        <condition property="browserFileNames" value="c:\program files\Mozilla Firefox\firefox.exe">
-                                            <os family="windows"/>
-                                        </condition>
-                                        <condition property="browserFileNames" value="/Applications/Firefox.app/Contents/MacOS/firefox-bin">
-                                            <os family="mac"/>
-                                        </condition>
-                                        <condition property="browserFileNames" value="/usr/bin/firefox">
-                                            <os family="unix"/>
-                                        </condition>
-                                        <property name="testRunnerLocation" location="src/main/resources/jsunit/testRunner.html"/>
-                                        <property name="testSuiteLocation" location="src/main/resources/unittest/browserbot/suite.html"/>
-                                        <property name="port" value="8281"/>
-                                        <property name="browserBotTestUrl"
-                                                  value="file://${testRunnerLocation}?testPage=${testSuiteLocation}&amp;autoRun=true&amp;submitresults=localhost:${port}/jsunit/acceptor"/>
-                                        <property name="resourceBase" value=""/>
-                                        <property name="logsDirectory" value="target/logs"/>
-
-                                        <mkdir dir="target/logs"/>
-                                        <junit showoutput="true" errorproperty="tests.failed" failureproperty="tests.failed">
-                                            <classpath>
-                                                <fileset dir="code/java/lib">
-                                                    <include name="*.jar"/>
-                                                </fileset>
-                                            </classpath>
-                                            <sysproperty key="browserFileNames" value="${browserFileNames}"/>
-                                            <sysproperty key="url" value="${browserBotTestUrl}"/>
-                                            <sysproperty key="port" value="${port}"/>
-                                            <sysproperty key="resourceBase" value="${resourceBase}"/>
-                                            <sysproperty key="logsDirectory" value="target/logs"/>
-                                            <test name="net.jsunit.StandaloneTest"/>
-                                        </junit>
-                                        <junitreport todir="target/logs">
-                                            <fileset dir="target/logs"/>
-                                            <report format="frames" todir="target/logs" />
-                                        </junitreport>
-                                        <fail if="tests.failed" message="JSUnit tests failed, see output for details: target/logs" />
-                                    </tasks>
-                                </configuration>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <dependencies>
-                            <dependency>
-                                <groupId>ant</groupId>
-                                <artifactId>ant-trax</artifactId>
-                                <version>1.6.5</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>ant</groupId>
-                                <artifactId>ant-junit</artifactId>
-                                <version>1.6.5</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>junit</groupId>
-                                <artifactId>junit</artifactId>
-                                <version>3.8.1</version>
-                            </dependency>
-                        </dependencies>
-                    </plugin-->
                 </plugins>
             </build>
         </profile>
         
         <profile>
             <id>integration-test-firefox</id>
-            <activation>                <property>
+            <activation>
+                <!-- Reqire manual activation of this profile with -Pintegration-test-firefox
+                <property>
                     <name>!skipTests</name>
-                </property>
+                </property>-->
             </activation>
             <properties>
                 <slowResources>false</slowResources>
