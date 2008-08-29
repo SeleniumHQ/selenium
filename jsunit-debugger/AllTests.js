@@ -20,7 +20,7 @@ load("src/main/resources/core/xpath/util.js");
 load("src/main/resources/core/xpath/dom.js");
 load("src/main/resources/core/xpath/xpath.js");
 
-/*load("src/test/resources/AlertHandlingTest.js");
+load("src/test/resources/AlertHandlingTest.js");
 load("src/test/resources/BrowserBotTest.js");
 load("src/test/resources/BrowserBotFrameFinderTest.js");
 load("src/test/resources/CommandFactoryTest.js");
@@ -38,8 +38,6 @@ load("src/test/resources/SampleTest.js");
 load("src/test/resources/HtmlUtilTest.js");
 load("src/test/resources/UIElementTest.js");
 load("src/test/resources/RemoteRunnerTest.js");
-*/
-
 load("src/test/resources/CookieTest.js");
 
 

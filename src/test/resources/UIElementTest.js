@@ -149,10 +149,9 @@ UIElementTest.prototype.test_UIElement_getTestcases = function() {
         }
     });
     
-    this.assertTrue(are_equal([
-        {name: 'testcase1', xhtml: '<div id="content" expected-result></div>'},
-        {name: 'testcase2', xhtml: '<div id="main"><div id="content" expected-result></div></div>'}],
-        testUIElement.getTestcases()));
+    var output = testUIElement.getTestcases();
+    this.assertArrayEqualsIgnoreOrder(['testcase1','testcase2'], [output[0].name, output[1].name]);
+    this.assertArrayEqualsIgnoreOrder(['<div id="content" expected-result></div>','<div id="main"><div id="content" expected-result></div></div>'], [output[0].xhtml, output[1].xhtml]);
 }
 
 
