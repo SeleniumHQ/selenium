@@ -32,9 +32,13 @@ load("src/test/resources/AssertTest.js");
 load("src/test/resources/OptionLocatorTest.js");
 load("src/test/resources/PageBotAccessorTest.js");
 load("src/test/resources/SeleniumApiTest.js");
-load("src/test/resources/SeleniumParameterTest.js");*/
-load("src/test/resources/SampleTest.js");
+load("src/test/resources/SeleniumParameterTest.js");
 load("src/test/resources/TestLoopHandleErrorTest.js");
+load("src/test/resources/SampleTest.js");
+*/
+load("src/test/resources/HtmlUtilTest.js");
+
+
 
 var stringWriter = new StringWriter();
 var runner = new EmbeddedTextTestRunner(new XMLResultPrinter(stringWriter));
