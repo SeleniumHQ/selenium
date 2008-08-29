@@ -24,6 +24,7 @@ load("src/test/resources/AlertHandlingTest.js");
 load("src/test/resources/BrowserBotTest.js");
 load("src/test/resources/BrowserBotFrameFinderTest.js");
 load("src/test/resources/CommandFactoryTest.js");
+load("src/test/resources/CommandHandlerTest.js");
 load("src/test/resources/SampleTest.js");
 
 var stringWriter = new StringWriter();
