@@ -21,6 +21,7 @@ load("src/main/resources/core/xpath/dom.js");
 load("src/main/resources/core/xpath/xpath.js");
 
 load("src/test/resources/AlertHandlingTest.js");
+load("src/test/resources/BrowserBotTest.js");
 load("src/test/resources/BrowserBotFrameFinderTest.js");
 load("src/test/resources/SampleTest.js");
 
