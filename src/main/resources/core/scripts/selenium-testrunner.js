@@ -674,7 +674,7 @@ objectExtend(HtmlTestSuite.prototype, {
 
     _onTestSuiteComplete: function() {
         this.markDone();
-        new TestResult(this.failed, this.getTestTable()).post();
+        new SeleniumTestResult(this.failed, this.getTestTable()).post();
     },
 
     updateSuiteWithResultOfPreviousTest: function() {
@@ -698,8 +698,8 @@ objectExtend(HtmlTestSuite.prototype, {
 
 });
 
-var TestResult = classCreate();
-objectExtend(TestResult.prototype, {
+var SeleniumTestResult = classCreate();
+objectExtend(SeleniumTestResult.prototype, {
 
 // Post the results to a servlet, CGI-script, etc.  The URL of the
 // results-handler defaults to "/postResults", but an alternative location

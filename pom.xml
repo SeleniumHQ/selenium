@@ -167,6 +167,62 @@
             <build>
                 <plugins>
                     <plugin>
+                        <groupId>de.berlios.jsunit</groupId>
+                        <artifactId>jsunit-maven2-plugin</artifactId>
+                        <version>1.3</version>
+                        <dependencies>
+                          <dependency>
+                            <groupId>rhino</groupId>
+                            <artifactId>js</artifactId>
+                            <version>1.7R1</version>
+                          </dependency>
+                        </dependencies>
+                        <executions>
+                            <execution>
+                                <id>test</id>
+                                <configuration>
+                                    <sourceDirectory>src/main/resources</sourceDirectory>
+                                    <sources>
+                                        <source>unittest/fake-browser.js</source>
+                                        <source>unittest/dummy-logging.js</source>
+                                        <source>unittest/jsmock/mock.js</source>
+                                        <source>core/lib/prototype.js</source>
+                                        <source>core/scripts/htmlutils.js</source>
+                                        <source>core/scripts/selenium-api.js</source>
+                                        <source>core/scripts/selenium-browserbot.js</source>
+                                        <source>core/scripts/selenium-browserdetect.js</source>
+                                        <source>core/scripts/selenium-commandhandlers.js</source>
+                                        <source>core/scripts/selenium-executionloop.js</source>
+                                        <source>core/scripts/selenium-logging.js</source>
+                                        <source>core/scripts/selenium-remoterunner.js</source>
+                                        <source>core/scripts/selenium-testrunner.js</source>
+                                        <source>core/scripts/ui-element.js</source>
+                                        <source>core/xpath/xmltoken.js</source>
+                                        <source>core/xpath/util.js</source>
+                                        <source>core/xpath/dom.js</source>
+                                        <source>core/xpath/xpath.js</source>
+                                        
+                                    </sources>
+                                    <testSourceDirectory>src/test/resources</testSourceDirectory>
+                                    <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
+                                    <testSuites>
+                                        <testSuite>
+                                            <name>TestSuite</name>
+                                            <type>TESTCASES</type>
+                                            <includes>
+                                                <include>*.js</include>
+                                            </includes>
+                                        </testSuite>
+                                    </testSuites>
+                                </configuration>
+                                <goals>
+                                    <goal>jsunit-test</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!--plugin>
                         <artifactId>maven-antrun-plugin</artifactId>
                         <version>1.2-SNAPSHOT</version>
                         <executions>
@@ -238,15 +294,14 @@
                                 <version>3.8.1</version>
                             </dependency>
                         </dependencies>
-                    </plugin>
+                    </plugin-->
                 </plugins>
             </build>
         </profile>
         
         <profile>
             <id>integration-test-firefox</id>
-            <activation>
-                <property>
+            <activation>                <property>
                     <name>!skipTests</name>
                 </property>
             </activation>

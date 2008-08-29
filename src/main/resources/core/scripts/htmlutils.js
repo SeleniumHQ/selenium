@@ -728,52 +728,52 @@ PatternMatcher.regexpFromGlob = function(glob) {
     return "^" + PatternMatcher.convertGlobMetaCharsToRegexpMetaChars(glob) + "$";
 };
 
-var Assert = {
+if (!this["Assert"]) Assert = {};
 
-    fail: function(message) {
-        throw new AssertionFailedError(message);
-    },
+
+Assert.fail = function(message) {
+    throw new AssertionFailedError(message);
+};
 
 /*
 * Assert.equals(comment?, expected, actual)
 */
-    equals: function() {
-        var args = new AssertionArguments(arguments);
-        if (args.expected === args.actual) {
-            return;
-        }
-        Assert.fail(args.comment +
-                    "Expected '" + args.expected +
-                    "' but was '" + args.actual + "'");
-    },
+Assert.equals = function() {
+    var args = new AssertionArguments(arguments);
+    if (args.expected === args.actual) {
+        return;
+    }
+    Assert.fail(args.comment +
+                "Expected '" + args.expected +
+                "' but was '" + args.actual + "'");
+};
 
 /*
 * Assert.matches(comment?, pattern, actual)
 */
-    matches: function() {
-        var args = new AssertionArguments(arguments);
-        if (PatternMatcher.matches(args.expected, args.actual)) {
-            return;
-        }
-        Assert.fail(args.comment +
-                    "Actual value '" + args.actual +
-                    "' did not match '" + args.expected + "'");
-    },
+Assert.matches = function() {
+    var args = new AssertionArguments(arguments);
+    if (PatternMatcher.matches(args.expected, args.actual)) {
+        return;
+    }
+    Assert.fail(args.comment +
+                "Actual value '" + args.actual +
+                "' did not match '" + args.expected + "'");
+}
 
 /*
 * Assert.notMtches(comment?, pattern, actual)
 */
-    notMatches: function() {
-        var args = new AssertionArguments(arguments);
-        if (!PatternMatcher.matches(args.expected, args.actual)) {
-            return;
-        }
-        Assert.fail(args.comment +
-                    "Actual value '" + args.actual +
-                    "' did match '" + args.expected + "'");
+Assert.notMatches = function() {
+    var args = new AssertionArguments(arguments);
+    if (!PatternMatcher.matches(args.expected, args.actual)) {
+        return;
     }
+    Assert.fail(args.comment +
+                "Actual value '" + args.actual +
+                "' did match '" + args.expected + "'");
+}
 
-};
 
 // Preprocess the arguments to allow for an optional comment.
 function AssertionArguments(args) {
