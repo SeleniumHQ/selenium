@@ -12,7 +12,7 @@ module Selenium
       end
       
       def start(options = {})
-        command = "java -jar '#{jar_file}'"
+        command = "java -jar \"#{jar_file}\""
         command << " -port #{@port}"
         command << " -timeout #{@timeout_in_seconds}"
         command << " #{additional_args.join(' ')}" unless additional_args.empty?

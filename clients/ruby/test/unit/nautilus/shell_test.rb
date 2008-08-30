@@ -25,7 +25,7 @@ unit_tests do
   test "build_command prepend start when command is run on the background on non windows platforms" do
     shell = Nautilus::Shell.new
     shell.stubs(:windows?).returns(true)
-    assert_equal "start /wait/ /b a command", 
+    assert_equal "start /wait /b a command", 
                  shell.build_command("a command", :background => true)
   end
   

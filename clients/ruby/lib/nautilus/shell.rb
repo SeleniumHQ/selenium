@@ -10,7 +10,7 @@ module Nautilus
       actual_command = command.kind_of?(Array) ? command.join(" ") : command
       if options[:background]
         if windows?
-          actual_command = "start /wait/ /b " + command
+          actual_command = "start /wait /b " + command
         elsif options[:background]
           actual_command << " &"
         end

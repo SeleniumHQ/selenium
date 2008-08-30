@@ -43,7 +43,7 @@ unit_tests do
   test "start launches the remote control process with the right port and timeout" do
     remote_control = Selenium::RemoteControl::RemoteControl.new(:a_host, :the_port, :the_timeout)
     remote_control.jar_file = :the_jar_file
-    Nautilus::Shell.any_instance.expects(:run).with("java -jar 'the_jar_file' -port the_port -timeout the_timeout", anything)
+    Nautilus::Shell.any_instance.expects(:run).with('java -jar "the_jar_file" -port the_port -timeout the_timeout', anything)
     remote_control.start
   end
 
@@ -51,11 +51,11 @@ unit_tests do
     remote_control = Selenium::RemoteControl::RemoteControl.new(:a_host, :a_port, :a_timeout)
     remote_control.jar_file = :a_jar_file
     remote_control.additional_args = [:an_arg, :another_arg]
-    Nautilus::Shell.any_instance.expects(:run).with("java -jar 'a_jar_file' -port a_port -timeout a_timeout an_arg another_arg", anything)
+    Nautilus::Shell.any_instance.expects(:run).with('java -jar "a_jar_file" -port a_port -timeout a_timeout an_arg another_arg', anything)
     remote_control.start
   end
 
-  test "start doe not launch the remote control process in the background by default" do
+  test "start does not launch the remote control process in the background by default" do
     remote_control = Selenium::RemoteControl::RemoteControl.new(:a_host, :the_port, :the_timeout)
     remote_control.jar_file = :the_jar_file
     Nautilus::Shell.any_instance.expects(:run).with(anything, :background => nil)
