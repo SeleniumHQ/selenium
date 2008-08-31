@@ -23,12 +23,12 @@ module Selenium
       include Selenium::Client::SeleneseClient
       include Selenium::Client::GeneratedDriver
   
-      def initialize(server_host, server_port, browser_string, browser_url, timeout=30000)
+      def initialize(server_host, server_port, browser_string, browser_url, timeout_in_seconds=300)
         @server_host = server_host
         @server_port = server_port
         @browser_string = browser_string
         @browser_url = browser_url
-        @timeout = timeout
+        @timeout = timeout_in_seconds
         @extension_js = ""
         @session_id = nil
       end
@@ -57,6 +57,10 @@ module Selenium
       
       def session_started?
         not @session_id.nil?
+      end
+      
+      def default_timeout_in_seconds
+        @timeout
       end
       
       def chrome_backend?

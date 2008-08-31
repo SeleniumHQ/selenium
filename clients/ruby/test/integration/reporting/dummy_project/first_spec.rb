@@ -49,7 +49,7 @@ describe "An Amazing Web Application" do
     
 		page.open "http://localhost:4444/selenium-server/tests/html/test_click_page1.html"
     page.double_click "doubleClickable"
-    page.get_alert.should eql("double clicked!")
+    page.alert.should eql("double clicked!")
   end
   
 end

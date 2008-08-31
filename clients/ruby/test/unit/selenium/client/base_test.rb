@@ -2,6 +2,16 @@ require File.expand_path(File.dirname(__FILE__) + '/../../unit_test_helper')
 
 unit_tests do
   
+  test "default_timeout_in_seconds returns the client driver default timeout in seconds" do
+    client = Class.new { include Selenium::Client::Base }.new :host, :port, :browser, :url, :the_timeout
+    assert_equal :the_timeout, client.default_timeout_in_seconds
+  end
+
+  test "default_timeout_in_seconds is 5 minutes by default" do
+    client = Class.new { include Selenium::Client::Base }.new :host, :port, :browser, :url
+    assert_equal 5 * 60, client.default_timeout_in_seconds
+  end
+
   test "session_started? returns false when no session has been started" do
     client = Class.new { include Selenium::Client::Base }.new :host, :port, :browser, :url
     assert_false client.session_started?

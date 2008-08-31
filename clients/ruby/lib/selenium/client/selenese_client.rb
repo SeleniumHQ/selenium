@@ -7,7 +7,7 @@ module Selenium
       attr_reader :session_id
   
       def do_command(verb, args)
-        timeout(@timeout) do
+        timeout(default_timeout_in_seconds) do
           status, response = http_post(http_request_for(verb, args))
           raise SeleniumCommandError, response unless status == "OK"          
           response

@@ -6,32 +6,24 @@ describe "Click Instrumentation" do
     selenium_driver.start_new_browser_session
 
     page.open "http://localhost:4444/selenium-server/tests/html/test_click_page1.html"
-    page.get_text("link").should eql("Click here for next page")
-    page.click "link"
-    page.wait_for_page_to_load "30000"
-    page.get_title.should eql("Click Page Target")
-    page.click "previousPage"
-    page.wait_for_page_to_load "30000"
-    page.get_title.should eql("Click Page 1")
-    page.click "linkWithEnclosedImage"
-    page.wait_for_page_to_load "30000"
-    page.get_title.should eql("Click Page Target")
-    page.click "previousPage"
-    page.wait_for_page_to_load "30000"
-    page.click "enclosedImage"
-    page.wait_for_page_to_load "30000"
-    page.get_title.should eql("Click Page Target")
-    page.click "previousPage"
-    page.wait_for_page_to_load "30000"
-    page.click "extraEnclosedImage"
-    page.wait_for_page_to_load "30000"
-    page.get_title.should eql("Click Page Target")
-    page.click "previousPage"
-    page.wait_for_page_to_load "30000"
+    page.text_content("link").should eql("Click here for next page")
+    page.click "link", :wait_for => :page
+    page.title.should eql("Click Page Target")
+    page.click "previousPage", :wait_for => :page
+    page.title.should eql("Click Page 1")
+    page.click "linkWithEnclosedImage", :wait_for => :page
+    page.title.should eql("Click Page Target")
+    page.click "previousPage", :wait_for => :page
+    page.click "enclosedImage", :wait_for => :page
+    page.title.should eql("Click Page Target")
+    page.click "previousPage", :wait_for => :page
+    page.click "extraEnclosedImage", :wait_for => :page
+    page.title.should eql("Click Page Target")
+    page.click "previousPage", :wait_for => :page
     page.click "linkToAnchorOnThisPage"
-    page.get_title.should eql("Click Page 1")
+    page.title.should eql("Click Page 1")
     page.click "linkWithOnclickReturnsFalse"
-    page.get_title.should eql("Click Page 1")
+    page.title.should eql("Click Page 1")
   end
 
   it "double clicks" do

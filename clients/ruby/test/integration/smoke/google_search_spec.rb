@@ -6,13 +6,12 @@ describe "Google Search" do
     selenium_driver.start_new_browser_session
     
     page.open "http://www.google.com/webhp?hl=en"
-    page.get_title.should eql("Google")
+    page.title.should eql("Google")
     page.type "q", "Selenium OpenQA"
-    page.get_value("q").should eql("Selenium OpenQA")
-    page.click "btnG"
-    page.wait_for_page_to_load 60000
-    page.is_text_present("openqa.org").should be_true
-    page.get_title.should eql("Selenium OpenQA - Google Search")
+    page.value("q").should eql("Selenium OpenQA")
+    page.click "btnG", :wait_for => :page
+    page.text_present?("openqa.org").should be_true
+    page.title.should eql("Selenium OpenQA - Google Search")
   end
 
   it "can search videos" do
