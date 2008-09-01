@@ -32,7 +32,7 @@ class MockTest < Test::Unit::TestCase
   def test_something
 		@selenium.open("/selenium-server/tests/html/test_i18n.html")
 		@selenium.click("foo")
-		assert_equal("x", @selenium.get_title())
+		assert_equal("x", @selenium.title())
 		assert(@selenium.is_alert_present());
 		links = @selenium.get_all_links()
 		assert(links.length == 1)

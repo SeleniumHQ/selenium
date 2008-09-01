@@ -7,9 +7,8 @@ describe "Another Amazing Web Application" do
     selenium_driver.start_new_browser_session
   
     page.open "http://localhost:4444/selenium-server/tests/html/test_click_page1.html"
-    page.get_text("link").should eql("Click here for next page")
-    page.click "link"
-    page.wait_for_page_to_load "30000"
+    page.text_content("link").should eql("Click here for next page")
+    page.click "link", :wait_for => :page
   end
   
   it "Test case that fails because the application is not behaving as expected" do
