@@ -3,23 +3,12 @@ require 'spec'
 require 'base64'
 require 'fileutils'
 require File.expand_path(File.dirname(__FILE__) + "/../../../../lib/selenium")
-require File.expand_path(File.dirname(__FILE__) + "/../../../../lib/selenium/rspec/rspec_extensions")
-require File.expand_path(File.dirname(__FILE__) + "/../../../../lib/selenium/rspec/reporting/selenium_test_report_formatter")
+require File.expand_path(File.dirname(__FILE__) + "/../../../../lib/selenium/rspec/spec_helper")
 
 Spec::Runner.configure do |config|
 
-  config.before(:each) do
-  end
-
   config.after(:each) do    
-    begin 
-      Selenium::RSpec::SeleniumTestReportFormatter.capture_system_state(@selenium_driver, self) if execution_error
-      if @selenium_driver.session_started?
-        selenium_driver.set_context "Ending example '#{self.description}'"
-      end
-    ensure
-      @selenium_driver.stop
-    end
+    @selenium_driver.stop
   end
 
   def create_selenium_driver(options = {})

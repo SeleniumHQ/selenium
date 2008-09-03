@@ -19,6 +19,7 @@ CLOBBER.include(
 
 task :default => :"test:unit"
 
+desc "Start a Selenium remote control, run all integration tests and stop the remote control"
 task :'ci:integration' do
   Rake::Task[:"selenium:rc:stop"].invoke rescue nil
   begin
@@ -137,7 +138,7 @@ specification = Gem::Specification.new do |s|
   s.summary = "Official Ruby Client for Selenium RC."
   s.version = "1.2"
   s.author = "OpenQA"
-	s.email = 'selenium-client@rubyforge.org'
+  s.email = 'selenium-client@rubyforge.org'
   s.homepage = "http://selenium-client.rubyforge.com"
   s.rubyforge_project = 'selenium-client'
   s.platform = Gem::Platform::RUBY

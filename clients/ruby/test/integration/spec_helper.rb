@@ -1,10 +1,7 @@
 require 'rubygems'
 require 'spec'
-require 'base64'
-require 'fileutils'
 require File.expand_path(File.dirname(__FILE__) + "/../../lib/selenium")
-require File.expand_path(File.dirname(__FILE__) + "/../../lib/selenium/rspec/rspec_extensions")
-require File.expand_path(File.dirname(__FILE__) + "/../../lib/selenium/rspec/reporting/selenium_test_report_formatter")
+require File.expand_path(File.dirname(__FILE__) + "/../../lib/selenium/rspec/spec_helper")
 
 Spec::Runner.configure do |config|
 
@@ -13,19 +10,7 @@ Spec::Runner.configure do |config|
   end
 
   config.after(:each) do
-    begin 
-      Selenium::RSpec::SeleniumTestReportFormatter.capture_system_state(@selenium_driver, self) if execution_error
-      if @selenium_driver.session_started?
-        selenium_driver.set_context "Ending example '#{self.description}'"
-      end
-    ensure
-      @selenium_driver.stop
-    end
-  end
-
-  def start_new_browser_session
-    @selenium_driver.start_new_browser_session
-    @selenium_driver.set_context "Starting example '#{self.description}'"
+    selenium_driver.stop
   end
 
   def selenium_driver
@@ -34,9 +19,6 @@ Spec::Runner.configure do |config|
     
   def page
     @selenium_driver
-  end
-
-  config.after(:each) do    
   end
 
   def create_selenium_driver
@@ -50,8 +32,11 @@ Spec::Runner.configure do |config|
         remote_control_server, port, browser, 
         "http://#{application_host}:#{application_port}", timeout)
   end
+  
+  def start_new_browser_session
+    selenium_driver.start_new_browser_session
+    selenium_driver.set_context "Starting example '#{self.description}'"
+  end
 
-  
-  
 end
 
