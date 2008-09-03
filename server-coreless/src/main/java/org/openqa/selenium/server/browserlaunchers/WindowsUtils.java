@@ -257,6 +257,23 @@ public class WindowsUtils {
         return new File("C:\\Program Files").getAbsolutePath();
     }
     
+    /** Returns the path to Local AppData.  For different users, this will be
+     * different.
+     * 
+     * @return the path to Local AppData
+     */
+    public static String getLocalAppDataPath() {
+        loadEnvironment();
+        final String keyLocalAppData =
+            "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\User Shell Folders\\Local AppData";
+        String localAppDataPath = readStringRegistryValue(keyLocalAppData);
+        String userProfile = getEnvVarIgnoreCase("USERPROFILE");
+        if (userProfile != null) {
+            return localAppDataPath.replace("%USERPROFILE%", userProfile);
+        }
+        return localAppDataPath;
+    }
+    
     public static String getEnvVarIgnoreCase(String var) {
         loadEnvironment();
         for (Iterator i = env.keySet().iterator(); i.hasNext();) {
@@ -392,7 +409,7 @@ public class WindowsUtils {
             throw new WindowsRegistryException("Output didn't look right: " + output);
         }
         String type = m.group(1);
-        if ("REG_SZ".equals(type)) {
+        if ("REG_SZ".equals(type) || "REG_EXPAND_SZ".equals(type)) {
             return String.class;
         } else if ("REG_DWORD".equals(type)) {
         	return int.class;
@@ -415,8 +432,8 @@ public class WindowsUtils {
             throw new WindowsRegistryException("Output didn't look right: " + output);
         }
         String type = m.group(1);
-        if (!"REG_SZ".equals(type)) {
-            throw new WindowsRegistryException(r.value + " was not a REG_SZ (String): " + type);
+        if (!"REG_SZ".equals(type) && !"REG_EXPAND_SZ".equals(type)) {
+            throw new WindowsRegistryException(r.value + " was not a REG_SZ or a REG_EXPAND_SZ (String): " + type);
         }
         String value = m.group(2);
         return value;

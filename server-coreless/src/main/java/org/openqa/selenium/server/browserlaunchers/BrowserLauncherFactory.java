@@ -62,6 +62,7 @@ public class BrowserLauncherFactory {
         //supportedBrowsers.put("pisafari", ProxyInjectionSafariCustomProfileLauncher.class);
         supportedBrowsers.put("konqueror", KonquerorLauncher.class);
         supportedBrowsers.put("mock", MockBrowserLauncher.class);
+        supportedBrowsers.put("googlechrome", GoogleChromeLauncher.class);
     }
     
     public BrowserLauncherFactory() {
