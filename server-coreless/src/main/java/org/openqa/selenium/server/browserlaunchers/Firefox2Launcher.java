@@ -27,7 +27,9 @@ public class Firefox2Launcher extends FirefoxChromeLauncher {
     }
 
     public Firefox2Launcher(RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
-        super(configuration, sessionId, ApplicationRegistry.instance().browserInstallationCache().locateBrowserInstallation("firefox2", browserLaunchLocation, new Firefox2Locator()));        
+        super(configuration, sessionId,
+                ApplicationRegistry.instance().browserInstallationCache().locateBrowserInstallation(
+                        "firefox2", browserLaunchLocation, new Firefox2Locator()));        
     }
 
 }

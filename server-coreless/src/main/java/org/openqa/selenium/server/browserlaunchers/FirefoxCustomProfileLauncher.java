@@ -48,7 +48,9 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
     }
 
     public FirefoxCustomProfileLauncher(RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
-        this(configuration, sessionId, ApplicationRegistry.instance().browserInstallationCache().locateBrowserInstallation("firefox", browserLaunchLocation, new Firefox2or3Locator()));
+        this(configuration, sessionId,
+                ApplicationRegistry.instance().browserInstallationCache().locateBrowserInstallation(
+                        "firefox", browserLaunchLocation, new Firefox2or3Locator()));
     }
 
     public FirefoxCustomProfileLauncher(RemoteControlConfiguration configuration, String sessionId, BrowserInstallation browserInstallation) {

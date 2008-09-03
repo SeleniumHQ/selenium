@@ -27,7 +27,9 @@ public class Firefox3Launcher extends FirefoxChromeLauncher {
     }
 
     public Firefox3Launcher(RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
-        super(configuration, sessionId, ApplicationRegistry.instance().browserInstallationCache().locateBrowserInstallation("firefox3", browserLaunchLocation, new Firefox3Locator()));        
+        super(configuration, sessionId,
+                ApplicationRegistry.instance().browserInstallationCache().locateBrowserInstallation(
+                        "firefox3", browserLaunchLocation, new Firefox3Locator()));        
     }
 
 }
