@@ -64,7 +64,6 @@
                 <configuration>
                     <includes>
                         <include>**/*UnitTest.java</include>
-                        <!--<include>**/ServerTestSuite.java</include>-->
                     </includes>
                     <forkMode>never</forkMode>
                     <useFile>false</useFile>
@@ -74,6 +73,36 @@
                       </property>
                     </systemProperties>
                 </configuration>
+            </plugin>
+            <plugin>
+              <artifactId>maven-antrun-plugin</artifactId>
+              <version>1.2-SNAPSHOT</version>
+              <executions>
+                <execution>
+                  <phase>process-test-resources</phase>
+                  <configuration>
+                    <tasks>
+                      <echo>Shutting down any existing Remote Control...</echo>
+                      <get src="http://localhost:4444/selenium-server/driver/?cmd=shutDown" dest="shutdown.log" ignoreerrors="true"/>
+                    </tasks>
+                  </configuration>
+                  <goals>
+                    <goal>run</goal>
+                  </goals>
+                </execution>
+              </executions>
+              <dependencies>
+                <dependency>
+                  <groupId>ant</groupId>
+                  <artifactId>ant-nodeps</artifactId>
+                  <version>1.6.5</version>
+                </dependency>
+                <dependency>
+                  <groupId>ant</groupId>
+                  <artifactId>ant-trax</artifactId>
+                  <version>1.6.5</version>
+                </dependency>
+              </dependencies>
             </plugin>
         </plugins>
     </build>
