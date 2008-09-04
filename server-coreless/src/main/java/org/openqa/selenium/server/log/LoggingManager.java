@@ -146,7 +146,10 @@ public class LoggingManager {
         }
         for (Handler handler : originalHandlers) {
             logger.addHandler(handler);
-            handler.setFormatter(originalFormatters.get(handler));
+            // jbevan: java.util.logging.Handler.setFormatter(null) throws an NPE
+            if (originalFormatters.get(handler) != null) {
+                handler.setFormatter(originalFormatters.get(handler));
+            }
             handler.setLevel(originalLogLevels.get(handler));
         }
     }
@@ -162,5 +165,4 @@ public class LoggingManager {
         }
     }
 
-    
 }
