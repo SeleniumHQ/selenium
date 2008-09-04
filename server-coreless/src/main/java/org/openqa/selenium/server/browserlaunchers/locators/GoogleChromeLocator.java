@@ -24,10 +24,6 @@ import org.openqa.selenium.server.browserlaunchers.WindowsUtils;
  */
 public class GoogleChromeLocator extends SingleBrowserLocator {
 
-    private static final String[] USUAL_WINDOWS_LAUNCHER_LOCATIONS = {
-            WindowsUtils.getLocalAppDataPath() + "\\Google\\Chrome\\Application"
-    };
-
     protected String browserName() {
         return "Google Chrome";
     }
@@ -45,7 +41,21 @@ public class GoogleChromeLocator extends SingleBrowserLocator {
     }
 
     protected String[] usualLauncherLocations() {
-        return WindowsUtils.thisIsWindows() ? USUAL_WINDOWS_LAUNCHER_LOCATIONS : new String[0];
+        return WindowsUtils.thisIsWindows() ? usualWindowsLauncherLocations() : new String[0];
     }
+
+    /**
+     * Returns usual Google Chrome installation location on Windows.
+     *
+     * WARNING: Executing this method on a non-windows platform will fail because the system root is not set.
+     *
+     * @return Usual Google Chrome installation location on Windows
+     */
+    protected String[] usualWindowsLauncherLocations() {
+        return new String[]{
+                WindowsUtils.getLocalAppDataPath() + "\\Google\\Chrome\\Application"
+        };
+    }
+
 
 }

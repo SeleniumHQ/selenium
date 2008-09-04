@@ -540,7 +540,7 @@ public class ProxyHandler extends AbstractHttpHandler {
                 HttpServer server = http_connection.getHttpServer();
 
                 SslRelay listener = getSslRelayOrCreateNew(uri, addrPort, server);
-
+                                                     
                 int port = listener.getPort();
 
                 // Get the timeout

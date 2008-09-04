@@ -16,18 +16,16 @@
  */
 package org.openqa.selenium.server.browserlaunchers;
 
+import org.apache.commons.logging.Log;
+import org.mortbay.log.LogFactory;
+import org.openqa.selenium.server.RemoteControlConfiguration;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.openqa.selenium.server.SeleniumServer;
-import org.openqa.selenium.server.RemoteControlConfiguration;
-import org.apache.commons.logging.Log;
-import org.mortbay.log.LogFactory;
 
 /**
  * Returns BrowserLaunchers based on simple strings given by the user
@@ -124,8 +122,7 @@ public class BrowserLauncherFactory {
         }
         errorMessage.append('\n');
         errorMessage.append("Supported browsers include:\n");
-        for (Iterator<String> iterator = supportedBrowsers.keySet().iterator(); iterator.hasNext();) {
-            String name = iterator.next();
+        for (String name : supportedBrowsers.keySet()) {
             errorMessage.append("  *").append(name).append('\n');
         }
         errorMessage.append("  *custom\n");
