@@ -1213,10 +1213,14 @@ BrowserBot.prototype.findElementRecursive = function(locatorType, locatorString,
     }
 
     for (var i = 0; i < inWindow.frames.length; i++) {
-        element = this.findElementRecursive(locatorType, locatorString, inWindow.frames[i].document, inWindow.frames[i]);
+        // On some browsers, the document object is undefined for third-party
+        // frames.  Make sure the document is valid before continuing.
+        if (inWindow.frames[i].document) {
+            element = this.findElementRecursive(locatorType, locatorString, inWindow.frames[i].document, inWindow.frames[i]);
 
-        if (element != null) {
-            return element;
+            if (element != null) {
+                return element;
+            }
         }
     }
 };
