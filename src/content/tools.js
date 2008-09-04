@@ -211,7 +211,7 @@ String.prototype.formatAsHTML = function() {
     return this.replace(/(?:\r\n|\r|\n)/g, '<br />');
 };
 
-Array.prototype.delete = function(value) {
+Array.prototype["delete"] = function(value) {
     for (var i = 0; i < this.length; i++) {
         if (this[i] == value) {
             this.splice(i, 1);
@@ -229,7 +229,7 @@ function observable(clazz) {
 
     clazz.prototype.removeObserver = function(observer) {
         if (!this.observers) return;
-        this.observers.delete(observer);
+        this.observers["delete"](observer);
     }
 
     clazz.prototype.notify = function(event) {
