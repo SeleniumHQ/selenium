@@ -156,6 +156,20 @@ Application.prototype = {
         this.testSuite.addTestCaseFromContent(testCase);
         this.setTestCase(testCase);
     },
+    
+    /**
+     * Adds a testcase to the current suite
+     */
+    addTestCase: function(path) {
+        var file = null;
+        if (path) {
+            file = FileUtils.getFile(path);
+        }
+        if (this._loadTestCase(file)) {
+            this.testSuite.addTestCaseFromContent(this.getTestCase());
+            this.setTestCase(this.getTestCase());
+        }
+    },
 
     loadTestCaseWithNewSuite: function(path) {
         var file = null;

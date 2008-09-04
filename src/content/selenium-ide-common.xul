@@ -67,6 +67,7 @@ limitations under the License.
   <commandset id="seleniumIDECommands">
     <command id="cmd_save" oncommand="goDoCommand('cmd_save')"/>
     <command id="cmd_open" oncommand="goDoCommand('cmd_open')"/>
+    <command id="cmd_add" oncommand="goDoCommand('cmd_add')"/>
     <command id="cmd_new_suite" oncommand="goDoCommand('cmd_new_suite')"/>
     <command id="cmd_save_suite" oncommand="goDoCommand('cmd_save_suite')"/>
     <command id="cmd_save_suite_as" oncommand="goDoCommand('cmd_save_suite_as')"/>
@@ -89,6 +90,7 @@ limitations under the License.
     <key id="close-key" modifiers="accel" key="W" command="cmd_close"/>
     <key id="save-key" modifiers="accel" key="S" command="cmd_save"/>
     <key id="open-key" modifiers="accel" key="O" command="cmd_open"/>
+    <key id="add-key" modifiers="accel" key="D" command="cmd_add"/>
     <key id="breakpoint-key" key="B" command="cmd_selenium_breakpoint"/>
     <key id="startpoint-key" key="S" command="cmd_selenium_startpoint"/>
     <key id="exec-key" key="X" command="cmd_selenium_exec_command"/>
@@ -113,6 +115,7 @@ limitations under the License.
     </popup>
     <popup id="suiteContextMenu">
       <menuitem label="&newTestCmd.label;" oncommand="window.editor.app.newTestCase();"/>
+      <menuitem label="&addTestCmd.label;" command="cmd_add" key="add-key" />
       <menuitem label="&contextMenu.delete.label;" command="cmd_delete" />
       <menuitem label="&testCaseProperties.label;" oncommand="window.editor.suiteTreeView.editProperties()"/>
     </popup>
@@ -134,6 +137,8 @@ limitations under the License.
       <menu label="&recentTestCmd.label;">
         <menupopup id="popup_recent_tests" onpopupshowing="window.editor.app.recentTestCases.populateMenu(this)" oncommand="window.editor.app.loadTestCaseWithNewSuite(event.target.getAttribute('value'))" />
       </menu>
+      <menuseparator/>
+      <menuitem label="&addTestCmd.label;" command="cmd_add" key="add-key" accesskey="D"/>
       <menuseparator/>
       <menuitem label="&newSuiteCmd.label;" command="cmd_new_suite" />
       <menuitem label="&openSuiteCmd.label;" command="cmd_open_suite" />

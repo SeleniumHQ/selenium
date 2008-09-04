@@ -148,6 +148,7 @@ Editor.controller = {
 		switch (cmd) {
 		case "cmd_close":
 		case "cmd_open":
+		case "cmd_add":
         case "cmd_new_suite":
 		case "cmd_open_suite":
 		case "cmd_save":
@@ -169,6 +170,7 @@ Editor.controller = {
 		switch (cmd) {
 		case "cmd_close":
 		case "cmd_open":
+		case "cmd_add":
 		case "cmd_new_suite":
 		case "cmd_open_suite":
 		case "cmd_save":
@@ -199,6 +201,7 @@ Editor.controller = {
 		switch (cmd) {
 		case "cmd_close": if (editor.confirmClose()) { window.close(); } break;
 		case "cmd_save": editor.saveTestCase(); break;
+		case "cmd_add": editor.app.addTestCase(); break;
 		case "cmd_open": editor.app.loadTestCaseWithNewSuite(); break;
 		case "cmd_new_suite": editor.app.newTestSuite(); break;
 		case "cmd_open_suite": editor.app.loadTestSuite(); break;
