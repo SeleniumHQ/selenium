@@ -1,5 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.openqa.selenium</groupId>
@@ -47,7 +47,8 @@
     </repositories>
     <modules>
         <module>java</module>
-    </modules>
+        <module>testng</module>
+  </modules>
     <build>
         <plugins>
             <plugin>
@@ -63,10 +64,8 @@
                                 <mkdir dir="${basedir}/target"/>
                                 <property name="output.path" location="${basedir}/target"/>
 
-                                <whichresource resource="/core/iedoc.xml" property="iedoc.url"
-                                               classpath="${maven.dependency.org.openqa.selenium.server.selenium-server.standalone.jar.path}"/>
-                                <fail unless="iedoc.url"
-                                      message="Couldn't find iedoc.xml in the classpath: ${maven.dependency.org.openqa.selenium.server.selenium-server.standalone.jar.path}"/>
+                                <whichresource resource="/core/iedoc.xml" property="iedoc.url" classpath="${maven.dependency.org.openqa.selenium.server.selenium-server.standalone.jar.path}"/>
+                                <fail unless="iedoc.url" message="Couldn't find iedoc.xml in the classpath: ${maven.dependency.org.openqa.selenium.server.selenium-server.standalone.jar.path}"/>
 
                                 <get src="${iedoc.url}" dest="${output.path}/iedoc.xml"/>
                                 <property name="iedoc.xml" location="${output.path}/iedoc.xml"/>

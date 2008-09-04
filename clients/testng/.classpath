@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="/selenium-java-client-driver"/>
+	<classpathentry kind="var" path="M2_REPO/org/testng/testng/5.8/testng-5.8-jdk15.jar" sourcepath="M2_REPO/org/testng/testng/5.8/testng-5.8-sources.jar"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>

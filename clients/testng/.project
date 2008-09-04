@@ -1,0 +1,17 @@
+<projectDescription>
+  <name>selenium-java-testng-helper</name>
+  <comment/>
+  <projects>
+    <project>selenium-java-client-driver</project>
+    <project>selenium-server-coreless</project>
+    <project>selenium-server</project>
+  </projects>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+  </natures>
+</projectDescription>
