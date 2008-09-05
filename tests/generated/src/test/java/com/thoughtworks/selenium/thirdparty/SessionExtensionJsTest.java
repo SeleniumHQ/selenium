@@ -1,8 +1,11 @@
-package com.thoughtworks.selenium;
+package com.thoughtworks.selenium.thirdparty;
 
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
-import junit.framework.TestCase;
+import com.thoughtworks.selenium.DefaultSelenium;
+import com.thoughtworks.selenium.SeleneseTestCase;
+import com.thoughtworks.selenium.Selenium;
+import com.thoughtworks.selenium.SeleniumException;
 
 public class SessionExtensionJsTest extends SeleneseTestCase {
 
