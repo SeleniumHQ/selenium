@@ -34,6 +34,10 @@ function verifyFalse(expression) {
 	return verify(assertFalse(expression));
 }
 
+function joinExpression(expression) {
+    return expression.toString() + ".join(\",\")";
+}
+
 function assignToVariable(type, variable, expression) {
 	return variable + " = " + expression.toString();
 }
@@ -80,16 +84,6 @@ RegexpMatch.prototype.toString = function() {
 
 RegexpNotMatch.prototype.toString = function() {
 	return "/" + this.pattern.replace(/\//g, "\\/") + "/ !~ " + this.expression;
-}
-
-EqualsArray.useUniqueVariableForAssertion = false;
-
-EqualsArray.prototype.length = function() {
-	return this.variableName + ".size";
-}
-
-EqualsArray.prototype.item = function(index) {
-	return this.variableName + "[" + index + "]";
 }
 
 function pause(milliseconds) {

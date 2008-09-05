@@ -37,6 +37,10 @@ function verifyFalse(expression) {
 	return verify(assertFalse(expression));
 }
 
+function joinExpression(expression) {
+    return "String.Join(\",\", " + expression.toString() + ")";
+}
+
 function assignToVariable(type, variable, expression) {
 	return capitalize(type) + " " + variable + " = " + expression.toString();
 }
@@ -93,14 +97,6 @@ NotEquals.prototype.verify = function() {
 
 RegexpMatch.prototype.toString = function() {
 	return "Regex.IsMatch(" + this.expression + ", " + string(this.pattern) + ")";
-}
-
-EqualsArray.prototype.length = function() {
-	return this.variableName + ".Length";
-}
-
-EqualsArray.prototype.item = function(index) {
-	return this.variableName + "[" + index + "]";
 }
 
 function pause(milliseconds) {

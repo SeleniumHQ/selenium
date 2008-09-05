@@ -6,10 +6,6 @@ load('remoteControl.js');
 
 this.name = "perl-rc";
 
-function useSeparateEqualsForArray() {
-	return true;
-}
-
 // method name will not be used in this format
 function testMethodName(testName) {
 	return testName;
@@ -49,7 +45,6 @@ concatString = function(array) {
 	return array.join(" . ");
 }
 
-
 function assertTrue(expression) {
 	if (formatter.assertOrVerifyFailureOnNext) {
 		return expression.toString() + " or die;";
@@ -75,6 +70,10 @@ function assertFalse(expression) {
 
 var verifyTrue = assertTrue;
 var verifyFalse = assertFalse;
+
+function joinExpression(expression) {
+    return "join(',', " + expression.toString() + ")";
+}
 
 function assignToVariable(type, variable, expression) {
 	if (type == 'String[]') {
@@ -150,14 +149,6 @@ RegexpMatch.prototype.toString = function() {
 
 RegexpNotMatch.prototype.toString = function() {
 	return notOperator() + "(" + RegexpMatch.prototype.toString.call(this) + ")";
-}
-
-EqualsArray.prototype.length = function() {
-	return "@" + this.variableName;
-}
-
-EqualsArray.prototype.item = function(index) {
-	return "$" + this.variableName + "[" + index + "]";
 }
 
 function ifCondition(expression, callback) {

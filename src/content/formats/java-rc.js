@@ -38,6 +38,10 @@ function ifCondition(expression, callback) {
     return "if (" + expression.toString() + ") {\n" + callback() + "}";
 }
 
+function joinExpression(expression) {
+    return "join(" + expression.toString() + ", ',')";
+}
+
 function waitFor(expression) {
 	return "for (int second = 0;; second++) {\n" +
 		"\tif (second >= 60) fail(\"timeout\");\n" +
@@ -90,14 +94,6 @@ RegexpMatch.prototype.toString = function() {
 	} else {
 		return "Pattern.compile(" + string(this.pattern) + ").matcher(" + this.expression + ").find()";
 	}
-}
-
-EqualsArray.prototype.length = function() {
-	return this.variableName + ".length";
-}
-
-EqualsArray.prototype.item = function(index) {
-	return this.variableName + "[" + index + "]";
 }
 
 function pause(milliseconds) {

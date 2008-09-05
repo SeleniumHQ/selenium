@@ -49,6 +49,10 @@ function verifyFalse(expression) {
 	return verify(assertFalse(expression));
 }
 
+function joinExpression(expression) {
+    return "','.join(" + expression.toString() + ")";
+}
+
 function assignToVariable(type, variable, expression) {
 	return variable + " = " + expression.toString();
 }
@@ -103,14 +107,6 @@ RegexpMatch.prototype.toString = function() {
 		str = 'r"' + str + '"';
 	}
 	return "re.search(" + str + ", " + this.expression + ")";
-}
-
-EqualsArray.prototype.length = function() {
-	return "len(" + this.variableName + ")";
-}
-
-EqualsArray.prototype.item = function(index) {
-	return this.variableName + "[" + index + "]";
 }
 
 function pause(milliseconds) {
