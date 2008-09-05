@@ -10,7 +10,7 @@
     <modules>
         <module>server-coreless</module>
         <module>selenium-server</module>
-        <module>xlator</module>
+        <!--<module>xlator</module>-->
         <module>clients</module>
     </modules>
     <repositories>
@@ -222,7 +222,7 @@
             <dependency>
                 <groupId>org.openqa.selenium.ide</groupId>
                 <artifactId>selenium-ide</artifactId>
-                <version>0.8.1-SNAPSHOT</version>
+                <version>1.0-beta-2</version>
             </dependency>
 
             <dependency>
@@ -248,7 +248,7 @@
             <dependency>
                 <groupId>rhino</groupId>
                 <artifactId>js</artifactId>
-                <version>1.6R2</version>
+                <version>1.7R1</version>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>
