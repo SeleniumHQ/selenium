@@ -1,16 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-  <classpathentry kind="src" path="src/main/java"/>
-  <classpathentry kind="src" path="src/test/java" output="target/test-classes"/>
-  <classpathentry kind="output" path="target/classes"/>
-  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-  <classpathentry kind="var" path="M2_REPO/ant/ant/1.6.5/ant-1.6.5.jar"/>
-  <classpathentry kind="var" path="M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/openqa/selenium/core/selenium-core/1.0-SNAPSHOT/selenium-core-1.0-SNAPSHOT.jar"/>
-  <classpathentry kind="src" path="/selenium-server-coreless"/>
-  <classpathentry kind="var" path="M2_REPO/jetty/org.mortbay.jetty/5.1.10/org.mortbay.jetty-5.1.10.jar"/>
-  <classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging/1.0.4/commons-logging-1.0.4.jar"/>
-  <classpathentry kind="var" path="M2_REPO/javax/servlet/servlet-api/2.4/servlet-api-2.4.jar"/>
-  <classpathentry kind="var" path="M2_REPO/bouncycastle/bcprov-jdk15/135/bcprov-jdk15-135.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/openqa/selenium/ide/selenium-ide/0.8.1-SNAPSHOT/selenium-ide-0.8.1-SNAPSHOT.jar"/>
-  <classpathentry kind="var" path="M2_REPO/rhino/js/1.6R2/js-1.6R2.jar"/>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="src" path="src/test/java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="var" path="M2_REPO/ant/ant/1.6.5/ant-1.6.5.jar" sourcepath="M2_REPO/ant/ant/1.6.5/ant-1.6.5-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar" sourcepath="M2_REPO/junit/junit/3.8.1/junit-3.8.1-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/openqa/selenium/ide/selenium-ide/1.0-beta-2/selenium-ide-1.0-beta-2.jar"/>
+	<classpathentry kind="var" path="M2_REPO/rhino/js/1.7R1/js-1.7R1.jar" sourcepath="M2_REPO/rhino/js/1.7R1/js-1.7R1-sources.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/selenium-core"/>
+	<classpathentry kind="output" path="target-eclipse"/>
 </classpath>

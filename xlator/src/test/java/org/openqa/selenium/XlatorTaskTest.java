@@ -4,12 +4,15 @@
  */
 package org.openqa.selenium;
 
-import java.io.*;
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 
-import junit.framework.*;
+import junit.framework.TestCase;
 
-import org.apache.tools.ant.*;
-import org.apache.tools.ant.types.*;
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
+import org.apache.tools.ant.types.FileSet;
 
 public class XlatorTaskTest extends TestCase {
 
@@ -35,13 +38,14 @@ public class XlatorTaskTest extends TestCase {
         executeTask("java-rc");
     }
 
-    private void executeTask(String formatter) {
+    private void executeTask(String formatter) throws MalformedURLException {
         XlatorTask task = new XlatorTask();
         task.setProject(new Project());
         FileSet fs = new FileSet();
         fs.setDir(inputDir);
         task.addFileSet(fs);
         task.setDestDir(outputDir);
+        task.setBaseUrl(new URL("http://foo.com"));
         XlatorTask.FormatterType f = new XlatorTask.FormatterType();
         f.setValue(formatter);
         task.setFormatter(f);

@@ -2,6 +2,7 @@ package org.openqa.selenium;
 
 import java.io.*;
 import java.util.*;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.*;
 
@@ -19,21 +20,22 @@ public class Xlator
 
     public static void main( String[] args ) throws Exception
     {
-        if (args.length < 2) {
-            System.err.println("usage: Xlator <formatter> <input.html> [output]\n" +
-                    "example: Xlator java-rc c:\\my\\TestFoo.html\n");
+        if (args.length < 3) {
+            System.err.println("usage: Xlator <formatter> <input.html> <baseUrl> [output]\n" +
+                    "example: Xlator java-rc c:\\my\\TestFoo.html http://foo.com\n");
             System.exit(1);
         }
         int i = 0;
         String outputFormat = args[i++];
         File testCaseHTML = new File(args[i++]);
+        String baseUrl = args[i++];
         File outputFile = null;
         if (args.length == 3) {
             outputFile = new File(args[i++]);
         }
         HashMap<String, String> options = extractOptions();
         String testName = extractTestName(testCaseHTML);
-        String output = xlateTestCase(testName, outputFormat, Xlator.loadFile(testCaseHTML), options);
+        String output = xlateTestCase(testName, baseUrl, outputFormat, Xlator.loadFile(testCaseHTML), options, null);
         if (outputFile == null) {
             System.out.println(output);
         } else {
@@ -61,14 +63,16 @@ public class Xlator
         if (dotIndex == -1) return testFile.getName();
         return testFile.getName().substring(0, dotIndex);
     }
-    
-    public static String xlateTestCase(String testName, String outputFormat, String htmlSource, HashMap<String, String> options) throws Exception {
+
+    public static String xlateTestCase(String testName, String baseUrl, String outputFormat, String htmlSource, HashMap<String, String> options, Logger log) throws Exception {
         Context cx = Context.enter();
         try {
             Scriptable scope = cx.initStandardObjects();
+            loadJSSource(cx, scope, "/content/xhtml-entities.js");
             loadJSSource(cx, scope, "/content/formats/html.js");
-            loadJSSource(cx, scope, "/content/testCase.js");
             loadJSSource(cx, scope, "/content/tools.js");
+            loadJSSource(cx, scope, "/content/testCase.js");
+            
             
 //          add window.editor.seleniumAPI
 			InputStream stream = Xlator.class.getResourceAsStream("/core/iedoc-core.xml");
@@ -82,14 +86,23 @@ public class Xlator
             Scriptable seleniumAPI = (Scriptable) cx.evaluateString(scope, "window = new Object(); window.editor = new Object(); window.editor.seleniumAPI = new Object();", "<JavaEval>", 1, null);
             loadJSSource(cx, seleniumAPI, "/core/scripts/selenium-api.js");
             
-            // add log.debug
-			cx.evaluateString(scope, "Log.write = function(msg) { java.lang.System.out.println(msg) }; log = new Log('format');", "<JavaEval>", 1, null);
+            // add logger
+            if (log != null) {
+                Scriptable logObject = (Scriptable) scope.get("Log", scope);
+                ScriptableObject.putProperty(logObject, "rhinoLogger", log);
+                cx.evaluateString(scope, "Log.prototype._write = function(msg) { Log.rhinoLogger.info(msg) };", "<JavaEval>", 1, null);
+            } else {
+                cx.evaluateString(scope, "Log.prototype._write = function(msg) {};", "<JavaEval>", 1, null);
+            }
+			
+            cx.evaluateString(scope, "log = new Log('format');", "<JavaEval>", 1, null);
             
             Function parse = getFunction(scope, "parse");
             Scriptable myTestCase = cx.newObject(scope, "TestCase");
             parse.call(cx, scope, scope, new Object[] {myTestCase, htmlSource});
             
-            ScriptableObject.putProperty(myTestCase, "name", testName);
+            ScriptableObject.putProperty(myTestCase, "title", testName);
+            ScriptableObject.putProperty(myTestCase, "baseURL", baseUrl);
 
             Object wrappedResourceLoader = Context.javaToJS(new ResourceLoader(cx, scope), scope);
             ScriptableObject.putProperty(scope, "resourceLoader", wrappedResourceLoader);
@@ -100,9 +113,9 @@ public class Xlator
             loadJSSource(cx, scope, "/content/formats/" + outputFormat + ".js");
             
             if (options != null) {
-                for (Map.Entry<String,String> option : options.entrySet()) {
+                for (String option : options.keySet()) {
                     Scriptable jsOptions = (Scriptable) scope.get("options", scope);
-                    ScriptableObject.putProperty(jsOptions, option.getKey(), option.getValue());
+                    ScriptableObject.putProperty(jsOptions, option, options.get(option));
                 }
             }
             
