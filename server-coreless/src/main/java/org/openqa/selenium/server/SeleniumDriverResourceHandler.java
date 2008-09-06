@@ -611,6 +611,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
          // set the speed for this session's queues
          FrameGroupCommandQueueSet queueSet = 
            FrameGroupCommandQueueSet.getQueueSet(sessionId);
+         if (speed < 0) speed = 0;
          if (null != queueSet) {
            queueSet.setSpeed(speed);
          }
