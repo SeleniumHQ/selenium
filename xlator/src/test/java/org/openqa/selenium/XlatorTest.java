@@ -19,6 +19,8 @@ public class XlatorTest
     extends TestCase
 {
     
+    private static final String RESOURCE = "/tests/TestSelectWindow.html";
+    private static final String NAME = "TestSelectWindow";
     private HashMap<String, String> options;
     private Logger log;
     private String baseUrl = "http://foo.com";
@@ -52,31 +54,31 @@ public class XlatorTest
     public void testJava() throws Exception
     {
         
-        Xlator.xlateTestCase("TestClick", baseUrl, "java-rc", Xlator.loadResource("/tests/TestClick.html"), options, log);
+        Xlator.xlateTestCase(NAME, baseUrl, "java-rc", Xlator.loadResource(RESOURCE), options, log);
     }
     
     public void testJavaTestNg() throws Exception
     {
-        Xlator.xlateTestCase("TestClick", baseUrl, "java-rc-testng", Xlator.loadResource("/tests/TestClick.html"), options, null);
+        Xlator.xlateTestCase(NAME, baseUrl, "java-rc-testng", Xlator.loadResource(RESOURCE), options, null);
     }
     
     public void testCsharp() throws Exception
     {
-        Xlator.xlateTestCase("TestClick", baseUrl, "cs-rc", Xlator.loadResource("/tests/TestClick.html"), options, null);
+        Xlator.xlateTestCase(NAME, baseUrl, "cs-rc", Xlator.loadResource(RESOURCE), options, null);
     }
     
     public void testPerl() throws Exception
     {
-        Xlator.xlateTestCase("TestClick", baseUrl, "perl-rc", Xlator.loadResource("/tests/TestClick.html"), options, null);
+        Xlator.xlateTestCase(NAME, baseUrl, "perl-rc", Xlator.loadResource(RESOURCE), options, null);
     }
     
     public void testRuby() throws Exception
     {
-        Xlator.xlateTestCase("TestClick", baseUrl, "ruby-rc", Xlator.loadResource("/tests/TestClick.html"), options, null);
+        Xlator.xlateTestCase(NAME, baseUrl, "ruby-rc", Xlator.loadResource(RESOURCE), options, null);
     }
     
     public void testPython() throws Exception
     {
-        Xlator.xlateTestCase("TestClick", baseUrl, "python-rc", Xlator.loadResource("/tests/TestClick.html"), options, null);
+        Xlator.xlateTestCase(NAME, baseUrl, "python-rc", Xlator.loadResource(RESOURCE), options, null);
     }
 }
