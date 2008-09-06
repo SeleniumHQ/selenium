@@ -2,10 +2,11 @@ package org.openqa.selenium.thirdparty;
 
 import static org.testng.Assert.assertTrue;
 
-import org.openqa.selenium.AbstractTest;
 import org.testng.annotations.Test;
 
-public class DollarRentACarTest extends AbstractTest {
+import com.thoughtworks.selenium.SeleneseTestNgHelper;
+
+public class DollarRentACarTest extends SeleneseTestNgHelper {
     public static String TIMEOUT = "120000";
     @Test
     public void searchAndRent() throws InterruptedException {

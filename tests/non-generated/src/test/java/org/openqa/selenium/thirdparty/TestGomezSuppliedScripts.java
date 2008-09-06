@@ -2,10 +2,11 @@ package org.openqa.selenium.thirdparty;
 
 import static org.testng.Assert.assertTrue;
 
-import org.openqa.selenium.AbstractTest;
 import org.testng.annotations.Test;
 
-public class TestGomezSuppliedScripts extends AbstractTest {
+import com.thoughtworks.selenium.SeleneseTestNgHelper;
+
+public class TestGomezSuppliedScripts extends SeleneseTestNgHelper {
     @Test
     public void RC108() throws Exception {
         selenium.open("http://www.hrs.com");

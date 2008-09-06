@@ -1,11 +1,10 @@
 package org.openqa.selenium.thirdparty;
 
-import static org.testng.Assert.assertTrue;
-
-import org.openqa.selenium.AbstractTest;
 import org.testng.annotations.Test;
 
-public class BBCTest extends AbstractTest {
+import com.thoughtworks.selenium.SeleneseTestNgHelper;
+
+public class BBCTest extends SeleneseTestNgHelper {
     @Test
     public void haveYourSaySignup() {
         selenium.open("http://www.bbc.co.uk/?ok");

@@ -1,11 +1,11 @@
 package org.openqa.selenium.thirdparty;
 
-import com.thoughtworks.selenium.Wait;
-
-import org.openqa.selenium.AbstractTest;
 import org.testng.annotations.Test;
 
-public class FidelityTest extends AbstractTest {
+import com.thoughtworks.selenium.SeleneseTestNgHelper;
+import com.thoughtworks.selenium.Wait;
+
+public class FidelityTest extends SeleneseTestNgHelper {
     
     long timeout = 60000;
     

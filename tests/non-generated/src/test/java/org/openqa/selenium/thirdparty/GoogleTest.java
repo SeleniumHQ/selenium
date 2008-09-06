@@ -2,10 +2,11 @@ package org.openqa.selenium.thirdparty;
 
 import static org.testng.Assert.assertTrue;
 
-import org.openqa.selenium.AbstractTest;
 import org.testng.annotations.Test;
 
-public class GoogleTest extends AbstractTest {
+import com.thoughtworks.selenium.SeleneseTestNgHelper;
+
+public class GoogleTest extends SeleneseTestNgHelper {
     @Test
     public void homepage() {
         selenium.open("http://www.google.com");

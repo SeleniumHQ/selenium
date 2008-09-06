@@ -1,9 +1,10 @@
 package org.openqa.selenium.thirdparty;
 
-import org.openqa.selenium.AbstractTest;
 import org.testng.annotations.Test;
 
-public class CrossDomainTest extends AbstractTest {
+import com.thoughtworks.selenium.SeleneseTestNgHelper;
+
+public class CrossDomainTest extends SeleneseTestNgHelper {
     @Test
     public void crossDomain() {
         selenium.open("http://www.yahoo.com");

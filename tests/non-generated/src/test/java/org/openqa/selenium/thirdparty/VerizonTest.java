@@ -1,10 +1,11 @@
 package org.openqa.selenium.thirdparty;
 
-import org.openqa.selenium.AbstractTest;
 import org.testng.SkipException;
 import org.testng.annotations.Test;
 
-public class VerizonTest extends AbstractTest {
+import com.thoughtworks.selenium.SeleneseTestNgHelper;
+
+public class VerizonTest extends SeleneseTestNgHelper {
     private static final String TIMEOUT = "60000";
 
     @Test
