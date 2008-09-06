@@ -1,6 +1,7 @@
-package org.openqa.selenium;
+package org.openqa.selenium.thirdparty;
 
 import org.testng.annotations.Test;
+import org.openqa.selenium.AbstractTest;
 import org.openqa.selenium.utils.TestReporter;
 
 public class HttpsTest extends AbstractTest {

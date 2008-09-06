@@ -1,5 +1,6 @@
-package org.openqa.selenium;
+package org.openqa.selenium.thirdparty;
 
+import org.openqa.selenium.AbstractTest;
 import org.testng.SkipException;
 import org.testng.annotations.Test;
 

@@ -1,6 +1,8 @@
-package org.openqa.selenium;
+package org.openqa.selenium.thirdparty;
 
 import com.thoughtworks.selenium.Wait;
+
+import org.openqa.selenium.AbstractTest;
 import org.testng.annotations.Test;
 
 public class FidelityTest extends AbstractTest {

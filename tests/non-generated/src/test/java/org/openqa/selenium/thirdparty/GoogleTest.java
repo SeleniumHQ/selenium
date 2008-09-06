@@ -1,6 +1,8 @@
-package org.openqa.selenium;
+package org.openqa.selenium.thirdparty;
 
 import static org.testng.Assert.assertTrue;
+
+import org.openqa.selenium.AbstractTest;
 import org.testng.annotations.Test;
 
 public class GoogleTest extends AbstractTest {

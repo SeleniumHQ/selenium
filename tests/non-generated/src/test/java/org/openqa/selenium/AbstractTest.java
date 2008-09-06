@@ -12,7 +12,7 @@ import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
 
-public class AbstractTest {
+public abstract class AbstractTest {
     protected SeleniumServer ss;
     protected Selenium selenium;
 
