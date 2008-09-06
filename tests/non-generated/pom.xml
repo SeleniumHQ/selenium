@@ -137,19 +137,20 @@
             <scope>test</scope>
             <exclusions>
                 <exclusion>
-                    <groupId>org.openqa.selenium.server</groupId>
-                    <artifactId>selenium-server</artifactId>
-                </exclusion>
-                <exclusion>
                     <groupId>junit</groupId>
                     <artifactId>junit</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
         <dependency>
+            <groupId>org.openqa.selenium.client-drivers</groupId>
+            <artifactId>selenium-java-testng-helper</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <version>5.7</version>
             <classifier>jdk15</classifier>
             <scope>test</scope>
         </dependency>
