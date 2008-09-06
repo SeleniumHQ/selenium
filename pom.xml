@@ -56,6 +56,14 @@
         </repository>
     </repositories>
     <build>
+        <resources>
+          <resource>
+            <directory>src/main/resources</directory>
+          </resource>
+          <resource>
+            <directory>target/generated-resources</directory>
+          </resource>
+        </resources>
 	    <extensions>
             <extension>
                 <groupId>org.apache.maven.wagon</groupId>
@@ -75,15 +83,15 @@
                 <version>1.2-SNAPSHOT</version>
                 <executions>
                     <execution>
-                        <id>compile</id>
-                        <phase>compile</phase>
+                        <id>generate-resources</id>
+                        <phase>generate-resources</phase>
                         <configuration>
                             <tasks>
                                 <exec executable="svnversion" outputProperty="svn-revision" failOnError="true">
                                     <arg value="."/>
                                 </exec>
 
-                                <copy todir="target/classes" overwrite="true">
+                                <copy todir="target/generated-resources" overwrite="true">
                                     <fileset dir="src/main/resources">
                                         <include name="core/scripts/selenium-version.js"/>
                                         <include name="VERSION.txt"/>
@@ -94,23 +102,23 @@
                                     </filterset>
                                 </copy>
                                 
-                                <copy file="target/classes/core/TestRunner.html" tofile="target/classes/core/TestRunner.hta" />
+                                <copy file="src/main/resources/core/TestRunner.html" tofile="target/generated-resources/core/TestRunner.hta" />
 
-                                <mkdir dir="target/classes/core"/>
-                                <java jar="${maven.dependency.rhino.js.jar.path}" output="target/classes/core/iedoc.xml" failonerror="true" fork="true">
+                                <mkdir dir="target/generated-resources/core"/>
+                                <java jar="${maven.dependency.rhino.js.jar.path}" output="target/generated-resources/core/iedoc.xml" failonerror="true" fork="true">
                                     <arg file="src/main/resources/doctool/doc.js"/>
                                     <arg file="src/main/resources/core/scripts/selenium-api.js"/>
                                     <arg file="src/main/resources/core/scripts/selenium-remoterunner.js"/>
                                 </java>
-                                <!--<xmlvalidate file="target/classes/core/iedoc.xml" lenient="true"/>-->
-                                <java jar="${maven.dependency.rhino.js.jar.path}" output="target/classes/core/iedoc-core.xml" failonerror="true" fork="true">
+                                <!--<xmlvalidate file="target/generated-resources/core/iedoc.xml" lenient="true"/>-->
+                                <java jar="${maven.dependency.rhino.js.jar.path}" output="target/generated-resources/core/iedoc-core.xml" failonerror="true" fork="true">
                                     <arg file="src/main/resources/doctool/doc.js"/>
                                     <arg file="src/main/resources/core/scripts/selenium-api.js"/>
                                     <arg file="src/main/resources/core/scripts/selenium-testrunner.js"/>
                                 </java>
-                                <!--<xmlvalidate file="target/classes/core/iedoc-core.xml" lenient="true"/>-->
+                                <!--<xmlvalidate file="target/generated-resources/core/iedoc-core.xml" lenient="true"/>-->
 
-                                <xslt in="target/classes/core/iedoc-core.xml" out="target/classes/reference.html" style="src/main/resources/doctool/doc2html.xml"/>
+                                <xslt in="target/generated-resources/core/iedoc-core.xml" out="target/generated-resources/reference.html" style="src/main/resources/doctool/doc2html.xml"/>
                             </tasks>
                         </configuration>
                         <goals>
