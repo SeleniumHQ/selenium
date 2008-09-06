@@ -190,6 +190,10 @@ public class SeleniumServer {
     public SeleniumServer() throws Exception {
         this(slowResourceProperty(), new RemoteControlConfiguration());
     }
+    
+    public SeleniumServer(RemoteControlConfiguration configuration) throws Exception {
+        this(slowResourceProperty(), configuration);
+    }
 
     public SeleniumServer(boolean slowResources) throws Exception {
         this(slowResources, new RemoteControlConfiguration());
