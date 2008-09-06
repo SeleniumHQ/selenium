@@ -129,7 +129,7 @@ RegexpNotMatch.prototype.verify = function() {
 
 function seleniumEquals(type, pattern, expression) {
 	if (type == 'String[]') {
-		return seleniumEquals('String', pattern, joinExpression(expression));
+		return seleniumEquals('String', pattern.replace(/\\,/g, ',') , joinExpression(expression));
 	} else if (type == 'String' && pattern.match(/^regexp:/)) {
 		return new RegexpMatch(pattern.substring(7), expression);
 	} else if (type == 'String' && pattern.match(/^regex:/)) {
