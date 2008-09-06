@@ -61,7 +61,7 @@ function testRubyRCFormat() {
 	assertEquals('assert_equal "abc", @selenium.get_location', nextCommand());
 	assertEquals('assert_not_equal "abc", @selenium.get_location', nextCommand());
 	assertEquals('@selenium.type "theText", @selenium.get_eval("\'abc\'")', nextCommand());
-	assertEquals('assert_equal ["", "abc", "ab,c"], @selenium.get_select_options("theSelect")', nextCommand());
+	assertEquals('assert_equal ",abc,ab,c", @selenium.get_select_options("theSelect").join(",")', nextCommand());
 	assertEquals('assert_not_equal "abc", @selenium.get_location', nextCommand());
 	assertEquals('def = @selenium.get_text("abc")', nextCommand());
 	assertEquals('assert !60.times{ break if ("def" == @selenium.get_text("abc") rescue false); sleep 1 }', nextCommand());
@@ -71,7 +71,7 @@ function testRubyRCFormat() {
 	assertEquals('@selenium.wait_for_page_to_load "30000"', nextCommand());
 	assertEquals('sleep 1', nextCommand());
 	assertEquals("# line 1\n# line 2", f.formatComment(this.commands.shift()));
-  assertEquals('assert_not_equal ["", "abc", "ab,c"], @selenium.get_select_options("theSelect")', nextCommand());
+  assertEquals('assert_not_equal ",abc,ab,c", @selenium.get_select_options("theSelect").join(",")', nextCommand());
 }
 
 function testPerlRCFormat() {
@@ -123,11 +123,7 @@ function testJavaRCFormat() {
 	assertEquals('assertEquals("abc", selenium.getLocation());', nextCommand());
 	assertEquals('assertNotEquals("abc", selenium.getLocation());', nextCommand());
 	assertEquals('selenium.type("theText", selenium.getEval("\'abc\'"));', nextCommand());
-	assertEquals('String[] array1 = selenium.getSelectOptions("theSelect");\n' +
-				 'assertEquals(3, array1.length);\n' +
-				 'assertEquals("", array1[0]);\n' +
-				 'assertEquals("abc", array1[1]);\n' +
-				 'assertEquals("ab,c", array1[2]);', nextCommand());
+	assertEquals('assertEquals(",abc,ab,c", join(selenium.getSelectOptions("theSelect"), \',\'));', nextCommand());
 	assertEquals('assertNotEquals("abc", selenium.getLocation());', nextCommand());
 	assertEquals('String def = selenium.getText("abc");', nextCommand());
 	assertTrue(nextCommand().indexOf('if ("def".equals(selenium.getText("abc"))) break; }') >= 0);
@@ -137,10 +133,7 @@ function testJavaRCFormat() {
 	assertEquals('selenium.waitForPageToLoad("30000");', nextCommand());
 	assertEquals('Thread.sleep(1000);', nextCommand());
 	assertEquals("// line 1\n// line 2", f.formatComment(this.commands.shift()));
-    assertEquals('String[] array2 = selenium.getSelectOptions("theSelect");\n' +
-                 'if (3 == array2.length) {\n' +
-                 '\tassertFalse("".equals(array2[0]) && "abc".equals(array2[1]) && "ab,c".equals(array2[2]));\n' +
-                 '}', nextCommand());
+    assertEquals('assertNotEquals(",abc,ab,c", join(selenium.getSelectOptions("theSelect"), \',\'));', nextCommand());
 }
 
 function testCSharpRCFormat() {
