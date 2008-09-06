@@ -12,7 +12,7 @@ options.header =
 	"package ${packageName};\n" +
 	"\n" +
 	"import com.thoughtworks.selenium.*;\n" +
-	"import org.testng.*;\n" +
+	"import org.testng.annotations.*;\n" +
 	"import static org.testng.Assert.*;\n" +
 	"import java.util.regex.Pattern;\n" +
 	"\n" +
