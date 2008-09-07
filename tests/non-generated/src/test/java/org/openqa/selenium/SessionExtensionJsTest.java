@@ -1,4 +1,4 @@
-package com.thoughtworks.selenium.thirdparty;
+package org.openqa.selenium;
 
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
