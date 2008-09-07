@@ -1,9 +1,12 @@
 package com.thoughtworks.selenium.thirdparty;
 
-import com.thoughtworks.selenium.SeleneseTestCase;
+import org.testng.annotations.Test;
 
-public class MultiDomainTest extends SeleneseTestCase {
+import com.thoughtworks.selenium.SeleneseTestNgHelper;
 
+public class MultiDomainTest extends SeleneseTestNgHelper {
+
+    @Test
     public void testMultipleDomains() {
         // DGF This test isn't REALLY a multi-domain test; we're visiting /selenium-server on multi-domains
         // still, non-PI & non-proxy modes can't pass this test.

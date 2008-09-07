@@ -1,18 +1,21 @@
 package com.thoughtworks.selenium.thirdparty;
 
-import com.thoughtworks.selenium.SeleneseTestCase;
+import org.testng.annotations.Test;
 
-public class GoogleTest extends SeleneseTestCase {
+import com.thoughtworks.selenium.SeleneseTestNgHelper;
 
+public class GoogleTest extends SeleneseTestNgHelper {
+
+    @Test
     public void testGoogle() throws Throwable {
         selenium.open("http://www.google.com/webhp?hl=en");
 
-        assertEquals("Google", selenium.getTitle());
+        assertEquals(selenium.getTitle(), "Google");
         selenium.type("q", "Selenium OpenQA");
-        assertEquals("Selenium OpenQA", selenium.getValue("q"));
+        assertEquals(selenium.getValue("q"), "Selenium OpenQA");
         selenium.click("btnG");
         selenium.waitForPageToLoad("5000");
-        assertEquals("Selenium OpenQA - Google Search", selenium.getTitle());
+        assertEquals(selenium.getTitle(), "Selenium OpenQA - Google Search");
     }
 
 }

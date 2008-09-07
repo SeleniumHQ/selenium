@@ -1,9 +1,12 @@
 package com.thoughtworks.selenium.thirdparty;
 
-import com.thoughtworks.selenium.SeleneseTestCase;
+import org.testng.annotations.Test;
 
-public class GoogleVideoTest extends SeleneseTestCase {
+import com.thoughtworks.selenium.SeleneseTestNgHelper;
+
+public class GoogleVideoTest extends SeleneseTestNgHelper {
     
+    @Test
     public void testGoogle() {
         selenium.open("http://video.google.com");
         selenium.type("q", "hello world");

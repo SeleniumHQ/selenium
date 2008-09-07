@@ -1,27 +1,14 @@
 package com.thoughtworks.selenium.thirdparty;
 
-import junit.framework.*;
+import org.testng.annotations.Test;
 
-import org.openqa.selenium.server.*;
+import com.thoughtworks.selenium.SeleneseTestNgHelper;
 
-import com.thoughtworks.selenium.DefaultSelenium;
-import com.thoughtworks.selenium.Selenium;
-
-public class AttachFileTest extends TestCase {
-    private Selenium selenium;
-
-    public void setUp() throws Exception {
-        String url = "http://www.snipshot.com";
-        selenium = new DefaultSelenium("localhost", RemoteControlConfiguration.getDefaultPort(), "*chrome", url);
-        selenium.start();
-    }
-
-    protected void tearDown() throws Exception {
-        selenium.stop();
-    }
-
+public class AttachFileTest extends SeleneseTestNgHelper {
+    
+    @Test
     public void testAttachfile() throws Throwable {
-		selenium.open("/");
+		selenium.open("http://www.snipshot.com");
 		assertEquals("Snipshot: Edit pictures online", selenium.getTitle());
 		
 		selenium.attachFile("file", "http://www.google.com/intl/en_ALL/images/logo.gif");
