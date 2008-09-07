@@ -1,24 +1,8 @@
 package com.thoughtworks.selenium.thirdparty;
 
-import junit.framework.*;
+import com.thoughtworks.selenium.SeleneseTestCase;
 
-import org.openqa.selenium.server.*;
-
-import com.thoughtworks.selenium.DefaultSelenium;
-import com.thoughtworks.selenium.Selenium;
-
-public class GoogleTest extends TestCase {
-    private Selenium selenium;
-
-    public void setUp() throws Exception {
-        String url = "http://www.google.com";
-        selenium = new DefaultSelenium("localhost", RemoteControlConfiguration.getDefaultPort(), "*firefox", url);
-        selenium.start();
-    }
-
-    protected void tearDown() throws Exception {
-        selenium.stop();
-    }
+public class GoogleTest extends SeleneseTestCase {
 
     public void testGoogle() throws Throwable {
         selenium.open("http://www.google.com/webhp?hl=en");

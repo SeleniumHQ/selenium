@@ -1,39 +1,19 @@
 package com.thoughtworks.selenium.thirdparty;
 
-import junit.framework.TestCase;
+import com.thoughtworks.selenium.SeleneseTestCase;
 
-import org.openqa.selenium.server.RemoteControlConfiguration;
-
-import com.thoughtworks.selenium.DefaultSelenium;
-import com.thoughtworks.selenium.Selenium;
-
-public class DomainTourTest extends TestCase
+public class DomainTourTest extends SeleneseTestCase
 {
-    private Selenium selenium;
-    
-    public void setUp() throws Exception {
-        String url = "http://www.google.com";
-        selenium = new DefaultSelenium("localhost", RemoteControlConfiguration.getDefaultPort(), "*iexplore", url);
-        selenium.start();
-    }
-    
-    protected void tearDown() throws Exception {
-        selenium.stop();
-    }
     
     public void testAll() throws Throwable {     
-//        selenium.open("http://maps.google.com/maps?f=q&hl=en&q=646+Judson+Ave.,+60202&ie=UTF8&om=1");
-//        // selenium.open("http://www.gmail.com");  had to disable because it redirects to https  :(
-//        selenium.open("http://www.thoughtworks.com");
-//        selenium.open("http://www.104.com.tw");
-//        selenium.open("http://www.126.com");
-//        selenium.open("http://www.139.com");
-//        selenium.open("http://www.163.com");
+        selenium.open("http://maps.google.com/maps?f=q&hl=en&q=646+Judson+Ave.,+60202&ie=UTF8&om=1");
+        selenium.open("http://www.gmail.com");
+        selenium.open("http://www.thoughtworks.com");
+        selenium.open("http://www.104.com.tw");
+        selenium.open("http://www.126.com");
+        selenium.open("http://www.139.com");
+        selenium.open("http://www.163.com");
         
-        /*
-         * The builds have been taking forever lately, and I suspect perhaps this test is being run?
-         * It's not called in ClientDriverSuite, but its addition roughly coincides w/ the long
-         * builds.  I'll comment out the guts to see if that helps...
         selenium.open("http://www.17173.com");
         selenium.open("http://www.1ting.com");
         selenium.open("http://www.21cn.com");
@@ -532,6 +512,6 @@ public class DomainTourTest extends TestCase
         selenium.open("http://www.zhaopin.com");
         selenium.open("http://www.zhongsou.com");
         selenium.open("http://www.zol.com.cn");   
-        */
+        
     }    
 }
