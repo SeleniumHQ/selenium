@@ -1,12 +1,12 @@
-import com.thoughtworks.selenium.GroovySeleniumTestCase
+import com.thoughtworks.selenium.GroovySeleneseTestCase
 
-class GroovySeleniumTestCaseTest extends GroovyTestCase {
+class GroovySeleneseTestCaseTest extends GroovyTestCase {
     def testcase
     
     @Override
     void setUp() {
         super.setUp()
-        testcase = new GroovySeleniumTestCase()
+        testcase = new GroovySeleneseTestCase()
     }
     
     void testMethodMissingIsResolvable() {

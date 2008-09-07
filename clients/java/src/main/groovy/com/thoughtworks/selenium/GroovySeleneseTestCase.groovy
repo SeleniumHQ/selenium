@@ -3,13 +3,13 @@ package com.thoughtworks.selenium
 /**
  * The Groovy equivalent of SeleneseTestCase, as a GroovyTestCase.
  */
-class GroovySeleniumTestCase extends GroovyTestCase {
+class GroovySeleneseTestCase extends GroovyTestCase {
     def base
     def baseMethods
     
     protected selenium
     
-    GroovySeleniumTestCase() {
+    GroovySeleneseTestCase() {
         super()
         base = new SeleneseTestBase()
         baseMethods = SeleneseTestBase.class.methods
@@ -34,7 +34,7 @@ class GroovySeleniumTestCase extends GroovyTestCase {
     }
     
     /**
-     * Delegates missing method calls to the SeleniumTestBase object where
+     * Delegates missing method calls to the SeleneseTestBase object where
      * possible.
      *
      * @param name
