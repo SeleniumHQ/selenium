@@ -1,64 +1,71 @@
 package com.thoughtworks.selenium.thirdparty;
 
-import org.openqa.selenium.server.RemoteControlConfiguration;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Optional;
+import org.testng.annotations.Parameters;
+import org.testng.annotations.Test;
 
 import com.thoughtworks.selenium.DefaultSelenium;
-import com.thoughtworks.selenium.SeleneseTestCase;
+import com.thoughtworks.selenium.SeleneseTestNgHelper;
 import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.SeleniumException;
 
-public class SessionExtensionJsTest extends SeleneseTestCase {
+public class SessionExtensionJsTest extends SeleneseTestNgHelper {
 
-    private static final String TEST_URL = "http://www.google.com";
+    private Selenium privateSelenium;
+    private String host, browser;
+    private int port;
+    
+    private static final String TEST_URL = "http://localhost:4444/selenium-server/tests/html/test_click_page1.html";
 
-    @Override
-    public void setUp(String url, String browserString) throws Exception {
-       setTestContext();
+    @BeforeMethod
+    @Parameters({"selenium.host", "selenium.port", "selenium.browser"})
+    public void privateSetUp(@Optional("localhost") String host, @Optional("4444") String port, @Optional String browser) {
+        if (browser == null) browser = runtimeBrowserString();
+        this.host = host;
+        this.port = Integer.parseInt(port);
+        this.browser = browser;
+        privateSelenium = getNewSelenium();
+    }
+    
+    @AfterMethod(alwaysRun=true)
+    public void privateTearDown(){
+        if (privateSelenium != null) privateSelenium.stop();
     }
 
-    @Override
-    public void tearDown() throws Exception {    
-    }
-
-    public void testLoadSimpleExtensionJs() {
-        // expect failure when the extension isn't set
-        Selenium selenium = getNewSelenium();
+    @Test
+    public void expectFailureWhenExtensionNotSet() {
         try {
-            runCommands(selenium);
+            runCommands(privateSelenium);
             fail("Expected SeleniumException but none was encountered");
         }
         catch (SeleniumException se) {
             assertTrue(se.getMessage().endsWith("comeGetSome is not defined"));
         }
-        finally {
-            selenium.stop();
-        }
-
+    }
+    
+    @Test
+    public void loadSimpleExtensionJs() {
         // everything is peachy when the extension is set
-        selenium = getNewSelenium();
-        selenium.setExtensionJs("var comeGetSome = 'tn';");
-        runCommands(selenium);
-        assertEquals("Klaatu barada nikto - Google Search",
-            selenium.getTitle());
-        selenium.stop();
+        privateSelenium.setExtensionJs("var comeGetSome = 'in';");
+        runCommands(privateSelenium);
+        assertEquals("Click Page Target", privateSelenium.getTitle());
+        privateSelenium.stop();
         
         // reusing the session ... extension should still be available
-        runCommands(selenium);
-        assertEquals("Klaatu barada nikto - Google Search",
-            selenium.getTitle());
-        selenium.stop();
+        runCommands(privateSelenium);
+        assertEquals("Click Page Target", privateSelenium.getTitle());
     }
 
     private Selenium getNewSelenium() {
-        return new DefaultSelenium("localhost",
-            RemoteControlConfiguration.getDefaultPort(), runtimeBrowserString(), TEST_URL);
+        return new DefaultSelenium(host, port, browser, TEST_URL);
     }
 
     private void runCommands(Selenium selenium) {
         selenium.start();
         selenium.open(TEST_URL);
-        selenium.type("q", "Klaatu barada nikto");
-        selenium.click("javascript{ 'b' + comeGetSome + 'G' }");
+        selenium.click("javascript{ 'l' + comeGetSome + 'k' }");
         selenium.waitForPageToLoad("5000");
     }
 
