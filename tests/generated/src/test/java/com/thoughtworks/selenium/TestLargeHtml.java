@@ -1,12 +1,15 @@
 package com.thoughtworks.selenium;
 
-public class TestLargeHtml extends SeleneseTestCase {
-    public void testLargeHtml() {
+import org.testng.Assert;
+import org.testng.annotations.Test;
+
+public class TestLargeHtml extends SeleneseTestNgHelper {
+    @Test public void testLargeHtml() {
         selenium.open("/selenium-server/tests/html/test_large_html.html");
         String source = selenium.getHtmlSource().trim();
         String expectedEndsWith = "</body>";
         int index = source.length() - expectedEndsWith.length();
         String actualEndsWith = source.substring(index).toLowerCase();
-        assertEquals("source doesn't end correctly", expectedEndsWith, actualEndsWith);
+        Assert.assertEquals(actualEndsWith, expectedEndsWith, "source doesn't end correctly");
     }
 }
