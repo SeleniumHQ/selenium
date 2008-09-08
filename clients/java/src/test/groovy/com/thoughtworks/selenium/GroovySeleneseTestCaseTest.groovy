@@ -13,12 +13,12 @@ class GroovySeleneseTestCaseTest extends GroovyTestCase {
     
     void testWaitForSucceeds() {
         def then = System.currentTimeMillis()
-        testcase.waitFor(2, { System.currentTimeMillis() >= then + 1000 })
+        testcase.waitFor(2000, { System.currentTimeMillis() >= then + 100 })
     }
     
     void testWaitForTimesOut() {
         try {
-            testcase.waitFor(1, { true == false })
+            testcase.waitFor(1000, { false })
             fail('Expected AssertionFailedError, but none thrown')
         }
         catch (AssertionFailedError afe) {
