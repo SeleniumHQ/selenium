@@ -59,7 +59,32 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <skip>true</skip>
+                    <systemProperties>
+                      <property>
+                        <name>selenium.browser</name>
+                        <value>*firefox</value>
+                      </property>
+                      <property>
+                        <name>selenium.url</name>
+                        <value>http://localhost:4444/selenium-server/core/</value>
+                      </property>
+                    </systemProperties>
+                    <includes>
+                      <include>**/*Test.class</include>
+                      <include>**/Test*.class</include>
+                    </includes>
+                    <excludes>
+                      <exclude>**/thirdparty/**</exclude>
+                      <!-- failing tests -->
+                      <exclude>**/TestModalDialog.class</exclude> <!-- runs IE proprietary showModalDialog; hangs the browser -->
+                      <exclude>**/TestXPathLocatorInXHtml.class</exclude> <!-- fails in IE, which doesn't support XHTML -->
+                      <exclude>**/TestCursorPosition.class</exclude> <!-- frequently fails on FF (only succeeds if the window has focus -->
+                      <exclude>**/TestUserExtensions.class</exclude> <!-- tests sample user extensions -->
+                      <exclude>**/TestGet.class</exclude> <!-- translation failure, uses funky javascript{} expression -->
+                        
+                      <!-- Tests Hanging the Build -->
+                      <exclude>**/TestProxy.class</exclude>
+                    </excludes>
                 </configuration>
             </plugin>
             <plugin>
@@ -91,48 +116,6 @@
                             <goal>run</goal>
                         </goals>
                     </execution>
-                    <execution>
-                        <id>test-junit</id>
-                        <phase>test</phase>
-                        <configuration>
-                            <tasks>
-                              <!-- START SELENIUM SERVER -->
-                              <java jar="${maven.dependency.org.openqa.selenium.server.selenium-server.standalone.jar.path}" fork="true" spawn="true"/>
-                              
-                              <mkdir dir="target/surefire-reports" />
-                              <junit printSummary="withOutAndErr" failureproperty="failed" haltonerror="false" haltonfailure="false" fork="true" dir="target/surefire-reports">
-                                <sysproperty key="selenium.defaultBrowser" value="${selenium.defaultBrowser}" />
-                                <classpath refid="maven.test.classpath"/>
-                                <formatter type="xml"/>
-                                <formatter type="plain"/>
-                                <batchtest todir="target/surefire-reports">
-                                  <fileset dir="target/test-classes">
-                                    <include name="**/*Test.class"/>
-                                    <include name="**/Test*.class"/>
-                                    
-                                    <exclude name="**/thirdparty/**" />
-                                    
-                                    <!-- failing tests -->
-                                    <exclude name="**/TestModalDialog.class" /> <!-- runs IE proprietary showModalDialog; hangs the browser -->
-                                    <exclude name="**/TestXPathLocatorInXHtml.class" /> <!-- fails in IE, which doesn't support XHTML -->
-                                    <exclude name="**/TestCursorPosition.class" /> <!-- frequently fails on FF (only succeeds if the window has focus -->
-                                    <exclude name="**/TestUserExtensions.class" /> <!-- tests sample user extensions -->
-                                    
-                                    <!-- Tests Hanging the Build -->
-                                    <exclude name="**/TestProxy.class" />
-                                  </fileset>
-                                </batchtest>
-                              </junit>
-                              
-                              <!-- STOP SELENIUM SERVER -->
-                              <get taskname="selenium-shutdown" src="http://localhost:4444/selenium-server/driver/?cmd=shutDown" dest="target/shutdown-result.txt" ignoreerrors="true" />
-                              <fail message="tests failed!" if="failed" />
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
                 </executions>
                 <dependencies>
                     <dependency>
@@ -146,15 +129,10 @@
                         <version>1.7.0</version>
                     </dependency>
                     <dependency>
-                        <groupId>junit</groupId>
-                        <artifactId>junit</artifactId>
-                        <version>4.4</version>
-                    </dependency>
-                    <!--<dependency>
-                             <groupId>org.openqa.selenium</groupId>
-                             <artifactId>selenium-xlator</artifactId>
-                             <version>${project.version}</version>
-                         </dependency>-->
+                         <groupId>org.openqa.selenium</groupId>
+                         <artifactId>selenium-xlator</artifactId>
+                         <version>${project.version}</version>
+                     </dependency>
                 </dependencies>
             </plugin>
         </plugins>
@@ -166,14 +144,28 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.openqa.selenium.client-drivers</groupId>
+            <artifactId>selenium-java-testng-helper</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
 		    <groupId>org.openqa.selenium.server</groupId>
 		    <artifactId>selenium-server</artifactId>
 		    <classifier>standalone</classifier>
 		    <version>${project.version}</version>
+		    <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <classifier>jdk15</classifier>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>
