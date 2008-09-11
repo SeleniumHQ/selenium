@@ -6,6 +6,15 @@ load('java-rc.js');
 
 this.name = "java-rc-testng";
 
+// TestNG reverses the order of assert functions
+Equals.prototype.assert = function() {
+	return "assertEquals(" + this.e2.toString() + ", " + this.e1.toString() + ");";
+}
+
+Equals.prototype.verify = function() {
+	return "verifyEquals(" + this.e2.toString() + ", " + this.e1.toString() + ");";
+}
+
 options.superClass = "SeleneseTestNgHelper";
 
 options.header =
