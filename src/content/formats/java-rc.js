@@ -118,6 +118,10 @@ function array(value) {
 	return str;
 }
 
+function nonBreakingSpace() {
+    return "\"\\u00a0\"";
+}
+
 CallSelenium.prototype.toString = function() {
 	var result = '';
 	if (this.negative) {

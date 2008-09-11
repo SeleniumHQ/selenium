@@ -40,6 +40,7 @@ function setUp() {
 	this.commands.push(new Command('pause', '1000'));
 	this.commands.push(new Comment("line 1\nline 2"));
 	this.commands.push(new Command('assertNotSelectOptions', "theSelect", ",abc,ab\\,c"));
+	this.commands.push(new Command('assertTextPresent', "foo${nbsp}bar"));
 }
 
 function nextCommand() {
@@ -71,7 +72,8 @@ function testRubyRCFormat() {
 	assertEquals('@selenium.wait_for_page_to_load "30000"', nextCommand());
 	assertEquals('sleep 1', nextCommand());
 	assertEquals("# line 1\n# line 2", f.formatComment(this.commands.shift()));
-  assertEquals('assert_not_equal ",abc,ab,c", @selenium.get_select_options("theSelect").join(",")', nextCommand());
+    assertEquals('assert_not_equal ",abc,ab,c", @selenium.get_select_options("theSelect").join(",")', nextCommand());
+    assertEquals('assert @selenium.is_text_present("foo" + "\\xa0" + "bar")', nextCommand());
 }
 
 function testPerlRCFormat() {
@@ -89,6 +91,7 @@ function testPerlRCFormat() {
 	//assertEquals('sleep 1 until "def" eq $sel->get_text("abc");', f.formatCommand(new Command('waitForText', 'abc', 'def')));
 	//assertEquals('sleep 1 while "def" eq $sel->get_text("abc");', f.formatCommand(new Command('waitForNotText', 'abc', 'def')));
 	assertEquals('$sel->open_ok("http://www.google.com/");', f.formatCommand(new Command('open', 'http://www.google.com/')));
+	assertEquals('$sel->is_text_present_ok("foo" . "\\x{00A0}" . "bar");', f.formatCommand(new Command('assertTextPresent', 'foo${nbsp}bar')));
 }
 
 function testPythonRCFormat() {
@@ -106,6 +109,7 @@ function testPythonRCFormat() {
 	//assertEquals('while "def" != sel.get_text("abc"): time.sleep(1)', f.formatCommand(new Command('waitForText', 'abc', 'def')));
 	//assertEquals('while u"あいうえお" == sel.get_text("abc"): time.sleep(1)', f.formatCommand(new Command('waitForNotText', 'abc', 'あいうえお')));
 	assertEquals('sel.open("http://www.google.com/")', f.formatCommand(new Command('open', 'http://www.google.com/')));
+	assertEquals('self.failUnless(sel.is_text_present("foo" + u"\\u00a0" + "bar"))', f.formatCommand(new Command('assertTextPresent', 'foo${nbsp}bar')));
 }
 
 function testJavaRCFormat() {
@@ -134,6 +138,7 @@ function testJavaRCFormat() {
 	assertEquals('Thread.sleep(1000);', nextCommand());
 	assertEquals("// line 1\n// line 2", f.formatComment(this.commands.shift()));
     assertEquals('assertNotEquals(",abc,ab,c", join(selenium.getSelectOptions("theSelect"), \',\'));', nextCommand());
+    assertEquals('assertTrue(selenium.isTextPresent("foo" + "\\u00a0" + "bar"));', nextCommand());
 }
 
 function testCSharpRCFormat() {
@@ -151,6 +156,7 @@ function testCSharpRCFormat() {
 	//assertEquals('while ("def" != selenium.GetText("abc")) { Thread.Sleep(1000); }', f.formatCommand(new Command('waitForText', 'abc', 'def')));
 	//assertEquals('while ("def" == selenium.GetText("abc")) { Thread.Sleep(1000); }', f.formatCommand(new Command('waitForNotText', 'abc', 'def')));
 	assertEquals('selenium.Open("http://www.google.com/");', f.formatCommand(new Command('open', 'http://www.google.com/')));
+	assertEquals('Assert.IsTrue(selenium.IsTextPresent("foo" + "\\u00a0" + "bar"));', f.formatCommand(new Command('assertTextPresent', 'foo${nbsp}bar')));
 }
 </script>
   </head>

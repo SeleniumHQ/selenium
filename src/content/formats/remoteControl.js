@@ -168,12 +168,20 @@ function xlateArgument(value) {
 		var regexp = /\$\{(.*?)\}/g;
 		var lastIndex = 0;
 		var r2;
-		while ((r2 = regexp.exec(value)) && this.declaredVars && this.declaredVars[r2[1]]) {
-			if (r2.index - lastIndex > 0) {
-				parts.push(string(value.substring(lastIndex, r2.index)));
-			}
-			parts.push(variableName(r2[1]));
-			lastIndex = regexp.lastIndex;
+		while (r2 = regexp.exec(value)) {
+		    if (this.declaredVars && this.declaredVars[r2[1]]) {
+    			if (r2.index - lastIndex > 0) {
+    				parts.push(string(value.substring(lastIndex, r2.index)));
+    			}
+    			parts.push(variableName(r2[1]));
+    			lastIndex = regexp.lastIndex;
+    		} else if (r2[1] == "nbsp") {
+    		    if (r2.index - lastIndex > 0) {
+    				parts.push(string(value.substring(lastIndex, r2.index)));
+    			}
+    			parts.push(nonBreakingSpace());
+    			lastIndex = regexp.lastIndex;
+    		}
 		}
 		if (lastIndex < value.length) {
 			parts.push(string(value.substring(lastIndex, value.length)));

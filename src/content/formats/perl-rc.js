@@ -181,6 +181,10 @@ function array(value) {
 	return str;
 }
 
+function nonBreakingSpace() {
+    return "\"\\x{00A0}\"";
+}
+
 CallSelenium.prototype.assertable = true;
 
 CallSelenium.prototype.toString = function() {
