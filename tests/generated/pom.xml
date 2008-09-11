@@ -76,6 +76,9 @@
                     <excludes>
                       <exclude>**/thirdparty/**</exclude>
                       <!-- failing tests -->
+                      <exclude>**/TestDomainCookie.class</exclude> <!-- requires a specially crafted /etc/hosts file -->
+                      <exclude>**/TestRollup.class</exclude> <!-- UI element, requires manual extensions -->
+                      <exclude>**/TestUIElementLocators.class</exclude> <!-- UI element, requires manual extensions -->
                       <exclude>**/TestModalDialog.class</exclude> <!-- runs IE proprietary showModalDialog; hangs the browser -->
                       <exclude>**/TestXPathLocatorInXHtml.class</exclude> <!-- fails in IE, which doesn't support XHTML -->
                       <exclude>**/TestCursorPosition.class</exclude> <!-- frequently fails on FF (only succeeds if the window has focus -->
@@ -104,10 +107,36 @@
                         <phase>generate-test-sources</phase>
                         <configuration>
                             <tasks>
-                                <ant antfile="generate-sources.xml" target="ant-generate-tests" inheritrefs="true">
-                                    <property name="selenium-server"
-                                              value="${maven.dependency.org.openqa.selenium.server.selenium-server.standalone.jar.path}"/>
-                                </ant>
+                                <property name="selenium-server"
+                                    value="${maven.dependency.org.openqa.selenium.server.selenium-server.standalone.jar.path}"/>
+                                <property name="maven.src.path" location="target/generated-sources/main/java/com/thoughtworks/selenium" />
+                        	    <property name="dir.java.tests.based.on.core.javascript" location="target/generated-sources/test/java/com/thoughtworks/selenium/corebased" />
+                                <mkdir dir="target/selenium-server"/>
+                                <taskdef name="xlate" classname="org.openqa.selenium.XlatorTask" />
+                                
+                                <unzip src="${selenium-server}" dest="target/selenium-server">
+                                    <patternset>
+                                        <include name="tests/*.html" />
+                                        <exclude name="**/html/**" />
+                                        <exclude name="**/dogfood/aut/**" />
+                                        <exclude name="**/*Suite.html" />
+                                        <exclude name="**/GoogleTestSearch.html" /> <!-- thirdparty test, verified in non-generated -->
+                                        <exclude name="**/TestUserExtensions.html" />
+                                        <exclude name="**/TestSuite-*.html" />
+                                        <exclude name="**/TestJS-for-loops.html" />
+                                        <exclude name="**/TestJS-functions.html" />
+                                        <exclude name="**/TestJS-if-then-else.html" />
+                                        <exclude name="**/TestOpen_SSV_syntax.html" />
+                                    </patternset>
+                                </unzip>
+                        
+                        		<property name="dir.core.tests" location="target/selenium-server/tests" />
+                                <mkdir  dir="${dir.java.tests.based.on.core.javascript}" />
+                                
+                                <xlate destDir="${dir.java.tests.based.on.core.javascript}" formatter="java-rc-testng" baseUrl="http://localhost:4444/selenium-server/core/">
+                                    <fileset dir="${dir.core.tests}"/>
+                                    <option name="packageName" value="com.thoughtworks.selenium.corebased" />
+                                </xlate>
                             </tasks>
                             <sourceRoot>${project.build.directory}/generated-sources/main/java</sourceRoot>
                             <testSourceRoot>${project.build.directory}/generated-sources/test/java</testSourceRoot>
