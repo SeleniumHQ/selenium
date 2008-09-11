@@ -1653,6 +1653,17 @@ BrowserBot.prototype.goForward = function() {
 };
 
 BrowserBot.prototype.close = function() {
+    if (browserVersion.isIE) {
+        // fix "do you want to close this window" warning in IE
+        // You can only close windows that you have opened.
+        // So, let's "open" it.
+        try {
+            this.topFrame.name=new Date().getTime();
+            window.open("", this.topFrame.name, "");
+            this.topFrame.close();
+            return;
+        } catch (e) {}
+    }
     if (browserVersion.isChrome || browserVersion.isSafari || browserVersion.isOpera) {
         this.topFrame.close();
     } else {
