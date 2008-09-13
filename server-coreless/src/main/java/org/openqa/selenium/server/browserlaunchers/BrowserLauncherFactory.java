@@ -38,7 +38,7 @@ public class BrowserLauncherFactory {
 
     private static Log LOGGER = LogFactory.getLog(BrowserLauncherFactory.class);
 
-    private static final Pattern CUSTOM_PATTERN = Pattern.compile("^\\*custom( .*)?$");
+    private static final Pattern CUSTOM_PATTERN = Pattern.compile("^\\*?custom( .*)?$");
     
     private static final Map<String, Class<? extends BrowserLauncher>> supportedBrowsers = new HashMap<String, Class<? extends BrowserLauncher>>();
 
@@ -77,19 +77,19 @@ public class BrowserLauncherFactory {
             throw new IllegalArgumentException("browser may not be null");
         }
 
-        for (Map.Entry<String,Class<? extends BrowserLauncher>> entry : supportedBrowsers.entrySet()) {
-            final Pattern pattern = Pattern.compile("^\\*" + entry.getKey() + "( .*)?$");
+        for (String key : supportedBrowsers.keySet()) {
+            final Pattern pattern = Pattern.compile("^\\*?" + key + "( .*)?$");
             Matcher matcher = pattern.matcher(browser);
             if (matcher.find()) {
                 final String browserStartCommand;
 
-                if (browser.equals("*" + entry.getKey())) {
+                if (browser.equals("*" + key) || browser.equals(key)) {
                     browserStartCommand = null;
                 } else {
                     browserStartCommand = matcher.group(1).substring(1);
                 }
-                LOGGER.debug("Requested browser string '" + browser + "' matches *" + entry + " ");
-                return createBrowserLauncher(entry.getValue(), browserStartCommand, sessionId, configuration);
+                LOGGER.debug("Requested browser string '" + browser + "' matches *" + key + " ");
+                return createBrowserLauncher(supportedBrowsers.get(key), browserStartCommand, sessionId, configuration);
             }
         }
         
