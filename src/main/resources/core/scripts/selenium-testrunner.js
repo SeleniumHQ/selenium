@@ -169,6 +169,10 @@ objectExtend(SeleniumFrame.prototype, {
         addLoadListener(this.frame, fnBind(this._handleLoad, this));
     },
 
+    getWindow : function() {
+        return this.frame.contentWindow;
+    },
+
     getDocument : function() {
         return this.frame.contentWindow.document;
     },
@@ -260,7 +264,7 @@ objectExtend(HtmlTestFrame.prototype, SeleniumFrame.prototype);
 objectExtend(HtmlTestFrame.prototype, {
 
     _onLoad: function() {
-        this.currentTestCase = new HtmlTestCase(this.getDocument(), htmlTestRunner.getTestSuite().getCurrentRow());
+        this.currentTestCase = new HtmlTestCase(this.getWindow(), htmlTestRunner.getTestSuite().getCurrentRow());
     },
 
     getCurrentTestCase: function() {
@@ -876,14 +880,15 @@ objectExtend(SeleniumTestResult.prototype, {
 var HtmlTestCase = classCreate();
 objectExtend(HtmlTestCase.prototype, {
 
-    initialize: function(testDocument, htmlTestSuiteRow) {
-        if (testDocument == null) {
-            throw "testDocument should not be null";
+    initialize: function(testWindow, htmlTestSuiteRow) {
+        if (testWindow == null) {
+            throw "testWindow should not be null";
         }
         if (htmlTestSuiteRow == null) {
             throw "htmlTestSuiteRow should not be null";
         }
-        this.testDocument = testDocument;
+        this.testWindow = testWindow;
+        this.testDocument = testWindow.document;
         this.htmlTestSuiteRow = htmlTestSuiteRow;
         this.headerRow = new TitleRow(this.testDocument.getElementsByTagName("tr")[0]);
         this.commandRows = this._collectCommandRows();
@@ -1084,7 +1089,7 @@ objectExtend(HtmlRunnerTestLoop.prototype, {
         this.metrics = metrics;
 
         this.htmlTestCase = htmlTestCase;
-        LOG.info("Starting test " + htmlTestCase.testDocument.location.pathname);
+        LOG.info("Starting test " + htmlTestCase.testWindow.location.pathname);
 
         this.currentRow = null;
         this.currentRowIndex = 0;
