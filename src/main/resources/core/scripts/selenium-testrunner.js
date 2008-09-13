@@ -596,7 +596,9 @@ objectExtend(HtmlTestSuite.prototype, {
     initialize: function(suiteDocument) {
         this.suiteDocument = suiteDocument;
         this.suiteRows = this._collectSuiteRows();
-        this.titleRow = new TitleRow(this.getTestTable().rows[0]);
+        var testTable = this.getTestTable();
+        if (!testTable) return;
+        this.titleRow = new TitleRow(testTable.rows[0]);
         this.reset();
     },
 
@@ -627,6 +629,7 @@ objectExtend(HtmlTestSuite.prototype, {
         var result = [];
         var tables = sel$A(this.suiteDocument.getElementsByTagName("table"));
         var testTable = tables[0];
+        if (!testTable) return;
         for (rowNum = 1; rowNum < testTable.rows.length; rowNum++) {
             var rowElement = testTable.rows[rowNum];
             result.push(new HtmlTestSuiteRow(rowElement, testFrame, this));
