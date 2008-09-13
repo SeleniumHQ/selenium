@@ -28,7 +28,7 @@ public class SeleniumCoreCommand extends Command {
         final FrameGroupCommandQueueSet queue;
         final String response;
 
-        LOGGER.info("Executing '" + id + "' selenium core command on session " + sessionId);
+        LOGGER.debug("Executing '" + id + "' selenium core command on session " + sessionId);
         try {
             LOGGER.debug("Session " + sessionId + " going to doCommand(" + id + ','+ values.get(0) + ','+ values.get(1) + ")");
             queue = FrameGroupCommandQueueSet.getQueueSet(sessionId);
