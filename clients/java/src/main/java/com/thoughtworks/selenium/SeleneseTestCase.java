@@ -233,5 +233,8 @@ public class SeleneseTestCase extends TestCase {
         }
     }
 
+    public String join(String[] array, char c) {
+        return stb.join(array, c);
+    }
     
 }

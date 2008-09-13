@@ -19,6 +19,8 @@ package com.thoughtworks.selenium;
 
 
 import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.Method;
 import java.util.regex.Pattern;
 
@@ -116,7 +118,7 @@ public class SeleneseTestBase {
         try {
             assertTrue(b);
         } catch (Error e) {
-            verificationErrors.append(e);
+            verificationErrors.append(throwableToString(e));
         }
     }
     
@@ -125,7 +127,7 @@ public class SeleneseTestBase {
         try {
             assertFalse(b);
         } catch (Error e) {
-            verificationErrors.append(e);
+            verificationErrors.append(throwableToString(e));
         }
     }
     
@@ -139,7 +141,7 @@ public class SeleneseTestBase {
         try {
             assertEquals(s1, s2);
         } catch (Error e) {
-            verificationErrors.append(e);
+            verificationErrors.append(throwableToString(e));
         }
     }
     
@@ -148,7 +150,7 @@ public class SeleneseTestBase {
         try {
             assertEquals(new Boolean(s1), new Boolean(s2));
         } catch (Error e) {
-            verificationErrors.append(e);
+            verificationErrors.append(throwableToString(e));
         }
     }
 
@@ -185,7 +187,7 @@ public class SeleneseTestBase {
      * handles "regexp:" strings like HTML Selenese
      */
     public static void assertEquals(String s1, String[] s2) {
-    	assertEquals(s1, stringArrayToSimpleString(s2));
+    	assertEquals(s1, join(s2, ','));
     }
     
     /** Compares two strings, but handles "regexp:" strings like HTML Selenese
@@ -301,12 +303,19 @@ public class SeleneseTestBase {
         return sb.toString();
     }
     
-    private static String stringArrayToSimpleString(String[] sa) {
+    private static String throwableToString(Throwable t) {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        t.printStackTrace(pw);
+        return sw.toString();
+    }
+    
+    public static String join(String[] sa, char c) {
         StringBuffer sb = new StringBuffer();
         for (int j = 0; j < sa.length; j++) {
             sb.append(sa[j]);
             if (j < sa.length -1) {
-            	sb.append(',');
+            	sb.append(c);
             }          
         }
         return sb.toString();
@@ -317,7 +326,7 @@ public class SeleneseTestBase {
         try {
             assertNotEquals(s1, s2);
         } catch (AssertionFailedError e) {
-            verificationErrors.append(e);
+            verificationErrors.append(throwableToString(e));
         }
     }
     
@@ -326,7 +335,7 @@ public class SeleneseTestBase {
         try {
             assertNotEquals(new Boolean(s1), new Boolean(s2));
         } catch (AssertionFailedError e) {
-            verificationErrors.append(e);
+            verificationErrors.append(throwableToString(e));
         }
     }
     
@@ -387,7 +396,10 @@ public class SeleneseTestBase {
     	try {
     		checkForVerificationErrors();
     	} finally {
-    		selenium.stop();
+    	    if (selenium != null) {
+    	        selenium.stop();
+    	        selenium = null;
+    	    }
     	}
     }
 
