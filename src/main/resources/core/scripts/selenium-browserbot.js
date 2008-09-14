@@ -578,6 +578,10 @@ BrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(windowToModify,
         if (isHTA) {
             myOriginalOpen = this[originalOpenReference];
         }
+        if (windowName == "" || windowName == "_blank") {
+            windowName = "selenium_blank" + Math.round(100000 * Math.random());
+            LOG.warn("Opening window '_blank', which is not a real window name.  Randomizing target to be: " + windowName);
+        }
         var openedWindow = myOriginalOpen(url, windowName, windowFeatures, replaceFlag);
         LOG.debug("window.open call intercepted; window ID (which you can use with selectWindow()) is \"" +  windowName + "\"");
         if (windowName!=null) {
