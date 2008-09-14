@@ -10,6 +10,9 @@
     <artifactId>selenium-generated-tests</artifactId>
     <packaging>jar</packaging>
     <name>Selenium Generated Tests</name>
+    <properties>
+      <selenium.browser>firefox</selenium.browser>
+    </properties>
     <repositories>
         <repository>
             <id>openqa-releases</id>
@@ -62,11 +65,15 @@
                     <systemProperties>
                       <property>
                         <name>selenium.browser</name>
-                        <value>*firefox</value>
+                        <value>${selenium.browser}</value>
                       </property>
                       <property>
                         <name>selenium.url</name>
                         <value>http://localhost:4444/selenium-server/core/</value>
+                      </property>
+                      <property>
+                        <name>selenium.restartSession</name>
+                        <value>false</value>
                       </property>
                     </systemProperties>
                     <includes>
