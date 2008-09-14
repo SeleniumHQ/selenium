@@ -1,7 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-  <classpathentry kind="src" path="src/main/resources" excluding="**/*.java"/>
-  <classpathentry kind="src" path="src/test/resources" excluding="**/*.java"/>
-  <classpathentry kind="src" path="target/generated-resources" excluding="**/*.java"/>
-  <classpathentry kind="output" path="eclipse"/>
-  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="src/main/resources"/>
+	<classpathentry kind="lib" path="src/test/resources"/>
+	<classpathentry kind="lib" path="target/generated-resources"/>
+	<classpathentry kind="output" path="eclipse"/>
 </classpath>
