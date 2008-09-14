@@ -15,10 +15,6 @@ TestLoopHandleErrorTest.prototype.setUp = function() {
     htmlTestCase = new Object();
     htmlTestCase.reset = function() {
     };
-    htmlTestCase.testDocument = document;
-    document.location = {
-        pathname: ""
-    }
     this.seleniumTest = new HtmlRunnerTestLoop(htmlTestCase, false, commandFactory);
     // We want to verify that testLoop.commandError() function is called appropriately
     // by testLoop.handleCommandError()

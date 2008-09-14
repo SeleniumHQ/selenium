@@ -889,6 +889,13 @@ objectExtend(HtmlTestCase.prototype, {
         }
         this.testWindow = testWindow;
         this.testDocument = testWindow.document;
+        this.pathname = "'unknown'";
+        try {
+            if (this.testWindow.location) {
+                this.pathname = this.testWindow.location.pathname;
+            }
+        } catch (e) {}
+            
         this.htmlTestSuiteRow = htmlTestSuiteRow;
         this.headerRow = new TitleRow(this.testDocument.getElementsByTagName("tr")[0]);
         this.commandRows = this._collectCommandRows();
@@ -1089,7 +1096,7 @@ objectExtend(HtmlRunnerTestLoop.prototype, {
         this.metrics = metrics;
 
         this.htmlTestCase = htmlTestCase;
-        LOG.info("Starting test " + htmlTestCase.testWindow.location.pathname);
+        LOG.info("Starting test " + htmlTestCase.pathname);
 
         this.currentRow = null;
         this.currentRowIndex = 0;
