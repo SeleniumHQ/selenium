@@ -54,4 +54,15 @@ public class BrowserConfigurationOptionsTest extends TestCase {
         assertEquals("test", options.getProfile());
         assertTrue(options.hasOptions());
     }
+    
+    public void testToStringEquivalentToSerialize() {
+        String[] tests = { "", "foo", "foo bar", null };
+        
+        BrowserConfigurationOptions options = new BrowserConfigurationOptions();
+        
+        for (String test : tests) {
+            options.setProfile(test);
+            assertEquals(options.serialize(), options.toString());
+        }
+    }
 }

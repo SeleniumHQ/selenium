@@ -45,5 +45,12 @@ public class BrowserConfigurationOptions {
     public boolean hasOptions() {
       return hasOptions;
     }
-
+    
+    /**
+     * Returns the serialization of this object, as defined by the serialize()
+     * method.
+     */
+    public String toString() {
+        return serialize();
+    }
 }

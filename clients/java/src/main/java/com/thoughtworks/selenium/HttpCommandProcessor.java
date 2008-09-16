@@ -217,11 +217,22 @@ public class HttpCommandProcessor implements CommandProcessor {
         setSessionInProgress(result);
     }
     
-    public void start(BrowserConfigurationOptions browserConfigOptions){
+    public void start(String optionsString) {
         String result = getString("getNewBrowserSession",
-                new String[]{browserStartCommand, browserURL, 
-                             extensionJs, browserConfigOptions.serialize()});
-            setSessionInProgress(result);
+            new String[]{browserStartCommand, browserURL, 
+                 extensionJs, optionsString});
+        setSessionInProgress(result);
+    }
+    
+    /**
+     * Wraps the version of start() that takes a String parameter, sending it
+     * the result of calling toString() on optionsObject, which will likely be
+     * a BrowserConfigurationOptions instance.
+     * 
+     * @param optionsObject
+     */
+    public void start(Object optionsObject) {
+        start(optionsObject.toString());
     }
 
     protected void setSessionInProgress(String result) {
