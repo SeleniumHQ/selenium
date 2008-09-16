@@ -60,19 +60,19 @@ public class DesiredCapabilities implements Capabilities {
     this.javascriptEnabled = javascriptEnabled;
   }
 
-  static DesiredCapabilities firefox() {
+  public static DesiredCapabilities firefox() {
     return new DesiredCapabilities("firefox", "", OperatingSystem.ANY);
   }
 
-  static DesiredCapabilities internetExplorer() {
+  public static DesiredCapabilities internetExplorer() {
     return new DesiredCapabilities("internet explorer", "", OperatingSystem.WINDOWS);
   }
 
-  static DesiredCapabilities htmlUnit() {
+  public static DesiredCapabilities htmlUnit() {
     return new DesiredCapabilities("htmlunit", "", OperatingSystem.ANY);
   }
 
-  static DesiredCapabilities safari() {
+  public static DesiredCapabilities safari() {
     return new DesiredCapabilities("safari", "", OperatingSystem.MAC);
   }
 
