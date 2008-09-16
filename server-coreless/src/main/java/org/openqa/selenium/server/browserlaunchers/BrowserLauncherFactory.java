@@ -78,19 +78,13 @@ public class BrowserLauncherFactory {
         }
 
         for (String key : supportedBrowsers.keySet()) {
-            final Pattern pattern = Pattern.compile("^\\*?" + key + "( .*)?$");
-            Matcher matcher = pattern.matcher(browser);
-            if (matcher.find()) {
-                final String browserStartCommand;
-
-                if (browser.equals("*" + key) || browser.equals(key)) {
-                    browserStartCommand = null;
-                } else {
-                    browserStartCommand = matcher.group(1).substring(1);
-                }
-                LOGGER.debug("Requested browser string '" + browser + "' matches *" + key + " ");
-                return createBrowserLauncher(supportedBrowsers.get(key), browserStartCommand, sessionId, configuration);
-            }
+          try {
+            final String browserStartCommand = getBrowserStartCommand(key, browser);
+            LOGGER.debug("Requested browser string '" + browser + "' matches *" + key + " ");
+            return createBrowserLauncher(supportedBrowsers.get(key), browserStartCommand, sessionId, configuration);
+          } catch (IllegalArgumentException iae) {
+            // this supportedBrowser did not match the 'browser' parameter.
+          }
         }
         
         LOGGER.debug("Requested browser string '" + browser + "' does not match any known browser, treating is as a custom browser...");
@@ -104,6 +98,29 @@ public class BrowserLauncherFactory {
             return new DestroyableRuntimeExecutingBrowserLauncher(browserStartCommand, sessionId);
         }
         throw browserNotSupported(browser);
+    }
+    
+    /**
+     * Returns the browser start command, if any, for the browser in the 'browserString'
+     * parameter.  If the browserString cannot be matched to the 'knownBrowser' parameter,
+     * an illegal argument exception is thrown.
+     * 
+     * @param knownBrowser a known browser identifier.
+     * @param browserString the string sent by the client to identify the type of browser to start, e.g. *firefox
+     * @return the browser start command; null if none given.
+     * @throws IllegalArgumentException if the browserString cannot be matched to a known browser.
+     */
+    protected String getBrowserStartCommand(String knownBrowser, String browserString) 
+        throws IllegalArgumentException {
+      final Pattern pattern = Pattern.compile("^\\*?" + knownBrowser + "( .*)?$");
+      Matcher matcher = pattern.matcher(browserString);
+      if (matcher.find()) {
+        if (browserString.equals("*" + knownBrowser) || browserString.equals(knownBrowser)) {
+          return null;
+        } else {
+          return matcher.group(1).substring(1);
+        }
+      } else throw new IllegalArgumentException("requested browser " + browserString + " not found");
     }
 
     public static Map<String, Class<? extends BrowserLauncher>> getSupportedLaunchers() {
