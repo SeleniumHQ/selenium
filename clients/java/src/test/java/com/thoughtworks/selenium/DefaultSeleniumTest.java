@@ -48,7 +48,10 @@ public class DefaultSeleniumTest extends TestCase {
         public void start() {
         }
         
-        public void start(BrowserConfigurationOptions browserConfigurationOptions) {
+        public void start(String optionsString) {
+        }
+        
+        public void start(Object optionsObject) {
         }
 
         public void stop() {

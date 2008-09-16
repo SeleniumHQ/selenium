@@ -49,7 +49,11 @@ public class DefaultSeleniumStartErrorHandlingTest extends TestCase {
             throw new SeleniumException(message);
         }
         
-        public void start(BrowserConfigurationOptions browserConfigurationOptions) {
+        public void start(String optionsString) {
+            throw new UnsupportedOperationException();
+        }
+
+        public void start(Object optionsObject) {
             throw new UnsupportedOperationException();
         }
 
