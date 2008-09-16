@@ -2,8 +2,6 @@ package com.thoughtworks.selenium;
 
 import junit.framework.TestCase;
 
-import org.openqa.selenium.server.BrowserConfigurationOptions;
-
 public class DefaultSeleniumStartErrorHandlingTest extends TestCase {
 
     public void testWrapsConnectionRefusedWithUserFriendlyExceptionMessage() {

@@ -1,7 +1,6 @@
 package com.thoughtworks.selenium;
 
 import junit.framework.TestCase;
-import org.openqa.selenium.server.BrowserConfigurationOptions;
 
 public class DefaultSeleniumTest extends TestCase {
 

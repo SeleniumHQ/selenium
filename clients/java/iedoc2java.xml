@@ -66,7 +66,6 @@ TOP
 
 <xsl:template match="top" mode="interface">
 	<xsl:text>package com.thoughtworks.selenium;&nl;</xsl:text>
-  <xsl:text>import org.openqa.selenium.server.BrowserConfigurationOptions;&nl;</xsl:text>
 	<xsl:text>/**&nl;</xsl:text>
 	<xsl:apply-templates />
 	<xsl:text>*/&nl;public interface Selenium {
@@ -77,9 +76,12 @@ TOP
 	/** Launches the browser with a new Selenium session */
     void start();
     
+    /** Starts a new Selenium testing session with a String, representing a configuration */
+    public void start(String optionsString);
+    
     /** Starts a new Selenium testing session with a configuration options object */
-    public void start(BrowserConfigurationOptions browserConfigurationOptions);
-
+    public void start(Object optionsObject);
+    
     /** Ends the test session, killing the browser */
     void stop();
 
@@ -90,7 +92,6 @@ TOP
 
 <xsl:template match="top" mode="implementation">
 	<xsl:text>package com.thoughtworks.selenium;&nl;</xsl:text>
-  <xsl:text>import org.openqa.selenium.server.BrowserConfigurationOptions;&nl;</xsl:text>
 	<xsl:text disable-output-escaping="yes"><![CDATA[
 /** The default implementation of the Selenium interface; <i>end users will primarily interact with this object.</i> */
 public class DefaultSelenium implements Selenium {
@@ -163,11 +164,11 @@ public class DefaultSelenium implements Selenium {
         }
     }
     
-    public void start(BrowserConfigurationOptions browserConfigurationOptions) {
-    try {
-            commandProcessor.start(browserConfigurationOptions);
+    public void start(String optionsString) {
+    	try {
+            commandProcessor.start(optionsString);
         }
-        //TODO: EB Add exception catching for bad browserConfigurationOptions (i.e. Extention Not Found)
+        //TODO: EB Add exception catching for bad BrowserConfigurationOptions (i.e. Extension Not Found)
         catch (Exception e) {
             final String message = e.getMessage();
             if (message != null && message.indexOf("Connection refused: connect") != -1) {
@@ -177,6 +178,10 @@ public class DefaultSelenium implements Selenium {
         }
     }
 
+    public void start(Object optionsObject) {
+    	start(optionsObject.toString());
+    }
+    
     public void stop() {
         commandProcessor.stop();
     }
