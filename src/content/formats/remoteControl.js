@@ -16,7 +16,8 @@ function formatHeader(testCase) {
 	var formatLocal = testCase.formatLocal(this.name);
 	methodName = testMethodName(className.replace(/Test$/, "").replace(/^Test/, "").
 								replace(/^[A-Z]/, function(str) { return str.toLowerCase() }));
-	var header = options.header.replace(/\$\{className\}/g, className).
+	var header = (options.getHeader ? options.getHeader() : options.header).
+		replace(/\$\{className\}/g, className).
 		replace(/\$\{methodName\}/g, methodName).
 		replace(/\$\{baseURL\}/g, baseURL).
 		replace(/\$\{([a-zA-Z0-9_]+)\}/g, function(str, name) { return options[name] });

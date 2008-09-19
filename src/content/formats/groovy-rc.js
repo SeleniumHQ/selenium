@@ -181,17 +181,20 @@ this.options = {
     initialIndents:    '2'
 };
 
-options.header =
-    "package ${packageName}\n"
-    + "\n"
-    + "import com.thoughtworks.selenium.*\n"
-    + "\n"
-    + "class ${className} extends ${superClass} {\n\n" 
-    + indents(1) + "@Override\n"
-    + indents(1) + "void setUp() throws Exception {\n"
-    + indents(2) + "super.setUp('${baseURL}', '*chrome')\n"
-    + indents(1) + "}\n\n"
-    + indents(1) + "void ${methodName}() throws Exception {\n";
+options.getHeader = function() {
+    var timeout = options['global.timeout'] || '30000';
+    return "package ${packageName}\n"
+        + "\n"
+        + "import com.thoughtworks.selenium.*\n"
+        + "\n"
+        + "class ${className} extends ${superClass} {\n\n" 
+        + indents(1) + "@Override\n"
+        + indents(1) + "void setUp() throws Exception {\n"
+        + indents(2) + "super.setUp('${baseURL}', '*chrome')\n"
+        + indents(2) + "setDefaultTimeout(" + timeout + ")\n"
+        + indents(1) + "}\n\n"
+        + indents(1) + "void ${methodName}() throws Exception {\n";
+}
 
 options.footer = indents(1) + "}\n"
     + "}\n";
