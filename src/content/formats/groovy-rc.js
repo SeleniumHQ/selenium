@@ -6,6 +6,28 @@ load('remoteControl.js');
 
 this.name = "groovy-rc";
 
+/**
+ * Combines commands involving waits into single *AndWait commands, using the
+ * hook provided in filterForRemoteControl(). Returns the modified list.
+ *
+ * @param commands
+ */
+function postFilter(filteredCommands) {
+    var i = 1;
+    
+    while (i < filteredCommands.length) {
+        var command = filteredCommands[i];
+        if (command.command == 'waitForPageToLoad') {
+            filteredCommands[i-1].command += 'AndWait';
+            filteredCommands.splice(i, 1);
+        }
+        else {
+            ++i;
+        }
+    }
+    return filteredCommands;
+}
+    
 function testMethodName(testName) {
     return "test" + capitalize(testName);
 }
@@ -102,7 +124,8 @@ function echo(message) {
     return "println(" + xlateArgument(message) + ")";
 }
 
-function statement(expression) {
+function statement(expression, command) {
+    expression.command = command.command;
     return expression.toString();
 }
 
@@ -118,20 +141,28 @@ function array(value) {
 
 CallSelenium.prototype.toString = function() {
     var result = '';
+    
     if (this.negative) {
         result += '! ';
     }
     if (options.receiver) {
         result += options.receiver + '.';
     }
-    result += this.message;
+    if (/AndWait$/.test(this.command)) {
+        result += this.command;
+    }
+    else {
+        result += this.message;
+    }
     result += '(';
+    
     for (var i = 0; i < this.args.length; i++) {
         result += this.args[i];
         if (i < this.args.length - 1) {
             result += ', ';
         }
     }
+    
     result += ')';
     return result;
 }

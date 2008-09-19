@@ -347,7 +347,7 @@ function formatCommand(command) {
                         call.args.push(xlateArgument(command.getParameterAt(i)));
                     }
                 }
-				line = statement(call);
+				line = statement(call, command);
 			}
 		} else {
 			this.log.info("unknown command: <" + command.command + ">");

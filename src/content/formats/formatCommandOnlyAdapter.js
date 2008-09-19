@@ -74,6 +74,10 @@ function filterForRemoteControl(originalCommands) {
 				commands.push(c);
 			}
 		}
+		if (this.postFilter) {
+			// formats can inject command list post-processing here
+			commands = this.postFilter(commands);
+		}
 		return commands;
 	} else {
 		return originalCommands;
