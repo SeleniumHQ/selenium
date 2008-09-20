@@ -4,8 +4,6 @@ package org.openqa.selenium.server.browserlaunchers;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
-import javax.naming.OperationNotSupportedException;
-
 /**
  * Runs the specified command path to start the browser, and kills the process to quit.
  *

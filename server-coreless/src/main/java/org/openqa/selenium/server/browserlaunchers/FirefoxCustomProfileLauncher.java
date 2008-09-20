@@ -18,10 +18,9 @@ package org.openqa.selenium.server.browserlaunchers;
 
 import org.apache.commons.logging.Log;
 import org.mortbay.log.LogFactory;
-import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.ApplicationRegistry;
+import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.browserlaunchers.locators.Firefox2or3Locator;
-import org.openqa.selenium.server.browserlaunchers.locators.Firefox3Locator;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,7 +49,7 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
     public FirefoxCustomProfileLauncher(RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
         this(configuration, sessionId,
                 ApplicationRegistry.instance().browserInstallationCache().locateBrowserInstallation(
-                        "firefox", browserLaunchLocation, new Firefox2or3Locator()));
+                        "firefoxproxy", browserLaunchLocation, new Firefox2or3Locator()));
     }
 
     public FirefoxCustomProfileLauncher(RemoteControlConfiguration configuration, String sessionId, BrowserInstallation browserInstallation) {

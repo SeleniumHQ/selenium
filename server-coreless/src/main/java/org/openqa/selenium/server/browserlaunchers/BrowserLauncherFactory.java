@@ -29,8 +29,8 @@ import java.util.regex.Pattern;
 
 /**
  * Returns BrowserLaunchers based on simple strings given by the user
- *  
- * 
+ *
+ *
  *  @author danielf
  *
  */
@@ -39,12 +39,12 @@ public class BrowserLauncherFactory {
     private static Log LOGGER = LogFactory.getLog(BrowserLauncherFactory.class);
 
     private static final Pattern CUSTOM_PATTERN = Pattern.compile("^\\*?custom( .*)?$");
-    
+
     private static final Map<String, Class<? extends BrowserLauncher>> supportedBrowsers = new HashMap<String, Class<? extends BrowserLauncher>>();
 
     static {
         supportedBrowsers.put("firefoxproxy", FirefoxCustomProfileLauncher.class);
-        supportedBrowsers.put("firefox", FirefoxChromeLauncher.class);
+        supportedBrowsers.put("firefox", FirefoxLauncher.class);
         supportedBrowsers.put("chrome", FirefoxChromeLauncher.class);
         supportedBrowsers.put("firefox2", Firefox2Launcher.class);
         supportedBrowsers.put("firefox3", Firefox3Launcher.class);
@@ -62,12 +62,12 @@ public class BrowserLauncherFactory {
         supportedBrowsers.put("mock", MockBrowserLauncher.class);
         supportedBrowsers.put("googlechrome", GoogleChromeLauncher.class);
     }
-    
+
     public BrowserLauncherFactory() {
     }
-    
+
     /** Returns the browser given by the specified browser string
-     * 
+     *
      * @param browser a browser string like "*firefox"
      * @param sessionId the sessionId to launch
      * @return the BrowserLauncher ready to launch
@@ -78,15 +78,14 @@ public class BrowserLauncherFactory {
         }
 
         for (String key : supportedBrowsers.keySet()) {
-          try {
-            final String browserStartCommand = getBrowserStartCommand(key, browser);
-            LOGGER.debug("Requested browser string '" + browser + "' matches *" + key + " ");
-            return createBrowserLauncher(supportedBrowsers.get(key), browserStartCommand, sessionId, configuration);
-          } catch (IllegalArgumentException iae) {
-            // this supportedBrowser did not match the 'browser' parameter.
-          }
+            final BrowserStringParser.Result result;
+            result = new BrowserStringParser().parseBrowserStartCommand(key, browser);
+            if (result.match()) {
+                LOGGER.debug("Requested browser string '" + browser + "' matches *" + key + " ");
+                return createBrowserLauncher(supportedBrowsers.get(key), result.customLauncher(), sessionId, configuration);
+            }
         }
-        
+
         LOGGER.debug("Requested browser string '" + browser + "' does not match any known browser, treating is as a custom browser...");
         Matcher CustomMatcher = CUSTOM_PATTERN.matcher(browser);
         if (CustomMatcher.find()) {
@@ -99,29 +98,7 @@ public class BrowserLauncherFactory {
         }
         throw browserNotSupported(browser);
     }
-    
-    /**
-     * Returns the browser start command, if any, for the browser in the 'browserString'
-     * parameter.  If the browserString cannot be matched to the 'knownBrowser' parameter,
-     * an illegal argument exception is thrown.
-     * 
-     * @param knownBrowser a known browser identifier.
-     * @param browserString the string sent by the client to identify the type of browser to start, e.g. *firefox
-     * @return the browser start command; null if none given.
-     * @throws IllegalArgumentException if the browserString cannot be matched to a known browser.
-     */
-    protected String getBrowserStartCommand(String knownBrowser, String browserString) 
-        throws IllegalArgumentException {
-      final Pattern pattern = Pattern.compile("^\\*?" + knownBrowser + "( .*)?$");
-      Matcher matcher = pattern.matcher(browserString);
-      if (matcher.find()) {
-        if (browserString.equals("*" + knownBrowser) || browserString.equals(knownBrowser)) {
-          return null;
-        } else {
-          return matcher.group(1).substring(1);
-        }
-      } else throw new IllegalArgumentException("requested browser " + browserString + " not found");
-    }
+
 
     public static Map<String, Class<? extends BrowserLauncher>> getSupportedLaunchers() {
         return supportedBrowsers;

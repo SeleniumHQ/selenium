@@ -44,7 +44,8 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
     }
 
     public InternetExplorerCustomProxyLauncher(RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
-        this(configuration, sessionId, ApplicationRegistry.instance().browserInstallationCache().locateBrowserInstallation("iexplore", browserLaunchLocation, new InternetExplorerLocator()));
+        this(configuration, sessionId, ApplicationRegistry.instance().browserInstallationCache().locateBrowserInstallation(
+                "iexplore", browserLaunchLocation, new InternetExplorerLocator()));
     }
 
     public InternetExplorerCustomProxyLauncher(RemoteControlConfiguration configuration,

@@ -28,36 +28,6 @@ public class BrowserLauncherFactoryUnitTest extends TestCase {
         }
     }
     
-    public void testBrowserStartCommandThrowsExceptionIfNotMatched() {
-      BrowserLauncherFactory blf = new BrowserLauncherFactory();
-      try {
-        blf.getBrowserStartCommand("iexplore", "*foobar");
-        fail();
-      } catch (IllegalArgumentException iae) {
-        // pass.
-      }
-    }
-    
-    public void testBrowserStartCommandMatchesWithNoLaunchCommand() {
-      BrowserLauncherFactory blf = new BrowserLauncherFactory();
-      try {
-        String startCommand = blf.getBrowserStartCommand("iexplore", "*iexplore");
-        assertNull(startCommand);
-      } catch (IllegalArgumentException iae) {
-        fail();
-      }
-    }
-    
-    public void testBrowserStartCommandMatchesWithLaunchCommand() {
-      BrowserLauncherFactory blf = new BrowserLauncherFactory();
-      try {
-        String expectedCommand = "foo";
-        String startCommand = blf.getBrowserStartCommand("iexplore", "*iexplore " + expectedCommand);
-        assertEquals(expectedCommand, startCommand);
-      } catch (IllegalArgumentException iae) {
-        fail();
-      }
-    }
 
 }
 

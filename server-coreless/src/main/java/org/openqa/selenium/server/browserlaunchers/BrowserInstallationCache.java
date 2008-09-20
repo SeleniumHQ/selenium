@@ -16,10 +16,10 @@ public class BrowserInstallationCache {
         this.cache = new HashMap<String,BrowserInstallation>(5);
     }
 
-    public BrowserInstallation locateBrowserInstallation(String browserString, String customLauncherPath, BrowserLocator locator) {
+    public BrowserInstallation locateBrowserInstallation(String browserName, String customLauncherPath, BrowserLocator locator) {
         final String cacheKey;
 
-        cacheKey = cacheKey(browserString, customLauncherPath);
+        cacheKey = cacheKey(browserName, customLauncherPath);
         synchronized(cache) {
             if (null == cache.get(cacheKey)) {
                 if (null == customLauncherPath) {

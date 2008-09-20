@@ -50,10 +50,10 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
         this(configuration, sessionId, (String) null);
     }
 
-    public FirefoxChromeLauncher(RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
+    public FirefoxChromeLauncher(RemoteControlConfiguration configuration, String sessionId, String browserString) {
         this(configuration, sessionId,
                 ApplicationRegistry.instance().browserInstallationCache().locateBrowserInstallation(
-                        "firefox", browserLaunchLocation, new Firefox2or3Locator()));
+                        "chrome", browserString, new Firefox2or3Locator()));
     }
 
     public FirefoxChromeLauncher(RemoteControlConfiguration configuration, String sessionId, BrowserInstallation browserInstallation) {
@@ -82,7 +82,7 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
         String profile = "";
 
         try {
-            homePage = new ChromeUrlConvert().convert(url, getPort());
+            homePage = new ChromeUrlConvert().convert(url);
             if (config != null) {
                 profile = config.getProfile();
             } 
@@ -272,7 +272,7 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
     }
 
     public static class ChromeUrlConvert {
-        public String convert(String httpUrl, int port) throws MalformedURLException {
+        public String convert(String httpUrl) throws MalformedURLException {
             String query = LauncherUtils.getQueryString(httpUrl);
             String file = new File(new URL(httpUrl).getPath()).getName();
             return "chrome://src/content/" + file + "?" + query;
