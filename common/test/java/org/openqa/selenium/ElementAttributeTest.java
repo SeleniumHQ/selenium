@@ -30,6 +30,16 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
         assertThat(inputElement.getAttribute("disabled"), equalTo("false"));
     }
 
+    @Ignore("ie, htmlunit, safari")
+    public void testShouldReturnTheValueOfTheIndexAttrbuteEvenIfItIsMissing() {
+        driver.get(formPage);
+
+        WebElement multiSelect = driver.findElement(By.id("multi"));
+        List<WebElement> options = multiSelect.getChildrenOfType("option");
+        assertThat(options.get(1).getAttribute("index"), equalTo("1"));
+    }
+
+
 	@Ignore("safari")
     public void testShouldIndicateTheElementsThatAreDisabledAreNotEnabled() {
         driver.get(formPage);

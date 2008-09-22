@@ -137,7 +137,7 @@ FirefoxDriver.prototype.getElementAttribute = function(respond, value) {
 
     if (element.hasAttribute(attributeName)) {
         respond.response = element.getAttribute(attributeName);
-
+        // Is this block necessary?
         if (attributeName.toLowerCase() == "disabled") {
             respond.response = element.disabled;
         } else if (attributeName.toLowerCase() == "selected") {
@@ -164,8 +164,11 @@ FirefoxDriver.prototype.getElementAttribute = function(respond, value) {
         respond.response = element.selected;
         respond.send();
         return;
+    } else if (attributeName == "index" && element.tagName.toLowerCase() == "option") {
+       respond.response = element.index;
+       respond.send();
+       return;
     }
-
     respond.isError = true;
     respond.response = "No match";
     respond.send();
