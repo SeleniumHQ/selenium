@@ -321,8 +321,8 @@ task :remote_release => [:remote] do
   rm_rf "build/dist/remote_server"
 end
 
-task :release => [:common, :firefox, :htmlunit, :jobbie, :remote_release, :support] do
-  %w(common firefox jobbie htmlunit support).each do |driver|
+task :release => [:common, :firefox, :htmlunit, :jobbie, :safari, :remote_release, :support] do
+  %w(common firefox jobbie htmlunit safari support).each do |driver|
     mkdir_p "build/dist/#{driver}"
     cp 'common/build/webdriver-common.jar', "build/dist/#{driver}"
     cp "#{driver}/build/webdriver-#{driver}.jar", "build/dist/#{driver}"
