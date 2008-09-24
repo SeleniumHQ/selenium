@@ -63,6 +63,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Collections;
 
 public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecutor,
         FindsById, FindsByLinkText, FindsByXPath, FindsByName {
@@ -180,6 +181,9 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
         if (page == null)
           return;
 
+        if (!(page instanceof HtmlPage))
+          return;
+
         if (((HtmlPage) page).getFrames().size() > 0) {
             FrameWindow frame = ((HtmlPage) page).getFrames().get(0);
             if (!(frame.getFrameElement() instanceof HtmlInlineFrame))
@@ -192,11 +196,11 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     }
 
     public String getTitle() {
-        HtmlPage htmlPage = lastPage();
-        if (htmlPage == null) {
+        Page page = lastPage();
+        if (page == null || !(page instanceof HtmlPage)) {
             return null; // no page so there is no title
         }
-        return htmlPage.getTitleText();
+        return ((HtmlPage) page).getTitleText();
     }
 
     public boolean getVisible() {
@@ -230,6 +234,12 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     }
 
     public Object executeScript(String script, Object... args) {
+        if (!(lastPage() instanceof HtmlPage)) {
+          throw new UnsupportedOperationException("Cannot execute JS against a plain text page");
+        }
+
+        HtmlPage page = (HtmlPage) lastPage();
+
         if (!isJavascriptEnabled())
             throw new UnsupportedOperationException("Javascript is not enabled for this HtmlUnitDriver instance");
 
@@ -254,14 +264,14 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
         }
 
         script = "function() {" + script + "};";
-        ScriptResult result = lastPage().executeJavaScript(script);
+        ScriptResult result = page.executeJavaScript(script);
         Function func = (Function) result.getJavaScriptResult();
         
-        result = lastPage().executeJavaScriptFunctionIfPossible(
+        result = page.executeJavaScriptFunctionIfPossible(
         		func, 
         		(ScriptableObject) currentWindow.getScriptObject(), 
         		parameters, 
-        		lastPage().getDocumentElement());
+        		page.getDocumentElement());
         
         Object value = result.getJavaScriptResult();
 
@@ -285,15 +295,19 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     return new HtmlUnitNavigation();
   }
 
-  private synchronized HtmlPage lastPage() {
-        return (HtmlPage) currentWindow.getEnclosedPage();
+  private synchronized Page lastPage() {
+        return currentWindow.getEnclosedPage();
     }
 
   public WebElement findElementByLinkText(String selector) {
     int equalsIndex = selector.indexOf('=') + 1;
     String expectedText = selector.substring(equalsIndex).trim();
 
-    List<HtmlAnchor> anchors = lastPage().getAnchors();
+    if (!(lastPage() instanceof HtmlPage)) {
+      throw new NoSuchElementException("There are no links on a text page: " + expectedText);
+    }
+
+    List<HtmlAnchor> anchors = ((HtmlPage) lastPage()).getAnchors();
     for (HtmlAnchor anchor : anchors) {
       if (expectedText.equals(anchor.asText())) {
         return newHtmlUnitWebElement(anchor);
@@ -310,14 +324,16 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
   }
 
   public List<WebElement> findElementsByLinkText(String selector) {
+    List<WebElement> elements = new ArrayList<WebElement>();
+
+    if (!(lastPage() instanceof HtmlPage))
+      return elements;
+
     int equalsIndex = selector.indexOf('=') + 1;
     String expectedText = selector.substring(equalsIndex).trim();
 
-    List<HtmlAnchor> anchors = lastPage().getAnchors();
-    Iterator<HtmlAnchor> allAnchors = anchors.iterator();
-    List<WebElement> elements = new ArrayList<WebElement>();
-    while (allAnchors.hasNext()) {
-      HtmlAnchor anchor = allAnchors.next();
+    List<HtmlAnchor> anchors = ((HtmlPage) lastPage()).getAnchors();
+    for (HtmlAnchor anchor : anchors) {
       if (expectedText.equals(anchor.asText())) {
         elements.add(newHtmlUnitWebElement(anchor));
       }
@@ -326,8 +342,11 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
   }
 
     public WebElement findElementById(String id) {
+        if (!(lastPage() instanceof HtmlPage))
+            throw new NoSuchElementException("Cannot find element with ID: " + id);
+
         try {
-            HtmlElement element = lastPage().getHtmlElementById(id);
+            HtmlElement element = ((HtmlPage) lastPage()).getHtmlElementById(id);
             return newHtmlUnitWebElement(element);
         } catch (ElementNotFoundException e) {
             throw new NoSuchElementException("Cannot find element with ID: " + id);
@@ -339,7 +358,10 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     }
 
   public WebElement findElementByName(String name) {
-    List<HtmlElement> allElements = lastPage().getHtmlElementsByName(name);
+    if (!(lastPage() instanceof HtmlPage))
+      throw new NoSuchElementException("Cannot find element with name: " + name);
+
+    List<HtmlElement> allElements = ((HtmlPage) lastPage()).getHtmlElementsByName(name);
     if (allElements.size() > 0) {
         return newHtmlUnitWebElement(allElements.get(0));
     }
@@ -349,12 +371,18 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
 
   @SuppressWarnings("unchecked")
   public List<WebElement> findElementsByName(String using) {
-    List allElements = lastPage().getHtmlElementsByName(using);
+    if (!(lastPage() instanceof HtmlPage))
+      return new ArrayList<WebElement>();
+
+    List allElements = ((HtmlPage) lastPage()).getHtmlElementsByName(using);
     return convertRawHtmlElementsToWebElements(allElements);
   }
 
   public WebElement findElementByXPath(String selector) {
-    	Object node = lastPage().getFirstByXPath(selector);
+    if (!(lastPage() instanceof HtmlPage))
+      throw new NoSuchElementException(String.format("Cannot find element with xpath %s", selector));
+
+        Object node = ((HtmlPage) lastPage()).getFirstByXPath(selector);
         if (node == null)
             throw new NoSuchElementException("Cannot locate a node using " + selector);
         if (node instanceof HtmlElement)
@@ -363,8 +391,11 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     }
 
     public List<WebElement> findElementsByXPath(String selector) {
-    	List<?> nodes = lastPage().getByXPath(selector);
-        return convertRawHtmlElementsToWebElements(nodes);
+      if (!(lastPage() instanceof HtmlPage))
+        return new ArrayList<WebElement>();
+
+      List<?> nodes = ((HtmlPage) lastPage()).getByXPath(selector);
+      return convertRawHtmlElementsToWebElements(nodes);
     }
 
     private List<WebElement> convertRawHtmlElementsToWebElements(List<?> nodes) {
