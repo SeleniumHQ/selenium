@@ -80,7 +80,7 @@ public class Cookie {
 
     protected void validate() {
         if (name == null || "".equals(name) || value == null || path == null)
-            throw new IllegalArgumentException("Required attribuets are not set or " +
+            throw new IllegalArgumentException("Required attributes are not set or " +
                     "any non-null attribute set to null");
 
         if (name.indexOf(';') != -1)
@@ -97,27 +97,21 @@ public class Cookie {
     }
 
     /**
-     *  Two cookies are equal if the domain, name and path match.
+     *  Two cookies are equal if the name and value match
      */
-    @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-
-        if (o == null || (!(o instanceof Cookie)))
-            return false;
+        if (this == o) return true;
+        if (!(o instanceof Cookie)) return false;
 
         Cookie cookie = (Cookie) o;
-//        if (!domain.equals(cookie.domain))
-//            return false;
-      return name.equals(cookie.name);
+    
+        if (!name.equals(cookie.name)) return false;
+        if (value != null ? !value.equals(cookie.value) : cookie.value != null) return false;
+
+        return true;
     }
 
-    @Override
     public int hashCode() {
-        int result;
-        result = name.hashCode();
-//        result = 31 * result + domain.hashCode();
-        return result;
+        return name.hashCode();
     }
 }

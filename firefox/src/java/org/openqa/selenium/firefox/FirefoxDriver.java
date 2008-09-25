@@ -406,6 +406,8 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
 
             if(!"".equals(response)) {
                 for(String cookieString : response.split("\n")) {
+                    if ("".equals(cookieString.trim())) continue;
+                  
                     HashMap<String, String> attributesMap = new HashMap<String, String>();
                     attributesMap.put("name", "");
                     attributesMap.put("value", "");
@@ -416,7 +418,7 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
 
                     for (String attribute : cookieString.split(";")) {
                         if(attribute.contains("=")) {
-                            String[] tokens = attribute.trim().split("=");
+                            String[] tokens = attribute.trim().split("=", 2);
                             if(attributesMap.get("name").equals("")) {
                                 attributesMap.put("name", tokens[0]);
                                 attributesMap.put("value", tokens[1]);
@@ -433,10 +435,12 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
                         }
                     }
                     Date expires = null;
-                    if (!attributesMap.get("expires").equals("0")) {
+                  String expiry = attributesMap.get("expires");
+                  if (expiry != null && !"".equals(expiry) && !expiry.equals("0")) {
                         //firefox stores expiry as number of seconds
                         expires = new Date(Long.parseLong(attributesMap.get("expires")));
                     }
+
                     cookies.add(new ReturnedCookie(attributesMap.get("name"), attributesMap.get("value"),
                             attributesMap.get("domain"), attributesMap.get("path"),
                             expires, Boolean.parseBoolean(attributesMap.get("secure"))));
