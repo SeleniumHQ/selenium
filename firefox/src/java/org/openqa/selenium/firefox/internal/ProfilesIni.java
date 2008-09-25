@@ -21,12 +21,13 @@ public class ProfilesIni {
   }
   
   protected Map<String, FirefoxProfile> readProfiles(File appData) {
+    Map<String, FirefoxProfile> toReturn = new HashMap<String, FirefoxProfile>();
+
     File profilesIni = new File(appData, "profiles.ini");
     if (!profilesIni.exists()) {
-        throw new RuntimeException("Unable to locate the profiles.ini file, which contains information about where to locate the profiles");
+        // Fine. No profiles.ini file
+        return toReturn;
     }
-
-    Map<String, FirefoxProfile> toReturn = new HashMap<String, FirefoxProfile>();
     
     boolean isRelative = true;
     String name = null;
@@ -108,8 +109,9 @@ public class ProfilesIni {
     }
 
     if (!appData.exists()) {
-        throw new RuntimeException("Unable to locate directory which should contain the information about Firefox profiles.\n" +
-                "Tried looking in: " + appData.getAbsolutePath());
+        // It's possible we're being run as part of an automated build.
+        // Assume the user knows what they're doing
+        return null;
     }
 
     if (!appData.isDirectory()) {

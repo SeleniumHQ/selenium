@@ -1,12 +1,12 @@
 package org.openqa.selenium.firefox;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.ConnectException;
-
 import org.openqa.selenium.firefox.internal.FirefoxBinary;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.firefox.internal.RunningInstanceConnection;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.ConnectException;
 
 public class FirefoxLauncher {
     public static void main(String[] args) throws IOException {
@@ -47,6 +47,9 @@ public class FirefoxLauncher {
 
         ProfilesIni allProfiles = new ProfilesIni();
         FirefoxProfile profile = allProfiles.getProfile(profileName);
+
+        if (profile == null)
+          throw new IllegalStateException(String.format("Unable to locate profile \"%s\"", profileName));
 
         System.out.println("Attempting to install the WebDriver extension");
         profile.addWebDriverExtensionIfNeeded(true);
