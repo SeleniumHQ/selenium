@@ -59,7 +59,7 @@ function ifCondition(expression, callback) {
 }
 
 function joinExpression(expression) {
-    return "join(" + expression.toString() + ", ',')";
+    return expression.toString() + ".join(',')";
 }
 
 function waitFor(expression) {
@@ -125,7 +125,7 @@ function echo(message) {
 }
 
 function statement(expression, command) {
-    expression.command = command.command;
+    expression.command = command ? command.command : "";
     return expression.toString();
 }
 
