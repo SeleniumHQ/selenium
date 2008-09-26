@@ -206,8 +206,8 @@ SocketListener.prototype.executeCommand = function() {
                     respond.commandName = info.command.commandName;
                     info.driver[info.command.commandName](respond, info.command.parameters);
                 } catch (e) {
-                    info.driver.window.dump("Exception caught: " + info.command.commandName + "(" + info.command.parameters + ")\n");
-                    info.driver.window.dump(e + "\n");
+                    Utils.dumpn("Exception caught: " + info.command.commandName + "(" + info.command.parameters + ")\n");
+                    Utils.dumpn(e + "\n");
                     respond.isError = true;
                     respond.context = info.driver.context;
                     respond.send();

@@ -361,7 +361,7 @@ FirefoxDriver.prototype.addCookie = function(respond, cookieString) {
     respond.send();
 }
 
-FirefoxDriver.prototype.getCookie = function(respond) {
+function handleCookies(context, toCall) {
   var cm = Utils.getService("@mozilla.org/cookiemanager;1", "nsICookieManager");
 
   var makeStrippedHost = function (aHost) {
@@ -369,56 +369,58 @@ FirefoxDriver.prototype.getCookie = function(respond) {
     return formattedHost.substring(0, 4) == "www." ? formattedHost.substring(4, formattedHost.length) : formattedHost;
   };
 
-  var currentDomain = makeStrippedHost(Utils.getBrowser(this.context).contentWindow.location.hostname);
+  var currentDomain = makeStrippedHost(Utils.getBrowser(context).contentWindow.location.hostname);
   var isForCurrentHost = function(aHost) {
     return currentDomain.indexOf(aHost) != -1;
   }
 
-  var currentPath = Utils.getBrowser(this.context).contentWindow.location.pathname;
+  var currentPath = Utils.getBrowser(context).contentWindow.location.pathname;
   if (!currentPath) currentPath = "/";
   var isForCurrentPath = function(aPath) {
     return currentPath.indexOf(aPath) != -1;
   }
 
-  var cookieToString = function(c) {
-    return c.name + "=" + c.value + ";" + "domain=" + c.host + ";"
-        + "path=" + c.path + ";" + "expires=" + c.expires + ";"
-        + (c.isSecure ? "secure ;" : "");
-  }
-
   var e = cm.enumerator;
-  var toReturn = "";
   while (e.hasMoreElements()) {
     var cookie = e.getNext();
      if (cookie && cookie instanceof Components.interfaces.nsICookie) {
        var strippedHost = makeStrippedHost(cookie.host);
 
        if (isForCurrentHost(strippedHost) && isForCurrentPath(cookie.path)) {
-         var toAdd = cookieToString(cookie);
-         toReturn += toAdd + "\n";
+         toCall(cookie);
       }
     }
   }
+}
+
+FirefoxDriver.prototype.getCookie = function(respond) {
+  var cookieToString = function(c) {
+    return c.name + "=" + c.value + ";" + "domain=" + c.host + ";"
+        + "path=" + c.path + ";" + "expires=" + c.expires + ";"
+        + (c.isSecure ? "secure ;" : "");
+  }
+
+  var toReturn = "";
+  handleCookies(this.context, function(cookie) {
+    var toAdd = cookieToString(cookie);
+    toReturn += toAdd + "\n";
+  });
 
   respond.response = toReturn;
-  Utils.dumpn(respond.response);
   respond.send();
 }
 
+// This is damn ugly, but it turns out that just deleting a cookie from the document
+// doesn't always do The Right Thing
 FirefoxDriver.prototype.deleteCookie = function(respond, cookieString) {
-    var cookie = eval('(' + cookieString + ')');
+    var cm = Utils.getService("@mozilla.org/cookiemanager;1", "nsICookieManager");
+    var toDelete = eval('(' + cookieString + ')');
 
-    if (!cookie.domain) {
-        var location = Utils.getBrowser(this.context).contentWindow.location
-        cookie.domain = location.hostname; // + ":" + location.port;
-    }
-
-    if (!cookie.path) {
-        cookie.path = "/";
-    }
-
-    var cookieManager = Utils.getService("@mozilla.org/cookiemanager;1", "nsICookieManager");
-    cookieManager.remove(cookie.domain, cookie.name, cookie.path, false);
+    handleCookies(this.context,  function(cookie) {
+      if (toDelete.name == cookie.name) {
+        cm.remove(cookie.host, cookie.name, cookie.path, false);
+      }
+    });
 
     respond.context = this.context;
     respond.send();
