@@ -8,6 +8,12 @@ unit_tests do
     assert_equal "A String", client.get_string(:a_verb, :some_args)
   end
 
+  test "args are optionals for get_string (when there are none)" do
+    client = Class.new { include Selenium::Client::SeleneseClient }.new
+    client.expects(:do_command).with(:a_verb, [])
+    client.get_string :a_verb
+  end
+
   test "get_string_parses the command response as a CSV row" do
     client = Class.new { include Selenium::Client::SeleneseClient }.new
     client.expects(:do_command).with(:a_verb, :some_args).returns("One,Two,Three")
@@ -50,6 +56,12 @@ unit_tests do
     client = Class.new { include Selenium::Client::SeleneseClient }.new
     client.stubs(:get_string).with(:a_verb, :some_args).returns("true")
     assert_equal true, client.get_boolean(:a_verb, :some_args)
+  end
+
+  test "args are optionals for get_boolean (when there are none)" do
+    client = Class.new { include Selenium::Client::SeleneseClient }.new
+    client.expects(:get_string).with(:a_verb, []).returns("true")
+    client.get_boolean(:a_verb)
   end
 
   test "get_boolean returns false when get_string returns 'false'" do

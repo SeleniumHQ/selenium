@@ -14,7 +14,7 @@ module Selenium
         end
       end
       
-      def get_string(verb, args)
+      def get_string(verb, args=[])
         do_command(verb, args)
       end
     
@@ -53,7 +53,7 @@ module Selenium
         return get_string_array(verb, args)
       end
 
-      def get_boolean(verb, args)
+      def get_boolean(verb, args=[])
         parse_boolean_value get_string(verb, args)
       end
     

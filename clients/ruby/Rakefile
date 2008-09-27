@@ -17,6 +17,17 @@ CLOBBER.include(
   '**/*.log'
 )
 
+if ENV["SELENIUM_RC_JAR"]
+	# User override
+	SELENIUM_RC_JAR = ENV["SELENIUM_RC_JAR"] 
+elsif not Dir[File.dirname(__FILE__) + "/../../selenium-server/target/selenium-server-*-standalone.jar"].empty?
+	# We are part of the global Selenium RC Build
+	SELENIUM_RC_JAR = Dir[File.dirname(__FILE__) + "/../../selenium-server/target/selenium-server-*-standalone.jar"].first
+else
+	# Bundled version
+	SELENIUM_RC_JAR = Dir[File.dirname(__FILE__) + "/vendor/selenium-remote-control/selenium-server-*-standalone.jar"].first
+end
+
 task :default => :"test:unit"
 
 desc "Start a Selenium remote control, run all integration tests and stop the remote control"
@@ -30,23 +41,8 @@ task :'ci:integration' do
   end
 end
 
-Selenium::Rake::RemoteControlStartTask.new do |rc|
-  rc.port = 4444
-  rc.timeout_in_seconds = 3 * 60
-  rc.background = true
-  rc.wait_until_up_and_running = true
-  rc.jar_file = ENV["SELENIUM_RC_JAR"] || Dir[File.dirname(__FILE__) + "/../../selenium-server/target/selenium-server-*-standalone.jar"].first
-  rc.additional_args << "-singleWindow"
-end
-
-Selenium::Rake::RemoteControlStopTask.new do |rc|
-  rc.host = "localhost"
-  rc.port = 4444
-  rc.timeout_in_seconds = 3 * 60
-end
-
 file "target/iedoc.xml" do
-  cp "iedoc.xml", "target/iedoc.xml"
+	sh "unzip -u '#{SELENIUM_RC_JAR}' core/iedoc.xml -d target"
 end
 
 desc "Generate driver from iedoc.xml"
@@ -60,6 +56,21 @@ Rake::TestTask.new(:'test:unit') do |t|
   t.warning = true
 end
 task :"test:unit" => "lib/selenium/client/generated_driver.rb"
+
+Selenium::Rake::RemoteControlStartTask.new do |rc|
+  rc.port = 4444
+  rc.timeout_in_seconds = 3 * 60
+  rc.background = true
+  rc.wait_until_up_and_running = true
+  rc.jar_file = SELENIUM_RC_JAR
+  rc.additional_args << "-singleWindow"
+end
+
+Selenium::Rake::RemoteControlStopTask.new do |rc|
+  rc.host = "localhost"
+  rc.port = 4444
+  rc.timeout_in_seconds = 3 * 60
+end
 
 desc "Run all integration tests"
 Spec::Rake::SpecTask.new("test:integration") do |t|
@@ -85,7 +96,7 @@ begin
                   :timeout_in_seconds => 180
   end
 rescue Exception
-  puts "Could not find DeepTest, disbal parallel run"
+  puts "Could not find DeepTest, disable parallel run"
 end
 
 desc "Run headless integration tests"
@@ -132,11 +143,10 @@ Spec::Rake::SpecTask.new("test:parallel") do |t|
     t.spec_opts << "--format=progress"                
 end
 
-
 specification = Gem::Specification.new do |s|
   s.name = "selenium-client"
   s.summary = "Official Ruby Client for Selenium RC."
-  s.version = "1.2"
+  s.version = "1.3"
   s.author = "OpenQA"
   s.email = 'selenium-client@rubyforge.org'
   s.homepage = "http://selenium-client.rubyforge.com"
