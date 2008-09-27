@@ -24,7 +24,7 @@ Spec::Runner.configure do |config|
   def create_selenium_driver
     remote_control_server = ENV['SELENIUM_RC_HOST'] || "localhost"
     port = ENV['SELENIUM_RC_PORT'] || 4444
-    browser = ENV['SELENIUM_RC_BROWSER'] || "*firefox"
+    browser = ENV['SELENIUM_BROWSER'] || "*firefox"
     timeout = ENV['SELENIUM_RC_TIMEOUT'] || 60
     application_host = ENV['SELENIUM_APPLICATION_HOST'] || "localhost"
     application_port = ENV['SELENIUM_APPLICATION_PORT'] || "3000"
