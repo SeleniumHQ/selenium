@@ -35,12 +35,12 @@ task :default => :"test:unit"
 
 desc "Start a Selenium remote control, run all integration tests and stop the remote control"
 task :'ci:integration' => [ :clean, :'test:unit' ] do
-  Rake::Task[:"selenium:rc:stop"].invoke rescue nil
+  Rake::Task[:"selenium:rc:stop"].execute [] rescue nil
   begin
-    Rake::Task[:"selenium:rc:start"].invoke
+    Rake::Task[:"selenium:rc:start"].execute []
     Rake::Task[:"test:integration"].invoke
   ensure
-    Rake::Task[:"selenium:rc:stop"].invoke
+    Rake::Task[:"selenium:rc:stop"].execute []
   end
 end
 
