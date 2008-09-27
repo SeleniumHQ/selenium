@@ -39,7 +39,7 @@ class Object
     full_path_file_name = eval "__FILE__", block.binding
     test_name = File.basename(full_path_file_name, ".rb")
     test_class = eval "module #{type}; class #{test_name.to_class_name} < Test::Unit::TestCase; self; end; end"
-    test_class.class_eval &block
+    test_class.class_eval(&block)
     check_for_setup(test_class, options)
     check_for_helpers(test_class, options)
   end

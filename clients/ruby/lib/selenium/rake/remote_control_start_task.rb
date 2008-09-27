@@ -2,8 +2,9 @@ module Selenium
   module Rake
   
     class RemoteControlStartTask
-      attr_accessor :port, :jar_file, :timeout_in_seconds, :background, 
+      attr_accessor :port, :timeout_in_seconds, :background, 
                     :wait_until_up_and_running, :additional_args
+      attr_reader :jar_file
 
       def initialize(name = :'selenium:rc:start')
         @name = name
