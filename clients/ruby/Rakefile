@@ -38,7 +38,7 @@ task :'ci:integration' => [ :clean, :'test:unit' ] do
   Rake::Task[:"selenium:rc:stop"].execute [] rescue nil
   begin
     Rake::Task[:"selenium:rc:start"].execute []
-    Rake::Task[:"test:integration"].invoke
+    Rake::Task[:"test:integration"].execute []
   ensure
     Rake::Task[:"selenium:rc:stop"].execute []
   end
