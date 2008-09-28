@@ -136,6 +136,15 @@ TestSuite.prototype = {
         } else {
             return "Untitled";
         }
+    },
+    
+    // return a shallow copy of testsuite
+    createCopy: function() {
+        var copy = new TestSuite();
+        for (prop in this) {
+            copy[prop] = this[prop];
+        }
+        return copy;
     }
 }
 

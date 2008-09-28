@@ -264,6 +264,57 @@ Format.prototype.saveAs = function(testCase, filename, exportTest) {
 	}
 };
 
+/**
+ * Displays a filepicker so the user can select where to export the test suite,
+ * and saves the exported file there. Returns true on success, and false
+ * otherwise.
+ *
+ * @param testSuite   the test suite to export
+ * @param exportTest  ???
+ */
+Format.prototype.saveSuiteAsNew = function(testSuite, exportTest) {
+    var formatter = this.getFormatter();
+    if (typeof(formatter.formatSuite) != 'function') {
+        var name = formatter.name ? formatter.name : 'default'
+        alert('Suite export not implemented for the ' + name + ' formatter');
+        return false
+    }
+    
+    try {
+        var file = null;
+        file = showFilePicker(window, "Export TestSuite as...",
+            Components.interfaces.nsIFilePicker.modeSave,
+            TestSuite.TEST_SUITE_DIRECTORY_PREF,
+            function(fp) { return fp.file; });
+        
+        if (file != null) {
+            var filepath = [];
+            filepath = FileUtils.splitPath(file);
+            
+            var filename = filepath[filepath.length -1];
+            var output = FileUtils.openFileOutputStream(file);
+            var converter = FileUtils.getUnicodeConverter("UTF-8");
+            var text = converter.ConvertFromUnicode(formatter
+                .formatSuite(testSuite, filename));
+            
+            output.write(text, text.length);
+            
+            var fin = converter.Finish();
+            if (fin.length > 0) {
+                output.write(fin, fin.length);
+            }
+            
+            output.close();
+            return true;
+        }
+    }
+    catch (err) {
+        alert("error: " + err);
+    }
+    
+    return false;
+};
+
 Format.prototype.getSourceForTestCase = function(testCase) {
 	return this.getFormatter().format(testCase, "New Test", true);
 }

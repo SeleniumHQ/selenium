@@ -144,6 +144,9 @@ limitations under the License.
       <menuitem label="&openSuiteCmd.label;" command="cmd_open_suite" />
       <menuitem label="&saveSuiteCmd.label;" command="cmd_save_suite" />
       <menuitem label="&saveSuiteAsCmd.label;" command="cmd_save_suite_as" />
+      <menu label="&exportSuiteCmd.label;" accesskey="X">
+        <menupopup id="popup_export_formats" onpopupshowing="window.editor.populateFormatsPopup(this)" oncommand="window.editor.exportTestSuiteWithFormat(window.editor.app.getFormats().selectFormat(event.target.getAttribute('value')))" />
+      </menu>
       <menu label="&recentSuiteCmd.label;">
         <menupopup id="popup_recent_suites" onpopupshowing="window.editor.app.recentTestSuites.populateMenu(this)" oncommand="window.editor.app.loadTestSuite(event.target.getAttribute('value'))" />
       </menu>

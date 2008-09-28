@@ -360,6 +360,11 @@ Editor.prototype.exportTestCaseWithFormat = function(format) {
 	format.saveAsNew(this.getTestCase().createCopy(), true);
 }
 
+Editor.prototype.exportTestSuiteWithFormat = function(format) {
+    this.view.syncModel();
+    format.saveSuiteAsNew(this.app.getTestSuite().createCopy(), true);
+};
+
 Editor.prototype.loadRecorderFor = function(contentWindow, isRootDocument) {
 	this.log.debug("loadRecorderFor: " + contentWindow);
 	if (this.recordingEnabled && (isRootDocument || this.recordFrameTitle) &&

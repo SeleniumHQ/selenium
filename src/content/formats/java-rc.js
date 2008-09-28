@@ -148,6 +148,16 @@ function formatComment(comment) {
 		});
 }
 
+/**
+ * Returns a string representing the suite for this formatter language.
+ *
+ * @param testSuite  the suite to format
+ * @param filename   the file the formatted suite will be saved as
+ */
+function formatSuite(testSuite, filename) {
+    return 'TODO - implement';
+}
+
 this.options = {
 	receiver: "selenium",
 	packageName: "com.example.tests",
