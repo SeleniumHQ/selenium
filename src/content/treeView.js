@@ -237,13 +237,15 @@ objectExtend(TreeView.prototype, {
             if (command.isRollup() && ! command.value && Editor.rollupManager) {
                 var rule = Editor.rollupManager.getRollupRule(command.target);
                 if (rule != null) {
-                    var names = [];
+                    var args = {};
+                    var keys = [];
                     for (var i = 0; i < rule.args.length; ++i) {
-                        var arg = rule.args[i];
-                        names.push(arg.name + '=');
+                        var name = rule.args[i].name;
+                        args[name] = "";
+                        keys.push(name);
                     }
                     this.setTextBox('commandValue',
-                        this.encodeText(names.join(', ')), false);
+                        this.encodeText(to_kwargs(args, keys)), false);
                 }
             }
         },
