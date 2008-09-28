@@ -227,6 +227,28 @@ objectExtend(TreeView.prototype, {
         },
         
         /**
+         * Updates the value field, depending on the values of the other fields
+         */
+        updateSeleniumValues: function() {
+            var command = this.currentCommand;
+            
+            // populate the arguments for rollups, but don't clobber an
+            // existing value
+            if (command.isRollup() && ! command.value && Editor.rollupManager) {
+                var rule = Editor.rollupManager.getRollupRule(command.target);
+                if (rule != null) {
+                    var names = [];
+                    for (var i = 0; i < rule.args.length; ++i) {
+                        var arg = rule.args[i];
+                        names.push(arg.name + '=');
+                    }
+                    this.setTextBox('commandValue',
+                        this.encodeText(names.join(', ')), false);
+                }
+            }
+        },
+        
+        /**
          * execute undoable action
          */
         executeAction: function(action) {
@@ -324,6 +346,7 @@ objectExtend(TreeView.prototype, {
                     this.editor.showReference(this.currentCommand);
                 }
                 else if (key == 'target') {
+                    this.updateSeleniumValues();
                     this.editor.showUIReference(value);
                     this.editor.showRollupReference(this.currentCommand);
                 }
