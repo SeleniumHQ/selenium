@@ -17,22 +17,22 @@
 
 package org.openqa.selenium.htmlunit;
 
+import com.gargoylesoftware.htmlunit.CookieManager;
 import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 import com.gargoylesoftware.htmlunit.Page;
+import com.gargoylesoftware.htmlunit.ProxyConfig;
 import com.gargoylesoftware.htmlunit.ScriptResult;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebResponse;
 import com.gargoylesoftware.htmlunit.WebWindow;
 import com.gargoylesoftware.htmlunit.WebWindowEvent;
 import com.gargoylesoftware.htmlunit.WebWindowListener;
-import com.gargoylesoftware.htmlunit.ProxyConfig;
 import com.gargoylesoftware.htmlunit.html.FrameWindow;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlInlineFrame;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.javascript.host.HTMLElement;
-import org.apache.commons.httpclient.HttpState;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.ScriptableObject;
 import org.openqa.selenium.Alert;
@@ -56,14 +56,12 @@ import java.net.URL;
 import java.net.UnknownHostException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Collections;
 
 public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecutor,
         FindsById, FindsByLinkText, FindsByXPath, FindsByName {
@@ -586,52 +584,41 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     }
 
     private class HtmlUnitOptions implements Options {
-        private HttpState state;
-
-        HtmlUnitOptions() {
-            state = webClient.getWebConnection().getState();
-        }
-
         public void addCookie(Cookie cookie) {
           String domain = getDomainForCookie(cookie);
 
-            state.addCookie(new org.apache.commons.httpclient.Cookie(domain,
+            webClient.getCookieManager().addCookie(new org.apache.commons.httpclient.Cookie(domain,
                     cookie.getName(), cookie.getValue(), cookie.getPath(), cookie.getExpiry(),
                     cookie.isSecure()));
         }
 
         public void deleteCookieNamed(String name) {
-            //Assume the cookie either doesn't have a domain or has the same domain as the current
-            //page. Delete the cookie for both cases.
-            state.addCookie(new org.apache.commons.httpclient.Cookie(getHostName(), name, "", "/",
-                    new Date(0), false));
-            state.addCookie(new org.apache.commons.httpclient.Cookie("", name, "", "/", new Date(0),
-                    false));
+            CookieManager cookieManager = webClient.getCookieManager();
+
+            Set<org.apache.commons.httpclient.Cookie> rawCookies = webClient.getCookieManager().getCookies(getHostName());
+            for (org.apache.commons.httpclient.Cookie cookie : rawCookies) {
+                if (name.equals(cookie.getName())) {
+                    cookieManager.removeCookie(cookie);
+                }
+            }
         }
 
         public void deleteCookie(Cookie cookie) {
-            String domain = getDomainForCookie(cookie);
-
-            state.addCookie(new org.apache.commons.httpclient.Cookie(domain,
-                    cookie.getName(), cookie.getValue(), cookie.getPath(), new Date(0),
-                    cookie.isSecure()));
+            deleteCookieNamed(cookie.getName());
         }
 
         public void deleteAllCookies() {
-            state.clearCookies();
+            webClient.getCookieManager().clearCookies();
         }
 
         public Set<Cookie> getCookies() {
-            HttpState state = webClient.getWebConnection().getState();
-            org.apache.commons.httpclient.Cookie[] rawCookies = state.getCookies();
-            
+            Set<org.apache.commons.httpclient.Cookie> rawCookies = webClient.getCookieManager().getCookies(getHostName());
+
             Set<Cookie> retCookies = new HashSet<Cookie>();
             for(org.apache.commons.httpclient.Cookie c : rawCookies) {
-                if("".equals(c.getDomain()) || getHostName().indexOf(c.getDomain()) != -1) {
-                	if (c.getPath() != null && getPath().startsWith(c.getPath())) {
-                		retCookies.add(new ReturnedCookie(c.getName(), c.getValue(), c.getDomain(), c.getPath(),
-                            c.getExpiryDate(), c.getSecure()));
-                	}
+                if (c.getPath() != null && getPath().startsWith(c.getPath())) {
+                    retCookies.add(new ReturnedCookie(c.getName(), c.getValue(), c.getDomain(), c.getPath(),
+                        c.getExpiryDate(), c.getSecure()));
                 }
             }
             return retCookies;  

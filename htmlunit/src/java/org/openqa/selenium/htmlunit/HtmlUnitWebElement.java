@@ -68,10 +68,9 @@ public class HtmlUnitWebElement implements WebElement,
         ClickableElement clickableElement = ((ClickableElement) element);
         try {
             if (parent.isJavascriptEnabled()) {
-              clickableElement.focus();
-              clickableElement.mouseDown();
-              clickableElement.mouseUp();
+                element.focus();
             }
+
             clickableElement.click();
         } catch (IOException e) {
             throw new RuntimeException(e);
