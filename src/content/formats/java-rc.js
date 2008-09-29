@@ -155,7 +155,32 @@ function formatComment(comment) {
  * @param filename   the file the formatted suite will be saved as
  */
 function formatSuite(testSuite, filename) {
-    return 'TODO - implement';
+    var suiteClass = /^(\w+)/.exec(filename)[1];
+    suiteClass = suiteClass[0].toUpperCase() + suiteClass.substring(1);
+    
+    var formattedSuite = "import junit.framework.Test;\n"
+        + "import junit.framework.TestSuite;\n"
+        + "\n"
+        + "public class " + suiteClass + " {\n"
+        + "\n"
+        + indents(1) + "public static Test suite() {\n"
+        + indents(2) + "TestSuite suite = new TestSuite();\n";
+        
+    for (var i = 0; i < testSuite.tests.length; ++i) {
+        var testClass = testSuite.tests[i].getTitle();
+        formattedSuite += indents(2)
+            + "suite.addTestSuite(" + testClass + ".class);\n";
+    }
+
+    formattedSuite += indents(2) + "return suite;\n"
+        + indents(1) + "}\n"
+        + "\n"
+        + indents(1) + "public static void main(String[] args) {\n"
+        + indents(2) + "junit.textui.TestRunner.run(suite());\n"
+        + indents(1) + "}\n"
+        + "}\n";
+    
+    return formattedSuite;
 }
 
 this.options = {
