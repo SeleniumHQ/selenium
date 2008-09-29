@@ -67,7 +67,7 @@ public class HtmlUnitWebElement implements WebElement,
 
         ClickableElement clickableElement = ((ClickableElement) element);
         try {
-            if (parent.isJavascriptEnabled()) {
+            if (parent.isJavascriptEnabled() && !(element instanceof HtmlInput)) {
                 element.focus();
             }
 
