@@ -4,28 +4,24 @@ package com.thoughtworks.selenium
  * The Groovy equivalent of SeleneseTestCase, as a GroovyTestCase.
  */
 class GroovySeleneseTestCase extends GroovyTestCase {
+    static final BASE_METHODS = SeleneseTestBase.class.methods
+    
     def base
-    def baseMethods
-    int defaultTimeout
+    def defaultTimeout
     
     protected selenium
     
     GroovySeleneseTestCase() {
         super()
-        
         base = new SeleneseTestBase()
-        baseMethods = SeleneseTestBase.class.methods
         defaultTimeout = 60000
-        
-        instrumentSeleniumWithAndWait()
     }
     
     @Override
     void setUp(String url = null, browserString = base.runtimeBrowserString()) {
         super.setUp()
         base.setUp(url, browserString)
-        
-        selenium = base.selenium
+        selenium = new GroovySelenium(base.selenium)
     }
     
     @Override
@@ -34,48 +30,17 @@ class GroovySeleneseTestCase extends GroovyTestCase {
         base.tearDown()
     }
     
-    void setTestContext() {
-        selenium.setContext("${getClass().getSimpleName()}.${getName()}")
+    void setDefaultTimeout(int timeout) {
+        defaultTimeout = timeout
+        selenium.setDefaultTimeout(timeout)
     }
     
-    /**
-     * Adds "*AndWait" methods to the DefaultSelenium metaclass. New methods
-     * are added for any API methods that do not begin with "is", "get", or
-     * "waitFor".
-     */
-    private void instrumentSeleniumWithAndWait() {
-        DefaultSelenium.class.methods.each { method ->
-            def name = method.getName()
-            if (name =~ /^(is|get|waitFor)/) {
-                return
-            }
-            
-            def newName = "${name}AndWait"
-            if (DefaultSelenium.metaClass."${newName}" instanceof Closure) {
-                return
-            }
-            
-            switch (method.getParameterTypes().length) {
-                case 0:
-                    DefaultSelenium.metaClass."${newName}" = {
-                        delegate."${name}"()
-                        delegate.waitForPageToLoad("${defaultTimeout}")
-                    }
-                    break
-                case 1:
-                    DefaultSelenium.metaClass."${newName}" = { a ->
-                        delegate."${name}"(a)
-                        delegate.waitForPageToLoad("${defaultTimeout}")
-                    }
-                    break
-                case 2:
-                    DefaultSelenium.metaClass."${newName}" = { a, b ->
-                        delegate."${name}"(a, b)
-                        delegate.waitForPageToLoad("${defaultTimeout}")
-                    }
-                    break
-            }
-        }
+    void setCaptureScreenShotOnFailure(boolean capture) {
+        selenium.setCaptureScreenShotOnFailure(capture)
+    }
+    
+    void setTestContext() {
+        selenium.setContext("${getClass().getSimpleName()}.${getName()}")
     }
     
     /**
@@ -100,7 +65,7 @@ class GroovySeleneseTestCase extends GroovyTestCase {
                 }
             }
             catch (e) {}
-            sleep(1000)
+            sleep(500)
         }
         
         fail('timeout')
@@ -114,7 +79,7 @@ class GroovySeleneseTestCase extends GroovyTestCase {
      * @param args
      */
     def methodMissing(String name, args) {
-        def method = baseMethods.find { it.getName() == name }
+        def method = BASE_METHODS.find { it.getName() == name }
         if (method) {
             return method.invoke(base, args)
         }
