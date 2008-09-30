@@ -3,23 +3,24 @@ module Selenium
 
     HTTP_HEADERS = { 'Content-Type' => 'application/x-www-form-urlencoded; charset=utf-8' }
     
-    module SeleneseClient
+    # Module in charge of handling Selenium over-the-wire HTTP protocol
+    module Protocol
       attr_reader :session_id
   
-      def do_command(verb, args)
+      def remote_control_command(verb, args=[])
         timeout(default_timeout_in_seconds) do
           status, response = http_post(http_request_for(verb, args))
-          raise SeleniumCommandError, response unless status == "OK"          
+          raise Selenium::CommandError, response unless status == "OK"          
           response
         end
       end
       
-      def get_string(verb, args=[])
-        do_command(verb, args)
+      def string_command(verb, args=[])
+        remote_control_command(verb, args)
       end
     
-      def get_string_array(verb, args)
-        csv = get_string(verb, args)
+      def string_array_command(verb, args)
+        csv = string_command(verb, args)
         token = ""
         tokens = []
         escape = false
@@ -43,24 +44,26 @@ module Selenium
         return tokens
       end
 
-      def get_number(verb, args)
-        # Is there something I need to do here?
-        return get_string(verb, args)
+      def number_command(verb, args)
+        string_command verb, args
       end
     
-      def get_number_array(verb, args)
-        # Is there something I need to do here?
-        return get_string_array(verb, args)
+      def number_array_command(verb, args)
+        string_array_command verb, args
       end
 
-      def get_boolean(verb, args=[])
-        parse_boolean_value get_string(verb, args)
+      def boolean_command(verb, args=[])
+        parse_boolean_value string_command(verb, args)
       end
     
-      def get_boolean_array(verb, args)
-        get_string_array(verb, args).collect {|value| parse_boolean_value(value)}
+      def boolean_array_command(verb, args)
+        string_array_command(verb, args).collect {|value| parse_boolean_value(value)}
       end
-      
+
+      def default_timeout_in_seconds
+        @timeout
+      end
+            
       protected
 
       def parse_boolean_value(value)
@@ -88,7 +91,7 @@ module Selenium
         # puts "RESULT: #{response.inspect}\n"       
         [ response.body[0..1], response.body[3..-1] ]
       end
-      
+     
     end
 
   end

@@ -198,7 +198,7 @@ FUNCTION
 	<xsl:text>)&nl;&tab;&tab;&tab;</xsl:text>
 	
 	<xsl:if test="count(./return) = 0">
-		<xsl:text>do_command</xsl:text>
+		<xsl:text>remote_control_command</xsl:text>
 	</xsl:if>
 	<xsl:apply-templates select="return" mode="implementation" />
 	<xsl:text>("</xsl:text>
@@ -216,22 +216,22 @@ RETURN
 	<xsl:param name="type" />
 	<xsl:choose>
 		<xsl:when test="$type='string'">
-			<xsl:text>get_string</xsl:text>
+			<xsl:text>string_command</xsl:text>
 		</xsl:when>
 		<xsl:when test="$type='number'">
-			<xsl:text>get_number</xsl:text>
+			<xsl:text>number_command</xsl:text>
 		</xsl:when>
 		<xsl:when test="$type='boolean'">
-			<xsl:text>get_boolean</xsl:text>
+			<xsl:text>boolean_command</xsl:text>
 		</xsl:when>
 		<xsl:when test="$type='string[]'">
-			<xsl:text>get_string_array</xsl:text>
+			<xsl:text>string_array_command</xsl:text>
 		</xsl:when>
 		<xsl:when test="$type='number[]'">
-			<xsl:text>get_number_array</xsl:text>
+			<xsl:text>number_array_command</xsl:text>
 		</xsl:when>
 		<xsl:when test="$type='boolean[]'">
-			<xsl:text>get_boolean_array</xsl:text>
+			<xsl:text>boolean_array_command</xsl:text>
 		</xsl:when>
 		<xsl:otherwise>
 			<xsl:message terminate="yes">returntype is invalid: <xsl:value-of select="$type"/></xsl:message>

@@ -12,6 +12,36 @@ unit_tests do
     assert_equal 5 * 60, client.default_timeout_in_seconds
   end
 
+  test "start_new_browser_session executes a getNewBrowserSession command with the browser string an url" do
+    client = Class.new { include Selenium::Client::Base }.new :host, :port, :the_browser, :the_url
+    client.stubs(:remote_control_command)
+    client.expects(:string_command).with("getNewBrowserSession", [:the_browser, :the_url, ""])
+    client.start_new_browser_session
+	end
+
+  test "start_new_browser_session sets the current sessionId with getNewBrowserSession response" do
+    client = Class.new { include Selenium::Client::Base }.new :host, :port, :the_browser, :the_url
+    client.stubs(:remote_control_command)
+    client.stubs(:string_command).with("getNewBrowserSession", any_parameters).returns("the new session id")
+    client.start_new_browser_session
+    assert_equal client.session_id, "the new session id"
+	end
+
+  test "start_new_browser_session sumbimte the javascript extension when previously defined" do
+    client = Class.new { include Selenium::Client::Base }.new :host, :port, :the_browser, :the_url
+    client.javascript_extension = :the_javascript_extension
+    client.stubs(:remote_control_command)
+    client.expects(:string_command).with("getNewBrowserSession", [:the_browser, :the_url, :the_javascript_extension])
+    client.start_new_browser_session
+	end
+
+  test "start_new_browser_session sets remote control timeout to the driver default timeout" do
+    client = Class.new { include Selenium::Client::Base }.new :host, :port, :the_browser, :the_url, 24
+    client.stubs(:string_command).with("getNewBrowserSession", any_parameters)
+    client.expects(:remote_control_timeout_in_seconds=).with(24)
+    client.start_new_browser_session
+	end
+	
   test "session_started? returns false when no session has been started" do
     client = Class.new { include Selenium::Client::Base }.new :host, :port, :browser, :url
     assert_false client.session_started?
@@ -19,16 +49,17 @@ unit_tests do
 
   test "session_started? returns true when session has been started" do
     client = Class.new { include Selenium::Client::Base }.new :host, :port, :browser, :url
-    client.stubs(:get_string).returns("A Session Id")
-    client.start    
+    client.stubs(:string_command).returns("A Session Id")
+    client.stubs(:remote_control_command)
+    client.start_new_browser_session    
     assert_true client.session_started?
   end
 
   test "session_started? returns false when session has been stopped" do
     client = Class.new { include Selenium::Client::Base }.new :host, :port, :browser, :url
-    client.stubs(:get_string).returns("A Session Id")
-    client.stubs(:do_command)
-    client.start    
+    client.stubs(:string_command).returns("A Session Id")
+    client.stubs(:remote_control_command)
+    client.start_new_browser_session    
     client.stop
     assert_false client.session_started?
   end

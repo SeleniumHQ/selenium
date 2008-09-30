@@ -10,7 +10,7 @@ describe "Google Search" do
     page.type "q", "Selenium OpenQA"
     page.value("q").should eql("Selenium OpenQA")
     page.click "btnG", :wait_for => :page
-    page.text_present?("openqa.org").should be_true
+    page.text?("openqa.org").should be_true
     page.title.should eql("Selenium OpenQA - Google Search")
   end
 

@@ -1,27 +1,16 @@
-# Copyright 2006 ThoughtWorks, Inc
-#
-#  Licensed under the Apache License, Version 2.0 (the "License");
-#  you may not use this file except in compliance with the License.
-#  You may obtain a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-#  Unless required by applicable law or agreed to in writing, software
-#  distributed under the License is distributed on an "AS IS" BASIS,
-#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#  See the License for the specific language governing permissions and
-#  limitations under the License.
-#
-#
-#
-# Original code by Aslak Hellesoy and Darren Hobbs
-#
 module Selenium
   module Client
     
+		# Driver constructor and session management commands
+		#
+		# Original code by Aslak Hellesoy and Darren Hobbs
     module Base
-      include Selenium::Client::SeleneseClient
+      include Selenium::Client::Protocol
       include Selenium::Client::GeneratedDriver
+      include Selenium::Client::Extensions
+      include Selenium::Client::Idiomatic
+
+      attr_reader :browser_string
   
       def initialize(server_host, server_port, browser_string, browser_url, timeout_in_seconds=300)
         @server_host = server_host
@@ -33,38 +22,41 @@ module Selenium
         @session_id = nil
       end
       
-      def set_extension_js(extension_js)
-        @extension_js = extension_js
-      end
-      
-      def start()
-        result = get_string("getNewBrowserSession", [@browser_string, @browser_url, @extension_js])
-        @session_id = result
-      end
-      
-      def stop()
-        do_command("testComplete", [])
-        @session_id = nil
-      end
-
-      def start_new_browser_session
-        start
-      end
-      
-      def close_current_browser_session
-        stop
-      end
-      
       def session_started?
         not @session_id.nil?
       end
-      
-      def default_timeout_in_seconds
-        @timeout
+
+      def start_new_browser_session
+        result = string_command "getNewBrowserSession", [@browser_string, @browser_url, @extension_js]
+        @session_id = result
+        # Consistent timeout on the remote control and driver side.
+        # Intuitive and this is what you want 90% of the time
+        self.remote_control_timeout_in_seconds = @timeout 
       end
       
+      def close_current_browser_session
+        remote_control_command "testComplete"
+        @session_id = nil
+      end
+      
+      def start
+        start_new_browser_session
+      end
+      
+      def stop
+	      close_current_browser_session
+      end
+            
       def chrome_backend?
         ["*chrome", "*firefox", "*firefox2", "*firefox3"].include?(@browser_string)
+      end
+
+      def javascript_extension=(new_javascript_extension)
+        @extension_js = new_javascript_extension
+	    end
+	
+      def set_extension_js(new_javascript_extension)
+	      javascript_extension = new_javascript_extension
       end
       
     end

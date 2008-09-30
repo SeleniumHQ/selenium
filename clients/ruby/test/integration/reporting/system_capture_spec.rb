@@ -90,8 +90,12 @@ describe "System Capture" do
     end
     system_capture = Selenium::RSpec::Reporting::SystemCapture.new selenium_driver, example, strategy
     system_capture.capture_page_screenshot
-    
-    File.exists?("/tmp/selenium_ruby_client/resources/test_report/example_123_page_screenshot.png").should be_true
+
+	  if selenium_driver.chrome_backend?    
+      File.exists?("/tmp/selenium_ruby_client/resources/test_report/example_123_page_screenshot.png").should be_true
+    else
+	    pending "No in page screenshot support for '#{selenium_driver.browser_string}' yet"  
+	  end
   end
   
 end
