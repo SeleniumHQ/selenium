@@ -35,8 +35,12 @@ class GroovySeleneseTestCase extends GroovyTestCase {
         selenium.setDefaultTimeout(timeout)
     }
     
-    void setCaptureScreenShotOnFailure(boolean capture) {
-        selenium.setCaptureScreenShotOnFailure(capture)
+    void setAlwaysCaptureScreenshots(boolean capture) {
+        selenium.setAlwaysCaptureScreenshots(capture)
+    }
+    
+    void setCaptureScreenshotOnFailure(boolean capture) {
+        selenium.setCaptureScreenshotOnFailure(capture)
     }
     
     void setTestContext() {

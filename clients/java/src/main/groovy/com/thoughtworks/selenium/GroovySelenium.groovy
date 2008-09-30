@@ -1,65 +1,31 @@
 /**
  * Decorates a real Selenium object to add some convenient behaviors.
+ * Additional behaviors can be added by extending this class and extending or
+ * overriding postSuccess() and postFailure().
  */
 package com.thoughtworks.selenium
 
+import java.util.regex.Pattern
+
 class GroovySelenium /* implements Selenium */ {
+    static final PATTERN_AND_WAIT = Pattern.compile(/^(.+)AndWait$/)
+    
     def selenium
     def defaultTimeout
-    def captureScreenShotOnFailure
-    def screenShotDir
+    def alwaysCaptureScreenshots
+    def captureScreenshotOnFailure
+    def screenshotDir
     def generator
-    def screenShotCounter
+    def screenshotCounter
     
     GroovySelenium(Selenium selenium) {
         this.selenium = selenium
         defaultTimeout = 60000
-        captureScreenShotOnFailure = false
-        screenShotDir = new File('.')
+        alwaysCaptureScreenshots = false
+        captureScreenshotOnFailure = false
+        screenshotDir = new File('.')
         generator = this
-        screenShotCounter = 0
-        
-        instrumentSeleniumWithAndWait()
-    }
-    
-    /**
-     * Adds "*AndWait" methods to the DefaultSelenium metaclass. New methods
-     * are added for any API methods that do not begin with "is", "get", or
-     * "waitFor".
-     */
-    private void instrumentSeleniumWithAndWait() {
-        DefaultSelenium.class.methods.each { method ->
-            def name = method.getName()
-            if (name =~ /^(is|get|waitFor)/) {
-                return
-            }
-            
-            def newName = "${name}AndWait"
-            if (DefaultSelenium.metaClass."${newName}" instanceof Closure) {
-                return
-            }
-            
-            switch (method.getParameterTypes().length) {
-                case 0:
-                    DefaultSelenium.metaClass."${newName}" = {
-                        delegate."${name}"()
-                        delegate.waitForPageToLoad("${defaultTimeout}")
-                    }
-                    break
-                case 1:
-                    DefaultSelenium.metaClass."${newName}" = { a ->
-                        delegate."${name}"(a)
-                        delegate.waitForPageToLoad("${defaultTimeout}")
-                    }
-                    break
-                case 2:
-                    DefaultSelenium.metaClass."${newName}" = { a, b ->
-                        delegate."${name}"(a, b)
-                        delegate.waitForPageToLoad("${defaultTimeout}")
-                    }
-                    break
-            }
-        }
+        screenshotCounter = 0
     }
     
     /**
@@ -73,12 +39,23 @@ class GroovySelenium /* implements Selenium */ {
     
     /**
      * If true is passed in, we will attempt to capture a screenshot of the
+     * application whenever a Selenium command finishes, whether it failed or
+     * not.
+     *
+     * @param capture
+     */
+    void setAlwaysCaptureScreenshots(boolean capture) {
+        alwaysCaptureScreenshots = capture
+    }
+    
+    /**
+     * If true is passed in, we will attempt to capture a screenshot of the
      * application whenever a Selenium command fails.
      *
      * @param capture
      */
-    void setCaptureScreenShotOnFailure(boolean capture) {
-        captureScreenShotOnFailure = capture
+    void setCaptureScreenshotOnFailure(boolean capture) {
+        captureScreenshotOnFailure = capture
     }
     
     /**
@@ -86,8 +63,8 @@ class GroovySelenium /* implements Selenium */ {
      *
      * @param dir
      */
-    void setScreenShotDir(File dir) {
-        screenShotDir = dir
+    void setScreenshotDir(File dir) {
+        screenshotDir = dir
     }
     
     /**
@@ -98,48 +75,71 @@ class GroovySelenium /* implements Selenium */ {
      *                   String representing a file name. See the generate
      *                   method for this class as an example.
      */
-    void setScreenShotFileNameGenerator(generator) {
+    void setScreenshotFileNameGenerator(generator) {
         this.generator = generator
     }
     
-    private String generate(File screenShotDir, String command) {
-        def prefix = "${++screenShotCounter}".padLeft(4, '0') + "_${command}"
+    protected String generate(File screenshotDir, String label) {
+        def prefix = "${++screenshotCounter}".padLeft(4, '0') + "_${label}"
         def suffix = '.png'
-        def file = new File(screenShotDir, "${prefix}${suffix}")
+        def file = new File(screenshotDir, "${prefix}${suffix}")
         def clobberCounter = 1
         
         while (file.exists()) {
             suffix = "-${++clobberCounter}.png"
-            file = new File(screenShotDir, "${prefix}${suffix}")
+            file = new File(screenshotDir, "${prefix}${suffix}")
         }
         
         return file.getCanonicalPath()
     }
     
     /**
+     * Called when a Selenium command succeeds. The Selenium object is passed
+     * in.
+     *
+     * @param selenium  the selenium instance
+     * @param command   the name of the command that succeeded
+     */
+    protected void postSuccess(selenium, String command) {
+        if (alwaysCaptureScreenshots) {
+            captureScreenshot(command)
+        }
+    }
+    
+    /**
      * Called when a Selenium command fails. The Selenium object is passed in.
      *
-     * @param selenium
-     * @param args
+     * @param selenium  the selenium instance
+     * @param command   the name of the command that failed
      */
-    private void postFailure(selenium, String command) {
-        if (captureScreenShotOnFailure) {
-            def fileName = generator.generate(screenShotDir, command)
-            
+    protected void postFailure(selenium, String command) {
+        if (alwaysCaptureScreenshots || captureScreenshotOnFailure) {
+            captureScreenshot(command)
+        }
+    }
+    
+    /**
+     * Captures a screenshot using the wrapped Selenium instance.
+     *
+     * @param label  an identifying label to include in the name of the created
+     *               screenshot
+     */
+    void captureScreenshot(String label) {
+        def fileName = generator.generate(screenshotDir, label)
+        
+        try {
+            selenium.captureEntirePageScreenshot(fileName, "")
+            println "Saved entire-page screenshot: ${fileName}"
+        }
+        catch (e) {
             try {
-                selenium.captureEntirePageScreenshot(fileName, "")
-                println "Saved entire-page screenshot: ${fileName}"
+                selenium.captureScreenshot(fileName)
+                println "Saved screenshot: ${fileName}"
             }
-            catch (e) {
-                try {
-                    selenium.captureScreenshot(fileName)
-                    println "Saved screenshot: ${fileName}"
-                }
-                catch (f) {
-                    println "Could not save screenshot ${fileName}: " +
-                        f.getMessage()
-                    f.printStackTrace()
-                }
+            catch (f) {
+                println "Could not save screenshot ${fileName}: " +
+                    f.getMessage()
+                f.printStackTrace()
             }
         }
     }
@@ -152,12 +152,35 @@ class GroovySelenium /* implements Selenium */ {
      * @param args
      */
     def methodMissing(String name, args) {
+        def command = name
+        def isAndWait = false
+        def matcher = (name =~ PATTERN_AND_WAIT)
+        
+        if (matcher.find()) {
+            command = matcher.group(1)
+            isAndWait = true
+        }
+        
         try {
+            def result
             switch (args.size()) {
-                case 0: return selenium."${name}"()
-                case 1: return selenium."${name}"(args[0])
-                case 2: return selenium."${name}"(args[0], args[1])
+                case 0:
+                    result = selenium."${command}"()
+                    break
+                case 1:
+                    result = selenium."${command}"(args[0])
+                    break
+                case 2:
+                    result = selenium."${command}"(args[0], args[1])
+                    break
             }
+            
+            if (isAndWait) {
+                selenium.waitForPageToLoad("${defaultTimeout}")
+            }
+            
+            postSuccess(selenium, name)
+            return result
         }
         catch (e) {
             if (! (e instanceof MissingMethodException)) {
