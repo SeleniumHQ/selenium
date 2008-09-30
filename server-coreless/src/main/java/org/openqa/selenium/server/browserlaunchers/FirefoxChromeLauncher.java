@@ -34,15 +34,13 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
     public static final String CHROME_URL = "chrome://killff/content/kill.html";
     private static Log LOGGER = LogFactory.getLog(FirefoxChromeLauncher.class);
 
-    private static boolean simple = false;
-
     private File customProfileDir;
     private String[] cmdarray;
     private boolean closed = false;
     private BrowserInstallation browserInstallation;
     private Process process;
 
-    private static AsyncExecute shell = new AsyncExecute();
+    private AsyncExecute shell = new AsyncExecute();
 
     private static boolean changeMaxConnections = false;
 
@@ -115,7 +113,6 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
 
     private String makeCustomProfile(String homePage, String profile) throws IOException {
         customProfileDir = LauncherUtils.createCustomProfileDir(sessionId);
-        if (simple) return customProfileDir.getAbsolutePath();
 
         String sourceLocationName = "/customProfileDirCUSTFFCHROME";
 
