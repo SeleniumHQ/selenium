@@ -192,7 +192,7 @@ options.getHeader = function() {
         + indents(1) + "void setUp() throws Exception {\n"
         + indents(2) + "super.setUp('${baseURL}', '*chrome')\n"
         + indents(2) + "setDefaultTimeout(" + timeout + ")\n"
-        + indents(2) + "setCaptureScreenShotOnFailure(false)\n"
+        + indents(2) + "setCaptureScreenshotOnFailure(false)\n"
         + indents(1) + "}\n\n"
         + indents(1) + "void ${methodName}() throws Exception {\n";
 }
