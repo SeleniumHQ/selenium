@@ -231,12 +231,9 @@ public class FirefoxWebElement implements RenderedWebElement, FindsByXPath,
     }
 
     public WebElement findElementByPartialLinkText(String using) {
-        List<WebElement> elements = findElementsByPartialLinkText(using);
-        if (elements.size() == 0) {
-            throw new NoSuchElementException(
-                    "Unable to find element with linkText" + using);
-        }
-        return elements.get(0);
+    	String id = sendMessage(RuntimeException.class, 
+                "findElementByPartialLinkText", using);
+    	return new FirefoxWebElement(parent, id);
     }
 
     public List<WebElement> findElementsByPartialLinkText(String using) {

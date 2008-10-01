@@ -1,8 +1,10 @@
 package org.openqa.selenium;
 
+import java.util.Collection;
+
 public class PartialLinkTextMatchTest extends AbstractDriverTestCase {
 
-	public void xtestLinkWithFormattingTags() {
+	public void testLinkWithFormattingTags() {
         driver.get(simpleTestPage);
         WebElement elem = driver.findElement(By.id("links"));
         
@@ -12,7 +14,7 @@ public class PartialLinkTextMatchTest extends AbstractDriverTestCase {
         assertEquals("link with formatting tags", res.getText());
     }
 	
-	public void xtestLinkWithLeadingSpaces() {
+	public void testLinkWithLeadingSpaces() {
         driver.get(simpleTestPage);
         WebElement elem = driver.findElement(By.id("links"));
         
@@ -22,7 +24,7 @@ public class PartialLinkTextMatchTest extends AbstractDriverTestCase {
         assertEquals(" link with leading space", res.getText());
     }
 	
-	public void xtestLinkWithTrailingSpace() {
+	public void testLinkWithTrailingSpace() {
         driver.get(simpleTestPage);
         WebElement elem = driver.findElement(By.id("links"));
         
@@ -31,9 +33,14 @@ public class PartialLinkTextMatchTest extends AbstractDriverTestCase {
         assertNotNull(res);
         assertEquals("link with trailing space", res.getText());
     }
-
-  public void testEmpty() {
-    // TODO: These tests need to pass on Firefox and may need to be @Ignore("ie") too
-  }
-
+	
+	public void testFindMultipleElements() {
+		driver.get(simpleTestPage);
+        WebElement elem = driver.findElement(By.id("links"));
+        
+        Collection<WebElement> elements = 
+            elem.findElements(By.partialLinkText("link"));
+        assertNotNull(elements);
+        assertEquals(3, elements.size());
+	}
 }
