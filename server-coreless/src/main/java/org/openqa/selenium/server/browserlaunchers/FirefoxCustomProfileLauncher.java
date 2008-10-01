@@ -29,9 +29,6 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
 
     private static final Log LOGGER = LogFactory.getLog(FirefoxCustomProfileLauncher.class);
 
-    private static boolean simple = false;
-
-    private String[] cmdarray;
     private boolean closed = false;
     private BrowserInstallation browserInstallation;
     private Process process;
@@ -40,7 +37,7 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
     private static boolean alwaysChangeMaxConnections = false;
     protected boolean changeMaxConnections = alwaysChangeMaxConnections;
 
-    private static AsyncExecute exe = new AsyncExecute();
+    private AsyncExecute shell = new AsyncExecute();
 
     public FirefoxCustomProfileLauncher(RemoteControlConfiguration configuration, String sessionId) {
         this(configuration, sessionId, (String) null);
@@ -56,10 +53,10 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
         super(sessionId, configuration);
         init();
         this.browserInstallation = browserInstallation;
-        exe.setLibraryPath(browserInstallation.libraryPath());
+        shell.setLibraryPath(browserInstallation.libraryPath());
         // Set MOZ_NO_REMOTE in order to ensure we always get a new Firefox process
         // http://blog.dojotoolkit.org/2005/12/01/running-multiple-versions-of-firefox-side-by-side
-        exe.setEnvironmentVariable("MOZ_NO_REMOTE", "1");
+        shell.setEnvironmentVariable("MOZ_NO_REMOTE", "1");
     }
 
     protected void init() {
@@ -73,7 +70,7 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
 
             String chromeURL = "chrome://killff/content/kill.html";
 
-            cmdarray = new String[]{browserInstallation.launcherFilePath(), "-profile", customProfileDir().getAbsolutePath(), "-chrome", chromeURL};
+            String[] cmdarray = new String[]{browserInstallation.launcherFilePath(), "-profile", customProfileDir().getAbsolutePath(), "-chrome", chromeURL};
 
             /* The first time we launch Firefox with an empty profile directory,
      * Firefox will launch itself, populate the profile directory, then
@@ -82,8 +79,8 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
      * that will immediately shut itself down. */
             LOGGER.info("Preparing Firefox profile...");
 
-            exe.setCommandline(cmdarray);
-            exe.execute();
+            shell.setCommandline(cmdarray);
+            shell.execute();
 
 
             waitForFullProfileToBeCreated(20 * 1000);
@@ -91,19 +88,15 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
             LOGGER.info("Launching Firefox...");
             cmdarray = new String[]{browserInstallation.launcherFilePath(), "-profile", customProfileDir().getAbsolutePath(), url};
 
-            exe.setCommandline(cmdarray);
+            shell.setCommandline(cmdarray);
 
-            process = exe.asyncSpawn();
+            process = shell.asyncSpawn();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     private void makeCustomProfile(File customProfileDirectory) throws IOException {
-        if (simple) {
-            return;
-        }
-
         File firefoxProfileTemplate = getConfiguration().getFirefoxProfileTemplate();
         if (firefoxProfileTemplate != null) {
             LauncherUtils.copyDirectory(firefoxProfileTemplate, customProfileDir);
@@ -166,7 +159,7 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
      *
      * @param timeout    max time to wait for the file to go away
      * @param timeToWait minimum time to wait to make sure the file is gone
-     * @throws FileLockRemainedException
+     * @throws FileLockRemainedException Wehn the lock file is still present.
      */
     private void waitForFileLockToGoAway(long timeout, long timeToWait) throws FileLockRemainedException {
         File lock = new File(customProfileDir(), "parent.lock");
