@@ -2,9 +2,6 @@
 
 #include "stdafx.h"
 #include "utils.h"
-#include "InternetExplorerDriver.h"
-#include "ElementWrapper.h"
-#include <iostream>
 
 using namespace std;
 
@@ -12,18 +9,44 @@ using namespace std;
 extern "C" {
 #endif
 
+	InternetExplorerDriver* g_pStillOpenedIE = NULL;
+
+InternetExplorerDriver* createIE(JNIEnv *env, jobject& obj)
+{
+	InternetExplorerDriver* wrapper = NULL;
+	try {
+		wrapper = new InternetExplorerDriver();
+		g_pStillOpenedIE = wrapper;
+
+		jclass cls = env->GetObjectClass(obj);
+		jfieldID fid = env->GetFieldID(cls, "iePointer", "J");
+		env->SetLongField(obj, fid, (jlong) wrapper);
+	} catch (std::wstring& message) {
+		throwRunTimeException(env, message.c_str());
+	}
+	return wrapper;
+}
+
 InternetExplorerDriver* getIe(JNIEnv *env, jobject obj)
 {
+	TRY
+	{
 	jclass cls = env->GetObjectClass(obj);
 	jfieldID fid = env->GetFieldID(cls, "iePointer", "J");
 	jlong value = env->GetLongField(obj, fid);
 
 	return (InternetExplorerDriver *) value;
+	}
+	END_TRY_CATCH_ANY
+	return NULL;
 }
+
 
 JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_doExecuteScript
   (JNIEnv *env, jobject obj, jstring script, jobjectArray args)
 {
+	TRY
+	{
 	InternetExplorerDriver* wrapper = getIe(env, obj);
 
 	// Convert the args into something we can use elsewhere.
@@ -38,7 +61,6 @@ JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_doE
 
 	jsize length = env->GetArrayLength(args);
 
-
 	SAFEARRAYBOUND bounds;
 	bounds.cElements = length;
 	bounds.lLbound = 0;
@@ -47,8 +69,7 @@ JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_doE
 	LONG index[1];
 	for (jsize i = 0; i < length; i++) {
 		index[0] = i;
-		VARIANT dest;
-		VariantInit(&dest);
+		CComVariant dest;
 
 		jobject arrayObject = env->GetObjectArrayElement(args, i);
 		jclass objClazz = env->GetObjectClass(arrayObject);
@@ -81,22 +102,20 @@ JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_doE
 	}
 
 	const wchar_t* converted = (wchar_t *)env->GetStringChars(script, 0);
-	VARIANT result;
-	VariantInit(&result);
-	wrapper->executeScript(converted, convertedItems, &result);
+	CComVariant& result = wrapper->executeScript(converted, convertedItems);
 	env->ReleaseStringChars(script, (jchar*) converted);
 
 	// TODO (simon): Does this clear everything properly?
 	SafeArrayDestroy(convertedItems);
 
 	if (result.vt == VT_BSTR) {
-		return wstring2jstring(env, bstr2wstring(result.bstrVal));
+		return bstr2jstring(env, result.bstrVal);
 	} else if (result.vt == VT_DISPATCH) {
 		// Attempt to create a new webelement
-		CComQIPtr<IHTMLDOMNode> node(result.pdispVal);
+		IHTMLElement *node = (IHTMLElement*) result.pdispVal;
 		if (!node) {
-			cerr << "Cannot convert response to node. Attempting to convert to string" << endl;
-			return wstring2jstring(env, variant2wchar(result));
+			cerr << L"Cannot convert response to element. Attempting to convert to string" << endl;
+			return lpcw2jstring(env, comvariant2cw(result));
 		}
 
 		ElementWrapper* element = new ElementWrapper(wrapper, node);
@@ -125,7 +144,7 @@ JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_doE
 		newExcCls = env->FindClass("java/lang/RuntimeException");
 		jmethodID cId = env->GetMethodID(newExcCls, "<init>", "(Ljava/lang/String;)V");
 
-		jstring message = wstring2jstring(env, bstr2wstring(result.bstrVal));
+		jstring message = bstr2jstring(env, result.bstrVal);
 
 		jobject exception;
 		if (message) {
@@ -140,14 +159,24 @@ JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_doE
 	}
 
 	cerr << "Unknown variant type. Will attempt to coerce to string: " << result.vt << endl;
-	return wstring2jstring(env, variant2wchar(result));
+	return lpcw2jstring(env, comvariant2cw(result));
+	}
+	END_TRY_CATCH_ANY
+	return NULL;
+	
+	return NULL;
 }
 
 JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_close
 (JNIEnv *env, jobject obj) 
 {
+	TRY
+	{
 	InternetExplorerDriver* wrapper = getIe(env, obj);
 	wrapper->close();
+	g_pStillOpenedIE = NULL;
+	}
+	END_TRY_CATCH_ANY
 
 	return NULL;
 }
@@ -155,71 +184,109 @@ JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_clo
 JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_startComNatively
   (JNIEnv *env, jobject obj)
 {
-	startCom();
+	TRY
+	{
+	}
+	END_TRY_CATCH_ANY
 }
+
 
 JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_openIe
   (JNIEnv *env, jobject obj)
 {
-	try {
-		InternetExplorerDriver* wrapper = new InternetExplorerDriver();
-
-		jclass cls = env->GetObjectClass(obj);
-		jfieldID fid = env->GetFieldID(cls, "iePointer", "J");
-		env->SetLongField(obj, fid, (jlong) wrapper);
-	} catch (const char *message) {
-		throwRunTimeException(env, message);
+	TRY
+	{
+		if(g_pStillOpenedIE)
+		{
+			g_pStillOpenedIE->close();
+			g_pStillOpenedIE = NULL;
+		}
+	createIE(env, obj);
 	}
+	END_TRY_CATCH_ANY
 }
 
 JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_setVisible
   (JNIEnv *env, jobject obj, jboolean isVisible)
 {
+	TRY
+	{
 	InternetExplorerDriver* ie = getIe(env, obj);
 	ie->setVisible(isVisible == JNI_TRUE);
+	}
+	END_TRY_CATCH_ANY
 }
 
 JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_waitForLoadToComplete
   (JNIEnv *env, jobject obj)
 {
+	TRY
+	{
 	InternetExplorerDriver* ie = getIe(env, obj);
 	ie->waitForNavigateToFinish();
+	}
+	END_TRY_CATCH_ANY
 }
 
 JNIEXPORT jstring JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_getCurrentUrl
   (JNIEnv *env, jobject obj)
 {
+	TRY
+	{
 	InternetExplorerDriver* ie = getIe(env, obj);
-	return wstring2jstring(env, ie->getCurrentUrl());
+	LPCWSTR text = ie->getCurrentUrl();
+
+	return lpcw2jstring(env, text);
+	}
+	END_TRY_CATCH_ANY
+	return NULL;
 }
 
 JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_get
   (JNIEnv *env, jobject obj, jstring url)
 {
+	TRY
+	{
 	InternetExplorerDriver* ie = getIe(env, obj);
 	const wchar_t* converted = (wchar_t *)env->GetStringChars(url, 0);
 	ie->get(converted);
 	env->ReleaseStringChars(url, (jchar*) converted);
+	}
+	END_TRY_CATCH_ANY
 }
 
 JNIEXPORT jstring JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_getTitle
   (JNIEnv *env, jobject obj)
 {
+	TRY
+	{
 	InternetExplorerDriver* ie = getIe(env, obj);
-	return wstring2jstring(env, ie->getTitle());
+	LPCWSTR text = ie->getTitle();
+	return lpcw2jstring(env, text);
+	}
+	END_TRY_CATCH_ANY
+	return NULL;
 }
 
 JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_deleteStoredObject
   (JNIEnv *env, jobject obj)
 {
+	TRY
+	{
 	InternetExplorerDriver* ie = getIe(env, obj);
 	if (ie)
+	{
 		delete ie;
+	}
+	}
+	END_TRY_CATCH_ANY
 }
 
 JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_setFrameIndex
   (JNIEnv *env, jobject obj, jstring pathToFrame)
 {
+	TRY
+	{
 	const wchar_t* path = (wchar_t *)env->GetStringChars(pathToFrame, 0);
 	InternetExplorerDriver* ie = getIe(env, obj);
 	if (!ie->switchToFrame(path)) {
@@ -228,49 +295,76 @@ JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_setFra
 		throwNoSuchFrameException(env, msg.c_str());
 	}
 	env->ReleaseStringChars(pathToFrame, (jchar*) path);
+	}
+	END_TRY_CATCH_ANY
 }
+
 
 JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_goBack
   (JNIEnv *env, jobject obj)
 {
+	TRY
+	{
 	InternetExplorerDriver* ie = getIe(env, obj);
 	ie->goBack();
+	}
+	END_TRY_CATCH_ANY
 }
 
 JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_goForward
   (JNIEnv *env, jobject obj)
 {
+	TRY
+	{
 	InternetExplorerDriver* ie = getIe(env, obj);
 	ie->goForward();
+	}
+	END_TRY_CATCH_ANY
 }
 
 JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_doAddCookie
   (JNIEnv *env, jobject obj, jstring cookieString)
 {
+	TRY
+	{
 	InternetExplorerDriver* ie = getIe(env, obj);
 
 	const wchar_t* converted = (wchar_t *)env->GetStringChars(cookieString, 0);
 	ie->addCookie(converted);
 	env->ReleaseStringChars(cookieString, (jchar*) converted);
+	}
+	END_TRY_CATCH_ANY
 }
 
 JNIEXPORT jstring JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_doGetCookies
   (JNIEnv *env, jobject obj)
 {
+	TRY
+	{
 	InternetExplorerDriver* ie = getIe(env, obj);
-	return wstring2jstring(env, ie->getCookies());
+	LPCWSTR text = ie->getCookies();
+	return lpcw2jstring(env, text);
+	}
+	END_TRY_CATCH_ANY
+	return NULL;
 }
 
 JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_doSetMouseSpeed
   (JNIEnv *env, jobject obj, jint speed) 
 {
+	TRY
+	{
 	InternetExplorerDriver* ie = getIe(env, obj);
 	ie->setSpeed((int) speed);
+	}
+	END_TRY_CATCH_ANY
 }
 
 JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_doSwitchToActiveElement
   (JNIEnv *env, jobject obj)
 {
+	TRY
+	{
 	InternetExplorerDriver* ie = getIe(env, obj);
 	ElementWrapper* element = ie->getActiveElement();
 
@@ -281,6 +375,9 @@ JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_doS
 	jmethodID cId = env->GetMethodID(clazz, "<init>", "(J)V");
 
 	return env->NewObject(clazz, cId, (jlong) element);
+	}
+	END_TRY_CATCH_ANY
+	return NULL;
 }
 
 #ifdef __cplusplus

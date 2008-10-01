@@ -1,15 +1,8 @@
-#pragma once
 #ifndef InternetExplorerDriver_h
 #define InternetExplorerDriver_h
 
-#include <Exdisp.h>
-#include <mshtml.h>
-#include <string>
-#include <vector>
 #include "ElementWrapper.h"
-
-class ElementWrapper;
-class IeEventSink;
+#include "IEThread.h"
 
 class InternetExplorerDriver
 {
@@ -20,71 +13,57 @@ public:
 
 	void close();
 
+	IeThread* ThreadFactory();
+
 	bool getVisible();
 	void setVisible(bool isShown);
 
-	std::wstring getCurrentUrl();
+	LPCWSTR getCurrentUrl();
 
-	std::wstring getTitle();
+	LPCWSTR getTitle();
 	void get(const wchar_t* url);
 	void goForward();
 	void goBack();
+	void GetIe(IWebBrowser2 **ppv);
 
 	void setSpeed(int speed);
 	int getSpeed();
 
+	bool sendThreadMsg(UINT msg, DataMarshaller& data);
+	DataMarshaller& prepareCmData();
+	DataMarshaller& prepareCmData(LPCWSTR str);
+	DataMarshaller& prepareCmData(int v);
+	DataMarshaller& prepareCmData(IHTMLElement *pElem, LPCWSTR str);
+
 	ElementWrapper* getActiveElement();
-	void getDocument(IHTMLDocument2 **pdoc);
-	void getDocument3(IHTMLDocument3 **pdoc);
+
+	ElementWrapper* selectElementByXPath(IHTMLElement *p, const wchar_t *xpath);
+	std::vector<ElementWrapper*>* selectElementsByXPath(IHTMLElement *p, const wchar_t *xpath);
+	ElementWrapper* selectElementById(IHTMLElement *p, const wchar_t *elementId);
+	std::vector<ElementWrapper*>* selectElementsById(IHTMLElement *p, const wchar_t *elementId);
+	ElementWrapper* selectElementByLink(IHTMLElement *p, const wchar_t *elementLink);
+	std::vector<ElementWrapper*>* selectElementsByLink(IHTMLElement *p, const wchar_t *elementLink);
+	ElementWrapper* selectElementByName(IHTMLElement *p, const wchar_t *elementName);
+	std::vector<ElementWrapper*>* selectElementsByName(IHTMLElement *p, const wchar_t *elementName);
+	ElementWrapper* selectElementByClassName(IHTMLElement *p, const wchar_t *elementClassName);
+	std::vector<ElementWrapper*>* selectElementsByClassName(IHTMLElement *p, const wchar_t *elementClassName);
 
 	void waitForNavigateToFinish();
-	bool switchToFrame(const wchar_t *pathToFrame);
+	bool switchToFrame(LPCWSTR pathToFrame);
 
-	std::wstring getCookies();
+	LPCWSTR getCookies();
 	void addCookie(const wchar_t *cookieString);
 
-	HWND getHwnd();
+	IeThread* p_IEthread;
 
-	void executeScript(const wchar_t *script, SAFEARRAY* args, VARIANT *result, bool tryAgain = true);
+	CComVariant& executeScript(const wchar_t *script, SAFEARRAY* args, bool tryAgain = true);
 
 private:
-	bool getEval(IHTMLDocument2* doc, DISPID* evalId, bool* added);
-	void removeScript(IHTMLDocument2* doc);
-	bool createAnonymousFunction(IDispatch* scriptEngine, DISPID evalId, const wchar_t *script, VARIANT* result);
-	void waitForDocumentToComplete(IHTMLDocument2* doc);
-	void getDefaultContentFromDoc(IHTMLWindow2 **result, IHTMLDocument2* doc);
-	void findCurrentFrame(IHTMLWindow2 **result);
 
-	IeEventSink* sink;
-	CComQIPtr<IWebBrowser2, &__uuidof(IWebBrowser2)> ie;
-	std::wstring pathToFrame;
 	int speed;
-
 	bool closeCalled;
-};
 
-class IeEventSink : public IDispatch {
- public:
-	IeEventSink(IWebBrowser2* ie);
-	~IeEventSink();
-
-   // IUnknown
-    STDMETHODIMP QueryInterface(REFIID interfaceId, void **pointerToObj);
-    STDMETHODIMP_(ULONG) AddRef();
-    STDMETHODIMP_(ULONG) Release();
-
-	// IDispatch interface
-	STDMETHODIMP Invoke(DISPID dispidMember, REFIID riid, LCID lcid, WORD wFlags,
-                                   DISPPARAMS* pDispParams, VARIANT* pvarResult, EXCEPINFO*  pExcepInfo, UINT* puArgErr);
-
-	STDMETHODIMP GetIDsOfNames(REFIID riid,  LPOLESTR* names, UINT numNames, LCID localeContextId, DISPID* dispatchIds);
-
-	STDMETHODIMP GetTypeInfoCount(UINT* pctinfo);
-	STDMETHODIMP GetTypeInfo(UINT typeInfoId, LCID localeContextId, ITypeInfo** pointerToTypeInfo);
-
- private:
-	CComPtr<IWebBrowser2> ie;
-	DWORD eventSinkCookie;
+	DataMarshaller& commandData() {return p_IEthread->getCmdData();}
 };
 
 #endif

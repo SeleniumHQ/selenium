@@ -73,6 +73,22 @@ JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_waitFo
 
 /*
  * Class:     org_openqa_selenium_ie_InternetExplorerDriver
+ * Method:    getDocumentNode
+ * Signature: ()J
+ */
+JNIEXPORT jlong JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_getDocumentNode
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     org_openqa_selenium_ie_InternetExplorerDriver
+ * Method:    releaseDocumentNode
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_releaseDocumentNode
+  (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     org_openqa_selenium_ie_InternetExplorerDriver
  * Method:    startComNatively
  * Signature: ()V
  */
@@ -85,6 +101,14 @@ JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_startC
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_openIe
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     org_openqa_selenium_ie_InternetExplorerDriver
+ * Method:    getDocument
+ * Signature: ()Lorg/openqa/selenium/ie/DocumentNode;
+ */
+JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_getDocument
   (JNIEnv *, jobject);
 
 /*
@@ -134,7 +158,6 @@ JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_doAddC
  */
 JNIEXPORT jstring JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_doGetCookies
   (JNIEnv *, jobject);
-
 /*
  * Class:     org_openqa_selenium_ie_InternetExplorerDriver
  * Method:    doSetMouseSpeed

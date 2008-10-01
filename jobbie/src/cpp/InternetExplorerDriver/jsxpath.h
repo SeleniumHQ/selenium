@@ -1,3 +1,4 @@
+
 /*
     Copyright (c) 2007 Cybozu Labs, Inc.
 	
@@ -16,9 +17,6 @@
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 	SOFTWARE.
 */
-
-#ifndef jsxpath_h
-#define jsxpath_h
 
 // The JS XPath library from http://coderepos.org/share/wiki/JavaScript-XPath
 
@@ -313,4 +311,4 @@ L"if(!ea.hasNative||!ea.useNative){cg(pg||window);}})();",
 NULL
 };
 
-#endif
+
