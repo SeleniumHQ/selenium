@@ -15,8 +15,9 @@ describe "Google Search" do
     selenium_driver.start_new_browser_session
   end
 
-  after(:each) do
-    selenium_driver.close_current_browser_session
+  # The system capture need to happen BEFORE closing the Selenium session 
+  config.append_after(:each) do    
+    @selenium_driver.close_current_browser_session
   end
 
   it "can find Selenium" do    

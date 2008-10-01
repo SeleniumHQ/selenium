@@ -7,7 +7,7 @@ require File.expand_path(File.dirname(__FILE__) + "/reporting/selenium_test_repo
 
 Spec::Runner.configure do |config|
 
-  config.after(:each) do
+  config.prepend_after(:each) do
     begin 
       Selenium::RSpec::SeleniumTestReportFormatter.capture_system_state(selenium_driver, self) if execution_error
       if selenium_driver.session_started?

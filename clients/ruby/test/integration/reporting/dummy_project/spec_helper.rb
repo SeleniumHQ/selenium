@@ -2,13 +2,14 @@ require 'rubygems'
 require 'spec'
 require 'base64'
 require 'fileutils'
-require File.expand_path(File.dirname(__FILE__) + "/../../../../lib/selenium")
+require File.expand_path(File.dirname(__FILE__) + "/../../../../lib/selenium/client")
 require File.expand_path(File.dirname(__FILE__) + "/../../../../lib/selenium/rspec/spec_helper")
 
 Spec::Runner.configure do |config|
 
-  config.after(:each) do    
-    @selenium_driver.stop
+  # The system capture need to happen BEFORE closing the Selenium session 
+  config.append_after(:each) do    
+    @selenium_driver.close_current_browser_session
   end
 
   def create_selenium_driver(options = {})
@@ -18,7 +19,7 @@ Spec::Runner.configure do |config|
     application_host = options[:application_host] || ENV['SELENIUM_APPLICATION_HOST'] || "localhost"
     application_port = options[:application_port] || ENV['SELENIUM_APPLICATION_PORT'] || "4444"
     timeout = options[:timeout] || 60
-    @selenium_driver = Selenium::SeleniumDriver.new(remote_control_server, port, browser, "http://#{application_host}:#{application_port}", timeout)
+    @selenium_driver = Selenium::Client::Driver.new(remote_control_server, port, browser, "http://#{application_host}:#{application_port}", timeout)
   end
 
   def start_new_browser_session
