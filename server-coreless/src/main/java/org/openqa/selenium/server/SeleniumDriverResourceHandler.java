@@ -517,6 +517,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         }
 
         if (CaptureScreenshotToStringCommand.ID.equals(cmd)
+            || CaptureEntirePageScreenshotToStringCommand.ID.equals(cmd)
             || SeleniumCoreCommand.CAPTURE_ENTIRE_PAGE_SCREENSHOT_ID.equals(cmd)) {
             LOGGER.info("Got result: [base64 encoded PNG] on session " + sessionId);
         } else if (RetrieveLastRemoteControlLogsCommand.ID.equals(cmd)) {
