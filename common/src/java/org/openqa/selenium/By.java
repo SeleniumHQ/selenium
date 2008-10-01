@@ -71,6 +71,28 @@ public abstract class By {
         }
       };
     }
+    
+    public static By partialLinkText(final String linkText) {
+      if (linkText == null)
+        throw new IllegalArgumentException("Cannot find elements when link text is null.");
+
+      return new By() {
+        @Override
+        public List<WebElement> findElements(SearchContext context) {
+          return ((FindsByLinkText) context).findElementsByPartialLinkText(linkText);
+        }
+
+        @Override
+        public WebElement findElement(SearchContext context) {
+          return ((FindsByLinkText) context).findElementByPartialLinkText(linkText);
+        }
+        
+        @Override
+        public String toString() {
+          return "By.linkText: " + linkText;
+        }
+      };
+    }
 
     public static By name(final String name) {
       if (name == null)

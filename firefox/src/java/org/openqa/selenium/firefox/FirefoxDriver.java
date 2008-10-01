@@ -178,16 +178,17 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
       return findElement("selectElementById", using);
   }
 
-
   public List<WebElement> findElementsById(String using) {
       throw new UnsupportedOperationException("findElementsById");
   }
-
 
   public List<WebElement> findElementsByLinkText(String using) {
     throw new UnsupportedOperationException("findElementsByLinkText");
   }
 
+  public List<WebElement> findElementsByPartialLinkText(String using) {
+      throw new UnsupportedOperationException();
+  }
 
   public List<WebElement> findElementsByXPath(String using) {
       return findElements("selectElementsUsingXPath", using);
@@ -204,8 +205,11 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
   public WebElement findElementByLinkText(String using) {
     return findElement("selectElementUsingLink", using);
   }
-
-
+  
+  public WebElement findElementByPartialLinkText(String using) {
+      return findElement("selectElementUsingPartialLinkText", using);
+  }
+  
   public WebElement findElementByXPath(String using) {
     return findElement("selectElementUsingXPath", using);
   }

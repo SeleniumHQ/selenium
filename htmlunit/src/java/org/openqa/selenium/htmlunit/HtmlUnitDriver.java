@@ -677,4 +677,28 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
         throw new UnsupportedOperationException("remove");
       }
     }
+
+    public WebElement findElementByPartialLinkText(String using) {
+        List<HtmlAnchor> anchors = ((HtmlPage) lastPage()).getAnchors();
+        for (HtmlAnchor anchor : anchors) {
+          if (anchor.asText().contains(using)) {
+            return newHtmlUnitWebElement(anchor);
+          }
+        }
+        throw new NoSuchElementException("No link found with text: " + using);
+    }
+
+    public List<WebElement> findElementsByPartialLinkText(String using) {
+        
+        List<HtmlAnchor> anchors = ((HtmlPage) lastPage()).getAnchors();
+        Iterator<HtmlAnchor> allAnchors = anchors.iterator();
+        List<WebElement> elements = new ArrayList<WebElement>();
+        while (allAnchors.hasNext()) {
+          HtmlAnchor anchor = allAnchors.next();
+          if (anchor.asText().contains(using)) {
+            elements.add(newHtmlUnitWebElement(anchor));
+          }
+        }
+        return elements;
+    }
 }

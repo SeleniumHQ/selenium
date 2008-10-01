@@ -142,4 +142,13 @@ public class RemoteWebElement implements WebElement, SearchContext,
     Response response = parent.execute("findElementsUsingElement", map("id", id, "using", "xpath", "value", using));
     return parent.getElementsFrom(response);
   }
- }
+
+  public WebElement findElementByPartialLinkText(String using) {
+	  throw new UnsupportedOperationException();
+  }
+
+  public List<WebElement> findElementsByPartialLinkText(String using) {
+	  throw new UnsupportedOperationException();
+
+  }
+}

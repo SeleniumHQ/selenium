@@ -91,4 +91,12 @@ class Finder implements SearchContext,
 	public List<WebElement> findElements(By by) {
 		return by.findElements(this);
 	}
+
+	public WebElement findElementByPartialLinkText(String using) {
+		throw new UnsupportedOperationException();
+	}
+
+	public List<WebElement> findElementsByPartialLinkText(String using) {
+		throw new UnsupportedOperationException();
+	}
 }

@@ -76,7 +76,7 @@ public class HtmlUnitWebElement implements WebElement,
             throw new RuntimeException(e);
         }
     }
-
+    
     public void submit() {
         try {
             if (element instanceof HtmlForm) {
@@ -418,6 +418,29 @@ public class HtmlUnitWebElement implements WebElement,
         List<WebElement> webElements = new ArrayList<WebElement>();
         for (HtmlElement e : htmlElements) {
             if (e.getTextContent().equals(linkText) 
+                    && e.getAttribute("href") != null) {
+                webElements.add(getParent().newHtmlUnitWebElement(e));
+            }
+        }
+        return webElements;
+    }
+    
+    public WebElement findElementByPartialLinkText(String linkText) {
+        List<WebElement> elements = findElementsByPartialLinkText(linkText);
+        if (elements.size() == 0) {
+            throw new NoSuchElementException(
+                    "Unable to find element with linkText " + linkText);
+        }
+        return elements.size() > 0 ? elements.get(0) : null;
+    }
+    
+    @SuppressWarnings("unchecked")
+    public List<WebElement> findElementsByPartialLinkText(String linkText) {
+        List<HtmlElement> htmlElements = 
+            (List<HtmlElement>) element.getHtmlElementsByTagName("a");
+        List<WebElement> webElements = new ArrayList<WebElement>();
+        for (HtmlElement e : htmlElements) {
+            if (e.getTextContent().contains(linkText) 
                     && e.getAttribute("href") != null) {
                 webElements.add(getParent().newHtmlUnitWebElement(e));
             }

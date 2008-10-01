@@ -458,4 +458,12 @@ public class RemoteWebDriver implements WebDriver, SearchContext, JavascriptExec
       return getElementFrom(response);
     }
   }
+
+  public WebElement findElementByPartialLinkText(String using) {
+	  throw new UnsupportedOperationException();
+  }
+	
+  public List<WebElement> findElementsByPartialLinkText(String using) {
+	  throw new UnsupportedOperationException();
+  }
 }

@@ -243,6 +243,29 @@ FirefoxDriver.prototype.selectElementUsingLink = function(respond, linkText) {
     respond.send();
 };
 
+FirefoxDriver.prototype.selectElementUsingPartialLinkText = function(respond, linkText) {
+    var allLinks = Utils.getDocument(this.context).getElementsByTagName("A");
+    var index;
+    for (var i = 0; i < allLinks.length && !index; i++) {
+        var text = Utils.getText(allLinks[i], true);
+        if (text.indexOf(linkText) != -1) {
+            index = Utils.addToKnownElements(allLinks[i], this.context);
+            break;
+        }
+    }
+
+    respond.context = this.context;
+
+    if (index !== undefined) {
+        respond.response = index;
+    } else {
+        respond.isError = true;
+        respond.response = "Unable to find element with link text contains '" + linkText + "'";
+    }
+
+    respond.send();
+};
+
 FirefoxDriver.prototype.selectElementById = function(respond, id) {
     var doc = Utils.getDocument(this.context);
     var element = doc.getElementById(id);

@@ -248,4 +248,12 @@ public class SafariDriver implements WebDriver, FindsByLinkText, FindsById,
 			}
 		}
     }
+
+    public WebElement findElementByPartialLinkText(String using) {
+        throw new UnsupportedOperationException();
+    }
+
+    public List<WebElement> findElementsByPartialLinkText(String using) {
+        throw new UnsupportedOperationException();
+    }
 }

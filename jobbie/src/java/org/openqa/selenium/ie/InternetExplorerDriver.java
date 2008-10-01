@@ -291,4 +291,12 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
             doSetMouseSpeed(speed.getTimeOut());
         }
     }
+
+    public WebElement findElementByPartialLinkText(String using) {
+        throw new UnsupportedOperationException();
+    }
+
+    public List<WebElement> findElementsByPartialLinkText(String using) {
+        throw new UnsupportedOperationException();
+    }
 }

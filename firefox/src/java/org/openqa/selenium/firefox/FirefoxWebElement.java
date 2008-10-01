@@ -31,7 +31,7 @@ public class FirefoxWebElement implements RenderedWebElement, FindsByXPath,
     public void click() {
         sendMessage(RuntimeException.class, "click");
     }
-
+    
     public void submit() {
         sendMessage(RuntimeException.class, "submitElement");
     }
@@ -226,7 +226,22 @@ public class FirefoxWebElement implements RenderedWebElement, FindsByXPath,
         return parent.sendMessage(throwOnFailure, new Command(parent.context, elementId, methodName, parameters));
     }
 
-  public String getElementId() {
-    return elementId;
-  }
+    public String getElementId() {
+        return elementId;
+    }
+
+    public WebElement findElementByPartialLinkText(String using) {
+        List<WebElement> elements = findElementsByPartialLinkText(using);
+        if (elements.size() == 0) {
+            throw new NoSuchElementException(
+                    "Unable to find element with linkText" + using);
+        }
+        return elements.get(0);
+    }
+
+    public List<WebElement> findElementsByPartialLinkText(String using) {
+        String indices = sendMessage(RuntimeException.class, 
+                "findElementsByPartialLinkText", using);
+        return getElementsFromIndices(indices);
+    }
 }
