@@ -38,7 +38,7 @@ public class CaptureScreenshotCommand extends Command {
         }
     }
 
-    private void captureSystemScreenshot(String fileName) throws IOException, InterruptedException, ExecutionException, TimeoutException {
+    public void captureSystemScreenshot(String fileName) throws IOException, InterruptedException, ExecutionException, TimeoutException {
         final BufferedImage bufferedImage;
         final Rectangle captureSize;
         final Robot robot;
