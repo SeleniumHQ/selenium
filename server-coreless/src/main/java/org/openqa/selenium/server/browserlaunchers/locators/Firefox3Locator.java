@@ -10,7 +10,7 @@ public class Firefox3Locator extends FirefoxLocator {
     private static final String[] USUAL_UNIX_LAUNCHER_LOCATIONS = {
             "/Applications/Firefox-3.app/Contents/MacOS",
             "/Applications/Firefox.app/Contents/MacOS",
-            "/usr/lib/firefox-3.0.1", /* Ubuntu 8.x default location */
+            "/usr/lib/firefox-3.0.3", /* Ubuntu 8.04 default location */
     };
 
     private static final String[] USUAL_WINDOWS_LAUNCHER_LOCATIONS = {
