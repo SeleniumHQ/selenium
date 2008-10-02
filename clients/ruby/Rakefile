@@ -3,6 +3,7 @@
 $:.unshift 'lib'
 
 require 'rubygems'
+gem "rspec", "1.1.4"
 require 'rake/clean'
 require 'rake/testtask'
 require 'rake/packagetask'

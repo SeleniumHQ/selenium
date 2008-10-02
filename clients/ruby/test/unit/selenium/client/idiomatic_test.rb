@@ -238,4 +238,59 @@ unit_tests do
     assert_equal :the_value, client.table_cell_text(:the_cell_address)
   end
 
+  test "cookies returns the result of the getCookie command" do
+    client = Class.new { include Selenium::Client::Idiomatic }.new
+    client.expects(:string_command).with("getCookie").returns(:the_value)
+    assert_equal :the_value, client.cookies
+  end
+
+  test "cookie returns the result of the getCookieByName command" do
+    client = Class.new { include Selenium::Client::Idiomatic }.new
+    client.expects(:string_command).with("getCookieByName", [:the_name,]).returns(:the_value)
+    assert_equal :the_value, client.cookie(:the_name)
+  end
+
+  test "cookie? returns the result of the isCookiePresent command" do
+    client = Class.new { include Selenium::Client::Idiomatic }.new
+    client.expects(:boolean_command).with("isCookiePresent", [:the_name,]).returns(:the_value)
+    assert_equal :the_value, client.cookie?(:the_name)
+  end
+
+  test "create_cookie returns the result of the createCookie command" do
+    client = Class.new { include Selenium::Client::Idiomatic }.new
+    client.expects(:remote_control_command).with("createCookie", [:the_name_value_pair, "options"]).returns(:the_value)
+    assert_equal :the_value, client.create_cookie(:the_name_value_pair, "options")
+  end
+
+  test "options are optional for create_cookie" do
+    client = Class.new { include Selenium::Client::Idiomatic }.new
+    client.expects(:remote_control_command).with("createCookie", [:the_name_value_pair, ""]).returns(:the_value)
+    assert_equal :the_value, client.create_cookie(:the_name_value_pair)
+  end
+
+  test "create_cookie take options has a hash" do
+    client = Class.new { include Selenium::Client::Idiomatic }.new
+    client.expects(:remote_control_command).with("createCookie", [:the_name_value_pair, "domain=.foo.com, max_age=60"]).returns(:the_value)
+    assert_equal :the_value, client.create_cookie(:the_name_value_pair, {:max_age => 60, :domain => ".foo.com"})
+  end
+
+  test "delete_cookie returns the result of the createCookie command" do
+    client = Class.new { include Selenium::Client::Idiomatic }.new
+    client.expects(:remote_control_command).with("deleteCookie", [:the_name, "options"]).returns(:the_value)
+    assert_equal :the_value, client.delete_cookie(:the_name, "options")
+  end
+
+  test "options are optional for delete_cookie" do
+    client = Class.new { include Selenium::Client::Idiomatic }.new
+    client.expects(:remote_control_command).with("deleteCookie", [:the_name, ""]).returns(:the_value)
+    assert_equal :the_value, client.delete_cookie(:the_name)
+  end
+
+  test "delete_cookie take options has a hash" do
+    client = Class.new { include Selenium::Client::Idiomatic }.new
+    client.expects(:remote_control_command).with("deleteCookie", [:the_name, "domain=.foo.com, max_age=60"]).returns(:the_value)
+    assert_equal :the_value, client.delete_cookie(:the_name, {:max_age => 60, :domain => ".foo.com"})
+  end
+
+
 end

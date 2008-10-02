@@ -283,6 +283,58 @@ module Selenium
         wait_for options
       end
 
+      # Return all cookies for the current page under test.
+      def cookies
+        string_command "getCookie"
+      end
+
+      # Returns the value of the cookie with the specified name, or throws an error if the cookie is not present.
+      #
+      # 'name' is the name of the cookie
+      def cookie(name)
+        string_command "getCookieByName", [name,]
+      end
+
+      # Returns true if a cookie with the specified name is present, or false otherwise.
+      #
+      # 'name' is the name of the cookie
+      def cookie?(name)
+        boolean_command "isCookiePresent", [name,]
+      end
+
+      # Create a new cookie whose path and domain are same with those of current page
+      # under test, unless you specified a path for this cookie explicitly.
+      #
+      # 'nameValuePair' is name and value of the cookie in a format "name=value"
+      # 'optionsString' is options for the cookie. Currently supported options include 'path', 'max_age' and 'domain'.
+      # the optionsString's format is "path=/path/, max_age=60, domain=.foo.com". The order of options are irrelevant, the unit      of the value of 'max_age' is second.  Note that specifying a domain that isn't a subset of the current domain will      usually fail.
+      def create_cookie(name_value_pair, options="")
+	      if options.kind_of? Hash
+		      options = options.keys.collect {|key| "#{key}=#{options[key]}" }.join(", ")
+		    end
+        remote_control_command "createCookie", [name_value_pair,options,]
+      end
+
+      # Delete a named cookie with specified path and domain.  Be careful; to delete a cookie, you
+      # need to delete it using the exact same path and domain that were used to create the cookie.
+      # If the path is wrong, or the domain is wrong, the cookie simply won't be deleted.  Also
+      # note that specifying a domain that isn't a subset of the current domain will usually fail.
+      # 
+      # Since there's no way to discover at runtime the original path and domain of a given cookie,
+      # we've added an option called 'recurse' to try all sub-domains of the current domain with
+      # all paths that are a subset of the current path.  Beware; this option can be slow.  In
+      # big-O notation, it operates in O(n*m) time, where n is the number of dots in the domain
+      # name and m is the number of slashes in the path.
+      #
+      # 'name' is the name of the cookie to be deleted
+      # 'optionsString' is options for the cookie. Currently supported options include 'path', 'domain'      and 'recurse.' The optionsString's format is "path=/path/, domain=.foo.com, recurse=true".      The order of options are irrelevant. Note that specifying a domain that isn't a subset of      the current domain will usually fail.
+      def delete_cookie(name, options="")
+	      if options.kind_of? Hash
+		      options = options.keys.collect {|key| "#{key}=#{options[key]}" }.join(", ")
+		    end
+        remote_control_command "deleteCookie", [name,options,]
+      end
+
     end
   
   end

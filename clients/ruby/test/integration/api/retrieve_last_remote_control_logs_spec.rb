@@ -13,7 +13,7 @@ describe "Remote Control Logs Retrieval" do
 
     page.open "http://localhost:4444/selenium-server/tests/html/test_click_page1.html"
     logs = selenium_driver.retrieve_last_remote_control_logs
-    logs.should =~ %r{request: getNewBrowserSession\[\*[a-z]+, http://localhost:3000, \]}
+    logs.should =~ %r{request: getNewBrowserSession\[\*[a-z0-9]+, http://localhost:3000, \]}
     logs.should =~ %r{request: open\[http://localhost:4444/selenium-server/tests/html/test_click_page1.html, \]}
     logs.should =~ %r{request: retrieveLastRemoteControlLogs\[, \]}
     logs.should =~ %r{org.openqa.selenium.server.SeleniumDriverResourceHandler - Got result: OK}
@@ -25,7 +25,7 @@ describe "Remote Control Logs Retrieval" do
     page.open "http://localhost:4444/selenium-server/tests/html/test_click_page1.html"
     page.get_title
     logs = selenium_driver.retrieve_last_remote_control_logs
-    logs.should =~ %r{request: getNewBrowserSession\[\*[a-z]+, http://localhost:3000, \]}
+    logs.should =~ %r{request: getNewBrowserSession\[\*[a-z0-9]+, http://localhost:3000, \]}
     logs.should =~ %r{request: open\[http://localhost:4444/selenium-server/tests/html/test_click_page1.html, \]}
     logs.should =~ %r{request: getTitle\[, \]}
     logs.should =~ %r{request: retrieveLastRemoteControlLogs\[, \]}
