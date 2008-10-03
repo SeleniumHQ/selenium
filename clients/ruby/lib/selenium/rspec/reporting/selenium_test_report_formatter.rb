@@ -6,6 +6,7 @@
 require "digest/md5"
 require "base64"
 require "rubygems"
+gem "rspec", "1.1.4"
 require "spec"
 require 'spec/runner/formatter/html_formatter'
 require File.expand_path(File.dirname(__FILE__) + "/file_path_strategy")
@@ -63,7 +64,7 @@ module Selenium
   
       # Should be called from config.after(:each) in spec helper
       def self.capture_system_state(selenium_driver, example)
-        system_capture = Selenium::RSpec::Reporting::SystemCapture.new(selenium_driver, example, @@file_path_strategy)
+        system_capture = Selenium::RSpec::Reporting::SystemCapture.new(selenium_driver, example, file_path_strategy)
         system_capture.capture_system_state                      
       end
 
@@ -75,6 +76,14 @@ module Selenium
         Selenium::RSpec::Reporting::HtmlReport.append_css(super)
       end
 
+      def self.file_path_strategy
+	      ### HACK ####
+	      # When running with DeepTest the class instance variable could not have been set
+	      # For now you must set the env variable before launching the tests. We need to revisit the way DeepTest
+	      # and RSpec reporting work for a proper fix.
+	      @@file_path_strategy ||= Selenium::RSpec::Reporting::FilePathStrategy.new(ENV["SELENIUM_TEST_REPORT_FILE"])
+	    end
+	
       protected
         
       def include_example_group_description(example)
