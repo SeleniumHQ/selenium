@@ -206,10 +206,19 @@ SocketListener.prototype.executeCommand = function() {
                     respond.commandName = info.command.commandName;
                     info.driver[info.command.commandName](respond, info.command.parameters);
                 } catch (e) {
-                    Utils.dumpn("Exception caught: " + info.command.commandName + "(" + info.command.parameters + ")\n");
-                    Utils.dumpn(e + "\n");
+                    var obj = {
+                      fileName : e.fileName,
+                      lineNumber : e.lineNumber,
+                      message : e.message,
+                      name : e.name,
+                      stack : e.stack  
+                    };
+                    var message = "Exception caught by driver: " + info.command.commandName + "(" + info.command.parameters + ")\n" + e;
+                    Utils.dumpn(message);
+                    Utils.dump(e);
                     respond.isError = true;
                     respond.context = info.driver.context;
+                    respond.response = obj;
                     respond.send();
                 }
             }

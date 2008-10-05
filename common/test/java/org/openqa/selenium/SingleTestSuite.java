@@ -26,7 +26,7 @@ public class SingleTestSuite extends TestCase {
         .keepDriverInstance()
         .includeJavascriptTests()
         .onlyRun("JavascriptEnabledDriverTest")
-//         .method("testShouldBeAbleToClickIfEvenSomethingHorribleHappens")
+         .method("testDocumentShouldReflectLatestTitle")
 //        .exclude("ie")
         .leaveRunning()
         ;  // Yeah, this look strange :)

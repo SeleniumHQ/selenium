@@ -14,6 +14,7 @@ FirefoxDriver.prototype.click = function(respond) {
       currentlyActive.blur();
       element.focus();
     }
+//    Utils.fireMouseEventOn(this.context, element, "mouseup");
     Utils.fireMouseEventOn(this.context, element, "mouseup");
     Utils.fireMouseEventOn(this.context, element, "click");
 

@@ -4,6 +4,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Constructor;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Response {
 	private final JSONObject result;
@@ -62,15 +65,44 @@ public class Response {
         if (!isError)
             return;
 
-        RuntimeException toThrow;
+        RuntimeException toThrow = null;
         try {
             Constructor<? extends RuntimeException> constructor = exceptionClass.getConstructor(String.class);
-            toThrow = constructor.newInstance(getResponseText());
+            JSONObject info = null;
+            try {
+                info = new JSONObject(getResponseText());
+            } catch (Exception e) {
+                toThrow = constructor.newInstance(getResponseText());
+            }
+
+            if (info != null) {
+                toThrow = constructor.newInstance(String.format("%s: %s", info.get("name"), info.get("message")));
+                List<StackTraceElement> stack = new ArrayList<StackTraceElement>();
+                for (String trace : ((String) info.get("stack")).split("\n")) {
+                    StackTraceElement element = createStackTraceElement(trace);
+                    if (element != null)
+                        stack.add(element);
+                }
+
+                stack.addAll(Arrays.asList(toThrow.getStackTrace()));
+                toThrow.setStackTrace(stack.toArray(new StackTraceElement[0]));
+            }
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(getResponseText());
         }
 
         throw toThrow;
+    }
+
+    private StackTraceElement createStackTraceElement(String trace) {
+        try {
+            String[] parts = trace.split(" -> ");
+            int splitAt = parts[1].lastIndexOf(":");
+            int lineNumber = Integer.parseInt(parts[1].substring(splitAt + 1));
+            return new StackTraceElement("FirefoxDriver", parts[0], parts[1].substring(0, splitAt), lineNumber);
+        } catch (Exception e) {
+            return null;
+        }
     }
 }
