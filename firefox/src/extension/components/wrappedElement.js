@@ -1,68 +1,49 @@
 FirefoxDriver.prototype.click = function(respond) {
     respond.context = this.context;
 
-    var currentlyActive = Utils.getActiveElement(this.context);
-
     var element = Utils.getElementAt(respond.elementId, this.context);
     if (!element) {
         respond.send();
         return;
     }
 
-    // Attach a listener so that we can wait until any page load this causes to complete
-    var driver = this;
-    var alreadyReplied = false;
-    var browser = Utils.getBrowser(driver.context);
-    var contentWindow = Utils.getBrowser(driver.context).contentWindow;
-    var fireMouseEventOn = Utils.fireMouseEventOn;
+    var currentlyActive = Utils.getActiveElement(this.context);
 
-    var clickListener = new WebLoadingListener(driver, function(event) {
+    Utils.fireMouseEventOn(this.context, element, "mousedown");
+    if (element != currentlyActive) {
+      currentlyActive.blur();
+      element.focus();
+    }
+    Utils.fireMouseEventOn(this.context, element, "mouseup");
+    Utils.fireMouseEventOn(this.context, element, "click");
+
+    var browser = Utils.getBrowser(this.context);
+    var alreadyReplied = false;
+    
+    var clickListener = new WebLoadingListener(this, function(event) {
         if (!alreadyReplied) {
             alreadyReplied = true;
             respond.send();
         }
     });
 
-    var clickEvents = function() {
-        fireMouseEventOn(driver.context, element, "mousedown");
-        if (element != currentlyActive) {
-          currentlyActive.blur();
-          element.focus();
-        }
-        
-        fireMouseEventOn(driver.context, element, "mouseup");
-
-        var checkForLoad = function() {
-            // Returning should be handled by the click listener, unless we're not actually loading something. Do a check and return if we are.
-            // There's a race condition here, in that the click event and load may have finished before we get here. For now, let's pretend that
-            // doesn't happen. The other race condition is that we make this check before the load has begun. With all the javascript out there,
-            // this might actually be a bit of a problem.
-            var docLoaderService = browser.webProgress
-            if (!docLoaderService.isLoadingDocument) {
-                WebLoadingListener.removeListener(browser, clickListener);
-                if (!alreadyReplied) {
-                    alreadyReplied = true;
-                    respond.send();
-                }
+    var checkForLoad = function() {
+        // Returning should be handled by the click listener, unless we're not actually loading something. Do a check and return if we are.
+        // There's a race condition here, in that the click event and load may have finished before we get here. For now, let's pretend that
+        // doesn't happen. The other race condition is that we make this check before the load has begun. With all the javascript out there,
+        // this might actually be a bit of a problem.
+        var docLoaderService = browser.webProgress;
+        if (!docLoaderService.isLoadingDocument) {
+            WebLoadingListener.removeListener(browser, clickListener);
+            if (!alreadyReplied) {
+                alreadyReplied = true;
+                respond.send();
             }
-        };
-        
-        var doClick = function() {
-	        // Now do the click. I'm a little surprised that this works as often as it does:
-	        // http://developer.mozilla.org/en/docs/DOM:element.click#Notes
-//	        if (element["click"]) {
-//	            element.click();
-//	        }
-	            // Or just send the click event.
-	            fireMouseEventOn(driver.context, element, "click");
-	        
-	        contentWindow.setTimeout(checkForLoad, 50);
-        };
-        
-        contentWindow.setTimeout(doClick, 50);
-    }
+        }
+    };
 
-    contentWindow.setTimeout(clickEvents, 50);
+    var contentWindow = browser.contentWindow;
+    contentWindow.setTimeout(checkForLoad, 50);
 };
 
 FirefoxDriver.prototype.getElementText = function(respond) {

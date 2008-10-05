@@ -225,12 +225,15 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     assertThat(driver.findElement(By.id("result")).getText().trim(), either(is("focus change blur focus blur")).or(is("focus blur change focus blur")));
   }
 
+  /**
+  * If the click handler throws an exception, the firefox driver freezes. This is suboptimal.   
+  */
   @JavascriptEnabled
   @Ignore("safari, htmlunit, ie")
   public void testShouldBeAbleToClickIfEvenSomethingHorribleHappens() {
     driver.get(javascriptPage);
 
-//    driver.findElement(By.id("error")).click();
+    driver.findElement(By.id("error")).click();
 
     // If we get this far then the test has passed, but let's do something basic to prove the point
     String text = driver.findElement(By.id("error")).getText();
