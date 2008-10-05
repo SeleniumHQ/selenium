@@ -63,6 +63,10 @@
     <p>Click for the mouse click event</p>
 </div>
 
+<div id="error" onclick="document.getElementById('doesnotexist').innerHTML = 'cheese';">
+    Clicking this causes a JS exception in the click handler
+</div>
+
 <div>
   <form action="resultPage.html" id="on-form">
     <input id="theworks"

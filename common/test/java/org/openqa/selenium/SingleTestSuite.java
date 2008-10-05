@@ -25,7 +25,7 @@ public class SingleTestSuite extends TestCase {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("CookieImplementationTest")
+        .onlyRun("AlertsTest")
 //         .method("testAddCookiesWithDifferentPaths")
 //        .exclude("ie")
         .leaveRunning()

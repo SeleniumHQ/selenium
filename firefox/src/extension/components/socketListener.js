@@ -146,10 +146,10 @@ SocketListener.prototype.executeCommand = function() {
         }
 
         if (!fxbrowser) {
-            dump("Unable to find browser with id " + context.windowId + "\n");
+            Utils.dumpn("Unable to find browser with id " + context.windowId + "\n");
         }
         if (!driver) {
-            dump("Unable to find the driver\n");
+            Utils.dumpn("Unable to find the driver\n");
         }
 
         driver.context = context;
@@ -216,7 +216,7 @@ SocketListener.prototype.executeCommand = function() {
         }
         driver.window.setTimeout(wait, 0, info);
     } else {
-        dump("Unrecognised command: " + this.command + "\n");
+        Utils.dumpn("Unrecognised command: " + this.command + "\n");
         this.linesLeft = 0;
         this.step = 0;
         this.readLength = false;
