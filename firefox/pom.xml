@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.openqa.selenium.webdriver</groupId>
 		<artifactId>webdriver-parent</artifactId>
-		<version>0.5-SNAPSHOT</version>
+		<version>0.5.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>webdriver-firefox</artifactId>
 	<name>webdriver-firefox</name>
@@ -15,7 +15,7 @@
 		<dependency>
 			<groupId>org.openqa.selenium.webdriver</groupId>
 			<artifactId>webdriver-common</artifactId>
-			<version>0.5-SNAPSHOT</version>
+			<version>0.5.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.json</groupId>
@@ -26,7 +26,7 @@
 		<dependency>
 			<groupId>org.openqa.selenium.webdriver</groupId>
 			<artifactId>webdriver-common</artifactId>
-			<version>0.5-SNAPSHOT</version>
+			<version>0.5.1-SNAPSHOT</version>
 			<classifier>tests</classifier>
 			<scope>test</scope>
 		</dependency>

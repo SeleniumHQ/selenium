@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.openqa.selenium.webdriver</groupId>
 		<artifactId>webdriver-parent</artifactId>
-		<version>0.5-SNAPSHOT</version>
+		<version>0.5.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>webdriver-support</artifactId>
 	<name>webdriver-support</name>
@@ -15,7 +15,7 @@
 		<dependency>
 			<groupId>org.openqa.selenium.webdriver</groupId>
 			<artifactId>webdriver-common</artifactId>
-			<version>0.5-SNAPSHOT</version>
+			<version>0.5.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.hamcrest</groupId>
@@ -31,7 +31,7 @@
 		<dependency>
 			<groupId>org.openqa.selenium.webdriver</groupId>
 			<artifactId>webdriver-common</artifactId>
-			<version>0.5-SNAPSHOT</version>
+			<version>0.5.1-SNAPSHOT</version>
 			<classifier>tests</classifier>
 			<scope>test</scope>
 		</dependency>

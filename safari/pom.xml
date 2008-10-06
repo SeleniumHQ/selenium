@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.openqa.selenium.webdriver</groupId>
 		<artifactId>webdriver-parent</artifactId>
-		<version>0.5-SNAPSHOT</version>
+		<version>0.5.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>webdriver-safari</artifactId>
 	<name>webdriver-safari</name>
@@ -15,13 +15,13 @@
 		<dependency>
 			<groupId>org.openqa.selenium.webdriver</groupId>
 			<artifactId>webdriver-common</artifactId>
-			<version>0.5-SNAPSHOT</version>
+			<version>0.5.1-SNAPSHOT</version>
 		</dependency>
 		<!-- Test dependencies ... -->
 		<dependency>
 			<groupId>org.openqa.selenium.webdriver</groupId>
 			<artifactId>webdriver-common</artifactId>
-			<version>0.5-SNAPSHOT</version>
+			<version>0.5.1-SNAPSHOT</version>
 			<classifier>tests</classifier>
 			<scope>test</scope>
 		</dependency>
