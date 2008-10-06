@@ -7,15 +7,12 @@ import static org.hamcrest.core.IsNot.not;
 
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.TestEnvironment;
+import org.openqa.selenium.environment.webserver.AppServer;
 
 import junit.framework.TestCase;
 
 public class AbstractDriverTestCase extends TestCase implements NeedsDriver {
 	protected WebDriver driver;
-	protected String hostName;
-	protected String alternateHostName;
-	protected String baseUrl;
-	protected String alternateBaseUrl;
 	protected String simpleTestPage;
 	protected String xhtmlTestPage;
 	protected String formPage;
@@ -39,23 +36,22 @@ public class AbstractDriverTestCase extends TestCase implements NeedsDriver {
         driver.setVisible(true);
 
         TestEnvironment environment = GlobalTestEnvironment.get();
+
+        AppServer appServer = environment.getAppServer();
+        simpleTestPage = appServer.whereIs("simpleTest.html");
+        xhtmlTestPage = appServer.whereIs("xhtmlTest.html");
+        formPage = appServer.whereIs("formPage.html");
+        metaRedirectPage = appServer.whereIs("meta-redirect.html");
+        redirectPage = appServer.whereIs("redirect");
+        javascriptPage = appServer.whereIs("javascriptPage.html");
+        framesetPage = appServer.whereIs("frameset.html");
+        iframePage = appServer.whereIs("iframes.html");
+        dragAndDropPage = appServer.whereIs("dragAndDropTest.html");
+        chinesePage = appServer.whereIs("cn-test.html");
+        nestedPage = appServer.whereIs("nestedElements.html");
         
-        baseUrl = environment.getAppServer().getBaseUrl();
-        simpleTestPage = baseUrl + "simpleTest.html";
-        xhtmlTestPage = baseUrl + "xhtmlTest.html";
-        formPage = baseUrl + "formPage.html";
-        metaRedirectPage = baseUrl + "meta-redirect.html";
-        redirectPage = baseUrl + "redirect";
-        javascriptPage = baseUrl + "javascriptPage.html";
-        framesetPage = baseUrl + "frameset.html";
-        iframePage = baseUrl + "iframes.html";
-        dragAndDropPage = baseUrl + "dragAndDropTest.html";
-        chinesePage = baseUrl + "cn-test.html";
-        nestedPage = baseUrl + "nestedElements.html";
-        
-        hostName = environment.getAppServer().getHostName();
-        alternateHostName = environment.getAppServer().getAlternateHostName();
-        alternateBaseUrl = environment.getAppServer().getAlternateBaseUrl();
+        String hostName = environment.getAppServer().getHostName();
+        String alternateHostName = environment.getAppServer().getAlternateHostName();
 
         assertThat(hostName, is(not(equalTo(alternateHostName))));
 	}

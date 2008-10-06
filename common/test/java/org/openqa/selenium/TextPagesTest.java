@@ -2,6 +2,8 @@
 
 package org.openqa.selenium;
 
+import org.openqa.selenium.environment.GlobalTestEnvironment;
+
 public class TextPagesTest extends AbstractDriverTestCase {
   private String textPage;
 
@@ -9,7 +11,7 @@ public class TextPagesTest extends AbstractDriverTestCase {
   protected void setUp() throws Exception {
     super.setUp();
 
-    textPage = baseUrl + "plain.txt";
+    textPage = GlobalTestEnvironment.get().getAppServer().whereIs("plain.txt");
   }
 
   @Ignore("firefox, ie, safari")

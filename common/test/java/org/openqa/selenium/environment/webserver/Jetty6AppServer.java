@@ -21,6 +21,7 @@ import junit.framework.Assert;
 
 import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Server;
+import org.mortbay.jetty.security.SslSocketConnector;
 import org.mortbay.jetty.nio.SelectChannelConnector;
 import org.mortbay.jetty.webapp.WebAppContext;
 
@@ -32,12 +33,12 @@ import javax.servlet.Servlet;
 
 public class Jetty6AppServer implements AppServer {
     private int port;
+    private int securePort;
     private File path;
     private final Server server = new Server();
     private WebAppContext context;
 
-
-  public Jetty6AppServer() {
+    public Jetty6AppServer() {
     path = findRootOfWebApp();
 
     context = addWebApplication("", path.getAbsolutePath());
@@ -46,6 +47,7 @@ public class Jetty6AppServer implements AppServer {
     addServlet("InfinitePagerServer", "/page/*", PageServlet.class);
 
     listenOn(3000);
+    listenSecurelyOn(3443);
   }
 
 
@@ -80,18 +82,35 @@ public class Jetty6AppServer implements AppServer {
         }
     }
 
-    public String getBaseUrl() {
-        return "http://" + getHostName() + ":" + port + "/";
+    public String whereIs(String relativeUrl) {
+        return "http://" + getHostName() + ":" + port + "/" + relativeUrl;
     }
 
-    public String getAlternateBaseUrl() {
-    	return "http://" + getAlternateHostName() + ":" + port + "/";
+    public String whereElseIs(String relativeUrl) {
+    	return "http://" + getAlternateHostName() + ":" + port + "/" + relativeUrl;
+    }
+
+    public String whereIsSecure(String relativeUrl) {
+        return "https://" + getHostName() + ":" + securePort + "/" + relativeUrl;
     }
 
   public void start() {
     SelectChannelConnector connector = new SelectChannelConnector();
     connector.setPort(port);
     server.addConnector(connector);
+
+    File keyStore = new File(findRootOfWebApp(), "../../test/java/keystore");
+    if (!keyStore.exists())
+      throw new RuntimeException("Cannot find keystore for SSL cert");
+
+    SslSocketConnector secureSocket = new SslSocketConnector();
+    secureSocket.setPort(securePort);
+    secureSocket.setKeystore(keyStore.getAbsolutePath());
+    secureSocket.setPassword("password");
+    secureSocket.setKeyPassword("password");
+    secureSocket.setTruststore(keyStore.getAbsolutePath());
+    secureSocket.setTrustPassword("password");
+    server.addConnector(secureSocket);
 
     try {
       server.start();
@@ -102,6 +121,10 @@ public class Jetty6AppServer implements AppServer {
 
   public void listenOn(int port) {
     this.port = port;
+  }
+
+  public void listenSecurelyOn(int port) {
+    this.securePort = port;
   }
 
 

@@ -172,7 +172,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
 
     @Ignore("ie, safari")
     public void testReadALargeAmountOfData() {
-        driver.get(GlobalTestEnvironment.get().getAppServer().getBaseUrl() + "macbeth.html");
+        driver.get(GlobalTestEnvironment.get().getAppServer().whereIs("macbeth.html"));
         String source = driver.getPageSource().trim();
 
         assertThat(source.endsWith("</html>"), is(true));

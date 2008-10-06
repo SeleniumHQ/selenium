@@ -6,6 +6,8 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.core.IsNot.not;
+import org.openqa.selenium.environment.GlobalTestEnvironment;
+import org.openqa.selenium.environment.webserver.AppServer;
 
 import java.util.Calendar;
 import java.util.Iterator;
@@ -22,13 +24,14 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
         options.addCookie(cookie1);
         options.addCookie(cookie2);
 
-        driver.get(baseUrl + "animals");
+        AppServer appServer = GlobalTestEnvironment.get().getAppServer();
+        driver.get(appServer.whereIs("animals"));
         Set<Cookie> cookies = options.getCookies();
 
         assertThat(cookies.contains(cookie1), is(true));
         assertThat(cookies.contains(cookie2), is(false));
 
-        driver.get(baseUrl + "galaxy");
+        driver.get(appServer.whereIs("galaxy"));
         cookies = options.getCookies();
         assertThat(cookies.contains(cookie1), is(false));
         assertThat(cookies.contains(cookie2), is(true));
@@ -54,7 +57,9 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
 	
 	@Ignore("ie")
     public void testCookieIntegrity() {
-        driver.get(alternateBaseUrl + "animals");
+        String url = GlobalTestEnvironment.get().getAppServer().whereElseIs("animals");
+
+        driver.get(url);
         driver.manage().deleteAllCookies();
         
         Calendar c = Calendar.getInstance();
@@ -170,7 +175,8 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
         WebDriver.Options options = driver.manage();
         options.addCookie(cookie1);
 
-        driver.get(alternateBaseUrl);
+        String url = GlobalTestEnvironment.get().getAppServer().whereElseIs("");
+        driver.get(url);
         Set<Cookie> cookies = options.getCookies();
         assertThat(cookies, not(hasItem(cookie1)));
     }

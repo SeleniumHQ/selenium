@@ -23,8 +23,9 @@ public interface AppServer {
     String getHostName();
     String getAlternateHostName();
 
-    String getBaseUrl();
-    String getAlternateBaseUrl();
+    String whereIs(String relativeUrl);
+    String whereElseIs(String relativeUrl);
+    String whereIsSecure(String relativeUrl);
 
     void start();
     void stop();

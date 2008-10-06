@@ -2,6 +2,7 @@ package org.openqa.selenium;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import org.openqa.selenium.environment.GlobalTestEnvironment;
 
 public class PageLoadingTest extends AbstractDriverTestCase {
     public void testShouldWaitForDocumentToBeLoaded() {
@@ -82,4 +83,13 @@ public class PageLoadingTest extends AbstractDriverTestCase {
           driver.navigate().forward();
           assertThat(driver.getTitle(), equalTo("We Arrive Here"));
       }
+
+    @Ignore("safari, ie, firefox")
+    public void testShouldBeAbleToAccessPagesWithAnInsecureSslCertificate() {
+        String url = GlobalTestEnvironment.get().getAppServer().whereIsSecure("simpleTest.html");
+        driver.get(url);
+        
+        // This should work
+        assertThat(driver.getTitle(), equalTo("Hello WebDriver"));
+    }
 }

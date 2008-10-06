@@ -11,7 +11,7 @@ public class AlertsTest extends AbstractDriverTestCase {
         super.setUp();
 
         TestEnvironment environment = GlobalTestEnvironment.get();
-        alertPage = environment.getAppServer().getBaseUrl() + "alerts.html";
+        alertPage = environment.getAppServer().whereIs("alerts.html");
     }
 
     @JavascriptEnabled
