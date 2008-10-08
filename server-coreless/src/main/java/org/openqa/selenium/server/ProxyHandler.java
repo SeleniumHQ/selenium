@@ -61,6 +61,9 @@ public class ProxyHandler extends AbstractHttpHandler {
     private final String dontInjectRegex;
     private final String debugURL;
 
+    // see docs for the lock object on SeleniumServer for information on this and why it is IMPORTANT!
+    private Object shutdownLock;
+
     /* ------------------------------------------------------------ */
     /**
      * Map of leg by leg headers (not end to end). Should be a set, but more efficient string map is
@@ -599,14 +602,21 @@ public class ProxyHandler extends AbstractHttpHandler {
                 listener.setPassword("password");
                 listener.setKeyPassword("password");
                 server.addListener(listener);
-                try
-                {
-                    listener.start();
-                }
-                catch(Exception e)
-                {
-                    e.printStackTrace();
-                    throw e;
+
+                synchronized (shutdownLock) {
+                    try
+                    {
+                        if (server.isStarted()) {
+                            listener.start();
+                        } else {
+                            throw new RuntimeException("Can't start SslRelay: server is not started (perhaps it was just shut down?)");
+                        }
+                    }
+                    catch(Exception e)
+                    {
+                        e.printStackTrace();
+                        throw e;
+                    }
                 }
                 _sslMap.put(uri.toString(),listener);
             }
@@ -842,6 +852,11 @@ public class ProxyHandler extends AbstractHttpHandler {
 
     public void setSslKeystorePath(String sslKeystorePath) {
         this.sslKeystorePath = sslKeystorePath;
+    }
+
+    public void setShutdownLock(Object shutdownLock) {
+
+        this.shutdownLock = shutdownLock;
     }
 
     private static class SslRelay extends SslListener

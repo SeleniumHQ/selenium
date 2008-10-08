@@ -164,7 +164,13 @@ public class SeleniumServer {
     private static boolean FORCE_PROXY_CHAIN = false;
     private static boolean debugMode = false;
 
-
+    /**
+     * This lock is very important to ensure that SeleniumServer and the underlying Jetty instance
+     * shuts down properly. It ensures that ProxyHandler does not add an SslRelay to the Jetty server
+     * dynamically (needed for SSL proxying) if the server has been shut down or is in the process
+     * of getting shut down.
+     */
+    private final Object shutdownLock = new Object();
     private static final int MAX_SHUTDOWN_RETRIES = 8;
 
     /**
@@ -331,6 +337,9 @@ public class SeleniumServer {
         } else {
             proxyHandler = customProxyHandler;
         }
+
+        // see docs for the lock object for information on this and why it is IMPORTANT!
+        proxyHandler.setShutdownLock(shutdownLock);
         root.addHandler(proxyHandler);
         // pre-compute the 1-16 SSL relays+certs for the logging hosts (see selenium-remoterunner.js sendToRCAndForget for more info)
         if (browserSideLogEnabled) {
@@ -443,7 +452,10 @@ public class SeleniumServer {
         while (numTries <= MAX_SHUTDOWN_RETRIES) {
             ++numTries;
             try {
-                server.stop();
+                // see docs for the lock object for information on this and why it is IMPORTANT!
+                synchronized (shutdownLock) {
+                    server.stop();
+                }
 
                 // If we reached here stop didnt throw an exception.
                 // So we assume it was successful.
