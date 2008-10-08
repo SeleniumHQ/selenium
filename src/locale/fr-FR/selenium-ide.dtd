@@ -1,4 +1,5 @@
 <!ENTITY newTestCmd.label "Nouveau test">
+<!ENTITY addTestCmd.label "Add Test Case...">
 <!ENTITY openCmd.label "Ouvrir...">
 <!ENTITY saveTestCmd.label "Sauver le test">
 <!ENTITY saveTestAsCmd.label "Sauver le test sous...">
@@ -58,6 +59,7 @@
 <!ENTITY openSuiteCmd.label "Open Test Suite...">
 <!ENTITY saveSuiteCmd.label "Save Test Suite">
 <!ENTITY saveSuiteAsCmd.label "Save Test Suite As...">
+<!ENTITY exportSuiteCmd.label "Export Test Suite As...">
 <!ENTITY recentSuiteCmd.label "Recent Test Suites">
 <!ENTITY recentTestCmd.label "Recent Test Cases">
 

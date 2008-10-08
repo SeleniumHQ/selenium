@@ -1,4 +1,5 @@
 <!ENTITY newTestCmd.label "テストケースを新規作成">
+<!ENTITY addTestCmd.label "テストケースを追加...">
 <!ENTITY openCmd.label "テストケースを開く...">
 <!ENTITY saveTestCmd.label "テストケースを保存">
 <!ENTITY saveTestAsCmd.label "テストケースに名前を付けて保存...">
@@ -58,6 +59,7 @@
 <!ENTITY openSuiteCmd.label "テストスイートを開く...">
 <!ENTITY saveSuiteCmd.label "テストスイートを保存">
 <!ENTITY saveSuiteAsCmd.label "テストスイートに名前を付けて保存...">
+<!ENTITY exportSuiteCmd.label "テストスイートをエクスポート...">
 <!ENTITY recentSuiteCmd.label "最近開いたテストスイート">
 <!ENTITY recentTestCmd.label "最近開いたテストケース">
 
