@@ -141,7 +141,7 @@ public class JsonToBeanConverter {
   private Map convertMap(JSONObject toConvert) throws Exception {
     Map map = new HashMap();
 
-    Iterator allEntries = toConvert.sortedKeys();
+    Iterator allEntries = toConvert.keys();
     while (allEntries.hasNext()) {
       String key = (String) allEntries.next();
       map.put(key, convert(Object.class, toConvert.get(key)));
