@@ -5,6 +5,7 @@ import org.mortbay.log.LogFactory;
 import org.openqa.selenium.server.RobotRetriever;
 
 import javax.imageio.ImageIO;
+
 import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.Toolkit;
@@ -22,15 +23,26 @@ public class CaptureScreenshotCommand extends Command {
     public static final String ID = "captureScreenshot";
     private static final Log LOGGER = LogFactory.getLog(CaptureScreenshotCommand.class);
 
-    private final String fileName;
-
+    private final File file;
+    
     public CaptureScreenshotCommand(String fileName) {
-        this.fileName = fileName;
+        this(new File(fileName));
     }
 
-    public String execute() {
+    CaptureScreenshotCommand(File file) {
+		this.file = file;
+    }
+    
+    private void createNecessaryDirectories() {
+    	File parentDir = file.getParentFile();
+    	if (parentDir != null && !parentDir.exists()) {
+    		parentDir.mkdirs();
+    	}
+    }
+    
+	public String execute() {
         try {
-            captureSystemScreenshot(fileName);
+            captureSystemScreenshot();
             return "OK";
         } catch (Exception e) {
             LOGGER.error("Problem capturing screenshot", e);
@@ -38,7 +50,7 @@ public class CaptureScreenshotCommand extends Command {
         }
     }
 
-    public void captureSystemScreenshot(String fileName) throws IOException, InterruptedException, ExecutionException, TimeoutException {
+    public void captureSystemScreenshot() throws IOException, InterruptedException, ExecutionException, TimeoutException {
         final BufferedImage bufferedImage;
         final Rectangle captureSize;
         final Robot robot;
@@ -46,7 +58,8 @@ public class CaptureScreenshotCommand extends Command {
         robot = RobotRetriever.getRobot();
         captureSize = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
         bufferedImage = robot.createScreenCapture(captureSize);
-        ImageIO.write(bufferedImage, "png", new File(fileName));
+        createNecessaryDirectories();
+        ImageIO.write(bufferedImage, "png", this.file);
     }
 
 
