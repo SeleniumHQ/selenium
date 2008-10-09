@@ -24,6 +24,9 @@ public class FirefoxBinary {
     }
 
     public void startProfile(FirefoxProfile profile, String... commandLineFlags) throws IOException {
+        String libraryPath = System.getProperty("LD_LIBRARY_PATH", System.getenv("LD_LIBRARY_PATH"));
+        if (libraryPath == null)
+          libraryPath = "";
         List<String> commands = new ArrayList<String>();
         commands.add(actualBinary.getAbsolutePath());
         commands.addAll(Arrays.asList(commandLineFlags));
@@ -31,6 +34,8 @@ public class FirefoxBinary {
         modifyLibraryPath(builder);
         builder.environment().put("MOZ_NO_REMOTE", "1");
         builder.environment().put("XRE_PROFILE_PATH", profile.getProfileDir().getAbsolutePath());
+        builder.environment().put("DISPLAY", System.getProperty("DISPLAY", System.getenv("DISPLAY")));
+        builder.environment().put("LD_LIBRARY_PATH", libraryPath);
         process = builder.start();
     }
 
