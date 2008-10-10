@@ -65,7 +65,8 @@
                     <includes>
                         <include>**/*UnitTest.java</include>
                     </includes>
-                    <forkMode>never</forkMode>
+                    <!-- DGF what was this doing here? it screws up Maven deploy
+                    <forkMode>never</forkMode>-->
                     <useFile>false</useFile>
                     <systemProperties>
                       <property>
