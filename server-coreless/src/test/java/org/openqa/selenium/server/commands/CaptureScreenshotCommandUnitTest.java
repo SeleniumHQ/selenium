@@ -15,7 +15,11 @@ public class CaptureScreenshotCommandUnitTest extends TestCase {
 	private String fileName = "test_screenshot.png";
 	private File file = new File(fileName);
 	private String tempDirName = System.getProperty("java.io.tmpdir"); 
-	
+
+    public void testDumbJUnit() {
+        // this test is needed to make JUnit happy since the rest of the tests are disabled temporarily
+    }
+
     public void disable_testExecuteReturnsOKWhencaptureSystemScreenshotSucceeds() throws Exception {
         final ConstructorArgs args;
 
