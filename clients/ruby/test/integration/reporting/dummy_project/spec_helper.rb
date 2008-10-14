@@ -1,5 +1,5 @@
 require 'rubygems'
-gem "rspec", "1.1.4"
+gem "rspec", "1.1.8"
 require 'spec'
 require 'base64'
 require 'fileutils'

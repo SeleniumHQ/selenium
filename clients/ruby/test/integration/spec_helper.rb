@@ -1,5 +1,5 @@
 require 'rubygems'
-gem 'rspec', "1.1.4"
+gem 'rspec', "1.1.8"
 require File.expand_path(File.dirname(__FILE__) + "/../../lib/selenium")
 require File.expand_path(File.dirname(__FILE__) + "/../../lib/selenium/rspec/spec_helper")
 

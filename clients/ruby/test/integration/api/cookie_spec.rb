@@ -38,23 +38,5 @@ describe "Cookie Handling" do
   	page.delete_cookie "addedCookieForPath2"
   	page.cookies.should be_empty
   end
-	
-	  it "Testing creating cookies with same name but diffrent paths" do
-		  pending "not working yet" do
-			  selenium_driver.start_new_browser_session
-
-	  	  page.create_cookie "testCookieWithSameName=new value1", :path => "/"
-		    page.create_cookie "testCookieWithSameName=new value2", :path => "/selenium-server/tests/html/path2/"
-	      page.open "/selenium-server/tests/html/path1/cookie1.html"
-		    page.cookie("testCookieWithSameName").should eql("new value1")
-	      page.open "/selenium-server/tests/html/path2/cookie2.html"
-		    page.cookies.should =~ /testCookieWithSameName=new value1/
-		    page.cookies.should =~ /testCookieWithSameName=new value2/
-	      page.delete_cookie "testCookieWithSameName", "/selenium-server/tests/html/path2/"
-	      page.open "/selenium-server/tests/html/path2/cookie2.html"
-		    page.cookie("testCookieWithSameName").should eql("new value1")
-		  # verifyNotCookie /testCookieWithSameName=new value2/, &nbsp;
-		end
-	end
-  
+	  
 end

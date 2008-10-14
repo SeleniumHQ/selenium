@@ -1,3 +1,6 @@
+require "rubygems"
+gem "rspec", "=1.1.8"
+require 'spec'
 require 'spec/example/example_group'
 
 #
@@ -23,7 +26,7 @@ module Spec
         Timeout.timeout(options.timeout) do
           begin
             before_example
-            run_with_description_capturing
+            eval_block
           rescue Exception => e
             @execution_error ||= e
           end

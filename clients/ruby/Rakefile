@@ -2,13 +2,14 @@
 
 $:.unshift 'lib'
 
-require 'rubygems'
-gem "rspec", "1.1.4"
 require 'rake/clean'
 require 'rake/testtask'
 require 'rake/packagetask'
 require 'rake/gempackagetask'
 require 'rake/rdoctask'
+
+require 'rubygems'
+gem "rspec", "1.1.8"
 require 'spec/rake/spectask'
 require 'selenium/rake/tasks'
 
