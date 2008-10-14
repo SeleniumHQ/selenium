@@ -9,14 +9,14 @@ module Selenium
 	    # See http://davidvollbracht.com/2008/6/4/30-days-of-tech-day-3-waitforajax for
 	    # more background.
       def wait_for_ajax(timeout_in_seconds=nil)
-	      selenium.wait_for_condition "selenium.browserbot.getCurrentWindow().Ajax.activeRequestCount == 0", timeout_in_seconds
+	      wait_for_condition "selenium.browserbot.getCurrentWindow().Ajax.activeRequestCount == 0", timeout_in_seconds
 	    end
 	
 	    # Wait for all Prototype effects to be processed (the wait in happenning browser side).
 	    #
 	    # Credits to http://github.com/brynary/webrat/tree/master
 			def wait_for_effects(timeout_in_seconds=nil)
-			  selenium.wait_for_condition "window.Effect.Queue.size() == 0", timeout_in_seconds
+			  wait_for_condition "window.Effect.Queue.size() == 0", timeout_in_seconds
 			end
 			
 			# Wait for an element to be present (the wait in happenning browser side).

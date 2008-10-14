@@ -35,7 +35,7 @@ module Selenium
       end
       
       def close_current_browser_session
-        remote_control_command "testComplete"
+        remote_control_command "testComplete" if @session_id
         @session_id = nil
       end
       

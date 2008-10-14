@@ -330,7 +330,8 @@ module Selenium
       # 'optionsString' is options for the cookie. Currently supported options include 'path', 'domain'      and 'recurse.' The optionsString's format is "path=/path/, domain=.foo.com, recurse=true".      The order of options are irrelevant. Note that specifying a domain that isn't a subset of      the current domain will usually fail.
       def delete_cookie(name, options="")
 	      if options.kind_of? Hash
-		      options = options.keys.collect {|key| "#{key}=#{options[key]}" }.join(", ")
+		      ordered_keys = options.keys.sort {|a,b| a.to_s <=> b.to_s }
+		      options = ordered_keys.collect {|key| "#{key}=#{options[key]}" }.join(", ")
 		    end
         remote_control_command "deleteCookie", [name,options,]
       end

@@ -41,7 +41,7 @@ module Selenium
         super
       end
   
-      def example_pending(example, message)
+      def example_pending(example, message, pending_caller)
         include_example_group_description example
         super
       end
