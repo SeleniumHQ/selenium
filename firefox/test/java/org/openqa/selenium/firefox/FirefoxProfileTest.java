@@ -9,7 +9,7 @@ import java.io.FileReader;
 public class FirefoxProfileTest extends TestCase {
     public void testShouldRetainAdditionalPreferencesWhenCopyingAProfile() throws Exception {
         FirefoxProfile profile = new FirefoxProfile();
-        profile.addAdditionalPreference("cheese", "true");
+        profile.setPreference("cheese", true);
 
         FirefoxProfile copiedProfile = profile.createCopy(8000);
 

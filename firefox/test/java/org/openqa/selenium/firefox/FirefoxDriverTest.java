@@ -73,7 +73,7 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     @Ignore(value="firefox", reason="Until we package the extension this will fail on the command line")
     public void testANewProfileShouldAllowSettingAdditionalParameters() {
       FirefoxProfile profile = new FirefoxProfile();
-      profile.addAdditionalPreference("browser.startup.homepage", "\"" + formPage + "\"");
+      profile.setPreference("browser.startup.homepage", formPage);
 
       try {
         WebDriver secondDriver = new FirefoxDriver(profile);

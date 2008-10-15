@@ -259,10 +259,49 @@ public class FirefoxProfile {
         return extensionsDir;
     }
 
+    /**
+     * Set a preference for this particular profile. The value will be properly quoted
+     * before use.
+     *
+     * @param key The key
+     * @param value The new value.
+     */
+    public void setPreference(String key, String value) {
+        additionalPrefs.put(key, String.format("\"%s\"", value));
+    }
+
+    /**
+     * Set a preference for this particular profile.
+     *
+     * @param key The key
+     * @param value The new value.
+     */
+    public void setPreference(String key, boolean value) {
+        additionalPrefs.put(key, String.valueOf(value));
+    }
+
+    /**
+     * Set a preference for this particular profile.
+     *
+     * @param key The key
+     * @param value The new value.
+     */
+    public void setPreference(String key, int value) {
+        additionalPrefs.put(key, String.valueOf(value));
+    }
+
+    /**
+     * @deprecated Use the appropriate #setPreference method
+     */
+    @Deprecated
     public void addAdditionalPreference(String key, String value) {
         this.additionalPrefs.put(key, value);
     }
 
+    /**
+     * @deprecated Loop over the additional preferences, calling #setPreference each time
+     */
+    @Deprecated
     public void addAdditionalPreferences(Map<String, String> additionalPrefs) {
         this.additionalPrefs.putAll(additionalPrefs);
     }
