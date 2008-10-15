@@ -1,32 +1,30 @@
 package org.openqa.selenium.firefox;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.Speed;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.firefox.internal.ExtensionConnectionFactory;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
+import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.internal.OperatingSystem;
 import org.openqa.selenium.internal.ReturnedCookie;
-import org.openqa.selenium.internal.FindsByClassName;
-
-import org.json.JSONObject;
-import org.json.JSONException;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -35,11 +33,11 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 import java.util.Map;
-import java.util.Iterator;
+import java.util.Set;
 
 
 /**
@@ -73,48 +71,48 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
         this(findProfile(profileName), port);
     }
 
-    /**
-     * @deprecated Use FirefoxDriver(new FirefoxProfile(profileDir)) instead
-     */
-    public FirefoxDriver(File profileDir) {
-      this (profileDir, DEFAULT_PORT);
-    }
-
-    /**
-     * @deprecated Use FirefoxDriver(new FirefoxProfile(profileDir), port) instead
-     */
-    public FirefoxDriver(File profileDir, int port) {
-      this(new FirefoxProfile(profileDir), port);
-    }
-
     public FirefoxDriver(FirefoxProfile profile) {
       this(profile, DEFAULT_PORT);
     }
 
+    /**
+     * @deprecated Set the port on the profile directly
+     */
+    @Deprecated
     public FirefoxDriver(FirefoxProfile profile, int port) {
-      if (profile == null) {
-        profile = new FirefoxProfile();
-      }
+        this(new FirefoxBinary(), modifyProfile(profile, port));
+    }
 
-      try {
-        profile.init();
-      } catch (IOException e) {
-        throw new RuntimeException(e);
-      }
-      prepareEnvironment();
+    private static FirefoxProfile modifyProfile(FirefoxProfile profile, int port) {
+        profile.setPort(port);
+        return profile;
+    }
 
-        extension = connectTo(profile, "localhost", port);
+    public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile) {
+        if (profile == null) {
+            profile = new FirefoxProfile();
+        }
+
+        try {
+            profile.init();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        prepareEnvironment();
+
+        extension = connectTo(binary, profile, "localhost");
 
         if (!extension.isConnected()) {
             throw new RuntimeException(
                     "Unable to connect to Firefox. Is the WebDriver extension installed, and is there a profile called WebDriver?" +
-                    OperatingSystem.getCurrentPlatform().getLineEnding() +
-                    "To set up a profile for WebDriver, simply start firefox from the command line with the \"ProfileManager\" switch" +
-                    OperatingSystem.getCurrentPlatform().getLineEnding() +
-                    "This will look like: firefox -ProfileManager. Alternatively, use the FirefoxLauncher support class from this project");
+                            OperatingSystem.getCurrentPlatform().getLineEnding() +
+                            "To set up a profile for WebDriver, simply start firefox from the command line with the \"ProfileManager\" switch" +
+                            OperatingSystem.getCurrentPlatform().getLineEnding() +
+                            "This will look like: firefox -ProfileManager. Alternatively, use the FirefoxLauncher support class from this project");
         }
 
         fixId();
+
     }
 
     private FirefoxDriver(ExtensionConnection extension, Context context) {
@@ -130,8 +128,8 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
       return new ProfilesIni().getProfile(profileName);
     }
 
-    protected ExtensionConnection connectTo(FirefoxProfile profile, String host, int port) {
-        return ExtensionConnectionFactory.connectTo(profile, host, port);
+    protected ExtensionConnection connectTo(FirefoxBinary binary, FirefoxProfile profile, String host) {
+        return ExtensionConnectionFactory.connectTo(binary, profile, host);
     }
 
     protected void prepareEnvironment() {

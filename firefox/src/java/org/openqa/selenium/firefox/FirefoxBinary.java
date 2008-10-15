@@ -1,4 +1,7 @@
-package org.openqa.selenium.firefox.internal;
+package org.openqa.selenium.firefox;
+
+import org.openqa.selenium.internal.OperatingSystem;
+import org.openqa.selenium.firefox.internal.Cleanly;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -6,12 +9,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-
-import org.openqa.selenium.firefox.FirefoxProfile;
-import org.openqa.selenium.internal.OperatingSystem;
+import java.util.Map;
 
 public class FirefoxBinary {
+    private final Map<String, String> extraEnv = new HashMap<String, String>();
     private final File actualBinary;
     private Process process;
 
@@ -24,19 +27,23 @@ public class FirefoxBinary {
     }
 
     public void startProfile(FirefoxProfile profile, String... commandLineFlags) throws IOException {
-        String libraryPath = System.getProperty("LD_LIBRARY_PATH", System.getenv("LD_LIBRARY_PATH"));
-        if (libraryPath == null)
-          libraryPath = "";
+        setEnvironmentProperty("XRE_PROFILE_PATH", profile.getProfileDir().getAbsolutePath());
+        setEnvironmentProperty("MOZ_NO_REMOTE", "1");
+
         List<String> commands = new ArrayList<String>();
         commands.add(actualBinary.getAbsolutePath());
         commands.addAll(Arrays.asList(commandLineFlags));
         ProcessBuilder builder = new ProcessBuilder(commands);
+        builder.environment().putAll(extraEnv);
         modifyLibraryPath(builder);
-        builder.environment().put("MOZ_NO_REMOTE", "1");
-        builder.environment().put("XRE_PROFILE_PATH", profile.getProfileDir().getAbsolutePath());
-        builder.environment().put("DISPLAY", System.getProperty("DISPLAY", System.getenv("DISPLAY")));
-        builder.environment().put("LD_LIBRARY_PATH", libraryPath);
         process = builder.start();
+    }
+
+    public void setEnvironmentProperty(String propertyName, String value) {
+        if (propertyName == null || value == null)
+            throw new RuntimeException(
+                    String.format("You must set both the property name and value: %s, %s", propertyName, value));
+        extraEnv.put(propertyName, value);
     }
 
     public void createProfile(String profileName) throws IOException {
@@ -79,16 +86,20 @@ public class FirefoxBinary {
                 break;
         }
 
-        String libraryPath = System.getenv(propertyName);
-        if (libraryPath == null) {
-            libraryPath = "";
-        }
+
+        StringBuilder libraryPath = new StringBuilder();
+        String env = System.getenv(propertyName);
+        if (env != null)
+            libraryPath.append(env).append(File.pathSeparator);
+        env = extraEnv.get(propertyName);
+        if (env != null)
+            libraryPath.append(env).append(File.pathSeparator);
 
         String firefoxLibraryPath = System.getProperty("webdriver.firefox.library.path", actualBinary.getParentFile().getAbsolutePath());
 
-        libraryPath = firefoxLibraryPath + File.pathSeparator + libraryPath;
+        libraryPath.append(firefoxLibraryPath).append(File.pathSeparator).append(libraryPath);
 
-        builder.environment().put(propertyName, libraryPath);
+        builder.environment().put(propertyName, libraryPath.toString());
     }
 
     protected File locateFirefoxBinary(File suggestedLocation) {
@@ -164,14 +175,14 @@ public class FirefoxBinary {
     }
 
     private File shellOutAndFindPathOfFirefox(String binaryName) {
-        // Assume that we're on a unix of some kind. We're going to cheat
-        try {
-            Process which = Runtime.getRuntime().exec(new String[]{"which", binaryName});
-            String result = getNextLineOfOutputFrom(which);
-            return result == null ? null : new File(result);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        String fullPath = System.getenv("PATH");
+        for (String path : fullPath.split(":")) {
+            File file = new File(path, binaryName);
+            if (file.exists())
+                return file;
         }
+
+        throw new RuntimeException("Unable to locate the binary on the PATH: " + binaryName);
     }
 
 

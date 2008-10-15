@@ -1,6 +1,5 @@
 package org.openqa.selenium.firefox;
 
-import org.openqa.selenium.firefox.internal.FirefoxBinary;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.firefox.internal.RunningInstanceConnection;
 
@@ -9,8 +8,14 @@ import java.io.IOException;
 import java.net.ConnectException;
 
 public class FirefoxLauncher {
+    private final FirefoxBinary binary;
+
+    public FirefoxLauncher(FirefoxBinary binary) {
+        this.binary = binary;
+    }
+
     public static void main(String[] args) throws IOException {
-        FirefoxLauncher launcher = new FirefoxLauncher();
+        FirefoxLauncher launcher = new FirefoxLauncher(new FirefoxBinary());
 
         if (args.length == 0)
             launcher.createBaseWebDriverProfile();
@@ -31,8 +36,6 @@ public class FirefoxLauncher {
     public void createBaseWebDriverProfile(String profileName, int port) throws IOException {
         // If there's a browser already running
         connectAndKill(port);
-
-        FirefoxBinary binary = new FirefoxBinary();
 
         System.out.println(String.format("Creating %s", profileName));
         try {

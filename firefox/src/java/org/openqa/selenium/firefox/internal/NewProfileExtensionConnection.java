@@ -3,6 +3,7 @@ package org.openqa.selenium.firefox.internal;
 import org.openqa.selenium.firefox.Command;
 import org.openqa.selenium.firefox.FirefoxLauncher;
 import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.internal.OperatingSystem;
 
 import java.io.IOException;
@@ -16,12 +17,12 @@ public class NewProfileExtensionConnection extends AbstractExtensionConnection {
   private FirefoxBinary process;
   private Socket lockSocket;
 
-    public NewProfileExtensionConnection(FirefoxProfile profile, String host, int port) throws IOException {
-        getLock(port);
+    public NewProfileExtensionConnection(FirefoxBinary binary, FirefoxProfile profile, String host) throws IOException {
+        getLock(profile.getPort());
         try {
-          int portToUse = determineNextFreePort(host, port);
+          int portToUse = determineNextFreePort(host, profile.getPort());
 
-          process = new FirefoxLauncher().startProfile(profile, portToUse);
+          process = new FirefoxLauncher(binary).startProfile(profile, portToUse);
 
           setAddress(host, portToUse);
 
@@ -31,7 +32,7 @@ public class NewProfileExtensionConnection extends AbstractExtensionConnection {
         }
     }
 
-  protected void getLock(int port) throws IOException {
+    protected void getLock(int port) throws IOException {
     InetSocketAddress address = getAddressForLock(port);
 
     lockSocket = new Socket();
