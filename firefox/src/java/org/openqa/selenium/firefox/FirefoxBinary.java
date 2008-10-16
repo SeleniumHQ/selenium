@@ -182,7 +182,7 @@ public class FirefoxBinary {
                 return file;
         }
 
-        throw new RuntimeException("Unable to locate the binary on the PATH: " + binaryName);
+        return null;
     }
 
 

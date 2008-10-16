@@ -55,8 +55,13 @@ public class RemoteWebDriverTestSuite extends TestCase {
               String.format("file exists %s and is: %s", file.exists(), file.getAbsolutePath()));
           return file;
         }
+
+        protected File getKeyStore() {
+          return new File(findRootOfWebApp(), "../../../../common/test/java/keystore");
+        }
       };
       appServer.listenOn(7055);
+      appServer.listenSecurelyOn(7000);
       appServer.addServlet("remote webdriver", "/hub/*", DriverServlet.class);
       appServer.start();
 

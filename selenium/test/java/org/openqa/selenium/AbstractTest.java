@@ -70,7 +70,7 @@ public class AbstractTest {
     }
 
     protected void fail(String name, Throwable t) {
-        TestReporter.report(name, false);
+//        TestReporter.report(name, false);
         if (t instanceof RuntimeException) {
             throw (RuntimeException) t;
         } else {

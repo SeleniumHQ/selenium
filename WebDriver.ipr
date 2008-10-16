@@ -31,6 +31,7 @@
       <entry name="?*.png" />
       <entry name="?*.jpeg" />
       <entry name="?*.jpg" />
+      <entry name="?*.js" />
     </wildcardResourcePatterns>
   </component>
   <component name="DataSourceManagerImpl" />

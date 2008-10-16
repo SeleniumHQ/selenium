@@ -75,6 +75,7 @@ FirefoxDriver.prototype.close = function(respond) {
 }
 
 FirefoxDriver.prototype.executeScript = function(respond, script) {
+  Utils.dumpn("Executing script");
   var context = this.context;
   var window = Utils.getBrowser(this.context).contentWindow;
 

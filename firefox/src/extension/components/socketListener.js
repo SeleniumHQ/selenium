@@ -35,7 +35,7 @@ SocketListener.prototype.onStopRequest = function(request, context, status)
 SocketListener.prototype.onDataAvailable = function(request, context, inputStream, offset, count)
 {
     var incoming = {}
-    this.inputStream.readString(count, incoming);
+    var read = this.inputStream.readString(count, incoming);
 
     var lines = incoming.value.split('\n');
     for (var j = 0; j < lines.length; j++) {
@@ -48,17 +48,17 @@ SocketListener.prototype.onDataAvailable = function(request, context, inputStrea
                 this.step++;
             }
         } else {
-            this.data += lines[j] + "\n";
-            this.linesLeft--;
+            this.data += lines[j];
+            this.linesLeft -= read;
 
-            if (this.linesLeft == 0) {
+            if (this.linesLeft <= 0) {
                 this.executeCommand();
                 j++;  // Consume the empty line
             }
         }
     }
 
-    if (this.linesLeft == 0 && this.data) {
+    if (this.linesLeft <= 0 && this.data) {
         this.executeCommand();
     }
 }
@@ -70,7 +70,7 @@ SocketListener.prototype.executeCommand = function() {
     var command = JSON.parse(this.data);
 
     var sendBack = {
-        commandName : command.commandName,
+        commandName : command ? command.commandName : "Unknown command",
         isError : false,
         response : "",
         elementId : command.elementId

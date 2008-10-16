@@ -99,9 +99,9 @@ public class Jetty6AppServer implements AppServer {
     connector.setPort(port);
     server.addConnector(connector);
 
-    File keyStore = new File(findRootOfWebApp(), "../../test/java/keystore");
+    File keyStore = getKeyStore();
     if (!keyStore.exists())
-      throw new RuntimeException("Cannot find keystore for SSL cert");
+      throw new RuntimeException("Cannot find keystore for SSL cert: " + keyStore.getAbsolutePath());
 
     SslSocketConnector secureSocket = new SslSocketConnector();
     secureSocket.setPort(securePort);
@@ -117,6 +117,10 @@ public class Jetty6AppServer implements AppServer {
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
+  }
+
+  protected File getKeyStore() {
+    return new File(findRootOfWebApp(), "../../test/java/keystore");
   }
 
   public void listenOn(int port) {

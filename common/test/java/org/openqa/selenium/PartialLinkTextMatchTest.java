@@ -3,7 +3,7 @@ package org.openqa.selenium;
 import java.util.Collection;
 
 public class PartialLinkTextMatchTest extends AbstractDriverTestCase {
-
+        @Ignore("safari,remote,ie")
 	public void testLinkWithFormattingTags() {
         driver.get(simpleTestPage);
         WebElement elem = driver.findElement(By.id("links"));
@@ -13,7 +13,8 @@ public class PartialLinkTextMatchTest extends AbstractDriverTestCase {
         assertNotNull(res);
         assertEquals("link with formatting tags", res.getText());
     }
-	
+
+        @Ignore("safari,remote,ie")
 	public void testLinkWithLeadingSpaces() {
         driver.get(simpleTestPage);
         WebElement elem = driver.findElement(By.id("links"));
@@ -23,8 +24,9 @@ public class PartialLinkTextMatchTest extends AbstractDriverTestCase {
         assertNotNull(res);
         assertEquals(" link with leading space", res.getText());
     }
-	
-	public void testLinkWithTrailingSpace() {
+
+        @Ignore("safari,remote,ie")
+        public void testLinkWithTrailingSpace() {
         driver.get(simpleTestPage);
         WebElement elem = driver.findElement(By.id("links"));
         
@@ -33,8 +35,9 @@ public class PartialLinkTextMatchTest extends AbstractDriverTestCase {
         assertNotNull(res);
         assertEquals("link with trailing space", res.getText());
     }
-	
-	public void testFindMultipleElements() {
+
+        @Ignore("safari,remote,ie")
+        public void testFindMultipleElements() {
 		driver.get(simpleTestPage);
         WebElement elem = driver.findElement(By.id("links"));
         

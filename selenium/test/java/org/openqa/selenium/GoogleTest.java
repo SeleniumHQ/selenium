@@ -26,7 +26,7 @@ public class GoogleTest extends AbstractTest {
             selenium.type("q", "OpenQA");
             selenium.click("btnG");
             selenium.waitForPageToLoad("30000");
-            assertTrue(selenium.getBodyText().contains("premier source for quality open source QA projects"));
+            assertTrue(selenium.getBodyText().contains("Bromine"));
         } catch (Throwable t) {
             fail("GoogleTest.simple", t);
         }

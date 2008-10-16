@@ -23,7 +23,6 @@ import org.openqa.selenium.remote.PropertyMunger;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.handler.WebDriverHandler;
-import org.openqa.selenium.remote.server.renderer.EmptyResult;
 
 public class ResultConfig {
 

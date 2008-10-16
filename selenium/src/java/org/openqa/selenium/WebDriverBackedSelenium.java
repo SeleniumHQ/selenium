@@ -33,8 +33,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Date;
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.BufferedReader;
+import java.io.IOException;
 
 public class WebDriverBackedSelenium implements Selenium {
     private static final Pattern STRATEGY_AND_VALUE_PATTERN = Pattern.compile("^(\\p{Alpha}+)=(.*)");
@@ -44,6 +50,19 @@ public class WebDriverBackedSelenium implements Selenium {
     private final Map<String, LookupStrategy> lookupStrategies = new HashMap<String, LookupStrategy>();
     private final Map<String, OptionSelectStrategy> optionSelectStrategies = new HashMap<String, OptionSelectStrategy>(); 
     private final Map<String, TextMatchingStrategy> textMatchingStrategies = new HashMap<String, TextMatchingStrategy>();
+    private final Pattern NAME_VALUE_PAIR_PATTERN = Pattern.compile("([^\\s=\\[\\]\\(\\),\"\\/\\?@:;]+)=([^\\s=\\[\\]\\(\\),\"\\/\\?@:;]*)");
+    private static final Pattern MAX_AGE_PATTERN = Pattern.compile("max_age=(\\d+)");
+    private static final Pattern PATH_PATTERN = Pattern.compile("path=([^\\s,]+)[,]?");
+    private static final Pattern DOMAIN_PATTERN = Pattern.compile("domain=([^\\s,]+)[,]?");
+
+    private static final String resourceName = "/org/openqa/selenium/internal/injectableSelenium.js";
+
+    // Keyboard related stuff
+    private boolean metaKeyDown;
+    private boolean altKeyDown;
+    private boolean controlKeyDown;
+    private boolean shiftKeyDown;
+    private String embeddedSelenium;
 
     public WebDriverBackedSelenium(WebDriver baseDriver, String baseUrl) {
         setUpElementFindingStrategies();
@@ -92,11 +111,11 @@ public class WebDriverBackedSelenium implements Selenium {
     }
 
     public void altKeyDown() {
-        throw new UnsupportedOperationException();
+        altKeyDown = true;
     }
 
     public void altKeyUp() {
-        throw new UnsupportedOperationException();
+        altKeyDown = false;
     }
 
     public void answerOnNextPrompt(String answer) {
@@ -129,36 +148,62 @@ public class WebDriverBackedSelenium implements Selenium {
     }
 
     public void controlKeyDown() {
-        throw new UnsupportedOperationException();
+        controlKeyDown = true;
     }
 
     public void controlKeyUp() {
-        throw new UnsupportedOperationException();
+        controlKeyDown = false;
     }
 
     public void createCookie(String nameValuePair, String optionsString) {
-        throw new UnsupportedOperationException();
+        Matcher nameValuePairMatcher = NAME_VALUE_PAIR_PATTERN.matcher(nameValuePair);
+        if (!nameValuePairMatcher.find())
+            throw new SeleniumException("Invalid parameter: " + nameValuePair);
+
+        String name = nameValuePairMatcher.group(1);
+        String value = nameValuePairMatcher.group(2);
+
+        String rawCookie = nameValuePair.trim();
+        Matcher maxAgeMatcher = MAX_AGE_PATTERN.matcher(optionsString);
+        Date maxAge = null;
+
+        if (maxAgeMatcher.find()) {
+            maxAge = new Date(System.currentTimeMillis() + Integer.parseInt(maxAgeMatcher.group(1)) * 1000);
+        }
+
+        String path = null;
+        Matcher pathMatcher = PATH_PATTERN.matcher(optionsString);
+        if (pathMatcher.find()) {
+            path = pathMatcher.group(1);
+        }
+
+        Cookie cookie = new Cookie(name, value, path, maxAge);
+        driver.manage().addCookie(cookie);
     }
 
     public void deleteCookie(String name, String path) {
-        throw new UnsupportedOperationException();
+        driver.manage().deleteCookieNamed(name);
     }
 
     public void deleteAllVisibleCookies() {
-        throw new UnsupportedOperationException("deleteAllVisibleCookies");
+        driver.manage().deleteAllCookies();
     }
 
     public void setBrowserLogLevel(String logLevel) {
         throw new UnsupportedOperationException("setBrowserLogLevel");
     }
 
-    public void runScript(String script) {
+    private Object executeScript(String script) {
         if (driver instanceof JavascriptExecutor) {
-            ((JavascriptExecutor) driver).executeScript(script);
+            return ((JavascriptExecutor) driver).executeScript(script);
         }
 
         throw new UnsupportedOperationException(
                 "The underlying WebDriver instance does not support executing javascript");
+    }
+
+    public void runScript(String script) {
+        executeScript(script);
     }
 
     public void addLocationStrategy(String strategyName, String functionDefinition) {
@@ -192,25 +237,33 @@ public class WebDriverBackedSelenium implements Selenium {
     }
 
     public void dragAndDrop(String locator, String movementsString) {
-        throw new UnsupportedOperationException();
+        String[] parts = movementsString.split("\\s*,\\s*", 2);
+        int xDelta = Integer.parseInt(parts[0].trim());
+        int yDelta = Integer.parseInt(parts[1].trim());
+
+        ((RenderedWebElement) findElement(locator)).dragAndDropBy(xDelta, yDelta);
     }
 
     public void dragAndDropToObject(String locatorOfObjectToBeDragged,
                                     String locatorOfDragDestinationObject) {
-        throw new UnsupportedOperationException();
+        RenderedWebElement dragger = (RenderedWebElement) findElement(locatorOfObjectToBeDragged);
+        RenderedWebElement draggee = (RenderedWebElement) findElement(locatorOfDragDestinationObject);
+
+        dragger.dragAndDropOn(draggee);
     }
 
     public void dragdrop(String locator, String movementsString) {
-        throw new UnsupportedOperationException();
+        dragAndDrop(locator, movementsString);
     }
 
     public void fireEvent(String locator, String eventName) {
-        // no-op
-        System.err.println("Fire event is not supported by WebDriver. Doing nothing");
+        WebElement element = findElement(locator);
+
+        throw new UnsupportedOperationException("fireEvent");
     }
 
     public void focus(String locator) {
-        throw new UnsupportedOperationException("focus");
+        fireEvent(locator, "focus");
     }
 
     public String getAlert() {
@@ -218,11 +271,29 @@ public class WebDriverBackedSelenium implements Selenium {
     }
 
     public String[] getAllButtons() {
-        throw new UnsupportedOperationException();
+        List<WebElement> allInputs = driver.findElements(By.xpath("//input"));
+        List<String> ids = new ArrayList<String>();
+
+        for (WebElement input : allInputs) {
+            String type = input.getAttribute("type").toLowerCase();
+            if ("button".equals(type) || "submit".equals(type) || "reset".equals(type))
+                ids.add(input.getAttribute("id"));
+        }
+
+        return ids.toArray(new String[0]);
     }
 
     public String[] getAllFields() {
-        throw new UnsupportedOperationException();
+        List<WebElement> allInputs = driver.findElements(By.xpath("//input"));
+        List<String> ids = new ArrayList<String>();
+
+        for (WebElement input : allInputs) {
+            String type = input.getAttribute("type").toLowerCase();
+            if ("text".equals(type))
+                ids.add(input.getAttribute("id"));
+        }
+
+        return ids.toArray(new String[0]);
     }
 
     public String[] getAllLinks() {
@@ -276,15 +347,20 @@ public class WebDriverBackedSelenium implements Selenium {
     }
 
     public String getCookie() {
-        throw new UnsupportedOperationException();
+        return (String) executeScript("return document.cookie;");
     }
 
     public String getCookieByName(String name) {
-        throw new UnsupportedOperationException("getCookieByName");
+        for (Cookie cookie : driver.manage().getCookies()) {
+            if (name.equals(cookie.getName()))
+                return cookie.getValue();
+        }
+
+        return null;
     }
 
     public boolean isCookiePresent(String name) {
-        throw new UnsupportedOperationException("isCookiePresent");
+        return getCookieByName(name) == null;
     }
 
     public Number getCursorPosition(String locator) {
@@ -297,7 +373,7 @@ public class WebDriverBackedSelenium implements Selenium {
     }
 
     public Number getElementIndex(String locator) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("getElementIndex");
     }
 
     public Number getElementPositionLeft(String locator) {
@@ -316,8 +392,7 @@ public class WebDriverBackedSelenium implements Selenium {
     }
 
     public String getEval(String script) {
-    	// no-op. I'll have to come up with a better answer than this
-    	return null;
+    	return String.valueOf(((JavascriptExecutor) driver).executeScript(script));
     }
 
     public String getExpression(String expression) {
@@ -325,7 +400,7 @@ public class WebDriverBackedSelenium implements Selenium {
     }
 
     public Number getXpathCount(String xpath) {
-        throw new UnsupportedOperationException("getXpathCount");
+        return driver.findElements(By.xpath(xpath)).size();
     }
 
     public void assignId(String locator, String identifier) {
@@ -333,7 +408,7 @@ public class WebDriverBackedSelenium implements Selenium {
     }
 
     public void allowNativeXpath(String allow) {
-        throw new UnsupportedOperationException("allowNativeXpath");
+        // no-op
     }
 
     public void ignoreAttributesWithoutValue(String ignore) {
@@ -524,7 +599,8 @@ public class WebDriverBackedSelenium implements Selenium {
     }
 
     public void keyDown(String locator, String keySequence) {
-        typeKeys(locator, keySequence);
+        callEmbeddedSelenium("doKeyDown", findElement(locator), keySequence, controlKeyDown, altKeyDown, shiftKeyDown, metaKeyDown);
+
     }
 
     public void keyPress(String locator, String keySequence) {
@@ -536,43 +612,51 @@ public class WebDriverBackedSelenium implements Selenium {
     }
 
     public void metaKeyDown() {
-        throw new UnsupportedOperationException();
+        metaKeyDown = true;
     }
 
     public void metaKeyUp() {
-        throw new UnsupportedOperationException();
+        metaKeyDown = false;
     }
 
     public void mouseDown(String locator) {
-        findElement(locator).click();
+        WebElement element = findElement(locator);
+        callEmbeddedSelenium("triggerMouseEvent", element, "mousedown", true);
     }
 
     public void mouseDownAt(String locator, String coordString) {
-        throw new UnsupportedOperationException();
+        WebElement element = findElement(locator);
+        callEmbeddedSelenium("triggerMouseEventAt", element, "mousedown", coordString);
     }
 
     public void mouseMove(String locator) {
-        throw new UnsupportedOperationException();
+        WebElement element = findElement(locator);
+        callEmbeddedSelenium("triggerMouseEvent", element, "mousemove", true);
     }
 
     public void mouseMoveAt(String locator, String coordString) {
-        throw new UnsupportedOperationException();
+        WebElement element = findElement(locator);
+        callEmbeddedSelenium("triggerMouseEventAt", element, "mousemove", coordString);
     }
 
     public void mouseOut(String locator) {
-        throw new UnsupportedOperationException();
+        WebElement element = findElement(locator);
+        callEmbeddedSelenium("triggerMouseEvent", element, "mouseout", true);
     }
 
     public void mouseOver(String locator) {
-        throw new UnsupportedOperationException();
+        WebElement element = findElement(locator);
+        callEmbeddedSelenium("triggerMouseEvent", element, "mouseover", true);
     }
 
     public void mouseUp(String locator) {
-      findElement(locator).click();
+      WebElement element = findElement(locator);
+        callEmbeddedSelenium("triggerMouseEvent", element, "mouseup", true);
     }
 
     public void mouseUpAt(String locator, String coordString) {
-        throw new UnsupportedOperationException();
+        WebElement element = findElement(locator);
+        callEmbeddedSelenium("triggerMouseEventAt", element, "mouseup", coordString);
     }
 
     public void open(String url) {
@@ -678,11 +762,11 @@ public class WebDriverBackedSelenium implements Selenium {
     }
 
     public void shiftKeyDown() {
-        throw new UnsupportedOperationException();
+        shiftKeyDown = true;
     }
 
     public void shiftKeyUp() {
-        throw new UnsupportedOperationException();
+        shiftKeyDown = false;
     }
 
     public void start() {
@@ -699,8 +783,48 @@ public class WebDriverBackedSelenium implements Selenium {
 
     public void type(String locator, String value) {
     	WebElement element = findElement(locator);
-    	element.clear();
-        element.sendKeys(value);
+
+        callEmbeddedSelenium("replaceText", element, value);
+    }
+
+    private void callEmbeddedSelenium(String functionName, WebElement element, Object... values) {
+        StringBuilder builder = new StringBuilder(readSelenium());
+        builder.append("return browserbot.").append(functionName).append(".apply(browserbot, arguments);");
+
+        List<Object> args = new ArrayList<Object>();
+        args.add(element);
+        args.addAll(Arrays.asList(values));
+
+        ((JavascriptExecutor) driver).executeScript(builder.toString(), args.toArray());
+    }
+
+    private String readSelenium() {
+        if (embeddedSelenium != null) {
+            return embeddedSelenium;
+        }
+
+        InputStream raw = WebDriverBackedSelenium.class.getResourceAsStream(resourceName);
+        if (raw == null) {
+            throw new RuntimeException("Cannot locate the embedded selenium instance");
+        }
+
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(raw));
+            StringBuilder builder = new StringBuilder();
+            for (String line = reader.readLine(); line != null; line = reader.readLine()) {
+                builder.append(line).append("\n");
+            }
+            embeddedSelenium = builder.toString();
+            return embeddedSelenium;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                raw.close();
+            } catch (IOException e) {
+                // Nothing sane to do
+            }
+        }
     }
 
     public void typeKeys(String locator, String value) {
@@ -747,7 +871,7 @@ public class WebDriverBackedSelenium implements Selenium {
     }
 
     public void shutDownSeleniumServer() {
-        throw new UnsupportedOperationException("shutDownSeleniumServer");
+        driver.quit();
     }
 
     public void keyDownNative(String keycode) {

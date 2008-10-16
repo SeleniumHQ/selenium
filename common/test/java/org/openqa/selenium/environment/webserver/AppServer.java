@@ -33,4 +33,5 @@ public interface AppServer {
     void addAdditionalWebApplication(String context, String absolutePath);
     void addServlet(String name, String url, Class<? extends Servlet> servletClass);
     void listenOn(int port);
+    void listenSecurelyOn(int port);
 }

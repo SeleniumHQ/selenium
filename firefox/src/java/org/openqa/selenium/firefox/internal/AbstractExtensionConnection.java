@@ -10,6 +10,7 @@ import org.json.JSONException;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
@@ -96,7 +97,6 @@ public abstract class AbstractExtensionConnection implements ExtensionConnection
         long waitUntil = System.currentTimeMillis() + timeToWaitInMilliSeconds;
         while (!isConnected() && waitUntil > System.currentTimeMillis()) {
             try {
-//                System.out.println("Attempting to connect");
                 connect();
             } catch (ConnectException e) {
                 try {
@@ -125,11 +125,8 @@ public abstract class AbstractExtensionConnection implements ExtensionConnection
                                                   Command command) {
         String converted = convert(command);
 
-        int lines = countLines(converted);
-
-        StringBuffer message = new StringBuffer("Length: ");
-        message.append(lines).append("\n\n");
-
+        StringBuilder message = new StringBuilder("Length: ");
+        message.append(converted.length()).append("\n\n");
         message.append(converted).append("\n");
 
         try {
@@ -159,11 +156,14 @@ public abstract class AbstractExtensionConnection implements ExtensionConnection
             throw new RuntimeException(e);
         }
 
-        return json.toString();
-    }
-
-    private int countLines(String response) {
-        return response.split("\n").length;
+      try {
+        // Force encoding as UTF-8.
+        byte[] bytes = json.toString().getBytes("UTF-8");
+        return new String(bytes, "UTF-8");
+      } catch (UnsupportedEncodingException e) {
+        // If UTF-8 is missing from Java, we've got problems
+        throw new IllegalStateException("Cannot convert string to UTF-8");
+      }
     }
 
     private Response waitForResponseFor(String command) {
