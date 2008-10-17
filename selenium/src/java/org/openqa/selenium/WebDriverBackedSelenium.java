@@ -258,8 +258,7 @@ public class WebDriverBackedSelenium implements Selenium {
 
     public void fireEvent(String locator, String eventName) {
         WebElement element = findElement(locator);
-
-        throw new UnsupportedOperationException("fireEvent");
+        callEmbeddedSelenium("doFireEvent", element, eventName);
     }
 
     public void focus(String locator) {

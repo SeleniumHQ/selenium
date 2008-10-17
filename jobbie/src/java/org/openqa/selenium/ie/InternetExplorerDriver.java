@@ -72,7 +72,6 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
     			throw new IllegalArgumentException("Parameter is not of recognized type: " + arg);
     	}
     	
-    	script = script.replace("\"", "\\\"");
     	script = "(function() { return function(){" + script + "};})();";
     	return doExecuteScript(script, args);
     }

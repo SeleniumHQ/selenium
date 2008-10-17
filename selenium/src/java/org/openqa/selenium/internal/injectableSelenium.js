@@ -173,6 +173,16 @@ var browserbot = {
         }
     },
 
+    doFireEvent : function(element, eventName) {
+      /**
+       * Explicitly simulate an event, to trigger the corresponding &quot;on<em>event</em>&quot;
+       * handler.
+       *
+       * @param locator an <a href="#locators">element locator</a>
+       * @param eventName the event name, e.g. "focus" or "blur"
+       */
+       this.triggerEvent(element, eventName, false);
+    },
 
     getClientXY : function(element, coordString) {
         // Parse coordString
