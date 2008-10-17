@@ -151,14 +151,14 @@ public abstract class By {
          public List<WebElement> findElements(SearchContext context) {
              if (context instanceof FindsByClassName)
                return ((FindsByClassName) context).findElementsByClassName(className);
-             return ((FindsByXPath) context).findElementsByXPath("//*[" + containingWord("class", className) + "]");
+             return ((FindsByXPath) context).findElementsByXPath(".//*[" + containingWord("class", className) + "]");
          }
 
          @Override
          public WebElement findElement(SearchContext context) {
              if (context instanceof FindsByClassName)
                return ((FindsByClassName) context).findElementByClassName(className);
-             return ((FindsByXPath) context).findElementByXPath("//*[" + containingWord("class", className) + "]");
+             return ((FindsByXPath) context).findElementByXPath(".//*[" + containingWord("class", className) + "]");
          }
 
          /**

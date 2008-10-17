@@ -413,6 +413,31 @@ FirefoxDriver.prototype.findElementsByLinkText = function (respond, linkText) {
     respond.send();
 };
 
+
+FirefoxDriver.prototype.findChildElementsByClassName = function(respond, className) {
+    var element = Utils.getElementAt(respond.elementId, this.context);
+
+    if (element["getElementsByClassName"]) {
+      Utils.dumpn("All good");
+      var result = element.getElementsByClassName(className);
+
+      var response = "";
+      for (var i = 0; i < result.length; i++) {
+          var e = result[i];
+          var index = Utils.addToKnownElements(e, this.context);
+          response += index + ",";
+      }
+      // Strip the trailing comma
+      response = response.substring(0, response.length - 1);
+
+      respond.context = this.context;
+      respond.response = response;
+      respond.send();
+    } else {
+      this.findElementsByXPath(respond, "//*[contains(concat(' ',normalize-space(@class),' '),' " + name + " ')]");
+    }
+};
+
 FirefoxDriver.prototype.findElementById = function(respond, id) {
 	var doc = Utils.getDocument(this.context);
 	var parentElement = Utils.getElementAt(respond.elementId, this.context);

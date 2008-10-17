@@ -123,4 +123,24 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
                 By.linkText("hello world"));
         assertThat(children.size(), is(2));
     }
+
+    @Ignore("safari,ie")
+    public void testShouldFindChildElementsByClassName() {
+        driver.get(nestedPage);
+        WebElement parent = driver.findElement(By.name("classes"));
+
+        WebElement element = parent.findElement(By.className("one"));
+
+        assertEquals("Find me", element.getText());
+    }
+
+    @Ignore("safari,ie")
+    public void testShouldFindChildrenByClassName() {
+        driver.get(nestedPage);
+        WebElement parent = driver.findElement(By.name("classes"));
+
+        List<WebElement> elements = parent.findElements(By.className("one"));
+
+        assertEquals(2, elements.size());
+    }
 }

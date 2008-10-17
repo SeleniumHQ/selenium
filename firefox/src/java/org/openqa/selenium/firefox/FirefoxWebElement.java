@@ -214,7 +214,7 @@ public class FirefoxWebElement implements RenderedWebElement, FindsByXPath,
     }
     
     public List<WebElement> findElementsByClassName(String using) {
-    	String indices = sendMessage(RuntimeException.class, "findElementsByClassName", using);
+    	String indices = sendMessage(RuntimeException.class, "findChildElementsByClassName", using);
         return getElementsFromIndices(indices);
     }
     
