@@ -339,11 +339,11 @@ public class HttpCommandProcessor implements CommandProcessor {
         String[] result = getStringArray(commandName, args);
         boolean[] b = new boolean[result.length];
         for (int i = 0; i < result.length; i++) {
-            if ("true".equals(result)) {
+            if ("true".equals(result[i])) {
                 b[i] = true;
                 continue;
             }
-            if ("false".equals(result)) {
+            if ("false".equals(result[i])) {
                 b[i] = false;
                 continue;
             }
