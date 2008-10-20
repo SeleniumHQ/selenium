@@ -68,7 +68,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     private WebClient webClient;
     private WebWindow currentWindow;
     /** window name => history. */
-    private Map<String, History> histories = new HashMap<String, History>();
+    private Map<WebWindow, History> histories = new HashMap<WebWindow, History>();
     private boolean enableJavascript;
     private ProxyConfig proxyConfig;
 
@@ -89,19 +89,17 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
                     waitingToLoad = false;
                     webClient.setCurrentWindow(window);
                 }
-                String windowName = window.getName();
-                History history = histories.get(windowName);
+                History history = histories.get(window);
                 if (history == null) {
                     history = new History(window);
-                    histories.put(windowName, history);
+                    histories.put(window, history);
                 }
                 history.addNewPage(webWindowEvent.getNewPage());
             }
 
             public void webWindowClosed(WebWindowEvent webWindowEvent) {
                 WebWindow window = webWindowEvent.getWebWindow();
-                String windowName = window.getName();
-                histories.remove(windowName);
+                histories.remove(window);
                 pickWindow();
             }
         });
@@ -250,7 +248,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
                   args[i] instanceof Boolean)) {
               throw new IllegalArgumentException(
                   "Argument must be a string, number, boolean or WebElement: " +
-                      args[i] + " (" + args[i].getClass() + ")");                                  
+                      args[i] + " (" + args[i].getClass() + ")");
             }
 
             if (args[i] instanceof HtmlUnitWebElement) {
@@ -264,13 +262,13 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
         script = "function() {" + script + "};";
         ScriptResult result = page.executeJavaScript(script);
         Function func = (Function) result.getJavaScriptResult();
-        
+
         result = page.executeJavaScriptFunctionIfPossible(
-        		func, 
-        		(ScriptableObject) currentWindow.getScriptObject(), 
-        		parameters, 
+        		func,
+        		(ScriptableObject) currentWindow.getScriptObject(),
+        		parameters,
         		page.getDocumentElement());
-        
+
         Object value = result.getJavaScriptResult();
 
         if (value instanceof HTMLElement) {
@@ -561,15 +559,13 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
 
     private class HtmlUnitNavigation implements Navigation {
       public void back() {
-        String windowName = currentWindow.getName();
-        History history = histories.get(windowName);
+        History history = histories.get(currentWindow);
         history.goBack();
       }
 
 
       public void forward() {
-          String windowName = currentWindow.getName();
-          History history = histories.get(windowName);
+          History history = histories.get(currentWindow);
           history.goForward();
       }
 
@@ -621,13 +617,13 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
                         c.getExpiryDate(), c.getSecure()));
                 }
             }
-            return retCookies;  
+            return retCookies;
         }
 
         private String getHostName() {
             return lastPage().getWebResponse().getUrl().getHost().toLowerCase();
         }
-        
+
         private String getPath() {
         	return lastPage().getWebResponse().getUrl().getPath();
         }
@@ -689,7 +685,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     }
 
     public List<WebElement> findElementsByPartialLinkText(String using) {
-        
+
         List<HtmlAnchor> anchors = ((HtmlPage) lastPage()).getAnchors();
         Iterator<HtmlAnchor> allAnchors = anchors.iterator();
         List<WebElement> elements = new ArrayList<WebElement>();

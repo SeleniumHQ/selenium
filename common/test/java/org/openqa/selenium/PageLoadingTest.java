@@ -10,7 +10,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
 
         assertThat(driver.getTitle(), equalTo("Hello WebDriver"));
     }
-    
+
     public void testShouldFollowRedirectsSentInTheHttpResponseHeaders() {
         driver.get(redirectPage);
 
@@ -21,7 +21,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
         driver.get(metaRedirectPage);
         assertThat(driver.getTitle(), equalTo("We Arrive Here"));
     }
-    
+
     public void testShouldBeAbleToGetAFragmentOnTheCurrentPage() {
         driver.get(xhtmlTestPage);
         driver.get(xhtmlTestPage + "#text");
@@ -60,35 +60,46 @@ public class PageLoadingTest extends AbstractDriverTestCase {
       }
 
     @Ignore("safari")
-      public void testShouldBeAbleToNavigateBackInTheBrowserHistory() {
-          driver.get(formPage);
+    public void testShouldBeAbleToNavigateBackInTheBrowserHistory() {
+        driver.get(formPage);
 
-          driver.findElement(By.id("imageButton")).submit();
-          assertThat(driver.getTitle(), equalTo("We Arrive Here"));
+        driver.findElement(By.id("imageButton")).submit();
+        assertThat(driver.getTitle(), equalTo("We Arrive Here"));
 
-          driver.navigate().back();
-          assertThat(driver.getTitle(), equalTo("We Leave From Here"));
-      }
+        driver.navigate().back();
+        assertThat(driver.getTitle(), equalTo("We Leave From Here"));
+    }
 
     @Ignore("safari")
-      public void testShouldBeAbleToNavigateForwardsInTheBrowserHistory() {
-          driver.get(formPage);
+    public void testShouldBeAbleToNavigateBackInTheBrowserHistoryInPresenceOfIframes() {
+        driver.get(xhtmlTestPage);
 
-          driver.findElement(By.id("imageButton")).submit();
-          assertThat(driver.getTitle(), equalTo("We Arrive Here"));
+        driver.findElement(By.name("sameWindow")).click();
+        assertThat(driver.getTitle(), equalTo("This page has iframes"));
 
-          driver.navigate().back();
-          assertThat(driver.getTitle(), equalTo("We Leave From Here"));
+        driver.navigate().back();
+        assertThat(driver.getTitle(), equalTo("XHTML Test Page"));
+    }
 
-          driver.navigate().forward();
-          assertThat(driver.getTitle(), equalTo("We Arrive Here"));
-      }
+    @Ignore("safari")
+    public void testShouldBeAbleToNavigateForwardsInTheBrowserHistory() {
+        driver.get(formPage);
+
+        driver.findElement(By.id("imageButton")).submit();
+        assertThat(driver.getTitle(), equalTo("We Arrive Here"));
+
+        driver.navigate().back();
+        assertThat(driver.getTitle(), equalTo("We Leave From Here"));
+
+        driver.navigate().forward();
+        assertThat(driver.getTitle(), equalTo("We Arrive Here"));
+    }
 
     @Ignore("safari, ie, firefox")
     public void testShouldBeAbleToAccessPagesWithAnInsecureSslCertificate() {
         String url = GlobalTestEnvironment.get().getAppServer().whereIsSecure("simpleTest.html");
         driver.get(url);
-        
+
         // This should work
         assertThat(driver.getTitle(), equalTo("Hello WebDriver"));
     }
