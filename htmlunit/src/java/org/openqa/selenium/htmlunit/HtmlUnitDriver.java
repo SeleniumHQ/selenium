@@ -641,12 +641,12 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
         }
 
         private String getDomainForCookie(Cookie cookie) {
-            URL current = lastPage().getWebResponse().getUrl();
-            String hostName = cookie.getDomain();
-            if (hostName == null || "".equals(hostName)) {
-                hostName = String.format("%s:%s", current.getHost(), current.getPort());
+            String domain = cookie.getDomain();
+            if (domain == null || "".equals(domain)) {
+                URL current = lastPage().getWebResponse().getUrl();
+                domain = String.format("%s:%s", current.getHost(), current.getPort());
             }
-            return hostName;
+            return domain;
         }
     }
 
