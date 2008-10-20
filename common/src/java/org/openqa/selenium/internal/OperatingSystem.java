@@ -21,7 +21,7 @@ public enum OperatingSystem {
 			return "\n";
 		}
         },
-        ANY("") {
+     ANY("") {
                @Override
                public String getLineEnding() {
                    throw new UnsupportedOperationException("getLineEnding");
@@ -41,18 +41,21 @@ public enum OperatingSystem {
 		}
 
                 OperatingSystem mostLikely = UNIX;
+                String previousMatch = null;
                 for (OperatingSystem os : OperatingSystem.values()) {
                   for (String matcher : os.partOfOsName) {
                         if ("".equals(matcher))
                           continue;
 
                         if (os.isExactMatch(matcher)) {
+                          System.out.println("Exect match: " + matcher);
                           currentOs = os;
                           return os;
                         }
-                        if (os.isCurrentPlatform(matcher)) {
-			  mostLikely = os;
-			}
+                        if (os.isCurrentPlatform(matcher) && isBetterMatch(previousMatch, matcher)) {
+                        	previousMatch = matcher;
+                        	mostLikely = os;
+			            }
                   }
                 }
 
@@ -61,7 +64,14 @@ public enum OperatingSystem {
 		return mostLikely;
 	}
 
-        public abstract String getLineEnding();
+    private static boolean isBetterMatch(String previous, String matcher) {
+		if (previous == null)
+			return true;
+		
+		return matcher.length() >= previous.length();
+	}
+
+		public abstract String getLineEnding();
 
 	private boolean isCurrentPlatform(String matchAgainst) {
 		String osName = System.getProperty("os.name").toLowerCase();
