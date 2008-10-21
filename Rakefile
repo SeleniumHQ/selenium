@@ -39,7 +39,7 @@ task :prebuild do
 
   if windows? then
     if (!present?("msbuild.exe")) then
-      puts "Cannot locate '#{exe}' which is required for the build"
+      puts "Cannot locate 'msbuild.exe' which is required for the build"
       exit -1
     end
   end
