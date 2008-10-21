@@ -2,16 +2,7 @@ package org.openqa.selenium.firefox;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.openqa.selenium.Alert;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Cookie;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.NoSuchFrameException;
-import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.Speed;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.internal.ExtensionConnectionFactory;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.internal.FindsByClassName;
@@ -199,15 +190,15 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
   public WebElement findElementByClassName(String using) {
     return findElement("selectElementUsingClassName", using);
   }
-  
+
   public WebElement findElementByLinkText(String using) {
     return findElement("selectElementUsingLink", using);
   }
-  
+
   public WebElement findElementByPartialLinkText(String using) {
       return findElement("selectElementUsingPartialLinkText", using);
   }
-  
+
   public WebElement findElementByXPath(String using) {
     return findElement("selectElementUsingXPath", using);
   }
@@ -307,7 +298,7 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
     for (int i = 0; i < args.length; i++) {
       converted[i] = convertToJsObject(args[i]);
     }
-    
+
     return converted;
   }
 
@@ -409,7 +400,7 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
             if(!"".equals(response)) {
                 for(String cookieString : response.split("\n")) {
                     if ("".equals(cookieString.trim())) continue;
-                  
+
                     HashMap<String, String> attributesMap = new HashMap<String, String>();
                     attributesMap.put("name", "");
                     attributesMap.put("value", "");
@@ -522,10 +513,9 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
         }
 
         public WebDriver window(String windowName) {
-            // TODO: simon: 2007-02-01 This should also throw an exception
-            String response = sendMessage(RuntimeException.class, "switchToWindow", String.valueOf(windowName));
+            String response = sendMessage(NoSuchWindowException.class, "switchToWindow", String.valueOf(windowName));
             if (response == null || "No window found".equals(response)) {
-                return null;
+                throw new NoSuchWindowException("Cannot find window: " + windowName);
             }
             try {
                 FirefoxDriver.this.context = new Context(response);

@@ -132,7 +132,7 @@ public interface WebDriver {
      * currently open.
      */
     void close();
-    
+
     /**
      * Quits this driver, closing every associated window.
      */
@@ -162,9 +162,9 @@ public interface WebDriver {
      * @see org.openqa.selenium.WebDriver.Options
      */
     public Options manage();
-    
+
     /**
-     * An interface for managing stuff you would do in a browser menu 
+     * An interface for managing stuff you would do in a browser menu
      */
     public interface Options {
 
@@ -172,7 +172,7 @@ public interface WebDriver {
          * Add a specific cookie. If the cookie's domain name is left blank, it
          * is assumed that the cookie is meant for the domain of the current
          * document.
-         * 
+         *
          * @param cookie
          *                The cookie to add.
          */
@@ -181,7 +181,7 @@ public interface WebDriver {
         /**
          * Delete the named cookie from the current domain. This is equivalent
          * to setting the named cookie's expiry date to some time in the past.
-         * 
+         *
          * @param name
          *                The name of the cookie to delete
          */
@@ -190,7 +190,7 @@ public interface WebDriver {
         /**
          * Delete a cookie from the browser's "cookie jar". The domain of the
          * cookie will be ignored.
-         * 
+         *
          * @param cookie
          */
         void deleteCookie(Cookie cookie);
@@ -203,25 +203,25 @@ public interface WebDriver {
         /**
          * Get all the cookies for the current domain. This is the equivalent of
          * calling "document.cookies"
-         * 
+         *
          * @return A Set of cookies for the current domain.
          */
         Set<Cookie> getCookies();
 
         /**
          * Gets the mouse speed for drag and drop
-         * 
+         *
          */
         Speed getSpeed();
 
         /**
          * Sets the speed for user input
-         * 
+         *
          * @param speed
          */
         void setSpeed(Speed speed);
     }
-    
+
     /**
 	 * Used to locate a given frame or window.
 	 */
@@ -255,20 +255,21 @@ public interface WebDriver {
          *
          * @param windowName
          * @return A driver focused on the given window
+         * @throws NoSuchWindowException If the window cannot be found
          */
         WebDriver window(String windowName);
 
-      /**
-       * Provides a mechanism to iterate over every open browser window.  
-       *
-       * @return An iterable of current open windows.
-       */
+        /**
+         * Provides a mechanism to iterate over every open browser window.
+         *
+         * @return An iterable of current open windows.
+         */
         Iterable<WebDriver> windowIterable();
 
         /**
          * Selects either the first frame on the page, or the main document when a page contains iframes.
          */
-          WebDriver defaultContent();
+        WebDriver defaultContent();
 
         /**
          * Switches to the element that currently has focus, or the body element if this cannot be detected.
@@ -281,30 +282,30 @@ public interface WebDriver {
     }
 
     public interface Navigation {
-      /**
-       * Move back a single "item" in the browser's history.
-       */
-      void back();
+        /**
+         * Move back a single "item" in the browser's history.
+         */
+        void back();
 
-      /**
-       * Move a single "item" forward in the browser's history. Does nothing if
-       * we are on the latest page viewed.
-       */
-      void forward();
+        /**
+         * Move a single "item" forward in the browser's history. Does nothing if
+         * we are on the latest page viewed.
+         */
+        void forward();
 
 
-      /**
-       * Load a new web page in the current browser window. This is done using an
-       * HTTP GET operation, and the method will block until the load is complete.
-       * This will follow redirects issued either by the server or as a
-       * meta-redirect from within the returned HTML. Should a meta-redirect
-       * "rest" for any duration of time, it is best to wait until this timeout is
-       * over, since should the underlying page change whilst your test is
-       * executing the results of future calls against this interface will be
-       * against the freshly loaded page.
-       *
-       * @param url The URL to load. It is best to use a fully qualified URL
-       */
-      void to(String url);
+        /**
+         * Load a new web page in the current browser window. This is done using an
+         * HTTP GET operation, and the method will block until the load is complete.
+         * This will follow redirects issued either by the server or as a
+         * meta-redirect from within the returned HTML. Should a meta-redirect
+         * "rest" for any duration of time, it is best to wait until this timeout is
+         * over, since should the underlying page change whilst your test is
+         * executing the results of future calls against this interface will be
+         * against the freshly loaded page.
+         *
+         * @param url The URL to load. It is best to use a fully qualified URL
+         */
+        void to(String url);
     }
 }

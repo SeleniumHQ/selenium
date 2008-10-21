@@ -38,6 +38,19 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
     driver.findElement(By.id("iframe_page_heading"));
   }
 
+  @Ignore("ie")
+  public void testShouldThrowNoSuchWindowException() {
+    driver.get(xhtmlTestPage);
+
+    try {
+      driver.switchTo().window("invalid name");
+      fail("NoSuchWindowException expected");
+    } catch (NoSuchWindowException e) {
+      // Expected.
+    }
+  }
+
+
   @NeedsFreshDriver
   @NoDriverAfterTest
   @Ignore("ie, remote")
@@ -59,6 +72,6 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
 
 
   public void testRemovingDriversFromTheWindowIteratorShouldCloseTheUnderlyingWindow() {
-    // Not implemented yet  
+    // Not implemented yet
   }
 }
