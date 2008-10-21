@@ -29,7 +29,7 @@ public class FirefoxWebElement implements RenderedWebElement, FindsByXPath,
     }
 
     public void click() {
-        sendMessage(RuntimeException.class, "click");
+        sendMessage(UnsupportedOperationException.class, "click");
     }
     
     public void submit() {
@@ -46,7 +46,7 @@ public class FirefoxWebElement implements RenderedWebElement, FindsByXPath,
     }
 
     public void clear() {
-    	sendMessage(RuntimeException.class, "clear");
+    	sendMessage(UnsupportedOperationException.class, "clear");
     }
     
     public void sendKeys(CharSequence... value) {
@@ -54,7 +54,7 @@ public class FirefoxWebElement implements RenderedWebElement, FindsByXPath,
     	for (CharSequence seq : value) {
     		builder.append(seq);
     	}
-        sendMessage(RuntimeException.class, "sendKeys", builder.toString());
+        sendMessage(UnsupportedOperationException.class, "sendKeys", builder.toString());
     }
 
     public String getAttribute(String name) {
@@ -125,7 +125,7 @@ public class FirefoxWebElement implements RenderedWebElement, FindsByXPath,
     }
     
     public void dragAndDropBy(int moveRight, int moveDown) {
-        sendMessage(RuntimeException.class, "dragAndDrop", moveRight, moveDown);
+        sendMessage(UnsupportedOperationException.class, "dragAndDrop", moveRight, moveDown);
     }
 
     public void dragAndDropOn(RenderedWebElement element) {

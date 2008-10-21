@@ -21,6 +21,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import org.hamcrest.Matchers;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNot.not;
 import static org.junit.matchers.JUnitMatchers.either;
 
 import java.awt.*;
@@ -239,5 +240,63 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     String text = driver.findElement(By.id("error")).getText();
 
     assertNotNull(text);
+  }
+  
+  @JavascriptEnabled
+  @Ignore("safari, htmlunit, ie")
+  public void testShouldNotBeAbleToClickOnAnElementThatIsNotDisplayed() {
+	 driver.get(javascriptPage);
+	 WebElement element = driver.findElement(By.id("unclickable"));
+	 
+	 try {
+	   element.click();
+	   fail("You should not be able to click on an invisible element");
+	 } catch (UnsupportedOperationException e) {
+		 // This is expected
+	 }
+  }
+  
+  @JavascriptEnabled
+  @Ignore("safari, htmlunit, ie")
+  public void testShouldNotBeAbleToToggleAnElementThatIsNotDisplayed() {
+	 driver.get(javascriptPage);
+	 WebElement element = driver.findElement(By.id("untogglable"));
+	 
+	 try {
+	   element.toggle();
+	   fail("You should not be able to toggle an invisible element");
+	 } catch (UnsupportedOperationException e) {
+		 // This is expected
+	 }
+  }
+  
+  @JavascriptEnabled
+  @Ignore("safari, htmlunit, ie")
+  public void testShouldNotBeAbleToSelectAnElementThatIsNotDisplayed() {
+	 driver.get(javascriptPage);
+	 WebElement element = driver.findElement(By.id("untogglable"));
+	 
+	 try {
+	   element.setSelected();
+	   fail("You should not be able to select an invisible element");
+	 } catch (UnsupportedOperationException e) {
+		 // This is expected
+	 }
+  }
+  
+  @JavascriptEnabled
+  @Ignore("safari, htmlunit, ie")
+  public void testShouldNotBeAbleToTypeAnElementThatIsNotDisplayed() {
+	 driver.get(javascriptPage);
+	 WebElement element = driver.findElement(By.id("unclickable"));
+	 
+	 try {
+	   element.sendKeys("You don't see me");
+	   fail("You should not be able to send keyboard input to an invisible element");
+	 } catch (UnsupportedOperationException e) {
+		 // This is expected
+	 }
+	 
+	 assertThat(element.getValue(), is(not("You don't see me")));
   }
 }

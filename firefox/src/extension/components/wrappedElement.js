@@ -7,6 +7,13 @@ FirefoxDriver.prototype.click = function(respond) {
         return;
     }
 
+    if (!Utils.isDisplayed(element)) {
+	    respond.isError = true;
+		respond.response = "Element is not currently visible and so may not be clicked";
+		respond.send();
+		return;
+	}
+
     var currentlyActive = Utils.getActiveElement(this.context);
 
     Utils.fireMouseEventOn(this.context, element, "mousedown");
@@ -87,6 +94,13 @@ FirefoxDriver.prototype.sendKeys = function(respond, value) {
 
     var element = Utils.getElementAt(respond.elementId, this.context);
 
+    if (!Utils.isDisplayed(element)) {
+	    respond.isError = true;
+		respond.response = "Element is not currently visible and so may not be clicked";
+		respond.send();
+		return;
+	}
+
   var currentlyActive = Utils.getActiveElement(this.context);
   if (currentlyActive != element) {
       currentlyActive.blur();
@@ -102,6 +116,14 @@ FirefoxDriver.prototype.clear = function(respond) {
    respond.context = this.context;
 
    var element = Utils.getElementAt(respond.elementId, this.context);
+   
+   if (!Utils.isDisplayed(element)) {
+	    respond.isError = true;
+		respond.response = "Element is not currently visible and so may not be clicked";
+		respond.send();
+		return;
+   }
+   
    var isTextField = element["value"] !== undefined;
 
    if (isTextField) {
@@ -216,6 +238,14 @@ FirefoxDriver.prototype.getElementSelected = function(respond) {
 FirefoxDriver.prototype.setElementSelected = function(respond) {
     var element = Utils.getElementAt(respond.elementId, this.context);
 
+    if (!Utils.isDisplayed(element)) {
+	    respond.isError = true;
+		respond.response = "Element is not currently visible and so may not be clicked";
+		respond.send();
+		return;
+	}
+
+
     var wasSet = "You may not select an unselectable element";
     respond.context = this.context;
     respond.isError = true;
@@ -263,6 +293,13 @@ FirefoxDriver.prototype.toggleElement = function(respond) {
 
     var element = Utils.getElementAt(respond.elementId, this.context);
 
+    if (!Utils.isDisplayed(element)) {
+	    respond.isError = true;
+		respond.response = "Element is not currently visible and so may not be clicked";
+		respond.send();
+		return;
+	}
+
     try {
         var checkbox = element.QueryInterface(Components.interfaces.nsIDOMHTMLInputElement);
         if (checkbox.type == "checkbox") {
@@ -300,17 +337,8 @@ FirefoxDriver.prototype.toggleElement = function(respond) {
 FirefoxDriver.prototype.isElementDisplayed = function(respond) {
     var element = Utils.getElementAt(respond.elementId, this.context);
 
-    var isDisplayed = true;
-    do {
-        var display = Utils.getStyleProperty(element, "display");
-        var visible = Utils.getStyleProperty(element, "visibility");
-        isDisplayed &= display != "none" && visible != "hidden";
-
-        element = element.parentNode;
-    } while (element.tagName.toLowerCase() != "body" && isDisplayed);
-
     respond.context = this.context;
-    respond.response = isDisplayed ? "true" : "false";
+    respond.response = Utils.isDisplayed(element) ? "true" : "false";
     respond.send();
 };
 
@@ -336,6 +364,13 @@ FirefoxDriver.prototype.getElementSize = function(respond) {
 
 FirefoxDriver.prototype.dragAndDrop = function(respond, movementString) {
     var element = Utils.getElementAt(respond.elementId, this.context);
+    
+    if (!Utils.isDisplayed(element)) {
+	    respond.isError = true;
+		respond.response = "Element is not currently visible and so may not be clicked";
+		respond.send();
+		return;
+	}
     
     var clientStartXY = Utils.getElementLocation(element, this.context);
     

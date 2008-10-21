@@ -14,7 +14,7 @@ public class SingleTestSuite extends TestCase {
   private final static String SAFARI = "org.openqa.selenium.safari.SafariDriver";
 
   public static Test suite() throws Exception {
-    String driver = HTML_UNIT;
+    String driver = FIREFOX;
 
     System.setProperty("webdriver.firefox.useExisting", "true");
 
@@ -25,8 +25,8 @@ public class SingleTestSuite extends TestCase {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("ChildrenFindingTest")
-         .method("testShouldFindChildElementsByClassName")
+        .onlyRun("FormHandlingTest")
+         .method("testClickingOnUnclickableElementsDoesNothing")
 //        .exclude("ie")
         .leaveRunning()
         ;  // Yeah, this look strange :)

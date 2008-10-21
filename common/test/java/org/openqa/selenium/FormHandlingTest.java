@@ -17,8 +17,9 @@ public class FormHandlingTest extends AbstractDriverTestCase {
 	public void testClickingOnUnclickableElementsDoesNothing() {
 		driver.get(formPage);
 		try {
-			driver.findElement(By.xpath("//title")).click();
+			driver.findElement(By.xpath("//body")).click();
 		} catch (Exception e) {
+			e.printStackTrace();
 			fail("Clicking on the unclickable should be a no-op");
 		}
 	}

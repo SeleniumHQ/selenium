@@ -104,7 +104,20 @@ function isBlockLevel(node) {
     } catch (e) {
         return false;
     }
-}
+};
+
+Utils.isDisplayed = function(element) {
+    var isDisplayed = true;
+    do {
+        var display = Utils.getStyleProperty(element, "display");
+        var visible = Utils.getStyleProperty(element, "visibility");
+        isDisplayed &= display != "none" && visible != "hidden";
+
+        element = element.parentNode;
+    } while (element.tagName && element.tagName.toLowerCase() != "body" && isDisplayed);
+	
+	return isDisplayed;
+};
 
 Utils.getStyleProperty = function(node, propertyName) {
     var value = node.ownerDocument.defaultView.getComputedStyle(node, null).getPropertyValue(propertyName);

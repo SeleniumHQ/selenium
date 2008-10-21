@@ -140,7 +140,7 @@ public class FirefoxBinary {
 
         if (binary == null) {
             throw new RuntimeException("Cannot find firefox binary in PATH. Make sure firefox " +
-                    "is installed");
+                    "is installed. OS appears to be: " + OperatingSystem.getCurrentPlatform());
         }
 
         if (binary.exists())
