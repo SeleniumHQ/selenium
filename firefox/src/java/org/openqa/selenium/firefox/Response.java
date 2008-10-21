@@ -29,7 +29,7 @@ public class Response {
 
             isError = (Boolean) result.get("isError");
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Could not parse \"" + json.replace("\"", "\\\"").replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t") + "\".", e);
         }
     }
 
