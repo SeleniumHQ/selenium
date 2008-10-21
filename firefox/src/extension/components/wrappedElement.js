@@ -453,7 +453,6 @@ FirefoxDriver.prototype.findChildElementsByClassName = function(respond, classNa
     var element = Utils.getElementAt(respond.elementId, this.context);
 
     if (element["getElementsByClassName"]) {
-      Utils.dumpn("All good");
       var result = element.getElementsByClassName(className);
 
       var response = "";
@@ -469,7 +468,7 @@ FirefoxDriver.prototype.findChildElementsByClassName = function(respond, classNa
       respond.response = response;
       respond.send();
     } else {
-      this.findElementsByXPath(respond, "//*[contains(concat(' ',normalize-space(@class),' '),' " + name + " ')]");
+      this.findElementsByXPath(respond, ".//*[contains(concat(' ',normalize-space(@class),' '),' " + name + " ')]");
     }
 };
 
@@ -489,7 +488,7 @@ FirefoxDriver.prototype.findElementById = function(respond, id) {
 	    	tmp = tmp.parentNode	
 	    }
 		if (isChild) {
-	        respond.response = Utils.addToKnownElements(element, this.context);
+	    respond.response = Utils.addToKnownElements(element, this.context);
 		} else {
 			//The first match is not a child of the current node, fall back
 			//to xpath to see if there are any children nodes with that id
