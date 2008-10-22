@@ -47,7 +47,11 @@ public class HttpCommandExecutor implements CommandExecutor {
 
   public HttpCommandExecutor(URL addressOfRemoteServer) throws Exception {
     if (addressOfRemoteServer == null) {
-      throw new IllegalArgumentException("You must specify a remote address to connect to");
+      String remoteServer = System.getProperty("webdriver.remote.server");
+      addressOfRemoteServer = remoteServer == null ? null : new URL(remoteServer);
+
+      if (addressOfRemoteServer == null)
+        throw new IllegalArgumentException("You must specify a remote address to connect to");
     }
 
     this.remotePath = addressOfRemoteServer.getPath();

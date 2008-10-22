@@ -32,16 +32,21 @@ public class RemoteWebDriver implements WebDriver, SearchContext, JavascriptExec
   private Capabilities capabilities;
   private SessionId sessionId;
 
-  @SuppressWarnings({"unchecked"})
+  public RemoteWebDriver(CommandExecutor executor, Capabilities desiredCapabilities) {
+    this.executor = executor;
+    startSession(desiredCapabilities);
+  }
+
+  public RemoteWebDriver(Capabilities desiredCapabilities) throws Exception {
+    this((URL) null, desiredCapabilities);
+  }
+
   public RemoteWebDriver(URL remoteAddress, Capabilities desiredCapabilities) throws Exception {
-    URL toUse = remoteAddress;
-    if (remoteAddress == null) {
-      String remoteServer = System.getProperty("webdriver.remote.server");
-      toUse = remoteServer == null ? null : new URL(remoteServer);
-    }
+    this(new HttpCommandExecutor(remoteAddress), desiredCapabilities);
+  }
 
-    executor = new HttpCommandExecutor(toUse);
-
+  @SuppressWarnings({"unchecked"})
+  protected void startSession(Capabilities desiredCapabilities) {
     Response response = execute("newSession", desiredCapabilities);
 
     Map<String, Object> rawCapabilities = (Map<String, Object>) response.getValue();
@@ -53,10 +58,6 @@ public class RemoteWebDriver implements WebDriver, SearchContext, JavascriptExec
     returnedCapabilities.setJavascriptEnabled((Boolean) rawCapabilities.get("javascriptEnabled"));
     capabilities = returnedCapabilities;
     sessionId = new SessionId(response.getSessionId());
-  }
-
-  public RemoteWebDriver(Capabilities desiredCapabilities) throws Exception {
-    this(null, desiredCapabilities);
   }
 
   public Capabilities getCapabilities() {
@@ -289,6 +290,7 @@ public class RemoteWebDriver implements WebDriver, SearchContext, JavascriptExec
 
     try {
       response = executor.execute(command);
+      amendElementValueIfNecessary(response);
     } catch (Exception e) {
       response.setError(true);
       response.setValue(e.getStackTrace());
@@ -299,6 +301,27 @@ public class RemoteWebDriver implements WebDriver, SearchContext, JavascriptExec
     }
 
     return response;
+  }
+
+  private void amendElementValueIfNecessary(Response response) {
+    if (!(response.getValue() instanceof RemoteWebElement))
+      return;
+
+    // Ensure that the parent is set properly
+    RemoteWebElement existingElement = (RemoteWebElement) response.getValue();
+    existingElement.setParent(this);
+
+    if (!getCapabilities().isJavascriptEnabled())
+      return;
+
+    if (response.getValue() instanceof RenderedRemoteWebElement)
+      return;  // Good, nothing to do
+
+    RenderedRemoteWebElement replacement = new RenderedRemoteWebElement();
+    replacement.setId(existingElement.getId());
+    replacement.setParent(this);
+
+    response.setValue(replacement);
   }
 
   private Response throwIfResponseFailed(Response response) {
