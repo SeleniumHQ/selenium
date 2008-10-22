@@ -1,10 +1,12 @@
 package org.openqa.selenium;
 
 /**
- * @author Michael Tamm
+ * Thrown by {@link WebDriver.TargetLocator#window(String) WebDriver.switchTo().window(String windowName)}.
  */
-public class NoSuchWindowException extends RuntimeException {
+public class NoSuchWindowException extends NotFoundException {
+
     public NoSuchWindowException(String reason) {
         super(reason);
     }
+
 }

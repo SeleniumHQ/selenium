@@ -17,8 +17,14 @@
 
 package org.openqa.selenium;
 
-public class NoSuchElementException extends RuntimeException {
+/**
+ * Thrown by {@link WebDriver#findElement(By) WebDriver.findElement(By by)}
+ * and {@link WebElement#findElement(By by) WebElement.findElement(By by)}.
+ */
+public class NoSuchElementException extends NotFoundException {
+
     public NoSuchElementException(String reason) {
         super(reason);
     }
+
 }
