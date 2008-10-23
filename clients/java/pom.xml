@@ -132,5 +132,17 @@
             <artifactId>gmaven-runtime-default</artifactId>
             <version>1.0-rc-3</version>
         </dependency>
+      <dependency>
+          <groupId>org.easymock</groupId>
+          <artifactId>easymock</artifactId>
+          <version>2.4</version>
+          <scope>test</scope>
+      </dependency>
+      <dependency>
+          <groupId>org.easymock</groupId>
+          <artifactId>easymockclassextension</artifactId>
+          <version>2.4</version>
+          <scope>test</scope>
+      </dependency>      
     </dependencies>
 </project>
