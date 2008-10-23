@@ -1,6 +1,6 @@
 package org.openqa.selenium.remote.server.handler;
 
-import org.openqa.selenium.internal.OperatingSystem;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.Capabilities;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.server.DriverSessions;
@@ -33,14 +33,14 @@ public class GetSessionCapabilities extends WebDriverHandler {
 
     private final String browser;
     private final String version;
-    private final OperatingSystem os;
+    private final Platform platform;
     private final boolean supportsJavascript;
 
-    public ReadOnlyCapabilities(String browser, String version, OperatingSystem os,
+    public ReadOnlyCapabilities(String browser, String version, Platform platform,
                                 boolean supportsJavascript) {
       this.browser = browser;
       this.version = version;
-      this.os = os;
+      this.platform = platform;
       this.supportsJavascript = supportsJavascript;
     }
 
@@ -48,8 +48,8 @@ public class GetSessionCapabilities extends WebDriverHandler {
       return browser;
     }
 
-    public OperatingSystem getOperatingSystem() {
-      return os;
+    public Platform getPlatform() {
+      return platform;
     }
 
     public String getVersion() {

@@ -2,14 +2,24 @@ package org.openqa.selenium.firefox;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.openqa.selenium.*;
+import org.openqa.selenium.Alert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Cookie;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.NoSuchFrameException;
+import org.openqa.selenium.NoSuchWindowException;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.Speed;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.internal.ExtensionConnectionFactory;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByXPath;
-import org.openqa.selenium.internal.OperatingSystem;
 import org.openqa.selenium.internal.ReturnedCookie;
 
 import java.beans.BeanInfo;
@@ -96,9 +106,9 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
         if (!extension.isConnected()) {
             throw new RuntimeException(
                     "Unable to connect to Firefox. Is the WebDriver extension installed, and is there a profile called WebDriver?" +
-                            OperatingSystem.getCurrentPlatform().getLineEnding() +
+                            Platform.getCurrent().getLineEnding() +
                             "To set up a profile for WebDriver, simply start firefox from the command line with the \"ProfileManager\" switch" +
-                            OperatingSystem.getCurrentPlatform().getLineEnding() +
+                            Platform.getCurrent().getLineEnding() +
                             "This will look like: firefox -ProfileManager. Alternatively, use the FirefoxLauncher support class from this project");
         }
 

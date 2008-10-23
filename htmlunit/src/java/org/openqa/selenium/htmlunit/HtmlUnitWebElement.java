@@ -17,20 +17,6 @@
 
 package org.openqa.selenium.htmlunit;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.internal.FindsById;
-import org.openqa.selenium.internal.FindsByLinkText;
-import org.openqa.selenium.internal.FindsByName;
-import org.openqa.selenium.internal.FindsByXPath;
-import org.openqa.selenium.internal.OperatingSystem;
-
 import com.gargoylesoftware.htmlunit.html.ClickableElement;
 import com.gargoylesoftware.htmlunit.html.DomNode;
 import com.gargoylesoftware.htmlunit.html.DomText;
@@ -46,6 +32,19 @@ import com.gargoylesoftware.htmlunit.html.HtmlPreformattedText;
 import com.gargoylesoftware.htmlunit.html.HtmlSelect;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextArea;
+import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.internal.FindsById;
+import org.openqa.selenium.internal.FindsByLinkText;
+import org.openqa.selenium.internal.FindsByName;
+import org.openqa.selenium.internal.FindsByXPath;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class HtmlUnitWebElement implements WebElement,
     FindsById, FindsByLinkText, FindsByXPath, FindsByName, SearchContext {
@@ -323,7 +322,7 @@ public class HtmlUnitWebElement implements WebElement,
         }
 
         if (isBlockLevel(node)) {
-            toReturn.append(collapseWhitespace(textSoFar)).append(OperatingSystem.getCurrentPlatform().getLineEnding());
+            toReturn.append(collapseWhitespace(textSoFar)).append(Platform.getCurrent().getLineEnding());
             textSoFar.delete(0, textSoFar.length());
         }
     }

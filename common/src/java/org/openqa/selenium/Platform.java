@@ -1,66 +1,65 @@
-// Copyright 2008 Google Inc. All Rights Reserved.
+package org.openqa.selenium;
 
-package org.openqa.selenium.internal;
-
-import org.openqa.selenium.Platform;
-
-/**
- * @deprecated Use {#link Platform} instead
- */
-@Deprecated
-public enum OperatingSystem {
-  WINDOWS("win") {
+public enum Platform {
+  WINDOWS("") {
     @Override
     public String getLineEnding() {
       return "\r\n";
     }
 
-    public Platform getPlatform() {
-      return Platform.WINDOWS;
-    }},
+    public boolean is(Platform compareWith) {
+      return compareWith == WINDOWS || compareWith == XP || compareWith == VISTA;
+    }
+  },
+  XP("xp") {
+    public String getLineEnding() {
+      return "\r\n";
+    }
+
+    public boolean is(Platform compareWith) {
+      return compareWith == WINDOWS || compareWith == XP;
+    }
+  },
+  VISTA("vista") {
+    public String getLineEnding() {
+      return "\r\n";
+    }
+
+    public boolean is(Platform compareWith) {
+      return compareWith == WINDOWS || compareWith == VISTA;
+    }
+  },
   MAC("mac", "darwin") {
-    @Override
     public String getLineEnding() {
       return "\r";
     }
-
-    public Platform getPlatform() {
-      return Platform.MAC;
-    }},
-  UNIX("x") {
-    @Override
+  },
+  UNIX("linux", "solaris", "bsd") {
     public String getLineEnding() {
       return "\n";
     }
-
-    public Platform getPlatform() {
-      return Platform.UNIX;
-    }},
+  },
   ANY("") {
-    @Override
     public String getLineEnding() {
       throw new UnsupportedOperationException("getLineEnding");
     }
+  };
 
-    public Platform getPlatform() {
-      return Platform.ANY;
-    }};
-
-  private static OperatingSystem currentOs;
+  private static Platform currentOs;
   private final String[] partOfOsName;
 
-  private OperatingSystem(String... partOfOsName) {
+  private Platform(String... partOfOsName) {
     this.partOfOsName = partOfOsName;
   }
 
-  public static OperatingSystem getCurrentPlatform() {
+  public static Platform getCurrent() {
     if (currentOs != null) {
       return currentOs;
     }
 
-    OperatingSystem mostLikely = UNIX;
+    Platform mostLikely = UNIX;
     String previousMatch = null;
-    for (OperatingSystem os : OperatingSystem.values()) {
+    for (Platform os : Platform.values()) {
       for (String matcher : os.partOfOsName) {
         if ("".equals(matcher))
           continue;
@@ -89,9 +88,11 @@ public enum OperatingSystem {
     return matcher.length() >= previous.length();
   }
 
-  public abstract String getLineEnding();
+  public boolean is(Platform compareWith) {
+    return this.equals(compareWith);
+  }
 
-  public abstract Platform getPlatform();
+  public abstract String getLineEnding();
 
   private boolean isCurrentPlatform(String matchAgainst) {
     String osName = System.getProperty("os.name").toLowerCase();

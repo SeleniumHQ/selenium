@@ -1,12 +1,12 @@
 package org.openqa.selenium.remote;
 
-import org.openqa.selenium.internal.OperatingSystem;
+import org.openqa.selenium.Platform;
 
 public interface Capabilities {
 
   String getBrowserName();
 
-  OperatingSystem getOperatingSystem();
+  Platform getPlatform();
 
   String getVersion();
 

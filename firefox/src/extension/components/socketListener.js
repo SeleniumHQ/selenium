@@ -147,9 +147,17 @@ SocketListener.prototype.executeCommand = function() {
 
         if (!fxbrowser) {
             Utils.dumpn("Unable to find browser with id " + context.windowId + "\n");
+            respond.isError = true;
+            respond.response = "Unable to find browser with id " + context.windowId;
+            respond.send();
+            return;
         }
         if (!driver) {
             Utils.dumpn("Unable to find the driver\n");
+            respond.isError = true;
+            respond.response = "Unable to find the driver";
+            respond.send();
+            return;
         }
 
         driver.context = context;

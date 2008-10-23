@@ -1,6 +1,6 @@
 package org.openqa.selenium.firefox;
 
-import org.openqa.selenium.internal.OperatingSystem;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.firefox.internal.Cleanly;
 
 import java.io.BufferedReader;
@@ -71,7 +71,7 @@ public class FirefoxBinary {
     protected void modifyLibraryPath(ProcessBuilder builder) {
         String propertyName;
 
-        OperatingSystem os = OperatingSystem.getCurrentPlatform();
+        Platform os = Platform.getCurrent();
         switch (os) {
             case MAC:
                 propertyName = "DYLD_LIBRARY_PATH";
@@ -114,9 +114,11 @@ public class FirefoxBinary {
         if (binary != null)
             return binary;
 
-        OperatingSystem os = OperatingSystem.getCurrentPlatform();
-        switch (os) {
+        Platform platform = Platform.getCurrent();
+        switch (platform) {
             case WINDOWS:
+            case VISTA:
+            case XP:
                 String programFiles = System.getenv("PROGRAMFILES");
                 if (programFiles == null)
                     programFiles = "\\Program Files";
@@ -140,7 +142,7 @@ public class FirefoxBinary {
 
         if (binary == null) {
             throw new RuntimeException("Cannot find firefox binary in PATH. Make sure firefox " +
-                    "is installed. OS appears to be: " + OperatingSystem.getCurrentPlatform());
+                    "is installed. OS appears to be: " + Platform.getCurrent());
         }
 
         if (binary.exists())
@@ -159,8 +161,10 @@ public class FirefoxBinary {
         if (binary.exists())
             return binary;
 
-        switch (OperatingSystem.getCurrentPlatform()) {
+        switch (Platform.getCurrent()) {
             case WINDOWS:
+            case VISTA:
+            case XP:
                 return null;
 
             case MAC:
@@ -215,7 +219,7 @@ public class FirefoxBinary {
 			throw new RuntimeException(e);
 		}
 
-		if (OperatingSystem.WINDOWS.equals(OperatingSystem.getCurrentPlatform())) {
+		if (Platform.getCurrent().is(Platform.WINDOWS)) {
 		    while (profile.isRunning()) {
 			    sleep(500);
 		    }

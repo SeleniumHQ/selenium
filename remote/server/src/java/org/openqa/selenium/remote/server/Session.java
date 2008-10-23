@@ -1,15 +1,15 @@
 package org.openqa.selenium.remote.server;
 
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.Capabilities;
+import org.openqa.selenium.remote.Context;
+import org.openqa.selenium.remote.DesiredCapabilities;
+
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
-
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.internal.OperatingSystem;
-import org.openqa.selenium.remote.Capabilities;
-import org.openqa.selenium.remote.Context;
-import org.openqa.selenium.remote.DesiredCapabilities;
 
 public class Session {
   private final WebDriver driver;
@@ -36,7 +36,7 @@ public class Session {
     boolean isRendered = isRenderingDriver(capabilities);
     DesiredCapabilities desiredCapabilities =
         new DesiredCapabilities(capabilities.getBrowserName(), capabilities.getVersion(),
-                                capabilities.getOperatingSystem());
+                                capabilities.getPlatform());
     desiredCapabilities.setJavascriptEnabled(isRendered);
 
     this.capabilities = desiredCapabilities;
@@ -70,9 +70,8 @@ public class Session {
   }
 
   private WebDriver createNewDriverMatching(Capabilities capabilities) throws Exception {
-    OperatingSystem os = capabilities.getOperatingSystem();
-    if (os != null && !OperatingSystem.ANY.equals(os) && !OperatingSystem.getCurrentPlatform()
-        .equals(os)) {
+    Platform platform = capabilities.getPlatform();
+    if (platform != null && !Platform.ANY.equals(platform) && !Platform.getCurrent().is(platform)) {
       throw new RuntimeException("Desired operating system does not match current OS");
     }
 

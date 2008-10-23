@@ -211,7 +211,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore("safari, htmlunit, ie")
+  @Ignore(value = "safari, htmlunit, ie, firefox, remote", reason = "Firefox: Window demands focus to work. Other platforms: not properly tested")
   public void testChangeEventIsFiredAppropriatelyWhenFocusIsLost() {
     driver.get(javascriptPage);
 

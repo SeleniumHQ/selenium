@@ -1,10 +1,10 @@
 package org.openqa.selenium.firefox.internal;
 
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.firefox.Command;
+import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxLauncher;
 import org.openqa.selenium.firefox.FirefoxProfile;
-import org.openqa.selenium.firefox.FirefoxBinary;
-import org.openqa.selenium.internal.OperatingSystem;
 
 import java.io.IOException;
 import java.net.BindException;
@@ -99,7 +99,7 @@ public class NewProfileExtensionConnection extends AbstractExtensionConnection {
             // this is expected
         }
 
-        if (OperatingSystem.WINDOWS.equals(OperatingSystem.getCurrentPlatform())) {
+        if (Platform.getCurrent().is(Platform.WINDOWS)) {
         	quitOnWindows();
         } else {
             quitOnOtherPlatforms();

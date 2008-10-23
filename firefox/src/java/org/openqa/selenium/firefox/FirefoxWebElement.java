@@ -5,12 +5,12 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.RenderedWebElement;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByXPath;
-import org.openqa.selenium.internal.OperatingSystem;
 
 import java.awt.Point;
 import java.awt.Dimension;
@@ -39,7 +39,7 @@ public class FirefoxWebElement implements RenderedWebElement, FindsByXPath,
     public String getValue() {
         try {
             String toReturn = sendMessage(RuntimeException.class, "getElementValue");
-            return toReturn.replace("\n", OperatingSystem.getCurrentPlatform().getLineEnding());
+            return toReturn.replace("\n", Platform.getCurrent().getLineEnding());
         } catch (RuntimeException e) {
             return null;
         }
@@ -86,7 +86,7 @@ public class FirefoxWebElement implements RenderedWebElement, FindsByXPath,
 
     public String getText() {
     	String toReturn = sendMessage(RuntimeException.class, "getElementText");
-        return toReturn.replace("\n", OperatingSystem.getCurrentPlatform().getLineEnding());
+        return toReturn.replace("\n", Platform.getCurrent().getLineEnding());
     }
 
     public List<WebElement> getChildrenOfType(String tagName) {

@@ -8,7 +8,6 @@ import org.hamcrest.Matcher;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 
-import org.openqa.selenium.internal.OperatingSystem;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 
 import java.util.regex.Pattern;
@@ -20,7 +19,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		
-		newLine = OperatingSystem.getCurrentPlatform().getLineEnding();
+		newLine = Platform.getCurrent().getLineEnding();
 	}
 	
     public void testShouldReturnTheTextContentOfASingleElementWithNoChildren() {

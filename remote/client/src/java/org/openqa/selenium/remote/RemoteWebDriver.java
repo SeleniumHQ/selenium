@@ -2,11 +2,12 @@ package org.openqa.selenium.remote;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.Speed;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
@@ -19,11 +20,11 @@ import static org.openqa.selenium.remote.MapMaker.map;
 import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.HashMap;
 
 public class RemoteWebDriver implements WebDriver, SearchContext, JavascriptExecutor,
     FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByXPath {
@@ -52,9 +53,15 @@ public class RemoteWebDriver implements WebDriver, SearchContext, JavascriptExec
     Map<String, Object> rawCapabilities = (Map<String, Object>) response.getValue();
     String browser = (String) rawCapabilities.get("browserName");
     String version = (String) rawCapabilities.get("version");
-    OperatingSystem os = OperatingSystem.valueOf((String) rawCapabilities.get("operatingSystem"));
+    Platform platform;
+    if (rawCapabilities.containsKey("operatingSystem")) {
+      platform = OperatingSystem.valueOf((String) rawCapabilities.get("operatingSystem")).getPlatform();
+    } else {
+      platform = Platform.valueOf((String) rawCapabilities.get("platform"));
+    }
 
-    DesiredCapabilities returnedCapabilities = new DesiredCapabilities(browser, version, os);
+
+    DesiredCapabilities returnedCapabilities = new DesiredCapabilities(browser, version, platform);
     returnedCapabilities.setJavascriptEnabled((Boolean) rawCapabilities.get("javascriptEnabled"));
     capabilities = returnedCapabilities;
     sessionId = new SessionId(response.getSessionId());

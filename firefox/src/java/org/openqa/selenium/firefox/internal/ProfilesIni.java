@@ -1,7 +1,7 @@
 package org.openqa.selenium.firefox.internal;
 
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.firefox.FirefoxProfile;
-import org.openqa.selenium.internal.OperatingSystem;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -16,7 +16,7 @@ public class ProfilesIni {
   private Map<String, FirefoxProfile> profiles = new HashMap<String, FirefoxProfile>();
   
   public ProfilesIni() {
-    File appData = locateAppDataDirectory(OperatingSystem.getCurrentPlatform());
+    File appData = locateAppDataDirectory(Platform.getCurrent());
     profiles = readProfiles(appData);
   }
   
@@ -92,10 +92,12 @@ public class ProfilesIni {
     return profiles.values();
   }
   
-  protected File locateAppDataDirectory(OperatingSystem os) {
+  protected File locateAppDataDirectory(Platform os) {
     File appData;
     switch (os) {
         case WINDOWS:
+        case VISTA:
+        case XP:
             appData = new File(MessageFormat.format("{0}\\Mozilla\\Firefox", System.getenv("APPDATA")));
             break;
 

@@ -1,5 +1,6 @@
 package org.openqa.selenium.remote;
 
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.internal.OperatingSystem;
 
 import java.util.Map;
@@ -8,13 +9,19 @@ public class DesiredCapabilities implements Capabilities {
 
   private String browserName;
   private String version;
-  private OperatingSystem operatingSystem;
+  private Platform platform;
   private boolean javascriptEnabled;
 
   public DesiredCapabilities(String browser, String version, OperatingSystem operatingSystem) {
     this.browserName = browser;
     this.version = version;
-    this.operatingSystem = operatingSystem;
+    this.platform = operatingSystem.getPlatform();
+  }
+
+  public DesiredCapabilities(String browser, String version, Platform platform) {
+    this.browserName = browser;
+    this.version = version;
+    this.platform = platform;
   }
 
   public DesiredCapabilities() {
@@ -25,7 +32,11 @@ public class DesiredCapabilities implements Capabilities {
     browserName = (String) rawMap.get("browserName");
     version = (String) rawMap.get("version");
     javascriptEnabled = (Boolean) rawMap.get("javascriptEnabled");
-    operatingSystem = OperatingSystem.valueOf((String) rawMap.get("operatingSystem"));
+    if (rawMap.containsKey("operatingSystem")) {
+      platform = OperatingSystem.valueOf((String) rawMap.get("operatingSystem")).getPlatform();
+    } else {
+      platform = Platform.valueOf((String) rawMap.get("platform"));
+    }
   }
 
   public String getBrowserName() {
@@ -44,12 +55,21 @@ public class DesiredCapabilities implements Capabilities {
     this.version = version;
   }
 
-  public OperatingSystem getOperatingSystem() {
-    return operatingSystem;
+  public Platform getPlatform() {
+    return platform;
   }
 
+  /**
+   * @deprecated Use {@link #setPlatform(org.openqa.selenium.Platform)} instead
+   * @param operatingSystem
+   */
+  @Deprecated
   public void setOperatingSystem(OperatingSystem operatingSystem) {
-    this.operatingSystem = operatingSystem;
+    this.platform = operatingSystem.getPlatform();
+  }
+
+  public void setPlatform(Platform platform) {
+    this.platform = platform;
   }
 
   public boolean isJavascriptEnabled() {
@@ -92,7 +112,7 @@ public class DesiredCapabilities implements Capabilities {
     if (browserName != null ? !browserName.equals(that.browserName) : that.browserName != null) {
       return false;
     }
-    if (operatingSystem != that.operatingSystem) {
+    if (!platform.is(that.platform)) {
       return false;
     }
     if (version != null ? !version.equals(that.version) : that.version != null) {
@@ -106,7 +126,7 @@ public class DesiredCapabilities implements Capabilities {
     int result;
     result = (browserName != null ? browserName.hashCode() : 0);
     result = 31 * result + (version != null ? version.hashCode() : 0);
-    result = 31 * result + (operatingSystem != null ? operatingSystem.hashCode() : 0);
+    result = 31 * result + (platform != null ? platform.hashCode() : 0);
     result = 31 * result + (javascriptEnabled ? 1 : 0);
     return result;
   }
