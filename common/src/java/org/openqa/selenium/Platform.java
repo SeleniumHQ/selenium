@@ -65,7 +65,6 @@ public enum Platform {
           continue;
 
         if (os.isExactMatch(matcher)) {
-          System.out.println("Exect match: " + matcher);
           currentOs = os;
           return os;
         }
