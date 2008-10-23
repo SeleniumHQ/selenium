@@ -24,7 +24,7 @@ import java.util.Iterator;
 
 public class WindowSwitchingTest extends AbstractDriverTestCase {
 
-  @Ignore("ie")
+  @Ignore("ie, remote, safari")
   public void testShouldSwitchFocusToANewWindowWhenItIsOpenedAndNotStopFutureOperations() {
     driver.get(xhtmlTestPage);
 
@@ -38,7 +38,7 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
     driver.findElement(By.id("iframe_page_heading"));
   }
 
-  @Ignore("ie")
+  @Ignore("ie, remote, safari")
   public void testShouldThrowNoSuchWindowException() {
     driver.get(xhtmlTestPage);
 
@@ -53,7 +53,7 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
 
   @NeedsFreshDriver
   @NoDriverAfterTest
-  @Ignore("ie, remote")
+  @Ignore("ie, remote, safari")
   public void testShouldBeAbleToIterateOverAllOpenWindows() {
     driver.get(xhtmlTestPage);
     driver.findElement(By.name("windowOne")).click();
