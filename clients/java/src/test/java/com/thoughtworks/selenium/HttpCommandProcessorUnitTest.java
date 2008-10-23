@@ -160,29 +160,26 @@ public class HttpCommandProcessorUnitTest extends TestCase {
 
 	}
 
-//  PH7 - This test breaks the build at compile time. We need to either upgrade the target to
-//        1.5 or give up on easymock for the Java client 
+	public void testGetBooleanArray() throws Exception {
+		final HttpCommandProcessor processor;
+		final ConstructorArgs constArgs = new ConstructorArgs(
+				HttpCommandProcessor.class.getConstructor(String.class,	int.class, String.class, String.class),
+				"localhost", 4444, "*chrome", "http://www.openqa.org");
+		Method getStringArray = HttpCommandProcessor.class.getDeclaredMethod("getStringArray", String.class, String[].class);
+		processor = org.easymock.classextension.EasyMock.createMock(HttpCommandProcessor.class, constArgs, getStringArray);
 
-//	public void testGetBooleanArray() throws Exception {
-//		final HttpCommandProcessor processor;
-//		final ConstructorArgs constArgs = new ConstructorArgs(
-//				HttpCommandProcessor.class.getConstructor(String.class,	int.class, String.class, String.class),
-//				"localhost", 4444, "*chrome", "http://www.openqa.org");
-//		Method getStringArray = HttpCommandProcessor.class.getDeclaredMethod("getStringArray", String.class, String[].class);
-//		processor = org.easymock.classextension.EasyMock.createMock(HttpCommandProcessor.class, constArgs, getStringArray);
-//
-//		String[] cmdArgs = new String[] {"1", "2"};
-//		String[] cmdResults = new String[] {"true", "false"};
-//		boolean[] boolCmdResults = new boolean[] {true, false};
-//
-//		org.easymock.classextension.EasyMock.expect(processor.getStringArray("command", cmdArgs)).andReturn(
-//				cmdResults);
-//		org.easymock.classextension.EasyMock.replay(processor);
-//
-//		boolean[] methodResults = processor.getBooleanArray("command", cmdArgs);
-//		assertEquals(boolCmdResults[0],methodResults[0]);
-//		assertEquals(boolCmdResults[1], methodResults[1]);
-//		org.easymock.classextension.EasyMock.verify(processor);
-//	}
+		String[] cmdArgs = new String[] {"1", "2"};
+		String[] cmdResults = new String[] {"true", "false"};
+		boolean[] boolCmdResults = new boolean[] {true, false};
+
+		org.easymock.classextension.EasyMock.expect(processor.getStringArray("command", cmdArgs)).andReturn(
+				cmdResults);
+		org.easymock.classextension.EasyMock.replay(processor);
+
+		boolean[] methodResults = processor.getBooleanArray("command", cmdArgs);
+		assertEquals(boolCmdResults[0],methodResults[0]);
+		assertEquals(boolCmdResults[1], methodResults[1]);
+		org.easymock.classextension.EasyMock.verify(processor);
+	}
 
 }
