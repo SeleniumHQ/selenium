@@ -58,6 +58,8 @@ public class FirefoxProfile {
         extensionsDir = new File(profileDir, "extensions");
         if (!extensionsDir.mkdirs())
             throw new RuntimeException(String.format("Cannot create custom profile extensions directory: %s", extensionsDir));
+
+        port = FirefoxDriver.DEFAULT_PORT;
     }
 
     protected void addWebDriverExtensionIfNeeded(boolean forceCreation) throws IOException {
@@ -322,11 +324,14 @@ public class FirefoxProfile {
         prefs.putAll(additionalPrefs);
 
         // Normal settings to facilitate testing
+        prefs.put("app.update.auto", "false");
         prefs.put("app.update.enabled", "false");
         prefs.put("browser.download.manager.showWhenStarting", "false");
         prefs.put("browser.EULA.override", "true");
+        prefs.put("browser.EULA.3.accepted", "true");
         prefs.put("browser.link.open_external", "2");
         prefs.put("browser.link.open_newwindow", "2");
+        prefs.put("browser.safebrowsing.enabled", "false");
         prefs.put("browser.search.update", "false");
         prefs.put("browser.sessionstore.resume_from_crash", "false");
         prefs.put("browser.shell.checkDefaultBrowser", "false");

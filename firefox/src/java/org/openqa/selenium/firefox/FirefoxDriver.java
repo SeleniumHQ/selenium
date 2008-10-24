@@ -61,37 +61,43 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
     protected Context context;
 
     public FirefoxDriver() {
-        this(getProfileName(), DEFAULT_PORT);
+      this(new FirefoxBinary(), null);
     }
 
     public FirefoxDriver(String profileName) {
-    	this(findProfile(profileName), DEFAULT_PORT);
+      this(new FirefoxBinary(), findProfile(profileName));
     }
 
     public FirefoxDriver(String profileName, int port) {
-        this(findProfile(profileName), port);
+      this(new FirefoxBinary(), findProfile(profileName), port);
     }
 
     public FirefoxDriver(FirefoxProfile profile) {
-      this(profile, DEFAULT_PORT);
+      this(new FirefoxBinary(), profile);
     }
 
-    /**
-     * @deprecated Set the port on the profile directly
-     */
-    @Deprecated
-    public FirefoxDriver(FirefoxProfile profile, int port) {
-        this(new FirefoxBinary(), modifyProfile(profile, port));
+
+    private FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile, int port) {
+      this(binary, modifyProfile(profile, port));
     }
 
     private static FirefoxProfile modifyProfile(FirefoxProfile profile, int port) {
+        if (profile == null) {
+          throw new NullPointerException("You must pass in a profile");
+        }
         profile.setPort(port);
         return profile;
     }
 
     public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile) {
         if (profile == null) {
-            profile = new FirefoxProfile();
+            // See if we can find the installed profile
+            String profileToFind =  System.getProperty("webdriver.firefox.profile", DEFAULT_PROFILE);
+            profile = new ProfilesIni().getProfile(profileToFind);
+
+            // And then fall back to the packaged one
+            if (profile == null)
+              profile = new FirefoxProfile();
         }
 
         try {
@@ -121,12 +127,11 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
       this.context = context;
     }
 
-    private static String getProfileName() {
-      return System.getProperty("webdriver.firefox.profile", DEFAULT_PROFILE);
-    }
-
     private static FirefoxProfile findProfile(String profileName) {
-      return new ProfilesIni().getProfile(profileName);
+      FirefoxProfile profile = new ProfilesIni().getProfile(profileName);
+      if (profile == null)
+        throw new NullPointerException("No firefox profile found: " + profileName);
+      return profile;
     }
 
     protected ExtensionConnection connectTo(FirefoxBinary binary, FirefoxProfile profile, String host) {

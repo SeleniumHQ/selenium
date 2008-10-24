@@ -1,6 +1,7 @@
 package org.openqa.selenium.firefox.internal;
 
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 
 import java.io.BufferedReader;
@@ -85,7 +86,10 @@ public class ProfilesIni {
   }
 
   public FirefoxProfile getProfile(String profileName) {
-    return profiles.get(profileName);
+    FirefoxProfile profile = profiles.get(profileName);
+    if (profile.getPort() == 0)
+      profile.setPort(FirefoxDriver.DEFAULT_PORT);
+    return profile;
   }
   
   public Collection<FirefoxProfile> getExistingProfiles() {
