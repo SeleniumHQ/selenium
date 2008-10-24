@@ -59,7 +59,8 @@ public class DriverTestDecorator extends TestSetup {
 		try {
 			return driverClass.newInstance();
 		} catch (Exception e) {
-			fail("Cannot instantiate driver: " + e.getMessage());
+                        e.printStackTrace();
+                        fail("Cannot instantiate driver: " + e.getMessage());
 			throw new RuntimeException(e);
 		}
 	}

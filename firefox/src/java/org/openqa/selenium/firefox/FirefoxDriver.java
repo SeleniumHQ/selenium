@@ -93,6 +93,7 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
         if (profile == null) {
             // See if we can find the installed profile
             String profileToFind =  System.getProperty("webdriver.firefox.profile", DEFAULT_PROFILE);
+
             profile = new ProfilesIni().getProfile(profileToFind);
 
             // And then fall back to the packaged one

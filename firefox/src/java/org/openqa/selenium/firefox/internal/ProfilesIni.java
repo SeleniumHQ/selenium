@@ -87,6 +87,9 @@ public class ProfilesIni {
 
   public FirefoxProfile getProfile(String profileName) {
     FirefoxProfile profile = profiles.get(profileName);
+    if (profile == null)
+      return null;
+
     if (profile.getPort() == 0)
       profile.setPort(FirefoxDriver.DEFAULT_PORT);
     return profile;
