@@ -633,8 +633,13 @@ void IeThread::waitForDocumentToComplete(IHTMLDocument2* doc)
 {
 	SCOPETRACER
 	CComBSTR state;
-	HRESULT hr = doc->get_readyState(&state);
 
+	if (!doc) {
+		// There's no way to tell what's meant to happen. Bail
+		return;
+	}
+
+	HRESULT hr = doc->get_readyState(&state);
 
 	int counter = 0;
 	while ( _wcsicmp( combstr2cw(state) , L"complete") != 0) {
@@ -642,7 +647,7 @@ void IeThread::waitForDocumentToComplete(IHTMLDocument2* doc)
 		waitWithoutMsgPump(50);
 		state.Empty();
 		hr = doc->get_readyState(&state);
-		if(counter>60 && !SUCCEEDED(hr))
+		if(counter > 60 && !SUCCEEDED(hr))
 		{
 			safeIO::CoutA("Error: failed to call get_readyState", true);
 			break;
