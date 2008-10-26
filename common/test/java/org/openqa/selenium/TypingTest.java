@@ -325,7 +325,7 @@ public class TypingTest extends AbstractDriverTestCase {
     @Ignore(value= "safari, htmlunit", reason = "untested user agents")
     public void testHomeAndEndAndPageUpAndPageDownKeys() {
         // FIXME: macs don't have HOME keys, would PGUP work?
-        if (Platform.getCurrent() == Platform.MAC)
+        if (Platform.getCurrent().is(Platform.MAC))
             return;
 
         driver.get(javascriptPage);
@@ -404,7 +404,7 @@ public class TypingTest extends AbstractDriverTestCase {
     @Ignore(value= "safari, htmlunit", reason = "untested user agents")
     public void testChordControlHomeShiftEndDelete() {
         // FIXME: macs don't have HOME keys, would PGUP work?
-        if (Platform.getCurrent() == Platform.MAC)
+        if (Platform.getCurrent().is(Platform.MAC))
             return;
 
         driver.get(javascriptPage);
@@ -425,7 +425,7 @@ public class TypingTest extends AbstractDriverTestCase {
     @Ignore(value= "safari, htmlunit", reason = "untested user agents")
     public void testChordReveseShiftHomeSelectionDeletes() {
         // FIXME: macs don't have HOME keys, would PGUP work?
-    	if (Platform.getCurrent() == Platform.MAC)
+    	if (Platform.getCurrent().is(Platform.MAC))
     		return;
 
         driver.get(javascriptPage);
@@ -458,7 +458,7 @@ public class TypingTest extends AbstractDriverTestCase {
     @Ignore(value= "safari, htmlunit", reason = "untested user agents")
     public void testChordControlCutAndPaste() {
         // FIXME: macs don't have HOME keys, would PGUP work?
-        if (Platform.getCurrent() == Platform.MAC)
+        if (Platform.getCurrent().is(Platform.MAC))
             return;
 
         driver.get(javascriptPage);

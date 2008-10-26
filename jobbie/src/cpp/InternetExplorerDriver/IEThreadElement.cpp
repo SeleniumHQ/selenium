@@ -9,13 +9,19 @@
 
 using namespace std;
 
-
-const LPCTSTR windowNames[] = {
-	_T("TabWindowClass"),
-	_T("Shell DocObject View"),
-	_T("Internet Explorer_Server"),
-	NULL
+const LPCTSTR ie7WindowNames[] = {
+        _T("TabWindowClass"),
+        _T("Shell DocObject View"),
+        _T("Internet Explorer_Server"),
+        NULL
 };
+
+const LPCTSTR ie6WindowNames[] = {
+        _T("Shell DocObject View"),
+        _T("Internet Explorer_Server"),
+        NULL
+};
+
 
 // "Internet Explorer_Server" + 1
 #define LONGEST_NAME 25
@@ -41,18 +47,19 @@ HWND getChildWindow(HWND hwnd, LPCTSTR name)
 
 HWND getIeServerWindow(HWND hwnd) 
 {
-  const HWND initial_hwnd = hwnd;
-  HWND iehwnd = hwnd;
+    HWND iehwnd = hwnd;
 
- for (int i = 0; windowNames[i] && iehwnd; i++) {
-	 iehwnd = getChildWindow(iehwnd, windowNames[i]);
-	 if(i==0 && iehwnd==NULL)
-	 {
-		 iehwnd = initial_hwnd;
-	 }
- }
+    for (int i = 0; ie7WindowNames[i] && iehwnd; i++) {
+        iehwnd = getChildWindow(iehwnd, ie7WindowNames[i]);
+    }
 
- return iehwnd;
+   if (!iehwnd) {
+       for (int i = 0; ie6WindowNames[i] && iehwnd; i++) {
+           iehwnd = getChildWindow(iehwnd, ie6WindowNames[i]);
+        }
+   }
+
+   return iehwnd;
 }
 
 const LPCTSTR fileDialogNames[] = {
