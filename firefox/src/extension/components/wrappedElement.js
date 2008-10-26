@@ -468,7 +468,7 @@ FirefoxDriver.prototype.findChildElementsByClassName = function(respond, classNa
       respond.response = response;
       respond.send();
     } else {
-      this.findElementsByXPath(respond, ".//*[contains(concat(' ',normalize-space(@class),' '),' " + name + " ')]");
+      this.findElementsByXPath(respond, ".//*[contains(concat(' ',normalize-space(@class),' '),' " + className + " ')]");
     }
 };
 
