@@ -32,6 +32,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPreformattedText;
 import com.gargoylesoftware.htmlunit.html.HtmlSelect;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextArea;
+import com.gargoylesoftware.htmlunit.ScriptException;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.Platform;
@@ -48,8 +49,8 @@ import java.util.List;
 
 public class HtmlUnitWebElement implements WebElement,
     FindsById, FindsByLinkText, FindsByXPath, FindsByName, SearchContext {
-    private final HtmlUnitDriver parent;
-    private final HtmlElement element;
+    protected final HtmlUnitDriver parent;
+    protected final HtmlElement element;
     private final static char nbspChar = (char) 160;
     private final static String[] blockLevelsTagNames =
             {"p", "h1", "h2", "h3", "h4", "h5", "h6", "dl", "div", "noscript",
@@ -73,6 +74,9 @@ public class HtmlUnitWebElement implements WebElement,
             clickableElement.click();
         } catch (IOException e) {
             throw new RuntimeException(e);
+        } catch (ScriptException e) {
+          System.out.println(e.getMessage());
+          // Press on regardless
         }
     }
     
@@ -282,8 +286,7 @@ public class HtmlUnitWebElement implements WebElement,
         return text.substring(0, index);
     }
 
-
-    protected HtmlUnitDriver getParent() {
+  protected HtmlUnitDriver getParent() {
         return parent;
     }
 

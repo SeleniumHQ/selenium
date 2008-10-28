@@ -93,7 +93,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
 //	}
 
 	@JavascriptEnabled
-	@Ignore("safari, htmlunit")
+	@Ignore("safari")
     public void testShouldAllowTheUserToTellIfAnElementIsDisplayedOrNot() {
         driver.get(javascriptPage);
 
