@@ -17,12 +17,15 @@ public class PageServlet extends HttpServlet {
 
         response.setContentType("text/html");
 
-        response.getOutputStream().println("<html><head><title>");
         int lastIndex = request.getPathInfo().lastIndexOf('/');
         String pageNumber = (lastIndex == -1 ? "Unknown" : request.getPathInfo().substring(lastIndex + 1));
-        response.getOutputStream().println("Page" + pageNumber);
-        response.getOutputStream().print("</title></head><body>Page number <span id=\"pageNumber\">");
-        response.getOutputStream().print(pageNumber);
-        response.getOutputStream().print("</span><p><a href=\"../xhtmlTest.html\" target=\"_top\">top</a></body></html>");
+        String res = String.format("<html><head><title>Page%s</title></head>" +
+        		"<body>Page number <span id=\"pageNumber\">%s</span>" +
+        		"<p><a href=\"../xhtmlTest.html\" target=\"_top\">top</a>" +
+//        		"<script>var s=''; for (var i in window) {s += i + ' -> ' + window[i] + '<p>';} document.write(s);</script>" +
+        		"</body></html>", 
+        		pageNumber, pageNumber);
+        
+        response.getOutputStream().println(res);
     }
 }

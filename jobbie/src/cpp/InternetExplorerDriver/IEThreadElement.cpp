@@ -138,6 +138,29 @@ static HHOOK hook = 0;
 #pragma data_seg()
 #pragma comment(linker, "/section:.LISTENER,rws")
 
+void backgroundUnicodeKeyPress(HWND ieWindow, wchar_t c, int pause) 
+{
+	pause = pause / 3;
+
+	pressed = false;
+	PostMessage(ieWindow, WM_KEYDOWN, VkKeyScanW(c), 0);
+	wait(pause);
+
+	// TODO: There must be a better way to tell when the keydown is processed
+	clock_t maxWait = clock() + 250;
+	while (!pressed && clock() < maxWait) {
+		wait(5);
+	}
+
+	PostMessage(ieWindow, WM_CHAR, c, 0);
+
+	wait(pause);
+
+	PostMessage(ieWindow, WM_KEYUP, VkKeyScanW(c), 0);
+
+	wait(pause);
+}
+
 void backgroundKeyPress(HWND hwnd, HKL layout, BYTE keyboardState[256],
 		WORD keyCode, UINT scanCode, bool extended, bool printable, int pause)
 {
@@ -548,7 +571,8 @@ void IeThread::OnElementSendKeys(WPARAM w, LPARAM lp)
 			keyCode = VkKeyScanExW(c, layout);
 			scanCode = MapVirtualKeyExW(LOBYTE(keyCode), 0, layout);
 			if (!scanCode || (keyCode == 0xFFFFU)) {
-				cerr << "No translation for key: " << c << endl;
+				cerr << "No translation for key. Assuming unicode input: " << c << endl;
+				backgroundUnicodeKeyPress(ieWindow, c, pIED->getSpeed());
 				continue;  // bogus
 			}
 		}
@@ -1017,30 +1041,75 @@ void IeThread::click(IHTMLElement *pElement, CScopeCaller *pSC)
 		return;
 	}
 
-	static CComBSTR mouseDown(L"onmousedown");
-	static CComBSTR mouseUp(L"onmouseup");
+	// TODO: Is the element isn't visible, throw an exception
 
-	CComPtr<IDispatch> dispatch;
-	node->get_ownerDocument(&dispatch);
-	CComQIPtr<IHTMLDocument4> doc(dispatch);
+	const HWND hWnd = getHwnd();
+	const HWND ieWindow = getIeServerWindow(hWnd);
 
-	CComQIPtr<IHTMLElement3> element3(pElement);
+	// Scroll the element into view
+	CComVariant toTop;
+	toTop.vt = VT_BOOL;
+	toTop.boolVal = VARIANT_TRUE;
+	pElement->scrollIntoView(toTop);
+
+	// getBoundingClientRect. Note, the docs talk about this possibly being off by 2,2
+	// and Jon Resig mentions some problems too. For now, we'll hope for the best
+	// http://ejohn.org/blog/getboundingclientrect-is-awesome/
 	CComQIPtr<IHTMLElement2> element2(pElement);
+	CComPtr<IHTMLRect> rect;
+	if (FAILED(element2->getBoundingClientRect(&rect))) {
+		tryTransferEventReleaserToNotifyNavigCompleted(pSC);
+		return;
+	}
 
-	CComPtr<IHTMLEventObj> eventObject;
-	CComVariant empty;
-	doc->createEventObject(&empty, &eventObject);
+	long clickX, clickY;
+	rect->get_top(&clickY);
+	rect->get_left(&clickX);
 
-	CComVariant eventref;
-    V_VT(&eventref) = VT_DISPATCH;
-    V_DISPATCH(&eventref) = eventObject;
+	CComPtr<IDispatch> ownerDocDispatch;
+	node->get_ownerDocument(&ownerDocDispatch);
+	CComQIPtr<IHTMLDocument3> ownerDoc(ownerDocDispatch);
+	CComPtr<IHTMLElement> docElement;
+	ownerDoc->get_documentElement(&docElement);
 
-	VARIANT_BOOL cancellable;
-	element3->fireEvent(mouseDown, &eventref, &cancellable);
-	element2->focus();
-	element3->fireEvent(mouseUp, &eventref, &cancellable);
+	CComQIPtr<IHTMLElement2> e2(docElement);
 
-	pElement->click();
+	CComQIPtr<IHTMLDocument2> doc2(ownerDoc);
+
+	long clientLeft, clientTop;
+	e2->get_clientLeft(&clientLeft);
+	e2->get_clientTop(&clientTop);
+
+	clickX += clientLeft;
+	clickY += clientTop;
+
+	// We now know the location of the element within its frame.
+	// Where is the frame in relation to the HWND, though?
+	// The ieWindow is the ultimate container, without chrome,
+	// so if we know its location, we can subtract the screenLeft and screenTop
+	// of the window.
+
+	WINDOWINFO winInfo;
+	GetWindowInfo(ieWindow, &winInfo);
+	clickX -= winInfo.rcWindow.left;
+	clickY -= winInfo.rcWindow.top;
+
+	CComPtr<IHTMLWindow2> win2;
+	doc2->get_parentWindow(&win2);
+	CComQIPtr<IHTMLWindow3> win3(win2);
+	long screenLeft, screenTop;
+	win3->get_screenLeft(&screenLeft);
+	win3->get_screenTop(&screenTop);
+
+	clickX += screenLeft;
+	clickY += screenTop;
+
+	// Create a mouse move, mouse down, mouse up OS event
+	SendMessage(ieWindow, WM_LBUTTONDOWN, MK_LBUTTON, MAKELONG(clickX, clickY));
+	SendMessage(ieWindow, WM_LBUTTONUP, 0, MAKELONG(clickX, clickY));
+
+	// TODO(simon): We should probably wait until the messages have been processed
+	// Should we consider SendMessage?
 
 	tryTransferEventReleaserToNotifyNavigCompleted(pSC);
 	waitForNavigateToFinish();
@@ -1504,6 +1573,7 @@ void IeThread::OnElementRelease(WPARAM w, LPARAM lp)
 	ON_THREAD_ELEMENT(data, pElement)
 	pElement->Release();
 }
+
 
 
 
