@@ -24,8 +24,8 @@ public class DragElement extends WebDriverHandler implements JsonParametersAware
   }
 
   public void setJsonParameters(List<Object> allParameters) throws Exception {
-    x = (Integer) allParameters.get(1);
-    y = (Integer) allParameters.get(2);
+    x = ((Long) allParameters.get(1)).intValue();
+    y = ((Long) allParameters.get(2)).intValue();
   }
 
   public ResultType call() throws Exception {

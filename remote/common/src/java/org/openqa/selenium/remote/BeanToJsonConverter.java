@@ -1,6 +1,9 @@
+// Copyright 2008 Google Inc.  All Rights Reserved.
+
 package org.openqa.selenium.remote;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.beans.BeanInfo;
@@ -8,164 +11,159 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
+/**
+ * Utility class for converting between JSON and Java Objects.
+ */
 public class BeanToJsonConverter {
 
-  private final static int MAX_DEPTH = 8;
+  private static final int MAX_DEPTH = 5;
 
-  public String convert(Object toConvert) throws Exception {
-    Object returned = realConvert(toConvert, MAX_DEPTH);
-    return returned == null ? null : returned.toString();
+  /**
+   * Convert an object that may or may not be a JSONArray or JSONObject into
+   * its JSON string representation, handling the case where it is neither in a
+   * graceful way.
+   *
+   * @param object which needs conversion
+   * @return the JSON string representation of object
+   */
+  public String convert(Object object) {
+    if (object == null)
+      return null;
+
+    try {
+      Object converted = convertObject(object, MAX_DEPTH);
+      if (converted instanceof JSONObject || converted instanceof JSONArray) {
+        return converted.toString();
+      }
+
+      return String.valueOf(object);
+    } catch (JSONException e) {
+      throw new RuntimeException("Unable to convert: " + object, e);
+    }
   }
 
-  @SuppressWarnings("unchecked")
-  private Object realConvert(Object toConvert, int maxDepth) throws Exception {
-    if (maxDepth < 1) {
+  /**
+   * Convert a JSON[Array|Object] into the equivalent Java Collection type
+   * (that is, List|Map) returning other objects untouched. This method is used
+   * for preparing values for use by the HttpCommandExecutor
+   *
+   * @param o Object to convert
+   * @return a Map, List or the unconverted Object.
+   */
+  private Object convertUnknownObjectFromJson(Object o) {
+    if (o instanceof JSONArray) {
+      return convertJsonArray((JSONArray) o);
+    }
+
+    if (o instanceof JSONObject) {
+      return convertJsonObject((JSONObject) o);
+    }
+
+    return o;
+  }
+
+  private Map<String, Object> convertJsonObject(JSONObject jsonObject) {
+    Map<String, Object> toReturn = new HashMap<String, Object>();
+    Iterator allKeys = jsonObject.keys();
+    while (allKeys.hasNext()) {
+      String key = (String) allKeys.next();
+
+      try {
+        toReturn.put(key, convertUnknownObjectFromJson(jsonObject.get(key)));
+      } catch (JSONException e) {
+        throw new IllegalStateException("Unable to access key: " + key, e);
+      }
+    }
+    return toReturn;
+  }
+
+  private List<Object> convertJsonArray(JSONArray jsonArray) {
+    List<Object> toReturn = new ArrayList<Object>();
+    for (int i = 0; i < jsonArray.length(); i++) {
+      try {
+        toReturn.add(convertUnknownObjectFromJson(jsonArray.get(i)));
+      } catch (JSONException e) {
+        throw new IllegalStateException("Cannot convert object at index: " + i, e);
+      }
+    }
+    return toReturn;
+  }
+
+  @SuppressWarnings({"unchecked"})
+  private Object convertObject(Object toConvert, int maxDepth) throws JSONException {
+    if (toConvert == null)
       return null;
-    }
 
-    if (toConvert == null) {
-      return null;
-    }
-
-    if (toConvert.getClass().isArray()) {
-      return convertArray(toConvert, maxDepth - 1);
-    }
-
-    // Assume that strings have already been converted
-    if (isPrimitiveType(toConvert)) {
+    if (toConvert instanceof Boolean ||
+        toConvert instanceof CharSequence ||
+        toConvert instanceof Number) {
       return toConvert;
-    }
-
-    if (toConvert instanceof String) {
-      return toConvert;
-    }
-
-    if (toConvert instanceof Map) {
-      return convertMap((Map) toConvert, maxDepth - 1);
-    }
-
-    if (toConvert instanceof Collection) {
-      return convertCollection((Collection) toConvert, maxDepth - 1);
     }
 
     if (toConvert.getClass().isEnum() || toConvert instanceof Enum) {
       return toConvert.toString();
     }
 
-    return convertBean(toConvert, maxDepth - 1);
+    if (toConvert instanceof Map) {
+      JSONObject converted = new JSONObject();
+      for (Object objectEntry : ((Map) toConvert).entrySet()) {
+        Map.Entry<String, Object> entry = (Map.Entry) objectEntry;
+        converted.put(entry.getKey(), convertObject(entry.getValue(), maxDepth - 1));
+      }
+      return converted;
+    }
+
+    if (toConvert instanceof Collection) {
+      JSONArray array = new JSONArray();
+      for (Object o : (Collection) toConvert) {
+        array.put(convertObject(o, maxDepth - 1));
+      }
+      return array;
+    }
+
+    if (toConvert.getClass().isArray()) {
+      JSONArray converted = new JSONArray();
+      int length = Array.getLength(toConvert);
+      for (int i = 0; i < length; i++) {
+        converted.put(convertObject(Array.get(toConvert, i), maxDepth - 1));
+      }
+      return converted;
+    }
+
+    try {
+      return mapObject(toConvert, maxDepth - 1);
+    } catch(Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
-  // I'm missing something really obvious
-  private boolean isPrimitiveType(Object toConvert) {
-    if (toConvert.getClass().isPrimitive()) {
-      return true;
-    }
+  private Object mapObject(Object toConvert, int maxDepth) throws Exception {
+    if (maxDepth == 0)
+        return null;
 
-    if (toConvert instanceof Boolean) {
-      return true;
-    }
-
-    if (toConvert instanceof Byte) {
-      return true;
-    }
-
-    if (toConvert instanceof Character) {
-      return true;
-    }
-
-    if (toConvert instanceof Double) {
-      return true;
-    }
-
-    if (toConvert instanceof Float) {
-      return true;
-    }
-
-    if (toConvert instanceof Integer) {
-      return true;
-    }
-
-    if (toConvert instanceof Long) {
-      return true;
-    }
-
-    if (toConvert instanceof Short) {
-      return true;
-    }
-
-    if (toConvert instanceof Void) {
-      return true;
-    }
-
-    return false;
-  }
-
-  @SuppressWarnings("unchecked")
-  private Object convertCollection(Collection collection, int maxDepth) throws Exception {
-    JSONArray json = new JSONArray();
-
-    if (collection == null) {
-      return json;
-    }
-
-    for (Object o : collection) {
-      json.put(realConvert(o, maxDepth));
-    }
-
-    return json;
-  }
-
-  @SuppressWarnings("unchecked")
-  private Object convertArray(Object array, int maxDepth) throws Exception {
-    JSONArray json = new JSONArray();
-
-    int length = Array.getLength(array);
-    for (int i = 0; i < length; i++) {
-      json.put(realConvert(Array.get(array, i), maxDepth - 1));
-    }
-
-    return json;
-  }
-
-  @SuppressWarnings("unchecked")
-  private Object convertBean(Object toConvert, int maxDepth) throws Exception {
-    JSONObject json = new JSONObject();
-
+    // Raw object via reflection? Nope, not needed
+    JSONObject mapped = new JSONObject();
     BeanInfo beanInfo = Introspector.getBeanInfo(toConvert.getClass());
-    PropertyDescriptor[] allProperties = beanInfo.getPropertyDescriptors();
-    for (PropertyDescriptor property : allProperties) {
-      if ("class".equals(property.getName())) {
-        json.put("class", toConvert.getClass().getName());
+    for (PropertyDescriptor pd : beanInfo.getPropertyDescriptors()) {
+      if ("class".equals(pd.getName())) {
+        mapped.put("class", toConvert.getClass().getName());
         continue;
       }
 
-      Method read = property.getReadMethod();
-      if (read == null) {
+      Method readMethod = pd.getReadMethod();
+      if (readMethod == null)
         continue;
-      }
 
-      try {
-        Object result = read.invoke(toConvert);
-        json.put(property.getName(), realConvert(result, maxDepth - 1));
-      } catch (Exception e) {
-        // Skip this property
-      }
+      Object result = readMethod.invoke(toConvert);
+      mapped.put(pd.getName(), convertObject(result, maxDepth - 1));
     }
-
-    return json;
-  }
-
-  @SuppressWarnings("unchecked")
-  private Object convertMap(Map map, int maxDepth) throws Exception {
-    JSONObject json = new JSONObject();
-    for (Object rawEntry : map.entrySet()) {
-      Map.Entry entry = (Map.Entry) rawEntry;
-      json.put(String.valueOf(entry.getKey()), realConvert(entry.getValue(), maxDepth - 1));
-    }
-
-    return json;
+    return mapped;
   }
 }

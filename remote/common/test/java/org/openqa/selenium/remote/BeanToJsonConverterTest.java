@@ -57,6 +57,18 @@ public class BeanToJsonConverterTest extends TestCase {
     assertThat(allNames.length(), is(2));
   }
 
+  public void testShouldConvertNumbersAsLongs() throws Exception {
+    
+    String json = new BeanToJsonConverter().convert(new Exception());
+    Map map = new JsonToBeanConverter().convert(Map.class, json);
+
+    List stack = (List) map.get("stackTrace");
+    Map line = (Map) stack.get(0);
+
+    Object o = line.get("lineNumber");
+    assertTrue("line number is of type: " + o.getClass(), o instanceof Long);
+  }
+
   public void testShouldNotChokeWhenCollectionIsNull() throws Exception {
     try {
       new BeanToJsonConverter().convert(new BeanWithNullCollection());
@@ -93,6 +105,13 @@ public class BeanToJsonConverterTest extends TestCase {
     } catch (StackOverflowError e) {
       fail("This should never happen");
     }
+  }
+
+  public void testShouldEncodeClassNameAsClassProperty() throws Exception {
+    String json = new BeanToJsonConverter().convert(new SimpleBean());
+    JSONObject converted = new JSONObject(json);
+
+    assertEquals(SimpleBean.class.getName(), converted.get("class"));
   }
 
   private static class SimpleBean {

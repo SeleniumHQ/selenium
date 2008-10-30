@@ -27,8 +27,8 @@ public class RenderedRemoteWebElement extends RemoteWebElement implements Render
   public Point getLocation() {
     Response response = parent.execute("getElementLocation", map("id", id));
     Map<String, Object> rawPoint = (Map<String, Object>) response.getValue();
-    int x = (Integer) rawPoint.get("x");
-    int y = (Integer) rawPoint.get("y");
+    int x = ((Long) rawPoint.get("x")).intValue();
+    int y = ((Long) rawPoint.get("y")).intValue();
     return new Point(x, y);
   }
 
@@ -36,8 +36,8 @@ public class RenderedRemoteWebElement extends RemoteWebElement implements Render
   public Dimension getSize() {
     Response response = parent.execute("getElementSize", map("id", id));
     Map<String, Object> rawSize = (Map<String, Object>) response.getValue();
-    int width = (Integer) rawSize.get("width");
-    int height = (Integer) rawSize.get("height");
+    int width = ((Long) rawSize.get("width")).intValue();
+    int height = ((Long) rawSize.get("height")).intValue();
     return new Dimension(width, height);
   }
 

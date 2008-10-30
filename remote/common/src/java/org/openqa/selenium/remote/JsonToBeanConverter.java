@@ -31,6 +31,11 @@ public class JsonToBeanConverter {
       return (T) text;
     }
 
+    if (text instanceof Number) {
+      // Thank you type erasure. 
+      return (T) Long.valueOf(String.valueOf(text));
+    }
+
     if (isPrimitive(text.getClass())) {
       return (T) text;
     }
