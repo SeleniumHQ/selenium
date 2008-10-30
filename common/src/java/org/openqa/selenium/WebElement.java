@@ -67,8 +67,14 @@ public interface WebElement {
      */
     void clear();
 
-    
-    
+    /**
+     * Get the tag name of this element, <b>not</b> the value of the name attribute:
+     * will return <code>"input"</code> for the element <code>&lt;input name="foo" /&gt;</code>.
+     *
+     * @return The element name of this element.
+     */
+    String getElementName();
+
     /**
      * Get the value of a the given attribute of the element. Will return the
      * current value, even if this has been modified after the page has been
@@ -129,7 +135,7 @@ public interface WebElement {
      * @return A list of {@link WebElement}s of the given type.
      */
     List<WebElement> getChildrenOfType(String tagName);
-    
+
     /**
      * Find all elements within the current context using the given mechanism.
      *
@@ -147,5 +153,5 @@ public interface WebElement {
      * @throws NoSuchElementException If no matching elements are found
      */
     WebElement findElement(By by);
-    
+
 }

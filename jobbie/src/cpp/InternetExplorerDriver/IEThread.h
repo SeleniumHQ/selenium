@@ -9,7 +9,7 @@
 class ElementWrapper;
 class InternetExplorerDriver;
 
-class IeThread 
+class IeThread
 {
 public:
 	IeThread();           // protected constructor used by dynamic creation
@@ -35,7 +35,7 @@ public:
 	void setVisible(bool isVisible);
 	HWND bringToFront();
 
-	void waitForNavigateToFinish(); 
+	void waitForNavigateToFinish();
 
 	EventHandler sync_LaunchThread;
 	EventHandler sync_LaunchIE;
@@ -76,6 +76,7 @@ protected:
 	void executeScript(const wchar_t *script, SAFEARRAY* args, VARIANT *result, bool tryAgain = true);
 	bool isCheckbox(IHTMLElement *pElement);
 	bool isRadio(IHTMLElement *pElement);
+	void getElementName(IHTMLElement *pElement, std::wstring& res);
 	void getAttribute(IHTMLElement *pElement, LPCWSTR name, std::wstring& res);
 	bool isSelected(IHTMLElement *pElement);
 	bool isEnabled(IHTMLElement *pElement);
@@ -108,7 +109,8 @@ protected:
 		  void OnElementGetY(WPARAM, LPARAM);
 		  void OnElementGetHeight(WPARAM, LPARAM);
 		  void OnElementGetWidth(WPARAM, LPARAM);
-		  
+
+		  void OnElementGetElementName(WPARAM, LPARAM);
 		  void OnElementGetAttribute(WPARAM, LPARAM);
 		  void OnElementGetValue(WPARAM, LPARAM);
 		  void OnElementSendKeys(WPARAM, LPARAM);
@@ -141,7 +143,7 @@ protected:
 		  void OnGetCookies(WPARAM, LPARAM);
 		  void OnAddCookie(WPARAM, LPARAM);
 		  void OnWaitForNavigationToFinish(WPARAM, LPARAM);
-		  
+
 		  void OnElementRelease(WPARAM, LPARAM);
 
 		  void OnQuitIE(WPARAM, LPARAM);
@@ -149,5 +151,6 @@ protected:
 public:
 	DataMarshaller& getCmdData() {return pBody->m_CmdData;}
 };
+
 
 

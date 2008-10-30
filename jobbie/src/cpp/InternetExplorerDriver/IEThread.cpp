@@ -47,6 +47,7 @@ BOOL IeThread::DispatchThreadMessageEx(MSG* pMsg)
 	CUSTOM_MESSAGE_MAP ( _WD_ELEM_GETHEIGHT, OnElementGetHeight )
 	CUSTOM_MESSAGE_MAP ( _WD_ELEM_GETWIDTH, OnElementGetWidth )
 
+	CUSTOM_MESSAGE_MAP ( _WD_ELEM_GETELEMENTNAME, OnElementGetElementName )
 	CUSTOM_MESSAGE_MAP ( _WD_ELEM_GETATTRIBUTE, OnElementGetAttribute )
 	CUSTOM_MESSAGE_MAP ( _WD_ELEM_GETVALUE, OnElementGetValue )
 	CUSTOM_MESSAGE_MAP ( _WD_ELEM_SENDKEYS, OnElementSendKeys )
@@ -123,13 +124,13 @@ int IeThread::runProcess()
 BOOL IeThread::InitInstance()
 {
 	SCOPETRACER
-	threadID = GetCurrentThreadId(); 
+	threadID = GetCurrentThreadId();
 	pBody = new IeThreadData;
 
 	pBody->m_CmdData.output_string_.resize(5000);
 
 	CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
-	
+
 	return TRUE;
 }
 
@@ -181,9 +182,9 @@ void IeThread::OnStartIE(WPARAM w, LPARAM lp)
 
 	LOG(INFO) << "Has instanciated IE. Multithreaded version." ;
 
-	if (!SUCCEEDED(hr)) 
+	if (!SUCCEEDED(hr))
 	{
-		std::wstring Err(L"Cannot create InternetExplorer instance"); 
+		std::wstring Err(L"Cannot create InternetExplorer instance");
 		throw Err;
 	}
 
@@ -193,16 +194,16 @@ void IeThread::OnStartIE(WPARAM w, LPARAM lp)
 	bringToFront();
 }
 
-void IeThread::setVisible(bool isVisible) 
+void IeThread::setVisible(bool isVisible)
 {
 	SCOPETRACER
 	if (isVisible)
 		pBody->ieThreaded->put_Visible(VARIANT_TRUE);
-	else 
+	else
 		pBody->ieThreaded->put_Visible(VARIANT_FALSE);
 }
 
-HWND IeThread::bringToFront() 
+HWND IeThread::bringToFront()
 {
 	SCOPETRACER
 	setVisible(true);
@@ -262,7 +263,7 @@ void IeThread::getDefaultContentFromDoc(IHTMLWindow2 **result, IHTMLDocument2* d
 	CComVariant index;
 	index.vt = VT_I4;
 	index.lVal = 0;
-	
+
 	CComVariant frameHolder;
 	frames->item(&index, &frameHolder);
 
@@ -297,7 +298,7 @@ void IeThread::findCurrentFrame(IHTMLWindow2 **result)
 		}
 	}
 
-	// Otherwise, tokenize the current frame and loop, finding the 
+	// Otherwise, tokenize the current frame and loop, finding the
 	// child frame in turn
 	size_t len = pBody->pathToFrame.length() + 1;
 	wchar_t *path = new wchar_t[len];
@@ -331,7 +332,7 @@ void IeThread::findCurrentFrame(IHTMLWindow2 **result)
 			index.vt = VT_BSTR;
 			index.bstrVal = frameName;
 		}
-		
+
 		// Find the frame
 		CComVariant frameHolder;
 		frames->item(&index, &frameHolder);
@@ -341,12 +342,12 @@ void IeThread::findCurrentFrame(IHTMLWindow2 **result)
 
 		if (!interimResult) { break; } // pathToFrame does not match. Exit.
 
-		// TODO: Check to see if a collection of frames were returned. Grab the 0th element if there was. 
+		// TODO: Check to see if a collection of frames were returned. Grab the 0th element if there was.
 
 		// Was there only one result? Next time round, please.
 		CComQIPtr<IHTMLWindow2> window(interimResult);
 		if (!window) { break; } // pathToFrame does not match. Exit.
-		
+
 		doc.Detach();
 		window->get_document(&doc);
 	}
@@ -363,20 +364,20 @@ void IeThread::getDocument3(IHTMLDocument3** pOutDoc)
 
 	CComPtr<IHTMLDocument2> doc2;
 	getDocument(&doc2);
-	
+
 	CComQIPtr<IHTMLDocument3> doc(doc2);
 	*pOutDoc = doc.Detach();
 }
 
 
-bool IeThread::getEval(IHTMLDocument2* doc, DISPID* evalId, bool* added) 
+bool IeThread::getEval(IHTMLDocument2* doc, DISPID* evalId, bool* added)
 {
 	CComPtr<IDispatch> scriptEngine;
 	doc->get_Script(&scriptEngine);
 
 	OLECHAR FAR* evalName = L"eval";
     HRESULT hr = scriptEngine->GetIDsOfNames(IID_NULL, &evalName, 1, LOCALE_USER_DEFAULT, evalId);
-	if (FAILED(hr)) { 
+	if (FAILED(hr)) {
 		*added = true;
 		// Start the script engine by adding a script tag to the page
 		CComPtr<IHTMLElement> scriptTag;
@@ -415,7 +416,7 @@ void IeThread::removeScript(IHTMLDocument2* doc)
 	CComPtr<IHTMLElement> element;
 	CComBSTR id(L"__webdriver_private_span");
 	doc3->getElementById(id, &element);
-	
+
 	CComQIPtr<IHTMLDOMNode> elementNode(element);
 
 	if (elementNode) {
@@ -493,7 +494,7 @@ void IeThread::executeScript(const wchar_t *script, SAFEARRAY* args, VARIANT *re
 	}
 
 	DISPPARAMS callParameters = { 0 };
-	int nargs = getLengthOf(args);	  
+	int nargs = getLengthOf(args);
 	callParameters.cArgs = nargs + 1;
 
 	CComPtr<IHTMLWindow2> win;
@@ -520,7 +521,7 @@ void IeThread::executeScript(const wchar_t *script, SAFEARRAY* args, VARIANT *re
 	  } else {
 		  wcerr << L"Failed to execute: " << script << endl;
 	  }
-	  
+
 	  if (result) {
 		  result->vt = VT_USERDEFINED;
 		  result->bstrVal = exception.bstrDescription;
@@ -533,7 +534,7 @@ void IeThread::executeScript(const wchar_t *script, SAFEARRAY* args, VARIANT *re
 }
 
 
-HWND IeThread::getHwnd() 
+HWND IeThread::getHwnd()
 {
 	SCOPETRACER
 	HWND hWnd;
@@ -558,7 +559,7 @@ HWND IeThread::getHwnd()
 }
 
 
-void IeThread::waitForNavigateToFinish() 
+void IeThread::waitForNavigateToFinish()
 {
 	static bool alreadyInsideWFNTF = false;
 	if(alreadyInsideWFNTF)
@@ -599,7 +600,7 @@ void IeThread::waitForNavigateToFinish()
 	CComPtr<IDispatch> dispatch;
 	pBody->ieThreaded->get_Document(&dispatch);
 	CComQIPtr<IHTMLDocument2> doc(dispatch);
-	
+
 	waitForDocumentToComplete(doc);
 
 	CComPtr<IHTMLFramesCollection2> frames;
@@ -658,7 +659,7 @@ void IeThread::waitForDocumentToComplete(IHTMLDocument2* doc)
 bool IeThread::addEvaluateToDocument(const IHTMLDOMNode* node, int count)
 {
 	SCOPETRACER
-	
+
 	// Is there an evaluate method on the document?
 	CComPtr<IHTMLDocument2> doc;
 	getDocument2(node, &doc);
@@ -679,20 +680,20 @@ bool IeThread::addEvaluateToDocument(const IHTMLDOMNode* node, int count)
 	// Create it if necessary
 	CComPtr<IHTMLWindow2> win;
 	doc->get_parentWindow(&win);
-	
+
 	std::wstring script;
 	for (int i = 0; XPATHJS[i]; i++) {
 		script += XPATHJS[i];
 	}
 	executeScript(script.c_str(), NULL, NULL);
-	
+
 	hr = doc->GetIDsOfNames(IID_NULL, &szMember, 1, LOCALE_USER_DEFAULT, &dispid);
 	if (FAILED(hr)) {
 		cerr << "After attempting to add the xpath engine, the evaluate method is still missing" << endl;
 		if (count < 1) {
 			return addEvaluateToDocument(node, ++count);
 		}
-	
+
 		return false;
 	}
 	return true;
@@ -720,5 +721,6 @@ void IeThread::tryTransferEventReleaserToNotifyNavigCompleted(CScopeCaller *pSC,
 	sc.m_releaseOnDestructor = !setETNWNC;
 	m_EventToNotifyWhenNavigationCompleted = (setETNWNC) ? sc.getSync() : NULL;
 }
+
 
 

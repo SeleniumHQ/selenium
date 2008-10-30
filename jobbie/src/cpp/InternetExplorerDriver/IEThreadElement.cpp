@@ -2,6 +2,8 @@
 //
 #include "stdafx.h"
 #include <ctime>
+#include <cctype>
+#include <algorithm>
 
 #include "IEThread.h"
 #include "utils.h"
@@ -34,7 +36,7 @@ const LPCTSTR ie6WindowNames[] = {
 
 HWND getChildWindow(HWND hwnd, LPCTSTR name)
 {
-	TCHAR pszClassName[LONGEST_NAME]; 
+	TCHAR pszClassName[LONGEST_NAME];
 	HWND hwndtmp = GetWindow(hwnd, GW_CHILD);
 	while(hwndtmp != NULL) {
 		::GetClassName(hwndtmp, pszClassName, LONGEST_NAME);
@@ -45,7 +47,7 @@ HWND getChildWindow(HWND hwnd, LPCTSTR name)
 	return NULL;
 }
 
-HWND getIeServerWindow(HWND hwnd) 
+HWND getIeServerWindow(HWND hwnd)
 {
     HWND iehwnd = hwnd;
 
@@ -138,7 +140,7 @@ static HHOOK hook = 0;
 #pragma data_seg()
 #pragma comment(linker, "/section:.LISTENER,rws")
 
-void backgroundUnicodeKeyPress(HWND ieWindow, wchar_t c, int pause) 
+void backgroundUnicodeKeyPress(HWND ieWindow, wchar_t c, int pause)
 {
 	pause = pause / 3;
 
@@ -236,7 +238,7 @@ void backgroundKeyPress(HWND hwnd, HKL layout, BYTE keyboardState[256],
 		cerr << "Key up failed: " << GetLastError() << endl;
 
 	wait(pause);
-	
+
 
 	if (needsShift) {
 		keyboardState[VK_SHIFT] &= ~0x80;
@@ -329,7 +331,7 @@ void IeThread::OnElementSendKeys(WPARAM w, LPARAM lp)
 			}
 		}
 	}
-	
+
 	if (!hasFocus) {
 		cerr << "We don't have focus on element." << endl;
 	}
@@ -674,15 +676,15 @@ void IeThread::OnElementGetX(WPARAM w, LPARAM lp)
 	CComBSTR table(L"TABLE");
 	CComBSTR body(L"BODY");
 
-	while (parent) 
+	while (parent)
 	{
 		CComBSTR tagName;
 		parent->get_tagName(&tagName);
 
-		if (table == tagName || body == tagName) 
+		if (table == tagName || body == tagName)
 		{
 			CComQIPtr<IHTMLElement2> parent2(parent);
-				
+
 			parent2->get_clientLeft(&x);
 			totalX += x;
 		}
@@ -715,15 +717,15 @@ void IeThread::OnElementGetY(WPARAM w, LPARAM lp)
 	CComBSTR table(L"TABLE");
 	CComBSTR body(L"BODY");
 
-	while (parent) 
+	while (parent)
 	{
 		CComBSTR tagName;
 		parent->get_tagName(&tagName);
 
-		if (table == tagName || body == tagName) 
+		if (table == tagName || body == tagName)
 		{
 			CComQIPtr<IHTMLElement2> parent2(parent);
-				
+
 			parent2->get_clientTop(&y);
 			totalY += y;
 		}
@@ -757,6 +759,16 @@ void IeThread::OnElementGetWidth(WPARAM w, LPARAM lp)
 	pElement->get_offsetWidth(&width);
 }
 
+void IeThread::OnElementGetElementName(WPARAM w, LPARAM lp)
+{
+	SCOPETRACER
+	ON_THREAD_ELEMENT(data, pElement)
+
+	std::wstring& ret = data.output_string_;
+
+	getElementName(pElement, ret);
+}
+
 void IeThread::OnElementGetAttribute(WPARAM w, LPARAM lp)
 {
 	SCOPETRACER
@@ -765,7 +777,7 @@ void IeThread::OnElementGetAttribute(WPARAM w, LPARAM lp)
 	getAttribute(pElement, data.input_string_, data.output_string_);
 }
 
-void IeThread::getTextAreaValue(IHTMLElement *pElement, std::wstring& res) 
+void IeThread::getTextAreaValue(IHTMLElement *pElement, std::wstring& res)
 {
 	SCOPETRACER
 	CComQIPtr<IHTMLTextAreaElement> textarea(pElement);
@@ -780,7 +792,7 @@ void IeThread::OnElementGetValue(WPARAM w, LPARAM lp)
 	SCOPETRACER
 	ON_THREAD_ELEMENT(data, pElement)
 
-	std::wstring& ret = data.output_string_; 
+	std::wstring& ret = data.output_string_;
 
 	getValue(pElement, ret);
 }
@@ -817,13 +829,13 @@ void IeThread::OnElementSetSelected(WPARAM w, LPARAM lp)
 	ON_THREAD_ELEMENT(data, pElement)
 
 	bool currentlySelected = isSelected(pElement);
-	
+
 	bool& hasToThrowException = data.output_bool_;
 	hasToThrowException = false;
 
 	std::wstring& exceptionString = data.output_string_;
 
-	if (!this->isEnabled(pElement)) 
+	if (!this->isEnabled(pElement))
 	{
 		hasToThrowException = true;
 		exceptionString = L"Unable to select a disabled element";
@@ -878,7 +890,7 @@ void IeThread::OnElementSetSelected(WPARAM w, LPARAM lp)
 	CComQIPtr<IHTMLOptionElement> option(pElement);
 	if (option) {
 		option->put_selected(VARIANT_TRUE);
-		
+
 		// Looks like we'll need to fire the event on the select element and not the option. Assume for now that the parent node is a select. Which is dumb
 		CComQIPtr<IHTMLDOMNode> node(pElement);
 		CComPtr<IHTMLDOMNode> parent;
@@ -888,7 +900,7 @@ void IeThread::OnElementSetSelected(WPARAM w, LPARAM lp)
 			CComPtr<IHTMLEventObj> eventObj(newEventObject(pElement));
 			fireEvent(pElement, parent, eventObj, L"onchange");
 		}
-		
+
 		return;
 	}
 
@@ -914,7 +926,7 @@ void IeThread::OnElementGetText(WPARAM w, LPARAM lp)
 void IeThread::OnElementClick(WPARAM w, LPARAM lp)
 {
 	SCOPETRACER
-	ON_THREAD_ELEMENT(data, pElement)	
+	ON_THREAD_ELEMENT(data, pElement)
 	click(pElement, &SC);
 }
 
@@ -922,31 +934,31 @@ void IeThread::OnElementSubmit(WPARAM w, LPARAM lp)
 {
 	SCOPETRACER
 	ON_THREAD_ELEMENT(data, pElement)
-	
+
 	submit(pElement, &SC);
 }
 
-IHTMLEventObj* IeThread::newEventObject(IHTMLElement *pElement) 
+IHTMLEventObj* IeThread::newEventObject(IHTMLElement *pElement)
 {
 	SCOPETRACER
 	IDispatch* dispatch;
 	pElement->get_document(&dispatch);
 	CComQIPtr<IHTMLDocument4> doc(dispatch);
 	dispatch->Release();
-		
+
 	CComVariant empty;
 	IHTMLEventObj* eventObject;
 	doc->createEventObject(&empty, &eventObject);
 	return eventObject;
 }
 
-void IeThread::fireEvent(IHTMLElement *pElement, IHTMLEventObj* eventObject, const OLECHAR* eventName) 
+void IeThread::fireEvent(IHTMLElement *pElement, IHTMLEventObj* eventObject, const OLECHAR* eventName)
 {
 	CComQIPtr<IHTMLDOMNode> node = pElement;
 	fireEvent(pElement, node, eventObject, eventName);
 }
 
-void IeThread::fireEvent(IHTMLElement *pElement, IHTMLDOMNode* fireOn, IHTMLEventObj* eventObject, const OLECHAR* eventName) 
+void IeThread::fireEvent(IHTMLElement *pElement, IHTMLDOMNode* fireOn, IHTMLEventObj* eventObject, const OLECHAR* eventName)
 {
 	SCOPETRACER
 	CComVariant eventref;
@@ -986,7 +998,15 @@ bool IeThread::isRadio(IHTMLElement *pElement)
 	return _wcsicmp(combstr2cw(typeName), L"radio") == 0;
 }
 
-void IeThread::getAttribute(IHTMLElement *pElement, LPCWSTR name, std::wstring& res) 
+void IeThread::getElementName(IHTMLElement *pElement, std::wstring& res)
+{
+	CComBSTR temp;
+	pElement->get_tagName(&temp);
+    res = combstr2cw(temp);
+    transform(res.begin(), res.end(), res.begin(), tolower);
+}
+
+void IeThread::getAttribute(IHTMLElement *pElement, LPCWSTR name, std::wstring& res)
 {
 	SCOPETRACER
 	CComBSTR attributeName;
@@ -1115,7 +1135,7 @@ void IeThread::click(IHTMLElement *pElement, CScopeCaller *pSC)
 	waitForNavigateToFinish();
 }
 
-bool IeThread::isEnabled(IHTMLElement *pElement) 
+bool IeThread::isEnabled(IHTMLElement *pElement)
 {
 	SCOPETRACER
 	CComQIPtr<IHTMLElement3> elem3(pElement);
@@ -1159,14 +1179,14 @@ const wchar_t* colourNames2hex[][2] = {
 	{ NULL,			NULL }
 };
 
-LPCWSTR mangleColour(LPCWSTR propertyName, LPCWSTR toMangle) 
+LPCWSTR mangleColour(LPCWSTR propertyName, LPCWSTR toMangle)
 {
 	if (wcsstr(propertyName, L"color") == NULL)
 		return toMangle;
 
 	// Look for each of the named colours and mangle them.
 	for (int i = 0; colourNames2hex[i][0]; i++) {
-		if (_wcsicmp(colourNames2hex[i][0], toMangle) == 0) 
+		if (_wcsicmp(colourNames2hex[i][0], toMangle) == 0)
 			return colourNames2hex[i][1];
 	}
 
@@ -1184,7 +1204,7 @@ void IeThread::getValueOfCssProperty(IHTMLElement *pElement, LPCWSTR propertyNam
 
 	CComPtr<IHTMLCurrentStyle> style;
 	styled->get_currentStyle(&style);
-	
+
 	/*
 	// This is what I'd like to write.
 
@@ -1194,7 +1214,7 @@ void IeThread::getValueOfCssProperty(IHTMLElement *pElement, LPCWSTR propertyNam
 	*/
 
 	// So the way we've done this strikes me as a remarkably poor idea.
-	
+
 	/*
     Not implemented
 		background-position
@@ -1282,7 +1302,7 @@ void IeThread::getValueOfCssProperty(IHTMLElement *pElement, LPCWSTR propertyNam
 	resultStr = L"";
 }
 
-void IeThread::getText(IHTMLElement *pElement, std::wstring& res) 
+void IeThread::getText(IHTMLElement *pElement, std::wstring& res)
 {
 	SCOPETRACER
 	CComBSTR tagName;
@@ -1296,7 +1316,7 @@ void IeThread::getText(IHTMLElement *pElement, std::wstring& res)
 		return;
 	}
 
-	CComQIPtr<IHTMLDOMNode> node(pElement); 
+	CComQIPtr<IHTMLDOMNode> node(pElement);
 	std::wstring toReturn(L"");
 	getText(toReturn, node, isPre);
 
@@ -1334,7 +1354,7 @@ void IeThread::getText(IHTMLElement *pElement, std::wstring& res)
 
 	long length = 0;
 	children->get_length(&length);
-	for (long i = 0; i < length; i++) 
+	for (long i = 0; i < length; i++)
 	{
 		CComPtr<IDispatch> dispatch2;
 		children->item(i, &dispatch2);
@@ -1342,7 +1362,7 @@ void IeThread::getText(IHTMLElement *pElement, std::wstring& res)
 
 		CComBSTR childName;
 		child->get_nodeName(&childName);
-		
+
 		CComQIPtr<IHTMLDOMTextNode> textNode(child);
 		if (textNode) {
 			CComBSTR text;
@@ -1354,8 +1374,8 @@ void IeThread::getText(IHTMLElement *pElement, std::wstring& res)
 				}
 			}
 
-			collapsingAppend(toReturn, isPreformatted ? 
-				std::wstring(combstr2cw(text)) // bstr2wstring(text) 
+			collapsingAppend(toReturn, isPreformatted ?
+				std::wstring(combstr2cw(text)) // bstr2wstring(text)
 				: collapseWhitespace(text));
 		} else if (wcscmp(combstr2cw(childName), L"PRE") == 0) {
 			getText(toReturn, child, true);
@@ -1416,15 +1436,15 @@ void IeThread::getText(IHTMLElement *pElement, std::wstring& res)
 			toReturn += c;
 			newlineAlreadyAppended = false;
 		} else if (previous == L'\r' && c == L'\n' && !newlineAlreadyAppended) {
-			// If the previous char was '\r' and current is '\n' 
+			// If the previous char was '\r' and current is '\n'
 			// and we've not already appended '\r\n' append '\r\n'.
 
-			// The previous char was '\r' and has already been appended and 
+			// The previous char was '\r' and has already been appended and
 			// the current character is '\n'. Just appended that.
-			toReturn += c; 
+			toReturn += c;
 			newlineAlreadyAppended = true;
 		}
-		
+
 		previousWasSpace = currentIsSpace;
 		previous = c;
 	}
@@ -1499,14 +1519,14 @@ void IeThread::submit(IHTMLElement *pElement, CScopeCaller *pSC)
 		} else {
 			findParentForm(pElement, &form);
 			if (!form) {
-				std::wstring Err(L"Unable to find the containing form"); 
+				std::wstring Err(L"Unable to find the containing form");
 				throw Err;
-			} 
+			}
 			form->submit();
 		}
 	}
 
-	/////// 
+	///////
 	tryTransferEventReleaserToNotifyNavigCompleted(pSC);
 	waitForNavigateToFinish();
 }
@@ -1534,7 +1554,7 @@ void IeThread::OnElementGetChildrenWithTagName(WPARAM w, LPARAM lp)
 	SCOPETRACER
 	ON_THREAD_ELEMENT(data, pElement)
 
-	std::vector<IHTMLElement*> &allElems = data.output_list_html_element_; 
+	std::vector<IHTMLElement*> &allElems = data.output_list_html_element_;
 	LPCWSTR tagName= data.input_string_;
 
 	CComQIPtr<IHTMLElement2> element2(pElement);
@@ -1573,6 +1593,7 @@ void IeThread::OnElementRelease(WPARAM w, LPARAM lp)
 	ON_THREAD_ELEMENT(data, pElement)
 	pElement->Release();
 }
+
 
 
 

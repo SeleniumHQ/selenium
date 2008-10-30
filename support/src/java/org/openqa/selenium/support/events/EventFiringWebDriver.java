@@ -165,6 +165,10 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor {
             dispatcher.afterChangeValueOf(element, driver);
         }
 
+        public String getElementName() {
+            return element.getElementName();
+        }
+
         public String getAttribute(String name) {
             return element.getAttribute(name);
         }

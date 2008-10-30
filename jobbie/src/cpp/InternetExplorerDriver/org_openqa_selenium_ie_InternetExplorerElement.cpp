@@ -18,7 +18,7 @@ extern "C" {
 #endif
 
 JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_click
-  (JNIEnv *env, jobject obj) 
+  (JNIEnv *env, jobject obj)
 {
 	TRY
 	{
@@ -73,6 +73,20 @@ JNIEXPORT jstring JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_ge
 	ElementWrapper* wrapper = getWrapper(env, obj);
 	LPCWSTR text = wrapper->getText();
 	return lpcw2jstring(env, text);
+	}
+	END_TRY_CATCH_ANY
+	return NULL;
+}
+
+JNIEXPORT jstring JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_getElementName
+  (JNIEnv *env, jobject obj)
+{
+	TRY
+	{
+	ElementWrapper* wrapper = getWrapper(env, obj);
+
+	LPCWSTR name = wrapper->getElementName();
+	return lpcw2jstring(env, name);
 	}
 	END_TRY_CATCH_ANY
 	return NULL;
@@ -182,7 +196,7 @@ JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_ge
 
 	jclass pointClass = env->FindClass("java/awt/Point");
 	jmethodID cId = env->GetMethodID(pointClass, "<init>", "(II)V");
-	
+
 	return env->NewObject(pointClass, cId, x, y);
 	}
 	END_TRY_CATCH_ANY
@@ -190,7 +204,7 @@ JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_ge
 }
 
 JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_getSize
-  (JNIEnv *env, jobject obj) 
+  (JNIEnv *env, jobject obj)
 {
 	TRY
 	{
@@ -208,7 +222,7 @@ JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_ge
 }
 
 JNIEXPORT jlong JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_getElementNode
-  (JNIEnv *env, jobject obj) 
+  (JNIEnv *env, jobject obj)
 {
 	ElementWrapper* wrapper = getWrapper(env, obj);
 
@@ -218,9 +232,9 @@ JNIEXPORT jlong JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_getE
 }
 
 JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_releaseElementNode
-  (JNIEnv *env, jobject obj, jlong freeMe) 
+  (JNIEnv *env, jobject obj, jlong freeMe)
 {
-//	((IHTMLDOMNode*) freeMe)->Release(); 
+//	((IHTMLDOMNode*) freeMe)->Release();
 }
 
 JNIEXPORT jlong JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_getIePointer

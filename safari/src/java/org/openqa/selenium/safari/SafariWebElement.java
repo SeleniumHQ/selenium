@@ -26,7 +26,7 @@ public class SafariWebElement implements WebElement, SearchContext {
                     locator + ".click();\r" +
                 "var event = document.createEvent(\"MouseEvents\");\r" +
                 "event.initMouseEvent(\"click\", true, true, null, 1, 0, 0, 0, 0, false, false, false, false, 0, null);" +
-                locator + ".dispatchEvent(event);\r" 
+                locator + ".dispatchEvent(event);\r"
         );
         parent.waitForLoadToComplete();
     }
@@ -50,7 +50,7 @@ public class SafariWebElement implements WebElement, SearchContext {
 
         appleScript.executeJavascript(locator + ".focus()");
         appleScript.executeApplescript(
-        		"tell application \"System Events\"\r" + 
+        		"tell application \"System Events\"\r" +
         		"    keystroke (\"" + builder.toString() + "\")\r" +
         		"end tell");
         appleScript.executeJavascript(locator + ".blur()");
@@ -62,7 +62,11 @@ public class SafariWebElement implements WebElement, SearchContext {
                 "else { " + locator + ".setAttribute('value', ''); }"
         );
     }
-    
+
+    public String getElementName() {
+        throw new UnsupportedOperationException("getElementName");
+    }
+
     public String getAttribute(String name) {
         throw new UnsupportedOperationException("getAttribute");
     }

@@ -31,7 +31,7 @@ public class FirefoxWebElement implements RenderedWebElement, FindsByXPath,
     public void click() {
         sendMessage(UnsupportedOperationException.class, "click");
     }
-    
+
     public void submit() {
         sendMessage(RuntimeException.class, "submitElement");
     }
@@ -48,13 +48,18 @@ public class FirefoxWebElement implements RenderedWebElement, FindsByXPath,
     public void clear() {
     	sendMessage(UnsupportedOperationException.class, "clear");
     }
-    
+
     public void sendKeys(CharSequence... value) {
     	StringBuilder builder = new StringBuilder();
     	for (CharSequence seq : value) {
     		builder.append(seq);
     	}
         sendMessage(UnsupportedOperationException.class, "sendKeys", builder.toString());
+    }
+
+    public String getElementName() {
+        String name = sendMessage(RuntimeException.class, "getElementName");
+        return name;
     }
 
     public String getAttribute(String name) {
@@ -123,7 +128,7 @@ public class FirefoxWebElement implements RenderedWebElement, FindsByXPath,
 
         return new Dimension(x, y);
     }
-    
+
     public void dragAndDropBy(int moveRight, int moveDown) {
         sendMessage(UnsupportedOperationException.class, "dragAndDrop", moveRight, moveDown);
     }
@@ -133,7 +138,7 @@ public class FirefoxWebElement implements RenderedWebElement, FindsByXPath,
         Point destination = element.getLocation();
         dragAndDropBy(destination.x - currentLocation.x, destination.y - currentLocation.y);
     }
- 
+
     public WebElement findElement(By by) {
         return by.findElement(this);
     }
@@ -141,7 +146,7 @@ public class FirefoxWebElement implements RenderedWebElement, FindsByXPath,
     public List<WebElement> findElements(By by) {
         return by.findElements(this);
     }
-    
+
     public WebElement findElementByXPath(String xpath) {
         List<WebElement> elements = findElementsByXPath(xpath);
         if (elements.size() == 0) {
@@ -150,9 +155,9 @@ public class FirefoxWebElement implements RenderedWebElement, FindsByXPath,
         }
         return elements.get(0);
     }
-    
+
     public List<WebElement> findElementsByXPath(String xpath) {
-        String indices = sendMessage(RuntimeException.class, 
+        String indices = sendMessage(RuntimeException.class,
                 "findElementsByXPath", xpath);
         return getElementsFromIndices(indices);
     }
@@ -167,11 +172,11 @@ public class FirefoxWebElement implements RenderedWebElement, FindsByXPath,
     }
 
     public List<WebElement> findElementsByLinkText(String linkText) {
-        String indices = sendMessage(RuntimeException.class, 
+        String indices = sendMessage(RuntimeException.class,
                 "findElementsByLinkText", linkText);
         return getElementsFromIndices(indices);
     }
-    
+
     private List<WebElement> getElementsFromIndices(String indices) {
         List<WebElement> elements = new ArrayList<WebElement>();
 
@@ -184,7 +189,7 @@ public class FirefoxWebElement implements RenderedWebElement, FindsByXPath,
         }
         return elements;
     }
-    
+
     public WebElement findElementById(String id) {
     	String response = sendMessage(RuntimeException.class, "findElementById", id);
     	if (response.equals("-1"))
@@ -193,7 +198,7 @@ public class FirefoxWebElement implements RenderedWebElement, FindsByXPath,
     }
 
     public List<WebElement> findElementsById(String id) {
-    	return findElementsByXPath(".//*[@id = '" + id + "']");  
+    	return findElementsByXPath(".//*[@id = '" + id + "']");
     }
 
     public WebElement findElementByName(String name) {
@@ -203,7 +208,7 @@ public class FirefoxWebElement implements RenderedWebElement, FindsByXPath,
     public List<WebElement> findElementsByName(String name) {
         return findElementsByXPath(".//*[@name = '" + name + "']");
     }
-    
+
     public WebElement findElementByClassName(String using) {
         List<WebElement> elements = findElementsByClassName(using);
         if (elements.size() == 0) {
@@ -212,16 +217,16 @@ public class FirefoxWebElement implements RenderedWebElement, FindsByXPath,
         }
         return elements.get(0);
     }
-    
+
     public List<WebElement> findElementsByClassName(String using) {
     	String indices = sendMessage(RuntimeException.class, "findChildElementsByClassName", using);
         return getElementsFromIndices(indices);
     }
-    
+
     public String getValueOfCssProperty(String propertyName) {
     	return sendMessage(RuntimeException.class,"getElementCssProperty", propertyName);
     }
-    
+
     private String sendMessage(Class<? extends RuntimeException> throwOnFailure, String methodName, Object... parameters) {
         return parent.sendMessage(throwOnFailure, new Command(parent.context, elementId, methodName, parameters));
     }
@@ -231,13 +236,13 @@ public class FirefoxWebElement implements RenderedWebElement, FindsByXPath,
     }
 
     public WebElement findElementByPartialLinkText(String using) {
-    	String id = sendMessage(RuntimeException.class, 
+    	String id = sendMessage(RuntimeException.class,
                 "findElementByPartialLinkText", using);
     	return new FirefoxWebElement(parent, id);
     }
 
     public List<WebElement> findElementsByPartialLinkText(String using) {
-        String indices = sendMessage(RuntimeException.class, 
+        String indices = sendMessage(RuntimeException.class,
                 "findElementsByPartialLinkText", using);
         return getElementsFromIndices(indices);
     }

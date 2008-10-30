@@ -51,6 +51,11 @@ public class RemoteWebElement implements WebElement, SearchContext,
     parent.execute("clearElement", map("id", id));
   }
 
+  public String getElementName() {
+    // TODO: implement me
+    throw new UnsupportedOperationException();
+  }
+
   public String getAttribute(String name) {
     Object value = parent.execute("getElementAttribute", map("id", id, "name", name)).getValue();
     if (value == null) {

@@ -79,7 +79,7 @@ public class HtmlUnitWebElement implements WebElement,
           // Press on regardless
         }
     }
-    
+
     public void submit() {
         try {
             if (element instanceof HtmlForm) {
@@ -110,16 +110,16 @@ public class HtmlUnitWebElement implements WebElement,
     	names.add("input");
     	names.add("button");
     	List<? extends HtmlElement> allElements = form.getHtmlElementsByTagNames(names);
-    	
+
     	HtmlElement submit = null;
     	for (HtmlElement element : allElements) {
     		if (!isSubmitElement(element))
     			continue;
-    		
+
     		if (isBefore(submit, element))
     			submit = element;
     	}
-    	
+
     	if (submit == null)
     		throw new RuntimeException("Cannot locate element used to submit form");
     	try {
@@ -131,17 +131,17 @@ public class HtmlUnitWebElement implements WebElement,
 
 	private boolean isSubmitElement(HtmlElement element) {
 		HtmlElement candidate = null;
-		
+
 		if (element instanceof HtmlSubmitInput && !((HtmlSubmitInput)element).isDisabled())
 			candidate = element;
 		else if (element instanceof HtmlImageInput && !((HtmlImageInput)element).isDisabled())
 			candidate = element;
 		else if (element instanceof HtmlButton) {
 			HtmlButton button = (HtmlButton) element;
-			if ("submit".equalsIgnoreCase(button.getTypeAttribute()) && !button.isDisabled()) 
+			if ("submit".equalsIgnoreCase(button.getTypeAttribute()) && !button.isDisabled())
 				candidate = element;
 		}
-		
+
 		return candidate != null;
 	}
 
@@ -162,7 +162,7 @@ public class HtmlUnitWebElement implements WebElement,
             ((HtmlTextArea) element).setText("");
         }
     }
-    
+
     public void sendKeys(CharSequence... value) {
         StringBuilder builder = new StringBuilder();
         for (CharSequence seq : value) {
@@ -189,7 +189,11 @@ public class HtmlUnitWebElement implements WebElement,
         }
     }
 
-  public String getAttribute(String name) {
+    public String getElementName() {
+        return element.getNodeName();
+    }
+
+    public String getAttribute(String name) {
         final String lowerName = name.toLowerCase();
 
         String value = element.getAttributeValue(name);
@@ -373,19 +377,19 @@ public class HtmlUnitWebElement implements WebElement,
     public WebElement findElement(By by) {
         return by.findElement(this);
     }
-    
+
     public List<WebElement> findElements(By by) {
         return by.findElements(this);
     }
-    
+
     public WebElement findElementById(String id) {
         return findElementByXPath(".//*[@id = '" + id + "']");
     }
-    
+
     public List<WebElement> findElementsById(String id) {
         return findElementsByXPath(".//*[@id = '" + id + "']");
     }
-    
+
     public WebElement findElementByXPath(String xpathExpr) {
         HtmlElement match = (HtmlElement) element.getFirstByXPath(xpathExpr);
         if (match == null) {
@@ -394,7 +398,7 @@ public class HtmlUnitWebElement implements WebElement,
         }
         return getParent().newHtmlUnitWebElement(match);
     }
-    
+
     public List<WebElement> findElementsByXPath(String xpathExpr) {
         List<WebElement> webElements = new ArrayList<WebElement>();
         List<?> htmlElements = element.getByXPath(xpathExpr);
@@ -403,7 +407,7 @@ public class HtmlUnitWebElement implements WebElement,
         }
         return webElements;
     }
-    
+
     public WebElement findElementByLinkText(String linkText) {
         List<WebElement> elements = findElementsByLinkText(linkText);
         if (elements.size() == 0) {
@@ -412,21 +416,21 @@ public class HtmlUnitWebElement implements WebElement,
         }
         return elements.size() > 0 ? elements.get(0) : null;
     }
-    
+
     @SuppressWarnings("unchecked")
     public List<WebElement> findElementsByLinkText(String linkText) {
-        List<HtmlElement> htmlElements = 
+        List<HtmlElement> htmlElements =
             (List<HtmlElement>) element.getHtmlElementsByTagName("a");
         List<WebElement> webElements = new ArrayList<WebElement>();
         for (HtmlElement e : htmlElements) {
-            if (e.getTextContent().equals(linkText) 
+            if (e.getTextContent().equals(linkText)
                     && e.getAttribute("href") != null) {
                 webElements.add(getParent().newHtmlUnitWebElement(e));
             }
         }
         return webElements;
     }
-    
+
     public WebElement findElementByPartialLinkText(String linkText) {
         List<WebElement> elements = findElementsByPartialLinkText(linkText);
         if (elements.size() == 0) {
@@ -435,21 +439,21 @@ public class HtmlUnitWebElement implements WebElement,
         }
         return elements.size() > 0 ? elements.get(0) : null;
     }
-    
+
     @SuppressWarnings("unchecked")
     public List<WebElement> findElementsByPartialLinkText(String linkText) {
-        List<HtmlElement> htmlElements = 
+        List<HtmlElement> htmlElements =
             (List<HtmlElement>) element.getHtmlElementsByTagName("a");
         List<WebElement> webElements = new ArrayList<WebElement>();
         for (HtmlElement e : htmlElements) {
-            if (e.getTextContent().contains(linkText) 
+            if (e.getTextContent().contains(linkText)
                     && e.getAttribute("href") != null) {
                 webElements.add(getParent().newHtmlUnitWebElement(e));
             }
         }
         return webElements;
     }
-    
+
     public WebElement findElementByName(String name) {
         return findElementByXPath(".//*[@name = '" + name + "']");
     }

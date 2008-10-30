@@ -27,7 +27,7 @@ FirefoxDriver.prototype.click = function(respond) {
 
     var browser = Utils.getBrowser(this.context);
     var alreadyReplied = false;
-    
+
     var clickListener = new WebLoadingListener(this, function(event) {
         if (!alreadyReplied) {
             alreadyReplied = true;
@@ -116,14 +116,14 @@ FirefoxDriver.prototype.clear = function(respond) {
    respond.context = this.context;
 
    var element = Utils.getElementAt(respond.elementId, this.context);
-   
+
    if (!Utils.isDisplayed(element)) {
 	    respond.isError = true;
 		respond.response = "Element is not currently visible and so may not be clicked";
 		respond.send();
 		return;
    }
-   
+
    var isTextField = element["value"] !== undefined;
 
    if (isTextField) {
@@ -131,8 +131,14 @@ FirefoxDriver.prototype.clear = function(respond) {
    } else {
      element.setAttribute("value", "");
    }
-   
+
    respond.send();
+}
+
+FirefoxDriver.prototype.getElementName = function(respond) {
+    var element = Utils.getElementAt(respond.elementId, this.context);
+    respond.response = element.tagName.toLowerCase();
+    respond.send();
 }
 
 FirefoxDriver.prototype.getElementAttribute = function(respond, value) {
@@ -364,19 +370,19 @@ FirefoxDriver.prototype.getElementSize = function(respond) {
 
 FirefoxDriver.prototype.dragAndDrop = function(respond, movementString) {
     var element = Utils.getElementAt(respond.elementId, this.context);
-    
+
     if (!Utils.isDisplayed(element)) {
 	    respond.isError = true;
 		respond.response = "Element is not currently visible and so may not be clicked";
 		respond.send();
 		return;
 	}
-    
+
     var clientStartXY = Utils.getElementLocation(element, this.context);
-    
+
     var clientStartX = clientStartXY.x;
     var clientStartY = clientStartXY.y;
-    
+
     var movementX = movementString[0];
     var movementY = movementString[1];
 
@@ -404,7 +410,7 @@ FirefoxDriver.prototype.dragAndDrop = function(respond, movementString) {
     while ((clientX != clientFinishX) || (clientY != clientFinishY)) {
         clientX = move(clientX, clientFinishX);
         clientY = move(clientY, clientFinishY);
-        
+
         Utils.triggerMouseEvent(element, 'mousemove', clientX, clientY);
     }
 
@@ -442,7 +448,7 @@ FirefoxDriver.prototype.findElementsByLinkText = function (respond, linkText) {
       }
     }
     response = response.substring(0, response.length - 1);
-    
+
     respond.context = this.context;
     respond.response = response;
     respond.send();
@@ -477,7 +483,7 @@ FirefoxDriver.prototype.findElementById = function(respond, id) {
 	var parentElement = Utils.getElementAt(respond.elementId, this.context);
     var element = doc.getElementById(id);
     var isChild = false;
-    
+
     if (element) {
     	var tmp = element;
     	while (tmp != null) {
@@ -485,7 +491,7 @@ FirefoxDriver.prototype.findElementById = function(respond, id) {
     			isChild = true;
 	    		break;
 	    	}
-	    	tmp = tmp.parentNode	
+	    	tmp = tmp.parentNode
 	    }
 		if (isChild) {
 	    respond.response = Utils.addToKnownElements(element, this.context);

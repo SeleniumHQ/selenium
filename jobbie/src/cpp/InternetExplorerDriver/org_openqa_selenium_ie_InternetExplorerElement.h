@@ -25,6 +25,14 @@ JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_click
 
 /*
  * Class:     org_openqa_selenium_ie_InternetExplorerElement
+ * Method:    getElementName
+ * Signature: ()Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_getElementName
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     org_openqa_selenium_ie_InternetExplorerElement
  * Method:    getAttribute
  * Signature: (Ljava/lang/String;)Ljava/lang/String;
  */

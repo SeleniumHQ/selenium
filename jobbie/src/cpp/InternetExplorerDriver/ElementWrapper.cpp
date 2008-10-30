@@ -3,6 +3,8 @@
 #include "utils.h"
 #include "InternalCustomMessage.h"
 
+
+
 using namespace std;
 
 ElementWrapper::ElementWrapper(InternetExplorerDriver* ie, IHTMLElement *pElem)
@@ -21,8 +23,14 @@ DataMarshaller& ElementWrapper::commandData()
 	return ie->p_IEthread->getCmdData();
 }
 
+LPCWSTR ElementWrapper::getElementName()
+{
+	SCOPETRACER
+	SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_ELEM_GETELEMENTNAME,)
+	return data.output_string_.c_str();
+}
 
-LPCWSTR ElementWrapper::getAttribute(LPCWSTR name) 
+LPCWSTR ElementWrapper::getAttribute(LPCWSTR name)
 {
 	SCOPETRACER
 	SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_ELEM_GETATTRIBUTE, name)
@@ -62,13 +70,13 @@ void ElementWrapper::setSelected()
 	SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_ELEM_SETSELECTED,)
 
 	if(data.output_bool_)
-	{ 
+	{
 		safeIO::CoutA("Error in ElementWrapper::setSelected with exceptionThrown", true);
 		throw data.output_string_;
 	}
 }
 
-bool ElementWrapper::isEnabled() 
+bool ElementWrapper::isEnabled()
 {
 	SCOPETRACER
 	SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_ELEM_ISENABLED,)
@@ -89,28 +97,28 @@ bool ElementWrapper::toggle()
 	return isSelected();
 }
 
-long ElementWrapper::getX() 
+long ElementWrapper::getX()
 {
 	SCOPETRACER
 	SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_ELEM_GETX,)
 	return data.output_long_;
 }
 
-long ElementWrapper::getY() 
+long ElementWrapper::getY()
 {
 	SCOPETRACER
 	SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_ELEM_GETY,)
 	return data.output_long_;
 }
 
-long ElementWrapper::getWidth() 
+long ElementWrapper::getWidth()
 {
 	SCOPETRACER
 	SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_ELEM_GETWIDTH,)
 	return data.output_long_;
 }
 
-long ElementWrapper::getHeight() 
+long ElementWrapper::getHeight()
 {
 	SCOPETRACER
 	SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_ELEM_GETHEIGHT,)
@@ -124,7 +132,7 @@ LPCWSTR ElementWrapper::getValueOfCssProperty(LPCWSTR propertyName)
 	return data.output_string_.c_str();
 }
 
-LPCWSTR ElementWrapper::getText() 
+LPCWSTR ElementWrapper::getText()
 {
 	SCOPETRACER
 	SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_ELEM_GETTEXT,)
@@ -144,7 +152,7 @@ void ElementWrapper::submit()
 }
 
 
-std::vector<ElementWrapper*>* ElementWrapper::getChildrenWithTagName(LPCWSTR tagName) 
+std::vector<ElementWrapper*>* ElementWrapper::getChildrenWithTagName(LPCWSTR tagName)
 {
 	SCOPETRACER
 	SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_ELEM_GETCHILDRENWTAGNAME, tagName)
@@ -167,7 +175,7 @@ std::vector<ElementWrapper*>* ElementWrapper::getChildrenWithTagName(LPCWSTR tag
 void ElementWrapper::releaseInterface()
 {
 	///// TODO !!!
-	return; 
+	return;
 	SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_ELEM_RELEASE,)
 }
 
@@ -191,4 +199,5 @@ bool ElementWrapper::sendThreadMsg(UINT msg, DataMarshaller& data)
 {
 	return ie->sendThreadMsg(msg, data);
 }
+
 

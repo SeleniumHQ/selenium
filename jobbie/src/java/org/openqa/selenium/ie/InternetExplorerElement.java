@@ -21,13 +21,15 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
 
     public native void click();
 
+    public native String getElementName();
+
     public native String getAttribute(String name);
 
     public List<WebElement> getChildrenOfType(String tagName) {
         List<WebElement> toReturn = new ArrayList<WebElement>();
         getChildrenOfTypeNatively(toReturn, tagName);
         return toReturn;
-    }	
+    }
 
     public native String getText();
 
@@ -38,14 +40,14 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
     	for (CharSequence seq : value) {
     		builder.append(seq);
     	}
-    	
+
     	doSendKeys(builder.toString());
     }
 
     private native void doSendKeys(String string);
-    
+
     public native void clear();
-    
+
     public native boolean isEnabled();
 
     public native boolean isSelected();
@@ -61,9 +63,9 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
     public native Point getLocation();
 
     public native Dimension getSize();
-    
+
     public native String getValueOfCssProperty(String propertyName);
-    
+
     private native long getElementNode();
     private native void releaseElementNode(long node);
     private native long getIePointer();
