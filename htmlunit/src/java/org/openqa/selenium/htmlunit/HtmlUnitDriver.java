@@ -448,7 +448,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
             try {
                  window = webClient.getWebWindowByName(windowId);
             } catch (WebWindowNotFoundException e) {
-                throw new NoSuchWindowException("Cannot find frame: " + windowId);
+                throw new NoSuchWindowException("Cannot find window: " + windowId);
             }
             webClient.setCurrentWindow(window);
             pickWindow();
