@@ -24,7 +24,7 @@ def present?(arg)
   matches = prefixes.select do |prefix|
     File.exists?(prefix + File::SEPARATOR + arg)
   end
-  
+
   matches.length > 0
 end
 
@@ -51,6 +51,7 @@ task :clean do
   rm_rf 'common/build'
   rm_rf 'htmlunit/build'
   rm_rf 'jobbie/build'
+  rm_rf 'jobbie/src/cpp/InternetExplorerDriver/Debug'
   rm_rf 'firefox/build'
   rm_rf 'safari/build'
   rm_rf 'support/build'
@@ -58,26 +59,26 @@ task :clean do
   rm_rf 'build/'
 end
 
-task :test => [:prebuild, :test_htmlunit, :test_firefox, :test_jobbie, :test_safari, :test_support, :test_remote] do 
+task :test => [:prebuild, :test_htmlunit, :test_firefox, :test_jobbie, :test_safari, :test_support, :test_remote] do
 end
 
-task :install_firefox => [:firefox] do  
+task :install_firefox => [:firefox] do
   libs = %w(common/build/webdriver-common.jar firefox/build/webdriver-firefox.jar firefox/lib/runtime/json-20080701.jar)
 
   firefox = "firefox"
   if ENV['firefox'] then
       firefox = ENV['firefox']
   end
-  
+
   extension_loc = File.dirname(__FILE__) + "/firefox/src/extension"
   extension_loc.tr!("/", "\\") if windows?
-  
+
   cmd = 'java'
   cmd += ' -cp ' + libs.join(File::PATH_SEPARATOR)
   cmd += ' -Dwebdriver.firefox.development="' + extension_loc + '"'
   cmd += " -Dwebdriver.firefox.bin=\"#{ENV['firefox']}\" " unless ENV['firefox'].nil?
   cmd += ' org.openqa.selenium.firefox.FirefoxLauncher '
-    
+
   sh cmd, :verbose => true
 end
 
@@ -197,7 +198,7 @@ simple_jars = {
     'resources' => nil,
     'classpath' => ["safari/lib/**/*.jar", "safari/build/webdriver-safari.jar"] + common_test_libs,
     'test_on'   => mac?,
-  },                              
+  },
   "support" =>   {
     'src'       => "support/src/java/**/*.java",
     'deps'      => [:common],
@@ -213,7 +214,7 @@ simple_jars = {
     'resources' => nil,
     'classpath' => ["support/lib/**/*.jar", "support/build/webdriver-support.jar"] + common_test_libs,
     'test_on'   => all?,
-  },    
+  },
   "selenium" => {
     'src'       => "selenium/src/java/**/*.java",
     'deps'      => [:common],
@@ -221,7 +222,7 @@ simple_jars = {
     'resources' => nil,
     'classpath' => ["selenium/lib/runtime/**/*.jar"] + common_libs,
     'test_on'   => false,
-  },                         
+  },
 }
 
 simple_jars.each do |name, details|
@@ -300,7 +301,7 @@ task :remote_release => [:remote] do
 
   cp 'remote/build/webdriver-remote-common.jar', 'build/dist/remote_client'
   cp 'common/build/webdriver-common.jar', 'build/dist/remote_client'
- 
+
   cp Dir.glob('remote/common/lib/runtime/*.jar'), 'build/dist/remote_client'
   cp Dir.glob('remote/client/lib/runtime/*.jar'), 'build/dist/remote_client'
 
@@ -335,77 +336,77 @@ end
 
 
 def javac(args)
-  # mandatory args  
+  # mandatory args
   out = (args[:jar] or raise 'javac: please specify the :jar parameter')
   source_patterns = (args[:sources] or raise 'javac: please specify the :sources parameter')
   sources = FileList.new(source_patterns)
   raise("No source files found at #{sources.join(', ')}") if sources.empty?
-  
+
   # We'll start with just one thing now
   extra_resources = args[:resources]
-  
+
   puts "Building: #{out}"
-  
+
   # optional args
   unless args[:exclude].nil?
     args[:exclude].each { |pattern| sources.exclude(pattern) }
   end
   debug = (args[:debug] or true)
   temp_classpath = (args[:classpath]) || []
-  
+
   classpath = FileList.new
   temp_classpath.each do |item|
     classpath.add item
   end
-  
+
   target_dir = "#{out}.classes"
   mkdir_p target_dir, :verbose => false
-  
+
   compile_string = "javac "
   compile_string += "-source 5 -target 5 "
-  compile_string += "-g " if debug 
+  compile_string += "-g " if debug
   compile_string += "-d #{target_dir} "
 
   compile_string += "-cp " + classpath.join(File::PATH_SEPARATOR) + " " if classpath.length > 0
-  
-  sources.each do |source| 
+
+  sources.each do |source|
     compile_string += " #{source}"
   end
-  
+
   sh compile_string, :verbose => false
-  
+
   # Copy the resource to the target_dir
   if extra_resources then
     cp_r extra_resources, target_dir, :verbose => false
   end
-  
+
   jar_string = "jar cf #{out} -C #{target_dir} ."
   sh jar_string, :verbose => false
-  
+
   rm_rf target_dir, :verbose => false
 end
 
 def junit(args)
   using = args[:in]
-  
+
   source_dir = "#{using}/test/java"
   source_glob = source_dir + File::SEPARATOR + '**' + File::SEPARATOR + '*.java'
-  
-  temp_classpath = (args[:classpath]) || []    
+
+  temp_classpath = (args[:classpath]) || []
   classpath = FileList.new
   temp_classpath.each do |item|
       classpath.add item
   end
-  
+
   tests = FileList.new(source_dir + File::SEPARATOR + '**' + File::SEPARATOR + '*Suite.java')
   tests.exclude '**/Abstract*'
-  
+
   test_string = 'java '
   test_string += '-cp ' + classpath.join(File::PATH_SEPARATOR) + ' ' if classpath.length > 1
   test_string += '-Djava.library.path=' + args[:native_path].join(File::PATH_SEPARATOR) + ' ' unless args[:native_path].nil?
   test_string += "-Dwebdriver.firefox.bin=\"#{ENV['firefox']}\" " unless ENV['firefox'].nil?
   test_string += 'junit.textui.TestRunner'
-  
+
   tests.each do |test|
     puts "Looking at #{test}\n"
     name = test.sub("#{source_dir}/", '').gsub('/', '.')
