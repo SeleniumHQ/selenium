@@ -189,17 +189,18 @@ public class DefaultSelenium implements Selenium {
     public void showContextualBanner() {
 
         try {
-            StackTraceElement e[]=Thread.currentThread().getStackTrace();
+            StackTraceElement[] e =Thread.currentThread().getStackTrace();
 
             String className = null;
             String methodName = null;
 
             for (int i = 0; i < e.length; i++) {
-                if(e[i].getClassName().equals("java.lang.Thread")) {
+                if(e[i].getClassName().equals("java.lang.Thread") 
+                  || e[i].getMethodName().equals("showContextualBanner") ) {
                     continue;
                 }
-                className = e[i+1].getClassName();
-                methodName = e[i+1].getMethodName();
+                className = e[i].getClassName();
+                methodName = e[i].getMethodName();
                 break;
             }
 
