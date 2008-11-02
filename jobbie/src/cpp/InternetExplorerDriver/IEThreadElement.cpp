@@ -148,6 +148,7 @@ void backgroundUnicodeKeyPress(HWND ieWindow, wchar_t c, int pause)
 
 	pressed = false;
 	PostMessage(ieWindow, WM_KEYDOWN, VkKeyScanW(c), 0);
+	PostMessage(ieWindow, WM_USER, 1234, 5678);
 	wait(pause);
 
 	// TODO: There must be a better way to tell when the keydown is processed
@@ -220,6 +221,8 @@ void backgroundKeyPress(HWND hwnd, HKL layout, BYTE keyboardState[256],
 	if (!PostMessage(hwnd, WM_KEYDOWN, keyCode, lparam))
 		cerr << "Key down failed: " << GetLastError() << endl;
 
+	PostMessage(hwnd, WM_USER, 1234, 5678);
+
 	// Listen out for the keypress event which IE synthesizes when IE
 	// processes the keydown message. Use a time out, just in case we
 	// have not got "printable" right. :)
@@ -274,8 +277,10 @@ void backgroundKeyPress(HWND hwnd, HKL layout, BYTE keyboardState[256],
 
 LRESULT CALLBACK GetMessageProc(int nCode, WPARAM wParam, LPARAM lParam)
 {
+	// PostMessage(ieWindow, WM_USER, 1234, 5678);
 	if ((nCode == HC_ACTION) && (wParam == PM_REMOVE)) {
-		if (reinterpret_cast<MSG*>(lParam)->message == WM_CHAR) {
+		MSG* msg = reinterpret_cast<MSG*>(lParam);
+		if (msg->message == WM_USER && msg->wParam == 1234 && msg->lParam == 5678) {
 			pressed = true;
 		}
 	}
