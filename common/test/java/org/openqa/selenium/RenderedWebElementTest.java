@@ -2,7 +2,7 @@ package org.openqa.selenium;
 
 public class RenderedWebElementTest extends AbstractDriverTestCase {
 	@JavascriptEnabled
-	@Ignore("htmlunit, safari")
+	@Ignore("safari, htmlunit")
 	public void testShouldPickUpStyleOfAnElement() {
 		driver.get(javascriptPage);
 		
@@ -18,7 +18,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
 	}
 
     @JavascriptEnabled
-	@Ignore("htmlunit, safari")
+	@Ignore("safari, htmlunit")
     public void testShouldAllowInheritedStylesToBeUsed() {
 		driver.get(javascriptPage);
 		

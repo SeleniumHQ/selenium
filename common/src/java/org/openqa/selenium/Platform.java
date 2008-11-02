@@ -1,6 +1,19 @@
 package org.openqa.selenium;
 
+/**
+ * Represents the known and supported Platforms that WebDriver runs on.
+ * This is pretty close to the Operating System, but differs slightly,
+ * because this class is used to extract information such as program
+ * locations and line endings.
+ *
+ */
+// Useful URLs:
+// http://hg.openjdk.java.net/jdk7/modules/jdk/file/a37326fa7f95/src/windows/native/java/lang/java_props_md.c
 public enum Platform {
+  /**
+   * Never returned, but can be used to request a browser running on
+   * any version of Windows.
+   */
   WINDOWS("") {
     @Override
     public String getLineEnding() {
@@ -11,7 +24,12 @@ public enum Platform {
       return compareWith == WINDOWS || compareWith == XP || compareWith == VISTA;
     }
   },
-  XP("xp") {
+  /**
+   * For versions of Windows that "feel like" Windows XP. These are
+   * ones that store files in "\Program Files\" and documents under
+   * "\documents and settings\username"
+   */
+  XP("xp", "windows") {
     public String getLineEnding() {
       return "\r\n";
     }
@@ -20,7 +38,10 @@ public enum Platform {
       return compareWith == WINDOWS || compareWith == XP;
     }
   },
-  VISTA("vista") {
+  /**
+   * For versions of Windows that "feel like" Windows Vista.
+   */
+  VISTA("windows vista", "Windows Server 2008") {
     public String getLineEnding() {
       return "\r\n";
     }
@@ -39,13 +60,20 @@ public enum Platform {
       return "\n";
     }
   },
+  /**
+   * Never returned, but can be used to request a browser running on
+   * any operating system
+   */
   ANY("") {
     public String getLineEnding() {
       throw new UnsupportedOperationException("getLineEnding");
     }
+
+    public boolean is(Platform compareWith) {
+      return true;
+    }
   };
 
-  private static Platform currentOs;
   private final String[] partOfOsName;
 
   private Platform(String... partOfOsName) {
@@ -53,10 +81,12 @@ public enum Platform {
   }
 
   public static Platform getCurrent() {
-    if (currentOs != null) {
-      return currentOs;
-    }
+    return extractFromSysProperty(System.getProperty("os.name"));
 
+  }
+
+  protected static Platform extractFromSysProperty(String osName) {
+    osName = osName.toLowerCase();
     Platform mostLikely = UNIX;
     String previousMatch = null;
     for (Platform os : Platform.values()) {
@@ -64,11 +94,10 @@ public enum Platform {
         if ("".equals(matcher))
           continue;
 
-        if (os.isExactMatch(matcher)) {
-          currentOs = os;
+        if (os.isExactMatch(osName, matcher)) {
           return os;
         }
-        if (os.isCurrentPlatform(matcher) && isBetterMatch(previousMatch, matcher)) {
+        if (os.isCurrentPlatform(osName, matcher) && isBetterMatch(previousMatch, matcher)) {
           previousMatch = matcher;
           mostLikely = os;
         }
@@ -76,7 +105,6 @@ public enum Platform {
     }
 
     // Default to assuming we're on a unix variant (including linux)
-    currentOs = mostLikely;
     return mostLikely;
   }
 
@@ -93,13 +121,11 @@ public enum Platform {
 
   public abstract String getLineEnding();
 
-  private boolean isCurrentPlatform(String matchAgainst) {
-    String osName = System.getProperty("os.name").toLowerCase();
+  private boolean isCurrentPlatform(String osName, String matchAgainst) {
     return osName.indexOf(matchAgainst) != -1;
   }
 
-  private boolean isExactMatch(String matchAgainst) {
-    String osName = System.getProperty("os.name").toLowerCase();
+  private boolean isExactMatch(String osName, String matchAgainst) {
     return matchAgainst.equals(osName);
   }
 

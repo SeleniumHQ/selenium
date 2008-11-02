@@ -21,27 +21,23 @@ public class I18nTest extends AbstractDriverTestCase {
     driver.findElement(By.linkText(Messages.getString("I18nTest.link1"))).click();
   }
 
-  @Ignore("htmlunit, safari, remote")
+  @Ignore("safari, remote")
   public void testEnteringHebrewTextFromLeftToRight() {
     driver.get(chinesePage);
     WebElement input = driver.findElement(By.name("i18n"));
 
     input.sendKeys(shalom);
-    WebElement result = driver.findElement(By.id("result"));
-    result.click(); // force the focus to shift
 
-    assertEquals(shalom, result.getText().trim());
+    assertEquals(shalom, input.getValue());
   }
 
-  @Ignore("htmlunit, safari, remote")
+  @Ignore("safari, remote")
   public void testEnteringHebrewTextFromRightToLeft() {
     driver.get(chinesePage);
     WebElement input = driver.findElement(By.name("i18n"));
 
     input.sendKeys(tmunot);
-    WebElement result = driver.findElement(By.id("result"));
-    result.click(); // force the focus to shift
 
-    assertEquals(tmunot, result.getText().trim());
+    assertEquals(tmunot, input.getValue());
   }
 }
