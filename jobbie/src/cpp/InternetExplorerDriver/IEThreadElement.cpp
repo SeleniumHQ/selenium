@@ -38,10 +38,11 @@ HWND getChildWindow(HWND hwnd, LPCTSTR name)
 {
 	TCHAR pszClassName[LONGEST_NAME];
 	HWND hwndtmp = GetWindow(hwnd, GW_CHILD);
-	while(hwndtmp != NULL) {
+	while (hwndtmp != NULL) {
 		::GetClassName(hwndtmp, pszClassName, LONGEST_NAME);
-		if (lstrcmp(pszClassName, name) == 0)
+		if (lstrcmp(pszClassName, name) == 0) {
 			return hwndtmp;
+		}
 		hwndtmp = GetWindow(hwndtmp, GW_HWNDNEXT);
 	}
 	return NULL;
@@ -49,19 +50,20 @@ HWND getChildWindow(HWND hwnd, LPCTSTR name)
 
 HWND getIeServerWindow(HWND hwnd)
 {
-    HWND iehwnd = hwnd;
+  HWND iehwnd = hwnd;
 
+  for (int i = 0; ie6WindowNames[i] && iehwnd; i++) {
+    iehwnd = getChildWindow(iehwnd, ie6WindowNames[i]);
+  }
+
+  if (!iehwnd) {
+    iehwnd = hwnd;
     for (int i = 0; ie7WindowNames[i] && iehwnd; i++) {
-        iehwnd = getChildWindow(iehwnd, ie7WindowNames[i]);
+      iehwnd = getChildWindow(iehwnd, ie7WindowNames[i]);
     }
+  }
 
-   if (!iehwnd) {
-       for (int i = 0; ie6WindowNames[i] && iehwnd; i++) {
-           iehwnd = getChildWindow(iehwnd, ie6WindowNames[i]);
-        }
-   }
-
-   return iehwnd;
+  return iehwnd;
 }
 
 const LPCTSTR fileDialogNames[] = {

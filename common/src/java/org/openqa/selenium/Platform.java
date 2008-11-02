@@ -27,7 +27,7 @@ public enum Platform {
   /**
    * For versions of Windows that "feel like" Windows XP. These are
    * ones that store files in "\Program Files\" and documents under
-   * "\documents and settings\username"
+   * "\\documents and settings\\username"
    */
   XP("xp", "windows") {
     public String getLineEnding() {

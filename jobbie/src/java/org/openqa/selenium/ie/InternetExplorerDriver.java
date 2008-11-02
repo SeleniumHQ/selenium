@@ -43,8 +43,11 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
     private static boolean comStarted;
 
     public InternetExplorerDriver() {
+        System.out.println("Starting COM");
         startCom();
+        System.out.println("Hello");
         openIe();
+        System.out.println("Done");
     }
 
     @SuppressWarnings("unused")
@@ -117,8 +120,16 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
 
     private void startCom() {
         if (!comStarted) {
+        	System.out.println("Loading library");
+        	try {
             loadLibrary();
+        	} catch (RuntimeException e) {
+        		e.printStackTrace();
+        		throw e;
+        	}
+            System.out.println("Starting COM natively");
             startComNatively();
+            System.out.println("Done");
             comStarted = true;
         }
     }
