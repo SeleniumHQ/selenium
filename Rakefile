@@ -250,6 +250,17 @@ task :remote => [:remote_client, :remote_server]
 task :test_remote => [:test_remote_client]
 
 
+task :javadocs => [:common, :firefox, :htmlunit, :jobbie, :remote, :safari, :support] do
+  mkdir_p "build/javadoc"
+   sourcepath = ""
+   classpath = "support/lib/runtime/hamcrest-all-1.1.jar"
+   %w(common firefox jobbie htmlunit safari support remote/common remote/server remote/client).each do |m|
+     sourcepath += ":#{m}/src/java"
+   end
+   cmd = "javadoc -d build/javadoc -sourcepath #{sourcepath} -classpath #{classpath} -subpackages org.openqa.selenium"
+  sh cmd
+end
+
 #### Internet Explorer ####
 file 'jobbie/build/InternetExplorerDriver.dll' => FileList['jobbie/src/csharp/**/*.cs'] do
   if windows? then
