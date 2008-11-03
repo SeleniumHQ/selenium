@@ -52,9 +52,7 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
         this.iePointer = iePointer;
     }
 
-    public String getPageSource() {
-        throw new UnsupportedOperationException("getPageSource");
-    }
+    public native String getPageSource();
 
     public native void close();
     

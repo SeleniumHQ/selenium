@@ -84,6 +84,7 @@ protected:
 	void getValue(IHTMLElement *pElement, std::wstring& res);
 	void getValueOfCssProperty(IHTMLElement *pElement, LPCWSTR propertyName, std::wstring& res);
 	void getText(IHTMLElement *pElement, std::wstring& res);
+	void getPageSource(std::wstring& res);
 	void getTitle(std::wstring& res);
 	void submit(IHTMLElement *pElement, CScopeCaller *pSC); // =NULL);
 	void findParentForm(IHTMLElement *pElement, IHTMLFormElement **pform);
@@ -126,6 +127,7 @@ protected:
 		  void OnGetVisible(WPARAM, LPARAM);
 		  void OnSetVisible(WPARAM, LPARAM);
 		  void OnGetCurrentUrl(WPARAM, LPARAM);
+		  void OnGetPageSource(WPARAM, LPARAM);
 		  void OnGetTitle(WPARAM, LPARAM);
 		  void OnGetUrl(WPARAM, LPARAM);
 		  void OnGoForward(WPARAM, LPARAM);

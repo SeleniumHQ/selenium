@@ -93,6 +93,31 @@ void IeThread::OnGetUrl(WPARAM w, LPARAM lp)
 	// then IeThread::waitForNavigateToFinish()
 }
 
+void IeThread::OnGetPageSource(WPARAM w, LPARAM lp)
+{
+	SCOPETRACER
+	ON_THREAD_COMMON(data)
+	getPageSource(data.output_string_);
+}
+
+void IeThread::getPageSource(std::wstring& res)
+{
+	CComPtr<IHTMLDocument3> doc;
+	getDocument3(&doc);
+	
+	if (!doc) {
+		return;
+	}
+
+	CComPtr<IHTMLElement> docElement;
+	doc->get_documentElement(&docElement);
+	
+	CComBSTR html;
+	docElement->get_outerHTML(&html);
+
+	res = combstr2cw(html);
+}
+
 void IeThread::OnGetTitle(WPARAM w, LPARAM lp)
 {
 	SCOPETRACER

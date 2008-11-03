@@ -20,6 +20,7 @@ public:
 
 	LPCWSTR getCurrentUrl();
 
+	LPCWSTR getPageSource();
 	LPCWSTR getTitle();
 	void get(const wchar_t* url);
 	void goForward();

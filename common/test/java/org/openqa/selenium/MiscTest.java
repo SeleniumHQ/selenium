@@ -13,15 +13,16 @@ public class MiscTest extends AbstractDriverTestCase {
         assertThat(driver.getCurrentUrl(), equalTo(javascriptPage));
     }
 
-    @Ignore("ie, safari")
+    @Ignore("safari")
     public void testShouldReturnTheSourceOfAPage() {
         driver.get(simpleTestPage);
 
         String source = driver.getPageSource().toLowerCase();
-
+        
         assertThat(source.contains("<html"), is(true));
         assertThat(source.contains("</html"), is(true));
         assertThat(source.contains("an inline element"), is(true));
-        assertThat(source.contains("<p id=\"lotsofspaces\""), is(true));
+        assertThat(source.contains("<p id="), is(true));
+        assertThat(source.contains("lotsofspaces"), is(true));
     }
 }

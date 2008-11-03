@@ -167,6 +167,20 @@ JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_doE
 	return NULL;
 }
 
+JNIEXPORT jstring JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_getPageSource
+  (JNIEnv *env, jobject obj)
+{
+	TRY
+	{
+		InternetExplorerDriver* wrapper = getIe(env, obj);
+		LPCWSTR text = wrapper->getPageSource();
+		return lpcw2jstring(env, text);
+	}
+	END_TRY_CATCH_ANY
+
+	return NULL;
+}
+
 JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_close
 (JNIEnv *env, jobject obj) 
 {

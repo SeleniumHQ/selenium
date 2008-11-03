@@ -83,6 +83,13 @@ LPCWSTR InternetExplorerDriver::getCurrentUrl()
 	return data.output_string_.c_str();
 }
 
+LPCWSTR InternetExplorerDriver::getPageSource()
+{
+	SCOPETRACER
+	SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_GETPAGESOURCE,)
+	return data.output_string_.c_str();
+}
+
 LPCWSTR InternetExplorerDriver::getTitle()
 {
 	SCOPETRACER

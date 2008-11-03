@@ -9,14 +9,6 @@ extern "C" {
 #endif
 /*
  * Class:     org_openqa_selenium_ie_InternetExplorerElement
- * Method:    createInternetExplorerElement
- * Signature: (JLorg/openqa/selenium/ie/ElementNode;)Lorg/openqa/selenium/ie/InternetExplorerElement;
- */
-JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_createInternetExplorerElement
-  (JNIEnv *, jclass, jlong, jobject);
-
-/*
- * Class:     org_openqa_selenium_ie_InternetExplorerElement
  * Method:    click
  * Signature: ()V
  */
@@ -137,6 +129,14 @@ JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_ge
 
 /*
  * Class:     org_openqa_selenium_ie_InternetExplorerElement
+ * Method:    getValueOfCssProperty
+ * Signature: (Ljava/lang/String;)Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_getValueOfCssProperty
+  (JNIEnv *, jobject, jstring);
+
+/*
+ * Class:     org_openqa_selenium_ie_InternetExplorerElement
  * Method:    getElementNode
  * Signature: ()J
  */
@@ -182,14 +182,6 @@ JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_delet
  */
 JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_getChildrenOfTypeNatively
   (JNIEnv *, jobject, jobject, jstring);
-
-/*
- * Class:     org_openqa_selenium_ie_InternetExplorerElement
- * Method:    getValueOfCssProperty
- * Signature: (Ljava/lang/String;)Ljava/lang/String;
- */
-JNIEXPORT jstring JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_getValueOfCssProperty
-  (JNIEnv *, jobject, jstring);
 
 #ifdef __cplusplus
 }

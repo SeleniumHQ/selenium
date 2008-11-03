@@ -121,7 +121,9 @@ public interface WebDriver {
      * returned text is that of the modified page. Please consult the
      * documentation of the particular driver being used to determine whether
      * the returned text reflects the current state of the page or the text last
-     * sent by the web server.
+     * sent by the web server. The page source returned is a representation of
+     * the underlying DOM: do not expect it to be formatted or escaped in the same
+     * way as the response sent from the web server.
      *
      * @return The source of the current page
      */

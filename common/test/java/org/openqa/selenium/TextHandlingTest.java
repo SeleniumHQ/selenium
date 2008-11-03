@@ -169,11 +169,13 @@ public class TextHandlingTest extends AbstractDriverTestCase {
     	assertThat(text, is("line has text"));
     }
 
-    @Ignore("ie, safari")
+    @Ignore("safari")
     public void testReadALargeAmountOfData() {
         driver.get(GlobalTestEnvironment.get().getAppServer().whereIs("macbeth.html"));
-        String source = driver.getPageSource().trim();
+        String source = driver.getPageSource().trim().toLowerCase();
 
+        System.out.println(source);
+        
         assertThat(source.endsWith("</html>"), is(true));
     }
 
