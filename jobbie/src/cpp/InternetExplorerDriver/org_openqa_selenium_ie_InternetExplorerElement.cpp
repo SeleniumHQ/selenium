@@ -23,7 +23,11 @@ JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_click
 	TRY
 	{
 	ElementWrapper* wrapper = getWrapper(env, obj);
-	wrapper->click();
+	try {
+		wrapper->click();
+	} catch (std::wstring& message) {
+		throwUnsupportedOperationException(env, message.c_str());
+	}
 	}
 	END_TRY_CATCH_ANY
 }
@@ -49,7 +53,12 @@ JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_doSen
 	{
 	ElementWrapper* wrapper = getWrapper(env, obj);
 	wchar_t* converted = (wchar_t*) env->GetStringChars(newValue, NULL);
-	wrapper->sendKeys(converted);
+
+	try {
+		wrapper->sendKeys(converted);
+	} catch (std::wstring& message) {
+		throwUnsupportedOperationException(env, message.c_str());
+	}
 	}
 	END_TRY_CATCH_ANY
 }
@@ -167,7 +176,11 @@ JNIEXPORT jboolean JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_t
 	TRY
 	{
 	ElementWrapper* wrapper = getWrapper(env, obj);
-	return wrapper->toggle() ? JNI_TRUE : JNI_FALSE;
+	try {
+		return wrapper->toggle() ? JNI_TRUE : JNI_FALSE;
+	} catch (std::wstring& message) {
+		throwUnsupportedOperationException(env, message.c_str());
+	}
 	}
 	END_TRY_CATCH_ANY
 	return NULL;

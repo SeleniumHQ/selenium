@@ -211,7 +211,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = "safari, htmlunit, ie, firefox, remote", reason = "Firefox: Window demands focus to work. Other platforms: not properly tested")
+  @Ignore(value = "safari, firefox, remote", reason = "Firefox: Window demands focus to work. Other platforms: not properly tested")
   public void testChangeEventIsFiredAppropriatelyWhenFocusIsLost() {
     driver.get(javascriptPage);
 
@@ -223,14 +223,17 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     input.sendKeys(Keys.BACK_SPACE, "t");
     driver.findElement(By.xpath("//body")).click();  // move focus
 
-    assertThat(driver.findElement(By.id("result")).getText().trim(), either(is("focus change blur focus blur")).or(is("focus blur change focus blur")));
+    assertThat(driver.findElement(By.id("result")).getText().trim(), 
+    		either(is("focus change blur focus blur"))
+    		.or(is("focus blur change focus blur"))
+    		.or(is("focus blur change focus blur change")));
   }
 
   /**
   * If the click handler throws an exception, the firefox driver freezes. This is suboptimal.   
   */
   @JavascriptEnabled
-  @Ignore("safari, htmlunit, ie")
+  @Ignore("safari")
   public void testShouldBeAbleToClickIfEvenSomethingHorribleHappens() {
     driver.get(javascriptPage);
 
@@ -243,7 +246,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
   
   @JavascriptEnabled
-  @Ignore("safari, htmlunit, ie")
+  @Ignore("safari")
   public void testShouldNotBeAbleToClickOnAnElementThatIsNotDisplayed() {
 	 driver.get(javascriptPage);
 	 WebElement element = driver.findElement(By.id("unclickable"));
@@ -257,7 +260,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
   
   @JavascriptEnabled
-  @Ignore("safari, htmlunit, ie")
+  @Ignore("safari, htmlunit")
   public void testShouldNotBeAbleToToggleAnElementThatIsNotDisplayed() {
 	 driver.get(javascriptPage);
 	 WebElement element = driver.findElement(By.id("untogglable"));
@@ -271,7 +274,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
   
   @JavascriptEnabled
-  @Ignore("safari, htmlunit, ie")
+  @Ignore("safari, htmlunit")
   public void testShouldNotBeAbleToSelectAnElementThatIsNotDisplayed() {
 	 driver.get(javascriptPage);
 	 WebElement element = driver.findElement(By.id("untogglable"));
@@ -285,7 +288,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
   
   @JavascriptEnabled
-  @Ignore("safari, htmlunit, ie")
+  @Ignore("safari, htmlunit")
   public void testShouldNotBeAbleToTypeAnElementThatIsNotDisplayed() {
 	 driver.get(javascriptPage);
 	 WebElement element = driver.findElement(By.id("unclickable"));

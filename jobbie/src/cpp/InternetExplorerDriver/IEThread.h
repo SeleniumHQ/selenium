@@ -79,6 +79,7 @@ protected:
 	void getElementName(IHTMLElement *pElement, std::wstring& res);
 	void getAttribute(IHTMLElement *pElement, LPCWSTR name, std::wstring& res);
 	bool isSelected(IHTMLElement *pElement);
+	bool isDisplayed(IHTMLElement *element);
 	bool isEnabled(IHTMLElement *pElement);
 	void click(IHTMLElement *pElement, CScopeCaller *pSC=NULL);
 	void getValue(IHTMLElement *pElement, std::wstring& res);
