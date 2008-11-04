@@ -26,6 +26,8 @@ import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class FirefoxProfile {
     private static final String EXTENSION_NAME = "fxdriver@googlecode.com";
@@ -34,6 +36,7 @@ public class FirefoxProfile {
     private File userPrefs;
     private Map<String, String> additionalPrefs = new HashMap<String, String>();
     private int port;
+    private static AtomicInteger nextId = new AtomicInteger(new Random().nextInt());
 
     public FirefoxProfile(File profileDir) {
         this.profileDir = profileDir;
@@ -47,13 +50,11 @@ public class FirefoxProfile {
     }
 
     public FirefoxProfile() {
-        File tmpDir = new File(System.getProperty("java.io.tmpdir"));
-        if (!tmpDir.exists())
-            throw new RuntimeException("Unable to find default temp directory: " + tmpDir);
+        profileDir = getUniqueProfileDir();
 
-        profileDir = new File(tmpDir, "webdriver-custom-" + System.currentTimeMillis());
-        if (!profileDir.mkdirs())
+        if (profileDir == null || !profileDir.mkdirs()) {
             throw new RuntimeException("Cannot create custom profile directory");
+        }
 
         extensionsDir = new File(profileDir, "extensions");
         if (!extensionsDir.mkdirs())
@@ -62,7 +63,17 @@ public class FirefoxProfile {
         port = FirefoxDriver.DEFAULT_PORT;
     }
 
-    protected void addWebDriverExtensionIfNeeded(boolean forceCreation) throws IOException {
+  protected File getUniqueProfileDir() {
+    File tmpDir = new File(System.getProperty("java.io.tmpdir"));
+        if (!tmpDir.exists())
+            throw new RuntimeException("Unable to find default temp directory: " + tmpDir);
+
+    String probablyUniqueName =
+        "webdriver-custom-" + System.currentTimeMillis() + nextId.getAndIncrement();
+    return new File(tmpDir, probablyUniqueName);
+  }
+
+  protected void addWebDriverExtensionIfNeeded(boolean forceCreation) throws IOException {
         File extensionLocation = new File(extensionsDir, EXTENSION_NAME);
         if (!forceCreation && extensionLocation.exists())
             return;
