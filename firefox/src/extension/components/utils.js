@@ -114,7 +114,7 @@ Utils.isDisplayed = function(element) {
         isDisplayed &= display != "none" && visible != "hidden";
 
         element = element.parentNode;
-    } while (element.tagName && element.tagName.toLowerCase() != "body" && isDisplayed);
+    } while (element && element.tagName && element.tagName.toLowerCase() != "body" && isDisplayed);
 	
 	return isDisplayed;
 };
