@@ -91,7 +91,6 @@ public class FirefoxLauncher {
         }
     }
 
-
     protected void connectAndKill(int port) {
         try {
             ExtensionConnection connection = new RunningInstanceConnection("localhost", port, 5000);
@@ -104,15 +103,14 @@ public class FirefoxLauncher {
     }
 
     public FirefoxBinary startProfile(FirefoxProfile profile, int port) throws IOException {
-        return startProfile(profile, null, port);
-    }
+      FirefoxBinary binaryToUse = binary;
+      if (binary == null) {
+        binaryToUse = new FirefoxBinary();
+      }
 
-    public FirefoxBinary startProfile(FirefoxProfile originalProfile, File firefoxBinary, int port) throws IOException {
-        FirefoxBinary binary = new FirefoxBinary(firefoxBinary);
-
-        FirefoxProfile profile = originalProfile.createCopy(port);
-        binary.clean(profile);
-        binary.startProfile(profile);
-        return binary;
+      FirefoxProfile profileToUse = profile.createCopy(port);
+      binaryToUse.clean(profileToUse);
+      binaryToUse.startProfile(profileToUse);
+      return binaryToUse;
     }
 }
