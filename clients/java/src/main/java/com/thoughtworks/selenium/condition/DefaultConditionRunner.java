@@ -126,7 +126,7 @@ public class DefaultConditionRunner implements ConditionRunner {
                 }
             }
         } catch (RuntimeException e) {
-            throw new RuntimeException("Exception while waiting for '" + condition.toString() + "'", e);
+            throwAssertionException("Exception while waiting for '" + condition.toString() + "'", e);
         }
         // Note that AssertionFailedError will pass right through
         context.fail(condition);
@@ -134,6 +134,10 @@ public class DefaultConditionRunner implements ConditionRunner {
 
     protected void throwAssertionException(String message) {
         throw new RuntimeException(message);
+    }
+
+    protected void throwAssertionException(String message, Throwable throwable) {
+        throw new RuntimeException(message, throwable);
     }
 
     private final class ContextImpl implements ConditionRunner.Context {
@@ -166,7 +170,7 @@ public class DefaultConditionRunner implements ConditionRunner {
         }
 
         private void fail(Condition condition) {
-            String message = condition.toString() +
+            String message = condition.toString() +  
                     " failed to become true within " + timeout() + " msec";
             say("Failed");
             if (info != null) {
