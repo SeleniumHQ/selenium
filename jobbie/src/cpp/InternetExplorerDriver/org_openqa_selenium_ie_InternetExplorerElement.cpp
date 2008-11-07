@@ -204,8 +204,8 @@ JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_ge
 	TRY
 	{
 	ElementWrapper* wrapper = getWrapper(env, obj);
-	long x = wrapper->getX();
-	long y = wrapper->getY();
+	long x, y;
+	wrapper->getLocation(&x, &y);
 
 	jclass pointClass = env->FindClass("java/awt/Point");
 	jmethodID cId = env->GetMethodID(pointClass, "<init>", "(II)V");

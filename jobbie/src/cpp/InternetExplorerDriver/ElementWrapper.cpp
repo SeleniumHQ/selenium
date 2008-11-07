@@ -102,18 +102,31 @@ bool ElementWrapper::toggle()
 	return isSelected();
 }
 
-long ElementWrapper::getX()
+void ElementWrapper::getLocation(long* x, long* y) 
 {
 	SCOPETRACER
-	SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_ELEM_GETX,)
-	return data.output_long_;
-}
+	SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_ELEM_GETLOCATION,)
 
-long ElementWrapper::getY()
-{
-	SCOPETRACER
-	SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_ELEM_GETY,)
-	return data.output_long_;
+	VARIANT result = data.output_variant_;
+	
+	if (result.vt != VT_ARRAY) {
+		*x = 0;
+		*y = 0;
+		return;
+	}
+
+	SAFEARRAY* ary = result.parray;
+	long index = 0;
+	CComVariant xVariant;
+	SafeArrayGetElement(ary, &index, (void*) &xVariant);
+	*x = xVariant.lVal;
+
+	CComVariant yVariant;
+	index = 1;
+	SafeArrayGetElement(ary, &index, (void*) &yVariant);
+	*y = yVariant.lVal;
+
+	SafeArrayDestroy(ary);
 }
 
 long ElementWrapper::getWidth()

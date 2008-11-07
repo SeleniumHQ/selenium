@@ -107,8 +107,7 @@ protected:
 
 		  void OnElementIsDisplayed(WPARAM, LPARAM);
 		  void OnElementIsEnabled(WPARAM, LPARAM);
-		  void OnElementGetX(WPARAM, LPARAM);
-		  void OnElementGetY(WPARAM, LPARAM);
+		  void OnElementGetLocation(WPARAM, LPARAM);
 		  void OnElementGetHeight(WPARAM, LPARAM);
 		  void OnElementGetWidth(WPARAM, LPARAM);
 

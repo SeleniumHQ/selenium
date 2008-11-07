@@ -689,86 +689,54 @@ void IeThread::OnElementIsEnabled(WPARAM w, LPARAM lp)
 	data.output_bool_ = isEnabled(pElement);
 }
 
-void IeThread::OnElementGetX(WPARAM w, LPARAM lp)
+void IeThread::OnElementGetLocation(WPARAM w, LPARAM lp)
 {
 	SCOPETRACER
 	ON_THREAD_ELEMENT(data, pElement)
 
-	long& totalX = data.output_long_;
+	long x = 0, y = 0;
 
-	totalX = 0;
-	long x;
+	CComQIPtr<IHTMLElement2> element2(pElement);
+	CComPtr<IHTMLRect> rect;
+	element2->getBoundingClientRect(&rect);
 
-	pElement->get_offsetLeft(&x);
-	totalX += x;
+	rect->get_left(&x);
+	rect->get_top(&y);
 
-	IHTMLElement* parent;
-	pElement->get_offsetParent(&parent);
+	CComQIPtr<IHTMLDOMNode2> node(element2);
+	CComPtr<IDispatch> ownerDocDispatch;
+	node->get_ownerDocument(&ownerDocDispatch);
+	CComQIPtr<IHTMLDocument3> ownerDoc(ownerDocDispatch);
 
-	CComBSTR table(L"TABLE");
-	CComBSTR body(L"BODY");
+	CComPtr<IHTMLElement> tempDoc;
+	ownerDoc->get_documentElement(&tempDoc);
 
-	while (parent)
-	{
-		CComBSTR tagName;
-		parent->get_tagName(&tagName);
+	CComQIPtr<IHTMLElement2> docElement(tempDoc);
+	long left = 0, top = 0;
+	docElement->get_scrollLeft(&left);
+	docElement->get_scrollTop(&top);
 
-		if (table == tagName || body == tagName)
-		{
-			CComQIPtr<IHTMLElement2> parent2(parent);
+	x += left;
+	y += top;
 
-			parent2->get_clientLeft(&x);
-			totalX += x;
-		}
+	SAFEARRAY* args = SafeArrayCreateVector(VT_VARIANT, 0, 2);
+	
+	long index = 0;
+	VARIANT xRes;
+	xRes.vt = VT_I8;
+	xRes.lVal = x;
+	SafeArrayPutElement(args, &index, &xRes);
 
-		parent->get_offsetLeft(&x);
-		totalX += x;
+	index = 1;
+	VARIANT yRes;
+	yRes.vt = VT_I8;
+	yRes.lVal = y;
+	SafeArrayPutElement(args, &index, &yRes);
 
-		CComPtr<IHTMLElement> t;
-		parent->get_offsetParent(&t);
-		parent = t;
-	}
-}
-
-void IeThread::OnElementGetY(WPARAM w, LPARAM lp)
-{
-	SCOPETRACER
-	ON_THREAD_ELEMENT(data, pElement)
-
-	long& totalY = data.output_long_;
-
-	totalY = 0;
-	long y;
-
-	pElement->get_offsetTop(&y);
-	totalY += y;
-
-	IHTMLElement* parent;
-	pElement->get_offsetParent(&parent);
-
-	CComBSTR table(L"TABLE");
-	CComBSTR body(L"BODY");
-
-	while (parent)
-	{
-		CComBSTR tagName;
-		parent->get_tagName(&tagName);
-
-		if (table == tagName || body == tagName)
-		{
-			CComQIPtr<IHTMLElement2> parent2(parent);
-
-			parent2->get_clientTop(&y);
-			totalY += y;
-		}
-
-		parent->get_offsetLeft(&y);
-		totalY += y;
-
-		CComPtr<IHTMLElement> t;
-		parent->get_offsetParent(&t);
-		parent = t;
-	}
+	VARIANT wrappedArray;
+	wrappedArray.vt = VT_ARRAY;
+	wrappedArray.parray = args;
+	data.output_variant_.Attach(&wrappedArray);
 }
 
 void IeThread::OnElementGetHeight(WPARAM w, LPARAM lp)
