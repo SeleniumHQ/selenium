@@ -221,6 +221,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\interactions.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\InternetExplorerDriver.cpp"
 				>
 			</File>
@@ -304,6 +308,10 @@
 			</File>
 			<File
 				RelativePath=".\IEThreadData.h"
+				>
+			</File>
+			<File
+				RelativePath=".\interactions.h"
 				>
 			</File>
 			<File

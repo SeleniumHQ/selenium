@@ -38,6 +38,7 @@ jobject newJavaInternetExplorerDriver(JNIEnv *, InternetExplorerDriver* driver);
 
 void wait(long millis);
 void waitWithoutMsgPump(long millis);
+HWND getChildWindow(HWND hwnd, LPCTSTR name);
 
 jstring lpcw2jstring(JNIEnv *env, LPCWSTR text, int size = -1);
 
