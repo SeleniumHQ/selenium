@@ -16,7 +16,7 @@ extern "C"
 {
 WebDriver* webdriver_newDriverInstance()
 {
-	startCom();
+//	startCom();
     WebDriver *driver = new WebDriver();
    
     driver->ie = new InternetExplorerDriver();

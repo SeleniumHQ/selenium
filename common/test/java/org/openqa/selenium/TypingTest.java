@@ -67,6 +67,21 @@ public class TypingTest extends AbstractDriverTestCase {
 		assertThat(keyReporter.getValue(), is("\""));
 	}
 
+  	public void testShouldBeAbleToTypeTheAtCharacter() {
+        // simon: I tend to use a US/UK or AUS keyboard layout with English
+	    // as my primary language. There are consistent reports that we're
+	    // not handling i18nised keyboards properly. This test exposes this
+	    // in a lightweight manner when my keyboard is set to the DE mapping
+	    // and we're using IE.
+
+  		driver.get(javascriptPage);
+
+		WebElement keyReporter = driver.findElement(By.id("keyReporter"));
+		keyReporter.sendKeys("@");
+
+		assertThat(keyReporter.getValue(), is("@"));
+  	}
+  
 	public void testShouldBeAbleToMixUpperAndLowerCaseLetters() {
 		driver.get(javascriptPage);
 

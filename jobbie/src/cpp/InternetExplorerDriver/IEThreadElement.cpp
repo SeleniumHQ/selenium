@@ -378,7 +378,7 @@ void IeThread::OnElementSendKeys(WPARAM w, LPARAM lp)
 		AttachThreadInput(currThreadId, ieWinThreadId, true);
 	}
 
-	HKL layout = GetKeyboardLayout(GetCurrentThreadId());
+	HKL layout = GetKeyboardLayout(ieWinThreadId);
 	BYTE keyboardState[256];
 	::ZeroMemory(keyboardState, sizeof(keyboardState));
 
@@ -606,7 +606,6 @@ void IeThread::OnElementSendKeys(WPARAM w, LPARAM lp)
 			}
 		}
 
-		keyCode &= 0x01ff;
 		if (shiftKey)
 			keyCode |= static_cast<WORD>(0x0100);
 		if (controlKey)
