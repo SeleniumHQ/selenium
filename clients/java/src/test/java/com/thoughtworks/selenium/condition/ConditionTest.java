@@ -19,6 +19,7 @@ package com.thoughtworks.selenium.condition;
 
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
+import com.thoughtworks.selenium.Selenium;
 
 /**
  * Test for Condition class.
@@ -29,18 +30,52 @@ public class ConditionTest extends TestCase {
             new JUnitConditionRunner(null, 1, 100);
 
     public void testAppendsInfoToFailureMessage() throws Exception {
-        Condition condition = new Condition("Sky should be blue") {
-            public boolean isTrue(ConditionRunner.Context context) {
-                context.info("sky is pink");
-                return false;
-            }
-        };
+        Condition condition = new AlwaysFalseCondition();
         try {
             conditionRunner.waitFor(condition);
             fail("the condition should have failed");
         } catch (AssertionFailedError expected) {
             assertEquals("Condition \"Sky should be blue\" failed to become true within 100 msec" +
-                    " - sky is pink", expected.getMessage());
+                    " - sky is in fact pink", expected.getMessage());
+        }
+    }
+
+    public void testNotCanInvertFailingSituationQuickly() throws Exception {
+        Condition alwaysFalse = new AlwaysFalseCondition();
+        long start = System.currentTimeMillis();
+        final StringBuilder sb = new StringBuilder();
+        alwaysFalse.isTrue(new ConditionRunner.Context(){
+            public ConditionRunner getConditionRunner() {
+                return null;
+            }
+
+            public Selenium getSelenium() {
+                return null;
+            }
+
+            public void info(String string) {
+                sb.append(string);
+            }
+
+            public long elapsed() {
+                return 0;
+            }
+        });
+        new JUnitConditionRunner(null, 1000, 100000).waitFor(new Not(alwaysFalse));
+        assertTrue(System.currentTimeMillis() - start < 100);
+        assertEquals("sky is in fact pink", sb.toString()); 
+    }
+
+    public void testNotCanNegatePassingSituationAfterTimeout() throws Exception {
+        Condition alwaysTrue = new AlwaysTrueCondition();
+        long start = System.currentTimeMillis();
+        try {
+            new JUnitConditionRunner(null, 1000, 1000).waitFor(new Not(alwaysTrue));
+            fail("the condition should have failed");
+        } catch (AssertionFailedError expected) {
+            long l = System.currentTimeMillis() - start;
+            assertTrue(l >= 1000);
+            assertEquals("Condition \"NOT of (Condition \"Sky should be blue\")\" failed to become true within 1000 msec - yes it is really is blue", expected.getMessage());
         }
     }
 
@@ -93,4 +128,25 @@ public class ConditionTest extends TestCase {
         }
     }
 
+    private static class AlwaysFalseCondition extends Condition {
+        public AlwaysFalseCondition() {
+            super("Sky should be blue");
+        }
+
+        public boolean isTrue(ConditionRunner.Context context) {
+            context.info("sky is in fact pink");
+            return false;
+        }
+    }
+
+    private static class AlwaysTrueCondition extends Condition {
+        public AlwaysTrueCondition() {
+            super("Sky should be blue");
+        }
+
+        public boolean isTrue(ConditionRunner.Context context) {
+            context.info("yes it is really is blue");
+            return true;
+        }
+    }
 }

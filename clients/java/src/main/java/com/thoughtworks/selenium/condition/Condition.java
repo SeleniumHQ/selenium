@@ -110,7 +110,7 @@ public abstract class Condition {
     }
 
     public String getMessage() {
-        return message;
+        return toString();
     }
 
     public String toString() {

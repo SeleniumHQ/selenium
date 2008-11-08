@@ -25,11 +25,12 @@ public class Not extends Condition {
     private Condition positiveCondition;
 
     public Not(Condition positiveCondition) {
-        super("Not " + positiveCondition.getMessage());
+        super("NOT of (" + positiveCondition.getMessage() + ")");
         this.positiveCondition = positiveCondition;
     }
 
     public boolean isTrue(ConditionRunner.Context context) {
         return !positiveCondition.isTrue(context);
     }
+
 }
