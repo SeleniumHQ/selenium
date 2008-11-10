@@ -345,7 +345,7 @@ FirefoxDriver.prototype.switchToDefaultContent = function(respond) {
 
 FirefoxDriver.prototype.switchToActiveElement = function(respond) {
   var element = Utils.getActiveElement(this.context);
-  
+
   respond.response = Utils.addToKnownElements(element, this.context);
   respond.send();
 };
@@ -478,8 +478,26 @@ FirefoxDriver.prototype.setMouseSpeed = function(respond, speed) {
     respond.send();
 };
 
-FirefoxDriver.prototype.getMouseSpeed = function(respond, speed) {
+FirefoxDriver.prototype.getMouseSpeed = function(respond) {
     respond.context = this.context;
     respond.response = "" + this.mouseSpeed;
     respond.send();
 };
+
+FirefoxDriver.prototype.saveScreenshot = function(respond, pngFile) {
+    var window = Utils.getBrowser(this.context).contentWindow
+    try {
+        var dataUrl = Screengrab.grab(window);
+        try {
+            Screengrab.save(dataUrl, pngFile);
+        } catch(e) {
+            respond.isError = true;
+            respond.response = "Could not save screenshot to " + pngFile;
+        }
+    } catch(e) {
+        respond.isError = true;
+        respond.response = "Could not take screenshot of current page";
+    }
+    respond.context = this.context;
+    respond.send();
+}
