@@ -75,7 +75,7 @@ WORD WINAPI setFileValue(keyboardData* data) {
         return false;
     }
 
-	return sendKeysToFileAlert(dialogHwnd, data->text);
+	return sendKeysToFileUploadAlert(dialogHwnd, data->text);
 }
 
 void IeThread::OnElementSendKeys(WPARAM w, LPARAM lp)

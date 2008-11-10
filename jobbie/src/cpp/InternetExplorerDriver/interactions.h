@@ -10,7 +10,7 @@ extern "C" {
 #endif
 
 // Keyboard interactions
-EXPORT boolean sendKeysToFileAlert(HWND alertHwnd, const wchar_t* value);
+EXPORT boolean sendKeysToFileUploadAlert(HWND alertHwnd, const wchar_t* value);
 EXPORT void sendKeys(HWND directInputTo, const wchar_t* value, int timePerKey);
 
 // Mouse interactions

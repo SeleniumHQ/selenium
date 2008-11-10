@@ -166,7 +166,7 @@ LRESULT CALLBACK GetMessageProc(int nCode, WPARAM wParam, LPARAM lParam)
 
 extern "C"
 {
-boolean sendKeysToFileAlert(HWND dialogHwnd, const wchar_t* value) 
+boolean sendKeysToFileUploadAlert(HWND dialogHwnd, const wchar_t* value) 
 {
     HWND editHwnd = NULL;
     int maxWait = 10;
@@ -210,7 +210,7 @@ void sendKeys(HWND directInputTo, const wchar_t* value, int timePerKey)
 
 	HINSTANCE moduleHandle;
 	GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, (LPCTSTR)
-			&getChildWindow, &moduleHandle);
+			&sendKeys, &moduleHandle);
 
 	hook = SetWindowsHookEx(WH_GETMESSAGE, (HOOKPROC) &GetMessageProc,
 			moduleHandle, ieWinThreadId);
