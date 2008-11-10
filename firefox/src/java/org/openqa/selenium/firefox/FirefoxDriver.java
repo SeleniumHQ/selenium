@@ -27,7 +27,6 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.IOException;
-import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -601,16 +600,4 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
       throw new UnsupportedOperationException("remove");
     }
   }
-
-    /** Saves a screenshot of the current page into the given file. */
-    public void saveScreenshot(File pngFile) {
-        if (pngFile == null) {
-            throw new IllegalArgumentException("Method parameter pngFile must not be null");
-        }
-        File dir = pngFile.getParentFile();
-        if (!dir.exists() && !dir.mkdirs()) {
-            throw new RuntimeException("Could not create directory " + dir.getAbsolutePath());
-        }
-        sendMessage(RuntimeException.class, "saveScreenshot", pngFile.getAbsolutePath());
-    }
 }

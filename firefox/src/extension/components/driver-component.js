@@ -15,10 +15,7 @@ var ExternalScripts = [
         "utils.js",
         "webdriverserver.js",
         "webLoadingListener.js",
-        "wrappedElement.js",
-        "ScreengrabDimensions.js",
-        "ScreengrabUtils.js",
-        "Screengrab.js"
+        "wrappedElement.js"
         ];
 
 (function() {
