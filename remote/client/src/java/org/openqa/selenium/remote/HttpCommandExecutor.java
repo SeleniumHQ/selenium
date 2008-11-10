@@ -101,6 +101,8 @@ public class HttpCommandExecutor implements CommandExecutor {
                   new CommandInfo("/session/:sessionId/:context/element/:id/value", HttpVerb.POST));
     nameToUrl.put("getElementValue",
                   new CommandInfo("/session/:sessionId/:context/element/:id/value", HttpVerb.GET));
+    nameToUrl.put("getElementName",
+                  new CommandInfo("/session/:sessionId/:context/element/:id/name", HttpVerb.GET));
     nameToUrl.put("isElementSelected", new CommandInfo(
         "/session/:sessionId/:context/element/:id/selected", HttpVerb.GET));
     nameToUrl.put("setElementSelected", new CommandInfo(
@@ -117,7 +119,7 @@ public class HttpCommandExecutor implements CommandExecutor {
                   new CommandInfo("/session/:sessionId/:context/element/:id/size", HttpVerb.GET));
 
     nameToUrl.put("getElementAttribute",
-                  new CommandInfo("/session/:sessionId/:context/element/:id/:name", HttpVerb.GET));
+                  new CommandInfo("/session/:sessionId/:context/element/:id/attribute/:name", HttpVerb.GET));
 
     nameToUrl
         .put("getAllCookies", new CommandInfo("/session/:sessionId/:context/cookie", HttpVerb.GET));

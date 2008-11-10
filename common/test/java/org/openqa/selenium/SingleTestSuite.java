@@ -14,9 +14,9 @@ public class SingleTestSuite extends TestCase {
   private final static String SAFARI = "org.openqa.selenium.safari.SafariDriver";
 
   public static Test suite() throws Exception {
-    String driver = IE;
+    String driver = REMOTE;
 
-    System.setProperty("webdriver.firefox.useExisting", "true");
+//    System.setProperty("webdriver.firefox.useExisting", "true");
 
     TestSuiteBuilder builder = new TestSuiteBuilder()
     	.addSourceDir("../common")
@@ -25,8 +25,8 @@ public class SingleTestSuite extends TestCase {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("TypingTest")
-//         .method("testDocumentShouldReflectLatestTitle")
+        .onlyRun("ChildrenFindingTest")
+         .method("testFindElementByLinkText")
 //        .exclude("ie")
         .leaveRunning()
         ;  // Yeah, this look strange :)

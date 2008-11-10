@@ -34,7 +34,7 @@ public class RemoteWebDriverTestSuite extends TestCase {
 
   public static class RemoteWebDriverForTest extends RemoteWebDriver {
     public RemoteWebDriverForTest() throws Exception {
-      super(new URL("http://localhost:7055/hub"), DesiredCapabilities.firefox());
+      super(new URL("http://localhost:6000/hub"), DesiredCapabilities.firefox());
     }
   }
 
@@ -60,7 +60,7 @@ public class RemoteWebDriverTestSuite extends TestCase {
           return new File(findRootOfWebApp(), "../../../../common/test/java/keystore");
         }
       };
-      appServer.listenOn(7055);
+      appServer.listenOn(6000);
       appServer.listenSecurelyOn(7000);
       appServer.addServlet("remote webdriver", "/hub/*", DriverServlet.class);
       appServer.start();

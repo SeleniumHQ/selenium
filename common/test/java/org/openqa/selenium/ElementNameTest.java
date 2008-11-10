@@ -5,7 +5,7 @@ import static org.hamcrest.Matchers.*;
 
 public class ElementNameTest extends AbstractDriverTestCase {
 
-    @Ignore("safari, remote")
+    @Ignore("safari")
     public void testShouldReturnInput() {
         driver.get(formPage);
         WebElement selectBox = driver.findElement(By.id("cheese"));
