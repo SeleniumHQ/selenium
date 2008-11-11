@@ -36,7 +36,7 @@ public class ConditionTest extends TestCase {
             fail("the condition should have failed");
         } catch (AssertionFailedError expected) {
             assertEquals("Condition \"Sky should be blue\" failed to become true within 100 msec" +
-                    " - sky is in fact pink", expected.getMessage());
+                    " - [sky is in fact pink]", expected.getMessage());
         }
     }
 
@@ -75,7 +75,7 @@ public class ConditionTest extends TestCase {
         } catch (AssertionFailedError expected) {
             long l = System.currentTimeMillis() - start;
             assertTrue(l >= 1000);
-            assertEquals("Condition \"NOT of (Condition \"Sky should be blue\")\" failed to become true within 1000 msec - yes it is really is blue", expected.getMessage());
+            assertEquals("Condition \"NOT of (Condition \"Sky should be blue\")\" failed to become true within 1000 msec - [yes it is really is blue]", expected.getMessage());
         }
     }
 

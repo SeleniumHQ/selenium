@@ -20,6 +20,8 @@ package com.thoughtworks.selenium.condition;
 import com.thoughtworks.selenium.Selenium;
 
 import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 import java.lang.reflect.Method;
 
@@ -143,7 +145,8 @@ public class DefaultConditionRunner implements ConditionRunner {
     private final class ContextImpl implements ConditionRunner.Context {
 
         private final long start;
-        private String info;
+        private List<String> info = new ArrayList<String>();
+        private String lastInfo;
 
         public ContextImpl() {
             this.start = now();
@@ -154,7 +157,10 @@ public class DefaultConditionRunner implements ConditionRunner {
         }
 
         public void info(String info) {
-            this.info = info;
+            if (!info.equals(lastInfo)) {
+                this.info.add(info);
+            }
+            lastInfo = info;
         }
 
         public long elapsed() {
@@ -173,7 +179,7 @@ public class DefaultConditionRunner implements ConditionRunner {
             String message = condition.toString() +  
                     " failed to become true within " + timeout() + " msec";
             say("Failed");
-            if (info != null) {
+            if (!info.isEmpty()) {
                 message += " - " + info;
             }
             throwAssertionException(message);
