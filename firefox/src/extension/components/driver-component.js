@@ -15,7 +15,8 @@ var ExternalScripts = [
         "utils.js",
         "webdriverserver.js",
         "webLoadingListener.js",
-        "wrappedElement.js"
+        "wrappedElement.js",
+        "screenshooter.js"
         ];
 
 (function() {
