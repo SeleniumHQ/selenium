@@ -950,6 +950,24 @@ function safeScrollIntoView(element) {
 }
 
 /**
+ * Returns the absolute time represented as an offset of the current time.
+ * Throws a SeleniumException if timeout is invalid.
+ *
+ * @param timeout  the number of milliseconds from "now" whose absolute time
+ *                 to return
+ */
+function getTimeoutTime(timeout) {
+    var now = new Date().getTime();
+    var timeoutLength = parseInt(timeout);
+    
+    if (isNaN(timeoutLength)) {
+        throw new SeleniumError("Timeout is not a number: '" + timeout + "'");
+    }
+    
+    return now + timeoutLength;
+}
+
+/**
  * Returns true iff the current environment is the IDE.
  */
 function is_IDE()

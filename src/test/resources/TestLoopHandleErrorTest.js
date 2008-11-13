@@ -49,7 +49,7 @@ TestLoopHandleErrorTest.prototype.testOrdinaryCommandError = function() {
 TestLoopHandleErrorTest.prototype.testSeleniumMalfunction = function() {
     var error = new Error("Test Error");
     LOG.expects("exception", error);
-    commandErrorHandler.expects("handleError", "Selenium failure. Please report to the Selenium Users forum at http://forums.openqa.org, with error details from the log window.  The error message is: Test Error");
+    commandErrorHandler.expects("handleError", "Command execution failure. Please search the forum at http://clearspace.openqa.org for error details from the log window.  The error message is: Test Error");
     this.seleniumTest._handleCommandError(error);
 };
 

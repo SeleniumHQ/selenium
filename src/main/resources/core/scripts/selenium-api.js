@@ -190,15 +190,12 @@ Selenium.decorateFunctionWithTimeout = function(f, timeout) {
     if (f == null) {
         return null;
     }
-    var timeoutValue = parseInt(timeout);
-    if (isNaN(timeoutValue)) {
-        throw new SeleniumError("Timeout is not a number: '" + timeout + "'");
-    }
-    var now = new Date().getTime();
-    var timeoutTime = now + timeoutValue;
+    
+    var timeoutTime = getTimeoutTime(timeout);
+    
     return function() {
         if (new Date().getTime() > timeoutTime) {
-            throw new SeleniumError("Timed out after " + timeoutValue + "ms");
+            throw new SeleniumError("Timed out after " + timeout + "ms");
         }
         return f();
     };
@@ -996,8 +993,19 @@ Selenium.prototype.doWaitForPopUp = function(windowID, timeout) {
     * @param windowID the JavaScript window "name" of the window that will appear (not the text of the title bar)
     * @param timeout a timeout in milliseconds, after which the action will return with an error
     */
+    var timeoutTime = getTimeoutTime(timeout);
+    
     var popupLoadedPredicate = function () {
-        var targetWindow = selenium.browserbot.getWindowByName(windowID, true);
+        var targetWindow;
+        try {
+            targetWindow = selenium.browserbot.getWindowByName(windowID, true);
+        }
+        catch (e) {
+            if (new Date().getTime() > timeoutTime) {
+                throw e;
+            }
+        }
+        
         if (!targetWindow) return false;
         if (!targetWindow.location) return false;
         if ("about:blank" == targetWindow.location) return false;
