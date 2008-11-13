@@ -78,12 +78,13 @@ public class Response {
             if (info != null) {
                 toThrow = constructor.newInstance(String.format("%s: %s", info.get("name"), info.get("message")));
                 List<StackTraceElement> stack = new ArrayList<StackTraceElement>();
-                for (String trace : ((String) info.get("stack")).split("\n")) {
-                    StackTraceElement element = createStackTraceElement(trace);
-                    if (element != null)
-                        stack.add(element);
+                if (info.has("stack")) {
+                  for (String trace : ((String) info.get("stack")).split("\n")) {
+                      StackTraceElement element = createStackTraceElement(trace);
+                      if (element != null)
+                          stack.add(element);
+                  }
                 }
-
                 stack.addAll(Arrays.asList(toThrow.getStackTrace()));
                 toThrow.setStackTrace(stack.toArray(new StackTraceElement[0]));
             }
