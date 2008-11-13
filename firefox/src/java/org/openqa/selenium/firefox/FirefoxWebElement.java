@@ -11,6 +11,9 @@ import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByXPath;
+import org.openqa.selenium.internal.Locatable;
+import org.json.JSONObject;
+import org.json.JSONException;
 
 import java.awt.Point;
 import java.awt.Dimension;
@@ -18,8 +21,8 @@ import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FirefoxWebElement implements RenderedWebElement, FindsByXPath,
-        FindsByLinkText, FindsById, FindsByName, FindsByClassName, SearchContext {
+public class FirefoxWebElement implements RenderedWebElement, Locatable, 
+        FindsByXPath, FindsByLinkText, FindsById, FindsByName, FindsByClassName, SearchContext {
     private final FirefoxDriver parent;
     private final String elementId;
 
@@ -245,5 +248,20 @@ public class FirefoxWebElement implements RenderedWebElement, FindsByXPath,
         String indices = sendMessage(RuntimeException.class,
                 "findElementsByPartialLinkText", using);
         return getElementsFromIndices(indices);
+    }
+
+    public Point getLocationOnScreenOnceScrolledIntoView() {
+        String json = sendMessage(RuntimeException.class, "getLocationOnceScrolledIntoView");
+        if (json == null) {
+            return null;
+        }
+
+        try {
+            JSONObject mapped = new JSONObject(json);
+
+            return new Point(mapped.getInt("x"), mapped.getInt("y"));
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

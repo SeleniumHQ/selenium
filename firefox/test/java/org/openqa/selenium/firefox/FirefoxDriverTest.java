@@ -12,6 +12,8 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+import java.awt.*;
+
 public class FirefoxDriverTest extends AbstractDriverTestCase {
     public void testShouldContinueToWorkIfUnableToFindElementById() {
         driver.get(formPage);
@@ -57,7 +59,6 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
       secondDriver.quit();
     }
     
-    @Ignore(value="firefox", reason="Until we package the extension this will fail on the command line")
     public void testShouldBeAbleToStartFromAUniqueProfile() {
       FirefoxProfile profile = new FirefoxProfile();
       
@@ -70,7 +71,7 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
       }
     }
 
-    @Ignore(value="firefox", reason="Until we package the extension this will fail on the command line")
+    @Ignore("firefox")
     public void testANewProfileShouldAllowSettingAdditionalParameters() {
       FirefoxProfile profile = new FirefoxProfile();
       profile.setPreference("browser.startup.homepage", formPage);
@@ -85,5 +86,15 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
         e.printStackTrace();
         fail("Expected driver to be created succesfully");
       }
+    }
+
+    public void testShouldBeAbleToGetTheLocationOfAnElement() {
+        driver.get(javascriptPage);
+
+        FirefoxWebElement element = (FirefoxWebElement) driver.findElement(By.id("on-form"));
+        Point point = element.getLocationOnScreenOnceScrolledIntoView();
+
+        assertTrue(point.getX() > 1);
+        assertTrue(point.getY() > 1);
     }
 }

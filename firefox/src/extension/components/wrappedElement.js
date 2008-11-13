@@ -2,6 +2,7 @@ FirefoxDriver.prototype.click = function(respond) {
     respond.context = this.context;
 
     var element = Utils.getElementAt(respond.elementId, this.context);
+
     if (!element) {
         respond.send();
         return;
@@ -515,4 +516,29 @@ FirefoxDriver.prototype.getElementCssProperty = function(respond, propertyName) 
     var element = Utils.getElementAt(respond.elementId, this.context);
     respond.response = Utils.getStyleProperty(element, propertyName); // Coeerce to a string
     respond.send();
+};
+
+FirefoxDriver.prototype.getLocationOnceScrolledIntoView = function(respond) {
+  var element = Utils.getElementAt(respond.elementId, this.context);
+
+  if (!Utils.isDisplayed(element)) {
+    respond.response = undefined;
+    respond.send();
+    return;
+  }
+
+  element.scrollIntoView(true);
+
+  var retrieval = Utils.newInstance("@mozilla.org/accessibleRetrieval;1", "nsIAccessibleRetrieval");
+  var accessible = retrieval.getAccessibleFor(element);
+  var x = {}, y = {}, width = {}, height = {};
+  accessible.getBounds(x, y, width, height);
+
+  respond.response = {
+    x : x.value,
+    y : y.value,
+    width : width.value,
+    height : height.value
+  };
+  respond.send();
 };

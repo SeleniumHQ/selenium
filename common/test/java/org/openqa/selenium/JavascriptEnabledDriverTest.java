@@ -114,6 +114,27 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
         assertFalse(hiddenLink.isDisplayed());
     }
 
+//    @JavascriptEnabled
+//    @Ignore("ie, safari, htmlunit, remote")
+//    public void testShouldNotAllowAnElementWithZeroHeightToBeCountedAsDisplayed() {
+//        driver.get(javascriptPage);
+//
+//        RenderedWebElement zeroHeight = (RenderedWebElement) driver.findElement(By.id("zeroheight"));
+//
+//        assertFalse(zeroHeight.isDisplayed());
+//    }
+//
+//    @JavascriptEnabled
+//    @Ignore("ie, safari, htmlunit, remote")
+//    public void testShouldNotAllowAnElementWithZeroWidthToBeCountedAsDisplayed() {
+//        driver.get(javascriptPage);
+//
+//        RenderedWebElement zeroWidth = (RenderedWebElement) driver.findElement(By.id("zerowidth"));
+//
+//        assertFalse(zeroWidth.isDisplayed());
+//    }
+
+
     @JavascriptEnabled
 	@Ignore(value = "ie, safari", reason="safari: not implemented, ie: Fails")
     public void testShouldWaitForLoadsToCompleteAfterJavascriptCausesANewPageToLoad() {
