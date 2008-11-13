@@ -198,6 +198,24 @@ JNIEXPORT jboolean JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_i
 	return NULL;
 }
 
+JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_getLocationOnScreenOnceScrolledIntoView
+  (JNIEnv *env, jobject obj)
+{
+	TRY
+	{
+	ElementWrapper *wrapper = getWrapper(env, obj);
+	long x = 0, y = 0;
+	wrapper->getLocationOnceScrolledIntoView(&x, &y);
+
+	jclass pointClass = env->FindClass("java/awt/Point");
+	jmethodID cId = env->GetMethodID(pointClass, "<init>", "(II)V");
+
+	return env->NewObject(pointClass, cId, x, y);
+	} 
+	END_TRY_CATCH_ANY
+	return NULL;
+}
+
 JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_getLocation
   (JNIEnv *env, jobject obj)
 {

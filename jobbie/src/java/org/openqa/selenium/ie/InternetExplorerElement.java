@@ -9,8 +9,9 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.internal.Locatable;
 
-public class InternetExplorerElement implements RenderedWebElement, SearchContext {
+public class InternetExplorerElement implements RenderedWebElement, SearchContext, Locatable {
     @SuppressWarnings("unused")
     private long nodePointer;
 
@@ -60,12 +61,14 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
 
     public native boolean isDisplayed();
 
+    public native Point getLocationOnScreenOnceScrolledIntoView();
+    
     public native Point getLocation();
 
     public native Dimension getSize();
 
     public native String getValueOfCssProperty(String propertyName);
-
+    
     private native long getElementNode();
     private native void releaseElementNode(long node);
     private native long getIePointer();

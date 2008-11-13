@@ -113,6 +113,14 @@ JNIEXPORT jboolean JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_i
 
 /*
  * Class:     org_openqa_selenium_ie_InternetExplorerElement
+ * Method:    getLocationOnScreenOnceScrolledIntoView
+ * Signature: ()Ljava/awt/Point;
+ */
+JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_getLocationOnScreenOnceScrolledIntoView
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     org_openqa_selenium_ie_InternetExplorerElement
  * Method:    getLocation
  * Signature: ()Ljava/awt/Point;
  */

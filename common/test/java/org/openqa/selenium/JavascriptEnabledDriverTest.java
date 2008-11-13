@@ -18,13 +18,16 @@
 package org.openqa.selenium;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import org.hamcrest.Matchers;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.matchers.JUnitMatchers.either;
 
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Point;
+
+import org.hamcrest.Matchers;
+import org.openqa.selenium.internal.Locatable;
 
 /**
  * Test case for browsers that support using Javascript
@@ -322,5 +325,20 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
 	 }
 	 
 	 assertThat(element.getValue(), is(not("You don't see me")));
+  }
+  
+  @JavascriptEnabled
+  public void testShouldBeAbleToGetTheLocationOfAnElement() {
+      driver.get(javascriptPage);
+
+      WebElement element = driver.findElement(By.id("on-form"));
+      
+      if (!(element instanceof Locatable))
+    	  return;
+      
+      Point point = ((Locatable) element).getLocationOnScreenOnceScrolledIntoView();
+
+      assertTrue(point.getX() > 1);
+      assertTrue(point.getY() > 1);
   }
 }

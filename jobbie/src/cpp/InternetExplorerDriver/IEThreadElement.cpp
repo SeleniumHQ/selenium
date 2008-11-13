@@ -205,6 +205,35 @@ void IeThread::OnElementIsEnabled(WPARAM w, LPARAM lp)
 	data.output_bool_ = isEnabled(pElement);
 }
 
+void IeThread::OnElementGetLocationOnceScrolledIntoView(WPARAM w, LPARAM lp)
+{
+	SCOPETRACER
+	ON_THREAD_ELEMENT(data, pElement)
+
+	long x = 0, y = 0;
+
+	getLocationOnceScrolledIntoView(pElement, &x, &y);
+
+	SAFEARRAY* args = SafeArrayCreateVector(VT_VARIANT, 0, 2);
+	
+	long index = 0;
+	VARIANT xRes;
+	xRes.vt = VT_I8;
+	xRes.lVal = x;
+	SafeArrayPutElement(args, &index, &xRes);
+
+	index = 1;
+	VARIANT yRes;
+	yRes.vt = VT_I8;
+	yRes.lVal = y;
+	SafeArrayPutElement(args, &index, &yRes);
+
+	VARIANT wrappedArray;
+	wrappedArray.vt = VT_ARRAY;
+	wrappedArray.parray = args;
+	data.output_variant_.Attach(&wrappedArray);
+}
+
 void IeThread::OnElementGetLocation(WPARAM w, LPARAM lp)
 {
 	SCOPETRACER
@@ -586,13 +615,12 @@ bool IeThread::isSelected(IHTMLElement *pElement)
 	return false;
 }
 
-void IeThread::click(IHTMLElement *pElement, CScopeCaller *pSC)
+void IeThread::getLocationOnceScrolledIntoView(IHTMLElement *pElement, long *x, long *y)
 {
-	SCOPETRACER
 	CComQIPtr<IHTMLDOMNode2> node(pElement);
 
 	if (!node) {
-		cerr << "No node to click on" << endl;
+		cerr << "No node to get location of" << endl;
 		return;
 	}
 
@@ -621,7 +649,6 @@ void IeThread::click(IHTMLElement *pElement, CScopeCaller *pSC)
 	CComQIPtr<IHTMLElement2> element2(pElement);
 	CComPtr<IHTMLRect> rect;
 	if (FAILED(element2->getBoundingClientRect(&rect))) {
-		tryTransferEventReleaserToNotifyNavigCompleted(pSC);
 		return;
 	}
 
@@ -677,6 +704,20 @@ void IeThread::click(IHTMLElement *pElement, CScopeCaller *pSC)
 
 	clickX += screenLeft;
 	clickY += screenTop;
+
+	*x = clickX;
+	*y = clickY;
+}
+
+void IeThread::click(IHTMLElement *pElement, CScopeCaller *pSC)
+{
+	SCOPETRACER
+
+	long clickX = 0, clickY = 0;
+	getLocationOnceScrolledIntoView(pElement, &clickX, &clickY);
+
+	const HWND hWnd = getHwnd();
+	const HWND ieWindow = getIeServerWindow(hWnd);
 
 	// Create a mouse move, mouse down, mouse up OS event
 	clickAt(ieWindow, clickX, clickY);

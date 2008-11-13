@@ -87,14 +87,4 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
         fail("Expected driver to be created succesfully");
       }
     }
-
-    public void testShouldBeAbleToGetTheLocationOfAnElement() {
-        driver.get(javascriptPage);
-
-        FirefoxWebElement element = (FirefoxWebElement) driver.findElement(By.id("on-form"));
-        Point point = element.getLocationOnScreenOnceScrolledIntoView();
-
-        assertTrue(point.getX() > 1);
-        assertTrue(point.getY() > 1);
-    }
 }

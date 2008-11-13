@@ -27,7 +27,8 @@ public:
 	LPCWSTR getValueOfCssProperty(LPCWSTR propertyName);
 	void releaseInterface();
 
-	void getLocation(long* x, long *y);
+	void getLocationOnceScrolledIntoView(long *x, long *y);
+	void getLocation(long *x, long *y);
 	long getWidth();
 	long getHeight();
 
