@@ -143,7 +143,11 @@ FirefoxDriver.prototype.executeScript = function(respond, script) {
 
 FirefoxDriver.prototype.getCurrentUrl = function(respond) {
     respond.context = this.context;
-    respond.response = "" + Utils.getBrowser(this.context).contentWindow.location;
+    var url = Utils.getDocument(this.context).location;
+    if (!url) {
+      url = Utils.getBrowser(this.context).contentWindow.location;
+    }
+    respond.response = "" + url;
     respond.send();
 }
 

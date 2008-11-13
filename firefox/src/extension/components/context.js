@@ -1,13 +1,13 @@
 function Context(windowId, frameId) {
-    this.windowId = (windowId !== undefined ? windowId - 0 : 1) || 0;
+  this.windowId = (windowId !== undefined ? windowId - 0 : 1) || 0;
 
-    if (frameId) {
-		if (frameId.match(/^\d+$/g)) {
-        	this.frameId = frameId - 0;
-		} else {
-			this.frameId = frameId;
-		}
-	}
+  if (frameId) {
+    if (frameId.match(/^\d+$/g)) {
+      this.frameId = frameId - 0;
+    } else {
+      this.frameId = frameId;
+    }
+  }
 }
 
 Context.fromString = function(text) {
