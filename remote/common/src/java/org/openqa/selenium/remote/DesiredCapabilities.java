@@ -33,9 +33,19 @@ public class DesiredCapabilities implements Capabilities {
     version = (String) rawMap.get("version");
     javascriptEnabled = (Boolean) rawMap.get("javascriptEnabled");
     if (rawMap.containsKey("operatingSystem")) {
-      platform = OperatingSystem.valueOf((String) rawMap.get("operatingSystem")).getPlatform();
-    } else {
-      platform = Platform.valueOf((String) rawMap.get("platform"));
+      Object os = rawMap.get("operatingSystem");
+      if (os instanceof String) {
+        platform = OperatingSystem.valueOf((String) os).getPlatform();
+      } else if (os instanceof OperatingSystem) {
+        platform = ((OperatingSystem) os).getPlatform();
+      }
+    }
+    if (rawMap.containsKey("platform")) {
+      Object raw = rawMap.get("platform");
+      if (raw instanceof String)
+        platform = Platform.valueOf((String) raw);
+      else if (raw instanceof Platform)
+        platform = (Platform) raw;
     }
   }
 
