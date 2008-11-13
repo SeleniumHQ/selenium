@@ -84,7 +84,9 @@ public interface WebDriver {
      * Is the browser visible or not?
      *
      * @return True if the browser can be seen, or false otherwise
+     * @deprecated Do not use unless you're using the IE driver
      */
+    @Deprecated
     boolean getVisible();
 
     /**
@@ -92,7 +94,9 @@ public interface WebDriver {
      * is a no-op.
      *
      * @param visible Set whether or not the browser is visible
+     * @deprecated Do not use unless you're using the IE driver
      */
+    @Deprecated
     void setVisible(boolean visible);
 
   /**
