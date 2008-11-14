@@ -527,6 +527,7 @@ FirefoxDriver.prototype.getLocationOnceScrolledIntoView = function(respond) {
     return;
   }
 
+  element.ownerDocument.body.focus();
   element.scrollIntoView(true);
 
   var retrieval = Utils.newInstance("@mozilla.org/accessibleRetrieval;1", "nsIAccessibleRetrieval");
@@ -549,11 +550,20 @@ FirefoxDriver.prototype.getLocationOnceScrolledIntoView = function(respond) {
   // Fallback. We grab the location of the underlying document and then add the
   // position of the node to that. All documents are accessible, so we can use
   // that to find out where the viewport is.
+  var docX, docY;
   var theDoc = Utils.getDocument(this.context);
-  var location = retrieval.getAccessibleFor(theDoc);
+  if (retrieval) {
+    var location = retrieval.getAccessibleFor(theDoc);
 
-  var docX = {}, docY = {}, w = {}, h = {};
-  location.getBounds(docX, docY, w, h);
+    var w = {}; var h = {};
+    docX = {};
+    docY = {};
+    location.getBounds(docX, docY, w, h);
+  } else {
+    var boxObj = Utils.getBrowser(this.context).boxObject;
+    docX = { value : boxObj.x };
+    docY = { value : boxObj.y };
+  }
 
   // And now use the (deprecated) method to find out where the element is in
   // the viewport. This should be fine to use because we only fall down this

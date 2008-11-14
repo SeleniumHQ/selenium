@@ -18,16 +18,14 @@
 package org.openqa.selenium;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import org.hamcrest.Matchers;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.matchers.JUnitMatchers.either;
-
-import java.awt.Dimension;
-import java.awt.Point;
-
-import org.hamcrest.Matchers;
 import org.openqa.selenium.internal.Locatable;
+
+import java.awt.*;
 
 /**
  * Test case for browsers that support using Javascript
@@ -329,6 +327,9 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   
   @JavascriptEnabled
   public void testShouldBeAbleToGetTheLocationOfAnElement() {
+      if (Platform.getCurrent().is(Platform.MAC))
+        return; // nsIAccessible isn't available on the Mac, and that's what this uses.
+
       driver.get(javascriptPage);
 
       WebElement element = driver.findElement(By.id("on-form"));

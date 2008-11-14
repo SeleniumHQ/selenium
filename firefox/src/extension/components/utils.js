@@ -3,6 +3,10 @@ function Utils() {
 
 Utils.newInstance = function(className, interfaceName) {
     var clazz = Components.classes[className];
+
+    if (!clazz)
+      return undefined;
+
     var iface = Components.interfaces[interfaceName];
     return clazz.createInstance(iface);
 };
