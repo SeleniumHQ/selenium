@@ -558,6 +558,10 @@ function reassembleLocation(loc) {
 }
 
 function canonicalize(url) {
+    if(url == "about:blank")
+    {
+	return url;
+    }
     var tempLink = window.document.createElement("link");
     tempLink.href = url; // this will canonicalize the href on most browsers
     var loc = parseUrl(tempLink.href)
