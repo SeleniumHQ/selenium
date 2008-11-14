@@ -20,6 +20,7 @@ import org.apache.commons.logging.Log;
 import org.mortbay.log.LogFactory;
 import org.openqa.selenium.server.ApplicationRegistry;
 import org.openqa.selenium.server.RemoteControlConfiguration;
+import org.openqa.selenium.server.browserlaunchers.FirefoxChromeLauncher.FileLockRemainedException;
 import org.openqa.selenium.server.browserlaunchers.locators.Firefox2or3Locator;
 
 import java.io.File;
@@ -106,45 +107,66 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
         LauncherUtils.generatePacAndPrefJs(customProfileDirectory, getPort(), proxySetting, null, changeMaxConnections, getConfiguration());
     }
 
+    /** Implementation identical to that in FirefoxChromeLauncher. **/
+    //TODO(jbevan): refactor?
     public void close() {
         if (closed) return;
-        if (process == null) return;
+        FileLockRemainedException fileLockException = null;
+        if (process != null) {
+            try {
+              killFirefoxProcess();
+            } catch (FileLockRemainedException flre) {
+              fileLockException = flre;
+            }
+        }
+        if (customProfileDir != null) {
+            try {
+                removeCustomProfileDir();
+            } catch (RuntimeException e) {
+                if (fileLockException != null) {
+                    LOGGER.error("Couldn't delete custom Firefox profile directory", e);
+                    LOGGER.error("Perhaps caused by this exception:");
+                    if (fileLockException != null) LOGGER.error("Perhaps caused by this exception:", fileLockException);
+                    throw new RuntimeException("Couldn't delete custom Firefox " +
+                            "profile directory, presumably because task kill failed; " +
+                            "see error LOGGER!", e);
+                }
+                throw e;
+            }
+        }
+        closed = true;
+    }
+    
+    /** Wrapper to allow for stubbed-out testing **/
+    protected void removeCustomProfileDir() throws RuntimeException {
+        LauncherUtils.deleteTryTryAgain(customProfileDir, 6);
+    }
+
+    /** Wrapper to allow for stubbed-out testing **/
+    protected void killFirefoxProcess() throws FileLockRemainedException {
         LOGGER.info("Killing Firefox...");
-        Exception taskKillException = null;
-        Exception fileLockException = null;
         int exitValue = AsyncExecute.killProcess(process);
         if (exitValue == 0) {
             LOGGER.warn("Firefox seems to have ended on its own (did we kill the real browser???)");
         }
-        try {
-            waitForFileLockToGoAway(0, 500);
-        } catch (FileLockRemainedException e1) {
-            fileLockException = e1;
-        }
-
-
-        try {
-            LauncherUtils.deleteTryTryAgain(customProfileDir(), 6);
-        } catch (RuntimeException e) {
-            if (taskKillException != null || fileLockException != null) {
-                LOGGER.error("Couldn't delete custom Firefox profile directory", e);
-                LOGGER.error("Perhaps caused by this exception:");
-                if (taskKillException != null) LOGGER.error("Perhaps caused by this exception:", taskKillException);
-                if (fileLockException != null) LOGGER.error("Perhaps caused by this exception:", fileLockException);
-                throw new RuntimeException("Couldn't delete custom Firefox " +
-                        "profile directory, presumably because task kill failed; " +
-                        "see error log!", e);
-            }
-            throw e;
-        }
-        closed = true;
+        waitForFileLockToGoAway(0, 500);
+    }
+    
+    // visible for testing
+    protected void setCustomProfileDir(File value) {
+      customProfileDir = value;
+    }
+    
+    // visible for testing
+    protected void setProcess(Process p) {
+      process = p;
     }
 
     public Process getProcess() {
         return process;
     }
 
-    private File customProfileDir;
+    private File customProfileDir = null;
 
     private File customProfileDir() {
         if (customProfileDir == null) {
@@ -213,7 +235,7 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
         }
     }
 
-    private class FileLockRemainedException extends Exception {
+    protected class FileLockRemainedException extends Exception {
         FileLockRemainedException(String message) {
             super(message);
         }

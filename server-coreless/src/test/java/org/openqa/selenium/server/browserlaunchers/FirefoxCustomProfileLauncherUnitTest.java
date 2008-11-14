@@ -8,16 +8,10 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class FirefoxChromeLauncherUnitTest extends TestCase {
-    public void testShouldAbleToCreateChromeUrlWithNormalUrl() throws Exception {
-        String httpUrl = "http://www.my.com/folder/endname.html?a=aaa&b=bbb";
-        String chromeUrl = new FirefoxChromeLauncher.ChromeUrlConvert().convert(httpUrl);
-        assertEquals("chrome://src/content/endname.html?a=aaa&b=bbb",
-                chromeUrl);
-    }
+public class FirefoxCustomProfileLauncherUnitTest extends TestCase {
     
     public void testProfileRemovedWhenProcessNull() {
-      FirefoxChromeLauncherStubbedForShutdown launcher = new FirefoxChromeLauncherStubbedForShutdown();
+      FirefoxCustomProfileLauncherStubbedForShutdown launcher = new FirefoxCustomProfileLauncherStubbedForShutdown();
       launcher.setCustomProfileDir(new File("testdir"));
       launcher.close();
       assertFalse(launcher.wasKillFirefoxProcessCalled());
@@ -25,7 +19,7 @@ public class FirefoxChromeLauncherUnitTest extends TestCase {
     }
     
     public void testProfileRemovedWhenProcessKillFails() {
-      FirefoxChromeLauncherStubbedForShutdown launcher = new FirefoxChromeLauncherStubbedForShutdown();
+      FirefoxCustomProfileLauncherStubbedForShutdown launcher = new FirefoxCustomProfileLauncherStubbedForShutdown();
       launcher.haveProcessKillThrowException(false);
       launcher.setCustomProfileDir(new File("testdir"));
       launcher.setProcess(new TestProcess());
@@ -35,7 +29,7 @@ public class FirefoxChromeLauncherUnitTest extends TestCase {
     }
     
     public void testProfileRemovedWhenProcessNotNull() {
-      FirefoxChromeLauncherStubbedForShutdown launcher = new FirefoxChromeLauncherStubbedForShutdown();
+      FirefoxCustomProfileLauncherStubbedForShutdown launcher = new FirefoxCustomProfileLauncherStubbedForShutdown();
       launcher.setCustomProfileDir(new File("testdir"));
       launcher.setProcess(new TestProcess());
       launcher.close();
@@ -44,14 +38,14 @@ public class FirefoxChromeLauncherUnitTest extends TestCase {
     }
     
     public void testNothingRemovedIfAlreadyNull() {
-      FirefoxChromeLauncherStubbedForShutdown launcher = new FirefoxChromeLauncherStubbedForShutdown();
+      FirefoxCustomProfileLauncherStubbedForShutdown launcher = new FirefoxCustomProfileLauncherStubbedForShutdown();
       launcher.close();
       assertFalse(launcher.wasKillFirefoxProcessCalled());
       assertFalse(launcher.wasRemoveCustomProfileCalled());
     }
     
     public void testSecondCloseIsNoOp() {
-      FirefoxChromeLauncherStubbedForShutdown launcher = new FirefoxChromeLauncherStubbedForShutdown();
+      FirefoxCustomProfileLauncherStubbedForShutdown launcher = new FirefoxCustomProfileLauncherStubbedForShutdown();
       launcher.setCustomProfileDir(new File("testdir"));
       launcher.close();
       assertTrue(launcher.wasRemoveCustomProfileCalled());
@@ -60,13 +54,14 @@ public class FirefoxChromeLauncherUnitTest extends TestCase {
       assertFalse(launcher.wasRemoveCustomProfileCalled());
     }
     
-    public static class FirefoxChromeLauncherStubbedForShutdown extends FirefoxChromeLauncher {
+    public static class FirefoxCustomProfileLauncherStubbedForShutdown
+        extends FirefoxCustomProfileLauncher {
 
       private boolean killFirefoxProcessCalled = false;
       private boolean removeCustomProfileDirCalled = false;
       private boolean throwProcessKillException = true;
       
-      public FirefoxChromeLauncherStubbedForShutdown() {
+      public FirefoxCustomProfileLauncherStubbedForShutdown() {
         super(new RemoteControlConfiguration(), "testsession");
       }
       

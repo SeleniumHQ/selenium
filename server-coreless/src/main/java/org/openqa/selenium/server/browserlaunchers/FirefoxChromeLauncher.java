@@ -34,11 +34,11 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
     public static final String CHROME_URL = "chrome://killff/content/kill.html";
     private static Log LOGGER = LogFactory.getLog(FirefoxChromeLauncher.class);
 
-    private File customProfileDir;
+    private File customProfileDir = null;
     private String[] cmdarray;
     private boolean closed = false;
     private BrowserInstallation browserInstallation;
-    private Process process;
+    private Process process = null;
 
     private AsyncExecute shell = new AsyncExecute();
 
@@ -154,44 +154,45 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
 
     public void close() {
         if (closed) return;
-        if (process == null) return;
-        LOGGER.info("Killing Firefox...");
-        Exception taskKillException = null;
-        Exception fileLockException = null;
-        if (false) {
+        FileLockRemainedException fileLockException = null;
+        if (process != null) {
             try {
-                // try to kill with windows taskkill
-                WindowsUtils.kill(cmdarray);
-            } catch (Exception e) {
-                taskKillException = e;
+              killFirefoxProcess();
+            } catch (FileLockRemainedException flre) {
+              fileLockException = flre;
             }
         }
-        int exitValue = AsyncExecute.killProcess(process);
-        if (exitValue == 0) {
-            LOGGER.warn("Firefox seems to have ended on its own (did we kill the real browser???)");
-        }
-        try {
-            waitForFileLockToGoAway(5 * 000, 500);
-        } catch (FileLockRemainedException e1) {
-            fileLockException = e1;
-        }
-
-
-        try {
-            LauncherUtils.deleteTryTryAgain(customProfileDir, 6);
-        } catch (RuntimeException e) {
-            if (taskKillException != null || fileLockException != null) {
-                LOGGER.error("Couldn't delete custom Firefox profile directory", e);
-                LOGGER.error("Perhaps caused by this exception:");
-                if (taskKillException != null) LOGGER.error("Perhaps caused by this exception:", taskKillException);
-                if (fileLockException != null) LOGGER.error("Perhaps caused by this exception:", fileLockException);
-                throw new RuntimeException("Couldn't delete custom Firefox " +
-                        "profile directory, presumably because task kill failed; " +
-                        "see error LOGGER!", e);
+        if (customProfileDir != null) {
+            try {
+                removeCustomProfileDir();
+            } catch (RuntimeException e) {
+                if (fileLockException != null) {
+                    LOGGER.error("Couldn't delete custom Firefox profile directory", e);
+                    LOGGER.error("Perhaps caused by this exception:");
+                    if (fileLockException != null) LOGGER.error("Perhaps caused by this exception:", fileLockException);
+                    throw new RuntimeException("Couldn't delete custom Firefox " +
+                            "profile directory, presumably because task kill failed; " +
+                            "see error LOGGER!", e);
+                }
+                throw e;
             }
-            throw e;
         }
         closed = true;
+    }
+    
+    /** Wrapper to allow for stubbed-out testing **/
+    protected void removeCustomProfileDir() throws RuntimeException {
+      LauncherUtils.deleteTryTryAgain(customProfileDir, 6);
+    }
+
+    /** Wrapper to allow for stubbed-out testing **/
+    protected void killFirefoxProcess() throws FileLockRemainedException {
+      LOGGER.info("Killing Firefox...");
+      int exitValue = AsyncExecute.killProcess(process);
+      if (exitValue == 0) {
+          LOGGER.warn("Firefox seems to have ended on its own (did we kill the real browser???)");
+      }
+      waitForFileLockToGoAway(0, 500);
     }
 
     public Process getProcess() {
@@ -257,12 +258,22 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
             throw new RuntimeException("Firefox refused shutdown while preparing a profile", e);
         }
     }
+    
+    // visible for testing
+    protected void setCustomProfileDir(File value) {
+      customProfileDir = value;
+    }
+    
+    // visible for testing
+    protected void setProcess(Process p) {
+      process = p;
+    }
 
     public static void setChangeMaxConnections(boolean changeMaxConnections) {
         FirefoxChromeLauncher.changeMaxConnections = changeMaxConnections;
     }
 
-    private class FileLockRemainedException extends Exception {
+    protected class FileLockRemainedException extends Exception {
         FileLockRemainedException(String message) {
             super(message);
         }
