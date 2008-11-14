@@ -4,6 +4,7 @@
 #
 require "test/unit"
 require "rubygems"
+gem "selenium-client", ">=1.2.9"
 require "selenium/client"
 
 class ExampleTest < Test::Unit::TestCase

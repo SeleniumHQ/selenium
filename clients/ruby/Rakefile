@@ -9,7 +9,7 @@ require 'rake/gempackagetask'
 require 'rake/rdoctask'
 
 require 'rubygems'
-gem "rspec", "1.1.8"
+gem "rspec", "1.1.11"
 require 'spec/rake/spectask'
 require 'selenium/rake/tasks'
 
@@ -148,7 +148,7 @@ end
 specification = Gem::Specification.new do |s|
   s.name = "selenium-client"
   s.summary = "Official Ruby Client for Selenium RC."
-  s.version = "1.2.9"
+  s.version = "1.2.10"
   s.author = "OpenQA"
   s.email = 'selenium-client@rubyforge.org'
   s.homepage = "http://selenium-client.rubyforge.com"

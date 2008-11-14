@@ -9,7 +9,7 @@ require 'rake/packagetask'
 require 'rake/gempackagetask'
 require 'rake/rdoctask'
 
-gem "rspec", "1.1.8"
+gem "rspec", "1.1.11"
 require 'spec/rake/spectask'
 CLEAN.include("target")
 

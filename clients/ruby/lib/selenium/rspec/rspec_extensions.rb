@@ -25,13 +25,13 @@ module Spec
         @execution_error = nil
         Timeout.timeout(options.timeout) do
           begin
-            before_example
+            before_each_example
             eval_block
           rescue Exception => e
             @execution_error ||= e
           end
           begin
-            after_example
+            after_each_example
           rescue Exception => e
             @execution_error ||= e
           end

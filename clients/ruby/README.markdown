@@ -69,8 +69,8 @@ Plain API
     #
     # Sample Ruby script using the Selenium client API
     #
-    require "test/unit"
     require "rubygems"
+    gem "selenium-client", ">=1.2.9"
     require "selenium/client"
 
     begin
@@ -96,8 +96,8 @@ Writing Tests
     #
     require "test/unit"
     require "rubygems"
-    gem "selenium-client"
-    require "selenium"
+    gem "selenium-client", ">=1.2.9"
+    require "selenium/client"
 
     class ExampleTest < Test::Unit::TestCase
     	attr_reader :browser
@@ -127,9 +127,9 @@ Writing Tests
  If BDD is more your style, here is how you can achieve the same thing  using RSpec:
 
     require 'rubygems'
-    require 'spec'
-    gem "selenium-client"
-    require "selenium"
+    gem "rspec", "=1.1.11"
+    gem "selenium-client", ">=1.2.9"
+    require "selenium/client"
     require "selenium/rspec/spec_helper"
 
     describe "Google Search" do
@@ -145,7 +145,7 @@ Writing Tests
      end
 
      # The system capture need to happen BEFORE closing the Selenium session 
-     config.append_after(:each) do    
+     append_after(:each) do    
        @selenium_driver.close_current_browser_session
      end
 

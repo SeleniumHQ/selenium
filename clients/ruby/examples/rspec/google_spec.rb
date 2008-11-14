@@ -1,5 +1,6 @@
 require 'rubygems'
-require 'spec'
+gem "rspec", "=1.1.11"
+gem "selenium-client", ">=1.2.9"
 require "selenium/client"
 require "selenium/rspec/spec_helper"
 
@@ -8,15 +9,15 @@ describe "Google Search" do
 	alias :page :selenium_driver
 
   before(:all) do
-	  @selenium_driver = Selenium::Client::Driver.new "localhost", 4444, "*firefox", "http://www.google.com", 10000    
+      @selenium_driver = Selenium::Client::Driver.new "localhost", 4444, "*firefox", "http://www.google.com", 10000    
   end
   
   before(:each) do
     selenium_driver.start_new_browser_session
   end
-
+  
   # The system capture need to happen BEFORE closing the Selenium session 
-  config.append_after(:each) do    
+  append_after(:each) do    
     @selenium_driver.close_current_browser_session
   end
 

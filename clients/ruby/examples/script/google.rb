@@ -2,8 +2,8 @@
 #
 # Sample Ruby script using the Selenium client API
 #
-require "test/unit"
 require "rubygems"
+gem "selenium-client", ">=1.2.9"
 require "selenium/client"
 
 begin
