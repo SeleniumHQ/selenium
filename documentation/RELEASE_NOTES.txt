@@ -1,0 +1,26 @@
+Release Notes - Selenium Remote Control 1.0
+
+What's new in 1.0:
+- Support for Firefox 3.0
+- Support for Google Chrome 0.x
+- *chrome is now a supported launcher type
+- *iehta is now a supported launcher type
+- *firefox defaults to *chrome
+- *iexplore defaults to *iehta
+- multiWindow by default for all launcher types
+- Java client driver requires Java 5
+- captureScreenshot now creates intermediate directories (SRC-438)
+- captureEntirePageScreenshotToString/captureScreenshotToString allow client-side storage of screenshots
+
+New server command line options:
+- singleWindow: puts you into a mode where the test web site executes in a frame.
+  This mode should only be selected if the application under test does not use frames.
+- profilesLocation: Specifies the directory that holds the profiles that java clients can use to start up Selenium. 
+  Currently supported for Firefox only. For further information see http://clearspace.openqa.org/docs/DOC-1192.
+- forcedBrowserModeRestOfLine <browser>: sets the browser mode to all the remaining tokens on the line 
+  (e.g. "*custom /some/random/place/iexplore.exe") for all sessions, no matter what is passed to getNewBrowserSession
+- browserSideLog: enables logging on the browser side; logging messages will be transmitted to the server.
+  This can affect performance.
+- ensureCleanSession: If the browser does not have user profiles, make sure every new session has no artifacts 
+  from previous sessions. For example, enabling this option will cause all user cookies to be archived before launching IE, 
+  and restored after IE is closed.
