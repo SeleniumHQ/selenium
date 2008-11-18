@@ -327,12 +327,10 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   
   @JavascriptEnabled
   public void testShouldBeAbleToGetTheLocationOfAnElement() {
-      if (Platform.getCurrent().is(Platform.MAC))
-        return; // nsIAccessible isn't available on the Mac, and that's what this uses.
-
       driver.get(javascriptPage);
 
-      WebElement element = driver.findElement(By.id("on-form"));
+      ((JavascriptExecutor) driver).executeScript("window.focus();");
+      WebElement element = driver.findElement(By.id("keyUp"));
       
       if (!(element instanceof Locatable))
     	  return;
