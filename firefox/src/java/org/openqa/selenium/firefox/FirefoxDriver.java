@@ -121,7 +121,6 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
         }
 
         fixId();
-
     }
 
     private FirefoxDriver(ExtensionConnection extension, Context context) {

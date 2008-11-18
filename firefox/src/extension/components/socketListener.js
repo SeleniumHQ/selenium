@@ -288,9 +288,9 @@ SocketListener.prototype.getAllWindowHandles = function(respond) {
   var index = -1;
   while (allWindows.hasMoreElements()) {
     var win = allWindows.getNext();
-    index++;
-    if (win.top.fxdriver) {
-      res += index + ","
+
+    if (win.top.fxdriver && !win.top.closed) {
+      res += win.top.fxdriver.id + ","
     }
   }
 
