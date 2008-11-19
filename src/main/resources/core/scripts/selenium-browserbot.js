@@ -1009,6 +1009,21 @@ BrowserBot.prototype.getCurrentWindow = function(doNotModify) {
     return testWindow;
 };
 
+/**
+ * Offer a method the end-user can reliably use to retrieve the current window.
+ * This should work even for windows with an XPCNativeWrapper. Returns the
+ * current window object.
+ */
+BrowserBot.prototype.getUserWindow = function() {
+    var userWindow = this.getCurrentWindow(true);
+    
+    if (userWindow.wrappedJSObject) {
+        userWindow = userWindow.wrappedJSObject;
+    }
+    
+    return userWindow;
+};
+
 BrowserBot.prototype._handleClosedSubFrame = function(testWindow, doNotModify) {
     if (this.proxyInjectionMode) {
         return testWindow;
