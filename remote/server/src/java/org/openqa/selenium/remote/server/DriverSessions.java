@@ -8,14 +8,16 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.Capabilities;
 
 public class DriverSessions {
-  private static Executor executor = new ThreadPoolExecutor(
-		      1, 1, Long.MAX_VALUE, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
+
   private static Map<SessionId, Session> sessionIdToDriver =
       new ConcurrentHashMap<SessionId, Session>();
 
-  public SessionId newSession(Session session) throws Exception {
+  public SessionId newSession(Capabilities desiredCapabilities) throws Exception {
+    Session session = new Session(desiredCapabilities);
+    
     SessionId sessionId = new SessionId(String.valueOf(System.currentTimeMillis()));
     sessionIdToDriver.put(sessionId, session);
     return sessionId;
@@ -27,9 +29,5 @@ public class DriverSessions {
 
   public void deleteSession(SessionId sessionId) {
     sessionIdToDriver.remove(sessionId);
-  }
-
-  public Executor getExecutor() {
-    return executor;
   }
 }

@@ -17,12 +17,8 @@ public class Session {
   private Capabilities capabilities;
   private Executor executor;
 
-  public Session(DriverSessions parent, final Capabilities capabilities) throws Exception {
-    if (isDriverRequiringGlobalThread(capabilities)) {
-      this.executor = parent.getExecutor();
-    } else {
-      this.executor = Executors.newSingleThreadExecutor();
-    }
+  public Session(final Capabilities capabilities) throws Exception {
+    executor = Executors.newSingleThreadExecutor();
 
     // Ensure that the browser is created on the single thread.
     FutureTask<WebDriver> createBrowser = new FutureTask<WebDriver>(new Callable<WebDriver>() {
@@ -40,10 +36,6 @@ public class Session {
     desiredCapabilities.setJavascriptEnabled(isRendered);
 
     this.capabilities = desiredCapabilities;
-  }
-
-  private boolean isDriverRequiringGlobalThread(Capabilities capabilities) {
-    return "internet explorer".equals(capabilities.getBrowserName());
   }
 
   public <X> X execute(FutureTask<X> future) throws Exception {

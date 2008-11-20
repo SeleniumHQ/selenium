@@ -27,8 +27,7 @@ public class NewSession implements Handler, JsonParametersAware {
   }
 
   public ResultType handle() throws Exception {
-    Session session = new Session(allSessions, desiredCapabilities);
-    sessionId = allSessions.newSession(session);
+    sessionId = allSessions.newSession(desiredCapabilities);
 
     return ResultType.SUCCESS;
   }
