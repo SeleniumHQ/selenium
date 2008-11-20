@@ -426,6 +426,7 @@ FirefoxDriver.prototype.dragAndDrop = function(respond, movementString) {
 };
 
 FirefoxDriver.prototype.findElementsByXPath = function (respond, xpath) {
+    Utils.dumpn("findElementsByXPath: " + respond.elementId);
     var element = Utils.getElementAt(respond.elementId, this.context);
     var indices = Utils.findElementsByXPath(xpath, element, this.context)
     var response = ""
@@ -441,9 +442,10 @@ FirefoxDriver.prototype.findElementsByXPath = function (respond, xpath) {
 
 FirefoxDriver.prototype.findElementsByLinkText = function (respond, linkText) {
     var element = Utils.getElementAt(respond.elementId, this.context);
-    var children = element.getElementsByTagName("a");
+    var children = element.getElementsByTagName("A");
     var response = "";
     for (var i = 0; i < children.length; i++) {
+
       if (linkText == Utils.getText(children[i])) {
         response += Utils.addToKnownElements(children[i], this.context) + ",";
       }
@@ -455,6 +457,45 @@ FirefoxDriver.prototype.findElementsByLinkText = function (respond, linkText) {
     respond.send();
 };
 
+FirefoxDriver.prototype.findElementByPartialLinkText = function(respond, linkText) {
+    var element = Utils.getElementAt(respond.elementId, this.context);
+    var allLinks = element.getElementsByTagName("A");
+    var index;
+    for (var i = 0; i < allLinks.length && !index; i++) {
+        var text = Utils.getText(allLinks[i], true);
+        if (text.indexOf(linkText) != -1) {
+            index = Utils.addToKnownElements(allLinks[i], this.context);
+            break;
+        }
+    }
+
+    respond.context = this.context;
+
+    if (index !== undefined) {
+        respond.response = index;
+    } else {
+        respond.isError = true;
+        respond.response = "Unable to find element with link text contains '" + linkText + "'";
+    }
+
+    respond.send();
+};
+
+FirefoxDriver.prototype.findElementsByPartialLinkText = function (respond, linkText) {
+    var element = Utils.getElementAt(respond.elementId, this.context);
+    var children = element.getElementsByTagName("A");
+    var response = "";
+    for (var i = 0; i < children.length; i++) {
+      if (Utils.getText(children[i]).indexOf(linkText) != -1) {
+        response += Utils.addToKnownElements(children[i], this.context) + ",";
+      }
+    }
+    response = response.substring(0, response.length - 1);
+
+    respond.context = this.context;
+    respond.response = response;
+    respond.send();
+};
 
 FirefoxDriver.prototype.findChildElementsByClassName = function(respond, className) {
     var element = Utils.getElementAt(respond.elementId, this.context);

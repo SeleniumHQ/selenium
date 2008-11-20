@@ -19,6 +19,7 @@ import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
+import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.internal.ReturnedCookie;
 
@@ -26,8 +27,8 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.io.IOException;
 import java.io.File;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -54,7 +55,7 @@ import java.util.Set;
  * This allows multiple instances of firefox to be started.
  */
 public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecutor,
-        FindsById, FindsByClassName, FindsByLinkText, FindsByXPath {
+        FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByXPath {
 	public static final String DEFAULT_PROFILE = "WebDriver";
 	public static final int DEFAULT_PORT = 7055;
 
@@ -184,15 +185,23 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
   }
 
   public List<WebElement> findElementsById(String using) {
-      throw new UnsupportedOperationException("findElementsById");
+      return findElements("selectElementsUsingId", using);
+  }
+
+  public WebElement findElementByLinkText(String using) {
+    return findElement("selectElementUsingLink", using);
   }
 
   public List<WebElement> findElementsByLinkText(String using) {
-    throw new UnsupportedOperationException("findElementsByLinkText");
+    return findElements("selectElementsUsingLink", using);
+  }
+
+  public WebElement findElementByPartialLinkText(String using) {
+      return findElement("selectElementUsingPartialLinkText", using);
   }
 
   public List<WebElement> findElementsByPartialLinkText(String using) {
-      throw new UnsupportedOperationException();
+    return findElements("selectElementsUsingPartialLinkText", using);
   }
 
   public List<WebElement> findElementsByXPath(String using) {
@@ -207,12 +216,12 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
     return findElement("selectElementUsingClassName", using);
   }
 
-  public WebElement findElementByLinkText(String using) {
-    return findElement("selectElementUsingLink", using);
+  public WebElement findElementByName(String using) {
+      return findElement("selectElementByName", using);
   }
 
-  public WebElement findElementByPartialLinkText(String using) {
-      return findElement("selectElementUsingPartialLinkText", using);
+  public List<WebElement> findElementsByName(String using) {
+      return findElements("selectElementsUsingName", using);
   }
 
   public WebElement findElementByXPath(String using) {

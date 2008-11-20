@@ -180,6 +180,19 @@ public class FirefoxWebElement implements RenderedWebElement, Locatable,
         return getElementsFromIndices(indices);
     }
 
+    public WebElement findElementByPartialLinkText(String using) {
+      String id = sendMessage(RuntimeException.class,
+                "findElementByPartialLinkText", using);
+      return new FirefoxWebElement(parent, id);
+    }
+
+    public List<WebElement> findElementsByPartialLinkText(String using) {
+        String indices = sendMessage(RuntimeException.class,
+                "findElementsByPartialLinkText", using);
+        return getElementsFromIndices(indices);
+    }
+
+
     private List<WebElement> getElementsFromIndices(String indices) {
         List<WebElement> elements = new ArrayList<WebElement>();
 
@@ -236,18 +249,6 @@ public class FirefoxWebElement implements RenderedWebElement, Locatable,
 
     public String getElementId() {
         return elementId;
-    }
-
-    public WebElement findElementByPartialLinkText(String using) {
-    	String id = sendMessage(RuntimeException.class,
-                "findElementByPartialLinkText", using);
-    	return new FirefoxWebElement(parent, id);
-    }
-
-    public List<WebElement> findElementsByPartialLinkText(String using) {
-        String indices = sendMessage(RuntimeException.class,
-                "findElementsByPartialLinkText", using);
-        return getElementsFromIndices(indices);
     }
 
     public Point getLocationOnScreenOnceScrolledIntoView() {

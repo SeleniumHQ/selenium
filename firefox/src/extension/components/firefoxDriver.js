@@ -183,6 +183,38 @@ FirefoxDriver.prototype.selectElementUsingXPath = function(respond, xpath) {
     respond.send();
 };
 
+FirefoxDriver.prototype.selectElementByName = function(respond, name) {
+  var doc = Utils.getDocument(this.context);
+
+  var elements = doc.getElementsByName(name);
+  if (elements.length) {
+    respond.response = Utils.addToKnownElements(elements[0], this.context);
+  } else {
+    respond.isError = true;
+    respond.response = "Unable to find element with name '" + name + "'";
+  }
+
+  respond.send();
+};
+
+FirefoxDriver.prototype.selectElementsUsingName = function(respond, name) {
+  var doc = Utils.getDocument(this.context);
+
+  var elements = doc.getElementsByName(name);
+  var response = "";
+  for (var i = 0; i < elements.length; i++) {
+    var element = elements[i];
+    var index = Utils.addToKnownElements(element, this.context);
+    response += index + ",";
+  }
+      // Strip the trailing comma
+  response = response.substring(0, response.length - 1);
+
+  respond.context = this.context;
+  respond.response = response;
+  respond.send();
+};
+
 FirefoxDriver.prototype.selectElementUsingClassName = function(respond, name) {
     var doc = Utils.getDocument(this.context);
 
@@ -248,7 +280,27 @@ FirefoxDriver.prototype.selectElementUsingLink = function(respond, linkText) {
     respond.send();
 };
 
-FirefoxDriver.prototype.findElementsByPartialLinkText = function(respond, linkText) {
+FirefoxDriver.prototype.selectElementsUsingLink = function(respond, linkText) {
+  var allLinks = Utils.getDocument(this.context).getElementsByTagName("A");
+  var indices = "";
+  for (var i = 0; i < allLinks.length; i++) {
+    var text = Utils.getText(allLinks[i], true);
+    Utils.dumpn(text);
+    if (linkText == text) {
+      indices += Utils.addToKnownElements(allLinks[i], this.context) + ",";
+    }
+
+  }
+
+  // Strip the trailing comma
+  indices = indices.substring(0, indices.length - 1);
+
+  respond.context = this.context;
+  respond.response = indices;
+  respond.send();
+};
+
+FirefoxDriver.prototype.selectElementsUsingPartialLinkText = function(respond, linkText) {
     var allLinks = Utils.getDocument(this.context).getElementsByTagName("A");
     var indices = "";
     for (var i = 0; i < allLinks.length; i++) {
@@ -259,17 +311,11 @@ FirefoxDriver.prototype.findElementsByPartialLinkText = function(respond, linkTe
     }
 
     respond.context = this.context;
-
-    if (indices != "") {
-        respond.response = indices;
-    } else {
-        respond.isError = true;
-        respond.response = "Unable to find element with link text contains '" + linkText + "'";
-    }
+    respond.response = indices;
     respond.send();
 };
 
-FirefoxDriver.prototype.findElementByPartialLinkText = function(respond, linkText) {
+FirefoxDriver.prototype.selectElementUsingPartialLinkText = function(respond, linkText) {
     var allLinks = Utils.getDocument(this.context).getElementsByTagName("A");
     var index;
     for (var i = 0; i < allLinks.length && !index; i++) {
@@ -306,7 +352,26 @@ FirefoxDriver.prototype.selectElementById = function(respond, id) {
     }
 
     respond.send();
-}
+};
+
+FirefoxDriver.prototype.selectElementsUsingId = function(respond, id) {
+    var doc = Utils.getDocument(this.context);
+	var allElements = doc.evaluate("//*", doc, null, Components.interfaces.nsIDOMXPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
+    var indices = "";
+	var element = allElements.iterateNext();
+    while (element) {
+        var index = Utils.addToKnownElements(element, this.context);
+        indices += index + ",";
+        element = allElements.iterateNext();
+    }
+    // Strip the trailing comma
+    indices = indices.substring(0, indices.length - 1);
+
+    respond.context = this.context;
+    respond.response = indices;
+    respond.send();
+};
+
 
 FirefoxDriver.prototype.selectElementsUsingXPath = function(respond, xpath) {
     var doc = Utils.getDocument(this.context)

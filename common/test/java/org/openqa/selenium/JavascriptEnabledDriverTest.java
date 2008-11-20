@@ -329,6 +329,9 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   public void testShouldBeAbleToGetTheLocationOfAnElement() {
       driver.get(javascriptPage);
 
+      if (!(driver instanceof JavascriptExecutor))
+        return;
+
       ((JavascriptExecutor) driver).executeScript("window.focus();");
       WebElement element = driver.findElement(By.id("keyUp"));
       

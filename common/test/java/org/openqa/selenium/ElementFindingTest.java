@@ -141,13 +141,33 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     	assertTrue(elements.size() > 1);
     }
     
-    @Ignore("safari, firefox")
+    @Ignore("safari")
     public void testShouldBeAbleToFindMultipleElementsByLinkText() {
     	driver.get(xhtmlTestPage);
     	
     	List<WebElement> elements = driver.findElements(By.linkText("click me"));
     	
+    	assertTrue("Expected 2 links, got " + elements.size(), elements.size() == 2);
+    }
+
+    @Ignore("safari, ie")
+    public void testShouldBeAbleToFindMultipleElementsByPartialLinkText() {
+    	driver.get(xhtmlTestPage);
+
+    	List<WebElement> elements = driver.findElements(By.partialLinkText("ick me"));
+
     	assertTrue(elements.size() == 2);
+    }
+
+    @Ignore("safari, ie")
+    public void testShouldBeAbleToFindElementByPartialLinkText() {
+    	driver.get(xhtmlTestPage);
+
+      try {
+        driver.findElement(By.partialLinkText("anon"));
+      } catch (NoSuchElementException e) {
+        fail("Expected element to be found");
+      }
     }
     
     @Ignore("safari")
@@ -220,5 +240,17 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     	
     	driver.findElement(By.name("div1"));
     	// If this works, we're all good
+    }
+
+    public void testShouldFindHiddenElementsByName() {
+        driver.get(formPage);
+
+        try {
+            driver.findElement(By.name("hidden"));
+        } catch (NoSuchElementException e) {
+            fail("Expected to be able to find hidden element");
+        }
+
+
     }
 }
