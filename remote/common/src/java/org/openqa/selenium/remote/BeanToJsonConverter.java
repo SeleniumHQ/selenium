@@ -161,6 +161,8 @@ public class BeanToJsonConverter {
       if (readMethod == null)
         continue;
 
+      readMethod.setAccessible(true);
+
       Object result = readMethod.invoke(toConvert);
       mapped.put(pd.getName(), convertObject(result, maxDepth - 1));
     }
