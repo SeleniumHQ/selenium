@@ -2588,12 +2588,14 @@ Selenium.prototype.doAddLocationStrategy = function(strategyName, functionDefini
 Selenium.prototype.doCaptureEntirePageScreenshot = function(filename, kwargs) {
     /**
      * Saves the entire contents of the current window canvas to a PNG file.
-     * Currently this only works in Mozilla and when running in chrome mode.
      * Contrast this with the captureScreenshot command, which captures the
      * contents of the OS viewport (i.e. whatever is currently being displayed
-     * on the monitor), and is implemented in the RC only. Implementation
-     * mostly borrowed from the Screengrab! Firefox extension. Please see
-     * http://www.screengrab.org for details.
+     * on the monitor), and is implemented in the RC only. Currently this only
+     * works in Firefox when running in chrome mode, and in IE non-HTA using
+     * the EXPERIMENTAL "Snapsie" utility. The Firefox implementation is mostly
+     * borrowed from the Screengrab! Firefox extension. Please see
+     * http://www.screengrab.org and http://snapsie.sourceforge.net/ for
+     * details.
      *
      * @param filename  the path to the file to persist the screenshot as. No
      *                  filename extension will be appended by default.
@@ -2613,12 +2615,12 @@ Selenium.prototype.doCaptureEntirePageScreenshot = function(filename, kwargs) {
      *                     (possibly obscuring black text).</dd>
      *                  </dl>
      */
-    // can only take screenshots in Mozilla chrome mode or IE (non-PI). But
-    // since IE support is HIGHLY EXPERIMENTAL, don't advertise it in the doc.
-    if (!browserVersion.isChrome && !browserVersion.isIE) {
-        throw new SeleniumError('takeScreenshot is only implemented for '
-            + "chrome and iexplore browsers, but the current browser isn't "
-            + 'one of them');
+    if (! browserVersion.isChrome &&
+        ! (browserVersion.isIE && ! browserVersion.isHTA)) {
+        throw new SeleniumError('captureEntirePageScreenshot is only '
+            + 'implemented for Firefox ("firefox" or "chrome", NOT '
+            + '"firefoxproxy") and IE non-HTA ("iexploreproxy", NOT "iexplore" '
+            + 'or "iehta"). The current browser isn\'t one of them!');
     }
     
     // do or do not ... there is no try
