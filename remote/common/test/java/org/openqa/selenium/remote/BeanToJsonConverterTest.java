@@ -6,6 +6,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.json.JSONException;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -112,6 +113,22 @@ public class BeanToJsonConverterTest extends TestCase {
     JSONObject converted = new JSONObject(json);
 
     assertEquals(SimpleBean.class.getName(), converted.get("class"));
+  }
+
+  public void testShouldBeAbleToConvertASessionId() throws JSONException {
+    SessionId sessionId = new SessionId("some id");
+    String json = new BeanToJsonConverter().convert(sessionId);
+    JSONObject converted = new JSONObject(json);
+
+    assertEquals("some id", converted.getString("value"));
+  }
+
+  public void testShouldBeAbleToConvertAContext() throws JSONException {
+    Context context = new Context("some context");
+    String json = new BeanToJsonConverter().convert(context);
+    JSONObject converted = new JSONObject(json);
+
+    assertEquals("some context", converted.getString("value"));
   }
 
   private static class SimpleBean {

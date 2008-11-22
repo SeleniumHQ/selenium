@@ -1,19 +1,17 @@
 package org.openqa.selenium.remote;
 
-import org.json.JSONObject;
-import org.json.JSONTokener;
-import org.json.JSONException;
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.io.StringReader;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.ArrayList;
 
 public class JsonToBeanConverter {
 
@@ -48,6 +46,36 @@ public class JsonToBeanConverter {
       return (T) text;
     }
 
+    if (Command.class.equals(clazz)) {
+      JSONObject rawCommand = new JSONObject((String) text);
+
+      SessionId sessionId = null;
+      if (rawCommand.has("sessionId"))
+        sessionId = convert(SessionId.class, rawCommand.getString("sessionId"));
+      Context context = null;
+      if (rawCommand.has("context"))
+        context = convert(Context.class, rawCommand.getString("context"));
+
+      if (rawCommand.has("parameters")) {
+        List args = convert(ArrayList.class, rawCommand.getJSONArray("parameters"));
+        return (T) new Command(sessionId, context, rawCommand.getString("methodName"), args.toArray());
+      }
+
+      return (T) new Command(sessionId, context, rawCommand.getString("methodName"));
+    }
+
+    if (Context.class.equals(clazz)) {
+      JSONObject object = new JSONObject((String) text);
+      String value = object.getString("value");
+      return (T) new Context(value);
+    }
+
+    if (SessionId.class.equals(clazz)) {
+      JSONObject object = new JSONObject((String) text);
+      String value = object.getString("value");
+      return (T) new SessionId(value);
+    }
+
     if (text != null && text instanceof String && !((String) text).startsWith("{") && Object.class
         .equals(clazz)) {
       return (T) text;
@@ -74,10 +102,6 @@ public class JsonToBeanConverter {
     if (Map.class.isAssignableFrom(clazz)) {
       return (T) convertMap(o);
     }
-
-//    if (List.class.isAssignableFrom(o.getClass())) {
-//      return (T) convertList(o);
-//    }
 
     if (isPrimitive(o.getClass())) {
       return (T) o;

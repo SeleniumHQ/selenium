@@ -188,6 +188,35 @@ public class JsonToBeanConverterTest extends TestCase {
     assertTrue(trace.get(0) instanceof Map);
   }
 
+  public void testShouldBeAbleToReconsituteASessionId() throws Exception {
+    String json = new BeanToJsonConverter().convert(new SessionId("id"));
+    SessionId sessionId = new JsonToBeanConverter().convert(SessionId.class, json);
+
+    assertEquals("id", sessionId.toString());
+  }
+
+  public void testShouldBeAbleToReconsituteAContext() throws Exception {
+    String json = new BeanToJsonConverter().convert(new Context("ctxt"));
+    Context context = new JsonToBeanConverter().convert(Context.class, json);
+
+    assertEquals("ctxt", context.toString());
+  }
+
+  public void testShouldBeAbleToConvertACommand() throws Exception {
+    SessionId sessionId = new SessionId("session id");
+    Context context = new Context("context");
+    Command original = new Command(sessionId, context, "methodName", "cheese");
+    String raw = new BeanToJsonConverter().convert(original);
+    Command converted = new JsonToBeanConverter().convert(Command.class, raw);
+
+    assertEquals(sessionId.toString(), converted.getSessionId().toString());
+    assertEquals(context.toString(), converted.getContext().toString());
+    assertEquals(original.getMethodName(), converted.getMethodName());
+
+    assertTrue(converted.getParameters().length == 1);
+    assertEquals("cheese", converted.getParameters()[0]);
+  }
+
   public static class SimpleBean {
 
     private String value;
