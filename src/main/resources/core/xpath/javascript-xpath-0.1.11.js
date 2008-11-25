@@ -1,4 +1,4 @@
-/*  JavaScript-XPath 0.1.8
+/*  JavaScript-XPath 0.1.11
  *  (c) 2007 Cybozu Labs, Inc.
  *
  *  JavaScript-XPath is freely distributable under the terms of an MIT-style license.
@@ -36,11 +36,11 @@ else {
             var configString = configStrings[i];
             var configStringSplited = configString.split('=');
             var configName = configStringSplited[0];
-            var convigValue = configStringSplited[1];
+            var configValue = configStringSplited[1];
             if (configValue == undefined) {
                 configValue == true;
             }
-            else if (configValue == 'false' || /^-?d+$/.test(configValue)) {
+            else if (configValue == 'false' || /^-?\d+$/.test(configValue)) {
                 configValue = eval(configValue);
             }
             config[configName] = configValue;
@@ -212,18 +212,6 @@ var uai = new function() {
         } else if (ua.indexOf("SunOS") >= 0) {
             this.sunos = true;
         }
-
-        // jrh - 6 Feb 2008 - begin
-        /* For Internet Explorer 6 */
-        if (ua.match(/MSIE 6/)){
-            this.ie6 = true
-        }
-				
-        /* For Internet Explorer 7 */
-        if (ua.match(/MSIE 7/)){
-            this.ie7 = true
-        }
-        // jrh - end
     }
 };
 
@@ -997,49 +985,17 @@ NodeUtil = {
         name: 'name',
         title: 'title'
     },
-    // jrh - 6 Feb 2008 - begin 
-    getNodeAttribute: function(node, attrName, attrValue){
-        var retrievedValue = node.getAttribute(attrName);
-        
-        // Reapplying a fix for a bug similar to http://svn.openqa.org/fisheye/changelog/selenium?cs=1523
-        if ("function anonymous()\n{\n" + attrValue + "\n}" == retrievedValue) {
-            retrievedValue = attrValue;
-        }    
-        
-        if (uai.ie6) {
-            if (attrName.length != 4) return retrievedValue;
-            if (!/^href$/i.test(attrName)) return retrievedValue;       
-            if (!/^javascript:/.test(retrievedValue)) return retrievedValue;
-            // fix for "xpath href with spaces" (http://jira.openqa.org/browse/SEL-347)   
-            return unescape(retrievedValue)
-        } else {
-            return retrievedValue;
-        }
-    },
-    // jrh - end
     attrMatch: function(node, attrName, attrValue) {
 /*@cc_on @if (@_jscript)
-        // jrh - 6 Feb 2008 - begin
-        try {
-            retrievedAttrValue = NodeUtil.getNodeAttribute(node, attrName, attrValue);
-        } catch(e) {
-            var retrievedAttrValue = null;
-        }
-        // jrh - end
         var propName = NodeUtil.attrPropMap[attrName];
         if (!attrName ||
             attrValue == null && (
                 propName && node[propName] ||
-                !propName && node.getAttribute && node.getAttribute(attrName)
+                !propName && node.getAttribute && node.getAttribute(attrName, 2)
             ) ||
             attrValue != null && (
                 propName && node[propName] == attrValue ||
-                // jrh - 6 Feb 2008 - begin
-                // changed the next line from:
-                // !propName && node.getAttribute && node.getAttribute(attrName) == attrValue
-                // to the following:
-                !propName && node.getAttribute && retrievedAttrValue == attrValue
-                // jrh - end
+                !propName && node.getAttribute && node.getAttribute(attrName, 2) == attrValue
             )) {
 @else @*/
         if (!attrName ||
@@ -1057,68 +1013,71 @@ NodeUtil = {
             prevNodeset.delDescendant(node, prevIndex);
         }
 /*@cc_on
-        if (!test.notOnlyElement || test.type == 8 || (attrName && test.type == 0)) {
+        try {
+            if (!test.notOnlyElement || test.type == 8 || (attrName && test.type == 0)) {
 
-            var all = node.all;
-            if (!all) {
-                return nodeset;
-            }
-
-            var name = test.name;
-            if (test.type == 8) name = '!';
-            else if (test.type == 0) name = '*';
-
-            if (name != '*') {
-                all = all.tags(name);
+                var all = node.all;
                 if (!all) {
                     return nodeset;
                 }
-            }
 
-            if (attrName) {
-                var result = []
-                var i = 0;
-                if (attrValue != null && (attrName == 'id' || attrName == 'name')) {
-                    all = all[attrValue];
+                var name = test.name;
+                if (test.type == 8) name = '!';
+                else if (test.type == 0) name = '*';
+
+                if (name != '*') {
+                    all = all.tags(name);
                     if (!all) {
                         return nodeset;
                     }
-                    if (!all.length || all.nodeType) {
-                        all = [all];
+                }
+
+                if (attrName) {
+                    var result = []
+                    var i = 0;
+                    if (attrValue != null && (attrName == 'id' || attrName == 'name')) {
+                        all = all[attrValue];
+                        if (!all) {
+                            return nodeset;
+                        }
+                        if (!all.length || all.nodeType) {
+                            all = [all];
+                        }
+                    }
+        
+                    while (node = all[i++]) {
+                        if (NodeUtil.attrMatch(node, attrName, attrValue)) result.push(node);
+                    }
+
+                    all = result;
+                }
+
+                var i = 0;
+                while (node = all[i++]) {
+                    if (name != '*' || node.tagName != '!') {
+                        nodeset.push(node);
                     }
                 }
-    
-                while (node = all[i++]) {
-                    if (NodeUtil.attrMatch(node, attrName, attrValue)) result.push(node);
-                }
 
-                all = result;
+                return nodeset;
             }
 
-            var i = 0;
-            while (node = all[i++]) {
-                if (name != '*' || node.tagName != '!') {
-                    nodeset.push(node);
+            (function (parent) {
+                var g = arguments.callee;
+                var node = parent.firstChild;
+                if (node) {
+                    for (; node; node = node.nextSibling) {
+                        if (NodeUtil.attrMatch(node, attrName, attrValue)) {
+                            if (test.match(node)) nodeset.push(node);
+                        }
+                        g(node);
+                    }
                 }
-            }
+            })(node);
 
             return nodeset;
         }
-
-        (function (parent) {
-            var g = arguments.callee;
-            var node = parent.firstChild;
-            if (node) {
-                for (; node; node = node.nextSibling) {
-                    if (NodeUtil.attrMatch(node, attrName, attrValue)) {
-                        if (test.match(node)) nodeset.push(node);
-                    }
-                    g(node);
-                }
-            }
-        })(node);
-
-        return nodeset;
+        catch(e) {
 @*/
         if (attrValue && attrName == 'id' && node.getElementById) {
             node = node.getElementById(attrValue);
@@ -1168,65 +1127,70 @@ NodeUtil = {
             }
         }
         return nodeset;
+/*@cc_on
+        }
+@*/
     },
 
     getChildNodes: function(test, node, nodeset, attrName, attrValue) {
 
 /*@cc_on
-        var children;
+        try {
+            var children;
 
-        if ((!test.notOnlyElement || test.type == 8 || (attrName && test.type == 0)) && (children = node.children)) {
-            var name, elm;
+            if ((!test.notOnlyElement || test.type == 8 || (attrName && test.type == 0)) && (children = node.children)) {
+                var name, elm;
 
-            name = test.name;
-            if (test.type == 8) name = '!';
-            else if (test.type == 0) name = '*';
+                name = test.name;
+                if (test.type == 8) name = '!';
+                else if (test.type == 0) name = '*';
 
-            if (name != '*') {
-                children = children.tags(name);
-                if (!children) {
-                    return nodeset;
-                }
-            }
-
-            if (attrName) {
-                var result = []
-                var i = 0;
-                if (attrName == 'id' || attrName == 'name') {
-                    children = children[attrValue];
-    
+                if (name != '*') {
+                    children = children.tags(name);
                     if (!children) {
                         return nodeset;
                     }
-    
-                    if (!children.length || children.nodeType) {
-                        children = [children];
+                }
+
+                if (attrName) {
+                    var result = []
+                    var i = 0;
+                    if (attrName == 'id' || attrName == 'name') {
+                        children = children[attrValue];
+        
+                        if (!children) {
+                            return nodeset;
+                        }
+        
+                        if (!children.length || children.nodeType) {
+                            children = [children];
+                        }
+                    }
+        
+                    while (node = children[i++]) {
+                        if (NodeUtil.attrMatch(node, attrName, attrValue)) result.push(node);
+                    }
+                    children = result;
+                }
+
+                var i = 0;
+                while (node = children[i++]) {
+                    if (name != '*' || node.tagName != '!') {
+                        nodeset.push(node);
                     }
                 }
-    
-                while (node = children[i++]) {
-                    if (NodeUtil.attrMatch(node, attrName, attrValue)) result.push(node);
-                }
-                children = result;
+
+                return nodeset;
             }
 
-            var i = 0;
-            while (node = children[i++]) {
-                if (name != '*' || node.tagName != '!') {
-                    nodeset.push(node);
+            for (var i = 0, node = node.firstChild; node; i++, node = node.nextSibling) {
+                if (NodeUtil.attrMatch(node, attrName, attrValue)) {
+                    if (test.match(node)) nodeset.push(node);
                 }
             }
 
             return nodeset;
-        }
-
-        for (var i = 0, node = node.firstChild; node; i++, node = node.nextSibling) {
-            if (NodeUtil.attrMatch(node, attrName, attrValue)) {
-                if (test.match(node)) nodeset.push(node);
-            }
-        }
-
-        return nodeset;
+        } catch(e) {
 @*/
         for (var node = node.firstChild; node; node = node.nextSibling) {
             if (NodeUtil.attrMatch(node, attrName, attrValue)) {
@@ -1234,6 +1198,9 @@ NodeUtil = {
             }
         }
         return nodeset;
+/*@cc_on
+        }
+@*/
     }
 };
 
@@ -1296,8 +1263,7 @@ Step.axises = {
             var sourceIndex = node.sourceIndex;
 @*/
             if ((test.notOnlyElement && test.type == 0) || test.name == '*') {
-                for (var i = 0, l = attrs.length; i < l; i ++) {
-                    var attr = attrs[i];
+                for (var i = 0, attr; attr = attrs[i]; i ++) {
 /*@cc_on @if (@_jscript)
                     if (attr.nodeValue) {
                         nodeset.push(new AttributeWrapper(attr, node, sourceIndex));

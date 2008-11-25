@@ -2917,6 +2917,25 @@ Selenium.prototype.doRollup = function(rollupName, kwargs) {
     }
 };
 
+Selenium.prototype.doUseXpathLibrary = function(libraryName) {
+    /**
+	* Allows choice of one of the available libraries.
+    * @param libraryName name of the desired library
+    * Only the following two can be chosen:
+    *   ajaxslt - Google's library
+    *   javascript - Cybozu Labs' faster library
+    * The default library is ajaxslt. If libraryName isn't one of them, then 
+    * no change will be made.
+    *   
+    */
+
+	if ((libraryName != 'ajaxslt') && (libraryName != 'javascript-xpath')) {
+		return;
+	} else {
+		this.browserbot.xpathLibrary = libraryName;	
+	}
+};
+
 /**
  *  Factory for creating "Option Locators".
  *  An OptionLocator is an object for dealing with Select options (e.g. for
