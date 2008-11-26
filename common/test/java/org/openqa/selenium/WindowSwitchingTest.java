@@ -54,10 +54,15 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
   @NeedsFreshDriver
   @NoDriverAfterTest
   @Ignore("ie, remote, safari")
-  public void testShouldBeAbleToIterateOverAllOpenWindows() {
+  public void testShouldBeAbleToIterateOverAllOpenWindows() throws Exception {
     driver.get(xhtmlTestPage);
     driver.findElement(By.name("windowOne")).click();
     driver.findElement(By.name("windowTwo")).click();
+    // TODO(alexis.j.vuillemin): We will need a mechanism for the creation of the windows
+    // to notify when their handlesString has been created.
+    // In the meantime this sleep command prevents this test from failing when run a slow environment,
+    // as mentioned in issue #118
+    Thread.sleep(500);
 
     Iterator<WebDriver> allWindows = driver.switchTo().windowIterable().iterator();
 
