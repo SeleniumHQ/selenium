@@ -19,7 +19,7 @@ describe "Google Search" do
 
     page.open "http://video.google.com"
     page.type "q", "hello world"
-    page.click "//input[@value='Search Video']"
+    page.click "search-button"
   end
     
 end
