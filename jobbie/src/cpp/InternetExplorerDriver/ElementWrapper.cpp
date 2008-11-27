@@ -49,11 +49,6 @@ void ElementWrapper::sendKeys(LPCWSTR newValue)
 {
 	SCOPETRACER
 	SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_ELEM_SENDKEYS, newValue)
-
-	if(data.output_bool_)
-	{
-		throw data.output_string_;
-	}
 }
 
 void ElementWrapper::clear()
@@ -73,12 +68,6 @@ void ElementWrapper::setSelected()
 {
 	SCOPETRACER
 	SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_ELEM_SETSELECTED,)
-
-	if(data.output_bool_)
-	{
-		safeIO::CoutA("Error in ElementWrapper::setSelected with exceptionThrown", true);
-		throw data.output_string_;
-	}
 }
 
 bool ElementWrapper::isEnabled()
@@ -188,11 +177,6 @@ void ElementWrapper::click()
 {
 	SCOPETRACER
 	SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_ELEM_CLICK,)
-
-	if(data.output_bool_)
-	{
-		throw data.output_string_;
-	}
 }
 
 void ElementWrapper::submit()

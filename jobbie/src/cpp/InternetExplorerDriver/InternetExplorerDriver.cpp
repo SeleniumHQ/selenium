@@ -119,8 +119,6 @@ ElementWrapper* InternetExplorerDriver::getActiveElement()
 {
 	SCOPETRACER
 	SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_GETACTIVEELEMENT,)
-
-	if(!data.output_bool_) return NULL;
 	
 	return new ElementWrapper(this, data.output_html_element_);
 }
@@ -333,10 +331,20 @@ bool InternetExplorerDriver::sendThreadMsg(UINT msg, DataMarshaller& data)
 	//   it has to be performed FROM the worker thread (see ON_THREAD_COMMON).
 	p_IEthread->PostThreadMessageW(msg, 0, 0);
 	DWORD res = WaitForSingleObject(data.synchronization_flag_, 60000);
+	data.resetInputs();
 	if(WAIT_TIMEOUT == res)
 	{
-		safeIO::CoutA("Unexpected TIME OUT as a request from a calling thread did not complete after 1 min.");
+		safeIO::CoutA("Unexpected TIME OUT.");
 		p_IEthread->m_EventToNotifyWhenNavigationCompleted = NULL;
+		std::wstring Err(L"Error: had to TIME OUT as a request to the worker thread did not complete after 1 min.");
+		throw Err;
+	}
+	if(data.exception_caught_)
+	{
+		safeIO::CoutA("Caught exception from worker thread.");
+		p_IEthread->m_EventToNotifyWhenNavigationCompleted = NULL;
+		std::wstring Err(data.output_string_);
+		throw Err;
 	}
 	return true;
 }

@@ -159,13 +159,14 @@ long getLengthOf(SAFEARRAY* ary)
 	return 1 + upper - lower;
 }
 
-
+/*
 bool on_catchAllExceptions()
 {
 	safeIO::CoutA("Exception caught in dll", true);
 	// Do nothing for the moment.
 	return true;
 }
+*/
 
 safeIO::safeIO()
 {

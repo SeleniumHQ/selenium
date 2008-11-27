@@ -13,18 +13,19 @@ extern "C" {
 
 InternetExplorerDriver* createIE(JNIEnv *env, jobject& obj)
 {
+	TRY
+	{
 	InternetExplorerDriver* wrapper = NULL;
-	try {
-		wrapper = new InternetExplorerDriver();
-		g_pStillOpenedIE = wrapper;
+	wrapper = new InternetExplorerDriver();
+	g_pStillOpenedIE = wrapper;
 
-		jclass cls = env->GetObjectClass(obj);
-		jfieldID fid = env->GetFieldID(cls, "iePointer", "J");
-		env->SetLongField(obj, fid, (jlong) wrapper);
-	} catch (std::wstring& message) {
-		throwRunTimeException(env, message.c_str());
-	}
+	jclass cls = env->GetObjectClass(obj);
+	jfieldID fid = env->GetFieldID(cls, "iePointer", "J");
+	env->SetLongField(obj, fid, (jlong) wrapper);
 	return wrapper;
+	}
+	END_TRY_CATCH_ANY
+	return NULL;
 }
 
 InternetExplorerDriver* getIe(JNIEnv *env, jobject obj)

@@ -54,12 +54,15 @@ long getLengthOf(SAFEARRAY* ary);
 
 char* ConvertLPCWSTRToLPSTR (LPCWSTR lpwszStrIn);
 void ConvertLPCWSTRToLPSTR (LPCWSTR lpwszStrIn, std::string &out);
-bool on_catchAllExceptions();
 
-#define END_TRY_CATCH_ANY  catch (...) \
+#define END_TRY_CATCH_ANY  catch(std::wstring& message) \
+	{ \
+		throwRunTimeException(env, message.c_str()); \
+	} \
+	catch (...) \
 	{ \
 	safeIO::CoutA("CException caught in dll", true); \
-	on_catchAllExceptions(); }
+	throwRunTimeException(env, L"Unhandled exception caught in calling thread."); }
 
 class safeIO
 {

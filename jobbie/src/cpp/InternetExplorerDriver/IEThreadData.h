@@ -22,6 +22,9 @@ public:
 #define ON_THREAD_COMMON(dataMarshaller) \
 	DataMarshaller& dataMarshaller = getCmdData(); \
 	dataMarshaller.resetOutputs(); \
-	CScopeCaller SC(dataMarshaller); 
+	CScopeCaller& SC = *dataMarshaller.scope_caller_; 
+
+#define NO_THREAD_COMMON \
+	getCmdData().scope_caller_->m_releaseOnDestructor = false;
 
 #endif // JOBBIE_IETHREADDATA_H_

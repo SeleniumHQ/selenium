@@ -29,7 +29,24 @@ IeThread::~IeThread()
 
 
 #define CUSTOM_MESSAGE_MAP(a,b) \
-	if(a == msg) {b(pMsg->lParam, pMsg->wParam); return TRUE;}
+	if (a == msg) { \
+	std::wstring& error = dataMarshaller.output_string_; \
+	try {b(pMsg->lParam, pMsg->wParam);} \
+	catch(std::wstring& content) { \
+		safeIO::CoutA("in catch1"); \
+		dataMarshaller.exception_caught_ = true; \
+		error = L"Error in ["; \
+		error += L#b; \
+		error += L"] "; \
+		error += content; \
+	}\
+	catch(...) { \
+		safeIO::CoutA("in catch2"); \
+		dataMarshaller.exception_caught_ = true; \
+		error = L"Unhandled exception thrown in "; \
+		error += L#b; \
+	}\
+	return TRUE;}
 
 BOOL IeThread::DispatchThreadMessageEx(MSG* pMsg)
 {
@@ -37,6 +54,13 @@ BOOL IeThread::DispatchThreadMessageEx(MSG* pMsg)
 	if (pMsg->message > (WM_USER+100)) return FALSE;
 
 	const UINT msg = pMsg->message;
+
+	DataMarshaller& dataMarshaller = getCmdData();
+	CScopeCaller SC(dataMarshaller);
+	// NOTE(alexis.j.vuillemin): 
+	// This is just a hacky way to have this CScopeCaller supplied to the called methods,
+	// so that they can optionally turn off its m_releaseOnDestructor flag.
+	dataMarshaller.scope_caller_ = &SC; 
 
 	CUSTOM_MESSAGE_MAP ( _WD_START, OnStartIE )
     CUSTOM_MESSAGE_MAP ( _WD_SWITCHTOFRAME, OnSwitchToFrame )
@@ -98,6 +122,7 @@ int IeThread::runProcessStatic(void *pThis)
 
 int IeThread::runProcess()
 {
+	try{
 	SCOPETRACER
 	InitInstance();
 
@@ -118,6 +143,9 @@ int IeThread::runProcess()
 				quitASAP = true;
 			}
 		} while (::PeekMessage(&curMsg, NULL, NULL, NULL, PM_NOREMOVE));
+	}
+	} catch(...) {
+		int gotcha = 9;
 	}
 	return ExitInstance();
 }
@@ -178,6 +206,7 @@ BOOL IeThread::CustomInternalPumpMessage()
 void IeThread::OnStartIE(WPARAM w, LPARAM lp)
 {
 	SCOPETRACER
+	NO_THREAD_COMMON
 	EventReleaser er(sync_LaunchIE);
 	HRESULT hr = pBody->ieThreaded.CoCreateInstance(CLSID_InternetExplorer, NULL, CLSCTX_LOCAL_SERVER);
 

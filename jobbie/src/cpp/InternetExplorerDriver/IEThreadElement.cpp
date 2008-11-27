@@ -83,23 +83,12 @@ void IeThread::OnElementSendKeys(WPARAM w, LPARAM lp)
 	SCOPETRACER
 	ON_THREAD_ELEMENT(data, pElement)
 
-	bool& hasToThrowException = data.output_bool_;
-	hasToThrowException = false;
-
-	std::wstring& exceptionString = data.output_string_;
-
 	if (!isDisplayed(pElement)) {
-		hasToThrowException = true;
-		std::wstring err(L"Element is not displayed");
-		exceptionString = err.c_str();
-		return;
+		throw std::wstring(L"Element is not displayed");
 	}
 
 	if (!isEnabled(pElement)) {
-		hasToThrowException = true;
-		std::wstring err(L"Element is not enabled");
-		exceptionString = err.c_str();
-		return;
+		throw std::wstring(L"Element is not enabled");
 	}
 
 	LPCWSTR newValue = data.input_string_;
@@ -178,6 +167,9 @@ bool IeThread::isDisplayed(IHTMLElement *element)
 		CComBSTR visible;
 
 		e2->get_currentStyle(&style);
+		if(!style) {
+			throw std::wstring(L"appears to manipulate obsolete DOM element.");
+		}
 		style->get_display(&display);
 		style->get_visibility(&visible);
 
@@ -375,23 +367,14 @@ void IeThread::OnElementSetSelected(WPARAM w, LPARAM lp)
 
 	bool currentlySelected = isSelected(pElement);
 
-	bool& hasToThrowException = data.output_bool_;
-	hasToThrowException = false;
-
-	std::wstring& exceptionString = data.output_string_;
-
 	if (!this->isEnabled(pElement))
 	{
-		hasToThrowException = true;
-		exceptionString = L"Unable to select a disabled element";
-		return;
+		throw std::wstring(L"Unable to select a disabled element");
 	}
 
 	if (!this->isDisplayed(pElement)) 
 	{
-		hasToThrowException = true;
-		exceptionString = L"Unable to select an element that is not displayed";
-		return;
+		throw std::wstring(L"Unable to select an element that is not displayed");
 	}
 
 	/* TODO(malcolmr): Why not: if (isSelected()) return; ? Do we really need to re-set 'checked=true' for checkbox and do effectively nothing for select?
@@ -456,8 +439,7 @@ void IeThread::OnElementSetSelected(WPARAM w, LPARAM lp)
 		return;
 	}
 
-	hasToThrowException = true;
-	exceptionString = L"Unable to select element";
+	throw std::wstring(L"Unable to select element");
 }
 
 void IeThread::OnElementGetValueOfCssProp(WPARAM w, LPARAM lp)
@@ -480,18 +462,7 @@ void IeThread::OnElementClick(WPARAM w, LPARAM lp)
 	SCOPETRACER
 	ON_THREAD_ELEMENT(data, pElement)
 
-	bool& hasToThrowException = data.output_bool_;
-	hasToThrowException = false;
-
-	std::wstring& exceptionString = data.output_string_;
-
-	try {
-		click(pElement, &SC);
-	} catch (std::wstring err) {
-		hasToThrowException = true;
-		exceptionString = err.c_str();
-		return;
-	}
+	click(pElement, &SC);
 }
 
 void IeThread::OnElementSubmit(WPARAM w, LPARAM lp)
@@ -625,13 +596,11 @@ void IeThread::getLocationOnceScrolledIntoView(IHTMLElement *pElement, long *x, 
 	}
 
 	if (!isDisplayed(pElement)) {
-		std::wstring Err(L"Element is not displayed");
-		throw Err;
+		throw std::wstring(L"Element is not displayed");
 	}
 
 	if (!isEnabled(pElement)) {
-		std::wstring Err(L"Element is not enabled");
-		throw Err;
+		throw std::wstring(L"Element is not enabled");
 	}
 
 	const HWND hWnd = getHwnd();
@@ -663,8 +632,7 @@ void IeThread::getLocationOnceScrolledIntoView(IHTMLElement *pElement, long *x, 
 	width -= clickX;
 
 	if (height == 0 || width == 0) {
-		std::wstring Err(L"Element would not be visible because it lacks height and/or width.");
-		throw Err;
+		throw std::wstring(L"Element would not be visible because it lacks height and/or width.");
 	}
 
 	CComPtr<IDispatch> ownerDocDispatch;
@@ -1110,8 +1078,7 @@ void IeThread::submit(IHTMLElement *pElement, CScopeCaller *pSC)
 		} else {
 			findParentForm(pElement, &form);
 			if (!form) {
-				std::wstring Err(L"Unable to find the containing form");
-				throw Err;
+				throw std::wstring(L"Unable to find the containing form");
 			}
 			form->submit();
 		}

@@ -218,6 +218,7 @@ void IeThread::OnAddCookie(WPARAM w, LPARAM lp)
 void IeThread::OnWaitForNavigationToFinish(WPARAM w, LPARAM lp)
 {
 	SCOPETRACER
+	NO_THREAD_COMMON
 	waitForNavigateToFinish();
 }
 
@@ -474,6 +475,7 @@ bool IeThread::isOrUnder(const IHTMLDOMNode* root, IHTMLElement* child)
 void IeThread::OnQuitIE(WPARAM w, LPARAM lp)
 {
 	SCOPETRACER
+	NO_THREAD_COMMON
 	pBody->ieThreaded->Stop();
 	pBody->ieThreaded->Quit();
 	pBody->ieThreaded.Release();

@@ -28,7 +28,6 @@ CScopeCaller::CScopeCaller(DataMarshaller& p, bool releaseOnDestructor) :
 CScopeCaller::~CScopeCaller(void) 
 {
 	if(m_releaseOnDestructor) {
-		pData->resetInputs(); 
 		safeIO::CoutA("Release data.sync", true);
 		SetEvent(pData->synchronization_flag_);
 	}

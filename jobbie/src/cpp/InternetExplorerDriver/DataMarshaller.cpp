@@ -14,6 +14,7 @@ void DataMarshaller::resetInputs()
 	input_html_element_ = NULL;
 	input_string_ = NULL;
 	input_safe_array_ = NULL;
+	scope_caller_ = NULL;
 }
 
 void DataMarshaller::resetOutputs()
@@ -24,6 +25,7 @@ void DataMarshaller::resetOutputs()
 	output_bool_ = true;
 	output_list_html_element_.clear();
 	output_variant_.Clear();
+	exception_caught_ = false;
 }
 
 EventHandler::EventHandler(void)

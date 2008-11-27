@@ -255,11 +255,16 @@ JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_ge
 JNIEXPORT jlong JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_getElementNode
   (JNIEnv *env, jobject obj)
 {
+	TRY
+	{
 	ElementWrapper* wrapper = getWrapper(env, obj);
 
 	IHTMLElement* pElem = wrapper->getWrappedElement();
 
 	return (jlong) pElem;
+	}
+	END_TRY_CATCH_ANY
+	return NULL;
 }
 
 JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_releaseElementNode
@@ -271,9 +276,14 @@ JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_relea
 JNIEXPORT jlong JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_getIePointer
   (JNIEnv *env, jobject obj)
 {
+	TRY
+	{
 	ElementWrapper* wrapper = getWrapper(env, obj);
 
 	return (jlong) wrapper->getParent();
+	}
+	END_TRY_CATCH_ANY
+	return NULL;
 }
 
 JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_releaseIePointer

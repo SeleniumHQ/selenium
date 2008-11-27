@@ -51,7 +51,7 @@ task :clean do
   rm_rf 'common/build'
   rm_rf 'htmlunit/build'
   rm_rf 'jobbie/build'
-  rm_rf 'jobbie/src/cpp/InternetExplorerDriver/Debug'
+  rm_rf 'jobbie/src/cpp/InternetExplorerDriver/Release'
   rm_rf 'firefox/build'
   rm_rf 'safari/build'
   rm_rf 'support/build'
@@ -264,7 +264,7 @@ end
 #### Internet Explorer ####
 file 'jobbie/build/InternetExplorerDriver.dll' => FileList['jobbie/src/csharp/**/*.cs'] do
   if windows? then
-    sh "MSBuild.exe WebDriver.sln /verbosity:q /target:Rebuild /property:Configuration=Debug", :verbose => false
+    sh "MSBuild.exe WebDriver.sln /verbosity:q /target:Rebuild /property:Configuration=Release", :verbose => false
   else
     puts "Not compiling DLL. Do not try and run the IE tests!"
     begin

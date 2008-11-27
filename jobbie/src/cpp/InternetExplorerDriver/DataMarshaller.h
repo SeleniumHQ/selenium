@@ -6,6 +6,8 @@
 
 using namespace std;
 
+class CScopeCaller;
+
 class EventHandler
 {
 private:
@@ -36,6 +38,9 @@ public:
 	std::vector<IHTMLElement*> output_list_html_element_;
 	CComVariant		output_variant_;
 
+	// Error handling and synchronization
+	bool			exception_caught_;
+	CScopeCaller	*scope_caller_;
 	EventHandler	synchronization_flag_;
 
 public:
