@@ -20,7 +20,8 @@ package org.openqa.selenium;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
-import java.util.Iterator;
+import java.util.HashSet;
+import java.util.Set;
 
 public class WindowSwitchingTest extends AbstractDriverTestCase {
 
@@ -58,21 +59,17 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
     driver.get(xhtmlTestPage);
     driver.findElement(By.name("windowOne")).click();
     driver.findElement(By.name("windowTwo")).click();
-    // TODO(alexis.j.vuillemin): We will need a mechanism for the creation of the windows
-    // to notify when their handlesString has been created.
-    // In the meantime this sleep command prevents this test from failing when run a slow environment,
-    // as mentioned in issue #118
-    Thread.sleep(500);
 
-    Iterator<WebDriver> allWindows = driver.switchTo().windowIterable().iterator();
+    Set<String> allWindowHandles = driver.getWindowHandles();
 
     // There should be three windows. We should also see each of the window titles at least once.
-    //
-    allWindows.next();
-    allWindows.next();
-    allWindows.next();
+    assertEquals(3, allWindowHandles.size());
 
-    assertFalse(allWindows.hasNext());
+    Set<String> seenHandles = new HashSet<String>();
+    for (String handle : allWindowHandles) {
+      assertFalse(seenHandles.contains(handle));
+      seenHandles.add(handle);
+    }
   }
 
 
