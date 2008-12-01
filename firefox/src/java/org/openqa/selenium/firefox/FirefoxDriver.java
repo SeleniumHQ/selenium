@@ -291,7 +291,21 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
         extension.quit();
     }
 
-    public Object executeScript(String script, Object... args) {
+  public String getWindowHandle() {
+    return sendMessage(RuntimeException.class, "getCurrentWindowHandle");
+  }
+
+  public Set<String> getWindowHandles() {
+    String allHandles = sendMessage(RuntimeException.class, "getAllWindowHandles");
+    String[] handles = allHandles.split(",");
+    HashSet<String> toReturn = new HashSet<String>();
+    for (String handle : handles) {
+      toReturn.add(handle);
+    }
+    return toReturn;
+  }
+
+  public Object executeScript(String script, Object... args) {
         // Escape the quote marks
         script = script.replaceAll("\"", "\\\"");
 

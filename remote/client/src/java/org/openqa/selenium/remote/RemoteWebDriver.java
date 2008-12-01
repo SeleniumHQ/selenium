@@ -168,6 +168,16 @@ public class RemoteWebDriver implements WebDriver, SearchContext, JavascriptExec
     execute("quit");
   }
 
+  @SuppressWarnings({"unchecked"})
+  public Set<String> getWindowHandles() {
+    Response response = execute("getWindowHandles");
+    return (Set<String>) response.getValue();
+  }
+
+  public String getWindowHandle() {
+    return (String) execute("getCurrentWindowHandle").getValue();
+  }
+
   public Object executeScript(String script, Object... args) {
     if (!capabilities.isJavascriptEnabled()) {
       throw new UnsupportedOperationException("You must be using an underlying instance of WebDriver that supports executing javascript");

@@ -1,9 +1,21 @@
-function FirefoxDriver(server, id) {
+function FirefoxDriver(server) {
     this.server = server;
     this.context = new Context();
-    this.id = id;
     this.mouseSpeed = 1;
 }
+
+FirefoxDriver.prototype.__defineGetter__("id", function() {
+  if (!this.id_) {
+    this.id_ = this.server.getNextId();
+  }
+
+  return this.id_;
+});
+
+FirefoxDriver.prototype.getCurrentWindowHandle = function(respond) {
+  respond.response = this.id;
+  respond.send();
+};
 
 FirefoxDriver.prototype.get = function(respond, url) {
     var self = this;

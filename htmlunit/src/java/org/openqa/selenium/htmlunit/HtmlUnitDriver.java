@@ -17,7 +17,17 @@
 
 package org.openqa.selenium.htmlunit;
 
-import com.gargoylesoftware.htmlunit.*;
+import com.gargoylesoftware.htmlunit.CookieManager;
+import com.gargoylesoftware.htmlunit.ElementNotFoundException;
+import com.gargoylesoftware.htmlunit.Page;
+import com.gargoylesoftware.htmlunit.ProxyConfig;
+import com.gargoylesoftware.htmlunit.ScriptResult;
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.WebResponse;
+import com.gargoylesoftware.htmlunit.WebWindow;
+import com.gargoylesoftware.htmlunit.WebWindowEvent;
+import com.gargoylesoftware.htmlunit.WebWindowListener;
+import com.gargoylesoftware.htmlunit.WebWindowNotFoundException;
 import com.gargoylesoftware.htmlunit.html.FrameWindow;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
@@ -26,7 +36,17 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.javascript.host.HTMLElement;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.ScriptableObject;
-import org.openqa.selenium.*;
+import org.openqa.selenium.Alert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Cookie;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.NoSuchFrameException;
+import org.openqa.selenium.NoSuchWindowException;
+import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.Speed;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
@@ -44,6 +64,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecutor,
         FindsById, FindsByLinkText, FindsByXPath, FindsByName {
@@ -53,6 +74,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     private Map<WebWindow, History> histories = new HashMap<WebWindow, History>();
     private boolean enableJavascript;
     private ProxyConfig proxyConfig;
+    private AtomicLong windowNamer = new AtomicLong(System.currentTimeMillis());
 
     public HtmlUnitDriver(boolean enableJavascript) {
     this.enableJavascript = enableJavascript;
@@ -212,7 +234,35 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
         histories.clear();
     }
 
-    public Object executeScript(String script, Object... args) {
+  public Set<String> getWindowHandles() {
+    Set<String> allHandles = new HashSet<String>();
+    List<WebWindow> allWindows = webClient.getWebWindows();
+    for (WebWindow window : allWindows) {
+      WebWindow top = window.getTopWindow();
+      if (top.getName() == null || "".equals(top.getName())) {
+        nameWindow(top);
+      }
+      allHandles.add(top.getName());
+    }
+
+    return allHandles;
+  }
+
+  public String getWindowHandle() {
+    WebWindow window = webClient.getCurrentWindow();
+    if (window.getName() == null) {
+      nameWindow(window);
+    }
+    return window.getName();
+  }
+
+  private String nameWindow(WebWindow window) {
+    String windowName = "webdriver" + windowNamer.incrementAndGet();
+    window.setName(windowName);
+    return windowName;
+  }
+
+  public Object executeScript(String script, Object... args) {
         if (!(lastPage() instanceof HtmlPage)) {
           throw new UnsupportedOperationException("Cannot execute JS against a plain text page");
         }

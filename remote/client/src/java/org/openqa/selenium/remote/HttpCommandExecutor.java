@@ -62,6 +62,8 @@ public class HttpCommandExecutor implements CommandExecutor {
 
     nameToUrl.put("newSession", new CommandInfo("/session", HttpVerb.POST));
     nameToUrl.put("quit", new CommandInfo("/session/:sessionId", HttpVerb.DELETE));
+    nameToUrl.put("getCurrentWindowHandle", new CommandInfo("/session/:sessioId/:context/window_handle", HttpVerb.GET));
+    nameToUrl.put("getWindowHandles", new CommandInfo("/session/:sessioId/:context/window_handles", HttpVerb.GET));
     nameToUrl.put("get", new CommandInfo("/session/:sessionId/:context/url", HttpVerb.POST));
     nameToUrl
         .put("forward", new CommandInfo("/session/:sessionId/:context/forward", HttpVerb.POST));

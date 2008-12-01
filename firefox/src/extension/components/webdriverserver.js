@@ -5,7 +5,7 @@ function WebDriverServer() {
 }
 
 WebDriverServer.prototype.newDriver = function(window) {
-    window.fxdriver = new FirefoxDriver(this, this.getNextId());
+    window.fxdriver = new FirefoxDriver(this);
     // Yuck. But it allows us to refer to it later.
     window.fxdriver.window = window;
     return window.fxdriver;

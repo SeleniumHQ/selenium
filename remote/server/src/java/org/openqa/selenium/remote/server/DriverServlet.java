@@ -10,6 +10,7 @@ import org.openqa.selenium.remote.server.handler.DeleteNamedCookie;
 import org.openqa.selenium.remote.server.handler.DeleteSession;
 import org.openqa.selenium.remote.server.handler.DescribeElement;
 import org.openqa.selenium.remote.server.handler.DragElement;
+import org.openqa.selenium.remote.server.handler.ExecuteScript;
 import org.openqa.selenium.remote.server.handler.FindActiveElement;
 import org.openqa.selenium.remote.server.handler.FindChildElement;
 import org.openqa.selenium.remote.server.handler.FindChildElements;
@@ -17,12 +18,15 @@ import org.openqa.selenium.remote.server.handler.FindElement;
 import org.openqa.selenium.remote.server.handler.FindElementChildren;
 import org.openqa.selenium.remote.server.handler.FindElements;
 import org.openqa.selenium.remote.server.handler.GetAllCookies;
+import org.openqa.selenium.remote.server.handler.GetAllWindowHandles;
 import org.openqa.selenium.remote.server.handler.GetCssProperty;
 import org.openqa.selenium.remote.server.handler.GetCurrentUrl;
+import org.openqa.selenium.remote.server.handler.GetCurrentWindowHandle;
 import org.openqa.selenium.remote.server.handler.GetElementAttribute;
 import org.openqa.selenium.remote.server.handler.GetElementDisplayed;
 import org.openqa.selenium.remote.server.handler.GetElementEnabled;
 import org.openqa.selenium.remote.server.handler.GetElementLocation;
+import org.openqa.selenium.remote.server.handler.GetElementName;
 import org.openqa.selenium.remote.server.handler.GetElementSelected;
 import org.openqa.selenium.remote.server.handler.GetElementSize;
 import org.openqa.selenium.remote.server.handler.GetElementText;
@@ -43,8 +47,6 @@ import org.openqa.selenium.remote.server.handler.SubmitElement;
 import org.openqa.selenium.remote.server.handler.SwitchToFrame;
 import org.openqa.selenium.remote.server.handler.SwitchToWindow;
 import org.openqa.selenium.remote.server.handler.ToggleElement;
-import org.openqa.selenium.remote.server.handler.ExecuteScript;
-import org.openqa.selenium.remote.server.handler.GetElementName;
 import org.openqa.selenium.remote.server.renderer.EmptyResult;
 import org.openqa.selenium.remote.server.renderer.ForwardResult;
 import org.openqa.selenium.remote.server.renderer.JsonErrorExceptionResult;
@@ -90,6 +92,11 @@ public class DriverServlet extends HttpServlet {
 
     deleteMapper.bind("/session/:sessionId", DeleteSession.class)
         .on(ResultType.SUCCESS, new EmptyResult());
+
+    getMapper.bind("/session/:sessioId/:context/window_handle", GetCurrentWindowHandle.class)
+        .on(ResultType.SUCCESS, new JsonResult(":response"));
+    getMapper.bind("/session/:sessioId/:context/window_handles", GetAllWindowHandles.class)
+        .on(ResultType.SUCCESS, new JsonResult(":response"));
 
     postMapper.bind("/session/:sessionId/:context/url", ChangeUrl.class)
         .on(ResultType.SUCCESS, new EmptyResult());

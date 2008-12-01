@@ -145,6 +145,20 @@ public interface WebDriver {
     void quit();
 
     /**
+     * Return a set of window handles which can be used to iterate over all open windows of
+     * this webdriver instance by passing them to {@link #switchTo().window(String)}
+     *
+     * @return A set of window handles which can be used to iterate over all open windows.
+     */
+    Set<String> getWindowHandles();
+
+    /**
+     * Return an opaque handle to this window that uniquely identifies it within this driver
+     * instance. This can be used to switch to this window at a later date
+     */
+    String getWindowHandle();
+
+    /**
      * Send future commands to a different frame or window.
      *
      * @return A TargetLocator which can be used to select a frame or window
@@ -269,7 +283,9 @@ public interface WebDriver {
          * Provides a mechanism to iterate over every open browser window.
          *
          * @return An iterable of current open windows.
+         * @deprecated This is a poor method. Use the #windowHandles method and "switchTo"
          */
+        @Deprecated
         Iterable<WebDriver> windowIterable();
 
         /**

@@ -110,7 +110,15 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor {
         driver.quit();
     }
 
-    public Object executeScript(String script, Object... args) {
+    public Set<String> getWindowHandles() {
+        return driver.getWindowHandles();
+    }
+
+    public String getWindowHandle() {
+        return driver.getWindowHandle();
+    }
+
+  public Object executeScript(String script, Object... args) {
         if (driver instanceof JavascriptExecutor) {
             dispatcher.beforeScript(script, driver);
             Object result = ((JavascriptExecutor) driver).executeScript(script);

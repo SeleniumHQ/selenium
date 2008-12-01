@@ -17,6 +17,16 @@
 
 package org.openqa.selenium.ie;
 
+import org.openqa.selenium.Alert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Cookie;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.Speed;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.internal.ReturnedCookie;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -27,16 +37,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import org.openqa.selenium.Alert;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Cookie;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.Speed;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.internal.ReturnedCookie;
+import java.util.Collections;
 
 public class InternetExplorerDriver implements WebDriver, SearchContext, JavascriptExecutor {
     private long iePointer; // Used by the native code to keep track of the IE instance
@@ -60,7 +61,15 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
     	close();  // Not a good implementation, but better than nothing
     }
 
-    private native Object doExecuteScript(String script, Object[] args);
+  public Set<String> getWindowHandles() {
+    return Collections.singleton("1");
+  }
+
+  public String getWindowHandle() {
+    return "1";
+  }
+
+  private native Object doExecuteScript(String script, Object[] args);
     public Object executeScript(String script, Object... args) {
     	for (Object arg : args) {
     		if (!(arg instanceof String || 

@@ -72,8 +72,16 @@ public class SafariDriver implements WebDriver, FindsByLinkText, FindsById,
     public void quit() {
     	appleScript.executeApplescript("tell application \"" + AppleScript.APP + "\" to quit");
     }
-    
-    public TargetLocator switchTo() {
+
+  public Set<String> getWindowHandles() {
+    throw new UnsupportedOperationException("getWindowHandles");
+  }
+
+  public String getWindowHandle() {
+    throw new UnsupportedOperationException("getWindowHandle");
+  }
+
+  public TargetLocator switchTo() {
     	throw new UnsupportedOperationException("switchTo");
     }
 
