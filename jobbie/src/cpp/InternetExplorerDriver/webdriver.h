@@ -29,16 +29,18 @@ EXPORT int wdCopyString(StringWrapper* source, int length, wchar_t* dest);
 EXPORT int wdFreeElement(WebElement* element);
 
 // Driver manipulation functions
-EXPORT int wdFreeDriver(WebDriver* driver);
+
 
 // WebDriver functions
-EXPORT WebDriver* webdriver_newDriverInstance();
-EXPORT int webdriver_deleteDriverInstance(WebDriver* handle);
+EXPORT int wdNewDriverInstance(WebDriver** result);
+EXPORT int wdFreeDriver(WebDriver* driver);
 
-EXPORT int webdriver_get(WebDriver* driver, wchar_t* url);
-EXPORT int webdriver_close(WebDriver* driver);
+EXPORT int wdGet(WebDriver* driver, wchar_t* url);
+EXPORT int wdClose(WebDriver* driver);
+EXPORT int wdSetVisible(WebDriver* driver, int value);
 
-EXPORT int webdriver_getCurrentUrl(WebDriver* driver, StringWrapper** result);
+EXPORT int wdGetCurrentUrl(WebDriver* driver, StringWrapper** result);
+EXPORT int wdGetTitle(WebDriver* driver, StringWrapper** result);
 
 // Element functions
 EXPORT int wdeSendKeys(WebElement* element, const wchar_t* text);

@@ -4,7 +4,18 @@
 #include "InternetExplorerDriver.h"
 #include "utils.h"
 #include <stdio.h>
+#include <string>
 #include <vector>
+
+#define END_TRY  catch(std::wstring&) \
+	{ \
+		return -10; \
+	} \
+	catch (...) \
+	{ \
+	safeIO::CoutA("CException caught in dll", true); \
+	return -11; }
+
 
 struct WebDriver {
     InternetExplorerDriver *ie;
@@ -21,6 +32,8 @@ struct StringWrapper {
 struct ElementCollection {
 	std::vector<ElementWrapper*> elements;
 };
+
+InternetExplorerDriver* openIeInstance = NULL;
 
 extern "C"
 {
@@ -92,38 +105,70 @@ int wdFreeDriver(WebDriver* driver)
 	return 0;
 }
 
-WebDriver* webdriver_newDriverInstance()
+int wdNewDriverInstance(WebDriver** result)
 {
-//	startCom();
-    WebDriver *driver = new WebDriver();
+	TRY
+	{
+	    WebDriver *driver = new WebDriver();
    
-    driver->ie = new InternetExplorerDriver();
-	driver->ie->setVisible(true);
+		driver->ie = new InternetExplorerDriver();
+		driver->ie->setVisible(true);
 
-    return driver;
+		openIeInstance = driver->ie;
+
+		*result = driver;
+
+		return 0;
+	}
+	END_TRY
+
+	return -1;
 }
 
-int webdriver_get(WebDriver* driver, wchar_t* url)
+int wdGet(WebDriver* driver, wchar_t* url)
 {
 	if (!driver || !driver->ie) return -1;
 	driver->ie->get(url);
 	return 0;
 }
 
-int webdriver_close(WebDriver* driver)
+int wdClose(WebDriver* driver)
 {
 	if (!driver || !driver->ie) return -1;
 	driver->ie->close();
 	return 0;
 }
 
-int webdriver_getCurrentUrl(WebDriver* driver, StringWrapper** result)
+int wdSetVisible(WebDriver* driver, int value) 
+{
+	if (!driver || !driver->ie) return -1;
+	driver->ie->setVisible(value != 0);
+	return 0;
+}
+
+int wdGetCurrentUrl(WebDriver* driver, StringWrapper** result)
 {
 	if (!driver || !driver->ie) return -1;
 
-	driver->ie->getCurrentUrl();
-
 	const std::wstring originalString(driver->ie->getCurrentUrl());
+	size_t length = originalString.length() + 1;
+	wchar_t* toReturn = new wchar_t[length];
+
+	wcscpy_s(toReturn, length, originalString.c_str());
+
+	StringWrapper* res = new StringWrapper();
+	res->text = toReturn;
+	
+	*result = res;
+
+	return 0;
+}
+
+int wdGetTitle(WebDriver* driver, StringWrapper** result)
+{
+	if (!driver || !driver->ie) return -1;
+
+	const std::wstring originalString(driver->ie->getTitle());
 	size_t length = originalString.length() + 1;
 	wchar_t* toReturn = new wchar_t[length];
 
