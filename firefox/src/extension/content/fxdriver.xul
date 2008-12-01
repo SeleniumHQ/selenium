@@ -1,4 +1,11 @@
 <?xml version="1.0"?>
 <overlay id="fxdriver-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-    <script src="server.js"/>
+    <script src="server.js" />
+    <statusbar id="status-bar">
+        <statusbarpanel>
+            <hbox>
+                <label id="fxdriver-label" value="WebDriver" tooltiptext="This Firefox can be remote controlled with WebDriver." />
+	    </hbox>
+        </statusbarpanel>
+    </statusbar>
 </overlay>
