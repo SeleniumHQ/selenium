@@ -30,7 +30,7 @@ struct StringWrapper {
 };
 
 struct ElementCollection {
-	std::vector<ElementWrapper*> elements;
+	std::vector<ElementWrapper*>* elements;
 };
 
 InternetExplorerDriver* openIeInstance = NULL;
@@ -84,8 +84,33 @@ int wdCopyString(StringWrapper* source, int size, wchar_t* dest)
 	return 0;
 }
 
+// Collection manipulation functions
+int wdcGetCollectionLength(ElementCollection* collection, int* length)
+{
+	if (!collection || !collection->elements) return -1;
+
+	*length = (int) collection->elements->size();
+
+	return 0;
+}
+
+int wdcGetElementAtIndex(ElementCollection* collection, int index, WebElement** result)
+{
+	if (!collection || !collection->elements) return -1;
+
+	
+	std::vector<ElementWrapper*>::const_iterator cur = collection->elements->begin();
+	cur += index;
+
+	WebElement* element = new WebElement();
+	element->element = *cur;
+	*result = element;
+
+	return 0;
+}
+
 // Element manipulation functions
-int wdFreeElement(WebElement* element)
+int wdeFreeElement(WebElement* element)
 {
 	if (!element)
 		return -1;
@@ -182,15 +207,107 @@ int wdGetTitle(WebDriver* driver, StringWrapper** result)
 	return 0;
 }
 
+int wdeClick(WebElement* element)
+{
+	if (!element || !element->element) { return -1; }
+
+	element->element->click();
+
+	return 0;
+}
+
+int wdeGetAttribute(WebElement* element, const wchar_t* name, StringWrapper** result)
+{
+	if (!element || !element->element) { return -1; }
+
+	const std::wstring originalString(element->element->getAttribute(name));
+	size_t length = originalString.length() + 1;
+	wchar_t* toReturn = new wchar_t[length];
+
+	wcscpy_s(toReturn, length, originalString.c_str());
+
+	StringWrapper* res = new StringWrapper();
+	res->text = toReturn;
+	
+	*result = res;
+
+	return 0;
+}
+
+int wdeGetText(WebElement* element, StringWrapper** result)
+{
+	if (!element || !element->element) { return -1; }
+
+	const std::wstring originalString(element->element->getText());
+	size_t length = originalString.length() + 1;
+	wchar_t* toReturn = new wchar_t[length];
+
+	wcscpy_s(toReturn, length, originalString.c_str());
+
+	StringWrapper* res = new StringWrapper();
+	res->text = toReturn;
+	
+	*result = res;
+
+	return 0;
+}
+
+int wdeIsDisplayed(WebElement* element, int* result)
+{
+	if (!element || !element->element) { return -1; }
+
+	*result = element->element->isDisplayed() ? 1 : 0;
+
+	return 0;
+}
+
 int wdeSendKeys(WebElement* element, const wchar_t* text)
 {
-	if (!element || !element->element) {
-		return -1;
-	}
+	if (!element || !element->element) { return -1; }
 
 	element->element->sendKeys(text);
 
 	return 0;
+}
+
+int wdeSubmit(WebElement* element)
+{
+	if (!element || !element->element) { return -1; }
+
+	element->element->submit();
+	return 0;
+}
+
+int wdFindElementById(WebDriver* driver, WebElement* element, const wchar_t* id, WebElement** result)
+{
+	CComPtr<IHTMLDOMNode> res;
+	InternetExplorerDriver* ie = driver->ie;
+	CComPtr<IHTMLElement> elem;
+	if (element && element->element) {
+		elem = element->element->getWrappedElement();
+	}
+
+	ElementWrapper* wrapper = NULL;
+	try {
+		wrapper = ie->selectElementById(elem, id);
+	} catch (std::wstring& ) {
+		return -1;
+	}
+
+	if (!wrapper) {
+		return -2;
+	}
+
+	WebElement* toReturn = new WebElement();
+	toReturn->element = wrapper;
+
+	*result = toReturn;
+	return 0;
+}
+
+int wdFindElementsById(WebDriver* driver, WebElement* element, const wchar_t* id, ElementCollection** result) 
+{
+	return -1;
 }
 
 int wdFindElementByName(WebDriver* driver, WebElement* element, const wchar_t* name, WebElement** result)
@@ -219,4 +336,111 @@ int wdFindElementByName(WebDriver* driver, WebElement* element, const wchar_t* n
 	*result = toReturn;
 	return 0;
 }
+
+int wdFindElementsByName(WebDriver* driver, WebElement* element, const wchar_t* name, ElementCollection** result)
+{
+	return -1;
+}
+
+int wdFindElementByClassName(WebDriver* driver, WebElement* element, const wchar_t* className, WebElement** result)
+{
+	CComPtr<IHTMLDOMNode> res;
+	InternetExplorerDriver* ie = driver->ie;
+	CComPtr<IHTMLElement> elem;
+	if (element && element->element) {
+		elem = element->element->getWrappedElement();
+	}
+
+	ElementWrapper* wrapper = NULL;
+	try {
+		wrapper = ie->selectElementByClassName(elem, className);
+	} catch (std::wstring& ) {
+		return -1;
+	}
+
+	if (!wrapper) {
+		return -2;
+	}
+
+	WebElement* toReturn = new WebElement();
+	toReturn->element = wrapper;
+
+	*result = toReturn;
+	return 0;
+}
+
+int wdFindElementsByClassName(WebDriver* driver, WebElement* element, const wchar_t* className, ElementCollection** result)
+{
+	return -1;
+}
+
+int wdFindElementByLinkText(WebDriver* driver, WebElement* element, const wchar_t* linkText, WebElement** result)
+{
+	CComPtr<IHTMLDOMNode> res;
+	InternetExplorerDriver* ie = driver->ie;
+	CComPtr<IHTMLElement> elem;
+	if (element && element->element) {
+		elem = element->element->getWrappedElement();
+	}
+
+	ElementWrapper* wrapper = NULL;
+	try {
+		wrapper = ie->selectElementByLink(elem, linkText);
+	} catch (std::wstring& ) {
+		return -1;
+	}
+
+	if (!wrapper) {
+		return -2;
+	}
+
+	WebElement* toReturn = new WebElement();
+	toReturn->element = wrapper;
+
+	*result = toReturn;
+	return 0;
+}
+
+int wdFindElementsByLinkText(WebDriver* driver, WebElement* element, const wchar_t* linkText, ElementCollection** result)
+{
+	return -1;
+}
+
+int wdFindElementByXPath(WebDriver* driver, WebElement* element, const wchar_t* xpath, WebElement** result)
+{
+	CComPtr<IHTMLDOMNode> res;
+	InternetExplorerDriver* ie = driver->ie;
+	CComPtr<IHTMLElement> elem;
+	if (element && element->element) {
+		elem = element->element->getWrappedElement();
+	}
+
+	ElementWrapper* wrapper = NULL;
+	try {
+		wrapper = ie->selectElementByXPath(elem, xpath);
+	} catch (std::wstring& ) {
+		return -1;
+	}
+
+	if (!wrapper) {
+		return -2;
+	}
+
+	WebElement* toReturn = new WebElement();
+	toReturn->element = wrapper;
+
+	*result = toReturn;
+	return 0;
+}
+
+int wdFindElementsByXPath(WebDriver* driver, WebElement* element, const wchar_t* xpath, ElementCollection** result)
+{
+	ElementCollection* collection = new ElementCollection();
+	collection->elements = driver->ie->selectElementsByXPath(NULL, xpath);
+
+	*result = collection;
+
+	return 0;
+}
+
 }
