@@ -2,11 +2,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.openqa.selenium</groupId>
+        <groupId>org.seleniumhq.selenium</groupId>
         <version>1.0-SNAPSHOT</version>
         <artifactId>selenium-rc</artifactId>
     </parent>
-    <groupId>org.openqa.selenium.tests</groupId>
+    <groupId>org.seleniumhq.selenium.tests</groupId>
     <artifactId>selenium-non-generated-tests</artifactId>
     <packaging>jar</packaging>
     <name>Selenium Non Generated Tests</name>
@@ -26,9 +26,9 @@
     </properties>
     <repositories>
         <repository>
-            <id>openqa-releases</id>
-            <name>OpenQA Releases</name>
-            <url>http://archiva.openqa.org/repository/releases/</url>
+            <id>seleniumhq-releases</id>
+            <name>SeleniumHQ Releases</name>
+            <url>http://archiva.seleniumhq.org/repository/releases/</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
@@ -37,9 +37,9 @@
             </snapshots>
         </repository>
         <repository>
-            <id>openqa-snapshots</id>
-            <name>OpenQA Snapshots</name>
-            <url>http://archiva.openqa.org/repository/snapshots/</url>
+            <id>seleniumhq-snapshots</id>
+            <name>SeleniumHQ Snapshots</name>
+            <url>http://archiva.seleniumhq.org/repository/snapshots/</url>
             <releases>
                 <enabled>false</enabled>
             </releases>
@@ -48,9 +48,9 @@
             </snapshots>
         </repository>
         <repository>
-            <id>openqa-thirdparty</id>
-            <name>OpenQA Third Party</name>
-            <url>http://archiva.openqa.org/repository/thirdparty/</url>
+            <id>seleniumhq-thirdparty</id>
+            <name>SeleniumHQ Third Party</name>
+            <url>http://archiva.seleniumhq.org/repository/thirdparty/</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
@@ -132,7 +132,7 @@
     </build>
     <dependencies>
         <dependency>
-		    <groupId>org.openqa.selenium.client-drivers</groupId>
+		    <groupId>org.seleniumhq.selenium.client-drivers</groupId>
 		    <artifactId>selenium-java-client-driver</artifactId>
             <scope>test</scope>
             <exclusions>
@@ -143,7 +143,7 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.openqa.selenium.client-drivers</groupId>
+            <groupId>org.seleniumhq.selenium.client-drivers</groupId>
             <artifactId>selenium-java-testng-helper</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>

@@ -2,19 +2,19 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.openqa.selenium</groupId>
+        <groupId>org.seleniumhq.selenium</groupId>
         <version>1.0-SNAPSHOT</version>
         <artifactId>selenium-rc</artifactId>
     </parent>
-    <groupId>org.openqa.selenium.server</groupId>
+    <groupId>org.seleniumhq.selenium.server</groupId>
     <artifactId>selenium-server</artifactId>
     <packaging>jar</packaging>
     <name>Selenium RC Server</name>
     <repositories>
         <repository>
-            <id>openqa-releases</id>
-            <name>OpenQA Releases</name>
-            <url>http://archiva.openqa.org/repository/releases/</url>
+            <id>seleniumhq-releases</id>
+            <name>SeleniumHQ Releases</name>
+            <url>http://archiva.seleniumhq.org/repository/releases/</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
@@ -23,9 +23,9 @@
             </snapshots>
         </repository>
         <repository>
-            <id>openqa-snapshots</id>
-            <name>OpenQA Snapshots</name>
-            <url>http://archiva.openqa.org/repository/snapshots/</url>
+            <id>seleniumhq-snapshots</id>
+            <name>SeleniumHQ Snapshots</name>
+            <url>http://archiva.seleniumhq.org/repository/snapshots/</url>
             <releases>
                 <enabled>false</enabled>
             </releases>
@@ -34,9 +34,9 @@
             </snapshots>
         </repository>
         <repository>
-            <id>openqa-thirdparty</id>
-            <name>OpenQA Third Party</name>
-            <url>http://archiva.openqa.org/repository/thirdparty/</url>
+            <id>seleniumhq-thirdparty</id>
+            <name>SeleniumHQ Third Party</name>
+            <url>http://archiva.seleniumhq.org/repository/thirdparty/</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
@@ -77,7 +77,7 @@
                             <tasks>
                                 <property name="svn-revision" value="1123" />
                                 
-                                <unzip src="${maven.dependency.org.openqa.selenium.core.selenium-core.jar.path}" dest="target/classes">
+                                <unzip src="${maven.dependency.org.seleniumhq.selenium.core.selenium-core.jar.path}" dest="target/classes">
                                     <patternset>
                                         <include name="VERSION.txt"/>
                                     </patternset>
@@ -150,11 +150,11 @@
     </build>
     <dependencies>
         <dependency>
-            <groupId>org.openqa.selenium.server</groupId>
+            <groupId>org.seleniumhq.selenium.server</groupId>
             <artifactId>selenium-server-coreless</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.openqa.selenium.core</groupId>
+            <groupId>org.seleniumhq.selenium.core</groupId>
             <artifactId>selenium-core</artifactId>
         </dependency>
     </dependencies>

@@ -12,10 +12,10 @@
             <scope>runtime</scope>
             <outputFileNameMapping></outputFileNameMapping>
             <includes>
-                <include>org.openqa.selenium.client-drivers:*:jar:doc</include>
+                <include>org.seleniumhq.selenium.client-drivers:*:jar:doc</include>
             </includes>
             <excludes>
-                <exclude>org.openqa.selenium.client-drivers:selenium-java-client-driver:jar:javadoc</exclude>
+                <exclude>org.seleniumhq.selenium.client-drivers:selenium-java-client-driver:jar:javadoc</exclude>
             </excludes>
         </dependencySet>
         
@@ -25,7 +25,7 @@
             <unpack>true</unpack>
             <scope>runtime</scope>
             <includes>
-                <include>org.openqa.selenium.server:selenium-server-coreless:jar:javadoc</include>
+                <include>org.seleniumhq.selenium.server:selenium-server-coreless:jar:javadoc</include>
             </includes>
         </dependencySet>
         
@@ -35,7 +35,7 @@
             <unpack>true</unpack>
             <scope>runtime</scope>
             <includes>
-                <include>org.openqa.selenium.client-drivers:selenium-java-client-driver:jar:javadoc</include>
+                <include>org.seleniumhq.selenium.client-drivers:selenium-java-client-driver:jar:javadoc</include>
             </includes>
         </dependencySet>
     </dependencySets>
