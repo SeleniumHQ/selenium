@@ -9,9 +9,9 @@
     <url>http://selenium.seleniumhq.org/projects/core</url>
     <repositories>
         <repository>
-            <id>seleniumhq-releases</id>
-            <name>SeleniumHQ Releases</name>
-            <url>http://archiva.seleniumhq.org/repository/releases/</url>
+            <id>openqa-releases</id>
+            <name>OpenQA Releases</name>
+            <url>http://nexus.openqa.org/content/repositories/releases</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
@@ -20,9 +20,9 @@
             </snapshots>
         </repository>
         <repository>
-            <id>seleniumhq-snapshots</id>
-            <name>SeleniumHQ Snapshots</name>
-            <url>http://archiva.seleniumhq.org/repository/snapshots/</url>
+            <id>openqa-snapshots</id>
+            <name>OpenQA Snapshots</name>
+            <url>http://nexus.openqa.org/content/repositories/snapshots</url>
             <releases>
                 <enabled>false</enabled>
             </releases>
@@ -31,9 +31,9 @@
             </snapshots>
         </repository>
         <repository>
-            <id>seleniumhq-thirdparty</id>
-            <name>SeleniumHQ Third Party</name>
-            <url>http://archiva.seleniumhq.org/repository/thirdparty/</url>
+            <id>openqa-thirdparty</id>
+            <name>OpenQA Third Party</name>
+            <url>http://nexus.openqa.org/content/repositories/thirdparty</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
@@ -64,13 +64,13 @@
             <directory>target/generated-resources</directory>
           </resource>
         </resources>
-	    <extensions>
+	    <!-- extensions>
             <extension>
                 <groupId>org.apache.maven.wagon</groupId>
                 <artifactId>wagon-webdav</artifactId>
                 <version>1.0-beta-2</version>
             </extension>
-        </extensions>
+        </extensions -->
         <plugins>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -314,18 +314,18 @@
     </pluginRepositories>
     <distributionManagement>
         <repository>
-            <id>seleniumhq-releases</id>
-            <url>dav:http://archiva.seleniumhq.org/repository/releases/</url>
+            <id>openqa-releases</id>
+            <url>http://nexus.openqa.org/content/repositories/releases</url>
         </repository>
         <snapshotRepository>
-            <id>seleniumhq-snapshots</id>
-            <url>dav:http://archiva.seleniumhq.org/repository/snapshots/</url>
+            <id>openqa-snapshots</id>
+            <url>http://nexus.openqa.org/content/repositories/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
     <scm>
-        <connection>scm:svn:https://svn.seleniumhq.org/svn/selenium-core/trunk</connection>
+        <connection>scm:svn:http://svn.seleniumhq.org/svn/selenium-core/trunk</connection>
         <developerConnection>scm:svn:https://svn.seleniumhq.org/svn/selenium-core/trunk</developerConnection>
-        <url>https://svn.seleniumhq.org/svn/selenium-core/trunk</url>
+        <url>http://svn.seleniumhq.org/svn/selenium-core/trunk</url>
     </scm>
     <dependencies>
         <dependency>
