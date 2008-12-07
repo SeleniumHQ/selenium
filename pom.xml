@@ -290,6 +290,10 @@
                                 <artifactId>junit</artifactId>
                                 <version>3.8.1</version>
                             </dependency>
+                            <dependency>
+								<groupId>jetty</groupId>
+								<artifactId>org.mortbay.jetty</artifactId>
+							</dependency>
                         </dependencies>
                     </plugin>
                 </plugins>
