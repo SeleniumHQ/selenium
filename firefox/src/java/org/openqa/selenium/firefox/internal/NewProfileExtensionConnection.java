@@ -16,9 +16,11 @@ public class NewProfileExtensionConnection extends AbstractExtensionConnection {
   private static long MILLIS_IN_SECONDS = 1000;
   private FirefoxBinary process;
   private Socket lockSocket;
+  private FirefoxProfile profile;
 
-    public NewProfileExtensionConnection(FirefoxBinary binary, FirefoxProfile profile, String host) throws IOException {
-        getLock(profile.getPort());
+  public NewProfileExtensionConnection(FirefoxBinary binary, FirefoxProfile profile, String host) throws IOException {
+    this.profile = profile;
+    getLock(profile.getPort());
         try {
           int portToUse = determineNextFreePort(host, profile.getPort());
 
@@ -104,6 +106,8 @@ public class NewProfileExtensionConnection extends AbstractExtensionConnection {
         } else {
             quitOnOtherPlatforms();
         }
+
+        profile.clean();    
     }
 
 	private void quitOnOtherPlatforms() {

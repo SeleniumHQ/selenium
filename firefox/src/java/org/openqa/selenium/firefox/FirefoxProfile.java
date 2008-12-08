@@ -2,6 +2,7 @@ package org.openqa.selenium.firefox;
 
 import org.openqa.selenium.firefox.internal.Cleanly;
 import org.openqa.selenium.firefox.internal.FileHandler;
+import org.openqa.selenium.firefox.internal.ProfileReaper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -24,43 +25,57 @@ import java.io.InputStream;
 import java.io.Writer;
 import java.text.MessageFormat;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class FirefoxProfile {
     private static final String EXTENSION_NAME = "fxdriver@googlecode.com";
-    private final File profileDir;
-    private final File extensionsDir;
+    private File profileDir;
+    private File extensionsDir;
     private File userPrefs;
     private Map<String, String> additionalPrefs = new HashMap<String, String>();
     private int port;
     private static AtomicInteger nextId = new AtomicInteger(new Random().nextInt());
 
-    public FirefoxProfile(File profileDir) {
-        this.profileDir = profileDir;
-        this.extensionsDir = new File(profileDir, "extensions");
-        this.userPrefs = new File(profileDir, "user.js");
+    // Profile management "stuff"
+    private Set<File> profileTempDirs = new HashSet<File>();
+    private ProfileReaper reaper;
 
-        if (!profileDir.exists()) {
-            throw new RuntimeException(MessageFormat.format("Profile directory does not exist: {0}",
-                    profileDir.getAbsolutePath()));
-        }
+    protected FirefoxProfile(ProfileReaper reaper) {
+      this.reaper = reaper;
+    }
+
+    public FirefoxProfile(File profileDir) {
+      this(ProfileReaper.getInstance());
+      commonConstruction(profileDir);
     }
 
     public FirefoxProfile() {
-        profileDir = getUniqueProfileDir();
+      this(ProfileReaper.getInstance());
+      profileDir = getUniqueProfileDir();
 
-        if (profileDir == null || !profileDir.mkdirs()) {
-            throw new RuntimeException("Cannot create custom profile directory");
-        }
+      if (profileDir == null || !profileDir.mkdirs()) {
+        throw new RuntimeException("Cannot create custom profile directory");
+      }
 
-        extensionsDir = new File(profileDir, "extensions");
-        if (!extensionsDir.mkdirs())
-            throw new RuntimeException(String.format("Cannot create custom profile extensions directory: %s", extensionsDir));
+      commonConstruction(profileDir);
+    }
 
-        port = FirefoxDriver.DEFAULT_PORT;
+    private void commonConstruction(File profileDir) {
+      this.profileDir = profileDir;
+      this.extensionsDir = new File(profileDir, "extensions");
+      this.userPrefs = new File(profileDir, "user.js");
+
+      port = FirefoxDriver.DEFAULT_PORT;
+
+      if (!profileDir.exists()) {
+        throw new RuntimeException(MessageFormat.format("Profile directory does not exist: {0}",
+            profileDir.getAbsolutePath()));
+      }
     }
 
   protected File getUniqueProfileDir() {
@@ -70,7 +85,12 @@ public class FirefoxProfile {
 
     String probablyUniqueName =
         "webdriver-custom-" + System.currentTimeMillis() + nextId.getAndIncrement();
-    return new File(tmpDir, probablyUniqueName);
+
+    File profileDir = new File(tmpDir, probablyUniqueName);
+
+    rememberToClean(profileDir);
+
+    return profileDir;
   }
 
   protected void addWebDriverExtensionIfNeeded(boolean forceCreation) throws IOException {
@@ -415,6 +435,10 @@ public class FirefoxProfile {
         return profileDir;
     }
 
+    public void clean() {
+      reaper.clean(this.profileTempDirs);
+    }
+
     public FirefoxProfile createCopy(int port) {
         File tmpDir = new File(System.getProperty("java.io.tmpdir"));
         File to = new File(tmpDir, "webdriver-" + System.currentTimeMillis());
@@ -426,6 +450,13 @@ public class FirefoxProfile {
         profile.setPort(port);
         profile.updateUserPrefs();
 
+        rememberToClean(to);
+
         return profile;
     }
+
+  private void rememberToClean(File dir) {
+    reaper.deleteOnExit(dir);
+    profileTempDirs.add(dir);
+  }
 }
