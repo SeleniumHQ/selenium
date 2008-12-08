@@ -9,7 +9,6 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.NoSuchWindowException;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.Speed;
 import org.openqa.selenium.WebDriver;
@@ -113,12 +112,7 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
         extension = connectTo(binary, profile, "localhost");
 
         if (!extension.isConnected()) {
-            throw new RuntimeException(
-                    "Unable to connect to Firefox. Is the WebDriver extension installed, and is there a profile called WebDriver?" +
-                            Platform.getCurrent().getLineEnding() +
-                            "To set up a profile for WebDriver, simply start firefox from the command line with the \"ProfileManager\" switch" +
-                            Platform.getCurrent().getLineEnding() +
-                            "This will look like: firefox -ProfileManager. Alternatively, use the FirefoxLauncher support class from this project");
+            throw new RuntimeException("Unable to connect to Firefox.");
         }
 
         fixId();
