@@ -68,6 +68,7 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
     Set<String> seenHandles = new HashSet<String>();
     for (String handle : allWindowHandles) {
       assertFalse(seenHandles.contains(handle));
+      driver.switchTo().window(handle);
       seenHandles.add(handle);
     }
   }

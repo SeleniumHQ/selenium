@@ -257,9 +257,19 @@ SocketListener.prototype.switchToWindow = function(respond, windowId) {
     var wm = Utils.getService("@mozilla.org/appshell/window-mediator;1", "nsIWindowMediator");
     var allWindows = wm.getEnumerator(null);
 
+    var matches = function(win, lookFor) {
+      if (win.content.name == lookFor)
+        return true;
+
+      if (win.top.fxdriver && win.top.fxdriver.id == lookFor)
+        return true;
+
+      return false;
+    }
+
     while (allWindows.hasMoreElements()) {
         var win = allWindows.getNext();
-        if (win.content.name == lookFor) {
+        if (matches(win, lookFor)) {
             win.focus();
             var driver = win.top.fxdriver;
             if (!driver) {
