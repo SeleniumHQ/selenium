@@ -23,7 +23,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.logging.Logger;
-import java.lang.reflect.Method;
 
 /**
  * {@inheritDoc}
@@ -40,22 +39,22 @@ public class DefaultConditionRunner implements ConditionRunner {
 
     private final Monitor monitor;
     private final Selenium selenium;
-    private final int delay;
+    private final int interval;
     private final int timeout;
 
     /**
      * @param selenium the selenium to be passed to the Conditions run from within
      *                 this runner.
-     * @param delay    (in millis) when waiting for a condition, how long to wait
+     * @param interval (in millis) when waiting for a condition, how long to wait
      *                 between calls to
      *                 {@link Condition#isTrue(com.google.testing.selenium.condition.ConditionRunner.Context)}
      * @param timeout  (in millis) when waiting for a condition, how long to wait
      *                 until we give up.
      */
-    public DefaultConditionRunner(Monitor monitor, Selenium selenium, int delay, int timeout) {
+    public DefaultConditionRunner(Monitor monitor, Selenium selenium, int interval, int timeout) {
         this.monitor = monitor;
         this.selenium = selenium;
-        this.delay = delay;
+        this.interval = interval;
         this.timeout = timeout;
     }
 
@@ -64,8 +63,8 @@ public class DefaultConditionRunner implements ConditionRunner {
      *
      * @see DefaultConditionRunner#DefaultConditionRunner(Monitor, Selenium, int, int)
      */
-    public DefaultConditionRunner(Selenium selenium, int delay, int timeout) {
-        this(new NoOpMonitor(), selenium, delay, timeout);
+    public DefaultConditionRunner(Selenium selenium, int interval, int timeout) {
+        this(new NoOpMonitor(), selenium, interval, timeout);
     }
 
     /**
@@ -123,7 +122,7 @@ public class DefaultConditionRunner implements ConditionRunner {
                     return;
                 }
                 try {
-                    Thread.sleep(delay);
+                    Thread.sleep(interval);
                 } catch (InterruptedException ignore) {
                 }
             }

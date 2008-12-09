@@ -29,14 +29,13 @@ import junit.framework.Assert;
  */
 public class JUnitConditionRunner extends DefaultConditionRunner {
 
-    public JUnitConditionRunner(Monitor monitor, Selenium selenium, int delay,
+    public JUnitConditionRunner(Monitor monitor, Selenium selenium, int interval,
                                 int timeout) {
-        super(monitor, selenium, delay, timeout);
+        super(monitor, selenium, interval, timeout);
     }
 
-    public JUnitConditionRunner(Selenium selenium, int delay,
-                                int timeout) {
-        super(selenium, delay, timeout);
+    public JUnitConditionRunner(Selenium selenium, int interval, int timeout) {
+        super(selenium, interval, timeout);
     }
 
     public JUnitConditionRunner(Selenium selenium) {
