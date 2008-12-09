@@ -39,8 +39,27 @@ public class DefaultConditionRunner implements ConditionRunner {
 
     private final Monitor monitor;
     private final Selenium selenium;
+    private final int initialDelay;
     private final int interval;
     private final int timeout;
+
+    /**
+     * @param selenium the selenium to be passed to the Conditions run from within
+     *                 this runner.
+     * @param initialDelay (in millis) how long to wait before the initial test of the condition
+     * @param interval (in millis) when waiting for a condition, how long to wait
+     *                 between calls to
+     *                 {@link Condition#isTrue(com.google.testing.selenium.condition.ConditionRunner.Context)}
+     * @param timeout  (in millis) when waiting for a condition, how long to wait
+     *                 until we give up.
+     */
+    public DefaultConditionRunner(Monitor monitor, Selenium selenium, int initialDelay, int interval, int timeout) {
+        this.monitor = monitor;
+        this.selenium = selenium;
+        this.initialDelay = initialDelay;
+        this.interval = interval;
+        this.timeout = timeout;
+    }
 
     /**
      * @param selenium the selenium to be passed to the Conditions run from within
@@ -52,10 +71,16 @@ public class DefaultConditionRunner implements ConditionRunner {
      *                 until we give up.
      */
     public DefaultConditionRunner(Monitor monitor, Selenium selenium, int interval, int timeout) {
-        this.monitor = monitor;
-        this.selenium = selenium;
-        this.interval = interval;
-        this.timeout = timeout;
+        this(new NoOpMonitor(), selenium, interval, interval, timeout);
+    }
+
+    /**
+     * Constructs an instance of this class with a {@link NoOpMonitor}.
+     *
+     * @see DefaultConditionRunner#DefaultConditionRunner(Monitor, Selenium, int, int)
+     */
+    public DefaultConditionRunner(Selenium selenium, int initialDelay, int interval, int timeout) {
+        this(new NoOpMonitor(), selenium, initialDelay, interval, timeout);
     }
 
     /**
@@ -115,22 +140,28 @@ public class DefaultConditionRunner implements ConditionRunner {
         try {
             monitor.waitHasBegun(context, condition);
             context.say("Waiting for");
+            System.err.println("--> x " + initialDelay);
+            threadSleep(initialDelay);
             while (context.elapsed() < context.timeout()) {
                 if (condition.isTrue(context)) {
                     context.reached(condition);
                     monitor.conditionWasReached(context, condition);
                     return;
                 }
-                try {
-                    Thread.sleep(interval);
-                } catch (InterruptedException ignore) {
-                }
+                threadSleep(interval);
             }
         } catch (RuntimeException e) {
             throwAssertionException("Exception while waiting for '" + condition.toString() + "'", e);
         }
         // Note that AssertionFailedError will pass right through
         context.fail(condition);
+    }
+
+    private void threadSleep(int interval) {
+        try {
+            Thread.sleep(interval);
+        } catch (InterruptedException ignore) {
+        }
     }
 
     protected void throwAssertionException(String message) {

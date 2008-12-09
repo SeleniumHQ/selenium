@@ -61,7 +61,7 @@ public class ConditionTest extends TestCase {
                 return 0;
             }
         });
-        new JUnitConditionRunner(null, 1000, 100000).waitFor(new Not(alwaysFalse));
+        new JUnitConditionRunner(null, 0, 1000, 100000).waitFor(new Not(alwaysFalse));
         assertTrue(System.currentTimeMillis() - start < 100);
         assertEquals("sky is in fact pink", sb.toString()); 
     }
@@ -70,7 +70,7 @@ public class ConditionTest extends TestCase {
         Condition alwaysTrue = new AlwaysTrueCondition();
         long start = System.currentTimeMillis();
         try {
-            new JUnitConditionRunner(null, 1000, 1000).waitFor(new Not(alwaysTrue));
+            new JUnitConditionRunner(null, 0, 1000, 1000).waitFor(new Not(alwaysTrue));
             fail("the condition should have failed");
         } catch (AssertionFailedError expected) {
             long l = System.currentTimeMillis() - start;

@@ -29,9 +29,19 @@ import junit.framework.Assert;
  */
 public class JUnit4AndTestNgConditionRunner extends DefaultConditionRunner {
 
+    public JUnit4AndTestNgConditionRunner(Monitor monitor, Selenium selenium, int initialDelay,
+                                          int interval, int timeout) {
+        super(monitor, selenium, initialDelay, interval, timeout);
+    }
+
     public JUnit4AndTestNgConditionRunner(Monitor monitor, Selenium selenium, int interval,
                                 int timeout) {
         super(monitor, selenium, interval, timeout);
+    }
+
+    public JUnit4AndTestNgConditionRunner(Selenium selenium, int initialDelay, int interval, 
+                                          int timeout) {
+        super(selenium, initialDelay, interval, timeout);
     }
 
     public JUnit4AndTestNgConditionRunner(Selenium selenium, int interval, int timeout) {
