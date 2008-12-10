@@ -91,6 +91,7 @@
       <arg value="${profile.template.dir}" />
       <arg value="-userExtensions" />
       <arg value="content/selenium-src/scripts/user-extensions.js" />
+      <arg value="-singleWindow" />
     </java>
   </target>
 
