@@ -1,11 +1,11 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.openqa.selenium.ide</groupId>
+  <groupId>org.seleniumhq.selenium.ide</groupId>
   <version>1.0-beta-3-SNAPSHOT</version>
   <artifactId>selenium-ide</artifactId>
   <packaging>jar</packaging>
   <name>Selenium IDE</name>
-  <url>http://www.openqa.org/selenium-ide</url>
+  <url>http://seleniumhq.org/projects/ide</url>
   <build>
     <extensions>
       <extension>
@@ -124,7 +124,7 @@
     <repository>
       <id>openqa-releases</id>
       <name>OpenQA Releases</name>
-      <url>http://archiva.openqa.org/repository/releases/</url>
+      <url>http://nexus.openqa.org/content/repositories/releases</url>
       <releases>
         <enabled>true</enabled>
       </releases>
@@ -135,7 +135,7 @@
     <repository>
       <id>openqa-snapshots</id>
       <name>OpenQA Snapshots</name>
-      <url>http://archiva.openqa.org/repository/snapshots/</url>
+      <url>http://nexus.openqa.org/content/repositories/snapshots</url>
       <releases>
         <enabled>false</enabled>
       </releases>
@@ -146,7 +146,7 @@
     <repository>
       <id>openqa-thirdparty</id>
       <name>OpenQA Third Party</name>
-      <url>http://archiva.openqa.org/repository/thirdparty/</url>
+      <url>http://nexus.openqa.org/content/repositories/thirdparty</url>
       <releases>
         <enabled>true</enabled>
       </releases>
@@ -158,26 +158,26 @@
   <distributionManagement>
     <repository>
       <id>openqa-releases</id>
-      <url>dav:http://archiva.openqa.org/repository/releases/</url>
+      <url>http://nexus.openqa.org/content/repositories/releases</url>
     </repository>
     <snapshotRepository>
       <id>openqa-snapshots</id>
-      <url>dav:http://archiva.openqa.org/repository/snapshots/</url>
+      <url>http://nexus.openqa.org/content/repositories/snapshots</url>
     </snapshotRepository>
   </distributionManagement>
   <dependencies>
     <dependency>
-      <groupId>org.openqa.selenium.core</groupId>
+      <groupId>org.seleniumhq.selenium.core</groupId>
       <artifactId>selenium-core</artifactId>
       <version>${seleniumCoreVersion}</version>
     </dependency>
     <dependency>
-      <groupId>org.openqa.selenium.server</groupId>
+      <groupId>org.seleniumhq.selenium.server</groupId>
       <artifactId>selenium-server-coreless</artifactId>
       <version>${seleniumRCVersion}</version>
     </dependency>
     <dependency>
-      <groupId>org.openqa.selenium.client-drivers</groupId>
+      <groupId>org.seleniumhq.selenium.client-drivers</groupId>
       <artifactId>selenium-java-client-driver</artifactId>
       <version>${seleniumRCVersion}</version>
       <scope>test</scope>
