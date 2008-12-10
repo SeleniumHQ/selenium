@@ -13,11 +13,13 @@
 	      classpath="one-jar-ant-task-0.96.jar" onerror="report"/>
  
     <target name="jar" depends="compile">
+   
+        <jar destfile="target/main.jar">
+            <fileset dir="target/classes"/>
+	    </jar>
 
         <one-jar destfile="target/selenium-server-onejar.jar" manifest="src/MANIFEST.MF">
-            <main>
-                <fileset dir="target/classes"/>
-            </main>
+            <main jar="target/main.jar"/>
             <lib>
                 <fileset file="../selenium-server/target/selenium-server-1.0-SNAPSHOT-standalone.jar" />
             </lib>
