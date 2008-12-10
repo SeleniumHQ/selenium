@@ -1,0 +1,30 @@
+<project name="Selenium-OneJar" default="dist" basedir=".">
+	
+  <target name="compile" description="compile the source " >
+	<mkdir dir="target"/>
+	<mkdir dir="target/classes"/>
+    <javac srcdir="src/java" destdir="target/classes">
+	    <classpath path="../selenium-server/target/selenium-server-1.0-SNAPSHOT-standalone.jar"/>
+	</javac>
+  </target>
+
+    <taskdef name="one-jar" 
+	      classname="com.simontuffs.onejar.ant.OneJarTask"
+	      classpath="one-jar-ant-task-0.96.jar" onerror="report"/>
+ 
+    <target name="jar" depends="compile">
+
+        <one-jar destfile="target/selenium-server-onejar.jar" manifest="src/MANIFEST.MF">
+            <main>
+                <fileset dir="target/classes"/>
+            </main>
+            <lib>
+                <fileset file="../selenium-server/target/selenium-server-1.0-SNAPSHOT-standalone.jar" />
+            </lib>
+        </one-jar>            
+    </target>
+
+  <target name="clean" description="clean up" >
+    <delete dir="target"/>
+  </target>
+</project>
