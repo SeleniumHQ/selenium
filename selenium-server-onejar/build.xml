@@ -1,28 +1,46 @@
 <project name="Selenium-OneJar" default="dist" basedir=".">
 	
-  <target name="compile" description="compile the source " >
+  <target name="unzip" description="compile the source " >
 	<mkdir dir="target"/>
-	<mkdir dir="target/classes"/>
-    <javac srcdir="src/java" destdir="target/classes">
-	    <classpath path="../selenium-server/target/selenium-server-1.0-SNAPSHOT-standalone.jar"/>
-	</javac>
+	<mkdir dir="target/main"/>
+	<mkdir dir="target/lib"/>
+	<unzip src="../selenium-server/target/selenium-server-1.0-SNAPSHOT-standalone.jar"
+	       dest="target/main">
+	    <patternset>
+	        <include name="org/openqa/selenium/server/**"/>
+	    </patternset>
+	</unzip>
+	<unzip src="../selenium-server/target/selenium-server-1.0-SNAPSHOT-standalone.jar"
+	       dest="target/lib">
+	    <patternset>
+	        <exclude name="org/openqa/selenium/server/**"/>
+	    </patternset>
+	</unzip>
+  </target>
+  <target name="jar" depends="unzip">
+
+      <jar destfile="target/main.jar">
+          <fileset dir="target/main"/>
+	    </jar>
+
+        <jar destfile="target/lib.jar">
+            <fileset dir="target/lib"/>
+	    </jar>
+
   </target>
 
     <taskdef name="one-jar" 
 	      classname="com.simontuffs.onejar.ant.OneJarTask"
 	      classpath="one-jar-ant-task-0.96.jar" onerror="report"/>
  
-    <target name="jar" depends="compile">
+    <target name="one-jar" depends="jar">
    
-        <jar destfile="target/main.jar">
-            <fileset dir="target/classes"/>
-	    </jar>
 
         <one-jar destfile="target/selenium-server-onejar.jar" manifest="src/MANIFEST.MF">
             <main jar="target/main.jar"/>
             <lib>
-                <fileset file="../selenium-server/target/selenium-server-1.0-SNAPSHOT-standalone.jar" />
-            </lib>
+	              <fileset file="target/lib.jar"/>
+	        </lib>
         </one-jar>            
     </target>
 
