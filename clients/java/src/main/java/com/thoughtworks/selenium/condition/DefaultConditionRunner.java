@@ -135,12 +135,16 @@ public class DefaultConditionRunner implements ConditionRunner {
         }
     }
 
+
     public void waitFor(Condition condition) {
+        waitFor("", condition);
+    }
+
+    public void waitFor(String narrative, Condition condition) {
         ContextImpl context = new ContextImpl();
         try {
             monitor.waitHasBegun(context, condition);
             context.say("Waiting for");
-            System.err.println("--> x " + initialDelay);
             threadSleep(initialDelay);
             while (context.elapsed() < context.timeout()) {
                 if (condition.isTrue(context)) {
@@ -154,7 +158,7 @@ public class DefaultConditionRunner implements ConditionRunner {
             throwAssertionException("Exception while waiting for '" + condition.toString() + "'", e);
         }
         // Note that AssertionFailedError will pass right through
-        context.fail(condition);
+        context.fail(narrative, condition);
     }
 
     private void threadSleep(int interval) {
@@ -206,11 +210,16 @@ public class DefaultConditionRunner implements ConditionRunner {
         }
 
         private void fail(Condition condition) {
-            String message = condition.toString() +  
+            fail("", condition);
+        }
+
+        private void fail(String narrative, Condition condition) {
+            String message = condition.toString() +
                     " failed to become true within " + timeout() + " msec";
+            message += narrative.equals("") ? "" : "; " + narrative;
             say("Failed");
             if (!info.isEmpty()) {
-                message += " - " + info;
+                message += "; " + info;
             }
             throwAssertionException(message);
         }
