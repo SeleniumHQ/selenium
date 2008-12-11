@@ -16,6 +16,13 @@
             <patternset>
                 <exclude name="org/openqa/selenium/server/**"/>
                 <exclude name="custom**"/>
+                <exclude name="sslSupport/**"/>
+                <exclude name="strands/**"/>
+                <exclude name="opera/**"/>
+                <exclude name="cybervillains/**"/>
+                <exclude name="readyState.xpi"/>
+                <exclude name="konqueror/*"/>
+                <exclude name="killableprocess/*"/>                
             </patternset>
         </unzip>
         <unzip src="../selenium-server/target/selenium-server-1.0-SNAPSHOT-standalone.jar"
