@@ -33,7 +33,14 @@
         </unzip>
     </target>
 
-    <target name="jar" depends="unzip">
+    <target name="compile" depends="unzip">
+        <mkdir dir="target/classes"/>        
+        <javac srcdir="src/java"
+         destdir="target/classes"
+        />
+    </target>
+
+    <target name="jar" depends="compile">
         <jar destfile="target/main.jar">
             <fileset dir="target/main"/>
         </jar>
@@ -52,6 +59,7 @@
             <lib>
                 <fileset file="target/lib.jar"/>
             </lib>
+            <fileset dir="target/classes"/>
             <fileset dir="target/top-level"/>
         </one-jar>
     </target>

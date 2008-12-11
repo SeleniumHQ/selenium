@@ -1,2 +1,2 @@
-Main-Class: com.simontuffs.onejar.Boot
+Main-Class: org.openqa.selenium.server.SeleniumServerOneJar
 One-Jar-Main-Class: org.openqa.selenium.server.SeleniumServer
