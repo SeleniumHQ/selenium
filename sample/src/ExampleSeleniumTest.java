@@ -16,7 +16,7 @@ public class ExampleSeleniumTest extends TestCase {
 	        browser.type("name=q", "hello world");
 	        browser.click("btnG");
 	        browser.waitForPageToLoad("5000");
-	        assertEquals("hello world - Google Search", browser.getTitle());
+	        assertEquals("asfsdfsdf", browser.getTitle());
 	        browser.type("name=q", "two");
 	        browser.click("btnG");
 	        browser.type("name=q", "three");

@@ -12,9 +12,9 @@ There are a number of working assumptions -
 
 2) You are able to run the supplied commands in a Terminal or command shell:
 
-  clean-java.sh ( or clean-java.bat on Windows)
-  build-java.sh ( or build-java.bat on Windows)
-  test-java.sh ( or test-java.bat on Windows)
+  clean.sh ( or clean.bat on Windows)
+  build.sh ( or build.bat on Windows)
+  test.sh ( or test.bat on Windows)
 
 3) Can edit text files on your platform
 
@@ -26,40 +26,43 @@ There are a number of working assumptions -
 Building and Running the supplied Test
 ======================================
 
-1) Run build-java.sh (or .bat) To make the test case.
+1) Run build.sh (or .bat) To make the test case.
 
-2) Download a version of selenium-server.jar from the http://selenium-rc.openqa.org/downloads.html It should be inside the zip. In a second command window, execute 'java -jar selenium.jar' 
+2) Download a version of selenium-server.jar from http://selenium-rc.openqa.org/download.html It should be inside the zip. In a second command window, execute 'java -jar selenium-server.jar' 
 
-3) Run test-java.sh (or .bat) to run the tests.  You should see output like so in the command line, if it all went fine:
+3) Run test.sh (or .bat) to run the tests.  You should see output like so in the command line, if it all went fine:
 
     Sample Selenium-RC Test - test
     -------------------------------
     Executing: java -cp java-lib/junit-3.8.2.jar:java-lib/selenium-java-client-driver-1.0-SNAPSHOT.jar:build/test-classes AllTests
-    Time: 17.18
-    OK (1 test)
+    Time: 55.738
+
+	OK (4 tests)
 
 Or something like this if the test failed:
 
     Sample Selenium-RC Test - test
     -------------------------------
     Executing: java -cp java-lib/junit-3.8.2.jar:java-lib/selenium-java-client-driver-1.0-SNAPSHOT.jar:build/test-classes AllTests
-    .F
-    Time: 7.781
-    There was 1 failure:
-    1) testGoogle(ExampleSeleniumTest)junit.framework.ComparisonFailure: expected:<[abcdefg]h> but was:<[hello world - Google Searc]h>
-	    at ExampleSeleniumTest.testGoogle(ExampleSeleniumTest.java:18)
-	    at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	    at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
-	    at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
-	    at AllTests.main(AllTests.java:12)
+    .F...
 
-    FAILURES!!!
-    Tests run: 1,  Failures: 1,  Errors: 0
+	Time: 49.424
+	There was 1 failure:
+	1) testGoogleForSomeThings(ExampleSeleniumTest)junit.framework.ComparisonFailure: expected:<[abcdefg]h> but was:<[hello world - Google Searc]h>
+		at ExampleSeleniumTest.testGoogleForSomeThings(ExampleSeleniumTest.java:19)
+		at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+		at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+		at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+		at AllTests.main(AllTests.java:12)
+
+	FAILURES!!!
+	Tests run: 4,  Failures: 1,  Errors: 0
+
 
 Reporting bugs to us for Selenium RC, or requesting help to get something working, that you think should
 ========================================================================================================
 
-Please modify the class in java-test-source to illustrate your problem.  Then run zip.sh or zip.bat and upload it to Jira (jira.openqa.org/browse/SRC) for our convenience.  Lastly, email the selenium-users mail-list or forum, briefly introducting the issue with a link to the issue.
+Please modify the class in java-test-source to illustrate your problem.  Then run zip.sh or zip.bat and upload it to Jira (jira.openqa.org/browse/SRC) for our convenience.  Lastly, email the selenium-users mail-list or forum, briefly introducing the issue with a link to the issue.
 
 Make sure you do not zip up the selenium-server.jar - it'll make for a huge (and needless) upload.
 
