@@ -1,59 +1,63 @@
 <project name="Selenium-OneJar" default="dist" basedir=".">
-	
-  <target name="unzip" description="compile the source " >
-	<mkdir dir="target"/>
-	<mkdir dir="target/main"/>
-	<mkdir dir="target/lib"/>
-	<mkdir dir="target/top-level"/>
-	<unzip src="../selenium-server/target/selenium-server-1.0-SNAPSHOT-standalone.jar"
-	       dest="target/main">
-	    <patternset>
-	        <include name="org/openqa/selenium/server/**"/>
-	    </patternset>
-	</unzip>
-	<unzip src="../selenium-server/target/selenium-server-1.0-SNAPSHOT-standalone.jar"
-	       dest="target/lib">
-	    <patternset>
-	        <exclude name="org/openqa/selenium/server/**"/>
-	        <exclude name="custom**"/>
-	    </patternset>
-	</unzip>
-	<unzip src="../selenium-server/target/selenium-server-1.0-SNAPSHOT-standalone.jar"
-	       dest="target/top-level">
-	    <patternset>
-	        <include name="custom*/**"/>
-	    </patternset>
-	</unzip>
-  </target>
-  <target name="jar" depends="unzip">
 
+    <target name="unzip" description="compile the source ">
+        <mkdir dir="target"/>
+        <mkdir dir="target/main"/>
+        <mkdir dir="target/lib"/>
+        <mkdir dir="target/top-level"/>
+        <unzip src="../selenium-server/target/selenium-server-1.0-SNAPSHOT-standalone.jar"
+               dest="target/main">
+            <patternset>
+                <include name="org/openqa/selenium/server/**"/>
+            </patternset>
+        </unzip>
+        <unzip src="../selenium-server/target/selenium-server-1.0-SNAPSHOT-standalone.jar"
+               dest="target/lib">
+            <patternset>
+                <exclude name="org/openqa/selenium/server/**"/>
+                <exclude name="custom**"/>
+            </patternset>
+        </unzip>
+        <unzip src="../selenium-server/target/selenium-server-1.0-SNAPSHOT-standalone.jar"
+               dest="target/top-level">
+            <patternset>
+                <include name="custom*/**"/>
+                <include name="sslSupport/**"/>
+                <include name="strands/**"/>
+                <include name="opera/**"/>
+                <include name="cybervillains/**"/>
+                <include name="readyState.xpi"/>
+                <include name="konqueror/*"/>
+                <include name="killableprocess/*"/>
+            </patternset>
+        </unzip>
+    </target>
+
+    <target name="jar" depends="unzip">
         <jar destfile="target/main.jar">
-          <fileset dir="target/main"/>
-	    </jar>
-
+            <fileset dir="target/main"/>
+        </jar>
         <jar destfile="target/lib.jar">
             <fileset dir="target/lib"/>
-	    </jar>
+        </jar>
+    </target>
 
-  </target>
+    <taskdef name="one-jar"
+             classname="com.simontuffs.onejar.ant.OneJarTask"
+             classpath="one-jar-ant-task-0.96.jar" onerror="report"/>
 
-    <taskdef name="one-jar" 
-	      classname="com.simontuffs.onejar.ant.OneJarTask"
-	      classpath="one-jar-ant-task-0.96.jar" onerror="report"/>
- 
     <target name="one-jar" depends="jar">
-   
-
         <one-jar destfile="target/selenium-server-onejar.jar" manifest="src/MANIFEST.MF">
             <main jar="target/main.jar"/>
             <lib>
-	              <fileset file="target/lib.jar"/>
-	        </lib>
-  	        <fileset dir="target/top-level"/>
-      </one-jar>            
+                <fileset file="target/lib.jar"/>
+            </lib>
+            <fileset dir="target/top-level"/>
+        </one-jar>
     </target>
 
-  <target name="clean" description="clean up" >
-    <delete dir="target"/>
-  </target>
+    <target name="clean" description="clean up">
+        <delete dir="target"/>
+    </target>
+
 </project>
