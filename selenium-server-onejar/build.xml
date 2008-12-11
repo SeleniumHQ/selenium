@@ -4,6 +4,7 @@
 	<mkdir dir="target"/>
 	<mkdir dir="target/main"/>
 	<mkdir dir="target/lib"/>
+	<mkdir dir="target/top-level"/>
 	<unzip src="../selenium-server/target/selenium-server-1.0-SNAPSHOT-standalone.jar"
 	       dest="target/main">
 	    <patternset>
@@ -14,12 +15,19 @@
 	       dest="target/lib">
 	    <patternset>
 	        <exclude name="org/openqa/selenium/server/**"/>
+	        <exclude name="custom**"/>
+	    </patternset>
+	</unzip>
+	<unzip src="../selenium-server/target/selenium-server-1.0-SNAPSHOT-standalone.jar"
+	       dest="target/top-level">
+	    <patternset>
+	        <include name="custom*/**"/>
 	    </patternset>
 	</unzip>
   </target>
   <target name="jar" depends="unzip">
 
-      <jar destfile="target/main.jar">
+        <jar destfile="target/main.jar">
           <fileset dir="target/main"/>
 	    </jar>
 
@@ -41,7 +49,8 @@
             <lib>
 	              <fileset file="target/lib.jar"/>
 	        </lib>
-        </one-jar>            
+  	        <fileset dir="target/top-level"/>
+      </one-jar>            
     </target>
 
   <target name="clean" description="clean up" >
