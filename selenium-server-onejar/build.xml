@@ -47,10 +47,15 @@
         />
     </target>
 
+    <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask"
+        classpath="jarjar-1.0rc8.jar"/>
+
     <target name="jar" depends="compile">
-        <jar destfile="target/main.jar">
+        <jarjar jarfile="target/main.jar">
             <fileset dir="target/main"/>
-        </jar>
+            <rule pattern="org.openqa.selenium.server.SeleniumServer"
+                  result="org.openqa.selenium.server.SeleniumServerOrig"/>
+        </jarjar>
         <jar destfile="target/lib.jar">
             <fileset dir="target/lib"/>
         </jar>

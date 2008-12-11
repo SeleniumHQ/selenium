@@ -1,2 +1,2 @@
-Main-Class: org.openqa.selenium.server.SeleniumServerOneJar
-One-Jar-Main-Class: org.openqa.selenium.server.SeleniumServer
+Main-Class: org.openqa.selenium.server.SeleniumServer
+One-Jar-Main-Class: org.openqa.selenium.server.SeleniumServerOrig

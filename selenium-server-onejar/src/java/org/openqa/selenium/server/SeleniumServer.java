@@ -18,7 +18,7 @@ package org.openqa.selenium.server;
 
 import java.lang.reflect.Method;
 
-public class SeleniumServerOneJar {
+public class SeleniumServer {
 
 	public static void main(String[] args) throws Throwable {
 		Class boot = Class.forName("com.simontuffs.onejar.Boot");
