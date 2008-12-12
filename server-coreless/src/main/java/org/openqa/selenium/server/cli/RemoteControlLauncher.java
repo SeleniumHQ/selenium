@@ -92,6 +92,8 @@ public class RemoteControlLauncher {
                 SeleniumServer.setAvoidProxy(true);
             } else if ("-proxyInjectionMode".equalsIgnoreCase(arg)) {
                 configuration.setProxyInjectionModeArg(true);
+                // proxyInjectionMode implies singleWindow mode
+                configuration.setMultiWindow(false);
             } else if ("-portDriversShouldContact".equalsIgnoreCase(arg)) {
                 // to facilitate tcptrace interception of interaction between
                 // injected js and the selenium server
