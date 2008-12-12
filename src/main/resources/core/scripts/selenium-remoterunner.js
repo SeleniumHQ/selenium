@@ -238,10 +238,12 @@ objectExtend(RemoteRunner.prototype, {
             cmd1 = cmdText;
         }
         lastCmd = cmdText;
-        var commandList = document.commands.commandList;
-        commandList.value = cmd8 + cmd7 + cmd6 + cmd5 + cmd4 + cmd3 + cmd2 + cmd1;
-        commandList.scrollTop = commandList.scrollHeight;
-
+        
+        if (! proxyInjectionMode) {
+            var commandList = document.commands.commandList;
+            commandList.value = cmd8 + cmd7 + cmd6 + cmd5 + cmd4 + cmd3 + cmd2 + cmd1;
+            commandList.scrollTop = commandList.scrollHeight;
+        }
     },
 
     commandComplete : function(result) {
