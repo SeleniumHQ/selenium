@@ -1,9 +1,9 @@
 document.write('<script src="chrome://selenium-ide/content/preferences.js" type="text/javascript"></script>');
 document.write('<script src="chrome://selenium-ide/content/selenium-ide-loader.js" type="text/javascript"></script>');
 
-TestResult.prototype.originalPost = TestResult.prototype.post;
+SeleniumTestResult.prototype.originalPost = SeleniumTestResult.prototype.post;
 
-TestResult.prototype.post = function() {
+SeleniumTestResult.prototype.post = function() {
     var editor = SeleniumIDE.Loader.getTopEditor();
     if (editor && editor.testRunnerResultCallback) {
         editor.testRunnerResultCallback(this, window);
