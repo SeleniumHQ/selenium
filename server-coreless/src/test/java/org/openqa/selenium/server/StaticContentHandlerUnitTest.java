@@ -1,6 +1,9 @@
 package org.openqa.selenium.server;
 
 import junit.framework.TestCase;
+import static org.easymock.classextension.EasyMock.*;
+
+
 import org.mortbay.http.HttpContext;
 import org.mortbay.http.HttpRequest;
 import org.mortbay.http.HttpResponse;
@@ -8,6 +11,7 @@ import org.mortbay.util.Resource;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.Date;
 
 public class StaticContentHandlerUnitTest extends TestCase {
@@ -68,4 +72,38 @@ public class StaticContentHandlerUnitTest extends TestCase {
         Resource resource = handler.getResource("not exists path");
         assertFalse(resource.exists());
     }
+
+    public void testHandleSetsResponseAttributeInCaseOfMissingResource() throws Exception {
+    	String pathInContext = "/invalid";
+    	String pathParams = "";
+    	HttpRequest httpRequest = new HttpRequest();
+    	HttpResponse httpResponse = new HttpResponse();
+    	handler.handle(pathInContext, pathParams, httpRequest, httpResponse);
+    	assertEquals("True", httpResponse.getAttribute("NotFound"));
+    }
+    
+    public void testHandleSetsNoResponseStatusCodeInCaseOfAvailableResource() throws Exception {
+    	
+    	StaticContentHandler mock = createMock(StaticContentHandler.class, 
+    			new Method[]{
+    		StaticContentHandler.class.getDeclaredMethod("getResource", String.class), 
+    		StaticContentHandler.class.getDeclaredMethod("callSuperHandle", String.class, String.class, HttpRequest.class, HttpResponse.class)
+    	});
+
+    	String pathInContext = "/driver/?cmd=getNewBrowserSession&1=*chrome&2=http://www.google.com";
+    	String pathParams = "";
+    	HttpRequest httpRequest = new HttpRequest();
+    	HttpResponse httpResponse = new HttpResponse();
+    	
+    	expect(mock.getResource(pathInContext)).andReturn(Resource.newResource("found_resource"));
+    	mock.callSuperHandle(pathInContext, pathParams, httpRequest, httpResponse);
+    	expectLastCall().once();
+    	replay(mock);
+    	
+    	mock.handle(pathInContext, pathParams, httpRequest, httpResponse);
+    	assertEquals(HttpResponse.__200_OK, httpResponse.getStatus());
+    	verify(mock);
+    }
+    
+
 }

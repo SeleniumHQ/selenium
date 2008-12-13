@@ -243,6 +243,14 @@ public class ProxyHandler extends AbstractHttpHandler {
         }
 
         try {
+        	
+        	// Has the requested resource been found?
+        	if ("True".equals(response.getAttribute("NotFound"))) {
+        		response.removeAttribute("NotFound");
+        		sendNotFound(response);
+        		return;
+        	}
+        	
             // Do we proxy this?
             URL url = isProxied(uri);
             if (url == null) {
@@ -830,6 +838,14 @@ public class ProxyHandler extends AbstractHttpHandler {
      */
     protected void sendForbid(HttpRequest request, HttpResponse response, URI uri) throws IOException {
         response.sendError(HttpResponse.__403_Forbidden, "Forbidden for Proxy");
+    }
+    
+    /**
+     * Send not found. Method called to send not found response. Default implementation calls
+     * sendError(404)
+     */
+    protected void sendNotFound(HttpResponse response) throws IOException {
+        response.sendError(HttpResponse.__404_Not_Found, "Not found");
     }
 
     /* ------------------------------------------------------------ */

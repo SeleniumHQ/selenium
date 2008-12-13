@@ -28,7 +28,17 @@ public class StaticContentHandler extends ResourceHandler {
             pathInContext = pathInContext.replaceFirst("/core/RemoteRunner.html",
                     "/core/InjectedRemoteRunner.html");
         }
-        super.handle(pathInContext, pathParams, httpRequest, httpResponse);
+        callSuperHandle(pathInContext, pathParams, httpRequest, httpResponse);
+        
+        String resourceName = getResource(pathInContext).getName();
+        if (resourceName.endsWith("MISSING RESOURCE")) {
+        	httpResponse.setAttribute("NotFound", "True");
+        }
+        
+    }
+    
+    protected void callSuperHandle(String pathInContext, String pathParams, HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
+    	super.handle(pathInContext, pathParams, httpRequest, httpResponse);
     }
     
     /** DGF Opera just refuses to honor my cache settings.  This will
