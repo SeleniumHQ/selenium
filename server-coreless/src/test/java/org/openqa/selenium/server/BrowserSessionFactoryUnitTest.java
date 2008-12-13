@@ -3,6 +3,7 @@ package org.openqa.selenium.server;
 import junit.framework.TestCase;
 import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
+import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -17,6 +18,23 @@ public class BrowserSessionFactoryUnitTest extends TestCase {
     private static final String BROWSER2 = "*firefox";
     private static final String BASEURL2 = "http://maps.google.com";
 
+    public void testInvalidLauncherPreventsNewRemoteSessionCreationWithException() {
+        final BrowserSessionFactory factory;
+        final RemoteControlConfiguration configuration;
+
+        factory = new BrowserSessionFactory(new BrowserLauncherFactory());
+        configuration = new RemoteControlConfiguration();
+        configuration.setTimeoutInSeconds(1);
+        try {
+          factory.createNewRemoteSession("*chrome invalid", "http://amazon.com", "", null, false, configuration);
+          fail("Did not catch a RemoteCommandException when timing out on browser launch.");
+        } catch (RuntimeException  rte) {
+            /* As expected */
+        } catch (RemoteCommandException rce) {
+        	fail("RuntimeException was expected...");
+        }
+    }
+    
     public void testIsValidWithInvalidSessionInfo() {
         BrowserSessionInfo info = new BrowserSessionInfo("id1", "*firefox",
                 null, null, null);

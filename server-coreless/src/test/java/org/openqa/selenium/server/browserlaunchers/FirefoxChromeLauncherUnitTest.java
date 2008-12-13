@@ -9,6 +9,23 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public class FirefoxChromeLauncherUnitTest extends TestCase {
+	
+	public void testInvalidBrowserStringCausesChromeLauncherToThrowException() {
+		
+		try {			
+			new FirefoxChromeLauncher(null,null,"invalid");
+			fail("No exception thrown");
+		} catch(InvalidBrowserExecutableException ibee) {
+			assertEquals("The specified path to the browser executable is invalid.", ibee.getMessage());
+		}
+	}
+	
+	public void testNullBrowserInstallationDoesntCauseChromeLauncherToThrowException() {
+		BrowserInstallation bi = null;
+		FirefoxChromeLauncher fcl = new FirefoxChromeLauncher(null,null,bi);
+		assertNotNull(fcl);
+	}
+	
     public void testShouldAbleToCreateChromeUrlWithNormalUrl() throws Exception {
         String httpUrl = "http://www.my.com/folder/endname.html?a=aaa&b=bbb";
         String chromeUrl = new FirefoxChromeLauncher.ChromeUrlConvert().convert(httpUrl);

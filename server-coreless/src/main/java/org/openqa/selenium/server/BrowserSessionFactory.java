@@ -5,6 +5,7 @@ import org.apache.commons.logging.Log;
 import org.mortbay.log.LogFactory;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
+import org.openqa.selenium.server.browserlaunchers.InvalidBrowserExecutableException;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -315,7 +316,13 @@ public class BrowserSessionFactory {
         sessionId = UUID.randomUUID().toString().replace("-", "");
         queueSet = FrameGroupCommandQueueSet.makeQueueSet(sessionId, configuration.getPortDriversShouldContact(), configuration);
         queueSet.setExtensionJs(extensionJs);
-        launcher = browserLauncherFactory.getBrowserLauncher(browserString, sessionId, configuration);
+        
+        try {
+        	launcher = browserLauncherFactory.getBrowserLauncher(browserString, sessionId, configuration);
+        } catch (InvalidBrowserExecutableException e) {
+        	throw new RemoteCommandException(e.getMessage(), "");
+        }
+        
         sessionInfo = new BrowserSessionInfo(sessionId, browserString, startURL, launcher, queueSet);
         LOGGER.info("Allocated session " + sessionId + " for " + startURL + ", launching...");
 
@@ -336,7 +343,7 @@ public class BrowserSessionFactory {
              * This session is unlikely to be of any practical use so we need to make sure we close the browser
              * and clear all session data.
              */
-            LOGGER.error("Failed to start new browser session, shutdown browser an clear all session data", e);
+            LOGGER.error("Failed to start new browser session, shutdown browser and clear all session data", e);
             shutdownBrowserAndClearSessionData(sessionInfo);
             throw new RemoteCommandException("Error while launching browser", "", e);
         }

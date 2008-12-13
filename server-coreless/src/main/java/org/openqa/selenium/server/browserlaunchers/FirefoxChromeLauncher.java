@@ -21,6 +21,7 @@ import org.apache.commons.logging.Log;
 import org.mortbay.log.LogFactory;
 import org.openqa.selenium.server.ApplicationRegistry;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
+import org.openqa.selenium.server.RemoteCommandException;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.browserlaunchers.locators.Firefox2or3Locator;
 
@@ -48,15 +49,22 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
         this(configuration, sessionId, (String) null);
     }
 
-    public FirefoxChromeLauncher(RemoteControlConfiguration configuration, String sessionId, String browserString) {
-        this(configuration, sessionId,
+    public FirefoxChromeLauncher(RemoteControlConfiguration configuration, String sessionId, String browserString)  throws InvalidBrowserExecutableException {
+    	this(configuration, sessionId,
                 ApplicationRegistry.instance().browserInstallationCache().locateBrowserInstallation(
                         "chrome", browserString, new Firefox2or3Locator()));
+    	if (browserInstallation == null) {        	
+        	throw new InvalidBrowserExecutableException("The specified path to the browser executable is invalid.");
+        }
     }
 
     public FirefoxChromeLauncher(RemoteControlConfiguration configuration, String sessionId, BrowserInstallation browserInstallation) {
         super(sessionId, configuration);
 
+        if (browserInstallation == null) {
+        	LOGGER.warn("The specified path to the browser executable is invalid.");
+        	return;
+        }
         this.browserInstallation = browserInstallation;
 
         shell.setLibraryPath(browserInstallation.libraryPath());
