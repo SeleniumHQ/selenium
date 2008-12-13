@@ -141,7 +141,7 @@ public class BrowserSessionFactoryUnitTest extends TestCase {
         assertFalse(factory.hasAvailableSession(SESSION_ID_1));
     }
 
-    public void testRemoveIdleAvailableSessionsViaCleanup() {
+    public void disable_testRemoveIdleAvailableSessionsViaCleanup() {
         BrowserSessionFactory factory = new BrowserSessionFactory(null, 5, 0, true);
         BrowserSessionInfo info1 = getTestSession1();
         info1.lastClosedAt = 0; // very idle.
