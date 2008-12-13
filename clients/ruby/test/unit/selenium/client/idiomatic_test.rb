@@ -270,7 +270,7 @@ unit_tests do
 
   test "create_cookie take options has a hash" do
     client = Class.new { include Selenium::Client::Idiomatic }.new
-    client.expects(:remote_control_command).with("createCookie", [:the_name_value_pair, "max_age=60, domain=.foo.com"]).returns(:the_value)
+    client.expects(:remote_control_command).with("createCookie", [:the_name_value_pair, "domain=.foo.com, max_age=60"]).returns(:the_value)
     assert_equal :the_value, client.create_cookie(:the_name_value_pair, {:max_age => 60, :domain => ".foo.com"})
   end
 
