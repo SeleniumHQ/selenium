@@ -12,10 +12,10 @@
             <scope>runtime</scope>
             <outputFileNameMapping></outputFileNameMapping>
             <includes>
-                <include>org.openqa.selenium.client-drivers:*</include>
+                <include>org.seleniumhq.selenium.client-drivers:*</include>
             </includes>
             <excludes>
-                <exclude>org.openqa.selenium.client-drivers:selenium-java-client-driver</exclude>
+                <exclude>org.seleniumhq.selenium.client-drivers:selenium-java-client-driver</exclude>
             </excludes>
         </dependencySet>
         
@@ -26,7 +26,7 @@
             <scope>runtime</scope>
             <outputFileNameMapping>selenium-server.jar</outputFileNameMapping>
             <includes>
-                <include>org.openqa.selenium.server:selenium-server:jar:standalone</include>
+                <include>org.seleniumhq.selenium.server:selenium-server:jar:standalone</include>
             </includes>
         </dependencySet>
         <!-- copy selenium-server-coreless.jar -->
@@ -36,7 +36,7 @@
             <scope>runtime</scope>
             <outputFileNameMapping>selenium-server-coreless.jar</outputFileNameMapping>
             <includes>
-                <include>org.openqa.selenium.server:selenium-server-coreless:jar</include>
+                <include>org.seleniumhq.selenium.server:selenium-server-coreless:jar</include>
             </includes>
         </dependencySet>
         <!-- extract selenium-server-coreless javadoc -->
@@ -45,7 +45,7 @@
             <unpack>true</unpack>
             <scope>runtime</scope>
             <includes>
-                <include>org.openqa.selenium.server:selenium-server-coreless:jar:javadoc</include>
+                <include>org.seleniumhq.selenium.server:selenium-server-coreless:jar:javadoc</include>
             </includes>
         </dependencySet>
         <!-- copy selenium-server-coreless sources as selenium-server-sources.jar -->
@@ -55,7 +55,7 @@
             <scope>runtime</scope>
             <outputFileNameMapping>selenium-server-sources.jar</outputFileNameMapping>
             <includes>
-                <include>org.openqa.selenium.server:selenium-server-coreless:jar:sources</include>
+                <include>org.seleniumhq.selenium.server:selenium-server-coreless:jar:sources</include>
             </includes>
         </dependencySet>
         <!-- copy selenium-server-coreless tests as selenium-server-tests.jar -->
@@ -65,7 +65,7 @@
             <scope>runtime</scope>
             <outputFileNameMapping>selenium-server-tests.jar</outputFileNameMapping>
             <includes>
-                <include>org.openqa.selenium.server:selenium-server-coreless:jar:tests</include>
+                <include>org.seleniumhq.selenium.server:selenium-server-coreless:jar:tests</include>
             </includes>
         </dependencySet>
         <!-- copy selenium-server-coreless test sources as selenium-server-test-sources.jar -->
@@ -75,7 +75,7 @@
             <scope>runtime</scope>
             <outputFileNameMapping>selenium-server-test-sources.jar</outputFileNameMapping>
             <includes>
-                <include>org.openqa.selenium.server:selenium-server-coreless:jar:test-sources</include>
+                <include>org.seleniumhq.selenium.server:selenium-server-coreless:jar:test-sources</include>
             </includes>
         </dependencySet>
         <!-- extract cybervillains.cer -->
@@ -84,7 +84,7 @@
             <unpack>true</unpack>
             <scope>runtime</scope>
             <includes>
-                <include>org.openqa.selenium.server:selenium-server-coreless:jar</include>
+                <include>org.seleniumhq.selenium.server:selenium-server-coreless:jar</include>
             </includes>
             <unpackOptions>
                 <includes>
@@ -100,7 +100,7 @@
             <scope>runtime</scope>
             <outputFileNameMapping>selenium-java-client-driver.jar</outputFileNameMapping>
             <includes>
-                <include>org.openqa.selenium.client-drivers:selenium-java-client-driver:jar</include>
+                <include>org.seleniumhq.selenium.client-drivers:selenium-java-client-driver:jar</include>
             </includes>
         </dependencySet>
         <!-- extract selenium-java-client-driver javadoc -->
@@ -109,7 +109,7 @@
             <unpack>true</unpack>
             <scope>runtime</scope>
             <includes>
-                <include>org.openqa.selenium.client-drivers:selenium-java-client-driver:jar:javadoc</include>
+                <include>org.seleniumhq.selenium.client-drivers:selenium-java-client-driver:jar:javadoc</include>
             </includes>
         </dependencySet>
         <!-- copy selenium-java-client-driver-sources.jar -->
@@ -119,7 +119,7 @@
             <scope>runtime</scope>
             <outputFileNameMapping>selenium-java-client-driver-sources.jar</outputFileNameMapping>
             <includes>
-                <include>org.openqa.selenium.client-drivers:selenium-java-client-driver:jar:sources</include>
+                <include>org.seleniumhq.selenium.client-drivers:selenium-java-client-driver:jar:sources</include>
             </includes>
         </dependencySet>
         <!-- copy selenium-java-client-driver-tests.jar -->
@@ -129,7 +129,7 @@
             <scope>runtime</scope>
             <outputFileNameMapping>selenium-java-client-driver-tests.jar</outputFileNameMapping>
             <includes>
-                <include>org.openqa.selenium.client-drivers:selenium-java-client-driver:jar:tests</include>
+                <include>org.seleniumhq.selenium.client-drivers:selenium-java-client-driver:jar:tests</include>
             </includes>
         </dependencySet>
         <!-- copy selenium-java-client-driver-test-sources.jar -->
@@ -139,7 +139,7 @@
             <scope>runtime</scope>
             <outputFileNameMapping>selenium-java-client-driver-test-sources.jar</outputFileNameMapping>
             <includes>
-                <include>org.openqa.selenium.client-drivers:selenium-java-client-driver:jar:test-sources</include>
+                <include>org.seleniumhq.selenium.client-drivers:selenium-java-client-driver:jar:test-sources</include>
             </includes>
         </dependencySet>
     </dependencySets>
