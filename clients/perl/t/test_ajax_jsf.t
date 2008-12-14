@@ -13,6 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+use strict;
+use warnings;
+use lib 'lib';
 use Test::WWW::Selenium;
 use WWW::Selenium::Util qw(server_is_running);
 use Test::More;

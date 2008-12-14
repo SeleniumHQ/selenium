@@ -13,6 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+use strict;
+use warnings;
+use lib 'lib';
 use Test::WWW::Selenium;
 use WWW::Selenium::Util qw(server_is_running);
 use Test::More;
@@ -35,7 +38,7 @@ my $sel = Test::WWW::Selenium->new(
 );
 $sel->open_ok("/selenium-server/tests/html/test_click_page1.html");
 $sel->text_like("link", qr/Click here for next page/, "link contains expected text");
-@links = $sel->get_all_links();
+my @links = $sel->get_all_links();
 ok(@links > 3);
 is($links[3], "linkToAnchorOnThisPage");
 $sel->click("link");
