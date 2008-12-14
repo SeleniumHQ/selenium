@@ -11,7 +11,8 @@ my $core_dir = fetch_and_extract($selenium_core_url);
 my $core_iedoc = "$core_dir/core/iedoc.xml";
 die "Can't find $core_iedoc" unless -e $core_iedoc;
 print "Copying $core_iedoc to iedoc.xml...\n";
-copy($core_iedoc => 'iedoc.xml') or die "Can't copy $core_iedoc to iedoc.xml: $!";
+mkdir 'target' unless -d 'target';
+copy($core_iedoc => 'target/iedoc.xml') or die "Can't copy $core_iedoc to target/iedoc.xml: $!";
 exit;
 
 
