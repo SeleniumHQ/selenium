@@ -279,6 +279,7 @@ sub do_command {
     my %valid_pre_open_commands = (
         testComplete => 1,
         getNewBrowserSession => 1,
+        setTimeout => 1,
     );
     if (!$self->{_page_opened} and !$valid_pre_open_commands{$command}) {
         die "You must open a page before calling $command. eg: \$sel->open('/');\n";
