@@ -74,6 +74,7 @@ sub pm_header {
 
 package WWW::Selenium;
 use LWP::UserAgent;
+use HTTP::Headers;
 use HTTP::Request;
 use URI::Escape;
 use Carp qw(croak);
