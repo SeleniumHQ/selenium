@@ -4,7 +4,7 @@ use warnings;
 use Test::More;
 use Test::Exception;
 use Test::Mock::LWP;
-use Test::Builder::Tester tests => 42;
+use Test::Builder::Tester tests => 48;
 Test::Builder::Tester::color(1);
 
 BEGIN {
@@ -27,19 +27,13 @@ Good_usage: {
         test_out("ok 1 - get_title, 'Some Title'");
         $sel->title_is('Some Title');
         test_test('title_is passes');
-        my $url = 'http://localhost:4444/selenium-server/driver/'
-            . '?cmd=getTitle&sessionId=SESSION_ID';
-        is_deeply $Mock_req->new_args, [ 'HTTP::Request', 'GET', $url ],
-            'correct page title url';
+        req_ok('cmd=getTitle&sessionId=SESSION_ID');
     }
 
     Browser_gets_closed: {
         $Mock_resp->mock('content' => sub { 'OK' });
         $sel = undef; 
-        my $url = 'http://localhost:4444/selenium-server/driver/'
-            . '?cmd=testComplete&sessionId=SESSION_ID';
-        is_deeply $Mock_req->new_args, [ 'HTTP::Request', 'GET', $url ],
-           'testComplete request sent on DESTROY';
+        req_ok('cmd=testComplete&sessionId=SESSION_ID');
     }
 }
 
@@ -228,3 +222,16 @@ Default_test_names: {
         test_test('default names on with test name');
     }
 }
+
+exit;
+
+
+sub req_ok {
+    my $content = shift;
+    my $args = $Mock_req->new_args;
+    is $args->[0], 'HTTP::Request';
+    is $args->[1], 'POST';
+    is $args->[2], 'http://localhost:4444/selenium-server/driver/';
+    is $args->[4], $content;
+}
+

@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
-use Test::More tests => 25;
+use Test::More tests => 26;
 use Test::Exception;
 
 # The purpose of these tests are to ensure that WWW::Selenium does not 

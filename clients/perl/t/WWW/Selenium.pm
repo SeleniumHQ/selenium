@@ -21,10 +21,14 @@ sub new {
     # Store mock www user agent and startup a session
     $self->_set_mock_response_content('FAKE_SESSION_ID');
     $self->start;
-    (my $enc_url = $opts{browser_url}) =~ s#://#%3A%2F%2F#; # simple
-    my $url = "http://$opts{host}:$opts{port}/selenium-server/driver/"
-                   . "?cmd=getNewBrowserSession&1=$opts{browser}&2=$enc_url";
-    is_deeply $Mock_req->new_args, [ 'HTTP::Request', 'GET', $url ];
+
+    # Test that the session was started as we expect
+    my $req_args = $Mock_req->new_args;
+    my $content = pop @$req_args;
+    is $content, 'cmd=getNewBrowserSession&1=*firefox&2=http%3A%2F%2Fexample.com&3=';
+    my $headers = pop @$req_args;
+    my $url = "http://$opts{host}:$opts{port}/selenium-server/driver/";
+    is_deeply $req_args, [ 'HTTP::Request', 'POST', $url ];
 
     return $self;
 }

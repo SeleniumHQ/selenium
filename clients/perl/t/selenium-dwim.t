@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
-use Test::More tests => 14;
+use Test::More tests => 20;
 use Test::Exception;
 use Test::Mock::LWP;
 
@@ -21,7 +21,7 @@ Forgot_to_open: {
 Open_default: {
     my $sel = t::WWW::Selenium->new;
     lives_ok { $sel->open };
-    like $Mock_req->new_args->[2], qr/\Q1=%2F\E/, 'open specified /';
+    like $Mock_req->new_args->[4], qr/\Qcmd=open&1=%2F\E/, 'open specified /';
 }
 
 Double_start: {
@@ -36,7 +36,7 @@ Auto_stop: {
     $sel->_set_mock_response_content('http://example.com');
     $sel->get_location;
     $sel = undef;
-    like $Mock_req->new_args->[2], qr/cmd=testComplete/, 'auto-stop';
+    like $Mock_req->new_args->[4], qr/cmd=testComplete/, 'auto-stop';
 }
 
 Auto_stop_off: {
@@ -45,7 +45,7 @@ Auto_stop_off: {
     $sel->_set_mock_response_content('http://example.com');
     $sel->get_location;
     $sel = undef;
-    unlike $Mock_req->new_args->[2], qr/cmd=testComplete/, 'not auto-stop';
+    unlike $Mock_req->new_args->[4], qr/cmd=testComplete/, 'not auto-stop';
 }
 
 Do_command_open: {
