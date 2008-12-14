@@ -230,20 +230,26 @@ browser-specific prompting.
 Defaults to true, and will attempt to close the browser if the object
 goes out of scope and stop hasn't been called.
 
+=item * C<session_id>
+
+Optional argument that can be used to reuse session_ids between test
+runs.  This can make for faster testing.
+
 =back
 
 =cut
 
 sub new {
     my ($class, %args) = @_;
-    my $self = { # default args:
-                 host => 'localhost',
-                 port => 4444,
-                 auto_stop => 1,
-                 browser_start_command => delete $args{browser} || '*firefox',
-                 extension_js => "",
-                 %args,
-               };
+    my $self = {    # default args:
+        host                  => 'localhost',
+        port                  => 4444,
+        auto_stop             => 1,
+        browser_start_command => delete $args{browser} || '*firefox',
+        extension_js          => "",
+        session_id            => undef,
+        %args,
+    };
     croak 'browser_url is mandatory!' unless $self->{browser_url};
     bless $self, $class or die "Can't bless $class: $!";
     return $self;
