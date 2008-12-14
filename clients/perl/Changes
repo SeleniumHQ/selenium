@@ -4,6 +4,7 @@ Revision history for Perl extension Test::WWW::Selenium.
  - use POST instead of GET to selenium server (gyrm)
  - add support for per-session javascript (gyrm)
  - add unit tests and docs for re-using session_ids
+ - added LWP::UserAgent dependency to fix cpan testers failures
 
 1.15 - Sun 23 Mar 2008 14:02:25 PDT
  - allow set_timeout() to be called before open()

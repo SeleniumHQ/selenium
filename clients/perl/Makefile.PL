@@ -6,6 +6,7 @@ use inc::Module::Install;
 name            'Test-WWW-Selenium';
 author          'Luke Closs <test-www-selenium@awesnob.com>';
 requires       'URI::Escape'     => '1.31';
+requires       'LWP::UserAgent'  => 0;
 build_requires 'Test::More'      => '0.42';
 build_requires 'Test::Exception' => 0;
 build_requires 'Test::Mock::LWP' => 0;
