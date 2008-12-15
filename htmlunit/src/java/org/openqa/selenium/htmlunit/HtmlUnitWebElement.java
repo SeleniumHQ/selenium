@@ -282,12 +282,7 @@ public class HtmlUnitWebElement implements WebElement,
 
         String text = toReturn.toString() + collapseWhitespace(textSoFar);
 
-        int index = text.length();
-        while (index > 0 && isWhiteSpace(text.charAt(index - 1))) {
-            index--;
-        }
-
-        return text.substring(0, index);
+        return text.trim();
     }
 
   protected HtmlUnitDriver getParent() {

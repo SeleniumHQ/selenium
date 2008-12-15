@@ -119,7 +119,7 @@ Utils.isDisplayed = function(element) {
 
         element = element.parentNode;
     } while (element && element.tagName && element.tagName.toLowerCase() != "body" && isDisplayed);
-	
+
 	return isDisplayed;
 };
 
@@ -162,14 +162,16 @@ function isWhiteSpace(character) {
 
 Utils.getText = function(element) {
     var bits = getTextFromNode(element, "", "", element.tagName == "PRE");
-
     var text = bits[0] + collapseWhitespace(bits[1]);
-    var index = text.length - 1;
-    while (isWhiteSpace(text[index])) {
-        index--;
+    var start = 0;
+    while (start < text.length && isWhiteSpace(text[start])) {
+        ++start;
     }
-
-    return text.slice(0, index + 1);
+    var end = text.length;
+    while (end > start && isWhiteSpace(text[end - 1])) {
+        --end;
+    }
+    return text.slice(start, end);
 };
 
 Utils.addToKnownElements = function(element, context) {

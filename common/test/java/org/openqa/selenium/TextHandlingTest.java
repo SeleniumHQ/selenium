@@ -1,8 +1,13 @@
 package org.openqa.selenium;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.startsWith;
 
 import org.hamcrest.Matcher;
 import org.hamcrest.Description;
@@ -14,14 +19,14 @@ import java.util.regex.Pattern;
 
 public class TextHandlingTest extends AbstractDriverTestCase {
 	private String newLine;
-	
+
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		
+
 		newLine = Platform.getCurrent().getLineEnding();
 	}
-	
+
     public void testShouldReturnTheTextContentOfASingleElementWithNoChildren() {
         driver.get(simpleTestPage);
         String selectText = driver.findElement(By.id("oneline")).getText();
@@ -45,8 +50,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
         driver.get(simpleTestPage);
         String text = driver.findElement(By.id("multiline")).getText();
 
-        
-        assertThat(text, equalTo(" A div containing" + newLine +
+        assertThat(text, equalTo("A div containing" + newLine +
                 " More than one line of text" + newLine +
                 " and block level elements"));
     }
@@ -56,6 +60,14 @@ public class TextHandlingTest extends AbstractDriverTestCase {
         String text = driver.findElement(By.id("lotsofspaces")).getText();
 
         assertThat(text, equalTo("This line has lots of spaces."));
+    }
+
+    public void testShouldTrimText() {
+        driver.get(simpleTestPage);
+        String text = driver.findElement(By.id("multiline")).getText();
+
+        assertThat(text, startsWith("A div containing"));
+        assertThat(text, endsWith("block level elements"));
     }
 
     @Ignore(value = "safari", reason = "Test fails")
@@ -145,27 +157,27 @@ public class TextHandlingTest extends AbstractDriverTestCase {
     @Ignore("safari")
     public void testShouldHandleSiblingBlockLevelElements() {
     	driver.get(simpleTestPage);
-    	
+
     	String text = driver.findElement(By.id("twoblocks")).getText();
-    	
+
     	assertThat(text, is("Some text" + newLine + "Some more text"));
     }
 
     @Ignore("htmlunit, firefox, safari")
     public void testShouldHandleNestedBlockLevelElements() {
     	driver.get(simpleTestPage);
-    	
+
     	String text = driver.findElement(By.id("nestedblocks")).getText();
-    	
-    	assertThat(text, is("Cheese " + newLine + "Some text" + newLine + "Some more text" + newLine + "and also" + newLine + "Brie"));
+
+    	assertThat(text, is("Cheese" + newLine + "Some text" + newLine + "Some more text" + newLine + "and also" + newLine + "Brie"));
     }
 
     @Ignore("htmlunit, firefox, safari")
     public void testShouldHandleWhitespaceInInlineElements() {
     	driver.get(simpleTestPage);
-    	
+
     	String text = driver.findElement(By.id("inlinespan")).getText();
-    	
+
     	assertThat(text, is("line has text"));
     }
 
