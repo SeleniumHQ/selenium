@@ -293,6 +293,26 @@ public class BrowserSessionFactory {
     }
 
     /**
+     * Isolated dependency 
+     * @param sessionId
+     * @param port
+     * @param configuration
+     * @return a new FrameGroupCommandQueueSet instance
+     */
+    protected FrameGroupCommandQueueSet makeQueueSet(String sessionId, int port, RemoteControlConfiguration configuration) {
+    	return FrameGroupCommandQueueSet.makeQueueSet(sessionId, configuration.getPortDriversShouldContact(), configuration);
+    }
+    
+    /**
+     * Isolated dependency
+     * @param sessionId
+     * @return an existing FrameGroupCommandQueueSet instance
+     */
+    protected FrameGroupCommandQueueSet getQueueSet(String sessionId) {
+    	return FrameGroupCommandQueueSet.getQueueSet(sessionId);
+    }
+    
+    /**
      * Creates and tries to open a new session.
      *
      * @param browserString
@@ -314,7 +334,7 @@ public class BrowserSessionFactory {
         final String sessionId;
 
         sessionId = UUID.randomUUID().toString().replace("-", "");
-        queueSet = FrameGroupCommandQueueSet.makeQueueSet(sessionId, configuration.getPortDriversShouldContact(), configuration);
+        queueSet = makeQueueSet(sessionId, configuration.getPortDriversShouldContact(), configuration);
         queueSet.setExtensionJs(extensionJs);
         
         try {
@@ -324,6 +344,7 @@ public class BrowserSessionFactory {
         }
         
         sessionInfo = new BrowserSessionInfo(sessionId, browserString, startURL, launcher, queueSet);
+        SeleniumDriverResourceHandler.setLastSessionId(sessionId);
         LOGGER.info("Allocated session " + sessionId + " for " + startURL + ", launching...");
 
         try {
@@ -332,7 +353,7 @@ public class BrowserSessionFactory {
 
             // TODO DGF log4j only
             // NDC.push("sessionId="+sessionId);
-            FrameGroupCommandQueueSet queue = FrameGroupCommandQueueSet.getQueueSet(sessionId);
+            FrameGroupCommandQueueSet queue = getQueueSet(sessionId);
             queue.doCommand("setContext", sessionId, "");
 
             activeSessions.add(sessionInfo);

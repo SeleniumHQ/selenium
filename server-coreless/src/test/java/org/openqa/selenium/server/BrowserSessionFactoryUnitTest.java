@@ -1,9 +1,15 @@
 package org.openqa.selenium.server;
 
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.isA;
+import static org.easymock.classextension.EasyMock.createMock;
+import static org.easymock.classextension.EasyMock.replay;
 import junit.framework.TestCase;
+
 import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
-import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
+import org.openqa.selenium.server.browserlaunchers.DummyLauncher;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -18,6 +24,41 @@ public class BrowserSessionFactoryUnitTest extends TestCase {
     private static final String BROWSER2 = "*firefox";
     private static final String BASEURL2 = "http://maps.google.com";
 
+    public void testBrowserSessionFactorySetsLastSessionIdOfSeleniumDriverResourceHandler() throws Exception {
+
+        final RemoteControlConfiguration configuration;
+        
+        BrowserLauncherFactory blf = createMock(BrowserLauncherFactory.class);
+        DummyLauncher launcherMock = createMock(DummyLauncher.class);
+        
+        configuration = new RemoteControlConfiguration();
+        configuration.setTimeoutInSeconds(1);
+        
+        BrowserConfigurationOptions bco = new BrowserConfigurationOptions();
+        
+        BrowserSessionFactory factory = new BrowserSessionFactory(blf) {
+        	@Override
+        	protected FrameGroupCommandQueueSet makeQueueSet(String sessionId,
+        			int port, RemoteControlConfiguration configuration) {
+        		return createMock(FrameGroupCommandQueueSet.class);
+        	}
+        	
+        	@Override
+        	protected FrameGroupCommandQueueSet getQueueSet(String sessionId) {
+        		return createMock(FrameGroupCommandQueueSet.class);
+        	}
+        };
+        
+        expect(blf.getBrowserLauncher(isA(String.class), isA(String.class), isA(RemoteControlConfiguration.class))).andReturn(launcherMock);
+        launcherMock.launchRemoteSession("",true, bco);
+        expectLastCall().once();
+        replay(launcherMock);
+        replay(blf);
+        factory.createNewRemoteSession("", "", "", bco, true, configuration);
+        String expected = ((BrowserSessionInfo)(factory.activeSessions.toArray()[0])).sessionId;
+        assertEquals(expected, SeleniumDriverResourceHandler.getLastSessionId());
+    }
+    
     public void testInvalidLauncherPreventsNewRemoteSessionCreationWithException() {
         final BrowserSessionFactory factory;
         final RemoteControlConfiguration configuration;
@@ -173,62 +214,6 @@ public class BrowserSessionFactoryUnitTest extends TestCase {
 
     private BrowserSessionFactory getTestSessionFactory() {
         return new BrowserSessionFactory(null, 0, 0, false);
-    }
-
-    /**
-     * A teeny tiny no-op launcher to get a non-null launcher for testing.
-     *
-     * @author jbevan@google.com (Jennifer Bevan)
-     */
-    private static class DummyLauncher implements BrowserLauncher {
-
-        private boolean closed;
-
-        public DummyLauncher() {
-            closed = true;
-        }
-
-        /**
-         * noop
-         */
-        public void close() {
-            closed = true;
-        }
-
-        /**
-         * noop
-         */
-        public Process getProcess() {
-            return null;
-        }
-
-        /**
-         * noop
-         */
-        public void launchHTMLSuite(String startURL, String suiteUrl,
-                                    boolean multiWindow, String defaultLogLevel) {
-            closed = false;
-        }
-
-        /**
-         * noop
-         */
-        public void launchRemoteSession(String url, boolean multiWindow) {
-            closed = false;
-        }
-
-        protected boolean isClosed() {
-            return closed;
-        }
-
-        protected void setOpen() {
-            closed = false;
-        }
-
-        public void launchRemoteSession(String url, boolean multiWindow,
-                BrowserConfigurationOptions browserConfigurationOptions) {
-           closed = false;
-        }
     }
 
 }

@@ -746,7 +746,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         return lastSessionId;
     }
 
-    private static void setLastSessionId(String sessionId) {
+    public static void setLastSessionId(String sessionId) {
         SeleniumDriverResourceHandler.lastSessionId = sessionId;
     }
 
