@@ -254,7 +254,7 @@ task :javadocs => [:common, :firefox, :htmlunit, :jobbie, :remote, :safari, :sup
   mkdir_p "build/javadoc"
    sourcepath = ""
    classpath = "support/lib/runtime/hamcrest-all-1.1.jar"
-   %w(common firefox jobbie htmlunit safari support remote/common remote/server remote/client).each do |m|
+   %w(common firefox jobbie htmlunit safari support remote/common remote/client).each do |m|
      sourcepath += ":#{m}/src/java"
    end
    cmd = "javadoc -d build/javadoc -sourcepath #{sourcepath} -classpath #{classpath} -subpackages org.openqa.selenium"
