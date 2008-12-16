@@ -1,15 +1,17 @@
 package org.openqa.selenium.support;
 
+import org.openqa.selenium.RenderedWebElement;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.pagefactory.internal.LocatingElementHandler;
+import org.openqa.selenium.support.pagefactory.ElementLocatorFactory;
+import org.openqa.selenium.support.pagefactory.DefaultElementLocatorFactory;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Proxy;
-
-import org.openqa.selenium.RenderedWebElement;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.internal.LocatingElementHandler;
 
 /**
  * Factory class to make using Page Objects simpler and easier.
@@ -64,26 +66,39 @@ public class PageFactory {
    * @param page The object with WebElement fields that should be proxied.
    */
     public static void initElements(WebDriver driver, Object page) {
-        Class<?> proxyIn = page.getClass();
-        while (proxyIn != Object.class) {
-            proxyFields(driver, page, proxyIn);
-            proxyIn = proxyIn.getSuperclass();
-        }
+      final WebDriver driverRef = driver;
+      initElements(new DefaultElementLocatorFactory(driverRef), page);
+    }
+    
+    /**
+     * Similar to the other "initElements" methods, but takes an 
+     * {@link ElementLocatorFactory} which is used for providing the 
+     * mechanism for finding elements. 
+     * 
+     * @param factory The factory to use
+     * @param page The object to decorate the fields of
+     */
+    public static void initElements(ElementLocatorFactory factory, Object page) {
+      Class<?> proxyIn = page.getClass();
+      while (proxyIn != Object.class) {
+          proxyFields(factory, page, proxyIn);
+          proxyIn = proxyIn.getSuperclass();
+      }
     }
 
-    private static void proxyFields(WebDriver driver, Object page, Class<?> proxyIn) {
+    private static void proxyFields(ElementLocatorFactory factory, Object page, Class<?> proxyIn) {
         Field[] fields = proxyIn.getDeclaredFields();
         for (Field field : fields) {
             if (!WebElement.class.isAssignableFrom(field.getType()))
               continue;
 
             field.setAccessible(true);
-            proxyElement(driver, page, field);
+            proxyElement(factory, page, field);
         }
     }
 
-    private static void proxyElement(WebDriver driver, Object page, Field field) {
-        InvocationHandler handler = new LocatingElementHandler(driver, field);
+    private static void proxyElement(ElementLocatorFactory factory, Object page, Field field) {
+        InvocationHandler handler = new LocatingElementHandler(factory.createLocator(field));
         WebElement proxy;
         if (field.getType().equals(RenderedWebElement.class)){
           proxy = (RenderedWebElement) Proxy.newProxyInstance(
