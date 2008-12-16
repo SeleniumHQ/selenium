@@ -27,4 +27,8 @@ public class NoSuchElementException extends NotFoundException {
         super(reason);
     }
 
+    public NoSuchElementException(String reason, Throwable cause) {
+      super(reason, cause);
+    }
+
 }
