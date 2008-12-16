@@ -3,6 +3,8 @@ package org.openqa.selenium.support;
 import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.pagefactory.ElementLocatorFactory;
+import org.openqa.selenium.support.pagefactory.ElementLocator;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -11,6 +13,8 @@ import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
 
 import org.jmock.integration.junit3.MockObjectTestCase;
+
+import java.lang.reflect.Field;
 
 public class PageFactoryTest extends MockObjectTestCase {
     private WebDriver driver = null;
@@ -60,6 +64,21 @@ public class PageFactoryTest extends MockObjectTestCase {
         ConstructedPage page = PageFactory.initElements(driver, ConstructedPage.class);
 
         assertThat(driver, equalTo(page.driver));
+    }
+
+    public void testShouldNotDecorateFieldsWhenTheElementLocatorFactoryReturnsNull() {
+      PublicPage page = new PublicPage();
+      // Assign not-null values
+      WebElement q = mock(WebElement.class);
+      page.q = q;
+
+      PageFactory.initElements(new ElementLocatorFactory() {
+        public ElementLocator createLocator(Field field) {
+          return null;
+        }
+      }, page);
+
+      assertThat(page.q, equalTo(q));
     }
 
     public static class PublicPage {

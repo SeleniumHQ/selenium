@@ -6,6 +6,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.pagefactory.internal.LocatingElementHandler;
 import org.openqa.selenium.support.pagefactory.ElementLocatorFactory;
 import org.openqa.selenium.support.pagefactory.DefaultElementLocatorFactory;
+import org.openqa.selenium.support.pagefactory.ElementLocator;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -73,7 +74,8 @@ public class PageFactory {
     /**
      * Similar to the other "initElements" methods, but takes an 
      * {@link ElementLocatorFactory} which is used for providing the 
-     * mechanism for finding elements. 
+     * mechanism for finding elements. If the ElementLocatorFactory returns
+     * null then the field won't be decorated.
      * 
      * @param factory The factory to use
      * @param page The object to decorate the fields of
@@ -98,7 +100,12 @@ public class PageFactory {
     }
 
     private static void proxyElement(ElementLocatorFactory factory, Object page, Field field) {
-        InvocationHandler handler = new LocatingElementHandler(factory.createLocator(field));
+      ElementLocator locator = factory.createLocator(field);
+      if (locator == null) {
+        return;
+      }
+      
+      InvocationHandler handler = new LocatingElementHandler(locator);
         WebElement proxy;
         if (field.getType().equals(RenderedWebElement.class)){
           proxy = (RenderedWebElement) Proxy.newProxyInstance(
