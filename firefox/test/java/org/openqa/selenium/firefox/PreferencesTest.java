@@ -1,12 +1,7 @@
-// Copyright 2008 Google Inc.  All Rights Reserved.
-
 package org.openqa.selenium.firefox;
 
 import junit.framework.TestCase;
 
-/**
- * @author simonstewart@google.com (Simon Stewart)
- */
 public class PreferencesTest extends TestCase {
 
   public void testStringifyVsStringFormat() {
