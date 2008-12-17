@@ -6,13 +6,6 @@ import org.openqa.selenium.firefox.internal.ProfileReaper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
-import javax.xml.XMLConstants;
-import javax.xml.namespace.NamespaceContext;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathFactory;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
@@ -32,12 +25,20 @@ import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.xml.XMLConstants;
+import javax.xml.namespace.NamespaceContext;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
+
 public class FirefoxProfile {
     private static final String EXTENSION_NAME = "fxdriver@googlecode.com";
     private File profileDir;
     private File extensionsDir;
     private File userPrefs;
-    private Map<String, String> additionalPrefs = new HashMap<String, String>();
+    private Preferences additionalPrefs = new Preferences();
     private int port;
     private static AtomicInteger nextId = new AtomicInteger(new Random().nextInt());
 
@@ -294,13 +295,15 @@ public class FirefoxProfile {
 
     /**
      * Set a preference for this particular profile. The value will be properly quoted
-     * before use.
+     * before use. Note that if a value looks as if it is a quoted string (that is, starts
+     * with a quote character and ends with one too) an IllegalArgumentException is thrown:
+     * Firefox fails to start properly when some values are set to this.
      *
      * @param key The key
      * @param value The new value.
      */
     public void setPreference(String key, String value) {
-        additionalPrefs.put(key, String.format("\"%s\"", value));
+        additionalPrefs.setPreference(key, value);
     }
 
     /**
@@ -310,7 +313,7 @@ public class FirefoxProfile {
      * @param value The new value.
      */
     public void setPreference(String key, boolean value) {
-        additionalPrefs.put(key, String.valueOf(value));
+        additionalPrefs.setPreference(key, String.valueOf(value));
     }
 
     /**
@@ -320,23 +323,11 @@ public class FirefoxProfile {
      * @param value The new value.
      */
     public void setPreference(String key, int value) {
-        additionalPrefs.put(key, String.valueOf(value));
+        additionalPrefs.setPreference(key, String.valueOf(value));
     }
 
-    /**
-     * @deprecated Use the appropriate #setPreference method
-     */
-    @Deprecated
-    public void addAdditionalPreference(String key, String value) {
-        this.additionalPrefs.put(key, value);
-    }
-
-    /**
-     * @deprecated Loop over the additional preferences, calling #setPreference each time
-     */
-    @Deprecated
-    public void addAdditionalPreferences(Map<String, String> additionalPrefs) {
-        this.additionalPrefs.putAll(additionalPrefs);
+    protected Preferences getAdditionalPreferences() {
+      return additionalPrefs;
     }
 
     public void updateUserPrefs() {
@@ -352,7 +343,7 @@ public class FirefoxProfile {
                 throw new RuntimeException("Cannot delete existing user preferences");
         }
 
-        prefs.putAll(additionalPrefs);
+        additionalPrefs.addTo(prefs);
 
         // Normal settings to facilitate testing
         prefs.put("app.update.auto", "false");
@@ -446,7 +437,7 @@ public class FirefoxProfile {
 
         FileHandler.copyDir(profileDir, to);
         FirefoxProfile profile = new FirefoxProfile(to);
-        profile.addAdditionalPreferences(additionalPrefs);
+        additionalPrefs.addTo(profile);
         profile.setPort(port);
         profile.updateUserPrefs();
 
