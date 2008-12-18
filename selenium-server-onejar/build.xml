@@ -13,29 +13,36 @@
         </unzip>
         <unzip src="../selenium-server/target/selenium-server-1.0-SNAPSHOT-standalone.jar"
                dest="target/lib">
+            <!-- All classes but Selenium classes -->
             <patternset>
-                <exclude name="org/openqa/selenium/server/**"/>
-                <exclude name="custom**"/>
+                <exclude name="custom*/**"/>
+                <exclude name="cybervillains/**"/>
+                <exclude name="killableprocess/*"/> 
+                <exclude name="konqueror/*"/>
+                <exclude name="opera/**"/>
+                <exclude name="readyState.xpi"/>
                 <exclude name="sslSupport/**"/>
                 <exclude name="strands/**"/>
-                <exclude name="opera/**"/>
-                <exclude name="cybervillains/**"/>
-                <exclude name="readyState.xpi"/>
-                <exclude name="konqueror/*"/>
-                <exclude name="killableprocess/*"/>                
+                <!-- The following classes should not be in the standaone jar to begin with -->
+                <exclude name="core/**"/>
+                <exclude name="junit/**"/>
+                <exclude name="org/openqa/selenium/server/**"/>
+                <exclude name="tests/**"/>
+                <exclude name="unittest/**"/>
             </patternset>
         </unzip>
         <unzip src="../selenium-server/target/selenium-server-1.0-SNAPSHOT-standalone.jar"
                dest="target/top-level">
+            <!-- All data files needed by Selenium at runtime -->
             <patternset>
                 <include name="custom*/**"/>
+                <include name="cybervillains/**"/>
+                <include name="killableprocess/*"/>
+                <include name="konqueror/*"/>
+                <include name="opera/**"/>
+                <include name="readyState.xpi"/>
                 <include name="sslSupport/**"/>
                 <include name="strands/**"/>
-                <include name="opera/**"/>
-                <include name="cybervillains/**"/>
-                <include name="readyState.xpi"/>
-                <include name="konqueror/*"/>
-                <include name="killableprocess/*"/>
             </patternset>
         </unzip>
     </target>
