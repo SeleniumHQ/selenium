@@ -16,14 +16,20 @@
  */
 package org.openqa.selenium.server;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class SeleniumServer {
 
 	public static void main(String[] args) throws Throwable {
-		Class boot = Class.forName("com.simontuffs.onejar.Boot");
-		Method main = boot.getDeclaredMethod("main", new Class[] { String[].class });
-		main.invoke(null, (Object) args);
+		ClassLoader loader = Thread.currentThread().getContextClassLoader();
+		Class boot = loader.loadClass("com.simontuffs.onejar.Boot");
+		Method main = boot.getMethod("main", new Class[] { String[].class });
+		try {
+		    main.invoke(null, new Object[] { args });
+	    } catch (InvocationTargetException e) {
+			throw e.getTargetException();
+		}
 	}
-	
+
 }
