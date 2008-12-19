@@ -9,11 +9,11 @@ FirefoxDriver.prototype.click = function(respond) {
     }
 
     if (!Utils.isDisplayed(element)) {
-	    respond.isError = true;
-		respond.response = "Element is not currently visible and so may not be clicked";
-		respond.send();
-		return;
-	}
+        respond.isError = true;
+        respond.response = "Element is not currently visible and so may not be clicked";
+        respond.send();
+        return;
+    }
 
     var currentlyActive = Utils.getActiveElement(this.context);
 
@@ -209,10 +209,15 @@ FirefoxDriver.prototype.getElementChildren = function(respond, name) {
     var element = Utils.getElementAt(respond.elementId, this.context);
 
     var children = element.getElementsByTagName(name[0]);
+
     var response = "";
     for (var i = 0; i < children.length; i++) {
-        response += Utils.addToKnownElements(children[i], this.context) + " ";
+      var e = children[i];
+      var index = Utils.addToKnownElements(e, this.context);
+      response += index + ",";
     }
+    // Strip the trailing comma
+    response = response.substring(0, response.length - 1);
 
     respond.context = this.context;
     respond.response = response;

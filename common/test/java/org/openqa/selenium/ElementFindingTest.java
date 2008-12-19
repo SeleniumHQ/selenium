@@ -85,6 +85,15 @@ public class ElementFindingTest extends AbstractDriverTestCase {
         assertThat(importedScripts.size(), equalTo(2));
     }
 
+    @Ignore("safari")
+    public void testReturnAnEmptyListWhenThereAreNoChildrenOfANode() {
+        driver.get(xhtmlTestPage);
+        WebElement table = driver.findElement(By.id("table"));
+        List<WebElement> rows = table.getChildrenOfType("tr");
+
+        assertThat(rows.size(), equalTo(0));
+    }
+
     public void testShouldFindElementsByName() {
         driver.get(formPage);
 

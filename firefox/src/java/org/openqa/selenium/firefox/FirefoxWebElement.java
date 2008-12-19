@@ -1,23 +1,21 @@
 package org.openqa.selenium.firefox;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.RenderedWebElement;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.internal.Locatable;
-import org.json.JSONObject;
-import org.json.JSONException;
 
-import java.awt.Point;
-import java.awt.Dimension;
-
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -99,13 +97,8 @@ public class FirefoxWebElement implements RenderedWebElement, Locatable,
 
     public List<WebElement> getChildrenOfType(String tagName) {
         String response = sendMessage(RuntimeException.class, "getElementChildren", tagName);
-        String[] ids = response.split(" ");
 
-        ArrayList<WebElement> children = new ArrayList<WebElement>();
-        for (String id : ids)
-            children.add(new FirefoxWebElement(parent, id));
-
-        return children;
+        return getElementsFromIndices(response);
     }
 
     public boolean isDisplayed() {
