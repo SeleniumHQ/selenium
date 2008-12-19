@@ -3,7 +3,6 @@ package org.openqa.selenium.firefox;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.firefox.internal.RunningInstanceConnection;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.ConnectException;
 
@@ -18,7 +17,7 @@ public class FirefoxLauncher {
         FirefoxLauncher launcher = new FirefoxLauncher(new FirefoxBinary());
 
         if (args.length == 0)
-            launcher.createBaseWebDriverProfile();
+            launcher.createBaseWebDriverProfile("WebDriver");
         else if (args.length == 1)
             launcher.createBaseWebDriverProfile(args[0]);
         else
@@ -26,7 +25,7 @@ public class FirefoxLauncher {
     }
 
     public void createBaseWebDriverProfile() throws IOException {
-        createBaseWebDriverProfile(FirefoxDriver.DEFAULT_PROFILE);
+        createBaseWebDriverProfile(null);
     }
 
     public void createBaseWebDriverProfile(String profileName) throws IOException {

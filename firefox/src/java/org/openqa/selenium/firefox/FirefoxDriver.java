@@ -55,8 +55,7 @@ import java.util.Set;
  */
 public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecutor,
         FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByXPath {
-	public static final String DEFAULT_PROFILE = "WebDriver";
-	public static final int DEFAULT_PORT = 7055;
+    public static final int DEFAULT_PORT = 7055;
 
     private final ExtensionConnection extension;
     protected Context context;
@@ -92,14 +91,7 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
 
     public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile) {
         if (profile == null) {
-            // See if we can find the installed profile
-            String profileToFind =  System.getProperty("webdriver.firefox.profile", DEFAULT_PROFILE);
-
-            profile = new ProfilesIni().getProfile(profileToFind);
-
-            // And then fall back to the packaged one
-            if (profile == null)
-              profile = new FirefoxProfile();
+            profile = new FirefoxProfile();
         }
 
         try {

@@ -99,10 +99,9 @@ public class FirefoxProfile {
         if (!forceCreation && extensionLocation.exists())
             return;
 
-        String home = System.getProperty("webdriver.firefox.development");
-        if (home != null) {
-            System.out.println("Installing developer version");
-            installDevelopmentExtension(home);
+        boolean isDev = Boolean.getBoolean("webdriver.firefox.development");
+        if (isDev) {
+            installDevelopmentExtension();
         } else {
             addExtension(FirefoxProfile.class, "webdriver-extension.zip");
         }
@@ -230,13 +229,11 @@ public class FirefoxProfile {
     return root;
   }
 
-  public void installDevelopmentExtension(String home) throws IOException {
-        if (!home.endsWith("extension"))
-            throw new RuntimeException("The given source directory does not look like a source " +
-                    "directory for the extension: " + home);
-
+  protected void installDevelopmentExtension() throws IOException {
       if (!FileHandler.createDir(extensionsDir))
         throw new IOException("Cannot create extensions directory: " + extensionsDir.getAbsolutePath());
+
+      String home = findFirefoxExtensionRootInSourceCode();
 
       File writeTo = new File(extensionsDir, EXTENSION_NAME);
         if (writeTo.exists() && !FileHandler.delete(writeTo)) {
@@ -254,6 +251,23 @@ public class FirefoxProfile {
             Cleanly.close(writer);
         }
     }
+
+  private String findFirefoxExtensionRootInSourceCode() {
+    String[] possiblePaths = {
+        "firefox/src/extension",
+        "../firefox/src/extension",
+    };
+
+    File current;
+    for (String potential : possiblePaths) {
+      current = new File(potential);
+      if (current.exists()) {
+        return current.getAbsolutePath();
+      }
+    }
+
+    throw new RuntimeException("Unable to locate firefox driver extension in developer source");
+  }
 
   public File getProfileDir() {
         return profileDir;
