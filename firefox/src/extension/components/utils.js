@@ -1,6 +1,13 @@
 function Utils() {
 }
 
+Utils.getUniqueId = function() {
+  if (!Utils._generator) {
+    Utils._generator = Utils.getService("@mozilla.org/uuid-generator;1", "nsIUUIDGenerator");  
+  }
+  return Utils._generator.generateUUID().toString();
+};
+
 Utils.newInstance = function(className, interfaceName) {
     var clazz = Components.classes[className];
 
@@ -177,17 +184,16 @@ Utils.getText = function(element) {
 Utils.addToKnownElements = function(element, context) {
     var doc = Utils.getDocument(context);
     if (!doc.fxdriver_elements) {
-        doc.fxdriver_elements = new Array();
+        doc.fxdriver_elements = {};
     }
-    var start = doc.fxdriver_elements.length;
-    doc.fxdriver_elements.push(element);
-    return start;
+
+    var id = Utils.getUniqueId();
+    doc.fxdriver_elements[id] = element;
+
+    return id;
 };
 
 Utils.getElementAt = function(index, context) {
-    // Convert to a number if we're dealing with a string...
-    index = index - 0;
-
     var doc = Utils.getDocument(context);
     if (doc.fxdriver_elements)
         return doc.fxdriver_elements[index];
