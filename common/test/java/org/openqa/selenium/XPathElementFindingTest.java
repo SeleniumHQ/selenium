@@ -8,7 +8,7 @@ import java.util.List;
 public class XPathElementFindingTest extends AbstractDriverTestCase {
     public void testShouldThrowAnExceptionWhenThereIsNoLinkToClickAndItIsFoundWithXPath() {
         driver.get(xhtmlTestPage);
-        
+
         try {
         	driver.findElement(By.xpath("//a[@id='Not here']"));
         	fail("Should not have succeeded");
@@ -19,7 +19,7 @@ public class XPathElementFindingTest extends AbstractDriverTestCase {
 
     public void testShouldThrowAnExceptionWhenThereIsNoLinkToClick() {
         driver.get(xhtmlTestPage);
-        
+
         try {
         	driver.findElement(By.xpath("//a[@id='Not here']"));
         	fail("Should not have succeeded");
@@ -27,7 +27,7 @@ public class XPathElementFindingTest extends AbstractDriverTestCase {
         	// this is expected
         }
     }
-    
+
     public void testShouldFindSingleElementByXPath() {
         driver.get(xhtmlTestPage);
         WebElement element = driver.findElement(By.xpath("//h1"));
@@ -38,7 +38,7 @@ public class XPathElementFindingTest extends AbstractDriverTestCase {
     public void testShouldFindElementsByXPath() {
         driver.get(xhtmlTestPage);
         List<WebElement> divs = driver.findElements(By.xpath("//div"));
-        assertThat(divs.size(), equalTo(4));
+        assertThat(divs.size(), equalTo(5));
     }
 
     @Ignore(value = "safari", reason = "Test fails")
@@ -50,24 +50,24 @@ public class XPathElementFindingTest extends AbstractDriverTestCase {
         xpathString = "//node()[contains(@id,'nope')]";
         assertThat(driver.findElements(By.xpath(xpathString)).size(), equalTo(0));
     }
-    
+
     public void testShouldBeAbleToIdentifyElementsByClass() {
         driver.get(xhtmlTestPage);
 
         String header = driver.findElement(By.xpath("//h1[@class='header']")).getText();
         assertThat(header, equalTo("XHTML Might Be The Future"));
     }
-    
+
     public void testShouldBeAbleToSearchForMultipleAttributes() {
     	driver.get(formPage);
-    	
+
     	try {
     		driver.findElement(By.xpath("//form[@name='optional']/input[@type='submit' and @value='Click!']")).click();
     	} catch (NoSuchElementException e) {
     		fail("Should be able to find the submit button");
     	}
     }
-    
+
     public void testShouldLocateElementsWithGivenText() {
     	driver.get(xhtmlTestPage);
 
