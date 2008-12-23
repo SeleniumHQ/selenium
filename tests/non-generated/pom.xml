@@ -67,12 +67,14 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.4.2</version>
                 <configuration>
+                    <!--
                     <properties>
                         <property>
                             <name>listener</name>
                             <value>org.openqa.selenium.utils.GhettoListener</value>
                         </property>
                     </properties>
+                    -->
                     <suiteXmlFiles>
                         <suiteXmlFile>src/test/resources/testng.xml</suiteXmlFile>
                     </suiteXmlFiles>
@@ -151,6 +153,7 @@
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
+            <version>5.8</version>
             <classifier>jdk15</classifier>
             <scope>test</scope>
         </dependency>
