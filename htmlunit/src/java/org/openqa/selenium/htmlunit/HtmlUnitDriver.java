@@ -333,7 +333,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     String expectedText = selector.substring(equalsIndex).trim();
 
     if (!(lastPage() instanceof HtmlPage)) {
-      throw new NoSuchElementException("There are no links on a text page: " + expectedText);
+      throw new IllegalStateException("Cannot find links for " + lastPage());
     }
 
     List<HtmlAnchor> anchors = ((HtmlPage) lastPage()).getAnchors();
@@ -372,7 +372,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
 
     public WebElement findElementById(String id) {
         if (!(lastPage() instanceof HtmlPage))
-            throw new NoSuchElementException("Cannot find element with ID: " + id);
+            throw new IllegalStateException("Cannot find element by id for " + lastPage());
 
         try {
             HtmlElement element = ((HtmlPage) lastPage()).getHtmlElementById(id);
@@ -388,7 +388,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
 
   public WebElement findElementByName(String name) {
     if (!(lastPage() instanceof HtmlPage))
-      throw new NoSuchElementException("Cannot find element with name: " + name);
+      throw new IllegalStateException("Cannot find element by name for " + lastPage());
 
     List<HtmlElement> allElements = ((HtmlPage) lastPage()).getHtmlElementsByName(name);
     if (allElements.size() > 0) {
@@ -409,7 +409,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
 
   public WebElement findElementByXPath(String selector) {
     if (!(lastPage() instanceof HtmlPage))
-      throw new NoSuchElementException(String.format("Cannot find element with xpath %s", selector));
+      throw new IllegalStateException("Cannot find element by xpath for " + lastPage());
 
         Object node = ((HtmlPage) lastPage()).getFirstByXPath(selector);
         if (node == null)
@@ -713,6 +713,10 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     }
 
     public WebElement findElementByPartialLinkText(String using) {
+        if (!(lastPage() instanceof HtmlPage)) {
+          throw new IllegalStateException("Cannot find links for " + lastPage());
+        }
+
         List<HtmlAnchor> anchors = ((HtmlPage) lastPage()).getAnchors();
         for (HtmlAnchor anchor : anchors) {
           if (anchor.asText().contains(using)) {
