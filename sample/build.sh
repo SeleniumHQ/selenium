@@ -14,4 +14,6 @@ echo "Compiling src/ files: $TEST_FILES"
 
 javac -sourcepath src -classpath $CLASSPATH -d build/test-classes $TEST_FILES
 
+echo "OK, Compiled. Now run ./test.sh"
+
 echo ""
