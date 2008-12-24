@@ -582,7 +582,7 @@ Editor.prototype.exposeEditorToTestRunner = function(contentWindow) {
 		}
 		if ('chrome://selenium-ide-testrunner/content/PlayerTestSuite.html' == location) {
             var window = contentWindow.top;
-            if (window) {
+            if (window.wrappedJSObject) {
                 window = window.wrappedJSObject;
             }
 			this.log.debug('setting editor to TestRunner window ' + window);

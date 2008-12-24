@@ -11,10 +11,12 @@
     <echo message="Building Selenium IDE ${app.version}" />
     <mkdir dir="${build}"/>
     <mkdir dir="${build}/chrome"/>
+    <mkdir dir="content-files"/>
   </target>
 
   <target name="clean" description="Delete build files">
     <delete dir="${build}"/>
+    <delete dir="content-files"/>
     <delete dir="content/selenium"/>
     <delete dir="content/selenium-tests"/>
     <delete dir="content/jsunit"/>
@@ -32,6 +34,11 @@
 
   <target name="import-selenium" description="Import Selenium source into the extension">
     <fail message="Please set selenium.core.dir property in build.properties file." unless="selenium.core.dir"/>
+    <copy todir="content-files">
+      <fileset dir="${selenium.core.dir}/core/scripts">
+	<include name="selenium-testrunner.js"/>
+      </fileset>
+    </copy>
     <copy todir="content/selenium">
       <fileset dir="${selenium.core.dir}/core">
 	<include name="**"/>
@@ -40,6 +47,8 @@
     <copy todir="content/selenium" overwrite="true">
       <fileset dir="content/selenium-src"/>
     </copy>
+    <copy tofile="content/selenium/scripts/selenium-testrunner-original.js"
+	  file="${selenium.core.dir}/core/scripts/selenium-testrunner.js" />
     <copy todir="content/selenium-tests/tests">
       <fileset dir="${selenium.core.dir}/tests">
 	<include name="**"/>
@@ -73,6 +82,9 @@
     <property name="profile.extension.dir" value="${profile.template.dir}/extensions/{a6fd85ed-e919-4a43-a5af-8da18bda539f}" />
     <mkdir dir="${profile.extension.dir}" />
     <unzip src="${build}/${ant.project.name}-${app.version}-test.xpi" dest="${profile.extension.dir}" />
+    <copy todir="${profile.template.dir}">
+      <fileset dir="profile-template" />
+    </copy>
   </target>
 
   <target name="integration-test" unless="skip-integration-test">
@@ -113,6 +125,7 @@
 	  <include name="install.rdf"/>
 	  <include name="components/**"/>
 	  <exclude name="components/*.idl"/>
+	  <include name="content-files/**"/>
         </fileset>
         <fileset dir="production">
 	  <include name="chrome.manifest"/>
