@@ -1,10 +1,12 @@
 import junit.framework.TestCase;
 import com.thoughtworks.selenium.*;
+
 import java.lang.String;
 
 public class YahooTest extends TestCase {
 
     private Selenium browser;
+
     public void setUp() {
         browser = new DefaultSelenium("localhost", 4444, "*firefox",
                 "http://www.yahoo.com");
