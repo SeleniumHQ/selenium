@@ -26,6 +26,7 @@ import java.io.Reader;
 import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.ConnectException;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -42,7 +43,8 @@ public class HttpCommandProcessor implements CommandProcessor {
     private String browserURL;
     private String sessionId;
     private String extensionJs;
-    
+    private String rcServerLocation;
+
     /** Specifies a server host/port, a command to launch the browser, and a starting URL for the browser.
      * 
      * @param serverHost - the host name on which the Selenium Server resides
@@ -53,8 +55,9 @@ public class HttpCommandProcessor implements CommandProcessor {
      * e.g. "http://www.google.com" would send the browser to "http://www.google.com/selenium-server/core/RemoteRunner.html"
      */
     public HttpCommandProcessor(String serverHost, int serverPort, String browserStartCommand, String browserURL) {
-        this.pathToServlet = "http://" + serverHost + 
-        ":"+ Integer.toString(serverPort) + "/selenium-server/driver/";
+        rcServerLocation = serverHost +
+        ":"+ Integer.toString(serverPort);
+        this.pathToServlet = "http://" + rcServerLocation + "/selenium-server/driver/";
         this.browserStartCommand = browserStartCommand;
         this.browserURL = browserURL;
         this.extensionJs = "";
@@ -72,6 +75,10 @@ public class HttpCommandProcessor implements CommandProcessor {
         this.browserStartCommand = browserStartCommand;
         this.browserURL = browserURL;
         this.extensionJs = "";
+    }
+
+    public String getRemoteControlServerLocation() {
+        return rcServerLocation;
     }
 
     public String doCommand(String commandName, String[] args) {
@@ -96,6 +103,9 @@ public class HttpCommandProcessor implements CommandProcessor {
         try {
             return getCommandResponseAsString(command);
         } catch (IOException e) {
+            if (e instanceof ConnectException) {
+                throw new RuntimeException(e.getMessage(),e);
+            }
             e.printStackTrace();
             throw new UnsupportedOperationException("Catch body broken: IOException from " + command + " -> " + e, e);
         }

@@ -13,7 +13,7 @@ public class DefaultSeleniumStartErrorHandlingTest extends TestCase {
             new DefaultSelenium(failOnStartCommandProcessor).start();
             fail("Did not catch RuntimeException as expected");
         } catch (RuntimeException expected) {
-            assertTrue(-1 != expected.getMessage().indexOf("Could not contact Selenium Server; have you started it?"));
+            assertTrue(-1 != expected.getMessage().indexOf("Could not contact Selenium Server; have you started it on '' ?"));
             assertTrue(-1 != expected.getMessage().indexOf("Connection refused: connect"));
         }
     }
@@ -53,6 +53,10 @@ public class DefaultSeleniumStartErrorHandlingTest extends TestCase {
 
         public void start(Object optionsObject) {
             throw new UnsupportedOperationException();
+        }
+
+        public String getRemoteControlServerLocation() {
+            return "";
         }
 
         public String doCommand(String command, String[] args) {

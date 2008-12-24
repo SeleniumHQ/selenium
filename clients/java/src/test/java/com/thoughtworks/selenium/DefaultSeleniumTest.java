@@ -30,6 +30,11 @@ public class DefaultSeleniumTest extends TestCase {
 
     private static class MyCommandProcessor implements CommandProcessor {
         StringBuilder commands = new StringBuilder();
+
+        public String getRemoteControlServerLocation() {
+            return "";
+        }
+
         public String doCommand(String command, String[] args) {
             commands.append(command);
             for (int i = 0; i < args.length; i++) {

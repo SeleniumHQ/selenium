@@ -27,6 +27,12 @@ package com.thoughtworks.selenium;
  */
 public interface CommandProcessor {
 
+    /**
+     * The URL that the RemoteControl instance is allegedly running on
+     * @return the URL
+     */
+    String getRemoteControlServerLocation();
+
     /** Send the specified remote command to the browser to be performed
      * 
      * @param command - the remote command verb
