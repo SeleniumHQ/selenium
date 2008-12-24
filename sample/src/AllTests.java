@@ -16,6 +16,7 @@ public class AllTests extends TestSuite {
     TestSuite suite = new AllTests("Example Tests");
     suite.addTestSuite(ExampleSeleniumTest.class);
 	suite.addTestSuite(ExampleUITest.class);
+	suite.addTestSuite(YahooTest.class);
 	suite.addTestSuite(ExampleUsingConditionsTest.class);
     return suite;
   }

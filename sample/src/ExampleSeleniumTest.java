@@ -12,7 +12,7 @@ public class ExampleSeleniumTest extends TestCase {
 
 	    public void testGoogleForSomeThings() throws InterruptedException {
 	        browser.showContextualBanner();
-	        browser.open("/webhp?hl=en");
+	        browser.open("/webhp?hl=en"); // relative URL is correct idiom for open()
 	        browser.type("name=q", "hello world");
 	        browser.click("btnG");
 	        browser.waitForPageToLoad("5000");
