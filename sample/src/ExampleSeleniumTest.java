@@ -1,41 +1,31 @@
 import junit.framework.TestCase;
-import com.thoughtworks.selenium.*;
+
+import com.thoughtworks.selenium.DefaultSelenium;
+import com.thoughtworks.selenium.Selenium;
 
 public class ExampleSeleniumTest extends TestCase {
 
-    private Selenium browser;
+	private Selenium browser;
 
-    public void setUp() {
-        browser = new DefaultSelenium("localhost",
-                4444, "*firefox", "http://www.google.com");
-        browser.start();
-    }
+	public void setUp() {
+		browser = new DefaultSelenium("localhost", 4444, "*firefox",
+				"http://www.google.com");
+		browser.start();
+	}
 
-    public void testGoogleForSomeThings() throws InterruptedException {
-        browser.showContextualBanner();
-        browser.open("/webhp?hl=en"); // relative URL is correct idiom for open()
-        browser.type("name=q", "hello world");
-        browser.click("btnG");
-        browser.waitForPageToLoad("5000");
-        assertEquals("asfsdfsdf", browser.getTitle());
-        browser.type("name=q", "two");
-        browser.click("btnG");
-        browser.type("name=q", "three");
-        browser.click("btnG");
-        browser.type("name=q", "four");
-        browser.click("btnG");
-        browser.type("name=q", "five");
-        browser.click("btnG");
-        browser.type("name=q", "six");
-        browser.click("btnG");
-        browser.type("name=q", "seven");
-        browser.click("btnG");
+	public void testGoogleImFeelingLucky() throws InterruptedException {
+		browser.showContextualBanner();
+		browser.open("/webhp?hl=en"); // relative URL is correct idiom for
+		browser.type("name=q", "Erlang");
+		browser.click("btnI");
+		browser.waitForPageToLoad("5000");
 
-        // no need for you to keep this sleep. Delete it to speed things up
-        Thread.sleep(10 * 1000);
-    }
+		assertEquals("Erlang", browser.getTitle());
+		String bodyText = browser.getBodyText();
+		assertTrue(bodyText.contains("Software for a Concurrent World"));
+	}
 
-    public void tearDown() {
-        browser.stop();
-    }
+	public void tearDown() {
+		browser.stop();
+	}
 }
