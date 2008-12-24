@@ -8,7 +8,7 @@ public class ExampleUsingConditionsTest extends TestCase {
 	private Selenium browser;
 	    public void setUp() {
 	        browser = new DefaultSelenium("localhost",
-	            4444, "*firefox", "http://www.google.com");
+	            4444, "*firefox", "http://www.ajax.org");
 	        browser.start();
 	    }
 
@@ -20,8 +20,9 @@ public class ExampleUsingConditionsTest extends TestCase {
 		*/
 					
 		public void testWaitForAJAXToLoad() throws InterruptedException {
-			JUnitConditionRunner conditionRunner = new JUnitConditionRunner(browser);
-			browser.open("http://www.ajax.org");
+            browser.showContextualBanner();
+            JUnitConditionRunner conditionRunner = new JUnitConditionRunner(browser);
+			browser.open("/");
 			
 			assertTrue(browser.isVisible("loadscreen"));
 			conditionRunner.waitFor(new Text("Ajax stands for Asynchronous Javascript And XML"));

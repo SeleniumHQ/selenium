@@ -12,7 +12,8 @@ public class ExampleUITest extends TestCase {
 	    }
 			
 		public void testBrowsingGmailHelp() throws Exception {
-			browser.open("/");
+            browser.showContextualBanner();            
+            browser.open("/");
 			browser.click("link=Gmail");
 			browser.waitForPageToLoad("30000");
 			browser.click("link=I cannot access my account");

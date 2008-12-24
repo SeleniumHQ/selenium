@@ -12,7 +12,8 @@ public class YahooTest extends TestCase {
 	    }
 
 		public void testYahooRegistrationUIElements() throws InterruptedException {
-			browser.open("/");
+            browser.showContextualBanner();
+            browser.open("/");
 			browser.waitForPageToLoad("5000");
 			assertEquals("Yahoo!", browser.getTitle());
 
