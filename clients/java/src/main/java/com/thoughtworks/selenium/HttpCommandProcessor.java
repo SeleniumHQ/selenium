@@ -104,7 +104,7 @@ public class HttpCommandProcessor implements CommandProcessor {
             return getCommandResponseAsString(command);
         } catch (IOException e) {
             if (e instanceof ConnectException) {
-                throw new RuntimeException(e.getMessage(),e);
+                throw new SeleniumException(e.getMessage(),e);
             }
             e.printStackTrace();
             throw new UnsupportedOperationException("Catch body broken: IOException from " + command + " -> " + e, e);
