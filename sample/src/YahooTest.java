@@ -23,7 +23,12 @@ public class YahooTest extends TestCase {
         browser.waitForPageToLoad("5000");
         assertEquals("Sign in to Yahoo!", browser.getTitle());
 
-        browser.click("link=Sign Up");
+        // Yahoo issues different HTML for different browser versions
+        try {
+            browser.click("link=Sign Up");
+        } catch (SeleniumException e) {
+            browser.click("//div[@class=\"yregdsilu\"]/p/a");
+        }
         browser.waitForPageToLoad("5000");
         assertEquals("Yahoo! Registration", browser.getTitle());
 
