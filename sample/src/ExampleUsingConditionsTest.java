@@ -27,9 +27,11 @@ public class ExampleUsingConditionsTest extends TestCase {
         // relative URL is correct idiom for open()
         browser.open("/zuggest.aspx");
         browser.waitForPageToLoad("5000");
+        // enter two search terms
         browser.type("txtKeywords", "Neal Ford");
         browser.select("idx", "Books");
-        conditionRunner.waitFor(new Text("The"));
+        // this will throw an exception if Neal's book does not appear
+        conditionRunner.waitFor(new Text("The Productive Programmer"));
     }
 
     public void tearDown() {
