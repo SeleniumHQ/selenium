@@ -15,7 +15,7 @@ public class YahooTest extends TestCase {
 
     public void testYahooRegistrationUIElements() throws InterruptedException {
         browser.showContextualBanner();
-        browser.open("/");
+        browser.open("/"); // relative URL is correct idiom for open()
         browser.waitForPageToLoad("5000");
         assertEquals("Yahoo!", browser.getTitle());
 

@@ -12,19 +12,18 @@ public class ExampleUsingConditionsTest extends TestCase {
         browser = new DefaultSelenium("localhost",
                 4444, "*firefox", "http://www.ajax.org");
         browser.start();
+        /*
+                 Conditional Runner can be used to wait for conditions
+                 to be true before continuing on. In the example below,
+                 the runner is waiting for text to be present from the AJAX control
+                 on the given webpage.
+             */
         conditionRunner = new JUnitConditionRunner(browser);
     }
 
-    /*
-             Conditional Runner can be used to wait for conditions
-             to be true before continuing on. In the example below,
-             the runner is waiting for text to be present from the AJAX control
-             on the given webpage.
-         */
-
     public void testWaitForAJAXToLoad() throws InterruptedException {
         browser.showContextualBanner();
-        browser.open("/");
+        browser.open("/"); // relative URL is correct idiom for open()
 
         assertTrue(browser.isVisible("loadscreen"));
         conditionRunner.waitFor(new Text("Ajax stands for Asynchronous Javascript And XML"));
