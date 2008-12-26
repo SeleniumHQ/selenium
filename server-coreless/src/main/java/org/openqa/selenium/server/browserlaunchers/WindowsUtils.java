@@ -265,7 +265,7 @@ public class WindowsUtils {
     public static String getLocalAppDataPath() {
         loadEnvironment();
         final String keyLocalAppData =
-            "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\User Shell Folders\\Local AppData";
+            "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders\\Local AppData";
         String localAppDataPath = readStringRegistryValue(keyLocalAppData);
         String userProfile = getEnvVarIgnoreCase("USERPROFILE");
         if (userProfile != null) {
