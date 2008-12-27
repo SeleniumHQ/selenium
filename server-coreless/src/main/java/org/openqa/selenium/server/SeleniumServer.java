@@ -24,6 +24,7 @@ import org.mortbay.http.SecurityConstraint;
 import org.mortbay.http.SocketListener;
 import org.mortbay.http.handler.SecurityHandler;
 import org.mortbay.jetty.Server;
+import org.mortbay.util.MultiException;
 import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
 import org.openqa.selenium.server.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.server.cli.RemoteControlLauncher;
@@ -36,6 +37,7 @@ import org.openqa.selenium.server.log.LoggingManager;
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.BindException;
 import java.util.Properties;
 
 /**
@@ -207,7 +209,7 @@ public class SeleniumServer {
 
     /**
      * Prepares a Jetty server with its HTTP handlers.
-     *
+     *                               p
      * @param slowResources should the webserver return static resources more slowly?
      *        (Note that this will not slow down ordinary RC test runs; this setting is used to debug Selenese HTML tests.)
      * @param configuration  Remote Control configuration. Cannot be null.
@@ -395,7 +397,14 @@ public class SeleniumServer {
      */
     public void start() throws Exception {
         System.setProperty("org.mortbay.http.HttpRequest.maxFormContentSize", "0"); // default max is 200k; zero is infinite
-        server.start();
+        try {
+            server.start();
+        } catch (MultiException e) {
+            if (e.getExceptions().size() == 1 && e.getException(0) instanceof BindException) {
+                throw new BindException("Selenium is already running on port " + getPort() + ". Or some other service is." );
+            }
+            throw e;
+        }
 
         shutDownHook = new Thread(new ShutDownHook(this));
         shutDownHook.setName("SeleniumServerShutDownHook");
