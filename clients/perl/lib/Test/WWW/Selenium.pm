@@ -4,7 +4,7 @@ use strict;
 use base qw(WWW::Selenium);
 use Carp qw(croak);
 
-our $VERSION = '1.16';
+our $VERSION = '1.17';
 
 =head1 NAME
 
@@ -89,11 +89,17 @@ my %comparator = (
 my %no_locator = map { $_ => 1 }
                 qw(alert confirmation prompt absolute_location location
                    title body_text all_buttons all_links all_fields);
+sub no_locator {
+    my $self   = shift;
+    my $method = shift;
+    return $no_locator{$method};
+}
 
 sub AUTOLOAD {
     my $name = $AUTOLOAD;
     $name =~ s/.*:://;
     return if $name eq 'DESTROY';
+    my $self = $_[0];
 
     my $sub;
     if ($name =~ /(\w+)_(is|isnt|like|unlike)$/i) {
@@ -102,7 +108,7 @@ sub AUTOLOAD {
 
         # make a subroutine that will call Test::Builder's test methods
         # with selenium data from the getter
-        if ($no_locator{$1}) {
+        if ($self->no_locator($1)) {
             $sub = sub {
                 my( $self, $str, $name ) = @_;
                 diag "Test::WWW::Selenium running $getter (@_[1..$#_])"

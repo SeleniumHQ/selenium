@@ -1,5 +1,9 @@
 Revision history for Perl extension Test::WWW::Selenium.
 
+1.17 - Tue 30 Dec 2008 00:12:53 PST
+ - Allow no_locator methods to be subclassable
+   - Thanks to Michael Hendricks of Grant Street Group.
+
 1.16 - Sun 14 Dec 2008 15:28:38 PST
  - use POST instead of GET to selenium server (gyrm)
  - add support for per-session javascript (gyrm)
