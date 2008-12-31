@@ -14,6 +14,9 @@ BrowserBotFrameFinderTest.prototype.setUp = function() {
                 ,contentWindow: {
                     name:"testIframe-name"
                 }
+                ,getAttribute: function(attr) {
+                    if ("id" == attr) return this.id;
+                }
             }
         }
     };
