@@ -1284,7 +1284,7 @@ BrowserBot.prototype.locateElementByIdentifier = function(identifier, inDocument
  */
 BrowserBot.prototype.locateElementById = function(identifier, inDocument, inWindow) {
     var element = inDocument.getElementById(identifier);
-    if (element && element.id === identifier) {
+    if (element && element.getAttribute('id') === identifier) {
         return element;
     }
     else if (browserVersion.isIE || browserVersion.isOpera) {
