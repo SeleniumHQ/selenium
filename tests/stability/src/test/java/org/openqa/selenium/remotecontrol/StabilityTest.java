@@ -5,6 +5,9 @@ import org.junit.Test;
 
 /**
  * Regression test suite for stability problems discovered in Selenium Remote Control
+ *
+ * You need to have a Remote-Control server running on 4444 in a separate process before running this test
+ *
  */
 public class StabilityTest {
 
