@@ -197,6 +197,7 @@
             <artifactId>testng</artifactId>
             <classifier>jdk15</classifier>
             <scope>test</scope>
+            <version>5.8</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
