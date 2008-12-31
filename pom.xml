@@ -290,11 +290,13 @@
                                 <artifactId>junit</artifactId>
                                 <version>3.8.1</version>
                             </dependency>
+                            <!-- DGF commenting out Andras' change 2264/2265, fixing Hudson build
                             <dependency>
 								<groupId>jetty</groupId>
 								<artifactId>org.mortbay.jetty</artifactId>
 								<version>5.1.10</version>
 							</dependency>
+							-->
                         </dependencies>
                     </plugin>
                 </plugins>
