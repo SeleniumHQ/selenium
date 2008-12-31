@@ -3,7 +3,7 @@
     <proxy>
       <host>localhost</host>
       <port>9999</port>
-      <nonProxyHosts>archiva.openqa.org</nonProxyHosts>
+      <nonProxyHosts>nexus.openqa.org</nonProxyHosts>
     </proxy>
   </proxies>
 </settings>
