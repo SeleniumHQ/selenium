@@ -68,7 +68,7 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.openqa.selenium.ide</groupId>
+            <groupId>org.seleniumhq.selenium.ide</groupId>
             <artifactId>selenium-ide</artifactId>
             <exclusions>
               <exclusion>
