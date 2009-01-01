@@ -10,7 +10,7 @@
     <modules>
         <module>server-coreless</module>
         <module>selenium-server</module>
-        <!--<module>xlator</module>-->
+        <module>xlator</module>
         <module>clients</module>
     </modules>
     <repositories>
