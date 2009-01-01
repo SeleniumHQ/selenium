@@ -350,8 +350,10 @@ void IeThread::OnElementClear(WPARAM w, LPARAM lp)
 
 	HWND hWnd = getHwnd();
 	LRESULT lr;
-	SendMessageTimeoutW(hWnd, WM_SETTEXT, 0, (LPARAM) L"", SMTO_ABORTIFHUNG, 3000, (DWORD*)&lr);
+
+	SendMessageTimeoutW(hWnd, WM_SETTEXT, 0, (LPARAM) L"", SMTO_ABORTIFHUNG, 3000, (PDWORD_PTR)&lr);
 }
+
 void IeThread::OnElementIsSelected(WPARAM w, LPARAM lp)
 {
 	SCOPETRACER
