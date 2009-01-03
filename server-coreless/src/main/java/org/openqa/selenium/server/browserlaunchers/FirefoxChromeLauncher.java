@@ -155,6 +155,7 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
         htmlDir.mkdirs();
 
         LauncherUtils.extractHTAFile(htmlDir, getPort(), "/core/TestRunner.html", "TestRunner.html");
+        LauncherUtils.extractHTAFile(htmlDir, getPort(), "/core/TestPrompt.html", "TestPrompt.html");
         LauncherUtils.extractHTAFile(htmlDir, getPort(), "/core/RemoteRunner.html", "RemoteRunner.html");
 
     }
@@ -297,6 +298,10 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
 
     @Override // need to specify an absolute resultsUrl
     public void launchHTMLSuite(String suiteUrl, String browserURL, boolean multiWindow, String defaultLogLevel) {
+        // If navigating to TestPrompt, use the baked-in version instead.
+        if (suiteUrl != null && suiteUrl.startsWith("TestPrompt.html?")) {
+            suiteUrl = suiteUrl.replaceFirst("^TestPrompt\\.html\\?", "chrome://src/content/TestPrompt.html?");
+        }
         launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl, multiWindow, getPort(), defaultLogLevel), null);
     }
     
