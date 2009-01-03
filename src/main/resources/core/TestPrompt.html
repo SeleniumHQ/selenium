@@ -67,7 +67,7 @@ Copyright 2004 ThoughtWorks, Inc
         }
 
         function go() {
-            if (!browserVersion.isHTA) return true;
+            if (!browserVersion.isHTA && !browserVersion.isChrome) return true;
             var inputs = document.getElementsByTagName("input");
             var queryString = "";
             for (var i = 0; i < inputs.length; i++) {
