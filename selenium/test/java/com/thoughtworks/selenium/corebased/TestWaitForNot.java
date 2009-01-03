@@ -1,67 +1,32 @@
 package com.thoughtworks.selenium.corebased;
+
 import com.thoughtworks.selenium.*;
-/**
- * @author XlateHtmlSeleneseToJava
- * Generated from /private/tmp/selenium-rc/clients/java/target/selenium-server/tests/TestWaitForNot.html.
- */
-public class TestWaitForNot extends SeleneseTestCase
-{
-   public void testWaitForNot() throws Throwable {
-		try {
-			
+import org.testng.annotations.*;
+import static org.testng.Assert.*;
+import java.util.regex.Pattern;
 
-/* Test WaitForValueNot */
-			// open|../tests/html/test_async_event.html|
-			selenium.open("/selenium-server/tests/html/test_async_event.html");
-			// assertValue|theField|oldValue
-			assertEquals("oldValue", selenium.getValue("theField"));
-			// click|theButton|
-			selenium.click("theButton");
-			// assertValue|theField|oldValue
-			assertEquals("oldValue", selenium.getValue("theField"));
-			boolean sawCondition7 = false;
-			for (int second = 0; second < 60; second++) {
-				try {
-					if (!seleniumEquals("regexp:oldValu[aei]", selenium.getValue("theField"))) {
-						sawCondition7 = true;
-						break;
-					}
-				}
-				catch (Exception ignore) {
-				}
-				pause(1000);
-			}
-			assertTrue(sawCondition7);
-			
-			// verifyValue|theField|newValue
-			verifyEquals("newValue", selenium.getValue("theField"));
-			// assertText|theSpan|Some text
-			assertEquals("Some text", selenium.getText("theSpan"));
-			// click|theSpanButton|
-			selenium.click("theSpanButton");
-			// assertText|theSpan|Some text
-			assertEquals("Some text", selenium.getText("theSpan"));
-			boolean sawCondition12 = false;
-			for (int second = 0; second < 60; second++) {
-				try {
-					if (!seleniumEquals("regexp:Some te[xyz]t", selenium.getText("theSpan"))) {
-						sawCondition12 = true;
-						break;
-					}
-				}
-				catch (Exception ignore) {
-				}
-				pause(1000);
-			}
-			assertTrue(sawCondition12);
-			
-			// verifyText|theSpan|Some new text
-			verifyEquals("Some new text", selenium.getText("theSpan"));
+public class TestWaitForNot extends SeleneseTestNgHelper {
+	@Test public void testWaitForNot() throws Exception {
+		selenium.open("../tests/html/test_async_event.html");
+		assertEquals(selenium.getValue("theField"), "oldValue");
+		selenium.click("theButton");
+		assertEquals(selenium.getValue("theField"), "oldValue");
+		for (int second = 0;; second++) {
+			if (second >= 60) fail("timeout");
+			try { if (!Pattern.compile("oldValu[aei]").matcher(selenium.getValue("theField")).find()) break; } catch (Exception e) {}
+			Thread.sleep(1000);
+		}
 
-			checkForVerificationErrors();
+		verifyEquals(selenium.getValue("theField"), "newValue");
+		assertEquals(selenium.getText("theSpan"), "Some text");
+		selenium.click("theSpanButton");
+		assertEquals(selenium.getText("theSpan"), "Some text");
+		for (int second = 0;; second++) {
+			if (second >= 60) fail("timeout");
+			try { if (!Pattern.compile("Some te[xyz]t").matcher(selenium.getText("theSpan")).find()) break; } catch (Exception e) {}
+			Thread.sleep(1000);
 		}
-		finally {
-			clearVerificationErrors();
-		}
+
+		verifyEquals(selenium.getText("theSpan"), "Some new text");
 	}
 }

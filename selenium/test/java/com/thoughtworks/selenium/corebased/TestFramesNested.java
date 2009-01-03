@@ -1,76 +1,40 @@
 package com.thoughtworks.selenium.corebased;
+
 import com.thoughtworks.selenium.*;
-/**
- * @author XlateHtmlSeleneseToJava
- * Generated from /private/tmp/selenium-rc/clients/java/target/selenium-server/tests/TestFramesNested.html.
- */
-public class TestFramesNested extends SeleneseTestCase
-{
-   public void testFramesNested() throws Throwable {
-		try {
-			
+import org.testng.annotations.*;
+import static org.testng.Assert.*;
+import java.util.regex.Pattern;
 
-/* TestFramesNested */
-			// open|../tests/html/NestedFrames.html|
-			selenium.open("/selenium-server/tests/html/NestedFrames.html");
-			// verifyTitle|NestedFrames|
-			verifyEquals("*NestedFrames", selenium.getTitle());
-			assertTrue(!selenium.isTextPresent("This is a test"));
-			// selectFrame|mainFrame|
-			selenium.selectFrame("mainFrame");
-			// verifyTitle|NestedFrames2|
-			verifyEquals("*NestedFrames2", selenium.getTitle());
-			// selectFrame|mainFrame|
-			selenium.selectFrame("mainFrame");
-			// verifyTitle|AUT|
-			verifyEquals("*AUT", selenium.getTitle());
-			// selectFrame|mainFrame|
-			selenium.selectFrame("mainFrame");
-			// verifyLocation|*/tests/html/test_open.html|
-			verifyEquals("*/tests/html/test_open.html", selenium.getLocation());
-			assertTrue(selenium.isTextPresent("This is a test"));
-			// selectFrame|relative=up|
-			selenium.selectFrame("relative=up");
-			// verifyTitle|AUT|
-			verifyEquals("*AUT", selenium.getTitle());
-			assertTrue(!selenium.isTextPresent("This is a test"));
-			// selectFrame|relative=top|
-			selenium.selectFrame("relative=top");
-			// verifyTitle|NestedFrames|
-			verifyEquals("*NestedFrames", selenium.getTitle());
-			// selectFrame|dom=window.frames[1]|
-			selenium.selectFrame("dom=window.frames[1]");
-			// verifyTitle|NestedFrames2|
-			verifyEquals("*NestedFrames2", selenium.getTitle());
-			// selectFrame|relative=top|
-			selenium.selectFrame("relative=top");
-			// verifyTitle|NestedFrames|
-			verifyEquals("*NestedFrames", selenium.getTitle());
-			// selectFrame|index=1|
-			selenium.selectFrame("index=1");
-			// verifyTitle|NestedFrames2|
-			verifyEquals("*NestedFrames2", selenium.getTitle());
-			// selectFrame|relative=top|
-			selenium.selectFrame("relative=top");
-			// verifyTitle|NestedFrames|
-			verifyEquals("*NestedFrames", selenium.getTitle());
-			// selectFrame|foo|
-			selenium.selectFrame("foo");
-			// verifyTitle|NestedFrames2|
-			verifyEquals("*NestedFrames2", selenium.getTitle());
-			// selectFrame|relative=top|
-			selenium.selectFrame("relative=top");
-			// verifyTitle|NestedFrames|
-			verifyEquals("*NestedFrames", selenium.getTitle());
-			// selectFrame|dom=window.frames["mainFrame"].frames["mainFrame"]|
-			selenium.selectFrame("dom=window.frames[\"mainFrame\"].frames[\"mainFrame\"]");
-			// verifyTitle|AUT|
-			verifyEquals("*AUT", selenium.getTitle());
-
-			checkForVerificationErrors();
-		}
-		finally {
-			clearVerificationErrors();
-		}
+public class TestFramesNested extends SeleneseTestNgHelper {
+	@Test public void testFramesNested() throws Exception {
+		selenium.open("../tests/html/NestedFrames.html");
+		verifyEquals(selenium.getTitle(), "NestedFrames");
+		verifyFalse(selenium.isTextPresent("This is a test"));
+		selenium.selectFrame("mainFrame");
+		verifyEquals(selenium.getTitle(), "NestedFrames2");
+		selenium.selectFrame("mainFrame");
+		verifyEquals(selenium.getTitle(), "AUT");
+		selenium.selectFrame("mainFrame");
+		verifyTrue(selenium.getLocation().matches("^[\\s\\S]*/tests/html/test_open\\.html$"));
+		verifyTrue(selenium.isTextPresent("This is a test"));
+		selenium.selectFrame("relative=up");
+		verifyEquals(selenium.getTitle(), "AUT");
+		verifyFalse(selenium.isTextPresent("This is a test"));
+		selenium.selectFrame("relative=top");
+		verifyEquals(selenium.getTitle(), "NestedFrames");
+		selenium.selectFrame("dom=window.frames[1]");
+		verifyEquals(selenium.getTitle(), "NestedFrames2");
+		selenium.selectFrame("relative=top");
+		verifyEquals(selenium.getTitle(), "NestedFrames");
+		selenium.selectFrame("index=1");
+		verifyEquals(selenium.getTitle(), "NestedFrames2");
+		selenium.selectFrame("relative=top");
+		verifyEquals(selenium.getTitle(), "NestedFrames");
+		selenium.selectFrame("foo");
+		verifyEquals(selenium.getTitle(), "NestedFrames2");
+		selenium.selectFrame("relative=top");
+		verifyEquals(selenium.getTitle(), "NestedFrames");
+		selenium.selectFrame("dom=window.frames[\"mainFrame\"].frames[\"mainFrame\"]");
+		verifyEquals(selenium.getTitle(), "AUT");
 	}
 }

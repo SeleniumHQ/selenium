@@ -6,8 +6,8 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-common"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-firefox"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-internet-explorer"/>
-	<classpathentry kind="lib" path="lib/buildtime/testng-5.7-jdk15.jar"/>
+	<classpathentry kind="lib" path="lib/buildtime/testng-5.8-jdk15.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-htmlunit"/>
-	<classpathentry kind="lib" path="lib/runtime/jetty-6.1.9.jar"/>
+	<classpathentry kind="lib" path="lib/runtime/selenium-java-client-driver-1.0-SNAPSHOT.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

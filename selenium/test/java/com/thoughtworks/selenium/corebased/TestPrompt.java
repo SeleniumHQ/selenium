@@ -1,62 +1,31 @@
 package com.thoughtworks.selenium.corebased;
+
 import com.thoughtworks.selenium.*;
-/**
- * @author XlateHtmlSeleneseToJava
- * Generated from /private/tmp/selenium-rc/clients/java/target/selenium-server/tests/TestPrompt.html.
- */
-public class TestPrompt extends SeleneseTestCase
-{
-   public void testPrompt() throws Throwable {
-		try {
-			
+import org.testng.annotations.*;
+import static org.testng.Assert.*;
+import java.util.regex.Pattern;
 
-/* Test verify Prompting */
-			// open|../tests/html/test_prompt.html|
-			selenium.open("/selenium-server/tests/html/test_prompt.html");
-			// verifyPromptNotPresent||
-			assertTrue(!selenium.isPromptPresent());
-			// assertPromptNotPresent||
-			assertTrue(!selenium.isPromptPresent());
-			// answerOnNextPrompt|no|
-			selenium.answerOnNextPrompt("no");
-			// click|promptAndLeave|
-			selenium.click("promptAndLeave");
-			// verifyPromptPresent||
-			assertTrue(selenium.isPromptPresent());
-			boolean sawCondition9 = false;
-			for (int second = 0; second < 60; second++) {
-				try {
-					if ((selenium.isPromptPresent())) {
-						sawCondition9 = true;
-						break;
-					}
-				}
-				catch (Exception ignore) {
-				}
-				pause(1000);
-			}
-			assertTrue(sawCondition9);
-			
-			// assertPromptPresent||
-			assertTrue(selenium.isPromptPresent());
-			// verifyPrompt|Type 'yes' and click OK|
-			verifyEquals("Type 'yes' and click OK", selenium.getPrompt());
-			// verifyTitle|Test Prompt|
-			verifyEquals("*Test Prompt", selenium.getTitle());
-			// answerOnNextPrompt|yes|
-			selenium.answerOnNextPrompt("yes");
-			// clickAndWait|promptAndLeave|
-			selenium.click("promptAndLeave");
-			selenium.waitForPageToLoad("5000");
-			// verifyPrompt|*'yes'*|
-			verifyEquals("*'yes'*", selenium.getPrompt());
-			// verifyTitle|Dummy Page|
-			verifyEquals("*Dummy Page", selenium.getTitle());
+public class TestPrompt extends SeleneseTestNgHelper {
+	@Test public void testPrompt() throws Exception {
+		selenium.open("../tests/html/test_prompt.html");
+		verifyFalse(selenium.isPromptPresent());
+		assertFalse(selenium.isPromptPresent());
+		selenium.answerOnNextPrompt("no");
+		selenium.click("promptAndLeave");
+		verifyTrue(selenium.isPromptPresent());
+		for (int second = 0;; second++) {
+			if (second >= 60) fail("timeout");
+			try { if (selenium.isPromptPresent()) break; } catch (Exception e) {}
+			Thread.sleep(1000);
+		}
 
-			checkForVerificationErrors();
-		}
-		finally {
-			clearVerificationErrors();
-		}
+		assertTrue(selenium.isPromptPresent());
+		verifyEquals(selenium.getPrompt(), "Type 'yes' and click OK");
+		verifyEquals(selenium.getTitle(), "Test Prompt");
+		selenium.answerOnNextPrompt("yes");
+		selenium.click("promptAndLeave");
+		selenium.waitForPageToLoad("30000");
+		verifyTrue(selenium.getPrompt().matches("^[\\s\\S]*'yes'[\\s\\S]*$"));
+		verifyEquals(selenium.getTitle(), "Dummy Page");
 	}
 }

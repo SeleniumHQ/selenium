@@ -1,44 +1,18 @@
 package com.thoughtworks.selenium.corebased;
+
 import com.thoughtworks.selenium.*;
-/**
- * @author XlateHtmlSeleneseToJava
- * Generated from /private/tmp/selenium-rc/clients/java/target/selenium-server/tests/TestEvilClosingWindow.html.
- */
-public class TestEvilClosingWindow extends SeleneseTestCase
-{
-   public void testEvilClosingWindow() throws Throwable {
-		try {
-			
+import org.testng.annotations.*;
+import static org.testng.Assert.*;
+import java.util.regex.Pattern;
 
-/* Test selectWindow */
-			// open|../tests/html/test_select_window.html|
-			selenium.open("/selenium-server/tests/html/test_select_window.html");
-			// click|popupPage|
-			selenium.click("popupPage");
-			// waitForPopUp|myPopupWindow|5000
-			selenium.waitForPopUp("myPopupWindow", "5000");
-			// selectWindow|myPopupWindow|
-			selenium.selectWindow("myPopupWindow");
-			// verifyLocation|*/tests/html/test_select_window_popup.html|
-			verifyEquals("*/tests/html/test_select_window_popup.html", selenium.getLocation());
-			// close||
-			selenium.close();
-
-			boolean sawThrow9 = false;
-			try {
-							// assertLocation|*/tests/html/test_select_window_popup.html|
-			assertEquals("*/tests/html/test_select_window_popup.html", selenium.getLocation());
-			}
-			catch (Throwable e) {
-				sawThrow9 = true;
-			}
-			verifyTrue(sawThrow9);
-			
-
-			checkForVerificationErrors();
-		}
-		finally {
-			clearVerificationErrors();
-		}
+public class TestEvilClosingWindow extends SeleneseTestNgHelper {
+	@Test public void testEvilClosingWindow() throws Exception {
+		selenium.open("../tests/html/test_select_window.html");
+		selenium.click("popupPage");
+		selenium.waitForPopUp("myPopupWindow", "5000");
+		selenium.selectWindow("myPopupWindow");
+		verifyTrue(selenium.getLocation().matches("^[\\s\\S]*/tests/html/test_select_window_popup\\.html$"));
+		selenium.close();
+		try { assertTrue(selenium.getLocation().matches("^[\\s\\S]*/tests/html/test_select_window_popup\\.html$")); fail("expected failure"); } catch (Throwable e) {}
 	}
 }

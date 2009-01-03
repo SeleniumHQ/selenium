@@ -1,42 +1,32 @@
 package com.thoughtworks.selenium.corebased;
+
 import com.thoughtworks.selenium.*;
-/**
- * @author XlateHtmlSeleneseToJava
- * Generated from /private/tmp/selenium-rc/clients/java/target/selenium-server/tests/TestGoBack.html.
- */
-public class TestGoBack extends SeleneseTestCase
-{
-   public void testGoBack() throws Throwable {
-		try {
-			
+import org.testng.annotations.*;
+import static org.testng.Assert.*;
+import java.util.regex.Pattern;
 
-/* Test Back and Forward */
-			// open|../tests/html/test_click_page1.html|
-			selenium.open("/selenium-server/tests/html/test_click_page1.html");
-			// verifyTitle|Click Page 1|
-			verifyEquals("*Click Page 1", selenium.getTitle());
-
-			/* Click a regular link */
-			// clickAndWait|link|
-			selenium.click("link");
-			selenium.waitForPageToLoad("5000");
-			// verifyTitle|Click Page Target|
-			verifyEquals("*Click Page Target", selenium.getTitle());
-			// goBackAndWait||
-			selenium.goBack();
-			selenium.waitForPageToLoad("5000");
-			// verifyTitle|Click Page 1|
-			verifyEquals("*Click Page 1", selenium.getTitle());
-
-			/* history.forward() generates 'Permission Denied' in IE>>>>>goForward////////////<<<<<
-			// verifyTitle|Click Page Target|
-			verifyEquals("*Click Page Target", selenium.getTitle());
- */
-
-			checkForVerificationErrors();
-		}
-		finally {
-			clearVerificationErrors();
-		}
+public class TestGoBack extends SeleneseTestNgHelper {
+	@Test public void testGoBack() throws Exception {
+		selenium.open("../tests/html/test_click_page1.html");
+		verifyEquals(selenium.getTitle(), "Click Page 1");
+		//  Click a regular link 
+		selenium.click("link");
+		selenium.waitForPageToLoad("30000");
+		verifyEquals(selenium.getTitle(), "Click Page Target");
+		selenium.goBack();
+		selenium.waitForPageToLoad("30000");
+		verifyEquals(selenium.getTitle(), "Click Page 1");
+		//  history.forward() generates 'Permission Denied' in IE 
+		//     <tr>
+		//       <td>goForward</td>
+		//       <td>&nbsp;</td>
+		//       <td>&nbsp;</td>
+		//     </tr>
+		//     <tr>
+		//       <td>verifyTitle</td>
+		//       <td>Click Page Target</td>
+		//       <td>&nbsp;</td>
+		//     </tr>
+		//     
 	}
 }

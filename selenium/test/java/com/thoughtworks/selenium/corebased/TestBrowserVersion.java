@@ -1,22 +1,12 @@
 package com.thoughtworks.selenium.corebased;
+
 import com.thoughtworks.selenium.*;
-/**
- * @author XlateHtmlSeleneseToJava
- * Generated from /private/tmp/selenium-rc/clients/java/target/selenium-server/tests/TestBrowserVersion.html.
- */
-public class TestBrowserVersion extends SeleneseTestCase
-{
-   public void testBrowserVersion() throws Throwable {
-		try {
-			
+import org.testng.annotations.*;
+import static org.testng.Assert.*;
+import java.util.regex.Pattern;
 
-/* Test Browser Version */
-			// echo|javascript{browserVersion.name}|			: op not meaningful from rc client
-
-			checkForVerificationErrors();
-		}
-		finally {
-			clearVerificationErrors();
-		}
+public class TestBrowserVersion extends SeleneseTestNgHelper {
+	@Test public void testBrowserVersion() throws Exception {
+		System.out.println(selenium.getEval("browserVersion.name"));
 	}
 }

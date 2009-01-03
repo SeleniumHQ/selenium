@@ -1,29 +1,19 @@
 package com.thoughtworks.selenium.corebased;
+
 import com.thoughtworks.selenium.*;
-/**
- * @author XlateHtmlSeleneseToJava
- * Generated from /private/tmp/selenium-rc/clients/java/target/selenium-server/tests/TestQuickOpen.html.
- */
-public class TestQuickOpen extends SeleneseTestCase
-{
-   public void testQuickOpen() throws Throwable {
-		try {
-			
+import org.testng.annotations.*;
+import static org.testng.Assert.*;
+import java.util.regex.Pattern;
 
-/* Test Quick Open */
-
-			/* >>>>>setTimeout//////5000//////<<<<<
- */
-			// open|../tests/html/test_open.html|
-			selenium.open("/selenium-server/tests/html/test_open.html");
-			// open|../tests/html/test_page.slow.html|
-			selenium.open("/selenium-server/tests/html/test_page.slow.html");
-			assertTrue(selenium.isTextPresent("This is a slow-loading page"));
-
-			checkForVerificationErrors();
-		}
-		finally {
-			clearVerificationErrors();
-		}
+public class TestQuickOpen extends SeleneseTestNgHelper {
+	@Test public void testQuickOpen() throws Exception {
+		// <tr>
+		//       <td>setTimeout</td>
+		//       <td>5000</td>
+		//       <td>&nbsp;</td>
+		//     </tr>
+		selenium.open("../tests/html/test_open.html");
+		selenium.open("../tests/html/test_page.slow.html");
+		verifyTrue(selenium.isTextPresent("This is a slow-loading page"));
 	}
 }

@@ -1,66 +1,36 @@
 package com.thoughtworks.selenium.corebased;
+
 import com.thoughtworks.selenium.*;
-/**
- * @author XlateHtmlSeleneseToJava
- * Generated from /private/tmp/selenium-rc/clients/java/target/selenium-server/tests/TestWait.html.
- */
-public class TestWait extends SeleneseTestCase
-{
-   public void testWait() throws Throwable {
-		try {
-			
+import org.testng.annotations.*;
+import static org.testng.Assert.*;
+import java.util.regex.Pattern;
 
-/* Test AndWait commands for Reload */
-
-			/* Link click */
-			// open|../tests/html/test_reload_onchange_page.html|
-			selenium.open("/selenium-server/tests/html/test_reload_onchange_page.html");
-			// clickAndWait|theLink|
-			selenium.click("theLink");
-			selenium.waitForPageToLoad("5000");
-
-			/* Page should reload */
-			// verifyTitle|Slow Loading Page|
-			verifyEquals("*Slow Loading Page", selenium.getTitle());
-			// open|../tests/html/test_reload_onchange_page.html|
-			selenium.open("/selenium-server/tests/html/test_reload_onchange_page.html");
-			// selectAndWait|theSelect|Second Option
-			selenium.select("theSelect", "Second Option");
-			selenium.waitForPageToLoad("5000");
-
-			/* Page should reload */
-			// verifyTitle|Slow Loading Page|
-			verifyEquals("*Slow Loading Page", selenium.getTitle());
-
-			/* Textbox with onblur */
-			// open|../tests/html/test_reload_onchange_page.html|
-			selenium.open("/selenium-server/tests/html/test_reload_onchange_page.html");
-			// type|theTextbox|new value
-			selenium.type("theTextbox", "new value");
-			// fireEventAndWait|theTextbox|blur
-			selenium.fireEvent("theTextbox", "blur");
-			selenium.waitForPageToLoad("5000");
-			// verifyTitle|Slow Loading Page|
-			verifyEquals("*Slow Loading Page", selenium.getTitle());
-
-			/* Submit button */
-			// open|../tests/html/test_reload_onchange_page.html|
-			selenium.open("/selenium-server/tests/html/test_reload_onchange_page.html");
-			// clickAndWait|theSubmit|
-			selenium.click("theSubmit");
-			selenium.waitForPageToLoad("5000");
-			// verifyTitle|Slow Loading Page|
-			verifyEquals("*Slow Loading Page", selenium.getTitle());
-			// clickAndWait|slowPage_reload|
-			selenium.click("slowPage_reload");
-			selenium.waitForPageToLoad("5000");
-			// verifyTitle|Slow Loading Page|
-			verifyEquals("*Slow Loading Page", selenium.getTitle());
-
-			checkForVerificationErrors();
-		}
-		finally {
-			clearVerificationErrors();
-		}
+public class TestWait extends SeleneseTestNgHelper {
+	@Test public void testWait() throws Exception {
+		//  Link click 
+		selenium.open("../tests/html/test_reload_onchange_page.html");
+		selenium.click("theLink");
+		selenium.waitForPageToLoad("30000");
+		//  Page should reload 
+		verifyEquals(selenium.getTitle(), "Slow Loading Page");
+		selenium.open("../tests/html/test_reload_onchange_page.html");
+		selenium.select("theSelect", "Second Option");
+		selenium.waitForPageToLoad("30000");
+		//  Page should reload 
+		verifyEquals(selenium.getTitle(), "Slow Loading Page");
+		//  Textbox with onblur 
+		selenium.open("../tests/html/test_reload_onchange_page.html");
+		selenium.type("theTextbox", "new value");
+		selenium.fireEvent("theTextbox", "blur");
+		selenium.waitForPageToLoad("30000");
+		verifyEquals(selenium.getTitle(), "Slow Loading Page");
+		//  Submit button 
+		selenium.open("../tests/html/test_reload_onchange_page.html");
+		selenium.click("theSubmit");
+		selenium.waitForPageToLoad("30000");
+		verifyEquals(selenium.getTitle(), "Slow Loading Page");
+		selenium.click("slowPage_reload");
+		selenium.waitForPageToLoad("30000");
+		verifyEquals(selenium.getTitle(), "Slow Loading Page");
 	}
 }

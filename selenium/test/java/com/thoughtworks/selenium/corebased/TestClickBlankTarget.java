@@ -1,75 +1,38 @@
 package com.thoughtworks.selenium.corebased;
+
 import com.thoughtworks.selenium.*;
-/**
- * @author XlateHtmlSeleneseToJava
- * Generated from /private/tmp/selenium-rc/clients/java/target/selenium-server/tests/TestClickBlankTarget.html.
- */
-public class TestClickBlankTarget extends SeleneseTestCase
-{
-   public void testClickBlankTarget() throws Throwable {
-		try {
-			
+import org.testng.annotations.*;
+import static org.testng.Assert.*;
+import java.util.regex.Pattern;
 
-/* TestClickBlankTarget */
-			// open|../tests/html/Frames.html|
-			selenium.open("/selenium-server/tests/html/Frames.html");
-			// selectFrame|bottomFrame|
-			selenium.selectFrame("bottomFrame");
-			// click|changeBlank|
-			selenium.click("changeBlank");
-			// waitForPopUp|_blank|10000
-			selenium.waitForPopUp("_blank", "10000");
-			// selectWindow|_blank|
-			selenium.selectWindow("_blank");
-			// click|changeSpan|
-			selenium.click("changeSpan");
-			// close||
-			selenium.close();
-			// selectWindow|null|
-			selenium.selectWindow("null");
-			// click|changeBlank|
-			selenium.click("changeBlank");
-			// waitForPopUp|_blank|10000
-			selenium.waitForPopUp("_blank", "10000");
-			// selectWindow|_blank|
-			selenium.selectWindow("_blank");
-			// click|changeSpan|
-			selenium.click("changeSpan");
-			// close||
-			selenium.close();
-			// selectWindow|null|
-			selenium.selectWindow("null");
-			// selectFrame|bottomFrame|
-			selenium.selectFrame("bottomFrame");
-			// submit|formBlank|
-			selenium.submit("formBlank");
-			// waitForPopUp|_blank|10000
-			selenium.waitForPopUp("_blank", "10000");
-			// selectWindow|_blank|
-			selenium.selectWindow("_blank");
-			// click|changeSpan|
-			selenium.click("changeSpan");
-			// close||
-			selenium.close();
-			// selectWindow|null|
-			selenium.selectWindow("null");
-			// open|../tests/html/test_select_window.html|
-			selenium.open("/selenium-server/tests/html/test_select_window.html");
-			// click|popupBlank|
-			selenium.click("popupBlank");
-			// waitForPopUp|_blank|10000
-			selenium.waitForPopUp("_blank", "10000");
-			// selectWindow|_blank|
-			selenium.selectWindow("_blank");
-			// verifyTitle|Select Window Popup|
-			verifyEquals("*Select Window Popup", selenium.getTitle());
-			// close||
-			selenium.close();
-
-			checkForVerificationErrors();
-		}
-		finally {
-			clearVerificationErrors();
-		}
+public class TestClickBlankTarget extends SeleneseTestNgHelper {
+	@Test public void testClickBlankTarget() throws Exception {
+		selenium.open("../tests/html/Frames.html");
+		selenium.selectFrame("bottomFrame");
+		selenium.click("changeBlank");
+		selenium.waitForPopUp("_blank", "10000");
+		selenium.selectWindow("_blank");
+		selenium.click("changeSpan");
+		selenium.close();
+		selenium.selectWindow("null");
+		selenium.click("changeBlank");
+		selenium.waitForPopUp("_blank", "10000");
+		selenium.selectWindow("_blank");
+		selenium.click("changeSpan");
+		selenium.close();
+		selenium.selectWindow("null");
+		selenium.selectFrame("bottomFrame");
+		selenium.submit("formBlank");
+		selenium.waitForPopUp("_blank", "10000");
+		selenium.selectWindow("_blank");
+		selenium.click("changeSpan");
+		selenium.close();
+		selenium.selectWindow("null");
+		selenium.open("../tests/html/test_select_window.html");
+		selenium.click("popupBlank");
+		selenium.waitForPopUp("_blank", "10000");
+		selenium.selectWindow("_blank");
+		verifyEquals(selenium.getTitle(), "Select Window Popup");
+		selenium.close();
 	}
 }

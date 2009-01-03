@@ -1,25 +1,13 @@
 package com.thoughtworks.selenium.corebased;
+
 import com.thoughtworks.selenium.*;
-/**
- * @author XlateHtmlSeleneseToJava
- * Generated from /private/tmp/selenium-rc/clients/java/target/selenium-server/tests/TestHighlight.html.
- */
-public class TestHighlight extends SeleneseTestCase
-{
-   public void testHighlight() throws Throwable {
-		try {
-			
+import org.testng.annotations.*;
+import static org.testng.Assert.*;
+import java.util.regex.Pattern;
 
-/* Test Highlight */
-			// open|../tests/html/test_locators.html|
-			selenium.open("/selenium-server/tests/html/test_locators.html");
-			// highlight|id1|
-			selenium.highlight("id1");
-
-			checkForVerificationErrors();
-		}
-		finally {
-			clearVerificationErrors();
-		}
+public class TestHighlight extends SeleneseTestNgHelper {
+	@Test public void testHighlight() throws Exception {
+		selenium.open("../tests/html/test_locators.html");
+		selenium.highlight("id1");
 	}
 }

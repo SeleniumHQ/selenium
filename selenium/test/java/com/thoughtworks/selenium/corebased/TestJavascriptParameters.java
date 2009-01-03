@@ -1,48 +1,28 @@
 package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.*;
-/**
- * @author Nelson Sproul (nelsons@plumtree.com)
- * based on, but different from, selenium/tests/TestJavascriptParameters.html.
- */
-public class TestJavascriptParameters extends SeleneseTestCase
-{
-	public void test() throws Throwable {
-        	try {
+import org.testng.annotations.*;
+import static org.testng.Assert.*;
+import java.util.regex.Pattern;
 
-/* Test javascript evaluation of parameters       */
-		// open|./tests/html/test_store_value.html
-		selenium.open("/selenium-server/tests/html/test_store_value.html");
-		// type|theText|javascript{[1,2,3,4,5].join(':')}
+public class TestJavascriptParameters extends SeleneseTestNgHelper {
+	@Test public void testJavascriptParameters() throws Exception {
+		selenium.open("../tests/html/test_store_value.html");
 		selenium.type("theText", selenium.getEval("[1,2,3,4,5].join(':')"));
-		// verifyValue|theText|1:2:3:4:5
-		verifyEquals("1:2:3:4:5", selenium.getValue("theText"));
-		// type|javascript{'the' + 'Text'}|javascript{10 * 5}
+		verifyEquals(selenium.getValue("theText"), "1:2:3:4:5");
 		selenium.type(selenium.getEval("'the' + 'Text'"), selenium.getEval("10 * 5"));
-		// verifyValue|theText|50
-		verifyEquals("50", selenium.getValue("theText"));
-		// verifyValue|theText|javascript{10 + 10 + 10 + 10 + 10}
-		verifyEquals(selenium.getEval("10 + 10 + 10 + 10 + 10"), selenium.getValue("theText"));
-
-		/* Demonstrate interation between variable substitution and javascript */
-		// store|the value|var1
+		verifyEquals(selenium.getValue("theText"), "50");
+		verifyEquals(selenium.getValue("theText"), selenium.getEval("10 + 10 + 10 + 10 + 10"));
+		//  Check a complex expression 
+		selenium.type("theText", selenium.getEval("\n function square(n) {\n return n * n;\n };\n '25 * 25 = ' + square(25);\n "));
+		verifyTrue(selenium.getValue("theText").matches("^25 [\\s\\S]* 25 = 625$"));
+		//  Demonstrate interation between variable substitution and javascript 
 		String var1 = "the value";
-		// type|theText|javascript{'${var1}'.toUpperCase()}
 		selenium.type("theText", selenium.getEval("'${var1}'.toUpperCase()"));
-		// verifyValue|theText|${VAR1}
-		verifyEquals("${VAR1}", selenium.getValue("theText"));    // hand translated
-		// type|theText|javascript{storedVars['var1'].toUpperCase()}
-        selenium.type("theText", selenium.getEval("'" + var1 + "'.toUpperCase()"));
-        // verifyValue|theText|THE VALUE
-		verifyEquals("THE VALUE", selenium.getValue("theText"));
-		
-        // verifyExpression|javascript{selenium.getValue('theText')}|regexp:TH[Ee] VALUE
-		verifyEquals(selenium.getEval("selenium.getValue('theText')"), "regexp:TH[Ee] VALUE");
-
-		checkForVerificationErrors();
-            }
-            finally {
-            	clearVerificationErrors();
-            }
+		verifyEquals(selenium.getValue("theText"), "${VAR1}");
+		selenium.type("theText", selenium.getEval("'" + var1 + "'.toUpperCase()"));
+		verifyEquals(selenium.getValue("theText"), "THE VALUE");
+		verifyEquals(selenium.getExpression(selenium.getEval("'" + var1 + "'.toUpperCase()")), "THE VALUE");
+		verifyTrue(Pattern.compile("TH[Ee] VALUE").matcher(selenium.getExpression(selenium.getEval("selenium.getValue('theText')"))).find());
 	}
 }

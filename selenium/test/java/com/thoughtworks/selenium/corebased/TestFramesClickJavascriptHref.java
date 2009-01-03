@@ -1,33 +1,17 @@
 package com.thoughtworks.selenium.corebased;
+
 import com.thoughtworks.selenium.*;
-/**
- * @author XlateHtmlSeleneseToJava
- * Generated from /private/tmp/selenium-rc/clients/java/target/selenium-server/tests/TestFramesClickJavascriptHref.html.
- */
-public class TestFramesClickJavascriptHref extends SeleneseTestCase
-{
-   public void testFramesClickJavascriptHref() throws Throwable {
-		try {
-			
+import org.testng.annotations.*;
+import static org.testng.Assert.*;
+import java.util.regex.Pattern;
 
-/* TestFramesClickJavaScriptHrefInWrongFrame */
-			// open|../tests/html/Frames.html|
-			selenium.open("/selenium-server/tests/html/Frames.html");
-			// selectFrame|mainFrame|
-			selenium.selectFrame("mainFrame");
-			// open|../tests/html/test_click_javascript_page.html|
-			selenium.open("/selenium-server/tests/html/test_click_javascript_page.html");
-			// selectFrame|relative=top|
-			selenium.selectFrame("relative=top");
-			// click|link|
-			selenium.click("link");
-			// verifyAlert|link clicked: foo|
-			verifyEquals("link clicked: foo", selenium.getAlert());
-
-			checkForVerificationErrors();
-		}
-		finally {
-			clearVerificationErrors();
-		}
+public class TestFramesClickJavascriptHref extends SeleneseTestNgHelper {
+	@Test public void testFramesClickJavascriptHref() throws Exception {
+		selenium.open("../tests/html/Frames.html");
+		selenium.selectFrame("mainFrame");
+		selenium.open("../tests/html/test_click_javascript_page.html");
+		selenium.selectFrame("relative=top");
+		selenium.click("link");
+		verifyEquals(selenium.getAlert(), "link clicked: foo");
 	}
 }

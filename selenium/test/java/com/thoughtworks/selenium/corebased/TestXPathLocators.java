@@ -1,143 +1,104 @@
 package com.thoughtworks.selenium.corebased;
+
 import com.thoughtworks.selenium.*;
-/**
- * @author XlateHtmlSeleneseToJava
- * Generated from C:\svn\selenium\rc\trunk\clients\java\target\selenium-server\tests/TestXPathLocators.html.
- */
-public class TestXPathLocators extends SeleneseTestCase
-{
-   public void testXPathLocators() throws Throwable {
-        try {
-            
+import org.testng.annotations.*;
+import static org.testng.Assert.*;
+import java.util.regex.Pattern;
 
-/* Test XPath Locators */
-            // open|../tests/html/test_locators.html|
-            selenium.open("/selenium-server/tests/html/test_locators.html");
-            // verifyText|xpath=//a|this is the first element
-            verifyEquals("this is the first element", selenium.getText("xpath=//a"));
-            // verifyText|xpath=//a[@class='a2']|this is the second element
-            verifyEquals("this is the second element", selenium.getText("xpath=//a[@class='a2']"));
-            // verifyText|xpath=//*[@class='a2']|this is the second element
-            verifyEquals("this is the second element", selenium.getText("xpath=//*[@class='a2']"));
-            // verifyText|xpath=//a[2]|this is the second element
-            verifyEquals("this is the second element", selenium.getText("xpath=//a[2]"));
-            // verifyText|xpath=//a[position()=2]|this is the second element
-            verifyEquals("this is the second element", selenium.getText("xpath=//a[position()=2]"));
+public class TestXPathLocators extends SeleneseTestNgHelper {
+	@Test public void testXPathLocators() throws Exception {
+		selenium.open("../tests/html/test_locators.html");
+		verifyEquals(selenium.getText("xpath=//a"), "this is the first element");
+		verifyEquals(selenium.getText("xpath=//a[@class='a2']"), "this is the second element");
+		verifyEquals(selenium.getText("xpath=//*[@class='a2']"), "this is the second element");
+		verifyEquals(selenium.getText("xpath=//a[2]"), "this is the second element");
+		verifyEquals(selenium.getText("xpath=//a[position()=2]"), "this is the second element");
+		verifyFalse(selenium.isElementPresent("xpath=//a[@href='foo']"));
+		verifyEquals(selenium.getAttribute("xpath=//a[contains(@href,'#id1')]/@class"), "a1");
+		verifyTrue(selenium.isElementPresent("xpath=//a[text()=\"this is the" + "\u00a0" + "third element\"]"));
+		verifyEquals(selenium.getText("//a"), "this is the first element");
+		verifyEquals(selenium.getAttribute("//a[contains(@href,'#id1')]/@class"), "a1");
+		verifyEquals(selenium.getText("xpath=(//table[@class='stylee'])//th[text()='theHeaderText']/../td"), "theCellText");
+		selenium.click("//input[@name='name2' and @value='yes']");
+		verifyTrue(selenium.isElementPresent("xpath=//*[text()=\"right\"]"));
+		verifyEquals(selenium.getValue("xpath=//div[@id='nested1']/div[1]//input[2]"), "nested3b");
+		verifyEquals(selenium.getValue("xpath=id('nested1')/div[1]//input[2]"), "nested3b");
+		verifyEquals(selenium.getValue("xpath=id('anotherNested')//div[contains(@id, 'useful')]//input"), "winner");
+		selenium.assignId("xpath=//*[text()=\"right\"]", "rightButton");
+		verifyTrue(selenium.isElementPresent("rightButton"));
+		verifyEquals(selenium.getXpathCount("id('nested1')/div[1]//input"), "2");
+		verifyEquals(selenium.getXpathCount("//div[@id='nonexistent']"), "0");
+		verifyTrue(selenium.isElementPresent("xpath=//a[@href=\"javascript:doFoo('a', 'b')\"]"));
+		verifyFalse(selenium.isElementPresent("xpath=id('foo')//applet"));
+		try { assertTrue(selenium.isElementPresent("xpath=id('foo')//applet2")); fail("expected failure"); } catch (Throwable e) {}
+		try { assertTrue(selenium.isElementPresent("xpath=//a[0}")); fail("expected failure"); } catch (Throwable e) {}
 
-            boolean sawThrow9 = false;
-            try {
-                // originally verifyElementNotPresent|xpath=//a[@href='foo']|
-                        assertTrue(!selenium.isElementPresent("xpath=//a[@href='foo']"));
-            }
-            catch (Throwable e) {
-                sawThrow9 = true;
-            }
-            verifyFalse(sawThrow9);
-            
-            // verifyAttribute|xpath=//a[contains(@href,'#id1')]/@class|a1
-            verifyEquals("a1", selenium.getAttribute("xpath=//a[contains(@href,'#id1')]/@class"));
+		// These cases are now covered by the "in play attributes" optimization.
 
-            boolean sawThrow11 = false;
-            try {
-                // originally verifyElementPresent|xpath=//a[text()="this is the${nbsp}third element"]|
-                        assertTrue(selenium.isElementPresent("xpath=//a[text()=\"this is the\u00a0third element\"]"));
-            }
-            catch (Throwable e) {
-                sawThrow11 = true;
-            }
-            verifyFalse(sawThrow11);
-            
-            // verifyText|//a|this is the first element
-            verifyEquals("this is the first element", selenium.getText("//a"));
-            // verifyAttribute|//a[contains(@href,'#id1')]/@class|a1
-            verifyEquals("a1", selenium.getAttribute("//a[contains(@href,'#id1')]/@class"));
-            // verifyText|xpath=(//table[@class='stylee'])//th[text()='theHeaderText']/../td|theCellText
-            verifyEquals("theCellText", selenium.getText("xpath=(//table[@class='stylee'])//th[text()='theHeaderText']/../td"));
-            // click|//input[@name='name2' and @value='yes']|
-            selenium.click("//input[@name='name2' and @value='yes']");
+		// <p>Test toggling of ignoreAttributesWithoutValue. The test must be performed using the non-native ajaxslt engine. After the test, native xpaths are re-enabled.</p>
+		// <table cellpadding="1" cellspacing="1" border="1">
+		//     <tbody>
 
-/* test for SEL-242 */
+		//         <tr>
+		//             <td>allowNativeXpath</td>
+		//             <td>false</td>
+		//             <td>&nbsp;</td>
+		//         </tr>
+		//         <tr>
+		//             <td>ignoreAttributesWithoutValue</td>
+		//             <td>false</td>
+		//             <td>&nbsp;</td>
+		//         </tr>
+		//         <tr>
+		//             <td>verifyXpathCount</td>
+		//             <td>//div[@id='ignore']/a[@class]</td>
+		//             <td>2</td>
+		//         </tr>
+		//         <tr>
+		//             <td>verifyText</td>
+		//             <td>//div[@id='ignore']/a[@class][1]</td>
+		//             <td>over the rainbow</td>
+		//         </tr>
+		//         <tr>
+		//             <td>verifyText</td>
+		//             <td>//div[@id='ignore']/a[@class][2]</td>
+		//             <td>skies are blue</td>
+		//         </tr>
+		//         <tr>
+		//             <td>verifyXpathCount</td>
+		//             <td>//div[@id='ignore']/a[@class='']</td>
+		//             <td>1</td>
+		//         </tr>
+		//         <tr>
+		//             <td>verifyText</td>
+		//             <td>//div[@id='ignore']/a[@class='']</td>
+		//             <td>skies are blue</td>
+		//         </tr>
+		//         <tr>
+		//             <td>ignoreAttributesWithoutValue</td>
+		//             <td>true</td>
+		//             <td>&nbsp;</td>
+		//         </tr>
+		//         <tr>
+		//             <td>verifyXpathCount</td>
+		//             <td>//div[@id='ignore']/a[@class]</td>
+		//             <td>1</td>
+		//         </tr>
+		//         <tr>
+		//             <td>verifyText</td>
+		//             <td>//div[@id='ignore']/a[@class]</td>
+		//             <td>over the rainbow</td>
+		//         </tr>
+		//         <tr>
+		//             <td>verifyXpathCount</td>
+		//             <td>//div[@id='ignore']/a[@class='']</td>
+		//             <td>0</td>
+		//         </tr>
+		//         <tr>
+		//             <td>allowNativeXpath</td>
+		//             <td>true</td>
+		//             <td>&nbsp;</td>
+		//         </tr>
 
-            boolean sawThrow18 = false;
-            try {
-                // originally verifyElementPresent|xpath=//*[text()="right"]|
-                        assertTrue(selenium.isElementPresent("xpath=//*[text()=\"right\"]"));
-            }
-            catch (Throwable e) {
-                sawThrow18 = true;
-            }
-            verifyFalse(sawThrow18);
-            
-
-/* test for SEL-444 */
-            // verifyValue|xpath=//div[@id='nested1']/div[1]//input[2]|nested3b
-            verifyEquals("nested3b", selenium.getValue("xpath=//div[@id='nested1']/div[1]//input[2]"));
-
-/* test for SEL-486 and assignId */
-            // verifyValue|xpath=id('nested1')/div[1]//input[2]|nested3b
-            verifyEquals("nested3b", selenium.getValue("xpath=id('nested1')/div[1]//input[2]"));
-            // verifyValue|xpath=id('anotherNested')//div[contains(@id, 'useful')]//input|winner
-            verifyEquals("winner", selenium.getValue("xpath=id('anotherNested')//div[contains(@id, 'useful')]//input"));
-            // assignId|xpath=//*[text()="right"]|rightButton
-            selenium.assignId("xpath=//*[text()=\"right\"]", "rightButton");
-
-            boolean sawThrow27 = false;
-            try {
-                // originally verifyElementPresent|rightButton|
-                        assertTrue(selenium.isElementPresent("rightButton"));
-            }
-            catch (Throwable e) {
-                sawThrow27 = true;
-            }
-            verifyFalse(sawThrow27);
-            
-
-/* xpath counting */
-            // verifyXpathCount|id('nested1')/div[1]//input|2
-            assertEquals(new Integer(2), selenium.getXpathCount("id(\'nested1\')/div[1]//input"));
-            // verifyXpathCount|//div[@id='nonexistent']|0
-            assertEquals(new Integer(0), selenium.getXpathCount("//div[@id=\'nonexistent\']"));
-
-/* test for SEL-347 */
-
-            boolean sawThrow34 = false;
-            try {
-                // originally verifyElementPresent|xpath=//a[@href="javascript:doFoo('a', 'b')"]|
-                        assertTrue(selenium.isElementPresent("xpath=//a[@href=\"javascript:doFoo('a', 'b')\"]"));
-            }
-            catch (Throwable e) {
-                sawThrow34 = true;
-            }
-            verifyFalse(sawThrow34);
-            
-
-/* test for SEL-492 */
-
-            boolean sawThrow37 = false;
-            try {
-                // originally verifyElementNotPresent|xpath=id('foo')//applet|
-                        assertTrue(!selenium.isElementPresent("xpath=id('foo')//applet"));
-            }
-            catch (Throwable e) {
-                sawThrow37 = true;
-            }
-            verifyFalse(sawThrow37);
-            
-
-            boolean sawThrow38 = false;
-            try {
-                            assertTrue(selenium.isElementPresent("xpath=//a["));
-            }
-            catch (Throwable e) {
-                sawThrow38 = true;
-            }
-            verifyTrue(sawThrow38);
-            
-
-            checkForVerificationErrors();
-        }
-        finally {
-            clearVerificationErrors();
-        }
-    }
+	}
 }

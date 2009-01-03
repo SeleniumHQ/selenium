@@ -6,25 +6,21 @@ TO="`pwd`"
 SRC_DIR=/tmp/selenium-rc
 HOLDING=/tmp/selenium-rc-holding
 
-mkdir -p "$SRC_DIR"
-mkdir -p "$HOLDING"
-
+# Clear up the working directory
 rm -rf "$SRC_DIR"
-rm -rf "$HOLDING"
 
+# Get the latest version of Selenium RC
 svn export http://svn.openqa.org/svn/selenium-rc/trunk "$SRC_DIR"
-cd "$SRC_DIR"
+cd "$SRC_DIR/tests/generated"
 
-mvn install -Dnotest=1 -Dmaven.test.skip=true
+# Build the generated tests
+mvn package -Dnotest=1 -Dmaven.test.skip=true
 
-cd "$SRC_DIR/clients/java/target/generated-sources/test/java"
-cp -r . "$HOLDING"
+# Delete the old tests and copy in the new ones
+rm -f "$TO/test/java/com/thoughtworks/selenium/corebased/*.java"
+rm -f "$TO/test/java/org/openqa/selenium/*.java"
+rm -f "$TO/test/java/org/openqa/selenium/thirdparty/*.java"
 
-cd "$SRC_DIR/tests/src/test/java"
-cp -r . "$HOLDING"
+cp target/generated-sources/test/java/com/thoughtworks/selenium/corebased/*.java "$TO/test/java/com/thoughtworks/selenium/corebased"
+cp -R ../non-generated/src/test/java/org/openqa/selenium/ "$TO/test/java/org/openqa/selenium"
 
-cd "$HOLDING" && echo "In $HOLDING"
-find com -type f -print | grep -v .java | xargs rm
-find org -type f -print | grep -v .java | xargs rm
-
-cp -r "$HOLDING/" "$TO/test/java"

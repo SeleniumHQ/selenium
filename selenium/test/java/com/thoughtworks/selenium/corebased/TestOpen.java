@@ -1,51 +1,30 @@
 package com.thoughtworks.selenium.corebased;
+
 import com.thoughtworks.selenium.*;
-/**
- * @author XlateHtmlSeleneseToJava
- * Generated from /private/tmp/selenium-rc/clients/java/target/selenium-server/tests/TestOpen.html.
- */
-public class TestOpen extends SeleneseTestCase
-{
-   public void testOpen() throws Throwable {
-		try {
-			
+import org.testng.annotations.*;
+import static org.testng.Assert.*;
+import java.util.regex.Pattern;
 
-/* Test Open */
-			// open|../tests/html/test_open.html|
-			selenium.open("/selenium-server/tests/html/test_open.html");
-			// verifyLocation|*/tests/html/test_open.html|
-			verifyEquals("*/tests/html/test_open.html", selenium.getLocation());
-
-			/* Should really split these verifications into their own test file. */
-			// verifyLocation|regexp:.*/tests/html/[Tt]est_open.html|
-			verifyEquals("regexp:.*/tests/html/[Tt]est_open.html", selenium.getLocation());
-			// verifyNotLocation|*/foo.html|
-			verifyNotEquals("*/foo.html", selenium.getLocation());
-			assertTrue(selenium.isTextPresent("glob:This is a test of the open command."));
-			assertTrue(selenium.isTextPresent("This is a test of the open command."));
-			assertTrue(selenium.isTextPresent("exact:This is a test of"));
-			assertTrue(selenium.isTextPresent("regexp:This is a test of"));
-			assertTrue(selenium.isTextPresent("regexp:T*his is a test of"));
-			assertTrue(!selenium.isTextPresent("exact:XXXXThis is a test of"));
-			assertTrue(!selenium.isTextPresent("regexp:ThXXXXXXXXXis is a test of"));
-			// open|../tests/html/test_page.slow.html|
-			selenium.open("/selenium-server/tests/html/test_page.slow.html");
-			// verifyLocation|*/tests/html/test_page.slow.html|
-			verifyEquals("*/tests/html/test_page.slow.html", selenium.getLocation());
-			// verifyTitle|Slow Loading Page|
-			verifyEquals("*Slow Loading Page", selenium.getTitle());
-
-			// open|../tests/html/test_open.html|
-			selenium.open("/selenium-server/tests/html/test_open.html");
-			// open|../tests/html/test_open.html|
-			selenium.open("/selenium-server/tests/html/test_open.html");
-			// open|../tests/html/test_open.html|
-			selenium.open("/selenium-server/tests/html/test_open.html");
-
-			checkForVerificationErrors();
-		}
-		finally {
-			clearVerificationErrors();
-		}
+public class TestOpen extends SeleneseTestNgHelper {
+	@Test public void testOpen() throws Exception {
+		selenium.open("../tests/html/test_open.html");
+		verifyTrue(selenium.getLocation().matches("^[\\s\\S]*/tests/html/test_open\\.html$"));
+		//  Should really split these verifications into their own test file.
+		verifyTrue(Pattern.compile(".*/tests/html/[Tt]est_open.html").matcher(selenium.getLocation()).find());
+		verifyFalse(selenium.getLocation().matches("^[\\s\\S]*/foo\\.html$"));
+		verifyTrue(selenium.isTextPresent("glob:This is a test of the open command."));
+		verifyTrue(selenium.isTextPresent("This is a test of the open command."));
+		verifyTrue(selenium.isTextPresent("exact:This is a test of"));
+		verifyTrue(selenium.isTextPresent("regexp:This is a test of"));
+		verifyTrue(selenium.isTextPresent("regexp:T*his is a test of"));
+		verifyFalse(selenium.isTextPresent("exact:XXXXThis is a test of"));
+		verifyFalse(selenium.isTextPresent("regexp:ThXXXXXXXXXis is a test of"));
+		selenium.open("../tests/html/test_page.slow.html");
+		verifyTrue(selenium.getLocation().matches("^[\\s\\S]*/tests/html/test_page\\.slow\\.html$"));
+		verifyEquals(selenium.getTitle(), "Slow Loading Page");
+		selenium.setTimeout("5000");
+		selenium.open("../tests/html/test_open.html");
+		selenium.open("../tests/html/test_open.html");
+		selenium.open("../tests/html/test_open.html");
 	}
 }

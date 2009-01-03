@@ -1,129 +1,44 @@
 package com.thoughtworks.selenium.corebased;
+
 import com.thoughtworks.selenium.*;
-/**
- * @author XlateHtmlSeleneseToJava
- * Generated from /private/tmp/selenium-rc/clients/java/target/selenium-server/tests/TestAlerts.html.
- */
-public class TestAlerts extends SeleneseTestCase
-{
-   public void testAlerts() throws Throwable {
-		try {
-			
+import org.testng.annotations.*;
+import static org.testng.Assert.*;
+import java.util.regex.Pattern;
 
-/* Test Alert verifyment */
-			// open|../tests/html/test_verify_alert.html|
-			selenium.open("/selenium-server/tests/html/test_verify_alert.html");
-			// verifyAlertNotPresent||
-			assertTrue(!selenium.isAlertPresent());
-			// assertAlertNotPresent||
-			assertTrue(!selenium.isAlertPresent());
-			// click|oneAlert|
-			selenium.click("oneAlert");
-			// verifyAlertPresent||
-			assertTrue(selenium.isAlertPresent());
-			boolean sawCondition8 = false;
-			for (int second = 0; second < 60; second++) {
-				try {
-					if ((selenium.isAlertPresent())) {
-						sawCondition8 = true;
-						break;
-					}
-				}
-				catch (Exception ignore) {
-				}
-				pause(1000);
-			}
-			assertTrue(sawCondition8);
-			
-			// assertAlertPresent||
-			assertTrue(selenium.isAlertPresent());
-			// verifyAlert|Store Below 494 degrees K!|
-			verifyEquals("Store Below 494 degrees K!", selenium.getAlert());
-			// click|oneAlert|
-			selenium.click("oneAlert");
-			// storeAlert|myVar|
-			String myVar = selenium.getAlert();
-			// verifyExpression|${myVar}|Store Below 494 degrees K!
-			verifyEquals(myVar, "Store Below 494 degrees K!");
-			// click|twoAlerts|
-			selenium.click("twoAlerts");
-			// verifyAlert|* 220 degrees C!|
-			verifyEquals("* 220 degrees C!", selenium.getAlert());
-			// verifyAlert|regexp:^Store Below 429 degrees F!|
-			verifyEquals("regexp:^Store Below 429 degrees F!", selenium.getAlert());
-			// clickAndWait|alertAndLeave|
-			selenium.click("alertAndLeave");
-			selenium.waitForPageToLoad("30000");
-			// verifyAlert|I'm Melting! I'm Melting!|
-			verifyEquals("I'm Melting! I'm Melting!", selenium.getAlert());
-			// open|../tests/html/test_verify_alert.html|
-			selenium.open("/selenium-server/tests/html/test_verify_alert.html");
-
-			boolean sawThrow20 = false;
-			try {
-							// assertAlert|noAlert|
-			assertEquals("noAlert", selenium.getAlert());
-			}
-			catch (Throwable e) {
-				sawThrow20 = true;
-			}
-			verifyTrue(sawThrow20);
-			
-			// click|oneAlert|
-			selenium.click("oneAlert");
-
-			boolean sawThrow23 = false;
-			try {
-							// assertAlert|wrongAlert|
-			assertEquals("wrongAlert", selenium.getAlert());
-			}
-			catch (Throwable e) {
-				sawThrow23 = true;
-			}
-			verifyTrue(sawThrow23);
-			
-			// click|twoAlerts|
-			selenium.click("twoAlerts");
-
-			boolean sawThrow26 = false;
-			try {
-							// assertAlert|Store Below 429 degrees F!|
-			assertEquals("Store Below 429 degrees F!", selenium.getAlert());
-			}
-			catch (Throwable e) {
-				sawThrow26 = true;
-			}
-			verifyTrue(sawThrow26);
-			
-
-			boolean sawThrow28 = false;
-			try {
-							// assertAlert|Store Below 220 degrees C!|
-			assertEquals("Store Below 220 degrees C!", selenium.getAlert());
-			}
-			catch (Throwable e) {
-				sawThrow28 = true;
-			}
-			verifyTrue(sawThrow28);
-			
-			// click|oneAlert|
-			selenium.click("oneAlert");
-
-			boolean sawThrow31 = false;
-			try {
-							// open|../tests/html/test_assert_alert.html|
-			selenium.open("/selenium-server/tests/html/test_assert_alert.html");
-			}
-			catch (Throwable e) {
-				sawThrow31 = true;
-			}
-			assertTrue(sawThrow31);
-			
-
-			checkForVerificationErrors();
+public class TestAlerts extends SeleneseTestNgHelper {
+	@Test public void testAlerts() throws Exception {
+		selenium.open("../tests/html/test_verify_alert.html");
+		verifyFalse(selenium.isAlertPresent());
+		assertFalse(selenium.isAlertPresent());
+		selenium.click("oneAlert");
+		verifyTrue(selenium.isAlertPresent());
+		for (int second = 0;; second++) {
+			if (second >= 60) fail("timeout");
+			try { if (selenium.isAlertPresent()) break; } catch (Exception e) {}
+			Thread.sleep(1000);
 		}
-		finally {
-			clearVerificationErrors();
-		}
+
+		assertTrue(selenium.isAlertPresent());
+		verifyEquals(selenium.getAlert(), "Store Below 494 degrees K!");
+		selenium.click("multipleLineAlert");
+		verifyEquals(selenium.getAlert(), "This alert spans multiple lines");
+		selenium.click("oneAlert");
+		String myVar = selenium.getAlert();
+		verifyEquals(selenium.getExpression(myVar), "Store Below 494 degrees K!");
+		selenium.click("twoAlerts");
+		verifyTrue(selenium.getAlert().matches("^[\\s\\S]* 220 degrees C!$"));
+		verifyTrue(Pattern.compile("^Store Below 429 degrees F!").matcher(selenium.getAlert()).find());
+		selenium.click("alertAndLeave");
+		selenium.waitForPageToLoad("30000");
+		verifyEquals(selenium.getAlert(), "I'm Melting! I'm Melting!");
+		selenium.open("../tests/html/test_verify_alert.html");
+		try { assertEquals(selenium.getAlert(), "noAlert"); fail("expected failure"); } catch (Throwable e) {}
+		selenium.click("oneAlert");
+		try { assertEquals(selenium.getAlert(), "wrongAlert"); fail("expected failure"); } catch (Throwable e) {}
+		selenium.click("twoAlerts");
+		try { assertEquals(selenium.getAlert(), "Store Below 429 degrees F!"); fail("expected failure"); } catch (Throwable e) {}
+		try { assertEquals(selenium.getAlert(), "Store Below 220 degrees C!"); fail("expected failure"); } catch (Throwable e) {}
+		selenium.click("oneAlert");
+		try { selenium.open("../tests/html/test_verify_alert.html"); fail("expected failure"); } catch (Throwable e) {}
 	}
 }

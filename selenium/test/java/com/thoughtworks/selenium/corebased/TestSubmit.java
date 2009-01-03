@@ -1,35 +1,18 @@
 package com.thoughtworks.selenium.corebased;
+
 import com.thoughtworks.selenium.*;
-/**
- * @author XlateHtmlSeleneseToJava
- * Generated from /private/tmp/selenium-rc/clients/java/target/selenium-server/tests/TestSubmit.html.
- */
-public class TestSubmit extends SeleneseTestCase
-{
-   public void testSubmit() throws Throwable {
-		try {
-			
+import org.testng.annotations.*;
+import static org.testng.Assert.*;
+import java.util.regex.Pattern;
 
-/* TestSubmit */
-			// open|../tests/html/test_submit.html|
-			selenium.open("/selenium-server/tests/html/test_submit.html");
-			// submit|searchForm|
-			selenium.submit("searchForm");
-			// assertAlert|onsubmit called|
-			assertEquals("onsubmit called", selenium.getAlert());
-			// check|okayToSubmit|
-			selenium.check("okayToSubmit");
-			// submit|searchForm|
-			selenium.submit("searchForm");
-			// assertAlert|onsubmit called|
-			assertEquals("onsubmit called", selenium.getAlert());
-			// assertAlert|form submitted|
-			assertEquals("form submitted", selenium.getAlert());
-
-			checkForVerificationErrors();
-		}
-		finally {
-			clearVerificationErrors();
-		}
+public class TestSubmit extends SeleneseTestNgHelper {
+	@Test public void testSubmit() throws Exception {
+		selenium.open("../tests/html/test_submit.html");
+		selenium.submit("searchForm");
+		assertEquals(selenium.getAlert(), "onsubmit called");
+		selenium.check("okayToSubmit");
+		selenium.submit("searchForm");
+		assertEquals(selenium.getAlert(), "onsubmit called");
+		assertEquals(selenium.getAlert(), "form submitted");
 	}
 }

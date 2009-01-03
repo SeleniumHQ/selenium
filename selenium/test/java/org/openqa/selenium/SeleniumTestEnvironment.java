@@ -1,51 +1,66 @@
 package org.openqa.selenium;
 
 import junit.framework.Assert;
+import org.mortbay.jetty.Server;
+import org.mortbay.jetty.nio.SelectChannelConnector;
+import org.mortbay.jetty.webapp.WebAppContext;
 import org.openqa.selenium.environment.TestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
-import org.openqa.selenium.environment.webserver.Jetty6AppServer;
 
 import java.io.File;
 
 public class SeleniumTestEnvironment implements TestEnvironment {
-    private AppServer appServer;
+  private final Server server = new Server();
 
-    public SeleniumTestEnvironment() {
-        appServer = new Jetty6AppServer();
-        appServer.listenOn(4444);
+  public SeleniumTestEnvironment() {
+    SelectChannelConnector connector = new SelectChannelConnector();
+    connector.setPort(4444);
+    server.addConnector(connector);
 
-        File base = findSeleniumWebdir();
+    File base = findSeleniumWebdir();
 
-        appServer.addAdditionalWebApplication("/selenium-server", base.getAbsolutePath());
-        appServer.start();
+    WebAppContext app = new WebAppContext();
+    app.setContextPath("/tests");
+    app.setWar(base.getAbsolutePath());
+    server.addHandler(app);
+
+    try {
+      server.start();
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  private File findSeleniumWebdir() {
+    String[] places = new String[]{
+        "selenium/src/web/tests",
+        "src/web/tests",
+    };
+
+    for (String place : places) {
+      File root = new File(place);
+      if (root.exists()) {
+        return root;
+      }
     }
 
-    private File findSeleniumWebdir() {
-        String[] places = new String[]{
-                "selenium/src/web",
-                "src/web",
-        };
+    Assert.fail("Cannot find root of selenium web app");
+    return null;
+  }
 
-        File root = null;
-        for (String place : places) {
-            root = new File(place);
-            if (root.exists())
-                return root;
-        }
+  public AppServer getAppServer() {
+    return null;
+  }
 
-        Assert.fail("Cannot find root of selenium web app");
-        return null;
+  public void stop() {
+    try {
+      server.stop();
+    } catch (Exception e) {
+      throw new RuntimeException(e);
     }
+  }
 
-    public AppServer getAppServer() {
-        return appServer;
-    }
-
-    public void stop() {
-        appServer.stop();
-    }
-
-    public static void main(String[] args) {
-        new SeleniumTestEnvironment();
-    }
+  public static void main(String[] args) {
+    new SeleniumTestEnvironment();
+  }
 }

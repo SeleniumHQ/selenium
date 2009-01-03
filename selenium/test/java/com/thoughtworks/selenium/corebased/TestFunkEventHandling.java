@@ -1,28 +1,15 @@
 package com.thoughtworks.selenium.corebased;
+
 import com.thoughtworks.selenium.*;
-/**
- * @author XlateHtmlSeleneseToJava
- * Generated from /private/tmp/selenium-rc/clients/java/target/selenium-server/tests/TestFunkEventHandling.html.
- */
-public class TestFunkEventHandling extends SeleneseTestCase
-{
-   public void testFunkEventHandling() throws Throwable {
-		try {
-			
+import org.testng.annotations.*;
+import static org.testng.Assert.*;
+import java.util.regex.Pattern;
 
-/* Test Funky Event Handling */
-			// open|../tests/html/test_funky_event_handling.html|
-			selenium.open("/selenium-server/tests/html/test_funky_event_handling.html");
-			// click|clickMe|
-			selenium.click("clickMe");
-			// pause|1000|
-			pause(1000);
-			assertTrue(!selenium.isTextPresent("You shouldn't be here!"));
-
-			checkForVerificationErrors();
-		}
-		finally {
-			clearVerificationErrors();
-		}
+public class TestFunkEventHandling extends SeleneseTestNgHelper {
+	@Test public void testFunkEventHandling() throws Exception {
+		selenium.open("../tests/html/test_funky_event_handling.html");
+		selenium.click("clickMe");
+		Thread.sleep(1000);
+		verifyFalse(selenium.isTextPresent("You shouldn't be here!"));
 	}
 }

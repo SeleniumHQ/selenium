@@ -1,54 +1,29 @@
 package com.thoughtworks.selenium.corebased;
+
 import com.thoughtworks.selenium.*;
-/**
- * @author XlateHtmlSeleneseToJava
- * Generated from /private/tmp/selenium-rc/clients/java/target/selenium-server/tests/TestFramesSpecialTargets.html.
- */
-public class TestFramesSpecialTargets extends SeleneseTestCase
-{
-   public void testFramesSpecialTargets() throws Throwable {
-		try {
-			
+import org.testng.annotations.*;
+import static org.testng.Assert.*;
+import java.util.regex.Pattern;
 
-/* TestFramesSpecialTargets */
-			// openWindow|../tests/html/Frames.html|SpecialTargets
-			selenium.openWindow("/selenium-server/tests/html/Frames.html", "SpecialTargets");
-			// waitForPopUp|SpecialTargets|10000
-			selenium.waitForPopUp("SpecialTargets", "10000");
-			// selectWindow|SpecialTargets|
-			selenium.selectWindow("SpecialTargets");
-			// selectFrame|bottomFrame|
-			selenium.selectFrame("bottomFrame");
-			// clickAndWait|changeTop|
-			selenium.click("changeTop");
-			selenium.waitForPageToLoad("5000");
-			// click|changeSpan|
-			selenium.click("changeSpan");
-			// open|../tests/html/Frames.html|
-			selenium.open("/selenium-server/tests/html/Frames.html");
-			// selectFrame|bottomFrame|
-			selenium.selectFrame("bottomFrame");
-			// clickAndWait|changeParent|
-			selenium.click("changeParent");
-			selenium.waitForPageToLoad("5000");
-			// click|changeSpan|
-			selenium.click("changeSpan");
-			// open|../tests/html/Frames.html|
-			selenium.open("/selenium-server/tests/html/Frames.html");
-			// selectFrame|bottomFrame|
-			selenium.selectFrame("bottomFrame");
-			// clickAndWait|changeSelf|
-			selenium.click("changeSelf");
-			selenium.waitForPageToLoad("5000");
-			// click|changeSpan|
-			selenium.click("changeSpan");
-			// close||
-			selenium.close();
-
-			checkForVerificationErrors();
-		}
-		finally {
-			clearVerificationErrors();
-		}
+public class TestFramesSpecialTargets extends SeleneseTestNgHelper {
+	@Test public void testFramesSpecialTargets() throws Exception {
+		selenium.openWindow("../tests/html/Frames.html", "SpecialTargets");
+		selenium.waitForPopUp("SpecialTargets", "10000");
+		selenium.selectWindow("SpecialTargets");
+		selenium.selectFrame("bottomFrame");
+		selenium.click("changeTop");
+		selenium.waitForPageToLoad("30000");
+		selenium.click("changeSpan");
+		selenium.open("../tests/html/Frames.html");
+		selenium.selectFrame("bottomFrame");
+		selenium.click("changeParent");
+		selenium.waitForPageToLoad("30000");
+		selenium.click("changeSpan");
+		selenium.open("../tests/html/Frames.html");
+		selenium.selectFrame("bottomFrame");
+		selenium.click("changeSelf");
+		selenium.waitForPageToLoad("30000");
+		selenium.click("changeSpan");
+		selenium.close();
 	}
 }
