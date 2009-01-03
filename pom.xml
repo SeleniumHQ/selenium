@@ -227,7 +227,12 @@
                 <artifactId>selenium-ide</artifactId>
                 <version>1.0-beta-3-SNAPSHOT</version>
             </dependency>
-
+            <dependency>
+                <groupId>org.testng</groupId>
+                <artifactId>testng</artifactId>
+                <classifier>jdk15</classifier>
+                <version>5.8</version>
+            </dependency>
             <dependency>
                 <groupId>ant</groupId>
                 <artifactId>ant</artifactId>
