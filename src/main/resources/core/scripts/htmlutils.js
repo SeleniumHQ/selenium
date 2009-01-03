@@ -1094,20 +1094,25 @@ function eval_xpath(xpath, inDocument, opts)
     if (browserVersion && browserVersion.isIE) {
         xpath = xpath.replace(/x:/g, '')
     }
+    
+    var nativeXpathAvailable = inDocument.evaluate;
+    var useNativeXpath = allowNativeXpath && nativeXpathAvailable;
+    var useDocumentEvaluate = useNativeXpath;
 
     // When using the new and faster javascript-xpath library,
     // we'll use the TestRunner's document object, not the App-Under-Test's document.
     // The new library only modifies the TestRunner document with the new 
     // functionality.
-    if (xpathLibrary == 'javascript-xpath') {
+    if (xpathLibrary == 'javascript-xpath' && !useNativeXpath) {
         documentForXpath = document;
+        useDocumentEvaluate = true;
     } else {
         documentForXpath = inDocument;
     }
     var results = [];
     
-    // Use document.evaluate() if it's available
-    if (allowNativeXpath && documentForXpath.evaluate) {
+    // this is either native xpath or javascript-xpath via TestRunner.evaluate 
+    if (useDocumentEvaluate) {
         try {
             // Regarding use of the second argument to document.evaluate():
             // http://groups.google.com/group/comp.lang.javascript/browse_thread/thread/a59ce20639c74ba1/a9d9f53e88e5ebb5

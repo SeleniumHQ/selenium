@@ -2921,19 +2921,26 @@ Selenium.prototype.doUseXpathLibrary = function(libraryName) {
     /**
 	* Allows choice of one of the available libraries.
     * @param libraryName name of the desired library
-    * Only the following two can be chosen:
+    * Only the following three can be chosen:
     *   ajaxslt - Google's library
     *   javascript - Cybozu Labs' faster library
-    * The default library is ajaxslt. If libraryName isn't one of them, then 
+    *   default - The default library.  Currently the default library is ajaxslt.
+    * If libraryName isn't one of these three, then 
     * no change will be made.
     *   
     */
 
+    if (libraryName == "default") {
+        this.browserbot.xpathLibrary = this.browserbot.defaultXpathLibrary;
+        return;
+    }
+
 	if ((libraryName != 'ajaxslt') && (libraryName != 'javascript-xpath')) {
 		return;
-	} else {
-		this.browserbot.xpathLibrary = libraryName;	
 	}
+	
+	this.browserbot.xpathLibrary = libraryName;	
+	
 };
 
 /**
