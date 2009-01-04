@@ -2917,6 +2917,63 @@ Selenium.prototype.doRollup = function(rollupName, kwargs) {
     }
 };
 
+Selenium.prototype.doAddScript = function(scriptContent, scriptTagId) {
+    /**
+    * Loads script content into a new script tag in the Selenium document. This
+    * differs from the runScript command in that runScript adds the script tag
+    * to the document of the AUT, not the Selenium document. The following
+    * entities in the script content are replaced by the characters they
+    * represent:
+    *
+    *     &lt;
+    *     &gt;
+    *     &amp;
+    *
+    * The corresponding remove command is removeScript.
+    *
+    * @param scriptContent  the Javascript content of the script to add
+    * @param scriptTagId    (optional) the id of the new script tag. If
+    *                       specified, and an element with this id already
+    *                       exists, this operation will fail.
+    */
+    if (scriptTagId && document.getElementById(scriptTagId)) {
+        var msg = "Element with id '" + scriptTagId + "' already exists!";
+        throw new SeleniumError(msg);
+    }
+    
+    var head = document.getElementsByTagName('head')[0];
+    var script = document.createElement('script');
+    
+    script.type = 'text/javascript';
+    
+    if (scriptTagId) {
+        script.id = scriptTagId;
+    }
+    
+    // replace some entities
+    scriptContent = scriptContent
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&amp;/g, '&');
+    
+    script.appendChild(document.createTextNode(scriptContent));
+    head.appendChild(script);
+};
+
+Selenium.prototype.doRemoveScript = function(scriptTagId) {
+    /**
+    * Removes a script tag from the Selenium document identified by the given
+    * id. Does nothing if the referenced tag doesn't exist.
+    *
+    * @param scriptTagId  the id of the script element to remove.
+    */
+    var script = document.getElementById(scriptTagId);
+    
+    if (script && script.tagName.toLowerCase() == 'script') {
+        script.parentNode.removeChild(script);
+    }
+};
+
 Selenium.prototype.doUseXpathLibrary = function(libraryName) {
     /**
 	* Allows choice of one of the available libraries.
@@ -2973,7 +3030,7 @@ OptionLocatorFactory.prototype.fromLocatorString = function(locatorString) {
     if (this.optionLocators[locatorType]) {
         return new this.optionLocators[locatorType](locatorValue);
     }
-    throw new SeleniumError("Unkown option locator type: " + locatorType);
+    throw new SeleniumError("Unknown option locator type: " + locatorType);
 };
 
 /**

@@ -6,20 +6,10 @@
 <script type="text/javascript">
 // introduce some UIMap data to the TestRunner
 function setUp() {
-    var scriptId = 'uimap';
-    var doc = window.parent.document;
-    var script = doc.getElementById(scriptId);
+    var scriptContent = document.getElementById('uimap-content').innerHTML;
+    var container = document.getElementById('script-content-container');
     
-    if (script) {
-        script.parentNode.removeChild(script);
-    }
-    
-    script = doc.createElement('script');
-    script.text = document.getElementById('uimapContent').innerHTML;
-    script.id = scriptId;
-    
-    var head = doc.getElementsByTagName('head')[0];
-    head.appendChild(script);
+    container.appendChild(document.createTextNode(scriptContent));
 }
 </script>
 
@@ -40,11 +30,16 @@ function setUp() {
         </tr>
 
         <tr>
+            <td>addScript</td>
+            <td id="script-content-container"></td>
+            <td>uimap</td>
+        </tr>
+        
+        <tr>
             <td>open</td>
             <td>../tests/html/test_locators.html</td>
             <td>&nbsp;</td>
         </tr>
-
         <tr>
             <td>verifyText</td>
             <td>ui=pageset1::linksWithId()</td>
@@ -90,10 +85,16 @@ function setUp() {
             <td>ui=pageset2::cell(text=theCellText)</td>
             <td>exact:theCellText</td>
         </tr>
+        
+        <tr>
+            <td>removeScript</td>
+            <td>uimap</td>
+            <td>&nbsp;</td>
+        </tr>
     </tbody>
 </table>
 
-<pre id="uimapContent">
+<pre id="uimap-content">
 var map = new UIMap();
 
 map.addPageset({

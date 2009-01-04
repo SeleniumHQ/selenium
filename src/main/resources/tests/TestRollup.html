@@ -4,22 +4,12 @@
 <title>Test Rollup</title>
 
 <script type="text/javascript">
-// introduce some UIMap data to the TestRunner
+// introduce some Rollup data to the TestRunner
 function setUp() {
-    var scriptId = 'rollup';
-    var doc = window.parent.document;
-    var script = doc.getElementById(scriptId);
+    var scriptContent = document.getElementById('rollup-content').innerHTML;
+    var container = document.getElementById('script-content-container');
     
-    if (script) {
-        script.parentNode.removeChild(script);
-    }
-    
-    script = doc.createElement('script');
-    script.text = document.getElementById('rollupContent').innerHTML.replace(/&gt;/g, '>');
-    script.id = scriptId;
-    
-    var head = doc.getElementsByTagName('head')[0];
-    head.appendChild(script);
+    container.appendChild(document.createTextNode(scriptContent));
 }
 </script>
 
@@ -33,6 +23,13 @@ function setUp() {
             <td rowspan="1" colspan="3">Test Rollup<br>
             </td>
         </tr>
+        
+        <tr>
+            <td>addScript</td>
+            <td id="script-content-container"></td>
+            <td>rollup</td>
+        </tr>
+        
         <tr>
             <td>open</td>
             <td>../tests/html/test_rollup.html</td>
@@ -108,10 +105,16 @@ function setUp() {
             <td>steamed spinach</td>
             <td></td>
         </tr>
+
+        <tr>
+            <td>removeScript</td>
+            <td>rollup</td>
+            <td>&nbsp;</td>
+        </tr>
     </tbody>
 </table>
 
-<pre id="rollupContent">
+<pre id="rollup-content">
 var rm = new RollupManager();
 
 rm.addRollupRule({
