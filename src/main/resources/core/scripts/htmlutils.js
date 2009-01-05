@@ -1009,6 +1009,44 @@ function safe_alert(msg)
     }
 }
 
+/**
+ * Returns true iff the given element represents a link with a javascript
+ * href attribute, and does not have an onclick attribute defined.
+ *
+ * @param element  the element to test
+ */
+function hasJavascriptHref(element) {
+    if (getTagName(element) != 'a') {
+        return false;
+    }
+    if (element.onclick) {
+        return false;
+    }
+    if (! element.href) {
+        return false;
+    }
+    if (! /\s*javascript:/i.test(element.href)) {
+        return false;
+    }
+    return true;
+}
+
+/**
+ * Returns the given element, or its nearest ancestor, that satisfies
+ * hasJavascriptHref(). Returns null if none is found.
+ *
+ * @param element  the element whose ancestors to test
+ */
+function getAncestorOrSelfWithJavascriptHref(element) {
+    if (hasJavascriptHref(element)) {
+        return element;
+    }
+    if (element.parentNode == null) {
+        return null;
+    }
+    return getAncestorOrSelfWithJavascriptHref(element.parentNode);
+}
+
 //******************************************************************************
 // Locator evaluation support
 

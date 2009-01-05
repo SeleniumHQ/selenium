@@ -224,8 +224,52 @@ Selenium.prototype.doClick = function(locator) {
    * @param locator an element locator
    *
    */
-   var element = this.browserbot.findElement(locator);
-   this.browserbot.clickElement(element);
+    var element = this.browserbot.findElement(locator);
+    var elementWithHref = getAncestorOrSelfWithJavascriptHref(element);
+   
+    if (browserVersion.isChrome && elementWithHref != null) {
+        // SEL-621: Firefox chrome: Race condition bug in alert-handling code
+        //
+        // This appears to be because javascript href's are being executed in a
+        // separate thread from the main thread when running in chrome mode.
+        //
+        // This workaround injects a callback into the executing href that
+        // lowers a flag, which is initially raised. Execution of this click
+        // command will wait for the flag to be lowered.
+        
+        var self = this;
+        var win = this.browserbot.getCurrentWindow();
+        var originalHref = elementWithHref.href;
+        
+        elementWithHref.href = originalHref
+            + '; window._executingJavascriptHref = undefined;' ;
+        
+        win._executingJavascriptHref = true;
+        
+        this.browserbot.clickElement(element);
+        
+        return Selenium.decorateFunctionWithTimeout(function() {
+            if (win != self.browserbot.getCurrentWindow()) {
+                // navigated to some other page ... javascript from previous
+                // page can't still be executing!
+                return true;
+            }
+            if (! win._executingJavascriptHref) {
+                try {
+                    elementWithHref.href = originalHref;
+                }
+                catch (e) {
+                    // maybe the javascript removed the element ... should be
+                    // no danger in not reverting its href attribute
+                }
+                return true;
+            }
+            
+            return false;
+        }, Selenium.DEFAULT_TIMEOUT);
+    }
+    
+    this.browserbot.clickElement(element);
 };
 
 Selenium.prototype.doDoubleClick = function(locator) {
