@@ -310,7 +310,7 @@ module Selenium
       # the optionsString's format is "path=/path/, max_age=60, domain=.foo.com". The order of options are irrelevant, the unit      of the value of 'max_age' is second.  Note that specifying a domain that isn't a subset of the current domain will      usually fail.
       def create_cookie(name_value_pair, options="")
 	      if options.kind_of? Hash
-		      options = options.keys.collect {|key| "#{key}=#{options[key]}" }.join(", ")
+		      options = options.keys.collect {|key| "#{key}=#{options[key]}" }.sort.join(", ")
 		    end
         remote_control_command "createCookie", [name_value_pair,options,]
       end
