@@ -152,7 +152,30 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
 				equalTo("checkbox thing"));
 	}
 
-	private void clickOnElementWhichRecordsEvents() {
+  @JavascriptEnabled
+  @Ignore("safari")
+  public void testShouldEmitClickEventWhenClickingOnATextInputElement() {
+    driver.get(javascriptPage);
+
+    WebElement clicker = driver.findElement(By.id("clickField"));
+    clicker.click();
+
+    assertThat(clicker.getValue(), equalTo("Clicked"));
+  }
+
+  @JavascriptEnabled
+  @Ignore("safari")
+  public void testClearingAnElementShouldCauseTheOnChangeHandlerToFire() {
+    driver.get(javascriptPage);
+
+    WebElement element = driver.findElement(By.id("clearMe"));
+    element.clear();
+
+    WebElement result = driver.findElement(By.id("result"));
+    assertThat(result.getText(), equalTo("Cleared"));
+  }
+
+        private void clickOnElementWhichRecordsEvents() {
 		driver.findElement(By.id("plainButton")).click();
 	}
 

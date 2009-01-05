@@ -145,10 +145,27 @@ FirefoxDriver.prototype.clear = function(respond) {
 
    var isTextField = element["value"] !== undefined;
 
+   var currentlyActive = Utils.getActiveElement(this.context);
+    if (currentlyActive != element) {
+      currentlyActive.blur();
+      element.focus();
+  }
+
+  var currentValue = undefined;
+  if (element["value"] !== undefined) {
+      currentValue = element.value;
+  } else if (element.hasAttribute("value")) {
+      currentValue = element.getAttribute("value");
+  }
+
    if (isTextField) {
      element.value = "";
    } else {
      element.setAttribute("value", "");
+   }
+
+   if (currentValue !== undefined && currentValue != "") {
+     Utils.fireHtmlEvent(this.context, element, "change");
    }
 
    respond.send();
