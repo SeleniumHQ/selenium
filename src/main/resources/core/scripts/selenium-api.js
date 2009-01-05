@@ -249,9 +249,15 @@ Selenium.prototype.doClick = function(locator) {
         this.browserbot.clickElement(element);
         
         return Selenium.decorateFunctionWithTimeout(function() {
-            if (win != self.browserbot.getCurrentWindow()) {
-                // navigated to some other page ... javascript from previous
-                // page can't still be executing!
+            try {
+                if (win != self.browserbot.getCurrentWindow()) {
+                    // navigated to some other page ... javascript from
+                    // previous page can't still be executing!
+                    return true;
+                }
+            }
+            catch (e) {
+                // "Current window or frame is closed!"
                 return true;
             }
             if (! win._executingJavascriptHref) {
