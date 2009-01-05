@@ -34,6 +34,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlInlineFrame;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.javascript.host.HTMLElement;
+
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.ScriptableObject;
 import org.openqa.selenium.Alert;
@@ -107,6 +108,12 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
                 pickWindow();
             }
         });
+        if (currentWindow == null) {
+          get(WebClient.URL_ABOUT_BLANK);
+        }
+
+        // Clear the history.
+        histories.clear();
     }
 
     public HtmlUnitDriver() {
@@ -160,21 +167,37 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     }
 
     public void get(String url) {
-        try {
-            URL fullUrl = new URL(url);
-            webClient.getPage(fullUrl);
-        } catch (UnknownHostException e) {
-          // This should be fine
-        } catch (ConnectException e) {
-          // This might be expected
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+      URL fullUrl;
+      try {
+        fullUrl = new URL(url);
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
 
-        pickWindow();
+      get(fullUrl);
     }
 
-    protected void pickWindow() {
+    /**
+     * Allows HtmlUnit's about:blank to be loaded in the constructor, and may
+     * be useful for other tests?
+     *  
+     * @param fullUrl
+     */
+    protected void get(URL fullUrl) {
+      try {
+        webClient.getPage(fullUrl);
+      } catch (UnknownHostException e) {
+        // This should be fine
+      } catch (ConnectException e) {
+        // This might be expected
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+
+      pickWindow();
+    }
+
+  protected void pickWindow() {
         currentWindow = webClient.getCurrentWindow();
         Page page = webClient.getCurrentWindow().getEnclosedPage();
 
