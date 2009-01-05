@@ -238,11 +238,12 @@ Selenium.prototype.doClick = function(locator) {
         // command will wait for the flag to be lowered.
         
         var self = this;
-        var win = this.browserbot.getCurrentWindow();
+        var win = this.browserbot.getCurrentWindow().top;
         var originalHref = elementWithHref.href;
         
-        elementWithHref.href = originalHref
-            + '; window._executingJavascriptHref = undefined;' ;
+        elementWithHref.href = 'javascript:try { '
+            + originalHref.replace(/^\s*javascript:/i, "")
+            + '} finally { window.top._executingJavascriptHref = undefined; }';
         
         win._executingJavascriptHref = true;
         
@@ -250,7 +251,8 @@ Selenium.prototype.doClick = function(locator) {
         
         return Selenium.decorateFunctionWithTimeout(function() {
             try {
-                if (win != self.browserbot.getCurrentWindow()) {
+                var currentWin = self.browserbot.getCurrentWindow();
+                if (currentWin.location.href != win.location.href) {
                     // navigated to some other page ... javascript from
                     // previous page can't still be executing!
                     return true;
