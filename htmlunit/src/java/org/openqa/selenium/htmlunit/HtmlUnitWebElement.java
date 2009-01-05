@@ -175,8 +175,8 @@ public class HtmlUnitWebElement implements WebElement,
     }
 
     public void clear() {
-    	if (element instanceof HtmlInput) {
-            element.setAttributeValue("value", "");
+        if (element instanceof HtmlInput) {
+            ((HtmlInput)element).setValueAttribute("");
         } else if (element instanceof HtmlTextArea) {
             ((HtmlTextArea) element).setText("");
         }
