@@ -57,7 +57,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
         assertThat(text.contains("and block level elements"), is(true));
     }
 
-    @Ignore(value = "safari", reason = "Safari: Test fails. IE: Underlying model removes the necessary spaces. Bah!")
+    @Ignore(value = "firefox, safari", reason = "Safari: Test fails. IE: Underlying model removes the necessary spaces. Bah!")
     public void testShouldRepresentABlockLevelElementAsANewline() {
         driver.get(simpleTestPage);
         String text = driver.findElement(By.id("multiline")).getText();
