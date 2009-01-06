@@ -34,21 +34,22 @@ public class AbstractDriverTestCase extends TestCase implements NeedsDriver {
 	protected String formPage;
 	protected String metaRedirectPage;
 	protected String redirectPage;
+	protected String javascriptEnhancedForm;
 	protected String javascriptPage;
 	protected String framesetPage;
 	protected String iframePage;
 	protected String dragAndDropPage;
 	protected String chinesePage;
 	protected String nestedPage;
-	
+
 	public void setDriver(WebDriver driver) {
 		this.driver = driver;
 	}
-	
+
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		
+
         driver.setVisible(true);
 
         TestEnvironment environment = GlobalTestEnvironment.get();
@@ -59,13 +60,14 @@ public class AbstractDriverTestCase extends TestCase implements NeedsDriver {
         formPage = appServer.whereIs("formPage.html");
         metaRedirectPage = appServer.whereIs("meta-redirect.html");
         redirectPage = appServer.whereIs("redirect");
+        javascriptEnhancedForm = appServer.whereIs("javascriptEnhancedForm.html");
         javascriptPage = appServer.whereIs("javascriptPage.html");
         framesetPage = appServer.whereIs("frameset.html");
         iframePage = appServer.whereIs("iframes.html");
         dragAndDropPage = appServer.whereIs("dragAndDropTest.html");
         chinesePage = appServer.whereIs("cn-test.html");
         nestedPage = appServer.whereIs("nestedElements.html");
-        
+
         String hostName = environment.getAppServer().getHostName();
         String alternateHostName = environment.getAppServer().getAlternateHostName();
 

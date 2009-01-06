@@ -21,7 +21,7 @@ function Utils() {
 
 Utils.getUniqueId = function() {
   if (!Utils._generator) {
-    Utils._generator = Utils.getService("@mozilla.org/uuid-generator;1", "nsIUUIDGenerator");  
+    Utils._generator = Utils.getService("@mozilla.org/uuid-generator;1", "nsIUUIDGenerator");
   }
   return Utils._generator.generateUUID().toString();
 };
@@ -83,6 +83,9 @@ Utils.getActiveElement = function(context) {
 }
 
 function getTextFromNode(node, toReturn, textSoFar, isPreformatted) {
+    if (node['tagName'] && node.tagName == "SCRIPT") {
+        return [toReturn, textSoFar];
+    }
     var children = node.childNodes;
 
     for (var i = 0; i < children.length; i++) {

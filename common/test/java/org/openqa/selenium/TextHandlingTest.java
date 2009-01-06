@@ -20,9 +20,11 @@ package org.openqa.selenium;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.startsWith;
 import org.hamcrest.TypeSafeMatcher;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
@@ -57,24 +59,24 @@ public class TextHandlingTest extends AbstractDriverTestCase {
         assertThat(text.contains("and block level elements"), is(true));
     }
 
-    @Ignore(value = "firefox, safari", reason = "Safari: Test fails. IE: Underlying model removes the necessary spaces. Bah!")
+    public void testShouldIgnoreScriptElements() {
+        driver.get(javascriptEnhancedForm);
+        WebElement labelForUsername = driver.findElement(By.id("labelforusername"));
+        String text = labelForUsername.getText();
+
+        assertThat(labelForUsername.getChildrenOfType("script").size(), is(1));
+        assertThat(text, not(containsString("document.getElementById")));
+        assertThat(text, is("Username:"));
+    }
+
+    @Ignore(value = "safari")
     public void testShouldRepresentABlockLevelElementAsANewline() {
         driver.get(simpleTestPage);
         String text = driver.findElement(By.id("multiline")).getText();
 
-        assertThat(text, equalTo("A div containing" + newLine +
-                " More than one line of text" + newLine +
-                "and block level elements"));
-    }
-
-    @Ignore(value = "htmlunit, ie, safari", reason = "Safari: Test fails. Firefox: Underlying model differs from HtmlUnit and IE")
-    public void testShouldRepresentABlockLevelElementAsANewlineInFirefox() {
-        driver.get(simpleTestPage);
-        String text = driver.findElement(By.id("multiline")).getText();
-
-        assertThat(text, equalTo("A div containing" + newLine +
-                " More than one line of text" + newLine +
-                " and block level elements"));
+        assertThat(text, startsWith("A div containing" + newLine));
+        assertThat(text, containsString("More than one line of text" + newLine));
+        assertThat(text, endsWith("and block level elements"));
     }
 
     public void testShouldCollapseMultipleWhitespaceCharactersIntoASingleSpace() {
@@ -185,7 +187,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
     	assertThat(text, is("Some text" + newLine + "Some more text"));
     }
 
-    @Ignore("htmlunit, firefox, safari")
+    @Ignore("htmlunit, firefox, ie, safari")
     public void testShouldHandleNestedBlockLevelElements() {
     	driver.get(simpleTestPage);
 
@@ -194,7 +196,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
     	assertThat(text, is("Cheese" + newLine + "Some text" + newLine + "Some more text" + newLine + "and also" + newLine + "Brie"));
     }
 
-    @Ignore("htmlunit, firefox, safari")
+    @Ignore("safari")
     public void testShouldHandleWhitespaceInInlineElements() {
     	driver.get(simpleTestPage);
 
