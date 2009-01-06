@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src/java"/>
-	<classpathentry kind="src" path="test/java"/>
+	<classpathentry kind="src" output="build/client/classes" path="src/java"/>
+	<classpathentry kind="src" output="build/client/test-classes" path="test/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-common"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-firefox"/>

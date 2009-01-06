@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="client/src/java"/>
-	<classpathentry kind="src" path="client/test/java"/>
-	<classpathentry kind="src" path="common/src/java"/>
-	<classpathentry kind="src" path="common/test/java"/>
-	<classpathentry kind="src" path="server/src/java"/>
-	<classpathentry kind="src" path="server/test/java"/>
+	<classpathentry kind="src" output="build/client/classes" path="client/src/java"/>
+	<classpathentry kind="src" output="build/client/test-classes" path="client/test/java"/>
+	<classpathentry kind="src" output="build/common/classes" path="common/src/java"/>
+	<classpathentry kind="src" output="build/common/test-classes" path="common/test/java"/>
+	<classpathentry kind="src" output="build/server/classes" path="server/src/java"/>
+	<classpathentry kind="src" output="build/server/test-classes" path="server/test/java"/>
 	<classpathentry kind="lib" path="client/lib/runtime/commons-codec-1.3.jar"/>
 	<classpathentry kind="lib" path="client/lib/runtime/commons-collections-3.2.jar"/>
 	<classpathentry kind="lib" path="client/lib/runtime/commons-httpclient-3.1.jar"/>
@@ -21,5 +21,5 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-selenium"/>
 	<classpathentry kind="lib" path="/webdriver-common/lib/buildtime/servlet-api-2.5-6.1.9.jar"/>
 	<classpathentry kind="lib" path="common/lib/runtime/json-20080701.jar"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry kind="output" path="build"/>
 </classpath>
