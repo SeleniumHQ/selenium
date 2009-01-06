@@ -29,6 +29,7 @@ import org.openqa.selenium.environment.webserver.AppServer;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.Date;
 
 public class CookieImplementationTest extends AbstractDriverTestCase {
     public void testAddCookiesWithDifferentPaths() {
@@ -58,9 +59,8 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
         driver.get(simpleTestPage);
         driver.manage().deleteAllCookies();
         
-        Calendar c = Calendar.getInstance();
-        c.set(2009, 0, 1);
-        Cookie cookie1 = new Cookie("fish", "cod", "", c.getTime());
+        long time = System.currentTimeMillis() + (60 * 60 * 24);
+        Cookie cookie1 = new Cookie("fish", "cod", "", new Date(time));
         Cookie cookie2 = new Cookie("planet", "earth");
         WebDriver.Options options = driver.manage();
         options.addCookie(cookie1);
@@ -71,8 +71,8 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
         assertThat(cookies.contains(cookie1), is(true));
         assertThat(cookies.contains(cookie2), is(true));
     }
-	
-	@Ignore("ie")
+
+    @Ignore("ie")
     public void testCookieIntegrity() {
         String url = GlobalTestEnvironment.get().getAppServer().whereElseIs("animals");
 
@@ -80,8 +80,8 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
         driver.manage().deleteAllCookies();
         
         Calendar c = Calendar.getInstance();
-        c.set(2009, 0, 1);
-        Cookie cookie1 = new Cookie("fish", "cod", "/animals", c.getTime());
+        long time = System.currentTimeMillis() + (60 * 60 * 24);
+        Cookie cookie1 = new Cookie("fish", "cod", "/animals", new Date(time));
         WebDriver.Options options = driver.manage();
         options.addCookie(cookie1);
 
