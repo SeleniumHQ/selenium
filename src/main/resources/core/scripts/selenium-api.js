@@ -237,29 +237,25 @@ Selenium.prototype.doClick = function(locator) {
         // lowers a flag, which is initially raised. Execution of this click
         // command will wait for the flag to be lowered.
         
-        var self = this;
-        var win = this.browserbot.getCurrentWindow().top;
+        var win = elementWithHref.ownerDocument.defaultView;
+        var originalLocation = win.location.href;
         var originalHref = elementWithHref.href;
         
         elementWithHref.href = 'javascript:try { '
             + originalHref.replace(/^\s*javascript:/i, "")
-            + '} finally { window.top._executingJavascriptHref = undefined; }';
+            + '} finally { window._executingJavascriptHref = undefined; }' ;
         
         win._executingJavascriptHref = true;
         
         this.browserbot.clickElement(element);
         
         return Selenium.decorateFunctionWithTimeout(function() {
-            try {
-                var currentWin = self.browserbot.getCurrentWindow();
-                if (currentWin.location.href != win.location.href) {
-                    // navigated to some other page ... javascript from
-                    // previous page can't still be executing!
-                    return true;
-                }
+            if (win.closed) {
+                return true;
             }
-            catch (e) {
-                // "Current window or frame is closed!"
+            if (win.location.href != originalLocation) {
+                // navigated to some other page ... javascript from previous
+                // page can't still be executing!
                 return true;
             }
             if (! win._executingJavascriptHref) {
