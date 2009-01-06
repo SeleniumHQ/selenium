@@ -3004,7 +3004,7 @@ Selenium.prototype.doAddScript = function(scriptContent, scriptTagId) {
         .replace(/&gt;/g, '>')
         .replace(/&amp;/g, '&');
     
-    script.appendChild(document.createTextNode(scriptContent));
+    script.text = scriptContent;
     head.appendChild(script);
 };
 
@@ -3017,7 +3017,7 @@ Selenium.prototype.doRemoveScript = function(scriptTagId) {
     */
     var script = document.getElementById(scriptTagId);
     
-    if (script && script.tagName.toLowerCase() == 'script') {
+    if (script && getTagName(script) == 'script') {
         script.parentNode.removeChild(script);
     }
 };
