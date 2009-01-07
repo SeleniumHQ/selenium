@@ -62,7 +62,7 @@ public class Firefox3Locator extends FirefoxLocator {
 
         ubuntoLocationPaths = new String[ubuntuLocations.length];
         for (int i = 0; i < ubuntuLocations.length; i++) {
-            ubuntoLocationPaths[i] = UBUNTU_BASE_DIR + File.separator + ubuntuLocations[i];
+            ubuntoLocationPaths[i] = UBUNTU_BASE_DIR + "/" + ubuntuLocations[i];
         }
         return ubuntoLocationPaths;
     }
