@@ -52,7 +52,7 @@ public class Firefox3LocatorUnitTest extends TestCase {
 
             @Override
             protected String[] firefoxDefaultLocationsOnUbuntu() {
-                return new String[] { "/usr/lib/firefox-3.0.3" };
+                return new String[] { "firefox-3.0.3" };
             }
         };
 

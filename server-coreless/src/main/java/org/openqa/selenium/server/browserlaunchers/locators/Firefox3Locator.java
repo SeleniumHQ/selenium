@@ -10,6 +10,8 @@ import java.io.FilenameFilter;
  */
 public class Firefox3Locator extends FirefoxLocator {
 
+    private static final String UBUNTU_BASE_DIR = "/usr/lib";
+
     private static final String[] USUAL_OS_X_LAUNCHER_LOCATIONS = {
             "/Applications/Firefox-3.app/Contents/MacOS",
             "/Applications/Firefox.app/Contents/MacOS",
@@ -51,9 +53,18 @@ public class Firefox3Locator extends FirefoxLocator {
 
     protected String[] usualUnixLauncherLocations() {
         final String[] ubuntuLocations;
+        final String[] ubuntoLocationPaths;
 
         ubuntuLocations = firefoxDefaultLocationsOnUbuntu();
-        return ubuntuLocations.length == 0 ? USUAL_OS_X_LAUNCHER_LOCATIONS : ubuntuLocations;
+        if (ubuntuLocations.length == 0) {
+            return USUAL_OS_X_LAUNCHER_LOCATIONS;
+        }
+
+        ubuntoLocationPaths = new String[ubuntuLocations.length];
+        for (int i = 0; i < ubuntuLocations.length; i++) {
+            ubuntoLocationPaths[i] = UBUNTU_BASE_DIR + File.separator + ubuntuLocations[i];
+        }
+        return ubuntoLocationPaths;
     }
 
 
@@ -63,7 +74,7 @@ public class Firefox3Locator extends FirefoxLocator {
     protected String[] firefoxDefaultLocationsOnUbuntu() {
         final File dir;
 
-        dir = new File("/usr/lib");
+        dir = new File(UBUNTU_BASE_DIR);
 
         if (!dir.exists() && dir.isDirectory()) {
             return new String[] {};
