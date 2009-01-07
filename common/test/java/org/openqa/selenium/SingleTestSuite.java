@@ -37,14 +37,14 @@ public class SingleTestSuite extends TestCase {
 //    System.setProperty("webdriver.firefox.useExisting", "true");
 
     TestSuiteBuilder builder = new TestSuiteBuilder()
-    	.addSourceDir("../common")
+        .addSourceDir("../common")
         .addSourceDir("common")
         .addSourceDir("firefox")
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("CorrectEventFiringTest")
-//         .method("testFindElementByLinkText")
+        .onlyRun("DragAndDropTest")
+//         .method("testShouldAllowUsersToDragAndDropToElementsOffTheCurrentViewPort")
 //        .exclude("ie")
         .leaveRunning()
         ;  // Yeah, this look strange :)

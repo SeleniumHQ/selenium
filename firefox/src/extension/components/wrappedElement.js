@@ -401,8 +401,8 @@ FirefoxDriver.prototype.getElementLocation = function(respond) {
 FirefoxDriver.prototype.getElementSize = function(respond) {
     var element = Utils.getElementAt(respond.elementId, this.context);
 
-    var width = element.offsetWidth;
-    var height = element.offsetHeight;
+    var width = element.scrollWidth;
+    var height = element.scrollHeight;
 
     respond.context = this.context;
     respond.response = width + ", " + height;
@@ -410,59 +410,66 @@ FirefoxDriver.prototype.getElementSize = function(respond) {
 };
 
 FirefoxDriver.prototype.dragAndDrop = function(respond, movementString) {
-    var element = Utils.getElementAt(respond.elementId, this.context);
+  var element = Utils.getElementAt(respond.elementId, this.context);
 
-    if (!Utils.isDisplayed(element)) {
-	    respond.isError = true;
-		respond.response = "Element is not currently visible and so may not be clicked";
-		respond.send();
-		return;
-	}
-
-    var clientStartXY = Utils.getElementLocation(element, this.context);
-
-    var clientStartX = clientStartXY.x;
-    var clientStartY = clientStartXY.y;
-
-    var movementX = movementString[0];
-    var movementY = movementString[1];
-
-    var clientFinishX = ((clientStartX + movementX) < 0) ? 0 : (clientStartX + movementX);
-    var clientFinishY = ((clientStartY + movementY) < 0) ? 0 : (clientStartY + movementY);
-    // Restrict the desitnation into the sensible dimension
-    var window = Utils.getBrowser(this.context).contentWindow;
-    if (clientFinishX > window.innerWidth)
-        clientFinishX = window.innerWidth;
-    if (clientFinishY > window.innerHeight)
-        clientFinishY = window.innerHeight;
-
-    var mouseSpeed = this.mouseSpeed;
-    var move = function(current, dest) {
-        if (current == dest) return current;
-        if (Math.abs(current - dest) < mouseSpeed) return dest;
-        return (current < dest) ? current + mouseSpeed : current - mouseSpeed;
-    }
-
-    Utils.triggerMouseEvent(element, 'mousedown', clientStartX, clientStartY);
-    Utils.triggerMouseEvent(element, 'mousemove', clientStartX, clientStartY);
-    var clientX = clientStartX;
-    var clientY = clientStartY;
-
-    while ((clientX != clientFinishX) || (clientY != clientFinishY)) {
-        clientX = move(clientX, clientFinishX);
-        clientY = move(clientY, clientFinishY);
-
-        Utils.triggerMouseEvent(element, 'mousemove', clientX, clientY);
-    }
-
-    Utils.triggerMouseEvent(element, 'mousemove', clientFinishX, clientFinishY);
-    Utils.triggerMouseEvent(element, 'mouseup',  clientFinishX, clientFinishY);
-
-    var finalLoc = Utils.getElementLocation(element, this.context)
-
-    respond.context = this.context;
-    respond.response = finalLoc.x + "," + finalLoc.y;
+  if (!Utils.isDisplayed(element)) {
+    respond.isError = true;
+    respond.response = "Element is not currently visible and so may not be clicked";
     respond.send();
+    return;
+  }
+
+  // Scroll the first element into view
+//  element.scrollIntoView(true);
+
+  var clientStartXY = Utils.getElementLocation(element, this.context);
+
+  var clientStartX = clientStartXY.x;
+  var clientStartY = clientStartXY.y;
+
+  var movementX = movementString[0];
+  var movementY = movementString[1];
+
+  var clientFinishX = ((clientStartX + movementX) < 0) ? 0 : (clientStartX + movementX);
+  var clientFinishY = ((clientStartY + movementY) < 0) ? 0 : (clientStartY + movementY);
+
+  // Restrict the desitnation into the sensible dimension
+  var body = element.ownerDocument.body;
+
+  if (clientFinishX > body.scrollWidth)
+    clientFinishX = body.scrollWidth;
+  if (clientFinishY > body.scrollHeight)
+    clientFinishY = body.scrollHeight;
+
+  var mouseSpeed = this.mouseSpeed;
+  var move = function(current, dest) {
+    if (current == dest) return current;
+    if (Math.abs(current - dest) < mouseSpeed) return dest;
+    return (current < dest) ? current + mouseSpeed : current - mouseSpeed;
+  }
+
+  Utils.triggerMouseEvent(element, 'mousedown', clientStartX, clientStartY);
+  Utils.triggerMouseEvent(element, 'mousemove', clientStartX, clientStartY);
+  var clientX = clientStartX;
+  var clientY = clientStartY;
+
+  while ((clientX != clientFinishX) || (clientY != clientFinishY)) {
+    clientX = move(clientX, clientFinishX);
+    clientY = move(clientY, clientFinishY);
+
+    Utils.triggerMouseEvent(element, 'mousemove', clientX, clientY);
+  }
+
+  Utils.triggerMouseEvent(element, 'mousemove', clientFinishX, clientFinishY);
+
+  // TODO(simon.m.stewart) If we can tell which element is under the cursor, send the mouseup to that
+  Utils.triggerMouseEvent(element, 'mouseup', clientFinishX, clientFinishY);
+
+  var finalLoc = Utils.getElementLocation(element, this.context)
+
+  respond.context = this.context;
+  respond.response = finalLoc.x + "," + finalLoc.y;
+  respond.send();
 };
 
 FirefoxDriver.prototype.findElementsByXPath = function (respond, xpath) {
