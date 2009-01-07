@@ -1,6 +1,6 @@
-$: << File.expand_path(File.dirname(__FILE__) + "/../../vendor/mocha-0.5.6/lib")
+$: << File.expand_path(File.dirname(__FILE__) + "/../../vendor/mocha-0.9.4/lib")
 require File.expand_path(File.dirname(__FILE__) + "/../test_helper")
-require File.expand_path(File.dirname(__FILE__) + "/../../vendor/mocha-0.5.6/lib/mocha")
+require File.expand_path(File.dirname(__FILE__) + "/../../vendor/mocha-0.9.4/lib/mocha")
 require File.expand_path(File.dirname(__FILE__) + "/../../vendor/dust-0.1.6/lib/dust")
 require File.expand_path(File.dirname(__FILE__) + "/../../lib/selenium")
 require File.expand_path(File.dirname(__FILE__) + "/../../lib/selenium/rspec/reporting/file_path_strategy")

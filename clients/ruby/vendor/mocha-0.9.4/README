@@ -1,0 +1,37 @@
+= Mocha
+
+Mocha is a library for mocking and stubbing using a syntax like that of JMock[http://www.jmock.org].
+
+It can be used with many testing frameworks e.g. Test::Unit[http://www.ruby-doc.org/core/classes/Test/Unit.html], RSpec[http://rspec.info/], test/spec[http://chneukirchen.org/repos/testspec/README], expectations[http://expectations.rubyforge.org/], Dust[http://dust.rubyforge.org/], MiniTest[http://rubyforge.org/projects/bfts] and even JtestR[http://jtestr.codehaus.org/].
+
+Mocha provides a unified, simple and readable syntax for both traditional mocking and partial mocking.
+
+Mocha was harvested from projects at Reevoo[http://www.reevoo.com] by me (James[http://blog.floehopper.org]) and my (then) colleagues Ben[http://www.techbelly.com/], Chris[http://chrisroos.co.uk] and Paul[http://po-ru.com].
+
+== Download and Installation
+
+Install the gem with the following command...
+
+  $ gem install mocha
+ 
+Or install the Rails[http://www.rubyonrails.org] plugin...
+
+  $ script/plugin install git://github.com/floehopper/mocha.git
+
+Or download Mocha...
+
+  http://rubyforge.org/frs/?group_id=1917
+
+== Examples
+
+* Quick Start - {Usage Examples}[link:examples/misc.html]
+* Traditional mocking - {Star Trek Example}[link:examples/mocha.html]
+* Setting expectations on real classes - {Order Example}[link:examples/stubba.html]
+* More examples on {Floehopper's Blog}[http://blog.floehopper.org]
+* {Mailing List Archives}[http://groups.google.com/group/mocha-developer]
+
+== License
+
+Copyright Revieworld Ltd. 2006
+
+You may use, copy and redistribute this library under the same terms as {Ruby itself}[http://www.ruby-lang.org/en/LICENSE.txt] or under the {MIT license}[http://mocha.rubyforge.org/files/MIT-LICENSE.html].
