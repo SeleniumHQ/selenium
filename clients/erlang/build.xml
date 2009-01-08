@@ -1,0 +1,85 @@
+<project name="selenium">
+    <target name="generate-sources">
+        <mkdir dir="target"/>
+        <xslt in="target/iedoc.xml" out="selenium.erl" style="iedoc2erlang.xml"/>
+    </target>
+
+    <target name="init">
+        <property name="erl.executable" value="erl"/>
+        <property name="erlc.executable" value="erlc"/>
+    </target>
+
+    <target name="clean">
+        <delete failonerror="false" includeemptydirs="true">
+            <fileset dir="doc"/>
+            <fileset dir="." includes="**/*.beam"/>
+            <fileset dir="." includes="**/erl_crash.dump"/>
+        </delete>
+    </target>
+
+    <target name="doc" depends="init">
+        <erl command="edoc:files([&quot;selenium.erl&quot;],[{dir,&quot;doc&quot;}])" />
+    </target>
+
+    <target name="compile" depends="init">
+        <erlc files="selenium.erl mochiweb_util.erl"/>
+    </target>
+
+    <target name="test" depends="init,compile">
+<!--        <property name="selenium-server" value="" />
+        <echo>${selenium-server}</echo>
+        <java jar="${selenium-server}" fork="true" spawn="true"/>
+        <sleep seconds="20"/>
+-->
+        <erl command="selenium:test()"
+             failonerror="false"
+             resultproperty="result"/>
+<!--
+        <get taskname="selenium-shutdown" src="http://localhost:4444/selenium-server/driver/?cmd=shutDown" dest="target/shutdown-result.txt" ignoreerrors="true" />
+        <sleep seconds="20"/>
+-->
+        <condition property="build.failed">
+            <not>
+                <equals arg1="0" arg2="${result}"/>
+            </not>
+        </condition>
+        <fail if="build.failed" message="erlang tests failed!"/>
+    </target>
+    
+    <target name="dist" depends="generate-sources, compile, doc">
+        <property name="project.version" value="UNKNOWNVERSION" />
+        <property name="erlang.release" value="selenium-erlang-client-driver-${project.version}"/>
+        <zip zipfile="target/${erlang.release}.zip">
+            <zipfileset dir="." prefix="${erlang.release}">
+                <include name="*.beam" />
+                <include name="doc/**" />
+            </zipfileset>
+        </zip>
+        <zip zipfile="target/${erlang.release}-doc.zip">
+            <zipfileset dir="doc" prefix="erlang" />
+        </zip>
+    </target>
+
+    <macrodef name="erl">
+        <attribute name="command" />
+        <attribute name="failonerror" default="true" />
+        <attribute name="resultproperty" default="erl.result" />
+
+        <sequential>
+            <exec executable="${erl.executable}"
+                  failonerror="@{failonerror}"
+                  resultproperty="@{resultproperty}">
+                <arg line="-noshell -eval '@{command}' -s erlang halt"/>
+            </exec>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="erlc">
+        <attribute name="files" />
+        <sequential>
+            <exec executable="${erlc.executable}" failonerror="true" >
+                <arg line="@{files}" />
+            </exec>
+        </sequential>
+    </macrodef>
+</project>
