@@ -20,8 +20,11 @@ package org.openqa.selenium.support.pagefactory;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.Clock;
+import org.openqa.selenium.support.ui.SystemClock;
 
 import java.lang.reflect.Field;
+import java.util.concurrent.TimeUnit;
 
 /**
  * An element locator that will wait for the specified number of seconds for an
@@ -35,6 +38,7 @@ import java.lang.reflect.Field;
  */
 public class AjaxElementLocator extends DefaultElementLocator {
   protected final int timeOutInSeconds;
+  private final Clock clock;
 
   /**
    * Main constructor.
@@ -45,8 +49,13 @@ public class AjaxElementLocator extends DefaultElementLocator {
    * Measured in seconds.
    */
   public AjaxElementLocator(WebDriver driver, Field field, int timeOutInSeconds) {
+    this(new SystemClock(), driver, field, timeOutInSeconds);
+  }
+
+  public AjaxElementLocator(Clock clock, WebDriver driver, Field field, int timeOutInSeconds) {
     super(driver, field);
     this.timeOutInSeconds = timeOutInSeconds;
+    this.clock = clock;
   }
 
   /**
@@ -55,7 +64,7 @@ public class AjaxElementLocator extends DefaultElementLocator {
    * Will poll the interface on a regular basis until the element is present.
    */
   public WebElement findElement() {
-    long end = now() + timeOutInSeconds * 1000;
+    long end = clock.laterBy(TimeUnit.SECONDS.toMillis(timeOutInSeconds));
 
     NoSuchElementException lastException = null;
     do {
@@ -71,27 +80,29 @@ public class AjaxElementLocator extends DefaultElementLocator {
 
       // But don't poll too frequently.
       sleep();
-    } while (now() < end);
+    } while (clock.isNowBefore(end));
 
     throw new NoSuchElementException(
         String.format("Timed out after %d seconds. %s", timeOutInSeconds, lastException.getMessage()),
         lastException);
   }
 
-  protected long now() {
-    return System.currentTimeMillis();
+  private void sleep() {
+    try {
+      Thread.sleep(sleepFor());
+    } catch (InterruptedException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   /**
    * By default, we sleep for 250ms between polls. You may override this method
    * in order to change how it sleeps.
+   *
+   * @return Duration to sleep in milliseconds
    */
-  protected void sleep() {
-    try {
-      Thread.sleep(250);
-    } catch (InterruptedException e) {
-      throw new RuntimeException(e);
-    }
+  protected long sleepFor() {
+    return 250;
   }
 
   /**
