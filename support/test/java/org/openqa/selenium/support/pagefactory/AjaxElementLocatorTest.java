@@ -59,7 +59,7 @@ public class AjaxElementLocatorTest extends MockObjectTestCase {
     final By by = new ByIdOrName("first");
     
     checking(new Expectations() {{
-      exactly(2).of(driver).findElement(by); will(throwException(new NoSuchElementException("bar")));
+      exactly(3).of(driver).findElement(by); will(throwException(new NoSuchElementException("bar")));
     }});
     
     ElementLocator locator = new MonkeyedAjaxElementLocator(clock, driver, f, 2);
@@ -78,7 +78,7 @@ public class AjaxElementLocatorTest extends MockObjectTestCase {
     final By by = new ByIdOrName("first");
     
     checking(new Expectations() {{
-      exactly(1).of(driver).findElement(by); will(throwException(new NoSuchElementException("bar")));
+      exactly(2).of(driver).findElement(by); will(throwException(new NoSuchElementException("bar")));
     }});
     
     ElementLocator locator = new MonkeyedAjaxElementLocator(clock, driver, f, 0);

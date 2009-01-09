@@ -61,7 +61,7 @@ public abstract class SlowLoadableComponent<T extends LoadableComponent<T>>
       } catch (Error e) {
         // Not a problem, we could still be loading
       }
-      waitFor(200);
+      waitFor(sleepFor());
     }
 
     isLoaded();
