@@ -258,7 +258,7 @@
                                 <configuration>
                                     <tasks>
                                         <taskdef resource="selenium-ant.properties">
-                                            <classpath refid="maven.dependency.classpath" />
+                                            <classpath refid="maven.test.classpath" />
                                         </taskdef>
                                         <selenese 
                                             browser="${browser}"
