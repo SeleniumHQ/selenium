@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.seleniumhq.selenium.core</groupId>
     <artifactId>selenium-core</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0-beta-1</version>
     <name>Selenium Core</name>
     <packaging>jar</packaging>
     <url>http://selenium.seleniumhq.org/projects/core</url>
