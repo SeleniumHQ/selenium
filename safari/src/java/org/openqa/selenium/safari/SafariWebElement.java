@@ -112,7 +112,11 @@ public class SafariWebElement implements WebElement, SearchContext {
         throw new UnsupportedOperationException("getChildrenOfType");
     }
 
-    public WebElement findElement(By by) {
+    public List<WebElement> getElementsByTagName(String tagName) {
+        throw new UnsupportedOperationException("getElementsByTagName");
+    }
+
+  public WebElement findElement(By by) {
         throw new UnsupportedOperationException("To be implemented");
     }
 

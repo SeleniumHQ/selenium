@@ -62,6 +62,7 @@ import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByXPath;
+import org.w3c.dom.NodeList;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -354,10 +355,10 @@ public class HtmlUnitWebElement implements WebElement,
 
     private boolean isBlockLevel(DomNode node) {
         // From the HTML spec (http://www.w3.org/TR/html401/sgml/dtd.html#block)
-//		 <!ENTITY % block "P | %heading; | %list; | %preformatted; | DL | DIV | NOSCRIPT | BLOCKQUOTE | FORM | HR | TABLE | FIELDSET | ADDRESS">
-//	     <!ENTITY % heading "H1|H2|H3|H4|H5|H6">
-//	     <!ENTITY % list "UL | OL">
-//	     <!ENTITY % preformatted "PRE">
+        //     <!ENTITY % block "P | %heading; | %list; | %preformatted; | DL | DIV | NOSCRIPT | BLOCKQUOTE | FORM | HR | TABLE | FIELDSET | ADDRESS">
+        //     <!ENTITY % heading "H1|H2|H3|H4|H5|H6">
+        //     <!ENTITY % list "UL | OL">
+        //     <!ENTITY % preformatted "PRE">
 
         if (!(node instanceof HtmlElement))
             return false;
@@ -382,17 +383,23 @@ public class HtmlUnitWebElement implements WebElement,
     }
 
     public List<WebElement> getChildrenOfType(String tagName) {
-        Iterable<HtmlElement> allChildren = element.getAllHtmlChildElements();
-        List<WebElement> elements = new ArrayList<WebElement>();
-        for (HtmlElement child : allChildren) {
-            if (tagName.equals(child.getTagName())) {
-                elements.add(getParent().newHtmlUnitWebElement(child));
-            }
-        }
-        return elements;
+      return getElementsByTagName(tagName);
     }
 
-    public WebElement findElement(By by) {
+  public List<WebElement> getElementsByTagName(String tagName) {
+    List<?> allChildren =  element.getByXPath(".//" + tagName);
+    List<WebElement> elements = new ArrayList<WebElement>();
+    for (Object o : allChildren) {
+      if (!(o instanceof HtmlElement))
+        continue;
+
+      HtmlElement child = (HtmlElement) o;
+      elements.add(getParent().newHtmlUnitWebElement(child));
+    }
+    return elements;
+  }
+
+  public WebElement findElement(By by) {
         return by.findElement(this);
     }
 

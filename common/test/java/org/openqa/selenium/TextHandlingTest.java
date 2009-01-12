@@ -64,7 +64,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
         WebElement labelForUsername = driver.findElement(By.id("labelforusername"));
         String text = labelForUsername.getText();
 
-        assertThat(labelForUsername.getChildrenOfType("script").size(), is(1));
+        assertThat(labelForUsername.getElementsByTagName("script").size(), is(1));
         assertThat(text, not(containsString("document.getElementById")));
         assertThat(text, is("Username:"));
     }

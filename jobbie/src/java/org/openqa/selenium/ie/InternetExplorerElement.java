@@ -43,23 +43,28 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
 
     public native String getAttribute(String name);
 
+    @Deprecated
     public List<WebElement> getChildrenOfType(String tagName) {
+        return getElementsByTagName(tagName);
+    }
+
+    public List<WebElement> getElementsByTagName(String tagName) {
         List<WebElement> toReturn = new ArrayList<WebElement>();
         getChildrenOfTypeNatively(toReturn, tagName);
         return toReturn;
     }
 
-    public native String getText();
+  public native String getText();
 
     public native String getValue();
 
     public void sendKeys(CharSequence... value) {
-    	StringBuilder builder = new StringBuilder();
-    	for (CharSequence seq : value) {
-    		builder.append(seq);
-    	}
+        StringBuilder builder = new StringBuilder();
+        for (CharSequence seq : value) {
+            builder.append(seq);
+        }
 
-    	doSendKeys(builder.toString());
+        doSendKeys(builder.toString());
     }
 
     private native void doSendKeys(String string);

@@ -109,18 +109,23 @@ public class FirefoxWebElement implements RenderedWebElement, Locatable,
     }
 
     public String getText() {
-    	String toReturn = sendMessage(RuntimeException.class, "getElementText");
+        String toReturn = sendMessage(RuntimeException.class, "getElementText");
         return toReturn.replace("\n", Platform.getCurrent().getLineEnding());
     }
 
+    @Deprecated
     public List<WebElement> getChildrenOfType(String tagName) {
+      return getElementsByTagName(tagName);
+    }
+
+    public List<WebElement> getElementsByTagName(String tagName) {
         String response = sendMessage(RuntimeException.class, "getElementChildren", tagName);
 
         return getElementsFromIndices(response);
     }
 
-    public boolean isDisplayed() {
-    	return Boolean.parseBoolean(sendMessage(RuntimeException.class, "isElementDisplayed"));
+  public boolean isDisplayed() {
+    return Boolean.parseBoolean(sendMessage(RuntimeException.class, "isElementDisplayed"));
     }
 
     public Point getLocation() {

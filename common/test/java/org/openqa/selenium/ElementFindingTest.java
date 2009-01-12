@@ -98,7 +98,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
         driver.get(xhtmlTestPage);
         List<WebElement> elements = driver.findElements(By.xpath("/html/head"));
         WebElement head = elements.get(0);
-        List<WebElement> importedScripts = head.getChildrenOfType("script");
+        List<WebElement> importedScripts = head.getElementsByTagName("script");
         assertThat(importedScripts.size(), equalTo(2));
     }
 
@@ -106,7 +106,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     public void testReturnAnEmptyListWhenThereAreNoChildrenOfANode() {
         driver.get(xhtmlTestPage);
         WebElement table = driver.findElement(By.id("table"));
-        List<WebElement> rows = table.getChildrenOfType("tr");
+        List<WebElement> rows = table.getElementsByTagName("tr");
 
         assertThat(rows.size(), equalTo(0));
     }

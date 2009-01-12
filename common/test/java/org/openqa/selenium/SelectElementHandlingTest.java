@@ -23,12 +23,12 @@ import static org.hamcrest.Matchers.is;
 import java.util.List;
 
 public class SelectElementHandlingTest extends AbstractDriverTestCase {
-	@Ignore("safari, ie")
-	public void testShouldBePossibleToDeselectASingleOptionFromASelectWhichAllowsMultipleChoices() {
+    @Ignore("safari, ie")
+    public void testShouldBePossibleToDeselectASingleOptionFromASelectWhichAllowsMultipleChoices() {
         driver.get(formPage);
 
         WebElement multiSelect = driver.findElement(By.id("multi"));
-        List<WebElement> options = multiSelect.getChildrenOfType("option");
+        List<WebElement> options = multiSelect.getElementsByTagName("option");
 
         WebElement option = options.get(0);
         assertThat(option.isSelected(), is(true));
@@ -40,13 +40,13 @@ public class SelectElementHandlingTest extends AbstractDriverTestCase {
         option = options.get(2);
         assertThat(option.isSelected(), is(true));
     }
-	
-	@Ignore("safari, ie")
+
+    @Ignore("safari, ie")
     public void testShouldNotBeAbleToDeselectAnOptionFromANormalSelect() {
         driver.get(formPage);
 
         WebElement select = driver.findElement(By.xpath("//select[@name='selectomatic']"));
-        List<WebElement> options = select.getChildrenOfType("option");
+        List<WebElement> options = select.getElementsByTagName("option");
         WebElement option = options.get(0);
 
         try {
@@ -57,11 +57,11 @@ public class SelectElementHandlingTest extends AbstractDriverTestCase {
         }
     }
 
-	@Ignore("safari")
+    @Ignore("safari")
     public void testShouldBeAbleToChangeTheSelectedOptionInASelect() {
         driver.get(formPage);
         WebElement selectBox = driver.findElement(By.xpath("//select[@name='selectomatic']"));
-        List<WebElement> options = selectBox.getChildrenOfType("option");
+        List<WebElement> options = selectBox.getElementsByTagName("option");
         WebElement one = options.get(0);
         WebElement two = options.get(1);
         assertThat(one.isSelected(), is(true));
@@ -72,12 +72,12 @@ public class SelectElementHandlingTest extends AbstractDriverTestCase {
         assertThat(two.isSelected(), is(true));
     }
 
-	@Ignore("safari")
+    @Ignore("safari")
     public void testShouldBeAbleToSelectMoreThanOneOptionFromASelectWhichAllowsMultipleChoices() {
         driver.get(formPage);
 
         WebElement multiSelect = driver.findElement(By.id("multi"));
-        List<WebElement> options = multiSelect.getChildrenOfType("option");
+        List<WebElement> options = multiSelect.getElementsByTagName("option");
         for (WebElement option : options)
             option.setSelected();
 

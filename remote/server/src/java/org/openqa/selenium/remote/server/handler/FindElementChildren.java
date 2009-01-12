@@ -51,7 +51,7 @@ public class FindElementChildren extends WebDriverHandler {
 
     Set<String> urls = new LinkedHashSet<String>();
     WebElement parent = getKnownElements().get(id);
-    List<WebElement> elements = parent.getChildrenOfType(name);
+    List<WebElement> elements = parent.getElementsByTagName(name);
 
     for (WebElement element : elements) {
       String elementId = getKnownElements().add(element);
