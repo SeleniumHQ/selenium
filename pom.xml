@@ -339,17 +339,19 @@
             <groupId>org.seleniumhq.selenium.server</groupId>
             <artifactId>selenium-server-coreless</artifactId>
             <version>1.0-SNAPSHOT</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>rhino</groupId>
             <artifactId>js</artifactId>
             <version>1.6R5</version>
-            <scope>provided</scope>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>3.8.1</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>
