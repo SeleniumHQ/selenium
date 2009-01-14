@@ -126,7 +126,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
 	public void testShouldEmitOnChangeEventsWhenSelectingElements() {
 		driver.get(javascriptPage);
 		WebElement select = driver.findElement(By.id("selector"));
-		List<WebElement> allOptions = select.getElementsByTagName("option");
+		List<WebElement> allOptions = select.findElements(By.tagName("option"));
 
 		String initialTextValue = driver.findElement(By.id("result")).getText();
 

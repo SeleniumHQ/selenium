@@ -30,6 +30,7 @@ import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
+import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.internal.Locatable;
 
@@ -38,7 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FirefoxWebElement implements RenderedWebElement, Locatable, 
-        FindsByXPath, FindsByLinkText, FindsById, FindsByName, FindsByClassName, SearchContext {
+        FindsByXPath, FindsByLinkText, FindsById, FindsByName, FindsByTagName, FindsByClassName, SearchContext {
     private final FirefoxDriver parent;
     private final String elementId;
 
@@ -250,6 +251,16 @@ public class FirefoxWebElement implements RenderedWebElement, Locatable,
         return elements.get(0);
     }
 
+    public WebElement findElementByTagName(String using) {
+      String response = sendMessage(NoSuchElementException.class, "findElementByTagName", using);
+      return new FirefoxWebElement(parent, response);
+    }
+    
+    public List<WebElement> findElementsByTagName(String using) {
+      String indices = sendMessage(RuntimeException.class, "findElementsByTagName", using);
+      return getElementsFromIndices(indices);
+    }
+    
     public List<WebElement> findElementsByClassName(String using) {
     	String indices = sendMessage(RuntimeException.class, "findChildElementsByClassName", using);
         return getElementsFromIndices(indices);

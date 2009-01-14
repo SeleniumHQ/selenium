@@ -245,6 +245,38 @@ FirefoxDriver.prototype.selectElementsUsingName = function(respond, name) {
   respond.send();
 };
 
+FirefoxDriver.prototype.selectElementsUsingTagName = function(respond, name) {
+	var doc = Utils.getDocument(this.context);
+
+	var elements = doc.getElementsByTagName(name);
+	if (elements.length) {
+		respond.response = Utils.addToKnownElements(elements[0], this.context);
+	} else {
+		respond.isError = true;
+		respond.response = "Unable to find element with name '" + name + "'";
+	}
+
+	respond.send();
+};
+
+FirefoxDriver.prototype.selectElementsUsingTagName = function(respond, using) {
+	var doc = Utils.getDocument(this.context);
+
+	var elements = doc.getElementsByTagName(name);
+	var response = "";
+	for ( var i = 0; i < elements.length; i++) {
+		var element = elements[i];
+		var index = Utils.addToKnownElements(element, this.context);
+		response += index + ",";
+	}
+	// Strip the trailing comma
+	response = response.substring(0, response.length - 1);
+
+	respond.context = this.context;
+	respond.response = response;
+	respond.send();
+};
+
 FirefoxDriver.prototype.selectElementUsingClassName = function(respond, name) {
     var doc = Utils.getDocument(this.context);
 

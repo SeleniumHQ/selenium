@@ -28,6 +28,9 @@ void findElementsById(std::vector<ElementWrapper*>*toReturn, InternetExplorerDri
 void findElementByName(IHTMLDOMNode** result, InternetExplorerDriver* ie, const IHTMLDOMNode* node, const wchar_t* name);
 void findElementsByName(std::vector<ElementWrapper*>*toReturn, InternetExplorerDriver* ie, IHTMLDOMNode* node, const wchar_t* name);
 
+void findElementByTagName(IHTMLDOMNode** result, InternetExplorerDriver* ie, const IHTMLDOMNode* node, const wchar_t* name);
+void findElementsByTagName(std::vector<ElementWrapper*>*toReturn, InternetExplorerDriver* ie, IHTMLDOMNode* node, const wchar_t* name);
+
 void findElementByClassName(IHTMLDOMNode** result, InternetExplorerDriver* ie, const IHTMLDOMNode* node, const wchar_t* name);
 void findElementsByClassName(std::vector<ElementWrapper*>*toReturn, InternetExplorerDriver* ie, IHTMLDOMNode* node, const wchar_t* name);
 

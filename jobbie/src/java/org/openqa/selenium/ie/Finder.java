@@ -24,6 +24,7 @@ import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
+import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
 
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ import java.util.List;
 // Kept package level deliberately.
 
 class Finder implements SearchContext,
-	FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByXPath {
+	FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, FindsByXPath {
 
 	private final long iePointer;
 	private final long domNodePointer;
@@ -64,7 +65,19 @@ class Finder implements SearchContext,
 		selectElementsByName(iePointer, domNodePointer, using, rawElements);
         return rawElements;
 	}		
-    private native void selectElementsByName(long iePointer, long domNodePointer, String using, List<WebElement> rawElements);
+  private native void selectElementsByName(long iePointer, long domNodePointer, String using, List<WebElement> rawElements);
+  
+  public WebElement findElementByTagName(String using) {
+    return selectElementByTagName(iePointer, domNodePointer, using);
+  }
+  private native WebElement selectElementByTagName(long iePointer, long domNodePointer, String using);
+  
+  public List<WebElement> findElementsByTagName(String using) {
+    List<WebElement> rawElements = new ArrayList<WebElement>();
+    selectElementsByTagName(iePointer, domNodePointer, using, rawElements);
+    return rawElements;
+  }   
+    private native void selectElementsByTagName(long iePointer, long domNodePointer, String using, List<WebElement> rawElements);
 
 	public WebElement findElementByClassName(String using) {
 		return selectElementByClassName(iePointer, domNodePointer, using);

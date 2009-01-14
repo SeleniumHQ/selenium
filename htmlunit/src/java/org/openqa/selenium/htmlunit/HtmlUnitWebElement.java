@@ -35,6 +35,20 @@ limitations under the License.
 
 package org.openqa.selenium.htmlunit;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.internal.FindsById;
+import org.openqa.selenium.internal.FindsByLinkText;
+import org.openqa.selenium.internal.FindsByTagName;
+import org.openqa.selenium.internal.FindsByXPath;
+
 import com.gargoylesoftware.htmlunit.ScriptException;
 import com.gargoylesoftware.htmlunit.html.ClickableElement;
 import com.gargoylesoftware.htmlunit.html.DomNode;
@@ -53,23 +67,8 @@ import com.gargoylesoftware.htmlunit.html.HtmlSelect;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextArea;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.internal.FindsById;
-import org.openqa.selenium.internal.FindsByLinkText;
-import org.openqa.selenium.internal.FindsByName;
-import org.openqa.selenium.internal.FindsByXPath;
-import org.w3c.dom.NodeList;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 public class HtmlUnitWebElement implements WebElement,
-    FindsById, FindsByLinkText, FindsByXPath, FindsByName, SearchContext {
+    FindsById, FindsByLinkText, FindsByXPath, FindsByTagName, SearchContext {
     protected final HtmlUnitDriver parent;
     protected final HtmlElement element;
     private final static char nbspChar = (char) 160;
@@ -201,7 +200,7 @@ public class HtmlUnitWebElement implements WebElement,
 
         if (element instanceof HtmlInput) {
             String currentValue = getValue();
-            element.setAttributeValue("value", (currentValue == null ? "" : currentValue) + builder.toString());
+            element.setAttribute("value", (currentValue == null ? "" : currentValue) + builder.toString());
         } else if (element instanceof HtmlTextArea) {
             String currentValue = getValue();
             ((HtmlTextArea) element).setText((currentValue == null ? "" : currentValue) + builder.toString());
@@ -217,7 +216,7 @@ public class HtmlUnitWebElement implements WebElement,
     public String getAttribute(String name) {
         final String lowerName = name.toLowerCase();
 
-        String value = element.getAttributeValue(name);
+        String value = element.getAttribute(name);
 
         if ("disabled".equals(lowerName)) {
             return isEnabled() ? "false" : "true";
@@ -232,7 +231,7 @@ public class HtmlUnitWebElement implements WebElement,
         if (!"".equals(value))
             return value;
 
-        if (element.isAttributeDefined(name))
+        if (element.hasAttribute(name))
             return "";
 
 
@@ -255,7 +254,7 @@ public class HtmlUnitWebElement implements WebElement,
                 }
             }
 
-            throw new UnsupportedOperationException("You may only toggle checkboxes or options in a select which allows multiple selections");
+            throw new UnsupportedOperationException("You may only toggle checkboxes or options in a select which allows multiple selections: " + getElementName());
         } catch (IOException e) {
             throw new RuntimeException("Unexpected exception: " + e);
         }
@@ -271,7 +270,7 @@ public class HtmlUnitWebElement implements WebElement,
     }
 
     public void setSelected() {
-        String disabledValue = element.getAttributeValue("disabled");
+        String disabledValue = element.getAttribute("disabled");
         if (disabledValue.length() > 0) {
             throw new UnsupportedOperationException("You may not select a disabled element");
         }
@@ -312,10 +311,6 @@ public class HtmlUnitWebElement implements WebElement,
 
     protected HtmlElement getElement() {
         return element;
-    }
-
-    private boolean isWhiteSpace(int lastChar) {
-        return lastChar == '\n' || lastChar == ' ' || lastChar == '\t' || lastChar == '\r';
     }
 
     private void getTextFromNode(DomNode node, StringBuffer toReturn, StringBuffer textSoFar, boolean isPreformatted) {
@@ -442,7 +437,6 @@ public class HtmlUnitWebElement implements WebElement,
         return elements.size() > 0 ? elements.get(0) : null;
     }
 
-    @SuppressWarnings("unchecked")
     public List<WebElement> findElementsByLinkText(String linkText) {
         List<HtmlElement> htmlElements =
             (List<HtmlElement>) element.getHtmlElementsByTagName("a");
@@ -465,7 +459,6 @@ public class HtmlUnitWebElement implements WebElement,
         return elements.size() > 0 ? elements.get(0) : null;
     }
 
-    @SuppressWarnings("unchecked")
     public List<WebElement> findElementsByPartialLinkText(String linkText) {
         List<HtmlElement> htmlElements =
             (List<HtmlElement>) element.getHtmlElementsByTagName("a");
@@ -479,14 +472,28 @@ public class HtmlUnitWebElement implements WebElement,
         return webElements;
     }
 
-    public WebElement findElementByName(String name) {
-        return findElementByXPath(".//*[@name = '" + name + "']");
+    public WebElement findElementByTagName(String name) {
+      List<WebElement> elements = findElementsByTagName(name);
+      if (elements.size() == 0) {
+        throw new NoSuchElementException("Cannot find element with tag name: " + name);
+      }
+      return elements.get(0);
     }
-
-    public List<WebElement> findElementsByName(String name) {
-        return findElementsByXPath(".//*[@name = '" + name + "']");
+    
+    public List<WebElement> findElementsByTagName(String name) {
+      return findElementsByXPath(".//*[local-name()='" + name + "']");
+      
+      /* TODO(simon.m.stewart): Update this once the next version of HtmlUnit is released
+      NodeList elements = element.getElementsByTagName(name);
+      ArrayList<WebElement> toReturn = new ArrayList<WebElement>(elements.getLength());
+      for (int i = 0; i < elements.getLength(); i++) {
+        toReturn.add(parent.newHtmlUnitWebElement((HtmlElement) elements.item(i)));
+      }
+      
+      return toReturn;
+      */
     }
-
+    
     private WebElement findParentForm() {
         DomNode current = element;
         while (!(current == null || current instanceof HtmlForm)) {

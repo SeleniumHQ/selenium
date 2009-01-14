@@ -69,8 +69,11 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
+import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.internal.ReturnedCookie;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import java.net.ConnectException;
 import java.net.URL;
@@ -86,7 +89,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecutor,
-        FindsById, FindsByLinkText, FindsByXPath, FindsByName {
+        FindsById, FindsByLinkText, FindsByXPath, FindsByName, FindsByTagName {
     private WebClient webClient;
     private WebWindow currentWindow;
     /** window name => history. */
@@ -233,7 +236,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     }
 
     public String getCurrentUrl() {
-        return lastPage().getWebResponse().getUrl().toString();
+        return lastPage().getWebResponse().getRequestUrl().toString();
     }
 
     public String getTitle() {
@@ -431,7 +434,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     if (!(lastPage() instanceof HtmlPage))
       throw new IllegalStateException("Cannot find element by name for " + lastPage());
 
-    List<HtmlElement> allElements = ((HtmlPage) lastPage()).getHtmlElementsByName(name);
+    List<HtmlElement> allElements = ((HtmlPage) lastPage()).getElementsByName(name);
     if (allElements.size() > 0) {
         return newHtmlUnitWebElement(allElements.get(0));
     }
@@ -439,15 +442,41 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     throw new NoSuchElementException("Cannot find element with name: " + name);
   }
 
-  @SuppressWarnings("unchecked")
   public List<WebElement> findElementsByName(String using) {
     if (!(lastPage() instanceof HtmlPage))
       return new ArrayList<WebElement>();
 
-    List allElements = ((HtmlPage) lastPage()).getHtmlElementsByName(using);
+    List<HtmlElement> allElements = ((HtmlPage) lastPage()).getElementsByName(using);
     return convertRawHtmlElementsToWebElements(allElements);
   }
 
+  public WebElement findElementByTagName(String name) {
+    if (!(lastPage() instanceof HtmlPage))
+      throw new IllegalStateException("Cannot find element by name for " + lastPage());
+
+    NodeList allElements = ((HtmlPage) lastPage()).getElementsByTagName(name);
+    if (allElements.getLength() > 0) {
+        return newHtmlUnitWebElement((HtmlElement) allElements.item(0));
+    }
+
+    throw new NoSuchElementException("Cannot find element with name: " + name);
+  }
+
+  public List<WebElement> findElementsByTagName(String using) {
+    if (!(lastPage() instanceof HtmlPage))
+      return new ArrayList<WebElement>();
+
+    NodeList allElements = ((HtmlPage) lastPage()).getElementsByTagName(using);
+    List<WebElement> toReturn = new ArrayList<WebElement>(allElements.getLength());
+    for (int i = 0; i < allElements.getLength(); i++) {
+      Node item = allElements.item(i);
+      if (item instanceof HtmlElement) {
+        toReturn.add(newHtmlUnitWebElement((HtmlElement) item));
+      }
+    }
+    return toReturn;
+  }
+  
   public WebElement findElementByXPath(String selector) {
     if (!(lastPage() instanceof HtmlPage))
       throw new IllegalStateException("Cannot find element by xpath for " + lastPage());
@@ -476,7 +505,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     		elements.add(newHtmlUnitWebElement((HtmlElement) node));
       }
 
-        return elements;
+      return elements;
     }
 
   public boolean isJavascriptEnabled() {
@@ -704,11 +733,11 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
         }
 
         private String getHostName() {
-            return lastPage().getWebResponse().getUrl().getHost().toLowerCase();
+            return lastPage().getWebResponse().getRequestUrl().getHost().toLowerCase();
         }
 
         private String getPath() {
-        	return lastPage().getWebResponse().getUrl().getPath();
+        	return lastPage().getWebResponse().getRequestUrl().getPath();
         }
 
         public Speed getSpeed() {
@@ -722,7 +751,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
         private String getDomainForCookie(Cookie cookie) {
             String domain = cookie.getDomain();
             if (domain == null || "".equals(domain)) {
-                URL current = lastPage().getWebResponse().getUrl();
+                URL current = lastPage().getWebResponse().getRequestUrl();
                 domain = String.format("%s:%s", current.getHost(), current.getPort());
             }
             return domain;

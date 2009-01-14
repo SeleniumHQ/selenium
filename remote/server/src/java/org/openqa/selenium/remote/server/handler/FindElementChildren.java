@@ -19,6 +19,7 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.server.DriverSessions;
@@ -51,7 +52,7 @@ public class FindElementChildren extends WebDriverHandler {
 
     Set<String> urls = new LinkedHashSet<String>();
     WebElement parent = getKnownElements().get(id);
-    List<WebElement> elements = parent.getElementsByTagName(name);
+    List<WebElement> elements = parent.findElements(By.tagName(name));
 
     for (WebElement element : elements) {
       String elementId = getKnownElements().add(element);

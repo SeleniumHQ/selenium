@@ -457,6 +457,116 @@ void IeThread::OnSelectElementsByName(WPARAM w, LPARAM lp)
 	}
 }
 
+void IeThread::OnSelectElementByTagName(WPARAM w, LPARAM lp)
+{
+	SCOPETRACER
+	ON_THREAD_COMMON(data)
+	long &errorKind = data.output_long_; 
+	CComPtr<IHTMLElement> inputElement(data.input_html_element_);
+	IHTMLElement* &pDom = data.output_html_element_; 
+	const wchar_t *tagName = data.input_string_; 
+
+	pDom = NULL;
+	errorKind = 0;
+
+	CComPtr<IHTMLDocument3> root_doc;
+	getDocument3(&root_doc);
+	if (!root_doc) 
+	{
+		errorKind = 1;
+		return;
+	}
+	
+	CComPtr<IHTMLElementCollection> elements;
+	root_doc->getElementsByTagName(CComBSTR(tagName), &elements);
+
+	if (!elements)
+	{
+		errorKind = 1;
+		return;
+	}
+
+	long length;
+	elements->get_length(&length);
+
+	CComQIPtr<IHTMLDOMNode> node(inputElement);
+
+	for (int i = 0; i < length; i++) {
+		CComVariant idx;
+		idx.vt = VT_I4;
+		idx.lVal = i;
+		CComVariant zero;
+		zero.vt = VT_I4;
+		zero.lVal = 0;
+		CComPtr<IDispatch> dispatch;
+		elements->item(idx, zero, &dispatch);
+
+		CComQIPtr<IHTMLElement> element(dispatch);
+
+		// Check to see if the element is contained return if it is
+		if (isOrUnder(node, element))
+		{
+			element.CopyTo(&pDom);
+			return;
+		}
+	}
+
+	errorKind = 1;
+}
+
+void IeThread::OnSelectElementsByTagName(WPARAM w, LPARAM lp)
+{
+	SCOPETRACER
+	ON_THREAD_COMMON(data)
+	long &errorKind = data.output_long_;
+	CComPtr<IHTMLElement> inputElement(data.input_html_element_);
+	std::vector<IHTMLElement*> &allElems = data.output_list_html_element_;
+	const wchar_t *tagName = data.input_string_;
+
+	errorKind = 0;
+
+	/// Start from root DOM by default
+	CComPtr<IHTMLDocument3> root_doc;
+	getDocument3(&root_doc);
+	if (!root_doc) 
+	{
+		errorKind = 1;
+		return;
+	}
+	
+	CComPtr<IHTMLElementCollection> elements;
+	root_doc->getElementsByTagName(CComBSTR(tagName), &elements);
+
+	if (!elements)
+	{
+		errorKind = 1;
+		return;
+	}
+
+	long length;
+	elements->get_length(&length);
+
+	CComQIPtr<IHTMLDOMNode> node(inputElement);
+
+	for (int i = 0; i < length; i++) {
+		CComVariant idx;
+		idx.vt = VT_I4;
+		idx.lVal = i;
+		CComVariant zero;
+		zero.vt = VT_I4;
+		zero.lVal = 0;
+		CComPtr<IDispatch> dispatch;
+		elements->item(idx, zero, &dispatch);
+
+		CComQIPtr<IHTMLElement> element(dispatch);
+
+		if (isOrUnder(node, element)) {
+			IHTMLElement *pDom = NULL;
+			element.CopyTo(&pDom);
+			allElems.push_back(pDom);
+		}
+	}
+}
 
 void IeThread::OnSelectElementByClassName(WPARAM w, LPARAM lp)
 {

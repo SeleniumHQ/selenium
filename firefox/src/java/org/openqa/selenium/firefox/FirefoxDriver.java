@@ -37,6 +37,7 @@ import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
+import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.internal.ReturnedCookie;
 
@@ -73,7 +74,7 @@ import java.util.Set;
  * This allows multiple instances of firefox to be started.
  */
 public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecutor,
-        FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByXPath {
+        FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, FindsByXPath {
     public static final int DEFAULT_PORT = 7055;
 
     private final ExtensionConnection extension;
@@ -229,6 +230,14 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
       return findElements("selectElementsUsingName", using);
   }
 
+  public WebElement findElementByTagName(String using) {
+    return findElement("selectElementByTagName", using);
+  }
+
+  public List<WebElement> findElementsByTagName(String using) {
+    return findElements("selectElementsByTagName", using);
+  }
+  
   public WebElement findElementByXPath(String using) {
     return findElement("selectElementUsingXPath", using);
   }

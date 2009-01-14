@@ -134,20 +134,10 @@ public interface WebElement {
      *
      * @param tagName The tag name of the child elements.
      * @return A list of {@link WebElement}s of the given type.
-     * @deprecated Use {@link #getElementsByTagName(String)} 
+     * @deprecated Use {@link #findElement(By#tagName(String)} 
      */
     @Deprecated
     List<WebElement> getChildrenOfType(String tagName);
-
-    /**
-     * Get the list of descendant elements that match the given tag name.
-     * Has the same meaning as the equivalent method in the
-     * <a href="http://www.w3.org/TR/DOM-Level-2-Core/core.html#ID-1938918D">W3C DOM</a>
-     *
-     * @param tagName The tag name of the child elements.
-     * @return A list of {@link WebElement}s of the given type.
-     */
-    List<WebElement> getElementsByTagName(String tagName);
 
     /**
      * Find all elements within the current context using the given mechanism.

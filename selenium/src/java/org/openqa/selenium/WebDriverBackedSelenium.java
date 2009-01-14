@@ -613,7 +613,7 @@ public class WebDriverBackedSelenium implements Selenium {
    */
   public void removeAllSelections(String locator) {
     WebElement select = findElement(locator);
-    List<WebElement> options = select.getElementsByTagName("option");
+    List<WebElement> options = select.findElements(By.tagName("option"));
     removeAllSelections(options);
   }
 
@@ -1158,7 +1158,7 @@ public class WebDriverBackedSelenium implements Selenium {
    */
   public String[] getSelectOptions(String selectLocator) {
     WebElement select = findElement(selectLocator);
-    List<WebElement> options = select.getElementsByTagName("option");
+    List<WebElement> options = select.findElements(By.tagName("option"));
     List<String> optionValues = new ArrayList<String>();
     for (WebElement option : options) {
       optionValues.add(option.getText());
@@ -2022,7 +2022,7 @@ public class WebDriverBackedSelenium implements Selenium {
 
   protected void select(String selectLocator, String optionLocator, boolean setSelected, boolean onlyOneOption) {
     WebElement select = findElement(selectLocator);
-    List<WebElement> allOptions = select.getElementsByTagName("option");
+    List<WebElement> allOptions = select.findElements(By.tagName("option"));
 
     boolean isMultiple = false;
 
@@ -2079,7 +2079,7 @@ public class WebDriverBackedSelenium implements Selenium {
 
   private List<WebElement> getOptions(String selectLocator) {
     WebElement element = findElement(selectLocator);
-    List<WebElement> options = element.getElementsByTagName("option");
+    List<WebElement> options = element.findElements(By.tagName("option"));
     if (options.size() == 0) {
       throw new SeleniumException("Specified element is not a Select (has no options)");
     }

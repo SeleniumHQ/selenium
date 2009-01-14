@@ -238,26 +238,7 @@ FirefoxDriver.prototype.submitElement = function(respond) {
         respond.context = this.context;
         respond.send();
     }
-}
-
-FirefoxDriver.prototype.getElementChildren = function(respond, name) {
-    var element = Utils.getElementAt(respond.elementId, this.context);
-
-    var children = element.getElementsByTagName(name[0]);
-
-    var response = "";
-    for (var i = 0; i < children.length; i++) {
-      var e = children[i];
-      var index = Utils.addToKnownElements(e, this.context);
-      response += index + ",";
-    }
-    // Strip the trailing comma
-    response = response.substring(0, response.length - 1);
-
-    respond.context = this.context;
-    respond.response = response;
-    respond.send();
-}
+};
 
 FirefoxDriver.prototype.getElementSelected = function(respond) {
     var element = Utils.getElementAt(respond.elementId, this.context);
@@ -598,6 +579,38 @@ FirefoxDriver.prototype.findElementById = function(respond, id) {
     	respond.response = "-1";
     }
     respond.send();
+};
+
+FirefoxDriver.prototype.findElementByTagName = function(respond, name) {
+	var parentElement = Utils.getElementAt(respond.elementId, this.context);
+	
+	var elements = parentElement.getElementsByTagName(name);
+	if (elements.length) {
+		respond.response = Utils.addToKnownElements(elements[0], this.context);
+	} else {
+		respond.isError = true;
+		respond.response = "Unable to find element with tag name '" + name + "'";
+	}
+
+	respond.send();
+};
+
+FirefoxDriver.prototype.findElementsByTagName = function(respond, name) {
+	var parentElement = Utils.getElementAt(respond.elementId, this.context);
+	
+	var elements = parentElement.getElementsByTagName(name);
+	var response = "";
+	for ( var i = 0; i < elements.length; i++) {
+		var element = elements[i];
+		var index = Utils.addToKnownElements(element, this.context);
+		response += index + ",";
+	}
+	// Strip the trailing comma
+	response = response.substring(0, response.length - 1);
+
+	respond.context = this.context;
+	respond.response = response;
+	respond.send();
 };
 
 FirefoxDriver.prototype.getElementCssProperty = function(respond, propertyName) {

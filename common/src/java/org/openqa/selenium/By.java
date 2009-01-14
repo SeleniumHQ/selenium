@@ -21,6 +21,7 @@ import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
+import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
 
 import java.util.List;
@@ -120,14 +121,14 @@ public abstract class By {
         public List<WebElement> findElements(SearchContext context) {
             if (context instanceof FindsByName)
               return ((FindsByName) context).findElementsByName(name);
-            return ((FindsByXPath) context).findElementsByXPath("//*[@name = '" + name + "']");
+            return ((FindsByXPath) context).findElementsByXPath(".//*[@name = '" + name + "']");
         }
 
         @Override
         public WebElement findElement(SearchContext context) {
           if (context instanceof FindsByName)
             return ((FindsByName) context).findElementByName(name);
-          return ((FindsByXPath) context).findElementByXPath("//*[@name = '" + name + "']");
+          return ((FindsByXPath) context).findElementByXPath(".//*[@name = '" + name + "']");
         }
         
         @Override
@@ -137,6 +138,32 @@ public abstract class By {
       };
     }
 
+    public static By tagName(final String name) {
+      if (name == null)
+        throw new IllegalArgumentException("Cannot find elements when name tag name is null.");
+
+      return new By() {
+        @Override
+        public List<WebElement> findElements(SearchContext context) {
+            if (context instanceof FindsByTagName)
+              return ((FindsByTagName) context).findElementsByTagName(name);
+            return ((FindsByXPath) context).findElementsByXPath(name);
+        }
+
+        @Override
+        public WebElement findElement(SearchContext context) {
+          if (context instanceof FindsByTagName)
+            return ((FindsByTagName) context).findElementByTagName(name);
+          return ((FindsByXPath) context).findElementByXPath(name);
+        }
+        
+        @Override
+        public String toString() {
+          return "By.tagName: " + name;
+        }
+      };
+    }
+    
     public static By xpath(final String xpathExpression) {
        if (xpathExpression == null)
         throw new IllegalArgumentException("Cannot find elements when the XPath expression is null.");

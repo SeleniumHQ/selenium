@@ -28,7 +28,7 @@ public class SelectElementHandlingTest extends AbstractDriverTestCase {
         driver.get(formPage);
 
         WebElement multiSelect = driver.findElement(By.id("multi"));
-        List<WebElement> options = multiSelect.getElementsByTagName("option");
+        List<WebElement> options = multiSelect.findElements(By.tagName("option"));
 
         WebElement option = options.get(0);
         assertThat(option.isSelected(), is(true));
@@ -46,7 +46,7 @@ public class SelectElementHandlingTest extends AbstractDriverTestCase {
         driver.get(formPage);
 
         WebElement select = driver.findElement(By.xpath("//select[@name='selectomatic']"));
-        List<WebElement> options = select.getElementsByTagName("option");
+        List<WebElement> options = select.findElements(By.tagName("option"));
         WebElement option = options.get(0);
 
         try {
@@ -61,7 +61,7 @@ public class SelectElementHandlingTest extends AbstractDriverTestCase {
     public void testShouldBeAbleToChangeTheSelectedOptionInASelect() {
         driver.get(formPage);
         WebElement selectBox = driver.findElement(By.xpath("//select[@name='selectomatic']"));
-        List<WebElement> options = selectBox.getElementsByTagName("option");
+        List<WebElement> options = selectBox.findElements(By.tagName("option"));
         WebElement one = options.get(0);
         WebElement two = options.get(1);
         assertThat(one.isSelected(), is(true));
@@ -77,7 +77,7 @@ public class SelectElementHandlingTest extends AbstractDriverTestCase {
         driver.get(formPage);
 
         WebElement multiSelect = driver.findElement(By.id("multi"));
-        List<WebElement> options = multiSelect.getElementsByTagName("option");
+        List<WebElement> options = multiSelect.findElements(By.tagName("option"));
         for (WebElement option : options)
             option.setSelected();
 

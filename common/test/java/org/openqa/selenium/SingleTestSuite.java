@@ -31,7 +31,7 @@ public class SingleTestSuite extends TestCase {
   private final static String SAFARI = "org.openqa.selenium.safari.SafariDriver";
 
   public static Test suite() throws Exception {
-    String driver = HTML_UNIT_JS;
+    String driver = HTML_UNIT;
 
     System.setProperty("webdriver.firefox.development", "true");
 //    System.setProperty("webdriver.firefox.useExisting", "true");
@@ -44,7 +44,7 @@ public class SingleTestSuite extends TestCase {
         .keepDriverInstance()
         .includeJavascriptTests()
         .onlyRun("SelectElementHandlingTest")
-//         .method("testShouldAllowUsersToDragAndDropToElementsOffTheCurrentViewPort")
+//         .method("testShouldFindElementsByXPath")
 //        .exclude("ie")
         .leaveRunning()
         ;  // Yeah, this look strange :)

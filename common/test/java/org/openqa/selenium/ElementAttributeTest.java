@@ -52,7 +52,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
         driver.get(formPage);
 
         WebElement multiSelect = driver.findElement(By.id("multi"));
-        List<WebElement> options = multiSelect.getElementsByTagName("option");
+        List<WebElement> options = multiSelect.findElements(By.tagName("option"));
         assertThat(options.get(1).getAttribute("index"), equalTo("1"));
     }
 
@@ -91,7 +91,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     public void testShouldReturnTheValueOfSelectedForOptionsInSelectsEvenIfTheyLackThatAttribute() {
         driver.get(formPage);
         WebElement selectBox = driver.findElement(By.xpath("//select[@name='selectomatic']"));
-        List<WebElement> options = selectBox.getElementsByTagName("option");
+        List<WebElement> options = selectBox.findElements(By.tagName("option"));
         WebElement one = options.get(0);
         WebElement two = options.get(1);
         assertThat(one.isSelected(), is(true));

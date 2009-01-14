@@ -159,6 +159,8 @@ protected:
 		  void OnSelectElementsByLink(WPARAM, LPARAM);
 		  void OnSelectElementByName(WPARAM, LPARAM);
 		  void OnSelectElementsByName(WPARAM, LPARAM);
+		  void OnSelectElementByTagName(WPARAM, LPARAM);
+		  void OnSelectElementsByTagName(WPARAM, LPARAM);
 		  void OnSelectElementByClassName(WPARAM, LPARAM);
 		  void OnSelectElementsByClassName(WPARAM, LPARAM);
 		  void OnGetCookies(WPARAM, LPARAM);

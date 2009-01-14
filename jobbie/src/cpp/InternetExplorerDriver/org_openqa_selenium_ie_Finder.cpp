@@ -254,6 +254,82 @@ JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_Finder_selectElementsByName
 	END_TRY_CATCH_ANY
 }
 
+JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_Finder_selectElementByTagName
+  (JNIEnv *env, jclass ignored, jlong iePointer, jlong elementPointer, jstring name)
+{
+	TRY
+	{
+	wchar_t* converted = (wchar_t *)env->GetStringChars(name, 0);
+	std::wstring message(L"Cannot find element using tag name: ");
+	message.append(converted);
+
+	InternetExplorerDriver* ie = (InternetExplorerDriver*)(iePointer);
+	CComPtr<IHTMLElement> elem = (IHTMLElement*) elementPointer;
+
+	ElementWrapper* wrapper = NULL;
+	try {
+		wrapper = ie->selectElementByTagName(elem, converted);
+	} catch (std::wstring& ) {
+		env->ReleaseStringChars(name, (const jchar*) converted);	
+		throwNoSuchElementException(env, message.c_str());
+		return NULL;
+	} 
+
+	env->ReleaseStringChars(name, (const jchar*) converted);	
+
+	jclass clazz = env->FindClass("org/openqa/selenium/ie/InternetExplorerElement");
+	jmethodID cId = env->GetMethodID(clazz, "<init>", "(J)V");
+
+	return env->NewObject(clazz, cId, (jlong) wrapper);
+	}
+	END_TRY_CATCH_ANY
+	return NULL;
+}
+
+JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_Finder_selectElementsByTagName
+  (JNIEnv *env, jclass ignored, jlong iePointer, jlong elementPointer, jstring name, jobject list)
+{
+	TRY
+	{
+	wchar_t* converted = (wchar_t *)env->GetStringChars(name, 0);
+	std::wstring message(L"Cannot find elements using tag name: ");
+	message.append(converted);
+
+	jclass listClass = env->FindClass("java/util/List");
+	jmethodID addId = env->GetMethodID(listClass, "add", "(Ljava/lang/Object;)Z");
+
+	jclass ieeClass = env->FindClass("org/openqa/selenium/ie/InternetExplorerElement");
+	jmethodID cId = env->GetMethodID(ieeClass, "<init>", "(J)V");
+
+	InternetExplorerDriver* ie = (InternetExplorerDriver*)(iePointer);
+	CComPtr<IHTMLElement> elem = (IHTMLElement*) elementPointer;
+
+	const std::vector<ElementWrapper*>* elements = NULL;
+	try {
+	 elements = ie->selectElementsByTagName(elem, converted);
+	} catch (std::wstring& ) {
+		env->ReleaseStringChars(name, (const jchar*) converted);	
+		throwNoSuchElementException(env, message.c_str());
+		return;
+	} 
+	env->ReleaseStringChars(name, (const jchar*) converted);
+
+	std::vector<ElementWrapper*>::const_iterator end = elements->end();
+	std::vector<ElementWrapper*>::const_iterator cur = elements->begin();
+
+	while(cur < end)
+	{
+		ElementWrapper* wrapper = *cur;
+		jobject wrapped = env->NewObject(ieeClass, cId, wrapper);
+		env->CallVoidMethod(list, addId, wrapped);
+		cur++;
+	}
+
+	delete elements;
+	}
+	END_TRY_CATCH_ANY
+}
+
 
 JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_Finder_selectElementByClassName
   (JNIEnv *env, jclass ignored, jlong iePointer, jlong elementPointer, jstring classname)
