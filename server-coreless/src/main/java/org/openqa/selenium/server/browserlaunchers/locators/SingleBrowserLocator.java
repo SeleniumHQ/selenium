@@ -144,9 +144,9 @@ public abstract class SingleBrowserLocator implements BrowserLocator {
         }
 
         if (LauncherUtils.isScriptFile(launcher)) {
-            LOGGER.warn("Ignoring '" + launcher.getAbsolutePath() +"': file is a script file, not a real executable");
-            return null;
+            LOGGER.warn("Caution: '" + launcher.getAbsolutePath() +"': file is a script file, not a real executable.  The browser environment is no longer fully under RC control");
         }
+
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Discovered valid " + browserName() + " launcher  : '" + launcher + "'");
         }
