@@ -359,11 +359,26 @@ void IeThread::OnElementClear(WPARAM w, LPARAM lp)
 	CComQIPtr<IHTMLElement2> element2(pElement);
 
 	CComBSTR valueAttributeName(L"value");
+
+    // Get the current value, to see if we need to fire the onchange handler
+	std::wstring curr;
+	getValue(pElement, curr);
+	bool fireChange = curr.length() != 0;
+
+	element2->focus();
+
 	CComVariant empty;
 	CComBSTR emptyBstr(L"");
 	empty.vt = VT_BSTR;
 	empty.bstrVal = (BSTR)emptyBstr;
 	pElement->setAttribute(valueAttributeName, empty, 0);
+
+	if (fireChange) {
+		CComPtr<IHTMLEventObj> eventObj(newEventObject(pElement));
+		fireEvent(pElement, eventObj, L"onchange");
+	}
+
+	element2->blur();
 
 	HWND hWnd = getHwnd();
 	LRESULT lr;
