@@ -46,6 +46,7 @@ import com.gargoylesoftware.htmlunit.WebWindow;
 import com.gargoylesoftware.htmlunit.WebWindowEvent;
 import com.gargoylesoftware.htmlunit.WebWindowListener;
 import com.gargoylesoftware.htmlunit.WebWindowNotFoundException;
+import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.html.FrameWindow;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
@@ -97,11 +98,11 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     private boolean enableJavascript;
     private ProxyConfig proxyConfig;
     private AtomicLong windowNamer = new AtomicLong(System.currentTimeMillis());
+    private final BrowserVersion version;
 
-    public HtmlUnitDriver(boolean enableJavascript) {
-    this.enableJavascript = enableJavascript;
-
-    webClient = newWebClient();
+  public HtmlUnitDriver(BrowserVersion version) {
+        this.version = version;
+        webClient = createWebClient(version);
         webClient.addWebWindowListener(new WebWindowListener() {
             private boolean waitingToLoad;
 
@@ -141,27 +142,27 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
       this(false);
     }
 
+    public HtmlUnitDriver(boolean enableJavascript) {
+      this(BrowserVersion.getDefault());
+      setJavascriptEnabled(enableJavascript);
+    }
+
     private HtmlUnitDriver(boolean enableJavascript, WebWindow currentWindow) {
         this(enableJavascript);
         this.currentWindow = currentWindow;
     }
 
-    /**
-     * @return WebClient to use
-     * @deprecated Please override modifyWebClient. This method will become private
-     */
-    @Deprecated
-    protected WebClient newWebClient() {
-        WebClient client = new WebClient();
+    private WebClient createWebClient(BrowserVersion version) {
+        WebClient client = newWebClient(version);
         client.setThrowExceptionOnFailingStatusCode(false);
         client.setPrintContentOnFailingStatusCode(false);
         client.setJavaScriptEnabled(enableJavascript);
         client.setRedirectEnabled(true);
         try {
-			client.setUseInsecureSSL(true);
-		} catch (GeneralSecurityException e) {
-			throw new RuntimeException(e);
-		}
+            client.setUseInsecureSSL(true);
+        } catch (GeneralSecurityException e) {
+            throw new RuntimeException(e);
+        }
 
         // Ensure that we've set the proxy if necessary
         if (proxyConfig != null)
@@ -169,6 +170,16 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
 
         return modifyWebClient(client);
     }
+
+  /**
+   * Create the underlying webclient, but don't set any fields on it.
+   *
+   * @param version Which browser to emulate
+   * @return a new instance of WebClient.
+   */
+  protected WebClient newWebClient(BrowserVersion version) {
+    return new WebClient(version);
+  }
 
     /**
      * Child classes can override this method to customise the webclient that
@@ -261,7 +272,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     }
 
     public void close() {
-        webClient = newWebClient();
+        webClient = createWebClient(version);
     }
 
     public void quit() {
