@@ -30,7 +30,7 @@ public interface JavascriptExecutor {
      * returned</li> <li>For a boolean, a Boolean is returned</li> <li>For all other cases, a String is
      * returned.</li> <li>For an array, we check the first element, and attempt to return a List of
      * that type, following the rules above. We do not support nested lists.</li> <li>Unless the value
-     * is null or there is no return value</li> </ul>
+     * is null or there is no return value, in which null is returned</li> </ul>
      *
      * <p>Arguments must be a number (which will be converted to a Long), a boolean, String or
      * WebElement. An exception will be thrown if the arguments do not meet these criteria. The

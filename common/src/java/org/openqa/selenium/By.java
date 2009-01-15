@@ -43,6 +43,10 @@ import java.util.List;
  * </code>
  */
 public abstract class By {
+  /**
+   * @param id The value of the "id" attribute to search for
+   * @return a By which locates elements by the value of the "id" attribute.
+   */
     public static By id(final String id) {
       if (id == null)
         throw new IllegalArgumentException("Cannot find elements with a null id attribute.");
@@ -51,7 +55,7 @@ public abstract class By {
         @Override
         public List<WebElement> findElements(SearchContext context) {
           if (context instanceof FindsById)
-        	return ((FindsById) context).findElementsById(id);
+              return ((FindsById) context).findElementsById(id);
           return ((FindsByXPath) context).findElementsByXPath("*[@id = '" + id + "']");
         }
 
@@ -68,6 +72,10 @@ public abstract class By {
       };
     }
 
+  /**
+   * @param linkText The exact text to match against
+   * @return a By which locates A elements by the exact text it displays
+   */
     public static By linkText(final String linkText) {
       if (linkText == null)
         throw new IllegalArgumentException("Cannot find elements when link text is null.");
@@ -89,7 +97,11 @@ public abstract class By {
         }
       };
     }
-    
+
+  /**
+   * @param linkText The text to match against
+   * @return a By which locates A elements that contain the given link text
+   */
     public static By partialLinkText(final String linkText) {
       if (linkText == null)
         throw new IllegalArgumentException("Cannot find elements when link text is null.");
@@ -112,6 +124,10 @@ public abstract class By {
       };
     }
 
+  /**
+   * @param name The value of the "name" attribute to search for
+   * @return a By which locates elements by the value of the "name" attribute.
+   */
     public static By name(final String name) {
       if (name == null)
         throw new IllegalArgumentException("Cannot find elements when name text is null.");
@@ -138,6 +154,10 @@ public abstract class By {
       };
     }
 
+  /**
+   * @param name The element's tagName
+   * @return a By which locates elements by their tag name
+   */
     public static By tagName(final String name) {
       if (name == null)
         throw new IllegalArgumentException("Cannot find elements when name tag name is null.");
@@ -163,7 +183,11 @@ public abstract class By {
         }
       };
     }
-    
+
+  /**
+   * @param xpathExpression The xpath to use
+   * @return a By which locates elements via XPath
+   */
     public static By xpath(final String xpathExpression) {
        if (xpathExpression == null)
         throw new IllegalArgumentException("Cannot find elements when the XPath expression is null.");
@@ -186,6 +210,14 @@ public abstract class By {
       };
     }
 
+  /**
+   * Finds elements based on the value of the "class" attribute. If an element has many classes
+   * then this will match against each of them. For example if the value is "one two onone", then the
+   * following "className"s will match: "one" and "two"
+   *
+   * @param className The value of the "class" attribute to search for
+   * @return a By which locates elements by the value of the "class" attribute.
+   */
     public static By className(final String className) {
         if (className == null)
          throw new IllegalArgumentException("Cannot find elements when the class name expression is null.");
@@ -236,8 +268,6 @@ public abstract class By {
             throw new NoSuchElementException("Cannot locate an element using " + toString());
         return allElements.get(0);
     }
-
-    
 
     /**
      * Find many elements.
