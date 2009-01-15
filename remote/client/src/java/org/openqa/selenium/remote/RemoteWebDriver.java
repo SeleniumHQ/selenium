@@ -30,7 +30,6 @@ import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByXPath;
-import org.openqa.selenium.internal.OperatingSystem;
 import org.openqa.selenium.internal.ReturnedCookie;
 import static org.openqa.selenium.remote.MapMaker.map;
 
@@ -72,7 +71,7 @@ public class RemoteWebDriver implements WebDriver, SearchContext, JavascriptExec
     String version = (String) rawCapabilities.get("version");
     Platform platform;
     if (rawCapabilities.containsKey("operatingSystem")) {
-      platform = OperatingSystem.valueOf((String) rawCapabilities.get("operatingSystem")).getPlatform();
+      platform = Platform.valueOf((String) rawCapabilities.get("operatingSystem"));
     } else {
       platform = Platform.valueOf((String) rawCapabilities.get("platform"));
     }
@@ -200,7 +199,7 @@ public class RemoteWebDriver implements WebDriver, SearchContext, JavascriptExec
       command = new Command(sessionId, new Context("foo"), "executeScript", script, convertedArgs);
     else
       command = new Command(sessionId, new Context("foo"), "executeScript", script);
-    Response response = null;
+    Response response;
     try {
       response = executor.execute(command);
     } catch (Exception e) {
