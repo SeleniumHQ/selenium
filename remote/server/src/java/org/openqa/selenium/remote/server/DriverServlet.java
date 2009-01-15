@@ -52,14 +52,12 @@ import org.openqa.selenium.remote.server.handler.GetMouseSpeed;
 import org.openqa.selenium.remote.server.handler.GetPageSource;
 import org.openqa.selenium.remote.server.handler.GetSessionCapabilities;
 import org.openqa.selenium.remote.server.handler.GetTitle;
-import org.openqa.selenium.remote.server.handler.GetVisible;
 import org.openqa.selenium.remote.server.handler.GoBack;
 import org.openqa.selenium.remote.server.handler.GoForward;
 import org.openqa.selenium.remote.server.handler.NewSession;
 import org.openqa.selenium.remote.server.handler.SendKeys;
 import org.openqa.selenium.remote.server.handler.SetElementSelected;
 import org.openqa.selenium.remote.server.handler.SetMouseSpeed;
-import org.openqa.selenium.remote.server.handler.SetVisible;
 import org.openqa.selenium.remote.server.handler.SubmitElement;
 import org.openqa.selenium.remote.server.handler.SwitchToFrame;
 import org.openqa.selenium.remote.server.handler.SwitchToWindow;
@@ -133,11 +131,6 @@ public class DriverServlet extends HttpServlet {
         .on(ResultType.SUCCESS, new JsonResult(":response"));
 
     getMapper.bind("/session/:sessionId/:context/title", GetTitle.class)
-        .on(ResultType.SUCCESS, new JsonResult(":response"));
-
-    postMapper.bind("/session/:sessionId/:context/visible", SetVisible.class)
-        .on(ResultType.SUCCESS, new EmptyResult());
-    getMapper.bind("/session/:sessionId/:context/visible", GetVisible.class)
         .on(ResultType.SUCCESS, new JsonResult(":response"));
 
     postMapper.bind("/session/:sessionId/:context/element", FindElement.class).on(

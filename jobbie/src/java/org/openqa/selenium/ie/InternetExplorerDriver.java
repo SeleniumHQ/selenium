@@ -72,16 +72,17 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
 
   private native Object doExecuteScript(String script, Object[] args);
     public Object executeScript(String script, Object... args) {
-    	for (Object arg : args) {
-    		if (!(arg instanceof String || 
-    			  arg instanceof Boolean || 
-    			  arg instanceof Number || 
-    			  arg instanceof InternetExplorerElement))
-    			throw new IllegalArgumentException("Parameter is not of recognized type: " + arg);
-    	}
-    	
-    	script = "(function() { return function(){" + script + "};})();";
-    	return doExecuteScript(script, args);
+      for (Object arg : args) {
+        if (!(arg instanceof String ||
+              arg instanceof Boolean ||
+              arg instanceof Number ||
+              arg instanceof InternetExplorerElement)) {
+          throw new IllegalArgumentException("Parameter is not of recognized type: " + arg);
+        }
+      }
+
+      script = "(function() { return function(){" + script + "};})();";
+      return doExecuteScript(script, args);
     }
     
     
@@ -91,8 +92,19 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
 
     public native String getTitle();
 
+    /**
+     * Is the browser visible or not?
+     *
+     * @return True if the browser can be seen, or false otherwise
+     */
     public native boolean getVisible();
 
+  /**
+   * Make the browser visible or not. Note that for some implementations, this
+   * is a no-op.
+   *
+   * @param visible Set whether or not the browser is visible
+   */  
     public native void setVisible(boolean visible);
 
     public List<WebElement> findElements(By by) {

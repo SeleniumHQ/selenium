@@ -174,10 +174,6 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
         return sendMessage(RuntimeException.class, "title");
     }
 
-    public boolean getVisible() {
-        return true;
-    }
-
   public List<WebElement> findElements(By by) {
     return by.findElements((SearchContext)this);
   }
@@ -261,10 +257,6 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
     }
     return elements;
   }
-
-  public void setVisible(boolean visible) {
-        // no-op
-    }
 
     public TargetLocator switchTo() {
         return new FirefoxTargetLocator();

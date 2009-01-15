@@ -90,14 +90,6 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor {
         return driver.getTitle();
     }
 
-    public boolean getVisible() {
-        return driver.getVisible();
-    }
-
-    public void setVisible(boolean visible) {
-        driver.setVisible(visible);
-    }
-
     public List<WebElement> findElements(By by) {
         dispatcher.beforeFindBy(by, null, driver);
         List<WebElement> temp = driver.findElements(by);

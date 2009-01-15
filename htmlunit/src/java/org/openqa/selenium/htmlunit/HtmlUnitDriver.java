@@ -247,14 +247,6 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
         return ((HtmlPage) page).getTitleText();
     }
 
-    public boolean getVisible() {
-        return false;
-    }
-
-    public void setVisible(boolean visible) {
-        // no-op
-    }
-
     public WebElement findElement(By by) {
         return by.findElement((SearchContext)this);
     }

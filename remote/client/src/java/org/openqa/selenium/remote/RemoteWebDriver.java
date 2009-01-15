@@ -101,16 +101,6 @@ public class RemoteWebDriver implements WebDriver, SearchContext, JavascriptExec
     return execute("currentUrl").getValue().toString();
   }
 
-
-  public boolean getVisible() {
-    Response response = execute("getVisible");
-    return (Boolean) response.getValue();
-  }
-
-  public void setVisible(boolean visible) {
-    execute("setVisible", visible);
-  }
-
   public List<WebElement> findElements(By by) {
     return by.findElements((SearchContext) this);
   }

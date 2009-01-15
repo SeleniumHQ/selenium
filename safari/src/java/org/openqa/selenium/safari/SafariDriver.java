@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.Set;
 
 public class SafariDriver implements WebDriver, FindsByLinkText, FindsById, 
-		FindsByXPath, SearchContext {
+    FindsByXPath, SearchContext {
     protected final static String ELEMENTS = "document.webdriverElements";
     private AppleScript appleScript;
 
@@ -60,14 +60,6 @@ public class SafariDriver implements WebDriver, FindsByLinkText, FindsById,
 
     public String getTitle() {
         return appleScript.executeJavascript("return document.title");
-    }
-
-    public boolean getVisible() {
-        return true;
-    }
-
-    public void setVisible(boolean visible) {
-    	// no-op
     }
 
     public List<WebElement> findElements(By by) {

@@ -82,25 +82,6 @@ public interface WebDriver {
      */
     String getTitle();
 
-    /**
-     * Is the browser visible or not?
-     *
-     * @return True if the browser can be seen, or false otherwise
-     * @deprecated Do not use unless you're using the IE driver
-     */
-    @Deprecated
-    boolean getVisible();
-
-    /**
-     * Make the browser visible or not. Note that for some implementations, this
-     * is a no-op.
-     *
-     * @param visible Set whether or not the browser is visible
-     * @deprecated Do not use unless you're using the IE driver
-     */
-    @Deprecated
-    void setVisible(boolean visible);
-
   /**
      * Find all elements within the current page using the given mechanism.
      *
