@@ -18,7 +18,6 @@ limitations under the License.
 package org.openqa.selenium.remote;
 
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.internal.OperatingSystem;
 
 import java.util.Map;
 
@@ -28,12 +27,6 @@ public class DesiredCapabilities implements Capabilities {
   private String version;
   private Platform platform;
   private boolean javascriptEnabled;
-
-  public DesiredCapabilities(String browser, String version, OperatingSystem operatingSystem) {
-    this.browserName = browser;
-    this.version = version;
-    this.platform = operatingSystem.getPlatform();
-  }
 
   public DesiredCapabilities(String browser, String version, Platform platform) {
     this.browserName = browser;
@@ -52,9 +45,9 @@ public class DesiredCapabilities implements Capabilities {
     if (rawMap.containsKey("operatingSystem")) {
       Object os = rawMap.get("operatingSystem");
       if (os instanceof String) {
-        platform = OperatingSystem.valueOf((String) os).getPlatform();
-      } else if (os instanceof OperatingSystem) {
-        platform = ((OperatingSystem) os).getPlatform();
+        platform = Platform.valueOf((String) os);
+      } else if (os instanceof Platform) {
+        platform = (Platform) os;
       }
     }
     if (rawMap.containsKey("platform")) {
@@ -86,15 +79,6 @@ public class DesiredCapabilities implements Capabilities {
     return platform;
   }
 
-  /**
-   * @deprecated Use {@link #setPlatform(org.openqa.selenium.Platform)} instead
-   * @param operatingSystem
-   */
-  @Deprecated
-  public void setOperatingSystem(OperatingSystem operatingSystem) {
-    this.platform = operatingSystem.getPlatform();
-  }
-
   public void setPlatform(Platform platform) {
     this.platform = platform;
   }
@@ -108,19 +92,19 @@ public class DesiredCapabilities implements Capabilities {
   }
 
   public static DesiredCapabilities firefox() {
-    return new DesiredCapabilities("firefox", "", OperatingSystem.ANY);
+    return new DesiredCapabilities("firefox", "", Platform.ANY);
   }
 
   public static DesiredCapabilities internetExplorer() {
-    return new DesiredCapabilities("internet explorer", "", OperatingSystem.WINDOWS);
+    return new DesiredCapabilities("internet explorer", "", Platform.WINDOWS);
   }
 
   public static DesiredCapabilities htmlUnit() {
-    return new DesiredCapabilities("htmlunit", "", OperatingSystem.ANY);
+    return new DesiredCapabilities("htmlunit", "", Platform.ANY);
   }
 
   public static DesiredCapabilities safari() {
-    return new DesiredCapabilities("safari", "", OperatingSystem.MAC);
+    return new DesiredCapabilities("safari", "", Platform.MAC);
   }
 
   public boolean equals(Object o) {

@@ -24,7 +24,7 @@ import static org.hamcrest.Matchers.is;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.openqa.selenium.Cookie;
-import org.openqa.selenium.internal.OperatingSystem;
+import org.openqa.selenium.Platform;
 
 import java.util.Collections;
 import java.util.Date;
@@ -97,7 +97,7 @@ public class JsonToBeanConverterTest extends TestCase {
 
   public void testShouldProperlyFillInACapabilitiesObject() throws Exception {
     DesiredCapabilities capabilities =
-        new DesiredCapabilities("browser", "version", OperatingSystem.ANY);
+        new DesiredCapabilities("browser", "version", Platform.ANY);
     capabilities.setJavascriptEnabled(true);
     String text = new BeanToJsonConverter().convert(capabilities);
 
