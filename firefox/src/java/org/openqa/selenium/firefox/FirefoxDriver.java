@@ -570,15 +570,6 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
             return FirefoxDriver.this;
         }
 
-      public Iterable<WebDriver> windowIterable() {
-        final String handles = sendMessage(RuntimeException.class, "getAllWindowHandles");
-        return new Iterable<WebDriver>() {
-          public Iterator<WebDriver> iterator() {
-            return new FirefoxDriverIterator(handles);
-          }
-        };
-      }
-
       public WebDriver defaultContent() {
             sendMessage(RuntimeException.class, "switchToDefaultContent");
             return FirefoxDriver.this;

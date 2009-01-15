@@ -327,10 +327,6 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor {
             return targetLocator.window(windowName);
         }
 
-        public Iterable<WebDriver> windowIterable() {
-            return targetLocator.windowIterable();
-        }
-
       public WebDriver defaultContent() {
             return targetLocator.defaultContent();
         }

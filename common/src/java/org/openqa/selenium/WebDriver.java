@@ -262,16 +262,7 @@ public interface WebDriver {
          */
         WebDriver window(String windowName);
 
-        /**
-         * Provides a mechanism to iterate over every open browser window.
-         *
-         * @return An iterable of current open windows.
-         * @deprecated This is a poor method. Use the #windowHandles method and "switchTo"
-         */
-        @Deprecated
-        Iterable<WebDriver> windowIterable();
-
-        /**
+      /**
          * Selects either the first frame on the page, or the main document when a page contains iframes.
          */
         WebDriver defaultContent();

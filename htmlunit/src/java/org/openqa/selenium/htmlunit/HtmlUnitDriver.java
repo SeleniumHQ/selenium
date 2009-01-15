@@ -567,15 +567,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
             return HtmlUnitDriver.this;
         }
 
-        public Iterable<WebDriver> windowIterable() {
-            return new Iterable<WebDriver>() {
-              public Iterator<WebDriver> iterator() {
-                return new HtmlUnitDriverIterator();
-              }
-            };
-        }
-
-        public WebDriver defaultContent() {
+    public WebDriver defaultContent() {
             pickWindow();
             return HtmlUnitDriver.this;
         }
