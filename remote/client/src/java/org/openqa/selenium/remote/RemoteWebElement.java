@@ -100,10 +100,6 @@ public class RemoteWebElement implements WebElement, SearchContext,
     return (String) response.getValue();
   }
 
-  public List<WebElement> getChildrenOfType(String tagName) {
-    return getElementsByTagName(tagName);
-  }
-
   public List<WebElement> getElementsByTagName(String tagName) {
     Response response = execute("getChildrenOfType", map("id", id, "name", tagName));
     return getElementsFrom(response);

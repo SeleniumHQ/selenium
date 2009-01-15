@@ -214,15 +214,6 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor {
             return element.getText();
         }
 
-        public List<WebElement> getChildrenOfType(String tagName) {
-          List<WebElement> elements = element.findElements(By.tagName(tagName));
-          List<WebElement> result = new ArrayList<WebElement>(elements.size());
-          for (WebElement element : elements) {
-              result.add(new EventFiringWebElement(element));
-          }
-          return result;
-        }
-
       public WebElement findElement(By by) {
             dispatcher.beforeFindBy(by, element, driver);
             WebElement temp = element.findElement(by);

@@ -108,11 +108,7 @@ public class SafariWebElement implements WebElement, SearchContext {
         return appleScript.executeJavascript("return " + locator + ".innerText");
     }
 
-    public List<WebElement> getChildrenOfType(String tagName) {
-        throw new UnsupportedOperationException("getChildrenOfType");
-    }
-
-    public List<WebElement> getElementsByTagName(String tagName) {
+  public List<WebElement> getElementsByTagName(String tagName) {
         throw new UnsupportedOperationException("getElementsByTagName");
     }
 

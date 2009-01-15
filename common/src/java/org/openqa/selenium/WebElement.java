@@ -129,17 +129,7 @@ public interface WebElement {
      */
     String getText();
 
-    /**
-     * Get the list of child elements that match the given tag name.
-     *
-     * @param tagName The tag name of the child elements.
-     * @return A list of {@link WebElement}s of the given type.
-     * @deprecated Use {@link #findElement(By#tagName(String)} 
-     */
-    @Deprecated
-    List<WebElement> getChildrenOfType(String tagName);
-
-    /**
+  /**
      * Find all elements within the current context using the given mechanism.
      *
      * @param by The locating mechanism to use

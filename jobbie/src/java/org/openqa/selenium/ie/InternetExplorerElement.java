@@ -43,12 +43,7 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
 
     public native String getAttribute(String name);
 
-    @Deprecated
-    public List<WebElement> getChildrenOfType(String tagName) {
-        return getElementsByTagName(tagName);
-    }
-
-    public List<WebElement> getElementsByTagName(String tagName) {
+  public List<WebElement> getElementsByTagName(String tagName) {
         List<WebElement> toReturn = new ArrayList<WebElement>();
         getChildrenOfTypeNatively(toReturn, tagName);
         return toReturn;

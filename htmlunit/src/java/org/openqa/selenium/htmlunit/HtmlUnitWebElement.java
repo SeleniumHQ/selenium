@@ -377,10 +377,6 @@ public class HtmlUnitWebElement implements WebElement,
         toReturn.append(xmlText.replaceAll("^<pre.*?>", "").replaceAll("</pre.*>$", ""));
     }
 
-    public List<WebElement> getChildrenOfType(String tagName) {
-      return getElementsByTagName(tagName);
-    }
-
   public List<WebElement> getElementsByTagName(String tagName) {
     List<?> allChildren =  element.getByXPath(".//" + tagName);
     List<WebElement> elements = new ArrayList<WebElement>();

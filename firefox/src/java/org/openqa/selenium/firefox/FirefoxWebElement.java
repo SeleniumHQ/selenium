@@ -114,12 +114,7 @@ public class FirefoxWebElement implements RenderedWebElement, Locatable,
         return toReturn.replace("\n", Platform.getCurrent().getLineEnding());
     }
 
-    @Deprecated
-    public List<WebElement> getChildrenOfType(String tagName) {
-      return getElementsByTagName(tagName);
-    }
-
-    public List<WebElement> getElementsByTagName(String tagName) {
+  public List<WebElement> getElementsByTagName(String tagName) {
         String response = sendMessage(RuntimeException.class, "getElementChildren", tagName);
 
         return getElementsFromIndices(response);
