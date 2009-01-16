@@ -98,6 +98,7 @@ public class InjectionHelper {
                 appendFileContent(sb, "/core/scripts/xmlextras.js");
                 appendFileContent(sb, "/core/lib/cssQuery/cssQuery-p.js");
                 appendFileContent(sb, "/core/scripts/htmlutils.js");
+                appendFileContent(sb, "/core/scripts/ui-element.js");
                 appendFileContent(sb, "/core/scripts/selenium-browserdetect.js");
                 appendFileContent(sb, "/core/scripts/selenium-browserbot.js");
                 appendFileContent(sb, "/core/scripts/find_matching_child.js");
@@ -129,6 +130,7 @@ public class InjectionHelper {
         writeScriptTag(os, "/core/scripts/xmlextras.js");
         writeScriptTag(os, "/core/lib/cssQuery/cssQuery-p.js");
         writeScriptTag(os, "/core/scripts/htmlutils.js");
+        writeScriptTag(os, "/core/scripts/ui-element.js");
         writeScriptTag(os, "/core/scripts/selenium-browserdetect.js");
         writeScriptTag(os, "/core/scripts/selenium-browserbot.js");
         writeScriptTag(os, "/core/scripts/find_matching_child.js");
