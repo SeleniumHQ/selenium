@@ -2,11 +2,7 @@ package org.openqa.selenium.server;
 
 import java.security.GeneralSecurityException;
 
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
+import javax.net.ssl.*;
 
 /** Provides a mechanism to trust all SSL certificates */
 public class TrustEverythingSSLTrustManager implements X509TrustManager {
@@ -64,5 +60,10 @@ public class TrustEverythingSSLTrustManager implements X509TrustManager {
     public static void trustAllSSLCertificates(HttpsURLConnection connection) {
         getTrustingSSLSocketFactory();
         connection.setSSLSocketFactory(socketFactory);
+        connection.setHostnameVerifier(new HostnameVerifier() {
+            public boolean verify(String s, SSLSession sslSession) {
+                return true;
+            }
+        });
     }
 }
