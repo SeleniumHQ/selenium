@@ -329,16 +329,12 @@ public class SeleniumServer {
         context.addHandler(sh);
     }
 
-    private HttpContext createRootContextWithProxyHandler(RemoteControlConfiguration configuration) {
+    protected HttpContext createRootContextWithProxyHandler(RemoteControlConfiguration configuration) {
         HttpContext root;
         ProxyHandler proxyHandler;
         root = new HttpContext();
         root.setContextPath("/");
-        if (customProxyHandler == null) {
-            proxyHandler = new ProxyHandler(configuration.trustAllSSLCertificates(), configuration.getDontInjectRegex(), configuration.getDebugURL());
-        } else {
-            proxyHandler = customProxyHandler;
-        }
+        proxyHandler = makeProxyHandler(configuration);
 
         // see docs for the lock object for information on this and why it is IMPORTANT!
         proxyHandler.setShutdownLock(shutdownLock);
@@ -348,6 +344,16 @@ public class SeleniumServer {
             proxyHandler.generateSSLCertsForLoggingHosts(server);
         }
         return root;
+    }
+
+    protected ProxyHandler makeProxyHandler(RemoteControlConfiguration configuration) {
+        ProxyHandler proxyHandler;
+        if (customProxyHandler == null) {
+            proxyHandler = new ProxyHandler(configuration.trustAllSSLCertificates(), configuration.getDontInjectRegex(), configuration.getDebugURL());
+        } else {
+            proxyHandler = customProxyHandler;
+        }
+        return proxyHandler;
     }
 
     private void configServer() {
