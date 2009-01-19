@@ -40,7 +40,7 @@ FirefoxDriver.prototype.click = function(respond) {
       currentlyActive.blur();
       element.focus();
     }
-//    Utils.fireMouseEventOn(this.context, element, "mouseup");
+
     Utils.fireMouseEventOn(this.context, element, "mouseup");
     Utils.fireMouseEventOn(this.context, element, "click");
 
@@ -53,6 +53,8 @@ FirefoxDriver.prototype.click = function(respond) {
             respond.send();
         }
     });
+
+    var contentWindow = browser.contentWindow;
 
     var checkForLoad = function() {
         // Returning should be handled by the click listener, unless we're not actually loading something. Do a check and return if we are.
@@ -69,7 +71,11 @@ FirefoxDriver.prototype.click = function(respond) {
         }
     };
 
-    var contentWindow = browser.contentWindow;
+
+  if (contentWindow.closed) {
+    respond.send();
+    return;
+  }
     contentWindow.setTimeout(checkForLoad, 50);
 };
 

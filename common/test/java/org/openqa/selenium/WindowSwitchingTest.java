@@ -73,8 +73,21 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
     }
   }
 
+  @Ignore("ie, remote, safari")
+  public void testClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang() {
+    driver.get(xhtmlTestPage);
 
-  public void testRemovingDriversFromTheWindowIteratorShouldCloseTheUnderlyingWindow() {
-    // Not implemented yet
+    String currentHandle = driver.getWindowHandle();
+
+    driver.findElement(By.name("windowThree")).click();
+
+    driver.switchTo().window("result");
+
+    try {
+      driver.findElement(By.id("close")).click();
+      // If we make it this far, we're all good.
+    } finally {
+      driver.switchTo().window(currentHandle);
+    }
   }
 }

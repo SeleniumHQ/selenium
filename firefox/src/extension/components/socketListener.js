@@ -276,6 +276,9 @@ SocketListener.prototype.switchToWindow = function(respond, windowId) {
     var allWindows = wm.getEnumerator(null);
 
     var matches = function(win, lookFor) {
+      if (win.closed)
+        return false;
+
       if (win.content.name == lookFor)
         return true;
 
@@ -284,6 +287,8 @@ SocketListener.prototype.switchToWindow = function(respond, windowId) {
 
       return false;
     }
+
+    Utils.dumpn("Looking for: " + windowId);
 
     while (allWindows.hasMoreElements()) {
         var win = allWindows.getNext();

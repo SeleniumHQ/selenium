@@ -23,14 +23,17 @@ import junit.framework.TestCase;
 import org.openqa.selenium.TestSuiteBuilder;
 
 public class FirefoxDriverTestSuite extends TestCase {
-	public static Test suite() throws Exception {
-		return new TestSuiteBuilder()
-					.addSourceDir("firefox")
-					.addSourceDir("common")
-					.usingDriver(FirefoxDriver.class)
-					.exclude("firefox")
-					.keepDriverInstance()
-					.includeJavascriptTests()
-					.create();
-	}
+
+  public static Test suite() throws Exception {
+    System.setProperty("webdriver.firefox.development", "true");
+
+    return new TestSuiteBuilder()
+        .addSourceDir("firefox")
+        .addSourceDir("common")
+        .usingDriver(FirefoxDriver.class)
+        .exclude("firefox")
+        .keepDriverInstance()
+        .includeJavascriptTests()
+        .create();
+  }
 }
