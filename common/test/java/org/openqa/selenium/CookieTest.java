@@ -56,38 +56,6 @@ public class CookieTest extends TestCase {
         }
     }
 
-    @Ignore(value = "all", reason = "Weakened constraints to allow IE driver to be implemented")
-    public void testEquals() {
-        Cookie cookie1 = new ReturnedCookie("Fish", "cod", "", "", null, false);
-        Cookie cookie2 = new ReturnedCookie("Fish", "", "", "", new Date(0), true);
-        assertEquals(cookie1, cookie2);
-
-        cookie2 = new ReturnedCookie("Fish", "cod", "", "/", null, false);
-        assertFalse(cookie1.equals(cookie2));
-
-        cookie2 = new ReturnedCookie("fish", "cod", "", "", null, false);
-        assertFalse(cookie1.equals(cookie2));
-
-        cookie2 = new ReturnedCookie("Fish", "cod", "example.com", "", null, false);
-        assertFalse(cookie1.equals(cookie2));
-    }
-
-    @Ignore(value = "all", reason = "Weakened constraints to allow IE driver to be implemented")
-    public void testHashCode() {
-        Cookie cookie1 = new ReturnedCookie("Fish", "cod", "", "", null, false);
-        Cookie cookie2 = new ReturnedCookie("Fish", "", "", "", new Date(0), true);
-        assertEquals(cookie1.hashCode(), cookie2.hashCode());
-
-        cookie2 = new ReturnedCookie("Fish", "cod", "", "/", null, false);
-        assertFalse(cookie1.hashCode() == cookie2.hashCode());
-
-        cookie2 = new ReturnedCookie("fish", "cod", "", "", null, false);
-        assertFalse(cookie1.hashCode() == cookie2.hashCode());
-
-        cookie2 = new ReturnedCookie("Fish", "cod", "example.com", "", null, false);
-        assertFalse(cookie1.hashCode() == cookie2.hashCode());
-    }
-
     public void testCookiesShouldAllowSecureToBeSet() {
       Cookie cookie = new ReturnedCookie("name", "value", "", "/", new Date(), true);
       assertTrue(cookie.isSecure());

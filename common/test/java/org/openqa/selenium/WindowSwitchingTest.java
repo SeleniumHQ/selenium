@@ -20,12 +20,14 @@ package org.openqa.selenium;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
+import static org.openqa.selenium.Ignore.Driver.*;
+
 import java.util.HashSet;
 import java.util.Set;
 
 public class WindowSwitchingTest extends AbstractDriverTestCase {
 
-  @Ignore("ie, remote, safari")
+  @Ignore({IE, REMOTE, SAFARI})
   public void testShouldSwitchFocusToANewWindowWhenItIsOpenedAndNotStopFutureOperations() {
     driver.get(xhtmlTestPage);
 
@@ -39,7 +41,7 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
     driver.findElement(By.id("iframe_page_heading"));
   }
 
-  @Ignore("ie, remote, safari")
+  @Ignore({IE, REMOTE, SAFARI})
   public void testShouldThrowNoSuchWindowException() {
     driver.get(xhtmlTestPage);
 
@@ -54,7 +56,7 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
 
   @NeedsFreshDriver
   @NoDriverAfterTest
-  @Ignore("ie, remote, safari")
+  @Ignore({IE, REMOTE, SAFARI})
   public void testShouldBeAbleToIterateOverAllOpenWindows() throws Exception {
     driver.get(xhtmlTestPage);
     driver.findElement(By.name("windowOne")).click();
@@ -73,7 +75,7 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
     }
   }
 
-  @Ignore("ie, remote, safari")
+  @Ignore({IE, REMOTE, SAFARI})
   public void testClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang() {
     driver.get(xhtmlTestPage);
 

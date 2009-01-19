@@ -29,6 +29,8 @@ import static org.hamcrest.Matchers.startsWith;
 import org.hamcrest.TypeSafeMatcher;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 
+import static org.openqa.selenium.Ignore.Driver.*;
+
 import java.util.regex.Pattern;
 
 public class TextHandlingTest extends AbstractDriverTestCase {
@@ -69,7 +71,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
         assertThat(text, is("Username:"));
     }
 
-    @Ignore(value = "safari")
+    @Ignore(value = SAFARI)
     public void testShouldRepresentABlockLevelElementAsANewline() {
         driver.get(simpleTestPage);
         String text = driver.findElement(By.id("multiline")).getText();
@@ -94,7 +96,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
         assertThat(text, endsWith("block level elements"));
     }
 
-    @Ignore(value = "safari", reason = "Test fails")
+    @Ignore(value = SAFARI, reason = "Test fails")
     public void testShouldConvertANonBreakingSpaceIntoANormalSpaceCharacter() {
         driver.get(simpleTestPage);
         String text = driver.findElement(By.id("nbsp")).getText();
@@ -102,7 +104,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
         assertThat(text, equalTo("This line has a non-breaking space"));
     }
 
-    @Ignore(value = "safari", reason = "Test fails")
+    @Ignore(value = SAFARI, reason = "Test fails")
     public void testShouldTreatANonBreakingSpaceAsAnyOtherWhitespaceCharacterWhenCollapsingWhitespace() {
       driver.get(simpleTestPage);
       WebElement element = driver.findElement(By.id("nbspandspaces"));
@@ -111,7 +113,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
       assertThat(text, equalTo("This line has a non-breaking space and spaces"));
     }
 
-    @Ignore(value = "safari", reason = "Test fails")
+    @Ignore(value = SAFARI, reason = "Test fails")
     public void testHavingInlineElementsShouldNotAffectHowTextIsReturned() {
         driver.get(simpleTestPage);
         String text = driver.findElement(By.id("inline")).getText();
@@ -135,7 +137,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
 //                "        "));
 //    }
 
-    @Ignore(value = "safari", reason = "Test fails")
+    @Ignore(value = SAFARI, reason = "Test fails")
     public void testShouldBeAbleToSetMoreThanOneLineOfTextInATextArea() {
         driver.get(formPage);
         WebElement textarea = driver.findElement(By.id("withText"));
@@ -178,7 +180,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
         assertThat(text, equalTo(""));
     }
 
-    @Ignore("safari")
+    @Ignore(SAFARI)
     public void testShouldHandleSiblingBlockLevelElements() {
     	driver.get(simpleTestPage);
 
@@ -187,7 +189,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
     	assertThat(text, is("Some text" + newLine + "Some more text"));
     }
 
-    @Ignore("htmlunit, firefox, ie, safari")
+    @Ignore({FIREFOX, HTMLUNIT, IE, SAFARI})
     public void testShouldHandleNestedBlockLevelElements() {
     	driver.get(simpleTestPage);
 
@@ -196,7 +198,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
     	assertThat(text, is("Cheese" + newLine + "Some text" + newLine + "Some more text" + newLine + "and also" + newLine + "Brie"));
     }
 
-    @Ignore("safari")
+    @Ignore(SAFARI)
     public void testShouldHandleWhitespaceInInlineElements() {
     	driver.get(simpleTestPage);
 
@@ -205,7 +207,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
     	assertThat(text, is("line has text"));
     }
 
-    @Ignore("safari")
+    @Ignore(SAFARI)
     public void testReadALargeAmountOfData() {
         driver.get(GlobalTestEnvironment.get().getAppServer().whereIs("macbeth.html"));
         String source = driver.getPageSource().trim().toLowerCase();
@@ -213,7 +215,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
         assertThat(source.endsWith("</html>"), is(true));
     }
 
-    @Ignore("safari")
+    @Ignore(SAFARI)
     public void testGetTextWithLineBreakForInlineElement() {
         driver.get(simpleTestPage);
 

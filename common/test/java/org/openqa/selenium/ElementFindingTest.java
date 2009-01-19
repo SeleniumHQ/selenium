@@ -21,6 +21,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
+import static org.openqa.selenium.Ignore.Driver.*;
+
 import java.util.List;
 
 public class ElementFindingTest extends AbstractDriverTestCase {
@@ -73,7 +75,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
         }
     }
 
-    @Ignore("safari")
+    @Ignore(SAFARI)
     public void testShouldfindAnElementBasedOnId() {
         driver.get(formPage);
 
@@ -93,7 +95,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
         }
     }
     
-    @Ignore("safari")
+    @Ignore(SAFARI)
     public void testShouldBeAbleToFindChildrenOfANode() {
         driver.get(xhtmlTestPage);
         List<WebElement> elements = driver.findElements(By.xpath("/html/head"));
@@ -102,7 +104,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
         assertThat(importedScripts.size(), equalTo(2));
     }
 
-    @Ignore("safari")
+    @Ignore(SAFARI)
     public void testReturnAnEmptyListWhenThereAreNoChildrenOfANode() {
         driver.get(xhtmlTestPage);
         WebElement table = driver.findElement(By.id("table"));
@@ -158,7 +160,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
         }
     }
     
-    @Ignore("safari")
+    @Ignore(SAFARI)
     public void testShouldBeAbleToFindMultipleElementsByXPath() {
     	driver.get(xhtmlTestPage);
     	
@@ -167,7 +169,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     	assertTrue(elements.size() > 1);
     }
     
-    @Ignore("safari")
+    @Ignore(SAFARI)
     public void testShouldBeAbleToFindMultipleElementsByLinkText() {
     	driver.get(xhtmlTestPage);
     	
@@ -176,7 +178,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     	assertTrue("Expected 2 links, got " + elements.size(), elements.size() == 2);
     }
 
-    @Ignore("safari, ie, remote")
+    @Ignore({IE, REMOTE, SAFARI})
     public void testShouldBeAbleToFindMultipleElementsByPartialLinkText() {
     	driver.get(xhtmlTestPage);
 
@@ -185,7 +187,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     	assertTrue(elements.size() == 2);
     }
 
-    @Ignore("safari, ie, remote")
+    @Ignore({IE, REMOTE, SAFARI})
     public void testShouldBeAbleToFindElementByPartialLinkText() {
     	driver.get(xhtmlTestPage);
 
@@ -196,7 +198,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
       }
     }
     
-    @Ignore("safari")
+    @Ignore(SAFARI)
     public void testShouldBeAbleToFindMultipleElementsByName() {
     	driver.get(nestedPage);
     	
@@ -205,7 +207,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     	assertTrue(elements.size() > 1);
     }
 
-    @Ignore("safari, firefox")
+    @Ignore({FIREFOX, SAFARI})
     public void testShouldBeAbleToFindMultipleElementsById() {
     	driver.get(nestedPage);
     	
@@ -214,7 +216,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     	assertTrue(elements.size() > 1);
     }
     
-    @Ignore("safari")
+    @Ignore(SAFARI)
     public void testShouldBeAbleToFindMultipleElementsByClassName() {
     	driver.get(xhtmlTestPage);
     	
@@ -223,7 +225,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     	assertTrue(elements.size() > 1);
     }
 
-    @Ignore("safari")
+    @Ignore(SAFARI)
     // You don't want to ask why this is here
     public void testWhenFindingByNameShouldNotReturnById() {
         driver.get(formPage);
@@ -241,7 +243,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
         assertThat(element.getValue(), is("id"));
     }
 
-    @Ignore("safari")
+    @Ignore(SAFARI)
     public void testShouldFindGrandChildren() {
         driver.get(formPage);
         WebElement form = driver.findElement(By.id("nested_form"));
@@ -249,7 +251,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     }
 
 
-    @Ignore("safari")
+    @Ignore(SAFARI)
     public void testShouldNotFindElementOutSideTree() {
         driver.get(formPage);
         WebElement element = driver.findElement(By.name("login"));
@@ -260,7 +262,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
         }
     }
     
-    @Ignore("safari")
+    @Ignore(SAFARI)
     public void testShouldReturnElementsThatDoNotSupportTheNameProperty() {
     	driver.get(nestedPage);
     	

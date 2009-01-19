@@ -19,10 +19,11 @@ package org.openqa.selenium;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.openqa.selenium.Ignore.Driver.SAFARI;
 
 public class ElementNameTest extends AbstractDriverTestCase {
 
-    @Ignore("safari")
+    @Ignore(SAFARI)
     public void testShouldReturnInput() {
         driver.get(formPage);
         WebElement selectBox = driver.findElement(By.id("cheese"));

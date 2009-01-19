@@ -20,6 +20,7 @@ package org.openqa.selenium;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
+import static org.openqa.selenium.Ignore.Driver.*;
 
 public class PageLoadingTest extends AbstractDriverTestCase {
     public void testShouldWaitForDocumentToBeLoaded() {
@@ -54,7 +55,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
         driver.get("http://localhost:3001");
     }
 
-    @Ignore("safari")
+    @Ignore(SAFARI)
     public void testShouldBeAbleToLoadAPageWithFramesetsAndWaitUntilAllFramesAreLoaded() {
         driver.get(framesetPage);
 
@@ -67,7 +68,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
         assertThat(pageNumber.getText().trim(), equalTo("2"));
     }
 
-    @Ignore("safari")
+    @Ignore(SAFARI)
     @NeedsFreshDriver
     public void testSouldDoNothingIfThereIsNothingToGoBackTo() {
         driver.get(formPage);
@@ -76,7 +77,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
         assertThat(driver.getTitle(), equalTo("We Leave From Here"));
       }
 
-    @Ignore("safari")
+    @Ignore(SAFARI)
     public void testShouldBeAbleToNavigateBackInTheBrowserHistory() {
         driver.get(formPage);
 
@@ -87,7 +88,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
         assertThat(driver.getTitle(), equalTo("We Leave From Here"));
     }
 
-    @Ignore("safari")
+    @Ignore(SAFARI)
     public void testShouldBeAbleToNavigateBackInTheBrowserHistoryInPresenceOfIframes() {
         driver.get(xhtmlTestPage);
 
@@ -98,7 +99,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
         assertThat(driver.getTitle(), equalTo("XHTML Test Page"));
     }
 
-    @Ignore("safari")
+    @Ignore(SAFARI)
     public void testShouldBeAbleToNavigateForwardsInTheBrowserHistory() {
         driver.get(formPage);
 
@@ -112,7 +113,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
         assertThat(driver.getTitle(), equalTo("We Arrive Here"));
     }
 
-    @Ignore("safari, ie, firefox")
+    @Ignore({FIREFOX, IE, SAFARI})
     public void testShouldBeAbleToAccessPagesWithAnInsecureSslCertificate() {
         String url = GlobalTestEnvironment.get().getAppServer().whereIsSecure("simpleTest.html");
         driver.get(url);

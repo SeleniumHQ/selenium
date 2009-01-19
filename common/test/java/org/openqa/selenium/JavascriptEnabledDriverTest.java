@@ -26,6 +26,8 @@ import static org.hamcrest.core.IsNot.not;
 import static org.junit.matchers.JUnitMatchers.either;
 import org.openqa.selenium.internal.Locatable;
 
+import static org.openqa.selenium.Ignore.Driver.*;
+
 import java.awt.*;
 
 /**
@@ -33,7 +35,7 @@ import java.awt.*;
  */
 public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
 	@JavascriptEnabled
-	@Ignore(value = "safari", reason = "safari: not implemented, ie: fails for some reason.")
+	@Ignore(value = SAFARI, reason = "safari: not implemented, ie: fails for some reason.")
     public void testDocumentShouldReflectLatestTitle() throws Exception {
         driver.get(javascriptPage);
 
@@ -46,7 +48,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     }
 
 	@JavascriptEnabled
-	@Ignore("safari")
+	@Ignore(SAFARI)
     public void testDocumentShouldReflectLatestDom() throws Exception {
         driver.get(javascriptPage);
         String currentText = driver.findElement(By.xpath("//div[@id='dynamo']")).getText();
@@ -95,7 +97,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
 //	}
 
 	@JavascriptEnabled
-	@Ignore("safari")
+	@Ignore(SAFARI)
     public void testShouldAllowTheUserToTellIfAnElementIsDisplayedOrNot() {
         driver.get(javascriptPage);
 
@@ -105,7 +107,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     }
 
     @JavascriptEnabled
-    @Ignore("safari")
+    @Ignore(SAFARI)
     public void testVisibilityShouldTakeIntoAccountParentVisibility() {
         driver.get(javascriptPage);
 
@@ -138,7 +140,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
 
 
     @JavascriptEnabled
-	@Ignore(value = "ie, safari", reason="safari: not implemented, ie: Fails")
+	@Ignore(value = {IE, SAFARI}, reason="safari: not implemented, ie: Fails")
     public void testShouldWaitForLoadsToCompleteAfterJavascriptCausesANewPageToLoad() {
         driver.get(formPage);
 
@@ -148,7 +150,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     }
 
 	@JavascriptEnabled
-	@Ignore("safari, htmlunit")
+	@Ignore({HTMLUNIT, SAFARI})
     public void testShouldBeAbleToDetermineTheLocationOfAnElement() {
         driver.get(xhtmlTestPage);
 
@@ -160,7 +162,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     }
 
 	@JavascriptEnabled
-	@Ignore("safari, htmlunit")
+	@Ignore({HTMLUNIT, SAFARI})
     public void testShouldBeAbleToDetermineTheSizeOfAnElement() {
         driver.get(xhtmlTestPage);
 
@@ -181,7 +183,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     }
 
   @JavascriptEnabled
-  @Ignore("safari")
+  @Ignore(SAFARI)
   public void testShouldBeAbleToSubmitFormsByCausingTheOnClickEventToFire() {
     driver.get(javascriptPage);
     WebElement element = driver.findElement(By.id("jsSubmitButton"));
@@ -191,7 +193,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore("safari")
+  @Ignore(SAFARI)
   public void testShouldBeAbleToClickOnSubmitButtons() {
     driver.get(javascriptPage);
     WebElement element = driver.findElement(By.id("submittingButton"));
@@ -201,7 +203,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore("safari")
+  @Ignore(SAFARI)
   public void testIssue80ClickShouldGenerateClickEvent() {
     driver.get(javascriptPage);
     WebElement element = driver.findElement(By.id("clickField"));
@@ -213,7 +215,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore("safari, htmlunit")
+  @Ignore({HTMLUNIT, SAFARI})
   public void testShouldBeAbleToSwitchToFocusedElement() {
     driver.get(javascriptPage);
 
@@ -224,7 +226,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore("safari")
+  @Ignore(SAFARI)
   public void testIfNoElementHasFocusTheActiveElementIsTheBody() {
     driver.get(simpleTestPage);
 
@@ -234,7 +236,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = "safari, firefox, remote, htmlunit", reason = "Firefox: Window demands focus to work. Other platforms: not properly tested")
+  @Ignore(value = {FIREFOX, HTMLUNIT, REMOTE, SAFARI}, reason = "Firefox: Window demands focus to work. Other platforms: not properly tested")
   public void testChangeEventIsFiredAppropriatelyWhenFocusIsLost() {
     driver.get(javascriptPage);
 
@@ -256,7 +258,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   * If the click handler throws an exception, the firefox driver freezes. This is suboptimal.   
   */
   @JavascriptEnabled
-  @Ignore("safari")
+  @Ignore(SAFARI)
   public void testShouldBeAbleToClickIfEvenSomethingHorribleHappens() {
     driver.get(javascriptPage);
 
@@ -269,7 +271,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
   
   @JavascriptEnabled
-  @Ignore("safari")
+  @Ignore(SAFARI)
   public void testShouldNotBeAbleToClickOnAnElementThatIsNotDisplayed() {
 	 driver.get(javascriptPage);
 	 WebElement element = driver.findElement(By.id("unclickable"));
@@ -283,7 +285,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
   
   @JavascriptEnabled
-  @Ignore("safari, htmlunit")
+  @Ignore({HTMLUNIT, SAFARI})
   public void testShouldNotBeAbleToToggleAnElementThatIsNotDisplayed() {
 	 driver.get(javascriptPage);
 	 WebElement element = driver.findElement(By.id("untogglable"));
@@ -297,7 +299,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
   
   @JavascriptEnabled
-  @Ignore("safari, htmlunit")
+  @Ignore({HTMLUNIT, SAFARI})
   public void testShouldNotBeAbleToSelectAnElementThatIsNotDisplayed() {
 	 driver.get(javascriptPage);
 	 WebElement element = driver.findElement(By.id("untogglable"));
@@ -311,7 +313,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
   
   @JavascriptEnabled
-  @Ignore("safari, htmlunit")
+  @Ignore({HTMLUNIT, SAFARI})
   public void testShouldNotBeAbleToTypeAnElementThatIsNotDisplayed() {
 	 driver.get(javascriptPage);
 	 WebElement element = driver.findElement(By.id("unclickable"));

@@ -26,6 +26,8 @@ import static org.hamcrest.core.IsNot.not;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
 
+import static org.openqa.selenium.Ignore.Driver.*;
+
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.Set;
@@ -72,7 +74,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
         assertThat(cookies.contains(cookie2), is(true));
     }
 
-    @Ignore("ie")
+    @Ignore(IE)
     public void testCookieIntegrity() {
         String url = GlobalTestEnvironment.get().getAppServer().whereElseIs("animals");
 
@@ -105,7 +107,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
         assertThat(retrievedCookie.isSecure(), equalTo(cookie1.isSecure()));
     }
 
-    @Ignore("safari")
+    @Ignore(SAFARI)
     public void testDeleteAllCookies() {
         driver.get(simpleTestPage);
         Cookie cookie1 = new Cookie("fish", "cod");
@@ -124,7 +126,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
         assertThat(cookies.contains(cookie2), is(false));
     }
 
-    @Ignore("safari")
+    @Ignore(SAFARI)
     public void testDeleteCookie() {
         driver.get(simpleTestPage);
         Cookie cookie1 = new Cookie("fish", "cod");

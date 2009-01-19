@@ -20,6 +20,7 @@ package org.openqa.selenium.ie;
 import junit.framework.Test;
 import junit.framework.TestCase;
 
+import static org.openqa.selenium.Ignore.Driver.IE;
 import org.openqa.selenium.TestSuiteBuilder;
 
 public class InternetExplorerDriverTestSuite extends TestCase {
@@ -28,7 +29,7 @@ public class InternetExplorerDriverTestSuite extends TestCase {
 					.addSourceDir("common")
 					.addSourceDir("jobbie")
 					.usingDriver(InternetExplorerDriver.class)
-					.exclude("ie")
+					.exclude(IE)
 					.includeJavascriptTests()
 					.keepDriverInstance()
 					.create();

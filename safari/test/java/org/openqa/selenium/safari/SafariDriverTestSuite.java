@@ -20,6 +20,7 @@ package org.openqa.selenium.safari;
 import junit.framework.Test;
 import junit.framework.TestCase;
 
+import static org.openqa.selenium.Ignore.Driver.SAFARI;
 import org.openqa.selenium.TestSuiteBuilder;
 
 public class SafariDriverTestSuite extends TestCase {
@@ -28,7 +29,7 @@ public class SafariDriverTestSuite extends TestCase {
 					.addSourceDir("common")
 					.addSourceDir("safari")
 					.usingDriver(SafariDriver.class)
-					.exclude("safari")
+					.exclude(SAFARI)
 					.keepDriverInstance()
 					.includeJavascriptTests()
 					.create();

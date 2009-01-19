@@ -20,6 +20,7 @@ limitations under the License.
 package org.openqa.selenium;
 
 import org.openqa.selenium.environment.GlobalTestEnvironment;
+import static org.openqa.selenium.Ignore.Driver.*;
 
 public class TextPagesTest extends AbstractDriverTestCase {
   private String textPage;
@@ -31,7 +32,7 @@ public class TextPagesTest extends AbstractDriverTestCase {
     textPage = GlobalTestEnvironment.get().getAppServer().whereIs("plain.txt");
   }
 
-  @Ignore("firefox, ie, safari")
+  @Ignore({IE, FIREFOX, SAFARI})
   public void testShouldBeAbleToLoadASimplePageOfText() {
     driver.get(textPage);
 

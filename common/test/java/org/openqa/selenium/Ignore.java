@@ -25,6 +25,12 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface Ignore {
-	String value()	default("all");
-	String reason() default("Not implemented in driver yet");
+
+  public static enum Driver {
+    ALL, HTMLUNIT, IE, FIREFOX, SAFARI, REMOTE
+  }
+
+  Driver[] value() default {};
+
+  String reason() default ("Not implemented in driver yet");
 }

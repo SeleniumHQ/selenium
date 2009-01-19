@@ -36,7 +36,7 @@ public class TestSuiteBuilder {
 
   private File baseDir;
   private Set<File> sourceDirs = new HashSet<File>();
-  private Set<String> ignored = new HashSet<String>();
+  private Set<Ignore.Driver> ignored = new HashSet<Ignore.Driver>();
   private Class<? extends WebDriver> driverClass;
   private boolean keepDriver;
   private boolean includeJavascript;
@@ -59,7 +59,7 @@ public class TestSuiteBuilder {
     assertThat(baseDir.exists(), is(true));
 
     baseDir = baseDir.getParentFile();
-    exclude("all");
+//    exclude("all");
   }
 
   public TestSuiteBuilder addSourceDir(String dirName) {
@@ -86,7 +86,7 @@ public class TestSuiteBuilder {
     }
   }
 
-  public TestSuiteBuilder exclude(String tagToIgnore) {
+  public TestSuiteBuilder exclude(Ignore.Driver tagToIgnore) {
     ignored.add(tagToIgnore);
     return this;
   }
@@ -201,8 +201,8 @@ public class TestSuiteBuilder {
 
     Ignore ignore = method.getAnnotation(Ignore.class);
     if (ignore != null) {
-      for (String name : ignored) {
-        if (ignore.value().contains(name)) {
+      for (Ignore.Driver name : ignored) {
+        if (isIgnored(name, ignore)) {
           System.err.println("Ignoring: "
                              + method.getDeclaringClass() + "."
                              + method.getName() + ": " + ignore.reason());
@@ -212,6 +212,20 @@ public class TestSuiteBuilder {
     }
 
     return true;
+  }
+
+  private boolean isIgnored(Ignore.Driver name, Ignore ignore) {
+    if (ignore.value().length == 0) {
+      return true;
+    }
+
+    for (Ignore.Driver value : ignore.value()) {
+      if (value == name) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   private Class<?> getClassFrom(File file) {

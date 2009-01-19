@@ -17,9 +17,11 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import static org.openqa.selenium.Ignore.Driver.*;
+
 public class RenderedWebElementTest extends AbstractDriverTestCase {
 	@JavascriptEnabled
-	@Ignore("safari, htmlunit")
+        @Ignore({HTMLUNIT, SAFARI})
 	public void testShouldPickUpStyleOfAnElement() {
 		driver.get(javascriptPage);
 		
@@ -35,7 +37,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
 	}
 
     @JavascriptEnabled
-	@Ignore("safari, htmlunit")
+    @Ignore({HTMLUNIT, SAFARI})
     public void testShouldAllowInheritedStylesToBeUsed() {
 		driver.get(javascriptPage);
 		

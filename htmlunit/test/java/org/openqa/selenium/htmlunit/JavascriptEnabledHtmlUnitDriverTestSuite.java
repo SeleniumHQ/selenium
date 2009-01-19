@@ -22,6 +22,7 @@ package org.openqa.selenium.htmlunit;
 import junit.framework.Test;
 import junit.framework.TestCase;
 
+import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import org.openqa.selenium.TestSuiteBuilder;
 
 public class JavascriptEnabledHtmlUnitDriverTestSuite extends TestCase {
@@ -31,7 +32,7 @@ public class JavascriptEnabledHtmlUnitDriverTestSuite extends TestCase {
         .addSourceDir("common")
         .addSourceDir("htmlunit")
         .usingDriver(HtmlUnitDriverForTest.class)
-        .exclude("htmlunit")
+        .exclude(HTMLUNIT)
         .includeJavascriptTests()
         .create();
   }

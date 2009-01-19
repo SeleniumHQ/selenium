@@ -19,7 +19,7 @@ package org.openqa.selenium.firefox;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
-
+import static org.openqa.selenium.Ignore.Driver.*;
 import org.openqa.selenium.TestSuiteBuilder;
 
 public class FirefoxDriverTestSuite extends TestCase {
@@ -29,7 +29,7 @@ public class FirefoxDriverTestSuite extends TestCase {
         .addSourceDir("firefox")
         .addSourceDir("common")
         .usingDriver(FirefoxDriver.class)
-        .exclude("firefox")
+        .exclude(FIREFOX)
         .keepDriverInstance()
         .includeJavascriptTests()
         .create();

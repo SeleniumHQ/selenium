@@ -22,6 +22,8 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import static org.openqa.selenium.Ignore.Driver.FIREFOX;
+import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import org.openqa.selenium.TestSuiteBuilder;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.Jetty6AppServer;
@@ -40,8 +42,8 @@ public class RemoteWebDriverTestSuite extends TestCase {
             .keepDriverInstance()
             .includeJavascriptTests()
             .usingDriver(RemoteWebDriverForTest.class)
-            .exclude("firefox")
-            .exclude("remote")
+            .exclude(FIREFOX)
+            .exclude(REMOTE)
             .create();
 
     TestSuite toReturn = new TestSuite();

@@ -21,6 +21,9 @@ package org.openqa.selenium.firefox;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+
+import static org.openqa.selenium.Ignore.Driver.FIREFOX;
+
 import org.openqa.selenium.AbstractDriverTestCase;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Ignore;
@@ -28,6 +31,8 @@ import org.openqa.selenium.NeedsFreshDriver;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+
+
 
 public class FirefoxDriverTest extends AbstractDriverTestCase {
     public void testShouldContinueToWorkIfUnableToFindElementById() {
@@ -45,7 +50,7 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     }
 
     @NeedsFreshDriver
-    @Ignore(value = "firefox", reason = "Need to figure out how to open a new browser instance mid-test")
+    @Ignore(value = FIREFOX, reason = "Need to figure out how to open a new browser instance mid-test")
     public void testShouldWaitUntilBrowserHasClosedProperly() throws Exception {
       driver.get(simpleTestPage);
       driver.close();
@@ -86,7 +91,7 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
       }
     }
 
-    @Ignore("firefox")
+    @Ignore(FIREFOX)
     public void testANewProfileShouldAllowSettingAdditionalParameters() {
       FirefoxProfile profile = new FirefoxProfile();
       profile.setPreference("browser.startup.homepage", formPage);

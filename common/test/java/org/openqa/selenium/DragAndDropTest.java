@@ -19,10 +19,12 @@ package org.openqa.selenium;
 
 import java.awt.*;
 
+import static org.openqa.selenium.Ignore.Driver.*;
+
 public class DragAndDropTest extends AbstractDriverTestCase {
 
     @JavascriptEnabled
-    @Ignore("ie, safari, htmlunit")
+    @Ignore({HTMLUNIT, IE, SAFARI})
     public void testDragAndDrop() throws Exception {
         driver.get(dragAndDropPage);
         RenderedWebElement img = (RenderedWebElement) driver.findElement(By.id("test1"));
@@ -41,7 +43,7 @@ public class DragAndDropTest extends AbstractDriverTestCase {
     }
 
     @JavascriptEnabled
-    @Ignore("ie, safari, htmlunit")
+    @Ignore({HTMLUNIT, IE, SAFARI})
     public void testDragAndDropToElement() {
         driver.get(dragAndDropPage);
         RenderedWebElement img1 = (RenderedWebElement) driver.findElement(By.id("test1"));
@@ -52,7 +54,7 @@ public class DragAndDropTest extends AbstractDriverTestCase {
     }
 
     @JavascriptEnabled
-    @Ignore("ie, safari, htmlunit")
+    @Ignore({HTMLUNIT, IE, SAFARI})
     public void testElementInDiv() {
         driver.get(dragAndDropPage);
         RenderedWebElement img = (RenderedWebElement) driver.findElement(By.id("test3"));
@@ -62,7 +64,7 @@ public class DragAndDropTest extends AbstractDriverTestCase {
     }
 
     @JavascriptEnabled
-    @Ignore("ie, safari, htmlunit" )
+    @Ignore({HTMLUNIT, IE, SAFARI})
     public void testDragTooFar() {
         driver.get(dragAndDropPage);
         RenderedWebElement img = (RenderedWebElement) driver.findElement(By.id("test1"));
@@ -77,7 +79,7 @@ public class DragAndDropTest extends AbstractDriverTestCase {
     }
 
     @JavascriptEnabled
-    @Ignore("ie, safari, htmlunit")
+    @Ignore({HTMLUNIT, IE, SAFARI})
     public void testMouseSpeed() throws Exception {
         driver.get(dragAndDropPage);
         driver.manage().setSpeed(Speed.SLOW);
@@ -89,7 +91,7 @@ public class DragAndDropTest extends AbstractDriverTestCase {
     }
 
     @JavascriptEnabled
-    @Ignore("ie, safari, htmlunit")
+    @Ignore({HTMLUNIT, IE, SAFARI})
     public void testShouldAllowUsersToDragAndDropToElementsOffTheCurrentViewPort() {
       driver.get(dragAndDropPage);
 

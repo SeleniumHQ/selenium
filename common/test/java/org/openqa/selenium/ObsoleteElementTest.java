@@ -17,9 +17,10 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import static org.openqa.selenium.Ignore.Driver.*;
 
 public class ObsoleteElementTest extends AbstractDriverTestCase {
-	@Ignore("htmlunit, firefox, safari")
+	@Ignore({HTMLUNIT, FIREFOX, SAFARI})
     public void testOldPage() {
 		driver.get(simpleTestPage);
 		WebElement elem = driver.findElement(By.id("links"));
