@@ -17,7 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-public class NotFoundException extends RuntimeException {
+public class NotFoundException extends WebDriverException {
 
     public NotFoundException() {
     }
