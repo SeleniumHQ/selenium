@@ -66,7 +66,8 @@ public class WebDriverBackedSelenium implements Selenium {
   private static final Pattern MAX_AGE_PATTERN = Pattern.compile("max_age=(\\d+)");
   private static final Pattern PATH_PATTERN = Pattern.compile("path=([^\\s,]+)[,]?");
 
-  private static final String resourceName = "/org/openqa/selenium/internal/injectableSelenium.js";
+  private static final String injectableSelenium = "/org/openqa/selenium/internal/injectableSelenium.js";
+  private static final String htmlUtils = "/org/openqa/selenium/internal/htmlutils.js";
 
   // Keyboard related stuff
   private boolean metaKeyDown;
@@ -651,7 +652,7 @@ public class WebDriverBackedSelenium implements Selenium {
   public void open(String url) {
     String urlToOpen = url;
 
-    if (!url.startsWith("/")) {
+    if (!url.startsWith("/") && !url.startsWith("http")) {
       urlToOpen = baseUrl + "/" + url;
     }
     driver.get(urlToOpen);
@@ -670,7 +671,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param windowID the JavaScript window ID of the window to select
    */
   public void openWindow(String url, String windowID) {
-    throw new UnsupportedOperationException("openWindow");
+    ((JavascriptExecutor) driver).executeScript("window.open(arguments[0], arguments[1]", url, windowID);
   }
 
   /**
@@ -1001,7 +1002,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param locator an <a href="#locators">element locator</a>
    */
   public void highlight(String locator) {
-    throw new UnsupportedOperationException("highlight");
+    callEmbeddedHtmlUtils("highlight", findElement(locator));
   }
 
   /**
@@ -1320,7 +1321,19 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return the set of values of this attribute from all known windows.
    */
   public String[] getAttributeFromAllWindows(String attributeName) {
-    throw new UnsupportedOperationException("getAttributeFromAllWindows");
+    String current = driver.getWindowHandle();
+
+    List<String> attributes = new ArrayList<String>();
+    for (String handle : driver.getWindowHandles()) {
+      driver.switchTo().window(handle);
+      String value = (String) ((JavascriptExecutor) driver).executeScript(
+          "return '' + window[arguments[0]];", attributeName);
+      attributes.add(value);
+    }
+
+    driver.switchTo().window(current);
+
+    return attributes.toArray(new String[attributes.size()]);
   }
 
   /**
@@ -1386,14 +1399,14 @@ public class WebDriverBackedSelenium implements Selenium {
    * Gives focus to the currently selected window
    */
   public void windowFocus() {
-    throw new UnsupportedOperationException("windowFocus");
+    executeScript("window.focus()");
   }
 
   /**
    * Resize currently selected window to take up the entire screen
    */
   public void windowMaximize() {
-    throw new UnsupportedOperationException("windowMaximize");
+    executeScript("if (window.screen) { window.moveTo(0, 0); window.resizeTo(window.screen.availWidth, window.screen.availHeight);};");
   }
 
   /**
@@ -1402,7 +1415,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return the IDs of all windows that the browser knows about.
    */
   public String[] getAllWindowIds() {
-    throw new UnsupportedOperationException("getAllWindowIds");
+    return getAttributeFromAllWindows("id");
   }
 
   /**
@@ -1411,7 +1424,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return the names of all windows that the browser knows about.
    */
   public String[] getAllWindowNames() {
-    throw new UnsupportedOperationException("getAllWindowNames");
+    return getAttributeFromAllWindows("name");
   }
 
   /**
@@ -1420,7 +1433,17 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return the titles of all windows that the browser knows about.
    */
   public String[] getAllWindowTitles() {
-    throw new UnsupportedOperationException("getAllWindowTitles");
+    String current = driver.getWindowHandle();
+
+    List<String> attributes = new ArrayList<String>();
+    for (String handle : driver.getWindowHandles()) {
+      driver.switchTo().window(handle);
+      attributes.add(driver.getTitle());
+    }
+
+    driver.switchTo().window(current);
+
+    return attributes.toArray(new String[attributes.size()]);
   }
 
   /**
@@ -1558,7 +1581,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param identifier a string to be used as the ID of the specified element
    */
   public void assignId(String locator, String identifier) {
-    throw new UnsupportedOperationException("assignId");
+    executeScript("arguments[0].id = arguments[1]", findElement(locator), identifier);
   }
 
   /**
@@ -1589,7 +1612,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param ignore boolean, true means we'll ignore attributes without value                        at the expense of xpath "correctness"; false means                        we'll sacrifice speed for correctness.
    */
   public void ignoreAttributesWithoutValue(String ignore) {
-    throw new UnsupportedOperationException("ignoreAttributesWithoutValue");
+    // no-op
   }
 
   /**
@@ -1828,7 +1851,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param libraryName name of the desired library Only the following two can be chosen:   ajaxslt - Google's library   javascript - Cybozu Labs' faster library The default library is ajaxslt. If libraryName isn't one of them, then  no change will be made.
    */
   public void useXpathLibrary(String libraryName) {
-    throw new UnsupportedOperationException("useXpathLibrary");
+    // no-op
   }
 
   /**
@@ -1848,6 +1871,9 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param fileLocator  a URL pointing to the specified file. Before the file  can be set in the input field (fieldLocator), Selenium RC may need to transfer the file    to the local machine before attaching the file in a web page form. This is common in selenium  grid configurations where the RC server driving the browser is not the same  machine that started the test.   Supported Browsers: Firefox ("*chrome") only.
    */
   public void attachFile(String fieldLocator, String fileLocator) {
+    WebElement element = findElement(fieldLocator);
+    element.clear();
+
     throw new UnsupportedOperationException("attachFile");
   }
 
@@ -1981,7 +2007,7 @@ public class WebDriverBackedSelenium implements Selenium {
   }
 
   private void callEmbeddedSelenium(String functionName, WebElement element, Object... values) {
-    StringBuilder builder = new StringBuilder(readSelenium());
+    StringBuilder builder = new StringBuilder(readScript(injectableSelenium));
     builder.append("return browserbot.").append(functionName).append(".apply(browserbot, arguments);");
 
     List<Object> args = new ArrayList<Object>();
@@ -1991,12 +2017,20 @@ public class WebDriverBackedSelenium implements Selenium {
     ((JavascriptExecutor) driver).executeScript(builder.toString(), args.toArray());
   }
 
-  private String readSelenium() {
-    if (embeddedSelenium != null) {
-      return embeddedSelenium;
-    }
+  private void callEmbeddedHtmlUtils(String functionName, WebElement element, Object... values) {
+    StringBuilder builder = new StringBuilder(readScript(htmlUtils));
 
-    InputStream raw = WebDriverBackedSelenium.class.getResourceAsStream(resourceName);
+    builder.append("return htmlutils.").append(functionName).append(".apply(htmlutils, arguments);");
+
+    List<Object> args = new ArrayList<Object>();
+    args.add(element);
+    args.addAll(Arrays.asList(values));
+
+    ((JavascriptExecutor) driver).executeScript(builder.toString(), args.toArray());
+  }
+
+  private String readScript(String script) {
+    InputStream raw = WebDriverBackedSelenium.class.getResourceAsStream(script);
     if (raw == null) {
       throw new RuntimeException("Cannot locate the embedded selenium instance");
     }
@@ -2007,8 +2041,7 @@ public class WebDriverBackedSelenium implements Selenium {
       for (String line = reader.readLine(); line != null; line = reader.readLine()) {
         builder.append(line).append("\n");
       }
-      embeddedSelenium = builder.toString();
-      return embeddedSelenium;
+      return builder.toString();
     } catch (IOException e) {
       throw new RuntimeException(e);
     } finally {
@@ -2086,9 +2119,9 @@ public class WebDriverBackedSelenium implements Selenium {
     return options;
   }
 
-  private Object executeScript(String script) {
+  private Object executeScript(String script, Object... args) {
     if (driver instanceof JavascriptExecutor) {
-      return ((JavascriptExecutor) driver).executeScript(script);
+      return ((JavascriptExecutor) driver).executeScript(script, args);
     }
 
     throw new UnsupportedOperationException(

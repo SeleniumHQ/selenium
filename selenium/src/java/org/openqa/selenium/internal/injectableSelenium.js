@@ -1,4 +1,6 @@
 var browserbot = {
+    
+
     getTagName : function(element) {
         var tagName;
         if (element && element.tagName && element.tagName.toLowerCase) {
