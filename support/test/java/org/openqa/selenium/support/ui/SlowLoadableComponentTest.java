@@ -48,10 +48,23 @@ public class SlowLoadableComponentTest extends TestCase {
     FakeClock clock = new FakeClock();
     try {
       new BasicSlowLoader(clock, 2).get();
+      fail();
     } catch (Error e) {
       // We expect to time out
     }
   }
+
+  public void testShouldCancelLoadingIfAnErrorIsDetected() {
+    HasError error = new HasError();
+
+    try {
+      error.get();
+      fail();
+    } catch (CustomError e) {
+      // This is expected
+    }
+  }
+
 
   private static class DetonatingSlowLoader extends SlowLoadableComponent<DetonatingSlowLoader> {
 
@@ -69,6 +82,7 @@ public class SlowLoadableComponentTest extends TestCase {
   }
 
   private static class SlowLoading extends SlowLoadableComponent<SlowLoading> {
+
     private int counts;
     private long loopCount;
 
@@ -95,6 +109,7 @@ public class SlowLoadableComponentTest extends TestCase {
   }
 
   private static class OnlyOneLoad extends SlowLoading {
+
     private boolean loadAlreadyCalled;
 
     public OnlyOneLoad(Clock clock, int timeOutInSeconds, int counts) {
@@ -110,6 +125,7 @@ public class SlowLoadableComponentTest extends TestCase {
   }
 
   private static class BasicSlowLoader extends SlowLoadableComponent<BasicSlowLoader> {
+
     private final FakeClock clock;
     private final static int MILLIS_IN_A_SECOND = 1000;
 
@@ -128,5 +144,28 @@ public class SlowLoadableComponentTest extends TestCase {
       clock.timePasses(MILLIS_IN_A_SECOND);
       throw new Error(); // Never loads
     }
+  }
+
+  private static class HasError extends SlowLoadableComponent<HasError> {
+
+    public HasError() {
+      super(new FakeClock(), 1000);
+    }
+
+    protected void load() {
+      // does nothing
+    }
+
+    protected void isLoaded() throws Error {
+      fail();
+    }
+
+    protected void isError() throws Error {
+      throw new CustomError();
+    }
+  }
+
+  private static class CustomError extends Error {
+
   }
 }

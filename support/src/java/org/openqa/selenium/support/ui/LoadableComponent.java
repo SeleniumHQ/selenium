@@ -76,15 +76,4 @@ public abstract class LoadableComponent<T extends LoadableComponent<T>> {
    * @throws Error when the page is not loaded.
    */
   protected abstract void isLoaded() throws Error;
-
-  /**
-   * Check for well known error cases, which would mean that loading has
-   * finished, but an error condition was seen. If an error has occured
-   * throw an Error, possibly by using JUnit's Assert.assert* methods
-   *
-   * @throws Error When a well-known error condition has caused the load to fail
-   */
-  protected void isError() throws Error {
-    // no-op by default
-  }
 }

@@ -41,6 +41,7 @@ public class LoadableComponentTest extends TestCase {
 
     try {
       ok.get();
+      fail();
     } catch (Error e) {
       assertEquals("Expected failure", e.getMessage());
     }

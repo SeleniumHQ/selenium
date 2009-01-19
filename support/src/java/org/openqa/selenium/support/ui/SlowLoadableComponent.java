@@ -61,12 +61,27 @@ public abstract class SlowLoadableComponent<T extends LoadableComponent<T>>
       } catch (Error e) {
         // Not a problem, we could still be loading
       }
+
+      isError();
+
       waitFor(sleepFor());
     }
 
     isLoaded();
     return (T) this;
   }
+
+  /**
+   * Check for well known error cases, which would mean that loading has
+   * finished, but an error condition was seen. If an error has occured
+   * throw an Error, possibly by using JUnit's Assert.assert* methods
+   *
+   * @throws Error When a well-known error condition has caused the load to fail
+   */
+  protected void isError() throws Error {
+    // no-op by default
+  }
+
 
   protected long sleepFor() {
     return 200;
