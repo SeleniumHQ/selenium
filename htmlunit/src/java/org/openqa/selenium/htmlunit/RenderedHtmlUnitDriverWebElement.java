@@ -20,8 +20,11 @@ limitations under the License.
 package org.openqa.selenium.htmlunit;
 
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
+import com.gargoylesoftware.htmlunit.html.HtmlInput;
+import com.gargoylesoftware.htmlunit.html.StyledElement;
 
 import org.openqa.selenium.RenderedWebElement;
+import org.mozilla.javascript.Undefined;
 
 import java.awt.*;
 
@@ -35,7 +38,7 @@ public class RenderedHtmlUnitDriverWebElement extends HtmlUnitWebElement
   public void sendKeys(CharSequence... value) {
     if (!isDisplayed())
       throw new UnsupportedOperationException("You may only sendKeys to visible elements");
-    
+
     super.sendKeys(value);
   }
 
@@ -61,24 +64,30 @@ public class RenderedHtmlUnitDriverWebElement extends HtmlUnitWebElement
   }
 
   public boolean isDisplayed() {
-    boolean isDisplayed = true;
+    if (element instanceof HtmlInput) {
+      if (((HtmlInput) element).getTypeAttribute().equalsIgnoreCase("hidden")) {
+        return false;
+      }
+    }
 
-    HtmlElement underlyingElement = element;
+    String display = "";
+    String visible = "";
+    HtmlElement node = element;
+    while (node instanceof StyledElement) {
+      display = getEffectiveStyle(node, "display");
+      if ("none".equals(display)) {
+        break;
+      }
 
-    do {
-      HtmlUnitWebElement curr = new HtmlUnitWebElement(parent, underlyingElement);
-      String display = (String) parent.executeScript("return arguments[0].currentStyle.display", curr);
-      String visible = (String) parent.executeScript("return arguments[0].currentStyle.visibility", curr);
+      visible = getEffectiveStyle(node, "visibility");
+      if ("hidden".equals(visible)) {
+        break;
+      }
 
-      isDisplayed = !"none".equals(display) && !"hidden".equals(visible);
+      node = (HtmlElement) node.getParentNode();
+    }
 
-      if (underlyingElement.getParentNode() instanceof HtmlElement)
-        underlyingElement = (HtmlElement) underlyingElement.getParentNode();
-      else
-        underlyingElement = null;
-    } while (underlyingElement != null && isDisplayed && !"body".equals(underlyingElement.getTagName()));
-
-  return isDisplayed;
+    return !"none".equals(display) && !"hidden".equals(visible);
   }
 
   public Point getLocation() {
@@ -98,6 +107,39 @@ public class RenderedHtmlUnitDriverWebElement extends HtmlUnitWebElement
   }
 
   public String getValueOfCssProperty(String propertyName) {
-    return (String) parent.executeScript("var p = arguments[0].currentStyle[arguments[1]]; return p ? p.toString : undefined;", this, propertyName);   
+    return getEffectiveStyle(element, propertyName);
+  }
+
+  private String getEffectiveStyle(HtmlElement htmlElement, String propertyName) {
+    if (!(htmlElement instanceof StyledElement)) {
+      return "";
+    }
+
+    HtmlElement current = htmlElement;
+    String value = "inherit";
+    while (current instanceof StyledElement && "inherit".equals(value)) {
+      // Hat-tip to the Selenium team
+      Object result = parent.executeScript(
+          "if (window.getComputedStyle) { " +
+          "    return window.getComputedStyle(arguments[0], null)[arguments[1]]; " +
+          "} " +
+          "if (arguments[0].currentStyle) { " +
+          "    return arguments[0].currentStyle[arguments[1]]; " +
+          "} " +
+          "if (window.document.defaultView && window.document.defaultView.getComputedStyle) { " +
+          "    return window.document.defaultView.getComputedStyle(arguments[0], null)[arguments[1]]; "
+          +
+          "} ",
+          current, propertyName
+      );
+
+      if (!(result instanceof Undefined)) {
+        value = String.valueOf(result);
+      }
+
+      current = (HtmlElement) current.getParentNode();
+    }
+
+    return value;
   }
 }

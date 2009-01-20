@@ -30,7 +30,7 @@ public @interface Ignore {
     ALL, HTMLUNIT, IE, FIREFOX, SAFARI, REMOTE
   }
 
-  Driver[] value() default {};
+  Driver[] value() default { Driver.ALL };
 
   String reason() default ("Not implemented in driver yet");
 }

@@ -96,49 +96,6 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
 //		}
 //	}
 
-	@JavascriptEnabled
-	@Ignore(SAFARI)
-    public void testShouldAllowTheUserToTellIfAnElementIsDisplayedOrNot() {
-        driver.get(javascriptPage);
-
-        assertThat(((RenderedWebElement) driver.findElement(By.id("displayed"))).isDisplayed(), is(true));
-        assertThat(((RenderedWebElement) driver.findElement(By.id("none"))).isDisplayed(), is(false));
-        assertThat(((RenderedWebElement) driver.findElement(By.id("hidden"))).isDisplayed(), is(false));
-    }
-
-    @JavascriptEnabled
-    @Ignore(SAFARI)
-    public void testVisibilityShouldTakeIntoAccountParentVisibility() {
-        driver.get(javascriptPage);
-
-        RenderedWebElement childDiv =  (RenderedWebElement) driver.findElement(By.id("hiddenchild"));
-        RenderedWebElement hiddenLink = (RenderedWebElement) driver.findElement(By.id("hiddenlink"));
-
-        assertFalse(childDiv.isDisplayed());
-        assertFalse(hiddenLink.isDisplayed());
-    }
-
-//    @JavascriptEnabled
-//    @Ignore("ie, safari, htmlunit, remote")
-//    public void testShouldNotAllowAnElementWithZeroHeightToBeCountedAsDisplayed() {
-//        driver.get(javascriptPage);
-//
-//        RenderedWebElement zeroHeight = (RenderedWebElement) driver.findElement(By.id("zeroheight"));
-//
-//        assertFalse(zeroHeight.isDisplayed());
-//    }
-//
-//    @JavascriptEnabled
-//    @Ignore("ie, safari, htmlunit, remote")
-//    public void testShouldNotAllowAnElementWithZeroWidthToBeCountedAsDisplayed() {
-//        driver.get(javascriptPage);
-//
-//        RenderedWebElement zeroWidth = (RenderedWebElement) driver.findElement(By.id("zerowidth"));
-//
-//        assertFalse(zeroWidth.isDisplayed());
-//    }
-
-
     @JavascriptEnabled
 	@Ignore(value = {IE, SAFARI}, reason="safari: not implemented, ie: Fails")
     public void testShouldWaitForLoadsToCompleteAfterJavascriptCausesANewPageToLoad() {
@@ -285,7 +242,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
   
   @JavascriptEnabled
-  @Ignore({HTMLUNIT, SAFARI})
+  @Ignore(SAFARI)
   public void testShouldNotBeAbleToToggleAnElementThatIsNotDisplayed() {
 	 driver.get(javascriptPage);
 	 WebElement element = driver.findElement(By.id("untogglable"));
@@ -299,7 +256,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
   
   @JavascriptEnabled
-  @Ignore({HTMLUNIT, SAFARI})
+  @Ignore(SAFARI)
   public void testShouldNotBeAbleToSelectAnElementThatIsNotDisplayed() {
 	 driver.get(javascriptPage);
 	 WebElement element = driver.findElement(By.id("untogglable"));
@@ -313,7 +270,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
   
   @JavascriptEnabled
-  @Ignore({HTMLUNIT, SAFARI})
+  @Ignore(SAFARI)
   public void testShouldNotBeAbleToTypeAnElementThatIsNotDisplayed() {
 	 driver.get(javascriptPage);
 	 WebElement element = driver.findElement(By.id("unclickable"));

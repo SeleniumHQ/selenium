@@ -220,7 +220,7 @@ public class TestSuiteBuilder {
     }
 
     for (Ignore.Driver value : ignore.value()) {
-      if (value == name) {
+      if (value == name || value == Ignore.Driver.ALL) {
         return true;
       }
     }

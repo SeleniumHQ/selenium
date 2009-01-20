@@ -20,6 +20,8 @@ package org.openqa.selenium;
 import junit.framework.Test;
 import junit.framework.TestCase;
 
+import static org.openqa.selenium.Ignore.Driver.*;
+
 @SuppressWarnings("unused")
 public class SingleTestSuite extends TestCase {
 
@@ -31,7 +33,7 @@ public class SingleTestSuite extends TestCase {
   private final static String SAFARI = "org.openqa.selenium.safari.SafariDriver";
 
   public static Test suite() throws Exception {
-    String driver = FIREFOX;
+    String driver = HTML_UNIT_JS;
 
     System.setProperty("webdriver.firefox.development", "true");
 //    System.setProperty("webdriver.firefox.useExisting", "true");
@@ -43,9 +45,9 @@ public class SingleTestSuite extends TestCase {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("ChildrenFindingTest")
-//         .method("testClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang")
-//        .exclude("ie")
+        .onlyRun("ExecutingJavascriptTest")
+         .method("testShouldBeAbleToPassAWebElementAsArgument")
+        .exclude(ALL)
         .leaveRunning()
         ;  // Yeah, this look strange :)
 

@@ -101,8 +101,12 @@
   </form>
 </div>
 
+<p id="suppressedParagraph" style="display: none">A paragraph suppressed using CSS display=none</p>
+
 <div>
     <p id="displayed">Displayed</p>
+
+    <form action="#"><input type="hidden" name="hidden" /> </form>
 
     <p id="none" style="display: none;">Display set to none</p>
 
@@ -120,6 +124,8 @@
         <input type="checkbox" id="untogglable" checked="checked" />Check box you can't see
       </span>
     </div>
+
+    <p style="visibility: hidden">A <b id="visibleSubElement" style="visibility: visible">sub-element that is explicitly visible</b> using CSS visibility=visible</p>
 </div>
 
 <div>

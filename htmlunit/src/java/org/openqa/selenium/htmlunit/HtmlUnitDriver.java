@@ -323,6 +323,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
 
         for (int i = 0; i < args.length; i++) {
             if (!(args[i] instanceof HtmlUnitWebElement ||
+                  args[i] instanceof HtmlElement || // special case the underlying type
                   args[i] instanceof Number ||
                   args[i] instanceof String ||
                   args[i] instanceof Boolean)) {
@@ -334,6 +335,8 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
             if (args[i] instanceof HtmlUnitWebElement) {
                 HtmlElement element = ((HtmlUnitWebElement) args[i]).getElement();
                 parameters[i] = element.getScriptObject();
+            } else if (args[i] instanceof HtmlElement) {
+                parameters[i] = ((HtmlElement) args[i]).getScriptObject();
             } else {
                 parameters[i] = args[i];
             }

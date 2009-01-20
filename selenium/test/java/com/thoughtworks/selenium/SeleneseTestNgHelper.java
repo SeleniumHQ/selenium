@@ -35,9 +35,7 @@ public class SeleneseTestNgHelper extends SeleneseTestBase
         WebDriver driver = null;
         if (browserString.contains("firefox") || browserString.contains("chrome")) {
           System.setProperty("webdriver.firefox.development", "true");
-          File file = new File("firefox/src/extension");
-          FirefoxProfile profile = new FirefoxProfile(file);
-          driver = new FirefoxDriver(profile);
+          driver = new FirefoxDriver();
         } else if (browserString.contains("ie") || browserString.contains("hta")) {
           driver = new InternetExplorerDriver();
         } else {

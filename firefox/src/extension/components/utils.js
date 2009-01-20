@@ -139,19 +139,31 @@ function isBlockLevel(node) {
 };
 
 Utils.isDisplayed = function(element) {
-    var isDisplayed = true;
-    do {
-        var display = Utils.getStyleProperty(element, "display");
-        var visible = Utils.getStyleProperty(element, "visibility");
-        isDisplayed &= display != "none" && visible != "hidden";
+    // Hidden input elements are, by definition, never displayed
+    if (element.tagName == "input" && element.type == "hidden") {
+      return false;
+    }
 
-        element = element.parentNode;
-    } while (element && element.tagName && element.tagName.toLowerCase() != "body" && isDisplayed);
+    var visibility = Utils.getStyleProperty(element, "visibility");
 
-	return isDisplayed;
+    var _isDisplayed = function(e) {
+      var display = e.ownerDocument.defaultView.getComputedStyle(e, null).getPropertyValue("display");
+      if (display == "none") return display;
+      if (e.parentNode.style) {
+        return _isDisplayed(e.parentNode);
+      }
+      return undefined;
+    }
+
+    var displayed = _isDisplayed(element);
+
+    return displayed != "none" && visibility != "hidden";
 };
 
 Utils.getStyleProperty = function(node, propertyName) {
+    if (!node)
+      return undefined;
+
     var value = node.ownerDocument.defaultView.getComputedStyle(node, null).getPropertyValue(propertyName);
 
     // Convert colours to hex if possible
@@ -168,6 +180,10 @@ Utils.getStyleProperty = function(node, propertyName) {
         }
         hex = hex.toLowerCase();
         value = temp + hex + value.substr(raw.index + raw[0].length);
+    }
+
+    if (value == "inherit" && element.parentNode.style) {
+      value = Utils.getStyleProperty(node.parentNode, propertyName);
     }
 
     return value;
