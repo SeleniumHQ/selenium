@@ -171,39 +171,91 @@ void IeThread::OnElementIsDisplayed(WPARAM w, LPARAM lp)
 	data.output_bool_ = isDisplayed(pElement);
 }
 
+bool isElementDisplayed(IHTMLElement* element) 
+{
+	CComQIPtr<IHTMLElement2> e2(element);
+
+	CComPtr<IHTMLCurrentStyle> style;
+	CComBSTR display;
+
+	e2->get_currentStyle(&style);
+	if(!style) {
+		throw std::wstring(L"appears to manipulate obsolete DOM element.");
+	}
+	style->get_display(&display);
+	std::wstring displayValue = combstr2cw(display);
+
+	if (_wcsicmp(L"none", displayValue.c_str()) == 0) {
+		return false;
+	}
+
+	CComPtr<IHTMLElement> parent;
+	element->get_parentElement(&parent);
+
+	if (!parent) {
+		return true;
+	}
+
+	// Check that parent has style
+	CComQIPtr<IHTMLElement2> parent2(parent);
+
+	CComPtr<IHTMLCurrentStyle> parentStyle;
+	parent2->get_currentStyle(&parentStyle);
+
+	if (parentStyle) {
+		return isElementDisplayed(parent);
+	}
+
+    return true;
+}
+
+bool isElementVisible(IHTMLElement* element) 
+{
+	CComQIPtr<IHTMLElement2> e2(element);
+	CComPtr<IHTMLCurrentStyle> curr;
+	CComBSTR visible;
+
+	e2->get_currentStyle(&curr);
+	if(!curr) {
+		throw std::wstring(L"appears to manipulate obsolete DOM element.");
+	}
+	curr->get_visibility(&visible);
+
+	std::wstring visibleValue = combstr2cw(visible);
+
+	int isVisible = _wcsicmp(L"hidden", visibleValue.c_str());
+	if (isVisible == 0) {
+		return false;
+	}
+
+	// If the style attribute was set on this class and contained visibility, then stop
+	CComPtr<IHTMLStyle> style;
+	element->get_style(&style);
+	if (style) {
+		CComBSTR visibleStyle;
+		style->get_visibility(&visibleStyle);
+		if (visibleStyle) {
+			return true;  // because we'd have returned false earlier, otherwise
+		}
+	}
+
+	CComPtr<IHTMLElement> parent;
+	element->get_parentElement(&parent);
+	if (parent) {
+		return isElementVisible(parent);
+	}
+
+	return true;
+}
+
 bool IeThread::isDisplayed(IHTMLElement *element)
 {
-	bool toReturn = true;
+	CComQIPtr<IHTMLInputHiddenElement> hidden(element);
+	if (hidden) {
+		return false;
+	}
 
-	CComPtr<IHTMLElement> e(element);
-	do {
-		CComQIPtr<IHTMLElement2> e2(e);
-
-		CComPtr<IHTMLCurrentStyle> style;
-		CComBSTR display;
-		CComBSTR visible;
-
-		e2->get_currentStyle(&style);
-		if(!style) {
-			throw std::wstring(L"appears to manipulate obsolete DOM element.");
-		}
-		style->get_display(&display);
-		style->get_visibility(&visible);
-
-		std::wstring displayValue = combstr2cw(display);
-		std::wstring visibleValue = combstr2cw(visible);
-
-		int isDisplayed = _wcsicmp(L"none", displayValue.c_str());
-		int isVisible = _wcsicmp(L"hidden", visibleValue.c_str());
-
-		toReturn &= isDisplayed != 0 && isVisible != 0;
-
-		CComPtr<IHTMLElement> parent;
-		e->get_parentElement(&parent);
-		e = parent;
-	} while (e && toReturn);
-
-	return toReturn;
+	return isElementDisplayed(element) && isElementVisible(element);
 }
 
 void IeThread::OnElementIsEnabled(WPARAM w, LPARAM lp)

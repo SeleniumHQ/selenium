@@ -19,16 +19,20 @@ limitations under the License.
 package org.openqa.selenium;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import org.hamcrest.Matchers;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNot.not;
 import static org.junit.matchers.JUnitMatchers.either;
+import static org.openqa.selenium.Ignore.Driver.FIREFOX;
+import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
+import static org.openqa.selenium.Ignore.Driver.IE;
+import static org.openqa.selenium.Ignore.Driver.REMOTE;
+import static org.openqa.selenium.Ignore.Driver.SAFARI;
+
+import java.awt.Dimension;
+import java.awt.Point;
+
+import org.hamcrest.Matchers;
 import org.openqa.selenium.internal.Locatable;
-
-import static org.openqa.selenium.Ignore.Driver.*;
-
-import java.awt.*;
 
 /**
  * Test case for browsers that support using Javascript
@@ -226,65 +230,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
 
     assertNotNull(text);
   }
-  
-  @JavascriptEnabled
-  @Ignore(SAFARI)
-  public void testShouldNotBeAbleToClickOnAnElementThatIsNotDisplayed() {
-	 driver.get(javascriptPage);
-	 WebElement element = driver.findElement(By.id("unclickable"));
-	 
-	 try {
-	   element.click();
-	   fail("You should not be able to click on an invisible element");
-	 } catch (UnsupportedOperationException e) {
-		 // This is expected
-	 }
-  }
-  
-  @JavascriptEnabled
-  @Ignore(SAFARI)
-  public void testShouldNotBeAbleToToggleAnElementThatIsNotDisplayed() {
-	 driver.get(javascriptPage);
-	 WebElement element = driver.findElement(By.id("untogglable"));
-	 
-	 try {
-	   element.toggle();
-	   fail("You should not be able to toggle an invisible element");
-	 } catch (UnsupportedOperationException e) {
-		 // This is expected
-	 }
-  }
-  
-  @JavascriptEnabled
-  @Ignore(SAFARI)
-  public void testShouldNotBeAbleToSelectAnElementThatIsNotDisplayed() {
-	 driver.get(javascriptPage);
-	 WebElement element = driver.findElement(By.id("untogglable"));
-	 
-	 try {
-	   element.setSelected();
-	   fail("You should not be able to select an invisible element");
-	 } catch (UnsupportedOperationException e) {
-		 // This is expected
-	 }
-  }
-  
-  @JavascriptEnabled
-  @Ignore(SAFARI)
-  public void testShouldNotBeAbleToTypeAnElementThatIsNotDisplayed() {
-	 driver.get(javascriptPage);
-	 WebElement element = driver.findElement(By.id("unclickable"));
-	 
-	 try {
-	   element.sendKeys("You don't see me");
-	   fail("You should not be able to send keyboard input to an invisible element");
-	 } catch (UnsupportedOperationException e) {
-		 // This is expected
-	 }
-	 
-	 assertThat(element.getValue(), is(not("You don't see me")));
-  }
-  
+    
   @JavascriptEnabled
   public void testShouldBeAbleToGetTheLocationOfAnElement() {
       driver.get(javascriptPage);

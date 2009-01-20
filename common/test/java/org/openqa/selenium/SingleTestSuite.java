@@ -33,7 +33,7 @@ public class SingleTestSuite extends TestCase {
   private final static String SAFARI = "org.openqa.selenium.safari.SafariDriver";
 
   public static Test suite() throws Exception {
-    String driver = HTML_UNIT_JS;
+    String driver = IE;
 
     System.setProperty("webdriver.firefox.development", "true");
 //    System.setProperty("webdriver.firefox.useExisting", "true");
@@ -45,9 +45,10 @@ public class SingleTestSuite extends TestCase {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("ExecutingJavascriptTest")
-         .method("testShouldBeAbleToPassAWebElementAsArgument")
+        .onlyRun("VisibilityTest")
+//        .method("testShouldNotBeAbleToClickOnAnElementThatIsNotDisplayed")
         .exclude(ALL)
+//        .exclude(Ignore.Driver.IE)
         .leaveRunning()
         ;  // Yeah, this look strange :)
 
