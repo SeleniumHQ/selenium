@@ -46,7 +46,7 @@
 						<configuration>
 							<tasks>
 								<mkdir dir="target/classes" />
-								<copy file="InternetExplorerDriver.dll" todir="target/classes" />
+								<copy file="build/InternetExplorerDriver.dll" todir="target/classes" />
 							</tasks>
 						</configuration>
 						<goals>
@@ -62,7 +62,7 @@
 		<repository>
 			<id>openqa-releases</id>
 			<name>OpenQA Releases</name>
-			<url>http://archiva.openqa.org/repository/releases/</url>
+			<url>http://nexus.openqa.org/content/repositories/releases</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
@@ -73,7 +73,7 @@
 		<repository>
 			<id>openqa-snapshots</id>
 			<name>OpenQA Snapshots</name>
-			<url>http://archiva.openqa.org/repository/snapshots/</url>
+			<url>http://nexus.openqa.org/content/repositories/snapshots</url>
 			<releases>
 				<enabled>false</enabled>
 			</releases>
