@@ -22,7 +22,7 @@ Copyright 2006 ThoughtWorks, Inc
     <a id="id1" href="#id1" class="a1">this is the first element</a>
     <!-- DO NOT DELETE THIS COMMENT: see SEL-68 -->
     <a id="id2" name="name1" href="#id2" class="a2" alt="foo">this is the&nbsp;<b>second</b> <span selenium:foo="bar">element</span></a>
-    <a id="id3" name="name1" href="#id3" class="a3">this is the third element</a>
+    <a id="id3" name="name1" href="#id3" class="a3">this is the&nbsp;third element</a>
     <a id="foo:bar" href="#id3" class="a4">this is the fourth element</a>
     <a class="class1 class2 class3">this is the fifth element</a>
     <a lang="en-cn-something">this is the sixth element</a>
@@ -41,7 +41,7 @@ Copyright 2006 ThoughtWorks, Inc
     <div id="css3test">
         <a name="foobar">foobar</a>
         <a name="barfoo">barfoo</a>
-        <a name="foozoobar">foozoobar</a>
+        <a name="foozoobar" id="foobar">foozoobar</a>
     </div>
 
     <div id="onlyChild"><span>only child</span></div>
@@ -68,15 +68,36 @@ Copyright 2006 ThoughtWorks, Inc
             <input id="nested3b" type="button" value="nested3b">
         </div>
     </div>
+    
+    <div id="anotherNested">
+        <span>
+            <div id="usefulStuff">
+                <span>
+                    <input value="winner"></input>
+                </span>
+            </div>  
+        </span>
+    </div>
 
     <div id="targetTest">
         <span name="target">target</span>
         <a href="#target">referreing URI</a>
     </div>
 
+    <a id="jshref" href="javascript:doFoo('a', 'b')">javascript href with spaces</a>
+
     <div id="buttons">
         <button>left</button> <button>right</button>
     </div>
+    
+    <div id="ignore">
+        <a class="somewhere">over the rainbow</a>
+        <a class="">skies are blue</a>
+    </div>
+    
+    <form id="myForm" method="POST">
+         <input type="text" name="id" />
+    </form> 
 
 </body>
 </html>

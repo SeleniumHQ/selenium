@@ -16,19 +16,29 @@ Copyright 2006 ThoughtWorks, Inc
 -->
 <head>
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html">
-<title>Testing-ground for assertEditable and friends</title>
+<title>Click Page 1</title>
 <script type="text/javascript">
- function generateAnAlertAndFocus(inputElement) {
-     if (inputElement.value == "test") {
-        alert("Bad value");
-        inputElement.focus();
-     }
- }
+var foo = "foo";
+function navigateTo(url) {
+}
 </script>
 </head>
 <body>
+
 <img style="width: 644px; height: 41px;" alt="banner" src="banner.gif"><br>
-<form>
-<input name="testInput" onblur="javascript:generateAnAlertAndFocus(this);" />
-</form>
+
+<a id="a" href="javascript:alert('a')">link</a><br>
+<a id="b" href="  javascript:alert('b')">link</a><br>
+<a id="c" href="  jAvAsCrIpT:alert('c')">link</a><br>
+
+<a id="d" href="javascript:var d = document.getElementById('d'); d.parentNode.removeChild(d);">link</a><br>
+<a id="e" href="javascript:var e = document.getElementById('e'); e.parentNode.removeChild(e); alert('e')">link</a><br>
+
+<a id="f" href="javascript:window.open('test_visibility.html', 'f-window')">link</a><br>
+<a id="g" href="javascript:window.open('test_visibility.html', 'g-window'); alert('g')">link</a><br>
+
+<a id="h" href="javascript:alert('h'); window.location = 'test_visibility.html'">link</a><br />
+
+</body>
+
 </html>
