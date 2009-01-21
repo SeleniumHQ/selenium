@@ -3,8 +3,6 @@ require File.expand_path(__FILE__ + '/../../spec_helper')
 describe "Element API" do
     
   it "Can detect element presence" do
-    selenium_driver.start_new_browser_session
-
     page.open "http://localhost:4444/selenium-server/tests/html/test_element_present.html"
     page.element?('aLink').should be_true
     page.click 'removeLinkAfterAWhile', :wait_for => :no_element, :element => "aLink"

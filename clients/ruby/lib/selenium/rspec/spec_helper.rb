@@ -18,5 +18,15 @@ Spec::Runner.configure do |config|
     end
   end
 
+  config.append_before(:each) do
+    begin 
+      if selenium_driver && selenium_driver.session_started?
+        selenium_driver.set_context "Starting example '#{self.description}'"
+      end
+    rescue Exception => e
+      STDERR.puts "Problem while setting context on example start" + e
+    end
+  end
+
 end
 

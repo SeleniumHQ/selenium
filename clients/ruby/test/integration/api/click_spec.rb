@@ -3,8 +3,6 @@ require File.expand_path(__FILE__ + '/../../spec_helper')
 describe "Click Instrumentation" do
 
   it "clicks" do
-    selenium_driver.start_new_browser_session
-
     page.open "http://localhost:4444/selenium-server/tests/html/test_click_page1.html"
     page.text_content("link").should eql("Click here for next page")
     page.click "link", :wait_for => :page
@@ -27,8 +25,6 @@ describe "Click Instrumentation" do
   end
 
   it "double clicks" do
-    selenium_driver.start_new_browser_session
-    
     page.open "http://localhost:4444/selenium-server/tests/html/test_click_page1.html"
     page.double_click "doubleClickable"
     page.get_alert.should eql("double clicked!")

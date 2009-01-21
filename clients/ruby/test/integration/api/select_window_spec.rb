@@ -3,7 +3,6 @@ require File.expand_path(__FILE__ + '/../../spec_helper')
 describe "Window Selection" do
 
   it "Selects and close popup windows " do
-    selenium_driver.start_new_browser_session
     page.open "http://localhost:4444/selenium-server/tests/html/test_select_window.html"
     page.click "popupPage", :wait_for => :popup, :window => "myPopupWindow", :select => true
     page.location.should =~ %r{/tests/html/test_select_window_popup.html}
@@ -21,7 +20,6 @@ describe "Window Selection" do
   end
 
   it "Select an anonymous window (one that isn't assigned to a variable)" do
-    selenium_driver.start_new_browser_session
     page.open "http://localhost:4444/selenium-server/tests/html/test_select_window.html"
     page.click "popupAnonymous", :wait_for => :popup, :window => "anonymouspopup", :select => true
     page.location.should =~ %r{/tests/html/test_select_window_popup.html}
@@ -30,7 +28,6 @@ describe "Window Selection" do
   end
 
   it "Try onclick close handler" do
-    selenium_driver.start_new_browser_session
     page.open "http://localhost:4444/selenium-server/tests/html/test_select_window.html"
     page.click "popupAnonymous", :wait_for => :popup, :window => "anonymouspopup", :select => true
     page.location.should =~ %r{/tests/html/test_select_window_popup.html}

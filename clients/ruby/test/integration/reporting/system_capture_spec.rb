@@ -4,6 +4,7 @@ require File.expand_path(File.dirname(__FILE__) + "/../../../lib/selenium/rspec/
 describe "System Capture" do
 
   it "Retrieves remote control logs on local file system when no session is started" do
+    selenium_driver.stop
     FileUtils.rm_rf "/tmp/selenium_ruby_client"
     example  = stub('example',:backtrace => [ "a line" ])
     strategy = Selenium::RSpec::Reporting::FilePathStrategy.new "/tmp/selenium_ruby_client/test_report.html"
@@ -19,8 +20,6 @@ describe "System Capture" do
   end
   
   it "Retrieves remote control logs on local file system when there is a session" do
-    selenium_driver.start_new_browser_session
-    
     FileUtils.rm_rf "/tmp/selenium_ruby_client"
     example  = stub('example',:backtrace => [ "a line" ])
     strategy = Selenium::RSpec::Reporting::FilePathStrategy.new "/tmp/selenium_ruby_client/test_report.html"
@@ -36,6 +35,7 @@ describe "System Capture" do
   end
   
   it "Retrieving HTML Snapshot should not bomb when there is no session" do
+    selenium_driver.stop
     example  = stub('example',:backtrace => [ "a line" ])
     strategy = Selenium::RSpec::Reporting::FilePathStrategy.new "/tmp/selenium_ruby_client/test_report.html"
     system_capture = Selenium::RSpec::Reporting::SystemCapture.new selenium_driver, example, strategy
@@ -43,8 +43,6 @@ describe "System Capture" do
   end
   
   it "Retrieves HTML Snapshots on local file system when session is started" do
-    selenium_driver.start_new_browser_session
-  
     FileUtils.rm_rf "/tmp/selenium_ruby_client"
     example  = stub('example',:backtrace => [ "a line" ])
     strategy = Selenium::RSpec::Reporting::FilePathStrategy.new "/tmp/selenium_ruby_client/test_report.html"
@@ -60,8 +58,6 @@ describe "System Capture" do
   end
   
   it "Retrieves system screenshot on local file system when session is started" do
-    selenium_driver.start_new_browser_session
-  
     FileUtils.rm_rf "/tmp/selenium_ruby_client"
     example  = stub('example',:backtrace => [ "a line" ])
     strategy = Selenium::RSpec::Reporting::FilePathStrategy.new "/tmp/selenium_ruby_client/test_report.html"
@@ -77,7 +73,6 @@ describe "System Capture" do
   end
 
   it "Retrieves page screenshot on local file system when session is started" do
-    selenium_driver.start_new_browser_session
     page.open "http://localhost:4444/selenium-server/tests/html/test_form_events.html"
   
     FileUtils.rm_rf "/tmp/selenium_ruby_client"

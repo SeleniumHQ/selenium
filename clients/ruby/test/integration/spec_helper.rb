@@ -5,11 +5,12 @@ require File.expand_path(File.dirname(__FILE__) + "/../../lib/selenium/rspec/spe
 
 Spec::Runner.configure do |config|
 
-  config.before(:each) do
+  config.prepend_before(:each) do
     create_selenium_driver
+    start_new_browser_session
   end
 
-  config.after(:each) do
+  config.append_after(:each) do
     selenium_driver.stop
   end
 
