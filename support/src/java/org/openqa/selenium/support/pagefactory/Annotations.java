@@ -26,6 +26,7 @@ import org.openqa.selenium.support.FindBy;
 import java.lang.reflect.Field;
 
 public class Annotations {
+
   private Field field;
 
   public Annotations(Field field) {
@@ -47,23 +48,32 @@ public class Annotations {
     }
 
     switch (how) {
-    case ID:
-      return By.id(using);
+      case CLASS_NAME:
+        return By.className(using);
 
-    case ID_OR_NAME:
-      return new ByIdOrName(using);
+      case ID:
+        return By.id(using);
 
-    case LINK_TEXT:
-      return By.linkText(using);
+      case ID_OR_NAME:
+        return new ByIdOrName(using);
 
-    case NAME:
-      return By.name(using);
+      case LINK_TEXT:
+        return By.linkText(using);
 
-    case XPATH:
-      return By.xpath(using);
+      case NAME:
+        return By.name(using);
 
-    default:
-      throw new IllegalArgumentException("Cannot determine how to locate element");
+      case PARTIAL_LINK_TEXT:
+        return By.partialLinkText(using);
+
+      case TAG_NAME:
+        return By.tagName(using);
+
+      case XPATH:
+        return By.xpath(using);
+
+      default:
+        throw new IllegalArgumentException("Cannot determine how to locate element");
     }
   }
 

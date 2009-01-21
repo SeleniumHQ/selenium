@@ -18,9 +18,12 @@ limitations under the License.
 package org.openqa.selenium;
 
 public enum How {
+  CLASS_NAME,
   ID,
   ID_OR_NAME,
   LINK_TEXT,
   NAME,
+  PARTIAL_LINK_TEXT,
+  TAG_NAME,
   XPATH,
 }
