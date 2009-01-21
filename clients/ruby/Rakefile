@@ -9,7 +9,7 @@ require 'rake/gempackagetask'
 require 'rake/rdoctask'
 
 require 'rubygems'
-gem "rspec", "1.1.11"
+gem "rspec", "1.1.12"
 require 'spec/rake/spectask'
 require 'selenium/rake/tasks'
 
@@ -27,7 +27,7 @@ else
 	SELENIUM_RC_JAR = Dir[File.dirname(__FILE__) + "/vendor/selenium-remote-control/selenium-server-*-standalone.jar"].first
 end
 
-raise "Invalid Selnium RC jar : '#{SELENIUM_RC_JAR}" unless File.exists?(SELENIUM_RC_JAR)
+raise "Invalid Selenium RC jar : '#{SELENIUM_RC_JAR}" unless File.exists?(SELENIUM_RC_JAR)
   
 task :default => :"test:unit"
 

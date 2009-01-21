@@ -17,16 +17,16 @@ unit_tests do
   test "example_hash is distinct when examples first backtrace entry is different" do
     strategy = Selenium::RSpec::Reporting::FilePathStrategy.new "report.html"
   
-    first_example = stub('example',:implementation_backtrace => [ "a", "c" ])
-    second_example = stub('example',:implementation_backtrace => [ "b", "c" ])
+    first_example = stub('example',:backtrace => [ "a", "c" ])
+    second_example = stub('example',:backtrace => [ "b", "c" ])
     assert strategy.example_hash(first_example) != strategy.example_hash(second_example)
   end
   
   test "example_hash is the same when examples first backtrace entry is identical" do
     strategy = Selenium::RSpec::Reporting::FilePathStrategy.new "report.html"
   
-    first_example = stub('example',:implementation_backtrace => [ "a", "b" ])
-    second_example = stub('example',:implementation_backtrace => [ "a", "c" ])
+    first_example = stub('example',:backtrace => [ "a", "b" ])
+    second_example = stub('example',:backtrace => [ "a", "c" ])
     assert_equal strategy.example_hash(first_example), 
                  strategy.example_hash(second_example)
   end

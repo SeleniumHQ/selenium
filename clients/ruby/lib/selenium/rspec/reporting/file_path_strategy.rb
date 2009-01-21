@@ -60,7 +60,7 @@ module Selenium
         end
 
         def example_hash(example)
-          Digest::MD5.hexdigest example.implementation_backtrace.first
+          Digest::MD5.hexdigest example.backtrace.first
         end
       
       end

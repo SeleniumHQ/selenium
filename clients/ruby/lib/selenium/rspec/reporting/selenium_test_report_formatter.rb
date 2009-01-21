@@ -6,7 +6,7 @@
 require "digest/md5"
 require "base64"
 require "rubygems"
-gem "rspec", "1.1.11"
+gem "rspec", "1.1.12"
 require "spec"
 require 'spec/runner/formatter/html_formatter'
 require File.expand_path(File.dirname(__FILE__) + "/file_path_strategy")

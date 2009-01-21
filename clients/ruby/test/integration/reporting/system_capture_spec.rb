@@ -5,7 +5,7 @@ describe "System Capture" do
 
   it "Retrieves remote control logs on local file system when no session is started" do
     FileUtils.rm_rf "/tmp/selenium_ruby_client"
-    example  = stub('example',:implementation_backtrace => [ "a line" ])
+    example  = stub('example',:backtrace => [ "a line" ])
     strategy = Selenium::RSpec::Reporting::FilePathStrategy.new "/tmp/selenium_ruby_client/test_report.html"
     class << strategy
       def example_hash(example)
@@ -22,7 +22,7 @@ describe "System Capture" do
     selenium_driver.start_new_browser_session
     
     FileUtils.rm_rf "/tmp/selenium_ruby_client"
-    example  = stub('example',:implementation_backtrace => [ "a line" ])
+    example  = stub('example',:backtrace => [ "a line" ])
     strategy = Selenium::RSpec::Reporting::FilePathStrategy.new "/tmp/selenium_ruby_client/test_report.html"
     class << strategy
       def example_hash(example)
@@ -36,7 +36,7 @@ describe "System Capture" do
   end
   
   it "Retrieving HTML Snapshot should not bomb when there is no session" do
-    example  = stub('example',:implementation_backtrace => [ "a line" ])
+    example  = stub('example',:backtrace => [ "a line" ])
     strategy = Selenium::RSpec::Reporting::FilePathStrategy.new "/tmp/selenium_ruby_client/test_report.html"
     system_capture = Selenium::RSpec::Reporting::SystemCapture.new selenium_driver, example, strategy
     system_capture.capture_html_snapshot
@@ -46,7 +46,7 @@ describe "System Capture" do
     selenium_driver.start_new_browser_session
   
     FileUtils.rm_rf "/tmp/selenium_ruby_client"
-    example  = stub('example',:implementation_backtrace => [ "a line" ])
+    example  = stub('example',:backtrace => [ "a line" ])
     strategy = Selenium::RSpec::Reporting::FilePathStrategy.new "/tmp/selenium_ruby_client/test_report.html"
     class << strategy
       def example_hash(example)
@@ -63,7 +63,7 @@ describe "System Capture" do
     selenium_driver.start_new_browser_session
   
     FileUtils.rm_rf "/tmp/selenium_ruby_client"
-    example  = stub('example',:implementation_backtrace => [ "a line" ])
+    example  = stub('example',:backtrace => [ "a line" ])
     strategy = Selenium::RSpec::Reporting::FilePathStrategy.new "/tmp/selenium_ruby_client/test_report.html"
     class << strategy
       def example_hash(example)
@@ -81,7 +81,7 @@ describe "System Capture" do
     page.open "http://localhost:4444/selenium-server/tests/html/test_form_events.html"
   
     FileUtils.rm_rf "/tmp/selenium_ruby_client"
-    example  = stub('example',:implementation_backtrace => [ "a line" ])
+    example  = stub('example',:backtrace => [ "a line" ])
     strategy = Selenium::RSpec::Reporting::FilePathStrategy.new "/tmp/selenium_ruby_client/test_report.html"
     class << strategy
       def example_hash(example)

@@ -1,5 +1,5 @@
 require 'rubygems'
-gem "rspec", "=1.1.11"
+gem "rspec", "=1.1.12"
 gem "selenium-client", ">=1.2.9"
 require "selenium/client"
 require "selenium/rspec/spec_helper"

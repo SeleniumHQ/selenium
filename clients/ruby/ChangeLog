@@ -1,50 +1,54 @@
                    Selenium-Client gem ChangeLog
                    =============================
 
+1.2.10 
+=======
 
-1.2.9
-=====
+ - Upgraded RSpec support to 1.1.12
+
+1.2.9 (2008-11-04)
+==================
 
  - Upgraded RSpec support to 1.1.11
  - Explicit gem versions in examples and README
  
-1.2.6
-=====
+1.2.6 (2008-10-03)
+==================
 
   - Upgraded RSpec support to 1.1.8
   
-1.2.5
-=====
+1.2.5 (2008-10-01)
+==================
 
   - Fixing reporting with DeepTest+RSpec
   
-1.2.4
-=====
+1.2.4 (2008-09-30)
+==================
 
   - Bug fix release
 
-1.2.3
-=====
+1.2.3 (2008-09-29)
+==================
 
   - Friendlier namespace to coexist with the selenium gem
   
-1.2.2
-=====
+1.2.2 (2008-09-29)
+==================
 
  - Bug fix release
 
-1.2.1
-=====
+1.2.1 (2008-09-28)
+==================
 
  - Bug fix release
  
-1.1
-===
+1.1 (2008-07-16)
+================
 
  - More idiomatic client API (work in progress)
  
-1.0
-===
+1.0 (2008-04-14)
+================
 
  - Standlone gem packaging
  - Allows stop to be called when no session were started

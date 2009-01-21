@@ -15,6 +15,8 @@ module Selenium
       # rendered text shown to the user.
       #
       # * 'locator' is an Selenium element locator
+      #
+      # TODO - Should be renamed 'text'
       def text_content(locator)
         string_command"getText", [locator,]
       end
@@ -43,6 +45,7 @@ module Selenium
           actual_timeout = timeout_in_seconds || default_timeout_in_seconds
         remote_control_command "waitForPageToLoad", [actual_timeout * 1000,]
       end
+      alias_method :wait_for_page_to_load, :wait_for_page
 
       # Flexible wait semantics. ait is happening browser side. Useful for testing AJAX application.
       #

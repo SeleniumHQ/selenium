@@ -216,6 +216,15 @@ Grid](http://selenium-grid.openqa.org))
 
  You can then get cool reports like [this one](http://ph7spot.com/examples/selenium_rspec_report.html)
 
+ To capture screenshots and logs on failures, also make sure you 
+ require the following files in your `spec_helper`:
+ 
+    require "rubygems"
+    require "spec"
+    require "selenium/client"
+    require "selenium/rspec/spec_helper"
+
+
 Contribute and Join the Fun!
 ============================
 

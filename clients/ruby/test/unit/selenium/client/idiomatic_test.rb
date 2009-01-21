@@ -20,10 +20,23 @@ unit_tests do
     assert_equal :the_location, client.location
   end
   
-  test "wait_for_page_to_load wait for a page to load, converting seconds timeout to milliseconds" do
+  test "wait_for_page wait for a page to load, converting seconds timeout to milliseconds" do
     client = Class.new { include Selenium::Client::Idiomatic }.new
     client.expects(:remote_control_command).with("waitForPageToLoad", [2000,])
     client.wait_for_page 2
+  end
+
+  test "wait_for_page wait for a page to load use default timeout when none is specified" do
+    client = Class.new { include Selenium::Client::Idiomatic }.new
+    client.expects(:remote_control_command).with("waitForPageToLoad", [7000,])
+    client.stubs(:default_timeout_in_seconds).returns(7)
+    client.wait_for_page
+  end
+
+  test "wait_for_page_to_load is an alias for wait_for_page providing easy transition to people used to the old API" do
+    client = Class.new { include Selenium::Client::Idiomatic }.new
+    client.expects(:remote_control_command).with("waitForPageToLoad", [24000,])
+    client.wait_for_page_to_load 24
   end
 
   test "wait_for_page_to_load wait for a page to load use default timeout when none is specified" do
