@@ -42,14 +42,24 @@ module Selenium
       # * 'timeout_in_seconds' is a timeout in seconds, after which this 
       #   command will return with an error
       def wait_for_page(timeout_in_seconds=nil)
-          actual_timeout = timeout_in_seconds || default_timeout_in_seconds
+        actual_timeout = timeout_in_seconds || default_timeout_in_seconds
         remote_control_command "waitForPageToLoad", [actual_timeout * 1000,]
       end
       alias_method :wait_for_page_to_load, :wait_for_page
 
+      # Waits for a popup window to appear and load up.
+      #
+      # window_id is the JavaScript window "name" of the window that will appear (not the text of the title bar)
+      # timeout_in_seconds is a timeout in seconds, after which the action will return with an error
+      def wait_for_popup(window_id, timeout_in_seconds=nil)
+        actual_timeout = timeout_in_seconds || default_timeout_in_seconds
+        remote_control_command("waitForPopUp", [window_id, actual_timeout * 1000 ,])
+      end
+
       # Flexible wait semantics. ait is happening browser side. Useful for testing AJAX application.
       #
       # * wait :wait_for => :page                                       # will wait for a new page to load
+      # * wait :wait_for => :popup, :window => 'a window id'            # will wait for a new popup window to appear. Also selects the popup window for you provide `:select => true`
       # * wait :wait_for => :ajax                                       # will wait for all ajax requests to be completed (Prototype only)
       # * wait :wait_for => :effects                                    # will wait for all Prototype effects to be rendered
       # * wait :wait_for => :element, :element => 'new_element_id'      # will wait for an element to be present/appear
@@ -75,6 +85,9 @@ module Selenium
 	          wait_for_no_text options[:text], options[:timeout_in_seconds]
 	      elsif options[:wait_for] == :effects
 	          wait_for_effects options[:timeout_in_seconds]
+	      elsif options[:wait_for] == :popup
+	          wait_for_popup options[:window], options[:timeout_in_seconds]
+	          select_window options[:window] if options[:select]
 	      elsif options[:wait_for] == :condition
 	          wait_for_condition options[:javascript], options[:timeout_in_seconds]
         end
@@ -93,6 +106,7 @@ module Selenium
       # click. e.g.
       #
       # * click 'some_id', :wait_for => :page                                        # will wait for a new page to load
+      # * click 'some_id', :wait_for => :popup, :window => 'a window id'             # will wait for a new popup window to appear. Also selects the popup window for you provide `:select => true`
       # * click 'some_id', :wait_for => :ajax                                        # will wait for all ajax requests to be completed (Prototype only)
       # * click 'some_id', :wait_for => :effects                                     # will wait for all Prototype effects to be rendered
       # * click 'some_id', :wait_for => :element, :element => 'new_element_id'       # will wait for an element to be present/appear
@@ -337,6 +351,23 @@ module Selenium
 		      options = ordered_keys.collect {|key| "#{key}=#{options[key]}" }.join(", ")
 		    end
         remote_control_command "deleteCookie", [name,options,]
+      end
+
+      # Returns the IDs of all windows that the browser knows about.
+      def all_window_ids
+        string_array_command "getAllWindowIds"
+      end
+
+
+      # Returns the names of all windows that the browser knows about.
+      def all_window_names
+        string_array_command "getAllWindowNames"
+      end
+
+
+      # Returns the titles of all windows that the browser knows about.
+      def all_window_titles
+        string_array_command "getAllWindowTitles"
       end
 
     end

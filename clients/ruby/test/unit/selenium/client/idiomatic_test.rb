@@ -46,6 +46,25 @@ unit_tests do
     client.wait_for_page
   end
 
+  test "wait_for_popup returns the result of the waitForPopUp command" do
+    client = Class.new { include Selenium::Client::Idiomatic }.new
+    client.expects(:remote_control_command).with("waitForPopUp", [:the_window_id, 0]).returns(:the_value)
+    assert_equal :the_value, client.wait_for_popup(:the_window_id, 0)
+  end
+
+  test "wait_for_popup convert the timeout from seconds to milliseconds" do
+    client = Class.new { include Selenium::Client::Idiomatic }.new
+    client.expects(:remote_control_command).with("waitForPopUp", [:the_window_id, 3000]).returns(:the_value)
+    assert_equal :the_value, client.wait_for_popup(:the_window_id, 3)
+  end
+  
+  test "wait_for_popup use default timeout when none is specified" do
+    client = Class.new { include Selenium::Client::Idiomatic }.new
+    client.expects(:remote_control_command).with("waitForPopUp", [:the_window_id, 7000]).returns(:the_value)
+    client.stubs(:default_timeout_in_seconds).returns(7)
+    client.wait_for_popup :the_window_id
+  end
+
   test "wait_for_condition wait for a page to load use default timeout when none is specified" do
     client = Class.new { include Selenium::Client::Idiomatic }.new
     client.expects(:remote_control_command).with("waitForCondition", ["some javascript", 7000,])
@@ -60,26 +79,7 @@ unit_tests do
     client.wait_for_condition "some javascript", 24
   end
   
-  test "body_text returns the result of the getBodyText command" do
-    client = Class.new { include Selenium::Client::Idiomatic }.new
-    client.expects(:string_command).with("getBodyText").returns(:the_text)
-    assert_equal :the_text, client.body_text
-  end
-
-  test "click just clicks on an element when no options are given" do
-    client = Class.new { include Selenium::Client::Idiomatic }.new
-    client.expects(:remote_control_command).with("click", [:the_locator,])
-    client.click :the_locator
-  end
-
-  test "click calls wait_for with options provided" do
-    client = Class.new { include Selenium::Client::Idiomatic }.new
-    client.expects(:remote_control_command).with("click", [:the_locator,])
-    client.expects(:wait_for).with(:wait_for => :page)
-    client.click :the_locator, :wait_for => :page
-  end
-
-  test "wait does nothing when no options are given" do
+  test "wait_for does nothing when no options are given" do
     client = Class.new { include Selenium::Client::Idiomatic }.new
     client.expects(:remote_control_command).never
     client.wait_for({})
@@ -167,10 +167,55 @@ unit_tests do
     client.wait_for :wait_for => :effects, :timeout_in_seconds => :the_timeout
   end
 
+  test "wait_for waits for popup to appear when popup option is provided" do
+    client = Class.new { include Selenium::Client::Idiomatic }.new
+    client.expects(:wait_for_popup).with(:the_window_id, nil)
+    client.wait_for :wait_for => :popup, :window => :the_window_id
+  end
+
+  test "wait_for for popup uses explicit timeout when provided" do
+    client = Class.new { include Selenium::Client::Idiomatic }.new
+    client.expects(:wait_for_popup).with(:the_window_id, :the_timeout)
+    client.wait_for :wait_for => :popup, :window => :the_window_id, :timeout_in_seconds => :the_timeout
+  end
+
+  test "wait_for for popup also selects the popup when the select option is true" do
+    client = Class.new { include Selenium::Client::Idiomatic }.new
+    client.expects(:wait_for_popup).with(:the_window_id, nil)
+    client.expects(:select_window).with(:the_window_id)
+    client.wait_for :wait_for => :popup, :window => :the_window_id, :select => true
+  end
+
+  test "wait_for for popup does not select the popup when the select option is false" do
+    client = Class.new { include Selenium::Client::Idiomatic }.new
+    client.expects(:wait_for_popup).with(:the_window_id, nil)
+    client.expects(:select_window).with(:the_window_id).never
+    client.wait_for :wait_for => :popup, :window => :the_window_id
+  end
+
   test "wait_for waits for some javascript to be true when condition option is provided" do
     client = Class.new { include Selenium::Client::Idiomatic }.new
     client.expects(:wait_for_condition).with("some javascript", nil)
     client.wait_for :wait_for => :condition, :javascript => "some javascript"
+  end
+
+  test "body_text returns the result of the getBodyText command" do
+    client = Class.new { include Selenium::Client::Idiomatic }.new
+    client.expects(:string_command).with("getBodyText").returns(:the_text)
+    assert_equal :the_text, client.body_text
+  end
+
+  test "click just clicks on an element when no options are given" do
+    client = Class.new { include Selenium::Client::Idiomatic }.new
+    client.expects(:remote_control_command).with("click", [:the_locator,])
+    client.click :the_locator
+  end
+
+  test "click calls wait_for with options provided" do
+    client = Class.new { include Selenium::Client::Idiomatic }.new
+    client.expects(:remote_control_command).with("click", [:the_locator,])
+    client.expects(:wait_for).with(:wait_for => :page)
+    client.click :the_locator, :wait_for => :page
   end
 
   test "value returns the result of the getValue command" do
@@ -307,6 +352,23 @@ unit_tests do
     client.expects(:remote_control_command).with("deleteCookie", [:the_name, "domain=.foo.com, max_age=60"]).returns(:the_value)
     assert_equal :the_value, client.delete_cookie(:the_name, {:max_age => 60, :domain => ".foo.com"})
   end
+  
+  test "all_window_ids returns the result of the getAllWindowIds command" do
+    client = Class.new { include Selenium::Client::Idiomatic }.new
+    client.expects(:string_array_command).with("getAllWindowIds").returns(:the_value)
+    assert_equal :the_value, client.all_window_ids
+  end
 
+  test "all_window_names returns the result of the getAllWindowNames command" do
+    client = Class.new { include Selenium::Client::Idiomatic }.new
+    client.expects(:string_array_command).with("getAllWindowNames").returns(:the_value)
+    assert_equal :the_value, client.all_window_names
+  end
 
+  test "all_window_titles returns the result of the getAllWindowTitles command" do
+    client = Class.new { include Selenium::Client::Idiomatic }.new
+    client.expects(:string_array_command).with("getAllWindowTitles").returns(:the_value)
+    assert_equal :the_value, client.all_window_titles
+  end
+  
 end

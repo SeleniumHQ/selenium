@@ -19,7 +19,7 @@ module Selenium
         remote_control_command(verb, args)
       end
     
-      def string_array_command(verb, args)
+      def string_array_command(verb, args=[])
         csv = string_command(verb, args)
         token = ""
         tokens = []
