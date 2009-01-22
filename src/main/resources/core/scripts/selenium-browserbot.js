@@ -367,10 +367,10 @@ BrowserBot.prototype.selectFrame = function(target) {
         target = target.substr(6);
         var frame = this.getCurrentWindow().frames[target];
         if (frame == null) {
-            throw new SeleniumError("Not found: frames["+index+"]");
+            throw new SeleniumError("Not found: frames["+target+"]");
         }
         if (!frame.document) {
-            throw new SeleniumError("frames["+index+"] is not a frame");
+            throw new SeleniumError("frames["+target+"] is not a frame");
         }
         this.currentWindow = frame;
         this.isSubFrameSelected = true;
