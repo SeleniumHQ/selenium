@@ -75,7 +75,17 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
         assertThat(textArea.isEnabled(), is(false));
     }
 
-	@Ignore(SAFARI)
+    public void testShouldIndicateWhenASelectIsDisabled() {
+      driver.get(formPage);
+
+      WebElement enabled = driver.findElement(By.name("selectomatic"));
+      WebElement disabled = driver.findElement(By.name("no-select"));
+
+      assertTrue(enabled.isEnabled());
+      assertFalse(disabled.isEnabled());
+    }
+
+        @Ignore(SAFARI)
     public void testShouldReturnTheValueOfCheckedForACheckboxEvenIfItLacksThatAttribute() {
         driver.get(formPage);
         WebElement checkbox = driver.findElement(By.xpath("//input[@id='checky']"));

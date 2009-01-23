@@ -284,13 +284,7 @@ public class HtmlUnitWebElement implements WebElement,
     }
 
     public boolean isEnabled() {
-        if (element instanceof HtmlInput)
-            return !((HtmlInput) element).isDisabled();
-
-        if (element instanceof HtmlTextArea)
-            return !((HtmlTextArea) element).isDisabled();
-
-        return true;
+      return !element.hasAttribute("disabled");
     }
 
     // This isn't very pretty. Sorry.
