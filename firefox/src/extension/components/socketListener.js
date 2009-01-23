@@ -216,7 +216,8 @@ SocketListener.prototype.executeCommand = function() {
         var info = {
             webProgress: loadGroup,
             command: command,
-            driver: driver
+            driver: driver,
+            onBlank: false
         };
 
         this.data = "";
@@ -226,26 +227,34 @@ SocketListener.prototype.executeCommand = function() {
 
         var wait = function(info) {
             if (info.webProgress.isPending()) {
-                info.driver.window.setTimeout(wait, 10, info);
+                info.driver.window.setTimeout(wait, 100, info);
             } else {
-                try {
-                    respond.commandName = info.command.commandName;
-                    info.driver[info.command.commandName](respond, info.command.parameters);
-                } catch (e) {
-                    var obj = {
-                      fileName : e.fileName,
-                      lineNumber : e.lineNumber,
-                      message : e.message,
-                      name : e.name,
-                      stack : e.stack  
-                    };
-                    var message = "Exception caught by driver: " + info.command.commandName + "(" + info.command.parameters + ")\n" + e;
-                    Utils.dumpn(message);
-                    Utils.dump(e);
-                    respond.isError = true;
-                    respond.context = info.driver.context;
-                    respond.response = obj;
-                    respond.send();
+                // Ugh! New windows open on "about:blank" before going to their destination
+                // URL. This check attempts to tell the difference between a newly opened
+                // window and someone actually wanting to do something on about:blank.
+                if (info.driver.window.location == "about:blank" && !info.onBlank) {
+                  info.onBlank = true;
+                  info.driver.window.setTimeout(wait, 100, info);
+                } else {
+                  try {
+                      respond.commandName = info.command.commandName;
+                      info.driver[info.command.commandName](respond, info.command.parameters);
+                  } catch (e) {
+                      var obj = {
+                        fileName : e.fileName,
+                        lineNumber : e.lineNumber,
+                        message : e.message,
+                        name : e.name,
+                        stack : e.stack
+                      };
+                      var message = "Exception caught by driver: " + info.command.commandName + "(" + info.command.parameters + ")\n" + e;
+                      Utils.dumpn(message);
+                      Utils.dump(e);
+                      respond.isError = true;
+                      respond.context = info.driver.context;
+                      respond.response = obj;
+                      respond.send();
+                  }
                 }
             }
         }
