@@ -48,7 +48,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
         assertThat(inputElement.getAttribute("disabled"), equalTo("false"));
     }
 
-    @Ignore({HTMLUNIT, IE, SAFARI})
+    @Ignore({IE, SAFARI})
     public void testShouldReturnTheValueOfTheIndexAttrbuteEvenIfItIsMissing() {
         driver.get(formPage);
 

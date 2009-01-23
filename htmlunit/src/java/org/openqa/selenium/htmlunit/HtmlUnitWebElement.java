@@ -227,6 +227,18 @@ public class HtmlUnitWebElement implements WebElement,
         if ("checked".equals(lowerName)) {
             return (value.equalsIgnoreCase("checked") ? "true" : "false");
         }
+        if ("index".equals(lowerName) && element instanceof HtmlOption) {
+          HtmlSelect select = ((HtmlOption) element).getEnclosingSelect();
+          List<HtmlOption> allOptions = select.getOptions();
+          for (int i = 0; i < allOptions.size(); i++) {
+            HtmlOption option = select.getOption(i);
+            if (element.equals(option)) {
+              return String.valueOf(i);
+            }
+          }
+
+          return null;
+        }
 
         if (!"".equals(value))
             return value;
