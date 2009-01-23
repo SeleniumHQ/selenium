@@ -123,10 +123,6 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
 
         extension = connectTo(binary, profile, "localhost");
 
-        if (!extension.isConnected()) {
-            throw new RuntimeException("Unable to connect to Firefox.");
-        }
-
         fixId();
     }
 

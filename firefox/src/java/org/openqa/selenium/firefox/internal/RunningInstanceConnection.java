@@ -29,8 +29,7 @@ public class RunningInstanceConnection extends AbstractExtensionConnection {
 
     public RunningInstanceConnection(String host, int port, long timeOut) throws IOException {
         setAddress(host, port);
-        if (!connectToBrowser(timeOut))
-            throw new ConnectException("Cannot connect to browser");
+        connectToBrowser(timeOut);
     }
 
     public void quit() {

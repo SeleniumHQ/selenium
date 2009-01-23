@@ -23,6 +23,7 @@ import org.json.JSONObject;
 import org.openqa.selenium.firefox.Command;
 import org.openqa.selenium.firefox.ExtensionConnection;
 import org.openqa.selenium.firefox.Response;
+import org.openqa.selenium.firefox.NotConnectedException;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -93,7 +94,7 @@ public abstract class AbstractExtensionConnection implements ExtensionConnection
             return localIp6;
 
         // Nothing found. Grab the first address we can find
-        NetworkInterface firstInterface = null;
+        NetworkInterface firstInterface;
         try {
             firstInterface = NetworkInterface.getNetworkInterfaces().nextElement();
         } catch (SocketException e) {
@@ -110,7 +111,7 @@ public abstract class AbstractExtensionConnection implements ExtensionConnection
         throw new RuntimeException("Unable to find loopback address for localhost");
     }
 
-    protected boolean connectToBrowser(long timeToWaitInMilliSeconds) throws IOException {
+    protected void connectToBrowser(long timeToWaitInMilliSeconds) throws IOException {
         long waitUntil = System.currentTimeMillis() + timeToWaitInMilliSeconds;
         while (!isConnected() && waitUntil > System.currentTimeMillis()) {
             try {
@@ -123,7 +124,10 @@ public abstract class AbstractExtensionConnection implements ExtensionConnection
                 }
             }
         }
-        return isConnected();
+
+        if (!isConnected()) {
+          throw new NotConnectedException(timeToWaitInMilliSeconds);
+        }
     }
 
     private void connect() throws IOException {
