@@ -190,8 +190,16 @@ public class TestSuiteBuilder {
       return method.getName().equals(testMethodName);
     }
 
-    if (!method.getName().startsWith("test")) {
-      return false;
+    Ignore ignore = method.getAnnotation(Ignore.class);
+    for (Ignore.Driver name : ignored) {
+      if (isIgnored(name, ignore)) {
+        if (isIgnored(name, ignore)) {
+          System.err.println("Ignoring: "
+              + method.getDeclaringClass() + "."
+              + method.getName() + ": " + ignore.reason());
+          return false;
+        }
+      }
     }
 
     if (!includeJavascript
@@ -199,22 +207,14 @@ public class TestSuiteBuilder {
       return false;
     }
 
-    Ignore ignore = method.getAnnotation(Ignore.class);
-    if (ignore != null) {
-      for (Ignore.Driver name : ignored) {
-        if (isIgnored(name, ignore)) {
-          System.err.println("Ignoring: "
-                             + method.getDeclaringClass() + "."
-                             + method.getName() + ": " + ignore.reason());
-          return false;
-        }
-      }
-    }
-
-    return true;
+    return method.getName().startsWith("test") || method.getAnnotation(org.junit.Test.class) != null;
   }
 
   private boolean isIgnored(Ignore.Driver name, Ignore ignore) {
+    if (ignore == null) {
+      return false;
+    }
+
     if (ignore.value().length == 0) {
       return true;
     }
