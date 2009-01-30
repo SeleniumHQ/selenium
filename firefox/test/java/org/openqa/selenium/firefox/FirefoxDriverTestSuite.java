@@ -17,14 +17,19 @@ limitations under the License.
 
 package org.openqa.selenium.firefox;
 
+import static org.openqa.selenium.Ignore.Driver.FIREFOX;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
-import static org.openqa.selenium.Ignore.Driver.*;
+
 import org.openqa.selenium.TestSuiteBuilder;
 
 public class FirefoxDriverTestSuite extends TestCase {
-
   public static Test suite() throws Exception {
+    
+    System.setProperty("webdriver.firefox.development", "true");
+//  System.setProperty("webdriver.firefox.useExisting", "true");
+    
     return new TestSuiteBuilder()
         .addSourceDir("firefox")
         .addSourceDir("common")

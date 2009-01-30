@@ -22,8 +22,6 @@ window.addEventListener("load", function(e) {
     handle = Components.classes["@googlecode.com/webdriver/fxdriver;1"].createInstance(Components.interfaces.nsISupports);
     var server = handle.wrappedJSObject;
 
-    server.startListening();
-
     if (!driver) {
         driver = server.newDriver(window);
     } else {
@@ -55,6 +53,9 @@ window.addEventListener("load", function(e) {
             }
         }
     }
+    
+    server.startListening();
+
 }, true);
 
 //window.addEventListener("focus", function(e) {
