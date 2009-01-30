@@ -17,6 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.firefox.internal;
 
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.ExtensionConnection;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxProfile;
@@ -25,22 +26,21 @@ import java.io.IOException;
 
 public class ExtensionConnectionFactory {
     public static ExtensionConnection connectTo(FirefoxBinary binary, FirefoxProfile profile, String host) {
+      final int profilePort = profile.getPort();
         boolean isDev = Boolean.getBoolean("webdriver.firefox.useExisting");
         if (isDev) {
             try {
-                return new RunningInstanceConnection(host, profile.getPort());
+                return new RunningInstanceConnection(host, profilePort);
             } catch (IOException e) {
                 // Fine. No running instance
             }
         }
 
         try {
-          return new NewProfileExtensionConnection(binary, profile, host);
+          Lock lock = new SocketLock(profilePort - 1);
+          return new NewProfileExtensionConnection(lock, binary, profile, host);
         } catch (Exception e) {
-          // Tell the world what went wrong
-          e.printStackTrace();
+          throw new WebDriverException(e);
         }
-
-        return new DisconnectedExtension();
     }
 }

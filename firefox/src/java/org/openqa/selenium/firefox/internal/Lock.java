@@ -17,21 +17,9 @@ limitations under the License.
 
 package org.openqa.selenium.firefox.internal;
 
-import org.openqa.selenium.firefox.Command;
-import org.openqa.selenium.firefox.ExtensionConnection;
-import org.openqa.selenium.firefox.Response;
+import java.util.concurrent.TimeUnit;
 
-public class DisconnectedExtension implements ExtensionConnection {
-    public boolean isConnected() {
-        return false;
-    }
-
-
-    public Response sendMessageAndWaitForResponse(Class<? extends RuntimeException> throwOnFailure, Command command) {
-        throw new UnsupportedOperationException("Cannot execute " + command.getCommandName() + " on a disconnected extension");
-    }
-
-    public void quit() {
-        // no-op
-    }
+public interface Lock {
+  void lock(long time, TimeUnit unit);
+  void unlock();
 }

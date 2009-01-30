@@ -28,67 +28,30 @@ import java.io.IOException;
 import java.net.BindException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.concurrent.TimeUnit;
 
 public class NewProfileExtensionConnection extends AbstractExtensionConnection {
-  private static long TIMEOUT_IN_SECONDS = 20;
-  private static long MILLIS_IN_SECONDS = 1000;
+  private static long TIMEOUT = 45;
+  private static TimeUnit TIMEOUT_UNITS = TimeUnit.SECONDS;
   private FirefoxBinary process;
-  private Socket lockSocket;
   private FirefoxProfile profile;
 
-  public NewProfileExtensionConnection(FirefoxBinary binary, FirefoxProfile profile, String host) throws IOException {
+  public NewProfileExtensionConnection(Lock lock, FirefoxBinary binary, FirefoxProfile profile, String host) throws IOException {
     this.profile = profile;
-    getLock(profile.getPort());
-        try {
-          int portToUse = determineNextFreePort(host, profile.getPort());
-
-          process = new FirefoxLauncher(binary).startProfile(profile, portToUse);
-
-          setAddress(host, portToUse);
-
-          connectToBrowser(TIMEOUT_IN_SECONDS * MILLIS_IN_SECONDS);
-        } finally {
-          releaseLock();
-        }
-    }
-
-    protected void getLock(int port) throws IOException {
-    InetSocketAddress address = getAddressForLock(port);
-
-    lockSocket = new Socket();
-    long maxWait = System.currentTimeMillis() + 45000;  // 45 seconds
-
-    while (System.currentTimeMillis() < maxWait) {
-      try {
-        if (isLockFree(address))
-          return;
-        Thread.sleep(500);
-      } catch (InterruptedException e) {
-        throw new RuntimeException(e);
-      }
-    }
-
-    throw new IOException("Unable to bind to locking port");
-  }
-
-  protected InetSocketAddress getAddressForLock(int port) {
-    int lockPort = port - 1;
-    return new InetSocketAddress("localhost", lockPort);
-  }
-
-  private boolean isLockFree(InetSocketAddress address) throws IOException {
+    lock.lock(TIMEOUT, TIMEOUT_UNITS);
     try {
-      lockSocket.bind(address);
-      return true;
-    } catch (BindException e) {
-      return false;
+      int portToUse = determineNextFreePort(host, profile.getPort());
+
+      process = new FirefoxLauncher(binary).startProfile(profile, portToUse);
+
+      setAddress(host, portToUse);
+
+      connectToBrowser(TIMEOUT_UNITS.toMillis(TIMEOUT));
+    } finally {
+      lock.unlock();
     }
   }
 
-  protected void releaseLock() throws IOException {
-    if (lockSocket != null && lockSocket.isBound())
-      lockSocket.close();
-  }  
 
   protected int determineNextFreePort(String host, int port) throws IOException {
     // Attempt to connect to the given port on the host
