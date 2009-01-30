@@ -37,19 +37,10 @@ typedef struct StringWrapper StringWrapper;
 struct ElementCollection;
 typedef struct ElementCollection ElementCollection;
 
-// String manipulation functions
-EXPORT int wdStringLength(StringWrapper* string, int* length);
-EXPORT int wdFreeString(StringWrapper* string);
-EXPORT int wdCopyString(StringWrapper* source, int length, wchar_t* dest);
-
-// Element collection functions
-EXPORT int wdcGetCollectionLength(ElementCollection* collection, int* length);
-EXPORT int wdcGetElementAtIndex(ElementCollection* collection, int index, WebElement** result);
-
-// Element manipulation functions
+// Memory management functions
+EXPORT int wdNewDriverInstance(WebDriver** result);
+EXPORT int wdFreeDriver(WebDriver* driver);
 EXPORT int wdeFreeElement(WebElement* element);
-
-// Driver manipulation functions
 
 
 // WebDriver functions
@@ -63,6 +54,7 @@ EXPORT int wdSetVisible(WebDriver* driver, int value);
 EXPORT int wdGetCurrentUrl(WebDriver* driver, StringWrapper** result);
 EXPORT int wdGetTitle(WebDriver* driver, StringWrapper** result);
 
+
 // Element functions
 EXPORT int wdeClick(WebElement* element);
 EXPORT int wdeGetAttribute(WebElement* element, const wchar_t* string, StringWrapper** result);
@@ -70,6 +62,7 @@ EXPORT int wdeGetText(WebElement* element, StringWrapper** result);
 EXPORT int wdeIsDisplayed(WebElement* element, int* result);
 EXPORT int wdeSendKeys(WebElement* element, const wchar_t* text);
 EXPORT int wdeSubmit(WebElement* element);
+
 
 // Element locating functions
 EXPORT int wdFindElementById(WebDriver* driver, WebElement* element, const wchar_t* id, WebElement** result);
@@ -87,6 +80,22 @@ EXPORT int wdFindElementsByLinkText(WebDriver* driver, WebElement* element, cons
 EXPORT int wdFindElementByXPath(WebDriver* driver, WebElement* element, const wchar_t* xpath, WebElement** result);
 EXPORT int wdFindElementsByXPath(WebDriver* driver, WebElement* element, const wchar_t* xpath, ElementCollection** result);
 
+
+// Element collection functions
+EXPORT int wdcGetCollectionLength(ElementCollection* collection, int* length);
+EXPORT int wdcGetElementAtIndex(ElementCollection* collection, int index, WebElement** result);
+
+
+// String manipulation functions
+EXPORT int wdStringLength(StringWrapper* string, int* length);
+EXPORT int wdFreeString(StringWrapper* string);
+EXPORT int wdCopyString(StringWrapper* source, int length, wchar_t* dest);
+
+
+// Bridging function, as we migrate to the New World
+class InternetExplorerDriver;
+int nastyBridgingFunction(InternetExplorerDriver* driver, WebDriver** toReturn);
+int nastyBridgingFunction2(WebDriver* toReturn);
 
 #ifdef __cplusplus
 }

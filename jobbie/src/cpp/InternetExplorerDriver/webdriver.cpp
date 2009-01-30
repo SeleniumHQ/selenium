@@ -177,8 +177,12 @@ int wdGet(WebDriver* driver, wchar_t* url)
 int wdClose(WebDriver* driver)
 {
 	if (!driver || !driver->ie) return -1;
-	driver->ie->close();
-	return 0;
+
+	try {
+		driver->ie->close();
+		return 0;
+
+	} END_TRY
 }
 
 int wdSetVisible(WebDriver* driver, int value) 
@@ -210,6 +214,7 @@ int wdGetTitle(WebDriver* driver, StringWrapper** result)
 {
 	if (!driver || !driver->ie) return -1;
 
+	try {
 	const std::wstring originalString(driver->ie->getTitle());
 	size_t length = originalString.length() + 1;
 	wchar_t* toReturn = new wchar_t[length];
@@ -222,6 +227,7 @@ int wdGetTitle(WebDriver* driver, StringWrapper** result)
 	*result = res;
 
 	return 0;
+	} END_TRY;
 }
 
 int wdeClick(WebElement* element)
@@ -457,6 +463,21 @@ int wdFindElementsByXPath(WebDriver* driver, WebElement* element, const wchar_t*
 
 	*result = collection;
 
+	return 0;
+}
+
+// Never use me. Except when converting JNI code to call webdriver.h functions
+int nastyBridgingFunction(InternetExplorerDriver* driver, WebDriver** toReturn)
+{
+	WebDriver *d = new WebDriver();
+	d->ie = driver;
+	*toReturn = d;
+	return 0;
+}
+
+int nastyBridgingFunction2(WebDriver* toReturn) 
+{
+	delete toReturn;
 	return 0;
 }
 

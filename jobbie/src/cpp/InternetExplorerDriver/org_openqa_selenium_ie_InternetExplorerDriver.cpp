@@ -20,6 +20,7 @@ limitations under the License.
 
 #include "stdafx.h"
 #include "utils.h"
+#include "webdriver.h"
 
 using namespace std;
 
@@ -27,7 +28,7 @@ using namespace std;
 extern "C" {
 #endif
 
-	InternetExplorerDriver* g_pStillOpenedIE = NULL;
+InternetExplorerDriver* g_pStillOpenedIE = NULL;
 
 InternetExplorerDriver* createIE(JNIEnv *env, jobject& obj)
 {
@@ -60,6 +61,37 @@ InternetExplorerDriver* getIe(JNIEnv *env, jobject obj)
 	return NULL;
 }
 
+WebDriver* getDriver(JNIEnv *env, jobject obj) 
+{
+	InternetExplorerDriver* raw = getIe(env, obj);
+	WebDriver* toReturn;
+	nastyBridgingFunction(raw, &toReturn);
+	return toReturn;
+}
+
+jstring convertToJString(JNIEnv* env, StringWrapper* wrapper)
+{
+	int length;
+	int errCode = wdStringLength(wrapper, &length);
+	if (errCode != 0) {
+		cerr << "Unable to determine string length" << endl;
+		return NULL;
+	}
+
+	wchar_t* value = new wchar_t[length];
+	errCode = wdCopyString(wrapper, length, value);
+	if (errCode != 0) {
+		cerr << "Unable to copy string" << endl;
+		return NULL;
+	}
+
+	jstring toReturn = env->NewString((const jchar*) value, (jsize) ((length > 0) ? wcslen(value):length) );
+
+	delete[] value;
+	wdFreeString(wrapper);
+
+	return toReturn;
+}
 
 JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_doExecuteScript
   (JNIEnv *env, jobject obj, jstring script, jobjectArray args)
@@ -203,13 +235,11 @@ JNIEXPORT jstring JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_get
 JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_close
 (JNIEnv *env, jobject obj) 
 {
-	TRY
-	{
-	InternetExplorerDriver* wrapper = getIe(env, obj);
-	wrapper->close();
+	WebDriver* driver = getDriver(env, obj);
+	wdClose(driver);
+	nastyBridgingFunction2(driver);
+
 	g_pStillOpenedIE = NULL;
-	}
-	END_TRY_CATCH_ANY
 
 	return NULL;
 }
@@ -291,14 +321,12 @@ JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_get
 JNIEXPORT jstring JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_getTitle
   (JNIEnv *env, jobject obj)
 {
-	TRY
-	{
-	InternetExplorerDriver* ie = getIe(env, obj);
-	LPCWSTR text = ie->getTitle();
-	return lpcw2jstring(env, text);
-	}
-	END_TRY_CATCH_ANY
-	return NULL;
+	WebDriver* driver = getDriver(env, obj);
+	StringWrapper* wrapper;
+	wdGetTitle(driver, &wrapper);
+	nastyBridgingFunction2(driver);
+
+	return convertToJString(env, wrapper);
 }
 
 JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_deleteStoredObject
