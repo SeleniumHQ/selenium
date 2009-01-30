@@ -20,6 +20,7 @@ package org.openqa.selenium.firefox;
 import org.openqa.selenium.firefox.internal.Cleanly;
 import org.openqa.selenium.firefox.internal.FileHandler;
 import org.openqa.selenium.firefox.internal.ProfileReaper;
+import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -67,6 +68,16 @@ public class FirefoxProfile {
       this.reaper = reaper;
     }
 
+    /**
+     * Constructs a firefox profile from an existing, physical profile directory.
+     * Not a good idea, please don't.
+     * 
+     * <p>Users who need this functionality should be using a named profile.
+     * 
+     * @deprecated Prefer {@link ProfilesIni}
+     * @param profileDir
+     */
+    @Deprecated
     public FirefoxProfile(File profileDir) {
       this(ProfileReaper.getInstance());
       commonConstruction(profileDir);
