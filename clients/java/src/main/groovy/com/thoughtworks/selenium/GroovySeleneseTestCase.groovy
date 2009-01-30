@@ -18,9 +18,12 @@ class GroovySeleneseTestCase extends GroovyTestCase {
     }
     
     @Override
-    void setUp(String url = null, browserString = base.runtimeBrowserString()) {
+    void setUp(String url = null,
+        String browserString = base.runtimeBrowserString(),
+        int port = base.getDefaultPort())
+    {
         super.setUp()
-        base.setUp(url, browserString)
+        base.setUp(url, browserString, port)
         selenium = new GroovySelenium(base.selenium)
     }
     

@@ -88,29 +88,39 @@ public class SeleneseTestBase {
     }
 
     /**
-     * Creates a new DefaultSelenium object and starts it using the specified baseUrl and browser string
+     * Creates a new DefaultSelenium object and starts it using the specified
+     * baseUrl and browser string. The port is selected as follows: if the
+     * server package's RemoteControlConfiguration class is on the classpath,
+     * that class' default port is used. Otherwise, if the "server.port" system
+     * property is specified, that is used - failing that, the default of 4444
+     * is used.
+     *
+     * @see #setUp(String, String, int)
      * @param url the baseUrl for your tests
      * @param browserString the browser to use, e.g. *firefox
      * @throws Exception
      */
     public void setUp(String url, String browserString) throws Exception {
-        int port = getDefaultPort();
-        if (url==null) {
-            url = "http://localhost:" + port;
-        }
-        selenium = new DefaultSelenium("localhost", port, browserString, url);
-        selenium.start();
+        setUp(url, browserString, getDefaultPort());
     }
-
+    
     private int getDefaultPort() {
         try {
-            Class c = Class.forName("org.openqa.selenium.server.SeleniumServer");
+            Class c = Class.forName("org.openqa.selenium.server.RemoteControlConfiguration");
             Method getDefaultPort = c.getMethod("getDefaultPort", new Class[0]);
             Integer portNumber = (Integer)getDefaultPort.invoke(null, new Object[0]);
             return portNumber.intValue();
         } catch (Exception e) {
-            return 4444;
+            return Integer.getInteger("selenium.port", 4444).intValue();
         }
+    }
+
+    public void setUp(String url, String browserString, int port) {
+        if (url == null) {
+            url = "http://localhost:" + port;
+        }
+        selenium = new DefaultSelenium("localhost", port, browserString, url);
+        selenium.start();
     }
 
     /** Like assertTrue, but fails at the end of the test (during tearDown) */
