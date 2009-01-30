@@ -6,10 +6,10 @@ package com.thoughtworks.selenium
 class GroovySeleneseTestCase extends GroovyTestCase {
     static final BASE_METHODS = SeleneseTestBase.class.methods
     
-    def base
-    def defaultTimeout
-    
     protected selenium
+    
+    private SeleneseTestBase base
+    private int defaultTimeout
     
     GroovySeleneseTestCase() {
         super()
@@ -34,6 +34,8 @@ class GroovySeleneseTestCase extends GroovyTestCase {
     }
     
     void setDefaultTimeout(int timeout) {
+        assert selenium != null
+        
         defaultTimeout = timeout
         selenium.setDefaultTimeout(timeout)
     }

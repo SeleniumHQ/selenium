@@ -10,13 +10,13 @@ import java.util.regex.Pattern
 class GroovySelenium /* implements Selenium */ {
     static final PATTERN_AND_WAIT = Pattern.compile(/^(.+)AndWait$/)
     
-    def selenium
-    def defaultTimeout
-    def alwaysCaptureScreenshots
-    def captureScreenshotOnFailure
-    def screenshotDir
-    def generator
-    def screenshotCounter
+    private Selenium selenium
+    private int defaultTimeout
+    private boolean alwaysCaptureScreenshots
+    private boolean captureScreenshotOnFailure
+    private File screenshotDir
+    private generator
+    private int screenshotCounter
     
     GroovySelenium(Selenium selenium) {
         this.selenium = selenium
@@ -35,6 +35,7 @@ class GroovySelenium /* implements Selenium */ {
      */
     void setDefaultTimeout(int timeout) {
         defaultTimeout = timeout
+        selenium.setTimeout("${timeout}")
     }
     
     /**
