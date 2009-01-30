@@ -270,7 +270,7 @@ Selenium.prototype.doClick = function(locator) {
             }
             
             return false;
-        }, Selenium.DEFAULT_TIMEOUT);
+        }, this.defaultTimeout);
     }
     
     this.browserbot.clickElement(element);
