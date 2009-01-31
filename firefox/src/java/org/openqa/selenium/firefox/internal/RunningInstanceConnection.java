@@ -20,7 +20,6 @@ package org.openqa.selenium.firefox.internal;
 import org.openqa.selenium.firefox.Command;
 
 import java.io.IOException;
-import java.net.ConnectException;
 
 public class RunningInstanceConnection extends AbstractExtensionConnection {
     public RunningInstanceConnection(String host, int port) throws IOException {
