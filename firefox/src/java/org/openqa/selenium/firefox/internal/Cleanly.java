@@ -22,8 +22,19 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
+import java.nio.channels.Channel;
 
 public class Cleanly {
+  public static void close(Channel toClose) {
+    if (toClose == null) return;
+    
+    try {
+      toClose.close();
+    } catch (IOException e) {
+      // nothing that cna done. Ignoring.
+    }
+  }
+  
   public static void close(InputStream toClose) {
     if (toClose == null) return;
 
