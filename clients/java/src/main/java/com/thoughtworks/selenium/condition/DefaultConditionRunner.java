@@ -34,9 +34,6 @@ import java.util.logging.Logger;
  */
 public class DefaultConditionRunner implements ConditionRunner {
 
-    private static final Logger logger =
-            Logger.getLogger(DefaultConditionRunner.class.getName());
-
     private final Monitor monitor;
     private final Selenium selenium;
     private final int initialDelay;
@@ -49,7 +46,7 @@ public class DefaultConditionRunner implements ConditionRunner {
      * @param initialDelay (in millis) how long to wait before the initial test of the condition
      * @param interval (in millis) when waiting for a condition, how long to wait
      *                 between calls to
-     *                 {@link Condition#isTrue(com.google.testing.selenium.condition.ConditionRunner.Context)}
+     *                 {@link Condition#isTrue(com.thoughtworks.selenium.condition.ConditionRunner.Context)}
      * @param timeout  (in millis) when waiting for a condition, how long to wait
      *                 until we give up.
      */
@@ -66,7 +63,7 @@ public class DefaultConditionRunner implements ConditionRunner {
      *                 this runner.
      * @param interval (in millis) when waiting for a condition, how long to wait
      *                 between calls to
-     *                 {@link Condition#isTrue(com.google.testing.selenium.condition.ConditionRunner.Context)}
+     *                 {@link Condition#isTrue(com.thoughtworks.selenium.condition.ConditionRunner.Context)}
      * @param timeout  (in millis) when waiting for a condition, how long to wait
      *                 until we give up.
      */
@@ -116,10 +113,12 @@ public class DefaultConditionRunner implements ConditionRunner {
         /**
          * Called whenever a {@link DefaultConditionRunner#waitFor(Condition)} is
          * successful (i.e.
-         * {@link Condition#isTrue(com.google.testing.selenium.condition.ConditionRunner.Context)}
+         * {@link Condition#isTrue(com.thoughtworks.selenium.condition.ConditionRunner.Context)}
          * returned true within the timeout}.
          */
         void conditionWasReached(ConditionRunner.Context context, Condition condition);
+
+		void conditionFailed(ConditionRunner.Context context, Condition condition, String message);
     }
 
     /**
@@ -128,13 +127,44 @@ public class DefaultConditionRunner implements ConditionRunner {
      * {@inheritDoc}
      */
     public static final class NoOpMonitor implements Monitor {
+    	
+        public void waitHasBegun(ConditionRunner.Context context, Condition condition) {
+        }
+
         public void conditionWasReached(ConditionRunner.Context context, Condition condition) {
         }
 
-        public void waitHasBegun(ConditionRunner.Context context, Condition condition) {
-        }
+        public void conditionFailed(Context context, Condition condition, String message) {			
+		}
     }
 
+
+    /**
+     * A Log4j implementation of {@link Monitor}.
+     * <p/>
+     * {@inheritDoc}
+     */
+    public static final class Log4jMonitor implements Monitor {
+    	private static final Logger logger =
+              Logger.getLogger(DefaultConditionRunner.class.getName());
+
+        public void conditionWasReached(ConditionRunner.Context context, Condition condition) {
+        	log("Reached "+condition.toString());
+        }
+
+        public void waitHasBegun(ConditionRunner.Context context, Condition condition) {
+            log("Waiting for "+condition.toString());
+        }
+
+		public void conditionFailed(ConditionRunner.Context context, Condition condition, String message) {
+			log(message);
+		}
+
+        protected void log(String message) {
+        	logger.info(new Date() + " - " + message);
+        }
+
+    }
 
     public void waitFor(Condition condition) {
         waitFor("", condition);
@@ -144,11 +174,9 @@ public class DefaultConditionRunner implements ConditionRunner {
         ContextImpl context = new ContextImpl();
         try {
             monitor.waitHasBegun(context, condition);
-            context.say("Waiting for");
             threadSleep(initialDelay);
             while (context.elapsed() < context.timeout()) {
                 if (condition.isTrue(context)) {
-                    context.reached(condition);
                     monitor.conditionWasReached(context, condition);
                     return;
                 }
@@ -158,7 +186,9 @@ public class DefaultConditionRunner implements ConditionRunner {
             throwAssertionException("Exception while waiting for '" + condition.toString() + "'", e);
         }
         // Note that AssertionFailedError will pass right through
-        context.fail(narrative, condition);
+        String message = context.failureMessage(narrative, condition);
+		monitor.conditionFailed(context, condition, message);
+        throwAssertionException(message);
     }
 
     private void threadSleep(int interval) {
@@ -209,31 +239,19 @@ public class DefaultConditionRunner implements ConditionRunner {
             return DefaultConditionRunner.this;
         }
 
-        private void fail(Condition condition) {
-            fail("", condition);
-        }
-
-        private void fail(String narrative, Condition condition) {
+        private String failureMessage(String narrative, Condition condition) {
             String message = condition.toString() +
                     " failed to become true within " + timeout() + " msec";
             message += narrative.equals("") ? "" : "; " + narrative;
-            say("Failed");
             if (!info.isEmpty()) {
                 message += "; " + info;
             }
-            throwAssertionException(message);
+            return message;
         }
-
-        private void say(String msg) {
-            logger.info(new Date() + " - " + msg + " " + this);
-        }
-
+     
         private int timeout() {
             return timeout;
         }
-
-        private void reached(Condition condition) {
-            say("Reached");
-        }
+     
     }
 }
