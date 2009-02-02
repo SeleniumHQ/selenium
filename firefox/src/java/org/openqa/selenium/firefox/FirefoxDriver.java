@@ -32,7 +32,6 @@ import org.openqa.selenium.Speed;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.internal.ExtensionConnectionFactory;
-import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
@@ -46,7 +45,6 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -85,57 +83,36 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
     }
 
     public FirefoxDriver(String profileName) {
-      this(new FirefoxBinary(), findProfile(profileName));
+      this(profileName, DEFAULT_PORT);
     }
 
     public FirefoxDriver(String profileName, int port) {
-      this(new FirefoxBinary(), findProfile(profileName), port);
+      this(new FirefoxBinary(), profileName, port);
     }
 
     public FirefoxDriver(FirefoxProfile profile) {
       this(new FirefoxBinary(), profile);
     }
-
-
-    private FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile, int port) {
-      this(binary, modifyProfile(profile, port));
-    }
-
-    private static FirefoxProfile modifyProfile(FirefoxProfile profile, int port) {
-        if (profile == null) {
-          throw new NullPointerException("You must pass in a profile");
-        }
-        profile.setPort(port);
-        return profile;
+    
+    private FirefoxDriver(FirefoxBinary binary, String name, int port) {
+      this(binary, ProfileManager.getInstance().createProfile(binary, port));
     }
 
     public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile) {
-        if (profile == null) {
-            profile = new FirefoxProfile();
-        }
+      if (profile == null) {
+        profile = ProfileManager.getInstance().createProfile(binary, DEFAULT_PORT);
+      } else {
+        profile.addWebDriverExtensionIfNeeded(false);
+      }
+      prepareEnvironment();
 
-        try {
-            profile.init();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        prepareEnvironment();
-
-        extension = connectTo(binary, profile, "localhost");
-
-        fixId();
+      extension = connectTo(binary, profile, "localhost");
+      fixId();
     }
 
     private FirefoxDriver(ExtensionConnection extension, Context context) {
       this.extension = extension;
       this.context = context;
-    }
-
-    private static FirefoxProfile findProfile(String profileName) {
-      FirefoxProfile profile = new ProfilesIni().getProfile(profileName);
-      if (profile == null)
-        throw new NullPointerException("No firefox profile found: " + profileName);
-      return profile;
     }
 
     protected ExtensionConnection connectTo(FirefoxBinary binary, FirefoxProfile profile, String host) {
@@ -327,7 +304,7 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
 
         Object result = response.getExtraResult("response");
         if (result instanceof Integer)
-          return new Long((String) response.getResponseText());
+          return new Long(response.getResponseText());
         return result;
     }
 

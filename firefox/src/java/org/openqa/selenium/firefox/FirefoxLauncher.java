@@ -17,116 +17,106 @@ limitations under the License.
 
 package org.openqa.selenium.firefox;
 
-import org.openqa.selenium.firefox.internal.ProfilesIni;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.internal.RunningInstanceConnection;
 
 import java.io.IOException;
 import java.net.ConnectException;
 
 public class FirefoxLauncher {
-    private final FirefoxBinary binary;
+  private final FirefoxBinary binary;
 
-    public FirefoxLauncher(FirefoxBinary binary) {
-        this.binary = binary;
+  public FirefoxLauncher(FirefoxBinary binary) {
+      this.binary = binary;
+  }
+
+  public static void main(String[] args) {
+    FirefoxBinary binary = new FirefoxBinary();
+    FirefoxLauncher launcher = new FirefoxLauncher(new FirefoxBinary());
+    ProfileManager profileManager = ProfileManager.getInstance();
+
+    String profileName = "WebDriver";
+    int port = FirefoxDriver.DEFAULT_PORT;
+    if (args.length >= 2) {
+      port = Integer.parseInt(args[1]);
+    }
+    
+    if (args.length >= 1) {
+      profileName = args[0];
+    }
+    
+    // If there's a browser already running, connect and kill it.
+    launcher.connectAndKill(port);
+
+    // Ensure the profile is created, and initialize it.
+    launcher.createBaseWebDriverProfile(binary, profileName, port);
+    
+    // Connect until it works.
+    launcher.repeatedlyConnectUntilFirefoxAppearsStable(port);
+  }
+    
+  public FirefoxBinary startProfile(FirefoxProfile profile, int port) throws IOException {
+    FirefoxBinary binaryToUse = binary;
+    if (binary == null) {
+      binaryToUse = new FirefoxBinary();
     }
 
-    public static void main(String[] args) throws IOException {
-        FirefoxLauncher launcher = new FirefoxLauncher(new FirefoxBinary());
+    FirefoxProfile profileToUse = profile.createCopy(port);
+    binaryToUse.clean(profileToUse);
+    binaryToUse.startProfile(profileToUse);
+    return binaryToUse;
+  }
+  
+  @Deprecated
+  public void createBaseWebDriverProfile(FirefoxBinary binary, String profileName, int port) {
+    // If there's a browser already running
+    connectAndKill(port);
 
-        if (args.length == 0)
-            launcher.createBaseWebDriverProfile("WebDriver");
-        else if (args.length == 1)
-            launcher.createBaseWebDriverProfile(args[0]);
-        else
-            launcher.createBaseWebDriverProfile(args[0], Integer.parseInt(args[1]));
+    System.out.println(String.format("Creating %s", profileName));
+    try {
+        binary.createProfile(profileName);
+        System.out.println("Profile created");
+        binary.waitFor();
+    } catch (IOException e) {
+        throw new WebDriverException("Unable to create base webdriver profile", e);
+    } catch (InterruptedException e) {
+        throw new WebDriverException(e);
     }
+    
+    ProfileManager.getInstance().createProfile(binary, profileName, port);
+  }
 
-    public void createBaseWebDriverProfile() throws IOException {
-        createBaseWebDriverProfile(null);
+  @Deprecated
+  protected void connectAndKill(int port) {
+    try {
+        ExtensionConnection connection = new RunningInstanceConnection("localhost", port, 5000);
+        connection.quit();
+    } catch (ConnectException e) {
+        // This is fine. It just means that Firefox isn't running with the webdriver extension installed already
+    } catch (IOException e) {
+        throw new RuntimeException(e);
     }
+  }
 
-    public void createBaseWebDriverProfile(String profileName) throws IOException {
-        createBaseWebDriverProfile(profileName, FirefoxDriver.DEFAULT_PORT);
-    }
-
-    public void createBaseWebDriverProfile(String profileName, int port) throws IOException {
-        // If there's a browser already running
-        connectAndKill(port);
-
-        System.out.println(String.format("Creating %s", profileName));
-        try {
-            binary.createProfile(profileName);
-            System.out.println("Profile created");
-            binary.waitFor();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
-        ProfilesIni allProfiles = new ProfilesIni();
-        FirefoxProfile profile = allProfiles.getProfile(profileName);
-
-        if (profile == null)
-          throw new IllegalStateException(String.format("Unable to locate profile \"%s\"", profileName));
-
-        System.out.println("Attempting to install the WebDriver extension");
-        profile.addWebDriverExtensionIfNeeded(true);
-
-        System.out.println("Updating user preferences with common, useful settings");
-        profile.setPort(port);
-        profile.updateUserPrefs();
-
-        System.out.println("Deleting existing extensions cache (if it already exists)");
-        profile.deleteExtensionsCacheIfItExists();
-
-        System.out.println("Firefox should now start and quit");
-        binary.startProfile(profile);
-        
-        repeatedlyConnectUntilFirefoxAppearsStable(port);
-    }
-
-    private void repeatedlyConnectUntilFirefoxAppearsStable(int port) {
-      ExtensionConnection connection;
-      // maximum wait time is a minute
-      long maxWaitTime = System.currentTimeMillis() + 60000;
+  private void repeatedlyConnectUntilFirefoxAppearsStable(int port) {
+    ExtensionConnection connection;
+    
+    // maximum wait time is a minute
+    long maxWaitTime = System.currentTimeMillis() + 60000;
       
-        while (System.currentTimeMillis() < maxWaitTime) {
-            try {
-                connection = new RunningInstanceConnection("localhost", port, 1000);
-                Thread.sleep(2000);
-                connection.quit();
-                return;
-            } catch (ConnectException e) {
-                // Fine. Nothing listening. Perhaps in a restart?
-            } catch (IOException e) {
-                // Expected. It'll do that
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }
-
-    protected void connectAndKill(int port) {
-        try {
-            ExtensionConnection connection = new RunningInstanceConnection("localhost", port, 5000);
-            connection.quit();
-        } catch (ConnectException e) {
-            // This is fine. It just means that Firefox isn't running with the webdriver extension installed already
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public FirefoxBinary startProfile(FirefoxProfile profile, int port) throws IOException {
-      FirefoxBinary binaryToUse = binary;
-      if (binary == null) {
-        binaryToUse = new FirefoxBinary();
+    do {
+      try {
+          connection = new RunningInstanceConnection("localhost", port, 1000);
+          Thread.sleep(2000);
+          connection.quit();
+          return;
+      } catch (ConnectException e) {
+          // Fine. Nothing listening. Perhaps in a restart?
+      } catch (IOException e) {
+          // Expected. It'll do that
+      } catch (InterruptedException e) {
+          throw new RuntimeException(e);
       }
-
-      FirefoxProfile profileToUse = profile.createCopy(port);
-      binaryToUse.clean(profileToUse);
-      binaryToUse.startProfile(profileToUse);
-      return binaryToUse;
-    }
+    } while (System.currentTimeMillis() < maxWaitTime);
+  }
 }

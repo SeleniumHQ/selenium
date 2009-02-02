@@ -17,10 +17,10 @@ limitations under the License.
 
 package org.openqa.selenium.firefox;
 
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.internal.Cleanly;
 import org.openqa.selenium.firefox.internal.FileHandler;
-import org.openqa.selenium.firefox.internal.ProfileReaper;
-import org.openqa.selenium.firefox.internal.ProfilesIni;
+import org.openqa.selenium.firefox.internal.TemporaryFilesystem;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -36,12 +36,8 @@ import java.io.InputStream;
 import java.io.Writer;
 import java.text.MessageFormat;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
@@ -52,86 +48,55 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
 public class FirefoxProfile {
-    private static final String EXTENSION_NAME = "fxdriver@googlecode.com";
-    private File profileDir;
-    private File extensionsDir;
-    private File userPrefs;
-    private Preferences additionalPrefs = new Preferences();
-    private int port;
-    private static AtomicInteger nextId = new AtomicInteger(new Random().nextInt());
+  private static final String EXTENSION_NAME = "fxdriver@googlecode.com";
+  private File profileDir;
+  private File extensionsDir;
+  private File userPrefs;
+  private Preferences additionalPrefs = new Preferences();
+  private int port;
 
-    // Profile management "stuff"
-    private Set<File> profileTempDirs = new HashSet<File>();
-    private ProfileReaper reaper;
+  /**
+   * Constructs a firefox profile from an existing, physical profile directory.
+   * Not a good idea, please don't.
+   * 
+   * <p>Users who need this functionality should be using a named profile.
+   * 
+   * @deprecated Prefer {@link ProfileManager}; this will be private soon.
+   * @param profileDir
+   */
+  @Deprecated
+  public FirefoxProfile(File profileDir) {
+    this.profileDir = profileDir;
+    this.extensionsDir = new File(profileDir, "extensions");
+    this.userPrefs = new File(profileDir, "user.js");
 
-    protected FirefoxProfile(ProfileReaper reaper) {
-      this.reaper = reaper;
+    port = FirefoxDriver.DEFAULT_PORT;
+
+    if (!profileDir.exists()) {
+      throw new RuntimeException(MessageFormat.format("Profile directory does not exist: {0}",
+          profileDir.getAbsolutePath()));
     }
-
-    /**
-     * Constructs a firefox profile from an existing, physical profile directory.
-     * Not a good idea, please don't.
-     * 
-     * <p>Users who need this functionality should be using a named profile.
-     * 
-     * @deprecated Prefer {@link ProfilesIni}
-     * @param profileDir
-     */
-    @Deprecated
-    public FirefoxProfile(File profileDir) {
-      this(ProfileReaper.getInstance());
-      commonConstruction(profileDir);
-    }
-
-    public FirefoxProfile() {
-      this(ProfileReaper.getInstance());
-      profileDir = getUniqueProfileDir();
-
-      if (profileDir == null || !profileDir.mkdirs()) {
-        throw new RuntimeException("Cannot create custom profile directory");
-      }
-
-      commonConstruction(profileDir);
-    }
-
-    private void commonConstruction(File profileDir) {
-      this.profileDir = profileDir;
-      this.extensionsDir = new File(profileDir, "extensions");
-      this.userPrefs = new File(profileDir, "user.js");
-
-      port = FirefoxDriver.DEFAULT_PORT;
-
-      if (!profileDir.exists()) {
-        throw new RuntimeException(MessageFormat.format("Profile directory does not exist: {0}",
-            profileDir.getAbsolutePath()));
-      }
-    }
-
-  protected File getUniqueProfileDir() {
-    File tmpDir = new File(System.getProperty("java.io.tmpdir"));
-        if (!tmpDir.exists())
-            throw new RuntimeException("Unable to find default temp directory: " + tmpDir);
-
-    String probablyUniqueName =
-        "webdriver-custom-" + System.currentTimeMillis() + nextId.getAndIncrement();
-
-    File profileDir = new File(tmpDir, probablyUniqueName);
-
-    rememberToClean(profileDir);
-
-    return profileDir;
   }
 
-  protected void addWebDriverExtensionIfNeeded(boolean forceCreation) throws IOException {
+  
+  public FirefoxProfile() {
+    this(TemporaryFilesystem.createTempDir("webdriver", "profile"));
+  }
+
+  protected void addWebDriverExtensionIfNeeded(boolean forceCreation) {
         File extensionLocation = new File(extensionsDir, EXTENSION_NAME);
         if (!forceCreation && extensionLocation.exists())
             return;
 
         boolean isDev = Boolean.getBoolean("webdriver.firefox.development");
-        if (isDev) {
-            installDevelopmentExtension();
-        } else {
-            addExtension(FirefoxProfile.class, "webdriver-extension.zip");
+        try {
+          if (isDev) {
+              installDevelopmentExtension();
+          } else {
+              addExtension(FirefoxProfile.class, "webdriver-extension.zip");
+          }
+        } catch (IOException e) {
+          throw new WebDriverException("Failed to install webdriver extension", e);
         }
 
         deleteExtensionsCacheIfItExists();
@@ -194,7 +159,7 @@ public class FirefoxProfile {
 
     FileHandler.createDir(extensionDirectory);
     FileHandler.makeWritable(extensionDirectory);
-    FileHandler.copyDir(root, extensionDirectory);
+    FileHandler.copy(root, extensionDirectory);
   }
 
   private String readIdFromInstallRdf(File root) {
@@ -463,33 +428,24 @@ public class FirefoxProfile {
         return macAndLinuxLockFile.exists() || windowsLockFile.exists();
     }
 
-    public File init() throws IOException {
-        addWebDriverExtensionIfNeeded(false);
-        return profileDir;
-    }
-
     public void clean() {
-      reaper.clean(this.profileTempDirs);
+      TemporaryFilesystem.deleteTempDir(profileDir);
     }
-
+    
     public FirefoxProfile createCopy(int port) {
-        File tmpDir = new File(System.getProperty("java.io.tmpdir"));
-        File to = new File(tmpDir, "webdriver-" + System.currentTimeMillis());
-        to.mkdirs();
+      File to = TemporaryFilesystem.createTempDir("webdriver", "profilecopy");
 
-        FileHandler.copyDir(profileDir, to);
-        FirefoxProfile profile = new FirefoxProfile(to);
-        additionalPrefs.addTo(profile);
-        profile.setPort(port);
-        profile.updateUserPrefs();
+      try {
+        FileHandler.copy(profileDir, to);
+      } catch (IOException e) {
+        throw new WebDriverException(
+            "Cannot create copy of profile " + profileDir.getAbsolutePath(), e);
+      }
+      FirefoxProfile profile = new FirefoxProfile(to);
+      additionalPrefs.addTo(profile);
+      profile.setPort(port);
+      profile.updateUserPrefs();
 
-        rememberToClean(to);
-
-        return profile;
+      return profile;
     }
-
-  private void rememberToClean(File dir) {
-    reaper.deleteOnExit(dir);
-    profileTempDirs.add(dir);
-  }
 }
