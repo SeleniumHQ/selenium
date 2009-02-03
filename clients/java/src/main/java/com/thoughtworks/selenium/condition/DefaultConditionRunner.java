@@ -18,6 +18,7 @@
 package com.thoughtworks.selenium.condition;
 
 import com.thoughtworks.selenium.Selenium;
+import com.thoughtworks.selenium.SeleniumException;
 
 import java.util.Date;
 import java.util.List;
@@ -172,18 +173,27 @@ public class DefaultConditionRunner implements ConditionRunner {
 
     public void waitFor(String narrative, Condition condition) {
         ContextImpl context = new ContextImpl();
+        SeleniumException seleniumException = null;
         try {
             monitor.waitHasBegun(context, condition);
             threadSleep(initialDelay);
             while (context.elapsed() < context.timeout()) {
-                if (condition.isTrue(context)) {
-                    monitor.conditionWasReached(context, condition);
-                    return;
+                seleniumException = null;
+                try {
+                    if (condition.isTrue(context)) {
+                        monitor.conditionWasReached(context, condition);
+                        return;
+                    }
+                } catch (SeleniumException se) {
+                    seleniumException = se;
                 }
                 threadSleep(interval);
             }
         } catch (RuntimeException e) {
             throwAssertionException("Exception while waiting for '" + condition.toString() + "'", e);
+        }
+        if (seleniumException != null) {
+            throwAssertionException("SeleniumException while waiting for '" + condition.toString() + "' (otherwise timed out)", seleniumException);
         }
         // Note that AssertionFailedError will pass right through
         String message = context.failureMessage(narrative, condition);

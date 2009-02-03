@@ -54,4 +54,11 @@ public class JUnitConditionRunner extends DefaultConditionRunner {
     public void throwAssertionException(String message) {
         Assert.fail(message);
     }
+
+    public void throwAssertionException(String message, Throwable cause) {
+        String causeText = cause.getMessage();
+        Assert.fail(message + (causeText == null ? "" : "; cause: " + causeText));
+    }
+
+
 }

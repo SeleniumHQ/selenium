@@ -20,6 +20,7 @@ package com.thoughtworks.selenium.condition;
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 import com.thoughtworks.selenium.Selenium;
+import com.thoughtworks.selenium.SeleniumException;
 
 /**
  * Test for Condition class.
@@ -110,8 +111,34 @@ public class ConditionTest extends TestCase {
 
     }
 
+    /**
+     * Why?  Well because for some technologies/setups, any Selenium operation
+     * may result in a 'body not loaded' for the first few loops
+     * See http://jira.openqa.org/browse/SRC-302
+     * @throws Exception
+     */
+    public void testCanLateNotifyOfSeleniumExceptionAfterTimeout() throws Exception {
+        long start = System.currentTimeMillis();
+        final int[] time = new int[1];
+        JUnitConditionRunner conditionRunner1 = new JUnitConditionRunner(null, 0, 100, 5000);
+        try {
+            conditionRunner1.waitFor(new Condition() {
+                public boolean isTrue(ConditionRunner.Context runner) {
+                    throw new SeleniumException("Yeehaa!");
+                }
+            });
+            fail("the condition should have failed");
+        } catch (AssertionFailedError expected) {
+            assertEquals("SeleniumException while waiting for 'Condition \"null\"' (otherwise timed out); cause: Yeehaa!", expected.getMessage());
+            long l = System.currentTimeMillis() - start;
+            assertTrue(l >= 5000); // timed out after 5000 milliseconds
+        }
+
+    }
+
+
     public void testRuntimeExceptionInsideConditionIsWrapped() {
-        final RuntimeException thrownException = new RuntimeException();
+        final RuntimeException thrownException = new RuntimeException("ooops");
         Condition condition = new Condition("foo") {
             public boolean isTrue(ConditionRunner.Context runner) {
                 throw thrownException;
@@ -119,10 +146,9 @@ public class ConditionTest extends TestCase {
         };
         try {
             conditionRunner.waitFor(condition);
-            fail("should have thrown a runtime exception");
-        } catch (RuntimeException expected) {
-            assertEquals("Exception while waiting for 'Condition \"foo\"'", expected.getMessage());
-            assertEquals(thrownException, expected.getCause());
+            fail("should have thrown a exception");
+        } catch (AssertionFailedError expected) {
+            assertEquals("Exception while waiting for 'Condition \"foo\"'; cause: ooops", expected.getMessage());
         }
     }
 
@@ -152,10 +178,9 @@ public class ConditionTest extends TestCase {
         try {
             conditionRunner.waitFor(condition);
             fail("should have thrown a runtime exception");
-        } catch (RuntimeException expected) {
+        } catch (AssertionFailedError expected) {
             assertEquals("Exception while waiting for 'Condition \"foo bar baz\"'",
                     expected.getMessage());
-            assertEquals(thrownException, expected.getCause());
         }
     }
 
