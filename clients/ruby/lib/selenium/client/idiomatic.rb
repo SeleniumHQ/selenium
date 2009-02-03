@@ -18,17 +18,17 @@ module Selenium
       #
       # TODO - Should be renamed 'text'
       def text_content(locator)
-        string_command"getText", [locator,]
+        string_command "getText", [locator,]
       end
       
       # Return the title of the current HTML page.
       def title
-        string_command"getTitle"
+        string_command "getTitle"
       end
 
       # Returns the absolute URL of the current page.
       def location
-        string_command"getLocation"
+        string_command "getLocation"
       end
 
       # Waits for a new page to load.
@@ -53,20 +53,22 @@ module Selenium
       # timeout_in_seconds is a timeout in seconds, after which the action will return with an error
       def wait_for_popup(window_id, timeout_in_seconds=nil)
         actual_timeout = timeout_in_seconds || default_timeout_in_seconds
-        remote_control_command("waitForPopUp", [window_id, actual_timeout * 1000 ,])
+        remote_control_command "waitForPopUp", [window_id, actual_timeout * 1000 ,]
       end
 
       # Flexible wait semantics. ait is happening browser side. Useful for testing AJAX application.
       #
-      # * wait :wait_for => :page                                       # will wait for a new page to load
-      # * wait :wait_for => :popup, :window => 'a window id'            # will wait for a new popup window to appear. Also selects the popup window for you provide `:select => true`
-      # * wait :wait_for => :ajax                                       # will wait for all ajax requests to be completed (Prototype only)
-      # * wait :wait_for => :effects                                    # will wait for all Prototype effects to be rendered
-      # * wait :wait_for => :element, :element => 'new_element_id'      # will wait for an element to be present/appear
-      # * wait :wait_for => :no_element, :element => 'new_element_id'   # will wait for an element to be not be present/disappear
-      # * wait :wait_for => :text, :text => 'some text'                 # will wait for some text to be present/appear
-      # * wait :wait_for => :no_text, :text => 'some text'              # will wait for the text to be not be present/disappear
-      # * wait :wait_for => :condition, :javascript => 'some expression' # will wait for the javascript expression to be true
+      # * wait :wait_for => :page                                                   # will wait for a new page to load
+      # * wait :wait_for => :popup, :window => 'a window id'                        # will wait for a new popup window to appear. Also selects the popup window for you provide `:select => true`
+      # * wait :wait_for => :ajax                                                   # will wait for all ajax requests to be completed (Prototype only)
+      # * wait :wait_for => :effects                                                # will wait for all Prototype effects to be rendered
+      # * wait :wait_for => :element, :element => 'new_element_id'                  # will wait for an element to be present/appear
+      # * wait :wait_for => :no_element, :element => 'new_element_id'               # will wait for an element to be not be present/disappear
+      # * wait :wait_for => :text, :text => 'some text'                             # will wait for some text to be present/appear
+      # * wait :wait_for => :text, :element => 'a_locator', :text => 'some text'    # will wait for the content of 'a_locator' to be 'some text'
+      # * wait :wait_for => :no_text, :text => 'some text'                          # will wait for the text to be not be present/disappear
+      # * wait :wait_for => :no_text, :element => 'a_locator', :text => 'some text' # will wait for the content of 'a_locator' to not be 'some text'
+      # * wait :wait_for => :condition, :javascript => 'some expression'            # will wait for the javascript expression to be true
       #
       # Using options you can also define an explicit timeout (:timeout_in_seconds key). Otherwise the default driver timeout
       # is used.
@@ -80,9 +82,9 @@ module Selenium
 	      elsif options[:wait_for] == :no_element
 	          wait_for_no_element options[:element], options[:timeout_in_seconds]
 	      elsif options[:wait_for] == :text
-	          wait_for_text options[:text], options[:timeout_in_seconds]
+	          wait_for_text options[:text], options[:element], options[:timeout_in_seconds]
 	      elsif options[:wait_for] == :no_text
-	          wait_for_no_text options[:text], options[:timeout_in_seconds]
+          wait_for_no_text options[:text], options[:element], options[:timeout_in_seconds]
 	      elsif options[:wait_for] == :effects
 	          wait_for_effects options[:timeout_in_seconds]
 	      elsif options[:wait_for] == :popup
@@ -95,7 +97,7 @@ module Selenium
 	
       # Gets the entire text of the page.
       def body_text
-        string_command"getBodyText"
+        string_command "getBodyText"
       end
 
       # Clicks on a link, button, checkbox or radio button.
@@ -105,20 +107,22 @@ module Selenium
       # Using 'options' you can automatically wait for an event to happen after the 
       # click. e.g.
       #
-      # * click 'some_id', :wait_for => :page                                        # will wait for a new page to load
-      # * click 'some_id', :wait_for => :popup, :window => 'a window id'             # will wait for a new popup window to appear. Also selects the popup window for you provide `:select => true`
-      # * click 'some_id', :wait_for => :ajax                                        # will wait for all ajax requests to be completed (Prototype only)
-      # * click 'some_id', :wait_for => :effects                                     # will wait for all Prototype effects to be rendered
-      # * click 'some_id', :wait_for => :element, :element => 'new_element_id'       # will wait for an element to be present/appear
-      # * click 'some_id', :wait_for => :no_element, :element => 'new_element_id'    # will wait for an element to be not be present/disappear
+      # * click :wait_for => :page                                                   # will wait for a new page to load
+      # * click :wait_for => :popup, :window => 'a window id'                        # will wait for a new popup window to appear. Also selects the popup window for you provide `:select => true`
+      # * click :wait_for => :ajax                                                   # will wait for all ajax requests to be completed (Prototype only)
+      # * click :wait_for => :effects                                                # will wait for all Prototype effects to be rendered
+      # * click :wait_for => :element, :element => 'new_element_id'                  # will wait for an element to be present/appear
+      # * click :wait_for => :no_element, :element => 'new_element_id'               # will wait for an element to be not be present/disappear
       # * click :wait_for => :text, :text => 'some text'                             # will wait for some text to be present/appear
+      # * click :wait_for => :text, :element => 'a_locator', :text => 'some text'    # will wait for the content of 'a_locator' to be 'some text'
       # * click :wait_for => :no_text, :text => 'some text'                          # will wait for the text to be not be present/disappear
-      # * click 'some_id', :wait_for => :condition, :javascript => 'some expression' # will wait for the javascript expression to be true
+      # * click :wait_for => :no_text, :element => 'a_locator', :text => 'some text' # will wait for the content of 'a_locator' to not be 'some text'
+      # * click :wait_for => :condition, :javascript => 'some expression'            # will wait for the javascript expression to be true
       #
       # Using options you can also define an explicit timeout (:timeout_in_seconds key). Otherwise the default driver timeout
       # is used.
       def click(locator, options={})
-        remote_control_command("click", [locator,])        
+        remote_control_command "click", [locator,]
         wait_for options
       end
 
@@ -179,7 +183,7 @@ module Selenium
       # generated and Selenium will hang until someone manually clicks OK.
       # 
       def alert
-        string_command"getAlert"
+        string_command "getAlert"
       end
       
       # Whether a confirmation has been auto-acknoledged (i.e. confirm() been called)
@@ -205,7 +209,7 @@ module Selenium
       # dialog WILL be generated and Selenium will hang until you manually click
       # OK.
       def confirmation
-        string_command"getConfirmation"
+        string_command "getConfirmation"
       end
 
       # Whether a prompt occurred
@@ -227,7 +231,7 @@ module Selenium
       # page's onload() event handler. In this case a visible dialog WILL be
       # generated and Selenium will hang until someone manually clicks OK.
       def prompt
-        string_command"getPrompt"
+        string_command "getPrompt"
       end
 
       # Returns the result of evaluating the specified JavaScript snippet whithin the browser.
@@ -242,7 +246,7 @@ module Selenium
       # 
       # * 'script' is the JavaScript snippet to run
       def js_eval(script)
-        string_command"getEval", [script,]
+        string_command "getEval", [script,]
       end
 
       # Set the Remote Control timeout (as opposed to the client side driver timeout).
@@ -284,14 +288,17 @@ module Selenium
       # Using 'options' you can automatically wait for an event to happen after the 
       # click. e.g.
       #
-      # * go_back :wait_for => :page                                        # will wait for a new page to load
-      # * go_back :wait_for => :ajax                                        # will wait for all ajax requests to be completed (Prototype only)
-      # * go_back :wait_for => :effects                                     # will wait for all Prototype effects to be rendered
-      # * go_back :wait_for => :element, :element => 'new_element_id'       # will wait for an element to be present/appear
-      # * go_back :wait_for => :no_element, :element => 'new_element_id'    # will wait for an element to be not be present/disappear
-      # * go_back :wait_for => :text, :text => 'some text'                  # will wait for some text to be present/appear
-      # * go_back :wait_for => :no_text, :text => 'some text'               # will wait for the text to be not be present/disappear
-      # * go_back :wait_for => :condition, :javascript => 'some expression' # will wait for the javascript expression to be true
+      # * go_back :wait_for => :page                                                   # will wait for a new page to load
+      # * go_back :wait_for => :popup, :window => 'a window id'                        # will wait for a new popup window to appear. Also selects the popup window for you provide `:select => true`
+      # * go_back :wait_for => :ajax                                                   # will wait for all ajax requests to be completed (Prototype only)
+      # * go_back :wait_for => :effects                                                # will wait for all Prototype effects to be rendered
+      # * go_back :wait_for => :element, :element => 'new_element_id'                  # will wait for an element to be present/appear
+      # * go_back :wait_for => :no_element, :element => 'new_element_id'               # will wait for an element to be not be present/disappear
+      # * go_back :wait_for => :text, :text => 'some text'                             # will wait for some text to be present/appear
+      # * go_back :wait_for => :text, :element => 'a_locator', :text => 'some text'    # will wait for the content of 'a_locator' to be 'some text'
+      # * go_back :wait_for => :no_text, :text => 'some text'                          # will wait for the text to be not be present/disappear
+      # * go_back :wait_for => :no_text, :element => 'a_locator', :text => 'some text' # will wait for the content of 'a_locator' to not be 'some text'
+      # * go_back :wait_for => :condition, :javascript => 'some expression'            # will wait for the javascript expression to be true
       #
       # Using options you can also define an explicit timeout (:timeout_in_seconds key). Otherwise the default driver timeout
       # is used.

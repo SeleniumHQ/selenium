@@ -3,8 +3,12 @@ Welcome to the official Ruby driver for [Selenium Remote Control](http://seleniu
 Mission
 =======
 
- Provide a simple yet idiomatic Ruby API to write Selenium tests in Ruby. Gives you a straightforward way to
- write your Selenium tests in Ruby.
+ Provide a **lightweight, simple and idiomatic API to write 
+ Selenium tests in Ruby**. Focus is also on improving test 
+ feedback -- especially on failures -- by providing 
+ out-of-the-box **state-of-the-art reporting capabilities**.
+ With screenshots, HTML snapshopts and log captures,
+ investigating test failures becomes a breeze.
  
 Install It
 ==========

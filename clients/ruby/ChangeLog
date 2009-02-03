@@ -6,6 +6,43 @@
 
  - Upgraded RSpec support to 1.1.12
 
+ - Added popup support in wait_for semantics. e.g.
+
+    click 'my_button', :wait_for => :popup, :window => 'a window id'
+ 
+ - Fixed :wait_for => :text and :wait_for => :no_text semantics
+   Thank you Wade Catron for finding the reporting this bug!
+   
+   The new semantics are:
+   
+   If you do not provide any locator the text is searched in the entire
+   body of the page. e.g.
+   
+    click 'my_button', :wait_for => :text, :text => "Congratulations"
+     
+   If you provide and element locator the text search is scoped to the 
+   innerHTML of that element. e.g.
+
+    click 'my_button', :wait_for => :text, :element => "notification_box", :text => "Preferences Saved!"
+    
+  *** WARNING ****
+  
+    In the process I had to change the signature of the wait_for_text and
+    wait_for_no_text methods. Please update your code if you were using
+    directly any of these 2 methods:
+    
+    OLD:  wait_for_text(locator, text, timeout_in_seconds=nil)	  
+    NEW:  wait_for_text(text, locator=nil, timeout_in_seconds=nil)
+
+    OLD:  wait_for_no_text(locator, text, timeout_in_seconds=nil)	  
+    NEW:  wait_for_no_text(text, locator=nil, timeout_in_seconds=nil)
+
+ - More idiomatic methods to retrieves all window ids, names and titles:
+       .all_window_ids, .all_window_names, all_window_titles
+ 
+ - RSpec Helper automatically set context when starting a new test
+   (lib/selenium/rspec/spec_helper)
+	  
 1.2.9 (2008-11-04)
 ==================
 
