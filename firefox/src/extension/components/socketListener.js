@@ -288,10 +288,10 @@ SocketListener.prototype.switchToWindow = function(respond, windowId) {
       if (win.closed)
         return false;
 
-      if (win.content.name == lookFor)
+      if (win.content && win.content.name == lookFor)
         return true;
 
-      if (win.top.fxdriver && win.top.fxdriver.id == lookFor)
+      if (win.top && win.top.fxdriver && win.top.fxdriver.id == lookFor)
         return true;
 
       return false;
