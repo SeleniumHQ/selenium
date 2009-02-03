@@ -71,6 +71,7 @@ EXPORT int wdeGetAttribute(WebElement* element, const wchar_t* string, StringWra
 EXPORT int wdeGetText(WebElement* element, StringWrapper** result);
 EXPORT int wdeIsDisplayed(WebElement* element, int* result);
 EXPORT int wdeSendKeys(WebElement* element, const wchar_t* text);
+EXPORT int wdeClear(WebElement* element);
 EXPORT int wdeSubmit(WebElement* element);
 
 
@@ -104,8 +105,11 @@ EXPORT int wdCopyString(StringWrapper* source, int length, wchar_t* dest);
 
 // Bridging function, as we migrate to the New World
 class InternetExplorerDriver;
+class ElementWrapper;
 int nastyBridgingFunction(InternetExplorerDriver* driver, WebDriver** toReturn);
 int nastyBridgingFunction2(WebDriver* toReturn);
+int nastyBridgingFunction3(ElementWrapper* wrapper, WebElement** toReturn);
+int nastyBridgingFunction4(WebElement* toReturn);
 
 #ifdef __cplusplus
 }

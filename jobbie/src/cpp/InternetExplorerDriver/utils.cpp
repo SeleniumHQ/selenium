@@ -22,6 +22,7 @@ limitations under the License.
 
 #include "utils.h"
 #include "logging.h"
+#include "webdriver.h"
 
 using namespace std;
 
@@ -135,6 +136,29 @@ LPCWSTR comvariant2cw(CComVariant& toConvert)
 	return L"";
 }
 
+jstring convertToJString(JNIEnv* env, StringWrapper* wrapper)
+{
+	int length;
+	int errCode = wdStringLength(wrapper, &length);
+	if (errCode != 0) {
+		cerr << "Unable to determine string length" << endl;
+		return NULL;
+	}
+
+	wchar_t* value = new wchar_t[length];
+	errCode = wdCopyString(wrapper, length, value);
+	if (errCode != 0) {
+		cerr << "Unable to copy string" << endl;
+		return NULL;
+	}
+
+	jstring toReturn = env->NewString((const jchar*) value, (jsize) ((length > 0) ? wcslen(value):length) );
+
+	delete[] value;
+	wdFreeString(wrapper);
+
+	return toReturn;
+}
 
 LPCWSTR combstr2cw(CComBSTR& from) 
 {

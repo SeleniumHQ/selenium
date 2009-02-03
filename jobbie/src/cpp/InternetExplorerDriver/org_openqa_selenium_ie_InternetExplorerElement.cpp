@@ -19,6 +19,7 @@ limitations under the License.
 #include "stdafx.h"
 #include <ExDisp.h>
 #include "utils.h"
+#include "webdriver.h"
 
 using namespace std;
 
@@ -29,6 +30,14 @@ ElementWrapper* getWrapper(JNIEnv *env, jobject obj)
 	jlong value = env->GetLongField(obj, fid);
 
 	return (ElementWrapper *) value;
+}
+
+WebElement* getElement(JNIEnv *env, jobject obj) 
+{
+	ElementWrapper* raw = getWrapper(env, obj);
+	WebElement* toReturn;
+	nastyBridgingFunction3(raw, &toReturn);
+	return toReturn;
 }
 
 #ifdef __cplusplus
@@ -64,56 +73,45 @@ JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_click
 JNIEXPORT jstring JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_getValue
   (JNIEnv *env, jobject obj)
 {
-	TRY
-	{
-	ElementWrapper* wrapper = getWrapper(env, obj);
+	WebElement* element = getElement(env, obj);
+	StringWrapper* wrapper;
 
-	LPCWSTR text = wrapper->getValue();
-	return lpcw2jstring(env, text);
-	}
-	END_TRY_CATCH_ANY
-	return NULL;
+	wdeGetAttribute(element, L"value", &wrapper);
+	nastyBridgingFunction4(element);
+
+	return convertToJString(env, wrapper);
 }
 
 JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_doSendKeys
   (JNIEnv *env, jobject obj, jstring newValue)
 {
-	TRY
-	{
-	ElementWrapper* wrapper = getWrapper(env, obj);
+	WebElement* element = getElement(env, obj);
 	wchar_t* converted = (wchar_t*) env->GetStringChars(newValue, NULL);
 
-	try {
-		wrapper->sendKeys(converted);
-	} catch (std::wstring& message) {
-		throwUnsupportedOperationException(env, message.c_str());
+	if (wdeSendKeys(element, converted) != SUCCESS) {
+		throwUnsupportedOperationException(env, L"Cannot send keys");
 	}
-	}
-	END_TRY_CATCH_ANY
+	nastyBridgingFunction4(element);
 }
 
 JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_clear
   (JNIEnv *env, jobject obj)
 {
-	TRY
-	{
-	ElementWrapper* wrapper = getWrapper(env, obj);
-	wrapper->clear();
-	}
-	END_TRY_CATCH_ANY
+	WebElement* element = getElement(env, obj);
+	wdeClear(element);
+	nastyBridgingFunction4(element);
 }
 
 JNIEXPORT jstring JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_getText
   (JNIEnv *env, jobject obj)
 {
-	TRY
-	{
-	ElementWrapper* wrapper = getWrapper(env, obj);
-	LPCWSTR text = wrapper->getText();
-	return lpcw2jstring(env, text);
-	}
-	END_TRY_CATCH_ANY
-	return NULL;
+	WebElement* element = getElement(env, obj);
+	StringWrapper* wrapper;
+
+	wdeGetText(element, &wrapper);
+	nastyBridgingFunction4(element);
+	
+	return convertToJString(env, wrapper);
 }
 
 JNIEXPORT jstring JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_getElementName
@@ -133,16 +131,14 @@ JNIEXPORT jstring JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_ge
 JNIEXPORT jstring JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_getAttribute
   (JNIEnv *env, jobject obj, jstring attributeName)
 {
-	TRY
-	{
-	ElementWrapper* wrapper = getWrapper(env, obj);
+	WebElement* element = getElement(env, obj);
+	StringWrapper* wrapper;
 
 	const wchar_t* converted = (wchar_t*) env->GetStringChars(attributeName, NULL);
-	LPCWSTR text = wrapper->getAttribute(converted);
-	return lpcw2jstring(env, text);
-	}
-	END_TRY_CATCH_ANY
-	return NULL;
+	wdeGetAttribute(element, converted, &wrapper);
+	nastyBridgingFunction4(element);
+
+	return convertToJString(env, wrapper);
 }
 
 JNIEXPORT jboolean JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_isEnabled

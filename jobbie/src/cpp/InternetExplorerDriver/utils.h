@@ -60,6 +60,9 @@ HWND getChildWindow(HWND hwnd, LPCTSTR name);
 
 jstring lpcw2jstring(JNIEnv *env, LPCWSTR text, int size = -1);
 
+struct StringWrapper;
+typedef struct StringWrapper StringWrapper;
+jstring convertToJString(JNIEnv* env, StringWrapper* wrapper);
 LPCWSTR combstr2cw(CComBSTR& from);
 LPCWSTR bstr2cw(BSTR& from);
 LPCWSTR comvariant2cw(CComVariant& toConvert);

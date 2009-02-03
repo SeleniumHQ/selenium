@@ -346,36 +346,40 @@ int wdeGetAttribute(WebElement* element, const wchar_t* name, StringWrapper** re
 {
 	if (!element || !element->element) { return -ENOSUCHELEMENT; }
 
-	const std::wstring originalString(element->element->getAttribute(name));
-	size_t length = originalString.length() + 1;
-	wchar_t* toReturn = new wchar_t[length];
+	try {
+		const std::wstring originalString(element->element->getAttribute(name));
+		size_t length = originalString.length() + 1;
+		wchar_t* toReturn = new wchar_t[length];
 
-	wcscpy_s(toReturn, length, originalString.c_str());
+		wcscpy_s(toReturn, length, originalString.c_str());
 
-	StringWrapper* res = new StringWrapper();
-	res->text = toReturn;
-	
-	*result = res;
+		StringWrapper* res = new StringWrapper();
+		res->text = toReturn;
+		
+		*result = res;
 
-	return SUCCESS;
+		return SUCCESS;
+	} END_TRY;
 }
 
 int wdeGetText(WebElement* element, StringWrapper** result)
 {
 	if (!element || !element->element) { return -ENOSUCHELEMENT; }
 
-	const std::wstring originalString(element->element->getText());
-	size_t length = originalString.length() + 1;
-	wchar_t* toReturn = new wchar_t[length];
+	try {
+		const std::wstring originalString(element->element->getText());
+		size_t length = originalString.length() + 1;
+		wchar_t* toReturn = new wchar_t[length];
 
-	wcscpy_s(toReturn, length, originalString.c_str());
+		wcscpy_s(toReturn, length, originalString.c_str());
 
-	StringWrapper* res = new StringWrapper();
-	res->text = toReturn;
-	
-	*result = res;
+		StringWrapper* res = new StringWrapper();
+		res->text = toReturn;
+		
+		*result = res;
 
-	return SUCCESS;
+		return SUCCESS;
+	} END_TRY;
 }
 
 int wdeIsDisplayed(WebElement* element, int* result)
@@ -391,9 +395,21 @@ int wdeSendKeys(WebElement* element, const wchar_t* text)
 {
 	if (!element || !element->element) { return -ENOSUCHELEMENT; }
 
-	element->element->sendKeys(text);
+	try {
+		element->element->sendKeys(text);
 
-	return SUCCESS;
+		return SUCCESS;
+	} END_TRY;
+}
+
+int wdeClear(WebElement* element) 
+{
+    if (!element || !element->element) { return -ENOSUCHELEMENT; }
+
+	try {
+		element->element->clear();
+		return SUCCESS;
+	} END_TRY;
 }
 
 int wdeSubmit(WebElement* element)
@@ -585,6 +601,22 @@ int nastyBridgingFunction(InternetExplorerDriver* driver, WebDriver** toReturn)
 }
 
 int nastyBridgingFunction2(WebDriver* toReturn) 
+{
+	delete toReturn;
+
+	return SUCCESS;
+}
+
+int nastyBridgingFunction3(ElementWrapper* wrapper, WebElement** toReturn)
+{
+	WebElement *e = new WebElement();
+	e->element = wrapper;
+	*toReturn = e;
+
+	return SUCCESS;
+}
+
+int nastyBridgingFunction4(WebElement* toReturn) 
 {
 	delete toReturn;
 
