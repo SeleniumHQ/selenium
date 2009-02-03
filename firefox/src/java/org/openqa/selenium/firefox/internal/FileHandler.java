@@ -19,6 +19,8 @@ limitations under the License.
 
 package org.openqa.selenium.firefox.internal;
 
+import org.openqa.selenium.WebDriverException;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -109,7 +111,7 @@ public class FileHandler {
         process.waitFor();
         return file.canWrite();
       } catch (InterruptedException e1) {
-        throw new RuntimeException(e1);
+        throw new WebDriverException(e1);
       }
     }
     return false;

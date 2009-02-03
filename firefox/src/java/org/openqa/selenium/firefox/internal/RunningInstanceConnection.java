@@ -18,6 +18,7 @@ limitations under the License.
 package org.openqa.selenium.firefox.internal;
 
 import org.openqa.selenium.firefox.Command;
+import org.openqa.selenium.WebDriverException;
 
 import java.io.IOException;
 
@@ -33,7 +34,7 @@ public class RunningInstanceConnection extends AbstractExtensionConnection {
 
     public void quit() {
         try {
-            sendMessageAndWaitForResponse(RuntimeException.class, new Command(null, "quit"));
+            sendMessageAndWaitForResponse(WebDriverException.class, new Command(null, "quit"));
         } catch (Exception e) {
             // Expected
         }
@@ -45,7 +46,7 @@ public class RunningInstanceConnection extends AbstractExtensionConnection {
         try {
             Thread.sleep(250);
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            throw new WebDriverException(e);
         }
     }
 }

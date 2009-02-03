@@ -18,6 +18,7 @@ limitations under the License.
 package org.openqa.selenium.firefox;
 
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.internal.Executable;
 
 import java.io.BufferedReader;
@@ -58,7 +59,7 @@ public class FirefoxBinary {
 
     public void setEnvironmentProperty(String propertyName, String value) {
         if (propertyName == null || value == null)
-            throw new RuntimeException(
+            throw new WebDriverException(
                     String.format("You must set both the property name and value: %s, %s", propertyName, value));
         extraEnv.put(propertyName, value);
     }
@@ -91,26 +92,26 @@ public class FirefoxBinary {
         try {
             Thread.sleep(timeInMillis);
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            throw new WebDriverException(e);
         }
     }
 
-	public void clean(FirefoxProfile profile) throws IOException {
-		startProfile(profile, "-silent");
-		try {
-			waitFor();
-		} catch (InterruptedException e) {
-			throw new RuntimeException(e);
-		}
+  public void clean(FirefoxProfile profile) throws IOException {
+    startProfile(profile, "-silent");
+    try {
+      waitFor();
+    } catch (InterruptedException e) {
+      throw new WebDriverException(e);
+    }
 
-		if (Platform.getCurrent().is(Platform.WINDOWS)) {
-		    while (profile.isRunning()) {
-			    sleep(500);
-		    }
+    if (Platform.getCurrent().is(Platform.WINDOWS)) {
+      while (profile.isRunning()) {
+        sleep(500);
+      }
 
-		    do {
-				sleep(500);
-			} while (profile.isRunning());
-		}
-	}
+      do {
+        sleep(500);
+      } while (profile.isRunning());
+    }
+  }
 }

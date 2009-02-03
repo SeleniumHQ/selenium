@@ -19,6 +19,7 @@ limitations under the License.
 package org.openqa.selenium.firefox.internal;
 
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.Command;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxLauncher;
@@ -72,12 +73,12 @@ public class NewProfileExtensionConnection extends AbstractExtensionConnection {
       }
     }
 
-    throw new RuntimeException(String.format("Cannot find free port in the range %d to %d ", port, newport));
+    throw new WebDriverException(String.format("Cannot find free port in the range %d to %d ", port, newport));
   }
 
   public void quit() {
         try {
-            sendMessageAndWaitForResponse(RuntimeException.class, new Command(null, "quit"));
+            sendMessageAndWaitForResponse(WebDriverException.class, new Command(null, "quit"));
         } catch (Exception e) {
             // this is expected
         }
@@ -91,22 +92,22 @@ public class NewProfileExtensionConnection extends AbstractExtensionConnection {
         profile.clean();    
     }
 
-	private void quitOnOtherPlatforms() {
-		// Wait for process to die and return
-		try {
-		    process.waitFor();
-		} catch (InterruptedException e) {
-		    throw new RuntimeException(e);
-		} catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+  private void quitOnOtherPlatforms() {
+    // Wait for process to die and return
+    try {
+      process.waitFor();
+    } catch (InterruptedException e) {
+      throw new WebDriverException(e);
+    } catch (IOException e) {
+      throw new WebDriverException(e);
     }
+  }
 
-	private void quitOnWindows() {
-		try {
-			Thread.sleep(200);
-		} catch (InterruptedException e) {
-			throw new RuntimeException(e);
-		}
-	}
+  private void quitOnWindows() {
+    try {
+      Thread.sleep(200);
+    } catch (InterruptedException e) {
+      throw new WebDriverException(e);
+    }
+  }
 }

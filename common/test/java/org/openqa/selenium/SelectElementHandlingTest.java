@@ -53,7 +53,7 @@ public class SelectElementHandlingTest extends AbstractDriverTestCase {
         try {
         	option.toggle();
         	fail("Should not have succeeded");
-        } catch (RuntimeException e) {
+        } catch (UnsupportedOperationException e) {
         	// This is expected
         }
     }

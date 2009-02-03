@@ -20,6 +20,7 @@ package org.openqa.selenium.firefox;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.openqa.selenium.WebDriverException;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -47,7 +48,7 @@ public class Response {
 
             isError = (Boolean) result.get("isError");
         } catch (Exception e) {
-            throw new RuntimeException("Could not parse \"" + json.replace("\"", "\\\"").replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t") + "\".", e);
+            throw new WebDriverException("Could not parse \"" + json.replace("\"", "\\\"").replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t") + "\".", e);
         }
     }
 
@@ -72,12 +73,12 @@ public class Response {
   }
 
   public Object getExtraResult(String fieldName) {
-    	try {
-			return result.get(fieldName);
-		} catch (JSONException e) {
-			throw new RuntimeException(e);
-		}
+    try {
+      return result.get(fieldName);
+    } catch (JSONException e) {
+      throw new WebDriverException(e);
     }
+  }
 
     public void ifNecessaryThrow(Class<? extends RuntimeException> exceptionClass) {
         if (!isError)
@@ -108,7 +109,7 @@ public class Response {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException(getResponseText());
+            throw new WebDriverException(getResponseText());
         }
 
         throw toThrow;

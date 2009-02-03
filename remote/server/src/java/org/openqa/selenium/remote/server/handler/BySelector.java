@@ -20,6 +20,7 @@ limitations under the License.
 package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriverException;
 
 public class BySelector {
 
@@ -35,7 +36,7 @@ public class BySelector {
     } else if ("xpath".equals(method)) {
       return By.xpath(selector);
     } else {
-      throw new RuntimeException("Cannot find matching element locator to: " + method);
+      throw new WebDriverException("Cannot find matching element locator to: " + method);
     }
   }
 }

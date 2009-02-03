@@ -94,7 +94,7 @@ public class FirefoxLauncher {
     } catch (ConnectException e) {
         // This is fine. It just means that Firefox isn't running with the webdriver extension installed already
     } catch (IOException e) {
-        throw new RuntimeException(e);
+        throw new WebDriverException(e);
     }
   }
 
@@ -115,7 +115,7 @@ public class FirefoxLauncher {
       } catch (IOException e) {
           // Expected. It'll do that
       } catch (InterruptedException e) {
-          throw new RuntimeException(e);
+          throw new WebDriverException(e);
       }
     } while (System.currentTimeMillis() < maxWaitTime);
   }

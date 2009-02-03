@@ -19,6 +19,7 @@ package org.openqa.selenium.remote.server;
 
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.Capabilities;
 import org.openqa.selenium.remote.Context;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -81,7 +82,7 @@ public class Session {
   private WebDriver createNewDriverMatching(Capabilities capabilities) throws Exception {
     Platform platform = capabilities.getPlatform();
     if (platform != null && !Platform.ANY.equals(platform) && !Platform.getCurrent().is(platform)) {
-      throw new RuntimeException("Desired operating system does not match current OS");
+      throw new WebDriverException("Desired operating system does not match current OS");
     }
 
     String browser = capabilities.getBrowserName();
@@ -113,6 +114,6 @@ public class Session {
           .newInstance();
     }
 
-    throw new RuntimeException("Unable to match browser: " + browser);
+    throw new WebDriverException("Unable to match browser: " + browser);
   }
 }

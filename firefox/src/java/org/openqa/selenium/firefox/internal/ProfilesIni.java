@@ -18,6 +18,7 @@ limitations under the License.
 package org.openqa.selenium.firefox.internal;
 
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 
@@ -76,7 +77,7 @@ public class ProfilesIni {
           line = reader.readLine();
         }
     } catch (IOException e) {
-        throw new RuntimeException(e);
+        throw new WebDriverException(e);
     } finally {
         try {
             if (reader != null) {
@@ -141,7 +142,7 @@ public class ProfilesIni {
     }
 
     if (!appData.isDirectory()) {
-        throw new RuntimeException("The discovered user firefox data directory " +
+        throw new WebDriverException("The discovered user firefox data directory " +
                 "(which normally contains the profiles) isn't a directory: " + appData.getAbsolutePath());
     }
 

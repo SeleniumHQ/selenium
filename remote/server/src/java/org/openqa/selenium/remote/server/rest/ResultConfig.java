@@ -22,6 +22,7 @@ import org.openqa.selenium.remote.PropertyMunger;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
 import org.openqa.selenium.remote.server.handler.WebDriverHandler;
+import org.openqa.selenium.WebDriverException;
 
 import java.beans.BeanInfo;
 import java.beans.Introspector;
@@ -103,7 +104,7 @@ public class ResultConfig {
       try {
         PropertyMunger.set(sections[i].substring(1), handler, strings[i]);
       } catch (Exception e) {
-        throw new RuntimeException(e);
+        throw new WebDriverException(e);
       }
     }
 

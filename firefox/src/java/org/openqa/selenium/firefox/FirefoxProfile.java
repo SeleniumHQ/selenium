@@ -73,7 +73,7 @@ public class FirefoxProfile {
     port = FirefoxDriver.DEFAULT_PORT;
 
     if (!profileDir.exists()) {
-      throw new RuntimeException(MessageFormat.format("Profile directory does not exist: {0}",
+      throw new WebDriverException(MessageFormat.format("Profile directory does not exist: {0}",
           profileDir.getAbsolutePath()));
     }
   }
@@ -129,7 +129,7 @@ public class FirefoxProfile {
       if (FileHandler.isZipped(loadFrom)) {
         root = FileHandler.unzip(resource);
       } else {
-        throw new RuntimeException("Will only install zipped extensions for now");
+        throw new WebDriverException("Will only install zipped extensions for now");
       }
 
       addExtension(root);
@@ -193,7 +193,7 @@ public class FirefoxProfile {
       Node idNode = (Node) xpath.compile("//em:id").evaluate(doc, XPathConstants.NODE);
 
       if (idNode == null) {
-        throw new RuntimeException(
+        throw new WebDriverException(
             "Cannot locate node containing extension id: " + installRdf.getAbsolutePath());
       }
 
@@ -204,7 +204,7 @@ public class FirefoxProfile {
       }
       return id;
     } catch (Exception e) {
-      throw new RuntimeException(e);
+      throw new WebDriverException(e);
     }
   }
 
@@ -239,7 +239,7 @@ public class FirefoxProfile {
             writer = new FileWriter(writeTo);
             writer.write(home);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new WebDriverException(e);
         } finally {
             Cleanly.close(writer);
         }
@@ -259,7 +259,7 @@ public class FirefoxProfile {
       }
     }
 
-    throw new RuntimeException("Unable to locate firefox driver extension in developer source");
+    throw new WebDriverException("Unable to locate firefox driver extension in developer source");
   }
 
   public File getProfileDir() {
@@ -288,7 +288,7 @@ public class FirefoxProfile {
                 line = reader.readLine();
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new WebDriverException(e);
         } finally {
             Cleanly.close(reader);
         }
@@ -339,7 +339,7 @@ public class FirefoxProfile {
 
     public void updateUserPrefs() {
         if (port == 0) {
-            throw new RuntimeException("You must set the port to listen on before updating user.js");
+            throw new WebDriverException("You must set the port to listen on before updating user.js");
         }
 
         Map<String, String> prefs = new HashMap<String, String>();
@@ -347,7 +347,7 @@ public class FirefoxProfile {
         if (userPrefs.exists()) {
             prefs = readExistingPrefs(userPrefs);
             if (!userPrefs.delete())
-                throw new RuntimeException("Cannot delete existing user preferences");
+                throw new WebDriverException("Cannot delete existing user preferences");
         }
 
         additionalPrefs.addTo(prefs);
@@ -407,7 +407,7 @@ public class FirefoxProfile {
                 writer.append("user_pref(\"").append(entry.getKey()).append("\", ").append(entry.getValue()).append(");\n");
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new WebDriverException(e);
         } finally {
             Cleanly.close(writer);
         }

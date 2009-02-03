@@ -25,6 +25,7 @@ import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.Speed;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
@@ -203,7 +204,7 @@ public class RemoteWebDriver implements WebDriver, SearchContext, JavascriptExec
     try {
       response = executor.execute(command);
     } catch (Exception e) {
-      throw new RuntimeException(e);
+      throw new WebDriverException(e);
     }
     if (response.isError())
       throwIfResponseFailed(response);
@@ -349,7 +350,7 @@ public class RemoteWebDriver implements WebDriver, SearchContext, JavascriptExec
 
   private Response throwIfResponseFailed(Response response) {
     if (response.getValue() instanceof StackTraceElement[]) {
-      RuntimeException runtimeException = new RuntimeException();
+      WebDriverException runtimeException = new WebDriverException();
       runtimeException.setStackTrace((StackTraceElement[]) response.getValue());
       throw runtimeException;
     }
@@ -365,10 +366,10 @@ public class RemoteWebDriver implements WebDriver, SearchContext, JavascriptExec
       try {
         aClass = Class.forName(className);
         if (!RuntimeException.class.isAssignableFrom(aClass)) {
-          aClass = RuntimeException.class;
+          aClass = WebDriverException.class;
         }
       } catch (ClassNotFoundException e) {
-        aClass = RuntimeException.class;
+        aClass = WebDriverException.class;
       }
 
       try {
@@ -376,7 +377,7 @@ public class RemoteWebDriver implements WebDriver, SearchContext, JavascriptExec
             (Constructor<? extends RuntimeException>) aClass.getConstructor(String.class);
         toThrow = constructor.newInstance(message);
       } catch (NoSuchMethodException e) {
-        toThrow = (RuntimeException) aClass.newInstance();
+        toThrow = (WebDriverException) aClass.newInstance();
       }
 
       List<Map> elements = (List<Map>) rawException.get("stackTrace");
@@ -400,7 +401,7 @@ public class RemoteWebDriver implements WebDriver, SearchContext, JavascriptExec
         toThrow.setStackTrace(trace);
       }
     } catch (Exception e) {
-      toThrow = new RuntimeException(e);
+      toThrow = new WebDriverException(e);
     }
     throw toThrow;
   }
@@ -442,7 +443,7 @@ public class RemoteWebDriver implements WebDriver, SearchContext, JavascriptExec
 
         return toReturn;
       } catch (Exception e) {
-        throw new RuntimeException(e);
+        throw new WebDriverException(e);
       }
 
     }

@@ -28,7 +28,7 @@ public class ObsoleteElementTest extends AbstractDriverTestCase {
 		try {
 		  elem.click();
 		  fail();
-		} catch (RuntimeException e) {
+		} catch (WebDriverException e) {
 			// do nothing. this is what we expected.
 		}
 	}    

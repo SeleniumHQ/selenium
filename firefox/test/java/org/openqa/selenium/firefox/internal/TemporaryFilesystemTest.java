@@ -3,6 +3,7 @@ package org.openqa.selenium.firefox.internal;
 import junit.framework.TestCase;
 
 import org.junit.Test;
+import org.openqa.selenium.WebDriverException;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,7 +15,7 @@ public class TemporaryFilesystemTest extends TestCase {
     File tmp = TemporaryFilesystem.createTempDir("TemporaryFilesystem", "canCreate");
     try {
       assertTrue(tmp.exists());
-    } catch (RuntimeException e) {
+    } catch (WebDriverException e) {
       tmp.delete();
       throw e;
     }

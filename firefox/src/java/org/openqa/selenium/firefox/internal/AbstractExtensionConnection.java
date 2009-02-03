@@ -24,6 +24,7 @@ import org.openqa.selenium.firefox.Command;
 import org.openqa.selenium.firefox.ExtensionConnection;
 import org.openqa.selenium.firefox.Response;
 import org.openqa.selenium.firefox.NotConnectedException;
+import org.openqa.selenium.WebDriverException;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -56,7 +57,7 @@ public abstract class AbstractExtensionConnection implements ExtensionConnection
             try {
                 addr = InetAddress.getByName(host);
             } catch (UnknownHostException e) {
-                throw new RuntimeException(e);
+                throw new WebDriverException(e);
             }
         }
 
@@ -83,7 +84,7 @@ public abstract class AbstractExtensionConnection implements ExtensionConnection
                 }
             }
         } catch (SocketException e) {
-            throw new RuntimeException(e);
+            throw new WebDriverException(e);
         }
 
         // Firefox binds to the IP4 address by preference
@@ -98,7 +99,7 @@ public abstract class AbstractExtensionConnection implements ExtensionConnection
         try {
             firstInterface = NetworkInterface.getNetworkInterfaces().nextElement();
         } catch (SocketException e) {
-            throw new RuntimeException(e);
+            throw new WebDriverException(e);
         }
         InetAddress firstAddress = null;
         if (firstInterface != null) {
@@ -108,7 +109,7 @@ public abstract class AbstractExtensionConnection implements ExtensionConnection
         if (firstAddress != null)
             return firstAddress;
 
-        throw new RuntimeException("Unable to find loopback address for localhost");
+        throw new WebDriverException("Unable to find loopback address for localhost");
     }
 
     protected void connectToBrowser(long timeToWaitInMilliSeconds) throws IOException {
@@ -120,7 +121,7 @@ public abstract class AbstractExtensionConnection implements ExtensionConnection
                 try {
                     Thread.sleep(250);
                 } catch (InterruptedException ie) {
-                    throw new RuntimeException(ie);
+                    throw new WebDriverException(ie);
                 }
             }
         }
@@ -154,7 +155,7 @@ public abstract class AbstractExtensionConnection implements ExtensionConnection
             out.write(message.toString());
             out.flush();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new WebDriverException(e);
         }
 
         return waitForResponseFor(command.getCommandName());
@@ -174,7 +175,7 @@ public abstract class AbstractExtensionConnection implements ExtensionConnection
 
             json.put("parameters", params);
         } catch (JSONException e) {
-            throw new RuntimeException(e);
+            throw new WebDriverException(e);
         }
 
       try {
@@ -191,7 +192,7 @@ public abstract class AbstractExtensionConnection implements ExtensionConnection
         try {
             return readLoop(command);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new WebDriverException(e);
         }
     }
 
@@ -200,7 +201,7 @@ public abstract class AbstractExtensionConnection implements ExtensionConnection
 
         if (command.equals(response.getCommand()))
             return response;
-        throw new RuntimeException("Expected response to " + command + " but actually got: " + response.getCommand() + " (" + response.getCommand() + ")");
+        throw new WebDriverException("Expected response to " + command + " but actually got: " + response.getCommand() + " (" + response.getCommand() + ")");
     }
 
     private Response nextResponse() throws IOException {

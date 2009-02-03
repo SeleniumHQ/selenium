@@ -67,6 +67,7 @@ import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.Speed;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
@@ -161,7 +162,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
         try {
             client.setUseInsecureSSL(true);
         } catch (GeneralSecurityException e) {
-            throw new RuntimeException(e);
+            throw new WebDriverException(e);
         }
 
         // Ensure that we've set the proxy if necessary
@@ -203,7 +204,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
       try {
         fullUrl = new URL(url);
       } catch (Exception e) {
-        throw new RuntimeException(e);
+        throw new WebDriverException(e);
       }
 
       get(fullUrl);
@@ -223,7 +224,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
       } catch (ConnectException e) {
         // This might be expected
       } catch (Exception e) {
-        throw new RuntimeException(e);
+        throw new WebDriverException(e);
       }
 
       pickWindow();

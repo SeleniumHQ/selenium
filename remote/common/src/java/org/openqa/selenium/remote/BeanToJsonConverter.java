@@ -22,6 +22,7 @@ package org.openqa.selenium.remote;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.openqa.selenium.WebDriverException;
 
 import java.beans.BeanInfo;
 import java.beans.Introspector;
@@ -62,7 +63,7 @@ public class BeanToJsonConverter {
 
       return String.valueOf(object);
     } catch (JSONException e) {
-      throw new RuntimeException("Unable to convert: " + object, e);
+      throw new WebDriverException("Unable to convert: " + object, e);
     }
   }
 
@@ -169,7 +170,7 @@ public class BeanToJsonConverter {
     try {
       return mapObject(toConvert, maxDepth - 1);
     } catch(Exception e) {
-      throw new RuntimeException(e);
+      throw new WebDriverException(e);
     }
   }
 

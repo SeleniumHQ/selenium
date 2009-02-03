@@ -44,6 +44,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByTagName;
@@ -81,7 +82,7 @@ public class HtmlUnitWebElement implements WebElement,
 
             clickableElement.click();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new WebDriverException(e);
         } catch (ScriptException e) {
           System.out.println(e.getMessage());
           // Press on regardless
@@ -109,7 +110,7 @@ public class HtmlUnitWebElement implements WebElement,
                 throw new NoSuchElementException("Unable to find the containing form");
             form.submit();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new WebDriverException(e);
         }
     }
 
@@ -129,11 +130,11 @@ public class HtmlUnitWebElement implements WebElement,
     	}
 
     	if (submit == null)
-    		throw new RuntimeException("Cannot locate element used to submit form");
+    		throw new WebDriverException("Cannot locate element used to submit form");
     	try {
 			((ClickableElement) submit).click();
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			throw new WebDriverException(e);
 		}
 	}
 
@@ -182,7 +183,7 @@ public class HtmlUnitWebElement implements WebElement,
             element.type(builder.toString());
             return;
           } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new WebDriverException(e);
           }
         }
 
@@ -256,7 +257,7 @@ public class HtmlUnitWebElement implements WebElement,
 
             throw new UnsupportedOperationException("You may only toggle checkboxes or options in a select which allows multiple selections: " + getElementName());
         } catch (IOException e) {
-            throw new RuntimeException("Unexpected exception: " + e);
+            throw new WebDriverException("Unexpected exception: " + e);
         }
     }
 
