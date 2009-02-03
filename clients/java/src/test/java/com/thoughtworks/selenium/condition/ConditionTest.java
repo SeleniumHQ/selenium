@@ -78,6 +78,38 @@ public class ConditionTest extends TestCase {
         }
     }
 
+    public void testCanTurnTrueBeforeTimeout() throws Exception {
+        long start = System.currentTimeMillis();
+        final int[] time = new int[1];
+        JUnitConditionRunner conditionRunner1 = new JUnitConditionRunner(null, 0, 100, 5000);
+        conditionRunner1.waitFor(new Condition() {
+            public boolean isTrue(ConditionRunner.Context runner) {
+                return time[0]++ == 48;
+            }
+        });
+        long l = System.currentTimeMillis() - start;
+        assertTrue(l >= 4800); // is waiting at least 48 * 100 milliseconds
+        assertTrue(l < 5000); // but timing out before 5000 milliseconds
+    }
+
+    public void testCannotTurnTrueAfterTimeout() throws Exception {
+        long start = System.currentTimeMillis();
+        final int[] time = new int[1];
+        JUnitConditionRunner conditionRunner1 = new JUnitConditionRunner(null, 0, 100, 5000);
+        try {
+            conditionRunner1.waitFor(new Condition() {
+                public boolean isTrue(ConditionRunner.Context runner) {
+                    return time[0]++ == 52;
+                }
+            });
+            fail("the condition should have failed");
+        } catch (AssertionFailedError expected) {
+            long l = System.currentTimeMillis() - start;
+            assertTrue(l >= 5000); // timed out after 5000 milliseconds
+        }
+
+    }
+
     public void testRuntimeExceptionInsideConditionIsWrapped() {
         final RuntimeException thrownException = new RuntimeException();
         Condition condition = new Condition("foo") {
