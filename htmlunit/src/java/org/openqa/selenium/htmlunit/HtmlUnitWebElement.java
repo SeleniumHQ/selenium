@@ -48,24 +48,11 @@ import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Attr;
 
 import com.gargoylesoftware.htmlunit.ScriptException;
-import com.gargoylesoftware.htmlunit.html.ClickableElement;
-import com.gargoylesoftware.htmlunit.html.DomNode;
-import com.gargoylesoftware.htmlunit.html.DomText;
-import com.gargoylesoftware.htmlunit.html.HtmlButton;
-import com.gargoylesoftware.htmlunit.html.HtmlCheckBoxInput;
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import com.gargoylesoftware.htmlunit.html.HtmlFileInput;
-import com.gargoylesoftware.htmlunit.html.HtmlForm;
-import com.gargoylesoftware.htmlunit.html.HtmlImageInput;
-import com.gargoylesoftware.htmlunit.html.HtmlInput;
-import com.gargoylesoftware.htmlunit.html.HtmlOption;
-import com.gargoylesoftware.htmlunit.html.HtmlPreformattedText;
-import com.gargoylesoftware.htmlunit.html.HtmlScript;
-import com.gargoylesoftware.htmlunit.html.HtmlSelect;
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
-import com.gargoylesoftware.htmlunit.html.HtmlTextArea;
+import com.gargoylesoftware.htmlunit.html.*;
 
 public class HtmlUnitWebElement implements WebElement,
     FindsById, FindsByLinkText, FindsByXPath, FindsByTagName, SearchContext {
@@ -75,6 +62,7 @@ public class HtmlUnitWebElement implements WebElement,
     private final static String[] blockLevelsTagNames =
             {"p", "h1", "h2", "h3", "h4", "h5", "h6", "dl", "div", "noscript",
                     "blockquote", "form", "hr", "table", "fieldset", "address", "ul", "ol", "pre", "br"};
+    private String toString;
 
     public HtmlUnitWebElement(HtmlUnitDriver parent, HtmlElement element) {
         this.parent = parent;
@@ -481,26 +469,47 @@ public class HtmlUnitWebElement implements WebElement,
       }
       return elements.get(0);
     }
-    
+
     public List<WebElement> findElementsByTagName(String name) {
       return findElementsByXPath(".//*[local-name()='" + name + "']");
-      
+
       /* TODO(simon.m.stewart): Update this once the next version of HtmlUnit is released
       NodeList elements = element.getElementsByTagName(name);
       ArrayList<WebElement> toReturn = new ArrayList<WebElement>(elements.getLength());
       for (int i = 0; i < elements.getLength(); i++) {
         toReturn.add(parent.newHtmlUnitWebElement((HtmlElement) elements.item(i)));
       }
-      
+
       return toReturn;
       */
     }
-    
+
     private WebElement findParentForm() {
         DomNode current = element;
         while (!(current == null || current instanceof HtmlForm)) {
             current = current.getParentNode();
         }
         return getParent().newHtmlUnitWebElement((HtmlForm) current);
+    }
+
+    @Override
+    public String toString() {
+        if (toString == null) {
+            StringBuilder sb = new StringBuilder();
+            sb.append('<').append(element.getTagName());
+            NamedNodeMap attributes = element.getAttributes();
+            int n = attributes.getLength();
+            for (int i = 0; i < n; ++i) {
+                Attr a = (Attr) attributes.item(i);
+                sb.append(' ').append(a.getName()).append("=\"").append(a.getValue().replace("\"", "&quot;")).append("\"");
+            }
+            if (element.hasChildNodes()) {
+                sb.append('>');
+            } else {
+                sb.append(" />");
+            }
+            toString = sb.toString();
+        }
+        return toString;
     }
 }
