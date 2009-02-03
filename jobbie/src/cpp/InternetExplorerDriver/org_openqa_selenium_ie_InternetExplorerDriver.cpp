@@ -221,15 +221,12 @@ JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_doE
 JNIEXPORT jstring JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_getPageSource
   (JNIEnv *env, jobject obj)
 {
-	TRY
-	{
-		InternetExplorerDriver* wrapper = getIe(env, obj);
-		LPCWSTR text = wrapper->getPageSource();
-		return lpcw2jstring(env, text);
-	}
-	END_TRY_CATCH_ANY
+	WebDriver* driver = getDriver(env, obj);
+	StringWrapper* wrapper;
+	wdGetPageSource(driver, &wrapper);
+	nastyBridgingFunction2(driver);
 
-	return NULL;
+	return convertToJString(env, wrapper);
 }
 
 JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_close
@@ -272,12 +269,9 @@ JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_openIe
 JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_setVisible
   (JNIEnv *env, jobject obj, jboolean isVisible)
 {
-	TRY
-	{
-	InternetExplorerDriver* ie = getIe(env, obj);
-	ie->setVisible(isVisible == JNI_TRUE);
-	}
-	END_TRY_CATCH_ANY
+	WebDriver* driver = getDriver(env, obj);
+	wdSetVisible(driver, isVisible == JNI_TRUE ? 1 : 0);
+	nastyBridgingFunction2(driver);
 }
 
 JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_waitForLoadToComplete
@@ -294,28 +288,20 @@ JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_waitFo
 JNIEXPORT jstring JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_getCurrentUrl
   (JNIEnv *env, jobject obj)
 {
-	TRY
-	{
-	InternetExplorerDriver* ie = getIe(env, obj);
-	LPCWSTR text = ie->getCurrentUrl();
+	WebDriver* driver = getDriver(env, obj);
+	StringWrapper* wrapper;
+	wdGetCurrentUrl(driver, &wrapper);
 
-	return lpcw2jstring(env, text);
-	}
-	END_TRY_CATCH_ANY
-	return NULL;
+	return convertToJString(env, wrapper);
 }
 
 JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_get
   (JNIEnv *env, jobject obj, jstring url)
 {
-	TRY
-	{
-	InternetExplorerDriver* ie = getIe(env, obj);
+	WebDriver* driver = getDriver(env, obj);
 	const wchar_t* converted = (wchar_t *)env->GetStringChars(url, 0);
-	ie->get(converted);
+	wdGet(driver, converted);
 	env->ReleaseStringChars(url, (jchar*) converted);
-	}
-	END_TRY_CATCH_ANY
 }
 
 JNIEXPORT jstring JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_getTitle

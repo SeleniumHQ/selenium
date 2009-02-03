@@ -47,12 +47,13 @@ EXPORT int wdeFreeElement(WebElement* element);
 EXPORT int wdNewDriverInstance(WebDriver** result);
 EXPORT int wdFreeDriver(WebDriver* driver);
 
-EXPORT int wdGet(WebDriver* driver, wchar_t* url);
+EXPORT int wdGet(WebDriver* driver, const wchar_t* url);
 EXPORT int wdClose(WebDriver* driver);
 EXPORT int wdSetVisible(WebDriver* driver, int value);
 
 EXPORT int wdGetCurrentUrl(WebDriver* driver, StringWrapper** result);
 EXPORT int wdGetTitle(WebDriver* driver, StringWrapper** result);
+EXPORT int wdGetPageSource(WebDriver* driver, StringWrapper** result);
 
 
 // Element functions

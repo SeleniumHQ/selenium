@@ -167,11 +167,14 @@ int wdNewDriverInstance(WebDriver** result)
 	return -1;
 }
 
-int wdGet(WebDriver* driver, wchar_t* url)
+int wdGet(WebDriver* driver, const wchar_t* url)
 {
 	if (!driver || !driver->ie) return -1;
-	driver->ie->get(url);
-	return 0;
+
+	try {
+		driver->ie->get(url);
+		return 0;
+	} END_TRY;
 }
 
 int wdClose(WebDriver* driver)
@@ -188,7 +191,11 @@ int wdClose(WebDriver* driver)
 int wdSetVisible(WebDriver* driver, int value) 
 {
 	if (!driver || !driver->ie) return -1;
-	driver->ie->setVisible(value != 0);
+
+	try {
+		driver->ie->setVisible(value != 0);
+	} END_TRY;
+
 	return 0;
 }
 
@@ -196,18 +203,20 @@ int wdGetCurrentUrl(WebDriver* driver, StringWrapper** result)
 {
 	if (!driver || !driver->ie) return -1;
 
-	const std::wstring originalString(driver->ie->getCurrentUrl());
-	size_t length = originalString.length() + 1;
-	wchar_t* toReturn = new wchar_t[length];
+	try {
+		const std::wstring originalString(driver->ie->getCurrentUrl());
+		size_t length = originalString.length() + 1;
+		wchar_t* toReturn = new wchar_t[length];
 
-	wcscpy_s(toReturn, length, originalString.c_str());
+		wcscpy_s(toReturn, length, originalString.c_str());
 
-	StringWrapper* res = new StringWrapper();
-	res->text = toReturn;
-	
-	*result = res;
+		StringWrapper* res = new StringWrapper();
+		res->text = toReturn;
+		
+		*result = res;
 
-	return 0;
+		return 0;
+	} END_TRY;
 }
 
 int wdGetTitle(WebDriver* driver, StringWrapper** result)
@@ -215,20 +224,41 @@ int wdGetTitle(WebDriver* driver, StringWrapper** result)
 	if (!driver || !driver->ie) return -1;
 
 	try {
-	const std::wstring originalString(driver->ie->getTitle());
-	size_t length = originalString.length() + 1;
-	wchar_t* toReturn = new wchar_t[length];
+		const std::wstring originalString(driver->ie->getTitle());
+		size_t length = originalString.length() + 1;
+		wchar_t* toReturn = new wchar_t[length];
 
-	wcscpy_s(toReturn, length, originalString.c_str());
+		wcscpy_s(toReturn, length, originalString.c_str());
 
-	StringWrapper* res = new StringWrapper();
-	res->text = toReturn;
-	
-	*result = res;
+		StringWrapper* res = new StringWrapper();
+		res->text = toReturn;
+		
+		*result = res;
 
-	return 0;
+		return 0;
 	} END_TRY;
 }
+
+int wdGetPageSource(WebDriver* driver, StringWrapper** result)
+{
+	if (!driver || !driver->ie) return -1;
+
+	try {
+		const std::wstring originalString(driver->ie->getPageSource());
+        size_t length = originalString.length() + 1;
+        wchar_t* toReturn = new wchar_t[length];
+
+        wcscpy_s(toReturn, length, originalString.c_str());
+
+        StringWrapper* res = new StringWrapper();
+        res->text = toReturn;
+        
+        *result = res;
+
+		return 0;
+	} END_TRY;
+}
+
 
 int wdeClick(WebElement* element)
 {
