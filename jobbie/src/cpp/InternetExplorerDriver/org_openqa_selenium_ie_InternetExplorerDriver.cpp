@@ -293,6 +293,7 @@ JNIEXPORT jstring JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_get
 	WebDriver* driver = getDriver(env, obj);
 	StringWrapper* wrapper;
 	wdGetCurrentUrl(driver, &wrapper);
+	nastyBridgingFunction2(driver);
 
 	return convertToJString(env, wrapper);
 }
@@ -303,6 +304,7 @@ JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_get
 	WebDriver* driver = getDriver(env, obj);
 	const wchar_t* converted = (wchar_t *)env->GetStringChars(url, 0);
 	wdGet(driver, converted);
+	nastyBridgingFunction2(driver);
 	env->ReleaseStringChars(url, (jchar*) converted);
 }
 
@@ -368,28 +370,25 @@ JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_goForw
 JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_doAddCookie
   (JNIEnv *env, jobject obj, jstring cookieString)
 {
-	TRY
-	{
-	InternetExplorerDriver* ie = getIe(env, obj);
+	WebDriver* driver = getDriver(env, obj);
 
 	const wchar_t* converted = (wchar_t *)env->GetStringChars(cookieString, 0);
-	ie->addCookie(converted);
+	wdAddCookie(driver, converted);
 	env->ReleaseStringChars(cookieString, (jchar*) converted);
-	}
-	END_TRY_CATCH_ANY
+
+	nastyBridgingFunction2(driver);
 }
 
 JNIEXPORT jstring JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_doGetCookies
   (JNIEnv *env, jobject obj)
 {
-	TRY
-	{
-	InternetExplorerDriver* ie = getIe(env, obj);
-	LPCWSTR text = ie->getCookies();
-	return lpcw2jstring(env, text);
-	}
-	END_TRY_CATCH_ANY
-	return NULL;
+	WebDriver* driver = getDriver(env, obj);
+
+	StringWrapper* wrapper;
+	wdGetCookies(driver, &wrapper);
+
+	nastyBridgingFunction2(driver);
+	return convertToJString(env, wrapper);
 }
 
 JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_doSetMouseSpeed

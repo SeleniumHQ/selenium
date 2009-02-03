@@ -283,6 +283,37 @@ int wdGetPageSource(WebDriver* driver, StringWrapper** result)
 	} END_TRY;
 }
 
+int wdGetCookies(WebDriver* driver, StringWrapper** result)
+{ 
+	if (!driver || !driver->ie) return -ENOSUCHDRIVER;
+
+	try {
+		const std::wstring originalString(driver->ie->getCookies());
+		size_t length = originalString.length() + 1;
+		wchar_t* toReturn = new wchar_t[length];
+
+		wcscpy_s(toReturn, length, originalString.c_str());
+
+		StringWrapper* res = new StringWrapper();
+		res->text = toReturn;
+
+		*result = res;
+
+		return SUCCESS;
+	} END_TRY;
+}
+
+int wdAddCookie(WebDriver* driver, const wchar_t* cookie)
+{
+    if (!driver || !driver->ie) return -ENOSUCHDRIVER;
+
+	try {
+		driver->ie->addCookie(cookie);
+
+		return SUCCESS;
+	} END_TRY;
+}
+
 int wdSwitchToFrame(WebDriver* driver, const wchar_t* path)
 {
     if (!driver || !driver->ie) return -ENOSUCHDRIVER;

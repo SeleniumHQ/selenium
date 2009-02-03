@@ -59,6 +59,9 @@ EXPORT int wdGetCurrentUrl(WebDriver* driver, StringWrapper** result);
 EXPORT int wdGetTitle(WebDriver* driver, StringWrapper** result);
 EXPORT int wdGetPageSource(WebDriver* driver, StringWrapper** result);
 
+EXPORT int wdGetCookies(WebDriver* driver, StringWrapper** result);
+EXPORT int wdAddCookie(WebDriver* driver, const wchar_t* cookie);
+
 EXPORT int wdSwitchToFrame(WebDriver* driver, const wchar_t* path);
 EXPORT int wdWaitForLoadToComplete(WebDriver* driver);
 
