@@ -45,7 +45,6 @@ JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_click
 	try {
 		if (!wrapper->isDisplayed()) {
 			throwUnsupportedOperationException(env, L"You may not click on an element that is not displayed");
-			cout << "No exception" << endl;
 			return;
 		}
 	} catch (std::wstring& message) {	

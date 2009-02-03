@@ -19,6 +19,8 @@ limitations under the License.
 
 #include <wchar.h>
 
+#include "errorcodes.h"
+
 #define EXPORT __declspec(dllexport)
 
 #ifdef __cplusplus
@@ -55,6 +57,8 @@ EXPORT int wdGetCurrentUrl(WebDriver* driver, StringWrapper** result);
 EXPORT int wdGetTitle(WebDriver* driver, StringWrapper** result);
 EXPORT int wdGetPageSource(WebDriver* driver, StringWrapper** result);
 
+EXPORT int wdSwitchToFrame(WebDriver* driver, const wchar_t* path);
+EXPORT int wdWaitForLoadToComplete(WebDriver* driver);
 
 // Element functions
 EXPORT int wdeClick(WebElement* element);

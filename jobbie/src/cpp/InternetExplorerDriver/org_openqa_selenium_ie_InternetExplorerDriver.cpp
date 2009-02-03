@@ -277,10 +277,12 @@ JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_setVis
 JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_waitForLoadToComplete
   (JNIEnv *env, jobject obj)
 {
+	WebDriver* driver = getDriver(env, obj);
+
 	TRY
 	{
-	InternetExplorerDriver* ie = getIe(env, obj);
-	ie->waitForNavigateToFinish();
+		wdWaitForLoadToComplete(driver);
+		delete driver;
 	}
 	END_TRY_CATCH_ANY
 }

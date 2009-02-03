@@ -1,0 +1,17 @@
+#pragma once
+
+#define EINDEXOUTOFBOUNDS  1
+#define ENOCOLLECTION      2
+#define EELEMENTNOTDISPLAYED 11
+#define EELEMENTNOTENABLED 12
+#define ENOSTRING          3
+#define ENOSTRINGLENGTH    4
+#define ENOSTRINGWRAPPER   5
+#define ENOSUCHDRIVER      6
+#define ENOSUCHELEMENT     7
+#define ENOSUCHFRAME       8
+#define ENOTIMPLEMENTED    9
+#define EOBSOLETEELEMENT   10
+#define EUNHANDLEDERROR    13
+
+#define SUCCESS 0

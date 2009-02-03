@@ -293,6 +293,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\errorcodes.h"
+				>
+			</File>
+			<File
 				RelativePath=".\EventReleaser.h"
 				>
 			</File>
