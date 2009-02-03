@@ -14,19 +14,25 @@ unit_tests do
     assert_equal File.expand_path("/another/dir"), second_strategy.base_report_dir
   end
   
-  test "example_hash is distinct when examples first backtrace entry is different" do
+  test "example_hash is distinct when examples implementation is different" do
     strategy = Selenium::RSpec::Reporting::FilePathStrategy.new "report.html"
   
-    first_example = stub('example',:backtrace => [ "a", "c" ])
-    second_example = stub('example',:backtrace => [ "b", "c" ])
+    first_example = Object.new
+    first_example.instance_variable_set :'@_implementation', Proc.new {}
+    second_example = Object.new
+    second_example.instance_variable_set :'@_implementation', Proc.new {}
+
     assert strategy.example_hash(first_example) != strategy.example_hash(second_example)
   end
   
-  test "example_hash is the same when examples first backtrace entry is identical" do
+  test "example_hash is the same when examples implementation is identical" do
     strategy = Selenium::RSpec::Reporting::FilePathStrategy.new "report.html"
-  
-    first_example = stub('example',:backtrace => [ "a", "b" ])
-    second_example = stub('example',:backtrace => [ "a", "c" ])
+
+    same_implementation = Proc.new {}  
+    first_example = Object.new
+    first_example.instance_variable_set :'@_implementation', same_implementation
+    second_example = Object.new
+    second_example.instance_variable_set :'@_implementation', same_implementation
     assert_equal strategy.example_hash(first_example), 
                  strategy.example_hash(second_example)
   end

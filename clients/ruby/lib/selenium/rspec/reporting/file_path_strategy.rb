@@ -60,7 +60,9 @@ module Selenium
         end
 
         def example_hash(example)
-          Digest::MD5.hexdigest example.backtrace.first
+          # backtrace is not reliable anymore using the implementation proc          
+          implementation = example.instance_variable_get :'@_implementation'
+          Digest::MD5.hexdigest implementation.inspect
         end
       
       end

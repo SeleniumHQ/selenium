@@ -38,7 +38,9 @@ Features
   * `click 'the_button_id', :wait_for => :element, :element => 'new_element_id'`
   * `click 'the_button_id', :wait_for => :no_element, :element => 'disappearing_element_id'`
   * `click 'the_button_id', :wait_for => :text, :text => 'New Text'`
+  * `click 'the_button_id', :wait_for => :text, :element => 'notification_box', :text => 'New Text'`
   * `click 'the_button_id', :wait_for => :no_text, :text => 'Disappearing Text'`
+  * `click 'the_button_id', :wait_for => :no_text, :element => 'notification_box', :text => 'Disappearing Text'`
   * `click 'the_button_id', :wait_for => :effects`
   * `click 'the_button_id', :wait_for => :condition, :javascript => "some arbitrary javascript expression"`
 
