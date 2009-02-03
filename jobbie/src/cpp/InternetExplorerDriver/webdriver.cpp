@@ -181,6 +181,26 @@ int wdGet(WebDriver* driver, const wchar_t* url)
 	} END_TRY;
 }
 
+int wdGoBack(WebDriver* driver)
+{
+    if (!driver || !driver->ie) return -ENOSUCHDRIVER;
+
+	try {
+		driver->ie->goBack();
+		return SUCCESS;
+	} END_TRY;
+}
+
+int wdGoForward(WebDriver* driver) 
+{
+    if (!driver || !driver->ie) return -ENOSUCHDRIVER;
+
+	try {
+		driver->ie->goForward();
+		return SUCCESS;
+	} END_TRY;
+}
+
 int wdClose(WebDriver* driver)
 {
 	if (!driver || !driver->ie) return -ENOSUCHDRIVER;
@@ -267,7 +287,9 @@ int wdSwitchToFrame(WebDriver* driver, const wchar_t* path)
 {
     if (!driver || !driver->ie) return -ENOSUCHDRIVER;
 
-	return driver->ie->switchToFrame(path) ? SUCCESS : -ENOSUCHFRAME;
+	try {
+		return driver->ie->switchToFrame(path) ? SUCCESS : -ENOSUCHFRAME;
+	} END_TRY;
 }
 
 int wdWaitForLoadToComplete(WebDriver* driver) 

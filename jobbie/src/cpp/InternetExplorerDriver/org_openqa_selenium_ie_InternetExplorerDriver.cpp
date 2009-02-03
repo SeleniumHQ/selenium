@@ -282,7 +282,7 @@ JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_waitFo
 	TRY
 	{
 		wdWaitForLoadToComplete(driver);
-		delete driver;
+		nastyBridgingFunction2(driver);
 	}
 	END_TRY_CATCH_ANY
 }
@@ -334,41 +334,35 @@ JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_delete
 JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_setFrameIndex
   (JNIEnv *env, jobject obj, jstring pathToFrame)
 {
-	TRY
-	{
+	WebDriver *driver = getDriver(env, obj);
 	const wchar_t* path = (wchar_t *)env->GetStringChars(pathToFrame, 0);
-	InternetExplorerDriver* ie = getIe(env, obj);
-	if (!ie->switchToFrame(path)) {
+
+	int result = wdSwitchToFrame(driver, path);
+	env->ReleaseStringChars(pathToFrame, (jchar*) path);
+	nastyBridgingFunction2(driver);
+
+	if (result != SUCCESS) {
 		std::wstring msg(L"Cannot locate frame using path: ");
 		msg += path;
 		throwNoSuchFrameException(env, msg.c_str());
 	}
-	env->ReleaseStringChars(pathToFrame, (jchar*) path);
-	}
-	END_TRY_CATCH_ANY
 }
 
 
 JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_goBack
   (JNIEnv *env, jobject obj)
 {
-	TRY
-	{
-	InternetExplorerDriver* ie = getIe(env, obj);
-	ie->goBack();
-	}
-	END_TRY_CATCH_ANY
+	WebDriver* driver = getDriver(env, obj);
+	wdGoBack(driver);
+	nastyBridgingFunction2(driver);
 }
 
 JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_goForward
   (JNIEnv *env, jobject obj)
 {
-	TRY
-	{
-	InternetExplorerDriver* ie = getIe(env, obj);
-	ie->goForward();
-	}
-	END_TRY_CATCH_ANY
+	WebDriver* driver = getDriver(env, obj);
+	wdGoForward(driver);
+	nastyBridgingFunction2(driver);
 }
 
 JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerDriver_doAddCookie

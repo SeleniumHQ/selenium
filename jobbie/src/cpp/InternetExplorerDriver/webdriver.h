@@ -50,6 +50,8 @@ EXPORT int wdNewDriverInstance(WebDriver** result);
 EXPORT int wdFreeDriver(WebDriver* driver);
 
 EXPORT int wdGet(WebDriver* driver, const wchar_t* url);
+EXPORT int wdGoBack(WebDriver* driver);
+EXPORT int wdGoForward(WebDriver* driver);
 EXPORT int wdClose(WebDriver* driver);
 EXPORT int wdSetVisible(WebDriver* driver, int value);
 
