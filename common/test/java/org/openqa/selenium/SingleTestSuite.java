@@ -45,7 +45,7 @@ public class SingleTestSuite extends TestCase {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("ElementAttributeTest")
+        .onlyRun("FormHandlingTest")
 //        .method("testShouldNotBeAbleToClickOnAnElementThatIsNotDisplayed")
         .exclude(ALL)
 //        .exclude(Ignore.Driver.IE)

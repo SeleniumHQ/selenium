@@ -21,7 +21,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
-
+import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.SAFARI;
 
@@ -179,7 +179,39 @@ public class FormHandlingTest extends AbstractDriverTestCase {
 		}
 	}
 
-	@Ignore(value = SAFARI, reason = "Test fails")
+        @Ignore({FIREFOX, IE, SAFARI})
+        public void testTogglingAnOptionShouldThrowAnExceptionIfTheOptionIsNotInAMultiSelect() {
+          driver.get(formPage);
+
+          WebElement select = driver.findElement(By.name("selectomatic"));
+          WebElement option = select.findElements(By.tagName("option")).get(0);
+
+          try {
+            option.toggle();
+            fail("Should not be able to toggle an element");
+          } catch (UnsupportedOperationException e) {
+            // this is expected
+          }
+        }
+
+        @Ignore({FIREFOX, IE, SAFARI})
+        public void testTogglingAnOptionShouldToggleOptionsInAMultiSelect() {
+          driver.get(formPage);
+
+          WebElement select = driver.findElement(By.name("multi"));
+          WebElement option = select.findElements(By.tagName("option")).get(0);
+
+          boolean selected = option.isSelected();
+          boolean current = option.toggle();
+          assertFalse(selected == current);
+
+          current = option.toggle();
+          assertTrue(selected == current);
+        }
+
+
+
+        @Ignore(value = SAFARI, reason = "Test fails")
 	public void testShouldBeAbleToAlterTheContentsOfAFileUploadInputElement() throws Exception {
 		driver.get(formPage);
 		WebElement uploadElement = driver.findElement(By.id("upload"));
