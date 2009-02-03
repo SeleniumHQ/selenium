@@ -58,7 +58,7 @@ void throwNoSuchFrameException(JNIEnv *env, LPCWSTR msg)
 
 void throwRunTimeException(JNIEnv *env, LPCWSTR msg)
 {
-	throwException(env, "java/lang/RuntimeException", msg);
+	throwException(env, "org/openqa/selenium/WebDriverException", msg);
 }
 
 void throwUnsupportedOperationException(JNIEnv *env, LPCWSTR msg)

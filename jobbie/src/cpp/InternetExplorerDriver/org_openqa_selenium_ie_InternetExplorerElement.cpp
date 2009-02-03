@@ -41,10 +41,22 @@ JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_click
 	TRY
 	{
 	ElementWrapper* wrapper = getWrapper(env, obj);
+
+	try {
+		if (!wrapper->isDisplayed()) {
+			throwUnsupportedOperationException(env, L"You may not click on an element that is not displayed");
+			cout << "No exception" << endl;
+			return;
+		}
+	} catch (std::wstring& message) {	
+		throwRunTimeException(env, L"You may not click on an element that is not displayed. It is possible that the page this element was on is no longer being displayed.");
+		return;
+	}
+
 	try {
 		wrapper->click();
 	} catch (std::wstring& message) {
-		throwUnsupportedOperationException(env, message.c_str());
+		throwRunTimeException(env, message.c_str());
 	}
 	}
 	END_TRY_CATCH_ANY
