@@ -34,4 +34,36 @@ public class WebDriverException extends RuntimeException {
   public WebDriverException(String message, Throwable cause) {
     super(message, cause);
   }
+
+  public String getMessage() {
+    return createMessage(super.getMessage());
+  }
+
+  private String createMessage(String originalMessageString) {
+    return String.format("%sSystem info: %s\nDriver info: %s",
+                         originalMessageString == null ? "" : originalMessageString + "\n",
+                         getSystemInformation(),
+                         getDriverInformation());
+  }
+
+  public String getSystemInformation() {
+    return String.format("os.name: '%s', os.arch: '%s', os.version: '%s', java.version: '%s'",
+                         System.getProperty("os.name"),
+                         System.getProperty("os.arch"),
+                         System.getProperty("os.version"),
+                         System.getProperty("java.version"));
+  }
+
+  public String getDriverInformation() {
+    for (StackTraceElement e : getStackTrace()) {
+      if (e.getClassName().startsWith("org.openqa.selenium")) {
+        String[] bits = e.getClassName().split("\\.");
+        if (bits.length > 3 && !"support".equals("bits")) {
+          return "driver.version: " + bits[3];
+        }
+      }
+    }
+
+    return "driver.version: unknown";
+  }
 }
