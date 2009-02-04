@@ -56,7 +56,7 @@ JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_click
 			throwUnsupportedOperationException(env, L"You may not click on an element that is not displayed");
 			return;
 		}
-	} catch (std::wstring& message) {	
+	} catch (std::wstring&) {	
 		throwRunTimeException(env, L"You may not click on an element that is not displayed. It is possible that the page this element was on is no longer being displayed.");
 		return;
 	}
@@ -117,15 +117,13 @@ JNIEXPORT jstring JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_ge
 JNIEXPORT jstring JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_getElementName
   (JNIEnv *env, jobject obj)
 {
-	TRY
-	{
-	ElementWrapper* wrapper = getWrapper(env, obj);
+	WebElement* element = getElement(env, obj);
+	StringWrapper* wrapper;
 
-	LPCWSTR name = wrapper->getElementName();
-	return lpcw2jstring(env, name);
-	}
-	END_TRY_CATCH_ANY
-	return NULL;
+	wdeGetElementName(element, &wrapper);
+	nastyBridgingFunction4(element);
+
+	return convertToJString(env, wrapper);
 }
 
 JNIEXPORT jstring JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_getAttribute
@@ -144,83 +142,76 @@ JNIEXPORT jstring JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_ge
 JNIEXPORT jboolean JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_isEnabled
   (JNIEnv *env, jobject obj)
 {
-	TRY
-	{
-	ElementWrapper* wrapper = getWrapper(env, obj);
-	return wrapper->isEnabled() ? JNI_TRUE : JNI_FALSE;
-	}
-	END_TRY_CATCH_ANY
-	return NULL;
+	WebElement* element = getElement(env, obj);
+
+	int result;
+	wdeIsEnabled(element, &result);
+	nastyBridgingFunction4(element);
+
+	return result ? JNI_TRUE : JNI_FALSE;
 }
 
 JNIEXPORT jboolean JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_isSelected
   (JNIEnv *env, jobject obj)
 {
-	TRY
-	{
-	ElementWrapper* wrapper = getWrapper(env, obj);
-	return wrapper->isSelected() ? JNI_TRUE : JNI_FALSE;
-	}
-	END_TRY_CATCH_ANY
-	return NULL;
+	WebElement* element = getElement(env, obj);
+
+	int result;
+	wdeIsSelected(element, &result);
+	nastyBridgingFunction4(element);
+
+	return result ? JNI_TRUE : JNI_FALSE;
 }
 
 JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_setSelected
   (JNIEnv *env, jobject obj)
 {
-	TRY
-	{
-	ElementWrapper* wrapper = getWrapper(env, obj);
-	try {
-		wrapper->setSelected();
-	} catch (std::wstring& message) {
-		throwUnsupportedOperationException(env, message.c_str());
+	WebElement* element = getElement(env, obj);
+
+	if (wdeSetSelected(element) != SUCCESS) {
+		throwUnsupportedOperationException(env, L"You may not set this element to be selected");
 	}
-	}
-	END_TRY_CATCH_ANY
+
+	nastyBridgingFunction4(element);
 }
 
 JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_submit
   (JNIEnv *env, jobject obj)
 {
-	TRY
-	{
-	ElementWrapper* wrapper = getWrapper(env, obj);
-	try {
-		wrapper->submit();
-	} catch (std::wstring& message) {
-		throwNoSuchElementException(env, message.c_str());
+	WebElement* element = getElement(env, obj);
+
+	if (wdeSubmit(element) != SUCCESS) {
+		throwNoSuchElementException(env, L"Cannot submit form");
 	}
-	}
-	END_TRY_CATCH_ANY
+	nastyBridgingFunction4(element);
 }
 
 JNIEXPORT jboolean JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_toggle
   (JNIEnv *env, jobject obj)
 {
-	TRY
-	{
-	ElementWrapper* wrapper = getWrapper(env, obj);
-	try {
-		return wrapper->toggle() ? JNI_TRUE : JNI_FALSE;
-	} catch (std::wstring& message) {
-		throwUnsupportedOperationException(env, message.c_str());
+	WebElement* element = getElement(env, obj);
+
+	int result = 0;
+	if (wdeToggle(element, &result) != SUCCESS) {
+		throwUnsupportedOperationException(env, L"Cannot toggle element");
 	}
-	}
-	END_TRY_CATCH_ANY
-	return NULL;
+	nastyBridgingFunction4(element);
+
+	return result ? JNI_TRUE : JNI_FALSE;
 }
 
 JNIEXPORT jboolean JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_isDisplayed
   (JNIEnv *env, jobject obj)
 {
-	TRY
-	{
-	ElementWrapper* wrapper = getWrapper(env, obj);
-	return wrapper->isDisplayed() ? JNI_TRUE : JNI_FALSE;
+	WebElement* element = getElement(env, obj);
+
+	int result = 0;
+	if (wdeIsDisplayed(element, &result) != SUCCESS) {
+		throwRunTimeException(env, L"Cannot determine if element is displayed or not");
 	}
-	END_TRY_CATCH_ANY
-	return NULL;
+	nastyBridgingFunction4(element);
+
+	return result ? JNI_TRUE : JNI_FALSE;
 }
 
 JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_getLocationOnScreenOnceScrolledIntoView
@@ -244,19 +235,17 @@ JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_ge
 JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_getLocation
   (JNIEnv *env, jobject obj)
 {
-	TRY
-	{
-	ElementWrapper* wrapper = getWrapper(env, obj);
-	long x, y;
-	wrapper->getLocation(&x, &y);
+	WebElement* element = getElement(env, obj);
+
+	long x = 0;
+	long y = 0;
+	wdeGetLocation(element, &x, &y);
+	nastyBridgingFunction4(element);
 
 	jclass pointClass = env->FindClass("java/awt/Point");
 	jmethodID cId = env->GetMethodID(pointClass, "<init>", "(II)V");
 
 	return env->NewObject(pointClass, cId, x, y);
-	}
-	END_TRY_CATCH_ANY
-	return NULL;
 }
 
 JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_getSize
@@ -315,37 +304,6 @@ JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_relea
   (JNIEnv *, jobject, jlong)
 {
 	// No-op, but here to mirror behaviour of accessing other nodes
-}
-
-JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_getChildrenOfTypeNatively
-  (JNIEnv *env, jobject obj, jobject list, jstring tagName)
-{
-	TRY
-	{
-	jclass listClass = env->FindClass("java/util/List");
-	jmethodID addId = env->GetMethodID(listClass, "add", "(Ljava/lang/Object;)Z");
-
-	jclass ieeClass = env->FindClass("org/openqa/selenium/ie/InternetExplorerElement");
-	jmethodID cId = env->GetMethodID(ieeClass, "<init>", "(J)V");
-
-	const wchar_t* converted = (wchar_t*) env->GetStringChars(tagName, NULL);
-	ElementWrapper* wrapper = getWrapper(env, obj);
-	const std::vector<ElementWrapper*>* elements = wrapper->getChildrenWithTagName(converted);
-
-	std::vector<ElementWrapper*>::const_iterator end = elements->end();
-	std::vector<ElementWrapper*>::const_iterator cur = elements->begin();
-
-	while(cur < end)
-	{
-		ElementWrapper* wrapper = *cur;
-		jobject wrapped = env->NewObject(ieeClass, cId, wrapper);
-		env->CallVoidMethod(list, addId, wrapped);
-		cur++;
-	}
-	delete elements;
-
-	}
-	END_TRY_CATCH_ANY
 }
 
 JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_deleteStoredObject

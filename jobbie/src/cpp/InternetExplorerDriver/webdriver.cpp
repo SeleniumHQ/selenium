@@ -26,12 +26,12 @@ limitations under the License.
 
 #define END_TRY  catch(std::wstring&) \
 	{ \
-		return -10; \
+		return -EEXPECTEDERROR; \
 	} \
 	catch (...) \
 	{ \
 	safeIO::CoutA("CException caught in dll", true); \
-	return -11; }
+	return -EUNHANDLEDERROR; }
 
 
 struct WebDriver {
@@ -337,9 +337,11 @@ int wdeClick(WebElement* element)
 {
 	if (!element || !element->element) { return -ENOSUCHELEMENT; }
 
-	element->element->click();
+	try {
+		element->element->click();
 
-	return SUCCESS;
+		return SUCCESS;
+	} END_TRY;	
 }
 
 int wdeGetAttribute(WebElement* element, const wchar_t* name, StringWrapper** result)
@@ -382,13 +384,79 @@ int wdeGetText(WebElement* element, StringWrapper** result)
 	} END_TRY;
 }
 
+int wdeGetElementName(WebElement* element, StringWrapper** result)
+{
+	if (!element || !element->element) { return -ENOSUCHELEMENT; }
+
+	try {
+		const std::wstring originalString(element->element->getElementName());
+		size_t length = originalString.length() + 1;
+		wchar_t* toReturn = new wchar_t[length];
+
+		wcscpy_s(toReturn, length, originalString.c_str());
+
+		StringWrapper* res = new StringWrapper();
+		res->text = toReturn;
+	    
+		*result = res;
+
+		return SUCCESS;
+	} END_TRY;
+}
+
+int wdeIsSelected(WebElement* element, int* result)
+{
+    if (!element || !element->element) { return -ENOSUCHELEMENT; }
+
+	try {
+		*result = element->element->isSelected() ? 1 : 0;
+
+		return SUCCESS;
+	} END_TRY;
+}
+
+int wdeSetSelected(WebElement* element)
+{
+    if (!element || !element->element) { return -ENOSUCHELEMENT; }
+
+	try {
+		element->element->setSelected();
+
+		return SUCCESS;
+	} END_TRY;
+}
+
+int wdeToggle(WebElement* element, int* result)
+{
+    if (!element || !element->element) { return -ENOSUCHELEMENT; }
+
+	try {
+		*result = element->element->toggle() ? 1 : 0;
+
+		return SUCCESS;
+	} END_TRY;
+}
+
+int wdeIsEnabled(WebElement* element, int* result) 
+{
+    if (!element || !element->element) { return -ENOSUCHELEMENT; }
+
+	try {
+		*result = element->element->isEnabled() ? 1 : 0;
+
+		return SUCCESS;
+	} END_TRY;
+}
+
 int wdeIsDisplayed(WebElement* element, int* result)
 {
 	if (!element || !element->element) { return -ENOSUCHELEMENT; }
 
-	*result = element->element->isDisplayed() ? 1 : 0;
+	try {
+		*result = element->element->isDisplayed() ? 1 : 0;
 
-	return SUCCESS;
+		return SUCCESS;
+	} END_TRY;
 }
 
 int wdeSendKeys(WebElement* element, const wchar_t* text)
@@ -416,9 +484,21 @@ int wdeSubmit(WebElement* element)
 {
 	if (!element || !element->element) { return -ENOSUCHELEMENT; }
 
-	element->element->submit();
+	try {
+		element->element->submit();
+		return SUCCESS;
+	} END_TRY;	
+}
 
-	return SUCCESS;
+int wdeGetLocation(WebElement* element, long* x, long* y)
+{
+        if (!element || !element->element) { return -ENOSUCHELEMENT; }
+
+		try {
+			element->element->getLocation(x, y);
+
+			return SUCCESS;
+		} END_TRY;
 }
 
 int wdFindElementById(WebDriver* driver, WebElement* element, const wchar_t* id, WebElement** result)

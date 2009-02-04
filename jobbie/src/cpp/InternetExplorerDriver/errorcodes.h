@@ -13,5 +13,6 @@
 #define ENOTIMPLEMENTED    9
 #define EOBSOLETEELEMENT   10
 #define EUNHANDLEDERROR    13
+#define EEXPECTEDERROR     14
 
 #define SUCCESS 0

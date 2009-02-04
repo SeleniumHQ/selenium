@@ -211,7 +211,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
 
 
 
-        @Ignore(value = SAFARI, reason = "Test fails")
+  @Ignore(value = SAFARI, reason = "Test fails")
 	public void testShouldBeAbleToAlterTheContentsOfAFileUploadInputElement() throws Exception {
 		driver.get(formPage);
 		WebElement uploadElement = driver.findElement(By.id("upload"));

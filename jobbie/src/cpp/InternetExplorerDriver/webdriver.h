@@ -69,10 +69,17 @@ EXPORT int wdWaitForLoadToComplete(WebDriver* driver);
 EXPORT int wdeClick(WebElement* element);
 EXPORT int wdeGetAttribute(WebElement* element, const wchar_t* string, StringWrapper** result);
 EXPORT int wdeGetText(WebElement* element, StringWrapper** result);
+EXPORT int wdeGetElementName(WebElement* element, StringWrapper** result);
+EXPORT int wdeIsSelected(WebElement* element, int* result);
+EXPORT int wdeSetSelected(WebElement* element);
+EXPORT int wdeToggle(WebElement* element, int* result);
+EXPORT int wdeIsEnabled(WebElement* element, int* result);
 EXPORT int wdeIsDisplayed(WebElement* element, int* result);
 EXPORT int wdeSendKeys(WebElement* element, const wchar_t* text);
 EXPORT int wdeClear(WebElement* element);
 EXPORT int wdeSubmit(WebElement* element);
+
+EXPORT int wdeGetLocation(WebElement* element, long* x, long* y);
 
 
 // Element locating functions
