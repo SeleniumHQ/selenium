@@ -18,6 +18,7 @@ limitations under the License.
 package org.openqa.selenium.firefox;
 
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.firefox.NotConnectedException;
 import org.openqa.selenium.firefox.internal.RunningInstanceConnection;
 
 import java.io.IOException;
@@ -47,10 +48,10 @@ public class FirefoxLauncher {
     
     // If there's a browser already running, connect and kill it.
     launcher.connectAndKill(port);
-
+    
     // Ensure the profile is created, and initialize it.
     launcher.createBaseWebDriverProfile(binary, profileName, port);
-    
+
     // Connect until it works.
     launcher.repeatedlyConnectUntilFirefoxAppearsStable(port);
   }
@@ -92,6 +93,8 @@ public class FirefoxLauncher {
         ExtensionConnection connection = new RunningInstanceConnection("localhost", port, 5000);
         connection.quit();
     } catch (ConnectException e) {
+        // This is fine. It just means that Firefox isn't running with the webdriver extension installed already
+    } catch (NotConnectedException e) {
         // This is fine. It just means that Firefox isn't running with the webdriver extension installed already
     } catch (IOException e) {
         throw new WebDriverException(e);
