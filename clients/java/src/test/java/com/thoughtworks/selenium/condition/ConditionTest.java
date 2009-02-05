@@ -82,15 +82,15 @@ public class ConditionTest extends TestCase {
     public void testCanTurnTrueBeforeTimeout() throws Exception {
         long start = System.currentTimeMillis();
         final int[] time = new int[1];
-        JUnitConditionRunner conditionRunner1 = new JUnitConditionRunner(null, 0, 100, 5000);
+        JUnitConditionRunner conditionRunner1 = new JUnitConditionRunner(null, 0, 100, 2000);
         conditionRunner1.waitFor(new Condition() {
             public boolean isTrue(ConditionRunner.Context runner) {
-                return time[0]++ == 48;
+                return time[0]++ >= 12;
             }
         });
         long l = System.currentTimeMillis() - start;
-        assertTrue(l >= 4800); // is waiting at least 48 * 100 milliseconds
-        assertTrue(l < 5000); // but timing out before 5000 milliseconds
+        assertTrue(l >= 1200); // is waiting at least 12 * 100 milliseconds
+        assertTrue(l < 2000); // but timing out before 2000 milliseconds
     }
 
     public void testCannotTurnTrueAfterTimeout() throws Exception {
