@@ -5,60 +5,74 @@
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
-<thead>
-<tr><td rowspan="1" colspan="3">TestUseXpathLibrary</td></tr>
-</thead><tbody>
-<tr>
-	<td>useXpathLibrary</td>
-	<td>ajaxslt</td>
-	<td></td>
-</tr>
-<tr>
-	<td>assertEval</td>
-	<td>this.browserbot.xpathLibrary</td>
-	<td>ajaxslt</td>
-</tr>
-<tr>
-	<td>useXpathLibrary</td>
-	<td>javascript-xpath</td>
-	<td></td>
-</tr>
-<tr>
-	<td>assertEval</td>
-	<td>this.browserbot.xpathLibrary</td>
-	<td>javascript-xpath</td>
-</tr>
-<tr>
-	<td>useXpathLibrary</td>
-	<td></td>
-	<td></td>
-</tr>
-<tr>
-	<td>assertEval</td>
-	<td>this.browserbot.xpathLibrary</td>
-	<td>javascript-xpath</td>
-</tr>
-<tr>
-	<td>useXpathLibrary</td>
-	<td>nonExisting-xpath-library</td>
-	<td></td>
-</tr>
-<tr>
-	<td>assertEval</td>
-	<td>this.browserbot.xpathLibrary</td>
-	<td>javascript-xpath</td>
-</tr>
-<tr>
-	<td>useXpathLibrary</td>
-	<td>default</td>
-	<td></td>
-</tr>
-<tr>
-	<td>assertEval</td>
-	<td>this.browserbot.xpathLibrary</td>
-	<td>ajaxslt</td>
-</tr>
+	<thead>
+		<tr>
+			<td rowspan="1" colspan="3">TestUseXpathLibrary</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>useXpathLibrary</td>
+			<td>ajaxslt</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>assertEval</td>
+			<td>this.browserbot.xpathLibrary</td>
+			<td>ajaxslt</td>
+		</tr>
+		<tr>
+			<td>assertXpathCount</td>
+			<td>//</td>
+			<td>1</td>
+		</tr>
+		<tr>
+			<td>useXpathLibrary</td>
+			<td>javascript-xpath</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>assertEval</td>
+			<td>this.browserbot.xpathLibrary</td>
+			<td>javascript-xpath</td>
+		</tr>
+		<tr>
+			<td>assertXpathCount</td>
+			<td>//</td>
+			<td>1</td>
+		</tr>
+		<tr>
+			<td>useXpathLibrary</td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>assertEval</td>
+			<td>this.browserbot.xpathLibrary</td>
+			<td>javascript-xpath</td>
+		</tr>
+		<tr>
+			<td>useXpathLibrary</td>
+			<td>nonExisting-xpath-library</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>assertEval</td>
+			<td>this.browserbot.xpathLibrary</td>
+			<td>javascript-xpath</td>
+		</tr>
+		<tr>
+			<td>useXpathLibrary</td>
+			<td>default</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>assertEval</td>
+			<td>this.browserbot.xpathLibrary</td>
+			<td>ajaxslt</td>
+		</tr>
 
-</tbody></table>
+	</tbody>
+</table>
 </body>
 </html>
