@@ -47,27 +47,15 @@ extern "C" {
 JNIEXPORT void JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_click
   (JNIEnv *env, jobject obj)
 {
-	TRY
-	{
-	ElementWrapper* wrapper = getWrapper(env, obj);
+	WebElement* element = getElement(env, obj);
 
-	try {
-		if (!wrapper->isDisplayed()) {
-			throwUnsupportedOperationException(env, L"You may not click on an element that is not displayed");
-			return;
-		}
-	} catch (std::wstring&) {	
-		throwRunTimeException(env, L"You may not click on an element that is not displayed. It is possible that the page this element was on is no longer being displayed.");
-		return;
-	}
+	int result = wdeClick(element);
 
-	try {
-		wrapper->click();
-	} catch (std::wstring& message) {
-		throwRunTimeException(env, message.c_str());
+	if (result == -EELEMENTNOTDISPLAYED) {
+		throwUnsupportedOperationException(env, L"You may not click on an element that is not displayed");
+	} else if (result == -EOBSOLETEELEMENT) {
+		throwRunTimeException(env, L"The element you clicked appears to be stale. Has the page reloaded since you got the reference to it?");
 	}
-	}
-	END_TRY_CATCH_ANY
 }
 
 JNIEXPORT jstring JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_getValue
@@ -219,14 +207,25 @@ JNIEXPORT jobject JNICALL Java_org_openqa_selenium_ie_InternetExplorerElement_ge
 {
 	TRY
 	{
-	ElementWrapper *wrapper = getWrapper(env, obj);
-	long x = 0, y = 0;
-	wrapper->getLocationOnceScrolledIntoView(&x, &y);
+		ElementWrapper *wrapper = getWrapper(env, obj);
+		long x = 0, y = 0;
+		int result = wrapper->getLocationWhenScrolledIntoView(&x, &y);
 
-	jclass pointClass = env->FindClass("java/awt/Point");
-	jmethodID cId = env->GetMethodID(pointClass, "<init>", "(II)V");
+		if (result != SUCCESS) {
+			if (result == -ENOSUCHELEMENT) 
+				throwNoSuchElementException(env, L"Element does not appear to exist.");
+			else if (result == -EOBSOLETEELEMENT) 
+				throwRunTimeException(env, L"The element you wanted to click appears to be obsolete. Is it a stale reference?");
+			else 
+				throwRunTimeException(env, L"An unexpected error occured whilst scrolling into view. The most likely explanation is that the element cannot be scrolled into view for some reason");
 
-	return env->NewObject(pointClass, cId, x, y);
+			return NULL;
+		}
+
+		jclass pointClass = env->FindClass("java/awt/Point");
+		jmethodID cId = env->GetMethodID(pointClass, "<init>", "(II)V");
+
+		return env->NewObject(pointClass, cId, x, y);
 	} 
 	END_TRY_CATCH_ANY
 	return NULL;

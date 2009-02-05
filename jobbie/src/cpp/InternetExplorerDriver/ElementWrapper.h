@@ -40,17 +40,17 @@ public:
 	void setSelected();
 	bool isEnabled();
 	bool isDisplayed();
-	bool toggle();
+	int toggle(bool*);
 	LPCWSTR getText();
 	LPCWSTR getValueOfCssProperty(LPCWSTR propertyName);
 	void releaseInterface();
 
-	void getLocationOnceScrolledIntoView(long *x, long *y);
+	int getLocationWhenScrolledIntoView(long *x, long *y);
 	void getLocation(long *x, long *y);
 	long getWidth();
 	long getHeight();
 
-	void click();
+	int click();
 	void submit();
 
 	std::vector<ElementWrapper*>* getChildrenWithTagName(LPCWSTR tagName);

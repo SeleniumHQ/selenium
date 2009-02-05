@@ -338,9 +338,9 @@ int wdeClick(WebElement* element)
 	if (!element || !element->element) { return -ENOSUCHELEMENT; }
 
 	try {
-		element->element->click();
+		int res = element->element->click();
 
-		return SUCCESS;
+		return res;
 	} END_TRY;	
 }
 
@@ -431,8 +431,13 @@ int wdeToggle(WebElement* element, int* result)
     if (!element || !element->element) { return -ENOSUCHELEMENT; }
 
 	try {
-		*result = element->element->toggle() ? 1 : 0;
+		bool toggled;
+		int res = element->element->toggle(&toggled);
 
+		if (res != SUCCESS) {
+			return res;
+		}
+		*result = toggled ? 1 : 0;
 		return SUCCESS;
 	} END_TRY;
 }

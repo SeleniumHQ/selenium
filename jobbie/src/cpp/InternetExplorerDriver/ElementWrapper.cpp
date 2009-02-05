@@ -18,6 +18,7 @@ limitations under the License.
 
 #include "StdAfx.h"
 
+#include "errorcodes.h"
 #include "utils.h"
 #include "InternalCustomMessage.h"
 
@@ -102,24 +103,32 @@ bool ElementWrapper::isDisplayed()
 	return data.output_bool_;
 }
 
-bool ElementWrapper::toggle()
+int ElementWrapper::toggle(bool* result)
 {
 	SCOPETRACER
-	click();
-	return isSelected();
+	int res = click();
+	if (res != SUCCESS) {
+		return res;
+	}
+	*result = isSelected();
+	return SUCCESS;
 }
 
-void ElementWrapper::getLocationOnceScrolledIntoView(long* x, long* y) 
+int ElementWrapper::getLocationWhenScrolledIntoView(long* x, long* y) 
 {
 	SCOPETRACER
 	SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_ELEM_GETLOCATIONONCESCROLLEDINTOVIEW,)
+
+	if (data.error_code != SUCCESS) {
+		return data.error_code;
+	}
 
 	VARIANT result = data.output_variant_;
 	
 	if (result.vt != VT_ARRAY) {
 		*x = 0;
 		*y = 0;
-		return;
+		return -EUNHANDLEDERROR;
 	}
 
 	SAFEARRAY* ary = result.parray;
@@ -134,6 +143,7 @@ void ElementWrapper::getLocationOnceScrolledIntoView(long* x, long* y)
 	*y = yVariant.lVal;
 
 	SafeArrayDestroy(ary);
+	return SUCCESS;
 }
 
 void ElementWrapper::getLocation(long* x, long* y) 
@@ -191,10 +201,12 @@ LPCWSTR ElementWrapper::getText()
 	return data.output_string_.c_str();
 }
 
-void ElementWrapper::click()
+int ElementWrapper::click()
 {
 	SCOPETRACER
 	SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_ELEM_CLICK,)
+
+	return data.error_code;
 }
 
 void ElementWrapper::submit()
