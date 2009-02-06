@@ -22,13 +22,11 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.internal.Executable;
 import org.openqa.selenium.firefox.internal.Streams;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -36,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 
 public class FirefoxBinary {
+    private final StringWriter stdOutBuffer = new StringWriter();
     private final Map<String, String> extraEnv = new HashMap<String, String>();
     private final Executable executable;
     private Process process;
@@ -76,29 +75,45 @@ public class FirefoxBinary {
         process = builder.start();
     }
 
+    /**
+     * Waits for the process to execute, returning the command output taken from the profile's execution.
+     * 
+     * @throws InterruptedException if we are interrupted while waiting for the process to launch
+     * @throws IOException if there is a problem with reading the input stream of the launching process
+     */
     public void waitFor() throws InterruptedException, IOException {
-        process.waitFor();
-
-        // The Mac version (and perhaps others) spawns a new process when the profile needs fixing up
-        // This child process shares the same stdout, stdin and stderr as the parent one. By reading
-        // the line of input until EOF is reached, we know that we're good and that the child subprocess
-        // has also quit.
-        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-        try {
-            while (reader.readLine() != null) {
-              sleep(100);
-            }
-        } finally {
+      process.waitFor();
+  
+      // The Mac version (and perhaps others) spawns a new process when the profile needs fixing up
+      // This child process shares the same stdout, stdin and stderr as the parent one. By reading
+      // the line of input until EOF is reached, we know that we're good and that the child subprocess
+      // has also quit.
+      BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+      try {
+        String line;
+        while((line = reader.readLine()) != null) {
+          stdOutBuffer.append(line).append("\n");
+          sleep(100);
+        }
+      } finally {
             reader.close();
-        }        
+      }        
     }
 
-    public String drainInputStream() throws IOException {
+    /**
+     * Gets all console output of the binary.  
+     * Output retrieval is non-destructive and non-blocking.
+     * 
+     * @return the console output of the executed binary.
+     * @throws IOException
+     */
+    public String getConsoleOutput() throws IOException {
       if (process == null) {
         return null;
       }
-
-      return new String(Streams.drainStream(process.getInputStream()));
+      
+      stdOutBuffer.append(new String(Streams.drainStream(process.getInputStream())));
+      return stdOutBuffer.toString();
     }
 
     private void sleep(long timeInMillis) {

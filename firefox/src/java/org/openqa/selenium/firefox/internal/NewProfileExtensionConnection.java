@@ -59,7 +59,7 @@ public class NewProfileExtensionConnection extends AbstractExtensionConnection {
       super.connectToBrowser(timeToWaitInMilliSeconds);
     } catch (WebDriverException e) {
       throw new WebDriverException(
-          String.format("Failed to connect to browser; process output follows: \n%s", process.drainInputStream()), e);
+          String.format("Failed to connect to browser; process output follows: \n%s", process.getConsoleOutput()), e);
     }
   }
 
