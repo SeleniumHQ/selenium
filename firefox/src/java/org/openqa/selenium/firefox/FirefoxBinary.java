@@ -142,4 +142,9 @@ public class FirefoxBinary {
       } while (profile.isRunning());
     }
   }
+  
+  @Override
+  public String toString() {
+    return "FirefoxBinary(" + executable.getPath() + ")";
+  }
 }
