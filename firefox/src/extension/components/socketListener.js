@@ -94,8 +94,15 @@ SocketListener.prototype.executeCommand = function() {
         elementId : command.elementId
     };
 
+    var statusBarLabel = null;
+
     var respond = {
         send : function() {
+            // Indicate, that we are no longer executing a command ...
+            if (statusBarLabel) {
+                statusBarLabel.style.color = "black";
+            }
+
             sendBack.context = "" + sendBack.context;
             var remainder = JSON.stringify(sendBack);
 
@@ -154,8 +161,9 @@ SocketListener.prototype.executeCommand = function() {
         command.context = command.context.toString();
 
         var allWindows = this.wm.getEnumerator(null);
+        var win;
         while (allWindows.hasMoreElements()) {
-            var win = allWindows.getNext();
+            win = allWindows.getNext();
             if (win["fxdriver"] && win.fxdriver.id == context.windowId) {
                 fxbrowser = win.getBrowser();
                 driver = win.fxdriver;
@@ -209,6 +217,11 @@ SocketListener.prototype.executeCommand = function() {
         }
 
         driver.context.fxdocument = fxdocument;
+        // Indicate, that we are about to execute a command ...
+        statusBarLabel = win.document.getElementById("fxdriver-label");
+        if (statusBarLabel) {
+            statusBarLabel.style.color = "red";
+        }
 
         var webNav = frame.QueryInterface(CI.nsIInterfaceRequestor).getInterface(CI.nsIWebNavigation);
         var loadGroup = webNav.QueryInterface(CI.nsIInterfaceRequestor).getInterface(CI.nsILoadGroup);
