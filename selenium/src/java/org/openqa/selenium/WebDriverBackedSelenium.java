@@ -652,8 +652,8 @@ public class WebDriverBackedSelenium implements Selenium {
   public void open(String url) {
     String urlToOpen = url;
 
-    if (!url.startsWith("/") && !url.startsWith("http")) {
-      urlToOpen = baseUrl + "/" + url;
+    if (url.indexOf("://") == -1) {
+      urlToOpen = baseUrl + (!url.startsWith("/") ? "/" : "") + url;
     }
     driver.get(urlToOpen);
   }
