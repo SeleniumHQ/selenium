@@ -5,11 +5,11 @@ require 'rake/testtask'
 require 'rake/rdoctask'
 
 def windows?
-  RUBY_PLATFORM =~ /win32/i
+  RUBY_PLATFORM.downcase.include?("win32")
 end
 
 def mac?
-  RUBY_PLATFORM =~ /darwin/i
+  RUBY_PLATFORM.downcase.include?("darwin")
 end
 
 def all?
