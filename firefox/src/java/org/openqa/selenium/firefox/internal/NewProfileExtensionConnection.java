@@ -53,6 +53,15 @@ public class NewProfileExtensionConnection extends AbstractExtensionConnection {
     }
   }
 
+  @Override
+  protected void connectToBrowser(long timeToWaitInMilliSeconds) throws IOException {
+    try {
+      super.connectToBrowser(timeToWaitInMilliSeconds);
+    } catch (WebDriverException e) {
+      throw new WebDriverException(
+          String.format("Failed to connect to browser; process output follows: \n%s", process.drainInputStream()), e);
+    }
+  }
 
   protected int determineNextFreePort(String host, int port) throws IOException {
     // Attempt to connect to the given port on the host

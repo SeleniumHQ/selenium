@@ -20,10 +20,14 @@ package org.openqa.selenium.firefox;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.internal.Executable;
+import org.openqa.selenium.firefox.internal.Streams;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,6 +56,7 @@ public class FirefoxBinary {
         commands.add(executable.getPath());
         commands.addAll(Arrays.asList(commandLineFlags));
         ProcessBuilder builder = new ProcessBuilder(commands);
+        builder.redirectErrorStream();
         builder.environment().putAll(extraEnv);
         executable.setLibraryPath(builder, extraEnv);
         process = builder.start();
@@ -86,6 +91,14 @@ public class FirefoxBinary {
         } finally {
             reader.close();
         }        
+    }
+
+    public String drainInputStream() throws IOException {
+      if (process == null) {
+        return null;
+      }
+
+      return new String(Streams.drainStream(process.getInputStream()));
     }
 
     private void sleep(long timeInMillis) {
