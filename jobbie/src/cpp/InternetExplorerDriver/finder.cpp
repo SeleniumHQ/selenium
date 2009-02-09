@@ -16,6 +16,7 @@ limitations under the License.
 */
 
 #include "stdafx.h"
+#include "errorcodes.h"
 #include "utils.h"
 
 extern wchar_t* XPATHJS[];
@@ -27,13 +28,13 @@ void IeThread::OnSelectElementById(WPARAM w, LPARAM lp)
 {
 	SCOPETRACER
 	ON_THREAD_COMMON(data)
-	long &errorKind = data.output_long_;
+	int &errorKind = data.error_code;
 	CComPtr<IHTMLElement> inputElement(data.input_html_element_);
 	IHTMLElement* &pDom = data.output_html_element_;
 	const wchar_t *elementId= data.input_string_;
 
 	pDom = NULL;
-	errorKind = 0;
+	errorKind = SUCCESS;
 
 	/// Start from root DOM by default
 	if(!inputElement)
@@ -42,7 +43,7 @@ void IeThread::OnSelectElementById(WPARAM w, LPARAM lp)
 		getDocument3(&root_doc);
 		if (!root_doc) 
 		{
-			errorKind = 1;
+			errorKind = -ENOSUCHDOCUMENT;
 			return;
 		}
 		root_doc->get_documentElement(&inputElement);
@@ -51,7 +52,7 @@ void IeThread::OnSelectElementById(WPARAM w, LPARAM lp)
 	CComQIPtr<IHTMLDOMNode> node(inputElement);
 	if (!node) 
 	{
-		errorKind = 1;
+		errorKind = -ENOSUCHELEMENT;
 		return;
 	}
 
@@ -60,7 +61,7 @@ void IeThread::OnSelectElementById(WPARAM w, LPARAM lp)
 
 	if (!doc) 
 	{
-		errorKind = 1;
+		errorKind = -ENOSUCHDOCUMENT;
 		return;
 	}
  
@@ -68,7 +69,10 @@ void IeThread::OnSelectElementById(WPARAM w, LPARAM lp)
 	CComBSTR id(elementId);
 	doc->getElementById(id, &element);
 
-	if(NULL == element) return;
+	if(NULL == element) {
+		errorKind = -ENOSUCHELEMENT;
+		return;
+	}
 	
 	CComVariant value;
 	element->getAttribute(CComBSTR(L"id"), 0, &value);
@@ -110,6 +114,8 @@ void IeThread::OnSelectElementById(WPARAM w, LPARAM lp)
 			}
 		}
 	}	
+
+	errorKind = -ENOSUCHELEMENT;
 }
 
 void IeThread::OnSelectElementsById(WPARAM w, LPARAM lp)
@@ -184,13 +190,13 @@ void IeThread::OnSelectElementByLink(WPARAM w, LPARAM lp)
 {
 	SCOPETRACER
 	ON_THREAD_COMMON(data)
-	long &errorKind = data.output_long_;
+	int &errorKind = data.error_code;
 	CComPtr<IHTMLElement> inputElement(data.input_html_element_);
 	IHTMLElement* &pDom = data.output_html_element_;
 	const wchar_t *elementLink= data.input_string_;
 
 	pDom = NULL;
-	errorKind = 0;
+	errorKind = SUCCESS;
 
 	/// Start from root DOM by default
 	if(!inputElement)
@@ -199,7 +205,7 @@ void IeThread::OnSelectElementByLink(WPARAM w, LPARAM lp)
 		getDocument3(&root_doc);
 		if (!root_doc) 
 		{
-			errorKind = 1;
+			errorKind = -ENOSUCHDOCUMENT;
 			return;
 		}
 		root_doc->get_documentElement(&inputElement);
@@ -208,7 +214,7 @@ void IeThread::OnSelectElementByLink(WPARAM w, LPARAM lp)
 	CComQIPtr<IHTMLDOMNode> node(inputElement);
 	if (!node) 
 	{
-		errorKind = 1;
+		errorKind = -ENOSUCHELEMENT;
 		return;
 	}
 
@@ -217,7 +223,7 @@ void IeThread::OnSelectElementByLink(WPARAM w, LPARAM lp)
 	getDocument2(node, &doc);
 	if (!doc) 
 	{
-		errorKind = 1;
+		errorKind = -ENOSUCHDOCUMENT;
 		return;
 	}
 
@@ -247,6 +253,8 @@ void IeThread::OnSelectElementByLink(WPARAM w, LPARAM lp)
 			return;
 		}
 	}
+
+	errorKind = -ENOSUCHELEMENT;
 }
 
 void IeThread::OnSelectElementsByLink(WPARAM w, LPARAM lp)
@@ -322,7 +330,7 @@ void IeThread::OnSelectElementByName(WPARAM w, LPARAM lp)
 {
 	SCOPETRACER
 	ON_THREAD_COMMON(data)
-	long &errorKind = data.output_long_; 
+	int &errorKind = data.error_code; 
 	CComPtr<IHTMLElement> inputElement(data.input_html_element_);
 	IHTMLElement* &pDom = data.output_html_element_; 
 	const wchar_t *elementName= data.input_string_; 
@@ -337,7 +345,7 @@ void IeThread::OnSelectElementByName(WPARAM w, LPARAM lp)
 		getDocument3(&root_doc);
 		if (!root_doc) 
 		{
-			errorKind = 1;
+			errorKind = -ENOSUCHDOCUMENT;
 			return;
 		}
 		root_doc->get_documentElement(&inputElement);
@@ -346,7 +354,7 @@ void IeThread::OnSelectElementByName(WPARAM w, LPARAM lp)
 	CComQIPtr<IHTMLDOMNode> node(inputElement);
 	if (!node) 
 	{
-		errorKind = 1;
+		errorKind = -ENOSUCHELEMENT;
 		return;
 	}
 
@@ -354,7 +362,7 @@ void IeThread::OnSelectElementByName(WPARAM w, LPARAM lp)
 	getDocument2(node, &doc);
 	if (!doc) 
 	{
-		errorKind = 1;
+		errorKind = -ENOSUCHDOCUMENT;
 		return;
 	}
 
@@ -382,9 +390,12 @@ void IeThread::OnSelectElementByName(WPARAM w, LPARAM lp)
 		element->getAttribute(CComBSTR(L"name"), 0, &value);
 		if (wcscmp( comvariant2cw(value), elementName)==0 && isOrUnder(node, element)) {
 			element.CopyTo(&pDom);
+			errorKind = SUCCESS;
 			return;
 		}
 	}
+
+	errorKind = -ENOSUCHELEMENT;
 }
 
 
@@ -461,19 +472,19 @@ void IeThread::OnSelectElementByTagName(WPARAM w, LPARAM lp)
 {
 	SCOPETRACER
 	ON_THREAD_COMMON(data)
-	long &errorKind = data.output_long_; 
+	int &errorKind = data.error_code; 
 	CComPtr<IHTMLElement> inputElement(data.input_html_element_);
 	IHTMLElement* &pDom = data.output_html_element_; 
 	const wchar_t *tagName = data.input_string_; 
 
 	pDom = NULL;
-	errorKind = 0;
+	errorKind = SUCCESS;
 
 	CComPtr<IHTMLDocument3> root_doc;
 	getDocument3(&root_doc);
 	if (!root_doc) 
 	{
-		errorKind = 1;
+		errorKind = -ENOSUCHDOCUMENT;
 		return;
 	}
 	
@@ -482,7 +493,7 @@ void IeThread::OnSelectElementByTagName(WPARAM w, LPARAM lp)
 
 	if (!elements)
 	{
-		errorKind = 1;
+		errorKind = -ENOSUCHELEMENT;
 		return;
 	}
 
@@ -511,7 +522,7 @@ void IeThread::OnSelectElementByTagName(WPARAM w, LPARAM lp)
 		}
 	}
 
-	errorKind = 1;
+	errorKind = -ENOSUCHELEMENT;
 }
 
 void IeThread::OnSelectElementsByTagName(WPARAM w, LPARAM lp)
@@ -572,13 +583,13 @@ void IeThread::OnSelectElementByClassName(WPARAM w, LPARAM lp)
 {
 	SCOPETRACER
 	ON_THREAD_COMMON(data)
-	long &errorKind = data.output_long_; 
+	int &errorKind = data.error_code;
 	CComPtr<IHTMLElement> inputElement(data.input_html_element_);
 	IHTMLElement* &pDom = data.output_html_element_; 
 	const wchar_t *elementClassName= data.input_string_; 
 
 	pDom = NULL;
-	errorKind = 0;
+	errorKind = SUCCESS;
 
 	/// Start from root DOM by default
 	if(!inputElement)
@@ -587,7 +598,7 @@ void IeThread::OnSelectElementByClassName(WPARAM w, LPARAM lp)
 		getDocument3(&root_doc);
 		if (!root_doc) 
 		{
-			errorKind = 1;
+			errorKind = -ENOSUCHDOCUMENT;
 			return;
 		}
 		root_doc->get_documentElement(&inputElement);
@@ -596,7 +607,7 @@ void IeThread::OnSelectElementByClassName(WPARAM w, LPARAM lp)
 	CComQIPtr<IHTMLDOMNode> node(inputElement);
 	if (!node) 
 	{
-		errorKind = 1;
+		errorKind = -ENOSUCHELEMENT;
 		return;
 	}
 
@@ -604,7 +615,7 @@ void IeThread::OnSelectElementByClassName(WPARAM w, LPARAM lp)
 	getDocument2(node, &doc2);
 	if (!doc2) 
 	{
-		errorKind = 1;
+		errorKind = -ENOSUCHDOCUMENT;
 		return;
 	}
 
@@ -646,6 +657,8 @@ void IeThread::OnSelectElementByClassName(WPARAM w, LPARAM lp)
 			return;
 		}
 	}
+
+	errorKind = -ENOSUCHELEMENT;
 }
 
 void IeThread::OnSelectElementsByClassName(WPARAM w, LPARAM lp)

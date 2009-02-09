@@ -56,17 +56,17 @@ public:
 
 	ElementWrapper* getActiveElement();
 
-	ElementWrapper* selectElementByXPath(IHTMLElement *p, const wchar_t *xpath);
+	int selectElementByXPath(IHTMLElement *p, const wchar_t *xpath, ElementWrapper** element);
 	std::vector<ElementWrapper*>* selectElementsByXPath(IHTMLElement *p, const wchar_t *xpath);
-	ElementWrapper* selectElementById(IHTMLElement *p, const wchar_t *elementId);
+	int selectElementById(IHTMLElement *p, const wchar_t *elementId, ElementWrapper** element);
 	std::vector<ElementWrapper*>* selectElementsById(IHTMLElement *p, const wchar_t *elementId);
-	ElementWrapper* selectElementByLink(IHTMLElement *p, const wchar_t *elementLink);
+	int selectElementByLink(IHTMLElement *p, const wchar_t *elementLink, ElementWrapper** element);
 	std::vector<ElementWrapper*>* selectElementsByLink(IHTMLElement *p, const wchar_t *elementLink);
-	ElementWrapper* selectElementByName(IHTMLElement *p, const wchar_t *elementName);
+	int selectElementByName(IHTMLElement *p, const wchar_t *elementName, ElementWrapper** wrapper);
 	std::vector<ElementWrapper*>* selectElementsByName(IHTMLElement *p, const wchar_t *elementName);
-	ElementWrapper* selectElementByTagName(IHTMLElement *p, const wchar_t *elementName);
+	int selectElementByTagName(IHTMLElement *p, const wchar_t *elementName, ElementWrapper** element);
 	std::vector<ElementWrapper*>* selectElementsByTagName(IHTMLElement *p, const wchar_t *elementName);
-	ElementWrapper* selectElementByClassName(IHTMLElement *p, const wchar_t *elementClassName);
+	int selectElementByClassName(IHTMLElement *p, const wchar_t *elementClassName, ElementWrapper** element);
 	std::vector<ElementWrapper*>* selectElementsByClassName(IHTMLElement *p, const wchar_t *elementClassName);
 
 	void waitForNavigateToFinish();

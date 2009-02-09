@@ -18,6 +18,7 @@ limitations under the License.
 #include "StdAfx.h"
 
 #include "DataMarshaller.h"
+#include "errorcodes.h"
 
 DataMarshaller::DataMarshaller(void)
 {
@@ -42,6 +43,7 @@ void DataMarshaller::resetOutputs()
 	output_bool_ = true;
 	output_list_html_element_.clear();
 	output_variant_.Clear();
+	error_code = SUCCESS;
 	exception_caught_ = false;
 }
 

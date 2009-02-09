@@ -23,6 +23,7 @@ limitations under the License.
 
 #include "IEThread.h"
 
+#include "errorcodes.h"
 #include "utils.h"
 
 #include "InternalCustomMessage.h"
@@ -264,12 +265,12 @@ void IeThread::OnSelectElementByXPath(WPARAM w, LPARAM lp)
 {
 	SCOPETRACER
 	ON_THREAD_COMMON(data)
-	long &errorKind = data.output_long_;
+	int &errorKind = data.error_code;
 	IHTMLElement* &pDom = data.output_html_element_; 
 	CComPtr<IHTMLElement> inputElement(data.input_html_element_);
 
 	pDom = NULL;
-	errorKind = 0;
+	errorKind = SUCCESS;
 
 	const bool inputElementWasNull = (!inputElement);
 
@@ -280,7 +281,7 @@ void IeThread::OnSelectElementByXPath(WPARAM w, LPARAM lp)
 		getDocument3(&root_doc);
 		if (!root_doc) 
 		{
-			errorKind = 1;
+			errorKind = -ENOSUCHDOCUMENT;
 			return;
 		}
 		root_doc->get_documentElement(&inputElement);
@@ -289,7 +290,7 @@ void IeThread::OnSelectElementByXPath(WPARAM w, LPARAM lp)
 	CComQIPtr<IHTMLDOMNode> node(inputElement);
 	if (!node) 
 	{
-		errorKind = 1;
+		errorKind = -ENOSUCHELEMENT;
 		return;
 	}
 
@@ -297,7 +298,7 @@ void IeThread::OnSelectElementByXPath(WPARAM w, LPARAM lp)
 	bool evalToDocument = addEvaluateToDocument(node, 0);
 	if (!evalToDocument) 
 	{
-		errorKind = 2;
+		errorKind = -EUNEXPECTEDJSERROR;
 		return;
 	}
 
@@ -341,6 +342,8 @@ void IeThread::OnSelectElementByXPath(WPARAM w, LPARAM lp)
 			return; 
 		}
 	}
+
+	errorKind = -ENOSUCHELEMENT;
 }
 
 void IeThread::OnSelectElementsByXPath(WPARAM w, LPARAM lp)
@@ -483,6 +486,10 @@ void IeThread::getDocument2(const IHTMLDOMNode* extractFrom, IHTMLDocument2** pd
 bool IeThread::isOrUnder(const IHTMLDOMNode* root, IHTMLElement* child) 
 {
 	CComQIPtr<IHTMLElement> parent(const_cast<IHTMLDOMNode*>(root));
+
+	if (!parent)
+		return true;
+
 	VARIANT_BOOL toReturn;
 	parent->contains(child, &toReturn);
 

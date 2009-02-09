@@ -13,13 +13,20 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 
 package org.openqa.selenium.ie;
 
+import static org.openqa.selenium.ie.internal.ExportedWebDriverFunctions.SUCCESS;
+
+import java.util.List;
+
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.ie.internal.ElementCollection;
+import org.openqa.selenium.ie.internal.ExportedWebDriverFunctions;
 import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
@@ -27,106 +34,159 @@ import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.sun.jna.Pointer;
+import com.sun.jna.WString;
+import com.sun.jna.ptr.PointerByReference;
 
 // Kept package level deliberately.
 
-class Finder implements SearchContext,
-	FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, FindsByXPath {
+class Finder implements SearchContext, FindsByClassName, FindsById, FindsByLinkText, FindsByName,
+        FindsByTagName, FindsByXPath {
 
-	private final long iePointer;
-	private final long domNodePointer;
-	
-	public Finder(long iePointer, long domNodePointer) {
-		this.iePointer = iePointer;
-		this.domNodePointer = domNodePointer;		
-	}
-	
-	public WebElement findElementById(String using) {
-		return selectElementById(iePointer, domNodePointer, using);
-	}
-	private native WebElement selectElementById(long iePointer, long domNodePointer, String using);
+  private final ExportedWebDriverFunctions lib;
+  private final Pointer driver;
+  private final Pointer element;
 
-	public List<WebElement> findElementsById(String using) {
-		List<WebElement> rawElements = new ArrayList<WebElement>();
-		selectElementsById(iePointer, domNodePointer, using, rawElements);
-        return rawElements;
-	}		
-    private native void selectElementsById(long iePointer, long domNodePointer, String using, List<WebElement> rawElements);
-	
-	public WebElement findElementByName(String using) {
-		return selectElementByName(iePointer, domNodePointer, using);
-	}
-	private native WebElement selectElementByName(long iePointer, long domNodePointer, String using);
-	
-	public List<WebElement> findElementsByName(String using) {
-		List<WebElement> rawElements = new ArrayList<WebElement>();
-		selectElementsByName(iePointer, domNodePointer, using, rawElements);
-        return rawElements;
-	}		
-  private native void selectElementsByName(long iePointer, long domNodePointer, String using, List<WebElement> rawElements);
-  
-  public WebElement findElementByTagName(String using) {
-    return selectElementByTagName(iePointer, domNodePointer, using);
+  public Finder(ExportedWebDriverFunctions lib, Pointer driver, Pointer element) {
+    this.lib = lib;
+    this.driver = driver;
+    this.element = element;
   }
-  private native WebElement selectElementByTagName(long iePointer, long domNodePointer, String using);
+
+  public WebElement findElementByClassName(String using) {
+    PointerByReference rawElement = new PointerByReference();
+    int result = lib.wdFindElementByClassName(driver, element, new WString(using), rawElement);
+
+    handleErrorCode("id", using, result);
+
+    return new InternetExplorerElement(lib, driver, rawElement.getValue());
+  }
+
+  public List<WebElement> findElementsByClassName(String using) {
+    PointerByReference elements = new PointerByReference();
+    int result = lib.wdFindElementsByClassName(driver, element, new WString(using), elements);
+
+    handleErrorCode("id", using, result);
+
+    return new ElementCollection(lib, driver, elements.getValue()).toList();
+  }
+
+  public WebElement findElementById(String using) {
+    PointerByReference rawElement = new PointerByReference();
+    int result = lib.wdFindElementById(driver, element, new WString(using), rawElement);
+
+    handleErrorCode("id", using, result);
+
+    return new InternetExplorerElement(lib, driver, rawElement.getValue());
+  }
+
+  public List<WebElement> findElementsById(String using) {
+    PointerByReference elements = new PointerByReference();
+    int result = lib.wdFindElementsById(driver, element, new WString(using), elements);
+
+    handleErrorCode("id", using, result);
+
+    return new ElementCollection(lib, driver, elements.getValue()).toList();
+  }
+
+  public WebElement findElementByLinkText(String using) {
+    PointerByReference rawElement = new PointerByReference();
+    int result = lib.wdFindElementByLinkText(driver, element, new WString(using), rawElement);
+
+    handleErrorCode("id", using, result);
+
+    return new InternetExplorerElement(lib, driver, rawElement.getValue());
+  }
+
+  public List<WebElement> findElementsByLinkText(String using) {
+    PointerByReference elements = new PointerByReference();
+    int result = lib.wdFindElementsByLinkText(driver, element, new WString(using), elements);
+
+    handleErrorCode("id", using, result);
+
+    return new ElementCollection(lib, driver, elements.getValue()).toList();
+  }
+
+  public WebElement findElementByPartialLinkText(String using) {
+    throw new UnsupportedOperationException("findElementByPartialLinkText");
+  }
   
+  public List<WebElement> findElementsByPartialLinkText(String using) {
+    throw new UnsupportedOperationException("findElementsByPartialLinkText");
+  }
+  
+  public WebElement findElementByName(String using) {
+    PointerByReference rawElement = new PointerByReference();
+    int result = lib.wdFindElementByName(driver, element, new WString(using), rawElement);
+
+    handleErrorCode("name", using, result);
+
+    return new InternetExplorerElement(lib, driver, rawElement.getValue());
+  }
+
+  public List<WebElement> findElementsByName(String using) {
+    PointerByReference elements = new PointerByReference();
+    int result = lib.wdFindElementsByName(driver, element, new WString(using), elements);
+
+    handleErrorCode("name", using, result);
+
+    return new ElementCollection(lib, driver, elements.getValue()).toList();
+  }
+
+  public WebElement findElementByTagName(String using) {
+    throw new UnsupportedOperationException("findElementsByTagName");
+  }
+
   public List<WebElement> findElementsByTagName(String using) {
-    List<WebElement> rawElements = new ArrayList<WebElement>();
-    selectElementsByTagName(iePointer, domNodePointer, using, rawElements);
-    return rawElements;
-  }   
-    private native void selectElementsByTagName(long iePointer, long domNodePointer, String using, List<WebElement> rawElements);
+    PointerByReference elements = new PointerByReference();
+    int result = lib.wdFindElementsByTagName(driver, element, new WString(using), elements);
 
-	public WebElement findElementByClassName(String using) {
-		return selectElementByClassName(iePointer, domNodePointer, using);
-	}
-	private native WebElement selectElementByClassName(long iePointer, long domNodePointer, String using);
-	
-	public List<WebElement> findElementsByClassName(String using) {
-		List<WebElement> rawElements = new ArrayList<WebElement>();
-		selectElementsByClassName(iePointer, domNodePointer, using, rawElements);
-        return rawElements;
-	}		
-    private native void selectElementsByClassName(long iePointer, long domNodePointer, String using, List<WebElement> rawElements);
+    handleErrorCode("tag name", using, result);
 
-    public WebElement findElementByLinkText(String using) {
-		return selectElementByLinkText(iePointer, domNodePointer, using);
-	}
-	private native WebElement selectElementByLinkText(long iePointer, long domNodePointer, String using);
-	
-	public List<WebElement> findElementsByLinkText(String using) {
-		List<WebElement> rawElements = new ArrayList<WebElement>();
-		selectElementsByLinkText(iePointer, domNodePointer, using, rawElements);
-        return rawElements;
-	}		
-    private native void selectElementsByLinkText(long iePointer, long domNodePointer, String using, List<WebElement> rawElements);
-    
-    public WebElement findElementByXPath(String using) {
-		return selectElementByXPath(iePointer, domNodePointer, using);
-	}
-	private native WebElement selectElementByXPath(long iePointer, long domNodePointer, String using);
-	
-	public List<WebElement> findElementsByXPath(String using) {
-		List<WebElement> rawElements = new ArrayList<WebElement>();
-		selectElementsByXPath(iePointer, domNodePointer, using, rawElements);
-        return rawElements;
-	}		
-    private native void selectElementsByXPath(long iePointer, long domNodePointer, String using, List<WebElement> rawElements);
-    
-	public WebElement findElement(By by) {
-		return by.findElement(this);
-	}
-	public List<WebElement> findElements(By by) {
-		return by.findElements(this);
-	}
+    return new ElementCollection(lib, driver, elements.getValue()).toList();
+  }
 
-	public WebElement findElementByPartialLinkText(String using) {
-		throw new UnsupportedOperationException();
-	}
+  public WebElement findElementByXPath(String using) {
+    PointerByReference rawElement = new PointerByReference();
+    int result = lib.wdFindElementByXPath(driver, element, new WString(using), rawElement);
 
-	public List<WebElement> findElementsByPartialLinkText(String using) {
-		throw new UnsupportedOperationException();
-	}
+    handleErrorCode("xpath", using, result);
+
+    return new InternetExplorerElement(lib, driver, rawElement.getValue());
+  }
+
+  public List<WebElement> findElementsByXPath(String using) {
+    PointerByReference elements = new PointerByReference();
+    int result = lib.wdFindElementsByXPath(driver, element, new WString(using), elements);
+
+    handleErrorCode("xpath", using, result);
+
+    return new ElementCollection(lib, driver, elements.getValue()).toList();
+  }
+
+  public WebElement findElement(By by) {
+    return by.findElement(this);
+  }
+
+  public List<WebElement> findElements(By by) {
+    return by.findElements(this);
+  }
+
+  private void handleErrorCode(String how, String using, int errorCode) {
+    switch (errorCode) {
+    case SUCCESS:
+      break; // Nothing to be done
+
+    case -7:
+      throw new NoSuchElementException(String.format("Unable to find element by %s using \"%s\"",
+              how, using));
+
+    case -9:
+      throw new UnsupportedOperationException("The method that called me has not been implemented yet");
+      
+    default:
+      throw new IllegalStateException(String.format(
+              "Unable to find element by %s using \"%s\" (%d)", how, using, errorCode));
+    }
+  }
 }

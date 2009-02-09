@@ -34,10 +34,10 @@ public:
     LPCWSTR getElementName();
 	LPCWSTR getAttribute(LPCWSTR name);
 	LPCWSTR getValue();
-	void sendKeys(LPCWSTR newValue);
+	int sendKeys(LPCWSTR newValue);
 	void clear();
 	bool isSelected();
-	void setSelected();
+	int setSelected();
 	bool isEnabled();
 	bool isDisplayed();
 	int toggle(bool*);
@@ -45,7 +45,7 @@ public:
 	LPCWSTR getValueOfCssProperty(LPCWSTR propertyName);
 	void releaseInterface();
 
-	int getLocationWhenScrolledIntoView(long *x, long *y);
+	int getLocationWhenScrolledIntoView(HWND* hwnd, long *x, long *y);
 	void getLocation(long *x, long *y);
 	long getWidth();
 	long getHeight();

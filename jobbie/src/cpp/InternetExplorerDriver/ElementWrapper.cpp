@@ -64,10 +64,11 @@ LPCWSTR ElementWrapper::getValue()
 }
 
 
-void ElementWrapper::sendKeys(LPCWSTR newValue)
+int ElementWrapper::sendKeys(LPCWSTR newValue)
 {
 	SCOPETRACER
 	SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_ELEM_SENDKEYS, newValue)
+	return data.error_code;
 }
 
 void ElementWrapper::clear()
@@ -83,10 +84,11 @@ bool ElementWrapper::isSelected()
 	return data.output_bool_;
 }
 
-void ElementWrapper::setSelected()
+int ElementWrapper::setSelected()
 {
 	SCOPETRACER
 	SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_ELEM_SETSELECTED,)
+	return data.error_code;
 }
 
 bool ElementWrapper::isEnabled()
@@ -114,35 +116,38 @@ int ElementWrapper::toggle(bool* result)
 	return SUCCESS;
 }
 
-int ElementWrapper::getLocationWhenScrolledIntoView(long* x, long* y) 
+int ElementWrapper::getLocationWhenScrolledIntoView(HWND* hwnd, long* x, long* y) 
 {
 	SCOPETRACER
-	SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_ELEM_GETLOCATIONONCESCROLLEDINTOVIEW,)
+    SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_ELEM_GETLOCATIONONCESCROLLEDINTOVIEW,)
 
-	if (data.error_code != SUCCESS) {
-		return data.error_code;
-	}
+    VARIANT result = data.output_variant_;
+    
+    if (result.vt != VT_ARRAY) {
+            *hwnd = NULL;
+            *x = 0;
+            *y = 0;
+			return -EUNHANDLEDERROR;
+    }
 
-	VARIANT result = data.output_variant_;
-	
-	if (result.vt != VT_ARRAY) {
-		*x = 0;
-		*y = 0;
-		return -EUNHANDLEDERROR;
-	}
+    SAFEARRAY* ary = result.parray;
+    long index = 0;
+    CComVariant hwndVariant;
+    SafeArrayGetElement(ary, &index, (void*) &hwndVariant);
+    *hwnd = (HWND) hwndVariant.llVal;
 
-	SAFEARRAY* ary = result.parray;
-	long index = 0;
-	CComVariant xVariant;
-	SafeArrayGetElement(ary, &index, (void*) &xVariant);
-	*x = xVariant.lVal;
+    index = 1;
+    CComVariant xVariant;
+    SafeArrayGetElement(ary, &index, (void*) &xVariant);
+    *x = xVariant.lVal;
 
-	CComVariant yVariant;
-	index = 1;
-	SafeArrayGetElement(ary, &index, (void*) &yVariant);
-	*y = yVariant.lVal;
+    index = 2;
+    CComVariant yVariant;
+    SafeArrayGetElement(ary, &index, (void*) &yVariant);
+    *y = yVariant.lVal;
 
-	SafeArrayDestroy(ary);
+    SafeArrayDestroy(ary);
+
 	return SUCCESS;
 }
 

@@ -231,22 +231,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\build\InternetExplorerDriver.dll"
-				>
-			</File>
-			<File
-				RelativePath=".\org_openqa_selenium_ie_Finder.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\org_openqa_selenium_ie_InternetExplorerDriver.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\org_openqa_selenium_ie_InternetExplorerElement.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\ScopeTracer.cpp"
 				>
 			</File>
@@ -334,18 +318,6 @@
 			</File>
 			<File
 				RelativePath=".\logging.h"
-				>
-			</File>
-			<File
-				RelativePath=".\org_openqa_selenium_ie_Finder.h"
-				>
-			</File>
-			<File
-				RelativePath=".\org_openqa_selenium_ie_InternetExplorerDriver.h"
-				>
-			</File>
-			<File
-				RelativePath=".\org_openqa_selenium_ie_InternetExplorerElement.h"
 				>
 			</File>
 			<File

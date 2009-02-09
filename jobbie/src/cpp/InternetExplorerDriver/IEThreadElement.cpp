@@ -104,12 +104,16 @@ void IeThread::OnElementSendKeys(WPARAM w, LPARAM lp)
 	bool displayed;
 	int res = isDisplayed(pElement, &displayed);
 	if (res != SUCCESS || !displayed) {
-		throw std::wstring(L"Element is not displayed");
+		data.error_code = -EELEMENTNOTDISPLAYED;
+		return;
 	}
 
 	if (!isEnabled(pElement)) {
-		throw std::wstring(L"Element is not enabled");
+		data.error_code = -EELEMENTNOTENABLED;
+		return;
 	}
+
+	data.error_code = SUCCESS;
 
 	LPCWSTR newValue = data.input_string_;
 	CComPtr<IHTMLElement> element(pElement);
@@ -285,34 +289,37 @@ void IeThread::OnElementIsEnabled(WPARAM w, LPARAM lp)
 void IeThread::OnElementGetLocationOnceScrolledIntoView(WPARAM w, LPARAM lp)
 {
 	SCOPETRACER
-	ON_THREAD_ELEMENT(data, pElement)
+    ON_THREAD_ELEMENT(data, pElement)
 
-	long x = 0, y = 0;
+    HWND hwnd;
+    long x = 0, y = 0;
 
-	int result = getLocationWhenScrolledIntoView(pElement, &x, &y);
-	if (result != SUCCESS) {
-		data.error_code = result;
-		return;
-	}
+    getLocationWhenScrolledIntoView(pElement, &hwnd, &x, &y);
 
-	SAFEARRAY* args = SafeArrayCreateVector(VT_VARIANT, 0, 2);
-	
-	long index = 0;
-	VARIANT xRes;
-	xRes.vt = VT_I8;
-	xRes.lVal = x;
-	SafeArrayPutElement(args, &index, &xRes);
+    SAFEARRAY* args = SafeArrayCreateVector(VT_VARIANT, 0, 3);
+    
+    long index = 0;
+    VARIANT hwndRes;
+    hwndRes.vt = VT_I8;
+    hwndRes.llVal = (LONGLONG) hwnd;
+    SafeArrayPutElement(args, &index, &hwndRes);
 
-	index = 1;
-	VARIANT yRes;
-	yRes.vt = VT_I8;
-	yRes.lVal = y;
-	SafeArrayPutElement(args, &index, &yRes);
+    index = 1;
+    VARIANT xRes;
+    xRes.vt = VT_I4;
+    xRes.lVal = x;
+    SafeArrayPutElement(args, &index, &xRes);
 
-	VARIANT wrappedArray;
-	wrappedArray.vt = VT_ARRAY;
-	wrappedArray.parray = args;
-	data.output_variant_.Attach(&wrappedArray);
+    index = 2;
+    VARIANT yRes;
+    yRes.vt = VT_I4;
+    yRes.lVal = y;
+    SafeArrayPutElement(args, &index, &yRes);
+
+    VARIANT wrappedArray;
+    wrappedArray.vt = VT_ARRAY;
+    wrappedArray.parray = args;
+    data.output_variant_.Attach(&wrappedArray);
 }
 
 void IeThread::OnElementGetLocation(WPARAM w, LPARAM lp)
@@ -475,19 +482,22 @@ void IeThread::OnElementSetSelected(WPARAM w, LPARAM lp)
 
 	if (!this->isEnabled(pElement))
 	{
-		throw std::wstring(L"Unable to select a disabled element");
+		data.error_code = -EELEMENTNOTENABLED;
+		return;
 	}
 
 	bool displayed;
 	int result = this->isDisplayed(pElement, &displayed);
 	if (result != SUCCESS || !displayed) 
 	{
-		throw std::wstring(L"Unable to select an element that is not displayed");
+		data.error_code = -EELEMENTNOTDISPLAYED;
+		return;
 	}
 
 	/* TODO(malcolmr): Why not: if (isSelected()) return; ? Do we really need to re-set 'checked=true' for checkbox and do effectively nothing for select?
 	   Maybe we should check for disabled elements first? */
 
+	data.error_code = SUCCESS;
 
 	if (isCheckbox(pElement)) {
 
@@ -547,7 +557,7 @@ void IeThread::OnElementSetSelected(WPARAM w, LPARAM lp)
 		return;
 	}
 
-	throw std::wstring(L"Unable to select element");
+	data.error_code = -EELEMENTNOTSELECTED;
 }
 
 void IeThread::OnElementGetValueOfCssProp(WPARAM w, LPARAM lp)
@@ -696,123 +706,128 @@ bool IeThread::isSelected(IHTMLElement *pElement)
 	return false;
 }
 
-int IeThread::getLocationWhenScrolledIntoView(IHTMLElement *pElement, long *x, long *y)
+int IeThread::getLocationWhenScrolledIntoView(IHTMLElement *pElement, HWND* hwnd, long *x, long *y)
 {
-	CComQIPtr<IHTMLDOMNode2> node(pElement);
+    CComQIPtr<IHTMLDOMNode2> node(pElement);
 
-	if (!node) {
-		cerr << "No node to get location of" << endl;
-		return -ENOSUCHELEMENT;
-	}
+    if (!node) {
+            cerr << "No node to get location of" << endl;
+            return -ENOSUCHELEMENT;
+    }
 
-	bool displayed;
+    bool displayed;
 	int result = isDisplayed(pElement, &displayed);
 	if (result != SUCCESS) {
 		return result;
-	}
+	} 
 
 	if (!displayed) {
-		return -EELEMENTNOTDISPLAYED;
-	}
+        return -EELEMENTNOTDISPLAYED;
+    }
 
-	if (!isEnabled(pElement)) {
-		return -EELEMENTNOTENABLED;
-	}
+    if (!isEnabled(pElement)) {
+          return -EELEMENTNOTENABLED;
+    }
 
-	const HWND hWnd = getHwnd();
-	const HWND ieWindow = getIeServerWindow(hWnd);
+    const HWND hWnd = getHwnd();
+    const HWND ieWindow = getIeServerWindow(hWnd);
 
-	// Scroll the element into view
-	CComVariant toTop;
-	toTop.vt = VT_BOOL;
-	toTop.boolVal = VARIANT_TRUE;
-	pElement->scrollIntoView(toTop);
+    // Scroll the element into view
+    CComVariant toTop;
+    toTop.vt = VT_BOOL;
+    toTop.boolVal = VARIANT_TRUE;
+    pElement->scrollIntoView(toTop);
 
-	// getBoundingClientRect. Note, the docs talk about this possibly being off by 2,2
-	// and Jon Resig mentions some problems too. For now, we'll hope for the best
-	// http://ejohn.org/blog/getboundingclientrect-is-awesome/
-	CComQIPtr<IHTMLElement2> element2(pElement);
-	CComPtr<IHTMLRect> rect;
-	if (FAILED(element2->getBoundingClientRect(&rect))) {
-		return -EUNHANDLEDERROR;
-	}
+    // getBoundingClientRect. Note, the docs talk about this possibly being off by 2,2
+    // and Jon Resig mentions some problems too. For now, we'll hope for the best
+    // http://ejohn.org/blog/getboundingclientrect-is-awesome/
+    CComQIPtr<IHTMLElement2> element2(pElement);
+    CComPtr<IHTMLRect> rect;
+    if (FAILED(element2->getBoundingClientRect(&rect))) {
+            return -EUNHANDLEDERROR;
+    }
 
-	long clickX, clickY, width, height;
-	rect->get_top(&clickY);
-	rect->get_left(&clickX);
+    long clickX, clickY, width, height;
+    rect->get_top(&clickY);
+    rect->get_left(&clickX);
 
-	rect->get_bottom(&height);
-	rect->get_right(&width);
+    rect->get_bottom(&height);
+    rect->get_right(&width);
 
-	height -= clickY;
-	width -= clickX;
+    height -= clickY;
+    width -= clickX;
 
-	if (height == 0 || width == 0) {
-		return -EELEMENTNOTDISPLAYED;
-	}
+    if (height == 0 || width == 0) {
+            cerr << "Element would not be visible because it lacks height and/or width." << endl;
+            return -EELEMENTNOTDISPLAYED;
+    }
 
-	CComPtr<IDispatch> ownerDocDispatch;
-	node->get_ownerDocument(&ownerDocDispatch);
-	CComQIPtr<IHTMLDocument3> ownerDoc(ownerDocDispatch);
-	CComPtr<IHTMLElement> docElement;
-	ownerDoc->get_documentElement(&docElement);
+    CComPtr<IDispatch> ownerDocDispatch;
+    node->get_ownerDocument(&ownerDocDispatch);
+    CComQIPtr<IHTMLDocument3> ownerDoc(ownerDocDispatch);
+    CComPtr<IHTMLElement> docElement;
+    ownerDoc->get_documentElement(&docElement);
 
-	CComQIPtr<IHTMLElement2> e2(docElement);
+    CComQIPtr<IHTMLElement2> e2(docElement);
+    if (!e2) {
+            cerr << "Unable to get underlying html element from the document" << endl;
+            return -EUNHANDLEDERROR;
+    }
 
-	CComQIPtr<IHTMLDocument2> doc2(ownerDoc);
+    CComQIPtr<IHTMLDocument2> doc2(ownerDoc);
 
-	long clientLeft, clientTop;
-	e2->get_clientLeft(&clientLeft);
-	e2->get_clientTop(&clientTop);
+    long clientLeft, clientTop;
+    e2->get_clientLeft(&clientLeft);
+    e2->get_clientTop(&clientTop);
 
-	clickX += clientLeft;
-	clickY += clientTop;
+    clickX += clientLeft;
+    clickY += clientTop;
 
-	// We now know the location of the element within its frame.
-	// Where is the frame in relation to the HWND, though?
-	// The ieWindow is the ultimate container, without chrome,
-	// so if we know its location, we can subtract the screenLeft and screenTop
-	// of the window.
+    // We now know the location of the element within its frame.
+    // Where is the frame in relation to the HWND, though?
+    // The ieWindow is the ultimate container, without chrome,
+    // so if we know its location, we can subtract the screenLeft and screenTop
+    // of the window.
 
-	WINDOWINFO winInfo;
-	GetWindowInfo(ieWindow, &winInfo);
-	clickX -= winInfo.rcWindow.left;
-	clickY -= winInfo.rcWindow.top;
+    WINDOWINFO winInfo;
+    GetWindowInfo(ieWindow, &winInfo);
+    clickX -= winInfo.rcWindow.left;
+    clickY -= winInfo.rcWindow.top;
 
-	CComPtr<IHTMLWindow2> win2;
-	doc2->get_parentWindow(&win2);
-	CComQIPtr<IHTMLWindow3> win3(win2);
-	long screenLeft, screenTop;
-	win3->get_screenLeft(&screenLeft);
-	win3->get_screenTop(&screenTop);
+    CComPtr<IHTMLWindow2> win2;
+    doc2->get_parentWindow(&win2);
+    CComQIPtr<IHTMLWindow3> win3(win2);
+    long screenLeft, screenTop;
+    win3->get_screenLeft(&screenLeft);
+    win3->get_screenTop(&screenTop);
 
-	clickX += screenLeft;
-	clickY += screenTop;
+    clickX += screenLeft;
+    clickY += screenTop;
 
-	*x = clickX;
-	*y = clickY;
-
-	return SUCCESS;
+    *hwnd = ieWindow;
+    *x = clickX;
+    *y = clickY;
+    return SUCCESS;
 }
+
 
 int IeThread::click(IHTMLElement *pElement, CScopeCaller *pSC)
 {
 	SCOPETRACER
 
 	long clickX = 0, clickY = 0;
-	int result = getLocationWhenScrolledIntoView(pElement, &clickX, &clickY);
+	HWND ieWindow;
+	int result = getLocationWhenScrolledIntoView(pElement, &ieWindow, &clickX, &clickY);
 	if (result != SUCCESS) {
 		return result;
 	}
-
-	const HWND hWnd = getHwnd();
-	const HWND ieWindow = getIeServerWindow(hWnd);
 
 	// Create a mouse move, mouse down, mouse up OS event
 	clickAt(ieWindow, clickX, clickY);
 
 	tryTransferEventReleaserToNotifyNavigCompleted(pSC);
 	waitForNavigateToFinish();
+
 	return SUCCESS;
 }
 
