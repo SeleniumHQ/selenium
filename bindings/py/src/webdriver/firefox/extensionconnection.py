@@ -27,7 +27,7 @@ class ExtensionConnection(object):
 
             self.socket.settimeout(_SOCKET_TIMEOUT)
             self.context = "null"
-            resp = self.driver_command("findActiveDriver")
+            resp = self.driver_command("findActiveDriver")['response']
             self.context = resp
 
     def driver_command(self, cmd, *params):
@@ -66,6 +66,6 @@ class ExtensionConnection(object):
                 raise exceptions.ErrorInResponseException(decoded['response'],
                     "Error occurred when processing %s" % packet)
             self.context = decoded["context"]  #Update our context
-            return decoded["response"]
+            return decoded
         else:
             return None

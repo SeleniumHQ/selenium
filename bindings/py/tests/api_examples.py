@@ -7,6 +7,7 @@ import sys
 import unittest
 from webdriver.firefox.webdriver import WebDriver
 from webdriver.firefox.webserver import SimpleWebServer
+from webdriver.firefox.webelement import WebElement
 from webdriver.firefox.firefoxlauncher import FirefoxLauncher
 from webdriver.firefox import exceptions
 
@@ -139,6 +140,27 @@ class ApiExampleTest (unittest.TestCase):
         elems = self.driver.find_elements_by_xpath("//option")
         for i in range(3):
             self.assertEquals(i, elems[i].get_attribute("index"))
+
+    def testExecuteSimpleScript(self):
+        self._loadPage("xhtmlTest")
+        title = self.driver.execute_script("return document.title;")
+        self.assertEquals("XHTML Test Page", title)
+
+    def testExecuteScriptAndReturnElement(self):
+        self._loadPage("xhtmlTest")
+        elem = self.driver.execute_script("return document.getElementById('id1');")
+        self.assertEquals(WebElement, type(elem))
+
+    def testExecuteScriptWithArgs(self):
+        self._loadPage("xhtmlTest")
+        result = self.driver.execute_script("return arguments[0] == 'fish' ? 'fish' : 'not fish';", "fish")
+        self.assertEquals("fish", result)
+
+    def testExecuteScriptWithElementArgs(self):
+        self._loadPage("javascriptPage")
+        button = self.driver.find_element_by_id("plainButton")
+        result = self.driver.execute_script("arguments[0]['flibble'] = arguments[0].getAttribute('id'); return arguments[0]['flibble'];", button)
+        self.assertEquals("plainButton", result)
 
     def _loadSimplePage(self):
         self.driver.get("http://localhost:8000/simpleTest.html")

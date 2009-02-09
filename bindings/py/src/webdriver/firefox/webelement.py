@@ -7,7 +7,7 @@ class WebElement(object):
 
     def __init__(self, parent, id):
         self.parent = parent
-        self.conn = ExtensionConnection()
+        self._conn = ExtensionConnection()
         self.id = id
 
     def get_text(self):
@@ -73,5 +73,5 @@ class WebElement(object):
         """Simulates typing into the element."""
         self._command("sendKeys", keys_characters)
 
-    def _command(self, _cmd, *args):
-        return self.conn.element_command(_cmd, self.id, *args)
+    def _command(self, cmd, *args):
+        return self._conn.element_command(cmd, self.id, *args)['response']

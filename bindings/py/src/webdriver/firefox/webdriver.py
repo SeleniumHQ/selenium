@@ -8,22 +8,38 @@ class WebDriver(object):
     def __init__(self):
         self._conn = ExtensionConnection()
 
+    def execute_script(self, script, *args):
+        converted_args = []
+        for arg in args:
+            if type(arg) == WebElement:
+                converted_args.append({"type": "ELEMENT", "value": arg.id})
+            else:
+                converted_args.append({"type": "STRING", "value": arg})
+        resp = self._conn.driver_command("executeScript", script, converted_args)
+
+        if "NULL" == resp["resultType"]:
+            pass
+        elif "ELEMENT" == resp["resultType"]:
+            return WebElement(self, resp["response"])
+        else:
+            return resp["response"]
+
     def get(self, url):
         """Loads a web page in the current browser."""
-        self._conn.driver_command("get", url)
+        self._command("get", url)
 
     def get_current_url(self):
         """Gets the current url."""
-        return self._conn.driver_command("getCurrentUrl")
+        return self._command("getCurrentUrl")
 
     def get_title(self):
         """Gets the title of the current page."""
-        return self._conn.driver_command("title")
+        return self._command("title")
 
     def find_element_by_xpath(self, xpath):
         """Finds an element by xpath."""
         try:
-            elemId = self._conn.driver_command("selectElementUsingXPath", xpath)
+            elemId = self._command("selectElementUsingXPath", xpath)
             elem = WebElement(self, elemId)
         except ErrorInResponseException, e:
             self._handle_find_element_exception(e)
@@ -35,7 +51,7 @@ class WebDriver(object):
         Returns None if the element is not a link.
         """
         try:
-            elemId = self._conn.driver_command("selectElementUsingLink", link)
+            elemId = self._command("selectElementUsingLink", link)
             elem = WebElement(self, elemId)
             return elem
         except ErrorInResponseException, e:
@@ -59,7 +75,7 @@ class WebDriver(object):
     def find_elements_by_xpath(self, xpath):
         """Finds all the elements for the given xpath query."""
         try:
-            elemIds = self._conn.driver_command("selectElementsUsingXPath", xpath)
+            elemIds = self._command("selectElementsUsingXPath", xpath)
             elems = []
             if len(elemIds):
                 for elemId in elemIds.split(","):
@@ -71,11 +87,11 @@ class WebDriver(object):
 
     def get_page_source(self):
         """Gets the page source."""
-        return self._conn.driver_command("getPageSource")
+        return self._command("getPageSource")
 
     def close(self):
         """Closes the current window, quit the browser if it's the last window open."""
-        self._conn.driver_command("close")
+        self._command("close")
 
     def quit(self):
         """Quits the driver and close every associated window."""
@@ -83,25 +99,28 @@ class WebDriver(object):
 
     def switch_to_window(self, windowName):
         """Switches focus to a window."""
-        resp = self._conn.driver_command("switchToWindow", windowName)
+        resp = self._command("switchToWindow", windowName)
         if not resp or "No window found" in resp:
             raise InvalidSwitchToTargetException("Window %s not found" % windowName)
         self._conn.context = resp
 
     def switch_to_frame(self, indexOrName):
         """Switches focus to a frame by index or name."""
-        resp = self._conn.driver_command("switchToFrame", str(indexOrName))
+        resp = self._command("switchToFrame", str(indexOrName))
 
     def back(self):
         """Goes back in browser history."""
-        self._conn.driver_command("goBack")
+        self._command("goBack")
 
     def forward(self):
         """Goes forward in browser history."""
-        self._conn.driver_command("goForward")
+        self._command("goForward")
 
     def _handle_find_element_exception(self, e):
         if "Unable to locate element" in e.response:
             raise NoSuchElementException("Unable to locate element:")
         else:
             raise e
+
+    def _command(self, cmd, *args):
+        return self._conn.driver_command(cmd, *args)["response"]
