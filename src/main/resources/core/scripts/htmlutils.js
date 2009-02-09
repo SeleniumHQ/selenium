@@ -1137,16 +1137,13 @@ function eval_xpath(xpath, inDocument, opts)
     var useNativeXpath = allowNativeXpath && nativeXpathAvailable;
     var useDocumentEvaluate = useNativeXpath;
 
-    // AH: Who made the following comment and the corresponding change and why?
-    // I had to comment two
     // When using the new and faster javascript-xpath library,
     // we'll use the TestRunner's document object, not the App-Under-Test's document.
     // The new library only modifies the TestRunner document with the new 
     // functionality.
     if (xpathLibrary == 'javascript-xpath' && !useNativeXpath) {
-        //documentForXpath = document;
-        //useDocumentEvaluate = true;
-    	documentForXpath = inDocument;
+        documentForXpath = document;
+        useDocumentEvaluate = true;
     } else {
         documentForXpath = inDocument;
     }
