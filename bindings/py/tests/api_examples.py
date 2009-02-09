@@ -8,6 +8,7 @@ import unittest
 from webdriver.firefox.webdriver import WebDriver
 from webdriver.firefox.webserver import SimpleWebServer
 from webdriver.firefox.firefoxlauncher import FirefoxLauncher
+from webdriver.firefox import exceptions
 
 class ApiExampleTest (unittest.TestCase):
     def setUp(self):
@@ -30,6 +31,22 @@ class ApiExampleTest (unittest.TestCase):
         self._loadSimplePage()
         elem = self.driver.find_element_by_xpath("//h1")
         self.assertEquals("Heading", elem.get_text())
+
+    def testFindElementByXpathThrowNoSuchElementException(self):
+        self._loadSimplePage()
+        try:
+            elem = self.driver.find_element_by_xpath("//h4")
+        except exceptions.NoSuchElementException, e:
+            pass
+
+    def testFindElementByXpathThrowErrorInResponseExceptionForInvalidXPath(self):
+        self._loadSimplePage()
+        try:
+            elem = self.driver.find_element_by_xpath("//")
+        except exceptions.NoSuchElementException, e:
+            self.fail()
+        except exceptions.ErrorInResponseException, e1:
+            pass
 
     def testFindElementsByXpath(self):
         self._loadPage("nestedElements")

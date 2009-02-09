@@ -6,6 +6,7 @@ import simplejson
 import exceptions
 
 _SOCKET_TIMEOUT = 20
+_DEFAULT_PORT = 7055
 logger = logging.getLogger("webdriver.ExtensionConnection")
 
 class ExtensionConnection(object):
@@ -22,7 +23,7 @@ class ExtensionConnection(object):
         if "socket" not in self.__dict__:
             self.lock = threading.RLock()
             self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.socket.connect(("localhost", 7055))
+            self.socket.connect(("localhost", _DEFAULT_PORT))
 
             self.socket.settimeout(_SOCKET_TIMEOUT)
             self.context = "null"
@@ -62,8 +63,8 @@ class ExtensionConnection(object):
             json_content = sections[0];
             decoded = simplejson.loads(json_content)
             if decoded["isError"]:
-                raise exceptions.ErrorInResponseException(
-                    "Error occurred when processing %s, response: %s" % (packet, resp))
+                raise exceptions.ErrorInResponseException(decoded['response'],
+                    "Error occurred when processing %s" % packet)
             self.context = decoded["context"]  #Update our context
             return decoded["response"]
         else:
