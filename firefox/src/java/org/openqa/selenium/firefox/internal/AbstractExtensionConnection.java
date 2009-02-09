@@ -20,11 +20,11 @@ package org.openqa.selenium.firefox.internal;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.Command;
 import org.openqa.selenium.firefox.ExtensionConnection;
-import org.openqa.selenium.firefox.Response;
 import org.openqa.selenium.firefox.NotConnectedException;
-import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.firefox.Response;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -127,7 +127,7 @@ public abstract class AbstractExtensionConnection implements ExtensionConnection
         }
 
         if (!isConnected()) {
-          throw new NotConnectedException(timeToWaitInMilliSeconds);
+          throw new NotConnectedException(socket, timeToWaitInMilliSeconds);
         }
     }
 

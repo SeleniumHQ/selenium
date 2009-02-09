@@ -26,7 +26,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -34,7 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 public class FirefoxBinary {
-    private final StringWriter stdOutBuffer = new StringWriter();
+    private final StringBuffer stdOutBuffer = new StringBuffer();
     private final Map<String, String> extraEnv = new HashMap<String, String>();
     private final Executable executable;
     private Process process;
@@ -53,6 +52,7 @@ public class FirefoxBinary {
 
         List<String> commands = new ArrayList<String>();
         commands.add(executable.getPath());
+        commands.add("--verbose");
         commands.addAll(Arrays.asList(commandLineFlags));
         ProcessBuilder builder = new ProcessBuilder(commands);
         builder.redirectErrorStream();
@@ -69,7 +69,7 @@ public class FirefoxBinary {
     }
 
     public void createProfile(String profileName) throws IOException {
-        ProcessBuilder builder = new ProcessBuilder(executable.getPath(), "-CreateProfile", profileName)
+        ProcessBuilder builder = new ProcessBuilder(executable.getPath(), "--verbose", "-CreateProfile", profileName)
             .redirectErrorStream(true);
         builder.environment().put("MOZ_NO_REMOTE", "1");
         process = builder.start();
@@ -96,7 +96,7 @@ public class FirefoxBinary {
           sleep(100);
         }
       } finally {
-            reader.close();
+         // Don't close the stream.
       }        
     }
 

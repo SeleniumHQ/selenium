@@ -19,8 +19,11 @@ package org.openqa.selenium.firefox;
 
 import org.openqa.selenium.WebDriverException;
 
+import java.net.Socket;
+
 public class NotConnectedException extends WebDriverException {
-  public NotConnectedException(long timeToWaitInMilliSeconds) {
-    super(String.format("Unable to connect after %d ms", timeToWaitInMilliSeconds));
+  public NotConnectedException(Socket socket, long timeToWaitInMilliSeconds) {
+    super(String.format("Unable to connect to host %s on port %d after %d ms", 
+        socket.getInetAddress().toString(), socket.getPort(), timeToWaitInMilliSeconds));
   }
 }
