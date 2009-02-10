@@ -3027,9 +3027,11 @@ Selenium.prototype.doUseXpathLibrary = function(libraryName) {
 	* Allows choice of one of the available libraries.
     * @param libraryName name of the desired library
     * Only the following three can be chosen:
-    *   ajaxslt - Google's library
-    *   javascript - Cybozu Labs' faster library
-    *   default - The default library.  Currently the default library is ajaxslt.
+    * <ul>
+    *   <li>"ajaxslt" - Google's library</li>
+    *   <li>"javascript-xpath" - Cybozu Labs' faster library</li>
+    *   <li>"default" - The default library.  Currently the default library is "ajaxslt" .</li>
+    * </ul>
     * If libraryName isn't one of these three, then 
     * no change will be made.
     *   

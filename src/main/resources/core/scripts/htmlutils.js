@@ -1159,12 +1159,12 @@ function eval_xpath(xpath, inDocument, opts)
                     contextNode, namespaceResolver, 0, null);
         }
         catch (e) {
-            throw new SeleniumError("Invalid xpath: " + extractExceptionMessage(e));
+            throw new SeleniumError("Invalid xpath [1]: " + extractExceptionMessage(e));
         }
         finally{
             if (xpathResult == null) {
                 // If the result is null, we should still throw an Error.
-                throw new SeleniumError("Invalid xpath: " + xpath); 
+                throw new SeleniumError("Invalid xpath [2]: " + xpath); 
             }
         }
         var result = xpathResult.iterateNext();
@@ -1195,7 +1195,7 @@ function eval_xpath(xpath, inDocument, opts)
         xpathObj = xpathParse(xpath);
     }
     catch (e) {
-        throw new SeleniumError("Invalid xpath: " + extractExceptionMessage(e));
+        throw new SeleniumError("Invalid xpath [3]: " + extractExceptionMessage(e));
     }
     var xpathResult = xpathObj.evaluate(context);
     if (xpathResult && xpathResult.value) {
