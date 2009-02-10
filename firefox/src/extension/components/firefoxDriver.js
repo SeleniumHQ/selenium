@@ -105,7 +105,6 @@ FirefoxDriver.prototype.close = function(respond) {
 }
 
 FirefoxDriver.prototype.executeScript = function(respond, script) {
-  Utils.dumpn("Executing script");
   var context = this.context;
   var window = Utils.getBrowser(this.context).contentWindow;
 
@@ -347,7 +346,6 @@ FirefoxDriver.prototype.selectElementsUsingLink = function(respond, linkText) {
   var indices = "";
   for (var i = 0; i < allLinks.length; i++) {
     var text = Utils.getText(allLinks[i], true);
-    Utils.dumpn(text);
     if (linkText == text) {
       indices += Utils.addToKnownElements(allLinks[i], this.context) + ",";
     }
@@ -519,9 +517,24 @@ FirefoxDriver.prototype.addCookie = function(respond, cookieString) {
     cookie.expiry = cookie.expiry.getTime() / 1000; // Stored in seconds
 
     if (!cookie.domain) {
-        var location = Utils.getBrowser(this.context).contentWindow.location
-        cookie.domain = location.hostname; // + ":" + location.port;
+      var location = Utils.getBrowser(this.context).contentWindow.location
+      cookie.domain = location.hostname; // + ":" + location.port;
+      if (location.port != 80) {
+        cookie.domain += ":" + location.port;
+      }
+    } else {
+      var currLocation = Utils.getBrowser(this.context).contentWindow.location;
+      var currDomain = currLocation.host;
+      if (currLocation.port != 80) { currDomain += ":" + currLocation.port; }
+      if (currDomain.indexOf(cookie.domain) == -1) {  // Not quite right, but close enough
+        respond.isError = true;
+        respond.response = "You may only set cookies for the current domain";
+        respond.send();
+        return;
+      }
     }
+
+    Utils.dump(cookie);
 
     var cookieManager = Utils.getService("@mozilla.org/cookiemanager;1", "nsICookieManager2");
 
@@ -542,10 +555,16 @@ function handleCookies(context, toCall) {
 
   var makeStrippedHost = function (aHost) {
     var formattedHost = aHost.charAt(0) == "." ? aHost.substring(1, aHost.length) : aHost;
-    return formattedHost.substring(0, 4) == "www." ? formattedHost.substring(4, formattedHost.length) : formattedHost;
+    formattedHost = formattedHost.substring(0, 4) == "www." ? formattedHost.substring(4, formattedHost.length) : formattedHost;
+
+    return formattedHost;
   };
 
-  var currentDomain = makeStrippedHost(Utils.getBrowser(context).contentWindow.location.hostname);
+  var location = Utils.getBrowser(context).contentWindow.location;
+  var currentDomain = makeStrippedHost(location.host);
+  if (location.port != 80) {
+    currentDomain += ":" + location.port;
+  }
   var isForCurrentHost = function(aHost) {
     return currentDomain.indexOf(aHost) != -1;
   }

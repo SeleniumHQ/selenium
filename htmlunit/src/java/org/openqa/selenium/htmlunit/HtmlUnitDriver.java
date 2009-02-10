@@ -693,13 +693,34 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     private class HtmlUnitOptions implements Options {
         public void addCookie(Cookie cookie) {
           String domain = getDomainForCookie(cookie);
+          verifyDomain(cookie, domain);
 
-            webClient.getCookieManager().addCookie(new org.apache.commons.httpclient.Cookie(domain,
-                    cookie.getName(), cookie.getValue(), cookie.getPath(), cookie.getExpiry(),
-                    cookie.isSecure()));
+          webClient.getCookieManager().addCookie(new org.apache.commons.httpclient.Cookie(domain,
+              cookie.getName(), cookie.getValue(), cookie.getPath(), cookie.getExpiry(),
+              cookie.isSecure()));
         }
 
-        public void deleteCookieNamed(String name) {
+      private void verifyDomain(Cookie cookie, String expectedDomain) {
+        String domain = cookie.getDomain();
+        if (domain == null)
+          return;
+
+        if ("".equals(domain)) {
+          throw new WebDriverException(
+              "Domain must not be an empty string. Consider using null instead");
+        }
+
+        expectedDomain = expectedDomain.startsWith(".") ? expectedDomain : "." + expectedDomain;
+        domain = domain.startsWith(".") ? domain : "." + domain;
+
+        if (!expectedDomain.endsWith(domain)) {
+          throw new WebDriverException(
+              String.format("You may only add cookies that would be visible to the current domain: %s => %s",
+                  domain, expectedDomain));
+        }
+      }
+
+      public void deleteCookieNamed(String name) {
             CookieManager cookieManager = webClient.getCookieManager();
 
             Set<org.apache.commons.httpclient.Cookie> rawCookies = webClient.getCookieManager().getCookies(getHostName());
@@ -747,14 +768,14 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
             throw new UnsupportedOperationException();
         }
 
-        private String getDomainForCookie(Cookie cookie) {
-            String domain = cookie.getDomain();
-            if (domain == null || "".equals(domain)) {
-                URL current = lastPage().getWebResponse().getRequestUrl();
-                domain = String.format("%s:%s", current.getHost(), current.getPort());
-            }
-            return domain;
+      private String getDomainForCookie(Cookie cookie) {
+        URL current = lastPage().getWebResponse().getRequestUrl();
+        if (current.getPort() == 80) {
+          return current.getHost();
         }
+
+        return String.format("%s:%s", current.getHost(), current.getPort());
+      }
     }
 
     private class HtmlUnitDriverIterator implements Iterator<WebDriver> {

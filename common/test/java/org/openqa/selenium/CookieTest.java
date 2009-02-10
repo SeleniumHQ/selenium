@@ -24,40 +24,40 @@ import org.openqa.selenium.internal.ReturnedCookie;
 import java.util.Date;
 
 public class CookieTest extends TestCase {
-    
-    public void testCanCreateAWellFormedCookie() {
-        new ReturnedCookie("Fish", "cod", "", "", null, false);
-    }
-    
-    public void testShouldThrowAnExceptionWhenTheDomainIsBad() {
-        try {
-            new ReturnedCookie("Fish", "cod", "127.0.0.0.1", null, null, false);
-            fail();
-        } catch (IllegalArgumentException e) {
-            // This is expected
-        }
-    }
-    
-    public void testShouldThrowAnExceptionWhenSemiColonExistsInTheCookieAttribute() {
-        try {
-            new ReturnedCookie("hi;hi", "value", null, null, null, false);
-            fail();
-        } catch (IllegalArgumentException e) {
-            //Expected
-        }
-    }
-    
-    public void testShouldThrowAnExceptionTheNameIsNull() {
-        try {
-            new ReturnedCookie(null, "value", null, null, null, false);
-            fail();
-        } catch(IllegalArgumentException e) {
-            //expected
-        }
-    }
 
-    public void testCookiesShouldAllowSecureToBeSet() {
-      Cookie cookie = new ReturnedCookie("name", "value", "", "/", new Date(), true);
-      assertTrue(cookie.isSecure());
+  public void testCanCreateAWellFormedCookie() {
+    new ReturnedCookie("Fish", "cod", "", "", null, false);
+  }
+
+  public void testShouldThrowAnExceptionWhenTheDomainIsBad() {
+    try {
+      new ReturnedCookie("Fish", "cod", "127.0.0.0.1", null, null, false);
+      fail();
+    } catch (IllegalArgumentException e) {
+      // This is expected
     }
+  }
+
+  public void testShouldThrowAnExceptionWhenSemiColonExistsInTheCookieAttribute() {
+    try {
+      new ReturnedCookie("hi;hi", "value", null, null, null, false);
+      fail();
+    } catch (IllegalArgumentException e) {
+      //Expected
+    }
+  }
+
+  public void testShouldThrowAnExceptionTheNameIsNull() {
+    try {
+      new ReturnedCookie(null, "value", null, null, null, false);
+      fail();
+    } catch (IllegalArgumentException e) {
+      //expected
+    }
+  }
+
+  public void testCookiesShouldAllowSecureToBeSet() {
+    Cookie cookie = new ReturnedCookie("name", "value", "", "/", new Date(), true);
+    assertTrue(cookie.isSecure());
+  }
 }

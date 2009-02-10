@@ -18,11 +18,13 @@ limitations under the License.
 package org.openqa.selenium;
 
 import java.util.Date;
+import java.security.cert.CertPathBuilder;
 
 public class Cookie {
     private final String name;
     private final String value;
     private final String path;
+    private final String domain;
     private final Date expiry;
 
     /**
@@ -35,19 +37,24 @@ public class Cookie {
      * @param expiry expiry can be null
      */
     public Cookie(String name, String value, String path, Date expiry) {
-        this.name = name;
-        this.value = value;
-        this.path = path == null || "".equals(path) ? "/" : path;
-
-        if(expiry != null) {
-            //igonre the milliseconds because firefox only keeps the seconds
-            this.expiry = new Date(expiry.getTime() / 1000 * 1000);
-        } else {
-            this.expiry = null;
-        }
-
-        validate();
+      this(name, value, null, path, expiry);
     }
+
+  public Cookie(String name, String value, String domain, String path, Date expiry) {
+    this.name = name;
+    this.value = value;
+    this.path = path == null || "".equals(path) ? "/" : path;
+    this.domain = domain;
+
+    if (expiry != null) {
+      //igonre the milliseconds because firefox only keeps the seconds
+      this.expiry = new Date(expiry.getTime() / 1000 * 1000);
+    } else {
+      this.expiry = null;
+    }
+
+    validate();
+  }
 
   /**
    * Create a cookie for the default path with the given name and value with
@@ -80,7 +87,7 @@ public class Cookie {
     }
 
     public String getDomain() {
-        return null;
+        return domain;
     }
 
     public String getPath() {
@@ -108,8 +115,9 @@ public class Cookie {
     @Override
     public String toString() {
         return name + "=" + value 
-        		+ (expiry == null ? "" : ";expires=" + expiry)
-                + ("".equals(path) ? "" : ";path=" + path);
+                + (expiry == null ? "" : "; expires=" + expiry)
+                + ("".equals(path) ? "" : "; path=" + path)
+                + (domain == null ? "" : "; domain=" + domain);
 //                + (isSecure ? ";secure;" : "");
     }
 
@@ -131,4 +139,37 @@ public class Cookie {
     public int hashCode() {
         return name.hashCode();
     }
+
+  public static class Builder {
+
+    private final String name;
+    private final String value;
+    private String path;
+    private String domain;
+    private Date expiry;
+
+    public Builder(String name, String value) {
+      this.name = name;
+      this.value = value;
+    }
+
+    public Builder domain(String host) {
+      this.domain = host;
+      return this;
+    }
+
+    public Builder path(String path) {
+      this.path = path;
+      return this;
+    }
+
+    public Builder expiresOn(Date expiry) {
+      this.expiry = expiry;
+      return this;
+    }
+
+    public Cookie build() {
+      return new Cookie(name, value, domain, path, expiry);
+    }
+  }
 }

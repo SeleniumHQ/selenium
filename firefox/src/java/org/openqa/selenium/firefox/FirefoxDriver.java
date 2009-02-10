@@ -450,7 +450,7 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
                   String expiry = attributesMap.get("expires");
                   if (expiry != null && !"".equals(expiry) && !expiry.equals("0")) {
                         //firefox stores expiry as number of seconds
-                        expires = new Date(Long.parseLong(attributesMap.get("expires")));
+                        expires = new Date(Long.parseLong(attributesMap.get("expires")) * 1000);
                     }
 
                     cookies.add(new ReturnedCookie(attributesMap.get("name"), attributesMap.get("value"),

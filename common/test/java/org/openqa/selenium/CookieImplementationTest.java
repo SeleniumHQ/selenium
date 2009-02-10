@@ -32,6 +32,7 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Date;
+import java.net.URL;
 
 public class CookieImplementationTest extends AbstractDriverTestCase {
     public void testAddCookiesWithDifferentPaths() {
@@ -199,4 +200,36 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
         Set<Cookie> cookies = options.getCookies();
         assertThat(cookies, not(hasItem(cookie1)));
     }
+
+  @Ignore({IE, SAFARI})  
+  public void testShouldBeAbleToSetDomainToTheCurrentDomain() throws Exception {
+    driver.get(simpleTestPage);
+    driver.manage().deleteAllCookies();
+
+    URL url = new URL(driver.getCurrentUrl());
+    String host = url.getHost() + ":" + url.getPort();
+
+    Cookie cookie1 = new Cookie.Builder("fish", "cod").domain(host).build();
+    WebDriver.Options options = driver.manage();
+    options.addCookie(cookie1);
+
+    driver.get(javascriptPage);
+    Set<Cookie> cookies = options.getCookies();
+    assertThat(cookies, hasItem(cookie1));
+  }
+
+  @Ignore({IE, SAFARI})
+  public void testShouldNotBeAbleToSetDomainToSomethingThatIsNotTheCurrentDomain() {
+    driver.get(simpleTestPage);
+    driver.manage().deleteAllCookies();
+
+    Cookie cookie1 = new Cookie.Builder("fish", "cod").domain("example.com").build();
+    WebDriver.Options options = driver.manage();
+    try {
+      options.addCookie(cookie1);
+      fail("Should not be able to set cookie on another domain");
+    } catch (WebDriverException e) {
+      // This is expected
+    }
+  }
 }

@@ -26,20 +26,14 @@ import java.net.UnknownHostException;
 import java.util.Date;
 
 public class ReturnedCookie extends Cookie {
-  private String domain;
   private boolean isSecure;
 
   public ReturnedCookie(String name, String value, String domain, String path, Date expiry, boolean isSecure) {
-    super(name, value, path, expiry);
+    super(name, value, domain, path, expiry);
 
-    this.domain = domain;
     this.isSecure = isSecure;
 
     validate();
-  }
-
-  public String getDomain() {
-    return domain;
   }
 
   public boolean isSecure() {
@@ -49,6 +43,8 @@ public class ReturnedCookie extends Cookie {
   @Override
   protected void validate() {
     super.validate();
+
+    String domain = getDomain();
 
     if (domain != null && !"".equals(domain)) {
       try {

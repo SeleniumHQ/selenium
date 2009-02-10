@@ -21,6 +21,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.ExtensionConnection;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.firefox.NotConnectedException;
 
 import java.io.IOException;
 
@@ -31,8 +32,10 @@ public class ExtensionConnectionFactory {
         if (isDev) {
             try {
                 return new RunningInstanceConnection(host, profilePort);
-            } catch (IOException e) {
+            } catch (NotConnectedException e) {
                 // Fine. No running instance
+            } catch (IOException e) {
+              // Fine. No running instance.
             }
         }
 
