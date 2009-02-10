@@ -5,6 +5,7 @@
 ======
 
  - Include examples in RubyGem
+ - Added visible? method
  
 1.2.10 
 =======
