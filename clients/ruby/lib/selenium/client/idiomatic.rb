@@ -16,10 +16,10 @@ module Selenium
       #
       # * 'locator' is an Selenium element locator
       #
-      # TODO - Should be renamed 'text'
-      def text_content(locator)
+      def text(locator)
         string_command "getText", [locator,]
       end
+      alias :text_content :text
       
       # Return the title of the current HTML page.
       def title
@@ -138,6 +138,17 @@ module Selenium
       # * 'locator' is an element locator
       def element?(locator)
         boolean_command "isElementPresent", [locator,]
+      end
+
+      # Determines if the specified element is visible. An
+      # element can be rendered invisible by setting the CSS "visibility"
+      # property to "hidden", or the "display" property to "none", either for the
+      # element itself or one if its ancestors.  This method will fail if
+      # the element is not present.
+      #
+      # 'locator' is an element locator
+      def visible?(locator)
+         boolean_command "isVisible", [locator,]
       end
 
       # Gets the (whitespace-trimmed) value of an input field 

@@ -2,10 +2,10 @@ require File.expand_path(File.dirname(__FILE__) + '/../../unit_test_helper')
 
 unit_tests do
   
-  test "text_content is an alias for get_text" do
+  test "text is an alias for get_text" do
     client = Class.new { include Selenium::Client::Idiomatic }.new
     client.expects(:string_command).with("getText", [:the_locator,]).returns(:the_text)
-    assert_equal :the_text, client.text_content(:the_locator)
+    assert_equal :the_text, client.text(:the_locator)
   end
 
   test "title returns the result of the getTitle command" do
@@ -246,6 +246,12 @@ unit_tests do
     client = Class.new { include Selenium::Client::Idiomatic }.new
     client.expects(:boolean_command).with("isElementPresent", [:the_locator,]).returns(:the_result)
     assert_equal :the_result, client.element?(:the_locator)
+  end
+
+  test "visible? returns the result of the isTextPresent command" do
+    client = Class.new { include Selenium::Client::Idiomatic }.new
+    client.expects(:boolean_command).with("isVisible", [:the_locator,]).returns(:the_result)
+    assert_equal :the_result, client.visible?(:the_locator)
   end
 
   test "alert? returns the result of the isAlertPresent command" do
