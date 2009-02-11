@@ -471,6 +471,7 @@ FirefoxDriver.prototype.findElementsByXPath = function (respond, xpath) {
 
     respond.context = this.context;
     respond.response = response;
+
     respond.send();
 };
 
@@ -485,9 +486,9 @@ FirefoxDriver.prototype.findElementsByLinkText = function (respond, linkText) {
       }
     }
     response = response.substring(0, response.length - 1);
-
     respond.context = this.context;
     respond.response = response;
+
     respond.send();
 };
 
@@ -509,7 +510,7 @@ FirefoxDriver.prototype.findElementByPartialLinkText = function(respond, linkTex
         respond.response = index;
     } else {
         respond.isError = true;
-        respond.response = "Unable to find element with link text contains '" + linkText + "'";
+        respond.response = "Unable to locate element with link text contains '" + linkText + "'";
     }
 
     respond.send();
@@ -555,34 +556,35 @@ FirefoxDriver.prototype.findChildElementsByClassName = function(respond, classNa
 };
 
 FirefoxDriver.prototype.findElementById = function(respond, id) {
-	var doc = Utils.getDocument(this.context);
-	var parentElement = Utils.getElementAt(respond.elementId, this.context);
+    var doc = Utils.getDocument(this.context);
+    var parentElement = Utils.getElementAt(respond.elementId, this.context);
     var element = doc.getElementById(id);
     var isChild = false;
 
     if (element) {
-    	var tmp = element;
-    	while (tmp != null) {
-    		if (tmp == parentElement) {
-    			isChild = true;
-	    		break;
-	    	}
-	    	tmp = tmp.parentNode
-	    }
-		if (isChild) {
-	    respond.response = Utils.addToKnownElements(element, this.context);
-		} else {
-			//The first match is not a child of the current node, fall back
-			//to xpath to see if there are any children nodes with that id
-			elements = Utils.findElementsByXPath("*[@id = '" + id + "']", parentElement, this.context)
-			if (elements.length > 0) {
-				respond.response = elements[0];
-			} else {
-    			respond.response = "-1";
-			}
-		}
+        var tmp = element;
+        while (tmp != null) {
+            if (tmp == parentElement) {
+                isChild = true;
+                break;
+            }
+            tmp = tmp.parentNode
+        }
+        if (isChild) {
+            respond.response = Utils.addToKnownElements(element, this.context);
+        } else {
+            //The first match is not a child of the current node, fall back
+            //to xpath to see if there are any children nodes with that id
+            elements = Utils.findElementsByXPath("*[@id = '" + id + "']", parentElement, this.context)
+            if (elements.length > 0) {
+                respond.response = elements[0];
+            } else {
+                respond.response = "-1";
+            }
+        }
     } else {
-    	respond.response = "-1";
+        respond.isError = true
+        respond.response = "Unable to locate element using id '" + id + "'";
     }
     respond.send();
 };

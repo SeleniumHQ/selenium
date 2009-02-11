@@ -220,7 +220,7 @@ FirefoxDriver.prototype.selectElementByName = function(respond, name) {
     respond.response = Utils.addToKnownElements(elements[0], this.context);
   } else {
     respond.isError = true;
-    respond.response = "Unable to find element with name '" + name + "'";
+    respond.response = "Unable to locate element with name '" + name + "'";
   }
 
   respond.send();
@@ -252,7 +252,7 @@ FirefoxDriver.prototype.selectElementUsingTagName = function(respond, name) {
 		respond.response = Utils.addToKnownElements(elements[0], this.context);
 	} else {
 		respond.isError = true;
-		respond.response = "Unable to find element with name '" + name + "'";
+		respond.response = "Unable to locate element with name '" + name + "'";
 	}
 
 	respond.send();
@@ -287,7 +287,7 @@ FirefoxDriver.prototype.selectElementUsingClassName = function(respond, name) {
         respond.response = Utils.addToKnownElements(elements[0], this.context);
       } else {
         respond.isError = true;
-        respond.response = "Unable to find element with class name '" + name + "'";
+        respond.response = "Unable to locate element with class name '" + name + "'";
       }
 
       respond.send();
@@ -335,7 +335,7 @@ FirefoxDriver.prototype.selectElementUsingLink = function(respond, linkText) {
         respond.response = index;
     } else {
         respond.isError = true;
-        respond.response = "Unable to find element with link text '" + linkText + "'";
+        respond.response = "Unable to locate element with link text '" + linkText + "'";
     }
 
     respond.send();
@@ -392,7 +392,7 @@ FirefoxDriver.prototype.selectElementUsingPartialLinkText = function(respond, li
         respond.response = index;
     } else {
         respond.isError = true;
-        respond.response = "Unable to find element with link text contains '" + linkText + "'";
+        respond.response = "Unable to locate element with link text contains '" + linkText + "'";
     }
 
     respond.send();
@@ -408,7 +408,7 @@ FirefoxDriver.prototype.selectElementById = function(respond, id) {
         respond.response = Utils.addToKnownElements(element, this.context);
     } else {
         respond.isError = true;
-        respond.response = "Unable to find element with id '" + id + "'";
+        respond.response = "Unable to locate element with id '" + id + "'";
     }
 
     respond.send();

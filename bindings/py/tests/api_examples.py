@@ -60,6 +60,39 @@ class ApiExampleTest (unittest.TestCase):
         elem = self.driver.find_element_by_name("windowOne")
         self.assertEquals("Open new window", elem.get_text())
 
+    def testFindElementsByNameInElementContext(self):
+        self._loadPage("nestedElements")
+        elem = self.driver.find_element_by_name("form2")
+        sub_elem = elem.find_element_by_name("selectomatic")
+        self.assertEquals("2", sub_elem.get_attribute("id"))
+
+    def testFindElementsByLinkTextInElementContext(self):
+        self._loadPage("nestedElements")
+        elem = self.driver.find_element_by_name("div1")
+        sub_elem = elem.find_element_by_link_text("hello world")
+        self.assertEquals("link1", sub_elem.get_attribute("name"))
+
+    def testFindElementByIdInElementContext(self):
+        self._loadPage("nestedElements")
+        elem = self.driver.find_element_by_name("form2")
+        sub_elem = elem.find_element_by_id("2")
+        self.assertEquals("selectomatic", sub_elem.get_attribute("name"))
+
+    def testFindElementByXpathInElementContext(self):
+        self._loadPage("nestedElements")
+        elem = self.driver.find_element_by_name("form2")
+        sub_elem = elem.find_element_by_xpath("select")
+        self.assertEquals("2", sub_elem.get_attribute("id"))
+
+    def testFindElementByXpathInElementContext(self):
+        self._loadPage("nestedElements")
+        elem = self.driver.find_element_by_name("form2")
+        try:
+            sub_elem = elem.find_element_by_xpath("div")
+            self.fail()
+        except exceptions.NoSuchElementException:
+            pass
+
     def testShouldBeAbleToEnterDataIntoFormFields(self):
         self._loadPage("xhtmlTest")
         elem = self.driver.find_element_by_xpath("//form[@name='someForm']/input[@id='username']")

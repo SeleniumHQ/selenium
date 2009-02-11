@@ -1,5 +1,6 @@
 from extensionconnection import ExtensionConnection
 import webdriver
+from exceptions import *
 
 class WebElement(object):
     """Represents an HTML element. Generally, all interesting operations to do with
@@ -54,10 +55,37 @@ class WebElement(object):
             # The "disabled" attribute may not exist
             return True
 
+    def find_element_by_id(self, id):
+        """Finds element by id."""
+        try:
+            return WebElement(self, self._command("findElementById", id))
+        except ErrorInResponseException, e:
+            _handle_find_element_exception(e)
+
+    def find_element_by_name(self, name):
+        """Find element by name."""
+        try:
+            return self.find_element_by_xpath(".//*[@name = '%s']" % name)
+        except ErrorInResponseException, e:
+            _handle_find_element_exception(e)
+
+    def find_element_by_link_text(self, link_text):
+        """Finds element by link text."""
+        try:
+            return WebElement(self, self._command("findElementsByLinkText", link_text).split(",")[0])
+        except ErrorInResponseException, e:
+            _handle_find_element_exception(e)
+
+    def find_element_by_xpath(self, xpath):
+        """Finds element by xpath."""
+        return self.find_elements_by_xpath(xpath)[0]
+
     def find_elements_by_xpath(self, xpath):
         """Finds elements within the elements by xpath."""
         try:
             resp = self._command("findElementsByXPath", xpath)
+            if not resp:
+                raise NoSuchElementException("Unable to locate element for %s" % xpath)
             elems = []
             for elemId in resp.split(","):
                 elem = WebElement(self.parent, elemId)
@@ -65,7 +93,7 @@ class WebElement(object):
             return elems
         except ErrorInResponseException, e:
             if "Unable to locate element" in e.response:
-                raise exceptions.NoSuchElementException("Unable to locate element:")
+                raise NoSuchElementException("Unable to locate element:")
             else:
                 raise e
 
@@ -75,3 +103,9 @@ class WebElement(object):
 
     def _command(self, cmd, *args):
         return self._conn.element_command(cmd, self.id, *args)['response']
+
+    def _handle_find_element_exception(self, e):
+        if "Unable to locate element" in e.response:
+            raise NoSuchElementException("Unable to locate element:")
+        else:
+            raise e
