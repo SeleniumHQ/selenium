@@ -1,3 +1,3 @@
-set PYTHONPATH=%PYTHONPATH%;bindings\py\src;bindings\py\lib 
+set PYTHONPATH=%PYTHONPATH%;firefox\lib-src\simplejson 
 set webdriver_test_htmlroot=common\src\web
-python bindings\py\tests\api_examples.py
+python firefox\test\py\api_examples.py
