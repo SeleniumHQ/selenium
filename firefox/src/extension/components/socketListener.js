@@ -279,7 +279,7 @@ SocketListener.prototype.executeCommand = function() {
         this.readLength = false;
         respond.isError = true;
         respond.response = "Unrecognised command: " + command.commandName;
-        respond.context = new Context(driver.window);
+        // Context was already set.
         respond.send();
     }
 };
