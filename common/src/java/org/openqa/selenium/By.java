@@ -167,14 +167,14 @@ public abstract class By {
         public List<WebElement> findElements(SearchContext context) {
             if (context instanceof FindsByTagName)
               return ((FindsByTagName) context).findElementsByTagName(name);
-            return ((FindsByXPath) context).findElementsByXPath(name);
+            return ((FindsByXPath) context).findElementsByXPath(".//" + name);
         }
 
         @Override
         public WebElement findElement(SearchContext context) {
           if (context instanceof FindsByTagName)
             return ((FindsByTagName) context).findElementByTagName(name);
-          return ((FindsByXPath) context).findElementByXPath(name);
+          return ((FindsByXPath) context).findElementByXPath(".//" + name);
         }
         
         @Override

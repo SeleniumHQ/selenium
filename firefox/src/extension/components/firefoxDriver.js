@@ -244,7 +244,7 @@ FirefoxDriver.prototype.selectElementsUsingName = function(respond, name) {
   respond.send();
 };
 
-FirefoxDriver.prototype.selectElementsUsingTagName = function(respond, name) {
+FirefoxDriver.prototype.selectElementUsingTagName = function(respond, name) {
 	var doc = Utils.getDocument(this.context);
 
 	var elements = doc.getElementsByTagName(name);
@@ -258,7 +258,7 @@ FirefoxDriver.prototype.selectElementsUsingTagName = function(respond, name) {
 	respond.send();
 };
 
-FirefoxDriver.prototype.selectElementsUsingTagName = function(respond, using) {
+FirefoxDriver.prototype.selectElementsUsingTagName = function(respond, name) {
 	var doc = Utils.getDocument(this.context);
 
 	var elements = doc.getElementsByTagName(name);

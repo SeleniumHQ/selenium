@@ -78,10 +78,10 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
       // We only need to quit the second driver if the test passes
       secondDriver.quit();
     }
-    
+
     public void testShouldBeAbleToStartFromAUniqueProfile() {
       FirefoxProfile profile = new FirefoxProfile();
-      
+
       try {
         WebDriver secondDriver = new FirefoxDriver(profile);
         secondDriver.quit();

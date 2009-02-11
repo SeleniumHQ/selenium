@@ -161,4 +161,24 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
 
         assertEquals(2, elements.size());
     }
+
+  @Ignore({SAFARI})
+  public void testShouldFindChildElementsByTagName() {
+    driver.get(nestedPage);
+    WebElement parent = driver.findElement(By.name("div1"));
+
+    WebElement element = parent.findElement(By.tagName("a"));
+
+    assertEquals("link1", element.getAttribute("name"));
+  }
+
+  @Ignore({SAFARI})
+  public void testShouldFindChildrenByTagName() {
+    driver.get(nestedPage);
+    WebElement parent = driver.findElement(By.name("div1"));
+
+    List<WebElement> elements = parent.findElements(By.tagName("a"));
+
+    assertEquals(2, elements.size());
+  }
 }

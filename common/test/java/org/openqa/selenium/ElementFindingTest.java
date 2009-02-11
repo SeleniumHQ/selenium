@@ -278,7 +278,23 @@ public class ElementFindingTest extends AbstractDriverTestCase {
         } catch (NoSuchElementException e) {
             fail("Expected to be able to find hidden element");
         }
-
-
     }
+
+  @Ignore(SAFARI)
+  public void testShouldfindAnElementBasedOnTagName() {
+    driver.get(formPage);
+
+    WebElement element = driver.findElement(By.tagName("input"));
+
+    assertNotNull(element);
+  }
+
+  @Ignore(SAFARI)
+  public void testShouldfindElementsBasedOnTagName() {
+    driver.get(formPage);
+
+    List<WebElement> elements = driver.findElements(By.tagName("input"));
+
+    assertNotNull(elements);
+  }
 }

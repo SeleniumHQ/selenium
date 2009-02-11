@@ -201,11 +201,11 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
   }
 
   public WebElement findElementByTagName(String using) {
-    return findElement("selectElementByTagName", using);
+    return findElement("selectElementUsingTagName", using);
   }
 
   public List<WebElement> findElementsByTagName(String using) {
-    return findElements("selectElementsByTagName", using);
+    return findElements("selectElementsUsingTagName", using);
   }
   
   public WebElement findElementByXPath(String using) {
