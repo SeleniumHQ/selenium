@@ -50,6 +50,8 @@ EXPORT int wdNewDriverInstance(WebDriver** result);
 EXPORT int wdFreeDriver(WebDriver* driver);
 EXPORT int wdeFreeElement(WebElement* element);
 EXPORT int wdFreeElementCollection(ElementCollection* collection, int alsoFreeElements);
+EXPORT int wdFreeScriptArgs(ScriptArgs* scriptArgs);
+EXPORT int wdFreeScriptResult(ScriptResult* scriptResult);
 
 
 // WebDriver functions

@@ -102,34 +102,29 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
     handleErrorCode("Unable to create new script arguments array", result);
     Pointer scriptArgs = scriptArgsRef.getValue();
     
-    for (Object arg : args) {
-      if (arg instanceof String) {
-        result = lib.wdAddStringScriptArg(scriptArgs, new WString((String) arg));
-      } else if (arg instanceof Boolean) {
-        Boolean param = (Boolean) arg;
-        result = lib.wdAddBooleanScriptArg(scriptArgs, param == null || !param ? 0 : 1);      
-      } else if (arg instanceof Number) {
-        long number = ((Number) arg).longValue();
-        result = lib.wdAddNumberScriptArg(scriptArgs, new NativeLong(number));
-      } else if (arg instanceof InternetExplorerElement) {
-        result = ((InternetExplorerElement) arg).addToScriptArgs(scriptArgs);
-      } else {
-        throw new IllegalArgumentException("Parameter is not of recognized type: " + arg);
-      }
+    try {
+      populateArguments(result, scriptArgs, args);
       
-      handleErrorCode("Unable to add argument: " + arg, result);
+      script = "(function() { return function(){" + script + "};})();";
+      
+      PointerByReference scriptResultRef = new PointerByReference();
+      result = lib.wdExecuteScript(driver, new WString(script), scriptArgs, scriptResultRef);
+      
+      handleErrorCode("Cannot execute script", result);
+      Object toReturn = extractReturnValue(scriptResultRef);
+      return toReturn;
+    } finally {
+      lib.wdFreeScriptArgs(scriptArgs);
     }
-    
-    script = "(function() { return function(){" + script + "};})();";
-    
-    PointerByReference scriptResultRef = new PointerByReference();
-    result = lib.wdExecuteScript(driver, new WString(script), scriptArgs, scriptResultRef);
-    
-    handleErrorCode("Cannot execute script", result);
+  }
+
+  private Object extractReturnValue(PointerByReference scriptResultRef) {
+    int result;
     Pointer scriptResult = scriptResultRef.getValue();
     
     IntByReference type = new IntByReference();
     result = lib.wdGetScriptResultType(scriptResult, type);
+    lib.wdFreeScriptResult(scriptResult);
     
     handleErrorCode("Cannot determine result type", result);
     
@@ -176,8 +171,28 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
     default:
       throw new WebDriverException("Cannot determine result type");
     }
-    
     return toReturn;
+  }
+
+  private int populateArguments(int result, Pointer scriptArgs, Object... args) {
+    for (Object arg : args) {
+      if (arg instanceof String) {
+        result = lib.wdAddStringScriptArg(scriptArgs, new WString((String) arg));
+      } else if (arg instanceof Boolean) {
+        Boolean param = (Boolean) arg;
+        result = lib.wdAddBooleanScriptArg(scriptArgs, param == null || !param ? 0 : 1);      
+      } else if (arg instanceof Number) {
+        long number = ((Number) arg).longValue();
+        result = lib.wdAddNumberScriptArg(scriptArgs, new NativeLong(number));
+      } else if (arg instanceof InternetExplorerElement) {
+        result = ((InternetExplorerElement) arg).addToScriptArgs(scriptArgs);
+      } else {
+        throw new IllegalArgumentException("Parameter is not of recognized type: " + arg);
+      }
+      
+      handleErrorCode("Unable to add argument: " + arg, result);
+    }
+    return result;
   }
     
     

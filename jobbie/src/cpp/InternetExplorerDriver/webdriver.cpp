@@ -171,6 +171,27 @@ int wdFreeElementCollection(ElementCollection* collection, int alsoFreeElements)
 	return SUCCESS;
 }
 
+int wdFreeScriptArgs(ScriptArgs* scriptArgs)
+{
+	if (!scriptArgs || !scriptArgs->args) 
+		return -ENOSUCHCOLLECTION;
+
+	SafeArrayDestroy(scriptArgs->args);
+	delete scriptArgs;
+
+	return SUCCESS;
+}
+
+int wdFreeScriptResult(ScriptResult* scriptResult)
+{
+	if (!scriptResult)
+		return -ENOCOLLECTION;
+
+	delete scriptResult;
+
+	return SUCCESS;
+}
+
 // Driver manipulation functions
 int wdFreeDriver(WebDriver* driver)
 {
