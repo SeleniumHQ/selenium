@@ -775,6 +775,55 @@ int wdFindElementsByLinkText(WebDriver* driver, WebElement* element, const wchar
 	} END_TRY;
 }
 
+int wdFindElementByPartialLinkText(WebDriver* driver, WebElement* element, const wchar_t* linkText, WebElement** result)
+{
+	if (!driver || !driver->ie) { return -ENOSUCHDRIVER; }
+
+	CComPtr<IHTMLDOMNode> res;
+	InternetExplorerDriver* ie = driver->ie;
+	CComPtr<IHTMLElement> elem;
+	if (element && element->element) {
+		elem = element->element->getWrappedElement();
+	}
+
+	try {
+		ElementWrapper* wrapper;
+		int res = ie->selectElementByPartialLink(elem, linkText, &wrapper);
+
+		if (res != SUCCESS) {
+			return res;
+		}
+
+		WebElement* toReturn = new WebElement();
+		toReturn->element = wrapper;
+
+		*result = toReturn;
+		return SUCCESS;
+	} END_TRY;
+}
+
+int wdFindElementsByPartialLinkText(WebDriver* driver, WebElement* element, const wchar_t* linkText, ElementCollection** result)
+{
+	if (!driver || !driver->ie) { return -ENOSUCHDRIVER; }
+
+	CComPtr<IHTMLDOMNode> res;
+
+	try {
+		InternetExplorerDriver* ie = driver->ie;
+		CComPtr<IHTMLElement> elem;
+		if (element && element->element) {
+			elem = element->element->getWrappedElement();
+		}
+
+		ElementCollection* collection = new ElementCollection();
+		collection->elements = driver->ie->selectElementsByPartialLink(elem, linkText);
+
+		*result = collection;
+
+		return SUCCESS;
+	} END_TRY;
+}
+
 int wdFindElementByTagName(WebDriver* driver, WebElement* element, const wchar_t* name, WebElement** result)
 {
 	if (!driver || !driver->ie) { return -ENOSUCHDRIVER; }

@@ -62,6 +62,8 @@ public:
 	std::vector<ElementWrapper*>* selectElementsById(IHTMLElement *p, const wchar_t *elementId);
 	int selectElementByLink(IHTMLElement *p, const wchar_t *elementLink, ElementWrapper** element);
 	std::vector<ElementWrapper*>* selectElementsByLink(IHTMLElement *p, const wchar_t *elementLink);
+	int selectElementByPartialLink(IHTMLElement *p, const wchar_t *elementLink, ElementWrapper** element);
+	std::vector<ElementWrapper*>* selectElementsByPartialLink(IHTMLElement *p, const wchar_t *elementLink);
 	int selectElementByName(IHTMLElement *p, const wchar_t *elementName, ElementWrapper** wrapper);
 	std::vector<ElementWrapper*>* selectElementsByName(IHTMLElement *p, const wchar_t *elementName);
 	int selectElementByTagName(IHTMLElement *p, const wchar_t *elementName, ElementWrapper** element);

@@ -178,7 +178,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     	assertTrue("Expected 2 links, got " + elements.size(), elements.size() == 2);
     }
 
-    @Ignore({IE, REMOTE, SAFARI})
+    @Ignore({REMOTE, SAFARI})
     public void testShouldBeAbleToFindMultipleElementsByPartialLinkText() {
     	driver.get(xhtmlTestPage);
 
@@ -187,7 +187,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     	assertTrue(elements.size() == 2);
     }
 
-    @Ignore({IE, REMOTE, SAFARI})
+    @Ignore({REMOTE, SAFARI})
     public void testShouldBeAbleToFindElementByPartialLinkText() {
     	driver.get(xhtmlTestPage);
 

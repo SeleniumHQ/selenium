@@ -214,6 +214,37 @@ int InternetExplorerDriver::selectElementByLink(IHTMLElement *pElem, const wchar
 	return data.error_code;
 }
 
+std::vector<ElementWrapper*>* InternetExplorerDriver::selectElementsByPartialLink(IHTMLElement *pElem, const wchar_t *input_string)
+{
+	SCOPETRACER
+	SEND_MESSAGE_ABOUT_ELEM(_WD_SELELEMENTSBYPARTIALLINK)
+
+	if(1 == data.output_long_) {std::wstring Err(L"Cannot find elements by Link"); throw Err;}
+
+	std::vector<ElementWrapper*> *toReturn = new std::vector<ElementWrapper*>();
+
+	std::vector<IHTMLElement*>& allElems = data.output_list_html_element_;
+	std::vector<IHTMLElement*>::const_iterator cur, end = allElems.end();
+	for(cur = allElems.begin();cur < end; cur++)
+	{
+		IHTMLElement* elem = *cur;
+		toReturn->push_back(new ElementWrapper(this, elem));
+	}
+	return toReturn;
+}
+
+int InternetExplorerDriver::selectElementByPartialLink(IHTMLElement *pElem, const wchar_t *input_string, ElementWrapper** element)
+{
+	SCOPETRACER
+	SEND_MESSAGE_ABOUT_ELEM(_WD_SELELEMENTBYPARTIALLINK)
+
+	if (data.error_code == SUCCESS) { 
+		*element = new ElementWrapper(this, data.output_html_element_);
+	}
+
+	return data.error_code;
+}
+
 std::vector<ElementWrapper*>* InternetExplorerDriver::selectElementsByLink(IHTMLElement *pElem, const wchar_t *input_string)
 {
 	SCOPETRACER

@@ -157,6 +157,8 @@ protected:
 		  void OnSelectElementsById(WPARAM, LPARAM);
 		  void OnSelectElementByLink(WPARAM, LPARAM);
 		  void OnSelectElementsByLink(WPARAM, LPARAM);
+		  void OnSelectElementByPartialLink(WPARAM, LPARAM);
+		  void OnSelectElementsByPartialLink(WPARAM, LPARAM);
 		  void OnSelectElementByName(WPARAM, LPARAM);
 		  void OnSelectElementsByName(WPARAM, LPARAM);
 		  void OnSelectElementByTagName(WPARAM, LPARAM);

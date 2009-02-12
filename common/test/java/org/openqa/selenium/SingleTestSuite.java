@@ -46,7 +46,7 @@ public class SingleTestSuite extends TestCase {
         .keepDriverInstance()
         .includeJavascriptTests()
         .onlyRun("ElementFindingTest")
-//        .method("testShouldBeAbleToSetDomainToTheCurrentDomain")
+//        .method("testShouldBeAbleToFindMultipleElementsByPartialLinkText")
         .exclude(ALL)
 //        .exclude(Ignore.Driver.REMOTE)
         .leaveRunning()

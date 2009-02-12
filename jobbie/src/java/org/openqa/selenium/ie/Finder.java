@@ -93,7 +93,7 @@ class Finder implements SearchContext, FindsByClassName, FindsById, FindsByLinkT
     PointerByReference rawElement = new PointerByReference();
     int result = lib.wdFindElementByLinkText(driver, element, new WString(using), rawElement);
 
-    handleErrorCode("id", using, result);
+    handleErrorCode("link text", using, result);
 
     return new InternetExplorerElement(lib, driver, rawElement.getValue());
   }
@@ -102,19 +102,28 @@ class Finder implements SearchContext, FindsByClassName, FindsById, FindsByLinkT
     PointerByReference elements = new PointerByReference();
     int result = lib.wdFindElementsByLinkText(driver, element, new WString(using), elements);
 
-    handleErrorCode("id", using, result);
+    handleErrorCode("link text", using, result);
 
     return new ElementCollection(lib, driver, elements.getValue()).toList();
   }
 
   public WebElement findElementByPartialLinkText(String using) {
-    throw new UnsupportedOperationException("findElementByPartialLinkText");
+    PointerByReference rawElement = new PointerByReference();
+    int result = lib.wdFindElementByPartialLinkText(driver, element, new WString(using), rawElement);
+
+    handleErrorCode("link text", using, result);
+
+    return new InternetExplorerElement(lib, driver, rawElement.getValue());
   }
-  
+
   public List<WebElement> findElementsByPartialLinkText(String using) {
-    throw new UnsupportedOperationException("findElementsByPartialLinkText");
-  }
-  
+    PointerByReference elements = new PointerByReference();
+    int result = lib.wdFindElementsByPartialLinkText(driver, element, new WString(using), elements);
+
+    handleErrorCode("link text", using, result);
+
+    return new ElementCollection(lib, driver, elements.getValue()).toList();
+  }  
   public WebElement findElementByName(String using) {
     PointerByReference rawElement = new PointerByReference();
     int result = lib.wdFindElementByName(driver, element, new WString(using), rawElement);

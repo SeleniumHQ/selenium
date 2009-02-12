@@ -326,6 +326,146 @@ void IeThread::OnSelectElementsByLink(WPARAM w, LPARAM lp)
 	}
 }
 
+void IeThread::OnSelectElementByPartialLink(WPARAM w, LPARAM lp)
+{
+	SCOPETRACER
+	ON_THREAD_COMMON(data)
+	int &errorKind = data.error_code;
+	CComPtr<IHTMLElement> inputElement(data.input_html_element_);
+	IHTMLElement* &pDom = data.output_html_element_;
+	const wchar_t *elementLink= data.input_string_;
+
+	pDom = NULL;
+	errorKind = SUCCESS;
+
+	/// Start from root DOM by default
+	if(!inputElement)
+	{
+		CComPtr<IHTMLDocument3> root_doc;
+		getDocument3(&root_doc);
+		if (!root_doc) 
+		{
+			errorKind = -ENOSUCHDOCUMENT;
+			return;
+		}
+		root_doc->get_documentElement(&inputElement);
+	}
+
+	CComQIPtr<IHTMLDOMNode> node(inputElement);
+	if (!node) 
+	{
+		errorKind = -ENOSUCHELEMENT;
+		return;
+	}
+
+
+	CComPtr<IHTMLDocument2> doc;
+	getDocument2(node, &doc);
+	if (!doc) 
+	{
+		errorKind = -ENOSUCHDOCUMENT;
+		return;
+	}
+
+	CComPtr<IHTMLElementCollection> linkCollection;
+	doc->get_links(&linkCollection);
+	
+	long linksLength;
+	linkCollection->get_length(&linksLength);
+
+	for (int i = 0; i < linksLength; i++) {
+		CComVariant idx;
+		idx.vt = VT_I4;
+		idx.lVal = i;
+		CComVariant zero;
+		zero.vt = VT_I4;
+		zero.lVal = 0;
+		CComPtr<IDispatch> dispatch;
+		linkCollection->item(idx, zero, &dispatch);
+
+		CComQIPtr<IHTMLElement> element(dispatch);
+
+		CComBSTR linkText;
+		element->get_innerText(&linkText);
+
+		if (wcsstr(combstr2cw(linkText),elementLink) && isOrUnder(node, element)) {
+			element.CopyTo(&pDom);
+			return;
+		}
+	}
+
+	errorKind = -ENOSUCHELEMENT;
+}
+
+void IeThread::OnSelectElementsByPartialLink(WPARAM w, LPARAM lp)
+{
+	SCOPETRACER
+	ON_THREAD_COMMON(data)
+	long &errorKind = data.output_long_;
+	CComPtr<IHTMLElement> inputElement(data.input_html_element_);
+	std::vector<IHTMLElement*> &allElems = data.output_list_html_element_;
+	const wchar_t *elementLink= data.input_string_;
+
+	errorKind = 0;
+
+	/// Start from root DOM by default
+	if(!inputElement)
+	{
+		CComPtr<IHTMLDocument3> root_doc;
+		getDocument3(&root_doc);
+		if (!root_doc) 
+		{
+			errorKind = 1;
+			return;
+		}
+		root_doc->get_documentElement(&inputElement);
+	}
+
+	CComQIPtr<IHTMLDOMNode> node(inputElement);
+	if (!node) 
+	{
+		errorKind = 1;
+		return;
+	}
+
+	CComPtr<IHTMLDocument2> doc2;
+	getDocument2(node, &doc2);
+
+	if (!doc2) 
+	{
+		errorKind = 1;
+		return;
+	}
+
+	CComPtr<IHTMLElementCollection> linkCollection;
+	doc2->get_links(&linkCollection);
+	
+	long linksLength;
+	linkCollection->get_length(&linksLength);
+
+	for (int i = 0; i < linksLength; i++) {
+		CComVariant idx;
+		idx.vt = VT_I4;
+		idx.lVal = i;
+		CComVariant zero;
+		zero.vt = VT_I4;
+		zero.lVal = 0;
+		CComPtr<IDispatch> dispatch;
+		linkCollection->item(idx, zero, &dispatch);
+
+		CComQIPtr<IHTMLElement> element(dispatch);
+
+		CComBSTR linkText;
+		element->get_innerText(&linkText);
+
+		if (wcsstr(combstr2cw(linkText),elementLink) && isOrUnder(node, element)) {
+			IHTMLElement *pDom = NULL;
+			element.CopyTo(&pDom);
+			allElems.push_back(pDom);
+		}
+	}
+}
+
 void IeThread::OnSelectElementByName(WPARAM w, LPARAM lp)
 {
 	SCOPETRACER
