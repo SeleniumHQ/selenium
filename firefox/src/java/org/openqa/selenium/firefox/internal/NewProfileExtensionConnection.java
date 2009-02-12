@@ -57,6 +57,10 @@ public class NewProfileExtensionConnection extends AbstractExtensionConnection {
   protected void connectToBrowser(long timeToWaitInMilliSeconds) throws IOException {
     try {
       super.connectToBrowser(timeToWaitInMilliSeconds);
+    } catch (IOException e) {
+      throw new WebDriverException(
+          String.format("Failed to connect to binary %s on port %d; process output follows: \n%s", 
+              process.toString(), profile.getPort(), process.getConsoleOutput()), e);
     } catch (WebDriverException e) {
       throw new WebDriverException(
           String.format("Failed to connect to binary %s on port %d; process output follows: \n%s", 

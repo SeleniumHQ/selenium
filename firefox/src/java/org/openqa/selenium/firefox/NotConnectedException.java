@@ -17,23 +17,20 @@ limitations under the License.
 
 package org.openqa.selenium.firefox;
 
-import org.openqa.selenium.WebDriverException;
-
+import java.io.IOException;
 import java.net.Socket;
 
-public class NotConnectedException extends WebDriverException {
+public class NotConnectedException extends IOException {
   public NotConnectedException(Socket socket, long timeToWaitInMilliSeconds) {
     super(getMessage(socket, timeToWaitInMilliSeconds));
   }
   
   private static final String getMessage(Socket socket, long timeToWaitInMilliSeconds) {
-    if (socket == null) {
+    if (socket == null || socket.getInetAddress() == null) {
       return String.format("Failed to start up socket within %d", timeToWaitInMilliSeconds);
     } else {
-      final String host = 
-          (socket.getInetAddress() != null) ? socket.getInetAddress().toString() : "(null address)";
       return String.format("Unable to connect to host %s on port %d after %d ms", 
-          host, socket.getPort(), timeToWaitInMilliSeconds);
+          socket.getInetAddress().toString(), socket.getPort(), timeToWaitInMilliSeconds);
     }
   }
 }
