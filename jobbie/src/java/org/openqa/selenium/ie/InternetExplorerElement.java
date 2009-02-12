@@ -203,7 +203,7 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
 
   @Override
   protected void finalize() throws Throwable {
-    // deleteStoredObject();
+    lib.wdFreeElement(element);
   }
 
   public void dragAndDropBy(int moveRightBy, int moveDownBy) {

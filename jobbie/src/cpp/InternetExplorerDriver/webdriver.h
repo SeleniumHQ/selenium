@@ -49,6 +49,7 @@ typedef struct ElementCollection ElementCollection;
 EXPORT int wdNewDriverInstance(WebDriver** result);
 EXPORT int wdFreeDriver(WebDriver* driver);
 EXPORT int wdeFreeElement(WebElement* element);
+EXPORT int wdFreeElementCollection(ElementCollection* collection, int alsoFreeElements);
 
 
 // WebDriver functions
@@ -136,15 +137,6 @@ EXPORT int wdcGetElementAtIndex(ElementCollection* collection, int index, WebEle
 EXPORT int wdStringLength(StringWrapper* string, int* length);
 EXPORT int wdFreeString(StringWrapper* string);
 EXPORT int wdCopyString(StringWrapper* source, int length, wchar_t* dest);
-
-
-// Bridging function, as we migrate to the New World
-class InternetExplorerDriver;
-class ElementWrapper;
-int nastyBridgingFunction(InternetExplorerDriver* driver, WebDriver** toReturn);
-int nastyBridgingFunction2(WebDriver* toReturn);
-int nastyBridgingFunction3(ElementWrapper* wrapper, WebElement** toReturn);
-int nastyBridgingFunction4(WebElement* toReturn);
 
 #ifdef __cplusplus
 }

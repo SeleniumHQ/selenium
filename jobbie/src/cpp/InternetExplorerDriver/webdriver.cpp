@@ -142,10 +142,31 @@ int wdcGetElementAtIndex(ElementCollection* collection, int index, WebElement** 
 int wdeFreeElement(WebElement* element)
 {
 	if (!element)
-		return -1;
+		return -ENOSUCHDRIVER;
 
 	if (element->element) delete element->element;
 	delete element;
+
+	return SUCCESS;
+}
+
+int wdFreeElementCollection(ElementCollection* collection, int alsoFreeElements)
+{
+	if (!collection || !collection->elements) 
+		return -ENOSUCHCOLLECTION;
+
+	if (alsoFreeElements) {
+		std::vector<ElementWrapper*>::const_iterator cur = collection->elements->begin();
+		std::vector<ElementWrapper*>::const_iterator end = collection->elements->end();
+
+		while (cur != end) {
+			delete *cur;
+			cur++;
+		}
+	}
+
+	delete collection->elements;
+	delete collection;
 
 	return SUCCESS;
 }
@@ -1092,40 +1113,6 @@ int wdGetElementScriptResult(ScriptResult* result, WebDriver* driver, WebElement
 	toReturn->element = new ElementWrapper(driver->ie, node);
 
 	*element = toReturn;
-
-	return SUCCESS;
-}
-
-
-// Never use me. Except when converting JNI code to call webdriver.h functions
-int nastyBridgingFunction(InternetExplorerDriver* driver, WebDriver** toReturn)
-{
-	WebDriver *d = new WebDriver();
-	d->ie = driver;
-	*toReturn = d;
-
-	return SUCCESS;
-}
-
-int nastyBridgingFunction2(WebDriver* toReturn) 
-{
-	delete toReturn;
-
-	return SUCCESS;
-}
-
-int nastyBridgingFunction3(ElementWrapper* wrapper, WebElement** toReturn)
-{
-	WebElement *e = new WebElement();
-	e->element = wrapper;
-	*toReturn = e;
-
-	return SUCCESS;
-}
-
-int nastyBridgingFunction4(WebElement* toReturn) 
-{
-	delete toReturn;
 
 	return SUCCESS;
 }
