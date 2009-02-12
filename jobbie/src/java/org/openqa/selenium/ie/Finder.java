@@ -134,7 +134,12 @@ class Finder implements SearchContext, FindsByClassName, FindsById, FindsByLinkT
   }
 
   public WebElement findElementByTagName(String using) {
-    throw new UnsupportedOperationException("findElementsByTagName");
+    PointerByReference rawElement = new PointerByReference();
+    int result = lib.wdFindElementByTagName(driver, element, new WString(using), rawElement);
+
+    handleErrorCode("xpath", using, result);
+
+    return new InternetExplorerElement(lib, driver, rawElement.getValue());
   }
 
   public List<WebElement> findElementsByTagName(String using) {

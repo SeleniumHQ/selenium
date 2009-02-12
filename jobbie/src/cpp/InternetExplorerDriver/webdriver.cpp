@@ -788,7 +788,7 @@ int wdFindElementByTagName(WebDriver* driver, WebElement* element, const wchar_t
 
 	try {
 		ElementWrapper* wrapper;
-		int res = ie->selectElementByXPath(elem, name, &wrapper);
+		int res = ie->selectElementByTagName(elem, name, &wrapper);
 
 		if (res != SUCCESS) {
 			return res;

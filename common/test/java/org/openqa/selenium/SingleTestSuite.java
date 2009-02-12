@@ -33,7 +33,7 @@ public class SingleTestSuite extends TestCase {
   private final static String SAFARI = "org.openqa.selenium.safari.SafariDriver";
 
   public static Test suite() throws Exception {
-    String driver = REMOTE;
+    String driver = IE;
 
     System.setProperty("webdriver.firefox.development", "true");
 //    System.setProperty("webdriver.firefox.useExisting", "true");
@@ -48,7 +48,7 @@ public class SingleTestSuite extends TestCase {
         .onlyRun("ElementFindingTest")
 //        .method("testShouldBeAbleToSetDomainToTheCurrentDomain")
         .exclude(ALL)
-        .exclude(Ignore.Driver.REMOTE)
+//        .exclude(Ignore.Driver.REMOTE)
         .leaveRunning()
         ;  // Yeah, this look strange :)
 
