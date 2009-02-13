@@ -3,10 +3,13 @@ import sys
 
 from webelement import *
 from exceptions import *
+from firefoxlauncher import FirefoxLauncher
+
 class WebDriver(object):
     """The main interface to use for testing, which represents an idealised web browser."""
     def __init__(self):
         self._conn = ExtensionConnection()
+        self._conn.connect()
 
     def execute_script(self, script, *args):
         converted_args = []
@@ -96,6 +99,7 @@ class WebDriver(object):
     def quit(self):
         """Quits the driver and close every associated window."""
         self._conn.driver_command("quit")
+        FirefoxLauncher().CloseBrowser()
 
     def switch_to_window(self, windowName):
         """Switches focus to a window."""

@@ -20,19 +20,10 @@ class ExtensionConnection(object):
     def __init__(self):
         logger.debug("extension connection initiated")
         self.__dict__ = self.__shared_state
-        if "socket" not in self.__dict__:
-            self.lock = threading.RLock()
-            self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.socket.connect(("localhost", _DEFAULT_PORT))
-
-            self.socket.settimeout(_SOCKET_TIMEOUT)
-            self.context = "null"
-            resp = self.driver_command("findActiveDriver")['response']
-            self.context = resp
 
     def driver_command(self, cmd, *params):
         return self.element_command(cmd, "null", *params)
-  
+
     def element_command(self, cmd, elementId, *params):
         json_dump = simplejson.dumps({"parameters": params,
                                       "context": self.context,
@@ -43,8 +34,8 @@ class ExtensionConnection(object):
         packet += json_dump
         packet += "\n"
         logger.debug(packet)
-
-        self.lock.acquire()
+        lock = threading.RLock()
+        lock.acquire()
         self.socket.send(packet)
         if cmd == "quit":
             return
@@ -56,7 +47,7 @@ class ExtensionConnection(object):
         for i in range(resp_length):
             resp += self.socket.recv(1)
 
-        self.lock.release()
+        lock.release()
         logger.debug(resp)
         sections = re.findall(r'{.*}', resp)
         if sections:
@@ -71,3 +62,10 @@ class ExtensionConnection(object):
             return decoded
         else:
             return None
+
+    def connect(self):
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.socket.connect(("localhost", _DEFAULT_PORT))
+        self.socket.settimeout(_SOCKET_TIMEOUT)
+        self.context = "null"
+        self.context = self.driver_command("findActiveDriver")["response"]

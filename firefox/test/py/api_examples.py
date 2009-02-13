@@ -195,6 +195,15 @@ class ApiExampleTest (unittest.TestCase):
         result = self.driver.execute_script("arguments[0]['flibble'] = arguments[0].getAttribute('id'); return arguments[0]['flibble'];", button)
         self.assertEquals("plainButton", result)
 
+    def testRestartBrowser(self):
+        self.driver.quit()
+        firefox = FirefoxLauncher()
+        firefox.LaunchBrowser()
+        self.driver = WebDriver()
+        self._loadSimplePage()
+        title = self.driver.get_title()
+        self.assertEquals("Hello WebDriver", title)
+
     def _loadSimplePage(self):
         self.driver.get("http://localhost:8000/simpleTest.html")
 
@@ -202,7 +211,7 @@ class ApiExampleTest (unittest.TestCase):
         self.driver.get("http://localhost:8000/%s.html" % name)
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.DEBUG)
     webserver = SimpleWebServer()
     webserver.start()
     firefox = FirefoxLauncher()
