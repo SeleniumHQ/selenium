@@ -22,24 +22,72 @@ import junit.framework.TestCase;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FirefoxProfileTest extends TestCase {
-    public void testShouldRetainAdditionalPreferencesWhenCopyingAProfile() throws Exception {
-        FirefoxProfile profile = new FirefoxProfile();
-        profile.setPreference("cheese", true);
 
-        FirefoxProfile copiedProfile = profile.createCopy(8000);
+  private FirefoxProfile profile;
 
+  protected void setUp() throws Exception {
+    super.setUp();
 
-        File prefs = new File(copiedProfile.getProfileDir(), "user.js");
-        BufferedReader reader = new BufferedReader(new FileReader(prefs));
+    profile = new FirefoxProfile();
+  }
 
-        boolean seenCheese = false;
-        for (String line = reader.readLine(); line != null && !seenCheese; line = reader.readLine()) {
-            if (line.contains("cheese"))
-                seenCheese = true;
-        }
+  public void testShouldQuoteStringsWhenSettingStringProperties() throws Exception {
+    profile.setPreference("cheese", "brie");
 
-        assertTrue(seenCheese);
+    List<String> props = readGeneratedProperties(profile);
+    boolean seenCheese = false;
+    for (String line : props) {
+      if (line.contains("cheese") && line.contains("\"brie\"")) {
+        seenCheese = true;
+      }
     }
+
+    assertTrue(seenCheese);
+  }
+
+  public void testShouldSetIntegerPreferences() throws Exception {
+    profile.setPreference("cheese", 1234);
+
+    List<String> props = readGeneratedProperties(profile);
+    boolean seenCheese = false;
+    for (String line : props) {
+      if (line.contains("cheese") && line.contains(", 1234)")) {
+        seenCheese = true;
+      }
+    }
+
+    assertTrue("Did not see integer value being set correctly", seenCheese);
+  }
+
+  public void testShouldSetBooleanPreferences() throws Exception {
+    profile.setPreference("cheese", false);
+
+    List<String> props = readGeneratedProperties(profile);
+    boolean seenCheese = false;
+    for (String line : props) {
+      if (line.contains("cheese") && line.contains(", false)")) {
+        seenCheese = true;
+      }
+    }
+
+    assertTrue("Did not see integer value being set correctly", seenCheese);
+  }
+
+  private List<String> readGeneratedProperties(FirefoxProfile profile) throws Exception {
+    FirefoxProfile copiedProfile = profile.createCopy(8000);
+
+    File prefs = new File(copiedProfile.getProfileDir(), "user.js");
+    BufferedReader reader = new BufferedReader(new FileReader(prefs));
+
+    List<String> prefLines = new ArrayList<String>();
+    for (String line = reader.readLine(); line != null; line = reader.readLine()) {
+      prefLines.add(line);
+    }
+
+    return prefLines;
+  }
 }

@@ -320,7 +320,7 @@ public class FirefoxProfile {
      * @param value The new value.
      */
     public void setPreference(String key, boolean value) {
-        additionalPrefs.setPreference(key, String.valueOf(value));
+        additionalPrefs.setPreference(key, value);
     }
 
     /**
@@ -330,7 +330,7 @@ public class FirefoxProfile {
      * @param value The new value.
      */
     public void setPreference(String key, int value) {
-        additionalPrefs.setPreference(key, String.valueOf(value));
+        additionalPrefs.setPreference(key, value);
     }
 
     protected Preferences getAdditionalPreferences() {
