@@ -37,6 +37,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchFrameException;
+import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.Speed;
 import org.openqa.selenium.WebDriver;
@@ -297,7 +298,7 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
         }
 
         public WebDriver window(String windowName) {
-            return null; // For the sake of getting us off the ground
+            throw new NoSuchWindowException("Unable to switch to window: " + windowName);
         }
 
       public WebDriver defaultContent() {
@@ -340,6 +341,7 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
     }
     
     private class InternetExplorerOptions implements Options {
+      
 		public void addCookie(Cookie cookie) {
 		  int result = lib.wdAddCookie(driver, new WString(cookie.toString()));
 		 
