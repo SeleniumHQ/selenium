@@ -406,10 +406,20 @@ function stackToString(stack) {
 //   should be upper/lower case.  If you're running xpaths in an
 //   XSLT instance, you probably DO want case sensitivity, as per the
 //   XSL spec.
+//
+//   set/isReturnOnFirstMatch -- whether XPath evaluation should quit as soon
+//   as a result is found. This is an optimization that might make sense if you
+//   only care about the first result.
+//
+//   set/isIgnoreNonElementNodesForNTA -- whether to ignore non-element nodes
+//   when evaluating the "node()" any node test. While technically this is
+//   contrary to the XPath spec, practically it can enhance performance
+//   significantly, and makes sense if you a) use "node()" when you mean "*",
+//   and b) use "//" when you mean "/descendant::*/".
 
 function ExprContext(node, opt_position, opt_nodelist, opt_parent,
   opt_caseInsensitive, opt_ignoreAttributesWithoutValue,
-  opt_returnOnFirstMatch)
+  opt_returnOnFirstMatch, opt_ignoreNonElementNodesForNTA)
 {
   this.node = node;
   this.position = opt_position || 0;
@@ -419,6 +429,7 @@ function ExprContext(node, opt_position, opt_nodelist, opt_parent,
   this.caseInsensitive = opt_caseInsensitive || false;
   this.ignoreAttributesWithoutValue = opt_ignoreAttributesWithoutValue || false;
   this.returnOnFirstMatch = opt_returnOnFirstMatch || false;
+  this.ignoreNonElementNodesForNTA = opt_ignoreNonElementNodesForNTA || false;
   if (opt_parent) {
     this.root = opt_parent.root;
   } else if (this.node.nodeType == DOM_DOCUMENT_NODE) {
@@ -437,7 +448,8 @@ ExprContext.prototype.clone = function(opt_node, opt_position, opt_nodelist) {
       opt_node || this.node,
       typeof opt_position != 'undefined' ? opt_position : this.position,
       opt_nodelist || this.nodelist, this, this.caseInsensitive,
-      this.ignoreAttributesWithoutValue, this.returnOnFirstMatch);
+      this.ignoreAttributesWithoutValue, this.returnOnFirstMatch,
+      this.ignoreNonElementNodesForNTA);
 };
 
 ExprContext.prototype.setVariable = function(name, value) {
@@ -501,6 +513,14 @@ ExprContext.prototype.isReturnOnFirstMatch = function() {
 
 ExprContext.prototype.setReturnOnFirstMatch = function(returnOnFirstMatch) {
   return this.returnOnFirstMatch = returnOnFirstMatch;
+};
+
+ExprContext.prototype.isIgnoreNonElementNodesForNTA = function() {
+  return this.ignoreNonElementNodesForNTA;
+};
+
+ExprContext.prototype.setIgnoreNonElementNodesForNTA = function(ignoreNonElementNodesForNTA) {
+  return this.ignoreNonElementNodesForNTA = ignoreNonElementNodesForNTA;
 };
 
 // XPath expression values. They are what XPath expressions evaluate
@@ -852,12 +872,12 @@ StepExpr.prototype.evaluate = function(ctx) {
     if (this.nodetest.evaluate(ctx).booleanValue()) {
       nodelist.push(input);
     }
-    var tagName = xpathExtractTagNameFromNodeTest(this.nodetest);
+    var tagName = xpathExtractTagNameFromNodeTest(this.nodetest, ctx.ignoreNonElementNodesForNTA);
     xpathCollectDescendants(nodelist, input, tagName);
     if (tagName) skipNodeTest = true;
 
   } else if (this.axis == xpathAxis.DESCENDANT) {
-    var tagName = xpathExtractTagNameFromNodeTest(this.nodetest);
+    var tagName = xpathExtractTagNameFromNodeTest(this.nodetest, ctx.ignoreNonElementNodesForNTA);
     xpathCollectDescendants(nodelist, input, tagName);
     if (tagName) skipNodeTest = true;
 
@@ -1433,7 +1453,11 @@ function FilterExpr(expr, predicate) {
 }
 
 FilterExpr.prototype.evaluate = function(ctx) {
+  var flag = ctx.returnOnFirstMatch;
+  ctx.setReturnOnFirstMatch(false);
   var nodes = this.expr.evaluate(ctx).nodeSetValue();
+  ctx.setReturnOnFirstMatch(flag);
+  
   for (var i = 0; i < this.predicate.length; ++i) {
     var nodes0 = nodes;
     nodes = [];
@@ -2343,14 +2367,21 @@ function xpathCollectDescendants(nodelist, node, opt_tagName) {
   }
 }
 
-// DGF extract a tag name suitable for getElementsByTagName
-function xpathExtractTagNameFromNodeTest(nodetest) {
+/**
+ * DGF - extract a tag name suitable for getElementsByTagName
+ *
+ * @param nodetest                     the node test
+ * @param ignoreNonElementNodesForNTA  if true, the node list returned when
+ *                                     evaluating "node()" will not contain
+ *                                     non-element nodes. This can boost
+ *                                     performance. This is false by default.
+ */
+function xpathExtractTagNameFromNodeTest(nodetest, ignoreNonElementNodesForNTA) {
   if (nodetest instanceof NodeTestName) {
     return nodetest.name;
-  } else if (/* nodetest instanceof NodeTestAny || */ nodetest instanceof NodeTestElementOrAttribute) {
-    // HBC - commented out the NodeTestAny in the above condition; it causes
-    // non-element nodes to be excluded! The XPath spec says "node()" must
-    // match all node types.
+  }
+  if ((ignoreNonElementNodesForNTA && nodetest instanceof NodeTestAny) ||
+    nodetest instanceof NodeTestElementOrAttribute) {
     return "*";
   }
 }
