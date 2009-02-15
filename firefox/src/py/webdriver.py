@@ -1,5 +1,7 @@
+import logging
 import re
 import sys
+import time
 
 from webelement import *
 from exceptions import *
@@ -94,12 +96,16 @@ class WebDriver(object):
 
     def close(self):
         """Closes the current window, quit the browser if it's the last window open."""
-        self._command("close")
+        if self._conn.is_connectable():
+            self._conn.driver_command("close")
 
     def quit(self):
         """Quits the driver and close every associated window."""
-        self._conn.driver_command("quit")
-        FirefoxLauncher().CloseBrowser()
+        if self._conn.is_connectable():
+            self._conn.driver_command("quit")
+            while self._conn.is_connectable():
+                logging.debug("waiting to quit")
+                time.sleep(1)
 
     def switch_to_window(self, windowName):
         """Switches focus to a window."""

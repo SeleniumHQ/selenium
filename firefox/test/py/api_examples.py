@@ -211,7 +211,7 @@ class ApiExampleTest (unittest.TestCase):
         self.driver.get("http://localhost:8000/%s.html" % name)
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
     webserver = SimpleWebServer()
     webserver.start()
     firefox = FirefoxLauncher()

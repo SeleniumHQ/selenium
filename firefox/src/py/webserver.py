@@ -5,6 +5,7 @@ from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 import urllib
 
 HTML_ROOT = os.getenv("webdriver_test_htmlroot")
+PORT = 8000
 logger = logging.getLogger("webdriver.SimpleWebServer")
 
 class MyHandler(BaseHTTPRequestHandler):
@@ -26,7 +27,7 @@ class SimpleWebServer(object):
         self.stop_serving = False
 
     def _runWebServer(self):
-        self.server = HTTPServer(('', 8000), MyHandler)
+        self.server = HTTPServer(('', PORT), MyHandler)
         logger.info("web server started")
 
         while not self.stop_serving:

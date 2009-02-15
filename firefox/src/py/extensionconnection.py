@@ -37,7 +37,8 @@ class ExtensionConnection(object):
         lock = threading.RLock()
         lock.acquire()
         self.socket.send(packet)
-        if cmd == "quit":
+        if cmd == "quit" or cmd == "close":
+            lock.release()
             return
 
         resp = ""
@@ -64,8 +65,20 @@ class ExtensionConnection(object):
             return None
 
     def connect(self):
+        self._connect()
+        self.context = "null"
+        self.context = self.driver_command("findActiveDriver")["response"]
+
+    def _connect(self):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.connect(("localhost", _DEFAULT_PORT))
         self.socket.settimeout(_SOCKET_TIMEOUT)
-        self.context = "null"
-        self.context = self.driver_command("findActiveDriver")["response"]
+
+    def is_connectable(self):
+        try:
+            self._connect()
+            return True
+        except:
+            return False
+
+
