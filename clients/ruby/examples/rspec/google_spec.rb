@@ -5,11 +5,11 @@ require "selenium/client"
 require "selenium/rspec/spec_helper"
 
 describe "Google Search" do
-	attr_reader :selenium_driver
-	alias :page :selenium_driver
+  attr_reader :selenium_driver
+  alias :page :selenium_driver
 
   before(:all) do
-      @selenium_driver = Selenium::Client::Driver.new "localhost", 4444, "*firefox", "http://www.google.com", 10000    
+    @selenium_driver = Selenium::Client::Driver.new "localhost", 4444, "*firefox", "http://www.google.com", 10000    
   end
   
   before(:each) do
@@ -27,7 +27,7 @@ describe "Google Search" do
     page.type "q", "Selenium"
     page.click "btnG", :wait_for => :page
     page.value("q").should eql("Selenium")
-    page.text?("selenium.openqa.org").should be_true
+    page.text?("seleniumhq.org").should be_true
     page.title.should eql("Selenium - Google Search")
   end
     
