@@ -41,7 +41,6 @@
 }
 
 - (id<HTTPResource>)elementWithQuery:(NSString *)query {
-  
   NSString *queriedAttribute = [query substringFromIndex:1];
   NSString *attribute = [self attribute:queriedAttribute];
   return [HTTPStaticResource

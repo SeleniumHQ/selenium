@@ -107,6 +107,10 @@ public class DesiredCapabilities implements Capabilities {
     return new DesiredCapabilities("safari", "", Platform.MAC);
   }
 
+  public static DesiredCapabilities iphone() {
+    return new DesiredCapabilities("iphone", "", Platform.MAC);
+  }
+  
   public boolean equals(Object o) {
     if (this == o) {
       return true;

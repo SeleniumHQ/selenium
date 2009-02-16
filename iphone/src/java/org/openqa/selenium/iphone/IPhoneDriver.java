@@ -19,29 +19,50 @@ package org.openqa.selenium.iphone;
 
 import java.net.URL;
 
-import org.openqa.selenium.remote.Capabilities;
-import org.openqa.selenium.remote.CommandExecutor;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 /**
- * IPhoneDriver is a driver for running tests on Mobile Safari on the iPhone / iPod Touch.
+ * IPhoneDriver is a driver for running tests on Mobile Safari on the iPhone
+ *  / iPod Touch.
  * 
  * The driver uses WebDriver's remote REST interface to communicate with the
- * iphone. The iphone (or iphone simulator) must run the iWebDriver app.
+ * iphone. The iphone (or iphone simulator) must be running the iWebDriver app.
  */
 public class IPhoneDriver extends RemoteWebDriver {
 
-  public IPhoneDriver(CommandExecutor executor, Capabilities desiredCapabilities) {
-    super(executor, desiredCapabilities);
+  /**
+   * Create an IPhoneDriver connected to the remote address passed in.
+   * @param remoteAddress The full URL of the remote client (device or 
+   *                      simulator).
+   * @throws Exception
+   * @see IPhoneDriver(String remoteAddress)
+   */
+  public IPhoneDriver(URL remoteAddress) throws Exception {
+    super(remoteAddress, DesiredCapabilities.iphone());
   }
 
-  public IPhoneDriver(Capabilities desiredCapabilities) throws Exception {
-    super(desiredCapabilities);
+  /**
+   * Create an IPhoneDriver connected to the remote address passed in.
+   * @param remoteAddress The full URL of the remote client running iWebDriver.
+   *                      No trailing slash.
+   * @throws Exception
+   * @see IPhoneDriver(URL remoteAddress)
+   */
+  public IPhoneDriver(String remoteAddress) throws Exception {
+    this(new URL(remoteAddress));
   }
-
-  public IPhoneDriver(URL remoteAddress, Capabilities desiredCapabilities)
-  	    throws Exception {
-    super(remoteAddress, desiredCapabilities);
+  
+  /**
+   * Create an IPhoneDriver connected to an iphone simulator running on the
+   * local machine.
+   * 
+   * @throws Exception
+   */
+  public IPhoneDriver() throws Exception {
+    // This is the default port and URL for iWebDriver. Eventually it would
+    // be nice to use DNS-SD to detect iWebDriver instances running non
+    // locally or on non-default ports.
+    this("http://localhost:16000/hub");
   }
-
 }
