@@ -126,11 +126,13 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.codehaus.groovy.maven.runtime</groupId>
             <artifactId>gmaven-runtime-default</artifactId>
             <version>1.0-rc-3</version>
+            <scope>optional</scope>
         </dependency>
       <dependency>
           <groupId>org.easymock</groupId>
