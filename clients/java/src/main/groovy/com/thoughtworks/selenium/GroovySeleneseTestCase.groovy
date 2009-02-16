@@ -4,9 +4,9 @@ package com.thoughtworks.selenium
  * The Groovy equivalent of SeleneseTestCase, as a GroovyTestCase.
  */
 class GroovySeleneseTestCase extends GroovyTestCase {
-    static final BASE_METHODS = SeleneseTestBase.class.methods
+    public static final BASE_METHODS = SeleneseTestBase.class.methods
     
-    protected selenium
+    protected GroovySelenium selenium
     
     private SeleneseTestBase base
     private int defaultTimeout
@@ -31,6 +31,13 @@ class GroovySeleneseTestCase extends GroovyTestCase {
     void tearDown() {
         super.tearDown()
         base.tearDown()
+    }
+    
+    /**
+     * Returns the delegate for most Selenium API calls.
+     */
+    SeleneseTestBase getBase() {
+        return base
     }
     
     void setDefaultTimeout(int timeout) {
