@@ -1,0 +1,5 @@
+CocoaHTTPServer is a project hosted here: http://code.google.com/p/cocoahttpserver/
+
+Webdriver iphone uses it to host the REST webserver running on the iphone.
+
+There is a set of extensions to this project which the webdriver iphone project requires. These are found in the patches in the extensions/ directory.

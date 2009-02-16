@@ -45,7 +45,13 @@ task :prebuild do
   end
 end
 
-task :build => [:prebuild, :common, :htmlunit, :firefox, :jobbie, :safari, :support, :remote, :selenium]
+def iPhoneSDKPresent?
+  return false unless mac? && present?('xcodebuild')
+  sdks = `xcodebuild -showsdks`
+  !!(sdks =~ /simulator2.2/)
+end
+
+task :build => [:prebuild, :common, :htmlunit, :firefox, :jobbie, :safari, :iphone, :support, :remote, :selenium]
 
 task :clean do
   rm_rf 'common/build'
@@ -54,12 +60,13 @@ task :clean do
   rm_rf 'jobbie/src/cpp/InternetExplorerDriver/Release'
   rm_rf 'firefox/build'
   rm_rf 'safari/build'
+  rm_rf 'iphone/build'
   rm_rf 'support/build'
   rm_rf 'selenium/build'
   rm_rf 'build/'
 end
 
-task :test => [:prebuild, :test_htmlunit, :test_firefox, :test_jobbie, :test_safari, :test_support, :test_remote] do
+task :test => [:prebuild, :test_htmlunit, :test_firefox, :test_jobbie, :test_safari, :test_iphone, :test_support, :test_remote] do
 end
 
 task :install_firefox => [:firefox] do
@@ -199,6 +206,22 @@ simple_jars = {
     'classpath' => ["safari/lib/**/*.jar", "safari/build/webdriver-safari.jar"] + common_test_libs,
     'test_on'   => mac?,
   },
+  "iphone_client" =>   {
+    'src'       => "iphone/src/java/**/*.java",
+    'deps'      => [:common, :remote],
+    'jar'       => "iphone/build/webdriver-iphone.jar",
+    'resources' => nil,
+    'classpath' => ["remote/build/webdriver-remote-client.jar", "remote/build/webdriver-remote-common.jar"] + common_libs,
+    'test_on'   => false,
+  },
+  "test_iphone_client" => {
+    'src'       => "iphone/test/java/**/*.java",
+    'deps'      => [:iphone_client, :test_common],
+    'jar'       => "iphone/build/webdriver-iphone-test.jar",
+    'resources' => nil,
+    'classpath' => ["iphone/build/webdriver-iphone.jar"] + common_test_libs,
+    'test_on'   => mac?,
+  },
   "support" =>   {
     'src'       => "support/src/java/**/*.java",
     'deps'      => [:common],
@@ -287,6 +310,28 @@ file 'firefox/build/webdriver-extension.zip' => FileList['firefox/src/extension/
     sh "cd firefox/src/extension && jar cMvf ../../build/webdriver-extension.zip *"
   else
     sh "cd firefox/src/extension && zip -0r ../../build/webdriver-extension.zip * -x \*.svn\*"
+  end
+end
+
+task :iphone => [:iphone_server, :iphone_client]
+task :test_iphone => [:test_iphone_server, :test_iphone_client]
+
+#### iPhone ####
+task :iphone_server => FileList['iphone/src/objc/**'] do
+  if iPhoneSDKPresent? then
+    puts "Building iWebDriver iphone app"
+    sh "cd iphone && xcodebuild -sdk iphonesimulator2.2 ARCHS=i386 -target iWebDriver >/dev/null", :verbose => false
+  else
+    puts "XCode not found. Not building the iphone driver."
+  end
+end
+
+# This does not depend on :iphone_server because the dependancy is specified in xcode
+task :test_iphone_server do
+  if iPhoneSDKPresent? then
+    sh "cd iphone && xcodebuild -sdk iphonesimulator2.2 ARCHS=i386 -target Tests"
+  else
+    puts "XCode not found. Not testing the iphone driver."
   end
 end
 

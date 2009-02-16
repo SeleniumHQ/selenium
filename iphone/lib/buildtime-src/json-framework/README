@@ -1,0 +1,5 @@
+The json-framework is available here: http://code.google.com/p/json-framework/
+
+The webdriver remote interface uses JSON to send data across the wire. The
+iphone webdriver uses json-framework to parse the recieved data into cocoa
+objects.
