@@ -60,7 +60,7 @@ class WebDriver(object):
             elem = WebElement(self, elemId)
             return elem
         except ErrorInResponseException, e:
-            _handle_find_element_exception(e)
+            self._handle_find_element_exception(e)
 
 
     def find_element_by_id(self, id):
