@@ -316,12 +316,7 @@ BrowserBot.prototype.selectWindow = function(target) {
     }
     var result = target.match(/^([a-zA-Z]+)=(.*)/);
     if (!result) {
-        try {
-            this._selectWindowByName(target);
-        }
-        catch (e) {
-            this._selectWindowByTitle(target);
-        }
+        this._selectWindowByWindowId(target);
         return;
     }
     locatorType = result[1];
@@ -339,12 +334,30 @@ BrowserBot.prototype.selectWindow = function(target) {
     }
 };
 
+BrowserBot.prototype.selectPopUp = function(windowId) {
+    if (! windowId || windowId == 'null') {
+        this._selectFirstNonTopWindow();
+    }
+    else {
+        this._selectWindowByWindowId(windowId);
+    }
+};
+
 BrowserBot.prototype._selectTopWindow = function() {
     this.currentWindowName = null;
     this.currentWindow = this.topWindow;
     this.topFrame = this.topWindow;
     this.isSubFrameSelected = false;
 }
+
+BrowserBot.prototype._selectWindowByWindowId = function(windowId) {
+    try {
+        this._selectWindowByName(windowId);
+    }
+    catch (e) {
+        this._selectWindowByTitle(windowId);
+    }
+};
 
 BrowserBot.prototype._selectWindowByName = function(target) {
     this.currentWindow = this.getWindowByName(target, false);
@@ -361,6 +374,16 @@ BrowserBot.prototype._selectWindowByTitle = function(target) {
         this._selectWindowByName(windowName);
     }
 }
+
+BrowserBot.prototype._selectFirstNonTopWindow = function() {
+    for (var windowName in this.openedWindows) {
+        var win = this.openedWindows[windowName];
+        if (! this._windowClosed(win) && win != this.topWindow) {
+            this._selectWindowByName(windowName);
+            break;
+        }
+    }
+};
 
 BrowserBot.prototype.selectFrame = function(target) {
     if (target.indexOf("index=") == 0) {

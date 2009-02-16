@@ -981,6 +981,39 @@ Selenium.prototype.doSelectWindow = function(windowID) {
     this.browserbot.selectWindow(windowID);
 };
 
+Selenium.prototype.doSelectPopUp = function(windowID) {
+    /**
+    * Simplifies the process of selecting a popup window (and does not offer
+    * functionality beyond what <code>selectWindow()</code> already provides).
+    * <ul>
+    * <li>If <code>windowID</code> is either not specified, or specified as
+    * "null", the first non-top window is selected. The top window is the one
+    * that would be selected by <code>selectWindow()</code> without providing a
+    * <code>windowID</code> . This should not be used when more than one popup
+    * window is in play.</li>
+    * <li>Otherwise, the window will be looked up considering
+    * <code>windowID</code> as the following in order: 1) the "name" of the
+    * window, as specified to <code>window.open()</code>; 2) a javascript
+    * variable which is a reference to a window; and 3) the title of the
+    * window. This is the same ordered lookup performed by
+    * <code>selectWindow</code> .</li>
+    * </ul>
+    *
+    * @param windowID  an identifier for the popup window, which can take on a
+    *                  number of different meanings
+    */
+    this.browserbot.selectPopUp(windowID);
+};
+
+Selenium.prototype.doDeselectPopUp = function() {
+    /**
+    * Selects the main window. Functionally equivalent to using
+    * <code>selectWindow()</code> and specifying no value for
+    * <code>windowID</code>.
+    */
+    this.browserbot.selectWindow();
+}
+
 Selenium.prototype.doSelectFrame = function(locator) {
     /**
     * Selects a frame within the current window.  (You may invoke this command
