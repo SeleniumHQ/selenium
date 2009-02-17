@@ -1,8 +1,5 @@
 package com.thoughtworks.selenium;
 
-import java.lang.reflect.Method;
-import java.net.BindException;
-
 import org.openqa.selenium.SeleniumTestEnvironment;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverBackedSelenium;
@@ -16,6 +13,8 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
+
+import java.lang.reflect.Method;
 
 public class SeleneseTestNgHelper extends SeleneseTestBase
 {
@@ -81,7 +80,7 @@ public class SeleneseTestNgHelper extends SeleneseTestBase
     @AfterTest(alwaysRun=true)
     @Override
     public void tearDown() throws Exception {
-//        super.tearDown();
+        super.tearDown();
     }
     
     //@Override static method of super class (which assumes JUnit conventions)

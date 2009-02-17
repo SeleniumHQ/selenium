@@ -17,24 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import java.awt.Dimension;
-import java.awt.Point;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import com.thoughtworks.selenium.Selenium;
+import com.thoughtworks.selenium.SeleniumException;
 import org.openqa.selenium.internal.AltLookupStrategy;
 import org.openqa.selenium.internal.ClassLookupStrategy;
 import org.openqa.selenium.internal.ExactTextMatchingStrategy;
@@ -54,8 +38,22 @@ import org.openqa.selenium.internal.TextMatchingStrategy;
 import org.openqa.selenium.internal.ValueOptionSelectStrategy;
 import org.openqa.selenium.internal.XPathLookupStrategy;
 
-import com.thoughtworks.selenium.Selenium;
-import com.thoughtworks.selenium.SeleniumException;
+import java.awt.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class WebDriverBackedSelenium implements Selenium {
   private static final Pattern STRATEGY_AND_VALUE_PATTERN = Pattern.compile("^(\\p{Alpha}+)=(.*)");
@@ -486,6 +484,12 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param value   the value to type
    */
   public void type(String locator, String value) {
+    if (controlKeyDown || altKeyDown || metaKeyDown)
+      throw new SeleniumException("type not supported immediately after call to controlKeyDown() or altKeyDown() or metaKeyDown()");
+
+    if (shiftKeyDown)
+      value = value.toUpperCase();
+
     WebElement element = findElement(locator);
     callEmbeddedSelenium("replaceText", element, value);
   }
@@ -580,6 +584,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param optionLocator an option locator (a label by default)
    */
   public void select(String selectLocator, String optionLocator) {
+    removeAllSelections(selectLocator);
     select(selectLocator, optionLocator, true, true);
   }
 
@@ -617,6 +622,14 @@ public class WebDriverBackedSelenium implements Selenium {
   public void removeAllSelections(String locator) {
     WebElement select = findElement(locator);
     List<WebElement> options = select.findElements(By.tagName("option"));
+
+    if (select.getAttribute("multiple") == null) {
+      if (options.size() > 0) {
+        options.get(0).setSelected();
+      }
+      return;
+    }
+
     removeAllSelections(options);
   }
 
@@ -1151,7 +1164,19 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return true if some option has been selected, false otherwise
    */
   public boolean isSomethingSelected(String selectLocator) {
-    throw new UnsupportedOperationException("isSomethingSelected");
+    WebElement select = findElement(selectLocator);
+    String name = select.getElementName().toLowerCase();
+    if (!"select".equals(name)) {
+      throw new SeleniumException("Specified element is not a Select");
+    }
+
+    for (WebElement option : select.findElements(By.tagName("option"))) {
+      if (option.isSelected()) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   /**
