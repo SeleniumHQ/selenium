@@ -33,7 +33,7 @@ public class SingleTestSuite extends TestCase {
   private final static String SAFARI = "org.openqa.selenium.safari.SafariDriver";
 
   public static Test suite() throws Exception {
-    String driver = FIREFOX;
+    String driver = HTML_UNIT;
 
     System.setProperty("webdriver.firefox.development", "true");
 //    System.setProperty("webdriver.firefox.useExisting", "true");
@@ -45,7 +45,7 @@ public class SingleTestSuite extends TestCase {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("CorrectEventFiringTest")
+        .onlyRun("PageLoadingTest")
 //        .method("testShouldBeAbleToFindMultipleElementsByPartialLinkText")
         .exclude(ALL)
         .exclude(Ignore.Driver.FIREFOX)

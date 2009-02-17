@@ -15,17 +15,22 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package org.openqa.selenium.remote.server.renderer;
+// Copyright 2008 Google Inc.  All Rights Reserved.
 
-import org.openqa.selenium.remote.server.rest.Handler;
-import org.openqa.selenium.remote.server.rest.Renderer;
+package org.openqa.selenium.remote.server.handler;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import org.openqa.selenium.remote.server.DriverSessions;
+import org.openqa.selenium.remote.server.rest.ResultType;
 
-public class EmptyResult implements Renderer {
-  public void render(HttpServletRequest request, HttpServletResponse response, Handler handler)
-      throws Exception {
-    response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+public class RefreshPage extends WebDriverHandler {
+
+  public RefreshPage(DriverSessions sessions) {
+    super(sessions);
+  }
+
+  public ResultType call() throws Exception {
+    getDriver().navigate().refresh();
+
+    return ResultType.SUCCESS;
   }
 }

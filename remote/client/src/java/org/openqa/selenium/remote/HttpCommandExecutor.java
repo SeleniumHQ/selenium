@@ -85,6 +85,7 @@ public class HttpCommandExecutor implements CommandExecutor {
     nameToUrl
         .put("forward", new CommandInfo("/session/:sessionId/:context/forward", HttpVerb.POST));
     nameToUrl.put("back", new CommandInfo("/session/:sessionId/:context/back", HttpVerb.POST));
+    nameToUrl.put("refresh", new CommandInfo("/session/:sessionId/:context/refresh", HttpVerb.POST));
 
     nameToUrl.put("executeScript", new CommandInfo("/session/:sessionId/:context/execute", HttpVerb.POST));
 

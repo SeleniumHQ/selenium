@@ -89,6 +89,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
+import java.io.IOException;
 
 public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecutor,
         FindsById, FindsByLinkText, FindsByXPath, FindsByName, FindsByTagName {
@@ -683,6 +684,16 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
 
       public void to(URL url) {
         get(url);
+      }
+
+      public void refresh() {
+        if (lastPage() instanceof HtmlPage) {
+          try {
+            ((HtmlPage) lastPage()).refresh();
+          } catch (IOException e) {
+            throw new WebDriverException(e);
+          }
+        }
       }
     }
 

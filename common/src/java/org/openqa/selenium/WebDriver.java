@@ -310,5 +310,10 @@ public interface WebDriver {
          * @param url
          */
           void to(URL url);
+
+      /**
+       * Refresh the current page 
+       */
+         void refresh();
     }
 }

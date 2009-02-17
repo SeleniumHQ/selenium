@@ -121,4 +121,13 @@ public class PageLoadingTest extends AbstractDriverTestCase {
         // This should work
         assertThat(driver.getTitle(), equalTo("Hello WebDriver"));
     }
+
+    @Ignore({SAFARI, IE})
+    public void testShouldBeAbleToRefreshAPage() {
+      driver.get(xhtmlTestPage);
+
+      driver.navigate().refresh();
+
+      assertThat(driver.getTitle(), equalTo("XHTML Test Page"));
+    }
 }

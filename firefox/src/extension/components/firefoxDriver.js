@@ -502,6 +502,13 @@ FirefoxDriver.prototype.goForward = function(respond) {
     respond.send();
 }
 
+FirefoxDriver.prototype.refresh = function(respond) {
+    var browser = Utils.getBrowser(this.context);
+    browser.contentWindow.location.reload(true);
+
+    respond.send();
+}
+
 FirefoxDriver.prototype.addCookie = function(respond, cookieString) {
     var cookie;
     cookie = eval('(' + cookieString[0] + ')');

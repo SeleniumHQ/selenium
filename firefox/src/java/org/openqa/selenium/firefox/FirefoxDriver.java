@@ -18,24 +18,6 @@ limitations under the License.
 
 package org.openqa.selenium.firefox;
 
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-import java.io.File;
-import java.net.URL;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openqa.selenium.Alert;
@@ -58,6 +40,24 @@ import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.internal.ReturnedCookie;
+
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.io.File;
+import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -573,6 +573,10 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
 
       public void to(URL url) {
         get(String.valueOf(url));
+      }
+
+      public void refresh() {
+        sendMessage(WebDriverException.class, "refresh");
       }
     }
 

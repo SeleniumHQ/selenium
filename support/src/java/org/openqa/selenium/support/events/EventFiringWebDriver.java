@@ -301,6 +301,10 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor {
             navigation.forward();
             dispatcher.afterNavigateForward(driver);
         }
+
+        public void refresh() {
+            navigation.refresh();
+        }
     }
 
     private class EventFiringOptions implements Options {

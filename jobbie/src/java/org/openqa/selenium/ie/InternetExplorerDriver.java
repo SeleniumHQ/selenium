@@ -18,20 +18,13 @@ limitations under the License.
 
 package org.openqa.selenium.ie;
 
-import static org.openqa.selenium.ie.internal.ExportedWebDriverFunctions.SUCCESS;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import com.sun.jna.Native;
+import com.sun.jna.NativeLong;
+import com.sun.jna.Pointer;
+import com.sun.jna.WString;
+import com.sun.jna.ptr.IntByReference;
+import com.sun.jna.ptr.NativeLongByReference;
+import com.sun.jna.ptr.PointerByReference;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
@@ -44,16 +37,21 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.ie.internal.ExportedWebDriverFunctions;
+import static org.openqa.selenium.ie.internal.ExportedWebDriverFunctions.SUCCESS;
 import org.openqa.selenium.ie.internal.StringWrapper;
 import org.openqa.selenium.internal.ReturnedCookie;
 
-import com.sun.jna.Native;
-import com.sun.jna.NativeLong;
-import com.sun.jna.Pointer;
-import com.sun.jna.WString;
-import com.sun.jna.ptr.IntByReference;
-import com.sun.jna.ptr.NativeLongByReference;
-import com.sun.jna.ptr.PointerByReference;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class InternetExplorerDriver implements WebDriver, SearchContext, JavascriptExecutor {
     private static ExportedWebDriverFunctions lib;
@@ -338,6 +336,10 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
         public void to(URL url) {
             get(String.valueOf(url));
         }
+
+      public void refresh() {
+        throw new UnsupportedOperationException("refresh");
+      }
     }
     
     private class InternetExplorerOptions implements Options {

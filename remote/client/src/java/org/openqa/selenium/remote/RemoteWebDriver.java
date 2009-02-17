@@ -476,6 +476,10 @@ public class RemoteWebDriver implements WebDriver, SearchContext, JavascriptExec
     public void to(URL url) {
       get(String.valueOf(url));
     }
+
+    public void refresh() {
+      execute("refresh");
+    }
   }
 
   private class RemoteTargetLocator implements TargetLocator {

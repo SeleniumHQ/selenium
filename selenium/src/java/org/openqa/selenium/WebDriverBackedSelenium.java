@@ -850,7 +850,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * Simulates the user clicking the "Refresh" button on their browser.
    */
   public void refresh() {
-    throw new UnsupportedOperationException("refresh");
+    driver.navigate().refresh();
   }
 
   /**

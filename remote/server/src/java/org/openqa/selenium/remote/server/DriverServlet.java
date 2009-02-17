@@ -62,6 +62,7 @@ import org.openqa.selenium.remote.server.handler.SubmitElement;
 import org.openqa.selenium.remote.server.handler.SwitchToFrame;
 import org.openqa.selenium.remote.server.handler.SwitchToWindow;
 import org.openqa.selenium.remote.server.handler.ToggleElement;
+import org.openqa.selenium.remote.server.handler.RefreshPage;
 import org.openqa.selenium.remote.server.renderer.EmptyResult;
 import org.openqa.selenium.remote.server.renderer.ForwardResult;
 import org.openqa.selenium.remote.server.renderer.JsonErrorExceptionResult;
@@ -71,12 +72,11 @@ import org.openqa.selenium.remote.server.rest.ResultConfig;
 import org.openqa.selenium.remote.server.rest.ResultType;
 import org.openqa.selenium.remote.server.rest.UrlMapper;
 
-import java.io.IOException;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 public class DriverServlet extends HttpServlet {
   private UrlMapper getMapper;
@@ -122,6 +122,8 @@ public class DriverServlet extends HttpServlet {
     postMapper.bind("/session/:sessionId/:context/forward", GoForward.class)
         .on(ResultType.SUCCESS, new EmptyResult());
     postMapper.bind("/session/:sessionId/:context/back", GoBack.class)
+        .on(ResultType.SUCCESS, new EmptyResult());
+    postMapper.bind("/session/:sessionId/:context/refresh", RefreshPage.class)
         .on(ResultType.SUCCESS, new EmptyResult());
 
     postMapper.bind("/session/:sessionId/:context/execute", ExecuteScript.class)
