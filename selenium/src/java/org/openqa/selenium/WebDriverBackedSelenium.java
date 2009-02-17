@@ -66,6 +66,7 @@ public class WebDriverBackedSelenium implements Selenium {
   private final Pattern NAME_VALUE_PAIR_PATTERN = Pattern.compile("([^\\s=\\[\\]\\(\\),\"\\/\\?@:;]+)=([^=\\[\\]\\(\\),\"\\/\\?@:;]*)");
   private static final Pattern MAX_AGE_PATTERN = Pattern.compile("max_age=(\\d+)");
   private static final Pattern PATH_PATTERN = Pattern.compile("path=([^\\s,]+)[,]?");
+  private static final Pattern TABLE_PARTS = Pattern.compile("(.*)\\.(\\d+)\\.(\\d+)");
 
   private static final String injectableSelenium = "/org/openqa/selenium/internal/injectableSelenium.js";
   private static final String htmlUtils = "/org/openqa/selenium/internal/htmlutils.js";
@@ -1056,7 +1057,29 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return the text from the specified cell
    */
   public String getTable(String tableCellAddress) {
-    throw new UnsupportedOperationException("getTable");
+    Matcher matcher = TABLE_PARTS.matcher(tableCellAddress);
+    if (!matcher.matches()) {
+      throw new SeleniumException("Invalid target format. Correct format is tableName.rowNum.columnNum");
+    }
+
+    String tableName = matcher.group(1);
+    long row = Long.parseLong(matcher.group(2));
+    long col = Long.parseLong(matcher.group(3));
+
+    WebElement table = findElement(tableName);
+
+    String script =
+        "var table = arguments[0]; var row = arguments[1]; var col = arguments[2];" +
+        "if (row > table.rows.length) { return \"Cannot access row \" + row + \" - table has \" + table.rows.length + \" rows\"; }" +
+        "if (col > table.rows[row].cells.length) { return \"Cannot access column \" + col + \" - table row has \" + table.rows[row].cells.length + \" columns\"; }" +
+        "return table.rows[row].cells[col];";
+
+    Object value = executeScript(script, table, row, col);
+    if (value instanceof WebElement) {
+      return ((WebElement) value).getText().trim();
+    }
+
+    throw new SeleniumException((String) value);
   }
 
   /**
