@@ -23,6 +23,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Speed;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.RenderedWebElement;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -31,6 +32,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.awt.*;
 
 /**
  * A wrapper around an arbitrary {@link WebDriver} instance
@@ -96,7 +98,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor {
         dispatcher.afterFindBy(by, null, driver);
         List<WebElement> result = new ArrayList<WebElement>(temp.size());
         for (WebElement element : temp) {
-            result.add(new EventFiringWebElement(element));
+            result.add(createWebElement(element));
         }
         return result;
     }
@@ -105,7 +107,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor {
         dispatcher.beforeFindBy(by, null, driver);
         WebElement temp = driver.findElement(by);
         dispatcher.afterFindBy(by, null, driver);
-        return new EventFiringWebElement(temp);
+        return createWebElement(temp);
     }
 
     public String getPageSource() {
@@ -148,6 +150,11 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor {
 
     public Options manage() {
         return new EventFiringOptions(driver.manage());
+    }
+
+    private WebElement createWebElement(WebElement from) {
+      return from instanceof RenderedWebElement ?
+          new EventFiringRenderedWebElement(from) : new EventFiringWebElement(from);
     }
 
     private class EventFiringWebElement implements WebElement {
@@ -218,7 +225,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor {
             dispatcher.beforeFindBy(by, element, driver);
             WebElement temp = element.findElement(by);
             dispatcher.afterFindBy(by, element, driver);
-            return new EventFiringWebElement(temp);
+            return createWebElement(temp);
         }
 
         public List<WebElement> findElements(By by) {
@@ -227,10 +234,43 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor {
             dispatcher.afterFindBy(by, element, driver);
             List<WebElement> result = new ArrayList<WebElement>(temp.size());
             for (WebElement element : temp) {
-                result.add(new EventFiringWebElement(element));
+                result.add(createWebElement(element));
             }
             return result;
         }
+    }
+
+    private class EventFiringRenderedWebElement extends EventFiringWebElement implements RenderedWebElement {
+      private final RenderedWebElement delegate;
+
+      public EventFiringRenderedWebElement(WebElement element) {
+        super(element);
+        delegate = (RenderedWebElement) element;
+      }
+
+      public boolean isDisplayed() {
+        return delegate.isDisplayed();
+      }
+
+      public Point getLocation() {
+        return delegate.getLocation();
+      }
+
+      public Dimension getSize() {
+        return delegate.getSize();
+      }
+
+      public void dragAndDropBy(int moveRightBy, int moveDownBy) {
+        delegate.dragAndDropBy(moveRightBy, moveDownBy);
+      }
+
+      public void dragAndDropOn(RenderedWebElement element) {
+        delegate.dragAndDropOn(element);
+      }
+
+      public String getValueOfCssProperty(String propertyName) {
+        return delegate.getValueOfCssProperty(propertyName);
+      }
     }
 
     private class EventFiringNavigation implements Navigation {
