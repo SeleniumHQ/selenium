@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import static org.openqa.selenium.Ignore.Driver.*;
+
 /**
  * Bug 126 identified an instance where the HtmlUnitDriver threw a NullPointerException, {@see <a
  * href=http://code.google.com/p/webdriver/issues/detail?id=126>link to bug 126 </a>} This testsuite
@@ -24,10 +26,7 @@ package org.openqa.selenium;
  * necessary) is fixed they'll serve as regression tests :)
  */
 public class ObjectStateAssumptions extends AbstractDriverTestCase {
-
-  /**
-   * <p>This test checks various assumptions (which currently fail for the HtmlUnitDriver).
-   */
+  @Ignore(SAFARI)
   public void testUninitializedWebDriverDoesNotThrowNPE() {
     try {
       variousMethodCallsToCheckAssumptions();
@@ -40,6 +39,7 @@ public class ObjectStateAssumptions extends AbstractDriverTestCase {
    * This test case differs from @see testUninitializedWebDriverDoesNotThrowNPE as it initializes
    * WebDriver with an initial call to get(). It also should not fail.
    */
+  @Ignore(SAFARI)
   public void testinitializedWebDriverDoesNotThrowNPE() {
     driver.get(simpleTestPage);
     try {
@@ -65,6 +65,7 @@ public class ObjectStateAssumptions extends AbstractDriverTestCase {
   /**
    * Test the various options, again for an uninitialized driver, NPEs are thrown.
    */
+  @Ignore(SAFARI)
   public void testOptionsForUninitializedWebDriver() {
     WebDriver.Options options = driver.manage();
     try {

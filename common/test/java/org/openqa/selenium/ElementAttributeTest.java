@@ -75,6 +75,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
         assertThat(textArea.isEnabled(), is(false));
     }
 
+	@Ignore(SAFARI)
     public void testShouldIndicateWhenASelectIsDisabled() {
       driver.get(formPage);
 

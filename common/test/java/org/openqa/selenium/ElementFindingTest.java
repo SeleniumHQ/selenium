@@ -26,6 +26,7 @@ import static org.openqa.selenium.Ignore.Driver.*;
 import java.util.List;
 
 public class ElementFindingTest extends AbstractDriverTestCase {
+    @Ignore(SAFARI)
     public void testShouldReturnTitleOfPageIfSet() {
         driver.get(xhtmlTestPage);
         assertThat(driver.getTitle(), equalTo(("XHTML Test Page")));

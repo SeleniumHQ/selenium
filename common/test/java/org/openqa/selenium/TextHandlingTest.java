@@ -61,6 +61,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
         assertThat(text.contains("and block level elements"), is(true));
     }
 
+    @Ignore(SAFARI)
     public void testShouldIgnoreScriptElements() {
         driver.get(javascriptEnhancedForm);
         WebElement labelForUsername = driver.findElement(By.id("labelforusername"));
