@@ -113,11 +113,12 @@ static const NSString *JSARRAY = @"_WEBDRIVER_ELEM_CACHE";
   
   NSMutableArray *result = [NSMutableArray arrayWithCapacity:length];
   for (int i = 0; i < length; i++) {
-    [result addObject:[self
-                       elementFromJSObject:[NSString
-                                            stringWithFormat:@"%@[%d]",
-                                            container,
-                                            i]]];
+    Element *element = [self elementFromJSObject:
+                        [NSString stringWithFormat:@"%@[%d]",
+                                                  container,
+                                                  i]];
+    NSLog(@"Found element with id: '%@'", [element attribute:@"id"]);
+    [result addObject:element];
   }
   return result;
 }

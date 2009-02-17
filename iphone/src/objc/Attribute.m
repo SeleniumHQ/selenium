@@ -2,9 +2,19 @@
 //  Attribute.m
 //  iWebDriver
 //
-//  Created by Joseph Gentle on 1/12/09.
-//  Copyright 2009 Google Inc. All rights reserved.
+//  Copyright 2009 Google Inc.
 //
+//  Licensed under the Apache License, Version 2.0 (the "License");
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
+//
+//  http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
 
 #import "Attribute.h"
 #import "WebDriverResource.h"
@@ -30,19 +40,9 @@
   return [[[Attribute alloc] initForElement:element] autorelease];
 }
 
-// Get an attribute with the given name.
-- (NSString *)attribute:(NSString *)name {
-  NSLog(@"attribute query: %@", name);
-  NSString *query = [NSString stringWithFormat:
-                     @"%@.getAttribute('%@')",
-                     [element_ jsLocator],
-                     name];
-  return [[self viewController] jsEval:query];
-}
-
 - (id<HTTPResource>)elementWithQuery:(NSString *)query {
   NSString *queriedAttribute = [query substringFromIndex:1];
-  NSString *attribute = [self attribute:queriedAttribute];
+  NSString *attribute = [element_ attribute:queriedAttribute];
   return [HTTPStaticResource
           resourceWithResponse:[WebDriverResponse responseWithValue:attribute]];
 }

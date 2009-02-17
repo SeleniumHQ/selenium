@@ -93,4 +93,7 @@
 // Is the element displayed on the screen?
 - (NSNumber *)isDisplayed;
 
+// Get the attribute with the given name.
+- (NSString *)attribute:(NSString *)attributeName;
+
 @end

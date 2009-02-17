@@ -293,4 +293,12 @@
           nil];  
 }
 
+// Get an attribute with the given name.
+- (NSString *)attribute:(NSString *)name {
+  return [[self viewController] jsEval:
+          @"%@.getAttribute('%@')",
+          [self jsLocator],
+          name];
+}
+
 @end

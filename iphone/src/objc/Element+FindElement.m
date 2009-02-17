@@ -70,7 +70,8 @@
   return output;
 }
 
-// Do a search by xpath.
+// Do a search by xpath. The xpath expression string should escape any
+// double quotes.
 - (NSArray *)elementsByXPath:(NSString *)xpath to:(NSString *)container {
   NSString *query = [NSString stringWithFormat:
    @"var elemsByXpath = function(xpath, context) {\r"
@@ -84,7 +85,7 @@
     "  }\r"
     "  return arr;\r"
     "};\r"
-    "var %@ = elemsByXpath('%@', %@);", container, xpath, [self jsLocator]];
+    "var %@ = elemsByXpath(\"%@\", %@);", container, xpath, [self jsLocator]];
   [[self viewController] jsEval:@"%@.length", container];
   [[self viewController] jsEval:query];
   return [elementStore_ elementsFromJSArray:container];
