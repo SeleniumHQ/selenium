@@ -1,10 +1,13 @@
 package com.thoughtworks.selenium;
 
+import java.lang.reflect.Method;
+import java.net.BindException;
+
+import org.openqa.selenium.SeleniumTestEnvironment;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverBackedSelenium;
-import org.openqa.selenium.SeleniumTestEnvironment;
+import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterTest;
@@ -14,16 +17,15 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 
-import java.io.File;
-import java.lang.reflect.Method;
-
 public class SeleneseTestNgHelper extends SeleneseTestBase
 {
     private static Selenium staticSelenium;
 
     @BeforeClass
-    public void startWebServer() {
-      new SeleniumTestEnvironment();
+    public synchronized void startWebServer() {
+      if (!GlobalTestEnvironment.isSetUp()) {
+        GlobalTestEnvironment.set(new SeleniumTestEnvironment());
+      }
     }
 
     @BeforeTest
@@ -41,6 +43,9 @@ public class SeleneseTestNgHelper extends SeleneseTestBase
         } else {
           fail("Cannot determine which browser to load: " + browserString);
         }
+        
+        if (url == null)
+          url = "http://localhost:4444/selenium-server";
         selenium = new WebDriverBackedSelenium(driver, url);
 
         staticSelenium = selenium;
@@ -76,7 +81,7 @@ public class SeleneseTestNgHelper extends SeleneseTestBase
     @AfterTest(alwaysRun=true)
     @Override
     public void tearDown() throws Exception {
-        super.tearDown();
+//        super.tearDown();
     }
     
     //@Override static method of super class (which assumes JUnit conventions)

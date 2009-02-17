@@ -18,29 +18,6 @@ limitations under the License.
 
 package org.openqa.selenium.firefox;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.openqa.selenium.Alert;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Cookie;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.NoSuchFrameException;
-import org.openqa.selenium.NoSuchWindowException;
-import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.Speed;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.firefox.internal.ExtensionConnectionFactory;
-import org.openqa.selenium.internal.FindsByClassName;
-import org.openqa.selenium.internal.FindsById;
-import org.openqa.selenium.internal.FindsByLinkText;
-import org.openqa.selenium.internal.FindsByName;
-import org.openqa.selenium.internal.FindsByTagName;
-import org.openqa.selenium.internal.FindsByXPath;
-import org.openqa.selenium.internal.ReturnedCookie;
-
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -54,11 +31,33 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.openqa.selenium.Alert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Cookie;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.NoSuchFrameException;
+import org.openqa.selenium.NoSuchWindowException;
+import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.Speed;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.firefox.internal.ExtensionConnectionFactory;
+import org.openqa.selenium.internal.FindsByClassName;
+import org.openqa.selenium.internal.FindsById;
+import org.openqa.selenium.internal.FindsByLinkText;
+import org.openqa.selenium.internal.FindsByName;
+import org.openqa.selenium.internal.FindsByTagName;
+import org.openqa.selenium.internal.FindsByXPath;
+import org.openqa.selenium.internal.ReturnedCookie;
 
 
 /**
@@ -576,28 +575,6 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
         get(String.valueOf(url));
       }
     }
-
-  private class FirefoxDriverIterator implements Iterator<WebDriver> {
-    private String[] allHandles;
-    private int index = 0;
-
-    public FirefoxDriverIterator(String handlesString) {
-      allHandles = handlesString.split(",");
-    }
-
-    public boolean hasNext() {
-      return allHandles.length > index;
-    }
-
-    public WebDriver next() {
-      // Ugh. The context needs some reworking.
-      return new FirefoxDriver(extension, new Context(allHandles[index++] + " ?"));
-    }
-
-    public void remove() {
-      throw new UnsupportedOperationException("remove");
-    }
-  }
 
     /** Saves a screenshot of the current page into the given file. */
     public void saveScreenshot(File pngFile) {

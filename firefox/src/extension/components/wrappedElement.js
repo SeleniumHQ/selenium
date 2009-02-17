@@ -196,6 +196,8 @@ FirefoxDriver.prototype.getElementAttribute = function(respond, value) {
             respond.response = element.selected;
         } else if (attributeName.toLowerCase() == "checked") {
             respond.response = response.toLowerCase() == "checked" || response.toLowerCase() == "true";
+        } else if (attributeName.toLowerCase() == "readonly") {
+            respond.response = element.getAttributeNode('readonly');
         }
 
         respond.send();
@@ -460,7 +462,6 @@ FirefoxDriver.prototype.dragAndDrop = function(respond, movementString) {
 };
 
 FirefoxDriver.prototype.findElementsByXPath = function (respond, xpath) {
-    Utils.dumpn("findElementsByXPath: " + respond.elementId);
     var element = Utils.getElementAt(respond.elementId, this.context);
     var indices = Utils.findElementsByXPath(xpath, element, this.context)
     var response = ""

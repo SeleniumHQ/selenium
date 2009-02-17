@@ -17,8 +17,23 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import com.thoughtworks.selenium.Selenium;
-import com.thoughtworks.selenium.SeleniumException;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.openqa.selenium.internal.AltLookupStrategy;
 import org.openqa.selenium.internal.ClassLookupStrategy;
@@ -39,20 +54,8 @@ import org.openqa.selenium.internal.TextMatchingStrategy;
 import org.openqa.selenium.internal.ValueOptionSelectStrategy;
 import org.openqa.selenium.internal.XPathLookupStrategy;
 
-import java.awt.*;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.thoughtworks.selenium.Selenium;
+import com.thoughtworks.selenium.SeleniumException;
 
 public class WebDriverBackedSelenium implements Selenium {
   private static final Pattern STRATEGY_AND_VALUE_PATTERN = Pattern.compile("^(\\p{Alpha}+)=(.*)");
@@ -62,7 +65,7 @@ public class WebDriverBackedSelenium implements Selenium {
   private final Map<String, LookupStrategy> lookupStrategies = new HashMap<String, LookupStrategy>();
   private final Map<String, OptionSelectStrategy> optionSelectStrategies = new HashMap<String, OptionSelectStrategy>();
   private final Map<String, TextMatchingStrategy> textMatchingStrategies = new HashMap<String, TextMatchingStrategy>();
-  private final Pattern NAME_VALUE_PAIR_PATTERN = Pattern.compile("([^\\s=\\[\\]\\(\\),\"\\/\\?@:;]+)=([^\\s=\\[\\]\\(\\),\"\\/\\?@:;]*)");
+  private final Pattern NAME_VALUE_PAIR_PATTERN = Pattern.compile("([^\\s=\\[\\]\\(\\),\"\\/\\?@:;]+)=([^=\\[\\]\\(\\),\"\\/\\?@:;]*)");
   private static final Pattern MAX_AGE_PATTERN = Pattern.compile("max_age=(\\d+)");
   private static final Pattern PATH_PATTERN = Pattern.compile("path=([^\\s,]+)[,]?");
 
@@ -74,7 +77,6 @@ public class WebDriverBackedSelenium implements Selenium {
   private boolean altKeyDown;
   private boolean controlKeyDown;
   private boolean shiftKeyDown;
-  private String embeddedSelenium;
 
   public WebDriverBackedSelenium(WebDriver baseDriver, String baseUrl) {
     setUpElementFindingStrategies();
@@ -1019,6 +1021,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return the results of evaluating the snippet
    */
   public String getEval(String script) {
+    script = String.format("return eval(%s);", script); 
     return String.valueOf(((JavascriptExecutor) driver).executeScript(script));
   }
 
@@ -1247,8 +1250,10 @@ public class WebDriverBackedSelenium implements Selenium {
   public boolean isEditable(String locator) {
     WebElement element = findElement(locator);
     String value = element.getValue();
+    String readonly = element.getAttribute("readonly");
+    if (readonly == null) readonly = "";
 
-    return value != null && element.isEnabled();
+    return value != null && element.isEnabled() && "".equals(readonly);
   }
 
   /**
@@ -1475,7 +1480,22 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return of relative index of the element to its parent (starting from 0)
    */
   public Number getElementIndex(String locator) {
-    throw new UnsupportedOperationException("getElementIndex");
+    WebElement element = findElement(locator);
+    String script = 
+      "var _isCommentOrEmptyTextNode = function(node) {\n" + 
+      "    return node.nodeType == 8 || ((node.nodeType == 3) && !(/[^\\t\\n\\r ]/.test(node.data)));\n" + 
+      "}\n" +
+      "    var element = arguments[0];\n" +
+      "    var previousSibling;\n" + 
+      "    var index = 0;\n" + 
+      "    while ((previousSibling = element.previousSibling) != null) {\n" + 
+      "        if (!_isCommentOrEmptyTextNode(previousSibling)) {\n" + 
+      "            index++;\n" + 
+      "        }\n" + 
+      "        element = previousSibling;\n" + 
+      "    }\n" + 
+      "    return index;";
+    return (Long) executeScript(script, element);
   }
 
   /**
@@ -1487,7 +1507,23 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return true if element1 is the previous sibling of element2, false otherwise
    */
   public boolean isOrdered(String locator1, String locator2) {
-    throw new UnsupportedOperationException("isOrdered");
+    WebElement one = findElement(locator1);
+    WebElement two = findElement(locator2);
+    
+    String ordered =
+      "    if (arguments[0] === arguments[1]) return false;\n" + 
+      "\n" + 
+      "    var previousSibling;\n" + 
+      "    while ((previousSibling = arguments[1].previousSibling) != null) {\n" + 
+      "        if (previousSibling === arguments[0]) {\n" + 
+      "            return true;\n" + 
+      "        }\n" + 
+      "        arguments[1] = previousSibling;\n" + 
+      "    }\n" + 
+      "    return false;\n";
+    
+    Boolean result = (Boolean) executeScript(ordered, one, two);
+    return result == null ? false : result.booleanValue();
   }
 
   /**
@@ -1680,7 +1716,12 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return all cookies of the current page under test
    */
   public String getCookie() {
-    return (String) executeScript("return document.cookie;");
+    StringBuilder builder = new StringBuilder();
+    for (Cookie c : driver.manage().getCookies()) {
+      builder.append(c.toString());
+      builder.append("; ");
+    }
+    return builder.toString();
   }
 
   /**
@@ -1705,7 +1746,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return true if a cookie with the specified name is present, or false otherwise.
    */
   public boolean isCookiePresent(String name) {
-    return getCookieByName(name) == null;
+    return getCookieByName(name) != null;
   }
 
   /**
@@ -1734,6 +1775,13 @@ public class WebDriverBackedSelenium implements Selenium {
     Matcher pathMatcher = PATH_PATTERN.matcher(optionsString);
     if (pathMatcher.find()) {
       path = pathMatcher.group(1);
+      try {
+        if (path.startsWith("http")) {
+          path = new URL(path).getPath();
+        }
+      } catch (MalformedURLException e) {
+        // Fine. 
+      }
     }
 
     Cookie cookie = new Cookie(name, value, path, maxAge);
