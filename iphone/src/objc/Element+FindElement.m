@@ -70,9 +70,17 @@
   return output;
 }
 
-// Do a search by xpath. The xpath expression string should escape any
-// double quotes.
+// Do a search by xpath. |elementsByXPath:to:| will escape any quote characters
+// in your string.
 - (NSArray *)elementsByXPath:(NSString *)xpath to:(NSString *)container {
+  // If the xpath expression is invalid, calling elemsByXpath (below) will fail
+  // silently. To detect it, we'll first set container to null and then check
+  // its value afterwards and throw an exception.
+  [[self viewController] jsEval:@"var %@ = null;", container];
+  
+  // Sanitise quotes in the input
+  xpath = [xpath stringByReplacingOccurrencesOfString:@"'" withString:@"\\'"];
+  
   NSString *query = [NSString stringWithFormat:
    @"var elemsByXpath = function(xpath, context) {\r"
     "  var result = document.evaluate(\r"
@@ -85,9 +93,16 @@
     "  }\r"
     "  return arr;\r"
     "};\r"
-    "var %@ = elemsByXpath(\"%@\", %@);", container, xpath, [self jsLocator]];
-  [[self viewController] jsEval:@"%@.length", container];
+    "%@ = elemsByXpath('%@', %@);", container, xpath, [self jsLocator]];
+  
   [[self viewController] jsEval:query];
+  
+  if ([[self viewController] jsElementIsNullOrUndefined:container]) {
+    @throw [NSException webDriverExceptionWithMessage:
+            [NSString stringWithFormat:@"Invalid xpath expression: %@", xpath]
+                                       webDriverClass:nil];
+  }
+  
   return [elementStore_ elementsFromJSArray:container];
 }
 
