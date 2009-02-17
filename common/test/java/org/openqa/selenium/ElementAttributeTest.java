@@ -122,6 +122,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
         assertThat(className, equalTo("header"));
     }
 
+    @Ignore(SAFARI)
     public void testShouldReturnTheContentsOfATextAreaAsItsValue() {
         driver.get(formPage);
 
