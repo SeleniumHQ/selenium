@@ -216,11 +216,11 @@ simple_jars = {
   },
   "test_iphone_client" => {
     'src'       => "iphone/test/java/**/*.java",
-    'deps'      => [:iphone_client, :test_common],
+    'deps'      => [:iphone_client, :test_common, :remote_client],
     'jar'       => "iphone/build/webdriver-iphone-test.jar",
     'resources' => nil,
-    'classpath' => ["iphone/build/webdriver-iphone.jar"] + common_test_libs,
-    'test_on'   => mac?,
+    'classpath' => ["iphone/build/webdriver-iphone.jar", "remote/build/webdriver-remote-client.jar", "remote/build/webdriver-remote-common.jar"] + common_test_libs,
+    'test_on'   => iPhoneSDKPresent?,
   },
   "support" =>   {
     'src'       => "support/src/java/**/*.java",
@@ -314,7 +314,7 @@ file 'firefox/build/webdriver-extension.zip' => FileList['firefox/src/extension/
 end
 
 task :iphone => [:iphone_server, :iphone_client]
-task :test_iphone => [:test_iphone_server, :test_iphone_client]
+task :test_iphone => [:test_iphone_server, :test_iphone_client, :remote_client]
 
 #### iPhone ####
 task :iphone_server => FileList['iphone/src/objc/**'] do
@@ -333,19 +333,6 @@ task :test_iphone_server do
   else
     puts "XCode not found. Not testing the iphone driver."
   end
-end
-
-task :generate_headers => [:jobbie] do
-  cmd = "javah -jni -classpath common\\build\\webdriver-common.jar;jobbie\\build\\webdriver-jobbie.jar -d jobbie\\src\\cpp\\InternetExplorerDriver "
-  tests = FileList.new("jobbie/src/java/**/*.java")
-  tests.each {|f|
-    f = f.to_s
-    f =~ /jobbie\/src\/java\/(.*)\.java/
-    f = $1
-    f.tr! '/', '.'
-    cmd += f + " "
-  }
-  sh cmd, :verbose => true
 end
 
 def version
