@@ -24,7 +24,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 
 /**
  * IPhoneDriver is a driver for running tests on Mobile Safari on the iPhone
- *  / iPod Touch.
+ *  and iPod Touch.
  * 
  * The driver uses WebDriver's remote REST interface to communicate with the
  * iphone. The iphone (or iphone simulator) must be running the iWebDriver app.
