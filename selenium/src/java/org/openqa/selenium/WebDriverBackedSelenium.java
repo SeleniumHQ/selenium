@@ -19,6 +19,7 @@ package org.openqa.selenium;
 
 import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.SeleniumException;
+import com.thoughtworks.selenium.Wait;
 import org.openqa.selenium.internal.AltLookupStrategy;
 import org.openqa.selenium.internal.ClassLookupStrategy;
 import org.openqa.selenium.internal.ExactTextMatchingStrategy;
@@ -76,6 +77,7 @@ public class WebDriverBackedSelenium implements Selenium {
   private boolean altKeyDown;
   private boolean controlKeyDown;
   private boolean shiftKeyDown;
+  private String originalWindowHandle;
 
   public WebDriverBackedSelenium(WebDriver baseDriver, String baseUrl) {
     setUpElementFindingStrategies();
@@ -88,6 +90,7 @@ public class WebDriverBackedSelenium implements Selenium {
     } else {
       this.baseUrl = baseUrl;
     }
+    originalWindowHandle = driver.getWindowHandle();
   }
 
   private void setUpTextMatchingStrategies() {
@@ -687,7 +690,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param windowID the JavaScript window ID of the window to select
    */
   public void openWindow(String url, String windowID) {
-    ((JavascriptExecutor) driver).executeScript("window.open(arguments[0], arguments[1]", url, windowID);
+    getEval(String.format("window.open('%s', '%s');", url, windowID));
   }
 
   /**
@@ -724,10 +727,36 @@ public class WebDriverBackedSelenium implements Selenium {
    */
   public void selectWindow(String windowID) {
     if ("null".equals(windowID)) {
-      // TODO(simon.m.stewart): Fall back to the oldest window
+      driver.switchTo().window(originalWindowHandle);
     } else {
-      driver.switchTo().window(windowID);
+      if (windowID.startsWith("title=")) {
+        selectWindowWithTitle(windowID.substring("title=".length()));
+        return;
+      }
+
+      if (windowID.startsWith("name=")) {
+        windowID = windowID.substring("name=".length());
+      }
+
+      try {
+        driver.switchTo().window(windowID);
+      } catch (NoSuchWindowException e) {
+        selectWindowWithTitle(windowID);
+      }
     }
+  }
+
+  private void selectWindowWithTitle(String title) {
+    String current = driver.getWindowHandle();
+    for (String handle : driver.getWindowHandles()) {
+      driver.switchTo().window(handle);
+      if (title.equals(driver.getTitle())) {
+        return;
+      }
+    }
+    
+    driver.switchTo().window(current);
+    throw new SeleniumException("Unable to select window with title: " + title);
   }
 
   /**
@@ -743,7 +772,16 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param locator an <a href="#locators">element locator</a> identifying a frame or iframe
    */
   public void selectFrame(String locator) {
-    throw new UnsupportedOperationException("selectFrame");
+    if ("relative=top".equals(locator)) {
+      driver.switchTo().defaultContent();
+      return;
+    }
+    
+    try {
+      driver.switchTo().frame(locator);
+    } catch (NoSuchFrameException e) {
+      throw new SeleniumException(e.getMessage(), e);
+    }
   }
 
   /**
@@ -786,8 +824,21 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param windowID the JavaScript window "name" of the window that will appear (not the text of the title bar)
    * @param timeout  a timeout in milliseconds, after which the action will return with an error
    */
-  public void waitForPopUp(String windowID, String timeout) {
-    throw new UnsupportedOperationException("waitForPopUp");
+  public void waitForPopUp(final String windowID, String timeout) {
+    long millis = Long.parseLong(timeout);
+
+    new Wait() {
+
+      public boolean until() {
+        try {
+          driver.switchTo().window(windowID);
+          return !"about:blank".equals(driver.getCurrentUrl());
+        } catch (NoSuchWindowException e) {
+          // Swallow
+        }
+        return false;
+      }
+    }.wait(String.format("Timed out waiting for %s. Waited %s", windowID, timeout), millis);
   }
 
   /**
@@ -1035,7 +1086,8 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return the results of evaluating the snippet
    */
   public String getEval(String script) {
-    script = String.format("return eval(%s);", script); 
+    script = script.replaceAll("\n", "\\\\n");
+    script = String.format("return eval(\"%s\");", script); 
     return String.valueOf(((JavascriptExecutor) driver).executeScript(script));
   }
 
@@ -1642,7 +1694,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return the value passed in
    */
   public String getExpression(String expression) {
-    throw new UnsupportedOperationException("getExpression");
+    return expression;
   }
 
   /**
@@ -1725,7 +1777,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param timeout a timeout in milliseconds, after which the action will return with an error
    */
   public void setTimeout(String timeout) {
-    throw new UnsupportedOperationException("setTimeout");
+//    throw new UnsupportedOperationException("setTimeout");
   }
 
   /**
@@ -1873,7 +1925,6 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param logLevel one of the following: "debug", "info", "warn", "error" or "off"
    */
   public void setBrowserLogLevel(String logLevel) {
-    throw new UnsupportedOperationException("setBrowserLogLevel");
   }
 
   /**
