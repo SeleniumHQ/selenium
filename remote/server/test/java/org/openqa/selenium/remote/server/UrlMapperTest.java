@@ -30,7 +30,7 @@ import org.openqa.selenium.remote.server.rest.UrlMapper;
 public class UrlMapperTest extends TestCase {
 
   public void testShouldBePossibleToBindAHandler() throws Exception {
-    UrlMapper mapper = new UrlMapper(new DriverSessions());
+    UrlMapper mapper = new UrlMapper(new DriverSessions(), new NullLogTo());
 
     mapper.bind("/foo", StubHandler.class);
 
@@ -41,7 +41,7 @@ public class UrlMapperTest extends TestCase {
 
   public void testShouldInjectDependenciesViaTheConstructor() throws Exception {
     DriverSessions sessions = new DriverSessions();
-    UrlMapper mapper = new UrlMapper(sessions);
+    UrlMapper mapper = new UrlMapper(sessions, new NullLogTo());
     mapper.bind("/example", SessionHandler.class);
 
     ResultConfig config = mapper.getConfig("/example");

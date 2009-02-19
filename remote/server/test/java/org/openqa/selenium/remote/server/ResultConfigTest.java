@@ -28,9 +28,10 @@ import org.openqa.selenium.remote.server.rest.ResultConfig;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
 public class ResultConfigTest extends TestCase {
+  private LogTo logger = new NullLogTo();
 
   public void testShouldMatchBasicUrls() throws Exception {
-    ResultConfig config = new ResultConfig("/fish", StubHandler.class, null);
+    ResultConfig config = new ResultConfig("/fish", StubHandler.class, null, logger);
 
     assertThat(config.getHandler("/fish"), is(notNullValue()));
     assertThat(config.getHandler("/cod"), is(nullValue()));
@@ -38,7 +39,7 @@ public class ResultConfigTest extends TestCase {
 
   public void testShouldNotAllowNullToBeUsedAsTheUrl() {
     try {
-      new ResultConfig(null, StubHandler.class, null);
+      new ResultConfig(null, StubHandler.class, null, logger);
       fail("Should have failed");
     } catch (IllegalArgumentException e) {
       exceptionWasExpected();
@@ -47,7 +48,7 @@ public class ResultConfigTest extends TestCase {
 
   public void testShouldNotAllowNullToBeUsedForTheHandler() {
     try {
-      new ResultConfig("/cheese", null, null);
+      new ResultConfig("/cheese", null, null, logger);
       fail("Should have failed");
     } catch (IllegalArgumentException e) {
       exceptionWasExpected();
@@ -55,14 +56,14 @@ public class ResultConfigTest extends TestCase {
   }
 
   public void testShouldMatchNamedParameters() throws Exception {
-    ResultConfig config = new ResultConfig("/foo/:bar", NamedParameterHandler.class, null);
-    Handler handler = (NamedParameterHandler) config.getHandler("/foo/fishy");
+    ResultConfig config = new ResultConfig("/foo/:bar", NamedParameterHandler.class, null, logger);
+    Handler handler = config.getHandler("/foo/fishy");
 
     assertThat(handler, is(notNullValue()));
   }
 
   public void testShouldSetNamedParametersOnHandler() throws Exception {
-    ResultConfig config = new ResultConfig("/foo/:bar", NamedParameterHandler.class, null);
+    ResultConfig config = new ResultConfig("/foo/:bar", NamedParameterHandler.class, null, logger);
     NamedParameterHandler handler = (NamedParameterHandler) config.getHandler("/foo/fishy");
 
     assertThat(handler.getBar(), is("fishy"));
@@ -87,4 +88,5 @@ public class ResultConfigTest extends TestCase {
       return ResultType.SUCCESS;
     }
   }
+
 }

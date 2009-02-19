@@ -89,9 +89,11 @@ public class DriverServlet extends HttpServlet {
 
     DriverSessions driverSessions = new DriverSessions();
 
-    getMapper = new UrlMapper(driverSessions);
-    postMapper = new UrlMapper(driverSessions);
-    deleteMapper = new UrlMapper(driverSessions);
+    ServletLogTo logger = new ServletLogTo();
+
+    getMapper = new UrlMapper(driverSessions, logger);
+    postMapper = new UrlMapper(driverSessions, logger);
+    deleteMapper = new UrlMapper(driverSessions, logger);
 
     getMapper.addGlobalHandler(ResultType.EXCEPTION,
                                new JsonErrorExceptionResult(":exception", ":response"));
@@ -244,8 +246,14 @@ public class DriverServlet extends HttpServlet {
       ResultConfig config = mapper.getConfig(request.getPathInfo());
       config.handle(request.getPathInfo(), request, response);
     } catch (Exception e) {
+      log("Fatal, unhandled exception: " + request.getPathInfo() + ": " + e);
       throw new ServletException(e);
     }
   }
 
+  private class ServletLogTo implements LogTo {
+    public void log(String message) {
+      DriverServlet.this.log(message);
+    }
+  }
 }

@@ -17,13 +17,16 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.rest;
 
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.PropertyMunger;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
+import org.openqa.selenium.remote.server.LogTo;
 import org.openqa.selenium.remote.server.handler.WebDriverHandler;
-import org.openqa.selenium.WebDriverException;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
@@ -39,9 +42,6 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 public class ResultConfig {
 
   private final String[] sections;
@@ -49,8 +49,10 @@ public class ResultConfig {
   private final DriverSessions sessions;
   private final Map<ResultType, Set<Result>> resultToRender =
       new HashMap<ResultType, Set<Result>>();
+  private final LogTo logger;
 
-  public ResultConfig(String url, Class<? extends Handler> handlerClazz, DriverSessions sessions) {
+  public ResultConfig(String url, Class<? extends Handler> handlerClazz, DriverSessions sessions, LogTo logger) {
+    this.logger = logger;
     if (url == null || handlerClazz == null) {
       throw new IllegalArgumentException("You must specify the handler and the url");
     }
@@ -138,8 +140,10 @@ public class ResultConfig {
     ResultType result;
 
     try {
+      logger.log("Executing: " + pathInfo);
       result = handler.handle();
       addHandlerAttributesToRequest(request, handler);
+      logger.log("Done: " + pathInfo);
     } catch (Exception e) {
       result = ResultType.EXCEPTION;
       Throwable toUse = e;
@@ -149,6 +153,7 @@ public class ResultConfig {
         toUse = e.getCause().getCause();
       }
 
+      logger.log("Exception: " + toUse.getMessage());
       request.setAttribute("exception", toUse);
     }
 
