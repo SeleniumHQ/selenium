@@ -1072,8 +1072,13 @@ Selenium.prototype.doWaitForPopUp = function(windowID, timeout) {
     * Waits for a popup window to appear and load up.
     *
     * @param windowID the JavaScript window "name" of the window that will appear (not the text of the title bar)
-    * @param timeout a timeout in milliseconds, after which the action will return with an error
+    * @param timeout a timeout in milliseconds, after which the action will return with an error.
+    *                If this value is not specified, the default Selenium
+    *                timeout will be used. See the setTimeout() command.
     */
+    if (! timeout) {
+        var timeout = this.defaultTimeout;
+    }
     var timeoutTime = getTimeoutTime(timeout);
     
     var popupLoadedPredicate = function () {
