@@ -2,9 +2,19 @@
 //  VirtualDirectory.m
 //  iWebDriver
 //
-//  Created by Joseph Gentle on 12/4/08.
-//  Copyright 2008 __MyCompanyName__. All rights reserved.
+//  Copyright 2009 Google Inc.
 //
+//  Licensed under the Apache License, Version 2.0 (the "License");
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
+//
+//  http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
 
 #import "HTTPVirtualDirectory.h"
 #import "HTTPStaticResource.h"
@@ -40,6 +50,11 @@
 	[contents setValue:resource forKey:name];
 }
 
+- (void)removeResourceWithName:(NSString *)name
+{
+  [contents removeObjectForKey:name];
+}
+
 // Trim leading and trailing '/' characters
 + (NSString *)trimPathSeparatorFrom:(NSString *)query
 {
@@ -54,8 +69,6 @@
 // Discard everything after the next '/' or '?' character
 + (NSString *)getNextPathElementInQuery:(NSString *)query Remainder:(NSString **)remainder
 {
-//	query = [self trimPathSeparatorFrom:query];
-
 	if ([query isEqualToString:@""])
 	{
 		if (remainder)
@@ -63,9 +76,9 @@
 		return query;
 	}
 	
-	if ([query characterAtIndex:0] == '/')
+  // Discard duplicate '/' characters in the query string to make up for client bugs.
+	while ([query characterAtIndex:0] == '/')
 	{
-//		NSLog(@"trimming '/'");
 		query = [query substringFromIndex:1];
 	}
 	
@@ -88,8 +101,6 @@
 
 - (id<HTTPResource>)elementWithQuery:(NSString *)query
 {
-//	NSLog(@"query: '%@'", query);
-
 	// There's no file specified. Return the directory's index
 	if ([query isEqualToString:@""]
 		|| [query isEqualToString:@"/"])
@@ -129,8 +140,8 @@
 }
 
 - (id<HTTPResponse,NSObject>)httpResponseForQuery:(NSString *)query
-									method:(NSString *)method
-								  withData:(NSData *)theData
+										   method:(NSString *)method
+										 withData:(NSData *)theData
 {
 	// This will recursively find the correct handler for this URL
 	id<HTTPResource> resource = [self elementWithQuery:query];

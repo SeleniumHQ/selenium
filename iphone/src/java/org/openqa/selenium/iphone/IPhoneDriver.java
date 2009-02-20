@@ -45,7 +45,6 @@ public class IPhoneDriver extends RemoteWebDriver {
   /**
    * Create an IPhoneDriver connected to the remote address passed in.
    * @param remoteAddress The full URL of the remote client running iWebDriver.
-   *                      No trailing slash.
    * @throws Exception
    * @see IPhoneDriver(URL remoteAddress)
    */

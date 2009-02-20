@@ -1,7 +1,7 @@
 package org.openqa.selenium.iphone;
 
-public class MultitouchTest {
-	public void testFoo() {
+import junit.framework.TestCase;
 
-	}
+public class MultitouchTest extends TestCase {
+  
 }
