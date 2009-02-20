@@ -140,7 +140,7 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
       NativeLongByReference value = new NativeLongByReference();
       result = lib.wdGetNumberScriptResult(scriptResult, value);
       handleErrorCode("Cannot extract number result", result);
-      toReturn = new Long(value.getValue().longValue());
+      toReturn = value.getValue().longValue();
       break;
       
     case 3:
