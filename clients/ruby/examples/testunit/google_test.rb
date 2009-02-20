@@ -4,11 +4,11 @@
 #
 require "test/unit"
 require "rubygems"
-gem "selenium-client", ">=1.2.9"
+gem "selenium-client", ">=1.2.10"
 require "selenium/client"
 
 class ExampleTest < Test::Unit::TestCase
-  attr_reader :browser
+	attr_reader :browser
    
   def setup
     @browser = Selenium::Client::Driver.new "localhost", 4444, "*firefox", "http://www.google.com", 10000
@@ -20,14 +20,14 @@ class ExampleTest < Test::Unit::TestCase
   end
   
   def test_page_search
-    browser.open "/"
-    assert_equal "Google", browser.title
-    browser.type "q", "Selenium"
-    browser.click "btnG", :wait_for => :page
-    assert_equal "Selenium - Google Search", browser.title
-    assert_equal "Selenium", browser.field("q")
-    assert browser.text?("seleniumhq.org")
-    assert browser.element?("link=Cached")
+		browser.open "/"
+		assert_equal "Google", browser.title
+		browser.type "q", "Selenium seleniumhq"
+		browser.click "btnG", :wait_for => :page
+		assert_equal "Selenium seleniumhq - Google Search", browser.title
+		assert_equal "Selenium seleniumhq", browser.field("q")
+		assert browser.text?("seleniumhq.org")
+		assert browser.element?("link=Cached")
   end
     
 end

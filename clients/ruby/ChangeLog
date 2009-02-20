@@ -6,7 +6,10 @@
 
  - Include examples in RubyGem
  - Added visible? method
- 
+ - Wait for complete shutdown when stopping Selenium RC with
+   "rake selenium:rc:stop" (Thanks Aaron Tinio for the patch)
+
+
 1.2.10 
 =======
 

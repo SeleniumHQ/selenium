@@ -1,15 +1,15 @@
 require 'rubygems'
 gem "rspec", "=1.1.12"
-gem "selenium-client", ">=1.2.9"
+gem "selenium-client", ">=1.2.10"
 require "selenium/client"
 require "selenium/rspec/spec_helper"
 
 describe "Google Search" do
-  attr_reader :selenium_driver
-  alias :page :selenium_driver
+	attr_reader :selenium_driver
+	alias :page :selenium_driver
 
   before(:all) do
-    @selenium_driver = Selenium::Client::Driver.new "localhost", 4444, "*firefox", "http://www.google.com", 10000    
+      @selenium_driver = Selenium::Client::Driver.new "localhost", 4444, "*firefox", "http://www.google.com", 10000    
   end
   
   before(:each) do
@@ -24,11 +24,13 @@ describe "Google Search" do
   it "can find Selenium" do    
     page.open "/"
     page.title.should eql("Google")
-    page.type "q", "Selenium"
+    page.type "q", "Selenium seleniumhq"
     page.click "btnG", :wait_for => :page
-    page.value("q").should eql("Selenium")
+    page.value("q").should eql("Selenium seleniumhq")
     page.text?("seleniumhq.org").should be_true
-    page.title.should eql("Selenium - Google Search")
+    page.title.should eql("Selenium seleniumhq - Google Search")
+    page.text?("seleniumhq.org").should be_true
+		page.element?("link=Cached").should be_true		
   end
     
 end

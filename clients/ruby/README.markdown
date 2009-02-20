@@ -76,16 +76,16 @@ Plain API
     # Sample Ruby script using the Selenium client API
     #
     require "rubygems"
-    gem "selenium-client", ">=1.2.9"
+    gem "selenium-client", ">=1.2.10"
     require "selenium/client"
-
+    
     begin
       @browser = Selenium::Client::Driver.new("localhost", 4444, "*firefox", "http://www.google.com", 10000);
       @browser.start_new_browser_session
     	@browser.open "/"
-    	@browser.type "q", "Selenium"
+    	@browser.type "q", "Selenium seleniumhq.org"
     	@browser.click "btnG", :wait_for => :page
-    	puts @browser.text?("selenium.openqa.org")
+    	puts @browser.text?("seleniumhq.org")
     ensure
       @browser.close_current_browser_session    
     end
@@ -102,70 +102,72 @@ Writing Tests
     #
     require "test/unit"
     require "rubygems"
-    gem "selenium-client", ">=1.2.9"
+    gem "selenium-client", ">=1.2.10"
     require "selenium/client"
-
+    
     class ExampleTest < Test::Unit::TestCase
     	attr_reader :browser
-
+    
       def setup
         @browser = Selenium::Client::Driver.new "localhost", 4444, "*firefox", "http://www.google.com", 10000
         browser.start_new_browser_session
       end
-
+    
       def teardown
         browser.close_current_browser_session
       end
-
+    
       def test_page_search
     		browser.open "/"
     		assert_equal "Google", browser.title
-    		browser.type "q", "Selenium"
+    		browser.type "q", "Selenium seleniumhq"
     		browser.click "btnG", :wait_for => :page
-    		assert_equal "Selenium - Google Search", browser.title
-    		assert_equal "Selenium", browser.field("q")
-    		assert browser.text?("selenium.openqa.org")
+    		assert_equal "Selenium seleniumhq - Google Search", browser.title
+    		assert_equal "Selenium seleniumhq", browser.field("q")
+    		assert browser.text?("seleniumhq.org")
     		assert browser.element?("link=Cached")
       end
-
+    
     end
     
  If BDD is more your style, here is how you can achieve the same thing  using RSpec:
 
     require 'rubygems'
-    gem "rspec", "=1.1.11"
-    gem "selenium-client", ">=1.2.9"
+    gem "rspec", "=1.1.12"
+    gem "selenium-client", ">=1.2.10"
     require "selenium/client"
     require "selenium/rspec/spec_helper"
-
+    
     describe "Google Search" do
     	attr_reader :selenium_driver
     	alias :page :selenium_driver
-
-     before(:all) do
-       @selenium_driver = Selenium::Client::Driver.new "localhost", 4444, "*firefox", "http://www.google.com", 10000    
-     end
-
-     before(:each) do
-       selenium_driver.start_new_browser_session
-     end
-
-     # The system capture need to happen BEFORE closing the Selenium session 
-     append_after(:each) do    
-       @selenium_driver.close_current_browser_session
-     end
-
-     it "can find Selenium" do    
-       page.open "/"
-       page.title.should eql("Google")
-       page.type "q", "Selenium"
-       page.click "btnG", :wait_for => :page
-       page.value("q").should eql("Selenium")
-       page.text?("selenium.openqa.org").should be_true
-       page.title.should eql("Selenium - Google Search")
-     end
-
-    end 
+    
+      before(:all) do
+          @selenium_driver = Selenium::Client::Driver.new "localhost", 4444, "*firefox", "http://www.google.com", 10000    
+      end
+    
+      before(:each) do
+        selenium_driver.start_new_browser_session
+      end
+    
+      # The system capture need to happen BEFORE closing the Selenium session 
+      append_after(:each) do    
+        @selenium_driver.close_current_browser_session
+      end
+    
+      it "can find Selenium" do    
+        page.open "/"
+        page.title.should eql("Google")
+        page.type "q", "Selenium seleniumhq"
+        page.click "btnG", :wait_for => :page
+        page.value("q").should eql("Selenium seleniumhq")
+        page.text?("seleniumhq.org").should be_true
+        page.title.should eql("Selenium seleniumhq - Google Search")
+        page.text?("seleniumhq.org").should be_true
+    		page.element?("link=Cached").should be_true		
+      end
+    
+    end
 
 Start/Stop a Selenium Remote Control Server
 ===========================================

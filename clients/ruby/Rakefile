@@ -37,6 +37,7 @@ task :'ci:integration' => [ :clean, :'test:unit' ] do
   begin
     Rake::Task[:"selenium:rc:start"].execute []
     Rake::Task[:"test:integration"].execute []
+    Rake::Task[:"examples"].execute []
   ensure
     Rake::Task[:"selenium:rc:stop"].execute []
   end
@@ -139,6 +140,29 @@ Spec::Rake::SpecTask.new("test:integration:smoke") do |t|
     t.spec_opts << "--format=Selenium::RSpec::SeleniumTestReportFormatter:./target/smoke_tests_report.html"
     t.spec_opts << "--format=progress"                
 end
+
+desc "Run Test::Unit example"
+Rake::TestTask.new("examples:testunit"  ) do |t|
+  t.test_files = FileList['examples/testunit/**/*_test.rb']
+  t.warning = true
+end
+
+desc "Run RSpec examples"
+Spec::Rake::SpecTask.new("examples:rspec") do |t|
+    t.spec_files = FileList['examples/rspec/**/*_spec.rb']
+    t.spec_opts << '--color'
+    t.spec_opts << "--require 'lib/selenium/rspec/reporting/selenium_test_report_formatter'"
+    t.spec_opts << "--format=Selenium::RSpec::SeleniumTestReportFormatter:./target/smoke_tests_report.html"
+    t.spec_opts << "--format=progress"                
+end
+
+desc "Run script example"
+task :'examples:script' do
+  sh "ruby examples/script/*.rb"
+end
+
+desc "Run all examples"
+task :'examples' => [:'examples:rspec', :'examples:testunit', :'examples:script']
 
 desc "Run tests that are part of Selenium RC maven build (When Selenium Client is part of Selenium RC Workspace)."
 task :'test:maven_build' do |t|
