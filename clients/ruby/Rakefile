@@ -43,7 +43,7 @@ task :'ci:integration' => [ :clean, :'test:unit' ] do
 end
 
 file "target/iedoc.xml" do
-  has_unzip = system "unzipx -v"
+  has_unzip = system "unzip -v"
   if has_unzip
     sh "unzip -uj '#{SELENIUM_RC_JAR}' core/iedoc.xml -d target"
   else  # Windows support assumes Java is installed 
@@ -79,6 +79,13 @@ Selenium::Rake::RemoteControlStopTask.new do |rc|
   rc.host = "localhost"
   rc.port = 4444
   rc.timeout_in_seconds = 3 * 60
+  rc.wait_until_stopped = true
+end
+
+desc "Restart Selenium Remote Control"
+task :'selenium:rc:restart' do
+  Rake::Task[:"selenium:rc:stop"].execute [] rescue nil
+  Rake::Task[:"selenium:rc:start"].execute []
 end
 
 desc "Run all integration tests"
