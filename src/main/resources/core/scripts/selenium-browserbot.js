@@ -376,12 +376,9 @@ BrowserBot.prototype._selectWindowByTitle = function(target) {
 }
 
 BrowserBot.prototype._selectFirstNonTopWindow = function() {
-    for (var windowName in this.openedWindows) {
-        var win = this.openedWindows[windowName];
-        if (! this._windowClosed(win) && win != this.topWindow) {
-            this._selectWindowByName(windowName);
-            break;
-        }
+    var names = this.getNonTopWindowNames();
+    if (names.length) {
+        this._selectWindowByName(names[0]);
     }
 };
 
@@ -1016,6 +1013,19 @@ BrowserBot.prototype.getWindowNameByTitle = function(windowTitle) {
     } catch (e) {} // IE Perm denied
 
     throw new SeleniumError("Could not find window with title " + windowTitle);
+};
+
+BrowserBot.prototype.getNonTopWindowNames = function() {
+    var nonTopWindowNames = [];
+    
+    for (var windowName in this.openedWindows) {
+        var win = this.openedWindows[windowName];
+        if (! this._windowClosed(win) && win != this.topWindow) {
+            nonTopWindowNames.push(windowName);
+        }
+    }
+    
+    return nonTopWindowNames;
 };
 
 BrowserBot.prototype.getCurrentWindow = function(doNotModify) {
