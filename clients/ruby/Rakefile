@@ -97,7 +97,7 @@ Spec::Rake::SpecTask.new("test:integration") do |t|
     t.spec_opts << "--format=Selenium::RSpec::SeleniumTestReportFormatter:./target/integration_tests_report.html"
     t.spec_opts << "--format=progress"                
 end
-task :"test:integration" => ["lib/selenium/client/generated_driver.rb", :'test:integration:headless']
+task :"test:integration" => ["lib/selenium/client/generated_driver.rb"]
 
 begin
   gem "deep_test", ">=1.2.1"
@@ -115,12 +115,6 @@ begin
   end
 rescue Exception
   puts "Could not find DeepTest, disable parallel run"
-end
-
-desc "Run headless integration tests"
-Rake::TestTask.new(:'test:integration:headless') do |t|
-  t.test_files = FileList['test/integration/headless/**/*.rb']
-  t.warning = true
 end
 
 desc "Run API integration tests"
@@ -169,7 +163,6 @@ task :'test:maven_build' do |t|
   Rake::Task[:"test:unit"].invoke
   if (ENV['HEADLESS_TEST_MODE'] || "").downcase == "true"
     puts "Headless test mode detected"
-    Rake::Task[:"test:integration:headless"].invoke
   else
     Rake::Task[:"test:integration"].invoke
   end

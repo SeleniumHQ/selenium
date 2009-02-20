@@ -17,7 +17,8 @@ class TCPSocket
         socket = TCPSocket.new(options[:host], options[:port])
         socket.close unless socket.nil?
         true
-      rescue Errno::ECONNREFUSED
+      rescue Errno::ECONNREFUSED, 
+             Errno::EBADF           # Windows
         false
       end
     end

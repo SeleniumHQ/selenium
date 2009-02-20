@@ -8,7 +8,7 @@
  - Added visible? method
  - Wait for complete shutdown when stopping Selenium RC with
    "rake selenium:rc:stop" (Thanks Aaron Tinio for the patch)
-
+ - Fixed the integration build on Windows
 
 1.2.10 
 =======
