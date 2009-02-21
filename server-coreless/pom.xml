@@ -111,7 +111,6 @@
         <dependency>
             <groupId>ant</groupId>
             <artifactId>ant</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>jetty</groupId>
@@ -129,7 +128,6 @@
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>bouncycastle</groupId>
