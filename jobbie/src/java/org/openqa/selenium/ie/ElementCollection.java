@@ -1,18 +1,19 @@
-package org.openqa.selenium.ie.internal;
+package org.openqa.selenium.ie;
 
-import static org.openqa.selenium.ie.internal.ExportedWebDriverFunctions.SUCCESS;
+import static org.openqa.selenium.ie.ExportedWebDriverFunctions.SUCCESS;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.ie.ExportedWebDriverFunctions;
 import org.openqa.selenium.ie.InternetExplorerElement;
 
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
 
-public class ElementCollection {
+class ElementCollection {
   private final List<WebElement> elements;
   
   public ElementCollection(ExportedWebDriverFunctions lib, Pointer driver, Pointer rawElements) {

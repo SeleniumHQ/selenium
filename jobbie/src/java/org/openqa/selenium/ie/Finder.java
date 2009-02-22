@@ -17,7 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.ie;
 
-import static org.openqa.selenium.ie.internal.ExportedWebDriverFunctions.SUCCESS;
+import static org.openqa.selenium.ie.ExportedWebDriverFunctions.SUCCESS;
 
 import java.util.List;
 
@@ -25,8 +25,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.ie.internal.ElementCollection;
-import org.openqa.selenium.ie.internal.ExportedWebDriverFunctions;
+import org.openqa.selenium.ie.ElementCollection;
 import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;

@@ -1,11 +1,13 @@
-package org.openqa.selenium.ie.internal;
+package org.openqa.selenium.ie;
+
+import org.openqa.selenium.ie.ExportedWebDriverFunctions;
 
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
 
-public class StringWrapper {
+class StringWrapper {
   private final String value;
 
   public StringWrapper(ExportedWebDriverFunctions lib, PointerByReference ptr) {

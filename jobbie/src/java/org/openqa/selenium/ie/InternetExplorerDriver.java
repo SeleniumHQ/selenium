@@ -36,9 +36,10 @@ import org.openqa.selenium.Speed;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.ie.internal.ExportedWebDriverFunctions;
-import static org.openqa.selenium.ie.internal.ExportedWebDriverFunctions.SUCCESS;
-import org.openqa.selenium.ie.internal.StringWrapper;
+
+import static org.openqa.selenium.ie.ExportedWebDriverFunctions.SUCCESS;
+
+import org.openqa.selenium.ie.StringWrapper;
 import org.openqa.selenium.internal.ReturnedCookie;
 
 import java.io.File;
@@ -123,54 +124,57 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
     
     IntByReference type = new IntByReference();
     result = lib.wdGetScriptResultType(scriptResult, type);
-    lib.wdFreeScriptResult(scriptResult);
     
     handleErrorCode("Cannot determine result type", result);
     
-    Object toReturn;
-    switch (type.getValue()) {
-    case 1:
-      PointerByReference wrapper = new PointerByReference();
-      result = lib.wdGetStringScriptResult(scriptResult, wrapper);
-      handleErrorCode("Cannot extract string result", result);
-      toReturn = new StringWrapper(lib, wrapper).toString();
-      break;
-      
-    case 2:
-      NativeLongByReference value = new NativeLongByReference();
-      result = lib.wdGetNumberScriptResult(scriptResult, value);
-      handleErrorCode("Cannot extract number result", result);
-      toReturn = value.getValue().longValue();
-      break;
-      
-    case 3:
-      IntByReference boolVal = new IntByReference();
-      result = lib.wdGetBooleanScriptResult(scriptResult, boolVal);
-      handleErrorCode("Cannot extract boolean result", result);
-      toReturn = boolVal.getValue() == 1 ? Boolean.TRUE : Boolean.FALSE;
-      break;
-      
-    case 4:
-      PointerByReference element = new PointerByReference();
-      result = lib.wdGetElementScriptResult(scriptResult, driver, element);
-      handleErrorCode("Cannot extract element result", result);
-      toReturn = new InternetExplorerElement(lib, driver, element.getValue());
-      break;
-      
-    case 5:
-      toReturn = null;
-      break;
-      
-    case 6:
-      PointerByReference message = new PointerByReference();
-      result = lib.wdGetStringScriptResult(scriptResult, message);
-      handleErrorCode("Cannot extract string result", result);
-      throw new WebDriverException(new StringWrapper(lib, message).toString());
-      
-    default:
-      throw new WebDriverException("Cannot determine result type");
+    try {
+      Object toReturn;
+      switch (type.getValue()) {
+      case 1:
+        PointerByReference wrapper = new PointerByReference();
+        result = lib.wdGetStringScriptResult(scriptResult, wrapper);
+        handleErrorCode("Cannot extract string result", result);
+        toReturn = new StringWrapper(lib, wrapper).toString();
+        break;
+        
+      case 2:
+        NativeLongByReference value = new NativeLongByReference();
+        result = lib.wdGetNumberScriptResult(scriptResult, value);
+        handleErrorCode("Cannot extract number result", result);
+        toReturn = value.getValue().longValue();
+        break;
+        
+      case 3:
+        IntByReference boolVal = new IntByReference();
+        result = lib.wdGetBooleanScriptResult(scriptResult, boolVal);
+        handleErrorCode("Cannot extract boolean result", result);
+        toReturn = boolVal.getValue() == 1 ? Boolean.TRUE : Boolean.FALSE;
+        break;
+        
+      case 4:
+        PointerByReference element = new PointerByReference();
+        result = lib.wdGetElementScriptResult(scriptResult, driver, element);
+        handleErrorCode("Cannot extract element result", result);
+        toReturn = new InternetExplorerElement(lib, driver, element.getValue());
+        break;
+        
+      case 5:
+        toReturn = null;
+        break;
+        
+      case 6:
+        PointerByReference message = new PointerByReference();
+        result = lib.wdGetStringScriptResult(scriptResult, message);
+        handleErrorCode("Cannot extract string result", result);
+        throw new WebDriverException(new StringWrapper(lib, message).toString());
+        
+      default:
+        throw new WebDriverException("Cannot determine result type");
+      }
+      return toReturn;
+    } finally {
+      lib.wdFreeScriptResult(scriptResult);
     }
-    return toReturn;
   }
 
   private int populateArguments(int result, Pointer scriptArgs, Object... args) {

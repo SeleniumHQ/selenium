@@ -18,8 +18,8 @@ limitations under the License.
 
 package org.openqa.selenium.ie;
 
-import static org.openqa.selenium.ie.internal.ExportedWebDriverFunctions.HWNDByReference;
-import static org.openqa.selenium.ie.internal.ExportedWebDriverFunctions.SUCCESS;
+import static org.openqa.selenium.ie.ExportedWebDriverFunctions.HWNDByReference;
+import static org.openqa.selenium.ie.ExportedWebDriverFunctions.SUCCESS;
 
 import java.awt.Dimension;
 import java.awt.Point;
@@ -30,8 +30,7 @@ import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.ie.internal.ExportedWebDriverFunctions;
-import org.openqa.selenium.ie.internal.StringWrapper;
+import org.openqa.selenium.ie.StringWrapper;
 import org.openqa.selenium.internal.Locatable;
 
 import com.sun.jna.Pointer;

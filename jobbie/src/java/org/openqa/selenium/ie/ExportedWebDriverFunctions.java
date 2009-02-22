@@ -1,4 +1,4 @@
-package org.openqa.selenium.ie.internal;
+package org.openqa.selenium.ie;
 
 import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
@@ -10,7 +10,7 @@ import com.sun.jna.ptr.NativeLongByReference;
 import com.sun.jna.ptr.PointerByReference;
 import com.sun.jna.win32.StdCallLibrary;
 
-public interface ExportedWebDriverFunctions extends StdCallLibrary {
+interface ExportedWebDriverFunctions extends StdCallLibrary {
   int SUCCESS = 0;
   
   int wdNewDriverInstance(PointerByReference ptr);
