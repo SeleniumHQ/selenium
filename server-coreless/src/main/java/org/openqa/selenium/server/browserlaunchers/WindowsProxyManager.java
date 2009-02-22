@@ -105,7 +105,7 @@ public class WindowsProxyManager {
         // if we're here, we know the current type of pop-up manager,
         // and the backup has a different (wrong) type
         if (backupPopupMgrType != null) {
-            WindowsUtils.deleteRegistryValue(RegKey.POPUP_MGR.name());
+            WindowsUtils.deleteRegistryValue(RegKey.POPUP_MGR.key);
         }
         if (!backupIsReady()) {
             return;
