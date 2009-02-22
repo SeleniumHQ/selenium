@@ -15,5 +15,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/selenium-java-client-driver"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/selenium-java-testng-helper"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/selenium-server"/>
+	<classpathentry kind="var" path="M2_REPO/org/seleniumhq/selenium/client-drivers/selenium-java-client-driver/1.0-beta-2/selenium-java-client-driver-1.0-beta-2.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/seleniumhq/selenium/server/selenium-server/1.0-beta-2/selenium-server-1.0-beta-2-standalone.jar"/>
 	<classpathentry kind="output" path="target-eclipse"/>
 </classpath>
