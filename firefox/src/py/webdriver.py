@@ -4,12 +4,14 @@ import sys
 import time
 
 from webelement import *
-from exceptions import *
 from firefoxlauncher import FirefoxLauncher
+from firefox_profile import FirefoxProfile
+from webdriver_common.exceptions import *
 
 class WebDriver(object):
     """The main interface to use for testing, which represents an idealised web browser."""
-    def __init__(self):
+    def __init__(self, profile_name=None):
+        FirefoxLauncher().LaunchBrowser(profile_name)
         self._conn = ExtensionConnection()
         self._conn.connect()
 
@@ -128,7 +130,7 @@ class WebDriver(object):
 
     def _handle_find_element_exception(self, e):
         if "Unable to locate element" in e.response:
-            raise NoSuchElementException("Unable to locate element:")
+            raise NoSuchElementException(e.response)
         else:
             raise e
 

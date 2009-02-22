@@ -3,7 +3,7 @@ import socket
 import re
 import threading
 import simplejson
-import exceptions
+from webdriver_common.exceptions import *
 
 _SOCKET_TIMEOUT = 20
 _DEFAULT_PORT = 7055
@@ -55,7 +55,7 @@ class ExtensionConnection(object):
             json_content = sections[0];
             decoded = simplejson.loads(json_content)
             if decoded["isError"]:
-                raise exceptions.ErrorInResponseException(
+                raise ErrorInResponseException(
                     decoded['response'],
                     ("Error occurred when processing\n"
                      "packet:%s\nresponse:%s" % (packet, resp)))

@@ -1,6 +1,7 @@
+from exceptions import *
 from extensionconnection import ExtensionConnection
 import webdriver
-from exceptions import *
+from webdriver_common.exceptions import *
 
 class WebElement(object):
     """Represents an HTML element. Generally, all interesting operations to do with
