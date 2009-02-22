@@ -1,15 +1,12 @@
 import logging
-import re
-import sys
 import time
-
-from webelement import *
-from firefoxlauncher import FirefoxLauncher
-from firefox_profile import FirefoxProfile
+from webdriver_firefox.webelement import *
+from webdriver_firefox.firefoxlauncher import FirefoxLauncher
 from webdriver_common.exceptions import *
 
 class WebDriver(object):
-    """The main interface to use for testing, which represents an idealised web browser."""
+    """The main interface to use for testing,
+    which represents an idealised web browser."""
     def __init__(self, profile_name="WebDriver"):
         FirefoxLauncher().LaunchBrowser(profile_name)
         self._conn = ExtensionConnection()
@@ -22,7 +19,8 @@ class WebDriver(object):
                 converted_args.append({"type": "ELEMENT", "value": arg.id})
             else:
                 converted_args.append({"type": "STRING", "value": arg})
-        resp = self._conn.driver_command("executeScript", script, converted_args)
+        resp = self._conn.driver_command("executeScript", script,
+                                         converted_args)
 
         if "NULL" == resp["resultType"]:
             pass
@@ -97,7 +95,9 @@ class WebDriver(object):
         return self._command("getPageSource")
 
     def close(self):
-        """Closes the current window, quit the browser if it's the last window open."""
+        """Closes the current window.
+        Quit the browser if it's the last window open.
+        """
         if self._conn.is_connectable():
             self._conn.driver_command("close")
 
@@ -113,12 +113,13 @@ class WebDriver(object):
         """Switches focus to a window."""
         resp = self._command("switchToWindow", windowName)
         if not resp or "No window found" in resp:
-            raise InvalidSwitchToTargetException("Window %s not found" % windowName)
+            raise InvalidSwitchToTargetException(
+                "Window %s not found" % windowName)
         self._conn.context = resp
 
     def switch_to_frame(self, indexOrName):
         """Switches focus to a frame by index or name."""
-        resp = self._command("switchToFrame", str(indexOrName))
+        self._command("switchToFrame", str(indexOrName))
 
     def back(self):
         """Goes back in browser history."""

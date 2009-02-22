@@ -3,7 +3,7 @@ import socket
 import re
 import threading
 import simplejson
-from webdriver_common.exceptions import *
+from webdriver_common.exceptions import ErrorInResponseException
 
 _SOCKET_TIMEOUT = 20
 _DEFAULT_PORT = 7055

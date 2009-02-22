@@ -1,12 +1,14 @@
-from exceptions import *
-from extensionconnection import ExtensionConnection
-import webdriver
-from webdriver_common.exceptions import *
+from webdriver_firefox.extensionconnection import ExtensionConnection
+from webdriver_common.exceptions import ErrorInResponseException
+from webdriver_common.exceptions import NoSuchElementException
+
 
 class WebElement(object):
-    """Represents an HTML element. Generally, all interesting operations to do with
-    interacting with a page will be performed through this interface."""
+    """Represents an HTML element.
 
+    Generally, all interesting operations to do with
+    interacting with a page will be performed through this interface.
+    """
     def __init__(self, parent, id):
         self.parent = parent
         self._conn = ExtensionConnection()
@@ -61,21 +63,22 @@ class WebElement(object):
         try:
             return WebElement(self, self._command("findElementById", id))
         except ErrorInResponseException, e:
-            _handle_find_element_exception(e)
+            self._handle_find_element_exception(e)
 
     def find_element_by_name(self, name):
         """Find element by name."""
         try:
             return self.find_element_by_xpath(".//*[@name = '%s']" % name)
         except ErrorInResponseException, e:
-            _handle_find_element_exception(e)
+            self._handle_find_element_exception(e)
 
     def find_element_by_link_text(self, link_text):
         """Finds element by link text."""
         try:
-            return WebElement(self, self._command("findElementsByLinkText", link_text).split(",")[0])
+            return WebElement(self, self._command("findElementsByLinkText",
+                                                  link_text).split(",")[0])
         except ErrorInResponseException, e:
-            _handle_find_element_exception(e)
+            self._handle_find_element_exception(e)
 
     def find_element_by_xpath(self, xpath):
         """Finds element by xpath."""
@@ -86,7 +89,8 @@ class WebElement(object):
         try:
             resp = self._command("findElementsByXPath", xpath)
             if not resp:
-                raise NoSuchElementException("Unable to locate element for %s" % xpath)
+                raise NoSuchElementException(
+                    "Unable to locate element for %s" % xpath)
             elems = []
             for elemId in resp.split(","):
                 elem = WebElement(self.parent, elemId)

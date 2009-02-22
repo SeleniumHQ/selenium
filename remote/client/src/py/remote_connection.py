@@ -1,7 +1,7 @@
 import httplib
 import simplejson
 import logging
-import utils
+from webdriver_remote import utils
 from webdriver_common.exceptions import ErrorInResponseException
 
 class RemoteConnection(object):
@@ -13,14 +13,14 @@ class RemoteConnection(object):
             self._conn = httplib.HTTPConnection(remote_server_addr)
             self._context = "foo"
             self._session_id = ""
-            #TODO: parameterize the capabilities
-            resp = self.post("/hub/session",
-                             {"browserName": browser_name,
-                              "platform": platform,
-                              "class":"org.openqa.selenium.remote.DesiredCapabilities",
-                              "javascriptEnabled":False,
-                              "version":""},
-                             )
+            resp = self.post(
+                "/hub/session",
+                {"browserName": browser_name,
+                 "platform": platform,
+                 "class":"org.openqa.selenium.remote.DesiredCapabilities",
+                 "javascriptEnabled":False,
+                 "version":""},
+                )
             #TODO: handle the capabilities info sent back from server
             self._session_id = resp["sessionId"]
 
@@ -38,9 +38,11 @@ class RemoteConnection(object):
             payload = ""
 
         if not path.startswith("/hub") and not path.startswith("http://"):
-            path =  "/hub/session/%s/%s/" % (self._session_id, self._context) + path
+            path =  ("/hub/session/%s/%s/" %
+                     (self._session_id, self._context) + path)
         self._conn.request(method, path,
-                           body = payload, headers={"Accept":"application/json"})
+                           body = payload, 
+                           headers={"Accept":"application/json"})
         return self._process_response()
 
     def quit(self):
@@ -50,7 +52,8 @@ class RemoteConnection(object):
         resp = self._conn.getresponse()
         data = resp.read()
 
-        if resp.status in [301, 302, 303, 307] and resp.getheader("location") != None:
+        if (resp.status in [301, 302, 303, 307] and
+            resp.getheader("location") != None):
             redirected_url = resp.getheader("location")
             return self.get(redirected_url)
         if data:
@@ -59,6 +62,6 @@ class RemoteConnection(object):
             if decoded_data["error"]:
                 raise ErrorInResponseException(
                     decoded_data,
-                    "Error occurred when remote driver (server) is processing the request:" +
-                    utils.format_json(decoded_data))
+                    ("Error occurred when remote driver (server) is processing"
+                     "the request:") +  utils.format_json(decoded_data))
             return decoded_data

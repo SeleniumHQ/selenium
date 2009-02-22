@@ -1,9 +1,6 @@
-import logging
 import os
 import platform
 import re
-import tempfile
-import simplejson
 import shutil
 
 DEFAULT_PORT = 7055
@@ -21,11 +18,13 @@ class ProfileIni(object):
         if platform.system() == "Windows":
             app_data_dir = os.path.join(os.getenv("APPDATA"), "Mozilla/Firefox")
         elif platform.system() == "Darwin":
-            app_data_dir = os.path.join(os.getenv("HOME"), "Library/Application Support/Firefox")
+            app_data_dir = os.path.join(os.getenv("HOME"),
+                                        "Library/Application Support/Firefox")
         else:
             app_data_dir = os.path.join(os.getenv("HOME"), ".mozilla/firefox")
         profiles_ini = open(os.path.join(app_data_dir, "profiles.ini"))
-        profile_sections = re.findall(r"Name=(\S*)\s*IsRelative=(\d)\s*Path=(\S*)", profiles_ini.read())
+        profile_sections = re.findall(
+            r"Name=(\S*)\s*IsRelative=(\d)\s*Path=(\S*)", profiles_ini.read())
         return [FirefoxProfile(app_data_dir, *section)
                 for section in profile_sections]
 
@@ -34,7 +33,8 @@ class ProfileIni(object):
         
 
 class FirefoxProfile(object):
-    def __init__(self, app_data_dir, name, is_relative, path, port=DEFAULT_PORT):
+    def __init__(self, app_data_dir, name, is_relative, path,
+                 port=DEFAULT_PORT):
         self.app_data_dir = app_data_dir
         self.name = name
         self.is_relative = is_relative
@@ -43,21 +43,25 @@ class FirefoxProfile(object):
 
     def add_extension(self, force_create=False):
         webdriver_dir = os.getenv("WEBDRIVER")
-        extension_dir = os.path.join(self.app_data_dir, self.path, "extensions", "fxdriver@googlecode.com")
+        extension_dir = os.path.join(self.app_data_dir, self.path,
+                                     "extensions", "fxdriver@googlecode.com")
         if force_create or not os.path.exists(extension_dir):
             if not webdriver_dir:
-                raise Exception("Please set WEBDRIVER to your webdriver directory")
-            shutil.copytree(os.path.join(webdriver_dir, "firefox/src/extension"),
-                            extension_dir)
+                raise Exception(
+                    "Please set WEBDRIVER to your webdriver directory")
+            shutil.copytree(
+                os.path.join(webdriver_dir, "firefox/src/extension"),
+                extension_dir)
         self._update_user_preference()
 
     def _update_user_preference(self):
         preference = {}
-        user_pref_file_name = os.path.join(self.app_data_dir, self.path, "user.js")
+        user_pref_file_name = os.path.join(
+            self.app_data_dir, self.path, "user.js")
         try:
             user_pref_file = open(user_pref_file_name)
             for line in user_pref_file:
-                match = re.match(r'user_pref("(\.*?)","(\.*?)"')
+                match = re.match(r'user_pref("(\.*?)","(\.*?)"', line)
                 if match:
                     preference[match.group(1)] = match.group(2)
         except:

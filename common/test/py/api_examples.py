@@ -36,17 +36,17 @@ class ApiExampleTest (unittest.TestCase):
     def testFindElementByXpathThrowNoSuchElementException(self):
         self._loadSimplePage()
         try:
-            elem = self.driver.find_element_by_xpath("//h4")
-        except NoSuchElementException, e:
+            self.driver.find_element_by_xpath("//h4")
+        except NoSuchElementException:
             pass
 
     def testFindElementByXpathThrowErrorInResponseExceptionForInvalidXPath(self):
         self._loadSimplePage()
         try:
-            elem = self.driver.find_element_by_xpath("//")
-        except NoSuchElementException, e:
+            self.driver.find_element_by_xpath("//")
+        except NoSuchElementException:
             self.fail()
-        except ErrorInResponseException, e1:
+        except ErrorInResponseException:
             pass
 
     def testFindElementsByXpath(self):
@@ -84,11 +84,11 @@ class ApiExampleTest (unittest.TestCase):
         sub_elem = elem.find_element_by_xpath("select")
         self.assertEquals("2", sub_elem.get_attribute("id"))
 
-    def testFindElementByXpathInElementContext(self):
+    def testFindElementByXpathInElementContextNotFound(self):
         self._loadPage("nestedElements")
         elem = self.driver.find_element_by_name("form2")
         try:
-            sub_elem = elem.find_element_by_xpath("div")
+            elem.find_element_by_xpath("div")
             self.fail()
         except NoSuchElementException:
             pass

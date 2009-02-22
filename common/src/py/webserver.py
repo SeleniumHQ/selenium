@@ -46,8 +46,3 @@ class SimpleWebServer(object):
         except:
             pass  #the server has shutdown
         self.thread.join()
-
-if __name__ == "__main__":
-    server = SimpleWebServer()
-    t = server.runWebServerInThread()
-    t.join()

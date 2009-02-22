@@ -1,5 +1,5 @@
 import simplejson
-from webdriver_common.exceptions import *
+from webdriver_common.exceptions import NoSuchElementException
 
 
 def format_json(json_struct):

@@ -1,14 +1,13 @@
-import logging
-import simplejson
-import utils
-from remote_connection import RemoteConnection
-from webelement import WebElement
 from webdriver_common.exceptions import *
+from webdriver_remote import utils
+from webdriver_remote.webelement import WebElement
+from webdriver_remote.remote_connection import RemoteConnection
 
 
 class WebDriver(object):
     def __init__(self, remote_server_addr, browser_name, platform):
-        self._conn = RemoteConnection(remote_server_addr, browser_name, platform)
+        self._conn = RemoteConnection(
+            remote_server_addr, browser_name, platform)
 
     def get(self, url):
         """Loads a web page in the current browser."""
@@ -82,7 +81,10 @@ class WebDriver(object):
         return self._get("source")
 
     def close(self):
-        """Closes the current window, quit the browser if it's the last window open."""
+        """Closes the current window.
+
+        Quit the browser if it's the last window open.
+        """
         self._delete("window")
 
     def quit(self):
@@ -93,11 +95,12 @@ class WebDriver(object):
         """Switches focus to a window."""
         resp = self._post("window/%s" % windowName)
         if resp and "No window found" in resp:
-            raise InvalidSwitchToTargetException("Window %s not found" % windowName)
+            raise InvalidSwitchToTargetException(
+                "Window %s not found" % windowName)
 
     def switch_to_frame(self, indexOrName):
         """Switches focus to a frame by index or name."""
-        resp = self._post("frame/%s" % str(indexOrName))
+        self._post("frame/%s" % str(indexOrName))
 
     def back(self):
         """Goes back in browser history."""

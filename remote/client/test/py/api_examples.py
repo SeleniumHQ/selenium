@@ -1,6 +1,5 @@
 #!/usr/bin/python
 import logging
-import os
 import socket
 import subprocess
 import time
@@ -11,9 +10,9 @@ DEFAULT_PORT = 6001
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
-    socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    _socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
-        socket.connect(("localhost", DEFAULT_PORT))
+        _socket.connect(("localhost", DEFAULT_PORT))
         logging.info("The remote driver server is already running or something else"
                      "is using port %d, continuing..." % DEFAULT_PORT)
     except:
