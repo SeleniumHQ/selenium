@@ -47,8 +47,12 @@ end
 
 def iPhoneSDKPresent?
   return false unless mac? && present?('xcodebuild')
-  sdks = `xcodebuild -showsdks`
-  !!(sdks =~ /simulator2.2/)
+  begin
+    sdks = sh "xcodebuild -showsdks 2>/dev/null", :verbose => false
+    !!(sdks =~ /simulator2.2/)
+  rescue
+    false
+  end
 end
 
 task :build => [:prebuild, :common, :htmlunit, :firefox, :jobbie, :safari, :iphone, :support, :remote, :selenium]
@@ -246,6 +250,20 @@ simple_jars = {
     'classpath' => ["selenium/lib/runtime/**/*.jar"] + common_libs,
     'test_on'   => false,
   },
+  "test_selenium" => {
+    'src'       => "selenium/test/java/**/*.java",
+    'deps'      => [:test_common, :firefox, :jobbie, :htmlunit, :selenium],
+    'jar'       => "selenium/build/webdriver-selenium-test.jar",
+    'resources' => nil,
+    'classpath' => [
+                    "selenium/lib/**/*.jar", "selenium/build/webdriver-selenium.jar",
+                    "firefox/build/webdriver-firefox.jar", "firefox/lib/**/*.jar",
+                    "jobbie/build/webdriver-jobbie.jar", "jobbie/lib/**/*.jar",
+                    "htmlunit/build/webdriver-htmlunit.jar", "htmlunit/lib/**/*.jar",
+                    "selenium/build/*.jar"
+                   ] + common_test_libs,
+    'test_on'   => false,
+  }
 }
 
 simple_jars.each do |name, details|
@@ -272,6 +290,24 @@ end
 task :remote => [:remote_client, :remote_server]
 task :test_remote => [:test_remote_client]
 
+file "selenium/build/webdriver-selenium.jar" => "selenium/src/java/org/openqa/selenium/internal/injectableSelenium.js" do
+  sh "jar uf selenium/build/webdriver-selenium.jar -C selenium/src/java org/openqa/selenium/internal/injectableSelenium.js", :verbose => false
+end
+
+task :test_selenium do
+  temp_classpath = simple_jars['test_selenium']['classpath']
+  classpath = FileList.new
+  temp_classpath.each do |item|
+      classpath.add item
+  end
+
+  test_string = 'java '
+  test_string += '-cp ' + classpath.join(File::PATH_SEPARATOR) + ' '
+  test_string += "-Dwebdriver.firefox.bin=\"#{ENV['firefox']}\" " unless ENV['firefox'].nil?
+  test_string += 'org.testng.TestNG selenium/test/java/webdriver-selenium-suite.xml'
+
+  result = sh test_string, :verbose => false
+end
 
 task :javadocs => [:common, :firefox, :htmlunit, :jobbie, :remote, :safari, :support] do
   mkdir_p "build/javadoc"
