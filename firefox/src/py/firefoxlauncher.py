@@ -1,3 +1,21 @@
+# Copyright 2008-2009 WebDriver committers
+# Copyright 2008-2009 Google Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+"""Launches the firefox and does necessary preparation like
+installing the extension"""
+
 from subprocess import Popen
 from subprocess import PIPE
 import logging
@@ -8,6 +26,7 @@ from webdriver_firefox.extensionconnection import ExtensionConnection
 from webdriver_firefox.firefox_profile import ProfileIni
 
 class FirefoxLauncher(object):
+    """Launches the firefox browser."""
     __shared_state = {}
 
     def __init__(self):
@@ -27,15 +46,16 @@ class FirefoxLauncher(object):
                 # Maybe iceweasel (Debian) is another candidate...
                 for ffname in ["firefox2", "firefox", "firefox-3.0"]:
                     logging.debug("Searching for '%s'...", ffname)
-                    p = Popen(["which", ffname], stdout=PIPE)
-                    cmd = p.communicate()[0].strip()
+                    process = Popen(["which", ffname], stdout=PIPE)
+                    cmd = process.communicate()[0].strip()
                     if cmd != "":
                         logging.debug("Using %s", cmd)
                         self._start_cmd = cmd
                         break
             self.profile_ini = ProfileIni()
 
-    def LaunchBrowser(self, profile_name):
+    def launch_browser(self, profile_name):
+        """Launches the browser."""
         if self.extension_connection.is_connectable():
             logging.debug("Browser already running, ignore")
         else:
@@ -45,9 +65,10 @@ class FirefoxLauncher(object):
             self.profile_ini.profiles[profile_name].add_extension()
             Popen([self._start_cmd, "-no-remote", "--verbose", "-P",
                    profile_name])
-            self._WaitUntilConnectable()
+            self._wait_until_connectable()
 
-    def _WaitUntilConnectable(self):
+    def _wait_until_connectable(self):
+        """Blocks until the extension is connectable in the firefox."""
         while not self.extension_connection.is_connectable():
             time.sleep(1)
             logging.debug("Waiting for browser to launch...")
@@ -55,4 +76,4 @@ class FirefoxLauncher(object):
         
 
 if __name__ == "__main__":
-    FirefoxLauncher().LaunchBrowser()
+    FirefoxLauncher().launch_browser()

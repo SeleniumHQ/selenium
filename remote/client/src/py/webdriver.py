@@ -1,4 +1,22 @@
-from webdriver_common.exceptions import *
+# Copyright 2008-2009 WebDriver committers
+# Copyright 2008-2009 Google Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+"""The WebDriver implementation."""
+
+from webdriver_common.exceptions import ErrorInResponseException
+from webdriver_common.exceptions import InvalidSwitchToTargetException
 from webdriver_remote import utils
 from webdriver_remote.webelement import WebElement
 from webdriver_remote.remote_connection import RemoteConnection
@@ -18,18 +36,20 @@ class WebDriver(object):
         resp = self._get("title")
         return resp
 
-    def find_element_by_id(self, id):
+    def find_element_by_id(self, id_):
+        """Finds element by id."""
         try:
-            resp = self._post("element", "id", id)
+            resp = self._post("element", "id", id_)
             return self._get_elem(resp[0])
-        except ErrorInResponseException, e:
-            utils.handle_find_element_exception(e)
+        except ErrorInResponseException, ex:
+            utils.handle_find_element_exception(ex)
 
     def find_elements_by_xpath(self, xpath):
+        """Finds multiple elements by xpath."""
         resp = self._post("elements", "xpath", xpath)
         elems = []
-        for v in resp:
-            elems.append(self._get_elem(v))
+        for token in resp:
+            elems.append(self._get_elem(token))
         return elems
 
     def execute_script(self, script, *args):
@@ -56,8 +76,8 @@ class WebDriver(object):
         """Finds an element by xpath."""
         try:
             return self._get_elem(self._post("element", "xpath", xpath)[0])
-        except ErrorInResponseException, e:
-            utils.handle_find_element_exception(e)
+        except ErrorInResponseException, ex:
+            utils.handle_find_element_exception(ex)
 
     def find_element_by_link_text(self, link):
         """Finds an element by its link text.
@@ -66,15 +86,15 @@ class WebDriver(object):
         """
         try:
             return self._get_elem(self._post("element", "link text", link)[0])
-        except ErrorInResponseException, e:
-            utils.handle_find_element_exception(e)
+        except ErrorInResponseException, ex:
+            utils.handle_find_element_exception(ex)
 
     def find_element_by_name(self, name):
         """Finds and element by its name."""
         try:
             return self._get_elem(self._post("element", "name", name)[0])
-        except:
-            raise NoSuchElementException("Unable to locate element")
+        except ErrorInResponseException, ex:
+            utils.handle_find_element_exception(ex)
 
     def get_page_source(self):
         """Gets the page source."""
@@ -91,16 +111,16 @@ class WebDriver(object):
         """Quits the driver and close every associated window."""
         self._conn.quit()
 
-    def switch_to_window(self, windowName):
+    def switch_to_window(self, window_name):
         """Switches focus to a window."""
-        resp = self._post("window/%s" % windowName)
+        resp = self._post("window/%s" % window_name)
         if resp and "No window found" in resp:
             raise InvalidSwitchToTargetException(
-                "Window %s not found" % windowName)
+                "Window %s not found" % window_name)
 
-    def switch_to_frame(self, indexOrName):
+    def switch_to_frame(self, index_or_name):
         """Switches focus to a frame by index or name."""
-        self._post("frame/%s" % str(indexOrName))
+        self._post("frame/%s" % str(index_or_name))
 
     def back(self):
         """Goes back in browser history."""
@@ -109,17 +129,25 @@ class WebDriver(object):
     def forward(self):
         """Goes forward in browser history."""
         self._post("forward")
+    
+    @property
+    def conn(self):
+        return self._conn
 
     def _get_elem(self, resp_value):
+        """Creates a WebElement from a response token."""
         return WebElement(self, resp_value.split("/")[1])
 
     def _get(self, path, *params):
+        """Sends a command to the server using http GET method."""
         return utils.return_value_if_exists(
             self._conn.get(path, *params))
 
     def _post(self, path, *params):
+        """Sends a command to the server using http POST method."""
         return utils.return_value_if_exists(
             self._conn.post(path, *params))
 
     def _delete(self, path):
+        """Sends a command to the server using http DELETE method."""
         self._conn.request("DELETE", path)
