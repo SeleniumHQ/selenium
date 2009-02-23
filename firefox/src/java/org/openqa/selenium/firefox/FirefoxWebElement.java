@@ -50,7 +50,15 @@ public class FirefoxWebElement implements RenderedWebElement, Locatable,
     }
 
     public void click() {
+      try {
         sendMessage(UnsupportedOperationException.class, "click");
+      } catch (UnsupportedOperationException e) {
+        // Looks like we need to do the decent thing and rethink error messages in the firefox driver
+        if ("Unable to click on an obsolete element".equals(e.getMessage())) {
+          throw new WebDriverException(e.getMessage());
+        }
+        throw e;
+      }
     }
 
     public void submit() {

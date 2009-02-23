@@ -28,7 +28,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Response {
-	private final JSONObject result;
+    private final JSONObject result;
     private final String methodName;
     private final Context context;
     private final String responseText;

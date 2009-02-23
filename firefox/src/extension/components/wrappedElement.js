@@ -22,8 +22,10 @@ FirefoxDriver.prototype.click = function(respond) {
     var element = Utils.getElementAt(respond.elementId, this.context);
 
     if (!element) {
-        respond.send();
-        return;
+      respond.isError = true;
+      respond.response = "Unable to click on an obsolete element";
+      respond.send();
+      return;
     }
 
     if (!Utils.isDisplayed(element)) {

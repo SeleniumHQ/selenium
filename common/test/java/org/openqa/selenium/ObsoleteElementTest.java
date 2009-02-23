@@ -17,19 +17,35 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import static org.openqa.selenium.Ignore.Driver.*;
+import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
+import static org.openqa.selenium.Ignore.Driver.SAFARI;
 
 public class ObsoleteElementTest extends AbstractDriverTestCase {
-	@Ignore({HTMLUNIT, FIREFOX, SAFARI})
-    public void testOldPage() {
-		driver.get(simpleTestPage);
-		WebElement elem = driver.findElement(By.id("links"));
-		driver.get(xhtmlTestPage);
-		try {
-		  elem.click();
-		  fail();
-		} catch (WebDriverException e) {
-			// do nothing. this is what we expected.
-		}
-	}    
+
+  @Ignore({HTMLUNIT, SAFARI})
+  public void testOldPage() {
+    driver.get(simpleTestPage);
+    WebElement elem = driver.findElement(By.id("links"));
+    driver.get(xhtmlTestPage);
+    try {
+      elem.click();
+      fail();
+    } catch (WebDriverException e) {
+      // do nothing. this is what we expected.
+    }
+  }
+
+  @JavascriptEnabled
+  @Ignore({HTMLUNIT, SAFARI})
+  public void testShouldNotCrashWhenCallingGetSizeOnAnObsoleteElement() {
+    driver.get(simpleTestPage);
+    RenderedWebElement elem = (RenderedWebElement) driver.findElement(By.id("links"));
+    driver.get(xhtmlTestPage);
+    try {
+      elem.getSize();
+      fail();
+    } catch (WebDriverException e) {
+      // do nothing. this is what we expected.
+    }
+  }
 }
