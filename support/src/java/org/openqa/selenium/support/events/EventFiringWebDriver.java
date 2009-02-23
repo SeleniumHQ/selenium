@@ -28,6 +28,7 @@ import org.openqa.selenium.RenderedWebElement;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,8 +59,21 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor {
         }
     );
 
-    public EventFiringWebDriver(WebDriver driver) {
-        this.driver = driver;
+    public EventFiringWebDriver(final WebDriver driver) {
+      this.driver = (WebDriver) Proxy.newProxyInstance(
+          WebDriverEventListener.class.getClassLoader(),
+          new Class[]{WebDriver.class},
+          new InvocationHandler() {
+            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+              try {
+                return method.invoke(driver, args);
+              } catch (InvocationTargetException e) {
+                dispatcher.onException(e.getTargetException(), driver);
+                throw e.getTargetException();
+              }
+            }
+          }
+      );
     }
 
     /**
@@ -160,8 +174,21 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor {
     private class EventFiringWebElement implements WebElement {
         private final WebElement element;
 
-        private EventFiringWebElement(WebElement element) {
-            this.element = element;
+        private EventFiringWebElement(final WebElement element) {
+          this.element = (WebElement) Proxy.newProxyInstance(
+              WebDriverEventListener.class.getClassLoader(),
+              element instanceof RenderedWebElement ? new Class[]{RenderedWebElement.class} : new Class[] {WebElement.class},
+              new InvocationHandler() {
+                public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                  try {
+                    return method.invoke(element, args);
+                  } catch (Exception e) {
+                    dispatcher.onException(e, driver);
+                    throw e;
+                  }
+                }
+              }
+          );
         }
 
         public void click() {

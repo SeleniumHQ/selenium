@@ -118,4 +118,8 @@ public interface WebDriverEventListener {
    */
     void afterScript(String script, WebDriver driver);
 
+  /**
+   * Called whenever an exception would be thrown.
+   */
+    void onException(Throwable throwable, WebDriver driver);
 }

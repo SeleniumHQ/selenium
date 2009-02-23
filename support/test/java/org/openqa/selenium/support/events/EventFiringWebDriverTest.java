@@ -23,6 +23,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriver.Navigation;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.NoSuchElementException;
 
 /**
  * @author Michael Tamm
@@ -159,4 +160,29 @@ public class EventFiringWebDriverTest extends MockObjectTestCase {
             log.toString()
         );
     }
+
+  public void testShouldCallListenersWhenAnExceptionIsThrown() {
+    final WebDriver mockedDriver = mock(WebDriver.class);
+        final StringBuilder log = new StringBuilder();
+
+        final NoSuchElementException exception = new NoSuchElementException("argh");
+
+        checking(new Expectations() {{
+            one(mockedDriver).findElement(By.id("foo"));
+            will(throwException(exception));
+        }});
+
+        EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver).register(new AbstractWebDriverEventListener() {
+          public void onException(Throwable throwable, WebDriver driver) { log.append(throwable.getMessage()); }
+        });
+
+        try {
+          testedDriver.findElement(By.id("foo"));
+          fail("Expected exception to be propogated");
+        } catch (NoSuchElementException e) {
+          // Fine
+        }
+
+        assertEquals(exception.getMessage(), log.toString());
+  }
 }

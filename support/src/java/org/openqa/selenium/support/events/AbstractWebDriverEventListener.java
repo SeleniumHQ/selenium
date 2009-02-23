@@ -86,4 +86,8 @@ public abstract class AbstractWebDriverEventListener implements WebDriverEventLi
     public void afterScript(String script, WebDriver driver) {
         // Do nothing
     }
+
+    public void onException(Throwable throwable, WebDriver driver) {
+        // Do nothing
+    }
 }
