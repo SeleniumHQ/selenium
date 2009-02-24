@@ -44,8 +44,7 @@ class ExtensionConnection(object):
                                       "context": self.context,
                                       "elementId": element_id,
                                       "commandName":cmd})
-        length = len(json_dump.split("\n"))
-        packet = 'Length: %d\n\n' % length
+        packet = 'Length: %d\n\n' % len(json_dump)
         packet += json_dump
         packet += "\n"
         LOGGER.debug(packet)
@@ -58,7 +57,12 @@ class ExtensionConnection(object):
 
         resp = ""
         while not resp.endswith("\n\n"):
-            resp += self.socket.recv(1)
+            received = self.socket.recv(1)
+            if received:
+                resp += received
+            else:
+                raise ExtensionConnectionError(
+                    "Error occurred when processing %s in the extension" % cmd)
         resp_length = int(re.match("Length: (\d+)", resp).group(1))
         for i in range(resp_length):
             resp += self.socket.recv(1)
@@ -99,4 +103,9 @@ class ExtensionConnection(object):
         except socket.error:
             return False
 
+class ExtensionConnectionError(Exception):
+    """An internal error occurred int the extension.
 
+    Might be caused by bad input or bugs in webdriver
+    """
+    pass
