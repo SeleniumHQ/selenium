@@ -101,9 +101,9 @@ class WebElement(object):
             elems.append(self._get_elem(token))
         return elems
 
-    def send_keys(self, value):
+    def send_keys(self, *value):
         """Simulates typing into the element."""
-        self._post("value", {"id": self.id, "value":[value]})
+        self._post("value", {"id": self.id, "value":value})
 
     @property
     def parent(self):
