@@ -24,6 +24,11 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriver.Navigation;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.JavascriptExecutor;
+
+import java.lang.reflect.Proxy;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 
 /**
  * @author Michael Tamm
@@ -163,26 +168,52 @@ public class EventFiringWebDriverTest extends MockObjectTestCase {
 
   public void testShouldCallListenersWhenAnExceptionIsThrown() {
     final WebDriver mockedDriver = mock(WebDriver.class);
-        final StringBuilder log = new StringBuilder();
+    final StringBuilder log = new StringBuilder();
 
-        final NoSuchElementException exception = new NoSuchElementException("argh");
+    final NoSuchElementException exception = new NoSuchElementException("argh");
 
-        checking(new Expectations() {{
-            one(mockedDriver).findElement(By.id("foo"));
-            will(throwException(exception));
-        }});
+    checking(new Expectations() {{
+        one(mockedDriver).findElement(By.id("foo")); will(throwException(exception));
+      }});
 
-        EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver).register(new AbstractWebDriverEventListener() {
-          public void onException(Throwable throwable, WebDriver driver) { log.append(throwable.getMessage()); }
+    EventFiringWebDriver testedDriver =
+        new EventFiringWebDriver(mockedDriver).register(new AbstractWebDriverEventListener() {
+          public void onException(Throwable throwable, WebDriver driver) {
+            log.append(throwable.getMessage());
+          }
         });
 
-        try {
-          testedDriver.findElement(By.id("foo"));
-          fail("Expected exception to be propogated");
-        } catch (NoSuchElementException e) {
-          // Fine
-        }
+    try {
+      testedDriver.findElement(By.id("foo"));
+      fail("Expected exception to be propogated");
+    } catch (NoSuchElementException e) {
+      // Fine
+    }
 
-        assertEquals(exception.getMessage(), log.toString());
+    assertEquals(exception.getMessage(), log.toString());
   }
+
+  public void testShouldUnpackElementArgsWhenCallingScripts() {
+    final ExececutingDriver mockedDriver = mock(ExececutingDriver.class);
+    final WebElement stubbedElement = mock(WebElement.class);
+
+    checking(new Expectations() {{
+        one(mockedDriver).findElement(By.id("foo")); will(returnValue(stubbedElement));
+        allowing(stubbedElement);
+        one(mockedDriver).executeScript("foo", stubbedElement); will(returnValue("foo"));
+      }});
+
+    EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver);
+    testedDriver.register(new AbstractWebDriverEventListener() {} );
+
+    WebElement element = testedDriver.findElement(By.id("foo"));
+    try {
+      testedDriver.executeScript("foo", element);
+    } catch (RuntimeException e) {
+      // This is the error we're trying to fix
+      throw e;
+    }
+  }
+
+  private static interface ExececutingDriver extends WebDriver, JavascriptExecutor {}
 }

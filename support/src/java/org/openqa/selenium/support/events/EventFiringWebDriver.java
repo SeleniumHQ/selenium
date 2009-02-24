@@ -60,9 +60,11 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor {
     );
 
     public EventFiringWebDriver(final WebDriver driver) {
+
+
       this.driver = (WebDriver) Proxy.newProxyInstance(
           WebDriverEventListener.class.getClassLoader(),
-          new Class[]{WebDriver.class},
+          driver.getClass().getInterfaces(),
           new InvocationHandler() {
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
               try {
@@ -76,7 +78,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor {
       );
     }
 
-    /**
+  /**
      * @return this for method chaining.
      */
     public EventFiringWebDriver register(WebDriverEventListener eventListener) {
@@ -147,14 +149,28 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor {
   public Object executeScript(String script, Object... args) {
         if (driver instanceof JavascriptExecutor) {
             dispatcher.beforeScript(script, driver);
-            Object result = ((JavascriptExecutor) driver).executeScript(script);
+            Object[] usedArgs = unpackWrappedArgs(args);
+            Object result = ((JavascriptExecutor) driver).executeScript(script, usedArgs);
             dispatcher.afterScript(script, driver);
             return result;
         }
         throw new UnsupportedOperationException("Underlying driver instance does not support executing javascript");
     }
 
-    public TargetLocator switchTo() {
+  private Object[] unpackWrappedArgs(Object... args) {
+    // Walk the args: the various drivers expect unpacked versions of the elements
+    Object[] usedArgs = new Object[args.length];
+    for (int i = 0; i < args.length; i++) {
+      if (args[i] instanceof EventFiringWebElement) {
+        usedArgs[i] = ((EventFiringWebElement) args[i]).getUnderlyingElement();
+      } else {
+        usedArgs[i] = args[i];
+      }
+    }
+    return usedArgs;
+  }
+
+  public TargetLocator switchTo() {
         return new EventFiringTargetLocator(driver.switchTo());
     }
 
@@ -173,23 +189,25 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor {
 
     private class EventFiringWebElement implements WebElement {
         private final WebElement element;
+        private final WebElement underlyingElement;
 
-        private EventFiringWebElement(final WebElement element) {
-          this.element = (WebElement) Proxy.newProxyInstance(
-              WebDriverEventListener.class.getClassLoader(),
-              element instanceof RenderedWebElement ? new Class[]{RenderedWebElement.class} : new Class[] {WebElement.class},
-              new InvocationHandler() {
-                public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                  try {
-                    return method.invoke(element, args);
-                  } catch (Exception e) {
-                    dispatcher.onException(e, driver);
-                    throw e;
-                  }
+      private EventFiringWebElement(final WebElement element) {
+        this.element = (WebElement) Proxy.newProxyInstance(
+            WebDriverEventListener.class.getClassLoader(),
+            element.getClass().getInterfaces(),
+            new InvocationHandler() {
+              public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                try {
+                  return method.invoke(element, args);
+                } catch (InvocationTargetException e) {
+                  dispatcher.onException(e.getTargetException(), driver);
+                  throw e.getTargetException();
                 }
               }
-          );
-        }
+            }
+        );
+        this.underlyingElement = element;
+      }
 
         public void click() {
             dispatcher.beforeClickOn(element, driver);
@@ -265,6 +283,10 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor {
             }
             return result;
         }
+
+      public WebElement getUnderlyingElement() {
+        return underlyingElement;
+      }
     }
 
     private class EventFiringRenderedWebElement extends EventFiringWebElement implements RenderedWebElement {
