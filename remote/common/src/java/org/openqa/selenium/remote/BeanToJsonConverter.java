@@ -138,6 +138,10 @@ public class BeanToJsonConverter {
       return converted;
     }
 
+    if (toConvert instanceof JSONObject) {
+      return toConvert;
+    }
+
     if (toConvert instanceof Collection) {
       JSONArray array = new JSONArray();
       for (Object o : (Collection) toConvert) {

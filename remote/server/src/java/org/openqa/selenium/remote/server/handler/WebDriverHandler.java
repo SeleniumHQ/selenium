@@ -69,6 +69,11 @@ public abstract class WebDriverHandler implements Handler, Callable<ResultType> 
     return context == null ? null : context.toString();
   }
 
+  public String getScreenshot() {
+    Session session = sessions.get(sessionId);
+    return session != null ? session.getAndClearScreenshot() : null;
+  }
+
   protected WebDriver getDriver() {
     Session session = sessions.get(sessionId);
     return session.getDriver(context);

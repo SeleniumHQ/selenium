@@ -17,9 +17,12 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server;
 
+import junit.framework.TestCase;
+
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.openqa.selenium.remote.Capabilities;
 import org.openqa.selenium.remote.Context;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -34,6 +37,7 @@ public class Session {
   private KnownElements knownElements = new KnownElements();
   private Capabilities capabilities;
   private Executor executor;
+  private volatile String base64EncodedImage;
 
   public Session(final Capabilities capabilities) throws Exception {
     executor = Executors.newSingleThreadExecutor();
@@ -41,7 +45,10 @@ public class Session {
     // Ensure that the browser is created on the single thread.
     FutureTask<WebDriver> createBrowser = new FutureTask<WebDriver>(new Callable<WebDriver>() {
       public WebDriver call() throws Exception {
-        return createNewDriverMatching(capabilities);
+        EventFiringWebDriver driver =
+            new EventFiringWebDriver(createNewDriverMatching(capabilities));
+        driver.register(new SnapshotScreenListener(Session.this));
+        return driver;
       }
     });
     execute(createBrowser);
@@ -115,5 +122,15 @@ public class Session {
     }
 
     throw new WebDriverException("Unable to match browser: " + browser);
+  }
+
+  public void attachScreenshot(String base64EncodedImage) {
+    this.base64EncodedImage = base64EncodedImage;
+  }
+
+  public String getAndClearScreenshot() {
+    String temp = this.base64EncodedImage;
+    base64EncodedImage = null;
+    return temp;
   }
 }

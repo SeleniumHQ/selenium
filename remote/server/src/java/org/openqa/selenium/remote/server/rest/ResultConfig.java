@@ -155,6 +155,9 @@ public class ResultConfig {
 
       logger.log("Exception: " + toUse.getMessage());
       request.setAttribute("exception", toUse);
+      if (handler instanceof WebDriverHandler) {
+        request.setAttribute("screen", ((WebDriverHandler) handler).getScreenshot());
+      }
     }
 
     Set<Result> results = resultToRender.get(result);
@@ -167,18 +170,18 @@ public class ResultConfig {
     final Result toUse = tempToUse;
 
     if (handler instanceof WebDriverHandler) {
-    	FutureTask<ResultType> task = new FutureTask<ResultType>(new Callable<ResultType>() {
-			public ResultType call() throws Exception {
-				toUse.getRenderer().render(request, response, handler);
-				return null;
-			}
-    	});
-    	
-    	((WebDriverHandler) handler).execute(task);
-    	task.get();
+      FutureTask<ResultType> task = new FutureTask<ResultType>(new Callable<ResultType>() {
+        public ResultType call() throws Exception {
+          toUse.getRenderer().render(request, response, handler);
+          return null;
+        }
+      });
+
+      ((WebDriverHandler) handler).execute(task);
+      task.get();
     } else {
-    	toUse.getRenderer().render(request, response, handler);
-    }    
+      toUse.getRenderer().render(request, response, handler);
+    }
   }
 
   @SuppressWarnings("unchecked")

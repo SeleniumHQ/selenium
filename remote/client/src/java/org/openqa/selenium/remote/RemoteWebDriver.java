@@ -357,10 +357,11 @@ public class RemoteWebDriver implements WebDriver, SearchContext, JavascriptExec
 
     Map rawException = (Map) response.getValue();
 
+    String screenGrab = (String) rawException.get("screen");
     String message = (String) rawException.get("message");
     String className = (String) rawException.get("class");
 
-    RuntimeException toThrow;
+    RuntimeException toThrow = null;
     try {
       Class<?> aClass;
       try {
@@ -372,12 +373,25 @@ public class RemoteWebDriver implements WebDriver, SearchContext, JavascriptExec
         aClass = WebDriverException.class;
       }
 
+      if (screenGrab != null) {
+        try {
+          Constructor<? extends RuntimeException> constructor =
+              (Constructor<? extends RuntimeException>) aClass
+                  .getConstructor(String.class, Throwable.class);
+          toThrow = constructor.newInstance(message, new ScreenshotException(screenGrab));
+        } catch (NoSuchMethodException e) {
+          // Fine. Fall through
+        }
+      }
+
+      if (toThrow == null) {
       try {
         Constructor<? extends RuntimeException> constructor =
             (Constructor<? extends RuntimeException>) aClass.getConstructor(String.class);
         toThrow = constructor.newInstance(message);
       } catch (NoSuchMethodException e) {
         toThrow = (WebDriverException) aClass.newInstance();
+      }
       }
 
       List<Map> elements = (List<Map>) rawException.get("stackTrace");
@@ -403,6 +417,7 @@ public class RemoteWebDriver implements WebDriver, SearchContext, JavascriptExec
     } catch (Exception e) {
       toThrow = new WebDriverException(e);
     }
+
     throw toThrow;
   }
 
