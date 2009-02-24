@@ -822,7 +822,6 @@ public class FrameGroupCommandQueueSet {
         openUrl.append("/selenium-server/core/InjectedRemoteRunner.html");
       } else {
         openUrl.append(LauncherUtils.stripStartURL(baseUrl));
-        openUrl.append("/selenium-server/core/Blank.html");
       }
       try {
         doCommand("open", openUrl.toString(), ""); // will close out subframes
