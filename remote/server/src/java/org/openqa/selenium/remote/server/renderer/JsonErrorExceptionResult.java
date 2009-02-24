@@ -17,16 +17,14 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.renderer;
 
-import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.BeanToJsonConverter;
+import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.server.rest.Handler;
-import org.json.JSONObject;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class JsonErrorExceptionResult extends ErrorJsonResult {
-
   private final String exceptionName;
 
   public JsonErrorExceptionResult(String exceptionName, String responseOn) {
@@ -36,15 +34,18 @@ public class JsonErrorExceptionResult extends ErrorJsonResult {
 
   public void render(HttpServletRequest request, HttpServletResponse response, Handler handler)
       throws Exception {
-    Exception e = (Exception) request.getAttribute("exception");
+    Exception e = (Exception) request.getAttribute(exceptionName);
 
     Response res = new Response();
     res.setError(true);
 
-    JSONObject obj = new JSONObject(new BeanToJsonConverter().convert(e));
-    String session = (String) request.getAttribute("screen");
-    obj.put("screen", session);
-    res.setValue(obj);
+    String raw = new BeanToJsonConverter().convert(e);
+    if (raw.startsWith("{")) {
+      res.setValue(String.format("{ screen: \"%s\", %s",
+                   request.getAttribute("screen"), raw.substring(1))); 
+    } else {
+      res.setValue(raw);
+    }
 
     request.setAttribute(propertyName, res);
 
