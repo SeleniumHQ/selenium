@@ -233,7 +233,7 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
     case -10:
       throw new WebDriverException(
           String.format("You may not %s this element. It looks as if the reference is stale. " +
-          		"Did you navigate away from the page with this element on?", message));
+                        "Did you navigate away from the page with this element on?", message));
 
     case -11:
       throw new UnsupportedOperationException(
