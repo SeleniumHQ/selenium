@@ -174,7 +174,7 @@ simple_jars = {
     'deps'      => [:remote_common],
     'jar'       => "remote/build/webdriver-remote-client.jar",
     'resources' => nil,
-    'classpath' => ["remote/common/lib/runtime/**/*.jar", "remote/client/lib/runtime/**/*.jar", "remote/build/webdriver-remote-common.jar"] + common_libs,
+    'classpath' => ["remote/common/lib/runtime/**/*.jar", "remote/client/lib/runtime/**/*.jar", "remote/server/lib/runtime/*.jar", "remote/build/webdriver-remote-common.jar"] + common_libs,
     'test_on'   => false,
   },
   "test_remote_client" => {
@@ -182,16 +182,16 @@ simple_jars = {
     'deps'      => [:test_common, :firefox, :remote_client, :remote_server],
     'jar'       => "remote/build/webdriver-remote-common-test.jar",
     'resources' => nil,
-    'classpath' => ["remote/build/*.jar", "remote/client/lib/**/*.jar", "remote/common/lib/**/*.jar", "firefox/lib/**/*.jar", "firefox/build/webdriver-firefox.jar"] + common_test_libs,
+    'classpath' => ["remote/build/*.jar", "remote/client/lib/**/*.jar", "remote/common/lib/**/*.jar", "firefox/lib/**/*.jar", "firefox/build/webdriver-firefox.jar", "support/build/webdriver-support.jar", "support/lib/runtime/*.jar"] + common_test_libs,
     'test_on'   => all?,
     'test_in'   => 'remote/client',
   },
   "remote_server" => {
     'src'       => "remote/server/src/java/**/*.java",
-    'deps'      => [:remote_common],
+    'deps'      => [:remote_common, :support],
     'jar'       => "remote/build/webdriver-remote-server.jar",
     'resources' => nil,
-    'classpath' => ["remote/common/lib/runtime/**/*.jar", "remote/server/lib/runtime/**/*.jar", "remote/build/webdriver-remote-common.jar"] + common_libs,
+    'classpath' => ["remote/common/lib/runtime/**/*.jar", "support/lib/runtime/*.jar", "support/build/webdriver-support.jar", "remote/server/lib/runtime/**/*.jar", "remote/build/webdriver-remote-common.jar"] + common_libs,
     'test_on'   => false,
   },
   "safari" =>   {
