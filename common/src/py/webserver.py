@@ -22,7 +22,7 @@ import threading
 import urllib
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 
-HTML_ROOT = os.getenv("webdriver_test_htmlroot")
+HTML_ROOT = os.path.join(os.getenv("WEBDRIVER"), "common/src/web")
 PORT = 8000
 
 class HtmlOnlyHandler(BaseHTTPRequestHandler):

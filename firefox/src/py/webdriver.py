@@ -76,7 +76,8 @@ class WebDriver(object):
     def find_element_by_link_text(self, link):
         """Finds an element by its link text.
 
-        Returns None if the element is not a link.
+        throws NoSuchElementException when no element is found 
+        with the link text.
         """
         try:
             elem_id = self._command("selectElementUsingLink", link)
@@ -85,6 +86,21 @@ class WebDriver(object):
         except ErrorInResponseException, ex:
             utils.handle_find_element_exception(ex)
 
+    def find_elements_by_link_text(self, link):
+        """Finds all elements with the same link text.
+
+        throws NoSuchElementException when no element is found 
+        with the link text.
+        """
+        try:
+            elem_id_list = self._command("selectElementsUsingLink", link)
+            elem_list = []
+            for elem_id in elem_id_list.split(","):
+                elem = WebElement(self, elem_id)
+                elem_list.append(elem)
+            return elem_list
+        except ErrorInResponseException, ex:
+            utils.handle_find_element_exception(ex)
 
     def find_element_by_id(self, id_):
         """Finds an element by its id."""
@@ -139,6 +155,14 @@ class WebDriver(object):
             raise InvalidSwitchToTargetException(
                 "Window %s not found" % window_name)
         self._conn.context = resp
+        
+    def get_current_window_handle(self):
+        handle = self._command("getCurrentWindowHandle")
+        assert "," not in handle, "there should be only one current handle"
+
+    def get_window_handles(self):
+        return filter(lambda handle: handle,
+                      self._command("getAllWindowHandles").split(","))
 
     def switch_to_frame(self, index_or_name):
         """Switches focus to a frame by index or name."""
