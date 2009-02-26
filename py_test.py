@@ -30,9 +30,9 @@ def run_script(script_name, *args):
 
 if __name__ == "__main__":
     os.environ["WEBDRIVER"] = "."
-    os.environ["PYTHONPATH"] = "%s:%s:%s" % (os.environ.get("PYTHONPATH", ""),
+    os.environ["PYTHONPATH"] = os.pathsep.join([os.environ.get("PYTHONPATH", ""),
                                              os.path.join("firefox", "lib-src"),
-                                             os.path.join("build", "lib"))
+                                             os.path.join("build", "lib")])
     run_script("setup.py", "build")
     run_script("firefox/test/py/api_examples.py")
     run_script("firefox/test/py/firefox_launcher_tests.py")
