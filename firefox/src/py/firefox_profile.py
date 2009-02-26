@@ -80,6 +80,13 @@ class FirefoxProfile(object):
                 extension_dir)
         self._update_user_preference()
 
+    def remove_lock_file(self):
+        for lock_file in [".parentlock", "lock", "parent.lock"]:
+            try:
+                os.remove(os.path.join(self.path, lock_file))
+            except OSError:
+                pass
+
     def _update_user_preference(self):
         """Updates the user.js with the configurations needed by webdriver."""
         preference = {}

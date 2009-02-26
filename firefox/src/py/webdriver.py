@@ -26,9 +26,10 @@ from webdriver_firefox import utils
 class WebDriver(object):
     """The main interface to use for testing,
     which represents an idealised web browser."""
-    def __init__(self, profile_name="WebDriver"):
-        FirefoxLauncher().launch_browser(profile_name)
-        self._conn = ExtensionConnection()
+    def __init__(self, profile_name="WebDriver", timeout=30):
+        self.browser = FirefoxLauncher()
+        self.browser.launch_browser(profile_name)
+        self._conn = ExtensionConnection(timeout)
         self._conn.connect()
 
     def execute_script(self, script, *args):
@@ -142,11 +143,9 @@ class WebDriver(object):
 
     def quit(self):
         """Quits the driver and close every associated window."""
-        if self._conn.is_connectable():
-            self._conn.driver_command("quit")
-            while self._conn.is_connectable():
-                logging.debug("waiting to quit")
-                time.sleep(1)
+        self._conn.quit()
+        self.browser.kill()
+            
 
     def switch_to_window(self, window_name):
         """Switches focus to a window."""
@@ -159,6 +158,7 @@ class WebDriver(object):
     def get_current_window_handle(self):
         handle = self._command("getCurrentWindowHandle")
         assert "," not in handle, "there should be only one current handle"
+        return handle
 
     def get_window_handles(self):
         return filter(lambda handle: handle,

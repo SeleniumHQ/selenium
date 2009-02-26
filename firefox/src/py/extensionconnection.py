@@ -19,20 +19,22 @@ import logging
 import socket
 import re
 import threading
+import time
 import simplejson
 from webdriver_common.exceptions import ErrorInResponseException
 
-_SOCKET_TIMEOUT = 20
+_DEFAULT_TIMEOUT = 20
 _DEFAULT_PORT = 7055
 LOGGER = logging.getLogger("webdriver.ExtensionConnection")
 
 class ExtensionConnection(object):
     """This class maintains a connection to the firefox extension.
     """
-    def __init__(self):
+    def __init__(self, timeout=_DEFAULT_TIMEOUT):
         LOGGER.debug("extension connection initiated")
-        self.conext = None
+        self.context = "null"
         self.socket = None
+        self.timeout = timeout
 
     def driver_command(self, cmd, *params):
         """Driver level command."""
@@ -83,6 +85,12 @@ class ExtensionConnection(object):
         else:
             return None
 
+    def quit(self):
+        self.driver_command("quit")
+        while self.is_connectable():
+            logging.info("waiting to quit")
+            time.sleep(1)
+
     def connect(self):
         """Connects to the extension and retrieves the context id."""
         self._connect()
@@ -93,7 +101,7 @@ class ExtensionConnection(object):
         """Connects to the extension."""
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.connect(("localhost", _DEFAULT_PORT))
-        self.socket.settimeout(_SOCKET_TIMEOUT)
+        self.socket.settimeout(self.timeout)
 
     def is_connectable(self):
         """Trys to connect to the extension but do not retrieve context."""
