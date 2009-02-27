@@ -20,6 +20,8 @@ import os
 import platform
 import re
 import shutil
+import tempfile
+import zipfile
 
 DEFAULT_PORT = 7055
 
@@ -39,12 +41,12 @@ class ProfileIni(object):
     def read_profiles():
         """Reads the profiles from the profiles.ini file."""
         if platform.system() == "Windows":
-            app_data_dir = os.path.join(os.getenv("APPDATA"), "Mozilla/Firefox")
+            app_data_dir = os.path.join(os.getenv("APPDATA"), "Mozilla", "Firefox")
         elif platform.system() == "Darwin":
             app_data_dir = os.path.join(os.getenv("HOME"),
-                                        "Library/Application Support/Firefox")
+                                        "Library", "Application Support", "Firefox")
         else:
-            app_data_dir = os.path.join(os.getenv("HOME"), ".mozilla/firefox")
+            app_data_dir = os.path.join(os.getenv("HOME"), ".mozilla", "firefox")
         profiles_ini = open(os.path.join(app_data_dir, "profiles.ini"))
         profile_sections = re.findall(
             r"Name=(\S*)\s*IsRelative=(\d)\s*Path=(\S*)", profiles_ini.read())
@@ -68,16 +70,60 @@ class FirefoxProfile(object):
 
     def add_extension(self, force_create=False):
         """Adds the webdriver extension to this profile."""
-        webdriver_dir = os.getenv("WEBDRIVER")
-        extension_dir = os.path.join(self.path,
+
+        extension_dir = os.path.join(self.path, 
                                      "extensions", "fxdriver@googlecode.com")
+        logging.debug("extension_dir : %s" % extension_dir)
         if force_create or not os.path.exists(extension_dir):
-            if not webdriver_dir:
-                raise Exception(
-                    "Please set WEBDRIVER to your webdriver directory")
-            shutil.copytree(
-                os.path.join(webdriver_dir, "firefox/src/extension"),
-                extension_dir)
+            # We first seach for firefox_extension.zip in the current directory
+            # and then the directory specified by envionment vairable WEBDRIVER.
+
+            extension_source_path = None
+            # Use firefox_extension.zip in the current directory for the
+            # extension if there is one. Such a zip file can be created by
+            # 'zip -r firefox_extension *' in
+            # %webdriver_directory%/firefox/src/extension
+
+            try:
+                extension_zipfile = "webdriver-extension.zip"
+                if os.path.exists(extension_zipfile):
+                    logging.info("extracting %s" % extension_zipfile)
+                    zf = zipfile.ZipFile(extension_zipfile)
+                    # unzip the files into a temporary directory
+                    if zf.testzip() is None:
+                        tempdir = tempfile.mkdtemp()
+                        # create directories that don't exist
+                        for name in zf.namelist():
+                          dest = os.path.join(tempdir, name)
+                          if name.endswith(os.path.sep) and not os.path.exists(dest):
+                              os.mkdir(dest)
+                        # copy files
+                        for name in zf.namelist():
+                          dest = os.path.join(tempdir, name)
+                          if not dest.endswith(os.path.sep):
+                              outfile = open(dest, 'wb')
+                              outfile.write(zf.read(name))
+                              outfile.close()
+                        extension_source_path = tempdir
+            except IOError, err:
+                logging.info("Error in extracting firefox_extension.zip: %s" % err)
+
+            if extension_source_path is None:
+                webdriver_dir = os.getenv("WEBDRIVER")
+                logging.info("copying extension from $WEBDRIVER")
+                if webdriver_dir is not None:
+                    extension_source_path = os.path.join(webdriver_dir, "firefox", "src", "extension")
+
+            logging.debug("extension_source_path : %s" % extension_source_path)
+            if not os.path.exists(extension_source_path):
+                raise Exception("Please set WEBDRIVER to your webdriver " +
+                    "directory or provide zip firefox extension in current directory.")
+
+            try:
+              shutil.copytree(extension_source_path, extension_dir)
+            except OSError, err:
+                logging.info("Fail to install firefox extension. %s" % err)
+
         self._update_user_preference()
 
     def remove_lock_file(self):
