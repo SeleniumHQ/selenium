@@ -127,13 +127,15 @@
         <dependency>
 		    <groupId>org.seleniumhq.selenium.core</groupId>
 		    <artifactId>selenium-core</artifactId>
-		    <scope>optional</scope>        
+		    <scope>provided</scope>        
         </dependency>
         <dependency>
+	        <!-- this is used by the maven-antrun-plugin above -->
 		    <groupId>org.seleniumhq.selenium.server</groupId>
 		    <artifactId>selenium-server</artifactId>
 		    <classifier>standalone</classifier>
 		    <version>${project.version}</version>
+		    <scope>provided</scope>        
         </dependency>
     </dependencies>
 </project>
