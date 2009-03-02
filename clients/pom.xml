@@ -127,6 +127,7 @@
         <dependency>
 		    <groupId>org.seleniumhq.selenium.core</groupId>
 		    <artifactId>selenium-core</artifactId>
+		    <scope>optional</scope>        
         </dependency>
         <dependency>
 		    <groupId>org.seleniumhq.selenium.server</groupId>
