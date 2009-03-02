@@ -119,11 +119,6 @@
     </build>
     <dependencies>
         <dependency>
-            <groupId>org.seleniumhq.selenium.server</groupId>
-            <artifactId>selenium-server</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>provided</scope>
