@@ -1,4 +1,4 @@
-<project name="Selenium-OneJar" default="dist" basedir=".">
+<project name="Selenium-OneJar" default="one-jar" basedir=".">
 
     <target name="unzip" description="compile the source ">
         <mkdir dir="target"/>
