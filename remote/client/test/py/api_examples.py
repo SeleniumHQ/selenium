@@ -37,4 +37,4 @@ if __name__ == "__main__":
             stdout=subprocess.PIPE, stderr=subprocess.PIPE,
             shell=True)
     time.sleep(5)
-    api_examples.run_tests(WebDriver("localhost:6001", "firefox", "ANY"))
+    api_examples.run_tests(WebDriver("localhost:%d" % DEFAULT_PORT, "firefox", "ANY"))
