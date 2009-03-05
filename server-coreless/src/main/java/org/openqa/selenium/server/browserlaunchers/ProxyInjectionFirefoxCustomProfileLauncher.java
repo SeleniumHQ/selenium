@@ -1,5 +1,6 @@
 package org.openqa.selenium.server.browserlaunchers;
 
+import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
 /**
@@ -19,13 +20,9 @@ public class ProxyInjectionFirefoxCustomProfileLauncher extends
 
     private static boolean alwaysChangeMaxConnections = true;
 
-	public ProxyInjectionFirefoxCustomProfileLauncher(RemoteControlConfiguration configuration, String sessionId) {
-        super(configuration, sessionId);
-    }
-
-    public ProxyInjectionFirefoxCustomProfileLauncher(RemoteControlConfiguration configuration,
-            String sessionId, String browserLaunchLocation) {
-        super(configuration, sessionId, browserLaunchLocation);
+    public ProxyInjectionFirefoxCustomProfileLauncher(BrowserConfigurationOptions browserOptions,
+            RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
+        super(browserOptions, configuration, sessionId, browserLaunchLocation);
     }
 
     @Override

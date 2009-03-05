@@ -16,7 +16,7 @@ public class DummyBrowserLauncher implements BrowserLauncher {
 
     private static String sessionId;
     
-    public DummyBrowserLauncher(RemoteControlConfiguration configuration, String sessionId) {
+    public DummyBrowserLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration, String sessionId, String command) {
         DummyBrowserLauncher.sessionId = sessionId;
     }
    
@@ -42,12 +42,7 @@ public class DummyBrowserLauncher implements BrowserLauncher {
 
     /** noop */
     public void launchHTMLSuite(String startURL, String suiteUrl,
-            boolean multiWindow, String defaultLogLevel) {
-
-    }
-
-    /** noop */
-    public void launchRemoteSession(String url, boolean multiWindow) {
+            boolean multiWindow) {
 
     }
 

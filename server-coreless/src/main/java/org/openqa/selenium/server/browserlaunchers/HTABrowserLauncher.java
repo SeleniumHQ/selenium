@@ -23,19 +23,12 @@ public class HTABrowserLauncher implements BrowserLauncher {
     private Process htaProcess;
     private Process iexploreProcess;
     private RemoteControlConfiguration configuration;
-
-    public HTABrowserLauncher() {
-        htaCommandPath = findHTALaunchLocation();
-    }
     
-    public HTABrowserLauncher(RemoteControlConfiguration configuration, String sessionId) {
-        htaCommandPath = findHTALaunchLocation();
-        this.sessionId = sessionId;
-        this.configuration = configuration;
-    }
-    
-    public HTABrowserLauncher(RemoteControlConfiguration configuration, String sessionId,
-                              String browserLaunchLocation) {
+    public HTABrowserLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration,
+                              String sessionId, String browserLaunchLocation) {
+        if (browserLaunchLocation == null) {
+            browserLaunchLocation = findHTALaunchLocation();
+        }
         htaCommandPath = browserLaunchLocation;
         this.sessionId = sessionId;
         this.configuration = configuration;
@@ -123,12 +116,8 @@ public class HTABrowserLauncher implements BrowserLauncher {
         return htaProcess;
     }
 
-    public void launchHTMLSuite(String suiteUrl, String browserURL, boolean multiWindow, String defaultLogLevel) {
-        launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl, multiWindow, getPort(), defaultLogLevel), "TestRunner.hta");
-    }
-
-    public void launchRemoteSession(String browserURL, boolean multiWindow) {
-        launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId, multiWindow, getPort()), "RemoteRunner.hta");
+    public void launchHTMLSuite(String suiteUrl, String browserURL, boolean multiWindow) {
+        launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl, multiWindow, getPort()), "TestRunner.hta");
     }
 
     private int getPort() {
@@ -140,7 +129,7 @@ public class HTABrowserLauncher implements BrowserLauncher {
      */
     public void launchRemoteSession(String url, boolean multiWindow,
             BrowserConfigurationOptions browserConfigurationOptions) {
-        launchRemoteSession(url, multiWindow);
+        launch(LauncherUtils.getDefaultRemoteSessionUrl(url, sessionId, multiWindow, getPort()), "RemoteRunner.hta");
     }
 
 }

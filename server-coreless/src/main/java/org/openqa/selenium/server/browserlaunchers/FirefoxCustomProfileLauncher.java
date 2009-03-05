@@ -19,6 +19,7 @@ package org.openqa.selenium.server.browserlaunchers;
 import org.apache.commons.logging.Log;
 import org.mortbay.log.LogFactory;
 import org.openqa.selenium.server.ApplicationRegistry;
+import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.browserlaunchers.FirefoxChromeLauncher.FileLockRemainedException;
 import org.openqa.selenium.server.browserlaunchers.locators.Firefox2or3Locator;
@@ -40,18 +41,14 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
 
     private AsyncExecute shell = new AsyncExecute();
 
-    public FirefoxCustomProfileLauncher(RemoteControlConfiguration configuration, String sessionId) {
-        this(configuration, sessionId, (String) null);
-    }
-
-    public FirefoxCustomProfileLauncher(RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
-        this(configuration, sessionId,
-                ApplicationRegistry.instance().browserInstallationCache().locateBrowserInstallation(
+    public FirefoxCustomProfileLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
+        this(browserOptions, configuration,
+                sessionId, ApplicationRegistry.instance().browserInstallationCache().locateBrowserInstallation(
                         "firefoxproxy", browserLaunchLocation, new Firefox2or3Locator()));
     }
 
-    public FirefoxCustomProfileLauncher(RemoteControlConfiguration configuration, String sessionId, BrowserInstallation browserInstallation) {
-        super(sessionId, configuration);
+    public FirefoxCustomProfileLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration, String sessionId, BrowserInstallation browserInstallation) {
+        super(sessionId, configuration, browserOptions);
         init();
         this.browserInstallation = browserInstallation;
         shell.setLibraryPath(browserInstallation.libraryPath());

@@ -84,13 +84,13 @@ public class HTMLLauncher implements HTMLResultsListener {
         remoteControl.handleHTMLRunnerResults(this);
         BrowserLauncherFactory blf = new BrowserLauncherFactory();
         String sessionId = Long.toString(System.currentTimeMillis() % 1000000);
-        BrowserLauncher launcher = blf.getBrowserLauncher(browser, sessionId, remoteControl.getConfiguration());
+        BrowserLauncher launcher = blf.getBrowserLauncher(browser, sessionId, remoteControl.getConfiguration(), null);
         BrowserSessionInfo sessionInfo = new BrowserSessionInfo(sessionId, 
             browser, browserURL, launcher, null);
         remoteControl.registerBrowserSession(sessionInfo);
         
         // JB: -- aren't these URLs in the wrong order according to declaration?
-        launcher.launchHTMLSuite(suiteURL, browserURL, multiWindow, defaultLogLevel);
+        launcher.launchHTMLSuite(suiteURL, browserURL, multiWindow);
         long now = System.currentTimeMillis();
         long end = now + timeoutInMs;
         while (results == null && System.currentTimeMillis() < end) {

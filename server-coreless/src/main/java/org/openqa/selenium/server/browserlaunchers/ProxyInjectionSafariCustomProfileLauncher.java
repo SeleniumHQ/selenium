@@ -1,5 +1,6 @@
 package org.openqa.selenium.server.browserlaunchers;
 
+import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
 import java.io.IOException;
@@ -19,15 +20,11 @@ import java.io.IOException;
  */
 public class ProxyInjectionSafariCustomProfileLauncher extends SafariCustomProfileLauncher {
     private static boolean alwaysChangeMaxConnections = true;
-
-	public ProxyInjectionSafariCustomProfileLauncher(RemoteControlConfiguration configuration, String sessionId) {
-        super(configuration, sessionId);
-    }
     
-    public ProxyInjectionSafariCustomProfileLauncher(RemoteControlConfiguration configuration,
-            String sessionId, String browserLaunchLocation) {
+    public ProxyInjectionSafariCustomProfileLauncher(BrowserConfigurationOptions browserOptions,
+            RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
 
-        super(configuration, sessionId, browserLaunchLocation);
+        super(browserOptions, configuration, sessionId, browserLaunchLocation);
     }
     
     @Override

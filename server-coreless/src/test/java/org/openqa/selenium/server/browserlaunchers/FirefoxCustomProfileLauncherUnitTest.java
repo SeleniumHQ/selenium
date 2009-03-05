@@ -2,6 +2,7 @@ package org.openqa.selenium.server.browserlaunchers;
 
 import junit.framework.TestCase;
 
+import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
 import java.io.File;
@@ -62,7 +63,7 @@ public class FirefoxCustomProfileLauncherUnitTest extends TestCase {
       private boolean throwProcessKillException = true;
       
       public FirefoxCustomProfileLauncherStubbedForShutdown() {
-        super(new RemoteControlConfiguration(), "testsession");
+        super(new BrowserConfigurationOptions(), new RemoteControlConfiguration(), "testsession", (String)null);
       }
       
       public void haveProcessKillThrowException(boolean doThrow) {

@@ -1,5 +1,6 @@
 package org.openqa.selenium.server.browserlaunchers;
 
+import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
 /**
@@ -8,14 +9,14 @@ import org.openqa.selenium.server.RemoteControlConfiguration;
 public class FirefoxCustomProfileLauncherIntegrationTest extends LauncherFunctionalTestCase {
 
     public void testLauncherWithDefaultConfiguration() throws Exception {
-        launchBrowser(new FirefoxCustomProfileLauncher(new RemoteControlConfiguration(), "CUSTFFCHROME"));
+        launchBrowser(new FirefoxCustomProfileLauncher(new BrowserConfigurationOptions(), new RemoteControlConfiguration(), "CUSTFFCHROME", (String) null));
     }
 
     public void testLaunchTwoBrowsersInARowWithDefaultConfiguration() throws Exception {
         final RemoteControlConfiguration configuration = new RemoteControlConfiguration();
 
-        launchBrowser(new FirefoxCustomProfileLauncher(configuration, "CUSTFFCHROME"));
-        launchBrowser(new FirefoxCustomProfileLauncher(configuration, "CUSTFFCHROME"));
+        launchBrowser(new FirefoxCustomProfileLauncher(new BrowserConfigurationOptions(), configuration, "CUSTFFCHROME", (String) null));
+        launchBrowser(new FirefoxCustomProfileLauncher(new BrowserConfigurationOptions(), configuration, "CUSTFFCHROME", (String) null));
     }
 
 }

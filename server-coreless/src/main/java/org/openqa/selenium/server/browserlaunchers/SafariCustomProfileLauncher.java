@@ -20,6 +20,7 @@ import org.apache.commons.logging.Log;
 import org.apache.tools.ant.taskdefs.condition.Os;
 import org.mortbay.log.LogFactory;
 import org.openqa.selenium.server.ApplicationRegistry;
+import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.SeleniumServer;
 import org.openqa.selenium.server.browserlaunchers.locators.SafariLocator;
@@ -46,23 +47,17 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
 
     protected static AsyncExecute exe = new AsyncExecute();
 
-
-    public SafariCustomProfileLauncher(RemoteControlConfiguration configuration, String sessionId) {
-        this(configuration, sessionId, (String) null);
-    }
-
-
-    public SafariCustomProfileLauncher(RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
-        this(configuration, sessionId,
-             ApplicationRegistry.instance().browserInstallationCache().locateBrowserInstallation(
+    public SafariCustomProfileLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
+        this(browserOptions, configuration,
+             sessionId, ApplicationRegistry.instance().browserInstallationCache().locateBrowserInstallation(
                      "safari", browserLaunchLocation, new SafariLocator()));
     }
 
     
-    public SafariCustomProfileLauncher(RemoteControlConfiguration configuration, String sessionId,
-                                       BrowserInstallation browserInstallation) {
+    public SafariCustomProfileLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration,
+                                       String sessionId, BrowserInstallation browserInstallation) {
         
-        super(sessionId, configuration);
+        super(sessionId, configuration, browserOptions);
         this.browserInstallation = browserInstallation;
 
         if (configuration.shouldOverrideSystemProxy()) {

@@ -19,6 +19,7 @@ package org.openqa.selenium.server.browserlaunchers;
 import org.apache.commons.logging.Log;
 import org.mortbay.log.LogFactory;
 import org.openqa.selenium.server.ApplicationRegistry;
+import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.browserlaunchers.locators.InternetExplorerLocator;
 
@@ -39,18 +40,14 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
     private static boolean alwaysChangeMaxConnections = false;
     protected boolean changeMaxConnections = alwaysChangeMaxConnections;
 
-    public InternetExplorerCustomProxyLauncher(RemoteControlConfiguration configuration, String sessionId) {
-        this(configuration, sessionId, (String) null);
-    }
-
-    public InternetExplorerCustomProxyLauncher(RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
-        this(configuration, sessionId, ApplicationRegistry.instance().browserInstallationCache().locateBrowserInstallation(
+    public InternetExplorerCustomProxyLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
+        this(browserOptions, configuration, sessionId, ApplicationRegistry.instance().browserInstallationCache().locateBrowserInstallation(
                 "iexplore", browserLaunchLocation, new InternetExplorerLocator()));
     }
 
-    public InternetExplorerCustomProxyLauncher(RemoteControlConfiguration configuration,
-                                               String sessionId, BrowserInstallation browserInstallation) {
-        super(sessionId, configuration);
+    public InternetExplorerCustomProxyLauncher(BrowserConfigurationOptions browserOptions,
+                                               RemoteControlConfiguration configuration, String sessionId, BrowserInstallation browserInstallation) {
+        super(sessionId, configuration, browserOptions);
         this.browserInstallation = browserInstallation;
         this.wpm = new WindowsProxyManager(true, sessionId, getPort(), getPort());
     }
@@ -138,7 +135,7 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
     }
 
     public static void main(String[] args) {
-        InternetExplorerCustomProxyLauncher l = new InternetExplorerCustomProxyLauncher(new RemoteControlConfiguration(), "CUSTIE");
+        InternetExplorerCustomProxyLauncher l = new InternetExplorerCustomProxyLauncher(new BrowserConfigurationOptions(), new RemoteControlConfiguration(), "CUSTIE", (String)null);
         l.launch("http://www.google.com/");
         int seconds = 5;
         System.out.println("Killing browser in " + Integer.toString(seconds) + " seconds");

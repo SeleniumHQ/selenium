@@ -20,6 +20,7 @@ package org.openqa.selenium.server.browserlaunchers;
 import org.apache.commons.logging.Log;
 import org.mortbay.log.LogFactory;
 import org.openqa.selenium.server.ApplicationRegistry;
+import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.browserlaunchers.locators.GoogleChromeLocator;
 
@@ -51,19 +52,15 @@ public class GoogleChromeLauncher extends AbstractBrowserLauncher {
 
     private Process process;
 
-    public GoogleChromeLauncher(RemoteControlConfiguration configuration, String sessionId) {
-        this(configuration, sessionId, (String) null);
-    }
-
-    public GoogleChromeLauncher(RemoteControlConfiguration configuration, String sessionId,
-                                String browserLaunchLocation) {
-        this(configuration, sessionId, ApplicationRegistry.instance().browserInstallationCache().
+    public GoogleChromeLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration,
+                                String sessionId, String browserLaunchLocation) {
+        this(browserOptions, configuration, sessionId, ApplicationRegistry.instance().browserInstallationCache().
              locateBrowserInstallation("googlechrome", browserLaunchLocation, new GoogleChromeLocator()));
     }
 
-    public GoogleChromeLauncher(RemoteControlConfiguration configuration, String sessionId,
-                                BrowserInstallation browserInstallation) {
-        super(sessionId, configuration);
+    public GoogleChromeLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration,
+                                String sessionId, BrowserInstallation browserInstallation) {
+        super(sessionId, configuration, browserOptions);
         this.browserInstallation = browserInstallation;
     }
 

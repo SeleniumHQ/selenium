@@ -33,7 +33,7 @@ public class DestroyableRuntimeExecutingBrowserLauncher extends AbstractBrowserL
     
     /** Specifies a command path to run */
     public DestroyableRuntimeExecutingBrowserLauncher(String commandPath, String sessionId) {
-        super(sessionId, null);
+        super(sessionId, null, null);
         this.commandPath = commandPath;
         this.sessionId = sessionId;
     }

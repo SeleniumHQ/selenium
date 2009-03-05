@@ -18,6 +18,7 @@ package org.openqa.selenium.server.browserlaunchers;
 
 import org.apache.commons.logging.Log;
 import org.mortbay.log.LogFactory;
+import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
 import java.io.File;
@@ -48,12 +49,8 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
     // has a regression in which window.resizeTo() and window.moveTo() simply do not work!
     private static String additionalSettings = "";
 
-    public OperaCustomProfileLauncher(RemoteControlConfiguration configuration, String sessionId) {
-        this(configuration, sessionId, findBrowserLaunchLocation());
-    }
-
-    public OperaCustomProfileLauncher(RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
-        super(sessionId, configuration);
+    public OperaCustomProfileLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
+        super(sessionId, configuration, browserOptions);
         commandPath = browserLaunchLocation;
         this.sessionId = sessionId;
         if (!WindowsUtils.thisIsWindows()) {
@@ -311,7 +308,7 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
     }
 
     public static void main(String[] args) throws Exception {
-        OperaCustomProfileLauncher l = new OperaCustomProfileLauncher(new RemoteControlConfiguration(), "CUSTFF");
+        OperaCustomProfileLauncher l = new OperaCustomProfileLauncher(new BrowserConfigurationOptions(), new RemoteControlConfiguration(), "CUSTFF", null);
         l.launch("http://www.google.com");
         int seconds = 15;
         System.out.println("Killing browser in " + Integer.toString(seconds) + " seconds");

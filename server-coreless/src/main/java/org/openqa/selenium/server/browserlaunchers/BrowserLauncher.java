@@ -26,12 +26,6 @@ import org.openqa.selenium.server.BrowserConfigurationOptions;
  * @version $Revision: 732 $
  */
 public interface BrowserLauncher {
-    /**
-     * Start the browser and navigate directly to the specified URL
-     *
-     * @param multiWindow TODO
-     */
-    void launchRemoteSession(String url, boolean multiWindow);
     
     /**
      * Start the browser and navigate directly to the specified URL using the supplied browser configurations
@@ -47,9 +41,8 @@ public interface BrowserLauncher {
      * @param startURL    the url within which to initiate the session (if needed)
      * @param suiteUrl    the url of the HTML suite to launch
      * @param multiWindow TODO
-     * @param defaultLogLevel TODO
      */
-    void launchHTMLSuite(String startURL, String suiteUrl, boolean multiWindow, String defaultLogLevel);
+    void launchHTMLSuite(String startURL, String suiteUrl, boolean multiWindow);
 
     /**
      * Stop (kill) the browser process

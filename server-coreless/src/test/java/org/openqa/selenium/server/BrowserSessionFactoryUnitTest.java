@@ -49,7 +49,8 @@ public class BrowserSessionFactoryUnitTest extends TestCase {
         	}
         };
         
-        expect(blf.getBrowserLauncher(isA(String.class), isA(String.class), isA(RemoteControlConfiguration.class))).andReturn(launcherMock);
+        expect(blf.getBrowserLauncher(isA(String.class), isA(String.class), 
+                isA(RemoteControlConfiguration.class), isA(BrowserConfigurationOptions.class))).andReturn(launcherMock);
         launcherMock.launchRemoteSession("",true, bco);
         expectLastCall().once();
         replay(launcherMock);

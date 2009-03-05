@@ -1,5 +1,6 @@
 package org.openqa.selenium.server.browserlaunchers;
 
+import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 import junit.framework.TestCase;
 
@@ -11,7 +12,7 @@ public class InternetExplorerCustomProxyLauncherFunctionalTest extends TestCase 
     public void testCanLaunchASingleBrowser() {
         final InternetExplorerCustomProxyLauncher launcher;
 
-        launcher = new InternetExplorerCustomProxyLauncher(new RemoteControlConfiguration(), "aSessionId");
+        launcher = new InternetExplorerCustomProxyLauncher(new BrowserConfigurationOptions(), new RemoteControlConfiguration(), "aSessionId", (String) null);
         launcher.launch("http://www.google.com/");
         AsyncExecute.sleepTightInSeconds(5);
         launcher.close();
@@ -21,8 +22,8 @@ public class InternetExplorerCustomProxyLauncherFunctionalTest extends TestCase 
         final InternetExplorerCustomProxyLauncher firstLauncher;
         final InternetExplorerCustomProxyLauncher secondLauncher;
 
-        firstLauncher = new InternetExplorerCustomProxyLauncher(new RemoteControlConfiguration(), "firstSessionId");
-        secondLauncher = new InternetExplorerCustomProxyLauncher(new RemoteControlConfiguration(), "secondSessionId");
+        firstLauncher = new InternetExplorerCustomProxyLauncher(new BrowserConfigurationOptions(), new RemoteControlConfiguration(), "firstSessionId", (String) null);
+        secondLauncher = new InternetExplorerCustomProxyLauncher(new BrowserConfigurationOptions(), new RemoteControlConfiguration(), "secondSessionId", (String) null);
         firstLauncher.launch("http://www.google.com/");
         AsyncExecute.sleepTightInSeconds(5);
         firstLauncher.close();
@@ -35,8 +36,8 @@ public class InternetExplorerCustomProxyLauncherFunctionalTest extends TestCase 
         final InternetExplorerCustomProxyLauncher firstLauncher;
         final InternetExplorerCustomProxyLauncher secondLauncher;
 
-        firstLauncher = new InternetExplorerCustomProxyLauncher(new RemoteControlConfiguration(), "firstSessionId");
-        secondLauncher = new InternetExplorerCustomProxyLauncher(new RemoteControlConfiguration(), "secondSessionId");
+        firstLauncher = new InternetExplorerCustomProxyLauncher(new BrowserConfigurationOptions(), new RemoteControlConfiguration(), "firstSessionId", (String) null);
+        secondLauncher = new InternetExplorerCustomProxyLauncher(new BrowserConfigurationOptions(), new RemoteControlConfiguration(), "secondSessionId", (String) null);
         firstLauncher.launch("http://www.google.com/");
         secondLauncher.launch("http://www.google.com/");
         AsyncExecute.sleepTightInSeconds(5);

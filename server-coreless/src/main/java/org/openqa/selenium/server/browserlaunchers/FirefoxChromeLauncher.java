@@ -45,21 +45,17 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
 
     private static boolean changeMaxConnections = false;
 
-    public FirefoxChromeLauncher(RemoteControlConfiguration configuration, String sessionId) {
-        this(configuration, sessionId, (String) null);
-    }
-
-    public FirefoxChromeLauncher(RemoteControlConfiguration configuration, String sessionId, String browserString)  throws InvalidBrowserExecutableException {
-    	this(configuration, sessionId,
-                ApplicationRegistry.instance().browserInstallationCache().locateBrowserInstallation(
+    public FirefoxChromeLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration, String sessionId, String browserString)  throws InvalidBrowserExecutableException {
+    	this(browserOptions, configuration,
+                sessionId, ApplicationRegistry.instance().browserInstallationCache().locateBrowserInstallation(
                         "chrome", browserString, new Firefox2or3Locator()));
     	if (browserInstallation == null) {        	
         	throw new InvalidBrowserExecutableException("The specified path to the browser executable is invalid.");
         }
     }
 
-    public FirefoxChromeLauncher(RemoteControlConfiguration configuration, String sessionId, BrowserInstallation browserInstallation) {
-        super(sessionId, configuration);
+    public FirefoxChromeLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration, String sessionId, BrowserInstallation browserInstallation) {
+        super(sessionId, configuration, browserOptions);
 
         if (browserInstallation == null) {
         	LOGGER.warn("The specified path to the browser executable is invalid.");
@@ -297,12 +293,12 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
     }
 
     @Override // need to specify an absolute resultsUrl
-    public void launchHTMLSuite(String suiteUrl, String browserURL, boolean multiWindow, String defaultLogLevel) {
+    public void launchHTMLSuite(String suiteUrl, String browserURL, boolean multiWindow) {
         // If navigating to TestPrompt, use the baked-in version instead.
         if (suiteUrl != null && suiteUrl.startsWith("TestPrompt.html?")) {
             suiteUrl = suiteUrl.replaceFirst("^TestPrompt\\.html\\?", "chrome://src/content/TestPrompt.html?");
         }
-        launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl, multiWindow, getPort(), defaultLogLevel), null);
+        launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl, multiWindow, getPort()), null);
     }
     
     @Override // need to specify an absolute driverUrl

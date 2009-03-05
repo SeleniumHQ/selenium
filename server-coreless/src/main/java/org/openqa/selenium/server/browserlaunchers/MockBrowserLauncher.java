@@ -33,30 +33,15 @@ public class MockBrowserLauncher implements BrowserLauncher, Runnable {
     private String uniqueId;
     private int sequenceNumber = 0;
     private final RemoteControlConfiguration configuration;
-    
-    public MockBrowserLauncher(RemoteControlConfiguration configuration, String sessionId) {
+        
+    public MockBrowserLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration, String sessionId, String command) {
         this.sessionId = sessionId;
         this.uniqueId = "mock";
         this.configuration = configuration;
     }
     
-    public MockBrowserLauncher(RemoteControlConfiguration configuration, String sessionId, String command) {
-        this.sessionId = sessionId;
-        this.configuration = configuration;
-    }
-    
-    public void launchRemoteSession(String url, boolean multiWindow) {
-      browser = new Thread(this);
-      browser.setName("mockbrowser");
-      if (null != url) {
-        browser.start();
-      } else {
-        log.info("launching a mock unresponsive browser");
-      }
-    }
-
     public void launchHTMLSuite(String startURL, String suiteUrl,
-            boolean multiWindow, String defaultLogLevel) {
+            boolean multiWindow) {
 
     }
 
@@ -183,7 +168,13 @@ public class MockBrowserLauncher implements BrowserLauncher, Runnable {
      */
     public void launchRemoteSession(String url, boolean multiWindow,
             BrowserConfigurationOptions browserConfigurationOptions) {
-        launchRemoteSession(url, multiWindow);
+        browser = new Thread(this);
+          browser.setName("mockbrowser");
+          if (null != url) {
+            browser.start();
+          } else {
+            log.info("launching a mock unresponsive browser");
+          }
     }
 
 }

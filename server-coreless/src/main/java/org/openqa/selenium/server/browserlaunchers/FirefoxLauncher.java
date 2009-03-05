@@ -17,18 +17,15 @@
 package org.openqa.selenium.server.browserlaunchers;
 
 import org.openqa.selenium.server.ApplicationRegistry;
+import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.browserlaunchers.locators.Firefox2or3Locator;
 
 public class FirefoxLauncher extends FirefoxChromeLauncher {
 
-    public FirefoxLauncher(RemoteControlConfiguration configuration, String sessionId) {
-        this(configuration, sessionId, null);
-    }
-
-    public FirefoxLauncher(RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
-        super(configuration, sessionId,
-                ApplicationRegistry.instance().browserInstallationCache().locateBrowserInstallation(
+    public FirefoxLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
+        super(browserOptions, configuration,
+                sessionId, ApplicationRegistry.instance().browserInstallationCache().locateBrowserInstallation(
                         "firefox", browserLaunchLocation, new Firefox2or3Locator()));        
     }
 

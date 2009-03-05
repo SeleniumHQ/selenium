@@ -338,7 +338,7 @@ public class BrowserSessionFactory {
         queueSet.setExtensionJs(extensionJs);
         
         try {
-        	launcher = browserLauncherFactory.getBrowserLauncher(browserString, sessionId, configuration);
+        	launcher = browserLauncherFactory.getBrowserLauncher(browserString, sessionId, configuration, browserConfiguration);
         } catch (InvalidBrowserExecutableException e) {
         	throw new RemoteCommandException(e.getMessage(), "");
         }

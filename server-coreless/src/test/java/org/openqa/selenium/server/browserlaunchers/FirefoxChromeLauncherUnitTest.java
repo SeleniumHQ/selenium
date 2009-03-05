@@ -1,19 +1,20 @@
 package org.openqa.selenium.server.browserlaunchers;
 
-import junit.framework.TestCase;
-
-import org.openqa.selenium.server.RemoteControlConfiguration;
-
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
+
+import junit.framework.TestCase;
+
+import org.openqa.selenium.server.BrowserConfigurationOptions;
+import org.openqa.selenium.server.RemoteControlConfiguration;
 
 public class FirefoxChromeLauncherUnitTest extends TestCase {
 	
 	public void testInvalidBrowserStringCausesChromeLauncherToThrowException() {
 		
 		try {			
-			new FirefoxChromeLauncher(null,null,"invalid");
+			new FirefoxChromeLauncher(new BrowserConfigurationOptions(),null,null, "invalid");
 			fail("No exception thrown");
 		} catch(InvalidBrowserExecutableException ibee) {
 			assertEquals("The specified path to the browser executable is invalid.", ibee.getMessage());
@@ -22,7 +23,7 @@ public class FirefoxChromeLauncherUnitTest extends TestCase {
 	
 	public void testNullBrowserInstallationDoesntCauseChromeLauncherToThrowException() {
 		BrowserInstallation bi = null;
-		FirefoxChromeLauncher fcl = new FirefoxChromeLauncher(null,null,bi);
+		FirefoxChromeLauncher fcl = new FirefoxChromeLauncher(new BrowserConfigurationOptions(),null,null, bi);
 		assertNotNull(fcl);
 	}
 	
@@ -84,7 +85,7 @@ public class FirefoxChromeLauncherUnitTest extends TestCase {
       private boolean throwProcessKillException = true;
       
       public FirefoxChromeLauncherStubbedForShutdown() {
-        super(new RemoteControlConfiguration(), "testsession");
+        super(new BrowserConfigurationOptions(), new RemoteControlConfiguration(), "testsession", (String)null);
       }
       
       public void haveProcessKillThrowException(boolean doThrow) {

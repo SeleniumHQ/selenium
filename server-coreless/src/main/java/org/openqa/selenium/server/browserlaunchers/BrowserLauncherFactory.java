@@ -18,6 +18,7 @@ package org.openqa.selenium.server.browserlaunchers;
 
 import org.apache.commons.logging.Log;
 import org.mortbay.log.LogFactory;
+import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
 import java.lang.reflect.Constructor;
@@ -70,9 +71,10 @@ public class BrowserLauncherFactory {
      *
      * @param browser a browser string like "*firefox"
      * @param sessionId the sessionId to launch
+     * @param browserOptions TODO
      * @return the BrowserLauncher ready to launch
      */
-    public BrowserLauncher getBrowserLauncher(String browser, String sessionId, RemoteControlConfiguration configuration) {
+    public BrowserLauncher getBrowserLauncher(String browser, String sessionId, RemoteControlConfiguration configuration, BrowserConfigurationOptions browserOptions) {
         if (browser == null) {
             throw new IllegalArgumentException("browser may not be null");
         }
@@ -82,7 +84,7 @@ public class BrowserLauncherFactory {
             result = new BrowserStringParser().parseBrowserStartCommand(key, browser);
             if (result.match()) {
                 LOGGER.debug("Requested browser string '" + browser + "' matches *" + key + " ");
-                return createBrowserLauncher(supportedBrowsers.get(key), result.customLauncher(), sessionId, configuration);
+                return createBrowserLauncher(supportedBrowsers.get(key), result.customLauncher(), sessionId, configuration, browserOptions);
             }
         }
 
@@ -124,18 +126,13 @@ public class BrowserLauncherFactory {
     }
 
     private BrowserLauncher createBrowserLauncher(Class<? extends BrowserLauncher> c, String browserStartCommand,
-                                                  String sessionId, RemoteControlConfiguration configuration) {
+                                                  String sessionId, RemoteControlConfiguration configuration, BrowserConfigurationOptions browserOptions) {
         try {
             try {
                 final BrowserLauncher browserLauncher;
                 final Constructor<? extends BrowserLauncher> ctor;
-                if (null == browserStartCommand) {
-                    ctor = c.getConstructor(RemoteControlConfiguration.class, String.class);
-                    browserLauncher = ctor.newInstance(configuration, sessionId);
-                } else {
-                    ctor = c.getConstructor(RemoteControlConfiguration.class, String.class, String.class);
-                    browserLauncher = ctor.newInstance(configuration, sessionId, browserStartCommand);
-                }
+                ctor = c.getConstructor(BrowserConfigurationOptions.class, RemoteControlConfiguration.class, String.class, String.class);
+                browserLauncher = ctor.newInstance(browserOptions, configuration, sessionId, browserStartCommand);
 
                 return browserLauncher;
             } catch (InvocationTargetException e) {

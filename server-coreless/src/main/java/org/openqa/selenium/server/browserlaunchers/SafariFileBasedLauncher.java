@@ -1,6 +1,7 @@
 package org.openqa.selenium.server.browserlaunchers;
 
 import org.apache.tools.ant.util.FileUtils;
+import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.SeleniumServer;
 
@@ -9,18 +10,14 @@ import java.io.IOException;
 
 public class SafariFileBasedLauncher extends SafariCustomProfileLauncher {
 
-    public SafariFileBasedLauncher(RemoteControlConfiguration configuration, String sessionId) {
-        super(configuration, sessionId);
+    public SafariFileBasedLauncher(BrowserConfigurationOptions browserOptions,
+                                   RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
+        super(browserOptions, configuration, sessionId, browserLaunchLocation);
     }
 
-    public SafariFileBasedLauncher(RemoteControlConfiguration configuration,
-                                   String sessionId, String browserLaunchLocation) {
-        super(configuration, sessionId, browserLaunchLocation);
-    }
-
-    public SafariFileBasedLauncher(RemoteControlConfiguration configuration,
-                                   String sessionId, BrowserInstallation browserInstallation) {
-        super(configuration, sessionId, browserInstallation);
+    public SafariFileBasedLauncher(BrowserConfigurationOptions browserOptions,
+                                   RemoteControlConfiguration configuration, String sessionId, BrowserInstallation browserInstallation) {
+        super(browserOptions, configuration, sessionId, browserInstallation);
     }
     
     @Override

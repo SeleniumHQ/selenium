@@ -1,5 +1,6 @@
 package org.openqa.selenium.server.browserlaunchers;
 
+import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
 /**
@@ -8,7 +9,7 @@ import org.openqa.selenium.server.RemoteControlConfiguration;
 public class SafariCustomProfileLauncherFunctionalTest extends LauncherFunctionalTestCase {
 
     public void testLauncherWithDefaultConfiguration() throws Exception {
-        launchBrowser(new SafariCustomProfileLauncher(new RemoteControlConfiguration(), "CUST"));
+        launchBrowser(new SafariCustomProfileLauncher(new BrowserConfigurationOptions(), new RemoteControlConfiguration(), "CUST", (String) null));
     }
 
     public void testLauncherWithHonorSystemProxyEnabled() throws Exception {
@@ -16,14 +17,14 @@ public class SafariCustomProfileLauncherFunctionalTest extends LauncherFunctiona
 
         configuration = new RemoteControlConfiguration();
         configuration.setHonorSystemProxy(true);
-        launchBrowser(new SafariCustomProfileLauncher(configuration, "CUST"));
+        launchBrowser(new SafariCustomProfileLauncher(new BrowserConfigurationOptions(), configuration, "CUST", (String) null));
     }
 
     public void testLaunchTwoBrowsersInARowWithDefaultConfiguration() throws Exception {
         final RemoteControlConfiguration configuration = new RemoteControlConfiguration();
 
-        launchBrowser(new SafariCustomProfileLauncher(configuration, "CUST"));
-        launchBrowser(new SafariCustomProfileLauncher(configuration, "CUST"));
+        launchBrowser(new SafariCustomProfileLauncher(new BrowserConfigurationOptions(), configuration, "CUST", (String) null));
+        launchBrowser(new SafariCustomProfileLauncher(new BrowserConfigurationOptions(), configuration, "CUST", (String) null));
     }
 
 }

@@ -34,14 +34,7 @@ public class DummyLauncher implements BrowserLauncher {
      * noop
      */
     public void launchHTMLSuite(String startURL, String suiteUrl,
-                                boolean multiWindow, String defaultLogLevel) {
-        closed = false;
-    }
-
-    /**
-     * noop
-     */
-    public void launchRemoteSession(String url, boolean multiWindow) {
+                                boolean multiWindow) {
         closed = false;
     }
 

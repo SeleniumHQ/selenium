@@ -1,5 +1,6 @@
 package org.openqa.selenium.server.browserlaunchers;
 
+import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
 import java.io.File;
@@ -18,13 +19,8 @@ public class KonquerorLauncher extends AbstractBrowserLauncher {
 
     private String browserLaunchLocation;
 
-
-    public KonquerorLauncher(RemoteControlConfiguration configuration, String sessionId) {
-        this(configuration, sessionId, DEFAULT_KONQUEROR_LOCATION);
-    }
-
-    public KonquerorLauncher(RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
-        super(sessionId, configuration);
+    public KonquerorLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
+        super(sessionId, configuration, browserOptions);
         this.browserLaunchLocation = browserLaunchLocation;
     }
 

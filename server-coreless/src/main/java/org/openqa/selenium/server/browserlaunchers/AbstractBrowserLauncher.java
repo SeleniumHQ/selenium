@@ -13,23 +13,21 @@ import org.openqa.selenium.server.RemoteControlConfiguration;
 public abstract class AbstractBrowserLauncher implements BrowserLauncher {
 
     protected String sessionId;
-    private RemoteControlConfiguration configuration;
+    protected RemoteControlConfiguration configuration;
+    protected BrowserConfigurationOptions browserConfigurationOptions;
 
-    public AbstractBrowserLauncher(String sessionId, RemoteControlConfiguration configuration) {
+    public AbstractBrowserLauncher(String sessionId, RemoteControlConfiguration configuration, BrowserConfigurationOptions browserOptions) {
         this.sessionId = sessionId;
         this.configuration = configuration;
+        this.browserConfigurationOptions = browserOptions;
     }
 
-    public void launchHTMLSuite(String suiteUrl, String browserURL, boolean multiWindow, String defaultLogLevel) {
-        launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl, multiWindow, 0, defaultLogLevel));
+    public void launchHTMLSuite(String suiteUrl, String browserURL, boolean multiWindow) {
+        launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl, multiWindow, 0));
     }
 
     public void launchRemoteSession(String browserURL, boolean multiWindow, BrowserConfigurationOptions browserConfigurationOptions) {
         launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId, multiWindow, 0), browserConfigurationOptions);
-    }
-    
-    public void launchRemoteSession(String browserURL, boolean multiWindow) {
-        launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId, multiWindow, 0));
     }
 
     protected abstract void launch(String url);
