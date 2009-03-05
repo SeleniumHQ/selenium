@@ -8,7 +8,7 @@
                    em:version="1.0b2"
                    em:description="Record, edit and play Selenium tests"
                    em:creator="Shinya Kasatani"
-                   em:homepageURL="http://www.openqa.org/selenium-ide/"
+                   em:homepageURL="http://seleniumhq.org/projects/ide"
                    em:optionsURL="chrome://selenium-ide/content/optionsDialog.xul">
     <em:targetApplication RDF:resource="rdf:#$8MZop3"/>
   </RDF:Description>

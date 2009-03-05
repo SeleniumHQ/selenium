@@ -9,7 +9,7 @@
   <RDF:Description about="urn:mozilla:package:selenium-ide"
     chrome:displayName="Selenium IDE"
     chrome:author="OpenQA"
-    chrome:authorURL="http://www.openqa.org/seleniumide"
+    chrome:authorURL="http://seleniumhq.org/projects/ide"
     chrome:name="selenium-ide"
     chrome:extension="true"
     chrome:description="Record user input for selenium tests.">
