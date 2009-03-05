@@ -72,4 +72,17 @@ PageBot.prototype.locateElementByValueRepeated = function(text, inDocument) {
     return null;
 };
 
+var uiMap = new UIMap();
+
+uiMap.addPageset({
+    name: 'homepage'
+    , description: 'the OpenQA homepage'
+    , paths: [ "" ]
+});
+
+uiMap.addElement('homepage', {
+    name: 'bannerAd'
+    , description: 'the banner advertisement'
+    , locator: 'name=google_ads_frame'
+});
 
