@@ -181,7 +181,7 @@ map.addPageset({
 </tr>
 <tr><td>paths<br />pathRegexp</td>
     <td>Conditional</td>
-    <td>(Array | String) either a list of path strings, or a string that represents a regular expression. One or the other should be defined, but not both. If an array, it enumerates pages that are included in the pageset. If a regular expression, any pages whose URL paths match the expression are considered part of the pageset. In either case, the part of the URL being matched (called the <em>path</em>) is the part following the domain, less any training slash, and not including the CGI parameters. For example:
+    <td>(Array | String) either a list of path strings, or a string that represents a regular expression. One or the other should be defined, but not both. If an array, it enumerates pages that are included in the pageset. If a regular expression, any pages whose URL paths match the expression are considered part of the pageset. In either case, the part of the URL being matched (called the <em>path</em>) is the part following the domain, less any trailing slash, and not including the CGI parameters. For example:
     <ul>
     <li>http://www.example.com/<span class="highlight">articles/index.php</span></li>
     <li>http://www.example.com/<span class="highlight">articles/2579</span>?lang=en_US</li>
