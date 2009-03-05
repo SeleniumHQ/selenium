@@ -1025,7 +1025,7 @@ function hasJavascriptHref(element) {
     if (getTagName(element) != 'a') {
         return false;
     }
-    if (element.hasAttribute('onclick')) {
+    if (element.getAttribute('onclick')) {
         return false;
     }
     if (! element.href) {
