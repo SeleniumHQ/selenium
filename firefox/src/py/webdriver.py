@@ -97,8 +97,39 @@ class WebDriver(object):
             elem_id_list = self._command("selectElementsUsingLink", link)
             elem_list = []
             for elem_id in elem_id_list.split(","):
-                elem = WebElement(self, elem_id)
-                elem_list.append(elem)
+                if elem_id:
+                    elem = WebElement(self, elem_id)
+                    elem_list.append(elem)
+            return elem_list
+        except ErrorInResponseException, ex:
+            utils.handle_find_element_exception(ex)
+
+    def find_element_by_partial_link_text(self, text):
+        """Finds an element by a segment of its link text
+
+        throws NoSuchElementException when no element is found 
+        with the link text.
+        """
+        try:
+            elem_id = self._command("selectElementUsingPartialLinkText", text)
+            elem = WebElement(self, elem_id)
+            return elem
+        except ErrorInResponseException, ex:
+            utils.handle_find_element_exception(ex)
+
+    def find_elements_by_partial_link_text(self, text):
+        """Finds all elements by a segment of the link text.
+
+        throws NoSuchElementException when no element is found 
+        with the link text.
+        """
+        try:
+            elem_id_list = self._command("selectElementsUsingPartialLinkText", text)
+            elem_list = []
+            for elem_id in elem_id_list.split(","):
+                if elem_id:
+                    elem = WebElement(self, elem_id)
+                    elem_list.append(elem)
             return elem_list
         except ErrorInResponseException, ex:
             utils.handle_find_element_exception(ex)

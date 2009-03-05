@@ -22,8 +22,17 @@ import sys
 import unittest
 from webdriver_common.exceptions import *
 from webdriver_common.webserver import SimpleWebServer
+import webdriver_remote.webdriver
 
 driver = None
+
+def not_available_on_remote(func):
+    def testMethod(self):
+        if type(self.driver) == webdriver_remote.webdriver.WebDriver:
+            return lambda x: None
+        else:
+            return func(self)
+    return testMethod
 
 class ApiExampleTest (unittest.TestCase):
 
@@ -210,12 +219,19 @@ class ApiExampleTest (unittest.TestCase):
         result = self.driver.execute_script("arguments[0]['flibble'] = arguments[0].getAttribute('id'); return arguments[0]['flibble'];", button)
         self.assertEquals("plainButton", result)
 
+    @not_available_on_remote
+    def testFindElementsByPartialLinkText(self):
+        """PartialLink match is not yet implemented on Remote Driver"""
+        self._loadPage("xhtmlTest")
+        elem = self.driver.find_element_by_partial_link_text("new window")
+        elem.click()
         
     def _loadSimplePage(self):
         self.driver.get("http://localhost:8000/simpleTest.html")
 
     def _loadPage(self, name):
         self.driver.get("http://localhost:8000/%s.html" % name)
+
 
 def run_tests(_driver):
     global driver
