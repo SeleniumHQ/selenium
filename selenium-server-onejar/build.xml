@@ -23,8 +23,8 @@
                 <exclude name="readyState.xpi"/>
                 <exclude name="sslSupport/**"/>
                 <exclude name="strands/**"/>
-                <!-- The following classes should not be in the standaone jar to begin with -->
                 <exclude name="core/**"/>
+                <!-- The following classes should not be in the standalone jar to begin with -->
                 <exclude name="junit/**"/>
                 <exclude name="org/openqa/selenium/server/**"/>
                 <exclude name="tests/**"/>
@@ -35,6 +35,7 @@
                dest="target/top-level">
             <!-- All data files needed by Selenium at runtime -->
             <patternset>
+                <include name="core/**"/>
                 <include name="custom*/**"/>
                 <include name="cybervillains/**"/>
                 <include name="killableprocess/*"/>
