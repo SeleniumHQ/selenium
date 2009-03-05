@@ -9,6 +9,7 @@ import org.apache.tools.ant.types.FileSet;
 import org.mortbay.log.LogFactory;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.SeleniumServer;
+import org.openqa.selenium.server.ClassPathResource;
 
 import java.io.*;
 import java.net.MalformedURLException;
@@ -221,7 +222,7 @@ public class LauncherUtils {
     }
 
 	protected static File extractHTAFile(File dir, int port, String resourceFile, String outFile) {
-		InputStream input = HTABrowserLauncher.class.getResourceAsStream(resourceFile);
+        InputStream input = getSeleniumResourceAsStream(resourceFile);
 		BufferedReader br = new BufferedReader(new InputStreamReader(input));
 		File hta = new File(dir, outFile);
 		try {
@@ -241,6 +242,22 @@ public class LauncherUtils {
 		}
 		return hta;
 	}
+
+    public static InputStream getSeleniumResourceAsStream(String resourceFile) {
+        Class clazz = ClassPathResource.class;
+        InputStream input = clazz.getResourceAsStream(resourceFile);
+        if (input == null) {
+            try {
+                // This is hack for the OneJar version of Selenium-Server.
+                // Examine the contents of the jar made by
+                // https://svn.openqa.org/svn/selenium-rc/trunk/selenium-server-onejar/build.xml
+                clazz = Class.forName("OneJar");
+                input = clazz.getResourceAsStream(resourceFile);
+            } catch (ClassNotFoundException e) {
+            }
+        }
+        return input;
+    }
 
     public static boolean isScriptFile(File aFile) {
         final char firstTwoChars[] = new char[2];

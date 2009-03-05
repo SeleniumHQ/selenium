@@ -27,6 +27,7 @@ import org.mortbay.jetty.Server;
 import org.mortbay.util.MultiException;
 import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
 import org.openqa.selenium.server.browserlaunchers.AsyncExecute;
+import static org.openqa.selenium.server.browserlaunchers.LauncherUtils.getSeleniumResourceAsStream;
 import org.openqa.selenium.server.cli.RemoteControlLauncher;
 import org.openqa.selenium.server.htmlrunner.HTMLLauncher;
 import org.openqa.selenium.server.htmlrunner.HTMLResultsListener;
@@ -258,7 +259,7 @@ public class SeleniumServer {
     private void logVersionNumber() throws IOException {
         final Properties p = new Properties();
 
-        InputStream stream = SeleniumServer.class.getResourceAsStream("/VERSION.txt");
+        InputStream stream = getSeleniumResourceAsStream("/VERSION.txt");
         if (stream == null) {
             LOGGER.error("Couldn't determine version number");
             return;

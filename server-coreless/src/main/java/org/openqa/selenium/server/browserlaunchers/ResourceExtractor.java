@@ -19,6 +19,7 @@ import java.util.zip.ZipFile;
 import org.apache.commons.logging.Log;
 import org.apache.tools.ant.util.FileUtils;
 import org.mortbay.log.LogFactory;
+import static org.openqa.selenium.server.browserlaunchers.LauncherUtils.getSeleniumResourceAsStream;
 
 
 public class ResourceExtractor {
@@ -80,7 +81,7 @@ public class ResourceExtractor {
             }
         } else {
             FileOutputStream fos = new FileOutputStream(dest);
-            copyStream(cl.getResourceAsStream(resourcePath), fos);
+            copyStream(getSeleniumResourceAsStream(resourcePath), fos);
             
         }
     } 

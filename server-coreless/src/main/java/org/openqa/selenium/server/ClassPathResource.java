@@ -18,6 +18,7 @@ package org.openqa.selenium.server;
 
 import org.mortbay.util.IO;
 import org.mortbay.util.Resource;
+import static org.openqa.selenium.server.browserlaunchers.LauncherUtils.getSeleniumResourceAsStream;
 
 import java.io.*;
 import java.net.MalformedURLException;
@@ -38,7 +39,7 @@ public class ClassPathResource extends Resource {
 	 */
 	public ClassPathResource(String path) {
 		this.path = path;
-		InputStream is = ClassPathResource.class.getResourceAsStream(path);
+		InputStream is = getSeleniumResourceAsStream(path);
 		if (is != null) {
 			os = new ByteArrayOutputStream();
 			try {

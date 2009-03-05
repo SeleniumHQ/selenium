@@ -10,6 +10,7 @@ import java.util.*;
 import javax.xml.parsers.*;
 
 import org.w3c.dom.*;
+import static org.openqa.selenium.server.browserlaunchers.LauncherUtils.getSeleniumResourceAsStream;
 
 /**
  * Given an HTML file containing a Selenese test case, generate equivalent Java code w/ calls
@@ -116,7 +117,7 @@ public class XlateHtmlSeleneseToJava {
         if (funcTypes != null) return;
         funcTypes = new HashMap<String, Class>();
         funcArgCounts = new HashMap<String, Integer>();
-        InputStream stream = XlateHtmlSeleneseToJava.class.getResourceAsStream("/core/iedoc.xml");
+        InputStream stream = getSeleniumResourceAsStream("/core/iedoc.xml");
         if (stream==null) {
             throw new RuntimeException("could not find /core/iedoc.xml on the class path");
         }
