@@ -260,6 +260,8 @@
                                         <taskdef resource="selenium-ant.properties">
                                             <classpath refid="maven.test.classpath" />
                                         </taskdef>
+                                        <echo>Shutting down any existing Remote Control...</echo>
+                                        <get src="http://localhost:4444/selenium-server/driver/?cmd=shutDown" dest="shutdown.log" ignoreerrors="true"/>
                                         <selenese 
                                             browser="${browser}"
                                             suite="src/main/resources/tests/${seleneseSuite}.html"
