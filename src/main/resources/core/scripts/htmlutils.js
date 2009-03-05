@@ -972,10 +972,16 @@ function getTimeoutTime(timeout) {
 }
 
 /**
- * Returns true iff the current environment is the IDE.
+ * Returns true iff the current environment is the IDE, and is not the chrome
+ * runner launched by the IDE.
  */
-function is_IDE()
-{
+function is_IDE() {
+    var locstr = window.location.href;
+    
+    if (locstr.indexOf('chrome://selenium-ide-testrunner') == 0) {
+         return false;
+    }
+    
     return (typeof(SeleniumIDE) != 'undefined');
 }
 
