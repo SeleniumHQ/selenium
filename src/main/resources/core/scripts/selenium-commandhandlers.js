@@ -306,12 +306,14 @@ ActionHandler.prototype.execute = function(seleniumApi, command) {
         // todo: this conditional logic is ugly
         seleniumApi.ensureNoUnhandledPopups();
     }
-    var terminationCondition = this.actionBlock(command.target, command.value);
-    // If the handler didn't return a wait flag, check to see if the
-    // handler was registered with the wait flag.
-    if (terminationCondition == undefined && this.wait) {
-        terminationCondition = seleniumApi.makePageLoadCondition();
-    }
+    
+    var handlerCondition = this.actionBlock(command.target, command.value);
+    
+    // page load waiting takes precedence over any wait condition returned by
+    // the action handler.
+    var terminationCondition = (this.wait)
+        ? seleniumApi.makePageLoadCondition() : handlerCondition;
+    
     return new ActionResult(terminationCondition);
 };
 

@@ -243,7 +243,7 @@ Selenium.prototype.doClick = function(locator) {
         
         elementWithHref.href = 'javascript:try { '
             + originalHref.replace(/^\s*javascript:/i, "")
-            + '} finally { window._executingJavascriptHref = undefined; }' ;
+            + ' } finally { window._executingJavascriptHref = undefined; }' ;
         
         win._executingJavascriptHref = true;
         

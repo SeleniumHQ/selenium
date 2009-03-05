@@ -98,6 +98,33 @@ Change the text dynamically again, then click on a button to do a slow refresh
   </tbody>
 </table>
 
+<p>Change the text dynamically again, then click on a link (javascript href) to do a slow refresh. [SEL-638]</p>
+
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td>click</td>
+      <td>changeSpan</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>assertTextPresent</td>
+      <td>Changed the text</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>clickAndWait</td>
+      <td>id=slowRefreshJavascriptHref</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>assertTextNotPresent</td>
+      <td>Changed the text</td>
+      <td>&nbsp;</td>
+    </tr>
+  </tbody>
+</table>
+
 And again with an anchor in the URL
 
 <table cellpadding="1" cellspacing="1" border="1">
