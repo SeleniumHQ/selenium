@@ -348,7 +348,7 @@ public class BrowserSessionFactory {
         LOGGER.info("Allocated session " + sessionId + " for " + startURL + ", launching...");
 
         try {
-            launcher.launchRemoteSession(startURL, configuration.isMultiWindow(), browserConfiguration);
+            launcher.launchRemoteSession(startURL);
             queueSet.waitForLoad(configuration.getTimeoutInSeconds() * 1000l);
 
             // TODO DGF log4j only

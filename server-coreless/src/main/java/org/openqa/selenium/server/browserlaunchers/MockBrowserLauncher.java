@@ -40,8 +40,7 @@ public class MockBrowserLauncher implements BrowserLauncher, Runnable {
         this.configuration = configuration;
     }
     
-    public void launchHTMLSuite(String startURL, String suiteUrl,
-            boolean multiWindow) {
+    public void launchHTMLSuite(String startURL, String suiteUrl) {
 
     }
 
@@ -166,8 +165,7 @@ public class MockBrowserLauncher implements BrowserLauncher, Runnable {
     /**
      * Note that the browserConfigurationOptions object is ignored; This browser configuration is not supported for IE
      */
-    public void launchRemoteSession(String url, boolean multiWindow,
-            BrowserConfigurationOptions browserConfigurationOptions) {
+    public void launchRemoteSession(String url) {
         browser = new Thread(this);
           browser.setName("mockbrowser");
           if (null != url) {

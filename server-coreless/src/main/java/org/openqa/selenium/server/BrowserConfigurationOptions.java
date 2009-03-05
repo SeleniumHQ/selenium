@@ -3,6 +3,7 @@ package org.openqa.selenium.server;
 public class BrowserConfigurationOptions {
 
     private String profile = "";
+    private boolean multiWindow = true;
     private boolean hasOptions = false;
     
     public BrowserConfigurationOptions(String browserConfiguration) {
@@ -44,6 +45,15 @@ public class BrowserConfigurationOptions {
     
     public boolean hasOptions() {
       return hasOptions;
+    }
+    
+    public Boolean isMultiWindow() {
+        return multiWindow;
+    }
+    
+    public void  setMultiWindow(boolean multiWindow) {
+        this.multiWindow = multiWindow;
+        hasOptions = true;
     }
     
     /**

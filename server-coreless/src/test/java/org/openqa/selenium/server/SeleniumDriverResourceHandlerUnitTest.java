@@ -42,7 +42,7 @@ public class SeleniumDriverResourceHandlerUnitTest extends TestCase {
     server.start();
     SeleniumDriverResourceHandler sdrh = new SeleniumDriverResourceHandler(server);
     try {
-      sdrh.getNewBrowserSession("*mock", null, "", null);
+      sdrh.getNewBrowserSession("*mock", null, "", new BrowserConfigurationOptions());
       fail("Launch should have failed");
     } catch (RemoteCommandException rce) {
       // passes.

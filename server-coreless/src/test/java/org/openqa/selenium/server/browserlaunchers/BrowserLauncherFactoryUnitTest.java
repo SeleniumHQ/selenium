@@ -1,6 +1,8 @@
 package org.openqa.selenium.server.browserlaunchers;
 
 import junit.framework.TestCase;
+
+import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
 /**
@@ -9,25 +11,13 @@ import org.openqa.selenium.server.RemoteControlConfiguration;
 public class BrowserLauncherFactoryUnitTest extends TestCase {
 
     public void testAllSupportedBrowsersDefineAppropriateConstructor() {
-        for (String browser : BrowserLauncherFactory.getSupportedLaunchers().keySet()) {
+        for (Class<? extends BrowserLauncher> c : BrowserLauncherFactory.getSupportedLaunchers().values()) {
             try {
-                new BrowserLauncherFactory().getBrowserLauncher("*" + browser, "a-session-id", new RemoteControlConfiguration(), null);
-            } catch (RuntimeException e) {
-                if (e.getCause() instanceof NoSuchMethodException) {
-                    fail(browser + " browser does not define appropriate constructor: " + e.getMessage());
-                }
-                if (-1 != e.getMessage().indexOf("could not be found in the path")
-                    || -1 != e.getMessage().indexOf("SystemRoot apparently not set")
-                    || -1 != e.getMessage().indexOf("File was a script file, not a real executable")) {
-                    System.out.println("Ignoring problem with getting launcher for '" + browser
-                                       + "', as browser might not be installed on this machine");
-                } else {
-                    throw e;
-                }
+                c.getConstructor(BrowserConfigurationOptions.class, RemoteControlConfiguration.class, String.class, String.class);
+            } catch (Exception e) {
+                throw new RuntimeException(c.getSimpleName(), e);
             }
         }
     }
-    
-
 }
 

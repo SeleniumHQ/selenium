@@ -494,11 +494,11 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             } else {
                 String browser = values.get(0);
                 String newSessionId = generateNewSessionId();
-                BrowserLauncher simpleLauncher = browserLauncherFactory.getBrowserLauncher(browser, newSessionId, remoteControl.getConfiguration(), null);
+                BrowserLauncher simpleLauncher = browserLauncherFactory.getBrowserLauncher(browser, newSessionId, remoteControl.getConfiguration(), new BrowserConfigurationOptions());
                 String baseUrl = "http://localhost:" + remoteControl.getPort();
                 remoteControl.registerBrowserSession(new BrowserSessionInfo(
                     newSessionId, browser, baseUrl, simpleLauncher, null));
-                simpleLauncher.launchHTMLSuite("TestPrompt.html?thisIsSeleniumServer=true", baseUrl, false);
+                simpleLauncher.launchHTMLSuite("TestPrompt.html?thisIsSeleniumServer=true", baseUrl);
                 results = "OK";
             }
         } else if ("slowResources".equals(cmd)) {

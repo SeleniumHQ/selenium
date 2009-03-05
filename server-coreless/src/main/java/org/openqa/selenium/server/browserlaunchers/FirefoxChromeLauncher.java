@@ -293,17 +293,17 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
     }
 
     @Override // need to specify an absolute resultsUrl
-    public void launchHTMLSuite(String suiteUrl, String browserURL, boolean multiWindow) {
+    public void launchHTMLSuite(String suiteUrl, String browserURL) {
         // If navigating to TestPrompt, use the baked-in version instead.
         if (suiteUrl != null && suiteUrl.startsWith("TestPrompt.html?")) {
             suiteUrl = suiteUrl.replaceFirst("^TestPrompt\\.html\\?", "chrome://src/content/TestPrompt.html?");
         }
-        launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl, multiWindow, getPort()), null);
+        launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl, browserConfigurationOptions.isMultiWindow(), getPort()), null);
     }
     
     @Override // need to specify an absolute driverUrl
-    public void launchRemoteSession(String browserURL, boolean multiWindow, BrowserConfigurationOptions config) { 
-        launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId, multiWindow, getPort()), config);
+    public void launchRemoteSession(String browserURL) { 
+        launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId, browserConfigurationOptions.isMultiWindow(), getPort()), browserConfigurationOptions);
     }
 
 }

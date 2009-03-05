@@ -23,6 +23,7 @@ public class HTABrowserLauncher implements BrowserLauncher {
     private Process htaProcess;
     private Process iexploreProcess;
     private RemoteControlConfiguration configuration;
+    private BrowserConfigurationOptions browserOptions;
     
     public HTABrowserLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration,
                               String sessionId, String browserLaunchLocation) {
@@ -116,8 +117,8 @@ public class HTABrowserLauncher implements BrowserLauncher {
         return htaProcess;
     }
 
-    public void launchHTMLSuite(String suiteUrl, String browserURL, boolean multiWindow) {
-        launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl, multiWindow, getPort()), "TestRunner.hta");
+    public void launchHTMLSuite(String suiteUrl, String browserURL) {
+        launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl, browserOptions.isMultiWindow(), getPort()), "TestRunner.hta");
     }
 
     private int getPort() {
@@ -127,9 +128,8 @@ public class HTABrowserLauncher implements BrowserLauncher {
     /**
      * Note that the browserConfigurationOptions object is ignored; This browser configuration is not supported for IE
      */
-    public void launchRemoteSession(String url, boolean multiWindow,
-            BrowserConfigurationOptions browserConfigurationOptions) {
-        launch(LauncherUtils.getDefaultRemoteSessionUrl(url, sessionId, multiWindow, getPort()), "RemoteRunner.hta");
+    public void launchRemoteSession(String url) {
+        launch(LauncherUtils.getDefaultRemoteSessionUrl(url, sessionId, browserOptions.isMultiWindow(), getPort()), "RemoteRunner.hta");
     }
 
 }

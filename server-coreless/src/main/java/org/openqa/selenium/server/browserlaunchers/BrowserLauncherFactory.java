@@ -78,6 +78,9 @@ public class BrowserLauncherFactory {
         if (browser == null) {
             throw new IllegalArgumentException("browser may not be null");
         }
+        if (!browserOptions.hasOptions()) {
+            browserOptions.setMultiWindow(configuration.isMultiWindow());
+        }
 
         for (String key : supportedBrowsers.keySet()) {
             final BrowserStringParser.Result result;

@@ -1,6 +1,5 @@
 package org.openqa.selenium.server.browserlaunchers;
 
-import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
 
 /**
@@ -33,8 +32,7 @@ public class DummyLauncher implements BrowserLauncher {
     /**
      * noop
      */
-    public void launchHTMLSuite(String startURL, String suiteUrl,
-                                boolean multiWindow) {
+    public void launchHTMLSuite(String startURL, String suiteUrl) {
         closed = false;
     }
 
@@ -46,8 +44,7 @@ public class DummyLauncher implements BrowserLauncher {
         closed = false;
     }
 
-    public void launchRemoteSession(String url, boolean multiWindow,
-            BrowserConfigurationOptions browserConfigurationOptions) {
+    public void launchRemoteSession(String url) {
        closed = false;
     }
 }

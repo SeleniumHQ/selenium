@@ -16,6 +16,7 @@ import org.apache.tools.ant.taskdefs.Tar;
 import org.apache.tools.ant.taskdefs.condition.Os;
 import org.apache.tools.ant.types.FileSet;
 import org.mortbay.log.LogFactory;
+import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.SeleniumCommandTimedOutException;
 import org.openqa.selenium.server.SeleniumServer;
 import org.openqa.selenium.server.StaticContentHandler;
@@ -84,13 +85,15 @@ public class HTMLLauncher implements HTMLResultsListener {
         remoteControl.handleHTMLRunnerResults(this);
         BrowserLauncherFactory blf = new BrowserLauncherFactory();
         String sessionId = Long.toString(System.currentTimeMillis() % 1000000);
-        BrowserLauncher launcher = blf.getBrowserLauncher(browser, sessionId, remoteControl.getConfiguration(), null);
+        BrowserConfigurationOptions browserOptions = new BrowserConfigurationOptions();
+        browserOptions.setMultiWindow(multiWindow);
+        BrowserLauncher launcher = blf.getBrowserLauncher(browser, sessionId, remoteControl.getConfiguration(), browserOptions);
         BrowserSessionInfo sessionInfo = new BrowserSessionInfo(sessionId, 
             browser, browserURL, launcher, null);
         remoteControl.registerBrowserSession(sessionInfo);
         
         // JB: -- aren't these URLs in the wrong order according to declaration?
-        launcher.launchHTMLSuite(suiteURL, browserURL, multiWindow);
+        launcher.launchHTMLSuite(suiteURL, browserURL);
         long now = System.currentTimeMillis();
         long end = now + timeoutInMs;
         while (results == null && System.currentTimeMillis() < end) {

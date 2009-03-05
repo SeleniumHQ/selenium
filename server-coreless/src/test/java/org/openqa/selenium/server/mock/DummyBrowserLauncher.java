@@ -41,14 +41,12 @@ public class DummyBrowserLauncher implements BrowserLauncher {
     }
 
     /** noop */
-    public void launchHTMLSuite(String startURL, String suiteUrl,
-            boolean multiWindow) {
+    public void launchHTMLSuite(String startURL, String suiteUrl) {
 
     }
 
     /** noop */
-    public void launchRemoteSession(String url, boolean multiWindow,
-            BrowserConfigurationOptions browserConfigurationOptions) {
+    public void launchRemoteSession(String url) {
         
     }
 
