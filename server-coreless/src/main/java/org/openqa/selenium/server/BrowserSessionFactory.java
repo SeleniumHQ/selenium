@@ -42,6 +42,7 @@ public class BrowserSessionFactory {
     private final BrowserLauncherFactory browserLauncherFactory;
     private final Timer cleanupTimer;
     private final long maxIdleSessionTime;
+    private final boolean doCleanup;
 
     public BrowserSessionFactory(BrowserLauncherFactory blf) {
         this(blf, DEFAULT_CLEANUP_INTERVAL, DEFAULT_MAX_IDLE_SESSION_TIME, true);
@@ -59,6 +60,7 @@ public class BrowserSessionFactory {
                                     long cleanupInterval, long maxIdleSessionTime, boolean doCleanup) {
         browserLauncherFactory = blf;
         this.maxIdleSessionTime = maxIdleSessionTime;
+        this.doCleanup = doCleanup;
         cleanupTimer = new Timer(/* daemon= */true);
         if (doCleanup) {
             cleanupTimer.schedule(new CleanupTask(), 0, cleanupInterval);
@@ -153,6 +155,9 @@ public class BrowserSessionFactory {
             }
             done = (0 == activeSessions.size() && 0 == availableSessions.size());
             allSessions.clear();
+            if (doCleanup) {
+                cleanupTimer.cancel();
+            }
         }
     }
 
