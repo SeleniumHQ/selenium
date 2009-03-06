@@ -9,23 +9,20 @@ public class ExampleSeleniumTest extends TestCase {
 
     public void setUp() {
         browser = new DefaultSelenium("localhost", 4444, "*firefox",
-                "http://www.google.com");
+                "http://bankofscotland.co.uk/");
         browser.start();
     }
 
     public void testGoogleImFeelingLucky() throws InterruptedException {
         browser.showContextualBanner();
-        // relative URL is correct idiom for open()
-        browser.open("/webhp?hl=en");
-        // enter a search term
-        browser.type("name=q", "Erlang");
-        browser.click("btnI");
+        browser.open("/");
+// Banking_HomePage_Signin
+        browser.click("xpath=id('primaryarea-personal')//div[@class = \"login\"]/a");
         browser.waitForPageToLoad("5000");
+Thread.sleep(10000);
 
         // are we at erlang.org ?
         assertEquals("Erlang", browser.getTitle());
-        String bodyText = browser.getBodyText();
-        assertTrue(bodyText.contains("Software for a Concurrent World"));
     }
 
     public void tearDown() {
