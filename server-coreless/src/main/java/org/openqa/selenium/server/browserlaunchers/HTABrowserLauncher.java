@@ -13,7 +13,8 @@ import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.browserlaunchers.locators.InternetExplorerLocator;
 
-//TODO:  EB - Why doesn't this class extend AbstractBrowserLauncher
+//EB - Why doesn't this class extend AbstractBrowserLauncher
+//DGF - because it would override every method of ABL.
 public class HTABrowserLauncher implements BrowserLauncher {
 
     static Log log = LogFactory.getLog(HTABrowserLauncher.class);
@@ -129,7 +130,7 @@ public class HTABrowserLauncher implements BrowserLauncher {
      * Note that the browserConfigurationOptions object is ignored; This browser configuration is not supported for IE
      */
     public void launchRemoteSession(String url) {
-        launch(LauncherUtils.getDefaultRemoteSessionUrl(url, sessionId, browserOptions.isMultiWindow(), getPort()), "RemoteRunner.hta");
+        launch(LauncherUtils.getDefaultRemoteSessionUrl(url, sessionId, browserOptions.isMultiWindow(), getPort(), browserOptions.is("browserSideLog")), "RemoteRunner.hta");
     }
 
 }

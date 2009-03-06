@@ -33,11 +33,13 @@ public class MockBrowserLauncher implements BrowserLauncher, Runnable {
     private String uniqueId;
     private int sequenceNumber = 0;
     private final RemoteControlConfiguration configuration;
+    private final BrowserConfigurationOptions browserOptions;
         
     public MockBrowserLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration, String sessionId, String command) {
         this.sessionId = sessionId;
         this.uniqueId = "mock";
         this.configuration = configuration;
+        this.browserOptions = browserOptions;
     }
     
     public void launchHTMLSuite(String startURL, String suiteUrl) {
@@ -62,7 +64,7 @@ public class MockBrowserLauncher implements BrowserLauncher, Runnable {
                 log.info("MOCK: " + commandLine);
                 RemoteCommand sc = DefaultRemoteCommand.parse(commandLine);
                 String result = doCommand(sc);
-                if (SeleniumServer.isBrowserSideLogEnabled() && !interrupted) {
+                if (browserOptions.is("browserSideLog") && !interrupted) {
                     for (int i = 0; i < 3; i++) {
                         doBrowserRequest(startURL + "&logging=true&sequenceNumber="+sequenceNumber++, "logLevel=debug:dummy log message " + i + "\n");
                     }

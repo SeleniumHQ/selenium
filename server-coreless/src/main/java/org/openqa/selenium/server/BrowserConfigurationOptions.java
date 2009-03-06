@@ -49,7 +49,7 @@ public class BrowserConfigurationOptions {
     }
     
     public boolean isMultiWindow() {
-        return getBoolean("multiWindow");
+        return is("multiWindow");
     }
     
     public void  setMultiWindow(Boolean multiWindow) {
@@ -72,7 +72,7 @@ public class BrowserConfigurationOptions {
         return Integer.parseInt(value);
     }
     
-    public boolean getBoolean(String key) {
+    public boolean is(String key) {
         String value = options.get(key);
         if (value == null) return false;
         return Boolean.parseBoolean(value);
@@ -80,12 +80,6 @@ public class BrowserConfigurationOptions {
     
     public String get(String key) {
         return options.get(key);
-    }
-    
-    public int getInt(String key) {
-        String value = options.get(key);
-        if (value == null) return 0;
-        return Integer.parseInt(value);
     }
     
     public File getFile(String key) {

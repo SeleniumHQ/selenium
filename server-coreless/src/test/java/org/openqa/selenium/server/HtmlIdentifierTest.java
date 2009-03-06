@@ -6,7 +6,6 @@ import org.openqa.selenium.server.log.LoggingManager;
 public class HtmlIdentifierTest extends TestCase {
     
     public void setUp() throws Exception {
-        SeleniumServer.setBrowserSideLogEnabled(true);
         LoggingManager.configureLogging(new RemoteControlConfiguration(), true);
     }
     

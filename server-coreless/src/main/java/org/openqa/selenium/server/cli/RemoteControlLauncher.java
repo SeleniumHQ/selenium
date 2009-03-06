@@ -113,9 +113,9 @@ public class RemoteControlLauncher {
             } else if ("-dontInjectRegex".equalsIgnoreCase(arg)) {
                 configuration.setDontInjectRegex(getArg(args, ++i));
             } else if ("-browserSideLog".equalsIgnoreCase(arg)) {
-                SeleniumServer.setBrowserSideLogEnabled(true);
+                configuration.setBrowserSideLogEnabled(true);
             } else if ("-debug".equalsIgnoreCase(arg)) {
-                SeleniumServer.setDebugMode(true);
+                configuration.setDebugMode(true);
             } else if ("-debugURL".equalsIgnoreCase(arg)) {
                 configuration.setDebugURL(getArg(args, ++i));
             } else if ("-timeout".equalsIgnoreCase(arg)) {
@@ -124,7 +124,7 @@ public class RemoteControlLauncher {
                 int jettyThreadsCount = Integer.parseInt(getArg(args, ++i));
 
                 // Set the number of jetty threads before we construct the instance
-                SeleniumServer.setJettyThreads(jettyThreadsCount);
+                configuration.setJettyThreads(jettyThreadsCount);
             } else if ("-trustAllSSLCertificates".equalsIgnoreCase(arg)) {
                 configuration.setTrustAllSSLCertificates(true);
             } else if ("-userJsInjection".equalsIgnoreCase(arg)) {
@@ -187,6 +187,25 @@ public class RemoteControlLauncher {
         if (configuration.getProfilesLocation() != null && configuration.getFirefoxProfileTemplate() != null) {
             System.err.println("Cannot specify both a profileDirectory and a firefoxProfileTemplate");
             System.exit(1);
+        }
+        
+        if (null == configuration.getForcedBrowserMode()) {
+            if (null != System.getProperty("selenium.defaultBrowserString")) {
+                System.err.println("The selenium.defaultBrowserString property is no longer supported; use selenium.forcedBrowserMode instead.");
+                System.exit(-1);
+            }
+            configuration.setForcedBrowserMode(System.getProperty("selenium.forcedBrowserMode"));
+        }
+        
+        if (!configuration.getProxyInjectionModeArg() && System.getProperty("selenium.proxyInjectionMode") != null) {
+            configuration.setProxyInjectionModeArg("true".equals(System.getProperty("selenium.proxyInjectionMode")));
+        }
+        if (!configuration.isBrowserSideLogEnabled() && System.getProperty("selenium.browserSideLog") != null) {
+            configuration.setBrowserSideLogEnabled("true".equals(System.getProperty("selenium.browserSideLog")));
+        }
+        
+        if (!configuration.isDebugMode() && System.getProperty("selenium.debugMode") != null) {
+            configuration.setDebugMode("true".equals(System.getProperty("selenium.debugMode")));
         }
         return configuration;
     }

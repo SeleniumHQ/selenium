@@ -137,7 +137,7 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
 
         if (simple) return customProfileDir;
 
-        File proxyPAC = LauncherUtils.makeProxyPAC(customProfileDir, getPort(), browserConfigurationOptions.getBoolean("avoidProxy"));
+        File proxyPAC = LauncherUtils.makeProxyPAC(customProfileDir, getPort(), browserConfigurationOptions.is("avoidProxy"));
 
         // TODO Do we want to make these preferences configurable somehow?
         File opera6ini = new File(customProfileDir, "opera6.ini");

@@ -74,7 +74,6 @@ public class MockPIFrameUnitTest extends TestCase {
     @Override
     public void tearDown() {
         server.stop();
-        SeleniumServer.setDebugMode(false);
         LoggingManager.configureLogging(new RemoteControlConfiguration(), false);
         DummyBrowserLauncher.clearSessionId();
         InjectionHelper.setFailOnError(true);

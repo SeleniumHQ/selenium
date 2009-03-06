@@ -35,7 +35,6 @@ public class CommandHolderUnitTest extends TestCase {
     }
 
     private void configureLogging() throws Exception {
-        SeleniumServer.setDebugMode(true);
         LoggingManager.configureLogging(new RemoteControlConfiguration(), true);
         Logger logger = Logger.getLogger("");
         for (Handler handler : logger.getHandlers()) {
@@ -48,7 +47,6 @@ public class CommandHolderUnitTest extends TestCase {
 
     @Override
     public void tearDown() throws Exception {
-        SeleniumServer.setDebugMode(false);
         LoggingManager.configureLogging(new RemoteControlConfiguration(), false);
     }
 

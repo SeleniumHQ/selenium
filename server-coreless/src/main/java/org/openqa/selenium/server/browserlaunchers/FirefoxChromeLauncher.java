@@ -131,9 +131,9 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
 
         copyRunnerHtmlFiles();
         
-        changeMaxConnections = browserConfigurationOptions.getBoolean("changeMaxConnections");
+        changeMaxConnections = browserConfigurationOptions.is("changeMaxConnections");
 
-        LauncherUtils.generatePacAndPrefJs(customProfileDir, getPort(), LauncherUtils.ProxySetting.NO_PROXY, homePage, changeMaxConnections, browserConfigurationOptions.getTimeoutInSeconds(), browserConfigurationOptions.getBoolean("avoidProxy"));
+        LauncherUtils.generatePacAndPrefJs(customProfileDir, getPort(), LauncherUtils.ProxySetting.NO_PROXY, homePage, changeMaxConnections, browserConfigurationOptions.getTimeoutInSeconds(), browserConfigurationOptions.is("avoidProxy"));
 
         return customProfileDir.getAbsolutePath();
     }
@@ -294,7 +294,7 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
     
     @Override // need to specify an absolute driverUrl
     public void launchRemoteSession(String browserURL) { 
-        launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId, browserConfigurationOptions.isMultiWindow(), getPort()));
+        launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId, browserConfigurationOptions.isMultiWindow(), getPort(), browserConfigurationOptions.is("browserSideLog")));
     }
 
 }

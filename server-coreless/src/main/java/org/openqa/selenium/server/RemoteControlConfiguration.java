@@ -53,6 +53,10 @@ public class RemoteControlConfiguration {
     private boolean dontTouchLogging = false;
     private boolean ensureCleanSession;
     private boolean avoidProxy;
+    private boolean debugMode;
+    private boolean browserSideLogEnabled;
+    private int jettyThreads = SeleniumServer.DEFAULT_JETTY_THREADS;
+    private SeleniumServer server;
     
 
     public RemoteControlConfiguration() {
@@ -175,6 +179,14 @@ public class RemoteControlConfiguration {
 
     public void setDebugURL(String newDebugURL) {
         debugURL = newDebugURL;
+    }
+    
+    public boolean isDebugMode() {
+        return debugMode;
+    }
+
+    public void setDebugMode(boolean debugMode) {
+        this.debugMode = debugMode;
     }
 
     public void setDontInjectRegex(String newdontInjectRegex) {
@@ -301,7 +313,37 @@ public class RemoteControlConfiguration {
     public void setAvoidProxy(boolean value) {
         avoidProxy = value;
     }
+    
+    public boolean isBrowserSideLogEnabled() {
+        return browserSideLogEnabled;
+    }
 
+    public void setBrowserSideLogEnabled(boolean value) {
+        browserSideLogEnabled = value;
+    }
+    
+    public int getJettyThreads() {
+        return jettyThreads;
+    }
+    
+    public void setJettyThreads(int jettyThreads) {
+        final int MAX_JETTY_THREADS = 1024;
+        if (jettyThreads < 1
+                || jettyThreads > MAX_JETTY_THREADS) {
+            throw new IllegalArgumentException(
+                    "Number of jetty threads specified as an argument must be greater than zero and less than "
+                            + MAX_JETTY_THREADS);
+        }
+        this.jettyThreads = jettyThreads;
+    }
+
+    public SeleniumServer getSeleniumServer() {
+        return server;
+    }
+    
+    public void setSeleniumServer(SeleniumServer server) {
+        this.server = server;
+    }
     
     public void copySettingsIntoBrowserOptions(BrowserConfigurationOptions browserOptions) {
         if (browserOptions.hasOptions()) return;
@@ -316,6 +358,7 @@ public class RemoteControlConfiguration {
         browserOptions.set("multiWindow", multiWindow);
         browserOptions.set("ensureCleanSession", ensureCleanSession);
         browserOptions.set("avoidProxy", avoidProxy);
+        browserOptions.set("browserSideLog", browserSideLogEnabled);
     }
     
 }

@@ -28,7 +28,7 @@ public class SafariFileBasedLauncher extends SafariCustomProfileLauncher {
         query = LauncherUtils.getQueryString(url);
         query += "&driverUrl=http://localhost:" + getPort() + "/selenium-server/driver/";
         try {
-            if (browserConfigurationOptions.getBoolean("ensureCleanSession")) {
+            if (browserConfigurationOptions.is("ensureCleanSession")) {
                 ensureCleanSession();
             }
             fileUrl = createExtractedFiles().toURL() + "?" + query;

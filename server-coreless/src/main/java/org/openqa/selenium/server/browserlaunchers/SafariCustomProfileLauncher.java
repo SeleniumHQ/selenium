@@ -70,11 +70,11 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
     
     protected void launch(String url) {
         try {
-            if (!browserConfigurationOptions.getBoolean("honorSystemProxy")) {
+            if (!browserConfigurationOptions.is("honorSystemProxy")) {
                 setupSystemProxy();
             }
 
-            if (browserConfigurationOptions.getBoolean("ensureCleanSession")) {
+            if (browserConfigurationOptions.is("ensureCleanSession")) {
                 ensureCleanSession();
             }
 
@@ -107,7 +107,7 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
         if (closed) {
             return;
         }
-        if (!browserConfigurationOptions.getBoolean("honorSystemProxy")) {
+        if (!browserConfigurationOptions.is("honorSystemProxy")) {
           restoreSystemProxy();
         }
         
@@ -215,14 +215,14 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
 
     private void restoreSystemProxy() {
         if (WindowsUtils.thisIsWindows()) {
-            wpm.restoreRegistrySettings(browserConfigurationOptions.getBoolean("ensureCleanSession"));
+            wpm.restoreRegistrySettings(browserConfigurationOptions.is("ensureCleanSession"));
         } else {
             mpm.restoreNetworkSettings();
         }
     }
 
     protected void changeRegistrySettings() throws IOException {
-        wpm.changeRegistrySettings(browserConfigurationOptions.getBoolean("ensureCleanSession"), browserConfigurationOptions.getBoolean("avoidProxy"));
+        wpm.changeRegistrySettings(browserConfigurationOptions.is("ensureCleanSession"), browserConfigurationOptions.is("avoidProxy"));
     }
 
     private void createSystemProxyManager(String sessionId) {

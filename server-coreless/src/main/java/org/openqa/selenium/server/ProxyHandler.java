@@ -61,6 +61,8 @@ public class ProxyHandler extends AbstractHttpHandler {
     private final String dontInjectRegex;
     private final String debugURL;
     private final boolean proxyInjectionMode;
+    private final boolean forceProxyChain;
+    private boolean fakeCertsGenerated;
 
     // see docs for the lock object on SeleniumServer for information on this and why it is IMPORTANT!
     private Object shutdownLock;
@@ -128,19 +130,20 @@ public class ProxyHandler extends AbstractHttpHandler {
         _allowedConnectPorts.add(8443);
     }
 
-    public ProxyHandler(boolean trustAllSSLCertificates, String dontInjectRegex, String debugURL, boolean proxyInjectionMode) {
+    public ProxyHandler(boolean trustAllSSLCertificates, String dontInjectRegex, String debugURL, boolean proxyInjectionMode, boolean forceProxyChain) {
         super();
         this.trustAllSSLCertificates = trustAllSSLCertificates;
         this.dontInjectRegex = dontInjectRegex;
         this.debugURL = debugURL;
         this.proxyInjectionMode = proxyInjectionMode;
+        this.forceProxyChain = forceProxyChain;
     }
 
     /* ------------------------------------------------------------ */
     /*
      */
     public void start() throws Exception {
-        _chained = System.getProperty("http.proxyHost") != null || SeleniumServer.isForceProxyChain();
+        _chained = System.getProperty("http.proxyHost") != null || forceProxyChain;
         super.start();
     }
 
@@ -491,7 +494,7 @@ public class ProxyHandler extends AbstractHttpHandler {
         Server server = new Server();
         HttpContext httpContext = new HttpContext();
         httpContext.setContextPath("/");
-        ProxyHandler proxy = new ProxyHandler(true, "", "", false);
+        ProxyHandler proxy = new ProxyHandler(true, "", "", false, false);
         proxy.useCyberVillains = false;
         httpContext.addHandler(proxy);
         server.addContext(httpContext);
@@ -501,7 +504,8 @@ public class ProxyHandler extends AbstractHttpHandler {
         server.start();
     }
 
-    public void generateSSLCertsForLoggingHosts(HttpServer server) {
+    public synchronized void generateSSLCertsForLoggingHosts(HttpServer server) {
+        if (fakeCertsGenerated) return;
         log.info("Creating 16 fake SSL servers for browser side logging");
         for (int i = 1; i <= 16; i++) {
             String uri = i + ".selenium.doesnotexist:443";
@@ -511,6 +515,7 @@ public class ProxyHandler extends AbstractHttpHandler {
                 log.error("Could not pre-create logging SSL relay for " + uri, e);
             }
         }
+        fakeCertsGenerated = true;
     }
 
     /* ------------------------------------------------------------ */

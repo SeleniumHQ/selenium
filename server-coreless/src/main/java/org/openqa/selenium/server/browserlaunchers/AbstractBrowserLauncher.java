@@ -27,7 +27,11 @@ public abstract class AbstractBrowserLauncher implements BrowserLauncher {
     }
 
     public void launchRemoteSession(String browserURL) {
-        launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId, browserConfigurationOptions.isMultiWindow(), 0));
+        boolean browserSideLog = browserConfigurationOptions.is("browserSideLog");
+        if (browserSideLog) {
+            configuration.getSeleniumServer().generateSSLCertsForLoggingHosts();
+        }
+        launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId, browserConfigurationOptions.isMultiWindow(), 0, browserSideLog));
     }
 
     protected abstract void launch(String url);

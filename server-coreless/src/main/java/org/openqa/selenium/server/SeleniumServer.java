@@ -149,23 +149,16 @@ public class SeleniumServer {
     private Thread shutDownHook;
 
     private static ProxyHandler customProxyHandler;
-    private static boolean browserSideLogEnabled = false;
-    private static boolean avoidProxy = false;
-    private static boolean proxyInjectionMode = false;
-    private static boolean ensureCleanSession = false;
+    private ProxyHandler proxyHandler;
 
 
-    // Minimum and maximum number of jetty threads
-    public static final int MIN_JETTY_THREADS = 1;
-    public static final int MAX_JETTY_THREADS = 1024;
-    public static final int DEFAULT_JETTY_THREADS = 512;
-
+    
+    public static int DEFAULT_JETTY_THREADS = 512;
     // Number of jetty threads for the server
-    private static int jettyThreads = DEFAULT_JETTY_THREADS;
+    private int jettyThreads = DEFAULT_JETTY_THREADS;
 
 
-    private static boolean FORCE_PROXY_CHAIN = false;
-    private static boolean debugMode = false;
+    private boolean debugMode = false;
 
     /**
      * This lock is very important to ensure that SeleniumServer and the underlying Jetty instance
@@ -218,8 +211,9 @@ public class SeleniumServer {
      */
     public SeleniumServer(boolean slowResources, RemoteControlConfiguration configuration) throws Exception {
         this.configuration = configuration;
-        
-        LOGGER = LoggingManager.configureLogging(configuration, isDebugMode());
+        debugMode = configuration.isDebugMode();
+        jettyThreads = configuration.getJettyThreads();
+        LOGGER = LoggingManager.configureLogging(configuration, debugMode);
         logStartupInfo();
         sanitizeProxyConfiguration();
         createJettyServer(slowResources);
@@ -251,7 +245,6 @@ public class SeleniumServer {
         socketListener.setMaxThreads(jettyThreads);
         socketListener.setPort(getPort());
         server.addListener(socketListener);
-        configServer();
         assembleHandlers(slowResources, configuration);
     }
 
@@ -332,7 +325,7 @@ public class SeleniumServer {
 
     protected HttpContext createRootContextWithProxyHandler(RemoteControlConfiguration configuration) {
         HttpContext root;
-        ProxyHandler proxyHandler;
+        
         root = new HttpContext();
         root.setContextPath("/");
         proxyHandler = makeProxyHandler(configuration);
@@ -340,43 +333,23 @@ public class SeleniumServer {
         // see docs for the lock object for information on this and why it is IMPORTANT!
         proxyHandler.setShutdownLock(shutdownLock);
         root.addHandler(proxyHandler);
-        // pre-compute the 1-16 SSL relays+certs for the logging hosts (see selenium-remoterunner.js sendToRCAndForget for more info)
-        if (browserSideLogEnabled) {
-            proxyHandler.generateSSLCertsForLoggingHosts(server);
-        }
         return root;
+    }
+    
+    /** pre-compute the 1-16 SSL relays+certs for the logging hosts. (see selenium-remoterunner.js sendToRCAndForget for more info) */
+    public void generateSSLCertsForLoggingHosts() {
+        proxyHandler.generateSSLCertsForLoggingHosts(server);
     }
 
     protected ProxyHandler makeProxyHandler(RemoteControlConfiguration configuration) {
         ProxyHandler proxyHandler;
         if (customProxyHandler == null) {
-            proxyHandler = new ProxyHandler(configuration.trustAllSSLCertificates(), configuration.getDontInjectRegex(), configuration.getDebugURL(), configuration.getProxyInjectionModeArg());
+            proxyHandler = new ProxyHandler(configuration.trustAllSSLCertificates(), configuration.getDontInjectRegex(), configuration.getDebugURL(), configuration.getProxyInjectionModeArg(), false);
         } else {
             proxyHandler = customProxyHandler;
         }
         return proxyHandler;
     }
-
-    private void configServer() {
-        if (null == configuration.getForcedBrowserMode()) {
-            if (null != System.getProperty("selenium.defaultBrowserString")) {
-                System.err.println("The selenium.defaultBrowserString property is no longer supported; use selenium.forcedBrowserMode instead.");
-                System.exit(-1);
-            }
-            configuration.setForcedBrowserMode(System.getProperty("selenium.forcedBrowserMode"));
-        }
-        
-        if (!configuration.getProxyInjectionModeArg() && System.getProperty("selenium.proxyInjectionMode") != null) {
-            configuration.setProxyInjectionModeArg("true".equals(System.getProperty("selenium.proxyInjectionMode")));
-        }
-        if (!isDebugMode() && System.getProperty("selenium.debugMode") != null) {
-            setDebugMode("true".equals(System.getProperty("selenium.debugMode")));
-        }
-        if (!isBrowserSideLogEnabled() && System.getProperty("selenium.browserSideLog") != null) {
-            setBrowserSideLogEnabled("true".equals(System.getProperty("selenium.browserSideLog")));
-        }
-    }
-
 
     private static boolean slowResourceProperty() {
         return ("true".equals(System.getProperty("slowResources")));
@@ -409,14 +382,6 @@ public class SeleniumServer {
         shutDownHook = new Thread(new ShutDownHook(this));
         shutDownHook.setName("SeleniumServerShutDownHook");
         Runtime.getRuntime().addShutdownHook(shutDownHook);
-    }
-
-    public static boolean isForceProxyChain() {
-        return FORCE_PROXY_CHAIN;
-    }
-
-    public static void setForceProxyChain(boolean force) {
-        FORCE_PROXY_CHAIN = force;
     }
 
     /**
@@ -530,44 +495,8 @@ public class SeleniumServer {
      *
      * @return Returns the number of threads for Jetty.
      */
-    public static int getJettyThreads() {
+    public int getJettyThreads() {
         return jettyThreads;
-    }
-
-    /**
-     * Set the number of threads that the server will use for Jetty.
-     * <p/>
-     * In order to use this, you must call this method before you call the
-     * SeleniumServer constructor.
-     *
-     * @param jettyThreads Number of jetty threads for the server to use
-     * @throws IllegalArgumentException when jettyThreads < MIN_JETTY_THREADS or > MAX_JETTY_THREADS
-     */
-    public static void setJettyThreads(int jettyThreads) {
-        if (jettyThreads < MIN_JETTY_THREADS
-                || jettyThreads > MAX_JETTY_THREADS) {
-            throw new IllegalArgumentException(
-                    "Number of jetty threads specified as an argument must be greater than zero and less than "
-                            + MAX_JETTY_THREADS);
-        }
-
-        SeleniumServer.jettyThreads = jettyThreads;
-    }
-
-    public static boolean isDebugMode() {
-        return debugMode;
-    }
-
-    public static boolean isBrowserSideLogEnabled() {
-        return SeleniumServer.browserSideLogEnabled;
-    }
-
-    static public void setDebugMode(boolean debugMode) {
-        SeleniumServer.debugMode = debugMode;
-    }
-
-    static public void setBrowserSideLogEnabled(boolean browserSideLogEnabled) {
-        SeleniumServer.browserSideLogEnabled = browserSideLogEnabled;
     }
 
     protected void runHtmlSuite() {
@@ -661,7 +590,7 @@ public class SeleniumServer {
                         }
                     } catch (IOException e) {
                         System.err.println(e.getMessage());
-                        if (SeleniumServer.isDebugMode()) {
+                        if (debugMode) {
                             e.printStackTrace();
                         }
                     }
@@ -670,7 +599,6 @@ public class SeleniumServer {
             t.start();
         }
     }
-
 
     protected boolean runSelfTests() throws IOException {
         return new HTMLLauncher(this).runSelfTests(configuration.getSelfTestDir());
@@ -722,7 +650,7 @@ public class SeleniumServer {
         if (debugMode) {
             LOGGER.info("Selenium server running in debug mode.");
         }
-        if (proxyInjectionMode) {
+        if (configuration.getProxyInjectionModeArg()) {
             LOGGER.info("The selenium server will execute in proxyInjection mode.");
         }
         if (configuration.reuseBrowserSessions()) {

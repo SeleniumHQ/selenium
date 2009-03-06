@@ -107,6 +107,7 @@ public class BrowserSessionFactory {
         browserString = validateBrowserString(browserString, configuration);
 
         if (configuration.getProxyInjectionModeArg()) {
+            InjectionHelper.setBrowserSideLogEnabled(configuration.isBrowserSideLogEnabled());
             InjectionHelper.init();
         }
 

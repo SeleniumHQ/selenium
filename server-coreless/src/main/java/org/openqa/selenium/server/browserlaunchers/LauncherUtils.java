@@ -194,13 +194,13 @@ public class LauncherUtils {
                 + "&test=" + urlEncode(suiteUrl);
 	}
 
-	protected static String getDefaultRemoteSessionUrl(String startURL, String sessionId, boolean multiWindow, int serverPort) {
+	protected static String getDefaultRemoteSessionUrl(String startURL, String sessionId, boolean multiWindow, int serverPort, boolean browserSideLog) {
 		String url = LauncherUtils.stripStartURL(startURL);
 		url += "/selenium-server/core/RemoteRunner.html?" 
                 + "sessionId=" + sessionId 
                 + "&multiWindow=" + multiWindow 
                 + "&baseUrl=" + urlEncode(startURL)
-                + "&debugMode=" + SeleniumServer.isBrowserSideLogEnabled();
+                + "&debugMode=" + browserSideLog;
         if (serverPort != 0) {
             url += "&driverUrl=http://localhost:" + serverPort + "/selenium-server/driver/";
         }

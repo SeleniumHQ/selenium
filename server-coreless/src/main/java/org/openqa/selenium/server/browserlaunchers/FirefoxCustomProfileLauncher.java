@@ -101,7 +101,7 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
         }
         ResourceExtractor.extractResourcePath(getClass(), "/customProfileDirCUSTFF", customProfileDir);
 
-        LauncherUtils.generatePacAndPrefJs(customProfileDirectory, getPort(), proxySetting, null, changeMaxConnections, browserConfigurationOptions.getTimeoutInSeconds(), browserConfigurationOptions.getBoolean("avoidProxy"));
+        LauncherUtils.generatePacAndPrefJs(customProfileDirectory, getPort(), proxySetting, null, changeMaxConnections, browserConfigurationOptions.getTimeoutInSeconds(), browserConfigurationOptions.is("avoidProxy"));
     }
 
     /** Implementation identical to that in FirefoxChromeLauncher. **/

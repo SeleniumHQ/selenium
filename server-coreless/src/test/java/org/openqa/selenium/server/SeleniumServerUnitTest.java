@@ -12,11 +12,6 @@ public class SeleniumServerUnitTest extends TestCase {
 	// Number of jetty threads to positively test for
 	private int positiveJettyThreads = SeleniumServer.DEFAULT_JETTY_THREADS;
 
-	// Number of jetty threads to negatively test for
-	private int negativeJettyThreadsMaximum = SeleniumServer.MAX_JETTY_THREADS + 1;
-
-	private int negativeJettyThreadsMinimum = SeleniumServer.MIN_JETTY_THREADS - 1;
-
 	private SeleniumServer server;
 
 	public void tearDown() {
@@ -32,72 +27,15 @@ public class SeleniumServerUnitTest extends TestCase {
 	 * @throws Exception
 	 */
 	public void testJettyThreadsPositive() throws Exception {
-		SeleniumServer.setJettyThreads(positiveJettyThreads);
+		RemoteControlConfiguration configuration = new RemoteControlConfiguration();
+	    configuration.setJettyThreads(positiveJettyThreads);
 
-		server = new SeleniumServer();
+		server = new SeleniumServer(configuration);
 
 		server.start();
 
 		assertEquals("Jetty threads given is not correct.",
-				positiveJettyThreads, SeleniumServer.getJettyThreads());
-	}
-
-	/**
-	 * Test negative path if a bad number of threads is given. The server should
-	 * not start.
-	 * 
-	 * @throws Exception
-	 */
-	public void testJettyThreadsNegativeMaximum() throws Exception {
-		int expectedJettyThreads = SeleniumServer.getJettyThreads();
-
-		try {
-			SeleniumServer.setJettyThreads(negativeJettyThreadsMaximum);
-			// Fail if an exception wasn't thrown
-			fail("Error not caught when an illegal argument was passed to setJettyThreads");
-		} catch (IllegalArgumentException ex) {
-			/*
-			 * Empty catch block
-			 */
-		}
-
-		server = new SeleniumServer();
-
-		server.start();
-
-		// We should expect the default amount of threads since the above
-		// setJettyThreads should not pass
-		assertEquals("Server did not start up correctly.",
-				expectedJettyThreads, SeleniumServer.getJettyThreads());
-	}
-
-	/**
-	 * Test negative path if a bad number of threads is given. The server should
-	 * not start.
-	 * 
-	 * @throws Exception
-	 */
-	public void testJettyThreadsNegativeZero() throws Exception {
-		int expectedJettyThreads = SeleniumServer.getJettyThreads();
-
-		try {
-			SeleniumServer.setJettyThreads(negativeJettyThreadsMinimum);
-			// Fail if an exception wasn't thrown
-			fail("Error not caught when an illegal argument was passed to setJettyThreads");
-		} catch (IllegalArgumentException ex) {
-			/*
-			 * Empty catch block
-			 */
-		}
-
-		server = new SeleniumServer();
-
-		server.start();
-
-		// We should expect the default amount of threads since the above
-		// setJettyThreads should not pass
-		assertEquals("Server did not start up correctly.",
-				expectedJettyThreads, SeleniumServer.getJettyThreads());
+				positiveJettyThreads, server.getJettyThreads());
 	}
 
 //	/**

@@ -20,6 +20,7 @@ import org.mortbay.util.IO;
 public class InjectionHelper {
     static Log log = LogFactory.getLog(InjectionHelper.class);
     private static boolean failOnError = true;
+    private static boolean browserSideLogEnabled = true;
     private static boolean INJECT_SCRIPT_TAGS = true;
     private static boolean tryToInjectInHead = false;
     private static String injectionHtml = "/core/scripts/injection.html";
@@ -29,6 +30,10 @@ public class InjectionHelper {
     private static HashMap<String, String> contentTransformations = new HashMap<String, String>();
     private static List<String> userJsInjectionFiles = new LinkedList<String>();
 
+    public static void setBrowserSideLogEnabled(boolean browserSideLogEnabled) {
+        InjectionHelper.browserSideLogEnabled = browserSideLogEnabled; 
+    }
+    
     public static void setInjectScriptTags(boolean injectScriptTags) {
 	    InjectionHelper.INJECT_SCRIPT_TAGS = injectScriptTags;
     }
@@ -338,7 +343,7 @@ public class InjectionHelper {
 
     private static byte[] setSomeJsVars(String sessionId) {
         StringBuffer moreJs = new StringBuffer();
-        if (SeleniumServer.isBrowserSideLogEnabled()) {
+        if (InjectionHelper.browserSideLogEnabled) {
             moreJs.append("debugMode = true;\n");
         }
         moreJs.append("injectedSessionId = \"")

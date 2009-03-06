@@ -11,7 +11,7 @@ import java.lang.reflect.Method;
 public class ProxyHanderUnitTest extends TestCase {
 
 	public void testSendNotFoundSends404ResponseCode() throws Exception {
-		ProxyHandler proxyHandler = new ProxyHandler(true, "", "", false);
+		ProxyHandler proxyHandler = new ProxyHandler(true, "", "", false, false);
 		HttpResponse httpResponseMock = createMock(HttpResponse.class);
 		httpResponseMock.sendError(HttpResponse.__404_Not_Found, "Not found");
 		expectLastCall().once();
