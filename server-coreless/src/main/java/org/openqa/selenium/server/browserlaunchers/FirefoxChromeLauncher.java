@@ -17,18 +17,17 @@
 package org.openqa.selenium.server.browserlaunchers;
 
 
-import org.apache.commons.logging.Log;
-import org.mortbay.log.LogFactory;
-import org.openqa.selenium.server.ApplicationRegistry;
-import org.openqa.selenium.server.BrowserConfigurationOptions;
-import org.openqa.selenium.server.RemoteCommandException;
-import org.openqa.selenium.server.RemoteControlConfiguration;
-import org.openqa.selenium.server.browserlaunchers.locators.Firefox2or3Locator;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import org.apache.commons.logging.Log;
+import org.mortbay.log.LogFactory;
+import org.openqa.selenium.server.ApplicationRegistry;
+import org.openqa.selenium.server.BrowserConfigurationOptions;
+import org.openqa.selenium.server.RemoteControlConfiguration;
+import org.openqa.selenium.server.browserlaunchers.locators.Firefox2or3Locator;
 
 public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
 
@@ -43,7 +42,7 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
 
     private AsyncExecute shell = new AsyncExecute();
 
-    private static boolean changeMaxConnections = false;
+    private boolean changeMaxConnections = false;
 
     public FirefoxChromeLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration, String sessionId, String browserString)  throws InvalidBrowserExecutableException {
     	this(browserOptions, configuration,
@@ -75,20 +74,13 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
      */
     @Override
     protected void launch(String url) {
-        launch(url, null);       
-    }
-
-    protected void launch(String url, BrowserConfigurationOptions config) {
         final String profilePath;
         final String homePage;
         String profile = "";
 
         try {
             homePage = new ChromeUrlConvert().convert(url);
-            if (config != null) {
-                profile = config.getProfile();
-            } 
-            profilePath = makeCustomProfile(homePage, profile);
+            profilePath = makeCustomProfile(homePage);
             populateCustomProfileDirectory(profilePath);
 
             LOGGER.info("Launching Firefox...");
@@ -115,20 +107,21 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
         waitForFullProfileToBeCreated(20 * 1000);
     }
 
-    private String makeCustomProfile(String homePage, String profile) throws IOException {
+    private String makeCustomProfile(String homePage) throws IOException {
         customProfileDir = LauncherUtils.createCustomProfileDir(sessionId);
 
         String sourceLocationName = "/customProfileDirCUSTFFCHROME";
 
         File firefoxProfileTemplate = null;
-        if (!"".equals(getConfiguration().getProfilesLocation()) && !"".equals(profile)) {
+        String relativeProfile = browserConfigurationOptions.getProfile();
+        if (!"".equals(getConfiguration().getProfilesLocation()) && !"".equals(relativeProfile)) {
             File profileDirectory = getConfiguration().getProfilesLocation();
-            firefoxProfileTemplate = new File(profileDirectory + "/" + profile);
+            firefoxProfileTemplate = new File(profileDirectory + "/" + relativeProfile);
             if (!firefoxProfileTemplate.exists()) {
                 throw new RuntimeException("The profile specified '" + firefoxProfileTemplate.getAbsolutePath() + "' does not exist");
             }
         } else  {
-            firefoxProfileTemplate = getConfiguration().getFirefoxProfileTemplate();
+            firefoxProfileTemplate = browserConfigurationOptions.getFile("firefoxProfileTemplate");
         }
         
         if (firefoxProfileTemplate != null) {
@@ -137,8 +130,10 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
         ResourceExtractor.extractResourcePath(getClass(), sourceLocationName, customProfileDir);
 
         copyRunnerHtmlFiles();
+        
+        changeMaxConnections = browserConfigurationOptions.getBoolean("changeMaxConnections");
 
-        LauncherUtils.generatePacAndPrefJs(customProfileDir, getPort(), LauncherUtils.ProxySetting.NO_PROXY, homePage, changeMaxConnections, getConfiguration());
+        LauncherUtils.generatePacAndPrefJs(customProfileDir, getPort(), LauncherUtils.ProxySetting.NO_PROXY, homePage, changeMaxConnections, browserConfigurationOptions.getTimeoutInSeconds(), browserConfigurationOptions.getBoolean("avoidProxy"));
 
         return customProfileDir.getAbsolutePath();
     }
@@ -274,10 +269,6 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
       process = p;
     }
 
-    public static void setChangeMaxConnections(boolean changeMaxConnections) {
-        FirefoxChromeLauncher.changeMaxConnections = changeMaxConnections;
-    }
-
     protected class FileLockRemainedException extends Exception {
         FileLockRemainedException(String message) {
             super(message);
@@ -298,12 +289,12 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
         if (suiteUrl != null && suiteUrl.startsWith("TestPrompt.html?")) {
             suiteUrl = suiteUrl.replaceFirst("^TestPrompt\\.html\\?", "chrome://src/content/TestPrompt.html?");
         }
-        launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl, browserConfigurationOptions.isMultiWindow(), getPort()), null);
+        launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl, browserConfigurationOptions.isMultiWindow(), getPort()));
     }
     
     @Override // need to specify an absolute driverUrl
     public void launchRemoteSession(String browserURL) { 
-        launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId, browserConfigurationOptions.isMultiWindow(), getPort()), browserConfigurationOptions);
+        launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId, browserConfigurationOptions.isMultiWindow(), getPort()));
     }
 
 }

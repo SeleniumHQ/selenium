@@ -7,7 +7,6 @@ import org.apache.tools.ant.taskdefs.Copy;
 import org.apache.tools.ant.taskdefs.Delete;
 import org.apache.tools.ant.types.FileSet;
 import org.mortbay.log.LogFactory;
-import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.SeleniumServer;
 import org.openqa.selenium.server.ClassPathResource;
 
@@ -92,21 +91,23 @@ public class LauncherUtils {
 	/**
 	 * Generate a proxy.pac file, configuring a dynamic proxy for URLs
 	 * containing "/selenium-server/"
+	 * @param avoidProxy TODO
 	 */
-	protected static File makeProxyPAC(File parentDir, int port) throws FileNotFoundException {
-		return makeProxyPAC(parentDir, port, true);
+	protected static File makeProxyPAC(File parentDir, int port, boolean avoidProxy) throws FileNotFoundException {
+		return makeProxyPAC(parentDir, port, true, avoidProxy);
 	}
 
 	/**
 	 * Generate a proxy.pac file, configuring a dynamic proxy. <p/> If
 	 * proxySeleniumTrafficOnly is true, then the proxy applies only to URLs
 	 * containing "/selenium-server/". Otherwise the proxy applies to all URLs.
+	 * @param avoidProxy TODO
 	 */
-	protected static File makeProxyPAC(File parentDir, int port, boolean proxySeleniumTrafficOnly) throws FileNotFoundException {
+	protected static File makeProxyPAC(File parentDir, int port, boolean proxySeleniumTrafficOnly, boolean avoidProxy) throws FileNotFoundException {
 	    return makeProxyPAC(parentDir, port, proxySeleniumTrafficOnly,
             System.getProperty("http.proxyHost"),
             System.getProperty("http.proxyPort"),
-            System.getProperty("http.nonProxyHosts"), SeleniumServer.isAvoidProxy());
+            System.getProperty("http.nonProxyHosts"), avoidProxy);
 	}
 	
 	
@@ -338,10 +339,10 @@ public class LauncherUtils {
     
     protected enum ProxySetting { NO_PROXY, PROXY_SELENIUM_TRAFFIC_ONLY, PROXY_EVERYTHING };
     
-	protected static void generatePacAndPrefJs(File customProfileDir, int port, ProxySetting proxySetting, String homePage, boolean changeMaxConnections, RemoteControlConfiguration configuration) throws FileNotFoundException {
+	protected static void generatePacAndPrefJs(File customProfileDir, int port, ProxySetting proxySetting, String homePage, boolean changeMaxConnections, int timeoutInSeconds, boolean avoidProxy) throws FileNotFoundException {
 		// We treat PROXY_SELENIUM_TRAFFIC_ONLY as a suggestion; if the user didn't explicitly
 		// allow us to proxy selenium traffic only, then we'll proxy everything
-        if (proxySetting == ProxySetting.PROXY_SELENIUM_TRAFFIC_ONLY && !SeleniumServer.isAvoidProxy()) {
+        if (proxySetting == ProxySetting.PROXY_SELENIUM_TRAFFIC_ONLY && avoidProxy) {
             proxySetting = ProxySetting.PROXY_EVERYTHING;
         }
 
@@ -353,7 +354,7 @@ public class LauncherUtils {
         if (proxySetting != ProxySetting.NO_PROXY) {
             boolean proxySeleniumTrafficOnly = (proxySetting == ProxySetting.PROXY_SELENIUM_TRAFFIC_ONLY);
             // Configure us as the local proxy
-            File proxyPAC = LauncherUtils.makeProxyPAC(customProfileDir, port, proxySeleniumTrafficOnly);
+            File proxyPAC = LauncherUtils.makeProxyPAC(customProfileDir, port, proxySeleniumTrafficOnly, avoidProxy);
             out.println("user_pref('network.proxy.type', 2);");
             out.println("user_pref('network.proxy.autoconfig_url', '" + pathToBrowserURL(proxyPAC.getAbsolutePath()) + "');");
         }
@@ -367,8 +368,8 @@ public class LauncherUtils {
 
 		// Allow scripts to run as long as the server timeout
 
-        out.println("user_pref('dom.max_script_run_time', " + configuration.getTimeoutInSeconds() + ");");
-		out.println("user_pref('dom.max_chrome_script_run_time', " + configuration.getTimeoutInSeconds() + ");");
+        out.println("user_pref('dom.max_script_run_time', " + timeoutInSeconds + ");");
+		out.println("user_pref('dom.max_chrome_script_run_time', " + timeoutInSeconds + ");");
 
 		// Open links in new windows (Firefox 2.0)
 		out.println("user_pref('browser.link.open_external', 2);");

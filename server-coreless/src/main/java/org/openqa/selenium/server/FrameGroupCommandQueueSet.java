@@ -85,6 +85,7 @@ public class FrameGroupCommandQueueSet {
      * with a selenium server killing that process.
      */
     private final String sessionId;
+    private final boolean proxyInjectionMode;
     /**
      * Queues which will not be used anymore, but which cannot be immediately
      * destroyed because their corresponding windows may still be listening.
@@ -111,6 +112,7 @@ public class FrameGroupCommandQueueSet {
         this.sessionId = sessionId;
         this.portDriversShouldContact = portDriversShouldContact;
         this.extensionJs = "";
+        proxyInjectionMode = configuration.getProxyInjectionModeArg();
 
         /*
          * Initialize delay, using the static CommandQueue getSpeed
@@ -124,7 +126,7 @@ public class FrameGroupCommandQueueSet {
     }
 
     private String selectWindow(String seleniumWindowName) {
-        if (!SeleniumServer.isProxyInjectionMode()) {
+        if (!proxyInjectionMode) {
           String result;
           try {
             result = doCommand("selectWindow", seleniumWindowName, "");
@@ -294,7 +296,7 @@ public class FrameGroupCommandQueueSet {
      */
     public String doCommand(String command, String arg, String value) 
         throws RemoteCommandException {
-      if (SeleniumServer.isProxyInjectionMode()) {
+      if (proxyInjectionMode) {
         if (command.equals("selectFrame")) {
           if ("".equals(arg)) {
             arg = "top";
@@ -416,7 +418,7 @@ public class FrameGroupCommandQueueSet {
           }
           return waitForLoad(pageLoadTimeoutInMilliseconds);
         }
-      } // if (SeleniumServer.isProxyInjectionMode())
+      } // if (proxyInjectionMode)
       markWhetherJustLoaded(currentUniqueId, false);
       return getCommandQueue().doCommand(command, arg, value);
     }
@@ -454,7 +456,7 @@ public class FrameGroupCommandQueueSet {
      */
     private String getAttributeFromAllWindows(String attributeName) {
         // If we're not in PI mode, send the command back to the browser.
-        if (!SeleniumServer.isProxyInjectionMode()) {  
+        if (!proxyInjectionMode) {  
             String result;
             try {
               result = doCommand("getAttributeFromAllWindows", "", "");
@@ -785,7 +787,7 @@ public class FrameGroupCommandQueueSet {
 
     public void reset(String baseUrl) {
       LOGGER.debug("resetting frame group");
-      if (SeleniumServer.isProxyInjectionMode()) {
+      if (proxyInjectionMode) {
         // shut down all but the primary top level connection
         List<FrameAddress> newOrphans = new LinkedList<FrameAddress>(); 
         for (String uniqueId : uniqueIdToCommandQueue.keySet()) {
@@ -816,7 +818,7 @@ public class FrameGroupCommandQueueSet {
       selectWindow(DEFAULT_SELENIUM_WINDOW_NAME);
       // String defaultUrl = "http://localhost:" 
       StringBuilder openUrl = new StringBuilder();
-      if (SeleniumServer.isProxyInjectionMode()) {
+      if (proxyInjectionMode) {
         openUrl.append("http://localhost:");
         openUrl.append(portDriversShouldContact);
         openUrl.append("/selenium-server/core/InjectedRemoteRunner.html");

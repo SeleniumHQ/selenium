@@ -84,7 +84,7 @@ public class BrowserSessionFactory {
         return getNewBrowserSession(browserString, startURL, extensionJs,
                 browserConfigurations, 
                 configuration.reuseBrowserSessions(),
-                SeleniumServer.isEnsureCleanSession(), configuration);
+                configuration.isEnsureCleanSession(), configuration);
     }
 
     /**
@@ -106,7 +106,7 @@ public class BrowserSessionFactory {
         BrowserSessionInfo sessionInfo = null;
         browserString = validateBrowserString(browserString, configuration);
 
-        if (SeleniumServer.isProxyInjectionMode()) {
+        if (configuration.getProxyInjectionModeArg()) {
             InjectionHelper.init();
         }
 
@@ -123,7 +123,7 @@ public class BrowserSessionFactory {
         }
 
         assert null != sessionInfo;
-        if (ensureClean) {
+        if (false/*ensureClean*/) {
             // need to add this to the launcher API.
             // sessionInfo.launcher.hideCurrentSessionData();
         }
@@ -169,7 +169,7 @@ public class BrowserSessionFactory {
      * @param configuration Remote Control configuration. Cannot be null.
      */
     public void endBrowserSession(String sessionId, RemoteControlConfiguration configuration) {
-        endBrowserSession(false, sessionId, configuration, SeleniumServer.isEnsureCleanSession());
+        endBrowserSession(false, sessionId, configuration, configuration.isEnsureCleanSession());
     }
 
     /**
@@ -180,7 +180,7 @@ public class BrowserSessionFactory {
      * @param configuration Remote Control configuration. Cannot be null.
      */
     public void endBrowserSession(boolean forceClose, String sessionId, RemoteControlConfiguration configuration) {
-        endBrowserSession(forceClose, sessionId, configuration, SeleniumServer.isEnsureCleanSession());
+        endBrowserSession(forceClose, sessionId, configuration, configuration.isEnsureCleanSession());
     }
 
     /**
@@ -257,11 +257,11 @@ public class BrowserSessionFactory {
             browserString = configuration.getForcedBrowserMode();
             LOGGER.info("overriding browser mode w/ forced browser mode setting: " + browserString);
         }
-        if (SeleniumServer.isProxyInjectionMode() && browserString.equals("*iexplore")) {
+        if (configuration.getProxyInjectionModeArg() && browserString.equals("*iexplore")) {
             LOGGER.warn("running in proxy injection mode, but you used a *iexplore browser string; this is " +
                     "almost surely inappropriate, so I'm changing it to *piiexplore...");
             browserString = "*piiexplore";
-        } else if (SeleniumServer.isProxyInjectionMode() && (browserString.equals("*firefox")
+        } else if (configuration.getProxyInjectionModeArg() && (browserString.equals("*firefox")
                 || browserString.equals("*firefox2") || browserString.equals("*firefox3"))) {
             LOGGER.warn("running in proxy injection mode, but you used a " + browserString + " browser string; this is " +
                     "almost surely inappropriate, so I'm changing it to *pifirefox...");

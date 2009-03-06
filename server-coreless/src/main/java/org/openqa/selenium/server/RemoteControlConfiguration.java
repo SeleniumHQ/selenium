@@ -51,6 +51,8 @@ public class RemoteControlConfiguration {
     private int retryTimeoutInSeconds;
     /** useful for situations where Selenium is being invoked programatically and the outside container wants to own logging */
     private boolean dontTouchLogging = false;
+    private boolean ensureCleanSession;
+    private boolean avoidProxy;
     
 
     public RemoteControlConfiguration() {
@@ -281,6 +283,39 @@ public class RemoteControlConfiguration {
 
     public int shortTermMemoryLoggerCapacity() {
         return 30;
+    }
+    
+
+    public boolean isEnsureCleanSession() {
+        return ensureCleanSession;
+    }
+
+    public void setEnsureCleanSession(boolean value) {
+        ensureCleanSession = value;
+    }
+
+    public boolean isAvoidProxy() {
+        return avoidProxy;
+    }
+
+    public void setAvoidProxy(boolean value) {
+        avoidProxy = value;
+    }
+
+    
+    public void copySettingsIntoBrowserOptions(BrowserConfigurationOptions browserOptions) {
+        if (browserOptions.hasOptions()) return;
+        browserOptions.set("timeoutInSeconds", timeoutInSeconds);
+        browserOptions.set("honorSystemProxy", honorSystemProxy);
+        browserOptions.set("firefoxProfileTemplate", firefoxProfileTemplate);
+        browserOptions.set("dontInjectRegex", dontInjectRegex);
+        browserOptions.set("trustAllSSLCertificates", trustAllSSLCertificates);
+        browserOptions.set("userJSInjection", userJSInjection);
+        browserOptions.set("userExtensions", userExtensions);
+        browserOptions.set("proxyInjectionMode", proxyInjectionModeArg);
+        browserOptions.set("multiWindow", multiWindow);
+        browserOptions.set("ensureCleanSession", ensureCleanSession);
+        browserOptions.set("avoidProxy", avoidProxy);
     }
     
 }

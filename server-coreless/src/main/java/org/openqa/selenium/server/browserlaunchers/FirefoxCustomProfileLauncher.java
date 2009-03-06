@@ -95,13 +95,13 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
     }
 
     private void makeCustomProfile(File customProfileDirectory) throws IOException {
-        File firefoxProfileTemplate = getConfiguration().getFirefoxProfileTemplate();
+        File firefoxProfileTemplate = browserConfigurationOptions.getFile("firefoxProfileTemplate");
         if (firefoxProfileTemplate != null) {
             LauncherUtils.copyDirectory(firefoxProfileTemplate, customProfileDir);
         }
         ResourceExtractor.extractResourcePath(getClass(), "/customProfileDirCUSTFF", customProfileDir);
 
-        LauncherUtils.generatePacAndPrefJs(customProfileDirectory, getPort(), proxySetting, null, changeMaxConnections, getConfiguration());
+        LauncherUtils.generatePacAndPrefJs(customProfileDirectory, getPort(), proxySetting, null, changeMaxConnections, browserConfigurationOptions.getTimeoutInSeconds(), browserConfigurationOptions.getBoolean("avoidProxy"));
     }
 
     /** Implementation identical to that in FirefoxChromeLauncher. **/

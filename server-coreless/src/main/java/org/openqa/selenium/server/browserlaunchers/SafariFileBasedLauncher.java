@@ -28,7 +28,7 @@ public class SafariFileBasedLauncher extends SafariCustomProfileLauncher {
         query = LauncherUtils.getQueryString(url);
         query += "&driverUrl=http://localhost:" + getPort() + "/selenium-server/driver/";
         try {
-            if (SeleniumServer.isEnsureCleanSession()) {
+            if (browserConfigurationOptions.getBoolean("ensureCleanSession")) {
                 ensureCleanSession();
             }
             fileUrl = createExtractedFiles().toURL() + "?" + query;
@@ -49,7 +49,7 @@ public class SafariFileBasedLauncher extends SafariCustomProfileLauncher {
             coreDir.mkdirs();
             ResourceExtractor.extractResourcePath(SafariFileBasedLauncher.class, "/core", coreDir);
             // custom user-extensions
-            userExtensions = getConfiguration().getUserExtensions();
+            userExtensions = browserConfigurationOptions.getFile("userExtensions");
             if (userExtensions != null) {
                 userExtensionsJavascriptFile = new File(coreDir, "scripts/user-extensions.js");
                 FileUtils.getFileUtils().copyFile(userExtensions, userExtensionsJavascriptFile, null, true);

@@ -60,6 +60,7 @@ public class ProxyHandler extends AbstractHttpHandler {
     private boolean trustAllSSLCertificates = false;
     private final String dontInjectRegex;
     private final String debugURL;
+    private final boolean proxyInjectionMode;
 
     // see docs for the lock object on SeleniumServer for information on this and why it is IMPORTANT!
     private Object shutdownLock;
@@ -127,11 +128,12 @@ public class ProxyHandler extends AbstractHttpHandler {
         _allowedConnectPorts.add(8443);
     }
 
-    public ProxyHandler(boolean trustAllSSLCertificates, String dontInjectRegex, String debugURL) {
+    public ProxyHandler(boolean trustAllSSLCertificates, String dontInjectRegex, String debugURL, boolean proxyInjectionMode) {
         super();
         this.trustAllSSLCertificates = trustAllSSLCertificates;
         this.dontInjectRegex = dontInjectRegex;
         this.debugURL = debugURL;
+        this.proxyInjectionMode = proxyInjectionMode;
     }
 
     /* ------------------------------------------------------------ */
@@ -304,7 +306,7 @@ public class ProxyHandler extends AbstractHttpHandler {
         URLConnection connection = url.openConnection();
         connection.setAllowUserInteraction(false);
 
-        if (isProxyInjectionMode()) {
+        if (proxyInjectionMode) {
             adjustRequestForProxyInjection(request, connection);
         }
 
@@ -448,7 +450,7 @@ public class ProxyHandler extends AbstractHttpHandler {
         if (proxy_in != null) {
             boolean injectableResponse = http.getResponseCode() == HttpURLConnection.HTTP_OK ||
                     (http.getResponseCode() >= 400 && http.getResponseCode() < 600);
-            if (isProxyInjectionMode() && injectableResponse) {
+            if (proxyInjectionMode && injectableResponse) {
                 // check if we should proxy this path based on the dontProxyRegex that can be user-specified
                 if (shouldInject(request.getPath())) {
                     bytesCopied = InjectionHelper.injectJavaScript(request, response, proxy_in, response.getOutputStream(), debugURL);
@@ -472,20 +474,6 @@ public class ProxyHandler extends AbstractHttpHandler {
         return !path.matches(dontInjectRegex);
     }
 
-    /**
-     * A special subclass to determine if this proxy should inject Selenium Core's JS in to the appropriate pages.
-     * This is made available as a protected method, rather than directly calling {@link SeleniumServer#isProxyInjectionMode()}
-     * directly so as to make it possible for subclasses (namely those who use SeleniumServer programatically) to easyily
-     * change the behavior of this important class. It is also nice because this class is probably one of the only instances
-     * out in the open source world right now that can act as a full-fledged HTTP+HTTPS proxy, so with proxy injection
-     * turned off, it can pretty much work as an excellent standalone HTTP proxy.
-     *
-     * @return true if this proxy should inject Selenium JS
-     */
-    protected boolean isProxyInjectionMode() {
-        return SeleniumServer.isProxyInjectionMode();
-    }
-
     private void adjustRequestForProxyInjection(HttpRequest request, URLConnection connection) {
 		request.setState(HttpMessage.__MSG_EDITABLE);
 		if (request.containsField("If-Modified-Since")) {
@@ -503,7 +491,7 @@ public class ProxyHandler extends AbstractHttpHandler {
         Server server = new Server();
         HttpContext httpContext = new HttpContext();
         httpContext.setContextPath("/");
-        ProxyHandler proxy = new ProxyHandler(true, "", "");
+        ProxyHandler proxy = new ProxyHandler(true, "", "", false);
         proxy.useCyberVillains = false;
         httpContext.addHandler(proxy);
         server.addContext(httpContext);

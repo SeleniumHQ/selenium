@@ -78,16 +78,23 @@ public class BrowserLauncherFactory {
         if (browser == null) {
             throw new IllegalArgumentException("browser may not be null");
         }
-        if (!browserOptions.hasOptions()) {
-            browserOptions.setMultiWindow(configuration.isMultiWindow());
+        String executablePath = null;
+        if (browserOptions.hasOptions()) {
+            executablePath = browserOptions.getExecutablePath();
+        } else {
+            configuration.copySettingsIntoBrowserOptions(browserOptions);
         }
 
         for (String key : supportedBrowsers.keySet()) {
             final BrowserStringParser.Result result;
             result = new BrowserStringParser().parseBrowserStartCommand(key, browser);
             if (result.match()) {
+                if (executablePath == null) {
+                    executablePath = result.customLauncher();
+                    browserOptions.setExecutablePath(executablePath);
+                }
                 LOGGER.debug("Requested browser string '" + browser + "' matches *" + key + " ");
-                return createBrowserLauncher(supportedBrowsers.get(key), result.customLauncher(), sessionId, configuration, browserOptions);
+                return createBrowserLauncher(supportedBrowsers.get(key), executablePath, sessionId, configuration, browserOptions);
             }
         }
 

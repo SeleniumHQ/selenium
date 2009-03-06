@@ -89,7 +89,7 @@ public class RemoteControlLauncher {
                 }
                 configuration.setProfilesLocation(profilesLocation);
             } else if ("-avoidProxy".equalsIgnoreCase(arg)) {
-                SeleniumServer.setAvoidProxy(true);
+                configuration.setAvoidProxy(true);
             } else if ("-proxyInjectionMode".equalsIgnoreCase(arg)) {
                 configuration.setProxyInjectionModeArg(true);
                 // proxyInjectionMode implies singleWindow mode
@@ -109,7 +109,7 @@ public class RemoteControlLauncher {
                     System.exit(1);
                 }
             } else if ("-ensureCleanSession".equalsIgnoreCase(arg)) {
-                SeleniumServer.setEnsureCleanSession(true);
+                configuration.setEnsureCleanSession(true);
             } else if ("-dontInjectRegex".equalsIgnoreCase(arg)) {
                 configuration.setDontInjectRegex(getArg(args, ++i));
             } else if ("-browserSideLog".equalsIgnoreCase(arg)) {

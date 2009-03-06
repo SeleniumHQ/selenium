@@ -70,11 +70,11 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
     
     protected void launch(String url) {
         try {
-            if (getConfiguration().shouldOverrideSystemProxy()) {
+            if (!browserConfigurationOptions.getBoolean("honorSystemProxy")) {
                 setupSystemProxy();
             }
 
-            if (SeleniumServer.isEnsureCleanSession()) {
+            if (browserConfigurationOptions.getBoolean("ensureCleanSession")) {
                 ensureCleanSession();
             }
 
@@ -107,7 +107,7 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
         if (closed) {
             return;
         }
-        if (getConfiguration().shouldOverrideSystemProxy()) {
+        if (!browserConfigurationOptions.getBoolean("honorSystemProxy")) {
           restoreSystemProxy();
         }
         
@@ -215,14 +215,14 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
 
     private void restoreSystemProxy() {
         if (WindowsUtils.thisIsWindows()) {
-            wpm.restoreRegistrySettings();
+            wpm.restoreRegistrySettings(browserConfigurationOptions.getBoolean("ensureCleanSession"));
         } else {
             mpm.restoreNetworkSettings();
         }
     }
 
     protected void changeRegistrySettings() throws IOException {
-        wpm.changeRegistrySettings();
+        wpm.changeRegistrySettings(browserConfigurationOptions.getBoolean("ensureCleanSession"), browserConfigurationOptions.getBoolean("avoidProxy"));
     }
 
     private void createSystemProxyManager(String sessionId) {

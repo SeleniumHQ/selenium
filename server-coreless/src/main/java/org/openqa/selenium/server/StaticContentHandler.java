@@ -14,9 +14,11 @@ public class StaticContentHandler extends ResourceHandler {
     private List<ResourceLocator> resourceLocators = new ArrayList<ResourceLocator>();
     public static final int SERVER_DELAY = 1000;
     private final String debugURL;
+    private final boolean proxyInjectionMode;
 
-    public StaticContentHandler(String debugURL) {
+    public StaticContentHandler(String debugURL, boolean proxyInjectionMode) {
         this.debugURL = debugURL;
+        this.proxyInjectionMode = proxyInjectionMode;
     }
 
     public void handle(String pathInContext, String pathParams, HttpRequest httpRequest, HttpResponse httpResponse)
@@ -24,7 +26,7 @@ public class StaticContentHandler extends ResourceHandler {
 
         hackRemoveLastModifiedSince(httpRequest);
         setNoCacheHeaders(httpResponse);
-        if (pathInContext.equals("/core/RemoteRunner.html") && SeleniumServer.isProxyInjectionMode()) {
+        if (pathInContext.equals("/core/RemoteRunner.html") && proxyInjectionMode) {
             pathInContext = pathInContext.replaceFirst("/core/RemoteRunner.html",
                     "/core/InjectedRemoteRunner.html");
         }
@@ -105,7 +107,7 @@ public class StaticContentHandler extends ResourceHandler {
                          String pathInContext,
                          Resource resource,
                          boolean writeHeaders) throws IOException {
-        if (!SeleniumServer.isProxyInjectionMode()) {
+        if (!proxyInjectionMode) {
             super.sendData(request, response, pathInContext, resource, writeHeaders);
             return;
         }

@@ -28,10 +28,10 @@ public class CommandQueueUnitTest extends TestCase {
 
     @Override
     public void setUp() throws Exception {
+        configureLogging();
         configuration = new RemoteControlConfiguration();
         configuration.setTimeoutInSeconds(defaultTimeout);
-        SeleniumServer.setProxyInjectionMode(false);
-        configureLogging();
+        configuration.setProxyInjectionModeArg(false);
         cq = new CommandQueue(sessionId, getName(), configuration);
         log.info("Start test: " + getName());
     }
@@ -79,7 +79,6 @@ public class CommandQueueUnitTest extends TestCase {
     public void testAssertStartingState() {
         assertNull(cq.peekAtCommand());
         assertNull(cq.peekAtResult());
-        assertFalse(SeleniumServer.isProxyInjectionMode());
     }
 
     public void testBasicDoCommandWithoutWaiting() throws WindowClosedException {
@@ -103,7 +102,10 @@ public class CommandQueueUnitTest extends TestCase {
 
     public void testDoCommandWithoutWaitingWithResultAlreadyThereWithPI()
             throws WindowClosedException {
-        SeleniumServer.setProxyInjectionMode(true);
+        configuration = new RemoteControlConfiguration();
+        configuration.setTimeoutInSeconds(defaultTimeout);
+        configuration.setProxyInjectionModeArg(true);
+        cq = new CommandQueue(sessionId, getName(), configuration);
         cq.putResult(testResult);
         cq.doCommandWithoutWaitingForAResponse(testCommand, "", "");
         assertEquals(testResult, cq.peekAtResult());
@@ -111,7 +113,10 @@ public class CommandQueueUnitTest extends TestCase {
 
     public void testDoCommandWithoutWaitingWithBadResultAlreadyThereWithPI()
             throws WindowClosedException {
-        SeleniumServer.setProxyInjectionMode(true);
+        configuration = new RemoteControlConfiguration();
+        configuration.setTimeoutInSeconds(defaultTimeout);
+        configuration.setProxyInjectionModeArg(true);
+        cq = new CommandQueue(sessionId, getName(), configuration);
         cq.putResult(testResult);
         cq.doCommandWithoutWaitingForAResponse(waitCommand, "", "");
         assertEquals(testResult, cq.peekAtResult());
@@ -151,7 +156,10 @@ public class CommandQueueUnitTest extends TestCase {
     }
 
     public void testHandleResultWithOKResultWithNoResExpectedWithPI() {
-        SeleniumServer.setProxyInjectionMode(true);
+        configuration = new RemoteControlConfiguration();
+        configuration.setTimeoutInSeconds(defaultTimeout);
+        configuration.setProxyInjectionModeArg(true);
+        cq = new CommandQueue(sessionId, getName(), configuration);
         cq.handleCommandResultWithoutWaitingForACommand(testResult);
         assertEquals(testResult, cq.peekAtResult());
     }

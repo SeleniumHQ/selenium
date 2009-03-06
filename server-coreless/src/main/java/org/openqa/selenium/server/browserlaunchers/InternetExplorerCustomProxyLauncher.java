@@ -53,7 +53,7 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
     }
 
     protected void changeRegistrySettings() throws IOException {
-        wpm.changeRegistrySettings();
+        wpm.changeRegistrySettings(browserConfigurationOptions.getBoolean("ensureCleanSession"), browserConfigurationOptions.getBoolean("avoidProxy"));
     }
     
     @Override
@@ -75,7 +75,7 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
         if (WindowsUtils.thisIsWindows()) {
             final File killableProcessWrapper;
 
-            if (getConfiguration().shouldOverrideSystemProxy()) {
+            if (!browserConfigurationOptions.getBoolean("honorSystemProxy")) {
               setupSystemProxy();
             }
             customProxyPACDir = wpm.getCustomProxyPACDir();
@@ -91,7 +91,7 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
     public void close() {
         Exception taskKillException = null;
         if (WindowsUtils.thisIsWindows()) {
-            if (getConfiguration().shouldOverrideSystemProxy()) {
+            if (!browserConfigurationOptions.getBoolean("honorSystemProxy")) {
                 restoreSystemProxy();
             }
         }
@@ -127,7 +127,7 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
     }
 
     private void restoreSystemProxy() {
-        wpm.restoreRegistrySettings();
+        wpm.restoreRegistrySettings(browserConfigurationOptions.getBoolean("ensureCleanSession"));
     }
 
     public Process getProcess() {

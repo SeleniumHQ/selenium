@@ -303,7 +303,7 @@ public class SeleniumServer {
 
     private void addStaticContentHandler(boolean slowResources, RemoteControlConfiguration configuration, HttpContext context) {
         StaticContentHandler.setSlowResources(slowResources);
-        staticContentHandler = new StaticContentHandler(configuration.getDebugURL());
+        staticContentHandler = new StaticContentHandler(configuration.getDebugURL(), configuration.getProxyInjectionModeArg());
         String overrideJavascriptDir = System.getProperty("selenium.javascript.dir");
         if (overrideJavascriptDir != null) {
             staticContentHandler.addStaticContent(new FsResourceLocator(new File(overrideJavascriptDir)));
@@ -350,7 +350,7 @@ public class SeleniumServer {
     protected ProxyHandler makeProxyHandler(RemoteControlConfiguration configuration) {
         ProxyHandler proxyHandler;
         if (customProxyHandler == null) {
-            proxyHandler = new ProxyHandler(configuration.trustAllSSLCertificates(), configuration.getDontInjectRegex(), configuration.getDebugURL());
+            proxyHandler = new ProxyHandler(configuration.trustAllSSLCertificates(), configuration.getDontInjectRegex(), configuration.getDebugURL(), configuration.getProxyInjectionModeArg());
         } else {
             proxyHandler = customProxyHandler;
         }
@@ -365,8 +365,9 @@ public class SeleniumServer {
             }
             configuration.setForcedBrowserMode(System.getProperty("selenium.forcedBrowserMode"));
         }
-        if (!isProxyInjectionMode() && System.getProperty("selenium.proxyInjectionMode") != null) {
-            setProxyInjectionMode("true".equals(System.getProperty("selenium.proxyInjectionMode")));
+        
+        if (!configuration.getProxyInjectionModeArg() && System.getProperty("selenium.proxyInjectionMode") != null) {
+            configuration.setProxyInjectionModeArg("true".equals(System.getProperty("selenium.proxyInjectionMode")));
         }
         if (!isDebugMode() && System.getProperty("selenium.debugMode") != null) {
             setDebugMode("true".equals(System.getProperty("selenium.debugMode")));
@@ -376,14 +377,6 @@ public class SeleniumServer {
         }
     }
 
-
-    public static boolean isEnsureCleanSession() {
-        return ensureCleanSession;
-    }
-
-    public static void setEnsureCleanSession(boolean value) {
-        ensureCleanSession = value;
-    }
 
     private static boolean slowResourceProperty() {
         return ("true".equals(System.getProperty("slowResources")));
@@ -577,44 +570,6 @@ public class SeleniumServer {
         SeleniumServer.browserSideLogEnabled = browserSideLogEnabled;
     }
 
-    public static boolean isProxyInjectionMode() {
-        return proxyInjectionMode;
-    }
-
-    /**
-     * By default, we proxy every browser request; set this flag to make the browser use our proxy only for URLs containing '/selenium-server'
-     *
-     * @param alwaysProxy true if we should always proxy, false otherwise
-     * @deprecated use setAvoidProxy instead (note that avoidProxy is the opposite of alwaysProxy)
-     */
-    @Deprecated
-    public static void setAlwaysProxy(boolean alwaysProxy) {
-        setAvoidProxy(!alwaysProxy);
-    }
-
-    /**
-     * By default, we proxy every browser request; set this flag to make the browser use our proxy only for URLs containing '/selenium-server'
-     *
-     * @param avoidProxy true if we should proxy as little as possible, false to proxy everything
-     */
-    public static void setAvoidProxy(boolean avoidProxy) {
-        SeleniumServer.avoidProxy = avoidProxy;
-    }
-
-    /**
-     * By default, we proxy every browser request; if this flag is set, we make the browser use our
-     * proxy only for URLs containing '/selenium-server'
-     *
-     * @return Whether only URLs containing '/selenium-server' should be proxied.
-     */
-    public static boolean isAvoidProxy() {
-        return avoidProxy;
-    }
-
-    public static void setProxyInjectionMode(boolean proxyInjectionMode) {
-        SeleniumServer.proxyInjectionMode = proxyInjectionMode;
-    }
-
     protected void runHtmlSuite() {
         final String result;
         try {
@@ -737,9 +692,8 @@ public class SeleniumServer {
                 System.exit(1);
             }
         }
-        SeleniumServer.setProxyInjectionMode(configuration.getProxyInjectionModeArg());
 
-        if (!isProxyInjectionMode() &&
+        if (!configuration.getProxyInjectionModeArg() &&
                 (InjectionHelper.userContentTransformationsExist() ||
                         InjectionHelper.userJsInjectionsExist())) {
             RemoteControlLauncher.usage("-userJsInjection and -userContentTransformation are only " +

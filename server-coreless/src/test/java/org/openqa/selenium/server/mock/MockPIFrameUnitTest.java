@@ -41,7 +41,7 @@ public class MockPIFrameUnitTest extends TestCase {
         configureLogging();
         RemoteControlConfiguration configuration = new RemoteControlConfiguration();
         configuration.setTimeoutInSeconds(timeoutInSeconds);
-        SeleniumServer.setProxyInjectionMode(true);
+        configuration.setProxyInjectionModeArg(true);
         
         server = new SeleniumServer(false, configuration);
         server.start();
@@ -78,7 +78,6 @@ public class MockPIFrameUnitTest extends TestCase {
         LoggingManager.configureLogging(new RemoteControlConfiguration(), false);
         DummyBrowserLauncher.clearSessionId();
         InjectionHelper.setFailOnError(true);
-        SeleniumServer.setProxyInjectionMode(false);
     }
 
     /**

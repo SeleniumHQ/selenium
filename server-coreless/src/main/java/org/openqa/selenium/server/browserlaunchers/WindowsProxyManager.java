@@ -141,7 +141,7 @@ public class WindowsProxyManager {
         REG_KEY_BASE = base;
     }
 
-    protected void changeRegistrySettings() throws IOException {
+    protected void changeRegistrySettings(boolean ensureCleanSession, boolean avoidProxy) throws IOException {
     	log.info("Modifying registry settings...");
     	HudsuckrSettings settings;
     	if (oldSettings == null) {
@@ -151,7 +151,7 @@ public class WindowsProxyManager {
     		String proxyServer = "127.0.0.1:" + portDriversShouldContact;
             settings = new HudsuckrSettings(oldSettings.connection, true, true, false, false, proxyServer, "(null)", "(null)");
         } else {
-            File proxyPAC = LauncherUtils.makeProxyPAC(customProxyPACDir, port);
+            File proxyPAC = LauncherUtils.makeProxyPAC(customProxyPACDir, port, avoidProxy);
 
             String newURL = "file://" + proxyPAC.getAbsolutePath().replace('\\', '/');
             settings = new HudsuckrSettings(oldSettings.connection, true, false, true, false, "(null)", "(null)", newURL);
@@ -200,7 +200,7 @@ public class WindowsProxyManager {
         }
         
         // Hide pre-existing user cookies if -ensureCleanSession is set
-        if (SeleniumServer.isEnsureCleanSession()) {
+        if (ensureCleanSession) {
           hidePreexistingCookies();
           deleteTemporaryInternetFiles();
         }
@@ -234,10 +234,10 @@ public class WindowsProxyManager {
         backupReady(true);
     }
 
-    public void restoreRegistrySettings() {
+    public void restoreRegistrySettings(boolean ensureCleanSession) {
         
         // restore pre-existing user cookies if -ensureCleanSession is set
-        if (SeleniumServer.isEnsureCleanSession()) {
+        if (ensureCleanSession) {
           restorePreexistingCookies();
         }
       

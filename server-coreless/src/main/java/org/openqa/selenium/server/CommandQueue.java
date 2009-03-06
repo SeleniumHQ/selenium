@@ -43,6 +43,7 @@ public class CommandQueue {
     private final BrowserResponseSequencer browserResponseSequencer;
     private final String sessionId;
     private final String uniqueId;
+    private final boolean proxyInjectionMode;
     
     private CommandHolder commandHolder;
     private CommandResultHolder resultHolder;
@@ -55,6 +56,7 @@ public class CommandQueue {
     public CommandQueue(String newSessionId, String newUniqueId, RemoteControlConfiguration configuration) {
         sessionId = newSessionId;
         uniqueId = newUniqueId;
+        proxyInjectionMode = configuration.getProxyInjectionModeArg();
         browserResponseSequencer = new BrowserResponseSequencer(newUniqueId);
         resultExpected = new AtomicBoolean(false);
         closed = new AtomicBoolean(false);
@@ -130,7 +132,7 @@ public class CommandQueue {
       // make sure we're ready for a new command for this frame
       String prevResult = resultHolder.peek();
       if (null != prevResult) {
-        if (!SeleniumServer.isProxyInjectionMode()) {
+        if (!proxyInjectionMode) {
           throw new IllegalStateException(
               "A result was unexpectedly found in the result holder");
         }
@@ -211,7 +213,7 @@ public class CommandQueue {
     protected void handleCommandResultWithoutWaitingForACommand(String commandResult) {
       if (commandResult != null) {
         if (!resultExpected.get() ) {
-          if (SeleniumServer.isProxyInjectionMode()) {
+          if (proxyInjectionMode) {
             // This logic is to account for the case where in proxy injection mode, it is possible 
             // that a page reloads without having been explicitly asked to do so (e.g., an event 
             // in one frame causes reloads in others).

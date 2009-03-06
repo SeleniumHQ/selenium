@@ -34,34 +34,13 @@ public class BrowserConfigurationOptionsTest extends TestCase {
       assertTrue(options.hasOptions());
     }
     
-    public void testSettingProfileWithNull() {
-        BrowserConfigurationOptions options = new BrowserConfigurationOptions();
-        options.setProfile(null);
-        assertEquals("", options.getProfile());
-        assertFalse(options.hasOptions());
-    }
-
-    public void testSettingProfileWithEmptyString() {
-        BrowserConfigurationOptions options = new BrowserConfigurationOptions();
-        options.setProfile("");
-        assertEquals("", options.getProfile());
-        assertFalse(options.hasOptions());
-    }
-
-    public void testHasOptionsAfterSettingProfile() {
-        BrowserConfigurationOptions options = new BrowserConfigurationOptions();
-        options.setProfile("test");
-        assertEquals("test", options.getProfile());
-        assertTrue(options.hasOptions());
-    }
-    
     public void testToStringEquivalentToSerialize() {
         String[] tests = { "", "foo", "foo bar", null };
         
         BrowserConfigurationOptions options = new BrowserConfigurationOptions();
         
         for (String test : tests) {
-            options.setProfile(test);
+            options.set("profile", test);
             assertEquals(options.serialize(), options.toString());
         }
     }

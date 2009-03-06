@@ -20,7 +20,7 @@ public class StaticContentHandlerUnitTest extends TestCase {
 
     public void setUp() throws Exception {
         super.setUp();
-        handler = new StaticContentHandler("");
+        handler = new StaticContentHandler("", false);
         slowResourcesInitially = StaticContentHandler.getSlowResources();
     }
     
