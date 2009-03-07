@@ -113,8 +113,8 @@
             <artifactId>ant</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.mortbay.jetty</groupId>
-            <artifactId>jetty</artifactId>
+            <groupId>jetty</groupId>
+            <artifactId>org.mortbay.jetty</artifactId>
         </dependency>
         <dependency>
             <groupId>commons-logging</groupId>

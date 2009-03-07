@@ -239,8 +239,8 @@
                 <version>1.6.5</version>
             </dependency>
             <dependency>
-                <groupId>org.mortbay.jetty</groupId>
-                <artifactId>jetty</artifactId>
+                <groupId>jetty</groupId>
+                <artifactId>org.mortbay.jetty</artifactId>
                 <version>5.1.10</version>
             </dependency>
             <dependency>
