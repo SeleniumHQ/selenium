@@ -114,6 +114,7 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
 
         File firefoxProfileTemplate = null;
         String relativeProfile = browserConfigurationOptions.getProfile();
+        if (relativeProfile == null) relativeProfile = "";
         if (!"".equals(getConfiguration().getProfilesLocation()) && !"".equals(relativeProfile)) {
             File profileDirectory = getConfiguration().getProfilesLocation();
             firefoxProfileTemplate = new File(profileDirectory + "/" + relativeProfile);

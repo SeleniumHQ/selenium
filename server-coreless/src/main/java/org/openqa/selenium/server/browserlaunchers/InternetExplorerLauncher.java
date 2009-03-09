@@ -16,39 +16,22 @@
  */
 package org.openqa.selenium.server.browserlaunchers;
 
-import org.openqa.selenium.server.ApplicationRegistry;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
-import org.openqa.selenium.server.browserlaunchers.locators.BrowserLocator;
-import org.openqa.selenium.server.browserlaunchers.locators.Firefox2Locator;
-import org.openqa.selenium.server.browserlaunchers.locators.Firefox2or3Locator;
-import org.openqa.selenium.server.browserlaunchers.locators.Firefox3Locator;
 
-public class FirefoxLauncher implements BrowserLauncher {
+public class InternetExplorerLauncher implements BrowserLauncher {
 
     final BrowserLauncher realLauncher;
+    static final String DEFAULT_MODE="iehta";
     
-    public FirefoxLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
-        String browserName = "firefox";
-        BrowserLocator locator = new Firefox2or3Locator();
-        String version = browserOptions.get("version");
-        if ("2".equals(version)) {
-            browserName = "firefox2";
-            locator = new Firefox2Locator();
-        }
-        if ("3".equals(version)) {
-            browserName = "firefox3";
-            locator = new Firefox3Locator();
-        }
+    public InternetExplorerLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
+
         String mode = browserOptions.get("mode");
-        if (mode == null) mode = "chrome";
-        if ("default".equals(mode)) mode = "chrome";
+        if (mode == null) mode = DEFAULT_MODE;
+        if ("default".equals(mode)) mode = DEFAULT_MODE;
         
-        BrowserInstallation installation = ApplicationRegistry.instance().browserInstallationCache().locateBrowserInstallation(
-                browserName, browserLaunchLocation, locator);
-        
-        if ("chrome".equals(mode)) {
-            realLauncher = new FirefoxChromeLauncher(browserOptions, configuration, sessionId, installation);
+        if (DEFAULT_MODE.equals(mode)) {
+            realLauncher = new HTABrowserLauncher(browserOptions, configuration, sessionId, browserLaunchLocation);
             return;
         }
         
@@ -65,7 +48,7 @@ public class FirefoxLauncher implements BrowserLauncher {
         // if user didn't request PI, but the server is configured that way, just switch up to PI
         proxyInjectionMode = globalProxyInjectionMode;
         if (proxyInjectionMode) {
-            realLauncher = new ProxyInjectionFirefoxCustomProfileLauncher(browserOptions, configuration, sessionId, installation);
+            realLauncher = new ProxyInjectionInternetExplorerCustomProxyLauncher(browserOptions, configuration, sessionId, browserLaunchLocation);
             return;
         }
         
@@ -74,7 +57,7 @@ public class FirefoxLauncher implements BrowserLauncher {
             throw new RuntimeException("Unrecognized browser mode: " + mode);
         }
         
-        realLauncher = new FirefoxCustomProfileLauncher(browserOptions, configuration, sessionId, installation);
+        realLauncher = new InternetExplorerCustomProxyLauncher(browserOptions, configuration, sessionId, browserLaunchLocation);
                 
     }
 

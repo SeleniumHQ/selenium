@@ -1,7 +1,9 @@
 package org.openqa.selenium.server.browserlaunchers;
 
+import org.openqa.selenium.server.ApplicationRegistry;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
+import org.openqa.selenium.server.browserlaunchers.locators.Firefox2or3Locator;
 
 /**
  * launcher for Firefox under proxy injection mode
@@ -22,7 +24,13 @@ public class ProxyInjectionFirefoxCustomProfileLauncher extends
 
     public ProxyInjectionFirefoxCustomProfileLauncher(BrowserConfigurationOptions browserOptions,
             RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
-        super(browserOptions, configuration, sessionId, browserLaunchLocation);
+        this(browserOptions, configuration,
+                sessionId, ApplicationRegistry.instance().browserInstallationCache().locateBrowserInstallation(
+                        "firefoxproxy", browserLaunchLocation, new Firefox2or3Locator()));
+    }
+
+    public ProxyInjectionFirefoxCustomProfileLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration, String sessionId, BrowserInstallation browserInstallation) {
+        super(browserOptions, configuration, sessionId, browserInstallation);
     }
 
     @Override

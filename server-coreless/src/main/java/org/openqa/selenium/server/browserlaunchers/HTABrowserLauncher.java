@@ -34,6 +34,7 @@ public class HTABrowserLauncher implements BrowserLauncher {
         htaCommandPath = browserLaunchLocation;
         this.sessionId = sessionId;
         this.configuration = configuration;
+        this.browserOptions = browserOptions;
     }
     
     private static String findHTALaunchLocation() {
