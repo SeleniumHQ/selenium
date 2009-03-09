@@ -47,7 +47,7 @@ public class SeleneseTestBase {
     /** Use this object to run all of your selenium tests */
     protected Selenium selenium;
     
-    private StringBuffer verificationErrors = new StringBuffer();
+    protected StringBuffer verificationErrors = new StringBuffer();
     
     public SeleneseTestBase() {
         super();
