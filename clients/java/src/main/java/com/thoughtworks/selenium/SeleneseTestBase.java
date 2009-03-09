@@ -392,8 +392,11 @@ public class SeleneseTestBase {
     
     /** Asserts that there were no verification errors during the current test, failing immediately if any are found */
     public void checkForVerificationErrors() {
-        assertEquals("", verificationErrors.toString());
+        String verificationErrorString = verificationErrors.toString();
         clearVerificationErrors();
+        if (!"".equals(verificationErrorString)) {
+            fail(verificationErrorString);
+        }
     }
 
     /** Clears out the list of verification errors */
