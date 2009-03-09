@@ -28,6 +28,10 @@ def present?(arg)
   matches.length > 0
 end
 
+def python?
+  present?("python") || present?("python.exe")
+end
+
 task :prebuild do
   # Check that common tools are available
   %w(java jar).each do |exe|
@@ -70,7 +74,7 @@ task :clean do
   rm_rf 'build/'
 end
 
-task :test => [:prebuild, :test_htmlunit, :test_firefox, :test_jobbie, :test_safari, :test_iphone, :test_support, :test_remote] do
+task :test => [:prebuild, :test_htmlunit, :test_firefox, :test_jobbie, :test_safari, :test_iphone, :test_support, :test_remote, :test_selenium] do
 end
 
 task :install_firefox => [:firefox] do
@@ -346,6 +350,12 @@ file 'firefox/build/webdriver-extension.zip' => FileList['firefox/src/extension/
     sh "cd firefox/src/extension && jar cMvf ../../build/webdriver-extension.zip *"
   else
     sh "cd firefox/src/extension && zip -0r ../../build/webdriver-extension.zip * -x \*.svn\*"
+  end
+end
+
+task :test_firefox_py => :test_firefox do
+  if python? then
+    sh "python py_test.py", :verbose => true
   end
 end
 
