@@ -65,6 +65,43 @@ public class WindowsUtils {
         kill(args);
 
     }
+    
+    /** Kill processes by name */
+    public static void killByName(String name) {
+        Project p = new Project();
+        ExecTask exec = new ExecTask();
+        exec.setProject(p);
+        exec.setExecutable("taskkill");
+        Environment.Variable path = new Environment.Variable();
+        path.setKey(getExactPathEnvKey());
+        path.setFile(findWBEM());
+        exec.addEnv(path);
+        exec.setTaskType("taskkill");
+        exec.setFailonerror(false);
+        exec.createArg().setValue("/f");
+        exec.createArg().setValue("/im");
+        exec.createArg().setValue(name);
+        exec.setResultProperty("result");
+        exec.setOutputproperty("output");
+        exec.execute();
+        String result = p.getProperty("result");
+        String output = p.getProperty("output");
+        log.info(output);
+        if (!"0".equals(result)) {
+            throw new WindowsRegistryException("exec return code " + result + ": " + output);
+        }
+        
+    }
+    
+    /** Kill processes by name, log and ignore errors */
+    public static void tryToKillByName(String name) {
+        if (!thisIsWindows()) return;
+        try {
+            killByName(name);
+        } catch (WindowsRegistryException e) {
+            log.warn(e);
+        }
+    }
 
     /** Searches the process list for a process with the specified command line and kills it
      * 

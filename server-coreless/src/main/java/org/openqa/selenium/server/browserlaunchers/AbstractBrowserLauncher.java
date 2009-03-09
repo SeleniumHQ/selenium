@@ -23,7 +23,7 @@ public abstract class AbstractBrowserLauncher implements BrowserLauncher {
     }
 
     public void launchHTMLSuite(String suiteUrl, String browserURL) {
-        launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl, browserConfigurationOptions.isMultiWindow(), 0));
+        launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl, (!browserConfigurationOptions.isSingleWindow()), 0));
     }
 
     public void launchRemoteSession(String browserURL) {
@@ -31,7 +31,7 @@ public abstract class AbstractBrowserLauncher implements BrowserLauncher {
         if (browserSideLog) {
             configuration.getSeleniumServer().generateSSLCertsForLoggingHosts();
         }
-        launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId, browserConfigurationOptions.isMultiWindow(), 0, browserSideLog));
+        launch(LauncherUtils.getDefaultRemoteSessionUrl(browserURL, sessionId, (!browserConfigurationOptions.isSingleWindow()), 0, browserSideLog));
     }
 
     protected abstract void launch(String url);

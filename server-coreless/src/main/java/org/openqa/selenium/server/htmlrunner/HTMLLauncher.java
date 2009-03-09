@@ -86,7 +86,7 @@ public class HTMLLauncher implements HTMLResultsListener {
         BrowserLauncherFactory blf = new BrowserLauncherFactory();
         String sessionId = Long.toString(System.currentTimeMillis() % 1000000);
         BrowserConfigurationOptions browserOptions = new BrowserConfigurationOptions();
-        browserOptions.setMultiWindow(multiWindow);
+        browserOptions.setSingleWindow(!multiWindow);
         BrowserLauncher launcher = blf.getBrowserLauncher(browser, sessionId, remoteControl.getConfiguration(), browserOptions);
         BrowserSessionInfo sessionInfo = new BrowserSessionInfo(sessionId, 
             browser, browserURL, launcher, null);

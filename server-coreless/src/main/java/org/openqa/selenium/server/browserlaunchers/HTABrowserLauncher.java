@@ -104,6 +104,12 @@ public class HTABrowserLauncher implements BrowserLauncher {
     }
 
     public void close() {
+        if (browserOptions.is("killProcessesByName")) {
+            WindowsUtils.tryToKillByName("iexplore.exe");
+        }
+        if (browserOptions.is("killProcessesByName")) {
+            WindowsUtils.tryToKillByName("mshta.exe");
+        }
     	if (iexploreProcess != null) {
     		int exitValue = AsyncExecute.killProcess(iexploreProcess);
             if (exitValue == 0) {
@@ -120,7 +126,7 @@ public class HTABrowserLauncher implements BrowserLauncher {
     }
 
     public void launchHTMLSuite(String suiteUrl, String browserURL) {
-        launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl, browserOptions.isMultiWindow(), getPort()), "TestRunner.hta");
+        launch(LauncherUtils.getDefaultHTMLSuiteUrl(browserURL, suiteUrl, (!browserOptions.isSingleWindow()), getPort()), "TestRunner.hta");
     }
 
     private int getPort() {
@@ -131,7 +137,7 @@ public class HTABrowserLauncher implements BrowserLauncher {
      * Note that the browserConfigurationOptions object is ignored; This browser configuration is not supported for IE
      */
     public void launchRemoteSession(String url) {
-        launch(LauncherUtils.getDefaultRemoteSessionUrl(url, sessionId, browserOptions.isMultiWindow(), getPort(), browserOptions.is("browserSideLog")), "RemoteRunner.hta");
+        launch(LauncherUtils.getDefaultRemoteSessionUrl(url, sessionId, (!browserOptions.isSingleWindow()), getPort(), browserOptions.is("browserSideLog")), "RemoteRunner.hta");
     }
 
 }

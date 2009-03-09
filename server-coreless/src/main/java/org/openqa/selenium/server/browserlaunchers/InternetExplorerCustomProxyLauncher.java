@@ -96,13 +96,8 @@ public class InternetExplorerCustomProxyLauncher extends AbstractBrowserLauncher
             }
         }
         if (process == null) return;
-        if (false) {
-            try {
-                // try to kill with windows taskkill
-                WindowsUtils.kill(cmdarray);
-            } catch (Exception e) {
-                taskKillException = e;
-            }
+        if (browserConfigurationOptions.is("killProcessesByName")) {
+            WindowsUtils.tryToKillByName("iexplore.exe");
         }
         try { // DGF killableprocess.exe should commit suicide if we send it a newline
             process.getOutputStream().write('\n');

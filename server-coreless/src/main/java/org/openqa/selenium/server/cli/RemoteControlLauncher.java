@@ -78,9 +78,9 @@ public class RemoteControlLauncher {
             } else if ("-port".equalsIgnoreCase(arg)) {
                 configuration.setPort(Integer.parseInt(getArg(args, ++i)));
             } else if ("-multiWindow".equalsIgnoreCase(arg)) {
-                configuration.setMultiWindow(true);
+                configuration.setSingleWindow(!true);
             } else if ("-singleWindow".equalsIgnoreCase(arg)) {
-                configuration.setMultiWindow(false);
+                configuration.setSingleWindow(!false);
             } else if ("-profilesLocation".equalsIgnoreCase(arg)) {
                 File profilesLocation = new File(getArg(args, ++i));
                 if (!profilesLocation.exists()) {
@@ -93,7 +93,7 @@ public class RemoteControlLauncher {
             } else if ("-proxyInjectionMode".equalsIgnoreCase(arg)) {
                 configuration.setProxyInjectionModeArg(true);
                 // proxyInjectionMode implies singleWindow mode
-                configuration.setMultiWindow(false);
+                configuration.setSingleWindow(!false);
             } else if ("-portDriversShouldContact".equalsIgnoreCase(arg)) {
                 // to facilitate tcptrace interception of interaction between
                 // injected js and the selenium server

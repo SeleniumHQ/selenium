@@ -48,12 +48,12 @@ public class BrowserConfigurationOptions {
       return hasOptions;
     }
     
-    public boolean isMultiWindow() {
-        return is("multiWindow");
+    public boolean isSingleWindow() {
+        return is("singleWindow");
     }
     
-    public void  setMultiWindow(Boolean multiWindow) {
-        options.put("multiWindow", multiWindow.toString());
+    public void setSingleWindow(Boolean singleWindow) {
+        options.put("singleWindow", singleWindow.toString());
         hasOptions = true;
     }
     

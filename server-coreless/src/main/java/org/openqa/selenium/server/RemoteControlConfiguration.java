@@ -14,7 +14,6 @@ public class RemoteControlConfiguration {
     public static final int DEFAULT_RETRY_TIMEOUT_IN_SECONDS = 10;
 
     private int port;
-    private boolean multiWindow;
     private File profilesLocation;
     private boolean proxyInjectionModeArg;
     /**
@@ -57,12 +56,12 @@ public class RemoteControlConfiguration {
     private boolean browserSideLogEnabled;
     private int jettyThreads = SeleniumServer.DEFAULT_JETTY_THREADS;
     private SeleniumServer server;
+    private boolean singleWindow;
     
 
     public RemoteControlConfiguration() {
         this.port = getDefaultPort();
         this.logOutFileName = getDefaultLogOutFile();
-        this.multiWindow = true;
         this.profilesLocation = null;
         this.proxyInjectionModeArg = false;
         this.portDriversShouldContact = USE_SAME_PORT;
@@ -82,12 +81,12 @@ public class RemoteControlConfiguration {
         this.port = newPortNumber;
     }
 
-    public boolean isMultiWindow() {
-        return multiWindow;
+    public boolean isSingleWindow() {
+        return singleWindow;
     }
-
-    public void setMultiWindow(boolean useMultiWindow) {
-        this.multiWindow = useMultiWindow;
+    
+    public void setSingleWindow(boolean useSingleWindow) {
+        singleWindow = useSingleWindow;
     }
     
     public File getProfilesLocation() {
@@ -355,7 +354,7 @@ public class RemoteControlConfiguration {
         browserOptions.set("userJSInjection", userJSInjection);
         browserOptions.set("userExtensions", userExtensions);
         browserOptions.set("proxyInjectionMode", proxyInjectionModeArg);
-        browserOptions.set("multiWindow", multiWindow);
+        browserOptions.set("singleWindow", singleWindow);
         browserOptions.set("ensureCleanSession", ensureCleanSession);
         browserOptions.set("avoidProxy", avoidProxy);
         browserOptions.set("browserSideLog", browserSideLogEnabled);

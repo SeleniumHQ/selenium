@@ -22,15 +22,15 @@ public class RemoteControlConfigurationUnitTest extends TestCase {
     }
 
     public void testMultiWindowIsTrueByDefault() {
-        assertTrue(new RemoteControlConfiguration().isMultiWindow());
+        assertTrue((!new RemoteControlConfiguration().isSingleWindow()));
     }
 
     public void testMultiWindowCanBeSet() {
         final RemoteControlConfiguration configuration;
         configuration = new RemoteControlConfiguration();
 
-        configuration.setMultiWindow(true);
-        assertTrue(configuration.isMultiWindow());
+        configuration.setSingleWindow(!true);
+        assertTrue((!configuration.isSingleWindow()));
     }
 
     public void testProxyInjectionModeArgIsFalseByDefault() {
