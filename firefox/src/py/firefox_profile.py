@@ -79,11 +79,10 @@ class FirefoxProfile(object):
             # and then the directory specified by envionment vairable WEBDRIVER.
 
             extension_source_path = None
-            # Use firefox_extension.zip in the current directory for the
+            # Use webdriver-extension.zip in the current directory for the
             # extension if there is one. Such a zip file can be created by
-            # 'zip -r firefox_extension *' in
+            # 'zip -r webdriver-extension *' in
             # %webdriver_directory%/firefox/src/extension
-
             try:
                 extension_zipfile = "webdriver-extension.zip"
                 if os.path.exists(extension_zipfile):

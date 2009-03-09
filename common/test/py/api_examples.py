@@ -16,8 +16,11 @@
 #!/usr/bin/python
 
 import logging
+import os
 import re
+import tempfile
 import time
+import shutil
 import sys
 import unittest
 from webdriver_common.exceptions import *
@@ -225,7 +228,15 @@ class ApiExampleTest (unittest.TestCase):
         self._loadPage("xhtmlTest")
         elem = self.driver.find_element_by_partial_link_text("new window")
         elem.click()
-        
+
+    @not_available_on_remote
+    def testScreenshot(self):
+        self._loadPage("simpleTest")
+        file_name = os.path.join(tempfile.mkdtemp(), "screenshot.png")
+        self.driver.save_screenshot(file_name)
+        self.assertTrue(os.path.exists(file_name))
+        shutil.rmtree(os.path.dirname(file_name))
+                                 
     def _loadSimplePage(self):
         self.driver.get("http://localhost:8000/simpleTest.html")
 

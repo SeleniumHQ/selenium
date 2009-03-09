@@ -207,6 +207,11 @@ class WebDriver(object):
         """Goes forward in browser history."""
         self._command("goForward")
 
+    def save_screenshot(self, png_file):
+        """Saves a screenshot of the current page into the given
+        file."""
+        self._command("saveScreenshot", png_file)
+
     def _command(self, cmd, *args):
         """Forward command on to the extension connection."""
         return self._conn.driver_command(cmd, *args)["response"]
