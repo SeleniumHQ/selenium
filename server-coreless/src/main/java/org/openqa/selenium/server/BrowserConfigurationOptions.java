@@ -13,7 +13,7 @@ public class BrowserConfigurationOptions {
         //"name:value;name:value"
         String[] optionsPairList = browserConfiguration.split(";");
         for (int i = 0; i < optionsPairList.length; i++) {
-            String[] option = optionsPairList[i].split(":", 2);
+            String[] option = optionsPairList[i].split("=", 2);
             if (2 == option.length) {
               String optionsName = option[0].trim();
               String optionValue = option[1].trim();
