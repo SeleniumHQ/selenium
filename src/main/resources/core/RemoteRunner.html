@@ -43,13 +43,6 @@ http-equiv="content-type">
 <script language="JavaScript" type="text/javascript" src="xpath/javascript-xpath-0.1.11.js"></script>
 <script language="JavaScript" type="text/javascript" src="scripts/user-extensions.js"></script>
 <script language="JavaScript" type="text/javascript">
-    function openDomViewer() {
-        var autFrame = document.getElementById('selenium_myiframe');
-        var autFrameDocument = getIframeDocument(autFrame);
-        var domViewer = window.open(getDocumentBase(document) + 'domviewer/domviewer.html');
-        domViewer.rootDocument = autFrameDocument;
-        return false;
-    }
 
     function cleanUp() {
     	if (LOG != null) {
