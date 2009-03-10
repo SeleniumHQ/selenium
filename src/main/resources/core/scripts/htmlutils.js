@@ -855,7 +855,7 @@ function openSeparateApplicationWindow(url, suppressMozillaWarning) {
     window.resizeTo(1200, 500);
     window.moveTo(window.screenX, 0);
 
-    var appWindow = window.open(url + '?start=true', 'main');
+    var appWindow = window.open(url + '?start=true', 'selenium_main_app_window');
     if (appWindow == null) {
         var errorMessage = "Couldn't open app window; is the pop-up blocker enabled?"
         LOG.error(errorMessage);
