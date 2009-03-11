@@ -136,7 +136,7 @@ public class HTMLLauncher implements HTMLResultsListener {
         
         // DGF this is a hack, but I can't find a better place to put it
         String suiteURL;
-        if (browser.startsWith("*chrome") || browser.startsWith("*iehta")) {
+        if (browser.startsWith("*chrome") || browser.startsWith("*firefox") || browser.startsWith("*iehta")  || browser.startsWith("*iexplore") ) {
             suiteURL = "http://localhost:" + remoteControl.getConfiguration().getPortDriversShouldContact() + "/selenium-server/tests/" + suiteFile.getName();
         } else {
             suiteURL = LauncherUtils.stripStartURL(browserURL) + "/selenium-server/tests/" + suiteFile.getName();

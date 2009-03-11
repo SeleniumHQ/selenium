@@ -189,7 +189,7 @@ public class LauncherUtils {
 		return url + "/selenium-server/core/TestRunner.html?auto=true"
                 + "&multiWindow=" + multiWindow
                 + "&defaultLogLevel=info"
-                + "&baseUrl=" + urlEncode(browserURL) + "/selenium-server/tests/"
+                + "&baseUrl=" + urlEncode(browserURL)
                 + "&resultsUrl=" + resultsUrl
                 + "&test=" + urlEncode(suiteUrl);
 	}
