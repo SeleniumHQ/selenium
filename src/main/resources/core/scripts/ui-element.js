@@ -331,9 +331,6 @@ function UIElement(uiElementShorthand)
         if (uiElementShorthand.getOffsetLocator) {
             this.getOffsetLocator = uiElementShorthand.getOffsetLocator;
         }
-        else {
-            this.getOffsetLocator = UIElement.defaultOffsetLocatorStrategy;
-        }
         
         // get the testcases and local variables
         this.testcases = [];
