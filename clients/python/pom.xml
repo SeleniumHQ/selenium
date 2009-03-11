@@ -177,7 +177,6 @@
                         <fileset>
                             <directory>.</directory>
                             <includes>
-                                <include>selenium.py</include>
                                 <include>**/*.pyc</include>
                             </includes>
                         </fileset>
