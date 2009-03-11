@@ -32,8 +32,7 @@ public class UnitTests extends TestCase {
     protected void setUp() throws Exception {
         RemoteControlConfiguration configuration = new RemoteControlConfiguration();
         configuration.setFirefoxProfileTemplate(new File(PROFILE_TEMPLATE_DIR));
-        configuration.setMultiWindow(true);
-        SeleniumServer.setCustomProxyHandler(new ProxyHandler(false, "", "") {
+        SeleniumServer.setCustomProxyHandler(new ProxyHandler(false, "", "", false, false) {
             @SuppressWarnings("unchecked")
             @Override
             public void handle(String pathInContext, String pathParams, HttpRequest request, HttpResponse response) throws HttpException, IOException {
