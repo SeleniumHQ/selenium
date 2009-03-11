@@ -331,6 +331,9 @@ function UIElement(uiElementShorthand)
         if (uiElementShorthand.getOffsetLocator) {
             this.getOffsetLocator = uiElementShorthand.getOffsetLocator;
         }
+        else {
+            this.getOffsetLocator = UIElement.defaultOffsetLocatorStrategy;
+        }
         
         // get the testcases and local variables
         this.testcases = [];
@@ -386,27 +389,115 @@ function UIElement(uiElementShorthand)
     this.init(uiElementShorthand);
 }
 
-// hang this off the UIElement "namespace"
+// hang this off the UIElement "namespace". This is a composite strategy.
 UIElement.defaultOffsetLocatorStrategy = function(locatedElement, pageElement) {
+    var strategies = [
+        UIElement.linkXPathOffsetLocatorStrategy
+        , UIElement.preferredAttributeXPathOffsetLocatorStrategy
+        , UIElement.simpleXPathOffsetLocatorStrategy
+    ];
+    
+    for (var i = 0; i < strategies.length; ++i) {
+        var strategy = strategies[i];
+        var offsetLocator = strategy(locatedElement, pageElement);
+        
+        if (offsetLocator) {
+            return offsetLocator;
+        }
+    }
+    
+    return null;
+};
+
+UIElement.simpleXPathOffsetLocatorStrategy = function(locatedElement,
+    pageElement)
+{
     if (is_ancestor(locatedElement, pageElement)) {
-        var offsetLocator;
+        var xpath = "";
         var recorder = Recorder.get(locatedElement.ownerDocument.defaultView);
-        var builderNames = [
-            'xpath:link'
-            , 'xpath:img'
-            , 'xpath:attributes'
-            , 'xpath:idRelative'
-            , 'xpath:href'
-            , 'xpath:position'
-        ];
-        for (var i = 0; i < builderNames.length; ++i) {
-            offsetLocator = recorder.locatorBuilders
-                .buildWith(builderNames[i], pageElement, locatedElement);
-            if (offsetLocator) {
-                return offsetLocator;
+        var locatorBuilders = recorder.locatorBuilders;
+        var currentNode = pageElement;
+        
+        while (currentNode != null && currentNode != locatedElement) {
+            xpath = locatorBuilders.relativeXPathFromParent(currentNode)
+                + xpath;
+            currentNode = currentNode.parentNode;
+        }
+        
+        var results = eval_xpath(xpath, locatedElement.ownerDocument,
+            { contextNode: locatedElement });
+        
+        if (results.length > 0 && results[0] == pageElement) {
+            return xpath;
+        }
+    }
+    
+    return null;
+};
+
+UIElement.linkXPathOffsetLocatorStrategy = function(locatedElement, pageElement)
+{
+    if (pageElement.nodeName == 'A' && is_ancestor(locatedElement, pageElement))
+    {
+        var text = pageElement.textContent
+            .replace(/^\s+/, "")
+            .replace(/\s+$/, "");
+        
+        if (text) {
+            var xpath = '/descendant::a[normalize-space()='
+                + text.quoteForXPath() + ']';
+            
+            var results = eval_xpath(xpath, locatedElement.ownerDocument,
+                { contextNode: locatedElement });
+            
+            if (results.length > 0 && results[0] == pageElement) {
+                return xpath;
             }
         }
     }
+    
+    return null;
+};
+
+// compare to the "xpath:attributes" locator strategy defined in the IDE source
+UIElement.preferredAttributeXPathOffsetLocatorStrategy =
+    function(locatedElement, pageElement)
+{
+    // this is an ordered listing of single attributes
+    var preferredAttributes =  [
+        'name'
+        , 'value'
+        , 'type'
+        , 'action'
+        , 'alt'
+        , 'title'
+        , 'class'
+        , 'src'
+        , 'href'
+        , 'onclick'
+    ];
+    
+    if (is_ancestor(locatedElement, pageElement)) {
+        var xpathBase = '/descendant::' + pageElement.nodeName.toLowerCase();
+        
+        for (var i = 0; i < preferredAttributes.length; ++i) {
+            var name = preferredAttributes[i];
+            var value = pageElement.getAttribute(name);
+            
+            if (value) {
+                var xpath = xpathBase + '[@' + name + '='
+                    + value.quoteForXPath() + ']';
+                    
+                var results = eval_xpath(xpath, locatedElement.ownerDocument,
+                    { contextNode: locatedElement });
+                
+                if (results.length > 0 && results[0] == pageElement) {
+                    return xpath;
+                }
+            }
+        }
+    }
+    
     return null;
 };
 
