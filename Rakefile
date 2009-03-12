@@ -325,7 +325,7 @@ task :javadocs => [:common, :firefox, :htmlunit, :jobbie, :remote, :safari, :sup
 end
 
 #### Internet Explorer ####
-file 'jobbie/build/InternetExplorerDriver.dll' => FileList['jobbie/src/csharp/**/*.cs'] do
+file 'jobbie/build/InternetExplorerDriver.dll' => FileList['jobbie/src/cpp/**/*.cpp'] do
   if windows? then
     sh "MSBuild.exe WebDriver.sln /verbosity:q /target:Rebuild /property:Configuration=Release", :verbose => false
   else
