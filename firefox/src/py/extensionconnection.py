@@ -87,6 +87,7 @@ class ExtensionConnection(object):
 
     def quit(self):
         self.driver_command("quit")
+        self.socket.settimeout(1)
         while self.is_connectable():
             logging.info("waiting to quit")
             time.sleep(1)
@@ -100,13 +101,21 @@ class ExtensionConnection(object):
     def _connect(self):
         """Connects to the extension."""
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.socket.connect(("localhost", _DEFAULT_PORT))
         self.socket.settimeout(self.timeout)
+        self.socket.connect(("localhost", _DEFAULT_PORT))
+
+    def connect_and_quit(self):
+        """Connects to an running browser and quit immediately."""
+        self._connect()
+        self.quit()
 
     def is_connectable(self):
         """Trys to connect to the extension but do not retrieve context."""
         try:
-            self._connect()
+            socket_ = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            socket_.settimeout(1)
+            socket_.connect(("localhost", _DEFAULT_PORT))
+            socket_.close()
             return True
         except socket.error:
             return False

@@ -65,5 +65,6 @@ class SimpleWebServer(object):
             # This is to force stop the server loop
             urllib.URLopener().open("http://localhost:8000")
         except Exception:
-            pass  #the server has shutdown
+            pass
+
         self.thread.join()

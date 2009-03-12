@@ -15,17 +15,23 @@
 
 #!/usr/bin/python
 
+import datetime
 import logging
 import os
 import re
 import tempfile
 import time
 import shutil
+import simplejson
+import socket
 import sys
 import unittest
+from wsgiref.handlers import format_date_time
 from webdriver_common.exceptions import *
 from webdriver_common.webserver import SimpleWebServer
 import webdriver_remote.webdriver
+import webdriver_common_tests
+from webdriver_common_tests import utils
 
 driver = None
 
@@ -36,6 +42,7 @@ def not_available_on_remote(func):
         else:
             return func(self)
     return testMethod
+
 
 class ApiExampleTest (unittest.TestCase):
 
@@ -236,24 +243,14 @@ class ApiExampleTest (unittest.TestCase):
         self.driver.save_screenshot(file_name)
         self.assertTrue(os.path.exists(file_name))
         shutil.rmtree(os.path.dirname(file_name))
-                                 
+
     def _loadSimplePage(self):
         self.driver.get("http://localhost:8000/simpleTest.html")
 
     def _loadPage(self, name):
         self.driver.get("http://localhost:8000/%s.html" % name)
 
-
-def run_tests(_driver):
+def run_tests(driver_):
     global driver
-    driver = _driver
-    logging.basicConfig(level=logging.INFO)
-    webserver = SimpleWebServer()
-    webserver.start()
-    try:
-        testLoader = unittest.TestLoader()
-        testRunner = unittest.TextTestRunner()
-        testRunner.run(testLoader.loadTestsFromTestCase(ApiExampleTest))
-        driver.quit()
-    finally:
-        webserver.stop()
+    driver = driver_
+    utils.run_tests("api_examples.ApiExampleTest", driver)

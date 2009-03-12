@@ -23,17 +23,24 @@ import shutil
 import subprocess
 
 def run_script(script_name, *args):
-    subprocess.Popen(
-        ["python",
-         script_name.replace("/", os.path.sep)]
-        + list(args)).wait()
+    return subprocess.Popen("python %s %s" %
+                            (script_name.replace("/", os.path.sep),
+                             " ".join(args)), shell=True)
 
 if __name__ == "__main__":
     os.environ["WEBDRIVER"] = "."
     os.environ["PYTHONPATH"] = os.pathsep.join([os.environ.get("PYTHONPATH", ""),
                                              os.path.join("firefox", "lib-src"),
                                              os.path.join("build", "lib")])
-    run_script("setup.py", "build")
-    run_script("firefox/test/py/api_examples.py")
-    run_script("firefox/test/py/firefox_launcher_tests.py")
-    shutil.rmtree("build/lib")
+    run_script("setup.py", "build").wait()
+    try:
+        for test in ["api_examples", "cookie_tests", "firefox_launcher_tests"]:
+            process = run_script("firefox/test/py/%s.py" % test)
+            assert process.wait() == 0, "Test %s failed" % test
+    finally:
+        shutil.rmtree("build/lib")
+        try:
+            os.kill(process.pid, 9)
+        except:
+            pass
+

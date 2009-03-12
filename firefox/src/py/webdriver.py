@@ -13,8 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import logging
-import time
+from datetime import datetime
 from webdriver_common.exceptions import ErrorInResponseException
 from webdriver_common.exceptions import InvalidSwitchToTargetException
 from webdriver_firefox.webelement import WebElement
@@ -124,7 +123,8 @@ class WebDriver(object):
         with the link text.
         """
         try:
-            elem_id_list = self._command("selectElementsUsingPartialLinkText", text)
+            elem_id_list = self._command("selectElementsUsingPartialLinkText",
+                                         text)
             elem_list = []
             for elem_id in elem_id_list.split(","):
                 if elem_id:
@@ -206,6 +206,47 @@ class WebDriver(object):
     def forward(self):
         """Goes forward in browser history."""
         self._command("goForward")
+
+    def get_cookies(self):
+        """Gets all the cookies."""
+        cookie_response = self._command("getCookie")
+
+        #cookie_response is of type unicode, with cookies seperated by "\n".
+        cookie_unicodes = cookie_response.split("\n") 
+        cookies = []
+
+        for cookie_unicode in cookie_unicodes:
+            cookie = self.get_cookie_in_dict(cookie_unicode)
+            if cookie:
+                cookies.append(cookie)
+        return cookies
+
+    def delete_all_cookies(self):
+        """Gets the current url."""
+        cookies = self.get_cookies()
+        for cookie in cookies:
+            self.delete_cookie(cookie['name'])
+
+    def delete_cookie(self, cookie_name):
+        """Delete a cookie."""
+        cookie_arg = "{\"name\" : \"%s\"}" % cookie_name
+        self._command("deleteCookie", cookie_arg)
+
+    def get_cookie_in_dict(self, cookie_str):          
+        """Convert a cookie in unicode (returned by self._command('getCookie'))
+        to a dictionary representation.
+        """
+        tokens = cookie_str.split(";")
+        if len(tokens) > 1:
+            name, value = tuple(tokens[0].split("=", 1))
+            cookie_dict = dict([tuple(token.split("=", 1))
+                                for token in tokens[1:] if token])
+            cookie_dict["name"] = name
+            cookie_dict["value"] = value
+            return cookie_dict
+
+    def add_cookie(self, cookie_dict):
+        self._command("addCookie", cookie_dict)
 
     def save_screenshot(self, png_file):
         """Saves a screenshot of the current page into the given

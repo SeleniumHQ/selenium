@@ -1,5 +1,3 @@
-#!/usr/bin/python
-#
 # Copyright 2008-2009 WebDriver committers
 # Copyright 2008-2009 Google Inc.
 #
@@ -15,12 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
+#!/usr/bin/python
 import logging
-from webdriver_common_tests import api_examples
+from webdriver_common_tests import cookie_tests
 from webdriver_firefox.webdriver import WebDriver
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
-    api_examples.run_tests(WebDriver())
+    cookie_tests.run_tests(WebDriver())
 

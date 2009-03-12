@@ -60,7 +60,7 @@ class FirefoxLauncher(object):
         """Launches the browser."""
         if self.extension_connection.is_connectable():
             logging.info("Browser already running, kill it")
-            self.extension_connection.quit()
+            self.extension_connection.connect_and_quit()
         if profile_name not in self.profile_ini.profiles:
             Popen([self._start_cmd, "-createProfile", profile_name]).wait()
             self.profile_ini.refresh()

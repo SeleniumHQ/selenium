@@ -41,12 +41,14 @@ class ProfileIni(object):
     def read_profiles():
         """Reads the profiles from the profiles.ini file."""
         if platform.system() == "Windows":
-            app_data_dir = os.path.join(os.getenv("APPDATA"), "Mozilla", "Firefox")
+            app_data_dir = os.path.join(
+                os.getenv("APPDATA"), "Mozilla", "Firefox")
         elif platform.system() == "Darwin":
-            app_data_dir = os.path.join(os.getenv("HOME"),
-                                        "Library", "Application Support", "Firefox")
+            app_data_dir = os.path.join(
+                os.getenv("HOME"), "Library", "Application Support", "Firefox")
         else:
-            app_data_dir = os.path.join(os.getenv("HOME"), ".mozilla", "firefox")
+            app_data_dir = os.path.join(
+                os.getenv("HOME"), ".mozilla", "firefox")
         profiles_ini = open(os.path.join(app_data_dir, "profiles.ini"))
         profile_sections = re.findall(
             r"Name=(\S*)\s*IsRelative=(\d)\s*Path=(\S*)", profiles_ini.read())
@@ -93,33 +95,37 @@ class FirefoxProfile(object):
                         tempdir = tempfile.mkdtemp()
                         # create directories that don't exist
                         for name in zf.namelist():
-                          dest = os.path.join(tempdir, name)
-                          if name.endswith(os.path.sep) and not os.path.exists(dest):
-                              os.mkdir(dest)
+                            dest = os.path.join(tempdir, name)
+                            if (name.endswith(os.path.sep) and
+                                not os.path.exists(dest)):
+                                os.mkdir(dest)
                         # copy files
                         for name in zf.namelist():
-                          dest = os.path.join(tempdir, name)
-                          if not dest.endswith(os.path.sep):
-                              outfile = open(dest, 'wb')
-                              outfile.write(zf.read(name))
-                              outfile.close()
+                            dest = os.path.join(tempdir, name)
+                            if not dest.endswith(os.path.sep):
+                                outfile = open(dest, 'wb')
+                                outfile.write(zf.read(name))
+                                outfile.close()
                         extension_source_path = tempdir
             except IOError, err:
-                logging.info("Error in extracting firefox_extension.zip: %s" % err)
+                logging.info("Error in extracting firefox_extension.zip: %s"
+                             % err)
 
             if extension_source_path is None:
                 webdriver_dir = os.getenv("WEBDRIVER")
                 logging.info("copying extension from $WEBDRIVER")
                 if webdriver_dir is not None:
-                    extension_source_path = os.path.join(webdriver_dir, "firefox", "src", "extension")
+                    extension_source_path = os.path.join(
+                        webdriver_dir, "firefox", "src", "extension")
 
             logging.debug("extension_source_path : %s" % extension_source_path)
             if not os.path.exists(extension_source_path):
                 raise Exception("Please set WEBDRIVER to your webdriver " +
-                    "directory or provide zip firefox extension in current directory.")
+                                "directory or provide zip firefox extension"
+                                + "in current directory.")
 
             try:
-              shutil.copytree(extension_source_path, extension_dir)
+                shutil.copytree(extension_source_path, extension_dir)
             except OSError, err:
                 logging.info("Fail to install firefox extension. %s" % err)
 
