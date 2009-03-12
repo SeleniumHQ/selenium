@@ -47,8 +47,8 @@ public:
 
 	int getLocationWhenScrolledIntoView(HWND* hwnd, long *x, long *y);
 	void getLocation(long *x, long *y);
-	long getWidth();
-	long getHeight();
+	int getWidth(long* width);
+	int getHeight(long* height);
 
 	int click();
 	void submit();

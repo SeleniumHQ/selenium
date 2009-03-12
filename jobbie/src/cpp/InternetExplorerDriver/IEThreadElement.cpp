@@ -377,6 +377,13 @@ void IeThread::OnElementGetHeight(WPARAM w, LPARAM lp)
 	SCOPETRACER
 	ON_THREAD_ELEMENT(data, pElement)
 
+	bool displayed;
+	int result = isDisplayed(pElement, &displayed);
+	if (result != SUCCESS) {
+		data.error_code = result;
+		return;
+	}
+
 	long& height = data.output_long_;
 
 	pElement->get_offsetHeight(&height);
@@ -386,6 +393,13 @@ void IeThread::OnElementGetWidth(WPARAM w, LPARAM lp)
 {
 	SCOPETRACER
 	ON_THREAD_ELEMENT(data, pElement)
+
+	bool displayed;
+	int result = isDisplayed(pElement, &displayed);
+	if (result != SUCCESS) {
+		data.error_code = result;
+		return;
+	}
 
 	long& width = data.output_long_;
 

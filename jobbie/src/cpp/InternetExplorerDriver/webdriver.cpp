@@ -618,10 +618,13 @@ int wdeGetSize(WebElement* element, long* width, long* height)
         if (!element || !element->element) { return -ENOSUCHELEMENT; }
 
 		try {
-			*width = element->element->getWidth();
-			*height = element->element->getHeight();
+			int result = element->element->getWidth(width);
+			if (result != SUCCESS) {
+				return result;
+			}
+			result = element->element->getHeight(height);
 
-			return SUCCESS;
+			return result;
 		} END_TRY;
 }
 

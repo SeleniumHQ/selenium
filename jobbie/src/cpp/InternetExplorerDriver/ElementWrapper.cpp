@@ -178,18 +178,24 @@ void ElementWrapper::getLocation(long* x, long* y)
 	SafeArrayDestroy(ary);
 }
 
-long ElementWrapper::getWidth()
+int ElementWrapper::getWidth(long* width)
 {
 	SCOPETRACER
 	SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_ELEM_GETWIDTH,)
-	return data.output_long_;
+
+	if (data.error_code != SUCCESS) return data.error_code;
+	*width = data.output_long_;
+	return SUCCESS;
 }
 
-long ElementWrapper::getHeight()
+int ElementWrapper::getHeight(long* height)
 {
 	SCOPETRACER
+
 	SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_ELEM_GETHEIGHT,)
-	return data.output_long_;
+	if (data.error_code != SUCCESS) return data.error_code;
+	*height = data.output_long_;
+	return SUCCESS;
 }
 
 LPCWSTR ElementWrapper::getValueOfCssProperty(LPCWSTR propertyName)
