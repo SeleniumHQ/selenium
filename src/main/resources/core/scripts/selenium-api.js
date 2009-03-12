@@ -1884,7 +1884,7 @@ Selenium.prototype.getMouseSpeed = function() {
     * 
     * @return number the number of pixels between "mousemove" events during dragAndDrop commands (default=10)
     */
-    this.mouseSpeed = pixels;
+    return this.mouseSpeed;
 }
 
 
