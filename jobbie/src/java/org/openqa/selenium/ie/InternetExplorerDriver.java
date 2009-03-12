@@ -447,7 +447,6 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
       // We need to do this before calling any JNA methods because 
       // the map of paths to search is static. Apparently.
       File dll = writeResourceToDisk("InternetExplorerDriver.dll");
-      dll.deleteOnExit();
       String driverLib = dll.getName().replace(".dll", "");
       jnaPath.append(dll.getParent());
       
@@ -463,8 +462,10 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
     private File writeResourceToDisk(String resourceName) throws UnsatisfiedLinkError {
       InputStream is = InternetExplorerDriver.class.getResourceAsStream(resourceName);
       if (is == null) 
-        is = InternetExplorerDriver.class.getResourceAsStream("/" + resourceName);
-      
+          is = InternetExplorerDriver.class.getResourceAsStream("/" + resourceName);
+          if (is == null) {
+              throw new UnsatisfiedLinkError("Could not find " + resourceName);
+          }
           FileOutputStream fos = null;
           
       try {
@@ -479,13 +480,15 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
           }
           
           return dll;
-      } catch(IOException e2) {
-          throw new UnsatisfiedLinkError("Cannot create temporary DLL: " + e2.getMessage());
+      } catch(IOException e) {
+          throw new UnsatisfiedLinkError("Could not create temporary DLL: " + e.getMessage());
       }
       finally {
-          try { is.close(); } catch(IOException e2) { }
+          if (is != null) {
+              try { is.close(); } catch(IOException ignored) { }
+          }
           if (fos != null) {
-              try { fos.close(); } catch(IOException e2) { }
+              try { fos.close(); } catch(IOException ignored) { }
           }
       }
     }
