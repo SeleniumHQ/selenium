@@ -17,13 +17,11 @@ import logging
 import socket
 import sys
 import unittest
-from webdriver_common.webserver import SimpleWebServer
 
 
-def run_tests(test_case, driver):
+def run_tests(test_case, driver, webserver):
     logging.basicConfig(level=logging.DEBUG)
 
-    webserver = SimpleWebServer()
     webserver.start()
     try:
         testLoader = unittest.TestLoader()

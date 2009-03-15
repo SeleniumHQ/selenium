@@ -2,13 +2,16 @@ import datetime
 import simplejson
 import time
 import unittest
+from webdriver_common.webserver import SimpleWebServer
 from webdriver_common_tests import utils
 from webdriver_common_tests.utils import require_online
+
+webserver = SimpleWebServer()
 
 class CookieTest(unittest.TestCase):
     def setUp(self):
         self.driver = driver
-        self.driver.get("http://localhost:8000/simpleTest.html")
+        self.driver.get("http://localhost:%d/simpleTest.html" % webserver.port)
         timestamp = time.mktime(datetime.datetime.now().timetuple()) + 100
         self.COOKIE_A = {"name": "foo",
                          "value": "bar",
@@ -50,4 +53,4 @@ class CookieTest(unittest.TestCase):
 def run_tests(driver_):
     global driver
     driver = driver_
-    utils.run_tests("cookie_tests.CookieTest", driver)
+    utils.run_tests("cookie_tests.CookieTest", driver, webserver)

@@ -21,6 +21,5 @@ from webdriver_common_tests import api_examples
 from webdriver_firefox.webdriver import WebDriver
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
     api_examples.run_tests(WebDriver())
-

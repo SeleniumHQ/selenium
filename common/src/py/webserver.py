@@ -18,12 +18,22 @@ It serves the testing html pages that are needed by the webdriver unit tests."""
 
 import logging
 import os
+import socket
+import sys
 import threading
 import urllib
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 
-HTML_ROOT = os.path.join(os.getenv("WEBDRIVER"), "common/src/web")
-PORT = 8000
+
+try:
+    HTML_ROOT = os.path.join(os.getenv("WEBDRIVER"), "common/src/web")
+    assert os.path.exists(HTML_ROOT)
+except:
+    logging.error("Environment variable 'WEBDRIVER' is not set, unable to"
+                 "locate the test html files.")
+    sys.exit(-1)
+
+DEFAULT_PORT = 8000
 
 class HtmlOnlyHandler(BaseHTTPRequestHandler):
     """Http handler."""
@@ -44,7 +54,18 @@ class SimpleWebServer(object):
     """A very basic web server."""
     def __init__(self):
         self.stop_serving = False
-        self.server = HTTPServer(('', PORT), HtmlOnlyHandler)
+        port = DEFAULT_PORT
+        while True:
+            try:
+                self.server = HTTPServer(
+                    ('', port), HtmlOnlyHandler)
+                self.port = port
+                break
+            except socket.error:
+                logging.debug("port %d is in use, trying to next one"
+                              % port)
+                port += 1
+
         self.thread = threading.Thread(target=self._run_web_server)
 
     def _run_web_server(self):
@@ -63,8 +84,8 @@ class SimpleWebServer(object):
         self.stop_serving = True
         try:
             # This is to force stop the server loop
-            urllib.URLopener().open("http://localhost:8000")
+            urllib.URLopener().open("http://localhost:%d" % self.port)
         except Exception:
             pass
-
+        logging.info("Shutting down the webserver")
         self.thread.join()

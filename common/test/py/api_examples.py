@@ -33,6 +33,7 @@ import webdriver_remote.webdriver
 import webdriver_common_tests
 from webdriver_common_tests import utils
 
+webserver = SimpleWebServer()
 driver = None
 
 def not_available_on_remote(func):
@@ -60,7 +61,8 @@ class ApiExampleTest (unittest.TestCase):
     def testGetCurrentUrl(self):
         self._loadSimplePage()
         url = self.driver.get_current_url()
-        self.assertEquals("http://localhost:8000/simpleTest.html", url)
+        self.assertEquals("http://localhost:%d/simpleTest.html"
+                          % webserver.port, url)
 
     def testFindElementsByXPath(self):
         self._loadSimplePage()
@@ -245,12 +247,12 @@ class ApiExampleTest (unittest.TestCase):
         shutil.rmtree(os.path.dirname(file_name))
 
     def _loadSimplePage(self):
-        self.driver.get("http://localhost:8000/simpleTest.html")
+        self.driver.get("http://localhost:%d/simpleTest.html" % webserver.port)
 
     def _loadPage(self, name):
-        self.driver.get("http://localhost:8000/%s.html" % name)
+        self.driver.get("http://localhost:%d/%s.html" % (webserver.port, name))
 
 def run_tests(driver_):
     global driver
     driver = driver_
-    utils.run_tests("api_examples.ApiExampleTest", driver)
+    utils.run_tests("api_examples.ApiExampleTest", driver, webserver)

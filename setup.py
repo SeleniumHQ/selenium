@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 # Copyright 2008-2009 WebDriver committers
 # Copyright 2008-2009 Google Inc.
 #
@@ -15,20 +14,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from glob import glob
+import os
 from distutils.core import setup
 
 setup(
    name='webdriver',
-   version="0.0.1",
+   version="0.5",
    description='Python bidings for WebDriver',
    url='http://code.google.com/p/webdriver/',
    package_dir={
                 'webdriver_firefox': 'firefox/src/py',
                 'webdriver_common': 'common/src/py',
                 'webdriver_remote': 'remote/client/src/py',
-                'webdriver_common_tests': 'common/test/py'},
+                'webdriver_common_tests': 'common/test/py',
+                'webdriver_firefox_tests': 'firefox/test/py',
+                'webdriver_remote_tests': 'remote/client/test/py',
+                },
    packages=['webdriver_common',
              'webdriver_firefox',
              'webdriver_remote',
-             'webdriver_common_tests'],
+             'webdriver_common_tests',
+             'webdriver_firefox_tests',
+             'webdriver_remote_tests'],
 )
