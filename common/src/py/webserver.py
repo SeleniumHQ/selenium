@@ -27,11 +27,12 @@ from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 
 try:
     HTML_ROOT = os.path.join(os.getenv("WEBDRIVER"), "common/src/web")
-    assert os.path.exists(HTML_ROOT)
-except:
+except Exception:
     logging.error("Environment variable 'WEBDRIVER' is not set, unable to"
-                 "locate the test html files.")
+                 " locate the test html files.")
     sys.exit(-1)
+assert os.path.exists(HTML_ROOT), (
+    "Unable to locate the test html files from %s" % HTML_ROOT)
 
 DEFAULT_PORT = 8000
 
