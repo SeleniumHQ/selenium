@@ -130,6 +130,11 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
         }
         ResourceExtractor.extractResourcePath(getClass(), sourceLocationName, customProfileDir);
 
+        // Make sure that cert8.db of firefoxProfileTemplate is stored into customProfileDir 
+        if (firefoxProfileTemplate != null) {
+            LauncherUtils.copySingleFileWithOverwrite(new File(firefoxProfileTemplate, "cert8.db"), new File(customProfileDir, "cert8.db"), true);
+        }
+
         copyRunnerHtmlFiles();
         
         changeMaxConnections = browserConfigurationOptions.is("changeMaxConnections");

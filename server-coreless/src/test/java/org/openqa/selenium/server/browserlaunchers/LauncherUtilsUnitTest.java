@@ -5,11 +5,41 @@ import junit.framework.TestCase;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 
 public class LauncherUtilsUnitTest extends TestCase {
 
     private static String COOKIE_SUFFIX = "txt";
+
+    public void testCopySingleFileWithOverwrite() throws IOException {
+        File srcFile = createFileWithData("src-dir", "cert8.db", "src text"); 	    
+        File destFile = createFileWithData("dest-dir", "cert8.db", "some text"); 	    
+        LauncherUtils.copySingleFileWithOverwrite(srcFile, destFile, true);
+        String destText = getFileContent(destFile.getAbsolutePath());
+        assertEquals(destText, "src text");
+
+    }
+
+    // create file with name fileName under <temp-dir>/<parentDirName> and write <data> into the created file.
+    private File createFileWithData(String parentDirName, String fileName, String data) throws IOException {
+        File tempDir = new File(System.getProperty("java.io.tmpdir"));
+
+        File parentDir = new File(tempDir, parentDirName);
+        parentDir.deleteOnExit();
+        assertTrue(parentDir.mkdirs());
+        File file = new File(parentDir, fileName);
+        file.deleteOnExit();
+        assertTrue(file.createNewFile());
+        writeDataToFile(file, data); 
+        return file;
+    }
+
+    private void writeDataToFile(File file, String data) throws IOException {
+        FileWriter writer = new FileWriter(file);
+	writer.write(data);
+	writer.close();
+    }
 
     public void testCopyDirectoryWithNonMatchingSuffix() throws IOException {
         File srcDir = makeSourceDirAndCookie();
