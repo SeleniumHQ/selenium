@@ -2729,7 +2729,7 @@ Selenium.prototype.doCaptureEntirePageScreenshot = function(filename, kwargs) {
                 if (exceptionMessage ==
                     "Automation server can't create object") {
                     msg += 'Is it installed? Does it have permission to run '
-                        'as an add-on? See http://snapsie.sourceforge.net/';
+                        + 'as an add-on? See http://snapsie.sourceforge.net/';
                 }
                 else {
                     msg += exceptionMessage;
