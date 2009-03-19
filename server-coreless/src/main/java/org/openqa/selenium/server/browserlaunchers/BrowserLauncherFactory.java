@@ -47,6 +47,7 @@ public class BrowserLauncherFactory {
         supportedBrowsers.put("firefoxproxy", FirefoxCustomProfileLauncher.class);
         supportedBrowsers.put("firefox", FirefoxLauncher.class);
         supportedBrowsers.put("chrome", FirefoxChromeLauncher.class);
+        supportedBrowsers.put("firefoxchrome", FirefoxChromeLauncher.class);
         supportedBrowsers.put("firefox2", Firefox2Launcher.class);
         supportedBrowsers.put("firefox3", Firefox3Launcher.class);
         supportedBrowsers.put("iexploreproxy", InternetExplorerCustomProxyLauncher.class);
