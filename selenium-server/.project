@@ -2,6 +2,7 @@
   <name>selenium-server</name>
   <comment/>
   <projects>
+    <project>selenium-core</project>
     <project>selenium-server-coreless</project>
   </projects>
   <buildSpec>
