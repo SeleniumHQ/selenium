@@ -345,19 +345,18 @@ public class RemoteControlConfiguration {
     }
     
     public void copySettingsIntoBrowserOptions(BrowserConfigurationOptions browserOptions) {
-        if (browserOptions.hasOptions()) return;
-        browserOptions.set("timeoutInSeconds", timeoutInSeconds);
-        browserOptions.set("honorSystemProxy", honorSystemProxy);
-        browserOptions.set("firefoxProfileTemplate", firefoxProfileTemplate);
-        browserOptions.set("dontInjectRegex", dontInjectRegex);
-        browserOptions.set("trustAllSSLCertificates", trustAllSSLCertificates);
-        browserOptions.set("userJSInjection", userJSInjection);
-        browserOptions.set("userExtensions", userExtensions);
-        browserOptions.set("proxyInjectionMode", proxyInjectionModeArg);
-        browserOptions.set("singleWindow", singleWindow);
-        browserOptions.set("ensureCleanSession", ensureCleanSession);
-        browserOptions.set("avoidProxy", avoidProxy);
-        browserOptions.set("browserSideLog", browserSideLogEnabled);
+        browserOptions.setSafely("timeoutInSeconds", timeoutInSeconds);
+        browserOptions.setSafely("honorSystemProxy", honorSystemProxy);
+        browserOptions.setSafely("firefoxProfileTemplate", firefoxProfileTemplate);
+        browserOptions.setSafely("dontInjectRegex", dontInjectRegex);
+        browserOptions.setSafely("trustAllSSLCertificates", trustAllSSLCertificates);
+        browserOptions.setSafely("userJSInjection", userJSInjection);
+        browserOptions.setSafely("userExtensions", userExtensions);
+        browserOptions.setSafely("proxyInjectionMode", proxyInjectionModeArg);
+        browserOptions.setSafely("singleWindow", singleWindow);
+        browserOptions.setSafely("ensureCleanSession", ensureCleanSession);
+        browserOptions.setSafely("avoidProxy", avoidProxy);
+        browserOptions.setSafely("browserSideLog", browserSideLogEnabled);
     }
     
 }

@@ -96,6 +96,11 @@ public class BrowserConfigurationOptions {
         }
     }
     
+    public void setSafely(String key, Object value) {
+        if (options.get(key) == null) return;
+        set(key, value);
+    }
+    
     /**
      * Returns the serialization of this object, as defined by the serialize()
      * method.
