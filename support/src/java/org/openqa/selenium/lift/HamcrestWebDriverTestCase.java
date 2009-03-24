@@ -19,6 +19,9 @@ package org.openqa.selenium.lift;
 
 import junit.framework.TestCase;
 
+import static org.openqa.selenium.lift.match.NumericalMatchers.exactly;
+import static org.openqa.selenium.lift.match.SelectionMatcher.selection;
+
 import org.hamcrest.Matcher;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -31,10 +34,18 @@ import org.openqa.selenium.lift.find.Finder;
  */
 public abstract class HamcrestWebDriverTestCase extends TestCase {
 
+	private static final long DEFAULT_TIMEOUT = 5000;
+	
 	private TestContext context = new WebDriverTestContext(createDriver());
 
 	protected abstract WebDriver createDriver();
 
+	@Override
+	protected void tearDown() throws Exception {
+		context.quit();
+		super.tearDown();
+	}
+	
 	protected void clickOn(Finder<WebElement, WebDriver> finder) {
 		context.clickOn(finder);
 	}
@@ -45,6 +56,14 @@ public abstract class HamcrestWebDriverTestCase extends TestCase {
 	
 	protected void assertPresenceOf(Matcher<Integer> cardinalityConstraint, Finder<WebElement, WebDriver> finder) {
 		context.assertPresenceOf(cardinalityConstraint, finder);
+	}
+	
+	protected void waitFor(Finder<WebElement, WebDriver> finder) {
+		waitFor(finder, DEFAULT_TIMEOUT);
+	}
+	
+	protected void waitFor(Finder<WebElement, WebDriver> finder, long timeout) {
+		context.waitFor(finder, timeout);
 	}
 
 	/**
@@ -79,4 +98,13 @@ public abstract class HamcrestWebDriverTestCase extends TestCase {
 	void setContext(TestContext context) {
 		this.context = context;
 	}
+	
+	protected void assertSelected(Finder<WebElement, WebDriver> finder) {
+		assertPresenceOf(finder.with(selection()));
+	}
+	
+	protected void assertNotSelected(Finder<WebElement, WebDriver> finder) {
+		assertPresenceOf(exactly(0), finder.with(selection()));
+	}
+	
 }

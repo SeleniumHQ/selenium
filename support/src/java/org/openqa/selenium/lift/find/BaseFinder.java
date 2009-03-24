@@ -17,11 +17,13 @@ limitations under the License.
 
 package org.openqa.selenium.lift.find;
 
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeMatcher;
 
 /**
  * Base class for {@link Finder}s. These allow the creation of a specification
@@ -32,29 +34,31 @@ import java.util.Collection;
  */
 public abstract class BaseFinder<S,T> implements Finder<S, T> {
 
-	protected Matcher<S> matcher;
+	protected List<Matcher<S>> matchers = new ArrayList<Matcher<S>>();
 	
 	public Collection<S> findFrom(T context) {
 		
 		Collection<S> found = extractFrom(context);		
 		
-		if (matcher == null) {
+		if (matchers.isEmpty()) {
 			return found;
 		} else {
-			return allMatching(matcher, found);
+			return allMatching(matchers, found);
 		}
 	}
 	
 	public Finder<S, T> with(Matcher<S> matcher) {
-		this.matcher = matcher;
+		this.matchers.add(matcher);
 		return this;
 	}
 	
 	public void describeTo(Description description) {
 		describeTargetTo(description);
-		if (matcher != null) {
-			description.appendText(" with ");
-			matcher.describeTo(description);
+		for (Matcher<?> matcher : matchers) {
+			if (matcher != null) {
+				description.appendText(" with ");
+				matcher.describeTo(description);
+			}
 		}
 	}
 	
@@ -62,13 +66,33 @@ public abstract class BaseFinder<S,T> implements Finder<S, T> {
 	
 	protected abstract void describeTargetTo(Description description);
 
-	protected Collection<S> allMatching(Matcher<?> matcher, Collection<S> items) {
+	protected Collection<S> allMatching(List<Matcher<S>> matchers, Collection<S> items) {
 		Collection<S> temp = new ArrayList<S>();
 		for (S item : items) {
-			if (matcher.matches(item)) {
+			if (allOf(matchers).matches(item)) {
 				temp.add(item);
 			}
 		}
 		return temp;
+	}
+
+	private Matcher<S> allOf(final List<Matcher<S>> matcherList) {
+		return new TypeSafeMatcher<S>() {
+			@Override
+			public boolean matchesSafely(S item) {
+				for (Matcher<S> matcher : matcherList) {
+					if (!matcher.matches(item)) {
+						return false;
+					}
+				}
+				return true;
+			}
+
+			public void describeTo(Description description) {
+				for (Matcher<S> matcher : matcherList) {
+					matcher.describeTo(description);
+				}
+			}
+		};
 	}
 }

@@ -44,7 +44,7 @@ public abstract class HtmlTagFinder extends BaseFinder<WebElement, WebDriver> {
 	
 	@Override // more specific return type
 	public HtmlTagFinder with(Matcher<WebElement> matcher) {
-		this.matcher = matcher;
+		super.with(matcher);
 		return this;
 	}
 	

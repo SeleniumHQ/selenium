@@ -41,4 +41,8 @@ public interface TestContext {
 
 	public abstract void clickOn(Finder<WebElement, WebDriver> finder);
 
+	public abstract void waitFor(Finder<WebElement, WebDriver> finder, long timeout);
+
+	public abstract void quit();
+
 }

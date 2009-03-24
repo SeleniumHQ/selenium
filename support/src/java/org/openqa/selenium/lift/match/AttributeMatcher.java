@@ -52,4 +52,5 @@ public class AttributeMatcher extends TypeSafeMatcher<WebElement> {
 	public static Matcher<WebElement> attribute(final String name, final Matcher<String> valueMatcher) {
 		return new AttributeMatcher(name, valueMatcher);
 	}
+
 }

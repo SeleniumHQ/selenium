@@ -20,9 +20,13 @@ package org.openqa.selenium.lift;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.StringDescription;
+import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.lift.find.Finder;
+import org.openqa.selenium.support.ui.Clock;
+import org.openqa.selenium.support.ui.SystemClock;
+
 import static org.openqa.selenium.lift.match.NumericalMatchers.atLeast;
 
 import java.util.Collection;
@@ -36,9 +40,19 @@ import java.util.Collection;
 public class WebDriverTestContext implements TestContext {
 
 	private WebDriver driver;
+	private final Clock clock;
 
 	public WebDriverTestContext(WebDriver driver) {
+		this(driver, new SystemClock());
+	}
+
+	WebDriverTestContext(WebDriver driver, Clock clock) {
 		this.driver = driver;
+		this.clock = clock;
+	}
+	
+	public void quit() {
+		driver.quit();
 	}
 
 	public void goTo(String url) {
@@ -90,6 +104,19 @@ public class WebDriverTestContext implements TestContext {
 
 	private void failWith(String message) throws AssertionError {
 		throw new java.lang.AssertionError(message);
+	}
+
+	public void waitFor(Finder<WebElement, WebDriver> finder, long timeoutMillis) {
+		long timeoutTime = clock.now() + timeoutMillis;
+		while (clock.now() < timeoutTime) {
+			Collection<WebElement> result = finder.findFrom(driver);
+			for (WebElement webElement : result) {
+				if (((RenderedWebElement) webElement).isDisplayed()) {
+					return; // found it
+				}
+			}
+		}
+		failWith("Element was not rendered within " + timeoutMillis + "ms");
 	}
 
 }

@@ -18,8 +18,17 @@ limitations under the License.
 // Generated source.
 package org.openqa.selenium.lift;
 
+
 public class Finders {
 
+  public static org.openqa.selenium.lift.find.HtmlTagFinder div() {
+    return org.openqa.selenium.lift.find.DivFinder.div();
+  }
+  
+  public static org.openqa.selenium.lift.find.HtmlTagFinder div(String id) {
+	    return org.openqa.selenium.lift.find.DivFinder.div(id);
+	  }
+	 
   public static org.openqa.selenium.lift.find.HtmlTagFinder link() {
     return org.openqa.selenium.lift.find.LinkFinder.link();
   }
@@ -68,6 +77,22 @@ public class Finders {
     return org.openqa.selenium.lift.find.TableCellFinder.cells();
   }
 
+  public static org.openqa.selenium.lift.find.HtmlTagFinder imageButton() {
+	return org.openqa.selenium.lift.find.InputFinder.imageButton();
+  }
+  
+  public static org.openqa.selenium.lift.find.HtmlTagFinder imageButton(String label) {
+	return org.openqa.selenium.lift.find.InputFinder.imageButton(label);
+  }
+  
+  public static org.openqa.selenium.lift.find.HtmlTagFinder radioButton() {
+    return org.openqa.selenium.lift.find.InputFinder.radioButton();
+  }
+  
+  public static org.openqa.selenium.lift.find.HtmlTagFinder radioButton(String id) {
+    return org.openqa.selenium.lift.find.InputFinder.radioButton(id);
+  }
+  
   public static org.openqa.selenium.lift.find.HtmlTagFinder textbox() {
 	return org.openqa.selenium.lift.find.InputFinder.textbox();
   }
@@ -79,4 +104,5 @@ public class Finders {
   public static org.openqa.selenium.lift.find.HtmlTagFinder button(String label) {
 	 return org.openqa.selenium.lift.find.InputFinder.submitButton(label);
   }
+  
 }
