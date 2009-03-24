@@ -31,4 +31,8 @@ public class FakeClock implements Clock {
   public boolean isNowBefore(long endInMillis) {
     return now < endInMillis;
   }
+
+  public long now() {
+	return now;
+  }
 }

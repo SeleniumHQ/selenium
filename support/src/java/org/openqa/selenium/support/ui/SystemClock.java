@@ -27,4 +27,8 @@ public class SystemClock implements Clock {
   public boolean isNowBefore(long endInMillis) {
     return System.currentTimeMillis() < endInMillis;
   }
+
+  public long now() {
+    return System.currentTimeMillis();
+  }
 }

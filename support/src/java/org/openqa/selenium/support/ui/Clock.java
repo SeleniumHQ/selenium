@@ -22,7 +22,11 @@ package org.openqa.selenium.support.ui;
  * A simple encapsulation to allowing timing
  */
 public interface Clock {
+
+  long now();
+
   long laterBy(long durationInMillis);
 
   boolean isNowBefore(long endInMillis);
+
 }
