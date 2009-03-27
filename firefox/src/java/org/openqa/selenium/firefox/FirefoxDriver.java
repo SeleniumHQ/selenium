@@ -33,6 +33,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.internal.ExtensionConnectionFactory;
+import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
@@ -86,18 +87,24 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
       this(profileName, DEFAULT_PORT);
     }
 
+  /**
+   * @deprecated Use "new ProfilesIni.getProfile(profileName)" and set the port on the returned profile
+   */
+    @Deprecated
     public FirefoxDriver(String profileName, int port) {
-      this(new FirefoxBinary(), profileName, port);
+      this(new FirefoxBinary(), modifyProfile(profileName, port));
+    }
+
+    private static FirefoxProfile modifyProfile(String profileName, int port) {
+      FirefoxProfile profile = new ProfilesIni().getProfile(profileName);
+      profile.setPort(port);
+      return profile;
     }
 
     public FirefoxDriver(FirefoxProfile profile) {
       this(new FirefoxBinary(), profile);
     }
     
-    private FirefoxDriver(FirefoxBinary binary, String name, int port) {
-      this(binary, ProfileManager.getInstance().createProfile(binary, port));
-    }
-
     public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile) {
       if (profile == null) {
         profile = ProfileManager.getInstance().createProfile(binary, DEFAULT_PORT);
