@@ -91,7 +91,7 @@
                       <exclude>**/TestCursorPosition.class</exclude> <!-- frequently fails on FF (only succeeds if the window has focus -->
                       <exclude>**/TestUserExtensions.class</exclude> <!-- tests sample user extensions -->
                       <exclude>**/TestGet.class</exclude> <!-- translation failure, uses funky javascript{} expression -->
-                        
+                      
                       <!-- Tests Hanging the Build -->
                       <exclude>**/TestProxy.class</exclude>
                     </excludes>
@@ -134,6 +134,7 @@
                                         <exclude name="**/TestJS-functions.html" />
                                         <exclude name="**/TestJS-if-then-else.html" />
                                         <exclude name="**/TestOpen_SSV_syntax.html" />
+                                        <exclude name="**/TestMouseSpeed.html" /> <!-- translation failure due to the use of JS Number object -->  
                                     </patternset>
                                 </unzip>
                         
