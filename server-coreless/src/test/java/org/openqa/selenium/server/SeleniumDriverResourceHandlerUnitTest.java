@@ -90,8 +90,15 @@ public class SeleniumDriverResourceHandlerUnitTest {
 	  queueSet.addTemporaryFile((File)anyObject());
 	  expectLastCall().once();
 	  
+	  // Hack for windows...
+	  String tmpDir = System.getProperty("java.io.tmpdir");
+	  
+	  int tmpDirLength = tmpDir.length();
+	  if (tmpDir.lastIndexOf(File.separator) == tmpDirLength - 1) {
+		  tmpDir = tmpDir.substring(0, tmpDirLength - 1);
+	  }
 	  // This is where the previously downloaded file will be referenced with the same name as in the call to attachFile
-	  expect(queueSet.doCommand("type", locator,  System.getProperty("java.io.tmpdir") + File.separator + fileName)).andReturn("OK");
+	  expect(queueSet.doCommand("type", locator, tmpDir + File.separator + fileName)).andReturn("OK");
 	  replay(queueSet);
 	  
 	  Vector<String> values = new Vector<String>();

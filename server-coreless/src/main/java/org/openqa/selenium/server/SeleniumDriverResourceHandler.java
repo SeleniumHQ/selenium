@@ -599,12 +599,6 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     
     protected File createTempFile(String name) {
     	String parent = System.getProperty("java.io.tmpdir");
-    	// Hack for windows...
-    	int parentLength = parent.length();
-    	if (parent.lastIndexOf(File.separator) == parentLength - 1) {
-        	parent = parent.substring(0, parentLength - 1);
-    	}
-
     	return new File(parent, name);
     }
     
