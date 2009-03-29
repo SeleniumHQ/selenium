@@ -179,7 +179,7 @@ function Selenium(browserbot) {
         return browserbot;
     };
     this.defaultTimeout = Selenium.DEFAULT_TIMEOUT;
-    this.mouseSpeed = 10;
+    this.mouseSpeed = Selenium.DEFAULT_MOUSE_SPEED;
 }
 
 Selenium.DEFAULT_TIMEOUT = 30 * 1000;
@@ -1876,7 +1876,13 @@ Selenium.prototype.doSetMouseSpeed = function(pixels) {
     * just send one "mousemove" at the start location and then one final one at the end location.</p>
     * @param pixels the number of pixels between "mousemove" events
     */
-    this.mouseSpeed = pixels;
+    var intValue = new Number(pixels);
+    if (intValue.constructor != Number ||
+    		intValue < 0 ) {
+    	this.mouseSpeed = Selenium.DEFAULT_MOUSE_SPEED;
+    } else {
+    	this.mouseSpeed = pixels;
+    }
 }
  
 Selenium.prototype.getMouseSpeed = function() {
