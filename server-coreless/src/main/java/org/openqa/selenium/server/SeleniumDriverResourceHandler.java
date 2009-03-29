@@ -380,12 +380,17 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         req.setHandled(true);
     }
 
+    protected FrameGroupCommandQueueSet getQueueSet(String sessionId) {
+    	return FrameGroupCommandQueueSet.getQueueSet(sessionId);
+    }
+    
     public String doCommand(String cmd, Vector<String> values, String sessionId, HttpResponse res) {
         LOGGER.info("Command request: " + cmd + values.toString() + " on session " + sessionId);
         String results = null;
         // handle special commands
-        if ("getNewBrowserSession".equals(cmd)) {
-            String browserString = values.get(0);
+        switch(SpecialCommand.getValue(cmd)) {
+        case getNewBrowserSession:
+        	String browserString = values.get(0);
             String extensionJs = values.size() > 2 ? values.get(2) : "";
             String browserConfigurations = values.size() > 3 ? values.get(3) : "";
             try {
@@ -395,50 +400,51 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             } catch (RemoteCommandException rce) {
                 results = "Failed to start new browser session: " + rce.getMessage();
             }
-        } else if ("testComplete".equals(cmd)) {
-            browserSessionFactory.endBrowserSession(sessionId, remoteControl.getConfiguration());
+            break;
+        case testComplete:  
+        	browserSessionFactory.endBrowserSession(sessionId, remoteControl.getConfiguration());
             results = "OK";
-        } else if ("shutDown".equals(cmd) || "shutDownSeleniumServer".equals(cmd)) {
+            break;
+        case shutDown:
             results = null;
             shutDown(res);
-        } else if ("getLogMessages".equals(cmd)) {
-            results = "OK," + logMessagesBuffer.toString();
+        	break;
+        case getLogMessages:
+        	results = "OK," + logMessagesBuffer.toString();
             logMessagesBuffer.setLength(0);
-        } else if (RetrieveLastRemoteControlLogsCommand.ID.equals(cmd)) {
-            results = new RetrieveLastRemoteControlLogsCommand().execute();
-        } else if (CaptureEntirePageScreenshotToStringCommand.ID.equals(cmd)) {
-            results = new CaptureEntirePageScreenshotToStringCommand(values.get(0), sessionId).execute();
-        } else if("attachFile".equals(cmd)) {
-            FrameGroupCommandQueueSet queue = FrameGroupCommandQueueSet.getQueueSet(sessionId);
-            try {
-                File downloadedFile = downloadFile(values.get(1));
-                queue.addTemporaryFile(downloadedFile);
-                results = queue.doCommand("type", values.get(0), downloadedFile.getAbsolutePath());
-            } catch (Exception e) {
-                results = e.toString();
-            }
-        } else if (CaptureScreenshotCommand.ID.equals(cmd)) {
-            results = new CaptureScreenshotCommand(values.get(0)).execute();
-        } else if (CaptureScreenshotToStringCommand.ID.equals(cmd)) {
-                results = new CaptureScreenshotToStringCommand().execute();
-        } else if ("keyDownNative".equals(cmd)) {
-            try {
+        	break;
+        case retrieveLastRemoteControlLogs:
+        	results = new RetrieveLastRemoteControlLogsCommand().execute();
+        	break;
+        case captureEntirePageScreenshotToString:
+        	results = new CaptureEntirePageScreenshotToStringCommand(values.get(0), sessionId).execute();
+        	break;
+        case captureScreenshot:
+        	results = new CaptureScreenshotCommand(values.get(0)).execute();
+        	break;
+        case captureScreenshotToString:
+        	results = new CaptureScreenshotToStringCommand().execute();
+        	break;
+        case keyDownNative:
+        	try {
                 RobotRetriever.getRobot().keyPress(Integer.parseInt(values.get(0)));
                 results = "OK";
             } catch (Exception e) {
                 LOGGER.error("Problem during keyDown: ", e);
                 results = "ERROR: Problem during keyDown: " + e.getMessage();
             }
-        } else if ("keyUpNative".equals(cmd)) {
-            try {
+            break;
+        case keyUpNative:
+        	try {
                 RobotRetriever.getRobot().keyRelease(Integer.parseInt(values.get(0)));
                 results = "OK";
             } catch (Exception e) {
                 LOGGER.error("Problem during keyUp: ", e);
                 results = "ERROR: Problem during keyUp: " + e.getMessage();
             }
-        } else if ("keyPressNative".equals(cmd)) {
-            try {
+        	break;
+        case keyPressNative:
+        	try {
                 Robot r = RobotRetriever.getRobot();
                 int keycode = Integer.parseInt(values.get(0));
                 r.keyPress(keycode);
@@ -449,30 +455,34 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 LOGGER.error("Problem during keyDown: ", e);
                 results = "ERROR: Problem during keyDown: " + e.getMessage();
             }
-        // TODO typeKeysNative.  Requires converting String to array of keycodes.
-        } else if ("isPostSupported".equals(cmd)) {
-            results = "OK,true";
-        } else if ("setSpeed".equals(cmd)) {
-            try {
-             int speed = Integer.parseInt(values.get(0));
-             setSpeedForSession(sessionId, speed);
-            }
-            catch (NumberFormatException e) {
+            // TODO typeKeysNative.  Requires converting String to array of keycodes.
+        	break;
+        case isPostSupported:
+        	results = "OK,true";
+        	break;
+        case setSpeed:
+        	try {
+        		int speed = Integer.parseInt(values.get(0));
+                setSpeedForSession(sessionId, speed);
+            } catch (NumberFormatException e) {
                 return "ERROR: setSlowMode expects a string containing an integer, but saw '" + values.get(0) + "'";
             }
             results = "OK";
-        } else if ("getSpeed".equals(cmd)) {
-          results = getSpeedForSession(sessionId);
-        } else if ("addStaticContent".equals(cmd)) {
-            File dir = new File( values.get(0));
+        	break;
+        case getSpeed:
+        	results = getSpeedForSession(sessionId);
+        	break;
+        case addStaticContent:
+        	File dir = new File( values.get(0));
             if (dir.exists()) {
                 remoteControl.addNewStaticContent(dir);
                 results = "OK";
             } else {
                 results = "ERROR: dir does not exist - " + dir.getAbsolutePath();
             }
-        } else if ("runHTMLSuite".equals(cmd)) {
-            HTMLLauncher launcher = new HTMLLauncher(remoteControl);
+            break;
+        case runHTMLSuite:
+        	HTMLLauncher launcher = new HTMLLauncher(remoteControl);
             File output = null;
             if (values.size() < 4) {
                 results = "ERROR: Not enough arguments (browser, browserURL, suiteURL, multiWindow, [outputFile])";
@@ -488,8 +498,9 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                     results = e.toString();
                 }
             }
-        } else if ("launchOnly".equals(cmd)) {
-            if (values.size() < 1) {
+            break;
+        case launchOnly:
+        	if (values.size() < 1) {
                 results = "ERROR: You must specify a browser";
             } else {
                 String browser = values.get(0);
@@ -501,19 +512,30 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 simpleLauncher.launchHTMLSuite("TestPrompt.html?thisIsSeleniumServer=true", baseUrl);
                 results = "OK";
             }
-        } else if ("slowResources".equals(cmd)) {
-            String arg = values.get(0);
+        	break;
+        case slowResources:
+        	String arg = values.get(0);
             boolean setting = true;
             if ("off".equals(arg) || "false".equals(arg)) {
                 setting = false;
             }
             StaticContentHandler.setSlowResources(setting);
             results = "OK";
-        } else {
-            if ("open".equals(cmd)) {
-                warnIfApparentDomainChange(sessionId, values.get(0));
-            }            
-            results = new SeleniumCoreCommand(cmd, values, sessionId).execute();
+        	break;
+        case attachFile:
+        	FrameGroupCommandQueueSet queue = getQueueSet(sessionId);
+            try {
+                File downloadedFile = downloadFile(values.get(1));
+                queue.addTemporaryFile(downloadedFile);
+                results = queue.doCommand("type", values.get(0), downloadedFile.getAbsolutePath());
+            } catch (Exception e) {
+                results = e.toString();
+            }
+            break;
+        case open:
+        	warnIfApparentDomainChange(sessionId, values.get(0));
+        case nonSpecial:
+        	results = new SeleniumCoreCommand(cmd, values, sessionId).execute();
         }
 
         if (CaptureScreenshotToStringCommand.ID.equals(cmd)
@@ -564,22 +586,8 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         }
         return values;
     }
-
-
-    private File downloadFile(String urlString) {
-        URL url;
-        try {
-            url = new URL(urlString);
-        } catch (MalformedURLException e) {
-            throw new RuntimeException("Malformed URL <" + urlString + ">, ", e);
-        }
-        String fileType = ".file";
-        int fileTypeIndex = url.getFile().lastIndexOf(".");
-        if (fileTypeIndex != -1) {
-          fileType = url.getFile().substring(fileTypeIndex);
-        }
-        File outputFile = FileUtils.getFileUtils().createTempFile("se-", fileType, null);
-        outputFile.deleteOnExit(); // to be on the safe side.
+    
+    protected void downloadWithAnt(final URL url, final File outputFile) {
         Project p = new Project();
         p.addBuildListener(new AntJettyLoggerBuildListener(LOGGER));
         Get g = new Get();
@@ -587,6 +595,28 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         g.setSrc(url);
         g.setDest(outputFile);
         g.execute();
+    }
+    
+    protected File createTempFile(String name) {
+    	String parent = System.getProperty("java.io.tmpdir");
+    	return new File(parent, name);
+    }
+    
+    private File downloadFile(String urlString) {
+        URL url;
+        try {
+            url = new URL(urlString);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException("Malformed URL <" + urlString + ">, ", e);
+        }
+        
+        String fileName = url.getFile();
+
+        File outputFile = createTempFile(fileName);
+        outputFile.deleteOnExit(); // to be on the safe side.
+        
+        downloadWithAnt(url, outputFile);
+        
         return outputFile;
     }
     
