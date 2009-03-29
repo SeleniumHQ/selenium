@@ -304,6 +304,78 @@
                 </plugins>
             </build>
         </profile>
+        
+        <profile>
+            <id>integration-test-iexplore</id>
+            <activation>
+                <!-- Reqire manual activation of this profile with -Pintegration-test-firefox
+                <property>
+                    <name>!skipTests</name>
+                </property>-->
+            </activation>
+            <properties>
+                <slowResources>false</slowResources>
+                <multiWindow>true</multiWindow>
+                <browser>*iexplore</browser>
+                <seleneseSuite>TestSuite-InternetExplorer</seleneseSuite>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.2-SNAPSHOT</version>
+                        <executions>
+                            <execution>
+                                <id>integration-test</id>
+                                <phase>integration-test</phase>
+                                <configuration>
+                                    <tasks>
+                                        <taskdef resource="selenium-ant.properties">
+                                            <classpath refid="maven.test.classpath" />
+                                        </taskdef>
+                                        <selenese 
+                                            browser="${browser}"
+                                            suite="src/main/resources/tests/${seleneseSuite}.html"
+                                            port="4444"
+                                            slowResources="${slowResources}"
+                                            multiWindow="${multiWindow}"
+                                            startURL="http://localhost:4444" />
+                                    </tasks>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>ant</groupId>
+                                <artifactId>ant-trax</artifactId>
+                                <version>1.6.5</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>ant</groupId>
+                                <artifactId>ant-junit</artifactId>
+                                <version>1.6.5</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>junit</groupId>
+                                <artifactId>junit</artifactId>
+                                <version>3.8.1</version>
+                            </dependency>
+                            <!-- DGF commenting out Andras' change 2264/2265, fixing Hudson build
+                            <dependency>
+								<groupId>jetty</groupId>
+								<artifactId>org.mortbay.jetty</artifactId>
+								<version>5.1.10</version>
+							</dependency>
+							-->
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        
     </profiles>
     <pluginRepositories>
         <pluginRepository>
@@ -352,7 +424,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>3.8.1</version>
+            <version>4.5</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
