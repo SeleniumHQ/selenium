@@ -30,7 +30,7 @@ public class ObsoleteElementTest extends AbstractDriverTestCase {
     try {
       elem.click();
       fail();
-    } catch (WebDriverException e) {
+    } catch (ObsoleteElementException e) {
       // do nothing. this is what we expected.
     }
   }
@@ -44,7 +44,7 @@ public class ObsoleteElementTest extends AbstractDriverTestCase {
     try {
       elem.getSize();
       fail();
-    } catch (WebDriverException e) {
+    } catch (ObsoleteElementException e) {
       // do nothing. this is what we expected.
     }
   }

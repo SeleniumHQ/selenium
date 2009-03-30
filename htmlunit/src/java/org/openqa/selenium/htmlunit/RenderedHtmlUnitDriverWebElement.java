@@ -24,6 +24,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.StyledElement;
 
 import org.openqa.selenium.RenderedWebElement;
+import org.openqa.selenium.ElementNotVisibleException;
 import org.mozilla.javascript.Undefined;
 
 import java.awt.*;
@@ -37,28 +38,28 @@ public class RenderedHtmlUnitDriverWebElement extends HtmlUnitWebElement
 
   public void sendKeys(CharSequence... value) {
     if (!isDisplayed())
-      throw new UnsupportedOperationException("You may only sendKeys to visible elements");
+      throw new ElementNotVisibleException("You may only sendKeys to visible elements");
 
     super.sendKeys(value);
   }
 
   public boolean toggle() {
     if (!isDisplayed())
-          throw new UnsupportedOperationException("You may only toggle visible elements");
+          throw new ElementNotVisibleException("You may only toggle visible elements");
 
     return super.toggle();
   }
 
   public void click() {
     if (!isDisplayed())
-          throw new UnsupportedOperationException("You may only click visible elements");
+          throw new ElementNotVisibleException("You may only click visible elements");
 
     super.click();
   }
 
   public void setSelected() {
     if (!isDisplayed())
-          throw new UnsupportedOperationException("You may only select visible elements");
+          throw new ElementNotVisibleException("You may only select visible elements");
 
     super.setSelected();
   }

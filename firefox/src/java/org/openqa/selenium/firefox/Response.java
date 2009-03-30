@@ -21,6 +21,8 @@ package org.openqa.selenium.firefox;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.ObsoleteElementException;
+import org.openqa.selenium.ElementNotVisibleException;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -83,6 +85,14 @@ public class Response {
     public void ifNecessaryThrow(Class<? extends RuntimeException> exceptionClass) {
         if (!isError)
             return;
+
+        if (responseText.startsWith("element is obsolete")) {
+          throw new ObsoleteElementException("Element is obsolete");
+        }
+
+        if (responseText.startsWith("Element is not currently visible")) {
+          throw new ElementNotVisibleException("Element is not visible, and so cannot be interacted with");
+        }
 
         RuntimeException toThrow = null;
         try {

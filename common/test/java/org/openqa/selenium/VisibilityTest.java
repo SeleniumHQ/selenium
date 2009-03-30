@@ -80,7 +80,7 @@ public class VisibilityTest extends AbstractDriverTestCase {
     try {
       element.click();
       fail("You should not be able to click on an invisible element");
-    } catch (UnsupportedOperationException e) {
+    } catch (ElementNotVisibleException e) {
       // This is expected
     }
   }
@@ -94,7 +94,7 @@ public class VisibilityTest extends AbstractDriverTestCase {
     try {
       element.toggle();
       fail("You should not be able to toggle an invisible element");
-    } catch (UnsupportedOperationException e) {
+    } catch (ElementNotVisibleException e) {
       // This is expected
     }
   }
@@ -108,7 +108,7 @@ public class VisibilityTest extends AbstractDriverTestCase {
     try {
       element.setSelected();
       fail("You should not be able to select an invisible element");
-    } catch (UnsupportedOperationException e) {
+    } catch (ElementNotVisibleException e) {
       // This is expected
     }
   }
@@ -122,7 +122,7 @@ public class VisibilityTest extends AbstractDriverTestCase {
     try {
       element.sendKeys("You don't see me");
       fail("You should not be able to send keyboard input to an invisible element");
-    } catch (UnsupportedOperationException e) {
+    } catch (ElementNotVisibleException e) {
       // This is expected
     }
 

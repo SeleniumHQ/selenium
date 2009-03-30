@@ -138,6 +138,22 @@ function isBlockLevel(node) {
     }
 };
 
+Utils.isInHead = function(element) {
+  while (element) {
+    if (element.tagName && element.tagName.toLowerCase() == "head") {
+      return true;
+    }
+    try {
+      element = element.parentNode
+    } catch (e) {
+      // Fine. the DOM has dispeared from underneath us
+      return false;
+    }
+  }
+
+  return false;
+}
+
 Utils.isDisplayed = function(element) {
     // Hidden input elements are, by definition, never displayed
     if (element.tagName == "input" && element.type == "hidden") {

@@ -27,6 +27,7 @@ import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.ObsoleteElementException;
 import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
@@ -50,15 +51,7 @@ public class FirefoxWebElement implements RenderedWebElement, Locatable,
     }
 
     public void click() {
-      try {
-        sendMessage(UnsupportedOperationException.class, "click");
-      } catch (UnsupportedOperationException e) {
-        // Looks like we need to do the decent thing and rethink error messages in the firefox driver
-        if ("Unable to click on an obsolete element".equals(e.getMessage())) {
-          throw new WebDriverException(e.getMessage());
-        }
-        throw e;
-      }
+      sendMessage(UnsupportedOperationException.class, "click");
     }
 
     public void submit() {
