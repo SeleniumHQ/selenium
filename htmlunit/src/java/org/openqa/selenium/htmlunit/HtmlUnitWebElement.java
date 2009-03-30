@@ -228,13 +228,23 @@ public class HtmlUnitWebElement implements WebElement,
 
           return null;
         }
+        if ("readonly".equalsIgnoreCase(lowerName)) {
+          if (element instanceof HtmlInput) {
+            return String.valueOf(((HtmlInput) element).isReadOnly());
+          }
+
+          if (element instanceof HtmlTextArea) {
+            return "".equals(((HtmlTextArea) element).getReadOnlyAttribute()) ? "false" : "true";
+          }
+
+          return null;
+        }
 
         if (!"".equals(value))
             return value;
 
         if (element.hasAttribute(name))
             return "";
-
 
         return null;
     }

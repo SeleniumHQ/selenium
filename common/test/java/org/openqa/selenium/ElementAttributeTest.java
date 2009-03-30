@@ -130,4 +130,17 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
 
         assertThat(value, equalTo("Example text"));
     }
+
+    @Ignore({SAFARI, IE})
+    public void testShouldTreatReadonlyAsAValue() {
+      driver.get(formPage);
+
+      WebElement element = driver.findElement(By.name("readonly"));
+      String readonly = element.getAttribute("readonly");
+
+      WebElement textInput = driver.findElement(By.name("x"));
+      String notReadonly = element.getAttribute("readonly");
+
+      assertFalse(readonly.equals(textInput));
+    }
 }
