@@ -248,6 +248,7 @@ public class FirefoxProfile {
     String[] possiblePaths = {
         "firefox/src/extension",
         "../firefox/src/extension",
+        "../../firefox/src/extension",
     };
 
     File current;

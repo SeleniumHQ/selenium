@@ -55,6 +55,7 @@ public class Jetty6AppServer implements AppServer {
     String[] possiblePaths = {
         "common/src/web",
         "../common/src/web",
+        "../../common/src/web",
     };
 
     File current;

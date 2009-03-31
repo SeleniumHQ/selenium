@@ -16,6 +16,9 @@
 		<module>htmlunit</module>
 		<module>firefox</module>
 		<module>support</module>
+		<module>remote/common</module>
+		<module>remote/client</module>
+		<module>remote/server</module>
 	</modules>
 
 	<profiles>
@@ -68,20 +71,6 @@
 	</dependencies>
 
 	<build>
-		<plugins>
-			<!-- See http://maven.apache.org/plugins/maven-source-plugin -->
-			<plugin>
-				<artifactId>maven-source-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
 		<pluginManagement>
 			<plugins>
 				<!-- See http://maven.apache.org/plugins/maven-compiler-plugin -->
@@ -91,16 +80,6 @@
 						<encoding>Windows-1252</encoding>
 						<source>1.5</source>
 						<target>1.5</target>
-					</configuration>
-				</plugin>
-				<!-- See http://maven.apache.org/plugins/maven-surefire-plugin -->
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-surefire-plugin</artifactId>
-					<configuration>
-						<includes>
-							<include>**/*TestSuite.java</include>
-						</includes>
 					</configuration>
 				</plugin>
 			</plugins>
