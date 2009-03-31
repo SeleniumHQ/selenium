@@ -21,7 +21,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsNull.nullValue;
-import static org.openqa.selenium.Ignore.Driver.*;
+import static org.openqa.selenium.Ignore.Driver.IE;
+import static org.openqa.selenium.Ignore.Driver.SAFARI;
 
 import java.util.List;
 
@@ -131,7 +132,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
         assertThat(value, equalTo("Example text"));
     }
 
-    @Ignore({SAFARI, IE})
+    @Ignore(SAFARI)
     public void testShouldTreatReadonlyAsAValue() {
       driver.get(formPage);
 
@@ -139,8 +140,8 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
       String readonly = element.getAttribute("readonly");
 
       WebElement textInput = driver.findElement(By.name("x"));
-      String notReadonly = element.getAttribute("readonly");
+      String notReadonly = textInput.getAttribute("readonly");
 
-      assertFalse(readonly.equals(textInput));
+      assertFalse(readonly.equals(notReadonly));
     }
 }

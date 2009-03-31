@@ -45,7 +45,7 @@ public class SingleTestSuite extends TestCase {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("JavascriptEnabledDriverTest")
+        .onlyRun("ElementAttributeTest")
 //        .method("testShouldNotCrashWhenCallingGetSizeOnAnObsoleteElement")
         .exclude(ALL)
         .exclude(Ignore.Driver.IE)
