@@ -20,7 +20,7 @@ package org.openqa.selenium;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.SAFARI;
 
-public class ObsoleteElementTest extends AbstractDriverTestCase {
+public class StaleElementReferenceTest extends AbstractDriverTestCase {
 
   @Ignore({HTMLUNIT, SAFARI})
   public void testOldPage() {
@@ -30,7 +30,7 @@ public class ObsoleteElementTest extends AbstractDriverTestCase {
     try {
       elem.click();
       fail();
-    } catch (ObsoleteElementException e) {
+    } catch (StaleElementReferenceException e) {
       // do nothing. this is what we expected.
     }
   }
@@ -44,7 +44,7 @@ public class ObsoleteElementTest extends AbstractDriverTestCase {
     try {
       elem.getSize();
       fail();
-    } catch (ObsoleteElementException e) {
+    } catch (StaleElementReferenceException e) {
       // do nothing. this is what we expected.
     }
   }

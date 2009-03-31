@@ -21,7 +21,7 @@ package org.openqa.selenium.firefox;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.ObsoleteElementException;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.ElementNotVisibleException;
 
 import java.lang.reflect.Constructor;
@@ -87,7 +87,7 @@ public class Response {
             return;
 
         if (responseText.startsWith("element is obsolete")) {
-          throw new ObsoleteElementException("Element is obsolete");
+          throw new StaleElementReferenceException("Element is obsolete");
         }
 
         if (responseText.startsWith("Element is not currently visible")) {

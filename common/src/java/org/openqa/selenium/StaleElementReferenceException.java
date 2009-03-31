@@ -22,12 +22,12 @@ package org.openqa.selenium;
  * Indicates that a reference to an element is now "stale" --- the element no longer appears on the
  * DOM of the page.
  */
-public class ObsoleteElementException extends WebDriverException {
-  public ObsoleteElementException(String message) {
+public class StaleElementReferenceException extends WebDriverException {
+  public StaleElementReferenceException(String message) {
     super(message);
   }
 
-  public ObsoleteElementException(String message, Throwable cause) {
+  public StaleElementReferenceException(String message, Throwable cause) {
     super(message, cause);
   }
 }
