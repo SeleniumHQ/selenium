@@ -18,9 +18,6 @@ limitations under the License.
 
 package org.openqa.selenium.ie;
 
-import static org.openqa.selenium.ie.ExportedWebDriverFunctions.HWNDByReference;
-import static org.openqa.selenium.ie.ExportedWebDriverFunctions.SUCCESS;
-
 import java.awt.Dimension;
 import java.awt.Point;
 import java.util.List;
@@ -28,9 +25,8 @@ import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.ie.StringWrapper;
+import org.openqa.selenium.ie.ExportedWebDriverFunctions.HWNDByReference;
 import org.openqa.selenium.internal.Locatable;
 
 import com.sun.jna.Pointer;
@@ -44,6 +40,7 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
   private final ExportedWebDriverFunctions lib;
   private final Pointer driver;
   private final Pointer element;
+  private final ErrorHandler errors = new ErrorHandler();
 
   // Called from native code
   public InternetExplorerElement(ExportedWebDriverFunctions lib, Pointer driver, Pointer element) {
@@ -59,14 +56,14 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
   public void click() {
     int result = lib.wdeClick(element);
 
-    handleErrorCode("click", result);
+    errors.verifyErrorCode(result, "click");
   }
 
   public String getElementName() {
     PointerByReference wrapper = new PointerByReference();
     int result = lib.wdeGetElementName(element, wrapper);
     
-    handleErrorCode("element name", result);
+    errors.verifyErrorCode(result, "element name");
     
     return new StringWrapper(lib, wrapper).toString();
   }
@@ -75,7 +72,7 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
     PointerByReference wrapper = new PointerByReference();
     int result = lib.wdeGetAttribute(element, new WString(name), wrapper);
 
-    handleErrorCode("get attribute of", result);
+    errors.verifyErrorCode(result, "get attribute of");
 
     return new StringWrapper(lib, wrapper).toString();
   }
@@ -84,7 +81,7 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
     PointerByReference wrapper = new PointerByReference();
     int result = lib.wdeGetText(element, wrapper);
 
-    handleErrorCode("get text of", result);
+    errors.verifyErrorCode(result, "get text of");
 
     return new StringWrapper(lib, wrapper).toString();
   }
@@ -101,7 +98,7 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
 
     int result = lib.wdeSendKeys(element, new WString(builder.toString()));
     
-    handleErrorCode("send keys to", result);
+    errors.verifyErrorCode(result, "send keys to");
 
     result = lib.wdWaitForLoadToComplete(driver);
   }
@@ -109,14 +106,14 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
   public void clear() {
     int result = lib.wdeClear(element);
 
-    handleErrorCode("clear", result);
+    errors.verifyErrorCode(result, "clear");
   }
 
   public boolean isEnabled() {
     IntByReference selected = new IntByReference();
     int result = lib.wdeIsEnabled(element, selected);
     
-    handleErrorCode("get enabled state", result);
+    errors.verifyErrorCode(result, "get enabled state");
     
     return selected.getValue() == 1;
   }
@@ -125,7 +122,7 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
     IntByReference selected = new IntByReference();
     int result = lib.wdeIsSelected(element, selected);
     
-    handleErrorCode("get selected state", result);
+    errors.verifyErrorCode(result, "get selected state");
     
     return selected.getValue() == 1;
   }
@@ -133,20 +130,20 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
   public void setSelected() {
     int result = lib.wdeSetSelected(element);
 
-    handleErrorCode("select", result);
+    errors.verifyErrorCode(result, "select");
   }
 
   public void submit() {
     int result = lib.wdeSubmit(element);
     
-    handleErrorCode("submit", result);
+    errors.verifyErrorCode(result, "submit");
   }
 
   public boolean toggle() {
     IntByReference toReturn = new IntByReference();
     int result = lib.wdeToggle(element, toReturn);
 
-    handleErrorCode("toggle", result);
+    errors.verifyErrorCode(result, "toggle");
 
     return toReturn.getValue() == 1;
   }
@@ -155,7 +152,7 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
     IntByReference displayed = new IntByReference();
     int result = lib.wdeIsDisplayed(element, displayed);
 
-    handleErrorCode("clear", result);
+    errors.verifyErrorCode(result, "clear");
 
     return displayed.getValue() == 1;
   }
@@ -177,7 +174,7 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
     NativeLongByReference y = new NativeLongByReference();
     int result = lib.wdeGetLocation(element, x, y);
     
-    handleErrorCode("Unable to get location of element", result);
+    errors.verifyErrorCode(result, "Unable to get location of element");
     
     return new Point(x.getValue().intValue(), y.getValue().intValue());
   }
@@ -187,7 +184,7 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
     NativeLongByReference height = new NativeLongByReference();
     int result = lib.wdeGetSize(element, width, height);
     
-    handleErrorCode("Unable to get element size", result);
+    errors.verifyErrorCode(result, "Unable to get element size");
     
     return new Dimension(width.getValue().intValue(), height.getValue().intValue());
   }
@@ -195,7 +192,7 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
   public String getValueOfCssProperty(String propertyName) {
     PointerByReference wrapper = new PointerByReference();
     int result = lib.wdeGetValueOfCssProperty(element, new WString(propertyName), wrapper);
-    handleErrorCode("Unable to get value of css property: " + propertyName, result);
+    errors.verifyErrorCode(result, ("Unable to get value of css property: " + propertyName));
     
     return new StringWrapper(lib, wrapper).toString();
   }
@@ -223,33 +220,5 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
   
   protected int addToScriptArgs(Pointer scriptArgs) {
     return lib.wdAddElementScriptArg(scriptArgs, element);
-  }
-  
-  private void handleErrorCode(String message, int errorCode) {
-    switch (errorCode) {
-    case SUCCESS: 
-      break; // Do nothing
-            
-    case -10:
-      throw new WebDriverException(
-          String.format("You may not %s this element. It looks as if the reference is stale. " +
-                        "Did you navigate away from the page with this element on?", message));
-
-    case -11:
-      throw new UnsupportedOperationException(
-          String.format("You may not %s an element that is not displayed", message));
-      
-    case -12:
-      throw new UnsupportedOperationException(
-              String.format("You may not %s an element that is not enabled", message));
-      
-    case -15:
-      throw new UnsupportedOperationException(
-              String.format("The element appears to be unselectable", message));
-      
-    default:
-      throw new IllegalStateException(
-          String.format("Unable to %s element: %d", message, errorCode));  
-  }
   }
 }

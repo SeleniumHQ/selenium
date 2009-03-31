@@ -1,7 +1,6 @@
 /*
 Copyright 2007-2009 WebDriver committers
 Copyright 2007-2009 Google Inc.
-Portions copyright 2007 ThoughtWorks, Inc
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18,29 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.ie;
 
-import com.sun.jna.Native;
-import com.sun.jna.NativeLong;
-import com.sun.jna.Pointer;
-import com.sun.jna.WString;
-import com.sun.jna.ptr.IntByReference;
-import com.sun.jna.ptr.NativeLongByReference;
-import com.sun.jna.ptr.PointerByReference;
-import org.openqa.selenium.Alert;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Cookie;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.NoSuchFrameException;
-import org.openqa.selenium.NoSuchWindowException;
-import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.Speed;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
-
 import static org.openqa.selenium.ie.ExportedWebDriverFunctions.SUCCESS;
-
-import org.openqa.selenium.ie.StringWrapper;
-import org.openqa.selenium.internal.ReturnedCookie;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -54,9 +31,30 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.openqa.selenium.Alert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Cookie;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoSuchWindowException;
+import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.Speed;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.internal.ReturnedCookie;
+
+import com.sun.jna.Native;
+import com.sun.jna.NativeLong;
+import com.sun.jna.Pointer;
+import com.sun.jna.WString;
+import com.sun.jna.ptr.IntByReference;
+import com.sun.jna.ptr.NativeLongByReference;
+import com.sun.jna.ptr.PointerByReference;
+
 public class InternetExplorerDriver implements WebDriver, SearchContext, JavascriptExecutor {
     private static ExportedWebDriverFunctions lib;
     private Pointer driver;
+    private ErrorHandler errors = new ErrorHandler();
 
     public InternetExplorerDriver() {
       intializeLib();
@@ -72,7 +70,7 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
       PointerByReference wrapper = new PointerByReference();
       int result = lib.wdGetPageSource(driver, wrapper);
       
-      handleErrorCode("Unable to get page source", result);
+      errors.verifyErrorCode(result, "Unable to get page source");
       
       return new StringWrapper(lib, wrapper).toString();
     }
@@ -99,7 +97,7 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
   public Object executeScript(String script, Object... args) {
     PointerByReference scriptArgsRef = new PointerByReference();
     int result = lib.wdNewScriptArgs(scriptArgsRef, args.length);
-    handleErrorCode("Unable to create new script arguments array", result);
+    errors.verifyErrorCode(result, "Unable to create new script arguments array");
     Pointer scriptArgs = scriptArgsRef.getValue();
     
     try {
@@ -110,7 +108,7 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
       PointerByReference scriptResultRef = new PointerByReference();
       result = lib.wdExecuteScript(driver, new WString(script), scriptArgs, scriptResultRef);
       
-      handleErrorCode("Cannot execute script", result);
+      errors.verifyErrorCode(result, "Cannot execute script");
       Object toReturn = extractReturnValue(scriptResultRef);
       return toReturn;
     } finally {
@@ -125,7 +123,7 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
     IntByReference type = new IntByReference();
     result = lib.wdGetScriptResultType(scriptResult, type);
     
-    handleErrorCode("Cannot determine result type", result);
+    errors.verifyErrorCode(result, "Cannot determine result type");
     
     try {
       Object toReturn;
@@ -133,28 +131,28 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
       case 1:
         PointerByReference wrapper = new PointerByReference();
         result = lib.wdGetStringScriptResult(scriptResult, wrapper);
-        handleErrorCode("Cannot extract string result", result);
+        errors.verifyErrorCode(result, "Cannot extract string result");
         toReturn = new StringWrapper(lib, wrapper).toString();
         break;
         
       case 2:
         NativeLongByReference value = new NativeLongByReference();
         result = lib.wdGetNumberScriptResult(scriptResult, value);
-        handleErrorCode("Cannot extract number result", result);
+        errors.verifyErrorCode(result, "Cannot extract number result");
         toReturn = value.getValue().longValue();
         break;
         
       case 3:
         IntByReference boolVal = new IntByReference();
         result = lib.wdGetBooleanScriptResult(scriptResult, boolVal);
-        handleErrorCode("Cannot extract boolean result", result);
+        errors.verifyErrorCode(result, "Cannot extract boolean result");
         toReturn = boolVal.getValue() == 1 ? Boolean.TRUE : Boolean.FALSE;
         break;
         
       case 4:
         PointerByReference element = new PointerByReference();
         result = lib.wdGetElementScriptResult(scriptResult, driver, element);
-        handleErrorCode("Cannot extract element result", result);
+        errors.verifyErrorCode(result, "Cannot extract element result");
         toReturn = new InternetExplorerElement(lib, driver, element.getValue());
         break;
         
@@ -165,7 +163,7 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
       case 6:
         PointerByReference message = new PointerByReference();
         result = lib.wdGetStringScriptResult(scriptResult, message);
-        handleErrorCode("Cannot extract string result", result);
+        errors.verifyErrorCode(result, "Cannot extract string result");
         throw new WebDriverException(new StringWrapper(lib, message).toString());
         
       default:
@@ -193,7 +191,7 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
         throw new IllegalArgumentException("Parameter is not of recognized type: " + arg);
       }
       
-      handleErrorCode("Unable to add argument: " + arg, result);
+      errors.verifyErrorCode(result, ("Unable to add argument: " + arg));
     }
     return result;
   }
@@ -235,7 +233,7 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
       IntByReference toReturn = new IntByReference();
       int result = lib.wdGetVisible(driver, toReturn);
       
-      handleErrorCode("Unable to determine if browser is visible", result);
+      errors.verifyErrorCode(result, "Unable to determine if browser is visible");
       
       return toReturn.getValue() == 1;
     }
@@ -248,7 +246,7 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
    public void setVisible(boolean visible) {
      int result = lib.wdSetVisible(driver, visible ? 1 : 0);
      
-     handleErrorCode("Unable to change the visibility of the browser", result);
+     errors.verifyErrorCode(result, "Unable to change the visibility of the browser");
    }
 
     public List<WebElement> findElements(By by) {
@@ -294,7 +292,7 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
         public WebDriver frame(String frameName) {
           int result = lib.wdSwitchToFrame(driver, new WString(frameName));
           
-          handleErrorCode("Unable to switch to frame: " + frameName, result);
+          errors.verifyErrorCode(result, ("Unable to switch to frame: " + frameName));
           
         	return InternetExplorerDriver.this;
         }
@@ -312,7 +310,7 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
           PointerByReference element = new PointerByReference();
           int result = lib.wdSwitchToActiveElement(driver, element);
           
-          handleErrorCode("Unable to find active element", result);
+          errors.verifyErrorCode(result, "Unable to find active element");
           
           return new InternetExplorerElement(lib, driver, element.getValue());
         }
@@ -325,12 +323,12 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
     private class InternetExplorerNavigation implements Navigation {
 		public void back() {
 		  int result = lib.wdGoBack(driver);
-      handleErrorCode("Unable to go back", result);
+      errors.verifyErrorCode(result, "Unable to go back");
 		}
 		
 		public void forward() {
 			int result = lib.wdGoForward(driver);
-			handleErrorCode("Unable to go forward", result);
+			errors.verifyErrorCode(result, "Unable to go forward");
 		}
 
 		public void to(String url) {
@@ -351,7 +349,7 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
 		public void addCookie(Cookie cookie) {
 		  int result = lib.wdAddCookie(driver, new WString(cookie.toString()));
 		 
-		  handleErrorCode("Unable to add cookie: " + cookie, result);
+		  errors.verifyErrorCode(result, ("Unable to add cookie: " + cookie));
 		}
 
 		public void deleteAllCookies() {
@@ -377,7 +375,7 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
 			PointerByReference wrapper = new PointerByReference();
 			int result = lib.wdGetCookies(driver, wrapper);
 			
-			handleErrorCode("Unable to extract visible cookies", result);
+			errors.verifyErrorCode(result, "Unable to extract visible cookies");
 			
 			Set<Cookie> toReturn = new HashSet<Cookie>();
 			String allDomainCookies = new StringWrapper(lib, wrapper).toString(); 
@@ -419,19 +417,6 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
 
     public List<WebElement> findElementsByPartialLinkText(String using) {
         throw new UnsupportedOperationException();
-    }
-    
-    private void handleErrorCode(String message, int errorCode) {
-      switch (errorCode) {
-      case SUCCESS: 
-        break; // Nothing to do
-        
-      case -8:
-        throw new NoSuchFrameException(message);
-       
-        default: 
-          throw new IllegalStateException(String.format("%s (%d)", message, errorCode));
-      }
     }
     
     private synchronized void intializeLib() {
