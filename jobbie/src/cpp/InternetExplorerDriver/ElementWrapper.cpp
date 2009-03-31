@@ -19,10 +19,9 @@ limitations under the License.
 #include "StdAfx.h"
 
 #include "errorcodes.h"
+#include "logging.h"
 #include "utils.h"
 #include "InternalCustomMessage.h"
-
-
 
 using namespace std;
 
@@ -105,15 +104,12 @@ bool ElementWrapper::isDisplayed()
 	return data.output_bool_;
 }
 
-int ElementWrapper::toggle(bool* result)
+int ElementWrapper::toggle()
 {
 	SCOPETRACER
-	int res = click();
-	if (res != SUCCESS) {
-		return res;
-	}
-	*result = isSelected();
-	return SUCCESS;
+	SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_ELEM_TOGGLE,)
+
+	return data.error_code;
 }
 
 int ElementWrapper::getLocationWhenScrolledIntoView(HWND* hwnd, long* x, long* y) 

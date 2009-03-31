@@ -137,6 +137,7 @@ protected:
 		  void OnElementClear(WPARAM, LPARAM);
 		  void OnElementIsSelected(WPARAM, LPARAM);
 		  void OnElementSetSelected(WPARAM, LPARAM);
+		  void OnElementToggle(WPARAM, LPARAM);
 		  void OnElementGetValueOfCssProp(WPARAM, LPARAM);
 		  void OnElementGetText(WPARAM, LPARAM);
 		  void OnElementClick(WPARAM, LPARAM);

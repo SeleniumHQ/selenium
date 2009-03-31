@@ -32,6 +32,9 @@ class ErrorHandler {
     case -8:
       throw new NoSuchFrameException(message);
      
+    case -9:
+      throw new UnsupportedOperationException("You may not perform the requested action");
+      
     case -10:
       throw new StaleElementReferenceException(
           String.format("You may not %s this element. It looks as if the reference is stale. " +

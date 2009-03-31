@@ -158,7 +158,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
 		}
 	}
 
-	@Ignore(value = SAFARI, reason = "IE: Fails test. Safari: Not implemented")
+	@Ignore(value = SAFARI)
 	public void testShouldBeAbleToSelectARadioButton() {
 		driver.get(formPage);
 		WebElement radioButton = driver.findElement(By.id("peas"));
@@ -166,8 +166,26 @@ public class FormHandlingTest extends AbstractDriverTestCase {
 		radioButton.setSelected();
 		assertThat(radioButton.isSelected(), is(true));
 	}
+	
+	@Ignore(value = SAFARI)
+  public void testShouldBeAbleToSelectARadioButtonByClickingOnIt() {
+    driver.get(formPage);
+    WebElement radioButton = driver.findElement(By.id("peas"));
+    assertThat(radioButton.isSelected(), is(false));
+    radioButton.click();
+    assertThat(radioButton.isSelected(), is(true));
+  }
+	
+	 @Ignore(value = SAFARI)
+	  public void testShouldReturnStateOfRadioButtonsBeforeInteration() {
+	    driver.get(formPage);
+	    WebElement radioButton = driver.findElement(By.id("cheese_and_peas"));
+	    assertThat(radioButton.isSelected(), is(true));
+	    
+	    radioButton = driver.findElement(By.id("cheese"));
+	    assertThat(radioButton.isSelected(), is(false));
+	  }
 
-	@Ignore(value = IE, reason = "Fails test")
 	public void testShouldThrowAnExceptionWhenTogglingTheStateOfARadioButton() {
 		driver.get(formPage);
 		WebElement radioButton = driver.findElement(By.id("cheese"));

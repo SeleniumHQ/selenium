@@ -24,6 +24,7 @@ limitations under the License.
 
 #include "IEThread.h"
 #include "interactions.h"
+#include "logging.h"
 #include "utils.h"
 #include "EventReleaser.h"
 #include "errorcodes.h"
@@ -574,6 +575,26 @@ void IeThread::OnElementSetSelected(WPARAM w, LPARAM lp)
 	data.error_code = -EELEMENTNOTSELECTED;
 }
 
+void IeThread::OnElementToggle(WPARAM w, LPARAM lp) 
+{
+	SCOPETRACER
+	ON_THREAD_ELEMENT(data, pElement)
+
+	// It only makes sense to toggle check boxes or options in a multi-select
+	CComBSTR tagName;
+	pElement->get_tagName(&tagName);
+
+	if ((tagName != L"OPTION") &&
+		!isCheckbox(pElement)) 
+	{
+		data.error_code = -ENOTIMPLEMENTED;
+		return;
+	}
+
+	int res = click(pElement, &SC);
+	data.error_code = res;
+}
+
 void IeThread::OnElementGetValueOfCssProp(WPARAM w, LPARAM lp)
 {
 	SCOPETRACER
@@ -700,21 +721,12 @@ bool IeThread::isSelected(IHTMLElement *pElement)
 		return isSelected == VARIANT_TRUE;
 	}
 
-	if (isCheckbox(pElement)) {
+	if (isCheckbox(pElement) || isRadio(pElement)) {
 		CComQIPtr<IHTMLInputElement> input(pElement);
 
 		VARIANT_BOOL isChecked;
 		input->get_checked(&isChecked);
 		return isChecked == VARIANT_TRUE;
-	}
-
-	if (isRadio(pElement)) {
-		std::wstring value;
-		getAttribute(pElement, L"selected", value);
-		if (!value.c_str())
-			return false;
-
-		return _wcsicmp(value.c_str(), L"selected") == 0 || _wcsicmp(value.c_str(), L"true") == 0;
 	}
 
 	return false;

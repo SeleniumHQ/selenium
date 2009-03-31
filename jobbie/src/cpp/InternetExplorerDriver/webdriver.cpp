@@ -19,6 +19,7 @@ limitations under the License.
 #include "webdriver.h"
 #include "finder.h"
 #include "InternetExplorerDriver.h"
+#include "logging.h"
 #include "utils.h"
 #include <stdio.h>
 #include <string>
@@ -530,14 +531,13 @@ int wdeToggle(WebElement* element, int* result)
     if (!element || !element->element) { return -ENOSUCHELEMENT; }
 
 	try {
-		bool toggled;
-		int res = element->element->toggle(&toggled);
+		int res = element->element->toggle();
 
 		if (res != SUCCESS) {
 			return res;
 		}
-		*result = toggled ? 1 : 0;
-		return SUCCESS;
+
+		return wdeIsSelected(element, result);
 	} END_TRY;
 }
 

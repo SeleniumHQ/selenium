@@ -40,7 +40,7 @@ public:
 	int setSelected();
 	bool isEnabled();
 	bool isDisplayed();
-	int toggle(bool*);
+	int toggle();
 	LPCWSTR getText();
 	LPCWSTR getValueOfCssProperty(LPCWSTR propertyName);
 	void releaseInterface();

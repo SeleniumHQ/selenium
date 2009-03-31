@@ -121,7 +121,7 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
   public boolean isSelected() {
     IntByReference selected = new IntByReference();
     int result = lib.wdeIsSelected(element, selected);
-    
+        
     errors.verifyErrorCode(result, "get selected state");
     
     return selected.getValue() == 1;
@@ -143,6 +143,10 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
     IntByReference toReturn = new IntByReference();
     int result = lib.wdeToggle(element, toReturn);
 
+    if (result == -9) {
+      throw new UnsupportedOperationException("You may not toggle this element: " + getElementName());
+    }
+    
     errors.verifyErrorCode(result, "toggle");
 
     return toReturn.getValue() == 1;
