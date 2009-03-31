@@ -22,7 +22,7 @@ import static org.openqa.selenium.Ignore.Driver.SAFARI;
 
 public class StaleElementReferenceTest extends AbstractDriverTestCase {
 
-  @Ignore({HTMLUNIT, SAFARI})
+  @Ignore(SAFARI)
   public void testOldPage() {
     driver.get(simpleTestPage);
     WebElement elem = driver.findElement(By.id("links"));

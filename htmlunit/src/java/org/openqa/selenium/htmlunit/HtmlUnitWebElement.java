@@ -45,14 +45,18 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Attr;
+import org.w3c.dom.NodeList;
 
 import com.gargoylesoftware.htmlunit.ScriptException;
+import com.gargoylesoftware.htmlunit.SgmlPage;
+import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.html.*;
 
 public class HtmlUnitWebElement implements WebElement,
@@ -71,6 +75,8 @@ public class HtmlUnitWebElement implements WebElement,
     }
 
     public void click() {
+        assertElementNotStale();
+
         if (!(element instanceof ClickableElement))
             return;
 
@@ -89,7 +95,9 @@ public class HtmlUnitWebElement implements WebElement,
         }
     }
 
-    public void submit() {
+  public void submit() {
+    assertElementNotStale();
+
         try {
             if (element instanceof HtmlForm) {
                 submitForm((HtmlForm) element);
@@ -115,7 +123,9 @@ public class HtmlUnitWebElement implements WebElement,
     }
 
     private void submitForm(HtmlForm form) {
-    	List<String> names = new ArrayList<String>();
+      assertElementNotStale();
+
+            List<String> names = new ArrayList<String>();
     	names.add("input");
     	names.add("button");
     	List<? extends HtmlElement> allElements = form.getHtmlElementsByTagNames(names);
@@ -159,12 +169,16 @@ public class HtmlUnitWebElement implements WebElement,
     }
 
 	public String getValue() {
+          assertElementNotStale();
+
         if (element instanceof HtmlTextArea)
             return ((HtmlTextArea) element).getText();
         return getAttribute("value");
     }
 
     public void clear() {
+      assertElementNotStale();
+
         if (element instanceof HtmlInput) {
             ((HtmlInput)element).setValueAttribute("");
         } else if (element instanceof HtmlTextArea) {
@@ -173,6 +187,8 @@ public class HtmlUnitWebElement implements WebElement,
     }
 
     public void sendKeys(CharSequence... value) {
+      assertElementNotStale();
+
         StringBuilder builder = new StringBuilder();
         for (CharSequence seq : value) {
             builder.append(seq);
@@ -199,10 +215,14 @@ public class HtmlUnitWebElement implements WebElement,
     }
 
     public String getElementName() {
+      assertElementNotStale();
+
         return element.getNodeName();
     }
 
     public String getAttribute(String name) {
+      assertElementNotStale();
+
         final String lowerName = name.toLowerCase();
 
         String value = element.getAttribute(name);
@@ -250,6 +270,8 @@ public class HtmlUnitWebElement implements WebElement,
     }
 
     public boolean toggle() {
+      assertElementNotStale();
+
         try {
             if (element instanceof HtmlCheckBoxInput) {
                 ((HtmlCheckBoxInput) element).click();
@@ -272,6 +294,8 @@ public class HtmlUnitWebElement implements WebElement,
     }
 
     public boolean isSelected() {
+      assertElementNotStale();
+
         if (element instanceof HtmlInput)
             return ((HtmlInput) element).isChecked();
         else if (element instanceof HtmlOption)
@@ -281,6 +305,8 @@ public class HtmlUnitWebElement implements WebElement,
     }
 
     public void setSelected() {
+      assertElementNotStale();
+
         String disabledValue = element.getAttribute("disabled");
         if (disabledValue.length() > 0) {
             throw new UnsupportedOperationException("You may not select a disabled element");
@@ -295,11 +321,15 @@ public class HtmlUnitWebElement implements WebElement,
     }
 
     public boolean isEnabled() {
+      assertElementNotStale();
+
       return !element.hasAttribute("disabled");
     }
 
     // This isn't very pretty. Sorry.
     public String getText() {
+      assertElementNotStale();
+
         StringBuffer toReturn = new StringBuffer();
         StringBuffer textSoFar = new StringBuffer();
 
@@ -383,6 +413,8 @@ public class HtmlUnitWebElement implements WebElement,
     }
 
   public List<WebElement> getElementsByTagName(String tagName) {
+    assertElementNotStale();
+
     List<?> allChildren =  element.getByXPath(".//" + tagName);
     List<WebElement> elements = new ArrayList<WebElement>();
     for (Object o : allChildren) {
@@ -396,22 +428,32 @@ public class HtmlUnitWebElement implements WebElement,
   }
 
   public WebElement findElement(By by) {
+    assertElementNotStale();
+
         return by.findElement(this);
     }
 
     public List<WebElement> findElements(By by) {
+      assertElementNotStale();
+
         return by.findElements(this);
     }
 
     public WebElement findElementById(String id) {
+      assertElementNotStale();
+
         return findElementByXPath(".//*[@id = '" + id + "']");
     }
 
     public List<WebElement> findElementsById(String id) {
+      assertElementNotStale();
+
         return findElementsByXPath(".//*[@id = '" + id + "']");
     }
 
     public WebElement findElementByXPath(String xpathExpr) {
+      assertElementNotStale();
+
         HtmlElement match = (HtmlElement) element.getFirstByXPath(xpathExpr);
         if (match == null) {
             throw new NoSuchElementException("Unable to find element with xpath "
@@ -421,6 +463,8 @@ public class HtmlUnitWebElement implements WebElement,
     }
 
     public List<WebElement> findElementsByXPath(String xpathExpr) {
+      assertElementNotStale();
+
         List<WebElement> webElements = new ArrayList<WebElement>();
         List<?> htmlElements = element.getByXPath(xpathExpr);
         for (Object e : htmlElements) {
@@ -430,6 +474,8 @@ public class HtmlUnitWebElement implements WebElement,
     }
 
     public WebElement findElementByLinkText(String linkText) {
+      assertElementNotStale();
+
         List<WebElement> elements = findElementsByLinkText(linkText);
         if (elements.size() == 0) {
             throw new NoSuchElementException(
@@ -439,6 +485,8 @@ public class HtmlUnitWebElement implements WebElement,
     }
 
     public List<WebElement> findElementsByLinkText(String linkText) {
+      assertElementNotStale();
+
         List<HtmlElement> htmlElements =
             (List<HtmlElement>) element.getHtmlElementsByTagName("a");
         List<WebElement> webElements = new ArrayList<WebElement>();
@@ -452,6 +500,8 @@ public class HtmlUnitWebElement implements WebElement,
     }
 
     public WebElement findElementByPartialLinkText(String linkText) {
+      assertElementNotStale();
+
         List<WebElement> elements = findElementsByPartialLinkText(linkText);
         if (elements.size() == 0) {
             throw new NoSuchElementException(
@@ -461,6 +511,8 @@ public class HtmlUnitWebElement implements WebElement,
     }
 
     public List<WebElement> findElementsByPartialLinkText(String linkText) {
+      assertElementNotStale();
+
         List<HtmlElement> htmlElements =
             (List<HtmlElement>) element.getHtmlElementsByTagName("a");
         List<WebElement> webElements = new ArrayList<WebElement>();
@@ -474,6 +526,8 @@ public class HtmlUnitWebElement implements WebElement,
     }
 
     public WebElement findElementByTagName(String name) {
+      assertElementNotStale();
+
       List<WebElement> elements = findElementsByTagName(name);
       if (elements.size() == 0) {
         throw new NoSuchElementException("Cannot find element with tag name: " + name);
@@ -482,17 +536,18 @@ public class HtmlUnitWebElement implements WebElement,
     }
 
     public List<WebElement> findElementsByTagName(String name) {
+      assertElementNotStale();
+
       return findElementsByXPath(".//*[local-name()='" + name + "']");
 
-      /* TODO(simon.m.stewart): Update this once the next version of HtmlUnit is released
-      NodeList elements = element.getElementsByTagName(name);
-      ArrayList<WebElement> toReturn = new ArrayList<WebElement>(elements.getLength());
-      for (int i = 0; i < elements.getLength(); i++) {
-        toReturn.add(parent.newHtmlUnitWebElement((HtmlElement) elements.item(i)));
-      }
-
-      return toReturn;
-      */
+//      // TODO(simon.m.stewart): Update this once the next version of HtmlUnit is released
+//      NodeList elements = element.getElementsByTagName(name);
+//      ArrayList<WebElement> toReturn = new ArrayList<WebElement>(elements.getLength());
+//      for (int i = 0; i < elements.getLength(); i++) {
+//        toReturn.add(parent.newHtmlUnitWebElement((HtmlElement) elements.item(i)));
+//      }
+//
+//      return toReturn;
     }
 
     private WebElement findParentForm() {
@@ -523,4 +578,15 @@ public class HtmlUnitWebElement implements WebElement,
         }
         return toString;
     }
+
+  private void assertElementNotStale() {
+    SgmlPage elementPage = element.getPage();
+    Page currentPage = parent.lastPage();
+
+    if (!currentPage.equals(elementPage)) {
+      throw new StaleElementReferenceException(
+          "Element appears to be stale. Did you navigate away from the page that contained it? "
+          + " And is the current window focussed the same as the one holding this element?");
+    }
+  }
 }

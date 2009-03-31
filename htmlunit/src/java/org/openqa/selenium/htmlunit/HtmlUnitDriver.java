@@ -376,9 +376,9 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     return new HtmlUnitNavigation();
   }
 
-  private synchronized Page lastPage() {
-        return currentWindow.getEnclosedPage();
-    }
+  protected synchronized Page lastPage() {
+    return currentWindow.getEnclosedPage();
+  }
 
   public WebElement findElementByLinkText(String selector) {
     int equalsIndex = selector.indexOf('=') + 1;
