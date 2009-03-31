@@ -27,7 +27,7 @@ import java.util.Set;
 
 public class WindowSwitchingTest extends AbstractDriverTestCase {
 
-  @Ignore({IE, REMOTE, SAFARI})
+  @Ignore({IE, SAFARI})
   public void testShouldSwitchFocusToANewWindowWhenItIsOpenedAndNotStopFutureOperations() {
     driver.get(xhtmlTestPage);
 
@@ -56,7 +56,7 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
 
   @NeedsFreshDriver
   @NoDriverAfterTest
-  @Ignore({IE, REMOTE, SAFARI})
+  @Ignore({IE, SAFARI})
   public void testShouldBeAbleToIterateOverAllOpenWindows() throws Exception {
     driver.get(xhtmlTestPage);
     driver.findElement(By.name("windowOne")).click();
@@ -75,7 +75,7 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
     }
   }
 
-  @Ignore({IE, REMOTE, SAFARI})
+  @Ignore({IE, SAFARI})
   public void testClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang() {
     driver.get(xhtmlTestPage);
 

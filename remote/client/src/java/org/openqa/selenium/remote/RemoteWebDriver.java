@@ -42,6 +42,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.LinkedHashSet;
 
 public class RemoteWebDriver implements WebDriver, SearchContext, JavascriptExecutor,
     FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByXPath {
@@ -178,7 +179,9 @@ public class RemoteWebDriver implements WebDriver, SearchContext, JavascriptExec
   @SuppressWarnings({"unchecked"})
   public Set<String> getWindowHandles() {
     Response response = execute("getWindowHandles");
-    return (Set<String>) response.getValue();
+    List<String> returnedValues = (List<String>) response.getValue();
+
+    return new LinkedHashSet<String>(returnedValues);
   }
 
   public String getWindowHandle() {

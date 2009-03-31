@@ -111,9 +111,9 @@ public class DriverServlet extends HttpServlet {
     deleteMapper.bind("/session/:sessionId", DeleteSession.class)
         .on(ResultType.SUCCESS, new EmptyResult());
 
-    getMapper.bind("/session/:sessioId/:context/window_handle", GetCurrentWindowHandle.class)
+    getMapper.bind("/session/:sessionId/:context/window_handle", GetCurrentWindowHandle.class)
         .on(ResultType.SUCCESS, new JsonResult(":response"));
-    getMapper.bind("/session/:sessioId/:context/window_handles", GetAllWindowHandles.class)
+    getMapper.bind("/session/:sessionId/:context/window_handles", GetAllWindowHandles.class)
         .on(ResultType.SUCCESS, new JsonResult(":response"));
 
     postMapper.bind("/session/:sessionId/:context/url", ChangeUrl.class)
