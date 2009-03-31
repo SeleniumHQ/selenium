@@ -299,7 +299,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
 
   public String getWindowHandle() {
     WebWindow window = webClient.getCurrentWindow();
-    if (window.getName() == null) {
+    if (window.getName() == null || "".equals(window.getName())) {
       nameWindow(window);
     }
     return window.getName();
