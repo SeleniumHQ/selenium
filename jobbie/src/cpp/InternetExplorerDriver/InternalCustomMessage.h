@@ -72,6 +72,7 @@ limitations under the License.
 
 #define _WD_WAITFORNAVIGATIONTOFINISH	WM_USER+70
 #define _WD_ELEM_RELEASE				WM_USER+71
+#define _WD_ELEM_BLUR					WM_USER+72
 
 #define _WD_QUIT_IE						WM_USER+80
 #define _WD_EXECUTESCRIPT				WM_USER+81

@@ -67,7 +67,15 @@ int ElementWrapper::sendKeys(LPCWSTR newValue)
 {
 	SCOPETRACER
 	SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_ELEM_SENDKEYS, newValue)
-	return data.error_code;
+	int result = data.error_code;
+	if (result != SUCCESS) {
+		return result;
+	}
+
+	DataMarshaller& data2 = prepareCmData();
+	sendThreadMsg(_WD_ELEM_BLUR, data2);
+
+	return data2.error_code;
 }
 
 void ElementWrapper::clear()

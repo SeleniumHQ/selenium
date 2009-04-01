@@ -1315,10 +1315,11 @@ void IeThread::OnElementRelease(WPARAM w, LPARAM lp)
 	pElement->Release();
 }
 
+void IeThread::OnElementBlur(WPARAM w, LPARAM lp) 
+{
+	SCOPETRACER
+	ON_THREAD_ELEMENT(data, pElement)
 
-
-
-
-
-
-
+	CComQIPtr<IHTMLElement2> e2(pElement);
+	e2->blur();
+}

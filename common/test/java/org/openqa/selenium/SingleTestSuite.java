@@ -33,7 +33,7 @@ public class SingleTestSuite extends TestCase {
   private final static String SAFARI = "org.openqa.selenium.safari.SafariDriver";
 
   public static Test suite() throws Exception {
-    String driver = HTML_UNIT_JS;
+    String driver = IE;
 
     System.setProperty("webdriver.firefox.development", "true");
 //    System.setProperty("webdriver.firefox.useExisting", "true");

@@ -171,6 +171,7 @@ protected:
 		  void OnWaitForNavigationToFinish(WPARAM, LPARAM);
 
 		  void OnElementRelease(WPARAM, LPARAM);
+  		  void OnElementBlur(WPARAM, LPARAM);
 
 		  void OnQuitIE(WPARAM, LPARAM);
 
