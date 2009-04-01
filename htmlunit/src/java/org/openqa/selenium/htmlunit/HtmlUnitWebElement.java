@@ -168,53 +168,64 @@ public class HtmlUnitWebElement implements WebElement,
       return submit == null;
     }
 
-	public String getValue() {
-          assertElementNotStale();
+  public String getValue() {
+    assertElementNotStale();
 
-        if (element instanceof HtmlTextArea)
-            return ((HtmlTextArea) element).getText();
-        return getAttribute("value");
+    if (element instanceof HtmlTextArea) {
+      return ((HtmlTextArea) element).getText();
+    }
+    return getAttribute("value");
+  }
+
+  public void clear() {
+    assertElementNotStale();
+
+    if (element instanceof HtmlInput) {
+      ((HtmlInput) element).setValueAttribute("");
+    } else if (element instanceof HtmlTextArea) {
+      ((HtmlTextArea) element).setText("");
+    }
+  }
+
+  public void sendKeys(CharSequence... value) {
+    assertElementNotStale();
+
+    StringBuilder builder = new StringBuilder();
+    for (CharSequence seq : value) {
+      builder.append(seq);
     }
 
-    public void clear() {
-      assertElementNotStale();
-
-        if (element instanceof HtmlInput) {
-            ((HtmlInput)element).setValueAttribute("");
-        } else if (element instanceof HtmlTextArea) {
-            ((HtmlTextArea) element).setText("");
-        }
+    if (parent.isJavascriptEnabled() && !(element instanceof HtmlFileInput)) {
+      try {
+        element.type(builder.toString());
+        element.blur();
+        return;
+      } catch (IOException e) {
+        throw new WebDriverException(e);
+      }
     }
 
-    public void sendKeys(CharSequence... value) {
-      assertElementNotStale();
+    String originalValue = getValue();
 
-        StringBuilder builder = new StringBuilder();
-        for (CharSequence seq : value) {
-            builder.append(seq);
-        }
-
-        if (parent.isJavascriptEnabled() && !(element instanceof HtmlFileInput)) {
-          try {
-            element.type(builder.toString());
-            return;
-          } catch (IOException e) {
-            throw new WebDriverException(e);
-          }
-        }
-
-        if (element instanceof HtmlInput) {
-            String currentValue = getValue();
-            element.setAttribute("value", (currentValue == null ? "" : currentValue) + builder.toString());
-        } else if (element instanceof HtmlTextArea) {
-            String currentValue = getValue();
-            ((HtmlTextArea) element).setText((currentValue == null ? "" : currentValue) + builder.toString());
-        } else {
-            throw new UnsupportedOperationException("You may only set the value of elements that are input elements");
-        }
+    if (element instanceof HtmlInput) {
+      String v = getValue();
+      element.setAttribute("value", (v == null ? "" : v) + builder.toString());
+    } else if (element instanceof HtmlTextArea) {
+      String v = getValue();
+      ((HtmlTextArea) element).setText((v == null ? "" : v) + builder.toString());
+    } else {
+      throw new UnsupportedOperationException(
+          "You may only set the value of elements that are input elements");
     }
 
-    public String getElementName() {
+    if (element instanceof HtmlFileInput &&
+        !originalValue.equals(getValue()) &&
+        parent.isJavascriptEnabled()) {
+      element.fireEvent("change");
+    }
+  }
+
+  public String getElementName() {
       assertElementNotStale();
 
         return element.getNodeName();

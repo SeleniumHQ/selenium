@@ -593,7 +593,7 @@ Utils.keyEvent = function(context, element, type, keyCode, charCode,
 };
 
 Utils.fireHtmlEvent = function(context, element, eventName) {
-    var doc = Utils.getDocument(context);
+    var doc = element.ownerDocument;
     var e = doc.createEvent("HTMLEvents");
     e.initEvent(eventName, true, true);
     element.dispatchEvent(e);

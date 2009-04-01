@@ -114,7 +114,6 @@ FirefoxDriver.prototype.getElementValue = function(respond) {
       return;
     }
 
-
     if (element["value"] !== undefined) {
         respond.response = element.value;
         respond.send();
@@ -144,24 +143,30 @@ FirefoxDriver.prototype.sendKeys = function(respond, value) {
       return;
     }
 
-
-
     if (!Utils.isDisplayed(element) && !Utils.isInHead(element)) {
-	    respond.isError = true;
-		respond.response = "Element is not currently visible and so may not be used for typing";
-		respond.send();
-		return;
-	}
+      respond.isError = true;
+      respond.response = "Element is not currently visible and so may not be used for typing";
+      respond.send();
+      return;
+    }
 
+  
   var currentlyActive = Utils.getActiveElement(this.context);
   if (currentlyActive != element) {
       currentlyActive.blur();
       element.focus();
   }
-    Utils.type(this.context, element, value[0]);
 
-    respond.context = this.context;
-    respond.send();
+  // Grab the current value for later comparison
+  var current = this.getValueOf(element);
+  Utils.type(this.context, element, value[0]);
+  var newValue = this.getValueOf(element);
+
+  if (current != newValue) {
+    Utils.fireHtmlEvent(this.context, element, "change");
+  }
+
+  respond.send();
 };
 
 FirefoxDriver.prototype.clear = function(respond) {
@@ -176,15 +181,14 @@ FirefoxDriver.prototype.clear = function(respond) {
     return;
   }
 
+  if (!Utils.isDisplayed(element) && !Utils.isInHead(element)) {
+    respond.isError = true;
+    respond.response = "Element is not currently visible and so may not be cleared";
+    respond.send();
+    return;
+  }
 
-    if (!Utils.isDisplayed(element) && !Utils.isInHead(element)) {
-	    respond.isError = true;
-		respond.response = "Element is not currently visible and so may not be cleared";
-		respond.send();
-		return;
-   }
-
-   var isTextField = element["value"] !== undefined;
+  var isTextField = element["value"] !== undefined;
 
    var currentlyActive = Utils.getActiveElement(this.context);
     if (currentlyActive != element) {
@@ -192,12 +196,7 @@ FirefoxDriver.prototype.clear = function(respond) {
       element.focus();
   }
 
-  var currentValue = undefined;
-  if (element["value"] !== undefined) {
-      currentValue = element.value;
-  } else if (element.hasAttribute("value")) {
-      currentValue = element.getAttribute("value");
-  }
+  var currentValue = this.getValueOf(element);
 
    if (isTextField) {
      element.value = "";
@@ -205,7 +204,8 @@ FirefoxDriver.prototype.clear = function(respond) {
      element.setAttribute("value", "");
    }
 
-   if (currentValue !== undefined && currentValue != "") {
+   var newValue = this.getValueOf(element);
+   if (currentValue != newValue) {
      Utils.fireHtmlEvent(this.context, element, "change");
    }
 
