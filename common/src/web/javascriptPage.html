@@ -38,7 +38,6 @@
         </select>
         <input type="checkbox" id="checkbox" value="checkbox thing" onchange="javascript:updateContent(this)"/>
         <input id="clickField" type="text" onclick="document.getElementById('clickField').value='Clicked';" value="Hello"/>
-        <input id="clearMe" value="Something" onchange="displayMessage('Cleared')"/>
     </form>
 </div>
 
@@ -98,6 +97,10 @@
 
     <button type="button" id="switchFocus" onclick="document.getElementById('theworks').focus();">Switch focus</button>
     <button type="button" onclick="var element = document.getElementById('switchFocus'); var clickEvent = document.createEvent('MouseEvents'); clickEvent.initMouseEvent('click', true, true, null, 0, 0, 0, 0, 0,false, false, false, false, 0, element);element.dispatchEvent(clickEvent);">Do magic</button>
+
+    <input id="changing-input" name="changing-input" value="some text" onchange="displayMessage('Changed');" />
+    <input id="changing-file" name="changing-input" type="file" value="some text" onchange="displayMessage('Changed');" />
+    <textarea rows="3" cols="15" id="changing-textarea" onchange="displayMessage('Changed');">Example text</textarea>
   </form>
 </div>
 
