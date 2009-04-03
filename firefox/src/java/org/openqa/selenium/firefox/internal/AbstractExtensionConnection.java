@@ -147,7 +147,11 @@ public abstract class AbstractExtensionConnection implements ExtensionConnection
                                                   Command command) {
         String converted = convert(command);
 
-        StringBuilder message = new StringBuilder("Length: ");
+        // Make this look like an HTTP request
+        StringBuilder message = new StringBuilder();
+        message.append("GET / HTTP/1.1\n");
+        message.append("Host: localhost\n");
+        message.append("Content-Length: ");
         message.append(converted.length()).append("\n\n");
         message.append(converted).append("\n");
 

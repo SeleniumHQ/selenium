@@ -59,7 +59,7 @@ SocketListener.prototype.onDataAvailable = function(request, context, inputStrea
     for (var j = 0; j < lines.length; j++) {
         if (this.isReadingHeaders()) {
             var head = lines[j].split(": ", 2);
-            if (head[0] == "Length") {
+            if (head[0] == "Content-Length") {
                 this.linesLeft = head[1] - 0;
                 this.readLength = true;
             } else if (lines[j].length == 0 && this.readLength) {

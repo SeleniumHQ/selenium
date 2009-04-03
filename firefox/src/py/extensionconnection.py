@@ -46,7 +46,7 @@ class ExtensionConnection(object):
                                       "context": self.context,
                                       "elementId": element_id,
                                       "commandName":cmd})
-        packet = 'Length: %d\n\n' % len(json_dump)
+        packet = 'Content-Length: %d\n\n' % len(json_dump)
         packet += json_dump
         packet += "\n"
         LOGGER.debug(packet)
