@@ -20,49 +20,57 @@ public class TemporaryFilesystemTest extends TestCase {
       throw e;
     }
   }
-  
+
   @Test
   public void testFilesystemCleanupDeletesDirs() {
-    File tmp = TemporaryFilesystem.createTempDir("TemporaryFilesystem", "canDelete");
+    File tmp = TemporaryFilesystem.createTempDir("TemporaryFilesystem", "fcdd");
     assertTrue(tmp.exists());
+
     TemporaryFilesystem.deleteTemporaryFiles();
     assertFalse(tmp.exists());
   }
-  
+
   @Test
   public void testFilesystemCleanupDeletesRecursive() throws IOException {
-    File tmp = TemporaryFilesystem.createTempDir("TemporaryFilesystem", "canDeleteRecurisve");
-    assertTrue(tmp.exists());
+    File tmp = TemporaryFilesystem.createTempDir("TemporaryFilesystem", "fcdr");
+    createDummyFilesystemContent(tmp);
 
-    File.createTempFile("cleanup", "file", tmp);
-    File childDir = new File(tmp, "child");
-    childDir.mkdir();
-    File.createTempFile("cleanup", "childFile", childDir);
-    
     TemporaryFilesystem.deleteTemporaryFiles();
     assertFalse(tmp.exists());
   }
-  
-  @Test
-  public void testSpecificDeleteRequestHonored() {
-    File first = TemporaryFilesystem.createTempDir("TemporaryFilesystem", "canDeleteRecurisve");
-    File second = TemporaryFilesystem.createTempDir("TemporaryFilesystem", "canDeleteRecurisve");
-    assertTrue(first.exists());
-    assertTrue(second.exists());
 
-    TemporaryFilesystem.deleteTempDir(first);
-    
-    assertFalse(first.exists());
-    assertTrue(second.exists());
+  @Test
+  public void testSpecificDeleteRequestHonored() throws IOException {
+    File tmp = TemporaryFilesystem.createTempDir("TemporaryFilesystem", "sdrh");
+    createDummyFilesystemContent(tmp);
+
+    TemporaryFilesystem.deleteTempDir(tmp);
+
+    assertFalse(tmp.exists());
   }
-  
+
   @Test
   public void testDoesNotDeleteArbitraryFiles() throws IOException {
-    File tempFile = File.createTempFile("TemporaryFilesystem", "file");
+    File tempFile = File.createTempFile("TemporaryFilesystem", "dndaf");
     assertTrue(tempFile.exists());
+    try {
+      TemporaryFilesystem.deleteTempDir(tempFile);
+      assertTrue(tempFile.exists());
+    } finally {
+      tempFile.delete();
+    }
+  }
 
-    TemporaryFilesystem.deleteTempDir(tempFile);
-    
-    assertTrue(tempFile.exists());
+  @Test
+  public void testShouldReapDefaultsTrue() {
+    assertTrue(TemporaryFilesystem.shouldReap());
+  }
+
+  private void createDummyFilesystemContent(File dir) throws IOException {
+    assertTrue(dir.isDirectory());
+    File.createTempFile("cleanup", "file", dir);
+    File childDir = new File(dir, "child");
+    childDir.mkdir();
+    File.createTempFile("cleanup", "childFile", childDir);
   }
 }

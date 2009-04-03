@@ -26,7 +26,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * A wrapper around temporary filesystem behaviour.
- * 
+ *
  * @author gblock@google.com (Gregory Block)
  */
 public class TemporaryFilesystem {
@@ -37,13 +37,13 @@ public class TemporaryFilesystem {
       deleteTemporaryFiles();
     }
   };
-  
+
   /**
    * Add the static initialization hook; verify java.io.tmpdir is writable.
    */
   static {
     Runtime.getRuntime().addShutdownHook(shutdownHook);
-    
+
     if (!baseDir.exists()) {
       throw new WebDriverException("Unable to find tmp dir: " + baseDir.getAbsolutePath());
     }
@@ -51,14 +51,14 @@ public class TemporaryFilesystem {
       throw new WebDriverException("Unable to write to tmp dir: " + baseDir.getAbsolutePath());
     }
   }
-  
+
   private TemporaryFilesystem() {
     // Static utility class, no public constructor.
   }
-  
+
   /**
    * Create a temporary directory, and track it for deletion.
-   * 
+   *
    * @param prefix the prefix to use when creating the temporary directory
    * @param suffix the suffix to use when creating the temporary directory
    * @return the temporary directory to create
@@ -68,16 +68,16 @@ public class TemporaryFilesystem {
       // Create a tempfile, and delete it.
       File file = File.createTempFile(prefix, suffix, baseDir);
       file.delete();
-      
+
       // Create it as a directory.
       File dir = new File(file.getAbsolutePath());
       if (dir == null || !dir.mkdirs()) {
         throw new WebDriverException("Cannot create profile directory at " + dir.getAbsolutePath());
       }
-      
+
       // Create the directory and mark it writable.
       FileHandler.createDir(dir);
-      
+
       temporaryFiles.add(dir);
       return dir;
     } catch (IOException e) {
@@ -88,7 +88,7 @@ public class TemporaryFilesystem {
 
   /**
    * Delete a temporary directory that we were responsible for creating.
-   * 
+   *
    * @param file the file to delete
    * @throws WebDriverException if interrupted
    */
@@ -96,7 +96,7 @@ public class TemporaryFilesystem {
     if (!shouldReap()) {
       return;
     }
-    
+
     // If the tempfile can be removed, delete it.  If not, it wasn't created by us.
     if (temporaryFiles.remove(file)) {
       FileHandler.delete(file);
@@ -110,22 +110,22 @@ public class TemporaryFilesystem {
     if (!shouldReap()) {
       return;
     }
-    
-    try {
-      for (File file : temporaryFiles) {
+
+    for (File file : temporaryFiles) {
+      try {
         FileHandler.delete(file);
+      } catch (WebDriverException e) {
+        // ignore; an interrupt will already have been logged.
       }
-    } catch (WebDriverException e) {
-      // ignore; an interrupt will already have been logged.
     }
   }
-  
+
   /**
    * Returns true if we should be reaping profiles.  Used to control tempfile deletion.
-   * 
+   *
    * @return true if reaping is enabled.
    */
-  private static boolean shouldReap() {
+  static boolean shouldReap() {
     String reap = System.getProperty("webdriver.firefox.reap_profile", "true");
     return Boolean.valueOf(reap);
   }
