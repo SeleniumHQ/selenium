@@ -35,6 +35,7 @@ public class WebDriverException extends RuntimeException {
     super(message, cause);
   }
 
+  @Override
   public String getMessage() {
     return createMessage(super.getMessage());
   }
