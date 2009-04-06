@@ -1978,25 +1978,25 @@ Selenium.prototype.doWindowMaximize = function() {
 };
 
 Selenium.prototype.getAllWindowIds = function() {
-  /** Returns the IDs of all windows that the browser knows about.
+  /** Returns the IDs of all windows that the browser knows about in an array.
    *
-   * @return string[] the IDs of all windows that the browser knows about.
+   * @return string[] Array of identifiers of all windows that the browser knows about.
    */
    return this.getAttributeFromAllWindows("id");
 };
 
 Selenium.prototype.getAllWindowNames = function() {
-  /** Returns the names of all windows that the browser knows about.
+  /** Returns the names of all windows that the browser knows about in an array.
    *
-   * @return string[] the names of all windows that the browser knows about.
+   * @return string[] Array of names of all windows that the browser knows about.
    */
    return this.getAttributeFromAllWindows("name");
 };
 
 Selenium.prototype.getAllWindowTitles = function() {
-  /** Returns the titles of all windows that the browser knows about.
+  /** Returns the titles of all windows that the browser knows about in an array.
    *
-   * @return string[] the titles of all windows that the browser knows about.
+   * @return string[] Array of titles of all windows that the browser knows about.
    */
    return this.getAttributeFromAllWindows("document.title");
 };
