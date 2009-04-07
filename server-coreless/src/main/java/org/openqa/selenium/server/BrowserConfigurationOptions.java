@@ -97,7 +97,7 @@ public class BrowserConfigurationOptions {
     }
     
     public void setSafely(String key, Object value) {
-        if (options.get(key) == null) return;
+        if (value == null) return;
         set(key, value);
     }
     

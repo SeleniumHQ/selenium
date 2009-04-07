@@ -1,295 +1,275 @@
 package org.openqa.selenium.server;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import java.io.File;
 
 /**
  * #{@link org.openqa.selenium.server.RemoteControlConfiguration} unit test class.
  */
-public class RemoteControlConfigurationUnitTest extends TestCase {
-    
-    public void testPortIs4444ByDefault() {
-        assertEquals(4444, new RemoteControlConfiguration().getPort());
+public class RemoteControlConfigurationUnitTest {
+	
+	final RemoteControlConfiguration configuration = new RemoteControlConfiguration();
+
+	@Before
+	public void setUp() {
+	}
+	
+    @Test public void testPortIs4444ByDefault() {
+        assertEquals(4444, configuration.getPort());
     }
 
-    public void testPortCanBeSet() {
-        final RemoteControlConfiguration configuration;
-        configuration = new RemoteControlConfiguration();
-
+    @Test public void testPortCanBeSet() {
         configuration.setPort(1234);
         assertEquals(1234, configuration.getPort());
     }
 
-    public void testMultiWindowIsTrueByDefault() {
-        assertTrue((!new RemoteControlConfiguration().isSingleWindow()));
+    @Test public void testMultiWindowIsTrueByDefault() {
+        assertTrue((!configuration.isSingleWindow()));
     }
 
-    public void testMultiWindowCanBeSet() {
-        final RemoteControlConfiguration configuration;
-        configuration = new RemoteControlConfiguration();
-
+    @Test public void testMultiWindowCanBeSet() {
         configuration.setSingleWindow(!true);
         assertTrue((!configuration.isSingleWindow()));
     }
 
-    public void testProxyInjectionModeArgIsFalseByDefault() {
-        assertFalse(new RemoteControlConfiguration().getProxyInjectionModeArg());
+    @Test public void testProxyInjectionModeArgIsFalseByDefault() {
+        assertFalse(configuration.getProxyInjectionModeArg());
     }
 
-    public void testProxyInjectionModeArgCanBeSet() {
-        final RemoteControlConfiguration configuration;
-        configuration = new RemoteControlConfiguration();
-
+    @Test public void testProxyInjectionModeArgCanBeSet() {
         configuration.setProxyInjectionModeArg(true);
         assertTrue(configuration.getProxyInjectionModeArg());
     }
 
-
-    public void testPortDriversShouldContactIsSamePortByDefault() {
-        final RemoteControlConfiguration configuration;
-
-        configuration = new RemoteControlConfiguration();
+    @Test public void testPortDriversShouldContactIsSamePortByDefault() {
         configuration.setPort(1515);
         assertEquals(1515, configuration.getPortDriversShouldContact());
     }
 
-    public void testPortDriversShouldContactCanBeSet() {
-        final RemoteControlConfiguration configuration;
-        configuration = new RemoteControlConfiguration();
-
+    @Test public void testPortDriversShouldContactCanBeSet() {
         configuration.setPortDriversShouldContact(1234);
         assertEquals(1234, configuration.getPortDriversShouldContact());
     }
 
-    public void testHTMLSuiteIsFalseByDefault() {
-        assertFalse(new RemoteControlConfiguration().isHTMLSuite());
+    @Test public void testHTMLSuiteIsFalseByDefault() {
+        assertFalse(configuration.isHTMLSuite());
     }
 
-    public void testHTMLSuiteCanBeSet() {
-        final RemoteControlConfiguration configuration;
-        configuration = new RemoteControlConfiguration();
-
+    @Test public void testHTMLSuiteCanBeSet() {
         configuration.setHTMLSuite(true);
         assertTrue(configuration.isHTMLSuite());
     }
 
-    public void testSelfTestIsFalseByDefault() {
-        assertFalse(new RemoteControlConfiguration().isSelfTest());
+    @Test public void testSelfTestIsFalseByDefault() {
+        assertFalse(configuration.isSelfTest());
     }
 
-    public void testSelfTestCanBeSet() {
-        final RemoteControlConfiguration configuration;
-        configuration = new RemoteControlConfiguration();
-
+    @Test public void testSelfTestCanBeSet() {
         configuration.setSelfTest(true);
         assertTrue(configuration.isSelfTest());
     }
 
-    public void testSelfTestDirIsNullByDefault() {
-        assertNull(new RemoteControlConfiguration().getSelfTestDir());
+    @Test public void testSelfTestDirIsNullByDefault() {
+        assertNull(configuration.getSelfTestDir());
     }
 
-    public void testSelfTestDirCanBeSet() {
-        final RemoteControlConfiguration configuration;
-        final File aDirectory;
-
-        configuration = new RemoteControlConfiguration();
-        aDirectory = new File("\"A Directory Name\"");
+    @Test public void testSelfTestDirCanBeSet() {
+        final File aDirectory = new File("\"A Directory Name\"");
         configuration.setSelfTestDir(aDirectory);
         assertEquals(aDirectory, configuration.getSelfTestDir());
     }
 
-    public void testInteractiveIsFalseByDefault() {
-        assertFalse(new RemoteControlConfiguration().isInteractive());
+    @Test public void testInteractiveIsFalseByDefault() {
+        assertFalse(configuration.isInteractive());
     }
 
-    public void testInteractiveCanBeSet() {
-        final RemoteControlConfiguration configuration;
-        configuration = new RemoteControlConfiguration();
-
+    @Test public void testInteractiveCanBeSet() {
         configuration.setInteractive(true);
         assertTrue(configuration.isInteractive());
     }
 
-    public void testUserExtensionsIsNullByDefault() {
-        assertNull(new RemoteControlConfiguration().getUserExtensions());
+    @Test public void testUserExtensionsIsNullByDefault() {
+        assertNull(configuration.getUserExtensions());
     }
 
-    public void testUserExtensionsCanBeSet() {
-        final RemoteControlConfiguration configuration;
-        final File aDirectory;
-
-        configuration = new RemoteControlConfiguration();
-        aDirectory = new File("\"A File Name\"");
+    @Test public void testUserExtensionsCanBeSet() {
+        final File aDirectory = new File("\"A File Name\"");
         configuration.setUserExtensions(aDirectory);
         assertEquals(aDirectory, configuration.getUserExtensions());
     }
 
-    public void testUserJSInjectionIsFalseByDefault() {
-        assertFalse(new RemoteControlConfiguration().userJSInjection());
+    @Test public void testUserJSInjectionIsFalseByDefault() {
+        assertFalse(configuration.userJSInjection());
     }
 
-    public void testUserJSInjectionCanBeSet() {
-        final RemoteControlConfiguration configuration;
-        configuration = new RemoteControlConfiguration();
-
+    @Test public void testUserJSInjectionCanBeSet() {
         configuration.setUserJSInjection(true);
         assertTrue(configuration.userJSInjection());
     }
 
-    public void testTrustAllSSLCertificatesIsFalseByDefault() {
-        assertFalse(new RemoteControlConfiguration().trustAllSSLCertificates());
+    @Test public void testTrustAllSSLCertificatesIsFalseByDefault() {
+        assertFalse(configuration.trustAllSSLCertificates());
     }
 
-    public void testTrustAllSSLCertificatesCanBeSet() {
-        final RemoteControlConfiguration configuration;
-        configuration = new RemoteControlConfiguration();
-
+    @Test public void testTrustAllSSLCertificatesCanBeSet() {
         configuration.setTrustAllSSLCertificates(true);
         assertTrue(configuration.trustAllSSLCertificates());
     }
 
-    public void testDebugURLIsEmptyByDefault() {
-        assertEquals("", new RemoteControlConfiguration().getDebugURL());
+    @Test public void testDebugURLIsEmptyByDefault() {
+        assertEquals("", configuration.getDebugURL());
     }
 
 
-    public void testDebugURLCanBeSet() {
-        final RemoteControlConfiguration configuration;
-        configuration = new RemoteControlConfiguration();
-
+    @Test public void testDebugURLCanBeSet() {
         configuration.setDebugURL("A URL");
         assertEquals("A URL", configuration.getDebugURL());
     }
 
-    public void testDontInjectRegexIsNullByDefault() {
-        assertNull(new RemoteControlConfiguration().getDontInjectRegex());
+    @Test public void testDontInjectRegexIsNullByDefault() {
+        assertNull(configuration.getDontInjectRegex());
     }
 
-    public void testDontInjectRegexCanBeSet() {
-        final RemoteControlConfiguration configuration;
-        configuration = new RemoteControlConfiguration();
-
+    @Test public void testDontInjectRegexCanBeSet() {
         configuration.setDontInjectRegex("A Regex");
         assertEquals("A Regex", configuration.getDontInjectRegex());
     }
 
-    public void testFirefoxProfileTemplateIsNullByDefault() {
-        assertNull(new RemoteControlConfiguration().getFirefoxProfileTemplate());
+    @Test public void testFirefoxProfileTemplateIsNullByDefault() {
+        assertNull(configuration.getFirefoxProfileTemplate());
     }
 
-    public void testFirefoxProfileTemplateCanBeSet() {
-        final RemoteControlConfiguration configuration;
-        final File aDirectory;
-
-        configuration = new RemoteControlConfiguration();
-        aDirectory = new File("\"A Directory Path\"");
+    @Test public void testFirefoxProfileTemplateCanBeSet() {
+        final File aDirectory = new File("\"A Directory Path\"");
         configuration.setFirefoxProfileTemplate(aDirectory);
         assertEquals(aDirectory, configuration.getFirefoxProfileTemplate());
     }
 
-    public void testReuseBrowserSessionsIsFalseByDefault() {
-        assertFalse(new RemoteControlConfiguration().reuseBrowserSessions());
+    @Test public void testReuseBrowserSessionsIsFalseByDefault() {
+        assertFalse(configuration.reuseBrowserSessions());
     }
 
-    public void testReuseBrowserSessionsCanBeSet() {
-        final RemoteControlConfiguration configuration;
-        configuration = new RemoteControlConfiguration();
-
+    @Test public void testReuseBrowserSessionsCanBeSet() {
         configuration.setReuseBrowserSessions(true);
         assertTrue(configuration.reuseBrowserSessions());
     }
 
-    public void testLogoutFileNameIsNullByDefault() {
-        assertNull(new RemoteControlConfiguration().getLogOutFileName());
+    @Test public void testLogoutFileNameIsNullByDefault() {
+        assertNull(configuration.getLogOutFileName());
     }
 
-    public void testLogoutFileNameCanBeSet() {
-        final RemoteControlConfiguration configuration;
-        configuration = new RemoteControlConfiguration();
-
-        configuration.setLogOutFileName("A File Name");
+    @Test public void testLogoutFileNameCanBeSet() {
+    	configuration.setLogOutFileName("A File Name");
         assertEquals("A File Name", configuration.getLogOutFileName());
     }
 
-    public void testForcedBrowserModeIsNullByDefault() {
-        assertNull(new RemoteControlConfiguration().getForcedBrowserMode());
+    @Test public void testForcedBrowserModeIsNullByDefault() {
+        assertNull(configuration.getForcedBrowserMode());
     }
 
-    public void testForcedBrowserModeCanBeSet() {
-        final RemoteControlConfiguration configuration;
-
-        configuration = new RemoteControlConfiguration();
+    @Test public void testForcedBrowserModeCanBeSet() {
         configuration.setForcedBrowserMode("A Mode");
         assertEquals("A Mode", configuration.getForcedBrowserMode());
     }
 
-    public void testHonorSystemProxyIsFalseByDefault() {
-        assertFalse(new RemoteControlConfiguration().honorSystemProxy());
+    @Test public void testHonorSystemProxyIsFalseByDefault() {
+        assertFalse(configuration.honorSystemProxy());
 
     }
 
-    public void testHonorSystemProxyCanBeSet() {
-        final RemoteControlConfiguration configuration;
-
-        configuration = new RemoteControlConfiguration();
+    @Test public void testHonorSystemProxyCanBeSet() {
         configuration.setHonorSystemProxy(true);
         assertTrue(configuration.honorSystemProxy());
 
     }
 
-    public void testShouldOverrideSystemProxyIsTrueByDefault() {
-        assertTrue(new RemoteControlConfiguration().shouldOverrideSystemProxy());
+    @Test public void testShouldOverrideSystemProxyIsTrueByDefault() {
+        assertTrue(configuration.shouldOverrideSystemProxy());
 
     }
 
-    public void testShouldOverrideSystemProxyIsFalseIfHonorSystemProxyIsSet() {
-        final RemoteControlConfiguration configuration;
-
-        configuration = new RemoteControlConfiguration();
+    @Test public void testShouldOverrideSystemProxyIsFalseIfHonorSystemProxyIsSet() {
         configuration.setHonorSystemProxy(true);
         assertFalse(configuration.shouldOverrideSystemProxy());
     }
 
-    public void testTimeoutInSecondsIs30MinutesByDefault() {
-        assertEquals(30 * 60, new RemoteControlConfiguration().getTimeoutInSeconds());
+    @Test public void testTimeoutInSecondsIs30MinutesByDefault() {
+        assertEquals(30 * 60, configuration.getTimeoutInSeconds());
     }
 
-    public void testTimeoutInSecondsCanBeSet() {
-        final RemoteControlConfiguration configuration;
-
-        configuration = new RemoteControlConfiguration();
+    @Test public void testTimeoutInSecondsCanBeSet() {
         configuration.setTimeoutInSeconds(123);
         assertEquals(123, configuration.getTimeoutInSeconds());
     }
 
-    public void testRetryTimeoutInSecondsIs10SecondsByDefault() {
-        assertEquals(10, new RemoteControlConfiguration().getRetryTimeoutInSeconds());
+    @Test public void testRetryTimeoutInSecondsIs10SecondsByDefault() {
+        assertEquals(10, configuration.getRetryTimeoutInSeconds());
     }
 
-    public void testRetryTimeoutInSecondsCanBeSet() {
-        final RemoteControlConfiguration configuration;
-
-        configuration = new RemoteControlConfiguration();
+    @Test public void testRetryTimeoutInSecondsCanBeSet() {
         configuration.setRetryTimeoutInSeconds(123);
         assertEquals(123, configuration.getRetryTimeoutInSeconds());
     }
 
-    public void testDontTouchLoggingIsFalseByDefault() {
-        assertFalse(new RemoteControlConfiguration().dontTouchLogging());
+    @Test public void testDontTouchLoggingIsFalseByDefault() {
+        assertFalse(configuration.dontTouchLogging());
     }
 
-    public void testDontTouchLoggingCanBeSet() {
-        final RemoteControlConfiguration configuration;
-        configuration = new RemoteControlConfiguration();
-
+    @Test public void testDontTouchLoggingCanBeSet() {
         configuration.setDontTouchLogging(true);
         assertTrue(configuration.dontTouchLogging());
     }
 
-    public void testShortTermMemoryLoggerCapacityIs50Bydefault() {
-        assertEquals(30, new RemoteControlConfiguration().shortTermMemoryLoggerCapacity());
+    @Test public void testShortTermMemoryLoggerCapacityIs50Bydefault() {
+        assertEquals(30, configuration.shortTermMemoryLoggerCapacity());
     }
 
+    @Test public void remoteControlConfigurationWillBeCopiedIntoBrowserOptions() throws Exception {
+    	final BrowserConfigurationOptions browserOptions = new BrowserConfigurationOptions();
+    	
+    	String fileName = "file";
+    	int timeOut = 5;
+    	boolean honorSystemProxy = true;
+    	String dontInjectRegex = "newdontInjectRegex";
+    	boolean trustAllSSLCertificates = true;
+    	File newuserExtensions = new File("newuserExtensions");
+    	boolean useUserJSInjection = true;
+    	boolean useProxyInjectionMode = true;
+    	boolean useSingleWindow = true;
+    	boolean ensureCleanSession = true;
+    	boolean avoidProxy = true;
+    	boolean browserSideLogEnabled = true;
+    	
+    	configuration.setFirefoxProfileTemplate(new File(fileName));
+    	configuration.setTimeoutInSeconds(timeOut);
+    	configuration.setHonorSystemProxy(honorSystemProxy);
+    	configuration.setDontInjectRegex(dontInjectRegex);
+    	configuration.setTrustAllSSLCertificates(trustAllSSLCertificates);
+    	configuration.setUserExtensions(newuserExtensions);
+    	configuration.setUserJSInjection(useUserJSInjection);
+    	configuration.setProxyInjectionModeArg(useProxyInjectionMode);
+    	configuration.setSingleWindow(useSingleWindow);
+    	configuration.setEnsureCleanSession(ensureCleanSession);
+    	configuration.setAvoidProxy(avoidProxy);
+    	configuration.setBrowserSideLogEnabled(browserSideLogEnabled);
+    	
+    	configuration.copySettingsIntoBrowserOptions(browserOptions);
+    	
+    	assertEquals(fileName, browserOptions.get("firefoxProfileTemplate"));
+    	assertEquals(Integer.toString(timeOut), browserOptions.get("timeoutInSeconds"));
+    	assertEquals(Boolean.toString(honorSystemProxy), browserOptions.get("honorSystemProxy"));
+    	assertEquals(dontInjectRegex, browserOptions.get("dontInjectRegex"));
+    	assertEquals(Boolean.toString(trustAllSSLCertificates), browserOptions.get("trustAllSSLCertificates"));
+    	assertEquals(newuserExtensions.getName(), browserOptions.get("userExtensions"));
+    	assertEquals(Boolean.toString(useUserJSInjection), browserOptions.get("userJSInjection"));
+    	assertEquals(Boolean.toString(useProxyInjectionMode), browserOptions.get("proxyInjectionMode"));
+    	assertEquals(Boolean.toString(useSingleWindow), browserOptions.get("singleWindow"));
+    	assertEquals(Boolean.toString(ensureCleanSession), browserOptions.get("ensureCleanSession"));
+    	assertEquals(Boolean.toString(avoidProxy), browserOptions.get("avoidProxy"));
+    	assertEquals(Boolean.toString(browserSideLogEnabled), browserOptions.get("browserSideLog"));
+    }
+    
 }
