@@ -17,6 +17,7 @@ import org.apache.tools.ant.taskdefs.condition.Os;
 import org.apache.tools.ant.types.FileSet;
 import org.mortbay.log.LogFactory;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
+import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.SeleniumCommandTimedOutException;
 import org.openqa.selenium.server.SeleniumServer;
 import org.openqa.selenium.server.StaticContentHandler;
@@ -39,8 +40,8 @@ public class HTMLLauncher implements HTMLResultsListener {
     static Log log = LogFactory.getLog(HTMLLauncher.class);
     private SeleniumServer remoteControl;
     private HTMLTestResults results;
-    
-    public HTMLLauncher(SeleniumServer remoteControl) {
+
+	public HTMLLauncher(SeleniumServer remoteControl) {
         this.remoteControl = remoteControl;
     }
     
@@ -58,6 +59,31 @@ public class HTMLLauncher implements HTMLResultsListener {
     public String runHTMLSuite(String browser, String browserURL, String suiteURL, File outputFile, int timeoutInSeconds, boolean multiWindow) throws IOException {
         return runHTMLSuite(browser, browserURL, suiteURL, outputFile,
                 timeoutInSeconds, multiWindow, "info");
+    }
+    
+    protected BrowserLauncher getBrowserLauncher(String browser, String sessionId, RemoteControlConfiguration configuration, BrowserConfigurationOptions browserOptions) {
+    	BrowserLauncherFactory blf = new BrowserLauncherFactory();
+    	return blf.getBrowserLauncher(browser, sessionId, configuration, browserOptions);
+    }
+    
+    protected void sleepTight(long timeoutInMs) {
+        long now = System.currentTimeMillis();
+        long end = now + timeoutInMs;
+        while (results == null && System.currentTimeMillis() < end) {
+            AsyncExecute.sleepTight(500);
+        }
+    }
+    
+    protected FileWriter getFileWriter(File outputFile) throws IOException {
+    	return new FileWriter(outputFile);
+    }
+    
+    protected void writeResults(File outputFile) throws IOException {
+        if (outputFile != null) {
+            FileWriter fw = getFileWriter(outputFile);
+            results.write(fw);
+            fw.close();
+        }
     }
 
     /** Launches a single HTML Selenium test suite.
@@ -82,33 +108,37 @@ public class HTMLLauncher implements HTMLResultsListener {
             log.warn("Looks like the timeout overflowed, so resetting it to the maximum.");
             timeoutInMs = Long.MAX_VALUE;
         }
+        
+        RemoteControlConfiguration configuration = remoteControl.getConfiguration();
         remoteControl.handleHTMLRunnerResults(this);
-        BrowserLauncherFactory blf = new BrowserLauncherFactory();
+
         String sessionId = Long.toString(System.currentTimeMillis() % 1000000);
         BrowserConfigurationOptions browserOptions = new BrowserConfigurationOptions();
+        
+        configuration.copySettingsIntoBrowserOptions(browserOptions);
+        
         browserOptions.setSingleWindow(!multiWindow);
-        BrowserLauncher launcher = blf.getBrowserLauncher(browser, sessionId, remoteControl.getConfiguration(), browserOptions);
+        
+        BrowserLauncher launcher = getBrowserLauncher(browser, sessionId, configuration, browserOptions);
         BrowserSessionInfo sessionInfo = new BrowserSessionInfo(sessionId, 
             browser, browserURL, launcher, null);
+        
         remoteControl.registerBrowserSession(sessionInfo);
         
         // JB: -- aren't these URLs in the wrong order according to declaration?
         launcher.launchHTMLSuite(suiteURL, browserURL);
-        long now = System.currentTimeMillis();
-        long end = now + timeoutInMs;
-        while (results == null && System.currentTimeMillis() < end) {
-            AsyncExecute.sleepTight(500);
-        }
+        
+        sleepTight(timeoutInMs);
+        
         launcher.close();
+        
         remoteControl.deregisterBrowserSession(sessionInfo);
+        
         if (results == null) {
             throw new SeleniumCommandTimedOutException();
         }
-        if (outputFile != null) {
-            FileWriter fw = new FileWriter(outputFile);
-            results.write(fw);
-            fw.close();
-        }
+        
+        writeResults(outputFile);
         
         return results.getResult().toUpperCase();
     }
@@ -263,4 +293,12 @@ public class HTMLLauncher implements HTMLResultsListener {
     public static void main(String[] args) throws Exception {
     	System.exit(mainInt(args));
     }
+    
+    public HTMLTestResults getResults() {
+		return results;
+	}
+
+	public void setResults(HTMLTestResults results) {
+		this.results = results;
+	}
 }

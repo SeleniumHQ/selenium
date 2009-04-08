@@ -4,14 +4,17 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+import static org.easymock.classextension.EasyMock.*;
 
 import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
-public class FirefoxChromeLauncherUnitTest extends TestCase {
+public class FirefoxChromeLauncherUnitTest {
 	
-	public void testInvalidBrowserStringCausesChromeLauncherToThrowException() {
+	@Test public void testInvalidBrowserStringCausesChromeLauncherToThrowException() {
 		
 		try {			
 			new FirefoxChromeLauncher(new BrowserConfigurationOptions(),null,null, "invalid");
@@ -21,20 +24,20 @@ public class FirefoxChromeLauncherUnitTest extends TestCase {
 		}
 	}
 	
-	public void testNullBrowserInstallationDoesntCauseChromeLauncherToThrowException() {
+	@Test public void testNullBrowserInstallationDoesntCauseChromeLauncherToThrowException() {
 		BrowserInstallation bi = null;
 		FirefoxChromeLauncher fcl = new FirefoxChromeLauncher(new BrowserConfigurationOptions(),null,null, bi);
 		assertNotNull(fcl);
 	}
 	
-    public void testShouldAbleToCreateChromeUrlWithNormalUrl() throws Exception {
+    @Test public void testShouldAbleToCreateChromeUrlWithNormalUrl() throws Exception {
         String httpUrl = "http://www.my.com/folder/endname.html?a=aaa&b=bbb";
         String chromeUrl = new FirefoxChromeLauncher.ChromeUrlConvert().convert(httpUrl);
         assertEquals("chrome://src/content/endname.html?a=aaa&b=bbb",
                 chromeUrl);
     }
     
-    public void testProfileRemovedWhenProcessNull() {
+    @Test public void testProfileRemovedWhenProcessNull() {
       FirefoxChromeLauncherStubbedForShutdown launcher = new FirefoxChromeLauncherStubbedForShutdown();
       launcher.setCustomProfileDir(new File("testdir"));
       launcher.close();
@@ -42,7 +45,7 @@ public class FirefoxChromeLauncherUnitTest extends TestCase {
       assertTrue(launcher.wasRemoveCustomProfileCalled());
     }
     
-    public void testProfileRemovedWhenProcessKillFails() {
+    @Test public void testProfileRemovedWhenProcessKillFails() {
       FirefoxChromeLauncherStubbedForShutdown launcher = new FirefoxChromeLauncherStubbedForShutdown();
       launcher.haveProcessKillThrowException(false);
       launcher.setCustomProfileDir(new File("testdir"));
@@ -52,7 +55,7 @@ public class FirefoxChromeLauncherUnitTest extends TestCase {
       assertTrue(launcher.wasRemoveCustomProfileCalled());
     }
     
-    public void testProfileRemovedWhenProcessNotNull() {
+    @Test public void testProfileRemovedWhenProcessNotNull() {
       FirefoxChromeLauncherStubbedForShutdown launcher = new FirefoxChromeLauncherStubbedForShutdown();
       launcher.setCustomProfileDir(new File("testdir"));
       launcher.setProcess(new TestProcess());
@@ -61,14 +64,14 @@ public class FirefoxChromeLauncherUnitTest extends TestCase {
       assertTrue(launcher.wasRemoveCustomProfileCalled());
     }
     
-    public void testNothingRemovedIfAlreadyNull() {
+    @Test public void testNothingRemovedIfAlreadyNull() {
       FirefoxChromeLauncherStubbedForShutdown launcher = new FirefoxChromeLauncherStubbedForShutdown();
       launcher.close();
       assertFalse(launcher.wasKillFirefoxProcessCalled());
       assertFalse(launcher.wasRemoveCustomProfileCalled());
     }
     
-    public void testSecondCloseIsNoOp() {
+    @Test public void testSecondCloseIsNoOp() {
       FirefoxChromeLauncherStubbedForShutdown launcher = new FirefoxChromeLauncherStubbedForShutdown();
       launcher.setCustomProfileDir(new File("testdir"));
       launcher.close();
@@ -76,6 +79,84 @@ public class FirefoxChromeLauncherUnitTest extends TestCase {
       launcher.reset();
       launcher.close();
       assertFalse(launcher.wasRemoveCustomProfileCalled());
+    }
+    
+    @Test
+    public void copyCert8db_copyiesOnlyIfFileExists() throws Exception {
+    	BrowserConfigurationOptions browserOptions = new BrowserConfigurationOptions();
+    	RemoteControlConfiguration configuration = new RemoteControlConfiguration();
+    	File firefoxProfileTemplate = new File("x");
+    	final File certFile = createMock(File.class);
+    	final BrowserInstallation browserInstallation = createMock(BrowserInstallation.class);
+    	
+    	FirefoxChromeLauncher launcher = new FirefoxChromeLauncher(browserOptions, configuration, "session", browserInstallation) {
+    		@Override
+    		protected void copySingleFileWithOverwrite(File sourceFile,
+    				File destFile) {
+    		}
+    		
+    		@Override
+    		protected File getFileFromParent(File parent, String child) {
+    			return certFile;
+    		}
+    	};
+    	
+    	// Expecting the call for exists()
+    	expect(certFile.exists()).andReturn(true);
+    	replay(certFile);
+    	launcher.copyCert8db(firefoxProfileTemplate);
+    	verify(certFile);
+    	
+    }
+    
+    @Test
+    public void initProfileTemplate_usesBrowserOptionIfNoProfilesLocationSpecified() throws Exception {
+    	final BrowserConfigurationOptions browserOptions = new BrowserConfigurationOptions();
+    	final RemoteControlConfiguration configuration = new RemoteControlConfiguration();
+    	final BrowserInstallation browserInstallation = createMock(BrowserInstallation.class);
+    	
+    	FirefoxChromeLauncher launcher = new FirefoxChromeLauncher(browserOptions, configuration, "session", browserInstallation) {
+    		@Override
+    		protected void copyDirectory(File sourceDir, File destDir) {
+    		}
+    	};
+    	
+    	browserOptions.set("firefoxProfileTemplate", "profileTemplate");
+    	
+    	File result = launcher.initProfileTemplate();
+    	
+    	assertEquals("profileTemplate", result.getName());
+    	
+    }
+
+    @Test
+    public void initProfileTemplate_usesProfilesLocationAlongWithRelativeProfileIfTheirAbsoluteTemplateExists() throws Exception {
+    	final BrowserConfigurationOptions browserOptions = new BrowserConfigurationOptions();
+    	final RemoteControlConfiguration configuration = new RemoteControlConfiguration();
+    	final BrowserInstallation browserInstallation = createMock(BrowserInstallation.class);
+    	final File profileTemplate = createMock(File.class);
+    	
+    	FirefoxChromeLauncher launcher = new FirefoxChromeLauncher(browserOptions, configuration, "session", browserInstallation) {
+    		@Override
+    		protected void copyDirectory(File sourceDir, File destDir) {
+    		}
+    		
+    		@Override
+    		protected File getFileFromParent(File parent, String child) {
+    			return profileTemplate;
+    		}
+    	};
+    	
+    	expect(profileTemplate.exists()).andReturn(true);
+    	replay(profileTemplate);
+    	
+    	configuration.setProfilesLocation(profileTemplate);
+    	browserOptions.set("profile", "profile");
+    	
+    	File result = launcher.initProfileTemplate();
+    	verify(profileTemplate);
+    	assertEquals(profileTemplate, result);
+    	
     }
     
     public static class FirefoxChromeLauncherStubbedForShutdown extends FirefoxChromeLauncher {
