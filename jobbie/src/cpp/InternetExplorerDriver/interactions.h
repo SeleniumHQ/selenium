@@ -31,9 +31,9 @@ EXPORT boolean sendKeysToFileUploadAlert(HWND alertHwnd, const wchar_t* value);
 EXPORT void sendKeys(HWND directInputTo, const wchar_t* value, int timePerKey);
 
 // Mouse interactions
-EXPORT void clickAt(HWND directInputTo, long x, long y);
-EXPORT void mouseDownAt(HWND directInputTo, long x, long y);
-EXPORT void mouseUpAt(HWND directInputTo, long x, long y);
+EXPORT LRESULT clickAt(HWND directInputTo, long x, long y);
+EXPORT LRESULT mouseDownAt(HWND directInputTo, long x, long y);
+EXPORT LRESULT mouseUpAt(HWND directInputTo, long x, long y);
 
 #ifdef __cplusplus
 }

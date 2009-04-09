@@ -26,6 +26,7 @@ limitations under the License.
 #include "utils.h"
 #include "InternalCustomMessage.h"
 #include "EventReleaser.h"
+#include "windows.h"
 
 using namespace std;
 extern wchar_t* XPATHJS[];
@@ -37,6 +38,18 @@ IeThread::IeThread() :  pBody(NULL), pIED(NULL), hThread(NULL), threadID(0)
 	SCOPETRACER
 
 	m_EventToNotifyWhenNavigationCompleted = NULL;
+
+	HKEY key;
+	if (RegOpenKeyEx(HKEY_LOCAL_MACHINE, L"software\\microsoft\\internet explorer", 0L,  KEY_READ, &key) == ERROR_SUCCESS) {
+		char value[32];
+		DWORD type = REG_SZ;
+		DWORD size = 32;
+
+		 if (RegQueryValueEx(key, L"version", NULL, &type, (LPBYTE)&value, &size) == ERROR_SUCCESS) {
+			 ieRelease = atoi(value);
+		 }
+	}
+    RegCloseKey(key);
 }
 
 IeThread::~IeThread()

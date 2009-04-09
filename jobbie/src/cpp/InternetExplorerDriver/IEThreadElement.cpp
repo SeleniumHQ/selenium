@@ -31,6 +31,14 @@ limitations under the License.
 
 using namespace std;
 
+const LPCTSTR ie8WindowNames[] = {
+        _T("Frame Tab"),
+        _T("TabWindowClass"),
+        _T("Shell DocObject View"),
+        _T("Internet Explorer_Server"),
+        NULL
+};
+
 const LPCTSTR ie7WindowNames[] = {
         _T("TabWindowClass"),
         _T("Shell DocObject View"),
@@ -61,6 +69,13 @@ HWND getIeServerWindow(HWND hwnd)
     iehwnd = hwnd;
     for (int i = 0; ie7WindowNames[i] && iehwnd; i++) {
       iehwnd = getChildWindow(iehwnd, ie7WindowNames[i]);
+    }
+  }
+
+  if (!iehwnd) {
+    iehwnd = hwnd;
+    for (int i = 0; ie8WindowNames[i] && iehwnd; i++) {
+      iehwnd = getChildWindow(iehwnd, ie8WindowNames[i]);
     }
   }
 
@@ -777,6 +792,12 @@ int IeThread::getLocationWhenScrolledIntoView(IHTMLElement *pElement, HWND* hwnd
     rect->get_top(&clickY);
     rect->get_left(&clickX);
 
+	// This is a little funky.
+	if (ieRelease > 7) {
+		clickX += 2;
+		clickY += 2;
+	}
+
     rect->get_bottom(&height);
     rect->get_right(&width);
 
@@ -849,7 +870,10 @@ int IeThread::click(IHTMLElement *pElement, CScopeCaller *pSC)
 	}
 
 	// Create a mouse move, mouse down, mouse up OS event
-	clickAt(ieWindow, clickX, clickY);
+	LRESULT lresult = clickAt(ieWindow, clickX, clickY);
+    if (result != SUCCESS) {
+		return result;
+	}
 
 	tryTransferEventReleaserToNotifyNavigCompleted(pSC);
 	waitForNavigateToFinish();

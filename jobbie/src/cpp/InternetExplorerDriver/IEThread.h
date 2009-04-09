@@ -65,6 +65,8 @@ public:
 	BOOL CustomInternalPumpMessage();
 	BOOL DispatchThreadMessageEx(MSG* pMsg);
 
+	int ieRelease;
+
 private:
 
 	bool isOrUnder(const IHTMLDOMNode* root, IHTMLElement* child);

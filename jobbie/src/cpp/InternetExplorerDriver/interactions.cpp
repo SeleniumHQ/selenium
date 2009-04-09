@@ -499,20 +499,23 @@ void sendKeys(HWND directInputTo, const wchar_t* value, int timePerKey)
 	}
 }
 
-void clickAt(HWND directInputTo, long x, long y) 
+LRESULT clickAt(HWND directInputTo, long x, long y) 
 {
-	mouseDownAt(directInputTo, x, y);
-	mouseUpAt(directInputTo, x, y);
+	LRESULT result = mouseDownAt(directInputTo, x, y);
+    if (result != 0) {
+		return result;
+	}
+	return mouseUpAt(directInputTo, x, y);
 }
 
-void mouseDownAt(HWND directInputTo, long x, long y)
+LRESULT mouseDownAt(HWND directInputTo, long x, long y)
 {
-	SendMessage(directInputTo, WM_LBUTTONDOWN, MK_LBUTTON, MAKELONG(x, y));
+	return SendMessage(directInputTo, WM_LBUTTONDOWN, MK_LBUTTON, MAKELONG(x, y));
 }
 
-void mouseUpAt(HWND directInputTo, long x, long y) 
+LRESULT mouseUpAt(HWND directInputTo, long x, long y) 
 {
-	SendMessage(directInputTo, WM_LBUTTONUP, 0, MAKELONG(x, y));
+	return SendMessage(directInputTo, WM_LBUTTONUP, 0, MAKELONG(x, y));
 }
 
 }
