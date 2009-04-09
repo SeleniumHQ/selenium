@@ -22,11 +22,6 @@
 			<artifactId>jna</artifactId>
 			<version>3.0.9</version>
 		</dependency>
-		<dependency>
-			<groupId>com.sun.jna</groupId>
-			<artifactId>jna</artifactId>
-			<version>3.0.5</version>
-		</dependency>
 		<!-- Test dependencies ... -->
 		<dependency>
 			<groupId>org.openqa.selenium.webdriver</groupId>
