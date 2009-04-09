@@ -35,8 +35,9 @@ import org.openqa.selenium.lift.find.Finder;
 public abstract class HamcrestWebDriverTestCase extends TestCase {
 
 	private static final long DEFAULT_TIMEOUT = 5000;
-	
-	private TestContext context = new WebDriverTestContext(createDriver());
+
+        private WebDriver driver = createDriver();
+        private TestContext context = new WebDriverTestContext(driver);
 
 	protected abstract WebDriver createDriver();
 
@@ -45,8 +46,12 @@ public abstract class HamcrestWebDriverTestCase extends TestCase {
 		context.quit();
 		super.tearDown();
 	}
-	
-	protected void clickOn(Finder<WebElement, WebDriver> finder) {
+
+        protected WebDriver getWebDriver() {
+          return driver;
+        }
+
+        protected void clickOn(Finder<WebElement, WebDriver> finder) {
 		context.clickOn(finder);
 	}
 
