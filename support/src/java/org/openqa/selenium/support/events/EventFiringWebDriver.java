@@ -157,6 +157,14 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor {
         throw new UnsupportedOperationException("Underlying driver instance does not support executing javascript");
     }
 
+  public boolean isJavascriptEnabled() {
+    if (driver instanceof JavascriptExecutor) {
+      return ((JavascriptExecutor) driver).isJavascriptEnabled();
+    }
+
+    throw new UnsupportedOperationException("Underlying driver instance does not support executing javascript");
+  }
+
   private Object[] unpackWrappedArgs(Object... args) {
     // Walk the args: the various drivers expect unpacked versions of the elements
     Object[] usedArgs = new Object[args.length];

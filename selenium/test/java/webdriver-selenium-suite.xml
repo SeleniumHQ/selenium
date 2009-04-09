@@ -20,6 +20,7 @@
       <class name="com.thoughtworks.selenium.corebased.TestFunkEventHandling"/>
       <class name="com.thoughtworks.selenium.corebased.TestGoBack"/>
       <class name="com.thoughtworks.selenium.corebased.TestHtmlSource"/>
+      <class name="com.thoughtworks.selenium.corebased.TestImplicitLocators"/>
       <class name="com.thoughtworks.selenium.corebased.TestMultiSelect"/>
       <class name="com.thoughtworks.selenium.corebased.TestOpen"/>
       <class name="com.thoughtworks.selenium.corebased.TestOpenInTargetFrame"/>

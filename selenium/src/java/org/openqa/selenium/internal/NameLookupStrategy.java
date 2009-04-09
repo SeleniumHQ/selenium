@@ -67,7 +67,7 @@ public class NameLookupStrategy implements LookupStrategy {
         }
 
         if (allElements.size() > 0) {
-            return (RenderedWebElement) allElements.get(0);
+            return allElements.get(0);
         }
         throw new SeleniumException(use + " not found");
     }

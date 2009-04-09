@@ -1,7 +1,6 @@
 /*
 Copyright 2007-2009 WebDriver committers
 Copyright 2007-2009 Google Inc.
-Portions copyright 2007 ThoughtWorks, Inc
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18,17 +17,24 @@ limitations under the License.
 
 package org.openqa.selenium.internal;
 
+
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-public class ImplicitLookupStrategy implements LookupStrategy {
-    public WebElement find(WebDriver driver, String use) {
-        if (use.startsWith("document.")) {
-            return new DomTraversalLookupStrategy().find(driver, use);
-        } else if (use.startsWith("//")) {
-            return new XPathLookupStrategy().find(driver, use);
-        } else {
-            return new IdentifierLookupStrategy().find(driver, use);
-        }
+public class DomTraversalLookupStrategy implements LookupStrategy {
+  public WebElement find(WebDriver driver, String use) {
+    if (!(driver instanceof JavascriptExecutor)) {
+      throw new UnsupportedOperationException(
+          "DOM lookups only work when the driver supports Javascript");
     }
+
+    JavascriptExecutor executor = (JavascriptExecutor) driver;
+    if (!executor.isJavascriptEnabled()) {
+      throw new UnsupportedOperationException(
+          "DOM lookup failed: driver does not have JS enabled");
+    }
+
+    return (WebElement) executor.executeScript(String.format("return %s", use));
+  }
 }

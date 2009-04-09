@@ -38,6 +38,7 @@ import org.openqa.selenium.internal.RegExTextMatchingStrategy;
 import org.openqa.selenium.internal.TextMatchingStrategy;
 import org.openqa.selenium.internal.ValueOptionSelectStrategy;
 import org.openqa.selenium.internal.XPathLookupStrategy;
+import org.openqa.selenium.internal.DomTraversalLookupStrategy;
 
 import java.awt.*;
 import java.io.BufferedReader;
@@ -117,6 +118,7 @@ public class WebDriverBackedSelenium implements Selenium {
     lookupStrategies.put("link", new LinkLookupStrategy());
     lookupStrategies.put("name", new NameLookupStrategy());
     lookupStrategies.put("xpath", new XPathLookupStrategy());
+    lookupStrategies.put("dom", new DomTraversalLookupStrategy());
   }
 
   /**
@@ -495,7 +497,11 @@ public class WebDriverBackedSelenium implements Selenium {
       value = value.toUpperCase();
 
     WebElement element = findElement(locator);
-    callEmbeddedSelenium("replaceText", element, value);
+    if(driver instanceof JavascriptExecutor && ((JavascriptExecutor) driver).isJavascriptEnabled()) {
+        callEmbeddedSelenium("replaceText", element, value);
+    } else {
+        element.sendKeys(value);
+    }
   }
 
   /**
@@ -2273,6 +2279,18 @@ public class WebDriverBackedSelenium implements Selenium {
 
     throw new UnsupportedOperationException(
         "The underlying WebDriver instance does not support executing javascript");
+  }
+
+  public void captureEntirePageScreenshot(String s) {
+      throw new UnsupportedOperationException();
+  }
+
+  public void addScript(String arg0, String arg1) {
+      throw new UnsupportedOperationException("Selenium.addScript() not implemented yet.");
+  }
+
+  public void removeScript(String arg0) {
+      throw new UnsupportedOperationException("Selenium.removeScript() not implemented yet.");
   }
 
 }

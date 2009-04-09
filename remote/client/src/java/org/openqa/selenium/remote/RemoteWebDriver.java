@@ -230,6 +230,10 @@ public class RemoteWebDriver implements WebDriver, SearchContext, JavascriptExec
     return result.get("value");
   }
 
+  public boolean isJavascriptEnabled() {
+    throw new UnsupportedOperationException("isJavascriptEnabled");
+  }
+
   private Object[] convertToJsObjects(Object[] args) {
     if (args.length == 0)
       return null;

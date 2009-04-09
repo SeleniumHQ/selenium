@@ -42,4 +42,9 @@ public interface JavascriptExecutor {
      * @return One of Boolean, Long, String, List or WebElement. Or null.
      */
     Object executeScript(String script, Object... args);
+
+    /**
+     * It's not enough to simply support javascript, it also needs to be enabled too.
+     */
+      boolean isJavascriptEnabled();
 }

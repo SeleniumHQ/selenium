@@ -116,6 +116,10 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
     }
   }
 
+  public boolean isJavascriptEnabled() {
+    return true;
+  }
+
   private Object extractReturnValue(PointerByReference scriptResultRef) {
     int result;
     Pointer scriptResult = scriptResultRef.getValue();
