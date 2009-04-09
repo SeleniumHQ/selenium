@@ -103,8 +103,29 @@ public abstract class HamcrestWebDriverTestCase extends TestCase {
 	void setContext(TestContext context) {
 		this.context = context;
 	}
-	
-	protected void assertSelected(Finder<WebElement, WebDriver> finder) {
+
+      /**
+       * Returns the current page source
+       */
+      public String getPageSource() {
+        return getWebDriver().getPageSource();
+      }
+
+      /**
+       * Returns the current page title
+       */
+      public String getTitle() {
+        return getWebDriver().getTitle();
+      }
+
+      /**
+       * Returns the current URL
+       */
+      public String getCurrentUrl() {
+        return getWebDriver().getCurrentUrl();
+      }
+
+      protected void assertSelected(Finder<WebElement, WebDriver> finder) {
 		assertPresenceOf(finder.with(selection()));
 	}
 	

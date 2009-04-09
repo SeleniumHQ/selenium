@@ -91,16 +91,30 @@ public class WebDriverTestContext implements TestContext {
 		element.click();
 	}	
 	
-	private WebElement findOneElementTo(String action, Finder<WebElement, WebDriver> finder) {
-		Collection<WebElement> foundElements = finder.findFrom(driver);
-		if (foundElements.isEmpty()) {
-			failWith("could not find element to " + action);
-		} else if (foundElements.size() > 1) {
-			failWith("did not know what to " + action + " - ambiguous");
-		} 
-		
-		return foundElements.iterator().next();
-	}
+	public void clickOnFirst(Finder<WebElement, WebDriver> finder) {
+		WebElement element = findFirstElementTo("click on", finder);
+		element.click();
+	}	
+	
+  private WebElement findFirstElementTo(String action, Finder<WebElement, WebDriver> finder) {
+    Collection<WebElement> foundElements = finder.findFrom(driver);
+    if (foundElements.isEmpty()) {
+      failWith("could not find element to " + action);
+    } 
+    
+    return foundElements.iterator().next();
+  }
+
+  private WebElement findOneElementTo(String action, Finder<WebElement, WebDriver> finder) {
+    Collection<WebElement> foundElements = finder.findFrom(driver);
+    if (foundElements.isEmpty()) {
+      failWith("could not find element to " + action);
+    } else if (foundElements.size() > 1) {
+      failWith("did not know what to " + action + " - ambiguous");
+    } 
+    
+    return foundElements.iterator().next();
+  }
 
 	private void failWith(String message) throws AssertionError {
 		throw new java.lang.AssertionError(message);
