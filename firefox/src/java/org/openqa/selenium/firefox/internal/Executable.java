@@ -82,7 +82,8 @@ public class Executable {
   }
   
   /**
-   * Locates the firefox binary from a system property.
+   * Locates the firefox binary from a system property. Will throw an exception if the binary
+   * cannot be found.
    */
   private static File locateFirefoxBinaryFromSystemProperty() {
       String binaryName = System.getProperty("webdriver.firefox.bin");
@@ -97,33 +98,56 @@ public class Executable {
           case WINDOWS:
           case VISTA:
           case XP:
-              return null;
+              if (!binaryName.endsWith(".exe"))
+                binaryName += ".exe";
+              break;
   
           case MAC:
               if (!binaryName.endsWith(".app"))
                   binaryName += ".app";
               binaryName += "/Contents/MacOS/firefox";
-              return new File(binaryName);
-  
+              break;
+
           default:
-              return findBinary(binaryName);
+              // Fall through
       }
+
+      binary = new File(binaryName);
+      if (binary.exists())
+          return binary;
+
+      throw new WebDriverException(
+          String.format(
+              "\"webdriver.firefox.bin\" property set, but unable to locate the requested binary: %s",
+              binaryName
+          ));
   }
   
   /**
    * Locates the firefox binary by platform.
    */
   private static File locateFirefoxBinaryFromPlatform() {
+    File binary = null;
+
     switch (Platform.getCurrent()) {
       case WINDOWS:
       case VISTA:
       case XP:
-          return new File(getEnvVar("PROGRAMFILES", "\\Program Files") + "\\Mozilla Firefox\\firefox.exe");
+          binary = new File(getEnvVar("PROGRAMFILES", "\\Program Files") + "\\Mozilla Firefox\\firefox.exe");
+          if (!binary.exists()) {
+            binary = new File("/Program Files (x64)/Mozilla Firefox/firefox.exe");
+          }
+          break;
+
       case MAC:
-          return new File("/Applications/Firefox.app/Contents/MacOS/firefox");
+          binary = new File("/Applications/Firefox.app/Contents/MacOS/firefox");
+          break;
+
       default:
-          return findBinary("firefox3", "firefox2", "firefox");
+          // Do nothing
     }
+
+    return binary != null && binary.exists() ? binary : findBinary("firefox3", "firefox2", "firefox");
   }
   
   /**
@@ -133,7 +157,7 @@ public class Executable {
    * @param defaultValue the default value of the variable
    * @return the env var
    */
-  private static final String getEnvVar(String name, String defaultValue) {
+  private static String getEnvVar(String name, String defaultValue) {
     final String value = System.getenv(name);
     if (value != null) {
       return value;
@@ -148,18 +172,21 @@ public class Executable {
     switch (Platform.getCurrent()) {
       case MAC:
           return "DYLD_LIBRARY_PATH";
+
       case WINDOWS:
+      case VISTA:
+      case XP:
           return "PATH";
+
       default:
           return "LD_LIBRARY_PATH";
     }
   }
 
   /**
-   * UNIXy-only: walk a PATH to locate binaries with a specified name.
-   * Binaries will be searched for in the order they are provided.
+   * Walk a PATH to locate binaries with a specified name. Binaries will be searched for in the
+   * order they are provided.
    * 
-   * TODO(gblock): Consider using this on Win32
    * @param binaryNames the binary names to search for
    * @return the first binary found matching that name.
    */
@@ -170,6 +197,12 @@ public class Executable {
         File file = new File(path, binaryName);
         if (file.exists()) {
           return file;
+        }
+        if (Platform.getCurrent().is(Platform.WINDOWS)) {
+          File exe = new File(path, binaryName + ".exe");
+          if (exe.exists()) {
+            return exe;
+          }
         }
       }
     }
