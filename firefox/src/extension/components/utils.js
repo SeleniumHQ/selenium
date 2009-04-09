@@ -165,7 +165,7 @@ Utils.isDisplayed = function(element) {
     var _isDisplayed = function(e) {
       var display = e.ownerDocument.defaultView.getComputedStyle(e, null).getPropertyValue("display");
       if (display == "none") return display;
-      if (e.parentNode.style) {
+      if (e && e.parentNode && e.parentNode.style) {
         return _isDisplayed(e.parentNode);
       }
       return undefined;
