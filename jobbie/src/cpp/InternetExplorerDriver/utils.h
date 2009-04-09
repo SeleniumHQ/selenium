@@ -21,7 +21,6 @@ limitations under the License.
 
 #include <iostream>
 #include <string>
-#include <jni.h>
 
 
 #include "InternetExplorerDriver.h"
@@ -46,29 +45,17 @@ limitations under the License.
 	DataMarshaller& data = prepareCmData(pElem, input_string); \
 	sendThreadMsg(message, data);
 
-
-void throwRunTimeException(JNIEnv *, LPCWSTR msg);
-void throwNoSuchFrameException(JNIEnv *, LPCWSTR message);
-void throwNoSuchElementException(JNIEnv *, LPCWSTR msg);
-void throwUnsupportedOperationException(JNIEnv *, LPCWSTR msg);
-
-jobject newJavaInternetExplorerDriver(JNIEnv *, InternetExplorerDriver* driver);
-
 void wait(long millis);
 void waitWithoutMsgPump(long millis);
 HWND getChildWindow(HWND hwnd, LPCTSTR name);
 
-jstring lpcw2jstring(JNIEnv *env, LPCWSTR text, int size = -1);
-
 struct StringWrapper;
 typedef struct StringWrapper StringWrapper;
-jstring convertToJString(JNIEnv* env, StringWrapper* wrapper);
 LPCWSTR combstr2cw(CComBSTR& from);
 LPCWSTR bstr2cw(BSTR& from);
 LPCWSTR comvariant2cw(CComVariant& toConvert);
 void wstring2string(const std::wstring& inp, std::string &out);
 void cw2string(LPCWSTR inp, std::string &out);
-inline jstring bstr2jstring(JNIEnv *env, BSTR& from) {return lpcw2jstring(env, bstr2cw(from));}
 
 long getLengthOf(SAFEARRAY* ary);
 

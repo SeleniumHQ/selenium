@@ -28,54 +28,6 @@ using namespace std;
 
 safeIO gSafe;
 
-void throwException(JNIEnv *env, const char* className, const char *message)
-{
-	jclass newExcCls;
-	env->ExceptionDescribe();
-	env->ExceptionClear();
-	newExcCls = env->FindClass(className);
-	if (newExcCls == NULL) {
-		return;
-	}
-	env->ThrowNew(newExcCls, message);
-}
-
-void throwException(JNIEnv *env, const char* className, LPCWSTR msg)
-{
-	std::string str;
-	cw2string(msg, str);
-	throwException(env, className, str.c_str());
-}
-
-void throwNoSuchElementException(JNIEnv *env, LPCWSTR msg)
-{
-	throwException(env, "org/openqa/selenium/NoSuchElementException", msg);
-}
-
-void throwNoSuchFrameException(JNIEnv *env, LPCWSTR msg)
-{
-	throwException(env, "org/openqa/selenium/NoSuchFrameException", msg);
-}
-
-void throwRunTimeException(JNIEnv *env, LPCWSTR msg)
-{
-	throwException(env, "org/openqa/selenium/WebDriverException", msg);
-}
-
-void throwUnsupportedOperationException(JNIEnv *env, LPCWSTR msg)
-{
-	throwException(env, "java/lang/UnsupportedOperationException", msg);
-}
-
-jobject newJavaInternetExplorerDriver(JNIEnv* env, InternetExplorerDriver* driver) 
-{
-	jclass clazz = env->FindClass("org/openqa/selenium/ie/InternetExplorerDriver");
-	jmethodID cId = env->GetMethodID(clazz, "<init>", "(J)V");
-
-	return env->NewObject(clazz, cId, (jlong) driver);
-}
-
-
 void wait(long millis)
 {
 	clock_t end = clock() + millis;
@@ -136,30 +88,6 @@ LPCWSTR comvariant2cw(CComVariant& toConvert)
 	return L"";
 }
 
-jstring convertToJString(JNIEnv* env, StringWrapper* wrapper)
-{
-	int length;
-	int errCode = wdStringLength(wrapper, &length);
-	if (errCode != 0) {
-		cerr << "Unable to determine string length" << endl;
-		return NULL;
-	}
-
-	wchar_t* value = new wchar_t[length];
-	errCode = wdCopyString(wrapper, length, value);
-	if (errCode != 0) {
-		cerr << "Unable to copy string" << endl;
-		return NULL;
-	}
-
-	jstring toReturn = env->NewString((const jchar*) value, (jsize) ((length > 0) ? wcslen(value):length) );
-
-	delete[] value;
-	wdFreeString(wrapper);
-
-	return toReturn;
-}
-
 LPCWSTR combstr2cw(CComBSTR& from) 
 {
 	if (!from.operator BSTR()) {
@@ -177,17 +105,6 @@ LPCWSTR bstr2cw(BSTR& from)
 
 	return (LPCWSTR) from;
 }
-
-jstring lpcw2jstring(JNIEnv *env, LPCWSTR text, int size)
-{
-	SCOPETRACER
-	if (!text)
-		return NULL;
-
-	return env->NewString((const jchar*) text, 
-		(jsize) ((size==-1) ? wcslen(text):size) );
-}
-
 
 long getLengthOf(SAFEARRAY* ary)
 {
