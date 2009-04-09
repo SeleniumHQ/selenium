@@ -315,6 +315,10 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
         return result;
     }
 
+  public boolean isJavascriptEnabled() {
+    return true;
+  }
+
   private Object[] convertToJsObjects(Object[] args) {
     if (args.length == 0)
       return null;
