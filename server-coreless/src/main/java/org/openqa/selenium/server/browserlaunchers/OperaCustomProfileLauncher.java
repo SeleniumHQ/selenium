@@ -49,13 +49,17 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
     // has a regression in which window.resizeTo() and window.moveTo() simply do not work!
     private static String additionalSettings = "";
 
+    protected File locateBinaryInPath(String commandPath) {
+    	return AsyncExecute.whichExec(commandPath);
+    }
+    
     public OperaCustomProfileLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
         super(sessionId, configuration, browserOptions);
-        commandPath = browserLaunchLocation;
+        commandPath = browserLaunchLocation == null ? findBrowserLaunchLocation() : browserLaunchLocation;
         this.sessionId = sessionId;
         if (!WindowsUtils.thisIsWindows()) {
             // On unix, add command's directory to LD_LIBRARY_PATH
-            File operaBin = AsyncExecute.whichExec(commandPath);
+            File operaBin = locateBinaryInPath(commandPath);
             if (operaBin == null) {
                 File execDirect = new File(commandPath);
                 if (execDirect.isAbsolute() && execDirect.exists()) operaBin = execDirect;
@@ -76,7 +80,7 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
         OperaCustomProfileLauncher.additionalSettings = additionalSettings;
     }
 
-    private static String findBrowserLaunchLocation() {
+    protected String findBrowserLaunchLocation() {
         String defaultPath = System.getProperty("operaDefaultPath");
         if (defaultPath == null) {
             if (WindowsUtils.thisIsWindows()) {
@@ -322,4 +326,12 @@ public class OperaCustomProfileLauncher extends AbstractBrowserLauncher {
             super(message);
         }
     }
+
+	public String getCommandPath() {
+		return commandPath;
+	}
+
+	public void setCommandPath(String commandPath) {
+		this.commandPath = commandPath;
+	}
 }
