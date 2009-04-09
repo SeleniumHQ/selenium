@@ -18,6 +18,16 @@ limitations under the License.
 // Generated source.
 package org.openqa.selenium.lift;
 
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.lift.find.Finder;
+import org.openqa.selenium.lift.find.BaseFinder;
+import org.hamcrest.Description;
+
+import java.util.Iterator;
+import java.util.Collections;
+import java.util.Collection;
+
 
 public class Finders {
 
@@ -104,5 +114,34 @@ public class Finders {
   public static org.openqa.selenium.lift.find.HtmlTagFinder button(String label) {
 	 return org.openqa.selenium.lift.find.InputFinder.submitButton(label);
   }
-  
+
+  /**
+   * A finder which returns the first element matched - such as if you have multiple elements which
+   * match the finder (such as multiple links with the same text on a page etc)
+   */
+  public static Finder<WebElement, WebDriver> first(final Finder<WebElement, WebDriver> finder) {
+    return new BaseFinder<WebElement, WebDriver>() {
+
+      @Override
+      public Collection<WebElement> findFrom(WebDriver context) {
+        Collection<WebElement> collection = super.findFrom(context);
+        if (!collection.isEmpty()) {
+          Iterator<WebElement> iter = collection.iterator();
+          iter.hasNext();
+          return Collections.singletonList(iter.next());
+        } else {
+          return collection;
+        }
+      }
+
+      protected Collection<WebElement> extractFrom(WebDriver context) {
+        return finder.findFrom(context);
+      }
+
+      protected void describeTargetTo(Description description) {
+        description.appendText("first ");
+        finder.describeTo(description);
+      }
+    };
+  }
 }

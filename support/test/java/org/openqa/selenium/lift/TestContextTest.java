@@ -26,6 +26,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.lift.find.Finder;
 import static org.openqa.selenium.lift.match.NumericalMatchers.atLeast;
+import static org.openqa.selenium.lift.Finders.first;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -116,6 +117,19 @@ public class TestContextTest extends MockObjectTestCase {
 		context.clickOn(finder);
 	}
 	
+	@SuppressWarnings("unchecked")
+	public void testCanTriggerClicksOnFirstElement() throws Exception {
+
+		final Finder<WebElement, WebDriver> finder = mock(Finder.class);
+
+		checking(new Expectations() {{
+			one(finder).findFrom(webdriver); will(returnValue(twoElements()));
+			one(element).click();
+		}});
+
+		context.clickOn(first(finder));
+	}
+
 	@SuppressWarnings("unchecked")
 	public void testThrowsAnExceptionIfTheFinderReturnsAmbiguousResults() throws Exception {
 		 
