@@ -16,9 +16,7 @@
 		<module>htmlunit</module>
 		<module>firefox</module>
 		<module>support</module>
-		<module>remote/common</module>
-		<module>remote/client</module>
-		<module>remote/server</module>
+                <module>selenium</module>
 	</modules>
 
 	<profiles>
