@@ -20,15 +20,6 @@ function FirefoxDriver(server) {
     this.server = server;
     this.context = new Context();
     this.mouseSpeed = 1;
-
-    this.getValueOf = function(e) {
-        if (e["value"] !== undefined) {
-          return e.value;
-        } else if (e.hasAttribute("value")) {
-          return e.getAttribute("value");
-        }
-        return undefined;
-    }
 }
 
 FirefoxDriver.prototype.__defineGetter__("id", function() {

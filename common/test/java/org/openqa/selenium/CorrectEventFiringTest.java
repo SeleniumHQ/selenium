@@ -22,7 +22,6 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.openqa.selenium.Ignore.Driver.SAFARI;
 
 import java.util.List;
-import java.io.File;
 
 public class CorrectEventFiringTest extends AbstractDriverTestCase {
 	@JavascriptEnabled
@@ -165,6 +164,18 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
     assertThat(clicker.getValue(), equalTo("Clicked"));
   }
 
+  @JavascriptEnabled
+  @Ignore(SAFARI)
+  public void testClearingAnElementShouldCauseTheOnChangeHandlerToFire() {
+    driver.get(javascriptPage);
+
+    WebElement element = driver.findElement(By.id("clearMe"));
+    element.clear();
+
+    WebElement result = driver.findElement(By.id("result"));
+    assertThat(result.getText(), equalTo("Cleared"));
+  }
+
         private void clickOnElementWhichRecordsEvents() {
 		driver.findElement(By.id("plainButton")).click();
 	}
@@ -174,61 +185,4 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
 		String text = result.getText();
 		assertTrue("No " + eventName + " fired", text.contains(eventName));
 	}
-
-  @JavascriptEnabled
-  @Ignore(SAFARI)
-  public void testShouldCauseTheOnChangeHandlerToFireWhenEditingTextInputs() {
-    driver.get(javascriptPage);
-
-    driver.findElement(By.id("changing-input")).sendKeys("I like cheese");
-
-    String text = driver.findElement(By.id("result")).getText();
-    assertTrue(text.contains("Changed"));
-  }
-
-  @JavascriptEnabled
-  @Ignore(SAFARI)
-  public void testShouldCauseTheOnChangeHandlerToFireWhenEditingTextareas() {
-    driver.get(javascriptPage);
-
-    driver.findElement(By.id("changing-textarea")).sendKeys("I like cheese");
-
-    String text = driver.findElement(By.id("result")).getText();
-    assertTrue(text.contains("Changed"));
-  }
-
-  @JavascriptEnabled
-  @Ignore(SAFARI)
-  public void testShouldCauseTheOnChangeHandlerToFireWhenEditingFileUploads() throws Exception {
-    driver.get(javascriptPage);
-
-    File file = File.createTempFile("test", "txt");
-    file.deleteOnExit();
-    driver.findElement(By.id("changing-file")).sendKeys(file.getAbsolutePath());
-
-    String text = driver.findElement(By.id("result")).getText();
-    assertTrue(text.contains("Changed"));
-  }
-
-  @JavascriptEnabled
-  @Ignore(SAFARI)
-  public void testShouldCauseTheOnChangeHandlerToFireWhenClearingTextInputs() {
-    driver.get(javascriptPage);
-
-    driver.findElement(By.id("changing-input")).clear();
-
-    String text = driver.findElement(By.id("result")).getText();
-    assertTrue(text.contains("Changed"));
-  }
-
-  @JavascriptEnabled
-  @Ignore(SAFARI)
-  public void testShouldCauseTheOnChangeHandlerToFireWhenClearingTextareas() {
-    driver.get(javascriptPage);
-
-    driver.findElement(By.id("changing-textarea")).clear();
-
-    String text = driver.findElement(By.id("result")).getText();
-    assertTrue(text.contains("Changed"));
-  }
 }
