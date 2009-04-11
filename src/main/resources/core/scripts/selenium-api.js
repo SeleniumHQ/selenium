@@ -1802,7 +1802,7 @@ Selenium.prototype.getAllFields = function() {
 };
 
 Selenium.prototype.getAttributeFromAllWindows = function(attributeName) {
-    /** Returns every instance of some attribute from all known windows.
+    /** Returns an array of JavaScript property values from all known windows having one.
     *
     * @param attributeName name of an attribute on the windows
     * @return string[] the set of values of this attribute from all known windows.
