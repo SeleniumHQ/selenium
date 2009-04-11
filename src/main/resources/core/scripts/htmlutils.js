@@ -181,6 +181,7 @@ function getText(element) {
 }
 
 function getTextContent(element, preformatted) {
+    if (element.style && (element.style.visibility == 'hidden' || element.style.display == 'none')) return '';
     if (element.nodeType == 3 /*Node.TEXT_NODE*/) {
         var text = element.data;
         if (!preformatted) {
@@ -188,7 +189,7 @@ function getTextContent(element, preformatted) {
         }
         return text;
     }
-    if (element.nodeType == 1 /*Node.ELEMENT_NODE*/) {
+    if (element.nodeType == 1 /*Node.ELEMENT_NODE*/ && element.nodeName != 'SCRIPT') {
         var childrenPreformatted = preformatted || (element.tagName == "PRE");
         var text = "";
         for (var i = 0; i < element.childNodes.length; i++) {
