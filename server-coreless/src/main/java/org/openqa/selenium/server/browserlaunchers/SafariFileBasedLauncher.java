@@ -14,11 +14,6 @@ public class SafariFileBasedLauncher extends SafariCustomProfileLauncher {
                                    RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
         super(browserOptions, configuration, sessionId, browserLaunchLocation);
     }
-
-    public SafariFileBasedLauncher(BrowserConfigurationOptions browserOptions,
-                                   RemoteControlConfiguration configuration, String sessionId, BrowserInstallation browserInstallation) {
-        super(browserOptions, configuration, sessionId, browserInstallation);
-    }
     
     @Override
     protected void launch(String url) {

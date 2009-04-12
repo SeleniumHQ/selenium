@@ -47,35 +47,30 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
 
     protected static AsyncExecute exe = new AsyncExecute();
 
+    protected BrowserInstallation locateSafari(String browserLaunchLocation) {
+    	return ApplicationRegistry.instance().browserInstallationCache().locateBrowserInstallation(
+                "safari", browserLaunchLocation, new SafariLocator());
+    }
+    
     public SafariCustomProfileLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
-        this(browserOptions, configuration,
-             sessionId, ApplicationRegistry.instance().browserInstallationCache().locateBrowserInstallation(
-                     "safari", browserLaunchLocation, new SafariLocator()));
-    	if (browserInstallation == null) {        	
+    	
+    	super(sessionId, configuration, browserOptions);
+    	
+        this.browserInstallation = locateSafari(browserLaunchLocation);
+    	
+    	if (browserInstallation == null) {
+    		LOGGER.error("The specified path to the browser executable is invalid.");
         	throw new InvalidBrowserExecutableException("The specified path to the browser executable is invalid.");
         }
-    }
-
-    
-    public SafariCustomProfileLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration,
-                                       String sessionId, BrowserInstallation browserInstallation) {
-        
-        super(sessionId, configuration, browserOptions);
-        
-        if (browserInstallation == null) {
-        	LOGGER.warn("The specified path to the browser executable is invalid.");
-        	return;
-        }
-        this.browserInstallation = browserInstallation;
 
         if (configuration.shouldOverrideSystemProxy()) {
             createSystemProxyManager(sessionId);
         }
         exe.setLibraryPath(browserInstallation.libraryPath());
         customProfileDir = LauncherUtils.createCustomProfileDir(sessionId);
+    	
     }
 
-    
     protected void launch(String url) {
         try {
             if (!browserConfigurationOptions.is("honorSystemProxy")) {

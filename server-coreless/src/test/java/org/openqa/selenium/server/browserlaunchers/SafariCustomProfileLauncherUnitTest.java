@@ -35,6 +35,11 @@ public class SafariCustomProfileLauncherUnitTest {
 			@Override
 			protected void launch(String url) {
 			};
+			
+			@Override
+			protected BrowserInstallation locateSafari(String location) {
+					return new BrowserInstallation("", "");
+			}
 		};
 		
 		replay(server);
