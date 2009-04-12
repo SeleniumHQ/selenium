@@ -51,6 +51,9 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
         this(browserOptions, configuration,
              sessionId, ApplicationRegistry.instance().browserInstallationCache().locateBrowserInstallation(
                      "safari", browserLaunchLocation, new SafariLocator()));
+    	if (browserInstallation == null) {        	
+        	throw new InvalidBrowserExecutableException("The specified path to the browser executable is invalid.");
+        }
     }
 
     
@@ -58,6 +61,11 @@ public class SafariCustomProfileLauncher extends AbstractBrowserLauncher {
                                        String sessionId, BrowserInstallation browserInstallation) {
         
         super(sessionId, configuration, browserOptions);
+        
+        if (browserInstallation == null) {
+        	LOGGER.warn("The specified path to the browser executable is invalid.");
+        	return;
+        }
         this.browserInstallation = browserInstallation;
 
         if (configuration.shouldOverrideSystemProxy()) {

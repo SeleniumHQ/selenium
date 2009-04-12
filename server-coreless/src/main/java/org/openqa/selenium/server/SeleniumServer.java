@@ -217,6 +217,7 @@ public class SeleniumServer {
         logStartupInfo();
         sanitizeProxyConfiguration();
         createJettyServer(slowResources);
+        configuration.setSeleniumServer(this);
     }
 
     public void boot() throws Exception {
