@@ -20,15 +20,11 @@ package org.openqa.selenium.support.events;
 import org.jmock.Expectations;
 import org.jmock.integration.junit3.MockObjectTestCase;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriver.Navigation;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.JavascriptExecutor;
-
-import java.lang.reflect.Proxy;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 
 /**
  * @author Michael Tamm
@@ -215,5 +211,17 @@ public class EventFiringWebDriverTest extends MockObjectTestCase {
     }
   }
 
+  public void testShouldBeAbleToWrapSubclassesOfSomethingImplementingTheWebDriverInterface() {
+    try {
+      new EventFiringWebDriver(new ChildDriver());
+      // We should get this far
+    } catch (ClassCastException e) {
+      e.printStackTrace();
+      fail("Should have been able to wrap the child of a webdriver implementing interface");
+    }
+  }
+
   private static interface ExececutingDriver extends WebDriver, JavascriptExecutor {}
+
+  private static class ChildDriver extends StubDriver {}
 }
