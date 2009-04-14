@@ -32,6 +32,7 @@ import org.openqa.selenium.Speed;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.IllegalLocatorException;
 import org.openqa.selenium.firefox.internal.ExtensionConnectionFactory;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.internal.FindsByClassName;
@@ -191,10 +192,26 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
   }
 
   public List<WebElement> findElementsByClassName(String using) {
+    if (using == null)
+     throw new IllegalArgumentException("Cannot find elements when the class name expression is null.");
+
+    if (using.matches(".*\\s+.*")) {
+      throw new IllegalLocatorException(
+          "Compound class names are not supported. Consider searching for one class name and filtering the results.");
+    }
+        
     return findElements("selectElementsUsingClassName", using);
   }
 
   public WebElement findElementByClassName(String using) {
+    if (using == null)
+     throw new IllegalArgumentException("Cannot find elements when the class name expression is null.");
+
+    if (using.matches(".*\\s+.*")) {
+      throw new IllegalLocatorException(
+          "Compound class names are not supported. Consider searching for one class name and filtering the results.");
+    }
+
     return findElement("selectElementUsingClassName", using);
   }
 

@@ -222,6 +222,12 @@ public abstract class By {
         if (className == null)
          throw new IllegalArgumentException("Cannot find elements when the class name expression is null.");
 
+        if (className.matches(".*\\s+.*")) {
+          throw new IllegalLocatorException(
+              "Compound class names are not supported. Consider searching for one class name and filtering the results.");
+        }
+
+
        return new By() {
          @Override
          public List<WebElement> findElements(SearchContext context) {

@@ -17,15 +17,15 @@ limitations under the License.
 
 package org.openqa.selenium.ie;
 
-import static org.openqa.selenium.ie.ExportedWebDriverFunctions.SUCCESS;
-
-import java.util.List;
-
+import com.sun.jna.Pointer;
+import com.sun.jna.WString;
+import com.sun.jna.ptr.PointerByReference;
 import org.openqa.selenium.By;
+import org.openqa.selenium.IllegalLocatorException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.ie.ElementCollection;
+import static org.openqa.selenium.ie.ExportedWebDriverFunctions.SUCCESS;
 import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
@@ -33,9 +33,7 @@ import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
 
-import com.sun.jna.Pointer;
-import com.sun.jna.WString;
-import com.sun.jna.ptr.PointerByReference;
+import java.util.List;
 
 // Kept package level deliberately.
 
@@ -53,6 +51,14 @@ class Finder implements SearchContext, FindsByClassName, FindsById, FindsByLinkT
   }
 
   public WebElement findElementByClassName(String using) {
+    if (using == null)
+     throw new IllegalArgumentException("Cannot find elements when the class name expression is null.");
+
+    if (using.matches(".*\\s+.*")) {
+      throw new IllegalLocatorException(
+          "Compound class names are not supported. Consider searching for one class name and filtering the results.");
+    }
+
     PointerByReference rawElement = new PointerByReference();
     int result = lib.wdFindElementByClassName(driver, element, new WString(using), rawElement);
 
@@ -62,6 +68,14 @@ class Finder implements SearchContext, FindsByClassName, FindsById, FindsByLinkT
   }
 
   public List<WebElement> findElementsByClassName(String using) {
+    if (using == null)
+     throw new IllegalArgumentException("Cannot find elements when the class name expression is null.");
+
+    if (using.matches(".*\\s+.*")) {
+      throw new IllegalLocatorException(
+          "Compound class names are not supported. Consider searching for one class name and filtering the results.");
+    }
+
     PointerByReference elements = new PointerByReference();
     int result = lib.wdFindElementsByClassName(driver, element, new WString(using), elements);
 

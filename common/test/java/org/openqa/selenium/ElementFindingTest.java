@@ -298,4 +298,23 @@ public class ElementFindingTest extends AbstractDriverTestCase {
 
     assertNotNull(elements);
   }
+
+  public void testFindingByCompoundClassNameIsAnError() {
+    driver.get(xhtmlTestPage);
+
+    try {
+      driver.findElement(By.className("a b"));
+      fail("Compound class names aren't allowed");
+    } catch (IllegalLocatorException e) {
+      // This is expected
+    }
+
+    try {
+      driver.findElements(By.className("a b"));
+      fail("Compound class names aren't allowed");
+    } catch (IllegalLocatorException e) {
+      // This is expected
+    }
+
+  }
 }
