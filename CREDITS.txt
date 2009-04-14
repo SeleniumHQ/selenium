@@ -26,3 +26,7 @@ Amitabh Saikia
 Julian Harty
 Philippe Hanrigou
 Jon Spalding
+James Strachen
+Aslak Hellesoy
+Rune Flobakk
+Dan Fabulich
