@@ -41,32 +41,31 @@ import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Enumeration;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Collections;
 
 public abstract class AbstractExtensionConnection implements ExtensionConnection {
     private Socket socket;
-    protected SocketAddress address;
+    private Set<SocketAddress> addresses;
     private OutputStreamWriter out;
     private BufferedInputStream in;
 
     protected void setAddress(String host, int port) {
-        InetAddress addr;
-
         if ("localhost".equals(host)) {
-            addr = obtainLoopbackAddress();
+            addresses = obtainLoopbackAddresses(port);
         } else {
             try {
-                addr = InetAddress.getByName(host);
+              SocketAddress hostAddress = new InetSocketAddress(InetAddress.getByName(host), port);
+              addresses = Collections.singleton(hostAddress);
             } catch (UnknownHostException e) {
                 throw new WebDriverException(e);
             }
         }
-
-        address = new InetSocketAddress(addr, port);
     }
 
-    private InetAddress obtainLoopbackAddress() {
-        InetAddress localIp4 = null;
-        InetAddress localIp6 = null;
+    private Set<SocketAddress> obtainLoopbackAddresses(int port) {
+        Set<SocketAddress> localhosts = new HashSet<SocketAddress>();
 
         try {
             Enumeration<NetworkInterface> allInterfaces = NetworkInterface.getNetworkInterfaces();
@@ -76,10 +75,8 @@ public abstract class AbstractExtensionConnection implements ExtensionConnection
                 while (allAddresses.hasMoreElements()) {
                     InetAddress addr = allAddresses.nextElement();
                     if (addr.isLoopbackAddress()) {
-                        if (addr instanceof Inet4Address && localIp4 == null)
-                            localIp4 = addr;
-                        else if (addr instanceof Inet6Address && localIp6 == null)
-                            localIp6 = addr;
+                      SocketAddress socketAddress = new InetSocketAddress(addr, port);
+                      localhosts.add(socketAddress);
                     }
                 }
             }
@@ -87,12 +84,9 @@ public abstract class AbstractExtensionConnection implements ExtensionConnection
             throw new WebDriverException(e);
         }
 
-        // Firefox binds to the IP4 address by preference
-        if (localIp4 != null)
-            return localIp4;
-
-        if (localIp6 != null)
-            return localIp6;
+        if (!localhosts.isEmpty()) {
+          return localhosts;
+        }
 
         // Nothing found. Grab the first address we can find
         NetworkInterface firstInterface;
@@ -106,8 +100,10 @@ public abstract class AbstractExtensionConnection implements ExtensionConnection
             firstAddress = firstInterface.getInetAddresses().nextElement();
         }
 
-        if (firstAddress != null)
-            return firstAddress;
+        if (firstAddress != null) {
+          SocketAddress socketAddress = new InetSocketAddress(firstAddress, port);
+          return Collections.singleton(socketAddress);
+        }
 
         throw new WebDriverException("Unable to find loopback address for localhost");
     }
@@ -115,8 +111,10 @@ public abstract class AbstractExtensionConnection implements ExtensionConnection
     protected void connectToBrowser(long timeToWaitInMilliSeconds) throws IOException {
         long waitUntil = System.currentTimeMillis() + timeToWaitInMilliSeconds;
         while (!isConnected() && waitUntil > System.currentTimeMillis()) {
+          for (SocketAddress addr : addresses) {
             try {
-                connect();
+              connect(addr);
+              break;
             } catch (ConnectException e) {
                 try {
                     Thread.sleep(250);
@@ -124,6 +122,7 @@ public abstract class AbstractExtensionConnection implements ExtensionConnection
                     throw new WebDriverException(ie);
                 }
             }
+          }
         }
 
         if (!isConnected()) {
@@ -131,16 +130,15 @@ public abstract class AbstractExtensionConnection implements ExtensionConnection
         }
     }
 
-    private void connect() throws IOException {
+    private void connect(SocketAddress addr) throws IOException {
         socket = new Socket();
-
-        socket.connect(address);
+        socket.connect(addr);
         in = new BufferedInputStream(socket.getInputStream());
         out = new OutputStreamWriter(socket.getOutputStream(), "UTF-8");
     }
 
     public boolean isConnected() {
-        return socket != null && socket.isConnected();
+      return socket != null && socket.isConnected();
     }
 
     public Response sendMessageAndWaitForResponse(Class<? extends RuntimeException> throwOnFailure,
