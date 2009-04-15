@@ -200,20 +200,10 @@ class Finder implements SearchContext, FindsByClassName, FindsById, FindsByLinkT
   }
 
   private void handleErrorCode(String how, String using, int errorCode) {
-    switch (errorCode) {
-    case SUCCESS:
-      break; // Nothing to be done
-
-    case -7:
-      throw new NoSuchElementException(String.format("Unable to find element by %s using \"%s\"",
-              how, using));
-
-    case -9:
-      throw new UnsupportedOperationException("The method that called me has not been implemented yet");
-      
-    default:
-      throw new IllegalStateException(String.format(
-              "Unable to find element by %s using \"%s\" (%d)", how, using, errorCode));
+    if (SUCCESS == errorCode) {
+      return;
     }
+    throw new NoSuchElementException(String.format(
+            "Unable to find element by %s using \"%s\" (%d)", how, using, errorCode));
   }
 }
