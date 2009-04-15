@@ -97,23 +97,45 @@ public class LocatingElementHandlerTest extends MockObjectTestCase {
       proxy.sendKeys("Cheese");
     }
 
-    public static class Page {
-        @SuppressWarnings("unused")
-		private WebElement q;
+  public void testFindByAnnotationShouldBeInherited() {
+    ChildPage page = new ChildPage();
 
-        @FindBy(how = How.XPATH, using = "//input[@name='q']")
-        private WebElement query;
+    final WebDriver driver = mock(WebDriver.class);
+    final WebElement element = mock(WebElement.class);
 
-        @SuppressWarnings("unused")
-		@CacheLookup
-        private WebElement staysTheSame;
+    checking(new Expectations() {{
+      allowing(driver).findElement(By.xpath("//input[@name='q']")); will(returnValue(element));
+      one(element).getValue(); will(returnValue(""));
+    }});
 
-        @SuppressWarnings("unused")
-		private RenderedWebElement rendered;
+    PageFactory.initElements(driver, page);
+    page.doChildQuery();
+  }
 
-      public void doQuery(String foo) {
-    	  	query.clear();
-            query.sendKeys(foo);
-        }
+  public static class Page {
+
+    @SuppressWarnings("unused")
+    private WebElement q;
+
+    @FindBy(how = How.XPATH, using = "//input[@name='q']")
+    protected WebElement query;
+
+    @SuppressWarnings("unused")
+    @CacheLookup
+    private WebElement staysTheSame;
+
+    @SuppressWarnings("unused")
+    private RenderedWebElement rendered;
+
+    public void doQuery(String foo) {
+      query.clear();
+      query.sendKeys(foo);
     }
+  }
+
+  public static class ChildPage extends Page {
+    public void doChildQuery() {
+      query.getValue();
+    }
+  }
 }
