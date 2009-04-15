@@ -415,14 +415,6 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
         }
     }
 
-    public WebElement findElementByPartialLinkText(String using) {
-        throw new UnsupportedOperationException();
-    }
-
-    public List<WebElement> findElementsByPartialLinkText(String using) {
-        throw new UnsupportedOperationException();
-    }
-    
     private synchronized void intializeLib() {
       if (lib != null) {
         return;
