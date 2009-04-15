@@ -315,6 +315,16 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     } catch (IllegalLocatorException e) {
       // This is expected
     }
-
+  }
+  
+  @JavascriptEnabled
+  public void testShouldBeAbleToClickOnLinksWithNoHrefAttribute() {
+    driver.get(javascriptPage);
+    
+    WebElement element = driver.findElement(By.linkText("No href"));
+    element.click();
+    
+    // if any exception is thrown, we won't get this far. Sanity check
+    assertEquals("Changed", driver.getTitle());
   }
 }

@@ -198,40 +198,36 @@ void IeThread::OnSelectElementByLink(WPARAM w, LPARAM lp)
 	pDom = NULL;
 	errorKind = SUCCESS;
 
+	CComPtr<IHTMLDocument3> root_doc;
+	getDocument3(&root_doc);
+
 	/// Start from root DOM by default
 	if(!inputElement)
 	{
-		CComPtr<IHTMLDocument3> root_doc;
-		getDocument3(&root_doc);
 		if (!root_doc) 
 		{
 			errorKind = -ENOSUCHDOCUMENT;
 			return;
 		}
-		root_doc->get_documentElement(&inputElement);
+		CComQIPtr<IHTMLDocument2> bodyDoc(root_doc);
+		if (bodyDoc) {
+			bodyDoc->get_body(&inputElement);
+		}
 	}
 
 	CComQIPtr<IHTMLDOMNode> node(inputElement);
-	if (!node) 
+	CComQIPtr<IHTMLElement2> element2(inputElement);
+	if (!element2 || !node)
 	{
 		errorKind = -ENOSUCHELEMENT;
 		return;
 	}
 
-
-	CComPtr<IHTMLDocument2> doc;
-	getDocument2(node, &doc);
-	if (!doc) 
-	{
-		errorKind = -ENOSUCHDOCUMENT;
-		return;
-	}
-
-	CComPtr<IHTMLElementCollection> linkCollection;
-	doc->get_links(&linkCollection);
+	CComPtr<IHTMLElementCollection> elements;
+	element2->getElementsByTagName(CComBSTR("A"), &elements);
 	
 	long linksLength;
-	linkCollection->get_length(&linksLength);
+	elements->get_length(&linksLength);
 
 	for (int i = 0; i < linksLength; i++) {
 		CComVariant idx;
@@ -241,7 +237,7 @@ void IeThread::OnSelectElementByLink(WPARAM w, LPARAM lp)
 		zero.vt = VT_I4;
 		zero.lVal = 0;
 		CComPtr<IDispatch> dispatch;
-		linkCollection->item(idx, zero, &dispatch);
+		elements->item(idx, zero, &dispatch);
 
 		CComQIPtr<IHTMLElement> element(dispatch);
 
@@ -266,42 +262,38 @@ void IeThread::OnSelectElementsByLink(WPARAM w, LPARAM lp)
 	std::vector<IHTMLElement*> &allElems = data.output_list_html_element_;
 	const wchar_t *elementLink= data.input_string_;
 
-	errorKind = 0;
+	errorKind = SUCCESS;
+
+	CComPtr<IHTMLDocument3> root_doc;
+	getDocument3(&root_doc);
 
 	/// Start from root DOM by default
 	if(!inputElement)
 	{
-		CComPtr<IHTMLDocument3> root_doc;
-		getDocument3(&root_doc);
 		if (!root_doc) 
 		{
-			errorKind = 1;
+			errorKind = -ENOSUCHDOCUMENT;
 			return;
 		}
-		root_doc->get_documentElement(&inputElement);
+		CComQIPtr<IHTMLDocument2> bodyDoc(root_doc);
+		if (bodyDoc) {
+			bodyDoc->get_body(&inputElement);
+		}
 	}
 
 	CComQIPtr<IHTMLDOMNode> node(inputElement);
-	if (!node) 
+	CComQIPtr<IHTMLElement2> element2(inputElement);
+	if (!element2 || !node)
 	{
-		errorKind = 1;
+		errorKind = -ENOSUCHELEMENT;
 		return;
 	}
 
-	CComPtr<IHTMLDocument2> doc2;
-	getDocument2(node, &doc2);
-
-	if (!doc2) 
-	{
-		errorKind = 1;
-		return;
-	}
-
-	CComPtr<IHTMLElementCollection> linkCollection;
-	doc2->get_links(&linkCollection);
+	CComPtr<IHTMLElementCollection> elements;
+	element2->getElementsByTagName(CComBSTR("A"), &elements);
 	
 	long linksLength;
-	linkCollection->get_length(&linksLength);
+	elements->get_length(&linksLength);
 
 	for (int i = 0; i < linksLength; i++) {
 		CComVariant idx;
@@ -311,7 +303,7 @@ void IeThread::OnSelectElementsByLink(WPARAM w, LPARAM lp)
 		zero.vt = VT_I4;
 		zero.lVal = 0;
 		CComPtr<IDispatch> dispatch;
-		linkCollection->item(idx, zero, &dispatch);
+		elements->item(idx, zero, &dispatch);
 
 		CComQIPtr<IHTMLElement> element(dispatch);
 
