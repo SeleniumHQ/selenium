@@ -30,6 +30,7 @@ import org.mortbay.log.LogFactory;
 import org.mortbay.util.*;
 import org.mortbay.util.URI;
 import org.openqa.selenium.server.browserlaunchers.*;
+import org.openqa.selenium.server.commands.CaptureNetworkTrafficCommand;
 
 import cybervillains.ca.*;
 
@@ -303,6 +304,9 @@ public class ProxyHandler extends AbstractHttpHandler {
     }
 
     protected long proxyPlainTextRequest(URL url, String pathInContext, String pathParams, HttpRequest request, HttpResponse response) throws IOException {
+        CaptureNetworkTrafficCommand.Entry entry = new CaptureNetworkTrafficCommand.Entry(request.getMethod(), url.toString());
+        entry.addRequestHeaders(request);
+
         if (log.isDebugEnabled())
             log.debug("PROXY URL=" + url);
 
@@ -398,7 +402,7 @@ public class ProxyHandler extends AbstractHttpHandler {
         InputStream proxy_in = null;
 
         // handler status codes etc.
-        int code;
+        int code = -1;
         if (http != null) {
             proxy_in = http.getErrorStream();
 
@@ -465,6 +469,11 @@ public class ProxyHandler extends AbstractHttpHandler {
                 bytesCopied = ModifiedIO.copy(proxy_in, response.getOutputStream());
             }
         }
+
+        entry.finish(code, bytesCopied);
+        entry.addResponseHeader(response);
+
+        CaptureNetworkTrafficCommand.capture(entry);
 
         return bytesCopied;
     }

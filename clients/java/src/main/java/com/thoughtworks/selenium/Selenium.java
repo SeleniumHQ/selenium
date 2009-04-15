@@ -1173,7 +1173,13 @@ void captureScreenshot(String filename);
 */
 String captureScreenshotToString();
 
-/** Downloads a screenshot of the browser current window canvas to a 
+/** Returns the network traffic seen by the browser, including headers, AJAX requests, status codes, and timings. When this function is called, the traffic log is cleared, so the returned content is only the traffic seen since the last call.
+@param type The type of data to return the network traffic as. Valid values are: json, xml, or plain.
+@return A string representation in the defined type of the network traffic seen by the browser.
+*/
+String captureNetworkTraffic(String type);
+
+/** Downloads a screenshot of the browser current window canvas to a
 based 64 encoded PNG file. The <em>entire</em> windows canvas is captured,
 including parts rendered outside of the current view port.
 

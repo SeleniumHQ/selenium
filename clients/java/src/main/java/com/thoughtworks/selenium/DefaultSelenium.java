@@ -711,7 +711,11 @@ public class DefaultSelenium implements Selenium {
 		return commandProcessor.getString("captureScreenshotToString", new String[] {});
 	}
 
-	public String captureEntirePageScreenshotToString(String kwargs) {
+    public String captureNetworkTraffic(String type) {
+        return commandProcessor.getString("captureNetworkTraffic", new String[] {type});
+    }
+
+    public String captureEntirePageScreenshotToString(String kwargs) {
 		return commandProcessor.getString("captureEntirePageScreenshotToString", new String[] {kwargs,});
 	}
 

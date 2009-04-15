@@ -1979,6 +1979,14 @@ class selenium:
         """
         return self.get_string("captureScreenshotToString", [])
 
+    def captureNetworkTraffic(self, type):
+        """
+        Returns the network traffic seen by the browser, including headers, AJAX requests, status codes, and timings. When this function is called, the traffic log is cleared, so the returned content is only the traffic seen since the last call.
+
+        'type' is The type of data to return the network traffic as. Valid values are: json, xml, or plain.
+        """
+        return self.get_string("captureNetworkTraffic", [type,])
+
 
     def capture_entire_page_screenshot_to_string(self,kwargs):
         """

@@ -165,7 +165,12 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
     }
     
     protected void generatePacAndPrefJs(String homePage) throws IOException {
-    	LauncherUtils.generatePacAndPrefJs(customProfileDir, getPort(), LauncherUtils.ProxySetting.NO_PROXY, homePage, changeMaxConnections, browserConfigurationOptions.getTimeoutInSeconds(), browserConfigurationOptions.is("avoidProxy"));
+        LauncherUtils.ProxySetting proxySetting = LauncherUtils.ProxySetting.NO_PROXY;
+        if (browserConfigurationOptions.is("captureNetworkTraffic")) {
+            proxySetting = LauncherUtils.ProxySetting.PROXY_EVERYTHING;
+        }
+
+        LauncherUtils.generatePacAndPrefJs(customProfileDir, getPort(), proxySetting, homePage, changeMaxConnections, browserConfigurationOptions.getTimeoutInSeconds(), browserConfigurationOptions.is("avoidProxy"));
     }
     
     private String makeCustomProfile(String homePage) throws IOException {
