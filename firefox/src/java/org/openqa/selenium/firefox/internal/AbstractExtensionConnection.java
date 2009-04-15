@@ -21,6 +21,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.firefox.Command;
 import org.openqa.selenium.firefox.ExtensionConnection;
 import org.openqa.selenium.firefox.NotConnectedException;
@@ -74,12 +75,27 @@ public abstract class AbstractExtensionConnection implements ExtensionConnection
                 Enumeration<InetAddress> allAddresses = iface.getInetAddresses();
                 while (allAddresses.hasMoreElements()) {
                     InetAddress addr = allAddresses.nextElement();
-                    if (addr.isLoopbackAddress()) {
+                    if (addr.isAnyLocalAddress()) {
                       SocketAddress socketAddress = new InetSocketAddress(addr, port);
                       localhosts.add(socketAddress);
                     }
                 }
             }
+
+          // On linux, loopback addresses are named "lo". See if we can find that. We do this
+          // craziness because sometimes the loopback device is given an IP range that falls outside
+          // of 127/24
+          if (Platform.getCurrent().is(Platform.UNIX)) {
+            NetworkInterface linuxLoopback = NetworkInterface.getByName("lo");
+            if (linuxLoopback != null) {
+              Enumeration<InetAddress> possibleLoopbacks = linuxLoopback.getInetAddresses();
+              while (possibleLoopbacks.hasMoreElements()) {
+                InetAddress inetAddress = possibleLoopbacks.nextElement();
+                SocketAddress socketAddress = new InetSocketAddress(inetAddress, port);
+                localhosts.add(socketAddress);
+              }
+            }
+          }
         } catch (SocketException e) {
             throw new WebDriverException(e);
         }
