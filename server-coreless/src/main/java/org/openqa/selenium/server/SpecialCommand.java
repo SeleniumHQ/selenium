@@ -10,6 +10,7 @@ public enum SpecialCommand {
 	attachFile,
 	captureScreenshot,
 	captureScreenshotToString,
+	captureNetworkTraffic,
 	keyDownNative,
 	keyUpNative,
 	keyPressNative,

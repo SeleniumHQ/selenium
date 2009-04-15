@@ -34,11 +34,7 @@ import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
 import org.openqa.selenium.server.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
-import org.openqa.selenium.server.commands.CaptureScreenshotCommand;
-import org.openqa.selenium.server.commands.CaptureScreenshotToStringCommand;
-import org.openqa.selenium.server.commands.RetrieveLastRemoteControlLogsCommand;
-import org.openqa.selenium.server.commands.CaptureEntirePageScreenshotToStringCommand;
-import org.openqa.selenium.server.commands.SeleniumCoreCommand;
+import org.openqa.selenium.server.commands.*;
 import org.openqa.selenium.server.htmlrunner.HTMLLauncher;
 import org.openqa.selenium.server.log.AntJettyLoggerBuildListener;
 
@@ -400,6 +396,10 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             } catch (RemoteCommandException rce) {
                 results = "Failed to start new browser session: " + rce.getMessage();
             }
+
+            // clear out any network traffic captured but never pulled back by the last client (this feature only works with one concurrent browser, similar to PI mode)
+            CaptureNetworkTrafficCommand.clear();
+
             break;
         case testComplete:  
         	browserSessionFactory.endBrowserSession(sessionId, remoteControl.getConfiguration());
@@ -424,6 +424,9 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         	break;
         case captureScreenshotToString:
         	results = new CaptureScreenshotToStringCommand().execute();
+        	break;
+        case captureNetworkTraffic:
+        	results = new CaptureNetworkTrafficCommand(values.get(0)).execute();
         	break;
         case keyDownNative:
         	try {
