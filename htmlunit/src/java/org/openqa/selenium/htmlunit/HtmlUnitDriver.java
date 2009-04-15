@@ -424,7 +424,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
 
     public WebElement findElementById(String id) {
         if (!(lastPage() instanceof HtmlPage))
-            throw new IllegalStateException("Cannot find element by id for " + lastPage());
+            throw new NoSuchElementException("Cannot find element by id for " + lastPage());
 
         try {
             HtmlElement element = ((HtmlPage) lastPage()).getHtmlElementById(id);

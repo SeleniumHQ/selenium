@@ -17,15 +17,12 @@ limitations under the License.
 
 package org.openqa.selenium.ie;
 
-import com.sun.jna.Pointer;
-import com.sun.jna.WString;
-import com.sun.jna.ptr.PointerByReference;
+import java.util.List;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.IllegalLocatorException;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
-import static org.openqa.selenium.ie.ExportedWebDriverFunctions.SUCCESS;
 import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
@@ -33,7 +30,9 @@ import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
 
-import java.util.List;
+import com.sun.jna.Pointer;
+import com.sun.jna.WString;
+import com.sun.jna.ptr.PointerByReference;
 
 // Kept package level deliberately.
 
@@ -200,10 +199,10 @@ class Finder implements SearchContext, FindsByClassName, FindsById, FindsByLinkT
   }
 
   private void handleErrorCode(String how, String using, int errorCode) {
-    if (SUCCESS == errorCode) {
-      return;
-    }
-    throw new NoSuchElementException(String.format(
-            "Unable to find element by %s using \"%s\" (%d)", how, using, errorCode));
+    ErrorHandler errors = new ErrorHandler();
+    
+    String message = String.format(
+            "Unable to find element by %s using \"%s\" (%d)", how, using, errorCode);
+    errors.verifyErrorCode(errorCode, message);
   }
 }

@@ -20,6 +20,7 @@ package org.openqa.selenium.ie;
 import static org.openqa.selenium.ie.ExportedWebDriverFunctions.SUCCESS;
 
 import org.openqa.selenium.ElementNotVisibleException;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.StaleElementReferenceException;
 
@@ -28,10 +29,13 @@ class ErrorHandler {
     switch (errorCode) {
     case SUCCESS: 
       break; // Nothing to do
+     
+    case -7:
+      throw new NoSuchElementException(message);
       
     case -8:
       throw new NoSuchFrameException(message);
-     
+           
     case -9:
       throw new UnsupportedOperationException("You may not perform the requested action");
       
@@ -52,6 +56,8 @@ class ErrorHandler {
       throw new UnsupportedOperationException(
               String.format("The element appears to be unselectable", message));
       
+    case -16:
+      throw new NoSuchElementException(message + " (no document found)");
       default: 
         throw new IllegalStateException(String.format("%s (%d)", message, errorCode));
     }

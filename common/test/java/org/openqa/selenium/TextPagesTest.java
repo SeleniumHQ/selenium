@@ -39,4 +39,16 @@ public class TextPagesTest extends AbstractDriverTestCase {
     String source = driver.getPageSource();
     assertEquals("Test", source);
   }
+  
+  @Ignore(SAFARI)
+  public void testFindingAnElementOnAPlainTextPageWillNeverWork() {
+    driver.get(textPage);
+    
+    try {
+      driver.findElement(By.id("foo"));
+      fail("This shouldn't work");
+    } catch (NoSuchElementException e) {
+      // this is expected
+    }
+  }
 }

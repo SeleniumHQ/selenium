@@ -327,4 +327,17 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     // if any exception is thrown, we won't get this far. Sanity check
     assertEquals("Changed", driver.getTitle());
   }
+  
+  @Ignore({HTMLUNIT, SAFARI})
+  public void testShouldNotBeAbleToFindAnElementOnABlankPage() {
+    driver.get("about:blank");
+    
+    try {
+      // Search for anything. This used to cause an IllegalStateException in IE.
+      driver.findElement(By.tagName("a"));
+      fail("Should not have been able to find a link");
+    } catch (NoSuchElementException e) {
+      // this is expected
+    }
+  }
 }
