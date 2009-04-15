@@ -45,7 +45,7 @@ public class SingleTestSuite extends TestCase {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("TextPagesTest")
+        .onlyRun("ElementFindingTest")
 //        .method("testShouldNotBeAbleToFindAnElementOnABlankPage")
         .exclude(ALL)
         .exclude(Ignore.Driver.IE)

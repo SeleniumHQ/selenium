@@ -340,4 +340,17 @@ public class ElementFindingTest extends AbstractDriverTestCase {
       // this is expected
     }
   }
+  
+  @Ignore({HTMLUNIT, SAFARI})
+  @NeedsFreshDriver
+  public void testShouldNotBeAbleToLocateASingleElementOnABlankPage() {
+    // Note we're on the default start page for the browser at this point.
+    
+    try {
+      driver.findElement(By.id("nonExistantButton"));
+      fail("Should not have succeeded");
+    } catch (NoSuchElementException e) {
+      // this is expected
+    }
+  }
 }
