@@ -20,6 +20,6 @@ package org.openqa.selenium.firefox.internal;
 import java.util.concurrent.TimeUnit;
 
 public interface Lock {
-  void lock(long time, TimeUnit unit);
+  void lock(long timeoutInMillis);
   void unlock();
 }

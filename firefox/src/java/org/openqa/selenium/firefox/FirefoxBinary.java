@@ -31,12 +31,15 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class FirefoxBinary {
     private final StringBuffer stdOutBuffer = new StringBuffer();
     private final Map<String, String> extraEnv = new HashMap<String, String>();
     private final Executable executable;
     private Process process;
+    private long timeout = SECONDS.toMillis(45);
 
     public FirefoxBinary() {
         this(null);
@@ -142,7 +145,15 @@ public class FirefoxBinary {
       } while (profile.isRunning());
     }
   }
-  
+
+  public long getTimeout() {
+    return timeout;
+  }
+
+  public void setTimeout(long timeout) {
+    this.timeout = timeout;
+  }
+
   @Override
   public String toString() {
     return "FirefoxBinary(" + executable.getPath() + ")";

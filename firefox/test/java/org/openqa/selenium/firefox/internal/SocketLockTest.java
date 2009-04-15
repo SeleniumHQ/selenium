@@ -35,7 +35,7 @@ public class SocketLockTest extends TestCase {
   @Test
   public void wellKnownLockLocation() {
     Lock lock = new SocketLock(12345);
-    lock.lock(1, TimeUnit.SECONDS);
+    lock.lock(TimeUnit.SECONDS.toMillis(1));
     lock.unlock();
   }
   
@@ -43,7 +43,7 @@ public class SocketLockTest extends TestCase {
   public void serialLockOnSamePort() {
     for (int i = 0; i < 20; i++) {
       Lock lock = new SocketLock(34567);
-      lock.lock(1, TimeUnit.SECONDS);
+      lock.lock(TimeUnit.SECONDS.toMillis(1));
       lock.unlock();
     }
   }
@@ -51,10 +51,10 @@ public class SocketLockTest extends TestCase {
   @Test
   public void attemptToReuseLocksFails() {
     Lock lock = new SocketLock(23456);
-    lock.lock(1, TimeUnit.SECONDS);
+    lock.lock(TimeUnit.SECONDS.toMillis(1));
     lock.unlock();
     try {
-      lock.lock(1, TimeUnit.SECONDS);
+      lock.lock(TimeUnit.SECONDS.toMillis(1));
       Assert.fail("Expected a SocketException to be thrown when reused");
     } catch (WebDriverException e) {
       

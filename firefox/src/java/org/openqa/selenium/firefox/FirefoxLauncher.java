@@ -105,7 +105,7 @@ public class FirefoxLauncher {
     ExtensionConnection connection;
     
     // maximum wait time is a minute
-    long maxWaitTime = System.currentTimeMillis() + 60000;
+    long maxWaitTime = System.currentTimeMillis() + binary.getTimeout();
       
     do {
       try {

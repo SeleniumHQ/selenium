@@ -50,11 +50,11 @@ public class SocketLock implements Lock {
   /**
    * @inheritDoc
    */
-  public void lock(long time, TimeUnit unit) throws WebDriverException {
+  public void lock(long timeoutInMillis) throws WebDriverException {
     InetSocketAddress address = new InetSocketAddress("localhost", lockPort);
 
     // Calculate the 'exit time' for our wait loop.
-    long maxWait = System.currentTimeMillis() + unit.toMillis(time);
+    long maxWait = System.currentTimeMillis() + timeoutInMillis;
 
     // Attempt to acquire the lock until something goes wrong or we run out of time.
     do {
@@ -70,7 +70,7 @@ public class SocketLock implements Lock {
     } while (System.currentTimeMillis() < maxWait);
 
     throw new WebDriverException(
-        String.format("Unable to bind to locking port %d within %d %s", lockPort, time, unit));
+        String.format("Unable to bind to locking port %d within %d ms", lockPort, timeoutInMillis));
   }
 
   /**

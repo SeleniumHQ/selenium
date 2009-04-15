@@ -32,14 +32,12 @@ import java.net.Socket;
 import java.util.concurrent.TimeUnit;
 
 public class NewProfileExtensionConnection extends AbstractExtensionConnection {
-  private static long TIMEOUT = 45;
-  private static TimeUnit TIMEOUT_UNITS = TimeUnit.SECONDS;
   private FirefoxBinary process;
   private FirefoxProfile profile;
 
   public NewProfileExtensionConnection(Lock lock, FirefoxBinary binary, FirefoxProfile profile, String host) throws IOException {
     this.profile = profile;
-    lock.lock(TIMEOUT, TIMEOUT_UNITS);
+    lock.lock(binary.getTimeout());
     try {
       int portToUse = determineNextFreePort(host, profile.getPort());
 
@@ -47,7 +45,7 @@ public class NewProfileExtensionConnection extends AbstractExtensionConnection {
 
       setAddress(host, portToUse);
 
-      connectToBrowser(TIMEOUT_UNITS.toMillis(TIMEOUT));
+      connectToBrowser(binary.getTimeout());
     } finally {
       lock.unlock();
     }
@@ -98,7 +96,7 @@ public class NewProfileExtensionConnection extends AbstractExtensionConnection {
         }
 
         if (Platform.getCurrent().is(Platform.WINDOWS)) {
-        	quitOnWindows();
+            quitOnWindows();
         } else {
             quitOnOtherPlatforms();
         }
