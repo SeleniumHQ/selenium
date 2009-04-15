@@ -1,0 +1,10 @@
+<project name="selenium">
+
+
+    <target name="test">
+        <get src="jar:file:/Users/openqa/hudson/workspace/selenium-rc-trunk-osx-headless/tmp/org/seleniumhq/selenium/server/selenium-server/1.0-SNAPSHOT/selenium-server-1.0-SNAPSHOT-standalone.jar!/core/iedoc.xml"
+             dest="/Users/openqa/hudson/workspace/selenium-rc-trunk-osx-headless/trunk/clients/target/iedoc.xml"/>
+    </target>
+
+
+</project>
