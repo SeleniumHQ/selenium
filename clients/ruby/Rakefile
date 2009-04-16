@@ -72,6 +72,7 @@ Selenium::Rake::RemoteControlStartTask.new do |rc|
   rc.timeout_in_seconds = 3 * 60
   rc.background = true
   rc.wait_until_up_and_running = true
+  raise "Invalid Selenium RC jar : '#{SELENIUM_RC_JAR}" unless File.exists?(SELENIUM_RC_JAR)
   rc.jar_file = SELENIUM_RC_JAR
   rc.additional_args << "-singleWindow"
 end
@@ -180,7 +181,7 @@ end
 specification = Gem::Specification.new do |s|
   s.name = "selenium-client"
   s.summary = "Official Ruby Client for Selenium RC."
-  s.version = "1.2.11"
+  s.version = "1.2.14"
   s.author = "OpenQA"
   s.email = 'selenium-client@rubyforge.org'
   s.homepage = "http://selenium-client.rubyforge.com"
