@@ -123,7 +123,7 @@ int ElementWrapper::getLocationWhenScrolledIntoView(HWND* hwnd, long* x, long* y
             *hwnd = NULL;
             *x = 0;
             *y = 0;
-			return -EUNHANDLEDERROR;
+			return EUNHANDLEDERROR;
     }
 
     SAFEARRAY* ary = result.parray;

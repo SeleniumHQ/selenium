@@ -43,7 +43,7 @@ void IeThread::OnSelectElementById(WPARAM w, LPARAM lp)
 		getDocument3(&root_doc);
 		if (!root_doc) 
 		{
-			errorKind = -ENOSUCHDOCUMENT;
+			errorKind = ENOSUCHDOCUMENT;
 			return;
 		}
 		root_doc->get_documentElement(&inputElement);
@@ -52,7 +52,7 @@ void IeThread::OnSelectElementById(WPARAM w, LPARAM lp)
 	CComQIPtr<IHTMLDOMNode> node(inputElement);
 	if (!node) 
 	{
-		errorKind = -ENOSUCHELEMENT;
+		errorKind = ENOSUCHELEMENT;
 		return;
 	}
 
@@ -61,7 +61,7 @@ void IeThread::OnSelectElementById(WPARAM w, LPARAM lp)
 
 	if (!doc) 
 	{
-		errorKind = -ENOSUCHDOCUMENT;
+		errorKind = ENOSUCHDOCUMENT;
 		return;
 	}
  
@@ -70,7 +70,7 @@ void IeThread::OnSelectElementById(WPARAM w, LPARAM lp)
 	doc->getElementById(id, &element);
 
 	if(NULL == element) {
-		errorKind = -ENOSUCHELEMENT;
+		errorKind = ENOSUCHELEMENT;
 		return;
 	}
 	
@@ -115,7 +115,7 @@ void IeThread::OnSelectElementById(WPARAM w, LPARAM lp)
 		}
 	}	
 
-	errorKind = -ENOSUCHELEMENT;
+	errorKind = ENOSUCHELEMENT;
 }
 
 void IeThread::OnSelectElementsById(WPARAM w, LPARAM lp)
@@ -206,7 +206,7 @@ void IeThread::OnSelectElementByLink(WPARAM w, LPARAM lp)
 	{
 		if (!root_doc) 
 		{
-			errorKind = -ENOSUCHDOCUMENT;
+			errorKind = ENOSUCHDOCUMENT;
 			return;
 		}
 		CComQIPtr<IHTMLDocument2> bodyDoc(root_doc);
@@ -219,7 +219,7 @@ void IeThread::OnSelectElementByLink(WPARAM w, LPARAM lp)
 	CComQIPtr<IHTMLElement2> element2(inputElement);
 	if (!element2 || !node)
 	{
-		errorKind = -ENOSUCHELEMENT;
+		errorKind = ENOSUCHELEMENT;
 		return;
 	}
 
@@ -250,7 +250,7 @@ void IeThread::OnSelectElementByLink(WPARAM w, LPARAM lp)
 		}
 	}
 
-	errorKind = -ENOSUCHELEMENT;
+	errorKind = ENOSUCHELEMENT;
 }
 
 void IeThread::OnSelectElementsByLink(WPARAM w, LPARAM lp)
@@ -272,7 +272,7 @@ void IeThread::OnSelectElementsByLink(WPARAM w, LPARAM lp)
 	{
 		if (!root_doc) 
 		{
-			errorKind = -ENOSUCHDOCUMENT;
+			errorKind = ENOSUCHDOCUMENT;
 			return;
 		}
 		CComQIPtr<IHTMLDocument2> bodyDoc(root_doc);
@@ -285,7 +285,7 @@ void IeThread::OnSelectElementsByLink(WPARAM w, LPARAM lp)
 	CComQIPtr<IHTMLElement2> element2(inputElement);
 	if (!element2 || !node)
 	{
-		errorKind = -ENOSUCHELEMENT;
+		errorKind = ENOSUCHELEMENT;
 		return;
 	}
 
@@ -346,7 +346,7 @@ void IeThread::OnSelectElementByPartialLink(WPARAM w, LPARAM lp)
 	CComQIPtr<IHTMLDOMNode> node(inputElement);
 	if (!node) 
 	{
-		errorKind = -ENOSUCHELEMENT;
+		errorKind = ENOSUCHELEMENT;
 		return;
 	}
 
@@ -355,7 +355,7 @@ void IeThread::OnSelectElementByPartialLink(WPARAM w, LPARAM lp)
 	getDocument2(node, &doc);
 	if (!doc) 
 	{
-		errorKind = -ENOSUCHDOCUMENT;
+		errorKind = ENOSUCHDOCUMENT;
 		return;
 	}
 
@@ -386,7 +386,7 @@ void IeThread::OnSelectElementByPartialLink(WPARAM w, LPARAM lp)
 		}
 	}
 
-	errorKind = -ENOSUCHELEMENT;
+	errorKind = ENOSUCHELEMENT;
 }
 
 void IeThread::OnSelectElementsByPartialLink(WPARAM w, LPARAM lp)
@@ -477,7 +477,7 @@ void IeThread::OnSelectElementByName(WPARAM w, LPARAM lp)
 		getDocument3(&root_doc);
 		if (!root_doc) 
 		{
-			errorKind = -ENOSUCHDOCUMENT;
+			errorKind = ENOSUCHDOCUMENT;
 			return;
 		}
 		root_doc->get_documentElement(&inputElement);
@@ -486,7 +486,7 @@ void IeThread::OnSelectElementByName(WPARAM w, LPARAM lp)
 	CComQIPtr<IHTMLDOMNode> node(inputElement);
 	if (!node) 
 	{
-		errorKind = -ENOSUCHELEMENT;
+		errorKind = ENOSUCHELEMENT;
 		return;
 	}
 
@@ -494,7 +494,7 @@ void IeThread::OnSelectElementByName(WPARAM w, LPARAM lp)
 	getDocument2(node, &doc);
 	if (!doc) 
 	{
-		errorKind = -ENOSUCHDOCUMENT;
+		errorKind = ENOSUCHDOCUMENT;
 		return;
 	}
 
@@ -527,7 +527,7 @@ void IeThread::OnSelectElementByName(WPARAM w, LPARAM lp)
 		}
 	}
 
-	errorKind = -ENOSUCHELEMENT;
+	errorKind = ENOSUCHELEMENT;
 }
 
 
@@ -616,7 +616,7 @@ void IeThread::OnSelectElementByTagName(WPARAM w, LPARAM lp)
 	getDocument3(&root_doc);
 	if (!root_doc) 
 	{
-		errorKind = -ENOSUCHDOCUMENT;
+		errorKind = ENOSUCHDOCUMENT;
 		return;
 	}
 	
@@ -625,7 +625,7 @@ void IeThread::OnSelectElementByTagName(WPARAM w, LPARAM lp)
 
 	if (!elements)
 	{
-		errorKind = -ENOSUCHELEMENT;
+		errorKind = ENOSUCHELEMENT;
 		return;
 	}
 
@@ -654,7 +654,7 @@ void IeThread::OnSelectElementByTagName(WPARAM w, LPARAM lp)
 		}
 	}
 
-	errorKind = -ENOSUCHELEMENT;
+	errorKind = ENOSUCHELEMENT;
 }
 
 void IeThread::OnSelectElementsByTagName(WPARAM w, LPARAM lp)
@@ -730,7 +730,7 @@ void IeThread::OnSelectElementByClassName(WPARAM w, LPARAM lp)
 		getDocument3(&root_doc);
 		if (!root_doc) 
 		{
-			errorKind = -ENOSUCHDOCUMENT;
+			errorKind = ENOSUCHDOCUMENT;
 			return;
 		}
 		root_doc->get_documentElement(&inputElement);
@@ -739,7 +739,7 @@ void IeThread::OnSelectElementByClassName(WPARAM w, LPARAM lp)
 	CComQIPtr<IHTMLDOMNode> node(inputElement);
 	if (!node) 
 	{
-		errorKind = -ENOSUCHELEMENT;
+		errorKind = ENOSUCHELEMENT;
 		return;
 	}
 
@@ -747,7 +747,7 @@ void IeThread::OnSelectElementByClassName(WPARAM w, LPARAM lp)
 	getDocument2(node, &doc2);
 	if (!doc2) 
 	{
-		errorKind = -ENOSUCHDOCUMENT;
+		errorKind = ENOSUCHDOCUMENT;
 		return;
 	}
 
@@ -790,7 +790,7 @@ void IeThread::OnSelectElementByClassName(WPARAM w, LPARAM lp)
 		}
 	}
 
-	errorKind = -ENOSUCHELEMENT;
+	errorKind = ENOSUCHELEMENT;
 }
 
 void IeThread::OnSelectElementsByClassName(WPARAM w, LPARAM lp)

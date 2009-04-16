@@ -120,12 +120,12 @@ void IeThread::OnElementSendKeys(WPARAM w, LPARAM lp)
 	bool displayed;
 	int res = isDisplayed(pElement, &displayed);
 	if (res != SUCCESS || !displayed) {
-		data.error_code = -EELEMENTNOTDISPLAYED;
+		data.error_code = EELEMENTNOTDISPLAYED;
 		return;
 	}
 
 	if (!isEnabled(pElement)) {
-		data.error_code = -EELEMENTNOTENABLED;
+		data.error_code = EELEMENTNOTENABLED;
 		return;
 	}
 
@@ -205,7 +205,7 @@ int isElementDisplayed(IHTMLElement* element, bool* displayed)
 
 	e2->get_currentStyle(&style);
 	if(!style) {
-		return -EOBSOLETEELEMENT;
+		return EOBSOLETEELEMENT;
 	}
 	style->get_display(&display);
 	std::wstring displayValue = combstr2cw(display);
@@ -512,7 +512,7 @@ void IeThread::OnElementSetSelected(WPARAM w, LPARAM lp)
 
 	if (!this->isEnabled(pElement))
 	{
-		data.error_code = -EELEMENTNOTENABLED;
+		data.error_code = EELEMENTNOTENABLED;
 		return;
 	}
 
@@ -520,7 +520,7 @@ void IeThread::OnElementSetSelected(WPARAM w, LPARAM lp)
 	int result = this->isDisplayed(pElement, &displayed);
 	if (result != SUCCESS || !displayed) 
 	{
-		data.error_code = -EELEMENTNOTDISPLAYED;
+		data.error_code = EELEMENTNOTDISPLAYED;
 		return;
 	}
 
@@ -587,7 +587,7 @@ void IeThread::OnElementSetSelected(WPARAM w, LPARAM lp)
 		return;
 	}
 
-	data.error_code = -EELEMENTNOTSELECTED;
+	data.error_code = EELEMENTNOTSELECTED;
 }
 
 void IeThread::OnElementToggle(WPARAM w, LPARAM lp) 
@@ -602,7 +602,7 @@ void IeThread::OnElementToggle(WPARAM w, LPARAM lp)
 	if ((tagName != L"OPTION") &&
 		!isCheckbox(pElement)) 
 	{
-		data.error_code = -ENOTIMPLEMENTED;
+		data.error_code = ENOTIMPLEMENTED;
 		return;
 	}
 
@@ -753,7 +753,7 @@ int IeThread::getLocationWhenScrolledIntoView(IHTMLElement *pElement, HWND* hwnd
 
     if (!node) {
             cerr << "No node to get location of" << endl;
-            return -ENOSUCHELEMENT;
+            return ENOSUCHELEMENT;
     }
 
     bool displayed;
@@ -763,11 +763,11 @@ int IeThread::getLocationWhenScrolledIntoView(IHTMLElement *pElement, HWND* hwnd
 	} 
 
 	if (!displayed) {
-        return -EELEMENTNOTDISPLAYED;
+        return EELEMENTNOTDISPLAYED;
     }
 
     if (!isEnabled(pElement)) {
-          return -EELEMENTNOTENABLED;
+          return EELEMENTNOTENABLED;
     }
 
     const HWND hWnd = getHwnd();
@@ -785,7 +785,7 @@ int IeThread::getLocationWhenScrolledIntoView(IHTMLElement *pElement, HWND* hwnd
     CComQIPtr<IHTMLElement2> element2(pElement);
     CComPtr<IHTMLRect> rect;
     if (FAILED(element2->getBoundingClientRect(&rect))) {
-            return -EUNHANDLEDERROR;
+            return EUNHANDLEDERROR;
     }
 
     long clickX, clickY, width, height;
@@ -806,7 +806,7 @@ int IeThread::getLocationWhenScrolledIntoView(IHTMLElement *pElement, HWND* hwnd
 
     if (height == 0 || width == 0) {
             cerr << "Element would not be visible because it lacks height and/or width." << endl;
-            return -EELEMENTNOTDISPLAYED;
+            return EELEMENTNOTDISPLAYED;
     }
 
     CComPtr<IDispatch> ownerDocDispatch;
@@ -818,7 +818,7 @@ int IeThread::getLocationWhenScrolledIntoView(IHTMLElement *pElement, HWND* hwnd
     CComQIPtr<IHTMLElement2> e2(docElement);
     if (!e2) {
             cerr << "Unable to get underlying html element from the document" << endl;
-            return -EUNHANDLEDERROR;
+            return EUNHANDLEDERROR;
     }
 
     CComQIPtr<IHTMLDocument2> doc2(ownerDoc);

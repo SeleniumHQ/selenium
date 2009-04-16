@@ -30,36 +30,37 @@ class ErrorHandler {
     case SUCCESS: 
       break; // Nothing to do
      
-    case -7:
+    case 7:
       throw new NoSuchElementException(message);
       
-    case -8:
+    case 8:
       throw new NoSuchFrameException(message);
            
-    case -9:
+    case 9:
       throw new UnsupportedOperationException("You may not perform the requested action");
       
-    case -10:
+    case 10:
       throw new StaleElementReferenceException(
           String.format("You may not %s this element. It looks as if the reference is stale. " +
                         "Did you navigate away from the page with this element on?", message));
 
-    case -11:
+    case 11:
       throw new ElementNotVisibleException(
           String.format("You may not %s an element that is not displayed", message));
       
-    case -12:
+    case 12:
       throw new UnsupportedOperationException(
               String.format("You may not %s an element that is not enabled", message));
       
-    case -15:
+    case 15:
       throw new UnsupportedOperationException(
               String.format("The element appears to be unselectable", message));
       
-    case -16:
+    case 16:
       throw new NoSuchElementException(message + " (no document found)");
-      default: 
-        throw new IllegalStateException(String.format("%s (%d)", message, errorCode));
+      
+    default: 
+      throw new IllegalStateException(String.format("%s (%d)", message, errorCode));
     }
   }
 }

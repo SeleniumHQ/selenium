@@ -281,7 +281,7 @@ void IeThread::OnSelectElementByXPath(WPARAM w, LPARAM lp)
 		getDocument3(&root_doc);
 		if (!root_doc) 
 		{
-			errorKind = -ENOSUCHDOCUMENT;
+			errorKind = ENOSUCHDOCUMENT;
 			return;
 		}
 		root_doc->get_documentElement(&inputElement);
@@ -290,7 +290,7 @@ void IeThread::OnSelectElementByXPath(WPARAM w, LPARAM lp)
 	CComQIPtr<IHTMLDOMNode> node(inputElement);
 	if (!node) 
 	{
-		errorKind = -ENOSUCHELEMENT;
+		errorKind = ENOSUCHELEMENT;
 		return;
 	}
 
@@ -298,7 +298,7 @@ void IeThread::OnSelectElementByXPath(WPARAM w, LPARAM lp)
 	bool evalToDocument = addEvaluateToDocument(node, 0);
 	if (!evalToDocument) 
 	{
-		errorKind = -EUNEXPECTEDJSERROR;
+		errorKind = EUNEXPECTEDJSERROR;
 		return;
 	}
 
@@ -343,7 +343,7 @@ void IeThread::OnSelectElementByXPath(WPARAM w, LPARAM lp)
 		}
 	}
 
-	errorKind = -ENOSUCHELEMENT;
+	errorKind = ENOSUCHELEMENT;
 }
 
 void IeThread::OnSelectElementsByXPath(WPARAM w, LPARAM lp)
