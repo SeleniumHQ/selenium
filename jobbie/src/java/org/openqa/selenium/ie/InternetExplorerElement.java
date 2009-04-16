@@ -143,7 +143,7 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
     IntByReference toReturn = new IntByReference();
     int result = lib.wdeToggle(element, toReturn);
 
-    if (result == -9) {
+    if (result == 9) {
       throw new UnsupportedOperationException("You may not toggle this element: " + getElementName());
     }
     
