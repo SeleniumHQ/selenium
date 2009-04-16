@@ -35,14 +35,18 @@
         <fail if="build.failed" message="ruby tests failed!"/>
     </target>
     
-    <target name="dist" depends="generate-sources, doc">
+	<target name="gem">
+		<exec dir="." executable="${rake.executable}">
+			<arg value="gem"/>
+		</exec>
+	</target>
+	
+    <target name="dist" depends="generate-sources, gem, doc">
         <property name="project.version" value="UNKNOWNVERSION" />
         <property name="ruby.release" value="selenium-ruby-client-driver-${project.version}"/>
-        <zip zipfile="target/${ruby.release}.zip">
-            <zipfileset dir="." prefix="${ruby.release}">
-                <include name="lib/selenium/client/*.rb" />
-                <include name="doc/**" />
-            </zipfileset>
+        <zip destfile="target/${ruby.release}.zip">
+            <zipfileset dir="doc" prefix="${ruby.release}/doc" />
+        	<zipfileset file="pkg/*.gem" prefix="${ruby.release}" />
         </zip>
         <zip zipfile="target/${ruby.release}-doc.zip">
             <zipfileset dir="doc" prefix="ruby" />
