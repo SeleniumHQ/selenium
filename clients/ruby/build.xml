@@ -40,7 +40,7 @@
         <property name="ruby.release" value="selenium-ruby-client-driver-${project.version}"/>
         <zip zipfile="target/${ruby.release}.zip">
             <zipfileset dir="." prefix="${ruby.release}">
-                <include name="*.rb" />
+                <include name="lib/selenium/client/*.rb" />
                 <include name="doc/**" />
             </zipfileset>
         </zip>
