@@ -487,8 +487,8 @@ public class HtmlUnitWebElement implements WebElement,
     public List<WebElement> findElementsByLinkText(String linkText) {
       assertElementNotStale();
 
-        List<HtmlElement> htmlElements =
-            (List<HtmlElement>) element.getHtmlElementsByTagName("a");
+        List<? extends HtmlElement> htmlElements =
+            (List<? extends HtmlElement>) element.getHtmlElementsByTagName("a");
         List<WebElement> webElements = new ArrayList<WebElement>();
         for (HtmlElement e : htmlElements) {
             if (e.getTextContent().equals(linkText)
@@ -513,8 +513,8 @@ public class HtmlUnitWebElement implements WebElement,
     public List<WebElement> findElementsByPartialLinkText(String linkText) {
       assertElementNotStale();
 
-        List<HtmlElement> htmlElements =
-            (List<HtmlElement>) element.getHtmlElementsByTagName("a");
+        List<? extends HtmlElement> htmlElements =
+            (List<? extends HtmlElement>) element.getHtmlElementsByTagName("a");
         List<WebElement> webElements = new ArrayList<WebElement>();
         for (HtmlElement e : htmlElements) {
             if (e.getTextContent().contains(linkText)
