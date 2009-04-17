@@ -779,7 +779,7 @@ void IeThread::OnSelectElementByClassName(WPARAM w, LPARAM lp)
 			  token;
 			  token = wcstok_s( NULL, seps, &next_token) )
 		{
-			__w64 int lengthRead = next_token - token;
+			__int64 lengthRead = next_token - token;
 			if(*next_token!=NULL) lengthRead--;
 			if(exactLength != lengthRead) continue;
 			if(0!=wcscmp(elementClassName, token)) continue;
@@ -860,7 +860,7 @@ void IeThread::OnSelectElementsByClassName(WPARAM w, LPARAM lp)
 			  token;
 			  token = wcstok_s( NULL, seps, &next_token) )
 		{
-			__w64 int lengthRead = next_token - token;
+			__int64 lengthRead = next_token - token;
 			if(*next_token!=NULL) lengthRead--;
 			if(exactLength != lengthRead) continue;
 			if(0!=wcscmp(elementClassName, token)) continue;

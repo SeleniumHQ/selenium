@@ -151,9 +151,8 @@ simple_jars = {
   },
   "jobbie" =>   {
     'src'       => "jobbie/src/java/**/*.java",
-    'deps'      => [:common, 'jobbie/build/InternetExplorerDriver.dll'],
+    'deps'      => [:common, 'jobbie/build/Win32/Release/InternetExplorerDriver.dll'],
     'jar'       => "jobbie/build/webdriver-jobbie.jar",
-    'resources' => 'jobbie/build/InternetExplorerDriver.dll',
     'classpath' => ["jobbie/lib/runtime/**/*.jar"] + common_libs,
     'test_on'   => false,
   },
@@ -325,17 +324,27 @@ task :javadocs => [:common, :firefox, :htmlunit, :jobbie, :remote, :safari, :sup
 end
 
 #### Internet Explorer ####
-file 'jobbie/build/InternetExplorerDriver.dll' => FileList['jobbie/src/cpp/**/*.cpp'] do
+file 'jobbie/build/Win32/Release/InternetExplorerDriver.dll' => FileList['jobbie/src/cpp/**/*.cpp'] do
   if windows? then
-    sh "MSBuild.exe WebDriver.sln /verbosity:q /target:Rebuild /property:Configuration=Release", :verbose => false
+    sh "MSBuild.exe WebDriver.sln /verbosity:q /target:Rebuild /property:Configuration=Release /property:Platform=x64", :verbose => false
+    sh "MSBuild.exe WebDriver.sln /verbosity:q /target:Rebuild /property:Configuration=Release /property:Platform=Win32", :verbose => false
   else
     puts "Not compiling DLL. Do not try and run the IE tests!"
     begin
       mkdir_p 'jobbie/build', :verbose => false
     rescue
     end
-    File.open('jobbie/build/InternetExplorerDriver.dll', 'w') {|f| f.write("")}
+    File.open('jobbie/build/Win32/Release/InternetExplorerDriver.dll', 'w') {|f| f.write("")}
+    File.open('jobbie/build/x64/Release/InternetExplorerDriver.dll', 'w') {|f| f.write("")}
   end
+end
+
+file "jobbie/build/webdriver-jobbie.jar" => "jobbie/build/Win32/Release/InternetExplorerDriver.dll" do
+  mkdir_p "jobbie/build/jar/x86"
+  mkdir_p "jobbie/build/jar/amd64"
+  cp "jobbie/build/Win32/Release/InternetExplorerDriver.dll", "jobbie/build/jar/x86"
+  cp "jobbie/build/x64/Release/InternetExplorerDriver.dll", "jobbie/build/jar/amd64"
+  sh "jar uf jobbie/build/webdriver-jobbie.jar -C jobbie/build/jar .", :verbose => false
 end
 
 #### Firefox ####

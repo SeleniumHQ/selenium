@@ -441,9 +441,12 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
     }
     
     private File writeResourceToDisk(String resourceName) throws UnsatisfiedLinkError {
-      InputStream is = InternetExplorerDriver.class.getResourceAsStream(resourceName);
+      // Expected values: x86 or amd64
+      String arch = System.getProperty("os.arch").toLowerCase() + "/";
+      
+      InputStream is = InternetExplorerDriver.class.getResourceAsStream(arch + resourceName);
       if (is == null) 
-          is = InternetExplorerDriver.class.getResourceAsStream("/" + resourceName);
+          is = InternetExplorerDriver.class.getResourceAsStream("/" + arch + resourceName);
           if (is == null) {
               throw new UnsatisfiedLinkError("Could not find " + resourceName);
           }
