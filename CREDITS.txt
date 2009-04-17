@@ -30,3 +30,4 @@ James Strachen
 Aslak Hellesoy
 Rune Flobakk
 Dan Fabulich
+Michele Sama
