@@ -830,7 +830,35 @@ public class WebDriverBackedSelenium implements Selenium {
     driver.switchTo().window(current);
     throw new SeleniumException("Unable to select window _blank");
   }
-  
+
+  /** Simplifies the process of selecting a popup window (and does not offer
+   * functionality beyond what <code>selectWindow()</code> already provides).
+   * <ul><li>If <code>windowID</code> is either not specified, or specified as
+   * "null", the first non-top window is selected. The top window is the one
+   * that would be selected by <code>selectWindow()</code> without providing a
+   * <code>windowID</code> . This should not be used when more than one popup
+   * window is in play.</li><li>Otherwise, the window will be looked up considering
+   * <code>windowID</code> as the following in order: 1) the "name" of the
+   * window, as specified to <code>window.open()</code>; 2) a javascript
+   * variable which is a reference to a window; and 3) the title of the
+   * window. This is the same ordered lookup performed by
+   * <code>selectWindow</code> .</li></ul>
+   *
+   * @param windowID an identifier for the popup window, which can take on a
+   *                 number of different meanings
+   */
+  public void selectPopUp(String windowID) {
+    throw new UnsupportedOperationException("Not implemented yet.");
+  }
+
+  /** Selects the main window. Functionally equivalent to using
+   * <code>selectWindow()</code> and specifying no value for
+   * <code>windowID</code>.
+   */
+  public void deselectPopUp() {
+    throw new UnsupportedOperationException("Not implemented yet.");
+  }
+
   /**
    * Selects a frame within the current window.  (You may invoke this command
    * multiple times to select nested frames.)  To select the parent frame, use
@@ -2141,6 +2169,20 @@ public class WebDriverBackedSelenium implements Selenium {
     throw new UnsupportedOperationException("captureScreenshotToString");
   }
 
+  /**
+   * Returns the network traffic seen by the browser, including headers,
+   * AJAX requests, status codes, and timings. When this function is called,
+   * the traffic log is cleared, so the returned content is only the traffic
+   * seen since the last call.
+   *
+   * @param type The type of data to return the network traffic as.
+   *             Valid values are: json, xml, or plain.
+   * @return A string representation in the defined type of the network traffic seen by the browser.
+   */
+  public String captureNetworkTraffic(String type) {
+    throw new UnsupportedOperationException("Not implemented yet.");
+  }
+    
   /**
    * Downloads a screenshot of the browser current window canvas to a
    * based 64 encoded PNG file. The <em>entire</em> windows canvas is captured,

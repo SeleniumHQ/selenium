@@ -18,14 +18,9 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-all</artifactId>
-            <version>1.1</version>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>3.8.1</version>
+            <groupId>org.seleniumhq.selenium.client-drivers</groupId>
+            <artifactId>selenium-java-client-driver</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
         <!-- Test dependencies ... -->
         <dependency>
@@ -36,14 +31,10 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.openqa.selenium.client-drivers</groupId>
-            <artifactId>selenium-java-client-driver</artifactId>
-            <version>1.0-beta-2</version>
-        </dependency>
-        <dependency>
             <groupId>org.openqa.selenium.webdriver</groupId>
             <artifactId>webdriver-htmlunit</artifactId>
             <version>1.0-SNAPSHOT</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.openqa.selenium.webdriver</groupId>
@@ -57,7 +48,6 @@
             <version>1.0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
