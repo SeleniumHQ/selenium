@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 
 public class TestRollup extends SeleneseTestNgHelper {
 	@Test public void testRollup() throws Exception {
+		selenium.addScript("", "rollup");
 		selenium.open("../tests/html/test_rollup.html");
 		selenium.rollup("cake", "");
 		selenium.rollup("biscuits", "n=1");
@@ -22,5 +23,6 @@ public class TestRollup extends SeleneseTestNgHelper {
 		verifyTrue(selenium.isChecked("name=dos"));
 		verifyFalse(selenium.isChecked("name=san"));
 		selenium.rollup("steamed spinach", "");
+		selenium.removeScript("rollup");
 	}
 }

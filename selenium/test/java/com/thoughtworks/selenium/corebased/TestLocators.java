@@ -44,5 +44,7 @@ public class TestLocators extends SeleneseTestNgHelper {
 		//  SEL-484:  IE: Can't select element by ID when there's another earlier element whose "name" matches the ID 
 		verifyTrue(selenium.isElementPresent("name=foobar"));
 		verifyTrue(selenium.isElementPresent("id=foobar"));
+		//  SEL-608: "ID selector does not work when an element on the page has a name parameter equal to id" 
+		verifyTrue(selenium.isElementPresent("id=myForm"));
 	}
 }

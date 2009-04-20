@@ -1206,7 +1206,7 @@ public class WebDriverBackedSelenium implements Selenium {
    */
   public String getEval(String script) {
     script = script.replaceAll("\n", "\\\\n");
-    script = String.format("return eval(\"%s\");", script); 
+    script = String.format("return eval(\"%s\");", script);
     return String.valueOf(((JavascriptExecutor) driver).executeScript(script));
   }
 

@@ -7,8 +7,7 @@ import java.util.regex.Pattern;
 
 public class TestCookie extends SeleneseTestNgHelper {
 	@Test public void testCookie() throws Exception {
-		//String base = selenium.getEval("parseUrl(canonicalize(absolutify(\"html\", selenium.browserbot.baseUrl))).pathname;");
-	    String base = "http://localhost:4444/tests/html";
+		String base = "http://localhost:4444/tests/html";
 		System.out.println(base);
 		selenium.open(base + "/path1/cookie1.html");
 		selenium.deleteAllVisibleCookies();

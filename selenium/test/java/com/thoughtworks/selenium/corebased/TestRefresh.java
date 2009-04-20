@@ -20,6 +20,11 @@ public class TestRefresh extends SeleneseTestNgHelper {
 		selenium.click("slowRefresh");
 		selenium.waitForPageToLoad("30000");
 		assertFalse(selenium.isTextPresent("Changed the text"));
+		selenium.click("changeSpan");
+		assertTrue(selenium.isTextPresent("Changed the text"));
+		selenium.click("id=slowRefreshJavascriptHref");
+		selenium.waitForPageToLoad("30000");
+		assertFalse(selenium.isTextPresent("Changed the text"));
 		selenium.click("anchor");
 		selenium.click("changeSpan");
 		assertTrue(selenium.isTextPresent("Changed the text"));

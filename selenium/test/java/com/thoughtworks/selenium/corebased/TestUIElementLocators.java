@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 
 public class TestUIElementLocators extends SeleneseTestNgHelper {
 	@Test public void testUIElementLocators() throws Exception {
+		selenium.addScript("", "uimap");
 		selenium.open("../tests/html/test_locators.html");
 		verifyEquals(selenium.getText("ui=pageset1::linksWithId()"), "this is the first element");
 		verifyEquals(selenium.getText("ui=pageset1::linksWithId(index=1)"), "this is the first element");
@@ -17,5 +18,6 @@ public class TestUIElementLocators extends SeleneseTestNgHelper {
 		verifyEquals(selenium.getText("ui=pageset1::linksWithId()->//span"), "element");
 		verifyEquals(selenium.getText("ui=pageset2::cell(text=theHeaderText)"), "theHeaderText");
 		verifyEquals(selenium.getText("ui=pageset2::cell(text=theCellText)"), "theCellText");
+		selenium.removeScript("uimap");
 	}
 }
