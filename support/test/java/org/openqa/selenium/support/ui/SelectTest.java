@@ -18,6 +18,7 @@ limitations under the License.
 package org.openqa.selenium.support.ui;
 
 import org.jmock.Expectations;
+import org.jmock.api.Expectation;
 import org.jmock.integration.junit3.MockObjectTestCase;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
@@ -147,16 +148,12 @@ public class SelectTest extends MockObjectTestCase {
   public void testShouldAllowOptionsToBeSelectedByVisibleText() {
     final WebElement element = mock(WebElement.class);
     final WebElement firstOption = mock(WebElement.class, "first");
-    final WebElement secondOption = mock(WebElement.class, "second");
-    final List<WebElement> options = Arrays.asList(firstOption, secondOption);
+    final List<WebElement> options = Arrays.asList(firstOption);
 
     checking(new Expectations() {{
       allowing(element).getElementName(); will(returnValue("select"));
-      exactly(1).of(element).findElements(By.tagName("option")); will(returnValue(options));
-      exactly(1).of(firstOption).getText(); will(returnValue("fish"));
+      exactly(1).of(element).findElements(By.xpath(".//option[. = \"fish\"]")); will(returnValue(options));
       exactly(1).of(firstOption).setSelected();
-      exactly(1).of(secondOption).getText(); will(returnValue("cheese"));
-      never(secondOption).setSelected();
     }});
 
     Select select = new Select(element);
@@ -185,16 +182,12 @@ public class SelectTest extends MockObjectTestCase {
   public void testShouldAllowOptionsToBeSelectedByReturnedValue() {
     final WebElement element = mock(WebElement.class);
     final WebElement firstOption = mock(WebElement.class, "first");
-    final WebElement secondOption = mock(WebElement.class, "second");
-    final List<WebElement> options = Arrays.asList(firstOption, secondOption);
+    final List<WebElement> options = Arrays.asList(firstOption);
 
     checking(new Expectations() {{
       allowing(element).getElementName(); will(returnValue("select"));
-      exactly(1).of(element).findElements(By.tagName("option")); will(returnValue(options));
-      exactly(1).of(firstOption).getValue(); will(returnValue("b"));
+      exactly(1).of(element).findElements(By.xpath(".//option[@value = \"b\"]")); will(returnValue(options));
       exactly(1).of(firstOption).setSelected();
-      exactly(1).of(secondOption).getValue(); will(returnValue("cheese"));
-      never(secondOption).setSelected();
     }});
 
     Select select = new Select(element);
@@ -242,20 +235,15 @@ public class SelectTest extends MockObjectTestCase {
     final WebElement element = mock(WebElement.class);
     final WebElement firstOption = mock(WebElement.class, "first");
     final WebElement secondOption = mock(WebElement.class, "second");
-    final WebElement thirdOption = mock(WebElement.class, "third");
-    final List<WebElement> options = Arrays.asList(firstOption, secondOption, thirdOption);
+    final List<WebElement> options = Arrays.asList(firstOption, secondOption);
 
     checking(new Expectations() {{
       allowing(element).getElementName(); will(returnValue("select"));
-      exactly(1).of(element).findElements(By.tagName("option")); will(returnValue(options));
-      exactly(1).of(firstOption).getText(); will(returnValue("b"));
+      exactly(1).of(element).findElements(By.xpath(".//option[. = \"b\"]")); will(returnValue(options));
       exactly(1).of(firstOption).isSelected(); will(returnValue(true));
       exactly(1).of(firstOption).toggle();
-      exactly(1).of(secondOption).getText(); will(returnValue("cheese"));
-      never(secondOption).setSelected();
-      exactly(1).of(thirdOption).getText(); will(returnValue("b"));
-      exactly(1).of(thirdOption).isSelected(); will(returnValue(false));
-      never(thirdOption).toggle();
+      exactly(1).of(secondOption).isSelected(); will(returnValue(false));
+      never(secondOption).toggle();
     }});
 
     Select select = new Select(element);
@@ -285,24 +273,71 @@ public class SelectTest extends MockObjectTestCase {
   public void testShouldAllowOptionsToBeDeselectedByReturnedValue() {
     final WebElement element = mock(WebElement.class);
     final WebElement firstOption = mock(WebElement.class, "first");
-    final WebElement secondOption = mock(WebElement.class, "second");
-    final WebElement thirdOption = mock(WebElement.class, "third");
-    final List<WebElement> options = Arrays.asList(firstOption, secondOption, thirdOption);
+    final WebElement secondOption = mock(WebElement.class, "third");
+    final List<WebElement> options = Arrays.asList(firstOption, secondOption);
 
     checking(new Expectations() {{
       allowing(element).getElementName(); will(returnValue("select"));
-      exactly(1).of(element).findElements(By.tagName("option")); will(returnValue(options));
-      exactly(1).of(firstOption).getValue(); will(returnValue("b"));
+      exactly(1).of(element).findElements(By.xpath(".//option[@value = \"b\"]")); will(returnValue(options));
       exactly(1).of(firstOption).isSelected(); will(returnValue(true));
       exactly(1).of(firstOption).toggle();
-      exactly(1).of(secondOption).getValue(); will(returnValue("cheese"));
-      never(secondOption).setSelected();
-      exactly(1).of(thirdOption).getValue(); will(returnValue("b"));
-      exactly(1).of(thirdOption).isSelected(); will(returnValue(false));
-      never(thirdOption).toggle();
+      exactly(1).of(secondOption).isSelected(); will(returnValue(false));
+      never(secondOption).toggle();
     }});
 
     Select select = new Select(element);
     select.deselectByValue("b");
-  }  
+  }
+
+  public void testShouldConvertAnUnquotedStringIntoOneWithQuotes() {
+    final WebElement element = mock(WebElement.class);
+
+    checking(new Expectations() {{
+      allowing(element).getElementName(); will(returnValue("select"));
+    }});
+    
+    Select select = new Select(element);
+    String result = select.escapeQuotes("foo");
+
+    assertEquals("\"foo\"", result);
+  }
+
+  public void testShouldConvertAStringWithATickIntoOneWithQuotes() {
+    final WebElement element = mock(WebElement.class);
+
+    checking(new Expectations() {{
+      allowing(element).getElementName(); will(returnValue("select"));
+    }});
+
+    Select select = new Select(element);
+    String result = select.escapeQuotes("f'oo");
+
+    assertEquals("\"f'oo\"", result);
+  }
+
+  public void testShouldConvertAStringWithAQuotIntoOneWithTicks() {
+    final WebElement element = mock(WebElement.class);
+
+    checking(new Expectations() {{
+      allowing(element).getElementName(); will(returnValue("select"));
+    }});
+
+    Select select = new Select(element);
+    String result = select.escapeQuotes("f\"oo");
+
+    assertEquals("'f\"oo'", result);
+  }
+  
+  public void testShouldProvideConcatenatedStringsWhenStringToEscapeContainsTicksAndQuotes() {
+    final WebElement element = mock(WebElement.class);
+
+    checking(new Expectations() {{
+      allowing(element).getElementName(); will(returnValue("select"));
+    }});
+
+    Select select = new Select(element);
+    String result = select.escapeQuotes("f\"o'o");
+
+    assertEquals("concat(\"f\", '\"', \"o'o\")", result);
+  }
 }
