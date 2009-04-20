@@ -93,7 +93,7 @@ task :install_firefox => [:firefox] do
   cmd += ' -Dwebdriver.firefox.development="' + extension_loc + '"'
   cmd += " -Dwebdriver.firefox.bin=\"#{ENV['firefox']}\" " unless ENV['firefox'].nil?
   cmd += ' org.openqa.selenium.firefox.FirefoxLauncher '
-
+  
   sh cmd, :verbose => true
 end
 
@@ -399,6 +399,7 @@ end
 task :remote_release => [:remote] do
   mkdir_p "build/dist/remote_client"
 
+  cp 'remote/build/webdriver-remote-client.jar', 'build/dist/remote_client'
   cp 'remote/build/webdriver-remote-common.jar', 'build/dist/remote_client'
   cp 'common/build/webdriver-common.jar', 'build/dist/remote_client'
 
@@ -422,8 +423,8 @@ task :remote_release => [:remote] do
   rm_rf "build/dist/remote_server"
 end
 
-task :release => [:common, :firefox, :htmlunit, :jobbie, :safari, :remote_release, :support] do
-  %w(common firefox jobbie htmlunit safari support).each do |driver|
+task :release => [:common, :firefox, :htmlunit, :jobbie, :remote_release, :support] do
+  %w(common firefox jobbie htmlunit support).each do |driver|
     mkdir_p "build/dist/#{driver}"
     cp 'common/build/webdriver-common.jar', "build/dist/#{driver}"
     cp "#{driver}/build/webdriver-#{driver}.jar", "build/dist/#{driver}"
@@ -434,6 +435,35 @@ task :release => [:common, :firefox, :htmlunit, :jobbie, :safari, :remote_releas
   end
 end
 
+task :all => [:release] do
+  mkdir_p "build/all"
+  mkdir_p "build/all/webdriver"
+
+  # Expand all the individual webdriver JARs and combine into one
+  # We do things this way so that if we've built a JAR on another
+  # platform and copied it to the right place, this uberjar works
+  %w(common firefox htmlunit jobbie remote-client support).each do |zip|
+    sh "pwd", :verbose => true
+    sh "cd build/all && unzip ../dist/webdriver-#{zip}-#{version}.zip", :verbose => true
+  end
+
+  mkdir_p "build/all/all"
+  %w(common firefox htmlunit jobbie support).each do |j|
+    sh "cd build/all/all && jar xf ../#{j}/webdriver-#{j}.jar"
+  end
+  sh "cd build/all/all && jar xf ../remote_client/webdriver-remote-client.jar"
+
+  # Repackage the uber jar
+  sh "cd build/all/all && jar cf ../webdriver/webdriver-all.jar *"
+
+  # Collect the libraries into one place
+  %w(common firefox htmlunit jobbie remote_client support).each do |j|
+    cp Dir.glob("build/all/#{j}/*.jar").reject {|f| f =~ /webdriver/} , "build/all/webdriver"
+  end
+
+  # And repack. Finally
+  sh "cd build/all && zip ../dist/webdriver-all-#{version}.zip webdriver/*"
+end
 
 def javac(args)
   # mandatory args
