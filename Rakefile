@@ -334,6 +334,8 @@ file 'jobbie/build/Win32/Release/InternetExplorerDriver.dll' => FileList['jobbie
       mkdir_p 'jobbie/build', :verbose => false
     rescue
     end
+    mkdir_p "jobbie/build/Win32/Release"
+    mkdir_p "jobbie/build/x64/Release"
     File.open('jobbie/build/Win32/Release/InternetExplorerDriver.dll', 'w') {|f| f.write("")}
     File.open('jobbie/build/x64/Release/InternetExplorerDriver.dll', 'w') {|f| f.write("")}
   end
