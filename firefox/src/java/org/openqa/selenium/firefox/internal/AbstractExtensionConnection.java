@@ -20,8 +20,8 @@ package org.openqa.selenium.firefox.internal;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.firefox.Command;
 import org.openqa.selenium.firefox.ExtensionConnection;
 import org.openqa.selenium.firefox.NotConnectedException;
@@ -32,8 +32,6 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
-import java.net.Inet4Address;
-import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
@@ -41,10 +39,10 @@ import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.Enumeration;
-import java.util.Set;
-import java.util.HashSet;
 import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Set;
 
 public abstract class AbstractExtensionConnection implements ExtensionConnection {
     private Socket socket;
@@ -75,7 +73,7 @@ public abstract class AbstractExtensionConnection implements ExtensionConnection
                 Enumeration<InetAddress> allAddresses = iface.getInetAddresses();
                 while (allAddresses.hasMoreElements()) {
                     InetAddress addr = allAddresses.nextElement();
-                    if (addr.isAnyLocalAddress()) {
+                    if (addr.isLoopbackAddress()) {
                       SocketAddress socketAddress = new InetSocketAddress(addr, port);
                       localhosts.add(socketAddress);
                     }
