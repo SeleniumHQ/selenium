@@ -293,8 +293,9 @@ end
 task :remote => [:remote_client, :remote_server]
 task :test_remote => [:test_remote_client]
 
-file "selenium/build/webdriver-selenium.jar" => "selenium/src/java/org/openqa/selenium/internal/injectableSelenium.js" do
+file "selenium/build/webdriver-selenium.jar" => FileList["selenium/src/java/org/openqa/selenium/internal/*.js"] do
   sh "jar uf selenium/build/webdriver-selenium.jar -C selenium/src/java org/openqa/selenium/internal/injectableSelenium.js", :verbose => false
+  sh "jar uf selenium/build/webdriver-selenium.jar -C selenium/src/java org/openqa/selenium/internal/htmlutils.js", :verbose => false
 end
 
 task :test_selenium do
