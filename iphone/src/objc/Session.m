@@ -67,11 +67,22 @@
  
   // The context has a static name.
   [session setResource:context withName:[Context contextName]];
+  
+  [self deleteAllCookies];
 
   return [HTTPRedirectResponse redirectToURL:
           [NSString stringWithFormat:@"session/%d/%@/",
            sessionId,
            [Context contextName]]];
+}
+
+- (void)deleteAllCookies {
+  NSArray *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies];
+  NSEnumerator *enumerator = [cookies objectEnumerator];
+  NSHTTPCookie *cookie = nil;
+  while ((cookie = [enumerator nextObject])) {
+    [[NSHTTPCookieStorage sharedHTTPCookieStorage] deleteCookie:cookie];
+  }
 }
 
 @end

@@ -26,4 +26,8 @@
   int nextId_;
 }
 
+// Deletes all from shared cookie storage on iPhone. If cookies are not deleted
+// in between sessions than sessions become nondeterministic.
+- (void)deleteAllCookies;
+
 @end
