@@ -32,6 +32,7 @@ import java.util.Collections;
 public class Select {
 
   private final WebElement element;
+  private boolean isMulti;
 
   /**
    * Constructor. A check is made that the given element is, indeed, a SELECT tag. If it is not,
@@ -48,6 +49,10 @@ public class Select {
     }
 
     this.element = element;
+
+    String value = element.getAttribute("multiple");
+    isMulti = value != null && "multiple".equals(value.toLowerCase());
+
   }
 
   /**
@@ -55,8 +60,7 @@ public class Select {
    *         is done by checking the value of the "multiple" attribute.
    */
   public boolean isMultiple() {
-    String value = element.getAttribute("multiple");
-    return value != null && "multiple".equals(value.toLowerCase());
+    return isMulti;
   }
 
   /**
@@ -111,6 +115,7 @@ public class Select {
     List<WebElement> options = element.findElements(By.xpath(builder.toString()));
     for (WebElement option : options) {
       option.setSelected();
+      if (isMultiple()) {  return;  }
     }
   }
 
@@ -126,6 +131,7 @@ public class Select {
     for (WebElement option : getOptions()) {
       if (match.equals(option.getAttribute("index"))) {
         option.setSelected();
+        if (isMultiple()) {  return;  }
       }
     }
   }
@@ -145,6 +151,7 @@ public class Select {
     List<WebElement> options = element.findElements(By.xpath(builder.toString()));
     for (WebElement option : options) {
       option.setSelected();
+      if (isMultiple()) {  return;  }
     }
   }
 
