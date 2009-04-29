@@ -20,56 +20,46 @@ installing the extension"""
 from subprocess import Popen
 from subprocess import PIPE
 import logging
+import shutil
+import tempfile
 import time
 import platform
 import os
 from webdriver_firefox.extensionconnection import ExtensionConnection
-from webdriver_firefox.firefox_profile import ProfileIni
+from webdriver_firefox.firefox_profile import FirefoxProfile
+from webdriver_firefox import utils
+
+MAX_START_ATTEMPTS = 3
 
 class FirefoxLauncher(object):
     """Launches the firefox browser."""
-    __shared_state = {}
 
     def __init__(self):
-        self.__dict__ = self.__shared_state
-        if "_start_cmd" not in self.__dict__:
-            self.extension_connection = ExtensionConnection()
-            if platform.system() == "Darwin":
-                self._start_cmd = ("/Applications/Firefox.app/Contents/"
-                                   "MacOS/firefox-bin")
-            elif platform.system() == "Windows":
-                program_files = os.getenv("PROGRAMFILES")
-                if program_files is None:
-                    program_files = "\\Program Files"
-                self._start_cmd = os.path.join(program_files, 
-                                               "Mozilla Firefox\\firefox.exe") 
-            else:
-                # Maybe iceweasel (Debian) is another candidate...
-                for ffname in ["firefox2", "firefox", "firefox-3.0"]:
-                    logging.debug("Searching for '%s'...", ffname)
-                    process = Popen(["which", ffname], stdout=PIPE)
-                    cmd = process.communicate()[0].strip()
-                    if cmd != "":
-                        logging.debug("Using %s", cmd)
-                        self._start_cmd = cmd
-                        break
-            self.profile_ini = ProfileIni()
-            self.process = None
+        self.extension_connection = ExtensionConnection()
+        self._start_cmd = utils.get_firefox_start_cmd()
+        self.process = None
 
-    def launch_browser(self, profile_name):
-        """Launches the browser."""
-        if self.extension_connection.is_connectable():
+    def launch_browser(self, profile):
+        """Launches the browser for the given profile name.
+        It is assumed the profile already exists.
+        """
+        self.profile = profile
+        while self.extension_connection.is_connectable():
             logging.info("Browser already running, kill it")
             self.extension_connection.connect_and_quit()
-        if profile_name not in self.profile_ini.profiles:
-            Popen([self._start_cmd, "-createProfile", profile_name]).wait()
-            self.profile_ini.refresh()
-        profile = self.profile_ini.profiles[profile_name]
-        profile.remove_lock_file()
-        profile.add_extension()
-        self.process = Popen([self._start_cmd, "-no-remote", "--verbose", "-P",
-               profile_name])
-        self._wait_until_connectable()
+            time.sleep(1)
+        self._start_from_profile_path(profile.path)
+
+        attempts = 0
+        while not self.extension_connection.is_connectable():
+            attempts += 1
+            if attempts >  MAX_START_ATTEMPTS:
+                raise RuntimeError("Unablet to start firefox")
+            self._start_from_profile_path(profile.path)
+            time.sleep(1)
+
+    def _lock_file_exists(self):
+        return os.path.exists(os.path.join(self.profile.path, ".parentlock"))
 
     def kill(self):
         """Kill the browser.
@@ -83,8 +73,16 @@ class FirefoxLauncher(object):
             # kill may not be available under windows environment
             pass
 
+    def _start_from_profile_path(self, path):
+        os.environ["XRE_PROFILE_PATH"] = path
+        self.process = Popen([self._start_cmd, "-no-remote", "--verbose"])
+
     def _wait_until_connectable(self):
         """Blocks until the extension is connectable in the firefox."""
         while not self.extension_connection.is_connectable():
-            time.sleep(1)
             logging.debug("Waiting for browser to launch...")
+            if self.process.returncode:
+                # Browser has exited
+                return False
+            time.sleep(1)
+        return True

@@ -20,17 +20,17 @@ class CookieTest(unittest.TestCase):
                          "path": "/"}
 
     def testAddCookie(self):
-        self.driver.add_cookie(self._convert_cookie_to_json(self.COOKIE_A))
+        self.driver.add_cookie(utils.convert_cookie_to_json(self.COOKIE_A))
         cookie_returned = self.driver.get_cookies()[0]
         self.assertEquals(self.COOKIE_A, cookie_returned)
 
     def testDeleteAllCookie(self):
-        self.driver.add_cookie(self._convert_cookie_to_json(self.COOKIE_A))
+        self.driver.add_cookie(utils.convert_cookie_to_json(self.COOKIE_A))
         self.driver.delete_all_cookies()
         self.assertFalse(self.driver.get_cookies())
 
     def testDeleteCookie(self):
-        self.driver.add_cookie(self._convert_cookie_to_json(self.COOKIE_A))
+        self.driver.add_cookie(utils.convert_cookie_to_json(self.COOKIE_A))
         self.driver.delete_cookie("foo")
         self.assertFalse(self.driver.get_cookies())
 
@@ -39,16 +39,7 @@ class CookieTest(unittest.TestCase):
         self.driver.get("http://www.google.com")
         cookie = self.driver.get_cookies()
         self.assertEquals("PREF", cookie[0]["name"])
-        self.assertEquals(cookie[0]["domain"], ".google.com")
-
-    def _convert_cookie_to_json(self, cookie):
-        cookie_dict = {}
-        for key, value in cookie.items():
-            if key == "expires":
-                cookie_dict["expiry"] = int(value) * 1000
-            else:
-                cookie_dict[key] = value
-        return simplejson.dumps(cookie_dict)
+        self.assertTrue("google" in cookie[0]["domain"])
                 
 def run_tests(driver_):
     global driver

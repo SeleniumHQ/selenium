@@ -22,11 +22,11 @@ from webdriver_firefox.webdriver import WebDriver
 class FirefoxLauncherTests (unittest.TestCase):
 
     def testLaunchAndCloseBrowser(self):
-         self.webdriver = WebDriver("WebDriver")
+         self.webdriver = WebDriver()
          self.webdriver.quit()
 
     def testDoubleClose(self):
-        self.webdriver = WebDriver("WebDriver")
+        self.webdriver = WebDriver()
         self.webdriver.close()
         self.webdriver.close()
         self.webdriver.quit()

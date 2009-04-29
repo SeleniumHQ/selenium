@@ -18,6 +18,7 @@ from webdriver_common.exceptions import ErrorInResponseException
 from webdriver_common.exceptions import InvalidSwitchToTargetException
 from webdriver_firefox.webelement import WebElement
 from webdriver_firefox.firefoxlauncher import FirefoxLauncher
+from webdriver_firefox.firefox_profile import FirefoxProfile
 from webdriver_firefox.extensionconnection import ExtensionConnection
 from webdriver_firefox import utils
 
@@ -25,9 +26,23 @@ from webdriver_firefox import utils
 class WebDriver(object):
     """The main interface to use for testing,
     which represents an idealised web browser."""
-    def __init__(self, profile_name="WebDriver", timeout=30):
+    def __init__(self, profile=None, timeout=30):
+        """Creates a webdriver instance.
+        
+        Args:
+          profile: a FirefoxProfile object (it can also be a profile name,
+                   but the support for that may be removed in future, it is
+                   recommended to pass in a FirefoxProfile object)
+          timeout: the amount of time to wait for extension socket
+        """
         self.browser = FirefoxLauncher()
-        self.browser.launch_browser(profile_name)
+        if type(profile) == str:
+            # This is to be Backward compatible because we used to take a
+            # profile name
+            profile = FirefoxProfile(name=profile)
+        if not profile:
+            profile = FirefoxProfile()
+        self.browser.launch_browser(profile)
         self._conn = ExtensionConnection(timeout)
         self._conn.connect()
 
@@ -150,17 +165,12 @@ class WebDriver(object):
 
     def find_elements_by_xpath(self, xpath):
         """Finds all the elements for the given xpath query."""
-        try:
-            elem_ids = self._command("selectElementsUsingXPath", xpath)
-            elems = []
-            if len(elem_ids):
-                for elem_id in elem_ids.split(","):
-                    elem = WebElement(self, elem_id)
-                    elems.append(elem)
-            return elems
-        except ErrorInResponseException, ex:
-            utils.handle_find_element_exception(ex)
+        return self._find_elements_by("XPath", xpath)
 
+    def find_elements_by_tag_name(self, tag_name):
+        """Finds all the elements with the given tag"""
+        return self._find_elements_by("TagName", tag_name)
+    
     def get_page_source(self):
         """Gets the page source."""
         return self._command("getPageSource")
@@ -171,6 +181,7 @@ class WebDriver(object):
         """
         if self._conn.is_connectable():
             self._conn.driver_command("close")
+        self.browser.kill()
 
     def quit(self):
         """Quits the driver and close every associated window."""
@@ -209,7 +220,10 @@ class WebDriver(object):
 
     def get_cookies(self):
         """Gets all the cookies."""
-        cookie_response = self._command("getCookie")
+        try:
+            cookie_response = self._command("getCookie")
+        except ErrorInResponseException:
+            return []
 
         #cookie_response is of type unicode, with cookies seperated by "\n".
         cookie_unicodes = cookie_response.split("\n") 
@@ -260,3 +274,15 @@ class WebDriver(object):
     @property
     def conn(self):
         return self._conn
+
+    def _find_elements_by(self, selector, key):
+        try:
+            elem_ids = self._command("selectElementsUsing%s" % selector, key)
+            elems = []
+            if len(elem_ids):
+                for elem_id in elem_ids.split(","):
+                    elem = WebElement(self, elem_id)
+                    elems.append(elem)
+            return elems
+        except ErrorInResponseException, ex:
+            utils.handle_find_element_exception(ex)

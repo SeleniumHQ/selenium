@@ -19,6 +19,6 @@ from webdriver_common_tests import cookie_tests
 from webdriver_firefox.webdriver import WebDriver
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG)
+    logging.getLogger().setLevel(logging.DEBUG)
     cookie_tests.run_tests(WebDriver())
 

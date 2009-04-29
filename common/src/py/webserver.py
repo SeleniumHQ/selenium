@@ -53,9 +53,9 @@ class HtmlOnlyHandler(BaseHTTPRequestHandler):
 
 class SimpleWebServer(object):
     """A very basic web server."""
-    def __init__(self):
+    def __init__(self, port=DEFAULT_PORT):
         self.stop_serving = False
-        port = DEFAULT_PORT
+        port = port
         while True:
             try:
                 self.server = HTTPServer(

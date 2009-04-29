@@ -87,7 +87,6 @@ class ExtensionConnection(object):
 
     def quit(self):
         self.driver_command("quit")
-        self.socket.settimeout(1)
         while self.is_connectable():
             logging.info("waiting to quit")
             time.sleep(1)

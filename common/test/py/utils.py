@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import logging
+import simplejson
 import socket
 import sys
 import unittest
@@ -51,3 +52,13 @@ def require_online(func):
             return lambda x: None
     testMethod.func_name = func.func_name
     return testMethod
+
+
+def convert_cookie_to_json(cookie):
+    cookie_dict = {}
+    for key, value in cookie.items():
+        if key == "expires":
+            cookie_dict["expiry"] = int(value) * 1000
+        else:
+            cookie_dict[key] = value
+    return simplejson.dumps(cookie_dict)

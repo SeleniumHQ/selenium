@@ -103,19 +103,12 @@ class WebElement(object):
 
     def find_elements_by_xpath(self, xpath):
         """Finds elements within the elements by xpath."""
-        try:
-            resp = self._command("findElementsByXPath", xpath)
-            if not resp:
-                raise NoSuchElementException(
-                    "Unable to locate element for %s" % xpath)
-            elems = []
-            for elem_id in resp.split(","):
-                elem = WebElement(self._parent, elem_id)
-                elems.append(elem)
-            return elems
-        except ErrorInResponseException, ex:
-            utils.handle_find_element_exception(ex)
+        return self._find_elments_by("XPath", xpath)
 
+    def find_elements_by_tag_name(self, tag_name):
+        """Finds elements within the elements by tag name."""
+        return self._find_elments_by("TagName", tag_name)
+    
     def send_keys(self, keys_characters):
         """Simulates typing into the element."""
         self._command("sendKeys", keys_characters)
@@ -132,3 +125,16 @@ class WebElement(object):
         return remote_utils.get_root_parent(self).conn.element_command(
             cmd, self._id, *args)['response']
 
+    def _find_elments_by(self, selector, key):
+        try:
+            resp = self._command("findElementsBy%s" % selector, key)
+            if not resp:
+                raise NoSuchElementException(
+                    "Unable to locate element for %s" % key)
+            elems = []
+            for elem_id in resp.split(","):
+                elem = WebElement(self._parent, elem_id)
+                elems.append(elem)
+            return elems
+        except ErrorInResponseException, ex:
+            utils.handle_find_element_exception(ex)
