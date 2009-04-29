@@ -85,6 +85,10 @@
   [self setMyWebDriverHandlerWithGETAction:@selector(sizeAsDictionary)
                                 POSTAction:NULL
                                   withName:@"size"];
+  
+  [self setMyWebDriverHandlerWithGETAction:@selector(name) 
+                                POSTAction:NULL
+                                  withName:@"name"];
     
   [self addSearchSubdirs];
   
@@ -212,7 +216,7 @@
 
 - (void)submit {
   NSString *locator = [self jsLocator];
-  [[self viewController] jsEval:[NSString stringWithFormat:
+  [[self viewController] jsEvalAndBlock:[NSString stringWithFormat:
     @"if (%@ instanceof HTMLFormElement) %@.submit(); else %@.form.submit();",
                                  locator, locator, locator]];
 }
@@ -227,9 +231,9 @@
             [NSCharacterSet whitespaceAndNewlineCharacterSet]];
 }
 
-- (void)sendKeys:(NSString *)keys {
-  // double check my signature
-  // TODO: implement me.
+- (void)sendKeys:(NSDictionary *)dict {
+  [[self viewController] 
+   jsEval:[NSString stringWithFormat:@"%@.value=\"%@\"", [self jsLocator], [[dict objectForKey:@"value"] componentsJoinedByString:@""]]];	
 }
 
 - (NSString *)value {
@@ -247,13 +251,18 @@
   return [NSNumber numberWithBool:checked];
 }
 
-// This method is only valid on checkboxes and radio buttons.
+// This method is only valid on option elements, checkboxes and radio buttons.
 - (void)setChecked:(NSNumber *)numValue {
-//  BOOL value = [numValue boolValue];
+  NSString *locator = [self jsLocator];
   
-  [[self viewController]
-           jsEval:[NSString stringWithFormat:@"%@.checked = %@",
-                           [self jsLocator], numValue]];
+  [[self viewController] jsEval:[NSString stringWithFormat:
+      @"if (%@ instanceof HTMLOptionElement) {\r"
+          "%@.selected = true;\r"
+          "%@.parentNode.onchange();\r"
+       "} else {\r"
+          "%@.checked = true;\r"
+       "}",
+      locator, locator, locator, locator]];
 }
 
 // Like |checked| above, we should check that the element is valid.
@@ -299,6 +308,14 @@
           @"%@.getAttribute('%@')",
           [self jsLocator],
           name];
+}
+
+// Get the tag name of this element, not the value of the name attribute:
+// will return "input" for the element <input name="foo">
+- (NSString *)name {
+  return [[[self viewController] jsEval:
+          @"%@.nodeName",
+          [self jsLocator]] lowercaseString];
 }
 
 @end

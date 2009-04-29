@@ -73,7 +73,7 @@
 - (NSString *)text;
 
 // Type these keys into the element.
-- (void)sendKeys:(NSString *)keys;
+- (void)sendKeys:(NSDictionary *)dict;
 
 // Is the element checked?
 // This method is only valid on checkboxes and radio buttons.
@@ -95,5 +95,9 @@
 
 // Get the attribute with the given name.
 - (NSString *)attribute:(NSString *)attributeName;
+
+// Get the tag name of this element, not the value of the name attribute:
+// will return "input" for the element <input name="foo">
+- (NSString *)name;
 
 @end

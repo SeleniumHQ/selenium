@@ -54,7 +54,9 @@ def iPhoneSDKPresent?
   begin
     sdks = sh "xcodebuild -showsdks 2>/dev/null", :verbose => false
     !!(sdks =~ /simulator2.2/)
+    true
   rescue
+    puts "Ouch"
     false
   end
 end
@@ -218,7 +220,7 @@ simple_jars = {
     'deps'      => [:common, :remote],
     'jar'       => "iphone/build/webdriver-iphone.jar",
     'resources' => nil,
-    'classpath' => ["remote/build/webdriver-remote-client.jar", "remote/build/webdriver-remote-common.jar"] + common_libs,
+    'classpath' => ["remote/build/webdriver-remote-client.jar", "remote/build/webdriver-remote-common.jar", "remote/client/lib/runtime/*.jar"] + common_libs,
     'test_on'   => false,
   },
   "test_iphone_client" => {
@@ -226,7 +228,7 @@ simple_jars = {
     'deps'      => [:iphone_client, :test_common, :remote_client],
     'jar'       => "iphone/build/webdriver-iphone-test.jar",
     'resources' => nil,
-    'classpath' => ["iphone/build/webdriver-iphone.jar", "remote/build/webdriver-remote-client.jar", "remote/build/webdriver-remote-common.jar"] + common_test_libs,
+    'classpath' => ["iphone/build/webdriver-iphone.jar", "remote/build/webdriver-remote-client.jar", "remote/build/webdriver-remote-common.jar", "remote/client/lib/runtime/*.jar", "remote/common/lib/runtime/*.jar"] + common_test_libs,
     'test_on'   => iPhoneSDKPresent?,
   },
   "support" =>   {
