@@ -161,6 +161,9 @@ int IeThread::runProcess()
 	SCOPETRACER
 	InitInstance();
 
+	// This will create the message pump
+	::PeekMessage(&curMsg, NULL, WM_USER, WM_USER, PM_NOREMOVE);
+
 	SetEvent(sync_LaunchThread);
 
 	bool quitASAP = false;
