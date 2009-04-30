@@ -25,9 +25,10 @@ import com.gargoylesoftware.htmlunit.html.StyledElement;
 
 import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.ElementNotVisibleException;
-import org.mozilla.javascript.Undefined;
 
 import java.awt.*;
+
+import net.sourceforge.htmlunit.corejs.javascript.Undefined;
 
 public class RenderedHtmlUnitDriverWebElement extends HtmlUnitWebElement
     implements RenderedWebElement {
@@ -65,30 +66,7 @@ public class RenderedHtmlUnitDriverWebElement extends HtmlUnitWebElement
   }
 
   public boolean isDisplayed() {
-    if (element instanceof HtmlInput) {
-      if (((HtmlInput) element).getTypeAttribute().equalsIgnoreCase("hidden")) {
-        return false;
-      }
-    }
-
-    String display = "";
-    String visible = "";
-    HtmlElement node = element;
-    while (node instanceof StyledElement) {
-      display = getEffectiveStyle(node, "display");
-      if ("none".equals(display)) {
-        break;
-      }
-
-      visible = getEffectiveStyle(node, "visibility");
-      if ("hidden".equals(visible)) {
-        break;
-      }
-
-      node = (HtmlElement) node.getParentNode();
-    }
-
-    return !"none".equals(display) && !"hidden".equals(visible);
+    return element.isDisplayed();
   }
 
   public Point getLocation() {

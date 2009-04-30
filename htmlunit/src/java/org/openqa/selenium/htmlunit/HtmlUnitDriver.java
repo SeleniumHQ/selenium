@@ -54,8 +54,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlInlineFrame;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.javascript.host.HTMLElement;
 
-import org.mozilla.javascript.Function;
-import org.mozilla.javascript.ScriptableObject;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
@@ -90,6 +88,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import java.io.IOException;
+
+import net.sourceforge.htmlunit.corejs.javascript.ScriptableObject;
+import net.sourceforge.htmlunit.corejs.javascript.Function;
 
 public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecutor,
         FindsById, FindsByLinkText, FindsByXPath, FindsByName, FindsByTagName {
@@ -357,7 +358,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
         Object value = result.getJavaScriptResult();
 
         if (value instanceof HTMLElement) {
-            return new HtmlUnitWebElement(this, ((HTMLElement) value).getHtmlElementOrDie());
+            return new HtmlUnitWebElement(this, ((HTMLElement) value).getDomNodeOrDie());
         }
 
         if (value instanceof Number) {
