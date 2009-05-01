@@ -98,7 +98,8 @@ protected:
 	void getElementName(IHTMLElement *pElement, std::wstring& res);
 	void getAttribute(IHTMLElement *pElement, LPCWSTR name, std::wstring& res);
 	bool isSelected(IHTMLElement *pElement);
-	int isDisplayed(IHTMLElement *element, bool* displayed);
+	static int isNodeDisplayed(IHTMLDOMNode *element, bool* displayed);
+	static int isDisplayed(IHTMLElement *element, bool* displayed);
 	bool isEnabled(IHTMLElement *pElement);
 	int getLocationWhenScrolledIntoView(IHTMLElement *pElement, HWND* hwnd, long *x, long *y);
 	int click(IHTMLElement *pElement, CScopeCaller *pSC=NULL);

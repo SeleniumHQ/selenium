@@ -36,6 +36,7 @@ public class SingleTestSuite extends TestCase {
     String driver = IE;
 
     System.setProperty("webdriver.firefox.development", "true");
+    System.setProperty("jna.library.path", ".\\jobbie;.");
 //    System.setProperty("webdriver.firefox.useExisting", "true");
 
     TestSuiteBuilder builder = new TestSuiteBuilder()
@@ -45,7 +46,7 @@ public class SingleTestSuite extends TestCase {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("ElementFindingTest")
+        .onlyRun("TextHandlingTest")
 //        .method("testShouldNotBeAbleToFindAnElementOnABlankPage")
         .exclude(ALL)
         .exclude(Ignore.Driver.IE)

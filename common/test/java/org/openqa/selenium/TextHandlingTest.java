@@ -239,4 +239,16 @@ public class TextHandlingTest extends AbstractDriverTestCase {
             }
         };
     }
+
+    @JavascriptEnabled
+    @Ignore(SAFARI)
+    public void testShouldOnlyIncludeVisibleText() {
+      driver.get(javascriptPage);
+
+      String empty = driver.findElement(By.id("suppressedParagraph")).getText();
+      String explicit = driver.findElement(By.id("outer")).getText();
+
+      assertEquals("", empty);
+      assertEquals("sub-element that is explicitly visible", explicit);
+    }
 }

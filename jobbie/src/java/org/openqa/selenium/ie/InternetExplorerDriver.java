@@ -23,6 +23,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.BufferedOutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
@@ -57,7 +59,7 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
     private ErrorHandler errors = new ErrorHandler();
 
     public InternetExplorerDriver() {
-      intializeLib();
+      initializeLib();
       PointerByReference ptr = new PointerByReference();
       int result = lib.wdNewDriverInstance(ptr);
       if (result != SUCCESS) {
@@ -287,8 +289,8 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
     	  lib.wdFreeDriver(driver);
     	}
     }
-    
-    private class InternetExplorerTargetLocator implements TargetLocator {
+
+  private class InternetExplorerTargetLocator implements TargetLocator {
         public WebDriver frame(int frameIndex) {
             return frame(String.valueOf(frameIndex));
         }
@@ -415,21 +417,24 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
         }
     }
 
-    private synchronized void intializeLib() {
+    private synchronized void initializeLib() {
       if (lib != null) {
         return;
       }
       
-      StringBuilder jnaPath = new StringBuilder();
+      StringBuilder jnaPath = new StringBuilder(System.getProperty("jna.library.path", ""));
+      jnaPath.append(File.pathSeparator);
       jnaPath.append(System.getProperty("java.class.path"));
       jnaPath.append(File.pathSeparator);
       
-      
-      // We need to do this before calling any JNA methods because 
+      // We need to do this before calling any JNA methods because
       // the map of paths to search is static. Apparently.
       File dll = writeResourceToDisk("InternetExplorerDriver.dll");
-      String driverLib = dll.getName().replace(".dll", "");
-      jnaPath.append(dll.getParent());
+      String driverLib = "InternetExplorerDriver";
+      if (dll != null) {
+        driverLib = dll.getName().replace(".dll", "");
+        jnaPath.append(dll.getParent());
+      }
       
       System.setProperty("jna.library.path", jnaPath.toString());
       
@@ -448,17 +453,18 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
       if (is == null) 
           is = InternetExplorerDriver.class.getResourceAsStream("/" + arch + resourceName);
           if (is == null) {
-              throw new UnsatisfiedLinkError("Could not find " + resourceName);
+            System.err.println("Unable to locate driver DLL. This may cause the IE driver not to start");
+            return null;
           }
-          FileOutputStream fos = null;
+          OutputStream fos = null;
           
       try {
           File dll = File.createTempFile("webdriver", ".dll");
           dll.deleteOnExit();
-          fos = new FileOutputStream(dll);
+          fos = new BufferedOutputStream(new FileOutputStream(dll), 8192);
           
           int count;
-          byte[] buf = new byte[4096];
+          byte[] buf = new byte[8192];
           while ((count = is.read(buf, 0, buf.length)) > 0) {
               fos.write(buf, 0, count);
           }

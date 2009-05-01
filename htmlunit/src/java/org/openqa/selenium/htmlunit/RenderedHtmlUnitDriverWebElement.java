@@ -22,6 +22,7 @@ package org.openqa.selenium.htmlunit;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.StyledElement;
+import com.gargoylesoftware.htmlunit.html.HtmlHiddenInput;
 
 import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.ElementNotVisibleException;
@@ -66,7 +67,8 @@ public class RenderedHtmlUnitDriverWebElement extends HtmlUnitWebElement
   }
 
   public boolean isDisplayed() {
-    return element.isDisplayed();
+
+    return !(element instanceof HtmlHiddenInput) && element.isDisplayed();
   }
 
   public Point getLocation() {

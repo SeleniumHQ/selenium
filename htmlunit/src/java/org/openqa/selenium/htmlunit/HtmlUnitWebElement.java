@@ -359,18 +359,22 @@ public class HtmlUnitWebElement implements WebElement,
         for (DomNode child : node.getChildren()) {
             // Do we need to collapse the text so far?
             if (child instanceof HtmlPreformattedText) {
+              if (child.isDisplayed()) {
                 toReturn.append(collapseWhitespace(textSoFar));
                 textSoFar.delete(0, textSoFar.length());
-                getTextFromNode(child, toReturn, textSoFar, true);
-                continue;
+              }
+              getTextFromNode(child, toReturn, textSoFar, true);
+              continue;
             }
 
             // Or is this just plain text?
             if (child instanceof DomText) {
+              if (child.isDisplayed()) {
                 String textToAdd = ((DomText) child).getData();
                 textToAdd = textToAdd.replace(nbspChar, ' ');
                 textSoFar.append(textToAdd);
-                continue;
+              }
+              continue;
             }
 
             // Treat as another child node.
@@ -408,8 +412,10 @@ public class HtmlUnitWebElement implements WebElement,
     }
 
     private void getPreformattedText(DomNode node, StringBuffer toReturn) {
-        String xmlText = node.asXml();
-        toReturn.append(xmlText.replaceAll("^<pre.*?>", "").replaceAll("</pre.*>$", ""));
+        if (node.isDisplayed()) {
+          String xmlText = node.asXml();
+          toReturn.append(xmlText.replaceAll("^<pre.*?>", "").replaceAll("</pre.*>$", ""));
+        }
     }
 
   public List<WebElement> getElementsByTagName(String tagName) {

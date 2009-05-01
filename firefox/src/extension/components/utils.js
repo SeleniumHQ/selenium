@@ -102,9 +102,11 @@ function getTextFromNode(node, toReturn, textSoFar, isPreformatted) {
 
         // Or is this just plain text?
         if (child.nodeName == "#text") {
-            var textToAdd = child.nodeValue;
-            textToAdd = textToAdd.replace(new RegExp(String.fromCharCode(160), "gm"), " ");
-            textSoFar += textToAdd;
+            if (Utils.isDisplayed(child)) {
+                var textToAdd = child.nodeValue;
+                textToAdd = textToAdd.replace(new RegExp(String.fromCharCode(160), "gm"), " ");
+                textSoFar += textToAdd;
+            }
             continue;
         }
 
@@ -144,7 +146,7 @@ Utils.isInHead = function(element) {
       return true;
     }
     try {
-      element = element.parentNode
+      element = element.parentNode;
     } catch (e) {
       // Fine. the DOM has dispeared from underneath us
       return false;
@@ -152,15 +154,26 @@ Utils.isInHead = function(element) {
   }
 
   return false;
-}
+};
 
 Utils.isDisplayed = function(element) {
+    Utils.dumpn("In displayed");
+
+    // Ensure that we're dealing with an element.
+    var el = element;
+    while (el.nodeType != 1 && !(el.nodeType >= 9 && el.nodeType <= 11)) {
+        el = el.parentNode;
+    }
+
     // Hidden input elements are, by definition, never displayed
-    if (element.tagName == "input" && element.type == "hidden") {
+    if (el.tagName == "input" && el.type == "hidden") {
       return false;
     }
 
-    var visibility = Utils.getStyleProperty(element, "visibility");
+    Utils.dumpn("Getting style");
+    var visibility = Utils.getStyleProperty(el, "visibility");
+
+    Utils.dumpn("Got vis");
 
     var _isDisplayed = function(e) {
       var display = e.ownerDocument.defaultView.getComputedStyle(e, null).getPropertyValue("display");
@@ -169,9 +182,9 @@ Utils.isDisplayed = function(element) {
         return _isDisplayed(e.parentNode);
       }
       return undefined;
-    }
+    };
 
-    var displayed = _isDisplayed(element);
+    var displayed = _isDisplayed(el);
 
     return displayed != "none" && visibility != "hidden";
 };

@@ -275,6 +275,23 @@ bool isElementVisible(IHTMLElement* element)
 	return true;
 }
 
+int IeThread::isNodeDisplayed(IHTMLDOMNode *node, bool* result) 
+{
+	if (!node) {
+		*result = false;
+		return SUCCESS;
+	}
+
+	// Walk up the parents of the node until we either find an element or null
+	CComQIPtr<IHTMLElement> element(node);
+	if (!element) {
+		CComPtr<IHTMLDOMNode> parent;
+		node->get_parentNode(&parent);
+		return isNodeDisplayed(parent, result);
+	}
+	return isDisplayed(element, result);
+}
+
 int IeThread::isDisplayed(IHTMLElement *element, bool* result)
 {
 	CComQIPtr<IHTMLInputHiddenElement> hidden(element);
@@ -1100,6 +1117,9 @@ void IeThread::getText(IHTMLElement *pElement, std::wstring& res)
 
 	long length = 0;
 	children->get_length(&length);
+	bool displayed;
+	
+
 	for (long i = 0; i < length; i++)
 	{
 		CComPtr<IDispatch> dispatch2;
@@ -1110,7 +1130,9 @@ void IeThread::getText(IHTMLElement *pElement, std::wstring& res)
 		child->get_nodeName(&childName);
 
 		CComQIPtr<IHTMLDOMTextNode> textNode(child);
-		if (textNode) {
+		
+		isNodeDisplayed(node, &displayed);
+		if (textNode && displayed) {
 			CComBSTR text;
 			textNode->get_data(&text);
 

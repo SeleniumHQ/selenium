@@ -77,7 +77,7 @@ public class Jetty6AppServer implements AppServer {
 
     public String getAlternateHostName() {
         try {
-            return InetAddress.getLocalHost().getHostName();
+            return InetAddress.getLocalHost().getCanonicalHostName();
         } catch (UnknownHostException e) {
             throw new RuntimeException(e);
         }
