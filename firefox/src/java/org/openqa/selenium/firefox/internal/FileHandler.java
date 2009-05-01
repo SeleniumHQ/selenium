@@ -21,12 +21,7 @@ package org.openqa.selenium.firefox.internal;
 
 import org.openqa.selenium.WebDriverException;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.channels.FileChannel;
@@ -37,14 +32,14 @@ import java.util.zip.ZipInputStream;
  * Utility methods for common filesystem activities
  */
 public class FileHandler {
-  private static final int BUF_SIZE = 4098;
+  private static final int BUF_SIZE = 16384; // "big"
   private static final Method JDK6_SETWRITABLE = findJdk6SetWritableMethod();
   private static final File CHMOD_SETWRITABLE = findChmodCommand();
 
   public static File unzip(InputStream resource) throws IOException {
     File output = TemporaryFilesystem.createTempDir("unzip", "stream");
     
-    ZipInputStream zipStream = new ZipInputStream(new BufferedInputStream(resource));
+    ZipInputStream zipStream = new ZipInputStream(new BufferedInputStream(resource, BUF_SIZE));
     ZipEntry entry = zipStream.getNextEntry();
     while (entry != null) {
       if (entry.isDirectory()) {
@@ -65,7 +60,7 @@ public class FileHandler {
     if (!createDir(toWrite.getParentFile()))
        throw new IOException("Cannot create parent director for: " + name);
 
-    FileOutputStream out = new FileOutputStream(toWrite);
+    OutputStream out = new BufferedOutputStream(new FileOutputStream(toWrite), BUF_SIZE);
     try {
       byte[] buffer = new byte[BUF_SIZE];
       int read;
