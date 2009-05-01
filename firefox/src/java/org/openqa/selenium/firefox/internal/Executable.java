@@ -135,7 +135,7 @@ public class Executable {
       case XP:
           binary = new File(getEnvVar("PROGRAMFILES", "\\Program Files") + "\\Mozilla Firefox\\firefox.exe");
           if (!binary.exists()) {
-            binary = new File("/Program Files (x64)/Mozilla Firefox/firefox.exe");
+            binary = new File("/Program Files (x86)/Mozilla Firefox/firefox.exe");
           }
           break;
 
