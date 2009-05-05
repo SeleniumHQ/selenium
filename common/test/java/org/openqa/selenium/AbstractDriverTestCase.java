@@ -41,8 +41,9 @@ public class AbstractDriverTestCase extends TestCase implements NeedsDriver {
 	protected String dragAndDropPage;
 	protected String chinesePage;
 	protected String nestedPage;
+        protected String richTextPage;
 
-	public void setDriver(WebDriver driver) {
+  public void setDriver(WebDriver driver) {
 		this.driver = driver;
 	}
 
@@ -65,6 +66,7 @@ public class AbstractDriverTestCase extends TestCase implements NeedsDriver {
         dragAndDropPage = appServer.whereIs("dragAndDropTest.html");
         chinesePage = appServer.whereIs("cn-test.html");
         nestedPage = appServer.whereIs("nestedElements.html");
+        richTextPage = appServer.whereIs("rich_text.html");
 
         String hostName = environment.getAppServer().getHostName();
         String alternateHostName = environment.getAppServer().getAlternateHostName();

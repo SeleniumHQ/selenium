@@ -106,7 +106,7 @@ FirefoxDriver.prototype.close = function(respond) {
 
 FirefoxDriver.prototype.executeScript = function(respond, script) {
   var context = this.context;
-  var window = Utils.getBrowser(this.context).contentWindow;
+  var window = Utils.getDocument(this.context).defaultView;
 
   var parameters = new Array();
   var runScript;
@@ -178,7 +178,7 @@ FirefoxDriver.prototype.getCurrentUrl = function(respond) {
     }
     respond.response = "" + url;
     respond.send();
-}
+};
 
 FirefoxDriver.prototype.title = function(respond) {
     var browser = Utils.getBrowser(this.context);

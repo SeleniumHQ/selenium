@@ -187,4 +187,15 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
         
         assertEquals("onetwo", result);
     }
+
+  @JavascriptEnabled
+  @Ignore(SAFARI)
+  public void testShouldBeAbleToGrabTheBodyOfFrameOnceSwitchedTo() {
+    driver.get(richTextPage);
+
+    driver.switchTo().frame("editFrame");
+    WebElement body = (WebElement) ((JavascriptExecutor) driver).executeScript("return document.body");
+
+    assertEquals("", body.getText());
+  }
 }

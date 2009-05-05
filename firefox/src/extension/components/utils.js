@@ -157,8 +157,6 @@ Utils.isInHead = function(element) {
 };
 
 Utils.isDisplayed = function(element) {
-    Utils.dumpn("In displayed");
-
     // Ensure that we're dealing with an element.
     var el = element;
     while (el.nodeType != 1 && !(el.nodeType >= 9 && el.nodeType <= 11)) {
@@ -170,10 +168,7 @@ Utils.isDisplayed = function(element) {
       return false;
     }
 
-    Utils.dumpn("Getting style");
     var visibility = Utils.getStyleProperty(el, "visibility");
-
-    Utils.dumpn("Got vis");
 
     var _isDisplayed = function(e) {
       var display = e.ownerDocument.defaultView.getComputedStyle(e, null).getPropertyValue("display");

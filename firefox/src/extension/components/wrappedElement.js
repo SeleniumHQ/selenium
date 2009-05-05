@@ -144,8 +144,6 @@ FirefoxDriver.prototype.sendKeys = function(respond, value) {
       return;
     }
 
-
-
     if (!Utils.isDisplayed(element) && !Utils.isInHead(element)) {
 	    respond.isError = true;
 		respond.response = "Element is not currently visible and so may not be used for typing";
@@ -158,10 +156,16 @@ FirefoxDriver.prototype.sendKeys = function(respond, value) {
       currentlyActive.blur();
       element.focus();
   }
-    Utils.type(this.context, element, value[0]);
 
-    respond.context = this.context;
-    respond.send();
+  var tagName = element.tagName.toLowerCase();
+  if (tagName == "body" && element.ownerDocument.defaultView.frameElement) {
+      element.ownerDocument.defaultView.focus();
+  }
+
+  Utils.type(this.context, element, value[0]);
+
+  respond.context = this.context;
+  respond.send();
 };
 
 FirefoxDriver.prototype.clear = function(respond) {

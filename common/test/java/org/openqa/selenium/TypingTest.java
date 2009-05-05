@@ -23,9 +23,11 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
 import static org.openqa.selenium.Ignore.Driver.*;
+import org.openqa.selenium.environment.TestEnvironment;
+import org.openqa.selenium.environment.GlobalTestEnvironment;
 
 public class TypingTest extends AbstractDriverTestCase {
-	@JavascriptEnabled
+  @JavascriptEnabled
 	public void testShouldFireKeyPressEvents() {
 		driver.get(javascriptPage);
 
@@ -561,4 +563,35 @@ public class TypingTest extends AbstractDriverTestCase {
 		silent.sendKeys("s");
     	assertThat(result.getText(), containsString("press"));
     }
+
+  @JavascriptEnabled
+  @Ignore({SAFARI, HTMLUNIT, IE})
+  public void testTypingIntoAnIFrameWithContentEditableOrDesignModeSet() {
+    driver.get(richTextPage);
+
+    driver.switchTo().frame("editFrame");
+    WebElement element = driver.switchTo().activeElement();
+    element.sendKeys("Fishy");
+
+    driver.switchTo().defaultContent();
+    WebElement trusted = driver.findElement(By.id("istrusted"));
+    WebElement id = driver.findElement(By.id("tagId"));
+
+    assertEquals("[true]", trusted.getText());
+    assertEquals("[theBody]", id.getText());
+  }
+
+  @JavascriptEnabled
+  @Ignore({SAFARI, HTMLUNIT})
+  public void testNonPrintableCharactersShouldWorkWithContentEditableOrDesignModeSet() {
+    driver.get(richTextPage);
+
+    driver.switchTo().frame("editFrame");
+    WebElement element = driver.switchTo().activeElement();
+    element.click();
+    element.sendKeys("Dishy", Keys.BACK_SPACE, Keys.LEFT, Keys.LEFT);
+    element.sendKeys(Keys.LEFT, Keys.LEFT, "F", Keys.DELETE, Keys.END, "ee!");
+
+    assertEquals("Fishee!", element.getText());
+  }
 }
