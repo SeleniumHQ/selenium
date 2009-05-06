@@ -29,7 +29,7 @@ from webdriver_firefox.extensionconnection import ExtensionConnection
 from webdriver_firefox.firefox_profile import FirefoxProfile
 from webdriver_firefox import utils
 
-MAX_START_ATTEMPTS = 3
+MAX_START_ATTEMPTS = 20
 
 class FirefoxLauncher(object):
     """Launches the firefox browser."""
