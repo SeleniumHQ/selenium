@@ -2,7 +2,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe "Google Search" do
   
-  it "can find OpenQA" do
+  it "can find SeleniumHQ" do
     page.open "http://www.google.com/webhp?hl=en"
     page.title.should eql("Google")
     page.type "q", "Selenium SeleniumHQ"
@@ -17,9 +17,9 @@ describe "Google Search" do
     page.title.should eql("Google")
     page.type "q", "Selenium SeleniumHQ"
     page.value("q").should eql("Selenium SeleniumHQ")
-    page.click "btnG", :wait_for => :text, :text => "Selenium SeleniumHQ"
-    page.wait_for :wait_for => :text, :locator => 'q', :text => "Selenium SeleniumHQ"
-    page.wait_for :wait_for => :no_text, :locator => 'q', :text => "Mercury"
+    page.click "btnG", :wait_for => :text, :text => "Did you mean"
+    page.wait_for :wait_for => :value, :element => 'q', :value => "Selenium SeleniumHQ"
+    page.wait_for :wait_for => :no_value, :element => 'q', :value => "Mercury"
     page.wait_for :wait_for => :no_text, :text => "Gre sacdas asdcasd"
     page.title.should eql("Selenium SeleniumHQ - Google Search")
   end

@@ -4,6 +4,7 @@ unit_tests do
   
   test "remote_control_command return the content of the HTTP response when the command succeeds" do
     client = Class.new { include Selenium::Client::Protocol }.new
+    client.instance_variable_set :@default_timeout_in_seconds, 1
     client.stubs(:http_request_for).with(:a_verb, :some_args).returns(:the_request)
     client.expects(:http_post).with(:the_request).returns(["OK", "the response"])
     assert_equal "the response", client.remote_control_command(:a_verb, :some_args)
@@ -11,6 +12,7 @@ unit_tests do
 
   test "remote_control_command raises a SeleniumCommandError when the command fails" do
     client = Class.new { include Selenium::Client::Protocol }.new
+    client.instance_variable_set :@default_timeout_in_seconds, 1
     client.stubs(:http_request_for).with(:a_verb, :some_args).returns(:the_request)
     client.expects(:http_post).with(:the_request).returns(["ERROR", "the error message"])
     assert_raises(SeleniumCommandError) { client.remote_control_command(:a_verb, :some_args) }
@@ -18,6 +20,7 @@ unit_tests do
 
   test "the args are optional for remote_control_command" do
     client = Class.new { include Selenium::Client::Protocol }.new
+    client.instance_variable_set :@default_timeout_in_seconds, 1
     client.expects(:http_request_for).with(:a_verb, []).returns(:the_request)
     client.stubs(:http_post).with(:the_request).returns(["OK", "the response"])
     client.remote_control_command(:a_verb)

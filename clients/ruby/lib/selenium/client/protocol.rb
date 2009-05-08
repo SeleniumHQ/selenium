@@ -8,7 +8,7 @@ module Selenium
       attr_reader :session_id
   
       def remote_control_command(verb, args=[])
-        timeout(default_timeout_in_seconds) do
+        timeout(@default_timeout_in_seconds) do
           status, response = http_post(http_request_for(verb, args))
           raise Selenium::CommandError, response unless status == "OK"          
           response
@@ -59,10 +59,6 @@ module Selenium
       def boolean_array_command(verb, args)
         string_array_command(verb, args).collect {|value| parse_boolean_value(value)}
       end
-
-      def default_timeout_in_seconds
-        @timeout
-      end
             
       protected
 
@@ -86,9 +82,11 @@ module Selenium
             
       def http_post(data)
         # puts "Requesting ---> #{data.inspect}"
-        http = Net::HTTP.new(@server_host, @server_port)
+        http = Net::HTTP.new(@host, @port)
+        http.open_timeout = default_timeout_in_seconds
+        http.read_timeout = default_timeout_in_seconds
         response = http.post('/selenium-server/driver/', data, HTTP_HEADERS)
-        # puts "RESULT: #{response.inspect}\n"       
+        # puts "RESULT: #{response.body.inspect}\n"
         [ response.body[0..1], response.body[3..-1] ]
       end
      

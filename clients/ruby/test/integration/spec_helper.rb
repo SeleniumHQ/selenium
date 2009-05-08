@@ -1,5 +1,5 @@
 require 'rubygems'
-gem 'rspec', "1.1.12"
+gem 'rspec', "1.2.6"
 require File.expand_path(File.dirname(__FILE__) + "/../../lib/selenium")
 require File.expand_path(File.dirname(__FILE__) + "/../../lib/selenium/rspec/spec_helper")
 
@@ -11,7 +11,11 @@ Spec::Runner.configure do |config|
   end
 
   config.append_after(:each) do
-    selenium_driver.stop
+    begin
+      selenium_driver.stop
+    rescue Exception => e
+      STDERR.puts "Could not properly close selenium session : #{e.inspect}"
+    end
   end
 
   def selenium_driver
@@ -23,20 +27,31 @@ Spec::Runner.configure do |config|
   end
 
   def create_selenium_driver
-    remote_control_server = ENV['SELENIUM_RC_HOST'] || "localhost"
-    port = ENV['SELENIUM_RC_PORT'] || 4444
-    browser = ENV['SELENIUM_BROWSER'] || "*firefox"
-    timeout = ENV['SELENIUM_RC_TIMEOUT'] || 60
     application_host = ENV['SELENIUM_APPLICATION_HOST'] || "localhost"
-    application_port = ENV['SELENIUM_APPLICATION_PORT'] || "3000"
-    @selenium_driver = Selenium::SeleniumDriver.new(
-        remote_control_server, port, browser, 
-        "http://#{application_host}:#{application_port}", timeout)
+    application_port = ENV['SELENIUM_APPLICATION_PORT'] || "4567"
+    @selenium_driver = Selenium::Client::Driver.new \
+        :host => (ENV['SELENIUM_RC_HOST'] || "localhost"),
+        :port => (ENV['SELENIUM_RC_PORT'] || 4444),
+        :browser => (ENV['SELENIUM_BROWSER'] || "*firefox"),
+        :timeout_in_seconds => (ENV['SELENIUM_RC_TIMEOUT'] || 10),
+        :url => "http://#{application_host}:#{application_port}"
   end
   
   def start_new_browser_session
     selenium_driver.start_new_browser_session
     selenium_driver.set_context "Starting example '#{self.description}'"
+  end
+
+  def should_timeout
+    begin
+      yield
+      raise "Should have timed out"
+    rescue Timeout::Error => e
+      # All good
+    rescue Selenium::CommandError => e
+      raise unless e.message =~ /ed out after/
+      # All good
+    end
   end
 
 end

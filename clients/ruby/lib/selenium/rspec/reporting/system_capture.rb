@@ -49,7 +49,7 @@ module Selenium
           
           encodedImage = @selenium_driver.capture_screenshot_to_string
           pngImage = Base64.decode64(encodedImage)
-          File.open(@file_path_strategy.file_path_for_system_screenshot(@example), "w") { |f| f.write pngImage }
+          File.open(@file_path_strategy.file_path_for_system_screenshot(@example), "wb") { |f| f.write pngImage }
         end
 
         def capture_page_screenshot
@@ -57,7 +57,7 @@ module Selenium
           
           encodedImage = @selenium_driver.capture_entire_page_screenshot_to_string("")
           pngImage = Base64.decode64(encodedImage)
-          File.open(@file_path_strategy.file_path_for_page_screenshot(@example), "w") { |f| f.write pngImage }
+          File.open(@file_path_strategy.file_path_for_page_screenshot(@example), "wb") { |f| f.write pngImage }
         end
 
         def retrieve_remote_control_logs

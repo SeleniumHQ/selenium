@@ -8,129 +8,98 @@ module Selenium
 	    #
 	    # See http://davidvollbracht.com/2008/6/4/30-days-of-tech-day-3-waitforajax for
 	    # more background.
-      def wait_for_ajax(timeout_in_seconds=nil)
-	      wait_for_condition "selenium.browserbot.getCurrentWindow().Ajax.activeRequestCount == 0", timeout_in_seconds
+      def wait_for_ajax(options={})
+		    builder = JavascriptExpressionBuilder.new active_javascript_framework(options)
+	      wait_for_condition builder.no_pending_ajax_requests.script, 
+	                         options[:timeout_in_seconds]
 	    end
 	
 	    # Wait for all Prototype effects to be processed (the wait in happenning browser side).
 	    #
 	    # Credits to http://github.com/brynary/webrat/tree/master
-			def wait_for_effects(timeout_in_seconds=nil)
-			  wait_for_condition "window.Effect.Queue.size() == 0", timeout_in_seconds
+			def wait_for_effects(options={})
+		    builder = JavascriptExpressionBuilder.new active_javascript_framework(options)
+			  wait_for_condition builder.no_pending_effects.script,
+			                     options[:timeout_in_seconds]
 			end
 			
 			# Wait for an element to be present (the wait in happenning browser side).
-		  def wait_for_element(locator, timeout_in_seconds=nil)
-		    script = <<-EOS
-		    var element;
-		    try {
-		      element = selenium.browserbot.findElement('#{locator}');
-		    } catch(e) {
-		      element = null;
-		    }
-		    element != null;
-		    EOS
-
-		    wait_for_condition script, timeout_in_seconds
+		  def wait_for_element(locator, options={})
+		    builder = JavascriptExpressionBuilder.new 
+		    builder.find_element(locator).append("element != null;")
+		    wait_for_condition builder.script, options[:timeout_in_seconds]
 		  end
 
 			# Wait for an element to NOT be present (the wait in happenning browser side).
-		  def wait_for_no_element(locator, timeout_in_seconds=nil)
-		    script = <<-EOS
-		    var element;
-		    try {
-		      element = selenium.browserbot.findElement('#{locator}');
-		    } catch(e) {
-		      element = null;
-		    }
-		    element == null;
-		    EOS
-
-		    wait_for_condition script, timeout_in_seconds
+		  def wait_for_no_element(locator, options={})
+		    builder = JavascriptExpressionBuilder.new 
+		    builder.find_element(locator).append("element == null;")
+		    wait_for_condition builder.script, options[:timeout_in_seconds]
 		  end
 
-			# Wait for some text to be present (the wait in happenning browser side).
+			# Wait for some text to be present (the wait is happening browser side).
 			#
-			# If locator is nil or no locator is provided, the text will be
-			# detected anywhere in the page.
-			#
-			# If a non nil locator is provided, the text will be
-			# detected within the innerHTML of the element identified by the locator.			
-		  def wait_for_text(text, locator=nil, timeout_in_seconds=nil)
-		    script = case locator
-		    when nil:
-  		    <<-EOS
-              var text;
-              try {
-                text = selenium.browserbot.getCurrentWindow().find('#{text}');
-              } catch(e) {
-                text = null;
-              }
-              text != null;
-          EOS
-        else
-  		    <<-EOS
-  		        var element;
-                try {
-                  element = selenium.browserbot.getCurrentWindow().findElement('#{locator}');
-                } catch(e) {
-                  element = null;
-                }
-                element != null && element.innerHTML == '#{text}'";
-          EOS
-        end          
-
-		    wait_for_condition script, timeout_in_seconds
-		  end
-
-			# Wait for some text to NOT be present (the wait in happenning browser side).
-			#
-			# If locator is nil or no locator is provided, the text will be
-			# detected anywhere in the page.
-			#
-			# If a non nil locator is provided, the text will be
-			# detected within the innerHTML of the element identified by the locator.			
-		  def wait_for_no_text(original_text, locator=nil, timeout_in_seconds=nil)
-		    script = case locator
-		    when nil:
-		      <<-EOS
-              var text;
-              try {
-                text = selenium.browserbot.getCurrentWindow().find('#{original_text}');
-              } catch(e) {
-                text = false;
-              }
-              text == false;
-		      EOS
-		    else
-          <<-EOS
-              var element;
-              
-              try {
-                element = selenium.browserbot.findElement('#{locator}');
-              } catch(e) {
-                element = null;
-              }
-              alert(element);
-              element != null && element.innerHTML != '#{original_text}'";
-           EOS
-		    end
-        wait_for_condition script, timeout_in_seconds
-		  end
+      # wait_for_text will search for the given argument within the innerHTML
+      # of the current DOM. Note that this method treats a single string
+      # as a special case.
+      #
+      # ==== Parameters
+      # wait_for_text accepts an optional hash of parameters:
+      # * <tt>:element</tt> - a selenium locator for an element limiting 
+      #   the search scope.
+      # * <tt>:timeout_in_seconds</tt> - duration in seconds after  which we
+      #   time out if text cannot be found.
+      # 
+      # ==== Regular Expressions
+      # In addition to plain strings, wait_for_text accepts regular expressions
+      # as the pattern specification.
+      # 
+      # ==== Examples
+      # The following are equivalent, and will match "some text" anywhere
+      # within the document:
+      #   wait_for_text "some text"
+      #   wait_for_text /some text/
+      #
+      # This will match "some text" anywhere within the specified element:
+      #   wait_for_text /some text/, :element => "container"
+      #
+      # This will match "some text" only if it exactly matches the complete
+      # innerHTML of the specified element: 
+      #   wait_for_text "some text", :element => "container"
+      #
+      def wait_for_text(pattern, options={})
+        builder = JavascriptExpressionBuilder.new 
+		    builder.find_text(pattern, options).append("text_match == true;")
+        wait_for_condition builder.script, options[:timeout_in_seconds]
+      end
+      
+      # Wait for some text to NOT be present (the wait in happenning browser side).
+      #
+      # See wait_for_text for usage details.
+      def wait_for_no_text(pattern, options={})
+        builder = JavascriptExpressionBuilder.new 
+		    builder.find_text(pattern, options).append("text_match == false;")
+        wait_for_condition builder.script, options[:timeout_in_seconds]
+      end
 
 			# Wait for a field to get a specific value (the wait in happenning browser side).
-		  def wait_for_field_value(locator, expected_value, timeout_in_seconds=nil)
-		    script = "var element;
-		              try {
-		                element = selenium.browserbot.findElement('#{locator}');
-		              } catch(e) {
-		                element = null;
-		              }
-		              element != null && element.value == '#{expected_value}'";
+      def wait_for_field_value(locator, expected_value, options={})
+        builder = JavascriptExpressionBuilder.new 
+        builder.find_element(locator).element_value_is(expected_value)
+        wait_for_condition builder.script, options[:timeout_in_seconds]
+      end
 
-		    wait_for_condition script, timeout_in_seconds
-		  end
+      def wait_for_no_field_value(locator, expected_value, options={})
+        builder = JavascriptExpressionBuilder.new 
+        builder.find_element(locator).element_value_is_not(expected_value)
+        wait_for_condition builder.script, options[:timeout_in_seconds]
+      end
+
+      def active_javascript_framework(options)
+        options[:javascript_framework] || default_javascript_framework
+      end
 
     end
+
   end
 end

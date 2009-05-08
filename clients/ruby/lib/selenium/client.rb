@@ -6,13 +6,17 @@ require 'net/http'
 require 'uri'
 require 'cgi'
 require "digest/md5"
-require "fileutils"
+require 'fileutils'
+require 'tmpdir'
 require File.expand_path(File.dirname(__FILE__) + '/../tcp_socket_extension')
 require File.expand_path(File.dirname(__FILE__) + '/../nautilus/shell')
 require File.expand_path(File.dirname(__FILE__) + '/command_error')
 require File.expand_path(File.dirname(__FILE__) + '/protocol_error')
 require File.expand_path(File.dirname(__FILE__) + '/client/protocol')
 require File.expand_path(File.dirname(__FILE__) + '/client/generated_driver')
+require File.expand_path(File.dirname(__FILE__) + '/client/javascript_expression_builder')
+require File.expand_path(File.dirname(__FILE__) + '/client/javascript_frameworks/prototype')
+require File.expand_path(File.dirname(__FILE__) + '/client/javascript_frameworks/jquery')
 require File.expand_path(File.dirname(__FILE__) + '/client/extensions')
 require File.expand_path(File.dirname(__FILE__) + '/client/idiomatic')
 require File.expand_path(File.dirname(__FILE__) + '/client/base')

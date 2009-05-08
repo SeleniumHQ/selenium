@@ -19,7 +19,7 @@ module Selenium
         end
         
         def logs_and_screenshot_sections(example)
-          dom_id = "example_" + @file_path_strategy.example_hash(example)
+          dom_id = "example_" + example.reporting_uid
           system_screenshot_url = @file_path_strategy.relative_file_path_for_system_screenshot(example)
           page_screenshot_url = @file_path_strategy.relative_file_path_for_page_screenshot(example)
           snapshot_url = @file_path_strategy.relative_file_path_for_html_capture(example)

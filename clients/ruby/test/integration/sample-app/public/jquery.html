@@ -1,0 +1,32 @@
+<htmL>
+<head>
+  <title>Prototype - Selenium Ruby Client Sample App</title>
+  <script type="application/x-javascript" src="/jquery-1.3.2.js"></script>
+</head>
+<body>
+  <h1 id="title">jQuery - Selenium Ruby Client Sample App</h1>
+
+  <div id="ajax-demo">
+    <h2>AJAX Calculator</h2>
+    <form id="calculator-form" action="#" method="post" onSubmit="return false;">
+      <input id="calculator-expression" name="calculator-expression"/>
+      <input type="submit" id="calculator-button" value="Compute" />
+      <br/><br/>
+      <div>Result: <input id="calculator-result" disabled /></div>
+    </form>
+
+    <script type="text/javascript" language="javascript">  
+      $(document).ready(function(){
+
+        $('#calculator-button').click(function() { 
+          $.post("/compute", $('#calculator-form').serialize(), function(data) {
+            $('#calculator-result').val(data);
+          });
+          return false;
+        });
+
+      });
+    </script>
+  </div>
+
+</body>

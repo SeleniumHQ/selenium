@@ -3,7 +3,7 @@ module Selenium
     
     class RemoteControl
       attr_reader :host, :port, :timeout_in_seconds
-      attr_accessor :additional_args, :jar_file
+      attr_accessor :additional_args, :jar_file, :log_to
       
       def initialize(host, port, timeout_in_seconds = 2 * 60)
         @host, @port, @timeout_in_seconds = host, port, timeout_in_seconds
@@ -16,6 +16,7 @@ module Selenium
         command << " -port #{@port}"
         command << " -timeout #{@timeout_in_seconds}"
         command << " #{additional_args.join(' ')}" unless additional_args.empty?
+        command << " > #{log_to}" if log_to
         
         @shell.run command, {:background => options[:background]}
       end

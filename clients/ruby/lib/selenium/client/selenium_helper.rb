@@ -7,29 +7,27 @@ module Selenium
     
   module SeleniumHelper
     
-      # Overrides standard "open" method with @selenium.open
-      def open(addr)
-        @selenium.open(addr)
+      # Overrides default open method to actually delegates to @selenium
+      def open(url)
+        @selenium.open url
       end
     
-      # Overrides standard "type" method with @selenium.type
-      def type(inputLocator, value)
-        @selenium.type(inputLocator, value)
+      # Overrides default type method to actually delegates to @selenium
+      def type(locator, value)
+        @selenium.type locator, value
       end
     
-      # Overrides standard "select" method with @selenium.select
-      def select(inputLocator, optionLocator)
-        @selenium.select(inputLocator, optionLocator)
+      # Overrides default select method to actually delegates to @selenium
+      def select(input_locator, option_locator)
+        @selenium.select input_locator, option_locator
       end
 
-      # Passes all calls to missing methods to @selenium
+      # Delegates to @selenium on method missing 
       def method_missing(method_name, *args)
-        if args.empty?
-            @selenium.send(method_name)
-        else
-            @selenium.send(method_name, *args)
-        end
-      end      
+        return super unless @selenium.respond_to?(method_name)
+        
+        @selenium.send(method_name, *args)
+      end                  
     end
     
   end

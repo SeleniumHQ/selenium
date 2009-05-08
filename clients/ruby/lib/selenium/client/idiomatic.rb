@@ -58,17 +58,23 @@ module Selenium
 
       # Flexible wait semantics. ait is happening browser side. Useful for testing AJAX application.
       #
-      # * wait :wait_for => :page                                                   # will wait for a new page to load
-      # * wait :wait_for => :popup, :window => 'a window id'                        # will wait for a new popup window to appear. Also selects the popup window for you provide `:select => true`
-      # * wait :wait_for => :ajax                                                   # will wait for all ajax requests to be completed (Prototype only)
-      # * wait :wait_for => :effects                                                # will wait for all Prototype effects to be rendered
-      # * wait :wait_for => :element, :element => 'new_element_id'                  # will wait for an element to be present/appear
-      # * wait :wait_for => :no_element, :element => 'new_element_id'               # will wait for an element to be not be present/disappear
-      # * wait :wait_for => :text, :text => 'some text'                             # will wait for some text to be present/appear
-      # * wait :wait_for => :text, :element => 'a_locator', :text => 'some text'    # will wait for the content of 'a_locator' to be 'some text'
-      # * wait :wait_for => :no_text, :text => 'some text'                          # will wait for the text to be not be present/disappear
-      # * wait :wait_for => :no_text, :element => 'a_locator', :text => 'some text' # will wait for the content of 'a_locator' to not be 'some text'
-      # * wait :wait_for => :condition, :javascript => 'some expression'            # will wait for the javascript expression to be true
+      # * wait :wait_for => :page                                                      # will wait for a new page to load
+      # * wait :wait_for => :popup, :window => 'a window id'                           # will wait for a new popup window to appear. Also selects the popup window for you provide `:select => true`
+      # * wait :wait_for => :ajax                                                      # will wait for all ajax requests to be completed using semantics of default javascript framework
+      # * wait :wait_for => :ajax, :javascript_framework => :jquery                    # will wait for all ajax requests to be completed overriding default javascript framework
+      # * wait :wait_for => :effects                                                   # will wait for all javascript effects to be rendered using semantics of default javascript framework
+      # * wait :wait_for => :effects, :javascript_framework => :prototype              # will wait for all javascript effects to be rendered overriding default javascript framework
+      # * wait :wait_for => :element, :element => 'new_element_id'                     # will wait for an element to be present/appear
+      # * wait :wait_for => :no_element, :element => 'new_element_id'                  # will wait for an element to be not be present/disappear
+      # * wait :wait_for => :text, :text => 'some text'                                # will wait for some text to be present/appear
+      # * wait :wait_for => :text, :text => /A Regexp/                                 # will wait for some text to be present/appear
+      # * wait :wait_for => :text, :element => 'a_locator', :text => 'some text'       # will wait for the content of 'a_locator' to be 'some text'
+      # * wait :wait_for => :no_text, :text => 'some text'                             # will wait for the text to be not be present/disappear
+      # * wait :wait_for => :no_text, :text => /A Regexp/                              # will wait for the text to be not be present/disappear
+      # * wait :wait_for => :no_text, :element => 'a_locator', :text => 'some text'    # will wait for the content of 'a_locator' to not be 'some text'
+      # * wait :wait_for => :value, :element => 'a_locator', :value => 'some value'    # will wait for the field value of 'a_locator' to be 'some value'
+      # * wait :wait_for => :no_value, :element => 'a_locator', :value => 'some value' # will wait for the field value of 'a_locator' to not be 'some value'
+      # * wait :wait_for => :condition, :javascript => 'some expression'               # will wait for the javascript expression to be true
       #
       # Using options you can also define an explicit timeout (:timeout_in_seconds key). Otherwise the default driver timeout
       # is used.
@@ -76,20 +82,24 @@ module Selenium
         if options[:wait_for] == :page
           wait_for_page options[:timeout_in_seconds]
 	      elsif options[:wait_for] == :ajax
-	          wait_for_ajax options[:timeout_in_seconds]
+	          wait_for_ajax options
 	      elsif options[:wait_for] == :element
-	          wait_for_element options[:element], options[:timeout_in_seconds]
+	          wait_for_element options[:element], options
 	      elsif options[:wait_for] == :no_element
-	          wait_for_no_element options[:element], options[:timeout_in_seconds]
+	          wait_for_no_element options[:element], options
 	      elsif options[:wait_for] == :text
-	          wait_for_text options[:text], options[:element], options[:timeout_in_seconds]
+	          wait_for_text options[:text], options
 	      elsif options[:wait_for] == :no_text
-          wait_for_no_text options[:text], options[:element], options[:timeout_in_seconds]
+          wait_for_no_text options[:text], options
 	      elsif options[:wait_for] == :effects
-	          wait_for_effects options[:timeout_in_seconds]
-	      elsif options[:wait_for] == :popup
-	          wait_for_popup options[:window], options[:timeout_in_seconds]
-	          select_window options[:window] if options[:select]
+	          wait_for_effects options
+        elsif options[:wait_for] == :popup
+            wait_for_popup options[:window], options[:timeout_in_seconds]
+            select_window options[:window] if options[:select]
+        elsif options[:wait_for] == :value
+            wait_for_field_value options[:element], options[:value], options
+        elsif options[:wait_for] == :no_value
+            wait_for_no_field_value options[:element], options[:value], options
 	      elsif options[:wait_for] == :condition
 	          wait_for_condition options[:javascript], options[:timeout_in_seconds]
         end
@@ -107,17 +117,23 @@ module Selenium
       # Using 'options' you can automatically wait for an event to happen after the 
       # click. e.g.
       #
-      # * click :wait_for => :page                                                   # will wait for a new page to load
-      # * click :wait_for => :popup, :window => 'a window id'                        # will wait for a new popup window to appear. Also selects the popup window for you provide `:select => true`
-      # * click :wait_for => :ajax                                                   # will wait for all ajax requests to be completed (Prototype only)
-      # * click :wait_for => :effects                                                # will wait for all Prototype effects to be rendered
-      # * click :wait_for => :element, :element => 'new_element_id'                  # will wait for an element to be present/appear
-      # * click :wait_for => :no_element, :element => 'new_element_id'               # will wait for an element to be not be present/disappear
-      # * click :wait_for => :text, :text => 'some text'                             # will wait for some text to be present/appear
-      # * click :wait_for => :text, :element => 'a_locator', :text => 'some text'    # will wait for the content of 'a_locator' to be 'some text'
-      # * click :wait_for => :no_text, :text => 'some text'                          # will wait for the text to be not be present/disappear
-      # * click :wait_for => :no_text, :element => 'a_locator', :text => 'some text' # will wait for the content of 'a_locator' to not be 'some text'
-      # * click :wait_for => :condition, :javascript => 'some expression'            # will wait for the javascript expression to be true
+      # * click "a_locator", :wait_for => :page                                                      # will wait for a new page to load
+      # * click "a_locator", :wait_for => :popup, :window => 'a window id'                           # will wait for a new popup window to appear. Also selects the popup window for you provide `:select => true`
+      # * click "a_locator", :wait_for => :ajax                                                      # will wait for all ajax requests to be completed using semantics of default javascript framework
+      # * click "a_locator", :wait_for => :ajax, :javascript_framework => :jquery                    # will wait for all ajax requests to be completed overriding default javascript framework
+      # * click "a_locator", :wait_for => :effects                                                   # will wait for all javascript effects to be rendered using semantics of default javascript framework
+      # * click "a_locator", :wait_for => :effects, :javascript_framework => :prototype              # will wait for all javascript effects to be rendered overriding default javascript framework
+      # * click "a_locator", :wait_for => :element, :element => 'new_element_id'                     # will wait for an element to be present/appear
+      # * click "a_locator", :wait_for => :no_element, :element => 'new_element_id'                  # will wait for an element to be not be present/disappear
+      # * click "a_locator", :wait_for => :text, :text => 'some text'                                # will wait for some text to be present/appear
+      # * click "a_locator", :wait_for => :text, :text => /A Regexp/                                 # will wait for some text to be present/appear
+      # * click "a_locator", :wait_for => :text, :element => 'a_locator', :text => 'some text'       # will wait for the content of 'a_locator' to be 'some text'
+      # * click "a_locator", :wait_for => :no_text, :text => 'some text'                             # will wait for the text to be not be present/disappear
+      # * click "a_locator", :wait_for => :no_text, :text => /A Regexp/                              # will wait for the text to be not be present/disappear
+      # * click "a_locator", :wait_for => :no_text, :element => 'a_locator', :text => 'some text'    # will wait for the content of 'a_locator' to not be 'some text'
+      # * click "a_locator", :wait_for => :value, :element => 'a_locator', :value => 'some value'    # will wait for the field value of 'a_locator' to be 'some value'
+      # * click "a_locator", :wait_for => :no_value, :element => 'a_locator', :value => 'some value' # will wait for the field value of 'a_locator' to not be 'some value'
+      # * click "a_locator", :wait_for => :condition, :javascript => 'some expression'               # will wait for the javascript expression to be true
       #
       # Using options you can also define an explicit timeout (:timeout_in_seconds key). Otherwise the default driver timeout
       # is used.
@@ -299,17 +315,23 @@ module Selenium
       # Using 'options' you can automatically wait for an event to happen after the 
       # click. e.g.
       #
-      # * go_back :wait_for => :page                                                   # will wait for a new page to load
-      # * go_back :wait_for => :popup, :window => 'a window id'                        # will wait for a new popup window to appear. Also selects the popup window for you provide `:select => true`
-      # * go_back :wait_for => :ajax                                                   # will wait for all ajax requests to be completed (Prototype only)
-      # * go_back :wait_for => :effects                                                # will wait for all Prototype effects to be rendered
-      # * go_back :wait_for => :element, :element => 'new_element_id'                  # will wait for an element to be present/appear
-      # * go_back :wait_for => :no_element, :element => 'new_element_id'               # will wait for an element to be not be present/disappear
-      # * go_back :wait_for => :text, :text => 'some text'                             # will wait for some text to be present/appear
-      # * go_back :wait_for => :text, :element => 'a_locator', :text => 'some text'    # will wait for the content of 'a_locator' to be 'some text'
-      # * go_back :wait_for => :no_text, :text => 'some text'                          # will wait for the text to be not be present/disappear
-      # * go_back :wait_for => :no_text, :element => 'a_locator', :text => 'some text' # will wait for the content of 'a_locator' to not be 'some text'
-      # * go_back :wait_for => :condition, :javascript => 'some expression'            # will wait for the javascript expression to be true
+      # * go_back :wait_for => :page                                                      # will wait for a new page to load
+      # * go_back :wait_for => :popup, :window => 'a window id'                           # will wait for a new popup window to appear. Also selects the popup window for you provide `:select => true`
+      # * go_back :wait_for => :ajax                                                      # will wait for all ajax requests to be completed using semantics of default javascript framework
+      # * go_back :wait_for => :ajax, :javascript_framework => :jquery                    # will wait for all ajax requests to be completed overriding default javascript framework
+      # * go_back :wait_for => :effects                                                   # will wait for all javascript effects to be rendered using semantics of default javascript framework
+      # * go_back :wait_for => :effects, :javascript_framework => :prototype              # will wait for all javascript effects to be rendered overriding default javascript framework
+      # * go_back :wait_for => :element, :element => 'new_element_id'                     # will wait for an element to be present/appear
+      # * go_back :wait_for => :no_element, :element => 'new_element_id'                  # will wait for an element to be not be present/disappear
+      # * go_back :wait_for => :text, :text => 'some text'                                # will wait for some text to be present/appear
+      # * go_back "a_locator", :wait_for => :text, :text => /A Regexp/                    # will wait for some text to be present/appear
+      # * go_back :wait_for => :text, :element => 'a_locator', :text => 'some text'       # will wait for the content of 'a_locator' to be 'some text'
+      # * go_back :wait_for => :no_text, :text => 'some text'                             # will wait for the text to be not be present/disappear
+      # * go_back "a_locator", :wait_for => :no_text, :text => /A Regexp/                 # will wait for the text to be not be present/disappear
+      # * go_back :wait_for => :no_text, :element => 'a_locator', :text => 'some text'    # will wait for the content of 'a_locator' to not be 'some text'
+      # * go_back :wait_for => :condition, :javascript => 'some expression'               # will wait for the javascript expression to be true
+      # * go_back :wait_for => :value, :element => 'a_locator', :value => 'some value'    # will wait for the field value of 'a_locator' to be 'some value'
+      # * go_back :wait_for => :no_value, :element => 'a_locator', :value => 'some value' # will wait for the field value of 'a_locator' to not be 'some value'
       #
       # Using options you can also define an explicit timeout (:timeout_in_seconds key). Otherwise the default driver timeout
       # is used.
@@ -386,6 +408,25 @@ module Selenium
       # Returns the titles of all windows that the browser knows about.
       def all_window_titles
         string_array_command "getAllWindowTitles"
+      end
+
+      # Returns a string representation of the network traffic seen by the
+      # browser, including headers, AJAX requests, status codes, and timings.
+      # When this function is called, the traffic log is cleared, so the
+      # returned content is only the traffic seen since the last call.
+      #
+      # The network traffic is returned in the format it was requested. Valid
+      # values are: :json, :xml, or :plain.
+      # 
+      # Warning: For browser_network_traffic to work you need to start your 
+      # browser session with the option "captureNetworkTraffic=true", which 
+      # will force ALL traffic to go to the Remote Control proxy even for
+      # more efficient browser modes like `*firefox` and `*safari`.
+      def browser_network_traffic(format = :plain)
+        raise "format must be :plain, :json, or :xml"   \
+            unless [:plain, :json, :xml].include?(format)
+              
+        remote_control_command "captureNetworkTraffic", [format.to_s]
       end
 
     end

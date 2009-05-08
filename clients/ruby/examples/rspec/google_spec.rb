@@ -1,6 +1,6 @@
 require 'rubygems'
-gem "rspec", "=1.1.12"
-gem "selenium-client", ">=1.2.10"
+gem "rspec", "=1.2.4"
+gem "selenium-client", ">=1.2.13"
 require "selenium/client"
 require "selenium/rspec/spec_helper"
 
@@ -9,7 +9,12 @@ describe "Google Search" do
 	alias :page :selenium_driver
 
   before(:all) do
-      @selenium_driver = Selenium::Client::Driver.new "localhost", 4444, "*firefox", "http://www.google.com", 10000    
+      @selenium_driver = Selenium::Client::Driver.new \
+          :host => "localhost", 
+          :port => 4444, 
+          :browser => "*firefox", 
+          :url => "http://www.google.com", 
+          :timeout_in_second => 60
   end
   
   before(:each) do

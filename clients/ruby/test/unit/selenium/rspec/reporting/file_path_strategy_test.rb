@@ -2,6 +2,17 @@ require File.expand_path(File.dirname(__FILE__) + '/../../../unit_test_helper')
 
 unit_tests do
   
+  test "final_report_file_path is the path provided in the constructor when not nil" do
+    strategy = Selenium::RSpec::Reporting::FilePathStrategy.new "/some/dir/a_final_report.html"
+    assert_equal "/some/dir/a_final_report.html", strategy.final_report_file_path
+  end
+
+  test "final_report_file_path default to a temporary path when the path provided in the constructor is nil" do
+    strategy = Selenium::RSpec::Reporting::FilePathStrategy.new nil
+    assert_match(/tmp|temp|\.Trash/, strategy.final_report_file_path)
+    assert_match(/index.html$/, strategy.final_report_file_path)
+  end
+
   test "base_report_dir is resource/<name of the report> under the final report base directory" do
     strategy = Selenium::RSpec::Reporting::FilePathStrategy.new "/some/dir/a_final_report.html"
     assert_equal File.expand_path("/some/dir"), strategy.base_report_dir
@@ -14,55 +25,32 @@ unit_tests do
     assert_equal File.expand_path("/another/dir"), second_strategy.base_report_dir
   end
   
-  test "example_hash is distinct when examples implementation is different" do
-    strategy = Selenium::RSpec::Reporting::FilePathStrategy.new "report.html"
-  
-    first_example = Object.new
-    first_example.instance_variable_set :'@_implementation', Proc.new {}
-    second_example = Object.new
-    second_example.instance_variable_set :'@_implementation', Proc.new {}
-
-    assert strategy.example_hash(first_example) != strategy.example_hash(second_example)
-  end
-  
-  test "example_hash is the same when examples implementation is identical" do
-    strategy = Selenium::RSpec::Reporting::FilePathStrategy.new "report.html"
-
-    same_implementation = Proc.new {}  
-    first_example = Object.new
-    first_example.instance_variable_set :'@_implementation', same_implementation
-    second_example = Object.new
-    second_example.instance_variable_set :'@_implementation', same_implementation
-    assert_equal strategy.example_hash(first_example), 
-                 strategy.example_hash(second_example)
-  end
-  
   test "relative_file_path_for_html_capture is based on the example hash" do
     strategy = Selenium::RSpec::Reporting::FilePathStrategy.new "a_report.html"
-    strategy.expects(:example_hash).with(:the_example).returns("the_hash")
+    example = stub_everything(:reporting_uid => "the_hash")
     assert_equal "resources/a_report/example_the_hash.html", 
-                strategy.relative_file_path_for_html_capture(:the_example)
+                strategy.relative_file_path_for_html_capture(example)
   end
 
   test "relative_file_path_for_system_screenshot is based on the example hash" do
     strategy = Selenium::RSpec::Reporting::FilePathStrategy.new "the_report.html"
-    strategy.expects(:example_hash).with(:the_example).returns("the_hash")
+    example = stub_everything(:reporting_uid => "the_hash")
     assert_equal "resources/the_report/example_the_hash_system_screenshot.png", 
-                 strategy.relative_file_path_for_system_screenshot(:the_example)
+                 strategy.relative_file_path_for_system_screenshot(example)
   end
 
   test "relative_file_path_for_page_screenshot is based on the example hash" do
     strategy = Selenium::RSpec::Reporting::FilePathStrategy.new "the_report.html"
-    strategy.expects(:example_hash).with(:the_example).returns("the_hash")
+    example = stub_everything(:reporting_uid => "the_hash")
     assert_equal "resources/the_report/example_the_hash_system_screenshot.png", 
-                 strategy.relative_file_path_for_system_screenshot(:the_example)
+                 strategy.relative_file_path_for_system_screenshot(example)
   end
 
   test "relative_file_path_for_remote_control_logs is based on the example hash" do
     strategy = Selenium::RSpec::Reporting::FilePathStrategy.new "the_report.html"
-    strategy.expects(:example_hash).with(:the_example).returns("the_hash")
+    example = stub_everything(:reporting_uid => "the_hash")
     assert_equal "resources/the_report/example_the_hash_remote_control.log", 
-                 strategy.relative_file_path_for_remote_control_logs(:the_example)
+                 strategy.relative_file_path_for_remote_control_logs(example)
   end
   
   test "file_path concatenate the base_report_dir and the relative path" do
@@ -93,38 +81,47 @@ unit_tests do
 
   test "file_path_for_html_capture return the absolute file path for the html file" do
     strategy = Selenium::RSpec::Reporting::FilePathStrategy.new "a_final_report.html"
-    strategy.stubs(:example_hash).with(:the_example).returns("the_hash")
+    example = stub_everything(:reporting_uid => "the_hash")
 
     strategy.expects(:file_path).with("resources/a_final_report/example_the_hash.html") \
             .returns(:the_absolute_file_path)    
-    assert_equal :the_absolute_file_path, strategy.file_path_for_html_capture(:the_example)
+    assert_equal :the_absolute_file_path, strategy.file_path_for_html_capture(example)
   end
 
   test "file_path_for_system_screenshot return the absolute file path for the png file" do
     strategy = Selenium::RSpec::Reporting::FilePathStrategy.new "a_final_report.html"
-    strategy.stubs(:example_hash).with(:the_example).returns("the_hash")
+    example = stub_everything(:reporting_uid => "the_hash")
 
     strategy.expects(:file_path).with("resources/a_final_report/example_the_hash_system_screenshot.png")\
             .returns(:the_absolute_file_path)    
-    assert_equal :the_absolute_file_path, strategy.file_path_for_system_screenshot(:the_example)
+    assert_equal :the_absolute_file_path, strategy.file_path_for_system_screenshot(example)
   end
 
   test "file_path_for_page_screenshot return the absolute file path for the png file" do
     strategy = Selenium::RSpec::Reporting::FilePathStrategy.new "a_final_report.html"
-    strategy.stubs(:example_hash).with(:the_example).returns("the_hash")
+    example = stub_everything(:reporting_uid => "the_hash")
 
     strategy.expects(:file_path).with("resources/a_final_report/example_the_hash_page_screenshot.png")\
             .returns(:the_absolute_file_path)    
-    assert_equal :the_absolute_file_path, strategy.file_path_for_page_screenshot(:the_example)
+    assert_equal :the_absolute_file_path, strategy.file_path_for_page_screenshot(example)
   end
 
   test "file_path_for_remote_control_logs return the absolute file path for the log file" do
     strategy = Selenium::RSpec::Reporting::FilePathStrategy.new "a_final_report.html"
-    strategy.stubs(:example_hash).with(:the_example).returns("the_hash")
+    example = stub_everything(:reporting_uid => "the_hash")
 
     strategy.expects(:file_path).with("resources/a_final_report/example_the_hash_remote_control.log")\
             .returns(:the_absolute_file_path)    
-    assert_equal :the_absolute_file_path, strategy.file_path_for_remote_control_logs(:the_example)
+    assert_equal :the_absolute_file_path, strategy.file_path_for_remote_control_logs(example)
+  end
+
+  test "file_path_for_browser_network_traffic return the absolute file path for the log file" do
+    strategy = Selenium::RSpec::Reporting::FilePathStrategy.new "a_final_report.html"
+    example = stub_everything(:reporting_uid => "the_hash")
+
+    strategy.expects(:file_path).with("resources/a_final_report/example_the_hash_browser_network_traffic.log")\
+            .returns(:the_absolute_file_path)    
+    assert_equal :the_absolute_file_path, strategy.file_path_for_browser_network_traffic(example)
   end
   
 end

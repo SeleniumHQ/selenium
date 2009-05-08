@@ -1,6 +1,14 @@
 module Selenium
   module Rake
 
+    # Rake task to stop a Selenium Remote Control Server
+    #
+    # Selenium::Rake::RemoteControlStopTask.new do |rc|
+    #   rc.host = "localhost"
+    #   rc.port = 4444
+    #   rc.timeout_in_seconds = 3 * 60
+    # end
+    #    
     class RemoteControlStopTask
       attr_accessor :host, :port, :timeout_in_seconds, :wait_until_stopped
 

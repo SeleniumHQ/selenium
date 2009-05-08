@@ -2,9 +2,61 @@ require File.expand_path(File.dirname(__FILE__) + '/../../unit_test_helper')
 
 unit_tests do
   
+  test "Hash initializer sets the host" do
+    client_class = Class.new { include Selenium::Client::Base }
+    client = client_class.new :host => "the.host.com"
+    assert_equal "the.host.com", client.host
+  end
+
+  test "Hash initializer sets the port" do
+    client_class = Class.new { include Selenium::Client::Base }
+    client = client_class.new :port => 4000
+    assert_equal 4000, client.port
+  end
+
+  test "Hash initializer port can be specified as a string" do
+    client_class = Class.new { include Selenium::Client::Base }
+    client = client_class.new :port => "4000"
+    assert_equal 4000, client.port
+  end
+
+  test "Hash initializer sets the browser string" do
+    client_class = Class.new { include Selenium::Client::Base }
+    client = client_class.new :browser => "*safari"
+    assert_equal "*safari", client.browser_string
+  end
+
+  test "Hash initializer sets the browser url" do
+    client_class = Class.new { include Selenium::Client::Base }
+    client = client_class.new :url => "http://ph7spot.com"
+    assert_equal "http://ph7spot.com", client.browser_url
+  end
+
+  test "Hash initializer sets the default timeout" do
+    client_class = Class.new { include Selenium::Client::Base }
+    client = client_class.new :timeout_in_seconds => 24
+    assert_equal 24, client.default_timeout_in_seconds
+  end
+
+  test "Hash initializer sets the default timeout to 5 minutes when not explicitely set" do
+    client = Class.new { include Selenium::Client::Base }.new
+    assert_equal 5 * 60, client.default_timeout_in_seconds
+  end
+
+  test "Hash initializer sets the default javascript framework " do
+    client_class = Class.new { include Selenium::Client::Base }
+    client = client_class.new :javascript_framework => :jquery
+    assert_equal :jquery, client.default_javascript_framework
+  end
+
+  test "Hash initializer sets the default javascript framework to prototype when not explicitely set" do
+    client = Class.new { include Selenium::Client::Base }.new
+    assert_equal :prototype, client.default_javascript_framework
+  end
+
   test "default_timeout_in_seconds returns the client driver default timeout in seconds" do
-    client = Class.new { include Selenium::Client::Base }.new :host, :port, :browser, :url, :the_timeout
-    assert_equal :the_timeout, client.default_timeout_in_seconds
+    client = Class.new { include Selenium::Client::Base }.new :host, :port, :browser, :url, 24
+    assert_equal 24, client.default_timeout_in_seconds
   end
 
   test "default_timeout_in_seconds is 5 minutes by default" do
@@ -15,9 +67,33 @@ unit_tests do
   test "start_new_browser_session executes a getNewBrowserSession command with the browser string an url" do
     client = Class.new { include Selenium::Client::Base }.new :host, :port, :the_browser, :the_url
     client.stubs(:remote_control_command)
-    client.expects(:string_command).with("getNewBrowserSession", [:the_browser, :the_url, ""])
+    client.expects(:string_command).with("getNewBrowserSession", [:the_browser, :the_url, "", ""])
     client.start_new_browser_session
 	end
+
+  test "start_new_browser_session submit the javascript extension when previously defined" do
+    client = Class.new { include Selenium::Client::Base }.new :host, :port, :the_browser, :the_url
+    client.javascript_extension = :the_javascript_extension
+    client.stubs(:remote_control_command)
+    client.expects(:string_command).with("getNewBrowserSession", [:the_browser, :the_url, :the_javascript_extension, ""])
+    client.start_new_browser_session
+  end
+
+  test "start_new_browser_session submit an option when provided" do
+    client = Class.new { include Selenium::Client::Base }.new :host, :port, :the_browser, :the_url
+    client.javascript_extension = :the_javascript_extension
+    client.stubs(:remote_control_command)
+    client.expects(:string_command).with("getNewBrowserSession", [:the_browser, :the_url, :the_javascript_extension, "captureNetworkTraffic=true"])
+    client.start_new_browser_session(:captureNetworkTraffic => true)
+  end
+
+  test "start_new_browser_session submit multiple options when provided" do
+    client = Class.new { include Selenium::Client::Base }.new :host, :port, :the_browser, :the_url
+    client.javascript_extension = :the_javascript_extension
+    client.stubs(:remote_control_command)
+    client.expects(:string_command).with("getNewBrowserSession", [:the_browser, :the_url, :the_javascript_extension, "captureNetworkTraffic=true;quack=false"])
+    client.start_new_browser_session(:captureNetworkTraffic => true, :quack => false)
+  end
 
   test "start_new_browser_session sets the current sessionId with getNewBrowserSession response" do
     client = Class.new { include Selenium::Client::Base }.new :host, :port, :the_browser, :the_url
@@ -25,14 +101,6 @@ unit_tests do
     client.stubs(:string_command).with("getNewBrowserSession", any_parameters).returns("the new session id")
     client.start_new_browser_session
     assert_equal client.session_id, "the new session id"
-	end
-
-  test "start_new_browser_session sumbimte the javascript extension when previously defined" do
-    client = Class.new { include Selenium::Client::Base }.new :host, :port, :the_browser, :the_url
-    client.javascript_extension = :the_javascript_extension
-    client.stubs(:remote_control_command)
-    client.expects(:string_command).with("getNewBrowserSession", [:the_browser, :the_url, :the_javascript_extension])
-    client.start_new_browser_session
 	end
 
   test "start_new_browser_session sets remote control timeout to the driver default timeout" do

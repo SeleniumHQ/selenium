@@ -5,8 +5,9 @@
 #
 require "digest/md5"
 require "base64"
+require 'tmpdir'
 require "rubygems"
-gem "rspec", "1.1.12"
+gem "rspec", "1.2.6"
 require "spec"
 require 'spec/runner/formatter/html_formatter'
 require File.expand_path(File.dirname(__FILE__) + "/file_path_strategy")
@@ -18,14 +19,19 @@ module Selenium
       
     class SeleniumTestReportFormatter < Spec::Runner::Formatter::HtmlFormatter
 
+      def initialize(options, output)
+        super
+        raise "Unexpected output type #{output.inspect}" unless output.kind_of?(String)
+        @@file_path_strategy = Selenium::RSpec::Reporting::FilePathStrategy.new(output)
+      end
+
       def start(example_count)
         super
         # ensure there's at least 1 example group header (normally 0 with deep_test)
         # prevents js and html validity errors
         example_group = Object.new
         def example_group.description; ""; end
-        add_example_group(example_group)
-        @@file_path_strategy = Selenium::RSpec::Reporting::FilePathStrategy.new(@where)
+        example_group_started example_group
       end  
   
       def move_progress
@@ -36,19 +42,11 @@ module Selenium
         Selenium::RSpec::Reporting::HtmlReport.inject_placeholder(super)
       end
   
-      def example_passed(example)
-        include_example_group_description example
+      def example_pending(example_proxy, message, deprecated_pending_location=nil)
         super
       end
   
-      def example_pending(example, message, pending_caller)
-        include_example_group_description example
-        super
-      end
-  
-      def example_failed(example, counter, failure)
-        include_example_group_description example
-        
+      def example_failed(example, counter, failure)        
         old_output = @output
         @output = StringIO.new
         super
@@ -83,14 +81,6 @@ module Selenium
 	      # and RSpec reporting work for a proper fix.
 	      @@file_path_strategy ||= Selenium::RSpec::Reporting::FilePathStrategy.new(ENV["SELENIUM_TEST_REPORT_FILE"])
 	    end
-	
-      protected
-        
-      def include_example_group_description(example)
-        def example.description
-          self.class.description.to_s + " :: " + super
-        end
-      end
   
     end
   end

@@ -10,6 +10,7 @@ Mission
  With screenshots, HTML snapshopts and log captures,
  investigating test failures becomes a breeze.
  
+
 Install It
 ==========
 
@@ -38,10 +39,14 @@ Features
   * `click 'the_button_id', :wait_for => :element, :element => 'new_element_id'`
   * `click 'the_button_id', :wait_for => :no_element, :element => 'disappearing_element_id'`
   * `click 'the_button_id', :wait_for => :text, :text => 'New Text'`
+  * `click 'the_button_id', :wait_for => :text, :text => /A Regexp/`
   * `click 'the_button_id', :wait_for => :text, :element => 'notification_box', :text => 'New Text'`
   * `click 'the_button_id', :wait_for => :no_text, :text => 'Disappearing Text'`
+  * `click 'the_button_id', :wait_for => :no_text, :text => /A Regexp/`
   * `click 'the_button_id', :wait_for => :no_text, :element => 'notification_box', :text => 'Disappearing Text'`
   * `click 'the_button_id', :wait_for => :effects`
+  * `click 'the_button_id', :wait_for => :value, :element => 'a_locator', :value => 'some value'`
+  * `click 'the_button_id', :wait_for => :no_value, :element => 'a_locator', :value => 'some value' # will wait for the field value of 'a_locator' to not be 'some value'`  
   * `click 'the_button_id', :wait_for => :condition, :javascript => "some arbitrary javascript expression"`
 
   Check out the `click`, `go_back` and `wait_for` methods of the [Idiomatic Module](http://selenium-client.rubyforge.org/classes/Selenium/Client/Idiomatic.html)
@@ -76,11 +81,17 @@ Plain API
     # Sample Ruby script using the Selenium client API
     #
     require "rubygems"
-    gem "selenium-client", ">=1.2.10"
+    gem "selenium-client", ">=1.2.13"
     require "selenium/client"
     
     begin
-      @browser = Selenium::Client::Driver.new("localhost", 4444, "*firefox", "http://www.google.com", 10000);
+      @browser = Selenium::Client::Driver.new \
+          :host => "localhost", 
+          :port => 4444, 
+          :browser => "*firefox", 
+          :url => "http://www.google.com", 
+          :timeout_in_second => 60
+    
       @browser.start_new_browser_session
     	@browser.open "/"
     	@browser.type "q", "Selenium seleniumhq.org"
@@ -89,6 +100,7 @@ Plain API
     ensure
       @browser.close_current_browser_session    
     end
+
  
 Writing Tests
 =============
@@ -102,14 +114,20 @@ Writing Tests
     #
     require "test/unit"
     require "rubygems"
-    gem "selenium-client", ">=1.2.10"
+    gem "selenium-client", ">=1.2.13"
     require "selenium/client"
     
     class ExampleTest < Test::Unit::TestCase
     	attr_reader :browser
     
       def setup
-        @browser = Selenium::Client::Driver.new "localhost", 4444, "*firefox", "http://www.google.com", 10000
+        @browser = Selenium::Client::Driver.new \
+            :host => "localhost", 
+            :port => 4444, 
+            :browser => "*firefox", 
+            :url => "http://www.google.com", 
+            :timeout_in_second => 60
+    
         browser.start_new_browser_session
       end
     
@@ -133,8 +151,8 @@ Writing Tests
  If BDD is more your style, here is how you can achieve the same thing  using RSpec:
 
     require 'rubygems'
-    gem "rspec", "=1.1.12"
-    gem "selenium-client", ">=1.2.10"
+    gem "rspec", "=1.2.6"
+    gem "selenium-client", ">=1.2.13"
     require "selenium/client"
     require "selenium/rspec/spec_helper"
     
@@ -143,7 +161,12 @@ Writing Tests
     	alias :page :selenium_driver
     
       before(:all) do
-          @selenium_driver = Selenium::Client::Driver.new "localhost", 4444, "*firefox", "http://www.google.com", 10000    
+          @selenium_driver = Selenium::Client::Driver.new \
+              :host => "localhost", 
+              :port => 4444, 
+              :browser => "*firefox", 
+              :url => "http://www.google.com", 
+              :timeout_in_second => 60
       end
     
       before(:each) do
@@ -196,8 +219,12 @@ Start/Stop a Selenium Remote Control Server
       rc.port = 4444
       rc.timeout_in_seconds = 3 * 60
     end
-    
- Check out [RemoteControlStartTask](http://selenium-client.rubyforge.org/classes/Selenium/Rake/RemoteControlStartTask.html) and [RemoteControlStopTask](http://selenium-client.rubyforge.org/classes/Selenium/Rake/RemoteControlStopTask.html) for more 
+
+  If you do not explicitly specify the path to selenium remote control jar
+  it will be "auto-discovered" in `vendor` directory using the following
+  path : `vendor/selenium-remote-control/selenium-server*-standalone.jar`
+
+  Check out [RemoteControlStartTask](http://selenium-client.rubyforge.org/classes/Selenium/Rake/RemoteControlStartTask.html) and [RemoteControlStopTask](http://selenium-client.rubyforge.org/classes/Selenium/Rake/RemoteControlStopTask.html) for more 
 details. 
 
 State-of-the-Art RSpec Reporting
@@ -232,22 +259,59 @@ Grid](http://selenium-grid.openqa.org))
     require "selenium/client"
     require "selenium/rspec/spec_helper"
 
+Other Resources
+===============
+
+* Report bugs at http://github.com/ph7/selenium-client/issues
+* Browse API at http://selenium-client.rubyforge.org
+
 
 Contribute and Join the Fun!
 ============================
 
-  We welcome new features, add-ons, bug fixes, example, documentation, etc. Make the gem work the way you
-  envision!
+  We welcome new features, add-ons, bug fixes, example, documentation, 
+  etc. Make the gem work the way you envision!
+
+* Report bugs at http://github.com/ph7/selenium-client/issues
   
-* I recommend cloning the selenium-client [reference repository](http://github.com/ph7/selenium-client/tree/master)
-  I you are more of a SVN guy, the same code also lives at [OpenQA](http://svn.openqa.org/svn/selenium-rc/trunk/clients/ruby)
+* I recommend cloning the selenium-client 
+  [reference repository](http://github.com/ph7/selenium-client/tree/master)
   
-* You can also check out the [RubyForge page](http://rubyforge.org/projects/selenium-client) and the [RDoc](http://selenium-client.rubyforge.org)
+* You can also check out the [RubyForge page](http://rubyforge.org/projects/selenium-client) 
+  and the [RDoc](http://selenium-client.rubyforge.org)
   
 * We also have a [continuous integration server](http://xserve.openqa.org:8080/view/Ruby%20Client)
 
+* Stories live in [Pivotal Tracker](https://www.pivotaltracker.com/projects/6280)
+* To build, run `rake clean default package`. You can then install the
+generated gem with `sudo gem install pkg/*.gem`
+* You can also run all integration tests with `rake ci:integration`
 
+
+Core Team
+=========
+
+* Philippe Hanrigou (`ph7`): Current Maintainer and main contributor
+* Aslak Hellesoy and Darren Hobbs : Original version of the Selenium Ruby driver
+
+Contributors
+============
   
+* Aaron Tinio (`aptinio`):
+   - More robust Selenium RC shutdown
+   - Support for locator including single quotes in `wait_for_...` methods
+   - Do not capture system state on execution errors for pending examples
+     (ExamplePendingError, NotYetImplementedError)
+
+* Rick Lee-Morlang (`rleemorlang`):
+   - Fix for incremental calls to `wait_for_text`
+   - Regex support in `wait_for_text`
   
- 
- 
+* [Paul Boone](http://www.mindbucket.com) (`paulboone`)
+   - Fixed method_missing in selenium_helper to only delegate to methods 
+     that @selenium responds to
+
+* [Adam Greene](http://blog.sweetspot.dm) (`skippy`)
+   - Added the ability to redirect output to a log file, when
+     launching Selenium Remote Control with the Rake task
+   

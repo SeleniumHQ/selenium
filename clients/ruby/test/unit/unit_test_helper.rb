@@ -4,6 +4,8 @@ require File.expand_path(File.dirname(__FILE__) + "/../../vendor/mocha-0.9.4/lib
 require File.expand_path(File.dirname(__FILE__) + "/../../vendor/dust-0.1.6/lib/dust")
 require File.expand_path(File.dirname(__FILE__) + "/../../lib/selenium")
 require File.expand_path(File.dirname(__FILE__) + "/../../lib/selenium/rspec/reporting/file_path_strategy")
+require File.expand_path(File.dirname(__FILE__) + "/../../lib/selenium/rspec/reporting/system_capture")
+require File.expand_path(File.dirname(__FILE__) + "/../../lib/selenium/rspec/rspec_extensions")
 
 Test::Unit::TestCase.class_eval do
   
@@ -15,5 +17,16 @@ Test::Unit::TestCase.class_eval do
     assert_equal false, result
   end
   
+  def assert_stderr_match(expected, &block)
+    original_stderr = Object.send :remove_const, :STDERR
+    Object.const_set :STDERR, StringIO.new
+    yield
+    STDERR.rewind
+    assert_match expected, STDERR.read    
+  ensure
+    Object.send :remove_const, :STDERR
+    Object.const_set :STDERR, original_stderr
+  end
+
 end
   

@@ -1,0 +1,8 @@
+* Christian Neukirchen <chneukirchen@gmail.com>
+* HTTP authentication: Tim Fletcher <twoggle@gmail.com>
+* Cookie sessions, Static handler: Luc Heinrich <luc@honk-honk.com>
+* Pool sessions, OpenID authentication: blink <blinketje@gmail.com>
+* Rack::Deflater: Christoffer Sawicki <christoffer.sawicki@gmail.com>
+* LiteSpeed handler: Adrian Madrid
+* SCGI handler: Jeremy Evans
+* Official Logo: Armin Ronacher
