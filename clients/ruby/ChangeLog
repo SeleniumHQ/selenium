@@ -38,6 +38,9 @@
  - Add support for browser session specific options when starting a new 
    session (used to trigger capture of browser network traffic). 
 
+ - Added a more idiomatic `browser_xpath_library=` method to
+   use a custom xpath library for browser-side xpath evaluations.
+ 
 1.2.14 (2008-03-08)
 ===================
 

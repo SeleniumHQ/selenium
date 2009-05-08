@@ -9,7 +9,7 @@ unit_tests do
 
   test "final_report_file_path default to a temporary path when the path provided in the constructor is nil" do
     strategy = Selenium::RSpec::Reporting::FilePathStrategy.new nil
-    assert_match(/tmp|temp|\.Trash/, strategy.final_report_file_path)
+    assert_match(/tmp|temp|\.Trash/i, strategy.final_report_file_path)
     assert_match(/index.html$/, strategy.final_report_file_path)
   end
 

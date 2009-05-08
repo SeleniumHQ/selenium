@@ -429,6 +429,19 @@ module Selenium
         remote_control_command "captureNetworkTraffic", [format.to_s]
       end
 
+      # Allows choice of a specific XPath libraries for Xpath evualuation
+      # in the browser (e.g. to resolve XPath locators).
+      #
+      # `library_name' can be:
+      #     * :ajaxslt          : Google's library
+      #     * :javascript-xpath : Cybozu Labs' faster library
+      #     * :default          : Selenium default library.
+      def browser_xpath_library=(library_name)
+        raise "library name must be :ajaxslt, :javascript-xpath, or :default"   \
+            unless [:ajaxslt, :'javascript-xpath', :default].include?(library_name)
+        remote_control_command "useXpathLibrary", [library_name.to_s]
+      end
+
     end
   
   end

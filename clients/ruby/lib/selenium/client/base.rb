@@ -68,7 +68,7 @@ module Selenium
       #    driver.start_new_browser_session(:captureNetworkTraffic => true)
       #
       def start_new_browser_session(options={})
-        options_as_string = options.collect {|key,value| "#{key.to_s}=#{value.to_s}"}.join(";")
+        options_as_string = options.collect {|key,value| "#{key.to_s}=#{value.to_s}"}.sort.join(";")
         result = string_command "getNewBrowserSession", [@browser_string, @browser_url, @extension_js, options_as_string]
         @session_id = result
         # Consistent timeout on the remote control and driver side.

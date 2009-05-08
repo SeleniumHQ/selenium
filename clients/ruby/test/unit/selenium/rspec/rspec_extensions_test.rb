@@ -83,4 +83,56 @@ unit_tests do
     assert_false example.actual_failure?
   end
 
+  test "pending_for_browsers yields the block when actual browser does not match any regexp" do
+    example_class = Class.new { include Spec::Example::ExampleMethods }
+    example = example_class.new(:a_proxy) do puts "some implementation" end
+    example.stubs(:selenium_driver).returns(stub_everything(:browser_string => "*safari"))
+    testlogic = mock("testlogic")
+
+    testlogic.expects(:trigger)
+    example.pending_for_browsers(/firefox/) do
+      testlogic.trigger      
+    end    
+  end
+
+  test "pending_for_browsers calls pending when actual browser does match one of the regexp" do
+    example_class = Class.new { include Spec::Example::ExampleMethods }
+    example = example_class.new(:a_proxy) do puts "some implementation" end
+    example.stubs(:selenium_driver).returns(stub_everything(:browser_string => "*safari"))
+
+    example.expects(:pending).with("Safari does not support this feature yet")
+    example.pending_for_browsers(/safari/) do end    
+  end
+
+  test "pending_for_browsers does not trigger test logic when actual browser does match one of the regexp" do
+    example_class = Class.new { include Spec::Example::ExampleMethods }
+    example = example_class.new(:a_proxy) do puts "some implementation" end
+    example.stubs(:selenium_driver).returns(stub_everything(:browser_string => "*safari"))
+    example.stubs(:pending)
+    testlogic = mock("testlogic")
+
+    testlogic.expects(:trigger).never
+    example.pending_for_browsers(/safari/) do
+      testlogic.trigger      
+    end    
+  end
+
+  test "pending_for_browsers can match multiple regexps" do
+    example_class = Class.new { include Spec::Example::ExampleMethods }
+    example = example_class.new(:a_proxy) do puts "some implementation" end
+    example.stubs(:selenium_driver).returns(stub_everything(:browser_string => "*safari"))
+
+    example.expects(:pending).with("Safari does not support this feature yet")
+    example.pending_for_browsers(/iexplore/, /safari/, /opera/) do end    
+  end
+
+  test "pending_for_browsers regexp match is case insensitive" do
+    example_class = Class.new { include Spec::Example::ExampleMethods }
+    example = example_class.new(:a_proxy) do puts "some implementation" end
+    example.stubs(:selenium_driver).returns(stub_everything(:browser_string => "*safari"))
+
+    example.expects(:pending).with("Safari does not support this feature yet")
+    example.pending_for_browsers(/Safari/) do end    
+  end
+
 end

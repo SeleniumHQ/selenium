@@ -442,5 +442,16 @@ unit_tests do
     client = Class.new { include Selenium::Client::Idiomatic }.new
     assert_raise(RuntimeError) { client.browser_network_traffic(:random_format) }
   end
+
+  test "browser_xpath_library= invokes the useXpathLibrary command" do
+    client = Class.new { include Selenium::Client::Idiomatic }.new
+    client.expects(:remote_control_command).with("useXpathLibrary", ["ajaxslt"]).returns(:the_value)
+    client.browser_xpath_library = :ajaxslt
+  end
+
+  test "browser_xpath_library= raises whe library name is not :ajaxslt, :javascript-xpath, or :default" do
+    client = Class.new { include Selenium::Client::Idiomatic }.new
+    assert_raises(RuntimeError) { client.browser_xpath_library = :random_library }
+  end
   
 end

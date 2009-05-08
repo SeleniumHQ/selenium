@@ -68,6 +68,18 @@ module Spec
         # backtrace is not reliable anymore using the implementation proc          
         Digest::MD5.hexdigest @_implementation.inspect
       end
+
+      def pending_for_browsers(*browser_regexps, &block)
+        actual_browser = selenium_driver.browser_string
+        match_browser_regexps = browser_regexps.inject(false) do |match, regexp| 
+          match ||= actual_browser =~ Regexp.new(regexp.source, Regexp::IGNORECASE)
+        end
+        if match_browser_regexps
+          pending "#{actual_browser.gsub(/\*/, '').capitalize} does not support this feature yet"
+        else 
+          yield
+        end
+      end
  
     end
 
