@@ -77,24 +77,15 @@ public class DefaultRemoteCommandUnitTest extends TestCase {
     }
 
     public void testHascodeIsDifferentWhenCommandsDoNotMatch() {
-        assertFalse(
-            new DefaultRemoteCommand("a command", "", "").hashCode()
-            == new DefaultRemoteCommand("another command", "", "").hashCode()
-        );
+        assertNotSame(new DefaultRemoteCommand("a command", "", "").hashCode(), new DefaultRemoteCommand("another command", "", "").hashCode());
     }
 
     public void testHascodeIsDifferentWhenFieldsDoNotMatch() {
-        assertFalse(
-            new DefaultRemoteCommand("", "a field", "").hashCode()
-            == new DefaultRemoteCommand("", "another field", "").hashCode()
-        );
+        assertNotSame(new DefaultRemoteCommand("", "a field", "").hashCode(), new DefaultRemoteCommand("", "another field", "").hashCode());
     }
 
     public void testHascodeIsDifferentWhenValuesDoNotMatch() {
-        assertFalse(
-            new DefaultRemoteCommand("", "", "a value").hashCode()
-            == new DefaultRemoteCommand("", "", "another value").hashCode()
-        );
+        assertNotSame(new DefaultRemoteCommand("", "", "a value").hashCode(), new DefaultRemoteCommand("", "", "another value").hashCode());
     }
 
     public void testHascodeIsIdenticalWhenCommandsFieldsAndValuesDoMatch() {

@@ -1,12 +1,12 @@
 package org.openqa.selenium.server;
 
 import junit.framework.TestCase;
-import static org.easymock.classextension.EasyMock.*;
-
+import static org.easymock.classextension.EasyMock.createMock;
+import static org.easymock.classextension.EasyMock.expectLastCall;
+import static org.easymock.classextension.EasyMock.replay;
+import static org.easymock.classextension.EasyMock.verify;
 import org.mortbay.http.HttpRequest;
 import org.mortbay.http.HttpResponse;
-
-import java.lang.reflect.Method;
 
 public class ProxyHanderUnitTest extends TestCase {
 
@@ -23,8 +23,8 @@ public class ProxyHanderUnitTest extends TestCase {
 	public void testHandleCallsSendNotFoundWhenAskingForNonExistentResource()
 			throws Exception {
 		ProxyHandler proxyHandlerMock = createMock(ProxyHandler.class,
-				new Method[] { ProxyHandler.class.getDeclaredMethod(
-						"sendNotFound", HttpResponse.class) });
+                ProxyHandler.class.getDeclaredMethod(
+						"sendNotFound", HttpResponse.class));
 		
 		String pathInContext = "/invalid";
 		String pathParams = "";

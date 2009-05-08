@@ -7,7 +7,7 @@ import org.openqa.selenium.server.RemoteCommand;
 
 
 public class BrowserRequest extends AsyncHttpRequest {
-    protected BrowserRequest() {};
+    protected BrowserRequest() {}
     
     /** Request more work from the server and reply with the previous result
      * 

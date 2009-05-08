@@ -11,7 +11,7 @@ import java.io.File;
  */
 public class RemoteControlConfigurationUnitTest {
 	
-	final RemoteControlConfiguration configuration = new RemoteControlConfiguration();
+	private final RemoteControlConfiguration configuration = new RemoteControlConfiguration();
 
 	@Before
 	public void setUp() {
@@ -31,7 +31,7 @@ public class RemoteControlConfigurationUnitTest {
     }
 
     @Test public void testMultiWindowCanBeSet() {
-        configuration.setSingleWindow(!true);
+        configuration.setSingleWindow(false);
         assertTrue((!configuration.isSingleWindow()));
     }
 

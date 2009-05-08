@@ -1,7 +1,5 @@
 package org.openqa.selenium.server.browserlaunchers;
 
-import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
-
 /**
  * A teeny tiny no-op launcher to get a non-null launcher for testing.
  *

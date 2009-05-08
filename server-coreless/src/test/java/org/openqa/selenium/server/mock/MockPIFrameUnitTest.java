@@ -1,20 +1,24 @@
 package org.openqa.selenium.server.mock;
 
-import java.io.File;
-import java.util.logging.Handler;
-import java.util.logging.Logger;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-
 import org.apache.commons.logging.Log;
 import org.mortbay.log.LogFactory;
-import org.openqa.selenium.server.*;
+import org.openqa.selenium.server.DefaultRemoteCommand;
+import org.openqa.selenium.server.InjectionHelper;
+import org.openqa.selenium.server.RemoteCommand;
+import org.openqa.selenium.server.RemoteControlConfiguration;
+import org.openqa.selenium.server.SeleniumServer;
+import org.openqa.selenium.server.WindowClosedException;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
+import org.openqa.selenium.server.log.LoggingManager;
 import org.openqa.selenium.server.log.StdOutHandler;
 import org.openqa.selenium.server.log.TerseFormatter;
-import org.openqa.selenium.server.log.LoggingManager;
+
+import java.io.File;
+import java.util.logging.Handler;
+import java.util.logging.Logger;
 
 public class MockPIFrameUnitTest extends TestCase {
 

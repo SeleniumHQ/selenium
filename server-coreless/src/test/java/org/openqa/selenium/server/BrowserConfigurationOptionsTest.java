@@ -6,7 +6,7 @@ import junit.framework.TestCase;
 public class BrowserConfigurationOptionsTest extends TestCase {
 
     public void testInitializationWithNoOptions() {
-      BrowserConfigurationOptions options = new BrowserConfigurationOptions("");
+      new BrowserConfigurationOptions("");
     }
     
     public void testInitializationWithGoodSingleOption() {

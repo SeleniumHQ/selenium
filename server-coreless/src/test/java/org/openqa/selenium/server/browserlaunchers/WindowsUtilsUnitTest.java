@@ -16,16 +16,17 @@
  */
 package org.openqa.selenium.server.browserlaunchers;
 
-import java.util.*;
-import java.util.regex.*;
+import junit.framework.TestCase;
 
-import junit.framework.*;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class WindowsUtilsUnitTest extends TestCase {
 
-    int majorVersion;
-    int minorVersion;
-    Pattern WIN_OS_VERSION = Pattern.compile("^(\\d)+\\.(\\d)+$");
+    private int majorVersion;
+    private int minorVersion;
+    private Pattern WIN_OS_VERSION = Pattern.compile("^(\\d)+\\.(\\d)+$");
     
     public void setUp() {
         if (!WindowsUtils.thisIsWindows()) return;
@@ -37,9 +38,7 @@ public class WindowsUtilsUnitTest extends TestCase {
     }
     
     private boolean isXpOrHigher() {
-        if (majorVersion < 5) return false;
-        if (minorVersion < 1) return false;
-        return true;
+        return majorVersion >= 5 && minorVersion >= 1;
     }
     
     public void testLoadEnvironment() {

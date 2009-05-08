@@ -1,13 +1,11 @@
 package org.openqa.selenium.server.browserlaunchers;
 
-import static org.junit.Assert.*;
-import static org.easymock.classextension.EasyMock.*;
-
-import java.io.File;
-
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
+
+import java.io.File;
 
 public class OperaCustomProfileLauncherUnitTest {
 

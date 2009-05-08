@@ -1,19 +1,21 @@
 package org.openqa.selenium.server.browserlaunchers;
 
+import static org.easymock.classextension.EasyMock.createStrictMock;
+import static org.easymock.classextension.EasyMock.expectLastCall;
+import static org.easymock.classextension.EasyMock.replay;
+import static org.easymock.classextension.EasyMock.verify;
 import org.junit.Test;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.SeleniumServer;
 
-import static org.easymock.classextension.EasyMock.*;
-
 
 public class SafariCustomProfileLauncherUnitTest {
 	
-	AbstractBrowserLauncher launcher;
-	BrowserConfigurationOptions browserOptions = new BrowserConfigurationOptions();
-	RemoteControlConfiguration remoteConfiguration = new RemoteControlConfiguration();
-	SeleniumServer server;
+	private AbstractBrowserLauncher launcher;
+	private BrowserConfigurationOptions browserOptions = new BrowserConfigurationOptions();
+	private RemoteControlConfiguration remoteConfiguration = new RemoteControlConfiguration();
+	private SeleniumServer server;
 	
 	@Test(expected=InvalidBrowserExecutableException.class)
 	public void constructor_invalidBrowserInstallationCausesException() throws Exception {
@@ -34,7 +36,7 @@ public class SafariCustomProfileLauncherUnitTest {
 		launcher = new SafariCustomProfileLauncher(browserOptions, remoteConfiguration, "session", location) {
 			@Override
 			protected void launch(String url) {
-			};
+			}
 			
 			@Override
 			protected BrowserInstallation locateSafari(String location) {

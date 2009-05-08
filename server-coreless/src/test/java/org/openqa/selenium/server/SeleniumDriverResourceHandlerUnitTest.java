@@ -1,13 +1,19 @@
 package org.openqa.selenium.server;
 
-import static org.junit.Assert.*;
-import static org.easymock.classextension.EasyMock.*;
+import static org.easymock.classextension.EasyMock.anyObject;
+import static org.easymock.classextension.EasyMock.createMock;
+import static org.easymock.classextension.EasyMock.expect;
+import static org.easymock.classextension.EasyMock.expectLastCall;
+import static org.easymock.classextension.EasyMock.replay;
+import static org.easymock.classextension.EasyMock.verify;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+import org.junit.Test;
 
 import java.io.File;
 import java.net.URL;
 import java.util.Vector;
-
-import org.junit.Test;
 
 
 public class SeleniumDriverResourceHandlerUnitTest {
@@ -59,9 +65,7 @@ public class SeleniumDriverResourceHandlerUnitTest {
     } catch (RemoteCommandException rce) {
       // passes.
     } finally {
-        if (server != null) {
-            server.stop();
-        }
+      server.stop();
     }
   }
 

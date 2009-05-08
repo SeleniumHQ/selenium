@@ -1,9 +1,8 @@
 package org.openqa.selenium.server.browserlaunchers;
 
-import org.openqa.selenium.server.RemoteControlConfiguration;
+import junit.framework.TestCase;
 import org.apache.commons.logging.Log;
 import org.mortbay.log.LogFactory;
-import junit.framework.TestCase;
 
 /**
  * {@link org.openqa.selenium.server.browserlaunchers.Firefox2Launcher} integration test class.

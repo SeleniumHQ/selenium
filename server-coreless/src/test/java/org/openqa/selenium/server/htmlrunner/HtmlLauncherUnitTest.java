@@ -1,9 +1,13 @@
 package org.openqa.selenium.server.htmlrunner;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-
+import static org.easymock.classextension.EasyMock.anyObject;
+import static org.easymock.classextension.EasyMock.createMock;
+import static org.easymock.classextension.EasyMock.createNiceMock;
+import static org.easymock.classextension.EasyMock.createStrictMock;
+import static org.easymock.classextension.EasyMock.expect;
+import static org.easymock.classextension.EasyMock.expectLastCall;
+import static org.easymock.classextension.EasyMock.replay;
+import static org.easymock.classextension.EasyMock.verify;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
@@ -11,15 +15,17 @@ import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.SeleniumServer;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
 
-import static org.easymock.classextension.EasyMock.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class HtmlLauncherUnitTest {
 	
-	SeleniumServer remoteControl;
-	RemoteControlConfiguration configuration;
-	File outputFile;
-	HTMLTestResults results;
-	HTMLLauncher launcher;
+	private SeleniumServer remoteControl;
+	private RemoteControlConfiguration configuration;
+	private File outputFile;
+	private HTMLTestResults results;
+	private HTMLLauncher launcher;
 
 	@Before
 	public void setUp() throws Exception {
@@ -32,7 +38,7 @@ public class HtmlLauncherUnitTest {
 			@Override
 			protected BrowserLauncher getBrowserLauncher(String browser, String sessionId, RemoteControlConfiguration configuration, BrowserConfigurationOptions browserOptions) {
 				return browserLauncher;
-			};
+			}
 			
 			@Override
 			protected void sleepTight(long timeoutInMs) {
@@ -89,7 +95,7 @@ public class HtmlLauncherUnitTest {
 			@Override
 			protected BrowserLauncher getBrowserLauncher(String browser, String sessionId, RemoteControlConfiguration configuration, BrowserConfigurationOptions browserOptions) {
 				return browserLauncher;
-			};
+			}
 			
 			@Override
 			protected void sleepTight(long timeoutInMs) {

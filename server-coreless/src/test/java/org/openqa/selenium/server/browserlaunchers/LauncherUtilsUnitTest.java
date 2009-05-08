@@ -17,7 +17,7 @@ public class LauncherUtilsUnitTest extends TestCase {
         File destFile = createFileWithData("dest-dir", "cert8.db", "some text"); 	    
         LauncherUtils.copySingleFileWithOverwrite(srcFile, destFile, true);
         String destText = getFileContent(destFile.getAbsolutePath());
-        assertEquals(destText, "src text");
+        assertEquals("src text", destText);
 
     }
 

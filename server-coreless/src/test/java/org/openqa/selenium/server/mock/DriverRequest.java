@@ -12,7 +12,7 @@ public class DriverRequest extends AsyncHttpRequest {
     /** Send a command to the server.
      * 
      * @param url the url to contact, not including the command in the GET args
-     * @param body the body of the request; normally null
+     * @param cmd remote command; normally null
      * @param timeoutInMillis time to wait before giving up on the request
      * @return request object; used to acquire result when it's eventually ready
      */
