@@ -108,7 +108,11 @@ public class WebDriverBackedSelenium implements Selenium {
       timeoutThread = null;
     }
   }
-  
+
+  public WebDriver getUnderlyingWebDriver() {
+    return driver;
+  }
+
   /**
    * Creates a new timeout thread. If exists a previous existing timeout will
    * be stopped.
@@ -2417,7 +2421,7 @@ public class WebDriverBackedSelenium implements Selenium {
   }
 
   public void captureEntirePageScreenshot(String s) {
-      throw new UnsupportedOperationException();
+      throw new UnsupportedOperationException("captureEntirePageScreenshot");
   }
 
   public void addScript(String arg0, String arg1) {
