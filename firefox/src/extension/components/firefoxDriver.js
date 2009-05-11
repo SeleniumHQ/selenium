@@ -541,8 +541,6 @@ FirefoxDriver.prototype.addCookie = function(respond, cookieString) {
       }
     }
 
-    Utils.dump(cookie);
-
     var cookieManager = Utils.getService("@mozilla.org/cookiemanager;1", "nsICookieManager2");
 
     // The signature for "add" is different in firefox 3 and 2. We should sniff the browser version and call the right
