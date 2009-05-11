@@ -358,7 +358,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
         Object value = result.getJavaScriptResult();
 
         if (value instanceof HTMLElement) {
-            return new HtmlUnitWebElement(this, ((HTMLElement) value).getDomNodeOrDie());
+            return newHtmlUnitWebElement(((HTMLElement) value).getDomNodeOrDie());
         }
 
         if (value instanceof Number) {
@@ -599,6 +599,8 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
           if (allBodies.size() > 0) {
             return newHtmlUnitWebElement(allBodies.get(0));
           }
+        } else {
+          return newHtmlUnitWebElement(element);
         }
       }
 

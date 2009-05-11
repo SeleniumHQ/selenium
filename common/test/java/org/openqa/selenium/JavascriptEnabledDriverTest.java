@@ -176,7 +176,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({HTMLUNIT, SAFARI})
+  @Ignore(SAFARI)
   public void testShouldBeAbleToSwitchToFocusedElement() {
     driver.get(javascriptPage);
 
