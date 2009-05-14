@@ -61,7 +61,7 @@ void backgroundUnicodeKeyPress(HWND ieWindow, wchar_t c, int pause)
 }
 
 void backgroundKeyPress(HWND hwnd, HKL layout, BYTE keyboardState[256],
-		WORD keyCode, UINT scanCode, bool extended, bool printable, int pause)
+		WORD keyCode, UINT scanCode, bool extended, int pause)
 {
 	pause = pause / 3;
 
@@ -119,10 +119,10 @@ void backgroundKeyPress(HWND hwnd, HKL layout, BYTE keyboardState[256],
 
 	// Listen out for the keypress event which IE synthesizes when IE
 	// processes the keydown message. Use a time out, just in case we
-	// have not got "printable" right. :)
+	// have not got the logic right :)
 
 	clock_t maxWait = clock() + 5000;
-	while (printable && !pressed) {
+	while (!pressed) {
 		wait(5);
 		if (clock() >= maxWait) {
 			cerr << "Timeout awaiting keypress: " << keyCode << endl;
@@ -248,7 +248,6 @@ void sendKeys(HWND directInputTo, const wchar_t* value, int timePerKey)
 	for (const wchar_t *p = value; *p; ++p) {
 		const wchar_t c = *p;
 
-		bool printable = false;
 		bool extended = false;
 
 		UINT scanCode = 0;
@@ -260,7 +259,6 @@ void sendKeys(HWND directInputTo, const wchar_t* value, int timePerKey)
 		} else if (c == 0xE001U) {  // ^break
 			keyCode = VK_CANCEL;
 			scanCode = keyCode;
-			printable = true;
 			extended = true;
 		} else if (c == 0xE002U) {  // help
 			keyCode = VK_HELP;
@@ -296,11 +294,9 @@ void sendKeys(HWND directInputTo, const wchar_t* value, int timePerKey)
 		} else if (c == 0xE00CU) {  // escape
 			keyCode = VK_ESCAPE;
 			scanCode = keyCode;
-			printable = true;
 		} else if (c == 0xE00DU) {  // space
 			keyCode = VK_SPACE;
 			scanCode = keyCode;
-			printable = true;
 		} else if (c == 0xE00EU) {  // page up
 			keyCode = VK_PRIOR;
 			scanCode = keyCode;
@@ -344,11 +340,9 @@ void sendKeys(HWND directInputTo, const wchar_t* value, int timePerKey)
 		} else if (c == 0xE018U) {  // semicolon
 			keyCode = VkKeyScanExW(L';', layout);
 			scanCode = MapVirtualKeyExW(LOBYTE(keyCode), 0, layout);
-			printable = true;
 		} else if (c == 0xE019U) {  // equals
 			keyCode = VkKeyScanExW(L'=', layout);
 			scanCode = MapVirtualKeyExW(LOBYTE(keyCode), 0, layout);
-			printable = true;
 		} else if (c == 0xE01AU) {  // numpad0
 			keyCode = VK_NUMPAD0;
 			scanCode = keyCode;
@@ -400,7 +394,6 @@ void sendKeys(HWND directInputTo, const wchar_t* value, int timePerKey)
 		} else if (c == 0xE026U) {  // separator
 			keyCode = VkKeyScanExW(L',', layout);
 			scanCode = MapVirtualKeyExW(LOBYTE(keyCode), 0, layout);
-			printable = true;
 		} else if (c == 0xE027U) {  // subtract
 			keyCode = VK_SUBTRACT;
 			scanCode = keyCode;
@@ -455,7 +448,6 @@ void sendKeys(HWND directInputTo, const wchar_t* value, int timePerKey)
 		} else if (c == L'\r') {    // carriage return
 			continue;  // skip it
 		} else {
-			printable = true;
 			keyCode = VkKeyScanExW(c, layout);
 			scanCode = MapVirtualKeyExW(LOBYTE(keyCode), 0, layout);
 			if (!scanCode || (keyCode == 0xFFFFU)) {
@@ -472,9 +464,6 @@ void sendKeys(HWND directInputTo, const wchar_t* value, int timePerKey)
 		if (altKey)
 			keyCode |= static_cast<WORD>(0x0400);
 
-		if (controlKey || altKey)
-			printable = false;
-
 		int pause = timePerKey;
 
 		// Pause for control, alt, and shift generation: if we create these
@@ -487,7 +476,7 @@ void sendKeys(HWND directInputTo, const wchar_t* value, int timePerKey)
 		}
 
 		backgroundKeyPress(directInputTo, layout, keyboardState, keyCode, scanCode,
-				extended, printable, pause);
+				extended, pause);
 	}
 
 	if (hook) {
