@@ -82,7 +82,7 @@ SocketListener.prototype.onDataAvailable = function(request, context, inputStrea
 }
 
 SocketListener.prototype.executeCommand = function() {
-    var fxbrowser, fxdocument;
+    var fxbrowser;
     var self = this;
 
     var command = JSON.parse(this.data);
@@ -202,28 +202,18 @@ SocketListener.prototype.executeCommand = function() {
                 driver.context.frameId = undefined;
             }
         }
-
-        var frame = fxbrowser.contentWindow;
         if (driver.context.frameId !== undefined) {
-            frame = Utils.findFrame(fxbrowser, driver.context.frameId);
-            if (!frame) {
-                frame = fxbrowser.contentWindow;
-                fxdocument = fxbrowser.contextDocument;
-            } else {
-                fxdocument = frame.document;
-            }
-        } else {
-            fxdocument = fxbrowser.contentDocument;
+            driver.context.frame = Utils.findFrame(fxbrowser, driver.context.frameId);
         }
 
-        driver.context.fxdocument = fxdocument;
         // Indicate, that we are about to execute a command ...
         statusBarLabel = win.document.getElementById("fxdriver-label");
         if (statusBarLabel) {
             statusBarLabel.style.color = "red";
         }
 
-        var webNav = frame.QueryInterface(CI.nsIInterfaceRequestor).getInterface(CI.nsIWebNavigation);
+        var activeWindow = driver.context.frame || fxbrowser.contentWindow;
+        var webNav = activeWindow.QueryInterface(CI.nsIInterfaceRequestor).getInterface(CI.nsIWebNavigation);
         var loadGroup = webNav.QueryInterface(CI.nsIInterfaceRequestor).getInterface(CI.nsILoadGroup);
 
         var info = {

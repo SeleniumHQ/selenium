@@ -110,6 +110,17 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
         assertThat(driver.getTitle(), equalTo("Page3"));
     }
 
+    @JavascriptEnabled
+	@Ignore(value = {IE, SAFARI}, reason="safari: not implemented, ie: Fails")
+    public void testShouldBeAbleToFindElementAfterJavascriptCausesANewPageToLoad() throws InterruptedException
+    {
+        driver.get(formPage);
+
+        driver.findElement(By.id("changeme")).setSelected();
+
+        assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("3"));
+    }
+
 	@JavascriptEnabled
 	@Ignore({HTMLUNIT, SAFARI})
     public void testShouldBeAbleToDetermineTheLocationOfAnElement() {

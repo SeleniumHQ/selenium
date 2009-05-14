@@ -48,8 +48,9 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
         driver.get(framesetPage);
 
         driver.findElement(By.linkText("top")).click();
-        
+
         assertThat(driver.getTitle(), equalTo("XHTML Test Page"));
+        assertThat(driver.findElement(By.xpath("/html/head/title")).getText(), equalTo("XHTML Test Page"));
     }
 
     public void testShouldNotAutomaticallySwitchFocusToAnIFrameWhenAPageContainingThemIsLoaded() {
