@@ -32,13 +32,14 @@ import java.net.UnknownHostException;
 import javax.servlet.Servlet;
 
 public class Jetty6AppServer implements AppServer {
-    private int port;
-    private int securePort;
-    private File path;
-    private final Server server = new Server();
-    private WebAppContext context;
 
-    public Jetty6AppServer() {
+  private int port;
+  private int securePort;
+  private File path;
+  private final Server server = new Server();
+  private WebAppContext context;
+
+  public Jetty6AppServer() {
     path = findRootOfWebApp();
 
     context = addWebApplication("", path.getAbsolutePath());
@@ -72,28 +73,28 @@ public class Jetty6AppServer implements AppServer {
   }
 
   public String getHostName() {
-        return "localhost";
-    }
+    return "localhost";
+  }
 
-    public String getAlternateHostName() {
-        try {
-            return InetAddress.getLocalHost().getCanonicalHostName();
-        } catch (UnknownHostException e) {
-            throw new RuntimeException(e);
-        }
+  public String getAlternateHostName() {
+    try {
+      return InetAddress.getLocalHost().getCanonicalHostName();
+    } catch (UnknownHostException e) {
+      throw new RuntimeException(e);
     }
+  }
 
-    public String whereIs(String relativeUrl) {
-        return "http://" + getHostName() + ":" + port + "/" + relativeUrl;
-    }
+  public String whereIs(String relativeUrl) {
+    return "http://" + getHostName() + ":" + port + "/" + relativeUrl;
+  }
 
-    public String whereElseIs(String relativeUrl) {
-    	return "http://" + getAlternateHostName() + ":" + port + "/" + relativeUrl;
-    }
+  public String whereElseIs(String relativeUrl) {
+    return "http://" + getAlternateHostName() + ":" + port + "/" + relativeUrl;
+  }
 
-    public String whereIsSecure(String relativeUrl) {
-        return "https://" + getHostName() + ":" + securePort + "/" + relativeUrl;
-    }
+  public String whereIsSecure(String relativeUrl) {
+    return "https://" + getHostName() + ":" + securePort + "/" + relativeUrl;
+  }
 
   public void start() {
     SelectChannelConnector connector = new SelectChannelConnector();
@@ -101,8 +102,10 @@ public class Jetty6AppServer implements AppServer {
     server.addConnector(connector);
 
     File keyStore = getKeyStore();
-    if (!keyStore.exists())
-      throw new RuntimeException("Cannot find keystore for SSL cert: " + keyStore.getAbsolutePath());
+    if (!keyStore.exists()) {
+      throw new RuntimeException(
+          "Cannot find keystore for SSL cert: " + keyStore.getAbsolutePath());
+    }
 
     SslSocketConnector secureSocket = new SslSocketConnector();
     secureSocket.setPort(securePort);
@@ -134,16 +137,16 @@ public class Jetty6AppServer implements AppServer {
 
 
   protected void addListener(Connector listener) {
-        server.addConnector(listener);
-    }
+    server.addConnector(listener);
+  }
 
-    public void stop() {
-        try {
-            server.stop();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+  public void stop() {
+    try {
+      server.stop();
+    } catch (Exception e) {
+      throw new RuntimeException(e);
     }
+  }
 
   public void addServlet(String name, String url, Class<? extends Servlet> servletClass) {
     try {
@@ -155,14 +158,14 @@ public class Jetty6AppServer implements AppServer {
 
 
   public void addAdditionalWebApplication(String context, String absolutePath) {
-        addWebApplication(context, absolutePath);
-    }
+    addWebApplication(context, absolutePath);
+  }
 
-    private WebAppContext addWebApplication(String contextPath, String absolutePath) {
-    	WebAppContext app = new WebAppContext();
-    	app.setContextPath(contextPath);
-    	app.setWar(absolutePath);
-		server.addHandler(app);
-		return app;
-    }
+  private WebAppContext addWebApplication(String contextPath, String absolutePath) {
+    WebAppContext app = new WebAppContext();
+    app.setContextPath(contextPath);
+    app.setWar(absolutePath);
+    server.addHandler(app);
+    return app;
+  }
 }

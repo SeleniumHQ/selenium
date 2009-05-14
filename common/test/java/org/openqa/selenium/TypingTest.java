@@ -370,7 +370,8 @@ public class TypingTest extends AbstractDriverTestCase {
 
         element.sendKeys("abc" + Keys.HOME + "0" + Keys.LEFT + Keys.RIGHT +
             Keys.PAGE_UP + Keys.PAGE_DOWN + Keys.END + "1" + Keys.HOME +
-            "0" + Keys.PAGE_UP + Keys.END + "111" + Keys.HOME + "00");
+//            "0" + Keys.PAGE_UP + Keys.END + "111" + Keys.HOME + "00");
+            "");
         assertThat(element.getValue(), is("0000abc1111"));
     }
 
@@ -588,7 +589,6 @@ public class TypingTest extends AbstractDriverTestCase {
 
     driver.switchTo().frame("editFrame");
     WebElement element = driver.switchTo().activeElement();
-    element.click();
     element.sendKeys("Dishy", Keys.BACK_SPACE, Keys.LEFT, Keys.LEFT);
     element.sendKeys(Keys.LEFT, Keys.LEFT, "F", Keys.DELETE, Keys.END, "ee!");
 

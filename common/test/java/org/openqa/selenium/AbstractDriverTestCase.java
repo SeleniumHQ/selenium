@@ -73,4 +73,9 @@ public class AbstractDriverTestCase extends TestCase implements NeedsDriver {
 
         assertThat(hostName, is(not(equalTo(alternateHostName))));
 	}
+
+  protected boolean isIeDriverTimedOutException(IllegalStateException e) {
+    // The IE driver may throw a timed out exception
+    return e.getClass().getName().contains("TimedOutException");
+  }
 }

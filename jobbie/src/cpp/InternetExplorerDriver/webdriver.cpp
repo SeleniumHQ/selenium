@@ -22,11 +22,13 @@ limitations under the License.
 #include "logging.h"
 #include "utils.h"
 #include <stdio.h>
+#include <iostream>
 #include <string>
 #include <vector>
 
 #define END_TRY  catch(std::wstring& m) \
 	{ \
+		if (m.find(L"TIME OUT") > 0) { return ETIMEOUT; } \
 		wcerr << m.c_str() << endl; \
 		return EEXPECTEDERROR; \
 	} \

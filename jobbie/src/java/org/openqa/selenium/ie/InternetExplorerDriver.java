@@ -206,7 +206,7 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
     public void get(String url) {
       int result = lib.wdGet(driver, new WString(url));
       if (result != SUCCESS) {
-        throw new IllegalStateException(String.format("Cannot get \"%s\": %s", url, result));
+        errors.verifyErrorCode(result, String.format("Cannot get \"%s\": %s", url, result));
       }
     }
 

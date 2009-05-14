@@ -33,7 +33,7 @@ public class SingleTestSuite extends TestCase {
   private final static String SAFARI = "org.openqa.selenium.safari.SafariDriver";
 
   public static Test suite() throws Exception {
-    String driver = HTML_UNIT_JS;
+    String driver = IE;
 
     System.setProperty("webdriver.firefox.development", "true");
     System.setProperty("jna.library.path", ".\\jobbie;.");
@@ -46,8 +46,8 @@ public class SingleTestSuite extends TestCase {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("JavascriptEnabledDriverTest")
-//        .method("testShouldNotBeAbleToFindAnElementOnABlankPage")
+        .onlyRun("TypingTest")
+        .method("testHomeAndEndAndPageUpAndPageDownKeys")
         .exclude(ALL)
         .exclude(Ignore.Driver.IE)
         .leaveRunning()

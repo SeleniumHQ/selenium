@@ -46,14 +46,20 @@ public class PageLoadingTest extends AbstractDriverTestCase {
     }
 
     public void testShouldReturnWhenGettingAUrlThatDoesNotResolve() {
+      try {
         // Of course, we're up the creek if this ever does get registered
         driver.get("http://www.thisurldoesnotexist.comx/");
+      } catch (IllegalStateException e) {
+        if (!isIeDriverTimedOutException(e)) {
+          throw e;
+        }
+      }
     }
 
-    public void testShouldReturnWhenGettingAUrlThatDoesNotConnect() {
-        // Here's hoping that there's nothing here. There shouldn't be
-        driver.get("http://localhost:3001");
-    }
+  public void testShouldReturnWhenGettingAUrlThatDoesNotConnect() {
+    // Here's hoping that there's nothing here. There shouldn't be
+    driver.get("http://localhost:3001");
+  }
 
     @Ignore(SAFARI)
     public void testShouldBeAbleToLoadAPageWithFramesetsAndWaitUntilAllFramesAreLoaded() {

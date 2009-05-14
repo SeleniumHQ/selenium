@@ -51,14 +51,22 @@ class ErrorHandler {
     case 12:
       throw new UnsupportedOperationException(
               String.format("You may not %s an element that is not enabled", message));
-      
+
     case 15:
       throw new UnsupportedOperationException(
-              String.format("The element appears to be unselectable", message));
-      
+              String.format("The element appears to be unselectable: %s", message));
+
     case 16:
       throw new NoSuchElementException(message + " (no document found)");
-      
+
+    case 21:
+      throw new TimedOutException("The driver reported that the command timed out. There may "
+                                      + "be several reasons for this. Check that the destination"
+                                      + "site is in IE's 'Trusted Sites' (accessed from Tools->"
+                                      + "Internet Options in the 'Security' tab) If it is a "
+                                      + "trusted site, then the request may have taken more than"
+                                      + "a minute to finish.");
+
     default: 
       throw new IllegalStateException(String.format("%s (%d)", message, errorCode));
     }

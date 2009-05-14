@@ -187,19 +187,26 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
         assertThat(cookies, hasItem(cookie2));
     }
 
-    public void testGetCookieDoesNotRetriveBeyondCurrentDomain() {
-        driver.get(simpleTestPage);
-        driver.manage().deleteAllCookies();
+  public void testGetCookieDoesNotRetriveBeyondCurrentDomain() {
+    driver.get(simpleTestPage);
+    driver.manage().deleteAllCookies();
 
-        Cookie cookie1 = new Cookie("fish", "cod");
-        WebDriver.Options options = driver.manage();
-        options.addCookie(cookie1);
+    Cookie cookie1 = new Cookie("fish", "cod");
+    WebDriver.Options options = driver.manage();
+    options.addCookie(cookie1);
 
-        String url = GlobalTestEnvironment.get().getAppServer().whereElseIs("");
-        driver.get(url);
-        Set<Cookie> cookies = options.getCookies();
-        assertThat(cookies, not(hasItem(cookie1)));
-    }
+    String url = GlobalTestEnvironment.get().getAppServer().whereElseIs("");
+    try {
+      driver.get(url);
+    } catch (IllegalStateException e) {
+      if (isIeDriverTimedOutException(e)) {
+        System.err.println("Looks like IE timed out. Is the site accessible?");
+        return;
+      }
+    }    
+    Set<Cookie> cookies = options.getCookies();
+    assertThat(cookies, not(hasItem(cookie1)));
+  }
 
   @Ignore({IE, SAFARI})  
   public void testShouldBeAbleToSetDomainToTheCurrentDomain() throws Exception {
