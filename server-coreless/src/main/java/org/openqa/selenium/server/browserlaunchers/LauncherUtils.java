@@ -287,6 +287,7 @@ public class LauncherUtils {
         c.setProject(p);
         c.setTofile(destFile);
         FileSet fs = new FileSet();
+        fs.setProject(p);
         fs.setFile(sourceFile);
         c.addFileset(fs);
         c.setOverwrite(overwrite);
