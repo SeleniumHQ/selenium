@@ -14,7 +14,12 @@ import org.openqa.selenium.server.RemoteControlConfiguration;
 
 public class FirefoxChromeLauncherUnitTest {
 	
-	@Test public void testInvalidBrowserStringCausesChromeLauncherToThrowException() {
+	final BrowserConfigurationOptions browserOptions = new BrowserConfigurationOptions();
+	final RemoteControlConfiguration configuration = new RemoteControlConfiguration();
+	
+	// AH: This is the inverse of what it used to be - as the former test only assured an NPE I changed it
+	@Test
+	public void testInvalidBrowserStringCausesChromeLauncherToThrowException() {
 		
 		try {			
 			new FirefoxChromeLauncher(new BrowserConfigurationOptions(),null,null, "invalid");
@@ -24,10 +29,17 @@ public class FirefoxChromeLauncherUnitTest {
 		}
 	}
 	
-	@Test public void testNullBrowserInstallationDoesntCauseChromeLauncherToThrowException() {
-		BrowserInstallation bi = null;
-		FirefoxChromeLauncher fcl = new FirefoxChromeLauncher(new BrowserConfigurationOptions(),null,null, bi);
-		assertNotNull(fcl);
+	@Test
+	public void nullBrowserInstallationDoesCauseChromeLauncherToThrowException() {
+		BrowserInstallation browserInstallation = null;
+		
+		try {			
+			new FirefoxChromeLauncher(new BrowserConfigurationOptions(), null, null, browserInstallation);
+			fail("No exception thrown");
+		} catch(InvalidBrowserExecutableException ibee) {
+			assertEquals("The specified path to the browser executable is invalid.", ibee.getMessage());
+		}
+
 	}
 	
     @Test public void testShouldAbleToCreateChromeUrlWithNormalUrl() throws Exception {
@@ -111,8 +123,7 @@ public class FirefoxChromeLauncherUnitTest {
     
     @Test
     public void initProfileTemplate_usesBrowserOptionIfNoProfilesLocationSpecified() throws Exception {
-    	final BrowserConfigurationOptions browserOptions = new BrowserConfigurationOptions();
-    	final RemoteControlConfiguration configuration = new RemoteControlConfiguration();
+
     	final BrowserInstallation browserInstallation = createMock(BrowserInstallation.class);
     	
     	FirefoxChromeLauncher launcher = new FirefoxChromeLauncher(browserOptions, configuration, "session", browserInstallation) {
@@ -131,8 +142,7 @@ public class FirefoxChromeLauncherUnitTest {
 
     @Test
     public void initProfileTemplate_usesProfilesLocationAlongWithRelativeProfileIfTheirAbsoluteTemplateExists() throws Exception {
-    	final BrowserConfigurationOptions browserOptions = new BrowserConfigurationOptions();
-    	final RemoteControlConfiguration configuration = new RemoteControlConfiguration();
+
     	final BrowserInstallation browserInstallation = createMock(BrowserInstallation.class);
     	final File profileTemplate = createMock(File.class);
     	
@@ -157,7 +167,7 @@ public class FirefoxChromeLauncherUnitTest {
     	verify(profileTemplate);
     	assertEquals(profileTemplate, result);
     	
-    }
+    }    
     
     public static class FirefoxChromeLauncherStubbedForShutdown extends FirefoxChromeLauncher {
 
