@@ -60,6 +60,11 @@
 				<updatePolicy>never</updatePolicy>
 			</releases>
 		</repository>
+		<repository>
+			<id>laughing-panda</id>
+			<name>Laughing Panda</name>
+			<url>http://www.laughingpanda.org/maven2/</url>
+		</repository>
 	</repositories>
 	<pluginRepositories>
 		<pluginRepository>
@@ -88,9 +93,9 @@
 		</snapshotRepository>
 	</distributionManagement>
 	<scm>
-		<connection>scm:svn:http://svn.seleniumhq.org/svn/selenium-rc/trunk</connection>
-		<developerConnection>scm:svn:https://svn.seleniumhq.org/svn/selenium-rc/trunk</developerConnection>
-		<url>http://svn.seleniumhq.org/svn/selenium-rc/trunk</url>
+		<connection>scm:svn:http://svn.openqa.org/svn/selenium-rc/trunk</connection>
+		<developerConnection>scm:svn:https://svn.openqa.org/svn/selenium-rc/trunk</developerConnection>
+		<url>http://svn.openqa.org/svn/selenium-rc/trunk</url>
 	</scm>
 	<build>
 		<!--
@@ -141,9 +146,9 @@
 						<executable>java</executable>
 						<classpathScope>test</classpathScope>
 						<commandlineArgs>-cp $classpath org.infinitest.Infinitest</commandlineArgs>
-            		</configuration>
-          		</plugin>
-        	</plugins>
+					</configuration>
+				</plugin>
+			</plugins>
 		</pluginManagement>
 	</build>
 	<profiles>
@@ -269,7 +274,7 @@
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
-				<version>4.5</version>
+				<version>4.4</version>
 			</dependency>
 			<dependency>
 				<groupId>bouncycastle</groupId>
@@ -286,12 +291,6 @@
 				<groupId>org.easymock</groupId>
 				<artifactId>easymockclassextension</artifactId>
 				<version>2.4</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.infinitest</groupId>
-				<artifactId>infinitest</artifactId>
-				<version>4.0.1</version>
 				<scope>test</scope>
 			</dependency>
 		</dependencies>
