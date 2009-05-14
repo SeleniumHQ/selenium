@@ -54,6 +54,11 @@
                 <updatePolicy>never</updatePolicy>
             </releases>
         </repository>
+     	<repository>
+			<id>laughing-panda</id>
+			<name>Laughing Panda</name>
+			<url>http://www.laughingpanda.org/maven2/</url>
+		</repository>
     </repositories>
     <build>
         <resources>
@@ -80,7 +85,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.2-SNAPSHOT</version>
+                <version>1.3</version>
                 <executions>
                     <execution>
                         <id>generate-resources</id>
@@ -145,7 +150,7 @@
                     <dependency>
                         <groupId>junit</groupId>
                         <artifactId>junit</artifactId>
-                        <version>3.8.1</version>
+                        <version>4.4</version>
                     </dependency>
                 </dependencies>
             </plugin>
@@ -250,7 +255,7 @@
                 <plugins>
                     <plugin>
                         <artifactId>maven-antrun-plugin</artifactId>
-                        <version>1.2-SNAPSHOT</version>
+                        <version>1.3</version>
                         <executions>
                             <execution>
                                 <id>integration-test</id>
@@ -323,7 +328,7 @@
                 <plugins>
                     <plugin>
                         <artifactId>maven-antrun-plugin</artifactId>
-                        <version>1.2-SNAPSHOT</version>
+                        <version>1.3</version>
                         <executions>
                             <execution>
                                 <id>integration-test</id>
@@ -361,15 +366,8 @@
                             <dependency>
                                 <groupId>junit</groupId>
                                 <artifactId>junit</artifactId>
-                                <version>3.8.1</version>
+                                <version>4.4</version>
                             </dependency>
-                            <!-- DGF commenting out Andras' change 2264/2265, fixing Hudson build
-                            <dependency>
-								<groupId>jetty</groupId>
-								<artifactId>org.mortbay.jetty</artifactId>
-								<version>5.1.10</version>
-							</dependency>
-							-->
                         </dependencies>
                     </plugin>
                 </plugins>
@@ -404,9 +402,9 @@
         </snapshotRepository>
     </distributionManagement>
     <scm>
-        <connection>scm:svn:http://svn.seleniumhq.org/svn/selenium-core/trunk</connection>
-        <developerConnection>scm:svn:https://svn.seleniumhq.org/svn/selenium-core/trunk</developerConnection>
-        <url>http://svn.seleniumhq.org/svn/selenium-core/trunk</url>
+        <connection>scm:svn:http://svn.openqa.org/svn/selenium-core/trunk</connection>
+        <developerConnection>scm:svn:https://svn.openqa.org/svn/selenium-core/trunk</developerConnection>
+        <url>http://svn.openqa.org/svn/selenium-core/trunk</url>
     </scm>
     <dependencies>
         <dependency>
@@ -418,13 +416,13 @@
         <dependency>
             <groupId>rhino</groupId>
             <artifactId>js</artifactId>
-            <version>1.6R5</version>
+            <version>1.7R1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.5</version>
+            <version>4.4</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
