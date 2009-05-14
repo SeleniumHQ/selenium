@@ -69,13 +69,6 @@
             <directory>target/generated-resources</directory>
           </resource>
         </resources>
-	    <!-- extensions>
-            <extension>
-                <groupId>org.apache.maven.wagon</groupId>
-                <artifactId>wagon-webdav</artifactId>
-                <version>1.0-beta-2</version>
-            </extension>
-        </extensions -->
         <plugins>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -133,19 +126,19 @@
                 </executions>
                 <dependencies>
                     <dependency>
-                        <groupId>ant</groupId>
+                        <groupId>org.apache.ant</groupId>
                         <artifactId>ant-trax</artifactId>
-                        <version>1.6.5</version>
+                        <version>1.7.1</version>
                     </dependency>
                     <dependency>
-                        <groupId>ant</groupId>
+                        <groupId>org.apache.ant</groupId>
                         <artifactId>ant-nodeps</artifactId>
-                        <version>1.6.5</version>
+                        <version>1.7.1</version>
                     </dependency>
                     <dependency>
-                        <groupId>ant</groupId>
+                        <groupId>org.apache.ant</groupId>
                         <artifactId>ant-junit</artifactId>
-                        <version>1.6.5</version>
+                        <version>1.7.1</version>
                     </dependency>
                     <dependency>
                         <groupId>junit</groupId>
@@ -283,14 +276,14 @@
                         </executions>
                         <dependencies>
                             <dependency>
-                                <groupId>ant</groupId>
+                                <groupId>org.apache.ant</groupId>
                                 <artifactId>ant-trax</artifactId>
-                                <version>1.6.5</version>
+                                <version>1.7.1</version>
                             </dependency>
                             <dependency>
-                                <groupId>ant</groupId>
+                                <groupId>org.apache.ant</groupId>
                                 <artifactId>ant-junit</artifactId>
-                                <version>1.6.5</version>
+                                <version>1.7.1</version>
                             </dependency>
                             <dependency>
                                 <groupId>junit</groupId>
@@ -354,14 +347,14 @@
                         </executions>
                         <dependencies>
                             <dependency>
-                                <groupId>ant</groupId>
+                                <groupId>org.apache.ant</groupId>
                                 <artifactId>ant-trax</artifactId>
-                                <version>1.6.5</version>
+                                <version>1.7.1</version>
                             </dependency>
                             <dependency>
-                                <groupId>ant</groupId>
+                                <groupId>org.apache.ant</groupId>
                                 <artifactId>ant-junit</artifactId>
-                                <version>1.6.5</version>
+                                <version>1.7.1</version>
                             </dependency>
                             <dependency>
                                 <groupId>junit</groupId>
