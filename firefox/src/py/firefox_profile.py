@@ -42,26 +42,41 @@ class FirefoxProfile(object):
     profile_ini = get_profile_ini()
 
     def __init__(self, name=ANONYMOUS_PROFILE_NAME, port=DEFAULT_PORT,
-                 extension_path=None):
+                 template_profile=None, extension_path=None):
         """Creates a FirefoxProfile.
 
         Args:
             name: the profile name. A new firefox profile is created if the one
                   specified doesn't exist.
             port: the port webdriver extension listens on for command
+            template_profile: if not none, the content of the specified profile
+                will be copied from this directory.
             extension_path: the source of the webdriver extension
-            fresh: whether to clean all the cookie and cache
+
+        Usage:
+            -- Get a profile with a given name: 
+               profile = FirefoxProfile("profile_name")
+
+            -- Get a new created profile:
+               profile = FirefoxProfile()
+
+            -- Get a new created profile with content copied from "/some/path":
+               profile = FirefoxProfile(template_profile="/some/path")
         """
         self.name = name
         self.port = port
         self.extension_path = extension_path
-        if name == ANONYMOUS_PROFILE_NAME:
-            self._create_anonymous_profile()
-            self._refresh_ini()
-        self.initialize()
 
-    def _create_anonymous_profile(self):
+        if name == ANONYMOUS_PROFILE_NAME:
+            self._create_anonymous_profile(template_profile)
+            self._refresh_ini()
+        else:
+            self.initialize()
+
+    def _create_anonymous_profile(self, template_profile):
         self.anonymous_profile_dir = tempfile.mkdtemp()
+        if template_profile is not None and os.path.exists(template_profile):
+            self._copy_profile_source(template_profile)
         self._update_user_preference()
         self.add_extension(extension_zip_path=self.extension_path)
         self._launch_in_silent()
@@ -70,7 +85,7 @@ class FirefoxProfile(object):
         self.remove_lock_file()
         self.add_extension(True, extension_zip_path=self.extension_path)
 
-    def copy_profile_source(self, source_path):
+    def _copy_profile_source(self, source_path):
         """Copy the profile content from source_path source_path.
         """
         logging.info("Copying profile from '%s' to '%s'" 
