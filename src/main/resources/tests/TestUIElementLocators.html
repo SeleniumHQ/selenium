@@ -85,7 +85,11 @@ function setUp() {
             <td>ui=pageset2::cell(text=theCellText)</td>
             <td>exact:theCellText</td>
         </tr>
-        
+        <tr>
+            <td>verifyEval</td>
+            <td>map.getUISpecifierString(selenium.browserbot.findElement('id=firstChild'), selenium.browserbot.getDocument())</td>
+            <td>ui=pageset3::anyDiv()->/child::span</td>
+        </tr>
         <tr>
             <td>removeScript</td>
             <td>uimap</td>
@@ -139,7 +143,7 @@ map.addPageset({
 
 map.addElement('pageset2', {
     name: 'cell'
-    , description: 'a cell in the stylee table'
+    , description: 'a cell in the style table'
     , args: [
         {
             name: 'text'
@@ -154,6 +158,24 @@ map.addElement('pageset2', {
     , _contentMap: {
         'theHeaderText': 'th'
         , 'theCellText': 'td'
+    }
+});
+
+map.addPageset({
+    name: 'pageset3'
+    , description: 'pageset3Desc'
+    , pathRegexp: '.*'
+});
+
+map.addElement('pageset3', {
+    name: 'anyDiv'
+    , description: 'any div element'
+    , locator: '//div'
+    , getOffsetLocator: function(locatedElement, pageElement) {
+        if (pageElement.parentNode == locatedElement) {
+            return '/child::' + pageElement.nodeName.toLowerCase();
+        }
+        return null;
     }
 });
 </pre>

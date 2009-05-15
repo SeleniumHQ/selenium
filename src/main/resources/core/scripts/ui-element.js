@@ -640,10 +640,9 @@ function UISpecifier(uiSpecifierStringOrPagesetName, elementName, args)
             // probably under unit test
             var kwargs = to_kwargs(this.args);
         }
+        
         return this.pagesetName + '::' + this.elementName + '(' + kwargs + ')';
     };
-    
-    
     
     // construct the object
     if (arguments.length < 2) {
@@ -1037,9 +1036,11 @@ function UIMap()
         var is_fuzzy_match =
             BrowserBot.prototype.locateElementByUIElement.is_fuzzy_match;
         var pagesets = this.getPagesetsForPage(inDocument);
+        
         for (var i = 0; i < pagesets.length; ++i) {
             var pageset = pagesets[i];
             var uiElements = pageset.getUIElements();
+            
             for (var j = 0; j < uiElements.length; ++j) {
                 var uiElement = uiElements[j];
                 
@@ -1095,12 +1096,13 @@ function UIMap()
                                     defaultLocators[locator]);
                         }
                     }
+                    
                     // ok, matching the element failed. See if an offset
                     // locator can complete the match.
                     if (uiElement.getOffsetLocator) {
-                        for (var i = 0; i < locatedElements.length; ++i) {
+                        for (var k = 0; k < locatedElements.length; ++k) {
                             var offsetLocator = uiElement
-                                .getOffsetLocator(locatedElement, pageElement);
+                                .getOffsetLocator(locatedElements[k], pageElement);
                             if (offsetLocator) {
                                 return UI_GLOBAL.UI_PREFIX + '=' +
                                     new UISpecifier(pageset.name,
