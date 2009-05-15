@@ -114,9 +114,19 @@ def get_firefox_app_data_dir():
     elif platform.system() == "Darwin":
         app_data_dir = os.path.join(
             os.getenv("HOME"), "Library", "Application Support", "Firefox")
-    else:
-        app_data_dir = os.path.join(
-            os.getenv("HOME"), ".mozilla", "firefox")
+    else: # unix
+        home = os.getenv("HOME")
+        sudo_user = os.getenv("SUDO_USER")
+        user = os.getenv("USER")
+        if sudo_user and sudo_user !=  user:
+            process = Popen(["getent passwd ${USER} | cut -f6 -d:"], stdout=PIPE, shell=True)
+            sudo_home = process.communicate()[0].strip()
+
+            if os.path.exists(sudo_home):
+                home = sudo_home
+
+        app_data_dir = os.path.join(home, ".mozilla", "firefox")
+
     logging.info("Application data is found at %s" % app_data_dir)
     return app_data_dir
 
