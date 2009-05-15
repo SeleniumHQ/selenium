@@ -34,3 +34,6 @@ class NoSuchElementException(Exception):
     def __init__(self, msg=None):
         Exception.__init__(self, msg)
 
+class RemoteDriverServerException(Exception):
+    def __init__(self, msg=None):
+        Exception.__init__(self, msg)

@@ -17,6 +17,7 @@
 
 from webdriver_common.exceptions import ErrorInResponseException
 from webdriver_common.exceptions import InvalidSwitchToTargetException
+from webdriver_common.exceptions import NoSuchElementException
 from webdriver_remote import utils
 from webdriver_remote.webelement import WebElement
 from webdriver_remote.remote_connection import RemoteConnection
@@ -38,11 +39,7 @@ class WebDriver(object):
 
     def find_element_by_id(self, id_):
         """Finds element by id."""
-        try:
-            resp = self._post("element", "id", id_)
-            return self._get_elem(resp[0])
-        except ErrorInResponseException, ex:
-            utils.handle_find_element_exception(ex)
+        return self._find_element_by("id", id_)
 
     def find_elements_by_xpath(self, xpath):
         """Finds multiple elements by xpath."""
@@ -51,6 +48,21 @@ class WebDriver(object):
         for token in resp:
             elems.append(self._get_elem(token))
         return elems
+
+    def find_element_by_xpath(self, xpath):
+        """Finds an element by xpath."""
+        return self._find_element_by("xpath", xpath)
+
+    def find_element_by_link_text(self, link_text):
+        """Finds an element by its link text.
+
+        Returns None if the element is not a link.
+        """
+        return self._find_element_by("link text", link_text)
+
+    def find_element_by_name(self, name):
+        """Finds and element by its name."""
+        return self._find_element_by("name", name)
 
     def execute_script(self, script, *args):
         converted_args = []
@@ -71,30 +83,6 @@ class WebDriver(object):
     def get_current_url(self):
         """Gets the current url."""
         return self._get("url")
-
-    def find_element_by_xpath(self, xpath):
-        """Finds an element by xpath."""
-        try:
-            return self._get_elem(self._post("element", "xpath", xpath)[0])
-        except ErrorInResponseException, ex:
-            utils.handle_find_element_exception(ex)
-
-    def find_element_by_link_text(self, link):
-        """Finds an element by its link text.
-
-        Returns None if the element is not a link.
-        """
-        try:
-            return self._get_elem(self._post("element", "link text", link)[0])
-        except ErrorInResponseException, ex:
-            utils.handle_find_element_exception(ex)
-
-    def find_element_by_name(self, name):
-        """Finds and element by its name."""
-        try:
-            return self._get_elem(self._post("element", "name", name)[0])
-        except ErrorInResponseException, ex:
-            utils.handle_find_element_exception(ex)
 
     def get_page_source(self):
         """Gets the page source."""
@@ -129,7 +117,22 @@ class WebDriver(object):
     def forward(self):
         """Goes forward in browser history."""
         self._post("forward")
-    
+    # Options
+    def get_cookie(self):
+        """Gets all the cookies. Return a set of dicts."""
+        return self._get("cookie")
+
+    def delete_cookie(self, name):
+        """Delete a cookie with the given name."""
+        self._delete("cookie/%s" % name)
+
+    def delete_all_cookies(self):
+        """Delete all the cookies."""
+        self._delete("cookie")
+
+    def add_cookie(self, cookie_dict):
+        self._post("addCookie", cookie_dict)
+
     @property
     def conn(self):
         return self._conn
@@ -137,6 +140,15 @@ class WebDriver(object):
     def _get_elem(self, resp_value):
         """Creates a WebElement from a response token."""
         return WebElement(self, resp_value.split("/")[1])
+
+    def _find_element_by(self, by, value):
+        try:
+            resp = self._post("element", by, value)
+            if not resp:
+                raise NoSuchElementException(resp)
+            return self._get_elem(resp[0])
+        except ErrorInResponseException, ex:
+            utils.handle_find_element_exception(ex)
 
     def _get(self, path, *params):
         """Sends a command to the server using http GET method."""
@@ -150,4 +162,5 @@ class WebDriver(object):
 
     def _delete(self, path):
         """Sends a command to the server using http DELETE method."""
-        self._conn.request("DELETE", path)
+        return utils.return_value_if_exists(
+            self._conn.delete(path))

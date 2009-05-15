@@ -18,32 +18,35 @@ import simplejson
 import logging
 from webdriver_remote import utils
 from webdriver_common.exceptions import ErrorInResponseException
+from webdriver_common.exceptions import NoSuchElementException
+from webdriver_common.exceptions import RemoteDriverServerException
+
 
 class RemoteConnection(object):
-    __shared_state = {}
 
     def __init__(self, remote_server_addr, browser_name, platform):
-        self.__dict__ = self.__shared_state
-        if "_conn" not in self.__dict__:
-            self._conn = httplib.HTTPConnection(remote_server_addr)
-            self._context = "foo"
-            self._session_id = ""
-            resp = self.post(
-                "/hub/session",
-                {"browserName": browser_name,
-                 "platform": platform,
-                 "class":"org.openqa.selenium.remote.DesiredCapabilities",
-                 "javascriptEnabled":False,
-                 "version":""},
-                )
-            #TODO: handle the capabilities info sent back from server
-            self._session_id = resp["sessionId"]
+        self._conn = httplib.HTTPConnection(remote_server_addr)
+        self._context = "foo"
+        self._session_id = ""
+        resp = self.post(
+            "/hub/session",
+            {"browserName": browser_name,
+             "platform": platform,
+             "class":"org.openqa.selenium.remote.DesiredCapabilities",
+             "javascriptEnabled":False,
+             "version":""},
+            )
+        #TODO: handle the capabilities info sent back from server
+        self._session_id = resp["sessionId"]
 
     def post(self, path, *params):
         return self.request("POST", path, *params)
 
     def get(self, path, *params):
         return self.request("GET", path, *params)
+
+    def delete(self, path, *params):
+        return self.request("DELETE", path)
 
     def request(self, method, path, *params):
         if params:
@@ -66,12 +69,11 @@ class RemoteConnection(object):
     def _process_response(self):
         resp = self._conn.getresponse()
         data = resp.read()
-
         if (resp.status in [301, 302, 303, 307] and
             resp.getheader("location") != None):
             redirected_url = resp.getheader("location")
             return self.get(redirected_url)
-        if data:
+        if resp.status == 200 and data:
             decoded_data = simplejson.loads(data)
             logging.debug("response:" + utils.format_json(decoded_data))
             if decoded_data["error"]:
@@ -80,3 +82,11 @@ class RemoteConnection(object):
                     ("Error occurred when remote driver (server) is processing"
                      "the request:") +  utils.format_json(decoded_data))
             return decoded_data
+        elif resp.status in [202, 204]:
+            pass
+        elif resp.status == 404:
+            raise NoSuchElementException()
+        else:
+            raise RemoteDriverServerException(
+                "Server error in the remote driver server, status=%d"
+                % resp.status)

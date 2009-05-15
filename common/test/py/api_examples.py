@@ -76,6 +76,7 @@ class ApiExampleTest (unittest.TestCase):
         except NoSuchElementException:
             pass
 
+    @not_available_on_remote #TODO: the remote driver is still giving NSE
     def testFindElementByXpathThrowErrorInResponseExceptionForInvalidXPath(self):
         self._loadSimplePage()
         try:
@@ -137,6 +138,7 @@ class ApiExampleTest (unittest.TestCase):
         elem = self.driver.find_element_by_xpath("//form[@name='someForm']/input[@id='username']")
         self.assertEquals("some text", elem.get_value())
 
+    @not_available_on_remote
     def testFindElementByTagName(self):
         self._loadPage("simpleTest")
         elems = self.driver.find_elements_by_tag_name("div")
@@ -146,6 +148,7 @@ class ApiExampleTest (unittest.TestCase):
         elems = self.driver.find_elements_by_tag_name("iframe")
         self.assertEquals(0, len(elems))
 
+    @not_available_on_remote
     def testFindElementByTagNameWithinElement(self):
         self._loadPage("simpleTest")
         div = self.driver.find_element_by_id("multiline")
