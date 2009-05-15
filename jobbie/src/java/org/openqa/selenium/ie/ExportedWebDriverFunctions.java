@@ -59,7 +59,7 @@ interface ExportedWebDriverFunctions extends StdCallLibrary {
   int wdeGetText(Pointer element, PointerByReference wrapper);
   int wdeGetElementName(Pointer element, PointerByReference wrapper);
   
-  int wdeGetDetailsOnceScrolledOnToScreen(Pointer element, HWNDByReference hwnd, IntByReference x, IntByReference y, IntByReference width, IntByReference height);
+  int wdeGetDetailsOnceScrolledOnToScreen(Pointer element, HWNDByReference hwnd, NativeLongByReference x, NativeLongByReference y, NativeLongByReference width, NativeLongByReference height);
   int wdeGetLocation(Pointer element, NativeLongByReference x, NativeLongByReference y);
   int wdeGetSize(Pointer element, NativeLongByReference width, NativeLongByReference height);
   
@@ -94,6 +94,11 @@ interface ExportedWebDriverFunctions extends StdCallLibrary {
   int wdGetNumberScriptResult(Pointer result, NativeLongByReference value);
   int wdGetBooleanScriptResult(Pointer result, IntByReference value);
   int wdGetElementScriptResult(Pointer result, Pointer driver, PointerByReference element);
+
+  // Things that should be interactions
+  int wdeMouseDownAt(HWND hwnd, NativeLong windowX, NativeLong windowY);
+  int wdeMouseUpAt(HWND hwnd, NativeLong windowX, NativeLong windowY);
+  int wdeMouseMoveTo(HWND hwnd, NativeLong duration, NativeLong fromX, NativeLong fromY, NativeLong toX, NativeLong toY);
 
   public static class HWND extends PointerType { }
   

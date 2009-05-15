@@ -17,14 +17,16 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import java.awt.*;
+import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
+import static org.openqa.selenium.Ignore.Driver.IE;
+import static org.openqa.selenium.Ignore.Driver.SAFARI;
 
-import static org.openqa.selenium.Ignore.Driver.*;
+import java.awt.*;
 
 public class DragAndDropTest extends AbstractDriverTestCase {
 
     @JavascriptEnabled
-    @Ignore({HTMLUNIT, IE, SAFARI})
+    @Ignore({HTMLUNIT, SAFARI})
     public void testDragAndDrop() throws Exception {
         driver.get(dragAndDropPage);
         RenderedWebElement img = (RenderedWebElement) driver.findElement(By.id("test1"));
@@ -43,18 +45,17 @@ public class DragAndDropTest extends AbstractDriverTestCase {
     }
 
     @JavascriptEnabled
-    @Ignore({HTMLUNIT, IE, SAFARI})
+    @Ignore({HTMLUNIT, SAFARI})
     public void testDragAndDropToElement() {
         driver.get(dragAndDropPage);
         RenderedWebElement img1 = (RenderedWebElement) driver.findElement(By.id("test1"));
         RenderedWebElement img2 = (RenderedWebElement) driver.findElement(By.id("test2"));
-        img1.dragAndDropBy(100, 100);
         img2.dragAndDropOn(img1);
         assertEquals(img1.getLocation(), img2.getLocation());
     }
 
     @JavascriptEnabled
-    @Ignore({HTMLUNIT, IE, SAFARI})
+    @Ignore({HTMLUNIT, SAFARI})
     public void testElementInDiv() {
         driver.get(dragAndDropPage);
         RenderedWebElement img = (RenderedWebElement) driver.findElement(By.id("test3"));

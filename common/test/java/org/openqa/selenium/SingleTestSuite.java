@@ -47,7 +47,7 @@ public class SingleTestSuite extends TestCase {
         .keepDriverInstance()
         .includeJavascriptTests()
         .onlyRun("TypingTest")
-        .method("testHomeAndEndAndPageUpAndPageDownKeys")
+//        .method("testDragAndDrop")
         .exclude(ALL)
         .exclude(Ignore.Driver.IE)
         .leaveRunning()

@@ -54,6 +54,7 @@ public:
 	IHTMLElement	*output_html_element_;
 	std::vector<IHTMLElement*> output_list_html_element_;
 	CComVariant		output_variant_;
+	SAFEARRAY		*output_safe_array_;
 	int				error_code;
 
 	// Error handling and synchronization

@@ -56,6 +56,7 @@ import com.sun.jna.ptr.PointerByReference;
 public class InternetExplorerDriver implements WebDriver, SearchContext, JavascriptExecutor {
     private static ExportedWebDriverFunctions lib;
     private Pointer driver;
+    private Speed speed = Speed.FAST;
     private ErrorHandler errors = new ErrorHandler();
 
     public InternetExplorerDriver() {
@@ -111,8 +112,7 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
       result = lib.wdExecuteScript(driver, new WString(script), scriptArgs, scriptResultRef);
       
       errors.verifyErrorCode(result, "Cannot execute script");
-      Object toReturn = extractReturnValue(scriptResultRef);
-      return toReturn;
+      return extractReturnValue(scriptResultRef);
     } finally {
       lib.wdFreeScriptArgs(scriptArgs);
     }
@@ -159,7 +159,7 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
         PointerByReference element = new PointerByReference();
         result = lib.wdGetElementScriptResult(scriptResult, driver, element);
         errors.verifyErrorCode(result, "Cannot extract element result");
-        toReturn = new InternetExplorerElement(lib, driver, element.getValue());
+        toReturn = new InternetExplorerElement(lib, this, element.getValue());
         break;
         
       case 5:
@@ -256,11 +256,11 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
    }
 
     public List<WebElement> findElements(By by) {
-    	return new Finder(lib, driver, null).findElements(by);
+    	return new Finder(lib, this, null).findElements(by);
     }
 
     public WebElement findElement(By by) {
-        return new Finder(lib, driver, null).findElement(by);
+        return new Finder(lib, this, null).findElement(by);
     }
 
     @Override
@@ -281,14 +281,22 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
         return new InternetExplorerOptions();
     }
 
-    protected native void waitForLoadToComplete();
+    protected void waitForLoadToComplete() {
+      lib.wdWaitForLoadToComplete(driver);
+    }
 
     @Override
     protected void finalize() throws Throwable {
-    	if (driver != null) {
-    	  lib.wdFreeDriver(driver);
-    	}
+      super.finalize();
+      if (driver != null) {
+        lib.wdFreeDriver(driver);
+      }
     }
+
+  // Deliberately package level visibility
+  Pointer getUnderlyingPointer() {
+    return driver;
+  }
 
   private class InternetExplorerTargetLocator implements TargetLocator {
         public WebDriver frame(int frameIndex) {
@@ -318,7 +326,7 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
           
           errors.verifyErrorCode(result, "Unable to find active element");
           
-          return new InternetExplorerElement(lib, driver, element.getValue());
+          return new InternetExplorerElement(lib, InternetExplorerDriver.this, element.getValue());
         }
 
         public Alert alert() {
@@ -351,8 +359,8 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
     }
     
     private class InternetExplorerOptions implements Options {
-      
-		public void addCookie(Cookie cookie) {
+
+      public void addCookie(Cookie cookie) {
 		  int result = lib.wdAddCookie(driver, new WString(cookie.toString()));
 		 
 		  errors.verifyErrorCode(result, ("Unable to add cookie: " + cookie));
@@ -409,11 +417,11 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
 		}
 
         public Speed getSpeed() {
-            throw new UnsupportedOperationException();
+            return speed;
         }
 
         public void setSpeed(Speed speed) {
-//            doSetMouseSpeed(speed.getTimeOut());
+          InternetExplorerDriver.this.speed = speed;
         }
     }
 

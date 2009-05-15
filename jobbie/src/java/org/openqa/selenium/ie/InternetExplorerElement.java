@@ -31,6 +31,7 @@ import org.openqa.selenium.internal.Locatable;
 
 import com.sun.jna.Pointer;
 import com.sun.jna.WString;
+import com.sun.jna.NativeLong;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.NativeLongByReference;
 import com.sun.jna.ptr.PointerByReference;
@@ -38,14 +39,15 @@ import com.sun.jna.ptr.PointerByReference;
 public class InternetExplorerElement implements RenderedWebElement, SearchContext, Locatable {
 
   private final ExportedWebDriverFunctions lib;
-  private final Pointer driver;
+  private final InternetExplorerDriver parent;
   private final Pointer element;
   private final ErrorHandler errors = new ErrorHandler();
 
   // Called from native code
-  public InternetExplorerElement(ExportedWebDriverFunctions lib, Pointer driver, Pointer element) {
+  public InternetExplorerElement(ExportedWebDriverFunctions lib, InternetExplorerDriver parent, Pointer element) {
     this.lib = lib;
-    this.driver = driver;
+    this.parent = parent;
+//    this.driver = parent.;
     this.element = element;
 
     if (element == null) {
@@ -100,7 +102,7 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
     
     errors.verifyErrorCode(result, "send keys to");
 
-    result = lib.wdWaitForLoadToComplete(driver);
+    parent.waitForLoadToComplete();
   }
 
   public void clear() {
@@ -163,21 +165,21 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
 
   public Point getLocationOnScreenOnceScrolledIntoView() {
     HWNDByReference hwnd = new HWNDByReference();
-    IntByReference x = new IntByReference();
-    IntByReference y = new IntByReference();
-    IntByReference width = new IntByReference();
-    IntByReference height = new IntByReference();
+    NativeLongByReference x = new NativeLongByReference();
+    NativeLongByReference y = new NativeLongByReference();
+    NativeLongByReference width = new NativeLongByReference();
+    NativeLongByReference height = new NativeLongByReference();
     if (lib.wdeGetDetailsOnceScrolledOnToScreen(element, hwnd, x, y, width, height) != 0) 
             return null;
-    
-    return new Point(x.getValue(), y.getValue());
+
+    return new Point(x.getValue().intValue(), y.getValue().intValue());
   }
 
   public Point getLocation() {
     NativeLongByReference x = new NativeLongByReference();
     NativeLongByReference y = new NativeLongByReference();
+
     int result = lib.wdeGetLocation(element, x, y);
-    
     errors.verifyErrorCode(result, "Unable to get location of element");
     
     return new Point(x.getValue().intValue(), y.getValue().intValue());
@@ -203,23 +205,61 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
 
   @Override
   protected void finalize() throws Throwable {
+    super.finalize();
     lib.wdFreeElement(element);
   }
 
   public void dragAndDropBy(int moveRightBy, int moveDownBy) {
-    throw new UnsupportedOperationException();
+    HWNDByReference hwnd = new HWNDByReference();
+    NativeLongByReference x = new NativeLongByReference();
+    NativeLongByReference y = new NativeLongByReference();
+    NativeLongByReference width = new NativeLongByReference();
+    NativeLongByReference height = new NativeLongByReference();
+    int result = lib.wdeGetDetailsOnceScrolledOnToScreen(element, hwnd, x, y, width, height);
+    errors.verifyErrorCode(result, "Unable to determine location once scrolled on to screen");
+
+    lib.wdeMouseDownAt(hwnd.getValue(), x.getValue(), y.getValue());
+
+    long endX = x.getValue().longValue() + moveRightBy;
+    long endY = y.getValue().longValue() + moveDownBy;
+
+    int duration = parent.manage().getSpeed().getTimeOut();
+    lib.wdeMouseMoveTo(hwnd.getValue(), new NativeLong(duration), x.getValue(), y.getValue(), new NativeLong(endX), new NativeLong(endY));
+    lib.wdeMouseUpAt(hwnd.getValue(), new NativeLong(endX), new NativeLong(endY));
   }
 
-  public void dragAndDropOn(RenderedWebElement element) {
-    throw new UnsupportedOperationException();
+  public void dragAndDropOn(RenderedWebElement toElement) {
+    HWNDByReference hwnd = new HWNDByReference();
+    NativeLongByReference x = new NativeLongByReference();
+    NativeLongByReference y = new NativeLongByReference();
+    NativeLongByReference width = new NativeLongByReference();
+    NativeLongByReference height = new NativeLongByReference();
+    int result = lib.wdeGetDetailsOnceScrolledOnToScreen(element, hwnd, x, y, width, height);
+    errors.verifyErrorCode(result, "Unable to determine location once scrolled on to screen");
+
+    NativeLong startX = new NativeLong(x.getValue().longValue() + (width.getValue().longValue() / 2));
+    NativeLong startY = new NativeLong(y.getValue().longValue() + (height.getValue().longValue() / 2));
+
+    lib.wdeMouseDownAt(hwnd.getValue(), startX, startY);
+
+    Pointer other = ((InternetExplorerElement) toElement).element;
+    result = lib.wdeGetDetailsOnceScrolledOnToScreen(other, hwnd, x, y, width, height);
+    errors.verifyErrorCode(result, "Unable to determine location of target once scrolled on to screen");
+
+    NativeLong endX = new NativeLong(x.getValue().longValue() + (width.getValue().longValue() / 2));
+    NativeLong endY = new NativeLong(y.getValue().longValue() + (height.getValue().longValue() / 2));
+
+    int duration = parent.manage().getSpeed().getTimeOut();
+    lib.wdeMouseMoveTo(hwnd.getValue(), new NativeLong(duration), startX, startY, endX, endY);
+    lib.wdeMouseUpAt(hwnd.getValue(), endX, endY);
   }
   
   public WebElement findElement(By by) {
-    return new Finder(lib, driver, element).findElement(by);
+    return new Finder(lib, parent, element).findElement(by);
   }
   
   public List<WebElement> findElements(By by) {
-    return new Finder(lib, driver, element).findElements(by);
+    return new Finder(lib, parent, element).findElements(by);
   }
   
   protected int addToScriptArgs(Pointer scriptArgs) {

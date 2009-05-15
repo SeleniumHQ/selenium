@@ -112,21 +112,12 @@ int ElementWrapper::toggle()
 	return data.error_code;
 }
 
-int ElementWrapper::getLocationWhenScrolledIntoView(HWND* hwnd, long* x, long* y) 
+int ElementWrapper::getLocationWhenScrolledIntoView(HWND* hwnd, long* x, long* y, long* width, long* height) 
 {
 	SCOPETRACER
     SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_ELEM_GETLOCATIONONCESCROLLEDINTOVIEW,)
 
-    VARIANT result = data.output_variant_;
-    
-    if (result.vt != VT_ARRAY) {
-            *hwnd = NULL;
-            *x = 0;
-            *y = 0;
-			return EUNHANDLEDERROR;
-    }
-
-    SAFEARRAY* ary = result.parray;
+    SAFEARRAY* ary = data.output_safe_array_;
     long index = 0;
     CComVariant hwndVariant;
     SafeArrayGetElement(ary, &index, (void*) &hwndVariant);
@@ -135,12 +126,22 @@ int ElementWrapper::getLocationWhenScrolledIntoView(HWND* hwnd, long* x, long* y
     index = 1;
     CComVariant xVariant;
     SafeArrayGetElement(ary, &index, (void*) &xVariant);
-    *x = xVariant.lVal;
+	*x = xVariant.lVal;
 
     index = 2;
     CComVariant yVariant;
     SafeArrayGetElement(ary, &index, (void*) &yVariant);
     *y = yVariant.lVal;
+
+	index = 3;
+    CComVariant widthVariant;
+    SafeArrayGetElement(ary, &index, (void*) &widthVariant);
+    *width = widthVariant.lVal;
+
+	index = 4;
+    CComVariant heightVariant;
+    SafeArrayGetElement(ary, &index, (void*) &heightVariant);
+    *height = heightVariant.lVal;
 
     SafeArrayDestroy(ary);
 
@@ -152,15 +153,8 @@ void ElementWrapper::getLocation(long* x, long* y)
 	SCOPETRACER
 	SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_ELEM_GETLOCATION,)
 
-	VARIANT result = data.output_variant_;
-	
-	if (result.vt != VT_ARRAY) {
-		*x = 0;
-		*y = 0;
-		return;
-	}
+	SAFEARRAY* ary = data.output_safe_array_;
 
-	SAFEARRAY* ary = result.parray;
 	long index = 0;
 	CComVariant xVariant;
 	SafeArrayGetElement(ary, &index, (void*) &xVariant);

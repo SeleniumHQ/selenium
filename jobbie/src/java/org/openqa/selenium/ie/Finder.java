@@ -40,12 +40,14 @@ class Finder implements SearchContext, FindsByClassName, FindsById, FindsByLinkT
         FindsByTagName, FindsByXPath {
 
   private final ExportedWebDriverFunctions lib;
+  private final InternetExplorerDriver parent;
   private final Pointer driver;
   private final Pointer element;
 
-  public Finder(ExportedWebDriverFunctions lib, Pointer driver, Pointer element) {
+  public Finder(ExportedWebDriverFunctions lib, InternetExplorerDriver parent, Pointer element) {
     this.lib = lib;
-    this.driver = driver;
+    this.parent = parent;
+    this.driver = parent.getUnderlyingPointer();
     this.element = element;
   }
 
@@ -63,7 +65,7 @@ class Finder implements SearchContext, FindsByClassName, FindsById, FindsByLinkT
 
     handleErrorCode("id", using, result);
 
-    return new InternetExplorerElement(lib, driver, rawElement.getValue());
+    return new InternetExplorerElement(lib, parent, rawElement.getValue());
   }
 
   public List<WebElement> findElementsByClassName(String using) {
@@ -80,7 +82,7 @@ class Finder implements SearchContext, FindsByClassName, FindsById, FindsByLinkT
 
     handleErrorCode("id", using, result);
 
-    return new ElementCollection(lib, driver, elements.getValue()).toList();
+    return new ElementCollection(lib, parent, elements.getValue()).toList();
   }
 
   public WebElement findElementById(String using) {
@@ -89,7 +91,7 @@ class Finder implements SearchContext, FindsByClassName, FindsById, FindsByLinkT
 
     handleErrorCode("id", using, result);
 
-    return new InternetExplorerElement(lib, driver, rawElement.getValue());
+    return new InternetExplorerElement(lib, parent, rawElement.getValue());
   }
 
   public List<WebElement> findElementsById(String using) {
@@ -98,7 +100,7 @@ class Finder implements SearchContext, FindsByClassName, FindsById, FindsByLinkT
 
     handleErrorCode("id", using, result);
 
-    return new ElementCollection(lib, driver, elements.getValue()).toList();
+    return new ElementCollection(lib, parent, elements.getValue()).toList();
   }
 
   public WebElement findElementByLinkText(String using) {
@@ -107,7 +109,7 @@ class Finder implements SearchContext, FindsByClassName, FindsById, FindsByLinkT
 
     handleErrorCode("link text", using, result);
 
-    return new InternetExplorerElement(lib, driver, rawElement.getValue());
+    return new InternetExplorerElement(lib, parent, rawElement.getValue());
   }
 
   public List<WebElement> findElementsByLinkText(String using) {
@@ -116,7 +118,7 @@ class Finder implements SearchContext, FindsByClassName, FindsById, FindsByLinkT
 
     handleErrorCode("link text", using, result);
 
-    return new ElementCollection(lib, driver, elements.getValue()).toList();
+    return new ElementCollection(lib, parent, elements.getValue()).toList();
   }
 
   public WebElement findElementByPartialLinkText(String using) {
@@ -125,7 +127,7 @@ class Finder implements SearchContext, FindsByClassName, FindsById, FindsByLinkT
 
     handleErrorCode("link text", using, result);
 
-    return new InternetExplorerElement(lib, driver, rawElement.getValue());
+    return new InternetExplorerElement(lib, parent, rawElement.getValue());
   }
 
   public List<WebElement> findElementsByPartialLinkText(String using) {
@@ -134,7 +136,7 @@ class Finder implements SearchContext, FindsByClassName, FindsById, FindsByLinkT
 
     handleErrorCode("link text", using, result);
 
-    return new ElementCollection(lib, driver, elements.getValue()).toList();
+    return new ElementCollection(lib, parent, elements.getValue()).toList();
   }  
   public WebElement findElementByName(String using) {
     PointerByReference rawElement = new PointerByReference();
@@ -142,7 +144,7 @@ class Finder implements SearchContext, FindsByClassName, FindsById, FindsByLinkT
 
     handleErrorCode("name", using, result);
 
-    return new InternetExplorerElement(lib, driver, rawElement.getValue());
+    return new InternetExplorerElement(lib, parent, rawElement.getValue());
   }
 
   public List<WebElement> findElementsByName(String using) {
@@ -151,7 +153,7 @@ class Finder implements SearchContext, FindsByClassName, FindsById, FindsByLinkT
 
     handleErrorCode("name", using, result);
 
-    return new ElementCollection(lib, driver, elements.getValue()).toList();
+    return new ElementCollection(lib, parent, elements.getValue()).toList();
   }
 
   public WebElement findElementByTagName(String using) {
@@ -160,7 +162,7 @@ class Finder implements SearchContext, FindsByClassName, FindsById, FindsByLinkT
 
     handleErrorCode("xpath", using, result);
 
-    return new InternetExplorerElement(lib, driver, rawElement.getValue());
+    return new InternetExplorerElement(lib, parent, rawElement.getValue());
   }
 
   public List<WebElement> findElementsByTagName(String using) {
@@ -169,7 +171,7 @@ class Finder implements SearchContext, FindsByClassName, FindsById, FindsByLinkT
 
     handleErrorCode("tag name", using, result);
 
-    return new ElementCollection(lib, driver, elements.getValue()).toList();
+    return new ElementCollection(lib, parent, elements.getValue()).toList();
   }
 
   public WebElement findElementByXPath(String using) {
@@ -178,7 +180,7 @@ class Finder implements SearchContext, FindsByClassName, FindsById, FindsByLinkT
 
     handleErrorCode("xpath", using, result);
 
-    return new InternetExplorerElement(lib, driver, rawElement.getValue());
+    return new InternetExplorerElement(lib, parent, rawElement.getValue());
   }
 
   public List<WebElement> findElementsByXPath(String using) {
@@ -187,7 +189,7 @@ class Finder implements SearchContext, FindsByClassName, FindsById, FindsByLinkT
 
     handleErrorCode("xpath", using, result);
 
-    return new ElementCollection(lib, driver, elements.getValue()).toList();
+    return new ElementCollection(lib, parent, elements.getValue()).toList();
   }
 
   public WebElement findElement(By by) {

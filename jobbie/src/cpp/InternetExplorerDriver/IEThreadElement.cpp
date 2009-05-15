@@ -325,11 +325,11 @@ void IeThread::OnElementGetLocationOnceScrolledIntoView(WPARAM w, LPARAM lp)
     ON_THREAD_ELEMENT(data, pElement)
 
     HWND hwnd;
-    long x = 0, y = 0;
+    long x = 0, y = 0, width = 0, height = 0;
 
-    getLocationWhenScrolledIntoView(pElement, &hwnd, &x, &y);
+    getLocationWhenScrolledIntoView(pElement, &hwnd, &x, &y, &width, &height);
 
-    SAFEARRAY* args = SafeArrayCreateVector(VT_VARIANT, 0, 3);
+    SAFEARRAY* args = SafeArrayCreateVector(VT_VARIANT, 0, 5);
     
     long index = 0;
     VARIANT hwndRes;
@@ -349,10 +349,19 @@ void IeThread::OnElementGetLocationOnceScrolledIntoView(WPARAM w, LPARAM lp)
     yRes.lVal = y;
     SafeArrayPutElement(args, &index, &yRes);
 
-    VARIANT wrappedArray;
-    wrappedArray.vt = VT_ARRAY;
-    wrappedArray.parray = args;
-    data.output_variant_.Attach(&wrappedArray);
+	index = 3;
+    VARIANT widthRes;
+    widthRes.vt = VT_I4;
+    widthRes.lVal = width;
+    SafeArrayPutElement(args, &index, &widthRes);
+
+	index = 4;
+    VARIANT heightRes;
+    heightRes.vt = VT_I4;
+    heightRes.lVal = height;
+    SafeArrayPutElement(args, &index, &heightRes);
+
+    data.output_safe_array_ = args;
 }
 
 void IeThread::OnElementGetLocation(WPARAM w, LPARAM lp)
@@ -389,20 +398,17 @@ void IeThread::OnElementGetLocation(WPARAM w, LPARAM lp)
 	
 	long index = 0;
 	VARIANT xRes;
-	xRes.vt = VT_I8;
+	xRes.vt = VT_I4;
 	xRes.lVal = x;
-	SafeArrayPutElement(args, &index, &xRes);
+	SafeArrayPutElement(args, &index, (void*) &xRes);
 
 	index = 1;
 	VARIANT yRes;
-	yRes.vt = VT_I8;
+	yRes.vt = VT_I4;
 	yRes.lVal = y;
 	SafeArrayPutElement(args, &index, &yRes);
 
-	VARIANT wrappedArray;
-	wrappedArray.vt = VT_ARRAY;
-	wrappedArray.parray = args;
-	data.output_variant_.Attach(&wrappedArray);
+	data.output_safe_array_ = args;
 }
 
 void IeThread::OnElementGetHeight(WPARAM w, LPARAM lp)
@@ -764,7 +770,7 @@ bool IeThread::isSelected(IHTMLElement *pElement)
 	return false;
 }
 
-int IeThread::getLocationWhenScrolledIntoView(IHTMLElement *pElement, HWND* hwnd, long *x, long *y)
+int IeThread::getLocationWhenScrolledIntoView(IHTMLElement *pElement, HWND* hwnd, long *x, long *y, long* w, long* h)
 {
     CComQIPtr<IHTMLDOMNode2> node(pElement);
 
@@ -820,6 +826,9 @@ int IeThread::getLocationWhenScrolledIntoView(IHTMLElement *pElement, HWND* hwnd
 
     height -= clickY;
     width -= clickX;
+
+	*w = width;
+	*h = height;
 
     if (height == 0 || width == 0) {
             cerr << "Element would not be visible because it lacks height and/or width." << endl;
@@ -879,9 +888,9 @@ int IeThread::click(IHTMLElement *pElement, CScopeCaller *pSC)
 {
 	SCOPETRACER
 
-	long clickX = 0, clickY = 0;
+	long clickX = 0, clickY = 0, w = 0, h = 0;
 	HWND ieWindow;
-	int result = getLocationWhenScrolledIntoView(pElement, &ieWindow, &clickX, &clickY);
+	int result = getLocationWhenScrolledIntoView(pElement, &ieWindow, &clickX, &clickY, &w, &h);
 	if (result != SUCCESS) {
 		return result;
 	}

@@ -44,6 +44,7 @@ void DataMarshaller::resetOutputs()
 	output_list_html_element_.clear();
 	output_variant_.Clear();
 	error_code = SUCCESS;
+	output_safe_array_ = NULL;
 	exception_caught_ = false;
 }
 

@@ -34,6 +34,7 @@ EXPORT void sendKeys(HWND directInputTo, const wchar_t* value, int timePerKey);
 EXPORT LRESULT clickAt(HWND directInputTo, long x, long y);
 EXPORT LRESULT mouseDownAt(HWND directInputTo, long x, long y);
 EXPORT LRESULT mouseUpAt(HWND directInputTo, long x, long y);
+EXPORT LRESULT mouseMoveTo(HWND directInputTo, long duration, long fromX, long fromY, long toX, long toY);
 
 #ifdef __cplusplus
 }

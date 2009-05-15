@@ -507,4 +507,27 @@ LRESULT mouseUpAt(HWND directInputTo, long x, long y)
 	return SendMessage(directInputTo, WM_LBUTTONUP, 0, MAKELONG(x, y));
 }
 
+LRESULT mouseMoveTo(HWND directInputTo, long duration, long fromX, long fromY, long toX, long toY)
+{
+	// How many steps?
+	int steps = 15;
+	long sleep = duration / steps;
+
+	// Move in a straight line, and always use the same number of steps
+	int currentX = fromX;
+	int currentY = fromY;
+
+	int stepX = (fromX - toX) / steps;
+	int stepY = (fromY - toY) / steps;
+
+	for (int i = 0; i < steps -1; i++) {
+		SendMessage(directInputTo, WM_MOUSEMOVE, 0, MAKELPARAM(currentX, currentY));
+		currentX += stepX;
+		currentY += stepY;
+		wait(sleep);
+	}
+
+	return SendMessage(directInputTo, WM_MOUSEMOVE, 0, MAKELPARAM(toX, toY));
+}
+
 }

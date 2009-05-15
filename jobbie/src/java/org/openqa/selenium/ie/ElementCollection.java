@@ -1,22 +1,19 @@
 package org.openqa.selenium.ie;
 
+import com.sun.jna.Pointer;
+import com.sun.jna.ptr.IntByReference;
+import com.sun.jna.ptr.PointerByReference;
+
+import org.openqa.selenium.WebElement;
 import static org.openqa.selenium.ie.ExportedWebDriverFunctions.SUCCESS;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.ie.ExportedWebDriverFunctions;
-import org.openqa.selenium.ie.InternetExplorerElement;
-
-import com.sun.jna.Pointer;
-import com.sun.jna.ptr.IntByReference;
-import com.sun.jna.ptr.PointerByReference;
-
 class ElementCollection {
   private final List<WebElement> elements;
   
-  public ElementCollection(ExportedWebDriverFunctions lib, Pointer driver, Pointer rawElements) {
+  public ElementCollection(ExportedWebDriverFunctions lib, InternetExplorerDriver driver, Pointer rawElements) {
     elements = extractElements(lib, driver, rawElements);
   }
 
@@ -24,7 +21,7 @@ class ElementCollection {
     return elements;
   }
 
-  private List<WebElement> extractElements(ExportedWebDriverFunctions lib, Pointer driver, Pointer rawElements) {
+  private List<WebElement> extractElements(ExportedWebDriverFunctions lib, InternetExplorerDriver driver, Pointer rawElements) {
     IntByReference length = new IntByReference();
     int result = lib.wdcGetCollectionLength(rawElements, length);
     if (result != SUCCESS) {

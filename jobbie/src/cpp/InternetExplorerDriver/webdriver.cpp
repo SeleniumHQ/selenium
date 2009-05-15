@@ -18,6 +18,7 @@ limitations under the License.
 #include "stdafx.h"
 #include "webdriver.h"
 #include "finder.h"
+#include "interactions.h"
 #include "InternetExplorerDriver.h"
 #include "logging.h"
 #include "utils.h"
@@ -599,7 +600,7 @@ int wdeGetDetailsOnceScrolledOnToScreen(WebElement* element, HWND* hwnd, long* x
     if (!element || !element->element) { return ENOSUCHELEMENT; }
 
 	try {
-		element->element->getLocationWhenScrolledIntoView(hwnd, x, y);
+		element->element->getLocationWhenScrolledIntoView(hwnd, x, y, width, height);
 		return SUCCESS;
 	} END_TRY;
 }
@@ -1140,6 +1141,24 @@ int wdGetElementScriptResult(ScriptResult* result, WebDriver* driver, WebElement
 
 	*element = toReturn;
 
+	return SUCCESS;
+}
+
+int wdeMouseDownAt(HWND hwnd, long windowX, long windowY)
+{
+	mouseDownAt(hwnd, windowX, windowY);
+	return SUCCESS;
+}
+
+int wdeMouseUpAt(HWND hwnd, long windowX, long windowY)
+{
+	mouseUpAt(hwnd, windowX, windowY);
+	return SUCCESS;
+}
+
+int wdeMouseMoveTo(HWND hwnd, long duration, long fromX, long fromY, long toX, long toY)
+{
+	mouseMoveTo(hwnd, duration, fromX, fromY, toX, toY);
 	return SUCCESS;
 }
 
