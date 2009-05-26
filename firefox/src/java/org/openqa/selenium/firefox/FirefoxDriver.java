@@ -614,7 +614,7 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
             throw new IllegalArgumentException("Method parameter pngFile must not be null");
         }
         File dir = pngFile.getParentFile();
-        if (!dir.exists() && !dir.mkdirs()) {
+        if (dir != null && !dir.exists() && !dir.mkdirs()) {
             throw new WebDriverException("Could not create directory " + dir.getAbsolutePath());
         }
         sendMessage(WebDriverException.class, "saveScreenshot", pngFile.getAbsolutePath());
