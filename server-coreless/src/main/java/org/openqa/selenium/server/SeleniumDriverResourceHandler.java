@@ -34,6 +34,7 @@ import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
 import org.openqa.selenium.server.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
+import org.openqa.selenium.server.browserlaunchers.InvalidBrowserExecutableException;
 import org.openqa.selenium.server.commands.*;
 import org.openqa.selenium.server.htmlrunner.HTMLLauncher;
 import org.openqa.selenium.server.log.AntJettyLoggerBuildListener;
@@ -394,9 +395,14 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 setDomain(sessionId, values.get(1));
                 results = "OK," + sessionId;
             } catch (RemoteCommandException rce) {
-                results = "Failed to start new browser session: " + rce.getMessage();
-            }
-
+                  results = "Failed to start new browser session: " + rce.getMessage();
+            } catch (InvalidBrowserExecutableException ibex) {
+                  results = "Failed to start new browser session: " + ibex.getMessage();
+            } catch (IllegalArgumentException iaex) {
+                  results = "Failed to start new browser session: " + iaex.getMessage();
+            } catch (RuntimeException rte) {
+                  results = "Failed to start new browser session: " + rte.getMessage();
+            } 
             // clear out any network traffic captured but never pulled back by the last client (this feature only works with one concurrent browser, similar to PI mode)
             CaptureNetworkTrafficCommand.clear();
 

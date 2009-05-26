@@ -41,10 +41,13 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
 
     private AsyncExecute shell = new AsyncExecute();
 
-    public FirefoxCustomProfileLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
+    public FirefoxCustomProfileLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) throws InvalidBrowserExecutableException {
         this(browserOptions, configuration,
                 sessionId, ApplicationRegistry.instance().browserInstallationCache().locateBrowserInstallation(
                         "firefoxproxy", browserLaunchLocation, new Firefox2or3Locator()));
+        if (browserInstallation == null) {
+          throw new InvalidBrowserExecutableException("The specified path to the browser executable is invalid.");
+        }
     }
 
     public FirefoxCustomProfileLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration, String sessionId, BrowserInstallation browserInstallation) {

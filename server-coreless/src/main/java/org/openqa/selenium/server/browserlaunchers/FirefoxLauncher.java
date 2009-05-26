@@ -28,7 +28,7 @@ public class FirefoxLauncher implements BrowserLauncher {
 
     final BrowserLauncher realLauncher;
     
-    public FirefoxLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) {
+    public FirefoxLauncher(BrowserConfigurationOptions browserOptions, RemoteControlConfiguration configuration, String sessionId, String browserLaunchLocation) throws InvalidBrowserExecutableException {
         String browserName = "firefox";
         BrowserLocator locator = new Firefox2or3Locator();
         String version = browserOptions.get("version");
@@ -46,6 +46,10 @@ public class FirefoxLauncher implements BrowserLauncher {
         
         BrowserInstallation installation = ApplicationRegistry.instance().browserInstallationCache().locateBrowserInstallation(
                 browserName, browserLaunchLocation, locator);
+        
+        if (installation == null) {
+          throw new InvalidBrowserExecutableException("The specified path to the browser executable is invalid.");
+        }
         
         if ("chrome".equals(mode)) {
             realLauncher = new FirefoxChromeLauncher(browserOptions, configuration, sessionId, installation);
