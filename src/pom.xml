@@ -200,7 +200,7 @@
     </dependency>
   </dependencies>
   <properties>
-    <seleniumCoreVersion>1.0-SNAPSHOT</seleniumCoreVersion>
-    <seleniumRCVersion>1.0-SNAPSHOT</seleniumRCVersion>
+    <seleniumCoreVersion>1.0</seleniumCoreVersion>
+    <seleniumRCVersion>1.0</seleniumRCVersion>
   </properties>
 </project>
