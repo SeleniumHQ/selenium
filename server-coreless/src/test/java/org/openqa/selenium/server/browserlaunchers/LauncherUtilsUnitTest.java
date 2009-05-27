@@ -29,7 +29,8 @@ public class LauncherUtilsUnitTest extends TestCase {
         parentDir.deleteOnExit();
         System.out.println("Making dirs for path " + parentDir.getPath() + " (assuming path has not already been created)");
         // todo - this was commented out because this assert was preventing the 1.0 release and doesn't seem that important :) (PL - 20090527)
-        //assertTrue(parentDir.mkdirs());
+        boolean mkdirResult = parentDir.mkdirs();
+        //assertTrue(mkdirResult);
         File file = new File(parentDir, fileName);
         file.deleteOnExit();
         assertTrue(file.createNewFile());
