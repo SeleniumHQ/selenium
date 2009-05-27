@@ -241,7 +241,7 @@
             <properties>
                 <slowResources>false</slowResources>
                 <multiWindow>true</multiWindow>
-                <browser>*firefox</browser>
+                <browser>*firefoxproxy</browser>
                 <seleneseSuite>TestSuite</seleneseSuite>
             </properties>
             <build>
@@ -266,7 +266,7 @@
                                             port="4444"
                                             slowResources="${slowResources}"
                                             multiWindow="${multiWindow}"
-                                            startURL="http://localhost:4444" />
+                                            startURL="http://localhost:4444/selenium-server/tests/" />
                                     </tasks>
                                 </configuration>
                                 <goals>
