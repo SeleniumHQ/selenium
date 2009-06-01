@@ -20,7 +20,7 @@ from distutils.core import setup
 
 setup(
    name='webdriver',
-   version="0.5",
+   version="0.6",
    description='Python bidings for WebDriver',
    url='http://code.google.com/p/webdriver/',
    package_dir={

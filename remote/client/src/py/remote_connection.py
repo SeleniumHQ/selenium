@@ -45,7 +45,7 @@ class RemoteConnection(object):
     def get(self, path, *params):
         return self.request("GET", path, *params)
 
-    def delete(self, path, *params):
+    def delete(self, path):
         return self.request("DELETE", path)
 
     def request(self, method, path, *params):
@@ -64,7 +64,7 @@ class RemoteConnection(object):
         return self._process_response()
 
     def quit(self):
-        self._conn.request("DELETE", "/hub/session/%s" % (self._session_id))
+        self.delete("/hub/session/%s" % self._session_id)
 
     def _process_response(self):
         resp = self._conn.getresponse()
