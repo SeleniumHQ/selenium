@@ -38,7 +38,7 @@
         <exec executable="${python.executable}" resultproperty="result">
             <arg line="selenium_test_suite${_headless}.py"/>
         </exec>
-        <get taskname="selenium-shutdown" src="http://localhost:4444/selenium-server/driver/?cmd=shutDown" dest="target/shutdown-result.txt" ignoreerrors="true" />
+        <get taskname="selenium-shutdown" src="http://localhost:4444/selenium-server/driver/?cmd=shutDownSeleniumServer" dest="target/shutdown-result.txt" ignoreerrors="true" />
         <sleep seconds="20"/>
         <condition property="build.failed">
         	<not><equals arg1="0" arg2="${result}" /></not>

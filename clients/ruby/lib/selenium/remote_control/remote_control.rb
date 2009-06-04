@@ -22,7 +22,7 @@ module Selenium
       end
       
       def stop
-        Net::HTTP.get(@host, '/selenium-server/driver/?cmd=shutDown', @port)
+        Net::HTTP.get(@host, '/selenium-server/driver/?cmd=shutDownSeleniumServer', @port)
       end
       
     end

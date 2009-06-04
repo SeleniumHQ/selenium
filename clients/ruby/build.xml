@@ -30,7 +30,7 @@
             </not>
         </condition>
 
-        <get taskname="selenium-shutdown" src="http://localhost:4444/selenium-server/driver/?cmd=shutDown" dest="target/shutdown-result.txt" ignoreerrors="true" />
+        <get taskname="selenium-shutdown" src="http://localhost:4444/selenium-server/driver/?cmd=shutDownSeleniumServer" dest="target/shutdown-result.txt" ignoreerrors="true" />
         <sleep seconds="20"/>
         <fail if="build.failed" message="ruby tests failed!"/>
     </target>
