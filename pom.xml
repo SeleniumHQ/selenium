@@ -259,7 +259,7 @@
                                             <classpath refid="maven.test.classpath" />
                                         </taskdef>
                                         <echo>Shutting down any existing Remote Control...</echo>
-                                        <get src="http://localhost:4444/selenium-server/driver/?cmd=shutDown" dest="shutdown.log" ignoreerrors="true"/>
+                                        <get src="http://localhost:4444/selenium-server/driver/?cmd=shutDownSeleniumServer" dest="shutdown.log" ignoreerrors="true"/>
                                         <selenese 
                                             browser="${browser}"
                                             suite="src/main/resources/tests/${seleneseSuite}.html"
@@ -288,15 +288,8 @@
                             <dependency>
                                 <groupId>junit</groupId>
                                 <artifactId>junit</artifactId>
-                                <version>3.8.1</version>
+                                <version>4.4</version>
                             </dependency>
-                            <!-- DGF commenting out Andras' change 2264/2265, fixing Hudson build
-                            <dependency>
-								<groupId>jetty</groupId>
-								<artifactId>org.mortbay.jetty</artifactId>
-								<version>5.1.10</version>
-							</dependency>
-							-->
                         </dependencies>
                     </plugin>
                 </plugins>
