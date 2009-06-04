@@ -1,7 +1,7 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.seleniumhq.selenium.ide</groupId>
-  <version>1.0</version>
+  <version>1.0.1-SNAPSHOT</version>
   <artifactId>selenium-ide</artifactId>
   <packaging>jar</packaging>
   <name>Selenium IDE</name>
@@ -185,7 +185,7 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>3.8.1</version>
+      <version>4.4</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -194,13 +194,13 @@
       <version>2.4</version>
     </dependency>
     <dependency>
-      <groupId>ant</groupId>
+      <groupId>org.apache.ant</groupId>
       <artifactId>ant</artifactId>
-      <version>1.6.5</version>
+      <version>1.7.1</version>
     </dependency>
   </dependencies>
   <properties>
-    <seleniumCoreVersion>1.0</seleniumCoreVersion>
-    <seleniumRCVersion>1.0</seleniumRCVersion>
+    <seleniumCoreVersion>1.0.1-SNAPSHOT</seleniumCoreVersion>
+    <seleniumRCVersion>1.0.1-SNAPSHOT</seleniumRCVersion>
   </properties>
 </project>
