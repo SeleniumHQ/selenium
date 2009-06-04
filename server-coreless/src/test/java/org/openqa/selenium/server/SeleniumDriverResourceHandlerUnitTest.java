@@ -2,6 +2,7 @@ package org.openqa.selenium.server;
 
 import static org.easymock.classextension.EasyMock.anyObject;
 import static org.easymock.classextension.EasyMock.createMock;
+import static org.easymock.classextension.EasyMock.createNiceMock;
 import static org.easymock.classextension.EasyMock.expect;
 import static org.easymock.classextension.EasyMock.expectLastCall;
 import static org.easymock.classextension.EasyMock.replay;
@@ -10,8 +11,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import org.junit.Test;
+import org.mortbay.http.HttpResponse;
 
 import java.io.File;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.Vector;
 
@@ -114,5 +117,26 @@ public class SeleniumDriverResourceHandlerUnitTest {
 	  assertEquals("OK", result);
 	  
 	  verify(queueSet);
+  }
+
+  @Test
+  public void shutDownSeleniumServer_willBeProcessedInDoCommand() throws Exception {
+	  SeleniumServer server = createNiceMock(SeleniumServer.class);
+	  HttpResponse response = createNiceMock(HttpResponse.class);
+	  OutputStream stream = createNiceMock(OutputStream.class);
+	  
+	  SeleniumDriverResourceHandler handler = new SeleniumDriverResourceHandler(server);
+
+
+	  expect(response.getOutputStream()).andReturn(stream);
+	  response.commit();
+	  expectLastCall().once();
+	  replay(response);
+
+	  String result = handler.doCommand(SpecialCommand.shutDownSeleniumServer.toString(), new Vector<String>(), "sessionId", response);
+	  verify(response);
+
+	  assertEquals("OK", result);
+	  
   }
 }

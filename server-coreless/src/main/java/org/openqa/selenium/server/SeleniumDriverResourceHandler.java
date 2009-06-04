@@ -21,7 +21,6 @@ package org.openqa.selenium.server;
 import org.apache.commons.logging.Log;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.Get;
-import org.apache.tools.ant.util.FileUtils;
 import org.mortbay.http.HttpConnection;
 import org.mortbay.http.HttpException;
 import org.mortbay.http.HttpFields;
@@ -411,8 +410,8 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         	browserSessionFactory.endBrowserSession(sessionId, remoteControl.getConfiguration());
             results = "OK";
             break;
-        case shutDown:
-            results = null;
+        case shutDownSeleniumServer:
+            results = "OK";
             shutDown(res);
         	break;
         case getLogMessages:
