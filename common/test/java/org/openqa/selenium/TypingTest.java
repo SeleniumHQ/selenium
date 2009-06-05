@@ -21,10 +21,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-
-import static org.openqa.selenium.Ignore.Driver.*;
-import org.openqa.selenium.environment.TestEnvironment;
-import org.openqa.selenium.environment.GlobalTestEnvironment;
+import static org.openqa.selenium.Ignore.Driver.FIREFOX;
+import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
+import static org.openqa.selenium.Ignore.Driver.IE;
+import static org.openqa.selenium.Ignore.Driver.SAFARI;
 
 public class TypingTest extends AbstractDriverTestCase {
   @JavascriptEnabled
@@ -585,6 +585,11 @@ public class TypingTest extends AbstractDriverTestCase {
   @Ignore({SAFARI, HTMLUNIT})
   public void testNonPrintableCharactersShouldWorkWithContentEditableOrDesignModeSet() {
     driver.get(richTextPage);
+
+    // not tested on mac
+    if (Platform.getCurrent().is(Platform.MAC)) {
+      return;
+    }
 
     driver.switchTo().frame("editFrame");
     WebElement element = driver.switchTo().activeElement();

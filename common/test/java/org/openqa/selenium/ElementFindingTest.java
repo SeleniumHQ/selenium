@@ -316,7 +316,8 @@ public class ElementFindingTest extends AbstractDriverTestCase {
       // This is expected
     }
   }
-  
+
+  @Ignore(SAFARI)
   @JavascriptEnabled
   public void testShouldBeAbleToClickOnLinksWithNoHrefAttribute() {
     driver.get(javascriptPage);
