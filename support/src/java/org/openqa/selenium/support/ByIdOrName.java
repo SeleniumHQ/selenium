@@ -20,6 +20,7 @@ package org.openqa.selenium.support;
 import org.openqa.selenium.By;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.NoSuchElementException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,13 +38,13 @@ public class ByIdOrName extends By {
 
   @Override
   public WebElement findElement(SearchContext finder) {
-    // First, try to locate by id
-    WebElement toReturn = idFinder.findElement(finder);
-    if (toReturn != null)
-      return toReturn;
-
-    // Then by name
-    return nameFinder.findElement(finder);
+    try {
+      // First, try to locate by id
+      return idFinder.findElement(finder);
+    } catch (NoSuchElementException e) {
+      // Then by name
+      return nameFinder.findElement(finder);
+    }
   }
 
   @Override
