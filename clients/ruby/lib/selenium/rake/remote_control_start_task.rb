@@ -18,10 +18,10 @@ module Selenium
     # it will be "auto-discovered" in `vendor` directory using the following
     # path : `vendor/selenium-remote-control/selenium-server*-standalone.jar`
     # 
-    # To leverage all selenium-client capabilities I recommend downloading 
+    # To leverage the latest selenium-client capabilities, you may need to download 
     # a recent nightly build of a standalone packaging of Selenium Remote 
-    # Control. You will find the mightly build at 
-    # http://archiva.openqa.org/repository/snapshots/org/openqa/selenium/selenium-remote-control/1.0-SNAPSHOT/
+    # Control. You will find the nightly build at 
+    # http://nexus.openqa.org/content/repositories/snapshots/org/seleniumhq/selenium/server/selenium-server/
     class RemoteControlStartTask
       attr_accessor :port, :timeout_in_seconds, :background, 
                     :wait_until_up_and_running, :additional_args,
