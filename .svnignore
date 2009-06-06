@@ -5,5 +5,5 @@ classes
 selenium.xml
 .project
 .classpath
-.log
-.log.lck
+*.log
+*.log.lck
