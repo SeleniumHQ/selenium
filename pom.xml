@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.seleniumhq.selenium.core</groupId>
     <artifactId>selenium-core</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.1</version>
     <name>Selenium Core</name>
     <packaging>jar</packaging>
     <url>http://selenium.seleniumhq.org/projects/core</url>
@@ -396,7 +396,7 @@
         <dependency>
             <groupId>org.seleniumhq.selenium.server</groupId>
             <artifactId>selenium-server-coreless</artifactId>
-            <version>1.0.1-SNAPSHOT</version>
+            <version>1.0.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
