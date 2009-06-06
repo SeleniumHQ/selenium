@@ -196,10 +196,11 @@ Start/Stop a Selenium Remote Control Server
 ===========================================
  
   Selenium client comes with some convenient Rake tasks to start/stop a Remote Control server.
-  To leverage all selenium-client capabilities I recommend downloading a recent nightly build of
-  a standalone packaging of Selenium Remote Control (great for kick-ass Safari and Firefox 3 support anyway).
-  You will find the mightly build at [OpenQA.org](http://archiva.openqa.org/repository/snapshots/org/openqa/selenium/selenium-remote-control/1.0-SNAPSHOT/)
- 
+  To leverage the latest selenium-client capabilities, you may need to download 
+  a recent nightly build of a standalone packaging of Selenium Remote 
+  Control. You will find the nightly build at 
+  http://nexus.openqa.org/content/repositories/snapshots/org/seleniumhq/selenium/server/selenium-server/
+
  You typically "freeze" the Selenium Remote Control jar in your `vendor` 
  directory.
  
