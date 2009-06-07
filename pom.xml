@@ -225,12 +225,12 @@
 			<dependency>
 				<groupId>org.seleniumhq.selenium.core</groupId>
 				<artifactId>selenium-core</artifactId>
-				<version>1.0.1-SNAPSHOT</version>
+				<version>1.0.1</version>
 			</dependency>
 			<dependency>
 				<groupId>org.seleniumhq.selenium.ide</groupId>
 				<artifactId>selenium-ide</artifactId>
-				<version>1.0.1-SNAPSHOT</version>
+				<version>1.0</version>
 			</dependency>
 			<dependency>
 				<groupId>org.testng</groupId>
