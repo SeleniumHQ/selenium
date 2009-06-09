@@ -1,7 +1,7 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.seleniumhq.selenium.ide</groupId>
-  <version>1.0.1-SNAPSHOT</version>
+  <version>1.0.1</version>
   <artifactId>selenium-ide</artifactId>
   <packaging>jar</packaging>
   <name>Selenium IDE</name>
@@ -200,7 +200,7 @@
     </dependency>
   </dependencies>
   <properties>
-    <seleniumCoreVersion>1.0.1-SNAPSHOT</seleniumCoreVersion>
-    <seleniumRCVersion>1.0.1-SNAPSHOT</seleniumRCVersion>
+    <seleniumCoreVersion>1.0.1</seleniumCoreVersion>
+    <seleniumRCVersion>1.0.1</seleniumRCVersion>
   </properties>
 </project>
