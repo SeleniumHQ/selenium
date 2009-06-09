@@ -1179,7 +1179,13 @@ String captureScreenshotToString();
 */
 String captureNetworkTraffic(String type);
 
-/** Downloads a screenshot of the browser current window canvas to a
+/** Tells the Selenium server to add the specificed key and value as a custom outgoing request header. This only works if the browser is configured to use the built in Selenium proxy.
+@param key the header name.
+@param value the header value.
+*/
+void addCustomRequestHeader(String key, String value);
+
+    /** Downloads a screenshot of the browser current window canvas to a
 based 64 encoded PNG file. The <em>entire</em> windows canvas is captured,
 including parts rendered outside of the current view port.
 

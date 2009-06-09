@@ -245,6 +245,10 @@ public class CaptureNetworkTrafficCommand extends Command {
         public String toString() {
             return method + "|" + statusCode + "|" + url + "|" + requestHeaders.size() + "|" + responseHeaders.size() + "\n";
         }
+
+        public void addRequestHeader(String key, String value) {
+            this.requestHeaders.add(new Header(key, value));
+        }
     }
 
     public static class Header {

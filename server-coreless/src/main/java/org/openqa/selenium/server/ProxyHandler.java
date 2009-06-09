@@ -31,6 +31,7 @@ import org.mortbay.util.*;
 import org.mortbay.util.URI;
 import org.openqa.selenium.server.browserlaunchers.*;
 import org.openqa.selenium.server.commands.CaptureNetworkTrafficCommand;
+import org.openqa.selenium.server.commands.AddCustomRequestHeaderCommand;
 
 import cybervillains.ca.*;
 
@@ -367,7 +368,14 @@ public class ProxyHandler extends AbstractHttpHandler {
                 }
             }
         }
-        
+
+        // add any custom request headers that the user asked for
+        Map<String, String> customRequestHeaders = AddCustomRequestHeaderCommand.getHeaders();
+        for (Map.Entry<String, String> e : customRequestHeaders.entrySet()) {
+            connection.addRequestProperty(e.getKey(), e.getValue());
+            entry.addRequestHeader(e.getKey(), e.getValue());
+        }
+
         // Proxy headers
         if (!_anonymous)
             connection.setRequestProperty("Via", "1.1 (jetty)");

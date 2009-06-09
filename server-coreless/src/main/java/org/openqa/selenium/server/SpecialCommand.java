@@ -11,6 +11,7 @@ public enum SpecialCommand {
 	captureScreenshot,
 	captureScreenshotToString,
 	captureNetworkTraffic,
+	addCustomRequestHeader,
 	keyDownNative,
 	keyUpNative,
 	keyPressNative,

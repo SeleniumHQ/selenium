@@ -1979,6 +1979,7 @@ class selenium:
         """
         return self.get_string("captureScreenshotToString", [])
 
+
     def captureNetworkTraffic(self, type):
         """
         Returns the network traffic seen by the browser, including headers, AJAX requests, status codes, and timings. When this function is called, the traffic log is cleared, so the returned content is only the traffic seen since the last call.
@@ -1987,6 +1988,14 @@ class selenium:
         """
         return self.get_string("captureNetworkTraffic", [type,])
 
+    def addCustomRequestHeader(self, key, value):
+        """
+        Tells the Selenium server to add the specificed key and value as a custom outgoing request header. This only works if the browser is configured to use the built in Selenium proxy.
+
+        'key' the header name.
+        'value' the header value.
+        """
+        return self.do_command("addCustomRequestHeader", [key,value,])
 
     def capture_entire_page_screenshot_to_string(self,kwargs):
         """

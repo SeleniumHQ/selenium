@@ -165,7 +165,7 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
     
     protected void generatePacAndPrefJs(String homePage) throws IOException {
         LauncherUtils.ProxySetting proxySetting = LauncherUtils.ProxySetting.NO_PROXY;
-        if (browserConfigurationOptions.is("captureNetworkTraffic")) {
+        if (browserConfigurationOptions.is("captureNetworkTraffic") || browserConfigurationOptions.is("addCustomRequestHeaders")) {
             proxySetting = LauncherUtils.ProxySetting.PROXY_EVERYTHING;
         }
 

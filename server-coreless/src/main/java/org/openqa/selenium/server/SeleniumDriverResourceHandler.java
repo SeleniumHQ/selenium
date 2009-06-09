@@ -433,6 +433,9 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         case captureNetworkTraffic:
         	results = new CaptureNetworkTrafficCommand(values.get(0)).execute();
         	break;
+        case addCustomRequestHeader:
+        	results = new AddCustomRequestHeaderCommand(values.get(0), values.get(1)).execute();
+        	break;
         case keyDownNative:
         	try {
                 RobotRetriever.getRobot().keyPress(Integer.parseInt(values.get(0)));

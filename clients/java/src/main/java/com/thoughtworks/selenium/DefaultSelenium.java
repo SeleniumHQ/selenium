@@ -715,6 +715,10 @@ public class DefaultSelenium implements Selenium {
         return commandProcessor.getString("captureNetworkTraffic", new String[] {type});
     }
 
+    public void addCustomRequestHeader(String key, String value) {
+        commandProcessor.getString("addCustomRequestHeader", new String[] {key, value});
+    }
+
     public String captureEntirePageScreenshotToString(String kwargs) {
 		return commandProcessor.getString("captureEntirePageScreenshotToString", new String[] {kwargs,});
 	}
