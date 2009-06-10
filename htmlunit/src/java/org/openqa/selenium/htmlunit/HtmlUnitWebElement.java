@@ -214,10 +214,16 @@ public class HtmlUnitWebElement implements WebElement,
         }
     }
 
-    public String getElementName() {
-      assertElementNotStale();
-
+    public String getTagName() {
+        assertElementNotStale();
         return element.getNodeName();
+    }
+
+    /**
+     * @deprecated Use {@link #getTagName()} instead, this method will be removed in the near future.
+     */
+    public String getElementName() {
+        return getTagName();
     }
 
     public String getAttribute(String name) {
@@ -287,7 +293,7 @@ public class HtmlUnitWebElement implements WebElement,
                 }
             }
 
-            throw new UnsupportedOperationException("You may only toggle checkboxes or options in a select which allows multiple selections: " + getElementName());
+            throw new UnsupportedOperationException("You may only toggle checkboxes or options in a select which allows multiple selections: " + getTagName());
         } catch (IOException e) {
             throw new WebDriverException("Unexpected exception: " + e);
         }

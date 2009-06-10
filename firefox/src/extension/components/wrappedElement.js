@@ -216,7 +216,7 @@ FirefoxDriver.prototype.clear = function(respond) {
    respond.send();
 }
 
-FirefoxDriver.prototype.getElementName = function(respond) {
+FirefoxDriver.prototype.getTagName = function(respond) {
     var element = Utils.getElementAt(respond.elementId, this.context);
 
   if (!element) {

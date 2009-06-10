@@ -18,7 +18,6 @@ limitations under the License.
 package org.openqa.selenium.support.ui;
 
 import org.jmock.Expectations;
-import org.jmock.api.Expectation;
 import org.jmock.integration.junit3.MockObjectTestCase;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
@@ -33,7 +32,7 @@ public class SelectTest extends MockObjectTestCase {
     final WebElement element = mock(WebElement.class);
 
     checking(new Expectations() {{
-      exactly(1).of(element).getElementName(); will(returnValue("a"));
+      exactly(1).of(element).getTagName(); will(returnValue("a"));
     }});
 
     try {
@@ -48,7 +47,7 @@ public class SelectTest extends MockObjectTestCase {
     final WebElement element = mock(WebElement.class);
 
     checking(new Expectations() {{
-      allowing(element).getElementName(); will(returnValue("select"));
+      allowing(element).getTagName(); will(returnValue("select"));
       exactly(1).of(element).getAttribute("multiple"); will(returnValue("multiple"));
     }});
 
@@ -60,7 +59,7 @@ public class SelectTest extends MockObjectTestCase {
     final WebElement element = mock(WebElement.class);
 
     checking(new Expectations() {{
-      allowing(element).getElementName(); will(returnValue("select"));
+      allowing(element).getTagName(); will(returnValue("select"));
       exactly(1).of(element).getAttribute("multiple"); will(returnValue(null));
     }});
 
@@ -73,7 +72,7 @@ public class SelectTest extends MockObjectTestCase {
     final List<WebElement> options = Collections.emptyList();
 
     checking(new Expectations() {{
-      allowing(element).getElementName(); will(returnValue("select"));
+      allowing(element).getTagName(); will(returnValue("select"));
       allowing(element).getAttribute("multiple"); will(returnValue("multiple"));
       exactly(1).of(element).findElements(By.tagName("option")); will(returnValue(options));
     }});
@@ -91,7 +90,7 @@ public class SelectTest extends MockObjectTestCase {
     final List<WebElement> options = Arrays.asList(optionBad, optionGood);
 
     checking(new Expectations() {{
-      allowing(element).getElementName(); will(returnValue("select"));
+      allowing(element).getTagName(); will(returnValue("select"));
       allowing(element).getAttribute("multiple"); will(returnValue("multiple"));
       exactly(1).of(element).findElements(By.tagName("option")); will(returnValue(options));
       exactly(1).of(optionBad).isSelected(); will(returnValue(false));
@@ -112,7 +111,7 @@ public class SelectTest extends MockObjectTestCase {
     final List<WebElement> options = Arrays.asList(firstOption, secondOption);
 
     checking(new Expectations() {{
-      allowing(element).getElementName(); will(returnValue("select"));
+      allowing(element).getTagName(); will(returnValue("select"));
       allowing(element).getAttribute("multiple"); will(returnValue("multiple"));
       exactly(1).of(element).findElements(By.tagName("option")); will(returnValue(options));
       exactly(1).of(firstOption).isSelected(); will(returnValue(true));
@@ -131,7 +130,7 @@ public class SelectTest extends MockObjectTestCase {
     final List<WebElement> options = Arrays.asList(firstOption);
 
     checking(new Expectations() {{
-      allowing(element).getElementName(); will(returnValue("select"));
+      allowing(element).getTagName(); will(returnValue("select"));
       allowing(element).getAttribute("multiple"); will(returnValue("multiple"));
       exactly(1).of(element).findElements(By.tagName("option")); will(returnValue(options));
       exactly(1).of(firstOption).isSelected(); will(returnValue(false));
@@ -153,7 +152,7 @@ public class SelectTest extends MockObjectTestCase {
     final List<WebElement> options = Arrays.asList(firstOption);
 
     checking(new Expectations() {{
-      allowing(element).getElementName(); will(returnValue("select"));
+      allowing(element).getTagName(); will(returnValue("select"));
       allowing(element).getAttribute("multiple"); will(returnValue("multiple"));
       exactly(1).of(element).findElements(By.xpath(".//option[. = \"fish\"]")); will(returnValue(options));
       exactly(1).of(firstOption).setSelected();
@@ -170,7 +169,7 @@ public class SelectTest extends MockObjectTestCase {
     final List<WebElement> options = Arrays.asList(firstOption, secondOption);
 
     checking(new Expectations() {{
-      allowing(element).getElementName(); will(returnValue("select"));
+      allowing(element).getTagName(); will(returnValue("select"));
       allowing(element).getAttribute("multiple"); will(returnValue("multiple"));
       exactly(1).of(element).findElements(By.tagName("option")); will(returnValue(options));
       exactly(1).of(firstOption).getAttribute("index"); will(returnValue("0"));
@@ -189,7 +188,7 @@ public class SelectTest extends MockObjectTestCase {
     final List<WebElement> options = Arrays.asList(firstOption);
 
     checking(new Expectations() {{
-      allowing(element).getElementName(); will(returnValue("select"));
+      allowing(element).getTagName(); will(returnValue("select"));
       allowing(element).getAttribute("multiple"); will(returnValue("multiple"));
       exactly(1).of(element).findElements(By.xpath(".//option[@value = \"b\"]")); will(returnValue(options));
       exactly(1).of(firstOption).setSelected();
@@ -206,7 +205,7 @@ public class SelectTest extends MockObjectTestCase {
     final List<WebElement> options = Arrays.asList(firstOption, secondOption);
 
     checking(new Expectations() {{
-      allowing(element).getElementName(); will(returnValue("select"));
+      allowing(element).getTagName(); will(returnValue("select"));
       allowing(element).getAttribute("multiple"); will(returnValue("multiple"));
       allowing(element).getAttribute("multiple"); will(returnValue("multiple"));
       exactly(1).of(element).findElements(By.tagName("option")); will(returnValue(options));
@@ -224,7 +223,7 @@ public class SelectTest extends MockObjectTestCase {
     final WebElement element = mock(WebElement.class);
 
     checking(new Expectations() {{
-      allowing(element).getElementName(); will(returnValue("select"));
+      allowing(element).getTagName(); will(returnValue("select"));
       exactly(1).of(element).getAttribute("multiple"); will(returnValue(""));
     }});
 
@@ -244,7 +243,7 @@ public class SelectTest extends MockObjectTestCase {
     final List<WebElement> options = Arrays.asList(firstOption, secondOption);
 
     checking(new Expectations() {{
-      allowing(element).getElementName(); will(returnValue("select"));
+      allowing(element).getTagName(); will(returnValue("select"));
       allowing(element).getAttribute("multiple"); will(returnValue("multiple"));
       exactly(1).of(element).findElements(By.xpath(".//option[. = \"b\"]")); will(returnValue(options));
       exactly(1).of(firstOption).isSelected(); will(returnValue(true));
@@ -264,7 +263,7 @@ public class SelectTest extends MockObjectTestCase {
     final List<WebElement> options = Arrays.asList(firstOption, secondOption);
 
     checking(new Expectations() {{
-      allowing(element).getElementName(); will(returnValue("select"));
+      allowing(element).getTagName(); will(returnValue("select"));
       allowing(element).getAttribute("multiple"); will(returnValue("multiple"));
       exactly(1).of(element).findElements(By.tagName("option")); will(returnValue(options));
       exactly(1).of(firstOption).getAttribute("index"); will(returnValue("2"));
@@ -285,7 +284,7 @@ public class SelectTest extends MockObjectTestCase {
     final List<WebElement> options = Arrays.asList(firstOption, secondOption);
 
     checking(new Expectations() {{
-      allowing(element).getElementName(); will(returnValue("select"));
+      allowing(element).getTagName(); will(returnValue("select"));
       allowing(element).getAttribute("multiple"); will(returnValue("multiple"));
       exactly(1).of(element).findElements(By.xpath(".//option[@value = \"b\"]")); will(returnValue(options));
       exactly(1).of(firstOption).isSelected(); will(returnValue(true));
@@ -302,7 +301,7 @@ public class SelectTest extends MockObjectTestCase {
     final WebElement element = mock(WebElement.class);
 
     checking(new Expectations() {{
-      allowing(element).getElementName(); will(returnValue("select"));
+      allowing(element).getTagName(); will(returnValue("select"));
       allowing(element).getAttribute("multiple"); will(returnValue("multiple"));
     }});
     
@@ -316,7 +315,7 @@ public class SelectTest extends MockObjectTestCase {
     final WebElement element = mock(WebElement.class);
 
     checking(new Expectations() {{
-      allowing(element).getElementName(); will(returnValue("select"));
+      allowing(element).getTagName(); will(returnValue("select"));
       allowing(element).getAttribute("multiple"); will(returnValue("multiple"));
     }});
 
@@ -330,7 +329,7 @@ public class SelectTest extends MockObjectTestCase {
     final WebElement element = mock(WebElement.class);
 
     checking(new Expectations() {{
-      allowing(element).getElementName(); will(returnValue("select"));
+      allowing(element).getTagName(); will(returnValue("select"));
       allowing(element).getAttribute("multiple"); will(returnValue("multiple"));
     }});
 
@@ -344,7 +343,7 @@ public class SelectTest extends MockObjectTestCase {
     final WebElement element = mock(WebElement.class);
 
     checking(new Expectations() {{
-      allowing(element).getElementName(); will(returnValue("select"));
+      allowing(element).getTagName(); will(returnValue("select"));
       allowing(element).getAttribute("multiple"); will(returnValue("multiple"));
     }});
 

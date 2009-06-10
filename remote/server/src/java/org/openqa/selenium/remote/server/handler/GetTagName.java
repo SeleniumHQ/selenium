@@ -21,12 +21,12 @@ import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
-public class GetElementName extends WebDriverHandler {
+public class GetTagName extends WebDriverHandler {
 
   private String elementId;
   private Response response;
 
-  public GetElementName(DriverSessions sessions) {
+  public GetTagName(DriverSessions sessions) {
     super(sessions);
   }
 
@@ -36,7 +36,7 @@ public class GetElementName extends WebDriverHandler {
 
   public ResultType call() throws Exception {
     response = newResponse();
-    response.setValue(getKnownElements().get(elementId).getElementName());
+    response.setValue(getKnownElements().get(elementId).getTagName());
 
     return ResultType.SUCCESS;
   }

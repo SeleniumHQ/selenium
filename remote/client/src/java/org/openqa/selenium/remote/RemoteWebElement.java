@@ -67,8 +67,15 @@ public class RemoteWebElement implements WebElement, SearchContext,
     execute("clearElement", map("id", id));
   }
 
+  public String getTagName() {
+    return (String) execute("getTagName", map("id", id)).getValue();
+  }
+
+  /**
+   * @deprecated Use {@link #getTagName()} instead, this method will be removed in the near future.
+   */
   public String getElementName() {
-    return (String) execute("getElementName", map("id", id)).getValue();
+    return getTagName();
   }
 
   public String getAttribute(String name) {

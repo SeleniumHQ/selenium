@@ -22,14 +22,14 @@ import static org.hamcrest.Matchers.is;
 import static org.openqa.selenium.Ignore.Driver.SAFARI;
 import org.junit.Test;
 
-public class ElementNameTest extends AbstractDriverTestCase {
+public class TagNameTest extends AbstractDriverTestCase {
 
     @Ignore(SAFARI)
     @Test
     public void shouldReturnInput() {
         driver.get(formPage);
         WebElement selectBox = driver.findElement(By.id("cheese"));
-        assertThat(selectBox.getElementName(), is("input"));
+        assertThat(selectBox.getTagName(), is("input"));
     }
 
 }

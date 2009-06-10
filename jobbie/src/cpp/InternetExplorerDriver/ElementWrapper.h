@@ -31,7 +31,7 @@ public:
 	ElementWrapper(InternetExplorerDriver* ie, IHTMLElement *pElem);
 	~ElementWrapper();
 
-    LPCWSTR getElementName();
+    LPCWSTR getTagName();
 	LPCWSTR getAttribute(LPCWSTR name);
 	LPCWSTR getValue();
 	int sendKeys(LPCWSTR newValue);

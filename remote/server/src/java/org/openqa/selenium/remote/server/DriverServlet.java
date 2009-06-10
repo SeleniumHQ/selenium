@@ -43,7 +43,6 @@ import org.openqa.selenium.remote.server.handler.GetElementAttribute;
 import org.openqa.selenium.remote.server.handler.GetElementDisplayed;
 import org.openqa.selenium.remote.server.handler.GetElementEnabled;
 import org.openqa.selenium.remote.server.handler.GetElementLocation;
-import org.openqa.selenium.remote.server.handler.GetElementName;
 import org.openqa.selenium.remote.server.handler.GetElementSelected;
 import org.openqa.selenium.remote.server.handler.GetElementSize;
 import org.openqa.selenium.remote.server.handler.GetElementText;
@@ -51,6 +50,7 @@ import org.openqa.selenium.remote.server.handler.GetElementValue;
 import org.openqa.selenium.remote.server.handler.GetMouseSpeed;
 import org.openqa.selenium.remote.server.handler.GetPageSource;
 import org.openqa.selenium.remote.server.handler.GetSessionCapabilities;
+import org.openqa.selenium.remote.server.handler.GetTagName;
 import org.openqa.selenium.remote.server.handler.GetTitle;
 import org.openqa.selenium.remote.server.handler.GoBack;
 import org.openqa.selenium.remote.server.handler.GoForward;
@@ -168,7 +168,7 @@ public class DriverServlet extends HttpServlet {
         .on(ResultType.SUCCESS, new EmptyResult());
     getMapper.bind("/session/:sessionId/:context/element/:id/value", GetElementValue.class)
         .on(ResultType.SUCCESS, new JsonResult(":response"));
-        getMapper.bind("/session/:sessionId/:context/element/:id/name", GetElementName.class)
+        getMapper.bind("/session/:sessionId/:context/element/:id/name", GetTagName.class)
         .on(ResultType.SUCCESS, new JsonResult(":response"));
 
     postMapper.bind("/session/:sessionId/:context/element/:id/clear", ClearElement.class)

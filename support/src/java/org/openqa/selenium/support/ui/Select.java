@@ -42,7 +42,7 @@ public class Select {
    * @throws UnexpectedTagNameException when element is not a SELECT
    */
   public Select(WebElement element) {
-    String tagName = element.getElementName();
+    String tagName = element.getTagName();
 
     if (null == tagName || !"select".equals(tagName.toLowerCase())) {
       throw new UnexpectedTagNameException("select", tagName);

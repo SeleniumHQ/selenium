@@ -95,7 +95,7 @@ protected:
 	void executeScript(const wchar_t *script, SAFEARRAY* args, VARIANT *result, bool tryAgain = true);
 	bool isCheckbox(IHTMLElement *pElement);
 	bool isRadio(IHTMLElement *pElement);
-	void getElementName(IHTMLElement *pElement, std::wstring& res);
+	void getTagName(IHTMLElement *pElement, std::wstring& res);
 	void getAttribute(IHTMLElement *pElement, LPCWSTR name, std::wstring& res);
 	bool isSelected(IHTMLElement *pElement);
 	static int isNodeDisplayed(IHTMLDOMNode *element, bool* displayed);
@@ -133,7 +133,7 @@ protected:
 		  void OnElementGetHeight(WPARAM, LPARAM);
 		  void OnElementGetWidth(WPARAM, LPARAM);
 
-		  void OnElementGetElementName(WPARAM, LPARAM);
+		  void OnElementGetTagName(WPARAM, LPARAM);
 		  void OnElementGetAttribute(WPARAM, LPARAM);
 		  void OnElementGetValue(WPARAM, LPARAM);
 		  void OnElementSendKeys(WPARAM, LPARAM);

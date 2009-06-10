@@ -69,10 +69,15 @@ public interface WebElement {
     void clear();
 
     /**
-     * Get the tag name of this element, <b>not</b> the value of the name attribute:
+     * Get the tag name of this element. <b>Not</b> the value of the name attribute:
      * will return <code>"input"</code> for the element <code>&lt;input name="foo" /&gt;</code>.
      *
-     * @return The element name of this element.
+     * @return The tag name of this element.
+     */
+    String getTagName();
+
+    /**
+     * @deprecated Use {@link #getTagName()} instead, this method will be removed in the near future.
      */
     String getElementName();
 

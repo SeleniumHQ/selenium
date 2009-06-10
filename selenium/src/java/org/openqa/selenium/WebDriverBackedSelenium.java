@@ -1363,8 +1363,8 @@ public class WebDriverBackedSelenium implements Selenium {
    */
   public boolean isSomethingSelected(String selectLocator) {
     WebElement select = findElement(selectLocator);
-    String name = select.getElementName().toLowerCase();
-    if (!"select".equals(name)) {
+    String tagName = select.getTagName().toLowerCase();
+    if (!"select".equals(tagName)) {
       throw new SeleniumException("Specified element is not a Select");
     }
 

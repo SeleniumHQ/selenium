@@ -445,14 +445,14 @@ void IeThread::OnElementGetWidth(WPARAM w, LPARAM lp)
 	pElement->get_offsetWidth(&width);
 }
 
-void IeThread::OnElementGetElementName(WPARAM w, LPARAM lp)
+void IeThread::OnElementGetTagName(WPARAM w, LPARAM lp)
 {
 	SCOPETRACER
 	ON_THREAD_ELEMENT(data, pElement)
 
 	std::wstring& ret = data.output_string_;
 
-	getElementName(pElement, ret);
+	getTagName(pElement, ret);
 }
 
 void IeThread::OnElementGetAttribute(WPARAM w, LPARAM lp)
@@ -726,7 +726,7 @@ bool IeThread::isRadio(IHTMLElement *pElement)
 	return _wcsicmp(combstr2cw(typeName), L"radio") == 0;
 }
 
-void IeThread::getElementName(IHTMLElement *pElement, std::wstring& res)
+void IeThread::getTagName(IHTMLElement *pElement, std::wstring& res)
 {
 	CComBSTR temp;
 	pElement->get_tagName(&temp);

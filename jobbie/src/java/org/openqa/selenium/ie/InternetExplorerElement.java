@@ -61,13 +61,20 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
     errors.verifyErrorCode(result, "click");
   }
 
-  public String getElementName() {
+  public String getTagName() {
     PointerByReference wrapper = new PointerByReference();
-    int result = lib.wdeGetElementName(element, wrapper);
-    
+    int result = lib.wdeGetTagName(element, wrapper);
+
     errors.verifyErrorCode(result, "element name");
-    
+
     return new StringWrapper(lib, wrapper).toString();
+  }
+
+  /**
+   * @deprecated Use {@link #getTagName()} instead, this method will be removed in the near future.
+   */
+  public String getElementName() {
+    return getTagName();
   }
 
   public String getAttribute(String name) {
@@ -146,7 +153,7 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
     int result = lib.wdeToggle(element, toReturn);
 
     if (result == 9) {
-      throw new UnsupportedOperationException("You may not toggle this element: " + getElementName());
+      throw new UnsupportedOperationException("You may not toggle this element: " + getTagName());
     }
     
     errors.verifyErrorCode(result, "toggle");

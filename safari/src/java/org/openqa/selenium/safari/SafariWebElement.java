@@ -80,6 +80,13 @@ public class SafariWebElement implements WebElement, SearchContext {
         );
     }
 
+    public String getTagName() {
+        throw new UnsupportedOperationException("getTagName");
+    }
+
+    /**
+     * @deprecated Use {@link #getTagName()} instead, this method will be removed in the near future.
+     */
     public String getElementName() {
         throw new UnsupportedOperationException("getElementName");
     }

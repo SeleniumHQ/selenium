@@ -81,7 +81,7 @@ EXPORT int wdeClick(WebElement* element);
 EXPORT int wdeGetAttribute(WebElement* element, const wchar_t* string, StringWrapper** result);
 EXPORT int wdeGetValueOfCssProperty(WebElement* element, const wchar_t* name, StringWrapper** result);
 EXPORT int wdeGetText(WebElement* element, StringWrapper** result);
-EXPORT int wdeGetElementName(WebElement* element, StringWrapper** result);
+EXPORT int wdeGetTagName(WebElement* element, StringWrapper** result);
 EXPORT int wdeIsSelected(WebElement* element, int* result);
 EXPORT int wdeSetSelected(WebElement* element);
 EXPORT int wdeToggle(WebElement* element, int* result);

@@ -489,12 +489,12 @@ int wdeGetText(WebElement* element, StringWrapper** result)
 	} END_TRY;
 }
 
-int wdeGetElementName(WebElement* element, StringWrapper** result)
+int wdeGetTagName(WebElement* element, StringWrapper** result)
 {
 	if (!element || !element->element) { return ENOSUCHELEMENT; }
 
 	try {
-		const std::wstring originalString(element->element->getElementName());
+		const std::wstring originalString(element->element->getTagName());
 		size_t length = originalString.length() + 1;
 		wchar_t* toReturn = new wchar_t[length];
 

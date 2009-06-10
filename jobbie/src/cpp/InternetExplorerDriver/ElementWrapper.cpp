@@ -41,10 +41,10 @@ DataMarshaller& ElementWrapper::commandData()
 	return ie->p_IEthread->getCmdData();
 }
 
-LPCWSTR ElementWrapper::getElementName()
+LPCWSTR ElementWrapper::getTagName()
 {
 	SCOPETRACER
-	SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_ELEM_GETELEMENTNAME,)
+	SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_ELEM_GETTAGNAME,)
 	return data.output_string_.c_str();
 }
 
