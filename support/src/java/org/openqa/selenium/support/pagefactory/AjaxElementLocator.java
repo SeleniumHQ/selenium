@@ -25,7 +25,6 @@ import org.openqa.selenium.support.ui.SystemClock;
 import org.openqa.selenium.support.ui.SlowLoadableComponent;
 
 import java.lang.reflect.Field;
-import java.util.concurrent.TimeUnit;
 
 /**
  * An element locator that will wait for the specified number of seconds for an

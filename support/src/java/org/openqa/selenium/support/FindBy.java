@@ -17,8 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.support;
 
-import org.openqa.selenium.How;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
