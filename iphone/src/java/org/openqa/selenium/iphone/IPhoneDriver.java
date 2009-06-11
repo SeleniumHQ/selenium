@@ -62,6 +62,6 @@ public class IPhoneDriver extends RemoteWebDriver {
     // This is the default port and URL for iWebDriver. Eventually it would
     // be nice to use DNS-SD to detect iWebDriver instances running non
     // locally or on non-default ports.
-    this("http://localhost:16000/hub");
+    this("http://localhost:3001/hub");
   }
 }

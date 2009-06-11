@@ -37,6 +37,7 @@
 - (void)dealloc
 {
 	[contents release];
+	[index release];
 	[super dealloc];
 }
 

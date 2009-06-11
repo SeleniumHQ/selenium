@@ -20,6 +20,7 @@ package org.openqa.selenium;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.openqa.selenium.Ignore.Driver.SAFARI;
+import static org.openqa.selenium.Ignore.Driver.IPHONE;
 
 import java.util.List;
 
@@ -113,7 +114,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
 	}
 
 	@JavascriptEnabled
-	@Ignore(SAFARI)
+	@Ignore({SAFARI, IPHONE})
 	public void testMouseEventsShouldBubbleUpToContainingElements() {
 		driver.get(javascriptPage);
 		driver.findElement(By.id("child")).click();
@@ -123,7 +124,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
 	}
 
 	@JavascriptEnabled
-	@Ignore(SAFARI)
+	@Ignore({SAFARI, IPHONE})
 	public void testShouldEmitOnChangeEventsWhenSelectingElements() {
 		driver.get(javascriptPage);
 		WebElement select = driver.findElement(By.id("selector"));

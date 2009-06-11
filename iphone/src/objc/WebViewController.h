@@ -29,6 +29,8 @@
   NSCondition *loadLock_;
   
   NSString *lastJSResult_;
+	
+  NSURLRequestCachePolicy cachePolicy_;
   
   // Pointer to the status / activity label.
   IBOutlet UILabel *statusLabel_;

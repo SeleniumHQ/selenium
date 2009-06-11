@@ -20,6 +20,8 @@
 #import "JSONRESTResource.h"
 #import "Context.h"
 #import "HTTPRedirectResponse.h"
+#import "WebDriverUtilities.h"
+#import "HTTPVirtualDirectory+Remove.h"
 
 @implementation Session
 
@@ -37,6 +39,12 @@
   nextId_ = 1001;
 
   return self;
+}
+
+- (void)cleanSessionStatus{
+  [WebDriverUtilities cleanCookies];
+  [WebDriverUtilities cleanCache];
+  [WebDriverUtilities cleanDatabases];
 }
 
 // TODO (josephg): We really only support one session. Error (or ignore the
@@ -57,7 +65,12 @@
   // Sessions don't really mean anything on the iphone. There's only one
   // browser, only one session and only one context.
 
+  // But we would like to give a clean status by cleaning up application data,
+  // in particular, cookies, cache and HTML5 client-side storage.  
+  [self cleanSessionStatus];
+  
   HTTPVirtualDirectory *session = [HTTPVirtualDirectory virtualDirectory];
+  
   [self setResource:session
            withName:[NSString stringWithFormat:@"%d", sessionId]];
 

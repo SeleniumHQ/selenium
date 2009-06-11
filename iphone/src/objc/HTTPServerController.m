@@ -20,6 +20,7 @@
 #import "WebDriverHTTPServer.h"
 #import "WebDriverHTTPConnection.h"
 #import "RESTServiceMapping.h"
+#import "WebDriverPreferences.h"
 
 #import <sys/types.h>
 #import <sys/socket.h>
@@ -72,11 +73,12 @@
 -(id) init {
   if (![super init])
     return nil;
-  
+  UInt16 portNumber = [[WebDriverPreferences sharedInstance] serverPortNumber];
+
   server_ = [[WebDriverHTTPServer alloc] init];
 
   [server_ setType:@"_http._tcp."];
-  [server_ setPort:16000];
+  [server_ setPort:portNumber];
   [server_ setDelegate:self];
   [server_ setConnectionClass:[WebDriverHTTPConnection class]];
   

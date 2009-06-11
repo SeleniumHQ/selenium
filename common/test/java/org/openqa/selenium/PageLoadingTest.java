@@ -21,6 +21,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import static org.openqa.selenium.Ignore.Driver.*;
+import static org.openqa.selenium.Ignore.Driver.IPHONE;
 
 public class PageLoadingTest extends AbstractDriverTestCase {
     public void testShouldWaitForDocumentToBeLoaded() {
@@ -56,6 +57,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
       }
     }
 
+  @Ignore(IPHONE)
   public void testShouldReturnWhenGettingAUrlThatDoesNotConnect() {
     // Here's hoping that there's nothing here. There shouldn't be
     driver.get("http://localhost:3001");

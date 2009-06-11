@@ -34,7 +34,7 @@ public class AlertsTest extends AbstractDriverTestCase {
     }
 
     @JavascriptEnabled
-    @Ignore({IE, SAFARI})
+    @Ignore({IE, IPHONE, SAFARI})
     public void testShouldBeAbleToOverrideTheWindowAlertMethod() {
         driver.get(alertPage);
 

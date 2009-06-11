@@ -15,11 +15,14 @@
 //  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
-
 #import "WebViewController.h"
 #import "HTTPServerController.h"
 #import "UIResponder+SimulateTouch.h"
+#import "WebDriverPreferences.h"
+#import "WebDriverRequestFetcher.h"
+#import "WebDriverUtilities.h"
 #import <objc/runtime.h>
+
 @implementation WebViewController
 
 @dynamic webView;
@@ -30,10 +33,26 @@
   [super viewDidLoad];
   [[self webView] setScalesPageToFit:YES];
   [[self webView] setDelegate:self];
-  [[HTTPServerController sharedInstance] setViewController:self];
-  [self describeLastAction:[[HTTPServerController sharedInstance] status]];
+
   loadLock_ = [[NSCondition alloc] init];
   lastJSResult_ = nil;
+
+  WebDriverPreferences *preferences = [WebDriverPreferences sharedInstance];
+
+  cachePolicy_ = [preferences cache_policy];
+  NSURLCache *sharedCache = [NSURLCache sharedURLCache];
+  [sharedCache setDiskCapacity:[preferences diskCacheCapacity]];
+  [sharedCache setMemoryCapacity:[preferences memoryCacheCapacity]];
+
+  if ([[preferences mode] isEqualToString: @"Server"]) {
+    HTTPServerController* serverController = [HTTPServerController sharedInstance];
+    [serverController setViewController:self];
+    [self describeLastAction:[serverController status]];		
+  } else {
+    WebDriverRequestFetcher* fetcher = [WebDriverRequestFetcher sharedInstance]; 
+    [fetcher setViewController:self];
+    [self describeLastAction:[fetcher status]];		
+  }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -141,7 +160,9 @@
 
 // Get the specified URL and block until it's finished loading.
 - (void)setURL:(NSString *)urlString {
-  NSURLRequest *url = [NSURLRequest requestWithURL:[NSURL URLWithString:urlString]];
+  NSURLRequest *url = [NSURLRequest requestWithURL:[NSURL URLWithString:urlString]
+                                       cachePolicy:cachePolicy_
+                                   timeoutInterval:60];
   
   [self performSelectorOnView:@selector(loadRequest:)
                    withObject:url
@@ -201,7 +222,7 @@
                          withObject:script
                       waitUntilDone:YES];
   
-  return [lastJSResult_ copy];
+  return [[lastJSResult_ copy] autorelease];
 }
 
 - (NSString *)jsEvalAndBlock:(NSString *)format, ... {

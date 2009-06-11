@@ -18,6 +18,8 @@
 
 #import "HTTPVirtualDirectory+AccessViewController.h"
 #import "HTTPServerController.h"
+#import "WebDriverPreferences.h"
+#import "WebDriverRequestFetcher.h"
 
 @implementation HTTPVirtualDirectory (AccessViewController)
 
@@ -25,7 +27,13 @@
   // This is a somewhat ugly implementation. It is implemented like this so
   // if we have multiple view controllers (eg, tabs), all VirtualDirectory
   // access of the viewController can be easily changed.
-  return [[HTTPServerController sharedInstance] viewController];
+	
+  NSString* mode = [[WebDriverPreferences sharedInstance] mode];
+  if ([mode isEqualToString:@"Server"]) {
+    return [[HTTPServerController sharedInstance] viewController];
+  } else {
+    return [[WebDriverRequestFetcher sharedInstance] viewController];
+  }
 }
 
 @end
