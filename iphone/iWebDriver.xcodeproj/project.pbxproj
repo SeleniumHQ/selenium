@@ -76,6 +76,10 @@
 		83B927D30EE354060011DCC4 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83B927D20EE354060011DCC4 /* CFNetwork.framework */; };
 		83E5B3830EFF6DB7004AA772 /* HTTPJSONResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 83E5B30F0EFF6749004AA772 /* HTTPJSONResponse.m */; };
 		83E5B3840EFF6DB7004AA772 /* JSONRESTResource.m in Sources */ = {isa = PBXBuildFile; fileRef = 83E5B3110EFF6749004AA772 /* JSONRESTResource.m */; };
+		FD61E6990FE150E5006E1274 /* WebDriverUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = FD61E6980FE150E5006E1274 /* WebDriverUtilities.m */; };
+		FD61E69E0FE151A4006E1274 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = FD61E69D0FE151A4006E1274 /* libsqlite3.dylib */; };
+		FD61E6A90FE151D2006E1274 /* WebDriverPreferences.m in Sources */ = {isa = PBXBuildFile; fileRef = FD61E6A60FE151D2006E1274 /* WebDriverPreferences.m */; };
+		FD61E6AA0FE151D2006E1274 /* WebDriverRequestFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = FD61E6A80FE151D2006E1274 /* WebDriverRequestFetcher.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -219,6 +223,13 @@
 		83E5B30F0EFF6749004AA772 /* HTTPJSONResponse.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HTTPJSONResponse.m; sourceTree = "<group>"; };
 		83E5B3100EFF6749004AA772 /* JSONRESTResource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JSONRESTResource.h; sourceTree = "<group>"; };
 		83E5B3110EFF6749004AA772 /* JSONRESTResource.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JSONRESTResource.m; sourceTree = "<group>"; };
+		FD61E6970FE150E5006E1274 /* WebDriverUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebDriverUtilities.h; sourceTree = "<group>"; };
+		FD61E6980FE150E5006E1274 /* WebDriverUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebDriverUtilities.m; sourceTree = "<group>"; };
+		FD61E69D0FE151A4006E1274 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = /usr/lib/libsqlite3.dylib; sourceTree = "<absolute>"; };
+		FD61E6A50FE151D2006E1274 /* WebDriverPreferences.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebDriverPreferences.h; sourceTree = "<group>"; };
+		FD61E6A60FE151D2006E1274 /* WebDriverPreferences.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebDriverPreferences.m; sourceTree = "<group>"; };
+		FD61E6A70FE151D2006E1274 /* WebDriverRequestFetcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebDriverRequestFetcher.h; sourceTree = "<group>"; };
+		FD61E6A80FE151D2006E1274 /* WebDriverRequestFetcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebDriverRequestFetcher.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -232,6 +243,7 @@
 				83B927D30EE354060011DCC4 /* CFNetwork.framework in Frameworks */,
 				831964A50F296925005D1D21 /* libjson.a in Frameworks */,
 				831964A60F29692E005D1D21 /* libCocoaHTTPServer.a in Frameworks */,
+				FD61E69E0FE151A4006E1274 /* libsqlite3.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -340,6 +352,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FD61E69D0FE151A4006E1274 /* libsqlite3.dylib */,
 				831964870F296888005D1D21 /* JSON.xcodeproj */,
 				831964740F29686E005D1D21 /* CocoaHTTPServerLibrary.xcodeproj */,
 				83B927D20EE354060011DCC4 /* CFNetwork.framework */,
@@ -410,6 +423,12 @@
 		839986AC0EE3AA720074D106 /* Web server extensions */ = {
 			isa = PBXGroup;
 			children = (
+				FD61E6970FE150E5006E1274 /* WebDriverUtilities.h */,
+				FD61E6980FE150E5006E1274 /* WebDriverUtilities.m */,
+				FD61E6A50FE151D2006E1274 /* WebDriverPreferences.h */,
+				FD61E6A60FE151D2006E1274 /* WebDriverPreferences.m */,
+				FD61E6A70FE151D2006E1274 /* WebDriverRequestFetcher.h */,
+				FD61E6A80FE151D2006E1274 /* WebDriverRequestFetcher.m */,
 				839986A10EE3AA5E0074D106 /* HTTPServerController.h */,
 				839986A20EE3AA5E0074D106 /* HTTPServerController.m */,
 				83169E840EE8DE0100FE869C /* HTTP Server configuration */,
@@ -663,6 +682,9 @@
 				839049350F1ACEFD001A79B6 /* Attribute.m in Sources */,
 				833104800F1EB2F7000A38DB /* NSException+WebDriver.m in Sources */,
 				831962720F27E79F005D1D21 /* UIResponder+SimulateTouch.m in Sources */,
+				FD61E6990FE150E5006E1274 /* WebDriverUtilities.m in Sources */,
+				FD61E6A90FE151D2006E1274 /* WebDriverPreferences.m in Sources */,
+				FD61E6AA0FE151D2006E1274 /* WebDriverRequestFetcher.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
