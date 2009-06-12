@@ -121,7 +121,7 @@ public class HttpCommandExecutor implements CommandExecutor {
                   new CommandInfo("/session/:sessionId/:context/element/:id/value", HttpVerb.POST));
     nameToUrl.put("getElementValue",
                   new CommandInfo("/session/:sessionId/:context/element/:id/value", HttpVerb.GET));
-    nameToUrl.put("getElementName",
+    nameToUrl.put("getTagName",
                   new CommandInfo("/session/:sessionId/:context/element/:id/name", HttpVerb.GET));
     nameToUrl.put("isElementSelected", new CommandInfo(
         "/session/:sessionId/:context/element/:id/selected", HttpVerb.GET));
