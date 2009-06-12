@@ -54,6 +54,9 @@
       <build intervalToCheckBuild="1" buildKey="" buildLabel="" enabled="false" />
     </builds>
   </component>
+  <component name="CopyrightManager" default="">
+    <module2copyright />
+  </component>
   <component name="DependenciesAnalyzeManager">
     <option name="myForwardDirection" value="false" />
   </component>
@@ -74,6 +77,7 @@
     <option name="ADDITIONAL_OPTIONS_STRING" value="" />
     <option name="MAXIMUM_HEAP_SIZE" value="128" />
   </component>
+  <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false" />
   <component name="EntryPointsManager">
     <entry_points version="2.0" />
   </component>
@@ -223,7 +227,8 @@
         <inspection_tool class="InstanceofCatchParameter" level="ERROR" enabled="true" />
         <inspection_tool class="SingleCharacterStartsWith" level="WARNING" enabled="false" />
         <inspection_tool class="ImplicitNumericConversion" level="WARNING" enabled="false">
-          <option name="m_ignoreWideningConversions" value="false" />
+          <option name="ignoreWideningConversions" value="false" />
+          <option name="ignoreCharConversions" value="false" />
         </inspection_tool>
         <inspection_tool class="UnnecessaryInterfaceModifier" level="WARNING" enabled="true" />
         <inspection_tool class="InstanceVariableInitialization" level="WARNING" enabled="false">
@@ -476,7 +481,9 @@
           <option name="m_maxLength" value="32" />
         </inspection_tool>
         <inspection_tool class="CheckedExceptionClass" level="WARNING" enabled="false" />
-        <inspection_tool class="CastThatLosesPrecision" level="WARNING" enabled="false" />
+        <inspection_tool class="CastThatLosesPrecision" level="WARNING" enabled="false">
+          <option name="ignoreIntegerCharCasts" value="false" />
+        </inspection_tool>
         <inspection_tool class="SwitchStatementWithConfusingDeclaration" level="WARNING" enabled="false" />
         <inspection_tool class="EmptyTryBlock" level="ERROR" enabled="true" />
         <inspection_tool class="ManualArrayCopy" level="WARNING" enabled="false" />
@@ -487,8 +494,13 @@
         <inspection_tool class="OverlyComplexArithmeticExpression" level="WARNING" enabled="false">
           <option name="m_limit" value="6" />
         </inspection_tool>
-        <inspection_tool class="ConditionalExpression" level="WARNING" enabled="false" />
-        <inspection_tool class="UnnecessaryParentheses" level="WARNING" enabled="false" />
+        <inspection_tool class="ConditionalExpression" level="WARNING" enabled="false">
+          <option name="ignoreSimpleAssignmentsAndReturns" value="false" />
+        </inspection_tool>
+        <inspection_tool class="UnnecessaryParentheses" level="WARNING" enabled="false">
+          <option name="ignoreClarifyingParentheses" value="false" />
+          <option name="ignoreParenthesesOnConditionals" value="false" />
+        </inspection_tool>
         <inspection_tool class="AssignmentToMethodParameter" level="WARNING" enabled="true">
           <option name="ignoreTransformationOfOriginalParameter" value="false" />
         </inspection_tool>
@@ -521,7 +533,6 @@
         <inspection_tool class="UnusedCatchParameter" level="WARNING" enabled="false">
           <option name="m_ignoreCatchBlocksWithComments" value="false" />
           <option name="m_ignoreTestCases" value="false" />
-          <option name="m_ignoreIgnoreParameter" value="true" />
         </inspection_tool>
         <inspection_tool class="ClassInTopLevelPackage" level="WARNING" enabled="false" />
         <inspection_tool class="FieldAccessedSynchronizedAndUnsynchronized" level="ERROR" enabled="true">
@@ -573,7 +584,9 @@
           <option name="ignoreTestCases" value="false" />
         </inspection_tool>
         <inspection_tool class="ConstantDeclaredInAbstractClass" level="WARNING" enabled="false" />
-        <inspection_tool class="TooBroadCatch" level="WARNING" enabled="true" />
+        <inspection_tool class="TooBroadCatch" level="WARNING" enabled="true">
+          <option name="onlyWarnOnRootExceptions" value="false" />
+        </inspection_tool>
         <inspection_tool class="FloatingPointEquality" level="ERROR" enabled="true" />
         <inspection_tool class="ReplaceAssignmentWithOperatorAssignment" level="WARNING" enabled="true">
           <option name="ignoreLazyOperators" value="true" />
@@ -830,12 +843,19 @@
       </item>
     </group>
   </component>
+  <component name="ProjectDetails">
+    <option name="projectName" value="WebDriver" />
+  </component>
   <component name="ProjectFileVersion" converted="true" />
+  <component name="ProjectKey">
+    <option name="state" value="https://webdriver.googlecode.com/svn/trunk/WebDriver.ipr" />
+  </component>
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/common/common.iml" filepath="$PROJECT_DIR$/common/common.iml" />
       <module fileurl="file://$PROJECT_DIR$/firefox/firefox.iml" filepath="$PROJECT_DIR$/firefox/firefox.iml" />
       <module fileurl="file://$PROJECT_DIR$/htmlunit/htmlunit.iml" filepath="$PROJECT_DIR$/htmlunit/htmlunit.iml" />
+      <module fileurl="file://$PROJECT_DIR$/iphone/iphone.iml" filepath="$PROJECT_DIR$/iphone/iphone.iml" />
       <module fileurl="file://$PROJECT_DIR$/jobbie/jobbie.iml" filepath="$PROJECT_DIR$/jobbie/jobbie.iml" />
       <module fileurl="file://$PROJECT_DIR$/remote/remote.iml" filepath="$PROJECT_DIR$/remote/remote.iml" />
       <module fileurl="file://$PROJECT_DIR$/safari/safari.iml" filepath="$PROJECT_DIR$/safari/safari.iml" />
@@ -843,12 +863,15 @@
       <module fileurl="file://$PROJECT_DIR$/support/support.iml" filepath="$PROJECT_DIR$/support/support.iml" />
     </modules>
   </component>
-  <component name="ProjectRootManager" version="2" assert-keyword="true" jdk-15="true" project-jdk-name="1.5" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_5" assert-keyword="true" jdk-15="true" project-jdk-name="1.5" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/eclipse" />
   </component>
   <component name="ProjectRunConfigurationManager">
-    <configuration default="false" name="SingleTestSuite" type="JUnit" factoryName="JUnit" enabled="false" merge="false">
-      <pattern value="com.googlecode.webdriver.*" />
+    <configuration default="false" name="SingleTestSuite" type="JUnit" factoryName="JUnit" enabled="false" merge="false" runner="emma">
+      <pattern>
+        <option name="PATTERN" value="com.googlecode.webdriver.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
       <module name="remote" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" value="" />
@@ -894,7 +917,8 @@
     <option name="ADDITIONAL_OPTIONS_STRING" value="" />
   </component>
   <component name="SvnBranchConfigurationManager">
-    <option name="myVersion" value="123" />
+    <option name="myVersion" value="124" />
+    <option name="mySupportsUserInfoFilter" value="true" />
   </component>
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="svn" />
