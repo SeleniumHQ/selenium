@@ -50,6 +50,8 @@ task :prebuild do
 end
 
 def iPhoneSDKPresent?
+  return false # For now
+  
   return false unless mac? && present?('xcodebuild')
   begin
     sdks = sh "xcodebuild -showsdks 2>/dev/null", :verbose => false

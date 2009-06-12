@@ -94,6 +94,8 @@ public class HttpCommandExecutor implements CommandExecutor {
     nameToUrl
         .put("pageSource", new CommandInfo("/session/:sessionId/:context/source", HttpVerb.GET));
     nameToUrl
+        .put("screenshot", new CommandInfo("/session/:sessionId/:context/screenshot", HttpVerb.GET));
+    nameToUrl
         .put("setVisible", new CommandInfo("/session/:sessionId/:context/visible", HttpVerb.POST));
     nameToUrl
         .put("getVisible", new CommandInfo("/session/:sessionId/:context/visible", HttpVerb.GET));
@@ -170,9 +172,9 @@ public class HttpCommandExecutor implements CommandExecutor {
 
   public Response execute(Command command) throws Exception {
     CommandInfo info = nameToUrl.get(command.getMethodName());
-    HttpMethod httpMethod = info.getMethod(remotePath, command);
+      HttpMethod httpMethod = info.getMethod(remotePath, command);
 
-    httpMethod.addRequestHeader("Accept", "application/json");
+    httpMethod.addRequestHeader("Accept", "application/json, image/png");
 
     String payload = new BeanToJsonConverter().convert(command.getParameters());
 
@@ -188,7 +190,7 @@ public class HttpCommandExecutor implements CommandExecutor {
       Header newLocation = httpMethod.getResponseHeader("location");
       httpMethod = new GetMethod(newLocation.getValue());
       httpMethod.setFollowRedirects(true);
-      httpMethod.addRequestHeader("Accept", "application/json");
+      httpMethod.addRequestHeader("Accept", "application/json, image/png");
       client.executeMethod(httpMethod);
     }
 
@@ -204,7 +206,13 @@ public class HttpCommandExecutor implements CommandExecutor {
       response = new JsonToBeanConverter().convert(Response.class, httpMethod.getResponseBodyAsString());
     } else {
       response = new Response();
-      response.setValue(httpMethod.getResponseBodyAsString());
+
+      if (header != null && header.getValue().startsWith("image/png")) {
+        response.setValue(httpMethod.getResponseBody());
+      } else {
+        response.setValue(httpMethod.getResponseBodyAsString());
+      }
+      
       String uri = httpMethod.getURI().toString();
       int sessionIndex = uri.indexOf("/session/");
       if (sessionIndex != -1) {
