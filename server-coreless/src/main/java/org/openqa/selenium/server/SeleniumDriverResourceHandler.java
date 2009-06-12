@@ -599,6 +599,7 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
     }
     
     protected void downloadWithAnt(final URL url, final File outputFile) {
+
         Project p = new Project();
         p.addBuildListener(new AntJettyLoggerBuildListener(LOGGER));
         Get g = new Get();
@@ -607,11 +608,24 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         g.setDest(outputFile);
         g.execute();
     }
+   
+    private void createParentDirsAndSetDeleteOnExit(String parent, File tmpFile) {
+      File parentFile = tmpFile.getParentFile();
+      if (!parentFile.getPath().equals(parent) && !parentFile.exists()) {
+        createParentDirsAndSetDeleteOnExit(parent, parentFile);
+      }
+      parentFile.mkdir();
+      parentFile.deleteOnExit();
+    }
     
     protected File createTempFile(String name) {
-    	String parent = System.getProperty("java.io.tmpdir");
-    	return new File(parent, name);
+      String parent = System.getProperty("java.io.tmpdir");
+      File tmpFile = new File(parent, name);
+      createParentDirsAndSetDeleteOnExit(parent, tmpFile);
+      tmpFile.deleteOnExit();
+      return tmpFile;
     }
+ 
     
     private File downloadFile(String urlString) {
         URL url;
@@ -624,7 +638,6 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         String fileName = url.getFile();
 
         File outputFile = createTempFile(fileName);
-        outputFile.deleteOnExit(); // to be on the safe side.
         
         downloadWithAnt(url, outputFile);
         
