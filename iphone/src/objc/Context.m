@@ -100,6 +100,11 @@ static NSString * const CONTEXT_NAME = @"foo";
                               POST:NULL
                           withName:@"source"];
   
+  // Get a screenshot
+  [self setResourceToViewMethodGET:@selector(screenshot)
+                              POST:NULL
+                          withName:@"screenshot"];
+  
   // Load firebug into the webview. This doesn't currently work.
   // TODO(josephg): find out why firebug doesn't load and fix it.
   [self setResourceToViewMethodGET:NULL

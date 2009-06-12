@@ -46,7 +46,7 @@
   NSString *context_;
 
   // We're a proxy around this response.
-  HTTPJSONResponse *response_;
+  HTTPDataResponse *response_;
 }
 
 @property (nonatomic) BOOL isError;
@@ -59,6 +59,8 @@
 
 + (WebDriverResponse *)responseWithValue:(id)value;
 + (WebDriverResponse *)responseWithError:(id)error;
+
+- (HTTPDataResponse *)response;
 
 @end
 

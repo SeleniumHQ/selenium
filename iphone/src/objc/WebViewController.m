@@ -22,6 +22,7 @@
 #import "WebDriverRequestFetcher.h"
 #import "WebDriverUtilities.h"
 #import <objc/runtime.h>
+#import <QuartzCore/QuartzCore.h>œ
 
 @implementation WebViewController
 
@@ -276,6 +277,22 @@
 
 - (NSString *)source {
   return [self jsEval:@"document.documentElement.innerHTML"];
+}
+
+// Takes a screenshot.
+- (UIImage *)screenshot {
+  UIGraphicsBeginImageContext([[self webView] bounds].size);
+  [[self webView].layer renderInContext:UIGraphicsGetCurrentContext()];
+  UIImage *viewImage = UIGraphicsGetImageFromCurrentImageContext();
+  UIGraphicsEndImageContext();
+  
+  // dump the screenshot into a file for debugging
+  //NSString *path = [[[NSSearchPathForDirectoriesInDomains
+  //   (NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0]
+  //  stringByAppendingPathComponent:@"screenshot.png"] retain];
+  //[UIImagePNGRepresentation(viewImage) writeToFile:path atomically:YES];
+  
+  return viewImage;
 }
 
 - (NSString *)URL {

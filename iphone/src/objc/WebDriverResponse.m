@@ -18,6 +18,7 @@
 
 #import "WebDriverResponse.h"
 #import "HTTPJSONResponse.h"
+#import "HTTPPNGResponse.h"
 
 @implementation WebDriverResponse
 
@@ -77,12 +78,17 @@
 // Create the response_ object from the current property set.
 - (void)createResponse {
   [response_ release];
-  NSDictionary *dict = [self convertToDictionary];
-  response_ = [[HTTPJSONResponse alloc] initWithObject:(id)dict];
+  
+  if ([value_ isKindOfClass:[UIImage class]]) {
+    response_ = [[HTTPPNGResponse alloc] initWithImage:value_];
+  } else {
+    NSDictionary *dict = [self convertToDictionary];
+    response_ = [[HTTPJSONResponse alloc] initWithObject:(id)dict];
+  }
 }
 
 // Return the response_ object (create it if necessary).
-- (HTTPJSONResponse *)response {
+- (HTTPDataResponse *)response {
   if (response_ == nil)
     [self createResponse];
   
