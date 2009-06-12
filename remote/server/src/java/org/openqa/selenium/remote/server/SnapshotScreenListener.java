@@ -19,6 +19,7 @@ package org.openqa.selenium.remote.server;
 
 import org.apache.commons.codec.binary.Base64;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.support.events.AbstractWebDriverEventListener;
 
 import java.awt.*;
@@ -38,15 +39,25 @@ public class SnapshotScreenListener extends AbstractWebDriverEventListener {
   public void onException(Throwable throwable, WebDriver driver) {
     String encoded;
     try {
+      workAroundD3dBugInVista();
+
       Rectangle size = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
       BufferedImage image = new Robot().createScreenCapture(size);
+
       ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       ImageIO.write(image, "png", outputStream);
       encoded = new String(Base64.encodeBase64(outputStream.toByteArray()), "UTF-8");
 
       session.attachScreenshot(encoded);
-    } catch (Exception e) {
+    } catch (Throwable e) {
+      System.out.println("e = " + e);
       // Alright. No screen shot. Propogate the original exception
+    }
+  }
+
+  private void workAroundD3dBugInVista() {
+    if (Platform.getCurrent().is(Platform.WINDOWS)) {
+      System.setProperty("sun.java2d.d3d", "false");
     }
   }
 }
