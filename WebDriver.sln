@@ -1,8 +1,9 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual Studio 2005
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "C:\...\web\", "common\src\web\", "{DB560F4B-1F41-4E8E-AC06-640D736E8A72}"
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "web", "common\src\web\", "{DB560F4B-1F41-4E8E-AC06-640D736E8A72}"
 	ProjectSection(WebsiteProperties) = preProject
+		TargetFramework = "2.0"
 		Debug.AspNetCompiler.VirtualPath = "/web"
 		Debug.AspNetCompiler.PhysicalPath = "common\src\web\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\web\"
@@ -22,10 +23,6 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "C:\...\web\", "common\src\w
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "InternetExplorerDriver", "jobbie\src\cpp\InternetExplorerDriver\InternetExplorerDriver.vcproj", "{0BC72326-88BE-4369-9077-74AA7B2BE15D}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
