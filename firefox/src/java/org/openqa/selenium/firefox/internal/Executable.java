@@ -4,6 +4,7 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 
 import java.io.File;
+import java.io.OutputStream;
 import java.util.Map;
 
 /**
@@ -207,5 +208,9 @@ public class Executable {
       }
     }
     return null;
+  }
+
+  public OutputStream getDefaultOutputStream() {
+    return new CircularOutputStream();
   }
 }

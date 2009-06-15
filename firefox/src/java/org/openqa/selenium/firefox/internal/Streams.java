@@ -20,6 +20,7 @@ package org.openqa.selenium.firefox.internal;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 public class Streams {
 
@@ -29,17 +30,15 @@ public class Streams {
    * @param stream the stream to drain
    * @return the contents of the drained stream
    */
-  public static byte[] drainStream(InputStream stream) throws IOException {
+  public static String drainStream(OutputStream stream) throws IOException {
     if (stream == null) {
       return null;
     }
-    
-    final byte[] streamBuffer = new byte[4096];
-    final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    int len;
-    while ((len = stream.available()) > 0) {
-      baos.write(streamBuffer, 0, stream.read(streamBuffer, 0, Math.min(len, streamBuffer.length)));
+
+    if (stream instanceof CircularOutputStream) {
+      return stream.toString();
     }
-    return baos.toByteArray();
+
+    return null;
   }
 }

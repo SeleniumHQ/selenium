@@ -29,11 +29,11 @@ import java.io.IOException;
 import java.net.BindException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.util.concurrent.TimeUnit;
 
 public class NewProfileExtensionConnection extends AbstractExtensionConnection {
   private FirefoxBinary process;
   private FirefoxProfile profile;
+  private int bufferSize = 4096;
 
   public NewProfileExtensionConnection(Lock lock, FirefoxBinary binary, FirefoxProfile profile, String host) throws IOException {
     this.profile = profile;
@@ -41,6 +41,7 @@ public class NewProfileExtensionConnection extends AbstractExtensionConnection {
     try {
       int portToUse = determineNextFreePort(host, profile.getPort());
 
+      binary.setOutputWatcher(new CircularOutputStream(bufferSize));
       process = new FirefoxLauncher(binary).startProfile(profile, portToUse);
 
       setAddress(host, portToUse);

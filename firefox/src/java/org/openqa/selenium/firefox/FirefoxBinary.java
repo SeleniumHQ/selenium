@@ -26,23 +26,24 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class FirefoxBinary {
-    private final StringBuffer stdOutBuffer = new StringBuffer();
     private final Map<String, String> extraEnv = new HashMap<String, String>();
     private final Executable executable;
     private Process process;
     private long timeout = SECONDS.toMillis(45);
+    private OutputStream stream;
+    private Thread outputWatcher;
 
     public FirefoxBinary() {
-        this(null);
+          this(null);
     }
 
     public FirefoxBinary(File pathToFirefoxBinary) {
@@ -58,10 +59,18 @@ public class FirefoxBinary {
         commands.add("--verbose");
         commands.addAll(Arrays.asList(commandLineFlags));
         ProcessBuilder builder = new ProcessBuilder(commands);
-        builder.redirectErrorStream();
+        builder.redirectErrorStream(true);
         builder.environment().putAll(extraEnv);
         executable.setLibraryPath(builder, extraEnv);
+
+        if (stream == null) {
+          stream = executable.getDefaultOutputStream();
+        }
+
         process = builder.start();
+
+        outputWatcher = new Thread(new OutputWatcher(process, stream), "Firefox output watcher");
+        outputWatcher.start();
     }
 
     public void setEnvironmentProperty(String propertyName, String value) {
@@ -75,7 +84,14 @@ public class FirefoxBinary {
         ProcessBuilder builder = new ProcessBuilder(executable.getPath(), "--verbose", "-CreateProfile", profileName)
             .redirectErrorStream(true);
         builder.environment().put("MOZ_NO_REMOTE", "1");
+       if (stream == null) {
+          stream = executable.getDefaultOutputStream();
+        }
+
         process = builder.start();
+
+        outputWatcher = new Thread(new OutputWatcher(process, stream));
+        outputWatcher.start();
     }
 
     /**
@@ -86,21 +102,6 @@ public class FirefoxBinary {
      */
     public void waitFor() throws InterruptedException, IOException {
       process.waitFor();
-  
-      // The Mac version (and perhaps others) spawns a new process when the profile needs fixing up
-      // This child process shares the same stdout, stdin and stderr as the parent one. By reading
-      // the line of input until EOF is reached, we know that we're good and that the child subprocess
-      // has also quit.
-      BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-      try {
-        String line;
-        while((line = reader.readLine()) != null) {
-          stdOutBuffer.append(line).append("\n");
-          sleep(100);
-        }
-      } finally {
-         // Don't close the stream.
-      }        
     }
 
     /**
@@ -115,8 +116,7 @@ public class FirefoxBinary {
         return null;
       }
       
-      stdOutBuffer.append(new String(Streams.drainStream(process.getInputStream())));
-      return stdOutBuffer.toString();
+      return Streams.drainStream(stream);
     }
 
     private void sleep(long timeInMillis) {
@@ -157,5 +157,31 @@ public class FirefoxBinary {
   @Override
   public String toString() {
     return "FirefoxBinary(" + executable.getPath() + ")";
+  }
+
+  public void setOutputWatcher(OutputStream stream) {
+    this.stream = stream;
+  }
+
+  private static class OutputWatcher implements Runnable {
+    private Process process;
+    private OutputStream stream;
+
+    public OutputWatcher(Process process, OutputStream stream) {
+      this.process = process;
+      this.stream = stream;
+    }
+
+    public void run() {
+      int in = 0;
+      while (in != -1) {
+        try {
+          in = process.getInputStream().read();
+          stream.write(in);
+        } catch (IOException e) {
+          System.err.println(e);
+        }
+      }
+    }
   }
 }

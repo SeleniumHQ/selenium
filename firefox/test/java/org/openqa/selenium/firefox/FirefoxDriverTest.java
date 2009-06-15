@@ -118,4 +118,12 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
 //      System.out.println("Not running start with named profile test: no default profile found");
 //    }
   }
+
+  public void testShouldBeAbleToStartANewInstanceEvenWithVerboseLogging() {
+    FirefoxBinary binary = new FirefoxBinary();
+    binary.setEnvironmentProperty("NSPR_LOG_MODULES", "all:5");
+
+    // We will have an infinite hang if this driver does not start properly
+    new FirefoxDriver(binary, null).quit();
+  }
 }
