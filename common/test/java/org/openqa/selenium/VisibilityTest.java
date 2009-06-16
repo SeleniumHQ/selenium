@@ -19,8 +19,8 @@ limitations under the License.
 package org.openqa.selenium;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
 import static org.hamcrest.Matchers.not;
+import static org.hamcrest.core.Is.is;
 import static org.openqa.selenium.Ignore.Driver.SAFARI;
 
 public class VisibilityTest extends AbstractDriverTestCase {
@@ -58,6 +58,20 @@ public class VisibilityTest extends AbstractDriverTestCase {
     RenderedWebElement shown = (RenderedWebElement) driver.findElement(By.id("visibleSubElement"));
 
     assertTrue(shown.isDisplayed());
+  }
+
+  @JavascriptEnabled
+  @Ignore(SAFARI)
+  public void testShouldModifyTheVisibilityOfAnElementDynamically() {
+    driver.get(javascriptPage);
+
+    RenderedWebElement element = (RenderedWebElement) driver.findElement(By.id("hideMe"));
+
+    assertTrue(element.isDisplayed());
+
+    element.click();
+
+    assertFalse(element.isDisplayed());
   }
 
   @JavascriptEnabled

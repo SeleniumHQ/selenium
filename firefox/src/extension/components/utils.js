@@ -269,6 +269,9 @@ Utils.getElementAt = function(index, context) {
     }
 
     if (parent !== e.ownerDocument.documentElement) {
+      // Remove from the cache
+      delete doc.fxdriver_elements[index];
+
       throw new StaleElementError();
     }
   } else {
