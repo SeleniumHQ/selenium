@@ -706,6 +706,13 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
 
     private class HtmlUnitOptions implements Options {
         public void addCookie(Cookie cookie) {
+          Page page = lastPage();
+          if (!(page instanceof HtmlPage)) {
+            throw new WebDriverException("You may not set cookies on a page that is not HTML");
+          }
+
+          // Cookies only make sense if the page is
+
           String domain = getDomainForCookie(cookie);
           verifyDomain(cookie, domain);
 

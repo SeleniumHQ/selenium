@@ -29,7 +29,7 @@ limitations under the License.
 
 #define END_TRY  catch(std::wstring& m) \
 	{ \
-		if (m.find(L"TIME OUT") > 0) { return ETIMEOUT; } \
+		if (m.find(L"TIME OUT") != std::wstring::npos) { return ETIMEOUT; } \
 		wcerr << m.c_str() << endl; \
 		return EEXPECTEDERROR; \
 	} \
@@ -375,9 +375,7 @@ int wdAddCookie(WebDriver* driver, const wchar_t* cookie)
     if (!driver || !driver->ie) return ENOSUCHDRIVER;
 
 	try {
-		driver->ie->addCookie(cookie);
-
-		return SUCCESS;
+		return driver->ie->addCookie(cookie);
 	} END_TRY;
 }
 

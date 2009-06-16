@@ -23,6 +23,7 @@ import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.WebDriverException;
 
 class ErrorHandler {
   public void verifyErrorCode(int errorCode, String message) {
@@ -51,6 +52,9 @@ class ErrorHandler {
     case 12:
       throw new UnsupportedOperationException(
               String.format("You may not %s an element that is not enabled", message));
+
+    case 14:
+      throw new WebDriverException("An unhandled exception has occured. " + message);
 
     case 15:
       throw new UnsupportedOperationException(

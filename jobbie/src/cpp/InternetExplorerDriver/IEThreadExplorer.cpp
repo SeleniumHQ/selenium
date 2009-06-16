@@ -221,6 +221,22 @@ void IeThread::OnGetCookies(WPARAM w, LPARAM lp)
 	ret = combstr2cw(cookie); 
 }
 
+bool isHtmlPage(IHTMLDocument2* doc) 
+{
+	CComBSTR type;
+	if (!SUCCEEDED(doc->get_mimeType(&type))) 
+	{
+		return false;
+	}
+
+	if (!SUCCEEDED(type.ToLower())) 
+	{
+		return false;
+	}
+
+	return wcsstr(combstr2cw(type), L"html") != NULL;
+}
+
 void IeThread::OnAddCookie(WPARAM w, LPARAM lp)
 {
 	SCOPETRACER
@@ -230,7 +246,25 @@ void IeThread::OnAddCookie(WPARAM w, LPARAM lp)
 	CComPtr<IHTMLDocument2> doc;
 	getDocument(&doc);
 
-	doc->put_cookie(cookie);
+	if (!doc) 
+	{
+		data.output_string_ = L"Unable to locate document";
+		data.exception_caught_ = true;
+		return;
+	}
+
+	if (!isHtmlPage(doc)) 
+	{
+		data.output_string_ = L"Document is not an HTML page";
+		data.error_code = ENOSUCHDOCUMENT;
+		return;
+	}
+
+	if (!SUCCEEDED(doc->put_cookie(cookie))) 
+	{
+		data.output_string_ = L"Unable to add cookie to page";
+		data.exception_caught_ = true;
+	}
 }
 
 void IeThread::OnWaitForNavigationToFinish(WPARAM w, LPARAM lp)

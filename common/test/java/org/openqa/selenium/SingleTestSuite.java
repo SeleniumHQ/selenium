@@ -33,7 +33,7 @@ public class SingleTestSuite extends TestCase {
   private final static String SAFARI = "org.openqa.selenium.safari.SafariDriver";
 
   public static Test suite() throws Exception {
-    String driver = IE;
+    String driver = FIREFOX;
 
     System.setProperty("webdriver.firefox.development", "true");
     System.setProperty("jna.library.path", ".\\jobbie\\build");
@@ -46,10 +46,10 @@ public class SingleTestSuite extends TestCase {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("ElementFindingTest")
-        .method("testRemovingAnElementDynamicallyFromTheDomShouldCauseAStaleRefException")
+        .onlyRun("TextPagesTest")
+        .method("testShouldThrowExceptionWhenAddingCookieToAPageThatIsNotHtml")
         .exclude(ALL)
-        .exclude(Ignore.Driver.IE)
+//        .exclude(Ignore.Driver.IE)
         .leaveRunning()
         ;  // Yeah, this look strange :)
 

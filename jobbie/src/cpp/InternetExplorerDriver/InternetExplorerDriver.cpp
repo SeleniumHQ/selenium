@@ -379,10 +379,12 @@ LPCWSTR InternetExplorerDriver::getCookies()
 	return data.output_string_.c_str();
 }
 
-void InternetExplorerDriver::addCookie(const wchar_t *cookieString)
+int InternetExplorerDriver::addCookie(const wchar_t *cookieString)
 {
 	SCOPETRACER
 	SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_ADDCOOKIE, cookieString)
+
+	return data.error_code;
 }
 
 
