@@ -56,21 +56,17 @@ public class CircularOutputStream extends OutputStream {
 
   @Override
   public String toString() {
-    return toString(Charset.defaultCharset());
-  }
-
-  public String toString(Charset charset) {
     int size = filled ? buffer.length : end;
     byte[] toReturn = new byte[size];
 
     // Handle the partially filled array as a special case
     if (!filled) {
       System.arraycopy(buffer, 0, toReturn, 0, end);
-      return new String(toReturn, charset);
+      return new String(toReturn);
     }
 
     System.arraycopy(buffer, start, toReturn, 0, buffer.length - start);
     System.arraycopy(buffer, 0, toReturn, buffer.length - start, end);
-    return new String(toReturn, charset);
+    return new String(toReturn);
   }
 }
