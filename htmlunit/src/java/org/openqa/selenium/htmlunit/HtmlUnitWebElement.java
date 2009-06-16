@@ -53,6 +53,7 @@ import org.openqa.selenium.internal.FindsByXPath;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Attr;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.Element;
 
 import com.gargoylesoftware.htmlunit.ScriptException;
 import com.gargoylesoftware.htmlunit.SgmlPage;
@@ -591,7 +592,7 @@ public class HtmlUnitWebElement implements WebElement,
         return toString;
     }
 
-  private void assertElementNotStale() {
+  protected void assertElementNotStale() {
     SgmlPage elementPage = element.getPage();
     Page currentPage = parent.lastPage();
 
@@ -599,6 +600,17 @@ public class HtmlUnitWebElement implements WebElement,
       throw new StaleElementReferenceException(
           "Element appears to be stale. Did you navigate away from the page that contained it? "
           + " And is the current window focussed the same as the one holding this element?");
+    }
+
+    // We need to walk the DOM to determine if the element is actually attached
+    DomNode parent = element;
+    while (parent != null && !(parent instanceof HtmlHtml)) {
+      parent = parent.getParentNode();
+    }
+
+    if (parent == null) {
+      throw new StaleElementReferenceException("The element seems to be disconnected from the DOM. "
+        + " This means that a user cannot interact with it.");
     }
   }
 }

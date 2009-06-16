@@ -38,28 +38,40 @@ public class RenderedHtmlUnitDriverWebElement extends HtmlUnitWebElement
     super(parent, element);
   }
 
+  @Override
   public void sendKeys(CharSequence... value) {
+    assertElementNotStale();
+
     if (!isDisplayed())
       throw new ElementNotVisibleException("You may only sendKeys to visible elements");
 
     super.sendKeys(value);
   }
 
+  @Override
   public boolean toggle() {
+    assertElementNotStale();
+
     if (!isDisplayed())
           throw new ElementNotVisibleException("You may only toggle visible elements");
 
     return super.toggle();
   }
 
+  @Override
   public void click() {
+    assertElementNotStale();
+
     if (!isDisplayed())
           throw new ElementNotVisibleException("You may only click visible elements");
 
     super.click();
   }
 
+  @Override
   public void setSelected() {
+    assertElementNotStale();
+
     if (!isDisplayed())
           throw new ElementNotVisibleException("You may only select visible elements");
 
@@ -67,27 +79,34 @@ public class RenderedHtmlUnitDriverWebElement extends HtmlUnitWebElement
   }
 
   public boolean isDisplayed() {
+    assertElementNotStale();
 
     return !(element instanceof HtmlHiddenInput) && element.isDisplayed();
   }
 
   public Point getLocation() {
+    assertElementNotStale();
     throw new UnsupportedOperationException("getLocation");
   }
 
   public Dimension getSize() {
+    assertElementNotStale();
     throw new UnsupportedOperationException("getSize");
   }
 
   public void dragAndDropBy(int moveRightBy, int moveDownBy) {
+    assertElementNotStale();
     throw new UnsupportedOperationException("dragAndDropBy");
   }
 
   public void dragAndDropOn(RenderedWebElement element) {
+    assertElementNotStale();
     throw new UnsupportedOperationException("dragAndDropOn");
   }
 
   public String getValueOfCssProperty(String propertyName) {
+    assertElementNotStale();
+
     return getEffectiveStyle(element, propertyName);
   }
 

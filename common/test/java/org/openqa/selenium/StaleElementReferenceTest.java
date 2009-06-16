@@ -21,7 +21,6 @@ import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.SAFARI;
 
 public class StaleElementReferenceTest extends AbstractDriverTestCase {
-
   @Ignore(SAFARI)
   public void testOldPage() {
     driver.get(simpleTestPage);

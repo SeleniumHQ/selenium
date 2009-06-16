@@ -25,6 +25,8 @@ import org.openqa.selenium.TestSuiteBuilder;
 
 public class InternetExplorerDriverTestSuite extends TestCase {
 	public static Test suite() throws Exception {
+                System.setProperty("jna.library.path", ".\\jobbie\\build");
+
 		return new TestSuiteBuilder()
 					.addSourceDir("common")
 					.addSourceDir("jobbie")

@@ -19,6 +19,8 @@ limitations under the License.
 const charset = "UTF-8";
 const CI = Components.interfaces;
 
+function StaleElementError() {};
+
 function SocketListener(server, transport)
 {
     this.outstream = transport.openOutputStream(Components.interfaces.nsITransport.OPEN_BLOCKING, 0, 0);
@@ -243,20 +245,28 @@ SocketListener.prototype.executeCommand = function() {
                       respond.commandName = info.command.commandName;
                       info.driver[info.command.commandName](respond, info.command.parameters);
                   } catch (e) {
-                      var obj = {
-                        fileName : e.fileName,
-                        lineNumber : e.lineNumber,
-                        message : e.message,
-                        name : e.name,
-                        stack : e.stack
-                      };
-                      var message = "Exception caught by driver: " + info.command.commandName + "(" + info.command.parameters + ")\n" + e;
-                      Utils.dumpn(message);
-                      Utils.dump(e);
-                      respond.isError = true;
-                      respond.context = info.driver.context;
-                      respond.response = obj;
-                      respond.send();
+                      if (e instanceof StaleElementError) {
+                        respond.isError = true;
+                        respond.context  = info.driver.context;
+                        respond.response = "element is obsolete";
+                        respond.send();
+                      } else {
+                        var obj = {
+                          fileName : e.fileName,
+                          lineNumber : e.lineNumber,
+                          message : e.message,
+                          name : e.name,
+                          stack : e.stack
+                        };
+                        var message = "Exception caught by driver: " + info.command.commandName
+                            + "(" + info.command.parameters + ")\n" + e;
+                        Utils.dumpn(message);
+                        Utils.dump(e);
+                        respond.isError = true;
+                        respond.context = info.driver.context;
+                        respond.response = obj;
+                        respond.send();
+                      }
                   }
                 }
             }

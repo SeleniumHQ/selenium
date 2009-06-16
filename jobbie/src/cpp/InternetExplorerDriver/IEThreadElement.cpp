@@ -445,6 +445,26 @@ void IeThread::OnElementGetWidth(WPARAM w, LPARAM lp)
 	pElement->get_offsetWidth(&width);
 }
 
+void IeThread::OnIsElementFresh(WPARAM w, LPARAM lp) 
+{
+	SCOPETRACER
+	ON_THREAD_ELEMENT(data, pElement);
+
+	// Walk up the tree until we find no parent or the html tag
+	CComPtr<IHTMLElement> parent(pElement);
+	while (parent) {
+		CComQIPtr<IHTMLHtmlElement> html(parent);
+		if (html) {
+			data.output_bool_ = true;
+			return;
+		}
+		CComPtr<IHTMLElement> next;
+		parent->get_parentElement(&next);
+		parent = next;
+	}
+	data.output_bool_ = false;
+}
+
 void IeThread::OnElementGetTagName(WPARAM w, LPARAM lp)
 {
 	SCOPETRACER

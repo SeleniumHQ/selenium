@@ -259,10 +259,23 @@ Utils.addToKnownElements = function(element, context) {
 };
 
 Utils.getElementAt = function(index, context) {
-    var doc = Utils.getDocument(context);
-    if (doc.fxdriver_elements)
-        return doc.fxdriver_elements[index];
-    return undefined;
+  var doc = Utils.getDocument(context);
+  var e = doc.fxdriver_elements ? doc.fxdriver_elements[index] : undefined;
+  if (e) {
+    // Is this a stale reference?
+    var parent = e;
+    while (parent && parent != e.ownerDocument.documentElement) {
+      parent = parent.parentNode;
+    }
+
+    if (parent !== e.ownerDocument.documentElement) {
+      throw new StaleElementError();
+    }
+  } else {
+    throw new StaleElementError();
+  }
+
+  return e;
 };
 
 Utils.currentDocument = function(context) {

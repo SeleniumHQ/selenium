@@ -155,6 +155,11 @@
 
 <a href="#" id="close" onclick="window.close();">Close window</a>
 
+<div id="delete" onclick="var d = document.getElementById('deleted'); this.removeChild(d);">
+    <p id="deleted">I should be deleted when you click my containing div</p>
+    <p>Whereas, I should not</p>
+</div>
+
 </body>
 </html>
 

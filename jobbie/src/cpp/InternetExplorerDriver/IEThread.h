@@ -133,6 +133,7 @@ protected:
 		  void OnElementGetHeight(WPARAM, LPARAM);
 		  void OnElementGetWidth(WPARAM, LPARAM);
 
+		  void OnIsElementFresh(WPARAM, LPARAM);
 		  void OnElementGetTagName(WPARAM, LPARAM);
 		  void OnElementGetAttribute(WPARAM, LPARAM);
 		  void OnElementGetValue(WPARAM, LPARAM);

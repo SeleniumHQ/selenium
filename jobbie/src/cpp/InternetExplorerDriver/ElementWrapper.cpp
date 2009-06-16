@@ -41,6 +41,13 @@ DataMarshaller& ElementWrapper::commandData()
 	return ie->p_IEthread->getCmdData();
 }
 
+bool ElementWrapper::isFresh()
+{
+	SCOPETRACER
+	SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_ELEM_ISFRESH,);
+	return data.output_bool_;
+}
+
 LPCWSTR ElementWrapper::getTagName()
 {
 	SCOPETRACER

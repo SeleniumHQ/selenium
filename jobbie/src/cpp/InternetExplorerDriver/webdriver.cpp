@@ -418,12 +418,25 @@ int wdWaitForLoadToComplete(WebDriver* driver)
 	} END_TRY;
 }
 
-int wdeClick(WebElement* element)
+int verifyFresh(WebElement* element) 
 {
 	if (!element || !element->element) { return ENOSUCHELEMENT; }
 
 	try {
-		int res = element->element->click();
+		if (!element->element->isFresh()) 
+		{
+			return EOBSOLETEELEMENT;
+		}
+	} END_TRY;
+	return SUCCESS;
+}
+
+int wdeClick(WebElement* element)
+{
+	int res = verifyFresh(element);	if (res != SUCCESS) { return res; }
+
+	try {
+		res = element->element->click();
 
 		return res;
 	} END_TRY;	
@@ -431,7 +444,7 @@ int wdeClick(WebElement* element)
 
 int wdeGetAttribute(WebElement* element, const wchar_t* name, StringWrapper** result)
 {
-	if (!element || !element->element) { return ENOSUCHELEMENT; }
+	int res = verifyFresh(element);	if (res != SUCCESS) { return res; }
 
 	try {
 		const std::wstring originalString(element->element->getAttribute(name));
@@ -451,7 +464,7 @@ int wdeGetAttribute(WebElement* element, const wchar_t* name, StringWrapper** re
 
 int wdeGetValueOfCssProperty(WebElement* element, const wchar_t* name, StringWrapper** result)
 {
-	if (!element || !element->element) { return ENOSUCHELEMENT; }
+	int res = verifyFresh(element);	if (res != SUCCESS) { return res; }
 
 	try {
         const std::wstring originalString(element->element->getValueOfCssProperty(name));
@@ -471,7 +484,7 @@ int wdeGetValueOfCssProperty(WebElement* element, const wchar_t* name, StringWra
 
 int wdeGetText(WebElement* element, StringWrapper** result)
 {
-	if (!element || !element->element) { return ENOSUCHELEMENT; }
+	int res = verifyFresh(element);	if (res != SUCCESS) { return res; }
 
 	try {
 		const std::wstring originalString(element->element->getText());
@@ -491,7 +504,7 @@ int wdeGetText(WebElement* element, StringWrapper** result)
 
 int wdeGetTagName(WebElement* element, StringWrapper** result)
 {
-	if (!element || !element->element) { return ENOSUCHELEMENT; }
+	int res = verifyFresh(element);	if (res != SUCCESS) { return res; }
 
 	try {
 		const std::wstring originalString(element->element->getTagName());
@@ -511,7 +524,7 @@ int wdeGetTagName(WebElement* element, StringWrapper** result)
 
 int wdeIsSelected(WebElement* element, int* result)
 {
-    if (!element || !element->element) { return ENOSUCHELEMENT; }
+    int res = verifyFresh(element);	if (res != SUCCESS) { return res; }
 
 	try {
 		*result = element->element->isSelected() ? 1 : 0;
@@ -522,7 +535,7 @@ int wdeIsSelected(WebElement* element, int* result)
 
 int wdeSetSelected(WebElement* element)
 {
-    if (!element || !element->element) { return ENOSUCHELEMENT; }
+    int res = verifyFresh(element);	if (res != SUCCESS) { return res; }
 
 	try {
 		return element->element->setSelected();
@@ -531,7 +544,7 @@ int wdeSetSelected(WebElement* element)
 
 int wdeToggle(WebElement* element, int* result)
 {
-    if (!element || !element->element) { return ENOSUCHELEMENT; }
+    int res = verifyFresh(element);	if (res != SUCCESS) { return res; }
 
 	try {
 		int res = element->element->toggle();
@@ -546,7 +559,7 @@ int wdeToggle(WebElement* element, int* result)
 
 int wdeIsEnabled(WebElement* element, int* result) 
 {
-    if (!element || !element->element) { return ENOSUCHELEMENT; }
+    int res = verifyFresh(element);	if (res != SUCCESS) { return res; }
 
 	try {
 		*result = element->element->isEnabled() ? 1 : 0;
@@ -557,7 +570,7 @@ int wdeIsEnabled(WebElement* element, int* result)
 
 int wdeIsDisplayed(WebElement* element, int* result)
 {
-	if (!element || !element->element) { return ENOSUCHELEMENT; }
+	int res = verifyFresh(element);	if (res != SUCCESS) { return res; }
 
 	try {
 		*result = element->element->isDisplayed() ? 1 : 0;
@@ -568,7 +581,7 @@ int wdeIsDisplayed(WebElement* element, int* result)
 
 int wdeSendKeys(WebElement* element, const wchar_t* text)
 {
-	if (!element || !element->element) { return ENOSUCHELEMENT; }
+	int res = verifyFresh(element);	if (res != SUCCESS) { return res; }
 
 	try {
 		return element->element->sendKeys(text);
@@ -577,7 +590,7 @@ int wdeSendKeys(WebElement* element, const wchar_t* text)
 
 int wdeClear(WebElement* element) 
 {
-    if (!element || !element->element) { return ENOSUCHELEMENT; }
+    int res = verifyFresh(element);	if (res != SUCCESS) { return res; }
 
 	try {
 		element->element->clear();
@@ -587,7 +600,7 @@ int wdeClear(WebElement* element)
 
 int wdeSubmit(WebElement* element)
 {
-	if (!element || !element->element) { return ENOSUCHELEMENT; }
+	int res = verifyFresh(element);	if (res != SUCCESS) { return res; }
 
 	try {
 		element->element->submit();
@@ -597,7 +610,7 @@ int wdeSubmit(WebElement* element)
 
 int wdeGetDetailsOnceScrolledOnToScreen(WebElement* element, HWND* hwnd, long* x, long* y, long* width, long* height)
 {
-    if (!element || !element->element) { return ENOSUCHELEMENT; }
+    int res = verifyFresh(element);	if (res != SUCCESS) { return res; }
 
 	try {
 		element->element->getLocationWhenScrolledIntoView(hwnd, x, y, width, height);
@@ -607,28 +620,28 @@ int wdeGetDetailsOnceScrolledOnToScreen(WebElement* element, HWND* hwnd, long* x
 
 int wdeGetLocation(WebElement* element, long* x, long* y)
 {
-        if (!element || !element->element) { return ENOSUCHELEMENT; }
+	int res = verifyFresh(element);	if (res != SUCCESS) { return res; }
 
-		try {
-			element->element->getLocation(x, y);
+	try {
+		element->element->getLocation(x, y);
 
-			return SUCCESS;
-		} END_TRY;
+		return SUCCESS;
+	} END_TRY;
 }
 
 int wdeGetSize(WebElement* element, long* width, long* height)
 {
-        if (!element || !element->element) { return ENOSUCHELEMENT; }
+	int res = verifyFresh(element);	if (res != SUCCESS) { return res; }
 
-		try {
-			int result = element->element->getWidth(width);
-			if (result != SUCCESS) {
-				return result;
-			}
-			result = element->element->getHeight(height);
-
+	try {
+		int result = element->element->getWidth(width);
+		if (result != SUCCESS) {
 			return result;
-		} END_TRY;
+		}
+		result = element->element->getHeight(height);
+
+		return result;
+	} END_TRY;
 }
 
 int wdFindElementById(WebDriver* driver, WebElement* element, const wchar_t* id, WebElement** result)

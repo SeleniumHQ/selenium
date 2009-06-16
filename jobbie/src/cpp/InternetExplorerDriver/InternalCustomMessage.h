@@ -41,6 +41,7 @@ limitations under the License.
 #define _WD_ELEM_CLICK					WM_USER+26
 #define _WD_ELEM_SUBMIT					WM_USER+27
 #define _WD_ELEM_GETCHILDRENWTAGNAME	WM_USER+28
+#define _WD_ELEM_ISFRESH				WM_USER+29
 
 #define _WD_GETVISIBLE					WM_USER+30
 #define _WD_SETVISIBLE					WM_USER+31
@@ -65,7 +66,6 @@ limitations under the License.
 #define _WD_SELELEMENTSBYCLASSNAME		WM_USER+51
 #define _WD_SELELEMENTBYTAGNAME			WM_USER+52
 #define _WD_SELELEMENTSBYTAGNAME		WM_USER+53
-
 
 #define _WD_GETCOOKIES					WM_USER+60
 #define _WD_ADDCOOKIE					WM_USER+61

@@ -33,10 +33,10 @@ public class SingleTestSuite extends TestCase {
   private final static String SAFARI = "org.openqa.selenium.safari.SafariDriver";
 
   public static Test suite() throws Exception {
-    String driver = FIREFOX;
+    String driver = IE;
 
     System.setProperty("webdriver.firefox.development", "true");
-    System.setProperty("jna.library.path", ".\\jobbie;.");
+    System.setProperty("jna.library.path", ".\\jobbie\\build");
 //    System.setProperty("webdriver.firefox.useExisting", "true");
 
     TestSuiteBuilder builder = new TestSuiteBuilder()
@@ -46,8 +46,8 @@ public class SingleTestSuite extends TestCase {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("FormHandlingTest")
-        .method("testShouldNotBeAbleToSubmitAFormThatDoesNotExist")
+        .onlyRun("ElementFindingTest")
+        .method("testRemovingAnElementDynamicallyFromTheDomShouldCauseAStaleRefException")
         .exclude(ALL)
         .exclude(Ignore.Driver.IE)
         .leaveRunning()

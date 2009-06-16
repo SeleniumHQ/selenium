@@ -31,6 +31,8 @@ public:
 	ElementWrapper(InternetExplorerDriver* ie, IHTMLElement *pElem);
 	~ElementWrapper();
 
+	bool isFresh();
+
     LPCWSTR getTagName();
 	LPCWSTR getAttribute(LPCWSTR name);
 	LPCWSTR getValue();

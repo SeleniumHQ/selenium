@@ -21,13 +21,6 @@ FirefoxDriver.prototype.click = function(respond) {
 
     var element = Utils.getElementAt(respond.elementId, this.context);
 
-    if (!element) {
-      respond.isError = true;
-      respond.response = "element is obsolete";
-      respond.send();
-      return;
-    }
-
     if (!Utils.isDisplayed(element) && !Utils.isInHead(element)) {
         respond.isError = true;
         respond.response = "Element is not currently visible and so may not be clicked";
@@ -86,13 +79,6 @@ FirefoxDriver.prototype.getElementText = function(respond) {
 
     var element = Utils.getElementAt(respond.elementId, this.context);
 
-    if (!element) {
-      respond.isError = true;
-      respond.response = "element is obsolete";
-      respond.send();
-      return;
-    }
-
     if (element.tagName == "TITLE") {
         respond.response = Utils.getBrowser(this.context).contentTitle;
     } else {
@@ -106,14 +92,6 @@ FirefoxDriver.prototype.getElementValue = function(respond) {
     respond.context = this.context;
 
     var element = Utils.getElementAt(respond.elementId, this.context);
-
-    if (!element) {
-      respond.isError = true;
-      respond.response = "element is obsolete";
-      respond.send();
-      return;
-    }
-
 
     if (element["value"] !== undefined) {
         respond.response = element.value;
@@ -136,13 +114,6 @@ FirefoxDriver.prototype.sendKeys = function(respond, value) {
     respond.context = this.context;
 
     var element = Utils.getElementAt(respond.elementId, this.context);
-
-    if (!element) {
-      respond.isError = true;
-      respond.response = "element is obsolete";
-      respond.send();
-      return;
-    }
 
     if (!Utils.isDisplayed(element) && !Utils.isInHead(element)) {
 	    respond.isError = true;
@@ -173,15 +144,7 @@ FirefoxDriver.prototype.clear = function(respond) {
 
    var element = Utils.getElementAt(respond.elementId, this.context);
 
-  if (!element) {
-    respond.isError = true;
-    respond.response = "element is obsolete";
-    respond.send();
-    return;
-  }
-
-
-    if (!Utils.isDisplayed(element) && !Utils.isInHead(element)) {
+  if (!Utils.isDisplayed(element) && !Utils.isInHead(element)) {
 	    respond.isError = true;
 		respond.response = "Element is not currently visible and so may not be cleared";
 		respond.send();
@@ -219,27 +182,12 @@ FirefoxDriver.prototype.clear = function(respond) {
 FirefoxDriver.prototype.getTagName = function(respond) {
     var element = Utils.getElementAt(respond.elementId, this.context);
 
-  if (!element) {
-    respond.isError = true;
-    respond.response = "element is obsolete";
-    respond.send();
-    return;
-  }
-
-
     respond.response = element.tagName.toLowerCase();
     respond.send();
 }
 
 FirefoxDriver.prototype.getElementAttribute = function(respond, value) {
     var element = Utils.getElementAt(respond.elementId, this.context);
-
-  if (!element) {
-    respond.isError = true;
-    respond.response = "element is obsolete";
-    respond.send();
-    return;
-  }
 
     var attributeName = value[0];
 
@@ -287,13 +235,6 @@ FirefoxDriver.prototype.getElementAttribute = function(respond, value) {
 FirefoxDriver.prototype.submitElement = function(respond) {
     var element = Utils.getElementAt(respond.elementId, this.context);
 
-  if (!element) {
-    respond.isError = true;
-    respond.response = "element is obsolete";
-    respond.send();
-    return;
-  }
-
     var submitElement = Utils.findForm(element);
     if (submitElement) {
         var driver = this;
@@ -314,13 +255,6 @@ FirefoxDriver.prototype.submitElement = function(respond) {
 FirefoxDriver.prototype.getElementSelected = function(respond) {
     var element = Utils.getElementAt(respond.elementId, this.context);
 
-  if (!element) {
-    respond.isError = true;
-    respond.response = "element is obsolete";
-    respond.send();
-    return;
-  }
-
     var selected = false;
 
     try {
@@ -340,17 +274,10 @@ FirefoxDriver.prototype.getElementSelected = function(respond) {
     respond.context = this.context;
     respond.response = selected;
     respond.send();
-}
+};
 
 FirefoxDriver.prototype.setElementSelected = function(respond) {
     var element = Utils.getElementAt(respond.elementId, this.context);
-
-  if (!element) {
-    respond.isError = true;
-    respond.response = "element is obsolete";
-    respond.send();
-    return;
-  }
 
   if (!Utils.isDisplayed(element) && !Utils.isInHead(element)) {
     respond.isError = true;
@@ -399,19 +326,12 @@ FirefoxDriver.prototype.setElementSelected = function(respond) {
 
     respond.response = wasSet;
     respond.send();
-}
+};
 
 FirefoxDriver.prototype.toggleElement = function(respond) {
     respond.context = this.context;
 
     var element = Utils.getElementAt(respond.elementId, this.context);
-
-  if (!element) {
-    respond.isError = true;
-    respond.response = "element is obsolete";
-    respond.send();
-    return;
-  }
 
     if (!Utils.isDisplayed(element) && !Utils.isInHead(element)) {
     respond.isError = true;
@@ -457,13 +377,6 @@ FirefoxDriver.prototype.toggleElement = function(respond) {
 FirefoxDriver.prototype.isElementDisplayed = function(respond) {
     var element = Utils.getElementAt(respond.elementId, this.context);
 
-  if (!element) {
-    respond.isError = true;
-    respond.response = "element is obsolete";
-    respond.send();
-    return;
-  }
-
     respond.context = this.context;
     respond.response = Utils.isDisplayed(element) ? "true" : "false";
     respond.send();
@@ -471,13 +384,6 @@ FirefoxDriver.prototype.isElementDisplayed = function(respond) {
 
 FirefoxDriver.prototype.getElementLocation = function(respond) {
     var element = Utils.getElementAt(respond.elementId, this.context);
-
-    if (!element) {
-      respond.isError = true;
-      respond.response = "element is obsolete";
-      respond.send();
-      return;
-    }
 
     var location = Utils.getElementLocation(element, this.context);
 
@@ -489,14 +395,6 @@ FirefoxDriver.prototype.getElementLocation = function(respond) {
 FirefoxDriver.prototype.getElementSize = function(respond) {
     var element = Utils.getElementAt(respond.elementId, this.context);
 
-  if (!element) {
-    respond.isError = true;
-    respond.response = "element is obsolete";
-    respond.send();
-    return;
-  }
-
-
     var width = element.scrollWidth;
     var height = element.scrollHeight;
 
@@ -507,14 +405,6 @@ FirefoxDriver.prototype.getElementSize = function(respond) {
 
 FirefoxDriver.prototype.dragAndDrop = function(respond, movementString) {
   var element = Utils.getElementAt(respond.elementId, this.context);
-
-  if (!element) {
-    respond.isError = true;
-    respond.response = "element is obsolete";
-    respond.send();
-    return;
-  }
-
 
     if (!Utils.isDisplayed(element) && !Utils.isInHead(element)) {
     respond.isError = true;
@@ -579,13 +469,6 @@ FirefoxDriver.prototype.dragAndDrop = function(respond, movementString) {
 FirefoxDriver.prototype.findElementsByXPath = function (respond, xpath) {
     var element = Utils.getElementAt(respond.elementId, this.context);
 
-  if (!element) {
-    respond.isError = true;
-    respond.response = "element is obsolete";
-    respond.send();
-    return;
-  }
-
     var indices = Utils.findElementsByXPath(xpath, element, this.context)
     var response = ""
     for (var i = 0; i < indices.length; i++) {
@@ -601,13 +484,6 @@ FirefoxDriver.prototype.findElementsByXPath = function (respond, xpath) {
 
 FirefoxDriver.prototype.findElementsByLinkText = function (respond, linkText) {
     var element = Utils.getElementAt(respond.elementId, this.context);
-
-  if (!element) {
-    respond.isError = true;
-    respond.response = "element is obsolete";
-    respond.send();
-    return;
-  }
 
     var children = element.getElementsByTagName("A");
     var response = "";
@@ -626,14 +502,6 @@ FirefoxDriver.prototype.findElementsByLinkText = function (respond, linkText) {
 
 FirefoxDriver.prototype.findElementByPartialLinkText = function(respond, linkText) {
     var element = Utils.getElementAt(respond.elementId, this.context);
-
-  if (!element) {
-    respond.isError = true;
-    respond.response = "element is obsolete";
-    respond.send();
-    return;
-  }
-
 
     var allLinks = element.getElementsByTagName("A");
     var index;
@@ -660,13 +528,6 @@ FirefoxDriver.prototype.findElementByPartialLinkText = function(respond, linkTex
 FirefoxDriver.prototype.findElementsByPartialLinkText = function (respond, linkText) {
     var element = Utils.getElementAt(respond.elementId, this.context);
 
-  if (!element) {
-    respond.isError = true;
-    respond.response = "element is obsolete";
-    respond.send();
-    return;
-  }
-
     var children = element.getElementsByTagName("A");
     var response = "";
     for (var i = 0; i < children.length; i++) {
@@ -683,14 +544,6 @@ FirefoxDriver.prototype.findElementsByPartialLinkText = function (respond, linkT
 
 FirefoxDriver.prototype.findChildElementsByClassName = function(respond, className) {
     var element = Utils.getElementAt(respond.elementId, this.context);
-
-  if (!element) {
-    respond.isError = true;
-    respond.response = "element is obsolete";
-    respond.send();
-    return;
-  }
-
 
     if (element["getElementsByClassName"]) {
       var result = element.getElementsByClassName(className);
@@ -715,14 +568,6 @@ FirefoxDriver.prototype.findChildElementsByClassName = function(respond, classNa
 FirefoxDriver.prototype.findElementById = function(respond, id) {
     var doc = Utils.getDocument(this.context);
     var parentElement = Utils.getElementAt(respond.elementId, this.context);
-
-  if (!parentElement) {
-    respond.isError = true;
-    respond.response = "element is obsolete";
-    respond.send();
-    return;
-  }
-
 
     var element = doc.getElementById(id);
     var isChild = false;
@@ -749,7 +594,7 @@ FirefoxDriver.prototype.findElementById = function(respond, id) {
             }
         }
     } else {
-        respond.isError = true
+        respond.isError = true;
         respond.response = "Unable to locate element using id '" + id + "'";
     }
     respond.send();
@@ -758,15 +603,7 @@ FirefoxDriver.prototype.findElementById = function(respond, id) {
 FirefoxDriver.prototype.findElementByTagName = function(respond, name) {
 	var parentElement = Utils.getElementAt(respond.elementId, this.context);
 
-  if (!parentElement) {
-    respond.isError = true;
-    respond.response = "element is obsolete";
-    respond.send();
-    return;
-  }
-
-
-        var elements = parentElement.getElementsByTagName(name);
+  var elements = parentElement.getElementsByTagName(name);
 	if (elements.length) {
 		respond.response = Utils.addToKnownElements(elements[0], this.context);
 	} else {
@@ -780,15 +617,7 @@ FirefoxDriver.prototype.findElementByTagName = function(respond, name) {
 FirefoxDriver.prototype.findElementsByTagName = function(respond, name) {
 	var parentElement = Utils.getElementAt(respond.elementId, this.context);
 
-  if (!parentElement) {
-    respond.isError = true;
-    respond.response = "element is obsolete";
-    respond.send();
-    return;
-  }
-
-
-        var elements = parentElement.getElementsByTagName(name);
+  var elements = parentElement.getElementsByTagName(name);
 	var response = "";
 	for ( var i = 0; i < elements.length; i++) {
 		var element = elements[i];
@@ -806,27 +635,12 @@ FirefoxDriver.prototype.findElementsByTagName = function(respond, name) {
 FirefoxDriver.prototype.getElementCssProperty = function(respond, propertyName) {
     var element = Utils.getElementAt(respond.elementId, this.context);
 
-  if (!element) {
-    respond.isError = true;
-    respond.response = "element is obsolete";
-    respond.send();
-    return;
-  }
-
-
     respond.response = Utils.getStyleProperty(element, propertyName); // Coeerce to a string
     respond.send();
 };
 
 FirefoxDriver.prototype.getLocationOnceScrolledIntoView = function(respond) {
   var element = Utils.getElementAt(respond.elementId, this.context);
-
-  if (!element) {
-    respond.isError = true;
-    respond.response = "element is obsolete";
-    respond.send();
-    return;
-  }
 
   if (!Utils.isDisplayed(element)) {
     respond.response = undefined;

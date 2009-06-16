@@ -354,4 +354,22 @@ public class ElementFindingTest extends AbstractDriverTestCase {
       // this is expected
     }
   }
+
+  @JavascriptEnabled
+  @Ignore(SAFARI)
+  public void testRemovingAnElementDynamicallyFromTheDomShouldCauseAStaleRefException() {
+    driver.get(javascriptPage);
+
+    RenderedWebElement toBeDeleted = (RenderedWebElement) driver.findElement(By.id("deleted"));
+    assertTrue(toBeDeleted.isDisplayed());
+
+    driver.findElement(By.id("delete")).click();
+
+    try {
+      toBeDeleted.isDisplayed();
+      fail("Element should be stale at this point");
+    } catch (StaleElementReferenceException e) {
+      // this is expected
+    }
+  }
 }
