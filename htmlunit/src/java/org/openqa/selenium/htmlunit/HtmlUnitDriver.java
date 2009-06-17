@@ -275,13 +275,14 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     }
 
     public void close() {
-        webClient = createWebClient(version);
+      webClient = createWebClient(version);
     }
 
     public void quit() {
-    	webClient = null;
-    	currentWindow = null;
-        histories.clear();
+      webClient.closeAllWindows();
+      webClient = null;
+      currentWindow = null;
+      histories.clear();
     }
 
   public Set<String> getWindowHandles() {
