@@ -15,10 +15,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#ifndef interactions_h
-#define interactions_h
-
-#include <wchar.h>
+#ifndef interaction_utils_h
+#define interaction_utils_h
 
 #define EXPORT __declspec(dllexport)
 
@@ -26,17 +24,12 @@ limitations under the License.
 extern "C" {
 #endif
 
-// Keyboard interactions
-EXPORT boolean sendKeysToFileUploadAlert(HWND alertHwnd, const wchar_t* value);
-EXPORT void sendKeys(HWND directInputTo, const wchar_t* value, int timePerKey);
-
-// Mouse interactions
-EXPORT LRESULT clickAt(HWND directInputTo, long x, long y);
-EXPORT LRESULT mouseDownAt(HWND directInputTo, long x, long y);
-EXPORT LRESULT mouseUpAt(HWND directInputTo, long x, long y);
-EXPORT LRESULT mouseMoveTo(HWND directInputTo, long duration, long fromX, long fromY, long toX, long toY);
+EXPORT void wait(long millis);
+EXPORT void waitWithoutMsgPump(long millis);
+EXPORT HWND getChildWindow(HWND hwnd, LPCTSTR name);
 
 #ifdef __cplusplus
 }
-#endif
+#endif 
+
 #endif

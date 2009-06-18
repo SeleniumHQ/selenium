@@ -155,7 +155,7 @@ simple_jars = {
   },
   "jobbie" =>   {
     'src'       => "jobbie/src/java/**/*.java",
-    'deps'      => [:common, 'jobbie/build/Win32/Release/InternetExplorerDriver.dll'],
+    'deps'      => [:common, 'build/Win32/Release/InternetExplorerDriver.dll'],
     'jar'       => "jobbie/build/webdriver-jobbie.jar",
     'classpath' => ["jobbie/lib/runtime/**/*.jar"] + common_libs,
     'test_on'   => false,
@@ -329,28 +329,31 @@ task :javadocs => [:common, :firefox, :htmlunit, :jobbie, :remote, :safari, :sup
 end
 
 #### Internet Explorer ####
-file 'jobbie/build/Win32/Release/InternetExplorerDriver.dll' => FileList['jobbie/src/cpp/**/*.cpp'] do
+file 'build/Win32/Release/InternetExplorerDriver.dll' => FileList['jobbie/src/cpp/**/*.cpp'] do
   if windows? then
-    sh "MSBuild.exe WebDriver.sln /verbosity:q /target:Rebuild /property:Configuration=Release /property:Platform=x64", :verbose => false
-    sh "MSBuild.exe WebDriver.sln /verbosity:q /target:Rebuild /property:Configuration=Release /property:Platform=Win32", :verbose => false
+    sh "MSBuild.exe WebDriver.sln /verbosity:q /target:Rebuild /property:Configuration=Release /property:Platform=x64", :verbose => true
+    sh "MSBuild.exe WebDriver.sln /verbosity:q /target:Rebuild /property:Configuration=Release /property:Platform=Win32", :verbose => true
   else
     puts "Not compiling DLL. Do not try and run the IE tests!"
     begin
-      mkdir_p 'jobbie/build', :verbose => false
+      mkdir_p 'build', :verbose => false
     rescue
     end
-    mkdir_p "jobbie/build/Win32/Release"
-    mkdir_p "jobbie/build/x64/Release"
-    File.open('jobbie/build/Win32/Release/InternetExplorerDriver.dll', 'w') {|f| f.write("")}
-    File.open('jobbie/build/x64/Release/InternetExplorerDriver.dll', 'w') {|f| f.write("")}
+    mkdir_p "build/Win32/Release"
+    mkdir_p "build/x64/Release"
+    File.open('build/Win32/Release/InternetExplorerDriver.dll', 'w') {|f| f.write("")}
+    File.open('build/Win32/Release/webdriver-interactions.dll', 'w') {|f| f.write("")}
+    File.open('build/x64/Release/webdriver-interactions.dll', 'w') {|f| f.write("")}
   end
 end
 
-file "jobbie/build/webdriver-jobbie.jar" => "jobbie/build/Win32/Release/InternetExplorerDriver.dll" do
+file "jobbie/build/webdriver-jobbie.jar" => "build/Win32/Release/InternetExplorerDriver.dll" do
   mkdir_p "jobbie/build/jar/x86"
   mkdir_p "jobbie/build/jar/amd64"
-  cp "jobbie/build/Win32/Release/InternetExplorerDriver.dll", "jobbie/build/jar/x86"
-  cp "jobbie/build/x64/Release/InternetExplorerDriver.dll", "jobbie/build/jar/amd64"
+  cp "build/Win32/Release/InternetExplorerDriver.dll", "jobbie/build/jar/x86"
+  cp "build/Win32/Release/webdriver-interactions.dll", "jobbie/build/jar/x86"
+  cp "build/x64/Release/InternetExplorerDriver.dll", "jobbie/build/jar/amd64"
+  cp "build/x64/Release/webdriver-interactions.dll", "jobbie/build/jar/amd64"
   sh "jar uf jobbie/build/webdriver-jobbie.jar -C jobbie/build/jar .", :verbose => false
 end
 
@@ -495,7 +498,11 @@ def javac(args)
   end
 
   target_dir = "#{out}.classes"
-  mkdir_p target_dir, :verbose => false
+  puts target_dir
+  unless File.directory?(target_dir) 
+	mkdir_p target_dir, :verbose => false 
+  end
+  
 
   compile_string = "javac "
   compile_string += "-source 5 -target 5 "

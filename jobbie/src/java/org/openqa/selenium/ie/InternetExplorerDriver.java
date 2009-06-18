@@ -429,31 +429,46 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
       if (lib != null) {
         return;
       }
-      
+
+      File parentDir;
+      try {
+        parentDir = File.createTempFile("webdriver", "");
+      } catch (IOException e) {
+        throw new WebDriverException(e);
+      }
+      parentDir.delete();
+      parentDir.mkdirs();
+
       StringBuilder jnaPath = new StringBuilder(System.getProperty("jna.library.path", ""));
       jnaPath.append(File.pathSeparator);
       jnaPath.append(System.getProperty("java.class.path"));
       jnaPath.append(File.pathSeparator);
-      
+      jnaPath.append(parentDir.getAbsolutePath());
+      jnaPath.append(File.pathSeparator);
+
       // We need to do this before calling any JNA methods because
       // the map of paths to search is static. Apparently.
-      File dll = writeResourceToDisk("InternetExplorerDriver.dll");
-      String driverLib = "InternetExplorerDriver";
-      if (dll != null) {
-        driverLib = dll.getName().replace(".dll", "");
-        jnaPath.append(dll.getParent());
-      }
+      writeResourceToDisk(parentDir, "webdriver-interactions.dll");
+
+      // At this point, we assume the interactions library is available "somewhere"
+
+      File dll = writeResourceToDisk(parentDir, "InternetExplorerDriver.dll");
+//      String driverLib = "InternetExplorerDriver";
+//      if (dll != null) {
+//        driverLib = dll.getName().replace(".dll", "");
+//        jnaPath.append(dll.getParent());
+//      }
       
       System.setProperty("jna.library.path", jnaPath.toString());
-      
+
       try {
         lib = (ExportedWebDriverFunctions)  Native.loadLibrary("InternetExplorerDriver", ExportedWebDriverFunctions.class);
       } catch (UnsatisfiedLinkError e) {
-        lib = (ExportedWebDriverFunctions)  Native.loadLibrary(driverLib, ExportedWebDriverFunctions.class);
+        System.out.println("new File(\".\").getAbsolutePath() = " + new File(".").getAbsolutePath());
       }
     }
     
-    private File writeResourceToDisk(String resourceName) throws UnsatisfiedLinkError {
+    private File writeResourceToDisk(File parentDir, String resourceName) throws UnsatisfiedLinkError {
       // Expected values: x86 or amd64
       String arch = System.getProperty("os.arch").toLowerCase() + "/";
       
@@ -467,9 +482,8 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
           OutputStream fos = null;
           
       try {
-          File dll = File.createTempFile("webdriver", ".dll");
-          dll.deleteOnExit();
-          fos = new BufferedOutputStream(new FileOutputStream(dll), 8192);
+          File output = new File(parentDir, resourceName);
+          fos = new BufferedOutputStream(new FileOutputStream(output), 8192);
           
           int count;
           byte[] buf = new byte[8192];
@@ -477,7 +491,7 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
               fos.write(buf, 0, count);
           }
           
-          return dll;
+          return output;
       } catch(IOException e) {
           throw new UnsatisfiedLinkError("Could not create temporary DLL: " + e.getMessage());
       }

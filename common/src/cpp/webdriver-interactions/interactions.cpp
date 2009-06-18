@@ -18,9 +18,12 @@ limitations under the License.
 #include "stdafx.h"
 
 #include <ctime>
+#include <string>
+#include <iostream>
 
 #include "interactions.h"
-#include "utils.h"
+
+using namespace std;
 
 const LPCTSTR fileDialogNames[] = {
 	_T("#32770"),

@@ -28,41 +28,6 @@ using namespace std;
 
 safeIO gSafe;
 
-void wait(long millis)
-{
-	clock_t end = clock() + millis;
-	do {
-        MSG msg;
-		if (PeekMessage( &msg, NULL, 0, 0, PM_REMOVE)) {
-			TranslateMessage(&msg); 
-			DispatchMessage(&msg); 
-		}
-		Sleep(0);
-	} while (clock() < end);
-}
-
-void waitWithoutMsgPump(long millis)
-{
-	Sleep(millis);
-}
-
-// "Internet Explorer_Server" + 1
-#define LONGEST_NAME 25
-
-HWND getChildWindow(HWND hwnd, LPCTSTR name)
-{
-	TCHAR pszClassName[LONGEST_NAME];
-	HWND hwndtmp = GetWindow(hwnd, GW_CHILD);
-	while (hwndtmp != NULL) {
-		::GetClassName(hwndtmp, pszClassName, LONGEST_NAME);
-		if (lstrcmp(pszClassName, name) == 0) {
-			return hwndtmp;
-		}
-		hwndtmp = GetWindow(hwndtmp, GW_HWNDNEXT);
-	}
-	return NULL;
-}
-
 LPCWSTR comvariant2cw(CComVariant& toConvert) 
 {
 	VARTYPE type = toConvert.vt;

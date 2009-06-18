@@ -22,7 +22,7 @@ limitations under the License.
 #include <iostream>
 #include <string>
 
-
+#include "interaction_utils.h"
 #include "InternetExplorerDriver.h"
 
 
@@ -44,10 +44,6 @@ limitations under the License.
 #define SEND_MESSAGE_ABOUT_ELEM(message) \
 	DataMarshaller& data = prepareCmData(pElem, input_string); \
 	sendThreadMsg(message, data);
-
-void wait(long millis);
-void waitWithoutMsgPump(long millis);
-HWND getChildWindow(HWND hwnd, LPCTSTR name);
 
 struct StringWrapper;
 typedef struct StringWrapper StringWrapper;
