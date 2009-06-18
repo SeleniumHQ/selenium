@@ -12,7 +12,7 @@ module Selenium
 		    builder = JavascriptExpressionBuilder.new active_javascript_framework(options)
 	      wait_for_condition builder.no_pending_ajax_requests.script, 
 	                         options[:timeout_in_seconds]
-	    end
+      end
 	
 	    # Wait for all Prototype effects to be processed (the wait in happenning browser side).
 	    #

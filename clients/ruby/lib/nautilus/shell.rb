@@ -19,7 +19,7 @@ module Nautilus
     end
             
     def windows?
-      PLATFORM['win32']
+      RUBY_PLATFORM =~ /mswin/
     end
     
     def sh(command)

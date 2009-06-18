@@ -81,7 +81,7 @@ Plain API
     # Sample Ruby script using the Selenium client API
     #
     require "rubygems"
-    gem "selenium-client", ">=1.2.15"
+    gem "selenium-client", ">=1.2.16"
     require "selenium/client"
     
     begin
@@ -114,7 +114,7 @@ Writing Tests
     #
     require "test/unit"
     require "rubygems"
-    gem "selenium-client", ">=1.2.15"
+    gem "selenium-client", ">=1.2.16"
     require "selenium/client"
     
     class ExampleTest < Test::Unit::TestCase
@@ -152,7 +152,7 @@ Writing Tests
 
     require 'rubygems'
     gem "rspec", "=1.2.6"
-    gem "selenium-client", ">=1.2.15"
+    gem "selenium-client", ">=1.2.16"
     require "selenium/client"
     require "selenium/rspec/spec_helper"
     

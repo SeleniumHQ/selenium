@@ -95,7 +95,7 @@ module Selenium
 
       def javascript_extension=(new_javascript_extension)
         @extension_js = new_javascript_extension
-	    end
+      end
 	
       def set_extension_js(new_javascript_extension)
 	      javascript_extension = new_javascript_extension

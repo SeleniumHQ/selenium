@@ -1,8 +1,11 @@
                    Selenium-Client gem ChangeLog
                    =============================
 
+1.2.16 (?)
+==========
+ - Upgraded Selenium RC support to 1.0 (official release)
 
-1.2.15 (2008-05-?)
+1.2.15 (2008-05-13)
 ===================
 
  - Upgraded RSpec support to 1.2.6
@@ -35,7 +38,7 @@
    timings. When this function is called, the traffic log is cleared, so the
    returned content is only the traffic seen since the last call.
 
- - Add support for browser session specific options when starting a new 
+ - Added support for browser session specific options when starting a new 
    session (used to trigger capture of browser network traffic). 
 
  - Added a more idiomatic `browser_xpath_library=` method to

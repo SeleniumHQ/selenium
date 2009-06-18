@@ -5,7 +5,7 @@
 module Selenium
   module Client
     
-  module SeleniumHelper
+    module SeleniumHelper
     
       # Overrides default open method to actually delegates to @selenium
       def open(url)

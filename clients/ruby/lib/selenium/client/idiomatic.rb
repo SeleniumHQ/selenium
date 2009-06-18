@@ -366,9 +366,9 @@ module Selenium
       # 'optionsString' is options for the cookie. Currently supported options include 'path', 'max_age' and 'domain'.
       # the optionsString's format is "path=/path/, max_age=60, domain=.foo.com". The order of options are irrelevant, the unit      of the value of 'max_age' is second.  Note that specifying a domain that isn't a subset of the current domain will      usually fail.
       def create_cookie(name_value_pair, options="")
-	      if options.kind_of? Hash
+        if options.kind_of? Hash
 		      options = options.keys.collect {|key| "#{key}=#{options[key]}" }.sort.join(", ")
-		    end
+        end
         remote_control_command "createCookie", [name_value_pair,options,]
       end
 
@@ -386,10 +386,10 @@ module Selenium
       # 'name' is the name of the cookie to be deleted
       # 'optionsString' is options for the cookie. Currently supported options include 'path', 'domain'      and 'recurse.' The optionsString's format is "path=/path/, domain=.foo.com, recurse=true".      The order of options are irrelevant. Note that specifying a domain that isn't a subset of      the current domain will usually fail.
       def delete_cookie(name, options="")
-	      if options.kind_of? Hash
+        if options.kind_of? Hash
 		      ordered_keys = options.keys.sort {|a,b| a.to_s <=> b.to_s }
 		      options = ordered_keys.collect {|key| "#{key}=#{options[key]}" }.join(", ")
-		    end
+        end
         remote_control_command "deleteCookie", [name,options,]
       end
 

@@ -7,7 +7,7 @@ module Selenium
       def initialize(javascript_framework_name=nil)
         @framework = javascript_framework_for(javascript_framework_name) if javascript_framework_name       
         @script = ""
-	    end
+      end
 	    
 	    def append(text)
 	      @script << text
