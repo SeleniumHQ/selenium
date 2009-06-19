@@ -1,4 +1,4 @@
-package org.openqa.selenium.firefox.internal;
+package org.openqa.selenium.internal;
 
 import junit.framework.TestCase;
 

@@ -24,21 +24,22 @@ import static org.openqa.selenium.Ignore.Driver.IE;
 import org.openqa.selenium.TestSuiteBuilder;
 
 public class InternetExplorerDriverTestSuite extends TestCase {
-	public static Test suite() throws Exception {
-                String arch = System.getProperty("os.arch").toLowerCase() + "/";
-                if (arch.contains("64")) {
-                  System.setProperty("jna.library.path", "..\\build\\x64\\Debug;build\\x64\\Debug");
-                } else {
-                  System.setProperty("jna.library.path", "..\\build\\Win32\\Debug;build\\Win32\\Debug");
-                }
+  public static Test suite() throws Exception {
+    System.setProperty("webdriver.development", "true");
+    String arch = System.getProperty("os.arch").toLowerCase() + "/";
+    if (arch.contains("64")) {
+      System.setProperty("jna.library.path", "..\\build\\x64\\Debug;build\\x64\\Debug");
+    } else {
+      System.setProperty("jna.library.path", "..\\build\\Win32\\Debug;build\\Win32\\Debug");
+    }
 
-		return new TestSuiteBuilder()
-					.addSourceDir("common")
-					.addSourceDir("jobbie")
-					.usingDriver(InternetExplorerDriver.class)
-					.exclude(IE)
-					.includeJavascriptTests()
-					.keepDriverInstance()
-					.create();
-	}
+    return new TestSuiteBuilder()
+        .addSourceDir("common")
+        .addSourceDir("jobbie")
+        .usingDriver(InternetExplorerDriver.class)
+        .exclude(IE)
+        .includeJavascriptTests()
+        .keepDriverInstance()
+        .create();
+  }
 }

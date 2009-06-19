@@ -35,7 +35,7 @@ public class SingleTestSuite extends TestCase {
   public static Test suite() throws Exception {
     String driver = IE;
 
-    System.setProperty("webdriver.firefox.development", "true");
+    System.setProperty("webdriver.development", "true");
     System.setProperty("jna.library.path", ".\\jobbie\\build");
 //    System.setProperty("webdriver.firefox.useExisting", "true");
 

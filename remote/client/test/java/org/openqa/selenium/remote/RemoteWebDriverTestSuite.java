@@ -34,7 +34,7 @@ import java.net.URL;
 
 public class RemoteWebDriverTestSuite extends TestCase {
   public static Test suite() throws Exception {
-    System.setProperty("webdriver.firefox.development", "true");
+    System.setProperty("webdriver.development", "true");
 
     Test rawSuite =
         new TestSuiteBuilder()

@@ -17,16 +17,23 @@ limitations under the License.
 
 // Copyright 2008 Google Inc.  All Rights Reserved.
 
-package org.openqa.selenium.firefox.internal;
+package org.openqa.selenium.internal;
 
 import org.openqa.selenium.WebDriverException;
 
-import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.channels.FileChannel;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import java.io.File;
+import java.io.InputStream;
+import java.io.IOException;
+import java.io.BufferedInputStream;
+import java.io.OutputStream;
+import java.io.BufferedOutputStream;
+import java.io.FileOutputStream;
+import java.io.FileInputStream;
 
 /**
  * Utility methods for common filesystem activities
@@ -71,6 +78,38 @@ public class FileHandler {
       out.close();
     }
   }
+
+  public static void copyResource(File outputDir, Class forClassLoader, String... names)
+      throws IOException {
+    for (String name : names) {
+      InputStream is = locateResource(forClassLoader, name);
+      try {
+        unzipFile(outputDir, is, name);
+      } finally {
+        Cleanly.close(is);
+      }
+    }
+  }
+
+  private static InputStream locateResource(Class forClassLoader, String name) throws IOException {
+    String arch = System.getProperty("os.arch").toLowerCase() + "/";
+    String[] alternatives = {name, "/" + name, arch + name, "/" + arch + name};
+
+    // First look using our own classloader
+    for (String possibility : alternatives) {
+      InputStream stream = FileHandler.class.getResourceAsStream(possibility);
+      if (stream != null) {
+        return stream;
+      }
+      stream = forClassLoader.getResourceAsStream(possibility);
+      if (stream != null) {
+        return stream;
+      }
+    }
+
+    throw new IOException("Unable to locate: " + name);
+  }
+
 
   public static boolean createDir(File dir) throws IOException {
     if ((dir.exists() || dir.mkdirs()) && dir.canWrite())

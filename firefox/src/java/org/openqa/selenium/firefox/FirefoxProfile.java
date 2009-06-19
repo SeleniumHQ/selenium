@@ -18,9 +18,9 @@ limitations under the License.
 package org.openqa.selenium.firefox;
 
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.firefox.internal.Cleanly;
-import org.openqa.selenium.firefox.internal.FileHandler;
-import org.openqa.selenium.firefox.internal.TemporaryFilesystem;
+import org.openqa.selenium.internal.FileHandler;
+import org.openqa.selenium.internal.TemporaryFilesystem;
+import org.openqa.selenium.internal.Cleanly;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -60,11 +60,9 @@ public class FirefoxProfile {
    * 
    * <p>Users who need this functionality should be using a named profile.
    * 
-   * @deprecated Prefer {@link ProfileManager}; this will be private soon.
    * @param profileDir
    */
-  @Deprecated
-  public FirefoxProfile(File profileDir) {
+  protected FirefoxProfile(File profileDir) {
     this.profileDir = profileDir;
     this.extensionsDir = new File(profileDir, "extensions");
     this.userPrefs = new File(profileDir, "user.js");
@@ -83,25 +81,26 @@ public class FirefoxProfile {
   }
 
   protected void addWebDriverExtensionIfNeeded(boolean forceCreation) {
-        File extensionLocation = new File(extensionsDir, EXTENSION_NAME);
-        if (!forceCreation && extensionLocation.exists())
-            return;
-
-        boolean isDev = Boolean.getBoolean("webdriver.firefox.development");
-        try {
-          if (isDev) {
-              installDevelopmentExtension();
-          } else {
-              addExtension(FirefoxProfile.class, "webdriver-extension.zip");
-          }
-        } catch (IOException e) {
-          throw new WebDriverException("Failed to install webdriver extension", e);
-        }
-
-        deleteExtensionsCacheIfItExists();
+    File extensionLocation = new File(extensionsDir, EXTENSION_NAME);
+    if (!forceCreation && extensionLocation.exists()) {
+      return;
     }
 
-    public void addExtension(Class<?> loadResourcesUsing, String loadFrom) throws IOException {
+    boolean isDev = Boolean.getBoolean("webdriver.development");
+    try {
+      if (isDev) {
+        installDevelopmentExtension();
+      } else {
+        addExtension(FirefoxProfile.class, "webdriver-extension.zip");
+      }
+    } catch (IOException e) {
+      throw new WebDriverException("Failed to install webdriver extension", e);
+    }
+
+    deleteExtensionsCacheIfItExists();
+  }
+
+  public void addExtension(Class<?> loadResourcesUsing, String loadFrom) throws IOException {
       // Is loadFrom a file?
       File file = new File(loadFrom);
       if (file.exists()) {

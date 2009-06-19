@@ -44,6 +44,9 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.ReturnedCookie;
+import org.openqa.selenium.internal.TemporaryFilesystem;
+import org.openqa.selenium.internal.Cleanly;
+import org.openqa.selenium.internal.FileHandler;
 
 import com.sun.jna.Native;
 import com.sun.jna.NativeLong;
@@ -425,83 +428,41 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
         }
     }
 
-    private synchronized void initializeLib() {
-      if (lib != null) {
-        return;
-      }
+  private synchronized void initializeLib() {
+    if (lib != null) {
+      return;
+    }
 
-      File parentDir;
-      try {
-        parentDir = File.createTempFile("webdriver", "");
-      } catch (IOException e) {
+    File parentDir = TemporaryFilesystem.createTempDir("webdriver", "libs");
+
+    // We need to do this before calling any JNA methods because
+    // the map of paths to search is static. Apparently.
+    StringBuilder jnaPath = new StringBuilder(System.getProperty("jna.library.path", ""));
+    jnaPath.append(File.pathSeparator);
+    jnaPath.append(System.getProperty("java.class.path"));
+    jnaPath.append(File.pathSeparator);
+    jnaPath.append(parentDir.getAbsolutePath());
+    jnaPath.append(File.pathSeparator);
+
+    try {
+      FileHandler.copyResource(parentDir, getClass(),
+          "webdriver-interactions.dll", "InternetExplorerDriver.dll");
+    } catch (IOException e) {
+      if (Boolean.getBoolean("webdriver.development")) {
+        System.err.println("Exception unpacking required libraries, but in development mode. Continuing");
+      } else {
         throw new WebDriverException(e);
       }
-      parentDir.delete();
-      parentDir.mkdirs();
-
-      StringBuilder jnaPath = new StringBuilder(System.getProperty("jna.library.path", ""));
-      jnaPath.append(File.pathSeparator);
-      jnaPath.append(System.getProperty("java.class.path"));
-      jnaPath.append(File.pathSeparator);
-      jnaPath.append(parentDir.getAbsolutePath());
-      jnaPath.append(File.pathSeparator);
-
-      // We need to do this before calling any JNA methods because
-      // the map of paths to search is static. Apparently.
-      writeResourceToDisk(parentDir, "webdriver-interactions.dll");
-
-      // At this point, we assume the interactions library is available "somewhere"
-
-      File dll = writeResourceToDisk(parentDir, "InternetExplorerDriver.dll");
-//      String driverLib = "InternetExplorerDriver";
-//      if (dll != null) {
-//        driverLib = dll.getName().replace(".dll", "");
-//        jnaPath.append(dll.getParent());
-//      }
-      
-      System.setProperty("jna.library.path", jnaPath.toString());
-
-      try {
-        lib = (ExportedWebDriverFunctions)  Native.loadLibrary("InternetExplorerDriver", ExportedWebDriverFunctions.class);
-      } catch (UnsatisfiedLinkError e) {
-        System.out.println("new File(\".\").getAbsolutePath() = " + new File(".").getAbsolutePath());
-      }
     }
-    
-    private File writeResourceToDisk(File parentDir, String resourceName) throws UnsatisfiedLinkError {
-      // Expected values: x86 or amd64
-      String arch = System.getProperty("os.arch").toLowerCase() + "/";
-      
-      InputStream is = InternetExplorerDriver.class.getResourceAsStream(arch + resourceName);
-      if (is == null) 
-          is = InternetExplorerDriver.class.getResourceAsStream("/" + arch + resourceName);
-          if (is == null) {
-            System.err.println("Unable to locate driver DLL. This may cause the IE driver not to start");
-            return null;
-          }
-          OutputStream fos = null;
-          
-      try {
-          File output = new File(parentDir, resourceName);
-          fos = new BufferedOutputStream(new FileOutputStream(output), 8192);
-          
-          int count;
-          byte[] buf = new byte[8192];
-          while ((count = is.read(buf, 0, buf.length)) > 0) {
-              fos.write(buf, 0, count);
-          }
-          
-          return output;
-      } catch(IOException e) {
-          throw new UnsatisfiedLinkError("Could not create temporary DLL: " + e.getMessage());
-      }
-      finally {
-          if (is != null) {
-              try { is.close(); } catch(IOException ignored) { }
-          }
-          if (fos != null) {
-              try { fos.close(); } catch(IOException ignored) { }
-          }
-      }
+
+    System.setProperty("jna.library.path", jnaPath.toString());
+
+    try {
+      lib =
+          (ExportedWebDriverFunctions) Native
+              .loadLibrary("InternetExplorerDriver", ExportedWebDriverFunctions.class);
+    } catch (UnsatisfiedLinkError e) {
+      System.out.println("new File(\".\").getAbsolutePath() = " + new File(".").getAbsolutePath());
     }
+  }
 }

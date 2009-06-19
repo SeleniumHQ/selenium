@@ -98,9 +98,15 @@ public class ProfilesIni {
   protected FirefoxProfile newProfile(String name, File appData, String path, boolean isRelative) {
     if (name != null && path != null) {
       File profileDir = isRelative ? new File(appData, path) : new File(path);
-      return new FirefoxProfile(profileDir);
+      return new ProfileFromDirectory(profileDir);
     }
     return null;
+  }
+
+  private static class ProfileFromDirectory extends FirefoxProfile {
+    public ProfileFromDirectory(File dir) {
+      super(dir);
+    }
   }
 
   public FirefoxProfile getProfile(String profileName) {

@@ -483,8 +483,6 @@ def javac(args)
   # We'll start with just one thing now
   extra_resources = args[:resources]
 
-  puts "Building: #{out}"
-
   # optional args
   unless args[:exclude].nil?
     args[:exclude].each { |pattern| sources.exclude(pattern) }
