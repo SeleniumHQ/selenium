@@ -32,6 +32,10 @@ def python?
   present?("python") || present?("python.exe")
 end
 
+def msbuild?
+  windows? && present?("msbuild.exe")
+end
+
 task :prebuild do
   # Check that common tools are available
   %w(java jar).each do |exe|
@@ -328,11 +332,38 @@ task :javadocs => [:common, :firefox, :htmlunit, :jobbie, :remote, :safari, :sup
   sh cmd
 end
 
+#### The interactions library ####
+
+file 'build/Win32/Release/webdriver-interactions.dll' => FileList['common/src/cpp/webdriver-interactions/*.*'] do
+  if msbuild? then
+    sh "MSBuild.exe common\\src\\cpp\\webdriver-interactions\\webdriver-interactions.vcproj /verbosity:q /target:Rebuild /property:Configuration=Release /property:Platform=x64", :verbose => false
+	sh "MSBuild.exe common\\src\\cpp\\webdriver-interactions\\webdriver-interactions.vcproj /verbosity:q /target:Rebuild /property:Configuration=Release /property:Platform=Win32", :verbose => false
+  else
+	puts "Not compiling interactions library."
+    begin
+      mkdir_p 'build', :verbose => false
+    rescue
+    end
+    mkdir_p "build/Win32/Release"
+    mkdir_p "build/x64/Release"
+    File.open('build/Win32/Release/webdriver-interactions.dll', 'w') {|f| f.write("")}
+    File.open('build/x64/Release/webdriver-interactions.dll', 'w') {|f| f.write("")}
+  end
+end
+
+file "common/build/webdriver-common.jar" => "build/Win32/Release/webdriver-interactions.dll" do
+  mkdir_p "common/build/jar/x86"
+  mkdir_p "common/build/jar/amd64"
+  cp "build/Win32/Release/webdriver-interactions.dll", "common/build/jar/x86"
+  cp "build/x64/Release/webdriver-interactions.dll", "common/build/jar/amd64"
+  sh "jar uf common/build/webdriver-common.jar -C common/build/jar .", :verbose => false
+end
+
 #### Internet Explorer ####
 file 'build/Win32/Release/InternetExplorerDriver.dll' => FileList['jobbie/src/cpp/**/*.cpp'] do
   if windows? then
-    sh "MSBuild.exe WebDriver.sln /verbosity:q /target:Rebuild /property:Configuration=Release /property:Platform=x64", :verbose => true
-    sh "MSBuild.exe WebDriver.sln /verbosity:q /target:Rebuild /property:Configuration=Release /property:Platform=Win32", :verbose => true
+    sh "MSBuild.exe WebDriver.sln /verbosity:q /target:Rebuild /property:Configuration=Release /property:Platform=x64", :verbose => false
+    sh "MSBuild.exe WebDriver.sln /verbosity:q /target:Rebuild /property:Configuration=Release /property:Platform=Win32", :verbose => false
   else
     puts "Not compiling DLL. Do not try and run the IE tests!"
     begin
@@ -342,8 +373,7 @@ file 'build/Win32/Release/InternetExplorerDriver.dll' => FileList['jobbie/src/cp
     mkdir_p "build/Win32/Release"
     mkdir_p "build/x64/Release"
     File.open('build/Win32/Release/InternetExplorerDriver.dll', 'w') {|f| f.write("")}
-    File.open('build/Win32/Release/webdriver-interactions.dll', 'w') {|f| f.write("")}
-    File.open('build/x64/Release/webdriver-interactions.dll', 'w') {|f| f.write("")}
+    File.open('build/x64/Release/InternetExplorerDriver.dll', 'w') {|f| f.write("")}
   end
 end
 
@@ -351,9 +381,7 @@ file "jobbie/build/webdriver-jobbie.jar" => "build/Win32/Release/InternetExplore
   mkdir_p "jobbie/build/jar/x86"
   mkdir_p "jobbie/build/jar/amd64"
   cp "build/Win32/Release/InternetExplorerDriver.dll", "jobbie/build/jar/x86"
-  cp "build/Win32/Release/webdriver-interactions.dll", "jobbie/build/jar/x86"
   cp "build/x64/Release/InternetExplorerDriver.dll", "jobbie/build/jar/amd64"
-  cp "build/x64/Release/webdriver-interactions.dll", "jobbie/build/jar/amd64"
   sh "jar uf jobbie/build/webdriver-jobbie.jar -C jobbie/build/jar .", :verbose => false
 end
 
