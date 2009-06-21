@@ -49,7 +49,7 @@ module Selenium
         desc "Launch Selenium Remote Control"
         task @name do
           puts "Starting Selenium Remote Control at 0.0.0.0:#{@port}..."
-          remote_control = Selenium::RemoteControl::RemoteControl.new("0.0.0.0", @port, @timeout_in_seconds)
+          remote_control = Selenium::RemoteControl::RemoteControl.new("0.0.0.0", @port, :timeout => @timeout_in_seconds)
           remote_control.jar_file = @jar_file
           remote_control.additional_args = @additional_args
           remote_control.log_to = @log_to

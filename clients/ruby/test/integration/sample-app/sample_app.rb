@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
-$:.unshift File.expand_path(File.dirname(__FILE__) + "/../../../vendor/sinatra-0.9.0.4/lib")
-$:.unshift File.expand_path(File.dirname(__FILE__) + "/../../../vendor/rack-0.9.1/lib")
+$:.unshift File.expand_path(File.dirname(__FILE__) + "/../../../vendor/sinatra-0.9.2/lib")
+$:.unshift File.expand_path(File.dirname(__FILE__) + "/../../../vendor/rack-1.0.0/lib")
 
 require 'sinatra'
 

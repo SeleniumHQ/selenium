@@ -303,6 +303,7 @@ Contributors
    - Support for locator including single quotes in `wait_for_...` methods
    - Do not capture system state on execution errors for pending examples
      (ExamplePendingError, NotYetImplementedError)
+   - Auto-highlighting support
 
 * Rick Lee-Morlang (`rleemorlang`):
    - Fix for incremental calls to `wait_for_text`

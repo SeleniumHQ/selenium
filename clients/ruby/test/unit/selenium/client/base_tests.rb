@@ -109,6 +109,20 @@ unit_tests do
     client.expects(:remote_control_timeout_in_seconds=).with(24)
     client.start_new_browser_session
 	end
+
+  test "start_new_browser_session setup auto-higlight of located element when option is set" do
+    client = Class.new { include Selenium::Client::Base }.new :highlight_located_element => true
+    client.stubs(:remote_control_command)
+    client.expects(:highlight_located_element=).with(true)
+    client.start_new_browser_session
+  end
+
+  test "start_new_browser_session do not setup auto-higlight of located element when option is not set" do
+    client = Class.new { include Selenium::Client::Base }.new :highlight_located_element => false
+    client.stubs(:remote_control_command)
+    client.expects(:highlight_located_element=).never
+    client.start_new_browser_session
+  end
 	
   test "session_started? returns false when no session has been started" do
     client = Class.new { include Selenium::Client::Base }.new :host, 24, :browser, :url
@@ -177,5 +191,20 @@ unit_tests do
     assert_false client.chrome_backend?
   end
 
+  test "Hash initializer sets highlight_located_element_by_default" do
+    client_class = Class.new { include Selenium::Client::Base }
+    client = client_class.new :highlight_located_element => true
+    assert_true client.highlight_located_element_by_default
+  end
+
+  test "basic initializer sets highlight_located_element_by_default to false by default" do
+    client = Class.new { include Selenium::Client::Base }.new
+    assert_false client.highlight_located_element_by_default
+  end
+
+  test "Hash initializer sets highlight_located_element_by_default to false by default" do
+    client = Class.new { include Selenium::Client::Base }.new :host => :a_host
+    assert_false client.highlight_located_element_by_default
+  end
     
 end

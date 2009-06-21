@@ -453,5 +453,29 @@ unit_tests do
     client = Class.new { include Selenium::Client::Idiomatic }.new
     assert_raises(RuntimeError) { client.browser_xpath_library = :random_library }
   end
-  
+
+  test "setting highlight_located_element to true enables auto-hilighting in selenium core" do
+    client = Class.new { include Selenium::Client::Idiomatic }.new
+    client.expects(:js_eval).with("selenium.browserbot.shouldHighlightLocatedElement = true")
+    client.highlight_located_element = true
+  end
+
+  test "setting highlight_located_element to false disables auto-hilighting in selenium core" do
+    client = Class.new { include Selenium::Client::Idiomatic }.new
+    client.expects(:js_eval).with("selenium.browserbot.shouldHighlightLocatedElement = false")
+    client.highlight_located_element = false
+  end
+
+  test "execution_delay returns the result of the getSpeed command" do
+    client = Class.new { include Selenium::Client::Idiomatic }.new
+    client.expects(:string_command).with("getSpeed").returns(:the_speed)
+    assert_equal :the_speed, client.execution_delay
+  end
+
+  test "execution_delay= executes the setSpeed command" do
+    client = Class.new { include Selenium::Client::Idiomatic }.new
+    client.expects(:remote_control_command).with("setSpeed", [24])
+    client.execution_delay= 24
+  end
+
 end

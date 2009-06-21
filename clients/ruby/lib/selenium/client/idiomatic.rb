@@ -442,7 +442,31 @@ module Selenium
         remote_control_command "useXpathLibrary", [library_name.to_s]
       end
 
+      #
+      # Turn on/off the automatic hightlighting of the element driven or
+      # inspected by Selenium core. Useful when recording videos
+      #
+      def highlight_located_element=(enabled)
+        boolean = (true == enabled)
+        js_eval "selenium.browserbot.shouldHighlightLocatedElement = #{boolean}"
+      end
+
+      # Get execution delay in milliseconds, i.e. a pause delay following 
+      # each selenium operation. By default, there is no such delay 
+      # (value is 0).
+      def execution_delay
+        string_command "getSpeed"
+      end
+
+      # Set the execution delay in milliseconds, i.e. a pause delay following
+      # each selenium operation. By default, there is no such delay.
+      #
+      # Setting an execution can be useful to troubleshoot of capture videos
+      def execution_delay=(delay_in_milliseconds)
+        remote_control_command "setSpeed", [delay_in_milliseconds]
+      end
+
     end
-  
+
   end
 end

@@ -1,11 +1,29 @@
-                   Selenium-Client gem ChangeLog
+                   selenium-client gem ChangeLog
                    =============================
 
-1.2.16 (?)
-==========
- - Upgraded Selenium RC support to 1.0 (official release)
+1.2.16 (2009-06-20)
+===================
 
-1.2.15 (2008-05-13)
+ - Upgraded Selenium RC support to 1.0.1 (official release)
+
+ - Changed default Selenium RC shutdown command to `shutDownSeleniumServer`
+   per Selenium RC 1.0 changes breaking backward compatibility :-(
+   Shutdown method can be overriden when defining the rake task, e.g.
+
+    Selenium::Rake::RemoteControlStopTask.new do |rc|
+      rc.shutdown_method = "shutDown"
+    end
+
+ - Ruby 1.9.1 compatibility
+ 
+ - Added support for turning on/off automatic hightlighting of the element 
+   driven or inspected by Selenium. Useful when recording videos. Thank
+   you Aaron Tinio. See the `highlight_located_element` option when
+   creating the driver and the `highlight_located_element=` method on
+   the driver for more details.
+ 
+
+1.2.15 (2009-05-13)
 ===================
 
  - Upgraded RSpec support to 1.2.6
@@ -44,13 +62,13 @@
  - Added a more idiomatic `browser_xpath_library=` method to
    use a custom xpath library for browser-side xpath evaluations.
  
-1.2.14 (2008-03-08)
+1.2.14 (2009-03-08)
 ===================
 
  - Fixing packaging problem
  - Removed warnings when running unit tests
 
-1.2.13 (2008-03-05)
+1.2.13 (2009-03-05)
 ===================
 
  - Patch for incremental calls to `wait_for_text` (Thank you Rick Lee-Morlang)

@@ -2,11 +2,13 @@ module Selenium
   module RemoteControl
     
     class RemoteControl
-      attr_reader :host, :port, :timeout_in_seconds
+      attr_reader :host, :port, :timeout_in_seconds, :shutdown_command
       attr_accessor :additional_args, :jar_file, :log_to
       
-      def initialize(host, port, timeout_in_seconds = 2 * 60)
-        @host, @port, @timeout_in_seconds = host, port, timeout_in_seconds
+      def initialize(host, port, options={})
+        @host, @port = host, port
+        @timeout_in_seconds = options[:timeout] || (2 * 60)
+        @shutdown_command = options[:shutdown_command] || "shutDownSeleniumServer"
         @additional_args = []
         @shell = Nautilus::Shell.new
       end
@@ -22,7 +24,7 @@ module Selenium
       end
       
       def stop
-        Net::HTTP.get(@host, '/selenium-server/driver/?cmd=shutDownSeleniumServer', @port)
+        Net::HTTP.get(@host, "/selenium-server/driver/?cmd=#{shutdown_command}", @port)
       end
       
     end
