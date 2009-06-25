@@ -327,7 +327,10 @@ void IeThread::OnElementGetLocationOnceScrolledIntoView(WPARAM w, LPARAM lp)
     HWND hwnd;
     long x = 0, y = 0, width = 0, height = 0;
 
-    getLocationWhenScrolledIntoView(pElement, &hwnd, &x, &y, &width, &height);
+    int result = getLocationWhenScrolledIntoView(pElement, &hwnd, &x, &y, &width, &height);
+	if (result != SUCCESS) {
+		data.error_code = result;
+	}
 
     SAFEARRAY* args = SafeArrayCreateVector(VT_VARIANT, 0, 5);
     
@@ -795,7 +798,6 @@ int IeThread::getLocationWhenScrolledIntoView(IHTMLElement *pElement, HWND* hwnd
     CComQIPtr<IHTMLDOMNode2> node(pElement);
 
     if (!node) {
-            cerr << "No node to get location of" << endl;
             return ENOSUCHELEMENT;
     }
 
@@ -810,7 +812,7 @@ int IeThread::getLocationWhenScrolledIntoView(IHTMLElement *pElement, HWND* hwnd
     }
 
     if (!isEnabled(pElement)) {
-          return EELEMENTNOTENABLED;
+        return EELEMENTNOTENABLED;
     }
 
     const HWND hWnd = getHwnd();
@@ -908,15 +910,23 @@ int IeThread::click(IHTMLElement *pElement, CScopeCaller *pSC)
 {
 	SCOPETRACER
 
-	long clickX = 0, clickY = 0, w = 0, h = 0;
+	long x = 0, y = 0, w = 0, h = 0;
 	HWND ieWindow;
-	int result = getLocationWhenScrolledIntoView(pElement, &ieWindow, &clickX, &clickY, &w, &h);
+	int result = getLocationWhenScrolledIntoView(pElement, &ieWindow, &x, &y, &w, &h);
 	if (result != SUCCESS) {
 		return result;
 	}
 
+	long clickX = x + (w ? w / 2 : 0);
+	long clickY = y + (h ? h / 2 : 0);
+
 	// Create a mouse move, mouse down, mouse up OS event
-	LRESULT lresult = clickAt(ieWindow, clickX, clickY);
+	LRESULT lresult = mouseMoveTo(ieWindow, 10, x, y, clickX, clickY);
+	if (result != SUCCESS) {
+		return result;
+	}
+	
+	lresult = clickAt(ieWindow, clickX, clickY);
     if (result != SUCCESS) {
 		return result;
 	}

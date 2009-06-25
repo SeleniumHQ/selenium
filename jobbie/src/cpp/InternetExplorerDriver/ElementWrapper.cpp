@@ -124,6 +124,10 @@ int ElementWrapper::getLocationWhenScrolledIntoView(HWND* hwnd, long* x, long* y
 	SCOPETRACER
     SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_ELEM_GETLOCATIONONCESCROLLEDINTOVIEW,)
 
+	if (data.error_code != SUCCESS) {
+		return data.error_code;
+	}
+
     SAFEARRAY* ary = data.output_safe_array_;
     long index = 0;
     CComVariant hwndVariant;
