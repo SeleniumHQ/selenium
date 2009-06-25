@@ -447,6 +447,7 @@ task :remote_release => [:remote] do
 
   mkdir_p "build/dist/remote_server"
 
+  cp 'remote/build/webdriver-remote-server.jar', 'build/dist/remote_server'
   cp 'remote/build/webdriver-remote-common.jar', 'build/dist/remote_server'
   cp 'common/build/webdriver-common.jar', 'build/dist/remote_server'
 
@@ -459,8 +460,8 @@ task :remote_release => [:remote] do
   rm_rf "build/dist/remote_server"
 end
 
-task :release => [:common, :firefox, :htmlunit, :jobbie, :remote_release, :support] do
-  %w(common firefox jobbie htmlunit support).each do |driver|
+task :release => [:common, :firefox, :htmlunit, :jobbie, :remote_release, :support, :selenium] do
+  %w(common firefox jobbie htmlunit support selenium).each do |driver|
     mkdir_p "build/dist/#{driver}"
     cp 'common/build/webdriver-common.jar', "build/dist/#{driver}"
     cp "#{driver}/build/webdriver-#{driver}.jar", "build/dist/#{driver}"
@@ -478,13 +479,13 @@ task :all => [:release] do
   # Expand all the individual webdriver JARs and combine into one
   # We do things this way so that if we've built a JAR on another
   # platform and copied it to the right place, this uberjar works
-  %w(common firefox htmlunit jobbie remote-client support).each do |zip|
+  %w(common firefox htmlunit jobbie remote-client support selenium).each do |zip|
     sh "pwd", :verbose => true
-    sh "cd build/all && unzip ../dist/webdriver-#{zip}-#{version}.zip", :verbose => true
+    sh "cd build/all && unzip -o ../dist/webdriver-#{zip}-#{version}.zip", :verbose => true
   end
 
   mkdir_p "build/all/all"
-  %w(common firefox htmlunit jobbie support).each do |j|
+  %w(common firefox htmlunit jobbie support selenium).each do |j|
     sh "cd build/all/all && jar xf ../#{j}/webdriver-#{j}.jar"
   end
   sh "cd build/all/all && jar xf ../remote_client/webdriver-remote-client.jar"
