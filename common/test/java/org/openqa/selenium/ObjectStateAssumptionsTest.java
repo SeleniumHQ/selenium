@@ -25,13 +25,15 @@ import static org.openqa.selenium.Ignore.Driver.*;
  * calls various methods to confirm the expected NPEs happen, once HtmlUnitDriver (and any others if
  * necessary) is fixed they'll serve as regression tests :)
  */
-public class ObjectStateAssumptions extends AbstractDriverTestCase {
+public class ObjectStateAssumptionsTest extends AbstractDriverTestCase {
   @Ignore(SAFARI)
   public void testUninitializedWebDriverDoesNotThrowNPE() {
     try {
       variousMethodCallsToCheckAssumptions();
     } catch (NullPointerException npe) {
       throw new IllegalStateException("Assumptions broken for a fresh WebDriver instance", npe);
+    } catch (WebDriverException e) {
+      // this is fine.
     }
   }
 

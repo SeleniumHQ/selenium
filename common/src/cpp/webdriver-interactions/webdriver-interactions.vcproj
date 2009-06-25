@@ -87,7 +87,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine=""
+				CommandLine="copy /Y &quot;$(TargetPath)&quot; &quot;$(TargetDir)..\..&quot;"
 			/>
 		</Configuration>
 		<Configuration
@@ -160,7 +160,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine=""
+				CommandLine="copy /Y &quot;$(TargetPath)&quot; &quot;$(TargetDir)..\..&quot;"
 			/>
 		</Configuration>
 		<Configuration
@@ -235,7 +235,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine=""
+				CommandLine="copy /Y &quot;$(TargetPath)&quot; &quot;$(TargetDir)..\..&quot;"
 			/>
 		</Configuration>
 		<Configuration
@@ -311,7 +311,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine=""
+				CommandLine="copy /Y &quot;$(TargetPath)&quot; &quot;$(TargetDir)..\..&quot;"
 			/>
 		</Configuration>
 	</Configurations>

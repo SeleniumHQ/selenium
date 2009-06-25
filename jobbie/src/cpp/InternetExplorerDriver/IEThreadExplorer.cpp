@@ -147,6 +147,13 @@ void IeThread::getTitle(std::wstring& res)
 {
 	CComPtr<IHTMLDocument2> doc;
 	getDocument(&doc);
+	
+	if (!doc) 
+	{
+		res = std::wstring(L"");
+		return;
+	}
+
 	CComBSTR title;
 	doc->get_title(&title);
 	res = combstr2cw(title);
