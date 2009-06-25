@@ -15,12 +15,12 @@
 		<dependency>
 			<groupId>org.openqa.selenium.webdriver</groupId>
 			<artifactId>webdriver-remote-common</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
         <dependency>
             <groupId>org.openqa.selenium.webdriver</groupId>
             <artifactId>webdriver-support</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mortbay.jetty</groupId>
