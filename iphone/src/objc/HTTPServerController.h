@@ -41,4 +41,7 @@
 
 +(HTTPServerController *)sharedInstance;
 
+-(NSObject *)httpResponseForQuery:(NSString *)query
+                           method:(NSString *)method
+                         withData:(NSData *)theData;
 @end

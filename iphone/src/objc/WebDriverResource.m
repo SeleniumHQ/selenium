@@ -222,7 +222,7 @@
   SEL selector = [[methodActions_ objectForKey:method] pointerValue];
   NSMethodSignature *methodSignature = [target_ methodSignatureForSelector:selector];
   WebDriverResponse *response = nil;
-  
+	
   if (methodSignature == nil) {
     response = [WebDriverResponse responseWithError:
                 [NSString stringWithFormat:@"Invalid method for resource: %@",

@@ -22,6 +22,7 @@
 #import "WebDriverRequestFetcher.h"
 #import "WebDriverUtilities.h"
 #import <objc/runtime.h>
+#import "RootViewController.h"
 #import <QuartzCore/QuartzCore.h>œ
 
 @implementation WebViewController
@@ -32,11 +33,21 @@
 // Configure the webview to match the mobile safari app.
 - (void)viewDidLoad {
   [super viewDidLoad];
-  [[self webView] setScalesPageToFit:YES];
+  [[self webView] setScalesPageToFit:NO];
   [[self webView] setDelegate:self];
 
   loadLock_ = [[NSCondition alloc] init];
   lastJSResult_ = nil;
+	
+  // Creating a new session if auto-create is enabled
+  if ([[RootViewController sharedInstance] isAutoCreateSession]) {
+    [[HTTPServerController sharedInstance]
+      httpResponseForQuery:@"/hub/session"
+                    method:@"POST"
+                  withData:[@"{\"browserName\":\"firefox\",\"platform\":\"ANY\","
+                            "\"javascriptEnabled\":false,\"version\":\"\"}"
+                            dataUsingEncoding:NSASCIIStringEncoding]];
+  }
 
   WebDriverPreferences *preferences = [WebDriverPreferences sharedInstance];
 

@@ -34,8 +34,11 @@
 }
 
 @property (nonatomic, readonly) ElementStore *elementStore;
+@property (nonatomic) int sessionId;
 
 - (id)initWithSessionId:(int)sessionId;
+
+- (void)deleteContext;
 
 // Returns the constant context name. There is only one context in each
 // session.

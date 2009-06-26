@@ -118,4 +118,12 @@ static HTTPServerController *singleton = nil;
   return [serviceMapping_ httpResponseForRequest:request];
 }
 
+- (NSObject *)httpResponseForQuery:(NSString *)query
+														method:(NSString *)method
+													withData:(NSData *)theData {
+	return [serviceMapping_.serverRoot httpResponseForQuery:query
+																									 method:method
+																								 withData:theData];
+}
+
 @end

@@ -54,6 +54,7 @@ static const NSString *JSARRAY = @"_WEBDRIVER_ELEM_CACHE";
 }
 
 - (void)dealloc {
+  [[self index] release]; 
   [super dealloc];
 }
 

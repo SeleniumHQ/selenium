@@ -20,6 +20,8 @@
 #import "RootViewController.h"
 #import "MainViewController.h"
 #import "FlipsideViewController.h"
+#import "HTTPServerController.h"
+#import "HTTPResponse+Utility.h"
 
 
 @implementation RootViewController
@@ -28,21 +30,36 @@
 @synthesize flipsideNavigationBar;
 @synthesize mainViewController;
 @synthesize flipsideViewController;
+@synthesize swAuto;
+@synthesize lblAutoSession;
 
 // This is all boilerplate apple template code.
 
+static RootViewController *singleton_;
+BOOL isAutoCreateSession_ = YES;
+
 - (void)viewDidLoad {
-  
+
   [super viewDidLoad];
+	
   MainViewController *viewController = [[MainViewController alloc]
                                         initWithNibName:@"MainView"
                                         bundle:nil];
   self.mainViewController = viewController;
   [viewController release];
   
+  singleton_ = self;
+
   [self.view insertSubview:mainViewController.view belowSubview:infoButton];
 }
 
++ (RootViewController *)sharedInstance {
+  return singleton_;
+}
+
+- (BOOL)isAutoCreateSession {
+  return isAutoCreateSession_;
+}
 
 - (void)loadFlipsideViewController {
     
@@ -53,11 +70,8 @@
   [viewController release];
   
   // Set up the navigation bar
-  UINavigationBar *aNavigationBar = [[UINavigationBar alloc]
-                                     initWithFrame:CGRectMake(0.0,
-                                                              0.0,
-                                                              320.0,
-                                                              44.0)];
+  UINavigationBar *aNavigationBar = 
+    [[UINavigationBar alloc] initWithFrame:CGRectMake(0.0, 0.0, 320.0, 44.0)];
   aNavigationBar.barStyle = UIBarStyleBlackOpaque;
   self.flipsideNavigationBar = aNavigationBar;
   [aNavigationBar release];
@@ -66,14 +80,35 @@
     [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone 
                                                   target:self
                                                   action:@selector(toggleView)];
+	
+  UISwitch *switchAutoSession = [[UISwitch alloc]
+								   initWithFrame:CGRectMake(206.0, 65.0, 94.0, 27.0)];
+	[switchAutoSession addTarget:self action:@selector(toggleAutoCreateSession)
+							forControlEvents:UIControlEventValueChanged];
+	[switchAutoSession setOn:YES];
+	self.swAuto = switchAutoSession;
+	[switchAutoSession release];
+	
+  UILabel *labelAutoSession = [[UILabel alloc]
+                        initWithFrame:CGRectMake(12.0, 68.0, 179.0, 21.0)];
+  [labelAutoSession setText:@"Auto-create session:"];
+  [labelAutoSession setTextColor:[UIColor whiteColor]];
+  [labelAutoSession setBackgroundColor:[UIColor viewFlipsideBackgroundColor]];
+  self.lblAutoSession = labelAutoSession;
+  [labelAutoSession release];
+	
   UINavigationItem *navigationItem =
-    [[UINavigationItem alloc] initWithTitle:@"iWebDriver"];
+    [[UINavigationItem alloc] initWithTitle:@"Details"];
   navigationItem.rightBarButtonItem = buttonItem;
+
   [flipsideNavigationBar pushNavigationItem:navigationItem animated:NO];
   [navigationItem release];
   [buttonItem release];
 }
 
+- (IBAction)toggleAutoCreateSession	{
+  isAutoCreateSession_ = [self.swAuto isOn];
+}
 
 - (IBAction)toggleView {    
   /*
@@ -103,6 +138,8 @@
     [infoButton removeFromSuperview];
     [self.view addSubview:flipsideView];
     [self.view insertSubview:flipsideNavigationBar aboveSubview:flipsideView];
+    [self.view insertSubview:swAuto aboveSubview:flipsideView];
+    [self.view insertSubview:lblAutoSession aboveSubview:flipsideView];
     [mainViewController viewDidDisappear:YES];
     [flipsideViewController viewDidAppear:YES];
 

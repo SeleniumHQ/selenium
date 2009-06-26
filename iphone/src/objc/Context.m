@@ -37,6 +37,7 @@ static NSString * const CONTEXT_NAME = @"foo";
 @implementation Context
 
 @synthesize elementStore = elementStore_;
+@synthesize sessionId = sessionId_;
 
 // The WebViewController has most of the actual functionality this vdir exposes.
 // We'll just forward most messages there.
@@ -140,7 +141,6 @@ static NSString * const CONTEXT_NAME = @"foo";
 }
 
 - (void)dealloc {
-  [elementStore_ release];
   [super dealloc];
 }
 
@@ -149,19 +149,20 @@ static NSString * const CONTEXT_NAME = @"foo";
 }
 
 - (id)capabilities {
-  NSMutableDictionary *capabilities = [NSMutableDictionary dictionary];
-  [capabilities setObject:@"mobile safari" forKey:@"browserName"];
-  [capabilities setObject:@"MAC" forKey:@"platform"];
-  [capabilities setValue:[NSNumber numberWithBool:YES]
-                  forKey:@"javascriptEnabled"];
-  [capabilities setObject:@"1.0" forKey:@"version"];
-  return capabilities;
+  NSMutableDictionary *caps = [NSMutableDictionary dictionary];
+  [caps setObject:@"mobile safari" forKey:@"browserName"];
+  [caps setObject:@"MAC" forKey:@"platform"];
+  [caps setValue:[NSNumber numberWithBool:YES]
+          forKey:@"javascriptEnabled"];
+  [caps setObject:@"1.0" forKey:@"version"];
+  return caps;
 }
 
-// This is called when the client sends DELETE to session/context.
-// TODO(josephg): Make this actually clear resources.
+// This is called from session when the client sends DELETE to session.
 - (void)deleteContext {
-  
+  NSLog( @"Delete session: %d", sessionId_ );
+  [contents removeAllObjects];
+  [elementStore_ release];
 }
 
 #pragma mark Webdriver Resource configuration

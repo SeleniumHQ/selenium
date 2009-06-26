@@ -342,7 +342,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     }
   }
   
-  @Ignore({HTMLUNIT, SAFARI})
+  @Ignore({HTMLUNIT, SAFARI, IPHONE})
   @NeedsFreshDriver
   public void testShouldNotBeAbleToLocateASingleElementOnABlankPage() {
     // Note we're on the default start page for the browser at this point.

@@ -29,13 +29,23 @@
   MainViewController *mainViewController;
   FlipsideViewController *flipsideViewController;
   UINavigationBar *flipsideNavigationBar;
+  UISwitch *swAuto;
+  UILabel *lblAutoSession;
 }
 
 @property (nonatomic, retain) IBOutlet UIButton *infoButton;
 @property (nonatomic, retain) MainViewController *mainViewController;
 @property (nonatomic, retain) UINavigationBar *flipsideNavigationBar;
 @property (nonatomic, retain) FlipsideViewController *flipsideViewController;
+@property (nonatomic, retain) UISwitch *swAuto;
+@property (nonatomic, retain) UILabel *lblAutoSession;
 
 - (IBAction)toggleView;
+- (IBAction)toggleAutoCreateSession;
+
+// Access the singleton object.
++ (RootViewController *)sharedInstance;
+
+- (BOOL) isAutoCreateSession;
 
 @end

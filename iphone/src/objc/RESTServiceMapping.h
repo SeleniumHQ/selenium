@@ -31,6 +31,8 @@
   VirtualDirectory *serverRoot_;
 }
 
+@property (nonatomic, copy) VirtualDirectory *serverRoot;
+
 - (NSObject<HTTPResponse> *)httpResponseForRequest:(CFHTTPMessageRef)request;
 
 @end

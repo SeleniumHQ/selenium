@@ -20,10 +20,15 @@
 #import "JSONRESTResource.h"
 #import "Context.h"
 #import "HTTPRedirectResponse.h"
+#import "RootViewController.h"
+#import "WebDriverResource.h"
 #import "WebDriverUtilities.h"
 #import "HTTPVirtualDirectory+Remove.h"
 
 @implementation Session
+
+static NSMutableDictionary *sessions = nil;
+static NSMutableDictionary *contexts = nil;
 
 - (id)init {
   if (![super init])
@@ -33,12 +38,15 @@
   // a set of |DesiredCapabilities|.
   [self setIndex:[JSONRESTResource
                   JSONResourceWithTarget:self 
-                                  action:@selector(createSessionWithData:method:)]];
+															action:@selector(createSessionWithData:method:)]];
 
   // Session IDs start at 1001.
   nextId_ = 1001;
-
-  return self;
+	
+	sessions = [NSMutableDictionary new];
+	contexts = [NSMutableDictionary new];
+	
+	return self;
 }
 
 - (void)cleanSessionStatus{
@@ -54,10 +62,10 @@
 // Create a session. This method is bound to the index of /hub/session/
 - (NSObject<HTTPResponse> *)createSessionWithData:(id)desiredCapabilities
                                            method:(NSString *)method {
-  // TODO (josephg): Implement DELETE on this method.
+
   if (![method isEqualToString:@"POST"] && ![method isEqualToString:@"GET"])
-    return nil;
-  
+		 return nil;
+	
   int sessionId = nextId_++;
   
   NSLog(@"session %d created", sessionId);
@@ -70,23 +78,49 @@
   [self cleanSessionStatus];
   
   HTTPVirtualDirectory *session = [HTTPVirtualDirectory virtualDirectory];
-  
-  [self setResource:session
-           withName:[NSString stringWithFormat:@"%d", sessionId]];
+  [session setIndex:[WebDriverResource resourceWithTarget:self
+                                                GETAction:NULL
+                                               POSTAction:NULL
+                                                PUTAction:NULL
+                                             DELETEAction:@selector(deleteSessionWithSessionId:)]];
+	
+  NSString *sessionIdStr = [NSString stringWithFormat:@"%d", sessionId];
+  [self setResource:session withName:sessionIdStr];
 
-  HTTPVirtualDirectory *context = [[[Context alloc]
-                                    initWithSessionId:sessionId]
-                                    autorelease];
+  Context *context = [[[Context alloc] initWithSessionId:sessionId] autorelease];
+	[contexts setObject:context forKey:sessionIdStr];
  
   // The context has a static name.
   [session setResource:context withName:[Context contextName]];
-  
+  [sessions setObject:session forKey:sessionIdStr];
+	
   [self deleteAllCookies];
 
   return [HTTPRedirectResponse redirectToURL:
-          [NSString stringWithFormat:@"session/%d/%@/",
-           sessionId,
+          [NSString stringWithFormat:@"session/%d/%@/", sessionId,
            [Context contextName]]];
+}
+
+- (void)deleteSessionWithSessionId:(NSString *)sessionId {
+  Context *ctx = (Context *)[contexts objectForKey:sessionId];
+  Session *sess = [sessions objectForKey:sessionId];
+  if (ctx == nil || sess == nil) {
+      NSLog(@"Session %@ doesn't exist.", sessionId);
+      return;
+  }
+  [contexts removeObjectForKey:sessionId];
+  [sessions removeObjectForKey:sessionId];
+  [ctx deleteContext];
+  [ctx release];
+  [contents removeAllObjects];
+
+  NSLog(@"Session %@ deleted", sessionId);
+  if ([sessionId intValue] == nextId_ -1)
+      nextId_--;
+}
+
+- (void)dealloc {
+  [super dealloc];
 }
 
 - (void)deleteAllCookies {

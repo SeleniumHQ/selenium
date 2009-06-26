@@ -19,6 +19,7 @@ package org.openqa.selenium;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.SAFARI;
 
 public class FrameSwitchingTest extends AbstractDriverTestCase {
@@ -106,7 +107,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     }
 
     @NoDriverAfterTest
-    @Ignore(SAFARI)
+    @Ignore({SAFARI, IPHONE})
     public void testClosingTheFinalBrowserWindowShouldNotCauseAnExceptionToBeThrown() {
         driver.get(simpleTestPage);
         try {

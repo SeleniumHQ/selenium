@@ -24,8 +24,11 @@
 #import "JSONRESTResource.h"
 #import "Session.h"
 #import "HTTPResponse+Utility.h"
+#import "RootViewController.h"
 
 @implementation RESTServiceMapping
+
+@synthesize serverRoot = serverRoot_;
 
 - (id)init {
   if (![super init])
@@ -53,7 +56,7 @@
   
   [restRoot setResource:[[[Session alloc] init] autorelease]
                withName:@"session"];
-  
+  	
   return self;
 }
 
@@ -99,13 +102,17 @@
                                                 encoding:NSUTF8StringEncoding]
                             autorelease]);
   }
-  
-  // Do the actual work.
-  id<HTTPResponse,NSObject> response =
-    [serverRoot_ httpResponseForQuery:query
-                               method:method
-                             withData:data];
+	
+  if ([method isEqualToString:@"DELETE"] && [data length] == 0)
+    data = [[NSString stringWithFormat:@"[\"%@\"]", [query lastPathComponent]]
+            dataUsingEncoding:NSASCIIStringEncoding];
 
+	// Do the actual work.
+  id<HTTPResponse,NSObject> response =
+	[serverRoot_ httpResponseForQuery:query
+														 method:method
+													 withData:data];
+	
   // Unfortunately, WebDriver only supports absolute redirects (r733). We need
   // to expand all relative redirects to absolute redirects.
   if ([response isKindOfClass:[HTTPRedirectResponse class]]) {

@@ -749,6 +749,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_ENTITLEMENTS = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Matt Waddell";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -771,6 +773,8 @@
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = iWebDriver;
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "7157E00A-B6DC-4ED0-B1A3-12C6F3ADEE16";
+				SKIP_INSTALL = YES;
 			};
 			name = Debug;
 		};
@@ -778,6 +782,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Matt Waddell";
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -798,6 +803,8 @@
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = iWebDriver;
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "7157E00A-B6DC-4ED0-B1A3-12C6F3ADEE16";
+				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};
@@ -876,9 +883,12 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				JSON_HEADERS = "$(PROJECT_DIR)/lib/buildtime-src/json-framework/project/Source/";
+				OBJROOT = "$(SYMROOT)";
 				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
-				SDKROOT = iphoneos2.2;
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				SDKROOT = iphoneos2.2.1;
+				SKIP_INSTALL = NO;
 			};
 			name = Debug;
 		};
@@ -892,8 +902,11 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				JSON_HEADERS = "$(PROJECT_DIR)/lib/buildtime-src/json-framework/project/Source/";
+				OBJROOT = "$(SYMROOT)";
 				PREBINDING = NO;
-				SDKROOT = iphoneos2.2;
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				SDKROOT = iphoneos2.2.1;
+				SKIP_INSTALL = NO;
 			};
 			name = Release;
 		};

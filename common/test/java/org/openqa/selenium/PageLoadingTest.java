@@ -76,7 +76,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
         assertThat(pageNumber.getText().trim(), equalTo("2"));
     }
 
-    @Ignore(SAFARI)
+    @Ignore({SAFARI, IPHONE})
     @NeedsFreshDriver
     public void testSouldDoNothingIfThereIsNothingToGoBackTo() {
         driver.get(formPage);
