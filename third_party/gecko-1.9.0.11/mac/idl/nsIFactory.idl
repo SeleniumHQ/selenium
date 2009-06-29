@@ -1,0 +1,79 @@
+/* -*- Mode: IDL; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+/* ***** BEGIN LICENSE BLOCK *****
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
+ *
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
+ *
+ * The Original Code is mozilla.org code.
+ *
+ * The Initial Developer of the Original Code is
+ * Netscape Communications Corporation.
+ * Portions created by the Initial Developer are Copyright (C) 1998
+ * the Initial Developer. All Rights Reserved.
+ *
+ * Contributor(s):
+ *
+ * Alternatively, the contents of this file may be used under the terms of
+ * either of the GNU General Public License Version 2 or later (the "GPL"),
+ * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+ * in which case the provisions of the GPL or the LGPL are applicable instead
+ * of those above. If you wish to allow use of your version of this file only
+ * under the terms of either the GPL or the LGPL, and not to allow others to
+ * use your version of this file under the terms of the MPL, indicate your
+ * decision by deleting the provisions above and replace them with the notice
+ * and other provisions required by the GPL or the LGPL. If you do not delete
+ * the provisions above, a recipient may use your version of this file under
+ * the terms of any one of the MPL, the GPL or the LGPL.
+ *
+ * ***** END LICENSE BLOCK ***** */
+
+#include "nsISupports.idl"
+
+/**
+ * A class factory allows the creation of nsISupports derived
+ * components without specifying a concrete base class.  
+ *
+ * @status FROZEN
+ */
+
+[scriptable, object, uuid(00000001-0000-0000-c000-000000000046)]
+interface nsIFactory :  nsISupports {
+   /**
+    * Creates an instance of a component.
+    *
+    * @param aOuter Pointer to a component that wishes to be aggregated
+    *               in the resulting instance. This will be nsnull if no
+    *               aggregation is requested.
+    * @param iid    The IID of the interface being requested in
+    *               the component which is being currently created.
+    * @param result [out] Pointer to the newly created instance, if successful.
+    * @return NS_OK - Component successfully created and the interface 
+    *                 being requested was successfully returned in result.
+    *         NS_NOINTERFACE - Interface not accessible.
+    *         NS_ERROR_NO_AGGREGATION - if an 'outer' object is supplied, but the
+    *                                   component is not aggregatable.
+    *         NS_ERROR* - Method failure.
+    */
+    void createInstance(in nsISupports aOuter, in nsIIDRef iid,
+                      [retval, iid_is(iid)] out nsQIResult result);
+
+   /**
+    * LockFactory provides the client a way to keep the component
+    * in memory until it is finished with it. The client can call
+    * LockFactory(PR_TRUE) to lock the factory and LockFactory(PR_FALSE)
+    * to release the factory.	 
+    *
+    * @param lock - Must be PR_TRUE or PR_FALSE
+    * @return NS_OK - If the lock operation was successful.
+    *         NS_ERROR* - Method failure.
+    */
+    void lockFactory(in PRBool lock);
+};

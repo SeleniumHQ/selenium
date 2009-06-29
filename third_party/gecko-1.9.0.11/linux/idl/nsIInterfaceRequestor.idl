@@ -1,0 +1,72 @@
+/* -*- Mode: IDL; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
+ *
+ * ***** BEGIN LICENSE BLOCK *****
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
+ *
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
+ *
+ * The Original Code is the Mozilla browser.
+ *
+ * The Initial Developer of the Original Code is
+ * Netscape Communications, Inc.
+ * Portions created by the Initial Developer are Copyright (C) 1999
+ * the Initial Developer. All Rights Reserved.
+ *
+ * Contributor(s):
+ *   Travis Bogard <travis@netscape.com>
+ *
+ * Alternatively, the contents of this file may be used under the terms of
+ * either of the GNU General Public License Version 2 or later (the "GPL"),
+ * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+ * in which case the provisions of the GPL or the LGPL are applicable instead
+ * of those above. If you wish to allow use of your version of this file only
+ * under the terms of either the GPL or the LGPL, and not to allow others to
+ * use your version of this file under the terms of the MPL, indicate your
+ * decision by deleting the provisions above and replace them with the notice
+ * and other provisions required by the GPL or the LGPL. If you do not delete
+ * the provisions above, a recipient may use your version of this file under
+ * the terms of any one of the MPL, the GPL or the LGPL.
+ *
+ * ***** END LICENSE BLOCK ***** */
+
+#include "nsISupports.idl"
+
+/**
+ * The nsIInterfaceRequestor interface defines a generic interface for 
+ * requesting interfaces that a given object might provide access to.
+ * This is very similar to QueryInterface found in nsISupports.  
+ * The main difference is that interfaces returned from GetInterface()
+ * are not required to provide a way back to the object implementing this 
+ * interface.  The semantics of QI() dictate that given an interface A that 
+ * you QI() on to get to interface B, you must be able to QI on B to get back 
+ * to A.  This interface however allows you to obtain an interface C from A 
+ * that may or most likely will not have the ability to get back to A. 
+ *
+ * @status FROZEN
+ */
+
+[scriptable, uuid(033A1470-8B2A-11d3-AF88-00A024FFC08C)]
+interface nsIInterfaceRequestor : nsISupports
+{
+   /**
+    * Retrieves the specified interface pointer.
+    *
+    * @param uuid The IID of the interface being requested.
+    * @param result [out] The interface pointer to be filled in if
+    *               the interface is accessible.
+    * @return NS_OK - interface was successfully returned.
+    *         NS_NOINTERFACE - interface not accessible.
+    *         NS_ERROR* - method failure.
+    */
+	void getInterface(in nsIIDRef uuid, 
+                      [iid_is(uuid),retval] out nsQIResult result);
+};
+

@@ -1,0 +1,183 @@
+/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+/* ***** BEGIN LICENSE BLOCK *****
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
+ *
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
+ *
+ * The Original Code is mozilla.org code.
+ *
+ * The Initial Developer of the Original Code is
+ * Netscape Communications Corporation.
+ * Portions created by the Initial Developer are Copyright (C) 1998
+ * the Initial Developer. All Rights Reserved.
+ *
+ * Contributor(s):
+ *   Warren Harris <warren@netscape.com>
+ *   Darin Fisher <darin@netscape.com>
+ *
+ * Alternatively, the contents of this file may be used under the terms of
+ * either of the GNU General Public License Version 2 or later (the "GPL"),
+ * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+ * in which case the provisions of the GPL or the LGPL are applicable instead
+ * of those above. If you wish to allow use of your version of this file only
+ * under the terms of either the GPL or the LGPL, and not to allow others to
+ * use your version of this file under the terms of the MPL, indicate your
+ * decision by deleting the provisions above and replace them with the notice
+ * and other provisions required by the GPL or the LGPL. If you do not delete
+ * the provisions above, a recipient may use your version of this file under
+ * the terms of any one of the MPL, the GPL or the LGPL.
+ *
+ * ***** END LICENSE BLOCK ***** */
+
+#include "nsISupports.idl"
+
+interface nsIOutputStream;
+interface nsIInputStream;
+
+%{C++
+/**
+ * The signature for the reader function passed to WriteSegments. This 
+ * is the "provider" of data that gets written into the stream's buffer.
+ *
+ * @param aOutStream stream being written to
+ * @param aClosure opaque parameter passed to WriteSegments
+ * @param aToSegment pointer to memory owned by the output stream
+ * @param aFromOffset amount already written (since WriteSegments was called)
+ * @param aCount length of toSegment
+ * @param aReadCount number of bytes written
+ *
+ * Implementers should return the following:
+ *
+ * @return NS_OK and (*aReadCount > 0) if successfully provided some data
+ * @return NS_OK and (*aReadCount = 0) or
+ * @return <any-error> if not interested in providing any data
+ *
+ * Errors are never passed to the caller of WriteSegments.
+ *
+ * @status FROZEN
+ */
+typedef NS_CALLBACK(nsReadSegmentFun)(nsIOutputStream *aOutStream,
+                                      void *aClosure,
+                                      char *aToSegment,
+                                      PRUint32 aFromOffset,
+                                      PRUint32 aCount,
+                                      PRUint32 *aReadCount);
+%}
+
+native nsReadSegmentFun(nsReadSegmentFun);
+
+/**
+ * nsIOutputStream
+ *
+ * An interface describing a writable stream of data.  An output stream may be
+ * "blocking" or "non-blocking" (see the IsNonBlocking method).  A blocking
+ * output stream may suspend the calling thread in order to satisfy a call to
+ * Close, Flush, Write, WriteFrom, or WriteSegments.  A non-blocking output
+ * stream, on the other hand, must not block the calling thread of execution.
+ *
+ * NOTE: blocking output streams are often written to on a background thread to
+ * avoid locking up the main application thread.  For this reason, it is
+ * generally the case that a blocking output stream should be implemented using
+ * thread- safe AddRef and Release.
+ *
+ * @status FROZEN
+ */
+[scriptable, uuid(0d0acd2a-61b4-11d4-9877-00c04fa0cf4a)]
+interface nsIOutputStream : nsISupports
+{
+    /** 
+     * Close the stream. Forces the output stream to flush any buffered data.
+     *
+     * @throws NS_BASE_STREAM_WOULD_BLOCK if unable to flush without blocking 
+     *   the calling thread (non-blocking mode only)
+     */
+    void close();
+
+    /**
+     * Flush the stream.
+     *
+     * @throws NS_BASE_STREAM_WOULD_BLOCK if unable to flush without blocking 
+     *   the calling thread (non-blocking mode only)
+     */
+    void flush();
+
+    /**
+     * Write data into the stream.
+     *
+     * @param aBuf the buffer containing the data to be written
+     * @param aCount the maximum number of bytes to be written
+     *
+     * @return number of bytes written (may be less than aCount)
+     *
+     * @throws NS_BASE_STREAM_WOULD_BLOCK if writing to the output stream would
+     *   block the calling thread (non-blocking mode only)
+     * @throws <other-error> on failure
+     */
+    unsigned long write(in string aBuf, in unsigned long aCount);
+
+    /**
+     * Writes data into the stream from an input stream.
+     *
+     * @param aFromStream the stream containing the data to be written
+     * @param aCount the maximum number of bytes to be written
+     *
+     * @return number of bytes written (may be less than aCount)
+     *
+     * @throws NS_BASE_STREAM_WOULD_BLOCK if writing to the output stream would
+     *    block the calling thread (non-blocking mode only)
+     * @throws <other-error> on failure
+     *
+     * NOTE: This method is defined by this interface in order to allow the
+     * output stream to efficiently copy the data from the input stream into
+     * its internal buffer (if any). If this method was provided as an external
+     * facility, a separate char* buffer would need to be used in order to call
+     * the output stream's other Write method.
+     */
+    unsigned long writeFrom(in nsIInputStream aFromStream,
+                            in unsigned long aCount);
+
+    /**
+     * Low-level write method that has access to the stream's underlying buffer.
+     * The reader function may be called multiple times for segmented buffers.
+     * WriteSegments is expected to keep calling the reader until either there
+     * is nothing left to write or the reader returns an error.  WriteSegments
+     * should not call the reader with zero bytes to provide.
+     *
+     * @param aReader the "provider" of the data to be written
+     * @param aClosure opaque parameter passed to reader
+     * @param aCount the maximum number of bytes to be written
+     *
+     * @return number of bytes written (may be less than aCount)
+     *
+     * @throws NS_BASE_STREAM_WOULD_BLOCK if writing to the output stream would
+     *    block the calling thread (non-blocking mode only)
+     * @throws NS_ERROR_NOT_IMPLEMENTED if the stream has no underlying buffer
+     * @throws <other-error> on failure
+     *
+     * NOTE: this function may be unimplemented if a stream has no underlying
+     * buffer (e.g., socket output stream).
+     */
+    [noscript] unsigned long writeSegments(in nsReadSegmentFun aReader,
+                                           in voidPtr aClosure,
+                                           in unsigned long aCount);
+
+    /**
+     * @return true if stream is non-blocking
+     *
+     * NOTE: writing to a blocking output stream will block the calling thread
+     * until all given data can be consumed by the stream.
+     *
+     * NOTE: a non-blocking output stream may implement nsIAsyncOutputStream to
+     * provide consumers with a way to wait for the stream to accept more data
+     * once its write method is unable to accept any data without blocking.
+     */
+    boolean isNonBlocking();
+};

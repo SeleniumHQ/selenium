@@ -1,0 +1,179 @@
+/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+/* ***** BEGIN LICENSE BLOCK *****
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
+ *
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
+ *
+ * The Original Code is mozilla.org code.
+ *
+ * The Initial Developer of the Original Code is
+ * Netscape Communications Corporation.
+ * Portions created by the Initial Developer are Copyright (C) 1998
+ * the Initial Developer. All Rights Reserved.
+ *
+ * Contributor(s):
+ *   Gagan Saksena <gagan@netscape.com> (original author)
+ *   Darin Fisher <darin@netscape.com>
+ *
+ * Alternatively, the contents of this file may be used under the terms of
+ * either the GNU General Public License Version 2 or later (the "GPL"), or
+ * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+ * in which case the provisions of the GPL or the LGPL are applicable instead
+ * of those above. If you wish to allow use of your version of this file only
+ * under the terms of either the GPL or the LGPL, and not to allow others to
+ * use your version of this file under the terms of the MPL, indicate your
+ * decision by deleting the provisions above and replace them with the notice
+ * and other provisions required by the GPL or the LGPL. If you do not delete
+ * the provisions above, a recipient may use your version of this file under
+ * the terms of any one of the MPL, the GPL or the LGPL.
+ *
+ * ***** END LICENSE BLOCK ***** */
+
+#include "nsIURI.idl"
+
+/**
+ * The nsIURL interface provides convenience methods that further
+ * break down the path portion of nsIURI:
+ *
+ * http://host/directory/fileBaseName.fileExtension?query
+ * http://host/directory/fileBaseName.fileExtension#ref
+ * http://host/directory/fileBaseName.fileExtension;param
+ *            \          \                       /
+ *             \          -----------------------
+ *              \                   |          /
+ *               \               fileName     /
+ *                ----------------------------
+ *                            |
+ *                        filePath
+ *
+ * @status FROZEN
+ */
+[scriptable, uuid(d6116970-8034-11d3-9399-00104ba0fd40)]
+interface nsIURL : nsIURI
+{
+    /*************************************************************************
+     * The URL path is broken down into the following principal components:
+     */
+
+    /**
+     * Returns a path including the directory and file portions of a
+     * URL.  For example, the filePath of "http://host/foo/bar.html#baz"
+     * is "/foo/bar.html".
+     *
+     * Some characters may be escaped.
+     */
+    attribute AUTF8String filePath;
+
+    /**
+     * Returns the parameters specified after the ; in the URL. 
+     *
+     * Some characters may be escaped.
+     */
+    attribute AUTF8String param;
+
+    /**
+     * Returns the query portion (the part after the "?") of the URL.
+     * If there isn't one, an empty string is returned.
+     *
+     * Some characters may be escaped.
+     */
+    attribute AUTF8String query;
+
+    /**
+     * Returns the reference portion (the part after the "#") of the URL.
+     * If there isn't one, an empty string is returned.
+     *
+     * Some characters may be escaped.
+     */
+    attribute AUTF8String ref;
+
+
+    /*************************************************************************
+     * The URL filepath is broken down into the following sub-components:
+     */
+
+    /**
+     * Returns the directory portion of a URL.  If the URL denotes a path to a
+     * directory and not a file, e.g. http://host/foo/bar/, then the Directory
+     * attribute accesses the complete /foo/bar/ portion, and the FileName is
+     * the empty string. If the trailing slash is omitted, then the Directory
+     * is /foo/ and the file is bar (i.e. this is a syntactic, not a semantic
+     * breakdown of the Path).  And hence don't rely on this for something to
+     * be a definitely be a file. But you can get just the leading directory
+     * portion for sure.
+     *
+     * Some characters may be escaped.
+     */
+    attribute AUTF8String directory;
+
+    /**
+     * Returns the file name portion of a URL.  If the URL denotes a path to a
+     * directory and not a file, e.g. http://host/foo/bar/, then the Directory
+     * attribute accesses the complete /foo/bar/ portion, and the FileName is
+     * the empty string. Note that this is purely based on searching for the
+     * last trailing slash. And hence don't rely on this to be a definite file. 
+     *
+     * Some characters may be escaped.
+     */
+    attribute AUTF8String fileName;
+
+
+    /*************************************************************************
+     * The URL filename is broken down even further:
+     */
+
+    /**
+     * Returns the file basename portion of a filename in a url.
+     *
+     * Some characters may be escaped.
+     */
+    attribute AUTF8String fileBaseName;
+
+    /**
+     * Returns the file extension portion of a filename in a url.  If a file
+     * extension does not exist, the empty string is returned.
+     *
+     * Some characters may be escaped.
+     */
+    attribute AUTF8String fileExtension;
+
+    /**
+     * This method takes a uri and compares the two.  The common uri portion
+     * is returned as a string.  The minimum common uri portion is the 
+     * protocol, and any of these if present:  login, password, host and port
+     * If no commonality is found, "" is returned.  If they are identical, the
+     * whole path with file/ref/etc. is returned.  For file uris, it is
+     * expected that the common spec would be at least "file:///" since '/' is
+     * a shared common root.
+     *
+     * Examples:
+     *    this.spec               aURIToCompare.spec        result
+     * 1) http://mozilla.org/     http://www.mozilla.org/   ""
+     * 2) http://foo.com/bar/     ftp://foo.com/bar/        ""
+     * 3) http://foo.com:8080/    http://foo.com/bar/       ""
+     * 4) ftp://user@foo.com/     ftp://user:pw@foo.com/    ""
+     * 5) ftp://foo.com/bar/      ftp://foo.com/bar         ftp://foo.com/
+     * 6) ftp://foo.com/bar/      ftp://foo.com/bar/b.html  ftp://foo.com/bar/
+     * 7) http://foo.com/a.htm#i  http://foo.com/b.htm      http://foo.com/
+     * 8) ftp://foo.com/c.htm#i   ftp://foo.com/c.htm       ftp://foo.com/c.htm
+     * 9) file:///a/b/c.html      file:///d/e/c.html        file:///
+     */
+    AUTF8String getCommonBaseSpec(in nsIURI aURIToCompare);
+
+    /**
+     * This method takes a uri and returns a substring of this if it can be
+     * made relative to the uri passed in.  If no commonality is found, the
+     * entire uri spec is returned.  If they are identical, "" is returned.
+     * Filename, query, etc are always returned except when uris are identical.
+     */
+    AUTF8String getRelativeSpec(in nsIURI aURIToCompare);
+
+};

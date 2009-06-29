@@ -1,0 +1,112 @@
+/* -*- Mode: IDL; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
+ *
+ * ***** BEGIN LICENSE BLOCK *****
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
+ *
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
+ *
+ * The Original Code is the Mozilla browser.
+ *
+ * The Initial Developer of the Original Code is
+ * Netscape Communications, Inc.
+ * Portions created by the Initial Developer are Copyright (C) 1999
+ * the Initial Developer. All Rights Reserved.
+ *
+ * Contributor(s):
+ *   Chris Saari <saari@netscape.com>
+ *   Dan Rosen <dr@netscape.com>
+ *
+ * Alternatively, the contents of this file may be used under the terms of
+ * either the GNU General Public License Version 2 or later (the "GPL"), or
+ * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+ * in which case the provisions of the GPL or the LGPL are applicable instead
+ * of those above. If you wish to allow use of your version of this file only
+ * under the terms of either the GPL or the LGPL, and not to allow others to
+ * use your version of this file under the terms of the MPL, indicate your
+ * decision by deleting the provisions above and replace them with the notice
+ * and other provisions required by the GPL or the LGPL. If you do not delete
+ * the provisions above, a recipient may use your version of this file under
+ * the terms of any one of the MPL, the GPL or the LGPL.
+ *
+ * ***** END LICENSE BLOCK ***** */
+
+interface nsIDOMWindow;
+interface nsIDOMElement;
+
+#include "nsISupports.idl"
+
+/**
+ * nsIWebBrowserFocus
+ * Interface that embedders use for controlling and interacting
+ * with the browser focus management. The embedded browser can be focused by
+ * clicking in it or tabbing into it. If the browser is currently focused and
+ * the embedding application's top level window is disabled, deactivate() must
+ * be called, and activate() called again when the top level window is
+ * reactivated for the browser's focus memory to work correctly.
+ *
+ * @status FROZEN
+ */
+
+[scriptable, uuid(9c5d3c58-1dd1-11b2-a1c9-f3699284657a)]
+interface nsIWebBrowserFocus : nsISupports
+{
+  /**
+   * MANDATORY
+   * activate() is a mandatory call that must be made to the browser
+   * when the embedding application's window is activated *and* the 
+   * browser area was the last thing in focus.  This method can also be called
+   * if the embedding application wishes to give the browser area focus,
+   * without affecting the currently focused element within the browser.
+   *
+   * @note
+   * If you fail to make this call, mozilla focus memory will not work
+   * correctly.
+   */
+  void activate();
+
+  /**
+   * MANDATORY
+   * deactivate() is a mandatory call that must be made to the browser
+   * when the embedding application's window is deactivated *and* the
+   * browser area was the last thing in focus.  On non-windows platforms,
+   * deactivate() should also be called when focus moves from the browser
+   * to the embedding chrome.
+   *
+   * @note
+   * If you fail to make this call, mozilla focus memory will not work
+   * correctly.
+   */
+  void deactivate();
+
+  /**
+   * Give the first element focus within mozilla
+   * (i.e. TAB was pressed and focus should enter mozilla)
+   */
+  void setFocusAtFirstElement();
+
+  /**
+   * Give the last element focus within mozilla
+   * (i.e. SHIFT-TAB was pressed and focus should enter mozilla)
+   */
+  void setFocusAtLastElement();
+  
+  /**
+   * The currently focused nsDOMWindow when the browser is active,
+   * or the last focused nsDOMWindow when the browser is inactive.
+   */
+  attribute nsIDOMWindow focusedWindow;
+  
+  /**
+   * The currently focused nsDOMElement when the browser is active,
+   * or the last focused nsDOMElement when the browser is inactive.
+   */
+  attribute nsIDOMElement focusedElement;
+};

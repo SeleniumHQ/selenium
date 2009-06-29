@@ -1,0 +1,169 @@
+/* -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+/* ***** BEGIN LICENSE BLOCK *****
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
+ *
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
+ *
+ * The Original Code is mozilla.org code.
+ *
+ * The Initial Developer of the Original Code is
+ * Netscape Communications Corporation.
+ * Portions created by the Initial Developer are Copyright (C) 1998
+ * the Initial Developer. All Rights Reserved.
+ *
+ * Contributor(s):
+ *
+ * Alternatively, the contents of this file may be used under the terms of
+ * either of the GNU General Public License Version 2 or later (the "GPL"),
+ * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+ * in which case the provisions of the GPL or the LGPL are applicable instead
+ * of those above. If you wish to allow use of your version of this file only
+ * under the terms of either the GPL or the LGPL, and not to allow others to
+ * use your version of this file under the terms of the MPL, indicate your
+ * decision by deleting the provisions above and replace them with the notice
+ * and other provisions required by the GPL or the LGPL. If you do not delete
+ * the provisions above, a recipient may use your version of this file under
+ * the terms of any one of the MPL, the GPL or the LGPL.
+ *
+ * ***** END LICENSE BLOCK ***** */
+
+#include "nsISupports.idl"
+
+/* THIS IS A PUBLIC INTERFACE */
+
+interface nsIDOMNode;
+interface nsIDOMRange;
+
+/**
+ * Interface for manipulating and querying the current selected range
+ * of nodes within the document.
+ *
+ * @status FROZEN
+ * @version 1.0
+ */
+
+[scriptable, uuid(B2C7ED59-8634-4352-9E37-5484C8B6E4E1)]
+interface nsISelection : nsISupports
+{
+    /**
+     * Returns the node in which the selection begins.
+     */
+    readonly attribute nsIDOMNode anchorNode;
+
+    /**
+     * The offset within the (text) node where the selection begins.
+     */
+    readonly attribute long anchorOffset;
+
+    /**
+     * Returns the node in which the selection ends.
+     */
+    readonly attribute nsIDOMNode focusNode;
+
+    /**
+     * The offset within the (text) node where the selection ends.
+     */
+    readonly attribute long focusOffset;
+
+    /**
+     * Indicates if the selection is collapsed or not.
+     */
+    readonly attribute boolean isCollapsed;
+
+    /**
+     * Returns the number of ranges in the selection.
+     */
+    readonly attribute long rangeCount;
+
+    /**
+     * Returns the range at the specified index.
+     */
+    nsIDOMRange getRangeAt(in long index);
+
+    /**
+     * Collapses the selection to a single point, at the specified offset
+     * in the given DOM node. When the selection is collapsed, and the content
+     * is focused and editable, the caret will blink there.
+     * @param parentNode      The given dom node where the selection will be set
+     * @param offset          Where in given dom node to place the selection (the offset into the given node)
+     */
+    void collapse(in nsIDOMNode parentNode, in long offset);
+
+
+    /**
+     * Extends the selection by moving the selection end to the specified node and offset,
+     * preserving the selection begin position. The new selection end result will always
+     * be from the anchorNode to the new focusNode, regardless of direction.
+     * @param parentNode      The node where the selection will be extended to
+     * @param offset          Where in node to place the offset in the new selection end
+     */
+    void extend(in nsIDOMNode parentNode, in long offset);
+
+    /**
+     * Collapses the whole selection to a single point at the start
+     * of the current selection (irrespective of direction).  If content
+     * is focused and editable, the caret will blink there.
+     */
+    void collapseToStart();
+
+    /**
+     * Collapses the whole selection to a single point at the end
+     * of the current selection (irrespective of direction).  If content
+     * is focused and editable, the caret will blink there.
+     */
+    void collapseToEnd();
+
+    /**
+     * Indicates whether the node is part of the selection. If partlyContained 
+     * is set to PR_TRUE, the function returns true when some part of the node 
+     * is part of the selection. If partlyContained is set to PR_FALSE, the
+     * function only returns true when the entire node is part of the selection.
+     */
+    boolean containsNode(in nsIDOMNode node, in boolean partlyContained);
+
+    /**
+     * Adds all children of the specified node to the selection.
+     * @param parentNode  the parent of the children to be added to the selection.
+     */
+    void selectAllChildren(in nsIDOMNode parentNode); 
+
+    /**
+     * Adds a range to the current selection.
+     */
+    void addRange(in nsIDOMRange range);
+ 
+    /**
+     * Removes a range from the current selection.
+     */
+    void removeRange(in nsIDOMRange range);
+
+    /**
+     * Removes all ranges from the current selection.
+     */
+    void removeAllRanges();
+
+    /**
+     * Deletes this selection from document the nodes belong to.
+     */
+    void deleteFromDocument();
+
+    /**
+     * Modifies the cursor Bidi level after a change in keyboard direction
+     * @param langRTL is PR_TRUE if the new language is right-to-left or
+     *                PR_FALSE if the new language is left-to-right.
+     */
+    void selectionLanguageChange(in boolean langRTL);
+
+    /**
+     * Returns the whole selection into a plain text string.
+     */
+    wstring toString();
+};

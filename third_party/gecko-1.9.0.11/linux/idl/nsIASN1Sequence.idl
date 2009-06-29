@@ -1,0 +1,91 @@
+/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*-
+ *
+ * ***** BEGIN LICENSE BLOCK *****
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
+ *
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
+ *
+ * The Original Code is mozilla.org code.
+ *
+ * The Initial Developer of the Original Code is
+ * Netscape Communications Corporation.
+ * Portions created by the Initial Developer are Copyright (C) 1998
+ * the Initial Developer. All Rights Reserved.
+ *
+ * Contributor(s):
+ *   Javier Delgadillo <javi@netscape.com>
+ *
+ * Alternatively, the contents of this file may be used under the terms of
+ * either the GNU General Public License Version 2 or later (the "GPL"), or
+ * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+ * in which case the provisions of the GPL or the LGPL are applicable instead
+ * of those above. If you wish to allow use of your version of this file only
+ * under the terms of either the GPL or the LGPL, and not to allow others to
+ * use your version of this file under the terms of the MPL, indicate your
+ * decision by deleting the provisions above and replace them with the notice
+ * and other provisions required by the GPL or the LGPL. If you do not delete
+ * the provisions above, a recipient may use your version of this file under
+ * the terms of any one of the MPL, the GPL or the LGPL.
+ *
+ * ***** END LICENSE BLOCK ***** */
+
+#include "nsISupports.idl"
+#include "nsIASN1Object.idl"
+
+interface nsIMutableArray;
+
+/**
+ * This represents a sequence of ASN.1 objects,
+ * where ASN.1 is "Abstract Syntax Notation number One".
+ *
+ * Overview of how this ASN1 interface is intended to
+ * work.
+ *
+ * First off, the nsIASN1Sequence is any type in ASN1
+ * that consists of sub-elements (ie SEQUENCE, SET)
+ * nsIASN1Printable Items are all the other types that
+ * can be viewed by themselves without interpreting further.
+ * Examples would include INTEGER, UTF-8 STRING, OID.
+ * These are not intended to directly reflect the numberous
+ * types that exist in ASN1, but merely an interface to ease
+ * producing a tree display the ASN1 structure of any DER
+ * object.
+ *
+ * The additional state information carried in this interface
+ * makes it fit for being used as the data structure
+ * when working with visual reprenstation of ASN.1 objects
+ * in a human user interface, like in a tree widget
+ * where open/close state of nodes must be remembered.
+ *
+ * @status FROZEN
+ */
+[scriptable, uuid(b6b957e6-1dd1-11b2-89d7-e30624f50b00)]
+interface nsIASN1Sequence : nsIASN1Object {
+
+  /**
+   *  The array of objects stored in the sequence.
+   */
+  attribute nsIMutableArray ASN1Objects;
+
+  /**
+   *  Whether the node at this position in the ASN.1 data structure
+   *  sequence contains sub elements understood by the
+   *  application.
+   */
+  attribute boolean isValidContainer;
+
+  /**
+   *  Whether the contained objects should be shown or hidden.
+   *  A UI implementation can use this flag to store the current
+   *  expansion state when shown in a tree widget.
+   */
+  attribute boolean isExpanded;
+};

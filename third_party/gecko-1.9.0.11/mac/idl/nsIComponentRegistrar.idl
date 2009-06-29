@@ -1,0 +1,242 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
+ *
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
+ *
+ * The Original Code is XPCOM.
+ *
+ * The Initial Developer of the Original Code is Netscape Communications.
+ * Portions created by the Initial Developer are Copyright (C) 2001
+ * the Initial Developer. All Rights Reserved.
+ *
+ * Contributor(s):
+ *
+ * Alternatively, the contents of this file may be used under the terms of
+ * either the GNU General Public License Version 2 or later (the "GPL"), or
+ * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+ * in which case the provisions of the GPL or the LGPL are applicable instead
+ * of those above. If you wish to allow use of your version of this file only
+ * under the terms of either the GPL or the LGPL, and not to allow others to
+ * use your version of this file under the terms of the MPL, indicate your
+ * decision by deleting the provisions above and replace them with the notice
+ * and other provisions required by the GPL or the LGPL. If you do not delete
+ * the provisions above, a recipient may use your version of this file under
+ * the terms of any one of the MPL, the GPL or the LGPL.
+ *
+ * ***** END LICENSE BLOCK ***** */
+
+/**
+ * The nsIComponentRegistrar interface.
+ * @status FROZEN
+ */
+
+#include "nsISupports.idl"
+
+interface nsIFile;
+interface nsIFactory;
+interface nsISimpleEnumerator;
+
+[scriptable, uuid(2417cbfe-65ad-48a6-b4b6-eb84db174392)]
+interface nsIComponentRegistrar : nsISupports
+{
+    /**
+     * autoRegister
+     *
+     * Register a component file or all component files in a directory.  
+     *
+     * Component files must have an associated loader and export the required
+     * symbols which this loader defines.  For example, if the given file is a
+     * native library (which is built into XPCOM), it must export the symbol 
+     * "NSGetModule".  Other loaders may have different semantics.
+     *
+     * This method may only be called from the main thread.
+     * 
+     * @param aSpec    : Filename spec for component file's location. If aSpec 
+     *                   is a directory, then every component file in the
+     *                   directory will be registered. 
+     *                   If aSpec is null, static components, GRE components,
+     *                   and the application's component directories will be
+     *                   registered. See NS_GRE_DIR, NS_XPCOM_COMPONENT_DIR,
+     *                   and NS_XPCOM_COMPONENT_DIR_LIST in
+     *                   nsDirectoryServiceDefs.h.
+     */
+    void autoRegister(in nsIFile aSpec);
+
+    /**
+     * autoUnregister
+     *
+     * Unregister a component file or all component files in a directory.  
+     * This method may only be called from the main thread.
+     *
+     * @param aSpec    : Filename spec for component file's location. If aSpec 
+     *                   is a directory, the every component file in the directory 
+     *                   will be registered.  
+     *                   If aSpec is null, then the application component's 
+     *                   directory as defined by NS_XPCOM_COMPONENT_DIR will be 
+     *                   registered. (see nsIDirectoryService.idl)
+     *
+     * @return NS_OK     Unregistration was successful.
+     *         NS_ERROR* Method failure.
+     */
+    void autoUnregister(in nsIFile aSpec);
+
+
+    /**
+     * registerFactory
+     *
+     * Register a factory with a given ContractID, CID and Class Name.
+     *
+     * @param aClass      : CID of object
+     * @param aClassName  : Class Name of CID
+     * @param aContractID : ContractID associated with CID aClass
+     * @param aFactory    : Factory that will be registered for CID aClass
+     *
+     * @return NS_OK        Registration was successful.
+     *         NS_ERROR*    method failure.
+     */
+    void registerFactory(in nsCIDRef aClass, 
+                         in string aClassName,
+                         in string aContractID, 
+                         in nsIFactory aFactory);
+
+    /**
+     * unregisterFactory
+     *
+     * Unregister a factory associated with CID aClass.
+     *
+     * @param aClass   : CID being unregistered
+     * @param aFactory : Factory previously registered to create instances of
+     *                   CID aClass.
+     *
+     * @return NS_OK     Unregistration was successful.
+     *         NS_ERROR* Method failure.
+     */    
+    void unregisterFactory(in nsCIDRef aClass, 
+                           in nsIFactory aFactory);
+
+    /**
+     * registerFactoryLocation
+     *
+     * Register a factory with a given ContractID, CID and Class Name
+     *
+     * @param aClass      : CID of object
+     * @param aClassName  : Class Name of CID
+     * @param aContractID : ContractID associated with CID aClass
+     * @param aFile       : Component File. This file must have an associated 
+     *                      loader and export the required symbols which this 
+     *                      loader specifies.
+     * @param aLoaderStr  : Opaque loader specific string.  This value is
+     *                      passed into the nsIModule's registerSelf
+     *                      callback and must be fowarded unmodified when
+     *                      registering factories via their location.
+     * @param aType       : Component Type of CID aClass.  This value is
+     *                      passed into the nsIModule's registerSelf
+     *                      callback and must be fowarded unmodified when
+     *                      registering factories via their location.
+     *
+     * @return NS_OK        Registration was successful.
+     *         NS_ERROR*    Method failure.
+     */
+    void registerFactoryLocation(in nsCIDRef aClass, 
+                                 in string aClassName,
+                                 in string aContractID, 
+                                 in nsIFile aFile,
+                                 in string aLoaderStr, 
+                                 in string aType);
+
+    /**
+     * unregisterFactoryLocation
+     *
+     * Unregister a factory associated with CID aClass.
+     *
+     * @param aClass   : CID being unregistered
+     * @param aFile    : Component File previously registered
+     *
+     * @return NS_OK     Unregistration was successful.
+     *         NS_ERROR* Method failure.
+     */    
+    void unregisterFactoryLocation(in nsCIDRef aClass, 
+                                   in nsIFile aFile);
+
+    /**
+     * isCIDRegistered
+     *
+     * Returns true if a factory is registered for the CID.
+     *
+     * @param aClass : CID queried for registeration
+     * @return       : true if a factory is registered for CID 
+     *                 false otherwise.
+     */
+    boolean isCIDRegistered(in nsCIDRef aClass);
+    
+    /**
+     * isContractIDRegistered
+     *
+     * Returns true if a factory is registered for the contract id.
+     *
+     * @param aClass : contract id queried for registeration
+     * @return       : true if a factory is registered for contract id 
+     *                 false otherwise.
+     */
+    boolean isContractIDRegistered(in string aContractID);
+
+    /**
+     * enumerateCIDs
+     *
+     * Enumerate the list of all registered CIDs.
+     *
+     * @return : enumerator for CIDs.  Elements of the enumeration can be QI'ed
+     *           for the nsISupportsID interface.  From the nsISupportsID, you 
+     *           can obtain the actual CID.
+     */
+    nsISimpleEnumerator enumerateCIDs();
+
+    /**
+     * enumerateContractIDs
+     *
+     * Enumerate the list of all registered ContractIDs.
+     *
+     * @return : enumerator for ContractIDs. Elements of the enumeration can be 
+     *           QI'ed for the nsISupportsCString interface.  From  the
+     *           nsISupportsCString interface, you can obtain the actual 
+     *           Contract ID string.
+     */
+    nsISimpleEnumerator enumerateContractIDs();
+
+    /**
+     * CIDToContractID
+     *
+     * Returns the Contract ID for a given CID, if one exists and is registered.
+     *
+     * @return : Contract ID.
+     */
+    string   CIDToContractID(in nsCIDRef aClass);
+
+    /**
+     * contractIDToCID
+     *
+     * Returns the CID for a given Contract ID, if one exists and is registered.
+     *
+     * @return : Contract ID.
+     */
+    nsCIDPtr contractIDToCID(in string aContractID);
+
+};
+
+
+
+
+
+
+
+
+
+

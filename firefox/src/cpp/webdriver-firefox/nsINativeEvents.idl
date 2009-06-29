@@ -1,0 +1,8 @@
+#include "nsISupports.idl"
+
+[scriptable, uuid(5A86850B-F376-4ae6-860D-53A441CAFCE4)]
+interface nsINativeEvents : nsISupports
+{
+/* Send keyboard input to the window of this element */
+void sendKeys(in nsISupports aNode, in wstring value);
+};

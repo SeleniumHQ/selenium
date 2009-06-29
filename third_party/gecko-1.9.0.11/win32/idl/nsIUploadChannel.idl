@@ -1,0 +1,90 @@
+/* -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+/* ***** BEGIN LICENSE BLOCK *****
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
+ *
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
+ *
+ * The Original Code is mozilla.org code.
+ *
+ * The Initial Developer of the Original Code is
+ * Netscape Communications Corporation.
+ * Portions created by the Initial Developer are Copyright (C) 1998
+ * the Initial Developer. All Rights Reserved.
+ *
+ * Contributor(s):
+ *
+ * Alternatively, the contents of this file may be used under the terms of
+ * either the GNU General Public License Version 2 or later (the "GPL"), or
+ * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+ * in which case the provisions of the GPL or the LGPL are applicable instead
+ * of those above. If you wish to allow use of your version of this file only
+ * under the terms of either the GPL or the LGPL, and not to allow others to
+ * use your version of this file under the terms of the MPL, indicate your
+ * decision by deleting the provisions above and replace them with the notice
+ * and other provisions required by the GPL or the LGPL. If you do not delete
+ * the provisions above, a recipient may use your version of this file under
+ * the terms of any one of the MPL, the GPL or the LGPL.
+ *
+ * ***** END LICENSE BLOCK ***** */
+
+#include "nsISupports.idl"
+
+interface nsIInputStream;
+
+/**
+ * nsIUploadChannel
+ *
+ * A channel may optionally implement this interface if it supports the
+ * notion of uploading a data stream.  The upload stream may only be set
+ * prior to the invocation of asyncOpen on the channel.
+ *
+ * @status FROZEN
+ */
+[scriptable, uuid(ddf633d8-e9a4-439d-ad88-de636fd9bb75)]
+interface nsIUploadChannel : nsISupports
+{
+    /**
+     * Sets a stream to be uploaded by this channel.
+     *
+     * Most implementations of this interface require that the stream:
+     *   (1) implement threadsafe addRef and release
+     *   (2) implement nsIInputStream::readSegments
+     *   (3) implement nsISeekableStream::seek
+     *
+     * History here is that we need to support both streams that already have
+     * headers (e.g., Content-Type and Content-Length) information prepended to
+     * the stream (by plugins) as well as clients (composer, uploading
+     * application) that want to upload data streams without any knowledge of
+     * protocol specifications.  For this reason, we have a special meaning
+     * for the aContentType parameter (see below).
+     * 
+     * @param aStream
+     *        The stream to be uploaded by this channel.
+     * @param aContentType
+     *        If aContentType is empty, the protocol will assume that no
+     *        content headers are to be added to the uploaded stream and that
+     *        any required headers are already encoded in the stream.  In the
+     *        case of HTTP, if this parameter is non-empty, then its value will
+     *        replace any existing Content-Type header on the HTTP request.
+     *        In the case of FTP and FILE, this parameter is ignored.
+     * @param aContentLength
+     *        A value of -1 indicates that the length of the stream should be
+     *        determined by calling the stream's |available| method.
+     */
+    void setUploadStream(in nsIInputStream aStream,
+                         in ACString aContentType,
+                         in long aContentLength);    
+
+    /**
+     * Get the stream (to be) uploaded by this channel.
+     */
+    readonly attribute nsIInputStream uploadStream;
+};

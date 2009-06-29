@@ -1,0 +1,146 @@
+/* -*- Mode: IDL; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*-
+ *
+ * ***** BEGIN LICENSE BLOCK *****
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
+ *
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
+ *
+ * The Original Code is the Mozilla browser.
+ *
+ * The Initial Developer of the Original Code is
+ * Netscape Communications, Inc.
+ * Portions created by the Initial Developer are Copyright (C) 1999
+ * the Initial Developer. All Rights Reserved.
+ *
+ * Contributor(s):
+ *   Dan Rosen <dr@netscape.com>
+ *
+ * Alternatively, the contents of this file may be used under the terms of
+ * either of the GNU General Public License Version 2 or later (the "GPL"),
+ * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+ * in which case the provisions of the GPL or the LGPL are applicable instead
+ * of those above. If you wish to allow use of your version of this file only
+ * under the terms of either the GPL or the LGPL, and not to allow others to
+ * use your version of this file under the terms of the MPL, indicate your
+ * decision by deleting the provisions above and replace them with the notice
+ * and other provisions required by the GPL or the LGPL. If you do not delete
+ * the provisions above, a recipient may use your version of this file under
+ * the terms of any one of the MPL, the GPL or the LGPL.
+ *
+ * ***** END LICENSE BLOCK ***** */
+
+#include "nsISupports.idl"
+
+/**
+ * An interface for embedding clients who wish to interact with
+ * the system-wide OS clipboard. Mozilla does not use a private
+ * clipboard, instead it places its data directly onto the system 
+ * clipboard. The webshell implements this interface.
+ *
+ * @status FROZEN
+ */
+
+[scriptable, uuid(b8100c90-73be-11d2-92a5-00105a1b0d64)]
+interface nsIClipboardCommands : nsISupports {
+
+  /**
+   * Returns whether there is a selection and it is not read-only.
+   *
+   * @return <code>true</code> if the current selection can be cut,
+   *          <code>false</code> otherwise.
+   */
+  boolean canCutSelection();
+
+  /**
+   * Returns whether there is a selection and it is copyable.
+   *
+   * @return <code>true</code> if there is a selection,
+   *          <code>false</code> otherwise.
+   */
+  boolean canCopySelection();
+
+  /**
+   * Returns whether we can copy a link location.
+   *
+   * @return <code>true</code> if a link is selected,
+   *           <code>false</code> otherwise.
+   */
+  boolean canCopyLinkLocation();
+
+  /**
+   * Returns whether we can copy an image location.
+   *
+   * @return <code>true</code> if an image is selected,
+              <code>false</code> otherwise.
+   */
+  boolean canCopyImageLocation();
+
+  /**
+   * Returns whether we can copy an image's contents.
+   *
+   * @return <code>true</code> if an image is selected,
+   *          <code>false</code> otherwise
+   */
+  boolean canCopyImageContents();
+
+  /**
+   * Returns whether the current contents of the clipboard can be
+   * pasted and if the current selection is not read-only.
+   *
+   * @return <code>true</code> there is data to paste on the clipboard
+   *          and the current selection is not read-only,
+   *          <code>false</code> otherwise
+   */
+  boolean canPaste();
+
+  /**
+   * Cut the current selection onto the clipboard.
+   */
+  void cutSelection();
+
+  /**
+   * Copy the current selection onto the clipboard.
+   */
+  void copySelection();
+
+  /**
+   * Copy the link location of the current selection (e.g.,
+   * the |href| attribute of a selected |a| tag).
+   */
+  void copyLinkLocation();
+
+  /**
+   * Copy the location of the selected image.
+   */
+  void copyImageLocation();
+
+  /**
+   * Copy the contents of the selected image.
+   */
+  void copyImageContents();
+
+  /**
+   * Paste the contents of the clipboard into the current selection.
+   */
+  void paste();
+
+  /**
+   * Select the entire contents.
+   */
+  void selectAll();
+
+  /**
+   * Clear the current selection (if any). Insertion point ends up
+   * at beginning of current selection.
+   */
+  void selectNone();
+
+};

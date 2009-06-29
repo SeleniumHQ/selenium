@@ -1,0 +1,270 @@
+/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*-
+ *
+ * ***** BEGIN LICENSE BLOCK *****
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
+ *
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
+ *
+ * The Original Code is mozilla.org code.
+ *
+ * The Initial Developer of the Original Code is
+ * Netscape Communications Corporation.
+ * Portions created by the Initial Developer are Copyright (C) 1998
+ * the Initial Developer. All Rights Reserved.
+ *
+ * Contributor(s):
+ *   Javier Delgadillo <javi@netscape.com>
+ *
+ * Alternatively, the contents of this file may be used under the terms of
+ * either the GNU General Public License Version 2 or later (the "GPL"), or
+ * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+ * in which case the provisions of the GPL or the LGPL are applicable instead
+ * of those above. If you wish to allow use of your version of this file only
+ * under the terms of either the GPL or the LGPL, and not to allow others to
+ * use your version of this file under the terms of the MPL, indicate your
+ * decision by deleting the provisions above and replace them with the notice
+ * and other provisions required by the GPL or the LGPL. If you do not delete
+ * the provisions above, a recipient may use your version of this file under
+ * the terms of any one of the MPL, the GPL or the LGPL.
+ *
+ * ***** END LICENSE BLOCK ***** */
+
+#include "nsISupports.idl"
+
+interface nsIArray;
+interface nsIX509CertValidity;
+interface nsIASN1Object;
+
+/**
+ * This represents a X.509 certificate.
+ *
+ * @status FROZEN
+ */
+[scriptable, uuid(f0980f60-ee3d-11d4-998b-00b0d02354a0)]
+interface nsIX509Cert : nsISupports {
+
+  /**
+   *  A nickname for the certificate.
+   */
+  readonly attribute AString nickname;
+
+  /**
+   *  The primary email address of the certificate, if present.
+   */
+  readonly attribute AString emailAddress;
+
+  /**
+   *  Obtain a list of all email addresses
+   *  contained in the certificate.
+   *
+   *  @param length The number of strings in the returned array.
+   *  @return An array of email addresses.
+   */
+  void getEmailAddresses(out unsigned long length, 
+                         [retval, array, size_is(length)] out wstring addresses);
+
+  /**
+   *  Check whether a given address is contained in the certificate.
+   *  The comparison will convert the email address to lowercase.
+   *  The behaviour for non ASCII characters is undefined.
+   *
+   *  @param aEmailAddress The address to search for.
+   *                
+   *  @return True if the address is contained in the certificate.
+   */
+  boolean containsEmailAddress(in AString aEmailAddress);
+
+  /**
+   *  The subject owning the certificate.
+   */
+  readonly attribute AString subjectName;
+
+  /**
+   *  The subject's common name.
+   */
+  readonly attribute AString commonName;
+
+  /**
+   *  The subject's organization.
+   */
+  readonly attribute AString organization;
+
+  /**
+   *  The subject's organizational unit.
+   */
+  readonly attribute AString organizationalUnit;
+
+  /**
+   *  The fingerprint of the certificate's public key,
+   *  calculated using the SHA1 algorithm.
+   */
+  readonly attribute AString sha1Fingerprint;
+
+  /**
+   *  The fingerprint of the certificate's public key,
+   *  calculated using the MD5 algorithm.
+   */
+  readonly attribute AString md5Fingerprint;
+
+  /**
+   *  A human readable name identifying the hardware or
+   *  software token the certificate is stored on.
+   */
+  readonly attribute AString tokenName;
+
+  /**
+   *  The subject identifying the issuer certificate.
+   */
+  readonly attribute AString issuerName;
+
+  /**
+   *  The serial number the issuer assigned to this certificate.
+   */
+  readonly attribute AString serialNumber;
+
+  /**
+   *  The issuer subject's common name.
+   */
+  readonly attribute AString issuerCommonName;
+
+  /**
+   *  The issuer subject's organization.
+   */
+  readonly attribute AString issuerOrganization;
+
+  /**
+   *  The issuer subject's organizational unit.
+   */
+  readonly attribute AString issuerOrganizationUnit;
+
+  /**
+   *  The certificate used by the issuer to sign this certificate.
+   */
+  readonly attribute nsIX509Cert issuer;
+
+  /**
+   *  This certificate's validity period.
+   */
+  readonly attribute nsIX509CertValidity validity;
+
+  /**
+   *  A unique identifier of this certificate within the local storage.
+   */
+  readonly attribute string dbKey;
+
+  /**
+   *  A human readable identifier to label this certificate.
+   */
+  readonly attribute string windowTitle;
+
+  /**
+   *  Constants to classify the type of a certificate.
+   */
+  const unsigned long UNKNOWN_CERT =      0;
+  const unsigned long CA_CERT      = 1 << 0;
+  const unsigned long USER_CERT    = 1 << 1;
+  const unsigned long EMAIL_CERT   = 1 << 2;
+  const unsigned long SERVER_CERT  = 1 << 3;
+
+  /**
+   *  Constants for certificate verification results.
+   */
+  const unsigned long VERIFIED_OK          =      0;
+  const unsigned long NOT_VERIFIED_UNKNOWN = 1 << 0;
+  const unsigned long CERT_REVOKED         = 1 << 1;
+  const unsigned long CERT_EXPIRED         = 1 << 2;
+  const unsigned long CERT_NOT_TRUSTED     = 1 << 3;
+  const unsigned long ISSUER_NOT_TRUSTED   = 1 << 4;
+  const unsigned long ISSUER_UNKNOWN       = 1 << 5;
+  const unsigned long INVALID_CA           = 1 << 6;
+  const unsigned long USAGE_NOT_ALLOWED    = 1 << 7;
+  
+  /**
+   *  Constants that describe the certified usages of a certificate.
+   */
+  const unsigned long CERT_USAGE_SSLClient = 0;
+  const unsigned long CERT_USAGE_SSLServer = 1;
+  const unsigned long CERT_USAGE_SSLServerWithStepUp = 2;
+  const unsigned long CERT_USAGE_SSLCA = 3;
+  const unsigned long CERT_USAGE_EmailSigner = 4;
+  const unsigned long CERT_USAGE_EmailRecipient = 5;
+  const unsigned long CERT_USAGE_ObjectSigner = 6;
+  const unsigned long CERT_USAGE_UserCertImport = 7;
+  const unsigned long CERT_USAGE_VerifyCA = 8;
+  const unsigned long CERT_USAGE_ProtectedObjectSigner = 9;
+  const unsigned long CERT_USAGE_StatusResponder = 10;
+  const unsigned long CERT_USAGE_AnyCA = 11;
+
+  /**
+   *  Obtain a list of certificates that contains this certificate 
+   *  and the issuing certificates of all involved issuers,
+   *  up to the root issuer.
+   *
+   *  @return The chain of certifficates including the issuers.
+   */
+  nsIArray getChain();
+
+  /**
+   *  Obtain an array of human readable strings describing
+   *  the certificate's certified usages.
+   *
+   *  @param ignoreOcsp Do not use OCSP even if it is currently activated.
+   *  @param verified The certificate verification result, see constants.
+   *  @param count The number of human readable usages returned.
+   *  @param usages The array of human readable usages.
+   */
+  void getUsagesArray(in boolean ignoreOcsp,
+                      out PRUint32 verified,
+                      out PRUint32 count, 
+                      [array, size_is(count)] out wstring usages);
+
+  /**
+   *  Obtain a single comma separated human readable string describing
+   *  the certificate's certified usages.
+   *
+   *  @param ignoreOcsp Do not use OCSP even if it is currently activated.
+   *  @param verified The certificate verification result, see constants.
+   *  @param purposes The string listing the usages.
+   */
+  void getUsagesString(in boolean ignoreOcsp, out PRUint32 verified, out AString usages);
+
+  /**
+   *  Verify the certificate for a particular usage.
+   *
+   *  @return The certificate verification result, see constants.
+   */
+   unsigned long verifyForUsage(in unsigned long usage);
+
+  /**
+   *  This is the attribute which describes the ASN1 layout
+   *  of the certificate.  This can be used when doing a
+   *  "pretty print" of the certificate's ASN1 structure.
+   */
+  readonly attribute nsIASN1Object ASN1Structure;
+
+  /**
+   *  Obtain a raw binary encoding of this certificate
+   *  in DER format.
+   *
+   *  @param length The number of bytes in the binary encoding.
+   *  @param data The bytes representing the DER encoded certificate.
+   */
+  void getRawDER(out unsigned long length,
+	               [retval, array, size_is(length)] out octet data);
+
+  /**
+   *  Test whether two certificate instances represent the 
+   *  same certificate.
+   *
+   *  @return Whether the certificates are equal
+   */
+  boolean equals(in nsIX509Cert other);
+};

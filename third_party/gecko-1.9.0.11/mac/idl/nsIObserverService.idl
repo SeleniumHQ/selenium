@@ -1,0 +1,111 @@
+/* -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+/* ***** BEGIN LICENSE BLOCK *****
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
+ *
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
+ *
+ * The Original Code is mozilla.org code.
+ *
+ * The Initial Developer of the Original Code is
+ * Netscape Communications Corporation.
+ * Portions created by the Initial Developer are Copyright (C) 1998
+ * the Initial Developer. All Rights Reserved.
+ *
+ * Contributor(s):
+ *
+ * Alternatively, the contents of this file may be used under the terms of
+ * either of the GNU General Public License Version 2 or later (the "GPL"),
+ * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+ * in which case the provisions of the GPL or the LGPL are applicable instead
+ * of those above. If you wish to allow use of your version of this file only
+ * under the terms of either the GPL or the LGPL, and not to allow others to
+ * use your version of this file under the terms of the MPL, indicate your
+ * decision by deleting the provisions above and replace them with the notice
+ * and other provisions required by the GPL or the LGPL. If you do not delete
+ * the provisions above, a recipient may use your version of this file under
+ * the terms of any one of the MPL, the GPL or the LGPL.
+ *
+ * ***** END LICENSE BLOCK ***** */
+
+#include "nsISupports.idl"
+
+interface nsIObserver;
+interface nsISimpleEnumerator;
+
+/**
+ * nsIObserverService
+ * 
+ * Service allows a client listener (nsIObserver) to register and unregister for 
+ * notifications of specific string referenced topic. Service also provides a 
+ * way to notify registered listeners and a way to enumerate registered client 
+ * listeners.
+ * 
+ * @status FROZEN
+ */
+
+[scriptable, uuid(D07F5192-E3D1-11d2-8ACD-00105A1B8860)]
+interface nsIObserverService : nsISupports 
+{
+
+    /**
+     * AddObserver
+     *
+     * Registers a given listener for a notifications regarding the specified
+     * topic.
+     *
+     * @param anObserve : The interface pointer which will receive notifications.
+     * @param aTopic    : The notification topic or subject.
+     * @param ownsWeak  : If set to false, the nsIObserverService will hold a 
+     *                    strong reference to |anObserver|.  If set to true and 
+     *                    |anObserver| supports the nsIWeakReference interface,
+     *                    a weak reference will be held.  Otherwise an error will be
+     *                    returned.
+     */
+ 	void addObserver( in nsIObserver anObserver, in string aTopic, in boolean ownsWeak);
+
+    /**
+     * removeObserver
+     *
+     * Unregisters a given listener from notifications regarding the specified
+     * topic.
+     *
+     * @param anObserver : The interface pointer which will stop recieving
+     *                     notifications.
+     * @param aTopic     : The notification topic or subject.
+     */
+    void removeObserver( in nsIObserver anObserver, in string aTopic );
+
+    /**
+     * notifyObservers
+     *
+     * Notifies all registered listeners of the given topic.
+     *
+     * @param aSubject : Notification specific interface pointer.
+     * @param aTopic   : The notification topic or subject.
+     * @param someData : Notification specific wide string.
+     */
+    void notifyObservers( in nsISupports aSubject, 
+                          in string aTopic, 
+                          in wstring someData );
+
+    /**
+     * enumerateObservers
+     *
+     * Returns an enumeration of all registered listeners.
+     *
+     * @param aTopic   : The notification topic or subject.
+     */
+	nsISimpleEnumerator enumerateObservers( in string aTopic );
+
+
+};
+
+

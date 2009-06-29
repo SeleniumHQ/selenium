@@ -17,6 +17,14 @@
             </Description>
         </em:targetApplication>
 
+        <!-- Platforms where we're not compiling the native events -->
+        <em:targetPlatform>Darwin</em:targetPlatform>
+        <em:targetPlatform>Linux</em:targetPlatform>
+        <em:targetPlatform>Linux</em:targetPlatform>
+        <!-- Platforms where we are -->
+        <em:targetPlatform>WINNT_x86-msvc</em:targetPlatform>
+
+        <!-- We're probably missing lots of platforms here -->
     </Description>
 
 </RDF>

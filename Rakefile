@@ -335,20 +335,7 @@ end
 #### The interactions library ####
 
 file 'build/Win32/Release/webdriver-interactions.dll' => FileList['common/src/cpp/webdriver-interactions/*.*'] do
-  if msbuild? then
-    sh "MSBuild.exe common\\src\\cpp\\webdriver-interactions\\webdriver-interactions.vcproj /verbosity:q /target:Rebuild /property:Configuration=Release /property:Platform=x64", :verbose => false
-	sh "MSBuild.exe common\\src\\cpp\\webdriver-interactions\\webdriver-interactions.vcproj /verbosity:q /target:Rebuild /property:Configuration=Release /property:Platform=Win32", :verbose => false
-  else
-	puts "Not compiling interactions library."
-    begin
-      mkdir_p 'build', :verbose => false
-    rescue
-    end
-    mkdir_p "build/Win32/Release"
-    mkdir_p "build/x64/Release"
-    File.open('build/Win32/Release/webdriver-interactions.dll', 'w') {|f| f.write("")}
-    File.open('build/x64/Release/webdriver-interactions.dll', 'w') {|f| f.write("")}
-  end
+  msbuild 'WebDriver.sln'
 end
 
 file "common/build/webdriver-common.jar" => "build/Win32/Release/webdriver-interactions.dll" do
@@ -361,20 +348,7 @@ end
 
 #### Internet Explorer ####
 file 'build/Win32/Release/InternetExplorerDriver.dll' => FileList['jobbie/src/cpp/**/*.cpp'] do
-  if windows? then
-    sh "MSBuild.exe WebDriver.sln /verbosity:q /target:Rebuild /property:Configuration=Release /property:Platform=x64", :verbose => false
-    sh "MSBuild.exe WebDriver.sln /verbosity:q /target:Rebuild /property:Configuration=Release /property:Platform=Win32", :verbose => false
-  else
-    puts "Not compiling DLL. Do not try and run the IE tests!"
-    begin
-      mkdir_p 'build', :verbose => false
-    rescue
-    end
-    mkdir_p "build/Win32/Release"
-    mkdir_p "build/x64/Release"
-    File.open('build/Win32/Release/InternetExplorerDriver.dll', 'w') {|f| f.write("")}
-    File.open('build/x64/Release/InternetExplorerDriver.dll', 'w') {|f| f.write("")}
-  end
+  msbuild 'WebDriver.sln'
 end
 
 file "jobbie/build/webdriver-jobbie.jar" => "build/Win32/Release/InternetExplorerDriver.dll" do
@@ -386,19 +360,29 @@ file "jobbie/build/webdriver-jobbie.jar" => "build/Win32/Release/InternetExplore
 end
 
 #### Firefox ####
-file 'firefox/build/webdriver-extension.zip' => FileList['firefox/src/extension/**'] do
-  begin
-    mkdir_p 'firefox/build'
-  rescue
-  end
+file 'firefox/build/webdriver-extension.zip' => FileList['firefox/src/extension/**'] + ['build/Win32/Release/webdriver-firefox.dll'] do
+  mkdir_p "firefox/build/extension/platform/WINNT_x86-msvc/components/"
+
+  cp_r "firefox/src/extension/.", "firefox/build/extension"
+
+  cp "build/Win32/Release/webdriver-interactions.dll", "firefox/build/extension/platform/WINNT_x86-msvc/components/"
+  cp "build/Win32/Release/webdriver-firefox.dll", "firefox/build/extension/platform/WINNT_x86-msvc/components/"
+
+  # Delete the .svn dirs
+  rm_r Dir.glob("firefox/build/extension/**/.svn")
 
   if windows? then
     puts "This Firefox JAR is not suitable for uploading to Google Code"
-    sh "cd firefox/src/extension && jar cMvf ../../build/webdriver-extension.zip *"
+    sh "cd firefox/build/extension && jar cMvf ../webdriver-extension.zip *"
   else
-    sh "cd firefox/src/extension && zip -0r ../../build/webdriver-extension.zip * -x \*.svn\*"
+    sh "cd firefox/build/extension && zip -0r ../webdriver-extension.zip * -x \*.svn\*"
   end
 end
+
+file 'build/Win32/Release/webdriver-firefox.dll' => FileList['firefox/src/cpp/**/*.cpp'] do
+  msbuild 'WebDriver.sln'
+end
+
 
 task :test_firefox_py => :test_firefox do
   if python? then
@@ -530,7 +514,6 @@ def javac(args)
 	mkdir_p target_dir, :verbose => false 
   end
   
-
   compile_string = "javac "
   compile_string += "-source 5 -target 5 "
   compile_string += "-g " if debug
@@ -545,9 +528,7 @@ def javac(args)
   sh compile_string, :verbose => false
 
   # Copy the resource to the target_dir
-  if extra_resources then
-    cp_r extra_resources, target_dir, :verbose => false
-  end
+  cp_r extra_resources, target_dir, :verbose => false
 
   jar_string = "jar cf #{out} -C #{target_dir} ."
   sh jar_string, :verbose => false
@@ -581,5 +562,20 @@ def junit(args)
     name = test.sub("#{source_dir}/", '').gsub('/', '.')
     test_string += " #{name[0, name.size - 5]}"
     result = sh test_string, :verbose => false
+  end
+end
+
+def msbuild(solution)
+  if msbuild?
+    sh "MSBuild.exe #{solution} /verbosity:q /target:Rebuild /property:Configuration=Release /property:Platform=x64", :verbose => false
+    sh "MSBuild.exe #{solution} /verbosity:q /target:Rebuild /property:Configuration=Release /property:Platform=Win32", :verbose => false
+  else
+    %w(build/Win32/Release build/x64/Release).each do |dir|
+      mkdir_p dir
+
+      %w(webdriver-interactions.dll InternetExplorerDriver.dll webdriver-firefox.dll).each do |res|
+        File.open("#{dir}/#{res}", 'w') {|f| f.write("")}
+      end
+    end
   end
 end

@@ -24,7 +24,9 @@ import static org.openqa.selenium.Ignore.Driver.*;
 
 @SuppressWarnings("unused")
 public class SingleTestSuite extends TestCase {
-  private final static String FIREFOX = "org.openqa.selenium.firefox.FirefoxDriver";
+
+  private final static String FIREFOX = "org.openqa.selenium.firefox.FirefoxDriverTestSuite$TestFirefoxDriver";
+//  private final static String FIREFOX = "org.openqa.selenium.firefox.FirefoxDriver";
   private final static String HTML_UNIT = "org.openqa.selenium.htmlunit.HtmlUnitDriver";
   private final static String HTML_UNIT_JS = "org.openqa.selenium.htmlunit.JavascriptEnabledHtmlUnitDriverTestSuite$HtmlUnitDriverForTest";
   private final static String IE = "org.openqa.selenium.ie.InternetExplorerDriver";
@@ -32,7 +34,7 @@ public class SingleTestSuite extends TestCase {
   private final static String SAFARI = "org.openqa.selenium.safari.SafariDriver";
 
   public static Test suite() throws Exception {
-    String driver = IE;
+    String driver = FIREFOX;
 
     System.setProperty("webdriver.development", "true");
     System.setProperty("jna.library.path", "..\\build;build");
@@ -45,8 +47,8 @@ public class SingleTestSuite extends TestCase {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("FrameSwitchingTest")
-//        .method("testShouldBeAbleToSubmitFormsByCausingTheOnClickEventToFire")
+        .onlyRun("FormHandlingTest")
+//        .method("testShouldModifyTheVisibilityOfAnElementDynamically")
         .exclude(ALL)
         .exclude(Ignore.Driver.IE)
         .leaveRunning()

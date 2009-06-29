@@ -18,19 +18,12 @@ limitations under the License.
 package org.openqa.selenium.firefox;
 
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.Cleanly;
 import org.openqa.selenium.internal.FileHandler;
 import org.openqa.selenium.internal.TemporaryFilesystem;
-import org.openqa.selenium.internal.Cleanly;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
-import javax.xml.XMLConstants;
-import javax.xml.namespace.NamespaceContext;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathFactory;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
@@ -45,6 +38,14 @@ import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import javax.xml.XMLConstants;
+import javax.xml.namespace.NamespaceContext;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
 
 public class FirefoxProfile {
   private static final String EXTENSION_NAME = "fxdriver@googlecode.com";
@@ -86,26 +87,23 @@ public class FirefoxProfile {
       return;
     }
 
-    boolean isDev = Boolean.getBoolean("webdriver.development");
     try {
-      if (isDev) {
-        installDevelopmentExtension();
-      } else {
-        addExtension(FirefoxProfile.class, "webdriver-extension.zip");
-      }
+      addExtension(FirefoxProfile.class, "webdriver-extension.zip");
     } catch (IOException e) {
-      throw new WebDriverException("Failed to install webdriver extension", e);
+      if (!Boolean.getBoolean("webdriver.development")) {
+        throw new WebDriverException("Failed to install webdriver extension", e);
+      }
     }
 
     deleteExtensionsCacheIfItExists();
   }
 
-  public void addExtension(Class<?> loadResourcesUsing, String loadFrom) throws IOException {
+  public File addExtension(Class<?> loadResourcesUsing, String loadFrom) throws IOException {
       // Is loadFrom a file?
       File file = new File(loadFrom);
       if (file.exists()) {
         addExtension(file);
-        return;
+        return file;
       }
 
       // Try and load it from the classpath
@@ -131,6 +129,7 @@ public class FirefoxProfile {
       }
 
       addExtension(root);
+      return root;
     }
 
   /**

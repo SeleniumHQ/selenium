@@ -1,0 +1,1890 @@
+/* THIS IS A GENERATED FILE */
+/* ***** BEGIN LICENSE BLOCK *****
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
+ *
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
+ *
+ * The Original Code is the Netscape security libraries.
+ *
+ * The Initial Developer of the Original Code is
+ * Netscape Communications Corporation.
+ * Portions created by the Initial Developer are Copyright (C) 1994-2000
+ * the Initial Developer. All Rights Reserved.
+ *
+ * Contributor(s):
+ *
+ * Alternatively, the contents of this file may be used under the terms of
+ * either the GNU General Public License Version 2 or later (the "GPL"), or
+ * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+ * in which case the provisions of the GPL or the LGPL are applicable instead
+ * of those above. If you wish to allow use of your version of this file only
+ * under the terms of either the GPL or the LGPL, and not to allow others to
+ * use your version of this file under the terms of the MPL, indicate your
+ * decision by deleting the provisions above and replace them with the notice
+ * and other provisions required by the GPL or the LGPL. If you do not delete
+ * the provisions above, a recipient may use your version of this file under
+ * the terms of any one of the MPL, the GPL or the LGPL.
+ *
+ * ***** END LICENSE BLOCK ***** */
+
+#ifdef DEBUG
+static const char NSSCKAPI_CVS_ID[] = "@(#) $RCSfile: nssck.api,v $ $Revision: 1.7 $ $Date: 2005/02/02 22:28:11 $ ; @(#) $RCSfile: nssck.api,v $ $Revision: 1.7 $ $Date: 2005/02/02 22:28:11 $";
+#endif /* DEBUG */
+
+/*
+ * nssck.api
+ *
+ * This automatically-generated file is used to generate a set of
+ * Cryptoki entry points within the object space of a Module using
+ * the NSS Cryptoki Framework.
+ *
+ * The Module should have a .c file with the following:
+ *
+ *  #define MODULE_NAME name
+ *  #define INSTANCE_NAME instance
+ *  #include "nssck.api"
+ *
+ * where "name" is some module-specific name that can be used to
+ * disambiguate various modules.  This included file will then
+ * define the actual Cryptoki routines which pass through to the
+ * Framework calls.  All routines, except C_GetFunctionList, will
+ * be prefixed with the name; C_GetFunctionList will be generated
+ * to return an entry-point vector with these routines.  The
+ * instance specified should be the basic instance of NSSCKMDInstance.
+ *
+ * If, prior to including nssck.api, the .c file also specifies
+ *
+ *  #define DECLARE_STRICT_CRYTPOKI_NAMES
+ *
+ * Then a set of "stub" routines not prefixed with the name will
+ * be included.  This would allow the combined module and framework
+ * to be used in applications which are hard-coded to use the
+ * PKCS#11 names (instead of going through the EPV).  Please note
+ * that such applications should be careful resolving symbols when
+ * more than one PKCS#11 module is loaded.
+ */
+
+#ifndef MODULE_NAME
+#error "Error: MODULE_NAME must be defined."
+#endif /* MODULE_NAME */
+
+#ifndef INSTANCE_NAME
+#error "Error: INSTANCE_NAME must be defined."
+#endif /* INSTANCE_NAME */
+
+#ifndef NSSCKT_H
+#include "nssckt.h"
+#endif /* NSSCKT_H */
+
+#ifndef NSSCKFWT_H
+#include "nssckfwt.h"
+#endif /* NSSCKFWT_H */
+
+#ifndef NSSCKFWC_H
+#include "nssckfwc.h"
+#endif /* NSSCKFWC_H */
+
+#ifndef NSSCKEPV_H
+#include "nssckepv.h"
+#endif /* NSSCKEPV_H */
+
+#define ADJOIN(x,y) x##y
+
+#define __ADJOIN(x,y) ADJOIN(x,y)
+
+/*
+ * The anchor.  This object is used to store an "anchor" pointer in
+ * the Module's object space, so the wrapper functions can relate
+ * back to this instance.
+ */
+
+static NSSCKFWInstance *fwInstance = (NSSCKFWInstance *)0;
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_Initialize)
+(
+  CK_VOID_PTR pInitArgs
+)
+{
+  return NSSCKFWC_Initialize(&fwInstance, INSTANCE_NAME, pInitArgs);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY 
+C_Initialize
+(
+  CK_VOID_PTR pInitArgs
+)
+{
+  return __ADJOIN(MODULE_NAME,C_Initialize)(pInitArgs);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_Finalize)
+(
+  CK_VOID_PTR pReserved
+)
+{
+  return NSSCKFWC_Finalize(&fwInstance);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_Finalize
+(
+  CK_VOID_PTR pReserved
+)
+{
+  return __ADJOIN(MODULE_NAME,C_Finalize)(pReserved);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_GetInfo)
+(
+  CK_INFO_PTR pInfo
+)
+{
+  return NSSCKFWC_GetInfo(fwInstance, pInfo);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_GetInfo
+(
+  CK_INFO_PTR pInfo
+)
+{
+  return __ADJOIN(MODULE_NAME,C_GetInfo)(pInfo);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+/*
+ * C_GetFunctionList is defined at the end.
+ */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_GetSlotList)
+(
+  CK_BBOOL tokenPresent,
+  CK_SLOT_ID_PTR pSlotList,
+  CK_ULONG_PTR pulCount
+)
+{
+  return NSSCKFWC_GetSlotList(fwInstance, tokenPresent, pSlotList, pulCount);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_GetSlotList
+(
+  CK_BBOOL tokenPresent,
+  CK_SLOT_ID_PTR pSlotList,
+  CK_ULONG_PTR pulCount
+)
+{
+  return __ADJOIN(MODULE_NAME,C_GetSlotList)(tokenPresent, pSlotList, pulCount);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_GetSlotInfo)
+(
+  CK_SLOT_ID slotID,
+  CK_SLOT_INFO_PTR pInfo
+)
+{
+  return NSSCKFWC_GetSlotInfo(fwInstance, slotID, pInfo);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_GetSlotInfo
+(
+  CK_SLOT_ID slotID,
+  CK_SLOT_INFO_PTR pInfo
+)
+{
+  return __ADJOIN(MODULE_NAME,C_GetSlotInfo)(slotID, pInfo);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_GetTokenInfo)
+(
+  CK_SLOT_ID slotID,
+  CK_TOKEN_INFO_PTR pInfo
+)
+{
+  return NSSCKFWC_GetTokenInfo(fwInstance, slotID, pInfo);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_GetTokenInfo
+(
+  CK_SLOT_ID slotID,
+  CK_TOKEN_INFO_PTR pInfo
+)
+{
+  return __ADJOIN(MODULE_NAME,C_GetTokenInfo)(slotID, pInfo);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_GetMechanismList)
+(
+  CK_SLOT_ID slotID,
+  CK_MECHANISM_TYPE_PTR pMechanismList,
+  CK_ULONG_PTR pulCount
+)
+{
+  return NSSCKFWC_GetMechanismList(fwInstance, slotID, pMechanismList, pulCount);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_GetMechanismList
+(
+  CK_SLOT_ID slotID,
+  CK_MECHANISM_TYPE_PTR pMechanismList,
+  CK_ULONG_PTR pulCount
+)
+{
+  return __ADJOIN(MODULE_NAME,C_GetMechanismList)(slotID, pMechanismList, pulCount);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_GetMechanismInfo)
+(
+  CK_SLOT_ID slotID,
+  CK_MECHANISM_TYPE type,
+  CK_MECHANISM_INFO_PTR pInfo
+)
+{
+  return NSSCKFWC_GetMechanismInfo(fwInstance, slotID, type, pInfo);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_GetMechanismInfo
+(
+  CK_SLOT_ID slotID,
+  CK_MECHANISM_TYPE type,
+  CK_MECHANISM_INFO_PTR pInfo
+)
+{
+  return __ADJOIN(MODULE_NAME,C_GetMechanismInfo)(slotID, type, pInfo);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_InitToken)
+(
+  CK_SLOT_ID slotID,
+  CK_CHAR_PTR pPin,
+  CK_ULONG ulPinLen,
+  CK_CHAR_PTR pLabel
+)
+{
+  return NSSCKFWC_InitToken(fwInstance, slotID, pPin, ulPinLen, pLabel);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_InitToken
+(
+  CK_SLOT_ID slotID,
+  CK_CHAR_PTR pPin,
+  CK_ULONG ulPinLen,
+  CK_CHAR_PTR pLabel
+)
+{
+  return __ADJOIN(MODULE_NAME,C_InitToken)(slotID, pPin, ulPinLen, pLabel);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_InitPIN)
+(
+  CK_SESSION_HANDLE hSession,
+  CK_CHAR_PTR pPin,
+  CK_ULONG ulPinLen
+)
+{
+  return NSSCKFWC_InitPIN(fwInstance, hSession, pPin, ulPinLen);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_InitPIN
+(
+  CK_SESSION_HANDLE hSession,
+  CK_CHAR_PTR pPin,
+  CK_ULONG ulPinLen
+)
+{
+  return __ADJOIN(MODULE_NAME,C_InitPIN)(hSession, pPin, ulPinLen);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_SetPIN)
+(
+  CK_SESSION_HANDLE hSession,
+  CK_CHAR_PTR pOldPin,
+  CK_ULONG ulOldLen,
+  CK_CHAR_PTR pNewPin,
+  CK_ULONG ulNewLen
+)
+{
+  return NSSCKFWC_SetPIN(fwInstance, hSession, pOldPin, ulOldLen, pNewPin, ulNewLen);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_SetPIN
+(
+  CK_SESSION_HANDLE hSession,
+  CK_CHAR_PTR pOldPin,
+  CK_ULONG ulOldLen,
+  CK_CHAR_PTR pNewPin,
+  CK_ULONG ulNewLen
+)
+{
+  return __ADJOIN(MODULE_NAME,C_SetPIN)(hSession, pOldPin, ulOldLen, pNewPin, ulNewLen);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_OpenSession)
+(
+  CK_SLOT_ID slotID,
+  CK_FLAGS flags,
+  CK_VOID_PTR pApplication,
+  CK_NOTIFY Notify,
+  CK_SESSION_HANDLE_PTR phSession
+)
+{
+  return NSSCKFWC_OpenSession(fwInstance, slotID, flags, pApplication, Notify, phSession);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_OpenSession
+(
+  CK_SLOT_ID slotID,
+  CK_FLAGS flags,
+  CK_VOID_PTR pApplication,
+  CK_NOTIFY Notify,
+  CK_SESSION_HANDLE_PTR phSession
+)
+{
+  return __ADJOIN(MODULE_NAME,C_OpenSession)(slotID, flags, pApplication, Notify, phSession);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_CloseSession)
+(
+  CK_SESSION_HANDLE hSession
+)
+{
+  return NSSCKFWC_CloseSession(fwInstance, hSession);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_CloseSession
+(
+  CK_SESSION_HANDLE hSession
+)
+{
+  return __ADJOIN(MODULE_NAME,C_CloseSession)(hSession);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_CloseAllSessions)
+(
+  CK_SLOT_ID slotID
+)
+{
+  return NSSCKFWC_CloseAllSessions(fwInstance, slotID);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_CloseAllSessions
+(
+  CK_SLOT_ID slotID
+)
+{
+  return __ADJOIN(MODULE_NAME,C_CloseAllSessions)(slotID);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_GetSessionInfo)
+(
+  CK_SESSION_HANDLE hSession,
+  CK_SESSION_INFO_PTR pInfo
+)
+{
+  return NSSCKFWC_GetSessionInfo(fwInstance, hSession, pInfo);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_GetSessionInfo
+(
+  CK_SESSION_HANDLE hSession,
+  CK_SESSION_INFO_PTR pInfo
+)
+{
+  return __ADJOIN(MODULE_NAME,C_GetSessionInfo)(hSession, pInfo);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_GetOperationState)
+(
+  CK_SESSION_HANDLE hSession,
+  CK_BYTE_PTR pOperationState,
+  CK_ULONG_PTR pulOperationStateLen
+)
+{
+  return NSSCKFWC_GetOperationState(fwInstance, hSession, pOperationState, pulOperationStateLen);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_GetOperationState
+(
+  CK_SESSION_HANDLE hSession,
+  CK_BYTE_PTR pOperationState,
+  CK_ULONG_PTR pulOperationStateLen
+)
+{
+  return __ADJOIN(MODULE_NAME,C_GetOperationState)(hSession, pOperationState, pulOperationStateLen);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_SetOperationState)
+(
+  CK_SESSION_HANDLE hSession,
+  CK_BYTE_PTR pOperationState,
+  CK_ULONG ulOperationStateLen,
+  CK_OBJECT_HANDLE hEncryptionKey,
+  CK_OBJECT_HANDLE hAuthenticationKey
+)
+{
+  return NSSCKFWC_SetOperationState(fwInstance, hSession, pOperationState, ulOperationStateLen, hEncryptionKey, hAuthenticationKey);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_SetOperationState
+(
+  CK_SESSION_HANDLE hSession,
+  CK_BYTE_PTR pOperationState,
+  CK_ULONG ulOperationStateLen,
+  CK_OBJECT_HANDLE hEncryptionKey,
+  CK_OBJECT_HANDLE hAuthenticationKey
+)
+{
+  return __ADJOIN(MODULE_NAME,C_SetOperationState)(hSession, pOperationState, ulOperationStateLen, hEncryptionKey, hAuthenticationKey);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_Login)
+(
+  CK_SESSION_HANDLE hSession,
+  CK_USER_TYPE userType,
+  CK_CHAR_PTR pPin,
+  CK_ULONG ulPinLen
+)
+{
+  return NSSCKFWC_Login(fwInstance, hSession, userType, pPin, ulPinLen);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_Login
+(
+  CK_SESSION_HANDLE hSession,
+  CK_USER_TYPE userType,
+  CK_CHAR_PTR pPin,
+  CK_ULONG ulPinLen
+)
+{
+  return __ADJOIN(MODULE_NAME,C_Login)(hSession, userType, pPin, ulPinLen);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_Logout)
+(
+  CK_SESSION_HANDLE hSession
+)
+{
+  return NSSCKFWC_Logout(fwInstance, hSession);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_Logout
+(
+  CK_SESSION_HANDLE hSession
+)
+{
+  return __ADJOIN(MODULE_NAME,C_Logout)(hSession);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_CreateObject)
+(
+  CK_SESSION_HANDLE hSession,
+  CK_ATTRIBUTE_PTR pTemplate,
+  CK_ULONG ulCount,
+  CK_OBJECT_HANDLE_PTR phObject
+)
+{
+  return NSSCKFWC_CreateObject(fwInstance, hSession, pTemplate, ulCount, phObject);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_CreateObject
+(
+  CK_SESSION_HANDLE hSession,
+  CK_ATTRIBUTE_PTR pTemplate,
+  CK_ULONG ulCount,
+  CK_OBJECT_HANDLE_PTR phObject
+)
+{
+  return __ADJOIN(MODULE_NAME,C_CreateObject)(hSession, pTemplate, ulCount, phObject);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_CopyObject)
+(
+  CK_SESSION_HANDLE hSession,
+  CK_OBJECT_HANDLE hObject,
+  CK_ATTRIBUTE_PTR pTemplate,
+  CK_ULONG ulCount,
+  CK_OBJECT_HANDLE_PTR phNewObject
+)
+{
+  return NSSCKFWC_CopyObject(fwInstance, hSession, hObject, pTemplate, ulCount, phNewObject);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_CopyObject
+(
+  CK_SESSION_HANDLE hSession,
+  CK_OBJECT_HANDLE hObject,
+  CK_ATTRIBUTE_PTR pTemplate,
+  CK_ULONG ulCount,
+  CK_OBJECT_HANDLE_PTR phNewObject
+)
+{
+  return __ADJOIN(MODULE_NAME,C_CopyObject)(hSession, hObject, pTemplate, ulCount, phNewObject);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_DestroyObject)
+(
+  CK_SESSION_HANDLE hSession,
+  CK_OBJECT_HANDLE hObject
+)
+{
+  return NSSCKFWC_DestroyObject(fwInstance, hSession, hObject);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_DestroyObject
+(
+  CK_SESSION_HANDLE hSession,
+  CK_OBJECT_HANDLE hObject
+)
+{
+  return __ADJOIN(MODULE_NAME,C_DestroyObject)(hSession, hObject);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_GetObjectSize)
+(
+  CK_SESSION_HANDLE hSession,
+  CK_OBJECT_HANDLE hObject,
+  CK_ULONG_PTR pulSize
+)
+{
+  return NSSCKFWC_GetObjectSize(fwInstance, hSession, hObject, pulSize);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_GetObjectSize
+(
+  CK_SESSION_HANDLE hSession,
+  CK_OBJECT_HANDLE hObject,
+  CK_ULONG_PTR pulSize
+)
+{
+  return __ADJOIN(MODULE_NAME,C_GetObjectSize)(hSession, hObject, pulSize);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_GetAttributeValue)
+(
+  CK_SESSION_HANDLE hSession,
+  CK_OBJECT_HANDLE hObject,
+  CK_ATTRIBUTE_PTR pTemplate,
+  CK_ULONG ulCount
+)
+{
+  return NSSCKFWC_GetAttributeValue(fwInstance, hSession, hObject, pTemplate, ulCount);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_GetAttributeValue
+(
+  CK_SESSION_HANDLE hSession,
+  CK_OBJECT_HANDLE hObject,
+  CK_ATTRIBUTE_PTR pTemplate,
+  CK_ULONG ulCount
+)
+{
+  return __ADJOIN(MODULE_NAME,C_GetAttributeValue)(hSession, hObject, pTemplate, ulCount);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_SetAttributeValue)
+(
+  CK_SESSION_HANDLE hSession,
+  CK_OBJECT_HANDLE hObject,
+  CK_ATTRIBUTE_PTR pTemplate,
+  CK_ULONG ulCount
+)
+{
+  return NSSCKFWC_SetAttributeValue(fwInstance, hSession, hObject, pTemplate, ulCount);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_SetAttributeValue
+(
+  CK_SESSION_HANDLE hSession,
+  CK_OBJECT_HANDLE hObject,
+  CK_ATTRIBUTE_PTR pTemplate,
+  CK_ULONG ulCount
+)
+{
+  return __ADJOIN(MODULE_NAME,C_SetAttributeValue)(hSession, hObject, pTemplate, ulCount);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_FindObjectsInit)
+(
+  CK_SESSION_HANDLE hSession,
+  CK_ATTRIBUTE_PTR pTemplate,
+  CK_ULONG ulCount
+)
+{
+  return NSSCKFWC_FindObjectsInit(fwInstance, hSession, pTemplate, ulCount);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_FindObjectsInit
+(
+  CK_SESSION_HANDLE hSession,
+  CK_ATTRIBUTE_PTR pTemplate,
+  CK_ULONG ulCount
+)
+{
+  return __ADJOIN(MODULE_NAME,C_FindObjectsInit)(hSession, pTemplate, ulCount);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_FindObjects)
+(
+  CK_SESSION_HANDLE hSession,
+  CK_OBJECT_HANDLE_PTR phObject,
+  CK_ULONG ulMaxObjectCount,
+  CK_ULONG_PTR pulObjectCount
+)
+{
+  return NSSCKFWC_FindObjects(fwInstance, hSession, phObject, ulMaxObjectCount, pulObjectCount);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_FindObjects
+(
+  CK_SESSION_HANDLE hSession,
+  CK_OBJECT_HANDLE_PTR phObject,
+  CK_ULONG ulMaxObjectCount,
+  CK_ULONG_PTR pulObjectCount
+)
+{
+  return __ADJOIN(MODULE_NAME,C_FindObjects)(hSession, phObject, ulMaxObjectCount, pulObjectCount);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_FindObjectsFinal)
+(
+  CK_SESSION_HANDLE hSession
+)
+{
+  return NSSCKFWC_FindObjectsFinal(fwInstance, hSession);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_FindObjectsFinal
+(
+  CK_SESSION_HANDLE hSession
+)
+{
+  return __ADJOIN(MODULE_NAME,C_FindObjectsFinal)(hSession);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_EncryptInit)
+(
+  CK_SESSION_HANDLE hSession,
+  CK_MECHANISM_PTR pMechanism,
+  CK_OBJECT_HANDLE hKey
+)
+{
+  return NSSCKFWC_EncryptInit(fwInstance, hSession, pMechanism, hKey);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_EncryptInit
+(
+  CK_SESSION_HANDLE hSession,
+  CK_MECHANISM_PTR pMechanism,
+  CK_OBJECT_HANDLE hKey
+)
+{
+  return __ADJOIN(MODULE_NAME,C_EncryptInit)(hSession, pMechanism, hKey);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_Encrypt)
+(
+  CK_SESSION_HANDLE hSession,
+  CK_BYTE_PTR pData,
+  CK_ULONG ulDataLen,
+  CK_BYTE_PTR pEncryptedData,
+  CK_ULONG_PTR pulEncryptedDataLen
+)
+{
+  return NSSCKFWC_Encrypt(fwInstance, hSession, pData, ulDataLen, pEncryptedData, pulEncryptedDataLen);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_Encrypt
+(
+  CK_SESSION_HANDLE hSession,
+  CK_BYTE_PTR pData,
+  CK_ULONG ulDataLen,
+  CK_BYTE_PTR pEncryptedData,
+  CK_ULONG_PTR pulEncryptedDataLen
+)
+{
+  return __ADJOIN(MODULE_NAME,C_Encrypt)(hSession, pData, ulDataLen, pEncryptedData, pulEncryptedDataLen);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_EncryptUpdate)
+(
+  CK_SESSION_HANDLE hSession,
+  CK_BYTE_PTR pPart,
+  CK_ULONG ulPartLen,
+  CK_BYTE_PTR pEncryptedPart,
+  CK_ULONG_PTR pulEncryptedPartLen
+)
+{
+  return NSSCKFWC_EncryptUpdate(fwInstance, hSession, pPart, ulPartLen, pEncryptedPart, pulEncryptedPartLen);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_EncryptUpdate
+(
+  CK_SESSION_HANDLE hSession,
+  CK_BYTE_PTR pPart,
+  CK_ULONG ulPartLen,
+  CK_BYTE_PTR pEncryptedPart,
+  CK_ULONG_PTR pulEncryptedPartLen
+)
+{
+  return __ADJOIN(MODULE_NAME,C_EncryptUpdate)(hSession, pPart, ulPartLen, pEncryptedPart, pulEncryptedPartLen);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_EncryptFinal)
+(
+  CK_SESSION_HANDLE hSession,
+  CK_BYTE_PTR pLastEncryptedPart,
+  CK_ULONG_PTR pulLastEncryptedPartLen
+)
+{
+  return NSSCKFWC_EncryptFinal(fwInstance, hSession, pLastEncryptedPart, pulLastEncryptedPartLen);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_EncryptFinal
+(
+  CK_SESSION_HANDLE hSession,
+  CK_BYTE_PTR pLastEncryptedPart,
+  CK_ULONG_PTR pulLastEncryptedPartLen
+)
+{
+  return __ADJOIN(MODULE_NAME,C_EncryptFinal)(hSession, pLastEncryptedPart, pulLastEncryptedPartLen);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_DecryptInit)
+(
+  CK_SESSION_HANDLE hSession,
+  CK_MECHANISM_PTR pMechanism,
+  CK_OBJECT_HANDLE hKey
+)
+{
+  return NSSCKFWC_DecryptInit(fwInstance, hSession, pMechanism, hKey);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_DecryptInit
+(
+  CK_SESSION_HANDLE hSession,
+  CK_MECHANISM_PTR pMechanism,
+  CK_OBJECT_HANDLE hKey
+)
+{
+  return __ADJOIN(MODULE_NAME,C_DecryptInit)(hSession, pMechanism, hKey);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_Decrypt)
+(
+  CK_SESSION_HANDLE hSession,
+  CK_BYTE_PTR pEncryptedData,
+  CK_ULONG ulEncryptedDataLen,
+  CK_BYTE_PTR pData,
+  CK_ULONG_PTR pulDataLen
+)
+{
+  return NSSCKFWC_Decrypt(fwInstance, hSession, pEncryptedData, ulEncryptedDataLen, pData, pulDataLen);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_Decrypt
+(
+  CK_SESSION_HANDLE hSession,
+  CK_BYTE_PTR pEncryptedData,
+  CK_ULONG ulEncryptedDataLen,
+  CK_BYTE_PTR pData,
+  CK_ULONG_PTR pulDataLen
+)
+{
+  return __ADJOIN(MODULE_NAME,C_Decrypt)(hSession, pEncryptedData, ulEncryptedDataLen, pData, pulDataLen);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_DecryptUpdate)
+(
+  CK_SESSION_HANDLE hSession,
+  CK_BYTE_PTR pEncryptedPart,
+  CK_ULONG ulEncryptedPartLen,
+  CK_BYTE_PTR pPart,
+  CK_ULONG_PTR pulPartLen
+)
+{
+  return NSSCKFWC_DecryptUpdate(fwInstance, hSession, pEncryptedPart, ulEncryptedPartLen, pPart, pulPartLen);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_DecryptUpdate
+(
+  CK_SESSION_HANDLE hSession,
+  CK_BYTE_PTR pEncryptedPart,
+  CK_ULONG ulEncryptedPartLen,
+  CK_BYTE_PTR pPart,
+  CK_ULONG_PTR pulPartLen
+)
+{
+  return __ADJOIN(MODULE_NAME,C_DecryptUpdate)(hSession, pEncryptedPart, ulEncryptedPartLen, pPart, pulPartLen);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_DecryptFinal)
+(
+  CK_SESSION_HANDLE hSession,
+  CK_BYTE_PTR pLastPart,
+  CK_ULONG_PTR pulLastPartLen
+)
+{
+  return NSSCKFWC_DecryptFinal(fwInstance, hSession, pLastPart, pulLastPartLen);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_DecryptFinal
+(
+  CK_SESSION_HANDLE hSession,
+  CK_BYTE_PTR pLastPart,
+  CK_ULONG_PTR pulLastPartLen
+)
+{
+  return __ADJOIN(MODULE_NAME,C_DecryptFinal)(hSession, pLastPart, pulLastPartLen);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_DigestInit)
+(
+  CK_SESSION_HANDLE hSession,
+  CK_MECHANISM_PTR pMechanism
+)
+{
+  return NSSCKFWC_DigestInit(fwInstance, hSession, pMechanism);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_DigestInit
+(
+  CK_SESSION_HANDLE hSession,
+  CK_MECHANISM_PTR pMechanism
+)
+{
+  return __ADJOIN(MODULE_NAME,C_DigestInit)(hSession, pMechanism);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_Digest)
+(
+  CK_SESSION_HANDLE hSession,
+  CK_BYTE_PTR pData,
+  CK_ULONG ulDataLen,
+  CK_BYTE_PTR pDigest,
+  CK_ULONG_PTR pulDigestLen
+)
+{
+  return NSSCKFWC_Digest(fwInstance, hSession, pData, ulDataLen, pDigest, pulDigestLen);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_Digest
+(
+  CK_SESSION_HANDLE hSession,
+  CK_BYTE_PTR pData,
+  CK_ULONG ulDataLen,
+  CK_BYTE_PTR pDigest,
+  CK_ULONG_PTR pulDigestLen
+)
+{
+  return __ADJOIN(MODULE_NAME,C_Digest)(hSession, pData, ulDataLen, pDigest, pulDigestLen);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_DigestUpdate)
+(
+  CK_SESSION_HANDLE hSession,
+  CK_BYTE_PTR pPart,
+  CK_ULONG ulPartLen
+)
+{
+  return NSSCKFWC_DigestUpdate(fwInstance, hSession, pPart, ulPartLen);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_DigestUpdate
+(
+  CK_SESSION_HANDLE hSession,
+  CK_BYTE_PTR pPart,
+  CK_ULONG ulPartLen
+)
+{
+  return __ADJOIN(MODULE_NAME,C_DigestUpdate)(hSession, pPart, ulPartLen);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_DigestKey)
+(
+  CK_SESSION_HANDLE hSession,
+  CK_OBJECT_HANDLE hKey
+)
+{
+  return NSSCKFWC_DigestKey(fwInstance, hSession, hKey);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_DigestKey
+(
+  CK_SESSION_HANDLE hSession,
+  CK_OBJECT_HANDLE hKey
+)
+{
+  return __ADJOIN(MODULE_NAME,C_DigestKey)(hSession, hKey);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_DigestFinal)
+(
+  CK_SESSION_HANDLE hSession,
+  CK_BYTE_PTR pDigest,
+  CK_ULONG_PTR pulDigestLen
+)
+{
+  return NSSCKFWC_DigestFinal(fwInstance, hSession, pDigest, pulDigestLen);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_DigestFinal
+(
+  CK_SESSION_HANDLE hSession,
+  CK_BYTE_PTR pDigest,
+  CK_ULONG_PTR pulDigestLen
+)
+{
+  return __ADJOIN(MODULE_NAME,C_DigestFinal)(hSession, pDigest, pulDigestLen);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_SignInit)
+(
+  CK_SESSION_HANDLE hSession,
+  CK_MECHANISM_PTR pMechanism,
+  CK_OBJECT_HANDLE hKey
+)
+{
+  return NSSCKFWC_SignInit(fwInstance, hSession, pMechanism, hKey);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_SignInit
+(
+  CK_SESSION_HANDLE hSession,
+  CK_MECHANISM_PTR pMechanism,
+  CK_OBJECT_HANDLE hKey
+)
+{
+  return __ADJOIN(MODULE_NAME,C_SignInit)(hSession, pMechanism, hKey);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_Sign)
+(
+  CK_SESSION_HANDLE hSession,
+  CK_BYTE_PTR pData,
+  CK_ULONG ulDataLen,
+  CK_BYTE_PTR pSignature,
+  CK_ULONG_PTR pulSignatureLen
+)
+{
+  return NSSCKFWC_Sign(fwInstance, hSession, pData, ulDataLen, pSignature, pulSignatureLen);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_Sign
+(
+  CK_SESSION_HANDLE hSession,
+  CK_BYTE_PTR pData,
+  CK_ULONG ulDataLen,
+  CK_BYTE_PTR pSignature,
+  CK_ULONG_PTR pulSignatureLen
+)
+{
+  return __ADJOIN(MODULE_NAME,C_Sign)(hSession, pData, ulDataLen, pSignature, pulSignatureLen);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_SignUpdate)
+(
+  CK_SESSION_HANDLE hSession,
+  CK_BYTE_PTR pPart,
+  CK_ULONG ulPartLen
+)
+{
+  return NSSCKFWC_SignUpdate(fwInstance, hSession, pPart, ulPartLen);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_SignUpdate
+(
+  CK_SESSION_HANDLE hSession,
+  CK_BYTE_PTR pPart,
+  CK_ULONG ulPartLen
+)
+{
+  return __ADJOIN(MODULE_NAME,C_SignUpdate)(hSession, pPart, ulPartLen);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_SignFinal)
+(
+  CK_SESSION_HANDLE hSession,
+  CK_BYTE_PTR pSignature,
+  CK_ULONG_PTR pulSignatureLen
+)
+{
+  return NSSCKFWC_SignFinal(fwInstance, hSession, pSignature, pulSignatureLen);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_SignFinal
+(
+  CK_SESSION_HANDLE hSession,
+  CK_BYTE_PTR pSignature,
+  CK_ULONG_PTR pulSignatureLen
+)
+{
+  return __ADJOIN(MODULE_NAME,C_SignFinal)(hSession, pSignature, pulSignatureLen);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_SignRecoverInit)
+(
+  CK_SESSION_HANDLE hSession,
+  CK_MECHANISM_PTR pMechanism,
+  CK_OBJECT_HANDLE hKey
+)
+{
+  return NSSCKFWC_SignRecoverInit(fwInstance, hSession, pMechanism, hKey);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_SignRecoverInit
+(
+  CK_SESSION_HANDLE hSession,
+  CK_MECHANISM_PTR pMechanism,
+  CK_OBJECT_HANDLE hKey
+)
+{
+  return __ADJOIN(MODULE_NAME,C_SignRecoverInit)(hSession, pMechanism, hKey);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_SignRecover)
+(
+  CK_SESSION_HANDLE hSession,
+  CK_BYTE_PTR pData,
+  CK_ULONG ulDataLen,
+  CK_BYTE_PTR pSignature,
+  CK_ULONG_PTR pulSignatureLen
+)
+{
+  return NSSCKFWC_SignRecover(fwInstance, hSession, pData, ulDataLen, pSignature, pulSignatureLen);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_SignRecover
+(
+  CK_SESSION_HANDLE hSession,
+  CK_BYTE_PTR pData,
+  CK_ULONG ulDataLen,
+  CK_BYTE_PTR pSignature,
+  CK_ULONG_PTR pulSignatureLen
+)
+{
+  return __ADJOIN(MODULE_NAME,C_SignRecover)(hSession, pData, ulDataLen, pSignature, pulSignatureLen);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_VerifyInit)
+(
+  CK_SESSION_HANDLE hSession,
+  CK_MECHANISM_PTR pMechanism,
+  CK_OBJECT_HANDLE hKey
+)
+{
+  return NSSCKFWC_VerifyInit(fwInstance, hSession, pMechanism, hKey);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_VerifyInit
+(
+  CK_SESSION_HANDLE hSession,
+  CK_MECHANISM_PTR pMechanism,
+  CK_OBJECT_HANDLE hKey
+)
+{
+  return __ADJOIN(MODULE_NAME,C_VerifyInit)(hSession, pMechanism, hKey);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_Verify)
+(
+  CK_SESSION_HANDLE hSession,
+  CK_BYTE_PTR pData,
+  CK_ULONG ulDataLen,
+  CK_BYTE_PTR pSignature,
+  CK_ULONG ulSignatureLen
+)
+{
+  return NSSCKFWC_Verify(fwInstance, hSession, pData, ulDataLen, pSignature, ulSignatureLen);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_Verify
+(
+  CK_SESSION_HANDLE hSession,
+  CK_BYTE_PTR pData,
+  CK_ULONG ulDataLen,
+  CK_BYTE_PTR pSignature,
+  CK_ULONG ulSignatureLen
+)
+{
+  return __ADJOIN(MODULE_NAME,C_Verify)(hSession, pData, ulDataLen, pSignature, ulSignatureLen);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_VerifyUpdate)
+(
+  CK_SESSION_HANDLE hSession,
+  CK_BYTE_PTR pPart,
+  CK_ULONG ulPartLen
+)
+{
+  return NSSCKFWC_VerifyUpdate(fwInstance, hSession, pPart, ulPartLen);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_VerifyUpdate
+(
+  CK_SESSION_HANDLE hSession,
+  CK_BYTE_PTR pPart,
+  CK_ULONG ulPartLen
+)
+{
+  return __ADJOIN(MODULE_NAME,C_VerifyUpdate)(hSession, pPart, ulPartLen);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_VerifyFinal)
+(
+  CK_SESSION_HANDLE hSession,
+  CK_BYTE_PTR pSignature,
+  CK_ULONG ulSignatureLen
+)
+{
+  return NSSCKFWC_VerifyFinal(fwInstance, hSession, pSignature, ulSignatureLen);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_VerifyFinal
+(
+  CK_SESSION_HANDLE hSession,
+  CK_BYTE_PTR pSignature,
+  CK_ULONG ulSignatureLen
+)
+{
+  return __ADJOIN(MODULE_NAME,C_VerifyFinal)(hSession, pSignature, ulSignatureLen);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_VerifyRecoverInit)
+(
+  CK_SESSION_HANDLE hSession,
+  CK_MECHANISM_PTR pMechanism,
+  CK_OBJECT_HANDLE hKey
+)
+{
+  return NSSCKFWC_VerifyRecoverInit(fwInstance, hSession, pMechanism, hKey);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_VerifyRecoverInit
+(
+  CK_SESSION_HANDLE hSession,
+  CK_MECHANISM_PTR pMechanism,
+  CK_OBJECT_HANDLE hKey
+)
+{
+  return __ADJOIN(MODULE_NAME,C_VerifyRecoverInit)(hSession, pMechanism, hKey);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_VerifyRecover)
+(
+  CK_SESSION_HANDLE hSession,
+  CK_BYTE_PTR pSignature,
+  CK_ULONG ulSignatureLen,
+  CK_BYTE_PTR pData,
+  CK_ULONG_PTR pulDataLen
+)
+{
+  return NSSCKFWC_VerifyRecover(fwInstance, hSession, pSignature, ulSignatureLen, pData, pulDataLen);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_VerifyRecover
+(
+  CK_SESSION_HANDLE hSession,
+  CK_BYTE_PTR pSignature,
+  CK_ULONG ulSignatureLen,
+  CK_BYTE_PTR pData,
+  CK_ULONG_PTR pulDataLen
+)
+{
+  return __ADJOIN(MODULE_NAME,C_VerifyRecover)(hSession, pSignature, ulSignatureLen, pData, pulDataLen);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_DigestEncryptUpdate)
+(
+  CK_SESSION_HANDLE hSession,
+  CK_BYTE_PTR pPart,
+  CK_ULONG ulPartLen,
+  CK_BYTE_PTR pEncryptedPart,
+  CK_ULONG_PTR pulEncryptedPartLen
+)
+{
+  return NSSCKFWC_DigestEncryptUpdate(fwInstance, hSession, pPart, ulPartLen, pEncryptedPart, pulEncryptedPartLen);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_DigestEncryptUpdate
+(
+  CK_SESSION_HANDLE hSession,
+  CK_BYTE_PTR pPart,
+  CK_ULONG ulPartLen,
+  CK_BYTE_PTR pEncryptedPart,
+  CK_ULONG_PTR pulEncryptedPartLen
+)
+{
+  return __ADJOIN(MODULE_NAME,C_DigestEncryptUpdate)(hSession, pPart, ulPartLen, pEncryptedPart, pulEncryptedPartLen);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_DecryptDigestUpdate)
+(
+  CK_SESSION_HANDLE hSession,
+  CK_BYTE_PTR pEncryptedPart,
+  CK_ULONG ulEncryptedPartLen,
+  CK_BYTE_PTR pPart,
+  CK_ULONG_PTR pulPartLen
+)
+{
+  return NSSCKFWC_DecryptDigestUpdate(fwInstance, hSession, pEncryptedPart, ulEncryptedPartLen, pPart, pulPartLen);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_DecryptDigestUpdate
+(
+  CK_SESSION_HANDLE hSession,
+  CK_BYTE_PTR pEncryptedPart,
+  CK_ULONG ulEncryptedPartLen,
+  CK_BYTE_PTR pPart,
+  CK_ULONG_PTR pulPartLen
+)
+{
+  return __ADJOIN(MODULE_NAME,C_DecryptDigestUpdate)(hSession, pEncryptedPart, ulEncryptedPartLen, pPart, pulPartLen);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_SignEncryptUpdate)
+(
+  CK_SESSION_HANDLE hSession,
+  CK_BYTE_PTR pPart,
+  CK_ULONG ulPartLen,
+  CK_BYTE_PTR pEncryptedPart,
+  CK_ULONG_PTR pulEncryptedPartLen
+)
+{
+  return NSSCKFWC_SignEncryptUpdate(fwInstance, hSession, pPart, ulPartLen, pEncryptedPart, pulEncryptedPartLen);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_SignEncryptUpdate
+(
+  CK_SESSION_HANDLE hSession,
+  CK_BYTE_PTR pPart,
+  CK_ULONG ulPartLen,
+  CK_BYTE_PTR pEncryptedPart,
+  CK_ULONG_PTR pulEncryptedPartLen
+)
+{
+  return __ADJOIN(MODULE_NAME,C_SignEncryptUpdate)(hSession, pPart, ulPartLen, pEncryptedPart, pulEncryptedPartLen);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_DecryptVerifyUpdate)
+(
+  CK_SESSION_HANDLE hSession,
+  CK_BYTE_PTR pEncryptedPart,
+  CK_ULONG ulEncryptedPartLen,
+  CK_BYTE_PTR pPart,
+  CK_ULONG_PTR pulPartLen
+)
+{
+  return NSSCKFWC_DecryptVerifyUpdate(fwInstance, hSession, pEncryptedPart, ulEncryptedPartLen, pPart, pulPartLen);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_DecryptVerifyUpdate
+(
+  CK_SESSION_HANDLE hSession,
+  CK_BYTE_PTR pEncryptedPart,
+  CK_ULONG ulEncryptedPartLen,
+  CK_BYTE_PTR pPart,
+  CK_ULONG_PTR pulPartLen
+)
+{
+  return __ADJOIN(MODULE_NAME,C_DecryptVerifyUpdate)(hSession, pEncryptedPart, ulEncryptedPartLen, pPart, pulPartLen);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_GenerateKey)
+(
+  CK_SESSION_HANDLE hSession,
+  CK_MECHANISM_PTR pMechanism,
+  CK_ATTRIBUTE_PTR pTemplate,
+  CK_ULONG ulCount,
+  CK_OBJECT_HANDLE_PTR phKey
+)
+{
+  return NSSCKFWC_GenerateKey(fwInstance, hSession, pMechanism, pTemplate, ulCount, phKey);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_GenerateKey
+(
+  CK_SESSION_HANDLE hSession,
+  CK_MECHANISM_PTR pMechanism,
+  CK_ATTRIBUTE_PTR pTemplate,
+  CK_ULONG ulCount,
+  CK_OBJECT_HANDLE_PTR phKey
+)
+{
+  return __ADJOIN(MODULE_NAME,C_GenerateKey)(hSession, pMechanism, pTemplate, ulCount, phKey);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_GenerateKeyPair)
+(
+  CK_SESSION_HANDLE hSession,
+  CK_MECHANISM_PTR pMechanism,
+  CK_ATTRIBUTE_PTR pPublicKeyTemplate,
+  CK_ULONG ulPublicKeyAttributeCount,
+  CK_ATTRIBUTE_PTR pPrivateKeyTemplate,
+  CK_ULONG ulPrivateKeyAttributeCount,
+  CK_OBJECT_HANDLE_PTR phPublicKey,
+  CK_OBJECT_HANDLE_PTR phPrivateKey
+)
+{
+  return NSSCKFWC_GenerateKeyPair(fwInstance, hSession, pMechanism, pPublicKeyTemplate, ulPublicKeyAttributeCount, pPrivateKeyTemplate, ulPrivateKeyAttributeCount, phPublicKey, phPrivateKey);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_GenerateKeyPair
+(
+  CK_SESSION_HANDLE hSession,
+  CK_MECHANISM_PTR pMechanism,
+  CK_ATTRIBUTE_PTR pPublicKeyTemplate,
+  CK_ULONG ulPublicKeyAttributeCount,
+  CK_ATTRIBUTE_PTR pPrivateKeyTemplate,
+  CK_ULONG ulPrivateKeyAttributeCount,
+  CK_OBJECT_HANDLE_PTR phPublicKey,
+  CK_OBJECT_HANDLE_PTR phPrivateKey
+)
+{
+  return __ADJOIN(MODULE_NAME,C_GenerateKeyPair)(hSession, pMechanism, pPublicKeyTemplate, ulPublicKeyAttributeCount, pPrivateKeyTemplate, ulPrivateKeyAttributeCount, phPublicKey, phPrivateKey);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_WrapKey)
+(
+  CK_SESSION_HANDLE hSession,
+  CK_MECHANISM_PTR pMechanism,
+  CK_OBJECT_HANDLE hWrappingKey,
+  CK_OBJECT_HANDLE hKey,
+  CK_BYTE_PTR pWrappedKey,
+  CK_ULONG_PTR pulWrappedKeyLen
+)
+{
+  return NSSCKFWC_WrapKey(fwInstance, hSession, pMechanism, hWrappingKey, hKey, pWrappedKey, pulWrappedKeyLen);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_WrapKey
+(
+  CK_SESSION_HANDLE hSession,
+  CK_MECHANISM_PTR pMechanism,
+  CK_OBJECT_HANDLE hWrappingKey,
+  CK_OBJECT_HANDLE hKey,
+  CK_BYTE_PTR pWrappedKey,
+  CK_ULONG_PTR pulWrappedKeyLen
+)
+{
+  return __ADJOIN(MODULE_NAME,C_WrapKey)(hSession, pMechanism, hWrappingKey, hKey, pWrappedKey, pulWrappedKeyLen);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_UnwrapKey)
+(
+  CK_SESSION_HANDLE hSession,
+  CK_MECHANISM_PTR pMechanism,
+  CK_OBJECT_HANDLE hUnwrappingKey,
+  CK_BYTE_PTR pWrappedKey,
+  CK_ULONG ulWrappedKeyLen,
+  CK_ATTRIBUTE_PTR pTemplate,
+  CK_ULONG ulAttributeCount,
+  CK_OBJECT_HANDLE_PTR phKey
+)
+{
+  return NSSCKFWC_UnwrapKey(fwInstance, hSession, pMechanism, hUnwrappingKey, pWrappedKey, ulWrappedKeyLen, pTemplate, ulAttributeCount, phKey);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_UnwrapKey
+(
+  CK_SESSION_HANDLE hSession,
+  CK_MECHANISM_PTR pMechanism,
+  CK_OBJECT_HANDLE hUnwrappingKey,
+  CK_BYTE_PTR pWrappedKey,
+  CK_ULONG ulWrappedKeyLen,
+  CK_ATTRIBUTE_PTR pTemplate,
+  CK_ULONG ulAttributeCount,
+  CK_OBJECT_HANDLE_PTR phKey
+)
+{
+  return __ADJOIN(MODULE_NAME,C_UnwrapKey)(hSession, pMechanism, hUnwrappingKey, pWrappedKey, ulWrappedKeyLen, pTemplate, ulAttributeCount, phKey);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_DeriveKey)
+(
+  CK_SESSION_HANDLE hSession,
+  CK_MECHANISM_PTR pMechanism,
+  CK_OBJECT_HANDLE hBaseKey,
+  CK_ATTRIBUTE_PTR pTemplate,
+  CK_ULONG ulAttributeCount,
+  CK_OBJECT_HANDLE_PTR phKey
+)
+{
+  return NSSCKFWC_DeriveKey(fwInstance, hSession, pMechanism, hBaseKey, pTemplate, ulAttributeCount, phKey);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_DeriveKey
+(
+  CK_SESSION_HANDLE hSession,
+  CK_MECHANISM_PTR pMechanism,
+  CK_OBJECT_HANDLE hBaseKey,
+  CK_ATTRIBUTE_PTR pTemplate,
+  CK_ULONG ulAttributeCount,
+  CK_OBJECT_HANDLE_PTR phKey
+)
+{
+  return __ADJOIN(MODULE_NAME,C_DeriveKey)(hSession, pMechanism, hBaseKey, pTemplate, ulAttributeCount, phKey);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_SeedRandom)
+(
+  CK_SESSION_HANDLE hSession,
+  CK_BYTE_PTR pSeed,
+  CK_ULONG ulSeedLen
+)
+{
+  return NSSCKFWC_SeedRandom(fwInstance, hSession, pSeed, ulSeedLen);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_SeedRandom
+(
+  CK_SESSION_HANDLE hSession,
+  CK_BYTE_PTR pSeed,
+  CK_ULONG ulSeedLen
+)
+{
+  return __ADJOIN(MODULE_NAME,C_SeedRandom)(hSession, pSeed, ulSeedLen);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_GenerateRandom)
+(
+  CK_SESSION_HANDLE hSession,
+  CK_BYTE_PTR RandomData,
+  CK_ULONG ulRandomLen
+)
+{
+  return NSSCKFWC_GenerateRandom(fwInstance, hSession, RandomData, ulRandomLen);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_GenerateRandom
+(
+  CK_SESSION_HANDLE hSession,
+  CK_BYTE_PTR RandomData,
+  CK_ULONG ulRandomLen
+)
+{
+  return __ADJOIN(MODULE_NAME,C_GenerateRandom)(hSession, RandomData, ulRandomLen);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_GetFunctionStatus)
+(
+  CK_SESSION_HANDLE hSession
+)
+{
+  return NSSCKFWC_GetFunctionStatus(fwInstance, hSession);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_GetFunctionStatus
+(
+  CK_SESSION_HANDLE hSession
+)
+{
+  return __ADJOIN(MODULE_NAME,C_GetFunctionStatus)(hSession);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_CancelFunction)
+(
+  CK_SESSION_HANDLE hSession
+)
+{
+  return NSSCKFWC_CancelFunction(fwInstance, hSession);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_CancelFunction
+(
+  CK_SESSION_HANDLE hSession
+)
+{
+  return __ADJOIN(MODULE_NAME,C_CancelFunction)(hSession);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_WaitForSlotEvent)
+(
+  CK_FLAGS flags,
+  CK_SLOT_ID_PTR pSlot,
+  CK_VOID_PTR pRserved
+)
+{
+  return NSSCKFWC_WaitForSlotEvent(fwInstance, flags, pSlot, pRserved);
+}
+
+#ifdef DECLARE_STRICT_CRYPTOKI_NAMES
+CK_RV CK_ENTRY
+C_WaitForSlotEvent
+(
+  CK_FLAGS flags,
+  CK_SLOT_ID_PTR pSlot,
+  CK_VOID_PTR pRserved
+)
+{
+  return __ADJOIN(MODULE_NAME,C_WaitForSlotEvent)(flags, pSlot, pRserved);
+}
+#endif /* DECLARE_STRICT_CRYPTOKI_NAMES */
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_GetFunctionList)
+(
+  CK_FUNCTION_LIST_PTR_PTR ppFunctionList
+);
+
+static CK_FUNCTION_LIST FunctionList = {
+  { 2, 1 },
+__ADJOIN(MODULE_NAME,C_Initialize),
+__ADJOIN(MODULE_NAME,C_Finalize),
+__ADJOIN(MODULE_NAME,C_GetInfo),
+__ADJOIN(MODULE_NAME,C_GetFunctionList),
+__ADJOIN(MODULE_NAME,C_GetSlotList),
+__ADJOIN(MODULE_NAME,C_GetSlotInfo),
+__ADJOIN(MODULE_NAME,C_GetTokenInfo),
+__ADJOIN(MODULE_NAME,C_GetMechanismList),
+__ADJOIN(MODULE_NAME,C_GetMechanismInfo),
+__ADJOIN(MODULE_NAME,C_InitToken),
+__ADJOIN(MODULE_NAME,C_InitPIN),
+__ADJOIN(MODULE_NAME,C_SetPIN),
+__ADJOIN(MODULE_NAME,C_OpenSession),
+__ADJOIN(MODULE_NAME,C_CloseSession),
+__ADJOIN(MODULE_NAME,C_CloseAllSessions),
+__ADJOIN(MODULE_NAME,C_GetSessionInfo),
+__ADJOIN(MODULE_NAME,C_GetOperationState),
+__ADJOIN(MODULE_NAME,C_SetOperationState),
+__ADJOIN(MODULE_NAME,C_Login),
+__ADJOIN(MODULE_NAME,C_Logout),
+__ADJOIN(MODULE_NAME,C_CreateObject),
+__ADJOIN(MODULE_NAME,C_CopyObject),
+__ADJOIN(MODULE_NAME,C_DestroyObject),
+__ADJOIN(MODULE_NAME,C_GetObjectSize),
+__ADJOIN(MODULE_NAME,C_GetAttributeValue),
+__ADJOIN(MODULE_NAME,C_SetAttributeValue),
+__ADJOIN(MODULE_NAME,C_FindObjectsInit),
+__ADJOIN(MODULE_NAME,C_FindObjects),
+__ADJOIN(MODULE_NAME,C_FindObjectsFinal),
+__ADJOIN(MODULE_NAME,C_EncryptInit),
+__ADJOIN(MODULE_NAME,C_Encrypt),
+__ADJOIN(MODULE_NAME,C_EncryptUpdate),
+__ADJOIN(MODULE_NAME,C_EncryptFinal),
+__ADJOIN(MODULE_NAME,C_DecryptInit),
+__ADJOIN(MODULE_NAME,C_Decrypt),
+__ADJOIN(MODULE_NAME,C_DecryptUpdate),
+__ADJOIN(MODULE_NAME,C_DecryptFinal),
+__ADJOIN(MODULE_NAME,C_DigestInit),
+__ADJOIN(MODULE_NAME,C_Digest),
+__ADJOIN(MODULE_NAME,C_DigestUpdate),
+__ADJOIN(MODULE_NAME,C_DigestKey),
+__ADJOIN(MODULE_NAME,C_DigestFinal),
+__ADJOIN(MODULE_NAME,C_SignInit),
+__ADJOIN(MODULE_NAME,C_Sign),
+__ADJOIN(MODULE_NAME,C_SignUpdate),
+__ADJOIN(MODULE_NAME,C_SignFinal),
+__ADJOIN(MODULE_NAME,C_SignRecoverInit),
+__ADJOIN(MODULE_NAME,C_SignRecover),
+__ADJOIN(MODULE_NAME,C_VerifyInit),
+__ADJOIN(MODULE_NAME,C_Verify),
+__ADJOIN(MODULE_NAME,C_VerifyUpdate),
+__ADJOIN(MODULE_NAME,C_VerifyFinal),
+__ADJOIN(MODULE_NAME,C_VerifyRecoverInit),
+__ADJOIN(MODULE_NAME,C_VerifyRecover),
+__ADJOIN(MODULE_NAME,C_DigestEncryptUpdate),
+__ADJOIN(MODULE_NAME,C_DecryptDigestUpdate),
+__ADJOIN(MODULE_NAME,C_SignEncryptUpdate),
+__ADJOIN(MODULE_NAME,C_DecryptVerifyUpdate),
+__ADJOIN(MODULE_NAME,C_GenerateKey),
+__ADJOIN(MODULE_NAME,C_GenerateKeyPair),
+__ADJOIN(MODULE_NAME,C_WrapKey),
+__ADJOIN(MODULE_NAME,C_UnwrapKey),
+__ADJOIN(MODULE_NAME,C_DeriveKey),
+__ADJOIN(MODULE_NAME,C_SeedRandom),
+__ADJOIN(MODULE_NAME,C_GenerateRandom),
+__ADJOIN(MODULE_NAME,C_GetFunctionStatus),
+__ADJOIN(MODULE_NAME,C_CancelFunction),
+__ADJOIN(MODULE_NAME,C_WaitForSlotEvent)
+};
+
+static CK_RV CK_ENTRY
+__ADJOIN(MODULE_NAME,C_GetFunctionList)
+(
+  CK_FUNCTION_LIST_PTR_PTR ppFunctionList
+)
+{
+  *ppFunctionList = &FunctionList;
+  return CKR_OK;
+}
+
+/* This one is always present */
+CK_RV CK_ENTRY
+C_GetFunctionList
+(
+  CK_FUNCTION_LIST_PTR_PTR ppFunctionList
+)
+{
+  return __ADJOIN(MODULE_NAME,C_GetFunctionList)(ppFunctionList);
+}
+
+#undef __ADJOIN
+

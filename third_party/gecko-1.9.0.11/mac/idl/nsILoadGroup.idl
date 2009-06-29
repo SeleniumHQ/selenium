@@ -1,0 +1,108 @@
+/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+/* ***** BEGIN LICENSE BLOCK *****
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
+ *
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
+ *
+ * The Original Code is mozilla.org code.
+ *
+ * The Initial Developer of the Original Code is
+ * Netscape Communications Corporation.
+ * Portions created by the Initial Developer are Copyright (C) 1998
+ * the Initial Developer. All Rights Reserved.
+ *
+ * Contributor(s):
+ *
+ * Alternatively, the contents of this file may be used under the terms of
+ * either the GNU General Public License Version 2 or later (the "GPL"), or
+ * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+ * in which case the provisions of the GPL or the LGPL are applicable instead
+ * of those above. If you wish to allow use of your version of this file only
+ * under the terms of either the GPL or the LGPL, and not to allow others to
+ * use your version of this file under the terms of the MPL, indicate your
+ * decision by deleting the provisions above and replace them with the notice
+ * and other provisions required by the GPL or the LGPL. If you do not delete
+ * the provisions above, a recipient may use your version of this file under
+ * the terms of any one of the MPL, the GPL or the LGPL.
+ *
+ * ***** END LICENSE BLOCK ***** */
+
+#include "nsIRequest.idl"
+
+interface nsISimpleEnumerator;
+interface nsIRequestObserver;
+interface nsIInterfaceRequestor;
+
+/**
+ * A load group maintains a collection of nsIRequest objects. 
+ *
+ * @status FROZEN
+ */
+[scriptable, uuid(3de0a31c-feaf-400f-9f1e-4ef71f8b20cc)]
+interface nsILoadGroup : nsIRequest
+{
+    /**
+     * The group observer is notified when requests are added to and removed
+     * from this load group.  The groupObserver is weak referenced.
+     */
+    attribute nsIRequestObserver groupObserver;
+
+    /**
+     * Accesses the default load request for the group.  Each time a number
+     * of requests are added to a group, the defaultLoadRequest may be set
+     * to indicate that all of the requests are related to a base request.
+     *
+     * The load group inherits its load flags from the default load request.
+     * If the default load request is NULL, then the group's load flags are
+     * not changed.
+     */
+    attribute nsIRequest defaultLoadRequest;
+
+    /**
+     * Adds a new request to the group.  This will cause the default load
+     * flags to be applied to the request.  If this is a foreground
+     * request then the groupObserver's onStartRequest will be called.
+     *
+     * If the request is the default load request or if the default load
+     * request is null, then the load group will inherit its load flags from
+     * the request.
+     */
+    void addRequest(in nsIRequest aRequest,
+                    in nsISupports aContext);
+
+    /**
+     * Removes a request from the group.  If this is a foreground request
+     * then the groupObserver's onStopRequest will be called.
+     *
+     * By the time this call ends, aRequest will have been removed from the
+     * loadgroup, even if this function throws an exception.
+     */
+    void removeRequest(in nsIRequest aRequest, 
+                       in nsISupports aContext,
+                       in nsresult aStatus);
+
+    /**
+     * Returns the requests contained directly in this group.
+     * Enumerator element type: nsIRequest.
+     */
+    readonly attribute nsISimpleEnumerator requests;
+
+    /**
+     * Returns the count of "active" requests (ie. requests without the
+     * LOAD_BACKGROUND bit set).
+     */
+    readonly attribute unsigned long activeCount;
+
+    /**
+     * Notification callbacks for the load group.
+     */
+    attribute nsIInterfaceRequestor notificationCallbacks;
+};

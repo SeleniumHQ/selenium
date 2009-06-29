@@ -1,0 +1,155 @@
+/* -*- Mode: IDL; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+/* ***** BEGIN LICENSE BLOCK *****
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
+ *
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
+ *
+ * The Original Code is mozilla.org code.
+ *
+ * The Initial Developer of the Original Code is
+ * Netscape Communications Corporation.
+ * Portions created by the Initial Developer are Copyright (C) 2000
+ * the Initial Developer. All Rights Reserved.
+ *
+ * Contributor(s):
+ *   Vidur Apparao <vidur@netscape.com> (original author)
+ *   Johnny Stenback <jst@netscape.com>
+ *
+ * Alternatively, the contents of this file may be used under the terms of
+ * either of the GNU General Public License Version 2 or later (the "GPL"),
+ * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+ * in which case the provisions of the GPL or the LGPL are applicable instead
+ * of those above. If you wish to allow use of your version of this file only
+ * under the terms of either the GPL or the LGPL, and not to allow others to
+ * use your version of this file under the terms of the MPL, indicate your
+ * decision by deleting the provisions above and replace them with the notice
+ * and other provisions required by the GPL or the LGPL. If you do not delete
+ * the provisions above, a recipient may use your version of this file under
+ * the terms of any one of the MPL, the GPL or the LGPL.
+ *
+ * ***** END LICENSE BLOCK ***** */
+
+#include "domstubs.idl"
+
+interface nsISelection;
+
+/**
+ * The nsIDOMWindow interface is the primary interface for a DOM
+ * window object. It represents a single window object that may
+ * contain child windows if the document in the window contains a
+ * HTML frameset document or if the document contains iframe elements.
+ *
+ * This interface is not officially defined by any standard bodies, it
+ * originates from the defacto DOM Level 0 standard.
+ *
+ * @status FROZEN
+ */
+
+[scriptable, uuid(a6cf906b-15b3-11d2-932e-00805f8add32)]
+interface nsIDOMWindow : nsISupports
+{
+  /**
+   * Accessor for the document in this window.
+   */
+  readonly attribute nsIDOMDocument                     document;
+
+  /**
+   * Accessor for this window's parent window, or the window itself if
+   * there is no parent, or if the parent is of different type
+   * (i.e. this does not cross chrome-content boundaries).
+   */
+  readonly attribute nsIDOMWindow                       parent;
+
+  /**
+   * Accessor for the root of this hierarchy of windows. This root may
+   * be the window itself if there is no parent, or if the parent is
+   * of different type (i.e. this does not cross chrome-content
+   * boundaries).
+   *
+   * This property is "replaceable" in JavaScript */
+  readonly attribute nsIDOMWindow                       top;
+
+  /**
+   * Accessor for the object that controls whether or not scrollbars
+   * are shown in this window.
+   *
+   * This attribute is "replaceable" in JavaScript
+   */
+  readonly attribute nsIDOMBarProp                      scrollbars;
+
+  /**
+   * Accessor for the child windows in this window.
+   */
+  [noscript] readonly attribute nsIDOMWindowCollection  frames;
+
+  /**
+   * Set/Get the name of this window.
+   *
+   * This attribute is "replaceable" in JavaScript
+   */
+           attribute DOMString                          name;
+  /**
+   * Set/Get the document scale factor as a multiplier on the default
+   * size. When setting this attribute, a NS_ERROR_NOT_IMPLEMENTED
+   * error may be returned by implementations not supporting
+   * zoom. Implementations not supporting zoom should return 1.0 all
+   * the time for the Get operation. 1.0 is equals normal size,
+   * i.e. no zoom.
+   */
+  [noscript] attribute float                            textZoom;
+
+  /**
+   * Accessor for the current x scroll position in this window in
+   * pixels.
+   *
+   * This attribute is "replaceable" in JavaScript
+   */
+  readonly attribute long                               scrollX;
+
+  /**
+   * Accessor for the current y scroll position in this window in
+   * pixels.
+   *
+   * This attribute is "replaceable" in JavaScript
+   */
+  readonly attribute long                               scrollY;
+
+  /**
+   * Method for scrolling this window to an absolute pixel offset.
+   */
+  void                      scrollTo(in long xScroll, in long yScroll);
+
+  /**
+   * Method for scrolling this window to a pixel offset relative to
+   * the current scroll position.
+   */
+  void                      scrollBy(in long xScrollDif, in long yScrollDif);
+
+  /**
+   * Method for accessing this window's selection object.
+   */
+  nsISelection              getSelection();
+
+  /**
+   * Method for scrolling this window by a number of lines.
+   */
+  void                      scrollByLines(in long numLines);
+
+  /**
+   * Method for scrolling this window by a number of pages.
+   */
+  void                      scrollByPages(in long numPages);
+
+  /**
+   * Method for sizing this window to the content in the window.
+   */
+  void                      sizeToContent();
+};

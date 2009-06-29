@@ -223,8 +223,9 @@ boolean sendKeysToFileUploadAlert(HWND dialogHwnd, const wchar_t* value)
     return false;
 }
 
-void sendKeys(HWND directInputTo, const wchar_t* value, int timePerKey)
+void sendKeys(void* windowHandle, const wchar_t* value, int timePerKey)
 {
+	HWND directInputTo = static_cast<HWND>(windowHandle);
 	DWORD currThreadId = GetCurrentThreadId();
 	DWORD ieWinThreadId = GetWindowThreadProcessId(directInputTo, NULL);
 

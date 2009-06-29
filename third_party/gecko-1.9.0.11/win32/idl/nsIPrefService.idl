@@ -1,0 +1,189 @@
+/* -*- Mode: IDL; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+/* ***** BEGIN LICENSE BLOCK *****
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
+ *
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
+ *
+ * The Original Code is Mozilla Communicator client code.
+ *
+ * The Initial Developer of the Original Code is
+ * Netscape Communications Corporation.
+ * Portions created by the Initial Developer are Copyright (C) 1998
+ * the Initial Developer. All Rights Reserved.
+ *
+ * Contributor(s):
+ *   Alec Flett <alecf@netscape.com>
+ *   Brian Nesse <bnesse@netscape.com>
+ *
+ * Alternatively, the contents of this file may be used under the terms of
+ * either the GNU General Public License Version 2 or later (the "GPL"), or
+ * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+ * in which case the provisions of the GPL or the LGPL are applicable instead
+ * of those above. If you wish to allow use of your version of this file only
+ * under the terms of either the GPL or the LGPL, and not to allow others to
+ * use your version of this file under the terms of the MPL, indicate your
+ * decision by deleting the provisions above and replace them with the notice
+ * and other provisions required by the GPL or the LGPL. If you do not delete
+ * the provisions above, a recipient may use your version of this file under
+ * the terms of any one of the MPL, the GPL or the LGPL.
+ *
+ * ***** END LICENSE BLOCK ***** */
+
+#include "nsISupports.idl"
+#include "nsIPrefBranch.idl"
+
+interface nsIFile;
+
+/**
+ * The nsIPrefService interface is the main entry point into the back end
+ * preferences management library. The preference service is directly
+ * responsible for the management of the preferences files and also facilitates
+ * access to the preference branch object which allows the direct manipulation
+ * of the preferences themselves.
+ *
+ * @see nsIPrefBranch
+ * 
+ * @status FROZEN
+ */
+
+[scriptable, uuid(decb9cc7-c08f-4ea5-be91-a8fc637ce2d2)]
+interface nsIPrefService : nsISupports
+{
+  /**
+   * Called to read in the preferences specified in a user preference file.
+   *
+   * @param aFile The file to be read.
+   *
+   * @note
+   * If nsnull is passed in for the aFile parameter the default preferences
+   * file(s) [prefs.js, user.js] will be read and processed.
+   *
+   * @return NS_OK File was read and processed.
+   * @return Other File failed to read or contained invalid data.
+   *
+   * @see savePrefFile
+   * @see nsIFile
+   */
+  void readUserPrefs(in nsIFile aFile);
+
+  /**
+   * Called to completely flush and re-initialize the preferences system.
+   *
+   * @return NS_OK The preference service was re-initialized correctly.
+   * @return Other The preference service failed to restart correctly.
+   */
+  void resetPrefs();
+
+  /**
+   * Called to reset all preferences with user set values back to the
+   * application default values.
+   *
+   * @return NS_OK Always.
+   */
+  void resetUserPrefs();
+
+  /**
+   * Called to write current preferences state to a file.
+   *
+   * @param aFile The file to be written.
+   *
+   * @note
+   * If nsnull is passed in for the aFile parameter the preference data is
+   * written out to the current preferences file (usually prefs.js.)
+   *
+   * @return NS_OK File was written.
+   * @return Other File failed to write.
+   *
+   * @see readUserPrefs
+   * @see nsIFile
+   */
+  void savePrefFile(in nsIFile aFile);
+
+
+  /**
+   * Call to get a Preferences "Branch" which accesses user preference data.
+   * Using a Set method on this object will always create or set a user
+   * preference value. When using a Get method a user set value will be
+   * returned if one exists, otherwise a default value will be returned.
+   *
+   * @param aPrefRoot The preference "root" on which to base this "branch".
+   *                  For example, if the root "browser.startup." is used, the
+   *                  branch will be able to easily access the preferences
+   *                  "browser.startup.page", "browser.startup.homepage", or
+   *                  "browser.startup.homepage_override" by simply requesting
+   *                  "page", "homepage", or "homepage_override". nsnull or "" 
+   *                  may be used to access to the entire preference "tree".
+   *
+   * @return nsIPrefBranch The object representing the requested branch.
+   *
+   * @see getDefaultBranch
+   */
+  nsIPrefBranch getBranch(in string aPrefRoot);
+
+  /**
+   * Call to get a Preferences "Branch" which accesses only the default 
+   * preference data. Using a Set method on this object will always create or
+   * set a default preference value. When using a Get method a default value
+   * will always be returned.
+   *
+   * @param aPrefRoot The preference "root" on which to base this "branch".
+   *                  For example, if the root "browser.startup." is used, the
+   *                  branch will be able to easily access the preferences
+   *                  "browser.startup.page", "browser.startup.homepage", or
+   *                  "browser.startup.homepage_override" by simply requesting
+   *                  "page", "homepage", or "homepage_override". nsnull or "" 
+   *                  may be used to access to the entire preference "tree".
+   *
+   * @note
+   * Few consumers will want to create default branch objects. Many of the
+   * branch methods do nothing on a default branch because the operations only
+   * make sense when applied to user set preferences.
+   *
+   * @return nsIPrefBranch The object representing the requested default branch.
+   *
+   * @see getBranch
+   */
+  nsIPrefBranch getDefaultBranch(in string aPrefRoot);
+
+};
+
+%{C++
+
+#define NS_PREFSERVICE_CID                             \
+  { /* {1cd91b88-1dd2-11b2-92e1-ed22ed298000} */       \
+    0x1cd91b88,                                        \
+    0x1dd2,                                            \
+    0x11b2,                                            \
+    { 0x92, 0xe1, 0xed, 0x22, 0xed, 0x29, 0x80, 0x00 } \
+  }
+
+#define NS_PREFSERVICE_CONTRACTID "@mozilla.org/preferences-service;1"
+#define NS_PREFSERVICE_CLASSNAME "Preferences Server"
+
+/**
+ * Notification sent before reading the default user preferences files.
+ */
+#define NS_PREFSERVICE_READ_TOPIC_ID "prefservice:before-read-userprefs"
+
+/**
+ * Notification sent when resetPrefs has been called, but before the actual
+ * reset process occurs.
+ */
+#define NS_PREFSERVICE_RESET_TOPIC_ID "prefservice:before-reset"
+
+/**
+ * Notification sent when after reading app-provided default
+ * preferences, but before user profile override defaults or extension
+ * defaults are loaded.
+ */
+#define NS_PREFSERVICE_APPDEFAULTS_TOPIC_ID "prefservice:after-app-defaults"
+
+%}

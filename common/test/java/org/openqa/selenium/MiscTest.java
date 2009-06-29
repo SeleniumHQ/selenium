@@ -43,4 +43,19 @@ public class MiscTest extends AbstractDriverTestCase {
         assertThat(source.contains("<p id="), is(true));
         assertThat(source.contains("lotsofspaces"), is(true));
     }
+
+    @NeedsFreshDriver
+    @NoDriverAfterTest
+    @Ignore(SAFARI)
+    public void testShouldReturnAnEmptyStringIfTitleNotSet() {
+      // We start on the default home page of the brower
+      try {
+        String title = driver.getTitle();
+        assertEquals("", title);
+      } catch (Exception e) {
+        fail("Should not have thrown an exception: " + e.getMessage());
+      } finally {
+        driver.quit();
+      }
+    }
 }

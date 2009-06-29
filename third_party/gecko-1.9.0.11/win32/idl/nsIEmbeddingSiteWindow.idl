@@ -1,0 +1,155 @@
+/* -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
+ *
+ * ***** BEGIN LICENSE BLOCK *****
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
+ *
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
+ *
+ * The Original Code is the Mozilla browser.
+ *
+ * The Initial Developer of the Original Code is
+ * Netscape Communications, Inc.
+ * Portions created by the Initial Developer are Copyright (C) 1999
+ * the Initial Developer. All Rights Reserved.
+ *
+ * Contributor(s):
+ *   Adam Lock <adamlock@netscape.com>
+ *
+ * Alternatively, the contents of this file may be used under the terms of
+ * either the GNU General Public License Version 2 or later (the "GPL"), or
+ * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+ * in which case the provisions of the GPL or the LGPL are applicable instead
+ * of those above. If you wish to allow use of your version of this file only
+ * under the terms of either the GPL or the LGPL, and not to allow others to
+ * use your version of this file under the terms of the MPL, indicate your
+ * decision by deleting the provisions above and replace them with the notice
+ * and other provisions required by the GPL or the LGPL. If you do not delete
+ * the provisions above, a recipient may use your version of this file under
+ * the terms of any one of the MPL, the GPL or the LGPL.
+ *
+ * ***** END LICENSE BLOCK ***** */
+
+#include "nsISupports.idl"
+
+/* THIS IS A PUBLIC EMBEDDING API */
+
+/**
+ * The nsIEmbeddingSiteWindow is implemented by the embedder to provide
+ * Gecko with the means to call up to the host to resize the window,
+ * hide or show it and set/get its title.
+ *
+ * @status FROZEN
+ */
+[scriptable, uuid(3E5432CD-9568-4bd1-8CBE-D50ABA110743)]
+interface nsIEmbeddingSiteWindow : nsISupports
+{
+    /**
+     * Flag indicates that position of the top left corner of the outer area
+     * is required/specified.
+     *
+     * @see setDimensions
+     * @see getDimensions
+     */
+    const unsigned long DIM_FLAGS_POSITION   = 1;
+    
+    /**
+     * Flag indicates that the size of the inner area is required/specified.
+     *
+     * @note The inner and outer flags are mutually exclusive and it is
+     *       invalid to combine them.
+     *
+     * @see setDimensions
+     * @see getDimensions
+     * @see DIM_FLAGS_SIZE_OUTER
+     */
+    const unsigned long DIM_FLAGS_SIZE_INNER = 2;
+
+    /**
+     * Flag indicates that the size of the outer area is required/specified.
+     *
+     * @see setDimensions
+     * @see getDimensions
+     * @see DIM_FLAGS_SIZE_INNER
+     */
+    const unsigned long DIM_FLAGS_SIZE_OUTER = 4;
+
+    /**
+     * Sets the dimensions for the window; the position & size. The
+     * flags to indicate what the caller wants to set and whether the size
+     * refers to the inner or outer area. The inner area refers to just
+     * the embedded area, wheras the outer area can also include any 
+     * surrounding chrome, window frame, title bar, and so on.
+     *
+     * @param flags  Combination of position, inner and outer size flags.
+     * @param x      Left hand corner of the outer area.
+     * @param y      Top corner of the outer area.
+     * @param cx     Width of the inner or outer area.
+     * @param cy     Height of the inner or outer area.
+     *
+     * @return <code>NS_OK</code> if operation was performed correctly;
+     *         <code>NS_ERROR_UNEXPECTED</code> if window could not be
+     *           destroyed;
+     *         <code>NS_ERROR_INVALID_ARG</code> for bad flag combination
+     *           or illegal dimensions.
+     *
+     * @see getDimensions
+     * @see DIM_FLAGS_POSITION
+     * @see DIM_FLAGS_SIZE_OUTER
+     * @see DIM_FLAGS_SIZE_INNER
+     */
+    void setDimensions(in unsigned long flags, in long x, in long y, in long cx, in long cy);
+
+    /**
+     * Gets the dimensions of the window. The caller may pass
+     * <CODE>nsnull</CODE> for any value it is uninterested in receiving.
+     *
+     * @param flags  Combination of position, inner and outer size flag .
+     * @param x      Left hand corner of the outer area; or <CODE>nsnull</CODE>.
+     * @param y      Top corner of the outer area; or <CODE>nsnull</CODE>.
+     * @param cx     Width of the inner or outer area; or <CODE>nsnull</CODE>.
+     * @param cy     Height of the inner or outer area; or <CODE>nsnull</CODE>.
+     *
+     * @see setDimensions
+     * @see DIM_FLAGS_POSITION
+     * @see DIM_FLAGS_SIZE_OUTER
+     * @see DIM_FLAGS_SIZE_INNER
+     */
+    void getDimensions(in unsigned long flags, out long x, out long y, out long cx, out long cy);
+
+    /**
+     * Give the window focus.
+     */
+    void setFocus();
+
+    /**
+     * Visibility of the window.
+     */
+    attribute boolean visibility;
+
+    /**
+     * Title of the window.
+     */
+    attribute wstring title;
+
+    /**
+     * Native window for the site's window. The implementor should copy the
+     * native window object into the address supplied by the caller. The
+     * type of the native window that the address refers to is  platform
+     * and OS specific as follows:
+     *
+     * <ul>
+     *   <li>On Win32 it is an <CODE>HWND</CODE>.</li>
+     *   <li>On MacOS this is a <CODE>WindowPtr</CODE>.</li>
+     *   <li>On GTK this is a <CODE>GtkWidget*</CODE>.</li>
+     * </ul>
+     */
+    [noscript] readonly attribute voidPtr siteWindow;
+};

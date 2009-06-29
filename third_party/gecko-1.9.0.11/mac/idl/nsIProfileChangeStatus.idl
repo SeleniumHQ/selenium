@@ -1,0 +1,142 @@
+/* -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+/* ***** BEGIN LICENSE BLOCK *****
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
+ *
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
+ *
+ * The Original Code is mozilla.org code.
+ *
+ * The Initial Developer of the Original Code is
+ * Netscape Communications Corporation.
+ * Portions created by the Initial Developer are Copyright (C) 1998
+ * the Initial Developer. All Rights Reserved.
+ *
+ * Contributor(s):
+ *   ccarlen@netscape.com
+ *
+ * Alternatively, the contents of this file may be used under the terms of
+ * either of the GNU General Public License Version 2 or later (the "GPL"),
+ * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+ * in which case the provisions of the GPL or the LGPL are applicable instead
+ * of those above. If you wish to allow use of your version of this file only
+ * under the terms of either the GPL or the LGPL, and not to allow others to
+ * use your version of this file under the terms of the MPL, indicate your
+ * decision by deleting the provisions above and replace them with the notice
+ * and other provisions required by the GPL or the LGPL. If you do not delete
+ * the provisions above, a recipient may use your version of this file under
+ * the terms of any one of the MPL, the GPL or the LGPL.
+ *
+ * ***** END LICENSE BLOCK ***** */
+
+#include "nsISupports.idl"
+
+%{C++
+
+   /**
+    * nsIObserver topics for profile changing. Profile changing happens in phases
+    * in the order given below. An observer may register separately for each phase
+    * of the process depending on its needs. The subject passed to the observer's
+    * Observe() method can be QI'd to an nsIProfileChangeStatus.
+    *
+    * "profile-approve-change"
+    *   Called before a profile change is attempted. Typically,
+    *   the application level observer will ask the user if
+    *   he/she wants to stop all network activity, close all open
+    *   windows, etc. If the user says NO, the observer should
+    *   call the subject's vetoChange(). If any observer does
+    *   this, the profile will not be changed.
+    *
+    * "profile-change-teardown"
+    *   All async activity must be stopped in this phase. Typically,
+    *   the application level observer will close all open windows.
+    *   This is the last phase in which the subject's vetoChange()
+    *   method may still be called. 
+    *   The next notification will be either 
+    *   profile-change-teardown-veto or profile-before-change.
+    *
+    * "profile-change-teardown-veto"
+    *   This notification will only be sent, if the profile change 
+    *   was vetoed during the profile-change-teardown phase.
+    *   This allows components to bring back required resources,
+    *   that were tore down on profile-change-teardown.
+    *
+    * "profile-before-change"
+    *   Called before the profile has changed. Use this notification
+    *   to prepare for the profile going away. If a component is
+    *   holding any state which needs to be flushed to a profile-relative
+    *   location, it should be done here.
+    *
+    * "profile-do-change"
+    *   Called after the profile has changed. Do the work to
+    *   respond to having a new profile. Any change which
+    *   affects others must be done in this phase.
+    *
+    * "profile-after-change"
+    *   Called after the profile has changed. Use this notification
+    *   to make changes that are dependent on what some other listener
+    *   did during its profile-do-change. For example, to respond to
+    *   new preferences. 
+    *
+    * "profile-initial-state"
+    *   Called after all phases of a change have completed. Typically
+    *   in this phase, an application level observer will open a new window.
+    *
+    * Contexts for profile changes. These are passed as the someData param to the
+    * observer's Observe() method.
+    
+    * "startup"
+    *   Going from no profile to a profile.
+    *
+    *   The following topics happen in this context:
+    *       profile-do-change
+    *       profile-after-change
+    *
+    * "shutdown-persist"
+    *   The user is logging out and whatever data the observer stores
+    *   for the current profile should be released from memory and
+    *   saved to disk.
+    *
+    * "shutdown-cleanse"
+    *   The user is logging out and whatever data the observer stores
+    *   for the current profile should be released from memory and
+    *   deleted from disk.
+    *
+    *   The following topics happen in both shutdown contexts:
+    *       profile-approve-change
+    *       profile-change-teardown
+    *       profile-before-change
+    *
+    * "switch"
+    *   Going from one profile to another.
+    *
+    *   All of the above topics happen in a profile switch.
+    *
+    */  
+%}
+
+
+[scriptable, uuid(2f977d43-5485-11d4-87e2-0010a4e75ef2)]
+interface nsIProfileChangeStatus : nsISupports {
+        
+    void vetoChange();
+    
+   /**
+    * Called by a profile change observer when a fatal error
+    * occurred during the attempt to switch the profile.
+    *
+    * The profile should be considered in an unsafe condition,
+    * and the profile manager should inform the user and
+    * exit immediately.
+    *
+    */
+    void changeFailed();
+
+};

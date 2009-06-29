@@ -1,0 +1,91 @@
+/* -*- Mode: C; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+/* ***** BEGIN LICENSE BLOCK *****
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
+ *
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
+ *
+ * The Original Code is mozilla.org code.
+ *
+ * The Initial Developer of the Original Code is
+ * Netscape Communications Corporation.
+ * Portions created by the Initial Developer are Copyright (C) 2001, 2002
+ * the Initial Developer. All Rights Reserved.
+ *
+ * Contributor(s):
+ *  Marco Pesenti Gritti <marco@gnome.org>
+ *
+ * Alternatively, the contents of this file may be used under the terms of
+ * either the GNU General Public License Version 2 or later (the "GPL"), or
+ * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+ * in which case the provisions of the GPL or the LGPL are applicable instead
+ * of those above. If you wish to allow use of your version of this file only
+ * under the terms of either the GPL or the LGPL, and not to allow others to
+ * use your version of this file under the terms of the MPL, indicate your
+ * decision by deleting the provisions above and replace them with the notice
+ * and other provisions required by the GPL or the LGPL. If you do not delete
+ * the provisions above, a recipient may use your version of this file under
+ * the terms of any one of the MPL, the GPL or the LGPL.
+ *
+ * ***** END LICENSE BLOCK ***** */
+
+#include "nsISupports.idl"
+
+interface nsIURI;
+
+/**
+ * This interface provides a way to stream data to the web browser. This allows
+ * loading of data from sources which can not be accessed using URIs and
+ * nsIWebNavigation.
+ *
+ * @status FROZEN
+ */
+[scriptable, uuid(86d02f0e-219b-4cfc-9c88-bd98d2cce0b8)]
+interface nsIWebBrowserStream : nsISupports
+{
+  /**
+   * Prepare to load a stream of data. When this function returns successfully,
+   * it must be paired by a call to closeStream.
+   *
+   * @param aBaseURI
+   *        The base URI of the data. Must not be null. Relative
+   *        URIs will be resolved relative to this URI.
+   * @param aContentType
+   *        ASCII string giving the content type of the data. If rendering
+   *        content of this type is not supported, this method fails.
+   *        This string may include a charset declaration, for example:
+   *        text/html;charset=ISO-8859-1
+   *
+   * @throw NS_ERROR_NOT_AVAILABLE
+   *        The requested content type is not supported.
+   * @throw NS_ERROR_IN_PROGRESS
+   *        openStream was called twice without an intermediate closeStream.
+   */
+  void openStream(in nsIURI aBaseURI, in ACString aContentType);
+
+  /**
+   * Append data to this stream.
+   * @param aData The data to append
+   * @param aLen  Length of the data to append.
+   *
+   * @note To append more than 4 GB of data, call this method multiple times.
+   */
+  void appendToStream([const, array, size_is(aLen)] in octet aData,
+                      in unsigned long aLen);
+
+  /**
+   * Notifies the browser that all the data has been appended. This may notify
+   * the user that the browser is "done loading" in some form.
+   *
+   * @throw NS_ERROR_UNEXPECTED
+   *        This method was called without a preceding openStream.
+   */
+  void closeStream();
+};

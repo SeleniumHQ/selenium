@@ -1,0 +1,96 @@
+/* -*- Mode: IDL; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+/* ***** BEGIN LICENSE BLOCK *****
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
+ *
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
+ *
+ * The Original Code is mozilla.org code.
+ *
+ * The Initial Developer of the Original Code is
+ * Netscape Communications Corporation.
+ * Portions created by the Initial Developer are Copyright (C) 2000
+ * the Initial Developer. All Rights Reserved.
+ *
+ * Contributor(s):
+ *   Vidur Apparao <vidur@netscape.com> (original author)
+ *   Johnny Stenback <jst@netscape.com>
+ *
+ * Alternatively, the contents of this file may be used under the terms of
+ * either of the GNU General Public License Version 2 or later (the "GPL"),
+ * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+ * in which case the provisions of the GPL or the LGPL are applicable instead
+ * of those above. If you wish to allow use of your version of this file only
+ * under the terms of either the GPL or the LGPL, and not to allow others to
+ * use your version of this file under the terms of the MPL, indicate your
+ * decision by deleting the provisions above and replace them with the notice
+ * and other provisions required by the GPL or the LGPL. If you do not delete
+ * the provisions above, a recipient may use your version of this file under
+ * the terms of any one of the MPL, the GPL or the LGPL.
+ *
+ * ***** END LICENSE BLOCK ***** */
+
+#include "nsIDOMNode.idl"
+
+/**
+ * The nsIDOMDocument interface represents the entire HTML or XML document.
+ * Conceptually, it is the root of the document tree, and provides the 
+ * primary access to the document's data.
+ * Since elements, text nodes, comments, processing instructions, etc. 
+ * cannot exist outside the context of a Document, the nsIDOMDocument 
+ * interface also contains the factory methods needed to create these 
+ * objects.
+ *
+ * For more information on this interface please see 
+ * http://www.w3.org/TR/DOM-Level-2-Core/
+ *
+ * @status FROZEN
+ */
+
+[scriptable, uuid(a6cf9075-15b3-11d2-932e-00805f8add32)]
+interface nsIDOMDocument : nsIDOMNode
+{
+  readonly attribute nsIDOMDocumentType         doctype;
+  readonly attribute nsIDOMDOMImplementation    implementation;
+  readonly attribute nsIDOMElement              documentElement;
+  nsIDOMElement                 createElement(in DOMString tagName)
+                                  raises(DOMException);
+  nsIDOMDocumentFragment        createDocumentFragment();
+  nsIDOMText                    createTextNode(in DOMString data);
+  nsIDOMComment                 createComment(in DOMString data);
+  nsIDOMCDATASection            createCDATASection(in DOMString data)
+                                  raises(DOMException);
+  nsIDOMProcessingInstruction   createProcessingInstruction(in DOMString target, 
+                                                            in DOMString data)
+                                  raises(DOMException);
+  nsIDOMAttr                    createAttribute(in DOMString name)
+                                  raises(DOMException);
+  nsIDOMEntityReference         createEntityReference(in DOMString name)
+                                  raises(DOMException);
+  nsIDOMNodeList                getElementsByTagName(in DOMString tagname);
+
+  // Introduced in DOM Level 2:
+  nsIDOMNode                    importNode(in nsIDOMNode importedNode,
+                                           in boolean deep)
+                                  raises(DOMException);
+  // Introduced in DOM Level 2:
+  nsIDOMElement                 createElementNS(in DOMString namespaceURI,
+                                                in DOMString qualifiedName)
+                                  raises(DOMException);
+  // Introduced in DOM Level 2:
+  nsIDOMAttr                    createAttributeNS(in DOMString namespaceURI,
+                                                  in DOMString qualifiedName)
+                                  raises(DOMException);
+  // Introduced in DOM Level 2:
+  nsIDOMNodeList                getElementsByTagNameNS(in DOMString namespaceURI,
+                                                       in DOMString localName);
+  // Introduced in DOM Level 2:
+  nsIDOMElement                 getElementById(in DOMString elementId);
+};

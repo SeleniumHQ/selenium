@@ -1,0 +1,360 @@
+/* -*- Mode: IDL; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+/* ***** BEGIN LICENSE BLOCK *****
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
+ *
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
+ *
+ * The Original Code is Mozilla Communicator client code.
+ *
+ * The Initial Developer of the Original Code is
+ * Netscape Communications Corporation.
+ * Portions created by the Initial Developer are Copyright (C) 1998
+ * the Initial Developer. All Rights Reserved.
+ *
+ * Contributor(s):
+ *   Alec Flett <alecf@netscape.com>
+ *   Brian Nesse <bnesse@netscape.com>
+ *
+ * Alternatively, the contents of this file may be used under the terms of
+ * either the GNU General Public License Version 2 or later (the "GPL"), or
+ * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+ * in which case the provisions of the GPL or the LGPL are applicable instead
+ * of those above. If you wish to allow use of your version of this file only
+ * under the terms of either the GPL or the LGPL, and not to allow others to
+ * use your version of this file under the terms of the MPL, indicate your
+ * decision by deleting the provisions above and replace them with the notice
+ * and other provisions required by the GPL or the LGPL. If you do not delete
+ * the provisions above, a recipient may use your version of this file under
+ * the terms of any one of the MPL, the GPL or the LGPL.
+ *
+ * ***** END LICENSE BLOCK ***** */
+
+#include "nsISupports.idl"
+
+/**
+ * The nsIPrefBranch interface is used to manipulate the preferences data. This
+ * object may be obtained from the preferences service (nsIPrefService) and
+ * used to get and set default and/or user preferences across the application.
+ *
+ * This object is created with a "root" value which describes the base point in
+ * the preferences "tree" from which this "branch" stems. Preferences are
+ * accessed off of this root by using just the final portion of the preference.
+ * For example, if this object is created with the root "browser.startup.",
+ * the preferences "browser.startup.page", "browser.startup.homepage",
+ * and "browser.startup.homepage_override" can be accessed by simply passing
+ * "page", "homepage", or "homepage_override" to the various Get/Set methods.
+ *
+ * @see nsIPrefService
+ * 
+ * @status FROZEN
+ */
+
+[scriptable, uuid(56c35506-f14b-11d3-99d3-ddbfac2ccf65)]
+interface nsIPrefBranch : nsISupports
+{
+
+  /**
+   * Values describing the basic preference types.
+   *
+   * @see getPrefType
+   */
+  const long PREF_INVALID = 0;
+  const long PREF_STRING = 32;
+  const long PREF_INT = 64;
+  const long PREF_BOOL = 128;
+
+  /**
+   * Called to get the root on which this branch is based, such as
+   * "browser.startup."
+   */
+  readonly attribute string root;
+
+  /**
+   * Called to determine the type of a specific preference.
+   *
+   * @param aPrefName The preference to get the type of.
+   *
+   * @return long     A value representing the type of the preference. This
+   *                  value will be PREF_STRING, PREF_INT, or PREF_BOOL.
+   */
+  long getPrefType(in string aPrefName);
+
+  /**
+   * Called to get the state of an individual boolean preference.
+   *
+   * @param aPrefName The boolean preference to get the state of.
+   *
+   * @return boolean  The value of the requested boolean preference.
+   *
+   * @see setBoolPref
+   */
+  boolean getBoolPref(in string aPrefName);
+
+  /**
+   * Called to set the state of an individual boolean preference.
+   *
+   * @param aPrefName The boolean preference to set the state of.
+   * @param aValue    The boolean value to set the preference to.
+   *
+   * @return NS_OK The value was successfully set.
+   * @return Other The value was not set or is the wrong type.
+   *
+   * @see getBoolPref
+   */
+  void setBoolPref(in string aPrefName, in long aValue);
+
+  /**
+   * Called to get the state of an individual string preference.
+   *
+   * @param aPrefName The string preference to retrieve.
+   *
+   * @return string   The value of the requested string preference.
+   *
+   * @see setCharPref
+   */
+  string getCharPref(in string aPrefName);
+
+  /**
+   * Called to set the state of an individual string preference.
+   *
+   * @param aPrefName The string preference to set.
+   * @param aValue    The string value to set the preference to.
+   *
+   * @return NS_OK The value was successfully set.
+   * @return Other The value was not set or is the wrong type.
+   *
+   * @see getCharPref
+   */
+  void setCharPref(in string aPrefName, in string aValue);
+
+  /**
+   * Called to get the state of an individual integer preference.
+   *
+   * @param aPrefName The integer preference to get the value of.
+   *
+   * @return long     The value of the requested integer preference.
+   *
+   * @see setIntPref
+   */
+  long getIntPref(in string aPrefName);
+
+  /**
+   * Called to set the state of an individual integer preference.
+   *
+   * @param aPrefName The integer preference to set the value of.
+   * @param aValue    The integer value to set the preference to.
+   *
+   * @return NS_OK The value was successfully set.
+   * @return Other The value was not set or is the wrong type.
+   *
+   * @see getIntPref
+   */
+  void setIntPref(in string aPrefName, in long aValue);
+
+  /**
+   * Called to get the state of an individual complex preference. A complex
+   * preference is a preference which represents an XPCOM object that can not
+   * be easily represented using a standard boolean, integer or string value.
+   *
+   * @param aPrefName The complex preference to get the value of.
+   * @param aType     The XPCOM interface that this complex preference
+   *                  represents. Interfaces currently supported are:
+   *                    - nsILocalFile
+   *                    - nsISupportsString (UniChar)
+   *                    - nsIPrefLocalizedString (Localized UniChar)
+   *                    - nsIFileSpec (deprecated - to be removed eventually)
+   * @param aValue    The XPCOM object into which to the complex preference 
+   *                  value should be retrieved.
+   *
+   * @return NS_OK The value was successfully retrieved.
+   * @return Other The value does not exist or is the wrong type.
+   *
+   * @see setComplexValue
+   */
+  void getComplexValue(in string aPrefName, in nsIIDRef aType,
+                       [iid_is(aType), retval] out nsQIResult aValue);
+
+  /**
+   * Called to set the state of an individual complex preference. A complex
+   * preference is a preference which represents an XPCOM object that can not
+   * be easily represented using a standard boolean, integer or string value.
+   *
+   * @param aPrefName The complex preference to set the value of.
+   * @param aType     The XPCOM interface that this complex preference
+   *                  represents. Interfaces currently supported are:
+   *                    - nsILocalFile
+   *                    - nsISupportsString (UniChar)
+   *                    - nsIPrefLocalizedString (Localized UniChar)
+   *                    - nsIFileSpec (deprecated - to be removed eventually)
+   * @param aValue    The XPCOM object from which to set the complex preference 
+   *                  value.
+   *
+   * @return NS_OK The value was successfully set.
+   * @return Other The value was not set or is the wrong type.
+   *
+   * @see getComplexValue
+   */
+  void setComplexValue(in string aPrefName, in nsIIDRef aType, in nsISupports aValue);
+
+  /**
+   * Called to clear a user set value from a specific preference. This will, in
+   * effect, reset the value to the default value. If no default value exists
+   * the preference will cease to exist.
+   *
+   * @param aPrefName The preference to be cleared.
+   *
+   * @note
+   * This method does nothing if this object is a default branch.
+   *
+   * @return NS_OK The user preference was successfully cleared.
+   * @return Other The preference does not exist or have a user set value.
+   */
+  void clearUserPref(in string aPrefName);
+
+  /**
+   * Called to lock a specific preference. Locking a preference will cause the
+   * preference service to always return the default value regardless of
+   * whether there is a user set value or not.
+   *
+   * @param aPrefName The preference to be locked.
+   *
+   * @note
+   * This method can be called on either a default or user branch but, in
+   * effect, always operates on the default branch.
+   *
+   * @return NS_OK The preference was successfully locked.
+   * @return Other The preference does not exist or an error occurred.
+   *
+   * @see unlockPref
+   */
+  void lockPref(in string aPrefName);
+
+  /**
+   * Called to check if a specific preference has a user value associated to
+   * it.
+   *
+   * @param aPrefName The preference to be tested.
+   *
+   * @note
+   * This method can be called on either a default or user branch but, in
+   * effect, always operates on the user branch.
+   *
+   * @note
+   * If a preference was manually set to a value that equals the default value,
+   * then the preference no longer has a user set value, i.e. it is
+   * considered reset to its default value.
+   * In particular, this method will return false for such a preference and
+   * the preference will not be saved to a file by nsIPrefService.savePrefFile.
+   *
+   * @return boolean  true  The preference has a user set value.
+   *                  false The preference only has a default value.
+   */
+  boolean prefHasUserValue(in string aPrefName);
+
+  /**
+   * Called to check if a specific preference is locked. If a preference is
+   * locked calling its Get method will always return the default value.
+   *
+   * @param aPrefName The preference to be tested.
+   *
+   * @note
+   * This method can be called on either a default or user branch but, in
+   * effect, always operates on the default branch.
+   *
+   * @return boolean  true  The preference is locked.
+   *                  false The preference is not locked.
+   *
+   * @see lockPref
+   * @see unlockPref
+   */
+  boolean prefIsLocked(in string aPrefName);
+
+  /**
+   * Called to unlock a specific preference. Unlocking a previously locked 
+   * preference allows the preference service to once again return the user set
+   * value of the preference.
+   *
+   * @param aPrefName The preference to be unlocked.
+   *
+   * @note
+   * This method can be called on either a default or user branch but, in
+   * effect, always operates on the default branch.
+   *
+   * @return NS_OK The preference was successfully unlocked.
+   * @return Other The preference does not exist or an error occurred.
+   *
+   * @see lockPref
+   */
+  void    unlockPref(in string aPrefName);
+
+
+  /**
+   * Called to remove all of the preferences referenced by this branch.
+   *
+   * @param aStartingAt The point on the branch at which to start the deleting
+   *                    preferences. Pass in "" to remove all preferences
+   *                    referenced by this branch.
+   *
+   * @note
+   * This method can be called on either a default or user branch but, in
+   * effect, always operates on both.
+   *
+   * @return NS_OK The preference(s) were successfully removed.
+   * @return Other The preference(s) do not exist or an error occurred.
+   */
+  void deleteBranch(in string aStartingAt);
+
+  /**
+   * Returns an array of strings representing the child preferences of the
+   * root of this branch.
+   * 
+   * @param aStartingAt The point on the branch at which to start enumerating
+   *                    the child preferences. Pass in "" to enumerate all
+   *                    preferences referenced by this branch.
+   * @param aCount      Receives the number of elements in the array.
+   * @param aChildArray Receives the array of child preferences.
+   *
+   * @note
+   * This method can be called on either a default or user branch but, in
+   * effect, always operates on both.
+   *
+   * @return NS_OK The preference list was successfully retrieved.
+   * @return Other The preference(s) do not exist or an error occurred.
+   */
+  void getChildList(in string aStartingAt, out unsigned long aCount,
+                    [array, size_is(aCount), retval] out string aChildArray);
+
+  /**
+   * Called to reset all of the preferences referenced by this branch to their
+   * default values.
+   *
+   * @param aStartingAt The point on the branch at which to start the resetting
+   *                    preferences to their default values. Pass in "" to
+   *                    reset all preferences referenced by this branch.
+   *
+   * @note
+   * This method can be called on either a default or user branch but, in
+   * effect, always operates on the user branch.
+   *
+   * @return NS_OK The preference(s) were successfully reset.
+   * @return Other The preference(s) do not exist or an error occurred.
+   */
+  void resetBranch(in string aStartingAt);
+
+};
+
+
+%{C++
+
+#define NS_PREFBRANCH_CONTRACTID "@mozilla.org/preferencesbranch;1"
+#define NS_PREFBRANCH_CLASSNAME "Preferences Branch"
+
+%}

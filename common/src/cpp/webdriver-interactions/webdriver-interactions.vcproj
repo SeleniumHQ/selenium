@@ -118,7 +118,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\..\common\src\cpp\webdriver-interactions"
+				AdditionalIncludeDirectories="&quot;..\..\..\..\common\src\cpp\webdriver-interactions&quot;"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"

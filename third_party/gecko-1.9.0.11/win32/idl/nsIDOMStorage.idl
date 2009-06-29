@@ -1,0 +1,98 @@
+/* -*- Mode: IDL; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+/* ***** BEGIN LICENSE BLOCK *****
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
+ *
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
+ *
+ * The Original Code is mozilla.org code.
+ *
+ * The Initial Developer of the Original Code is
+ *   Neil Deakin <enndeakin@sympatico.ca>
+ * Portions created by the Initial Developer are Copyright (C) 2006
+ * the Initial Developer. All Rights Reserved.
+ *
+ * Contributor(s):
+ *
+ * Alternatively, the contents of this file may be used under the terms of
+ * either of the GNU General Public License Version 2 or later (the "GPL"),
+ * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+ * in which case the provisions of the GPL or the LGPL are applicable instead
+ * of those above. If you wish to allow use of your version of this file only
+ * under the terms of either the GPL or the LGPL, and not to allow others to
+ * use your version of this file under the terms of the MPL, indicate your
+ * decision by deleting the provisions above and replace them with the notice
+ * and other provisions required by the GPL or the LGPL. If you do not delete
+ * the provisions above, a recipient may use your version of this file under
+ * the terms of any one of the MPL, the GPL or the LGPL.
+ *
+ * ***** END LICENSE BLOCK ***** */
+
+#include "domstubs.idl"
+
+/**
+ * Interface for client side storage. See
+ * http://www.whatwg.org/specs/web-apps/current-work/#scs-client-side
+ * for more information.
+ *
+ * A storage object stores an arbitrary set of key-value pairs, which
+ * may be retrieved, modified and removed as needed. A key may only
+ * exist once within a storage object, and only one value may be
+ * associated with a particular key. Keys are stored in a particular
+ * order with the condition that this order not change by merely changing
+ * the value associated with a key, but the order may change when a
+ * key is added or removed.
+ */
+
+interface nsIDOMStorageItem;
+
+[scriptable, uuid(95CC1383-3B62-4B89-AAEF-1004A513EF47)]
+interface nsIDOMStorage : nsISupports
+{
+  /**
+   * The number of keys stored.
+   */
+  readonly attribute unsigned long length;
+
+  /**
+   * Retrieve the name of the key at a particular index.
+   *
+   * @param index index of the item to retrieve
+   * @returns the key at index
+   * @throws INDEX_SIZE_ERR if there is no key at that index
+   */
+  DOMString key(in unsigned long index);
+
+  /**
+   * Retrieve an item with a given key
+   *
+   * @param key key to retrieve
+   * @returns found item or null if the key was not found
+   */
+  nsIDOMStorageItem getItem(in DOMString key);
+
+  /**
+   * Assign a value with a key. If the key does not exist already, a new
+   * key is added associated with that value. If the key already exists,
+   * then the existing value is replaced with a new value.
+   *
+   * @param key key to set
+   * @param data data to associate with the key
+   * @returns found item or null if the key was not found
+   */
+  void setItem(in DOMString key, in DOMString data);
+
+  /**
+   * Remove a key and its corresponding value.
+   *
+   * @param key key to remove
+   */
+  void removeItem(in DOMString key);
+};

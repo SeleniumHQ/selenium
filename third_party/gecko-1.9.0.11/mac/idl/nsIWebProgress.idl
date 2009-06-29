@@ -1,0 +1,178 @@
+/* -*- Mode: IDL; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*-
+ *
+ * ***** BEGIN LICENSE BLOCK *****
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
+ *
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
+ *
+ * The Original Code is the Mozilla browser.
+ *
+ * The Initial Developer of the Original Code is
+ * Netscape Communications, Inc.
+ * Portions created by the Initial Developer are Copyright (C) 1999
+ * the Initial Developer. All Rights Reserved.
+ *
+ * Contributor(s):
+ *   Travis Bogard <travis@netscape.com>
+ *   Darin Fisher <darin@meer.net>
+ *   Mark Pilgrim <pilgrim@gmail.com>
+ *
+ * Alternatively, the contents of this file may be used under the terms of
+ * either of the GNU General Public License Version 2 or later (the "GPL"),
+ * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+ * in which case the provisions of the GPL or the LGPL are applicable instead
+ * of those above. If you wish to allow use of your version of this file only
+ * under the terms of either the GPL or the LGPL, and not to allow others to
+ * use your version of this file under the terms of the MPL, indicate your
+ * decision by deleting the provisions above and replace them with the notice
+ * and other provisions required by the GPL or the LGPL. If you do not delete
+ * the provisions above, a recipient may use your version of this file under
+ * the terms of any one of the MPL, the GPL or the LGPL.
+ *
+ * ***** END LICENSE BLOCK ***** */
+
+#include "nsISupports.idl"
+
+interface nsIDOMWindow;
+interface nsIWebProgressListener;
+
+/**
+ * The nsIWebProgress interface is used to add or remove nsIWebProgressListener
+ * instances to observe the loading of asynchronous requests (usually in the
+ * context of a DOM window).
+ *
+ * nsIWebProgress instances may be arranged in a parent-child configuration,
+ * corresponding to the parent-child configuration of their respective DOM
+ * windows.  However, in some cases a nsIWebProgress instance may not have an
+ * associated DOM window.  The parent-child relationship of nsIWebProgress
+ * instances is not made explicit by this interface, but the relationship may
+ * exist in some implementations.
+ *
+ * A nsIWebProgressListener instance receives notifications for the
+ * nsIWebProgress instance to which it added itself, and it may also receive
+ * notifications from any nsIWebProgress instances that are children of that
+ * nsIWebProgress instance.
+ *
+ * @status FROZEN
+ */
+[scriptable, uuid(570F39D0-EFD0-11d3-B093-00A024FFC08C)]
+interface nsIWebProgress : nsISupports
+{
+  /**
+   * The following flags may be combined to form the aNotifyMask parameter for
+   * the addProgressListener method.  They limit the set of events that are
+   * delivered to an nsIWebProgressListener instance.
+   */ 
+
+  /**
+   * These flags indicate the state transistions to observe, corresponding to
+   * nsIWebProgressListener::onStateChange.
+   *
+   * NOTIFY_STATE_REQUEST
+   *   Only receive the onStateChange event if the aStateFlags parameter
+   *   includes nsIWebProgressListener::STATE_IS_REQUEST.
+   *   
+   * NOTIFY_STATE_DOCUMENT
+   *   Only receive the onStateChange event if the aStateFlags parameter
+   *   includes nsIWebProgressListener::STATE_IS_DOCUMENT.
+   *
+   * NOTIFY_STATE_NETWORK
+   *   Only receive the onStateChange event if the aStateFlags parameter
+   *   includes nsIWebProgressListener::STATE_IS_NETWORK.
+   *
+   * NOTIFY_STATE_WINDOW
+   *   Only receive the onStateChange event if the aStateFlags parameter
+   *   includes nsIWebProgressListener::STATE_IS_WINDOW.
+   *
+   * NOTIFY_STATE_ALL
+   *   Receive all onStateChange events.
+   */
+  const unsigned long NOTIFY_STATE_REQUEST  = 0x00000001;
+  const unsigned long NOTIFY_STATE_DOCUMENT = 0x00000002;
+  const unsigned long NOTIFY_STATE_NETWORK  = 0x00000004;
+  const unsigned long NOTIFY_STATE_WINDOW   = 0x00000008;
+  const unsigned long NOTIFY_STATE_ALL      = 0x0000000f;
+
+  /**
+   * These flags indicate the other events to observe, corresponding to the
+   * other four methods defined on nsIWebProgressListener.
+   *
+   * NOTIFY_PROGRESS
+   *   Receive onProgressChange events.
+   *
+   * NOTIFY_STATUS
+   *   Receive onStatusChange events.
+   *
+   * NOTIFY_SECURITY
+   *   Receive onSecurityChange events.
+   *
+   * NOTIFY_LOCATION
+   *   Receive onLocationChange events.
+   *
+   * NOTIFY_REFRESH
+   *   Receive onRefreshAttempted events.
+   *   This is defined on nsIWebProgressListener2.
+   */
+  const unsigned long NOTIFY_PROGRESS       = 0x00000010;
+  const unsigned long NOTIFY_STATUS         = 0x00000020;
+  const unsigned long NOTIFY_SECURITY       = 0x00000040;
+  const unsigned long NOTIFY_LOCATION       = 0x00000080;
+  const unsigned long NOTIFY_REFRESH        = 0x00000100;
+
+  /**
+   * This flag enables all notifications.
+   */
+  const unsigned long NOTIFY_ALL            = 0x000001ff;
+
+  /**
+   * Registers a listener to receive web progress events.
+   *
+   * @param aListener
+   *        The listener interface to be called when a progress event occurs.
+   *        This object must also implement nsISupportsWeakReference.
+   * @param aNotifyMask
+   *        The types of notifications to receive.
+   *
+   * @throw NS_ERROR_INVALID_ARG
+   *        Indicates that aListener was either null or that it does not
+   *        support weak references.
+   * @throw NS_ERROR_FAILURE
+   *        Indicates that aListener was already registered.
+   */
+  void addProgressListener(in nsIWebProgressListener aListener,
+                           in unsigned long aNotifyMask);
+
+  /**
+   * Removes a previously registered listener of progress events.
+   *
+   * @param aListener
+   *        The listener interface previously registered with a call to
+   *        addProgressListener.
+   *
+   * @throw NS_ERROR_FAILURE
+   *        Indicates that aListener was not registered.
+   */
+  void removeProgressListener(in nsIWebProgressListener aListener);
+
+  /**
+   * The DOM window associated with this nsIWebProgress instance.
+   *
+   * @throw NS_ERROR_FAILURE
+   *        Indicates that there is no associated DOM window.
+   */
+  readonly attribute nsIDOMWindow DOMWindow;
+  
+  /**
+   * Indicates whether or not a document is currently being loaded
+   * in the context of this nsIWebProgress instance.
+   */
+  readonly attribute PRBool isLoadingDocument;
+};

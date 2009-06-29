@@ -18,6 +18,7 @@ limitations under the License.
 #ifndef interactions_h
 #define interactions_h
 
+#include "stdafx.h"
 #include "interaction_utils.h"
 #include <wchar.h>
 
@@ -29,7 +30,7 @@ extern "C" {
 
 // Keyboard interactions
 EXPORT boolean sendKeysToFileUploadAlert(HWND alertHwnd, const wchar_t* value);
-EXPORT void sendKeys(HWND directInputTo, const wchar_t* value, int timePerKey);
+EXPORT void sendKeys(void* windowHandle, const wchar_t* value, int timePerKey);
 
 // Mouse interactions
 EXPORT LRESULT clickAt(HWND directInputTo, long x, long y);
