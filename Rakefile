@@ -528,7 +528,9 @@ def javac(args)
   sh compile_string, :verbose => false
 
   # Copy the resource to the target_dir
-  cp_r extra_resources, target_dir, :verbose => false
+  if !extra_resources.nil?
+    cp_r extra_resources, target_dir, :verbose => false
+  end
 
   jar_string = "jar cf #{out} -C #{target_dir} ."
   sh jar_string, :verbose => false
