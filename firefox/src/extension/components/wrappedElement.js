@@ -128,12 +128,16 @@ FirefoxDriver.prototype.sendKeys = function(respond, value) {
       element.focus();
   }
 
+  var use = element;
   var tagName = element.tagName.toLowerCase();
   if (tagName == "body" && element.ownerDocument.defaultView.frameElement) {
       element.ownerDocument.defaultView.focus();
+
+      // Turns out, this is what we should be using ass the target to send events to
+      use = element.ownerDocument.getElementsByTagName("html")[0];
   }
 
-  Utils.type(this.context, element, value[0]);
+  Utils.type(this.context, use, value[0]);
 
   respond.context = this.context;
   respond.send();

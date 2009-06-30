@@ -6,7 +6,7 @@
 #include "nsIAccessibleDocumentWrapper.h"
 
 #define EVENTS_CONTRACTID "@openqa.org/nativeevents;1"
-#define EVENTS_CLASSNAME "Fire OS-level events"
+#define EVENTS_CLASSNAME "Firefox OS-level events"
 #define EVENTS_CID { 0xaa54e938, 0x2752, 0x4194, { 0x80, 0xa6, 0x4d, 0x32, 0x58, 0x5b, 0x50, 0xee } }
 
 

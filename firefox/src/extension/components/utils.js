@@ -311,7 +311,26 @@ Utils.type = function(context, element, text) {
       }
     }
 
-    var controlKey = false;
+  try {
+    const cid = "@openqa.org/nativeevents;1";
+    var obj = Components.classes[cid].createInstance();
+    obj = obj.QueryInterface(Components.interfaces.nsINativeEvents);
+
+    // This stuff changes between releases. Do as much up-front work in JS as possible
+    var retrieval = Utils.newInstance("@mozilla.org/accessibleRetrieval;1", "nsIAccessibleRetrieval");
+    var accessible = retrieval.getAccessibleFor(element.ownerDocument);
+    var accessibleDoc = accessible.QueryInterface(Components.interfaces.nsIAccessibleDocument);
+    var supports = accessibleDoc.QueryInterface(Components.interfaces.nsISupports);
+
+    // Now do the native thing.
+    obj.sendKeys(supports, text);
+    return;
+  } catch (err) {
+    // We've not got native events here. Simulate.
+    Utils.dumpn(err);
+  }
+
+  var controlKey = false;
     var shiftKey = false;
     var altKey = false;
 

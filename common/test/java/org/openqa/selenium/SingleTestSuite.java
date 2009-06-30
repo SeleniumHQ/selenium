@@ -39,6 +39,7 @@ public class SingleTestSuite extends TestCase {
     System.setProperty("webdriver.development", "true");
     System.setProperty("jna.library.path", "..\\build;build");
 //    System.setProperty("webdriver.firefox.useExisting", "true");
+//    System.setProperty("webdriver.firefox.reap_profile", "false");
 
     TestSuiteBuilder builder = new TestSuiteBuilder()
         .addSourceDir("../common")
@@ -47,10 +48,10 @@ public class SingleTestSuite extends TestCase {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("FormHandlingTest")
-//        .method("testShouldModifyTheVisibilityOfAnElementDynamically")
+        .onlyRun("TypingTest")
+//        .method("testTypingIntoAnIFrameWithContentEditableOrDesignModeSet")
         .exclude(ALL)
-        .exclude(Ignore.Driver.IE)
+//        .exclude(Ignore.Driver.IE)
         .leaveRunning()
         ;  // Yeah, this look strange :)
 

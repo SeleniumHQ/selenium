@@ -53,7 +53,7 @@ public class FirefoxDriverTestSuite extends TestCase {
 
     private static FirefoxProfile createTemporaryProfile() {
       // Locate the extension directory
-      File extensionSource = locateExtensionSrc();
+      File extensionSource = locate("firefox/src/extension");
       File dir = TemporaryFilesystem.createTempDir("firefoxdriver", "");
       File extension = new File(dir, "extensions/fxdriver@googlecode.com");
 
@@ -66,14 +66,23 @@ public class FirefoxDriverTestSuite extends TestCase {
         throw new RuntimeException("Cannot copy extension directory");
       }
 
+      File buildDir = locate("build/Win32");
+
       // Copy in the native events library/libraries
       Map<String, String> fromTo = new HashMap<String, String>();
-      fromTo.put("build/Win32/Debug/webdriver-interactions.dll", "platform/WINNT_x86-msvc/components/webdriver-interactions.dll");
-      fromTo.put("build/Win32/Debug/webdriver-firefox.dll", "platform/WINNT_x86-msvc/components/webdriver-firefox.dll");
+//      fromTo.put("Debug/webdriver-interactions.dll", "platform/WINNT_x86-msvc/components/webdriver-interactions.dll");
+      fromTo.put("Debug/webdriver-firefox.dll", "platform/WINNT_x86-msvc/components/webdriver-firefox.dll");
+
+//      fromTo.put("Debug/webdriver-interactions.dll", "components/webdriver-interactions.dll");
+//      fromTo.put("Debug/webdriver-firefox.dll", "components/webdriver-firefox.dll");
 
       // We know the location of the "from" in relation to the extension source
       for (Map.Entry<String, String> entry : fromTo.entrySet()) {
-        File source = new File(extensionSource, "../../../" + entry.getKey());
+        File source = new File(buildDir, entry.getKey());
+        if (!source.exists()) {
+          System.out.println("File does not exist. Skipping: " + source);
+          continue;
+        }
         File dest = new File(extension, entry.getValue());
         dest.getParentFile().mkdirs(); // Ignore the return code, cos we're about to throw an exception
         try {
@@ -83,24 +92,40 @@ public class FirefoxDriverTestSuite extends TestCase {
         }
       }
 
+      File xpt = locate("firefox/build/extension/components/nsINativeEvents.xpt");
+      File outXpt = new File(extension, "components/nsINativeEvents.xpt");
+
+      try {
+        if (xpt.exists()) {
+          System.out.println("outXpt = " + outXpt);
+          FileHandler.copy(xpt, outXpt);
+        } else {
+          System.out.println("Skipping " + xpt);
+        }
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+
+      System.out.println("dir = " + dir);
       return new FirefoxProfile(dir);
     }
 
-    private static File locateExtensionSrc() {
+    private static File locate(String path) {
       // It'll be one of these. Probably
       String[] locations = {
-        "../firefox/src/extension",  // IDEA
-        "firefox/src/extension",     // Eclipse
+        "../",  // IDEA
+        ".",     // Eclipse
       };
 
       for (String location : locations) {
-        File file = new File(location);
+        File file = new File(location, path);
         if (file.exists()) {
           return file;
         }
       }
 
-      throw new RuntimeException("Unable to locate extension source");
+      // we know that this doesn't exist
+      return new File(locations[0], path);
     }
   }
 

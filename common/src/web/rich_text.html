@@ -31,6 +31,8 @@ window.onload = function () {
     editFrame.document.body.contentEditable = true;
   } else {
     editFrame.document.designMode = 'On';
+    // Attach a name to the containing HTML element
+    editFrame.document.getElementsByTagName("html")[0].id = "frameHtml";
   }
 
   var editDiv = document.getElementById('editDiv');
@@ -97,6 +99,12 @@ function printEventData(e) {
   write('ctrl', e.ctrlKey);
   write('shift', e.shiftKey);
   write('meta', e.metaKey);
+
+  var s = "";
+  for (var i in e) {
+    s += i + ": " + e[i] + "   ";
+  }
+  //alert(s);
 }
 </script>
 </head>

@@ -578,7 +578,7 @@ public class TypingTest extends AbstractDriverTestCase {
     WebElement id = driver.findElement(By.id("tagId"));
 
     assertEquals("[true]", trusted.getText());
-    assertEquals("[theBody]", id.getText());
+    assertEquals("[frameHtml]", id.getText());
   }
 
   @JavascriptEnabled

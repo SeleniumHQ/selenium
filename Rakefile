@@ -332,19 +332,6 @@ task :javadocs => [:common, :firefox, :htmlunit, :jobbie, :remote, :safari, :sup
   sh cmd
 end
 
-#### The interactions library ####
-
-file 'build/Win32/Release/webdriver-interactions.dll' => FileList['common/src/cpp/webdriver-interactions/*.*'] do
-  msbuild 'WebDriver.sln'
-end
-
-file "common/build/webdriver-common.jar" => "build/Win32/Release/webdriver-interactions.dll" do
-  mkdir_p "common/build/jar/x86"
-  mkdir_p "common/build/jar/amd64"
-  cp "build/Win32/Release/webdriver-interactions.dll", "common/build/jar/x86"
-  cp "build/x64/Release/webdriver-interactions.dll", "common/build/jar/amd64"
-  sh "jar uf common/build/webdriver-common.jar -C common/build/jar .", :verbose => false
-end
 
 #### Internet Explorer ####
 file 'build/Win32/Release/InternetExplorerDriver.dll' => FileList['jobbie/src/cpp/**/*.cpp'] do
@@ -360,12 +347,11 @@ file "jobbie/build/webdriver-jobbie.jar" => "build/Win32/Release/InternetExplore
 end
 
 #### Firefox ####
-file 'firefox/build/webdriver-extension.zip' => FileList['firefox/src/extension/**'] + ['build/Win32/Release/webdriver-firefox.dll'] do
+file 'firefox/build/webdriver-extension.zip' => FileList['firefox/src/extension/**'] + ['build/Win32/Release/webdriver-firefox.dll', 'firefox/build/extension/components/nsINativeEvents.xpt'] do
   mkdir_p "firefox/build/extension/platform/WINNT_x86-msvc/components/"
 
   cp_r "firefox/src/extension/.", "firefox/build/extension"
 
-  cp "build/Win32/Release/webdriver-interactions.dll", "firefox/build/extension/platform/WINNT_x86-msvc/components/"
   cp "build/Win32/Release/webdriver-firefox.dll", "firefox/build/extension/platform/WINNT_x86-msvc/components/"
 
   # Delete the .svn dirs
@@ -383,6 +369,10 @@ file 'build/Win32/Release/webdriver-firefox.dll' => FileList['firefox/src/cpp/**
   msbuild 'WebDriver.sln'
 end
 
+file 'firefox/build/extension/components/nsINativeEvents.xpt' => FileList['firefox/src/cpp/webdriver-firefox/nsINativeEvents.idl'] do
+  mkdir_p "firefox/build/extension/components/"
+  xpt("firefox\\src\\cpp\\webdriver-firefox\\nsINativeEvents.idl", "firefox\\build\\extension\\components\\nsINativeEvents.xpt")
+end
 
 task :test_firefox_py => :test_firefox do
   if python? then
@@ -575,9 +565,22 @@ def msbuild(solution)
     %w(build/Win32/Release build/x64/Release).each do |dir|
       mkdir_p dir
 
-      %w(webdriver-interactions.dll InternetExplorerDriver.dll webdriver-firefox.dll).each do |res|
+      %w(InternetExplorerDriver.dll webdriver-firefox.dll).each do |res|
         File.open("#{dir}/#{res}", 'w') {|f| f.write("")}
       end
     end
+  end
+end
+
+def xpt(idl, output)
+  gecko = "third_party\\gecko-1.9.0.11\\"
+
+  if (windows?)
+    gecko += "win32"
+    cmd = "#{gecko}\\bin\\xpidl.exe -w -m typelib -I#{gecko}\\idl -e #{output} #{idl}"
+    sh cmd, :verbose => true
+  else
+    puts "Doing nothing for now. Later revisions will enable xpt building. Creating stub"
+    File.open("#{output}", 'w') {|f| f.write("")}
   end
 end

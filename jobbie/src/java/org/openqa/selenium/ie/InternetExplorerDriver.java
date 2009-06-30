@@ -445,8 +445,7 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
     jnaPath.append(File.pathSeparator);
 
     try {
-      FileHandler.copyResource(parentDir, getClass(),
-          "webdriver-interactions.dll", "InternetExplorerDriver.dll");
+      FileHandler.copyResource(parentDir, getClass(), "InternetExplorerDriver.dll");
     } catch (IOException e) {
       if (Boolean.getBoolean("webdriver.development")) {
         System.err.println("Exception unpacking required libraries, but in development mode. Continuing");
