@@ -34,7 +34,7 @@ public class SingleTestSuite extends TestCase {
   private final static String SAFARI = "org.openqa.selenium.safari.SafariDriver";
 
   public static Test suite() throws Exception {
-    String driver = FIREFOX;
+    String driver = IE;
 
     System.setProperty("webdriver.development", "true");
     System.setProperty("jna.library.path", "..\\build;build");
@@ -48,10 +48,10 @@ public class SingleTestSuite extends TestCase {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("TypingTest")
-//        .method("testTypingIntoAnIFrameWithContentEditableOrDesignModeSet")
+        .onlyRun("ExecutingJavascriptTest")
+//        .method("testShouldThrowAnExceptionWhenTheJavascriptIsBad")
         .exclude(ALL)
-//        .exclude(Ignore.Driver.IE)
+        .exclude(Ignore.Driver.IE)
         .leaveRunning()
         ;  // Yeah, this look strange :)
 

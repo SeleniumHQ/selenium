@@ -395,6 +395,7 @@ CComVariant& InternetExplorerDriver::executeScript(const wchar_t *script, SAFEAR
 	DataMarshaller& data = prepareCmData(script);
 	data.input_safe_array_ = args;
 	sendThreadMsg(_WD_EXECUTESCRIPT, data);
+
 	return data.output_variant_;
 }
 

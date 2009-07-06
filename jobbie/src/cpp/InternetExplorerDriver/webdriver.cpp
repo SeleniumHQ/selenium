@@ -54,7 +54,7 @@ struct ScriptArgs {
 };
 
 struct ScriptResult {
-	CComVariant result;
+	VARIANT result;
 };
 
 struct StringWrapper {
@@ -190,6 +190,8 @@ int wdFreeScriptResult(ScriptResult* scriptResult)
 {
 	if (!scriptResult)
 		return ENOCOLLECTION;
+
+	VariantClear(&scriptResult->result);
 
 	delete scriptResult;
 
@@ -1056,7 +1058,12 @@ int wdExecuteScript(WebDriver* driver, const wchar_t* script, ScriptArgs* script
 	CComVariant &result = driver->ie->executeScript(script, scriptArgs->args);
 
 	ScriptResult* toReturn = new ScriptResult();
-	VariantCopy(&(toReturn->result), &result);
+	HRESULT hr = VariantCopy(&(toReturn->result), &result);
+	if (!SUCCEEDED(hr) && result.vt == VT_USERDEFINED) {
+		// Special handling of the user defined path *sigh*
+		toReturn->result.vt = VT_USERDEFINED;
+		toReturn->result.bstrVal = CComBSTR(result.bstrVal);
+	}
 	*scriptResultRef = toReturn;
 
 	return SUCCESS;

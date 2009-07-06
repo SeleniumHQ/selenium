@@ -833,30 +833,40 @@ int IeThread::getLocationWhenScrolledIntoView(IHTMLElement *pElement, HWND* hwnd
     }
 
     const HWND hWnd = getHwnd();
-    const HWND ieWindow = getIeServerWindow(hWnd);
+	const HWND ieWindow = getIeServerWindow(hWnd);
 
     // Scroll the element into view
-    CComVariant toTop;
-    toTop.vt = VT_BOOL;
-    toTop.boolVal = VARIANT_TRUE;
-    pElement->scrollIntoView(toTop);
+	pElement->scrollIntoView(CComVariant(VARIANT_TRUE));
+	wait(100);
 
     // getBoundingClientRect. Note, the docs talk about this possibly being off by 2,2
     // and Jon Resig mentions some problems too. For now, we'll hope for the best
     // http://ejohn.org/blog/getboundingclientrect-is-awesome/
+
     CComQIPtr<IHTMLElement2> element2(pElement);
     CComPtr<IHTMLRect> rect;
     if (FAILED(element2->getBoundingClientRect(&rect))) {
             return EUNHANDLEDERROR;
     }
 
-    long clickX, clickY, width, height;
-    rect->get_top(&clickY);
-    rect->get_left(&clickX);
-	rect->get_bottom(&height);
-    rect->get_right(&width);
+    long top, left, bottom, right = 0;
+    rect->get_top(&top);
+    rect->get_left(&left);
+	rect->get_bottom(&bottom);
+    rect->get_right(&right);
 
-	LOG(INFO) << "(x, y, w, h): " << clickX << ", " << clickY << ", " << width << ", " << height << endl;
+	long width = right - left;
+	long height = bottom - top;
+
+    long clickX = left;
+	long clickY = top;
+
+	LOG(DEBUG) << "(x, y, w, h): " << clickX << ", " << clickY << ", " << width << ", " << height << endl;
+
+    if (height == 0 || width == 0) {
+            cerr << "Element would not be visible because it lacks height and/or width." << endl;
+            return EELEMENTNOTDISPLAYED;
+    }
 
 	// This is a little funky.
 	if (ieRelease > 7) {
@@ -864,17 +874,8 @@ int IeThread::getLocationWhenScrolledIntoView(IHTMLElement *pElement, HWND* hwnd
 		clickY += 2;
 	}
 
-    height -= clickY;
-    width -= clickX;
-
 	*w = width;
 	*h = height;
-
-	
-    if (height == 0 || width == 0) {
-            cerr << "Element would not be visible because it lacks height and/or width." << endl;
-            return EELEMENTNOTDISPLAYED;
-    }
 
     CComPtr<IDispatch> ownerDocDispatch;
     node->get_ownerDocument(&ownerDocDispatch);

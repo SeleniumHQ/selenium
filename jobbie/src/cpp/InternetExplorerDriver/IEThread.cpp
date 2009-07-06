@@ -702,7 +702,6 @@ HWND IeThread::getHwnd()
     }
 
 	SetActiveWindow(hWnd);
-	SetFocus(hWnd);
 
 	if( ieWinThreadId != currThreadId )
     {
