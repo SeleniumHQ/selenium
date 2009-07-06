@@ -54,7 +54,7 @@ struct ScriptArgs {
 };
 
 struct ScriptResult {
-	VARIANT result;
+	CComVariant result;
 };
 
 struct StringWrapper {
@@ -1000,10 +1000,7 @@ int wdAddStringScriptArg(ScriptArgs* scriptArgs, const wchar_t* arg)
 {
 	std::wstring value(arg);
 
-	VARIANT dest;
-	dest.vt = VT_BSTR;
-	dest.bstrVal = SysAllocString(arg);
-
+	CComVariant dest(arg);
 	LONG index = scriptArgs->currentIndex;
 	SafeArrayPutElement(scriptArgs->args, &index, &dest);
 
@@ -1056,10 +1053,10 @@ int wdAddElementScriptArg(ScriptArgs* scriptArgs, WebElement* element)
 
 int wdExecuteScript(WebDriver* driver, const wchar_t* script, ScriptArgs* scriptArgs, ScriptResult** scriptResultRef) 
 {
-	VARIANT result = driver->ie->executeScript(script, scriptArgs->args);
+	CComVariant &result = driver->ie->executeScript(script, scriptArgs->args);
 
 	ScriptResult* toReturn = new ScriptResult();
-	toReturn->result = result;
+	VariantCopy(&(toReturn->result), &result);
 	*scriptResultRef = toReturn;
 
 	return SUCCESS;

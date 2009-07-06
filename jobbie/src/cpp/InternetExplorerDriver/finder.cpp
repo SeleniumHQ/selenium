@@ -29,7 +29,8 @@ void IeThread::OnSelectElementById(WPARAM w, LPARAM lp)
 	SCOPETRACER
 	ON_THREAD_COMMON(data)
 	int &errorKind = data.error_code;
-	CComPtr<IHTMLElement> inputElement(data.input_html_element_);
+	CComQIPtr<IHTMLElement> inputElement(data.input_html_element_);
+	checkValidDOM(inputElement);
 	IHTMLElement* &pDom = data.output_html_element_;
 	const wchar_t *elementId= data.input_string_;
 
@@ -123,7 +124,8 @@ void IeThread::OnSelectElementsById(WPARAM w, LPARAM lp)
 	SCOPETRACER
 	ON_THREAD_COMMON(data)
 	long &errorKind = data.output_long_;
-	CComPtr<IHTMLElement> inputElement(data.input_html_element_);
+	CComQIPtr<IHTMLElement> inputElement(data.input_html_element_);
+	checkValidDOM(inputElement);
 	std::vector<IHTMLElement*> &allElems = data.output_list_html_element_;
 	const wchar_t *elementId= data.input_string_;
 
@@ -191,7 +193,8 @@ void IeThread::OnSelectElementByLink(WPARAM w, LPARAM lp)
 	SCOPETRACER
 	ON_THREAD_COMMON(data)
 	int &errorKind = data.error_code;
-	CComPtr<IHTMLElement> inputElement(data.input_html_element_);
+	CComQIPtr<IHTMLElement> inputElement(data.input_html_element_);
+	checkValidDOM(inputElement);
 	IHTMLElement* &pDom = data.output_html_element_;
 	const wchar_t *elementLink= data.input_string_;
 
@@ -258,7 +261,8 @@ void IeThread::OnSelectElementsByLink(WPARAM w, LPARAM lp)
 	SCOPETRACER
 	ON_THREAD_COMMON(data)
 	long &errorKind = data.output_long_;
-	CComPtr<IHTMLElement> inputElement(data.input_html_element_);
+	CComQIPtr<IHTMLElement> inputElement(data.input_html_element_);
+	checkValidDOM(inputElement);
 	std::vector<IHTMLElement*> &allElems = data.output_list_html_element_;
 	const wchar_t *elementLink= data.input_string_;
 
@@ -323,7 +327,8 @@ void IeThread::OnSelectElementByPartialLink(WPARAM w, LPARAM lp)
 	SCOPETRACER
 	ON_THREAD_COMMON(data)
 	int &errorKind = data.error_code;
-	CComPtr<IHTMLElement> inputElement(data.input_html_element_);
+	CComQIPtr<IHTMLElement> inputElement(data.input_html_element_);
+	checkValidDOM(inputElement);
 	IHTMLElement* &pDom = data.output_html_element_;
 	const wchar_t *elementLink= data.input_string_;
 
@@ -394,7 +399,8 @@ void IeThread::OnSelectElementsByPartialLink(WPARAM w, LPARAM lp)
 	SCOPETRACER
 	ON_THREAD_COMMON(data)
 	long &errorKind = data.output_long_;
-	CComPtr<IHTMLElement> inputElement(data.input_html_element_);
+	CComQIPtr<IHTMLElement> inputElement(data.input_html_element_);
+	checkValidDOM(inputElement);
 	std::vector<IHTMLElement*> &allElems = data.output_list_html_element_;
 	const wchar_t *elementLink= data.input_string_;
 
@@ -463,7 +469,8 @@ void IeThread::OnSelectElementByName(WPARAM w, LPARAM lp)
 	SCOPETRACER
 	ON_THREAD_COMMON(data)
 	int &errorKind = data.error_code; 
-	CComPtr<IHTMLElement> inputElement(data.input_html_element_);
+	CComQIPtr<IHTMLElement> inputElement(data.input_html_element_);
+	checkValidDOM(inputElement);
 	IHTMLElement* &pDom = data.output_html_element_; 
 	const wchar_t *elementName= data.input_string_; 
 
@@ -536,7 +543,8 @@ void IeThread::OnSelectElementsByName(WPARAM w, LPARAM lp)
 	SCOPETRACER
 	ON_THREAD_COMMON(data)
 	long &errorKind = data.output_long_;
-	CComPtr<IHTMLElement> inputElement(data.input_html_element_);
+	CComQIPtr<IHTMLElement> inputElement(data.input_html_element_);
+	checkValidDOM(inputElement);
 	std::vector<IHTMLElement*> &allElems = data.output_list_html_element_;
 	const wchar_t *elementName= data.input_string_;
 
@@ -605,7 +613,8 @@ void IeThread::OnSelectElementByTagName(WPARAM w, LPARAM lp)
 	SCOPETRACER
 	ON_THREAD_COMMON(data)
 	int &errorKind = data.error_code; 
-	CComPtr<IHTMLElement> inputElement(data.input_html_element_);
+	CComQIPtr<IHTMLElement> inputElement(data.input_html_element_);
+	checkValidDOM(inputElement);
 	IHTMLElement* &pDom = data.output_html_element_; 
 	const wchar_t *tagName = data.input_string_; 
 
@@ -662,7 +671,8 @@ void IeThread::OnSelectElementsByTagName(WPARAM w, LPARAM lp)
 	SCOPETRACER
 	ON_THREAD_COMMON(data)
 	long &errorKind = data.output_long_;
-	CComPtr<IHTMLElement> inputElement(data.input_html_element_);
+	CComQIPtr<IHTMLElement> inputElement(data.input_html_element_);
+	checkValidDOM(inputElement);
 	std::vector<IHTMLElement*> &allElems = data.output_list_html_element_;
 	const wchar_t *tagName = data.input_string_;
 
@@ -716,7 +726,8 @@ void IeThread::OnSelectElementByClassName(WPARAM w, LPARAM lp)
 	SCOPETRACER
 	ON_THREAD_COMMON(data)
 	int &errorKind = data.error_code;
-	CComPtr<IHTMLElement> inputElement(data.input_html_element_);
+	CComQIPtr<IHTMLElement> inputElement(data.input_html_element_);
+	checkValidDOM(inputElement);
 	IHTMLElement* &pDom = data.output_html_element_; 
 	const wchar_t *elementClassName= data.input_string_; 
 
@@ -798,7 +809,8 @@ void IeThread::OnSelectElementsByClassName(WPARAM w, LPARAM lp)
 	SCOPETRACER
 	ON_THREAD_COMMON(data)
 	long &errorKind = data.output_long_;
-	CComPtr<IHTMLElement> inputElement(data.input_html_element_);
+	CComQIPtr<IHTMLElement> inputElement(data.input_html_element_);
+	checkValidDOM(inputElement);
 	std::vector<IHTMLElement*> &allElems = data.output_list_html_element_;
 	const wchar_t *elementClassName= data.input_string_;
 

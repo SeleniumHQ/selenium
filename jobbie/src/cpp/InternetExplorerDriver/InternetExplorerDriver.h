@@ -22,6 +22,8 @@ limitations under the License.
 #include "ElementWrapper.h"
 #include "IEThread.h"
 
+extern IeThread* g_IE_Thread;
+
 class InternetExplorerDriver
 {
 public:

@@ -289,7 +289,7 @@ void IeThread::OnExecuteScript(WPARAM w, LPARAM lp)
 	// TODO/MAYBE
 	// the input WebElement(s) may need to have their IHTMLElement QI-converted into IHTMLDOMNode
 
-	executeScript(data.input_string_, data.input_safe_array_, &(data.output_variant_));
+	executeScript(data.input_string_, data.input_safe_array_, &data.output_variant_);
 
 	if( VT_DISPATCH == data.output_variant_.vt )
 	{
@@ -308,12 +308,11 @@ void IeThread::OnSelectElementByXPath(WPARAM w, LPARAM lp)
 	ON_THREAD_COMMON(data)
 	int &errorKind = data.error_code;
 	IHTMLElement* &pDom = data.output_html_element_; 
+	const bool inputElementWasNull = (!data.input_html_element_);
 	CComPtr<IHTMLElement> inputElement(data.input_html_element_);
 
 	pDom = NULL;
 	errorKind = SUCCESS;
-
-	const bool inputElementWasNull = (!inputElement);
 
 	/// Start from root DOM by default
 	if(inputElementWasNull)
@@ -326,6 +325,9 @@ void IeThread::OnSelectElementByXPath(WPARAM w, LPARAM lp)
 			return;
 		}
 		root_doc->get_documentElement(&inputElement);
+	} else 
+	{
+		checkValidDOM(inputElement);
 	}
 
 	CComQIPtr<IHTMLDOMNode> node(inputElement);
@@ -357,19 +359,15 @@ void IeThread::OnSelectElementByXPath(WPARAM w, LPARAM lp)
 	if (!inputElementWasNull) {
 		args = SafeArrayCreateVector(VT_VARIANT, 0, 2);
 		long index = 1;
-		CComVariant dest2;   
 		CComQIPtr<IHTMLElement> element(const_cast<IHTMLDOMNode*>((IHTMLDOMNode*)node));
-		dest2.vt = VT_DISPATCH;
-		dest2.pdispVal = element;
+		CComVariant dest2((IDispatch*) element);
 		SafeArrayPutElement(args, &index, &dest2);
 	} else {
 		args = SafeArrayCreateVector(VT_VARIANT, 0, 2);
 	}
 
 	long index = 0;
-	CComVariant dest;   
-	dest.vt = VT_BSTR;
-	dest.bstrVal = expression;
+	CComVariant dest(expression);   
 	SafeArrayPutElement(args, &index, &dest);
 		
 	executeScript(expr.c_str(), args, &result);
@@ -391,13 +389,12 @@ void IeThread::OnSelectElementsByXPath(WPARAM w, LPARAM lp)
 {
 	SCOPETRACER
 	ON_THREAD_COMMON(data)
+	const bool inputElementWasNull = (!data.input_html_element_);
 	CComPtr<IHTMLElement> inputElement(data.input_html_element_);
 	long &errorKind = data.output_long_;
 	std::vector<IHTMLElement*> &allElems = data.output_list_html_element_;
 
 	errorKind = 0;
-
-	const bool inputElementWasNull = (!inputElement);
 
 	/// Start from root DOM by default
 	if(inputElementWasNull)
@@ -410,6 +407,10 @@ void IeThread::OnSelectElementsByXPath(WPARAM w, LPARAM lp)
 			return;
 		}
 		root_doc->get_documentElement(&inputElement);
+	}
+	else
+	{
+		checkValidDOM(inputElement);
 	}
 
 	CComQIPtr<IHTMLDOMNode> node(inputElement);
@@ -438,16 +439,11 @@ void IeThread::OnSelectElementsByXPath(WPARAM w, LPARAM lp)
 	SAFEARRAY* args = SafeArrayCreateVector(VT_VARIANT, 0, 2);
 	
 	long index = 1;
-	CComVariant dest2;
-	CComQIPtr<IHTMLElement> element(const_cast<IHTMLDOMNode*>((IHTMLDOMNode*)node));
-	dest2.vt = VT_DISPATCH;
-	dest2.pdispVal = element;
+	CComVariant dest2((IDispatch*) inputElement);
 	SafeArrayPutElement(args, &index, &dest2);
 
 	index = 0;
-	CComVariant dest;
-	dest.vt = VT_BSTR;
-	dest.bstrVal = expression;
+	CComVariant dest(expression);
 	SafeArrayPutElement(args, &index, &dest);
 	
 	executeScript(expr.c_str(), args, &result);

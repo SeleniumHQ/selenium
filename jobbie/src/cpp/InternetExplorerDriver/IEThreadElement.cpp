@@ -55,7 +55,10 @@ const LPCTSTR ie6WindowNames[] = {
 
 #define ON_THREAD_ELEMENT(dataMarshaller, p_HtmlElement) \
 	ON_THREAD_COMMON(dataMarshaller) \
-	IHTMLElement* p_HtmlElement = dataMarshaller.input_html_element_;
+	IHTMLElement* p_HtmlElement = dataMarshaller.input_html_element_; \
+	CComQIPtr<IHTMLElement> __elem__(p_HtmlElement); \
+	checkValidDOM(__elem__);
+
 
 HWND getIeServerWindow(HWND hwnd)
 {
@@ -92,6 +95,7 @@ struct keyboardData {
 };
 
 WORD WINAPI setFileValue(keyboardData* data) {
+	SCOPETRACER
 	EventReleaser ER(data->hdl_EventToNotifyWhenNavigationCompleted);
 
     Sleep(200);
@@ -132,7 +136,8 @@ void IeThread::OnElementSendKeys(WPARAM w, LPARAM lp)
 	data.error_code = SUCCESS;
 
 	LPCWSTR newValue = data.input_string_;
-	CComPtr<IHTMLElement> element(pElement);
+	CComQIPtr<IHTMLElement> element(pElement);
+	checkValidDOM(element);
 
 	const HWND hWnd = getHwnd();
 	const HWND ieWindow = getIeServerWindow(hWnd);
@@ -198,7 +203,11 @@ void IeThread::OnElementIsDisplayed(WPARAM w, LPARAM lp)
 
 int isElementDisplayed(IHTMLElement* element, bool* displayed) 
 {
+	SCOPETRACER
 	CComQIPtr<IHTMLElement2> e2(element);
+	if (!e2) {
+		return EOBSOLETEELEMENT;
+	}
 
 	CComPtr<IHTMLCurrentStyle> style;
 	CComBSTR display;
@@ -238,7 +247,11 @@ int isElementDisplayed(IHTMLElement* element, bool* displayed)
 
 bool isElementVisible(IHTMLElement* element) 
 {
+	SCOPETRACER
 	CComQIPtr<IHTMLElement2> e2(element);
+	if (!e2) {
+		return false;
+	}
 	CComPtr<IHTMLCurrentStyle> curr;
 	CComBSTR visible;
 
@@ -294,6 +307,7 @@ int IeThread::isNodeDisplayed(IHTMLDOMNode *node, bool* result)
 
 int IeThread::isDisplayed(IHTMLElement *element, bool* result)
 {
+	SCOPETRACER
 	CComQIPtr<IHTMLInputHiddenElement> hidden(element);
 	if (hidden) {
 		*result = false;
@@ -375,6 +389,10 @@ void IeThread::OnElementGetLocation(WPARAM w, LPARAM lp)
 	long x = 0, y = 0;
 
 	CComQIPtr<IHTMLElement2> element2(pElement);
+	if (!element2) {
+		// TODO(alexis): return an adhoc array
+		return;
+	}
 	CComPtr<IHTMLRect> rect;
 	element2->getBoundingClientRect(&rect);
 
@@ -512,6 +530,9 @@ void IeThread::OnElementClear(WPARAM w, LPARAM lp)
 	ON_THREAD_ELEMENT(data, pElement)
 
 	CComQIPtr<IHTMLElement2> element2(pElement);
+	if (!element2) {
+		return;
+	}
 
 	CComBSTR valueAttributeName(L"value");
 
@@ -522,14 +543,12 @@ void IeThread::OnElementClear(WPARAM w, LPARAM lp)
 
 	element2->focus();
 
-	CComVariant empty;
-	CComBSTR emptyBstr(L"");
-	empty.vt = VT_BSTR;
-	empty.bstrVal = (BSTR)emptyBstr;
+	CComVariant empty(L"");
 	pElement->setAttribute(valueAttributeName, empty, 0);
 
 	if (fireChange) {
-		CComPtr<IHTMLEventObj> eventObj(newEventObject(pElement));
+		CComPtr<IHTMLEventObj> eventObj;
+		newEventObject(pElement, eventObj);
 		fireEvent(pElement, eventObj, L"onchange");
 	}
 
@@ -582,14 +601,13 @@ void IeThread::OnElementSetSelected(WPARAM w, LPARAM lp)
 		}
 
 		CComBSTR checked(L"checked");
-		CComVariant isChecked;
 		CComBSTR isTrue(L"true");
-		isChecked.vt = VT_BSTR;
-		isChecked.bstrVal = (BSTR)isTrue;
+		CComVariant isChecked(isTrue);
 		pElement->setAttribute(checked, isChecked, 0);
 
 		if (currentlySelected != isSelected(pElement)) {
-			CComPtr<IHTMLEventObj> eventObj(newEventObject(pElement));
+			CComPtr<IHTMLEventObj> eventObj;
+			newEventObject(pElement, eventObj);
 			fireEvent(pElement, eventObj, L"onchange");
 		}
 
@@ -602,14 +620,13 @@ void IeThread::OnElementSetSelected(WPARAM w, LPARAM lp)
 		}
 
 		CComBSTR selected(L"selected");
-		CComVariant select;
 		CComBSTR isTrue(L"true");
-		select.vt = VT_BSTR;
-		select.bstrVal = (BSTR)isTrue;
+		CComVariant select(isTrue);
 		pElement->setAttribute(selected, select, 0);
 
 		if (currentlySelected != isSelected(pElement)) {
-			CComPtr<IHTMLEventObj> eventObj(newEventObject(pElement));
+			CComPtr<IHTMLEventObj> eventObj;
+			newEventObject(pElement, eventObj);
 			fireEvent(pElement, eventObj, L"onchange");
 		}
 
@@ -626,7 +643,8 @@ void IeThread::OnElementSetSelected(WPARAM w, LPARAM lp)
 		node->get_parentNode(&parent);
 
 		if (currentlySelected != isSelected(pElement)) {
-			CComPtr<IHTMLEventObj> eventObj(newEventObject(pElement));
+			CComPtr<IHTMLEventObj> eventObj;
+			newEventObject(pElement, eventObj);
 			fireEvent(pElement, parent, eventObj, L"onchange");
 		}
 
@@ -689,27 +707,25 @@ void IeThread::OnElementSubmit(WPARAM w, LPARAM lp)
 	submit(pElement, &SC);
 }
 
-IHTMLEventObj* IeThread::newEventObject(IHTMLElement *pElement)
+void IeThread::newEventObject(IHTMLElement *pElement, CComPtr<IHTMLEventObj>& r_eventObject)
 {
 	SCOPETRACER
-	IDispatch* dispatch;
+	CComPtr<IDispatch> dispatch;
 	pElement->get_document(&dispatch);
 	CComQIPtr<IHTMLDocument4> doc(dispatch);
-	dispatch->Release();
 
 	CComVariant empty;
-	IHTMLEventObj* eventObject;
-	doc->createEventObject(&empty, &eventObject);
-	return eventObject;
+	doc->createEventObject(&empty, &r_eventObject);
 }
 
-void IeThread::fireEvent(IHTMLElement *pElement, IHTMLEventObj* eventObject, const OLECHAR* eventName)
+void IeThread::fireEvent(IHTMLElement *pElement, IHTMLEventObj* eventObject, LPCWSTR eventName)
 {
-	CComQIPtr<IHTMLDOMNode> node = pElement;
+	SCOPETRACER
+	CComQIPtr<IHTMLDOMNode> node(pElement);
 	fireEvent(pElement, node, eventObject, eventName);
 }
 
-void IeThread::fireEvent(IHTMLElement *pElement, IHTMLDOMNode* fireOn, IHTMLEventObj* eventObject, const OLECHAR* eventName)
+void IeThread::fireEvent(IHTMLElement *pElement, IHTMLDOMNode* fireOn, IHTMLEventObj* eventObject, LPCWSTR eventName)
 {
 	SCOPETRACER
 	CComVariant eventref;
@@ -795,6 +811,7 @@ bool IeThread::isSelected(IHTMLElement *pElement)
 
 int IeThread::getLocationWhenScrolledIntoView(IHTMLElement *pElement, HWND* hwnd, long *x, long *y, long* w, long* h)
 {
+	SCOPETRACER
     CComQIPtr<IHTMLDOMNode2> node(pElement);
 
     if (!node) {
@@ -836,6 +853,10 @@ int IeThread::getLocationWhenScrolledIntoView(IHTMLElement *pElement, HWND* hwnd
     long clickX, clickY, width, height;
     rect->get_top(&clickY);
     rect->get_left(&clickX);
+	rect->get_bottom(&height);
+    rect->get_right(&width);
+
+	LOG(INFO) << "(x, y, w, h): " << clickX << ", " << clickY << ", " << width << ", " << height << endl;
 
 	// This is a little funky.
 	if (ieRelease > 7) {
@@ -843,15 +864,13 @@ int IeThread::getLocationWhenScrolledIntoView(IHTMLElement *pElement, HWND* hwnd
 		clickY += 2;
 	}
 
-    rect->get_bottom(&height);
-    rect->get_right(&width);
-
     height -= clickY;
     width -= clickX;
 
 	*w = width;
 	*h = height;
 
+	
     if (height == 0 || width == 0) {
             cerr << "Element would not be visible because it lacks height and/or width." << endl;
             return EELEMENTNOTDISPLAYED;
@@ -941,6 +960,9 @@ bool IeThread::isEnabled(IHTMLElement *pElement)
 {
 	SCOPETRACER
 	CComQIPtr<IHTMLElement3> elem3(pElement);
+	if (!elem3) {
+		return false;
+	}
 	VARIANT_BOOL isDisabled;
 	elem3->get_disabled(&isDisabled);
 	return !isDisabled;
@@ -948,6 +970,11 @@ bool IeThread::isEnabled(IHTMLElement *pElement)
 void IeThread::getValue(IHTMLElement *pElement, std::wstring& res)
 {
 	SCOPETRACER
+	
+	if (!pElement) {
+		return;
+	}
+
 	CComBSTR temp;
 	pElement->get_tagName(&temp);
 
@@ -1002,6 +1029,10 @@ void IeThread::getValueOfCssProperty(IHTMLElement *pElement, LPCWSTR propertyNam
 {
 	SCOPETRACER
 	CComQIPtr<IHTMLElement2> styled(pElement);
+	if (!styled) {
+		return;
+	}
+
 	CComBSTR name(propertyName);
 
 	CComPtr<IHTMLCurrentStyle> style;

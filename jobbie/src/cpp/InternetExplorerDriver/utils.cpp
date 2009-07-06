@@ -53,6 +53,16 @@ LPCWSTR comvariant2cw(CComVariant& toConvert)
 	return L"";
 }
 
+BSTR CopyBSTR(const BSTR& inp)
+{
+	if (inp != NULL)
+	{
+		return ::SysAllocStringByteLen((char*)inp, ::SysStringByteLen(inp));
+	}
+	return ::SysAllocStringByteLen(NULL, 0);
+}
+
+
 LPCWSTR combstr2cw(CComBSTR& from) 
 {
 	if (!from.operator BSTR()) {
@@ -97,6 +107,12 @@ safeIO::safeIO()
 	m_cs_out.Init();
 	// LOG::File("C:/tmp/test.log");
 	LOG::Level("INFO");
+	LOG::Limit(10000000);
+}
+
+void safeIO::CoutW(std::wstring& str, bool showThread, int cc)
+{
+	safeIO::CoutL(str.c_str(), showThread, cc);
 }
 
 void safeIO::CoutL(LPCWSTR str, bool showThread, int cc)
@@ -135,6 +151,24 @@ void safeIO::CoutA(LPCSTR str, bool showThread, int cc)
 #endif
 }
 
+void AppendValue(std::wstring& dest, long value)
+{
+	wstringstream st;
+	st << value;
+	dest += st.str();
+}
+
+
+void safeIO::CoutLong(long value)
+{
+#ifdef __VERBOSING_DLL__
+	gSafe.m_cs_out.Lock();
+	LOG(INFO) << value << " Hex=" << hex << value;
+	gSafe.m_cs_out.Unlock();
+#endif
+}
+
+
 char* ConvertLPCWSTRToLPSTR (LPCWSTR lpwszStrIn)
 {
   LPSTR pszOut = NULL;
@@ -154,11 +188,7 @@ char* ConvertLPCWSTRToLPSTR (LPCWSTR lpwszStrIn)
   }
   return pszOut;
 }
-
-inline void wstring2string(const std::wstring& inp, std::string &out)
-{
-	cw2string(inp.c_str(), out);
-} 
+ 
 
 void cw2string(LPCWSTR inp, std::string &out)
 {
@@ -171,3 +201,10 @@ void cw2string(LPCWSTR inp, std::string &out)
 	out = pszOut;
 	delete [] pszOut;
 } 
+
+bool checkValidDOM(IHTMLElement* r) {
+	if(r == NULL) return true;
+	LOG(DEBUG) << "IHTMLElement is null" << endl;
+	
+	return false;
+}

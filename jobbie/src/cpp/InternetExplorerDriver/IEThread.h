@@ -43,6 +43,14 @@ public:
 
 	IeThreadData* pBody;
 
+	static HWND m_HeartBeatListener;
+	UINT_PTR m_HeartBeatTimerID;
+	UINT_PTR m_NavigationCompletionTimerID;
+
+	void startNavigationCompletionTimer();
+	void stopNavigationCompletionTimer();
+
+
 	HANDLE hThread;
 	DWORD threadID;
 
@@ -76,9 +84,9 @@ private:
 	void tryNotifyNavigCompleted();
 	void tryTransferEventReleaserToNotifyNavigCompleted(CScopeCaller *pSC, bool setETNWNC=true);
 
-	IHTMLEventObj* newEventObject(IHTMLElement *pElement);
-	void fireEvent(IHTMLElement *pElement, IHTMLEventObj*, const OLECHAR*);
-	void fireEvent(IHTMLElement *pElement, IHTMLDOMNode* fireFrom, IHTMLEventObj*, const OLECHAR*);
+	void newEventObject(IHTMLElement *pElement, CComPtr<IHTMLEventObj>& r_eventObject);
+	void fireEvent(IHTMLElement *pElement, IHTMLEventObj*, LPCWSTR);
+	void fireEvent(IHTMLElement *pElement, IHTMLDOMNode* fireFrom, IHTMLEventObj*, LPCWSTR);
 
 	static void collapsingAppend(std::wstring& s, const std::wstring& s2);
 	static std::wstring collapseWhitespace(CComBSTR &text);
@@ -92,7 +100,7 @@ protected:
 	void getDocument(IHTMLDocument2** pOutDoc);
 	void getDocument3(IHTMLDocument3** pOutDoc);
 
-	void executeScript(const wchar_t *script, SAFEARRAY* args, VARIANT *result, bool tryAgain = true);
+	void executeScript(const wchar_t *script, SAFEARRAY* args, CComVariant* ref_result, bool tryAgain = true);
 	bool isCheckbox(IHTMLElement *pElement);
 	bool isRadio(IHTMLElement *pElement);
 	void getTagName(IHTMLElement *pElement, std::wstring& res);
@@ -100,6 +108,7 @@ protected:
 	bool isSelected(IHTMLElement *pElement);
 	static int isNodeDisplayed(IHTMLDOMNode *element, bool* displayed);
 	static int isDisplayed(IHTMLElement *element, bool* displayed);
+	bool isStillBusy();
 	bool isEnabled(IHTMLElement *pElement);
 	int getLocationWhenScrolledIntoView(IHTMLElement *pElement, HWND* hwnd, long *x, long *y, long *w, long *h);
 	int click(IHTMLElement *pElement, CScopeCaller *pSC=NULL);
@@ -111,7 +120,7 @@ protected:
 	void submit(IHTMLElement *pElement, CScopeCaller *pSC); // =NULL);
 	void findParentForm(IHTMLElement *pElement, IHTMLFormElement **pform);
 	std::vector<ElementWrapper*>* getChildrenWithTagName(IHTMLElement *pElement, LPCWSTR tagName) ;
-	void waitForDocumentToComplete(IHTMLDocument2* doc);
+	int waitForDocumentToComplete(IHTMLDocument2* doc);
 	bool addEvaluateToDocument(const IHTMLDOMNode* node, int count);
 	void findCurrentFrame(IHTMLWindow2 **result);
 	void getDefaultContentFromDoc(IHTMLWindow2 **result, IHTMLDocument2* doc);

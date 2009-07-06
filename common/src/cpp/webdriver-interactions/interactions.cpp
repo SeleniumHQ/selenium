@@ -34,7 +34,7 @@ const LPCTSTR fileDialogNames[] = {
 };
 
 #pragma data_seg(".LISTENER")
-bool pressed = false;
+static bool pressed = false;
 static HHOOK hook = 0;
 #pragma data_seg()
 #pragma comment(linker, "/section:.LISTENER,rws")

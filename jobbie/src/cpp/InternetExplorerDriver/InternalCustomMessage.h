@@ -77,4 +77,13 @@ limitations under the License.
 #define _WD_EXECUTESCRIPT				WM_USER+81
 #define _WD_GETACTIVEELEMENT			WM_USER+82
 
+// ==============================================================
+//     HEART BEATS
+// ==============================================================
+#define _WD_HB_START					WM_USER+0x100
+#define _WD_HB_STOP					    WM_USER+0x101
+#define _WD_HB_BEAT					    WM_USER+0x102
+#define _WD_HB_CRASHED					WM_USER+0x103
+
+
 #endif // JOBBIE_INTERNALCUSTOMMESSAGE_H_
