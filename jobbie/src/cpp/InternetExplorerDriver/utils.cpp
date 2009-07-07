@@ -26,7 +26,7 @@ limitations under the License.
 
 using namespace std;
 
-safeIO gSafe;
+safeIO* gSafe = NULL;
 
 LPCWSTR comvariant2cw(CComVariant& toConvert) 
 {
@@ -126,7 +126,8 @@ void safeIO::CoutL(LPCWSTR str, bool showThread, int cc)
 void safeIO::CoutA(LPCSTR str, bool showThread, int cc)
 {
 #ifdef __VERBOSING_DLL__
-	gSafe.m_cs_out.Lock();
+	if (!gSafe) return;
+	gSafe->m_cs_out.Lock();
 	if(showThread)
 	{
 		DWORD thrID = GetCurrentThreadId();
@@ -147,7 +148,7 @@ void safeIO::CoutA(LPCSTR str, bool showThread, int cc)
 	{
 		LOG(INFO) << str;
 	}
-	gSafe.m_cs_out.Unlock();
+	gSafe->m_cs_out.Unlock();
 #endif
 }
 
@@ -162,9 +163,10 @@ void AppendValue(std::wstring& dest, long value)
 void safeIO::CoutLong(long value)
 {
 #ifdef __VERBOSING_DLL__
-	gSafe.m_cs_out.Lock();
+	if (!gSafe) return;
+	gSafe->m_cs_out.Lock();
 	LOG(INFO) << value << " Hex=" << hex << value;
-	gSafe.m_cs_out.Unlock();
+	gSafe->m_cs_out.Unlock();
 #endif
 }
 
@@ -203,8 +205,7 @@ void cw2string(LPCWSTR inp, std::string &out)
 } 
 
 bool checkValidDOM(IHTMLElement* r) {
-	if(r == NULL) return true;
-	LOG(DEBUG) << "IHTMLElement is null" << endl;
-	
+	if(r != NULL) return true;
+	safeIO::CoutA("IHTMLElement is null");
 	return false;
 }

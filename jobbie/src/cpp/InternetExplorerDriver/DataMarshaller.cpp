@@ -20,7 +20,7 @@ limitations under the License.
 #include "DataMarshaller.h"
 #include "errorcodes.h"
 
-DataMarshaller::DataMarshaller(void)
+DataMarshaller::DataMarshaller(void) : output_safe_array_(NULL)
 {
 	resetInputs();
 	resetOutputs();
@@ -44,6 +44,9 @@ void DataMarshaller::resetOutputs()
 	output_list_html_element_.clear();
 	output_variant_.Clear();
 	error_code = SUCCESS;
+	if (output_safe_array_) {
+		SafeArrayDestroy(output_safe_array_);
+	}
 	output_safe_array_ = NULL;
 	exception_caught_ = false;
 }

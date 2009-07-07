@@ -21,6 +21,7 @@ limitations under the License.
 
 IeThreadData::IeThreadData(void)
 {
+	pathToFrame = L"";
 }
 
 IeThreadData::~IeThreadData(void)

@@ -154,8 +154,6 @@ int ElementWrapper::getLocationWhenScrolledIntoView(HWND* hwnd, long* x, long* y
     SafeArrayGetElement(ary, &index, (void*) &heightVariant);
     *height = heightVariant.lVal;
 
-    SafeArrayDestroy(ary);
-
 	return SUCCESS;
 }
 
@@ -175,8 +173,6 @@ void ElementWrapper::getLocation(long* x, long* y)
 	index = 1;
 	SafeArrayGetElement(ary, &index, (void*) &yVariant);
 	*y = yVariant.lVal;
-
-	SafeArrayDestroy(ary);
 }
 
 int ElementWrapper::getWidth(long* width)

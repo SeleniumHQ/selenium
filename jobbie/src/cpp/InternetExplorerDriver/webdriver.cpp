@@ -54,7 +54,7 @@ struct ScriptArgs {
 };
 
 struct ScriptResult {
-	VARIANT result;
+	CComVariant result;
 };
 
 struct StringWrapper {
@@ -129,6 +129,7 @@ int wdcGetCollectionLength(ElementCollection* collection, int* length)
 
 int wdcGetElementAtIndex(ElementCollection* collection, int index, WebElement** result)
 {
+	*result = NULL;
 	if (!collection || !collection->elements) return ENOCOLLECTION;
 
 	
@@ -211,6 +212,7 @@ int wdFreeDriver(WebDriver* driver)
 
 int wdNewDriverInstance(WebDriver** result)
 {
+	*result = NULL;
 	TRY
 	{
 	    WebDriver *driver = new WebDriver();
@@ -294,6 +296,7 @@ int wdSetVisible(WebDriver* driver, int value)
 
 int wdGetCurrentUrl(WebDriver* driver, StringWrapper** result)
 {
+	*result = NULL;
 	if (!driver || !driver->ie) return ENOSUCHDRIVER;
 
 	try {
@@ -314,6 +317,7 @@ int wdGetCurrentUrl(WebDriver* driver, StringWrapper** result)
 
 int wdGetTitle(WebDriver* driver, StringWrapper** result)
 {
+	*result = NULL;
 	if (!driver || !driver->ie) return ENOSUCHDRIVER;
 
 	try {
@@ -334,6 +338,7 @@ int wdGetTitle(WebDriver* driver, StringWrapper** result)
 
 int wdGetPageSource(WebDriver* driver, StringWrapper** result)
 {
+	*result = NULL;
 	if (!driver || !driver->ie) return ENOSUCHDRIVER;
 
 	try {
@@ -354,6 +359,7 @@ int wdGetPageSource(WebDriver* driver, StringWrapper** result)
 
 int wdGetCookies(WebDriver* driver, StringWrapper** result)
 { 
+	*result = NULL;
 	if (!driver || !driver->ie) return ENOSUCHDRIVER;
 
 	try {
@@ -383,20 +389,21 @@ int wdAddCookie(WebDriver* driver, const wchar_t* cookie)
 
 int wdSwitchToActiveElement(WebDriver* driver, WebElement** result)
 {
-        if (!driver || !driver->ie) return ENOSUCHDRIVER;
+	*result = NULL;
+    if (!driver || !driver->ie) return ENOSUCHDRIVER;
 
-		try {
-			ElementWrapper* element = driver->ie->getActiveElement();
+	try {
+		ElementWrapper* element = driver->ie->getActiveElement();
 
-			if (!element)
-					return ENOSUCHELEMENT;
+		if (!element)
+				return ENOSUCHELEMENT;
 
-			WebElement* toReturn = new WebElement();
-			toReturn->element = element;
-			*result = toReturn;
+		WebElement* toReturn = new WebElement();
+		toReturn->element = element;
+		*result = toReturn;
 
-			return SUCCESS;
-		} END_TRY;
+		return SUCCESS;
+	} END_TRY;
 }
 
 int wdSwitchToFrame(WebDriver* driver, const wchar_t* path)
@@ -444,6 +451,7 @@ int wdeClick(WebElement* element)
 
 int wdeGetAttribute(WebElement* element, const wchar_t* name, StringWrapper** result)
 {
+	*result = NULL;
 	int res = verifyFresh(element);	if (res != SUCCESS) { return res; }
 
 	try {
@@ -464,6 +472,7 @@ int wdeGetAttribute(WebElement* element, const wchar_t* name, StringWrapper** re
 
 int wdeGetValueOfCssProperty(WebElement* element, const wchar_t* name, StringWrapper** result)
 {
+	*result = NULL;
 	int res = verifyFresh(element);	if (res != SUCCESS) { return res; }
 
 	try {
@@ -484,6 +493,7 @@ int wdeGetValueOfCssProperty(WebElement* element, const wchar_t* name, StringWra
 
 int wdeGetText(WebElement* element, StringWrapper** result)
 {
+	*result = NULL;
 	int res = verifyFresh(element);	if (res != SUCCESS) { return res; }
 
 	try {
@@ -504,6 +514,7 @@ int wdeGetText(WebElement* element, StringWrapper** result)
 
 int wdeGetTagName(WebElement* element, StringWrapper** result)
 {
+	*result = NULL;
 	int res = verifyFresh(element);	if (res != SUCCESS) { return res; }
 
 	try {
@@ -646,9 +657,9 @@ int wdeGetSize(WebElement* element, long* width, long* height)
 
 int wdFindElementById(WebDriver* driver, WebElement* element, const wchar_t* id, WebElement** result)
 {
+	*result = NULL;
 	if (!driver || !driver->ie) { return ENOSUCHDRIVER; }
 
-	CComPtr<IHTMLDOMNode> res;
 	InternetExplorerDriver* ie = driver->ie;
 	CComPtr<IHTMLElement> elem;
 	if (element && element->element) {
@@ -673,8 +684,7 @@ int wdFindElementById(WebDriver* driver, WebElement* element, const wchar_t* id,
 
 int wdFindElementsById(WebDriver* driver, WebElement* element, const wchar_t* id, ElementCollection** result) 
 {
-	CComPtr<IHTMLDOMNode> res;
-
+	*result = NULL;
 	try {
 		InternetExplorerDriver* ie = driver->ie;
 		CComPtr<IHTMLElement> elem;
@@ -693,6 +703,7 @@ int wdFindElementsById(WebDriver* driver, WebElement* element, const wchar_t* id
 
 int wdFindElementByName(WebDriver* driver, WebElement* element, const wchar_t* name, WebElement** result)
 {
+	*result = NULL;
 	if (!driver || !driver->ie) { return ENOSUCHDRIVER; }
 
 	CComPtr<IHTMLDOMNode> res;
@@ -720,8 +731,7 @@ int wdFindElementByName(WebDriver* driver, WebElement* element, const wchar_t* n
 
 int wdFindElementsByName(WebDriver* driver, WebElement* element, const wchar_t* name, ElementCollection** result)
 {
-	CComPtr<IHTMLDOMNode> res;
-
+	*result = NULL;
 	try {
 		InternetExplorerDriver* ie = driver->ie;
 		CComPtr<IHTMLElement> elem;
@@ -740,9 +750,9 @@ int wdFindElementsByName(WebDriver* driver, WebElement* element, const wchar_t* 
 
 int wdFindElementByClassName(WebDriver* driver, WebElement* element, const wchar_t* className, WebElement** result)
 {
+	*result = NULL;
 	if (!driver || !driver->ie) { return ENOSUCHDRIVER; }
 
-	CComPtr<IHTMLDOMNode> res;
 	InternetExplorerDriver* ie = driver->ie;
 	CComPtr<IHTMLElement> elem;
 	if (element && element->element) {
@@ -767,9 +777,8 @@ int wdFindElementByClassName(WebDriver* driver, WebElement* element, const wchar
 
 int wdFindElementsByClassName(WebDriver* driver, WebElement* element, const wchar_t* className, ElementCollection** result)
 {
+	*result = NULL;
 	if (!driver || !driver->ie) { return ENOSUCHDRIVER; }
-
-	CComPtr<IHTMLDOMNode> res;
 
 	try {
 		InternetExplorerDriver* ie = driver->ie;
@@ -789,9 +798,9 @@ int wdFindElementsByClassName(WebDriver* driver, WebElement* element, const wcha
 
 int wdFindElementByLinkText(WebDriver* driver, WebElement* element, const wchar_t* linkText, WebElement** result)
 {
+	*result = NULL;
 	if (!driver || !driver->ie) { return ENOSUCHDRIVER; }
 
-	CComPtr<IHTMLDOMNode> res;
 	InternetExplorerDriver* ie = driver->ie;
 	CComPtr<IHTMLElement> elem;
 	if (element && element->element) {
@@ -816,9 +825,8 @@ int wdFindElementByLinkText(WebDriver* driver, WebElement* element, const wchar_
 
 int wdFindElementsByLinkText(WebDriver* driver, WebElement* element, const wchar_t* linkText, ElementCollection** result)
 {
+	*result = NULL;
 	if (!driver || !driver->ie) { return ENOSUCHDRIVER; }
-
-	CComPtr<IHTMLDOMNode> res;
 
 	try {
 		InternetExplorerDriver* ie = driver->ie;
@@ -838,9 +846,9 @@ int wdFindElementsByLinkText(WebDriver* driver, WebElement* element, const wchar
 
 int wdFindElementByPartialLinkText(WebDriver* driver, WebElement* element, const wchar_t* linkText, WebElement** result)
 {
+	*result = NULL;
 	if (!driver || !driver->ie) { return ENOSUCHDRIVER; }
 
-	CComPtr<IHTMLDOMNode> res;
 	InternetExplorerDriver* ie = driver->ie;
 	CComPtr<IHTMLElement> elem;
 	if (element && element->element) {
@@ -865,9 +873,8 @@ int wdFindElementByPartialLinkText(WebDriver* driver, WebElement* element, const
 
 int wdFindElementsByPartialLinkText(WebDriver* driver, WebElement* element, const wchar_t* linkText, ElementCollection** result)
 {
+	*result = NULL;
 	if (!driver || !driver->ie) { return ENOSUCHDRIVER; }
-
-	CComPtr<IHTMLDOMNode> res;
 
 	try {
 		InternetExplorerDriver* ie = driver->ie;
@@ -887,9 +894,9 @@ int wdFindElementsByPartialLinkText(WebDriver* driver, WebElement* element, cons
 
 int wdFindElementByTagName(WebDriver* driver, WebElement* element, const wchar_t* name, WebElement** result)
 {
+	*result = NULL;
 	if (!driver || !driver->ie) { return ENOSUCHDRIVER; }
 
-	CComPtr<IHTMLDOMNode> res;
 	InternetExplorerDriver* ie = driver->ie;
 	CComPtr<IHTMLElement> elem;
 	if (element && element->element) {
@@ -915,9 +922,8 @@ int wdFindElementByTagName(WebDriver* driver, WebElement* element, const wchar_t
 
 int wdFindElementsByTagName(WebDriver* driver, WebElement* element, const wchar_t* name, ElementCollection** result)
 {
+	*result = NULL;
 	if (!driver || !driver->ie) { return ENOSUCHDRIVER; }
-
-	CComPtr<IHTMLDOMNode> res;
 
 	try {
 		InternetExplorerDriver* ie = driver->ie;
@@ -937,9 +943,9 @@ int wdFindElementsByTagName(WebDriver* driver, WebElement* element, const wchar_
 
 int wdFindElementByXPath(WebDriver* driver, WebElement* element, const wchar_t* xpath, WebElement** result)
 {
+	*result = NULL;
 	if (!driver || !driver->ie) { return ENOSUCHDRIVER; }
 
-	CComPtr<IHTMLDOMNode> res;
 	InternetExplorerDriver* ie = driver->ie;
 	CComPtr<IHTMLElement> elem;
 	if (element && element->element) {
@@ -964,8 +970,7 @@ int wdFindElementByXPath(WebDriver* driver, WebElement* element, const wchar_t* 
 
 int wdFindElementsByXPath(WebDriver* driver, WebElement* element, const wchar_t* xpath, ElementCollection** result)
 {
-	CComPtr<IHTMLDOMNode> res;
-
+	*result = NULL;
 	try {
 		InternetExplorerDriver* ie = driver->ie;
 		CComPtr<IHTMLElement> elem;
@@ -985,6 +990,7 @@ int wdFindElementsByXPath(WebDriver* driver, WebElement* element, const wchar_t*
 
 int wdNewScriptArgs(ScriptArgs** scriptArgs, int maxLength) 
 {
+	*scriptArgs = NULL;
 	ScriptArgs* args = new ScriptArgs();
 	args->currentIndex = 0;
 	args->maxLength = maxLength;
@@ -1055,6 +1061,7 @@ int wdAddElementScriptArg(ScriptArgs* scriptArgs, WebElement* element)
 
 int wdExecuteScript(WebDriver* driver, const wchar_t* script, ScriptArgs* scriptArgs, ScriptResult** scriptResultRef) 
 {
+	*scriptResultRef = NULL;
 	CComVariant &result = driver->ie->executeScript(script, scriptArgs->args);
 
 	ScriptResult* toReturn = new ScriptResult();
@@ -1109,6 +1116,7 @@ int wdGetScriptResultType(ScriptResult* result, int* type)
 
 int wdGetStringScriptResult(ScriptResult* result, StringWrapper** wrapper)
 {
+	*wrapper = NULL;
 	if (!result) { return ENOSCRIPTRESULT; }
 
 	StringWrapper* toReturn = new StringWrapper();
@@ -1148,6 +1156,7 @@ int wdGetBooleanScriptResult(ScriptResult* result, int* value)
 
 int wdGetElementScriptResult(ScriptResult* result, WebDriver* driver, WebElement** element)
 {
+	*element = NULL;
 	if (!result) { return ENOSCRIPTRESULT; }
 
 	IHTMLElement *node = (IHTMLElement*) result->result.pdispVal;

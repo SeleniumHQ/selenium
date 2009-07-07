@@ -225,7 +225,7 @@ BOOL IeThread::InitInstance()
 {
 	SCOPETRACER
 	threadID = GetCurrentThreadId();
-	pBody = new IeThreadData;
+	pBody = new IeThreadData();
 
 	pBody->m_CmdData.output_string_.resize(5000);
 
@@ -299,7 +299,7 @@ void IeThread::OnStartIE(WPARAM w, LPARAM lp)
 	EventReleaser er(sync_LaunchIE);
 	HRESULT hr = pBody->ieThreaded.CoCreateInstance(CLSID_InternetExplorer, NULL, CLSCTX_LOCAL_SERVER);
 
-	LOG(INFO) << "Has instanciated IE. Multithreaded version." ;
+	safeIO::CoutA("Has instanciated IE. Multithreaded version.");
 
 	if (!SUCCEEDED(hr))
 	{
@@ -469,8 +469,6 @@ void IeThread::findCurrentFrame(IHTMLWindow2 **result)
 		} else {
 			// Alternatively, it's a name
 			frameName.CopyTo(&index);
-			index.vt = VT_BSTR;
-			index.bstrVal = frameName;
 		}
 
 		// Find the frame
@@ -564,7 +562,8 @@ void IeThread::removeScript(IHTMLDocument2* doc)
 		CComPtr<IHTMLElement> body;
 		doc->get_body(&body);
 		CComQIPtr<IHTMLDOMNode> bodyNode(body);
-		bodyNode->removeChild(elementNode, NULL);
+		CComPtr<IHTMLDOMNode> removed;
+		bodyNode->removeChild(elementNode, &removed);
 	}
 }
 
@@ -760,7 +759,7 @@ void IeThread::waitForNavigateToFinish()
 	pBody->ieThreaded->get_Document(&dispatch);
 	CComQIPtr<IHTMLDocument2> doc(dispatch);
 
-	if (!waitForDocumentToComplete(doc)) 
+	if (0==waitForDocumentToComplete(doc)) 
 	{
 		safeIO::CoutA("doc not complete yet", true);
 		startNavigationCompletionTimer();
@@ -787,7 +786,7 @@ void IeThread::waitForNavigateToFinish()
 			CComPtr<IHTMLDocument2> frameDoc;
 			window->get_document(&frameDoc);
 
-			if (!waitForDocumentToComplete(frameDoc))
+			if (0==waitForDocumentToComplete(frameDoc))
 			{
 				safeIO::CoutA("frame not complete yet", true);
 				startNavigationCompletionTimer();
@@ -799,6 +798,7 @@ void IeThread::waitForNavigateToFinish()
 	tryNotifyNavigCompleted();
 }
 
+// returns 1 if it is complete, 0 if incomplete.
 int IeThread::waitForDocumentToComplete(IHTMLDocument2* doc)
 {
 	SCOPETRACER
@@ -812,6 +812,7 @@ int IeThread::waitForDocumentToComplete(IHTMLDocument2* doc)
 	HRESULT hr = doc->get_readyState(&state);
 	hr = doc->get_readyState(&state);
 	if ( _wcsicmp( combstr2cw(state) , L"complete") != 0) {
+		// Still NOT complete
 		safeIO::CoutL(combstr2cw(state), true);
 		return 0;
 	}

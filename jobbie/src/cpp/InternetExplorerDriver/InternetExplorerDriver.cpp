@@ -27,6 +27,9 @@ IeThread* g_IE_Thread = NULL;
 
 InternetExplorerDriver::InternetExplorerDriver() : p_IEthread(NULL)
 {
+	if (NULL == gSafe) {
+		gSafe = new safeIO();
+	}
 	SCOPETRACER
 	speed = 0;
 	
@@ -418,13 +421,13 @@ bool InternetExplorerDriver::sendThreadMsg(UINT msg, DataMarshaller& data)
 	// NOTE(alexis.j.vuillemin): do not do here data.resetOutputs()
 	//   it has to be performed FROM the worker thread (see ON_THREAD_COMMON).
 	p_IEthread->PostThreadMessageW(msg, 0, 0);
-	DWORD res = WaitForSingleObject(data.synchronization_flag_, 1200000);
+	DWORD res = WaitForSingleObject(data.synchronization_flag_, 120000);
 	data.resetInputs();
 	if(WAIT_TIMEOUT == res)
 	{
 		safeIO::CoutA("Unexpected TIME OUT.");
 		p_IEthread->m_EventToNotifyWhenNavigationCompleted = NULL;
-		std::wstring Err(L"Error: had to TIME OUT as a request to the worker thread did not complete after 1 min.");
+		std::wstring Err(L"Error: had to TIME OUT as a request to the worker thread did not complete after 2 min.");
 		if(p_IEthread->m_HeartBeatListener != NULL)
 		{
 			PostMessage(p_IEthread->m_HeartBeatListener, _WD_HB_CRASHED, 0 ,0 );

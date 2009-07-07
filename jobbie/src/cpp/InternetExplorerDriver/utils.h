@@ -81,7 +81,7 @@ public:
 	static void CoutW(std::wstring& str, bool showThread = true, int cc=0);
 };
 
-extern safeIO gSafe;
+extern safeIO* gSafe;
 
 #endif
 

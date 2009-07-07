@@ -309,7 +309,7 @@ void IeThread::OnSelectElementByXPath(WPARAM w, LPARAM lp)
 	int &errorKind = data.error_code;
 	IHTMLElement* &pDom = data.output_html_element_; 
 	const bool inputElementWasNull = (!data.input_html_element_);
-	CComPtr<IHTMLElement> inputElement(data.input_html_element_);
+	CComQIPtr<IHTMLElement> inputElement(data.input_html_element_);
 
 	pDom = NULL;
 	errorKind = SUCCESS;

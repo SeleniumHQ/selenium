@@ -1372,7 +1372,7 @@ void IeThread::submit(IHTMLElement *pElement, CScopeCaller *pSC)
 void IeThread::findParentForm(IHTMLElement *pElement, IHTMLFormElement **pform)
 {
 	SCOPETRACER
-	CComPtr<IHTMLElement> current(pElement);
+	CComQIPtr<IHTMLElement> current(pElement);
 
 	while (current) {
 		CComQIPtr<IHTMLFormElement> form(current);
