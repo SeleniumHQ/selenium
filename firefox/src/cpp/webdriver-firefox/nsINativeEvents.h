@@ -1,5 +1,5 @@
 /*
- * DO NOT EDIT.  THIS FILE IS GENERATED FROM nsINativeEvents.idl
+ * DO NOT EDIT.  THIS FILE IS GENERATED FROM firefox\src\cpp\webdriver-firefox\nsINativeEvents.idl
  */
 
 #ifndef __gen_nsINativeEvents_h__
@@ -30,21 +30,33 @@ class NS_NO_VTABLE NS_SCRIPTABLE nsINativeEvents : public nsISupports {
   /* void sendKeys (in nsISupports aNode, in wstring value); */
   NS_SCRIPTABLE NS_IMETHOD SendKeys(nsISupports *aNode, const PRUnichar *value) = 0;
 
+  /* void mouseMove (in nsISupports aNode, in long startX, in long startY, in long endX, in long endY); */
+  NS_SCRIPTABLE NS_IMETHOD MouseMove(nsISupports *aNode, PRInt32 startX, PRInt32 startY, PRInt32 endX, PRInt32 endY) = 0;
+
+  /* void click (in nsISupports aNode, in long x, in long y); */
+  NS_SCRIPTABLE NS_IMETHOD Click(nsISupports *aNode, PRInt32 x, PRInt32 y) = 0;
+
 };
 
   NS_DEFINE_STATIC_IID_ACCESSOR(nsINativeEvents, NS_INATIVEEVENTS_IID)
 
 /* Use this macro when declaring classes that implement this interface. */
 #define NS_DECL_NSINATIVEEVENTS \
-  NS_SCRIPTABLE NS_IMETHOD SendKeys(nsISupports *aNode, const PRUnichar *value); 
+  NS_SCRIPTABLE NS_IMETHOD SendKeys(nsISupports *aNode, const PRUnichar *value); \
+  NS_SCRIPTABLE NS_IMETHOD MouseMove(nsISupports *aNode, PRInt32 startX, PRInt32 startY, PRInt32 endX, PRInt32 endY); \
+  NS_SCRIPTABLE NS_IMETHOD Click(nsISupports *aNode, PRInt32 x, PRInt32 y); 
 
 /* Use this macro to declare functions that forward the behavior of this interface to another object. */
 #define NS_FORWARD_NSINATIVEEVENTS(_to) \
-  NS_SCRIPTABLE NS_IMETHOD SendKeys(nsISupports *aNode, const PRUnichar *value) { return _to SendKeys(aNode, value); } 
+  NS_SCRIPTABLE NS_IMETHOD SendKeys(nsISupports *aNode, const PRUnichar *value) { return _to SendKeys(aNode, value); } \
+  NS_SCRIPTABLE NS_IMETHOD MouseMove(nsISupports *aNode, PRInt32 startX, PRInt32 startY, PRInt32 endX, PRInt32 endY) { return _to MouseMove(aNode, startX, startY, endX, endY); } \
+  NS_SCRIPTABLE NS_IMETHOD Click(nsISupports *aNode, PRInt32 x, PRInt32 y) { return _to Click(aNode, x, y); } 
 
 /* Use this macro to declare functions that forward the behavior of this interface to another object in a safe way. */
 #define NS_FORWARD_SAFE_NSINATIVEEVENTS(_to) \
-  NS_SCRIPTABLE NS_IMETHOD SendKeys(nsISupports *aNode, const PRUnichar *value) { return !_to ? NS_ERROR_NULL_POINTER : _to->SendKeys(aNode, value); } 
+  NS_SCRIPTABLE NS_IMETHOD SendKeys(nsISupports *aNode, const PRUnichar *value) { return !_to ? NS_ERROR_NULL_POINTER : _to->SendKeys(aNode, value); } \
+  NS_SCRIPTABLE NS_IMETHOD MouseMove(nsISupports *aNode, PRInt32 startX, PRInt32 startY, PRInt32 endX, PRInt32 endY) { return !_to ? NS_ERROR_NULL_POINTER : _to->MouseMove(aNode, startX, startY, endX, endY); } \
+  NS_SCRIPTABLE NS_IMETHOD Click(nsISupports *aNode, PRInt32 x, PRInt32 y) { return !_to ? NS_ERROR_NULL_POINTER : _to->Click(aNode, x, y); } 
 
 #if 0
 /* Use the code below as a template for the implementation class for this interface. */
@@ -80,6 +92,18 @@ nsNativeEvents::~nsNativeEvents()
 
 /* void sendKeys (in nsISupports aNode, in wstring value); */
 NS_IMETHODIMP nsNativeEvents::SendKeys(nsISupports *aNode, const PRUnichar *value)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* void mouseMove (in nsISupports aNode, in long startX, in long startY, in long endX, in long endY); */
+NS_IMETHODIMP nsNativeEvents::MouseMove(nsISupports *aNode, PRInt32 startX, PRInt32 startY, PRInt32 endX, PRInt32 endY)
+{
+    return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* void click (in nsISupports aNode, in long x, in long y); */
+NS_IMETHODIMP nsNativeEvents::Click(nsISupports *aNode, PRInt32 x, PRInt32 y)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
 }

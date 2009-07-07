@@ -26,7 +26,7 @@ import java.util.Arrays;
  * Captures the last N bytes of output.
  */
 public class CircularOutputStream extends OutputStream {
-  private static final int DEFAULT_SIZE = 8000;
+  private static final int DEFAULT_SIZE = 4096;
   private int start;
   private int end;
   private boolean filled = false;

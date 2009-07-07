@@ -48,7 +48,7 @@ Utils.getService = function(className, serviceName) {
 Utils.getServer = function() {
     var handle = Utils.newInstance("@googlecode.com/webdriver/fxdriver;1", "nsISupports");
     return handle.wrappedJSObject;
-}
+};
 
 Utils.getBrowser = function(context) {
     return context.fxbrowser;
@@ -301,33 +301,47 @@ Utils.platform = function(context) {
 
 Utils.shiftCount = 0;
 
-Utils.type = function(context, element, text) {
-    // Special-case file input elements. This is ugly, but should be okay
-    if (element.tagName == "INPUT") {
-      var inputtype = element.getAttribute("type");
-      if (inputtype && inputtype.toLowerCase() == "file") {
-        element.value = text;
-        return;
-      }
-    }
-
+Utils.getNativeEvents = function() {
   try {
     const cid = "@openqa.org/nativeevents;1";
     var obj = Components.classes[cid].createInstance();
-    obj = obj.QueryInterface(Components.interfaces.nsINativeEvents);
+    return obj.QueryInterface(Components.interfaces.nsINativeEvents);
+  } catch(e) {
+    // Unable to retrieve native events. No biggie, because we fall back to synthesis later
+    return undefined;
+  }
+};
 
+Utils.getNodeForNativeEvents = function(element) {
+  try {
     // This stuff changes between releases. Do as much up-front work in JS as possible
     var retrieval = Utils.newInstance("@mozilla.org/accessibleRetrieval;1", "nsIAccessibleRetrieval");
     var accessible = retrieval.getAccessibleFor(element.ownerDocument);
     var accessibleDoc = accessible.QueryInterface(Components.interfaces.nsIAccessibleDocument);
-    var supports = accessibleDoc.QueryInterface(Components.interfaces.nsISupports);
+    return accessibleDoc.QueryInterface(Components.interfaces.nsISupports);
+  } catch(e) {
+    // Unable to retrieve the accessible doc
+    return undefined;
+  }
+};
 
+Utils.type = function(context, element, text) {
+    // Special-case file input elements. This is ugly, but should be okay
+  if (element.tagName == "INPUT") {
+    var inputtype = element.getAttribute("type");
+    if (inputtype && inputtype.toLowerCase() == "file") {
+      element.value = text;
+      return;
+    }
+  }
+
+  var obj = Utils.getNativeEvents();
+  var node = Utils.getNodeForNativeEvents(element);
+
+  if (obj && node) {
     // Now do the native thing.
-    obj.sendKeys(supports, text);
+    obj.sendKeys(node, text);
     return;
-  } catch (err) {
-    // We've not got native events here. Simulate.
-    Utils.dumpn(err);
   }
 
   var controlKey = false;
@@ -644,7 +658,7 @@ Utils.fireHtmlEvent = function(context, element, eventName) {
     var e = doc.createEvent("HTMLEvents");
     e.initEvent(eventName, true, true);
     element.dispatchEvent(e);
-}
+};
 
 Utils.findForm = function(element) {
     // Are we already on an element that can be used to submit the form?
@@ -668,11 +682,11 @@ Utils.findForm = function(element) {
         form = form.parentNode;
     }
     return undefined;
-}
+};
 
 Utils.fireMouseEventOn = function(context, element, eventName) {
     Utils.triggerMouseEvent(element, eventName, 0, 0);
-}
+};
 
 Utils.triggerMouseEvent = function(element, eventType, clientX, clientY) {
     var event = element.ownerDocument.createEvent("MouseEvents");
@@ -680,7 +694,7 @@ Utils.triggerMouseEvent = function(element, eventType, clientX, clientY) {
 
     event.initMouseEvent(eventType, true, true, view, 1, 0, 0, clientX, clientY, false, false, false, false, 0, element);
     element.dispatchEvent(event);
-}
+};
 
 Utils.findDocumentInFrame = function(browser, frameId) {
     var frame = Utils.findFrame(browser, frameId);
@@ -842,4 +856,53 @@ Utils.findElementsByXPath = function (xpath, contextNode, context) {
         element = result.iterateNext();
     }
     return indices;
+};
+
+Utils.getLocationOnceScrolledIntoView = function(element) {
+  element.scrollIntoView(true);
+
+  var retrieval = Utils.newInstance("@mozilla.org/accessibleRetrieval;1", "nsIAccessibleRetrieval");
+
+  try {
+    var clientRect = element.getBoundingClientRect();
+    // Firefox 3.5
+
+    if (clientRect[width]) {
+      return {
+        x : clientRect.left,
+        y : clientRect.top,
+        width: clientRect.width,
+        height: clientRect.height
+      };
+    }
+
+    // Firefox 3.0
+    var accessible = retrieval.getAccessibleFor(element);
+    var x = {}, y = {}, width = {}, height = {};
+    accessible.getBounds(x, y, width, height);
+
+    return {
+      x : clientRect.left,
+      y : clientRect.top,
+      width: width.value,
+      height: height.value
+    };
+  } catch(e) {
+    // Element doesn't have an accessibility node
+  }
+
+  // Firefox 2.0
+
+  // Fallback. Use the (deprecated) method to find out where the element is in
+  // the viewport. This should be fine to use because we only fall down this
+  // code path on older versions of Firefox (I think!)
+  var theDoc = element.ownerDocument;
+  var box = theDoc.getBoxObjectFor(element);
+
+  return {
+    x : box.x,
+    y : box.y,
+    width: box.width,
+    height: box.height
+  };
 };

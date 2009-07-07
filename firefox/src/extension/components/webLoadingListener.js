@@ -47,12 +47,12 @@ function WebLoadingListener(driver, toCall) {
     onStatusChange: function() { return 0; },
     onSecurityChange: function() { return 0; },
     onLinkIconAvailable: function() { return 0; }
-  }
+  };
 
   browser.addProgressListener(this.handler,
       Components.interfaces.nsIWebProgress.NOTIFY_STATE_DOCUMENT);
-}
+};
 
 WebLoadingListener.removeListener = function(browser, listener) {
   browser.removeProgressListener(listener.handler);
-}
+};

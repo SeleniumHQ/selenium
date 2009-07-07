@@ -190,10 +190,10 @@ simple_jars = {
   },
   "test_remote_client" => {
     'src'       => "remote/client/test/java/**/*.java",
-    'deps'      => [:test_common, :firefox, :remote_client, :remote_server],
+    'deps'      => [:test_common, :firefox, :jobbie, :remote_client, :remote_server],
     'jar'       => "remote/build/webdriver-remote-common-test.jar",
     'resources' => nil,
-    'classpath' => ["remote/build/*.jar", "remote/client/lib/**/*.jar", "remote/common/lib/**/*.jar", "firefox/lib/**/*.jar", "firefox/build/webdriver-firefox.jar", "support/build/webdriver-support.jar", "support/lib/runtime/*.jar"] + common_test_libs,
+    'classpath' => ["remote/build/*.jar", "remote/client/lib/**/*.jar", "remote/common/lib/**/*.jar", "firefox/lib/**/*.jar", "firefox/build/webdriver-firefox.jar", "jobbie/build/webdriver-jobbie.jar", "jobbie/lib/runtime/*.jar", "support/build/webdriver-support.jar", "support/lib/runtime/*.jar"] + common_test_libs,
     'test_on'   => all?,
     'test_in'   => 'remote/client',
   },

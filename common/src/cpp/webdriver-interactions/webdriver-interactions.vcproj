@@ -302,11 +302,19 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath=".\errorcodes.h"
+				>
+			</File>
+			<File
 				RelativePath=".\interaction_utils.h"
 				>
 			</File>
 			<File
 				RelativePath=".\interactions.h"
+				>
+			</File>
+			<File
+				RelativePath=".\logging.h"
 				>
 			</File>
 			<File

@@ -28,6 +28,29 @@ FirefoxDriver.prototype.click = function(respond) {
         return;
     }
 
+    var nativeEvents = Utils.getNativeEvents();
+    var node = Utils.getNodeForNativeEvents(element);
+    var appInfo = Components.classes["@mozilla.org/xre/app-info;1"]
+                        .getService(Components.interfaces.nsIXULAppInfo);
+    var versionChecker = Components.classes["@mozilla.org/xpcom/version-comparator;1"]
+                                 .getService(Components.interfaces.nsIVersionComparator);
+    // I'm having trouble getting clicks to work on Firefox 2 on Windows. Always fall back for that
+    // TODO(simon): Get native clicks working for gecko 1.8+
+    var useNativeClick = versionChecker.compare(appInfo.platformVersion, "1.9") >= 0;
+
+    if (nativeEvents && node && useNativeClick) {
+      var loc = Utils.getLocationOnceScrolledIntoView(element);
+      var x = loc.x + (loc.width ? loc.width / 2 : 0) + 3;
+      var y = loc.y + (loc.height ? loc.height / 2 : 0);
+      x = parseInt(x);
+      y = parseInt(y);
+      nativeEvents.mouseMove(node, loc.x, loc.y, x, y);
+      nativeEvents.click(node, x, y);
+      respond.send();
+      return;
+    }
+
+    Utils.dumpn("Falling back to synthesized click");    
     var currentlyActive = Utils.getActiveElement(this.context);
 
     Utils.fireMouseEventOn(this.context, element, "mousedown");

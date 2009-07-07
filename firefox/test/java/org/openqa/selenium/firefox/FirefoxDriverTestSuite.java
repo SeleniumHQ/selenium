@@ -21,6 +21,11 @@ import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
+import junit.framework.TestListener;
+import junit.framework.AssertionFailedError;
+import junit.framework.TestSuite;
+import junit.framework.TestResult;
+import junit.extensions.TestDecorator;
 
 import org.openqa.selenium.TestSuiteBuilder;
 import org.openqa.selenium.internal.TemporaryFilesystem;
@@ -33,7 +38,8 @@ import java.util.HashMap;
 
 public class FirefoxDriverTestSuite extends TestCase {
   public static Test suite() throws Exception {
-    
+
+    System.setProperty("webdriver.development", "true");
 //  System.setProperty("webdriver.firefox.useExisting", "true");
     
     return new TestSuiteBuilder()
@@ -70,11 +76,7 @@ public class FirefoxDriverTestSuite extends TestCase {
 
       // Copy in the native events library/libraries
       Map<String, String> fromTo = new HashMap<String, String>();
-//      fromTo.put("Debug/webdriver-interactions.dll", "platform/WINNT_x86-msvc/components/webdriver-interactions.dll");
       fromTo.put("Debug/webdriver-firefox.dll", "platform/WINNT_x86-msvc/components/webdriver-firefox.dll");
-
-//      fromTo.put("Debug/webdriver-interactions.dll", "components/webdriver-interactions.dll");
-//      fromTo.put("Debug/webdriver-firefox.dll", "components/webdriver-firefox.dll");
 
       // We know the location of the "from" in relation to the extension source
       for (Map.Entry<String, String> entry : fromTo.entrySet()) {
@@ -97,16 +99,12 @@ public class FirefoxDriverTestSuite extends TestCase {
 
       try {
         if (xpt.exists()) {
-          System.out.println("outXpt = " + outXpt);
           FileHandler.copy(xpt, outXpt);
-        } else {
-          System.out.println("Skipping " + xpt);
         }
       } catch (IOException e) {
         throw new RuntimeException(e);
       }
 
-      System.out.println("dir = " + dir);
       return new FirefoxProfile(dir);
     }
 
@@ -127,10 +125,5 @@ public class FirefoxDriverTestSuite extends TestCase {
       // we know that this doesn't exist
       return new File(locations[0], path);
     }
-  }
-
-  public static void main(String[] args) {
-    System.setProperty("webdriver.development", "true");
-    new TestFirefoxDriver();
   }
 }

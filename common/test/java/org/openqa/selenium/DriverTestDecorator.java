@@ -56,10 +56,11 @@ public class DriverTestDecorator extends TestSetup {
 		if (!keepDriver || restartDriver) {
 			try {
 				driver.quit();
-				driver = null;
+
 			} catch (Exception e) {
 				// this is okay --- the driver could be quit by the test
 			}
+                        driver = null;
 		}
 		super.tearDown();
 	}

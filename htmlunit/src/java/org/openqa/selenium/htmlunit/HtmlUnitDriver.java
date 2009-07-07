@@ -279,8 +279,10 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     }
 
     public void quit() {
-      webClient.closeAllWindows();
-      webClient = null;
+      if (webClient != null) {
+        webClient.closeAllWindows();
+        webClient = null;
+      }
       currentWindow = null;
       histories.clear();
     }

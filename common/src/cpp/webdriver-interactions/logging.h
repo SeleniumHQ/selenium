@@ -40,6 +40,7 @@ limitations under the License.
 #include <time.h>
 #include <sstream>
 #include <string>
+#include <iostream>
 
 template <class _LOGGER> class Logger {
  public:

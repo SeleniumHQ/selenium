@@ -96,5 +96,4 @@ public class RemoteWebDriverTestSuite extends TestCase {
       super.tearDown();
     }
   }
-
 }

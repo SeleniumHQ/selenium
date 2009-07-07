@@ -425,10 +425,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\errorcodes.h"
-				>
-			</File>
-			<File
 				RelativePath=".\EventReleaser.h"
 				>
 			</File>
@@ -458,10 +454,6 @@
 			</File>
 			<File
 				RelativePath=".\jsxpath.h"
-				>
-			</File>
-			<File
-				RelativePath=".\logging.h"
 				>
 			</File>
 			<File

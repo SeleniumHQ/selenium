@@ -106,7 +106,7 @@ public class Response {
             }
 
             if (info != null) {
-                toThrow = constructor.newInstance(String.format("%s: %s", info.get("name"), info.get("message")));
+                toThrow = constructor.newInstance(String.format("%s: %s", info.has("name") ? info.get("name") : "unknown", info.get("message")));
                 List<StackTraceElement> stack = new ArrayList<StackTraceElement>();
                 if (info.has("stack")) {
                   for (String trace : ((String) info.get("stack")).split("\n")) {

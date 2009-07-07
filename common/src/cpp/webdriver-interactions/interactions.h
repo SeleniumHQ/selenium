@@ -33,10 +33,10 @@ EXPORT boolean sendKeysToFileUploadAlert(HWND alertHwnd, const wchar_t* value);
 EXPORT void sendKeys(void* windowHandle, const wchar_t* value, int timePerKey);
 
 // Mouse interactions
-EXPORT LRESULT clickAt(HWND directInputTo, long x, long y);
-EXPORT LRESULT mouseDownAt(HWND directInputTo, long x, long y);
-EXPORT LRESULT mouseUpAt(HWND directInputTo, long x, long y);
-EXPORT LRESULT mouseMoveTo(HWND directInputTo, long duration, long fromX, long fromY, long toX, long toY);
+EXPORT LRESULT clickAt(void* directInputTo, long x, long y);
+EXPORT LRESULT mouseDownAt(void* directInputTo, long x, long y);
+EXPORT LRESULT mouseUpAt(void* directInputTo, long x, long y);
+EXPORT LRESULT mouseMoveTo(void* directInputTo, long duration, long fromX, long fromY, long toX, long toY);
 
 #ifdef __cplusplus
 }

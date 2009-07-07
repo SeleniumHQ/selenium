@@ -21,7 +21,9 @@ limitations under the License.
 #include <string>
 #include <iostream>
 
+#include "errorcodes.h"
 #include "interactions.h"
+#include "logging.h"
 
 using namespace std;
 
@@ -225,6 +227,8 @@ boolean sendKeysToFileUploadAlert(HWND dialogHwnd, const wchar_t* value)
 
 void sendKeys(void* windowHandle, const wchar_t* value, int timePerKey)
 {
+	if (!windowHandle) { return; }
+
 	HWND directInputTo = static_cast<HWND>(windowHandle);
 	DWORD currThreadId = GetCurrentThreadId();
 	DWORD ieWinThreadId = GetWindowThreadProcessId(directInputTo, NULL);
@@ -492,27 +496,41 @@ void sendKeys(void* windowHandle, const wchar_t* value, int timePerKey)
 	}
 }
 
-LRESULT clickAt(HWND directInputTo, long x, long y) 
+LRESULT clickAt(void* handle, long x, long y) 
 {
-	LRESULT result = mouseDownAt(directInputTo, x, y);
+	if (!handle) { return ENULLPOINTER; }
+
+	HWND directInputTo = (HWND) handle;
+
+	LRESULT result = mouseDownAt(handle, x, y);
     if (result != 0) {
+		LOG(WARN) << "Mouse down did not succeed whilst clicking";
 		return result;
 	}
-	return mouseUpAt(directInputTo, x, y);
+
+	return mouseUpAt(handle, x, y);
 }
 
-LRESULT mouseDownAt(HWND directInputTo, long x, long y)
+LRESULT mouseDownAt(void* directInputTo, long x, long y)
 {
-	return SendMessage(directInputTo, WM_LBUTTONDOWN, MK_LBUTTON, MAKELONG(x, y));
+	if (!directInputTo) { return ENULLPOINTER; }
+
+	return SendMessage((HWND) directInputTo, WM_LBUTTONDOWN, MK_LBUTTON, MAKELONG(x, y));
 }
 
-LRESULT mouseUpAt(HWND directInputTo, long x, long y) 
+LRESULT mouseUpAt(void* directInputTo, long x, long y) 
 {
-	return SendMessage(directInputTo, WM_LBUTTONUP, 0, MAKELONG(x, y));
+	if (!directInputTo) { return ENULLPOINTER; }
+
+	return SendMessage((HWND) directInputTo, WM_LBUTTONUP, 0, MAKELONG(x, y));
 }
 
-LRESULT mouseMoveTo(HWND directInputTo, long duration, long fromX, long fromY, long toX, long toY)
+LRESULT mouseMoveTo(void* handle, long duration, long fromX, long fromY, long toX, long toY)
 {
+	if (!handle) { return ENULLPOINTER; }
+
+	HWND directInputTo = (HWND) handle;
+
 	// How many steps?
 	int steps = 15;
 	long sleep = duration / steps;
