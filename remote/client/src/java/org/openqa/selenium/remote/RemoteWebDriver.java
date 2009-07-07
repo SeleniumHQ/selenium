@@ -173,7 +173,11 @@ public class RemoteWebDriver implements WebDriver, SearchContext, JavascriptExec
   }
 
   public void quit() {
-    execute("quit");
+    try {
+      execute("quit");
+    } finally {
+      sessionId = null;
+    }
   }
 
   @SuppressWarnings({"unchecked"})
@@ -388,6 +392,8 @@ public class RemoteWebDriver implements WebDriver, SearchContext, JavascriptExec
           toThrow = constructor.newInstance(message, new ScreenshotException(screenGrab));
         } catch (NoSuchMethodException e) {
           // Fine. Fall through
+        } catch (OutOfMemoryError e) {
+          // It can happens sometimes. Fall through
         }
       }
 

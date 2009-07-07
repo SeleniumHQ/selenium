@@ -27,6 +27,8 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 
 import java.io.UnsupportedEncodingException;
+import java.io.InputStream;
+import java.io.StringWriter;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;

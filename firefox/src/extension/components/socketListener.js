@@ -81,7 +81,7 @@ SocketListener.prototype.onDataAvailable = function(request, context, inputStrea
     if (this.linesLeft <= 0 && this.data) {
         this.executeCommand();
     }
-}
+};
 
 SocketListener.prototype.executeCommand = function() {
     var fxbrowser;
@@ -148,12 +148,30 @@ SocketListener.prototype.executeCommand = function() {
         command.commandName == "quit") {
 
         this.data = "";
-        this.linesLeft = 0;
+        this.linesLeft = 0;                                                                                   
         this.step = 0;
         this.readLength = false;
 
+      try {
         respond.commandName = command.commandName;
         this[command.commandName](respond, command.parameters);
+      } catch (e) {
+        var obj = {
+          fileName : e.fileName,
+          lineNumber : e.lineNumber,
+          message : e.message,
+          name : e.name,
+          stack : e.stack
+        };
+        var message = "Exception caught by driver: " + info.command.commandName
+            + "(" + info.command.parameters + ")\n" + e;
+        Utils.dumpn(message);
+        Utils.dump(e);
+        respond.isError = true;
+        respond.context = info.driver.context;
+        respond.response = obj;
+        respond.send();
+      }
     } else if (this.driverPrototype[command.commandName]) {
         var driver;
 
