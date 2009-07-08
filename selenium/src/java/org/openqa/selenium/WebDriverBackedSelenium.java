@@ -2432,6 +2432,10 @@ public class WebDriverBackedSelenium implements Selenium {
       throw new UnsupportedOperationException("Selenium.removeScript() not implemented yet.");
   }
 
+  public void addCustomRequestHeader(String s, String s1) {
+    throw new UnsupportedOperationException("Selenium.addCustomRequestHeader() not implemented yet.");
+  }
+
   /**
    * Fake timeout thread to emulate the timeout feature in Selenium.
    */

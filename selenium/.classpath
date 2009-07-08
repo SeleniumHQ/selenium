@@ -8,6 +8,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-internet-explorer"/>
 	<classpathentry kind="lib" path="lib/buildtime/testng-5.8-jdk15.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-htmlunit"/>
-	<classpathentry kind="lib" path="lib/runtime/selenium-java-client-driver-1.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/runtime/selenium-java-client-driver-1.0.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
