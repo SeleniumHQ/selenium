@@ -99,7 +99,7 @@ public class BrowserLauncherFactory {
             }
         }
 
-        LOGGER.debug("Requested browser string '" + browser + "' does not match any known browser, treating is as a custom browser...");
+        LOGGER.debug("Requested browser string '" + browser + "' does not match any known browser, treating it as a custom browser...");
         Matcher CustomMatcher = CUSTOM_PATTERN.matcher(browser);
         if (CustomMatcher.find()) {
             String browserStartCommand = CustomMatcher.group(1);
@@ -107,7 +107,7 @@ public class BrowserLauncherFactory {
                 throw new RuntimeException("You must specify the path to an executable when using *custom!\n\n");
             }
             browserStartCommand = browserStartCommand.substring(1);
-            return new DestroyableRuntimeExecutingBrowserLauncher(browserStartCommand, sessionId);
+            return new CustomBrowserLauncher(browserStartCommand, sessionId, configuration, browserOptions);
         }
         throw browserNotSupported(browser);
     }

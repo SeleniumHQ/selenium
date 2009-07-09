@@ -19,6 +19,10 @@ package org.openqa.selenium.server.browserlaunchers;
 
 import java.io.IOException;
 
+import org.openqa.selenium.server.RemoteControlConfiguration;
+
+import org.openqa.selenium.server.BrowserConfigurationOptions;
+
 
 
 /**
@@ -26,14 +30,14 @@ import java.io.IOException;
  * @author Paul Hammant
  * @version $Revision: 189 $
  */
-public class DestroyableRuntimeExecutingBrowserLauncher extends AbstractBrowserLauncher{
+public class CustomBrowserLauncher extends AbstractBrowserLauncher{
 
     protected Process process;
     protected String commandPath;
     
     /** Specifies a command path to run */
-    public DestroyableRuntimeExecutingBrowserLauncher(String commandPath, String sessionId) {
-        super(sessionId, null, null);
+    public CustomBrowserLauncher(String commandPath, String sessionId, RemoteControlConfiguration configuration, BrowserConfigurationOptions browserOptions) {
+        super(sessionId, configuration, browserOptions);
         this.commandPath = commandPath;
         this.sessionId = sessionId;
     }
