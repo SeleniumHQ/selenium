@@ -415,21 +415,21 @@ FirefoxDriver.prototype.selectElementById = function(respond, id) {
 };
 
 FirefoxDriver.prototype.selectElementsUsingId = function(respond, id) {
-    var doc = Utils.getDocument(this.context);
-	var allElements = doc.evaluate("//*", doc, null, Components.interfaces.nsIDOMXPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
-    var indices = "";
-	var element = allElements.iterateNext();
-    while (element) {
-        var index = Utils.addToKnownElements(element, this.context);
-        indices += index + ",";
-        element = allElements.iterateNext();
-    }
-    // Strip the trailing comma
-    indices = indices.substring(0, indices.length - 1);
+  var doc = Utils.getDocument(this.context);
+  var allElements = doc.evaluate("//*[@id='" + id + "']", doc, null, Components.interfaces.nsIDOMXPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
+  var indices = "";
+  var element = allElements.iterateNext();
+  while (element) {
+    var index = Utils.addToKnownElements(element, this.context);
+    indices += index + ",";
+    element = allElements.iterateNext();
+  }
+  // Strip the trailing comma
+  indices = indices.substring(0, indices.length - 1);
 
-    respond.context = this.context;
-    respond.response = indices;
-    respond.send();
+  respond.context = this.context;
+  respond.response = indices;
+  respond.send();
 };
 
 

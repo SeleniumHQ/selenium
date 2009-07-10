@@ -208,13 +208,13 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     	assertTrue(elements.size() > 1);
     }
 
-    @Ignore({FIREFOX, SAFARI})
+    @Ignore(SAFARI)
     public void testShouldBeAbleToFindMultipleElementsById() {
     	driver.get(nestedPage);
     	
     	List<WebElement> elements = driver.findElements(By.id("2"));
     	
-    	assertTrue(elements.size() > 1);
+    	assertEquals(8, elements.size());
     }
     
     @Ignore(SAFARI)
