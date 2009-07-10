@@ -113,6 +113,18 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor {
         return this;
     }
 
+    /**
+     * Getter to access the encapsulated WebDriver.
+     * A typical example for having to use this getter is when this class is 
+     * wrapping a RemoteWebDriver, and we need to perform some queries on it 
+     * (such as calling getCapabilities).
+     * 
+     * @return the encapsulated WebDriver.
+     */
+    public WebDriver getDriver() {
+        return driver;
+    }
+    
     public void get(String url) {
         dispatcher.beforeNavigateTo(url, driver);
         driver.get(url);
