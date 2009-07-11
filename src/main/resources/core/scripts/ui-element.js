@@ -102,39 +102,47 @@ function UIElement(uiElementShorthand)
      * has no default values defined, it will not be included among the
      * permutations.
      *
-     * @param args            a list of UIArguments
-     * @param opt_inDocument  (optional)
-     * @return      a list of associative arrays containing key value pairs
+     * @param args        a list of UIArguments
+     * @param inDocument  the document object to pass to the getDefaultValues()
+     *                    method of each argument.
+     *
+     * @return  a list of associative arrays containing key value pairs
      */
-    this.permuteArgs = function(args, opt_inDocument) {
+    this.permuteArgs = function(args, inDocument) {
+        if (args.length == 0) {
+            return [];
+        }
+        
         var permutations = [];
-        for (var i = 0; i < args.length; ++i) {
-            var arg = args[i];
-            var defaultValues = (arguments.length > 1)
-                ? arg.getDefaultValues(opt_inDocument)
-                : arg.getDefaultValues();
+        var arg = args[0];
+        var remainingArgs = args.slice(1);
+        var subsequentPermutations = this.permuteArgs(remainingArgs,
+            inDocument);
+        var defaultValues = arg.getDefaultValues(inDocument);
+        
+        // skip arguments for which no default values are defined
+        if (defaultValues.length == 0) {
+            return subsequentPermutations;
+        }
+        
+        for (var i = 0; i < defaultValues.length; ++i) {
+            var value = defaultValues[i];
+            var permutation;
             
-            // skip arguments for which no default values are defined
-            if (defaultValues.length == 0) {
-                continue;
+            if (subsequentPermutations.length == 0) {
+                permutation = {};
+                permutation[arg.name] = value + "";
+                permutations.push(permutation);
             }
-            for (var j = 0; j < defaultValues.length; ++j) {
-                var value = defaultValues[j];
-                var nextPermutations = this.permuteArgs(args.slice(i+1));
-                if (nextPermutations.length == 0) {
-                    var permutation = {};
-                    permutation[arg.name] = value + ''; // make into string
+            else {
+                for (var j = 0; j < subsequentPermutations.length; ++j) {
+                    permutation = clone(subsequentPermutations[j]);
+                    permutation[arg.name] = value + "";
                     permutations.push(permutation);
                 }
-                else {
-                    for (var k = 0; k < nextPermutations.length; ++k) {
-                        nextPermutations[k][arg.name] = value + '';
-                        permutations.push(nextPermutations[k]);
-                    }
-                }
             }
-            break;
         }
+        
         return permutations;
     }
     

@@ -98,12 +98,22 @@ UIElementTest.prototype.test_UIElement_permuteArgs = function() {
             {
                 name: 'arg1',
                 description: 'desc1',
-                defaultValues: [4, 'g', '*']
+                getDefaultValues: function(inDocument) {
+                    if (inDocument != 'foo') {
+                        throw new Exception('document was not propagated!');
+                    }
+                    return [4, 'g', '*'];
+                }
             },
             {
                 name: 'arg2',
                 description: 'desc2',
-                defaultValues: []
+                getDefaultValues: function(inDocument) {
+                    if (inDocument != 'foo') {
+                        throw new Exception('document was not propagated!');
+                    }
+                    return [];
+                }
             },
             {
                 name: 'arg3',
@@ -126,7 +136,7 @@ UIElementTest.prototype.test_UIElement_permuteArgs = function() {
             {arg1: '*', arg3: '0'},
             {arg1: '*', arg3: 'q'}
         ],
-        testUIElement.permuteArgs(testUIElement.args))
+        testUIElement.permuteArgs(testUIElement.args, 'foo'))
     );
 }
 
