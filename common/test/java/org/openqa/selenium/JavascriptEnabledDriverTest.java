@@ -122,7 +122,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     }
 
 	@JavascriptEnabled
-	@Ignore({HTMLUNIT, SAFARI})
+	@Ignore(SAFARI)
     public void testShouldBeAbleToDetermineTheLocationOfAnElement() {
         driver.get(xhtmlTestPage);
 
@@ -134,7 +134,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     }
 
 	@JavascriptEnabled
-	@Ignore({HTMLUNIT, SAFARI})
+	@Ignore(SAFARI)
     public void testShouldBeAbleToDetermineTheSizeOfAnElement() {
         driver.get(xhtmlTestPage);
 
@@ -208,7 +208,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IE, FIREFOX, HTMLUNIT, REMOTE, SAFARI}, reason = "Firefox: Window demands focus to work. Other platforms: not properly tested")
+  @Ignore(value = {IE, FIREFOX, REMOTE, SAFARI}, reason = "Firefox: Window demands focus to work. Other platforms: not properly tested")
   public void testChangeEventIsFiredAppropriatelyWhenFocusIsLost() {
     driver.get(javascriptPage);
 

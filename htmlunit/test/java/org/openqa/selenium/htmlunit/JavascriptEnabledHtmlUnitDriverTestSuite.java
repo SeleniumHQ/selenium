@@ -19,6 +19,8 @@ limitations under the License.
 
 package org.openqa.selenium.htmlunit;
 
+import com.gargoylesoftware.htmlunit.BrowserVersion;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 
@@ -39,7 +41,8 @@ public class JavascriptEnabledHtmlUnitDriverTestSuite extends TestCase {
 
   public static class HtmlUnitDriverForTest extends HtmlUnitDriver {
     public HtmlUnitDriverForTest() {
-      super(true);
+      super(BrowserVersion.FIREFOX_2);
+      setJavascriptEnabled(true);
     }
   }
 }

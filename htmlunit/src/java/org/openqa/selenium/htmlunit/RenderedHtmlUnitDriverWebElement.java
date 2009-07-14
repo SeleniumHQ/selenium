@@ -26,6 +26,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlHiddenInput;
 
 import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.ElementNotVisibleException;
+import org.openqa.selenium.WebDriverException;
 
 import java.awt.*;
 
@@ -86,12 +87,55 @@ public class RenderedHtmlUnitDriverWebElement extends HtmlUnitWebElement
 
   public Point getLocation() {
     assertElementNotStale();
-    throw new UnsupportedOperationException("getLocation");
+
+    // Try the bounding client rect first.
+    String script = "var e = arguments[0]; "
+                    + "if (e.getBoundingClientRect instanceof Function) {"
+                    + "var r = e.getBoundingClientRect();"
+                    + "return r.left + ',' + r.top;"
+                    + "} return undefined;";
+    String result = (String) parent.executeScript(script, element);
+    if (result == null) {
+      // fall back to returning some value
+      // TODO(simon): This is wrong, but better something than nothing
+      result = (String) parent.executeScript(
+        "var w = arguments[0].offsetLeft; var h = arguments[0].offsetTop; return w + ',' + h;",
+        element);
+    }
+
+    try {
+      String[] sizes = result.split(",", 2);
+      return new Point(Integer.parseInt(sizes[0]), Integer.parseInt(sizes[1]));
+    } catch (Exception e) {
+      throw new WebDriverException("Cannot determine size of element from: " + result);
+    }
   }
 
   public Dimension getSize() {
     assertElementNotStale();
-    throw new UnsupportedOperationException("getSize");
+
+    // Try the bounding client rect first.
+    String script = "var e = arguments[0]; "
+                    + "if (e.getBoundingClientRect instanceof Function) {"
+                    + "var r = e.getBoundingClientRect();"
+                    + "var w = r.left - r.right; var h = r.top - r.bottom;"
+                    + "return w + ',' + h;"
+                    + "} return undefined;";
+    String result = (String) parent.executeScript(script, element);
+    if (result == null) {
+      // fall back to returning some value
+      // TODO(simon): This is probably very lame.
+      result = (String) parent.executeScript(
+        "var w = arguments[0].scrollWidth; var h = arguments[0].scrollHeight; return w + ',' + h;",
+        element);
+    }
+
+    try {
+      String[] sizes = result.split(",", 2);
+      return new Dimension(Integer.parseInt(sizes[0]), Integer.parseInt(sizes[1]));
+    } catch (Exception e) {
+      throw new WebDriverException("Cannot determine size of element from: " + result);
+    }
   }
 
   public void dragAndDropBy(int moveRightBy, int moveDownBy) {

@@ -91,6 +91,7 @@ import java.io.IOException;
 
 import net.sourceforge.htmlunit.corejs.javascript.ScriptableObject;
 import net.sourceforge.htmlunit.corejs.javascript.Function;
+import net.sourceforge.htmlunit.corejs.javascript.Undefined;
 
 public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecutor,
         FindsById, FindsByLinkText, FindsByXPath, FindsByName, FindsByTagName {
@@ -366,6 +367,10 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
 
         if (value instanceof Number) {
             return ((Number) value).longValue();
+        }
+
+        if (value instanceof Undefined) {
+          return null;
         }
 
         return result.getJavaScriptResult();
