@@ -238,22 +238,58 @@ Selenium.prototype.doClick = function(locator) {
         // command will wait for the flag to be lowered.
         
         var win = elementWithHref.ownerDocument.defaultView;
-        var originalLocation = win.location.href;
+        var originalLocation = win.location.href.replace(/#.*/,"");
         var originalHref = elementWithHref.href;
         
-        elementWithHref.href = 'javascript:try { '
+        var newHref = 'javascript:try { '
             + originalHref.replace(/^\s*javascript:/i, "")
             + ' } finally { window._executingJavascriptHref = undefined; }' ;
+        elementWithHref.href = newHref; 
         
         win._executingJavascriptHref = true;
-        
+
+        var savedEvent = null;
+        var evtListener =  function(evt) {
+          savedEvent = evt;
+        };
+
+        element.addEventListener("click", evtListener, false);
+
         this.browserbot.clickElement(element);
+
+        element.removeEventListener("click", evtListener, false);
+
+        // We're relying on javascript that's owned by
+        // elementWithHref getting executed.  It might not
+        // get executed if:
+        // 1) the click event was cancelled
+        // 2) the page changed the href value on us
+        // 3) the elementWithHref was removed from the document
+
+        if (savedEvent && savedEvent.getPreventDefault()) {
+          // click was canceled by event listener
+          win._executingJavascriptHref = undefined;
+        } else if (elementWithHref.href != newHref) {
+          // the page changed the href value on us
+          win._executingJavascriptHref = undefined;
+        } else {
+          // check that elementWithHref is still in the document
+          var d = elementWithHref.ownerDocument;
+          var html = d ? d.documentElement : null;
+          var curElem = elementWithHref;
+          while (curElem && html && !curElem.isSameNode(html)) {
+            curElem = curElem.parentNode;
+          }
+          if (!html || !curElem) {
+            win._executingJavascriptHref = undefined;
+          }
+        }
         
         return Selenium.decorateFunctionWithTimeout(function() {
             if (win.closed) {
                 return true;
             }
-            if (win.location.href != originalLocation) {
+            if (win.location.href.replace(/#.*/,"") != originalLocation) {
                 // navigated to some other page ... javascript from previous
                 // page can't still be executing!
                 return true;
