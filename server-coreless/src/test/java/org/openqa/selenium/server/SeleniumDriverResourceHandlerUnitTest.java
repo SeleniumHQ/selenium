@@ -12,6 +12,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import org.junit.Test;
 import org.mortbay.http.HttpResponse;
+import org.openqa.selenium.server.commands.CaptureScreenshotToStringCommand;
+import org.openqa.selenium.server.commands.CaptureEntirePageScreenshotToStringCommand;
+import org.openqa.selenium.server.commands.SeleniumCoreCommand;
+import org.openqa.selenium.server.commands.RetrieveLastRemoteControlLogsCommand;
 
 import java.io.File;
 import java.io.OutputStream;
@@ -139,4 +143,69 @@ public class SeleniumDriverResourceHandlerUnitTest {
 	  assertEquals("OK", result);
 	  
   }
+
+  @Test
+  public void commandResultsLogMessageForARandomCommand() {
+      final SeleniumDriverResourceHandler handler;
+
+      handler = new SeleniumDriverResourceHandler(null);
+      assertEquals("Got result: the results on session a_session_id",
+                   handler.commandResultsLogMessage("a command", "a_session_id", "the results"));
+  }
+
+  @Test
+  public void commandResultsLogMessageForCaptureScreenshotToStringCommand() {
+      final SeleniumDriverResourceHandler handler;
+
+      handler = new SeleniumDriverResourceHandler(null);
+      assertEquals("Got result: [base64 encoded PNG] on session a_session_id",
+                   handler.commandResultsLogMessage(CaptureScreenshotToStringCommand.ID, "a_session_id", "the results"));
+  }
+
+  @Test
+  public void commandResultsLogMessageForCaptureEntirePageScreenshotToStringCommand() {
+      final SeleniumDriverResourceHandler handler;
+
+      handler = new SeleniumDriverResourceHandler(null);
+      assertEquals("Got result: [base64 encoded PNG] on session a_session_id",
+                   handler.commandResultsLogMessage(CaptureEntirePageScreenshotToStringCommand.ID, "a_session_id", "the results"));
+  }
+
+  @Test
+  public void commandResultsLogMessageForCaptureEntirePageScreenshotCommand() {
+      final SeleniumDriverResourceHandler handler;
+
+      handler = new SeleniumDriverResourceHandler(null);
+      assertEquals("Got result: [base64 encoded PNG] on session a_session_id",
+                   handler.commandResultsLogMessage(SeleniumCoreCommand.CAPTURE_ENTIRE_PAGE_SCREENSHOT_ID, "a_session_id", "the results"));
+  }
+
+  @Test
+  public void commandResultsLogMessageForRetrieveLastRemoteControlLogsCommandWhenResultsAreAShortString() {
+      final SeleniumDriverResourceHandler handler;
+
+      handler = new SeleniumDriverResourceHandler(null);
+      assertEquals("Got result:the results... on session a_session_id",
+                   handler.commandResultsLogMessage(RetrieveLastRemoteControlLogsCommand.ID, "a_session_id", "the results"));
+  }
+
+  @Test
+  public void commandResultsLogMessageForRetrieveLastRemoteControlLogsCommandWhenResultsIsA30CharacterString() {
+      final SeleniumDriverResourceHandler handler;
+
+      handler = new SeleniumDriverResourceHandler(null);
+      assertEquals("Got result:123456789012345678901234567890... on session a_session_id",
+                   handler.commandResultsLogMessage(RetrieveLastRemoteControlLogsCommand.ID, "a_session_id", "123456789012345678901234567890"));
+  }
+
+  @Test
+  public void commandResultsLogMessageForRetrieveLastRemoteControlLogsCommandTruncatesWhenResultsIsALongString() {
+      final SeleniumDriverResourceHandler handler;
+
+      handler = new SeleniumDriverResourceHandler(null);
+      assertEquals("Got result:a very very very very very ver... on session a_session_id",
+                   handler.commandResultsLogMessage(RetrieveLastRemoteControlLogsCommand.ID, "a_session_id",
+                           "a very very very very very very very very very  long result"));
+  }
+
 }

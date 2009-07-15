@@ -549,18 +549,26 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         	results = new SeleniumCoreCommand(cmd, values, sessionId).execute();
         }
 
+        LOGGER.info(commandResultsLogMessage(cmd, sessionId, results));
+        return results;
+
+    }
+
+    protected String commandResultsLogMessage(String cmd, String sessionId, String results) {
+        final String trucatedResults;
+
         if (CaptureScreenshotToStringCommand.ID.equals(cmd)
             || CaptureEntirePageScreenshotToStringCommand.ID.equals(cmd)
             || SeleniumCoreCommand.CAPTURE_ENTIRE_PAGE_SCREENSHOT_ID.equals(cmd)) {
-            LOGGER.info("Got result: [base64 encoded PNG] on session " + sessionId);
-        } else if (RetrieveLastRemoteControlLogsCommand.ID.equals(cmd)) {
-            /* Trim logs to avoid Larsen effect (see remote control stability tests) */
-            LOGGER.info("Got result:" + results.substring(0, 30) + "... on session " + sessionId);
-        } else {
-            LOGGER.info("Got result: " + results + " on session " + sessionId);
+            return "Got result: [base64 encoded PNG] on session " + sessionId;
         }
-        return results;
+        if (RetrieveLastRemoteControlLogsCommand.ID.equals(cmd)) {
+            /* Trim logs to avoid Larsen effect (see remote control stability tests) */
+            trucatedResults = results.length() > 30 ? results.substring(0, 30) : results;
+            return "Got result:" + trucatedResults + "... on session " + sessionId;
+        }
 
+        return "Got result: " + results + " on session " + sessionId;
     }
 
     private void warnIfApparentDomainChange(String sessionId, String url) {
