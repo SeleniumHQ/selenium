@@ -15,14 +15,58 @@
             document.getElementById('result').innerHTML += message + " ";
         }
     </script>
+    <script type="text/javascript">
+        var startList = function() {
+            // Ugh. Let's hope no-one is faking their user agent when running the tests
+            if (navigator.userAgent.indexOf("MSIE") != -1) {
+                var navRoot = document.getElementById("nav");
+                for (var i = 0; i < navRoot.childNodes.length; i++) {
+                    var node = navRoot.childNodes[i];
+                    if (node.nodeName == "LI") {
+                        node.onmouseover = function() {
+                            this.className += " over";
+                        };
+                        node.onmouseout = function() {
+                            this.className = this.className.replace(" over", "");
+                        };
+                    }
+                }
+            }
+        };
+        window.onload=startList;
+    </script>
+    <style type="text/css">
+        #nav {
+            padding: 0; margin: 0; list-style: none;
+        }
+        #nav li {
+            float: left; position: relative; width: 10em;
+        }
+        #nav li ul {
+            display: none; position: absolute; top: 1em; left: 0;
+        }
+        #nav li > ul { top: auto; left: auto; }
+        #nav li:hover ul, #nav li.over ul{ display: block; background: white; }
+    </style>
 </head>
 <body>
 <h1>Type Stuff</h1>
 
+<div>
+    <ul id="nav">
+        <li id="menu1">Menu 1
+            <ul>
+                <li id="item1" onclick="displayMessage('item 1');">Item 1</li>
+                <li>Item 2</li>
+            </ul>
+        </li>
+    </ul>
+</div>
+
 <div id="result">
 	&nbsp;
 </div>
-
+                                                                                         
 <div id="formageddon">
     <form action="#">
         Key Up: <input type="text" id="keyUp" onkeyup="javascript:updateContent(this)"/><br/>

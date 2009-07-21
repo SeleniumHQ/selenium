@@ -539,8 +539,8 @@ LRESULT mouseMoveTo(void* handle, long duration, long fromX, long fromY, long to
 	int currentX = fromX;
 	int currentY = fromY;
 
-	int stepX = (fromX - toX) / steps;
-	int stepY = (fromY - toY) / steps;
+	int stepX = (toX - fromX) / steps;
+	int stepY = (toY - fromY) / steps;
 
 	for (int i = 0; i < steps -1; i++) {
 		SendMessage(directInputTo, WM_MOUSEMOVE, 0, MAKELPARAM(currentX, currentY));

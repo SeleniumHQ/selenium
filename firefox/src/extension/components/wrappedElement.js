@@ -40,12 +40,12 @@ FirefoxDriver.prototype.click = function(respond) {
 
     if (nativeEvents && node && useNativeClick) {
       var loc = Utils.getLocationOnceScrolledIntoView(element);
-      var x = loc.x + (loc.width ? loc.width / 2 : 0) + 3;
+      var x = loc.x + (loc.width ? loc.width / 2 : 0);
       var y = loc.y + (loc.height ? loc.height / 2 : 0);
-      x = parseInt(x);
-      y = parseInt(y);
-      nativeEvents.mouseMove(node, loc.x, loc.y, x, y);
+      nativeEvents.mouseMove(node, this.currentX, this.currentY, x, y);
       nativeEvents.click(node, x, y);
+      this.currentX = x;
+      this.currentY = y;
       respond.send();
       return;
     }
@@ -109,7 +109,7 @@ FirefoxDriver.prototype.getElementText = function(respond) {
     }
 
     respond.send();
-}
+};
 
 FirefoxDriver.prototype.getElementValue = function(respond) {
     respond.context = this.context;
@@ -204,14 +204,14 @@ FirefoxDriver.prototype.clear = function(respond) {
    }
 
    respond.send();
-}
+};
 
 FirefoxDriver.prototype.getTagName = function(respond) {
     var element = Utils.getElementAt(respond.elementId, this.context);
 
     respond.response = element.tagName.toLowerCase();
     respond.send();
-}
+};
 
 FirefoxDriver.prototype.getElementAttribute = function(respond, value) {
     var element = Utils.getElementAt(respond.elementId, this.context);
@@ -257,7 +257,29 @@ FirefoxDriver.prototype.getElementAttribute = function(respond, value) {
     respond.isError = true;
     respond.response = "No match";
     respond.send();
-}
+};
+
+FirefoxDriver.prototype.hover = function(respond) {
+  var element = Utils.getElementAt(respond.elementId, this.context);
+
+  var events = Utils.getNativeEvents();
+  var node = Utils.getNodeForNativeEvents(element);
+
+  if (events && node) {
+      var loc = Utils.getLocationOnceScrolledIntoView(element);
+
+      var x = loc.x + (loc.width ? loc.width / 2 : 0);
+      var y = loc.y + (loc.height ? loc.height / 2 : 0);
+
+      events.mouseMove(node, this.currentX, this.currentY, x, y);
+      this.currentX = x;
+      this.currentY = y;
+  } else {
+    Utils.dumpn("not hovering");
+  }
+
+  respond.send();
+};
 
 FirefoxDriver.prototype.submitElement = function(respond) {
     var element = Utils.getElementAt(respond.elementId, this.context);

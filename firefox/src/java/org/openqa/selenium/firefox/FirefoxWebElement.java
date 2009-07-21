@@ -53,6 +53,10 @@ public class FirefoxWebElement implements RenderedWebElement, Locatable,
       sendMessage(UnsupportedOperationException.class, "click");
     }
 
+    public void hover() {
+      sendMessage(WebDriverException.class, "hover");
+    }
+
     public void submit() {
         sendMessage(WebDriverException.class, "submitElement");
     }

@@ -864,12 +864,14 @@ Utils.getLocationOnceScrolledIntoView = function(element) {
   var retrieval = Utils.newInstance("@mozilla.org/accessibleRetrieval;1", "nsIAccessibleRetrieval");
 
   try {
-    var clientRect = element.getBoundingClientRect();
-    // Firefox 3.5
+    element = element.wrappedJSObject ? element.wrappedJSObject : element;
 
-    if (clientRect[width]) {
+    var clientRect = element.getBoundingClientRect();
+
+    // Firefox 3.5
+    if (clientRect['width']) {
       return {
-        x : clientRect.left,
+        x : clientRect.left + 3,
         y : clientRect.top,
         width: clientRect.width,
         height: clientRect.height
@@ -877,17 +879,19 @@ Utils.getLocationOnceScrolledIntoView = function(element) {
     }
 
     // Firefox 3.0
+    Utils.dumpn("Falling back to firefox3 mechanism");
     var accessible = retrieval.getAccessibleFor(element);
     var x = {}, y = {}, width = {}, height = {};
     accessible.getBounds(x, y, width, height);
 
     return {
-      x : clientRect.left,
+      x : clientRect.left + 3,
       y : clientRect.top,
       width: width.value,
       height: height.value
     };
   } catch(e) {
+    Utils.dumpn(e);
     // Element doesn't have an accessibility node
   }
 
@@ -900,7 +904,7 @@ Utils.getLocationOnceScrolledIntoView = function(element) {
   var box = theDoc.getBoxObjectFor(element);
 
   return {
-    x : box.x,
+    x : box.x + 3,
     y : box.y,
     width: box.width,
     height: box.height

@@ -372,4 +372,15 @@ public class ElementFindingTest extends AbstractDriverTestCase {
       // this is expected
     }
   }
+
+  public void testFindingALinkByXpathUsingContainsKeywordShouldWork() {
+    driver.get(nestedPage);
+
+    try {
+      driver.findElement(By.xpath("//a[contains(.,'hello world')]"));
+    } catch (Exception e) {
+      e.printStackTrace();
+      fail("Should not have thrown an exception");
+    }
+  }
 }

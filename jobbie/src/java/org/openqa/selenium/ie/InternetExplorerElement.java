@@ -142,6 +142,26 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
     errors.verifyErrorCode(result, "select");
   }
 
+  public void hover() {
+    HWNDByReference hwnd = new HWNDByReference();
+    NativeLongByReference x = new NativeLongByReference();
+    NativeLongByReference y = new NativeLongByReference();
+    NativeLongByReference width = new NativeLongByReference();
+    NativeLongByReference height = new NativeLongByReference();
+    int result = lib.wdeGetDetailsOnceScrolledOnToScreen(element, hwnd, x, y, width, height);
+
+    errors.verifyErrorCode(result, "hover");
+
+    long midX = x.getValue().longValue() + (width.getValue().longValue() / 2);
+    long midY = y.getValue().longValue() + (height.getValue().longValue() / 2);
+                                                                                                                           
+    result = lib.wdeMouseMoveTo(hwnd.getValue(), new NativeLong(100),
+                       new NativeLong(0), new NativeLong(0),
+                       new NativeLong(midX), new NativeLong(midY));
+
+    errors.verifyErrorCode(result, "hover mouse move");
+  }
+
   public void submit() {
     int result = lib.wdeSubmit(element);
     

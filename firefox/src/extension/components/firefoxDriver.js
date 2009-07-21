@@ -17,9 +17,12 @@ limitations under the License.
 */
 
 function FirefoxDriver(server) {
-    this.server = server;
-    this.context = new Context();
-    this.mouseSpeed = 1;
+  this.server = server;
+  this.context = new Context();
+  this.mouseSpeed = 1;
+
+  this.currentX = 0;
+  this.currentY = 0;
 }
 
 FirefoxDriver.prototype.__defineGetter__("id", function() {
