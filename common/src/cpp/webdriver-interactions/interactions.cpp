@@ -496,6 +496,14 @@ void sendKeys(void* windowHandle, const wchar_t* value, int timePerKey)
 	}
 }
 
+bool isSameThreadAs(HWND other) 
+{
+	DWORD currThreadId = GetCurrentThreadId();
+	DWORD winThreadId = GetWindowThreadProcessId(other, NULL);
+
+	return winThreadId == currThreadId;
+}
+
 LRESULT clickAt(void* handle, long x, long y) 
 {
 	if (!handle) { return ENULLPOINTER; }
@@ -515,15 +523,31 @@ LRESULT mouseDownAt(void* directInputTo, long x, long y)
 {
 	if (!directInputTo) { return ENULLPOINTER; }
 
-	return SendMessage((HWND) directInputTo, WM_LBUTTONDOWN, MK_LBUTTON, MAKELONG(x, y));
+	if (!isSameThreadAs((HWND) directInputTo)) {
+		BOOL toReturn = PostMessage((HWND) directInputTo, WM_LBUTTONDOWN, MK_LBUTTON, MAKELONG(x, y));
+
+		// Wait until we know that the previous message has been processed
+		SendMessage((HWND) directInputTo, WM_USER, 0, 0);
+		return toReturn ? 0 : 1;  // Because 0 means success.
+	} else {
+		return SendMessage((HWND) directInputTo, WM_LBUTTONDOWN, MK_LBUTTON, MAKELONG(x, y));
+	}
 }
 
 LRESULT mouseUpAt(void* directInputTo, long x, long y) 
 {
 	if (!directInputTo) { return ENULLPOINTER; }
 
-	return SendMessage((HWND) directInputTo, WM_LBUTTONUP, 0, MAKELONG(x, y));
-}
+	SendMessage((HWND) directInputTo, WM_MOUSEMOVE, 0, MAKELPARAM(x, y));
+	if (!isSameThreadAs((HWND) directInputTo)) {
+		BOOL toReturn = PostMessage((HWND) directInputTo, WM_LBUTTONUP, MK_LBUTTON, MAKELONG(x, y));
+
+		// Wait until we know that the previous message has been processed
+		SendMessage((HWND) directInputTo, WM_USER, 0, 0);
+		return toReturn ? 0 : 1;  // Because 0 means success.
+	} else {
+		return SendMessage((HWND) directInputTo, WM_LBUTTONUP, MK_LBUTTON, MAKELONG(x, y));
+	}}
 
 LRESULT mouseMoveTo(void* handle, long duration, long fromX, long fromY, long toX, long toY)
 {
