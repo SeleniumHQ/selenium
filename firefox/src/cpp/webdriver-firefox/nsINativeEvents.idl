@@ -11,4 +11,7 @@ void mouseMove(in nsISupports aNode, in long startX, in long startY, in long end
 
 /* Click the mouse at this point */
 void click(in nsISupports aNode, in long x, in long y);
+
+/* Check if there are unhandled keyboard events. */
+void hasUnhandledEvents(in nsISupports aNode, out boolean hasEvents);
 };

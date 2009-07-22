@@ -1,8 +1,11 @@
 #pragma once
 
+#ifdef _MSC_VER
 #include "stdafx.h"
+#endif
 #include "nsCOMPtr.h"
 #include "nsINativeEvents.h"
+
 #include "nsIAccessibleDocumentWrapper.h"
 
 #define EVENTS_CONTRACTID "@openqa.org/nativeevents;1"

@@ -576,4 +576,9 @@ LRESULT mouseMoveTo(void* handle, long duration, long fromX, long fromY, long to
 	return SendMessage(directInputTo, WM_MOUSEMOVE, 0, MAKELPARAM(toX, toY));
 }
 
+BOOL_TYPE pending_keyboard_events()
+{
+  return false;
+}
+
 }

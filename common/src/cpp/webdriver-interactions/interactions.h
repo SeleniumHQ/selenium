@@ -18,25 +18,39 @@ limitations under the License.
 #ifndef interactions_h
 #define interactions_h
 
+#ifdef _MSC_VER
 #include "stdafx.h"
 #include "interaction_utils.h"
+#endif
+
 #include <wchar.h>
 
+#ifdef _MSC_VER
 #define EXPORT __declspec(dllexport)
+#define WD_RESULT LRESULT
+#define WINDOW_HANDLE HWND
+#define BOOL_TYPE boolean
+#else
+#define EXPORT
+#define WD_RESULT int
+#define WINDOW_HANDLE void*
+#define BOOL_TYPE bool
+#endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 // Keyboard interactions
-EXPORT boolean sendKeysToFileUploadAlert(HWND alertHwnd, const wchar_t* value);
+EXPORT BOOL_TYPE sendKeysToFileUploadAlert(WINDOW_HANDLE alertHwnd, const wchar_t* value);
 EXPORT void sendKeys(void* windowHandle, const wchar_t* value, int timePerKey);
+EXPORT BOOL_TYPE pending_keyboard_events();
 
 // Mouse interactions
-EXPORT LRESULT clickAt(void* directInputTo, long x, long y);
-EXPORT LRESULT mouseDownAt(void* directInputTo, long x, long y);
-EXPORT LRESULT mouseUpAt(void* directInputTo, long x, long y);
-EXPORT LRESULT mouseMoveTo(void* directInputTo, long duration, long fromX, long fromY, long toX, long toY);
+EXPORT WD_RESULT clickAt(WINDOW_HANDLE directInputTo, long x, long y);
+EXPORT WD_RESULT mouseDownAt(WINDOW_HANDLE directInputTo, long x, long y);
+EXPORT WD_RESULT mouseUpAt(WINDOW_HANDLE directInputTo, long x, long y);
+EXPORT WD_RESULT mouseMoveTo(WINDOW_HANDLE directInputTo, long duration, long fromX, long fromY, long toX, long toY);
 
 #ifdef __cplusplus
 }

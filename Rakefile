@@ -12,6 +12,10 @@ def mac?
   RUBY_PLATFORM.downcase.include?("darwin")
 end
 
+def linux?
+  RUBY_PLATFORM.downcase.include?("linux")
+end
+
 def all?
   true
 end
@@ -66,6 +70,9 @@ def iPhoneSDKPresent?
     false
   end
 end
+
+# On linux only
+$gecko_dev_path = "/usr/lib/xulrunner-devel-1.9.0.10"
 
 task :build => [:prebuild, :common, :htmlunit, :firefox, :jobbie, :safari, :iphone, :support, :remote, :selenium]
 
@@ -347,12 +354,19 @@ file "jobbie/build/webdriver-jobbie.jar" => "build/Win32/Release/InternetExplore
 end
 
 #### Firefox ####
-file 'firefox/build/webdriver-extension.zip' => FileList['firefox/src/extension/**'] + ['build/Win32/Release/webdriver-firefox.dll', 'firefox/build/extension/components/nsINativeEvents.xpt'] do
-  mkdir_p "firefox/build/extension/platform/WINNT_x86-msvc/components/"
+file 'firefox/build/webdriver-extension.zip' => FileList['firefox/src/extension/**'] + ['firefox/build/extension/components/nsINativeEvents.xpt', 'build/Win32/Release/webdriver-firefox.dll', 'build/linux64/Release/libwebdriver-firefox.so']  do
+
+  if windows?
+    mkdir_p "firefox/build/extension/platform/WINNT_x86-msvc/components/"
+    cp "build/Win32/Release/webdriver-firefox.dll", "firefox/build/extension/platform/WINNT_x86-msvc/components/"
+  end
 
   cp_r "firefox/src/extension/.", "firefox/build/extension"
 
-  cp "build/Win32/Release/webdriver-firefox.dll", "firefox/build/extension/platform/WINNT_x86-msvc/components/"
+  if linux?
+    mkdir_p "firefox/build/extension/platform/Linux/components/"
+    cp "build/linux64/Release/libwebdriver-firefox.so", "firefox/build/extension/platform/Linux/components/"
+  end
 
   # Delete the .svn dirs
   rm_r Dir.glob("firefox/build/extension/**/.svn")
@@ -369,9 +383,77 @@ file 'build/Win32/Release/webdriver-firefox.dll' => FileList['firefox/src/cpp/**
   msbuild 'WebDriver.sln'
 end
 
+file "firefox/build/webdriver-firefox.jar" => "build/linux64/Release/x_ignore_nofocus.so" do
+
+  if linux?
+    mkdir_p "firefox/build/jar/amd64"
+    cp "build/linux64/Release/x_ignore_nofocus.so", "firefox/build/jar/amd64"
+  end
+  sh "jar uf firefox/build/webdriver-firefox.jar -C firefox/build/jar .", :verbose => false
+end
+
+file 'build/linux64/Release/libwebdriver-firefox.so' => FileList['firefox/src/cpp/webdriver-firefox/*.cpp'] + FileList['common/src/cpp/webdriver-interactions/*_linux.cpp'] do
+    obj_dir = "build/linux64/objects/ff_ext"
+    output_dir = "build/linux64/Release"
+    [output_dir, obj_dir].each do |dir|
+      mkdir_p dir
+    end
+
+    common_files = FileList.new('common/src/cpp/webdriver-interactions/*_linux.cpp')
+    #common_files.add 'common/src/cpp/webdriver-interactions/*_linux.cpp'
+    common_files.each do |srcfile|
+      gccbuild(srcfile, obj_dir)
+    end
+
+    firefox_files = FileList.new('firefox/src/cpp/webdriver-firefox/*.cpp')
+    firefox_files.each do |srcfile|
+      gccbuild_xul(srcfile, obj_dir)
+    end
+
+    library_name = 'libwebdriver-firefox.so'
+    gcclink(library_name, obj_dir, output_dir)
+end
+
+file 'build/linux64/Release/x_ignore_nofocus.so' => FileList['firefox/src/cpp/linux-specific/*.{c,cpp}'] do
+    obj_dir = "build/linux64/objects/linux_spec"
+    output_dir = "build/linux64/Release"
+    [output_dir, obj_dir].each do |dir|
+      mkdir_p dir
+    end
+
+    linux_specific_files = FileList.new('firefox/src/cpp/linux-specific/*.{c,cpp}')
+    linux_specific_files.each do |srcfile|
+      gccbuild_c(srcfile, obj_dir)
+    end
+
+    library_name = 'x_ignore_nofocus.so'
+    gcclink_c(library_name, obj_dir, output_dir)
+end
+
 file 'firefox/build/extension/components/nsINativeEvents.xpt' => FileList['firefox/src/cpp/webdriver-firefox/nsINativeEvents.idl'] do
   mkdir_p "firefox/build/extension/components/"
-  xpt("firefox\\src\\cpp\\webdriver-firefox\\nsINativeEvents.idl", "firefox\\build\\extension\\components\\nsINativeEvents.xpt")
+  ff_idl_in = "firefox/src/cpp/webdriver-firefox/nsINativeEvents.idl"
+  ff_idl_out = "firefox/build/extension/components/nsINativeEvents.xpt"
+  ff_idl_in.tr!("/", "\\") if windows?
+  ff_idl_out.tr!("/", "\\") if windows?
+  xpt(ff_idl_in, ff_idl_out)
+  if linux?
+    ff_idl_hdr = ff_idl_in.gsub('.idl', '.h')
+    xpt(ff_idl_in, ff_idl_hdr, "header")
+  end
+end
+
+file 'firefox/build/extension/components/nsIBaseWindow.xpt' => FileList['firefox/src/cpp/webdriver-firefox/nsIBaseWindow.idl'] do
+  mkdir_p "firefox/build/extension/components/"
+  ff_idl_in = "firefox/src/cpp/webdriver-firefox/nsIBaseWindow.idl"
+  ff_idl_out = "firefox/build/extension/components/nsIBaseWindow.xpt"
+  ff_idl_in.tr!("/", "\\") if windows?
+  ff_idl_out.tr!("/", "\\") if windows?
+  xpt(ff_idl_in, ff_idl_out)
+  if linux?
+    ff_idl_hdr = ff_idl_in.gsub('.idl', '.h')
+    xpt(ff_idl_in, ff_idl_hdr, "header")
+  end
 end
 
 task :test_firefox_py => :test_firefox do
@@ -445,6 +527,8 @@ task :release => [:common, :firefox, :htmlunit, :jobbie, :remote_release, :suppo
     rm_rf "build/dist/#{driver}"
   end
 end
+
+task :recomp_idl => FileList['firefox/build/extension/components/nsINativeEvents.xpt', 'firefox/build/extension/components/nsIBaseWindow.xpt'] 
 
 task :all => [:release] do
   mkdir_p "build/all"
@@ -572,15 +656,64 @@ def msbuild(solution)
   end
 end
 
-def xpt(idl, output)
+def xpt(idl, output, output_type = "typelib")
   gecko = "third_party\\gecko-1.9.0.11\\"
 
   if (windows?)
     gecko += "win32"
-    cmd = "#{gecko}\\bin\\xpidl.exe -w -m typelib -I#{gecko}\\idl -e #{output} #{idl}"
+    cmd = "#{gecko}\\bin\\xpidl.exe -w -m #{output_type} -I#{gecko}\\idl -e #{output} #{idl}"
+    sh cmd, :verbose => true
+  elsif (linux?)
+    sdk_inc = "#{$gecko_dev_path}/sdk/idl"
+    sdk_bin = "#{$gecko_dev_path}/bin"
+    cmd = "#{sdk_bin}/xpidl -w -m #{output_type} -I#{sdk_inc} -e #{output} #{idl}"
     sh cmd, :verbose => true
   else
     puts "Doing nothing for now. Later revisions will enable xpt building. Creating stub"
     File.open("#{output}", 'w') {|f| f.write("")}
   end
+end
+
+$gcc_comp_args = "-fPIC -fshort-wchar"
+
+def gccbuild(cppfile, obj_dir)
+  objname = cppfile.split('/')[-1].gsub('.cpp', '.o')
+  #puts "g++ #{cppfile} -c -o #{obj_dir}/#{objname}", :verbose => false
+  sh "g++ #{cppfile} `pkg-config gtk+-2.0 --cflags` #{$gcc_comp_args} -c -o #{obj_dir}/#{objname}", :verbose => true
+end
+
+def gccbuild_c(cfile, obj_dir)
+  objname = cfile.split('/')[-1].gsub('.c', '.o')
+  sh "gcc #{cfile} #{$gcc_comp_args} -Wall -c -o #{obj_dir}/#{objname}", :verbose => true
+end
+
+def gcclink_c(library_name, obj_dir, output_dir)
+  sh "gcc -Wall -shared  -fPIC -Os -o #{output_dir}/#{library_name} #{obj_dir}/*.o"
+end
+
+def gccbuild_xul(cppfile, obj_dir)
+  objname = cppfile.split('/')[-1].gsub('.cpp', '.o')
+  include_args = "-I common/src/cpp/webdriver-interactions -I #{$gecko_dev_path}/include -I /usr/include/nspr"
+
+  # XPCOM_GLUE must be defined, so we can use C++ code from within JS.
+  # https://developer.mozilla.org/en/XPCOM_Glue
+  sh "g++ -DXPCOM_GLUE  -DXPCOM_GLUE_USE_NSPR #{$gcc_comp_args} #{include_args} #{cppfile} -c -o #{obj_dir}/#{objname}", :verbose => true
+end
+
+
+def gcclink(library_name, obj_dir, output_dir)
+  gecko_sdk = "#{$gecko_dev_path}/sdk"
+  gecko_sdk_libs = "#{gecko_sdk}/lib"
+  gecko_sdk_bin = "#{gecko_sdk}/bin"
+  # Special care fore linkage should be taken: A frozen linkage is required, as
+  # the component does not care for changed interfaces.
+  # See: 
+  # http://groups.google.com/group/mozilla.dev.tech.xpcom/browse_thread/thread/bd782fa3fd08e0a9
+  # https://developer.mozilla.org/en/XPCOM_Glue
+  gecko_libs = "-L#{gecko_sdk_libs} -L#{gecko_sdk_bin} -Wl,-rpath-link,#{gecko_sdk_bin} -lxpcomglue_s -lxpcom -lnspr4 -lrt"
+  gtk_libs = "`pkg-config gtk+-2.0 --libs`"
+  #gtk_libs = ""
+  # -fPIC is important - all of the code should be position independent.
+  gcc_link_flags = "-fno-rtti -fno-exceptions -shared  -fPIC"
+  sh "g++ -Wall -Os -o #{output_dir}/#{library_name} #{obj_dir}/*.o #{gecko_libs} #{gtk_libs} #{gcc_link_flags} "
 end

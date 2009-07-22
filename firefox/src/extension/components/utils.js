@@ -337,13 +337,34 @@ Utils.type = function(context, element, text) {
 
   var obj = Utils.getNativeEvents();
   var node = Utils.getNodeForNativeEvents(element);
+  const thmgr_cls = Components.classes["@mozilla.org/thread-manager;1"];
 
-  if (obj && node) {
+  if (obj && node && thmgr_cls) {
     // Now do the native thing.
     obj.sendKeys(node, text);
+    
+    var hasEvents = {};
+    do {
+      // This sleep is needed so that Firefox on Linux will manage to process
+      // all of the keyboard events before returning control to the caller
+      // code (otherwise the caller may not find all of the keystrokes it
+      // has entered).
+
+        var threadmgr = thmgr_cls.getService(Components.interfaces.nsIThreadManager);
+        var thread = threadmgr.currentThread;
+        var done = false;
+        var the_window = element.ownerDocument.defaultView;
+        the_window.setTimeout(function() { done = true; }, 500);
+        while (!done) thread.processNextEvent(true);
+
+        obj.hasUnhandledEvents(node, hasEvents);
+    } while (hasEvents.value == true);
+
+    thread.processNextEvent(true);
     return;
   }
 
+  Utils.dumpn("Doing sendKeys in a non-native way...")
   var controlKey = false;
     var shiftKey = false;
     var altKey = false;

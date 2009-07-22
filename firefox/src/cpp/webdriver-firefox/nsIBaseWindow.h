@@ -1,5 +1,5 @@
 /*
- * DO NOT EDIT.  THIS FILE IS GENERATED FROM nsIBaseWindow.idl
+ * DO NOT EDIT.  THIS FILE IS GENERATED FROM firefox/src/cpp/webdriver-firefox/nsIBaseWindow.idl
  */
 
 #ifndef __gen_nsIBaseWindow_h__

@@ -42,15 +42,30 @@ FirefoxDriver.prototype.click = function(respond) {
       var loc = Utils.getLocationOnceScrolledIntoView(element);
       var x = loc.x + (loc.width ? loc.width / 2 : 0);
       var y = loc.y + (loc.height ? loc.height / 2 : 0);
-      nativeEvents.mouseMove(node, this.currentX, this.currentY, x, y);
-      nativeEvents.click(node, x, y);
-      this.currentX = x;
-      this.currentY = y;
-      respond.send();
-      return;
+      try {
+        nativeEvents.mouseMove(node, this.currentX, this.currentY, x, y);
+        nativeEvents.click(node, x, y);
+        this.currentX = x;
+        this.currentY = y;
+        respond.send();
+        return;
+      } catch (e) {
+        // Make sure that we only fall through only if
+        // the error returned from the native call indicates it's not
+        // implemented.
+
+        if (e.name != "NS_ERROR_NOT_IMPLEMENTED") {
+          respond.isError = true;
+          respond.response = e.toString();
+          respond.send();
+          return;
+        }
+
+        // Fall through to the synthesized click code.
+      }
     }
 
-    Utils.dumpn("Falling back to synthesized click");    
+    Utils.dumpn("Falling back to synthesized click");
     var currentlyActive = Utils.getActiveElement(this.context);
 
     Utils.fireMouseEventOn(this.context, element, "mousedown");
