@@ -98,14 +98,14 @@ template <class _LOGGER> class Logger {
 
 class LOG : public Logger<LOG> {
  public:
-  static void File(const std::string& name) {
+  static void File(const std::string& name, const char* openMode = "w") {
     const std::string& file = Name(name);
     if (file == "stdout") {
       LOG::File() = stdout;
     } else if (file == "stderr") {
       LOG::File() = stderr;
     } else {
-      LOG::File() = fopen(file.c_str(), "w");
+      LOG::File() = fopen(file.c_str(), openMode);
     }
   }
 
