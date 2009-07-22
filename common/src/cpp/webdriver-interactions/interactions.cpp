@@ -27,14 +27,6 @@ limitations under the License.
 
 using namespace std;
 
-const LPCTSTR fileDialogNames[] = {
-	_T("#32770"),
-	_T("ComboBoxEx32"),
-	_T("ComboBox"),
-	_T("Edit"),
-	NULL
-};
-
 #pragma data_seg(".LISTENER")
 static bool pressed = false;
 static HHOOK hook = 0;
@@ -188,44 +180,7 @@ LRESULT CALLBACK GetMessageProc(int nCode, WPARAM wParam, LPARAM lParam)
 
 extern "C"
 {
-boolean sendKeysToFileUploadAlert(HWND dialogHwnd, const wchar_t* value) 
-{
-    HWND editHwnd = NULL;
-    int maxWait = 10;
-    while (!editHwnd && --maxWait) {
-		wait(200);
-		editHwnd = dialogHwnd;
-		for (int i = 1; fileDialogNames[i]; ++i) {
-			editHwnd = getChildWindow(editHwnd, fileDialogNames[i]);
-		}
-    }
-
-    if (editHwnd) {
-        // Attempt to set the value, looping until we succeed.
-        const wchar_t* filename = value;
-        size_t expected = wcslen(filename);
-        size_t curr = 0;
-
-        while (expected != curr) {
-                SendMessage(editHwnd, WM_SETTEXT, 0, (LPARAM) filename);
-                wait(1000);
-                curr = SendMessage(editHwnd, WM_GETTEXTLENGTH, 0, 0);
-        }
-
-        HWND openHwnd = FindWindowExW(dialogHwnd, NULL, L"Button", L"&Open");
-        if (openHwnd) {
-                SendMessage(openHwnd, WM_LBUTTONDOWN, 0, 0);
-                SendMessage(openHwnd, WM_LBUTTONUP, 0, 0);
-        }
-
-        return true;
-    }
-
-    cout << "No edit found" << endl;
-    return false;
-}
-
-void sendKeys(void* windowHandle, const wchar_t* value, int timePerKey)
+void sendKeys(WINDOW_HANDLE windowHandle, const wchar_t* value, int timePerKey)
 {
 	if (!windowHandle) { return; }
 
@@ -504,7 +459,7 @@ bool isSameThreadAs(HWND other)
 	return winThreadId == currThreadId;
 }
 
-LRESULT clickAt(void* handle, long x, long y) 
+LRESULT clickAt(WINDOW_HANDLE handle, long x, long y) 
 {
 	if (!handle) { return ENULLPOINTER; }
 
@@ -519,7 +474,7 @@ LRESULT clickAt(void* handle, long x, long y)
 	return mouseUpAt(handle, x, y);
 }
 
-LRESULT mouseDownAt(void* directInputTo, long x, long y)
+LRESULT mouseDownAt(WINDOW_HANDLE directInputTo, long x, long y)
 {
 	if (!directInputTo) { return ENULLPOINTER; }
 
@@ -534,7 +489,7 @@ LRESULT mouseDownAt(void* directInputTo, long x, long y)
 	}
 }
 
-LRESULT mouseUpAt(void* directInputTo, long x, long y) 
+LRESULT mouseUpAt(WINDOW_HANDLE directInputTo, long x, long y) 
 {
 	if (!directInputTo) { return ENULLPOINTER; }
 
@@ -549,7 +504,7 @@ LRESULT mouseUpAt(void* directInputTo, long x, long y)
 		return SendMessage((HWND) directInputTo, WM_LBUTTONUP, MK_LBUTTON, MAKELONG(x, y));
 	}}
 
-LRESULT mouseMoveTo(void* handle, long duration, long fromX, long fromY, long toX, long toY)
+LRESULT mouseMoveTo(WINDOW_HANDLE handle, long duration, long fromX, long fromY, long toX, long toY)
 {
 	if (!handle) { return ENULLPOINTER; }
 

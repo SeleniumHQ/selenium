@@ -42,7 +42,7 @@ NS_IMETHODIMP nsNativeEvents::SendKeys(nsISupports *aNode,
 
         AccessibleDocumentWrapper doc(aNode);
 
-        void* windowHandle = doc.getWindowHandle();
+        WINDOW_HANDLE windowHandle = doc.getWindowHandle();
 
         if (!windowHandle) {
           LOG(WARN) << "Sorry, window handle is null.";

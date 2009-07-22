@@ -28,22 +28,21 @@ limitations under the License.
 #ifdef _MSC_VER
 #define EXPORT __declspec(dllexport)
 #define WD_RESULT LRESULT
-#define WINDOW_HANDLE HWND
 #define BOOL_TYPE boolean
 #else
 #define EXPORT
 #define WD_RESULT int
-#define WINDOW_HANDLE void*
 #define BOOL_TYPE bool
 #endif
+
+#define WINDOW_HANDLE void*
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 // Keyboard interactions
-EXPORT BOOL_TYPE sendKeysToFileUploadAlert(WINDOW_HANDLE alertHwnd, const wchar_t* value);
-EXPORT void sendKeys(void* windowHandle, const wchar_t* value, int timePerKey);
+EXPORT void sendKeys(WINDOW_HANDLE windowHandle, const wchar_t* value, int timePerKey);
 EXPORT BOOL_TYPE pending_keyboard_events();
 
 // Mouse interactions

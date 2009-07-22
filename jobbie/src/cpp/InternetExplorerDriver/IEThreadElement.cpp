@@ -94,6 +94,51 @@ struct keyboardData {
 	keyboardData(): hdl_EventToNotifyWhenNavigationCompleted(NULL) {}
 };
 
+const LPCTSTR fileDialogNames[] = {
+	_T("#32770"),
+	_T("ComboBoxEx32"),
+	_T("ComboBox"),
+	_T("Edit"),
+	NULL
+};
+
+boolean sendKeysToFileUploadAlert(HWND dialogHwnd, const wchar_t* value) 
+{
+    HWND editHwnd = NULL;
+    int maxWait = 10;
+    while (!editHwnd && --maxWait) {
+		wait(200);
+		editHwnd = dialogHwnd;
+		for (int i = 1; fileDialogNames[i]; ++i) {
+			editHwnd = getChildWindow(editHwnd, fileDialogNames[i]);
+		}
+    }
+
+    if (editHwnd) {
+        // Attempt to set the value, looping until we succeed.
+        const wchar_t* filename = value;
+        size_t expected = wcslen(filename);
+        size_t curr = 0;
+
+        while (expected != curr) {
+                SendMessage(editHwnd, WM_SETTEXT, 0, (LPARAM) filename);
+                wait(1000);
+                curr = SendMessage(editHwnd, WM_GETTEXTLENGTH, 0, 0);
+        }
+
+        HWND openHwnd = FindWindowExW(dialogHwnd, NULL, L"Button", L"&Open");
+        if (openHwnd) {
+                SendMessage(openHwnd, WM_LBUTTONDOWN, 0, 0);
+                SendMessage(openHwnd, WM_LBUTTONUP, 0, 0);
+        }
+
+        return true;
+    }
+
+    cout << "No edit found" << endl;
+    return false;
+}
+
 WORD WINAPI setFileValue(keyboardData* data) {
 	SCOPETRACER
 	EventReleaser ER(data->hdl_EventToNotifyWhenNavigationCompleted);

@@ -61,33 +61,32 @@ public class FirefoxBinary {
         setEnvironmentProperty("XRE_PROFILE_PATH", profileAbsPath);
         setEnvironmentProperty("MOZ_NO_REMOTE", "1");
         
-        if (isOnLinux()) {
-          String preloadLib = profileAbsPath + File.separator
-          + "x_ignore_nofocus.so";
-
-          try {
-            FileHandler.copyResource(profile.getProfileDir(), getClass(), "x_ignore_nofocus.so");
-          } catch (IOException e) {
-            if (Boolean.getBoolean("webdriver.development")) {
-              System.err.println("Exception unpacking required libraries, but in development mode. Continuing");
-              
-              // TODO(eranm): A crude hack to get some tests running. Do it
-              // in a more portable way.
-              String cwd = System.getProperty("user.dir");
-              System.out.println("CWD: " + cwd + " arch: " + System.getProperty("os.name"));
-              preloadLib = cwd + "/build/jar/amd64/x_ignore_nofocus.so";
-            } else {
-              throw new WebDriverException(e);
-            }
-          }
-          
-          File ld_file = new File(preloadLib);
-          if (ld_file.exists() == false) {
-            throw new WebDriverException("Could not locate " + preloadLib + ": "
-                + "native events will not work.");
-          }
-          setEnvironmentProperty("LD_PRELOAD", preloadLib);
-        }
+//        if (isOnLinux()) {
+//          String preloadLib = profileAbsPath + File.separator + "x_ignore_nofocus.so";
+//
+//          try {
+//            FileHandler.copyResource(profile.getProfileDir(), getClass(), "x_ignore_nofocus.so");
+//          } catch (IOException e) {
+//            if (Boolean.getBoolean("webdriver.development")) {
+//              System.err.println("Exception unpacking required libraries, but in development mode. Continuing");
+//
+//              // TODO(eranm): A crude hack to get some tests running. Do it
+//              // in a more portable way.
+//              String cwd = System.getProperty("user.dir");
+//              System.out.println("CWD: " + cwd + " arch: " + System.getProperty("os.name"));
+//              preloadLib = cwd + "/build/jar/amd64/x_ignore_nofocus.so";
+//            } else {
+//              throw new WebDriverException(e);
+//            }
+//          }
+//
+//          File ld_file = new File(preloadLib);
+//          if (ld_file.exists() == false) {
+//            throw new WebDriverException("Could not locate " + preloadLib + ": "
+//                + "native events will not work.");
+//          }
+//          setEnvironmentProperty("LD_PRELOAD", preloadLib);
+//        }
 
         List<String> commands = new ArrayList<String>();
         commands.add(executable.getPath());

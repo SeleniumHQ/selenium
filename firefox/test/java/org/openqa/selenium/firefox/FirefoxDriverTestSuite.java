@@ -39,7 +39,7 @@ import java.util.HashMap;
 public class FirefoxDriverTestSuite extends TestCase {
   public static Test suite() throws Exception {
 
-    System.setProperty("webdriver.development", "true");
+//    System.setProperty("webdriver.development", "true");
 //  System.setProperty("webdriver.firefox.useExisting", "true");
     
     return new TestSuiteBuilder()
