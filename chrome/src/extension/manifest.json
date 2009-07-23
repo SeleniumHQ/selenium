@@ -1,0 +1,16 @@
+{
+  "name": "WebDriver",
+  "version": "0.1",
+  "description": "WebDriver extension for Chrome",
+  "toolstrips": ["toolstrip.html"],
+  "background_page": "background.html",
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*", "file://*/*"],
+      "js": ["content_script.js"]
+    }
+  ],
+  "plugins": [
+    {"path": "npwebdriver.dll", "public": true}
+  ]
+}

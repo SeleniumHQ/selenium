@@ -25,6 +25,7 @@ import static org.openqa.selenium.Ignore.Driver.*;
 @SuppressWarnings("unused")
 public class SingleTestSuite extends TestCase {
 
+  private final static String CHROME = "org.openqa.selenium.chrome.ChromeDriver";
   private final static String FIREFOX = "org.openqa.selenium.firefox.FirefoxDriverTestSuite$TestFirefoxDriver";
   private final static String HTML_UNIT = "org.openqa.selenium.htmlunit.HtmlUnitDriver";
   private final static String HTML_UNIT_JS = "org.openqa.selenium.htmlunit.JavascriptEnabledHtmlUnitDriverTestSuite$HtmlUnitDriverForTest";

@@ -329,7 +329,9 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     assertEquals("Changed", driver.getTitle());
   }
   
-  @Ignore({HTMLUNIT, SAFARI})
+  @Ignore({HTMLUNIT, SAFARI, CHROME})
+  //Reason for Chrome: The content script mechanism which we use to open tabs
+  //doesn't allow for matching with non-{http, https, file, ftp} schemes
   public void testShouldNotBeAbleToFindAnElementOnABlankPage() {
     driver.get("about:blank");
     
@@ -342,7 +344,9 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     }
   }
   
-  @Ignore({HTMLUNIT, SAFARI, IPHONE})
+  @Ignore({HTMLUNIT, SAFARI, IPHONE, CHROME})
+  //Reason for Chrome: The content script mechanism which we use to open tabs
+  //doesn't allow for matching with non-{http, https, file, ftp} schemes
   @NeedsFreshDriver
   public void testShouldNotBeAbleToLocateASingleElementOnABlankPage() {
     // Note we're on the default start page for the browser at this point.
