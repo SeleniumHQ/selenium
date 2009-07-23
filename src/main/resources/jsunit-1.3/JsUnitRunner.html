@@ -1,0 +1,82 @@
+<!--
+JsUnit - a JUnit port for JavaScript
+Copyright (C) 1999,2000,2001,2002,2003,2006,2007 Joerg Schaible
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<html>
+<head>
+<title>JsUnit Selenium Unit Tests</title>
+<script type="text/javascript" language="JavaScript" src="jsunit/lib/JsUtil.js"></script>
+<script type="text/javascript" language="JavaScript" src="jsunit/lib/JsUnit.js"></script>
+
+<!-- unittest support includes -->
+<script type="text/javascript" src="../unittest/fake-browser.js"></script>
+<script type="text/javascript" src="../unittest/dummy-logging.js"></script>
+<script type="text/javascript" src="../unittest/jsmock/mock.js"></script>
+
+<!-- selenium includes -->
+<script type="text/javascript" src="../core/lib/prototype.js"></script>
+<script type="text/javascript" src="../core/scripts/htmlutils.js"></script>
+<script type="text/javascript" src="../core/scripts/selenium-api.js"></script>
+<script type="text/javascript" src="../core/scripts/selenium-browserbot.js"></script>
+<script type="text/javascript" src="../core/scripts/selenium-browserdetect.js"></script>
+<script type="text/javascript" src="../core/scripts/selenium-commandhandlers.js"></script>
+<script type="text/javascript" src="../core/scripts/selenium-executionloop.js"></script>
+<script type="text/javascript" src="../core/scripts/selenium-logging.js"></script>
+<script type="text/javascript" src="../core/scripts/selenium-remoterunner.js"></script>
+<script type="text/javascript" src="../core/scripts/selenium-testrunner.js"></script>
+<script type="text/javascript" src="../core/scripts/ui-element.js"></script>
+<script type="text/javascript" src="../core/xpath/xmltoken.js"></script>
+<script type="text/javascript" src="../core/xpath/util.js"></script>
+<script type="text/javascript" src="../core/xpath/dom.js"></script>
+<script type="text/javascript" src="../core/xpath/xpath.js"></script>
+
+<!-- the unittests -->
+<script type="text/javascript" language="JavaScript" src="../../../test/resources/AlertHandlingTest.js"></script>
+<script type="text/javascript" language="JavaScript" src="../../../test/resources/AssertTest.js"></script>
+<script type="text/javascript" language="JavaScript" src="../../../test/resources/BrowserBotFrameFinderTest.js"></script>
+<script type="text/javascript" language="JavaScript" src="../../../test/resources/BrowserBotTest.js"></script>
+<script type="text/javascript" language="JavaScript" src="../../../test/resources/CommandFactoryTest.js"></script>
+<script type="text/javascript" language="JavaScript" src="../../../test/resources/CommandHandlerTest.js"></script>
+<script type="text/javascript" language="JavaScript" src="../../../test/resources/ConfirmHandlingTest.js"></script>
+<script type="text/javascript" language="JavaScript" src="../../../test/resources/CookieTest.js"></script>
+<script type="text/javascript" language="JavaScript" src="../../../test/resources/ErrorCheckingCommandTest.js"></script>
+<script type="text/javascript" language="JavaScript" src="../../../test/resources/HtmlUtilTest.js"></script>
+<script type="text/javascript" language="JavaScript" src="../../../test/resources/OptionLocatorTest.js"></script>
+<script type="text/javascript" language="JavaScript" src="../../../test/resources/PageBotAccessorTest.js"></script>
+<script type="text/javascript" language="JavaScript" src="../../../test/resources/PatternMatcherTest.js"></script>
+<script type="text/javascript" language="JavaScript" src="../../../test/resources/RemoteRunnerTest.js"></script>
+<script type="text/javascript" language="JavaScript" src="../../../test/resources/SampleTest.js"></script>
+<script type="text/javascript" language="JavaScript" src="../../../test/resources/SeleniumApiTest.js"></script>
+<script type="text/javascript" language="JavaScript" src="../../../test/resources/SeleniumParameterTest.js"></script>
+<script type="text/javascript" language="JavaScript" src="../../../test/resources/TestLoopHandleErrorTest.js"></script>
+<script type="text/javascript" language="JavaScript" src="../../../test/resources/UIElementTest.js"></script>
+
+</head>
+
+<body>
+<h1>JsUnit Selenium Unit Tests</h1>
+
+<script type="text/javascript">
+var writer = new HTMLWriterFilter(JsUtil.prototype.getSystemWriter());
+var printer = new ClassicResultPrinter(writer);
+var runner = new EmbeddedTextTestRunner(printer);
+var collector = new TestCaseCollector(this);
+
+runner.run(collector.collectTests());
+</script>
+
+</body>
+</html>

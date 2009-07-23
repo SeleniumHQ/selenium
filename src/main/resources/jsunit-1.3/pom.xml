@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <!--
+        Copyright (C) 2006,2007 Joerg Schaible
+        Created on 17.09.2006 by Joerg Schaible
+        
+        Licensed under the Apache License, Version 2.0 (the "License");
+        you may not use this file except in compliance with the License.
+        You may obtain a copy of the License at
+        
+        http://www.apache.org/licenses/LICENSE-2.0
+        
+        Unless required by applicable law or agreed to in writing, software
+        distributed under the License is distributed on an "AS IS" BASIS,
+        WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+        See the License for the specific language governing permissions and
+        limitations under the License.
+    -->
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>de.berlios.jsunit</groupId>
+    <artifactId>jsunit-parent</artifactId>
+    <packaging>pom</packaging>
+    <version>1.3</version>
+    <name>JsUnit Parent</name>
+    <description>
+        Parent module of the JsUnit Maven build.  It combines the Java
+        components of JsUnit - a JavaScript Unit Test Framework - to a
+        multi module build.  Includes are the JsUnit utilities to embed
+        JsUnit into Java, the JsUnit Maven 2 plugin and the JsUnit Ant Task.
+    </description>
+
+    <organization>
+        <name>Joerg Schaible</name>
+    </organization>
+
+    <scm>
+        <connection>scm:svn:svn+ssh://svn.berlios.de/svnroot/repos/jsunit/tags/JsUnit_1-3</connection>
+        <developerConnection>scm:svn:svn+ssh://svn.berlios.de/svnroot/repos/jsunit/tags/JsUnit_1-3</developerConnection>
+        <url>scm:svn:svn+ssh://svn.berlios.de/svnroot/repos/jsunit/tags/JsUnit_1-3</url>
+    </scm>
+
+    <modules>
+        <module>ant</module>
+        <module>jsunit</module>
+        <module>maven2</module>
+    </modules>
+
+    <licenses>
+        <license>
+            <name>Apache 2</name>
+            <url>http://jsunit.berlios.de/license.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>joehni</id>
+            <name>Joerg Schaible</name>
+            <email>joehni@mail.berlios.de</email>
+            <organization>private</organization>
+            <organizationUrl>www.schaible.info</organizationUrl>
+            <roles>
+                <role>Project Despot</role>
+                <role>Developer</role>
+            </roles>
+            <timezone>+1</timezone>
+        </developer>
+    </developers>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>rhino</groupId>
+                <artifactId>js</artifactId>
+                <version>1.5R4.1</version>
+            </dependency>
+            <dependency>
+                <groupId>ant</groupId>
+                <artifactId>ant</artifactId>
+                <version>1.6.5</version>
+            </dependency>
+            <dependency>
+                <groupId>ant</groupId>
+                <artifactId>ant-junit</artifactId>
+                <version>1.6.5</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>1.2</version>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>3.8.1</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>jmock</groupId>
+                <artifactId>jmock</artifactId>
+                <version>1.1.0</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>2.1.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>2.0-beta-6</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-install-plugin</artifactId>
+                    <version>2.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>2.3</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.3</version>
+                    <configuration>
+                        <forkMode>once</forkMode>
+                        <workingDirectory>${basedir}</workingDirectory>
+                        <childDelegation>false</childDelegation>
+                        <useFile>true</useFile>
+                        <includes>
+                            <include>**/*Test.java</include>
+                        </includes>
+                        <excludes>
+                            <exclude>**/Abstract*.java</exclude>
+                        </excludes>
+                        <systemProperties>
+                            <property>
+                                <name>net.sourceforge.cobertura.datafile</name>
+                                <value>target/cobertura/cobertura.ser</value>
+                            </property>
+                        </systemProperties>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-report-plugin</artifactId>
+                    <version>2.3</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>2.0.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>2.1</version>
+                    <configuration>
+                        <archive>
+                            <addMavenDescriptor>false</addMavenDescriptor>
+                            <manifest>
+                                <addClasspath>false</addClasspath>
+                                <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            </manifest>
+                        </archive>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>2.0.2</version>
+                    <executions>
+                        <execution>
+                            <id>attach-sources</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>2.2</version>
+                    <executions>
+                        <execution>
+                            <id>attach-javadoc</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>2.0-beta-5</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-project-info-reports-plugin</artifactId>
+                    <version>2.0.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-plugin-plugin</artifactId>
+                    <version>2.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <version>1.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-eclipse-plugin</artifactId>
+                    <configuration>
+                        <downloadSources>true</downloadSources>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.modello</groupId>
+                    <artifactId>modello-maven-plugin</artifactId>
+                    <version>1.0-alpha-11</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>cobertura-maven-plugin</artifactId>
+                    <version>2.1</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <configuration>
+                    <tagBase>svn+ssh://svn.berlios.de/svnroot/repos/jsunit/tags</tagBase>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <reportSets>
+                    <reportSet>                                
+                        <reports>
+                            <report>index</report>
+                            <report>summary</report>
+                            <report>dependencies</report>
+                            <report>project-team</report>
+                            <report>license</report>
+                            <report>scm</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jxr-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+            </plugin>
+         </plugins>
+    </reporting>
+
+    <distributionManagement>
+        <!--  
+            The servers defined here must also appear in ~/.m2/settings.xml
+            <settings>
+            <servers>
+            <server>
+            <id>berlios-jsunit-dist-repository</id>
+            <filePermissions>664</filePermissions>
+            <directoryPermissions>775</directoryPermissions>
+            </server>
+            <server>
+            <id>berlios-jsunit-dist-snapshot-repository</id>
+            <filePermissions>664</filePermissions>
+            <directoryPermissions>775</directoryPermissions>
+            </server>
+            <server>
+            <id>berlios-jsunit-site</id>
+            <filePermissions>664</filePermissions>
+            <directoryPermissions>775</directoryPermissions>
+            </server>
+            </servers>
+            </settings>          
+        -->
+        <repository>
+            <id>berlios-jsunit-dist-repository</id>
+            <name>BerliOS JsUnit Repository</name>
+            <url>scpexe://shell.berlios.de/home/groups/jsunit/htdocs/maven2/repo</url>
+        </repository>
+        <snapshotRepository>
+            <id>berlios-jsunit-dist-snapshot-repository</id>
+            <name>BerliOS JsUnit Snapshot Repository</name>
+            <url>scpexe://shell.berlios.de/home/groups/jsunit/htdocs/maven2/snapshots</url>
+            <uniqueVersion>false</uniqueVersion>
+        </snapshotRepository>
+        <site>
+            <id>berlios-jsunit-site</id>
+            <name>BerliOS JsUnit Site</name>
+            <url>scpexe://shell.berlios.de/home/groups/jsunit/htdocs/reports/</url>
+        </site>
+    </distributionManagement>
+
+</project>

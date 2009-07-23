@@ -1,0 +1,143 @@
+# Microsoft Utility Project File - Name="AllTests" - Package Owner=<4>
+# Microsoft Utility Project Generated Build File, Format Version 70009
+# ** DO NOT EDIT **
+
+# TARGTYPE "Generic External Target" 0x0906
+
+CFG=AllTests - Generic Debug
+!MESSAGE This is not a valid makefile. To build this project using NMAKE,
+!MESSAGE use the Export Makefile command and run
+!MESSAGE 
+!MESSAGE NMAKE /f "AllTests.mak".
+!MESSAGE 
+!MESSAGE You can specify a configuration when running NMAKE
+!MESSAGE by defining the macro CFG on the command line. For example:
+!MESSAGE 
+!MESSAGE NMAKE /f "AllTests.mak" CFG="AllTests - Generic Debug"
+!MESSAGE 
+!MESSAGE Possible choices for configuration are:
+!MESSAGE 
+!MESSAGE "AllTests - Generic Release" (based on "Generic External Target")
+!MESSAGE "AllTests - Generic Debug" (based on "Generic External Target")
+!MESSAGE 
+
+# Begin Project
+# PROP VB_Project 5
+# PROP Scc_ProjName ""
+# PROP Scc_LocalPath ""
+
+!IF  "$(CFG)" == "AllTests - Generic Release"
+
+# PROP BASE Use_Debug_Libraries 0
+# PROP BASE Output_Dir "Release"
+# PROP BASE Intermediate_Dir "Release"
+# PROP BASE Cmd_Line ""
+# PROP BASE Rebuild_Opt ""
+# PROP BASE Target_File "AllTests.exe"
+# PROP BASE Bsc_Name "AllTests.bsc"
+# PROP BASE Target_Dir ""
+# PROP Use_Debug_Libraries 0
+# PROP Output_Dir "Release"
+# PROP Intermediate_Dir "Release"
+# PROP Cmd_Line ""
+# PROP Rebuild_Opt ""
+# PROP Target_File "AllTests.exe"
+# PROP Bsc_Name "AllTests.bsc"
+# PROP Target_Dir ""
+
+!ELSEIF  "$(CFG)" == "AllTests - Generic Debug"
+
+# PROP BASE Use_Debug_Libraries 1
+# PROP BASE Output_Dir "Debug"
+# PROP BASE Intermediate_Dir "Debug"
+# PROP BASE Cmd_Line ""
+# PROP BASE Rebuild_Opt ""
+# PROP BASE Target_File "AllTests.exe"
+# PROP BASE Bsc_Name "AllTests.bsc"
+# PROP BASE Target_Dir ""
+# PROP Use_Debug_Libraries 1
+# PROP Output_Dir "Debug"
+# PROP Intermediate_Dir "Debug"
+# PROP Cmd_Line ""
+# PROP Rebuild_Opt ""
+# PROP Target_File "AllTests.exe"
+# PROP Bsc_Name "AllTests.bsc"
+# PROP Target_Dir ""
+
+!ENDIF 
+
+# Begin Target
+
+# Name "AllTests - Generic Release"
+# Name "AllTests - Generic Debug"
+
+!IF  "$(CFG)" == "AllTests - Generic Release"
+
+!ELSEIF  "$(CFG)" == "AllTests - Generic Debug"
+
+!ENDIF 
+
+# Begin Source File
+
+SOURCE=.\AllTests.html
+# PROP BASE Deployment_Mode 1
+# PROP Deployment_Mode 1
+# End Source File
+# Begin Source File
+
+SOURCE=.\AllTests.js
+# PROP BASE Deployment_Mode 1
+# PROP Deployment_Mode 1
+# End Source File
+# Begin Source File
+
+SOURCE=.\ArrayTest.js
+# PROP BASE Deployment_Mode 1
+# PROP Deployment_Mode 1
+# End Source File
+# Begin Source File
+
+SOURCE=.\demo\Demo.js
+# PROP BASE Deployment_Mode 1
+# PROP Deployment_Mode 1
+# End Source File
+# End Target
+# End Project
+
+SOURCE=.\demo\DemoTest.js
+# PROP BASE Deployment_Mode 1
+# PROP Deployment_Mode 1
+# End Source File
+# End Target
+# End Project
+
+SOURCE=.\money\IMoney.js
+# PROP BASE Deployment_Mode 1
+# PROP Deployment_Mode 1
+# End Source File
+# Begin Source File
+
+SOURCE=.\money\Money.js
+# PROP BASE Deployment_Mode 1
+# PROP Deployment_Mode 1
+# End Source File
+# Begin Source File
+
+SOURCE=.\money\MoneyBag.js
+# PROP BASE Deployment_Mode 1
+# PROP Deployment_Mode 1
+# End Source File
+# Begin Source File
+
+SOURCE=.\money\MoneyTest.js
+# PROP BASE Deployment_Mode 1
+# PROP Deployment_Mode 1
+# End Source File
+# Begin Source File
+
+SOURCE=.\SimpleTest.js
+# PROP BASE Deployment_Mode 1
+# PROP Deployment_Mode 1
+# End Source File
+# End Target
+# End Project
