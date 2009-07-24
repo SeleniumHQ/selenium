@@ -16,8 +16,6 @@
 
 namespace webdriver {
 
-//TODO(danielwh): Don't hard code max size_t digits
-static const size_t kMaxSize_tDigits = 50;
 const size_t kGuidStringLength = 39;
 
 static wchar_t *CharStringToWCharString(char *in_string) {

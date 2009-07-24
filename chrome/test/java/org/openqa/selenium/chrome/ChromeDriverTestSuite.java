@@ -30,11 +30,6 @@ public class ChromeDriverTestSuite extends TestCase {
         .addSourceDir("chrome")
         .usingDriver(ChromeDriver.class)
         .exclude(CHROME)
-        .onlyRun("MiscTest")
-        .method("testShouldReportTheCurrentUrlCorrectly")
-        //.onlyRun("TypingTest")
-        //.method("testFindElementByXPath")
-        //ElementFindingTest.testShouldBeAbleToClickOnLinkIdentifiedByText
         //.includeJavascriptTests()
         .keepDriverInstance()
         .create();

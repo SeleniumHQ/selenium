@@ -38,6 +38,9 @@ function parse_port_message(message) {
   case "get element attribute":
     SendValue(message.value);
     break;
+  case "get element value":
+    SendValue(message.value);
+    break;
   case "is element selected":
     SendValue(message.value);
     break;
@@ -96,7 +99,7 @@ function HandleGet(uri) {
       }
       switch (path[5]) {
       case "value":
-        active_port.postMessage({request: "get element attribute", "element_id": element_id, "attribute": "value"});
+        active_port.postMessage({request: "get element value", "element_id": element_id});
         break;
       case "text":
         active_port.postMessage({request: "get element text", "element_id": element_id});
@@ -148,18 +151,21 @@ function HandlePost(uri, post_data, session_id, context) {
     break;
   case 6:
     if (path[3] == "element") {
+      element_id = parseInt(value[0].id);
       switch (path[5]) {
       case "value":
-        active_port.postMessage({request: "send element keys", "value": value});
+        active_port.postMessage({request: "send element keys",
+                                 "element_id": element_id,
+                                 "value": value[0].value[0]});
         break;
       case "clear":
-        active_port.postMessage({request: "clear element", "json_param": post_data});
+        active_port.postMessage({request: "clear element", "element_id": element_id});
         break;
       case "click":
-        active_port.postMessage({request: "click element", "json_param": post_data});
+        active_port.postMessage({request: "click element", "element_id": element_id});
         break;
       case "submit":
-        active_port.postMessage({request: "submit element", "json_param": post_data});
+        active_port.postMessage({request: "submit element", "element_id": element_id});
         break;
        }
      }

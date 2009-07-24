@@ -29,6 +29,8 @@ public class ChromeDriver extends RemoteWebDriver {
       }
       if (extensionFolder.isDirectory()) {
         clientProcess = Runtime.getRuntime().exec(chromeBinary + " --enable-extensions --load-extension=" + extensionFolder.getCanonicalPath());
+        //Ick, we sleep for a little bit in case the browser hasn't quite loaded
+        Thread.sleep(50);
       } else {
         throw new FileNotFoundException("Could not find extension directory (" + extensionDir + ").  Try setting webdriver.chrome.extensiondir");
       }

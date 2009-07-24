@@ -83,9 +83,9 @@ public class TypingTest extends AbstractDriverTestCase {
 		driver.get(javascriptPage);
 
 		WebElement keyReporter = driver.findElement(By.id("keyReporter"));
-		keyReporter.sendKeys("\"");
+		keyReporter.sendKeys("\"\'");
 
-		assertThat(keyReporter.getValue(), is("\""));
+		assertThat(keyReporter.getValue(), is("\"\'"));
 	}
 
   	public void testShouldBeAbleToTypeTheAtCharacter() {

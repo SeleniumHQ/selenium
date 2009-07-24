@@ -39,10 +39,6 @@ vector<string> HttpServer::SplitPath(string path) {
 void HttpServer::_CallbackHandler(mg_connection *connection,
                                   const mg_request_info *info,
                                   void *user_data) {
-  //XXX(danielwh): It may be useful to pass the full mg_request_info
-  //to the HttpHandler, and remove a bit of the abstraction, but I'm not
-  //going to for now, because I don't need to, and it's cleaner not to
-  
   WEBDRIVER_LOG_HTTP_IN(info);
   
   //Keep the connection alive until we have sent a response
@@ -66,8 +62,8 @@ void HttpServer::_CallbackHandler(mg_connection *connection,
   
   stringstream js;
   if (!strcmp(info->request_method, "POST")) {
-    string post_data = EscapeChar(string(info->post_data,
-        info->post_data_len), '\'');
+    string post_data = EscapeChar(EscapeChar(string(info->post_data,
+        info->post_data_len), '\''), '\"');
     if (uri.size() == 4 && uri[3] == "url") {
       char *guid = GenerateGuidString();
       js << "get_url('" << post_data << "', '"

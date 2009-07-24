@@ -25,6 +25,9 @@ function parse_port_message(message) {
   case "get element attribute":
     get_element_attribute(message.element_id, message.attribute);
     break;
+  case "get element value":
+    port.postMessage({response: "get element value", value: element_array[message.element_id].value});
+    break;
   case "is element selected":
     is_element_selected(message.element_id);
     break;
@@ -32,10 +35,10 @@ function parse_port_message(message) {
     get_element_text(message.element_id);
     break;
   case "send element keys":
-    send_element_keys(message.value);
+    send_element_keys(message.element_id, message.value);
     break;
   case "clear element":
-    clear_element(message.json_param);
+    clear_element(message.element_id);
     break;
   case "click element":
     click_element(message.json_param);
@@ -132,7 +135,6 @@ function get_element(plural, parsed) {
     return;
   } else {
     var elements_array = new Array();
-    //var elements_id_string = '[';
     if (plural) {
       var from = element_array.length;
       element_array = element_array.concat(elements);
@@ -183,41 +185,36 @@ function get_element_text(element_id) {
   port.postMessage({response: "get element text", value: element_array[element_id].innerText});
 }
 
-function send_element_keys(request) {
-  if (parseInt(request.id) != null && element_array.length >= parseInt(request.id) + 1) {
-    element_array[request.id].focus();
-    port.postMessage({response: "send element keys", status: true, value: request.value[0]});
+function send_element_keys(element_id, value) {
+  if ((element = internal_get_element(element_id)) != null) {
+    element.focus();
+    port.postMessage({response: "send element keys", status: true, value: value});
   } else {
     port.postMessage({response: "send element keys", status: false, value: ""});
   }
 }
 
-function clear_element(json_param) {
-  var request = JSON.parse(json_param)[0];
-  if (parseInt(request.id) != null && element_array.length >= parseInt(request.id) + 1) {
-    element_array[request.id].value = '';
+function clear_element(element_id) {
+  if ((element = internal_get_element(element_id)) != null) {
+    element.value = '';
     port.postMessage({response: "clear element", status: true});
   } else {
     port.postMessage({response: "clear element", status: false});
   }
 }
 
-function click_element(json_param) {
-  var request = JSON.parse(json_param)[0];
-  var request_id = parseInt(request.id);
-  if (parseInt(request.id) != null && element_array.length >= request_id + 1) {
-    var coords = find_element_coords(element_array[request_id]);
+function click_element(element_id) {
+  if ((element = internal_get_element(element_id)) != null) {
+    var coords = find_element_coords(element);
     port.postMessage({response: "click element", status: true, x: coords[0], y: coords[1]});
   } else {
     port.postMessage({response: "click element", status: false, x: -1, y: -1});
   }
 }
 
-function submit_element(json_param) {
-  var request = JSON.parse(json_param)[0];
-  var request_id = parseInt(request.id);
-  if (parseInt(request.id) != null && element_array.length >= request_id + 1) {
-    element_array[request_id].submit();
+function submit_element(element_id) {
+  if ((element = internal_get_element(element_id)) != null) {
+    element.submit();
     port.postMessage({response: "submit element", status: true});
   } else {
     port.postMessage({response: "submit element", status: false});
@@ -275,4 +272,12 @@ function get_elements_by_xpath(xpath) {
     this_element = found_elements.iterateNext();
   }
   return elements;
+}
+
+function internal_get_element(element_id) {
+  if (element_id != null && element_array.length >= element_id + 1) {
+    return element_array[element_id];
+  } else {
+    return null;
+  }
 }
