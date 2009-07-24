@@ -263,9 +263,11 @@ function UIElement(uiElementShorthand)
                 }
             }
             else {
-                // try using no arguments. If it doesn't work, fine.
+                // try using no arguments. Parse the locator to make sure it's
+                // really good. If it doesn't work, fine.
                 try {
                     var locator = this.getLocator();
+                    parse_locator(locator);
                     defaultLocators[locator] = {};
                 }
                 catch (e) {
