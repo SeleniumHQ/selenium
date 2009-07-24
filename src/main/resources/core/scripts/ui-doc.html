@@ -358,6 +358,11 @@ map.addElement('searchPages', {
     <td>(String) a description for the argument.</td>
     <td><pre>description: 'the index of the article'</pre></td>
 </tr>
+<tr><td>required</td>
+    <td>No</td>
+    <td>(Boolean) whether the argument is necessary for a valid locator to be produced. If <code>true</code>, locators will not be constructed at recording time when no default values are available for this argument. Defaults to <code>false</code>.</td>
+    <td><pre>required: true</pre></td>
+</tr>
 <tr><td>defaultValues<br/>getDefaultValues()</td>
     <td>Yes</td>
     <td><p>(Array | Function) either an array of string or numerical values, or a function that returns an array of string or numerical values. One or the other should be defined, but not both. Under the sheets, the <code>defaultValues</code> attribute eventually gets transcripted as a <code>getDefaultValues()</code> function.</p><p>The method signature of the function is <code>getDefaultValues(inDocument)</code>. <code>inDocument</code> is the current document object of the page at time of recording. In cases where the default values are known a priori, <code>inDocument</code> need not be used. If the default values of all arguments of a UI element are known a priori, the list of default locators for the element may be precalculated, resulting in better performance. If <code>inDocument</code> is used, in cases where the current document is inspected for valid values, the element's default locators are calculated once for every recordable event.</p></td>

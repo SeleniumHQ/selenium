@@ -142,6 +142,34 @@ UIElementTest.prototype.test_UIElement_permuteArgs = function() {
 
 
 
+UIElementTest.prototype.test_UIElement_permuteArgsRespectsRequiredArguments = function() {
+    var testUIElement = new UIElement({
+        name: 'name'
+        , description: 'desc'
+        , args: [
+            {
+                name: 'arg1',
+                description: 'desc1',
+                required: true,
+                getDefaultValues: function() {
+                    return [];
+                }
+            }
+            , {
+                name: 'arg3',
+                description: 'desc3',
+                required: false,
+                defaultValues: ['%', 0, 'q']
+            }
+        ]
+        , getLocator: function(args) { return '//a'; }
+    });
+    
+    this.assertTrue(are_equal([], testUIElement.permuteArgs(testUIElement.args, 'foo')));
+}
+
+
+
 UIElementTest.prototype.test_UIElement_getTestcases = function() {
     var testUIElement = new UIElement({
         name: 'name'
@@ -350,6 +378,7 @@ UIElementTest.prototype.test_UIArgument_init = function() {
         localVars);
     this.assertEquals('name', uiArgument.name);
     this.assertEquals('desc', uiArgument.description);
+    this.assertEquals(false, uiArgument.required);
     this.assertTrue(are_equal([1, 2], uiArgument.getDefaultValues()));
     this.assertEquals('bar', uiArgument._foo);
     

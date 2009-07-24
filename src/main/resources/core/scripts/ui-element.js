@@ -120,9 +120,15 @@ function UIElement(uiElementShorthand)
             inDocument);
         var defaultValues = arg.getDefaultValues(inDocument);
         
-        // skip arguments for which no default values are defined
+        // skip arguments for which no default values are defined. If the
+        // argument is a required one, then no permutations are possible.
         if (defaultValues.length == 0) {
-            return subsequentPermutations;
+            if (arg.required) {
+                return [];
+            }
+            else {
+                return subsequentPermutations;
+            }
         }
         
         for (var i = 0; i < defaultValues.length; ++i) {
@@ -554,6 +560,7 @@ function UIArgument(uiArgumentShorthand, localVars)
         
         this.name = uiArgumentShorthand.name;
         this.description = uiArgumentShorthand.description;
+        this.required = uiArgumentShorthand.required || false;
         
         if (uiArgumentShorthand.defaultValues) {
             var defaultValues = uiArgumentShorthand.defaultValues;
