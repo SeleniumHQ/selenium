@@ -36,7 +36,11 @@ function parse_port_message(message) {
     }
     break;
   case "get element attribute":
-    SendValue(message.value);
+    if (message.status) {
+      SendValue(message.value);
+    } else {
+      SendNotFound({message: "An error occured while finding attribute of " + message.attribute + " " + message.value, class: "org.openqa.selenium.NotFoundException"});
+    }
     break;
   case "get element value":
     SendValue(message.value);

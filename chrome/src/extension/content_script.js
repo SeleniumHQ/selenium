@@ -41,10 +41,10 @@ function parse_port_message(message) {
     clear_element(message.element_id);
     break;
   case "click element":
-    click_element(message.json_param);
+    click_element(message.element_id);
     break;
   case "submit element":
-    submit_element(message.json_param);
+    submit_element(message.element_id);
     break;
   case "url":
     port.postMessage({response: "url", url: document.location.href});
@@ -134,12 +134,12 @@ function get_element(plural, parsed) {
     }
     return;
   } else {
-    var elements_array = new Array();
+    var elements_to_return_array = new Array();
     if (plural) {
       var from = element_array.length;
       element_array = element_array.concat(elements);
       for (var i = from; i < element_array.length; i++) {
-        elements_array.push('element/' + i);
+        elements_to_return_array.push('element/' + i);
       }
     } else {
       if (!elements[0]) {
@@ -147,9 +147,9 @@ function get_element(plural, parsed) {
         return;
       }
       element_array.push(elements[0]);
-      elements_array.push('element/' + (element_array.length - 1));
+      elements_to_return_array.push('element/' + (element_array.length - 1));
     }
-    port.postMessage({response: "get element", status: true, "elements": elements_array});
+    port.postMessage({response: "get element", status: true, "elements": elements_to_return_array});
     return;
   }
 }
@@ -178,7 +178,15 @@ function getElementsByPartialLinkText(parent, partial_link_text) {
 }
 
 function get_element_attribute(element_id, attribute) {
-  port.postMessage({response: "get element attribute", value: element_array[element_id].getAttribute(attribute)});
+  if ((element = internal_get_element(element_id)) != null) {
+    var value = element.getAttribute(attribute);
+    if (attribute == "disabled" && value == null) {
+      value = "false";
+    }
+    port.postMessage({response: "get element attribute", status: true, value: value});
+  } else {
+    port.postMessage({response: "get element attribute", status: false, attribute: attribute});
+  }
 }
 
 function get_element_text(element_id) {
