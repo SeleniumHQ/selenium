@@ -4,89 +4,205 @@ require 'rake'
 require 'rake/testtask'
 require 'rake/rdoctask'
 
-def windows?
-  RUBY_PLATFORM.downcase.include?("win32")
-end
-
-def mac?
-  RUBY_PLATFORM.downcase.include?("darwin")
-end
-
-def all?
-  true
-end
+require 'rake-tasks/c.rb'
+require 'rake-tasks/checks.rb'
+require 'rake-tasks/java.rb'
+require 'rake-tasks/mozilla.rb'
 
 task :default => [:test]
 
-def present?(arg)
-  prefixes = ENV['PATH'].split(File::PATH_SEPARATOR)
+# TODO(simon): All "outs" should be arrays
 
-  matches = prefixes.select do |prefix|
-    File.exists?(prefix + File::SEPARATOR + arg)
-  end
+jar(:name => "common",
+    :src  => [ "common/src/java/**/*.java" ],
+    :out  => "webdriver-common.jar")
 
-  matches.length > 0
-end
+jar(:name => "test_common",
+    :src  => [ "common/test/java/**/*.java" ],
+    :deps => [ 
+               :common,
+               "common/lib/buildtime/*.jar"
+             ],
+    :out  => "webdriver-common-test.jar")
 
-def python?
-  present?("python") || present?("python.exe")
-end
+jar(:name => "htmlunit",
+    :src  => [ "htmlunit/src/java/**/*.java" ],
+    :deps => [ 
+               :common,
+               "htmlunit/lib/runtime/*.jar"
+             ],
+    :out  => "webdriver-htmlunit.jar")
 
-def msbuild?
-  windows? && present?("msbuild.exe")
-end
+test_java(:name => "test_htmlunit",
+          :src  => [ "htmlunit/test/java/**/*.java" ],
+          :deps => [
+                     :htmlunit,
+                     :test_common,
+                   ],
+          :out  => "webdriver-htmlunit-test.jar")
 
-task :prebuild do
-  # Check that common tools are available
-  %w(java jar).each do |exe|
-    if (!present?(exe) && !present?(exe + ".exe")) then
-      puts "Cannot locate '#{exe}' which is required for the build"
-      exit -1
-    end
-  end
+dll(:name => "ie_dll",
+    :src  => [ "common/src/cpp/webdriver-interactions/**/*", "jobbie/src/cpp/InternetExplorerDriver/**/*" ],
+    :solution => "WebDriver.sln",
+    :out  => [ "Win32/Release/InternetExplorerDriver.dll", "x64/Release/InternetExplorerDriver.dll" ],
+    :spoof => true)  # Dump "spoof" files in the right place if you can't build
 
-  if windows? then
-    if (!present?("msbuild.exe")) then
-      puts "Cannot locate 'msbuild.exe' which is required for the build"
-      exit -1
-    end
-  end
-end
+jar(:name => "ie",
+    :src  => [ "jobbie/src/java/**/*.java" ],
+    :deps => [
+               :common,
+               :ie_dll,
+               "jobbie/lib/runtime/*.jar"
+             ],
+    :resources => [
+               {"Win32/Release/InternetExplorerDriver.dll" => "x86/InternetExplorerDriver.dll"},
+               {"x64/Release/InternetExplorerDriver.dll" => "amd64/InternetExplorerDriver.dll"},
+             ],
+    :out  => "webdriver-ie.jar")
+task :jobbie => :ie
 
-def iPhoneSDKPresent?
-  return false # For now
-  
-  return false unless mac? && present?('xcodebuild')
-  begin
-    sdks = sh "xcodebuild -showsdks 2>/dev/null", :verbose => false
-    !!(sdks =~ /simulator2.2/)
-    true
-  rescue
-    puts "Ouch"
-    false
-  end
-end
+test_java(:name => "test_ie",
+          :src  => [ "jobbie/test/java/**/*.java" ],
+          :deps => [
+                     :ie,
+                     :test_common
+                   ],
+          :out  => "webdriver-ie-test.jar")
+task :test_jobbie => :test_ie                  
 
-task :build => [:prebuild, :common, :htmlunit, :firefox, :jobbie, :safari, :iphone, :support, :remote, :selenium]
+xpt(:name => "events_xpt",
+    :src  => [ "firefox/src/cpp/webdriver-firefox/nsINativeEvents.idl" ],
+    :out  => "nsINativeEvents.xpt")    
+
+xpi(:name => "firefox_xpi",
+    :src  => [ "firefox/src/extension" ],
+    :deps => [ 
+               :events_xpt,
+               :firefox_dll
+             ],
+    :resources => [
+                    { "nsINativeEvents.xpt" => "components/nsINativeEvents.xpt" },
+                    { "Win32/Release/webdriver-firefox.dll" => "platform/WINNT_x86-msvc/components/webdriver-firefox.dll" }
+                  ],
+    :out  => "webdriver-extension.zip")
+
+dll(:name => "firefox_dll",
+    :src  => [ "common/src/cpp/webdriver-interactions/**/*", "jobbie/src/cpp/webdriver-firefox/**/*" ],
+    :solution => "WebDriver.sln",
+    :out  => [ "Win32/Release/webdriver-firefox.dll" ],
+    :deps  => [ 
+                :events_xpt,
+              ],
+    :spoof => true)  # Dump "spoof" files in the right place if you can't build
+
+jar(:name => "firefox",
+    :src  => [ "firefox/src/java/**/*.java" ],
+    :deps => [
+               :common,
+               :firefox_xpi,
+               "firefox/lib/runtime/*.jar"
+             ],
+    :resources => [ "webdriver-extension.zip" ],
+    :out  => "webdriver-firefox.jar")
+
+test_java(:name => "test_firefox",
+          :src  => [ "firefox/test/java/**/*.java" ],
+          :deps => [
+                     :firefox,
+                     :test_common,
+                   ],
+          :out  => "webdriver-firefox-test.jar")
+
+jar(:name => "selenium",
+    :src  => [ "selenium/src/java/**/*.java" ],
+    :deps => [
+               :ie,
+               :firefox,
+               :support,
+               "selenium/lib/runtime/*.jar"
+             ],
+    :resources => [
+                    { "selenium/src/java/org/openqa/selenium/internal/injectableSelenium.js", "org/openqa/selenium/internal/injectableSelenium.js" },
+                    { "selenium/src/java/org/openqa/selenium/internal/htmlutils.js", "org/openqa/selenium/internal/htmlutils.js" }
+                  ],
+    :out => "webdriver-selenium.jar" )
+    
+test_java(:name => "test_selenium",
+          :src  => [ "selenium/test/java/**/*.java" ],
+          :deps => [
+                     :test_common,
+                     :htmlunit,
+                     :selenium,
+                     "selenium/lib/buildtime/*.jar",
+                   ],
+          :main => "org.testng.TestNG",
+          :args => "selenium/test/java/webdriver-selenium-suite.xml",
+          :out  => "webdriver-selenium-test.jar")
+
+jar(:name => "support",
+    :src  => [ "support/src/java/**/*.java" ],
+    :deps => [
+               :common,
+               "support/lib/runtime/*.jar"
+             ],
+    :out  => "webdriver-support.jar")
+    
+test_java(:name => "test_support",
+          :src  => [ "support/test/java/**/*.java" ],
+          :deps => [
+                     :support,
+                     :test_common,
+                   ],
+          :out  => "webdriver-support-test.jar")
+
+jar(:name => "remote_client",
+    :src  => [ "remote/client/src/java/**/*.java", "remote/common/src/java/**/*.java" ],
+    :deps => [
+               :common,
+               "remote/common/lib/runtime/*.jar",
+               "remote/client/lib/runtime/*.jar",
+             ],
+    :out  => "webdriver-remote-client.jar")
+    
+jar(:name => "remote_server",
+    :src  => [ "remote/server/src/java/**/*.java", "remote/common/src/java/**/*.java" ],
+    :deps => [
+               :htmlunit,
+               :ie,
+               :firefox,
+               :support,
+               "remote/common/lib/runtime/*.jar",
+               "remote/server/lib/runtime/*.jar"
+             ],
+    :out  => "webdriver-remote-server.jar")
+
+#test_java(:name => "test_remote",
+#          :src  => [ 
+#                     "remote/common/test/java/**/*.java",
+#                     "remote/client/test/java/**/*.java",
+#                     "remote/server/test/java/**/*.java"
+#                   ],
+#          :deps => [
+#                     :test_common,
+#                     :remote_client,
+#                     :remote_server
+#                   ],
+#          :out => "webdriver-remote-test.jar")
+task :test_remote                  
+
+task :remote => [:remote_server, :remote_client]
+task :build => [:common, :htmlunit, :firefox, :ie, :iphone, :support, :remote, :selenium]
+
 
 task :clean do
-  rm_rf 'common/build'
-  rm_rf 'htmlunit/build'
-  rm_rf 'jobbie/build'
-  rm_rf 'jobbie/src/cpp/InternetExplorerDriver/Release'
-  rm_rf 'firefox/build'
-  rm_rf 'safari/build'
-  rm_rf 'iphone/build'
-  rm_rf 'support/build'
-  rm_rf 'selenium/build'
   rm_rf 'build/'
 end
 
-task :test => [:prebuild, :test_htmlunit, :test_firefox, :test_jobbie, :test_safari, :test_iphone, :test_support, :test_remote, :test_selenium] do
+task :test => [:test_htmlunit, :test_firefox, :test_ie, :test_iphone, :test_support, :test_remote, :test_selenium] do
 end
 
 task :install_firefox => [:firefox] do
-  libs = %w(common/build/webdriver-common.jar firefox/build/webdriver-firefox.jar firefox/lib/runtime/json-20080701.jar)
+  libs = %w(build/webdriver-common.jar build/webdriver-firefox.jar firefox/lib/runtime/json-20080701.jar)
 
   firefox = "firefox"
   if ENV['firefox'] then
@@ -105,227 +221,14 @@ task :install_firefox => [:firefox] do
   sh cmd, :verbose => true
 end
 
-common_libs = ["common/lib/runtime/**/*.jar", "common/build/webdriver-common.jar"]
-common_test_libs = ["common/lib/**/*.jar", "common/build/webdriver-common.jar", "common/build/webdriver-common-test.jar"]
-
-simple_jars = {
-  "common" =>   {
-    'src'       => "common/src/java/**/*.java",
-    'deps'      => [],
-    'jar'       => "common/build/webdriver-common.jar",
-    'resources' => nil,
-    'classpath' => ["common/lib/runtime/**/*.jar"],
-    'test_on'   => false,
-  },
-  "test_common" => {
-    'src'       => "common/test/java/**/*.java",
-    'deps'      => [:common],
-    'jar'       => "common/build/webdriver-common-test.jar",
-    'resources' => nil,
-    'classpath' => ["common/lib/**/*.jar", "common/build/webdriver-common.jar"],
-    'test_on'   => false,
-  },
-  "htmlunit" =>   {
-    'src'       => "htmlunit/src/java/**/*.java",
-    'deps'      => [:common],
-    'jar'       => "htmlunit/build/webdriver-htmlunit.jar",
-    'resources' => nil,
-    'classpath' => ["htmlunit/lib/runtime/**/*.jar"] + common_libs,
-    'test_on'   => false,
-  },
-  "test_htmlunit" => {
-    'src'       => "htmlunit/test/java/**/*.java",
-    'deps'      => [:htmlunit, :test_common],
-    'jar'       => "htmlunit/build/webdriver-htmlunit-test.jar",
-    'resources' => nil,
-    'classpath' => ["htmlunit/lib/**/*.jar", "htmlunit/build/webdriver-htmlunit.jar"] + common_test_libs,
-    'test_on'   => all?,
-  },
-  "firefox" =>   {
-    'src'       => "firefox/src/java/**/*.java",
-    'deps'      => [:common, 'firefox/build/webdriver-extension.zip'],
-    'jar'       => "firefox/build/webdriver-firefox.jar",
-    'resources' => 'firefox/build/webdriver-extension.zip',
-    'classpath' => ["firefox/lib/runtime/**/*.jar"] + common_libs,
-    'test_on'   => false,
-  },
-  "test_firefox" => {
-    'src'       => "firefox/test/java/**/*.java",
-    'deps'      => [:firefox, :test_common],
-    'jar'       => "firefox/build/webdriver-firefox-test.jar",
-    'resources' => nil,
-    'classpath' => ["firefox/lib/**/*.jar", "firefox/build/webdriver-firefox.jar"] + common_test_libs,
-    'test_on'   => all?,
-  },
-  "jobbie" =>   {
-    'src'       => "jobbie/src/java/**/*.java",
-    'deps'      => [:common, 'build/Win32/Release/InternetExplorerDriver.dll'],
-    'jar'       => "jobbie/build/webdriver-jobbie.jar",
-    'classpath' => ["jobbie/lib/runtime/**/*.jar"] + common_libs,
-    'test_on'   => false,
-  },
-  "test_jobbie" => {
-    'src'       => "jobbie/test/java/**/*.java",
-    'deps'      => [:jobbie, :test_common],
-    'jar'       => "jobbie/build/webdriver-jobbie-test.jar",
-    'resources' => nil,
-    'classpath' => ["jobbie/lib/**/*.jar", "jobbie/build/webdriver-jobbie.jar"] + common_test_libs,
-    'test_on'   => windows?,
-  },
-  "remote_common" =>   {
-    'src'       => "remote/common/src/java/**/*.java",
-    'deps'      => [:common],
-    'jar'       => "remote/build/webdriver-remote-common.jar",
-    'resources' => nil,
-    'classpath' => ["remote/common/lib/runtime/**/*.jar"] + common_libs,
-    'test_on'   => false,
-  },
-  "remote_client" =>   {
-    'src'       => "remote/client/src/java/**/*.java",
-    'deps'      => [:remote_common],
-    'jar'       => "remote/build/webdriver-remote-client.jar",
-    'resources' => nil,
-    'classpath' => ["remote/common/lib/runtime/**/*.jar", "remote/client/lib/runtime/**/*.jar", "remote/server/lib/runtime/*.jar", "remote/build/webdriver-remote-common.jar"] + common_libs,
-    'test_on'   => false,
-  },
-  "test_remote_client" => {
-    'src'       => "remote/client/test/java/**/*.java",
-    'deps'      => [:test_common, :firefox, :jobbie, :remote_client, :remote_server],
-    'jar'       => "remote/build/webdriver-remote-common-test.jar",
-    'resources' => nil,
-    'classpath' => ["remote/build/*.jar", "remote/client/lib/**/*.jar", "remote/common/lib/**/*.jar", "firefox/lib/**/*.jar", "firefox/build/webdriver-firefox.jar", "jobbie/build/webdriver-jobbie.jar", "jobbie/lib/runtime/*.jar", "support/build/webdriver-support.jar", "support/lib/runtime/*.jar"] + common_test_libs,
-    'test_on'   => all?,
-    'test_in'   => 'remote/client',
-  },
-  "remote_server" => {
-    'src'       => "remote/server/src/java/**/*.java",
-    'deps'      => [:remote_common, :support],
-    'jar'       => "remote/build/webdriver-remote-server.jar",
-    'resources' => nil,
-    'classpath' => ["remote/common/lib/runtime/**/*.jar", "support/lib/runtime/*.jar", "support/build/webdriver-support.jar", "remote/server/lib/runtime/**/*.jar", "remote/build/webdriver-remote-common.jar"] + common_libs,
-    'test_on'   => false,
-  },
-  "safari" =>   {
-    'src'       => "safari/src/java/**/*.java",
-    'deps'      => [:common],
-    'jar'       => "safari/build/webdriver-safari.jar",
-    'resources' => nil,
-    'classpath' => ["safari/lib/runtime/**/*.jar"] + common_libs,
-    'test_on'   => false,
-  },
-  "test_safari" => {
-    'src'       => "safari/test/java/**/*.java",
-    'deps'      => [:safari, :test_common],
-    'jar'       => "safari/build/webdriver-safari-test.jar",
-    'resources' => nil,
-    'classpath' => ["safari/lib/**/*.jar", "safari/build/webdriver-safari.jar"] + common_test_libs,
-    'test_on'   => mac?,
-  },
-  "iphone_client" =>   {
-    'src'       => "iphone/src/java/**/*.java",
-    'deps'      => [:common, :remote],
-    'jar'       => "iphone/build/webdriver-iphone.jar",
-    'resources' => nil,
-    'classpath' => ["remote/build/webdriver-remote-client.jar", "remote/build/webdriver-remote-common.jar", "remote/client/lib/runtime/*.jar"] + common_libs,
-    'test_on'   => false,
-  },
-  "test_iphone_client" => {
-    'src'       => "iphone/test/java/**/*.java",
-    'deps'      => [:iphone_client, :test_common, :remote_client],
-    'jar'       => "iphone/build/webdriver-iphone-test.jar",
-    'resources' => nil,
-    'classpath' => ["iphone/build/webdriver-iphone.jar", "remote/build/webdriver-remote-client.jar", "remote/build/webdriver-remote-common.jar", "remote/client/lib/runtime/*.jar", "remote/common/lib/runtime/*.jar"] + common_test_libs,
-    'test_on'   => iPhoneSDKPresent?,
-  },
-  "support" =>   {
-    'src'       => "support/src/java/**/*.java",
-    'deps'      => [:common],
-    'jar'       => "support/build/webdriver-support.jar",
-    'resources' => nil,
-    'classpath' => ["support/lib/runtime/**/*.jar"] + common_libs,
-    'test_on'   => false,
-  },
-  "test_support" => {
-    'src'       => "support/test/java/**/*.java",
-    'deps'      => [:support, :test_common],
-    'jar'       => "support/build/webdriver-support-test.jar",
-    'resources' => nil,
-    'classpath' => ["support/lib/**/*.jar", "support/build/webdriver-support.jar"] + common_test_libs,
-    'test_on'   => all?,
-  },
-  "selenium" => {
-    'src'       => "selenium/src/java/**/*.java",
-    'deps'      => [:common],
-    'jar'       => "selenium/build/webdriver-selenium.jar",
-    'resources' => nil,
-    'classpath' => ["selenium/lib/runtime/**/*.jar"] + common_libs,
-    'test_on'   => false,
-  },
-  "test_selenium" => {
-    'src'       => "selenium/test/java/**/*.java",
-    'deps'      => [:test_common, :firefox, :jobbie, :htmlunit, :selenium],
-    'jar'       => "selenium/build/webdriver-selenium-test.jar",
-    'resources' => nil,
-    'classpath' => [
-                    "selenium/lib/**/*.jar", "selenium/build/webdriver-selenium.jar",
-                    "firefox/build/webdriver-firefox.jar", "firefox/lib/**/*.jar",
-                    "jobbie/build/webdriver-jobbie.jar", "jobbie/lib/**/*.jar",
-                    "htmlunit/build/webdriver-htmlunit.jar", "htmlunit/lib/**/*.jar",
-                    "selenium/build/*.jar"
-                   ] + common_test_libs,
-    'test_on'   => false,
-  }
-}
-
-simple_jars.each do |name, details|
-  file "#{details['jar']}" => FileList[details['src']] + details['deps'] do
-   classpath = []
-   details['classpath'].each do |path|
-     classpath += FileList[path]
-   end
-
-    javac :jar => details['jar'],
-          :sources => FileList[details['src']],
-          :classpath => classpath,
-          :resources => details['resources']
-
-    if details['test_on'] then
-      root = details['test_in'].nil? ? details['src'].split("/")[0] : details['test_in']
-      puts "Root: #{root}"
-      junit :in => root, :classpath =>  classpath + [details['jar']]
-    end
-  end
-  task "#{name}" => [details['jar']]
-end
-
 task :remote => [:remote_client, :remote_server]
-task :test_remote => [:test_remote_client]
+#task :test_remote => [:test_remote_client]
 
-file "selenium/build/webdriver-selenium.jar" => FileList["selenium/src/java/org/openqa/selenium/internal/*.js"] do
-  sh "jar uf selenium/build/webdriver-selenium.jar -C selenium/src/java org/openqa/selenium/internal/injectableSelenium.js", :verbose => false
-  sh "jar uf selenium/build/webdriver-selenium.jar -C selenium/src/java org/openqa/selenium/internal/htmlutils.js", :verbose => false
-end
-
-task :test_selenium do
-  temp_classpath = simple_jars['test_selenium']['classpath']
-  classpath = FileList.new
-  temp_classpath.each do |item|
-      classpath.add item
-  end
-
-  test_string = 'java '
-  test_string += '-cp ' + classpath.join(File::PATH_SEPARATOR) + ' '
-  test_string += "-Dwebdriver.firefox.bin=\"#{ENV['firefox']}\" " unless ENV['firefox'].nil?
-  test_string += 'org.testng.TestNG selenium/test/java/webdriver-selenium-suite.xml'
-
-  result = sh test_string, :verbose => false
-end
-
-task :javadocs => [:common, :firefox, :htmlunit, :jobbie, :remote, :safari, :support] do
+task :javadocs => [:common, :firefox, :htmlunit, :jobbie, :remote, :support] do
   mkdir_p "build/javadoc"
    sourcepath = ""
    classpath = "support/lib/runtime/hamcrest-all-1.1.jar"
-   %w(common firefox jobbie htmlunit safari support remote/common remote/client).each do |m|
+   %w(common firefox jobbie htmlunit support remote/common remote/client).each do |m|
      sourcepath += ":#{m}/src/java"
    end
    cmd = "javadoc -d build/javadoc -sourcepath #{sourcepath} -classpath #{classpath} -subpackages org.openqa.selenium"
@@ -333,46 +236,6 @@ task :javadocs => [:common, :firefox, :htmlunit, :jobbie, :remote, :safari, :sup
 end
 
 
-#### Internet Explorer ####
-file 'build/Win32/Release/InternetExplorerDriver.dll' => FileList['jobbie/src/cpp/**/*.cpp'] do
-  msbuild 'WebDriver.sln'
-end
-
-file "jobbie/build/webdriver-jobbie.jar" => "build/Win32/Release/InternetExplorerDriver.dll" do
-  mkdir_p "jobbie/build/jar/x86"
-  mkdir_p "jobbie/build/jar/amd64"
-  cp "build/Win32/Release/InternetExplorerDriver.dll", "jobbie/build/jar/x86"
-  cp "build/x64/Release/InternetExplorerDriver.dll", "jobbie/build/jar/amd64"
-  sh "jar uf jobbie/build/webdriver-jobbie.jar -C jobbie/build/jar .", :verbose => false
-end
-
-#### Firefox ####
-file 'firefox/build/webdriver-extension.zip' => FileList['firefox/src/extension/**'] + ['build/Win32/Release/webdriver-firefox.dll', 'firefox/build/extension/components/nsINativeEvents.xpt'] do
-  mkdir_p "firefox/build/extension/platform/WINNT_x86-msvc/components/"
-
-  cp_r "firefox/src/extension/.", "firefox/build/extension"
-
-  cp "build/Win32/Release/webdriver-firefox.dll", "firefox/build/extension/platform/WINNT_x86-msvc/components/"
-
-  # Delete the .svn dirs
-  rm_r Dir.glob("firefox/build/extension/**/.svn")
-
-  if windows? then
-    puts "This Firefox JAR is not suitable for uploading to Google Code"
-    sh "cd firefox/build/extension && jar cMvf ../webdriver-extension.zip *"
-  else
-    sh "cd firefox/build/extension && zip -0r ../webdriver-extension.zip * -x \*.svn\*"
-  end
-end
-
-file 'build/Win32/Release/webdriver-firefox.dll' => FileList['firefox/src/cpp/**/*.cpp'] do
-  msbuild 'WebDriver.sln'
-end
-
-file 'firefox/build/extension/components/nsINativeEvents.xpt' => FileList['firefox/src/cpp/webdriver-firefox/nsINativeEvents.idl'] do
-  mkdir_p "firefox/build/extension/components/"
-  xpt("firefox\\src\\cpp\\webdriver-firefox\\nsINativeEvents.idl", "firefox\\build\\extension\\components\\nsINativeEvents.xpt")
-end
 
 task :test_firefox_py => :test_firefox do
   if python? then
@@ -381,6 +244,10 @@ task :test_firefox_py => :test_firefox do
 end
 
 task :iphone => [:iphone_server, :iphone_client]
+
+# Place-holder tasks
+task :test_iphone_server
+task :test_iphone_client
 task :test_iphone => [:test_iphone_server, :test_iphone_client, :remote_client]
 
 #### iPhone ####
@@ -476,111 +343,3 @@ task :all => [:release] do
   sh "cd build/all && zip ../dist/webdriver-all-#{version}.zip webdriver/*"
 end
 
-def javac(args)
-  # mandatory args
-  out = (args[:jar] or raise 'javac: please specify the :jar parameter')
-  source_patterns = (args[:sources] or raise 'javac: please specify the :sources parameter')
-  sources = FileList.new(source_patterns)
-  raise("No source files found at #{sources.join(', ')}") if sources.empty?
-
-  # We'll start with just one thing now
-  extra_resources = args[:resources]
-
-  # optional args
-  unless args[:exclude].nil?
-    args[:exclude].each { |pattern| sources.exclude(pattern) }
-  end
-  debug = (args[:debug] or true)
-  temp_classpath = (args[:classpath]) || []
-
-  classpath = FileList.new
-  temp_classpath.each do |item|
-    classpath.add item
-  end
-
-  target_dir = "#{out}.classes"
-  puts target_dir
-  unless File.directory?(target_dir) 
-	mkdir_p target_dir, :verbose => false 
-  end
-  
-  compile_string = "javac "
-  compile_string += "-source 5 -target 5 "
-  compile_string += "-g " if debug
-  compile_string += "-d #{target_dir} "
-
-  compile_string += "-cp " + classpath.join(File::PATH_SEPARATOR) + " " if classpath.length > 0
-
-  sources.each do |source|
-    compile_string += " #{source}"
-  end
-
-  sh compile_string, :verbose => false
-
-  # Copy the resource to the target_dir
-  if !extra_resources.nil?
-    cp_r extra_resources, target_dir, :verbose => false
-  end
-
-  jar_string = "jar cf #{out} -C #{target_dir} ."
-  sh jar_string, :verbose => false
-
-  rm_rf target_dir, :verbose => false
-end
-
-def junit(args)
-  using = args[:in]
-
-  source_dir = "#{using}/test/java"
-  source_glob = source_dir + File::SEPARATOR + '**' + File::SEPARATOR + '*.java'
-
-  temp_classpath = (args[:classpath]) || []
-  classpath = FileList.new
-  temp_classpath.each do |item|
-      classpath.add item
-  end
-
-  tests = FileList.new(source_dir + File::SEPARATOR + '**' + File::SEPARATOR + '*Suite.java')
-  tests.exclude '**/Abstract*'
-
-  test_string = 'java '
-  test_string += '-cp ' + classpath.join(File::PATH_SEPARATOR) + ' ' if classpath.length > 1
-  test_string += '-Djava.library.path=' + args[:native_path].join(File::PATH_SEPARATOR) + ' ' unless args[:native_path].nil?
-  test_string += "-Dwebdriver.firefox.bin=\"#{ENV['firefox']}\" " unless ENV['firefox'].nil?
-  test_string += 'junit.textui.TestRunner'
-
-  tests.each do |test|
-    puts "Looking at #{test}\n"
-    name = test.sub("#{source_dir}/", '').gsub('/', '.')
-    test_string += " #{name[0, name.size - 5]}"
-    result = sh test_string, :verbose => false
-  end
-end
-
-def msbuild(solution)
-  if msbuild?
-    sh "MSBuild.exe #{solution} /verbosity:q /target:Rebuild /property:Configuration=Release /property:Platform=x64", :verbose => false
-    sh "MSBuild.exe #{solution} /verbosity:q /target:Rebuild /property:Configuration=Release /property:Platform=Win32", :verbose => false
-  else
-    %w(build/Win32/Release build/x64/Release).each do |dir|
-      mkdir_p dir
-
-      %w(InternetExplorerDriver.dll webdriver-firefox.dll).each do |res|
-        File.open("#{dir}/#{res}", 'w') {|f| f.write("")}
-      end
-    end
-  end
-end
-
-def xpt(idl, output)
-  gecko = "third_party\\gecko-1.9.0.11\\"
-
-  if (windows?)
-    gecko += "win32"
-    cmd = "#{gecko}\\bin\\xpidl.exe -w -m typelib -I#{gecko}\\idl -e #{output} #{idl}"
-    sh cmd, :verbose => true
-  else
-    puts "Doing nothing for now. Later revisions will enable xpt building. Creating stub"
-    File.open("#{output}", 'w') {|f| f.write("")}
-  end
-end
