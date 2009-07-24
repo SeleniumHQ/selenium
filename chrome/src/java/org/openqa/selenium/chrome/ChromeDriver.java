@@ -40,7 +40,7 @@ public class ChromeDriver extends RemoteWebDriver {
   @Override
   protected void stopClient() {
     if (clientProcess != null) {
-      clientProcess.destroy();
+      //clientProcess.destroy();
     }
   }
   

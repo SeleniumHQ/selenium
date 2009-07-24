@@ -10,7 +10,7 @@ struct mg_request_info;
 
 namespace webdriver {
 
-class HttpHandler;
+class ChromeDriverPlugin;
 
 /**
  * Server to listen for HTTP on the TCP port indicated, handle requests using
@@ -18,7 +18,7 @@ class HttpHandler;
  */
 class HttpServer {
  public:
-  HttpServer(HttpHandler *http_handler);
+  HttpServer();
   
   static void _CallbackHandler(mg_connection *connection,
                                const mg_request_info *info,
@@ -50,14 +50,12 @@ class HttpServer {
    */
   size_t send(const char *response);
   mg_connection *connection_;
+  void set_chrome_driver_plugin(ChromeDriverPlugin *chrome_driver_plugin);
  private:
-  /**
-   * Handler to use to parse requests which are received
-   */
-  HttpHandler *http_handler_;
   unsigned short port_;
   bool is_listening_;
   mg_context *server_context_;
+  ChromeDriverPlugin *chrome_driver_plugin_;
 }; //class HttpServer
 
 } //namespace webdriver

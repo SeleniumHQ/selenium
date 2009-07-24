@@ -22,23 +22,9 @@ bool JavascriptListener::HasMethod(NPIdentifier name) {
   WEBDRIVER_LOG((char *)method);
   WEBDRIVER_LOG("\n");
   
-  if (strcmp(method, "approve_session") &&
-      strcmp(method, "deny_session") &&
-      strcmp(method, "confirm_url_loaded") &&
-      strcmp(method, "return_get_title_success") &&
-      strcmp(method, "return_get_title_failure") &&
-      strcmp(method, "return_get_elements") &&
-      strcmp(method, "return_get_elements_failed") &&
+  if (strcmp(method, "SendHttp") &&
       strcmp(method, "return_send_element_keys") &&
-      strcmp(method, "return_clear_element") &&
-      strcmp(method, "return_click_element") &&
-      strcmp(method, "return_get_element_attribute") &&
-      strcmp(method, "return_get_element_text") &&
-      strcmp(method, "return_is_element_selected") &&
-      strcmp(method, "return_switch_window") &&
-      strcmp(method, "return_submit_element")) {
-    //Failure, but warn the client before telling the browser
-    chrome_driver_plugin_->SendGeneralFailure();
+      strcmp(method, "return_click_element")) {
     return false;
   } else {
     return true;
@@ -83,39 +69,14 @@ bool JavascriptListener::Invoke(NPIdentifier name,
 
   const char *method = browser_funcs_->utf8fromidentifier(name);
 
-  if (!strcmp(method, "approve_session") &&
-      argCount == 1 && args[0].type == NPVariantType_String) {
-    chrome_driver_plugin_->CreateSession(
-        string((char *)args[0].value.stringValue.UTF8Characters));
-  } else if (!strcmp(method, "deny_session")) {
-    //TODO(danielwh): What should I do here?
-  } else if (!strcmp(method, "confirm_url_loaded") &&
-      argCount == 0) {
-    chrome_driver_plugin_->ConfirmUrlLoaded();
-  } else if (!strcmp(method, "return_get_title_success") &&
-      argCount == 1 && args[0].type == NPVariantType_String) {
-    chrome_driver_plugin_->ReturnGetTitleSuccess(
-        string((char *)args[0].value.stringValue.UTF8Characters));
-  } else if (!strcmp(method, "return_get_title_failure")) {
-    chrome_driver_plugin_->ReturnGetTitleFailure();
-  } else if (!strcmp(method, "return_get_elements")) {
-    if (argCount == 1 && args[0].type == NPVariantType_String) {
-      chrome_driver_plugin_->ReturnGetElementFound(
-          string((char *)args[0].value.stringValue.UTF8Characters));
-    }
-  } else if (!strcmp(method, "return_get_elements_failed")) {
-    if (argCount == 1 && args[0].type == NPVariantType_String) {
-      chrome_driver_plugin_->ReturnGetElementNotFound(
-          string((char *)args[0].value.stringValue.UTF8Characters));
-    }
+  if (!strcmp(method, "SendHttp") && argCount == 1 &&
+      args[0].type == NPVariantType_String) {
+    chrome_driver_plugin_->SendHttp(args[0].value.stringValue.UTF8Characters);
   } else if (!strcmp(method, "return_send_element_keys") && argCount == 2 &&
       args[0].type == NPVariantType_Bool &&
       args[1].type == NPVariantType_String) {
     chrome_driver_plugin_->ReturnSendElementKeys(args[0].value.boolValue,
         (char *)args[1].value.stringValue.UTF8Characters);
-  } else if (!strcmp(method, "return_clear_element") && argCount == 1 &&
-      args[0].type == NPVariantType_Bool) {
-    chrome_driver_plugin_->ReturnClearElement(args[0].value.boolValue);
   } else if (!strcmp(method, "return_click_element") && argCount == 3 &&
       args[0].type == NPVariantType_Bool &&
       args[1].type == NPVariantType_Int32 &&
@@ -123,30 +84,6 @@ bool JavascriptListener::Invoke(NPIdentifier name,
     chrome_driver_plugin_->ReturnClickElement(args[0].value.boolValue,
                                               args[1].value.intValue,
                                               args[2].value.intValue);
-  } else if (!strcmp(method, "return_get_element_attribute") && argCount == 1) {
-    if (args[0].type == NPVariantType_Null) {
-      chrome_driver_plugin_->ReturnGetElementAttributeFailure();
-    } else if (args[0].type == NPVariantType_String) {
-      chrome_driver_plugin_->ReturnGetElementAttributeSuccess(
-          string((char *)args[0].value.stringValue.UTF8Characters));
-    }
-  } else if (!strcmp(method, "return_get_element_text") && argCount == 1) {
-    if (args[0].type == NPVariantType_Null) {
-      chrome_driver_plugin_->ReturnGetElementTextFailure();
-    } else if (args[0].type == NPVariantType_String) {
-      chrome_driver_plugin_->ReturnGetElementTextSuccess(
-          string((char *)args[0].value.stringValue.UTF8Characters));
-    }
-  } else if (!strcmp(method, "return_is_element_selected") && argCount == 1 &&
-      args[0].type == NPVariantType_Bool) {
-    chrome_driver_plugin_->ReturnIsElementSelected(args[0].value.boolValue);
-  //TODO(danielwh): Window switching
-  /*} else if (!strcmp(method, "return_switch_window") && argCount == 1 &&
-      args[0].type == NPVariantType_Bool) {
-    chrome_driver_plugin_->ReturnSwitchWindow(args[0].value.boolValue);*/
-  } else if (!strcmp(method, "return_submit_element") && argCount == 1 &&
-      args[0].type == NPVariantType_Bool){
-    chrome_driver_plugin_->ReturnSubmitElement(args[0].value.boolValue);
   } else {
     return false;
   }

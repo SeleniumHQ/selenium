@@ -191,10 +191,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\http_handler.cc"
-				>
-			</File>
-			<File
 				RelativePath=".\src\http_server.cc"
 				>
 			</File>
@@ -268,23 +264,11 @@
 					>
 				</File>
 				<File
-					RelativePath=".\src\include\webdriver\http_handler.h"
-					>
-				</File>
-				<File
-					RelativePath=".\src\include\webdriver\http_header.h"
-					>
-				</File>
-				<File
 					RelativePath=".\src\include\webdriver\http_responses.h"
 					>
 				</File>
 				<File
 					RelativePath=".\src\include\webdriver\http_server.h"
-					>
-				</File>
-				<File
-					RelativePath=".\src\include\webdriver\javascript_commands.h"
 					>
 				</File>
 				<File

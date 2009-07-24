@@ -1,7 +1,6 @@
 #include "webdriver/npapi_call_listener.h"
 
 #include "webdriver/chrome_driver_plugin.h"
-#include "webdriver/http_handler.h"
 #include "webdriver/http_server.h"
 #include "webdriver/javascript_executor.h"
 #include "webdriver/javascript_listener.h"
@@ -93,8 +92,7 @@ NPError NpapiCallListener::NewInstance(NPMIMEType pluginType,
   JavascriptExecutor *executor = new JavascriptExecutor(browser_funcs_,
                                                         instance);
   
-  HttpHandler *handler = new HttpHandler(executor);
-  HttpServer *server = new HttpServer(handler);
+  HttpServer *server = new HttpServer();
   
   //TODO(danielwh): Try ports if we can't bind to this one
   //TODO(danielwh): Read preference for port number
@@ -106,7 +104,7 @@ NPError NpapiCallListener::NewInstance(NPMIMEType pluginType,
 
   global_instance_ = instance;
 
-  handler->set_chrome_driver_plugin(chrome_driver_plugin_);
+  server->set_chrome_driver_plugin(chrome_driver_plugin_);
 
   return NPERR_NO_ERROR;
 }

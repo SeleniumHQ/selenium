@@ -30,42 +30,22 @@ class ChromeDriverPlugin {
    */
   bool IsReady();
   const size_t session_id();
+  const char *context();
   
 #if defined(WIN32)
   void GiveWindow(HWND handle);
 #endif
   
-  void SendGeneralFailure();
-  void SendNotFound();
-  void SendStringValue(std::string value);
-  void SendValue(std::string value);
-  
-  void CreateSession(std::string capabilities);
-  void ConfirmSession();
-  void DeleteSession();
+  void SendHttp(const char *http);
   void ConfirmUrlLoaded();
-  void ReturnGetTitleSuccess(std::string title);
-  void ReturnGetTitleFailure();
-  void ReturnGetElementNotFound(std::string identifier_string);
-  void ReturnGetElementFound(std::string internal_element_ids);
   void ReturnSendElementKeys(bool success, char *to_type);
-  void ReturnClearElement(bool success);
   void ReturnClickElement(bool success, int32 x, int32 y);
-  void ReturnGetElementAttributeSuccess(std::string value);
-  void ReturnGetElementAttributeFailure();
-  void ReturnGetElementTextSuccess(std::string text);
-  void ReturnGetElementTextFailure();
-  void ReturnIsElementSelected(bool selected);
-  //TODO(danielwh): Window switching
-  //void ReturnSwitchWindow(bool success);
-  void ReturnSubmitElement(bool success);
  private:
   const size_t session_id_;
   const char *context_;
   HttpServer *http_server_;
   JavascriptExecutor *javascript_executor_;
   bool is_ready_;
-  std::string capabilities_;
 #if defined(WIN32)
   HWND current_handle_;
 #endif

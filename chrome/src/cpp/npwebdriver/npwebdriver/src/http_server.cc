@@ -4,8 +4,7 @@
 
 #include "mongoose/mongoose.h"
 
-#include "webdriver/http_header.h"
-#include "webdriver/http_handler.h"
+#include "webdriver/chrome_driver_plugin.h"
 #include "webdriver/logging.h"
 #include "webdriver/webdriver_utils.h"
 
@@ -17,10 +16,9 @@ using namespace std;
 
 namespace webdriver {
 
-HttpServer::HttpServer(HttpHandler *http_handler) : port_(0),
-                                                    server_context_(NULL),
-                                                    connection_(NULL),
-                                                    http_handler_(http_handler) {
+HttpServer::HttpServer() : port_(0),
+                           server_context_(NULL),
+                           connection_(NULL) {
 }
 
 //Starts at the first slash, so if we ever change to have a non / root path,
@@ -50,32 +48,46 @@ void HttpServer::_CallbackHandler(mg_connection *connection,
   //Keep the connection alive until we have sent a response
   set_connection_keep_alive(connection, true);
   HttpServer *server = (HttpServer *)mg_get_connection_context_custom(connection);
+
   //Update the server's connection to the current one
   server->connection_ = connection;
+
+  ChromeDriverPlugin *chrome_driver_plugin = server->chrome_driver_plugin_;
+  if (chrome_driver_plugin == NULL) {
+    //TODO(danielwh): Fail with an HTTP message
+    return;
+  }  
   
-  HttpHandler *handler = server->http_handler_;
   vector<string> uri = server->SplitPath(string(info->uri));
-  vector<HttpHeader> headers;
-  headers.reserve(info->num_headers);
-  for (int i = 0; i < info->num_headers; i++) {
-    mg_header header = info->http_headers[i];
-    headers.push_back(HttpHeader(string(header.name),
-        string(header.value)));
-  }
-  
+
   char buf[1000];
   sprintf(buf, "Got %s to %s\n", info->request_method, info->uri);
   WEBDRIVER_LOG(buf);
   
+  stringstream js;
   if (!strcmp(info->request_method, "POST")) {
     string post_data = EscapeChar(string(info->post_data,
         info->post_data_len), '\'');
-    handler->HandlePost(uri, headers, post_data, connection);
+    if (uri.size() == 4 && uri[3] == "url") {
+      char *guid = GenerateGuidString();
+      js << "get_url('" << post_data << "', '"
+         << chrome_driver_plugin->session_id() << "', '" << guid << "');";
+      delete[] guid;
+    } else {
+      js << "HandlePost(" << "'" << info->uri << "', '" << post_data << "', '"
+         << chrome_driver_plugin->session_id() << "', '"
+         << chrome_driver_plugin->context() << "')";
+    }
   } else if (!strcmp(info->request_method, "GET")) {
-    handler->HandleGet(uri, headers, connection);
+    js << "HandleGet(" << "'" << info->uri << "')";
   } else if (!strcmp(info->request_method, "DELETE")) {
-    handler->HandleDelete(uri, headers, connection);
+    if (uri.size() == 2) {
+      js << "HandleDelete(" << "'" << info->uri << "')";
+    }
+  } else {
+    js << "HandleUnknown()";
   }
+  chrome_driver_plugin->ExecuteJavascript(js.str());
 }
 
 bool HttpServer::Listen(unsigned short port) {
@@ -111,6 +123,11 @@ void HttpServer::StopListening(){
 
 bool HttpServer::is_listening() {
   return is_listening_;
+}
+
+void HttpServer::set_chrome_driver_plugin(
+    ChromeDriverPlugin *chrome_driver_plugin) {
+  chrome_driver_plugin_ = chrome_driver_plugin;
 }
 
 size_t HttpServer::send(const char *response) {

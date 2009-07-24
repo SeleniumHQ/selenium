@@ -1,13 +1,18 @@
+//TODO(danielwh): Add failure HTTP messages if things unexpectedly faily
+
 ports = new Array();
 
 active_port = null;
-
 primary_display_tab_id = null;
+session_id_ = null;
+context_ = null;
+capabilities_ = null;
+path_offset_ = 1; //TODO(danielwh): Grab this from the initial URL
 
 chrome.self.onConnect.addListener(function(port) {
   console.log("Connected");
   ports.push(port);
-  active_port = port;
+  active_port = port; //TODO(danielwh): Probably move this
   port.onMessage.addListener(parse_port_message);
 });
 
@@ -15,59 +20,212 @@ function parse_port_message(message) {
   console.log("Received response to: " + message.response);
   switch(message.response) {
   case "title":
-    document.embeds[0].return_get_title_success(message.title);
+    SendValue(message.title);
     break;
   case "inject embed":
     active_port.postMessage({request: "remove embed", uuid: message.uuid});
     break;
   case "remove embed":
-    document.embeds[0].confirm_url_loaded();
+    SendNoContent();
     break;
   case "get element":
     if (message.status) {
-      document.embeds[0].return_get_elements(message.elements);
+      SendValue(message.elements);
     } else {
-      document.embeds[0].return_get_elements_failed(message.by + " '" + message.value + "'");
+      SendNotFound({message: "Unable to locate element with " + message.by + " " + message.value, class: "org.openqa.selenium.NoSuchElementException"});
     }
     break;
   case "get element attribute":
-    document.embeds[0].return_get_element_attribute(message.value);
+    SendValue(message.value);
     break;
   case "is element selected":
-    document.embeds[0].return_is_element_selected(message.value);
+    SendValue(message.value);
     break;
   case "get element text":
-    document.embeds[0].return_get_element_text(message.value);
+    SendValue(message.value);
     break;
   case "send element keys":
     document.embeds[0].return_send_element_keys(message.status, message.value);
     break;
   case "clear element":
-    document.embeds[0].return_clear_element(message.status);
+    if (message.status) {
+      SendNoContent();
+    }
     break;
   case "click element":
     document.embeds[0].return_click_element(message.status, message.x, message.y);
     break;
   case "submit element":
-    document.embeds[0].return_submit_element(message.status);
+    if (message.status) {
+      SendNoContent();
+    }
+    break;
+  case "url":
+    SendValue(message.url);
     break;
   }
 }
 
-function get_element_attribute(element_id, attribute) {
-  document.embeds[0].return_get_element_attribute(
-      element_array[element_id].getAttribute(attribute));
+function HandleGet(uri) {
+  var path = uri.split("/").slice(path_offset_);
+  if (path.length < 3 || path[0] != "session" || path[1] != session_id_) {
+    //TODO(danielwh): Fail with an HTTP message
+    console.log("Invalid session setup");
+    return;
+  }
+  switch (path.length) {
+  case 3:
+    SendValue(capabilities_);
+    break;
+  case 4:
+    switch (path[3]) {
+    case "title":
+      active_port.postMessage({request: "title"});
+      break;
+    case "url":
+      active_port.postMessage({request: "url"});
+    }
+    break;
+  case 6:
+    if (path[3] == "element") {
+      var element_id = parseInt(path[4]);
+      if (element_id == null) {
+        //TODO(danielwh): Fail with an HTTP message
+        console.log("Not an integer element id: " + path[4]);
+        return;
+      }
+      switch (path[5]) {
+      case "value":
+        active_port.postMessage({request: "get element attribute", "element_id": element_id, "attribute": "value"});
+        break;
+      case "text":
+        active_port.postMessage({request: "get element text", "element_id": element_id});
+        break;
+      case "selected":
+        active_port.postMessage({request: "is element selected", "element_id": element_id});
+        break;
+      }
+    }
+    break;
+  case 7:
+    if (path[3] == "element" && path[5] == "attribute") {
+      var element_id = parseInt(path[4]);
+      if (element_id == null) {
+        //TODO(danielwh): Fail with an HTTP message
+        console.log("Not an integer element id: " + path[4]);
+        return;
+      }
+      active_port.postMessage({request: "get element attribute", "element_id": element_id, "attribute": path[6]});
+    }
+    break;
+  }
 }
 
-function get_element_text(element_id) {
-  document.embeds[0].return_element_text(element_array[element_id].innerText);
+function HandlePost(uri, post_data, session_id, context) {
+  if (!session_id_) {
+    session_id_ = session_id;
+  }
+  if (!context_) {
+    context_ = context;
+  }
+  var path = uri.split("/").slice(path_offset_);
+  var value = JSON.parse(post_data);
+  switch (path.length) {
+  case 1:
+    if (path[0] == "session") {
+      create_session(value);
+    }
+    break;
+  case 4:
+    switch (path[3]) {
+    case "element":
+      active_port.postMessage({request: "get element", "value": value});
+      break;
+    case "elements":
+      active_port.postMessage({request: "get elements", "value": value});
+      break;
+    }
+    break;
+  case 6:
+    if (path[3] == "element") {
+      switch (path[5]) {
+      case "value":
+        active_port.postMessage({request: "send element keys", "value": value});
+        break;
+      case "clear":
+        active_port.postMessage({request: "clear element", "json_param": post_data});
+        break;
+      case "click":
+        active_port.postMessage({request: "click element", "json_param": post_data});
+        break;
+      case "submit":
+        active_port.postMessage({request: "submit element", "json_param": post_data});
+        break;
+       }
+     }
+     break;
+  case 7:
+    if (path[3] == "element") {
+      switch (path[5]) {
+      case "element":
+        active_port.postMessage({request: "get element", "value": value});
+        break;
+      case "elements":
+        active_port.postMessage({request: "get elements", "value": value});
+        break;
+      }
+    }
+  }
 }
 
-function create_session(capabilities) {
-  var start_session_request = JSON.parse(capabilities);
+function HandleDelete(uri) {
+  if (uri == "/session/" + session_id_) {
+    SendNoContent();
+  }
+}
+
+//TODO(danielwh): Some kind of filtering so that arbitrary HTTP can't be sent by random javascript
+function SendHttp(http) {
+  console.log("Sending HTTP: " + http);
+  document.embeds[0].SendHttp(http);
+}
+
+function SendNoContent() {
+  SendHttp("HTTP/1.1 204 No Content");
+}
+
+function SendNotFound(value) {
+  var response_data = '{"error":true,"sessionId":\"%u\",' +
+      '"context":"' + context_ + '","value":' + JSON.stringify(value) + 
+      ',"class":"org.openqa.selenium.remote.Response"}';
+  var response = "HTTP/1.1 404 Not Found" +
+      "\r\nContent-Length: " + response_data.length +
+      "\r\nContent-Type: application/json; charset=ISO-8859-1" +
+      "\r\n\r\n" + response_data;
+  SendHttp(response);
+}
+
+function SendValue(value) {
+  var response_data = '{"error":false,"sessionId":"' + session_id_ + 
+      '","value":' + JSON.stringify(value) + ',"context":"' + context_ + 
+      '","class":"org.openqa.selenium.remote.Response"}';
+  
+  var response = "HTTP/1.1 200 OK" +
+      "\r\nContent-Length: " + response_data.length + 
+      "\r\nContent-Type: application/json; charset=ISO-8859-1" +
+      "\r\n\r\n" + response_data;
+  SendHttp(response);
+}
+
+function create_session(request) {
+  capabilities_ = request[0];
   //TODO(danielwh): Better check for OS
-  if (start_session_request[0].platform == "WINDOWS" && start_session_request[0].browserName == "chrome") {
-    document.embeds[0].approve_session(JSON.stringify(start_session_request[0]));
+  //TODO(danielwh): Don't hard code url or port
+  if (request[0].platform == "WINDOWS" && request[0].browserName == "chrome") {
+    var response = "HTTP/1.1 302 Found" +
+    "\r\nLocation: http://localhost:7601/session/" + session_id_ + "/" + context_ +
+    "\r\nContent-Length: 0";
+    SendHttp(response);
   } else {
     document.embeds[0].deny_session();
   }
@@ -103,40 +261,4 @@ function get_url_loaded_callback_first_time(tab) {
 
 function get_url_check_loaded_first_time(tab_id) {
   chrome.tabs.get(tab_id, get_url_loaded_callback_first_time);
-}
-
-function get_title() {
-  active_port.postMessage({request: "title"});
-}
-
-function get_element(plural, json_lookup) {
-  active_port.postMessage({request: "get element", "plural": plural, "json_lookup": json_lookup});
-}
-
-function get_element_attribute(element_id, attribute) {
-  active_port.postMessage({request: "get element attribute", "element_id": element_id, "attribute": attribute});
-}
-
-function is_element_selected(element_id) {
-  active_port.postMessage({request: "is element selected", "element_id": element_id});
-}
-
-function get_element_text(element_id) {
-  active_port.postMessage({request: "get element text", "element_id": element_id});
-}
-
-function send_element_keys(json_param) {
-  active_port.postMessage({request: "send element keys", "json_param": json_param});
-}
-
-function clear_element(json_param) {
-  active_port.postMessage({request: "clear element", "json_param": json_param});
-}
-
-function click_element(json_param) {
-  active_port.postMessage({request: "click element", "json_param": json_param});
-}
-
-function submit_element(json_param) {
-  active_port.postMessage({request: "submit element", "json_param": json_param});
 }

@@ -1,6 +1,5 @@
 #include "webdriver/chrome_driver_plugin.h"
 
-#include "webdriver/http_handler.h"
 #include "webdriver/http_responses.h"
 #include "webdriver/http_server.h"
 #include "webdriver/javascript_executor.h"
@@ -71,6 +70,10 @@ void ChromeDriverPlugin::GiveWindow(HWND handle) {
 }
 #endif
 
+void ChromeDriverPlugin::SendHttp(const char *http) {
+  http_server_->send(http);
+}
+
 JavascriptExecutor *ChromeDriverPlugin::javascript_executor() {
   return javascript_executor_;
 }
@@ -79,128 +82,14 @@ const size_t ChromeDriverPlugin::session_id() {
   return session_id_;
 }
 
-void ChromeDriverPlugin::SendGeneralFailure() {
-  http_server_->send(kFailureResponse);
+const char *ChromeDriverPlugin::context() {
+  return context_;
 }
 
-//The actual construction of HTTP messages is ugly.  See my comment in
-//webdriver/http_responses.h -danielwh
-
-void ChromeDriverPlugin::SendNotFound() {
-  char *response_data = new char[strlen(kNotFoundResponseData) +
-      kMaxSize_tDigits + strlen(context_) + 1];
-  sprintf(response_data, kNotFoundResponseData, session_id_, context_);
-  char *response = new char[strlen(kNotFoundResponse) + kMaxSize_tDigits + 
-      strlen(response_data) + 1];
-  sprintf(response, kNotFoundResponse, strlen(response_data), response_data);
-      
-  http_server_->send(response);
-  
-  delete[] response;
-  delete[] response_data;
-}
-
-void ChromeDriverPlugin::SendStringValue(string value) {
-  stringstream s;
-  s << "\"" << value << "\"";
-  SendValue(s.str());
-}
-
-void ChromeDriverPlugin::SendValue(string value) {
-  string escaped_value = EscapeChar(value, '\n');
-  char *response_data = new char[
-      strlen(kSendValueResponseData) + kMaxSize_tDigits +
-      escaped_value.length() + strlen(context_) + 1];
-  sprintf(response_data, kSendValueResponseData,
-      session_id_, escaped_value.c_str(), context_);
-  char *response = new char[strlen(kOkResponse) +
-      kMaxSize_tDigits + strlen(response_data) + 1];
-  sprintf(response, kOkResponse, strlen(response_data), response_data);
-
-  http_server_->send(response);
-  
-  delete[] response;
-  delete[] response_data;
-}
-
-void ChromeDriverPlugin::CreateSession(string capabilities) {
-  //TODO(danielwh): Don't use hard-coded port
-  
-  capabilities_ = capabilities;
-  char *create_session_response = new char[
-      strlen(kAcceptCreateSessionResponse) + 4 + kMaxSize_tDigits +
-      strlen(context_) + 1];
-  sprintf(create_session_response, kAcceptCreateSessionResponse, 7601, session_id_, context_);
-  
-  http_server_->send(create_session_response);
-  
-  delete[] create_session_response;
-}
-
-void ChromeDriverPlugin::ConfirmSession() {
-  char *confirm_session_response_data = new char[
-      strlen(kConfirmCreateSessionResponseData) + kMaxSize_tDigits + 
-      capabilities_.length() + 1];
-  sprintf(confirm_session_response_data, kConfirmCreateSessionResponseData,
-      session_id_, capabilities_.c_str());
-  char *confirm_session_response = new char[
-      strlen(kOkResponse) + kMaxSize_tDigits + 
-      strlen(confirm_session_response_data) + 1];
-  sprintf(confirm_session_response, kOkResponse,
-      strlen(confirm_session_response_data), confirm_session_response_data);
-      
-  http_server_->send(confirm_session_response);
-  
-  delete[] confirm_session_response_data;
-  delete[] confirm_session_response;
-}
-
-void ChromeDriverPlugin::DeleteSession() {
-  http_server_->send(kNoContentReseponse);
-}
-
-void ChromeDriverPlugin::ConfirmUrlLoaded() {
-  http_server_->send(kNoContentReseponse);
-}
-
-void ChromeDriverPlugin::ReturnGetTitleSuccess(string title) {
-  SendStringValue(title);
-} 
-
-void ChromeDriverPlugin::ReturnGetTitleFailure() {
-  SendNotFound();
-}
-
-void ChromeDriverPlugin::ReturnGetElementFound(string internal_element_ids) {
-  SendValue(internal_element_ids);
-}
-
-void ChromeDriverPlugin::ReturnGetElementNotFound(string identifier_string) {
-  char *response_data = new char[strlen(kElementNotFoundResponseData) +
-      kMaxSize_tDigits + strlen(context_) + identifier_string.length() + 1];
-  sprintf(response_data, kElementNotFoundResponseData, session_id_, context_, identifier_string.c_str());
-  char *response = new char[strlen(kNotFoundResponse) + kMaxSize_tDigits + 
-      strlen(response_data) + 1];
-  sprintf(response, kNotFoundResponse, strlen(response_data), response_data);
-
-  http_server_->send(response);
-  
-  delete[] response;
-  delete[] response_data;
-}
 
 void ChromeDriverPlugin::ReturnSendElementKeys(bool success, char *to_type) {
   if (success) {
     sendKeys(current_handle_, CharStringToWCharString(to_type), 10);
-    http_server_->send(kNoContentReseponse);
-  } else {
-    //TODO(danielwh): Fail somehow
-    //http_server_->send(kNoContentReseponse);
-  }
-}
-
-void ChromeDriverPlugin::ReturnClearElement(bool success) {
-  if (success) {
     http_server_->send(kNoContentReseponse);
   } else {
     //TODO(danielwh): Fail somehow
@@ -215,43 +104,6 @@ void ChromeDriverPlugin::ReturnClickElement(bool success, int32 x, int32 y) {
   } else {
     //TODO(danielwh): Fail somehow
     //http_server_->send(kNoContentReseponse);
-  }
-}
-
-void ChromeDriverPlugin::ReturnGetElementAttributeSuccess(std::string value) {
-  SendStringValue(value);
-}
-
-void ChromeDriverPlugin::ReturnGetElementAttributeFailure() {
-  SendNotFound();
-}
-
-void ChromeDriverPlugin::ReturnGetElementTextSuccess(string text) {
-  SendStringValue(text);
-}
-
-void ChromeDriverPlugin::ReturnGetElementTextFailure() {
-  SendNotFound();
-}
-
-void ChromeDriverPlugin::ReturnIsElementSelected(bool selected) {
-  SendValue(string(selected ? "true" : "false"));
-}
-
-//TODO(danielwh): Window switching
-/*void ChromeDriverPlugin::ReturnSwitchWindow(bool success) {
-  if (selected) {
-    http_server_->send(kNoContentReseponse);
-  } else {
-    SendNotFound();
-  }
-}*/
-
-void ChromeDriverPlugin::ReturnSubmitElement(bool success) {
-  if (success) {
-    http_server_->send(kNoContentReseponse);
-  } else {
-    //TODO(danielwh): fail somehow
   }
 }
 

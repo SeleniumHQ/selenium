@@ -17,7 +17,10 @@ function parse_port_message(message) {
     remove_webdriver_embed(message.uuid);
     break;
   case "get element":
-    get_element(message.plural, message.json_lookup);
+    get_element(false, message.value);
+    break;
+  case "get elements":
+    get_element(true, message.value);
     break;
   case "get element attribute":
     get_element_attribute(message.element_id, message.attribute);
@@ -29,7 +32,7 @@ function parse_port_message(message) {
     get_element_text(message.element_id);
     break;
   case "send element keys":
-    send_element_keys(message.json_param);
+    send_element_keys(message.value);
     break;
   case "clear element":
     clear_element(message.json_param);
@@ -39,6 +42,9 @@ function parse_port_message(message) {
     break;
   case "submit element":
     submit_element(message.json_param);
+    break;
+  case "url":
+    port.postMessage({response: "url", url: document.location.href});
     break;
   }
 }
@@ -64,9 +70,8 @@ function remove_webdriver_embed(uuid) {
  * @param plural true if want array of all elements, false if singular element
  */
  
-function get_element(plural, lookup_json) {
+function get_element(plural, parsed) {
   //TODO(danielwh): Should probably check for nulls here
-  var parsed = JSON.parse(lookup_json);
   var root = "./"; //root always ends with /, so // lookups should only start with one additional /
   var lookup_by = "";
   var lookup_value = "";
@@ -120,19 +125,19 @@ function get_element(plural, lookup_json) {
   }
   if (elements == null || elements.length == 0) {
     if (plural) {
-      port.postMessage({response: "get element", status: true, "elements": "[]"});
+      port.postMessage({response: "get element", status: true, "elements": []});
     } else {
       port.postMessage({response: "get element", status: false, by: lookup_by, value: lookup_value});
     }
     return;
   } else {
-    var elements_id_string = '[';
+    var elements_array = new Array();
+    //var elements_id_string = '[';
     if (plural) {
       var from = element_array.length;
-      elements_id_string += '"element/' + from + '"';
       element_array = element_array.concat(elements);
-      for (var i = from + 1; i < element_array.length; i++) {
-        elements_id_string += ',"element/' + i + '"';
+      for (var i = from; i < element_array.length; i++) {
+        elements_array.push('element/' + i);
       }
     } else {
       if (!elements[0]) {
@@ -140,10 +145,9 @@ function get_element(plural, lookup_json) {
         return;
       }
       element_array.push(elements[0]);
-      elements_id_string += '"element/' + (element_array.length - 1) + '"';
+      elements_array.push('element/' + (element_array.length - 1));
     }
-    elements_id_string += ']';
-    port.postMessage({response: "get element", status: true, "elements": elements_id_string});
+    port.postMessage({response: "get element", status: true, "elements": elements_array});
     return;
   }
 }
@@ -179,8 +183,7 @@ function get_element_text(element_id) {
   port.postMessage({response: "get element text", value: element_array[element_id].innerText});
 }
 
-function send_element_keys(json_param) {
-  var request = JSON.parse(json_param)[0];
+function send_element_keys(request) {
   if (parseInt(request.id) != null && element_array.length >= parseInt(request.id) + 1) {
     element_array[request.id].focus();
     port.postMessage({response: "send element keys", status: true, value: request.value[0]});
