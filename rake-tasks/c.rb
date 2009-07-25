@@ -23,8 +23,8 @@ def msbuild(solution, out, spoof)
       sh "MSBuild.exe #{solution} /verbosity:q /target:Rebuild /property:Configuration=Release /property:Platform=x64", :verbose => false
       sh "MSBuild.exe #{solution} /verbosity:q /target:Rebuild /property:Configuration=Release /property:Platform=Win32", :verbose => false
     end
-  elsif spoof
-    dir = out.replace(/\.*?/, '')
+  elsif !windows?
+    dir = out.sub(/(.*)\/.*?$/, '\1')
     mkdir_p dir
     File.open("#{out}", 'w') {|f| f.write("")}
   else

@@ -40,17 +40,15 @@ def xpt(args)
 end
 
 def build_xpt(srcs, out)
-  gecko = "third_party\\gecko-1.9.0.11\\"
-
   if (windows?)
-    gecko += "win32"
+    gecko = "third_party\\gecko-1.9.0.11\\win32"
     srcs.each do |src|
       cmd = "#{gecko}\\bin\\xpidl.exe -w -m typelib -I#{gecko}\\idl -e #{out} #{src}"
       sh cmd, :verbose => false
     end
   else
-    puts "Doing nothing for now. Later revisions will enable xpt building. Creating stub"
-    File.open("#{output}", 'w') {|f| f.write("")}
+    puts "Doing nothing for now. Later revisions will enable xpt building. Creating stub for #{out}"
+    File.open("#{out}", 'w') {|f| f.write("")}
   end
 end
 

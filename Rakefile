@@ -67,6 +67,7 @@ test_java(:name => "test_ie",
                      :ie,
                      :test_common
                    ],
+          :run  => windows?,
           :out  => "webdriver-ie-test.jar")
 task :test_jobbie => :test_ie                  
 
@@ -246,6 +247,7 @@ end
 task :iphone => [:iphone_server, :iphone_client]
 
 # Place-holder tasks
+task :iphone_client
 task :test_iphone_server
 task :test_iphone_client
 task :test_iphone => [:test_iphone_server, :test_iphone_client, :remote_client]

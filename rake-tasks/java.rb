@@ -17,6 +17,11 @@ def build_deps_(srcs)
 end
 
 def jar(args)
+  if !jar? then
+    puts "Unable to locate 'jar' command"
+    exit -1
+  end
+  
   out = "build/#{args[:out]}"
   
   # Build list of dependencies
@@ -40,20 +45,19 @@ end
 def test_java(args)
   jar(args)
 
-  if !jar? then
-    puts "Unable to locate 'jar' command"
-    exit -1
-  end
-
   file "#{args[:name]}_never_there" => [ "build/#{args[:out]}" ] do
-    tests = `jar tvf build/#{args[:out]}` 
-    tests = tests.split /\n/
-    tests.map! do |clazz|
-      clazz =~ /.*\s+(.*TestSuite\.class)/ ? $1.gsub("/", ".").gsub(/\.class\s*$/, "") : nil
+    if (args[:run].nil? || args[:run])    
+      tests = `jar tvf build/#{args[:out]}` 
+      tests = tests.split /\n/
+      tests.map! do |clazz|
+        clazz =~ /.*\s+(.*TestSuite\.class)/ ? $1.gsub("/", ".").gsub(/\.class\s*$/, "") : nil
+      end
+      tests.compact!
+      
+      junit :tests => tests, :classpath => $targets[args[:name].to_sym][:deps], :main => args[:main], :args => args[:args]
+    else 
+      puts "Skipping tests for #{args[:name]}"
     end
-    tests.compact!
-    
-    junit :tests => tests, :classpath => $targets[args[:name].to_sym][:deps], :main => args[:main], :args => args[:args]
   end
  
   task "#{args[:name]}" => "#{args[:name]}_never_there"
@@ -121,7 +125,6 @@ def javac(args)
           dir = res.gsub(/\.*?/, "")
           mkdir_p dir
         end
-        puts "yo!: " + find_file(res)
         cp_r find_file(res), "#{target_dir}/#{res}"
       end
     end
