@@ -46,15 +46,15 @@ function SocketListener(server, transport)
 
 SocketListener.prototype.onStartRequest = function(request, context)
 {
-}
+};
 
 SocketListener.prototype.onStopRequest = function(request, context, status)
 {
-}
+};
 
 SocketListener.prototype.onDataAvailable = function(request, context, inputStream, offset, count)
 {
-    var incoming = {}
+    var incoming = {};
     var read = this.inputStream.readString(count, incoming);
 
     var lines = incoming.value.split('\n');
@@ -87,7 +87,15 @@ SocketListener.prototype.executeCommand = function() {
     var fxbrowser;
     var self = this;
 
-    var command = JSON.parse(this.data);
+    try {
+      var command = JSON.parse(this.data);
+    } catch (e) {
+      Utils.dump(e);
+      Utils.dump(this.data);
+
+      // Something has gone seriously wrong. Quit the browser
+      this.quit({});      
+    }
 
     var sendBack = {
         commandName : command ? command.commandName : "Unknown command",
