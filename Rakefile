@@ -4,6 +4,7 @@ require 'rake'
 require 'rake/testtask'
 require 'rake/rdoctask'
 
+require 'rake-tasks/zip.rb'
 require 'rake-tasks/c.rb'
 require 'rake-tasks/checks.rb'
 require 'rake-tasks/java.rb'
@@ -15,6 +16,7 @@ task :default => [:test]
 
 jar(:name => "common",
     :src  => [ "common/src/java/**/*.java" ],
+    :zip  => true,
     :out  => "webdriver-common.jar")
 
 jar(:name => "test_common",
@@ -31,6 +33,7 @@ jar(:name => "htmlunit",
                :common,
                "htmlunit/lib/runtime/*.jar"
              ],
+    :zip  => true,             
     :out  => "webdriver-htmlunit.jar")
 
 test_java(:name => "test_htmlunit",
@@ -58,6 +61,7 @@ jar(:name => "ie",
                {"Win32/Release/InternetExplorerDriver.dll" => "x86/InternetExplorerDriver.dll"},
                {"x64/Release/InternetExplorerDriver.dll" => "amd64/InternetExplorerDriver.dll"},
              ],
+    :zip  => true,             
     :out  => "webdriver-ie.jar")
 task :jobbie => :ie
 
@@ -104,6 +108,7 @@ jar(:name => "firefox",
                "firefox/lib/runtime/*.jar"
              ],
     :resources => [ "webdriver-extension.zip" ],
+    :zip  => true,    
     :out  => "webdriver-firefox.jar")
 
 test_java(:name => "test_firefox",
@@ -126,6 +131,7 @@ jar(:name => "selenium",
                     { "selenium/src/java/org/openqa/selenium/internal/injectableSelenium.js", "org/openqa/selenium/internal/injectableSelenium.js" },
                     { "selenium/src/java/org/openqa/selenium/internal/htmlutils.js", "org/openqa/selenium/internal/htmlutils.js" }
                   ],
+    :zip  => true,                  
     :out => "webdriver-selenium.jar" )
     
 test_java(:name => "test_selenium",
@@ -146,6 +152,7 @@ jar(:name => "support",
                :common,
                "support/lib/runtime/*.jar"
              ],
+    :zip  => true,             
     :out  => "webdriver-support.jar")
     
 test_java(:name => "test_support",
@@ -163,6 +170,7 @@ jar(:name => "remote_client",
                "remote/common/lib/runtime/*.jar",
                "remote/client/lib/runtime/*.jar",
              ],
+    :zip  => true,             
     :out  => "webdriver-remote-client.jar")
     
 jar(:name => "remote_server",
@@ -177,53 +185,26 @@ jar(:name => "remote_server",
              ],
     :out  => "webdriver-remote-server.jar")
 
-#test_java(:name => "test_remote",
-#          :src  => [ 
-#                     "remote/common/test/java/**/*.java",
-#                     "remote/client/test/java/**/*.java",
-#                     "remote/server/test/java/**/*.java"
-#                   ],
-#          :deps => [
-#                     :test_common,
-#                     :remote_client,
-#                     :remote_server
-#                   ],
-#          :out => "webdriver-remote-test.jar")
-task :test_remote                  
+test_java(:name => "test_remote",
+          :src  => [ 
+                     "remote/common/test/java/**/*.java",
+                     "remote/client/test/java/**/*.java",
+                     "remote/server/test/java/**/*.java"
+                   ],
+          :deps => [
+                     :test_common,
+                     :remote_client,
+                     :remote_server
+                   ],
+          :out => "webdriver-remote-test.jar")
 
 task :remote => [:remote_server, :remote_client]
 task :build => [:common, :htmlunit, :firefox, :ie, :iphone, :support, :remote, :selenium]
-
+task :test => [:test_htmlunit, :test_firefox, :test_ie, :test_iphone, :test_support, :test_remote, :test_selenium]
 
 task :clean do
   rm_rf 'build/'
 end
-
-task :test => [:test_htmlunit, :test_firefox, :test_ie, :test_iphone, :test_support, :test_remote, :test_selenium] do
-end
-
-task :install_firefox => [:firefox] do
-  libs = %w(build/webdriver-common.jar build/webdriver-firefox.jar firefox/lib/runtime/json-20080701.jar)
-
-  firefox = "firefox"
-  if ENV['firefox'] then
-      firefox = ENV['firefox']
-  end
-
-  extension_loc = File.dirname(__FILE__) + "/firefox/src/extension"
-  extension_loc.tr!("/", "\\") if windows?
-
-  cmd = 'java'
-  cmd += ' -cp ' + libs.join(File::PATH_SEPARATOR)
-  cmd += ' -Dwebdriver.firefox.development="' + extension_loc + '"'
-  cmd += " -Dwebdriver.firefox.bin=\"#{ENV['firefox']}\" " unless ENV['firefox'].nil?
-  cmd += ' org.openqa.selenium.firefox.FirefoxLauncher '
-  
-  sh cmd, :verbose => true
-end
-
-task :remote => [:remote_client, :remote_server]
-#task :test_remote => [:test_remote_client]
 
 task :javadocs => [:common, :firefox, :htmlunit, :jobbie, :remote, :support] do
   mkdir_p "build/javadoc"
@@ -236,8 +217,6 @@ task :javadocs => [:common, :firefox, :htmlunit, :jobbie, :remote, :support] do
   sh cmd
 end
 
-
-
 task :test_firefox_py => :test_firefox do
   if python? then
     sh "python py_test.py", :verbose => true
@@ -248,7 +227,6 @@ task :iphone => [:iphone_server, :iphone_client]
 
 # Place-holder tasks
 task :iphone_client
-task :test_iphone_server
 task :test_iphone_client
 task :test_iphone => [:test_iphone_server, :test_iphone_client, :remote_client]
 
@@ -303,45 +281,39 @@ task :remote_release => [:remote] do
   rm_rf "build/dist/remote_server"
 end
 
-task :release => [:common, :firefox, :htmlunit, :jobbie, :remote_release, :support, :selenium] do
-  %w(common firefox jobbie htmlunit support selenium).each do |driver|
-    mkdir_p "build/dist/#{driver}"
-    cp 'common/build/webdriver-common.jar', "build/dist/#{driver}"
-    cp "#{driver}/build/webdriver-#{driver}.jar", "build/dist/#{driver}"
-    cp Dir.glob("#{driver}/lib/runtime/*"), "build/dist/#{driver}" if File.exists?("#{driver}/lib/runtime")
+# TODO(simon): This should pick up the "out" files from the deps
+uber_jar(:name => "all",
+         :src  => [
+                    "build/webdriver-htmlunit.jar",
+                    "build/webdriver-firefox.jar",                    
+                    "build/webdriver-ie.jar",
+                    "build/webdriver-remote-client.jar",
+                    "build/webdriver-support.jar",
+                  ],
+         :deps => [
+                    :htmlunit,
+                    :ie,
+                    :firefox,
+                    :remote_client,
+                    :support
+                  ],
+         :out  => "webdriver-all.jar")
+         
+zip(:name => "all_zip",
+    :src  => [
+               "build/webdriver-all.jar",
+             ] + 
+             FileList.new("htmlunit/lib/runtime/*.jar") +
+             FileList.new("firefox/lib/runtime/*.jar") +
+             FileList.new("jobbie/lib/runtime/*.jar") +
+             FileList.new("remote/client/lib/runtime/*.jar") +
+             FileList.new("remote/common/lib/runtime/*.jar") +
+             FileList.new("support/lib/runtime/*.jar"),
+      :deps => [
+                 :all
+               ],
+      :out  => "webdriver-all.zip")
 
-    sh "cd build/dist && zip -r webdriver-#{driver}-#{version}.zip #{driver}/*"
-    rm_rf "build/dist/#{driver}"
-  end
-end
+task :release => [:common_zip, :firefox_zip, :htmlunit_zip, :ie_zip, :support_zip, :selenium_zip, :all_zip]
 
-task :all => [:release] do
-  mkdir_p "build/all"
-  mkdir_p "build/all/webdriver"
-
-  # Expand all the individual webdriver JARs and combine into one
-  # We do things this way so that if we've built a JAR on another
-  # platform and copied it to the right place, this uberjar works
-  %w(common firefox htmlunit jobbie remote-client support selenium).each do |zip|
-    sh "pwd", :verbose => true
-    sh "cd build/all && unzip -o ../dist/webdriver-#{zip}-#{version}.zip", :verbose => true
-  end
-
-  mkdir_p "build/all/all"
-  %w(common firefox htmlunit jobbie support selenium).each do |j|
-    sh "cd build/all/all && jar xf ../#{j}/webdriver-#{j}.jar"
-  end
-  sh "cd build/all/all && jar xf ../remote_client/webdriver-remote-client.jar"
-
-  # Repackage the uber jar
-  sh "cd build/all/all && jar cf ../webdriver/webdriver-all.jar *"
-
-  # Collect the libraries into one place
-  %w(common firefox htmlunit jobbie remote_client support).each do |j|
-    cp Dir.glob("build/all/#{j}/*.jar").reject {|f| f =~ /webdriver/} , "build/all/webdriver"
-  end
-
-  # And repack. Finally
-  sh "cd build/all && zip ../dist/webdriver-all-#{version}.zip webdriver/*"
-end
 

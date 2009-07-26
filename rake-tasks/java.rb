@@ -40,6 +40,13 @@ def jar(args)
 
   deps.push out
   $targets[args[:name].to_sym] = { :deps => deps }
+  
+  if args[:zip]
+    zip(:name => args[:name] + "_zip",
+        :src  => deps + [out],
+        :deps => deps,
+        :out  => args[:out].sub(".jar", ".zip"))
+  end
 end
 
 def test_java(args)
