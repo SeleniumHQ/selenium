@@ -17,7 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import static org.openqa.selenium.Ignore.Driver.*;
+import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
+import static org.openqa.selenium.Ignore.Driver.IPHONE;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -25,7 +26,7 @@ import java.lang.reflect.Modifier;
 public class RenderedWebElementTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
-  @Ignore({HTMLUNIT, SAFARI})
+  @Ignore(HTMLUNIT)
   public void testShouldPickUpStyleOfAnElement() {
     driver.get(javascriptPage);
 
@@ -41,7 +42,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({HTMLUNIT, SAFARI})
+  @Ignore(HTMLUNIT)
   public void testShouldAllowInheritedStylesToBeUsed() {
     driver.get(javascriptPage);
 
@@ -52,7 +53,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({HTMLUNIT, SAFARI, IPHONE})
+  @Ignore({HTMLUNIT, IPHONE})
   public void testShouldAllowUsersToHoverOverElements() {
     driver.get(javascriptPage);
 

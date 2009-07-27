@@ -17,12 +17,13 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import static org.openqa.selenium.Ignore.Driver.*;
+import static org.openqa.selenium.Ignore.Driver.IE;
+import static org.openqa.selenium.Ignore.Driver.REMOTE;
 
 import java.util.Collection;
 
 public class PartialLinkTextMatchTest extends AbstractDriverTestCase {
-        @Ignore({IE, REMOTE, SAFARI})
+        @Ignore({IE, REMOTE})
 	public void testLinkWithFormattingTags() {
         driver.get(simpleTestPage);
         WebElement elem = driver.findElement(By.id("links"));
@@ -33,7 +34,7 @@ public class PartialLinkTextMatchTest extends AbstractDriverTestCase {
         assertEquals("link with formatting tags", res.getText());
     }
 
-        @Ignore({IE, REMOTE, SAFARI})
+        @Ignore({IE, REMOTE})
 	public void testLinkWithLeadingSpaces() {
         driver.get(simpleTestPage);
         WebElement elem = driver.findElement(By.id("links"));
@@ -43,7 +44,7 @@ public class PartialLinkTextMatchTest extends AbstractDriverTestCase {
         assertEquals("link with leading space", res.getText());
     }
 
-        @Ignore({IE, REMOTE, SAFARI})
+        @Ignore({IE, REMOTE})
         public void testLinkWithTrailingSpace() {
         driver.get(simpleTestPage);
         WebElement elem = driver.findElement(By.id("links"));
@@ -54,7 +55,7 @@ public class PartialLinkTextMatchTest extends AbstractDriverTestCase {
         assertEquals("link with trailing space", res.getText());
     }
 
-        @Ignore({IE, REMOTE, SAFARI})
+        @Ignore({IE, REMOTE})
         public void testFindMultipleElements() {
 		driver.get(simpleTestPage);
         WebElement elem = driver.findElement(By.id("links"));

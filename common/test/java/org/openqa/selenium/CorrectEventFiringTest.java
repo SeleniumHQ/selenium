@@ -19,14 +19,12 @@ package org.openqa.selenium;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.openqa.selenium.Ignore.Driver.SAFARI;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 
 import java.util.List;
 
 public class CorrectEventFiringTest extends AbstractDriverTestCase {
 	@JavascriptEnabled
-        @Ignore(SAFARI)
 	public void testShouldFireFocusEventWhenClicking() {
 		driver.get(javascriptPage);
 
@@ -36,7 +34,6 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
 	}
 
 	@JavascriptEnabled
-	@Ignore(SAFARI)
 	public void testShouldFireClickEventWhenClicking() {
 		driver.get(javascriptPage);
 
@@ -46,7 +43,6 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
 	}
 
 	@JavascriptEnabled
-	@Ignore(SAFARI)
 	public void testShouldFireMouseDownEventWhenClicking() {
 		driver.get(javascriptPage);
 
@@ -56,7 +52,6 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
 	}
 
 	@JavascriptEnabled
-	@Ignore(SAFARI)
 	public void testShouldFireMouseUpEventWhenClicking() {
 		driver.get(javascriptPage);
 
@@ -66,7 +61,6 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
 	}
 
 	@JavascriptEnabled
-	@Ignore(SAFARI)
 	public void testShouldFireEventsInTheRightOrder() {
 		driver.get(javascriptPage);
 
@@ -84,7 +78,6 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
 	}
 
 	@JavascriptEnabled
-	@Ignore(SAFARI)
 	public void testsShouldIssueMouseDownEvents() {
 		driver.get(javascriptPage);
 		driver.findElement(By.id("mousedown")).click();
@@ -94,7 +87,6 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
 	}
 
 	@JavascriptEnabled
-	@Ignore(SAFARI)
 	public void testShouldIssueClickEvents() {
 		driver.get(javascriptPage);
 		driver.findElement(By.id("mouseclick")).click();
@@ -104,7 +96,6 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
 	}
 
 	@JavascriptEnabled
-	@Ignore(SAFARI)
 	public void testShouldIssueMouseUpEvents() {
 		driver.get(javascriptPage);
 		driver.findElement(By.id("mouseup")).click();
@@ -114,7 +105,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
 	}
 
 	@JavascriptEnabled
-	@Ignore({SAFARI, IPHONE})
+	@Ignore(IPHONE)
 	public void testMouseEventsShouldBubbleUpToContainingElements() {
 		driver.get(javascriptPage);
 		driver.findElement(By.id("child")).click();
@@ -124,7 +115,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
 	}
 
 	@JavascriptEnabled
-	@Ignore({SAFARI, IPHONE})
+	@Ignore(IPHONE)
 	public void testShouldEmitOnChangeEventsWhenSelectingElements() {
 		driver.get(javascriptPage);
 		WebElement select = driver.findElement(By.id("selector"));
@@ -144,7 +135,6 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
 	}
 
 	@JavascriptEnabled
-	@Ignore(SAFARI)
 	public void testShouldEmitOnChangeEventsWhenChnagingTheStateOfACheckbox() {
 		driver.get(javascriptPage);
 		WebElement checkbox = driver.findElement(By.id("checkbox"));
@@ -155,7 +145,6 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
 	}
 
   @JavascriptEnabled
-  @Ignore(SAFARI)
   public void testShouldEmitClickEventWhenClickingOnATextInputElement() {
     driver.get(javascriptPage);
 
@@ -166,7 +155,6 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(SAFARI)
   public void testClearingAnElementShouldCauseTheOnChangeHandlerToFire() {
     driver.get(javascriptPage);
 

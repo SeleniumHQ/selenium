@@ -27,7 +27,7 @@ import java.lang.annotation.Target;
 public @interface Ignore {
 
   public static enum Driver {
-    ALL, HTMLUNIT, IE, FIREFOX, SAFARI, REMOTE, IPHONE
+    ALL, HTMLUNIT, IE, FIREFOX, REMOTE, IPHONE
   }
 
   Driver[] value() default { Driver.ALL };

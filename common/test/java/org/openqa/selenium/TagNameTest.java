@@ -19,12 +19,9 @@ package org.openqa.selenium;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.openqa.selenium.Ignore.Driver.SAFARI;
 import org.junit.Test;
 
 public class TagNameTest extends AbstractDriverTestCase {
-
-    @Ignore(SAFARI)
     @Test
     public void shouldReturnInput() {
         driver.get(formPage);

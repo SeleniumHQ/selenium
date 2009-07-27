@@ -103,14 +103,11 @@ public class DesiredCapabilities implements Capabilities {
     return new DesiredCapabilities("htmlunit", "", Platform.ANY);
   }
 
-  public static DesiredCapabilities safari() {
-    return new DesiredCapabilities("safari", "", Platform.MAC);
-  }
-
   public static DesiredCapabilities iphone() {
     return new DesiredCapabilities("iphone", "", Platform.MAC);
   }
   
+  @Override
   public boolean equals(Object o) {
     if (this == o) {
       return true;
@@ -137,6 +134,7 @@ public class DesiredCapabilities implements Capabilities {
     return true;
   }
 
+  @Override
   public int hashCode() {
     int result;
     result = (browserName != null ? browserName.hashCode() : 0);

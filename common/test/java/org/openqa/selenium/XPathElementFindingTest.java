@@ -20,8 +20,6 @@ package org.openqa.selenium;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
-import static org.openqa.selenium.Ignore.Driver.SAFARI;
-
 import java.util.List;
 
 public class XPathElementFindingTest extends AbstractDriverTestCase {
@@ -53,7 +51,6 @@ public class XPathElementFindingTest extends AbstractDriverTestCase {
         assertThat(element.getText(), equalTo("XHTML Might Be The Future"));
     }
 
-    @Ignore(value = SAFARI, reason = "Test fails")
     public void testShouldFindElementsByXPath() {
         driver.get(xhtmlTestPage);
         List<WebElement> divs = driver.findElements(By.xpath("//div"));
@@ -61,7 +58,6 @@ public class XPathElementFindingTest extends AbstractDriverTestCase {
         assertThat(divs.size(), equalTo(5));
     }
 
-    @Ignore(value = SAFARI, reason = "Test fails")
     public void testShouldBeAbleToFindManyElementsRepeatedlyByXPath() {
         driver.get(xhtmlTestPage);
         String xpathString = "//node()[contains(@id,'id')]";

@@ -19,15 +19,15 @@ package org.openqa.selenium;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-
-import static org.openqa.selenium.Ignore.Driver.*;
+import static org.openqa.selenium.Ignore.Driver.IE;
+import static org.openqa.selenium.Ignore.Driver.REMOTE;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public class WindowSwitchingTest extends AbstractDriverTestCase {
 
-  @Ignore({IE, SAFARI, REMOTE})
+  @Ignore({IE, REMOTE})
   public void testShouldSwitchFocusToANewWindowWhenItIsOpenedAndNotStopFutureOperations() {
     driver.get(xhtmlTestPage);
 
@@ -41,7 +41,7 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
     driver.findElement(By.id("iframe_page_heading"));
   }
 
-  @Ignore({IE, REMOTE, SAFARI})
+  @Ignore({IE, REMOTE})
   public void testShouldThrowNoSuchWindowException() {
     driver.get(xhtmlTestPage);
 
@@ -56,7 +56,7 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
 
   @NeedsFreshDriver
   @NoDriverAfterTest
-  @Ignore({IE, SAFARI, REMOTE})
+  @Ignore({IE, REMOTE})
   public void testShouldBeAbleToIterateOverAllOpenWindows() throws Exception {
     driver.get(xhtmlTestPage);
     driver.findElement(By.name("windowOne")).click();
@@ -75,7 +75,7 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
     }
   }
 
-  @Ignore({IE, SAFARI})
+  @Ignore(IE)
   public void testClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang() {
     driver.get(xhtmlTestPage);
 
