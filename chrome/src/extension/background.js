@@ -38,8 +38,14 @@ function parse_port_message(message) {
     break;
   case "get element attribute":
     if (message.status) {
-      SendValue(message.value);
+      if (message.value != null || message.value == "") {
+        SendValue(message.value);
+      } else {
+        //Attribute not found
+        SendNoValue();
+      }
     } else {
+      //Element not found (or some similar error)
       SendNotFound({message: "An error occured while finding attribute of " + message.attribute + " " + message.value, class: "org.openqa.selenium.NotFoundException"});
     }
     break;
@@ -47,6 +53,9 @@ function parse_port_message(message) {
     SendValue(message.value);
     break;
   case "is element selected":
+    SendValue(message.value);
+    break;
+  case "is element enabled":
     SendValue(message.value);
     break;
   case "get element text":
@@ -64,6 +73,11 @@ function parse_port_message(message) {
     document.embeds[0].return_click_element(message.status, message.x, message.y);
     break;
   case "submit element":
+    if (message.status) {
+      SendNoContent();
+    }
+    break;
+  case "select element":
     if (message.status) {
       SendNoContent();
     }
@@ -136,6 +150,9 @@ function HandleGet(uri) {
       case "selected":
         active_port.postMessage({request: "is element selected", "element_id": element_id});
         break;
+      case "enabled":
+        active_port.postMessage({request: "is element enabled", "element_id": element_id});
+        break;
       }
     }
     break;
@@ -204,6 +221,9 @@ function HandlePost(uri, post_data, session_id, context) {
       case "submit":
         active_port.postMessage({request: "submit element", "element_id": element_id});
         break;
+      case "selected":
+        active_port.postMessage({request: "select element", "element_id": element_id});
+        break;
        }
      }
      break;
@@ -266,6 +286,18 @@ function SendNotFound(value) {
 function SendValue(value) {
   var response_data = '{"error":false,"sessionId":"' + session_id_ + 
       '","value":' + JSON.stringify(value) + ',"context":"' + context_ + 
+      '","class":"org.openqa.selenium.remote.Response"}';
+  
+  var response = "HTTP/1.1 200 OK" +
+      "\r\nContent-Length: " + response_data.length + 
+      "\r\nContent-Type: application/json; charset=ISO-8859-1" +
+      "\r\n\r\n" + response_data;
+  SendHttp(response);
+}
+
+function SendNoValue() {
+  var response_data = '{"error":false,"sessionId":"' + session_id_ + 
+      '","context":"' + context_ + 
       '","class":"org.openqa.selenium.remote.Response"}';
   
   var response = "HTTP/1.1 200 OK" +

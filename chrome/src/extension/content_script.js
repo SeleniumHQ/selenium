@@ -31,6 +31,9 @@ function parse_port_message(message) {
   case "is element selected":
     is_element_selected(message.element_id);
     break;
+  case "is element enabled":
+    is_element_enabled(message.element_id);
+    break;
   case "get element text":
     get_element_text(message.element_id);
     break;
@@ -45,6 +48,9 @@ function parse_port_message(message) {
     break;
   case "submit element":
     submit_element(message.element_id);
+    break;
+  case "select element":
+    selectElement(message.element_id);
     break;
   case "url":
     port.postMessage({response: "url", url: document.location.href});
@@ -193,8 +199,19 @@ function getElementsByPartialLinkText(parent, partial_link_text) {
 function get_element_attribute(element_id, attribute) {
   if ((element = internal_get_element(element_id)) != null) {
     var value = element.getAttribute(attribute);
-    if (attribute == "disabled" && value == null) {
-      value = "false";
+    switch (attribute.toLowerCase()) {
+    case "disabled":
+      value = (element.disabled ? element.disabled : "false");
+      break;
+    case "selected":
+      value = (element.selected ? element.selected : "false");
+      break;
+    case "checked":
+      value = (element.checked ? element.checked : "false");
+      break;
+    case "index":
+      value = element.index;
+      break;
     }
     port.postMessage({response: "get element attribute", status: true, value: value});
   } else {
@@ -242,18 +259,49 @@ function submit_element(element_id) {
   }
 }
 
-function is_element_selected(element_id) {
-  var element = element_array[element_id];
-  var selected = false;
-  try {
-    var type = element.getAttribute("type").toLowerCase();
-    if (type == "option") {
-      selected = element.selected;
-    } else if (type == "checkbox" || type == "radio") {
-      selected = element.checked;
+function selectElement(element_id) {
+  if ((element = internal_get_element(element_id)) != null) {
+    try {
+      var tagName = element.tagName.toLowerCase();
+      if (tagName == "option") {
+        element.selected = true;
+      } else if (tagName == "input") {
+        var type = element.getAttribute("type").toLowerCase();
+        if (type == "checkbox" || type == "radio") {
+          element.checked = true;
+        }
+      }
+    } catch (e) {
+      //TODO(danielwh): Fail somehow
     }
-  } catch(e) {}
+  }
+  port.postMessage({response: "select element", status: true});
+}
+
+function is_element_selected(element_id) {
+  var selected = false;
+  if ((element = internal_get_element(element_id)) != null) {
+    try {
+      var tagName = element.tagName.toLowerCase();
+      if (tagName == "option") {
+        selected = element.selected;
+      } else if (tagName == "input") {
+        var type = element.getAttribute("type").toLowerCase();
+        if (type == "checkbox" || type == "radio") {
+          selected = element.checked;
+        }
+      }
+    } catch (e) {
+      //TODO(danielwh): Fail somehow
+    }
+  }
   port.postMessage({response: "is element selected", value: selected});
+}
+
+function is_element_enabled(element_id) {
+  if ((element = internal_get_element(element_id)) != null) {
+    port.postMessage({response: "is element enabled", value: !element.disabled});
+  }
 }
 
 function getCookies() {
