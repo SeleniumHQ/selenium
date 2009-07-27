@@ -52,6 +52,9 @@ function parse_port_message(message) {
   case "select element":
     selectElement(message.element_id);
     break;
+  case "toggle element":
+    toggleElement(message.element_id);
+    break;
   case "url":
     port.postMessage({response: "url", url: document.location.href});
     break;
@@ -251,51 +254,43 @@ function click_element(element_id) {
 }
 
 function submit_element(element_id) {
-  if ((element = internal_get_element(element_id)) != null) {
-    element.submit();
-    port.postMessage({response: "submit element", status: true});
-  } else {
-    port.postMessage({response: "submit element", status: false});
+  var element = internal_get_element(element_id);
+  while (element != null) {
+    if (element.tagName.toLowerCase() == "form") {
+      element.submit();
+      port.postMessage({response: "submit element", status: true});
+    }
+    element = element.parentElement;
   }
+  port.postMessage({response: "submit element", status: false});
 }
 
 function selectElement(element_id) {
-  if ((element = internal_get_element(element_id)) != null) {
-    try {
-      var tagName = element.tagName.toLowerCase();
-      if (tagName == "option") {
-        element.selected = true;
-      } else if (tagName == "input") {
-        var type = element.getAttribute("type").toLowerCase();
-        if (type == "checkbox" || type == "radio") {
-          element.checked = true;
-        }
-      }
-    } catch (e) {
-      //TODO(danielwh): Fail somehow
-    }
+  if ((element = internal_get_element(element_id)) != null && element.disabled) {
+    port.postMessage({response: "select element", status: false, message: "Can only select things which are enabled"});
+    return;
   }
-  port.postMessage({response: "select element", status: true});
+  if (doSelectElement(element, true, true)) {
+    port.postMessage({response: "select element", status: true});
+  } else {
+    port.postMessage({response: "select element", status: false, message: "Can only select options, checkboxes and radio inputs"});
+  }
+}
+
+function toggleElement(element_id) {
+  if ((element = internal_get_element(element_id)) != null && element.disabled) {
+    port.postMessage({response: "toggle element", status: false, message: "Can only toggle things which are enabled"});
+    return;
+  }
+  if (doSelectElement(element, !doIsElementSelected(element_id), false)) {
+    port.postMessage({response: "toggle element", status: true, selected: doIsElementSelected(element_id)});
+  } else {
+    port.postMessage({response: "toggle element", status: false, message: "Can only toggle multiselect options and checkboxes"});
+  }
 }
 
 function is_element_selected(element_id) {
-  var selected = false;
-  if ((element = internal_get_element(element_id)) != null) {
-    try {
-      var tagName = element.tagName.toLowerCase();
-      if (tagName == "option") {
-        selected = element.selected;
-      } else if (tagName == "input") {
-        var type = element.getAttribute("type").toLowerCase();
-        if (type == "checkbox" || type == "radio") {
-          selected = element.checked;
-        }
-      }
-    } catch (e) {
-      //TODO(danielwh): Fail somehow
-    }
-  }
-  port.postMessage({response: "is element selected", value: selected});
+  port.postMessage({response: "is element selected", value: doIsElementSelected(element_id)});
 }
 
 function is_element_enabled(element_id) {
@@ -426,4 +421,58 @@ function setCookie(cookie) {
 
 function deleteCookie(name) {
   document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT';
+}
+
+/**
+ * @param allowSingular Whether we allow this element to be selected,
+ *                      even if it can't necessarily be un-selected
+ */
+function doSelectElement(element, select, allowSingular) {
+  var hasSelected = false;
+  try {
+    var tagName = element.tagName.toLowerCase();
+    //TODO(danielwh): Find parent which is select
+    if (tagName == "option") {
+      var parent = element;
+      while (parent != null && parent.tagName.toLowerCase() != "select") {
+        parent = parent.parentElement;
+      }
+      if (allowSingular || parent.multiple) {
+        element.selected = select;
+        hasSelected = true;
+      }
+    } else if (tagName == "input") {
+      var type = element.getAttribute("type").toLowerCase();
+      if (type == "checkbox") {
+        element.checked = select;
+        hasSelected = true;
+      } else if (allowSingular && type == "radio") {
+        element.checked = select;
+        hasSelected = true;
+      }
+    }
+  } catch (e) {
+    //TODO(danielwh): Fail somehow
+  }
+  return hasSelected;
+}
+
+function doIsElementSelected(element_id) {
+  var selected = false;
+  if ((element = internal_get_element(element_id)) != null) {
+    try {
+      var tagName = element.tagName.toLowerCase();
+      if (tagName == "option") {
+        selected = element.selected;
+      } else if (tagName == "input") {
+        var type = element.getAttribute("type").toLowerCase();
+        if (type == "checkbox" || type == "radio") {
+          selected = element.checked;
+        }
+      }
+    } catch (e) {
+      //TODO(danielwh): Fail somehow
+    }
+  }
+  return selected;
 }

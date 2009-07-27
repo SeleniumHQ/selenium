@@ -80,6 +80,15 @@ function parse_port_message(message) {
   case "select element":
     if (message.status) {
       SendNoContent();
+    } else {
+      SendNotFound({message: message.message, class: "java.lang.UnsupportedOperationException"});
+    }
+    break;
+  case "toggle element":
+    if (message.status) {
+      SendValue(message.selected);
+    } else {
+      SendNotFound({message: message.message, class: "java.lang.UnsupportedOperationException"});
     }
     break;
   case "url":
@@ -224,6 +233,9 @@ function HandlePost(uri, post_data, session_id, context) {
       case "selected":
         active_port.postMessage({request: "select element", "element_id": element_id});
         break;
+      case "toggle":
+        active_port.postMessage({request: "toggle element", "element_id": element_id});
+        break;
        }
      }
      break;
@@ -273,7 +285,7 @@ function SendNoContent() {
 }
 
 function SendNotFound(value) {
-  var response_data = '{"error":true,"sessionId":\"%u\",' +
+  var response_data = '{"error":true,"sessionId":\"' + session_id_ + '\",' +
       '"context":"' + context_ + '","value":' + JSON.stringify(value) + 
       ',"class":"org.openqa.selenium.remote.Response"}';
   var response = "HTTP/1.1 404 Not Found" +
