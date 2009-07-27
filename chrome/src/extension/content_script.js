@@ -2,7 +2,7 @@ var port = chrome.extension.connect();
 
 port.onMessage.addListener(parse_port_message);
 
-element_array = new Array();
+element_array = [];
 
 function parse_port_message(message) {
   console.log("Received request for: " + message.request);
@@ -48,6 +48,19 @@ function parse_port_message(message) {
     break;
   case "url":
     port.postMessage({response: "url", url: document.location.href});
+    break;
+  case "add cookie":
+    setCookie(message.cookie);
+    break;
+  case "delete cookie":
+    deleteCookie(message.name);
+    port.postMessage({response: "delete cookie", status: true});
+    break;
+  case "get cookies":
+    getCookies();
+    break;
+  case "delete all cookies":
+    deleteAllCookies();
     break;
   }
 }
@@ -96,7 +109,7 @@ function get_element(plural, parsed) {
     parent = document;
   }
   
-  var elements = new Array();
+  var elements = [];
   var attribute = '';
   switch (lookup_by) {
   case "class name":
@@ -134,7 +147,7 @@ function get_element(plural, parsed) {
     }
     return;
   } else {
-    var elements_to_return_array = new Array();
+    var elements_to_return_array = [];
     if (plural) {
       var from = element_array.length;
       element_array = element_array.concat(elements);
@@ -157,7 +170,7 @@ function get_element(plural, parsed) {
 function getElementsByLinkText(parent, link_text) {
   //TODO(danielwh): Check that this works for children
   var links = parent.getElementsByTagName("a");
-  var matching_links = new Array();
+  var matching_links = [];
   for (var i = 0; i < links.length; i++) {
     if (links[i].innerText == link_text) {
       matching_links.push(links[i]);
@@ -168,7 +181,7 @@ function getElementsByLinkText(parent, link_text) {
 
 function getElementsByPartialLinkText(parent, partial_link_text) {
   var links = parent.getElementsByTagName("a");
-  var matching_links = new Array();
+  var matching_links = [];
   for (var i = 0; i < links.length; i++) {
     if (links[i].innerText.indexOf(partial_link_text) > -1) {
       matching_links.push(links[i]);
@@ -243,6 +256,28 @@ function is_element_selected(element_id) {
   port.postMessage({response: "is element selected", value: selected});
 }
 
+function getCookies() {
+  var cookies = [];
+  var cookie_strings = getAllCookies();
+  for (var i = 0; i < cookie_strings.length; ++i) {
+    var cookie = cookie_strings[i].split("=");
+    cookies.push({name: cookie[0], value: cookie[1], secure: false, "class": "org.openqa.selenium.internal.ReturnedCookie"});
+  }
+  port.postMessage({response: "get cookies", "cookies": cookies});
+}
+
+function deleteAllCookies() {
+  var cookies = getAllCookies();
+  for (var i = 0; i < cookies.length; ++i) {
+    var cookie = cookies[i].split("=");
+    deleteCookie(cookie[0]);
+  }
+  port.postMessage({response: "delete all cookies", status: true});
+}
+
+
+
+
 function find_element_coords(element) {
   var x = y = 0;
   do {
@@ -272,7 +307,7 @@ function get_element_index(element) {
 }
 
 function get_elements_by_xpath(xpath) {
-  var elements = new Array();
+  var elements = [];
   var found_elements = document.evaluate(xpath, document, null, XPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
   var this_element = found_elements.iterateNext();
   while (this_element) {
@@ -288,4 +323,59 @@ function internal_get_element(element_id) {
   } else {
     return null;
   }
+}
+
+function getCookie(name) {
+  if (document.cookie.length > 0) {
+    var index = document.cookie.indexOf(name + '=');
+    var cookie = '';
+    if (index == -1) {
+      var start = index + name.length + 1;
+      return unescape(document.cookie.substring(start, document.cookie.indexOf(";",start)));
+    }
+  }
+  //TODO(danielwh): Fail somehow
+}
+
+function getAllCookies() {
+  var cookie_strings = document.cookie.split('; ');
+  var cookies = [];
+  for (var i = 0; i < cookie_strings.length; ++i) {
+    if (cookie_strings[i] == '') {
+      break;
+    }
+     cookies.push(cookie_strings[i]);
+  }
+   return cookies;
+}
+
+function setCookie(cookie) {
+  var currLocation = document.location;
+  var currDomain = currLocation.host;
+  if (currLocation.port != 80) { currDomain += ":" + currLocation.port; }
+  if (cookie.domain != null && cookie.domain != undefined &&
+      currDomain.indexOf(cookie.domain) == -1) {
+      // Not quite right, but close enough. (See r783)
+    port.postMessage({response: "add cookie", status: false,
+        message: "You may only set cookies for the current domain"});
+    return;
+  } else if (false) {
+    //TODO(danielwh): Work out a way to sniff whether it's html or not,
+    //for TextPagesTest.testShouldThrowExceptionWhenAddingCookieToAPageThatIsNotHtml
+    port.postMessage({response: "add cookie", status: false,
+        message: "You may only set cookies on html documents"});
+    return;
+  } else {
+    document.cookie = cookie.name + '=' + escape(cookie.value) +
+        ((cookie.expiry == null || cookie.expiry == undefined) ?
+            '' : ';expires=' + (new Date(cookie.expiry.time)).toGMTString()) +
+        ((cookie.path == null || cookie.path == undefined) ?
+            '' : ';path=' + cookie.path);
+    port.postMessage({response: "add cookie", status: true});
+    return;
+  }
+}
+
+function deleteCookie(name) {
+  document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT';
 }

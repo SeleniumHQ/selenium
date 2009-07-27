@@ -6,7 +6,7 @@
   "background_page": "background.html",
   "content_scripts": [
     {
-      "matches": ["http://*/*", "https://*/*", "file://*/*"],
+      "matches": ["http://*/*", "https://*/*", "file:///*"],
       "js": ["content_script.js"]
     }
   ],

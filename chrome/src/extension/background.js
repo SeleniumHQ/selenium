@@ -1,6 +1,7 @@
 //TODO(danielwh): Add failure HTTP messages if things unexpectedly faily
+//TODO(danielwh): A nice consistent naming convention
 
-ports = new Array();
+ports = [];
 
 active_port = null;
 primary_display_tab_id = null;
@@ -70,6 +71,26 @@ function parse_port_message(message) {
   case "url":
     SendValue(message.url);
     break;
+  case "add cookie":
+    if (message.status) {
+      SendNoContent();
+    } else {
+      SendNotFound({message: message.message, class: "org.openqa.selenium.WebDriverException"});
+    }
+    break;
+  case "delete cookie":
+    if (message.status) {
+      SendNoContent();
+    }
+    break;
+  case "get cookies":
+    SendValue(message.cookies);
+    break;
+  case "delete all cookies":
+    if (message.status) {
+      SendNoContent();
+    }
+    break;
   }
 }
 
@@ -91,6 +112,10 @@ function HandleGet(uri) {
       break;
     case "url":
       active_port.postMessage({request: "url"});
+      break;
+    case "cookie":
+      active_port.postMessage({request: "get cookies"});
+      break;
     }
     break;
   case 6:
@@ -146,10 +171,18 @@ function HandlePost(uri, post_data, session_id, context) {
   case 4:
     switch (path[3]) {
     case "element":
-      active_port.postMessage({request: "get element", "value": value});
+      active_port.postMessage({request: "get element", value: value});
       break;
     case "elements":
-      active_port.postMessage({request: "get elements", "value": value});
+      active_port.postMessage({request: "get elements", value: value});
+      break;
+    case "cookie":
+      var cookie = JSON.parse(post_data)[0];
+      if (cookie.class == "org.openqa.selenium.Cookie") {
+        active_port.postMessage({request: "add cookie", cookie: cookie});
+      } else {
+        //TODO(danielwh): Fail somehow
+      }
       break;
     }
     break;
@@ -189,8 +222,23 @@ function HandlePost(uri, post_data, session_id, context) {
 }
 
 function HandleDelete(uri) {
-  if (uri == "/session/" + session_id_) {
-    SendNoContent();
+  var path = uri.split("/").slice(path_offset_);
+  switch (path.length) {
+  case 2:
+    if (path[0] == "session" && path[1] == session_id_) {
+      SendNoContent();
+    }
+    break;
+  case 4:
+    if (path[3] == "cookie") {
+      active_port.postMessage({request: "delete all cookies"});
+    }
+    break;
+  case 5:
+    if (path[3] == "cookie") {
+      active_port.postMessage({request: "delete cookie", name: path[4]});
+    }
+    break;
   }
 }
 

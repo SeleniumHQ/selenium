@@ -77,9 +77,7 @@ void HttpServer::_CallbackHandler(mg_connection *connection,
   } else if (!strcmp(info->request_method, "GET")) {
     js << "HandleGet(" << "'" << info->uri << "')";
   } else if (!strcmp(info->request_method, "DELETE")) {
-    if (uri.size() == 2) {
-      js << "HandleDelete(" << "'" << info->uri << "')";
-    }
+    js << "HandleDelete(" << "'" << info->uri << "')";
   } else {
     js << "HandleUnknown()";
   }
