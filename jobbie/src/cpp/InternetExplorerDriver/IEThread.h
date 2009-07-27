@@ -165,6 +165,7 @@ protected:
 		  void OnGetUrl(WPARAM, LPARAM);
 		  void OnGoForward(WPARAM, LPARAM);
 		  void OnGoBack(WPARAM, LPARAM);
+		  void OnGetHandle(WPARAM, LPARAM);
 		  void OnSelectElementByXPath(WPARAM, LPARAM);
 		  void OnSelectElementsByXPath(WPARAM, LPARAM);
 		  void OnSelectElementById(WPARAM, LPARAM);

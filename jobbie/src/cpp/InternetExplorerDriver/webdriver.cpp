@@ -425,6 +425,29 @@ int wdWaitForLoadToComplete(WebDriver* driver)
 	} END_TRY;
 }
 
+int wdGetCurrentWindowHandle(WebDriver* driver, StringWrapper** handle)
+{
+	if (!driver || !driver->ie) return ENOSUCHDRIVER;
+
+	try {
+		const std::wstring originalString(driver->ie->getHandle());
+
+		// TODO(simon): Check that the handle is in the map of known driver instances
+
+		size_t length = originalString.length() + 1;
+		wchar_t* toReturn = new wchar_t[length];
+
+		wcscpy_s(toReturn, length, originalString.c_str());
+
+		StringWrapper* res = new StringWrapper();
+		res->text = toReturn;
+		
+		*handle = res;
+
+		return SUCCESS;
+	} END_TRY;
+}
+
 int verifyFresh(WebElement* element) 
 {
 	if (!element || !element->element) { return ENOSUCHELEMENT; }

@@ -92,4 +92,12 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
       driver.switchTo().window(currentHandle);
     }
   }
+
+  public void testCanObtainAWindowHandle() {
+    driver.get(xhtmlTestPage);
+
+    String currentHandle = driver.getWindowHandle();
+
+    assertNotNull(currentHandle);
+  }
 }

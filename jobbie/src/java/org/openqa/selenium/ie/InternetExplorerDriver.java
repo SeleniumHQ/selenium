@@ -93,11 +93,16 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
     }
 
   public Set<String> getWindowHandles() {
-    return Collections.singleton("1");
+    return Collections.singleton(getWindowHandle());
   }
 
   public String getWindowHandle() {
-    return "1";
+    PointerByReference handle = new PointerByReference();
+    int result = lib.wdGetCurrentWindowHandle(driver, handle);
+
+    errors.verifyErrorCode(result, "Unable to obtain current window handle");
+
+    return new StringWrapper(lib, handle).toString();
   }
 
   public Object executeScript(String script, Object... args) {
@@ -315,7 +320,7 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
         }
 
         public WebDriver window(String windowName) {
-            throw new NoSuchWindowException("Unable to switch to window: " + windowName);
+          throw new NoSuchWindowException("Unable to switch to window: " + windowName);
         }
 
       public WebDriver defaultContent() {

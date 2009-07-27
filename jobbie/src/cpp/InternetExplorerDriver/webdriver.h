@@ -53,7 +53,6 @@ EXPORT int wdFreeElementCollection(ElementCollection* collection, int alsoFreeEl
 EXPORT int wdFreeScriptArgs(ScriptArgs* scriptArgs);
 EXPORT int wdFreeScriptResult(ScriptResult* scriptResult);
 
-
 // WebDriver functions
 EXPORT int wdNewDriverInstance(WebDriver** result);
 EXPORT int wdFreeDriver(WebDriver* driver);
@@ -75,6 +74,8 @@ EXPORT int wdAddCookie(WebDriver* driver, const wchar_t* cookie);
 EXPORT int wdSwitchToActiveElement(WebDriver* driver, WebElement** result);
 EXPORT int wdSwitchToFrame(WebDriver* driver, const wchar_t* path);
 EXPORT int wdWaitForLoadToComplete(WebDriver* driver);
+
+EXPORT int wdGetCurrentWindowHandle(WebDriver* driver, StringWrapper** handle);
 
 // Element functions
 EXPORT int wdeClick(WebElement* element);

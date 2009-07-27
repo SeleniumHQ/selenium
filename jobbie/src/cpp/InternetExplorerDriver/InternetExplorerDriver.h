@@ -45,7 +45,7 @@ public:
 	void get(const wchar_t* url);
 	void goForward();
 	void goBack();
-	void GetIe(IWebBrowser2 **ppv);
+	std::wstring getHandle();
 
 	void setSpeed(int speed);
 	int getSpeed();
