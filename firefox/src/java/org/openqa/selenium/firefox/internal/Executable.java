@@ -196,12 +196,12 @@ public class Executable {
     for (String binaryName : binaryNames) {
       for (String path : paths) {
         File file = new File(path, binaryName);
-        if (file.exists()) {
+        if (file.exists() && !file.isDirectory()) {
           return file;
         }
         if (Platform.getCurrent().is(Platform.WINDOWS)) {
           File exe = new File(path, binaryName + ".exe");
-          if (exe.exists()) {
+          if (exe.exists() && !exe.isDirectory()) {
             return exe;
           }
         }
