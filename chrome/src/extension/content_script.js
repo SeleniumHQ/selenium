@@ -11,10 +11,10 @@ function parse_port_message(message) {
     port.postMessage({response: "title", title: document.title});
     break;
   case "inject embed":
-    inject_webdriver_embed(message.session_id, message.uuid);
+    inject_webdriver_embed(message.session_id, message.uuid, message.followup);
     break;
   case "remove embed":
-    remove_webdriver_embed(message.uuid);
+    remove_webdriver_embed(message.uuid, message.followup);
     break;
   case "get element":
     get_element(false, message.value);
@@ -71,23 +71,35 @@ function parse_port_message(message) {
   case "delete all cookies":
     deleteAllCookies();
     break;
+  case "go back":
+    history.back();
+    port.postMessage({response: "go back", status: true});
+    break;
+  case "go forward":
+    history.forward();
+    port.postMessage({response: "go back", status: true});
+    break;
+  case "refresh":
+    document.location.reload(true);
+    port.postMessage({response: "refresh", status: true});
+    break;
   }
 }
 
-function inject_webdriver_embed(session_id, uuid) {
+function inject_webdriver_embed(session_id, uuid, followup) {
   console.log("Injecting: " + session_id + ", " + uuid);
   var embed = document.createElement('embed');
   embed.setAttribute("type", "application/x-webdriver-reporter");
   embed.setAttribute("session_id", session_id);
   embed.setAttribute("id", uuid);
   document.getElementsByTagName("body")[0].appendChild(embed);
-  port.postMessage({response: "inject embed", "uuid": uuid});
+  port.postMessage({response: "inject embed", "uuid": uuid, followup: followup});
 }
 
-function remove_webdriver_embed(uuid) {
+function remove_webdriver_embed(uuid, followup) {
   //TODO(danielwh): See just how much of a race condition we have here between browser rendering the embed, and message being sent
   document.getElementsByTagName("body")[0].removeChild(document.getElementById(uuid));
-  port.postMessage({response: "remove embed"});
+  parse_port_message(followup);
 }
 
 /**

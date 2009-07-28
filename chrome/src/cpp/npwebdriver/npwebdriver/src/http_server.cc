@@ -126,6 +126,7 @@ void HttpServer::set_chrome_driver_plugin(
 
 size_t HttpServer::send(const char *response) {
   if (connection_ == NULL) {
+    HTTP_WEBDRIVER_LOG(">>>COULD NOT SEND DUE TO NULL CONNECTION");
     return 0;
   }
   HTTP_WEBDRIVER_LOG(">");
@@ -133,6 +134,7 @@ size_t HttpServer::send(const char *response) {
   HTTP_WEBDRIVER_LOG("\n");
   size_t wrote = mg_printf(connection_, "%s", response);
   set_connection_keep_alive(connection_, false);
+  connection_ = NULL;
   return wrote;
 }
 

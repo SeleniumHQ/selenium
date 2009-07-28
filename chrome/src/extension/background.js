@@ -9,6 +9,8 @@ session_id_ = null;
 context_ = null;
 capabilities_ = null;
 path_offset_ = 1; //TODO(danielwh): Grab this from the initial URL
+has_window_handle = false;
+is_loading_page = false;
 
 chrome.self.onConnect.addListener(function(port) {
   console.log("Connected");
@@ -24,10 +26,8 @@ function parse_port_message(message) {
     SendValue(message.title);
     break;
   case "inject embed":
-    active_port.postMessage({request: "remove embed", uuid: message.uuid});
-    break;
-  case "remove embed":
-    SendNoContent();
+    active_port.postMessage({request: "remove embed", uuid: message.uuid, followup: message.followup});
+    has_window_handle = true;
     break;
   case "get element":
     if (message.status) {
@@ -113,6 +113,15 @@ function parse_port_message(message) {
     if (message.status) {
       SendNoContent();
     }
+    break;
+  case "go back":
+    SendNoContent();
+    break;
+  case "go forward":
+    SendNoContent();
+    break;
+  case "refresh":
+    SendNoContent();
     break;
   }
 }
@@ -210,8 +219,17 @@ function HandlePost(uri, post_data, session_id, context) {
         //TODO(danielwh): Fail somehow
       }
       break;
-      //URL getting is dealt with by a special call to get_url from the plugin,
-      //NOT by this switch
+    case "back":
+      active_port.postMessage({request: "go back"});
+      break;
+    case "forward":
+      active_port.postMessage({request: "go forward"});
+      break;
+    case "refresh":
+      active_port.postMessage({request: "refresh"});
+      break;
+    //URL getting is dealt with by a special call to get_url from the plugin,
+    //NOT by this switch
     }
     break;
   case 6:
@@ -219,15 +237,23 @@ function HandlePost(uri, post_data, session_id, context) {
       element_id = parseInt(value[0].id);
       switch (path[5]) {
       case "value":
-        active_port.postMessage({request: "send element keys",
-                                 "element_id": element_id,
-                                 "value": value[0].value[0]});
+        var event = {request: "send element keys", "element_id": element_id, "value": value[0].value[0]};
+        if (has_window_handle) {
+          active_port.postMessage(event);
+        } else {
+          active_port.postMessage({request: "inject embed", followup: event, session_id: session_id, uuid: g_uuid});
+        }
         break;
       case "clear":
         active_port.postMessage({request: "clear element", "element_id": element_id});
         break;
       case "click":
-        active_port.postMessage({request: "click element", "element_id": element_id});
+        var event = {request: "click element", "element_id": element_id};
+        if (has_window_handle) {
+          active_port.postMessage(event);
+        } else {
+          active_port.postMessage({request: "inject embed", followup: event, session_id: session_id, uuid: g_uuid});
+        }
         break;
       case "submit":
         active_port.postMessage({request: "submit element", "element_id": element_id});
@@ -336,30 +362,33 @@ function create_session(request) {
 }
 
 //XXX(danielwh): This may change to a chrome.tabs.onCreated/onUpdated/onRemoved event listener, if it turns out to conflict with multiple windows
-function get_url(url_json, session_id, uuid) {
+function get_url(url_json, local_session_id, uuid) {
   var url_string = JSON.parse(url_json)[0];
+  //Ignore any URL request we get while loading a page,
+  //because we should still return a 204 when we cannot find the page.
+  if (is_loading_page) {
+    return;
+  }
   active_port = null;
+  has_window_handle = false;
   if (primary_display_tab_id) {
     chrome.tabs.remove(primary_display_tab_id);
   }
   primary_display_tab_id = null;
-  g_session_id = session_id;
+  session_id = local_session_id;
   g_uuid = uuid;
+  has_window_handle = false;
   chrome.tabs.create({url: url_string, selected: true}, get_url_loaded_callback_first_time);
 }
 
-function get_url_loaded_callback() {
-  document.embeds[0].confirm_url_loaded();
-}
-
 function get_url_loaded_callback_first_time(tab) {
-  if (!tab || (tab && tab.status != "complete") || !active_port) {
+  if (!tab || tab.status != "complete") {
+    is_loading_page = true
     setTimeout("get_url_check_loaded_first_time(" + tab.id + ")", 10);
   } else {
+    is_loading_page = false;
     primary_display_tab_id = tab.id;
-    active_port.postMessage({request: "inject embed", session_id: g_session_id, uuid: g_uuid});
-    g_session_id = null;
-    g_uuid = null;
+    SendNoContent();
   }
 }
 

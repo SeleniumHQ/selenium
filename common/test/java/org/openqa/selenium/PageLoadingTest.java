@@ -121,7 +121,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
         assertThat(driver.getTitle(), equalTo("We Arrive Here"));
     }
 
-    @Ignore({FIREFOX, IE, SAFARI})
+    @Ignore({FIREFOX, IE, SAFARI, CHROME})
     public void testShouldBeAbleToAccessPagesWithAnInsecureSslCertificate() {
         String url = GlobalTestEnvironment.get().getAppServer().whereIsSecure("simpleTest.html");
         driver.get(url);

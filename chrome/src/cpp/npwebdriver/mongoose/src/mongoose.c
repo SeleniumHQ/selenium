@@ -27,6 +27,7 @@
  *  o Added mg_set_context_custom, mg_get_context_custom,
  *    mg_get_connection_context_custom
  *  o Added set_connection_keep_alive
+ *  o Added some default allocations to mg_connection in accept_new_connection
  */
 
 #ifndef _WIN32_WCE /* Some ANSI #includes are not available on Windows CE */
@@ -3966,7 +3967,7 @@ accept_new_connection(const struct socket *listener, struct mg_context *ctx)
 	}
 	unlock_option(ctx, OPT_ACL);
 
-	if ((conn = calloc(1, sizeof(*conn))) == NULL) {
+	if ((conn = (struct mg_connection *)calloc(1, sizeof(*conn))) == NULL) {
 		cry(NULL, "%s: cannot allocate new socket", __func__);
 		(void) closesocket(accepted.sock);
 	} else {
@@ -3974,6 +3975,11 @@ accept_new_connection(const struct socket *listener, struct mg_context *ctx)
 		conn->client = accepted;
 		conn->ctx = ctx;
 		conn->birth_time = time(NULL);
+    //danielwh: Add in some defaults, because it doesn't set them
+    conn->ssl = NULL;
+    conn->free_post_data = FALSE;
+    conn->keep_alive = TRUE;
+    conn->num_bytes_sent = 0;
 
 		/*
 		 * If we need to start a new thread and it is maximum
