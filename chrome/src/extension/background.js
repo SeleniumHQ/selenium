@@ -58,6 +58,11 @@ function parse_port_message(message) {
   case "is element enabled":
     SendValue(message.value);
     break;
+  case "tag name":
+    if (message.status) {
+      SendValue(message.tagName);
+    }
+    break;
   case "get element text":
     SendValue(message.value);
     break;
@@ -123,6 +128,9 @@ function parse_port_message(message) {
   case "refresh":
     SendNoContent();
     break;
+  case "get source":
+    SendValue(message.source);
+    break;
   }
 }
 
@@ -148,6 +156,9 @@ function HandleGet(uri) {
     case "cookie":
       active_port.postMessage({request: "get cookies"});
       break;
+    case "source":
+      active_port.postMessage({request: "get source"});
+      break;
     }
     break;
   case 6:
@@ -170,6 +181,9 @@ function HandleGet(uri) {
         break;
       case "enabled":
         active_port.postMessage({request: "is element enabled", "element_id": element_id});
+        break;
+      case "name":
+        active_port.postMessage({request: "tag name", "element_id": element_id});
         break;
       }
     }

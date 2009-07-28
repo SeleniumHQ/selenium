@@ -46,7 +46,6 @@ public class ChromeDriver extends RemoteWebDriver {
     }
   }
   
-  //TODO(danielwh): What should these do, and what command should be used?
   @Override
   public WebElement findElementByPartialLinkText(String using) {
     Response response = execute("findElement", "partial link text", using);

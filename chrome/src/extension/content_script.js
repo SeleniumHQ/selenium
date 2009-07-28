@@ -34,6 +34,9 @@ function parse_port_message(message) {
   case "is element enabled":
     is_element_enabled(message.element_id);
     break;
+  case "tag name":
+    getTagName(message.element_id);
+    break;
   case "get element text":
     get_element_text(message.element_id);
     break;
@@ -82,6 +85,9 @@ function parse_port_message(message) {
   case "refresh":
     document.location.reload(true);
     port.postMessage({response: "refresh", status: true});
+    break;
+  case "get source":
+    getSource();
     break;
   }
 }
@@ -189,11 +195,10 @@ function get_element(plural, parsed) {
 }
 
 function getElementsByLinkText(parent, link_text) {
-  //TODO(danielwh): Check that this works for children
   var links = parent.getElementsByTagName("a");
   var matching_links = [];
   for (var i = 0; i < links.length; i++) {
-    if (links[i].innerText == link_text) {
+    if (Utils.getText(links[i]) == link_text) {
       matching_links.push(links[i]);
     }
   }
@@ -204,7 +209,7 @@ function getElementsByPartialLinkText(parent, partial_link_text) {
   var links = parent.getElementsByTagName("a");
   var matching_links = [];
   for (var i = 0; i < links.length; i++) {
-    if (links[i].innerText.indexOf(partial_link_text) > -1) {
+    if (Utils.getText(links[i]).indexOf(partial_link_text) > -1) {
       matching_links.push(links[i]);
     }
   }
@@ -235,7 +240,7 @@ function get_element_attribute(element_id, attribute) {
 }
 
 function get_element_text(element_id) {
-  port.postMessage({response: "get element text", value: element_array[element_id].innerText});
+  port.postMessage({response: "get element text", value: Utils.getText(element_array[element_id])});
 }
 
 function send_element_keys(element_id, value) {
@@ -311,6 +316,14 @@ function is_element_enabled(element_id) {
   }
 }
 
+function getTagName(element_id) {
+  if ((element = internal_get_element(element_id)) != null) {
+    port.postMessage({response: "tag name", status: true, tagName: element.tagName.toLowerCase()});
+  } else {
+    port.postMessage({response: "tag name", status: false});
+  }
+}
+
 function getCookies() {
   var cookies = [];
   var cookie_strings = getAllCookies();
@@ -330,6 +343,14 @@ function deleteAllCookies() {
   port.postMessage({response: "delete all cookies", status: true});
 }
 
+function getSource() {
+  if (guessPageType() == "html") {
+    console.log("Source: " + document.getElementsByTagName("html")[0].outerHTML);
+    port.postMessage({response: "get source", source: document.getElementsByTagName("html")[0].outerHTML});
+  } else if (guessPageType() == "text") {
+    port.postMessage({response: "get source", source: document.getElementsByTagName("pre")[0].innerHTML});
+  }
+}
 
 
 
@@ -414,12 +435,10 @@ function setCookie(cookie) {
     port.postMessage({response: "add cookie", status: false,
         message: "You may only set cookies for the current domain"});
     return;
-  } else if (false) {
-    //TODO(danielwh): Work out a way to sniff whether it's html or not,
-    //for TextPagesTest.testShouldThrowExceptionWhenAddingCookieToAPageThatIsNotHtml
-    port.postMessage({response: "add cookie", status: false,
-        message: "You may only set cookies on html documents"});
-    return;
+    } else if (guessPageType() != "html") {
+      port.postMessage({response: "add cookie", status: false,
+          message: "You may only set cookies on html documents"});
+      return;
   } else {
     document.cookie = cookie.name + '=' + escape(cookie.value) +
         ((cookie.expiry == null || cookie.expiry == undefined) ?
@@ -487,4 +506,17 @@ function doIsElementSelected(element_id) {
     }
   }
   return selected;
+}
+
+function guessPageType() {
+  var source = document.getElementsByTagName("html")[0].outerHTML;
+  var textSourceBegins = '<html><body><pre style="word-wrap: break-word; white-space: pre-wrap;">';
+  var textSourceEnds = '</pre></body></html>';
+  
+  if (source.substr(0, textSourceBegins.length) == textSourceBegins && 
+      source.substr(0 - textSourceEnds.length) == textSourceEnds) {
+    return "text";
+  } else {
+    return "html";
+  }
 }
