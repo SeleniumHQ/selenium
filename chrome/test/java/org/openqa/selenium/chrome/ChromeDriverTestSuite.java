@@ -30,6 +30,13 @@ public class ChromeDriverTestSuite extends TestCase {
         .addSourceDir("chrome")
         .usingDriver(ChromeDriver.class)
         .exclude(CHROME)
+        //.onlyRun("PageLoadingTest")
+        //TextHandlingTest
+        //MiscTest
+        //ObjectStateAssumptions
+        //PartialLinkTestMatchingTest
+        //StaleElementReferenceTest
+        //TagNameTest
         //.includeJavascriptTests()
         .keepDriverInstance()
         .create();

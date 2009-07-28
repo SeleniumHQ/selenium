@@ -210,6 +210,8 @@ function HandlePost(uri, post_data, session_id, context) {
         //TODO(danielwh): Fail somehow
       }
       break;
+      //URL getting is dealt with by a special call to get_url from the plugin,
+      //NOT by this switch
     }
     break;
   case 6:
@@ -351,7 +353,7 @@ function get_url_loaded_callback() {
 }
 
 function get_url_loaded_callback_first_time(tab) {
-  if (tab && tab.status != "complete" || !active_port) {
+  if (!tab || (tab && tab.status != "complete") || !active_port) {
     setTimeout("get_url_check_loaded_first_time(" + tab.id + ")", 10);
   } else {
     primary_display_tab_id = tab.id;
