@@ -41,7 +41,6 @@ import java.util.List;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WebDriverException;
@@ -389,7 +388,7 @@ public class HtmlUnitWebElement implements WebElement,
         }
 
         if (isBlockLevel(node)) {
-            toReturn.append(collapseWhitespace(textSoFar)).append(Platform.getCurrent().getLineEnding());
+            toReturn.append(collapseWhitespace(textSoFar)).append("\n");
             textSoFar.delete(0, textSoFar.length());
         }
     }

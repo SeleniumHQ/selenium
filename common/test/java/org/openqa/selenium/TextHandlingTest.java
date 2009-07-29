@@ -40,7 +40,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 
-		newLine = Platform.getCurrent().getLineEnding();
+		newLine = "\n";
 	}
 
     public void testShouldReturnTheTextContentOfASingleElementWithNoChildren() {

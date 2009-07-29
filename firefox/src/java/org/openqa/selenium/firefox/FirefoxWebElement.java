@@ -22,7 +22,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
@@ -63,8 +62,7 @@ public class FirefoxWebElement implements RenderedWebElement, Locatable,
 
     public String getValue() {
         try {
-            String toReturn = sendMessage(WebDriverException.class, "getElementValue");
-            return toReturn.replace("\n", Platform.getCurrent().getLineEnding());
+          return sendMessage(WebDriverException.class, "getElementValue");
         } catch (WebDriverException e) {
             return null;
         }
@@ -122,8 +120,7 @@ public class FirefoxWebElement implements RenderedWebElement, Locatable,
     }
 
     public String getText() {
-        String toReturn = sendMessage(WebDriverException.class, "getElementText");
-        return toReturn.replace("\n", Platform.getCurrent().getLineEnding());
+        return sendMessage(WebDriverException.class, "getElementText");
     }
 
   public List<WebElement> getElementsByTagName(String tagName) {
