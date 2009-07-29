@@ -1,4 +1,3 @@
-//TODO(danielwh): Add failure HTTP messages if things unexpectedly faily
 //TODO(danielwh): A nice consistent naming convention
 
 ports = [];
@@ -11,6 +10,8 @@ capabilities_ = null;
 path_offset_ = 1; //TODO(danielwh): Grab this from the initial URL
 has_window_handle = false;
 is_loading_page = false;
+minimum_element_on_page = -1;
+maximum_elemet_on_page = -2;
 
 chrome.self.onConnect.addListener(function(port) {
   console.log("Connected");
@@ -23,7 +24,7 @@ function parse_port_message(message) {
   console.log("Received response to: " + message.response);
   switch(message.response) {
   case "title":
-    SendValue(message.title);
+    SendValue(message.value);
     break;
   case "inject embed":
     active_port.postMessage({request: "remove embed", uuid: message.uuid, followup: message.followup});
@@ -31,6 +32,8 @@ function parse_port_message(message) {
     break;
   case "get element":
     if (message.status) {
+      minimum_element_on_page = 0;
+      maximum_element_on_page = message.maxElement;
       SendValue(message.elements);
     } else {
       SendNotFound({message: "Unable to locate element with " + message.by + " " + message.value, class: "org.openqa.selenium.NoSuchElementException"});
@@ -50,36 +53,66 @@ function parse_port_message(message) {
     }
     break;
   case "get element value":
-    SendValue(message.value);
+    if (message.status) {
+      SendValue(message.value);
+    } else {
+      SendNotFound({message: "Element is obsolete", class: "org.openqa.selenium.StaleElementReferenceException"});
+    }
     break;
   case "is element selected":
-    SendValue(message.value);
+    if (message.status) {
+      SendValue(message.value);
+    } else {
+      SendNotFound({message: "Element is obsolete", class: "org.openqa.selenium.StaleElementReferenceException"});
+    }
     break;
   case "is element enabled":
-    SendValue(message.value);
+    if (message.status) {
+      SendValue(message.value);
+    } else {
+      SendNotFound({message: "Element is obsolete", class: "org.openqa.selenium.StaleElementReferenceException"});
+    }
     break;
   case "tag name":
     if (message.status) {
-      SendValue(message.tagName);
+      SendValue(message.value);
+    } else {
+      SendNotFound({message: "Element is obsolete", class: "org.openqa.selenium.StaleElementReferenceException"});
     }
     break;
   case "get element text":
-    SendValue(message.value);
+    if (message.status) {
+      SendValue(message.value);
+    } else {
+      SendNotFound({message: "Element is obsolete", class: "org.openqa.selenium.StaleElementReferenceException"});
+    }
     break;
   case "send element keys":
-    document.embeds[0].return_send_element_keys(message.status, message.value);
+    if (message.status) {
+      document.embeds[0].return_send_element_keys(message.status, message.value);
+    } else {
+      SendNotFound({message: "Element is obsolete", class: "org.openqa.selenium.StaleElementReferenceException"});
+    }
     break;
   case "clear element":
     if (message.status) {
       SendNoContent();
+    } else {
+      SendNotFound({message: "Element is obsolete", class: "org.openqa.selenium.StaleElementReferenceException"});
     }
     break;
   case "click element":
-    document.embeds[0].return_click_element(message.status, message.x, message.y);
+    if (message.status) {
+      document.embeds[0].return_click_element(message.status, message.x, message.y);
+    } else {
+      SendNotFound({message: "Element is obsolete", class: "org.openqa.selenium.StaleElementReferenceException"});
+    }
     break;
   case "submit element":
     if (message.status) {
       SendNoContent();
+    } else {
+      SendNotFound({message: "Element is obsolete", class: "org.openqa.selenium.StaleElementReferenceException"});
     }
     break;
   case "select element":
@@ -91,13 +124,13 @@ function parse_port_message(message) {
     break;
   case "toggle element":
     if (message.status) {
-      SendValue(message.selected);
+      SendValue(message.value);
     } else {
       SendNotFound({message: message.message, class: "java.lang.UnsupportedOperationException"});
     }
     break;
   case "url":
-    SendValue(message.url);
+    SendValue(message.value);
     break;
   case "add cookie":
     if (message.status) {
@@ -109,15 +142,15 @@ function parse_port_message(message) {
   case "delete cookie":
     if (message.status) {
       SendNoContent();
+    } else {
+      SendNotFound({message: message.message, class: "org.openqa.selenium.WebDriverException"});
     }
     break;
   case "get cookies":
     SendValue(message.cookies);
     break;
   case "delete all cookies":
-    if (message.status) {
-      SendNoContent();
-    }
+    SendNoContent();
     break;
   case "go back":
     SendNoContent();
@@ -141,6 +174,7 @@ function HandleGet(uri) {
     console.log("Invalid session setup");
     return;
   }
+  //TODO(danielwh): Add check for not having a current page/port
   switch (path.length) {
   case 3:
     SendValue(capabilities_);
@@ -168,6 +202,8 @@ function HandleGet(uri) {
         //TODO(danielwh): Fail with an HTTP message
         console.log("Not an integer element id: " + path[4]);
         return;
+      } else if (element_id < minimum_element_on_page || element_id > maximum_element_on_page) {
+        SendNotFound({message: "Element is obsolete", class: "org.openqa.selenium.StaleElementReferenceException"});
       }
       switch (path[5]) {
       case "value":
@@ -209,6 +245,7 @@ function HandlePost(uri, post_data, session_id, context) {
   if (!context_) {
     context_ = context;
   }
+  //TODO(danielwh): Add check for not having a current page/port
   var path = uri.split("/").slice(path_offset_);
   var value = JSON.parse(post_data);
   switch (path.length) {
@@ -296,6 +333,7 @@ function HandlePost(uri, post_data, session_id, context) {
 }
 
 function HandleDelete(uri) {
+  //TODO(danielwh): Add check for not having a current page/port
   var path = uri.split("/").slice(path_offset_);
   switch (path.length) {
   case 2:
@@ -392,6 +430,8 @@ function get_url(url_json, local_session_id, uuid) {
   session_id = local_session_id;
   g_uuid = uuid;
   has_window_handle = false;
+  minimum_element_on_page = -1;
+  maximum_element_on_page = -2;
   chrome.tabs.create({url: url_string, selected: true}, get_url_loaded_callback_first_time);
 }
 

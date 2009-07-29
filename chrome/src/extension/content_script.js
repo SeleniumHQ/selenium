@@ -8,7 +8,7 @@ function parse_port_message(message) {
   console.log("Received request for: " + message.request);
   switch (message.request) {
   case "title":
-    port.postMessage({response: "title", title: document.title});
+    port.postMessage({response: "title", value: document.title});
     break;
   case "inject embed":
     inject_webdriver_embed(message.session_id, message.uuid, message.followup);
@@ -26,7 +26,7 @@ function parse_port_message(message) {
     get_element_attribute(message.element_id, message.attribute);
     break;
   case "get element value":
-    port.postMessage({response: "get element value", value: element_array[message.element_id].value});
+    get_element_value(message.element_id);
     break;
   case "is element selected":
     is_element_selected(message.element_id);
@@ -59,7 +59,7 @@ function parse_port_message(message) {
     toggleElement(message.element_id);
     break;
   case "url":
-    port.postMessage({response: "url", url: document.location.href});
+    port.postMessage({response: "url", value: document.location.href});
     break;
   case "add cookie":
     setCookie(message.cookie);
@@ -189,34 +189,22 @@ function get_element(plural, parsed) {
       element_array.push(elements[0]);
       elements_to_return_array.push('element/' + (element_array.length - 1));
     }
-    port.postMessage({response: "get element", status: true, "elements": elements_to_return_array});
+    port.postMessage({response: "get element", status: true, "elements": elements_to_return_array, maxElement: (element_array.length - 1)});
     return;
   }
 }
 
-function getElementsByLinkText(parent, link_text) {
-  var links = parent.getElementsByTagName("a");
-  var matching_links = [];
-  for (var i = 0; i < links.length; i++) {
-    if (Utils.getText(links[i]) == link_text) {
-      matching_links.push(links[i]);
-    }
+function get_element_value(element_id) {
+  var element = null;
+  if ((element = internal_get_element(element_id)) != null) {
+    port.postMessage({response: "get element value", status: true, value: element.value});
+  } else {
+    port.postMessage({response: "get element value", status: false});
   }
-  return matching_links;
-}
-
-function getElementsByPartialLinkText(parent, partial_link_text) {
-  var links = parent.getElementsByTagName("a");
-  var matching_links = [];
-  for (var i = 0; i < links.length; i++) {
-    if (Utils.getText(links[i]).indexOf(partial_link_text) > -1) {
-      matching_links.push(links[i]);
-    }
-  }
-  return matching_links;
 }
 
 function get_element_attribute(element_id, attribute) {
+  var element = null;
   if ((element = internal_get_element(element_id)) != null) {
     var value = element.getAttribute(attribute);
     switch (attribute.toLowerCase()) {
@@ -240,10 +228,16 @@ function get_element_attribute(element_id, attribute) {
 }
 
 function get_element_text(element_id) {
-  port.postMessage({response: "get element text", value: Utils.getText(element_array[element_id])});
+  var element = null;
+  if ((element = internal_get_element(element_id)) != null) {
+    port.postMessage({response: "get element text", status: true, value: Utils.getText(element)});
+  } else {
+    port.postMessage({response: "get element text", status: false});
+  }
 }
 
 function send_element_keys(element_id, value) {
+  var element = null;
   if ((element = internal_get_element(element_id)) != null) {
     element.focus();
     port.postMessage({response: "send element keys", status: true, value: value});
@@ -253,6 +247,7 @@ function send_element_keys(element_id, value) {
 }
 
 function clear_element(element_id) {
+  var element = null;
   if ((element = internal_get_element(element_id)) != null) {
     element.value = '';
     port.postMessage({response: "clear element", status: true});
@@ -262,6 +257,7 @@ function clear_element(element_id) {
 }
 
 function click_element(element_id) {
+  var element = null;
   if ((element = internal_get_element(element_id)) != null) {
     var coords = find_element_coords(element);
     port.postMessage({response: "click element", status: true, x: coords[0], y: coords[1]});
@@ -283,6 +279,7 @@ function submit_element(element_id) {
 }
 
 function selectElement(element_id) {
+  var element = null;
   if ((element = internal_get_element(element_id)) != null && element.disabled) {
     port.postMessage({response: "select element", status: false, message: "Can only select things which are enabled"});
     return;
@@ -295,31 +292,42 @@ function selectElement(element_id) {
 }
 
 function toggleElement(element_id) {
+  var element = null;
   if ((element = internal_get_element(element_id)) != null && element.disabled) {
     port.postMessage({response: "toggle element", status: false, message: "Can only toggle things which are enabled"});
     return;
   }
   if (doSelectElement(element, !doIsElementSelected(element_id), false)) {
-    port.postMessage({response: "toggle element", status: true, selected: doIsElementSelected(element_id)});
+    port.postMessage({response: "toggle element", status: true, value: doIsElementSelected(element_id)});
   } else {
     port.postMessage({response: "toggle element", status: false, message: "Can only toggle multiselect options and checkboxes"});
   }
 }
 
 function is_element_selected(element_id) {
-  port.postMessage({response: "is element selected", value: doIsElementSelected(element_id)});
+  var element = null;
+  if ((element = internal_get_element(element_id)) != null) {
+    port.postMessage({response: "is element selected", status: true, value: doIsElementSelected(element_id)});
+  } else {
+    port.postMessage({response: "is element selected", status: false});
+  }
 }
 
 function is_element_enabled(element_id) {
+  var element = null;
   if ((element = internal_get_element(element_id)) != null) {
-    port.postMessage({response: "is element enabled", value: !element.disabled});
+    port.postMessage({response: "is element enabled", status: true, value: !element.disabled});
+  } else {
+    port.postMessage({response: "is element enabled", status: false});
   }
 }
 
 function getTagName(element_id) {
+  var element = null;
   if ((element = internal_get_element(element_id)) != null) {
-    port.postMessage({response: "tag name", status: true, tagName: element.tagName.toLowerCase()});
+    port.postMessage({response: "tag name", status: true, value: element.tagName.toLowerCase()});
   } else {
+    console.log("Didn't find element");
     port.postMessage({response: "tag name", status: false});
   }
 }
@@ -340,7 +348,7 @@ function deleteAllCookies() {
     var cookie = cookies[i].split("=");
     deleteCookie(cookie[0]);
   }
-  port.postMessage({response: "delete all cookies", status: true});
+  port.postMessage({response: "delete all cookies"});
 }
 
 function getSource() {
@@ -507,6 +515,29 @@ function doIsElementSelected(element_id) {
   }
   return selected;
 }
+
+function getElementsByLinkText(parent, link_text) {
+  var links = parent.getElementsByTagName("a");
+  var matching_links = [];
+  for (var i = 0; i < links.length; i++) {
+    if (Utils.getText(links[i]) == link_text) {
+      matching_links.push(links[i]);
+    }
+  }
+  return matching_links;
+}
+
+function getElementsByPartialLinkText(parent, partial_link_text) {
+  var links = parent.getElementsByTagName("a");
+  var matching_links = [];
+  for (var i = 0; i < links.length; i++) {
+    if (Utils.getText(links[i]).indexOf(partial_link_text) > -1) {
+      matching_links.push(links[i]);
+    }
+  }
+  return matching_links;
+}
+
 
 function guessPageType() {
   var source = document.getElementsByTagName("html")[0].outerHTML;
