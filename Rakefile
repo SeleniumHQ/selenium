@@ -48,6 +48,7 @@ dll(:name => "ie_dll",
     :src  => [ "common/src/cpp/webdriver-interactions/**/*", "jobbie/src/cpp/InternetExplorerDriver/**/*" ],
     :solution => "WebDriver.sln",
     :out  => [ "Win32/Release/InternetExplorerDriver.dll", "x64/Release/InternetExplorerDriver.dll" ],
+    :prebuilt => "jobbie/prebuilt",
     :spoof => true)  # Dump "spoof" files in the right place if you can't build
 
 jar(:name => "ie",
@@ -77,17 +78,22 @@ task :test_jobbie => :test_ie
 
 xpt(:name => "events_xpt",
     :src  => [ "firefox/src/cpp/webdriver-firefox/nsINativeEvents.idl" ],
+    :prebuilt => "firefox/prebuilt",
     :out  => "nsINativeEvents.xpt")    
 
 xpi(:name => "firefox_xpi",
     :src  => [ "firefox/src/extension" ],
     :deps => [ 
                :events_xpt,
-               :firefox_dll
+               :firefox_dll,
+               :libwebdriver_firefox,
              ],
     :resources => [
                     { "nsINativeEvents.xpt" => "components/nsINativeEvents.xpt" },
-                    { "Win32/Release/webdriver-firefox.dll" => "platform/WINNT_x86-msvc/components/webdriver-firefox.dll" }
+                    { "Win32/Release/webdriver-firefox.dll" => "platform/WINNT_x86-msvc/components/webdriver-firefox.dll" },
+# Almost there, but this doesn't quite work on my Ubuntu machine
+#                    { "linux/Release/libwebdriver-firefox.so" => "platform/Linux_x86-gcc3/components/libwebdriver-firefox.so" },
+#                    { "linux64/Release/libwebdriver-firefox.so" => "platform/Linux_x86_64-gcc3/components/libwebdriver-firefox.so" },
                   ],
     :out  => "webdriver-extension.zip")
 
@@ -98,16 +104,65 @@ dll(:name => "firefox_dll",
     :deps  => [ 
                 :events_xpt,
               ],
+    :prebuilt => "firefox/prebuilt",
     :spoof => true)  # Dump "spoof" files in the right place if you can't build
+
+dll(:name => "libnoblur_so_64",
+    :src  => FileList['firefox/src/cpp/linux-specific/*.c'],
+    :arch => "amd64",
+    :prebuilt => "firefox/prebuilt",
+    :out  => "linux64/Release/x_ignore_nofocus.so")
+
+dll(:name => "libnoblur_so",
+    :src  => FileList['firefox/src/cpp/linux-specific/*.c'],
+    :arch => "i386",
+    :prebuilt => "firefox/prebuilt",
+    :out  => "linux/Release/x_ignore_nofocus.so")
+
+task :libnoblur => [:libnoblur_so, :libnoblur_so_64]
+
+gecko_sdk = "third_party/gecko-1.9.0.11/linux/"
+
+dll(:name => "libwebdriver_firefox_so",
+    :src  => FileList.new('common/src/cpp/webdriver-interactions/*_linux.cpp') +
+             FileList.new('firefox/src/cpp/webdriver-firefox/*.cpp'),
+    :arch => "i386",
+    :args => " -DXPCOM_GLUE  -DXPCOM_GLUE_USE_NSPR -I common/src/cpp/webdriver-interactions -I #{gecko_sdk}include -I /usr/include/nspr " + "`pkg-config gtk+-2.0 --cflags`",
+    :link_args => "-fno-rtti -fno-exceptions -shared  -fPIC -L/usr/lib32 -L#{gecko_sdk}lib -L#{gecko_sdk}bin -Wl,-rpath-link,#{gecko_sdk}bin -lxpcomglue_s -lxpcom -lnspr4 -lrt " + "`pkg-config gtk+-2.0 --libs`",
+    :prebuilt => "firefox/prebuilt",
+    :out  => "linux/Release/libwebdriver-firefox.so")
+
+# There is no official 64 bit gecko SDK. Fall back to trying to use the one on 
+# system, but be ready for this to fail. I have a Ubuntu machine, so that's 
+# what I'm basing this on. I understand that's a Bad Idea
+
+gecko_devels = FileList.new("/usr/lib/xulrunner-devel-1.9.*/lib")
+local_gecko = gecko_devels.empty? ? "" : "-L#{gecko_devels.to_a[0]}" 
+
+dll(:name => "libwebdriver_firefox_so64",
+    :src  => FileList.new('common/src/cpp/webdriver-interactions/*_linux.cpp') +
+             FileList.new('firefox/src/cpp/webdriver-firefox/*.cpp'),
+    :arch => "amd64",
+    :args => " -DXPCOM_GLUE  -DXPCOM_GLUE_USE_NSPR -I common/src/cpp/webdriver-interactions -I #{gecko_sdk}include -I /usr/include/nspr " + "`pkg-config gtk+-2.0 --cflags`",
+    :link_args => "-fno-rtti -fno-exceptions -shared  -fPIC #{local_gecko} -L#{gecko_sdk}lib -L#{gecko_sdk}bin -Wl,-rpath-link,#{gecko_sdk}bin -lxpcomglue_s -lxpcom -lnspr4 -lrt " + "`pkg-config gtk+-2.0 --libs`",
+    :prebuilt => "firefox/prebuilt",
+    :out  => "linux64/Release/libwebdriver-firefox.so")
+
+task :libwebdriver_firefox => [:libwebdriver_firefox_so, :libwebdriver_firefox_so64]
 
 jar(:name => "firefox",
     :src  => [ "firefox/src/java/**/*.java" ],
     :deps => [
                :common,
                :firefox_xpi,
+               :libnoblur,
                "firefox/lib/runtime/*.jar"
              ],
-    :resources => [ "webdriver-extension.zip" ],
+    :resources => [ 
+                    "webdriver-extension.zip",
+                    { "linux/Release/x_ignore_nofocus.so" => "x86/x_ignore_nofocus.so" },
+                    { "linux64/Release/x_ignore_nofocus.so" => "amd64/x_ignore_nofocus.so" }
+                  ],
     :zip  => true,    
     :out  => "webdriver-firefox.jar")
 

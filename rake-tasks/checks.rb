@@ -40,6 +40,11 @@ def jar?
   present?("jar") || present?("jar.exe")
 end
 
+# Think of the confusion if we called this "g++"
+def gcc?
+  linux? && present?("g++") 
+end
+
 def python?
   present?("python") || present?("python.exe")
 end

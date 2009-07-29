@@ -46,6 +46,12 @@ def build_xpt(srcs, out)
       cmd = "#{gecko}\\bin\\xpidl.exe -w -m typelib -I#{gecko}\\idl -e #{out} #{src}"
       sh cmd, :verbose => false
     end
+  elsif (linux?)
+    gecko = "third_party/gecko-1.9.0.11/linux"
+    srcs.each do |src|
+      cmd = "#{gecko}/bin/xpidl -w -m typelib -I#{gecko}/idl -e #{out} #{src}"
+      sh cmd, :verbose => false
+    end
   else
     puts "Doing nothing for now. Later revisions will enable xpt building. Creating stub for #{out}"
     File.open("#{out}", 'w') {|f| f.write("")}
