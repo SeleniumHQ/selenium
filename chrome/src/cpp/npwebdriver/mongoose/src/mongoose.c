@@ -28,6 +28,8 @@
  *    mg_get_connection_context_custom
  *  o Added set_connection_keep_alive
  *  o Added some default allocations to mg_connection in accept_new_connection
+ *  o Modified mg_vsnprintf to be consistent with MSVC vsnprintf,
+ *    where returning -1 means truncation, NOT error.
  */
 
 #ifndef _WIN32_WCE /* Some ANSI #includes are not available on Windows CE */
@@ -517,12 +519,9 @@ mg_vsnprintf(char *buf, size_t buflen, const char *fmt, va_list ap)
 
 	n = vsnprintf(buf, buflen, fmt, ap);
 
-	if (n < 0) {
-		cry(NULL, "vsnprintf error");
-		n = 0;
-	} else if (n >= (int) buflen) {
+	if ((size_t)n >= buflen || n < 0) {
 		cry(NULL, "truncating vsnprintf buffer: [%.*s]",
-		    n > 200 ? 200 : n, buf);
+		    (n > 200 || n < 0) ? 200 : n, buf);
 		n = (int) buflen - 1;
 	}
 	buf[n] = '\0';

@@ -132,10 +132,18 @@ size_t HttpServer::send(const char *response) {
   HTTP_WEBDRIVER_LOG(">");
   HTTP_WEBDRIVER_LOG(response);
   HTTP_WEBDRIVER_LOG("\n");
-  size_t wrote = mg_printf(connection_, "%s", response);
+  
+  //TODO(danielwh): This is slightly iffy sign-wise...
+  //Should really use a signed type larger than size_t
+  size_t sent = 0;
+  while (sent < strlen(response)) {
+    //TODO(danielwh): Check that this should not be + sent - 1
+    //(null-terminated strings)
+    sent += mg_printf(connection_, "%s", response + sent);
+  }
   set_connection_keep_alive(connection_, false);
   connection_ = NULL;
-  return wrote;
+  return sent;
 }
 
 } //namespace webdriver
