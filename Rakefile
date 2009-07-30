@@ -91,9 +91,8 @@ xpi(:name => "firefox_xpi",
     :resources => [
                     { "nsINativeEvents.xpt" => "components/nsINativeEvents.xpt" },
                     { "Win32/Release/webdriver-firefox.dll" => "platform/WINNT_x86-msvc/components/webdriver-firefox.dll" },
-# Almost there, but this doesn't quite work on my Ubuntu machine
 #                    { "linux/Release/libwebdriver-firefox.so" => "platform/Linux_x86-gcc3/components/libwebdriver-firefox.so" },
-#                    { "linux64/Release/libwebdriver-firefox.so" => "platform/Linux_x86_64-gcc3/components/libwebdriver-firefox.so" },
+                    { "linux64/Release/libwebdriver-firefox.so" => "platform/Linux_x86_64-gcc3/components/libwebdriver-firefox.so" },
                   ],
     :out  => "webdriver-extension.zip")
 
@@ -111,7 +110,7 @@ dll(:name => "libnoblur_so_64",
     :src  => FileList['firefox/src/cpp/linux-specific/*.c'],
     :arch => "amd64",
     :prebuilt => "firefox/prebuilt",
-    :out  => "linux64/Release/x_ignore_nofocus.so")
+    :out  => "linux64/Release/x_ignore_nofocus64.so")
 
 dll(:name => "libnoblur_so",
     :src  => FileList['firefox/src/cpp/linux-specific/*.c'],
@@ -136,15 +135,14 @@ dll(:name => "libwebdriver_firefox_so",
 # system, but be ready for this to fail. I have a Ubuntu machine, so that's 
 # what I'm basing this on. I understand that's a Bad Idea
 
-gecko_devels = FileList.new("/usr/lib/xulrunner-devel-1.9.*/lib")
-local_gecko = gecko_devels.empty? ? "" : "-L#{gecko_devels.to_a[0]}" 
+gecko_devels = FileList.new("/usr/lib/xulrunner-devel-1.9.*/sdk")
+local_gecko = gecko_devels.empty? ? "" : gecko_devels.to_a[0] + "/" 
 
 dll(:name => "libwebdriver_firefox_so64",
-    :src  => FileList.new('common/src/cpp/webdriver-interactions/*_linux.cpp') +
-             FileList.new('firefox/src/cpp/webdriver-firefox/*.cpp'),
+    :src  => FileList.new('common/src/cpp/webdriver-interactions/*_linux.cpp') + FileList.new('firefox/src/cpp/webdriver-firefox/native_events.cpp'),
     :arch => "amd64",
-    :args => " -DXPCOM_GLUE  -DXPCOM_GLUE_USE_NSPR -I common/src/cpp/webdriver-interactions -I #{gecko_sdk}include -I /usr/include/nspr " + "`pkg-config gtk+-2.0 --cflags`",
-    :link_args => "-fno-rtti -fno-exceptions -shared  -fPIC #{local_gecko} -L#{gecko_sdk}lib -L#{gecko_sdk}bin -Wl,-rpath-link,#{gecko_sdk}bin -lxpcomglue_s -lxpcom -lnspr4 -lrt " + "`pkg-config gtk+-2.0 --libs`",
+    :args => " -DXPCOM_GLUE  -DXPCOM_GLUE_USE_NSPR -fPIC -fshort-wchar -I common/src/cpp/webdriver-interactions -I #{local_gecko}include -I /usr/include/nspr `pkg-config gtk+-2.0 --cflags` ",
+    :link_args => "-Wall -Os -L#{local_gecko}lib -L{local_gecko}bin -Wl,-rpath-link,#{local_gecko}bin -lxpcomglue_s -lxpcom -lnspr4 -lrt `pkg-config gtk+-2.0 --libs` -fno-rtti -fno-exceptions -shared  -fPIC",
     :prebuilt => "firefox/prebuilt",
     :out  => "linux64/Release/libwebdriver-firefox.so")
 
@@ -161,7 +159,7 @@ jar(:name => "firefox",
     :resources => [ 
                     "webdriver-extension.zip",
                     { "linux/Release/x_ignore_nofocus.so" => "x86/x_ignore_nofocus.so" },
-                    { "linux64/Release/x_ignore_nofocus.so" => "amd64/x_ignore_nofocus.so" }
+                    { "linux64/Release/x_ignore_nofocus64.so" => "amd64/x_ignore_nofocus64.so" }
                   ],
     :zip  => true,    
     :out  => "webdriver-firefox.jar")

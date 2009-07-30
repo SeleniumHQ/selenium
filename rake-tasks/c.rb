@@ -55,7 +55,7 @@ def gcc(srcs, out, args, link_args, is_32_bit, prebuilt)
   flags += " " + link_args + " " if link_args
 
   # if we've made it this far, then continue
-  sh "g++ #{flags} -o #{out} #{obj_dir}/*.o", :verbose => false
+  sh "g++ -o #{out} #{obj_dir}/*.o #{flags}", :verbose => true
 
   rm_rf "#{out}_temp"
 end
@@ -66,7 +66,7 @@ def gccbuild_c(src_file, obj_dir, args, is_32_bit)
   cmd = "#{compiler} #{src_file} -Wall -c -fshort-wchar -fPIC -o #{obj_dir}/#{objname} "
   cmd += (is_32_bit ? " -m32" : " -m64")
   cmd += args if args
-  sh cmd, :verbose => false do |ok, res|
+  sh cmd, :verbose => true do |ok, res|
     if !ok
       puts "Unable to build. Aborting compilation"
       return false

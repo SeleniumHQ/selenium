@@ -20,6 +20,7 @@ package org.openqa.selenium;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.openqa.selenium.Ignore.Driver.IE;
+import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
 
 import java.util.HashSet;
@@ -30,6 +31,7 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
   @Ignore({IE, REMOTE})
   public void testShouldSwitchFocusToANewWindowWhenItIsOpenedAndNotStopFutureOperations() {
     driver.get(xhtmlTestPage);
+    String current = driver.getWindowHandle();
 
     driver.findElement(By.linkText("Open new window")).click();
     assertThat(driver.getTitle(), equalTo("XHTML Test Page"));
@@ -39,11 +41,13 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
 
     driver.get(iframePage);
     driver.findElement(By.id("iframe_page_heading"));
+    driver.switchTo().window(current);
   }
 
   @Ignore({IE, REMOTE})
   public void testShouldThrowNoSuchWindowException() {
     driver.get(xhtmlTestPage);
+    String current = driver.getWindowHandle();
 
     try {
       driver.switchTo().window("invalid name");
@@ -51,12 +55,14 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
     } catch (NoSuchWindowException e) {
       // Expected.
     }
+
+    driver.switchTo().window(current);
   }
 
 
   @NeedsFreshDriver
   @NoDriverAfterTest
-  @Ignore({IE, REMOTE})
+  @Ignore({IE, FIREFOX, REMOTE})
   public void testShouldBeAbleToIterateOverAllOpenWindows() throws Exception {
     driver.get(xhtmlTestPage);
     driver.findElement(By.name("windowOne")).click();
@@ -99,5 +105,21 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
     String currentHandle = driver.getWindowHandle();
 
     assertNotNull(currentHandle);
+  }
+
+  public void testFailingToSwitchToAWindowLeavesTheCurrentWindowAsIs() {
+    driver.get(xhtmlTestPage);
+    String current = driver.getWindowHandle();
+
+    try {
+      driver.switchTo().window("i will never exist");
+      fail("Should not be ablt to change to a non-existant window");
+    } catch (NoSuchWindowException e) {
+      // expected
+    }
+
+    String newHandle = driver.getWindowHandle();
+
+    assertEquals(current, newHandle);
   }
 }

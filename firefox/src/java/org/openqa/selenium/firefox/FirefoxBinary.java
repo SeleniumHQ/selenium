@@ -19,6 +19,7 @@ package org.openqa.selenium.firefox;
 
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.FileHandler;
 import org.openqa.selenium.firefox.internal.Executable;
 import org.openqa.selenium.firefox.internal.Streams;
 
@@ -57,32 +58,11 @@ public class FirefoxBinary {
         setEnvironmentProperty("XRE_PROFILE_PATH", profileAbsPath);
         setEnvironmentProperty("MOZ_NO_REMOTE", "1");
         
-//        if (isOnLinux()) {
-//          String preloadLib = profileAbsPath + File.separator + "x_ignore_nofocus.so";
-//
-//          try {
-//            FileHandler.copyResource(profile.getProfileDir(), getClass(), "x_ignore_nofocus.so");
-//          } catch (IOException e) {
-//            if (Boolean.getBoolean("webdriver.development")) {
-//              System.err.println("Exception unpacking required libraries, but in development mode. Continuing");
-//
-//              // TODO(eranm): A crude hack to get some tests running. Do it
-//              // in a more portable way.
-//              String cwd = System.getProperty("user.dir");
-//              System.out.println("CWD: " + cwd + " arch: " + System.getProperty("os.name"));
-//              preloadLib = cwd + "/build/jar/amd64/x_ignore_nofocus.so";
-//            } else {
-//              throw new WebDriverException(e);
-//            }
-//          }
-//
-//          File ld_file = new File(preloadLib);
-//          if (ld_file.exists() == false) {
-//            throw new WebDriverException("Could not locate " + preloadLib + ": "
-//                + "native events will not work.");
-//          }
-//          setEnvironmentProperty("LD_PRELOAD", preloadLib);
-//        }
+        if (isOnLinux()) {
+          String preloadLib = extractAndCheck(
+              profile, "x86/x_ignore_nofocus.so", "amd64/x_ignore_nofocus64.so");
+          setEnvironmentProperty("LD_PRELOAD", preloadLib);
+        }
 
         List<String> commands = new ArrayList<String>();
         commands.add(executable.getPath());
@@ -104,6 +84,38 @@ public class FirefoxBinary {
         outputWatcher = new Thread(new OutputWatcher(process, stream), "Firefox output watcher");
         outputWatcher.start();
     }
+
+  private String extractAndCheck(FirefoxProfile profile, String... paths) {
+    StringBuilder builtPath = new StringBuilder();
+
+    for (String path : paths) {
+      try {
+        FileHandler.copyResource(profile.getProfileDir(), getClass(), path);
+
+        File file = new File(profile.getProfileDir(), path);
+        if (!file.exists()) {
+          throw new WebDriverException("Could not locate " + path + ": "
+                                       + "native events will not work.");
+        }
+
+        builtPath.append(path).append(":");
+      } catch (IOException e) {
+        if (Boolean.getBoolean("webdriver.development")) {
+          System.err.println(
+              "Exception unpacking required library, but in development mode. Continuing");
+//
+//          // TODO(eranm): A crude hack to get some tests running. Do it
+//          // in a more portable way.
+//          String cwd = System.getProperty("user.dir");
+//          builtPath.append(cwd).append("/build");
+        } else {
+          throw new WebDriverException(e);
+        }
+      }
+    }
+
+    return builtPath.toString();
+  }
 
   private void copeWithTheStrangenessOfTheMac(ProcessBuilder builder) throws IOException {
     if (Platform.getCurrent().is(Platform.MAC)) {
