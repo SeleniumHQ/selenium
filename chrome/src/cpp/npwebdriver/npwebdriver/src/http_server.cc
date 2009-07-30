@@ -62,8 +62,8 @@ void HttpServer::_CallbackHandler(mg_connection *connection,
   
   stringstream js;
   if (!strcmp(info->request_method, "POST")) {
-    string post_data = EscapeChar(EscapeChar(string(info->post_data,
-        info->post_data_len), '\''), '\"');
+    string post_data = EscapeChar(EscapeChar(EscapeChar(string(info->post_data,
+        info->post_data_len), '\\'), '\''), '\"');
     if (uri.size() == 4 && uri[3] == "url") {
       char *guid = GenerateGuidString();
       js << "get_url('" << post_data << "', '"

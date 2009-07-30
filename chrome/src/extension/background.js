@@ -89,7 +89,14 @@ function parse_port_message(message) {
     break;
   case "send element keys":
     if (message.status) {
-      document.embeds[0].return_send_element_keys(message.status, message.value);
+      document.embeds[0].return_send_element_keys(message.value.join(""));
+    } else {
+      SendNotFound({message: "Element is obsolete", class: "org.openqa.selenium.StaleElementReferenceException"});
+    }
+    break;
+  case "send file element keys":
+    if (message.status) {
+      document.embeds[0].return_file_keys_element(message.value, message.x, message.y);
     } else {
       SendNotFound({message: "Element is obsolete", class: "org.openqa.selenium.StaleElementReferenceException"});
     }
@@ -103,7 +110,7 @@ function parse_port_message(message) {
     break;
   case "click element":
     if (message.status) {
-      document.embeds[0].return_click_element(message.status, message.x, message.y);
+      document.embeds[0].return_click_element(message.x, message.y);
     } else {
       SendNotFound({message: "Element is obsolete", class: "org.openqa.selenium.StaleElementReferenceException"});
     }
@@ -288,7 +295,7 @@ function HandlePost(uri, post_data, session_id, context) {
       element_id = parseInt(value[0].id);
       switch (path[5]) {
       case "value":
-        var event = {request: "send element keys", "element_id": element_id, "value": value[0].value[0]};
+        var event = {request: "send element keys", "element_id": element_id, "value": value[0].value};
         if (has_window_handle) {
           active_port.postMessage(event);
         } else {
@@ -329,6 +336,7 @@ function HandlePost(uri, post_data, session_id, context) {
         break;
       }
     }
+    break;
   }
 }
 
@@ -436,7 +444,7 @@ function get_url(url_json, local_session_id, uuid) {
 }
 
 function get_url_loaded_callback_first_time(tab) {
-  if (!tab || tab.status != "complete") {
+  if (tab.status != "complete") {
     is_loading_page = true
     setTimeout("get_url_check_loaded_first_time(" + tab.id + ")", 10);
   } else {

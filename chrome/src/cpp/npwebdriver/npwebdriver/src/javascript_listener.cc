@@ -24,7 +24,8 @@ bool JavascriptListener::HasMethod(NPIdentifier name) {
   
   if (strcmp(method, "SendHttp") &&
       strcmp(method, "return_send_element_keys") &&
-      strcmp(method, "return_click_element")) {
+      strcmp(method, "return_click_element") &&
+      strcmp(method, "return_file_keys_element")) {
     return false;
   } else {
     return true;
@@ -72,16 +73,35 @@ bool JavascriptListener::Invoke(NPIdentifier name,
   if (!strcmp(method, "SendHttp") && argCount == 1 &&
       args[0].type == NPVariantType_String) {
     chrome_driver_plugin_->SendHttp(args[0].value.stringValue.UTF8Characters);
-  } else if (!strcmp(method, "return_send_element_keys") && argCount == 2 &&
-      args[0].type == NPVariantType_Bool &&
-      args[1].type == NPVariantType_String) {
-    chrome_driver_plugin_->ReturnSendElementKeys(args[0].value.boolValue,
-        (char *)args[1].value.stringValue.UTF8Characters);
-  } else if (!strcmp(method, "return_click_element") && argCount == 3 &&
-      args[0].type == NPVariantType_Bool &&
-      args[1].type == NPVariantType_Int32 &&
-      args[2].type == NPVariantType_Int32) {
-    chrome_driver_plugin_->ReturnClickElement(args[0].value.boolValue,
+  } else if (!strcmp(method, "return_send_element_keys") && argCount == 1 &&
+      args[0].type == NPVariantType_String) {
+    wchar_t *value = new wchar_t[args[0].value.stringValue.UTF8Length + 1];
+    int r = MultiByteToWideChar(CP_UTF8,
+                                0,
+                                args[0].value.stringValue.UTF8Characters,
+                                args[0].value.stringValue.UTF8Length,
+                                value,
+                                args[0].value.stringValue.UTF8Length + 1);
+    value[r] = 0; //MultiByteToWideChar claims to null-terminate, but doesn't
+    chrome_driver_plugin_->ReturnSendElementKeys(value);
+  } else if (!strcmp(method, "return_click_element") && argCount == 2 &&
+      args[0].type == NPVariantType_Int32 &&
+      args[1].type == NPVariantType_Int32) {
+    chrome_driver_plugin_->ReturnClickElement(args[0].value.intValue,
+                                              args[1].value.intValue);
+  } else if (!strcmp(method, "return_file_keys_element") && argCount == 3 &&
+      args[0].type == NPVariantType_String &&
+      args[0].type == NPVariantType_Int32 &&
+      args[1].type == NPVariantType_Int32) {
+    wchar_t *value = new wchar_t[args[0].value.stringValue.UTF8Length + 1];
+    int r = MultiByteToWideChar(CP_UTF8,
+                                0,
+                                args[0].value.stringValue.UTF8Characters,
+                                args[0].value.stringValue.UTF8Length,
+                                value,
+                                args[0].value.stringValue.UTF8Length + 1);
+    value[r] = 0; //MultiByteToWideChar claims to null-terminate, but doesn't
+    chrome_driver_plugin_->ReturnSendFileKeys(value,
                                               args[1].value.intValue,
                                               args[2].value.intValue);
   } else {

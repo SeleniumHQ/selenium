@@ -239,8 +239,15 @@ function get_element_text(element_id) {
 function send_element_keys(element_id, value) {
   var element = null;
   if ((element = internal_get_element(element_id)) != null) {
-    element.focus();
-    port.postMessage({response: "send element keys", status: true, value: value});
+    var inputtype = element.getAttribute("type");
+    if (element.tagName.toLowerCase() == "input" && inputtype && inputtype.toLowerCase() == "file") {
+      var coords = find_element_coords(element);
+      port.postMessage({response: "send file element keys", status: true, value: value, x: coords[0], y: coords[1]});
+      return;
+    } else {
+      element.focus();
+      port.postMessage({response: "send element keys", status: true, value: value});
+    }
   } else {
     port.postMessage({response: "send element keys", status: false, value: ""});
   }
@@ -327,7 +334,6 @@ function getTagName(element_id) {
   if ((element = internal_get_element(element_id)) != null) {
     port.postMessage({response: "tag name", status: true, value: element.tagName.toLowerCase()});
   } else {
-    console.log("Didn't find element");
     port.postMessage({response: "tag name", status: false});
   }
 }
@@ -353,7 +359,6 @@ function deleteAllCookies() {
 
 function getSource() {
   if (guessPageType() == "html") {
-    console.log("Source: " + document.getElementsByTagName("html")[0].outerHTML);
     port.postMessage({response: "get source", source: document.getElementsByTagName("html")[0].outerHTML});
   } else if (guessPageType() == "text") {
     port.postMessage({response: "get source", source: document.getElementsByTagName("pre")[0].innerHTML});

@@ -87,24 +87,20 @@ const char *ChromeDriverPlugin::context() {
 }
 
 
-void ChromeDriverPlugin::ReturnSendElementKeys(bool success, char *to_type) {
-  if (success) {
-    sendKeys(current_handle_, CharStringToWCharString(to_type), 10);
-    http_server_->send(kNoContentReseponse);
-  } else {
-    //TODO(danielwh): Fail somehow
-    //http_server_->send(kNoContentReseponse);
-  }
+void ChromeDriverPlugin::ReturnSendElementKeys(wchar_t *to_type) {
+  sendKeys(current_handle_, to_type, 10);
+  http_server_->send(kNoContentReseponse);
 }
 
-void ChromeDriverPlugin::ReturnClickElement(bool success, int32 x, int32 y) {
-  if (success) {
-    clickAt(current_handle_, x, y);
-    http_server_->send(kNoContentReseponse);
-  } else {
-    //TODO(danielwh): Fail somehow
-    //http_server_->send(kNoContentReseponse);
-  }
+void ChromeDriverPlugin::ReturnClickElement(int32 x, int32 y) {
+  clickAt(current_handle_, x, y);
+  http_server_->send(kNoContentReseponse);
+}
+
+void ChromeDriverPlugin::ReturnSendFileKeys(wchar_t *value, int32 x, int32 y) {
+  WEBDRIVER_LOG("Sending file element keys...\n");
+  //TODO(danielwh): This
+  http_server_->send(kNoContentReseponse);
 }
 
 } //namespace webdriver

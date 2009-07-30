@@ -38,8 +38,9 @@ class ChromeDriverPlugin {
   
   void SendHttp(const char *http);
   void ConfirmUrlLoaded();
-  void ReturnSendElementKeys(bool success, char *to_type);
-  void ReturnClickElement(bool success, int32 x, int32 y);
+  void ReturnSendElementKeys(wchar_t *to_type);
+  void ReturnClickElement(int32 x, int32 y);
+  void ReturnSendFileKeys(wchar_t *value, int32 x, int32 y);
  private:
   const size_t session_id_;
   const char *context_;

@@ -190,7 +190,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
     	assertThat(text, is("Some text" + newLine + "Some more text"));
     }
 
-    @Ignore({FIREFOX, HTMLUNIT, IE, SAFARI})
+    @Ignore({FIREFOX, HTMLUNIT, IE, SAFARI, CHROME})
     public void testShouldHandleNestedBlockLevelElements() {
     	driver.get(simpleTestPage);
 
