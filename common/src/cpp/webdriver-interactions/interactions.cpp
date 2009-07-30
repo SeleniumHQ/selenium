@@ -331,7 +331,7 @@ void sendKeys(WINDOW_HANDLE windowHandle, const wchar_t* value, int timePerKey)
 			scanCode = keyCode;
 			extended = true;
 		} else if (c == 0xE020U) {  // numpad6
-			keyCode = VK_NUMPAD5;
+			keyCode = VK_NUMPAD6;
 			scanCode = keyCode;
 			extended = true;
 		} else if (c == 0xE021U) {  // numpad7
