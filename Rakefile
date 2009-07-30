@@ -91,7 +91,7 @@ xpi(:name => "firefox_xpi",
     :resources => [
                     { "nsINativeEvents.xpt" => "components/nsINativeEvents.xpt" },
                     { "Win32/Release/webdriver-firefox.dll" => "platform/WINNT_x86-msvc/components/webdriver-firefox.dll" },
-#                    { "linux/Release/libwebdriver-firefox.so" => "platform/Linux_x86-gcc3/components/libwebdriver-firefox.so" },
+                    { "linux/Release/libwebdriver-firefox.so" => "platform/Linux_x86-gcc3/components/libwebdriver-firefox.so" },
                     { "linux64/Release/libwebdriver-firefox.so" => "platform/Linux_x86_64-gcc3/components/libwebdriver-firefox.so" },
                   ],
     :out  => "webdriver-extension.zip")
