@@ -674,9 +674,8 @@ Utils.keyEvent = function(context, element, type, keyCode, charCode,
   return element.dispatchEvent(keyboardEvent);
 };
 
-Utils.fireHtmlEvent = function(context, element, eventName) {
-    var doc = Utils.getDocument(context);
-    var e = doc.createEvent("HTMLEvents");
+Utils.fireHtmlEvent = function(element, eventName) {
+    var e = document.createEvent("HTMLEvents");
     e.initEvent(eventName, true, true);
     element.dispatchEvent(e);
 };

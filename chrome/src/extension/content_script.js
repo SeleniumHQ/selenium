@@ -89,6 +89,9 @@ function parse_port_message(message) {
   case "get source":
     getSource();
     break;
+  case "execute":
+    execute(message.command);
+    break;
   }
 }
 
@@ -256,7 +259,11 @@ function send_element_keys(element_id, value) {
 function clear_element(element_id) {
   var element = null;
   if ((element = internal_get_element(element_id)) != null) {
+    var oldValue = element.value;
     element.value = '';
+    if (oldValue != '') {
+      Utils.fireHtmlEvent(element, "change");
+    }
     port.postMessage({response: "clear element", status: true});
   } else {
     port.postMessage({response: "clear element", status: false});
@@ -267,6 +274,7 @@ function click_element(element_id) {
   var element = null;
   if ((element = internal_get_element(element_id)) != null) {
     var coords = find_element_coords(element);
+    element.focus();
     port.postMessage({response: "click element", status: true, x: coords[0], y: coords[1]});
   } else {
     port.postMessage({response: "click element", status: false, x: -1, y: -1});
@@ -364,6 +372,51 @@ function getSource() {
     port.postMessage({response: "get source", source: document.getElementsByTagName("pre")[0].innerHTML});
   }
 }
+
+function execute(command) {
+  var __webdriverFunc = "function(){" + command[0] + "}";
+  var result = null;
+  var args = [];
+  if (command.length > 1) {
+    for (var i = 0; i < command[1].length; ++i) {
+      switch (command[1][i].type) {
+      case "ELEMENT":
+        var element_id = parseInt(command[1][i].value.replace("element/", ""));
+        args.push(internal_get_element(element_id));
+        break;
+      //Intentional falling through because Javascript will parse things properly
+      case "STRING":
+      case "BOOLEAN":
+      case "NUMBER":
+        args.push(command[1][i].value);
+        break;
+      }
+    }
+  }
+  try {
+    result = contentWindow.eval(__webdriverFunc).apply(contentWindow, args);
+  } catch(e) {
+    port.postMessage({response: "execute", status: false,
+        message: "Tried to execute bad javascript"});
+    return;
+  }
+  var value = {"type":"NULL"};
+  if (result && result.ELEMENT_NODE == 1) {
+    element_array.push(result);
+    value = {value:"element/" + (element_array.length - 1), type:"ELEMENT"};
+  } else if (result != null) {
+    switch (typeof(result)) {
+    //Intentional falling through because we treat all "VALUE"s the same
+    case "string":
+    case "number":
+    case "boolean":
+      value = {value: result, type: "VALUE"};
+      break;
+    }
+  }
+  port.postMessage({response: "execute", status: true, value: value});
+}
+
 
 
 
@@ -482,16 +535,28 @@ function doSelectElement(element, select, allowSingular) {
         parent = parent.parentElement;
       }
       if (allowSingular || parent.multiple) {
+        var oldSelected = element.selected;
         element.selected = select;
+        if (select != oldSelected) {
+          Utils.fireHtmlEvent(element, "change");
+        }
         hasSelected = true;
       }
     } else if (tagName == "input") {
       var type = element.getAttribute("type").toLowerCase();
       if (type == "checkbox") {
+        var oldChecked = element.checked;
         element.checked = select;
+        if (select != oldChecked) {
+          Utils.fireHtmlEvent(element, "change");
+        }
         hasSelected = true;
-      } else if (allowSingular && type == "radio") {
+      } else if (allowSingular && select && type == "radio") {
+        var oldChecked = element.checked;
         element.checked = select;
+        if (!oldChecked) {
+          Utils.fireHtmlEvent(element, "change");
+        }
         hasSelected = true;
       }
     }

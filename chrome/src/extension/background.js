@@ -171,6 +171,13 @@ function parse_port_message(message) {
   case "get source":
     SendValue(message.source);
     break;
+  case "execute":
+    if (message.status) {
+      SendValue(message.value);
+    } else {
+      SendNotFound({message: message.message, class: "org.openqa.selenium.WebDriverException"});
+    }
+    break;
   }
 }
 
@@ -285,6 +292,9 @@ function HandlePost(uri, post_data, session_id, context) {
       break;
     case "refresh":
       active_port.postMessage({request: "refresh"});
+      break;
+    case "execute":
+      active_port.postMessage({request: "execute", command: value});
       break;
     //URL getting is dealt with by a special call to get_url from the plugin,
     //NOT by this switch
