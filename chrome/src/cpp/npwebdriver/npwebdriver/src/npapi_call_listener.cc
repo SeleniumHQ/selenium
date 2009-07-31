@@ -143,7 +143,11 @@ NPError NpapiCallListener::SetWindow(NPP instance, NPWindow *window) {
   
   if (instance == global_instance_ &&
       chrome_driver_plugin_->javascript_executor() != NULL) {
-    chrome_driver_plugin_->javascript_executor()->set_has_window(true);
+    NPObject *window = NULL;
+    if (browser_funcs_->getvalue(instance, NPNVWindowNPObject, &window) ==
+        NPERR_NO_ERROR) {
+      chrome_driver_plugin_->javascript_executor()->set_has_window(true);
+    }
   }
   return NPERR_NO_ERROR;
 }
