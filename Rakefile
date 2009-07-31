@@ -255,6 +255,56 @@ task :remote => [:remote_server, :remote_client]
 task :build => [:common, :htmlunit, :firefox, :ie, :iphone, :support, :remote, :selenium]
 task :test => [:test_htmlunit, :test_firefox, :test_ie, :test_iphone, :test_support, :test_remote, :test_selenium]
 
+
+
+dll(:name => "chrome_dll",
+    :src  => [ "common/src/cpp/webdriver-interactions/**/*", "chome/src/cpp/**/*.*" ],
+    :solution => "WebDriver.sln",
+    :out  => [ "Win32/Release/npwebdriver.dll", "x64/Release/npwebdriver.dll" ])
+
+xpi(:name => "chrome_extension",
+    :src  => [ "chrome/src/extension" ],
+    :deps => [ :chrome_dll ],
+    :resources => [
+                     { "Win32/Release/npwebdriver.dll" => "npwebdriver.dll" }
+                  ],
+    :out => "chrome-extension.zip")
+
+xpi(:name => "firefox_xpi",
+    :src  => [ "firefox/src/extension" ],
+    :deps => [ 
+               :events_xpt,
+               :firefox_dll,
+               :libwebdriver_firefox,
+             ],
+    :resources => [
+                    { "nsINativeEvents.xpt" => "components/nsINativeEvents.xpt" },
+                    { "Win32/Release/webdriver-firefox.dll" => "platform/WINNT_x86-msvc/components/webdriver-firefox.dll" },
+                    { "linux/Release/libwebdriver-firefox.so" => "platform/Linux_x86-gcc3/components/libwebdriver-firefox.so" },
+                    { "linux64/Release/libwebdriver-firefox.so" => "platform/Linux_x86_64-gcc3/components/libwebdriver-firefox.so" },
+                  ],
+    :out  => "webdriver-extension.zip")
+    
+jar(:name => "chrome",
+    :src  => [ "chrome/src/java/**/*.java" ],
+    :deps => [
+               :common,
+               :remote_client,
+               :chrome_extension
+             ],
+    :resources => [ "chrome-extension.zip" ],
+    :zip  => true,
+    :out  => "webdriver-chrome.jar")
+
+test_java(:name => "test_chrome",
+          :src  => [ "chrome/test/java/**/*.java" ],
+          :deps => [
+                     :chrome,
+                     :test_common,
+                     :test_remote
+                   ],
+          :out  => "webdriver-chrome-test.jar")
+    
 task :clean do
   rm_rf 'build/'
 end

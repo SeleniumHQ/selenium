@@ -6,6 +6,7 @@ import java.net.URL;
 import java.util.List;
 
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.internal.FileHandler;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.Response;
@@ -22,7 +23,7 @@ public class ChromeDriver extends RemoteWebDriver {
     try {
       //TODO(danielwh): This is really hacky and wrong, do better
       String chromeBinary = System.getProperty("webdriver.chrome.binary", System.getProperty("java.io.tmpdir") + "..\\Google\\Chrome\\Application\\chrome.exe");
-      File extensionFolder = new File(extensionDir);
+      File extensionFolder = FileHandler.unzip(this.getClass().getResourceAsStream("/chrome-extension.zip"));
       File chromeFile = new File(chromeBinary);
       if (!chromeFile.isFile()) {
         throw new FileNotFoundException("Could not find chrome binary(" + chromeBinary + ").  Try setting webdriver.chrome.binary");
