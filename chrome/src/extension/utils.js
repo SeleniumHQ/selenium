@@ -89,6 +89,8 @@ Utils.getActiveElement = function(context) {
 function getTextFromNode(node, toReturn, textSoFar, isPreformatted) {
     if (node['tagName'] && node.tagName == "SCRIPT") {
         return [toReturn, textSoFar];
+    } else if (node['tagName'] && node.tagName == "TITLE") {
+        return [textSoFar + node.text, ""];
     }
     var children = node.childNodes;
 

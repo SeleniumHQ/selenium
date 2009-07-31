@@ -858,7 +858,6 @@
       <module fileurl="file://$PROJECT_DIR$/iphone/iphone.iml" filepath="$PROJECT_DIR$/iphone/iphone.iml" />
       <module fileurl="file://$PROJECT_DIR$/jobbie/jobbie.iml" filepath="$PROJECT_DIR$/jobbie/jobbie.iml" />
       <module fileurl="file://$PROJECT_DIR$/remote/remote.iml" filepath="$PROJECT_DIR$/remote/remote.iml" />
-      <module fileurl="file://$PROJECT_DIR$/safari/safari.iml" filepath="$PROJECT_DIR$/safari/safari.iml" />
       <module fileurl="file://$PROJECT_DIR$/selenium/selenium.iml" filepath="$PROJECT_DIR$/selenium/selenium.iml" />
       <module fileurl="file://$PROJECT_DIR$/support/support.iml" filepath="$PROJECT_DIR$/support/support.iml" />
     </modules>

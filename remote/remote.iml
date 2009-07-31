@@ -18,7 +18,6 @@
     <orderEntry type="module" module-name="firefox" />
     <orderEntry type="module" module-name="htmlunit" />
     <orderEntry type="module" module-name="jobbie" />
-    <orderEntry type="module" module-name="safari" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>

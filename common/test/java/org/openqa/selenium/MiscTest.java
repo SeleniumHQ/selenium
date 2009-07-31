@@ -20,7 +20,6 @@ package org.openqa.selenium;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.openqa.selenium.Ignore.Driver.SAFARI;
 
 public class MiscTest extends AbstractDriverTestCase {
     public void testShouldReportTheCurrentUrlCorrectly() {
@@ -31,7 +30,6 @@ public class MiscTest extends AbstractDriverTestCase {
         assertThat(driver.getCurrentUrl(), equalTo(javascriptPage));
     }
 
-    @Ignore(SAFARI)
     public void testShouldReturnTheSourceOfAPage() {
         driver.get(simpleTestPage);
 

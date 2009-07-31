@@ -46,15 +46,15 @@ function SocketListener(server, transport)
 
 SocketListener.prototype.onStartRequest = function(request, context)
 {
-}
+};
 
 SocketListener.prototype.onStopRequest = function(request, context, status)
 {
-}
+};
 
 SocketListener.prototype.onDataAvailable = function(request, context, inputStream, offset, count)
 {
-    var incoming = {}
+    var incoming = {};
     var read = this.inputStream.readString(count, incoming);
 
     var lines = incoming.value.split('\n');
@@ -87,7 +87,15 @@ SocketListener.prototype.executeCommand = function() {
     var fxbrowser;
     var self = this;
 
-    var command = JSON.parse(this.data);
+    try {
+      var command = JSON.parse(this.data);
+    } catch (e) {
+      Utils.dump(e);
+      Utils.dump(this.data);
+
+      // Something has gone seriously wrong. Quit the browser
+      this.quit({});      
+    }
 
     var sendBack = {
         commandName : command ? command.commandName : "Unknown command",
@@ -310,66 +318,89 @@ SocketListener.prototype.isReadingLineCount = function() {
     return this.step == 1;
 };
 
-SocketListener.prototype.switchToWindow = function(respond, windowId) {
-    var lookFor = windowId[0];
-    var wm = Utils.getService("@mozilla.org/appshell/window-mediator;1", "nsIWindowMediator");
-    var allWindows = wm.getEnumerator(null);
+SocketListener.prototype.switchToWindow = function(response, windowId, opt_isSecondSearch) {
+  var lookFor = windowId[0];
+  var matches = function(win, lookFor) {
+    return !win.closed &&
+           (win.content && win.content.name == lookFor) ||
+           (win.top && win.top.fxdriver && win.top.fxdriver.id == lookFor);
+  };
 
-    var matches = function(win, lookFor) {
-      if (win.closed)
-        return false;
-
-      if (win.content && win.content.name == lookFor)
-        return true;
-
-      if (win.top && win.top.fxdriver && win.top.fxdriver.id == lookFor)
-        return true;
-
-      return false;
+  Utils.dumpn('Looking for: ' + windowId);
+  var windowFound = this.searchWindows_('navigator:browser', function(win) {
+    if (matches(win, lookFor)) {
+      win.focus();
+      if (win.top.fxdriver) {
+        response.response = new Context(win.fxdriver.id).toString();
+      } else {
+        response.isError = true;
+        response.response = 'No driver found attached to top window!';
+      }
+      response.send();
+      // Found the desired window, stop the search.
+      return true;
     }
+  });
 
-    Utils.dumpn("Looking for: " + windowId);
-
-    while (allWindows.hasMoreElements()) {
-        var win = allWindows.getNext();
-        if (matches(win, lookFor)) {
-            win.focus();
-            var driver = win.top.fxdriver;
-            if (!driver) {
-                respond.isError = true;
-                respond.response = "No driver found attached to top window!";
-                respond.send();
-            }
-
-            respond.response = new Context(win.fxdriver.id).toString();
-            respond.send();
-            return;
-        }
-    }
-
-    respond.context = this.context;
-    respond.isError = true;
-    respond.response = "No window found";
-    respond.send();
-};
-
-SocketListener.prototype.getAllWindowHandles = function(respond) {
-  var wm = Utils.getService("@mozilla.org/appshell/window-mediator;1", "nsIWindowMediator");
-  var allWindows = wm.getEnumerator("navigator:browser");
-
-  var res = "";
-  var index = -1;
-  while (allWindows.hasMoreElements()) {
-    var win = allWindows.getNext();
-
-    if (win.top.fxdriver && !win.top.closed) {
-      res += win.top.fxdriver.id + ","
+  // It is possible that the window won't be found on the first attempt. This is
+  // typically true for anchors with a target attribute set. This search could
+  // execute before the target window has finished loaded, meaning the content
+  // window won't have a name or FirefoxDriver instance yet (see matches above).
+  // If we don't find the window, set a timeout to try one more time.
+  if (!windowFound) {
+    if (opt_isSecondSearch) {
+      Utils.dumpn('Window not found on 2nd attempt; reporting error');
+      response.isError = true;
+      response.response = 'Unable to locate window "' + lookFor + '"';
+      response.send();
+    } else {
+      Utils.dumpn('Window not found on 1st attempt...');
+      var self = this;
+      this.wm.getMostRecentWindow('navigator:browser').
+          setTimeout(function() {
+        Utils.dumpn('...trying to find window again');
+        self.switchToWindow(response, windowId, true);
+      }, 500);
     }
   }
+};
 
-  respond.response = res;
-  respond.send();
-}
+SocketListener.prototype.getAllWindowHandles = function(response) {
+  var res = [];
+  this.searchWindows_('navigator:browser', function(win) {
+    if (win.top && win.top.fxdriver) {
+      res.push(win.top.fxdriver.id);
+    } else if (win.content) {
+      res.push(win.content.name);
+    } else {
+      res.push('');
+    }
+  });
+  response.response = res.join(',');
+  response.send();
+};
+
+/**
+ * Searches over a selection of windows, calling a visitor function on each
+ * window found in the search.
+ * @param {?string} search_criteria The category of windows to search or
+ *     {@code null} to search all windows.
+ * @param {function} visitor_fn A visitor function to call with each window. The
+ *     function may return true to indicate that the window search should abort
+ *     early.
+ * @return {boolean} Whether the visitor function short circuited the search.
+ */
+SocketListener.prototype.searchWindows_ = function(search_criteria,
+                                                       visitor_fn) {
+  var allWindows = this.wm.getEnumerator(search_criteria);
+  while (allWindows.hasMoreElements()) {
+    var win = allWindows.getNext();
+    if (visitor_fn(win)) {
+      return true;
+    }
+  }
+  return false;
+};
 
 SocketListener.prototype.findActiveDriver = function(respond) {
     var win = this.wm.getMostRecentWindow("navigator:browser");

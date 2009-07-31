@@ -19,8 +19,9 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import static org.openqa.selenium.Ignore.Driver.FIREFOX;
+import static org.openqa.selenium.Ignore.Driver.IE;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
-import static org.openqa.selenium.Ignore.Driver.*;
 
 public class TextPagesTest extends AbstractDriverTestCase {
   private String textPage;
@@ -32,7 +33,7 @@ public class TextPagesTest extends AbstractDriverTestCase {
     textPage = GlobalTestEnvironment.get().getAppServer().whereIs("plain.txt");
   }
 
-  @Ignore({IE, FIREFOX, SAFARI})
+  @Ignore({IE, FIREFOX})
   public void testShouldBeAbleToLoadASimplePageOfText() {
     driver.get(textPage);
 
@@ -40,7 +41,6 @@ public class TextPagesTest extends AbstractDriverTestCase {
     assertEquals("Test", source);
   }
   
-  @Ignore(SAFARI)
   public void testFindingAnElementOnAPlainTextPageWillNeverWork() {
     driver.get(textPage);
     
@@ -52,7 +52,6 @@ public class TextPagesTest extends AbstractDriverTestCase {
     }
   }
 
-  @Ignore(SAFARI)
   public void testShouldThrowExceptionWhenAddingCookieToAPageThatIsNotHtml() {
     driver.get(textPage);
 

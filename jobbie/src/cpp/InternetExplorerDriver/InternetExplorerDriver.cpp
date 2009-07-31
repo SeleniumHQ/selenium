@@ -137,6 +137,13 @@ void InternetExplorerDriver::goBack()
 	SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_GOBACK,)
 }
 
+std::wstring InternetExplorerDriver::getHandle()
+{
+	SCOPETRACER
+	SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_GET_HANDLE,);
+	return data.output_string_.c_str();
+}
+
 ElementWrapper* InternetExplorerDriver::getActiveElement()
 {
 	SCOPETRACER

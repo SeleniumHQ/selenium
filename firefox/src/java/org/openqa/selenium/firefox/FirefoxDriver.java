@@ -302,9 +302,7 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
     String allHandles = sendMessage(WebDriverException.class, "getAllWindowHandles");
     String[] handles = allHandles.split(",");
     HashSet<String> toReturn = new HashSet<String>();
-    for (String handle : handles) {
-      toReturn.add(handle);
-    }
+    toReturn.addAll(Arrays.asList(handles));
     return toReturn;
   }
 
@@ -559,7 +557,7 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
         }
 
         public WebDriver window(String windowName) {
-            String response = sendMessage(NoSuchWindowException.class, "switchToWindow", String.valueOf(windowName));
+          String response = sendMessage(NoSuchWindowException.class, "switchToWindow", String.valueOf(windowName));
             if (response == null || "No window found".equals(response)) {
                 throw new NoSuchWindowException("Cannot find window: " + windowName);
             }

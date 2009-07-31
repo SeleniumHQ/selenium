@@ -12,6 +12,7 @@ has_window_handle = false;
 is_loading_page = false;
 minimum_element_on_page = -1;
 maximum_elemet_on_page = -2;
+blocked = false;
 
 chrome.self.onConnect.addListener(function(port) {
   console.log("Connected");
@@ -56,70 +57,70 @@ function parse_port_message(message) {
     if (message.status) {
       SendValue(message.value);
     } else {
-      SendNotFound({message: "Element is obsolete", class: "org.openqa.selenium.StaleElementReferenceException"});
+      SendStaleElement();
     }
     break;
   case "is element selected":
     if (message.status) {
       SendValue(message.value);
     } else {
-      SendNotFound({message: "Element is obsolete", class: "org.openqa.selenium.StaleElementReferenceException"});
+      SendStaleElement();
     }
     break;
   case "is element enabled":
     if (message.status) {
       SendValue(message.value);
     } else {
-      SendNotFound({message: "Element is obsolete", class: "org.openqa.selenium.StaleElementReferenceException"});
+      SendStaleElement();
     }
     break;
   case "tag name":
     if (message.status) {
       SendValue(message.value);
     } else {
-      SendNotFound({message: "Element is obsolete", class: "org.openqa.selenium.StaleElementReferenceException"});
+      SendStaleElement();
     }
     break;
   case "get element text":
     if (message.status) {
       SendValue(message.value);
     } else {
-      SendNotFound({message: "Element is obsolete", class: "org.openqa.selenium.StaleElementReferenceException"});
+      SendStaleElement();
     }
     break;
   case "send element keys":
     if (message.status) {
       document.embeds[0].return_send_element_keys(message.value.join(""));
     } else {
-      SendNotFound({message: "Element is obsolete", class: "org.openqa.selenium.StaleElementReferenceException"});
+      SendStaleElement();
     }
     break;
   case "send file element keys":
     if (message.status) {
       document.embeds[0].return_file_keys_element(message.value, message.x, message.y);
     } else {
-      SendNotFound({message: "Element is obsolete", class: "org.openqa.selenium.StaleElementReferenceException"});
+      SendStaleElement();
     }
     break;
   case "clear element":
     if (message.status) {
       SendNoContent();
     } else {
-      SendNotFound({message: "Element is obsolete", class: "org.openqa.selenium.StaleElementReferenceException"});
+      SendStaleElement();
     }
     break;
   case "click element":
     if (message.status) {
       document.embeds[0].return_click_element(message.x, message.y);
     } else {
-      SendNotFound({message: "Element is obsolete", class: "org.openqa.selenium.StaleElementReferenceException"});
+      SendStaleElement();
     }
     break;
   case "submit element":
     if (message.status) {
       SendNoContent();
     } else {
-      SendNotFound({message: "Element is obsolete", class: "org.openqa.selenium.StaleElementReferenceException"});
+      SendStaleElement();
     }
     break;
   case "select element":
@@ -178,6 +179,20 @@ function parse_port_message(message) {
       SendNotFound({message: message.message, class: "org.openqa.selenium.WebDriverException"});
     }
     break;
+  case "location":
+    if (message.status) {
+      SendValue({class: "java.awt.Point", x: message.x, y: message.y});
+    } else {
+      SendStaleElement();
+    }
+    break;
+  case "size":
+    if (message.status) {
+      SendValue({class: "java.awt.Dimension", height: message.height, width: message.width});
+    } else {
+      SendStaleElement();
+    }
+    break;
   }
 }
 
@@ -217,7 +232,7 @@ function HandleGet(uri) {
         console.log("Not an integer element id: " + path[4]);
         return;
       } else if (element_id < minimum_element_on_page || element_id > maximum_element_on_page) {
-        SendNotFound({message: "Element is obsolete", class: "org.openqa.selenium.StaleElementReferenceException"});
+        SendStaleElement();
       }
       switch (path[5]) {
       case "value":
@@ -234,6 +249,12 @@ function HandleGet(uri) {
         break;
       case "name":
         active_port.postMessage({request: "tag name", "element_id": element_id});
+        break;
+      case "location":
+        active_port.postMessage({request: "location", "element_id": element_id});
+        break;
+      case "size":
+        active_port.postMessage({request: "size", "element_id": element_id});
         break;
       }
     }
@@ -305,6 +326,10 @@ function HandlePost(uri, post_data, session_id, context) {
       element_id = parseInt(value[0].id);
       switch (path[5]) {
       case "value":
+        if (blocked) {
+          return;
+        }
+        blocked = true;
         var event = {request: "send element keys", "element_id": element_id, "value": value[0].value};
         if (has_window_handle) {
           active_port.postMessage(event);
@@ -417,6 +442,10 @@ function SendNoValue() {
   SendHttp(response);
 }
 
+function SendStaleElement() {
+  SendNotFound({message: "Element is obsolete", class: "org.openqa.selenium.StaleElementReferenceException"});
+}
+
 function create_session(request) {
   capabilities_ = request[0];
   //TODO(danielwh): Better check for OS
@@ -466,4 +495,8 @@ function get_url_loaded_callback_first_time(tab) {
 
 function get_url_check_loaded_first_time(tab_id) {
   chrome.tabs.get(tab_id, get_url_loaded_callback_first_time);
+}
+
+function unblock() {
+  blocked = false;
 }

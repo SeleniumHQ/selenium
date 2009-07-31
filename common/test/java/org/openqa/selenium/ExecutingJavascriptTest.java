@@ -17,13 +17,10 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import static org.openqa.selenium.Ignore.Driver.SAFARI;
-
 import java.util.ArrayList;
 
 public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     @JavascriptEnabled
-    @Ignore(SAFARI)
     public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAString() {
         if (!(driver instanceof JavascriptExecutor))
             return;
@@ -37,7 +34,6 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     }
 
     @JavascriptEnabled
-    @Ignore(SAFARI)
     public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnALong() {
         if (!(driver instanceof JavascriptExecutor))
             return;
@@ -51,7 +47,6 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     }
 
     @JavascriptEnabled
-    @Ignore(SAFARI)
     public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAWebElement() {
         if (!(driver instanceof JavascriptExecutor))
             return;
@@ -65,7 +60,6 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     }
 
     @JavascriptEnabled
-    @Ignore(SAFARI)
     public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnABoolean() {
         if (!(driver instanceof JavascriptExecutor))
             return;
@@ -80,7 +74,6 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     }
 
     @JavascriptEnabled
-    @Ignore(SAFARI)
     public void testShouldThrowAnExceptionWhenTheJavascriptIsBad() {
         if (!(driver instanceof JavascriptExecutor))
             return;
@@ -96,7 +89,6 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     }
 
     @JavascriptEnabled
-    @Ignore(SAFARI)
     public void testShouldBeAbleToCallFunctionsDefinedOnThePage() {
         if (!(driver instanceof JavascriptExecutor))
           return;
@@ -113,7 +105,6 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     }
 
   @JavascriptEnabled
-  @Ignore(SAFARI)
     public void testShouldBeAbleToPassAStringAnAsArgument() {
       if (!(driver instanceof JavascriptExecutor))
           return;
@@ -125,7 +116,6 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     }
 
     @JavascriptEnabled
-  @Ignore(SAFARI)
     public void testShouldBeAbleToPassABooleanAnAsArgument() {
       if (!(driver instanceof JavascriptExecutor))
           return;
@@ -137,7 +127,6 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     }
 
     @JavascriptEnabled
-  @Ignore(SAFARI)
     public void testShouldBeAbleToPassANumberAnAsArgument() {
       if (!(driver instanceof JavascriptExecutor))
           return;
@@ -149,7 +138,6 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     }
 
     @JavascriptEnabled
-    @Ignore(SAFARI)
     public void testShouldBeAbleToPassAWebElementAsArgument() {
       if (!(driver instanceof JavascriptExecutor))
           return;
@@ -162,7 +150,6 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     }
 
     @JavascriptEnabled
-    @Ignore(SAFARI)
     public void testShouldThrowAnExceptionIfAnArgumentIsNotValid() {
       if (!(driver instanceof JavascriptExecutor))
         return;
@@ -177,7 +164,6 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     }
     
     @JavascriptEnabled
-    @Ignore(SAFARI)
     public void testShouldBeAbleToPassInMoreThanOneArgument() {
     	if (!(driver instanceof JavascriptExecutor))
             return;
@@ -189,7 +175,6 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     }
 
   @JavascriptEnabled
-  @Ignore(SAFARI)
   public void testShouldBeAbleToGrabTheBodyOfFrameOnceSwitchedTo() {
     driver.get(richTextPage);
 

@@ -19,15 +19,12 @@ package org.openqa.selenium.firefox;
 
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.FileHandler;
 import org.openqa.selenium.firefox.internal.Executable;
 import org.openqa.selenium.firefox.internal.Streams;
-import org.openqa.selenium.internal.FileHandler;
-import org.openqa.selenium.internal.TemporaryFilesystem;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -61,32 +58,11 @@ public class FirefoxBinary {
         setEnvironmentProperty("XRE_PROFILE_PATH", profileAbsPath);
         setEnvironmentProperty("MOZ_NO_REMOTE", "1");
         
-//        if (isOnLinux()) {
-//          String preloadLib = profileAbsPath + File.separator + "x_ignore_nofocus.so";
-//
-//          try {
-//            FileHandler.copyResource(profile.getProfileDir(), getClass(), "x_ignore_nofocus.so");
-//          } catch (IOException e) {
-//            if (Boolean.getBoolean("webdriver.development")) {
-//              System.err.println("Exception unpacking required libraries, but in development mode. Continuing");
-//
-//              // TODO(eranm): A crude hack to get some tests running. Do it
-//              // in a more portable way.
-//              String cwd = System.getProperty("user.dir");
-//              System.out.println("CWD: " + cwd + " arch: " + System.getProperty("os.name"));
-//              preloadLib = cwd + "/build/jar/amd64/x_ignore_nofocus.so";
-//            } else {
-//              throw new WebDriverException(e);
-//            }
-//          }
-//
-//          File ld_file = new File(preloadLib);
-//          if (ld_file.exists() == false) {
-//            throw new WebDriverException("Could not locate " + preloadLib + ": "
-//                + "native events will not work.");
-//          }
-//          setEnvironmentProperty("LD_PRELOAD", preloadLib);
-//        }
+        if (isOnLinux()) {
+          String preloadLib = extractAndCheck(
+              profile, "x86/x_ignore_nofocus.so", "amd64/x_ignore_nofocus64.so");
+          setEnvironmentProperty("LD_PRELOAD", preloadLib);
+        }
 
         List<String> commands = new ArrayList<String>();
         commands.add(executable.getPath());
@@ -103,11 +79,86 @@ public class FirefoxBinary {
 
         process = builder.start();
 
+        copeWithTheStrangenessOfTheMac(builder);
+
         outputWatcher = new Thread(new OutputWatcher(process, stream), "Firefox output watcher");
         outputWatcher.start();
     }
 
-    public void setEnvironmentProperty(String propertyName, String value) {
+  private String extractAndCheck(FirefoxProfile profile, String... paths) {
+    StringBuilder builtPath = new StringBuilder();
+
+    for (String path : paths) {
+      try {
+        FileHandler.copyResource(profile.getProfileDir(), getClass(), path);
+
+        File file = new File(profile.getProfileDir(), path);
+        if (!file.exists()) {
+          throw new WebDriverException("Could not locate " + path + ": "
+                                       + "native events will not work.");
+        }
+
+        builtPath.append(path).append(":");
+      } catch (IOException e) {
+        if (Boolean.getBoolean("webdriver.development")) {
+          System.err.println(
+              "Exception unpacking required library, but in development mode. Continuing");
+//
+//          // TODO(eranm): A crude hack to get some tests running. Do it
+//          // in a more portable way.
+//          String cwd = System.getProperty("user.dir");
+//          builtPath.append(cwd).append("/build");
+        } else {
+          throw new WebDriverException(e);
+        }
+      }
+    }
+
+    return builtPath.toString();
+  }
+
+  private void copeWithTheStrangenessOfTheMac(ProcessBuilder builder) throws IOException {
+    if (Platform.getCurrent().is(Platform.MAC)) {
+      // On the Mac, this process sometimes dies. Check for this, put in a decent sleep
+      // and then attempt to restart it. If this doesn't work, then give up
+
+      // TODO(simon): Why is this happening? Firefox 2 never seemed to suffer this
+      try {
+        sleep(300);
+        if (process.exitValue() == 0) {
+          return;
+        }
+
+        // Looks like it's gone wrong.
+        // TODO(simon): This is utterly bogus. We should do something far smarter
+        sleep(10000);
+
+        process = builder.start();
+      } catch (IllegalThreadStateException e) {
+        // Excellent, we've not creashed.
+      }
+
+      // Ensure we're okay
+      try {
+        sleep(300);
+
+        process.exitValue();
+        if (process.exitValue() == 0) {
+          return;
+        }
+
+        StringBuilder message = new StringBuilder("Unable to start firefox cleanly.\n");
+        message.append(getConsoleOutput()).append("\n");
+        message.append("Exit value: ").append(process.exitValue()).append("\n");
+        message.append("Ran from: ").append(builder.command()).append("\n");
+        throw new WebDriverException(message.toString());
+      } catch (IllegalThreadStateException e) {
+        // Woot!
+      }
+    }
+  }
+
+  public void setEnvironmentProperty(String propertyName, String value) {
         if (propertyName == null || value == null)
             throw new WebDriverException(
                     String.format("You must set both the property name and value: %s, %s", propertyName, value));

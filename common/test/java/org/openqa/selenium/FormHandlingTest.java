@@ -25,7 +25,6 @@ import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
-import static org.openqa.selenium.Ignore.Driver.SAFARI;
 
 import java.io.File;
 
@@ -52,21 +51,18 @@ public class FormHandlingTest extends AbstractDriverTestCase {
 		assertThat(driver.getTitle(), equalTo("We Arrive Here"));
 	}
 
-	@Ignore(value = SAFARI, reason = "Test fails")
 	public void testShouldBeAbleToSubmitForms() {
 		driver.get(formPage);
 		driver.findElement(By.name("login")).submit();
 		assertThat(driver.getTitle(), equalTo("We Arrive Here"));
 	}
 
-	@Ignore(value = SAFARI, reason = "Test fails")
 	public void testShouldSubmitAFormWhenAnyInputElementWithinThatFormIsSubmitted() {
 		driver.get(formPage);
 		driver.findElement(By.id("checky")).submit();
 		assertThat(driver.getTitle(), equalTo("We Arrive Here"));
 	}
 
-	@Ignore(value = SAFARI, reason = "Test fails")
 	public void testShouldSubmitAFormWhenAnyElementWihinThatFormIsSubmitted() {
 		driver.get(formPage);
 		driver.findElement(By.xpath("//form/p")).submit();
@@ -110,7 +106,6 @@ public class FormHandlingTest extends AbstractDriverTestCase {
 		assertThat(newFormValue, equalTo("some text"));
 	}
 
-	@Ignore(SAFARI)
 	public void testShouldBeAbleToSelectACheckBox() {
 		driver.get(formPage);
 		WebElement checkbox = driver.findElement(By
@@ -122,7 +117,6 @@ public class FormHandlingTest extends AbstractDriverTestCase {
 		assertThat(checkbox.isSelected(), is(true));
 	}
 
-	@Ignore(SAFARI)
 	public void testShouldToggleTheCheckedStateOfACheckbox() {
 		driver.get(formPage);
 		WebElement checkbox = driver.findElement(By
@@ -134,7 +128,6 @@ public class FormHandlingTest extends AbstractDriverTestCase {
 		assertThat(checkbox.isSelected(), is(false));
 	}
 
-	@Ignore(SAFARI)
 	public void testTogglingACheckboxShouldReturnItsCurrentState() {
 		driver.get(formPage);
 		WebElement checkbox = driver.findElement(By
@@ -146,7 +139,6 @@ public class FormHandlingTest extends AbstractDriverTestCase {
 		assertThat(isChecked, is(false));
 	}
 
-	@Ignore(SAFARI)
 	public void testShouldNotBeAbleToSelectSomethingThatIsDisabled() {
 		driver.get(formPage);
 		WebElement radioButton = driver.findElement(By.id("nothing"));
@@ -160,7 +152,6 @@ public class FormHandlingTest extends AbstractDriverTestCase {
 		}
 	}
 
-	@Ignore(value = SAFARI)
 	public void testShouldBeAbleToSelectARadioButton() {
 		driver.get(formPage);
 		WebElement radioButton = driver.findElement(By.id("peas"));
@@ -169,7 +160,6 @@ public class FormHandlingTest extends AbstractDriverTestCase {
 		assertThat(radioButton.isSelected(), is(true));
 	}
 	
-	@Ignore(value = SAFARI)
   public void testShouldBeAbleToSelectARadioButtonByClickingOnIt() {
     driver.get(formPage);
     WebElement radioButton = driver.findElement(By.id("peas"));
@@ -178,7 +168,6 @@ public class FormHandlingTest extends AbstractDriverTestCase {
     assertThat(radioButton.isSelected(), is(true));
   }
 	
-	 @Ignore(value = SAFARI)
 	  public void testShouldReturnStateOfRadioButtonsBeforeInteration() {
 	    driver.get(formPage);
 	    WebElement radioButton = driver.findElement(By.id("cheese_and_peas"));
@@ -199,7 +188,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
 		}
 	}
 
-        @Ignore({FIREFOX, IE, SAFARI})
+        @Ignore({FIREFOX, IE})
         public void testTogglingAnOptionShouldThrowAnExceptionIfTheOptionIsNotInAMultiSelect() {
           driver.get(formPage);
 
@@ -214,7 +203,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
           }
         }
 
-        @Ignore({FIREFOX, IE, SAFARI})
+        @Ignore({FIREFOX, IE})
         public void testTogglingAnOptionShouldToggleOptionsInAMultiSelect() {
           driver.get(formPage);
 
@@ -231,7 +220,6 @@ public class FormHandlingTest extends AbstractDriverTestCase {
 
 
 
-  @Ignore(value = SAFARI, reason = "Test fails")
 	public void testShouldBeAbleToAlterTheContentsOfAFileUploadInputElement() throws Exception {
 		driver.get(formPage);
 		WebElement uploadElement = driver.findElement(By.id("upload"));
@@ -271,7 +259,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
 		assertThat(value, is("Some text"));
 	}
 	
-	@Ignore(value= {IE, SAFARI, HTMLUNIT, CHROME}, reason="Not implemented going to the end of the line first")
+	@Ignore(value= {IE, HTMLUNIT, CHROME}, reason="Not implemented going to the end of the line first")
 	public void testSendingKeyboardEventsShouldAppendTextinTextAreas() {
 		driver.get(formPage);
 		WebElement element = driver.findElement(By.id("withText"));

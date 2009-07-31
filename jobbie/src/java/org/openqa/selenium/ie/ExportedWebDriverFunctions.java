@@ -100,6 +100,8 @@ interface ExportedWebDriverFunctions extends StdCallLibrary {
   int wdeMouseUpAt(HWND hwnd, NativeLong windowX, NativeLong windowY);
   int wdeMouseMoveTo(HWND hwnd, NativeLong duration, NativeLong fromX, NativeLong fromY, NativeLong toX, NativeLong toY);
 
+  int wdGetCurrentWindowHandle(Pointer driver, PointerByReference handle);
+
   public static class HWND extends PointerType { }
   
   public static class HWNDByReference extends ByReference {

@@ -92,6 +92,12 @@ function parse_port_message(message) {
   case "execute":
     execute(message.command);
     break;
+  case "location":
+    getElementLocation(message.element_id);
+    break;
+  case "size":
+    getElementSize(message.element_id);
+    break;
   }
 }
 
@@ -415,6 +421,25 @@ function execute(command) {
     }
   }
   port.postMessage({response: "execute", status: true, value: value});
+}
+
+function getElementLocation(element_id) {
+  var element = null;
+  if ((element = internal_get_element(element_id)) != null) {
+    var coords = find_element_coords(element);
+    port.postMessage({response: "location", status: true, x: coords[0], y: coords[1]});
+  } else {
+    port.postMessage({response: "location", status: false});
+  }
+}
+
+function getElementSize(element_id) {
+  var element = null;
+  if ((element = internal_get_element(element_id)) != null) {
+    port.postMessage({response: "size", status: true, height: element.offsetHeight, width: element.offsetWidth});
+  } else {
+    port.postMessage({response: "size", status: false});
+  }
 }
 
 

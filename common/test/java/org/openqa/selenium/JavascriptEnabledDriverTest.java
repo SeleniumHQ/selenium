@@ -19,27 +19,22 @@ limitations under the License.
 package org.openqa.selenium;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import org.hamcrest.Matchers;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.Is.is;
 import static org.junit.matchers.JUnitMatchers.either;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
-import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
-import static org.openqa.selenium.Ignore.Driver.SAFARI;
-
-import java.awt.Dimension;
-import java.awt.Point;
-
-import org.hamcrest.Matchers;
 import org.openqa.selenium.internal.Locatable;
+
+import java.awt.*;
 
 /**
  * Test case for browsers that support using Javascript
  */
 public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
 	@JavascriptEnabled
-	@Ignore(value = SAFARI, reason = "safari: not implemented, ie: fails for some reason.")
     public void testDocumentShouldReflectLatestTitle() throws Exception {
         driver.get(javascriptPage);
 
@@ -52,7 +47,6 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     }
 
 	@JavascriptEnabled
-	@Ignore(SAFARI)
     public void testDocumentShouldReflectLatestDom() throws Exception {
         driver.get(javascriptPage);
         String currentText = driver.findElement(By.xpath("//div[@id='dynamo']")).getText();
@@ -101,7 +95,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
 //	}
 
     @JavascriptEnabled
-	@Ignore(value = {IE, SAFARI}, reason="safari: not implemented, ie: Fails")
+	@Ignore(IE)
     public void testShouldWaitForLoadsToCompleteAfterJavascriptCausesANewPageToLoad() {
         driver.get(formPage);
 
@@ -111,7 +105,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     }
 
     @JavascriptEnabled
-	@Ignore(value = {IE, SAFARI}, reason="safari: not implemented, ie: Fails")
+	@Ignore(IE)
     public void testShouldBeAbleToFindElementAfterJavascriptCausesANewPageToLoad() throws InterruptedException
     {
         driver.get(formPage);
@@ -122,7 +116,6 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     }
 
 	@JavascriptEnabled
-	@Ignore(SAFARI)
     public void testShouldBeAbleToDetermineTheLocationOfAnElement() {
         driver.get(xhtmlTestPage);
 
@@ -134,7 +127,6 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     }
 
 	@JavascriptEnabled
-	@Ignore(SAFARI)
     public void testShouldBeAbleToDetermineTheSizeOfAnElement() {
         driver.get(xhtmlTestPage);
 
@@ -155,7 +147,6 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     }
 
   @JavascriptEnabled
-  @Ignore(SAFARI)
   public void testShouldBeAbleToSubmitFormsByCausingTheOnClickEventToFire() {
     driver.get(javascriptPage);
     WebElement element = driver.findElement(By.id("jsSubmitButton"));
@@ -165,7 +156,6 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(SAFARI)
   public void testShouldBeAbleToClickOnSubmitButtons() {
     driver.get(javascriptPage);
     WebElement element = driver.findElement(By.id("submittingButton"));
@@ -175,7 +165,6 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(SAFARI)
   public void testIssue80ClickShouldGenerateClickEvent() {
     driver.get(javascriptPage);
     WebElement element = driver.findElement(By.id("clickField"));
@@ -187,7 +176,6 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(SAFARI)
   public void testShouldBeAbleToSwitchToFocusedElement() {
     driver.get(javascriptPage);
 
@@ -198,7 +186,6 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(SAFARI)
   public void testIfNoElementHasFocusTheActiveElementIsTheBody() {
     driver.get(simpleTestPage);
 
@@ -208,7 +195,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IE, FIREFOX, REMOTE, SAFARI}, reason = "Firefox: Window demands focus to work. Other platforms: not properly tested")
+  @Ignore(value = {IE, FIREFOX, REMOTE}, reason = "Firefox: Window demands focus to work. Other platforms: not properly tested")
   public void testChangeEventIsFiredAppropriatelyWhenFocusIsLost() {
     driver.get(javascriptPage);
 
@@ -223,14 +210,14 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     assertThat(driver.findElement(By.id("result")).getText().trim(), 
     		either(is("focus change blur focus blur"))
     		.or(is("focus blur change focus blur"))
-    		.or(is("focus blur change focus blur change")));
+    		.or(is("focus blur change focus blur change"))
+    		.or(is("focus change blur focus change blur"))); //What Chrome does
   }
 
   /**
   * If the click handler throws an exception, the firefox driver freezes. This is suboptimal.   
   */
   @JavascriptEnabled
-  @Ignore(SAFARI)
   public void testShouldBeAbleToClickIfEvenSomethingHorribleHappens() {
     driver.get(javascriptPage);
 

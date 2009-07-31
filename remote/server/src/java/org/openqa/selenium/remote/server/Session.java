@@ -116,9 +116,6 @@ public class Session {
     } else if ("internet explorer".equals(browser)) {
       return (WebDriver) Class.forName("org.openqa.selenium.ie.InternetExplorerDriver")
           .newInstance();
-    } else if ("safari".equals(browser)) {
-      return (WebDriver) Class.forName("org.openqa.selenium.safari.SafariDriver")
-          .newInstance();
     }
 
     throw new WebDriverException("Unable to match browser: " + browser);

@@ -17,10 +17,10 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import static org.openqa.selenium.Ignore.Driver.IE;
+import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.TestEnvironment;
-
-import static org.openqa.selenium.Ignore.Driver.*;
 
 public class AlertsTest extends AbstractDriverTestCase {
     private String alertPage;
@@ -34,7 +34,7 @@ public class AlertsTest extends AbstractDriverTestCase {
     }
 
     @JavascriptEnabled
-    @Ignore({IE, IPHONE, SAFARI})
+    @Ignore({IE, IPHONE})
     public void testShouldBeAbleToOverrideTheWindowAlertMethod() {
         driver.get(alertPage);
 

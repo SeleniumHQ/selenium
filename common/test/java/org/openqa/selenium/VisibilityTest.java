@@ -21,12 +21,10 @@ package org.openqa.selenium;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.core.Is.is;
-import static org.openqa.selenium.Ignore.Driver.SAFARI;
 
 public class VisibilityTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
-  @Ignore(SAFARI)
   public void testShouldAllowTheUserToTellIfAnElementIsDisplayedOrNot() {
     driver.get(javascriptPage);
 
@@ -39,7 +37,6 @@ public class VisibilityTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(SAFARI)
   public void testVisibilityShouldTakeIntoAccountParentVisibility() {
     driver.get(javascriptPage);
 
@@ -51,7 +48,6 @@ public class VisibilityTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(SAFARI)
   public void testShouldCountElementsAsVisibleIfStylePropertyHasBeenSet() {
     driver.get(javascriptPage);
 
@@ -61,7 +57,6 @@ public class VisibilityTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(SAFARI)
   public void testShouldModifyTheVisibilityOfAnElementDynamically() {
     driver.get(javascriptPage);
 
@@ -75,7 +70,6 @@ public class VisibilityTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(SAFARI)
   public void testHiddenInputElementsAreNeverVisible() {
     driver.get(javascriptPage);
 
@@ -85,7 +79,6 @@ public class VisibilityTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(SAFARI)
   public void testShouldNotBeAbleToClickOnAnElementThatIsNotDisplayed() {
     driver.get(javascriptPage);
     WebElement element = driver.findElement(By.id("unclickable"));
@@ -99,7 +92,6 @@ public class VisibilityTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(SAFARI)
   public void testShouldNotBeAbleToToggleAnElementThatIsNotDisplayed() {
     driver.get(javascriptPage);
     WebElement element = driver.findElement(By.id("untogglable"));
@@ -113,7 +105,6 @@ public class VisibilityTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(SAFARI)
   public void testShouldNotBeAbleToSelectAnElementThatIsNotDisplayed() {
     driver.get(javascriptPage);
     WebElement element = driver.findElement(By.id("untogglable"));
@@ -127,7 +118,6 @@ public class VisibilityTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(SAFARI)
   public void testShouldNotBeAbleToTypeAnElementThatIsNotDisplayed() {
     driver.get(javascriptPage);
     WebElement element = driver.findElement(By.id("unclickable"));

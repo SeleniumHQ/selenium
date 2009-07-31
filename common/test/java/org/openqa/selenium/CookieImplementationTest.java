@@ -23,16 +23,15 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.core.IsNot.not;
+import static org.openqa.selenium.Ignore.Driver.IE;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
 
-import static org.openqa.selenium.Ignore.Driver.*;
-
+import java.net.URL;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.Date;
-import java.net.URL;
 
 public class CookieImplementationTest extends AbstractDriverTestCase {
     public void testAddCookiesWithDifferentPaths() {
@@ -108,7 +107,6 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
         assertThat(retrievedCookie.isSecure(), equalTo(cookie1.isSecure()));
     }
 
-    @Ignore(SAFARI)
     public void testDeleteAllCookies() {
         driver.get(simpleTestPage);
         Cookie cookie1 = new Cookie("fish", "cod");
@@ -127,7 +125,6 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
         assertThat(cookies.contains(cookie2), is(false));
     }
 
-    @Ignore(SAFARI)
     public void testDeleteCookie() {
         driver.get(simpleTestPage);
         Cookie cookie1 = new Cookie("fish", "cod");
@@ -208,7 +205,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     assertThat(cookies, not(hasItem(cookie1)));
   }
 
-  @Ignore({IE, SAFARI})  
+  @Ignore(IE)
   public void testShouldBeAbleToSetDomainToTheCurrentDomain() throws Exception {
     driver.get(simpleTestPage);
     driver.manage().deleteAllCookies();
@@ -225,7 +222,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     assertThat(cookies, hasItem(cookie1));
   }
 
-  @Ignore({IE, SAFARI})
+  @Ignore(IE)
   public void testShouldNotBeAbleToSetDomainToSomethingThatIsNotTheCurrentDomain() {
     driver.get(simpleTestPage);
     driver.manage().deleteAllCookies();

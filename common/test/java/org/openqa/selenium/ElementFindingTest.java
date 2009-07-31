@@ -20,13 +20,14 @@ package org.openqa.selenium;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-
-import static org.openqa.selenium.Ignore.Driver.*;
+import static org.openqa.selenium.Ignore.Driver.CHROME;
+import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
+import static org.openqa.selenium.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.Ignore.Driver.REMOTE;
 
 import java.util.List;
 
 public class ElementFindingTest extends AbstractDriverTestCase {
-    @Ignore(SAFARI)
     public void testShouldReturnTitleOfPageIfSet() {
         driver.get(xhtmlTestPage);
         assertThat(driver.getTitle(), equalTo(("XHTML Test Page")));
@@ -76,7 +77,6 @@ public class ElementFindingTest extends AbstractDriverTestCase {
         }
     }
 
-    @Ignore(SAFARI)
     public void testShouldfindAnElementBasedOnId() {
         driver.get(formPage);
 
@@ -96,7 +96,6 @@ public class ElementFindingTest extends AbstractDriverTestCase {
         }
     }
     
-    @Ignore(SAFARI)
     public void testShouldBeAbleToFindChildrenOfANode() {
         driver.get(xhtmlTestPage);
         List<WebElement> elements = driver.findElements(By.xpath("/html/head"));
@@ -105,7 +104,6 @@ public class ElementFindingTest extends AbstractDriverTestCase {
         assertThat(importedScripts.size(), equalTo(2));
     }
 
-    @Ignore(SAFARI)
     public void testReturnAnEmptyListWhenThereAreNoChildrenOfANode() {
         driver.get(xhtmlTestPage);
         WebElement table = driver.findElement(By.id("table"));
@@ -161,7 +159,6 @@ public class ElementFindingTest extends AbstractDriverTestCase {
         }
     }
     
-    @Ignore(SAFARI)
     public void testShouldBeAbleToFindMultipleElementsByXPath() {
     	driver.get(xhtmlTestPage);
     	
@@ -170,7 +167,6 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     	assertTrue(elements.size() > 1);
     }
     
-    @Ignore(SAFARI)
     public void testShouldBeAbleToFindMultipleElementsByLinkText() {
     	driver.get(xhtmlTestPage);
     	
@@ -179,7 +175,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     	assertTrue("Expected 2 links, got " + elements.size(), elements.size() == 2);
     }
 
-    @Ignore({REMOTE, SAFARI})
+    @Ignore(REMOTE)
     public void testShouldBeAbleToFindMultipleElementsByPartialLinkText() {
     	driver.get(xhtmlTestPage);
 
@@ -188,7 +184,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     	assertTrue(elements.size() == 2);
     }
 
-    @Ignore({REMOTE, SAFARI})
+    @Ignore(REMOTE)
     public void testShouldBeAbleToFindElementByPartialLinkText() {
     	driver.get(xhtmlTestPage);
 
@@ -199,7 +195,6 @@ public class ElementFindingTest extends AbstractDriverTestCase {
       }
     }
     
-    @Ignore(SAFARI)
     public void testShouldBeAbleToFindMultipleElementsByName() {
     	driver.get(nestedPage);
     	
@@ -208,7 +203,6 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     	assertTrue(elements.size() > 1);
     }
 
-    @Ignore(SAFARI)
     public void testShouldBeAbleToFindMultipleElementsById() {
     	driver.get(nestedPage);
     	
@@ -217,7 +211,6 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     	assertEquals(8, elements.size());
     }
     
-    @Ignore(SAFARI)
     public void testShouldBeAbleToFindMultipleElementsByClassName() {
     	driver.get(xhtmlTestPage);
     	
@@ -226,7 +219,6 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     	assertTrue(elements.size() > 1);
     }
 
-    @Ignore(SAFARI)
     // You don't want to ask why this is here
     public void testWhenFindingByNameShouldNotReturnById() {
         driver.get(formPage);
@@ -244,7 +236,6 @@ public class ElementFindingTest extends AbstractDriverTestCase {
         assertThat(element.getValue(), is("id"));
     }
 
-    @Ignore(SAFARI)
     public void testShouldFindGrandChildren() {
         driver.get(formPage);
         WebElement form = driver.findElement(By.id("nested_form"));
@@ -252,7 +243,6 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     }
 
 
-    @Ignore(SAFARI)
     public void testShouldNotFindElementOutSideTree() {
         driver.get(formPage);
         WebElement element = driver.findElement(By.name("login"));
@@ -263,7 +253,6 @@ public class ElementFindingTest extends AbstractDriverTestCase {
         }
     }
     
-    @Ignore(SAFARI)
     public void testShouldReturnElementsThatDoNotSupportTheNameProperty() {
     	driver.get(nestedPage);
     	
@@ -281,7 +270,6 @@ public class ElementFindingTest extends AbstractDriverTestCase {
         }
     }
 
-  @Ignore(SAFARI)
   public void testShouldfindAnElementBasedOnTagName() {
     driver.get(formPage);
 
@@ -290,7 +278,6 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     assertNotNull(element);
   }
 
-  @Ignore(SAFARI)
   public void testShouldfindElementsBasedOnTagName() {
     driver.get(formPage);
 
@@ -317,7 +304,6 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     }
   }
 
-  @Ignore(SAFARI)
   @JavascriptEnabled
   public void testShouldBeAbleToClickOnLinksWithNoHrefAttribute() {
     driver.get(javascriptPage);
@@ -329,7 +315,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     assertEquals("Changed", driver.getTitle());
   }
   
-  @Ignore({HTMLUNIT, SAFARI, CHROME})
+  @Ignore({HTMLUNIT, CHROME})
   //Reason for Chrome: The content script mechanism which we use to open tabs
   //doesn't allow for matching with non-{http, https, file, ftp} schemes
   public void testShouldNotBeAbleToFindAnElementOnABlankPage() {
@@ -344,7 +330,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     }
   }
   
-  @Ignore({HTMLUNIT, SAFARI, IPHONE, CHROME})
+  @Ignore({HTMLUNIT, IPHONE, CHROME})
   //Reason for Chrome: The content script mechanism which we use to open tabs
   //doesn't allow for matching with non-{http, https, file, ftp} schemes
   @NeedsFreshDriver
@@ -360,7 +346,6 @@ public class ElementFindingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(SAFARI)
   public void testRemovingAnElementDynamicallyFromTheDomShouldCauseAStaleRefException() {
     driver.get(javascriptPage);
 

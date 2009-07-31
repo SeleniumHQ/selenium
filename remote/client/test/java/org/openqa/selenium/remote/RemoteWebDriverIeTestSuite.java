@@ -19,15 +19,22 @@ package org.openqa.selenium.remote;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
-import org.openqa.selenium.TestSuiteBuilder;
+import junit.framework.TestCase;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.TestSuiteBuilder;
 
 import java.net.URL;
 
-public class RemoteWebDriverIeTestSuite {
+public class RemoteWebDriverIeTestSuite extends TestCase {
   public static Test suite() throws Exception {
+    if (!(Platform.getCurrent().is(Platform.WINDOWS))) {      
+      TestSuite toReturn = new TestSuite();
+      toReturn.addTestSuite(EmptyTest.class);
+      return toReturn;
+    }
+
     System.setProperty("webdriver.development", "true");
     String arch = System.getProperty("os.arch").toLowerCase() + "/";
     if (arch.contains("64")) {
@@ -56,6 +63,12 @@ public class RemoteWebDriverIeTestSuite {
   public static class RemoteIeWebDriverForTest extends RemoteWebDriver {
     public RemoteIeWebDriverForTest() throws Exception {
       super(new URL("http://localhost:6000/hub"), DesiredCapabilities.internetExplorer());
+    }
+  }
+
+  public static class EmptyTest extends TestCase {
+    public void testDoNothingButLetTheSuiteWork() {
+      // Does nothing
     }
   }
 }

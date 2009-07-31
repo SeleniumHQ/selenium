@@ -31,10 +31,9 @@ public class SingleTestSuite extends TestCase {
   private final static String HTML_UNIT_JS = "org.openqa.selenium.htmlunit.JavascriptEnabledHtmlUnitDriverTestSuite$HtmlUnitDriverForTest";
   private final static String IE = "org.openqa.selenium.ie.InternetExplorerDriver";
   private final static String REMOTE = "org.openqa.selenium.remote.RemoteWebDriverTestSuite$RemoteWebDriverForTest";
-  private final static String SAFARI = "org.openqa.selenium.safari.SafariDriver";
 
   public static Test suite() throws Exception {
-    String driver = IE;
+    String driver = FIREFOX;
 
     System.setProperty("webdriver.development", "true");
     System.setProperty("jna.library.path", "..\\build;build");
@@ -51,7 +50,7 @@ public class SingleTestSuite extends TestCase {
         .onlyRun("WindowSwitchingTest")
 //        .method("testShouldAllowUsersToHoverOverElements")
         .exclude(ALL)
-        .exclude(Ignore.Driver.IE)
+        .exclude(Ignore.Driver.FIREFOX)
         .leaveRunning()
         ;  // Yeah, this look strange :)
 

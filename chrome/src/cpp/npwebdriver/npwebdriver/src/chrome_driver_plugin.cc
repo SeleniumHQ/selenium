@@ -89,6 +89,7 @@ const char *ChromeDriverPlugin::context() {
 
 void ChromeDriverPlugin::ReturnSendElementKeys(wchar_t *to_type) {
   sendKeys(current_handle_, to_type, 10);
+  javascript_executor_->execute(string("unblock()"));
   http_server_->send(kNoContentReseponse);
 }
 
