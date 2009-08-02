@@ -1,8 +1,18 @@
-var port = chrome.extension.connect();
-
-port.onMessage.addListener(parse_port_message);
+if (document.location != "about:blank") {
+  //TODO(danielwh): Report bug in chrome that content script is fired on about:blank for new javascript windows
+  //If loading windows using window.open, the port is opened
+  //while we are on about:blank (which reports window.name as ''),
+  //and we use port-per-tab semantics, so don't open the port if
+  //we're on about:blank
+  var port = chrome.extension.connect(window.name);
+  port.onMessage.addListener(parse_port_message);
+}
 
 element_array = [];
+
+global_window = window;
+
+current_window = window;
 
 function parse_port_message(message) {
   console.log("Received request for: " + message.request);
@@ -97,6 +107,9 @@ function parse_port_message(message) {
     break;
   case "size":
     getElementSize(message.element_id);
+    break;
+  case "select frame":
+    SelectFrame(message.by);
     break;
   }
 }
@@ -439,6 +452,16 @@ function getElementSize(element_id) {
     port.postMessage({response: "size", status: true, height: element.offsetHeight, width: element.offsetWidth});
   } else {
     port.postMessage({response: "size", status: false});
+  }
+}
+
+function SelectFrame(by) {
+  //TODO(danielwh): Currently broken in Chrome
+  if (by != null && by[0] != null && by[0].id != null && window.frames[by[0].id] != null) {
+    current_window = window.frames[by[0].id];
+    port.postMessage({response: "select frame", status: true});
+  } else {
+    port.postMessage({response: "select frame", message: "Could no find frame by " + JSON.stringify(by), status: false});
   }
 }
 

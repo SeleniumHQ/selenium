@@ -220,6 +220,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
 
 
 
+  @Ignore(value = CHROME, reason = "TODO(danielwh): Not yet implemented")
 	public void testShouldBeAbleToAlterTheContentsOfAFileUploadInputElement() throws Exception {
 		driver.get(formPage);
 		WebElement uploadElement = driver.findElement(By.id("upload"));

@@ -16,9 +16,12 @@ blocked = false;
 
 chrome.self.onConnect.addListener(function(port) {
   console.log("Connected");
-  ports.push(port);
-  active_port = port; //TODO(danielwh): Probably move this
+  PushPort(port);
+  if (!active_port || port.tab.id == active_port.tab.id) {
+    active_port = port; //TODO(danielwh): When SHOULD this actually be true??
+  }
   port.onMessage.addListener(parse_port_message);
+  port.onDisconnect.addListener(remove_port);
 });
 
 function parse_port_message(message) {
@@ -193,6 +196,13 @@ function parse_port_message(message) {
       SendStaleElement();
     }
     break;
+  case "select frame":
+    if (message.status) {
+      SendNoValue();
+    } else {
+      SendNotFound({message: message.message, class: "org.openqa.selenium.NoSuchFrameException"});
+    }
+    break;
   }
 }
 
@@ -221,6 +231,16 @@ function HandleGet(uri) {
       break;
     case "source":
       active_port.postMessage({request: "get source"});
+      break;
+    case "window_handle":
+      if (active_port) {
+        SendValue(active_port.name);
+      } else {
+        SendNotFound({message: "Can't get window handle without window", class: "org.openqa.selenium.WebDriverException"});
+      }
+      break;
+    case "window_handles":
+      get_window_handles();
       break;
     }
     break;
@@ -319,6 +339,26 @@ function HandlePost(uri, post_data, session_id, context) {
       break;
     //URL getting is dealt with by a special call to get_url from the plugin,
     //NOT by this switch
+    }
+    break;
+  case 5:
+    switch (path[3]) {
+    case "window":
+      var message = "Could not find window";
+      if (value[0] != undefined && value[0] != null && value[0].name != undefined && value[0].name != null) {
+        if (SetActivePortByWindowName(value[0].name)) {
+          //TODO(danielwh): Focus window and tab
+          SendNoContent();
+          return;
+        } else {
+          var message = "Could not find window by " + value[0].name;
+        }
+      }
+      SendNotFound({message: message, class: "org.openqa.selenium.NoSuchWindowException"});
+      break;
+    case "frame":
+      active_port.postMessage({request: "select frame", by: value});
+      break;
     }
     break;
   case 6:
@@ -460,6 +500,14 @@ function create_session(request) {
   }
 }
 
+function get_window_handles() {
+  var window_handles = [];
+  for (var i = 0; i < ports.length; ++i) {
+    window_handles.push(ports[i].name);
+  }
+  SendValue(window_handles);
+}
+
 //XXX(danielwh): This may change to a chrome.tabs.onCreated/onUpdated/onRemoved event listener, if it turns out to conflict with multiple windows
 function get_url(url_json, local_session_id, uuid) {
   var url_string = JSON.parse(url_json)[0];
@@ -489,6 +537,8 @@ function get_url_loaded_callback_first_time(tab) {
   } else {
     is_loading_page = false;
     primary_display_tab_id = tab.id;
+    SetActivePortByTabId(tab.id);
+    //TODO(danielwh): Maybe close other tabs/windows
     SendNoContent();
   }
 }
@@ -499,4 +549,39 @@ function get_url_check_loaded_first_time(tab_id) {
 
 function unblock() {
   blocked = false;
+}
+
+function SetActivePortByTabId(tab_id) {
+  for (var i = 0; i < ports.length; ++i) {
+    if (ports[i].tab.id == tab_id) {
+      active_port = ports[i];
+      break;
+    }
+  }
+}
+
+function SetActivePortByWindowName(name) {
+  for (var i = 0; i < ports.length; ++i) {
+    if (ports[i].name == name) {
+      active_port = ports[i];
+      return true;
+    }
+  }
+}
+
+function remove_port(port) {
+  //TODO(danielwh): Nice way of removing from array?
+  var temp_ports = [];
+  for (var i = 0; i < ports.length; ++i) {
+    if (ports[i].name != port.name) {
+      temp_ports.push(ports[i]);
+    }
+  }
+  ports = temp_ports;
+}
+
+function PushPort(port) {
+  //It would be nice to only have one port per name, so we enforce this
+  remove_port(port);
+  ports.push(port);
 }
