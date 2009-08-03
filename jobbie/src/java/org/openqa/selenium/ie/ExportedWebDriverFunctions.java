@@ -65,6 +65,7 @@ interface ExportedWebDriverFunctions extends StdCallLibrary {
   
   // Switching and navigation
   int wdSwitchToActiveElement(Pointer driver, PointerByReference result);
+  int wdSwitchToWindow(Pointer driver, WString windowName);
   int wdSwitchToFrame(Pointer driver, WString string);
   int wdGoBack(Pointer driver);
   int wdGoForward(Pointer driver);
@@ -101,6 +102,8 @@ interface ExportedWebDriverFunctions extends StdCallLibrary {
   int wdeMouseMoveTo(HWND hwnd, NativeLong duration, NativeLong fromX, NativeLong fromY, NativeLong toX, NativeLong toY);
 
   int wdGetCurrentWindowHandle(Pointer driver, PointerByReference handle);
+
+  int wdQuit(Pointer driver);
 
   public static class HWND extends PointerType { }
   

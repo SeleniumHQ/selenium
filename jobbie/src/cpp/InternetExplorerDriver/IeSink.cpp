@@ -20,6 +20,7 @@ limitations under the License.
 #include "stdafx.h"
 #include "IeSink.h"
 #include "utils.h"
+#include "InternetExplorerDriver.h"
 #include "InternalCustomMessage.h"
 
 using namespace std;
@@ -43,7 +44,7 @@ VARIANT * pvarData, VARIANT * pvarHeaders, VARIANT_BOOL * pbCancel)
 };
 
 
-void IeSink::OnQuit()
+void __stdcall IeSink::OnQuit()
 {
 	SCOPETRACER
 	DataMarshaller& dataMarshaller = p_Thread->getCmdData();
@@ -64,12 +65,12 @@ void __stdcall IeSink::DocumentComplete(IDispatch *pDisp,VARIANT *URL)
 	}
 }
 
-void IeSink::DownloadBegin()
+void __stdcall IeSink::DownloadBegin()
 {
 	safeIO::CoutA("in DownloadBegin", true);
 }
 
-void IeSink::DownloadComplete()
+void __stdcall IeSink::DownloadComplete()
 {
 	SCOPETRACER
 	if(p_Thread->m_EventToNotifyWhenNavigationCompleted)
@@ -78,7 +79,6 @@ void IeSink::DownloadComplete()
 		p_Thread->PostThreadMessageW(_WD_WAITFORNAVIGATIONTOFINISH , 0, 0);
 	}
 }
-
 
 void IeSink::ConnectionAdvise()
 {

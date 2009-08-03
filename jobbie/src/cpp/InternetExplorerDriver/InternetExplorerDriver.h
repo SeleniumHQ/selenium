@@ -32,6 +32,7 @@ public:
 	~InternetExplorerDriver();
 
 	void close();
+	void quit();
 
 	IeThread* ThreadFactory();
 

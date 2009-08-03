@@ -89,7 +89,7 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
     }
     
     public void quit() {
-    	close();  // Not a good implementation, but better than nothing
+      lib.wdQuit(driver);
     }
 
   public Set<String> getWindowHandles() {
@@ -321,6 +321,9 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
 
         public WebDriver window(String windowName) {
           throw new NoSuchWindowException("Unable to switch to window: " + windowName);
+          /*int result = lib.wdSwitchToWindow(driver, new WString(windowName));
+          errors.verifyErrorCode(result, "Unable to locate window: " + windowName);
+          return InternetExplorerDriver.this;*/
         }
 
       public WebDriver defaultContent() {

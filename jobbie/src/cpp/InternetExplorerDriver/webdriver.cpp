@@ -202,10 +202,19 @@ int wdFreeScriptResult(ScriptResult* scriptResult)
 // Driver manipulation functions
 int wdFreeDriver(WebDriver* driver)
 {
-	if (!driver || !driver->ie) return -1;
+	if (!driver || !driver->ie) return ENOSUCHDRIVER;
 	driver->ie->close();
     delete driver->ie;
     delete driver;
+
+	return SUCCESS;
+}
+
+int wdQuit(WebDriver* driver)
+{
+	if (!driver || !driver->ie) return ENOSUCHDRIVER;
+	
+	driver->ie->quit();
 
 	return SUCCESS;
 }
