@@ -337,6 +337,7 @@ end
 # TODO(simon): This should pick up the "out" files from the deps
 uber_jar(:name => "all",
          :src  => [
+                    "build/webdriver-common.jar",
                     "build/webdriver-htmlunit.jar",
                     "build/webdriver-firefox.jar",                    
                     "build/webdriver-ie.jar",
@@ -344,6 +345,7 @@ uber_jar(:name => "all",
                     "build/webdriver-support.jar",
                   ],
          :deps => [
+                    :common,
                     :htmlunit,
                     :ie,
                     :firefox,
