@@ -67,7 +67,10 @@ void IeThread::OnSelectElementById(WPARAM w, LPARAM lp)
  
 	CComPtr<IHTMLElement> element;
 	CComBSTR id(elementId);
-	doc->getElementById(id, &element);
+	if (!SUCCEEDED(doc->getElementById(id, &element))) {
+		errorKind = ENOSUCHELEMENT;
+		return;
+	}
 
 	if(NULL == element) {
 		errorKind = ENOSUCHELEMENT;
@@ -75,7 +78,11 @@ void IeThread::OnSelectElementById(WPARAM w, LPARAM lp)
 	}
 	
 	CComVariant value;
-	element->getAttribute(CComBSTR(L"id"), 0, &value);
+	if (!SUCCEEDED(element->getAttribute(CComBSTR(L"id"), 0, &value))) {
+		errorKind = ENOSUCHELEMENT;
+		return;
+	}
+
 	if (wcscmp(comvariant2cw(value), elementId)==0) 
 	{
 		if (isOrUnder(node, element)) {
@@ -91,7 +98,10 @@ void IeThread::OnSelectElementById(WPARAM w, LPARAM lp)
 	}
 
 	CComPtr<IHTMLElementCollection> allNodes;
-	doc2->get_all(&allNodes);
+	if (!SUCCEEDED(doc2->get_all(&allNodes))) {
+		errorKind = ENOSUCHELEMENT;
+		return;
+	}
 	long length = 0;
 	CComPtr<IUnknown> unknown;
 	if (!SUCCEEDED(allNodes->get__newEnum(&unknown))) {
@@ -100,9 +110,16 @@ void IeThread::OnSelectElementById(WPARAM w, LPARAM lp)
 	}
 
 	CComQIPtr<IEnumVARIANT> enumerator(unknown);
+	if (!enumerator) {
+		errorKind = ENOSUCHELEMENT;
+		return;
+	}
 
 	CComVariant var;
-	enumerator->Next(1, &var, NULL);
+	if (!SUCCEEDED(enumerator->Next(1, &var, NULL))) {
+		errorKind = ENOSUCHELEMENT;
+		return;
+	}
 
 	for (CComPtr<IDispatch> disp;
 		 disp = V_DISPATCH(&var); 
@@ -112,7 +129,9 @@ void IeThread::OnSelectElementById(WPARAM w, LPARAM lp)
 		if (curr)
 		{
 			CComVariant value;
-			curr->getAttribute(CComBSTR(L"id"), 0, &value);
+			if (!SUCCEEDED(curr->getAttribute(CComBSTR(L"id"), 0, &value))) {
+				continue;
+			}
 			if (wcscmp( comvariant2cw(value), elementId)==0) 
 			{
 				if (isOrUnder(node, curr)) {
@@ -145,7 +164,7 @@ void IeThread::OnSelectElementsById(WPARAM w, LPARAM lp)
 		getDocument3(&root_doc);
 		if (!root_doc) 
 		{
-			errorKind = 1;
+			errorKind = ENOSUCHDOCUMENT;
 			return;
 		}
 		root_doc->get_documentElement(&inputElement);
@@ -154,7 +173,7 @@ void IeThread::OnSelectElementsById(WPARAM w, LPARAM lp)
 	CComQIPtr<IHTMLDOMNode> node(inputElement);
 	if (!node) 
 	{
-		errorKind = 1;
+		errorKind = ENOSUCHELEMENT;
 		return;
 	}
 
@@ -163,16 +182,26 @@ void IeThread::OnSelectElementsById(WPARAM w, LPARAM lp)
 
 	if (!doc2) 
 	{
-		errorKind = 1;
+		errorKind = ENOSUCHDOCUMENT;
 		return;
 	}
 
 	CComPtr<IHTMLElementCollection> allNodes;
-	doc2->get_all(&allNodes);
+	if (!SUCCEEDED(doc2->get_all(&allNodes))) {
+		errorKind = ENOSUCHELEMENT;
+		return;
+	}
 
 	CComPtr<IUnknown> unknown;
-	allNodes->get__newEnum(&unknown);
+	if (!SUCCEEDED(allNodes->get__newEnum(&unknown))) {
+		errorKind = ENOSUCHELEMENT;
+		return;
+	}
 	CComQIPtr<IEnumVARIANT> enumerator(unknown);
+	if (!enumerator) {
+		errorKind = ENOSUCHELEMENT;
+		return;
+	}
 
 	CComVariant var;
 	enumerator->Next(1, &var, NULL);
@@ -185,7 +214,9 @@ void IeThread::OnSelectElementsById(WPARAM w, LPARAM lp)
 		if (!curr) continue;
 
 		CComVariant value;
-		curr->getAttribute(CComBSTR(L"id"), 0, &value);
+		if (!SUCCEEDED(curr->getAttribute(CComBSTR(L"id"), 0, &value))) {
+			continue;
+		}
 		if (wcscmp( comvariant2cw(value), elementId)==0 && isOrUnder(node, curr)) 
 		{
 			IHTMLElement *pDom = NULL;
@@ -592,7 +623,10 @@ void IeThread::OnSelectElementByName(WPARAM w, LPARAM lp)
 		if (!element) {
 			continue;
 		}
-		element->getAttribute(CComBSTR(L"name"), 0, &value);
+		if (!SUCCEEDED(element->getAttribute(CComBSTR(L"name"), 0, &value))) {
+			continue;
+		}
+
 		if (wcscmp(comvariant2cw(value), elementName)==0 && isOrUnder(node, element)) {
 			element.CopyTo(&pDom);
 			errorKind = SUCCESS;
@@ -676,7 +710,10 @@ void IeThread::OnSelectElementsByName(WPARAM w, LPARAM lp)
 
 		CComBSTR nameText;
 		CComVariant value;
-		element->getAttribute(CComBSTR(L"name"), 0, &value);
+		if (!SUCCEEDED(element->getAttribute(CComBSTR(L"name"), 0, &value))) {
+			continue;
+		}
+
 		if (wcscmp( comvariant2cw(value), elementName)==0 && isOrUnder(node, element)) {
 			IHTMLElement *pDom = NULL;
 			element.CopyTo(&pDom);
