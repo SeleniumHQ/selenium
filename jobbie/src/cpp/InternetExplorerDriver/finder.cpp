@@ -23,7 +23,6 @@ extern wchar_t* XPATHJS[];
 
 using namespace std;
 
-
 void IeThread::OnSelectElementById(WPARAM w, LPARAM lp)
 {
 	SCOPETRACER
@@ -77,7 +76,7 @@ void IeThread::OnSelectElementById(WPARAM w, LPARAM lp)
 	
 	CComVariant value;
 	element->getAttribute(CComBSTR(L"id"), 0, &value);
-	if (wcscmp( comvariant2cw(value), elementId)==0) 
+	if (wcscmp(comvariant2cw(value), elementId)==0) 
 	{
 		if (isOrUnder(node, element)) {
 			element.CopyTo(&pDom);
@@ -86,12 +85,20 @@ void IeThread::OnSelectElementById(WPARAM w, LPARAM lp)
 	}
 
 	CComQIPtr<IHTMLDocument2> doc2(doc);
+	if (!doc2) {
+		errorKind = ENOSUCHDOCUMENT;
+		return;
+	}
 
 	CComPtr<IHTMLElementCollection> allNodes;
 	doc2->get_all(&allNodes);
 	long length = 0;
 	CComPtr<IUnknown> unknown;
-	allNodes->get__newEnum(&unknown);
+	if (!SUCCEEDED(allNodes->get__newEnum(&unknown))) {
+		errorKind = ENOSUCHELEMENT;
+		return;
+	}
+
 	CComQIPtr<IEnumVARIANT> enumerator(unknown);
 
 	CComVariant var;
@@ -102,7 +109,7 @@ void IeThread::OnSelectElementById(WPARAM w, LPARAM lp)
 		 enumerator->Next(1, &var, NULL)) 
 	{
 		CComQIPtr<IHTMLElement> curr(disp);
-		if (curr) 
+		if (curr)
 		{
 			CComVariant value;
 			curr->getAttribute(CComBSTR(L"id"), 0, &value);
@@ -227,10 +234,16 @@ void IeThread::OnSelectElementByLink(WPARAM w, LPARAM lp)
 	}
 
 	CComPtr<IHTMLElementCollection> elements;
-	element2->getElementsByTagName(CComBSTR("A"), &elements);
+	if (!SUCCEEDED(element2->getElementsByTagName(CComBSTR("A"), &elements))) {
+		errorKind = ENOSUCHELEMENT;
+		return;
+	}
 	
 	long linksLength;
-	elements->get_length(&linksLength);
+	if (!SUCCEEDED(elements->get_length(&linksLength))) {
+		errorKind = ENOSUCHELEMENT;
+		return;
+	}
 
 	for (int i = 0; i < linksLength; i++) {
 		CComVariant idx;
@@ -240,12 +253,21 @@ void IeThread::OnSelectElementByLink(WPARAM w, LPARAM lp)
 		zero.vt = VT_I4;
 		zero.lVal = 0;
 		CComPtr<IDispatch> dispatch;
-		elements->item(idx, zero, &dispatch);
+		if (!SUCCEEDED(elements->item(idx, zero, &dispatch))) {
+			// The page is probably reloading, but you never know. Continue looping
+			continue;
+		}
 
 		CComQIPtr<IHTMLElement> element(dispatch);
+		if (!element) {
+			// Deeply unusual
+			continue;
+		}
 
 		CComBSTR linkText;
-		element->get_innerText(&linkText);
+		if (!SUCCEEDED(element->get_innerText(&linkText))) {
+			continue;
+		}
 
 		if (wcscmp(combstr2cw(linkText),elementLink)==0 && isOrUnder(node, element)) {
 			element.CopyTo(&pDom);
@@ -264,7 +286,7 @@ void IeThread::OnSelectElementsByLink(WPARAM w, LPARAM lp)
 	CComQIPtr<IHTMLElement> inputElement(data.input_html_element_);
 	checkValidDOM(inputElement);
 	std::vector<IHTMLElement*> &allElems = data.output_list_html_element_;
-	const wchar_t *elementLink= data.input_string_;
+	const wchar_t *elementLink = data.input_string_;
 
 	errorKind = SUCCESS;
 
@@ -294,10 +316,16 @@ void IeThread::OnSelectElementsByLink(WPARAM w, LPARAM lp)
 	}
 
 	CComPtr<IHTMLElementCollection> elements;
-	element2->getElementsByTagName(CComBSTR("A"), &elements);
+	if (!SUCCEEDED(element2->getElementsByTagName(CComBSTR("A"), &elements))) {
+		errorKind = ENOSUCHELEMENT;
+		return;
+	}
 	
 	long linksLength;
-	elements->get_length(&linksLength);
+	if (!SUCCEEDED(elements->get_length(&linksLength))) {
+		errorKind = ENOSUCHELEMENT;
+		return;
+	}
 
 	for (int i = 0; i < linksLength; i++) {
 		CComVariant idx;
@@ -307,9 +335,15 @@ void IeThread::OnSelectElementsByLink(WPARAM w, LPARAM lp)
 		zero.vt = VT_I4;
 		zero.lVal = 0;
 		CComPtr<IDispatch> dispatch;
-		elements->item(idx, zero, &dispatch);
+		if (!SUCCEEDED(elements->item(idx, zero, &dispatch))) {
+			errorKind = ENOSUCHELEMENT;
+			return;
+		}
 
 		CComQIPtr<IHTMLElement> element(dispatch);
+		if (!element) {
+			continue;
+		}
 
 		CComBSTR linkText;
 		element->get_innerText(&linkText);
@@ -330,7 +364,7 @@ void IeThread::OnSelectElementByPartialLink(WPARAM w, LPARAM lp)
 	CComQIPtr<IHTMLElement> inputElement(data.input_html_element_);
 	checkValidDOM(inputElement);
 	IHTMLElement* &pDom = data.output_html_element_;
-	const wchar_t *elementLink= data.input_string_;
+	const wchar_t *elementLink = data.input_string_;
 
 	pDom = NULL;
 	errorKind = SUCCESS;
@@ -365,10 +399,16 @@ void IeThread::OnSelectElementByPartialLink(WPARAM w, LPARAM lp)
 	}
 
 	CComPtr<IHTMLElementCollection> linkCollection;
-	doc->get_links(&linkCollection);
+	if (!SUCCEEDED(doc->get_links(&linkCollection))) {
+		errorKind = ENOSUCHELEMENT;
+		return;
+	}
 	
 	long linksLength;
-	linkCollection->get_length(&linksLength);
+	if (!SUCCEEDED(linkCollection->get_length(&linksLength))) {
+		errorKind = ENOSUCHELEMENT;
+		return;
+	}
 
 	for (int i = 0; i < linksLength; i++) {
 		CComVariant idx;
@@ -378,9 +418,14 @@ void IeThread::OnSelectElementByPartialLink(WPARAM w, LPARAM lp)
 		zero.vt = VT_I4;
 		zero.lVal = 0;
 		CComPtr<IDispatch> dispatch;
-		linkCollection->item(idx, zero, &dispatch);
+		if (!SUCCEEDED(linkCollection->item(idx, zero, &dispatch))) {
+			continue;
+		}
 
 		CComQIPtr<IHTMLElement> element(dispatch);
+		if (!element) {
+			continue;
+		}
 
 		CComBSTR linkText;
 		element->get_innerText(&linkText);
@@ -413,7 +458,7 @@ void IeThread::OnSelectElementsByPartialLink(WPARAM w, LPARAM lp)
 		getDocument3(&root_doc);
 		if (!root_doc) 
 		{
-			errorKind = 1;
+			errorKind = ENOSUCHDOCUMENT;
 			return;
 		}
 		root_doc->get_documentElement(&inputElement);
@@ -422,7 +467,7 @@ void IeThread::OnSelectElementsByPartialLink(WPARAM w, LPARAM lp)
 	CComQIPtr<IHTMLDOMNode> node(inputElement);
 	if (!node) 
 	{
-		errorKind = 1;
+		errorKind = ENOSUCHELEMENT;
 		return;
 	}
 
@@ -431,15 +476,21 @@ void IeThread::OnSelectElementsByPartialLink(WPARAM w, LPARAM lp)
 
 	if (!doc2) 
 	{
-		errorKind = 1;
+		errorKind = ENOSUCHDOCUMENT;
 		return;
 	}
 
 	CComPtr<IHTMLElementCollection> linkCollection;
-	doc2->get_links(&linkCollection);
+	if (!SUCCEEDED(doc2->get_links(&linkCollection))) {
+		errorKind = ENOSUCHELEMENT;
+		return;
+	}
 	
 	long linksLength;
-	linkCollection->get_length(&linksLength);
+	if (!SUCCEEDED(linkCollection->get_length(&linksLength))) {
+		errorKind = ENOSUCHELEMENT;
+		return;
+	}
 
 	for (int i = 0; i < linksLength; i++) {
 		CComVariant idx;
@@ -449,9 +500,14 @@ void IeThread::OnSelectElementsByPartialLink(WPARAM w, LPARAM lp)
 		zero.vt = VT_I4;
 		zero.lVal = 0;
 		CComPtr<IDispatch> dispatch;
-		linkCollection->item(idx, zero, &dispatch);
+		if (!SUCCEEDED(linkCollection->item(idx, zero, &dispatch))) {
+			continue;
+		}
 
 		CComQIPtr<IHTMLElement> element(dispatch);
+		if (!element) {
+			continue;
+		}
 
 		CComBSTR linkText;
 		element->get_innerText(&linkText);
@@ -507,10 +563,16 @@ void IeThread::OnSelectElementByName(WPARAM w, LPARAM lp)
 
 	CComPtr<IHTMLElementCollection> elementCollection;
 	CComBSTR name(elementName);
-	doc->get_all(&elementCollection);
+	if (!SUCCEEDED(doc->get_all(&elementCollection))) {
+		errorKind = ENOSUCHELEMENT;
+		return;
+	}
 	
 	long elementsLength;
-	elementCollection->get_length(&elementsLength);
+	if (!SUCCEEDED(elementCollection->get_length(&elementsLength))) {
+		errorKind = ENOSUCHELEMENT;
+		return;
+	}
 
 	for (int i = 0; i < elementsLength; i++) {
 		CComVariant idx;
@@ -520,14 +582,18 @@ void IeThread::OnSelectElementByName(WPARAM w, LPARAM lp)
 		zero.vt = VT_I4;
 		zero.lVal = 0;
 		CComPtr<IDispatch> dispatch;
-		elementCollection->item(idx, zero, &dispatch);
+		if (!SUCCEEDED(elementCollection->item(idx, zero, &dispatch))) {
+			continue;
+		}
 
 		CComQIPtr<IHTMLElement> element(dispatch);
-
 		CComBSTR nameText;
 		CComVariant value;
+		if (!element) {
+			continue;
+		}
 		element->getAttribute(CComBSTR(L"name"), 0, &value);
-		if (wcscmp( comvariant2cw(value), elementName)==0 && isOrUnder(node, element)) {
+		if (wcscmp(comvariant2cw(value), elementName)==0 && isOrUnder(node, element)) {
 			element.CopyTo(&pDom);
 			errorKind = SUCCESS;
 			return;
@@ -557,7 +623,7 @@ void IeThread::OnSelectElementsByName(WPARAM w, LPARAM lp)
 		getDocument3(&root_doc);
 		if (!root_doc) 
 		{
-			errorKind = 1;
+			errorKind = ENOSUCHDOCUMENT;
 			return;
 		}
 		root_doc->get_documentElement(&inputElement);
@@ -566,7 +632,7 @@ void IeThread::OnSelectElementsByName(WPARAM w, LPARAM lp)
 	CComQIPtr<IHTMLDOMNode> node(inputElement);
 	if (!node) 
 	{
-		errorKind = 1;
+		errorKind = ENOSUCHELEMENT;
 		return;
 	}
 
@@ -574,16 +640,22 @@ void IeThread::OnSelectElementsByName(WPARAM w, LPARAM lp)
 	getDocument2(node, &doc);
 	if (!doc) 
 	{
-		errorKind = 1;
+		errorKind = ENOSUCHDOCUMENT;
 		return;
 	}
 
 	CComPtr<IHTMLElementCollection> elementCollection;
 	CComBSTR name(elementName);
-	doc->get_all(&elementCollection);
+	if (!SUCCEEDED(doc->get_all(&elementCollection))) {
+		errorKind = ENOSUCHELEMENT;
+		return;
+	}
 	
 	long elementsLength;
-	elementCollection->get_length(&elementsLength);
+	if (!SUCCEEDED(elementCollection->get_length(&elementsLength))) {
+		errorKind = ENOSUCHELEMENT;
+		return;
+	}
 
 	for (int i = 0; i < elementsLength; i++) {
 		CComVariant idx;
@@ -593,9 +665,14 @@ void IeThread::OnSelectElementsByName(WPARAM w, LPARAM lp)
 		zero.vt = VT_I4;
 		zero.lVal = 0;
 		CComPtr<IDispatch> dispatch;
-		elementCollection->item(idx, zero, &dispatch);
+		if (!SUCCEEDED(elementCollection->item(idx, zero, &dispatch))) {
+			continue;
+		}
 
 		CComQIPtr<IHTMLElement> element(dispatch);
+		if (!element) {
+			continue;
+		}
 
 		CComBSTR nameText;
 		CComVariant value;
@@ -630,7 +707,10 @@ void IeThread::OnSelectElementByTagName(WPARAM w, LPARAM lp)
 	}
 	
 	CComPtr<IHTMLElementCollection> elements;
-	root_doc->getElementsByTagName(CComBSTR(tagName), &elements);
+	if (!SUCCEEDED(root_doc->getElementsByTagName(CComBSTR(tagName), &elements))) {
+		errorKind = ENOSUCHELEMENT;
+		return;
+	}
 
 	if (!elements)
 	{
@@ -639,7 +719,10 @@ void IeThread::OnSelectElementByTagName(WPARAM w, LPARAM lp)
 	}
 
 	long length;
-	elements->get_length(&length);
+	if (!SUCCEEDED(elements->get_length(&length))) {
+		errorKind = ENOSUCHELEMENT;
+		return;
+	}
 
 	CComQIPtr<IHTMLDOMNode> node(inputElement);
 
@@ -651,9 +734,14 @@ void IeThread::OnSelectElementByTagName(WPARAM w, LPARAM lp)
 		zero.vt = VT_I4;
 		zero.lVal = 0;
 		CComPtr<IDispatch> dispatch;
-		elements->item(idx, zero, &dispatch);
+		if (!SUCCEEDED(elements->item(idx, zero, &dispatch))) {
+			continue;
+		}
 
 		CComQIPtr<IHTMLElement> element(dispatch);
+		if (!element) {
+			element;
+		}
 
 		// Check to see if the element is contained return if it is
 		if (isOrUnder(node, element))
@@ -683,21 +771,27 @@ void IeThread::OnSelectElementsByTagName(WPARAM w, LPARAM lp)
 	getDocument3(&root_doc);
 	if (!root_doc) 
 	{
-		errorKind = 1;
+		errorKind = ENOSUCHDOCUMENT;
 		return;
 	}
 	
 	CComPtr<IHTMLElementCollection> elements;
-	root_doc->getElementsByTagName(CComBSTR(tagName), &elements);
+	if (!SUCCEEDED(root_doc->getElementsByTagName(CComBSTR(tagName), &elements))) {
+		errorKind = ENOSUCHELEMENT;
+		return;
+	}
 
 	if (!elements)
 	{
-		errorKind = 1;
+		errorKind = ENOSUCHELEMENT;
 		return;
 	}
 
 	long length;
-	elements->get_length(&length);
+	if (!SUCCEEDED(elements->get_length(&length))) {
+		errorKind = ENOSUCHELEMENT;
+		return;
+	}
 
 	CComQIPtr<IHTMLDOMNode> node(inputElement);
 
@@ -709,9 +803,14 @@ void IeThread::OnSelectElementsByTagName(WPARAM w, LPARAM lp)
 		zero.vt = VT_I4;
 		zero.lVal = 0;
 		CComPtr<IDispatch> dispatch;
-		elements->item(idx, zero, &dispatch);
+		if (!SUCCEEDED(elements->item(idx, zero, &dispatch))) {
+			continue;
+		}
 
 		CComQIPtr<IHTMLElement> element(dispatch);
+		if (!element) {
+			continue;
+		}
 
 		if (isOrUnder(node, element)) {
 			IHTMLElement *pDom = NULL;
@@ -763,15 +862,28 @@ void IeThread::OnSelectElementByClassName(WPARAM w, LPARAM lp)
 	}
 
 	CComPtr<IHTMLElementCollection> allNodes;
-	doc2->get_all(&allNodes);
+	if (!SUCCEEDED(doc2->get_all(&allNodes))) {
+		errorKind = ENOSUCHELEMENT;
+		return;
+	}
 
 	CComPtr<IUnknown> unknown;
-	allNodes->get__newEnum(&unknown);
+	if (!SUCCEEDED(allNodes->get__newEnum(&unknown))) {
+		errorKind = ENOSUCHELEMENT;
+		return;
+	}
 	CComQIPtr<IEnumVARIANT> enumerator(unknown);
+	if (!enumerator) {
+		errorKind = ENOSUCHELEMENT;
+		return;
+	}
 
 	CComVariant var;
 	CComBSTR nameRead;
-	enumerator->Next(1, &var, NULL);
+	if (!SUCCEEDED(enumerator->Next(1, &var, NULL))) {
+		errorKind = ENOSUCHELEMENT;
+		return;
+	}
 
 	const int exactLength = (int) wcslen(elementClassName);
 	wchar_t *next_token, seps[] = L" ";
@@ -823,7 +935,7 @@ void IeThread::OnSelectElementsByClassName(WPARAM w, LPARAM lp)
 		getDocument3(&root_doc);
 		if (!root_doc) 
 		{
-			errorKind = 1;
+			errorKind = ENOSUCHDOCUMENT;
 			return;
 		}
 		root_doc->get_documentElement(&inputElement);
@@ -832,7 +944,7 @@ void IeThread::OnSelectElementsByClassName(WPARAM w, LPARAM lp)
 	CComQIPtr<IHTMLDOMNode> node(inputElement);
 	if (!node) 
 	{
-		errorKind = 1;
+		errorKind = ENOSUCHELEMENT;
 		return;
 	}
 
@@ -840,20 +952,33 @@ void IeThread::OnSelectElementsByClassName(WPARAM w, LPARAM lp)
 	getDocument2(node, &doc2);
 	if (!doc2) 
 	{
-		errorKind = 1;
+		errorKind = ENOSUCHDOCUMENT;
 		return;
 	}
 
 	CComPtr<IHTMLElementCollection> allNodes;
-	doc2->get_all(&allNodes);
+	if (!SUCCEEDED(doc2->get_all(&allNodes))) {
+		errorKind = ENOSUCHELEMENT;
+		return;
+	}
 
 	CComPtr<IUnknown> unknown;
-	allNodes->get__newEnum(&unknown);
+	if (!SUCCEEDED(allNodes->get__newEnum(&unknown))) {
+		errorKind = ENOSUCHELEMENT;
+		return;
+	}
 	CComQIPtr<IEnumVARIANT> enumerator(unknown);
+	if (!enumerator) {
+		errorKind = ENOSUCHELEMENT;
+		return;
+	}
 
 	CComVariant var;
 	CComBSTR nameRead;
-	enumerator->Next(1, &var, NULL);
+	if (!SUCCEEDED(enumerator->Next(1, &var, NULL))) {
+		errorKind = ENOSUCHELEMENT;
+		return;
+	}
 
 	const int exactLength = (int) wcslen(elementClassName);
 	wchar_t *next_token, seps[] = L" ";
