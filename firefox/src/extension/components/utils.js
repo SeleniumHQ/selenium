@@ -16,6 +16,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+function StaleElementError() {};
+
 function Utils() {
 }
 
@@ -55,11 +57,10 @@ Utils.getBrowser = function(context) {
 };
 
 Utils.getDocument = function(context) {
-    if (context.frame)
-    {
-        return context.frame.document;
-    }
-    return context.fxbrowser.contentDocument;
+  if (context.frame) {
+    return context.frame.document;
+  }
+  return context.fxbrowser.contentDocument;
 };
 
 Utils.getActiveElement = function(context) {
@@ -84,14 +85,15 @@ Utils.getActiveElement = function(context) {
   }
 
   return element;
-}
+};
 
-function getTextFromNode(node, toReturn, textSoFar, isPreformatted) {
+function getTextFromNode(node, toReturn, textSoFar) {
     if (node['tagName'] && node.tagName == "SCRIPT") {
         return [toReturn, textSoFar];
     }
     var children = node.childNodes;
 
+    var bits;
     for (var i = 0; i < children.length; i++) {
         var child = children[i];
 
@@ -99,7 +101,7 @@ function getTextFromNode(node, toReturn, textSoFar, isPreformatted) {
         if (child["tagName"] && child.tagName == "PRE") {
             toReturn += collapseWhitespace(textSoFar);
             textSoFar = "";
-            var bits = getTextFromNode(child, toReturn, "", true);
+            bits = getTextFromNode(child, toReturn, "", true);
             toReturn += bits[1];
             continue;
         }
@@ -115,7 +117,7 @@ function getTextFromNode(node, toReturn, textSoFar, isPreformatted) {
         }
 
         // Treat as another child node.
-        var bits = getTextFromNode(child, toReturn, textSoFar, false);
+        bits = getTextFromNode(child, toReturn, textSoFar, false);
         toReturn = bits[0];
         textSoFar = bits[1];
     }
@@ -172,6 +174,11 @@ Utils.isDisplayed = function(element) {
       return false;
     }
 
+    // Elements with zero width or height are never displayed
+    if (el.offsetWidth == 0 || el.offsetHeight == 0) {
+      return false;
+    }
+
     var visibility = Utils.getStyleProperty(el, "visibility");
 
     var _isDisplayed = function(e) {
@@ -204,7 +211,7 @@ Utils.getStyleProperty = function(node, propertyName) {
             var colour = (raw[i] - 0).toString(16);
             if (colour.length == 1)
                 colour = "0" + colour;
-            hex += colour
+            hex += colour;
         }
         hex = hex.toLowerCase();
         value = temp + hex + value.substr(raw.index + raw[0].length);
@@ -325,7 +332,7 @@ Utils.getNodeForNativeEvents = function(element) {
   }
 };
 
-Utils.type = function(context, element, text) {
+Utils.type = function(context, element, text, opt_useNativeEvents) {
     // Special-case file input elements. This is ugly, but should be okay
   if (element.tagName == "INPUT") {
     var inputtype = element.getAttribute("type");
@@ -339,10 +346,10 @@ Utils.type = function(context, element, text) {
   var node = Utils.getNodeForNativeEvents(element);
   const thmgr_cls = Components.classes["@mozilla.org/thread-manager;1"];
 
-  if (obj && node && thmgr_cls) {
+  if (opt_useNativeEvents && obj && node && thmgr_cls) {
     // Now do the native thing.
     obj.sendKeys(node, text);
-    
+
     var hasEvents = {};
     do {
       // This sleep is needed so that Firefox on Linux will manage to process
@@ -368,6 +375,7 @@ Utils.type = function(context, element, text) {
   var controlKey = false;
     var shiftKey = false;
     var altKey = false;
+    var metaKey = false;
 
     Utils.shiftCount = 0;
 
@@ -382,19 +390,25 @@ Utils.type = function(context, element, text) {
           if (controlKey) {
             var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_CONTROL;
             Utils.keyEvent(context, element, "keyup", kCode, 0,
-              controlKey = false, shiftKey, altKey);
+              controlKey = false, shiftKey, altKey, metaKey);
           }
 
           if (shiftKey) {
             var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT;
             Utils.keyEvent(context, element, "keyup", kCode, 0,
-              controlKey, shiftKey = false, altKey);
+              controlKey, shiftKey = false, altKey, metaKey);
           }
 
           if (altKey) {
             var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_ALT;
             Utils.keyEvent(context, element, "keyup", kCode, 0,
-              controlKey, shiftKey, altKey = false);
+              controlKey, shiftKey, altKey = false, metaKey);
+          }
+
+          if (metaKey) {
+            var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_META;
+            Utils.keyEvent(context, element, "keyup", kCode, 0,
+              controlKey, shiftKey, altKey, metaKey = false);
           }
 
           continue;
@@ -432,6 +446,10 @@ Utils.type = function(context, element, text) {
             keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_ALT;
             altKey = !altKey;
             modifierEvent = altKey ? "keydown" : "keyup";
+        } else if (c == '\uE03D') {
+            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_META;
+            metaKey = !metaKey;
+            modifierEvent = metaKey ? "keydown" : "keyup";
         } else if (c == '\uE00B') {
             keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_PAUSE;
         } else if (c == '\uE00C') {
@@ -548,31 +566,31 @@ Utils.type = function(context, element, text) {
             }
         } else if (c == '\n') {
             keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_RETURN;
-            charCode = text.charCodeAt(i);
-        } else if (c == ',') {
+            charCode = c.charCodeAt(0);
+        } else if (c == ',' || c == '<') {
             keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_COMMA;
-            charCode = text.charCodeAt(i);
-        } else if (c == '.') {
+            charCode = c.charCodeAt(0);
+        } else if (c == '.' || c == '>') {
             keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_PERIOD;
-            charCode = text.charCodeAt(i);
-        } else if (c == '/') {
+            charCode = c.charCodeAt(0);
+        } else if (c == '/' || c == '?') {
             keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SLASH;
             charCode = text.charCodeAt(i);
-        } else if (c == '`') {
+        } else if (c == '`' || c == '~') {
             keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_BACK_QUOTE;
-            charCode = text.charCodeAt(i);
-        } else if (c == '{') {
+            charCode = c.charCodeAt(0);
+        } else if (c == '{' || c == '[') {
             keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_OPEN_BRACKET;
-            charCode = text.charCodeAt(i);
-        } else if (c == '\\') {
+            charCode = c.charCodeAt(0);
+        } else if (c == '\\' || c == '|') {
             keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_BACK_SLASH;
-            charCode = text.charCodeAt(i);
-        } else if (c == '}') {
+            charCode = c.charCodeAt(0);
+        } else if (c == '}' || c == ']') {
             keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_CLOSE_BRACKET;
-            charCode = text.charCodeAt(i);
-        } else if (c == '\'') {
+            charCode = c.charCodeAt(0);
+        } else if (c == '\'' || c == '"') {
             keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_QUOTE;
-            charCode = text.charCodeAt(i);
+            charCode = c.charCodeAt(0);
         } else {
             keyCode = upper.charCodeAt(i);
             charCode = text.charCodeAt(i);
@@ -582,7 +600,7 @@ Utils.type = function(context, element, text) {
 
         if (modifierEvent) {
           Utils.keyEvent(context, element, modifierEvent, keyCode, 0,
-              controlKey, shiftKey, altKey);
+              controlKey, shiftKey, altKey, metaKey);
           continue;
         }
 
@@ -596,32 +614,51 @@ Utils.type = function(context, element, text) {
         if (needsShift && !shiftKey) {
           var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT;
           Utils.keyEvent(context, element, "keydown", kCode, 0,
-              controlKey, true, altKey);
+              controlKey, true, altKey, metaKey);
           Utils.shiftCount += 1;
         }
 
         // generate key[down/press/up] for key
 
         var pressCode = keyCode;
-        if (charCode >= 32 && charCode < 127)
+        if (charCode >= 32 && charCode < 127) {
           pressCode = 0;
+          if (!needsShift && shiftKey && charCode > 32) {
+            // If typing a lowercase character key and the shiftKey is down, the
+            // charCode should be mapped to the shifted key value. This assumes
+            // a default 104 international keyboard layout.
+            if (charCode >= 97 && charCode <= 122) {
+              charCode = charCode + 65 - 97;  // [a-z] -> [A-Z]
+            } else {
+              var mapFrom = '`1234567890-=[]\\;\',./';
+              var mapTo   = '~!@#$%^&*()_+{}|:"<>?';
+
+              var value = String.fromCharCode(charCode).
+                  replace(/([\[\\\.])/g, '\\$1');
+              var index = mapFrom.search(value);
+              if (index >= 0) {
+                charCode = mapTo.charCodeAt(index);
+              }
+            }
+          }
+        }
 
         var accepted =
           Utils.keyEvent(context, element, "keydown", keyCode, 0,
-              controlKey, needsShift || shiftKey, altKey);
+              controlKey, needsShift || shiftKey, altKey, metaKey);
 
         Utils.keyEvent(context, element, "keypress", pressCode, charCode,
-            controlKey, needsShift || shiftKey, altKey, !accepted);
+            controlKey, needsShift || shiftKey, altKey, metaKey, !accepted);
 
         Utils.keyEvent(context, element, "keyup", keyCode, 0,
-            controlKey, needsShift || shiftKey, altKey);
+            controlKey, needsShift || shiftKey, altKey, metaKey);
 
         // shift up if needed
 
         if (needsShift && !shiftKey) {
           var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT;
           Utils.keyEvent(context, element, "keyup", kCode, 0,
-              controlKey, false, altKey);
+              controlKey, false, altKey, metaKey);
         }
     }
 
@@ -630,24 +667,30 @@ Utils.type = function(context, element, text) {
     if (controlKey) {
       var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_CONTROL;
       Utils.keyEvent(context, element, "keyup", kCode, 0,
-        controlKey = false, shiftKey, altKey);
+        controlKey = false, shiftKey, altKey, metaKey);
     }
 
     if (shiftKey) {
       var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT;
       Utils.keyEvent(context, element, "keyup", kCode, 0,
-        controlKey, shiftKey = false, altKey);
+        controlKey, shiftKey = false, altKey, metaKey);
     }
 
     if (altKey) {
       var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_ALT;
       Utils.keyEvent(context, element, "keyup", kCode, 0,
-        controlKey, shiftKey, altKey = false);
+        controlKey, shiftKey, altKey = false, metaKey);
+    }
+
+    if (metaKey) {
+      var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_META;
+      Utils.keyEvent(context, element, "keyup", kCode, 0,
+        controlKey, shiftKey, altKey, metaKey = false);
     }
 };
 
 Utils.keyEvent = function(context, element, type, keyCode, charCode,
-    controlState, shiftState, altState, shouldPreventDefault) {
+    controlState, shiftState, altState, metaState, shouldPreventDefault) {
   var preventDefault = shouldPreventDefault == undefined ? false : shouldPreventDefault;
 
   var keyboardEvent =
@@ -663,7 +706,7 @@ Utils.keyEvent = function(context, element, type, keyCode, charCode,
     controlState, //  in boolean ctrlKeyArg
     altState,     //  in boolean altKeyArg
     shiftState,   //  in boolean shiftKeyArg
-    false,        //  in boolean metaKeyArg
+    metaState,    //  in boolean metaKeyArg
     keyCode,      //  in unsigned long keyCodeArg
     charCode);    //  in unsigned long charCodeArg
 
@@ -675,7 +718,7 @@ Utils.keyEvent = function(context, element, type, keyCode, charCode,
 };
 
 Utils.fireHtmlEvent = function(context, element, eventName) {
-    var doc = Utils.getDocument(context);
+    var doc = element.ownerDocument;
     var e = doc.createEvent("HTMLEvents");
     e.initEvent(eventName, true, true);
     element.dispatchEvent(e);
@@ -731,8 +774,8 @@ Utils.findFrame = function(browser, frameId) {
         var index = names[i] - 0;
         if (!isNaN(index)) {
             frame = frame.frames[index];
-            if (!frame) {
-                return null;
+            if (frame) {
+              return frame;
             }
         } else {
             // Fine. Use the name and loop
@@ -756,16 +799,16 @@ Utils.findFrame = function(browser, frameId) {
 };
 
 Utils.dumpText = function(text) {
-	var consoleService = Utils.getService("@mozilla.org/consoleservice;1", "nsIConsoleService");
-	if (consoleService)
-		consoleService.logStringMessage(text);
-	else
-		dump(text);
-}
+  var consoleService = Utils.getService("@mozilla.org/consoleservice;1", "nsIConsoleService");
+  if (consoleService)
+    consoleService.logStringMessage(text);
+  else
+    dump(text);
+};
 
 Utils.dumpn = function(text) {
-	Utils.dumpText(text + "\n");
-}
+  Utils.dumpText(text + "\n");
+};
 
 Utils.dump = function(element) {
     var dump = "=============\n";
@@ -796,7 +839,7 @@ Utils.dump = function(element) {
 
     dump += "=============\n\n\n";
     Utils.dumpText(dump);
-}
+};
 
 Utils.dumpProperties = function(view, rows) {
     for (var i in view) {
@@ -813,7 +856,7 @@ Utils.dumpProperties = function(view, rows) {
 
         rows.push(value);
     }
-}
+};
 
 Utils.stackTrace = function() {
     var stack = Components.stack;
@@ -825,7 +868,7 @@ Utils.stackTrace = function() {
     }
 
     Utils.dumpText(dump);
-}
+};
 
 Utils.getElementLocation = function(element, context) {
     var x = element.offsetLeft;

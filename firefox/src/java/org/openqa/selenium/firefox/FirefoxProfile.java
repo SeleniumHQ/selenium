@@ -54,6 +54,7 @@ public class FirefoxProfile {
   private File userPrefs;
   private Preferences additionalPrefs = new Preferences();
   private int port;
+  private boolean enableNativeEvents;
 
   /**
    * Constructs a firefox profile from an existing, physical profile directory.
@@ -69,6 +70,7 @@ public class FirefoxProfile {
     this.userPrefs = new File(profileDir, "user.js");
 
     port = FirefoxDriver.DEFAULT_PORT;
+    enableNativeEvents = FirefoxDriver.DEFAULT_ENABLE_NATIVE_EVENTS;
 
     if (!profileDir.exists()) {
       throw new WebDriverException(MessageFormat.format("Profile directory does not exist: {0}",
@@ -384,6 +386,10 @@ public class FirefoxProfile {
         // Which port should we listen on?
         prefs.put("webdriver_firefox_port", Integer.toString(port));
 
+        // Should we use native events?
+        prefs.put("webdriver_enable_native_events",
+            Boolean.toString(enableNativeEvents));
+
         // Settings to facilitate debugging the driver
         prefs.put("javascript.options.showInConsole", "true"); // Logs errors in chrome files to the Error Console.
         prefs.put("browser.dom.window.dump.enabled", "true");  // Enables the use of the dump() statement
@@ -421,7 +427,15 @@ public class FirefoxProfile {
         this.port = port;
     }
 
-    public boolean isRunning() {
+    public boolean enableNativeEvents() {
+      return enableNativeEvents;
+    }
+
+    public void setEnableNativeEvents(boolean enableNativeEvents) {
+      this.enableNativeEvents = enableNativeEvents;
+    }
+
+  public boolean isRunning() {
         File macAndLinuxLockFile = new File(profileDir, ".parentlock");
         File windowsLockFile = new File(profileDir, "parent.lock");
 
@@ -444,6 +458,7 @@ public class FirefoxProfile {
       FirefoxProfile profile = new FirefoxProfile(to);
       additionalPrefs.addTo(profile);
       profile.setPort(port);
+      profile.setEnableNativeEvents(enableNativeEvents);
       profile.updateUserPrefs();
 
       return profile;

@@ -76,6 +76,7 @@ import java.util.Set;
 public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecutor,
         FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, FindsByXPath {
     public static final int DEFAULT_PORT = 7055;
+    public static final boolean DEFAULT_ENABLE_NATIVE_EVENTS = true;
 
     private final ExtensionConnection extension;
     protected Context context;

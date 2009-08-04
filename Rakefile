@@ -21,7 +21,7 @@ jar(:name => "common",
 
 jar(:name => "test_common",
     :src  => [ "common/test/java/**/*.java" ],
-    :deps => [ 
+    :deps => [
                :common,
                "common/lib/buildtime/*.jar"
              ],
@@ -29,11 +29,11 @@ jar(:name => "test_common",
 
 jar(:name => "htmlunit",
     :src  => [ "htmlunit/src/java/**/*.java" ],
-    :deps => [ 
+    :deps => [
                :common,
                "htmlunit/lib/runtime/*.jar"
              ],
-    :zip  => true,             
+    :zip  => true,
     :out  => "webdriver-htmlunit.jar")
 
 test_java(:name => "test_htmlunit",
@@ -62,7 +62,7 @@ jar(:name => "ie",
                {"Win32/Release/InternetExplorerDriver.dll" => "x86/InternetExplorerDriver.dll"},
                {"x64/Release/InternetExplorerDriver.dll" => "amd64/InternetExplorerDriver.dll"},
              ],
-    :zip  => true,             
+    :zip  => true,
     :out  => "webdriver-ie.jar")
 task :jobbie => :ie
 
@@ -74,21 +74,28 @@ test_java(:name => "test_ie",
                    ],
           :run  => windows?,
           :out  => "webdriver-ie-test.jar")
-task :test_jobbie => :test_ie                  
+task :test_jobbie => :test_ie
 
 xpt(:name => "events_xpt",
     :src  => [ "firefox/src/cpp/webdriver-firefox/nsINativeEvents.idl" ],
     :prebuilt => "firefox/prebuilt",
-    :out  => "nsINativeEvents.xpt")    
+    :out  => "nsINativeEvents.xpt")
+
+xpt(:name => "commandProcessor_xpt",
+    :src => [ "firefox/src/extension/components/nsICommandProcessor.idl" ],
+    :prebuilt => "firefox/prebuilt",
+    :out => "nsICommandProcessor.xpt")
 
 xpi(:name => "firefox_xpi",
     :src  => [ "firefox/src/extension" ],
-    :deps => [ 
+    :deps => [
+	       :commandProcessor_xpt,
                :events_xpt,
                :firefox_dll,
                :libwebdriver_firefox,
              ],
     :resources => [
+	            { "nsICommandProcessor.xpt" => "components/nsICommandProcessor.xpt" },
                     { "nsINativeEvents.xpt" => "components/nsINativeEvents.xpt" },
                     { "Win32/Release/webdriver-firefox.dll" => "platform/WINNT_x86-msvc/components/webdriver-firefox.dll" },
                     { "linux/Release/libwebdriver-firefox.so" => "platform/Linux_x86-gcc3/components/libwebdriver-firefox.so" },
@@ -161,7 +168,7 @@ jar(:name => "firefox",
                     { "linux/Release/x_ignore_nofocus.so" => "x86/x_ignore_nofocus.so" },
                     { "linux64/Release/x_ignore_nofocus64.so" => "amd64/x_ignore_nofocus64.so" }
                   ],
-    :zip  => true,    
+    :zip  => true,
     :out  => "webdriver-firefox.jar")
 
 test_java(:name => "test_firefox",
@@ -184,9 +191,9 @@ jar(:name => "selenium",
                     { "selenium/src/java/org/openqa/selenium/internal/injectableSelenium.js", "org/openqa/selenium/internal/injectableSelenium.js" },
                     { "selenium/src/java/org/openqa/selenium/internal/htmlutils.js", "org/openqa/selenium/internal/htmlutils.js" }
                   ],
-    :zip  => true,                  
+    :zip  => true,
     :out => "webdriver-selenium.jar" )
-    
+
 test_java(:name => "test_selenium",
           :src  => [ "selenium/test/java/**/*.java" ],
           :deps => [
@@ -205,9 +212,9 @@ jar(:name => "support",
                :common,
                "support/lib/runtime/*.jar"
              ],
-    :zip  => true,             
+    :zip  => true,
     :out  => "webdriver-support.jar")
-    
+
 test_java(:name => "test_support",
           :src  => [ "support/test/java/**/*.java" ],
           :deps => [
@@ -223,9 +230,9 @@ jar(:name => "remote_client",
                "remote/common/lib/runtime/*.jar",
                "remote/client/lib/runtime/*.jar",
              ],
-    :zip  => true,             
+    :zip  => true,
     :out  => "webdriver-remote-client.jar")
-    
+
 jar(:name => "remote_server",
     :src  => [ "remote/server/src/java/**/*.java", "remote/common/src/java/**/*.java" ],
     :deps => [
@@ -239,7 +246,7 @@ jar(:name => "remote_server",
     :out  => "webdriver-remote-server.jar")
 
 test_java(:name => "test_remote",
-          :src  => [ 
+          :src  => [
                      "remote/common/test/java/**/*.java",
                      "remote/client/test/java/**/*.java",
                      "remote/server/test/java/**/*.java"
@@ -253,7 +260,7 @@ test_java(:name => "test_remote",
 
 task :remote => [:remote_server, :remote_client]
 task :build => [:common, :htmlunit, :firefox, :ie, :iphone, :support, :remote, :selenium]
-task :test => [:test_htmlunit, :test_firefox, :test_ie, :test_iphone, :test_support, :test_remote, :test_selenium]
+task :test => [:test_htmlunit, :test_firefox, :test_ie, :test_iphone, :test_support, :test_remote, :test_selenium, :test_jsapi]
 
 task :clean do
   rm_rf 'build/'
@@ -339,7 +346,7 @@ uber_jar(:name => "all",
          :src  => [
                     "build/webdriver-common.jar",
                     "build/webdriver-htmlunit.jar",
-                    "build/webdriver-firefox.jar",                    
+                    "build/webdriver-firefox.jar",
                     "build/webdriver-ie.jar",
                     "build/webdriver-remote-client.jar",
                     "build/webdriver-support.jar",
@@ -353,11 +360,11 @@ uber_jar(:name => "all",
                     :support
                   ],
          :out  => "webdriver-all.jar")
-         
+
 zip(:name => "all_zip",
     :src  => [
                "build/webdriver-all.jar",
-             ] + 
+             ] +
              FileList.new("htmlunit/lib/runtime/*.jar") +
              FileList.new("firefox/lib/runtime/*.jar") +
              FileList.new("jobbie/lib/runtime/*.jar") +

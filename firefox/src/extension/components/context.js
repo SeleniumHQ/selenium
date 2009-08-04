@@ -19,20 +19,17 @@ limitations under the License.
 function Context(windowId, frameId) {
   this.windowId = windowId;
 
-  if (frameId) {
-    if (frameId.match(/^\d+$/g)) {
-      this.frameId = frameId - 0;
-    } else {
-      this.frameId = frameId;
-    }
+  if (typeof frameId == 'number' || (typeof frameId == 'string' && frameId)) {
+    this.frameId = frameId;
   }
 }
 
 Context.fromString = function(text) {
     var bits = text.split(" ");
     return new Context(bits[0], bits[1]);
-}
+};
 
 Context.prototype.toString = function() {
-    return this.windowId + " " + (this.frameId !== undefined ? this.frameId : "");
-}
+    return this.windowId + " " +
+           (this.frameId !== undefined ? this.frameId.toString() : "");
+};

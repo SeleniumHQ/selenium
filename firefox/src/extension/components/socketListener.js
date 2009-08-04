@@ -19,8 +19,6 @@ limitations under the License.
 const charset = "UTF-8";
 const CI = Components.interfaces;
 
-function StaleElementError() {};
-
 function SocketListener(server, transport)
 {
     this.outstream = transport.openOutputStream(Components.interfaces.nsITransport.OPEN_BLOCKING, 0, 0);

@@ -20,10 +20,21 @@ function WebDriverServer() {
     this.wrappedJSObject = this;
     this.serverSocket = Components.classes["@mozilla.org/network/server-socket;1"].createInstance(Components.interfaces.nsIServerSocket);
     this.generator = Utils.getService("@mozilla.org/uuid-generator;1", "nsIUUIDGenerator");
+    this.enableNativeEvents = null;
 }
 
 WebDriverServer.prototype.newDriver = function(window) {
-    window.fxdriver = new FirefoxDriver(this);
+    if (null == this.useNativeEvents) {
+      var prefs = Utils.getService("@mozilla.org/preferences-service;1", "nsIPrefBranch");
+      if (!prefs.prefHasUserValue("webdriver_enable_native_events")) {
+        Utils.dumpn('webdriver_enable_native_events not set; defaulting to true');
+      }
+      this.enableNativeEvents =
+          prefs.prefHasUserValue("webdriver_enable_native_events") ?
+          prefs.getBoolPref("webdriver_enable_native_events") : true;
+      Utils.dumpn('Enable native events: ' + this.enableNativeEvents);
+    }
+    window.fxdriver = new FirefoxDriver(this, this.enableNativeEvents);
     // Yuck. But it allows us to refer to it later.
     window.fxdriver.window = window;
     return window.fxdriver;
