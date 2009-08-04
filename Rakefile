@@ -259,6 +259,17 @@ test_java(:name => "test_remote",
           :out => "webdriver-remote-test.jar")
 
 task :remote => [:remote_server, :remote_client]
+
+jar(:name => "jsapi",
+    :src => [ "remote/server/test/java/**/JsApiTestServer.java" ],
+    :deps => [ :firefox, :test_common ],
+    :out => "webdriver-jsapi.jar")
+
+test_java(:name => "test_jsapi",
+          :src => [ "remote/server/test/java/**/JsApiTestSuite.java" ],
+          :deps => [ :jsapi ],
+          :out  => "webdriver-jsapi-test.jar")
+
 task :build => [:common, :htmlunit, :firefox, :ie, :iphone, :support, :remote, :selenium]
 task :test => [:test_htmlunit, :test_firefox, :test_ie, :test_iphone, :test_support, :test_remote, :test_selenium, :test_jsapi]
 

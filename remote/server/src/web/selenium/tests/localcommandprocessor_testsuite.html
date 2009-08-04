@@ -1,0 +1,44 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+    "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <title>Local CommandProcessor TestSuite</title>
+  <script type="text/javascript" src="../webdriver-bootstrap.js"></script>
+  <script type="text/javascript">
+    goog.require('webdriver.TestRunner');
+    goog.require('webdriver.factory');
+  </script>
+  <script type="text/javascript" src="test_suite.js"></script>
+  <script type="text/javascript">
+    /**
+     * Tells the nsICommandProcessor XPCOM component to reload itself, then
+     * reloads the page so the tests run again with the updated content.
+     */
+    function reload() {
+      var cp =  window['__webDriverCommandProcessor'];
+      window.setTimeout(function() {
+        cp.execute({
+          wrappedJSObject: {
+            commandName: 'reload',
+            callbackFn: function() {
+              window.setTimeout(function() {
+                window.location.reload();
+              }, 0);
+            }
+          }
+        });
+      }, 0);
+    }
+
+    window.onload = function() {
+      webdriver.logging.setLevel(webdriver.logging.Level.DEBUG);
+      webdriver.logging.setLevel(webdriver.logging.Level.ERROR);
+      webdriver.logging.enableFirebugLogging(false);
+      webdriver.TestRunner.start(webdriver.factory.createLocalWebDriver);
+    };
+  </script>
+</head>
+<body>
+  <input type="button" value="Reload nsICommandProcessor" onclick="reload();"/>
+</body>
+</html>

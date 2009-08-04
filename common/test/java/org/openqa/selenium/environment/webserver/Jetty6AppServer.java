@@ -33,6 +33,8 @@ import javax.servlet.Servlet;
 
 public class Jetty6AppServer implements AppServer {
 
+  private static final String DEFAULT_CONTEXT_PATH = "/common";
+
   private int port;
   private int securePort;
   private File path;
@@ -42,7 +44,7 @@ public class Jetty6AppServer implements AppServer {
   public Jetty6AppServer() {
     path = findRootOfWebApp();
 
-    context = addWebApplication("", path.getAbsolutePath());
+    context = addWebApplication(DEFAULT_CONTEXT_PATH, path.getAbsolutePath());
 
     addServlet("Redirecter", "/redirect", RedirectServlet.class);
     addServlet("InfinitePagerServer", "/page/*", PageServlet.class);
@@ -85,15 +87,28 @@ public class Jetty6AppServer implements AppServer {
   }
 
   public String whereIs(String relativeUrl) {
-    return "http://" + getHostName() + ":" + port + "/" + relativeUrl;
+    return whereIs(DEFAULT_CONTEXT_PATH, relativeUrl);
+  }
+
+  public String whereIs(String context, String relativeUrl) {
+    return "http://" + getHostName() + ":" + port + context + "/" + relativeUrl;
   }
 
   public String whereElseIs(String relativeUrl) {
-    return "http://" + getAlternateHostName() + ":" + port + "/" + relativeUrl;
+    return whereElseIs(DEFAULT_CONTEXT_PATH, relativeUrl);
+  }
+
+  public String whereElseIs(String context, String relativeUrl) {
+    return "http://" + getAlternateHostName() + ":" + port + context + "/" + relativeUrl;
   }
 
   public String whereIsSecure(String relativeUrl) {
-    return "https://" + getHostName() + ":" + securePort + "/" + relativeUrl;
+    return whereIsSecure(DEFAULT_CONTEXT_PATH, relativeUrl);
+  }
+
+
+  public String whereIsSecure(String context, String relativeUrl) {
+    return "https://" + getHostName() + ":" + securePort + context + "/" + relativeUrl;
   }
 
   public void start() {
