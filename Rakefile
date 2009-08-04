@@ -117,7 +117,7 @@ dll(:name => "libnoblur_so_64",
     :src  => FileList['firefox/src/cpp/linux-specific/*.c'],
     :arch => "amd64",
     :prebuilt => "firefox/prebuilt",
-    :out  => "linux64/Release/x_ignore_nofocus64.so")
+    :out  => "linux64/Release/x_ignore_nofocus.so")
 
 dll(:name => "libnoblur_so",
     :src  => FileList['firefox/src/cpp/linux-specific/*.c'],
@@ -166,7 +166,7 @@ jar(:name => "firefox",
     :resources => [ 
                     "webdriver-extension.zip",
                     { "linux/Release/x_ignore_nofocus.so" => "x86/x_ignore_nofocus.so" },
-                    { "linux64/Release/x_ignore_nofocus64.so" => "amd64/x_ignore_nofocus64.so" }
+                    { "linux64/Release/x_ignore_nofocus.so" => "amd64/x_ignore_nofocus.so" }
                   ],
     :zip  => true,
     :out  => "webdriver-firefox.jar")

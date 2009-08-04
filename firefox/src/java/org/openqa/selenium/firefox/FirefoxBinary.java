@@ -29,8 +29,11 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class FirefoxBinary {
@@ -59,9 +62,22 @@ public class FirefoxBinary {
         setEnvironmentProperty("MOZ_NO_REMOTE", "1");
         
         if (isOnLinux()) {
-          String preloadLib = extractAndCheck(
-              profile, "x86/x_ignore_nofocus.so", "amd64/x_ignore_nofocus64.so");
-          setEnvironmentProperty("LD_PRELOAD", preloadLib);
+          String noFocusSoName = "x_ignore_nofocus.so";
+          // Extract x_ignore_nofocus.so from x86, amd64 directories inside
+          // the jar into a real place in the filesystem and change LD_LIBRARY_PATH
+          // to reflect that.
+ 
+          String existingLdLibPath = System.getenv("LD_LIBRARY_PATH");
+          // The returned new ld lib path is terminated with ':'
+          String newLdLibPath = extractAndCheck(profile, noFocusSoName, "x86", "amd64");
+          if (existingLdLibPath != null && !existingLdLibPath.equals("")) {
+            newLdLibPath += existingLdLibPath;
+          }
+          
+          setEnvironmentProperty("LD_LIBRARY_PATH", newLdLibPath);
+          // Set LD_PRELOAD to x_ignore_nofocus.so - this will be taken automagically
+          // from the LD_LIBRARY_PATH
+          setEnvironmentProperty("LD_PRELOAD", noFocusSoName);
         }
 
         List<String> commands = new ArrayList<String>();
@@ -85,20 +101,35 @@ public class FirefoxBinary {
         outputWatcher.start();
     }
 
-  private String extractAndCheck(FirefoxProfile profile, String... paths) {
+  private String extractAndCheck(FirefoxProfile profile, String noFocusSoName,
+      String jarPath32Bit, String jarPath64Bit) {
+    
+    // 1. Extract x86/x_ignore_nofocus.so to profile.getLibsDir32bit
+    // 2. Extract amd64/x_ignore_nofocus.so to profile.getLibsDir64bit
+    // 3. Create a new LD_LIB_PATH string to contain:
+    //   profile.getLibsDir32bit + ":" + profile.getLibsDir64bit
+
+    Set<String> pathsSet = new HashSet<String>();
+    pathsSet.add(jarPath32Bit);
+    pathsSet.add(jarPath64Bit);
+    
     StringBuilder builtPath = new StringBuilder();
 
-    for (String path : paths) {
+    for (String path : pathsSet) {
       try {
-        FileHandler.copyResource(profile.getProfileDir(), getClass(), path);
+        
+        FileHandler.copyResource(profile.getProfileDir(), getClass(), path +
+            File.separator + noFocusSoName);
+        
+        String outSoPath = profile.getProfileDir().getAbsolutePath() + File.separator + path;
 
-        File file = new File(profile.getProfileDir(), path);
+        File file = new File(outSoPath, noFocusSoName);
         if (!file.exists()) {
           throw new WebDriverException("Could not locate " + path + ": "
                                        + "native events will not work.");
         }
 
-        builtPath.append(path).append(":");
+        builtPath.append(outSoPath).append(":");
       } catch (IOException e) {
         if (Boolean.getBoolean("webdriver.development")) {
           System.err.println(

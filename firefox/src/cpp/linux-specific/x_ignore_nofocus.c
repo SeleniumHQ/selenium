@@ -2,6 +2,8 @@
 #include <X11/Xlib.h>
 #include <X11/X.h>
 #include <dlfcn.h>
+#include <sys/utsname.h>
+#include <string.h>
 
 #define TRUE 1
 #define FALSE 0
@@ -55,12 +57,43 @@ void fake_visibility_event(XEvent* outEvent, XEvent* sourceEvent)
   *outEvent = ev;
 }
 
+int is_emulated_32bit()
+{
+#ifdef __i386__
+    struct utsname sys_info;
+    int uname_res = uname(&sys_info);
+    // In case of error, most chances are - not emulated.
+    if (uname_res != 0) {
+      return FALSE;
+    }
+
+    const char arch_64[] = "x86_64";
+    if (strncmp(sys_info.machine, arch_64, strlen(arch_64)) == 0) {
+      return TRUE;
+    }
+
+    return FALSE;
+#else
+    return FALSE;
+#endif
+}
+
+#define MAX_LIBRARY_PATH (1024)
+
 int XNextEvent(Display *display, XEvent *outEvent) {
   // Code to pull the real function handle from X11 library.
   void *handle = NULL;
   //This will turn the function proto into a function pointer declaration
   int (*real_func)(Display *display, XEvent *outEvent) = NULL;
-  const char library[] = "/usr/lib/libX11.so";
+  char library[MAX_LIBRARY_PATH + 1];
+  // If we're not emulating a 32 bit mode (which is either native 32 bit
+  // or native 64 bit) - use the ordinary path for libX11
+  if (is_emulated_32bit() == FALSE) {
+    snprintf(library, MAX_LIBRARY_PATH, "/usr/lib/libX11.so");
+  } else {
+    // Use a path that usually contains the 32 bit libs in a 64 bit system.
+    snprintf(library, MAX_LIBRARY_PATH, "/usr/lib32/libX11.so.6");
+  }
   handle = dlopen(library, RTLD_LAZY);
 
   if (handle == NULL) {
