@@ -165,12 +165,12 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
         driver.get(framesetPage);
 
         driver.switchTo().frame("second");
-        assertThat(driver.getCurrentUrl(), equalTo("http://localhost:3000/page/2?title=Fish"));
+        assertThat(driver.getCurrentUrl(), equalTo("http://localhost:3000/common/page/2?title=Fish"));
 
         driver.get(iframePage);
-        assertThat(driver.getCurrentUrl(), equalTo("http://localhost:3000/iframes.html"));
+        assertThat(driver.getCurrentUrl(), equalTo("http://localhost:3000/common/iframes.html"));
 
         driver.switchTo().frame("iframe1");
-        assertThat(driver.getCurrentUrl(), equalTo("http://localhost:3000/formPage.html"));
+        assertThat(driver.getCurrentUrl(), equalTo("http://localhost:3000/common/formPage.html"));
     }
 }

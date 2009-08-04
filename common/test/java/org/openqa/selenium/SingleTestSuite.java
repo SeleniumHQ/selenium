@@ -32,7 +32,7 @@ public class SingleTestSuite extends TestCase {
   private final static String REMOTE = "org.openqa.selenium.remote.RemoteWebDriverTestSuite$RemoteWebDriverForTest";
 
   public static Test suite() throws Exception {
-    String driver = IE;
+    String driver = HTML_UNIT;
 
     System.setProperty("webdriver.development", "true");
     System.setProperty("jna.library.path", "..\\build;build");
@@ -46,8 +46,8 @@ public class SingleTestSuite extends TestCase {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("WindowSwitchingTest")
-        .method("testShouldBeAbleToIterateOverAllOpenWindows")
+        .onlyRun("FrameSwitchingTest")
+//        .method("testShouldBeAbleToIterateOverAllOpenWindows")
         .exclude(ALL)
         .exclude(Ignore.Driver.IE)
         .leaveRunning()
