@@ -19,10 +19,12 @@ package org.openqa.selenium;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 
 public class FrameSwitchingTest extends AbstractDriverTestCase {
-    public void testShouldContinueToReferToTheSameFrameOnceItHasBeenSelected() {
+    @Ignore(value = CHROME, reason = "Not yet implemented")
+	public void testShouldContinueToReferToTheSameFrameOnceItHasBeenSelected() {
         driver.get(framesetPage);
 
         driver.switchTo().frame(2);
@@ -33,7 +35,8 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
         assertThat(driver.findElement(By.xpath("//p")).getText(), equalTo("Success!"));
     }
 
-    public void testShouldAutomaticallyUseTheFirstFrameOnAPage() {
+    @Ignore(value = CHROME, reason = "Not yet implemented")
+	public void testShouldAutomaticallyUseTheFirstFrameOnAPage() {
         driver.get(framesetPage);
 
         // Notice that we've not switched to the 0th frame
@@ -41,7 +44,8 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
         assertThat(pageNumber.getText().trim(), equalTo("1"));
     }
 
-    public void testShouldFocusOnTheReplacementWhenAFrameFollowsALinkToA_TopTargettedPage() {
+    @Ignore(value = CHROME, reason = "Not yet implemented")
+	public void testShouldFocusOnTheReplacementWhenAFrameFollowsALinkToA_TopTargettedPage() {
         driver.get(framesetPage);
 
         driver.findElement(By.linkText("top")).click();
@@ -50,12 +54,14 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
         assertThat(driver.findElement(By.xpath("/html/head/title")).getText(), equalTo("XHTML Test Page"));
     }
 
-    public void testShouldNotAutomaticallySwitchFocusToAnIFrameWhenAPageContainingThemIsLoaded() {
+    @Ignore(value = CHROME, reason = "Not yet implemented")
+	public void testShouldNotAutomaticallySwitchFocusToAnIFrameWhenAPageContainingThemIsLoaded() {
         driver.get(iframePage);
         driver.findElement(By.id("iframe_page_heading"));
     }
 
-    public void testShouldAllowAUserToSwitchFromAnIframeBackToTheMainContentOfThePage() {
+    @Ignore(value = CHROME, reason = "Not yet implemented")
+	public void testShouldAllowAUserToSwitchFromAnIframeBackToTheMainContentOfThePage() {
         driver.get(iframePage);
         driver.switchTo().frame(0);
 
@@ -67,7 +73,8 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
         }
     }
 
-    public void testShouldAllowTheUserToSwitchToAnIFrameAndRemainFocusedOnIt() {
+    @Ignore(value = CHROME, reason = "Not yet implemented")
+	public void testShouldAllowTheUserToSwitchToAnIFrameAndRemainFocusedOnIt() {
         driver.get(iframePage);
         driver.switchTo().frame(0);
 
@@ -76,21 +83,24 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
         assertThat(hello, equalTo("Success!"));
     }
 
-    public void testShouldBeAbleToSelectAFrameByName() {
+    @Ignore(value = CHROME, reason = "Not yet implemented")
+	public void testShouldBeAbleToSelectAFrameByName() {
         driver.get(framesetPage);
 
         driver.switchTo().frame("second");
         assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("2"));
     }
 
-    public void testShouldSelectChildFramesByUsingADotSeparatedString() {
+    @Ignore(value = CHROME, reason = "Not yet implemented")
+	public void testShouldSelectChildFramesByUsingADotSeparatedString() {
         driver.get(framesetPage);
 
         driver.switchTo().frame("fourth.child2");
         assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("11"));
     }
 
-    public void testShouldSwitchToChildFramesTreatingNumbersAsIndex() {
+    @Ignore(value = CHROME, reason = "Not yet implemented")
+	public void testShouldSwitchToChildFramesTreatingNumbersAsIndex() {
         driver.get(framesetPage);
 
         driver.switchTo().frame("fourth.1");
@@ -98,7 +108,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     }
 
     @NoDriverAfterTest
-    @Ignore(IPHONE)
+    @Ignore({IPHONE, CHROME})
     public void testClosingTheFinalBrowserWindowShouldNotCauseAnExceptionToBeThrown() {
         driver.get(simpleTestPage);
         try {
@@ -108,6 +118,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
         }
     }
 
+    @Ignore(value = CHROME, reason = "Not yet implemented")
     public void testShouldBeAbleToFlipToAFrameIdentifiedByItsId() {
         driver.get(framesetPage);
 
@@ -120,7 +131,8 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
         }
     }
 
-    public void testShouldThrowAnExceptionWhenAFrameCannotBeFound() {
+    @Ignore(value = CHROME, reason = "Not yet implemented")
+	public void testShouldThrowAnExceptionWhenAFrameCannotBeFound() {
         driver.get(xhtmlTestPage);
 
         try {
@@ -131,7 +143,8 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
         }
     }
 
-    public void testShouldThrowAnExceptionWhenAFrameCannotBeFoundByIndex() {
+    @Ignore(value = CHROME, reason = "Not yet implemented")
+	public void testShouldThrowAnExceptionWhenAFrameCannotBeFoundByIndex() {
         driver.get(xhtmlTestPage);
 
         try {
@@ -142,7 +155,8 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
         }
     }
 
-    public void testShouldBeAbleToFindElementsInIframesByName() {
+    @Ignore(value = CHROME, reason = "Not yet implemented")
+	public void testShouldBeAbleToFindElementsInIframesByName() {
         driver.get(iframePage);
 
         driver.switchTo().frame("iframe1");
@@ -151,7 +165,8 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
         assertNotNull(element);
     }
 
-    public void testShouldBeAbleToFindElementsInIframesByXPath() {
+    @Ignore(value = CHROME, reason = "Not yet implemented")
+	public void testShouldBeAbleToFindElementsInIframesByXPath() {
         driver.get(iframePage);
 
         driver.switchTo().frame("iframe1");
@@ -161,7 +176,8 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
         assertNotNull(element);
     }
 
-    public void testGetCurrentUrl() {
+    @Ignore(value = CHROME, reason = "Not yet implemented")
+	public void testGetCurrentUrl() {
         driver.get(framesetPage);
 
         driver.switchTo().frame("second");

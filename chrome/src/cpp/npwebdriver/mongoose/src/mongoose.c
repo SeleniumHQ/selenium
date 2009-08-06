@@ -60,6 +60,7 @@ static void MG_WEBDRIVER_LOG(const char *str) {
 #if defined(_WIN32)		/* Windows specific	*/
 #include <windows.h>
 
+//TODO(danielwh): Work out why this sometimes breaks the compile
 #include <WinSock2.h>
 
 #ifndef _WIN32_WCE

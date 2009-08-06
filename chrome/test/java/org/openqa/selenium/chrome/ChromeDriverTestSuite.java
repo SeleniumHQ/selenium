@@ -25,12 +25,14 @@ import org.openqa.selenium.TestSuiteBuilder;
 
 public class ChromeDriverTestSuite extends TestCase {
   public static Test suite() throws Exception {
+    System.setProperty("webdriver.chrome.extensiondir",
+    "C:\\work\\webdriver\\chrome\\src\\extension");
     return new TestSuiteBuilder()
         .addSourceDir("common")
         .addSourceDir("chrome")
         .usingDriver(ChromeDriver.class)
         .exclude(CHROME)
-        //.includeJavascriptTests()
+        .includeJavascriptTests()
         .keepDriverInstance()
         .create();
   }

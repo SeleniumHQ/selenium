@@ -2,6 +2,7 @@ package org.openqa.selenium.chrome;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
@@ -18,23 +19,31 @@ public class ChromeDriver extends RemoteWebDriver {
   }
   
   @Override
+  /**
+   * By default will try to load Chrome from system property
+   * webdriver.chrome.binary and the extension from
+   * webdriver.chrome.extensiondir.  If the former fails, will try to guess the
+   * path to Chrome.  If the latter fails, will try to unzip from the JAR we 
+   * hope we're in.  If these fail, throws exceptions.
+   */
   protected void startClient() {
-    String extensionDir = System.getProperty("user.dir") + "\\src\\extension";
     try {
-      //TODO(danielwh): This is really hacky and wrong, do better
-      String chromeBinary = System.getProperty("webdriver.chrome.binary", System.getProperty("java.io.tmpdir") + "..\\Google\\Chrome\\Application\\chrome.exe");
-      File extensionFolder = FileHandler.unzip(this.getClass().getResourceAsStream("/chrome-extension.zip"));
-      File chromeFile = new File(chromeBinary);
+      File extensionDir = getExtensionDir();
+      if (!extensionDir.isDirectory()) {
+        throw new FileNotFoundException("Could not find extension directory" +
+            "(" + extensionDir + ").  Try setting webdriver.chrome.extensiondir."); 
+      }
+      File chromeFile = getChromeFile();
       if (!chromeFile.isFile()) {
-        throw new FileNotFoundException("Could not find chrome binary(" + chromeBinary + ").  Try setting webdriver.chrome.binary");
+        throw new FileNotFoundException("Could not find chrome binary(" +
+            chromeFile.getCanonicalPath() + ").  " +
+            "Try setting webdriver.chrome.binary.");
       }
-      if (extensionFolder.isDirectory()) {
-        clientProcess = Runtime.getRuntime().exec(chromeBinary + " --enable-extensions --load-extension=" + extensionFolder.getCanonicalPath());
-        //Ick, we sleep for a little bit in case the browser hasn't quite loaded
-        Thread.sleep(50);
-      } else {
-        throw new FileNotFoundException("Could not find extension directory (" + extensionDir + ").  Try setting webdriver.chrome.extensiondir");
-      }
+      clientProcess = Runtime.getRuntime().exec(chromeFile.getCanonicalPath() +
+          " --enable-extensions --load-extension=\"" + 
+          extensionDir.getCanonicalPath() + "\"");
+      //Ick, we sleep for a little bit in case the browser hasn't quite loaded
+      Thread.sleep(50);
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
@@ -44,6 +53,7 @@ public class ChromeDriver extends RemoteWebDriver {
   protected void stopClient() {
     if (clientProcess != null) {
       //clientProcess.destroy();
+      //clientProcess = null;
     }
   }
   
@@ -57,5 +67,43 @@ public class ChromeDriver extends RemoteWebDriver {
   public List<WebElement> findElementsByPartialLinkText(String using) {
     Response response = execute("findElements", "partial link text", using);
     return getElementsFrom(response);
+  }
+  
+  
+  protected File getExtensionDir() throws IOException {
+    File extensionDir = null;
+    String extensionDirSystemProperty = System.getProperty(
+        "webdriver.chrome.extensiondir");
+    if (extensionDirSystemProperty != null) {
+      //Default to reading from the property
+      extensionDir = new File(extensionDirSystemProperty);
+    } else {
+      //If property not set, try to unpack the zip from the jar
+      extensionDir = FileHandler.unzip(this.getClass().getResourceAsStream(
+          "/chrome-extension.zip"));
+    }
+    return extensionDir;
+  }
+  
+  protected File getChromeFile() throws IOException {
+    File chromeFile = null;
+    String chromeFileSystemProperty = System.getProperty(
+        "webdriver.chrome.binary");
+    if (chromeFileSystemProperty != null) {
+      chromeFile = new File(chromeFileSystemProperty);
+    } else {
+      StringBuilder chromeFileString = new StringBuilder();
+      chromeFileString.append(System.getProperty("user.home"));
+      if (System.getProperty("os.name").equals("Windows XP")) {
+        chromeFileString.append("\\Local Settings\\Application Data\\" +
+            "Google\\Chrome\\Application");
+      } else {
+        throw new RuntimeException("Unsupported operating system.  " +
+            "Could not locate Chrome.  Set webdriver.chrome.binary.");
+      }
+      chromeFileString.append("\\chrome.exe");
+      chromeFile = new File(chromeFileString.toString());
+    }
+    return chromeFile;
   }
 }

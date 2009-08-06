@@ -1,4 +1,5 @@
 //TODO(danielwh): A nice consistent naming convention
+//TODO(danielwh): Factor out error handling (and general responses) to avoid so much duplication
 
 ports = [];
 
@@ -77,6 +78,13 @@ function parse_port_message(message) {
       SendStaleElement();
     }
     break;
+  case "is element displayed":
+    if (message.status) {
+      SendValue(message.value);
+    } else {
+      SendStaleElement();
+    }
+    break;
   case "tag name":
     if (message.status) {
       SendValue(message.value);
@@ -95,7 +103,11 @@ function parse_port_message(message) {
     if (message.status) {
       document.embeds[0].return_send_element_keys(message.value.join(""));
     } else {
-      SendStaleElement();
+      if (message.reason == "not visible") {
+        SendNotVisible();
+      } else if (message.reason == "stale element") {
+        SendStaleElement();
+      }
     }
     break;
   case "send file element keys":
@@ -116,7 +128,11 @@ function parse_port_message(message) {
     if (message.status) {
       document.embeds[0].return_click_element(message.x, message.y);
     } else {
-      SendStaleElement();
+      if (message.reason == "not visible") {
+        SendNotVisible();
+      } else if (message.reason == "stale element") {
+        SendStaleElement();
+      }
     }
     break;
   case "submit element":
@@ -130,14 +146,33 @@ function parse_port_message(message) {
     if (message.status) {
       SendNoContent();
     } else {
-      SendNotFound({message: message.message, class: "java.lang.UnsupportedOperationException"});
+      switch (message.reason) {
+      case "disabled":
+        //Intentional falling through, though it's not really right
+      case "unsupported":
+        SendNotFound({message: message.message, class: "java.lang.UnsupportedOperationException"});
+        break;
+      case "not visible":
+        SendNotVisible();
+        break;
+      }
     }
     break;
   case "toggle element":
     if (message.status) {
       SendValue(message.value);
     } else {
-      SendNotFound({message: message.message, class: "java.lang.UnsupportedOperationException"});
+      switch (message.reason) {
+      case "unsupported":
+        SendNotFound({message: message.message, class: "java.lang.UnsupportedOperationException"});
+        break;
+      case "not visible":
+        SendNotVisible();
+        break;
+      case "stale element":
+        SendStaleElement();
+        break;
+      }
     }
     break;
   case "url":
@@ -201,6 +236,13 @@ function parse_port_message(message) {
       SendNoValue();
     } else {
       SendNotFound({message: message.message, class: "org.openqa.selenium.NoSuchFrameException"});
+    }
+    break;
+  case "get element css":
+    if (message.status) {
+      SendValue(message.value);
+    } else {
+      SendNotFound({message: message.message, class: "org.openqa.selenium.WebDriverException"});
     }
     break;
   }
@@ -276,18 +318,28 @@ function HandleGet(uri) {
       case "size":
         active_port.postMessage({request: "size", "element_id": element_id});
         break;
+      case "displayed":
+        active_port.postMessage({request: "is element displayed", "element_id": element_id});
+        break;
       }
     }
     break;
   case 7:
-    if (path[3] == "element" && path[5] == "attribute") {
+    if (path[3] == "element") {
       var element_id = parseInt(path[4]);
       if (element_id == null) {
         //TODO(danielwh): Fail with an HTTP message
         console.log("Not an integer element id: " + path[4]);
         return;
       }
-      active_port.postMessage({request: "get element attribute", "element_id": element_id, "attribute": path[6]});
+      switch(path[5]) {
+      case "attribute":
+        active_port.postMessage({request: "get element attribute", "element_id": element_id, "attribute": path[6]});
+        break;
+      case "css":
+        active_port.postMessage({request: "get element css", element_id: element_id, css: path[6]});
+        break;
+      }
     }
     break;
   }
@@ -484,6 +536,10 @@ function SendNoValue() {
 
 function SendStaleElement() {
   SendNotFound({message: "Element is obsolete", class: "org.openqa.selenium.StaleElementReferenceException"});
+}
+
+function SendNotVisible() {
+  SendNotFound({message: "Element was not visible", class: "org.openqa.selenium.ElementNotVisibleException"});
 }
 
 function create_session(request) {

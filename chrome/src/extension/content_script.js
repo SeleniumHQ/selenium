@@ -14,6 +14,8 @@ global_window = window;
 
 current_window = window;
 
+executingScript = false;
+
 function parse_port_message(message) {
   console.log("Received request for: " + message.request);
   switch (message.request) {
@@ -43,6 +45,9 @@ function parse_port_message(message) {
     break;
   case "is element enabled":
     is_element_enabled(message.element_id);
+    break;
+  case "is element displayed":
+    is_element_displayed(message.element_id);
     break;
   case "tag name":
     getTagName(message.element_id);
@@ -110,6 +115,9 @@ function parse_port_message(message) {
     break;
   case "select frame":
     SelectFrame(message.by);
+    break;
+  case "get element css":
+    GetElementCss(message.element_id, message.css);
     break;
   }
 }
@@ -261,6 +269,9 @@ function get_element_text(element_id) {
 function send_element_keys(element_id, value) {
   var element = null;
   if ((element = internal_get_element(element_id)) != null) {
+    if (!Utils.isDisplayed(element)) {
+      port.postMessage({response: "send element keys", status: false, reason: "not visible"});
+    }
     var inputtype = element.getAttribute("type");
     if (element.tagName.toLowerCase() == "input" && inputtype && inputtype.toLowerCase() == "file") {
       var coords = find_element_coords(element);
@@ -271,7 +282,7 @@ function send_element_keys(element_id, value) {
       port.postMessage({response: "send element keys", status: true, value: value});
     }
   } else {
-    port.postMessage({response: "send element keys", status: false, value: ""});
+    port.postMessage({response: "send element keys", status: false, reason: "stale element"});
   }
 }
 
@@ -292,11 +303,14 @@ function clear_element(element_id) {
 function click_element(element_id) {
   var element = null;
   if ((element = internal_get_element(element_id)) != null) {
+    if (!Utils.isDisplayed(element)) {
+      port.postMessage({response: "click element", status: false, reason: "not visible"});
+    }
     var coords = find_element_coords(element);
     element.focus();
     port.postMessage({response: "click element", status: true, x: coords[0], y: coords[1]});
   } else {
-    port.postMessage({response: "click element", status: false, x: -1, y: -1});
+    port.postMessage({response: "click element", status: false, reason: "stale element"});
   }
 }
 
@@ -327,14 +341,18 @@ function selectElement(element_id) {
 
 function toggleElement(element_id) {
   var element = null;
-  if ((element = internal_get_element(element_id)) != null && element.disabled) {
-    port.postMessage({response: "toggle element", status: false, message: "Can only toggle things which are enabled"});
-    return;
-  }
-  if (doSelectElement(element, !doIsElementSelected(element_id), false)) {
-    port.postMessage({response: "toggle element", status: true, value: doIsElementSelected(element_id)});
-  } else {
-    port.postMessage({response: "toggle element", status: false, message: "Can only toggle multiselect options and checkboxes"});
+  if ((element = internal_get_element(element_id)) != null) {
+    if (!Utils.isDisplayed(element)) {
+      port.postMessage({response: "toggle element", status: false, reason: "not visible"});
+      return;
+    } else if (element.disabled) {
+      port.postMessage({response: "toggle element", status: false, message: "Can only toggle things which are enabled"});
+      return;
+    } else if (doSelectElement(element, !doIsElementSelected(element_id), false)) {
+      port.postMessage({response: "toggle element", status: true, value: doIsElementSelected(element_id)});
+    } else {
+      port.postMessage({response: "toggle element", status: false, message: "Can only toggle multiselect options and checkboxes"});
+    }
   }
 }
 
@@ -353,6 +371,15 @@ function is_element_enabled(element_id) {
     port.postMessage({response: "is element enabled", status: true, value: !element.disabled});
   } else {
     port.postMessage({response: "is element enabled", status: false});
+  }
+}
+
+function is_element_displayed(element_id) {
+  var element = null;
+  if ((element = internal_get_element(element_id)) != null) {
+    port.postMessage({response: "is element displayed", status: true, value: Utils.isDisplayed(element)});
+  } else {
+    port.postMessage({response: "is element displayed", status: false});
   }
 }
 
@@ -412,6 +439,9 @@ function execute(command) {
       }
     }
   }
+  executeJavascriptInPage(__webdriverFunc, args);
+  //executeJavascriptInPage(__webdriverFunc, args);
+  /*
   try {
     result = contentWindow.eval(__webdriverFunc).apply(contentWindow, args);
   } catch(e) {
@@ -434,6 +464,7 @@ function execute(command) {
     }
   }
   port.postMessage({response: "execute", status: true, value: value});
+  */
 }
 
 function getElementLocation(element_id) {
@@ -461,7 +492,17 @@ function SelectFrame(by) {
     current_window = window.frames[by[0].id];
     port.postMessage({response: "select frame", status: true});
   } else {
-    port.postMessage({response: "select frame", message: "Could no find frame by " + JSON.stringify(by), status: false});
+    port.postMessage({response: "select frame", message: "Could not find frame by " + JSON.stringify(by), status: false});
+  }
+}
+
+function GetElementCss(element_id, style) {
+  var element = null;
+  var value = null;
+  if ((element = internal_get_element(element_id)) != null) {
+    port.postMessage({response: "get element css", status: true, value: getStyle(element, style)});
+  } else {
+    port.postMessage({response: "get element css", status: false, message: "Could not find CSS property " + style});
   }
 }
 
@@ -669,3 +710,120 @@ function guessPageType() {
     return "html";
   }
 }
+
+function getStyle(element, style) {
+  //TODO(danielwh): Render colours from rgb[a](r,g,b[,a]) to #RRGGBB/transparent
+  var value = null;
+  if (element.currentStyle) {
+    value = element.currentStyle[style];
+  }
+  if (value == null && document.defaultView) {
+    value = document.defaultView.getComputedStyle(element, null).getPropertyValue(style);
+  }
+  return rgbToRRGGBB(value);
+}
+
+function rgbToRRGGBB(rgb) {
+  //rgb(0, 0, 0)
+  //rgba(0, 0, 0, 0)
+  var r, g, b;
+  var values = rgb.split(",");
+  if (values.length == 3 && values[0].length > 4 && values[0].substr(0, 4) == "rgb(") {
+    r = DecimalToTwoDigitHex(values[0].substr(4));
+    g = DecimalToTwoDigitHex(values[1]);
+    b = DecimalToTwoDigitHex(values[2].substr(0, values[2].length - 1));
+    console.log("r:" + r + ", g: " + g + ", b: " + b);
+    if (r == null || g == null || b == null) {
+      return null;
+    }
+    return "#" + r + g + b;
+  } else if (rgb == "rgba(0, 0, 0, 0)") {
+    return "transparent";
+  } else {
+    return rgb;
+  }
+}
+
+function DecimalToTwoDigitHex(value) {
+  value = parseInt(value);
+  if (value == null) {
+    return null;
+  }
+  var v0 = SingleHexDigitDecimalToLowerHex(value >> 4);
+  var v1 = SingleHexDigitDecimalToLowerHex(value % 16);
+  return v0.toString() + v1.toString();
+}
+
+//Returns passed value if negative or greater than 15
+function SingleHexDigitDecimalToLowerHex(value) {
+  if (value < 10) return value;
+  switch (value) {
+  case 10:
+    return "a";
+  case 11:
+    return "b";
+  case 12:
+    return "c";
+  case 13:
+    return "d";
+  case 14:
+    return "e";
+  case 15:
+    return "f";
+  default:
+    return value;
+  }
+}
+
+function executeJavascriptInPage(script, args) {
+  console.log("Executing Javascript In Page");
+  var scriptTag = document.createElement('script');
+  scriptTag.setAttribute("id", "GUID");
+  var argsString = JSON.stringify(args).replace(/"/g, "\\\"");
+  //TODO(danielwh): webelement wrapping and unwrapping
+  scriptTag.innerText = 'var e = document.createEvent("MutationEvent");' +
+                        'var args = "' + argsString + '";' +
+                        'var val = eval(' + script + ').apply(window, JSON.parse(args));' +
+                        'if (typeof(val) == "string") { val = \'"\' + val + \'"\'; }' +
+                        'e.initMutationEvent("DOMAttrModified", true, false, document.getElementById("GUID"), null, "function() { return " + val + "}", null, 0);' +
+                        'document.getElementById("GUID").dispatchEvent(e);';
+  scriptTag.addEventListener('DOMAttrModified', returnFromJavascriptInPage, false);
+  executingScript = true;
+  document.getElementsByTagName("body")[0].appendChild(scriptTag);
+  setTimeout(scriptHasDied, 800);
+}
+
+function scriptHasDied() {
+  if (executingScript) {
+    executingScript = false;
+    port.postMessage({response: "execute", status: false,
+        message: "Tried to execute bad javascript"});
+  }
+}
+
+function returnFromJavascriptInPage(e) {
+  if (!executingScript) {
+    return;
+  }
+  var result = eval(e.newValue)();
+  var value = {"type":"NULL"};
+  if (result && result.ELEMENT_NODE == 1) {
+    element_array.push(result);
+    value = {value:"element/" + (element_array.length - 1), type:"ELEMENT"};
+  } else if (result != null) {
+    switch (typeof(result)) {
+    //Intentional falling through because we treat all "VALUE"s the same
+    case "string":
+    case "number":
+    case "boolean":
+      value = {value: result, type: "VALUE"};
+      break;
+    }
+  }
+  port.postMessage({response: "execute", status: true, value: value});
+  document.getElementsByTagName("body")[0].removeChild(document.getElementById("GUID"));
+}
+
+//TODO(danielwh): Timeout JS execution
+//TODO(danielwh): Catch JS exceptions
+//TODO(danielwh): Use an actual GUID for the script tags
