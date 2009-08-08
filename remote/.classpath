@@ -12,8 +12,8 @@
 	<classpathentry kind="lib" path="client/lib/runtime/commons-io-1.4.jar"/>
 	<classpathentry kind="lib" path="client/lib/runtime/commons-lang-2.4.jar"/>
 	<classpathentry kind="lib" path="client/lib/runtime/commons-logging-1.1.1.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-common"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/webdriver-common"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-firefox"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-htmlunit"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-internet-explorer"/>

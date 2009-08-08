@@ -1,3 +1,7 @@
+//TODO(danielwh): Clear cache: use enable-benchmarking flag, call chromium.benchmarking.clearCache()
+//TODO(danielwh): Smarter page loaded mechanism (onload listener?)
+//TODO(danielwh): Refactor for consistency
+
 if (document.location != "about:blank") {
   //TODO(danielwh): Report bug in chrome that content script is fired on about:blank for new javascript windows
   //If loading windows using window.open, the port is opened
@@ -14,7 +18,7 @@ global_window = window;
 
 current_window = window;
 
-executingScript = false;
+injectedScriptElement = null;
 
 function parse_port_message(message) {
   console.log("Received request for: " + message.request);
@@ -305,12 +309,23 @@ function click_element(element_id) {
   if ((element = internal_get_element(element_id)) != null) {
     if (!Utils.isDisplayed(element)) {
       port.postMessage({response: "click element", status: false, reason: "not visible"});
+      return;
     }
     var coords = find_element_coords(element);
-    element.focus();
+    nnc(element); //TODO(danielwh): Work out why native clicks are dead
     port.postMessage({response: "click element", status: true, x: coords[0], y: coords[1]});
   } else {
     port.postMessage({response: "click element", status: false, reason: "stale element"});
+  }
+}
+
+function nnc(element) {
+  Utils.triggerMouseEvent(element, "mousedown", 0, 0);
+  Utils.triggerMouseEvent(element, "mouseup", 0, 0);
+  if (element.click) {
+    element.click();
+  } else {
+    Utils.triggerMouseEvent(element, "click", 0, 0);
   }
 }
 
@@ -428,7 +443,12 @@ function execute(command) {
       switch (command[1][i].type) {
       case "ELEMENT":
         var element_id = parseInt(command[1][i].value.replace("element/", ""));
-        args.push(internal_get_element(element_id));
+        var element = internal_get_element(element_id);
+        if (element == null) {
+          //TODO(danielwh): Fail
+          return;
+        }
+        args.push({webdriver_element_xpath: get_xpath_of_element(element)});
         break;
       //Intentional falling through because Javascript will parse things properly
       case "STRING":
@@ -531,7 +551,7 @@ function get_element_index(element) {
   var index = 1;
   for (var sibling = element.previousSibling; sibling ; sibling = sibling.previousSibling) {
     if (sibling.nodeType == 1 && sibling.tagName == element.tagName) {
-      index++
+      index++;
     }
   }
   return index;
@@ -549,8 +569,17 @@ function get_elements_by_xpath(xpath) {
 }
 
 function internal_get_element(element_id) {
+  //TODO(danielwh): Throw exceptions here when refactored
   if (element_id != null && element_array.length >= element_id + 1) {
-    return element_array[element_id];
+    var element = element_array[element_id];
+    var parent = element;
+    while (parent && parent != element.ownerDocument.documentElement) {
+      parent = parent.parentNode;
+    }
+    if (parent !== element.ownerDocument.documentElement) {
+      return null;
+    }
+    return element;
   } else {
     return null;
   }
@@ -712,7 +741,6 @@ function guessPageType() {
 }
 
 function getStyle(element, style) {
-  //TODO(danielwh): Render colours from rgb[a](r,g,b[,a]) to #RRGGBB/transparent
   var value = null;
   if (element.currentStyle) {
     value = element.currentStyle[style];
@@ -775,40 +803,62 @@ function SingleHexDigitDecimalToLowerHex(value) {
   }
 }
 
+//This is HORRIBLE.
 function executeJavascriptInPage(script, args) {
   console.log("Executing Javascript In Page");
   var scriptTag = document.createElement('script');
-  scriptTag.setAttribute("id", "GUID");
   var argsString = JSON.stringify(args).replace(/"/g, "\\\"");
-  //TODO(danielwh): webelement wrapping and unwrapping
+  //TODO(danielwh): See if more escaping is needed
   scriptTag.innerText = 'var e = document.createEvent("MutationEvent");' +
-                        'var args = "' + argsString + '";' +
-                        'var val = eval(' + script + ').apply(window, JSON.parse(args));' +
-                        'if (typeof(val) == "string") { val = \'"\' + val + \'"\'; }' +
-                        'e.initMutationEvent("DOMAttrModified", true, false, document.getElementById("GUID"), null, "function() { return " + val + "}", null, 0);' +
-                        'document.getElementById("GUID").dispatchEvent(e);';
+                        'var args = JSON.parse("' + argsString + '");' +
+                        'var element = null;' +
+                        'for (var i = 0; i < args.length; ++i) {' +
+                          'if (args[i] && typeof(args[i]) == "object" && args[i].webdriver_element_xpath) {' +
+                            'args[i] = document.evaluate(args[i].webdriver_element_xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;' +
+                          '}' +
+                        '}' +
+                        'var val = eval(' + script + ').apply(window, args);' +
+                        'if (typeof(val) == "string") { val = JSON.stringify(val); }' +
+                        //Slightly hacky, but will work
+                        'else if (typeof(val) == "undefined") { val = null; }' +
+                        'else if (typeof(val) == "object" && val && val.nodeType == 1) {' +
+                          'var path = "";' +
+                          'for (; val && val.nodeType == 1; val = val.parentNode) {' +
+                            'var index = 1;' +
+                            'for (var sibling = val.previousSibling; sibling; sibling = sibling.previousSibling) {' +
+                              'if (sibling.nodeType == 1 && sibling.tagName && sibling.tagName == val.tagName) {' +
+                                'index++;' +
+                              '}' +
+                            '}' +
+                            'path = "/" + val.tagName + "[" + index + "]" + path;' +
+                          '}' +
+                          'val = JSON.stringify({webdriver_element_xpath: path});' +
+                          'console.log(val);' +
+                        '}' +
+                        'e.initMutationEvent("DOMAttrModified", true, false, null, null, "{value: " + val + "}", null, 0);' +
+                        'document.getElementsByTagName("script")[document.getElementsByTagName("script").length - 1].dispatchEvent(e);';
   scriptTag.addEventListener('DOMAttrModified', returnFromJavascriptInPage, false);
-  executingScript = true;
+  injectedScriptElement = scriptTag;
   document.getElementsByTagName("body")[0].appendChild(scriptTag);
   setTimeout(scriptHasDied, 800);
 }
 
 function scriptHasDied() {
-  if (executingScript) {
-    executingScript = false;
+  if (injectedScriptElement != null) {
+    removeInjectedScript();
     port.postMessage({response: "execute", status: false,
         message: "Tried to execute bad javascript"});
   }
 }
 
 function returnFromJavascriptInPage(e) {
-  if (!executingScript) {
+  if (injectedScriptElement == null) {
     return;
   }
-  var result = eval(e.newValue)();
+  var result = JSON.parse(e.newValue).value;
   var value = {"type":"NULL"};
-  if (result && result.ELEMENT_NODE == 1) {
-    element_array.push(result);
+  if (result && typeof(result) == "object" && result.webdriver_element_xpath) {
+    element_array.push(get_elements_by_xpath(result.webdriver_element_xpath));
     value = {value:"element/" + (element_array.length - 1), type:"ELEMENT"};
   } else if (result != null) {
     switch (typeof(result)) {
@@ -820,10 +870,11 @@ function returnFromJavascriptInPage(e) {
       break;
     }
   }
+  removeInjectedScript();
   port.postMessage({response: "execute", status: true, value: value});
-  document.getElementsByTagName("body")[0].removeChild(document.getElementById("GUID"));
 }
 
-//TODO(danielwh): Timeout JS execution
-//TODO(danielwh): Catch JS exceptions
-//TODO(danielwh): Use an actual GUID for the script tags
+function removeInjectedScript() {
+  document.getElementsByTagName("body")[0].removeChild(injectedScriptElement);
+  injectedScriptElement = null;
+}

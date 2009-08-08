@@ -126,7 +126,8 @@ function parse_port_message(message) {
     break;
   case "click element":
     if (message.status) {
-      document.embeds[0].return_click_element(message.x, message.y);
+      //document.embeds[0].return_click_element(message.x, message.y);
+      SendNoContent();
     } else {
       if (message.reason == "not visible") {
         SendNotVisible();

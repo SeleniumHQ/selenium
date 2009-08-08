@@ -3,7 +3,7 @@
 	<classpathentry kind="src" output="build/classes" path="src/java"/>
 	<classpathentry kind="src" output="build/test-classes" path="test/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-common"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-remote"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/webdriver-common"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/webdriver-remote"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
