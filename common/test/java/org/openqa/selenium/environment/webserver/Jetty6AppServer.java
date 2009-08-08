@@ -174,7 +174,7 @@ public class Jetty6AppServer implements AppServer {
     addWebApplication(context, absolutePath);
   }
 
-  protected WebAppContext addWebApplication(String contextPath, String absolutePath) {
+  private WebAppContext addWebApplication(String contextPath, String absolutePath) {
     WebAppContext app = new WebAppContext();
     app.setContextPath(contextPath);
     app.setWar(absolutePath);

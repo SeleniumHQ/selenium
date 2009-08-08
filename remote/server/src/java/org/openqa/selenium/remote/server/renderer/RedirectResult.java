@@ -34,7 +34,7 @@ public class RedirectResult implements Renderer {
 
   public void render(HttpServletRequest request, HttpServletResponse response, Handler handler)
       throws Exception {
-    StringBuilder builder = new StringBuilder();
+    StringBuilder builder = new StringBuilder(request.getContextPath());
 
     builder.append(request.getServletPath());
 

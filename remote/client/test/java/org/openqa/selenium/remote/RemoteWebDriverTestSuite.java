@@ -28,7 +28,6 @@ import org.openqa.selenium.TestSuiteBuilder;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.Jetty6AppServer;
 import org.openqa.selenium.remote.server.DriverServlet;
-import org.mortbay.jetty.webapp.WebAppContext;
 
 import java.io.File;
 import java.net.URL;
@@ -56,7 +55,7 @@ public class RemoteWebDriverTestSuite extends TestCase {
 
   public static class RemoteWebDriverForTest extends RemoteWebDriver {
     public RemoteWebDriverForTest() throws Exception {
-      super(new URL("http://localhost:6000/hub"), DesiredCapabilities.firefox());
+      super(new URL("http://localhost:6000/common/hub"), DesiredCapabilities.firefox());
     }
   }
 
@@ -81,18 +80,10 @@ public class RemoteWebDriverTestSuite extends TestCase {
         protected File getKeyStore() {
           return new File(findRootOfWebApp(), "../../../../common/test/java/keystore");
         }
-
-        @Override
-        public void start() {
-          WebAppContext context = addWebApplication("", findRootOfWebApp().getAbsolutePath());
-          context.addServlet(DriverServlet.class, "/hub/*");
-
-          super.start();
-        }
       };
       appServer.listenOn(6000);
       appServer.listenSecurelyOn(7000);
-      
+      appServer.addServlet("remote webdriver", "/hub/*", DriverServlet.class);
       appServer.start();
 
       super.setUp();
@@ -103,23 +94,6 @@ public class RemoteWebDriverTestSuite extends TestCase {
       appServer.stop();
 
       super.tearDown();
-    }
-
-    public static void main(String[] args) {
-      AppServer appServer = new Jetty6AppServer() {
-        protected File findRootOfWebApp() {
-          File common = super.findRootOfWebApp();
-          return new File(common, "../../../remote/server/src/web");
-        }
-
-        protected File getKeyStore() {
-          return new File(findRootOfWebApp(), "../../../../common/test/java/keystore");
-        }
-      };
-      appServer.listenOn(6000);
-      appServer.listenSecurelyOn(7000);
-      appServer.addServlet("remote webdriver", "/hub/*", DriverServlet.class);
-      appServer.start();
     }
   }
 }
