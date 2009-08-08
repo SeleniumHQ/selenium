@@ -18,18 +18,16 @@ limitations under the License.
 package org.openqa.selenium.environment.webserver;
 
 import junit.framework.Assert;
-
 import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.nio.SelectChannelConnector;
 import org.mortbay.jetty.security.SslSocketConnector;
 import org.mortbay.jetty.webapp.WebAppContext;
 
+import javax.servlet.Servlet;
 import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-
-import javax.servlet.Servlet;
 
 public class Jetty6AppServer implements AppServer {
 
@@ -176,7 +174,7 @@ public class Jetty6AppServer implements AppServer {
     addWebApplication(context, absolutePath);
   }
 
-  private WebAppContext addWebApplication(String contextPath, String absolutePath) {
+  protected WebAppContext addWebApplication(String contextPath, String absolutePath) {
     WebAppContext app = new WebAppContext();
     app.setContextPath(contextPath);
     app.setWar(absolutePath);

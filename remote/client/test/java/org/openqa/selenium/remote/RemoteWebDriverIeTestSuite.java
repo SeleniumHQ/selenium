@@ -62,7 +62,7 @@ public class RemoteWebDriverIeTestSuite extends TestCase {
 
   public static class RemoteIeWebDriverForTest extends RemoteWebDriver {
     public RemoteIeWebDriverForTest() throws Exception {
-      super(new URL("http://localhost:6000/hub"), DesiredCapabilities.internetExplorer());
+      super(new URL("http://localhost:6000/common/hub"), DesiredCapabilities.internetExplorer());
     }
   }
 
