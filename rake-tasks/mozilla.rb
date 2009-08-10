@@ -46,8 +46,8 @@ def build_xpt(srcs, out)
       cmd = "#{gecko}\\bin\\xpidl.exe -w -m typelib -I#{gecko}\\idl -e #{out} #{src}"
       sh cmd, :verbose => false
     end
-  elsif (linux?)
-    gecko = "third_party/gecko-1.9.0.11/linux"
+  elsif (linux? or mac?)
+    gecko = "third_party/gecko-1.9.0.11/" + (linux? ? "linux" : "mac")
     srcs.each do |src|
       cmd = "#{gecko}/bin/xpidl -w -m typelib -I#{gecko}/idl -e #{out} #{src}"
       sh cmd, :verbose => false
