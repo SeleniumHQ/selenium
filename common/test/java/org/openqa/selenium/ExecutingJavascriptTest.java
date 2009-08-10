@@ -18,6 +18,7 @@ limitations under the License.
 package org.openqa.selenium;
 
 import java.util.ArrayList;
+import static org.openqa.selenium.Ignore.Driver.CHROME;
 
 public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     @JavascriptEnabled
@@ -174,6 +175,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
         assertEquals("onetwo", result);
     }
 
+  @Ignore(value = CHROME, reason = "Frames not implemented")
   @JavascriptEnabled
   public void testShouldBeAbleToGrabTheBodyOfFrameOnceSwitchedTo() {
     driver.get(richTextPage);

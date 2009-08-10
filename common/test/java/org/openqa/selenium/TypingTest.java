@@ -286,7 +286,7 @@ public class TypingTest extends AbstractDriverTestCase {
     }
 
     @JavascriptEnabled
-    @Ignore(value = HTMLUNIT, reason = "untested user agent")
+    @Ignore(value = {HTMLUNIT, CHROME}, reason = "untested user agent")
     public void testNumericShiftKeys() {
         driver.get(javascriptPage);
 
@@ -314,7 +314,7 @@ public class TypingTest extends AbstractDriverTestCase {
     }
 
     @JavascriptEnabled
-    @Ignore(value = {HTMLUNIT}, reason = "untested user agents")
+    @Ignore(value = {HTMLUNIT, CHROME}, reason = "untested user agents")
     public void testUppercaseAlphaKeys() {
         driver.get(javascriptPage);
 
@@ -402,7 +402,7 @@ public class TypingTest extends AbstractDriverTestCase {
     }
 
     @JavascriptEnabled
-    @Ignore(value = {HTMLUNIT}, reason = "untested user agents")
+    @Ignore(value = {HTMLUNIT, CHROME}, reason = "untested user agents")
     public void testNumberpadAndFunctionKeys() {
         driver.get(javascriptPage);
 
@@ -436,7 +436,7 @@ public class TypingTest extends AbstractDriverTestCase {
     }
 
     @JavascriptEnabled
-    @Ignore(value = {HTMLUNIT}, reason = "untested user agents")
+    @Ignore(value = {HTMLUNIT, CHROME}, reason = "untested user agents")
     public void testChordControlHomeShiftEndDelete() {
         // FIXME: macs don't have HOME keys, would PGUP work?
         if (Platform.getCurrent().is(Platform.MAC))
@@ -490,7 +490,7 @@ public class TypingTest extends AbstractDriverTestCase {
     // and linux, but not on the MAC.
 
     @JavascriptEnabled
-    @Ignore(value = {HTMLUNIT}, reason = "untested user agents")
+    @Ignore(value = {HTMLUNIT, CHROME}, reason = "untested user agents")
     public void testChordControlCutAndPaste() {
         // FIXME: macs don't have HOME keys, would PGUP work?
         if (Platform.getCurrent().is(Platform.MAC))
@@ -552,7 +552,7 @@ public class TypingTest extends AbstractDriverTestCase {
     }
 
     @JavascriptEnabled
-    @Ignore(value = {HTMLUNIT, IE}, reason = "firefox-specific")
+    @Ignore(value = {HTMLUNIT, IE, CHROME}, reason = "firefox-specific")
     public void testGenerateKeyPressEventEvenWhenElementPreventsDefault() {
     	driver.get(javascriptPage);
 
@@ -564,7 +564,7 @@ public class TypingTest extends AbstractDriverTestCase {
     }
 
   @JavascriptEnabled
-  @Ignore({HTMLUNIT, IE})
+  @Ignore({HTMLUNIT, IE, CHROME})
   public void testTypingIntoAnIFrameWithContentEditableOrDesignModeSet() {
     driver.get(richTextPage);
 
@@ -581,7 +581,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(HTMLUNIT)
+  @Ignore({HTMLUNIT, CHROME})
   public void testNonPrintableCharactersShouldWorkWithContentEditableOrDesignModeSet() {
     driver.get(richTextPage);
 

@@ -185,7 +185,6 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
         assertThat(cookies, hasItem(cookie2));
     }
 
-  @Ignore(value = CHROME, reason = "danielwh: This test makes no sense...")
   public void testGetCookieDoesNotRetriveBeyondCurrentDomain() {
     driver.get(simpleTestPage);
     driver.manage().deleteAllCookies();

@@ -43,7 +43,7 @@ public class ChromeDriver extends RemoteWebDriver {
           " --enable-extensions --load-extension=\"" + 
           extensionDir.getCanonicalPath() + "\"");
       //Ick, we sleep for a little bit in case the browser hasn't quite loaded
-      Thread.sleep(50);
+      Thread.sleep(200);
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
@@ -92,11 +92,16 @@ public class ChromeDriver extends RemoteWebDriver {
     if (chromeFileSystemProperty != null) {
       chromeFile = new File(chromeFileSystemProperty);
     } else {
+      //TODO(danielwh): Actually work out paths
       StringBuilder chromeFileString = new StringBuilder();
-      chromeFileString.append(System.getProperty("user.home"));
       if (System.getProperty("os.name").equals("Windows XP")) {
+        chromeFileString.append(System.getProperty("user.home"));
         chromeFileString.append("\\Local Settings\\Application Data\\" +
             "Google\\Chrome\\Application");
+      } else if (System.getProperty("os.name").equals("Windows Vista")) {
+        chromeFileString.append("C:\\Users\\");
+        chromeFileString.append(System.getProperty("user.name"));
+        chromeFileString.append("\\AppData\\Local\\Google\\Chrome\\Application");
       } else {
         throw new RuntimeException("Unsupported operating system.  " +
             "Could not locate Chrome.  Set webdriver.chrome.binary.");

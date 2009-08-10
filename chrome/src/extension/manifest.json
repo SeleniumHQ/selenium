@@ -7,7 +7,7 @@
   "content_scripts": [
     {
       "matches": ["http://*/*", "https://*/*", "file:///*"],
-      "js": ["utils.js", "content_script.js"]
+      "js": ["chromedriver_utils.js", "utils.js", "content_script.js"]
     }
   ],
   "plugins": [

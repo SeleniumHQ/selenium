@@ -1,644 +1,569 @@
-//TODO(danielwh): A nice consistent naming convention
-//TODO(danielwh): Factor out error handling (and general responses) to avoid so much duplication
+//Initialise globals
+ChromeDriver = {};
 
-ports = [];
-
-active_port = null;
-primary_display_tab_id = null;
-session_id_ = null;
-context_ = null;
-capabilities_ = null;
-path_offset_ = 1; //TODO(danielwh): Grab this from the initial URL
-has_window_handle = false;
-is_loading_page = false;
-minimum_element_on_page = -1;
-maximum_elemet_on_page = -2;
-blocked = false;
+//Array of ports to tabs we wish to use
+//The name of each port is expected to be its JS window handle
+ChromeDriver.ports = [];
+//Port to the currently active tab
+ChromeDriver.activePort = null;
+ChromeDriver.activeTabId = null;
+ChromeDriver.sessionId = null;
+ChromeDriver.context = null;
+ChromeDriver.agreedCapabilities = null;
+//Number of folders from / we need to traverse to get to /session of our URL
+//TODO(danielwh): Get this somehow
+ChromeDriver.pathOffset = 1;
+//Whether the plugin has the OS-specific window handle for the active tab
+//Called HWND rather than window handle to avoid confusion with the other
+//use of window handle to mean 'name of window'
+ChromeDriver.hasHwnd = false;
+ChromeDriver.isCurrentlyLoadingUrl = false;
+ChromeDriver.instanceUuid = null;
 
 chrome.self.onConnect.addListener(function(port) {
-  console.log("Connected");
-  PushPort(port);
-  if (!active_port || port.tab.id == active_port.tab.id) {
-    active_port = port; //TODO(danielwh): When SHOULD this actually be true??
+  console.log("Connected to " + port.name);
+  pushPort(port);
+  //If this is the only window (probably first, or we closed the others),
+  //or we have changed URL in the same tab, treat this as the active page
+  //Otherwise we have opened in the background, so we keep our current focus
+  if (ChromeDriver.activePort == null ||
+      port.tab.id == ChromeDriver.activePort.tab.id) {
+    ChromeDriver.activePort = port;
   }
-  port.onMessage.addListener(parse_port_message);
-  port.onDisconnect.addListener(remove_port);
+  port.onMessage.addListener(parsePortMessage);
+  port.onDisconnect.addListener(removePort);
 });
 
-function parse_port_message(message) {
-  console.log("Received response to: " + message.response);
-  switch(message.response) {
-  case "title":
-    SendValue(message.value);
-    break;
-  case "inject embed":
-    active_port.postMessage({request: "remove embed", uuid: message.uuid, followup: message.followup});
-    has_window_handle = true;
-    break;
-  case "get element":
-    if (message.status) {
-      minimum_element_on_page = 0;
-      maximum_element_on_page = message.maxElement;
-      SendValue(message.elements);
-    } else {
-      SendNotFound({message: "Unable to locate element with " + message.by + " " + message.value, class: "org.openqa.selenium.NoSuchElementException"});
-    }
-    break;
-  case "get element attribute":
-    if (message.status) {
-      if (message.value != null || message.value == "") {
-        SendValue(message.value);
-      } else {
-        //Attribute not found
-        SendNoValue();
-      }
-    } else {
-      //Element not found (or some similar error)
-      SendNotFound({message: "An error occured while finding attribute of " + message.attribute + " " + message.value, class: "org.openqa.selenium.NotFoundException"});
-    }
-    break;
-  case "get element value":
-    if (message.status) {
-      SendValue(message.value);
-    } else {
-      SendStaleElement();
-    }
-    break;
-  case "is element selected":
-    if (message.status) {
-      SendValue(message.value);
-    } else {
-      SendStaleElement();
-    }
-    break;
-  case "is element enabled":
-    if (message.status) {
-      SendValue(message.value);
-    } else {
-      SendStaleElement();
-    }
-    break;
-  case "is element displayed":
-    if (message.status) {
-      SendValue(message.value);
-    } else {
-      SendStaleElement();
-    }
-    break;
-  case "tag name":
-    if (message.status) {
-      SendValue(message.value);
-    } else {
-      SendStaleElement();
-    }
-    break;
-  case "get element text":
-    if (message.status) {
-      SendValue(message.value);
-    } else {
-      SendStaleElement();
-    }
-    break;
-  case "send element keys":
-    if (message.status) {
-      document.embeds[0].return_send_element_keys(message.value.join(""));
-    } else {
-      if (message.reason == "not visible") {
-        SendNotVisible();
-      } else if (message.reason == "stale element") {
-        SendStaleElement();
-      }
-    }
-    break;
-  case "send file element keys":
-    if (message.status) {
-      document.embeds[0].return_file_keys_element(message.value, message.x, message.y);
-    } else {
-      SendStaleElement();
-    }
-    break;
-  case "clear element":
-    if (message.status) {
-      SendNoContent();
-    } else {
-      SendStaleElement();
-    }
-    break;
-  case "click element":
-    if (message.status) {
-      //document.embeds[0].return_click_element(message.x, message.y);
-      SendNoContent();
-    } else {
-      if (message.reason == "not visible") {
-        SendNotVisible();
-      } else if (message.reason == "stale element") {
-        SendStaleElement();
-      }
-    }
-    break;
-  case "submit element":
-    if (message.status) {
-      SendNoContent();
-    } else {
-      SendStaleElement();
-    }
-    break;
-  case "select element":
-    if (message.status) {
-      SendNoContent();
-    } else {
-      switch (message.reason) {
-      case "disabled":
-        //Intentional falling through, though it's not really right
-      case "unsupported":
-        SendNotFound({message: message.message, class: "java.lang.UnsupportedOperationException"});
-        break;
-      case "not visible":
-        SendNotVisible();
-        break;
-      }
-    }
-    break;
-  case "toggle element":
-    if (message.status) {
-      SendValue(message.value);
-    } else {
-      switch (message.reason) {
-      case "unsupported":
-        SendNotFound({message: message.message, class: "java.lang.UnsupportedOperationException"});
-        break;
-      case "not visible":
-        SendNotVisible();
-        break;
-      case "stale element":
-        SendStaleElement();
-        break;
-      }
-    }
-    break;
-  case "url":
-    SendValue(message.value);
-    break;
-  case "add cookie":
-    if (message.status) {
-      SendNoContent();
-    } else {
-      SendNotFound({message: message.message, class: "org.openqa.selenium.WebDriverException"});
-    }
-    break;
-  case "delete cookie":
-    if (message.status) {
-      SendNoContent();
-    } else {
-      SendNotFound({message: message.message, class: "org.openqa.selenium.WebDriverException"});
-    }
-    break;
-  case "get cookies":
-    SendValue(message.cookies);
-    break;
-  case "delete all cookies":
-    SendNoContent();
-    break;
-  case "go back":
-    SendNoContent();
-    break;
-  case "go forward":
-    SendNoContent();
-    break;
-  case "refresh":
-    SendNoContent();
-    break;
-  case "get source":
-    SendValue(message.source);
-    break;
-  case "execute":
-    if (message.status) {
-      SendValue(message.value);
-    } else {
-      SendNotFound({message: message.message, class: "org.openqa.selenium.WebDriverException"});
-    }
-    break;
-  case "location":
-    if (message.status) {
-      SendValue({class: "java.awt.Point", x: message.x, y: message.y});
-    } else {
-      SendStaleElement();
-    }
-    break;
-  case "size":
-    if (message.status) {
-      SendValue({class: "java.awt.Dimension", height: message.height, width: message.width});
-    } else {
-      SendStaleElement();
-    }
-    break;
-  case "select frame":
-    if (message.status) {
-      SendNoValue();
-    } else {
-      SendNotFound({message: message.message, class: "org.openqa.selenium.NoSuchFrameException"});
-    }
-    break;
-  case "get element css":
-    if (message.status) {
-      SendValue(message.value);
-    } else {
-      SendNotFound({message: message.message, class: "org.openqa.selenium.WebDriverException"});
-    }
-    break;
-  }
-}
-
+/**
+ * Handles GET requests made to/by the plugin.
+ * @param uri String of full path of request,
+ *            e.g. "/session/:session/:context/title"
+ */
 function HandleGet(uri) {
-  var path = uri.split("/").slice(path_offset_);
-  if (path.length < 3 || path[0] != "session" || path[1] != session_id_) {
-    //TODO(danielwh): Fail with an HTTP message
-    console.log("Invalid session setup");
+  if (typeof(uri) != "string") {
+    console.log("HandleGet got non-string uri");
     return;
   }
-  //TODO(danielwh): Add check for not having a current page/port
+  var path = uri.split("/").slice(ChromeDriver.pathOffset);
+  //Check that path is /session/:session/:context/...
+  if (path.length < 3 || path[0] != "session" || path[1] != ChromeDriver.sessionId) {
+    sendNotFound({message: "An invalid session was set up: " + uri,
+                  class: "java.lang.IllegalStateException"});
+    return;
+  }
+  if (path.length == 3) {
+    sendValue(ChromeDriver.capabilities);
+    return;
+  }
+  //We should always have a port from now because
+  //all following cases involve page interaction
+  if (ChromeDriver.activePort == null) {
+    sendNotFound({message: "Tried to interact with a page when no page was loaded",
+                  class: "java.lang.IllegalStateException"});
+    return;
+  }
+  var requestObject = null;
   switch (path.length) {
-  case 3:
-    SendValue(capabilities_);
-    break;
   case 4:
+    var request = null;
     switch (path[3]) {
-    case "title":
-      active_port.postMessage({request: "title"});
-      break;
-    case "url":
-      active_port.postMessage({request: "url"});
-      break;
     case "cookie":
-      active_port.postMessage({request: "get cookies"});
+      request = "get cookies";
       break;
     case "source":
-      active_port.postMessage({request: "get source"});
+      request = "get source";
+      break;
+    case "title":
+      request = "get title";
+      break;
+    case "url":
+      request = "get url";
       break;
     case "window_handle":
-      if (active_port) {
-        SendValue(active_port.name);
-      } else {
-        SendNotFound({message: "Can't get window handle without window", class: "org.openqa.selenium.WebDriverException"});
-      }
+      sendValue(ChromeDriver.activePort.name);
       break;
     case "window_handles":
-      get_window_handles();
+      getWindowHandles();
       break;
+    }
+    if (request != null) {
+      requestObject = {request: request};
     }
     break;
   case 6:
+    var request = null;
     if (path[3] == "element") {
-      var element_id = parseInt(path[4]);
-      if (element_id == null) {
-        //TODO(danielwh): Fail with an HTTP message
-        console.log("Not an integer element id: " + path[4]);
-        return;
-      } else if (element_id < minimum_element_on_page || element_id > maximum_element_on_page) {
-        SendStaleElement();
-      }
       switch (path[5]) {
-      case "value":
-        active_port.postMessage({request: "get element value", "element_id": element_id});
-        break;
-      case "text":
-        active_port.postMessage({request: "get element text", "element_id": element_id});
-        break;
-      case "selected":
-        active_port.postMessage({request: "is element selected", "element_id": element_id});
+      case "displayed":
+        request = "is element displayed";
         break;
       case "enabled":
-        active_port.postMessage({request: "is element enabled", "element_id": element_id});
-        break;
-      case "name":
-        active_port.postMessage({request: "tag name", "element_id": element_id});
+        request = "is element enabled";
         break;
       case "location":
-        active_port.postMessage({request: "location", "element_id": element_id});
+        request = "get element location"
+        break;
+      case "name":
+        request = "get element tag name";
+        break;
+      case "selected":
+        request = "is element selected";
         break;
       case "size":
-        active_port.postMessage({request: "size", "element_id": element_id});
+        request = "get element size";;
         break;
-      case "displayed":
-        active_port.postMessage({request: "is element displayed", "element_id": element_id});
+      case "text":
+        request = "get element text";
         break;
+      case "value":
+        request = "get element value";
+        break;
+      }
+      if (request != null) {
+        requestObject = {request: request,
+                         value: {elementId: path[4]}};
       }
     }
     break;
   case 7:
     if (path[3] == "element") {
-      var element_id = parseInt(path[4]);
-      if (element_id == null) {
-        //TODO(danielwh): Fail with an HTTP message
-        console.log("Not an integer element id: " + path[4]);
-        return;
-      }
+      var elementId = path[4];
       switch(path[5]) {
       case "attribute":
-        active_port.postMessage({request: "get element attribute", "element_id": element_id, "attribute": path[6]});
+        requestObject = {request: "get element attribute",
+                         value: {elementId: elementId,
+                                 attribute: path[6]}};
         break;
       case "css":
-        active_port.postMessage({request: "get element css", element_id: element_id, css: path[6]});
+        requestObject = {request: "get element css",
+                         value: {elementId: elementId,
+                         css: path[6]}};
         break;
       }
     }
     break;
+  }
+  if (requestObject != null) {
+    ChromeDriver.activePort.postMessage(requestObject);
   }
 }
 
-function HandlePost(uri, post_data, session_id, context) {
-  if (!session_id_) {
-    session_id_ = session_id;
+/**
+ * Handles POST requests made to/by the plugin.
+ * URL getting is dealt with by a special call to getUrl
+ * directly from the plugin, NOT by this function
+ *
+ * @param uri String of full path of request,
+ *            e.g. "/session/:session/:context/back"
+ * @param postData The content of the post as a string,
+ *                 may be empty of a JSON object
+ * @param sessionId The ID of the session this request is for
+ *                  (should be invariant)
+ * @param context The context of the request (should be invariant)
+ */
+function HandlePost(uri, postData, sessionId, context) {
+  if (typeof(uri) != "string") {
+    console.log("HandleGet got non-string uri");
+    return;
   }
-  if (!context_) {
-    context_ = context;
+  if (ChromeDriver.sessionId == null) {
+    ChromeDriver.sessionId = sessionId;
   }
-  //TODO(danielwh): Add check for not having a current page/port
-  var path = uri.split("/").slice(path_offset_);
-  var value = JSON.parse(post_data);
+  if (ChromeDriver.context == null) {
+    ChromeDriver.context = context;
+  }
+  var path = uri.split("/").slice(ChromeDriver.pathOffset);
+  var value = JSON.parse(postData);
+  if (path.length == 1 && path[0] == "session") {
+    createSession(value);
+    return;
+  }
+  //We should always have an activePort from here on because
+  //all operations rely on having a page
+  if (ChromeDriver.activePort == null) {
+    sendNotFound({message: "Tried to interact with a page when no page was loaded",
+                  class: "java.lang.IllegalStateException"});
+    return;
+  }
+  var requestObject = null;
   switch (path.length) {
-  case 1:
-    if (path[0] == "session") {
-      create_session(value);
-    }
-    break;
   case 4:
+    var request = null;
     switch (path[3]) {
-    case "element":
-      active_port.postMessage({request: "get element", value: value});
-      break;
-    case "elements":
-      active_port.postMessage({request: "get elements", value: value});
+    case "back":
+      request = "go back";
       break;
     case "cookie":
-      var cookie = JSON.parse(post_data)[0];
-      if (cookie.class == "org.openqa.selenium.Cookie") {
-        active_port.postMessage({request: "add cookie", cookie: cookie});
-      } else {
-        //TODO(danielwh): Fail somehow
-      }
+      //XXX(danielwh): No longer derefing - reflect change in content script
+      //var cookie = JSON.parse(postData)[0];
+      //if (cookie.class == "org.openqa.selenium.Cookie") {
+      request = "add cookie";
       break;
-    case "back":
-      active_port.postMessage({request: "go back"});
+    case "element":
+      request = "get element";
       break;
-    case "forward":
-      active_port.postMessage({request: "go forward"});
-      break;
-    case "refresh":
-      active_port.postMessage({request: "refresh"});
+    case "elements":
+      request = "get elements";
       break;
     case "execute":
-      active_port.postMessage({request: "execute", command: value});
+      request = "execute";
       break;
-    //URL getting is dealt with by a special call to get_url from the plugin,
-    //NOT by this switch
+    case "forward":
+      request = "go forward";
+      break;
+    case "refresh":
+      request = "refresh";
+      break;
+    }
+    if (request != null) {
+      requestObject = {request: request, value: value};
     }
     break;
   case 5:
     switch (path[3]) {
-    case "window":
-      var message = "Could not find window";
-      if (value[0] != undefined && value[0] != null && value[0].name != undefined && value[0].name != null) {
-        if (SetActivePortByWindowName(value[0].name)) {
-          //TODO(danielwh): Focus window and tab
-          SendNoContent();
-          return;
-        } else {
-          var message = "Could not find window by " + value[0].name;
-        }
+    case "element":
+      if (path[4] == "active") {
+        requestObject = {request: "get active element"};
       }
-      SendNotFound({message: message, class: "org.openqa.selenium.NoSuchWindowException"});
       break;
     case "frame":
-      active_port.postMessage({request: "select frame", by: value});
+      //TODO(danielwh): Frame switching
+      //ChromeDriver.activePort.postMessage({request: "select frame", by: value});
+      break;
+    case "window":
+      setActivePortByWindowName(path[4]);
       break;
     }
     break;
   case 6:
+    var request = null;
     if (path[3] == "element") {
-      element_id = parseInt(value[0].id);
+      var value = {elementId: path[4], value: value};
       switch (path[5]) {
-      case "value":
-        if (blocked) {
-          return;
-        }
-        blocked = true;
-        var event = {request: "send element keys", "element_id": element_id, "value": value[0].value};
-        if (has_window_handle) {
-          active_port.postMessage(event);
-        } else {
-          active_port.postMessage({request: "inject embed", followup: event, session_id: session_id, uuid: g_uuid});
-        }
-        break;
       case "clear":
-        active_port.postMessage({request: "clear element", "element_id": element_id});
+        request = "clear element";
         break;
       case "click":
-        var event = {request: "click element", "element_id": element_id};
-        if (has_window_handle) {
-          active_port.postMessage(event);
-        } else {
-          active_port.postMessage({request: "inject embed", followup: event, session_id: session_id, uuid: g_uuid});
-        }
-        break;
-      case "submit":
-        active_port.postMessage({request: "submit element", "element_id": element_id});
+        requestObject = wrapInjectEmbedIfNecessary({request: "click element",
+                                                    value: value});
         break;
       case "selected":
-        active_port.postMessage({request: "select element", "element_id": element_id});
+        request = "select element";
+        console.log("uri: " + uri + ", postData: " + postData);
+        break;
+      case "submit":
+        request = "submit element";
         break;
       case "toggle":
-        active_port.postMessage({request: "toggle element", "element_id": element_id});
+        request = "toggle element";
         break;
-       }
-     }
-     break;
+      case "value":
+        //TODO(danielwh): Reflect this change
+        //var event = {request: "send element keys", "element_id": element_id, "value": value[0].value};
+        requestObject = wrapInjectEmbedIfNecessary({request: "send element keys",
+                                                    value: {elementId: path[4],
+                                                            value: value.value[0].value}});
+        break;
+      }
+    }
+    if (request != null) {
+      requestObject = {request: request, value: value};
+    }
+    break;
   case 7:
+    var request = null;
     if (path[3] == "element") {
       switch (path[5]) {
       case "element":
-        active_port.postMessage({request: "get element", "value": value});
+        request = "get element";
         break;
       case "elements":
-        active_port.postMessage({request: "get elements", "value": value});
+        request = "get elements";
         break;
       }
     }
+    if (request != null) {
+      requestObject = {request: request, value: value};
+    }
     break;
+  }
+  if (requestObject != null) {
+    ChromeDriver.activePort.postMessage(requestObject);
   }
 }
 
+/**
+ * Handles DELETE requests made to/by the plugin.
+ * @param uri String of full path of request,
+ *            e.g. "/session/:session/:context/cookie"
+ */
 function HandleDelete(uri) {
-  //TODO(danielwh): Add check for not having a current page/port
-  var path = uri.split("/").slice(path_offset_);
+  if (typeof(uri) != "string") {
+    console.log("HandleGet got non-string uri");
+    return;
+  }
+  var path = uri.split("/").slice(ChromeDriver.pathOffset);
+  if (path.length == 2 && path[0] == "session" &&
+      path[1] == ChromeDriver.sessionId) {
+    //TODO(danielwh): Close tabs? Windows? Tear down somehow?
+    sendNoContent();
+  }
+  //We should always have an activePort from here on because
+  //all operations rely on having a page
+  if (ChromeDriver.activePort == null) {
+    sendNotFound({message: "Tried to interact with a page when no page was loaded",
+                  class: "java.lang.IllegalStateException"});
+    return;
+  }
+  var requestObject = null;
   switch (path.length) {
-  case 2:
-    if (path[0] == "session" && path[1] == session_id_) {
-      SendNoContent();
-    }
-    break;
   case 4:
     if (path[3] == "cookie") {
-      active_port.postMessage({request: "delete all cookies"});
+      requestObject = {request: "delete all cookies"};
     }
     break;
   case 5:
     if (path[3] == "cookie") {
-      active_port.postMessage({request: "delete cookie", name: path[4]});
+      requestObject = {request: "delete cookie", value: {name: path[4]}};
     }
     break;
   }
-}
-
-//TODO(danielwh): Some kind of filtering so that arbitrary HTTP can't be sent by random javascript
-function SendHttp(http) {
-  console.log("Sending HTTP: " + http);
-  document.embeds[0].SendHttp(http);
-}
-
-function SendNoContent() {
-  SendHttp("HTTP/1.1 204 No Content");
-}
-
-function SendNotFound(value) {
-  var response_data = '{"error":true,"sessionId":\"' + session_id_ + '\",' +
-      '"context":"' + context_ + '","value":' + JSON.stringify(value) + 
-      ',"class":"org.openqa.selenium.remote.Response"}';
-  var response = "HTTP/1.1 404 Not Found" +
-      "\r\nContent-Length: " + response_data.length +
-      "\r\nContent-Type: application/json; charset=ISO-8859-1" +
-      "\r\n\r\n" + response_data;
-  SendHttp(response);
-}
-
-function SendValue(value) {
-  var response_data = '{"error":false,"sessionId":"' + session_id_ + 
-      '","value":' + JSON.stringify(value) + ',"context":"' + context_ + 
-      '","class":"org.openqa.selenium.remote.Response"}';
-  
-  var response = "HTTP/1.1 200 OK" +
-      "\r\nContent-Length: " + response_data.length + 
-      "\r\nContent-Type: application/json; charset=ISO-8859-1" +
-      "\r\n\r\n" + response_data;
-  SendHttp(response);
-}
-
-function SendNoValue() {
-  var response_data = '{"error":false,"sessionId":"' + session_id_ + 
-      '","context":"' + context_ + 
-      '","class":"org.openqa.selenium.remote.Response"}';
-  
-  var response = "HTTP/1.1 200 OK" +
-      "\r\nContent-Length: " + response_data.length + 
-      "\r\nContent-Type: application/json; charset=ISO-8859-1" +
-      "\r\n\r\n" + response_data;
-  SendHttp(response);
-}
-
-function SendStaleElement() {
-  SendNotFound({message: "Element is obsolete", class: "org.openqa.selenium.StaleElementReferenceException"});
-}
-
-function SendNotVisible() {
-  SendNotFound({message: "Element was not visible", class: "org.openqa.selenium.ElementNotVisibleException"});
-}
-
-function create_session(request) {
-  capabilities_ = request[0];
-  //TODO(danielwh): Better check for OS
-  //TODO(danielwh): Don't hard code url or port
-  if (request[0].platform == "WINDOWS" && request[0].browserName == "chrome") {
-    var response = "HTTP/1.1 302 Found" +
-    "\r\nLocation: http://localhost:7601/session/" + session_id_ + "/" + context_ +
-    "\r\nContent-Length: 0";
-    SendHttp(response);
-  } else {
-    document.embeds[0].deny_session();
+  if (requestObject != null) {
+    ChromeDriver.activePort.postMessage(requestObject);
   }
 }
 
-function get_window_handles() {
-  var window_handles = [];
-  for (var i = 0; i < ports.length; ++i) {
-    window_handles.push(ports[i].name);
-  }
-  SendValue(window_handles);
-}
-
-//XXX(danielwh): This may change to a chrome.tabs.onCreated/onUpdated/onRemoved event listener, if it turns out to conflict with multiple windows
-function get_url(url_json, local_session_id, uuid) {
-  var url_string = JSON.parse(url_json)[0];
-  //Ignore any URL request we get while loading a page,
-  //because we should still return a 204 when we cannot find the page.
-  if (is_loading_page) {
+/**
+ * Parse messages coming in on the port.
+ * Sends HTTP according to the value passed.
+ * @param message JSON message of format:
+ *                {response: "some command",
+ *                 value: {statusCode: HTTP_CODE
+ *                 [, optional params]}}
+ *                 HTTP_CODE ::= 200 | 204 | 404 | "no-op"
+ */
+function parsePortMessage(message) {
+  console.log("Received response to: " + message.response);
+  if (!message || !message.value || !message.value.statusCode) {
+    console.log("Got invalid response... No status code");
     return;
   }
-  active_port = null;
-  has_window_handle = false;
-  if (primary_display_tab_id) {
-    chrome.tabs.remove(primary_display_tab_id);
+  switch (message.value.statusCode) {
+  case 200:
+    sendValue(message.value.value);
+    break;
+  case 204:
+    sendNoContent();
+    break;
+  case 302:
+    sendFound(message.value.location);
+    break;
+  case 404:
+    sendNotFound(message.value.value);
+    break;
+  case "no-op":
+    //Some special operation which isn't sending HTTP
+    switch (message.response) {
+    case "click element":
+      document.embeds[0].clickAt(message.value.x, message.value.y);
+      break;
+    case "send element keys":
+      document.embeds[0].return_send_element_keys(message.value.value.join(""));
+      break;
+    }
+    break
   }
-  primary_display_tab_id = null;
-  session_id = local_session_id;
-  g_uuid = uuid;
-  has_window_handle = false;
-  minimum_element_on_page = -1;
-  maximum_element_on_page = -2;
-  chrome.tabs.create({url: url_string, selected: true}, get_url_loaded_callback_first_time);
 }
 
-function get_url_loaded_callback_first_time(tab) {
-  if (tab.status != "complete") {
-    is_loading_page = true
-    setTimeout("get_url_check_loaded_first_time(" + tab.id + ")", 10);
+/**
+ * Sends the HTTP message passed to the current connection
+ * @param http string of the message to send,
+ *             e.g. 'HTTP/1.1 204 No Content'
+ * TODO(danielwh): Some kind of filtering so that arbitrary HTTP can't be sent by random javascript
+ */
+function sendHttp(http) {
+  console.log("Sending HTTP: " + http);
+  document.embeds[0].sendHttp(http);
+}
+
+/**
+ * Sends the passed value in a 200 OK HTTP message
+ * @param value JSON.stringifiable value to send,
+ *              e.g. ["element/0"]
+ */
+function sendValue(value) {
+  var responseData = '{"error":false,"sessionId":"' + ChromeDriver.sessionId + '"';
+  if (value != null) {
+    responseData += ',"value":' + JSON.stringify(value);
+  }
+  responseData += ',"context":"' + ChromeDriver.context + 
+      '","class":"org.openqa.selenium.remote.Response"}';
+  
+  var response = "HTTP/1.1 200 OK" +
+      "\r\nContent-Length: " + responseData.length + 
+      "\r\nContent-Type: application/json; charset=ISO-8859-1" +
+      "\r\n\r\n" + responseData;
+  sendHttp(response);
+}
+
+/**
+ * Sends a 204 No Content HTTP message
+ */
+function sendNoContent() {
+  sendHttp("HTTP/1.1 204 No Content");
+}
+
+/**
+ * Sends a 302 Found HTTP Message to the passed location
+ * @param location String containing the location to redirect to,
+ *                 e.g. "http://www.google.co.uk"
+ */
+function sendFound(location) {
+  if (typeof(location) != "string") {
+    console.log("Tried to send 302 to a non-string location");
+    return;
+  }
+  var response = "HTTP/1.1 302 Found" +
+                 "\r\nLocation: " + location +
+                 "\r\nContent-Length: 0";
+  sendHttp(response);
+}
+
+/**
+ * Sends the passed exception in a 404 Not Found HTTP message
+ * @param value JSON.stringifiable object encapsulating the error,
+ *              e.g. {message: "Element with ID 'foo' could not be found",
+ *                    class: "org.openqa.selenium.NoSuchElementException"}
+ */
+function sendNotFound(value) {
+  if (!typeof(value) == "string") {
+    console.log("Tried to send an invalid 404 object");
+  }
+  var responseData = '{"error":true,"sessionId":\"' + ChromeDriver.sessionId + '\",' +
+      '"context":"' + ChromeDriver.context + '","value":' + JSON.stringify(value) + 
+      ',"class":"org.openqa.selenium.remote.Response"}';
+  var response = "HTTP/1.1 404 Not Found" +
+      "\r\nContent-Length: " + responseData.length +
+      "\r\nContent-Type: application/json; charset=ISO-8859-1" +
+      "\r\n\r\n" + responseData;
+  sendHttp(response);
+}
+
+function wrapInjectEmbedIfNecessary(requestObject) {
+  if (ChromeDriver.hasHwnd) {
+    return requestObject;
   } else {
-    is_loading_page = false;
-    primary_display_tab_id = tab.id;
-    SetActivePortByTabId(tab.id);
-    //TODO(danielwh): Maybe close other tabs/windows
-    SendNoContent();
+    return {request: "inject embed",
+            followup: requestObject,
+            value: {sessionId: ChromeDriver.sessionId,
+                    uuid: ChromeDriver.instanceUuid}};
   }
 }
 
-function get_url_check_loaded_first_time(tab_id) {
-  chrome.tabs.get(tab_id, get_url_loaded_callback_first_time);
+/**
+ * Respond to a request to start a new session
+ * TODO(danielwh): Actually make this do anything useful and
+ * not just be hard-coded.  Oh, and look at all capabilities in turn
+ * @param value array containing org.openqa.selenium.remote.DesiredCapabilities
+ */
+function createSession(capabilities) {
+  ChromeDriver.capabilities = capabilities[0];
+  if (capabilities[0].platform == "WINDOWS" && capabilities[0].browserName == "chrome") {
+    sendFound("http://localhost:7601/session/" + ChromeDriver.sessionId + "/" + ChromeDriver.context);
+  } else {
+    sendNotFound({message: "Could not negotiate capabilities", class: "org.openqa.selenium.WebDriverException"});
+  }
 }
 
-function unblock() {
-  blocked = false;
+/**
+ * Sends an array containing all of the current window handles
+ */
+function getWindowHandles() {
+  var windowHandles = [];
+  for (var i = 0; i < ChromeDriver.ports.length; ++i) {
+    windowHandles.push(ChromeDriver.ports[i].name);
+  }
+  sendValue(windowHandles);
 }
 
-function SetActivePortByTabId(tab_id) {
-  for (var i = 0; i < ports.length; ++i) {
-    if (ports[i].tab.id == tab_id) {
-      active_port = ports[i];
+/**
+ * Closes the current tab if it exists, and opens a new one, in which it
+ * gets the URL passed and record the sessionId and UUID passed.
+ * @param value JSON array containing the URL to load
+ * @param sessionId the current sessionId
+ * @param UUID a generated UUID that the extension can use for this page
+ *             if needed
+ */
+function getUrl(value, sessionId, uuid) {
+  var url = JSON.parse(value)[0];
+  //Ignore any URL request we get while loading a page,
+  //because we should still return a 204 when we cannot find the page.
+  if (ChromeDriver.isCurrentlyLoadingUrl) {
+    return;
+  }
+  ChromeDriver.activePort = null;
+  ChromeDriver.hasHwnd = false;
+  if (ChromeDriver.activeTabId != null) {
+    chrome.tabs.remove(ChromeDriver.activeTabId);
+  }
+  ChromeDriver.activeTabId = null;
+  ChromeDriver.sessionId = sessionId;
+  ChromeDriver.instanceUuid = uuid;
+  ChromeDriver.isCurrentlyLoadingUrl = true;
+  chrome.tabs.create({url: url, selected: true}, getUrlCallback);
+}
+
+//TODO(danielwh): Maybe use an onload listener
+function getUrlCallback(tab) {
+  if (tab.status != "complete") {
+    ChromeDriver.isCurrentlyLoadingUrl = true
+    //Use the helper calback so that we can add our own delay and not DOS the browser
+    setTimeout("getUrlCallbackById(" + tab.id + ")", 10);
+  } else {
+    ChromeDriver.isCurrentlyLoadingUrl = false;
+    ChromeDriver.activeTabId = tab.id;
+    setActivePortByTabId(tab.id);
+    sendNoContent();
+  }
+}
+
+function getUrlCallbackById(tabId) {
+  chrome.tabs.get(tabId, getUrlCallback);
+}
+
+function pushPort(port) {
+  //It would be nice to only have one port per name, so we enforce this
+  removePort(port);
+  ChromeDriver.ports.push(port);
+}
+
+function setActivePortByTabId(tab_id) {
+  for (var i = 0; i < ChromeDriver.ports.length; ++i) {
+    if (ChromeDriver.ports[i].tab.id == tab_id) {
+      ChromeDriver.activePort = ChromeDriver.ports[i];
       break;
     }
   }
 }
 
-function SetActivePortByWindowName(name) {
-  for (var i = 0; i < ports.length; ++i) {
-    if (ports[i].name == name) {
-      active_port = ports[i];
-      return true;
+function setActivePortByWindowName(handle) {
+  for (var i = 0; i < ChromeDriver.ports.length; ++i) {
+    if (ChromeDriver.ports[i].name == handle) {
+      ChromeDriver.activePort = ChromeDriver.ports[i];
+      sendNoContent();
     }
   }
+  sendNotFound({message: "Could not find window by handle: " + handle,
+                class: "org.openqa.selenium.NoSuchWindowException"});
 }
 
-function remove_port(port) {
+function removePort(port) {
   //TODO(danielwh): Nice way of removing from array?
   var temp_ports = [];
-  for (var i = 0; i < ports.length; ++i) {
-    if (ports[i].name != port.name) {
-      temp_ports.push(ports[i]);
+  for (var i = 0; i < ChromeDriver.ports.length; ++i) {
+    if (ChromeDriver.ports[i].name != port.name) {
+      temp_ports.push(ChromeDriver.ports[i]);
     }
   }
-  ports = temp_ports;
-}
-
-function PushPort(port) {
-  //It would be nice to only have one port per name, so we enforce this
-  remove_port(port);
-  ports.push(port);
+  ChromeDriver.ports = temp_ports;
 }

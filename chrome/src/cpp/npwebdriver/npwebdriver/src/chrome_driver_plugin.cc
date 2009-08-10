@@ -98,10 +98,4 @@ void ChromeDriverPlugin::ReturnClickElement(int32 x, int32 y) {
   http_server_->send(kNoContentReseponse);
 }
 
-void ChromeDriverPlugin::ReturnSendFileKeys(wchar_t *value, int32 x, int32 y) {
-  WEBDRIVER_LOG("Sending file element keys...\n");
-  //TODO(danielwh): This
-  http_server_->send(kNoContentReseponse);
-}
-
 } //namespace webdriver

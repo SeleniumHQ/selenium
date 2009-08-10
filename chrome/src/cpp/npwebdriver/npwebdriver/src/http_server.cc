@@ -66,7 +66,7 @@ void HttpServer::_CallbackHandler(mg_connection *connection,
         info->post_data_len), '\\'), '\''), '\"');
     if (uri.size() == 4 && uri[3] == "url") {
       char *guid = GenerateGuidString();
-      js << "get_url('" << post_data << "', '"
+      js << "getUrl('" << post_data << "', '"
          << chrome_driver_plugin->session_id() << "', '" << guid << "');";
       delete[] guid;
     } else {
