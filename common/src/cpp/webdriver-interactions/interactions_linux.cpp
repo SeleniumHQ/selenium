@@ -640,6 +640,7 @@ bool pending_keyboard_events()
     print_key_event(lastEvent);
   }
 
+  const int gdk_event_poll_time = 10 /*ms*/;
   bool ret_val = false;
   if (lastEvent != NULL && is_gdk_keyboard_event(lastEvent) &&
          event_earlier_than(lastEvent, gLatestEventTime)) {
