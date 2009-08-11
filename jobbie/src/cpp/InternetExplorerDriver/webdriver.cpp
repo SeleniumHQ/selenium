@@ -207,6 +207,9 @@ int wdFreeDriver(WebDriver* driver)
     delete driver->ie;
     delete driver;
 
+	// Let the IE COM instance fade away
+	wait(2000);
+
 	return SUCCESS;
 }
 
@@ -1093,19 +1096,21 @@ int wdAddElementScriptArg(ScriptArgs* scriptArgs, WebElement* element)
 
 int wdExecuteScript(WebDriver* driver, const wchar_t* script, ScriptArgs* scriptArgs, ScriptResult** scriptResultRef) 
 {
-	*scriptResultRef = NULL;
-	CComVariant &result = driver->ie->executeScript(script, scriptArgs->args);
+	try {
+		*scriptResultRef = NULL;
+		CComVariant &result = driver->ie->executeScript(script, scriptArgs->args);
 
-	ScriptResult* toReturn = new ScriptResult();
-	HRESULT hr = VariantCopy(&(toReturn->result), &result);
-	if (!SUCCEEDED(hr) && result.vt == VT_USERDEFINED) {
-		// Special handling of the user defined path *sigh*
-		toReturn->result.vt = VT_USERDEFINED;
-		toReturn->result.bstrVal = CComBSTR(result.bstrVal);
-	}
-	*scriptResultRef = toReturn;
+		ScriptResult* toReturn = new ScriptResult();
+		HRESULT hr = VariantCopy(&(toReturn->result), &result);
+		if (!SUCCEEDED(hr) && result.vt == VT_USERDEFINED) {
+			// Special handling of the user defined path *sigh*
+			toReturn->result.vt = VT_USERDEFINED;
+			toReturn->result.bstrVal = CComBSTR(result.bstrVal);
+		}
+		*scriptResultRef = toReturn;
 
-	return SUCCESS;
+		return SUCCESS;
+	} END_TRY;
 }
 
 int wdGetScriptResultType(ScriptResult* result, int* type) 

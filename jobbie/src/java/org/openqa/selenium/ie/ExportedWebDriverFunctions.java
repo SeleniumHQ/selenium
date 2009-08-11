@@ -103,8 +103,6 @@ interface ExportedWebDriverFunctions extends StdCallLibrary {
 
   int wdGetCurrentWindowHandle(Pointer driver, PointerByReference handle);
 
-  int wdQuit(Pointer driver);
-
   public static class HWND extends PointerType { }
   
   public static class HWNDByReference extends ByReference {
