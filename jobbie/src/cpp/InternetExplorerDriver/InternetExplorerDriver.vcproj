@@ -410,6 +410,10 @@
 				RelativePath=".\webdriver.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\windowHandling.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -466,6 +470,10 @@
 			</File>
 			<File
 				RelativePath=".\webdriver.h"
+				>
+			</File>
+			<File
+				RelativePath=".\windowHandling.h"
 				>
 			</File>
 		</Filter>

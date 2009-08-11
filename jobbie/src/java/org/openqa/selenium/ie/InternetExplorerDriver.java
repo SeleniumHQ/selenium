@@ -89,10 +89,18 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
     }
     
     public void quit() {
-      lib.wdClose(driver);
-//      lib.wdQuit(driver);
-//      lib.wdFreeDriver(driver);
-//      driver = null;
+      for (String handle : getWindowHandles()) {
+        switchTo().window(handle);
+        close();
+      }
+      lib.wdFreeDriver(driver);
+      driver = null;
+
+      try {
+        Thread.sleep(2000);
+      } catch (InterruptedException e) {
+        throw new WebDriverException(e);
+      }
     }
 
   public Set<String> getWindowHandles() {
@@ -323,10 +331,9 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
         }
 
         public WebDriver window(String windowName) {
-          throw new NoSuchWindowException("Unable to switch to window: " + windowName);
-          /*int result = lib.wdSwitchToWindow(driver, new WString(windowName));
+          int result = lib.wdSwitchToWindow(driver, new WString(windowName));
           errors.verifyErrorCode(result, "Unable to locate window: " + windowName);
-          return InternetExplorerDriver.this;*/
+          return InternetExplorerDriver.this;
         }
 
       public WebDriver defaultContent() {

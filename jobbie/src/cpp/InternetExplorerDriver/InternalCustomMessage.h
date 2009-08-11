@@ -74,9 +74,10 @@ limitations under the License.
 #define _WD_WAITFORNAVIGATIONTOFINISH	WM_USER+70
 #define _WD_ELEM_RELEASE				WM_USER+71
 
-#define _WD_QUIT_IE						WM_USER+80
+#define _WD_CLOSEWINDOW					WM_USER+80
 #define _WD_EXECUTESCRIPT				WM_USER+81
 #define _WD_GETACTIVEELEMENT			WM_USER+82
+#define _WD_SWITCHWINDOW				WM_USER+83
 
 // ==============================================================
 //     HEART BEATS

@@ -24,3 +24,5 @@
 #define ENOSUCHCOLLECTION    20
 #define ETIMEOUT			 21 
 #define ENULLPOINTER		 22
+#define ENOSUCHWINDOW        23
+

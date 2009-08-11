@@ -24,6 +24,7 @@ limitations under the License.
 
 #include "interaction_utils.h"
 #include "InternetExplorerDriver.h"
+#include "logging.h"
 
 
 // #define __VERBOSING_DLL__

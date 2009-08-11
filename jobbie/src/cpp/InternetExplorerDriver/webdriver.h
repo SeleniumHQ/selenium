@@ -57,8 +57,6 @@ EXPORT int wdFreeScriptResult(ScriptResult* scriptResult);
 EXPORT int wdNewDriverInstance(WebDriver** result);
 EXPORT int wdFreeDriver(WebDriver* driver);
 
-EXPORT int wdQuit(WebDriver* driver);
-
 EXPORT int wdGet(WebDriver* driver, const wchar_t* url);
 EXPORT int wdGoBack(WebDriver* driver);
 EXPORT int wdGoForward(WebDriver* driver);
@@ -74,6 +72,7 @@ EXPORT int wdGetCookies(WebDriver* driver, StringWrapper** result);
 EXPORT int wdAddCookie(WebDriver* driver, const wchar_t* cookie);
 
 EXPORT int wdSwitchToActiveElement(WebDriver* driver, WebElement** result);
+EXPORT int wdSwitchToWindow(WebDriver* driver, const wchar_t* name);
 EXPORT int wdSwitchToFrame(WebDriver* driver, const wchar_t* path);
 EXPORT int wdWaitForLoadToComplete(WebDriver* driver);
 

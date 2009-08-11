@@ -32,7 +32,6 @@ public:
 	~InternetExplorerDriver();
 
 	void close();
-	void quit();
 
 	IeThread* ThreadFactory();
 
@@ -76,6 +75,7 @@ public:
 
 	void waitForNavigateToFinish();
 	bool switchToFrame(LPCWSTR pathToFrame);
+	int switchToWindow(LPCWSTR name);
 
 	LPCWSTR getCookies();
 	int addCookie(const wchar_t *cookieString);

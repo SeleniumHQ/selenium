@@ -210,15 +210,6 @@ int wdFreeDriver(WebDriver* driver)
 	return SUCCESS;
 }
 
-int wdQuit(WebDriver* driver)
-{
-	if (!driver || !driver->ie) return ENOSUCHDRIVER;
-	
-	driver->ie->quit();
-
-	return SUCCESS;
-}
-
 int wdNewDriverInstance(WebDriver** result)
 {
 	*result = NULL;
@@ -412,6 +403,15 @@ int wdSwitchToActiveElement(WebDriver* driver, WebElement** result)
 		*result = toReturn;
 
 		return SUCCESS;
+	} END_TRY;
+}
+
+int wdSwitchToWindow(WebDriver* driver, const wchar_t* name)
+{
+	if (!driver || !driver->ie) return ENOSUCHDRIVER;
+
+	try {
+		return driver->ie->switchToWindow(name);
 	} END_TRY;
 }
 

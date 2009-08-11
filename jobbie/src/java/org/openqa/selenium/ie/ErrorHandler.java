@@ -24,6 +24,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.NoSuchWindowException;
 
 class ErrorHandler {
   public void verifyErrorCode(int errorCode, String message) {
@@ -70,6 +71,9 @@ class ErrorHandler {
                                       + "Internet Options in the 'Security' tab) If it is a "
                                       + "trusted site, then the request may have taken more than"
                                       + "a minute to finish.");
+
+    case 23:
+      throw new NoSuchWindowException(message);
 
     default: 
       throw new IllegalStateException(String.format("%s (%d)", message, errorCode));

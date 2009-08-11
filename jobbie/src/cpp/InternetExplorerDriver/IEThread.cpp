@@ -155,7 +155,8 @@ BOOL IeThread::DispatchThreadMessageEx(MSG* pMsg)
 	CUSTOM_MESSAGE_MAP ( _WD_WAITFORNAVIGATIONTOFINISH, OnWaitForNavigationToFinish )
 	CUSTOM_MESSAGE_MAP ( _WD_EXECUTESCRIPT, OnExecuteScript )
 	CUSTOM_MESSAGE_MAP ( _WD_GETACTIVEELEMENT, OnGetActiveElement )
-	CUSTOM_MESSAGE_MAP ( _WD_QUIT_IE, OnQuitIE )
+	CUSTOM_MESSAGE_MAP ( _WD_CLOSEWINDOW, OnCloseWindow )
+	CUSTOM_MESSAGE_MAP ( _WD_SWITCHWINDOW, OnSwitchToWindow )
 
 	 return FALSE;
 }
@@ -211,12 +212,12 @@ VOID CALLBACK NavigationCompletionTimer(HWND hwnd, UINT uMsg, UINT_PTR idEvent, 
 {
 	SCOPETRACER
 	safeIO::CoutA("g_IE_Thread =");
-	safeIO::CoutLong((long)g_IE_Thread);
+	safeIO::CoutLong((long)(LONG_PTR)g_IE_Thread);
 	if(!g_IE_Thread) return;
 	if(idEvent != g_IE_Thread->m_NavigationCompletionTimerID)
 	{
-		safeIO::CoutLong(idEvent);
-		safeIO::CoutLong(g_IE_Thread->m_NavigationCompletionTimerID);
+		safeIO::CoutLong((long)idEvent);
+		safeIO::CoutLong((long)(g_IE_Thread->m_NavigationCompletionTimerID));
 		return;
 	}
 	g_IE_Thread->waitForNavigateToFinish();
