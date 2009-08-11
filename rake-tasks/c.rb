@@ -1,5 +1,7 @@
 # C related tasks
 
+require "rake-tasks/files.rb"
+
 def dll(args)
   deps = build_deps_(args[:deps])
   
@@ -75,23 +77,3 @@ def gccbuild_c(src_file, obj_dir, args, is_32_bit)
   true
 end
 
-def copy_prebuilt(prebuilt, out)
-  dir = out.split('/')[0..-2].join('/') 
-
-  if prebuilt.nil?
-    mkdir_p dir
-    File.open(out, 'w') {|f| f.write('')}    
-  elsif File.directory? prebuilt
-    from = prebuilt + "/" + out
-    from = from.sub(/\/build\//, "/")
-    if (File.exists?(from))
-      puts "Falling back to copy of: #{out}"
-      mkdir_p dir
-      cp_r from, out
-    else
-      puts "Unable to locate prebuilt copy of #{out}"
-    end
-  else
-    puts "Unable to locate prebuilt copy of #{out}"
-  end
-end
