@@ -38,12 +38,13 @@ vector<string> HttpServer::SplitPath(string path) {
 
 void HttpServer::_CallbackHandler(mg_connection *connection,
                                   const mg_request_info *info,
-                                  void *user_data) {
+                                  void *passed_void_server) {
   WEBDRIVER_LOG_HTTP_IN(info);
   
   //Keep the connection alive until we have sent a response
   set_connection_keep_alive(connection, true);
-  HttpServer *server = (HttpServer *)mg_get_connection_context_custom(connection);
+
+  HttpServer *server = (HttpServer *)passed_void_server;
 
   //Update the server's connection to the current one
   server->connection_ = connection;
@@ -86,7 +87,6 @@ void HttpServer::_CallbackHandler(mg_connection *connection,
 
 bool HttpServer::Listen(unsigned short port) {
   server_context_ = mg_start();
-  mg_set_context_custom(server_context_, this);
   
   stringstream port_string;
   port_string << port;
@@ -99,7 +99,7 @@ bool HttpServer::Listen(unsigned short port) {
   mg_set_option(server_context_, "idle_time", "0");
 
   //We bind to all addresses for convenience  
-  mg_bind_to_uri(server_context_, "*", _CallbackHandler, NULL);
+  mg_bind_to_uri(server_context_, "*", _CallbackHandler, this);
   port_ = port;
   is_listening_ = true;
   return true;

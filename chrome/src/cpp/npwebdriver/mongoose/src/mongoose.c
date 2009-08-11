@@ -22,10 +22,6 @@
  * $Id: mongoose.c 327 2009-05-05 14:11:04Z valenok $
  *
  * Modified by danielwh 2009-07-20:
- *  o Added void *custom to mg_connection (yes it's ugly) to allow for custom
- *    storage
- *  o Added mg_set_context_custom, mg_get_context_custom,
- *    mg_get_connection_context_custom
  *  o Added set_connection_keep_alive
  *  o Added some default allocations to mg_connection in accept_new_connection
  *  o Modified mg_vsnprintf to be consistent with MSVC vsnprintf,
@@ -4135,18 +4131,6 @@ mg_start(void)
 	start_thread((mg_thread_func_t) master_thread, ctx);
 
 	return (ctx);
-}
-
-void mg_set_context_custom(struct mg_context *context, void *custom) {
-  context->custom = custom;
-}
-
-void *mg_get_context_custom(struct mg_context *context) {
-  return context->custom;
-}
-
-void *mg_get_connection_context_custom(struct mg_connection *connection) {
-  return connection->ctx->custom;
 }
 
 void set_connection_keep_alive(struct mg_connection *connection, int keep_alive) {

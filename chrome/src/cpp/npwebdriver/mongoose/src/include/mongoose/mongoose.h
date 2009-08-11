@@ -23,8 +23,6 @@
  *
  * Modified by danielwh 2009-07-20:
  *  o Factored mg_header into its a global struct
- *  o Added mg_set_context_custom, mg_get_context_custom,
- *    mg_get_connection_context_custom
  *  o Added set_connection_keep_alive
  */
 
@@ -141,9 +139,6 @@ void mg_free_var(char *var);
 const char *mg_version(void);
 void mg_md5(char *buf, ...);
 
-void mg_set_context_custom(struct mg_context *context, void *custom);
-void *mg_get_context_custom(struct mg_context *context);
-void *mg_get_connection_context_custom(struct mg_connection *connection);
 void set_connection_keep_alive(struct mg_connection *connection, int keep_alive);
 
 #ifdef __cplusplus
