@@ -44,11 +44,15 @@ def gcc(srcs, out, args, link_args, is_32_bit, prebuilt)
 
   mkdir_p obj_dir
 
+  is_cpp_code = false
   srcs.each do |src|
     ok = gccbuild_c(src, obj_dir, args, is_32_bit)
     if (!ok)
       copy_prebuilt(prebuilt, out)
       return
+    end
+    if (src =~ /\.cpp$/)
+      is_cpp_code = true
     end
   end
 
@@ -56,8 +60,15 @@ def gcc(srcs, out, args, link_args, is_32_bit, prebuilt)
   flags += (is_32_bit ? "-m32 " : "-m64 ")
   flags += " " + link_args + " " if link_args
 
-  # if we've made it this far, then continue
-  sh "g++ -o #{out} #{obj_dir}/*.o #{flags}", :verbose => true
+  # if we've made it this far, try to link. If link fails,
+  # copy from prebuilt.
+  linker = is_cpp_code ? "g++" : "gcc"
+  sh "#{linker} -o #{out} #{obj_dir}/*.o #{flags}", :verbose => true do |link_ok, res|
+    if (!link_ok)
+      copy_prebuilt(prebuilt, out)
+      return
+    end
+  end
 
   rm_rf "#{out}_temp"
 end
