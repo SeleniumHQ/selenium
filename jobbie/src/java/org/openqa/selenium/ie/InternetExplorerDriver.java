@@ -89,7 +89,10 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
     }
     
     public void quit() {
-      lib.wdQuit(driver);
+      lib.wdClose(driver);
+//      lib.wdQuit(driver);
+//      lib.wdFreeDriver(driver);
+//      driver = null;
     }
 
   public Set<String> getWindowHandles() {
