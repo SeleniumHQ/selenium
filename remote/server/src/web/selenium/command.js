@@ -21,195 +21,263 @@ limitations under the License.
  */
 
 goog.provide('webdriver.Command');
-goog.provide('webdriver.CommandInfo');
+goog.provide('webdriver.CommandName');
+goog.provide('webdriver.LocatorStrategy');
 goog.provide('webdriver.Response');
 
+goog.require('goog.array');
+
 
 /**
- * Describes the basic structure of a command to send.  Each instance of this
- * class is considered immutable.
- * @param {string} methodName The method to call when using a local command
- *     processor.
- * @param {string} url The path on the RemoteServer to send the command to when
- *     using a remote command processor.
- * @param {webdriver.CommandInfo.Verb} verb The HTTP method to use when sending
- *     the command with a remote command processor.
+ * Describes a command to be executed by a
+ * {@code webdriver.AbstractCommandProcessor}.
+ * @param {string} name The name of this command.
+ * @param {webdriver.WebElement} opt_element The element to perform this command
+ *     on. If not defined, the command will be performed relative to the
+ *     document root.
  * @constructor
  */
-webdriver.CommandInfo = function(methodName, url, verb) {
-  this.methodName = methodName;
-  this.url = url;
-  this.verb = verb;
+webdriver.Command = function(name, opt_element) {
+
+  /**
+   * The name of this command.
+   * @type {string}
+   */
+  this.name = name;
+
+  /**
+   * The element to perform this command on. If not defined, the command will be
+   * performed relative to the document root.
+   * @type {webdriver.WebElement}
+   */
+  this.element = opt_element;
+
+  /**
+   * The parameters to this command.
+   * @type {Array.<*>}
+   */
+  this.parameters = [];
+
+  /**
+   * Callback for when the command processor successfully finishes this command.
+   * The result of this function is included in the final result of the command.
+   * @type {?function}
+   */
+  this.onSuccessCallbackFn = null;
+  
+  /**
+   * Callback for when the command processor fails to successfully finish a
+   * command. The function should take a single argument, the
+   * {@code webdriver.Response} from the command processor. The response may be
+   * modified (for example, to turn an expect failure into a success). If the
+   * error state is cleared, the {@code onSucessCallbackFn} will still not be
+   * called.
+   * @type {?function}
+   */
+  this.onFailureCallbackFn = null;
+
+  /**
+   * Callback for when this command is completely finished, which is after the
+   * response is set and success/failure callbacks have been run. The function
+   * should take a single argument, a reference to this command.
+   * @type {?function}
+   * @private
+   */
+  this.onCompleteCallbackFn_ = null;
+
+  /**
+   * The response to this command.
+   * @type {webdriver.Response}
+   */
+  this.response = null;
+
+  /**
+   * Whether this command was aborted.
+   * @type {boolean}
+   */
+  this.abort = false;
 };
 
 
 /**
- * Creates a {@code webdriver.Command} for the given {@code webdriver.WebDriver}
- * instance.
- * @param {webdriver.WebDriver} driver The driver that will eventually execute
- *     the created command.
- * @param {Array.<*>} opt_args The arguments to send with the command.
- * @param {function} opt_callbackFn The function to call when the command
- *     completes.  The function should take a single argument, the
- *     {@code webdriver.Response} to the command.
- * @param {function} opt_errorCallbackFn The function to call if the command
- *     returns an error.  The function should take a single argument, the
- *     {@code webdriver.Response} to the command. Note that this function can
- *     handle expected errors (e.g. negative paths) by clearing the error flag
- *     of the response.
- * @return {webdriver.Command} The new Command object.
+ * Set the parameters to send with this command.
+ * @param {*} var_args The arguments to send to this command.
+ * @return {webdriver.Command} A self reference.
  */
-webdriver.CommandInfo.prototype.buildCommand = function(driver, opt_args,
-                                                        opt_callbackFn,
-                                                        opt_errorCallbackFn) {
-  return new webdriver.Command(driver.getSessionId(), driver.getContext(), this,
-      opt_args, opt_callbackFn, opt_errorCallbackFn);
+webdriver.Command.prototype.setParameters = function(var_args) {
+  this.parameters = goog.array.slice(arguments, 0);
+  return this;
 };
 
 
-// An anonymous function used to initialize predefined webdriver.CommandInfo
-// objects in a more readable manner.
-(function() {
-  var info = webdriver.CommandInfo;
-
-  info.NEW_SESSION = new info('findActiveDriver', '/session', 'POST');
-  info.QUIT = new info(null, '/session/:sessionId', 'DELETE');
-
-  info.GET_CURRENT_WINDOW_HANDLE = new info(
-      'getCurrentWindowHandle', '/session/:sessionId/:context/window_handle',
-      'GET');
-  info.GET_CURRENT_WINDOW_HANDLES = new info(
-      'getAllWindowHandles', '/session/:sessionId/:context/window_handles',
-      'GET');
-  info.GET_PAGE_SOURCE = new info('getPageSource', '', 'GET');
-
-  info.GET = new info('get', '/session/:sessionId/:context/url', 'POST');
-  info.FORWARD = new info(
-      'goForward', '/session/:sessionId/:context/forward', 'POST');
-  info.BACK = new info('goBack', '/session/:sessionId/:context/back', 'POST');
-  info.REFRESH = new info(
-      'refresh', '/session/:sessionId/:context/refresh', 'POST');
-
-  info.GET_TITLE = new info(
-      'title', '/session/:sessionId/:context/title', 'GET');
-  info.PAGE_SOURCE = new info(
-      'getPageSource', '/session/:sessionId/:context/source', 'GET');
-
-  info.CLOSE = new info(
-      'close', '/session/:sessionId/:context/window', 'DELETE');
-  info.SWITCH_TO_WINDOW = new info(
-      'switchToWindow', '/session/:sessionId/:context/window/:name', 'POST');
-  info.SWITCH_TO_FRAME = new info(
-      'switchToFrame', '/session/:sessionId/:context/frame/:id', 'POST');
-  info.SWITCH_TO_DEFAULT_CONTENT = new info(
-      'switchToDefaultContent',
-      '/session/:sessionId/:context/frame/:id', 'POST');
-
-  info.EXECUTE_SCRIPT = new info(
-      'executeScript', '/session/:sessionId/:context/execute', 'POST');
-
-  info.GET_MOUSE_SPEED = new info(
-      'getMouseSpeed', '/session/:sessionId/:context/speed', 'GET');
-  info.SET_MOUSE_SPEED = new info(
-      'setMouseSpeed', '/session/:sessionId/:context/speed', 'POST');
-
-  info.GET_ACTIVE_ELEMENT = new info('getActiveElement',
-      '/session/:sessionId/:context/element/active', 'POST');
-
-  info.SET_VISIBLE = new info(
-      'setVisible', '/session/:sessionId/:context/visible', 'POST');
-  info.GET_VISIBLE = new info(
-      'getVisible', '/session/:sessionId/:context/visible', 'GET');
-  info.CLICK_ELEMENT = new info(
-      'click', '/session/:sessionId/:context/element/:id/click', 'POST');
-  info.CLEAR_ELEMENT = new info(
-      'clear', '/session/:sessionId/:context/element/:id/clear', 'POST');
-  info.SUBMIT_ELEMENT = new info(
-      'submitElement', '/session/:sessionId/:context/element/:id/submit',
-      'POST');
-  info.GET_ELEMENT_TEXT = new info(
-      'getElementText', '/session/:sessionId/:context/element/:id/text', 'GET');
-  info.SEND_KEYS = new info(
-      'sendKeys', '/session/:sessionId/:context/element/:id/value', 'POST');
-  info.GET_ELEMENT_VALUE = new info(
-      'getElementValue', '/session/:sessionId/:context/element/:id/value',
-      'GET');
-  info.GET_ELEMENT_NAME = new info(
-      'getTagName', '/session/:sessionId/:context/element/:id/name', 'GET');
-  info.IS_ELEMENT_SELECTED = new info(
-      'isElementSelected', '/session/:sessionId/:context/element/:id/selected',
-      'GET');
-  info.SET_ELEMENT_SELECTED = new info(
-      'setElementSelected', '/session/:sessionId/:context/element/:id/selected',
-      'POST');
-  info.TOGGLE_ELEMENT = new info(
-      'toggleElement', '/session/:sessionId/:context/element/:id/toggle',
-      'POST');
-  info.IS_ELEMENT_ENABLED = new info(
-      'isElementEnabled', '/session/:sessionId/:context/element/:id/enabled',
-      'GET');
-  info.IS_ELEMENT_DISPLAYED = new info(
-      'isElementDisplayed',
-      '/session/:sessionId/:context/element/:id/displayed', 'GET');
-  info.GET_ELEMENT_LOCATION = new info(
-      'getElementLocation', '/session/:sessionId/:context/element/:id/location',
-      'GET');
-  info.GET_ELEMENT_SIZE = new info(
-      'getElementSize', '/session/:sessionId/:context/element/:id/size', 'GET');
-  info.GET_ELEMENT_ATTRIBUTE = new info(
-      'getElementAttribute',
-      '/session/:sessionId/:context/element/:id/attribute/:name', 'GET');
-  info.DRAG_ELEMENT = new info(
-      'dragAndDrop', '/session/:sessionId/:context/element/:id/drag', 'POST');
-  info.GET_VALUE_OF_CSS_PROPERTY = new info(
-      'getValueOfCssProperty',
-      '/session/:sessionId/:context/element/:id/css/:propertyName', 'GET');
-})();
+/**
+ * Set the function to call with the {@code webdriver.Response} when the
+ * command processor successfully runs this command. This function is considered
+ * part of the command and any errors will cause the command as a whole to fail.
+ * @param {function} callbackFn The function to call on success.
+ * @param {Object} opt_selfObj The object in whose context to execute the
+ *     function.
+ */
+webdriver.Command.prototype.setSuccessCallback = function(callbackFn,
+                                                          opt_selfObj) {
+  if (callbackFn) {
+    this.onSuccessCallbackFn = goog.bind(callbackFn, opt_selfObj);
+  }
+  return this;
+};
 
 
 /**
- * Defines a command to be executed.
- * @param {string} sessionId The session to execute the for. This parameter is
- *     only required when the executing {@code webdriver.WebDriver} is using a
- *     {@code webdriver.HttpCommandProcessor}.
- * @param {webdriver.Context} context The context to execute the command in.
- * @param {webdriver.CommandInfo} info Describes the internal structure of the
- *     command to send.
- * @param {Array.<*>} opt_parameters The parameters to send with this command;
- *     Defaults to an empty array.
- * @param {function} opt_commandCallbackFn The function to call when the command
- *     completes.
- * @param {function} opt_errorCallbackFn The function to call if the command
- *     results in an error.  This function can be used to handle negative paths
- *     by clearing an expected error flag.
- * @private
+ * Set the function to call with the {@code webdriver.Response} when the
+ * command processor encounters an error while executing this command.
+ * @param {function} callbackFn The function to call on failure.
+ * @param {Object} opt_selfObj The object in whose context to execute the
+ *     function.
  */
-webdriver.Command = function(sessionId, context, info, opt_parameters,
-                             opt_commandCallbackFn, opt_errorCallbackFn) {
-  this.sessionId = sessionId;
-  this.context = context;
-  this.info = info;
-  this.parameters = opt_parameters || [];
-  this.callbackFn = opt_commandCallbackFn || goog.nullFunction;
-  this.errorCallbackFn = opt_errorCallbackFn || goog.nullFunction;
-  this.elementId = null;
+webdriver.Command.prototype.setFailureCallback = function(callbackFn,
+                                                          opt_selfObj) {
+  if (callbackFn) {
+    this.onFailureCallbackFn = goog.bind(callbackFn, opt_selfObj);
+  }
+  return this;
+};
+
+
+/**
+ * Set the function to call with this command when it is completed.
+ * @param {function} callbackFn The function to call on command completion.
+ * @param {Object} opt_selfObj The object in whose context to execute the
+ *     function.
+ */
+webdriver.Command.prototype.setCompleteCallback = function(callbackFn,
+                                                           opt_selfObj) {
+  if (callbackFn) {
+    this.onCompleteCallbackFn_ = goog.bind(callbackFn, opt_selfObj);
+  }
+  return this;
+};
+
+
+/**
+ * Set the response for this command. The response may only be set once; any
+ * repeat calls will be ignored.
+ * @param {webdriver.Response} response The response.
+ * @throws If the response was already set.
+ */
+webdriver.Command.prototype.setResponse = function(response) {
+  if (this.response) {
+    return;
+  }
+  this.response = response;
+
+  var sandbox = goog.bind(function(fn) {
+    try {
+      fn.call(this, this.response);
+    } catch (ex) {
+      this.response.isFailure = true;
+      this.response.errors.push(ex);
+    }
+  }, this);
+
+  if (!this.response.errors.length) {
+    if (this.response.isFailure &&
+        goog.isFunction(this.onFailureCallbackFn)) {
+      sandbox(this.onFailureCallbackFn);
+    } else if (!this.response.isFailure &&
+               goog.isFunction(this.onSuccessCallbackFn)) {
+      sandbox(this.onSuccessCallbackFn);
+    }
+  }
+
+  if (this.onCompleteCallbackFn_) {
+    this.onCompleteCallbackFn_(this);
+  }
+};
+
+
+/**
+ * Enumeration of predefined names command names that all command processors
+ * will support.
+ * @enum {string}
+ */
+webdriver.CommandName = {
+  FUNCTION: 'function',
+  SLEEP: 'sleep',
+  WAIT: 'wait',
+  PAUSE: 'pause',
+  NEW_SESSION: 'newSession',
+  QUIT: 'quit',
+  GET_CURRENT_WINDOW_HANDLE: 'getCurrentWindowHandle',
+  GET_ALL_WINDOW_HANDLES: 'getAllWindowHandles',
+  CLOSE: 'close',
+  SWITCH_TO_WINDOW: 'switchToWindow',
+  SWITCH_TO_FRAME: 'switchToFrame',
+  SWITCH_TO_DEFAULT_CONTENT: 'switchToDefaultContent',
+  GET: 'get',
+  FORWARD: 'forward',
+  BACK: 'back',
+  REFRESH: 'refresh',
+  GET_TITLE: 'getTitle',
+  GET_PAGE_SOURCE: 'getPageSource',
+  EXECUTE_SCRIPT: 'executeScript',
+  GET_MOUSE_SPEED: 'getMouseSpeed',
+  SET_MOUSE_SPEED: 'setMouseSpeed',
+  FIND_ELEMENT: 'findElement',
+  FIND_ELEMENTS: 'findElements',
+  GET_ACTIVE_ELEMENT: 'getActiveElement',
+  SET_VISIBLE: 'setVisible',
+  GET_VISIBLE: 'getVisible',
+  CLICK: 'click',
+  CLEAR: 'clear',
+  SUBMIT: 'submit',
+  GET_TEXT: 'getText',
+  SEND_KEYS: 'sendKeys',
+  GET_VALUE: 'getValue',
+  GET_TAG_NAME: 'getTagName',
+  IS_SELECTED: 'isSelected',
+  SET_SELECTED: 'setSelected',
+  TOGGLE: 'toggle',
+  IS_ENABLED: 'isEnabled',
+  IS_DISPLAYED: 'isDisplayed',
+  GET_LOCATION: 'getLocation',
+  GET_SIZE: 'getSize',
+  GET_ATTRIBUTE: 'getAttribute',
+  DRAG: 'drag',
+  GET_CSS_PROPERTY: 'getCssProperty'
+};
+
+
+/**
+ * Enumeration of the supported strategies for finding
+ * {@code webdriver.WebElement} on the page.
+ * @enum {string}
+ */
+webdriver.LocatorStrategy = {
+  id: 'id',
+  name: 'name',
+  className: 'className',
+  linkText: 'linkText',
+  partialLinkText: 'partialLinkText',
+  tagName: 'tagName',
+  xpath: 'xpath'
 };
 
 
 /**
  * Encapsulates a response to a {@code webdriver.Command}.
- * @param {webdriver.Command} command The original command.
- * @param {boolean} isError Whether the command resulted in an error. If
+ * @param {boolean} isFailure Whether the command resulted in an error. If
  *     {@code true}, then {@code value} contains the error message.
  * @param {webdriver.Context} context The (potentially new) context resulting
  *     from the command.
  * @param {string} value The value of the response, the meaning of which depends
- *    on the command.
+ *     on the command.
+ * @parma {Error} opt_error An error that caused this command to fail
+ *     prematurely.
  * @constructor
  */
-webdriver.Response = function(command, isError, context, value) {
-  this.command = command;
-  this.isError = isError;
+webdriver.Response = function(isFailure, context, value, opt_error) {
+  this.isFailure = isFailure;
   this.context = context;
   this.value = value;
+  this.errors = goog.array.slice(arguments, 3);
 };

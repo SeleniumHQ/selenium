@@ -35,7 +35,7 @@ function testNotAbleToClickOnAnElementThatIsNotDisplayed(driver) {
   driver.get(TEST_PAGES.javascriptPage);
   var element = driver.findElement({id: 'unclickable'});
   element.click();
-  driver.expectErrorFromPreviousCommand(
+  driver.catchExpectedError(
       'Should not be able to click on an invisible element');
 }
 
@@ -44,7 +44,7 @@ function testNotAbleToToggleAnElementThatIsNotDisplayed(driver) {
   driver.get(TEST_PAGES.javascriptPage);
   var element = driver.findElement({id: 'untogglable'});
   element.toggle();
-  driver.expectErrorFromPreviousCommand(
+  driver.catchExpectedError(
       'Should not be able to toggle an invisible element');
 }
 
@@ -53,7 +53,7 @@ function testNotAbleToSelectAnElementThatIsNotDisplayed(driver) {
   driver.get(TEST_PAGES.javascriptPage);
   var element = driver.findElement({id: 'untogglable'});
   element.setSelected();
-  driver.expectErrorFromPreviousCommand(
+  driver.catchExpectedError(
       'Should not be able to select an invisible element');
 }
 
@@ -62,7 +62,7 @@ function testNotAbleToTypeOnAnElementThatIsNotDisplayed(driver) {
   driver.get(TEST_PAGES.javascriptPage);
   var element = driver.findElement({id: 'unclickable'});
   element.sendKeys('You do not see me');
-  driver.expectErrorFromPreviousCommand(
+  driver.catchExpectedError(
       'Should not be able to type on an invisible element');
 }
 

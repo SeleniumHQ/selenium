@@ -20,255 +20,27 @@ limitations under the License.
  * @author jmleyba@gmail.com (Jason Leyba)
  */
 
-goog.provide('webdriver.Locator');
 goog.provide('webdriver.WebElement');
 
 goog.require('goog.array');
 goog.require('goog.json');
 goog.require('goog.math.Coordinate');
 goog.require('goog.math.Size');
-goog.require('webdriver.CommandInfo');
+goog.require('webdriver.Command');
+goog.require('webdriver.CommandName');
 goog.require('webdriver.Future');
+goog.require('webdriver.LocatorStrategy');
 
 
 /**
- * A datastructure representing a strategy to use for locating an element on the
- * current page under test.
- * @param {webdriver.CommandInfo} info A CommandInfo object identifying which
- *     command to use for finding the element.
- * @param {string} target The target of the search.
- * @constructor
- */
-webdriver.Locator = function(info, target) {
-  this.info = info;
-  this.target = target;
-};
-
-
-/**
- * Class for building {@code webdriver.Locator} objects.
- * @constructor
- */
-webdriver.Locator.Builder = function() {
-  this.findUsingElement_ = false;
-  this.findMany_ = false;
-  this.locatorMap_ = webdriver.Locator.Builder.FIND_UNDER_ROOT_;
-};
-
-
-/**
- * A map of strategies to local command processor methods that can be used to
- * find an element under the document root. Each enumerated item is a 2-element
- * array; the first element is the method to use for finding a single element
- * and the second is for finding multiple elements.
- * @enum {Array.<string>}
- */
-webdriver.Locator.Builder.FIND_UNDER_ROOT_ = {
-  id: ['selectElementById', 'selectElementsUsingId'],
-  name: ['selectElementByName', 'selectElementsUsingName'],
-  className: ['selectElementUsingClassName', 'selectElementsUsingClassName'],
-  linkText: ['selectElementUsingLink', 'selectElementsUsingLink'],
-  partialLinkText: ['selectElementUsingPartialLinkText',
-                    'selectElementsUsingPartialLinkText'],
-  tagName: ['selectElementUsingTagName', 'selectElementsUsingTagName'],
-  xpath: ['selectElementUsingXPath', 'selectElementsUsingXPath']
-};
-
-
-/**
- * A map of strategies to local command processor methods that can be used to
- * find a collection of child elements. Any strategies not in the map will be
- * converted to XPath.
- * @enum {string}
- */
-webdriver.Locator.Builder.FIND_MANY_UNDER_ELEMENT_ = {
-  className: 'findChildElementsByClassName',
-  linkText: 'findElementsByLinkText',
-  partialLinkText: 'findElementsByPartialLinkText',
-  tagName: 'findElementsByTagName',
-  xpath: 'findElementsByXPath'
-};
-
-
-/**
- * Build a locator that searches under the current element.
- * @return {webdriver.Locator.Builder} A self reference for chaining calls.
- */
-webdriver.Locator.Builder.prototype.underCurrentElement = function() {
-  this.findUsingElement_ = true;
-  return this.findManyElements();
-};
-
-
-/**
- * Build a locator that searches for multiple elements instead of just one.
- * @return {webdriver.Locator.Builder} A self reference for chaining calls.
- */
-webdriver.Locator.Builder.prototype.findManyElements = function() {
-  this.findMany_ = true;
-  this.locatorMap_ = this.findUsingElement_ ?
-      webdriver.Locator.Builder.FIND_MANY_UNDER_ELEMENT_ :
-      webdriver.Locator.Builder.FIND_UNDER_ROOT_;
-  return this;
-};
-
-
-/**
- * Map a locator target to an XPath target.
- * @param {Object} locator A hash object to build a locator from. The object
- *     should have {@code type} and {@code target} properties.
- * @return {string} The value of {@code locator.target} as an XPath expression.
- * @throws If the locator target cannot be mapped to an XPath expression.
- * @private
- */
-webdriver.Locator.Builder.prototype.mapToXPath_ = function(locator) {
-  var prefix = this.findUsingElement_ ? '.' : '';
-  switch (locator.type) {
-    case 'id':
-    case 'name':
-      return prefix + '//*[@' + locator.type + '="' + locator.target + '"]';
-    case 'className':
-      return  prefix + "//*[contains(" +
-              "concat(' ', normalize-space(@class), ' '),' " +
-              locator.target + " ')]";
-    case 'linkText':
-      return prefix + '//a[text()="' + locator.target + '"]';
-    case 'partialLinkText':
-      return prefix + '//a[contains(text(),"' + locator.target + '")]';
-    case 'tagName':
-      return prefix + '//' + locator.target;
-    case 'xpath':
-      return locator.target;
-  }
-  throw new Error('Locator cannot be mapped to xpath: ' +
-                  goog.json.serialize(locator));
-};
-
-
-/**
- * Builds the URL the command should be sent to when using a remote command
- * processor.
- * @return {string} The URL to send the locator command to.
- * @private
- */
-webdriver.Locator.Builder.prototype.buildUrl_ = function() {
-  var url = '/session/:sessionId/:context/element';
-  if (this.findMany_) {
-    url += 's';
-  }
-  if (this.findUsingElement_) {
-    url += '/:using';
-  }
-  return url;
-};
-
-
-/**
- * Builds a locator that searches under the current document root.
- * @param {Object} locator A hash object to build a locator from. The object
- *     should have {@code type} and {@code target} properties.
- * @param {string} url The URL to send the locator command to.
- * @return {webdriver.Locator} A new locator.
- * @private
- */
-webdriver.Locator.Builder.prototype.buildLocatorFromRoot_ = function(locator,
-                                                                     url) {
-  var method = this.locatorMap_[locator.type][Number(this.findMany_)];
-  return new webdriver.Locator(
-      new webdriver.CommandInfo(method, url, 'POST'), locator.target);
-};
-
-
-/**
- * Builds a locator that searches under an element in the DOM tree.
- * @param {Object} locator A hash object to build a locator from. The object
- *     should have {@code type} and {@code target} properties.
- * @param {string} url The URL to send the locator command to.
- * @return {webdriver.Locator} A new locator.
- * @private
- */
-webdriver.Locator.Builder.prototype.buildLocatorFromElement_ = function(locator,
-                                                                        url) {
-  var method = this.locatorMap_[locator.type];
-  var target = locator.target;
-  if (!method) {
-    method = webdriver.Locator.Builder.FIND_MANY_UNDER_ELEMENT_.xpath;
-    target = this.mapToXPath_(locator);
-  }
-  return new webdriver.Locator(
-      new webdriver.CommandInfo(method, url, 'POST'), target);
-};
-
-
-/**
- * Builds a new locator using this {@code Builder} object's current
- * configuration. This method takes an anonymous object describing the locator
- * strategy to use and the target to search for.  The hash object should define
- * one of the following strategies:
- * <ol>
- * <li>id</li>
- * <li>name</li>
- * <li>className</li>
- * <li>linkText</li>
- * <li>partialLinkText</li>
- * <li>tagName</li>
- * <li>xpath</li>
- * </ol>
- * The strategy should be the hash key and the target its value. Strategies are
- * given the priority listed above.
- * Example usage:
- * <code>
- * new webdriver.Locator.Builder().
- *     underCurrentElement().
- *     build({id: 'my-id'});
- * </code>
- * @param {Object} by An anonymous hash object describing the locator strategy
- *     to use and the target to search for.
- * @return {webdriver.Locator} A new locator.
- * @throws If the hash object does not specify a supported locator strategy or
- *     if attempting to build a {@code className} locator with a compound class
- *     as the target (e.g. "lorem ipsum").
- */
-webdriver.Locator.Builder.prototype.build = function(by) {
-  var searchOrder = ['id', 'name', 'className', 'linkText', 'partialLinkText',
-                     'tagName', 'xpath'];
-  var mappedLocator = goog.array.reduce(searchOrder, function(current, item) {
-    if (current) {
-      return current;
-    } else if (item in by) {
-      return {type: item, target: by[item]};
-    } else {
-      return null;
-    }
-  }, null, this);
-
-  if (!mappedLocator) {
-    throw new Error('Unsupported locator: ' + goog.json.serialize(by));
-  } else if (mappedLocator.type == 'className') {
-    var normalized = goog.string.normalizeWhitespace(mappedLocator.target);
-    mappedLocator.target = goog.string.trim(normalized);
-    if (mappedLocator.target.search(/\s/) >= 0) {
-      throw new Error('Compound class names are not allowed for searches: ' +
-          goog.string.quote(mappedLocator.target));
-    }
-  }
-
-  if (this.findUsingElement_) {
-    return this.buildLocatorFromElement_(mappedLocator, this.buildUrl_());
-  } else {
-    return this.buildLocatorFromRoot_(mappedLocator, this.buildUrl_());
-  }
-};
-
-
-/**
- * Represents a DOM element.
- * <p/>
- * WebElements can be found using a {@code webdriver.WebDriver}:
+ * Represents a DOM element.  WebElements can be found by searching from the
+ * document root using a {@code webdriver.WebDriver}, or by searhcing under
+ * another {@code webdriver.WebElement}:
  *
  *   driver.get('http://www.google.com');
- *   var searchBoxWebElement = driver.findElement({name: 'q'});
- *   searchBoxWebElement.sendKeys('webdriver');
+ *   var searchForm = driver.findElement({tagName: 'form'});
+ *   var searchBox = searchForm.findElement({name: 'q'});
+ *   searchBox.sendKeys('webdriver');
  *
  * @param {webdriver.WebDriver} driver The WebDriver instance that will
  *     actually execute commands.
@@ -306,40 +78,73 @@ webdriver.WebElement.UUID_REGEX =
 /**
  * Adds a command to the given driver to find an element on the current page
  * under test.
+ * <p/>
+ * The {@code locator} object should define the strategy to use by having a
+ * property whose key matches one of the keys in
+ * {@code webdriver.LocatorStrategy}. The value of this property defines the
+ * target of the search.  For example, {@code locator = {id: 'myButton'}}, would
+ * search for an element whose ID is "myButton".
+ * 
  * @param {webdriver.WebDriver} driver Instance to add the command to.
- * @param {webdriver.Locator} locator Locator strategy to use.
+ * @param {object} locator Hash object describing the locator strategy to use.
+ * @param {webdriver.WebElement} opt_element The element to search under. If not
+ *     provided, will search from the document root.
+ * @param {boolean} opt_findMany Whether to find many elements or just one;
+ *     defaults to {@code false}.
  * @param {function} opt_callbackFn Function to call if the command succeeds.
  * @param {function} opt_errorCallbackFn Function to call if the command fails.
- * @param {webdriver.Future} opt_elementId A future for the ID of the element
- *     to search under. If not specified, the search will be conducted from the
- *     document root.
+ * @throws If {@code locator} does not define a supported strategy.
  * @static
- * @private
  */
-webdriver.WebElement.findElementInternal_ = function(driver,
-                                                     locator,
-                                                     opt_callbackFn,
-                                                     opt_errorCallbackFn,
-                                                     opt_elementId) {
-  var command = locator.info.buildCommand(
-      driver, [locator.target],
-      function(response) {
+webdriver.WebElement.buildFindElementCommand = function(driver,
+                                                        locator,
+                                                        opt_element,
+                                                        opt_findMany,
+                                                        opt_callbackFn,
+                                                        opt_errorCallbackFn) {
+  var type, target;
+  for (var key in locator) {
+    if (key in webdriver.LocatorStrategy) {
+      type = key;
+      target = locator[key];
+      break;
+    }
+  }
+
+  if (!type) {
+    throw new Error('Unsupported locator: ' + goog.json.serialize(locator));
+
+  } else if (type == 'className') {
+    var normalized = goog.string.normalizeWhitespace(target);
+    target = goog.string.trim(normalized);
+    if (target.search(/\s/) >= 0) {
+      throw new Error('Compound class names are not allowed for searches: ' +
+                      goog.string.quote(target));
+    }
+  }
+
+  var commandName = opt_findMany ?
+      webdriver.CommandName.FIND_ELEMENTS :
+      webdriver.CommandName.FIND_ELEMENT;
+
+  var command = new webdriver.Command(commandName, opt_element).
+      setParameters(type, target).
+      setSuccessCallback(function(response) {
         var ids = response.value.split(',');
         var elements = [];
         for (var i = 0, id; id = ids[i]; i++) {
-          var element = new webdriver.WebElement(driver);
-          element.getId().setValue(id);
-          elements.push(element);
+          if (id) {
+            var element = new webdriver.WebElement(driver);
+            element.getId().setValue(id);
+            elements.push(element);
+          }
         }
         response.value = elements;
         if (opt_callbackFn) {
           opt_callbackFn(response);
         }
-      },
-      opt_errorCallbackFn);
-  if (opt_elementId) {
-    command.elementId = opt_elementId;
-  }
+      }).
+      setFailureCallback(opt_errorCallbackFn);
   driver.addCommand(command);
 };
 
@@ -348,17 +153,15 @@ webdriver.WebElement.findElementInternal_ = function(driver,
  * Adds a command to the given {@code webdriver.WebDriver} instance to find an
  * element on the page.
  * @param {webdriver.WebDriver} driver The driver to perform the search with.
- * @param {Object} by A hash object describing the strategy to use for finding
- *     the element.
+ * @param {Object} locator A hash object describing how to find the element. For
+ *     more information, see {@code #buildFindElementCommand()}.
  * @return {webdriver.WebElement} A WebElement that can be used to issue
  *     commands on the found element.  The element's ID will be set
  *     asynchronously once the driver successfully finds the element.
  */
-webdriver.WebElement.findElement = function(driver, by) {
-  var locator = new webdriver.Locator.Builder().build(by);
+webdriver.WebElement.findElement = function(driver, locator) {
   var webElement = new webdriver.WebElement(driver);
-  webdriver.WebElement.findElementInternal_(
-      driver, locator,
+  webdriver.WebElement.buildFindElementCommand(driver, locator, null, false,
       function(response) {
         webElement.getId().setValue(response.value[0].getId().getValue());
       });
@@ -370,17 +173,15 @@ webdriver.WebElement.findElement = function(driver, by) {
  * Adds a command to the given {@code webdriver.WebDriver} instance to test if
  * an element is present on the page.
  * @param {webdriver.WebDriver} driver The driver to perform the search with.
- * @param {Object} by A hash object describing the strategy to use for finding
- *     the element.
+ * @param {Object} locator A hash object describing how to find the element. For
+ *     more information, see {@code #buildFindElementCommand()}.
  * @return {webdriver.Future} A future whose value will be set when the driver
  *     completes the search; value will be {@code true} if the element was
  *     found, false otherwise.
  */
-webdriver.WebElement.isElementPresent = function(driver, by) {
-  var locator = new webdriver.Locator.Builder().build(by);
+webdriver.WebElement.isElementPresent = function(driver, locator) {
   var isPresent = new webdriver.Future(driver);
-  webdriver.WebElement.findElementInternal_(
-      driver, locator,
+  webdriver.WebElement.buildFindElementCommand(driver, locator, null, false,
       // If returns without an error, element is present
       function(response) {
         response.value = response.value.length > 0;
@@ -388,7 +189,7 @@ webdriver.WebElement.isElementPresent = function(driver, by) {
       },
       // If returns with an error, element is not present (clear the error!)
       function(response) {
-        response.isError = false;
+        response.isFailure = false;
         response.value = false;
         isPresent.setValue(false);
       });
@@ -400,33 +201,27 @@ webdriver.WebElement.isElementPresent = function(driver, by) {
  * Adds a command to the given {@code webdriver.WebDriver} instance to find
  * multiple elements on the page.
  * @param {webdriver.WebDriver} driver The driver to perform the search with.
- * @param {Object} by A hash object describing the strategy to use for finding
- *     the element.
+ * @param {Object} locator A hash object describing how to find the element. For
+ *     more information, see {@code #buildFindElementCommand()}.
  */
-webdriver.WebElement.findElements = function(driver, by) {
-  webdriver.WebElement.findElementInternal_(driver,
-      new webdriver.Locator.Builder().
-          findManyElements().
-          build(by));
+webdriver.WebElement.findElements = function(driver, locator) {
+  webdriver.WebElement.buildFindElementCommand(driver, locator, null, true);
 };
 
 
 /**
  * Adds a command to determine if an element is present under this element in
  * the DOM tree.
- * @param {Object} findBy A hash object describing the strategy to use for
- *     finding the element.
+ * @param {Object} locator A hash object describing how to find the element. For
+ *     more information, see {@code #buildFindElementCommand()}.
  * @return {webdriver.Future} A future whose value will be set when the driver
  *     completes the search; value will be {@code true} if the element was
  *     found, false otherwise.
  */
-webdriver.WebElement.prototype.isElementPresent = function(findBy) {
-  var locator = new webdriver.Locator.Builder().
-      underCurrentElement().
-      build(findBy);
+webdriver.WebElement.prototype.isElementPresent = function(locator) {
   var isPresent = new webdriver.Future(this.driver_);
-  webdriver.WebElement.findElementInternal_(
-      this.driver_, locator,
+  webdriver.WebElement.buildFindElementCommand(
+      this.driver_, locator, this, false,
       // If returns without an error, element could be present (check response).
       function(response) {
         response.value = response.value.length > 0;
@@ -434,11 +229,10 @@ webdriver.WebElement.prototype.isElementPresent = function(findBy) {
       },
       // If returns with an error, element is not present (clear the error!)
       function(response) {
-        response.isError = false;
+        response.isFailure = false;
         response.value = false;
         isPresent.setValue(false);
-      },
-      this.getId());
+      });
   return isPresent;
 };
 
@@ -446,23 +240,19 @@ webdriver.WebElement.prototype.isElementPresent = function(findBy) {
 /**
  * Adds a command to search for a single element on the page, restricting the
  * search to the descendants of the element represented by this instance.
- * @param {Object} by The strategy to use for finding the element.
+ * @param {Object} locator A hash object describing how to find the element. For
+ *     more information, see {@code #buildFindElementCommand()}.
  * @return {webdriver.WebElement} A WebElement that can be used to issue
  *     commands on the found element.  The element's ID will be set
  *     asynchronously once the element is successfully located.
  */
-webdriver.WebElement.prototype.findElement = function(by) {
-  var locator = new webdriver.Locator.Builder().
-      underCurrentElement().
-      build(by);
+webdriver.WebElement.prototype.findElement = function(locator) {
   var webElement = new webdriver.WebElement(this.driver_);
-  webdriver.WebElement.findElementInternal_(
-      this.driver_, locator,
+  webdriver.WebElement.buildFindElementCommand(
+      this.driver_, locator, this, false,
       function(response) {
         webElement.getId().setValue(response.value[0].getId().getValue());
-      },
-      /*let any errors bubble up*/null,
-      this.getId());
+      });
   return webElement;
 };
 
@@ -470,17 +260,12 @@ webdriver.WebElement.prototype.findElement = function(by) {
 /**
  * Adds a command to search for multiple elements on the page, restricting the
  * search to the descendants of hte element represented by this instance.
- * @param {Object} by The strategy to use for finding the element.
+ * @param {Object} locator A hash object describing how to find the element. For
+ *     more information, see {@code #buildFindElementCommand()}.
  */
-webdriver.WebElement.prototype.findElements = function(by) {
-  webdriver.WebElement.findElementInternal_(this.driver_,
-      new webdriver.Locator.Builder().
-          underCurrentElement().
-          findManyElements().
-          build(by),
-      /*default callback handler is enough*/null,
-      /*let any errors bubble up*/null,
-      this.getId());
+webdriver.WebElement.prototype.findElements = function(locator) {
+  webdriver.WebElement.buildFindElementCommand(
+      this.driver_, locator, this, true);
 };
 
 
@@ -502,28 +287,14 @@ webdriver.WebElement.prototype.getId = function() {
 
 
 /**
- * Helper function for building commands that execute against the element
- * represented by this instance.
- * @param {webdriver.CommandInfo} commandInfo Describes the command to add.
- * @param {Array.<*>} opt_parameters Array of arguments to send with the
- *     command; defaults to an empty array.
- * @param {function} opt_callbackFn Function to call with the response to the
- *     command.
- * @param {function} opt_errorCallbackFn Function to call with the response when
- *     the response is an error.
- * @param {boolean} opt_addToFront Whether this command should be added to the
- *     front or back of the driver's command queue; defaults to {@code false}.
+ * Creates a new {@code webdriver.Command} against the element represented by
+ * this instance.
+ * @param {string} name The name of the command to create.
+ * @return {webdriver.Command} The new command.
  * @private
  */
-webdriver.WebElement.prototype.addCommand_ = function(commandInfo,
-                                                      opt_parameters,
-                                                      opt_callbackFn,
-                                                      opt_errorCallbackFn,
-                                                      opt_addToFront) {
-  var command = commandInfo.buildCommand(
-      this.driver_, opt_parameters, opt_callbackFn, opt_errorCallbackFn);
-  command.elementId = this.getId();
-  this.driver_.addCommand(command, opt_addToFront);
+webdriver.WebElement.prototype.createCommand_ = function(name) {
+  return new webdriver.Command(name, this);
 };
 
 
@@ -531,7 +302,8 @@ webdriver.WebElement.prototype.addCommand_ = function(commandInfo,
  * Adds a command to click on this element.
  */
 webdriver.WebElement.prototype.click = function() {
-  this.addCommand_(webdriver.CommandInfo.CLICK_ELEMENT);
+  var command = this.createCommand_(webdriver.CommandName.CLICK);
+  this.driver_.addCommand(command);
 };
 
 
@@ -580,21 +352,24 @@ webdriver.WebElement.prototype.click = function() {
  * supported (e.g. Firefox on OS X), key events will be synthesized. Special
  * punctionation keys will be synthesized according to a standard QWERTY English
  * keyboard layout.
- * @param {string} var_args The strings to type.  All arguments will be joined
- *     into a single sequence (var_args is permitted for convenience).
+ * @param {string|webdriver.Future} var_args The strings to type. All arguments
+ *     will be joined into a single sequence (var_args is permitted for
+ *     convenience).
  */
 webdriver.WebElement.prototype.sendKeys = function(var_args) {
-  this.addCommand_(webdriver.CommandInfo.SEND_KEYS,
-                   [goog.array.slice(arguments, 0).join('')]);
+  var command = this.createCommand_(webdriver.CommandName.SEND_KEYS);
+  command.setParameters.apply(command, arguments);
+  this.driver_.addCommand(command);
 };
 
 /**
  * Queries for the tag/node name of this element.
  */
-webdriver.WebElement.prototype.getElementName = function() {
+webdriver.WebElement.prototype.getTagName = function() {
   var name = new webdriver.Future(this.driver_);
-  this.addCommand_(webdriver.CommandInfo.GET_ELEMENT_NAME, null,
-      goog.bind(name.setValueFromResponse, name));
+  var command = this.createCommand_(webdriver.CommandName.GET_TAG_NAME).
+      setSuccessCallback(name.setValueFromResponse, name);
+  this.driver_.addCommand(command);
   return name;
 };
 
@@ -605,18 +380,20 @@ webdriver.WebElement.prototype.getElementName = function() {
  */
 webdriver.WebElement.prototype.getAttribute = function(attributeName) {
   var value = new webdriver.Future(this.driver_);
-  this.addCommand_(webdriver.CommandInfo.GET_ELEMENT_ATTRIBUTE,
-      [attributeName], goog.bind(value.setValueFromResponse, value),
+  var command = this.createCommand_(webdriver.CommandName.GET_ATTRIBUTE).
+      setParameters(attributeName).
+      setSuccessCallback(value.setValueFromResponse, value).
       // If there is an error b/c the attribute was not found, set value to null
-      function (response) {
+      setFailureCallback(function(response) {
         // TODO(jmleyba): This error message needs to be consistent for all
         // drivers.
         if (response.value == 'No match') {
-          response.isError = false;
+          response.isFailure = false;
           response.value = null;
           value.setValue(null);
         }
       });
+  this.driver_.addCommand(command);
   return value;
 };
 
@@ -627,8 +404,9 @@ webdriver.WebElement.prototype.getAttribute = function(attributeName) {
  */
 webdriver.WebElement.prototype.getValue = function() {
   var value = new webdriver.Future(this.driver_);
-  this.addCommand_(webdriver.CommandInfo.GET_ELEMENT_VALUE, null,
-      goog.bind(value.setValueFromResponse, value));
+  var command = this.createCommand_(webdriver.CommandName.GET_VALUE).
+      setSuccessCallback(value.setValueFromResponse, value);
+  this.driver_.addCommand(command);
   return value;
 };
 
@@ -639,8 +417,9 @@ webdriver.WebElement.prototype.getValue = function() {
  */
 webdriver.WebElement.prototype.getText = function() {
   var text = new webdriver.Future(this.driver_);
-  this.addCommand_(webdriver.CommandInfo.GET_ELEMENT_TEXT, null,
-      goog.bind(text.setValueFromResponse, text));
+  var command = this.createCommand_(webdriver.CommandName.GET_TEXT).
+      setSuccessCallback(text.setValueFromResponse, text);
+  this.driver_.addCommand(command);
   return text;
 };
 
@@ -649,7 +428,8 @@ webdriver.WebElement.prototype.getText = function() {
  * Selects this element.
  */
 webdriver.WebElement.prototype.setSelected = function() {
-  this.addCommand_(webdriver.CommandInfo.SET_ELEMENT_SELECTED);
+  var command = this.createCommand_(webdriver.CommandName.SET_SELECTED);
+  this.driver_.addCommand(command);
 };
 
 
@@ -658,12 +438,13 @@ webdriver.WebElement.prototype.setSelected = function() {
  */
 webdriver.WebElement.prototype.getSize = function() {
   var size = new webdriver.Future(this.driver_);
-  this.addCommand_(webdriver.CommandInfo.GET_ELEMENT_SIZE, null,
-      goog.bind(function(response) {
+  var command = this.createCommand_(webdriver.CommandName.GET_SIZE).
+      setSuccessCallback(function(response) {
         var wh = response.value.replace(/\s/g, '').split(',');
         response.value = new goog.math.Size(wh[0], wh[1]);
         size.setValue(response.value);
-      }, this));
+      });
+  this.driver_.addCommand(command);
   return size;
 };
 
@@ -688,24 +469,43 @@ webdriver.WebElement.createCoordinatesFromResponse_ = function(future,
  */
 webdriver.WebElement.prototype.getLocation = function() {
   var currentLocation = new webdriver.Future(this.driver_);
-  this.addCommand_(webdriver.CommandInfo.GET_ELEMENT_LOCATION, null,
-      goog.bind(webdriver.WebElement.createCoordinatesFromResponse_, null,
-          currentLocation));
+  var command = this.createCommand_(webdriver.CommandName.GET_LOCATION).
+      setSuccessCallback(
+          goog.bind(webdriver.WebElement.createCoordinatesFromResponse_, null,
+              currentLocation));
+  this.driver_.addCommand(command);
   return currentLocation;
+};
+
+
+/**
+ * @param {webdriver.Future} newLocation Future to store the new location in
+ *     when the command is complete.
+ * @param {number} x Horizontal distance to drag this element.
+ * @param {number} y Vertical distanct to drag this element.
+ * @param opt_addToFront
+ * @private
+ */
+webdriver.WebElement.prototype.addDragAndDropCommand_ = function(
+    newLocation, x, y, opt_addToFront) {
+  var command = this.createCommand_(webdriver.CommandName.DRAG).
+      setParameters(x, y).
+      setSuccessCallback(
+          goog.bind(webdriver.WebElement.createCoordinatesFromResponse_, null,
+              newLocation));
+  this.driver_.addCommand(command, opt_addToFront);
 };
 
 
 /**
  * Drags this element by the given offset.
  * @param {number} x The horizontal amount, in pixels, to drag this element.
- * @param {nubmer} y The vertical amount, in pixels, to drag this element.
+ * @param {number} y The vertical amount, in pixels, to drag this element.
  * @return {webdriver.Future} The new location of the element.
  */
 webdriver.WebElement.prototype.dragAndDropBy = function(x, y) {
   var newLocation = new webdriver.Future(this.driver_);
-  this.addCommand_(webdriver.CommandInfo.DRAG_ELEMENT, [x, y],
-      goog.bind(webdriver.WebElement.createCoordinatesFromResponse_, null,
-          newLocation));
+  this.addDragAndDropCommand_(newLocation, x, y);
   return newLocation;
 };
 
@@ -729,9 +529,7 @@ webdriver.WebElement.prototype.dragAndDropTo = function(webElement) {
   this.driver_.callFunction(goog.bind(function() {
     var delta = goog.math.Coordinate.difference(
         toLocation.getValue(), thisLocation.getValue());
-    this.addCommand_(webdriver.CommandInfo.DRAG_ELEMENT, [delta.x, delta.y],
-        goog.bind(webdriver.WebElement.createCoordinatesFromResponse_, null,
-            newLocation), null, true);
+    this.addDragAndDropCommand_(newLocation, delta.x, delta.y, true);
   }, this));
   return newLocation;
 };
@@ -743,11 +541,13 @@ webdriver.WebElement.prototype.dragAndDropTo = function(webElement) {
  */
 webdriver.WebElement.prototype.isEnabled = function() {
   var futureValue = new webdriver.Future(this.driver_);
-  this.addCommand_(webdriver.CommandInfo.GET_ELEMENT_ATTRIBUTE, ['disabled'],
-      function(response) {
+  var command = this.createCommand_(webdriver.CommandName.GET_ATTRIBUTE).
+      setParameters('disabled').
+      setSuccessCallback(function(response) {
         response.value = !!!response.value;
         futureValue.setValue(response.value);
       });
+  this.driver_.addCommand(command);
   return futureValue;
 };
 
@@ -763,16 +563,19 @@ webdriver.WebElement.prototype.isEnabled = function() {
 webdriver.WebElement.prototype.isCheckedOrSelected_ = function(opt_future,
                                                                opt_addToFront) {
   var value = opt_future ||  new webdriver.Future(this.driver_);
-  this.addCommand_(webdriver.CommandInfo.GET_ELEMENT_NAME, null,
-      goog.bind(function(response) {
+  var command = this.createCommand_(webdriver.CommandName.GET_TAG_NAME).
+      setSuccessCallback(function(response) {
         var attribute = response.value == 'input' ? 'checked' : 'selected';
-        this.addCommand_(
-            webdriver.CommandInfo.GET_ELEMENT_ATTRIBUTE, [attribute],
-            function(response) {
-              response.value = !!response.value;
-              value.setValue(response.value);
-            }, null, true);
-      }, this), null, opt_addToFront);
+        var getAttrCommand =
+            this.createCommand_(webdriver.CommandName.GET_ATTRIBUTE).
+                setParameters(attribute).
+                setSuccessCallback(function(response) {
+                  response.value = !!response.value;
+                  value.setValue(response.value);
+                });
+        this.driver_.addCommand(getAttrCommand, true);
+      }, this);
+  this.driver_.addCommand(command, opt_addToFront);
   return value;
 };
 
@@ -801,10 +604,11 @@ webdriver.WebElement.prototype.isChecked = function() {
  */
 webdriver.WebElement.prototype.toggle = function() {
   var toggleResult = new webdriver.Future(this.driver_);
-  this.addCommand_(webdriver.CommandInfo.TOGGLE_ELEMENT, null,
-      goog.bind(function() {
+  var command = this.createCommand_(webdriver.CommandName.TOGGLE).
+      setSuccessCallback(function() {
         this.isCheckedOrSelected_(toggleResult, true);
-      }, this));
+      }, this);
+  this.driver_.addCommand(command);
   return toggleResult;
 };
 
@@ -814,7 +618,8 @@ webdriver.WebElement.prototype.toggle = function() {
  * will that form.
  */
 webdriver.WebElement.prototype.submit = function() {
-  this.addCommand_(webdriver.CommandInfo.SUBMIT_ELEMENT);
+  this.driver_.addCommand(
+      this.createCommand_(webdriver.CommandName.SUBMIT));
 };
 
 
@@ -823,7 +628,8 @@ webdriver.WebElement.prototype.submit = function() {
  * will clear its {@code value}.
  */
 webdriver.WebElement.prototype.clear = function() {
-  this.addCommand_(webdriver.CommandInfo.CLEAR_ELEMENT);
+  this.driver_.addCommand(
+      this.createCommand_(webdriver.CommandName.CLEAR));
 };
 
 
@@ -832,8 +638,8 @@ webdriver.WebElement.prototype.clear = function() {
  */
 webdriver.WebElement.prototype.isDisplayed = function() {
   var futureValue = new webdriver.Future(this.driver_);
-  this.addCommand_(webdriver.CommandInfo.IS_ELEMENT_DISPLAYED, null,
-      function(response) {
+  var command = this.createCommand_(webdriver.CommandName.IS_DISPLAYED).
+      setSuccessCallback(function(response) {
         // TODO(jmleyba): FF extension should not be returning a string here...
         if (goog.isString(response.value)) {
           futureValue.setValue(response.value == 'true');
@@ -841,6 +647,7 @@ webdriver.WebElement.prototype.isDisplayed = function() {
           futureValue.setValue(response.value);
         }
       });
+  this.driver_.addCommand(command);
   return futureValue;
 };
 

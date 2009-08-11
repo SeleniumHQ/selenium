@@ -13,8 +13,7 @@ function testSwitchesFocusToANewWindowWhenItIsOpenedAndNotStopFutureOperations(
 function testThrowsAnErrorWhenNoMatchingWindowsAreFound(driver) {
   driver.get(TEST_PAGES.xhtmlTestPage);
   driver.switchToWindow('invalid name');
-  driver.expectErrorFromPreviousCommand(
-      'Should not have succeeded');
+  driver.catchExpectedError('Should not have succeeded');
 }
 
 

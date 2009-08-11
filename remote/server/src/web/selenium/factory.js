@@ -29,6 +29,18 @@ goog.require('webdriver.WebDriver');
 
 
 /**
+ * Creates a new {@code webdriver.WebDriver} instance that uses an
+ * {@code webdriver.AbstractCommandProcessor}. This driver will only be able to
+ * perform the most basic of commands: sleeping and calling user defined
+ * functions.
+ * @return {webdriver.WebDriver} A new WebDriver instance.
+ */
+webdriver.factory.createAbstractDriver = function() {
+  return new webdriver.WebDriver(new webdriver.AbstractCommandProcessor());
+};
+
+
+/**
  * Creates a new {@code webdriver.WebDriver} instance that uses a
  * CommandProcessor directly accessible to the current JavaScript engine.
  * Currently, only Firefox is supported, but IE and Google Chrome support is

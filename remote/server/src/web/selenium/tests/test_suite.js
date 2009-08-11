@@ -22,10 +22,8 @@ var TEST_FILES = [
   'formhandling_test.js',
   'frameswitching_test.js',
   'getinnerouterhtml_test.js',
-  'locatorbuilder_test.js',
   'misc_test.js',
   'pageloading_test.js',
-  'partiallinktextmatch_test.js',
   'selectelementhandling_test.js',
   'staleelementreference_test.js',
   'textpages_test.js',
@@ -34,8 +32,8 @@ var TEST_FILES = [
   'typing_richtext_test.js',
   'typing_test.js',
   'visibility_test.js',
+  'waiting_test.js',
   'windowswitching_test.js',
-  'xpathelementfinding_test.js'
 ];
 
 

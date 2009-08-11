@@ -37,7 +37,7 @@ function testCanExecuteScriptThatReturnsABoolean(driver) {
 function testThrowsAnExceptionWhenTheJavascriptIsBad(driver) {
   driver.get(TEST_PAGES.xhtmlTestPage);
   driver.executeScript('return squiggle();');
-  driver.expectErrorFromPreviousCommand(
+  driver.catchExpectedError(
       'Expected an exception from bad javascript');
 }
 

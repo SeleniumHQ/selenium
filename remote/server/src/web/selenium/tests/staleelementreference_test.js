@@ -3,7 +3,7 @@ function testOldPage(driver) {
   var element = driver.findElement({id: 'links'});
   driver.get(TEST_PAGES.xhtmlTestPage);
   element.click();
-  driver.expectErrorFromPreviousCommand('Element should be stale');
+  driver.catchExpectedError('Element should be stale');
 }
 
 
@@ -12,7 +12,7 @@ function testShouldNotCrashWhenCallingGetSizeOnAnObsoleteElement(driver) {
   var element = driver.findElement({id: 'links'});
   driver.get(TEST_PAGES.xhtmlTestPage);
   element.getSize();
-  driver.expectErrorFromPreviousCommand('Element should be stale');
+  driver.catchExpectedError('Element should be stale');
 }
 
 
@@ -23,6 +23,6 @@ function testDynamicallyRemovingAnElementFromTheDomCausesAStaleReference(
   assertThat(toDelete.isDisplayed(), is(true));
   driver.findElement({id: 'delete'}).click();
   toDelete.isDisplayed();
-  driver.expectErrorFromPreviousCommand(
+  driver.catchExpectedError(
       'Element should be stale at this point');
 }

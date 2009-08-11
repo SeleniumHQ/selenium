@@ -100,7 +100,7 @@ function testCannotSelectSomethingThatIsDisabled(driver) {
   var radioButton = driver.findElement({id: 'nothing'});
   assertThat(radioButton.isEnabled(), is(false));
   radioButton.setSelected();
-  driver.expectErrorFromPreviousCommand(
+  driver.catchExpectedError(
       'Should not be able to select disabled element');
 }
 
@@ -155,7 +155,7 @@ function testThrowsAnExceptionWhenTogglingTheStateOfARadioButton(driver) {
   driver.get(TEST_PAGES.formPage);
   var cheese = driver.findElement({id: 'cheese'});
   cheese.toggle();
-  driver.expectErrorFromPreviousCommand(
+  driver.catchExpectedError(
       'Should not be able to toggle a radio button');
 }
 
@@ -166,7 +166,7 @@ function testThrowsAnExceptionWhenTogglingOptionNotInAMultiSelect(driver) {
       findElements({tagName: 'option'});
   driver.callFunction(function(response) {
     response.value[0].toggle();
-    driver.expectErrorFromPreviousCommand(
+    driver.catchExpectedError(
         'Should not be able to toggle an option not in a multi-select');
   });
 }
@@ -199,7 +199,7 @@ function testCanAlterTheContentsOfAFileUploadInputElement(driver) {
 function testThrowsAnExceptionWhenSelectingAnUnselectableElement(driver) {
   driver.get(TEST_PAGES.formPage);
   driver.findElement({xpath: '//title'}).setSelected();
-  driver.expectErrorFromPreviousCommand(
+  driver.catchExpectedError(
       'Should not be able to select unselectable element');
 }
 

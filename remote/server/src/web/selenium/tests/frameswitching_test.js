@@ -39,7 +39,7 @@ function testShouldAllowAUserToSwitchFromAnIframeBackToTheMainContentOfThePage(
   driver.switchToFrame(0);
   driver.switchToDefaultContent();
   driver.findElement({id: 'nested_form'});
-  driver.expectErrorFromPreviousCommand(
+  driver.catchExpectedError(
       'Should have switched back to main content');
   driver.findElement({id: "iframe_page_heading"});
 }
@@ -88,14 +88,14 @@ function testShouldBeAbleToFlipToAFrameIdentifiedByItsId(driver) {
 function testShouldThrowAnExceptionWhenAFrameCannotBeFound(driver) {
   driver.get(TEST_PAGES.xhtmlTestPage);
   driver.switchToFrame("Nothing here");
-  driver.expectErrorFromPreviousCommand();
+  driver.catchExpectedError();
 }
 
 
 function testShouldThrowAnExceptionWhenAFrameCannotBeFoundByIndex(driver) {
   driver.get(TEST_PAGES.xhtmlTestPage);
   driver.switchToFrame(27);
-  driver.expectErrorFromPreviousCommand();
+  driver.catchExpectedError();
 }
 
 

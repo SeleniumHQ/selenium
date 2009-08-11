@@ -29,7 +29,7 @@ function testFindElementById(driver) {
 function testCannotFindElementsThatDoNotExistById(driver) {
   driver.get(TEST_PAGES.nestedPage);
   driver.findElement({id: 'notThere'});
-  driver.expectErrorFromPreviousCommand();
+  driver.catchExpectedError();
 }
 
 
@@ -67,7 +67,7 @@ function testShouldBeAbleToFindMultipleElementsById(driver) {
 function testShouldNotBeAbleToFindAnElementOnABlankPage(driver) {
   driver.get('about:blank');
   driver.findElement({id: 'imaginaryButton'});
-  driver.expectErrorFromPreviousCommand();
+  driver.catchExpectedError();
   assertThat(
       driver.isElementPresent({id: 'imaginaryButton'}), is(false));
 }
@@ -89,7 +89,7 @@ function testFindElementByName(driver) {
 function testCannotFindElementsThatDoNotExistByName(driver) {
   driver.get(TEST_PAGES.nestedPage);
   driver.findElement({name: 'thisIsNotThere'});
-  driver.expectErrorFromPreviousCommand();
+  driver.catchExpectedError();
 }
 
 
@@ -184,7 +184,7 @@ function testDoesNotFindElementByClassWhenRealNameIsShorterThanQuery(driver) {
   assertThat('Should not have found an element',
              driver.isElementPresent({className: 'nameB'}), is(false));
   driver.findElement({className: 'nameB'});
-  driver.expectErrorFromPreviousCommand();
+  driver.catchExpectedError();
 }
 
 
@@ -232,7 +232,7 @@ function testFindElementByLinkText(driver) {
 function testCannotFindElementsThatDoNotExistByLinkText(driver) {
   driver.get(TEST_PAGES.xhtmlTestPage);
   driver.findElement({linkText: 'THIS GOES TO THE SAME PLACE'});
-  driver.expectErrorFromPreviousCommand(
+  driver.catchExpectedError(
       'Link text search is case sensitive; should not find the link');
 }
 
@@ -325,7 +325,7 @@ function testIsElementPresentReturnsFalseWithNoMatchingPartialLinkText(driver) {
   var futureResult = driver.isElementPresent(locator);
   assertThat('Should not have found an element', futureResult, is(false));
   driver.findElement(locator);
-  driver.expectErrorFromPreviousCommand();
+  driver.catchExpectedError();
 }
 
 

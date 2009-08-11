@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+    "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <title>Waiting Demo</title>
+  <script type="text/javascript" src="../webdriver-bootstrap.js"></script>
+  <script type="text/javascript">
+    goog.require('webdriver.asserts');
+    goog.require('webdriver.factory');
+  </script>
+  <script type="text/javascript">
+    function Counter(countTo) {
+      this.value = 0;
+      this.countTo = countTo;
+    }
+
+    Counter.prototype.increment = function() {
+      this.value += 1;
+      return this.value == this.countTo;
+    };
+
+    window.onerror = function(e) {
+      webdriver.logging.error(
+          '[WARNING] window.onerror caught an error:\n  ' + e);
+      return true;
+    };
+
+    window.onload = function() {
+      webdriver.logging.setLevel(webdriver.logging.Level.DEBUG);
+      webdriver.logging.enableFirebugLogging(false);
+      webdriver.logging.info('Starting');
+
+
+      // Attach an error handler to trap and report any ERROR events from the
+      // driver signaling a failed command.
+      var driver = webdriver.factory.createLocalWebDriver();
+      goog.events.listen(driver, webdriver.WebDriver.EventType.ERROR,
+          function(e) {
+            var response = e.target.getPendingCommand().response;
+            webdriver.logging.error(
+                'ERROR handler:' +
+                (response.value ? '\n' + response.value : '') +
+                goog.array.reduce(response.errors,
+                    function(prev, e) {
+                      return prev + '\n   ' + e.message;
+                    }, ''));
+            e.target.abortPendingCommand();
+          });
+
+
+      window.open('', 'slave');
+      driver.switchToWindow('slave');
+      driver.get('http://localhost:3000/common/javascriptPage.html');
+
+      var clickToShow = driver.findElement({id: 'clickToShow'});
+      var clickToHide = driver.findElement({id: 'clickToHide'});
+
+      clickToShow.click();
+      driver.callFunction(webdriver.logging.info, null,
+          'waiting for black box to be visible');
+      driver.wait(clickToHide.isDisplayed, 4000, clickToHide);
+      assertThat(clickToHide.isDisplayed(), equals(true));
+
+      clickToHide.click();
+      driver.callFunction(webdriver.logging.info, null,
+          'waiting for black box to not be visible');
+      driver.waitNot(clickToHide.isDisplayed, 4000, clickToHide);
+      assertThat(clickToHide.isDisplayed(), equals(false));
+
+      driver.close();
+
+      // If this last message is not logged, something went wrong and the driver
+      // never finished processing its queue.
+      driver.callFunction(webdriver.logging.info, null, 'DONE');
+    };
+  </script>
+</head>
+<body>
+  This page demonstrates how to make a JS webdriver wait for a custom condition
+  before executing anymore commands.
+  <br/>
+  This page requires Firefox with the WebDriver extension installed.
+</body>
+</html>

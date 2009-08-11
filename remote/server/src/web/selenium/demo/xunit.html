@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+    "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <title>Test Runner Demo</title>
+  <script type="text/javascript" src="../webdriver-bootstrap.js"></script>
+  <script type="text/javascript">
+    goog.require('webdriver.TestRunner');
+    goog.require('webdriver.asserts');
+    goog.require('webdriver.factory');
+  </script>
+  <script type="text/javascript">
+    var SLEEP = 500;  // ms
+
+    // This demo demonstrates using the webdriver JS API's xUnit test-runner.
+    // This test runner will eventually be replaced by integration with JSUnit
+    // and Firebug.
+    window.onload = function() {
+      webdriver.logging.setLevel(webdriver.logging.Level.DEBUG);
+      webdriver.logging.enableFirebugLogging(false);
+
+      // Simply start the test runner with the factory function for the type of
+      // WebDriver you wish to use. This demo uses a LocalCommandProcessor, so
+      // this test will only work on Firefox (and requires the WebDriver
+      // extension to be installed).
+      webdriver.TestRunner.start(webdriver.factory.createLocalWebDriver);
+    };
+
+    // setUp, tearDown, and each test function should take a single argument,
+    // the WebDriver instance to schedule commands with. After each test method
+    // is called, all queued commands will be executed before the test runner
+    // starts the next phase. If an ERROR event is dispatched by the driver, the
+    // test runner will fail the current test.
+    function setUp(driver) {
+      window.open('', 'slave');
+      driver.switchToWindow('slave');
+    }
+
+    function tearDown(driver) {
+      driver.close();
+    }
+
+    function testPassingExample(driver) {
+      // sleep commands are used to make it easier to watch the test run (so you
+      // can see the driver execute each command).
+      driver.get('http://localhost:3000/common/javascriptPage.html');
+      driver.sleep(SLEEP);
+
+      // Before you can manipulate an element on the page, you have to find it.
+      // To maximize test readability, search strategies are specified with
+      // simple hash objects. See the documentation on webdriver.WebElement for
+      // more information on the supported search strategies.
+      var box = driver.findElement({id: 'keyReporter'});
+      box.sendKeys('lorem ipsum dolor sit amet');
+      driver.sleep(SLEEP);
+
+      // Commands that are expected to return a value will return an instance of
+      // webdriver.Future to the caller. This object will have its value set
+      // asynchronously when the driver executes its command in a later thread.
+      var value = box.getValue();
+
+      // The WebDriver assertion system recognizes Future objects and queues the
+      // assertion to be executed by the driver after the future has been set.
+      // The assertThat(actualValue, matches(expectedValue)) syntax was adopted
+      // to avoid namespace conflicts with the standard assertEquals() syntax of
+      // popular xUnit frameworks like JSUnit.
+      assertThat(value, equals('lorem ipsum dolor sit amet'));
+
+      box.clear();
+      box.sendKeys('"', value, '"');
+      driver.sleep(SLEEP);
+
+      // Whenever you add a command to call a function, that function is given
+      // the response from the last command (or null if there were no other
+      // commands. If a command returns a future, the value of that future can
+      // also be retrieved from the response.value property on a subsequent
+      // callFunction() command.
+      value = box.getValue();
+      driver.callFunction(function(lastResponse) {
+        assertEquals(value.getValue(), lastResponse.value);
+        assertEquals('"lorem ipsum dolor sit amet"', lastResponse.value);
+      });
+    }
+
+    function testFailingExample() {
+      fail('KA-BOOM!');
+    }
+  </script>
+</head>
+<body>
+<br/>
+This page demonstrates how to use the WebDriver JS API's test runner. Note that
+this test runner will eventually be replaced by integration with JSUnit and
+Firebug.
+<br/>
+This page requires Firefox with the WebDriver extension installed.
+</body>
+</html>

@@ -47,8 +47,6 @@ goog.require('goog.dom');
 goog.require('goog.style');
 goog.require('webdriver.factory');
 goog.require('webdriver.logging');
-goog.require('webdriver.Event');
-goog.require('webdriver.Event.Type');
 
 
 /**
@@ -181,14 +179,6 @@ webdriver.TestRunner = function(opt_driverFactoryFn, opt_dom) {
    * @private
    */
   this.tearDownFn_ = null;
-
-  /**
-   * Listens for {@code ERROR} events when executing the driver commands for a
-   * test case.  If called, the current test will be failed.
-   * @type {function}
-   * @private
-   */
-  this.errorListener_ = null;
 
   /**
    * The number of tests that have passed.
@@ -333,7 +323,7 @@ webdriver.TestRunner.prototype.initResultsSection_ = function() {
  * @private
  */
 webdriver.TestRunner.prototype.reportResult_ = function(result, driver) {
-  goog.events.removeAll(driver);
+  driver.dispose();
   this.errorListener_ = null;
   // TODO(jmleyba): Should quit the driver for remote driver instances.
 
@@ -492,17 +482,16 @@ webdriver.TestRunner.prototype.executeNextTest_ = function() {
   var driver;
   try {
     driver = this.driverFactoryFn_();
-    this.errorListener_ = goog.bind(this.handleError_, this, result);
-    goog.events.listen(driver, webdriver.Event.Type.ERROR, this.errorListener_);
-    goog.events.listen(driver, webdriver.Event.Type.PAUSED,
-        goog.bind(this.onPause_, this));
+    var driverError = goog.bind(this.handleDriverError_, this, result);
+    goog.events.listen(driver,
+        webdriver.WebDriver.EventType.ERROR, driverError);
 
-    // TODO(jmleyba): Need to hide pause/resume from test functions
     driver.newSession(true);
     window.setTimeout(goog.bind(this.setUp_, this, result, driver), 0);
   } catch (ex) {
-    this.handleError_(result,
-        new webdriver.Event(webdriver.Event.Type.ERROR, ex, driver));
+    result.passed = false;
+    result.errMsg = ex.message + (ex.stack ? ('\n' + ex.stack) : '');
+    this.reportResult_(result, driver);
   }
 };
 
@@ -523,11 +512,11 @@ webdriver.TestRunner.prototype.collectAndRunDriverCommands_ = function(
     result, driver, commandFn, nextPhase) {
   try {
     commandFn.apply(result.testCase, [driver]);
-    nextPhase = goog.bind(nextPhase, this, result, driver);
-    driver.callFunction(nextPhase);
+    driver.callFunction(nextPhase, this, result, driver);
   } catch (ex) {
-    this.handleError_(result,
-        new webdriver.Event(webdriver.Event.Type.ERROR, ex, driver));
+    result.passed = false;
+    result.errMsg = ex.message + (ex.stack ? ('\n' + ex.stack) : '');
+    this.reportResult_(result, driver);
   }
 };
 
@@ -581,18 +570,29 @@ webdriver.TestRunner.prototype.tearDown_ = function(result, driver) {
 
 /**
  * Event handler that fails the current test if {@code webdriver.WebDriver}
- * dispatches a {@code webdriver.Event.Type.ERROR} event.
+ * dispatches an {@code webdriver.WebDriver.EventType.ERROR} event.
  * @param {webdriver.TestResult} result Result object for the current test.
- * @param {webdriver.Event} e The error event.
+ * @param {goog.events.Event} e The error event whose target should be a
+ *     {@code webdriver.WebDriver} instance.
  * @private
  */
-webdriver.TestRunner.prototype.handleError_ = function(result, e) {
+webdriver.TestRunner.prototype.handleDriverError_ = function(result, e) {
   result.passed = false;
-  if (e.data.message) {
-    result.errMsg = '  ' + e.data.message;
-    // TODO(jmleyba): Include stack info
+  var failingCommand = e.target.getPendingCommand();
+  var response = failingCommand ? failingCommand.response : null;
+  if (response) {
+    result.errMsg = [];
+    if (response.value) {
+      result.errMsg.push('  ' + response.value);
+    }
+    goog.array.extend(
+        result.errMsg, goog.array.map(response.errors, function(error) {
+          return error.message + (error.stack ? ('\n' + error.stack) : '');
+        }));
+    result.errMsg = result.errMsg.join('\n');
   } else {
-    result.errMsg = webdriver.logging.describe(e.data);
+    // Should never happen, but just in case.
+    result.errMsg = 'Unknown error!';
   }
   this.reportResult_(result, e.target);
 };

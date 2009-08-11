@@ -20,7 +20,7 @@ function testShouldNotFindElementOutsideTree(driver) {
   var login = driver.findElement({name: 'login'});
   assertThat(login.isElementPresent({name: 'x'}), is(false));
   login.findElement({name: 'x'});
-  driver.expectErrorFromPreviousCommand();
+  driver.catchExpectedError();
 }
 
 
@@ -44,7 +44,7 @@ function testFindElementByIdWhenNoMatchInContext(driver) {
   driver.get(TEST_PAGES.nestedPage);
   driver.findElement({id: 'test_id_div'}).
       findElement({id: 'test_id_out'});
-  driver.expectErrorFromPreviousCommand(
+  driver.catchExpectedError(
       'Should not be able to find an element by ID when that element does ' +
       'not exist under the given root');
 }
@@ -65,7 +65,7 @@ function testRaisesAnErrorWhenChildElementIsNotFoundByXPath(driver) {
   assertThat(driver.isElementPresent(xpath), is(false));
   var select = driver.findElement({xpath: '//form[@name="form2"]/select'});
   select.findElement({xpath: './/x'});
-  driver.expectErrorFromPreviousCommand();
+  driver.catchExpectedError();
 }
 
 
@@ -122,11 +122,14 @@ function testShouldFindChildrenByClassName(driver) {
 
 function testShouldFindChildElementByTagName(driver) {
   driver.get(TEST_PAGES.nestedPage);
-  assertThat(
-      driver.findElement({name: 'div1'}).
-          findElement({tagName: 'A'}).
-          getAttribute('name'),
-      is('link1'));
+  var name = driver.findElement({name: 'div1'}).findElement({tagName: 'A'}).
+      getAttribute('name');
+  assertThat(name, is('link1'));
+//  assertThat(
+//      driver.findElement({name: 'div1'}).
+//          findElement({tagName: 'A'}).
+//          getAttribute('name'),
+//      is('link1'));
 }
 
 

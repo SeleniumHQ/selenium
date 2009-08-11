@@ -23,7 +23,7 @@ function testShouldNotBeAbleToDeselectAnOptionFromANormalSelect(driver) {
   driver.callFunction(function(response) {
     var options = response.value;
     options[0].toggle();
-    driver.expectErrorFromPreviousCommand();
+    driver.catchExpectedError();
   });
 }
 
