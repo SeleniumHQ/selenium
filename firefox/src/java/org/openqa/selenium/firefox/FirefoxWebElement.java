@@ -231,10 +231,9 @@ public class FirefoxWebElement implements RenderedWebElement, Locatable,
     }
 
     public WebElement findElementById(String id) {
-    	String response = sendMessage(WebDriverException.class, "findElementById", id);
-    	if (response.equals("-1"))
-    		throw new NoSuchElementException("Unable to find element with id" + id);
-    	return new FirefoxWebElement(parent, response);
+      String elementId =
+          sendMessage(NoSuchElementException.class, "findElementById", id);
+      return new FirefoxWebElement(parent, elementId);
     }
 
     public List<WebElement> findElementsById(String id) {

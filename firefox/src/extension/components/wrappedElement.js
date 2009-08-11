@@ -531,6 +531,20 @@ FirefoxDriver.prototype.dragAndDrop = function(respond, movementString) {
   respond.send();
 };
 
+
+FirefoxDriver.prototype.findElementByXPath = function(respond, xpath) {
+  var element = Utils.getElementAt(respond.elementId, this.context);
+  var elements = Utils.findElementsByXPath(xpath, element, this.context)
+  if (elements.length > 0) {
+    respond.response = elements[0];
+  } else {
+    respond.isError = true;
+    respond.response = 'Unable to locate element using xpath "' + xpath + '"';
+  }
+  respond.send();
+};
+
+
 FirefoxDriver.prototype.findElementsByXPath = function (respond, xpath) {
     var element = Utils.getElementAt(respond.elementId, this.context);
 
@@ -546,6 +560,25 @@ FirefoxDriver.prototype.findElementsByXPath = function (respond, xpath) {
 
     respond.send();
 };
+
+
+FirefoxDriver.prototype.findElementByLinkText = function(respond, linkText) {
+  var element = Utils.getElementAt(respond.elementId, this.context);
+
+  var children = element.getElementsByTagName('a');
+  for (var i = 0; i < children.length; i++) {
+    if (linkText == Utils.getText(children[i])) {
+      respond.response = Utils.addToKnownElements(children[i], this.context);
+      respond.send();
+      return;
+    }
+  }
+
+  respond.isError = true;
+  respond.response = 'Unable to find element by link text "' + linkText + '"';
+  respond.send();
+};
+
 
 FirefoxDriver.prototype.findElementsByLinkText = function (respond, linkText) {
     var element = Utils.getElementAt(respond.elementId, this.context);
@@ -607,6 +640,27 @@ FirefoxDriver.prototype.findElementsByPartialLinkText = function (respond, linkT
     respond.send();
 };
 
+
+FirefoxDriver.prototype.findElementByClassName = function(respond, className) {
+  var element = Utils.getElementAt(respond.elementId, this.context);
+
+  var xpath =
+      ".//*[contains(concat(' ',normalize-space(@class),' '),' " +
+      className + " ')]";
+  var elements = Utils.findElementsByXPath(xpath, element, this.context)
+
+  if (elements.length > 0) {
+    respond.response = elements[0];
+  } else {
+    respond.isError = true;
+    respond.response =
+        'Unable to locate element by className "' + className + '"';
+  }
+
+  respond.send();
+};
+
+
 FirefoxDriver.prototype.findChildElementsByClassName = function(respond, className) {
     var element = Utils.getElementAt(respond.elementId, this.context);
 
@@ -655,7 +709,8 @@ FirefoxDriver.prototype.findElementById = function(respond, id) {
             if (elements.length > 0) {
                 respond.response = elements[0];
             } else {
-                respond.response = "-1";
+              respond.isError = true;
+              respond.response = "Unable to locate element using id '" + id + "'";
             }
         }
     } else {
@@ -664,6 +719,33 @@ FirefoxDriver.prototype.findElementById = function(respond, id) {
     }
     respond.send();
 };
+
+
+FirefoxDriver.prototype.findElementsById = function(respond, id) {
+  this.findElementsByXPath(respond, './/*[@id = "' + id + '"]');
+};
+
+
+FirefoxDriver.prototype.findElementByName = function(respond, name) {
+  var xpath = './/*[@name = "' + name + '"]';
+  var element = Utils.getElementAt(respond.elementId, this.context);
+  var elements = Utils.findElementsByXPath(xpath, element, this.context)
+  if (elements.length > 0) {
+    respond.response = elements[0];
+  } else {
+    respond.isError = true;
+    respond.response =
+        'Unable to locate element by name "' + name + '"';
+  }
+
+  respond.send();
+};
+
+
+FirefoxDriver.prototype.findElementsByName = function(respond, name) {
+  this.findElementsByXPath(respond, './/*[@name = "' + name + '"]');
+};
+
 
 FirefoxDriver.prototype.findElementByTagName = function(respond, name) {
 	var parentElement = Utils.getElementAt(respond.elementId, this.context);
