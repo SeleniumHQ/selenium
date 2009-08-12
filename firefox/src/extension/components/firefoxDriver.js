@@ -18,7 +18,7 @@ limitations under the License.
 
 function FirefoxDriver(server, enableNativeEvents) {
   this.server = server;
-  this.context = new Context();
+  this.context = new Context(this.id);
   this.mouseSpeed = 1;
   this.enableNativeEvents = enableNativeEvents;
 

@@ -68,8 +68,15 @@ public class JsApiTestSuite extends TestCase {
   }
 
   public void testLocalCommandProcessorOnFirefox() throws Exception {
-    String url = testServer.whereIs(
-        "/remote", "selenium/tests/localcommandprocessor_testsuite.html");
+    runJavascriptTest("selenium/tests/embedded_driver_test.html");
+  }
+
+  public void testEmbeddedDriverOnFirefox() throws Exception {
+    runJavascriptTest("selenium/tests/localcommandprocessor_testsuite.html");
+  }
+
+  public void runJavascriptTest(String filePath) throws Exception {
+    String url = testServer.whereIs("/remote", filePath);
     driver.get(url);
     JavascriptExecutor executor = (JavascriptExecutor) driver;
     long start = System.currentTimeMillis();
