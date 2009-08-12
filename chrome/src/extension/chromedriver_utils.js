@@ -14,6 +14,9 @@ function guessPageType() {
   }
 }
 
+/**
+ * Gets an array of elements which match the passed xpath
+ */
 function getElementsByXPath(xpath) {
   var elements = [];
   var foundElements = document.evaluate(xpath, document, null, XPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
@@ -25,6 +28,9 @@ function getElementsByXPath(xpath) {
   return elements;
 }
 
+/**
+ * Gets canonical xpath of the passed element, e.g. /HTML/BODY/P[1]
+ */
 function getXPathOfElement(element) {
   var path = "";
   for (; element && element.nodeType == 1; element = element.parentNode) {
@@ -34,6 +40,9 @@ function getXPathOfElement(element) {
   return path;	
 }
 
+/**
+ * Returns n for the nth element of type element.tagName in the page
+ */
 function getElementIndexForXPath(element) {
   var index = 1;
   for (var sibling = element.previousSibling; sibling ; sibling = sibling.previousSibling) {
@@ -44,6 +53,9 @@ function getElementIndexForXPath(element) {
   return index;
 }
 
+/**
+ * Gets an array of link elements whose displayed text is linkText
+ */
 function getElementsByLinkText(parent, linkText) {
   var links = parent.getElementsByTagName("a");
   var matchingLinks = [];
@@ -55,6 +67,9 @@ function getElementsByLinkText(parent, linkText) {
   return matchingLinks;
 }
 
+/**
+ * Gets an array of link elements whose displayed text includes linkText
+ */
 function getElementsByPartialLinkText(parent, partialLinkText) {
   var links = parent.getElementsByTagName("a");
   var matchingLinks = [];
@@ -66,6 +81,11 @@ function getElementsByPartialLinkText(parent, partialLinkText) {
   return matchingLinks;
 }
 
+/**
+ * Throws exception if element is not displayed
+ * @return if element is displayed
+ * @throws ElementNotVisibleException object ready to be sent if element is not displayed
+ */
 function checkElementIsDisplayed(element) {
   if (element.tagName.toLowerCase() == "title") {
     //Always visible
@@ -77,6 +97,11 @@ function checkElementIsDisplayed(element) {
   }
 }
 
+/**
+ * Throws exception if element is disabled
+ * @return if element is enabled
+ * @throws UnsupoprtedOperationException object ready to be sent if element is disabled
+ */
 function checkElementNotDisabled(element) {
   if (element.disabled) {
     throw {statusCode: 404, value: {message: "Cannot operate on disabled element",
@@ -84,6 +109,11 @@ function checkElementNotDisabled(element) {
   }
 }
 
+/**
+ * Checks whether element is selected/checked
+ * @return true if element is {selectable and selected, checkable and checked},
+ *         false otherwise
+ */
 function findWhetherElementIsSelected(element) {
   var selected = false;
   try {
@@ -104,6 +134,10 @@ function findWhetherElementIsSelected(element) {
   return selected;
 }
 
+/**
+ * Gets the coordinates of the top-left corner of the element on the screen
+ * @return array: [x, y]
+ */
 function getElementCoords(element) {
   var x = y = 0;
   do {
@@ -113,6 +147,11 @@ function getElementCoords(element) {
   return [x, y];
 }
 
+/**
+ * Converts rgb(x, y, z) colours to #RRGGBB colours
+ * @param rgb string of form either rgb(x, y, z) or rgba(x, y, z, a) with x, y, z, a numbers
+ * @return string of form #RRGGBB where RR, GG, BB are two-digit lower-case hex values
+ */
 function rgbToRRGGBB(rgb) {
   //rgb(0, 0, 0)
   //rgba(0, 0, 0, 0)
@@ -134,6 +173,11 @@ function rgbToRRGGBB(rgb) {
   }
 }
 
+/**
+ * Convert a number from decimal to a two-digit hex string
+ * @return null if value was not an int, two digit string representation
+ *        (with leading zero if needed) of (value % 256) in base 16 otherwise
+ */
 function decimalToTwoDigitHex(value) {
   value = parseInt(value);
   if (value == null) {
@@ -144,8 +188,12 @@ function decimalToTwoDigitHex(value) {
   return v0.toString() + v1.toString();
 }
 
-//Returns passed value if negative or greater than 15
+/**
+ * Converts a number to a one-digit hex string representing it
+ * @return (value % 16) as a one-character base 16 string
+ */
 function singleHexDigitDecimalToLowerHex(value) {
+  value %= 16
   if (value < 10) return value;
   switch (value) {
   case 10:

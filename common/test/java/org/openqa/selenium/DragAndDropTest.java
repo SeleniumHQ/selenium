@@ -31,10 +31,10 @@ public class DragAndDropTest extends AbstractDriverTestCase {
         driver.get(dragAndDropPage);
         RenderedWebElement img = (RenderedWebElement) driver.findElement(By.id("test1"));
         Point expectedLocation = img.getLocation();
-        drag(img, expectedLocation, 500, 300);
+        drag(img, expectedLocation, 150, 200);
         assertEquals(expectedLocation, img.getLocation());
         driver.manage().setSpeed(Speed.SLOW);
-        drag(img, expectedLocation, -100, -50);
+        drag(img, expectedLocation, -50, -25);
         assertEquals(expectedLocation, img.getLocation());
         driver.manage().setSpeed(Speed.MEDIUM);
         drag(img, expectedLocation, 0, 0);

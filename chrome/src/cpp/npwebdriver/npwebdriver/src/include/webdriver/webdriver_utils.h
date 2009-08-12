@@ -16,7 +16,8 @@
 
 namespace webdriver {
 
-const size_t kGuidStringLength = 39;
+static const size_t kGuidStringLength = 39;
+static const char *kSpoofContext = "foo";
 
 static wchar_t *CharStringToWCharString(char *in_string) {
 #if defined(WIN32)
@@ -26,7 +27,7 @@ static wchar_t *CharStringToWCharString(char *in_string) {
              in_string, _TRUNCATE);
   return out_string;
 #elif defined(UNIX)
-  //TODO(danielwh): Implement this
+  //TODO(danielwh): Implement in Linux
   return NULL;
 #endif
 }
@@ -39,7 +40,7 @@ static char *WCharStringToCharString(wchar_t *in_string) {
              in_string, _TRUNCATE);
   return out_string;
 #elif defined(UNIX)
-  //TODO(danielwh): Implement this
+  //TODO(danielwh): Implement in Linux
   return NULL;
 #endif
 }

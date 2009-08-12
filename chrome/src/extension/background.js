@@ -11,7 +11,7 @@ ChromeDriver.sessionId = null;
 ChromeDriver.context = null;
 ChromeDriver.agreedCapabilities = null;
 //Number of folders from / we need to traverse to get to /session of our URL
-//TODO(danielwh): Get this somehow
+//TODO(danielwh): Get this usefully somehow
 ChromeDriver.pathOffset = 1;
 //Whether the plugin has the OS-specific window handle for the active tab
 //Called HWND rather than window handle to avoid confusion with the other
@@ -19,6 +19,7 @@ ChromeDriver.pathOffset = 1;
 ChromeDriver.hasHwnd = false;
 ChromeDriver.isCurrentlyLoadingUrl = false;
 ChromeDriver.instanceUuid = null;
+ChromeDriver.currentSpeed = 500; //TODO(danielwh): enum this? Oh, and actually do anything with it
 
 chrome.self.onConnect.addListener(function(port) {
   console.log("Connected to " + port.name);
@@ -194,9 +195,6 @@ function HandlePost(uri, postData, sessionId, context) {
       request = "go back";
       break;
     case "cookie":
-      //XXX(danielwh): No longer derefing - reflect change in content script
-      //var cookie = JSON.parse(postData)[0];
-      //if (cookie.class == "org.openqa.selenium.Cookie") {
       request = "add cookie";
       break;
     case "element":
@@ -214,6 +212,24 @@ function HandlePost(uri, postData, sessionId, context) {
     case "refresh":
       request = "refresh";
       break;
+    case "speed":
+      switch (value[0]) {
+      //TODO(danielwh): Put in real values
+      case "SLOW":
+        ChromeDriver.currentSpeed = 15;
+        break;
+      case "MEDIUM":
+        ChromeDriver.currentSpeed = 15;
+        break;
+      case "FAST":
+        ChromeDriver.currentSpeed = 15;
+        break;
+      default:
+        sendNotFound({message: "Tried to set speed to an unknown value",
+                      class: "java.lang.IllegalArgumentException"});
+        return;
+      }
+      sendNoContent();
     }
     if (request != null) {
       requestObject = {request: request, value: value};
@@ -226,10 +242,10 @@ function HandlePost(uri, postData, sessionId, context) {
         requestObject = {request: "get active element"};
       }
       break;
-    case "frame":
-      //TODO(danielwh): Frame switching
+    //TODO(danielwh): Frame switching
+    //case "frame":
       //ChromeDriver.activePort.postMessage({request: "select frame", by: value});
-      break;
+      //break;
     case "window":
       setActivePortByWindowName(path[4]);
       break;
@@ -247,9 +263,12 @@ function HandlePost(uri, postData, sessionId, context) {
         requestObject = wrapInjectEmbedIfNecessary({request: "click element",
                                                     value: value});
         break;
+      case "drag":
+        requestObject = wrapInjectEmbedIfNecessary({request: "drag element",
+                                                    value: value});
+        break;
       case "selected":
         request = "select element";
-        console.log("uri: " + uri + ", postData: " + postData);
         break;
       case "submit":
         request = "submit element";
@@ -258,8 +277,6 @@ function HandlePost(uri, postData, sessionId, context) {
         request = "toggle element";
         break;
       case "value":
-        //TODO(danielwh): Reflect this change
-        //var event = {request: "send element keys", "element_id": element_id, "value": value[0].value};
         requestObject = wrapInjectEmbedIfNecessary({request: "send element keys",
                                                     value: {elementId: path[4],
                                                             value: value.value[0].value}});
@@ -305,7 +322,6 @@ function HandleDelete(uri) {
   var path = uri.split("/").slice(ChromeDriver.pathOffset);
   if (path.length == 2 && path[0] == "session" &&
       path[1] == ChromeDriver.sessionId) {
-    //TODO(danielwh): Close tabs? Windows? Tear down somehow?
     sendNoContent();
   }
   //We should always have an activePort from here on because
@@ -366,6 +382,9 @@ function parsePortMessage(message) {
     switch (message.response) {
     case "click element":
       document.embeds[0].clickAt(message.value.x, message.value.y);
+      break;
+    case "drag element":
+      document.embeds[0].drag(1000, message.value.from.x, message.value.from.y, message.value.to.x, message.value.to.y);
       break;
     case "send element keys":
       document.embeds[0].return_send_element_keys(message.value.value.join(""));
@@ -449,6 +468,10 @@ function sendNotFound(value) {
   sendHttp(response);
 }
 
+/**
+ * If the plugin doesn't currently have an HWND for this page,
+ * we need to get one by injecting an embed
+ */
 function wrapInjectEmbedIfNecessary(requestObject) {
   if (ChromeDriver.hasHwnd) {
     return requestObject;
@@ -513,7 +536,6 @@ function getUrl(value, sessionId, uuid) {
   chrome.tabs.create({url: url, selected: true}, getUrlCallback);
 }
 
-//TODO(danielwh): Maybe use an onload listener
 function getUrlCallback(tab) {
   if (tab.status != "complete") {
     ChromeDriver.isCurrentlyLoadingUrl = true
@@ -531,15 +553,23 @@ function getUrlCallbackById(tabId) {
   chrome.tabs.get(tabId, getUrlCallback);
 }
 
+/**
+ * Called directly by the plugin if a click failed
+ */
+function didBadClick() {
+  sendNotFound({message: "Could not click",
+                class: "org.openqa.selenium.WebDriverException"});
+}
+
 function pushPort(port) {
   //It would be nice to only have one port per name, so we enforce this
   removePort(port);
   ChromeDriver.ports.push(port);
 }
 
-function setActivePortByTabId(tab_id) {
+function setActivePortByTabId(tabId) {
   for (var i = 0; i < ChromeDriver.ports.length; ++i) {
-    if (ChromeDriver.ports[i].tab.id == tab_id) {
+    if (ChromeDriver.ports[i].tab.id == tabId) {
       ChromeDriver.activePort = ChromeDriver.ports[i];
       break;
     }
@@ -558,7 +588,7 @@ function setActivePortByWindowName(handle) {
 }
 
 function removePort(port) {
-  //TODO(danielwh): Nice way of removing from array?
+  //TODO(danielwh): Nicer way of removing from array?
   var temp_ports = [];
   for (var i = 0; i < ChromeDriver.ports.length; ++i) {
     if (ChromeDriver.ports[i].name != port.name) {

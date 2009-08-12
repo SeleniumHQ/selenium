@@ -6,24 +6,23 @@ using namespace std;
 
 namespace webdriver {
 
-JavascriptExecutor::JavascriptExecutor(NPNetscapeFuncs *browser_funcs,
-                                       NPP instance) :
-    browser_funcs_(browser_funcs),
-    instance_(instance),
-    has_window_(false) {
+JavascriptExecutor::JavascriptExecutor(
+    const NPNetscapeFuncs *const browser_funcs,
+    const NPP instance) :
+  browser_funcs_(browser_funcs),
+  instance_(instance) {
 }
 
-bool JavascriptExecutor::execute(string javascript) {
-  if (!is_ready()) {
-    WEBDRIVER_LOG("JSE wasn't ready\n");
-    return false;
-  }
+bool JavascriptExecutor::execute(const string javascript) const {
   NPString script;
   script.UTF8Characters = javascript.c_str();
   script.UTF8Length = strlen(script.UTF8Characters);
   
   NPObject *window = NULL;
-  browser_funcs_->getvalue(instance_, NPNVWindowNPObject, &window);
+  if (browser_funcs_->getvalue(instance_, NPNVWindowNPObject, &window) !=
+      NPERR_NO_ERROR) {
+    return false;
+  }
 
   //Currently just throw away result - it could be helpful in the future
   NPVariant result;
@@ -34,14 +33,6 @@ bool JavascriptExecutor::execute(string javascript) {
   browser_funcs_->evaluate(instance_, window, &script, &result);
   
   return true;
-}
-
-void JavascriptExecutor::set_has_window(bool has_window) {
-  has_window_ = has_window;
-}
-
-bool JavascriptExecutor::is_ready() {
-  return has_window_;
 }
 
 } //namespace webdriver

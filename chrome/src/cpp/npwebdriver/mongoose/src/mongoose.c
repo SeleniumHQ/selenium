@@ -88,7 +88,9 @@ static void MG_WEBDRIVER_LOG(const char *str) {
 #define	IS_DIRSEP_CHAR(c)	((c) == '/' || (c) == '\\')
 #define	O_NONBLOCK		0
 #define	EWOULDBLOCK		WSAEWOULDBLOCK
-#define	dlopen(x,y)		LoadLibrary(x)
+//XXX(danielwh): This cast may be a bit dodgy - Windows expects wchars
+//I don't think it's ever actually called, but...
+#define	dlopen(x,y)		LoadLibrary((LPCWSTR)x)
 #define	dlsym(x,y)		GetProcAddress((HINSTANCE) (x), (y))
 #define	_POSIX_
 

@@ -1,5 +1,3 @@
-//TODO(danielwh): Proper UTF8 handling
-
 #ifndef WEBDRIVER_JAVASCRIPT_LISTENER_H_
 #define WEBDRIVER_JAVASCRIPT_LISTENER_H_
 

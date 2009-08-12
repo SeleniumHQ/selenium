@@ -1,3 +1,8 @@
+/**
+ * All functions which take elements assume that they are not null,
+ * and are present as passed on the DOM.
+ */
+
 ChromeDriverContentScript = {};
 
 ChromeDriverContentScript.internalElementArray = [];
@@ -5,7 +10,6 @@ ChromeDriverContentScript.port = null;
 ChromeDriverContentScript.injectedScriptElement = null;
 
 if (document.location != "about:blank") {
-  //TODO(danielwh): Report bug in chrome that content script is fired on about:blank for new javascript windows
   //If loading windows using window.open, the port is opened
   //while we are on about:blank (which reports window.name as ''),
   //and we use port-per-tab semantics, so don't open the port if
@@ -54,6 +58,9 @@ function parsePortMessage(message) {
     break;
   case "delete cookie":
     response.value = deleteCookie(message.value.name);
+    break;
+  case "drag element":
+    response.value = dragElement(element, {x: message.value.value[1], y: message.value.value[2]});
     break;
   case "execute":
     execute(message.value);
@@ -236,7 +243,6 @@ function setCookie(cookie) {
  *               [{"id": 0, using: "id", value: "cheese"}]
  */
 function getElement(plural, parsed) {
-  //TODO(danielwh): Should probably check for nulls here
   var root = "./"; //root always ends with /, so // lookups should only start with one additional /
   var lookupBy = "";
   var lookupValue = "";
@@ -347,6 +353,9 @@ function internalGetElement(elementIdAsString) {
   }
 }
 
+/**
+ * Ensures the passed element is in view, so that the native click event can be sent
+ */
 function clickElement(element) {
   try {
     checkElementIsDisplayed(element)
@@ -358,6 +367,9 @@ function clickElement(element) {
   return {statusCode: "no-op", x: coords[0] - document.body.scrollLeft, y: coords[1] - document.body.scrollTop};
 }
 
+/**
+ * Clears the passed element
+ */
 function clearElement(element) {
   var oldValue = element.value;
   element.value = '';
@@ -367,6 +379,23 @@ function clearElement(element) {
   return {statusCode: 204};
 }
 
+/**
+ * TODO(danielwh): Not currently working
+ */
+function dragElement(element, to) {
+  var fromCoords = getElementCoords(element);
+  var src = {x: fromCoords[0], y: fromCoords[1]};
+  var dest = {x: to.x + src.x, y: to.y + src.y};
+  console.log(src);
+  console.log(dest);
+  return {statusCode: "no-op", from: src, to: dest};
+}
+
+/**
+ * Gets the attribute of the element
+ * If the attribute is {disabled, selected, checked, index}, always returns
+ * the sensible default (i.e. never null)
+ */
 function getElementAttribute(element, attribute) {
   var value = null;
   switch (attribute.toLowerCase()) {
@@ -400,6 +429,9 @@ function getSource() {
   }
 }
 
+/**
+ * Get whether the element is currently displayed (i.e. can be seen in the browser)
+ */
 function isElementDisplayed(element) {
   try {
     checkElementIsDisplayed(element)
@@ -409,6 +441,10 @@ function isElementDisplayed(element) {
   return true;
 }
 
+/**
+ * Selects the element (i.e. sets its selected/checked value to true)
+ * @param element An option element or input element with type checkbox or radio
+ */
 function selectElement(element) {
   var oldValue = true;
   try {
@@ -444,6 +480,9 @@ function selectElement(element) {
   return {statusCode: 204};
 }
 
+/**
+ * Focus the element so that native code can type to it
+ */
 function sendElementKeys(element, value) {
   try {
     checkElementIsDisplayed(element)
@@ -454,6 +493,9 @@ function sendElementKeys(element, value) {
   return {statusCode: "no-op", value: value};
 }
 
+/**
+ * Submits the element if it is a form, or the closest enclosing form otherwise
+ */
 function submitElement(element) {
   while (element != null) {
     if (element.tagName.toLowerCase() == "form") {
@@ -466,6 +508,10 @@ function submitElement(element) {
                                    class: "java.lang.UnsupportedOperationException"}};
 }
 
+/**
+ * Toggles the element if it is an input element of type checkbox,
+ * or option element in a multi-select select element
+ */
 function toggleElement(element) {
   var changed = false;
   var oldValue = null;
@@ -512,11 +558,21 @@ function toggleElement(element) {
   return {statusCode: 200, value: newValue};
 }
 
+/**
+ * Gets the CSS property asked for
+ * @param style CSS property to get
+ */
 function getStyle(element, style) {
   var value = document.defaultView.getComputedStyle(element, null).getPropertyValue(style);
   return rgbToRRGGBB(value);
 }
 
+/**
+ * Execute arbitrary javascript in the page.   Returns by callback to returnFromJavascriptInPage.
+ * Yes, this is *horribly* hacky.
+ * @param command array with 0th argument as a string of the javascript to execute and
+ *                optional 1st argument as an array of wrapped up arguments to pass to the script
+ */
 function execute(command) {
   var func = "function(){" + command[0] + "}";
   var args = [];
@@ -529,7 +585,10 @@ function execute(command) {
         try {
           element = internalGetElement(element_id);
         } catch (e) {
-          //TODO(danielwh): FAIL
+          ChromeDriverContentScript.port.postMessage({response: "execute", value:
+              {statusCode: 404,
+               message: "Tried use obsolete element as argument when executing javascript.",
+               class: "org.openqa.selenium.StaleElementReferenceException"}});
           return;
         }
         args.push({webdriverElementXPath: getXPathOfElement(element)});
@@ -545,7 +604,6 @@ function execute(command) {
   }
   var scriptTag = document.createElement('script');
   var argsString = JSON.stringify(args).replace(/"/g, "\\\"");
-  //TODO(danielwh): See if more escaping is needed
   scriptTag.innerText = 'var e = document.createEvent("MutationEvent");' +
                         'var args = JSON.parse("' + argsString + '");' +
                         'var error = false;' +
@@ -585,9 +643,11 @@ function execute(command) {
   scriptTag.addEventListener('DOMAttrModified', returnFromJavascriptInPage, false);
   ChromeDriverContentScript.injectedScriptElement = scriptTag;
   document.getElementsByTagName("body")[0].appendChild(ChromeDriverContentScript.injectedScriptElement);
-  //setTimeout(scriptHasDied, 800);
 }
 
+/**
+ * Callback from execute(command)
+ */
 function returnFromJavascriptInPage(e) {
   if (ChromeDriverContentScript.injectedScriptElement == null) {
     console.log("Somehow the returnFromJavascriptInPage hander was reached.");
@@ -618,11 +678,19 @@ function returnFromJavascriptInPage(e) {
   ChromeDriverContentScript.port.postMessage({response: "execute", value: {statusCode: 200, value: value}});
 }
 
+/**
+ * Removes the script tag injected in the page by execute
+ */
 function removeInjectedScript() {
-  document.getElementsByTagName("body")[0].removeChild(ChromeDriverContentScript.injectedScriptElement);
-  ChromeDriverContentScript.injectedScriptElement = null;
+  if (ChromeDriverContentScript.injectedScriptElement != null) {
+    document.getElementsByTagName("body")[0].removeChild(ChromeDriverContentScript.injectedScriptElement);
+    ChromeDriverContentScript.injectedScriptElement = null;
+  }
 }
 
+/**
+ * Inject an embed tag so the native code can grab the HWND
+ */
 function injectEmbed(sessionId, uuid) {
   console.log("Injecting embed");
   var embed = document.createElement('embed');

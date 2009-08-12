@@ -71,8 +71,7 @@ public class AbstractDriverTestCase extends TestCase implements NeedsDriver {
         String hostName = environment.getAppServer().getHostName();
         String alternateHostName = environment.getAppServer().getAlternateHostName();
 
-        //TODO(danielwh): Check out how offline-based this assert is
-        //assertThat(hostName, is(not(equalTo(alternateHostName))));
+        assertThat(hostName, is(not(equalTo(alternateHostName))));
 	}
 
   protected boolean isIeDriverTimedOutException(IllegalStateException e) {

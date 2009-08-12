@@ -116,7 +116,6 @@ NPError NpapiCallListener::Destroy(NPP instance, NPSavedData **save) {
     return NPERR_INVALID_PLUGIN_ERROR;
   }
   if (instance == global_instance_) {
-    chrome_driver_plugin_->DeleteFields();
     delete chrome_driver_plugin_;
     chrome_driver_plugin_ = NULL;
   }
@@ -135,18 +134,7 @@ NPError NpapiCallListener::SetWindow(NPP instance, NPWindow *window) {
     if (it->instance_ == instance &&
         it->session_id_ == chrome_driver_plugin_->session_id() &&
         window->window != NULL) {
-#if defined(WIN32)
-      chrome_driver_plugin_->GiveWindow((HWND)window->window);
-#endif
-    }
-  }
-  
-  if (instance == global_instance_ &&
-      chrome_driver_plugin_->javascript_executor() != NULL) {
-    NPObject *window = NULL;
-    if (browser_funcs_->getvalue(instance, NPNVWindowNPObject, &window) ==
-        NPERR_NO_ERROR) {
-      chrome_driver_plugin_->javascript_executor()->set_has_window(true);
+      chrome_driver_plugin_->GiveWindow(window->window);
     }
   }
   return NPERR_NO_ERROR;

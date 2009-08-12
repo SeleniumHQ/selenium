@@ -1,5 +1,3 @@
-//TODO(danielwh): Consider the utility of wrapping up char*s in std::strings
-
 #ifndef WEBDRIVER_NPAPI_CALL_LISTENER_H_
 #define WEBDRIVER_NPAPI_CALL_LISTENER_H_
 

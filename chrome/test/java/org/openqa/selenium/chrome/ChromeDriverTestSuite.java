@@ -17,16 +17,18 @@ limitations under the License.
 
 package org.openqa.selenium.chrome;
 
+import java.io.File;
+import java.io.IOException;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import org.openqa.selenium.TestSuiteBuilder;
+import org.openqa.selenium.internal.FileHandler;
 
 public class ChromeDriverTestSuite extends TestCase {
   public static Test suite() throws Exception {
-    System.setProperty("webdriver.chrome.extensiondir",
-    "C:\\work\\webdriver\\chrome\\src\\extension");
     return new TestSuiteBuilder()
         .addSourceDir("common")
         .addSourceDir("chrome")
@@ -35,5 +37,38 @@ public class ChromeDriverTestSuite extends TestCase {
         .includeJavascriptTests()
         .keepDriverInstance()
         .create();
+  }
+  
+  public static class TestChromeDriver extends ChromeDriver {
+    public TestChromeDriver() throws Exception {
+      super();
+    }
+    @Override
+    protected void startClient() {
+      String extensionDir = System.getProperty("user.dir") + "/src/extension";
+      System.setProperty("webdriver.chrome.extensiondir", extensionDir);
+      try {
+        copyDll();
+      } catch (IOException e) {
+        //TODO(danielwh): Uncomment this when the browser doesn't crash
+        //throw new RuntimeException(e);
+      }
+      super.startClient();
+    }
+    
+    @Override
+    protected void stopClient() {
+      System.setProperty("webdriver.chrome.extensiondir", "");
+      super.stopClient();
+    }
+    
+    private void copyDll() throws IOException {
+      File dllFrom = new File(System.getProperty("user.dir"),
+          "../build/Win32/Release/npwebdriver.dll");
+      File dllToUse = new File(System.getProperty("webdriver.chrome.extensiondir"),
+          "npwebdriver.dll");
+      dllToUse.deleteOnExit();
+      FileHandler.copy(dllFrom, dllToUse);
+    }
   }
 }

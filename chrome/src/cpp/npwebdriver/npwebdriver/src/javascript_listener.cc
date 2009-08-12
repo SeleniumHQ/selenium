@@ -24,7 +24,8 @@ bool JavascriptListener::HasMethod(NPIdentifier name) {
   
   if (strcmp(method, "sendHttp") &&
       strcmp(method, "return_send_element_keys") &&
-      strcmp(method, "clickAt")) {
+      strcmp(method, "clickAt") &&
+      strcmp(method, "drag")) {
     return false;
   } else {
     return true;
@@ -88,6 +89,17 @@ bool JavascriptListener::Invoke(NPIdentifier name,
       args[1].type == NPVariantType_Int32) {
     chrome_driver_plugin_->ReturnClickElement(args[0].value.intValue,
                                               args[1].value.intValue);
+  } else if (!strcmp(method, "drag") && argCount == 5 &&
+      args[0].type == NPVariantType_Int32 &&
+      args[1].type == NPVariantType_Int32 &&
+      args[2].type == NPVariantType_Int32 &&
+      args[3].type == NPVariantType_Int32 &&
+      args[4].type == NPVariantType_Int32) {
+    chrome_driver_plugin_->ReturnDragElement(args[0].value.intValue,
+                                             args[1].value.intValue,
+                                             args[2].value.intValue,
+                                             args[3].value.intValue,
+                                             args[4].value.intValue);
   } else {
     return false;
   }

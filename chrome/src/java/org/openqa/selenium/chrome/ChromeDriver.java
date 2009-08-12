@@ -17,6 +17,8 @@ public class ChromeDriver extends RemoteWebDriver {
   public ChromeDriver() throws Exception {
       super(new URL("http://localhost:7601"), DesiredCapabilities.chrome());
   }
+
+  //TODO(danielwh): Work out why rake launch is broken
   
   @Override
   /**
@@ -39,6 +41,9 @@ public class ChromeDriver extends RemoteWebDriver {
             chromeFile.getCanonicalPath() + ").  " +
             "Try setting webdriver.chrome.binary.");
       }
+      System.out.println(chromeFile.getCanonicalPath() +
+          " --enable-extensions --load-extension=\"" + 
+          extensionDir.getCanonicalPath() + "\"");
       clientProcess = Runtime.getRuntime().exec(chromeFile.getCanonicalPath() +
           " --enable-extensions --load-extension=\"" + 
           extensionDir.getCanonicalPath() + "\"");
@@ -52,8 +57,8 @@ public class ChromeDriver extends RemoteWebDriver {
   @Override
   protected void stopClient() {
     if (clientProcess != null) {
-      //clientProcess.destroy();
-      //clientProcess = null;
+      clientProcess.destroy();
+      clientProcess = null;
     }
   }
   
@@ -92,21 +97,20 @@ public class ChromeDriver extends RemoteWebDriver {
     if (chromeFileSystemProperty != null) {
       chromeFile = new File(chromeFileSystemProperty);
     } else {
-      //TODO(danielwh): Actually work out paths
       StringBuilder chromeFileString = new StringBuilder();
       if (System.getProperty("os.name").equals("Windows XP")) {
-        chromeFileString.append(System.getProperty("user.home"));
-        chromeFileString.append("\\Local Settings\\Application Data\\" +
-            "Google\\Chrome\\Application");
+        chromeFileString.append(System.getProperty("user.home"))
+                        .append("\\Local Settings\\Application Data\\")
+                        .append("Google\\Chrome\\Application\\chrome.exe");
       } else if (System.getProperty("os.name").equals("Windows Vista")) {
-        chromeFileString.append("C:\\Users\\");
-        chromeFileString.append(System.getProperty("user.name"));
-        chromeFileString.append("\\AppData\\Local\\Google\\Chrome\\Application");
+        chromeFileString.append("C:\\Users\\")
+                        .append(System.getProperty("user.name"))
+                        .append("\\AppData\\Local\\")
+                        .append("Google\\Chrome\\Application\\chrome.exe");
       } else {
         throw new RuntimeException("Unsupported operating system.  " +
             "Could not locate Chrome.  Set webdriver.chrome.binary.");
       }
-      chromeFileString.append("\\chrome.exe");
       chromeFile = new File(chromeFileString.toString());
     }
     return chromeFile;
