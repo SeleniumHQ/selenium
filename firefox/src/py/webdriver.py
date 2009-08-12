@@ -189,6 +189,10 @@ class WebDriver(object):
         self.browser.kill()
             
 
+    def switch_to_active_element(self):
+        """Returns the element with focus, or BODY if nothing has focus"""
+        return WebElement(self, self._command("switchToActiveElement"))
+
     def switch_to_window(self, window_name):
         """Switches focus to a window."""
         resp = self._command("switchToWindow", window_name)
