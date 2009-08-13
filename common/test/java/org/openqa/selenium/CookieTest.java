@@ -31,7 +31,7 @@ public class CookieTest extends TestCase {
 
   public void testShouldThrowAnExceptionWhenTheDomainIsBad() {
     try {
-      new ReturnedCookie("Fish", "cod", "127.0.0.0.1", null, null, false);
+      new ReturnedCookie("Fish", "cod", "127.0.0.-1", null, null, false);
       fail();
     } catch (IllegalArgumentException e) {
       // This is expected
