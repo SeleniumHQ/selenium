@@ -30,7 +30,7 @@ public class ChromeDriver extends RemoteWebDriver {
    */
   protected void startClient() {
     try {
-      File extensionDir = getExtensionDir();
+       File extensionDir = getExtensionDir();
       if (!extensionDir.isDirectory()) {
         throw new FileNotFoundException("Could not find extension directory" +
             "(" + extensionDir + ").  Try setting webdriver.chrome.extensiondir."); 
@@ -41,14 +41,12 @@ public class ChromeDriver extends RemoteWebDriver {
             chromeFile.getCanonicalPath() + ").  " +
             "Try setting webdriver.chrome.binary.");
       }
-      System.out.println(chromeFile.getCanonicalPath() +
-          " --enable-extensions --load-extension=\"" + 
-          extensionDir.getCanonicalPath() + "\"");
-      clientProcess = Runtime.getRuntime().exec(chromeFile.getCanonicalPath() +
-          " --enable-extensions --load-extension=\"" + 
-          extensionDir.getCanonicalPath() + "\"");
+      String toRun = chromeFile.getCanonicalPath() +
+      " --enable-extensions --load-extension=\"" + 
+      extensionDir.getCanonicalPath() + "\"";
+      clientProcess = Runtime.getRuntime().exec(toRun);
       //Ick, we sleep for a little bit in case the browser hasn't quite loaded
-      Thread.sleep(200);
+      Thread.sleep(3000);
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
@@ -56,7 +54,9 @@ public class ChromeDriver extends RemoteWebDriver {
   
   @Override
   protected void stopClient() {
+    System.setProperty("webdriver.chrome.extensiondir", "");
     if (clientProcess != null) {
+      System.out.println("Killing browser");
       clientProcess.destroy();
       clientProcess = null;
     }
@@ -79,7 +79,8 @@ public class ChromeDriver extends RemoteWebDriver {
     File extensionDir = null;
     String extensionDirSystemProperty = System.getProperty(
         "webdriver.chrome.extensiondir");
-    if (extensionDirSystemProperty != null) {
+    if (extensionDirSystemProperty != null &&
+        extensionDirSystemProperty != "") {
       //Default to reading from the property
       extensionDir = new File(extensionDirSystemProperty);
     } else {

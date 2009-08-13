@@ -58,7 +58,6 @@ public class ChromeDriverTestSuite extends TestCase {
     
     @Override
     protected void stopClient() {
-      System.setProperty("webdriver.chrome.extensiondir", "");
       super.stopClient();
     }
     
