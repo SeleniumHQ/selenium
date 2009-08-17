@@ -46,5 +46,11 @@ function testWaitingOnAFutureConditionThatTimesout(driver) {
   driver.get(TEST_PAGES.javascriptPage);
   var clickToShow = driver.findElement({id: 'clickToShow'});
   driver.waitNot(clickToShow.isDisplayed, 500, clickToShow);
-  driver.catchExpectedError('Wait commmand should have timed out');
+  driver.catchExpectedError('Wait commmand should have timed out', function(command) {
+    var response = command.response;
+    assertTrue(!!response);
+    assertTrue(response.isFailure);
+    var regex = /Timeout after \d{3}ms/;
+    assertThat(response.value, matchesRegex(regex));
+  });
 }

@@ -297,6 +297,7 @@ webdriver.WebDriver.prototype.onCommandComplete_ = function(command) {
       for (var i = 1; i < this.pendingCommands_.length; i++) {
         this.pendingCommands_[i].abort = true;
       }
+      this.pendingCommands_ = [this.pendingCommands_[0]];
     }
     this.dispatchEvent(webdriver.WebDriver.EventType.ERROR);
   } else {
@@ -450,7 +451,8 @@ webdriver.WebDriver.prototype.callFunction = function(fn, opt_selfObj,
 /**
  * Waits for a condition to be true before executing the next command. If the
  * condition does not hold after the given {@code timeout}, an error will be
- * raised. Example:
+ * raised. Only one wait may be performed at a time (e.g. no nesting).
+ * Example:
  * <code>
  *   driver.get('http://www.google.com');
  *   var element = driver.findElement({name: 'q'});
@@ -460,9 +462,17 @@ webdriver.WebDriver.prototype.callFunction = function(fn, opt_selfObj,
  * @param {number} timeout The maximum amount of time to wait, in milliseconds.
  * @param {Object} opt_self (Optional) The object in whose context to execute
  *     the {@code conditionFn}.
+ * @throws If this driver is currently executing another wait command.
  * @see webdriver.Wait
  */
 webdriver.WebDriver.prototype.wait = function(conditionFn, timeout, opt_self) {
+  if (this.pendingCommands_.length) {
+    var command = this.pendingCommands_[0];
+    if (webdriver.CommandName.WAIT == command.name) {
+      throw new Error('Nested waits are not supported');
+    }
+  }
+
   if (opt_self) {
     conditionFn = goog.bind(conditionFn, opt_self);
   }
