@@ -33,6 +33,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.IllegalLocatorException;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.firefox.internal.ExtensionConnectionFactory;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
 import org.openqa.selenium.internal.FindsByClassName;
@@ -76,7 +77,8 @@ import java.util.Set;
 public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecutor,
         FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, FindsByXPath {
     public static final int DEFAULT_PORT = 7055;
-    public static final boolean DEFAULT_ENABLE_NATIVE_EVENTS = true;
+    // For now, only enable native events on Windows
+    public static final boolean DEFAULT_ENABLE_NATIVE_EVENTS = Platform.getCurrent().is(Platform.WINDOWS);
 
     private final ExtensionConnection extension;
     protected Context context;
