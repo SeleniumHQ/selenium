@@ -55,7 +55,7 @@ public class XPathElementFindingTest extends AbstractDriverTestCase {
         driver.get(xhtmlTestPage);
         List<WebElement> divs = driver.findElements(By.xpath("//div"));
         
-        assertThat(divs.size(), equalTo(5));
+        assertThat(divs.size(), equalTo(8));
     }
 
     public void testShouldBeAbleToFindManyElementsRepeatedlyByXPath() {

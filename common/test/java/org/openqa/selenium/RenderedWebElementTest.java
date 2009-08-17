@@ -22,6 +22,7 @@ import static org.openqa.selenium.Ignore.Driver.IPHONE;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.awt.*;
 
 public class RenderedWebElementTest extends AbstractDriverTestCase {
 
@@ -79,9 +80,18 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  public void testShouldCorrectlyIdentifyThatAnElementHasWidth() {
+    driver.get(xhtmlTestPage);
+
+    RenderedWebElement shrinko = (RenderedWebElement) driver.findElement(By.id("amazing"));
+    Dimension size = shrinko.getSize();
+    assertTrue("Width expected to be greater than 0", size.width > 0);
+    assertTrue("Height expected to be greater than 0", size.height > 0);
+  }
+
+  @JavascriptEnabled
   @Ignore
   public void testCanClickOnSuckerFishMenuItem() throws Exception {
-
     driver.get(javascriptPage);
 
     RenderedWebElement element = (RenderedWebElement) driver.findElement(By.id("menu1"));
