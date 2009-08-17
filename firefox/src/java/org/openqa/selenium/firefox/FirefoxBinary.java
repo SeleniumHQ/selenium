@@ -61,7 +61,7 @@ public class FirefoxBinary {
       setEnvironmentProperty("XRE_PROFILE_PATH", profileAbsPath);
       setEnvironmentProperty("MOZ_NO_REMOTE", "1");
 
-      if (isOnLinux()) {
+      if (isOnLinux() && profile.enableNativeEvents()) {
         modifyLinkLibraryPath(profile);
       }
 
