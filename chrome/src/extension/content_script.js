@@ -8,6 +8,7 @@ ChromeDriverContentScript = {};
 ChromeDriverContentScript.internalElementArray = [];
 ChromeDriverContentScript.port = null;
 ChromeDriverContentScript.injectedScriptElement = null;
+ChromeDriverContentScript.lastReturnedSequenceNumber = -1;
 
 if (document.location != "about:blank") {
   //If loading windows using window.open, the port is opened
@@ -28,24 +29,28 @@ if (document.location != "about:blank") {
  *                 where message' is a message to parse after this one
  */
 function parsePortMessage(message) {
-  if (message == null || message.request == null) {
+  if (message == null || message.request == null || typeof(message.sequenceNumber) == "undefined") {
     console.log("Received bad request");
     return;
   }
-  console.log("Received request for: " + message.request);
-  var response = {response: message.request, value: null};
-  if (message.value && message.value.elementId) {
+  if (message.sequenceNumber <= ChromeDriverContentScript.lastReturnedSequenceNumber) {
+    console.log("Already sent reply to this sequence number");
+    return;
+  }
+  console.log("Received request for: " + message.request.request);
+  var response = {response: message.request.request, value: null};
+  if (typeof(message.request.elementId) != undefined && message.request.elementId != null) {
     try {
-      var element = internalGetElement(message.value.elementId);
+      var element = internalGetElement(message.request.elementId);
     } catch(e) {
       response.value = e;
-      ChromeDriverContentScript.port.postMessage(response);
+      ChromeDriverContentScript.port.postMessage({response: response, sequenceNumber: request.sequenceNumber});
       return;
     }
   }
-  switch (message.request) {
-  case "add cookie":
-    response.value = setCookie(message.value[0]);
+  switch (message.request.request) {
+  case "addCookie":
+    response.value = setCookie(message.request.cookie);
     break;
   case "clear element":
     response.value = clearElement(element);
@@ -53,105 +58,106 @@ function parsePortMessage(message) {
   case "click element":
     response.value = clickElement(element);
     break;
-  case "delete all cookies":
+  case "deleteAllCookies":
     response.value = deleteAllCookies();
     break;
-  case "delete cookie":
-    response.value = deleteCookie(message.value.name);
+  case "deleteCookie":
+    response.value = deleteCookie(message.request.name);
     break;
-  case "drag element":
+  /*case "drag element":
     response.value = dragElement(element, {x: message.value.value[1], y: message.value.value[2]});
-    break;
+    break;*/
   case "execute":
-    execute(message.value);
+    execute(message.request.value);
     break;
-  case "get cookies":
+  case "getCookies":
     response.value = getCookies();
     break;
-  case "get element":
-    response.value = getElement(false, message.value);
+  case "getElement":
+    response.value = getElement(false, message.request.by);
     break;
-  case "get element attribute":
-    response.value = getElementAttribute(element, message.value.attribute);
+  case "getElementAttribute":
+    response.value = getElementAttribute(element, message.request.attribute);
     break;
   case "get element css":
-    response.value = {statusCode: 200, value: getStyle(element, message.value.css)};
+    response.value = {statusCode: 0, value: getStyle(element, message.request.value.css)};
     break;
   case "get element location":
     var coords = getElementCoords(element);
-    response.value = {statusCode: 200, value: {class: "java.awt.Point", x: coords[0], y: coords[1]}};
+    response.value = {statusCode: 0, value: {class: "java.awt.Point", x: coords[0], y: coords[1]}};
     break;
   case "get element size":
-    response.value = {statusCode: 200, value: {class: "java.awt.Dimension",
+    response.value = {statusCode: 0, value: {class: "java.awt.Dimension",
                                                height: element.offsetHeight,
                                                width: element.offsetWidth}};
     break;
-  case "get element tag name":
-    response.value = {statusCode: 200, value: element.tagName.toLowerCase()};
+  case "getElementTagName":
+    response.value = {statusCode: 0, value: element.tagName.toLowerCase()};
     break;
-  case "get element text":
-    response.value = {statusCode: 200, value: Utils.getText(element)};
+  case "getElementText":
+    response.value = {statusCode: 0, value: Utils.getText(element)};
     break;
-  case "get element value":
-    response.value = {statusCode: 200, value: element.value};
+  case "getElementValue":
+    response.value = {statusCode: 0, value: element.value};
     break;
-  case "get elements":
-    response.value = getElement(true, message.value);
+  case "getElements":
+    response.value = getElement(true, message.request.by);
     break;
-  case "get source":
+  case "getPageSource":
     response.value = getSource();
     break;
-  case "get title":
-    response.value = {statusCode: 200, value: document.title};
+  case "getTitle":
+    response.value = {statusCode: 0, value: document.title};
     break;
-  case "get url":
-    response.value = {statusCode: 200, value: document.location.href};
+  case "getCurrentUrl":
+    response.value = {statusCode: 0, value: document.location.href};
     break;
-  case "go back":
+  case "goBack":
     history.back();
-    response.value = {statusCode: 204};
+    response.value = {statusCode: 0};
     break;
-  case "go forward":
+  case "goForward":
     history.forward();
-    response.value = {statusCode: 204};
+    response.value = {statusCode: 0};
     break;
   case "inject embed":
-    injectEmbed(message.value.sessionId, message.value.uuid)
+    injectEmbed(message.request.value.sessionId, message.request.value.uuid)
     break;
-  case "is element displayed":
-    response.value = {statusCode: 200, value: isElementDisplayed(element)};
+  case "isElementDisplayed":
+    response.value = {statusCode: 0, value: isElementDisplayed(element)};
     break;
-  case "is element enabled":
-    response.value = {statusCode: 200, value: !element.disabled};
+  case "isElementEnabled":
+    response.value = {statusCode: 0, value: !element.disabled};
     break;
-  case "is element selected":
-    response.value = {statusCode: 200, value: findWhetherElementIsSelected(element)};
+  case "isElementSelected":
+    response.value = {statusCode: 0, value: findWhetherElementIsSelected(element)};
     break;
   case "refresh":
     document.location.reload(true);
-    response.value = {statusCode: 204};
-    break;
-  case "select element":
-    response.value = selectElement(element);
+    response.value = {statusCode: 0};
     break;
   case "send element keys":
-    response.value = sendElementKeys(element, message.value.value);
+    response.value = sendElementKeys(element, message.request.value.value);
     break;
-  case "submit element":
+  case "setElementSelected":
+    response.value = selectElement(element);
+    break;
+  case "submit":
     response.value = submitElement(element);
     break;
   case "toggle element":
     response.value = toggleElement(element);
     break;
   default:
-    response.value = {statusCode: 404, value: {message: message.request + " is unsupported", class: "java.lang.UnsupportedOperationException"}};
+    response.value = {statusCode: 404, value: {message: message.request.request + " is unsupported", class: "java.lang.UnsupportedOperationException"}};
     break;
   }
   if (response.value != null) {
-    ChromeDriverContentScript.port.postMessage(response);
+    ChromeDriverContentScript.lastReturnedSequenceNumber = message.sequenceNumber;
+    ChromeDriverContentScript.port.postMessage({response: response, sequenceNumber: message.sequenceNumber})
   }
   if (message.followup) {
-    setTimeout(parsePortMessage(message.followup), 100);
+    setTimeout(parsePortMessage(message.request.followup), 100);
   }
 }
 
@@ -164,7 +170,7 @@ function deleteAllCookies() {
     var cookie = cookies[i].split("=");
     deleteCookie(cookie[0]);
   }
-  return {statusCode: 204};
+  return {statusCode: 0};
 }
 
 /**
@@ -173,7 +179,7 @@ function deleteAllCookies() {
  */
 function deleteCookie(cookieName) {
   document.cookie = cookieName + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT';
-  return {statusCode: 204};
+  return {statusCode: 0};
 }
 
 /**
@@ -188,7 +194,7 @@ function getCookies() {
     cookies.push({name: cookie[0], value: cookie[1], secure: false,
                   class: "org.openqa.selenium.internal.ReturnedCookie"});
   }
-  return {statusCode: 200, value: cookies};
+  return {statusCode: 0, value: cookies};
 }
 
 /**
@@ -218,11 +224,11 @@ function setCookie(cookie) {
   if (cookie.domain != null && cookie.domain != undefined &&
       currDomain.indexOf(cookie.domain) == -1) {
       // Not quite right, but close enough. (See r783)
-    return {statusCode: 404, value: {
+    return {statusCode: 2, value: {
             message: "You may only set cookies for the current domain",
             class: "org.openqa.selenium.WebDriverException"}};
   } else if (guessPageType() != "html") {
-    return {statusCode: 404, value: {
+    return {statusCode: 2, value: {
             message: "You may only set cookies on html documents",
             class: "org.openqa.selenium.WebDriverException"}};
   } else {
@@ -231,7 +237,7 @@ function setCookie(cookie) {
             '' : ';expires=' + (new Date(cookie.expiry.time)).toGMTString()) +
         ((cookie.path == null || cookie.path == undefined) ?
             '' : ';path=' + cookie.path);
-    return {statusCode: 204};
+    return {statusCode: 0};
   }
 }
 
@@ -283,6 +289,9 @@ function getElement(plural, parsed) {
   case "partial link text":
     elements = getElementsByPartialLinkText(parent, lookupValue);
     break;
+  case "tag name":
+    elements = getElementsByXPath(root + "/" + lookupValue);
+    break;
   case "xpath":
     //Because root trails with a /, if the xpath starts with a /,
     //we need to strip it out, or we'll get unwanted duplication
@@ -298,10 +307,10 @@ function getElement(plural, parsed) {
   if (elements == null || elements.length == 0) {
     if (plural) {
       //Fine, no elements matched
-      return {statusCode: 200, value: []};
+      return {statusCode: 0, value: []};
     } else {
       //Problem - we were expecting an element
-      return {statusCode: 404, value: {
+      return {statusCode: 1, value: {
           message: "Unable to locate element with " + lookupBy + " " + lookupValue,
           class: "org.openqa.selenium.NoSuchElementException"}};
     }
@@ -315,14 +324,14 @@ function getElement(plural, parsed) {
       }
     } else {
       if (!elements[0]) {
-        return {statusCode: 404, value: {
+        return {statusCode: 1, value: {
           message: "Unable to locate element with " + lookupBy + " " + lookupValue,
           class: "org.openqa.selenium.NoSuchElementException"}};
       }
       ChromeDriverContentScript.internalElementArray.push(elements[0]);
       elementsToReturnArray.push('element/' + (ChromeDriverContentScript.internalElementArray.length - 1));
     }
-    return {statusCode: 200, value: elementsToReturnArray};
+    return {statusCode: 0, value: elementsToReturnArray};
   }
 }
 
@@ -376,7 +385,7 @@ function clearElement(element) {
   if (oldValue != '') {
     Utils.fireHtmlEvent(element, "change");
   }
-  return {statusCode: 204};
+  return {statusCode: 0};
 }
 
 /**
@@ -415,7 +424,7 @@ function getElementAttribute(element, attribute) {
   if (value == null) {
     value = element.getAttribute(attribute);
   }
-  return {statusCode: 200, value: value};
+  return {statusCode: 0, value: value};
 }
 
 /**
@@ -423,9 +432,9 @@ function getElementAttribute(element, attribute) {
  */
 function getSource() {
   if (guessPageType() == "html") {
-    return {statusCode: 200, value: document.getElementsByTagName("html")[0].outerHTML};
+    return {statusCode: 0, value: document.getElementsByTagName("html")[0].outerHTML};
   } else if (guessPageType() == "text") {
-    return {statusCode: 200, value: document.getElementsByTagName("pre")[0].innerHTML};
+    return {statusCode: 0, value: document.getElementsByTagName("pre")[0].innerHTML};
   }
 }
 
@@ -477,7 +486,7 @@ function selectElement(element) {
   if (!oldValue) {
     Utils.fireHtmlEvent(element, "change");
   }
-  return {statusCode: 204};
+  return {statusCode: 0};
 }
 
 /**
@@ -500,7 +509,7 @@ function submitElement(element) {
   while (element != null) {
     if (element.tagName.toLowerCase() == "form") {
       element.submit();
-      return {statusCode: 204};
+      return {statusCode: 0};
     }
     element = element.parentElement;
   }
@@ -555,7 +564,7 @@ function toggleElement(element) {
   if (changed) {
     Utils.fireHtmlEvent(element, "change");
   }
-  return {statusCode: 200, value: newValue};
+  return {statusCode: 0, value: newValue};
 }
 
 /**
@@ -675,7 +684,7 @@ function returnFromJavascriptInPage(e) {
     }
   }
   removeInjectedScript();
-  ChromeDriverContentScript.port.postMessage({response: "execute", value: {statusCode: 200, value: value}});
+  ChromeDriverContentScript.port.postMessage({response: "execute", value: {statusCode: 0, value: value}});
 }
 
 /**

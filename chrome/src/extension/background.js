@@ -7,7 +7,6 @@ ChromeDriver.ports = [];
 //Port to the currently active tab
 ChromeDriver.activePort = null;
 ChromeDriver.activeTabId = null;
-ChromeDriver.sessionId = null;
 ChromeDriver.context = null;
 ChromeDriver.agreedCapabilities = null;
 //Number of folders from / we need to traverse to get to /session of our URL
@@ -20,6 +19,11 @@ ChromeDriver.hasHwnd = false;
 ChromeDriver.isCurrentlyLoadingUrl = false;
 ChromeDriver.instanceUuid = null;
 ChromeDriver.currentSpeed = 500; //TODO(danielwh): enum this? Oh, and actually do anything with it
+ChromeDriver.xmlHttpRequest = null;
+ChromeDriver.xmlHttpRequestUrl = "http://localhost:9701/chromeCommandExecutor"
+ChromeDriver.requestSequenceNumber = 0;
+ChromeDriver.retryRequestBuffer = [];
+ChromeDriver.isOnBadPage = false; //Indicates we couldn't connect to the serer
 
 chrome.self.onConnect.addListener(function(port) {
   console.log("Connected to " + port.name);
@@ -30,10 +34,92 @@ chrome.self.onConnect.addListener(function(port) {
   if (ChromeDriver.activePort == null ||
       port.tab.id == ChromeDriver.activePort.tab.id) {
     ChromeDriver.activePort = port;
+    ChromeDriver.isOnBadPage = false;
   }
   port.onMessage.addListener(parsePortMessage);
-  port.onDisconnect.addListener(removePort);
+  port.onDisconnect.addListener(disconnectPort);
 });
+
+sendXmlHttpGetRequest();
+
+function sendXmlHttpGetRequest() {
+  console.log("Sending GET request");
+  ChromeDriver.xmlHttpRequest = new XMLHttpRequest();
+  ChromeDriver.xmlHttpRequest.onreadystatechange = handleXmlHttpGetRequestReadyStateChange;
+  ChromeDriver.xmlHttpRequest.open("GET", ChromeDriver.xmlHttpRequestUrl, true);
+  ChromeDriver.xmlHttpRequest.send(null);
+}
+
+function sendXmlHttpPostRequest(params) {
+  console.log("Sending POST request");
+  ChromeDriver.xmlHttpRequest = new XMLHttpRequest();
+  ChromeDriver.xmlHttpRequest.onreadystatechange = handleXmlHttpPostRequestReadyStateChange;
+  ChromeDriver.xmlHttpRequest.open("POST", ChromeDriver.xmlHttpRequestUrl, true);
+  ChromeDriver.xmlHttpRequest.setRequestHeader("Content-type", "application/json");
+  ChromeDriver.xmlHttpRequest.send(params + "\nEOF\n");
+}
+
+
+function handleXmlHttpGetRequestReadyStateChange() {
+  if (this.readyState == 4) {
+    if (this.status != 200) {
+      setTimeout("handleXmlHttpGetRequestReadyStateChange()", 500);
+    } else {
+      if (this.responseText == "quit") {
+        sendXmlHttpPostRequest("");
+      } else {
+        parseRequest(JSON.parse(this.responseText));
+      }
+    }
+  }
+}
+
+function handleXmlHttpPostRequestReadyStateChange() {
+  if (this.readyState == 4) {
+    if (this.status != 200) {
+      setTimeout("handleXmlHttpPostRequestReadyStateChange()", 500);
+    } else {
+      if (this.responseText == "ACK") {
+        sendXmlHttpGetRequest();
+        if (ChromeDriver.activePort == null) {
+          console.log("WARNING: No active port");
+        }
+      }
+    }
+  }
+}
+
+function disconnectPort(port) {
+  console.log("Disconnected from " + port.name);
+  removePort(port);
+}
+
+function parseRequest(request) {
+  switch (request.request) {
+  case "url":
+    //TODO(danielwh): Fill in GUID
+    getUrl(request.url, "GUID");
+    break;
+  default:
+    ChromeDriver.retryRequestBuffer.push({request: request, sequenceNumber: ChromeDriver.requestSequenceNumber++});
+    sendBufferedRequests();
+    break;
+  }
+}
+
+function sendBufferedRequests() {
+  if (!ChromeDriver.activePort) {
+    console.log("NO ACTIVE PORT");
+    if (ChromeDriver.isOnBadPage) {
+      ChromeDriver.retryRequestBuffer = [];
+    }
+  }
+  for (var i = 0; i < ChromeDriver.retryRequestBuffer.length; i++) {
+    console.log("Sending: " + ChromeDriver.retryRequestBuffer[i].sequenceNumber);
+    ChromeDriver.activePort.postMessage(ChromeDriver.retryRequestBuffer[i]);
+  }
+  setTimeout(sendBufferedRequests, 1000);
+}
 
 /**
  * Handles GET requests made to/by the plugin.
@@ -359,28 +445,27 @@ function HandleDelete(uri) {
  *                 HTTP_CODE ::= 200 | 204 | 404 | "no-op"
  */
 function parsePortMessage(message) {
-  console.log("Received response to: " + message.response);
-  if (!message || !message.value || !message.value.statusCode) {
-    console.log("Got invalid response... No status code");
+  if (!message || !message.response || !message.response.value || typeof(message.response.value.statusCode) == "undefined" || message.response.value.statusCode == null ||
+      typeof(message.sequenceNumber) == "undefined") {
+    console.log("Got invalid response.");
     return;
   }
-  switch (message.value.statusCode) {
-  case 200:
-    sendValue(message.value.value);
-    break;
-  case 204:
-    sendNoContent();
-    break;
-  case 302:
-    sendFound(message.value.location);
-    break;
-  case 404:
-    sendNotFound(message.value.value);
+  var toSend = "";
+  switch (message.response.value.statusCode) {
+  case 0:
+  case 1: //org.openqa.selenium.NoSuchElementException
+  case 2: //org.openqa.selenium.WebDriverException [Cookies]
+    toSend = '{statusCode: ' + message.response.value.statusCode;
+    if (typeof(message.response.value) != "undefined" && message.response.value != null &&
+        typeof(message.response.value.value) != "undefined") {
+      toSend += ',value:' + JSON.stringify(message.response.value.value);
+    }
+    toSend += ',class:"org.openqa.selenium.chrome.Response"}';
     break;
   case "no-op":
     //Some special operation which isn't sending HTTP
-    switch (message.response) {
-    case "click element":
+    switch (message.response.response) {
+    /*case "click element":
       document.embeds[0].clickAt(message.value.x, message.value.y);
       break;
     case "drag element":
@@ -389,9 +474,26 @@ function parsePortMessage(message) {
     case "send element keys":
       document.embeds[0].return_send_element_keys(message.value.value.join(""));
       break;
+    default:
+      toSend = '{statusCode: ' + message.value.statusCode + ',value:' + JSON.stringify(message.value.value) + 
+      ',"class":"org.openqa.selenium.chrome.Response"}';
+      break;*/
     }
     break
   }
+  console.log("Sending: " + toSend)
+  sendResponse(message.sequenceNumber, toSend);
+}
+
+function sendResponse(sequenceNumber, toSend) {
+  var updatedRetryRequestBuffer = [];
+  for (var i = 0; i < ChromeDriver.retryRequestBuffer.length; i++) {
+    if (ChromeDriver.retryRequestBuffer[i].sequenceNumber != sequenceNumber) {
+      updatedRetryRequestBuffer.push(ChromeDriver.retryRequestBuffer[i]);
+    }
+  }
+  ChromeDriver.retryRequestBuffer = updatedRetryRequestBuffer;
+  sendXmlHttpPostRequest(toSend);
 }
 
 /**
@@ -478,8 +580,7 @@ function wrapInjectEmbedIfNecessary(requestObject) {
   } else {
     return {request: "inject embed",
             followup: requestObject,
-            value: {sessionId: ChromeDriver.sessionId,
-                    uuid: ChromeDriver.instanceUuid}};
+            value: {uuid: ChromeDriver.instanceUuid}};
   }
 }
 
@@ -511,14 +612,12 @@ function getWindowHandles() {
 
 /**
  * Closes the current tab if it exists, and opens a new one, in which it
- * gets the URL passed and record the sessionId and UUID passed.
+ * gets the URL passed and record the UUID passed.
  * @param value JSON array containing the URL to load
- * @param sessionId the current sessionId
  * @param UUID a generated UUID that the extension can use for this page
  *             if needed
  */
-function getUrl(value, sessionId, uuid) {
-  var url = JSON.parse(value)[0];
+function getUrl(url, uuid) {
   //Ignore any URL request we get while loading a page,
   //because we should still return a 204 when we cannot find the page.
   if (ChromeDriver.isCurrentlyLoadingUrl) {
@@ -530,7 +629,6 @@ function getUrl(value, sessionId, uuid) {
     chrome.tabs.remove(ChromeDriver.activeTabId);
   }
   ChromeDriver.activeTabId = null;
-  ChromeDriver.sessionId = sessionId;
   ChromeDriver.instanceUuid = uuid;
   ChromeDriver.isCurrentlyLoadingUrl = true;
   chrome.tabs.create({url: url, selected: true}, getUrlCallback);
@@ -545,7 +643,12 @@ function getUrlCallback(tab) {
     ChromeDriver.isCurrentlyLoadingUrl = false;
     ChromeDriver.activeTabId = tab.id;
     setActivePortByTabId(tab.id);
-    sendNoContent();
+    ChromeDriver.retryRequestBuffer = [];
+    ChromeDriver.requestSequenceNumber = 0;
+    if (ChromeDriver.activePort == null) {
+      ChromeDriver.isOnBadPage = true;
+    }
+    sendXmlHttpPostRequest("");
   }
 }
 
@@ -596,4 +699,7 @@ function removePort(port) {
     }
   }
   ChromeDriver.ports = temp_ports;
+  if (ChromeDriver.activePort && ChromeDriver.activePort.name == port.name) {
+    ChromeDriver.activePort = null;
+  }
 }

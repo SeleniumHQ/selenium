@@ -5,5 +5,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/webdriver-common"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/webdriver-remote"/>
+	<classpathentry kind="lib" path="/webdriver-remote/common/lib/runtime/json-20080701.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

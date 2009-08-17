@@ -32,9 +32,9 @@ public class ChromeDriverTestSuite extends TestCase {
     return new TestSuiteBuilder()
         .addSourceDir("common")
         .addSourceDir("chrome")
-        .usingDriver(ChromeDriver.class)
+        .usingDriver(TestChromeDriver.class)
         .exclude(CHROME)
-        .includeJavascriptTests()
+        //.includeJavascriptTests()
         .keepDriverInstance()
         .create();
   }
@@ -54,11 +54,6 @@ public class ChromeDriverTestSuite extends TestCase {
         //throw new RuntimeException(e);
       }
       super.startClient();
-    }
-    
-    @Override
-    protected void stopClient() {
-      super.stopClient();
     }
     
     private void copyDll() throws IOException {
