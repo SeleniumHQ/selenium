@@ -31,6 +31,13 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface FindBy {
-    How how() default How.ID;
-    String using();
+  How how() default How.ID;
+  String using() default "";
+  String id() default "";
+  String name() default "";
+  String className() default "";
+  String tagName() default "";
+  String linkText() default "";
+  String partialLinkText() default "";
+  String xpath() default "";
 }

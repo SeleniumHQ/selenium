@@ -38,6 +38,13 @@ public class Annotations {
   }
 
   public By buildBy() {
+    assertOnlyOneMechansimIsSelected();
+
+    By shortForm = getShortFormBy();
+    if (shortForm != null) {
+      return shortForm;
+    }
+
     How how = How.ID_OR_NAME;
     String using = field.getName();
 
@@ -77,4 +84,60 @@ public class Annotations {
     }
   }
 
+  private By getShortFormBy() {
+    FindBy findBy = field.getAnnotation(FindBy.class);
+    if (findBy == null)
+      return null;
+
+    if (!"".equals(findBy.className()))
+      return By.className(findBy.className());
+
+    if (!"".equals(findBy.id()))
+      return By.id(findBy.id());
+
+    if (!"".equals(findBy.linkText()))
+      return By.linkText(findBy.linkText());
+
+    if (!"".equals(findBy.name()))
+      return By.name(findBy.name());
+
+    if (!"".equals(findBy.partialLinkText()))
+      return By.partialLinkText(findBy.partialLinkText());
+
+    if (!"".equals(findBy.tagName()))
+      return By.tagName(findBy.tagName());
+
+    if (!"".equals(findBy.xpath()))
+      return By.xpath(findBy.xpath());
+
+    // Fall through    
+    return null;
+  }
+
+  private void assertOnlyOneMechansimIsSelected() {
+    FindBy findBy = field.getAnnotation(FindBy.class);
+    if (findBy == null)
+      return;
+
+    if (findBy.how() != null) {
+      if (findBy.using() == null) {
+        throw new IllegalArgumentException("If you set the 'how' property, you must also set 'using'");
+      }
+    }
+
+    int count = 0;
+    if (!"".equals(findBy.how())) count++;
+    if (!"".equals(findBy.className())) count++;
+    if (!"".equals(findBy.id())) count++;
+    if (!"".equals(findBy.linkText())) count++;
+    if (!"".equals(findBy.name())) count++;
+    if (!"".equals(findBy.partialLinkText())) count++;
+    if (!"".equals(findBy.tagName())) count++;
+    if (!"".equals(findBy.xpath())) count++;
+
+    // A zero count is okay: it means to look by name or id.
+    if (count > 1) {
+      throw new IllegalArgumentException("You must specify at most one location strategy. Number found: " + count);
+    }
+  }
 }

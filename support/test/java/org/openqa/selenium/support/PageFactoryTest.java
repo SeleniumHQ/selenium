@@ -96,6 +96,28 @@ public class PageFactoryTest extends MockObjectTestCase {
       assertThat(page.q, equalTo(q));
     }
 
+    public void testShouldComplainWhenMoreThanOneFindByAttributeIsSet() {
+      GrottyPage page = new GrottyPage();
+
+      try {
+        PageFactory.initElements((WebDriver) null, page);
+        fail("Should not have allowed page to be initialised");
+      } catch (IllegalArgumentException e) {
+        // this is expected
+      }
+    }
+  
+    public void testShouldComplainWhenMoreThanOneFindByShortFormAttributeIsSet() {
+      GrottyPage2 page = new GrottyPage2();
+
+      try {
+        PageFactory.initElements((WebDriver) null, page);
+        fail("Should not have allowed page to be initialised");
+      } catch (IllegalArgumentException e) {
+        // this is expected
+      }
+    }
+
     public static class PublicPage {
         public WebElement q;
 
@@ -120,5 +142,15 @@ public class PageFactoryTest extends MockObjectTestCase {
         public WebElement getField() {
             return allMine;
         }
+    }
+
+    public static class GrottyPage {
+      @FindBy(how = How.XPATH, using = "//body", id = "cheese")
+      private WebElement one;
+    }
+
+    public static class GrottyPage2 {
+      @FindBy(xpath = "//body", id = "cheese")
+      private WebElement two;
     }
 }
