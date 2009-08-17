@@ -169,13 +169,18 @@ Utils.isDisplayed = function(element) {
         el = el.parentNode;
     }
 
+    if (!el)  {
+      return false;
+    }
+
     // Hidden input elements are, by definition, never displayed
     if (el.tagName == "input" && el.type == "hidden") {
       return false;
     }
 
+    var box = Utils.getLocationOnceScrolledIntoView(el);
     // Elements with zero width or height are never displayed
-    if (el.offsetWidth == 0 || el.offsetHeight == 0) {
+    if (box.width == 0 || box.height == 0) {
       return false;
     }
 

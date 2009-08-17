@@ -460,11 +460,10 @@ FirefoxDriver.prototype.getElementLocation = function(respond) {
 FirefoxDriver.prototype.getElementSize = function(respond) {
     var element = Utils.getElementAt(respond.elementId, this.context);
 
-    var width = element.scrollWidth;
-    var height = element.scrollHeight;
+    var box = Utils.getLocationOnceScrolledIntoView(element);
 
     respond.context = this.context;
-    respond.response = width + ", " + height;
+    respond.response = box.width + ", " + box.height;
     respond.send();
 };
 
