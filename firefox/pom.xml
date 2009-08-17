@@ -41,13 +41,26 @@
 				<artifactId>maven-antrun-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>create_fxdriver_xpi</id>
+						<id>create_extension_and_copy_libraries</id>
 						<phase>generate-resources</phase>
 						<configuration>
 							<tasks>
+								<copy todir="target/webdriver-extension">
+									<fileset dir="src/extension" excludes="**/.svn/**" />
+								</copy>
+								<copy todir="target/webdriver-extension/components">
+									<fileset dir="prebuilt" includes="*.xpt" />
+								</copy>
+								<copy todir="target/webdriver-extension/components">
+									<fileset dir="prebuilt" includes="*.xpt" />
+								</copy>
+								<copy file="prebuilt/Win32/Release/webdriver-firefox.dll" todir="target/webdriver-extension/platform/WINNT_x86-msvc/components" />
+								<copy file="prebuilt/linux/Release/libwebdriver-firefox.so" todir="target/webdriver-extension/platform/Linux_x86-gcc3/components" />
+								<copy file="prebuilt/linux64/Release/libwebdriver-firefox.so" todir="target/webdriver-extension/platform/Linux_x86_64-gcc3/components" />
 								<mkdir dir="target/classes" />
-								<!-- TODO: add *.so and *.dll files to webdriver-extension.zip -->
-								<zip destfile="target/classes/webdriver-extension.zip" basedir="src/extension" excludes="**/.svn/**" />
+								<zip destfile="target/classes/webdriver-extension.zip" basedir="target/webdriver-extension" />
+								<copy file="prebuilt/linux/Release/x_ignore_nofocus.so" todir="target/classes/x86" />
+								<copy file="prebuilt/linux64/Release/x_ignore_nofocus.so" todir="target/classes/amd64" />
 							</tasks>
 						</configuration>
 						<goals>
