@@ -49,6 +49,10 @@ public class RenderedRemoteWebElement extends RemoteWebElement implements Render
     return new Dimension(width, height);
   }
 
+  public void hover() {
+    parent.execute("hover", map("id", id));
+  }
+
   public void dragAndDropBy(int moveRightBy, int moveDownBy) {
     parent.execute("dragElement", map("id", id), moveRightBy, moveDownBy);
   }

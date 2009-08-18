@@ -63,6 +63,7 @@ import org.openqa.selenium.remote.server.handler.SwitchToFrame;
 import org.openqa.selenium.remote.server.handler.SwitchToWindow;
 import org.openqa.selenium.remote.server.handler.ToggleElement;
 import org.openqa.selenium.remote.server.handler.RefreshPage;
+import org.openqa.selenium.remote.server.handler.HoverOverElement;
 import org.openqa.selenium.remote.server.renderer.EmptyResult;
 import org.openqa.selenium.remote.server.renderer.ForwardResult;
 import org.openqa.selenium.remote.server.renderer.JsonErrorExceptionResult;
@@ -189,6 +190,9 @@ public class DriverServlet extends HttpServlet {
         .on(ResultType.SUCCESS, new JsonResult(":response"));
     getMapper.bind("/session/:sessionId/:context/element/:id/css/:propertyName", GetCssProperty.class)
         .on(ResultType.SUCCESS, new JsonResult(":response"));
+
+    postMapper.bind("/session/:sessionId/:context/element/:id/hover", HoverOverElement.class)
+        .on(ResultType.SUCCESS, new EmptyResult());
 
     postMapper.bind("/session/:sessionId/:context/element/:id/drag", DragElement.class)
         .on(ResultType.SUCCESS, new EmptyResult());

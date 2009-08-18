@@ -85,6 +85,10 @@ public class RenderedHtmlUnitDriverWebElement extends HtmlUnitWebElement
     return !(element instanceof HtmlHiddenInput) && element.isDisplayed();
   }
 
+  public void hover() {
+    throw new UnsupportedOperationException("Hover is not supported by the htmlunit driver");
+  }
+
   public Point getLocation() {
     assertElementNotStale();
 

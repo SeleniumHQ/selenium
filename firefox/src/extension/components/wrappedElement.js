@@ -291,7 +291,8 @@ FirefoxDriver.prototype.hover = function(respond) {
       this.currentX = x;
       this.currentY = y;
   } else {
-    Utils.dumpn("not hovering");
+    respond.isError = true;
+    respond.response = "Unable to hover over element";
   }
 
   respond.send();
