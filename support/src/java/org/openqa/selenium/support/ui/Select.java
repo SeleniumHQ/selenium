@@ -113,9 +113,20 @@ public class Select {
     builder.append("]");
 
     List<WebElement> options = element.findElements(By.xpath(builder.toString()));
+
     for (WebElement option : options) {
       option.setSelected();
-      if (isMultiple()) {  return;  }
+      if (!isMultiple()) {  return;  }
+    }
+
+    if (options.size() == 0 && text.contains(" ")) {
+      List<WebElement> allOptions = element.findElements(By.tagName("option"));
+      for (WebElement option : allOptions) {
+        if (text.equals(option.getText())) {
+          option.setSelected();
+          if (!isMultiple()) {  return;  }
+        }
+      }
     }
   }
 

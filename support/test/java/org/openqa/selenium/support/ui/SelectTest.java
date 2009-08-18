@@ -18,6 +18,7 @@ limitations under the License.
 package org.openqa.selenium.support.ui;
 
 import org.jmock.Expectations;
+import org.jmock.Sequence;
 import org.jmock.integration.junit3.MockObjectTestCase;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
@@ -351,5 +352,24 @@ public class SelectTest extends MockObjectTestCase {
     String result = select.escapeQuotes("f\"o'o");
 
     assertEquals("concat(\"f\", '\"', \"o'o\")", result);
+  }
+
+  public void testShouldFallBackToSlowLooksUpsWhenGetByVisibleTextFailsAndThereIsASpace() {
+    final WebElement element = mock(WebElement.class);
+    final WebElement firstOption = mock(WebElement.class, "first");
+    final By xpath = By.xpath(".//option[. = \"foo bar\"]");
+    final Sequence selects = sequence("selects");
+
+    checking(new Expectations() {{
+      allowing(element).getTagName(); will(returnValue("select"));
+      allowing(element).getAttribute("multiple"); will(returnValue(""));
+      one(element).findElements(xpath); will(returnValue(Collections.EMPTY_LIST));
+      one(element).findElements(By.tagName("option")); will(returnValue(Collections.singletonList(firstOption)));
+      one(firstOption).getText(); will(returnValue("foo bar"));
+      one(firstOption).setSelected();
+    }});
+
+    Select select = new Select(element);
+    select.selectByVisibleText("foo bar");
   }
 }
