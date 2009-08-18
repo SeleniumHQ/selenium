@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,14 +31,18 @@ public class ChromeDriver implements WebDriver, SearchContext, JavascriptExecuto
 FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, FindsByXPath {
 
   private Process clientProcess;
-  private final ChromeCommandExecutor executor;
+  private ChromeCommandExecutor executor;
   
   public ChromeDriver() throws Exception {
+    init();
+  }
+  
+  private void init() throws Exception {
     this.executor = new ChromeCommandExecutor(9701);
     startClient();
     //TODO(danielwh): Set up the session
     //execute("newSession", DesiredCapabilities.chrome());
-  }  
+  }
   
   /**
    * By default will try to load Chrome from system property
@@ -70,7 +75,7 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
       System.out.println("Execing: " + toRun);
       clientProcess = Runtime.getRuntime().exec(toRun.toString());
       //Ick, we sleep for a little bit in case the browser hasn't quite loaded
-      Thread.sleep(1000);
+      Thread.sleep(2500);
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
@@ -94,11 +99,20 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
     Command command = new Command(commandName, parameters);
     try {
       return executor.execute(command);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    } catch (UnsupportedOperationException e) {
+    } catch (Exception e) {
+      //If an exception is thrown in a test, we *always* launch a new instance
+      //of Chrome, because background page state may be inconsistent
       stopClient();
-      throw e;
+      try {
+        init();
+      } catch (Exception e2) {
+        throw new RuntimeException(e2);
+      }
+      if (e instanceof RuntimeException) {
+        throw (RuntimeException)e;
+      } else {
+        throw new RuntimeException(e);
+      }
     }
   }
   
@@ -148,8 +162,7 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
 
   @Override
   public void close() {
-    // TODO Auto-generated method stub
-    
+    throw new UnsupportedOperationException("Not yet supported in Chrome");
   }
 
   @Override
@@ -184,14 +197,17 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
 
   @Override
   public String getWindowHandle() {
-    // TODO Auto-generated method stub
-    return null;
+    return execute("getWindowHandle").getValue().toString();
   }
 
   @Override
   public Set<String> getWindowHandles() {
-    // TODO Auto-generated method stub
-    return null;
+    Object[] windowHandles = (Object[])execute("getWindowHandles").getValue();
+    Set<String> setOfHandles = new HashSet<String>();
+    for (Object windowHandle : windowHandles) {
+      setOfHandles.add((String)windowHandle);
+    }
+    return setOfHandles;
   }
 
   @Override
@@ -215,20 +231,27 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
 
   @Override
   public TargetLocator switchTo() {
-    // TODO Auto-generated method stub
-    return null;
+    throw new UnsupportedOperationException("Doesn't support switching yet");
+    //return new ChromeTargetLocator();
   }
 
   @Override
   public Object executeScript(String script, Object... args) {
-    // TODO Auto-generated method stub
-    return null;
+    System.out.println("executeScript(" + script + ", " + Arrays.toString(args) + ")");
+    Response response;
+    response = execute("execute", script, args);
+    if (response.getStatusCode() == -1) {
+      System.out.println("RETURNED: ChromeWebElement");
+      return new ChromeWebElement(this, response.getValue().toString());
+    } else {
+      System.out.println("RETURNED: " + response.getValue());
+      return response.getValue();
+    }
   }
 
   @Override
   public boolean isJavascriptEnabled() {
-    // TODO Auto-generated method stub
-    return false;
+    return true;
   }
 
   @Override
@@ -368,14 +391,12 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
 
     @Override
     public Speed getSpeed() {
-      // TODO Auto-generated method stub
-      return null;
+      throw new UnsupportedOperationException("Not yet supported in Chrome");
     }
 
     @Override
     public void setSpeed(Speed speed) {
-      // TODO Auto-generated method stub
-      
+      throw new UnsupportedOperationException("Not yet supported in Chrome");
     }
   }
   
@@ -399,5 +420,34 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
     public void refresh() {
       execute("refresh");
     }
+  }
+  
+  private class ChromeTargetLocator implements TargetLocator {
+    @Override
+    public WebElement activeElement() {
+      throw new UnsupportedOperationException("Chrome does not support active element switching yet");
+    }
+
+    @Override
+    public WebDriver defaultContent() {
+      throw new UnsupportedOperationException("Chrome does not support default content switching yet");
+    }
+
+    @Override
+    public WebDriver frame(int frameIndex) {
+      throw new UnsupportedOperationException("Chrome does not support frame switching yet");
+    }
+
+    @Override
+    public WebDriver frame(String frameName) {
+      throw new UnsupportedOperationException("Chrome does not support frame switching yet");
+    }
+
+    @Override
+    public WebDriver window(String windowName) {
+      execute("switchToWindow", windowName);
+      return ChromeDriver.this;
+    }
+    
   }
 }

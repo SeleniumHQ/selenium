@@ -37,50 +37,44 @@ FindsByXPath, FindsByLinkText, FindsById, FindsByName, FindsByTagName, FindsByCl
   
   @Override
   public void dragAndDropBy(int moveRightBy, int moveDownBy) {
-    // TODO Auto-generated method stub
-    
+    throw new UnsupportedOperationException("Not yet supported in Chrome");
   }
 
   @Override
   public void dragAndDropOn(RenderedWebElement element) {
-    // TODO Auto-generated method stub
-    
+    throw new UnsupportedOperationException("Not yet supported in Chrome");
   }
 
   @Override
   public Point getLocation() {
-    // TODO Auto-generated method stub
-    return null;
+    return (Point)parent.execute("getElementLocation", this).getValue();
   }
 
   @Override
   public Dimension getSize() {
-    // TODO Auto-generated method stub
-    return null;
+    return (Dimension)parent.execute("getElementSize", this).getValue();
   }
 
   @Override
   public String getValueOfCssProperty(String propertyName) {
-    // TODO Auto-generated method stub
-    return null;
+    return parent.execute("getElementValueOfCssProperty", this, propertyName)
+        .getValue().toString();
   }
 
   @Override
   public boolean isDisplayed() {
-    // TODO Auto-generated method stub
-    return false;
+    return Boolean.parseBoolean(execute("isElementDisplayed", this)
+        .getValue().toString());
   }
 
   @Override
   public void clear() {
-    // TODO Auto-generated method stub
-    
+    parent.execute("clearElement", this);
   }
 
   @Override
   public void click() {
-    // TODO Auto-generated method stub
-    
+    throw new UnsupportedOperationException("Not yet supported in Chrome");
   }
 
   @Override
@@ -102,7 +96,7 @@ FindsByXPath, FindsByLinkText, FindsById, FindsByName, FindsByTagName, FindsByCl
   @Override
   public String getElementName() {
     //TODO(danielwh)
-    return null;
+    throw new UnsupportedOperationException("Not yet supported in Chrome");
     //return execute("getElementName", this).getValue().toString();
   }
 
@@ -134,8 +128,7 @@ FindsByXPath, FindsByLinkText, FindsById, FindsByName, FindsByTagName, FindsByCl
 
   @Override
   public void sendKeys(CharSequence... keysToSend) {
-    // TODO Auto-generated method stub
-    
+    throw new UnsupportedOperationException("Not yet supported in Chrome");
   }
 
   @Override
@@ -150,14 +143,13 @@ FindsByXPath, FindsByLinkText, FindsById, FindsByName, FindsByTagName, FindsByCl
 
   @Override
   public boolean toggle() {
-    // TODO Auto-generated method stub
-    return false;
+    return Boolean.parseBoolean(execute("toggleElement", this)
+        .getValue().toString());
   }
 
   @Override
   public Point getLocationOnScreenOnceScrolledIntoView() {
-    // TODO Auto-generated method stub
-    return null;
+    throw new UnsupportedOperationException("Not yet supported in Chrome");
   }
 
   @Override

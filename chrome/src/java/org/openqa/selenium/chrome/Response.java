@@ -3,6 +3,7 @@ package org.openqa.selenium.chrome;
 
 public class Response {
 
+  //Status code of -1 indicates value is the ID of a ChromeWebElement
   private final int statusCode;
   private final Object value;
   public Response(int statusCode, Object value) {

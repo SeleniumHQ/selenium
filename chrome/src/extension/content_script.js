@@ -1,3 +1,5 @@
+console.log("Content script reached");
+
 /**
  * All functions which take elements assume that they are not null,
  * and are present as passed on the DOM.
@@ -8,13 +10,14 @@ ChromeDriverContentScript = {};
 ChromeDriverContentScript.internalElementArray = [];
 ChromeDriverContentScript.port = null;
 ChromeDriverContentScript.injectedScriptElement = null;
-ChromeDriverContentScript.lastReturnedSequenceNumber = -1;
+ChromeDriverContentScript.currentSequenceNumber = -1; //For async calls (execute), so returner knows what to return
 
 if (document.location != "about:blank") {
   //If loading windows using window.open, the port is opened
   //while we are on about:blank (which reports window.name as ''),
   //and we use port-per-tab semantics, so don't open the port if
   //we're on about:blank
+  console.log("Connecting port");
   ChromeDriverContentScript.port = chrome.extension.connect(window.name);
   ChromeDriverContentScript.port.onMessage.addListener(parsePortMessage);
 }
@@ -30,21 +33,26 @@ if (document.location != "about:blank") {
  */
 function parsePortMessage(message) {
   if (message == null || message.request == null || typeof(message.sequenceNumber) == "undefined") {
+    console.log(message);
     console.log("Received bad request");
     return;
   }
-  if (message.sequenceNumber <= ChromeDriverContentScript.lastReturnedSequenceNumber) {
-    console.log("Already sent reply to this sequence number");
+  if (message.sequenceNumber <= ChromeDriverContentScript.currentSequenceNumber) {
+    console.log("Already processing this sequence number");
     return;
   }
+  
+  ChromeDriverContentScript.currentSequenceNumber = message.sequenceNumber;
+  
   console.log("Received request for: " + message.request.request);
+  console.log(JSON.stringify(message));
   var response = {response: message.request.request, value: null};
   if (typeof(message.request.elementId) != undefined && message.request.elementId != null) {
     try {
       var element = internalGetElement(message.request.elementId);
     } catch(e) {
       response.value = e;
-      ChromeDriverContentScript.port.postMessage({response: response, sequenceNumber: request.sequenceNumber});
+      ChromeDriverContentScript.port.postMessage({response: response, sequenceNumber: message.sequenceNumber});
       return;
     }
   }
@@ -52,7 +60,7 @@ function parsePortMessage(message) {
   case "addCookie":
     response.value = setCookie(message.request.cookie);
     break;
-  case "clear element":
+  case "clearElement":
     response.value = clearElement(element);
     break;
   case "click element":
@@ -68,7 +76,7 @@ function parsePortMessage(message) {
     response.value = dragElement(element, {x: message.value.value[1], y: message.value.value[2]});
     break;*/
   case "execute":
-    execute(message.request.value);
+    execute(message.request.script, message.request.args);
     break;
   case "getCookies":
     response.value = getCookies();
@@ -79,15 +87,15 @@ function parsePortMessage(message) {
   case "getElementAttribute":
     response.value = getElementAttribute(element, message.request.attribute);
     break;
-  case "get element css":
-    response.value = {statusCode: 0, value: getStyle(element, message.request.value.css)};
+  case "getElementValueOfCssProperty":
+    response.value = {statusCode: 0, value: getStyle(element, message.request.css)};
     break;
-  case "get element location":
+  case "getElementLocation":
     var coords = getElementCoords(element);
-    response.value = {statusCode: 0, value: {class: "java.awt.Point", x: coords[0], y: coords[1]}};
+    response.value = {statusCode: 0, value: {type: "POINT", x: coords[0], y: coords[1]}};
     break;
-  case "get element size":
-    response.value = {statusCode: 0, value: {class: "java.awt.Dimension",
+  case "getElementSize":
+    response.value = {statusCode: 0, value: {type: "DIMENSION",
                                                height: element.offsetHeight,
                                                width: element.offsetWidth}};
     break;
@@ -145,16 +153,16 @@ function parsePortMessage(message) {
   case "submit":
     response.value = submitElement(element);
     break;
-  case "toggle element":
+  case "toggleElement":
     response.value = toggleElement(element);
     break;
   default:
-    response.value = {statusCode: 404, value: {message: message.request.request + " is unsupported", class: "java.lang.UnsupportedOperationException"}};
+    response.value = {statusCode: 7, value: {message: message.request.request + " is unsupported", class: "java.lang.UnsupportedOperationException"}};
     break;
   }
   if (response.value != null) {
-    ChromeDriverContentScript.lastReturnedSequenceNumber = message.sequenceNumber;
     ChromeDriverContentScript.port.postMessage({response: response, sequenceNumber: message.sequenceNumber})
+    console.log("SENT RESPONSE TO " + message.sequenceNumber);
   }
   if (message.followup) {
     setTimeout(parsePortMessage(message.request.followup), 100);
@@ -249,6 +257,7 @@ function setCookie(cookie) {
  *               [{"id": 0, using: "id", value: "cheese"}]
  */
 function getElement(plural, parsed) {
+  console.log(parsed);
   var root = "./"; //root always ends with /, so // lookups should only start with one additional /
   var lookupBy = "";
   var lookupValue = "";
@@ -290,6 +299,7 @@ function getElement(plural, parsed) {
     elements = getElementsByPartialLinkText(parent, lookupValue);
     break;
   case "tag name":
+    console.log("tag name");
     elements = getElementsByXPath(root + "/" + lookupValue);
     break;
   case "xpath":
@@ -299,6 +309,8 @@ function getElement(plural, parsed) {
       lookupValue = lookupValue.substring(1, lookupValue.length + 1);
     }
     elements = getElementsByXPath(root + lookupValue);
+    console.log("xpath: " + root + lookupValue);
+    console.log(elements);
     break;
   }
   if (attribute != '') {
@@ -352,12 +364,12 @@ function internalGetElement(elementIdAsString) {
       parent = parent.parentNode;
     }
     if (parent !== element.ownerDocument.documentElement) {
-      throw {statusCode: 404, value: {message: "Element is obsolete",
+      throw {statusCode: 8, value: {message: "Element is obsolete",
              class: "org.openqa.selenium.StaleElementReferenceException"}};
     }
     return element;
   } else {
-    throw {statusCode: 404, value: {message: "Element is obsolete",
+    throw {statusCode: 8, value: {message: "Element is obsolete",
            class: "org.openqa.selenium.StaleElementReferenceException"}};
   }
 }
@@ -472,11 +484,11 @@ function selectElement(element) {
         oldValue = element.checked;
         element.checked = true;
       } else {
-        throw {statusCode: 404, value: {message: "Cannot select an input." + type,
+        throw {statusCode: 6, value: {message: "Cannot select an input." + type,
                                         class: "java.lang.UnsupportedOperationException"}};
       }
     } else {
-      throw {statusCode: 404, value: {message: "Cannot select a " + tagName,
+      throw {statusCode: 6, value: {message: "Cannot select a " + tagName,
                                       class: "java.lang.UnsupportedOperationException"}};
     }
   } catch(e) {
@@ -513,7 +525,7 @@ function submitElement(element) {
     }
     element = element.parentElement;
   }
-  return {statusCode: 404, value: {message: "Cannot submit an element not in a form",
+  return {statusCode: 6, value: {message: "Cannot submit an element not in a form",
                                    class: "java.lang.UnsupportedOperationException"}};
 }
 
@@ -535,12 +547,12 @@ function toggleElement(element) {
         parent = parent.parentElement;
       }
       if (parent == null) {
-        throw {statusCode: 404, value: {message: "option tag had no select tag parent",
+        throw {statusCode: 6, value: {message: "option tag had no select tag parent",
                                         class: "org.openqa.selenium.WebDriverException"}};
       }
       oldValue = element.selected;
       if (oldValue && !parent.multiple) {
-        throw {statusCode: 404, value: {message: "Cannot unselect a single element select",
+        throw {statusCode: 6, value: {message: "Cannot unselect a single element select",
                                         class: "java.lang.UnsupportedOperationException"}};
       }
       newValue = element.selected = !oldValue;
@@ -551,11 +563,11 @@ function toggleElement(element) {
         newValue = element.checked = !oldValue;
         changed = true;
       } else {
-        throw {statusCode: 404, value: {message: "Cannot toggle an input." + type,
+        throw {statusCode: 6, value: {message: "Cannot toggle an input." + type,
                                         class: "java.lang.UnsupportedOperationException"}};
       }
     } else {
-      throw {statusCode: 404, value: {message: "Cannot toggle a " + tagName,
+      throw {statusCode: 6, value: {message: "Cannot toggle a " + tagName,
                                       class: "java.lang.UnsupportedOperationException"}};
     }
   } catch (e) {
@@ -582,33 +594,34 @@ function getStyle(element, style) {
  * @param command array with 0th argument as a string of the javascript to execute and
  *                optional 1st argument as an array of wrapped up arguments to pass to the script
  */
-function execute(command) {
-  var func = "function(){" + command[0] + "}";
+function execute(script, passedArgs) {
+  console.log(script);
+  console.log(JSON.stringify(passedArgs) + " (" + passedArgs.length + ")");
+  var func = "function(){" + script + "}";
   var args = [];
-  if (command.length > 1) {
-    for (var i = 0; i < command[1].length; ++i) {
-      switch (command[1][i].type) {
-      case "ELEMENT":
-        var element_id = command[1][i].value.replace("element/", "");
-        var element = null;
-        try {
-          element = internalGetElement(element_id);
-        } catch (e) {
-          ChromeDriverContentScript.port.postMessage({response: "execute", value:
-              {statusCode: 404,
-               message: "Tried use obsolete element as argument when executing javascript.",
-               class: "org.openqa.selenium.StaleElementReferenceException"}});
-          return;
-        }
-        args.push({webdriverElementXPath: getXPathOfElement(element)});
-        break;
-      //Intentional falling through because Javascript will parse things properly
-      case "STRING":
-      case "BOOLEAN":
-      case "NUMBER":
-        args.push(command[1][i].value);
-        break;
+  for (var i = 0; i < passedArgs.length; ++i) {
+    switch (passedArgs[i].type) {
+    case "ELEMENT":
+      var element_id = passedArgs[i].value.replace("element/", "");
+      var element = null;
+      try {
+        element = internalGetElement(element_id);
+      } catch (e) {
+        ChromeDriverContentScript.port.postMessage({response: "execute", value:
+            {statusCode: 8,
+             message: "Tried use obsolete element as argument when executing javascript.",
+             class: "org.openqa.selenium.StaleElementReferenceException"}});
+        return;
       }
+      args.push({webdriverElementXPath: getXPathOfElement(element)});
+      break;
+    //Intentional falling through because Javascript will parse things properly
+    case "STRING":
+    case "BOOLEAN":
+    case "NUMBER":
+      console.log("PUSHING ARG " + passedArgs[i].value);
+      args.push(passedArgs[i].value);
+      break;
     }
   }
   var scriptTag = document.createElement('script');
@@ -663,9 +676,9 @@ function returnFromJavascriptInPage(e) {
     return;
   }
   if (e.prevValue == "EXCEPTION") {
-    ChromeDriverContentScript.port.postMessage({response: "execute", value: {statusCode: 404,
-        message: "Tried to execute bad javascript.",
-        class: "org.openqa.selenium.WebDriverException"}});
+    ChromeDriverContentScript.port.postMessage({sequenceNumber: ChromeDriverContentScript.currentSequenceNumber,
+        response: {response: "execute", value: {statusCode: 4,
+        message: "Tried to execute bad javascript."}}});
     return;
   }
   var result = JSON.parse(e.newValue).value;
@@ -684,7 +697,8 @@ function returnFromJavascriptInPage(e) {
     }
   }
   removeInjectedScript();
-  ChromeDriverContentScript.port.postMessage({response: "execute", value: {statusCode: 0, value: value}});
+  console.log("Finished execing");
+  ChromeDriverContentScript.port.postMessage({sequenceNumber: ChromeDriverContentScript.currentSequenceNumber, response: {response: "execute", value: {statusCode: 0, value: value}}});
 }
 
 /**

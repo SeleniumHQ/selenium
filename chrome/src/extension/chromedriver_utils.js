@@ -92,7 +92,7 @@ function checkElementIsDisplayed(element) {
     return;
   }
   if (!Utils.isDisplayed(element)) {
-    throw {statusCode: 404, value: {message: "Element was not visible",
+    throw {statusCode: 5, value: {message: "Element was not visible",
                                     class: "org.openqa.selenium.ElementNotVisibleException"}};
   }
 }
@@ -104,7 +104,7 @@ function checkElementIsDisplayed(element) {
  */
 function checkElementNotDisabled(element) {
   if (element.disabled) {
-    throw {statusCode: 404, value: {message: "Cannot operate on disabled element",
+    throw {statusCode: 6, value: {message: "Cannot operate on disabled element",
                                     class: "java.lang.UnsupportedOperationException"}};
   }
 }
