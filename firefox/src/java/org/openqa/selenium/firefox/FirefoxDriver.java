@@ -111,7 +111,12 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
     
     public FirefoxDriver(FirefoxBinary binary, FirefoxProfile profile) {
       if (profile == null) {
-        profile = ProfileManager.getInstance().createProfile(binary, DEFAULT_PORT);
+        String suggestedProfile = System.getProperty("webdriver.firefox.profile");
+        if (suggestedProfile != null) {
+          profile = new ProfilesIni().getProfile(suggestedProfile);
+        } else {
+          profile = ProfileManager.getInstance().createProfile(binary, DEFAULT_PORT);
+        }
       } else {
         profile.addWebDriverExtensionIfNeeded(false);
       }
