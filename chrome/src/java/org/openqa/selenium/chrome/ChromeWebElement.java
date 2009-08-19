@@ -94,10 +94,9 @@ FindsByXPath, FindsByLinkText, FindsById, FindsByName, FindsByTagName, FindsByCl
   }
 
   @Override
+  @Deprecated
   public String getElementName() {
-    //TODO(danielwh)
-    throw new UnsupportedOperationException("Not yet supported in Chrome");
-    //return execute("getElementName", this).getValue().toString();
+    return getTagName();
   }
 
   @Override

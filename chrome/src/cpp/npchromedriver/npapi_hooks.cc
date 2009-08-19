@@ -48,11 +48,6 @@ NPError NewInstance(NPMIMEType pluginType,
   return NPERR_NO_ERROR;
 }
 
-NPError Destroy(NPP instance, NPSavedData **save) {
-  //TODO(danielwh): Stub
-  return NPERR_NO_ERROR;
-}
-
 static void GetChromeRenderWindow(WINDOW_HANDLE window) {
 #if defined(OS_WIN)
   HWND handle = (HWND)window;
@@ -86,7 +81,7 @@ bool HasJavascriptMethod(NPObject *npobj, NPIdentifier name) {
   return false;
 }
 
-bool callMethod(const char *name, const uint32_t argCount, const NPVariant *args) {
+bool CallMethod(const char *name, const uint32_t argCount, const NPVariant *args) {
   if (!strcmp(name, kSendKeysJavascriptCommand) && argCount == 1 &&
       args[0].type == NPVariantType_String) {
     if (window_handle_ == NULL) {
@@ -128,7 +123,7 @@ bool InvokeJavascript(NPObject *npobj,
                       uint32_t argCount,
                       NPVariant *result) {
   const char *method = browser_funcs_->utf8fromidentifier(name);
-  if (callMethod(method, argCount, args)) {
+  if (CallMethod(method, argCount, args)) {
     ExecuteInBackgroundPage(kSuccessfulJavascriptResponse);
     return true;
   } else {
@@ -155,7 +150,6 @@ static NPClass JavascriptListener_NPClass = {
 
 NPError GetValue(NPP instance, NPPVariable variable, void *value) {
   switch (variable) {
-    //TODO(danielwh): Check if this leaks because of the createobject/refcounting
     case NPPVpluginScriptableNPObject: {
       NPObject *listener = (NPObject *)browser_funcs_->
           createobject(instance, &JavascriptListener_NPClass);
@@ -176,7 +170,7 @@ static NPError SetupPluginFuncs(NPPluginFuncs *plugin_funcs) {
   plugin_funcs_ = plugin_funcs;
   
   plugin_funcs->newp = NewInstance;
-  plugin_funcs->destroy = Destroy;
+  plugin_funcs->destroy = StubDestroy;
   plugin_funcs->setwindow = SetWindow;
   plugin_funcs->newstream = StubNewStream;
   plugin_funcs->destroystream = StubDestroyStream;
@@ -207,9 +201,6 @@ static void ResetFuncs() {
 
 #if defined(OS_WIN)
 NPError WINAPI NP_GetEntryPoints(NPPluginFuncs *plugin_funcs) {
-  FILE *file = fopen("C:\\tmp\\PROOF.txt","a");
-  fputs("GetEntryPoints", file);
-  fclose(file);
   return SetupPluginFuncs(plugin_funcs);
 }
 

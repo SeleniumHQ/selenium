@@ -260,13 +260,13 @@ task :test => [:test_htmlunit, :test_firefox, :test_ie, :test_iphone, :test_supp
 dll(:name => "chrome_dll",
     :src  => [ "common/src/cpp/webdriver-interactions/**/*", "chome/src/cpp/**/*.*" ],
     :solution => "WebDriver.sln",
-    :out  => [ "Win32/Release/npwebdriver.dll", "x64/Release/npwebdriver.dll" ])
+    :out  => [ "Win32/Release/npchromedriver.dll", "x64/Release/npchromedriver.dll" ])
 
 xpi(:name => "chrome_extension",
     :src  => [ "chrome/src/extension" ],
     :deps => [ :chrome_dll ],
     :resources => [
-                     { "Win32/Release/npwebdriver.dll" => "npwebdriver.dll" }
+                     { "Win32/Release/npchromedriver.dll" => "npchromedriver.dll" }
                   ],
     :out => "chrome-extension.zip")
 

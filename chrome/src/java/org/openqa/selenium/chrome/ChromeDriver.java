@@ -181,6 +181,9 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
 
   @Override
   public void get(String url) {
+    if (clientProcess == null) {
+      startClient();
+    }
     execute("get", url);
   }
 
@@ -241,14 +244,11 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
 
   @Override
   public Object executeScript(String script, Object... args) {
-    System.out.println("executeScript(" + script + ", " + Arrays.toString(args) + ")");
     Response response;
     response = execute("execute", script, args);
     if (response.getStatusCode() == -1) {
-      System.out.println("RETURNED: ChromeWebElement");
       return new ChromeWebElement(this, response.getValue().toString());
     } else {
-      System.out.println("RETURNED: " + response.getValue());
       return response.getValue();
     }
   }
@@ -375,18 +375,18 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
       Set<Cookie> cookies = new HashSet<Cookie>();
       for (Object cookie : (Object[])result) {
         if (!(cookie instanceof JSONObject)) {
-          System.err.println("Ignoring malformed cookie: " + cookie);
+          //Ignore malformed cookie
           continue;
         }
         JSONObject jsonCookie = (JSONObject)cookie;
         if (!jsonCookie.has("name") || !jsonCookie.has("value")) {
-          System.err.println("Ignoring malformed cookie: " + cookie);
+          //Ignore malformed cookie
           continue;
         }
         try {
           cookies.add(new Cookie(jsonCookie.getString("name"), jsonCookie.getString("value")));
         } catch (JSONException e) {
-          System.err.println("Ignoring malformed cookie: " + cookie);
+          //Ignore malformed cookie
           continue;
         }
       }

@@ -110,10 +110,8 @@ public class ChromeCommandExecutor {
         System.err.println("CHROME ERROR");
       }
       if (e instanceof RuntimeException) {
-        System.err.println("Rethrowing runtime exception");
         throw (RuntimeException)e;
       } else {
-        System.err.println("Wrapping and rethrowing non-runtime exception");
         throw new RuntimeException(e);
       }
     }
@@ -133,7 +131,6 @@ public class ChromeCommandExecutor {
     }
     
     //Respond to GET with a command
-    System.out.println("Tried to execute " + command.getCommandName());
     JsonCommand commandToPopulate = 
       nameToJson.get(command.getCommandName());
     if (commandToPopulate == null) {
@@ -141,28 +138,17 @@ public class ChromeCommandExecutor {
     }
     
     //Read request
-    System.out.println("Reading request");
     BufferedReader reader = new BufferedReader(
         new InputStreamReader(socket.getInputStream()));
     String line;
-    while ((line = reader.readLine()) != null && !line.equals("EOF")) {
-      System.out.println(line);
-    }
-    System.out.println("Read request");
+    while ((line = reader.readLine()) != null && !line.equals("EOF")) {}
     
-    System.out.println("Populating");
     String commandStringToSend = commandToPopulate.populate(command.getParameters());
     
-    System.out.println("Filling");
-    
     socket.getOutputStream().write(fillTwoHundredWithJson(commandStringToSend));
-    System.out.println("Wrote to socket");
     socket.getOutputStream().flush();
-    System.out.println("Flushed socket");
     socket.close();
-    System.out.println("Closed socket");
     listeningThread.sockets.remove(socket);
-    System.out.println("Removed socket from queue");
   }
   
   private byte[] fillTwoHundredWithJson(String message) {
@@ -172,7 +158,13 @@ public class ChromeCommandExecutor {
   private byte[] fillTwoHundredWithText(String message) {
     return fillTwoHundred(message, "text/plain; charset=UTF-8");
   }
-  
+
+  /**
+   * Fills in an HTTP 200 response with the passed message and content type.
+   * @param message Response
+   * @param contentType HTTP Content-type header
+   * @return The HTTP 200 message in UTF8 as an array of bytes
+   */
   private byte[] fillTwoHundred(String message, String contentType) {
     String httpMessage = "HTTP/1.1 200 OK" +
     "\r\nContent-Length: " + message.length() + 
@@ -211,12 +203,10 @@ public class ChromeCommandExecutor {
         hasSeenDoubleEOF = true;
       }
     }
-    System.out.println("Response: " + resultBuilder);
     if (command.getCommandName().equals("quit")) {
       socket.getOutputStream().write(fillTwoHundredWithText("quit"));
       hasClient = false;
     } else {
-      System.out.println("Sending ack");
       socket.getOutputStream().write(fillTwoHundredWithText("ACK"));
     }
     socket.getOutputStream().flush();
@@ -227,22 +217,17 @@ public class ChromeCommandExecutor {
   }
   
   private Response parseResponse(String rawJsonString) {
-    //TODO(danielwh): Parse the response non-reflectively!
-    System.err.println("JSON:");
-    System.err.println(rawJsonString);
     if (rawJsonString.length() == 0) {
       return new Response(0, null);
     }
     try {
-      //{statusCode: 0,value:"XHTML Test Page",class:"org.openqa.selenium.chrome.Response"}
       JSONObject jsonObject = new JSONObject(rawJsonString);
       if (!jsonObject.has("statusCode")) {
-        throw new RuntimeException("Response had no status code.  Response was: " + rawJsonString);
+        throw new WebDriverException("Response had no status code.  Response was: " + rawJsonString);
       }
       if (jsonObject.getInt("statusCode") == 0) {
-        //Parse value
+        //Success! Parse value
         if (!jsonObject.has("value") || jsonObject.isNull("value")) {
-          System.out.println("VALUE WAS NULL");
           return new Response(0, null);
         }
         Object value = jsonObject.get("value");
@@ -265,7 +250,7 @@ public class ChromeCommandExecutor {
           //XXX(danielwh): Doesn't support arrays
           JSONObject object = (JSONObject)value;
           if (!object.has("type")) {
-            throw new RuntimeException("Returned a JSONObjet which had no type");
+            throw new WebDriverException("Returned a JSONObjet which had no type");
           }
           if ("NULL".equals(object.getString("type"))) {
             return new Response(0, null);
@@ -282,7 +267,7 @@ public class ChromeCommandExecutor {
             if (!object.has("x") || !object.has("y") ||
                 !(object.get("x") instanceof Number) ||
                 !(object.get("y") instanceof Number)) {
-              throw new RuntimeException("Couldn't construct Point without " +
+              throw new WebDriverException("Couldn't construct Point without " +
                   "x and y coordinates");
             }
             return new Response(0, new Point(object.getInt("x"),
@@ -291,14 +276,15 @@ public class ChromeCommandExecutor {
             if (!object.has("width") || !object.has("height") ||
                 !(object.get("width") instanceof Number) ||
                 !(object.get("height") instanceof Number)) {
-              throw new RuntimeException("Couldn't construct Dimension " +
-                  "without width and height coordinates");
+              throw new WebDriverException("Couldn't construct Dimension " +
+                  "without width and height");
             }
             return new Response(0, new Dimension(object.getInt("width"),
                                              object.getInt("height")));
           }
         } else {
-          System.out.println("CLASS: " + value.getClass());
+          throw new WebDriverException("Didn't know how to deal with value of type: "
+              + value.getClass());
         }
       } else {
         String message = "";
@@ -308,7 +294,6 @@ public class ChromeCommandExecutor {
             jsonObject.getJSONObject("value").get("message") instanceof String) {
           message = jsonObject.getJSONObject("value").getString("message");
         }
-        //Deal with exceptions
         //TODO(danielwh): Change these to match the IE exception codes
         switch (jsonObject.getInt("statusCode")) {
         case 1:
@@ -341,7 +326,7 @@ public class ChromeCommandExecutor {
         throw new WebDriverException("An error occured in the page");
       }
     } catch (JSONException e) {
-      throw new RuntimeException(e);
+      throw new WebDriverException(e);
     }
     return null;
   }
@@ -350,29 +335,24 @@ public class ChromeCommandExecutor {
     for (Socket socket : listeningThread.sockets) {
       try {
         socket.close();
-        System.out.println("Closed queued socket");
       } catch (IOException e) {
         //Nothing we can sanely do here
-        System.out.println("Problem closing socket");
       }
     }
   }
   
   public void stopListening() throws IOException {
-    System.out.println("Stopping listening");
     listen = false;
     listeningThread.stopListening();
     while (!serverSocket.isClosed()) {
       Thread.yield();
     }
-    System.out.println("Stopped listening");
   }
 
   private class ListeningThread extends Thread {
     //We only ever want one thread listening
     private boolean isListening = false;
     private Queue<Socket> sockets = new ConcurrentLinkedQueue<Socket>();
-    @Override
     public void run() {
       if (!isListening) {
         listen();
@@ -385,7 +365,6 @@ public class ChromeCommandExecutor {
           sockets.add(serverSocket.accept());
           hasClient = true;
           hadClient = true;
-          System.out.println("Accepted socket");
         }
       } catch (SocketException e) {
         if (listen) {
@@ -401,16 +380,13 @@ public class ChromeCommandExecutor {
     
     public void stopListening() {
       try {
-        System.out.println("Thread is closing server socket");
         closeCurrentSockets();
       } catch (Exception e) {
         throw new RuntimeException(e);
       } finally {
         try {
           if (!serverSocket.isClosed()) {
-            System.out.println("Closing serverSocket");
             serverSocket.close();
-            System.out.println("Closed serverSocket");
           }
         } catch (Exception e) {
           throw new RuntimeException(e);
@@ -439,7 +415,6 @@ public class ChromeCommandExecutor {
      */
     public String populate(Object... parameters) {
       if (json.equals("EXECUTE")) {
-        //{request: 'execute', script: ?script, args: ?args}
         JsonCommand jsonCommand = new JsonCommand("{request: 'execute', script: ?script}");
         String populated = jsonCommand.populate(parameters[0]);
         JSONObject jsonObject;
@@ -449,33 +424,27 @@ public class ChromeCommandExecutor {
           throw new RuntimeException(e);
         }
         JSONArray args = new JSONArray();
-        System.err.println("Filling in args");
         if (parameters.length > 1 && parameters[1].getClass().isArray()) {
           Object[] argumentsFromParameters = (Object[])parameters[1];
-          System.out.println("argumentsFromParameters: " + Arrays.toString(argumentsFromParameters));
           for (int i = 0; i < argumentsFromParameters.length; ++i) {
-            System.err.println("Putting arg: " + argumentsFromParameters[i]);
             try {
               args.put(wrapArgumentForScriptExecution(argumentsFromParameters[i]));
             } catch (IllegalArgumentException e) {
-              System.out.println("CAUGHT IAE");
               throw e;
             }
           }
         }
-        System.err.println("Putting args");
         try {
           jsonObject.put("args", args);
         } catch (JSONException e) {
           throw new RuntimeException(e);
         }
-        System.err.println("Returning command: " + jsonObject.toString());
         return jsonObject.toString();
       }
       
       List<String> parts = Arrays.asList(json.split(","));
       int i = 0;
-      //The output won't be of length json.length, but it's a good indication
+      //The output won't be exactly of length json.length, but it's a convenient indication
       StringBuilder builder = new StringBuilder(json.length());
       Iterator<String> it = parts.iterator();
       while (it.hasNext()) {
@@ -486,7 +455,7 @@ public class ChromeCommandExecutor {
           if (i >= parameters.length) {
             throw new IllegalArgumentException(
                 "More variables than parameters passed (" + parameters.length +
-                ")");
+                ") when populating command");
           }
           String value = nameAndValue[1];
           while (value.indexOf(']') > -1 || value.indexOf('}') > -1) {
@@ -497,7 +466,6 @@ public class ChromeCommandExecutor {
               value = value.substring(0, value.indexOf('}'));
             }
           }
-          //TODO(danielwh): Parse elements
           String parsedParameter;
           if (parameters[i] instanceof ChromeWebElement) {
             parsedParameter = ((ChromeWebElement)parameters[i]).getElementId().replace("element/", "");
@@ -527,7 +495,7 @@ public class ChromeCommandExecutor {
       }
       if (i != parameters.length) {
         throw new IllegalArgumentException("More parameters (" +
-            parameters.length + ") than variables ( " + i + ")");
+            parameters.length + ") than variables ( " + i + ") when populating command");
       }
       return builder.toString();
     }
@@ -548,7 +516,6 @@ public class ChromeCommandExecutor {
           wrappedArgument.put("type", "ELEMENT");
           wrappedArgument.put("value", ((ChromeWebElement)argument).getElementId());
         } else {
-          System.err.println("COULD NOT WRAP UP PARAM");
           throw new IllegalArgumentException("Could not wrap up " +
                 "javascript parameter " + argument +
                 "(class: " + argument.getClass() + ")");

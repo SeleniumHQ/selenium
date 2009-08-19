@@ -58,9 +58,9 @@ public class ChromeDriverTestSuite extends TestCase {
     
     private void copyDll() throws IOException {
       File dllFrom = new File(System.getProperty("user.dir"),
-          "../build/Win32/Release/npwebdriver.dll");
+          "../build/Win32/Debug/npchromedriver.dll");
       File dllToUse = new File(System.getProperty("webdriver.chrome.extensiondir"),
-          "npwebdriver.dll");
+          "npchromedriver.dll");
       dllToUse.deleteOnExit();
       FileHandler.copy(dllFrom, dllToUse);
     }

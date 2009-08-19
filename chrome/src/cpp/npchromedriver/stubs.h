@@ -4,6 +4,10 @@
 #include "third_party/webkit/glue/plugins/nphostapi.h"
 
 //For NPPluginFuncs
+static NPError StubDestroy(NPP instance, NPSavedData **save) {
+  return NPERR_NO_ERROR;
+}
+
 static NPError StubNewStream(NPP instance,
                              NPMIMEType type,
                              NPStream *stream,
