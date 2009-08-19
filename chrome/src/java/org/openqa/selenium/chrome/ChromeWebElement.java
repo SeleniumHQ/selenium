@@ -63,8 +63,8 @@ FindsByXPath, FindsByLinkText, FindsById, FindsByName, FindsByTagName, FindsByCl
 
   @Override
   public boolean isDisplayed() {
-    return Boolean.parseBoolean(execute("isElementDisplayed", this)
-        .getValue().toString());
+    Response r = execute("isElementDisplayed", this);
+    return (Boolean)r.getValue();
   }
 
   @Override

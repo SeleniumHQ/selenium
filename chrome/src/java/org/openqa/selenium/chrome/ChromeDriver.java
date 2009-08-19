@@ -85,7 +85,7 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
     System.setProperty("webdriver.chrome.extensiondir", "");
     if (clientProcess != null) {
       System.out.println("Killing browser");
-      clientProcess.destroy();
+      //clientProcess.destroy();
       clientProcess = null;
     }
     try {
@@ -238,8 +238,7 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
 
   @Override
   public TargetLocator switchTo() {
-    throw new UnsupportedOperationException("Doesn't support switching yet");
-    //return new ChromeTargetLocator();
+    return new ChromeTargetLocator();
   }
 
   @Override

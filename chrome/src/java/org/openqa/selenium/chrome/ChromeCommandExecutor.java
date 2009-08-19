@@ -234,7 +234,7 @@ public class ChromeCommandExecutor {
         if (value instanceof String) {
           return new Response(0, jsonObject.getString("value"));
         } else if (value instanceof Boolean) {
-          return new Response(0, jsonObject.getBoolean("value"));
+          return new Response(0, jsonObject.get("value"));
         } else if (value instanceof Number) {
           return new Response(0, jsonObject.getLong("value"));
         } else if (value instanceof JSONArray) {

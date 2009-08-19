@@ -32,7 +32,6 @@ public class ChromeDriverTestSuite extends TestCase {
     return new TestSuiteBuilder()
         .addSourceDir("common")
         .addSourceDir("chrome")
-        .usingDriver(ChromeDriver.class)
         .exclude(CHROME)
         .includeJavascriptTests()
         .keepDriverInstance()

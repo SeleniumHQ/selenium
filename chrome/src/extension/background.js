@@ -100,7 +100,6 @@ function handleXmlHttpPostRequestReadyStateChange() {
 function disconnectPort(port) {
   console.log("Disconnected from " + port.name);
   removePort(port);
-  console.log("Aborted xmlHttpRequest");
 }
 
 function parseRequest(request) {
@@ -110,32 +109,30 @@ function parseRequest(request) {
     getUrl(request.url, "GUID");
     break;
   case "getWindowHandle":
-    parsePortMessage({sequenceNumber: "INTERNAL", response: {value: {statusCode: 0, value: ChromeDriver.activePort.name}}});
+    console.log("CALL FOR getWindowHandle");
+    sendResponse("{statusCode: 0, value: '" + ChromeDriver.activePort.name + "'}");
     break;
   case "getWindowHandles":
-    parsePortMessage(getWindowHandles());
+    sendResponse(getWindowHandles());
     break;
   case "switchToWindow":
     if (typeof("request.windowName") != "undefined") {
       setActivePortByWindowName(request.windowName);
-      parsePortMessage({sequenceNumber: "INTERNAL", response: {value: {statusCode: 0}}});
     } else {
-      parsePortMessage({sequenceNumber: "INTERNAL", response: {value: {statusCode: 3, message: "Window to switch to was not given"}}});
+      sendResponse("{statusCode: 3, value: {message: 'Window to switch to was not given'}}");
     }
     break;
   case "clickElement":
   case "sendElementKeys":
-    ChromeDriver.retryRequestBuffer.push(wrapInjectEmbedIfNecessary(request));
-    sendBufferedRequests();
+    sendRequest(wrapInjectEmbedIfNecessary(request));
     break;
   default:
-    ChromeDriver.retryRequestBuffer.push({request: request, sequenceNumber: ChromeDriver.requestSequenceNumber++});
-    sendBufferedRequests();
+    sendRequest({request: request, sequenceNumber: ChromeDriver.requestSequenceNumber++});
     break;
   }
 }
 
-function sendResult(message) {
+function sendRequest(message) {
   ChromeDriver.retryRequestBuffer.push(message);
   sendBufferedRequests();
 }
@@ -182,6 +179,7 @@ function parsePortMessage(message) {
   case 6: //java.lang.UnsupportedOperationException [Invalid element state (e.g. disabled)]
   case 7: //java.lang.UnsupportedOperationException [Unknown command]
   case 8: //org.openqa.selenium.StaleElementReferenceException
+  case 9: //org.openqa.selenium.WebDriverException [Native event]
     toSend = '{statusCode: ' + message.response.value.statusCode;
     if (typeof(message.response.value) != "undefined" && message.response.value != null &&
         typeof(message.response.value.value) != "undefined") {
@@ -201,9 +199,6 @@ function parsePortMessage(message) {
         nativeWebdriverFailure();
       }
       break;
-    /*case "drag element":
-      document.embeds[0].drag(1000, message.value.from.x, message.value.from.y, message.value.to.x, message.value.to.y);
-      break;*/
     case "sendElementKeys":
       console.log("Sending keys");
       try {
@@ -270,7 +265,7 @@ function getWindowHandles() {
   for (var i = 0; i < ChromeDriver.ports.length; ++i) {
     windowHandles.push(ChromeDriver.ports[i].name);
   }
-  return {sequenceNumber: "INTERNAL", response: {value: {statusCode: 0, value: windowHandles}}};
+  return JSON.stringify({statusCode: 0, value: windowHandles});
 }
 
 /**
@@ -311,9 +306,7 @@ function timeoutGetUrl() {
 }
 
 function getUrlCallback(tab) {
-  console.log("getUrlCallback");
   if (tab.status != "complete") {
-    console.log(tab);
     ChromeDriver.isCurrentlyLoadingUrl = true
     //Use the helper calback so that we can add our own delay and not DOS the browser
     setTimeout("getUrlCallbackById(" + tab.id + ")", 10);
@@ -362,11 +355,11 @@ function setActivePortByWindowName(handle) {
   for (var i = 0; i < ChromeDriver.ports.length; ++i) {
     if (ChromeDriver.ports[i].name == handle) {
       ChromeDriver.activePort = ChromeDriver.ports[i];
-      sendNoContent();
+      sendResponse("{statusCode: 0}");
+      return;
     }
   }
-  sendNotFound({message: "Could not find window by handle: " + handle,
-                class: "org.openqa.selenium.NoSuchWindowException"});
+  sendResponse("{statusCode: 3, value: {message: 'Could not find window by handle: " + handle + "'}}");
 }
 
 function removePort(port) {
