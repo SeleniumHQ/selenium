@@ -648,14 +648,12 @@ Utils.type = function(context, element, text) {
     }
 };
 
-Utils.keyEvent = function(context, element, type, keyCode, charCode,
+Utils.keyEvent = function(element, type, keyCode, charCode,
     controlState, shiftState, altState, shouldPreventDefault) {
   var preventDefault = shouldPreventDefault == undefined ? false : shouldPreventDefault;
 
-  var keyboardEvent =
-     Utils.currentDocument(context).createEvent("KeyEvents");
-  var currentView =
-     Utils.currentDocument(context).defaultView;
+  var keyboardEvent = document.createEvent("KeyEvents");
+  var currentView = document.defaultView;
 
   keyboardEvent.initKeyEvent(
     type,         //  in DOMString typeArg,

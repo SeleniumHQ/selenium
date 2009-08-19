@@ -1,4 +1,4 @@
-LIBRARY	"npwebdriver"
+LIBRARY	"npchromedriver"
 
 EXPORTS
 	NP_GetEntryPoints   @1

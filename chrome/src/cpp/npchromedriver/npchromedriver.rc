@@ -53,8 +53,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,0,0,4
- PRODUCTVERSION 1,0,0,4
+ FILEVERSION 0,0,0,1
+ PRODUCTVERSION 0,0,0,1
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -69,14 +69,14 @@ BEGIN
     BEGIN
         BLOCK "080904b0"
         BEGIN
-            VALUE "FileDescription", "Plugin to allow WebDriver to drive Chrome "
-            VALUE "FileVersion", "1, 0, 0, 4"
-            VALUE "InternalName", "npwebdriver.dll"
+            VALUE "FileDescription", "Plugin to allow WebDriver to send native events to Chrome "
+            VALUE "FileVersion", "0, 0, 0, 1"
+            VALUE "InternalName", "npchromedriver.dll"
             VALUE "LegalCopyright", "Copyright (C) 2009 - Released under Apache 2"
-            VALUE "MIMEType", "application/x-webdriver|application/x-webdriver-reporter"
-            VALUE "OriginalFilename", "npwebdriver.dll"
+            VALUE "MIMEType", "application/x-chromedriver|application/x-chromedriver-reporter"
+            VALUE "OriginalFilename", "npchromedriver.dll"
             VALUE "ProductName", "WebDriver Chrome Plugin"
-            VALUE "ProductVersion", "1, 0, 0, 4"
+            VALUE "ProductVersion", "0, 0, 0, 1"
         END
     END
     BLOCK "VarFileInfo"

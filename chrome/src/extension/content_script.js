@@ -10,6 +10,7 @@ ChromeDriverContentScript = {};
 ChromeDriverContentScript.internalElementArray = [];
 ChromeDriverContentScript.port = null;
 ChromeDriverContentScript.injectedScriptElement = null;
+ChromeDriverContentScript.injectedEmbedElement = null;
 ChromeDriverContentScript.currentSequenceNumber = -1; //For async calls (execute), so returner knows what to return
 
 if (document.location != "about:blank") {
@@ -32,7 +33,7 @@ if (document.location != "about:blank") {
  *                 where message' is a message to parse after this one
  */
 function parsePortMessage(message) {
-  if (message == null || message.request == null || typeof(message.sequenceNumber) == "undefined") {
+  if (message == null || message.request == null) {
     console.log(message);
     console.log("Received bad request");
     return;
@@ -63,7 +64,7 @@ function parsePortMessage(message) {
   case "clearElement":
     response.value = clearElement(element);
     break;
-  case "click element":
+  case "clickElement":
     response.value = clickElement(element);
     break;
   case "deleteAllCookies":
@@ -91,6 +92,11 @@ function parsePortMessage(message) {
     response.value = {statusCode: 0, value: getStyle(element, message.request.css)};
     break;
   case "getElementLocation":
+    var coords = getElementCoords(element);
+    response.value = {statusCode: 0, value: {type: "POINT", x: coords[0], y: coords[1]}};
+    break;
+  case "getElementLocationOnceScrolledIntoView":
+    element.scrollIntoView(true);
     var coords = getElementCoords(element);
     response.value = {statusCode: 0, value: {type: "POINT", x: coords[0], y: coords[1]}};
     break;
@@ -128,8 +134,8 @@ function parsePortMessage(message) {
     history.forward();
     response.value = {statusCode: 0};
     break;
-  case "inject embed":
-    injectEmbed(message.request.value.sessionId, message.request.value.uuid)
+  case "injectEmbed":
+    injectEmbed();
     break;
   case "isElementDisplayed":
     response.value = {statusCode: 0, value: isElementDisplayed(element)};
@@ -144,13 +150,16 @@ function parsePortMessage(message) {
     document.location.reload(true);
     response.value = {statusCode: 0};
     break;
-  case "send element keys":
-    response.value = sendElementKeys(element, message.request.value.value);
+  case "sendElementKeys":
+    response.value = sendElementKeys(element, message.request.keys, message.request.elementId);
+    break;
+  case "sendElementNonNativeKeys":
+    response.value = sendElementNonNativeKeys(element, message.request.keys);
     break;
   case "setElementSelected":
     response.value = selectElement(element);
     break;
-  case "submit":
+  case "submitElement":
     response.value = submitElement(element);
     break;
   case "toggleElement":
@@ -164,7 +173,7 @@ function parsePortMessage(message) {
     ChromeDriverContentScript.port.postMessage({response: response, sequenceNumber: message.sequenceNumber})
     console.log("SENT RESPONSE TO " + message.sequenceNumber);
   }
-  if (message.followup) {
+  if (message.request.followup) {
     setTimeout(parsePortMessage(message.request.followup), 100);
   }
 }
@@ -504,14 +513,22 @@ function selectElement(element) {
 /**
  * Focus the element so that native code can type to it
  */
-function sendElementKeys(element, value) {
+function sendElementKeys(element, keys, elementId) {
   try {
     checkElementIsDisplayed(element)
   } catch (e) {
     return e;
   }
   element.focus();
-  return {statusCode: "no-op", value: value};
+  return {statusCode: "no-op", keys: keys, elementId: elementId};
+}
+
+function sendElementNonNativeKeys(element, keys) {
+  for (var i = 0; i < keys.length; i++) {
+    element.value += keys;
+    //TODO(danielwh): Deal with non-native keys
+  }
+  return {statusCode: 0};
 }
 
 /**
@@ -714,14 +731,19 @@ function removeInjectedScript() {
 /**
  * Inject an embed tag so the native code can grab the HWND
  */
-function injectEmbed(sessionId, uuid) {
+function injectEmbed() {
   console.log("Injecting embed");
-  var embed = document.createElement('embed');
-  embed.setAttribute("type", "application/x-webdriver-reporter");
-  embed.setAttribute("session_id", sessionId);
-  embed.setAttribute("id", uuid);
-  document.getElementsByTagName("body")[0].appendChild(embed);
+  ChromeDriverContentScript.injectedEmbedElement = document.createElement('embed');
+  ChromeDriverContentScript.injectedEmbedElement.setAttribute("type", "application/x-chromedriver-reporter");
+  document.getElementsByTagName("body")[0].appendChild(ChromeDriverContentScript.injectedEmbedElement);
   //Give the embed time to render.  Hope that the followup doesn't count embeds or anything
-  setTimeout('document.getElementsByTagName("body")[0].removeChild(document.getElementById("' + uuid + '"))', 100);
-  console.log("Embed removed");
+  //Wait for it to load before removing
+  setTimeout(removeInjectedEmbed, 100);
+}
+
+function removeInjectedEmbed() {
+  if (ChromeDriverContentScript.injectedEmbedElement != null) {
+    document.getElementsByTagName("body")[0].removeChild(ChromeDriverContentScript.injectedEmbedElement);
+    ChromeDriverContentScript.injectedEmbedElement = null;
+  }
 }

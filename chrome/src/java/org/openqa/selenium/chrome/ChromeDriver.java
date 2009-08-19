@@ -100,13 +100,17 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
     try {
       return executor.execute(command);
     } catch (Exception e) {
-      //If an exception is thrown in a test, we *always* launch a new instance
-      //of Chrome, because background page state may be inconsistent
-      stopClient();
-      try {
-        init();
-      } catch (Exception e2) {
-        throw new RuntimeException(e2);
+      if (e instanceof UnsupportedOperationException ||
+          e instanceof ChromeDriverException ||
+          e instanceof IllegalArgumentException) {
+        //These exceptions may leave the extension hung, or in an
+        //inconsistent state, so we restart Chrome
+        stopClient();
+        try {
+          init();
+        } catch (Exception e2) {
+          throw new RuntimeException(e2);
+        }
       }
       if (e instanceof RuntimeException) {
         throw (RuntimeException)e;

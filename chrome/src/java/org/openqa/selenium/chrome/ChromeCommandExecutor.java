@@ -5,6 +5,7 @@ import java.awt.Point;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
@@ -61,9 +62,13 @@ public class ChromeCommandExecutor {
     nameToJson.put("findChildElements", new JsonCommand("{request: 'getElements', by: [{id: ?element, using: ?using, value: ?value}]}"));
     
     nameToJson.put("clearElement", new JsonCommand("{request: 'clearElement', elementId: ?elementId}"));
+    nameToJson.put("clickElement", new JsonCommand("{request: 'clickElement', elementId: ?elementId}"));
+    nameToJson.put("sendElementKeys", new JsonCommand("{request: 'sendElementKeys', elementId: ?elementId, keys: ?keys}"));
+    nameToJson.put("submitElement", new JsonCommand("{request: 'submitElement', elementId: ?elementId}"));
     nameToJson.put("toggleElement", new JsonCommand("{request: 'toggleElement', elementId: ?elementId}"));
     
     nameToJson.put("getElementAttribute", new JsonCommand("{request: 'getElementAttribute', elementId: ?elementId, attribute: ?attribute}"));
+    nameToJson.put("getElementLocationOnceScrolledIntoView", new JsonCommand("{request: 'getElementLocationOnceScrolledIntoView', elementId: ?elementId}"));
     nameToJson.put("getElementLocation", new JsonCommand("{request: 'getElementLocation', elementId: ?elementId}"));
     nameToJson.put("getElementSize", new JsonCommand("{request: 'getElementSize', elementId: ?elementId}"));
     nameToJson.put("getElementTagName", new JsonCommand("{request: 'getElementTagName', elementId: ?elementId}"));
@@ -74,7 +79,6 @@ public class ChromeCommandExecutor {
     nameToJson.put("isElementEnabled", new JsonCommand("{request: 'isElementEnabled', elementId: ?elementId}"));
     nameToJson.put("isElementSelected", new JsonCommand("{request: 'isElementSelected', elementId: ?elementId}"));
     nameToJson.put("setElementSelected", new JsonCommand("{request: 'setElementSelected', elementId: ?elementId}"));
-    nameToJson.put("submit", new JsonCommand("{request: 'submit', elementId: ?elementId}"));
     
     nameToJson.put("getWindowHandle", new JsonCommand("{request: 'getWindowHandle'}"));
     nameToJson.put("getWindowHandles", new JsonCommand("{request: 'getWindowHandles'}"));
@@ -102,7 +106,9 @@ public class ChromeCommandExecutor {
       sendCommand(command);
       return handleResponse(command);
     } catch (Exception e) {
-      stopListening();
+      if (e instanceof ChromeDriverException) {
+        System.err.println("CHROME ERROR");
+      }
       if (e instanceof RuntimeException) {
         System.err.println("Rethrowing runtime exception");
         throw (RuntimeException)e;
@@ -149,9 +155,7 @@ public class ChromeCommandExecutor {
     
     System.out.println("Filling");
     
-    String httpMessage = fillTwoHundredWithJson(commandStringToSend);
-    System.out.println("Sending: " + httpMessage);
-    socket.getOutputStream().write(httpMessage.getBytes());
+    socket.getOutputStream().write(fillTwoHundredWithJson(commandStringToSend));
     System.out.println("Wrote to socket");
     socket.getOutputStream().flush();
     System.out.println("Flushed socket");
@@ -161,20 +165,25 @@ public class ChromeCommandExecutor {
     System.out.println("Removed socket from queue");
   }
   
-  private String fillTwoHundredWithJson(String message) {
+  private byte[] fillTwoHundredWithJson(String message) {
     return fillTwoHundred(message, "application/json; charset=UTF-8");
   }
   
-  private String fillTwoHundredWithText(String message) {
+  private byte[] fillTwoHundredWithText(String message) {
     return fillTwoHundred(message, "text/plain; charset=UTF-8");
   }
   
-  private String fillTwoHundred(String message, String contentType) {
+  private byte[] fillTwoHundred(String message, String contentType) {
     String httpMessage = "HTTP/1.1 200 OK" +
     "\r\nContent-Length: " + message.length() + 
     "\r\nContent-Type: " + contentType + 
     "\r\n\r\n" + message; //Bytelength
-    return httpMessage;
+    try {
+      return httpMessage.getBytes("UTF-8");
+    } catch (UnsupportedEncodingException e) {
+      //Should never happen - Java ships with UTF-8
+      throw new WebDriverException("Your environment doesn't support UTF-8");
+    }
   }
   
   private Response handleResponse(Command command) throws IOException {
@@ -203,13 +212,12 @@ public class ChromeCommandExecutor {
       }
     }
     System.out.println("Response: " + resultBuilder);
-    //TODO(danielwh): Maybe send HTTP
     if (command.getCommandName().equals("quit")) {
-      socket.getOutputStream().write(fillTwoHundredWithText("quit").getBytes());
+      socket.getOutputStream().write(fillTwoHundredWithText("quit"));
       hasClient = false;
     } else {
       System.out.println("Sending ack");
-      socket.getOutputStream().write(fillTwoHundredWithText("ACK").getBytes());
+      socket.getOutputStream().write(fillTwoHundredWithText("ACK"));
     }
     socket.getOutputStream().flush();
     socket.close();
@@ -301,6 +309,7 @@ public class ChromeCommandExecutor {
           message = jsonObject.getJSONObject("value").getString("message");
         }
         //Deal with exceptions
+        //TODO(danielwh): Change these to match the IE exception codes
         switch (jsonObject.getInt("statusCode")) {
         case 1:
           throw new NoSuchElementException(message);
@@ -322,6 +331,8 @@ public class ChromeCommandExecutor {
           throw new UnsupportedOperationException(message); 
         case 8:
           throw new StaleElementReferenceException(message);
+        case 9:
+          throw new WebDriverException("An error occured when sending a native event");
         case 500:
           throw new ChromeDriverException("An error occured due to the internals of Chrome. " +
           		"This does not mean your test failed. " +

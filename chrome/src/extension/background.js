@@ -123,6 +123,11 @@ function parseRequest(request) {
       parsePortMessage({sequenceNumber: "INTERNAL", response: {value: {statusCode: 3, message: "Window to switch to was not given"}}});
     }
     break;
+  case "clickElement":
+  case "sendElementKeys":
+    ChromeDriver.retryRequestBuffer.push(wrapInjectEmbedIfNecessary(request));
+    sendBufferedRequests();
+    break;
   default:
     ChromeDriver.retryRequestBuffer.push({request: request, sequenceNumber: ChromeDriver.requestSequenceNumber++});
     sendBufferedRequests();
@@ -183,40 +188,61 @@ function parsePortMessage(message) {
       toSend += ',value:' + JSON.stringify(message.response.value.value);
     }
     toSend += ',class:"org.openqa.selenium.chrome.Response"}';
+    console.log("Sending: " + toSend)
+    sendResponse(toSend);
     break;
   case "no-op":
     //Some special operation which isn't sending HTTP
     switch (message.response.response) {
-    /*case "click element":
-      document.embeds[0].clickAt(message.value.x, message.value.y);
+    case "clickElement":
+      try {
+        document.embeds[0].clickAt(message.response.value.x, message.response.value.y);
+      } catch(e) {
+        nativeWebdriverFailure();
+      }
       break;
-    case "drag element":
+    /*case "drag element":
       document.embeds[0].drag(1000, message.value.from.x, message.value.from.y, message.value.to.x, message.value.to.y);
-      break;
-    case "send element keys":
-      document.embeds[0].return_send_element_keys(message.value.value.join(""));
-      break;
-    default:
-      toSend = '{statusCode: ' + message.value.statusCode + ',value:' + JSON.stringify(message.value.value) + 
-      ',"class":"org.openqa.selenium.chrome.Response"}';
       break;*/
+    case "sendElementKeys":
+      console.log("Sending keys");
+      try {
+        document.embeds[0].sendKeys(message.response.value.keys);
+      } catch(e) {
+        console.log("Error natively sending keys.  Trying non-native");
+        parseRequest({request: 'sendElementNonNativeKeys', elementId: message.response.value.elementId, keys: message.response.value.keys});
+      }
+      break;
     }
     break
   }
-  console.log("Sending: " + toSend)
-  sendResponse(message.sequenceNumber, toSend);
+  updateRetryBuffer(message.sequenceNumber);
 }
 
-function sendResponse(sequenceNumber, toSend) {
+function updateRetryBuffer(sequenceNumber) {
   var updatedRetryRequestBuffer = [];
-  for (var i = 0; i < ChromeDriver.retryRequestBuffer.length; i++) {
-    if (ChromeDriver.retryRequestBuffer[i].sequenceNumber != sequenceNumber) {
+  for (var i = 0; i < ChromeDriver.retryRequestBuffer.length; ++i) {
+    //Because of followup/wrapped requests, we assume that any sequence number returned means all previous command have been executed
+    if (ChromeDriver.retryRequestBuffer[i].sequenceNumber > sequenceNumber) {
       updatedRetryRequestBuffer.push(ChromeDriver.retryRequestBuffer[i]);
     }
   }
   ChromeDriver.retryRequestBuffer = updatedRetryRequestBuffer;
+}
+
+function sendResponse(toSend) {
   console.log("Sending SENDRESPONSE POST");
   sendXmlHttpPostRequest(toSend);
+}
+
+function nativeWebdriverSuccess() {
+  console.log("Native success");
+  sendResponse("{statusCode: 0}");
+}
+
+function nativeWebdriverFailure() {
+  console.log("Native failure");
+  sendResponse("{statusCode: 9}");
 }
 
 /**
@@ -225,11 +251,14 @@ function sendResponse(sequenceNumber, toSend) {
  */
 function wrapInjectEmbedIfNecessary(requestObject) {
   if (ChromeDriver.hasHwnd) {
-    return requestObject;
+    return {sequenceNumber: ChromeDriver.requestSequenceNumber++, request: requestObject};
   } else {
-    return {request: "inject embed",
-            followup: requestObject,
-            value: {uuid: ChromeDriver.instanceUuid}};
+    var wrappedObject = {sequenceNumber: ChromeDriver.requestSequenceNumber,
+                         request: {request: "injectEmbed",
+                                   followup: {sequenceNumber: ChromeDriver.requestSequenceNumber + 1,
+                                              request: requestObject}}};
+    ChromeDriver.requestSequenceNumber += 2
+    return wrappedObject;
   }
 }
 

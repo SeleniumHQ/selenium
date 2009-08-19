@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
-// Used by npwebdriver.rc
+// Used by npchromedriver.rc
 //
 
 // Next default values for new objects

@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="npwebdriver"
-	ProjectGUID="{C2B548D0-0DD0-4979-B006-C3DFB4E91FE9}"
-	RootNamespace="npwebdriver"
+	Name="npchromedriver"
+	ProjectGUID="{2A4FDEBC-1AB8-4E35-8806-E4CC12285526}"
+	RootNamespace="npchromedriver"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"
 	>
@@ -21,11 +21,10 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)build\$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(SolutionDir)build\$(PlatformName)\$(ConfigurationName)_intermediate"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="2"
 			UseOfMFC="1"
-			UseOfATL="1"
 			CharacterSet="1"
 			>
 			<Tool
@@ -46,14 +45,13 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="src/include;src/include/third_party/npapi;../../../../../common/src/cpp/webdriver-interactions;../mongoose/src/include"
-				PreprocessorDefinitions="_CRT_SECURE_NO_WARNINGS;WIN32"
+				AdditionalIncludeDirectories="third_party/npapi;../../../../common/src/cpp/webdriver-interactions"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;NPCHROMEDRIVER_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
 			/>
 			<Tool
@@ -67,11 +65,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				LinkLibraryDependencies="true"
-				OutputFile="$(OutDir)\$(ProjectName).dll"
 				LinkIncremental="2"
-				IgnoreAllDefaultLibraries="false"
-				ModuleDefinitionFile="npwebdriver.def"
+				ModuleDefinitionFile="npchromedriver.def"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				TargetMachine="1"
@@ -99,92 +94,10 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Debug|x64"
-			OutputDirectory="$(SolutionDir)build\$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(SolutionDir)build\$(PlatformName)\$(ConfigurationName)_intermediate"
-			ConfigurationType="2"
-			UseOfMFC="1"
-			UseOfATL="1"
-			CharacterSet="1"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				TargetEnvironment="3"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				AdditionalIncludeDirectories="src/include;src/include/third_party/npapi;../../../../../common/src/cpp/webdriver-interactions;../mongoose/src/include"
-				PreprocessorDefinitions="_CRT_SECURE_NO_WARNINGS;WIN32"
-				MinimalRebuild="true"
-				BasicRuntimeChecks="3"
-				RuntimeLibrary="1"
-				UsePrecompiledHeader="0"
-				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="3"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				LinkLibraryDependencies="true"
-				OutputFile="$(OutDir)\$(ProjectName).dll"
-				LinkIncremental="2"
-				IgnoreAllDefaultLibraries="false"
-				ModuleDefinitionFile="npwebdriver.def"
-				GenerateDebugInformation="true"
-				SubSystem="2"
-				TargetMachine="17"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)build\$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(SolutionDir)build\$(PlatformName)\$(ConfigurationName)_intermediate"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="2"
-			UseOfMFC="1"
-			UseOfATL="1"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
@@ -207,9 +120,9 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="src/include;src/include/third_party/npapi;../../../../../common/src/cpp/webdriver-interactions;../mongoose/src/include"
-				PreprocessorDefinitions="_CRT_SECURE_NO_WARNINGS;WIN32"
-				RuntimeLibrary="0"
+				AdditionalIncludeDirectories="third_party/npapi;../../../../common/src/cpp/webdriver-interactions"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;NPCHROMEDRIVER_EXPORTS"
+				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -226,9 +139,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(OutDir)\$(ProjectName).dll"
 				LinkIncremental="1"
-				ModuleDefinitionFile="npwebdriver.def"
+				ModuleDefinitionFile="npchromedriver.def"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
@@ -258,12 +170,84 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Release|x64"
-			OutputDirectory="$(SolutionDir)build\$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(SolutionDir)build\$(PlatformName)\$(ConfigurationName)_intermediate"
+			Name="Debug|x64"
+			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
-			UseOfMFC="1"
-			UseOfATL="1"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="3"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="third_party/npapi;../../../../common/src/cpp/webdriver-interactions"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;NPCHROMEDRIVER_EXPORTS"
+				MinimalRebuild="true"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				LinkIncremental="2"
+				ModuleDefinitionFile="npchromedriver.def"
+				GenerateDebugInformation="true"
+				SubSystem="2"
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|x64"
+			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="2"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
@@ -287,9 +271,9 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="src/include;src/include/third_party/npapi;../../../../../common/src/cpp/webdriver-interactions;../mongoose/src/include"
-				PreprocessorDefinitions="_CRT_SECURE_NO_WARNINGS;WIN32"
-				RuntimeLibrary="0"
+				AdditionalIncludeDirectories="third_party/npapi;../../../../common/src/cpp/webdriver-interactions"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;NPCHROMEDRIVER_EXPORTS"
+				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -306,9 +290,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(OutDir)\$(ProjectName).dll"
 				LinkIncremental="1"
-				ModuleDefinitionFile="npwebdriver.def"
+				ModuleDefinitionFile="npchromedriver.def"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
@@ -340,10 +323,6 @@
 	</Configurations>
 	<References>
 		<ProjectReference
-			ReferencedProjectIdentifier="{C2E1F3C8-3405-4458-98E7-AA8AC4D58B85}"
-			RelativePathToProject=".\chrome\src\cpp\npwebdriver\mongoose\mongoose.vcproj"
-		/>
-		<ProjectReference
 			ReferencedProjectIdentifier="{87FA39A1-958E-478A-8AB9-6D5E5AAA3886}"
 			RelativePathToProject=".\common\src\cpp\webdriver-interactions\webdriver-interactions.vcproj"
 		/>
@@ -355,27 +334,11 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\src\chrome_driver_plugin.cc"
+				RelativePath=".\npapi_hooks.cc"
 				>
 			</File>
 			<File
-				RelativePath=".\src\http_server.cc"
-				>
-			</File>
-			<File
-				RelativePath=".\src\javascript_executor.cc"
-				>
-			</File>
-			<File
-				RelativePath=".\src\javascript_listener.cc"
-				>
-			</File>
-			<File
-				RelativePath=".\src\npapi_call_listener.cc"
-				>
-			</File>
-			<File
-				RelativePath=".\npwebdriver.def"
+				RelativePath=".\npchromedriver.def"
 				>
 			</File>
 		</Filter>
@@ -384,106 +347,14 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
-			<Filter
-				Name="base"
+			<File
+				RelativePath=".\npapi_hooks.h"
 				>
-				<File
-					RelativePath=".\src\include\base\basictypes.h"
-					>
-				</File>
-				<File
-					RelativePath=".\src\include\base\port.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="build"
+			</File>
+			<File
+				RelativePath=".\stubs.h"
 				>
-				<File
-					RelativePath=".\src\include\build\build_config.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="third_party"
-				>
-				<Filter
-					Name="npapi"
-					>
-					<Filter
-						Name="bindings"
-						>
-						<File
-							RelativePath=".\src\include\third_party\npapi\bindings\npapi.h"
-							>
-						</File>
-						<File
-							RelativePath=".\src\include\third_party\npapi\bindings\npruntime.h"
-							>
-						</File>
-					</Filter>
-				</Filter>
-			</Filter>
-			<Filter
-				Name="webdriver"
-				>
-				<File
-					RelativePath=".\src\include\webdriver\chrome_driver_plugin.h"
-					>
-				</File>
-				<File
-					RelativePath=".\src\include\webdriver\http_responses.h"
-					>
-				</File>
-				<File
-					RelativePath=".\src\include\webdriver\http_server.h"
-					>
-				</File>
-				<File
-					RelativePath=".\src\include\webdriver\javascript_executor.h"
-					>
-				</File>
-				<File
-					RelativePath=".\src\include\webdriver\javascript_listener.h"
-					>
-				</File>
-				<File
-					RelativePath=".\src\include\webdriver\logging.h"
-					>
-				</File>
-				<File
-					RelativePath=".\src\include\webdriver\npapi_call_listener.h"
-					>
-				</File>
-				<File
-					RelativePath=".\src\include\webdriver\stubs.h"
-					>
-				</File>
-				<File
-					RelativePath=".\src\include\webdriver\webdriver_utils.h"
-					>
-				</File>
-				<File
-					RelativePath=".\src\include\webdriver\window_listener_data.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="webkit"
-				>
-				<Filter
-					Name="glue"
-					>
-					<Filter
-						Name="plugins"
-						>
-						<File
-							RelativePath=".\src\include\webkit\glue\plugins\nphostapi.h"
-							>
-						</File>
-					</Filter>
-				</Filter>
-			</Filter>
+			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"
@@ -491,7 +362,7 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 			<File
-				RelativePath=".\npwebdriver.rc"
+				RelativePath=".\npchromedriver.rc"
 				>
 			</File>
 			<File

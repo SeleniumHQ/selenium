@@ -74,7 +74,7 @@ FindsByXPath, FindsByLinkText, FindsById, FindsByName, FindsByTagName, FindsByCl
 
   @Override
   public void click() {
-    throw new UnsupportedOperationException("Not yet supported in Chrome");
+    parent.execute("clickElement", this);
   }
 
   @Override
@@ -128,7 +128,11 @@ FindsByXPath, FindsByLinkText, FindsById, FindsByName, FindsByTagName, FindsByCl
 
   @Override
   public void sendKeys(CharSequence... keysToSend) {
-    throw new UnsupportedOperationException("Not yet supported in Chrome");
+    StringBuilder builder = new StringBuilder();
+    for (CharSequence seq : keysToSend) {
+      builder.append(seq);
+    }
+    execute("sendElementKeys", this, builder.toString());
   }
 
   @Override
@@ -138,7 +142,7 @@ FindsByXPath, FindsByLinkText, FindsById, FindsByName, FindsByTagName, FindsByCl
 
   @Override
   public void submit() {
-    execute("submit", this);
+    execute("submitElement", this);
   }
 
   @Override
@@ -149,7 +153,7 @@ FindsByXPath, FindsByLinkText, FindsById, FindsByName, FindsByTagName, FindsByCl
 
   @Override
   public Point getLocationOnScreenOnceScrolledIntoView() {
-    throw new UnsupportedOperationException("Not yet supported in Chrome");
+    return (Point)parent.execute("getElementLocationOnceScrolledIntoView", this).getValue();
   }
 
   @Override
