@@ -7,26 +7,31 @@ ChromeDriver.ports = [];
 //Port to the currently active tab
 ChromeDriver.activePort = null;
 ChromeDriver.activeTabId = null;
-ChromeDriver.context = null;
-ChromeDriver.agreedCapabilities = null;
-//Number of folders from / we need to traverse to get to /session of our URL
-//TODO(danielwh): Get this usefully somehow
-ChromeDriver.pathOffset = 1;
 //Whether the plugin has the OS-specific window handle for the active tab
 //Called HWND rather than window handle to avoid confusion with the other
 //use of window handle to mean 'name of window'
 ChromeDriver.hasHwnd = false;
+ChromeDriver.hasSeenPreContentScript = false;
 ChromeDriver.isCurrentlyLoadingUrl = false;
-ChromeDriver.instanceUuid = null;
-ChromeDriver.currentSpeed = 500; //TODO(danielwh): enum this? Oh, and actually do anything with it
-ChromeDriver.xmlHttpRequest = null;
-ChromeDriver.xmlHttpRequestUrl = "http://localhost:9701/chromeCommandExecutor"
+//ChromeDriver.currentSpeed = 500; //TODO(danielwh): enum this? Oh, and actually do anything with it
+ChromeDriver.requestXmlHttpRequest = null;
+ChromeDriver.responseXmlHttpRequest = null;
+ChromeDriver.requestXmlHttpRequestUrl = "http://localhost:9700/chromeCommandExecutor"
+ChromeDriver.responseXmlHttpRequestUrl = "http://localhost:9701/chromeCommandExecutor"
 ChromeDriver.requestSequenceNumber = 0;
 ChromeDriver.retryRequestBuffer = [];
-ChromeDriver.isOnBadPage = false; //Indicates we couldn't connect to the serer
+ChromeDriver.isOnBadPage = false; //Indicates we couldn't connect to the server
+
+ChromeDriver.isLoadingTabAtTheMomentAndMaybeWillNotSucceed = false;
+ChromeDriver.attemptsToSendWithNoPort = 0;
 
 chrome.self.onConnect.addListener(function(port) {
   console.log("Connected to " + port.name);
+  if (!ChromeDriver.hasSeenPreContentScript) {
+    ChromeDriver.hasSeenPreContentScript = true;
+    return;
+  }
+  ChromeDriver.hasSeenPreContentScript = false;
   pushPort(port);
   //If this is the only window (probably first, or we closed the others),
   //or we have changed URL in the same tab, treat this as the active page
@@ -40,38 +45,53 @@ chrome.self.onConnect.addListener(function(port) {
   port.onDisconnect.addListener(disconnectPort);
 });
 
-sendXmlHttpGetRequest();
+sendRequestXmlHttpRequest();
 
-function sendXmlHttpGetRequest() {
-  console.log("Sending POST request to get command");
-  ChromeDriver.xmlHttpRequest = new XMLHttpRequest();
-  ChromeDriver.xmlHttpRequest.onreadystatechange = handleXmlHttpGetRequestReadyStateChange;
-  ChromeDriver.xmlHttpRequest.open("POST", ChromeDriver.xmlHttpRequestUrl, true);
-  ChromeDriver.xmlHttpRequest.send("\nEOF\n");
+function sendRequestXmlHttpRequest() {
+  if (ChromeDriver.requestXmlHttpRequest != null) {
+    ChromeDriver.requestXmlHttpRequest.abort();
+  }
+  ChromeDriver.requestXmlHttpRequest = new XMLHttpRequest();
+  ChromeDriver.requestXmlHttpRequest.onreadystatechange = handleRequestXmlHttpRequestReadyStateChange;
+  ChromeDriver.requestXmlHttpRequest.open("POST", ChromeDriver.requestXmlHttpRequestUrl, true);
+  ChromeDriver.requestXmlHttpRequest.send("\nEORequest\n");
+  console.log("Sent XMLHTTP with a request");
 }
 
-function sendXmlHttpPostRequest(params) {
-  console.log("Sending POST request to respond to command");
-  ChromeDriver.xmlHttpRequest = new XMLHttpRequest();
-  ChromeDriver.xmlHttpRequest.onreadystatechange = handleXmlHttpPostRequestReadyStateChange;
-  ChromeDriver.xmlHttpRequest.open("POST", ChromeDriver.xmlHttpRequestUrl, true);
-  ChromeDriver.xmlHttpRequest.setRequestHeader("Content-type", "application/json");
-  ChromeDriver.xmlHttpRequest.send(params + "\nEOF\n");
-  console.log("SENT POST request");
+function sendResponseXmlHttpRequest(params, wait) {
+  console.log("sendResponseXmlHttpRequest");
+  if (ChromeDriver.responseXmlHttpRequest != null) {
+    ChromeDriver.responseXmlHttpRequest.abort();
+  }
+  ChromeDriver.responseXmlHttpRequest = new XMLHttpRequest();
+  ChromeDriver.responseXmlHttpRequest.onreadystatechange = handleResponseXmlHttpRequestReadyStateChange;
+  ChromeDriver.responseXmlHttpRequest.open("POST", ChromeDriver.responseXmlHttpRequestUrl, true);
+  ChromeDriver.responseXmlHttpRequest.setRequestHeader("Content-type", "application/json");
+  //Default to waiting for page changes, just in case
+  if (typeof(wait) == "undefined" || wait == null || wait == true) {
+    setTimeout(sendParams, 600, [params]);
+  } else {
+    sendParams(params);
+  }
 }
 
+function sendParams(params) {
+  if (ChromeDriver.hasSeenPreContentScript) {
+    setTimeout(sendParams, 100, [params]);
+  } else {
+    ChromeDriver.responseXmlHttpRequest.send(params + "\nEOResponse\n");
+  }
+}
 
-function handleXmlHttpGetRequestReadyStateChange() {
+function handleRequestXmlHttpRequestReadyStateChange() {
   console.log("State change to " + this.readyState);
   if (this.readyState == 4) {
     if (this.status != 200) {
-      console.log("State was 4 but status: " + this.status + ".  responseText: " + this.responseText);
-      setTimeout("handleXmlHttpGetRequestReadyStateChange()", 500);
+      console.log("Request state was 4 but status: " + this.status + ".  responseText: " + this.responseText);
     } else {
-      console.log("State was 4 and status: " + this.status)
-      if (this.responseText == "quit") {
-        console.log("Sending QUIT POST");
-        sendXmlHttpPostRequest("");
+      console.log("State was 4 and status: 200")
+      if (this.responseText == "QUIT") {
+        sendResponse("", false);
       } else {
         console.log("THE WIRE gave " + this.responseText);
         parseRequest(JSON.parse(this.responseText));
@@ -80,18 +100,17 @@ function handleXmlHttpGetRequestReadyStateChange() {
   }
 }
 
-function handleXmlHttpPostRequestReadyStateChange() {
+function handleResponseXmlHttpRequestReadyStateChange() {
   if (this.readyState == 4) {
     if (this.status != 200) {
-      console.log("Waiting for status change");
-      setTimeout("handleXmlHttpPostRequestReadyStateChange()", 500);
+      console.log("Response state was 4 but status: " + this.status + ".  responseText: " + this.responseText);
     } else {
       if (this.responseText == "ACK") {
         console.log("Got ACK");
-        sendXmlHttpGetRequest();
         if (ChromeDriver.activePort == null) {
-          console.log("WARNING: No active port");
+          console.log("WARNING: No active port.  Asking for command anyway.");
         }
+        sendRequestXmlHttpRequest();
       }
     }
   }
@@ -105,21 +124,21 @@ function disconnectPort(port) {
 function parseRequest(request) {
   switch (request.request) {
   case "url":
-    //TODO(danielwh): Fill in GUID
-    getUrl(request.url, "GUID");
+    getUrl(request.url);
     break;
   case "getWindowHandle":
     console.log("CALL FOR getWindowHandle");
-    sendResponse("{statusCode: 0, value: '" + ChromeDriver.activePort.name + "'}");
+    sendResponse("{statusCode: 0, value: '" + ChromeDriver.activePort.name + "'}", false);
     break;
   case "getWindowHandles":
-    sendResponse(getWindowHandles());
+    sendResponse(getWindowHandles(), false);
     break;
   case "switchToWindow":
+    ChromeDriver.hasHwnd = false;
     if (typeof("request.windowName") != "undefined") {
       setActivePortByWindowName(request.windowName);
     } else {
-      sendResponse("{statusCode: 3, value: {message: 'Window to switch to was not given'}}");
+      sendResponse("{statusCode: 3, value: {message: 'Window to switch to was not given'}}", false);
     }
     break;
   case "clickElement":
@@ -143,10 +162,16 @@ function sendBufferedRequests() {
     if (ChromeDriver.isOnBadPage) {
       ChromeDriver.retryRequestBuffer = [];
     }
-  }
-  for (var i = 0; i < ChromeDriver.retryRequestBuffer.length; ++i) {
-    console.log("Sending: " + ChromeDriver.retryRequestBuffer[i].sequenceNumber);
-    ChromeDriver.activePort.postMessage(ChromeDriver.retryRequestBuffer[i]);
+    if (++ChromeDriver.attemptsToSendWithNoPort > 15) {
+      sendResponse("{statusCode: 500}", false);
+      return;
+    }
+  } else {
+    ChromeDriver.attemptsToSendWithNoPort = 0;
+    for (var i = 0; i < ChromeDriver.retryRequestBuffer.length; ++i) {
+      console.log("Sending: " + ChromeDriver.retryRequestBuffer[i].sequenceNumber);
+      ChromeDriver.activePort.postMessage(ChromeDriver.retryRequestBuffer[i]);
+    }
   }
   setTimeout(sendBufferedRequests, 1000);
 }
@@ -185,9 +210,10 @@ function parsePortMessage(message) {
         typeof(message.response.value.value) != "undefined") {
       toSend += ',value:' + JSON.stringify(message.response.value.value);
     }
-    toSend += ',class:"org.openqa.selenium.chrome.Response"}';
+    toSend += '}';
     console.log("Sending: " + toSend)
-    sendResponse(toSend);
+    var wait = message.response.wait;
+    sendResponse(toSend, wait);
     break;
   case "no-op":
     //Some special operation which isn't sending HTTP
@@ -225,19 +251,19 @@ function updateRetryBuffer(sequenceNumber) {
   ChromeDriver.retryRequestBuffer = updatedRetryRequestBuffer;
 }
 
-function sendResponse(toSend) {
+function sendResponse(toSend, wait) {
   console.log("Sending SENDRESPONSE POST");
-  sendXmlHttpPostRequest(toSend);
+  sendResponseXmlHttpRequest(toSend, wait);
 }
 
 function nativeWebdriverSuccess() {
   console.log("Native success");
-  sendResponse("{statusCode: 0}");
+  sendResponse("{statusCode: 0}", true);
 }
 
 function nativeWebdriverFailure() {
   console.log("Native failure");
-  sendResponse("{statusCode: 9}");
+  sendResponse("{statusCode: 9}", true);
 }
 
 /**
@@ -270,12 +296,10 @@ function getWindowHandles() {
 
 /**
  * Closes the current tab if it exists, and opens a new one, in which it
- * gets the URL passed and record the UUID passed.
+ * gets the URL passed
  * @param value JSON array containing the URL to load
- * @param UUID a generated UUID that the extension can use for this page
- *             if needed
  */
-function getUrl(url, uuid) {
+function getUrl(url) {
   console.log("getUrl");
   //Ignore any URL request we get while loading a page,
   //because we should still return a 204 when we cannot find the page.
@@ -289,19 +313,17 @@ function getUrl(url, uuid) {
     chrome.tabs.remove(ChromeDriver.activeTabId);
   }
   ChromeDriver.activeTabId = null;
-  ChromeDriver.instanceUuid = uuid;
   ChromeDriver.isCurrentlyLoadingUrl = true;
-  console.log("Creating new tab");
+  console.log("Creating new tab with url: " + url);
+  ChromeDriver.isLoadingTabAtTheMomentAndMaybeWillNotSucceed = true;
   chrome.tabs.create({url: url, selected: true}, getUrlCallback);
-  //TODO(danielwh): Remove this
-  TEMPORARYloading = true;
-  setTimeout(timeoutGetUrl, 10000);
-  console.log("Created new tab");
+  setTimeout(getUrlTimeout, 20000);
 }
 
-function timeoutGetUrl() {
-  if (TEMPORARYloading) {
-    sendXmlHttpPostRequest("{statusCode: 500}");
+function getUrlTimeout() {
+  if (ChromeDriver.isLoadingTabAtTheMomentAndMaybeWillNotSucceed) {
+    ChromeDriver.isLoadingTabAtTheMomentAndMaybeWillNotSucceed = false;
+    sendResponse("{statusCode: 500}", false);
   }
 }
 
@@ -311,7 +333,7 @@ function getUrlCallback(tab) {
     //Use the helper calback so that we can add our own delay and not DOS the browser
     setTimeout("getUrlCallbackById(" + tab.id + ")", 10);
   } else {
-    TEMPORARYloading = false;
+    ChromeDriver.isLoadingTabAtTheMomentAndMaybeWillNotSucceed = false;
     ChromeDriver.isCurrentlyLoadingUrl = false;
     ChromeDriver.activeTabId = tab.id;
     setActivePortByTabId(tab.id);
@@ -320,20 +342,12 @@ function getUrlCallback(tab) {
     if (ChromeDriver.activePort == null) {
       ChromeDriver.isOnBadPage = true;
     }
-    sendXmlHttpPostRequest("");
+    sendResponse("", false);
   }
 }
 
 function getUrlCallbackById(tabId) {
   chrome.tabs.get(tabId, getUrlCallback);
-}
-
-/**
- * Called directly by the plugin if a click failed
- */
-function didBadClick() {
-  sendNotFound({message: "Could not click",
-                class: "org.openqa.selenium.WebDriverException"});
 }
 
 function pushPort(port) {
@@ -355,11 +369,11 @@ function setActivePortByWindowName(handle) {
   for (var i = 0; i < ChromeDriver.ports.length; ++i) {
     if (ChromeDriver.ports[i].name == handle) {
       ChromeDriver.activePort = ChromeDriver.ports[i];
-      sendResponse("{statusCode: 0}");
+      sendResponse("{statusCode: 0}", false);
       return;
     }
   }
-  sendResponse("{statusCode: 3, value: {message: 'Could not find window by handle: " + handle + "'}}");
+  sendResponse("{statusCode: 3, value: {message: 'Could not find window by handle: " + handle + "'}}", false);
 }
 
 function removePort(port) {

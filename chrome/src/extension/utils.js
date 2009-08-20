@@ -174,11 +174,6 @@ Utils.isDisplayed = function(element) {
       return false;
     }
 
-    var clientRect = element.getBoundingClientRect();
-    if (clientRect.width == 0 || clientRect.height == 0) {
-      return false;
-    }
-    
     var visibility = Utils.getStyleProperty(el, "visibility");
 
     var _isDisplayed = function(e) {

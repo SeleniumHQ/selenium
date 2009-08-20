@@ -47,11 +47,12 @@ function parsePortMessage(message) {
   
   console.log("Received request for: " + message.request.request);
   console.log(JSON.stringify(message));
-  var response = {response: message.request.request, value: null};
-  if (typeof(message.request.elementId) != undefined && message.request.elementId != null) {
+  var response = {response: message.request.request, value: null, wait: true};
+  if (typeof(message.request.elementId) != "undefined" && message.request.elementId != null) {
     try {
       var element = internalGetElement(message.request.elementId);
     } catch(e) {
+      console.log("Tried to get element internally, but it wasn't there.  Returning with exception.");
       response.value = e;
       ChromeDriverContentScript.port.postMessage({response: response, sequenceNumber: message.sequenceNumber});
       return;
@@ -60,6 +61,7 @@ function parsePortMessage(message) {
   switch (message.request.request) {
   case "addCookie":
     response.value = setCookie(message.request.cookie);
+    response.wait = false;
     break;
   case "clearElement":
     response.value = clearElement(element);
@@ -69,9 +71,11 @@ function parsePortMessage(message) {
     break;
   case "deleteAllCookies":
     response.value = deleteAllCookies();
+    response.wait = false;
     break;
   case "deleteCookie":
     response.value = deleteCookie(message.request.name);
+    response.wait = false;
     break;
   /*case "drag element":
     response.value = dragElement(element, {x: message.value.value[1], y: message.value.value[2]});
@@ -81,19 +85,28 @@ function parsePortMessage(message) {
     break;
   case "getCookies":
     response.value = getCookies();
+    response.wait = false;
     break;
   case "getElement":
     response.value = getElement(false, message.request.by);
+    response.wait = false;
+    break;
+  case "getElements":
+    response.value = getElement(true, message.request.by);
+    response.wait = false;
     break;
   case "getElementAttribute":
     response.value = getElementAttribute(element, message.request.attribute);
+    response.wait = false;
     break;
   case "getElementValueOfCssProperty":
     response.value = {statusCode: 0, value: getStyle(element, message.request.css)};
+    response.wait = false;
     break;
   case "getElementLocation":
     var coords = getElementCoords(element);
     response.value = {statusCode: 0, value: {type: "POINT", x: coords[0], y: coords[1]}};
+    response.wait = false;
     break;
   case "getElementLocationOnceScrolledIntoView":
     element.scrollIntoView(true);
@@ -104,27 +117,31 @@ function parsePortMessage(message) {
     response.value = {statusCode: 0, value: {type: "DIMENSION",
                                                height: element.offsetHeight,
                                                width: element.offsetWidth}};
+    response.wait = false;
     break;
   case "getElementTagName":
     response.value = {statusCode: 0, value: element.tagName.toLowerCase()};
+    response.wait = false;
     break;
   case "getElementText":
     response.value = {statusCode: 0, value: Utils.getText(element)};
+    response.wait = false;
     break;
   case "getElementValue":
     response.value = {statusCode: 0, value: element.value};
-    break;
-  case "getElements":
-    response.value = getElement(true, message.request.by);
+    response.wait = false;
     break;
   case "getPageSource":
     response.value = getSource();
+    response.wait = false;
     break;
   case "getTitle":
     response.value = {statusCode: 0, value: document.title};
+    response.wait = false;
     break;
   case "getCurrentUrl":
     response.value = {statusCode: 0, value: document.location.href};
+    response.wait = false;
     break;
   case "goBack":
     history.back();
@@ -139,12 +156,15 @@ function parsePortMessage(message) {
     break;
   case "isElementDisplayed":
     response.value = {statusCode: 0, value: isElementDisplayed(element)};
+    response.wait = false;
     break;
   case "isElementEnabled":
     response.value = {statusCode: 0, value: !element.disabled};
+    response.wait = false;
     break;
   case "isElementSelected":
     response.value = {statusCode: 0, value: findWhetherElementIsSelected(element)};
+    response.wait = false;
     break;
   case "refresh":
     document.location.reload(true);
@@ -166,7 +186,7 @@ function parsePortMessage(message) {
     response.value = toggleElement(element);
     break;
   default:
-    response.value = {statusCode: 7, value: {message: message.request.request + " is unsupported", class: "java.lang.UnsupportedOperationException"}};
+    response.value = {statusCode: 7, value: {message: message.request.request + " is unsupported"}};
     break;
   }
   if (response.value != null) {
@@ -208,8 +228,7 @@ function getCookies() {
   var cookieStrings = getAllCookiesAsStrings();
   for (var i = 0; i < cookieStrings.length; ++i) {
     var cookie = cookieStrings[i].split("=");
-    cookies.push({name: cookie[0], value: cookie[1], secure: false,
-                  class: "org.openqa.selenium.internal.ReturnedCookie"});
+    cookies.push({name: cookie[0], value: cookie[1], secure: false});
   }
   return {statusCode: 0, value: cookies};
 }
@@ -242,12 +261,10 @@ function setCookie(cookie) {
       currDomain.indexOf(cookie.domain) == -1) {
       // Not quite right, but close enough. (See r783)
     return {statusCode: 2, value: {
-            message: "You may only set cookies for the current domain",
-            class: "org.openqa.selenium.WebDriverException"}};
+            message: "You may only set cookies for the current domain"}};
   } else if (guessPageType() != "html") {
     return {statusCode: 2, value: {
-            message: "You may only set cookies on html documents",
-            class: "org.openqa.selenium.WebDriverException"}};
+            message: "You may only set cookies on html documents"}};
   } else {
     document.cookie = cookie.name + '=' + escape(cookie.value) +
         ((cookie.expiry == null || cookie.expiry == undefined) ?
@@ -266,7 +283,6 @@ function setCookie(cookie) {
  *               [{"id": 0, using: "id", value: "cheese"}]
  */
 function getElement(plural, parsed) {
-  console.log(parsed);
   var root = "./"; //root always ends with /, so // lookups should only start with one additional /
   var lookupBy = "";
   var lookupValue = "";
@@ -332,8 +348,7 @@ function getElement(plural, parsed) {
     } else {
       //Problem - we were expecting an element
       return {statusCode: 1, value: {
-          message: "Unable to locate element with " + lookupBy + " " + lookupValue,
-          class: "org.openqa.selenium.NoSuchElementException"}};
+          message: "Unable to locate element with " + lookupBy + " " + lookupValue}};
     }
   } else {
     var elementsToReturnArray = [];
@@ -346,8 +361,7 @@ function getElement(plural, parsed) {
     } else {
       if (!elements[0]) {
         return {statusCode: 1, value: {
-          message: "Unable to locate element with " + lookupBy + " " + lookupValue,
-          class: "org.openqa.selenium.NoSuchElementException"}};
+          message: "Unable to locate element with " + lookupBy + " " + lookupValue}};
       }
       ChromeDriverContentScript.internalElementArray.push(elements[0]);
       elementsToReturnArray.push('element/' + (ChromeDriverContentScript.internalElementArray.length - 1));
@@ -373,13 +387,11 @@ function internalGetElement(elementIdAsString) {
       parent = parent.parentNode;
     }
     if (parent !== element.ownerDocument.documentElement) {
-      throw {statusCode: 8, value: {message: "Element is obsolete",
-             class: "org.openqa.selenium.StaleElementReferenceException"}};
+      throw {statusCode: 8, value: {message: "Element is obsolete"}};
     }
     return element;
   } else {
-    throw {statusCode: 8, value: {message: "Element is obsolete",
-           class: "org.openqa.selenium.StaleElementReferenceException"}};
+    throw {statusCode: 8, value: {message: "Element is obsolete"}};
   }
 }
 
@@ -493,12 +505,10 @@ function selectElement(element) {
         oldValue = element.checked;
         element.checked = true;
       } else {
-        throw {statusCode: 6, value: {message: "Cannot select an input." + type,
-                                        class: "java.lang.UnsupportedOperationException"}};
+        throw {statusCode: 6, value: {message: "Cannot select an input." + type}};
       }
     } else {
-      throw {statusCode: 6, value: {message: "Cannot select a " + tagName,
-                                      class: "java.lang.UnsupportedOperationException"}};
+      throw {statusCode: 6, value: {message: "Cannot select a " + tagName}};
     }
   } catch(e) {
     console.log(e);
@@ -542,8 +552,7 @@ function submitElement(element) {
     }
     element = element.parentElement;
   }
-  return {statusCode: 6, value: {message: "Cannot submit an element not in a form",
-                                   class: "java.lang.UnsupportedOperationException"}};
+  return {statusCode: 6, value: {message: "Cannot submit an element not in a form"}};
 }
 
 /**
@@ -564,13 +573,11 @@ function toggleElement(element) {
         parent = parent.parentElement;
       }
       if (parent == null) {
-        throw {statusCode: 6, value: {message: "option tag had no select tag parent",
-                                        class: "org.openqa.selenium.WebDriverException"}};
+        throw {statusCode: 6, value: {message: "option tag had no select tag parent"}};
       }
       oldValue = element.selected;
       if (oldValue && !parent.multiple) {
-        throw {statusCode: 6, value: {message: "Cannot unselect a single element select",
-                                        class: "java.lang.UnsupportedOperationException"}};
+        throw {statusCode: 6, value: {message: "Cannot unselect a single element select"}};
       }
       newValue = element.selected = !oldValue;
     } else if (tagName == "input") {
@@ -580,12 +587,10 @@ function toggleElement(element) {
         newValue = element.checked = !oldValue;
         changed = true;
       } else {
-        throw {statusCode: 6, value: {message: "Cannot toggle an input." + type,
-                                        class: "java.lang.UnsupportedOperationException"}};
+        throw {statusCode: 6, value: {message: "Cannot toggle an input." + type}};
       }
     } else {
-      throw {statusCode: 6, value: {message: "Cannot toggle a " + tagName,
-                                      class: "java.lang.UnsupportedOperationException"}};
+      throw {statusCode: 6, value: {message: "Cannot toggle a " + tagName}};
     }
   } catch (e) {
     return e;
@@ -626,8 +631,7 @@ function execute(script, passedArgs) {
       } catch (e) {
         ChromeDriverContentScript.port.postMessage({response: "execute", value:
             {statusCode: 8,
-             message: "Tried use obsolete element as argument when executing javascript.",
-             class: "org.openqa.selenium.StaleElementReferenceException"}});
+             message: "Tried use obsolete element as argument when executing javascript."}});
         return;
       }
       args.push({webdriverElementXPath: getXPathOfElement(element)});

@@ -7,6 +7,11 @@
   "content_scripts": [
     {
       "matches": ["http://*/*", "https://*/*", "file:///*"],
+      "js": ["pre_content_script.js"],
+      "run_at": "document_start"
+    },
+    {
+      "matches": ["http://*/*", "https://*/*", "file:///*"],
       "js": ["chromedriver_utils.js", "utils.js", "content_script.js"]
     }
   ],

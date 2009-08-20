@@ -28,11 +28,13 @@ import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriverException;
 
 public class ChromeCommandExecutor {
-  private final ServerSocket serverSocket;
+  private final ServerSocket requestServerSocket;
+  private final ServerSocket responseServerSocket;
   private volatile boolean listen = false;
   private boolean hadClient = false;
   private boolean hasClient = false;
-  ListeningThread listeningThread = new ListeningThread();
+  ListeningThread requestListeningThread = new ListeningThread();
+  ListeningThread responseListeningThread = new ListeningThread();
   private Map<String, JsonCommand> nameToJson = new HashMap<String, JsonCommand>();
   
   /**
@@ -42,9 +44,9 @@ public class ChromeCommandExecutor {
    * and dispatch commands
    * @throws IOException if could not bind to port
    */
-  public ChromeCommandExecutor(int port) throws IOException {
+  public ChromeCommandExecutor(int requestPort, int responsePort) throws IOException {
     nameToJson.put("newSession", new JsonCommand("newSession :?params"));
-    nameToJson.put("quit", new JsonCommand("quit"));
+    nameToJson.put("quit", new JsonCommand("QUIT"));
     
     nameToJson.put("get", new JsonCommand("{request: 'url', url: ?url}"));
     nameToJson.put("goBack", new JsonCommand("{request: 'goBack'}"));
@@ -90,9 +92,15 @@ public class ChromeCommandExecutor {
     nameToJson.put("getPageSource", new JsonCommand("{request: 'getPageSource'}"));
     nameToJson.put("getTitle", new JsonCommand("{request: 'getTitle'}"));
     
-    serverSocket = new ServerSocket(port);
+    requestServerSocket = new ServerSocket(requestPort);
+    responseServerSocket = new ServerSocket(responsePort);
     listen = true;
-    listeningThread.start();
+    requestListeningThread.start(requestServerSocket);
+    responseListeningThread.start(responseServerSocket);
+  }
+  
+  boolean hasClient() {
+    return hasClient;
   }
   
   /**
@@ -102,19 +110,8 @@ public class ChromeCommandExecutor {
    * @throws IllegalStateException if no socket was present
    */
   public Response execute(Command command) throws IOException {
-    try {
-      sendCommand(command);
-      return handleResponse(command);
-    } catch (Exception e) {
-      if (e instanceof ChromeDriverException) {
-        System.err.println("CHROME ERROR");
-      }
-      if (e instanceof RuntimeException) {
-        throw (RuntimeException)e;
-      } else {
-        throw new RuntimeException(e);
-      }
-    }
+    sendCommand(command);
+    return handleResponse(command);
   }
   
   //TODO(danielwh): Don't use JsonCommand AND Command so interchangeably
@@ -123,32 +120,32 @@ public class ChromeCommandExecutor {
     //Peek, rather than poll, so that if it all goes horribly wrong,
     //we can just close all sockets in the queue,
     //not having to worry about the current ones
-    while ((socket = listeningThread.sockets.peek()) == null) {
+    while ((socket = requestListeningThread.sockets.peek()) == null) {
       if (hadClient && !hasClient) {
         throw new IllegalStateException("Cannot execute command without a client");
       }
       Thread.yield();
     }
     
-    //Respond to GET with a command
+    //Respond to request with the command
     JsonCommand commandToPopulate = 
       nameToJson.get(command.getCommandName());
     if (commandToPopulate == null) {
       throw new UnsupportedOperationException("Didn't know how to execute: " + command);
     }
+
+    String commandStringToSend = commandToPopulate.populate(command.getParameters());
     
     //Read request
     BufferedReader reader = new BufferedReader(
         new InputStreamReader(socket.getInputStream()));
     String line;
-    while ((line = reader.readLine()) != null && !line.equals("EOF")) {}
-    
-    String commandStringToSend = commandToPopulate.populate(command.getParameters());
+    while ((line = reader.readLine()) != null && !line.equals("EORequest")) {}
     
     socket.getOutputStream().write(fillTwoHundredWithJson(commandStringToSend));
     socket.getOutputStream().flush();
     socket.close();
-    listeningThread.sockets.remove(socket);
+    requestListeningThread.sockets.remove(socket);
   }
   
   private byte[] fillTwoHundredWithJson(String message) {
@@ -184,34 +181,36 @@ public class ChromeCommandExecutor {
     //Peek, rather than poll, so that if it all goes horribly wrong,
     //we can just close all sockets in the queue,
     //not having to worry about the current ones
-    while ((socket = listeningThread.sockets.peek()) == null) {
+    while ((socket = responseListeningThread.sockets.peek()) == null) {
       Thread.yield();
     }
     BufferedReader reader = new BufferedReader(
         new InputStreamReader(socket.getInputStream()));
     StringBuilder resultBuilder = new StringBuilder();
     String line;
-    boolean hasSeenDoubleEOF = false;
-    while ((line = reader.readLine()) != null && !line.equals("EOF")) {
-      if (hasSeenDoubleEOF) {
+    boolean hasSeenDoubleCRLF = false;
+    while ((line = reader.readLine()) != null && !line.equals("EOResponse")) {
+      if (hasSeenDoubleCRLF) {
         if (resultBuilder.length() > 0) {
           resultBuilder.append("\n");
         }
         resultBuilder.append(line);
       }
       if (line.equals("")) {
-        hasSeenDoubleEOF = true;
+        hasSeenDoubleCRLF = true;
       }
     }
     if (command.getCommandName().equals("quit")) {
-      socket.getOutputStream().write(fillTwoHundredWithText("quit"));
+      socket.getOutputStream().write(fillTwoHundredWithText("QUIT"));
+      //TODO(danielwh): Maybe stop listening?
       hasClient = false;
     } else {
       socket.getOutputStream().write(fillTwoHundredWithText("ACK"));
     }
     socket.getOutputStream().flush();
+    //TODO(danielwh): Finally
     socket.close();
-    listeningThread.sockets.remove(socket);
+    responseListeningThread.sockets.remove(socket);
     
     return parseResponse(resultBuilder.toString());
   }
@@ -320,8 +319,8 @@ public class ChromeCommandExecutor {
           throw new WebDriverException("An error occured when sending a native event");
         case 500:
           throw new ChromeDriverException("An error occured due to the internals of Chrome. " +
-          		"This does not mean your test failed. " +
-          		"Try running your test again in isolation.");
+              "This does not mean your test failed. " +
+              "Try running your test again in isolation.");
         }
         throw new WebDriverException("An error occured in the page");
       }
@@ -332,7 +331,14 @@ public class ChromeCommandExecutor {
   }
   
   private void closeCurrentSockets() {
-    for (Socket socket : listeningThread.sockets) {
+    for (Socket socket : requestListeningThread.sockets) {
+      try {
+        socket.close();
+      } catch (IOException e) {
+        //Nothing we can sanely do here
+      }
+    }
+    for (Socket socket : responseListeningThread.sockets) {
       try {
         socket.close();
       } catch (IOException e) {
@@ -343,8 +349,10 @@ public class ChromeCommandExecutor {
   
   public void stopListening() throws IOException {
     listen = false;
-    listeningThread.stopListening();
-    while (!serverSocket.isClosed()) {
+    requestListeningThread.stopListening();
+    responseListeningThread.stopListening();
+    while (!requestServerSocket.isClosed() &&
+           !responseServerSocket.isClosed()) {
       Thread.yield();
     }
   }
@@ -353,6 +361,14 @@ public class ChromeCommandExecutor {
     //We only ever want one thread listening
     private boolean isListening = false;
     private Queue<Socket> sockets = new ConcurrentLinkedQueue<Socket>();
+    private ServerSocket serverSocket;
+    
+    //TODO(danielwh): Constructor
+    public void start(ServerSocket serverSocket) {
+      this.serverSocket = serverSocket;
+      start();
+    }
+    
     public void run() {
       if (!isListening) {
         listen();
@@ -368,13 +384,13 @@ public class ChromeCommandExecutor {
         }
       } catch (SocketException e) {
         if (listen) {
-          throw new RuntimeException(e);
+          throw new WebDriverException(e);
         } else {
           //We are shutting down sockets manually
         }
       } catch (IOException e) {
         isListening = false;
-        throw new RuntimeException(e);
+        throw new WebDriverException(e);
       }
     }
     
@@ -382,14 +398,14 @@ public class ChromeCommandExecutor {
       try {
         closeCurrentSockets();
       } catch (Exception e) {
-        throw new RuntimeException(e);
+        throw new WebDriverException(e);
       } finally {
         try {
           if (!serverSocket.isClosed()) {
             serverSocket.close();
           }
         } catch (Exception e) {
-          throw new RuntimeException(e);
+          throw new WebDriverException(e);
         }
       }
     }

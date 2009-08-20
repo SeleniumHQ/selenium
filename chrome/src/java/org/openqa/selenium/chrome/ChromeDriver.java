@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -38,22 +37,24 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
   }
   
   private void init() throws Exception {
-    this.executor = new ChromeCommandExecutor(9701);
-    startClient();
-    //TODO(danielwh): Set up the session
-    //execute("newSession", DesiredCapabilities.chrome());
+    this.executor = new ChromeCommandExecutor(9700, 9701);
+    while (!executor.hasClient()) {
+      startClient();
+      //Ick, we sleep for a little bit in case the browser hasn't quite loaded
+      Thread.sleep(2500);
+    }
   }
   
   /**
    * By default will try to load Chrome from system property
-   * webdriver.chrome.binary and the extension from
+   * webdriver.chrome.bin and the extension from
    * webdriver.chrome.extensiondir.  If the former fails, will try to guess the
    * path to Chrome.  If the latter fails, will try to unzip from the JAR we 
    * hope we're in.  If these fail, throws exceptions.
    */
   protected void startClient() {
     try {
-       File extensionDir = getExtensionDir();
+      File extensionDir = getExtensionDir();
       if (!extensionDir.isDirectory()) {
         throw new FileNotFoundException("Could not find extension directory" +
             "(" + extensionDir + ").  Try setting webdriver.chrome.extensiondir."); 
@@ -62,7 +63,7 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
       if (!chromeFile.isFile()) {
         throw new FileNotFoundException("Could not find chrome binary(" +
             chromeFile.getCanonicalPath() + ").  " +
-            "Try setting webdriver.chrome.binary.");
+            "Try setting webdriver.chrome.bin.");
       }
       StringBuilder toRun = new StringBuilder();
       toRun.append(chromeFile.getCanonicalPath())
@@ -74,18 +75,15 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
       }
       System.out.println("Execing: " + toRun);
       clientProcess = Runtime.getRuntime().exec(toRun.toString());
-      //Ick, we sleep for a little bit in case the browser hasn't quite loaded
-      Thread.sleep(2500);
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
   }
   
   protected void stopClient() {
-    System.setProperty("webdriver.chrome.extensiondir", "");
     if (clientProcess != null) {
       System.out.println("Killing browser");
-      //clientProcess.destroy();
+      clientProcess.destroy();
       clientProcess = null;
     }
     try {
@@ -95,14 +93,18 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
     }
   }
   
+  //TODO(danielwh): Throw ChromeHORRIBLYDEADException
   Response execute(String commandName, Object... parameters) {
     Command command = new Command(commandName, parameters);
     try {
       return executor.execute(command);
     } catch (Exception e) {
       if (e instanceof UnsupportedOperationException ||
-          e instanceof ChromeDriverException ||
-          e instanceof IllegalArgumentException) {
+          e instanceof IllegalArgumentException ||
+          e instanceof ChromeDriverException) {
+        /*if (e instanceof ChromeDriverException) {
+          try { Thread.sleep(100000); } catch (Exception e2) {}
+        }*/
         //These exceptions may leave the extension hung, or in an
         //inconsistent state, so we restart Chrome
         stopClient();
@@ -136,10 +138,15 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
     return extensionDir;
   }
   
+  /**
+   * This is a fairly ugly way of getting the path
+   * @return Absolute path to chrome executable
+   * @throws IOException if file could not be found/accessed
+   */
   protected File getChromeFile() throws IOException {
     File chromeFile = null;
     String chromeFileSystemProperty = System.getProperty(
-        "webdriver.chrome.binary");
+        "webdriver.chrome.bin");
     if (chromeFileSystemProperty != null) {
       chromeFile = new File(chromeFileSystemProperty);
     } else {
@@ -157,7 +164,7 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
         chromeFileString.append("/usr/bin/google-chrome");
       } else {
         throw new RuntimeException("Unsupported operating system.  " +
-            "Could not locate Chrome.  Set webdriver.chrome.binary.");
+            "Could not locate Chrome.  Set webdriver.chrome.bin.");
       }
       chromeFile = new File(chromeFileString.toString());
     }
@@ -181,9 +188,6 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
 
   @Override
   public void get(String url) {
-    if (clientProcess == null) {
-      startClient();
-    }
     execute("get", url);
   }
 

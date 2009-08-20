@@ -33,6 +33,7 @@ public class ChromeDriverTestSuite extends TestCase {
         .addSourceDir("common")
         .addSourceDir("chrome")
         .exclude(CHROME)
+        .usingDriver(ChromeDriver.class)
         .includeJavascriptTests()
         .keepDriverInstance()
         .create();
@@ -44,13 +45,19 @@ public class ChromeDriverTestSuite extends TestCase {
     }
     @Override
     protected void startClient() {
+      //TODO(danielwh): Check for actual path to the src from user.dir
       String extensionDir = System.getProperty("user.dir") + "/src/extension";
-      System.setProperty("webdriver.chrome.extensiondir", extensionDir);
-      try {
-        copyDll();
-      } catch (IOException e) {
-        //TODO(danielwh): Uncomment this when the browser doesn't crash
-        //throw new RuntimeException(e);
+      File dllToUse = new File(System.getProperty("webdriver.chrome.extensiondir"),
+          "npchromedriver.dll");
+      if (System.getProperty("webdriver.chrome.extensiondir") == null ||
+          !System.getProperty("webdriver.chrome.extensiondir").equals(extensionDir) ||
+          !dllToUse.exists()) {
+        System.setProperty("webdriver.chrome.extensiondir", extensionDir);
+        try {
+          copyDll();
+        } catch (IOException e) {
+          throw new RuntimeException(e);
+        }
       }
       super.startClient();
     }

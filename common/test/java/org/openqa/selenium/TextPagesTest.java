@@ -19,6 +19,7 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
@@ -33,7 +34,8 @@ public class TextPagesTest extends AbstractDriverTestCase {
     textPage = GlobalTestEnvironment.get().getAppServer().whereIs("plain.txt");
   }
 
-  @Ignore({IE, FIREFOX})
+  @Ignore({IE, FIREFOX, CHROME})
+  //Reason for Chrome: Pre-load content scripts don't currently run for non-HTML files.  See crbug.com 17796
   public void testShouldBeAbleToLoadASimplePageOfText() {
     driver.get(textPage);
 
@@ -41,6 +43,7 @@ public class TextPagesTest extends AbstractDriverTestCase {
     assertEquals("Test", source);
   }
   
+  @Ignore(value = CHROME, reason = "Pre-load content scripts don't currently run for non-HTML files.  See crbug.com 17796")
   public void testFindingAnElementOnAPlainTextPageWillNeverWork() {
     driver.get(textPage);
     
@@ -52,6 +55,7 @@ public class TextPagesTest extends AbstractDriverTestCase {
     }
   }
 
+  @Ignore(value = CHROME, reason = "Pre-load content scripts don't currently run for non-HTML files.  See crbug.com 17796")
   public void testShouldThrowExceptionWhenAddingCookieToAPageThatIsNotHtml() {
     driver.get(textPage);
 
