@@ -195,16 +195,17 @@ function parsePortMessage(message) {
   }
   var toSend = "";
   switch (message.response.value.statusCode) {
+  //Error codes are loosely based on native exception codes, see common/src/cpp/webdriver-interactions/errorcodes.h
   case 0:
-  case 1: //org.openqa.selenium.NoSuchElementException
   case 2: //org.openqa.selenium.WebDriverException [Cookies]
   case 3: //org.openqa.selenium.NoSuchWindowException
-  case 4: //org.openqa.selenium.WebDriverException [Bad javascript]
-  case 5: //org.openqa.selenium.ElementNotVisibleException
-  case 6: //java.lang.UnsupportedOperationException [Invalid element state (e.g. disabled)]
-  case 7: //java.lang.UnsupportedOperationException [Unknown command]
-  case 8: //org.openqa.selenium.StaleElementReferenceException
-  case 9: //org.openqa.selenium.WebDriverException [Native event]
+  case 7: //org.openqa.selenium.NoSuchElementException
+  case 9: //java.lang.UnsupportedOperationException [Unknown command]
+  case 10: //org.openqa.selenium.StaleElementReferenceException
+  case 11: //org.openqa.selenium.ElementNotVisibleException
+  case 12: //java.lang.UnsupportedOperationException [Invalid element state (e.g. disabled)]
+  case 17: //org.openqa.selenium.WebDriverException [Bad javascript]
+  case 99: //org.openqa.selenium.WebDriverException [Native event]
     toSend = '{statusCode: ' + message.response.value.statusCode;
     if (typeof(message.response.value) != "undefined" && message.response.value != null &&
         typeof(message.response.value.value) != "undefined") {
@@ -220,15 +221,23 @@ function parsePortMessage(message) {
     switch (message.response.response) {
     case "clickElement":
       try {
-        document.embeds[0].clickAt(message.response.value.x, message.response.value.y);
+        if (document.embeds[0].clickAt(message.response.value.x, message.response.value.y)) {
+          sendResponse("{statusCode: 0}", true);
+        } else {
+          sendResponse("{statusCode: 99}", true);
+        }
       } catch(e) {
-        nativeWebdriverFailure();
+        sendResponse("{statusCode: 99}", true);
       }
       break;
     case "sendElementKeys":
       console.log("Sending keys");
       try {
-        document.embeds[0].sendKeys(message.response.value.keys);
+        if (document.embeds[0].sendKeys(message.response.value.keys)) {
+          sendResponse("{statusCode: 0}", true);
+        } else {
+          sendResponse("{statusCode: 99}", true);
+        }
       } catch(e) {
         console.log("Error natively sending keys.  Trying non-native");
         parseRequest({request: 'sendElementNonNativeKeys', elementId: message.response.value.elementId, keys: message.response.value.keys});
@@ -254,16 +263,6 @@ function updateRetryBuffer(sequenceNumber) {
 function sendResponse(toSend, wait) {
   console.log("Sending SENDRESPONSE POST");
   sendResponseXmlHttpRequest(toSend, wait);
-}
-
-function nativeWebdriverSuccess() {
-  console.log("Native success");
-  sendResponse("{statusCode: 0}", true);
-}
-
-function nativeWebdriverFailure() {
-  console.log("Native failure");
-  sendResponse("{statusCode: 9}", true);
 }
 
 /**

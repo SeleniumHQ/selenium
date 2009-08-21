@@ -62,7 +62,6 @@ static NPObject *StubAllocate(NPP npp, NPClass *clazz) {
   obj->_class = clazz;
   obj->referenceCount = 0;
   return obj;
-  //TODO(danielwh): Record NPP
 }
 
 static void StubDeallocate(NPObject *npobj) {}

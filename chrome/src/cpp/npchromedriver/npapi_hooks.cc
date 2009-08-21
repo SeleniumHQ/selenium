@@ -15,7 +15,6 @@ static const size_t kMaxWindowDepth = 10;
 
 static NPNetscapeFuncs *browser_funcs_ = NULL;
 static NPPluginFuncs *plugin_funcs_ = NULL;
-static NPP background_instance_ = NULL;
 static NPP current_reporter_instance_ = NULL;
 static WINDOW_HANDLE window_handle_ = NULL;
 
@@ -40,9 +39,7 @@ NPError NewInstance(NPMIMEType pluginType,
                     char *argn[],
                     char *argv[],
                     NPSavedData *saved) {
-  if (!strcmp(pluginType, kMainMime)) {
-    background_instance_ = instance;
-  } else if (!strcmp(pluginType, kReporterMime)) {
+  if (!strcmp(pluginType, kReporterMime)) {
     current_reporter_instance_ = instance;
   }
   return NPERR_NO_ERROR;
@@ -66,7 +63,7 @@ static void GetChromeRenderWindow(WINDOW_HANDLE window) {
 }
 
 NPError SetWindow(NPP instance, NPWindow *window) {
-  if (window->window != NULL && current_reporter_instance_ != NULL) {
+  if (window->window != NULL && current_reporter_instance_ == instance) {
     GetChromeRenderWindow(window->window);
   }
   return NPERR_NO_ERROR;
@@ -101,35 +98,16 @@ bool CallMethod(const char *name, const uint32_t argCount, const NPVariant *args
   return false;
 }
 
-boolean ExecuteInBackgroundPage(const char *javascript) {
-  if (background_instance_ == NULL) {
-    return false;
-  }
-  NPString script;
-  script.UTF8Characters = javascript;
-  script.UTF8Length = strlen(script.UTF8Characters);
-  NPObject *window = NULL;
-  if (browser_funcs_->getvalue(background_instance_, NPNVWindowNPObject,
-                               &window) != NPERR_NO_ERROR) {
-    return false;
-  }
-  NPVariant result;
-  return browser_funcs_->evaluate(background_instance_, window, &script, &result);
-}
-
 bool InvokeJavascript(NPObject *npobj,
                       NPIdentifier name,
                       const NPVariant *args,
                       uint32_t argCount,
                       NPVariant *result) {
   const char *method = browser_funcs_->utf8fromidentifier(name);
-  if (CallMethod(method, argCount, args)) {
-    ExecuteInBackgroundPage(kSuccessfulJavascriptResponse);
-    return true;
-  } else {
-    ExecuteInBackgroundPage(kFailureJavascriptResponse);
-    return false;
-  }
+  result->type = NPVariantType_Bool;
+  bool success = CallMethod(method, argCount, args);
+  result->value.boolValue = success;
+  return success;
 }
 
 static NPClass JavascriptListener_NPClass = {

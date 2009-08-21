@@ -186,7 +186,7 @@ function parsePortMessage(message) {
     response.value = toggleElement(element);
     break;
   default:
-    response.value = {statusCode: 7, value: {message: message.request.request + " is unsupported"}};
+    response.value = {statusCode: 9, value: {message: message.request.request + " is unsupported"}};
     break;
   }
   if (response.value != null) {
@@ -347,7 +347,7 @@ function getElement(plural, parsed) {
       return {statusCode: 0, value: []};
     } else {
       //Problem - we were expecting an element
-      return {statusCode: 1, value: {
+      return {statusCode: 7, value: {
           message: "Unable to locate element with " + lookupBy + " " + lookupValue}};
     }
   } else {
@@ -360,7 +360,7 @@ function getElement(plural, parsed) {
       }
     } else {
       if (!elements[0]) {
-        return {statusCode: 1, value: {
+        return {statusCode: 7, value: {
           message: "Unable to locate element with " + lookupBy + " " + lookupValue}};
       }
       ChromeDriverContentScript.internalElementArray.push(elements[0]);
@@ -387,11 +387,11 @@ function internalGetElement(elementIdAsString) {
       parent = parent.parentNode;
     }
     if (parent !== element.ownerDocument.documentElement) {
-      throw {statusCode: 8, value: {message: "Element is obsolete"}};
+      throw {statusCode: 10, value: {message: "Element is obsolete"}};
     }
     return element;
   } else {
-    throw {statusCode: 8, value: {message: "Element is obsolete"}};
+    throw {statusCode: 10, value: {message: "Element is obsolete"}};
   }
 }
 
@@ -505,10 +505,10 @@ function selectElement(element) {
         oldValue = element.checked;
         element.checked = true;
       } else {
-        throw {statusCode: 6, value: {message: "Cannot select an input." + type}};
+        throw {statusCode: 12, value: {message: "Cannot select an input." + type}};
       }
     } else {
-      throw {statusCode: 6, value: {message: "Cannot select a " + tagName}};
+      throw {statusCode: 12, value: {message: "Cannot select a " + tagName}};
     }
   } catch(e) {
     console.log(e);
@@ -552,7 +552,7 @@ function submitElement(element) {
     }
     element = element.parentElement;
   }
-  return {statusCode: 6, value: {message: "Cannot submit an element not in a form"}};
+  return {statusCode: 12, value: {message: "Cannot submit an element not in a form"}};
 }
 
 /**
@@ -573,11 +573,11 @@ function toggleElement(element) {
         parent = parent.parentElement;
       }
       if (parent == null) {
-        throw {statusCode: 6, value: {message: "option tag had no select tag parent"}};
+        throw {statusCode: 12, value: {message: "option tag had no select tag parent"}};
       }
       oldValue = element.selected;
       if (oldValue && !parent.multiple) {
-        throw {statusCode: 6, value: {message: "Cannot unselect a single element select"}};
+        throw {statusCode: 12, value: {message: "Cannot unselect a single element select"}};
       }
       newValue = element.selected = !oldValue;
     } else if (tagName == "input") {
@@ -587,10 +587,10 @@ function toggleElement(element) {
         newValue = element.checked = !oldValue;
         changed = true;
       } else {
-        throw {statusCode: 6, value: {message: "Cannot toggle an input." + type}};
+        throw {statusCode: 12, value: {message: "Cannot toggle an input." + type}};
       }
     } else {
-      throw {statusCode: 6, value: {message: "Cannot toggle a " + tagName}};
+      throw {statusCode: 12, value: {message: "Cannot toggle a " + tagName}};
     }
   } catch (e) {
     return e;
@@ -630,7 +630,7 @@ function execute(script, passedArgs) {
         element = internalGetElement(element_id);
       } catch (e) {
         ChromeDriverContentScript.port.postMessage({response: "execute", value:
-            {statusCode: 8,
+            {statusCode: 10,
              message: "Tried use obsolete element as argument when executing javascript."}});
         return;
       }
@@ -698,7 +698,7 @@ function returnFromJavascriptInPage(e) {
   }
   if (e.prevValue == "EXCEPTION") {
     ChromeDriverContentScript.port.postMessage({sequenceNumber: ChromeDriverContentScript.currentSequenceNumber,
-        response: {response: "execute", value: {statusCode: 4,
+        response: {response: "execute", value: {statusCode: 17,
         message: "Tried to execute bad javascript."}}});
     return;
   }

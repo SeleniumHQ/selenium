@@ -26,6 +26,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.remote.Command;
 
 public class ChromeCommandExecutor {
   private final ServerSocket requestServerSocket;
@@ -33,8 +34,10 @@ public class ChromeCommandExecutor {
   private volatile boolean listen = false;
   private boolean hadClient = false;
   private boolean hasClient = false;
-  ListeningThread requestListeningThread = new ListeningThread();
-  ListeningThread responseListeningThread = new ListeningThread();
+  //TODO(danielwh): Factor these back into one thread and one ServerSocket
+  //TODO(danielwh): Make socket communication much less flaky
+  ListeningThread requestListeningThread;
+  ListeningThread responseListeningThread;
   private Map<String, JsonCommand> nameToJson = new HashMap<String, JsonCommand>();
   
   /**
@@ -95,8 +98,10 @@ public class ChromeCommandExecutor {
     requestServerSocket = new ServerSocket(requestPort);
     responseServerSocket = new ServerSocket(responsePort);
     listen = true;
-    requestListeningThread.start(requestServerSocket);
-    responseListeningThread.start(responseServerSocket);
+    requestListeningThread = new ListeningThread(requestServerSocket);
+    responseListeningThread = new ListeningThread(responseServerSocket);
+    requestListeningThread.start();
+    responseListeningThread.start();
   }
   
   boolean hasClient() {
@@ -129,7 +134,7 @@ public class ChromeCommandExecutor {
     
     //Respond to request with the command
     JsonCommand commandToPopulate = 
-      nameToJson.get(command.getCommandName());
+      nameToJson.get(command.getMethodName());
     if (commandToPopulate == null) {
       throw new UnsupportedOperationException("Didn't know how to execute: " + command);
     }
@@ -200,9 +205,8 @@ public class ChromeCommandExecutor {
         hasSeenDoubleCRLF = true;
       }
     }
-    if (command.getCommandName().equals("quit")) {
+    if (command.getMethodName().equals("quit")) {
       socket.getOutputStream().write(fillTwoHundredWithText("QUIT"));
-      //TODO(danielwh): Maybe stop listening?
       hasClient = false;
     } else {
       socket.getOutputStream().write(fillTwoHundredWithText("ACK"));
@@ -293,32 +297,33 @@ public class ChromeCommandExecutor {
             jsonObject.getJSONObject("value").get("message") instanceof String) {
           message = jsonObject.getJSONObject("value").getString("message");
         }
-        //TODO(danielwh): Change these to match the IE exception codes
         switch (jsonObject.getInt("statusCode")) {
-        case 1:
-          throw new NoSuchElementException(message);
+        //Error codes are loosely based on native exception codes,
+        //see common/src/cpp/webdriver-interactions/errorcodes.h
         case 2:
           //Cookie error
           throw new WebDriverException(message);
         case 3:
           throw new NoSuchWindowException(message);
-        case 4:
-          //Bad javascript
-          throw new WebDriverException(message);
-        case 5:
-          throw new ElementNotVisibleException(message);
-        case 6: 
-          //Invalid element state (e.g. disabled)
-          throw new UnsupportedOperationException(message);
         case 7:
+          throw new NoSuchElementException(message);
+        case 9:
           //Unknown command
           throw new UnsupportedOperationException(message); 
-        case 8:
+        case 10:
           throw new StaleElementReferenceException(message);
-        case 9:
+        case 11:
+          throw new ElementNotVisibleException(message);
+        case 12: 
+          //Invalid element state (e.g. disabled)
+          throw new UnsupportedOperationException(message);
+        case 17:
+          //Bad javascript
+          throw new WebDriverException(message);
+        case 99:
           throw new WebDriverException("An error occured when sending a native event");
         case 500:
-          throw new ChromeDriverException("An error occured due to the internals of Chrome. " +
+          throw new FatalChromeException("An error occured due to the internals of Chrome. " +
               "This does not mean your test failed. " +
               "Try running your test again in isolation.");
         }
@@ -363,10 +368,8 @@ public class ChromeCommandExecutor {
     private Queue<Socket> sockets = new ConcurrentLinkedQueue<Socket>();
     private ServerSocket serverSocket;
     
-    //TODO(danielwh): Constructor
-    public void start(ServerSocket serverSocket) {
+    public ListeningThread(ServerSocket serverSocket) {
       this.serverSocket = serverSocket;
-      start();
     }
     
     public void run() {

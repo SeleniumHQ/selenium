@@ -64,10 +64,6 @@
  * Changed NPVariantType enum values to form PVariantType_XXX
  * Added NPP arguments to NPObject functions.
  * Replaced NPVariant functions with macros.
- *
- * Revision by danielwh (July 13, 2009):
- * Changing a uint32_t to size_t because it's appropriate.
- * There are more, but meh
  */
 #ifndef _NP_RUNTIME_H_
 #define _NP_RUNTIME_H_
@@ -78,8 +74,6 @@
 #include "base/basictypes.h"
 #include "bindings/npapi.h"
 
-//TODO(danielwh): Sort out this cross-platform nastyness
-#if defined(WIN32)
 typedef uint8 uint8_t;
 typedef int8 int8_t;
 typedef uint16 uint16_t;
@@ -88,9 +82,6 @@ typedef uint32 uint32_t;
 typedef int32 int32_t;
 typedef int64 int64_t;
 typedef uint64 uint64_t;
-#else
-#include <stdint.h>
-#endif
 
 // END GOOGLE MODIFICATIONS
 
@@ -142,7 +133,7 @@ typedef struct NPClass NPClass;
 typedef char NPUTF8;
 typedef struct _NPString {
     const NPUTF8 *UTF8Characters;
-    size_t UTF8Length;
+    uint32_t UTF8Length;
 } NPString;
   
 typedef enum {

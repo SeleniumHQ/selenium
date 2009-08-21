@@ -26,6 +26,9 @@ import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
+import org.openqa.selenium.remote.Command;
+import org.openqa.selenium.remote.Context;
+import org.openqa.selenium.remote.SessionId;
 
 public class ChromeDriver implements WebDriver, SearchContext, JavascriptExecutor,
 FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, FindsByXPath {
@@ -98,15 +101,17 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
     }
   }
   
-  //TODO(danielwh): Throw ChromeHORRIBLYDEADException
   Response execute(String commandName, Object... parameters) {
-    Command command = new Command(commandName, parameters);
+    Command command = new Command(new SessionId("[No sessionId]"),
+                                  new Context("[No context]"),
+                                  commandName,
+                                  parameters);
     try {
       return executor.execute(command);
     } catch (Exception e) {
       if (e instanceof UnsupportedOperationException ||
           e instanceof IllegalArgumentException ||
-          e instanceof ChromeDriverException) {
+          e instanceof FatalChromeException) {
         /*if (e instanceof ChromeDriverException) {
           try { Thread.sleep(100000); } catch (Exception e2) {}
         }*/
