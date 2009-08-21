@@ -26,6 +26,7 @@ import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
+import org.openqa.selenium.internal.TemporaryFilesystem;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.Context;
 import org.openqa.selenium.remote.SessionId;
@@ -73,16 +74,14 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
             chromeFile.getCanonicalPath() + ").  " +
             "Try setting webdriver.chrome.bin.");
       }
-      StringBuilder flags = new StringBuilder();
-      flags.append("--load-extension=");
-      if (!System.getProperty("os.name").startsWith("Windows")) {
-        flags.append(extensionDir.getCanonicalPath());
-      } else {
-        flags.append("\"").append(extensionDir.getCanonicalPath()).append("\"");
-      }
-      clientProcess = Runtime.getRuntime().exec(new String[] {
-        chromeFile.getCanonicalPath(),
-        flags.toString()});
+      
+      File profileDir = TemporaryFilesystem.createTempDir("profile", "");
+      
+      String[] toExec = new String[3];
+      toExec[0] = chromeFile.getCanonicalPath();
+      toExec[1] = "--user-data-dir=" + wrapInQuotesIfWindows(profileDir.getCanonicalPath());
+      toExec[2] = " --load-extension=" + wrapInQuotesIfWindows(extensionDir.getCanonicalPath()); 
+      clientProcess = Runtime.getRuntime().exec(toExec);
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
@@ -194,6 +193,14 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
       chromeFile = new File(chromeFileString.toString());
     }
     return chromeFile;
+  }
+  
+  private String wrapInQuotesIfWindows(String arg) {
+    if (System.getProperty("os.name").startsWith("Windows")) {
+      return "\"" + arg + "\"";
+    } else {
+      return arg;
+    }
   }
 
   public void close() {
