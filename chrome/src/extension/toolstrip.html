@@ -1,4 +1,28 @@
-<div class="toolstrip-button" id="webdriver-toolstrip">
-  <!--TODO(danielwh): Flicker when busy-->
-  <span id="visible">WebDriver</span>
-</div>
+<html>
+<head>
+  <script type="text/javascript">
+  function setWebdriverToolstripBusy() {
+    document.getElementById("toolstripText").className = "toolstripTextBusy";
+  }
+
+  function setWebdriverToolstripFree() {
+    document.getElementById("toolstripText").className = "toolstripTextFree";
+  }
+  </script>
+
+  <style type="text/css">
+  .toolstripTextBusy {
+    color: red;
+  }
+
+  .toolstripTextFree {
+    color: black;
+  }
+  </style>
+</head>
+<body>
+  <div>
+    <span id="toolstripText" class="toolstripTextFree">WebDriver</span>
+  </div>
+</body>
+</html>

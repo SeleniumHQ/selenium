@@ -122,6 +122,12 @@ function disconnectPort(port) {
 }
 
 function parseRequest(request) {
+  var views = chrome.self.getViews();
+  for (var view in views) {
+    if (views[view].setWebdriverToolstripBusy) {
+      views[view].setWebdriverToolstripBusy();
+    }
+  }
   switch (request.request) {
   case "url":
     getUrl(request.url);
@@ -263,6 +269,12 @@ function updateRetryBuffer(sequenceNumber) {
 function sendResponse(toSend, wait) {
   console.log("Sending SENDRESPONSE POST");
   sendResponseXmlHttpRequest(toSend, wait);
+  var views = chrome.self.getViews();
+  for (var view in views) {
+    if (views[view].setWebdriverToolstripFree) {
+      views[view].setWebdriverToolstripFree();
+    }
+  }
 }
 
 /**

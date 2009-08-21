@@ -2,8 +2,8 @@ package org.openqa.selenium.chrome;
 
 import org.openqa.selenium.WebDriverException;
 
-public class ChromeDriverException extends WebDriverException {
-  public ChromeDriverException(String message) {
+public class FatalChromeException extends WebDriverException {
+  public FatalChromeException(String message) {
     super(message);
   }
 }
