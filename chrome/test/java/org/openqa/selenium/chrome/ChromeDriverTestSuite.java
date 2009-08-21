@@ -18,6 +18,7 @@ limitations under the License.
 package org.openqa.selenium.chrome;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import junit.framework.Test;
@@ -25,7 +26,9 @@ import junit.framework.TestCase;
 
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import org.openqa.selenium.TestSuiteBuilder;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.FileHandler;
+import org.openqa.selenium.internal.TemporaryFilesystem;
 
 public class ChromeDriverTestSuite extends TestCase {
   public static Test suite() throws Exception {
@@ -33,8 +36,9 @@ public class ChromeDriverTestSuite extends TestCase {
         .addSourceDir("common")
         .addSourceDir("chrome")
         .exclude(CHROME)
-        .usingDriver(ChromeDriver.class)
-        .includeJavascriptTests()
+        .usingDriver(TestChromeDriver.class)
+        .onlyRun("ElementFindingTest")
+        //.includeJavascriptTests()
         .keepDriverInstance()
         .create();
   }
@@ -46,29 +50,55 @@ public class ChromeDriverTestSuite extends TestCase {
     @Override
     protected void startClient() {
       //TODO(danielwh): Check for actual path to the src from user.dir
-      String extensionDir = System.getProperty("user.dir") + "/src/extension";
+      File extensionSrcDir = new File(System.getProperty("user.dir"), "/src/extension");
+      File extensionDstDir = TemporaryFilesystem.createTempDir("extension", "folder");
+      String extensionDst;
+      try {
+        extensionDst = extensionDstDir.getCanonicalPath();
+        extensionDstDir.mkdir();
+        for (File file : extensionSrcDir.listFiles()) {
+          if (!file.getName().equals("manifest.json"))
+          FileHandler.copy(file, new File(extensionDst, file.getName()));
+        }
+      
+        if (System.getProperty("os.name").startsWith("Windows")) {
+          FileHandler.copy(new File(extensionSrcDir, "manifest-win.json"),
+                           new File(extensionDstDir, "manifest.json"));
+        } else {
+          FileHandler.copy(new File(extensionSrcDir, "manifest-nonwin.json"),
+                           new File(extensionDstDir, "manifest.json"));
+        }
+      } catch (IOException e) {
+        throw new WebDriverException(e);
+      }
+      
       File dllToUse = new File(System.getProperty("webdriver.chrome.extensiondir"),
           "npchromedriver.dll");
       if (System.getProperty("webdriver.chrome.extensiondir") == null ||
-          !System.getProperty("webdriver.chrome.extensiondir").equals(extensionDir) ||
+          !System.getProperty("webdriver.chrome.extensiondir").equals(extensionDstDir) ||
           !dllToUse.exists()) {
-        System.setProperty("webdriver.chrome.extensiondir", extensionDir);
+        System.setProperty("webdriver.chrome.extensiondir", extensionDst);
         try {
           copyDll();
         } catch (IOException e) {
-          throw new RuntimeException(e);
+          throw new WebDriverException(e);
         }
       }
       super.startClient();
     }
-    
+
     private void copyDll() throws IOException {
-      File dllFrom = new File(System.getProperty("user.dir"),
-          "../build/Win32/Debug/npchromedriver.dll");
-      File dllToUse = new File(System.getProperty("webdriver.chrome.extensiondir"),
-          "npchromedriver.dll");
-      dllToUse.deleteOnExit();
-      FileHandler.copy(dllFrom, dllToUse);
+      if (System.getProperty("os.name").startsWith("Windows")) {
+        File dllFrom = new File(System.getProperty("user.dir"),
+            "../build/Win32/Debug/npchromedriver.dll");
+        if (!dllFrom.exists()) {
+          throw new FileNotFoundException("Could not find " + dllFrom.getCanonicalFile());
+        }
+        File dllToUse = new File(System.getProperty("webdriver.chrome.extensiondir"),
+            "npchromedriver.dll");
+        dllToUse.deleteOnExit();
+        FileHandler.copy(dllFrom, dllToUse);
+      }
     }
   }
 }

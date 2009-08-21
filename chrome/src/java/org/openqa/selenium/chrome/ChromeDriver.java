@@ -17,6 +17,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.Speed;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.FileHandler;
 import org.openqa.selenium.internal.FindsByClassName;
@@ -38,11 +39,15 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
   
   private void init() throws Exception {
     this.executor = new ChromeCommandExecutor(9700, 9701);
-    while (!executor.hasClient()) {
+    try {
       startClient();
-      //Ick, we sleep for a little bit in case the browser hasn't quite loaded
-      Thread.sleep(2500);
+    } catch (Exception e) {
+      executor.stopListening();
+      stopClient();
+      throw e;
     }
+    //Ick, we sleep for a little bit in case the browser hasn't quite loaded
+    Thread.sleep(2500);
   }
   
   /**
@@ -65,16 +70,16 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
             chromeFile.getCanonicalPath() + ").  " +
             "Try setting webdriver.chrome.bin.");
       }
-      StringBuilder toRun = new StringBuilder();
-      toRun.append(chromeFile.getCanonicalPath())
-           .append(" --enable-extensions --load-extension=");
-      if (System.getProperty("os.name").equals("Linux")) {
-        toRun.append(extensionDir.getCanonicalPath());
+      StringBuilder flags = new StringBuilder();
+      flags.append("--load-extension=");
+      if (!System.getProperty("os.name").startsWith("Windows")) {
+        flags.append(extensionDir.getCanonicalPath());
       } else {
-        toRun.append("\"").append(extensionDir.getCanonicalPath()).append("\"");
+        flags.append("\"").append(extensionDir.getCanonicalPath()).append("\"");
       }
-      System.out.println("Execing: " + toRun);
-      clientProcess = Runtime.getRuntime().exec(toRun.toString());
+      clientProcess = Runtime.getRuntime().exec(new String[] {
+        chromeFile.getCanonicalPath(),
+        flags.toString()});
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
@@ -162,56 +167,61 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
                         .append("Google\\Chrome\\Application\\chrome.exe");
       } else if (System.getProperty("os.name").equals("Linux")) {
         chromeFileString.append("/usr/bin/google-chrome");
+      } else if (System.getProperty("os.name").startsWith("Mac OS")) {
+        File binary = new File("/Applications/Google Chrome.app/Contents/MacOS/Google Chrome");
+        if (binary.exists()) {
+          chromeFileString.append(binary.getCanonicalFile());
+        } else {
+          binary = new File("/Users/" + System.getProperty("user.name") +
+              binary.getCanonicalPath());
+          if (binary.exists()) {
+            chromeFileString.append(binary.getCanonicalFile());
+          } else {
+            throw new WebDriverException("Couldn't locate Chrome.  " +
+                "Set webdriver.chrome.bin");
+          }
+        }
       } else {
-        throw new RuntimeException("Unsupported operating system.  " +
-            "Could not locate Chrome.  Set webdriver.chrome.bin.");
+        throw new WebDriverException("Unsupported operating system.  " +
+            "Could not locate Chrome.  Set webdriver.chrome.bin");
       }
       chromeFile = new File(chromeFileString.toString());
     }
     return chromeFile;
   }
 
-  @Override
   public void close() {
     throw new UnsupportedOperationException("Not yet supported in Chrome");
   }
 
-  @Override
   public WebElement findElement(By by) {
     return by.findElement((SearchContext)this);
   }
 
-  @Override
   public List<WebElement> findElements(By by) {
     return by.findElements((SearchContext)this);
   }
 
-  @Override
   public void get(String url) {
     execute("get", url);
   }
 
-  @Override
   public String getCurrentUrl() {
     return execute("getCurrentUrl").getValue().toString();
   }
 
-  @Override
   public String getPageSource() {
     return execute("getPageSource").getValue().toString();
   }
 
-  @Override
   public String getTitle() {
     return execute("getTitle").getValue().toString();
   }
 
-  @Override
   public String getWindowHandle() {
     return execute("getWindowHandle").getValue().toString();
   }
 
-  @Override
   public Set<String> getWindowHandles() {
     Object[] windowHandles = (Object[])execute("getWindowHandles").getValue();
     Set<String> setOfHandles = new HashSet<String>();
@@ -221,17 +231,14 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
     return setOfHandles;
   }
 
-  @Override
   public Options manage() {
     return new ChromeOptions();
   }
 
-  @Override
   public Navigation navigate() {
     return new ChromeNavigation();
   }
 
-  @Override
   public void quit() {
     try {
       execute("quit");
@@ -240,12 +247,10 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
     }
   }
 
-  @Override
   public TargetLocator switchTo() {
     return new ChromeTargetLocator();
   }
 
-  @Override
   public Object executeScript(String script, Object... args) {
     Response response;
     response = execute("execute", script, args);
@@ -256,77 +261,62 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
     }
   }
 
-  @Override
   public boolean isJavascriptEnabled() {
     return true;
   }
 
-  @Override
   public WebElement findElementById(String using) {
     return getElementFrom(execute("findElement", "id", using));
   }
 
-  @Override
   public List<WebElement> findElementsById(String using) {
     return getElementsFrom(execute("findElements", "id", using));
   }
 
-  @Override
   public WebElement findElementByClassName(String using) {
     return getElementFrom(execute("findElement", "class name", using));
   }
 
-  @Override
   public List<WebElement> findElementsByClassName(String using) {
     return getElementsFrom(execute("findElements", "class name", using));
   }
 
-  @Override
   public WebElement findElementByLinkText(String using) {
     return getElementFrom(execute("findElement", "link text", using));
   }
 
-  @Override
   public List<WebElement> findElementsByLinkText(String using) {
     return getElementsFrom(execute("findElements", "link text", using));
   }
 
-  @Override
   public WebElement findElementByName(String using) {
     return getElementFrom(execute("findElement", "name", using));
   }
 
-  @Override
   public List<WebElement> findElementsByName(String using) {
     return getElementsFrom(execute("findElements", "name", using));
   }
 
-  @Override
   public WebElement findElementByTagName(String using) {
     return getElementFrom(execute("findElement", "tag name", using));
   }
 
-  @Override
   public List<WebElement> findElementsByTagName(String using) {
     return getElementsFrom(execute("findElements", "tag name", using));
   }
 
-  @Override
   public WebElement findElementByXPath(String using) {
     return getElementFrom(execute("findElement", "xpath", using));
   }
 
-  @Override
   public List<WebElement> findElementsByXPath(String using) {
     return getElementsFrom(execute("findElements", "xpath", using));
   }
 
-  @Override
   public WebElement findElementByPartialLinkText(String using) {
     return getElementFrom(execute("findElement", "partial link text", using));
   }
   
-  @Override
   public List<WebElement> findElementsByPartialLinkText(String using) {
     return getElementsFrom(execute("findElements", "partial link text", using));
   }
@@ -352,27 +342,22 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
   
   private class ChromeOptions implements Options {
 
-    @Override
     public void addCookie(Cookie cookie) {
       execute("addCookie", cookie);
     }
 
-    @Override
     public void deleteAllCookies() {
       execute("deleteAllCookies");
     }
 
-    @Override
     public void deleteCookie(Cookie cookie) {
       execute("deleteCookie", cookie.getName());
     }
 
-    @Override
     public void deleteCookieNamed(String name) {
       execute("deleteCookie", name);
     }
 
-    @Override
     public Set<Cookie> getCookies() {
       Object result = execute("getCookies").getValue();
       Set<Cookie> cookies = new HashSet<Cookie>();
@@ -396,12 +381,10 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
       return cookies;
     }
 
-    @Override
     public Speed getSpeed() {
       throw new UnsupportedOperationException("Not yet supported in Chrome");
     }
 
-    @Override
     public void setSpeed(Speed speed) {
       throw new UnsupportedOperationException("Not yet supported in Chrome");
     }
@@ -430,27 +413,22 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
   }
   
   private class ChromeTargetLocator implements TargetLocator {
-    @Override
     public WebElement activeElement() {
       throw new UnsupportedOperationException("Chrome does not support active element switching yet");
     }
 
-    @Override
     public WebDriver defaultContent() {
       throw new UnsupportedOperationException("Chrome does not support default content switching yet");
     }
 
-    @Override
     public WebDriver frame(int frameIndex) {
       throw new UnsupportedOperationException("Chrome does not support frame switching yet");
     }
 
-    @Override
     public WebDriver frame(String frameName) {
       throw new UnsupportedOperationException("Chrome does not support frame switching yet");
     }
 
-    @Override
     public WebDriver window(String windowName) {
       execute("switchToWindow", windowName);
       return ChromeDriver.this;
