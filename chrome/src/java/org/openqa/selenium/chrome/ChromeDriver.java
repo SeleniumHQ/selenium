@@ -119,6 +119,7 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
         //inconsistent state, so we restart Chrome
         stopClient();
         try {
+          executor.stopListening();
           init();
         } catch (Exception e2) {
           throw new RuntimeException(e2);

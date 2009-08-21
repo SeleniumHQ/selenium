@@ -67,7 +67,18 @@ function parsePortMessage(message) {
     response.value = clearElement(element);
     break;
   case "clickElement":
-    response.value = clickElement(element);
+    response.value = clickElement(element, message.request.elementId);
+    break;
+  case "nonNativeClickElement":
+    //TODO(danielwh): Focus/blur events
+    element.scrollIntoView(true);
+    Utils.fireMouseEventOn(element, "mousedown");
+    Utils.fireMouseEventOn(element, "mouseup");
+    Utils.fireMouseEventOn(element, "click");
+    if (element.click) {
+      element.click();
+    }
+    response.value = {statusCode: 0};
     break;
   case "deleteAllCookies":
     response.value = deleteAllCookies();
@@ -398,7 +409,7 @@ function internalGetElement(elementIdAsString) {
 /**
  * Ensures the passed element is in view, so that the native click event can be sent
  */
-function clickElement(element) {
+function clickElement(element, elementId) {
   try {
     checkElementIsDisplayed(element)
   } catch (e) {
@@ -406,7 +417,7 @@ function clickElement(element) {
   }
   element.scrollIntoView(true);
   var coords = getElementCoords(element);
-  return {statusCode: "no-op", x: coords[0] - document.body.scrollLeft, y: coords[1] - document.body.scrollTop};
+  return {statusCode: "no-op", elementId: elementId, x: coords[0] - document.body.scrollLeft, y: coords[1] - document.body.scrollTop};
 }
 
 /**
@@ -534,9 +545,9 @@ function sendElementKeys(element, keys, elementId) {
 }
 
 function sendElementNonNativeKeys(element, keys) {
+  //TODO(danielwh): Any kind of actually support for non-native keys
   for (var i = 0; i < keys.length; i++) {
-    element.value += keys;
-    //TODO(danielwh): Deal with non-native keys
+    element.value += keys.charAt(i);
   }
   return {statusCode: 0};
 }

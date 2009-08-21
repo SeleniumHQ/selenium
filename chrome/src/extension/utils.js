@@ -704,7 +704,7 @@ Utils.findForm = function(element) {
     return undefined;
 };
 
-Utils.fireMouseEventOn = function(context, element, eventName) {
+Utils.fireMouseEventOn = function(element, eventName) {
     Utils.triggerMouseEvent(element, eventName, 0, 0);
 };
 

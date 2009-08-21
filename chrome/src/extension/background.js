@@ -233,7 +233,8 @@ function parsePortMessage(message) {
           sendResponse("{statusCode: 99}", true);
         }
       } catch(e) {
-        sendResponse("{statusCode: 99}", true);
+        console.log("Error natively clicking.  Trying non-native");
+        parseRequest({request: 'nonNativeClickElement', elementId: message.response.value.elementId});
       }
       break;
     case "sendElementKeys":

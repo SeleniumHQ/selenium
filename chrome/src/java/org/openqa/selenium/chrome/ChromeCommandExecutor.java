@@ -360,6 +360,11 @@ public class ChromeCommandExecutor {
            !responseServerSocket.isClosed()) {
       Thread.yield();
     }
+    //TODO(danielwh): Check for isBound
+    //Hope that they maybe unbind
+    try {
+      Thread.sleep(500);
+    } catch(InterruptedException e) {}
   }
 
   private class ListeningThread extends Thread {
