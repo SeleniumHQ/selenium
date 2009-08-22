@@ -21,10 +21,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.*;
 
 /**
  * Models a SELECT tag, providing helper methods to select and deselect options.
@@ -108,20 +105,23 @@ public class Select {
    * @param text The visible text to match against
    */
   public void selectByVisibleText(String text) {
-    StringBuilder builder = new StringBuilder(".//option[. = ");
-    builder.append(escapeQuotes(text));
-    builder.append("]");
-
-    List<WebElement> options = element.findElements(By.xpath(builder.toString()));
-
+    // try to find the option via XPATH ...
+    List<WebElement> options = element.findElements(By.xpath(".//option[. = " + escapeQuotes(text) + "]"));
     for (WebElement option : options) {
       option.setSelected();
       if (!isMultiple()) {  return;  }
     }
-
     if (options.size() == 0 && text.contains(" ")) {
-      List<WebElement> allOptions = element.findElements(By.tagName("option"));
-      for (WebElement option : allOptions) {
+      String subStringWithoutSpace = getLongestSubstringWithoutSpace(text);
+      List<WebElement> candidates;
+      if ("".equals(subStringWithoutSpace)) {
+        // hmm, text is either empty or contains only spaces - get all options ...
+        candidates = element.findElements(By.tagName("option"));
+      } else {
+        // get candidates via XPATH ...
+        candidates = element.findElements(By.xpath(".//option[contains(., " + escapeQuotes(subStringWithoutSpace) + ")]"));
+      }
+      for (WebElement option : candidates) {
         if (text.equals(option.getText())) {
           option.setSelected();
           if (!isMultiple()) {  return;  }
@@ -130,7 +130,19 @@ public class Select {
     }
   }
 
-  /**
+  private String getLongestSubstringWithoutSpace(String s) {
+    String result = "";
+    StringTokenizer st = new StringTokenizer(s, " ");
+    while (st.hasMoreTokens()) {
+      String t = st.nextToken();
+      if (t.length() > result.length()) {
+        result = t;
+      }
+    }
+    return result;
+  }
+
+    /**
    * Select the option at the given index. This is done by examing the "index" attribute of an
    * element, and not merely by counting.
    *

@@ -357,14 +357,14 @@ public class SelectTest extends MockObjectTestCase {
   public void testShouldFallBackToSlowLooksUpsWhenGetByVisibleTextFailsAndThereIsASpace() {
     final WebElement element = mock(WebElement.class);
     final WebElement firstOption = mock(WebElement.class, "first");
-    final By xpath = By.xpath(".//option[. = \"foo bar\"]");
-    final Sequence selects = sequence("selects");
+    final By xpath1 = By.xpath(".//option[. = \"foo bar\"]");
+    final By xpath2 = By.xpath(".//option[contains(., \"foo\")]");
 
     checking(new Expectations() {{
       allowing(element).getTagName(); will(returnValue("select"));
       allowing(element).getAttribute("multiple"); will(returnValue(""));
-      one(element).findElements(xpath); will(returnValue(Collections.EMPTY_LIST));
-      one(element).findElements(By.tagName("option")); will(returnValue(Collections.singletonList(firstOption)));
+      one(element).findElements(xpath1); will(returnValue(Collections.EMPTY_LIST));
+      one(element).findElements(xpath2); will(returnValue(Collections.singletonList(firstOption)));
       one(firstOption).getText(); will(returnValue("foo bar"));
       one(firstOption).setSelected();
     }});
