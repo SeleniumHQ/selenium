@@ -24,6 +24,8 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
 
 import java.lang.reflect.Field;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Annotations {
 
@@ -125,19 +127,21 @@ public class Annotations {
       }
     }
 
-    int count = 0;
-    if (!"".equals(findBy.how())) count++;
-    if (!"".equals(findBy.className())) count++;
-    if (!"".equals(findBy.id())) count++;
-    if (!"".equals(findBy.linkText())) count++;
-    if (!"".equals(findBy.name())) count++;
-    if (!"".equals(findBy.partialLinkText())) count++;
-    if (!"".equals(findBy.tagName())) count++;
-    if (!"".equals(findBy.xpath())) count++;
+    Set<String> finders = new HashSet<String>();
+    if (!"".equals(findBy.using())) finders.add("how: " + findBy.using());
+    if (!"".equals(findBy.className())) finders.add("class name:" + findBy.className());
+    if (!"".equals(findBy.id())) finders.add("id: " + findBy.id());
+    if (!"".equals(findBy.linkText())) finders.add("link text: " + findBy.linkText());
+    if (!"".equals(findBy.name())) finders.add("name: " + findBy.name());
+    if (!"".equals(findBy.partialLinkText())) finders.add("partial link text: " + findBy.partialLinkText());
+    if (!"".equals(findBy.tagName())) finders.add("tag name: " + findBy.tagName());
+    if (!"".equals(findBy.xpath())) finders.add("xpath: " + findBy.xpath());
 
     // A zero count is okay: it means to look by name or id.
-    if (count > 1) {
-      throw new IllegalArgumentException("You must specify at most one location strategy. Number found: " + count);
+    if (finders.size() > 1) {
+      throw new IllegalArgumentException(
+      				String.format("You must specify at most one location strategy. Number found: %d (%s)",
+      								finders.size(), finders.toString()));
     }
   }
 }

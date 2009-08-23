@@ -119,6 +119,7 @@ public class PageFactoryTest extends MockObjectTestCase {
     }
 
     public static class PublicPage {
+    		@FindBy(name = "q")
         public WebElement q;
 
         public RenderedWebElement rendered;
