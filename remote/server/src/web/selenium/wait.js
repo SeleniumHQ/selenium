@@ -23,8 +23,9 @@ limitations under the License.
 
 goog.provide('webdriver.Wait');
 
-goog.require('goog.Timer');
+goog.require('goog.events');
 goog.require('webdriver.Future');
+goog.require('webdriver.timing');
 
 
 /**
@@ -35,11 +36,10 @@ goog.require('webdriver.Future');
  *     {@code webdriver.Future} that will evaluate to a boolean.
  * @param {number} timeout The amount of time to wait, in milliseconds, for the
  *     condition to hold.
- * @param {goog.Timer} opt_timer The timer used to poll for the condition.
  * @constructor
  * @private
  */
-webdriver.Wait = function(conditionFn, timeout, opt_timer) {
+webdriver.Wait = function(conditionFn, timeout) {
 
   /**
    * Function to call for evaluating the condition being waited on.
@@ -63,18 +63,19 @@ webdriver.Wait = function(conditionFn, timeout, opt_timer) {
   this.started_ = 0;
 
   /**
-   * Timer used to time polling the condition.
-   * @type {goog.Timer}
-   * @private
-   */
-  this.timer_ = opt_timer || new goog.Timer();
-
-  /**
    * ID of the timeout timer. Initialized on the first call to {@code #start()}.
    * @type {number}
    * @private
    */
   this.timeoutId_ = null;
+
+  /**
+   * ID of the interval timer. Initialized on the first call to
+   * {@code #start()}.
+   * @type {number}
+   * @private
+   */
+  this.pollingIntervalId_ = null;
 
   /**
    * Whether to wait on the inverse of the wait condition.
@@ -107,13 +108,11 @@ webdriver.Wait.prototype.start = function(callbackFn) {
     this.started_ = goog.now();
 
     var tickHandler = goog.bind(this.onTick_, this, callbackFn);
-    goog.events.listen(this.timer_, goog.Timer.TICK, tickHandler);
-
     var timeoutHandler = goog.bind(this.onTimeout_, this, callbackFn);
 
-    this.timer_.setInterval(5);
-    this.timer_.start();
-    this.timeoutId_ = goog.Timer.callOnce(timeoutHandler, this.timeout_);
+    this.pollingIntervalId_ = webdriver.timing.setInterval(tickHandler, 5);
+    this.timeoutId_ =
+        webdriver.timing.setTimeout(timeoutHandler, this.timeout_);
 
     this.onTick_(callbackFn);
   }
@@ -126,8 +125,7 @@ webdriver.Wait.prototype.start = function(callbackFn) {
  * @private
  */
 webdriver.Wait.prototype.onTimeout_ = function(callbackFn) {
-  this.timer_.stop();
-  this.timer_.dispose();
+  webdriver.timing.clearInterval(this.pollingIntervalId_);
   if (this.pendingFuture_) {
     this.pendingFuture_.dispose();
   }
@@ -167,12 +165,11 @@ webdriver.Wait.prototype.onTick_ = function(callbackFn) {
     }
 
   } catch (ex) {
-    this.timer_.stop();
-    this.timer_.dispose();
+    webdriver.timing.clearInterval(this.pollingIntervalId_);
+    webdriver.timing.clearTimeout(this.timeoutId_);
     if (this.pendingFuture_) {
       this.pendingFuture_.dispose();
     }
-    goog.Timer.clear(this.timeoutId_);
     callbackFn(true, elapsed, ex);
   }
 };
@@ -191,12 +188,11 @@ webdriver.Wait.prototype.checkValue_ = function(value, elapsed, callbackFn) {
     value = !value;
   }
   if (value) {
-    this.timer_.stop();
-    this.timer_.dispose();
+    webdriver.timing.clearInterval(this.pollingIntervalId_);
+    webdriver.timing.clearTimeout(this.timeoutId_);
     if (this.pendingFuture_) {
       this.pendingFuture_.dispose();
     }
-    goog.Timer.clear(this.timeoutId_);
     callbackFn(false, elapsed);
   }
   return value;

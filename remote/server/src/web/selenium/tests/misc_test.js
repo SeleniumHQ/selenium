@@ -15,3 +15,19 @@ function testShouldReturnTheSourceOfAPage(driver) {
   assertThat(source, contains("<p id="));
   assertThat(source, contains("lotsofspaces"));
 }
+
+
+function testUsersCanOverrideSetTimeoutWithoutBreakingWebDriver(driver) {
+  window.setTimeout = goog.nullFunction;
+  var count = 0;
+  function incrementCount() {
+    count += 1;
+  }
+  window.setTimeout(incrementCount, 0);
+  window.setTimeout(incrementCount, 1);
+  driver.sleep(5);
+  driver.callFunction(function() {
+    assertEquals(0, count);
+  });
+  // If this doesn't work, it will most likely result in the tests timing out.
+}

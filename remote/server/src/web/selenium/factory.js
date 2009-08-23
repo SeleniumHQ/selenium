@@ -51,43 +51,5 @@ webdriver.factory.createAbstractDriver = function() {
  *     local CommandProcessor.
  */
 webdriver.factory.createLocalWebDriver = function() {
-  if (goog.userAgent.GECKO) {
-    return new webdriver.WebDriver(new webdriver.LocalCommandProcessor());
-  }
-  throw new Error('The current browser does not support a local command ' +
-                  'processor');
-};
-
-
-/**
- * Creates a new {@code webdriver.WebDriver} instance that sends commands via
- * XMLHttpRequests to a CommandProcessor running on localhost.
- * @param {boolean} opt_runContinuously Whether the WebDriver instance should be
- *     configured to continually process commands in an asynchronous loop, or if
- *     commands should be queued up until
- *     {@code webdriver.WebDriver.processCommands} is called; Defaults to false.
- * @return {webdriver.WebDriver} A new WebDriver instance.
- * @throws If called in a JavaScript engine that does not support XMLHttpRequest
- *     objects.
- */
-webdriver.factory.createRemoteWebDriver = function(forBrowser,
-                                                   opt_runContinuously) {
-  var remoteCommandProcessor = {
-    execute: function(jsonCommandObj) {
-      var newXhr = function() {
-        if (window.XMLHttpRequest) {        // W3 browser
-          return new XMLHttpRequest();
-        } else if (window.ActiveXObject) {  // MSIE
-          return new ActiveXObject('Msxml2.XMLHTTP');
-        } else {
-          throw new Error('The current JavaScript engine does not support ' +
-                          'XMLHttpRequests');
-        }
-      };
-
-      var xhr = newXhr();
-    }
-  };
-  throw new Error('Not yet implemented!' + forBrowser); // TODO(jmleyba)
-//  return new webdriver.WebDriver(remoteCommandProcessor, opt_runContinuously);
+  return new webdriver.WebDriver(new webdriver.LocalCommandProcessor());
 };

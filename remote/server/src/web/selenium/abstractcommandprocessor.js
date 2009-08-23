@@ -27,6 +27,7 @@ goog.require('webdriver.CommandName');
 goog.require('webdriver.Context');
 goog.require('webdriver.Future');
 goog.require('webdriver.Response');
+goog.require('webdriver.timing');
 
 
 /**
@@ -34,7 +35,6 @@ goog.require('webdriver.Response');
  * @constructor
  */
 webdriver.AbstractCommandProcessor = function() {
-  this.lastResponse_ = null;
 };
 
 
@@ -81,7 +81,7 @@ webdriver.AbstractCommandProcessor.prototype.execute = function(command,
   switch (command.name) {
     case webdriver.CommandName.SLEEP:
       var ms = command.parameters[0];
-      window.setTimeout(function() {
+      webdriver.timing.setTimeout(function() {
         command.setResponse(new webdriver.Response(false, context, ms));
       }, ms);
       break;

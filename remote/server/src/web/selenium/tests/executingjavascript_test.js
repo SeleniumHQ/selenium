@@ -91,23 +91,32 @@ function testCanPassAWebElementAsAnArgument(driver) {
 
 function testThrowsAnExceptionIfAnArgumentIsNotValid(driver) {
   var script = 'return arguments[0];';
-  function assertArgumentIsInvalidScriptArgument(arg) {
-    try {
-      driver.executeScript(script, arg);
-      fail('Should have rejected invalid argument type: ' + (typeof arg) +
-           '\nValid argument types are: string, boolean, number, and ' +
-           'webdriver.WebElement objects');
-    } catch (expected) {
-      // TODO(jmleyba): Ick! assertThat system needs some lovin'
-      var message = new webdriver.Future(driver);
-      message.setValue(expected.message);
-      assertThat(message, startsWith('Invalid script argument type: '));
-    }
+  try {
+    driver.executeScript(script, goog.nullFunction);
+    fail('Should have rejected invalid argument type: function' +
+         '\nValid argument types are: string, boolean, number, and ' +
+         'webdriver.WebElement objects');
+  } catch (expected) {
+    assertEquals('Invalid script argument type: function', expected.message);
   }
-  driver.get(TEST_PAGES.javascriptPage);
-  assertArgumentIsInvalidScriptArgument(goog.nullFunction);
-  assertArgumentIsInvalidScriptArgument([]);
-  assertArgumentIsInvalidScriptArgument({});
+
+  try {
+    driver.executeScript(script, []);
+    fail('Should have rejected invalid argument type: array' +
+         '\nValid argument types are: string, boolean, number, and ' +
+         'webdriver.WebElement objects');
+  } catch (expected) {
+    assertEquals('Invalid script argument type: array', expected.message);
+  }
+
+  try {
+    driver.executeScript(script, {});
+    fail('Should have rejected invalid argument type: object' +
+         '\nValid argument types are: string, boolean, number, and ' +
+         'webdriver.WebElement objects');
+  } catch (expected) {
+    assertEquals('Invalid script argument type: object', expected.message);
+  }
 }
 
 

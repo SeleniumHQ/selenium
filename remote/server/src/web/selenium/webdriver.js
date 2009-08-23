@@ -23,7 +23,6 @@ limitations under the License.
 goog.provide('webdriver.WebDriver');
 goog.provide('webdriver.WebDriver.EventType');
 
-goog.require('goog.Timer');
 goog.require('goog.events');
 goog.require('goog.events.EventTarget');
 goog.require('webdriver.Command');
@@ -34,6 +33,7 @@ goog.require('webdriver.Response');
 goog.require('webdriver.Wait');
 goog.require('webdriver.WebElement');
 goog.require('webdriver.logging');
+goog.require('webdriver.timing');
 
 
 /**
@@ -66,7 +66,7 @@ goog.require('webdriver.logging');
  * @constructor
  * @extends {goog.events.EventTarget}
  */
-webdriver.WebDriver = function(commandProcessor, opt_timer) {
+webdriver.WebDriver = function(commandProcessor) {
   goog.events.EventTarget.call(this);
 
   /**
@@ -131,19 +131,17 @@ webdriver.WebDriver = function(commandProcessor, opt_timer) {
    * This instance's current session ID.  Set with the
    * {@code webdriver.WebDriver.prototype.newSession} command.
    * @type {?string}
+   * @private
    */
   this.sessionId_ = null;
 
   /**
-   * @type {goog.Timer}
+   * Interval ID for the command processing loop.
+   * @type {number}
    * @private
    */
-  this.timer_ = opt_timer || new goog.Timer();
-
-  goog.events.listen(this.timer_, goog.Timer.TICK, this.processCommands_, false,
-      this);
-  this.timer_.setInterval(10);
-  this.timer_.start();
+  this.commandInterval_ =
+      webdriver.timing.setInterval(goog.bind(this.processCommands_, this), 10);
 };
 goog.inherits(webdriver.WebDriver, goog.events.EventTarget);
 
@@ -178,7 +176,7 @@ webdriver.WebDriver.Speed = {
  */
 webdriver.WebDriver.prototype.dispose = function() {
   webdriver.logging.debug('disposing WebDriver');
-  this.timer_.stop();
+  webdriver.timing.clearInterval(this.commandInterval_);
   webdriver.WebDriver.superClass_.dispose.call(this);
 };
 
@@ -502,7 +500,7 @@ webdriver.WebDriver.prototype.waitNot = function(conditionFn, timeout, opt_self,
   if (opt_self) {
     conditionFn = goog.bind(conditionFn, opt_self);
   }
-  var waitOp = new webdriver.Wait(conditionFn, timeout, opt_interval);
+  var waitOp = new webdriver.Wait(conditionFn, timeout);
   waitOp.waitOnInverse(true);
   this.addCommand(new webdriver.Command(webdriver.CommandName.WAIT).
       setParameters(waitOp));

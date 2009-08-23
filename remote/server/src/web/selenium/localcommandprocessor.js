@@ -41,6 +41,10 @@ webdriver.LocalCommandProcessor = function() {
   webdriver.AbstractCommandProcessor.call(this);
   // TODO(jmleyba): IE, Chrome, et al. support
   this.cp_ = goog.global['__webDriverCommandProcessor'];
+  if (!goog.isDef(this.cp_)) {
+    throw new Error(
+        'The current browser does not support a LocalCommandProcessor');
+  }
 };
 goog.inherits(webdriver.LocalCommandProcessor,
               webdriver.AbstractCommandProcessor);

@@ -45,8 +45,10 @@ goog.provide('webdriver.TestRunner');
 goog.require('goog.Uri');
 goog.require('goog.dom');
 goog.require('goog.style');
+goog.require('webdriver.WebDriver.EventType');
 goog.require('webdriver.factory');
 goog.require('webdriver.logging');
+goog.require('webdriver.timing');
 
 
 /**
@@ -369,7 +371,8 @@ webdriver.TestRunner.prototype.reportResult_ = function(result, driver) {
   goog.dom.setTextContent(this.numPassedSpan_, this.numPassing_);
   goog.dom.setTextContent(this.numPendingSpan_,
       (this.tests_.length - this.currentTest_ - 1));
-  window.setTimeout(goog.bind(this.executeNextTest_, this), 0);
+  webdriver.logging.info('scheduling next test');
+  webdriver.timing.setTimeout(goog.bind(this.executeNextTest_, this), 0);
 };
 
 
@@ -487,7 +490,8 @@ webdriver.TestRunner.prototype.executeNextTest_ = function() {
         webdriver.WebDriver.EventType.ERROR, driverError);
 
     driver.newSession(true);
-    window.setTimeout(goog.bind(this.setUp_, this, result, driver), 0);
+    webdriver.timing.setTimeout(
+        goog.bind(this.setUp_, this, result, driver), 0);
   } catch (ex) {
     result.passed = false;
     result.errMsg = ex.message + (ex.stack ? ('\n' + ex.stack) : '');
