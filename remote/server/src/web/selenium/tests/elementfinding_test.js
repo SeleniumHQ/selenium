@@ -448,7 +448,7 @@ function testCanFindElementsByXPath(driver) {
   driver.get(TEST_PAGES.xhtmlTestPage);
   driver.findElements({xpath: '//div'});
   driver.callFunction(function(response) {
-    assertEquals(5, response.value.length);
+    assertEquals(8, response.value.length);
   });
 }
 
