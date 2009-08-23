@@ -16,65 +16,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-/*
- * Copyright 2007 ThoughtWorks, Inc
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
- */
-
 package org.openqa.selenium.htmlunit;
 
-import com.gargoylesoftware.htmlunit.CookieManager;
-import com.gargoylesoftware.htmlunit.ElementNotFoundException;
-import com.gargoylesoftware.htmlunit.Page;
-import com.gargoylesoftware.htmlunit.ProxyConfig;
-import com.gargoylesoftware.htmlunit.ScriptResult;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.WebResponse;
-import com.gargoylesoftware.htmlunit.WebWindow;
-import com.gargoylesoftware.htmlunit.WebWindowEvent;
-import com.gargoylesoftware.htmlunit.WebWindowListener;
-import com.gargoylesoftware.htmlunit.WebWindowNotFoundException;
-import com.gargoylesoftware.htmlunit.BrowserVersion;
-import com.gargoylesoftware.htmlunit.html.FrameWindow;
-import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import com.gargoylesoftware.htmlunit.html.HtmlInlineFrame;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.javascript.host.HTMLElement;
-
-import org.openqa.selenium.Alert;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Cookie;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.NoSuchFrameException;
-import org.openqa.selenium.NoSuchWindowException;
-import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.Speed;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.internal.FindsById;
-import org.openqa.selenium.internal.FindsByLinkText;
-import org.openqa.selenium.internal.FindsByName;
-import org.openqa.selenium.internal.FindsByTagName;
-import org.openqa.selenium.internal.FindsByXPath;
-import org.openqa.selenium.internal.ReturnedCookie;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
+import java.io.IOException;
 import java.net.ConnectException;
 import java.net.URL;
 import java.net.UnknownHostException;
@@ -87,11 +31,51 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
-import java.io.IOException;
 
-import net.sourceforge.htmlunit.corejs.javascript.ScriptableObject;
 import net.sourceforge.htmlunit.corejs.javascript.Function;
+import net.sourceforge.htmlunit.corejs.javascript.ScriptableObject;
 import net.sourceforge.htmlunit.corejs.javascript.Undefined;
+
+import org.openqa.selenium.Alert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Cookie;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.NoSuchFrameException;
+import org.openqa.selenium.NoSuchWindowException;
+import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.Speed;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.internal.FindsById;
+import org.openqa.selenium.internal.FindsByLinkText;
+import org.openqa.selenium.internal.FindsByName;
+import org.openqa.selenium.internal.FindsByTagName;
+import org.openqa.selenium.internal.FindsByXPath;
+import org.openqa.selenium.internal.ReturnedCookie;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import com.gargoylesoftware.htmlunit.BrowserVersion;
+import com.gargoylesoftware.htmlunit.CookieManager;
+import com.gargoylesoftware.htmlunit.ElementNotFoundException;
+import com.gargoylesoftware.htmlunit.Page;
+import com.gargoylesoftware.htmlunit.ProxyConfig;
+import com.gargoylesoftware.htmlunit.ScriptResult;
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.WebResponse;
+import com.gargoylesoftware.htmlunit.WebWindow;
+import com.gargoylesoftware.htmlunit.WebWindowEvent;
+import com.gargoylesoftware.htmlunit.WebWindowListener;
+import com.gargoylesoftware.htmlunit.WebWindowNotFoundException;
+import com.gargoylesoftware.htmlunit.html.FrameWindow;
+import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
+import com.gargoylesoftware.htmlunit.html.HtmlElement;
+import com.gargoylesoftware.htmlunit.html.HtmlFrame;
+import com.gargoylesoftware.htmlunit.html.HtmlInlineFrame;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.javascript.host.HTMLElement;
 
 public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecutor,
         FindsById, FindsByLinkText, FindsByXPath, FindsByName, FindsByTagName {
@@ -107,39 +91,53 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
   public HtmlUnitDriver(BrowserVersion version) {
         this.version = version;
         webClient = createWebClient(version);
+        currentWindow = webClient.getCurrentWindow();
+        
         webClient.addWebWindowListener(new WebWindowListener() {
-            private boolean waitingToLoad;
-
             public void webWindowOpened(WebWindowEvent webWindowEvent) {
-                waitingToLoad = true;
+            	// Ignore
             }
 
-            public void webWindowContentChanged(WebWindowEvent webWindowEvent) {
-                WebWindow window = webWindowEvent.getWebWindow();
-                if (waitingToLoad) {
-                    waitingToLoad = false;
-                    webClient.setCurrentWindow(window);
-                }
+            public void webWindowContentChanged(WebWindowEvent event) {
+                WebWindow window = event.getWebWindow();
+                
                 History history = histories.get(window);
                 if (history == null) {
                     history = new History(window);
                     histories.put(window, history);
                 }
-                history.addNewPage(webWindowEvent.getNewPage());
+                history.addNewPage(event.getNewPage());
+                
+                if (event.getWebWindow() != currentWindow)
+									return;
+				
+								// Do we need to pick some new default content?
+								switchToDefaultContentOfWindow(currentWindow);
             }
 
-            public void webWindowClosed(WebWindowEvent webWindowEvent) {
-                WebWindow window = webWindowEvent.getWebWindow();
+            public void webWindowClosed(WebWindowEvent event) {
+                WebWindow window = event.getWebWindow();
                 histories.remove(window);
-                pickWindow();
+                
+                // Check if the event window refers to us or one of our parent windows
+                // setup the currentWindow appropriately if necessary
+								WebWindow curr = currentWindow;
+								do {
+									// Instance equality is okay in this case
+									if (curr == event.getWebWindow()) {
+										currentWindow = currentWindow.getTopWindow();
+										return;
+									}
+									curr = curr.getParentWindow();
+								} while (curr != currentWindow.getTopWindow());
             }
         });
-        if (currentWindow == null) {
-          get(WebClient.URL_ABOUT_BLANK);
-        }
 
+        // Now put us on the home page, like a real browser
+        get(webClient.getHomePage());
+        
         // Clear the history.
-        histories.clear();
+        histories.clear();        
     }
 
     public HtmlUnitDriver() {
@@ -158,6 +156,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
 
     private WebClient createWebClient(BrowserVersion version) {
         WebClient client = newWebClient(version);
+        client.setHomePage(WebClient.URL_ABOUT_BLANK.toString());
         client.setThrowExceptionOnFailingStatusCode(false);
         client.setPrintContentOnFailingStatusCode(false);
         client.setJavaScriptEnabled(enableJavascript);
@@ -171,7 +170,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
         // Ensure that we've set the proxy if necessary
         if (proxyConfig != null)
             client.setProxyConfig(proxyConfig);
-
+        
         return modifyWebClient(client);
     }
 
@@ -203,6 +202,12 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     }
 
     public void get(String url) {
+    	// Prevent the malformed url exception.
+    	if (WebClient.URL_ABOUT_BLANK.toString().equals(url)) {
+    		get(WebClient.URL_ABOUT_BLANK);
+    		return;
+    	}
+    	
       URL fullUrl;
       try {
         fullUrl = new URL(url);
@@ -221,6 +226,8 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
      */
     protected void get(URL fullUrl) {
       try {
+      	// A "get" works over the entire page
+      	currentWindow = currentWindow.getTopWindow();
         webClient.getPage(fullUrl);
       } catch (UnknownHostException e) {
         // This should be fine
@@ -234,9 +241,12 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     }
 
   protected void pickWindow() {
-        currentWindow = webClient.getCurrentWindow();
-        Page page = webClient.getCurrentWindow().getEnclosedPage();
-
+  			// TODO(simon): HtmlUnit tries to track the current window as the frontmost. We don't
+				if (currentWindow == null) {
+					currentWindow = webClient.getCurrentWindow();
+				}
+		    Page page = currentWindow.getEnclosedPage();
+        
         if (page == null)
           return;
 
@@ -251,7 +261,12 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     }
 
     public String getCurrentUrl() {
-        return lastPage().getWebResponse().getRequestUrl().toString();
+    	// TODO(simon): Blech. I can see this being baaad
+    	Page page = lastPage();
+    	if (page == null) return null;
+    		
+    	WebResponse response = page.getWebResponse();
+    	return response.getRequestUrl().toString();
     }
 
     public String getTitle() {
@@ -271,8 +286,11 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     }
 
     public String getPageSource() {
-        WebResponse webResponse = lastPage().getWebResponse();
-        return webResponse.getContentAsString();
+    	Page page = lastPage();
+    	if (page == null) return null;
+    		
+    	WebResponse response = page.getWebResponse();
+    	return response.getContentAsString();
     }
 
     public void close() {
@@ -380,7 +398,24 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
         return new HtmlUnitTargetLocator();
     }
 
-
+  private void switchToDefaultContentOfWindow(WebWindow window) {
+		Page page = window.getEnclosedPage();
+		if (page instanceof HtmlPage) {
+			// Check for frames
+			List<FrameWindow> frames = ((HtmlPage) page).getFrames();
+			if (frames.size() > 0) {
+				FrameWindow frameWindow = frames.get(0);
+				if (HtmlFrame.class.isAssignableFrom(frameWindow.getFrameElement().getClass())) {
+					currentWindow = frameWindow;
+					return;
+				}
+			}
+			
+			// Lovely. We're on a normal page
+			currentWindow = window;
+		}
+	}
+  
   public Navigation navigate() {
     return new HtmlUnitNavigation();
   }
@@ -588,12 +623,13 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
                 throw new NoSuchWindowException("Cannot find window: " + windowId);
             }
             webClient.setCurrentWindow(window);
+            currentWindow = window;
             pickWindow();
             return HtmlUnitDriver.this;
         }
 
     public WebDriver defaultContent() {
-            pickWindow();
+            switchToDefaultContentOfWindow(currentWindow.getTopWindow());
             return HtmlUnitDriver.this;
         }
 
@@ -804,34 +840,6 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
         }
 
         return String.format("%s:%s", current.getHost(), current.getPort());
-      }
-    }
-
-    private class HtmlUnitDriverIterator implements Iterator<WebDriver> {
-      private Iterator<WebWindow> underlyingIterator;
-
-      public HtmlUnitDriverIterator() {
-        List<WebWindow> allWindows = new ArrayList<WebWindow>();
-        for (WebWindow window : webClient.getWebWindows()) {
-          WebWindow top = window.getTopWindow();
-          if (!allWindows.contains(top))
-            allWindows.add(top);
-        }
-
-        underlyingIterator = allWindows.iterator();
-      }
-
-      public boolean hasNext() {
-        return underlyingIterator.hasNext();
-      }
-
-      public WebDriver next() {
-        WebWindow window = underlyingIterator.next();
-        return new HtmlUnitDriver(isJavascriptEnabled(), window);
-      }
-
-      public void remove() {
-        throw new UnsupportedOperationException("remove");
       }
     }
 
