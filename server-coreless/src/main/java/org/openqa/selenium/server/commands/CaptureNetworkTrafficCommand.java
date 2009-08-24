@@ -110,7 +110,7 @@ public class CaptureNetworkTrafficCommand extends Command {
                 sb.append("    </requestHeaders>\n");
 
                 sb.append("    <responseHeaders>\n");
-                xmlHeaders(sb, entry.requestHeaders);
+                xmlHeaders(sb, entry.responseHeaders);
                 sb.append("    </responseHeaders>\n");
 
 
