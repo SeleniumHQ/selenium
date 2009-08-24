@@ -14,6 +14,7 @@ import org.json.JSONObject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.Speed;
 import org.openqa.selenium.WebDriver;
@@ -161,30 +162,34 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
       chromeFile = new File(chromeFileSystemProperty);
     } else {
       StringBuilder chromeFileString = new StringBuilder();
-      if (System.getProperty("os.name").equals("Windows XP")) {
+      if (Platform.getCurrent().is(Platform.XP)) {
         chromeFileString.append(System.getProperty("user.home"))
                         .append("\\Local Settings\\Application Data\\")
                         .append("Google\\Chrome\\Application\\chrome.exe");
-      } else if (System.getProperty("os.name").equals("Windows Vista")) {
+      } else if (Platform.getCurrent().is(Platform.VISTA)) {
         chromeFileString.append("C:\\Users\\")
                         .append(System.getProperty("user.name"))
                         .append("\\AppData\\Local\\")
                         .append("Google\\Chrome\\Application\\chrome.exe");
-      } else if (System.getProperty("os.name").equals("Linux")) {
+      } else if (Platform.getCurrent().is(Platform.UNIX)) {
         chromeFileString.append("/usr/bin/google-chrome");
-      } else if (System.getProperty("os.name").startsWith("Mac OS")) {
-        File binary = new File("/Applications/Google Chrome.app/Contents/MacOS/Google Chrome");
-        if (binary.exists()) {
-          chromeFileString.append(binary.getCanonicalFile());
-        } else {
-          binary = new File("/Users/" + System.getProperty("user.name") +
-              binary.getCanonicalPath());
+      } else if (Platform.getCurrent().is(Platform.MAC)) {
+        String[] paths = new String[] {
+          "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+          "/Users/" + System.getProperty("user.name") +
+              "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"};
+        boolean foundPath = false;
+        for (String path : paths) {
+          File binary = new File(path);
           if (binary.exists()) {
             chromeFileString.append(binary.getCanonicalFile());
-          } else {
-            throw new WebDriverException("Couldn't locate Chrome.  " +
-                "Set webdriver.chrome.bin");
+            foundPath = true;
+            break;
           }
+        }
+        if (!foundPath) {
+          throw new WebDriverException("Couldn't locate Chrome.  " +
+              "Set webdriver.chrome.bin");
         }
       } else {
         throw new WebDriverException("Unsupported operating system.  " +
@@ -196,7 +201,7 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
   }
   
   private String wrapInQuotesIfWindows(String arg) {
-    if (System.getProperty("os.name").startsWith("Windows")) {
+    if (Platform.getCurrent().is(Platform.WINDOWS)) {
       return "\"" + arg + "\"";
     } else {
       return arg;
