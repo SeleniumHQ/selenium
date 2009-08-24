@@ -134,7 +134,7 @@ function parseRequest(request) {
     console.log("Already sent a request which hasn't been replied to yet.  Not sending request to content script.");
     return;
   }
-  if (ChromeDriver.isOnBadPage) {
+  if (ChromeDriver.isOnBadPage && request.request != "url") {
     console.log("On bad page.  Not sending request.")
     ChromeDriver.isBlockedWaitingForResponse = true;
     sendResponse("{statusCode: 500}");

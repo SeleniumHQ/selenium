@@ -23,6 +23,7 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.core.IsNot.not;
+import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
@@ -125,6 +126,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
         assertThat(cookies.contains(cookie2), is(false));
     }
 
+    @Ignore(value = CHROME, reason = "Chrome on Linux/Mac doesn't expire cookies")
     public void testDeleteCookie() {
         driver.get(simpleTestPage);
         Cookie cookie1 = new Cookie("fish", "cod");
