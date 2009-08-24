@@ -77,6 +77,9 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
       }
       
       File profileDir = TemporaryFilesystem.createTempDir("profile", "");
+      File firstRunFile = new File(profileDir, "First Run Dev");
+      firstRunFile.createNewFile();
+      //TODO(danielwh): Maybe add Local State file with window_placement
       
       //TODO(danielwh): Rename this to not be firefox specific
       System.setProperty("webdriver.firefox.reap_profile", "false");
@@ -84,7 +87,7 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
       String[] toExec = new String[3];
       toExec[0] = chromeFile.getCanonicalPath();
       toExec[1] = "--user-data-dir=" + wrapInQuotesIfWindows(profileDir.getCanonicalPath());
-      toExec[2] = " --load-extension=" + wrapInQuotesIfWindows(extensionDir.getCanonicalPath()); 
+      toExec[2] = "--load-extension=" + wrapInQuotesIfWindows(extensionDir.getCanonicalPath()); 
       clientProcess = Runtime.getRuntime().exec(toExec);
     } catch (Exception e) {
       throw new RuntimeException(e);
