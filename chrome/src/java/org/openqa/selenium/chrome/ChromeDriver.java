@@ -43,11 +43,10 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
   }
   
   private void init() throws Exception {
-    this.executor = new ChromeCommandExecutor(9700, 9701);
-    while (!executor.hasClient()) {
+    while (executor == null || !executor.hasClient()) {
       stopClient();
       try {
-        this.executor = new ChromeCommandExecutor(9700, 9701);
+        this.executor = new ChromeCommandExecutor(9700);
         startClient();
       } catch (Exception e) {
         executor.stopListening();
@@ -100,12 +99,14 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
   
   protected void stopClient() {
     if (clientProcess != null) {
-      System.out.println("Killing browser");
       clientProcess.destroy();
       clientProcess = null;
     }
     try {
-      executor.stopListening();
+      if (executor != null) {
+        executor.stopListening();
+        executor = null;
+      }
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
@@ -129,7 +130,6 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
         //inconsistent state, so we restart Chrome
         stopClient();
         try {
-          executor.stopListening();
           init();
         } catch (Exception e2) {
           throw new RuntimeException(e2);

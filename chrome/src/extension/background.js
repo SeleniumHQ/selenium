@@ -15,9 +15,7 @@ ChromeDriver.hasSeenPreContentScript = false;
 ChromeDriver.isCurrentlyLoadingUrl = false;
 //ChromeDriver.currentSpeed = 500; //TODO(danielwh): enum this? Oh, and actually do anything with it
 ChromeDriver.requestXmlHttpRequest = null;
-ChromeDriver.responseXmlHttpRequest = null;
 ChromeDriver.requestXmlHttpRequestUrl = "http://localhost:9700/chromeCommandExecutor"
-ChromeDriver.responseXmlHttpRequestUrl = "http://localhost:9701/chromeCommandExecutor"
 ChromeDriver.requestSequenceNumber = 0;
 ChromeDriver.isOnBadPage = false; //Indicates we couldn't connect to the server
 
@@ -48,28 +46,17 @@ chrome.self.onConnect.addListener(function(port) {
   port.onDisconnect.addListener(disconnectPort);
 });
 
-sendRequestXmlHttpRequest();
+sendResponseXmlHttpRequest("", false);
 
-function sendRequestXmlHttpRequest() {
+function sendResponseXmlHttpRequest(params, wait) {
+  console.log("sendResponseXmlHttpRequest");
   if (ChromeDriver.requestXmlHttpRequest != null) {
     ChromeDriver.requestXmlHttpRequest.abort();
   }
   ChromeDriver.requestXmlHttpRequest = new XMLHttpRequest();
   ChromeDriver.requestXmlHttpRequest.onreadystatechange = handleRequestXmlHttpRequestReadyStateChange;
   ChromeDriver.requestXmlHttpRequest.open("POST", ChromeDriver.requestXmlHttpRequestUrl, true);
-  ChromeDriver.requestXmlHttpRequest.send("\nEORequest\n");
-  console.log("Sent XMLHTTP with a request");
-}
-
-function sendResponseXmlHttpRequest(params, wait) {
-  console.log("sendResponseXmlHttpRequest");
-  if (ChromeDriver.responseXmlHttpRequest != null) {
-    ChromeDriver.responseXmlHttpRequest.abort();
-  }
-  ChromeDriver.responseXmlHttpRequest = new XMLHttpRequest();
-  ChromeDriver.responseXmlHttpRequest.onreadystatechange = handleResponseXmlHttpRequestReadyStateChange;
-  ChromeDriver.responseXmlHttpRequest.open("POST", ChromeDriver.responseXmlHttpRequestUrl, true);
-  ChromeDriver.responseXmlHttpRequest.setRequestHeader("Content-type", "application/json");
+  ChromeDriver.requestXmlHttpRequest.setRequestHeader("Content-type", "application/json");
   //Default to waiting for page changes, just in case
   if (typeof(wait) == "undefined" || wait == null || wait == true) {
     setTimeout(sendParams, 600, [params]);
@@ -82,7 +69,8 @@ function sendParams(params) {
   if (ChromeDriver.hasSeenPreContentScript) {
     setTimeout(sendParams, 100, [params]);
   } else {
-    ChromeDriver.responseXmlHttpRequest.send(params + "\nEOResponse\n");
+    ChromeDriver.requestXmlHttpRequest.send(params + "\nEOResponse\n");
+    console.log("Sent response: " + params);
   }
 }
 
@@ -99,22 +87,6 @@ function handleRequestXmlHttpRequestReadyStateChange() {
       } else {
         console.log("THE WIRE gave " + this.responseText);
         parseRequest(JSON.parse(this.responseText));
-      }
-    }
-  }
-}
-
-function handleResponseXmlHttpRequestReadyStateChange() {
-  if (this.readyState == 4) {
-    if (this.status != 200) {
-      console.log("Response state was 4 but status: " + this.status + ".  responseText: " + this.responseText);
-    } else {
-      if (this.responseText == "ACK") {
-        console.log("Got ACK");
-        if (ChromeDriver.activePort == null) {
-          console.log("WARNING: No active port.  Asking for command anyway.");
-        }
-        sendRequestXmlHttpRequest();
       }
     }
   }
