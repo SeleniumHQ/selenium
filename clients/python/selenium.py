@@ -745,7 +745,6 @@ class selenium:
         """
         self.do_command("submit", [formLocator,])
 
-
     def open(self,url):
         """
         Opens an URL in the test frame. This accepts both relative and absolute
@@ -762,6 +761,24 @@ class selenium:
         'url' is the URL to open; may be relative or absolute
         """
         self.do_command("open", [url,])
+
+    def open(self,url,ignoreResponseCode):
+        """
+        Opens an URL in the test frame. This accepts both relative and absolute
+        URLs.
+        
+        The "open" command waits for the page to load before proceeding,
+        ie. the "AndWait" suffix is implicit.
+        
+        \ *Note*: The URL must be on the same domain as the runner HTML
+        due to security restrictions in the browser (Same Origin Policy). If you
+        need to open an URL on another domain, use the Selenium Server to start a
+        new browser session on that domain.
+        
+        'url' is the URL to open; may be relative or absolute
+        'ignoreResponseCode' if set to true: doesnt send ajax HEAD/GET request; if set to false: sends ajax HEAD/GET request to the url and reports error code if any as response to open.
+        """
+        self.do_command("open", [url,ignoreResponseCode])
 
 
     def open_window(self,url,windowID):
@@ -2068,4 +2085,3 @@ class selenium:
         'keycode' is an integer keycode number corresponding to a java.awt.event.KeyEvent; note that Java keycodes are NOT the same thing as JavaScript keycodes!
         """
         self.do_command("keyPressNative", [keycode,])
-

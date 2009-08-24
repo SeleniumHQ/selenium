@@ -388,6 +388,21 @@ due to security restrictions in the browser (Same Origin Policy). If you
 need to open an URL on another domain, use the Selenium Server to start a
 new browser session on that domain.
 @param url the URL to open; may be relative or absolute
+@param ignoreResponseCode if set to true, ignores http response code.
+*/
+void open(String url, String ignoreResponseCode);
+
+/** Opens an URL in the test frame. This accepts both relative and absolute
+URLs.
+
+The "open" command waits for the page to load before proceeding,
+ie. the "AndWait" suffix is implicit.
+
+<em>Note</em>: The URL must be on the same domain as the runner HTML
+due to security restrictions in the browser (Same Origin Policy). If you
+need to open an URL on another domain, use the Selenium Server to start a
+new browser session on that domain.
+@param url the URL to open; may be relative or absolute
 */
 void open(String url);
 

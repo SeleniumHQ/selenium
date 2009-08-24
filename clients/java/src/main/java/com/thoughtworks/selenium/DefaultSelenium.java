@@ -331,6 +331,10 @@ public class DefaultSelenium implements Selenium {
 		commandProcessor.doCommand("submit", new String[] {formLocator,});
 	}
 
+	public void open(String url, String ignoreResponseCode) {
+		commandProcessor.doCommand("open", new String[] {url,ignoreResponseCode});
+	}
+
 	public void open(String url) {
 		commandProcessor.doCommand("open", new String[] {url,});
 	}
