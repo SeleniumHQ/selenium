@@ -57,6 +57,15 @@ var BrowserBot = function(topLevelApplicationWindow) {
     this.newPageLoaded = false;
     this.pageLoadError = null;
 
+    this.ignoreResponseCode = false;
+    this.xhr = null;
+    this.abortXhr = false;
+    this.isXhrSent = false;
+    this.isXhrDone = false;
+    this.xhrOpenLocation = null;
+    this.xhrResponseCode = null;
+    this.xhrStatusText = null;
+
     this.shouldHighlightLocatedElement = false;
 
     this.uniqueId = "seleniumMarker" + new Date().getTime();
@@ -97,7 +106,25 @@ var BrowserBot = function(topLevelApplicationWindow) {
             this.pageLoadError = null;
             throw e;
         }
-        return self.newPageLoaded;
+
+        if (self.ignoreResponseCode) {
+            return self.newPageLoaded;
+        } else {
+            if (self.isXhrSent && self.isXhrDone) {
+                if (!((self.xhrResponseCode >= 200 && self.xhrResponseCode <= 399) || self.xhrResponseCode == 0)) {
+                     // TODO: for IE status like: 12002, 12007, ... provide corresponding statusText messages also.
+                     LOG.error("XHR failed with message " + self.xhrStatusText);
+                     var e = "XHR ERROR: URL = " + self.xhrOpenLocation + " Response_Code = " + self.xhrResponseCode + " Error_Message = " + self.xhrStatusText
+                     self.abortXhr = false;
+                     self.isXhrSent = false;
+                     self.isXhrDone = false;
+                     self.xhrResponseCode = null;
+                     self.xhrStatusText = null;
+                     throw new SeleniumError(e);
+                }
+           }
+          return self.newPageLoaded && (self.isXhrSent ? (self.abortXhr || self.isXhrDone) : true); 
+        }
     };
 
 };
@@ -507,12 +534,82 @@ BrowserBot.prototype.doesThisFrameMatchFrameExpression = function(currentFrameSt
     return false;
 };
 
+BrowserBot.prototype.abortXhrRequest = function() {
+    if (this.ignoreResponseCode) {
+       LOG.debug("XHR response code being ignored. Nothing to abort.");
+    } else {
+        if (this.abortXhr == false && this.isXhrSent && !this.isXhrDone) {
+            LOG.info("abortXhrRequest(): aborting request");
+            this.abortXhr = true;
+            this.xhr.abort();
+        }
+    }
+}
+
+BrowserBot.prototype.onXhrStateChange = function(method) {
+      LOG.info("onXhrStateChange(): xhr.readyState = " + this.xhr.readyState + " method = " + method + " time = " + new Date().getTime());
+      if (this.xhr.readyState == 4) {
+
+          // check if the request got aborted.
+          if (this.abortXhr == true) {
+              this.xhrResponseCode = 0;
+              this.xhrStatusText = "Request Aborted";
+              this.isXhrDone = true;
+              return;
+          }
+
+          try {
+              if (method == "HEAD" && (this.xhr.status == 501 || this.xhr.status == 405)) {
+                 LOG.info("onXhrStateChange(): HEAD ajax returned 501 or 405, retrying with GET");
+                 // handle 501 response code from servers that do not support 'HEAD' method.
+                 // send GET ajax request with range 0-1.
+                 this.xhr = XmlHttp.create();
+                 this.xhr.onreadystatechange = this.onXhrStateChange.bind(this, "GET");
+                 this.xhr.open("GET", this.xhrOpenLocation, true);
+                 this.xhr.setRequestHeader("Range", "bytes:0-1");
+                 this.xhr.send("");
+                 this.isXhrSent = true;
+                 return;
+              }
+              this.xhrResponseCode = this.xhr.status;
+              this.xhrStatusText = this.xhr.statusText;
+          } catch (ex) {
+              LOG.info("encountered exception while reading xhrResponseCode." + ex.message);
+              this.xhrResponseCode = -1;
+    	      this.xhrStatusText = "Request Error";
+          }
+
+          this.isXhrDone = true;
+      }
+};
+
+BrowserBot.prototype.checkedOpen = function(target) {
+    var url = absolutify(target, this.baseUrl);
+    LOG.debug("checkedOpen(): url = " + url);
+    this.isXhrDone = false;
+    this.abortXhr = false;
+    this.xhrResponseCode = null;
+    this.xhrOpenLocation = url;
+    try {
+        this.xhr = XmlHttp.create();
+    } catch (ex) {
+        LOG.error("Your browser doesnt support Xml Http Request");
+        return;
+    }
+    this.xhr.onreadystatechange =  this.onXhrStateChange.bind(this, "HEAD");
+    this.xhr.open("HEAD", url, true);
+    this.xhr.send("");
+    this.isXhrSent = true;
+}
+
 BrowserBot.prototype.openLocation = function(target) {
     // We're moving to a new page - clear the current one
     var win = this.getCurrentWindow();
     LOG.debug("openLocation newPageLoaded = false");
     this.newPageLoaded = false;
-
+    if (!this.ignoreResponseCode) {
+        this.checkedOpen(target);
+    }
     this.setOpenLocation(win, target);
 };
 

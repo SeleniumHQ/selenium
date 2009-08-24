@@ -186,16 +186,19 @@ Selenium.DEFAULT_TIMEOUT = 30 * 1000;
 Selenium.DEFAULT_MOUSE_SPEED = 10;
 Selenium.RIGHT_MOUSE_CLICK = 2;
 
-Selenium.decorateFunctionWithTimeout = function(f, timeout) {
+Selenium.decorateFunctionWithTimeout = function(f, timeout, callback) {
     if (f == null) {
         return null;
     }
     
     var timeoutTime = getTimeoutTime(timeout);
-    
+   
     return function() {
         if (new Date().getTime() > timeoutTime) {
-            throw new SeleniumError("Timed out after " + timeout + "ms");
+            if (callback != null) {
+                 callback();
+            }
+            throw new SeleniumError("Timed out after " + timeout + "ms" + " time = " + new Date().getTime());
         }
         return f();
     };
@@ -923,12 +926,14 @@ Selenium.prototype.makePageLoadCondition = function(timeout) {
     }
     // if the timeout is zero, we won't wait for the page to load before returning
     if (timeout == 0) {
+	  // abort XHR request  
+          this._abortXhrRequest(); 	   
     	  return;
     }
-    return Selenium.decorateFunctionWithTimeout(fnBind(this._isNewPageLoaded, this), timeout);
+    return Selenium.decorateFunctionWithTimeout(fnBind(this._isNewPageLoaded, this), timeout, fnBind(this._abortXhrRequest, this));
 };
 
-Selenium.prototype.doOpen = function(url) {
+Selenium.prototype.doOpen = function(url, ignoreResponseCode) {
     /**
    * Opens an URL in the test frame. This accepts both relative and absolute
    * URLs.
@@ -942,7 +947,16 @@ Selenium.prototype.doOpen = function(url) {
    * new browser session on that domain.
    *
    * @param url the URL to open; may be relative or absolute
+   * @param ignoreResponseCode (optional) turn off ajax head request functionality
+   *
    */
+    if (ignoreResponseCode == null) {
+        this.browserbot.ignoreResponseCode = false;
+    } else if (ignoreResponseCode.toLowerCase() == "true") {
+        this.browserbot.ignoreResponseCode = true;
+    } else {
+        this.browserbot.ignoreResponseCode = false;
+    }
     this.browserbot.openLocation(url);
     if (window["proxyInjectionMode"] == null || !window["proxyInjectionMode"]) {
         return this.makePageLoadCondition();
@@ -2450,6 +2464,10 @@ Selenium.prototype.doWaitForFrameToLoad = function(frameAddress, timeout) {
 
 Selenium.prototype._isNewPageLoaded = function() {
     return this.browserbot.isNewPageLoaded();
+};
+
+Selenium.prototype._abortXhrRequest = function() {
+    return this.browserbot.abortXhrRequest();
 };
 
 Selenium.prototype.doWaitForPageToLoad.dontCheckAlertsAndConfirms = true;
