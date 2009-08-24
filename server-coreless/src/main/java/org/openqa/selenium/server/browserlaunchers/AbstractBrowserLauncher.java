@@ -44,4 +44,12 @@ public abstract class AbstractBrowserLauncher implements BrowserLauncher {
         return configuration.getPortDriversShouldContact();
     }
 
+    protected int getTimeout() {
+        if (browserConfigurationOptions.isTimeoutSet()) {
+            return browserConfigurationOptions.getTimeoutInSeconds();
+        } else {
+            return configuration.getTimeoutInSeconds();
+        }
+    }
+
 }

@@ -66,6 +66,14 @@ public class BrowserConfigurationOptions {
         hasOptions = true;
     }
     
+    public boolean isTimeoutSet() {
+      String value = options.get("timeoutInSeconds");
+      if (value == null)
+        return false;
+      else 
+        return true;
+    }
+
     public int getTimeoutInSeconds() {
         String value = options.get("timeoutInSeconds");
         if (value == null) return RemoteControlConfiguration.DEFAULT_TIMEOUT_IN_SECONDS;

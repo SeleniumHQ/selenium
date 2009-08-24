@@ -60,14 +60,14 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
         	throw new InvalidBrowserExecutableException("The specified path to the browser executable is invalid.");
         }
         this.browserInstallation = browserInstallation;
-
+      
         shell.setLibraryPath(browserInstallation.libraryPath());
         // Set MOZ_NO_REMOTE in order to ensure we always get a new Firefox process
         // http://blog.dojotoolkit.org/2005/12/01/running-multiple-versions-of-firefox-side-by-side
         shell.setEnvironmentVariable("MOZ_NO_REMOTE", "1");
     }
 
-    
+        
     /* (non-Javadoc)
      * @see org.openqa.selenium.server.browserlaunchers.AbstractBrowserLauncher#launch(java.lang.String)
      */
@@ -169,7 +169,7 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
             proxySetting = LauncherUtils.ProxySetting.PROXY_EVERYTHING;
         }
 
-        LauncherUtils.generatePacAndPrefJs(customProfileDir, getPort(), proxySetting, homePage, changeMaxConnections, browserConfigurationOptions.getTimeoutInSeconds(), browserConfigurationOptions.is("avoidProxy"));
+        LauncherUtils.generatePacAndPrefJs(customProfileDir, getPort(), proxySetting, homePage, changeMaxConnections, getTimeout(), browserConfigurationOptions.is("avoidProxy"));
     }
     
     private String makeCustomProfile(String homePage) throws IOException {
