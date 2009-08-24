@@ -3,10 +3,13 @@ package org.openqa.selenium.internal;
 import junit.framework.TestCase;
 
 import org.junit.Test;
+import org.openqa.selenium.Ignore;
 import org.openqa.selenium.WebDriverException;
 
 import java.io.File;
 import java.io.IOException;
+
+import static org.openqa.selenium.Ignore.Driver.CHROME;
 
 public class TemporaryFilesystemTest extends TestCase {
 
@@ -22,6 +25,9 @@ public class TemporaryFilesystemTest extends TestCase {
   }
 
   @Test
+  @Ignore(CHROME)
+  //TODO(danielwh): Find out why these just don't run in Firefox.
+  //Maybe add a new @Ignore(UsesTemporaryFiles)
   public void testFilesystemCleanupDeletesDirs() {
     File tmp = TemporaryFilesystem.createTempDir("TemporaryFilesystem", "fcdd");
     assertTrue(tmp.exists());
@@ -31,6 +37,7 @@ public class TemporaryFilesystemTest extends TestCase {
   }
 
   @Test
+  @Ignore(CHROME)
   public void testFilesystemCleanupDeletesRecursive() throws IOException {
     File tmp = TemporaryFilesystem.createTempDir("TemporaryFilesystem", "fcdr");
     createDummyFilesystemContent(tmp);
@@ -40,6 +47,7 @@ public class TemporaryFilesystemTest extends TestCase {
   }
 
   @Test
+  @Ignore(CHROME)
   public void testSpecificDeleteRequestHonored() throws IOException {
     File tmp = TemporaryFilesystem.createTempDir("TemporaryFilesystem", "sdrh");
     createDummyFilesystemContent(tmp);
@@ -62,6 +70,7 @@ public class TemporaryFilesystemTest extends TestCase {
   }
 
   @Test
+  @Ignore(CHROME)
   public void testShouldReapDefaultsTrue() {
     assertTrue(TemporaryFilesystem.shouldReap());
   }

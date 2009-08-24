@@ -19,8 +19,11 @@ ChromeDriver.responseXmlHttpRequest = null;
 ChromeDriver.requestXmlHttpRequestUrl = "http://localhost:9700/chromeCommandExecutor"
 ChromeDriver.responseXmlHttpRequestUrl = "http://localhost:9701/chromeCommandExecutor"
 ChromeDriver.requestSequenceNumber = 0;
-ChromeDriver.retryRequestBuffer = [];
 ChromeDriver.isOnBadPage = false; //Indicates we couldn't connect to the server
+
+ChromeDriver.getUrlRequestNumber = 0;
+ChromeDriver.isBlockedBecauseGetUrlFailed = false;
+ChromeDriver.isBlockedWaitingForResponse = false;
 
 ChromeDriver.isLoadingTabAtTheMomentAndMaybeWillNotSucceed = false;
 ChromeDriver.attemptsToSendWithNoPort = 0;
@@ -91,6 +94,7 @@ function handleRequestXmlHttpRequestReadyStateChange() {
     } else {
       console.log("State was 4 and status: 200")
       if (this.responseText == "QUIT") {
+        ChromeDriver.isBlockedWaitingForResponse = true;
         sendResponse("", false);
       } else {
         console.log("THE WIRE gave " + this.responseText);
@@ -122,6 +126,22 @@ function disconnectPort(port) {
 }
 
 function parseRequest(request) {
+  if (ChromeDriver.isBlockedBecauseGetUrlFailed) {
+    console.log("Getting a URL failed in this instance.  Cannot parse any requests.");
+    return;
+  }
+  if (ChromeDriver.isBlockedWaitingForResponse) {
+    console.log("Already sent a request which hasn't been replied to yet.  Not sending request to content script.");
+    return;
+  }
+  if (ChromeDriver.isOnBadPage) {
+    console.log("On bad page.  Not sending request.")
+    ChromeDriver.isBlockedWaitingForResponse = true;
+    sendResponse("{statusCode: 500}");
+    return;
+  }
+  ChromeDriver.isBlockedWaitingForResponse = true;
+  
   var views = chrome.self.getViews();
   for (var view in views) {
     if (views[view].setWebdriverToolstripBusy) {
@@ -149,39 +169,23 @@ function parseRequest(request) {
     break;
   case "clickElement":
   case "sendElementKeys":
-    sendRequest(wrapInjectEmbedIfNecessary(request));
+    try {
+      ChromeDriver.activePort.postMessage(wrapInjectEmbedIfNecessary(request));
+    } catch (e) {
+      console.log("Tried to send request without an active port.  Ditching request and responding with error.");
+      sendResponse("{statusCode: 500}");
+    }
     break;
   default:
-    sendRequest({request: request, sequenceNumber: ChromeDriver.requestSequenceNumber++});
+    try {
+      ChromeDriver.activePort.postMessage({request: request, sequenceNumber: ChromeDriver.requestSequenceNumber++});
+    } catch (e) {
+      console.log("Tried to send request without an active port.  Ditching request and responding with error.");
+      sendResponse("{statusCode: 500}");
+    }
     break;
   }
 }
-
-function sendRequest(message) {
-  ChromeDriver.retryRequestBuffer.push(message);
-  sendBufferedRequests();
-}
-
-function sendBufferedRequests() {
-  if (!ChromeDriver.activePort) {
-    console.log("NO ACTIVE PORT");
-    if (ChromeDriver.isOnBadPage) {
-      ChromeDriver.retryRequestBuffer = [];
-    }
-    if (++ChromeDriver.attemptsToSendWithNoPort > 15) {
-      sendResponse("{statusCode: 500}", false);
-      return;
-    }
-  } else {
-    ChromeDriver.attemptsToSendWithNoPort = 0;
-    for (var i = 0; i < ChromeDriver.retryRequestBuffer.length; ++i) {
-      console.log("Sending: " + ChromeDriver.retryRequestBuffer[i].sequenceNumber);
-      ChromeDriver.activePort.postMessage(ChromeDriver.retryRequestBuffer[i]);
-    }
-  }
-  setTimeout(sendBufferedRequests, 1000);
-}
-
 
 /**
  * Parse messages coming in on the port.
@@ -253,22 +257,14 @@ function parsePortMessage(message) {
     }
     break
   }
-  updateRetryBuffer(message.sequenceNumber);
-}
-
-function updateRetryBuffer(sequenceNumber) {
-  var updatedRetryRequestBuffer = [];
-  for (var i = 0; i < ChromeDriver.retryRequestBuffer.length; ++i) {
-    //Because of followup/wrapped requests, we assume that any sequence number returned means all previous command have been executed
-    if (ChromeDriver.retryRequestBuffer[i].sequenceNumber > sequenceNumber) {
-      updatedRetryRequestBuffer.push(ChromeDriver.retryRequestBuffer[i]);
-    }
-  }
-  ChromeDriver.retryRequestBuffer = updatedRetryRequestBuffer;
 }
 
 function sendResponse(toSend, wait) {
-  console.log("Sending SENDRESPONSE POST");
+  if (!ChromeDriver.isBlockedWaitingForResponse) {
+    console.log("Tried to send a response (" + toSend + ") when not waiting for one.  Dropping response.");
+    return;
+  }
+  ChromeDriver.isBlockedWaitingForResponse = false;
   sendResponseXmlHttpRequest(toSend, wait);
   var views = chrome.self.getViews();
   for (var view in views) {
@@ -329,27 +325,34 @@ function getUrl(url) {
   console.log("Creating new tab with url: " + url);
   ChromeDriver.isLoadingTabAtTheMomentAndMaybeWillNotSucceed = true;
   chrome.tabs.create({url: url, selected: true}, getUrlCallback);
-  setTimeout(getUrlTimeout, 20000);
+  setTimeout("getUrlTimeout(" + ChromeDriver.getUrlRequestNumber + ")", 20000);
 }
 
-function getUrlTimeout() {
-  if (ChromeDriver.isLoadingTabAtTheMomentAndMaybeWillNotSucceed) {
+function getUrlTimeout(getUrlRequestNumber) {
+  //TODO(danielwh): Add lastError checks when they've been added to Chrome
+  if (ChromeDriver.getUrlRequestNumber == getUrlRequestNumber && ChromeDriver.isLoadingTabAtTheMomentAndMaybeWillNotSucceed) {
+    console.log("BLOCKING BECAUSE GET URL FAILED.  Restart chrome.");
+    ChromeDriver.isBlockedBecauseGetUrlFailed = true;
     ChromeDriver.isLoadingTabAtTheMomentAndMaybeWillNotSucceed = false;
     sendResponse("{statusCode: 500}", false);
   }
 }
 
 function getUrlCallback(tab) {
+  if (ChromeDriver.isBlockedBecauseGetUrlFailed) {
+    console.log("Got a url, but did not send a response because we have already responded that getting the URL failed.");
+    return;
+  }
   if (tab.status != "complete") {
     ChromeDriver.isCurrentlyLoadingUrl = true
     //Use the helper calback so that we can add our own delay and not DOS the browser
     setTimeout("getUrlCallbackById(" + tab.id + ")", 10);
   } else {
+    ++ChromeDriver.getUrlRequestNumber;
     ChromeDriver.isLoadingTabAtTheMomentAndMaybeWillNotSucceed = false;
     ChromeDriver.isCurrentlyLoadingUrl = false;
     ChromeDriver.activeTabId = tab.id;
     setActivePortByTabId(tab.id);
-    ChromeDriver.retryRequestBuffer = [];
     ChromeDriver.requestSequenceNumber = 0;
     if (ChromeDriver.activePort == null) {
       ChromeDriver.isOnBadPage = true;
@@ -359,6 +362,10 @@ function getUrlCallback(tab) {
 }
 
 function getUrlCallbackById(tabId) {
+  if (ChromeDriver.isBlockedBecauseGetUrlFailed) {
+    console.log("getUrlClalbackById reached, but did not schedule callback because we have already responded that getting the URL failed.");
+    return;
+  }
   chrome.tabs.get(tabId, getUrlCallback);
 }
 

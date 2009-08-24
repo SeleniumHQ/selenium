@@ -78,6 +78,9 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
       
       File profileDir = TemporaryFilesystem.createTempDir("profile", "");
       
+      //TODO(danielwh): Rename this to not be firefox specific
+      System.setProperty("webdriver.firefox.reap_profile", "false");
+      
       String[] toExec = new String[3];
       toExec[0] = chromeFile.getCanonicalPath();
       toExec[1] = "--user-data-dir=" + wrapInQuotesIfWindows(profileDir.getCanonicalPath());
@@ -112,7 +115,7 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
       if (e instanceof UnsupportedOperationException ||
           e instanceof IllegalArgumentException ||
           e instanceof FatalChromeException) {
-        /*if (e instanceof ChromeDriverException) {
+        /*if (e instanceof FatalChromeException) {
           try { Thread.sleep(100000); } catch (Exception e2) {}
         }*/
         //These exceptions may leave the extension hung, or in an
