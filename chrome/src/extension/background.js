@@ -238,6 +238,7 @@ function parsePortMessage(message) {
         }
       } catch(e) {
         console.log("Error natively clicking.  Trying non-native");
+        ChromeDriver.isBlockedWaitingForResponse = false;
         parseRequest({request: 'nonNativeClickElement', elementId: message.response.value.elementId});
       }
       break;
@@ -251,6 +252,7 @@ function parsePortMessage(message) {
         }
       } catch(e) {
         console.log("Error natively sending keys.  Trying non-native");
+        ChromeDriver.isBlockedWaitingForResponse = false;
         parseRequest({request: 'sendElementNonNativeKeys', elementId: message.response.value.elementId, keys: message.response.value.keys});
       }
       break;

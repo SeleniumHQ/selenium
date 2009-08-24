@@ -44,15 +44,19 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
   
   private void init() throws Exception {
     this.executor = new ChromeCommandExecutor(9700, 9701);
-    try {
-      startClient();
-    } catch (Exception e) {
-      executor.stopListening();
+    while (!executor.hasClient()) {
       stopClient();
-      throw e;
+      try {
+        this.executor = new ChromeCommandExecutor(9700, 9701);
+        startClient();
+      } catch (Exception e) {
+        executor.stopListening();
+        stopClient();
+        throw e;
+      }
+      //Ick, we sleep for a little bit in case the browser hasn't quite loaded
+      Thread.sleep(2500);
     }
-    //Ick, we sleep for a little bit in case the browser hasn't quite loaded
-    Thread.sleep(2500);
   }
   
   /**
