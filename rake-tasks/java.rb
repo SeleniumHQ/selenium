@@ -148,7 +148,7 @@ def junit(args)
 
   main = args[:main] || "junit.textui.TestRunner"
 
-  test_string = 'java '
+  test_string = 'java -Xmx128m -Xms128m '
   test_string += '-cp ' + classpath.join(File::PATH_SEPARATOR) + ' ' if classpath.length > 1
   test_string += main
   test_string += ' ' + args[:args] if args[:args]
