@@ -359,6 +359,8 @@ public class ChromeCommandExecutor {
     while (!serverSocket.isClosed() && serverSocket.isBound()) {
       Thread.yield();
     }
+    //TODO(danielwh): Remove this when using multiple ports
+    try { Thread.sleep(500); } catch (InterruptedException e) {}
   }
 
   /**
