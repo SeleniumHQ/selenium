@@ -31,6 +31,8 @@ public class BySelector {
       return By.id(selector);
     } else if ("link text".equals(method)) {
       return By.linkText(selector);
+    } else if ("partial link text".equals(method)) {
+      return By.partialLinkText(selector);
     } else if ("name".equals(method)) {
       return By.name(selector);
     } else if ("xpath".equals(method)) {
