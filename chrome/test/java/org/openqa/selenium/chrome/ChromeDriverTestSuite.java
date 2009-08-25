@@ -36,7 +36,7 @@ public class ChromeDriverTestSuite extends TestCase {
         .addSourceDir("common")
         .addSourceDir("chrome")
         .exclude(CHROME)
-        .usingDriver(ChromeDriver.class)
+        .usingDriver(TestChromeDriver.class)
         .includeJavascriptTests()
         .keepDriverInstance()
         .create();

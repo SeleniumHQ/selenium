@@ -35,8 +35,8 @@ import org.openqa.selenium.remote.SessionId;
 public class ChromeDriver implements WebDriver, SearchContext, JavascriptExecutor,
 FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, FindsByXPath {
 
-  private Process clientProcess;
   private ChromeCommandExecutor executor;
+  private ChromeBinary chromeBinary = new ChromeBinary();
   
   /**
    * Starts up a new instance of Chrome, with the required extension loaded,
@@ -85,29 +85,17 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
                          new File(extensionDir, "manifest.json"));
       }
       
-      File chromeFile = getChromeFile();
-      if (!chromeFile.isFile()) {
-        throw new FileNotFoundException("Could not find chrome binary(" +
-            chromeFile.getCanonicalPath() + ").  " +
-            "Try setting webdriver.chrome.bin.");
-      }
-      
       File profileDir = TemporaryFilesystem.createTempDir("profile", "");
       File firstRunFile = new File(profileDir, "First Run Dev");
       firstRunFile.createNewFile();
       //TODO(danielwh): Maybe add Local State file with window_placement
       
       System.setProperty("webdriver.reap_profile", "false");
-      
-      String[] toExec = new String[3];
-      toExec[0] = wrapInQuotesIfWindows(chromeFile.getCanonicalPath());
-      toExec[1] = "--user-data-dir=" + wrapInQuotesIfWindows(profileDir.getCanonicalPath());
-      toExec[2] = "--load-extension=" + wrapInQuotesIfWindows(extensionDir.getCanonicalPath());
-      if (Platform.getCurrent().is(Platform.XP)) {
-        clientProcess = Runtime.getRuntime().exec(toExec[0] + " " + toExec[1] + " " + toExec[2]);
-      } else {
-        clientProcess = Runtime.getRuntime().exec(toExec);
-      }
+
+      String[] flags = new String[2];
+      flags[0] = "--user-data-dir=" + wrapInQuotesIfWindows(profileDir.getCanonicalPath());
+      flags[1] = "--load-extension=" + wrapInQuotesIfWindows(extensionDir.getCanonicalPath());
+      chromeBinary.start(flags);
     } catch (IOException e) {
       throw new WebDriverException(e);
     }
@@ -117,10 +105,7 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
    * Kills the started Chrome process and ChromeCommandExecutor if they exist
    */
   protected void stopClient() {
-    if (clientProcess != null) {
-      clientProcess.destroy();
-      clientProcess = null;
-    }
+    chromeBinary.kill();
     if (executor != null) {
       executor.stopListening();
       executor = null;
@@ -177,59 +162,6 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
           "/chrome-extension.zip"));
     }
     return extensionDir;
-  }
-  
-  /**
-   * Locates the Chrome executable on the current platform.
-   * First looks in the webdriver.chrome.bin property, then searches
-   * through the default expected locations.
-   * @return chrome.exe
-   * @throws IOException if file could not be found/accessed
-   */
-  protected File getChromeFile() throws IOException {
-    File chromeFile = null;
-    String chromeFileSystemProperty = System.getProperty(
-        "webdriver.chrome.bin");
-    if (chromeFileSystemProperty != null) {
-      chromeFile = new File(chromeFileSystemProperty);
-    } else {
-      StringBuilder chromeFileString = new StringBuilder();
-      if (Platform.getCurrent().is(Platform.XP)) {
-        chromeFileString.append(System.getProperty("user.home"))
-                        .append("\\Local Settings\\Application Data\\")
-                        .append("Google\\Chrome\\Application\\chrome.exe");
-      } else if (Platform.getCurrent().is(Platform.VISTA)) {
-        chromeFileString.append("C:\\Users\\")
-                        .append(System.getProperty("user.name"))
-                        .append("\\AppData\\Local\\")
-                        .append("Google\\Chrome\\Application\\chrome.exe");
-      } else if (Platform.getCurrent().is(Platform.UNIX)) {
-        chromeFileString.append("/usr/bin/google-chrome");
-      } else if (Platform.getCurrent().is(Platform.MAC)) {
-        String[] paths = new String[] {
-          "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-          "/Users/" + System.getProperty("user.name") +
-              "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"};
-        boolean foundPath = false;
-        for (String path : paths) {
-          File binary = new File(path);
-          if (binary.exists()) {
-            chromeFileString.append(binary.getCanonicalFile());
-            foundPath = true;
-            break;
-          }
-        }
-        if (!foundPath) {
-          throw new WebDriverException("Couldn't locate Chrome.  " +
-              "Set webdriver.chrome.bin");
-        }
-      } else {
-        throw new WebDriverException("Unsupported operating system.  " +
-            "Could not locate Chrome.  Set webdriver.chrome.bin");
-      }
-      chromeFile = new File(chromeFileString.toString());
-    }
-    return chromeFile;
   }
 
   /**
