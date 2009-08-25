@@ -15,7 +15,7 @@ function guessPageType() {
 }
 
 /**
- * Gets an array of elements which match the passed xpath
+ * Gets an array of elements which match the passed xpath string
  */
 function getElementsByXPath(xpath) {
   var elements = [];
@@ -83,7 +83,7 @@ function getElementsByPartialLinkText(parent, partialLinkText) {
 
 /**
  * Throws exception if element is not displayed
- * @return if element is displayed
+ * @return nothing if element is displayed
  * @throws ElementNotVisibleException object ready to be sent if element is not displayed
  */
 function checkElementIsDisplayed(element) {
@@ -98,7 +98,7 @@ function checkElementIsDisplayed(element) {
 
 /**
  * Throws exception if element is disabled
- * @return if element is enabled
+ * @return nothing if element is enabled
  * @throws UnsupoprtedOperationException object ready to be sent if element is disabled
  */
 function checkElementNotDisabled(element) {
@@ -151,15 +151,12 @@ function getElementCoords(element) {
  * @return string of form #RRGGBB where RR, GG, BB are two-digit lower-case hex values
  */
 function rgbToRRGGBB(rgb) {
-  //rgb(0, 0, 0)
-  //rgba(0, 0, 0, 0)
   var r, g, b;
   var values = rgb.split(",");
   if (values.length == 3 && values[0].length > 4 && values[0].substr(0, 4) == "rgb(") {
-    r = decimalToTwoDigitHex(values[0].substr(4));
-    g = decimalToTwoDigitHex(values[1]);
-    b = decimalToTwoDigitHex(values[2].substr(0, values[2].length - 1));
-    console.log("r:" + r + ", g: " + g + ", b: " + b);
+    r = decimalToHex(values[0].substr(4));
+    g = decimalToHex(values[1]);
+    b = decimalToHex(values[2].substr(0, values[2].length - 1));
     if (r == null || g == null || b == null) {
       return null;
     }
@@ -172,41 +169,17 @@ function rgbToRRGGBB(rgb) {
 }
 
 /**
- * Convert a number from decimal to a two-digit hex string
+ * Convert a number from decimal to a hex string of at least two digits
  * @return null if value was not an int, two digit string representation
- *        (with leading zero if needed) of (value % 256) in base 16 otherwise
+ *        (with leading zero if needed) of value in base 16 otherwise
  */
-function decimalToTwoDigitHex(value) {
-  value = parseInt(value);
+function decimalToHex(value) {
+  value = parseInt(value).toString(16);
   if (value == null) {
     return null;
   }
-  var v0 = singleHexDigitDecimalToLowerHex(value >> 4);
-  var v1 = singleHexDigitDecimalToLowerHex(value % 16);
-  return v0.toString() + v1.toString();
-}
-
-/**
- * Converts a number to a one-digit hex string representing it
- * @return (value % 16) as a one-character base 16 string
- */
-function singleHexDigitDecimalToLowerHex(value) {
-  value %= 16
-  if (value < 10) return value;
-  switch (value) {
-  case 10:
-    return "a";
-  case 11:
-    return "b";
-  case 12:
-    return "c";
-  case 13:
-    return "d";
-  case 14:
-    return "e";
-  case 15:
-    return "f";
-  default:
-    return value;
+  if (value.length == 1) {
+    value = '0' + '' + value;
   }
+  return value;
 }

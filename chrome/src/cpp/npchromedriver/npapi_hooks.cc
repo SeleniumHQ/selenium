@@ -13,10 +13,22 @@ static const char *kReporterMime = "application/x-chromedriver-reporter";
 static const wchar_t *kDesiredClassName = L"Chrome_RenderWidgetHostHWND";
 static const size_t kMaxWindowDepth = 10;
 
+//These are per browser instance,
+//i.e. from when the first Chrome process is launched until the last is closed
+//so can be kept throughout
 static NPNetscapeFuncs *browser_funcs_ = NULL;
 static NPPluginFuncs *plugin_funcs_ = NULL;
+
 static NPP current_reporter_instance_ = NULL;
 static WINDOW_HANDLE window_handle_ = NULL;
+
+bool isSendKeysCommand(const char *command_name) {
+  return !strcmp(command_name, kSendKeysJavascriptCommand);
+}
+
+bool isClickCommand(const char *command_name) {
+  return !strcmp(command_name, kClickJavascriptCommand);
+}
 
 wchar_t *utf8ToWChar(const char *utf8, size_t len) {
 #if defined(OS_WIN)
@@ -71,25 +83,24 @@ NPError SetWindow(NPP instance, NPWindow *window) {
 
 bool HasJavascriptMethod(NPObject *npobj, NPIdentifier name) {
   const char *method = browser_funcs_->utf8fromidentifier(name);
-  if (!strcmp(method, kSendKeysJavascriptCommand) ||
-      !strcmp(method, kClickJavascriptCommand)) {
+  if (isSendKeysCommand(method) || isClickCommand(method)) {
     return true;
   }
   return false;
 }
 
 bool CallMethod(const char *name, const uint32_t argCount, const NPVariant *args) {
-  if (!strcmp(name, kSendKeysJavascriptCommand) && argCount == 1 &&
+  if (window_handle_ == NULL) {
+    return false;
+  }
+  if (isSendKeysCommand(name) && argCount == 1 &&
       args[0].type == NPVariantType_String) {
-    if (window_handle_ == NULL) {
-      return false;
-    }
     wchar_t *val = utf8ToWChar(args[0].value.stringValue.UTF8Characters,
                                args[0].value.stringValue.UTF8Length);
     sendKeys(window_handle_, val, 10);
     delete[] val;
     return true;
-  } else if (!strcmp(name, kClickJavascriptCommand) && argCount == 2 &&
+  } else if (isClickCommand(name) && argCount == 2 &&
       args[0].type == NPVariantType_Int32 &&
       args[1].type == NPVariantType_Int32) {
     clickAt(window_handle_, args[0].value.intValue, args[1].value.intValue);

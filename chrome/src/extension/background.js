@@ -1,4 +1,3 @@
-//Initialise globals
 ChromeDriver = {};
 
 //Array of ports to tabs we wish to use
@@ -6,24 +5,37 @@ ChromeDriver = {};
 ChromeDriver.ports = [];
 //Port to the currently active tab
 ChromeDriver.activePort = null;
+//ID of the currently active tab
 ChromeDriver.activeTabId = null;
 //Whether the plugin has the OS-specific window handle for the active tab
 //Called HWND rather than window handle to avoid confusion with the other
 //use of window handle to mean 'name of window'
 ChromeDriver.hasHwnd = false;
+//Whether the content script which loads at document_start has connected
+//(but the one which loads at document_end hasn't)
 ChromeDriver.hasSeenPreContentScript = false;
-ChromeDriver.isCurrentlyLoadingUrl = false;
-//ChromeDriver.currentSpeed = 500; //TODO(danielwh): enum this? Oh, and actually do anything with it
-ChromeDriver.requestXmlHttpRequest = null;
-ChromeDriver.requestXmlHttpRequestUrl = "http://localhost:9700/chromeCommandExecutor"
+ChromeDriver.xmlHttpRequest = null;
+//TODO(danielwh): Get this from a bookmark
+ChromeDriver.xmlHttpRequestUrl = "http://localhost:9700/chromeCommandExecutor"
 ChromeDriver.requestSequenceNumber = 0;
-ChromeDriver.isOnBadPage = false; //Indicates we couldn't connect to the server
+ChromeDriver.getUrlRequestSequenceNumber = 0;
+//Indicates we couldn't connect to the server
+//(a page has loaded, but we have no content script)
+ChromeDriver.isOnBadPage = false;
 
-ChromeDriver.getUrlRequestNumber = 0;
+//Indicates we will not execute any commands because we tried to load a page
+//and chrome failed to load it
 ChromeDriver.isBlockedBecauseGetUrlFailed = false;
+//Indicates we will not execute any commands because we are already executing one
 ChromeDriver.isBlockedWaitingForResponse = false;
 
+//Because we current cannot find out whether an error occured when loading the page,
+//we take note of when we are trying to so that we can usefully timeout
 ChromeDriver.isLoadingTabAtTheMomentAndMaybeWillNotSucceed = false;
+
+//We will try to re-send a request a few times if we don't have a port,
+//in case a page is loading/changing and we get a port.
+//This keeps track of how many attempts we have made.
 ChromeDriver.attemptsToSendWithNoPort = 0;
 
 chrome.self.onConnect.addListener(function(port) {
@@ -43,109 +55,147 @@ chrome.self.onConnect.addListener(function(port) {
     ChromeDriver.isOnBadPage = false;
   }
   port.onMessage.addListener(parsePortMessage);
-  port.onDisconnect.addListener(disconnectPort);
+  port.onDisconnect.addListener(function disconnectPort(port) {
+    console.log("Disconnected from " + port.name);
+    removePort(port);
+  })
 });
 
-sendResponseXmlHttpRequest("", false);
+//Tell the ChromeCommandExecutor that we are here
+sendResponseByXHR("", false);
 
-function sendResponseXmlHttpRequest(params, wait) {
-  console.log("sendResponseXmlHttpRequest");
-  if (ChromeDriver.requestXmlHttpRequest != null) {
-    ChromeDriver.requestXmlHttpRequest.abort();
+/**
+ * Sends the passed argument as the result of a command
+ * @param result result to send
+ * @param wait whether we expect this command to possibly make changes
+ * we need to wait for (e.g. adding elements, opening windows) - if so,
+ * we wait until we think these effects are done
+ */
+function sendResponseByXHR(result, wait) {
+  console.log("Sending result by XHR: " + result);
+  if (ChromeDriver.xmlHttpRequest != null) {
+    ChromeDriver.xmlHttpRequest.abort();
   }
-  ChromeDriver.requestXmlHttpRequest = new XMLHttpRequest();
-  ChromeDriver.requestXmlHttpRequest.onreadystatechange = handleRequestXmlHttpRequestReadyStateChange;
-  ChromeDriver.requestXmlHttpRequest.open("POST", ChromeDriver.requestXmlHttpRequestUrl, true);
-  ChromeDriver.requestXmlHttpRequest.setRequestHeader("Content-type", "application/json");
+  ChromeDriver.xmlHttpRequest = new XMLHttpRequest();
+  ChromeDriver.xmlHttpRequest.onreadystatechange = handleXmlHttpRequestReadyStateChange;
+  ChromeDriver.xmlHttpRequest.open("POST", ChromeDriver.xmlHttpRequestUrl, true);
+  ChromeDriver.xmlHttpRequest.setRequestHeader("Content-type", "application/json");
   //Default to waiting for page changes, just in case
   if (typeof(wait) == "undefined" || wait == null || wait == true) {
-    setTimeout(sendParams, 600, [params]);
+    setTimeout(sendResult, 600, [result]);
   } else {
-    sendParams(params);
+    sendResult(result);
   }
 }
 
-function sendParams(params) {
+/**
+ * Actually sends the result by XHR
+ * Should only EVER be called by sendResponseByXHR,
+ * as it ignores things like setting up XHR and blocking,
+ * and just forces the sending over an assumed open XHR
+ */
+function sendResult(result) {
   if (ChromeDriver.hasSeenPreContentScript) {
-    setTimeout(sendParams, 100, [params]);
+    //Wait! We are loading a new page!
+    setTimeout(sendResult, 100, [result]);
   } else {
-    ChromeDriver.requestXmlHttpRequest.send(params + "\nEOResponse\n");
-    console.log("Sent response: " + params);
+    ChromeDriver.xmlHttpRequest.send(result + "\nEOResponse\n");
+    console.log("Sent result by XHR: " + result);
   }
 }
 
-function handleRequestXmlHttpRequestReadyStateChange() {
-  console.log("State change to " + this.readyState);
+/**
+ * Sends the response to a request, which has been parsed by parseRequest
+ * Should be used only from within parseRequest (or methods called from it),
+ * because it adheres to the blocking semantics of parseRequest
+ */
+function sendResponseToParsedRequest(toSend, wait) {
+  if (!ChromeDriver.isBlockedWaitingForResponse) {
+    console.log("Tried to send a response (" + toSend + ") when not waiting for one.  Dropping response.");
+    return;
+  }
+  ChromeDriver.isBlockedWaitingForResponse = false;
+  sendResponseByXHR(toSend, wait);
+  var views = chrome.self.getViews();
+  for (var view in views) {
+    if (views[view].setWebdriverToolstripFree) {
+      views[view].setWebdriverToolstripFree();
+    }
+  }
+}
+
+/**
+ * When we receive a request, dispatches parseRequest to execute it
+ */
+function handleXmlHttpRequestReadyStateChange() {
   if (this.readyState == 4) {
     if (this.status != 200) {
       console.log("Request state was 4 but status: " + this.status + ".  responseText: " + this.responseText);
     } else {
-      console.log("State was 4 and status: 200")
       if (this.responseText == "QUIT") {
-        ChromeDriver.isBlockedWaitingForResponse = true;
-        sendResponse("", false);
+        //We're only allowed to send a response if we're blocked waiting for one, so pretend
+        sendResponseByXHR("", false);
       } else {
-        console.log("THE WIRE gave " + this.responseText);
+        console.log("Got request to execute from XHR: " + this.responseText);
         parseRequest(JSON.parse(this.responseText));
       }
     }
   }
 }
 
-function disconnectPort(port) {
-  console.log("Disconnected from " + port.name);
-  removePort(port);
-}
-
+/**
+ * Parses a request received from the ChromeCommandExecutor and either sends the response,
+ * or sends a message to the content script with a command to execute
+ * @param request object encapsulating the request (e.g. {request: url, url: "http://www.google.co.uk"})
+ */
 function parseRequest(request) {
   if (ChromeDriver.isBlockedBecauseGetUrlFailed) {
     console.log("Getting a URL failed in this instance.  Cannot parse any requests.");
     return;
   }
   if (ChromeDriver.isBlockedWaitingForResponse) {
-    console.log("Already sent a request which hasn't been replied to yet.  Not sending request to content script.");
+    console.log("Already sent a request which hasn't been replied to yet.  Not parsing any more.");
     return;
   }
   if (ChromeDriver.isOnBadPage && request.request != "url") {
     console.log("On bad page.  Not sending request.")
-    ChromeDriver.isBlockedWaitingForResponse = true;
-    sendResponse("{statusCode: 500}");
+    sendResponseByXHR("{statusCode: 500}");
     return;
   }
   ChromeDriver.isBlockedWaitingForResponse = true;
-  
   var views = chrome.self.getViews();
   for (var view in views) {
     if (views[view].setWebdriverToolstripBusy) {
       views[view].setWebdriverToolstripBusy();
     }
   }
+  
   switch (request.request) {
   case "url":
     getUrl(request.url);
     break;
   case "getWindowHandle":
-    console.log("CALL FOR getWindowHandle");
-    sendResponse("{statusCode: 0, value: '" + ChromeDriver.activePort.name + "'}", false);
+    sendResponseToParsedRequest("{statusCode: 0, value: '" + ChromeDriver.activePort.name + "'}", false);
     break;
   case "getWindowHandles":
-    sendResponse(getWindowHandles(), false);
+    sendResponseToParsedRequest(getWindowHandles(), false);
     break;
   case "switchToWindow":
     ChromeDriver.hasHwnd = false;
     if (typeof("request.windowName") != "undefined") {
       setActivePortByWindowName(request.windowName);
     } else {
-      sendResponse("{statusCode: 3, value: {message: 'Window to switch to was not given'}}", false);
+      sendResponseToParsedRequest("{statusCode: 3, value: {message: 'Window to switch to was not given'}}", false);
     }
     break;
   case "clickElement":
+    //Falling through, as native events are handled the same
   case "sendElementKeys":
     try {
       ChromeDriver.activePort.postMessage(wrapInjectEmbedIfNecessary(request));
     } catch (e) {
       console.log("Tried to send request without an active port.  Ditching request and responding with error.");
-      sendResponse("{statusCode: 500}");
+      sendResponseToParsedRequest("{statusCode: 500}");
     }
     break;
   default:
@@ -153,26 +203,27 @@ function parseRequest(request) {
       ChromeDriver.activePort.postMessage({request: request, sequenceNumber: ChromeDriver.requestSequenceNumber++});
     } catch (e) {
       console.log("Tried to send request without an active port.  Ditching request and responding with error.");
-      sendResponse("{statusCode: 500}");
+      sendResponseToParsedRequest("{statusCode: 500}");
     }
     break;
   }
 }
 
 /**
- * Parse messages coming in on the port.
- * Sends HTTP according to the value passed.
+ * Parse messages coming in on the port (responses from the content script).
  * @param message JSON message of format:
  *                {response: "some command",
  *                 value: {statusCode: STATUS_CODE
  *                 [, optional params]}}
  */
 function parsePortMessage(message) {
-  console.log("FROM CONTENT SCRIPT Received response to: " + message.response.response + "(" + message.sequenceNumber + ")");
-  console.log(JSON.stringify(message));
-  if (!message || !message.response || !message.response.value || typeof(message.response.value.statusCode) == "undefined" || message.response.value.statusCode == null ||
+  console.log("Received response from content script: " + JSON.stringify(message));
+  if (!message || !message.response || !message.response.value ||
+      typeof(message.response.value.statusCode) == "undefined" ||
+      message.response.value.statusCode == null ||
       typeof(message.sequenceNumber) == "undefined") {
-    console.log("Got invalid response.");
+    //Should only ever happen if we sent a bad request, or the content script is broken
+    console.log("Got invalid response from the content script.");
     return;
   }
   var toSend = "";
@@ -194,9 +245,7 @@ function parsePortMessage(message) {
       toSend += ',value:' + JSON.stringify(message.response.value.value);
     }
     toSend += '}';
-    console.log("Sending: " + toSend)
-    var wait = message.response.wait;
-    sendResponse(toSend, wait);
+    sendResponseToParsedRequest(toSend, message.response.wait);
     break;
   case "no-op":
     //Some special operation which isn't sending HTTP
@@ -204,12 +253,12 @@ function parsePortMessage(message) {
     case "clickElement":
       try {
         if (document.embeds[0].clickAt(message.response.value.x, message.response.value.y)) {
-          sendResponse("{statusCode: 0}", true);
+          sendResponseToParsedRequest("{statusCode: 0}", true);
         } else {
-          sendResponse("{statusCode: 99}", true);
+          sendResponseToParsedRequest("{statusCode: 99}", true);
         }
       } catch(e) {
-        console.log("Error natively clicking.  Trying non-native");
+        console.log("Error natively clicking.  Trying non-native.");
         ChromeDriver.isBlockedWaitingForResponse = false;
         parseRequest({request: 'nonNativeClickElement', elementId: message.response.value.elementId});
       }
@@ -218,33 +267,18 @@ function parsePortMessage(message) {
       console.log("Sending keys");
       try {
         if (document.embeds[0].sendKeys(message.response.value.keys)) {
-          sendResponse("{statusCode: 0}", true);
+          sendResponseToParsedRequest("{statusCode: 0}", true);
         } else {
-          sendResponse("{statusCode: 99}", true);
+          sendResponseToParsedRequest("{statusCode: 99}", true);
         }
       } catch(e) {
-        console.log("Error natively sending keys.  Trying non-native");
+        console.log("Error natively sending keys.  Trying non-native.");
         ChromeDriver.isBlockedWaitingForResponse = false;
         parseRequest({request: 'sendElementNonNativeKeys', elementId: message.response.value.elementId, keys: message.response.value.keys});
       }
       break;
     }
     break
-  }
-}
-
-function sendResponse(toSend, wait) {
-  if (!ChromeDriver.isBlockedWaitingForResponse) {
-    console.log("Tried to send a response (" + toSend + ") when not waiting for one.  Dropping response.");
-    return;
-  }
-  ChromeDriver.isBlockedWaitingForResponse = false;
-  sendResponseXmlHttpRequest(toSend, wait);
-  var views = chrome.self.getViews();
-  for (var view in views) {
-    if (views[view].setWebdriverToolstripFree) {
-      views[view].setWebdriverToolstripFree();
-    }
   }
 }
 
@@ -266,7 +300,8 @@ function wrapInjectEmbedIfNecessary(requestObject) {
 }
 
 /**
- * Sends an array containing all of the current window handles
+ * Gets all current window handles
+ * @return an array containing all of the current window handles
  */
 function getWindowHandles() {
   var windowHandles = [];
@@ -279,36 +314,30 @@ function getWindowHandles() {
 /**
  * Closes the current tab if it exists, and opens a new one, in which it
  * gets the URL passed
- * @param value JSON array containing the URL to load
+ * @param url the URL to load
  */
 function getUrl(url) {
-  console.log("getUrl");
-  //Ignore any URL request we get while loading a page,
-  //because we should still return a 204 when we cannot find the page.
-  if (ChromeDriver.isCurrentlyLoadingUrl) {
-    console.log("IS CURRENTLY LOADING URL");
-    return;
-  }
   ChromeDriver.activePort = null;
   ChromeDriver.hasHwnd = false;
   if (ChromeDriver.activeTabId != null) {
     chrome.tabs.remove(ChromeDriver.activeTabId);
   }
   ChromeDriver.activeTabId = null;
-  ChromeDriver.isCurrentlyLoadingUrl = true;
   console.log("Creating new tab with url: " + url);
   ChromeDriver.isLoadingTabAtTheMomentAndMaybeWillNotSucceed = true;
   chrome.tabs.create({url: url, selected: true}, getUrlCallback);
-  setTimeout("getUrlTimeout(" + ChromeDriver.getUrlRequestNumber + ")", 20000);
+  setTimeout("getUrlTimeout(" + ChromeDriver.getUrlRequestSequenceNumber + ")", 20000);
 }
 
 function getUrlTimeout(getUrlRequestNumber) {
   //TODO(danielwh): Add lastError checks when they've been added to Chrome
-  if (ChromeDriver.getUrlRequestNumber == getUrlRequestNumber && ChromeDriver.isLoadingTabAtTheMomentAndMaybeWillNotSucceed) {
-    console.log("BLOCKING BECAUSE GET URL FAILED.  Restart chrome.");
+  //TODO(danielwh): Remove this timeout stuff when they actually fix Chrome (see crbug.com 19846)
+  if (ChromeDriver.getUrlRequestSequenceNumber == getUrlRequestNumber &&
+      ChromeDriver.isLoadingTabAtTheMomentAndMaybeWillNotSucceed) {
+    console.log("Blocking because getUrl failed.  Restart chrome.");
     ChromeDriver.isBlockedBecauseGetUrlFailed = true;
     ChromeDriver.isLoadingTabAtTheMomentAndMaybeWillNotSucceed = false;
-    sendResponse("{statusCode: 500}", false);
+    sendResponseToParsedRequest("{statusCode: 500}", false);
   }
 }
 
@@ -318,20 +347,18 @@ function getUrlCallback(tab) {
     return;
   }
   if (tab.status != "complete") {
-    ChromeDriver.isCurrentlyLoadingUrl = true
-    //Use the helper calback so that we can add our own delay and not DOS the browser
+    //Use the helper calback so that we actually get updated version of the tab we're getting
     setTimeout("getUrlCallbackById(" + tab.id + ")", 10);
   } else {
-    ++ChromeDriver.getUrlRequestNumber;
+    ChromeDriver.getUrlRequestSequenceNumber++;
     ChromeDriver.isLoadingTabAtTheMomentAndMaybeWillNotSucceed = false;
-    ChromeDriver.isCurrentlyLoadingUrl = false;
     ChromeDriver.activeTabId = tab.id;
     setActivePortByTabId(tab.id);
     ChromeDriver.requestSequenceNumber = 0;
     if (ChromeDriver.activePort == null) {
       ChromeDriver.isOnBadPage = true;
     }
-    sendResponse("", false);
+    sendResponseToParsedRequest("", false);
   }
 }
 
@@ -362,15 +389,19 @@ function setActivePortByWindowName(handle) {
   for (var i = 0; i < ChromeDriver.ports.length; ++i) {
     if (ChromeDriver.ports[i].name == handle) {
       ChromeDriver.activePort = ChromeDriver.ports[i];
-      sendResponse("{statusCode: 0}", false);
+      ChromeDriver.activeTabId = ChromeDriver.activePort.tab.id;
+      chrome.tabs.update(ChromeDriver.activeTabId, {selected: true});
+      sendResponseToParsedRequest("{statusCode: 0}", false);
       return;
     }
   }
-  sendResponse("{statusCode: 3, value: {message: 'Could not find window by handle: " + handle + "'}}", false);
+  sendResponseToParsedRequest("{statusCode: 3, value: {message: 'Could not find window to switch to by handle: " + handle + "'}}", false);
 }
 
+/**
+ * Removes the passed port from our array of current ports
+ */
 function removePort(port) {
-  //TODO(danielwh): Nicer way of removing from array?
   var temp_ports = [];
   for (var i = 0; i < ChromeDriver.ports.length; ++i) {
     if (ChromeDriver.ports[i].name != port.name) {
