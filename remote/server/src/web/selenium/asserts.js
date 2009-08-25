@@ -1,4 +1,4 @@
-/*
+/** @license
 Copyright 2007-2009 WebDriver committers
 Copyright 2007-2009 Google Inc.
 
