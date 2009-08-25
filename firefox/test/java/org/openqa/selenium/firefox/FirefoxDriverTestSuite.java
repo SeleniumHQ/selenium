@@ -59,7 +59,7 @@ public class FirefoxDriverTestSuite extends TestCase {
 
     private static FirefoxProfile createTemporaryProfile() {
       // Locate the extension directory
-      File extensionSource = locate("firefox/src/extension");
+      File extensionSource = FileHandler.locateInProject("firefox/src/extension");
       File dir = TemporaryFilesystem.createTempDir("firefoxdriver", "");
       File extension = new File(dir, "extensions/fxdriver@googlecode.com");
 
@@ -72,7 +72,7 @@ public class FirefoxDriverTestSuite extends TestCase {
         throw new RuntimeException("Cannot copy extension directory");
       }
 
-      File buildDir = locate("build/Win32");
+      File buildDir = FileHandler.locateInProject("build/Win32");
 
       // Copy in the native events library/libraries
       Map<String, String> fromTo = new HashMap<String, String>();
@@ -98,7 +98,7 @@ public class FirefoxDriverTestSuite extends TestCase {
         }
       }
 
-      File xpt = locate("firefox/build/extension/components/nsINativeEvents.xpt");
+      File xpt = FileHandler.locateInProject("firefox/build/extension/components/nsINativeEvents.xpt");
       File outXpt = new File(extension, "components/nsINativeEvents.xpt");
 
       try {
@@ -110,24 +110,6 @@ public class FirefoxDriverTestSuite extends TestCase {
       }
 
       return new FirefoxProfile(dir);
-    }
-
-    private static File locate(String path) {
-      // It'll be one of these. Probably
-      String[] locations = {
-        "../",  // IDEA
-        ".",     // Eclipse
-      };
-
-      for (String location : locations) {
-        File file = new File(location, path);
-        if (file.exists()) {
-          return file;
-        }
-      }
-
-      // we know that this doesn't exist
-      return new File(locations[0], path);
     }
   }
 }

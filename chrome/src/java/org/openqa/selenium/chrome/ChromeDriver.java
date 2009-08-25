@@ -88,10 +88,14 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
       System.setProperty("webdriver.firefox.reap_profile", "false");
       
       String[] toExec = new String[3];
-      toExec[0] = chromeFile.getCanonicalPath();
+      toExec[0] = wrapInQuotesIfWindows(chromeFile.getCanonicalPath());
       toExec[1] = "--user-data-dir=" + wrapInQuotesIfWindows(profileDir.getCanonicalPath());
-      toExec[2] = "--load-extension=" + wrapInQuotesIfWindows(extensionDir.getCanonicalPath()); 
-      clientProcess = Runtime.getRuntime().exec(toExec);
+      toExec[2] = "--load-extension=" + wrapInQuotesIfWindows(extensionDir.getCanonicalPath());
+      if (Platform.getCurrent().is(Platform.XP)) {
+        clientProcess = Runtime.getRuntime().exec(toExec[0] + " " + toExec[1] + " " + toExec[2]);
+      } else {
+        clientProcess = Runtime.getRuntime().exec(toExec);
+      }
     } catch (Exception e) {
       throw new RuntimeException(e);
     }

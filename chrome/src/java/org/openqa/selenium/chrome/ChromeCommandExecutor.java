@@ -336,11 +336,9 @@ public class ChromeCommandExecutor {
   public void stopListening() throws IOException {
     listen = false;
     listeningThread.stopListening();
-    while (!serverSocket.isClosed()) {
+    while (!serverSocket.isClosed() && serverSocket.isBound()) {
       Thread.yield();
     }
-    //TODO(danielwh): Check for isBound
-    //Hope that they maybe unbind
     try {
       Thread.sleep(500);
     } catch(InterruptedException e) {}

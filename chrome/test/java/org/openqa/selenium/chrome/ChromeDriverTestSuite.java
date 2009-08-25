@@ -27,6 +27,7 @@ import junit.framework.TestCase;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import org.openqa.selenium.TestSuiteBuilder;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.firefox.FirefoxDriverTestSuite;
 import org.openqa.selenium.internal.FileHandler;
 import org.openqa.selenium.internal.TemporaryFilesystem;
 
@@ -48,8 +49,7 @@ public class ChromeDriverTestSuite extends TestCase {
     }
     @Override
     protected void startClient() {
-      //TODO(danielwh): Check for actual path to the src from user.dir
-      File extensionSrcDir = new File(System.getProperty("user.dir"), "/src/extension");
+      File extensionSrcDir = FileHandler.locateInProject("src/extension");
       File extensionDstDir = TemporaryFilesystem.createTempDir("extension", "folder");
       String extensionDst;
       try {
