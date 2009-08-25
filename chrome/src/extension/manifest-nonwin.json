@@ -15,5 +15,5 @@
       "js": ["chromedriver_utils.js", "utils.js", "content_script.js"]
     }
   ],
-  "permissions": ["tabs", "http://localhost:9701/*"]
+  "permissions": ["tabs"]
 }

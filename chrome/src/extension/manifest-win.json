@@ -16,5 +16,5 @@
     }
   ],
   "plugins": [{"path": "npchromedriver.dll", "public": true}],
-  "permissions": ["tabs", "http://localhost:9701/*"]
+  "permissions": ["tabs"]
 }

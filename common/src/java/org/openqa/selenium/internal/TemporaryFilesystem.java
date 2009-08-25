@@ -127,7 +127,7 @@ public class TemporaryFilesystem {
    * @return true if reaping is enabled.
    */
   static boolean shouldReap() {
-    String reap = System.getProperty("webdriver.firefox.reap_profile", "true");
+    String reap = System.getProperty("webdriver.reap_profile", "true");
     return Boolean.valueOf(reap);
   }
 }

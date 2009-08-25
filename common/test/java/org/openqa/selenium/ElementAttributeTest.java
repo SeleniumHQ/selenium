@@ -89,6 +89,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
         assertThat(checkbox.getAttribute("checked"), equalTo("true"));
     }
 
+    @Ignore //TODO(danielwh): Make work in non-chrome
     public void testShouldReturnTheValueOfSelectedForRadioButtonsEvenIfTheyLackThatAttribute() {
       driver.get(formPage);
       WebElement neverSelected = driver.findElement(By.id("cheese"));

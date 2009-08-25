@@ -38,23 +38,26 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
   private Process clientProcess;
   private ChromeCommandExecutor executor;
   
-  public ChromeDriver() throws Exception {
+  /**
+   * Starts up a new instance of Chrome, with the required extension loaded,
+   * and has it connect to a new ChromeCommandExecutor on port 9700
+   * TODO(danielwh): Make the port random
+   */
+  public ChromeDriver() {
     init();
   }
   
-  private void init() throws Exception {
+  private void init() {
     while (executor == null || !executor.hasClient()) {
       stopClient();
-      try {
-        this.executor = new ChromeCommandExecutor(9700);
-        startClient();
-      } catch (Exception e) {
-        executor.stopListening();
-        stopClient();
-        throw e;
-      }
+      this.executor = new ChromeCommandExecutor(9700);
+      startClient();
       //Ick, we sleep for a little bit in case the browser hasn't quite loaded
-      Thread.sleep(2500);
+      try {
+        Thread.sleep(2500);
+      } catch (InterruptedException e) {
+        //Nothing sane to do here
+      }
     }
   }
   
@@ -72,6 +75,16 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
         throw new FileNotFoundException("Could not find extension directory" +
             "(" + extensionDir + ").  Try setting webdriver.chrome.extensiondir."); 
       }
+      
+      //Copy over the correct manifest file
+      if (Platform.getCurrent().is(Platform.WINDOWS)) {
+        FileHandler.copy(new File(extensionDir, "manifest-win.json"),
+                         new File(extensionDir, "manifest.json"));
+      } else {
+        FileHandler.copy(new File(extensionDir, "manifest-nonwin.json"),
+                         new File(extensionDir, "manifest.json"));
+      }
+      
       File chromeFile = getChromeFile();
       if (!chromeFile.isFile()) {
         throw new FileNotFoundException("Could not find chrome binary(" +
@@ -84,8 +97,7 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
       firstRunFile.createNewFile();
       //TODO(danielwh): Maybe add Local State file with window_placement
       
-      //TODO(danielwh): Rename this to not be firefox specific
-      System.setProperty("webdriver.firefox.reap_profile", "false");
+      System.setProperty("webdriver.reap_profile", "false");
       
       String[] toExec = new String[3];
       toExec[0] = wrapInQuotesIfWindows(chromeFile.getCanonicalPath());
@@ -96,26 +108,31 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
       } else {
         clientProcess = Runtime.getRuntime().exec(toExec);
       }
-    } catch (Exception e) {
-      throw new RuntimeException(e);
+    } catch (IOException e) {
+      throw new WebDriverException(e);
     }
   }
   
+  /**
+   * Kills the started Chrome process and ChromeCommandExecutor if they exist
+   */
   protected void stopClient() {
     if (clientProcess != null) {
       clientProcess.destroy();
       clientProcess = null;
     }
-    try {
-      if (executor != null) {
-        executor.stopListening();
-        executor = null;
-      }
-    } catch (IOException e) {
-      throw new RuntimeException(e);
+    if (executor != null) {
+      executor.stopListening();
+      executor = null;
     }
   }
   
+  /**
+   * Executes a passed command using the current ChromeCommandExecutor
+   * @param commandName command to execute
+   * @param parameters parameters of command being executed
+   * @return response to the command (a Response wrapping a null value if none) 
+   */
   Response execute(String commandName, Object... parameters) {
     Command command = new Command(new SessionId("[No sessionId]"),
                                   new Context("[No context]"),
@@ -124,29 +141,28 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
     try {
       return executor.execute(command);
     } catch (Exception e) {
-      if (e instanceof UnsupportedOperationException ||
-          e instanceof IllegalArgumentException ||
+      if (e instanceof IllegalArgumentException ||
           e instanceof FatalChromeException) {
-        /*if (e instanceof FatalChromeException) {
-          try { Thread.sleep(100000); } catch (Exception e2) {}
-        }*/
         //These exceptions may leave the extension hung, or in an
         //inconsistent state, so we restart Chrome
         stopClient();
-        try {
-          init();
-        } catch (Exception e2) {
-          throw new RuntimeException(e2);
-        }
+        init();
       }
       if (e instanceof RuntimeException) {
         throw (RuntimeException)e;
       } else {
-        throw new RuntimeException(e);
+        throw new WebDriverException(e);
       }
     }
   }
   
+  /**
+   * Locates the directory containing the extension to load Chrome with,
+   * trying to unzip the zipped extension if no explicit extension is set using
+   * the system property webdriver.chrome.extensiondir.
+   * @return the extension directory
+   * @throws IOException if tried to unzip extension but couldn't
+   */
   protected File getExtensionDir() throws IOException {
     File extensionDir = null;
     String extensionDirSystemProperty = System.getProperty(
@@ -164,8 +180,10 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
   }
   
   /**
-   * This is a fairly ugly way of getting the path
-   * @return Absolute path to chrome executable
+   * Locates the Chrome executable on the current platform.
+   * First looks in the webdriver.chrome.bin property, then searches
+   * through the default expected locations.
+   * @return chrome.exe
    * @throws IOException if file could not be found/accessed
    */
   protected File getChromeFile() throws IOException {
@@ -213,7 +231,12 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
     }
     return chromeFile;
   }
-  
+
+  /**
+   * Wraps the passed argument in "s if the platform is Windows
+   * @param arg string to wrap
+   * @return "arg"
+   */
   private String wrapInQuotesIfWindows(String arg) {
     if (Platform.getCurrent().is(Platform.WINDOWS)) {
       return "\"" + arg + "\"";
@@ -383,6 +406,11 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
     }
 
     public void deleteCookie(Cookie cookie) {
+      if (!Platform.getCurrent().is(Platform.WINDOWS)) {
+        //See crbug.com issue 14734
+        throw new UnsupportedOperationException(
+            "Deleting cookies currently doesn't work in Chrome");
+      }
       execute("deleteCookie", cookie.getName());
     }
 

@@ -27,7 +27,6 @@ import junit.framework.TestCase;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import org.openqa.selenium.TestSuiteBuilder;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.firefox.FirefoxDriverTestSuite;
 import org.openqa.selenium.internal.FileHandler;
 import org.openqa.selenium.internal.TemporaryFilesystem;
 
@@ -56,16 +55,7 @@ public class ChromeDriverTestSuite extends TestCase {
         extensionDst = extensionDstDir.getCanonicalPath();
         extensionDstDir.mkdir();
         for (File file : extensionSrcDir.listFiles()) {
-          if (!file.getName().equals("manifest.json"))
           FileHandler.copy(file, new File(extensionDst, file.getName()));
-        }
-      
-        if (System.getProperty("os.name").startsWith("Windows")) {
-          FileHandler.copy(new File(extensionSrcDir, "manifest-win.json"),
-                           new File(extensionDstDir, "manifest.json"));
-        } else {
-          FileHandler.copy(new File(extensionSrcDir, "manifest-nonwin.json"),
-                           new File(extensionDstDir, "manifest.json"));
         }
       } catch (IOException e) {
         throw new WebDriverException(e);

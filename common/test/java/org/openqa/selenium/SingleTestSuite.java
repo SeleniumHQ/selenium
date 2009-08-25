@@ -38,7 +38,7 @@ public class SingleTestSuite extends TestCase {
     System.setProperty("webdriver.development", "true");
     System.setProperty("jna.library.path", "..\\build;build");
 //    System.setProperty("webdriver.firefox.useExisting", "true");
-//    System.setProperty("webdriver.firefox.reap_profile", "false");
+//    System.setProperty("webdriver.reap_profile", "false");
 
     TestSuiteBuilder builder = new TestSuiteBuilder()
         .addSourceDir("../common")

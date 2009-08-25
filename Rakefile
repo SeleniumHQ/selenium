@@ -25,6 +25,7 @@ jar(:name => "test_common",
                :common,
                "common/lib/buildtime/*.jar"
              ],
+    :resources => [ "common/test/java/org/openqa/selenium/messages.properties" => "org/openqa/selenium/messages.properties" ],
     :out  => "webdriver-common-test.jar")
 
 jar(:name => "htmlunit",
