@@ -26,6 +26,11 @@ public class ChromeBinary {
       }
       chromeProcess = Runtime.getRuntime().exec(toExec);
     }
+    try {
+      Thread.sleep(2500);
+    } catch (InterruptedException e) {
+      //Nothing sane to do here
+    }
   }
   
   public void kill() {

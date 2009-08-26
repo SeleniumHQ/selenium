@@ -52,12 +52,6 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
       stopClient();
       this.executor = new ChromeCommandExecutor(9700);
       startClient();
-      //Ick, we sleep for a little bit in case the browser hasn't quite loaded
-      try {
-        Thread.sleep(2500);
-      } catch (InterruptedException e) {
-        //Nothing sane to do here
-      }
     }
   }
   
@@ -130,6 +124,9 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
           e instanceof FatalChromeException) {
         //These exceptions may leave the extension hung, or in an
         //inconsistent state, so we restart Chrome
+        /*if (e instanceof FatalChromeException) {
+          try { Thread.sleep(100000000); } catch (InterruptedException e2) {}
+        }*/
         stopClient();
         init();
       }
