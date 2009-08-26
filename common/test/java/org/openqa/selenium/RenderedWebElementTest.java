@@ -42,6 +42,23 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
     assertEquals("#ff0000", backgroundColour);
   }
 
+  @Ignore(HTMLUNIT)
+  public void testShouldHandleNonIntegerPositionAndSize() {
+      driver.get(rectanglesPage);
+
+      RenderedWebElement r2 = (RenderedWebElement) driver.findElement(By.id("r2"));
+      String left = r2.getValueOfCssProperty("left");
+      assertTrue("left (\"" + left + "\") should start with \"10.9\".", left.startsWith("10.9"));
+      String top = r2.getValueOfCssProperty("top");
+      assertTrue("top (\"" + top + "\") should start with \"10.1\".", top.startsWith("10.1"));
+      assertEquals(r2.getLocation(), new Point(11, 10));
+      String width = r2.getValueOfCssProperty("width");
+      assertTrue("width (\"" + left + "\") should start with \"48.6\".", width.startsWith("48.6"));
+      String height = r2.getValueOfCssProperty("height");
+      assertTrue("height (\"" + left + "\") should start with \"49.3\".", height.startsWith("49.3"));
+      assertEquals(r2.getSize(), new Dimension(49, 49));
+  }
+
   @JavascriptEnabled
   @Ignore(HTMLUNIT)
   public void testShouldAllowInheritedStylesToBeUsed() {

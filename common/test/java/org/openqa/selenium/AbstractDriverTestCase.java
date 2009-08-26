@@ -29,6 +29,7 @@ import org.openqa.selenium.environment.webserver.AppServer;
 
 public class AbstractDriverTestCase extends TestCase implements NeedsDriver {
 	protected WebDriver driver;
+
 	protected String simpleTestPage;
 	protected String xhtmlTestPage;
 	protected String formPage;
@@ -41,9 +42,10 @@ public class AbstractDriverTestCase extends TestCase implements NeedsDriver {
 	protected String dragAndDropPage;
 	protected String chinesePage;
 	protected String nestedPage;
-        protected String richTextPage;
+	protected String richTextPage;
+	protected String rectanglesPage;
 
-  public void setDriver(WebDriver driver) {
+	public void setDriver(WebDriver driver) {
 		this.driver = driver;
 	}
 
@@ -67,6 +69,7 @@ public class AbstractDriverTestCase extends TestCase implements NeedsDriver {
         chinesePage = appServer.whereIs("cn-test.html");
         nestedPage = appServer.whereIs("nestedElements.html");
         richTextPage = appServer.whereIs("rich_text.html");
+        rectanglesPage = appServer.whereIs("rectangles.html");
 
         String hostName = environment.getAppServer().getHostName();
         String alternateHostName = environment.getAppServer().getAlternateHostName();
