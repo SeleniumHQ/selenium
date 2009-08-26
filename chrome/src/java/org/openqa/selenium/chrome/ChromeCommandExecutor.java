@@ -27,8 +27,9 @@ import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.Command;
+import org.openqa.selenium.remote.CommandExecutor;
 
-public class ChromeCommandExecutor {
+public class ChromeCommandExecutor implements CommandExecutor {
   private final ServerSocket serverSocket;
   //Whether the listening thread should listen
   private volatile boolean listen = false;
