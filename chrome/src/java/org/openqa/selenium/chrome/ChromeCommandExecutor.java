@@ -45,7 +45,7 @@ public class ChromeCommandExecutor {
    * @param port port on which to listen for the initial connection,
    * and dispatch commands
    * @throws IOException if could not bind to port
-   * TODO(danielwh): Bind to a random port
+   * TODO(danielwh): Bind to a random port (blocked on crbug.com 11547)
    */
   public ChromeCommandExecutor(int port) {
     nameToJson.put("newSession", new JsonCommand("newSession :?params"));
@@ -98,7 +98,6 @@ public class ChromeCommandExecutor {
     try {
       serverSocket = new ServerSocket(port);
     } catch (IOException e) {
-      //TODO(danielwh): Try random ports
       throw new WebDriverException(e);
     }
     listen = true;
@@ -356,10 +355,10 @@ public class ChromeCommandExecutor {
   public void stopListening() {
     listen = false;
     listeningThread.stopListening();
-    while (!serverSocket.isClosed() && serverSocket.isBound()) {
+    while (!serverSocket.isClosed()) {// || serverSocket.isBound()) {
       Thread.yield();
     }
-    //TODO(danielwh): Remove this when using multiple ports
+    //TODO(danielwh): Remove this when using multiple ports (blocked on crbug.com 11547)
     try { Thread.sleep(500); } catch (InterruptedException e) {}
   }
 

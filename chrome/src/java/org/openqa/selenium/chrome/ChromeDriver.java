@@ -41,7 +41,6 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
   /**
    * Starts up a new instance of Chrome, with the required extension loaded,
    * and has it connect to a new ChromeCommandExecutor on port 9700
-   * TODO(danielwh): Make the port random
    */
   public ChromeDriver() {
     init();
@@ -50,6 +49,7 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
   private void init() {
     while (executor == null || !executor.hasClient()) {
       stopClient();
+      //TODO(danielwh): Remove explicit port (blocked on crbug.com 11547)
       this.executor = new ChromeCommandExecutor(9700);
       startClient();
     }
