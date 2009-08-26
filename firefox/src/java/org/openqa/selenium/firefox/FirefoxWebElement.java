@@ -150,8 +150,8 @@ public class FirefoxWebElement implements RenderedWebElement, Locatable,
         String result = sendMessage(WebDriverException.class, "getElementSize");
 
         String[] parts = result.split(",");
-        int x = Integer.parseInt(parts[0].trim());
-        int y = Integer.parseInt(parts[1].trim());
+        int x = Math.round(Float.parseFloat(parts[0].trim()));
+        int y = Math.round(Float.parseFloat(parts[1].trim()));
 
         return new Dimension(x, y);
     }
