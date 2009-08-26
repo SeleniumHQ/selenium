@@ -192,11 +192,10 @@ void IeThread::OnGetHandle(WPARAM w, LPARAM lp)
 	pBody->ieThreaded->get_HWND(reinterpret_cast<SHANDLE_PTR*>(&hwnd));
 
 	// Let's hope we fit into 8 characters
-	wchar_t* buffer = new wchar_t[9];
+	wchar_t buffer[9];
 	swprintf_s(buffer, 9, L"%08X", (long long) hwnd);
 	std::wstring& ret = data.output_string_;  
 	ret.append(buffer);
-	delete[] buffer;
 }
 
 void IeThread::OnGetActiveElement(WPARAM w, LPARAM lp)
