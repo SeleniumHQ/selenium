@@ -15,7 +15,7 @@ ChromeDriver.hasHwnd = false;
 //(but the one which loads at document_end hasn't)
 ChromeDriver.hasSeenPreContentScript = false;
 ChromeDriver.xmlHttpRequest = null;
-//TODO(danielwh): Get this from a bookmark
+//TODO(danielwh): Get this from the initial URL
 ChromeDriver.xmlHttpRequestUrl = "http://localhost:9700/chromeCommandExecutor"
 ChromeDriver.requestSequenceNumber = 0;
 ChromeDriver.getUrlRequestSequenceNumber = 0;
