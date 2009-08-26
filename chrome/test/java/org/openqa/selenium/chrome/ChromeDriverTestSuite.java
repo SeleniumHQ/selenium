@@ -25,6 +25,9 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 
 import static org.openqa.selenium.Ignore.Driver.CHROME;
+import static org.openqa.selenium.Ignore.Driver.CHROME_NON_WINDOWS;
+
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.TestSuiteBuilder;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.FileHandler;
@@ -32,14 +35,20 @@ import org.openqa.selenium.internal.TemporaryFilesystem;
 
 public class ChromeDriverTestSuite extends TestCase {
   public static Test suite() throws Exception {
-    return new TestSuiteBuilder()
+    TestSuiteBuilder builder = new TestSuiteBuilder();
+    builder
         .addSourceDir("common")
         .addSourceDir("chrome")
         .exclude(CHROME)
         .usingDriver(ChromeDriver.class)
         .includeJavascriptTests()
-        .keepDriverInstance()
-        .create();
+        .keepDriverInstance();
+    
+    if (!Platform.getCurrent().is(Platform.WINDOWS)) {
+      builder.exclude(CHROME_NON_WINDOWS);
+    }
+    
+    return builder.create();
   }
   
   public static class TestChromeDriver extends ChromeDriver {
