@@ -19,6 +19,7 @@ package org.openqa.selenium;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
@@ -64,6 +65,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
     driver.get("http://localhost:3001");
   }
 
+    @Ignore(value = CHROME, reason = "Not yet implemented")
     public void testShouldBeAbleToLoadAPageWithFramesetsAndWaitUntilAllFramesAreLoaded() {
         driver.get(framesetPage);
 
@@ -95,6 +97,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
         assertThat(driver.getTitle(), equalTo("We Leave From Here"));
     }
 
+    @Ignore(value = CHROME, reason = "Not yet implemented")
     public void testShouldBeAbleToNavigateBackInTheBrowserHistoryInPresenceOfIframes() {
         driver.get(xhtmlTestPage);
 
@@ -118,7 +121,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
         assertThat(driver.getTitle(), equalTo("We Arrive Here"));
     }
 
-    @Ignore({FIREFOX, IE})
+    @Ignore({FIREFOX, IE, CHROME})
     public void testShouldBeAbleToAccessPagesWithAnInsecureSslCertificate() {
         String url = GlobalTestEnvironment.get().getAppServer().whereIsSecure("simpleTest.html");
         driver.get(url);

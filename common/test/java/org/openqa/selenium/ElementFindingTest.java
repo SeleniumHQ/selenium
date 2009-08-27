@@ -20,6 +20,7 @@ package org.openqa.selenium;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
@@ -174,6 +175,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     	assertTrue("Expected 2 links, got " + elements.size(), elements.size() == 2);
     }
 
+    @Ignore(REMOTE)
     public void testShouldBeAbleToFindMultipleElementsByPartialLinkText() {
     	driver.get(xhtmlTestPage);
 
@@ -182,6 +184,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     	assertTrue(elements.size() == 2);
     }
 
+    @Ignore(REMOTE)
     public void testShouldBeAbleToFindElementByPartialLinkText() {
     	driver.get(xhtmlTestPage);
 
@@ -312,7 +315,9 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     assertEquals("Changed", driver.getTitle());
   }
   
-  @Ignore(HTMLUNIT)
+  @Ignore({HTMLUNIT, CHROME})
+  //Reason for Chrome: The content script mechanism which we use to open tabs
+  //doesn't allow for matching with non-{http, https, file, ftp} schemes
   public void testShouldNotBeAbleToFindAnElementOnABlankPage() {
     driver.get("about:blank");
     
@@ -325,7 +330,9 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     }
   }
   
-  @Ignore({HTMLUNIT, IPHONE})
+  @Ignore({HTMLUNIT, IPHONE, CHROME})
+  //Reason for Chrome: The content script mechanism which we use to open tabs
+  //doesn't allow for matching with non-{http, https, file, ftp} schemes
   @NeedsFreshDriver
   public void testShouldNotBeAbleToLocateASingleElementOnABlankPage() {
     // Note we're on the default start page for the browser at this point.

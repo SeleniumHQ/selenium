@@ -107,6 +107,13 @@ public class DesiredCapabilities implements Capabilities {
     return new DesiredCapabilities("iphone", "", Platform.MAC);
   }
   
+  public static DesiredCapabilities chrome() {
+    //This is strangely inconsistent.
+    DesiredCapabilities dc = new DesiredCapabilities("chrome", "", Platform.WINDOWS);
+    dc.setJavascriptEnabled(true);
+    return dc;
+  }
+  
   @Override
   public boolean equals(Object o) {
     if (this == o) {

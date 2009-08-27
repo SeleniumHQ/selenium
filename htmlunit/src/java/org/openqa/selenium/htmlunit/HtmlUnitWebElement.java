@@ -420,7 +420,7 @@ public class HtmlUnitWebElement implements WebElement,
     }
 
     if (isBlockLevel(node)) {
-      toReturn.append(collapseWhitespace(textSoFar)).append(Platform.getCurrent().getLineEnding());
+      toReturn.append(collapseWhitespace(textSoFar)).append("\n");
       textSoFar.delete(0, textSoFar.length());
     }
   }

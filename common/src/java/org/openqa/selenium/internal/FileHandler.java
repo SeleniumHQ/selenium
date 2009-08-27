@@ -27,6 +27,7 @@ import java.nio.channels.FileChannel;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.BufferedInputStream;
@@ -177,6 +178,31 @@ public class FileHandler {
     } else {
       copyFile(from, to);
     }
+  }
+  
+  /**
+   * Locates a file in the current project
+   * @param path path to file to locate from root of project
+   * @return file being saught, if it exists
+   * @throws WebDriverException wrapped FileNotFoundException if file could
+   * not be found
+   */
+  public static File locateInProject(String path) {
+    // It'll be one of these. Probably
+    String[] locations = {
+      "../",  // IDEA
+      ".",     // Eclipse
+    };
+
+    for (String location : locations) {
+      File file = new File(location, path);
+      if (file.exists()) {
+        return file;
+      }
+    }
+
+    throw new WebDriverException(new FileNotFoundException(
+        "Could not find " + path + "in the project"));
   }
 
   private static void copyDir(File from, File to) throws IOException {

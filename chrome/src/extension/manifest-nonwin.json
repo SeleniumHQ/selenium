@@ -1,0 +1,19 @@
+{
+  "name": "WebDriver",
+  "version": "0.2",
+  "description": "WebDriver extension for Chrome",
+  "toolstrips": ["toolstrip.html"],
+  "background_page": "background.html",
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*", "file:///*"],
+      "js": ["pre_content_script.js"],
+      "run_at": "document_start"
+    },
+    {
+      "matches": ["http://*/*", "https://*/*", "file:///*"],
+      "js": ["chromedriver_utils.js", "utils.js", "content_script.js"]
+    }
+  ],
+  "permissions": ["tabs"]
+}

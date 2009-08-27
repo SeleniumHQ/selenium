@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "webdriver-interactions", "c
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "webdriver-firefox", "firefox\src\cpp\webdriver-firefox\webdriver-firefox.vcproj", "{A9D3BB2D-FD1E-43A2-80F6-F8320682323E}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "npchromedriver", "chrome\src\cpp\npchromedriver\npchromedriver.vcproj", "{2A4FDEBC-1AB8-4E35-8806-E4CC12285526}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|.NET = Debug|.NET
@@ -26,7 +28,6 @@ Global
 		{0BC72326-88BE-4369-9077-74AA7B2BE15D}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
 		{0BC72326-88BE-4369-9077-74AA7B2BE15D}.Debug|Mixed Platforms.Build.0 = Debug|Win32
 		{0BC72326-88BE-4369-9077-74AA7B2BE15D}.Debug|Win32.ActiveCfg = Debug|Win32
-		{0BC72326-88BE-4369-9077-74AA7B2BE15D}.Debug|Win32.Build.0 = Debug|Win32
 		{0BC72326-88BE-4369-9077-74AA7B2BE15D}.Debug|x64.ActiveCfg = Debug|x64
 		{0BC72326-88BE-4369-9077-74AA7B2BE15D}.Debug|x64.Build.0 = Debug|x64
 		{0BC72326-88BE-4369-9077-74AA7B2BE15D}.Release|.NET.ActiveCfg = Release|Win32
@@ -66,7 +67,21 @@ Global
 		{A9D3BB2D-FD1E-43A2-80F6-F8320682323E}.Release|Mixed Platforms.Build.0 = Release|Win32
 		{A9D3BB2D-FD1E-43A2-80F6-F8320682323E}.Release|Win32.ActiveCfg = Release|Win32
 		{A9D3BB2D-FD1E-43A2-80F6-F8320682323E}.Release|Win32.Build.0 = Release|Win32
-		{A9D3BB2D-FD1E-43A2-80F6-F8320682323E}.Release|x64.ActiveCfg = Release|Win32
+		{A9D3BB2D-FD1E-43A2-80F6-F8320682323E}.Release|x64.ActiveCfg = Release|x64
+		{2A4FDEBC-1AB8-4E35-8806-E4CC12285526}.Debug|.NET.ActiveCfg = Debug|Win32
+		{2A4FDEBC-1AB8-4E35-8806-E4CC12285526}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{2A4FDEBC-1AB8-4E35-8806-E4CC12285526}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{2A4FDEBC-1AB8-4E35-8806-E4CC12285526}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{2A4FDEBC-1AB8-4E35-8806-E4CC12285526}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2A4FDEBC-1AB8-4E35-8806-E4CC12285526}.Debug|Win32.Build.0 = Debug|Win32
+		{2A4FDEBC-1AB8-4E35-8806-E4CC12285526}.Debug|x64.ActiveCfg = Debug|x64
+		{2A4FDEBC-1AB8-4E35-8806-E4CC12285526}.Release|.NET.ActiveCfg = Release|Win32
+		{2A4FDEBC-1AB8-4E35-8806-E4CC12285526}.Release|Any CPU.ActiveCfg = Release|Win32
+		{2A4FDEBC-1AB8-4E35-8806-E4CC12285526}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{2A4FDEBC-1AB8-4E35-8806-E4CC12285526}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{2A4FDEBC-1AB8-4E35-8806-E4CC12285526}.Release|Win32.ActiveCfg = Release|Win32
+		{2A4FDEBC-1AB8-4E35-8806-E4CC12285526}.Release|Win32.Build.0 = Release|Win32
+		{2A4FDEBC-1AB8-4E35-8806-E4CC12285526}.Release|x64.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

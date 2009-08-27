@@ -23,6 +23,11 @@ public class TemporaryFilesystemTest extends TestCase {
 
   @Test
   public void testFilesystemCleanupDeletesDirs() {
+    if (!TemporaryFilesystem.shouldReap()) {
+      System.out.println("Reaping of files disabled - " +
+          "ignoring testFilesystemCleanupDeletesDirs");
+      return;
+    }
     File tmp = TemporaryFilesystem.createTempDir("TemporaryFilesystem", "fcdd");
     assertTrue(tmp.exists());
 
@@ -32,6 +37,11 @@ public class TemporaryFilesystemTest extends TestCase {
 
   @Test
   public void testFilesystemCleanupDeletesRecursive() throws IOException {
+    if (!TemporaryFilesystem.shouldReap()) {
+      System.out.println("Reaping of files disabled - " +
+          "ignoring testFilesystemCleanupDeletesRecursive");
+      return;
+    }
     File tmp = TemporaryFilesystem.createTempDir("TemporaryFilesystem", "fcdr");
     createDummyFilesystemContent(tmp);
 
@@ -41,6 +51,11 @@ public class TemporaryFilesystemTest extends TestCase {
 
   @Test
   public void testSpecificDeleteRequestHonored() throws IOException {
+    if (!TemporaryFilesystem.shouldReap()) {
+      System.out.println("Reaping of files disabled - " +
+          "ignoring testSpecificDeleteRequestHonored");
+      return;
+    }
     File tmp = TemporaryFilesystem.createTempDir("TemporaryFilesystem", "sdrh");
     createDummyFilesystemContent(tmp);
 
@@ -63,6 +78,11 @@ public class TemporaryFilesystemTest extends TestCase {
 
   @Test
   public void testShouldReapDefaultsTrue() {
+    if (!TemporaryFilesystem.shouldReap()) {
+      System.out.println("Reaping of files disabled - " +
+          "ignoring testShouldReapDefaultsTrue");
+      return;
+    }
     assertTrue(TemporaryFilesystem.shouldReap());
   }
 

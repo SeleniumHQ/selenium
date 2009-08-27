@@ -171,11 +171,13 @@ public class RemoteWebElement implements WebElement, SearchContext,
   }
 
   public WebElement findElementByPartialLinkText(String using) {
-    throw new UnsupportedOperationException();
+    Response response = execute("findElementUsingElement", map("id", id, "using", "partial link text", "value", using));
+    return getElementFrom(response); 
   }
 
   public List<WebElement> findElementsByPartialLinkText(String using) {
-    throw new UnsupportedOperationException();
+    Response response = execute("findElementsUsingElement", map("id", id, "using", "partial link text", "value", using));
+    return getElementsFrom(response);
   }
 
   protected Response execute(String commandName, Object... parameters) {

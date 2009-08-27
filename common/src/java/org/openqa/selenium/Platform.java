@@ -32,11 +32,6 @@ public enum Platform {
    * any version of Windows.
    */
   WINDOWS("") {
-    @Override
-    public String getLineEnding() {
-      return "\r\n";
-    }
-
     public boolean is(Platform compareWith) {
       return compareWith == WINDOWS || compareWith == XP || compareWith == VISTA;
     }
@@ -47,10 +42,6 @@ public enum Platform {
    * "\\documents and settings\\username"
    */
   XP("xp", "windows") {
-    public String getLineEnding() {
-      return "\r\n";
-    }
-
     public boolean is(Platform compareWith) {
       return compareWith == WINDOWS || compareWith == XP;
     }
@@ -59,33 +50,17 @@ public enum Platform {
    * For versions of Windows that "feel like" Windows Vista.
    */
   VISTA("windows vista", "Windows Server 2008") {
-    public String getLineEnding() {
-      return "\r\n";
-    }
-
     public boolean is(Platform compareWith) {
       return compareWith == WINDOWS || compareWith == VISTA;
     }
   },
-  MAC("mac", "darwin") {
-    public String getLineEnding() {
-      return "\r";
-    }
-  },
-  UNIX("linux", "solaris", "bsd") {
-    public String getLineEnding() {
-      return "\n";
-    }
-  },
+  MAC("mac", "darwin") {},
+  UNIX("linux", "solaris", "bsd") {},
   /**
    * Never returned, but can be used to request a browser running on
    * any operating system
    */
   ANY("") {
-    public String getLineEnding() {
-      throw new UnsupportedOperationException("getLineEnding");
-    }
-
     public boolean is(Platform compareWith) {
       return true;
     }
@@ -135,8 +110,6 @@ public enum Platform {
   public boolean is(Platform compareWith) {
     return this.equals(compareWith);
   }
-
-  public abstract String getLineEnding();
 
   private boolean isCurrentPlatform(String osName, String matchAgainst) {
     return osName.indexOf(matchAgainst) != -1;

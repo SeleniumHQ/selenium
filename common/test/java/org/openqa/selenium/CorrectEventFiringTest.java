@@ -19,12 +19,14 @@ package org.openqa.selenium;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 
 import java.util.List;
 
 public class CorrectEventFiringTest extends AbstractDriverTestCase {
-	@JavascriptEnabled
+	@Ignore(value = CHROME, reason = "Webkit bug 22261")
+  @JavascriptEnabled
 	public void testShouldFireFocusEventWhenClicking() {
 		driver.get(javascriptPage);
 
@@ -60,6 +62,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
 		assertEventFired("mouseup");
 	}
 
+	@Ignore(value = CHROME, reason = "Webkit bug 22261")
 	@JavascriptEnabled
 	public void testShouldFireEventsInTheRightOrder() {
 		driver.get(javascriptPage);
@@ -135,7 +138,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
 	}
 
 	@JavascriptEnabled
-	public void testShouldEmitOnChangeEventsWhenChnagingTheStateOfACheckbox() {
+	public void testShouldEmitOnChangeEventsWhenChangingTheStateOfACheckbox() {
 		driver.get(javascriptPage);
 		WebElement checkbox = driver.findElement(By.id("checkbox"));
 

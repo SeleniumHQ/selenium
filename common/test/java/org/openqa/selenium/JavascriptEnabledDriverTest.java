@@ -23,6 +23,8 @@ import org.hamcrest.Matchers;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.Is.is;
 import static org.junit.matchers.JUnitMatchers.either;
+import static org.openqa.selenium.Ignore.Driver.CHROME;
+import static org.openqa.selenium.Ignore.Driver.CHROME_NON_WINDOWS;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
@@ -138,6 +140,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     }
 
 	@JavascriptEnabled
+	@Ignore(CHROME_NON_WINDOWS)
     public void testShouldFireOnChangeEventWhenSettingAnElementsValue() {
       driver.get(javascriptPage);
       driver.findElement(By.id("change")).sendKeys("foo");
@@ -175,6 +178,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     assertEquals("Clicked", element.getValue());
   }
 
+  @Ignore(CHROME)
   @JavascriptEnabled
   public void testShouldBeAbleToSwitchToFocusedElement() {
     driver.get(javascriptPage);
@@ -185,6 +189,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     assertThat(element.getAttribute("id"), is("theworks"));
   }
 
+  @Ignore(CHROME)
   @JavascriptEnabled
   public void testIfNoElementHasFocusTheActiveElementIsTheBody() {
     driver.get(simpleTestPage);
@@ -195,7 +200,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IE, FIREFOX, REMOTE}, reason = "Firefox: Window demands focus to work. Other platforms: not properly tested")
+  @Ignore(value = {IE, FIREFOX, REMOTE, CHROME_NON_WINDOWS}, reason = "Firefox: Window demands focus to work. Other platforms: not properly tested")
   public void testChangeEventIsFiredAppropriatelyWhenFocusIsLost() {
     driver.get(javascriptPage);
 
@@ -210,7 +215,8 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     assertThat(driver.findElement(By.id("result")).getText().trim(), 
     		either(is("focus change blur focus blur"))
     		.or(is("focus blur change focus blur"))
-    		.or(is("focus blur change focus blur change")));
+    		.or(is("focus blur change focus blur change"))
+    		.or(is("focus change blur focus change blur"))); //What Chrome does
   }
 
   /**

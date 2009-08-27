@@ -25,6 +25,7 @@ jar(:name => "test_common",
                :common,
                "common/lib/buildtime/*.jar"
              ],
+    :resources => [ "common/test/java/org/openqa/selenium/messages.properties" => "org/openqa/selenium/messages.properties" ],
     :out  => "webdriver-common-test.jar")
 
 jar(:name => "htmlunit",
@@ -85,6 +86,10 @@ xpt(:name => "commandProcessor_xpt",
     :src => [ "firefox/src/extension/components/nsICommandProcessor.idl" ],
     :prebuilt => "firefox/prebuilt",
     :out => "nsICommandProcessor.xpt")
+
+task :clean do
+  rm_rf 'build/'
+end
 
 xpi(:name => "firefox_xpi",
     :src  => [ "firefox/src/extension" ],
@@ -260,6 +265,41 @@ test_java(:name => "test_remote",
 
 task :remote => [:remote_server, :remote_client]
 
+dll(:name => "chrome_dll",
+    :src  => [ "common/src/cpp/webdriver-interactions/**/*", "chome/src/cpp/**/*" ],
+    :solution => "WebDriver.sln",
+    :out  => [ "Win32/Release/npchromedriver.dll", "x64/Release/npchromedriver.dll" ],
+    :prebuilt => "chrome/prebuilt")
+
+xpi(:name => "chrome_extension",
+    :src  => [ "chrome/src/extension" ],
+    :deps => [ :chrome_dll ],
+    :resources => [
+                     { "Win32/Release/npchromedriver.dll" => "npchromedriver.dll" }
+                  ],
+    :out => "chrome-extension.zip")
+
+    jar(:name => "chrome",
+    :src  => [ "chrome/src/java/**/*.java" ],
+    :deps => [
+               :common,
+               :remote_client,
+               :chrome_extension,
+               "remote/common/lib/runtime/*.jar"
+             ],
+    :resources => [ "chrome-extension.zip" ],
+    :zip  => true,
+    :out  => "webdriver-chrome.jar")
+
+test_java(:name => "test_chrome",
+          :src  => [ "chrome/test/java/**/*.java" ],
+          :deps => [
+                     :chrome,
+                     :test_common,
+                     :test_remote
+                   ],
+          :out  => "webdriver-chrome-test.jar")
+
 jar(:name => "jsapi",
     :src => [ "remote/server/test/java/**/JsApiTestServer.java" ],
     :deps => [ :firefox, :test_common ],
@@ -270,18 +310,18 @@ test_java(:name => "test_jsapi",
           :deps => [ :jsapi ],
           :out  => "webdriver-jsapi-test.jar")
 
-task :build => [:common, :htmlunit, :firefox, :ie, :iphone, :support, :remote, :selenium]
-task :test => [:test_htmlunit, :test_firefox, :test_ie, :test_iphone, :test_support, :test_remote, :test_selenium, :test_jsapi]
+task :build => [:common, :htmlunit, :firefox, :ie, :iphone, :support, :remote, :chrome, :selenium]
+task :test => [:test_htmlunit, :test_firefox, :test_ie, :test_iphone, :test_support, :test_remote, :test_jsapi, :test_chrome, :test_selenium]
 
 task :clean do
   rm_rf 'build/'
 end
 
-task :javadocs => [:common, :firefox, :htmlunit, :jobbie, :remote, :support] do
+task :javadocs => [:common, :firefox, :htmlunit, :jobbie, :remote, :support, :chrome] do
   mkdir_p "build/javadoc"
    sourcepath = ""
    classpath = "support/lib/runtime/hamcrest-all-1.1.jar"
-   %w(common firefox jobbie htmlunit support remote/common remote/client).each do |m|
+   %w(common firefox jobbie htmlunit support remote/common remote/client chrome).each do |m|
      sourcepath += ":#{m}/src/java"
    end
    cmd = "javadoc -d build/javadoc -sourcepath #{sourcepath} -classpath #{classpath} -subpackages org.openqa.selenium"
