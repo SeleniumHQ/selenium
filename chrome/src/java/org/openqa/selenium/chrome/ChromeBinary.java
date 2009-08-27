@@ -60,10 +60,9 @@ public class ChromeBinary {
                         .append("\\Local Settings\\Application Data\\")
                         .append("Google\\Chrome\\Application\\chrome.exe");
       } else if (Platform.getCurrent().is(Platform.VISTA)) {
-        //TODO(danielwh): WHY is this hard-coded!?!
-        chromeFileString.append("C:\\Users\\")
-                        .append(System.getProperty("user.name"))
-                        .append("\\AppData\\Local\\")
+        //HOPEFULLY this is somewhat consistent...
+        chromeFileString.append(System.getProperty("java.io.tmpdir"))
+                        .append("..\\")
                         .append("Google\\Chrome\\Application\\chrome.exe");
       } else if (Platform.getCurrent().is(Platform.UNIX)) {
         chromeFileString.append("/usr/bin/google-chrome");
