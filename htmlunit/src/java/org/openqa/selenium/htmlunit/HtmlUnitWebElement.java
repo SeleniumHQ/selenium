@@ -256,6 +256,10 @@ public class HtmlUnitWebElement implements WebElement,
 
     String value = element.getAttribute(name);
 
+    if (element instanceof HtmlInput &&
+        ("selected".equals(lowerName) || "checked".equals(lowerName))) {
+      return ((HtmlInput)element).isChecked() ? "true" : "false";
+    }
     if ("disabled".equals(lowerName)) {
       return isEnabled() ? "false" : "true";
     }

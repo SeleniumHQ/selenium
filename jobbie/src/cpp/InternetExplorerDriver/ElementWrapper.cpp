@@ -57,6 +57,12 @@ LPCWSTR ElementWrapper::getTagName()
 
 LPCWSTR ElementWrapper::getAttribute(LPCWSTR name)
 {
+  if (!_wcsicmp(getTagName(), L"input") && !_wcsicmp(name, L"selected")) {
+    SCOPETRACER
+	  SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_ELEM_GETATTRIBUTE, L"checked")
+	  LPCWSTR result = data.output_string_.c_str();
+	  return (wcslen(result) == 0) ? L"false" : result;
+  }
 	SCOPETRACER
 	SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_ELEM_GETATTRIBUTE, name)
 	return data.output_string_.c_str();

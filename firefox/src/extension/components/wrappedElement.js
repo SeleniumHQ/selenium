@@ -257,7 +257,8 @@ FirefoxDriver.prototype.getElementAttribute = function(respond, value) {
         respond.response = element.disabled;
         respond.send();
         return;
-    } else if (attributeName == "checked" && element.tagName.toLowerCase() == "input") {
+    } else if ((attributeName == "checked" || attributeName == "selected") &&
+            element.tagName.toLowerCase() == "input") {
         respond.response = element.checked;
         respond.send();
         return;
