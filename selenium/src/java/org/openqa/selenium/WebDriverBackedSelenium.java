@@ -20,8 +20,10 @@ package org.openqa.selenium;
 import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.SeleniumException;
 import com.thoughtworks.selenium.Wait;
+
 import org.openqa.selenium.internal.AltLookupStrategy;
 import org.openqa.selenium.internal.ClassLookupStrategy;
+import org.openqa.selenium.internal.DomTraversalLookupStrategy;
 import org.openqa.selenium.internal.ExactTextMatchingStrategy;
 import org.openqa.selenium.internal.GlobTextMatchingStrategy;
 import org.openqa.selenium.internal.IdLookupStrategy;
@@ -38,7 +40,6 @@ import org.openqa.selenium.internal.RegExTextMatchingStrategy;
 import org.openqa.selenium.internal.TextMatchingStrategy;
 import org.openqa.selenium.internal.ValueOptionSelectStrategy;
 import org.openqa.selenium.internal.XPathLookupStrategy;
-import org.openqa.selenium.internal.DomTraversalLookupStrategy;
 
 import java.awt.*;
 import java.io.BufferedReader;
@@ -72,6 +73,20 @@ public class WebDriverBackedSelenium implements Selenium {
 
   private static final String injectableSelenium = "/org/openqa/selenium/internal/injectableSelenium.js";
   private static final String htmlUtils = "/org/openqa/selenium/internal/htmlutils.js";
+
+  /**
+   * Regular expression for scripts passed to {@link #getEval(String)} that
+   * reference the current window.
+   */
+  private static final Pattern SELENIUM_WINDOW_REF_REGEX = Pattern.compile(
+        "selenium\\.(browserbot|page\\(\\))\\.getCurrentWindow\\(\\)");
+
+  /**
+   * Regular expression for scripts passed to {@link #getEval(String)} that
+   * reference the current window's document.
+   */
+  private static final Pattern SELENIUM_DOCUMENT_REF_REGEX = Pattern.compile(
+        "selenium\\.(browserbot|page\\(\\))\\.getDocument\\(\\)");
 
   // Keyboard related stuff
   private boolean metaKeyDown;
@@ -1211,7 +1226,8 @@ public class WebDriverBackedSelenium implements Selenium {
    */
   public String getEval(String script) {
     script = script.replaceAll("\n", "\\\\n");
-    script = script.replaceAll("selenium\\.browserbot\\.getCurrentWindow\\(\\)", "window");
+    script = SELENIUM_WINDOW_REF_REGEX.matcher(script).replaceAll("window");
+    script = SELENIUM_DOCUMENT_REF_REGEX.matcher(script).replaceAll("window.document");
     script = String.format("return eval(\"%s\");", script);
     return String.valueOf(((JavascriptExecutor) driver).executeScript(script));
   }
