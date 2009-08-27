@@ -7,7 +7,7 @@ ChromeDriver.ports = [];
 ChromeDriver.activePort = null;
 //ID of the currently active tab
 ChromeDriver.activeTabId = null;
-//TODO(danielwh): Grab the window ID too, and handle toolstrip notifying better
+ChromeDriver.activeWindowId = null;
 //Whether the plugin has the OS-specific window handle for the active tab
 //Called HWND rather than window handle to avoid confusion with the other
 //use of window handle to mean 'name of window'
@@ -117,12 +117,7 @@ function sendResponseToParsedRequest(toSend, wait) {
   }
   ChromeDriver.isBlockedWaitingForResponse = false;
   sendResponseByXHR(toSend, wait);
-  var views = chrome.self.getViews();
-  for (var view in views) {
-    if (views[view].setWebdriverToolstripFree) {
-      views[view].setWebdriverToolstripFree();
-    }
-  }
+  setToolstripsBusy(false);
 }
 
 /**
@@ -164,12 +159,7 @@ function parseRequest(request) {
     return;
   }
   ChromeDriver.isBlockedWaitingForResponse = true;
-  var views = chrome.self.getViews();
-  for (var view in views) {
-    if (views[view].setWebdriverToolstripBusy) {
-      views[view].setWebdriverToolstripBusy();
-    }
-  }
+  setToolstripsBusy(true);
   
   switch (request.request) {
   case "url":
@@ -354,6 +344,7 @@ function getUrlCallback(tab) {
     ChromeDriver.getUrlRequestSequenceNumber++;
     ChromeDriver.isLoadingTabAtTheMomentAndMaybeWillNotSucceed = false;
     ChromeDriver.activeTabId = tab.id;
+    ChromeDriver.activeWindowId = tab.windowId;
     setActivePortByTabId(tab.id);
     ChromeDriver.requestSequenceNumber = 0;
     if (ChromeDriver.activePort == null) {
@@ -369,6 +360,20 @@ function getUrlCallbackById(tabId) {
     return;
   }
   chrome.tabs.get(tabId, getUrlCallback);
+}
+
+function setToolstripsBusy(busy) {
+  var toolstrips = chrome.self.getToolstrips(ChromeDriver.activeWindowId);
+  for (var toolstrip in toolstrips) {
+    if (toolstrips[toolstrip].setWebdriverToolstripBusy && 
+        toolstrips[toolstrip].setWebdriverToolstripFree) {
+      if (busy) {
+        toolstrips[toolstrip].setWebdriverToolstripBusy();
+      } else {
+        toolstrips[toolstrip].setWebdriverToolstripFree();
+      }
+    }
+  }
 }
 
 function pushPort(port) {
