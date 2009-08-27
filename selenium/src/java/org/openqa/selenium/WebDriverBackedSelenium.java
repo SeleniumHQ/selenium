@@ -562,7 +562,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param value the number of milliseconds to pause after operation
    */
   public void setSpeed(String value) {
-    throw new UnsupportedOperationException("setSpeed");
+    // no-op
   }
 
   /**
@@ -574,7 +574,8 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return the execution speed in milliseconds.
    */
   public String getSpeed() {
-    throw new UnsupportedOperationException("getSpeed");
+    // no-op. Pretend we work instantly. Which we do
+    return "0";
   }
 
   /**
@@ -1210,6 +1211,7 @@ public class WebDriverBackedSelenium implements Selenium {
    */
   public String getEval(String script) {
     script = script.replaceAll("\n", "\\\\n");
+    script = script.replaceAll("selenium\\.browserbot\\.getCurrentWindow\\(\\)", "window");
     script = String.format("return eval(\"%s\");", script);
     return String.valueOf(((JavascriptExecutor) driver).executeScript(script));
   }

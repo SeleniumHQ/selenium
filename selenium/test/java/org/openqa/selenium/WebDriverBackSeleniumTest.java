@@ -22,16 +22,45 @@ import junit.framework.TestCase;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.internal.IdLookupStrategy;
 import org.openqa.selenium.internal.LookupStrategy;
+import org.jmock.Mockery;
+import org.jmock.Expectations;
+import org.jmock.api.Expectation;
 
 public class WebDriverBackSeleniumTest extends TestCase {
-    public void testShouldBeAbleToConvertLocatorsToStrategies() {
-        WebDriverBackedSelenium selenium = new WebDriverBackedSelenium(new HtmlUnitDriver(), "http://localhost:3000");
 
-        String locator = "id=button1";
-        LookupStrategy strategy = selenium.findStrategy(locator);
-        String id = selenium.determineWebDriverLocator(locator);
+  public void testShouldBeAbleToConvertLocatorsToStrategies() {
+    WebDriverBackedSelenium
+        selenium =
+        new WebDriverBackedSelenium(new HtmlUnitDriver(), "http://localhost:3000");
 
-        assertTrue(strategy instanceof IdLookupStrategy);
-        assertEquals("button1", id);
-    }
+    String locator = "id=button1";
+    LookupStrategy strategy = selenium.findStrategy(locator);
+    String id = selenium.determineWebDriverLocator(locator);
+
+    assertTrue(strategy instanceof IdLookupStrategy);
+    assertEquals("button1", id);
+  }
+
+  public void testShouldConvertScriptsProperly() {
+    String script = "return selenium.browserbot.getCurrentWindow().title;";
+    final String expectedScript = "return eval(\"return window.title;\");";
+
+    Mockery context = new Mockery();
+    final JsDriver driver = context.mock(JsDriver.class);
+
+    context.checking(new Expectations() {{
+      one(driver).executeScript(expectedScript); will(returnValue("foo"));
+      allowing(driver).getWindowHandle();
+    }});
+
+    WebDriverBackedSelenium selenium =
+        new WebDriverBackedSelenium(driver, "http://www.example/com");
+
+    String value = selenium.getEval(script);
+
+    assertEquals("foo", value);
+    context.assertIsSatisfied();
+  }
+
+  public static interface JsDriver extends WebDriver, JavascriptExecutor {}
 }
