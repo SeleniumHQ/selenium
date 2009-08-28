@@ -73,7 +73,6 @@ public class TextHandlingTest extends AbstractDriverTestCase {
         assertThat(text, is("Username:"));
     }
 
-    @Ignore(IE) //TODO(danielwh): Sort out line endings in IE
     public void testShouldRepresentABlockLevelElementAsANewline() {
         driver.get(simpleTestPage);
         String text = driver.findElement(By.id("multiline")).getText();
@@ -136,7 +135,6 @@ public class TextHandlingTest extends AbstractDriverTestCase {
 //                "        "));
 //    }
 
-    @Ignore(IE) //TODO(danielwh): Sort out line endings in IE
     public void testShouldBeAbleToSetMoreThanOneLineOfTextInATextArea() {
         driver.get(formPage);
         WebElement textarea = driver.findElement(By.id("withText"));
@@ -179,7 +177,6 @@ public class TextHandlingTest extends AbstractDriverTestCase {
         assertThat(text, equalTo(""));
     }
 
-    @Ignore(IE) //TODO(danielwh): Sort out line endings in IE
     public void testShouldHandleSiblingBlockLevelElements() {
     	driver.get(simpleTestPage);
 

@@ -92,11 +92,11 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
 
     errors.verifyErrorCode(result, "get text of");
 
-    return new StringWrapper(lib, wrapper).toString();
+    return new StringWrapper(lib, wrapper).toString().replace("\r\n", "\n");
   }
 
   public String getValue() {
-    return getAttribute("value");
+    return getAttribute("value").replace("\r\n", "\n");
   }
 
   public void sendKeys(CharSequence... value) {
