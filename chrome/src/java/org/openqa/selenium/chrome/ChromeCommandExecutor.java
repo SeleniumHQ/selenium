@@ -48,7 +48,7 @@ public class ChromeCommandExecutor {
    * TODO(danielwh): Bind to a random port (blocked on crbug.com 11547)
    */
   public ChromeCommandExecutor(int port) {
-    nameToJson.put("newSession", new JsonCommand("newSession :?params"));
+    nameToJson.put("close", new JsonCommand("{request: 'close'}"));
     nameToJson.put("quit", new JsonCommand("QUIT"));
     
     nameToJson.put("get", new JsonCommand("{request: 'url', url: ?url}"));

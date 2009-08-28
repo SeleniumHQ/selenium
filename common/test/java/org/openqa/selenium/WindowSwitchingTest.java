@@ -19,8 +19,8 @@ package org.openqa.selenium;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
+import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
 
 import java.util.HashSet;
@@ -121,5 +121,30 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
     String newHandle = driver.getWindowHandle();
 
     assertEquals(current, newHandle);
+  }
+  
+  @NeedsFreshDriver
+  @NoDriverAfterTest
+  @Ignore(IE)
+  public void testCanCloseWindowWhenMultipleWindowsAreOpen() {
+    driver.get(xhtmlTestPage);
+    driver.findElement(By.name("windowOne")).click();
+
+    Set<String> allWindowHandles = driver.getWindowHandles();
+
+    // There should be three windows. We should also see each of the window titles at least once.
+    assertEquals(2, allWindowHandles.size());
+    String handle1 = (String)allWindowHandles.toArray()[1];
+    driver.switchTo().window(handle1);
+    driver.close();
+    allWindowHandles = driver.getWindowHandles();
+    assertEquals(1, allWindowHandles.size());
+  }
+
+  @NeedsFreshDriver
+  @NoDriverAfterTest
+  public void testClosingOnlyWindowShouldNotCauseTheBrowserToHang() {
+    driver.get(xhtmlTestPage);
+    driver.close();
   }
 }

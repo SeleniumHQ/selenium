@@ -175,7 +175,7 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
   }
 
   public void close() {
-    throw new UnsupportedOperationException("Not yet supported in Chrome");
+    execute("close");
   }
 
   public WebElement findElement(By by) {

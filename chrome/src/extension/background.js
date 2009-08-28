@@ -30,6 +30,9 @@ ChromeDriver.isBlockedBecauseGetUrlFailed = false;
 //Indicates we will not execute any commands because we are already executing one
 ChromeDriver.isBlockedWaitingForResponse = false;
 
+//Indicates we are in the process of closing a tab becuase .close() has been called
+ChromeDriver.isClosingTab = false;
+
 //Because we current cannot find out whether an error occured when loading the page,
 //we take note of when we are trying to so that we can usefully timeout
 ChromeDriver.isLoadingTabAtTheMomentAndMaybeWillNotSucceed = false;
@@ -58,6 +61,10 @@ chrome.self.onConnect.addListener(function(port) {
   port.onMessage.addListener(parsePortMessage);
   port.onDisconnect.addListener(function disconnectPort(port) {
     console.log("Disconnected from " + port.name);
+    if (ChromeDriver.isClosingTab) {
+      sendResponseToParsedRequest("{statusCode: 0}", false)
+      ChromeDriver.isClosingTab = false;
+    }
     removePort(port);
   })
 });
@@ -164,6 +171,16 @@ function parseRequest(request) {
   switch (request.request) {
   case "url":
     getUrl(request.url);
+    break;
+  case "close":
+    //Doesn't re-focus the ChromeDriver.activePort on any tab.
+    //If this turns out to be a problem, may need to store ChromeDriver.activePort as a list,
+    //using the head to post to, and popping as things are closed
+    var tabId = ChromeDriver.activeTabId;
+    ChromeDriver.activeTabId = null;
+    ChromeDriver.activePort = null;
+    ChromeDriver.isClosingTab = true;
+    chrome.tabs.remove(tabId);
     break;
   case "getWindowHandle":
     sendResponseToParsedRequest("{statusCode: 0, value: '" + ChromeDriver.activePort.name + "'}", false);
