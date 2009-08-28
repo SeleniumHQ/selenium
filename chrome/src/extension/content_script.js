@@ -217,11 +217,23 @@ function deleteAllCookies() {
 }
 
 /**
- * Deletes the cookie with the passed name, accessible from the current page
+ * Deletes the cookie with the passed name, accessible from the current page (i.e. with path of the current directory or above)
  * @param cookieName name of the cookie to delete
  */
 function deleteCookie(cookieName) {
-  document.cookie = cookieName + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT';
+  var fullpath = document.location.pathname;
+  fullpath = fullpath.split('/');
+  fullpath.pop(); //Get rid of the file
+  for (var segment in fullpath) {
+    var path = '';
+    for (var i = 0; i < segment; ++i) {
+      path += fullpath[segment] + '/';
+    }
+    //Delete cookie with trailing /
+    document.cookie = cookieName + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/' + path;
+    //Delete cookie without trailing /
+    document.cookie = cookieName + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/' + path.substring(0, path.length - 1);
+  }
   return {statusCode: 0};
 }
 
