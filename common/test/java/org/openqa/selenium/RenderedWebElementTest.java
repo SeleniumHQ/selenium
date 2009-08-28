@@ -44,7 +44,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
   }
 
   @Ignore({HTMLUNIT, IE, CHROME})
-  //TODO(danielwh): Investigate this.  I added IE and CHROME ignores
+  //Reason for Chrome: WebKit bug 28804
   public void testShouldHandleNonIntegerPositionAndSize() {
       driver.get(rectanglesPage);
 
