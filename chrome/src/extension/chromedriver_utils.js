@@ -146,6 +146,25 @@ function getElementCoords(element) {
 }
 
 /**
+ * Gets the maximum offsetHeight and offsetWidth of an element or those of its sub-elements
+ * In place because element.offset{Height,Width} returns incorrectly in WebKit (see bug 28810)
+ * @param element element to get max dimensions of
+ * @param width optional greatest width seen so far (omit when calling)
+ * @param height optional greatest height seen so far (omit when calling)
+ * @return an object of form: {type: "DIMENSION", width: maxOffsetWidth, height: maxOffsetHeight}
+ */
+function getOffsetSizeFromSubElements(element, maxWidth, maxHeight) {
+  maxWidth = (typeof(maxWidth) == "undefined" || element.offsetWidth > maxWidth) ? element.offsetWidth : maxWidth;
+  maxHeight = (typeof(maxHeight) == "undefined" || element.offsetHeight > maxHeight) ? element.offsetHeight : maxHeight;
+  for (var child in element.children) {
+    var childSize = getOffsetSizeFromSubElements(element.children[child], maxWidth, maxHeight);
+    maxWidth = (childSize.width > maxWidth) ? childSize.width : maxWidth;
+    maxHeight = (childSize.height > maxHeight) ? childSize.height : maxHeight;
+  }
+  return {type: "DIMENSION", width: maxWidth, height: maxHeight};
+}
+
+/**
  * Converts rgb(x, y, z) colours to #RRGGBB colours
  * @param rgb string of form either rgb(x, y, z) or rgba(x, y, z, a) with x, y, z, a numbers
  * @return string of form #RRGGBB where RR, GG, BB are two-digit lower-case hex values

@@ -122,9 +122,7 @@ function parsePortMessage(message) {
     response.value = {statusCode: 0, value: {type: "POINT", x: coords[0], y: coords[1]}};
     break;
   case "getElementSize":
-    response.value = {statusCode: 0, value: {type: "DIMENSION",
-                                               height: element.offsetHeight,
-                                               width: element.offsetWidth}};
+    response.value = {statusCode: 0, value: getOffsetSizeFromSubElements(element)};
     response.wait = false;
     break;
   case "getElementTagName":

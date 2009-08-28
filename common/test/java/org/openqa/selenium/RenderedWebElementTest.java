@@ -99,7 +99,6 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(CHROME) //TODO(danielwh): Solve this
   public void testShouldCorrectlyIdentifyThatAnElementHasWidth() {
     driver.get(xhtmlTestPage);
 
