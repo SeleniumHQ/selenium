@@ -134,20 +134,21 @@
     </build>
     <dependencies>
         <dependency>
-		    <groupId>org.seleniumhq.selenium.server</groupId>
-		    <artifactId>selenium-server-coreless</artifactId>
+            <groupId>org.seleniumhq.selenium.server</groupId>
+            <artifactId>selenium-server-coreless</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium.server</groupId>
             <artifactId>selenium-server</artifactId>
+            <classifier>standalone</classifier>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
-		    <groupId>org.seleniumhq.selenium.client-drivers</groupId>
-		    <artifactId>selenium-java-client-driver</artifactId>
+            <groupId>org.seleniumhq.selenium.client-drivers</groupId>
+            <artifactId>selenium-java-client-driver</artifactId>
             <scope>test</scope>
             <exclusions>
                 <exclusion>
