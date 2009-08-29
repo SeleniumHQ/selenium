@@ -191,7 +191,8 @@ public class HtmlUnitWebElement implements WebElement,
     if (element instanceof HtmlTextArea) {
       return ((HtmlTextArea) element).getText();
     }
-    return getAttribute("value");
+    String value = getAttribute("value");
+    return (value == null) ? "" : value;
   }
 
   public void clear() {

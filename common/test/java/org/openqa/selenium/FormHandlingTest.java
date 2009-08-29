@@ -284,6 +284,15 @@ public class FormHandlingTest extends AbstractDriverTestCase {
 		assertThat(value.length(), is(0));
 	}
 	
+	public void testEmptyTextBoxesShouldReturnAnEmptyStringNotNull() {
+	  driver.get(formPage);
+	  WebElement emptyTextBox = driver.findElement(By.id("working"));
+	  assertEquals(emptyTextBox.getValue(), "");
+	  
+	  WebElement emptyTextArea = driver.findElement(By.id("emptyTextArea"));
+	  assertEquals(emptyTextBox.getValue(), "");
+	}
+	
 	public void testShouldBeAbleToClearTextFromTextAreas() {
 		driver.get(formPage);
 		WebElement element = driver.findElement(By.id("withText"));
