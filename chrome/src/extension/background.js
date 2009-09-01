@@ -24,18 +24,13 @@ ChromeDriver.getUrlRequestSequenceNumber = 0;
 //(a page has loaded, but we have no content script)
 ChromeDriver.isOnBadPage = false;
 
-//Indicates we will not execute any commands because we tried to load a page
-//and chrome failed to load it
-ChromeDriver.isBlockedBecauseGetUrlFailed = false;
+//URL currently being loaded, if any
+ChromeDriver.currentlyLoadingUrl = null;
 //Indicates we will not execute any commands because we are already executing one
 ChromeDriver.isBlockedWaitingForResponse = false;
 
 //Indicates we are in the process of closing a tab becuase .close() has been called
 ChromeDriver.isClosingTab = false;
-
-//Because we current cannot find out whether an error occured when loading the page,
-//we take note of when we are trying to so that we can usefully timeout
-ChromeDriver.isLoadingTabAtTheMomentAndMaybeWillNotSucceed = false;
 
 //We will try to re-send a request a few times if we don't have a port,
 //in case a page is loading/changing and we get a port.
@@ -152,10 +147,6 @@ function handleXmlHttpRequestReadyStateChange() {
  * @param request object encapsulating the request (e.g. {request: url, url: "http://www.google.co.uk"})
  */
 function parseRequest(request) {
-  if (ChromeDriver.isBlockedBecauseGetUrlFailed) {
-    console.log("Getting a URL failed in this instance.  Cannot parse any requests.");
-    return;
-  }
   if (ChromeDriver.isBlockedWaitingForResponse) {
     console.log("Already sent a request which hasn't been replied to yet.  Not parsing any more.");
     return;
@@ -331,27 +322,16 @@ function getUrl(url) {
     chrome.tabs.remove(ChromeDriver.activeTabId);
   }
   ChromeDriver.activeTabId = null;
-  console.log("Creating new tab with url: " + url);
-  ChromeDriver.isLoadingTabAtTheMomentAndMaybeWillNotSucceed = true;
+  ChromeDriver.currentlyLoadingUrl = url;
   chrome.tabs.create({url: url, selected: true}, getUrlCallback);
-  setTimeout("getUrlTimeout(" + ChromeDriver.getUrlRequestSequenceNumber + ")", 20000);
-}
-
-function getUrlTimeout(getUrlRequestNumber) {
-  //TODO(danielwh): Add lastError checks when they've been added to Chrome
-  //TODO(danielwh): Remove this timeout stuff when they actually fix Chrome (see crbug.com 19846)
-  if (ChromeDriver.getUrlRequestSequenceNumber == getUrlRequestNumber &&
-      ChromeDriver.isLoadingTabAtTheMomentAndMaybeWillNotSucceed) {
-    console.log("Blocking because getUrl failed.  Restart chrome.");
-    ChromeDriver.isBlockedBecauseGetUrlFailed = true;
-    ChromeDriver.isLoadingTabAtTheMomentAndMaybeWillNotSucceed = false;
-    sendResponseToParsedRequest("{statusCode: 500}", false);
-  }
 }
 
 function getUrlCallback(tab) {
-  if (ChromeDriver.isBlockedBecauseGetUrlFailed) {
-    console.log("Got a url, but did not send a response because we have already responded that getting the URL failed.");
+  if (chrome.extension.lastError) {
+    //An error probably arose because Chrome didn't have a window yet (see crbug.com 19846)
+    //If we retry, we *should* be fine.  Unless something really bad is happening, in which case
+    //we will probably hang indefinitely trying to reload the same URL
+    getUrl(ChromeDriver.currentlyLoadingUrl);
     return;
   }
   if (tab.status != "complete") {
@@ -359,7 +339,6 @@ function getUrlCallback(tab) {
     setTimeout("getUrlCallbackById(" + tab.id + ")", 10);
   } else {
     ChromeDriver.getUrlRequestSequenceNumber++;
-    ChromeDriver.isLoadingTabAtTheMomentAndMaybeWillNotSucceed = false;
     ChromeDriver.activeTabId = tab.id;
     ChromeDriver.activeWindowId = tab.windowId;
     setActivePortByTabId(tab.id);
@@ -372,10 +351,6 @@ function getUrlCallback(tab) {
 }
 
 function getUrlCallbackById(tabId) {
-  if (ChromeDriver.isBlockedBecauseGetUrlFailed) {
-    console.log("getUrlClalbackById reached, but did not schedule callback because we have already responded that getting the URL failed.");
-    return;
-  }
   chrome.tabs.get(tabId, getUrlCallback);
 }
 
