@@ -4,19 +4,22 @@
  */
 package org.openqa.selenium.server.browserlaunchers;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 import org.apache.commons.logging.Log;
-import org.apache.tools.ant.util.*;
+import org.apache.tools.ant.util.FileUtils;
 import org.mortbay.log.LogFactory;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
+import org.openqa.selenium.server.FrameGroupCommandQueueSet;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.browserlaunchers.locators.InternetExplorerLocator;
 
 //EB - Why doesn't this class extend AbstractBrowserLauncher
 //DGF - because it would override every method of ABL.
 public class HTABrowserLauncher implements BrowserLauncher {
-
     static Log log = LogFactory.getLog(HTABrowserLauncher.class);
     private String sessionId;
     private File dir;
@@ -96,13 +99,36 @@ public class HTABrowserLauncher implements BrowserLauncher {
             }
             f.copyFile(selRunnerSrc, selRunnerDest);
             f.copyFile(testRunnerSrc, testRunnerDest);
+            writeSessionExtensionJs(coreDir);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        
-        
     }
+    
+    /**
+     * Writes the session extension javascript to the custom profile directory.
+     * The request for it does not pass through the Selenium server in HTA
+     * mode, thus the specialized extension js resource handler is of no use.
+     * 
+     * @param coreDir
+     * @throws IOException
+     */
+    private void writeSessionExtensionJs(File coreDir) throws IOException {
+        FrameGroupCommandQueueSet queueSet = 
+            FrameGroupCommandQueueSet.getQueueSet(sessionId);
+        
+        if (queueSet.getExtensionJs().length() > 0) {
+            String path = "scripts/user-extensions.js[" + sessionId + "]";
+            FileWriter fileWriter = new FileWriter(new File(coreDir, path));
+            BufferedWriter writer = new BufferedWriter(fileWriter);
+            
+            writer.write(queueSet.getExtensionJs());
+            writer.close();
 
+            fileWriter.close();
+        }
+    }
+    
     public void close() {
         if (browserOptions.is("killProcessesByName")) {
             WindowsUtils.tryToKillByName("iexplore.exe");
