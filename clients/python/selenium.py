@@ -745,24 +745,7 @@ class selenium:
         """
         self.do_command("submit", [formLocator,])
 
-    def open(self,url):
-        """
-        Opens an URL in the test frame. This accepts both relative and absolute
-        URLs.
-        
-        The "open" command waits for the page to load before proceeding,
-        ie. the "AndWait" suffix is implicit.
-        
-        \ *Note*: The URL must be on the same domain as the runner HTML
-        due to security restrictions in the browser (Same Origin Policy). If you
-        need to open an URL on another domain, use the Selenium Server to start a
-        new browser session on that domain.
-        
-        'url' is the URL to open; may be relative or absolute
-        """
-        self.do_command("open", [url,])
-
-    def open(self,url,ignoreResponseCode):
+    def open(self,url,ignoreResponseCode=False):
         """
         Opens an URL in the test frame. This accepts both relative and absolute
         URLs.
