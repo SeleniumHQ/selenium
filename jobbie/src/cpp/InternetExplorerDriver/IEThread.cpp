@@ -135,6 +135,7 @@ BOOL IeThread::DispatchThreadMessageEx(MSG* pMsg)
 	CUSTOM_MESSAGE_MAP ( _WD_GOFORWARD, OnGoForward )
 	CUSTOM_MESSAGE_MAP ( _WD_GOBACK, OnGoBack )
 	CUSTOM_MESSAGE_MAP ( _WD_GET_HANDLE, OnGetHandle )
+	CUSTOM_MESSAGE_MAP ( _WD_GET_HANDLES, OnGetHandles )
 	CUSTOM_MESSAGE_MAP ( _WD_SELELEMENTBYXPATH, OnSelectElementByXPath )
 	CUSTOM_MESSAGE_MAP ( _WD_SELELEMENTSBYXPATH, OnSelectElementsByXPath )
 	CUSTOM_MESSAGE_MAP ( _WD_SELELEMENTBYID, OnSelectElementById )
@@ -299,6 +300,12 @@ void IeThread::OnStartIE(WPARAM w, LPARAM lp)
 	SCOPETRACER
 	NO_THREAD_COMMON
 	EventReleaser er(sync_LaunchIE);
+	if (pBody->ieThreaded) {
+		// TODO(simon): There's no way that this should be necessary.
+		// but it is when starting and quitting IE in a tight loop
+		LOG(DEBUG) << "IE instance already set. Clearing";
+		pBody->ieThreaded.Release();
+	} 
 	HRESULT hr = pBody->ieThreaded.CoCreateInstance(CLSID_InternetExplorer, NULL, CLSCTX_LOCAL_SERVER);
 
 	safeIO::CoutA("Has instanciated IE. Multithreaded version.");

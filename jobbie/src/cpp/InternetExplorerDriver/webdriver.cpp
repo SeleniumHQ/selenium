@@ -65,6 +65,10 @@ struct ElementCollection {
 	std::vector<ElementWrapper*>* elements;
 };
 
+struct StringCollection {
+	std::vector<std::wstring>* strings;
+};
+
 InternetExplorerDriver* openIeInstance = NULL;
 
 extern "C"
@@ -118,7 +122,7 @@ int wdCopyString(StringWrapper* source, int size, wchar_t* dest)
 }
 
 // Collection manipulation functions
-int wdcGetCollectionLength(ElementCollection* collection, int* length)
+int wdcGetElementCollectionLength(ElementCollection* collection, int* length)
 {
 	if (!collection || !collection->elements) return ENOCOLLECTION;
 
@@ -139,6 +143,32 @@ int wdcGetElementAtIndex(ElementCollection* collection, int index, WebElement** 
 	WebElement* element = new WebElement();
 	element->element = *cur;
 	*result = element;
+
+	return SUCCESS;
+}
+
+int wdcGetStringCollectionLength(StringCollection* collection, int* length)
+{
+	if (!collection) return ENOCOLLECTION;
+
+	*length = (int) collection->strings->size();
+
+	return SUCCESS;
+}
+
+int wdcGetStringAtIndex(StringCollection* collection, int index, StringWrapper** result)
+{
+	*result = NULL;
+	if (!collection) return ENOCOLLECTION;
+
+	std::vector<std::wstring>::const_iterator cur = collection->strings->begin();
+	cur += index;
+
+	StringWrapper* wrapper = new StringWrapper();
+	size_t size = (*cur).length() + 1;
+	wrapper->text = new wchar_t[size];
+	wcscpy_s(wrapper->text, size, (*cur).c_str());
+	*result = wrapper;
 
 	return SUCCESS;
 }
@@ -176,6 +206,17 @@ int wdFreeElementCollection(ElementCollection* collection, int alsoFreeElements)
 	return SUCCESS;
 }
 
+int wdFreeStringCollection(StringCollection* collection)
+{
+	if (!collection || !collection->strings) 
+		return ENOSUCHCOLLECTION;
+
+	delete collection->strings;
+	delete collection;
+
+	return SUCCESS;
+}
+
 int wdFreeScriptArgs(ScriptArgs* scriptArgs)
 {
 	if (!scriptArgs || !scriptArgs->args) 
@@ -203,9 +244,15 @@ int wdFreeScriptResult(ScriptResult* scriptResult)
 int wdFreeDriver(WebDriver* driver)
 {
 	if (!driver || !driver->ie) return ENOSUCHDRIVER;
-	driver->ie->close();
+
+	try {
+		driver->ie->close();
+	} catch (...) {
+		// Fine. We're quitting anyway.
+	}
     delete driver->ie;
     delete driver;
+	driver = NULL;
 
 	// Let the IE COM instance fade away
 	wait(2000);
@@ -414,7 +461,15 @@ int wdSwitchToWindow(WebDriver* driver, const wchar_t* name)
 	if (!driver || !driver->ie) return ENOSUCHDRIVER;
 
 	try {
-		return driver->ie->switchToWindow(name);
+		int result;
+		// It's entirely possible the window to switch to isn't here yet. 
+		// TODO(simon): Make this configurable
+		for (int i = 0; i < 8; i++) {
+			result = driver->ie->switchToWindow(name);
+			if (result == SUCCESS) { break; }
+			wait(500);
+		}
+		return result;
 	} END_TRY;
 }
 
@@ -460,6 +515,27 @@ int wdGetCurrentWindowHandle(WebDriver* driver, StringWrapper** handle)
 	} END_TRY;
 }
 
+int wdGetAllWindowHandles(WebDriver* driver, StringCollection** handles)
+{
+	if (!driver || !driver->ie) return ENOSUCHDRIVER;
+
+	*handles = NULL;
+
+	try {
+		std::vector<std::wstring> rawHandles = driver->ie->getAllHandles();
+		StringCollection* collection = new StringCollection();
+		collection->strings = new std::vector<std::wstring>();
+		for (std::vector<std::wstring>::iterator curr = rawHandles.begin();
+			 curr != rawHandles.end();
+			 curr++) {
+				 collection->strings->push_back(std::wstring(*curr));
+		}
+		*handles = collection;
+
+		return SUCCESS;
+	} END_TRY;
+}
+
 int verifyFresh(WebElement* element) 
 {
 	if (!element || !element->element) { return ENOSUCHELEMENT; }
@@ -479,7 +555,6 @@ int wdeClick(WebElement* element)
 
 	try {
 		res = element->element->click();
-
 		return res;
 	} END_TRY;	
 }
@@ -720,6 +795,8 @@ int wdFindElementById(WebDriver* driver, WebElement* element, const wchar_t* id,
 int wdFindElementsById(WebDriver* driver, WebElement* element, const wchar_t* id, ElementCollection** result) 
 {
 	*result = NULL;
+	if (!driver || !driver->ie) { return ENOSUCHDRIVER; }
+
 	try {
 		InternetExplorerDriver* ie = driver->ie;
 		CComPtr<IHTMLElement> elem;

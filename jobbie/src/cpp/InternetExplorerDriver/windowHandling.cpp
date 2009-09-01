@@ -85,7 +85,7 @@ BOOL CALLBACK findServerWindows(HWND hwnd, LPARAM arg)
 	// http://support.microsoft.com/kb/257717
 	CComQIPtr<IServiceProvider> provider(window);
 	if (!provider) {
-		LOG(WARN) << "Cannot extract service provider";
+		LOG(INFO) << "Cannot extract service provider";
 		FreeLibrary(library);
 		return TRUE;
 	}

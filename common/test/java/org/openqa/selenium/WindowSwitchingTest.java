@@ -28,7 +28,6 @@ import java.util.Set;
 
 public class WindowSwitchingTest extends AbstractDriverTestCase {
 
-  @Ignore({IE, REMOTE})
   public void testShouldSwitchFocusToANewWindowWhenItIsOpenedAndNotStopFutureOperations() {
     driver.get(xhtmlTestPage);
     String current = driver.getWindowHandle();
@@ -44,7 +43,6 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
     driver.switchTo().window(current);
   }
 
-  @Ignore({IE, REMOTE})
   public void testShouldThrowNoSuchWindowException() {
     driver.get(xhtmlTestPage);
     String current = driver.getWindowHandle();
@@ -71,14 +69,14 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
     Set<String> allWindowHandles = driver.getWindowHandles();
 
     // There should be three windows. We should also see each of the window titles at least once.
-    assertEquals(3, allWindowHandles.size());
-
     Set<String> seenHandles = new HashSet<String>();
     for (String handle : allWindowHandles) {
       assertFalse(seenHandles.contains(handle));
       driver.switchTo().window(handle);
       seenHandles.add(handle);
     }
+
+    assertEquals(3, allWindowHandles.size());
   }
 
   @Ignore(IE)

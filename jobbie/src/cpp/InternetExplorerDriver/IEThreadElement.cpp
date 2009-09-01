@@ -135,7 +135,7 @@ boolean sendKeysToFileUploadAlert(HWND dialogHwnd, const wchar_t* value)
         return true;
     }
 
-    cout << "No edit found" << endl;
+    LOG(WARN) << "No edit found";
     return false;
 }
 
@@ -154,7 +154,7 @@ WORD WINAPI setFileValue(keyboardData* data) {
     }
 
     if (!dialogHwnd || (dialogHwnd == ieMain)) {
-        cout << "No dialog found" << endl;
+        LOG(WARN) << "No dialog found";
         return false;
     }
 

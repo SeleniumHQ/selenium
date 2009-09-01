@@ -52,6 +52,7 @@ limitations under the License.
 #define _WD_GOFORWARD					WM_USER+36
 #define _WD_GOBACK						WM_USER+37
 #define _WD_GET_HANDLE					WM_USER+38
+#define _WD_GET_HANDLES					WM_USER+39
 
 #define _WD_SELELEMENTBYXPATH			WM_USER+40
 #define _WD_SELELEMENTSBYXPATH			WM_USER+41

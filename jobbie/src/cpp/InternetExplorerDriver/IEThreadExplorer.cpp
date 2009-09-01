@@ -198,6 +198,35 @@ void IeThread::OnGetHandle(WPARAM w, LPARAM lp)
 	ret.append(buffer);
 }
 
+std::wstring getWindowHandle(IWebBrowser2* browser)
+{
+	HWND hwnd;
+	browser->get_HWND(reinterpret_cast<SHANDLE_PTR*>(&hwnd));
+
+	// Let's hope we fit into 8 characters
+	wchar_t buffer[9];
+	swprintf_s(buffer, 9, L"%08X", (long long) hwnd);
+	return std::wstring(buffer);
+}
+
+void IeThread::OnGetHandles(WPARAM w, LPARAM lp)
+{
+	SCOPETRACER
+	ON_THREAD_COMMON(data)
+
+	// Iterate over all the windows
+	std::vector<IWebBrowser2*> browsers;
+	getAllBrowsers(&browsers);
+	for (vector<IWebBrowser2*>::iterator curr = browsers.begin();
+		 curr != browsers.end();
+		 curr++) {
+			 data.output_list_string_.push_back(getWindowHandle(*curr));
+			 (*curr)->Release();
+	}
+
+	data.error_code = SUCCESS;
+}
+
 void IeThread::OnGetActiveElement(WPARAM w, LPARAM lp)
 {
 	SCOPETRACER
@@ -557,8 +586,12 @@ void IeThread::OnCloseWindow(WPARAM w, LPARAM lp)
 {
 	SCOPETRACER
 	NO_THREAD_COMMON
-	pBody->ieThreaded->Stop();
-	pBody->ieThreaded->Quit();
+	if (FAILED(pBody->ieThreaded->Stop())) {
+	    LOG(INFO) << "Unable to stop IE instance";
+	}
+	if (FAILED(pBody->ieThreaded->Quit())) {
+	    LOG(WARN) << "Unable to quit IE instance.";
+	}
 }
 
 bool browserMatches(const wchar_t* name, IWebBrowser2* browser)
@@ -586,17 +619,9 @@ bool browserMatches(const wchar_t* name, IWebBrowser2* browser)
 		return true;
 	}
 
-	// Compare with window handle
-	HWND hwnd;
-	browser->get_HWND(reinterpret_cast<SHANDLE_PTR*>(&hwnd));
+	std::wstring handle = getWindowHandle(browser);
 
-	// Let's hope we fit into 8 characters
-	wchar_t* buffer = new wchar_t[9];
-	swprintf_s(buffer, 9, L"%08X", (long long) hwnd);
-	bool matchesHwnd = wcscmp(name, buffer) == 0;
-	delete[] buffer;
-
-	return matchesHwnd;
+	return handle == name;
 }
 
 void IeThread::OnSwitchToWindow(WPARAM w, LPARAM lp) 
@@ -632,6 +657,9 @@ void IeThread::OnSwitchToWindow(WPARAM w, LPARAM lp)
 	pBody->ieThreaded = instance;
 	pBody->mSink.p_Thread->pBody = pBody;
 	pBody->mSink.ConnectionAdvise();
+	if (false) {
+		LOG(WARN) << "Failed to advise new connection";
+	}
 	
 	CComQIPtr<IDispatch> dispatcher(pBody->ieThreaded);
 	if (!dispatcher) {

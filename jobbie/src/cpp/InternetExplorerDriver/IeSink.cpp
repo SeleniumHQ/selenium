@@ -88,7 +88,14 @@ void IeSink::ConnectionAdvise()
 
 	CComQIPtr<IDispatch> dispatcher(p_Thread->pBody->ieThreaded);
 	CComPtr<IUnknown> univ(dispatcher);
-	this->DispEventAdvise(univ);
+
+	if (!univ) {
+		LOG(WARN) << "No dispatcher created when attempting to connect to IE instance";
+	}
+
+	if (FAILED(this->DispEventAdvise(univ))) {
+		LOG(WARN) << "Failed to advise new connection. Restarting the IE driver is recommended.";
+	}	
 }
 
 void IeSink::ConnectionUnAdvise()

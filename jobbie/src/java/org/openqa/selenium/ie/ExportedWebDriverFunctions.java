@@ -17,6 +17,7 @@ interface ExportedWebDriverFunctions extends StdCallLibrary {
   int wdFreeDriver(Pointer driver);
   int wdFreeElement(Pointer element);
   int wdFreeElementCollection(Pointer collection, int alsoFreeElements);
+  int wdFreeStringCollection(Pointer collection);
   int wdFreeScriptArgs(Pointer scriptArgs);
   int wdFreeScriptResult(Pointer scriptResult);
 
@@ -75,8 +76,10 @@ interface ExportedWebDriverFunctions extends StdCallLibrary {
   int wdGetCookies(Pointer driver, PointerByReference wrapper);
   
   // Element collection functions
-  int wdcGetCollectionLength(Pointer collection, IntByReference length);
+  int wdcGetElementCollectionLength(Pointer collection, IntByReference length);
   int wdcGetElementAtIndex(Pointer collection, int index, PointerByReference element);
+  int wdcGetStringCollectionLength(Pointer collection, IntByReference length);
+  int wdcGetStringAtIndex(Pointer rawStrings, int i, PointerByReference rawString);
   
   // String functions
   int wdStringLength(Pointer string, IntByReference length);
@@ -101,7 +104,9 @@ interface ExportedWebDriverFunctions extends StdCallLibrary {
   int wdeMouseUpAt(HWND hwnd, NativeLong windowX, NativeLong windowY);
   int wdeMouseMoveTo(HWND hwnd, NativeLong duration, NativeLong fromX, NativeLong fromY, NativeLong toX, NativeLong toY);
 
+  int wdGetAllWindowHandles(Pointer driver, PointerByReference rawHandles);
   int wdGetCurrentWindowHandle(Pointer driver, PointerByReference handle);
+
 
   public static class HWND extends PointerType { }
   

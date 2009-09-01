@@ -34,6 +34,7 @@ import org.openqa.selenium.Speed;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.NoSuchWindowException;
 import static org.openqa.selenium.ie.ExportedWebDriverFunctions.SUCCESS;
 import org.openqa.selenium.internal.FileHandler;
 import org.openqa.selenium.internal.ReturnedCookie;
@@ -83,15 +84,24 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
     
     public void quit() {
       for (String handle : getWindowHandles()) {
-        switchTo().window(handle);
-        close();
+        try {
+          switchTo().window(handle);
+          close();
+        } catch (NoSuchWindowException e) {
+          // doesn't matter one jot.
+        }
       }
       lib.wdFreeDriver(driver);
       driver = null;
     }
 
   public Set<String> getWindowHandles() {
-    return Collections.singleton(getWindowHandle());
+    PointerByReference rawHandles = new PointerByReference();
+    int result = lib.wdGetAllWindowHandles(driver, rawHandles);
+
+    errors.verifyErrorCode(result, "Unable to obtain all window handles");
+
+    return new StringCollection(lib, rawHandles.getValue()).toSet();
   }
 
   public String getWindowHandle() {

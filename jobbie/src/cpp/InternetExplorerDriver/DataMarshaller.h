@@ -53,6 +53,7 @@ public:
 	bool			output_bool_;
 	IHTMLElement	*output_html_element_;
 	std::vector<IHTMLElement*> output_list_html_element_;
+	std::vector<std::wstring> output_list_string_;
 	CComVariant		output_variant_;
 	SAFEARRAY		*output_safe_array_;
 	int				error_code;

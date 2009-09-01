@@ -45,11 +45,15 @@ typedef struct StringWrapper StringWrapper;
 struct ElementCollection;
 typedef struct ElementCollection ElementCollection;
 
+struct StringCollection;
+typedef struct StringCollection StringCollection;
+
 // Memory management functions
 EXPORT int wdNewDriverInstance(WebDriver** result);
 EXPORT int wdFreeDriver(WebDriver* driver);
 EXPORT int wdeFreeElement(WebElement* element);
 EXPORT int wdFreeElementCollection(ElementCollection* collection, int alsoFreeElements);
+EXPORT int wdFreeStringCollection(StringCollection* collection);
 EXPORT int wdFreeScriptArgs(ScriptArgs* scriptArgs);
 EXPORT int wdFreeScriptResult(ScriptResult* scriptResult);
 
@@ -76,6 +80,7 @@ EXPORT int wdSwitchToWindow(WebDriver* driver, const wchar_t* name);
 EXPORT int wdSwitchToFrame(WebDriver* driver, const wchar_t* path);
 EXPORT int wdWaitForLoadToComplete(WebDriver* driver);
 
+EXPORT int wdGetAllWindowHandles(WebDriver* driver, StringCollection** handles);
 EXPORT int wdGetCurrentWindowHandle(WebDriver* driver, StringWrapper** handle);
 
 // Element functions
@@ -133,8 +138,10 @@ EXPORT int wdGetElementScriptResult(ScriptResult* result, WebDriver* driver, Web
 
 
 // Element collection functions
-EXPORT int wdcGetCollectionLength(ElementCollection* collection, int* length);
+EXPORT int wdcGetElementCollectionLength(ElementCollection* collection, int* length);
 EXPORT int wdcGetElementAtIndex(ElementCollection* collection, int index, WebElement** result);
+EXPORT int wdcGetStringCollectionLength(StringCollection* collection, int* length);
+EXPORT int wdcGetStringAtIndex(StringCollection* collection, int index, StringWrapper** result);
 
 
 // String manipulation functions

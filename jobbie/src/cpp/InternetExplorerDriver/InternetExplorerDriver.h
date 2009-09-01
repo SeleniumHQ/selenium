@@ -46,6 +46,7 @@ public:
 	void goForward();
 	void goBack();
 	std::wstring getHandle();
+	std::vector<std::wstring> getAllHandles();
 
 	void setSpeed(int speed);
 	int getSpeed();

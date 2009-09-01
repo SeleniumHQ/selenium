@@ -80,8 +80,9 @@ IeThread* InternetExplorerDriver::ThreadFactory()
 void InternetExplorerDriver::close()
 {
 	SCOPETRACER
-	if (closeCalled)
+	if (closeCalled) {
 		return;
+	}
 
 	closeCalled = true;
 
@@ -145,6 +146,13 @@ std::wstring InternetExplorerDriver::getHandle()
 	SCOPETRACER
 	SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_GET_HANDLE,);
 	return data.output_string_.c_str();
+}
+
+std::vector<std::wstring> InternetExplorerDriver::getAllHandles() 
+{
+	SCOPETRACER
+	SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_GET_HANDLES,);
+	return data.output_list_string_;
 }
 
 ElementWrapper* InternetExplorerDriver::getActiveElement()
@@ -389,6 +397,11 @@ int InternetExplorerDriver::switchToWindow(LPCWSTR name)
 {
 	SCOPETRACER
 	SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_SWITCHWINDOW, name)
+	
+	if (data.error_code == SUCCESS) {
+		closeCalled = false;
+	}
+
 	return data.error_code;
 }
 
