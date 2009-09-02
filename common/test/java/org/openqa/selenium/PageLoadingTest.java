@@ -65,7 +65,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
     driver.get("http://localhost:3001");
   }
 
-    @Ignore(value = CHROME, reason = "Not yet implemented")
+  @Ignore(CHROME)
     public void testShouldBeAbleToLoadAPageWithFramesetsAndWaitUntilAllFramesAreLoaded() {
         driver.get(framesetPage);
 
@@ -97,7 +97,6 @@ public class PageLoadingTest extends AbstractDriverTestCase {
         assertThat(driver.getTitle(), equalTo("We Leave From Here"));
     }
 
-    @Ignore(value = CHROME, reason = "Not yet implemented")
     public void testShouldBeAbleToNavigateBackInTheBrowserHistoryInPresenceOfIframes() {
         driver.get(xhtmlTestPage);
 

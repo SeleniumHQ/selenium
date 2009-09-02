@@ -23,6 +23,7 @@ import org.json.JSONObject;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriverException;
@@ -84,6 +85,10 @@ public class ChromeCommandExecutor {
     nameToJson.put("isElementEnabled", new JsonCommand("{request: 'isElementEnabled', elementId: ?elementId}"));
     nameToJson.put("isElementSelected", new JsonCommand("{request: 'isElementSelected', elementId: ?elementId}"));
     nameToJson.put("setElementSelected", new JsonCommand("{request: 'setElementSelected', elementId: ?elementId}"));
+    
+    nameToJson.put("switchToFrameByIndex", new JsonCommand("{request: 'switchToFrame', using: {index: ?index}}"));
+    nameToJson.put("switchToFrameByName", new JsonCommand("{request: 'switchToFrame', using: {name: ?name}}"));
+    nameToJson.put("switchToDefaultContent", new JsonCommand("{request: 'switchToDefaultContent'}"));
     
     nameToJson.put("getWindowHandle", new JsonCommand("{request: 'getWindowHandle'}"));
     nameToJson.put("getWindowHandles", new JsonCommand("{request: 'getWindowHandles'}"));
@@ -321,6 +326,8 @@ public class ChromeCommandExecutor {
           throw new NoSuchWindowException(message);
         case 7:
           throw new NoSuchElementException(message);
+        case 8:
+          throw new NoSuchFrameException(message);
         case 9:
           //Unknown command
           throw new UnsupportedOperationException(message); 

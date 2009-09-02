@@ -407,15 +407,18 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
     }
 
     public WebDriver defaultContent() {
-      throw new UnsupportedOperationException("Chrome does not support default content switching yet");
+      execute("switchToDefaultContent");
+      return ChromeDriver.this;
     }
 
     public WebDriver frame(int frameIndex) {
-      throw new UnsupportedOperationException("Chrome does not support frame switching yet");
+      execute("switchToFrameByIndex", frameIndex);
+      return ChromeDriver.this;
     }
 
     public WebDriver frame(String frameName) {
-      throw new UnsupportedOperationException("Chrome does not support frame switching yet");
+      execute("switchToFrameByName", frameName);
+      return ChromeDriver.this;
     }
 
     public WebDriver window(String windowName) {

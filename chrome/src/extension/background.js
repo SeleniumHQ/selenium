@@ -1,36 +1,43 @@
 ChromeDriver = {};
 
-//Array of ports to tabs we wish to use
-//The name of each port is expected to be its JS window handle
-ChromeDriver.ports = [];
-//Port to the currently active tab
+//Array of all information about currently loaded tabs (where a WebDriver window is probably a tab)
+//Entries of form:
+//{Int tabId, String windowName, Port mainPort, Boolean isFrameset, FrameData[] frames}
+//FrameData ::= {[Int frameId], String frameName, Port framePort, FrameData[]}
+//frameId can be undefined, if it has not yet been looked up, but should be added once it is known
+ChromeDriver.tabs = [];
+
+//Port to the currently active frame (or tab, if the current page is not a frameset)
 ChromeDriver.activePort = null;
+
 //ID of the currently active tab
 ChromeDriver.activeTabId = null;
-ChromeDriver.activeWindowId = null;
+
+ChromeDriver.doFocusOnNextOpenedTab = true;
+
+ChromeDriver.urlBeingLoaded = null;
+
+ChromeDriver.isClosingTab = false;
+
+ChromeDriver.hasSentResponseToThisPageLoading = false;
+
+ChromeDriver.isOnBadPage = true;
+
 //Whether the plugin has the OS-specific window handle for the active tab
 //Called HWND rather than window handle to avoid confusion with the other
 //use of window handle to mean 'name of window'
 ChromeDriver.hasHwnd = false;
-//Whether the content script which loads at document_start has connected
-//(but the one which loads at document_end hasn't)
-ChromeDriver.hasSeenPreContentScript = false;
 ChromeDriver.xmlHttpRequest = null;
 //TODO(danielwh): Get this from the initial URL
 ChromeDriver.xmlHttpRequestUrl = "http://localhost:9700/chromeCommandExecutor"
 ChromeDriver.requestSequenceNumber = 0;
 ChromeDriver.getUrlRequestSequenceNumber = 0;
-//Indicates we couldn't connect to the server
-//(a page has loaded, but we have no content script)
-ChromeDriver.isOnBadPage = false;
 
-//URL currently being loaded, if any
-ChromeDriver.currentlyLoadingUrl = null;
+ChromeDriver.windowHandlePrefix = '__webdriver_chromedriver_windowhandle';
+ChromeDriver.windowHandleId = 0;
+
 //Indicates we will not execute any commands because we are already executing one
 ChromeDriver.isBlockedWaitingForResponse = false;
-
-//Indicates we are in the process of closing a tab becuase .close() has been called
-ChromeDriver.isClosingTab = false;
 
 //We will try to re-send a request a few times if we don't have a port,
 //in case a page is loading/changing and we get a port.
@@ -39,29 +46,75 @@ ChromeDriver.attemptsToSendWithNoPort = 0;
 
 chrome.self.onConnect.addListener(function(port) {
   console.log("Connected to " + port.name);
-  if (!ChromeDriver.hasSeenPreContentScript) {
-    ChromeDriver.hasSeenPreContentScript = true;
-    return;
+  //Note: The frameset port *always* connects before any frame port.  After that, the order is in page loading time
+  ChromeDriver.isOnBadPage = false;
+  var foundTab = false;
+  for (var tab in ChromeDriver.tabs) {
+    if (ChromeDriver.tabs[tab].tabId == port.tab.id) {
+      //We must be a new [i]frame in the page, because when a page closes, it is removed from ChromeDriver.tabs
+      //TODO(danielwh): Work out WHICH page it's a sub-frame of (I don't look forward to this)
+      //ChromeDriver.tabs[tab].frames.push({name: port.name, port: port, frames: []});
+      console.log("Loaded a frame.  Didn't push it to the array, as we don't know which page it's a sub-tab of, in the case of nested frames")
+      foundTab = true;
+      break;
+    }
   }
-  ChromeDriver.hasSeenPreContentScript = false;
-  pushPort(port);
-  //If this is the only window (probably first, or we closed the others),
-  //or we have changed URL in the same tab, treat this as the active page
-  //Otherwise we have opened in the background, so we keep our current focus
-  if (ChromeDriver.activePort == null ||
-      port.tab.id == ChromeDriver.activePort.tab.id) {
+  if (!foundTab) {
+    //New tab!
+    //We don't know if it's a frameset yet, so we leave that as undefined
+    ChromeDriver.tabs.push({tabId: port.tab.id, windowName: ChromeDriver.windowHandlePrefix + ChromeDriver.windowHandleId + "_" + port.tab.id, mainPort: port, frames: []});
+  }
+  
+  if (ChromeDriver.doFocusOnNextOpenedTab) {
     ChromeDriver.activePort = port;
-    ChromeDriver.isOnBadPage = false;
+    setActiveTabDetails(port.tab);
+  }
+  
+  if (ChromeDriver.urlBeingLoaded != null) {
+    //This was the result of a getUrl.  Need to issue a response
+    sendEmptyResponseWhenTabIsLoaded(port.tab);  
   }
   port.onMessage.addListener(parsePortMessage);
   port.onDisconnect.addListener(function disconnectPort(port) {
     console.log("Disconnected from " + port.name);
+    var remainingTabs = [];
+    for (var tab in ChromeDriver.tabs) {
+      if (ChromeDriver.tabs[tab].tabId == port.tab.id) {
+        if (ChromeDriver.tabs[tab].mainPort == port) {
+          //This main tab is being closed.
+          //Don't include it in the new version of ChromeDriver.tabs.
+          //Any subframes will also disconnect,
+          //but their tabId won't be present in the array,
+          //so they will be ignored.
+          continue;
+        } else {
+          //This is a subFrame being ditched
+          var remainingFrames = [];
+          for (var frame in ChromeDriver.tabs[tab].frames) {
+            if (ChromeDriver.tabs[tab].frames[frame].framePort == port) {
+              continue;
+            }
+            remainingFrames.push(ChromeDriver.tabs[tab].frames[frame]);
+          }
+          ChromeDriver.tabs[tab].frames = remainingFrames;
+        }
+      }
+      remainingTabs.push(ChromeDriver.tabs[tab]);
+    }
+    ChromeDriver.tabs = remainingTabs;
+    if (ChromeDriver.activePort.tab.id == port.tab.id ||
+        ChromeDriver.tabs.length == 0) {
+      //If it is the active tab, perhaps we have followed a link,
+      //so we should focus on it.
+      //We have nothing better to focus on, anyway.
+      resetActiveTabDetails();
+    }
     if (ChromeDriver.isClosingTab) {
+      //We are actively closing the tab, and expect a response to this
       sendResponseToParsedRequest("{statusCode: 0}", false)
       ChromeDriver.isClosingTab = false;
     }
-    removePort(port);
-  })
+  });
 });
 
 //Tell the ChromeCommandExecutor that we are here
@@ -84,6 +137,7 @@ function sendResponseByXHR(result, wait) {
   ChromeDriver.xmlHttpRequest.open("POST", ChromeDriver.xmlHttpRequestUrl, true);
   ChromeDriver.xmlHttpRequest.setRequestHeader("Content-type", "application/json");
   //Default to waiting for page changes, just in case
+  //TODO(danielwh): Iterate over tabs checking their status
   if (typeof(wait) == "undefined" || wait == null || wait == true) {
     setTimeout(sendResult, 600, [result]);
   } else {
@@ -98,13 +152,9 @@ function sendResponseByXHR(result, wait) {
  * and just forces the sending over an assumed open XHR
  */
 function sendResult(result) {
-  if (ChromeDriver.hasSeenPreContentScript) {
-    //Wait! We are loading a new page!
-    setTimeout(sendResult, 100, [result]);
-  } else {
-    ChromeDriver.xmlHttpRequest.send(result + "\nEOResponse\n");
-    console.log("Sent result by XHR: " + result);
-  }
+  //TODO(danielwh): Iterate over tabs checking their status
+  ChromeDriver.xmlHttpRequest.send(result + "\nEOResponse\n");
+  console.log("Sent result by XHR: " + result);
 }
 
 /**
@@ -165,15 +215,11 @@ function parseRequest(request) {
     break;
   case "close":
     //Doesn't re-focus the ChromeDriver.activePort on any tab.
-    //If this turns out to be a problem, may need to store ChromeDriver.activePort as a list,
-    //using the head to post to, and popping as things are closed
-    var tabId = ChromeDriver.activeTabId;
-    ChromeDriver.activeTabId = null;
-    ChromeDriver.activePort = null;
+    chrome.tabs.remove(ChromeDriver.activeTabId);
     ChromeDriver.isClosingTab = true;
-    chrome.tabs.remove(tabId);
     break;
   case "getWindowHandle":
+    //TODO(danielwh): Get window's handle, not frame's
     sendResponseToParsedRequest("{statusCode: 0, value: '" + ChromeDriver.activePort.name + "'}", false);
     break;
   case "getWindowHandles":
@@ -232,6 +278,7 @@ function parsePortMessage(message) {
   case 2: //org.openqa.selenium.WebDriverException [Cookies]
   case 3: //org.openqa.selenium.NoSuchWindowException
   case 7: //org.openqa.selenium.NoSuchElementException
+  case 8: //org.openqa.selenium.NoSuchFrameException
   case 9: //java.lang.UnsupportedOperationException [Unknown command]
   case 10: //org.openqa.selenium.StaleElementReferenceException
   case 11: //org.openqa.selenium.ElementNotVisibleException
@@ -276,6 +323,13 @@ function parsePortMessage(message) {
         parseRequest({request: 'sendElementNonNativeKeys', elementId: message.response.value.elementId, keys: message.response.value.keys});
       }
       break;
+    case "sniffForMetaRedirects":
+      if (!message.response.value.value && !ChromeDriver.hasSentResponseToThisPageLoading) {
+        ChromeDriver.urlBeingLoaded = null;
+        ChromeDriver.hasSentResponseToThisPageLoading = true;
+        sendResponseToParsedRequest("", false);
+      }
+      break;
     }
     break
   }
@@ -304,10 +358,24 @@ function wrapInjectEmbedIfNecessary(requestObject) {
  */
 function getWindowHandles() {
   var windowHandles = [];
-  for (var i = 0; i < ChromeDriver.ports.length; ++i) {
-    windowHandles.push(ChromeDriver.ports[i].name);
+  for (var tab in ChromeDriver.tabs) {
+    windowHandles.push(ChromeDriver.tabs[tab].windowName);
   }
   return JSON.stringify({statusCode: 0, value: windowHandles});
+}
+
+function resetActiveTabDetails() {
+  ChromeDriver.activePort = null;
+  ChromeDriver.hasHwnd = false;
+  ChromeDriver.activeTabId = null;
+  ChromeDriver.doFocusOnNextOpenedTab = true;
+  ChromeDriver.hasSentResponseToThisPageLoading = false;
+}
+
+function setActiveTabDetails(tab) {
+  ChromeDriver.activeTabId = tab.id;
+  ChromeDriver.activeWindowId = tab.windowId;
+  ChromeDriver.doFocusOnNextOpenedTab = false;
 }
 
 /**
@@ -316,14 +384,19 @@ function getWindowHandles() {
  * @param url the URL to load
  */
 function getUrl(url) {
-  ChromeDriver.activePort = null;
-  ChromeDriver.hasHwnd = false;
-  if (ChromeDriver.activeTabId != null) {
+  console.log("getUrl");
+  ChromeDriver.urlBeingLoaded = url;
+  var tempActiveTagId = ChromeDriver.activeTabId;
+  resetActiveTabDetails();
+  if (tempActiveTagId == null) {
+    chrome.tabs.create({url: url, selected: true}, getUrlCallback);
+  } else {
+    ChromeDriver.activeTabId = tempActiveTagId;
     chrome.tabs.remove(ChromeDriver.activeTabId);
+    chrome.tabs.create({url: url, selected: true}, getUrlCallback);
+    //.update is significantly faster, but reuses a port if we are only changing url by #foo, so we hang
+    //chrome.tabs.update(ChromeDriver.activeTabId, {url: url, selected: true}, getUrlCallback);
   }
-  ChromeDriver.activeTabId = null;
-  ChromeDriver.currentlyLoadingUrl = url;
-  chrome.tabs.create({url: url, selected: true}, getUrlCallback);
 }
 
 function getUrlCallback(tab) {
@@ -331,7 +404,11 @@ function getUrlCallback(tab) {
     //An error probably arose because Chrome didn't have a window yet (see crbug.com 19846)
     //If we retry, we *should* be fine.  Unless something really bad is happening, in which case
     //we will probably hang indefinitely trying to reload the same URL
-    getUrl(ChromeDriver.currentlyLoadingUrl);
+    getUrl(ChromeDriver.urlBeingLoaded);
+    return;
+  }
+  if (typeof(tab) == "undefined") {
+    chrome.tabs.get(ChromeDriver.activeTabId, getUrlCallback);
     return;
   }
   if (tab.status != "complete") {
@@ -339,20 +416,34 @@ function getUrlCallback(tab) {
     setTimeout("getUrlCallbackById(" + tab.id + ")", 10);
   } else {
     ChromeDriver.getUrlRequestSequenceNumber++;
-    ChromeDriver.activeTabId = tab.id;
-    ChromeDriver.activeWindowId = tab.windowId;
-    setActivePortByTabId(tab.id);
-    ChromeDriver.requestSequenceNumber = 0;
     if (ChromeDriver.activePort == null) {
       ChromeDriver.isOnBadPage = true;
+      sendEmptyResponseWhenTabIsLoaded(tab);
     }
-    sendResponseToParsedRequest("", false);
+    setActiveTabDetails(tab);
   }
 }
 
 function getUrlCallbackById(tabId) {
   chrome.tabs.get(tabId, getUrlCallback);
 }
+
+function sendEmptyResponseWhenTabIsLoaded(tab) {
+  if (tab.status == "complete") {
+    if (ChromeDriver.activePort) {
+      ChromeDriver.isBlockedWaitingForResponse = false;
+      parseRequest({request: 'sniffForMetaRedirects'});
+    } else {
+      if (!ChromeDriver.hasSentResponseToThisPageLoading) {
+        ChromeDriver.urlBeingLoaded = null;
+        sendResponseToParsedRequest("", false);
+      }
+    }
+  } else {
+    chrome.tabs.get(tab.id, sendEmptyResponseWhenTabIsLoaded);
+  }
+}
+      
 
 function setToolstripsBusy(busy) {
   var toolstrips = chrome.self.getToolstrips(ChromeDriver.activeWindowId);
@@ -368,46 +459,16 @@ function setToolstripsBusy(busy) {
   }
 }
 
-function pushPort(port) {
-  //It would be nice to only have one port per name, so we enforce this
-  removePort(port);
-  ChromeDriver.ports.push(port);
-}
-
-function setActivePortByTabId(tabId) {
-  for (var i = 0; i < ChromeDriver.ports.length; ++i) {
-    if (ChromeDriver.ports[i].tab.id == tabId) {
-      ChromeDriver.activePort = ChromeDriver.ports[i];
-      break;
-    }
-  }
-}
-
 function setActivePortByWindowName(handle) {
-  for (var i = 0; i < ChromeDriver.ports.length; ++i) {
-    if (ChromeDriver.ports[i].name == handle) {
-      ChromeDriver.activePort = ChromeDriver.ports[i];
-      ChromeDriver.activeTabId = ChromeDriver.activePort.tab.id;
-      chrome.tabs.update(ChromeDriver.activeTabId, {selected: true});
+  for (var tab in ChromeDriver.tabs) {
+    if (ChromeDriver.tabs[tab].windowName == handle || 
+        ChromeDriver.tabs[tab].mainPort.name == handle) {
+      ChromeDriver.activePort = ChromeDriver.tabs[tab].mainPort;
+      chrome.tabs.get(ChromeDriver.tabs[tab].tabId, setActiveTabDetails);
+      chrome.tabs.update(ChromeDriver.tabs[tab].tabId, {selected: true});
       sendResponseToParsedRequest("{statusCode: 0}", false);
       return;
     }
   }
   sendResponseToParsedRequest("{statusCode: 3, value: {message: 'Could not find window to switch to by handle: " + handle + "'}}", false);
-}
-
-/**
- * Removes the passed port from our array of current ports
- */
-function removePort(port) {
-  var temp_ports = [];
-  for (var i = 0; i < ChromeDriver.ports.length; ++i) {
-    if (ChromeDriver.ports[i].name != port.name) {
-      temp_ports.push(ChromeDriver.ports[i]);
-    }
-  }
-  ChromeDriver.ports = temp_ports;
-  if (ChromeDriver.activePort && ChromeDriver.activePort.name == port.name) {
-    ChromeDriver.activePort = null;
-  }
 }

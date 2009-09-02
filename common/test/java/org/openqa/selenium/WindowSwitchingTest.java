@@ -94,6 +94,7 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
       // If we make it this far, we're all good.
     } finally {
       driver.switchTo().window(currentHandle);
+      driver.findElement(By.id("linkId"));
     }
   }
 

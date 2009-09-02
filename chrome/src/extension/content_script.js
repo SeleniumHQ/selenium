@@ -191,6 +191,9 @@ function parsePortMessage(message) {
   case "toggleElement":
     response.value = toggleElement(element);
     break;
+  case "sniffForMetaRedirects":
+    response.value = sniffForMetaRedirects();
+    break;
   default:
     response.value = {statusCode: 9, value: {message: message.request.request + " is unsupported"}};
     break;
@@ -613,6 +616,16 @@ function toggleElement(element) {
 function getStyle(element, style) {
   var value = document.defaultView.getComputedStyle(element, null).getPropertyValue(style);
   return rgbToRRGGBB(value);
+}
+
+function sniffForMetaRedirects() {
+  for (var i = 0; i < document.getElementsByTagName("meta").length; ++i) {
+    if (document.getElementsByTagName("meta")[i].hasAttribute("http-equiv") &&
+        document.getElementsByTagName("meta")[i].getAttribute("http-equiv").toLowerCase == "refresh") {
+      return {statusCode: "no-op", value: true};
+    }
+  }
+  return {statusCode: "no-op", value: false};
 }
 
 /**
