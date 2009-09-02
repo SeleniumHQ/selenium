@@ -18,7 +18,6 @@ limitations under the License.
 package org.openqa.selenium.firefox;
 
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.firefox.NotConnectedException;
 import org.openqa.selenium.firefox.internal.RunningInstanceConnection;
 
 import java.io.IOException;
@@ -34,7 +33,6 @@ public class FirefoxLauncher {
   public static void main(String[] args) {
     FirefoxBinary binary = new FirefoxBinary();
     FirefoxLauncher launcher = new FirefoxLauncher(new FirefoxBinary());
-    ProfileManager profileManager = ProfileManager.getInstance();
 
     String profileName = "WebDriver";
     int port = FirefoxDriver.DEFAULT_PORT;

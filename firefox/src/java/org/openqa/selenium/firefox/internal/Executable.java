@@ -106,7 +106,7 @@ public class Executable {
           case MAC:
               if (!binaryName.endsWith(".app"))
                   binaryName += ".app";
-              binaryName += "/Contents/MacOS/firefox";
+              binaryName += "/Contents/MacOS/firefox-bin";
               break;
 
           default:
@@ -141,7 +141,7 @@ public class Executable {
           break;
 
       case MAC:
-          binary = new File("/Applications/Firefox.app/Contents/MacOS/firefox");
+          binary = new File("/Applications/Firefox.app/Contents/MacOS/firefox-bin");
           break;
 
       default:
