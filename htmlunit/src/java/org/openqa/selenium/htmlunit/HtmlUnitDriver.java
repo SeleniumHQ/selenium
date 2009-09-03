@@ -18,19 +18,25 @@ limitations under the License.
 
 package org.openqa.selenium.htmlunit;
 
-import java.io.IOException;
-import java.net.ConnectException;
-import java.net.URL;
-import java.net.UnknownHostException;
-import java.security.GeneralSecurityException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicLong;
+import com.gargoylesoftware.htmlunit.BrowserVersion;
+import com.gargoylesoftware.htmlunit.CookieManager;
+import com.gargoylesoftware.htmlunit.ElementNotFoundException;
+import com.gargoylesoftware.htmlunit.Page;
+import com.gargoylesoftware.htmlunit.ProxyConfig;
+import com.gargoylesoftware.htmlunit.ScriptResult;
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.WebResponse;
+import com.gargoylesoftware.htmlunit.WebWindow;
+import com.gargoylesoftware.htmlunit.WebWindowEvent;
+import com.gargoylesoftware.htmlunit.WebWindowListener;
+import com.gargoylesoftware.htmlunit.WebWindowNotFoundException;
+import com.gargoylesoftware.htmlunit.html.FrameWindow;
+import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
+import com.gargoylesoftware.htmlunit.html.HtmlElement;
+import com.gargoylesoftware.htmlunit.html.HtmlFrame;
+import com.gargoylesoftware.htmlunit.html.HtmlInlineFrame;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.javascript.host.html.HTMLElement;
 
 import net.sourceforge.htmlunit.corejs.javascript.Function;
 import net.sourceforge.htmlunit.corejs.javascript.ScriptableObject;
@@ -57,25 +63,17 @@ import org.openqa.selenium.internal.ReturnedCookie;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.gargoylesoftware.htmlunit.BrowserVersion;
-import com.gargoylesoftware.htmlunit.CookieManager;
-import com.gargoylesoftware.htmlunit.ElementNotFoundException;
-import com.gargoylesoftware.htmlunit.Page;
-import com.gargoylesoftware.htmlunit.ProxyConfig;
-import com.gargoylesoftware.htmlunit.ScriptResult;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.WebResponse;
-import com.gargoylesoftware.htmlunit.WebWindow;
-import com.gargoylesoftware.htmlunit.WebWindowEvent;
-import com.gargoylesoftware.htmlunit.WebWindowListener;
-import com.gargoylesoftware.htmlunit.WebWindowNotFoundException;
-import com.gargoylesoftware.htmlunit.html.FrameWindow;
-import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import com.gargoylesoftware.htmlunit.html.HtmlFrame;
-import com.gargoylesoftware.htmlunit.html.HtmlInlineFrame;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.javascript.host.HTMLElement;
+import java.io.IOException;
+import java.net.ConnectException;
+import java.net.URL;
+import java.net.UnknownHostException;
+import java.security.GeneralSecurityException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecutor,
                                        FindsById, FindsByLinkText, FindsByXPath, FindsByName,
@@ -83,10 +81,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
 
   private WebClient webClient;
   private WebWindow currentWindow;
-  /**
-   * window name => history.
-   */
-  private Map<WebWindow, History> histories = new HashMap<WebWindow, History>();
+
   private boolean enableJavascript;
   private ProxyConfig proxyConfig;
   private AtomicLong windowNamer = new AtomicLong(System.currentTimeMillis());
@@ -103,15 +98,6 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
       }
 
       public void webWindowContentChanged(WebWindowEvent event) {
-        WebWindow window = event.getWebWindow();
-
-        History history = histories.get(window);
-        if (history == null) {
-          history = new History(window);
-          histories.put(window, history);
-        }
-        history.addNewPage(event.getNewPage());
-
         if (event.getWebWindow() != currentWindow) {
           return;
         }
@@ -121,9 +107,6 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
       }
 
       public void webWindowClosed(WebWindowEvent event) {
-        WebWindow window = event.getWebWindow();
-        histories.remove(window);
-
         // Check if the event window refers to us or one of our parent windows
         // setup the currentWindow appropriately if necessary
         WebWindow curr = currentWindow;
@@ -140,9 +123,6 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
 
     // Now put us on the home page, like a real browser
     get(webClient.getHomePage());
-
-    // Clear the history.
-    histories.clear();
   }
 
   public HtmlUnitDriver() {
@@ -315,7 +295,6 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
       webClient = null;
     }
     currentWindow = null;
-    histories.clear();
   }
 
   public Set<String> getWindowHandles() {
@@ -708,50 +687,22 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     return currentWindow;
   }
 
-  private class History {
-
-    private final WebWindow window;
-    private List<Page> history = new ArrayList<Page>();
-    private int index = -1;
-
-    private History(WebWindow window) {
-      this.window = window;
-    }
-
-    public void addNewPage(Page newPage) {
-      ++index;
-      while (history.size() > index) {
-        history.remove(index);
-      }
-      history.add(newPage);
-    }
-
-    public void goBack() {
-      if (index > 0) {
-        --index;
-        window.setEnclosedPage(history.get(index));
-      }
-    }
-
-    public void goForward() {
-      if (index < history.size() - 1) {
-        ++index;
-        window.setEnclosedPage(history.get(index));
-      }
-    }
-  }
-
   private class HtmlUnitNavigation implements Navigation {
 
     public void back() {
-      History history = histories.get(currentWindow);
-      history.goBack();
+      try {
+        currentWindow.getHistory().back();
+      } catch (IOException e) {
+        throw new WebDriverException(e);
+      }
     }
 
-
     public void forward() {
-      History history = histories.get(currentWindow);
-      history.goForward();
+      try {
+        currentWindow.getHistory().forward();
+      } catch (IOException e) {
+        throw new WebDriverException(e);
+      }
     }
 
 

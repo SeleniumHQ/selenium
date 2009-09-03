@@ -19,6 +19,8 @@ package org.openqa.selenium;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.anyOf;
+import org.hamcrest.Matchers;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.IE;
@@ -78,16 +80,18 @@ public class PageLoadingTest extends AbstractDriverTestCase {
         assertThat(pageNumber.getText().trim(), equalTo("2"));
     }
 
-    @Ignore(IPHONE)
-    @NeedsFreshDriver
-    public void testSouldDoNothingIfThereIsNothingToGoBackTo() {
-        driver.get(formPage);
+  @Ignore(IPHONE)
+  @NeedsFreshDriver
+  public void testSouldDoNothingIfThereIsNothingToGoBackTo() {
+    String originalTitle = driver.getTitle();
+    driver.get(formPage);
 
-        driver.navigate().back();
-        assertThat(driver.getTitle(), equalTo("We Leave From Here"));
-      }
+    driver.navigate().back();
+    // We may have returned to the browser's home page
+    assertThat(driver.getTitle(), anyOf(equalTo(originalTitle), equalTo("We Leave From Here")));
+  }
 
-    public void testShouldBeAbleToNavigateBackInTheBrowserHistory() {
+  public void testShouldBeAbleToNavigateBackInTheBrowserHistory() {
         driver.get(formPage);
 
         driver.findElement(By.id("imageButton")).submit();
