@@ -23,6 +23,11 @@ ChromeDriver.hasSentResponseToThisPageLoading = false;
 
 ChromeDriver.isOnBadPage = true;
 
+ChromeDriver.restOfCurrentFramePath = [];
+
+ChromeDriver.portToUseForFrameLookups = null;
+ChromeDriver.lastFrameIndexLookedUp = -1;
+
 //Whether the plugin has the OS-specific window handle for the active tab
 //Called HWND rather than window handle to avoid confusion with the other
 //use of window handle to mean 'name of window'
@@ -53,8 +58,8 @@ chrome.self.onConnect.addListener(function(port) {
     if (ChromeDriver.tabs[tab].tabId == port.tab.id) {
       //We must be a new [i]frame in the page, because when a page closes, it is removed from ChromeDriver.tabs
       //TODO(danielwh): Work out WHICH page it's a sub-frame of (I don't look forward to this)
-      //ChromeDriver.tabs[tab].frames.push({name: port.name, port: port, frames: []});
-      console.log("Loaded a frame.  Didn't push it to the array, as we don't know which page it's a sub-tab of, in the case of nested frames")
+      ChromeDriver.tabs[tab].frames.push({frameName: port.name, framePort: port, frames: []});
+      //Loaded a frame.  Pushed it to the array.  We don't know which page it's a sub-frame of, in the case of nested frames, if they have the same names.  It would be nice to think people didn't use frames, let alone several layers of nesting of frames with the same name, but if it turns out to be a problem... Well, we'll see.
       foundTab = true;
       break;
     }
@@ -225,6 +230,12 @@ function parseRequest(request) {
   case "getWindowHandles":
     sendResponseToParsedRequest(getWindowHandles(), false);
     break;
+  case "switchToDefaultContent":
+    switchToDefaultContent();
+    break;
+  case "switchToFrame":
+    switchToFrame(request.using);
+    break;
   case "switchToWindow":
     ChromeDriver.hasHwnd = false;
     if (typeof("request.windowName") != "undefined") {
@@ -310,7 +321,6 @@ function parsePortMessage(message) {
       }
       break;
     case "sendElementKeys":
-      console.log("Sending keys");
       try {
         if (document.embeds[0].sendKeys(message.response.value.keys)) {
           sendResponseToParsedRequest("{statusCode: 0}", true);
@@ -327,8 +337,35 @@ function parsePortMessage(message) {
       if (!message.response.value.value && !ChromeDriver.hasSentResponseToThisPageLoading) {
         ChromeDriver.urlBeingLoaded = null;
         ChromeDriver.hasSentResponseToThisPageLoading = true;
-        sendResponseToParsedRequest("", false);
+        switchToDefaultContent()
       }
+      break;
+    case "newTabInformation":
+      var response = message.response.value;
+      for (var tab in ChromeDriver.tabs) {
+        //RACE CONDITION!!!
+        //This call should happen before another content script
+        //connects and returns this value,
+        //but if it doesn't, we may get mismatched information
+        if (typeof(ChromeDriver.tabs[tab].isFrameset) == "undefined") {
+          ChromeDriver.tabs[tab].isFrameset = response.isFrameset;
+          return;
+        } else {
+          for (var frame in ChromeDriver.tabs[tab].frames) {
+            if (typeof(ChromeDriver.tabs[tab].frames[frame].isFrameset) == "undefined") {
+              ChromeDriver.tabs[tab].frames[frame].isFrameset = response.isFrameset;
+              return;
+            }
+          }
+        }
+      }
+      break;
+    case "getFrameNameFromIndex":
+      var newName = message.response.value.name;
+      if (ChromeDriver.restOfCurrentFramePath.length != 0) {
+        newName += "." + ChromeDriver.restOfCurrentFramePath.join(".");
+      }
+      switchToFrameByName(newName);
       break;
     }
     break
@@ -370,6 +407,7 @@ function resetActiveTabDetails() {
   ChromeDriver.activeTabId = null;
   ChromeDriver.doFocusOnNextOpenedTab = true;
   ChromeDriver.hasSentResponseToThisPageLoading = false;
+  ChromeDriver.portToUseForFrameLookups = null;
 }
 
 function setActiveTabDetails(tab) {
@@ -378,13 +416,103 @@ function setActiveTabDetails(tab) {
   ChromeDriver.doFocusOnNextOpenedTab = false;
 }
 
+function switchToDefaultContent() {
+  ChromeDriver.hasHwnd = false;
+  for (var tab in ChromeDriver.tabs) {
+    if (ChromeDriver.tabs[tab].tabId == ChromeDriver.activeTabId) {
+      if (ChromeDriver.tabs[tab].isFrameset) {
+        ChromeDriver.isBlockedWaitingForResponse = false;
+        parseRequest({request: 'switchToFrame', using: {index: 0}});
+      } else {
+        ChromeDriver.activePort = ChromeDriver.tabs[tab].mainPort;
+        sendResponseToParsedRequest("{statusCode: 0}", false);
+      }
+      return;
+    }
+  }
+}
+
+function switchToFrame(using) {
+  ChromeDriver.hasHwnd = false;
+  for (var tab in ChromeDriver.tabs) {
+    if (ChromeDriver.tabs[tab].tabId == ChromeDriver.activeTabId) {
+      ChromeDriver.portToUseForFrameLookups = ChromeDriver.tabs[tab].mainPort;
+      break;
+    }
+  }
+  if (typeof(using.name) != "undefined") {
+    switchToFrameByName(using.name);
+  } else if (typeof(using.index != "undefined")) {
+    getFrameNameFromIndex(using.index);
+  } else {
+    sendResponseToParsedRequest('{statusCode: 9, value: {message: "Switching frames other than by name or id is unsupported"}}');
+  }
+}
+
+function switchToFrameByName(name) {
+  console.log("BREAKPOINT switchToFrameByName (" + name + ") ChromeDriver.portToUseForFrameLookups.name = " + ChromeDriver.portToUseForFrameLookups.name);
+  var names = name.split(".");
+  
+  for (var tab in ChromeDriver.tabs) {
+    if (ChromeDriver.tabs[tab].tabId == ChromeDriver.activeTabId) {
+      for (var frame in ChromeDriver.tabs[tab].frames) {
+        //Maybe name was a fully qualified name, which perhaps just happened to include .s
+        console.log("Checking " + ChromeDriver.tabs[tab].frames[frame].frameName + " == " + name);
+        if (ChromeDriver.tabs[tab].frames[frame].frameName == name) {
+          ChromeDriver.activePort = ChromeDriver.tabs[tab].frames[frame].framePort;
+          ChromeDriver.restOfCurrentFramePath = [];
+          sendResponseToParsedRequest("{statusCode: 0}", false);
+          return;
+        }
+      }
+      for (var frame in ChromeDriver.tabs[tab].frames) {
+        //Maybe we're looking for a child, see if this is the parent of it
+        if (ChromeDriver.tabs[tab].frames[frame].frameName == names[0]) {
+          ChromeDriver.activePort = ChromeDriver.tabs[tab].frames[frame].framePort;
+          ChromeDriver.portToUseForFrameLookups = ChromeDriver.activePort;
+          names.shift();
+          ChromeDriver.restOfCurrentFramePath = names;
+          if (names.length == 0) {
+            sendResponseToParsedRequest("{statusCode: 0}", false);
+            return;
+          } else {
+            switchToFrameByName(names.join("."));
+            return;
+          }
+        }
+      }
+    }
+  }
+  
+  //Maybe the "name" was actually an index? Let's find out...
+  var index = null;
+  try {
+    index = parseInt(names[0]);
+  } catch (e) {
+  }
+  if (!isNaN(index)) {
+    names.shift();
+    ChromeDriver.restOfCurrentFramePath = names;
+    getFrameNameFromIndex(index);
+    return;
+  }
+  
+  sendResponseToParsedRequest("{statusCode: 8, value: " +
+      "{message: 'Could not find frame to switch to by name: " + name + "'}}", false);
+}
+
+function getFrameNameFromIndex(index) {
+  ChromeDriver.lastFrameIndexLookedUp = index;
+  var message = {request: {request: "getFrameNameFromIndex", index: index}, sequenceNumber: ChromeDriver.requestSequenceNumber++};
+  ChromeDriver.portToUseForFrameLookups.postMessage(message);
+}
+
 /**
  * Closes the current tab if it exists, and opens a new one, in which it
  * gets the URL passed
  * @param url the URL to load
  */
 function getUrl(url) {
-  console.log("getUrl");
   ChromeDriver.urlBeingLoaded = url;
   var tempActiveTagId = ChromeDriver.activeTabId;
   resetActiveTabDetails();

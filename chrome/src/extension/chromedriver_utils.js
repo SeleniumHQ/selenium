@@ -142,6 +142,14 @@ function getElementCoords(element) {
     x += element.offsetLeft;
     y += element.offsetTop;
   } while (element = element.offsetParent);
+  if (frameElement) {
+    if (frameElement.offsetLeft) {
+      x += frameElement.offsetLeft;
+    }
+    if (frameElement.offsetTop) {
+      y += frameElement.offsetTop;
+    }
+  }
   return [x, y];
 }
 

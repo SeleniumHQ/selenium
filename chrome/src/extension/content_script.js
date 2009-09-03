@@ -20,6 +20,10 @@ if (document.location != "about:blank") {
   //we're on about:blank
   ChromeDriverContentScript.port = chrome.extension.connect(window.name);
   ChromeDriverContentScript.port.onMessage.addListener(parsePortMessage);
+  var isFrameset = (document.getElementsByTagName("frameset").length > 0);
+  ChromeDriverContentScript.port.postMessage({response: {response: "newTabInformation",
+      value: {statusCode: "no-op", isFrameset: isFrameset, frameCount: window.frames.length,
+      portName: ChromeDriverContentScript.port.name}}, sequenceNumber: -1});
 }
 
 /**
@@ -44,7 +48,7 @@ function parsePortMessage(message) {
   
   ChromeDriverContentScript.currentSequenceNumber = message.sequenceNumber;
   
-  console.log("Received request: " + JSON.stringify(message));
+  console.log("Received request: " + JSON.stringify(message) + " (" + window.name + ")");
   //wait indicates whether this is a potentially page-changing change (see background.js's sendResponseByXHR)
   var response = {response: message.request.request, value: null, wait: true};
   if (typeof(message.request.elementId) != "undefined" && message.request.elementId != null) {
@@ -136,6 +140,10 @@ function parsePortMessage(message) {
   case "getElementValue":
     response.value = {statusCode: 0, value: element.value};
     response.wait = false;
+    break;
+  case "getFrameNameFromIndex":
+    //TODO(danielwh): Do this by simply looking it up in window.frames when Chrome is fixed.  Track: crbug.com 20773
+    getFrameNameFromIndex(message.request.index);
     break;
   case "getPageSource":
     response.value = getSource();
@@ -754,6 +762,56 @@ function removeInjectedScript() {
     document.getElementsByTagName("body")[0].removeChild(ChromeDriverContentScript.injectedScriptElement);
     ChromeDriverContentScript.injectedScriptElement = null;
   }
+}
+
+function getFrameNameFromIndex(index) {
+  var scriptTag = document.createElement('script');
+  scriptTag.innerText = 'var e = document.createEvent("MutationEvent");' +
+                        'var error = false;' +
+                        'try {' +
+                          'var val = window.frames[' + index + '].name;' +
+                        '} catch (exn) {' +
+                          //Fire mutation event with prevValue set to EXCEPTION to indicate an error in the script
+                          'e.initMutationEvent("DOMAttrModified", true, false, null, "EXCEPTION", null, null, 0);' +
+                          'document.getElementsByTagName("script")[document.getElementsByTagName("script").length - 1].dispatchEvent(e);' +
+                           'error = true;' +
+                        '}' +
+                        'if (!error) {' +
+                          'e.initMutationEvent("DOMAttrModified", true, false, null, null, val, null, 0);' +
+                          'document.getElementsByTagName("script")[document.getElementsByTagName("script").length - 1].dispatchEvent(e);' +
+                        '}';
+  scriptTag.addEventListener('DOMAttrModified', returnFromGetFrameNameFromIndexJavascriptInPage, false);
+  try {
+    ChromeDriverContentScript.injectedScriptElement = scriptTag;
+    if (document.getElementsByTagName("frameset").length > 0) {
+      document.getElementsByTagName("frameset")[0].appendChild(ChromeDriverContentScript.injectedScriptElement);
+    } else {
+      document.getElementsByTagName("body")[0].appendChild(ChromeDriverContentScript.injectedScriptElement);
+    }
+  } catch (e) {
+    ChromeDriverContentScript.port.postMessage({sequenceNumber: ChromeDriverContentScript.currentSequenceNumber,
+        response: {response: "getFrameNameFromIndex", value: {statusCode: 8,
+        message: "Page seemed not to be a frameset.  Couldn't find frame"}}});
+    ChromeDriverContentScript.injectedScriptElement = null;
+  }
+}
+
+function returnFromGetFrameNameFromIndexJavascriptInPage(e) {
+  if (e.prevValue == "EXCEPTION") {
+    ChromeDriverContentScript.port.postMessage({sequenceNumber: ChromeDriverContentScript.currentSequenceNumber,
+        response: {response: "getFrameNameFromIndex", value: {statusCode: 8,
+        message: "No such frame"}}});
+  } else {
+    ChromeDriverContentScript.port.postMessage({sequenceNumber: ChromeDriverContentScript.currentSequenceNumber,
+        response: {response: "getFrameNameFromIndex", value: {statusCode: "no-op",
+        name: e.newValue}}});
+  }
+  if (document.getElementsByTagName("frameset").length > 0) {
+    document.getElementsByTagName("frameset")[0].removeChild(ChromeDriverContentScript.injectedScriptElement);
+  } else {
+    document.getElementsByTagName("body")[0].removeChild(ChromeDriverContentScript.injectedScriptElement);
+  }
+  ChromeDriverContentScript.injectedScriptElement = null;
 }
 
 /**
