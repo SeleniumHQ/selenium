@@ -195,7 +195,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     assertEquals("onetwo", result);
   }
 
-  @Ignore(value = CHROME, reason = "Frames not implemented")
+  @Ignore(value = CHROME, reason = "Can't execute script in iframe, crbug coming soon")
   @JavascriptEnabled
   public void testShouldBeAbleToGrabTheBodyOfFrameOnceSwitchedTo() {
     driver.get(richTextPage);

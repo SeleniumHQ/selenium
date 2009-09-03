@@ -7,7 +7,7 @@
   "content_scripts": [
     {
       "matches": ["http://*/*", "https://*/*", "file:///*"],
-      "js": ["chromedriver_utils.js", "utils.js", "content_script.js"]
+      "js": ["utils.js", "content_script.js"]
     }
   ],
   "plugins": [{"path": "npchromedriver.dll", "public": true}],

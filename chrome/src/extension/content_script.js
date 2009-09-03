@@ -7,20 +7,21 @@ ChromeDriverContentScript = {};
 
 ChromeDriverContentScript.internalElementArray = [];
 ChromeDriverContentScript.port = null;
+ChromeDriverContentScript.currentDocument = window.document;
 ChromeDriverContentScript.injectedScriptElement = null;
 ChromeDriverContentScript.injectedEmbedElement = null;
 //Record this for async calls (execute), so returner knows what to return
 //(Also so that we can not re-start commands we have already started executing)
 ChromeDriverContentScript.currentSequenceNumber = -1;
 
-if (document.location != "about:blank") {
+if (ChromeDriverContentScript.currentDocument.location != "about:blank") {
   //If loading windows using window.open, the port is opened
   //while we are on about:blank (which always reports window.name as ''),
   //and we use port-per-tab semantics, so don't open the port if
   //we're on about:blank
   ChromeDriverContentScript.port = chrome.extension.connect(window.name);
   ChromeDriverContentScript.port.onMessage.addListener(parsePortMessage);
-  var isFrameset = (document.getElementsByTagName("frameset").length > 0);
+  var isFrameset = (ChromeDriverContentScript.currentDocument.getElementsByTagName("frameset").length > 0);
   ChromeDriverContentScript.port.postMessage({response: {response: "newTabInformation",
       value: {statusCode: "no-op", isFrameset: isFrameset, frameCount: window.frames.length,
       portName: ChromeDriverContentScript.port.name}}, sequenceNumber: -1});
@@ -150,11 +151,11 @@ function parsePortMessage(message) {
     response.wait = false;
     break;
   case "getTitle":
-    response.value = {statusCode: 0, value: document.title};
+    response.value = {statusCode: 0, value: ChromeDriverContentScript.currentDocument.title};
     response.wait = false;
     break;
   case "getCurrentUrl":
-    response.value = {statusCode: 0, value: document.location.href};
+    response.value = {statusCode: 0, value: ChromeDriverContentScript.currentDocument.location.href};
     response.wait = false;
     break;
   case "goBack":
@@ -181,7 +182,7 @@ function parsePortMessage(message) {
     response.wait = false;
     break;
   case "refresh":
-    document.location.reload(true);
+    ChromeDriverContentScript.currentDocument.location.reload(true);
     response.value = {statusCode: 0};
     break;
   case "sendElementKeys":
@@ -192,6 +193,10 @@ function parsePortMessage(message) {
     break;
   case "setElementSelected":
     response.value = selectElement(element);
+    break;
+  case "switchToNamedIFrameIfOneExists":
+    response.value = switchToNamedIFrameIfOneExists(message.request.name);
+    response.wait = false;
     break;
   case "submitElement":
     response.value = submitElement(element);
@@ -232,7 +237,7 @@ function deleteAllCookies() {
  * @param cookieName name of the cookie to delete
  */
 function deleteCookie(cookieName) {
-  var fullpath = document.location.pathname;
+  var fullpath = ChromeDriverContentScript.currentDocument.location.pathname;
   fullpath = fullpath.split('/');
   fullpath.pop(); //Get rid of the file
   for (var segment in fullpath) {
@@ -241,9 +246,9 @@ function deleteCookie(cookieName) {
       path += fullpath[segment] + '/';
     }
     //Delete cookie with trailing /
-    document.cookie = cookieName + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/' + path;
+    ChromeDriverContentScript.currentDocument.cookie = cookieName + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/' + path;
     //Delete cookie without trailing /
-    document.cookie = cookieName + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/' + path.substring(0, path.length - 1);
+    ChromeDriverContentScript.currentDocument.cookie = cookieName + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/' + path.substring(0, path.length - 1);
   }
   return {statusCode: 0};
 }
@@ -267,7 +272,7 @@ function getCookies() {
  * key=value strings
  */
 function getAllCookiesAsStrings() {
-  var cookieStrings = document.cookie.split('; ');
+  var cookieStrings = ChromeDriverContentScript.currentDocument.cookie.split('; ');
   var cookies = [];
   for (var i = 0; i < cookieStrings.length; ++i) {
     if (cookieStrings[i] == '') {
@@ -283,7 +288,7 @@ function getAllCookiesAsStrings() {
  * @param cookie org.openqa.selenium.Cookie to add
  */
 function setCookie(cookie) {
-  var currLocation = document.location;
+  var currLocation = ChromeDriverContentScript.currentDocument.location;
   var currDomain = currLocation.host;
   if (currLocation.port != 80) { currDomain += ":" + currLocation.port; }
   if (cookie.domain != null && cookie.domain != undefined &&
@@ -295,7 +300,7 @@ function setCookie(cookie) {
     return {statusCode: 2, value: {
             message: "You may only set cookies on html documents"}};
   } else {
-    document.cookie = cookie.name + '=' + escape(cookie.value) +
+    ChromeDriverContentScript.currentDocument.cookie = cookie.name + '=' + escape(cookie.value) +
         ((cookie.expiry == null || cookie.expiry == undefined) ?
             '' : ';expires=' + (new Date(cookie.expiry.time)).toGMTString()) +
         ((cookie.path == null || cookie.path == undefined) ?
@@ -329,7 +334,7 @@ function getElement(plural, parsed) {
   } else {
     lookupBy = parsed[0];
     lookupValue = parsed[1];
-    parent = document;
+    parent = ChromeDriverContentScript.currentDocument;
   }
 
   var elements = [];
@@ -435,7 +440,7 @@ function clickElement(element, elementId) {
   }
   element.scrollIntoView(true);
   var coords = getElementCoords(element);
-  return {statusCode: "no-op", elementId: elementId, x: coords[0] - document.body.scrollLeft, y: coords[1] - document.body.scrollTop};
+  return {statusCode: "no-op", elementId: elementId, x: coords[0] - ChromeDriverContentScript.currentDocument.body.scrollLeft, y: coords[1] - ChromeDriverContentScript.currentDocument.body.scrollTop};
 }
 
 /**
@@ -482,9 +487,9 @@ function getElementAttribute(element, attribute) {
  */
 function getSource() {
   if (guessPageType() == "html") {
-    return {statusCode: 0, value: document.getElementsByTagName("html")[0].outerHTML};
+    return {statusCode: 0, value: ChromeDriverContentScript.currentDocument.getElementsByTagName("html")[0].outerHTML};
   } else if (guessPageType() == "text") {
-    return {statusCode: 0, value: document.getElementsByTagName("pre")[0].innerHTML};
+    return {statusCode: 0, value: ChromeDriverContentScript.currentDocument.getElementsByTagName("pre")[0].innerHTML};
   }
 }
 
@@ -622,14 +627,25 @@ function toggleElement(element) {
  * @param style CSS property to get
  */
 function getStyle(element, style) {
-  var value = document.defaultView.getComputedStyle(element, null).getPropertyValue(style);
+  var value = ChromeDriverContentScript.currentDocument.defaultView.getComputedStyle(element, null).getPropertyValue(style);
   return rgbToRRGGBB(value);
 }
 
+function switchToNamedIFrameIfOneExists(name) {
+  var iframes = ChromeDriverContentScript.currentDocument.getElementsByTagName("iframe");
+  for (var i = 0; i < iframes.length; ++i) {
+    if (iframes[i].name == name || iframes[i].id == name) {
+      ChromeDriverContentScript.currentDocument = iframes[i].contentDocument;
+      return {statusCode: 0};
+    }
+  }
+  return {statusCode: 8, value: {message: 'Could not find iframe to switch to by name:' + name}};
+}
+
 function sniffForMetaRedirects() {
-  for (var i = 0; i < document.getElementsByTagName("meta").length; ++i) {
-    if (document.getElementsByTagName("meta")[i].hasAttribute("http-equiv") &&
-        document.getElementsByTagName("meta")[i].getAttribute("http-equiv").toLowerCase == "refresh") {
+  for (var i = 0; i < ChromeDriverContentScript.currentDocument.getElementsByTagName("meta").length; ++i) {
+    if (ChromeDriverContentScript.currentDocument.getElementsByTagName("meta")[i].hasAttribute("http-equiv") &&
+        ChromeDriverContentScript.currentDocument.getElementsByTagName("meta")[i].getAttribute("http-equiv").toLowerCase == "refresh") {
       return {statusCode: "no-op", value: true};
     }
   }
@@ -673,7 +689,7 @@ function execute(script, passedArgs) {
     }
   }
   //Add a script tag to the page, containing the script we wish to execute
-  var scriptTag = document.createElement('script');
+  var scriptTag = ChromeDriverContentScript.currentDocument.createElement('script');
   var argsString = JSON.stringify(args).replace(/"/g, "\\\"");
   scriptTag.innerText = 'var e = document.createEvent("MutationEvent");' +
                         //Dump our arguments in an array
@@ -714,17 +730,17 @@ function execute(script, passedArgs) {
                           //Fire mutation event with newValue set to the JSON of our return value
                           'e.initMutationEvent("DOMAttrModified", true, false, null, null, "{value: " + val + "}", null, 0);' +
                           'document.getElementsByTagName("script")[document.getElementsByTagName("script").length - 1].dispatchEvent(e);' +
-                        '}';
+                        '};' +
   scriptTag.addEventListener('DOMAttrModified', returnFromJavascriptInPage, false);
   ChromeDriverContentScript.injectedScriptElement = scriptTag;
-  document.getElementsByTagName("body")[0].appendChild(ChromeDriverContentScript.injectedScriptElement);
+  ChromeDriverContentScript.currentDocument.getElementsByTagName("body")[0].appendChild(ChromeDriverContentScript.injectedScriptElement);
 }
 
 /**
  * Callback from execute
  */
 function returnFromJavascriptInPage(e) {
-  if (ChromeDriverContentScript.injectedScriptElement == null) {
+    if (ChromeDriverContentScript.injectedScriptElement == null) {
     console.log("Somehow the returnFromJavascriptInPage hander was reached.");
     return;
   }
@@ -759,13 +775,13 @@ function returnFromJavascriptInPage(e) {
  */
 function removeInjectedScript() {
   if (ChromeDriverContentScript.injectedScriptElement != null) {
-    document.getElementsByTagName("body")[0].removeChild(ChromeDriverContentScript.injectedScriptElement);
+    ChromeDriverContentScript.currentDocument.getElementsByTagName("body")[0].removeChild(ChromeDriverContentScript.injectedScriptElement);
     ChromeDriverContentScript.injectedScriptElement = null;
   }
 }
 
 function getFrameNameFromIndex(index) {
-  var scriptTag = document.createElement('script');
+  var scriptTag = ChromeDriverContentScript.currentDocument.createElement('script');
   scriptTag.innerText = 'var e = document.createEvent("MutationEvent");' +
                         'var error = false;' +
                         'try {' +
@@ -783,10 +799,10 @@ function getFrameNameFromIndex(index) {
   scriptTag.addEventListener('DOMAttrModified', returnFromGetFrameNameFromIndexJavascriptInPage, false);
   try {
     ChromeDriverContentScript.injectedScriptElement = scriptTag;
-    if (document.getElementsByTagName("frameset").length > 0) {
-      document.getElementsByTagName("frameset")[0].appendChild(ChromeDriverContentScript.injectedScriptElement);
+    if (ChromeDriverContentScript.currentDocument.getElementsByTagName("frameset").length > 0) {
+      ChromeDriverContentScript.currentDocument.getElementsByTagName("frameset")[0].appendChild(ChromeDriverContentScript.injectedScriptElement);
     } else {
-      document.getElementsByTagName("body")[0].appendChild(ChromeDriverContentScript.injectedScriptElement);
+      ChromeDriverContentScript.currentDocument.getElementsByTagName("body")[0].appendChild(ChromeDriverContentScript.injectedScriptElement);
     }
   } catch (e) {
     ChromeDriverContentScript.port.postMessage({sequenceNumber: ChromeDriverContentScript.currentSequenceNumber,
@@ -806,10 +822,10 @@ function returnFromGetFrameNameFromIndexJavascriptInPage(e) {
         response: {response: "getFrameNameFromIndex", value: {statusCode: "no-op",
         name: e.newValue}}});
   }
-  if (document.getElementsByTagName("frameset").length > 0) {
-    document.getElementsByTagName("frameset")[0].removeChild(ChromeDriverContentScript.injectedScriptElement);
+  if (ChromeDriverContentScript.currentDocument.getElementsByTagName("frameset").length > 0) {
+    ChromeDriverContentScript.currentDocument.getElementsByTagName("frameset")[0].removeChild(ChromeDriverContentScript.injectedScriptElement);
   } else {
-    document.getElementsByTagName("body")[0].removeChild(ChromeDriverContentScript.injectedScriptElement);
+    ChromeDriverContentScript.currentDocument.getElementsByTagName("body")[0].removeChild(ChromeDriverContentScript.injectedScriptElement);
   }
   ChromeDriverContentScript.injectedScriptElement = null;
 }
@@ -818,16 +834,229 @@ function returnFromGetFrameNameFromIndexJavascriptInPage(e) {
  * Inject an embed tag so the native code can grab the HWND
  */
 function injectEmbed() {
-  ChromeDriverContentScript.injectedEmbedElement = document.createElement('embed');
+  ChromeDriverContentScript.injectedEmbedElement = ChromeDriverContentScript.currentDocument.createElement('embed');
   ChromeDriverContentScript.injectedEmbedElement.setAttribute("type", "application/x-chromedriver-reporter");
-  document.getElementsByTagName("body")[0].appendChild(ChromeDriverContentScript.injectedEmbedElement);
+  ChromeDriverContentScript.currentDocument.getElementsByTagName("body")[0].appendChild(ChromeDriverContentScript.injectedEmbedElement);
   //Give the embed time to render.  Hope that the followup doesn't count embeds or anything
   setTimeout(removeInjectedEmbed, 100);
 }
 
 function removeInjectedEmbed() {
   if (ChromeDriverContentScript.injectedEmbedElement != null) {
-    document.getElementsByTagName("body")[0].removeChild(ChromeDriverContentScript.injectedEmbedElement);
+    ChromeDriverContentScript.currentDocument.getElementsByTagName("body")[0].removeChild(ChromeDriverContentScript.injectedEmbedElement);
     ChromeDriverContentScript.injectedEmbedElement = null;
   }
+}
+
+/**
+ * Guesses whether we have an HTML document or a text file
+ */
+function guessPageType() {
+  var source = ChromeDriverContentScript.currentDocument.getElementsByTagName("html")[0].outerHTML;
+  var textSourceBegins = '<html><body><pre style="word-wrap: break-word; white-space: pre-wrap;">';
+  var textSourceEnds = '</pre></body></html>';
+  
+  if (source.substr(0, textSourceBegins.length) == textSourceBegins && 
+      source.substr(0 - textSourceEnds.length) == textSourceEnds) {
+    return "text";
+  } else {
+    return "html";
+  }
+}
+
+/**
+ * Gets an array of elements which match the passed xpath string
+ */
+function getElementsByXPath(xpath) {
+  var elements = [];
+  var foundElements = ChromeDriverContentScript.currentDocument.evaluate(xpath, ChromeDriverContentScript.currentDocument, null, XPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
+  var this_element = foundElements.iterateNext();
+  while (this_element) {
+    elements.push(this_element);
+    this_element = foundElements.iterateNext();
+  }
+  return elements;
+}
+
+/**
+ * Gets canonical xpath of the passed element, e.g. /HTML/BODY/P[1]
+ */
+function getXPathOfElement(element) {
+  var path = "";
+  for (; element && element.nodeType == 1; element = element.parentNode) {
+    index = getElementIndexForXPath(element);
+    path = "/" + element.tagName + "[" + index + "]" + path;
+  }
+  return path;	
+}
+
+/**
+ * Returns n for the nth element of type element.tagName in the page
+ */
+function getElementIndexForXPath(element) {
+  var index = 1;
+  for (var sibling = element.previousSibling; sibling ; sibling = sibling.previousSibling) {
+    if (sibling.nodeType == 1 && sibling.tagName == element.tagName) {
+      index++;
+    }
+  }
+  return index;
+}
+
+/**
+ * Gets an array of link elements whose displayed text is linkText
+ */
+function getElementsByLinkText(parent, linkText) {
+  var links = parent.getElementsByTagName("a");
+  var matchingLinks = [];
+  for (var i = 0; i < links.length; i++) {
+    if (Utils.getText(links[i]) == linkText) {
+      matchingLinks.push(links[i]);
+    }
+  }
+  return matchingLinks;
+}
+
+/**
+ * Gets an array of link elements whose displayed text includes linkText
+ */
+function getElementsByPartialLinkText(parent, partialLinkText) {
+  var links = parent.getElementsByTagName("a");
+  var matchingLinks = [];
+  for (var i = 0; i < links.length; i++) {
+    if (Utils.getText(links[i]).indexOf(partialLinkText) > -1) {
+      matchingLinks.push(links[i]);
+    }
+  }
+  return matchingLinks;
+}
+
+/**
+ * Throws exception if element is not displayed
+ * @return nothing if element is displayed
+ * @throws ElementNotVisibleException object ready to be sent if element is not displayed
+ */
+function checkElementIsDisplayed(element) {
+  if (element.tagName.toLowerCase() == "title") {
+    //Always visible
+    return;
+  }
+  if (!Utils.isDisplayed(element)) {
+    throw {statusCode: 11, value: {message: "Element was not visible"}};
+  }
+}
+
+/**
+ * Throws exception if element is disabled
+ * @return nothing if element is enabled
+ * @throws UnsupoprtedOperationException object ready to be sent if element is disabled
+ */
+function checkElementNotDisabled(element) {
+  if (element.disabled) {
+    throw {statusCode: 12, value: {message: "Cannot operate on disabled element"}};
+  }
+}
+
+/**
+ * Checks whether element is selected/checked
+ * @return true if element is {selectable and selected, checkable and checked},
+ *         false otherwise
+ */
+function findWhetherElementIsSelected(element) {
+  var selected = false;
+  try {
+    var tagName = element.tagName.toLowerCase();
+    if (tagName == "option") {
+      selected = element.selected;
+    } else if (tagName == "input") {
+      var type = element.getAttribute("type").toLowerCase();
+      if (type == "checkbox" || type == "radio") {
+        selected = element.checked;
+      }
+    } else {
+      selected = element.getAttribute("selected");
+    }
+  } catch (e) {
+    selected = false;
+  }
+  return selected;
+}
+
+/**
+ * Gets the coordinates of the top-left corner of the element on the screen
+ * @return array: [x, y]
+ */
+function getElementCoords(element) {
+  var x = y = 0;
+  do {
+    x += element.offsetLeft;
+    y += element.offsetTop;
+  } while (element = element.offsetParent);
+  if (frameElement) {
+    if (frameElement.offsetLeft) {
+      x += frameElement.offsetLeft;
+    }
+    if (frameElement.offsetTop) {
+      y += frameElement.offsetTop;
+    }
+  }
+  return [x, y];
+}
+
+/**
+ * Gets the maximum offsetHeight and offsetWidth of an element or those of its sub-elements
+ * In place because element.offset{Height,Width} returns incorrectly in WebKit (see bug 28810)
+ * @param element element to get max dimensions of
+ * @param width optional greatest width seen so far (omit when calling)
+ * @param height optional greatest height seen so far (omit when calling)
+ * @return an object of form: {type: "DIMENSION", width: maxOffsetWidth, height: maxOffsetHeight}
+ */
+function getOffsetSizeFromSubElements(element, maxWidth, maxHeight) {
+  maxWidth = (typeof(maxWidth) == "undefined" || element.offsetWidth > maxWidth) ? element.offsetWidth : maxWidth;
+  maxHeight = (typeof(maxHeight) == "undefined" || element.offsetHeight > maxHeight) ? element.offsetHeight : maxHeight;
+  for (var child in element.children) {
+    var childSize = getOffsetSizeFromSubElements(element.children[child], maxWidth, maxHeight);
+    maxWidth = (childSize.width > maxWidth) ? childSize.width : maxWidth;
+    maxHeight = (childSize.height > maxHeight) ? childSize.height : maxHeight;
+  }
+  return {type: "DIMENSION", width: maxWidth, height: maxHeight};
+}
+
+/**
+ * Converts rgb(x, y, z) colours to #RRGGBB colours
+ * @param rgb string of form either rgb(x, y, z) or rgba(x, y, z, a) with x, y, z, a numbers
+ * @return string of form #RRGGBB where RR, GG, BB are two-digit lower-case hex values
+ */
+function rgbToRRGGBB(rgb) {
+  var r, g, b;
+  var values = rgb.split(",");
+  if (values.length == 3 && values[0].length > 4 && values[0].substr(0, 4) == "rgb(") {
+    r = decimalToHex(values[0].substr(4));
+    g = decimalToHex(values[1]);
+    b = decimalToHex(values[2].substr(0, values[2].length - 1));
+    if (r == null || g == null || b == null) {
+      return null;
+    }
+    return "#" + r + g + b;
+  } else if (rgb == "rgba(0, 0, 0, 0)") {
+    return "transparent";
+  } else {
+    return rgb;
+  }
+}
+
+/**
+ * Convert a number from decimal to a hex string of at least two digits
+ * @return null if value was not an int, two digit string representation
+ *        (with leading zero if needed) of value in base 16 otherwise
+ */
+function decimalToHex(value) {
+  value = parseInt(value).toString(16);
+  if (value == null) {
+    return null;
+  }
+  if (value.length == 1) {
+    value = '0' + '' + value;
+  }
+  return value;
 }

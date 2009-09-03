@@ -67,7 +67,6 @@ public class PageLoadingTest extends AbstractDriverTestCase {
     driver.get("http://localhost:3001");
   }
 
-  @Ignore(CHROME)
     public void testShouldBeAbleToLoadAPageWithFramesetsAndWaitUntilAllFramesAreLoaded() {
         driver.get(framesetPage);
 

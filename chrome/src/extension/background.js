@@ -450,14 +450,12 @@ function switchToFrame(using) {
 }
 
 function switchToFrameByName(name) {
-  console.log("BREAKPOINT switchToFrameByName (" + name + ") ChromeDriver.portToUseForFrameLookups.name = " + ChromeDriver.portToUseForFrameLookups.name);
   var names = name.split(".");
   
   for (var tab in ChromeDriver.tabs) {
     if (ChromeDriver.tabs[tab].tabId == ChromeDriver.activeTabId) {
       for (var frame in ChromeDriver.tabs[tab].frames) {
         //Maybe name was a fully qualified name, which perhaps just happened to include .s
-        console.log("Checking " + ChromeDriver.tabs[tab].frames[frame].frameName + " == " + name);
         if (ChromeDriver.tabs[tab].frames[frame].frameName == name) {
           ChromeDriver.activePort = ChromeDriver.tabs[tab].frames[frame].framePort;
           ChromeDriver.restOfCurrentFramePath = [];
@@ -496,9 +494,9 @@ function switchToFrameByName(name) {
     getFrameNameFromIndex(index);
     return;
   }
-  
-  sendResponseToParsedRequest("{statusCode: 8, value: " +
-      "{message: 'Could not find frame to switch to by name: " + name + "'}}", false);
+
+  ChromeDriver.isBlockedWaitingForResponse = false;
+  parseRequest({request: 'switchToNamedIFrameIfOneExists', name: name});
 }
 
 function getFrameNameFromIndex(index) {
