@@ -207,4 +207,18 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
 
     assertEquals("", body.getText());
   }
+
+  @JavascriptEnabled
+  public void testJavascriptStringHandlingShouldWorkAsExpected() {
+    driver.get(javascriptPage);
+
+    String value = (String) executeScript("return '';");
+    assertEquals("", value);
+
+    value = (String) executeScript("return undefined;");
+    assertNull(value);
+
+    value = (String) executeScript("return ' '");
+    assertEquals(" ", value);
+  }
 }

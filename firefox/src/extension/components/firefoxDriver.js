@@ -113,6 +113,7 @@ FirefoxDriver.prototype.executeScript = function(respond, script) {
 
   var parameters = new Array();
   var runScript;
+
   // Pre 2.0.0.15
   if (window['alert'] && !window.wrappedJSObject) {
     runScript = function(scriptSrc) {
@@ -149,11 +150,13 @@ FirefoxDriver.prototype.executeScript = function(respond, script) {
 
     var result = runScript(scriptSrc, parameters);
 
+    Utils.dumpn("result is: '" + result + "'");
+
     // Sophisticated.
     if (result && result['tagName']) {
       respond.setField('resultType', "ELEMENT");
       respond.response = Utils.addToKnownElements(result, this.context);
-    } else if (result) {
+    } else if (result !== undefined) {
       respond.setField('resultType', "OTHER");
       respond.response = result;
     } else {

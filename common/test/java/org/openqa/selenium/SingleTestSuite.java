@@ -32,7 +32,7 @@ public class SingleTestSuite extends TestCase {
   private final static String REMOTE = "org.openqa.selenium.remote.RemoteWebDriverTestSuite$RemoteWebDriverForTest";
 
   public static Test suite() throws Exception {
-    String driver = HTML_UNIT;
+    String driver = IE;
 
     System.setProperty("webdriver.development", "true");
     System.setProperty("jna.library.path", "..\\build;build");
@@ -46,8 +46,8 @@ public class SingleTestSuite extends TestCase {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("PageLoadingTest")
-//        .method("testSouldDoNothingIfThereIsNothingToGoBackTo")
+        .onlyRun("ExecutingJavascriptTest")
+        .method("testJavascriptStringHandlingShouldWorkAsExpected")
         .exclude(ALL)  
         .exclude(Ignore.Driver.IE)
 //        .leaveRunning()

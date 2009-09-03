@@ -202,7 +202,7 @@ public class FileHandler {
     }
 
     throw new WebDriverException(new FileNotFoundException(
-        "Could not find " + path + "in the project"));
+        "Could not find " + path + " in the project"));
   }
 
   private static void copyDir(File from, File to) throws IOException {

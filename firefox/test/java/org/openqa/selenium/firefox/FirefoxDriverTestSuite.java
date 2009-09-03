@@ -98,7 +98,7 @@ public class FirefoxDriverTestSuite extends TestCase {
         }
       }
 
-      File xpt = FileHandler.locateInProject("firefox/build/extension/components/nsINativeEvents.xpt");
+      File xpt = FileHandler.locateInProject("build/nsINativeEvents.xpt");
       File outXpt = new File(extension, "components/nsINativeEvents.xpt");
 
       try {
