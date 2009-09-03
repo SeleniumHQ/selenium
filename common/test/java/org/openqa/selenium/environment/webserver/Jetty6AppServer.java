@@ -26,8 +26,10 @@ import org.mortbay.jetty.webapp.WebAppContext;
 
 import javax.servlet.Servlet;
 import java.io.File;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.net.ServerSocket;
 
 public class Jetty6AppServer implements AppServer {
 
@@ -47,10 +49,28 @@ public class Jetty6AppServer implements AppServer {
     addServlet("Redirecter", "/redirect", RedirectServlet.class);
     addServlet("InfinitePagerServer", "/page/*", PageServlet.class);
 
-    listenOn(3000);
-    listenSecurelyOn(3443);
+    listenOn(findFreePort());
+    listenSecurelyOn(findFreePort());
   }
 
+  protected int findFreePort() {
+    ServerSocket socket = null;
+    try {
+      socket = new ServerSocket(0);
+      return socket.getLocalPort();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    } finally {
+      if (socket != null) {
+        try {
+          socket.close();
+        } catch (IOException e) {
+           // Throw this away
+        }
+      }
+    }
+
+  }
 
   protected File findRootOfWebApp() {
     String[] possiblePaths = {

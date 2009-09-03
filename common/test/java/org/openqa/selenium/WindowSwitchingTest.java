@@ -129,15 +129,25 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
     driver.get(xhtmlTestPage);
     driver.findElement(By.name("windowOne")).click();
 
+    sleepBecauseWindowsTakeTimeToOpen();
+
     Set<String> allWindowHandles = driver.getWindowHandles();
 
-    // There should be three windows. We should also see each of the window titles at least once.
+    // There should be two windows. We should also see each of the window titles at least once.
     assertEquals(2, allWindowHandles.size());
     String handle1 = (String)allWindowHandles.toArray()[1];
     driver.switchTo().window(handle1);
     driver.close();
     allWindowHandles = driver.getWindowHandles();
     assertEquals(1, allWindowHandles.size());
+  }
+
+  private void sleepBecauseWindowsTakeTimeToOpen() {
+    try {
+      Thread.sleep(1000);
+    } catch (InterruptedException e) {
+      fail("Interrupted");
+    }
   }
 
   @NeedsFreshDriver

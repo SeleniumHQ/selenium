@@ -22,6 +22,8 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
+import org.openqa.selenium.environment.GlobalTestEnvironment;
+import org.openqa.selenium.environment.webserver.AppServer;
 
 public class FrameSwitchingTest extends AbstractDriverTestCase {
     @Ignore(value = CHROME, reason = "Not yet implemented")
@@ -177,17 +179,24 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
         assertNotNull(element);
     }
 
-    @Ignore(value = CHROME, reason = "Not yet implemented")
-	public void testGetCurrentUrl() {
-        driver.get(framesetPage);
+  @Ignore(value = CHROME, reason = "Not yet implemented")
+  public void testGetCurrentUrl() {
+    AppServer appServer = GlobalTestEnvironment.get().getAppServer();
 
-        driver.switchTo().frame("second");
-        assertThat(driver.getCurrentUrl(), equalTo("http://localhost:3000/common/page/2?title=Fish"));
+    driver.get(framesetPage);
 
-        driver.get(iframePage);
-        assertThat(driver.getCurrentUrl(), equalTo("http://localhost:3000/common/iframes.html"));
+    driver.switchTo().frame("second");
 
-        driver.switchTo().frame("iframe1");
-        assertThat(driver.getCurrentUrl(), equalTo("http://localhost:3000/common/formPage.html"));
-    }
+
+    String url = appServer.whereIs("page/2");
+    assertThat(driver.getCurrentUrl(), equalTo(url + "?title=Fish"));
+
+    url = appServer.whereIs("iframes.html");
+    driver.get(iframePage);
+    assertThat(driver.getCurrentUrl(), equalTo(url));
+
+    url = appServer.whereIs("formPage.html");
+    driver.switchTo().frame("iframe1");
+    assertThat(driver.getCurrentUrl(), equalTo(url));
+  }
 }

@@ -310,8 +310,10 @@ test_java(:name => "test_jsapi",
           :deps => [ :jsapi ],
           :out  => "webdriver-jsapi-test.jar")
 
-task :build => [:common, :htmlunit, :firefox, :ie, :iphone, :support, :remote, :chrome, :selenium]
-task :test => [:test_htmlunit, :test_firefox, :test_ie, :test_iphone, :test_support, :test_remote, :test_jsapi, :test_chrome, :test_selenium]
+multitask :build => [:iphone, :support, :remote, :chrome, :selenium]
+multitask :fast_test => [:test_htmlunit, :test_firefox, :test_ie, :test_support]
+task :test => [:fast_test, :test_remote, :test_iphone, :test_jsapi, :test_selenium]
+task :all_tests => [:test, :test_chrome]
 
 task :clean do
   rm_rf 'build/'
