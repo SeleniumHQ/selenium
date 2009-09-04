@@ -21,6 +21,8 @@ def build_xpt(srcs, out, prebuilt)
       sh cmd, :verbose => false do |ok, res|
         if !ok
           copy_prebuilt(prebuilt, out)
+        else
+          copy_to_prebuilt(out, prebuilt)
         end
       end
     end
@@ -31,6 +33,8 @@ def build_xpt(srcs, out, prebuilt)
       sh cmd, :verbose => false do |ok, res|
         if !ok
           copy_prebuilt(prebuilt, out)
+        else
+          copy_to_prebuilt(out, prebuilt)
         end
       end
     end

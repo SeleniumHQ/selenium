@@ -46,3 +46,10 @@ def copy_prebuilt(prebuilt, out)
     puts "Unable to locate prebuilt copy of #{out}"
   end
 end
+
+def copy_to_prebuilt(out, prebuilt)
+  dest = "#{prebuilt}/#{out}".sub(/\/build\//, "/")
+  src = out
+
+  cp src, dest
+end

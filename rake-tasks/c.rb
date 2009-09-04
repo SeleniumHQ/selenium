@@ -28,6 +28,7 @@ def msbuild(solution, out, prebuilt)
     if (!File.exists? out) then
       sh "MSBuild.exe #{solution} /verbosity:q /target:Rebuild /property:Configuration=Release /property:Platform=x64", :verbose => false
       sh "MSBuild.exe #{solution} /verbosity:q /target:Rebuild /property:Configuration=Release /property:Platform=Win32", :verbose => false
+      copy_to_prebuilt(out, prebuilt)
     end
   else
     copy_prebuilt(prebuilt, out)
@@ -69,6 +70,8 @@ def gcc(srcs, out, args, link_args, is_32_bit, prebuilt)
       return
     end
   end
+
+  copy_to_prebuilt(out, prebuilt)
 
   rm_rf "#{out}_temp"
 end
