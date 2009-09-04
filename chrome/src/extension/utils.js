@@ -105,6 +105,16 @@ Utils.isDisplayed = function(element) {
 
     var displayed = _isDisplayed(el);
 
+    if (element.scrollIntoView && element.getBoundingClientRect &&
+        element.tagName.toLowerCase() != "option") {
+      //Option tags have 0-dimension bounding rects so ignore them
+      element.scrollIntoView(true);
+      var clientRect = element.getBoundingClientRect();
+      if (clientRect.width == 0 || clientRect.height == 0) {
+        return false;
+      }
+    }
+    
     return displayed != "none" && visibility != "hidden";
 };
 

@@ -21,6 +21,8 @@ package org.openqa.selenium;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.core.Is.is;
+import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
+import static org.openqa.selenium.Ignore.Driver.IE;
 
 public class VisibilityTest extends AbstractDriverTestCase {
 
@@ -133,7 +135,7 @@ public class VisibilityTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore
+  @Ignore({HTMLUNIT, IE})
   public void testShouldNotAllowAnElementWithZeroHeightToBeCountedAsDisplayed() {
     driver.get(javascriptPage);
 
@@ -143,7 +145,7 @@ public class VisibilityTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore
+  @Ignore({HTMLUNIT, IE})
   public void testShouldNotAllowAnElementWithZeroWidthToBeCountedAsDisplayed() {
     driver.get(javascriptPage);
 
