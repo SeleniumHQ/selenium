@@ -62,8 +62,7 @@ function testCanPassABooleanAsAScriptArgument(driver) {
   var script = 'return arguments[0] == true;';
   driver.get(TEST_PAGES.javascriptPage);
   assertThat(driver.executeScript(script, true), is(true));
-  // TODO(jmleyba): Bug in how false is handled in script conversion
-  assertThat(driver.executeScript(script, false), is(''));
+  assertThat(driver.executeScript(script, false), is(false));
 }
 
 
