@@ -34,7 +34,6 @@ public class TextPagesTest extends AbstractDriverTestCase {
   }
 
   @Ignore({IE, FIREFOX})
-  //Reason for Chrome: Pre-load content scripts don't currently run for non-HTML files.  See crbug.com 17796
   public void testShouldBeAbleToLoadASimplePageOfText() {
     driver.get(textPage);
 

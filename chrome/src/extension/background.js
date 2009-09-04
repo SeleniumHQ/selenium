@@ -21,7 +21,7 @@ ChromeDriver.isClosingTab = false;
 
 ChromeDriver.hasSentResponseToThisPageLoading = false;
 
-ChromeDriver.isOnBadPage = true;
+ChromeDriver.hasNoConnectionToPage = true;
 
 ChromeDriver.restOfCurrentFramePath = [];
 
@@ -52,7 +52,7 @@ ChromeDriver.attemptsToSendWithNoPort = 0;
 chrome.self.onConnect.addListener(function(port) {
   console.log("Connected to " + port.name);
   //Note: The frameset port *always* connects before any frame port.  After that, the order is in page loading time
-  ChromeDriver.isOnBadPage = false;
+  ChromeDriver.hasNoConnectionToPage = false;
   var foundTab = false;
   for (var tab in ChromeDriver.tabs) {
     if (ChromeDriver.tabs[tab].tabId == port.tab.id) {
@@ -206,7 +206,9 @@ function parseRequest(request) {
     console.log("Already sent a request which hasn't been replied to yet.  Not parsing any more.");
     return;
   }
-  if (ChromeDriver.isOnBadPage && request.request != "url") {
+  if (ChromeDriver.hasNoConnectionToPage && request.request != "url" &&
+      request.request != "getTitle" &&
+      request.request != "getElement" && request.request != "getElements") {
     console.log("On bad page.  Not sending request.")
     sendResponseByXHR("{statusCode: 500}");
     return;
@@ -254,6 +256,27 @@ function parseRequest(request) {
       sendResponseToParsedRequest("{statusCode: 500}");
     }
     break;
+  case "getTitle":
+    if (ChromeDriver.hasNoConnectionToPage) {
+      console.log("On bad page, but asked for title, so sending empty string");
+      sendResponseToParsedRequest("{statusCode: 0, value: ''}");
+      break;
+    }
+    //Falling through, as if we do have a page, we want to treat this like a normal request
+  case "getElement":
+    if (ChromeDriver.hasNoConnectionToPage) {
+      console.log("Not got a page, but asked for element, so throwing NoSuchElementException");
+      sendResponseToParsedRequest("{statusCode: 7, value: {message: 'Was not on a page, so could not find elements'}}");
+      break;
+    }
+    //Falling through, as if we do have a page, we want to treat this like a normal request
+  case "getElements":
+    if (ChromeDriver.hasNoConnectionToPage) {
+      console.log("Not got a page, but asked for elements, so returning no elements");
+      sendResponseToParsedRequest("{statusCode: 0, value: []}");
+      break;
+    }
+    //Falling through, as if we do have a page, we want to treat this like a normal request
   default:
     try {
       ChromeDriver.activePort.postMessage({request: request, sequenceNumber: ChromeDriver.requestSequenceNumber++});
@@ -543,7 +566,7 @@ function getUrlCallback(tab) {
   } else {
     ChromeDriver.getUrlRequestSequenceNumber++;
     if (ChromeDriver.activePort == null) {
-      ChromeDriver.isOnBadPage = true;
+      ChromeDriver.hasNoConnectionToPage = true;
       sendEmptyResponseWhenTabIsLoaded(tab);
     }
     setActiveTabDetails(tab);

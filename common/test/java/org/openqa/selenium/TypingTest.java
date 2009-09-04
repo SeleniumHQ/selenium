@@ -572,7 +572,7 @@ public class TypingTest extends AbstractDriverTestCase {
     }
 
   @JavascriptEnabled
-  @Ignore({HTMLUNIT, IE, CHROME})
+  @Ignore(value = {HTMLUNIT, IE, CHROME}, reason = "Chrome: See crbug 20773")
   public void testTypingIntoAnIFrameWithContentEditableOrDesignModeSet() {
     driver.get(richTextPage);
 
@@ -589,7 +589,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({HTMLUNIT, CHROME})
+  @Ignore(value = {HTMLUNIT, IE, CHROME}, reason = "Chrome: See crbug 20773")
   public void testNonPrintableCharactersShouldWorkWithContentEditableOrDesignModeSet() {
     driver.get(richTextPage);
 
