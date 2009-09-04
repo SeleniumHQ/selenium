@@ -69,6 +69,7 @@ public class ChromeCommandExecutor {
     
     nameToJson.put("clearElement", new JsonCommand("{request: 'clearElement', elementId: ?elementId}"));
     nameToJson.put("clickElement", new JsonCommand("{request: 'clickElement', elementId: ?elementId}"));
+    nameToJson.put("hoverElement", new JsonCommand("{request: 'hoverElement', elementId: ?elementId}"));
     nameToJson.put("sendElementKeys", new JsonCommand("{request: 'sendElementKeys', elementId: ?elementId, keys: ?keys}"));
     nameToJson.put("submitElement", new JsonCommand("{request: 'submitElement', elementId: ?elementId}"));
     nameToJson.put("toggleElement", new JsonCommand("{request: 'toggleElement', elementId: ?elementId}"));

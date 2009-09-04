@@ -30,6 +30,8 @@ using namespace std;
 #pragma data_seg(".LISTENER")
 static bool pressed = false;
 static HHOOK hook = 0;
+//Mouse coordinates we wish to preserve when we lock down the mouse
+static int globalX, globalY;
 #pragma data_seg()
 #pragma comment(linker, "/section:.LISTENER,rws")
 
@@ -180,6 +182,7 @@ LRESULT CALLBACK GetMessageProc(int nCode, WPARAM wParam, LPARAM lParam)
 
 extern "C"
 {
+//TODO(danielwh): Add hook to swallow real key pressing while we are sending keys
 void sendKeys(WINDOW_HANDLE windowHandle, const wchar_t* value, int timePerKey)
 {
 	if (!windowHandle) { return; }
@@ -504,6 +507,11 @@ LRESULT mouseUpAt(WINDOW_HANDLE directInputTo, long x, long y)
 		return SendMessage((HWND) directInputTo, WM_LBUTTONUP, MK_LBUTTON, MAKELONG(x, y));
 	}}
 
+LRESULT CALLBACK mouseHookProc(int nCode, WPARAM wParam, LPARAM lParam) {
+ SetCursorPos(globalX, globalY);
+ return 1;
+}
+
 LRESULT mouseMoveTo(WINDOW_HANDLE handle, long duration, long fromX, long fromY, long toX, long toY)
 {
 	if (!handle) { return ENULLPOINTER; }
@@ -514,21 +522,32 @@ LRESULT mouseMoveTo(WINDOW_HANDLE handle, long duration, long fromX, long fromY,
 	int steps = 15;
 	long sleep = duration / steps;
 
-	// Move in a straight line, and always use the same number of steps
-	int currentX = fromX;
-	int currentY = fromY;
+  LPRECT r = new RECT();
+  GetWindowRect(directInputTo, r);
 
-	int stepX = (toX - fromX) / steps;
-	int stepY = (toY - fromY) / steps;
-
-	for (int i = 0; i < steps -1; i++) {
-		SendMessage(directInputTo, WM_MOUSEMOVE, 0, MAKELPARAM(currentX, currentY));
-		currentX += stepX;
-		currentY += stepY;
+  //Swallow real mouse moves while we move the mouse
+  HHOOK mouseMoveHook = SetWindowsHookEx(WH_MOUSE_LL, mouseHookProc, NULL, NULL);
+  
+	for (int i = 0; i < steps; i++) {
+	  //To avoid integer division rounding and cumulative floating point errors,
+	  //calculate from scratch each time
+	  int currentX = fromX + ((toX - fromX) * ((double)i) / steps);
+		int currentY = fromY + ((toY - fromY) * ((double)i) / steps);
+	  globalX = r->left + currentX;
+    globalY = r->top + currentY;
+	  SetCursorPos(globalX, globalY);
+	  SendMessage(directInputTo, WM_MOUSEMOVE, 0, MAKELPARAM(currentX, currentY));
 		wait(sleep);
 	}
+	
+	globalX = r->left + toX;
+  globalY = r->top + toY;
+	SetCursorPos(globalX, globalY);
+	SendMessage(directInputTo, WM_MOUSEMOVE, 0, MAKELPARAM(toX, toY));
 
-	return SendMessage(directInputTo, WM_MOUSEMOVE, 0, MAKELPARAM(toX, toY));
+  UnhookWindowsHookEx(mouseMoveHook);
+  delete r;
+  return 0;
 }
 
 BOOL_TYPE pending_keyboard_events()

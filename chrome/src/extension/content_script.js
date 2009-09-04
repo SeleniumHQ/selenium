@@ -166,6 +166,9 @@ function parsePortMessage(message) {
     history.forward();
     response.value = {statusCode: 0};
     break;
+  case "hoverElement":
+    response.value = hoverElement(element, message.request.elementId);
+    break;
   case "injectEmbed":
     injectEmbed();
     break;
@@ -441,6 +444,27 @@ function clickElement(element, elementId) {
   element.scrollIntoView(true);
   var coords = getElementCoords(element);
   return {statusCode: "no-op", elementId: elementId, x: coords[0] - ChromeDriverContentScript.currentDocument.body.scrollLeft, y: coords[1] - ChromeDriverContentScript.currentDocument.body.scrollTop};
+}
+
+/**
+ * Ensures the passed element is in view, so that the native click event can be sent
+ * @return object to send back to background page to trigger a native click
+ */
+function hoverElement(element, elementId) {
+  try {
+    checkElementIsDisplayed(element)
+  } catch (e) {
+    return e;
+  }
+  element.scrollIntoView(true);
+  var coords = getElementCoords(element);
+  var size = getOffsetSizeFromSubElements(element)
+  console.log("element.clientX: " + element.clientX);
+  return {statusCode: "no-op", elementId: elementId,
+      oldX: 0,
+      oldY: 0,
+      newX: coords[0] - ChromeDriverContentScript.currentDocument.body.scrollLeft + (size.width ? size.width / 2 : 0),
+      newY: coords[1] - ChromeDriverContentScript.currentDocument.body.scrollTop + (size.height ? size.height / 2 : 0)};
 }
 
 /**

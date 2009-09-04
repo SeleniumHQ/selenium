@@ -190,7 +190,8 @@ FindsByXPath, FindsByLinkText, FindsById, FindsByName, FindsByTagName, FindsByCl
   }
 
   public void hover() {
-    throw new UnsupportedOperationException("Not yet supported in Chrome");
+    //Relies on the user not moving the mouse after the hover moves it into place 
+    execute("hoverElement", this);
   }
 
 }

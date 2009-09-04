@@ -247,6 +247,7 @@ function parseRequest(request) {
     }
     break;
   case "clickElement":
+  case "hoverElement":
     //Falling through, as native events are handled the same
   case "sendElementKeys":
     try {
@@ -341,6 +342,18 @@ function parsePortMessage(message) {
         console.log("Error natively clicking.  Trying non-native.");
         ChromeDriver.isBlockedWaitingForResponse = false;
         parseRequest({request: 'nonNativeClickElement', elementId: message.response.value.elementId});
+      }
+      break;
+    case "hoverElement":
+      try {
+        var points = message.response.value;
+        if (document.embeds[0].mouseMoveTo(15, points.oldX, points.oldY, points.newX, points.newY)) {
+          sendResponseToParsedRequest("{statusCode: 0}", true);
+        } else {
+          sendResponseToParsedRequest("{statusCode: 99}", true);
+        }
+      } catch(e) {
+        sendResponseToParsedRequest("{statusCode: 99}", true);
       }
       break;
     case "sendElementKeys":

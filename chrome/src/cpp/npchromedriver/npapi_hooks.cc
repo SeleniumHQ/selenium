@@ -30,6 +30,10 @@ bool isClickCommand(const char *command_name) {
   return !strcmp(command_name, kClickJavascriptCommand);
 }
 
+bool isMouseMoveCommand(const char *command_name) {
+  return !strcmp(command_name, kMouseMoveJavascriptCommand );
+}
+
 wchar_t *utf8ToWChar(const char *utf8, size_t len) {
 #if defined(OS_WIN)
   wchar_t *value = new wchar_t[len + 1];
@@ -83,10 +87,8 @@ NPError SetWindow(NPP instance, NPWindow *window) {
 
 bool HasJavascriptMethod(NPObject *npobj, NPIdentifier name) {
   const char *method = browser_funcs_->utf8fromidentifier(name);
-  if (isSendKeysCommand(method) || isClickCommand(method)) {
-    return true;
-  }
-  return false;
+  return (isSendKeysCommand(method) || isClickCommand(method) ||
+      isMouseMoveCommand(method));
 }
 
 bool CallMethod(const char *name, const uint32_t argCount, const NPVariant *args) {
@@ -104,6 +106,15 @@ bool CallMethod(const char *name, const uint32_t argCount, const NPVariant *args
       args[0].type == NPVariantType_Int32 &&
       args[1].type == NPVariantType_Int32) {
     clickAt(window_handle_, args[0].value.intValue, args[1].value.intValue);
+    return true;
+  } else if (isMouseMoveCommand(name) && argCount == 5 &&
+      args[0].type == NPVariantType_Int32 &&
+      args[1].type == NPVariantType_Int32 &&
+      args[2].type == NPVariantType_Int32 &&
+      args[3].type == NPVariantType_Int32 &&
+      args[4].type == NPVariantType_Int32) {
+    mouseMoveTo(window_handle_, args[0].value.intValue, args[1].value.intValue,
+        args[2].value.intValue, args[3].value.intValue, args[4].value.intValue);
     return true;
   }
   return false;
