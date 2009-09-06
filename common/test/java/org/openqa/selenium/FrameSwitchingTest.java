@@ -75,6 +75,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     }
   }
 
+	@Ignore(value = CHROME, reason = "Can't execute script in iframe, track crbug 20773")
 	public void testShouldAllowTheUserToSwitchToAnIFrameAndRemainFocusedOnIt() {
     driver.get(iframePage);
     driver.switchTo().frame(0);

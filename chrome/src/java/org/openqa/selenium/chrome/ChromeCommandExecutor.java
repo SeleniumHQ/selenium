@@ -10,11 +10,13 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Vector;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.json.JSONArray;
@@ -252,62 +254,11 @@ public class ChromeCommandExecutor {
           return new ChromeResponse(0, null);
         }
         Object value = jsonObject.get("value");
-        if (value instanceof String) {
-          return new ChromeResponse(0, jsonObject.getString("value"));
-        } else if (value instanceof Boolean) {
-          return new ChromeResponse(0, jsonObject.get("value"));
-        } else if (value instanceof Number) {
-          //We return all numbers as longs
-          return new ChromeResponse(0, jsonObject.getLong("value"));
-        } else if (value instanceof JSONArray) {
-          //XXX:(danielwh) Doesn't support nested arrays
-          JSONArray jsonArray = (JSONArray)(value);
-          Object[] arr = new Object[jsonArray.length()];
-          for (int i = 0; i < jsonArray.length(); i++) {
-            arr[i] = jsonArray.get(i);
-          }
-          return new ChromeResponse(0, arr);
-        } else if (value instanceof JSONObject) {
-          //Should only happen when we return from a javascript execution.
-          //Assumes the object is of the form {type: some_type, value: some_value}
-          //XXX(danielwh): Doesn't support arrays
-          JSONObject object = (JSONObject)value;
-          if (!object.has("type")) {
-            throw new WebDriverException("Returned a JSONObjet which had no type");
-          }
-          if ("NULL".equals(object.getString("type"))) {
-            return new ChromeResponse(0, null);
-          } else if ("VALUE".equals(object.getString("type"))) {
-            Object innerValue = object.get("value");
-            if (innerValue instanceof Integer) {
-              innerValue = new Long((Integer)innerValue);
-            }
-            return new ChromeResponse(0, innerValue);
-          } else if ("ELEMENT".equals(object.getString("type"))) {
-            //This is somewhat ugly and couples ChromeWebElement and Response
-            return new ChromeResponse(-1, object.get("value"));
-          } else if ("POINT".equals(object.getString("type"))) {
-            if (!object.has("x") || !object.has("y") ||
-                !(object.get("x") instanceof Number) ||
-                !(object.get("y") instanceof Number)) {
-              throw new WebDriverException("Couldn't construct Point without " +
-                  "x and y coordinates");
-            }
-            return new ChromeResponse(0, new Point(object.getInt("x"),
-                                             object.getInt("y")));
-          } else if ("DIMENSION".equals(object.getString("type"))) {
-            if (!object.has("width") || !object.has("height") ||
-                !(object.get("width") instanceof Number) ||
-                !(object.get("height") instanceof Number)) {
-              throw new WebDriverException("Couldn't construct Dimension " +
-                  "without width and height");
-            }
-            return new ChromeResponse(0, new Dimension(object.getInt("width"),
-                                                 object.getInt("height")));
-          }
+        Object parsedValue = parseJsonToObject(value);
+        if (parsedValue instanceof ChromeWebElement) {
+          return new ChromeResponse(-1, ((ChromeWebElement)parsedValue).getElementId());
         } else {
-          throw new WebDriverException("Didn't know how to deal with " +
-              "response value of type: " + value.getClass());
+          return new ChromeResponse(0, parsedValue);
         }
       } else {
         String message = "";
@@ -354,9 +305,72 @@ public class ChromeCommandExecutor {
     } catch (JSONException e) {
       throw new WebDriverException(e);
     }
-    return null;
   }
   
+  private Object parseJsonToObject(Object value) throws JSONException {
+    if (value instanceof String) {
+      return value;
+    } else if (value instanceof Boolean) {
+      return value;
+    } else if (value instanceof Number) {
+      //We return all numbers as longs
+      return ((Number)value).longValue();
+    } else if (value instanceof JSONArray) {
+      JSONArray jsonArray = (JSONArray)(value);
+      List<Object> arr = new Vector<Object>(jsonArray.length());
+      for (int i = 0; i < jsonArray.length(); i++) {
+        arr.add(parseJsonToObject(jsonArray.get(i)));
+      }
+      return arr;
+    } else if (value instanceof JSONObject) {
+      //Should only happen when we return from a javascript execution.
+      //Assumes the object is of the form {type: some_type, value: some_value}
+      JSONObject object = (JSONObject)value;
+      if (!object.has("type")) {
+        throw new WebDriverException("Returned a JSONObjet which had no type");
+      }
+      if ("NULL".equals(object.getString("type"))) {
+        return null;
+      } else if ("VALUE".equals(object.getString("type"))) {
+        Object innerValue = object.get("value");
+        if (innerValue instanceof Integer) {
+          innerValue = new Long((Integer)innerValue);
+        }
+        return innerValue;
+      } else if ("ELEMENT".equals(object.getString("type"))) {
+        return new ChromeWebElement(null, (String)object.get("value"));
+      } else if ("POINT".equals(object.getString("type"))) {
+        if (!object.has("x") || !object.has("y") ||
+            !(object.get("x") instanceof Number) ||
+            !(object.get("y") instanceof Number)) {
+          throw new WebDriverException("Couldn't construct Point without " +
+              "x and y coordinates");
+        }
+        return new Point(object.getInt("x"),
+                         object.getInt("y"));
+      } else if ("DIMENSION".equals(object.getString("type"))) {
+        if (!object.has("width") || !object.has("height") ||
+            !(object.get("width") instanceof Number) ||
+            !(object.get("height") instanceof Number)) {
+          throw new WebDriverException("Couldn't construct Dimension " +
+              "without width and height");
+        }
+        return new Dimension(object.getInt("width"),
+                             object.getInt("height"));
+      } else if ("COOKIE".equals(object.getString("type"))) {
+        if (!object.has("name") || !object.has("value")) {
+          throw new WebDriverException("Couldn't construct Cookie " +
+              "without name and value");
+        }
+        return new Cookie(object.getString("name"), object.getString("value"));
+      }
+    } else {
+      throw new WebDriverException("Didn't know how to deal with " +
+          "response value of type: " + value.getClass());
+    }
+    return null;
+  }
+
   /**
    * Stops listening from for new sockets from Chrome
    */
@@ -553,8 +567,9 @@ public class ChromeCommandExecutor {
      * Wraps up values as {type: some_type, value: some_value} objects
      * @param argument value to wrap up
      * @return wrapped up value
+     * TODO(danielwh): See if JSONObject and JSONArray have a useful common superclass
      */
-    static JSONObject wrapArgumentForScriptExecution(Object argument) {
+    static Object wrapArgumentForScriptExecution(Object argument) {
       JSONObject wrappedArgument = new JSONObject();
       try {
         if (argument instanceof String) {
@@ -569,6 +584,12 @@ public class ChromeCommandExecutor {
         } else if (argument instanceof ChromeWebElement) {
           wrappedArgument.put("type", "ELEMENT");
           wrappedArgument.put("value", ((ChromeWebElement)argument).getElementId());
+        } else if (argument instanceof Collection<?>) {
+          JSONArray array = new JSONArray();
+          for (Object o : (Collection<?>)argument) {
+            array.put(wrapArgumentForScriptExecution(o));
+          }
+          return array;
         } else {
           throw new IllegalArgumentException("Could not wrap up " +
                 "javascript parameter " + argument +

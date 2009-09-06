@@ -207,7 +207,7 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
   }
 
   public Set<String> getWindowHandles() {
-    Object[] windowHandles = (Object[])execute("getWindowHandles").getValue();
+    Vector<?> windowHandles = (Vector<?>)execute("getWindowHandles").getValue();
     Set<String> setOfHandles = new HashSet<String>();
     for (Object windowHandle : windowHandles) {
       setOfHandles.add((String)windowHandle);
@@ -307,14 +307,14 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
   
   WebElement getElementFrom(ChromeResponse response) {
     Object result = response.getValue();
-    Object[] elements = (Object[])result;
-    return new ChromeWebElement(this, (String)elements[0]);
+    List<?> elements = (List<?>)result;
+    return new ChromeWebElement(this, (String)elements.get(0));
   }
 
   List<WebElement> getElementsFrom(ChromeResponse response) {
     Object result = response.getValue();
     List<WebElement> elements = new Vector<WebElement>();
-    for (Object element : (Object[])result) {
+    for (Object element : (List<?>)result) {
       elements.add(new ChromeWebElement(this, (String)element));
     }
     return elements;
@@ -348,24 +348,10 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
     }
 
     public Set<Cookie> getCookies() {
-      Object result = execute("getCookies").getValue();
+      Vector<?> result = (Vector<?>)execute("getCookies").getValue();
       Set<Cookie> cookies = new HashSet<Cookie>();
-      for (Object cookie : (Object[])result) {
-        if (!(cookie instanceof JSONObject)) {
-          //Ignore malformed cookie
-          continue;
-        }
-        JSONObject jsonCookie = (JSONObject)cookie;
-        if (!jsonCookie.has("name") || !jsonCookie.has("value")) {
-          //Ignore malformed cookie
-          continue;
-        }
-        try {
-          cookies.add(new Cookie(jsonCookie.getString("name"), jsonCookie.getString("value")));
-        } catch (JSONException e) {
-          //Ignore malformed cookie
-          continue;
-        }
+      for (Object cookie : result) {
+        cookies.add((Cookie)cookie);
       }
       return cookies;
     }

@@ -265,7 +265,7 @@ function getCookies() {
   var cookieStrings = getAllCookiesAsStrings();
   for (var i = 0; i < cookieStrings.length; ++i) {
     var cookie = cookieStrings[i].split("=");
-    cookies.push({name: cookie[0], value: cookie[1], secure: false});
+    cookies.push({type: "COOKIE", name: cookie[0], value: cookie[1], secure: false});
   }
   return {statusCode: 0, value: cookies};
 }
@@ -676,6 +676,40 @@ function sniffForMetaRedirects() {
   return {statusCode: "no-op", value: false};
 }
 
+function parseWrappedArguments(argument) {
+  //Parse the arguments into actual values (which are wrapped up in JSON)
+  if (argument.length !== undefined) {
+    var array = [];
+    for (var i = 0; i < argument.length; ++i) {
+      array.push(parseWrappedArguments(argument[i]));
+    }
+    return {success: true, value: array};
+  }
+  switch (argument.type) {
+  case "ELEMENT":
+    //Wrap up as a special object with the element's canonical xpath, which the page can work out
+    var element_id = argument.value.replace("element/", "");
+    var element = null;
+    try {
+      element = internalGetElement(element_id);
+    } catch (e) {
+      return {success: false, value: {response: "execute", value:
+          {statusCode: 10,
+           message: "Tried use obsolete element as argument when executing javascript."}}};
+    }
+    return {success: true, value: {webdriverElementXPath: getXPathOfElement(element)}};
+    break;
+  //Intentional falling through because Javascript will parse things properly
+  case "STRING":
+  case "BOOLEAN":
+  case "NUMBER":
+    return {success: true, value: argument.value};
+    break;
+  }
+  return {success: false, value: {statusCode: 17,
+        message: "Bad argument to javascript."}}
+}
+
 /**
  * Execute arbitrary javascript in the page.
  * Returns by callback to returnFromJavascriptInPage.
@@ -685,31 +719,17 @@ function sniffForMetaRedirects() {
  * @param passedArgs array of arguments to pass to the script
  */
 function execute(script, passedArgs) {
+  console.log("execing " + script + ", args: " + passedArgs);
   var func = "function(){" + script + "}";
   var args = [];
-  //Parse the arguments into actual values (which are wrapped up in JSON)
   for (var i = 0; i < passedArgs.length; ++i) {
-    switch (passedArgs[i].type) {
-    case "ELEMENT":
-      //Wrap up as a special object with the element's canonical xpath, which the page can work out
-      var element_id = passedArgs[i].value.replace("element/", "");
-      var element = null;
-      try {
-        element = internalGetElement(element_id);
-      } catch (e) {
-        ChromeDriverContentScript.port.postMessage({response: "execute", value:
-            {statusCode: 10,
-             message: "Tried use obsolete element as argument when executing javascript."}});
-        return;
-      }
-      args.push({webdriverElementXPath: getXPathOfElement(element)});
-      break;
-    //Intentional falling through because Javascript will parse things properly
-    case "STRING":
-    case "BOOLEAN":
-    case "NUMBER":
-      args.push(passedArgs[i].value);
-      break;
+    console.log("Parsing: " + passedArgs[i]);
+    var value = parseWrappedArguments(passedArgs[i]);
+    if (value.success) {
+      args.push(value.value);
+    } else {
+      ChromeDriverContentScript.port.postMessage(value.value);
+      return;
     }
   }
   //Add a script tag to the page, containing the script we wish to execute
@@ -750,6 +770,8 @@ function execute(script, passedArgs) {
                               'path = "/" + val.tagName + "[" + index + "]" + path;' +
                             '}' +
                             'val = JSON.stringify({webdriverElementXPath: path});' +
+                          '} else {' +
+                            'val = JSON.stringify(val);' +
                           '}' +
                           //Fire mutation event with newValue set to the JSON of our return value
                           'e.initMutationEvent("DOMAttrModified", true, false, null, null, "{value: " + val + "}", null, 0);' +
@@ -757,7 +779,35 @@ function execute(script, passedArgs) {
                         '};' +
   scriptTag.addEventListener('DOMAttrModified', returnFromJavascriptInPage, false);
   ChromeDriverContentScript.injectedScriptElement = scriptTag;
+  console.log("Injecting script element");
   ChromeDriverContentScript.currentDocument.getElementsByTagName("body")[0].appendChild(ChromeDriverContentScript.injectedScriptElement);
+}
+
+function parseReturnValueFromScript(result) {
+  console.log("Parsing: " + JSON.stringify(result));
+  var value = {"type":"NULL"};
+  if (result !== undefined && result != null && typeof(result) == "object") {
+    if (result.webdriverElementXPath) {
+      //If we're returning an element, turn it into an actual element object
+      ChromeDriverContentScript.internalElementArray.push(getElementsByXPath(result.webdriverElementXPath)[0]);
+      value = {value:"element/" + (ChromeDriverContentScript.internalElementArray.length - 1), type:"ELEMENT"};
+    } else if (result.length !== undefined) {
+      value = [];
+      for (var i = 0; i < result.length; ++i) {
+        value.push(parseReturnValueFromScript(result[i]));
+      }
+    }
+  } else if (result !== undefined && result != null) {
+    switch (typeof(result)) {
+    //Intentional falling through because we treat all "VALUE"s the same
+    case "string":
+    case "number":
+    case "boolean":
+      value = {value: result, type: "VALUE"};
+      break;
+    }
+  }
+  return value;
 }
 
 /**
@@ -774,23 +824,12 @@ function returnFromJavascriptInPage(e) {
         message: "Tried to execute bad javascript."}}});
     return;
   }
+  console.log("Got result");
+  console.log("Result was: " + e.newValue.value);
   var result = JSON.parse(e.newValue).value;
-  var value = {"type":"NULL"};
-  if (result && typeof(result) == "object" && result.webdriverElementXPath) {
-    //If we're returning an element, turn it into an actual element object
-    ChromeDriverContentScript.internalElementArray.push(getElementsByXPath(result.webdriverElementXPath)[0]);
-    value = {value:"element/" + (ChromeDriverContentScript.internalElementArray.length - 1), type:"ELEMENT"};
-  } else if (result != null) {
-    switch (typeof(result)) {
-    //Intentional falling through because we treat all "VALUE"s the same
-    case "string":
-    case "number":
-    case "boolean":
-      value = {value: result, type: "VALUE"};
-      break;
-    }
-  }
+  var value = parseReturnValueFromScript(result);
   removeInjectedScript();
+  console.log("reutrn value: " + JSON.stringify(value));
   ChromeDriverContentScript.port.postMessage({sequenceNumber: ChromeDriverContentScript.currentSequenceNumber, response: {response: "execute", value: {statusCode: 0, value: value}}});
 }
 

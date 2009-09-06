@@ -17,9 +17,15 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Vector;
 
 import static org.openqa.selenium.Ignore.Driver.CHROME;
+import static org.openqa.selenium.Ignore.Driver.FIREFOX;
+import static org.openqa.selenium.Ignore.Driver.IE;
+import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 
 public class ExecutingJavascriptTest extends AbstractDriverTestCase {
 
@@ -62,7 +68,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     Object result = executeScript("return document.getElementById('id1');");
 
     assertNotNull(result);
-    assertTrue(result instanceof WebElement);
+    assertTrue("Expected WebElement, got: " + result.getClass(), result instanceof WebElement);
   }
 
   @JavascriptEnabled
@@ -78,6 +84,78 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     assertNotNull(result);
     assertTrue(result instanceof Boolean);
     assertTrue((Boolean) result);
+  }
+  
+  @SuppressWarnings("unchecked")
+  @JavascriptEnabled
+  @Ignore({FIREFOX, IE})
+  public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAnArray() {
+    if (!(driver instanceof JavascriptExecutor)) {
+      return;
+    }
+
+    driver.get(javascriptPage);
+    List<Object> expectedResult = new Vector<Object>();
+    expectedResult.add("zero");
+    List<Object> subList = new Vector<Object>();
+    subList.add(true);
+    subList.add(false);
+    expectedResult.add(subList);
+    Object result = executeScript("return ['zero', [true, false]];");
+    assertTrue("result was: " + result + " (" + result.getClass() + ")", result instanceof List);
+    List<Object> list = (List<Object>)result;
+    assertTrue(compareLists(expectedResult, list));
+  }
+  
+  private boolean compareLists(List<?> first, List<?> second) {
+    if (first.size() != second.size()) {
+      return false;
+    }
+    for (int i = 0; i < first.size(); ++i) {
+      if (first.get(i) instanceof List<?>) {
+        if (!(second instanceof List<?>)) {
+          return false;
+        } else {
+          if (!compareLists((List<?>)first.get(i), (List<?>)second.get(i))) {
+            return false;
+          }
+        }
+      } else {
+        if (!first.get(i).equals(second.get(i))) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+  
+  @JavascriptEnabled
+  public void testPassingAndReturningALongShouldReturnAWholeNumber() {
+    if (!(driver instanceof JavascriptExecutor)) {
+      return;
+    }
+
+    driver.get(javascriptPage);
+    Long expectedResult = 1L;
+    Object result = executeScript("return arguments[0];", expectedResult);
+    assertTrue("Expected result to be an Integer or Long but was a " +
+        result.getClass(), result instanceof Integer || result instanceof Long);
+    assertEquals(expectedResult.longValue(), result);
+  }
+  
+  @Ignore(value = {HTMLUNIT, FIREFOX}, reason = "HtmlUnit converts doubles into longs when passing")
+  @JavascriptEnabled
+  public void testPassingAndReturningADoubleShouldReturnADecimal() {
+    if (!(driver instanceof JavascriptExecutor)) {
+      return;
+    }
+
+    driver.get(javascriptPage);
+    Double expectedResult = 1.2;
+    Object result = executeScript("return arguments[0];", expectedResult);
+    assertTrue("Expected result to be a Double or Float but was a " +
+        result.getClass(), result instanceof Float || result instanceof Double);
+    assertEquals(expectedResult.doubleValue(), result);
   }
 
   @JavascriptEnabled
@@ -167,6 +245,48 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
 
     assertEquals("plainButton", value);
   }
+  
+  @JavascriptEnabled
+  @Ignore({FIREFOX, IE})
+  public void testShouldBeAbleToPassAnArrayAsArgument() {
+    if (!(driver instanceof JavascriptExecutor)) {
+      return;
+    }
+
+    driver.get(javascriptPage);
+    Object[] array = new Object[] { "zero", 1, true, 3.14159 };
+    long length = (Long)executeScript("return arguments[0].length", array);
+    assertEquals(array.length, length);
+  }
+  
+  @JavascriptEnabled
+  @Ignore({FIREFOX, IE})
+  public void testShouldBeAbleToPassACollectionAsArgument() {
+    if (!(driver instanceof JavascriptExecutor)) {
+      return;
+    }
+
+    driver.get(javascriptPage);
+    Collection<Object> collection = new Vector<Object>();
+    collection.add("Cheddar");
+    collection.add("Brie");
+    collection.add(7);
+    long length = (Long)executeScript("return arguments[0].length", collection);
+    assertEquals(collection.size(), length);
+    
+    length = (Long)executeScript("return arguments[0].length", collection.toArray());
+    assertEquals(collection.size(), length);
+    
+    collection = new HashSet<Object>();
+    collection.add("Gouda");
+    collection.add("Stilton");
+    collection.add("Stilton");
+    collection.add(true);
+    length = (Long)executeScript("return arguments[0].length", collection);
+    assertEquals(collection.size(), length);
+    
+    
+  }
 
   @JavascriptEnabled
   public void testShouldThrowAnExceptionIfAnArgumentIsNotValid() {
@@ -176,7 +296,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
 
     driver.get(javascriptPage);
     try {
-      executeScript("return arguments[0];", new ArrayList<WebElement>());
+      executeScript("return arguments[0];", driver);
       fail("Exception should have been thrown");
     } catch (IllegalArgumentException e) {
       // this is expected

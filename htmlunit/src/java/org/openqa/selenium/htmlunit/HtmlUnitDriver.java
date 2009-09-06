@@ -39,6 +39,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.javascript.host.html.HTMLElement;
 
 import net.sourceforge.htmlunit.corejs.javascript.Function;
+import net.sourceforge.htmlunit.corejs.javascript.NativeArray;
 import net.sourceforge.htmlunit.corejs.javascript.ScriptableObject;
 import net.sourceforge.htmlunit.corejs.javascript.Undefined;
 
@@ -69,10 +70,12 @@ import java.net.URL;
 import java.net.UnknownHostException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.Vector;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecutor,
@@ -340,24 +343,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     Object[] parameters = new Object[args.length];
 
     for (int i = 0; i < args.length; i++) {
-      if (!(args[i] instanceof HtmlUnitWebElement ||
-            args[i] instanceof HtmlElement || // special case the underlying type
-            args[i] instanceof Number ||
-            args[i] instanceof String ||
-            args[i] instanceof Boolean)) {
-        throw new IllegalArgumentException(
-            "Argument must be a string, number, boolean or WebElement: " +
-            args[i] + " (" + args[i].getClass() + ")");
-      }
-
-      if (args[i] instanceof HtmlUnitWebElement) {
-        HtmlElement element = ((HtmlUnitWebElement) args[i]).getElement();
-        parameters[i] = element.getScriptObject();
-      } else if (args[i] instanceof HtmlElement) {
-        parameters[i] = ((HtmlElement) args[i]).getScriptObject();
-      } else {
-        parameters[i] = args[i];
-      }
+      parameters[i] = parseArgumentIntoJavsacriptParameter(args[i]);
     }
 
     script = "function() {" + script + "};";
@@ -370,8 +356,45 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
         parameters,
         page.getDocumentElement());
 
-    Object value = result.getJavaScriptResult();
+    return parseNativeJavascriptResult(result);
+  }
 
+  private Object parseArgumentIntoJavsacriptParameter(Object arg) {
+    if (!(arg instanceof HtmlUnitWebElement ||
+        arg instanceof HtmlElement || // special case the underlying type
+        arg instanceof Number ||
+        arg instanceof String ||
+        arg instanceof Boolean ||
+        arg.getClass().isArray() ||
+        arg instanceof Collection<?>)) {
+    throw new IllegalArgumentException(
+        "Argument must be a string, number, boolean or WebElement: " +
+        arg + " (" + arg.getClass() + ")");
+    }
+  
+    if (arg instanceof HtmlUnitWebElement) {
+      HtmlElement element = ((HtmlUnitWebElement) arg).getElement();
+      return element.getScriptObject();
+    } else if (arg instanceof HtmlElement) {
+      return ((HtmlElement) arg).getScriptObject();
+    } else if (arg instanceof Collection<?>) {
+      List<Object> list = new Vector<Object>();
+      for (Object o : (Collection<?>)arg) {
+        list.add(parseArgumentIntoJavsacriptParameter(o));
+      }
+      return list.toArray();
+    } else {
+      return arg;
+    }
+  }
+
+  private Object parseNativeJavascriptResult(Object result) {
+    Object value;
+    if (result instanceof ScriptResult) {
+      value = ((ScriptResult)result).getJavaScriptResult();
+    } else {
+      value = result;
+    }
     if (value instanceof HTMLElement) {
       return newHtmlUnitWebElement(((HTMLElement) value).getDomNodeOrDie());
     }
@@ -379,12 +402,21 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     if (value instanceof Number) {
       return ((Number) value).longValue();
     }
+    
+    if (value instanceof NativeArray) {
+      NativeArray array = (NativeArray)value;
+      List<Object> list = new Vector<Object>((int)array.getLength());
+      for (int i = 0; i < array.getLength(); ++i) {
+        list.add(parseNativeJavascriptResult(array.get(i)));
+      }
+      return list;
+    }
 
     if (value instanceof Undefined) {
       return null;
     }
 
-    return result.getJavaScriptResult();
+    return value;
   }
 
   public TargetLocator switchTo() {
