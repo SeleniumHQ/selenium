@@ -33,8 +33,8 @@ ChromeDriver.lastFrameIndexLookedUp = -1;
 //use of window handle to mean 'name of window'
 ChromeDriver.hasHwnd = false;
 ChromeDriver.xmlHttpRequest = null;
-//The URL we talk to the ChromeDriver using
-ChromeDriver.xmlHttpRequestUrl = null;
+//TODO(danielwh): Get this from the initial URL
+ChromeDriver.xmlHttpRequestUrl = "http://localhost:9700/chromeCommandExecutor"
 ChromeDriver.requestSequenceNumber = 0;
 ChromeDriver.getUrlRequestSequenceNumber = 0;
 
@@ -50,13 +50,6 @@ ChromeDriver.isBlockedWaitingForResponse = false;
 ChromeDriver.attemptsToSendWithNoPort = 0;
 
 chrome.extension.onConnect.addListener(function(port) {
-  if (ChromeDriver.xmlHttpRequestUrl == null) {
-    //This is the first content script, so is from the URL we need to connect to
-    ChromeDriver.xmlHttpRequestUrl = port.tab.url;
-    //Tell the ChromeCommandExecutor that we are here
-    sendResponseByXHR("", false);
-    return;
-  }
   console.log("Connected to " + port.name);
   //Note: The frameset port *always* connects before any frame port.  After that, the order is in page loading time
   ChromeDriver.hasNoConnectionToPage = false;
@@ -128,6 +121,9 @@ chrome.extension.onConnect.addListener(function(port) {
     }
   });
 });
+
+//Tell the ChromeCommandExecutor that we are here
+sendResponseByXHR("", false);
 
 /**
  * Sends the passed argument as the result of a command

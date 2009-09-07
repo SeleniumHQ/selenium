@@ -43,11 +43,14 @@ public class ChromeCommandExecutor {
   private Map<String, JsonCommand> nameToJson = new HashMap<String, JsonCommand>();
   
   /**
-   * Creates a new ChromeCommandExecutor which listens on an available TCP port.
+   * Creates a new ChromeCommandExecutor which listens on a TCP port.
    * Doesn't return until the TCP port is connected to.
+   * @param port port on which to listen for the initial connection,
+   * and dispatch commands
    * @throws IOException if could not bind to port
+   * TODO(danielwh): Bind to a random port (blocked on crbug.com 11547)
    */
-  public ChromeCommandExecutor() {
+  public ChromeCommandExecutor(int port) {
     nameToJson.put("close", new JsonCommand("{request: 'close'}"));
     nameToJson.put("quit", new JsonCommand("QUIT"));
     
@@ -101,7 +104,7 @@ public class ChromeCommandExecutor {
     nameToJson.put("getTitle", new JsonCommand("{request: 'getTitle'}"));
     
     try {
-      serverSocket = new ServerSocket(0);
+      serverSocket = new ServerSocket(port);
     } catch (IOException e) {
       throw new WebDriverException(e);
     }
@@ -116,10 +119,6 @@ public class ChromeCommandExecutor {
    */
   boolean hasClient() {
     return hasClient;
-  }
-
-  public int getPort() {
-    return serverSocket.getLocalPort();
   }
   
   /**
@@ -158,7 +157,6 @@ public class ChromeCommandExecutor {
         throw new UnsupportedOperationException("Didn't know how to execute: " +
             command.getMethodName());
       }
-      
       String commandStringToSend = commandToPopulate.populate(command.getParameters());
       socket.getOutputStream().write(fillTwoHundredWithJson(commandStringToSend));
       socket.getOutputStream().flush();
@@ -382,6 +380,8 @@ public class ChromeCommandExecutor {
     while (!serverSocket.isClosed()) {// || serverSocket.isBound()) {
       Thread.yield();
     }
+    //TODO(danielwh): Remove this when using multiple ports (blocked on crbug.com 11547)
+    try { Thread.sleep(500); } catch (InterruptedException e) {}
   }
 
   /**
@@ -406,27 +406,9 @@ public class ChromeCommandExecutor {
       isListening = true;
       try {
         while (listen) {
-          Socket acceptedSocket = serverSocket.accept();
-          int r = acceptedSocket.getInputStream().read();
-          if (r != 'G') {
-            //Not a GET.
-            //Use browser sending a GET to sniff the URL we need to talk to,
-            //so we ignore any GET requests, but queue up any others,
-            //which we assume to be POSTs from the extension
-            sockets.add(acceptedSocket);
-            hasClient = true;
-            hadClient = true;
-          } else {
-            //The browser, rather than extension, is visiting the page
-            //Because the extension always uses POST
-            //Serve up a holding page and ignore the socket
-            acceptedSocket.getOutputStream().write(
-                fillTwoHundred(
-                    "ChromeDriver server started and connected.",
-                    "Content-Type: text/html"));
-            acceptedSocket.getOutputStream().flush();
-            acceptedSocket.close();
-          }
+          sockets.add(serverSocket.accept());
+          hasClient = true;
+          hadClient = true;
         }
       } catch (SocketException e) {
         if (listen) {
