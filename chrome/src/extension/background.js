@@ -49,7 +49,7 @@ ChromeDriver.isBlockedWaitingForResponse = false;
 //This keeps track of how many attempts we have made.
 ChromeDriver.attemptsToSendWithNoPort = 0;
 
-chrome.self.onConnect.addListener(function(port) {
+chrome.extension.onConnect.addListener(function(port) {
   console.log("Connected to " + port.name);
   //Note: The frameset port *always* connects before any frame port.  After that, the order is in page loading time
   ChromeDriver.hasNoConnectionToPage = false;
@@ -608,7 +608,7 @@ function sendEmptyResponseWhenTabIsLoaded(tab) {
       
 
 function setToolstripsBusy(busy) {
-  var toolstrips = chrome.self.getToolstrips(ChromeDriver.activeWindowId);
+  var toolstrips = chrome.extension.getToolstrips(ChromeDriver.activeWindowId);
   for (var toolstrip in toolstrips) {
     if (toolstrips[toolstrip].setWebdriverToolstripBusy && 
         toolstrips[toolstrip].setWebdriverToolstripFree) {

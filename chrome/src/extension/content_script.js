@@ -19,7 +19,7 @@ if (ChromeDriverContentScript.currentDocument.location != "about:blank") {
   //while we are on about:blank (which always reports window.name as ''),
   //and we use port-per-tab semantics, so don't open the port if
   //we're on about:blank
-  ChromeDriverContentScript.port = chrome.extension.connect(window.name);
+  ChromeDriverContentScript.port = chrome.extension.connect({name: window.name});
   ChromeDriverContentScript.port.onMessage.addListener(parsePortMessage);
   var isFrameset = (ChromeDriverContentScript.currentDocument.getElementsByTagName("frameset").length > 0);
   ChromeDriverContentScript.port.postMessage({response: {response: "newTabInformation",
