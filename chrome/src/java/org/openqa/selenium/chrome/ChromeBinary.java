@@ -8,6 +8,8 @@ import org.openqa.selenium.WebDriverException;
 
 public class ChromeBinary {
   
+  private static int linearBackoffCoefficient = 1;
+  
   Process chromeProcess = null;
   
   public void start(String[] flags) throws IOException {
@@ -27,7 +29,7 @@ public class ChromeBinary {
       chromeProcess = Runtime.getRuntime().exec(toExec);
     }
     try {
-      Thread.sleep(2500);
+      Thread.sleep(2500 * linearBackoffCoefficient);
     } catch (InterruptedException e) {
       //Nothing sane to do here
     }
@@ -38,6 +40,14 @@ public class ChromeBinary {
       chromeProcess.destroy();
       chromeProcess = null;
     }
+  }
+  
+  public void resetBackoff() {
+    linearBackoffCoefficient = 1;
+  }
+  
+  public void incrementBackoff() {
+    linearBackoffCoefficient++;
   }
   
   /**
