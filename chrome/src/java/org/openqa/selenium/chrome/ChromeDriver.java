@@ -38,7 +38,7 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
   
   /**
    * Starts up a new instance of Chrome, with the required extension loaded,
-   * and has it connect to a new ChromeCommandExecutor on port 9700
+   * and has it connect to a new ChromeCommandExecutor on its port
    */
   public ChromeDriver() {
     init();
@@ -47,8 +47,7 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
   private void init() {
     while (executor == null || !executor.hasClient()) {
       stopClient();
-      //TODO(danielwh): Remove explicit port (blocked on crbug.com 11547)
-      this.executor = new ChromeCommandExecutor(9700);
+      this.executor = new ChromeCommandExecutor();
       startClient();
       chromeBinary.incrementBackoff();
     }
@@ -85,9 +84,10 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
       
       System.setProperty("webdriver.reap_profile", "false");
 
-      String[] flags = new String[2];
+      String[] flags = new String[3];
       flags[0] = "--user-data-dir=" + wrapInQuotesIfWindows(profileDir.getCanonicalPath());
       flags[1] = "--load-extension=" + wrapInQuotesIfWindows(extensionDir.getCanonicalPath());
+      flags[2] = "http://localhost:" + executor.getPort() + "/chromeCommandExecutor";
       chromeBinary.start(flags);
     } catch (IOException e) {
       throw new WebDriverException(e);
