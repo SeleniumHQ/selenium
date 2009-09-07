@@ -34,7 +34,7 @@ import java.util.Iterator;
 import java.util.Set;
 public class CookieImplementationTest extends AbstractDriverTestCase {
   //TODO(danielwh): Work out IE issues (probably path-based)
-    @Ignore(value = {IE, CHROME_NON_WINDOWS}, reason = "Non-windows Chrome can't delete cookies, see crbug 14734")
+    @Ignore(value = {IE}, reason = "Non-windows Chrome can't delete cookies, see crbug 14734")
     public void testAddCookiesWithDifferentPaths() {
         driver.get(simpleTestPage);
         driver.manage().deleteAllCookies();
@@ -58,7 +58,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
         assertThat(cookies.contains(cookie2), is(true));
     }
 
-    @Ignore(value = {IE, CHROME_NON_WINDOWS}, reason = "Non-windows Chrome can't delete cookies, see crbug 14734")
+    @Ignore(value = {IE}, reason = "Non-windows Chrome can't delete cookies, see crbug 14734")
     public void testGetAllCookies() {
         driver.get(simpleTestPage);
         driver.manage().deleteAllCookies();
@@ -76,7 +76,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
         assertThat(cookies.contains(cookie2), is(true));
     }
 
-    @Ignore({IE, CHROME_NON_WINDOWS})
+    @Ignore({IE})
     public void testCookieIntegrity() {
         String url = GlobalTestEnvironment.get().getAppServer().whereElseIs("animals");
 
@@ -109,7 +109,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
         assertThat(retrievedCookie.isSecure(), equalTo(cookie1.isSecure()));
     }
 
-    @Ignore(value = {IE, CHROME_NON_WINDOWS}, reason = "Non-windows Chrome can't delete cookies, see crbug 14734")
+    @Ignore(value = {IE}, reason = "Non-windows Chrome can't delete cookies, see crbug 14734")
     public void testDeleteAllCookies() {
         driver.get(simpleTestPage);
         Cookie cookie1 = new Cookie("fish", "cod");
@@ -132,7 +132,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
         assertThat(cookies.contains(cookie3), is(false));
     }
 
-    @Ignore(value = {IE, CHROME_NON_WINDOWS}, reason = "Non-windows Chrome can't delete cookies, see crbug 14734")
+    @Ignore(value = {IE}, reason = "Non-windows Chrome can't delete cookies, see crbug 14734")
     public void testDeleteCookie() {
         driver.get(simpleTestPage);
         Cookie cookie1 = new Cookie("fish", "cod");
@@ -148,7 +148,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
         assertThat(cookies, hasItem(cookie2));
     }
 
-    @Ignore(value = {IE, CHROME_NON_WINDOWS}, reason = "Non-windows Chrome can't delete cookies, see crbug 14734")
+    @Ignore(value = {IE}, reason = "Non-windows Chrome can't delete cookies, see crbug 14734")
     public void testDeleteCookieWithName() {
         driver.get(simpleTestPage);
         driver.manage().deleteAllCookies();
@@ -175,7 +175,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
         assertThat(cookies, hasItem(cookie3));
     }
 
-    @Ignore(value = {IE, CHROME_NON_WINDOWS}, reason = "Non-windows Chrome can't delete cookies, see crbug 14734")
+    @Ignore(value = {IE}, reason = "Non-windows Chrome can't delete cookies, see crbug 14734")
     public void testShouldNotDeleteCookiesWithASimilarName() {
         driver.get(simpleTestPage);
         driver.manage().deleteAllCookies();
@@ -194,7 +194,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
         assertThat(cookies, hasItem(cookie2));
     }
 
-    @Ignore(value = {IE, CHROME_NON_WINDOWS}, reason = "Non-windows Chrome can't delete cookies, see crbug 14734")
+    @Ignore(value = {IE}, reason = "Non-windows Chrome can't delete cookies, see crbug 14734")
   public void testGetCookieDoesNotRetriveBeyondCurrentDomain() {
     driver.get(simpleTestPage);
     driver.manage().deleteAllCookies();
@@ -216,7 +216,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     assertThat(cookies, not(hasItem(cookie1)));
   }
 
-  @Ignore({IE, CHROME_NON_WINDOWS})
+  @Ignore({IE})
   public void testShouldBeAbleToSetDomainToTheCurrentDomain() throws Exception {
     driver.get(simpleTestPage);
     driver.manage().deleteAllCookies();
@@ -233,7 +233,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     assertThat(cookies, hasItem(cookie1));
   }
 
-  @Ignore({IE, CHROME_NON_WINDOWS})
+  @Ignore({IE})
   public void testShouldNotBeAbleToSetDomainToSomethingThatIsNotTheCurrentDomain() {
     driver.get(simpleTestPage);
     driver.manage().deleteAllCookies();

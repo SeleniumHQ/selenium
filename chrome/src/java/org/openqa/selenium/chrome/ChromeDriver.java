@@ -335,11 +335,6 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
     }
 
     public void deleteCookie(Cookie cookie) {
-      if (!Platform.getCurrent().is(Platform.WINDOWS)) {
-        //See crbug.com issue 14734
-        throw new UnsupportedOperationException(
-            "Deleting cookies currently doesn't work in Chrome");
-      }
       execute("deleteCookie", cookie.getName());
     }
 
