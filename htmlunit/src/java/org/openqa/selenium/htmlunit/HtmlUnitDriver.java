@@ -75,7 +75,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.Vector;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecutor,
@@ -378,7 +377,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     } else if (arg instanceof HtmlElement) {
       return ((HtmlElement) arg).getScriptObject();
     } else if (arg instanceof Collection<?>) {
-      List<Object> list = new Vector<Object>();
+      List<Object> list = new ArrayList<Object>();
       for (Object o : (Collection<?>)arg) {
         list.add(parseArgumentIntoJavsacriptParameter(o));
       }
@@ -405,7 +404,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     
     if (value instanceof NativeArray) {
       NativeArray array = (NativeArray)value;
-      List<Object> list = new Vector<Object>((int)array.getLength());
+      List<Object> list = new ArrayList<Object>((int)array.getLength());
       for (int i = 0; i < array.getLength(); ++i) {
         list.add(parseNativeJavascriptResult(array.get(i)));
       }

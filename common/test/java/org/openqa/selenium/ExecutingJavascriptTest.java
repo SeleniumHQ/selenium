@@ -17,10 +17,10 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Vector;
 
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
@@ -95,9 +95,9 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     }
 
     driver.get(javascriptPage);
-    List<Object> expectedResult = new Vector<Object>();
+    List<Object> expectedResult = new ArrayList<Object>();
     expectedResult.add("zero");
-    List<Object> subList = new Vector<Object>();
+    List<Object> subList = new ArrayList<Object>();
     subList.add(true);
     subList.add(false);
     expectedResult.add(subList);
@@ -267,7 +267,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     }
 
     driver.get(javascriptPage);
-    Collection<Object> collection = new Vector<Object>();
+    Collection<Object> collection = new ArrayList<Object>();
     collection.add("Cheddar");
     collection.add("Brie");
     collection.add(7);

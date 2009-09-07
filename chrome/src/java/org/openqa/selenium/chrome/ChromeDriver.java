@@ -4,13 +4,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.Vector;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.JavascriptExecutor;
@@ -208,7 +206,7 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
   }
 
   public Set<String> getWindowHandles() {
-    Vector<?> windowHandles = (Vector<?>)execute("getWindowHandles").getValue();
+    List<?> windowHandles = (List<?>)execute("getWindowHandles").getValue();
     Set<String> setOfHandles = new HashSet<String>();
     for (Object windowHandle : windowHandles) {
       setOfHandles.add((String)windowHandle);
@@ -315,7 +313,7 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
 
   List<WebElement> getElementsFrom(ChromeResponse response) {
     Object result = response.getValue();
-    List<WebElement> elements = new Vector<WebElement>();
+    List<WebElement> elements = new ArrayList<WebElement>();
     for (Object element : (List<?>)result) {
       elements.add(new ChromeWebElement(this, (String)element));
     }
@@ -350,7 +348,7 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
     }
 
     public Set<Cookie> getCookies() {
-      Vector<?> result = (Vector<?>)execute("getCookies").getValue();
+      List<?> result = (List<?>)execute("getCookies").getValue();
       Set<Cookie> cookies = new HashSet<Cookie>();
       for (Object cookie : result) {
         cookies.add((Cookie)cookie);

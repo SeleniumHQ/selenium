@@ -9,6 +9,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -16,7 +17,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-import java.util.Vector;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.json.JSONArray;
@@ -317,7 +317,7 @@ public class ChromeCommandExecutor {
       return ((Number)value).longValue();
     } else if (value instanceof JSONArray) {
       JSONArray jsonArray = (JSONArray)(value);
-      List<Object> arr = new Vector<Object>(jsonArray.length());
+      List<Object> arr = new ArrayList<Object>(jsonArray.length());
       for (int i = 0; i < jsonArray.length(); i++) {
         arr.add(parseJsonToObject(jsonArray.get(i)));
       }
