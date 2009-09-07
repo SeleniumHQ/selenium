@@ -274,10 +274,6 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     long length = (Long)executeScript("return arguments[0].length", collection);
     assertEquals(collection.size(), length);
     
-    //TODO(danielwh): Make this actually work
-    //length = (Long)executeScript("return arguments[0].length", collection.toArray());
-    //assertEquals(collection.size(), length);
-    
     collection = new HashSet<Object>();
     collection.add("Gouda");
     collection.add("Stilton");
