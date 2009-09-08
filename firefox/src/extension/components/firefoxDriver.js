@@ -132,36 +132,27 @@ FirefoxDriver.prototype.executeScript = function(respond, script) {
       return Components.utils.evalInSandbox(scriptSrc, sandbox);
     };
   }
-
+  
   try {
     var scriptSrc = "var __webdriverFunc = function(){" + script.shift() + "};  __webdriverFunc.apply(window, __webdriverParams);";
 
     var convert = script.shift();
-    while (convert && convert.length > 0) {
-      var t = convert.shift();
-
-      if (t['type'] == "ELEMENT") {
-        var element = Utils.getElementAt(t['value'], context);
-        t['value'] = element.wrappedJSObject ? element.wrappedJSObject : element;
-      }
-
-      parameters.push(t['value']);
-    }
-
+    
+    Utils.unwrapParameters(convert, parameters, context);
+    
     var result = runScript(scriptSrc, parameters);
 
     Utils.dumpn("result is: '" + result + "'");
 
-    // Sophisticated.
-    if (result && result['tagName']) {
-      respond.setField('resultType', "ELEMENT");
-      respond.response = Utils.addToKnownElements(result, this.context);
-    } else if (result !== undefined) {
-      respond.setField('resultType', "OTHER");
-      respond.response = result;
-    } else {
-      respond.setField('resultType', "NULL");
+    var wrappedResult = Utils.wrapResult(result, this.context);
+    
+    if (wrappedResult.resultType !== undefined) {
+      respond.setField("resultType", wrappedResult.resultType);
     }
+    
+    if (wrappedResult.response !== undefined) {
+      respond.response = wrappedResult.response;
+    } 
 
   } catch (e) {
     respond.isError = true;

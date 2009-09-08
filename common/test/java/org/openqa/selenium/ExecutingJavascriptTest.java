@@ -88,7 +88,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   
   @SuppressWarnings("unchecked")
   @JavascriptEnabled
-  @Ignore({FIREFOX, IE})
+  @Ignore(IE)
   public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAnArray() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -247,7 +247,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   }
   
   @JavascriptEnabled
-  @Ignore({FIREFOX, IE})
+  @Ignore(IE)
   public void testShouldBeAbleToPassAnArrayAsArgument() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -260,7 +260,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   }
   
   @JavascriptEnabled
-  @Ignore({FIREFOX, IE})
+  @Ignore(IE)
   public void testShouldBeAbleToPassACollectionAsArgument() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;

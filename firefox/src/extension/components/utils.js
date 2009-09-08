@@ -994,3 +994,40 @@ Utils.getLocationOnceScrolledIntoView = function(element) {
     height: box.height
   };
 };
+
+Utils.unwrapParameters = function(wrappedParameters, resultArray, context) {
+  while (wrappedParameters && wrappedParameters.length > 0) {
+    var t = wrappedParameters.shift();
+    
+    if (t != null && t.length !== undefined && t.length != null && (t['type'] === undefined || t['type'] == null)) {
+      var innerArray = [];
+      Utils.unwrapParameters(t, innerArray);
+      resultArray.push(innerArray);
+      return;
+    }
+    
+    if (t['type'] == "ELEMENT") {
+      var element = Utils.getElementAt(t['value'], context);
+      t['value'] = element.wrappedJSObject ? element.wrappedJSObject : element;
+    }
+
+    resultArray.push(t['value']);
+  }
+};
+
+Utils.wrapResult = function(result, context) {
+  // Sophisticated.
+  if (result && result['tagName']) {
+    return {resultType: "ELEMENT", response: Utils.addToKnownElements(result, context)};
+  } else if (result !== undefined && result.constructor.toString().indexOf("Array") != -1) {
+    var array = [];
+    for (var i = 0; i < result.length; i++) {
+      array.push(Utils.wrapResult(result[i], context));
+    }
+    return {resultType: "ARRAY", response: array};
+  } else if (result !== undefined) {
+    return {resultType: "OTHER", response: result};
+  } else {
+    return {resultType: "NULL"};
+  }
+}

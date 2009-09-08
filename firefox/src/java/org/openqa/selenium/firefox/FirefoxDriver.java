@@ -18,6 +18,7 @@ limitations under the License.
 
 package org.openqa.selenium.firefox;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openqa.selenium.Alert;
@@ -54,6 +55,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -325,18 +327,39 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
         context = response.getContext();
         response.ifNecessaryThrow(WebDriverException.class);
 
-        if ("NULL".equals(response.getExtraResult("resultType")))
-          return null;
-
-        String resultType = (String) response.getExtraResult("resultType");
-        if ("ELEMENT".equals(resultType))
-        	return new FirefoxWebElement(this, response.getResponseText());
-
-        Object result = response.getExtraResult("response");
-        if (result instanceof Integer)
-          return new Long(response.getResponseText());
-        return result;
+        return parseJavascriptObjectFromResponse(
+            (String)response.getExtraResult("resultType"),
+            response.getExtraResult("response"));
     }
+  
+  public Object parseJavascriptObjectFromResponse(String resultType, Object response) {
+    if ("NULL".equals(resultType))
+      return null;
+    
+    if ("ARRAY".equals(resultType)) {
+      List<Object> list = new ArrayList<Object>();
+      try {
+        JSONArray array = (JSONArray)response;
+        for (int i = 0; i < array.length(); ++i) {
+          //They really should all be JSONObjects of form {resultType, response}
+          JSONObject subObject = (JSONObject)array.get(i);
+          list.add(parseJavascriptObjectFromResponse(
+              subObject.getString("resultType"), subObject.get("response")));
+        }
+      } catch (JSONException e) {
+        throw new WebDriverException(e);
+      }
+      return list;
+    }
+    if ("ELEMENT".equals(resultType)) {
+      return new FirefoxWebElement(this, (String)response);
+    }
+
+    if (response instanceof Integer) {
+      return new Long((Integer)response);
+    }
+    return response;
+  }
 
   public boolean isJavascriptEnabled() {
     return true;
@@ -375,6 +398,15 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
     } else if (arg instanceof FirefoxWebElement) {
       converted.put("type", "ELEMENT");
       converted.put("value", ((FirefoxWebElement) arg).getElementId());
+    } else if (arg instanceof Collection<?>) {
+      Collection<?> args = ((Collection<?>)arg);
+      Object[] list = new Object[args.size()];
+      int i = 0;
+      for (Object o : args) {
+        list[i] = convertToJsObject(o);
+        i++;
+      }
+      return list;
     } else {
       throw new IllegalArgumentException("Argument is of an illegal type: " + arg);
     }
