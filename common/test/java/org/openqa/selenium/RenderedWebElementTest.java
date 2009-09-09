@@ -74,7 +74,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({HTMLUNIT, IPHONE, CHROME_NON_WINDOWS})
+  @Ignore({HTMLUNIT, IPHONE, CHROME})
   public void testShouldAllowUsersToHoverOverElements() {
     driver.get(javascriptPage);
 

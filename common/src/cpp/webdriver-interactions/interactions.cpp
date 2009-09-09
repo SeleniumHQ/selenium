@@ -30,8 +30,6 @@ using namespace std;
 #pragma data_seg(".LISTENER")
 static bool pressed = false;
 static HHOOK hook = 0;
-//Mouse coordinates we wish to preserve when we lock down the mouse
-static int globalX, globalY;
 #pragma data_seg()
 #pragma comment(linker, "/section:.LISTENER,rws")
 
@@ -182,7 +180,6 @@ LRESULT CALLBACK GetMessageProc(int nCode, WPARAM wParam, LPARAM lParam)
 
 extern "C"
 {
-//TODO(danielwh): Add hook to swallow real key pressing while we are sending keys
 void sendKeys(WINDOW_HANDLE windowHandle, const wchar_t* value, int timePerKey)
 {
 	if (!windowHandle) { return; }
@@ -507,11 +504,6 @@ LRESULT mouseUpAt(WINDOW_HANDLE directInputTo, long x, long y)
 		return SendMessage((HWND) directInputTo, WM_LBUTTONUP, MK_LBUTTON, MAKELONG(x, y));
 	}}
 
-LRESULT CALLBACK mouseHookProc(int nCode, WPARAM wParam, LPARAM lParam) {
- SetCursorPos(globalX, globalY);
- return 1;
-}
-
 LRESULT mouseMoveTo(WINDOW_HANDLE handle, long duration, long fromX, long fromY, long toX, long toY)
 {
 	if (!handle) { return ENULLPOINTER; }
@@ -525,27 +517,17 @@ LRESULT mouseMoveTo(WINDOW_HANDLE handle, long duration, long fromX, long fromY,
   LPRECT r = new RECT();
   GetWindowRect(directInputTo, r);
 
-  //Swallow real mouse moves while we move the mouse
-  HHOOK mouseMoveHook = SetWindowsHookEx(WH_MOUSE_LL, mouseHookProc, NULL, NULL);
-  
 	for (int i = 0; i < steps; i++) {
 	  //To avoid integer division rounding and cumulative floating point errors,
 	  //calculate from scratch each time
 	  int currentX = fromX + ((toX - fromX) * ((double)i) / steps);
 		int currentY = fromY + ((toY - fromY) * ((double)i) / steps);
-	  globalX = r->left + currentX;
-    globalY = r->top + currentY;
-	  SetCursorPos(globalX, globalY);
 	  SendMessage(directInputTo, WM_MOUSEMOVE, 0, MAKELPARAM(currentX, currentY));
 		wait(sleep);
 	}
 	
-	globalX = r->left + toX;
-  globalY = r->top + toY;
-	SetCursorPos(globalX, globalY);
 	SendMessage(directInputTo, WM_MOUSEMOVE, 0, MAKELPARAM(toX, toY));
 
-  UnhookWindowsHookEx(mouseMoveHook);
   delete r;
   return 0;
 }
