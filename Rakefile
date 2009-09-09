@@ -4,9 +4,9 @@ require 'rake'
 require 'rake/testtask'
 require 'rake/rdoctask'
 
+require 'rake-tasks/checks.rb'
 require 'rake-tasks/zip.rb'
 require 'rake-tasks/c.rb'
-require 'rake-tasks/checks.rb'
 require 'rake-tasks/java.rb'
 require 'rake-tasks/mozilla.rb'
 

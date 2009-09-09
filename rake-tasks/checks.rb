@@ -12,6 +12,18 @@ def linux?
   RUBY_PLATFORM.downcase.include?("linux")
 end
 
+def cygwin?
+  RUBY_PLATFORM.downcase.include?("cygwin")
+end
+
+def classpath_separator?
+  if cygwin? then
+    ";"
+  else
+    File::PATH_SEPARATOR
+  end
+end
+
 def all?
   true
 end
