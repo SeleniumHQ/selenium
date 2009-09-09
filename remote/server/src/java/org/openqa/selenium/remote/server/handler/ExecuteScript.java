@@ -46,15 +46,26 @@ public class ExecuteScript extends WebDriverHandler implements JsonParametersAwa
     if (allParameters.size() == 1)
       return;
 
-    List<Map<String, Object>> params = (List<Map<String, Object>>) allParameters.get(1);
+    List<?> params = (List<?>) allParameters.get(1);
 
-    for (Map<String, Object> param : params) {
-      String type = (String) param.get("type");
-      if ("ELEMENT".equals(type)) {
-        KnownElements.ProxiedElement element = (KnownElements.ProxiedElement) getKnownElements().get((String) param.get("value"));
-        args.add(element.getWrappedElement());
-      } else {
-        args.add(param.get("value"));
+    parseParams(params, args);
+  }
+  
+  private void parseParams(List<?> params, List<Object> args) {
+    for (Object param : params) {
+      if (param instanceof Map) {
+        Map<String, Object> paramAsMap = (Map<String, Object>)param;
+        String type = (String) paramAsMap.get("type");
+        if ("ELEMENT".equals(type)) {
+          KnownElements.ProxiedElement element = (KnownElements.ProxiedElement) getKnownElements().get((String) paramAsMap.get("value"));
+          args.add(element.getWrappedElement());
+        } else {
+          args.add(paramAsMap.get("value"));
+        }
+      } else if (param instanceof List) {
+        List<Object> sublist = new ArrayList<Object>();
+        parseParams((List<?>)param, sublist);
+        args.add(sublist);
       }
     }
   }

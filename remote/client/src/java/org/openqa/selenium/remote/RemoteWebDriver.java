@@ -37,6 +37,7 @@ import static org.openqa.selenium.remote.MapMaker.map;
 import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -284,10 +285,22 @@ public class RemoteWebDriver implements WebDriver, SearchContext, JavascriptExec
       converted.put("value", ((Number) arg).longValue());
     } else if (arg instanceof Boolean) {
       converted.put("type", "BOOLEAN");
+      converted.put("value", ((Boolean) arg).booleanValue());
+    } else if (arg.getClass() == boolean.class) {
+      converted.put("type", "BOOLEAN");
       converted.put("value", arg);
     } else if (arg instanceof RemoteWebElement) {
       converted.put("type", "ELEMENT");
       converted.put("value", ((RemoteWebElement) arg).getId());
+    } else if (arg instanceof Collection<?>) {
+      Collection<?> args = ((Collection<?>)arg);
+      Object[] list = new Object[args.size()];
+      int i = 0;
+      for (Object o : args) {
+        list[i] = convertToJsObject(o);
+        i++;
+      }
+      return list;
     } else {
       throw new IllegalArgumentException("Argument is of an illegal type: " + arg);
     }
