@@ -42,12 +42,8 @@ public class ChromeBinary {
     }
   }
   
-  public void resetBackoff() {
-    linearBackoffCoefficient = 1;
-  }
-  
-  public void incrementBackoff() {
-    linearBackoffCoefficient++;
+  public void incrementBackoffBy(int diff) {
+    linearBackoffCoefficient += diff;
   }
   
   /**

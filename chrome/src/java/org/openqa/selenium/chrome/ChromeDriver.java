@@ -50,8 +50,11 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
       //TODO(danielwh): Remove explicit port (blocked on crbug.com 11547)
       this.executor = new ChromeCommandExecutor(9700);
       startClient();
-      chromeBinary.incrementBackoff();
+      //In case this attempt fails, we increment how long we wait before sending a command
+      chromeBinary.incrementBackoffBy(1);
     }
+    //The last one attempt succeeded, so we reduce back to that time
+    chromeBinary.incrementBackoffBy(-1);
   }
   
   /**
@@ -227,7 +230,6 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
       execute("quit");
     } finally {
       stopClient();
-      chromeBinary.resetBackoff();
     }
   }
 
