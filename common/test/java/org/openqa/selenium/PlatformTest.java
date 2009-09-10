@@ -20,6 +20,7 @@ package org.openqa.selenium;
 import junit.framework.TestCase;
 
 public class PlatformTest extends TestCase {
+
   public void testShouldIdentifyWindowsVariants() {
     assertAllAre(Platform.WINDOWS, "Windows 2003");
   }
@@ -32,7 +33,7 @@ public class PlatformTest extends TestCase {
     for (String osName : osNames) {
       Platform seen = Platform.extractFromSysProperty(osName);
       assertTrue(String.format("Expected %s, but got %s from %s", platform, seen, osName),
-          seen.is(platform));
+                 seen.is(platform));
     }
   }
 }

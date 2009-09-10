@@ -21,7 +21,8 @@ package org.openqa.selenium.environment;
 import org.openqa.selenium.environment.webserver.AppServer;
 
 public interface TestEnvironment {
-    AppServer getAppServer();
 
-    void stop();
+  AppServer getAppServer();
+
+  void stop();
 }

@@ -24,65 +24,68 @@ import static org.openqa.selenium.Ignore.Driver.IE;
 import java.util.List;
 
 public class SelectElementHandlingTest extends AbstractDriverTestCase {
-    @Ignore(IE)
-    public void testShouldBePossibleToDeselectASingleOptionFromASelectWhichAllowsMultipleChoices() {
-        driver.get(formPage);
 
-        WebElement multiSelect = driver.findElement(By.id("multi"));
-        List<WebElement> options = multiSelect.findElements(By.tagName("option"));
+  @Ignore(IE)
+  public void testShouldBePossibleToDeselectASingleOptionFromASelectWhichAllowsMultipleChoices() {
+    driver.get(formPage);
 
-        WebElement option = options.get(0);
-        assertThat(option.isSelected(), is(true));
-        option.toggle();
-        assertThat(option.isSelected(), is(false));
-        option.toggle();
-        assertThat(option.isSelected(), is(true));
+    WebElement multiSelect = driver.findElement(By.id("multi"));
+    List<WebElement> options = multiSelect.findElements(By.tagName("option"));
 
-        option = options.get(2);
-        assertThat(option.isSelected(), is(true));
+    WebElement option = options.get(0);
+    assertThat(option.isSelected(), is(true));
+    option.toggle();
+    assertThat(option.isSelected(), is(false));
+    option.toggle();
+    assertThat(option.isSelected(), is(true));
+
+    option = options.get(2);
+    assertThat(option.isSelected(), is(true));
+  }
+
+  @Ignore(IE)
+  public void testShouldNotBeAbleToDeselectAnOptionFromANormalSelect() {
+    driver.get(formPage);
+
+    WebElement select = driver.findElement(By.xpath("//select[@name='selectomatic']"));
+    List<WebElement> options = select.findElements(By.tagName("option"));
+    WebElement option = options.get(0);
+
+    try {
+      option.toggle();
+      fail("Should not have succeeded");
+    } catch (UnsupportedOperationException e) {
+      // This is expected
+    }
+  }
+
+  public void testShouldBeAbleToChangeTheSelectedOptionInASelect() {
+    driver.get(formPage);
+    WebElement selectBox = driver.findElement(By.xpath("//select[@name='selectomatic']"));
+    List<WebElement> options = selectBox.findElements(By.tagName("option"));
+    WebElement one = options.get(0);
+    WebElement two = options.get(1);
+    assertThat(one.isSelected(), is(true));
+    assertThat(two.isSelected(), is(false));
+
+    two.setSelected();
+    assertThat(one.isSelected(), is(false));
+    assertThat(two.isSelected(), is(true));
+  }
+
+  public void testShouldBeAbleToSelectMoreThanOneOptionFromASelectWhichAllowsMultipleChoices() {
+    driver.get(formPage);
+
+    WebElement multiSelect = driver.findElement(By.id("multi"));
+    List<WebElement> options = multiSelect.findElements(By.tagName("option"));
+    for (WebElement option : options) {
+      option.setSelected();
     }
 
-    @Ignore(IE)
-    public void testShouldNotBeAbleToDeselectAnOptionFromANormalSelect() {
-        driver.get(formPage);
-
-        WebElement select = driver.findElement(By.xpath("//select[@name='selectomatic']"));
-        List<WebElement> options = select.findElements(By.tagName("option"));
-        WebElement option = options.get(0);
-
-        try {
-        	option.toggle();
-        	fail("Should not have succeeded");
-        } catch (UnsupportedOperationException e) {
-        	// This is expected
-        }
+    for (int i = 0; i < options.size(); i++) {
+      WebElement option = options.get(i);
+      assertThat("Option at index is not selected but should be: " + i, option.isSelected(),
+                 is(true));
     }
-
-    public void testShouldBeAbleToChangeTheSelectedOptionInASelect() {
-        driver.get(formPage);
-        WebElement selectBox = driver.findElement(By.xpath("//select[@name='selectomatic']"));
-        List<WebElement> options = selectBox.findElements(By.tagName("option"));
-        WebElement one = options.get(0);
-        WebElement two = options.get(1);
-        assertThat(one.isSelected(), is(true));
-        assertThat(two.isSelected(), is(false));
-
-        two.setSelected();
-        assertThat(one.isSelected(), is(false));
-        assertThat(two.isSelected(), is(true));
-    }
-
-    public void testShouldBeAbleToSelectMoreThanOneOptionFromASelectWhichAllowsMultipleChoices() {
-        driver.get(formPage);
-
-        WebElement multiSelect = driver.findElement(By.id("multi"));
-        List<WebElement> options = multiSelect.findElements(By.tagName("option"));
-        for (WebElement option : options)
-            option.setSelected();
-
-        for (int i = 0; i < options.size(); i++) {
-            WebElement option = options.get(i);
-            assertThat("Option at index is not selected but should be: " + i, option.isSelected(), is(true));
-        }
-    }
+  }
 }

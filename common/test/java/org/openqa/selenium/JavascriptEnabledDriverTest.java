@@ -36,30 +36,31 @@ import java.awt.*;
  * Test case for browsers that support using Javascript
  */
 public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
-	@JavascriptEnabled
-    public void testDocumentShouldReflectLatestTitle() throws Exception {
-        driver.get(javascriptPage);
 
-        assertThat(driver.getTitle(), equalTo("Testing Javascript"));
-        driver.findElement(By.linkText("Change the page title!")).click();
-        assertThat(driver.getTitle(), equalTo("Changed"));
+  @JavascriptEnabled
+  public void testDocumentShouldReflectLatestTitle() throws Exception {
+    driver.get(javascriptPage);
 
-        String titleViaXPath = driver.findElement(By.xpath("/html/head/title")).getText();
-        assertThat(titleViaXPath, equalTo("Changed"));
-    }
+    assertThat(driver.getTitle(), equalTo("Testing Javascript"));
+    driver.findElement(By.linkText("Change the page title!")).click();
+    assertThat(driver.getTitle(), equalTo("Changed"));
 
-	@JavascriptEnabled
-    public void testDocumentShouldReflectLatestDom() throws Exception {
-        driver.get(javascriptPage);
-        String currentText = driver.findElement(By.xpath("//div[@id='dynamo']")).getText();
-        assertThat(currentText, equalTo("What's for dinner?"));
+    String titleViaXPath = driver.findElement(By.xpath("/html/head/title")).getText();
+    assertThat(titleViaXPath, equalTo("Changed"));
+  }
 
-        WebElement webElement = driver.findElement(By.linkText("Update a div"));
-        webElement.click();
+  @JavascriptEnabled
+  public void testDocumentShouldReflectLatestDom() throws Exception {
+    driver.get(javascriptPage);
+    String currentText = driver.findElement(By.xpath("//div[@id='dynamo']")).getText();
+    assertThat(currentText, equalTo("What's for dinner?"));
 
-        String newText = driver.findElement(By.xpath("//div[@id='dynamo']")).getText();
-        assertThat(newText, equalTo("Fish and chips!"));
-    }
+    WebElement webElement = driver.findElement(By.linkText("Update a div"));
+    webElement.click();
+
+    String newText = driver.findElement(By.xpath("//div[@id='dynamo']")).getText();
+    assertThat(newText, equalTo("Fish and chips!"));
+  }
 
 //    public void testShouldAllowTheUserToOkayConfirmAlerts() {
 //		driver.get(alertPage);
@@ -96,58 +97,58 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
 //		}
 //	}
 
-    @JavascriptEnabled
-	@Ignore(IE)
-    public void testShouldWaitForLoadsToCompleteAfterJavascriptCausesANewPageToLoad() {
-        driver.get(formPage);
+  @JavascriptEnabled
+  @Ignore(IE)
+  public void testShouldWaitForLoadsToCompleteAfterJavascriptCausesANewPageToLoad() {
+    driver.get(formPage);
 
-        driver.findElement(By.id("changeme")).setSelected();
+    driver.findElement(By.id("changeme")).setSelected();
 
-        assertThat(driver.getTitle(), equalTo("Page3"));
-    }
+    assertThat(driver.getTitle(), equalTo("Page3"));
+  }
 
-    @JavascriptEnabled
-	@Ignore(IE)
-    public void testShouldBeAbleToFindElementAfterJavascriptCausesANewPageToLoad() throws InterruptedException
-    {
-        driver.get(formPage);
+  @JavascriptEnabled
+  @Ignore(IE)
+  public void testShouldBeAbleToFindElementAfterJavascriptCausesANewPageToLoad()
+      throws InterruptedException {
+    driver.get(formPage);
 
-        driver.findElement(By.id("changeme")).setSelected();
+    driver.findElement(By.id("changeme")).setSelected();
 
-        assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("3"));
-    }
+    assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("3"));
+  }
 
-	@JavascriptEnabled
-    public void testShouldBeAbleToDetermineTheLocationOfAnElement() {
-        driver.get(xhtmlTestPage);
+  @JavascriptEnabled
+  public void testShouldBeAbleToDetermineTheLocationOfAnElement() {
+    driver.get(xhtmlTestPage);
 
-        RenderedWebElement element = (RenderedWebElement) driver.findElement(By.id("username"));
-        Point location = element.getLocation();
+    RenderedWebElement element = (RenderedWebElement) driver.findElement(By.id("username"));
+    Point location = element.getLocation();
 
-        assertThat(location.getX() > 0, is(true));
-        assertThat(location.getY() > 0, is(true));
-    }
+    assertThat(location.getX() > 0, is(true));
+    assertThat(location.getY() > 0, is(true));
+  }
 
-	@JavascriptEnabled
-    public void testShouldBeAbleToDetermineTheSizeOfAnElement() {
-        driver.get(xhtmlTestPage);
+  @JavascriptEnabled
+  public void testShouldBeAbleToDetermineTheSizeOfAnElement() {
+    driver.get(xhtmlTestPage);
 
-        RenderedWebElement element = (RenderedWebElement) driver.findElement(By.id("username"));
-        Dimension size = element.getSize();
+    RenderedWebElement element = (RenderedWebElement) driver.findElement(By.id("username"));
+    Dimension size = element.getSize();
 
-        assertThat(size.getWidth() > 0, is(true));
-        assertThat(size.getHeight() > 0, is(true));
-    }
+    assertThat(size.getWidth() > 0, is(true));
+    assertThat(size.getHeight() > 0, is(true));
+  }
 
-	@JavascriptEnabled
-	@Ignore(CHROME_NON_WINDOWS)
-    public void testShouldFireOnChangeEventWhenSettingAnElementsValue() {
-      driver.get(javascriptPage);
-      driver.findElement(By.id("change")).sendKeys("foo");
-      String result = driver.findElement(By.id("result")).getText();
+  @JavascriptEnabled
+  @Ignore(CHROME_NON_WINDOWS)
+  public void testShouldFireOnChangeEventWhenSettingAnElementsValue() {
+    driver.get(javascriptPage);
+    driver.findElement(By.id("change")).sendKeys("foo");
+    String result = driver.findElement(By.id("result")).getText();
 
-      assertThat(result, equalTo("change"));
-    }
+    assertThat(result, equalTo("change"));
+  }
 
   @JavascriptEnabled
   public void testShouldBeAbleToSubmitFormsByCausingTheOnClickEventToFire() {
@@ -200,28 +201,30 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IE, FIREFOX, REMOTE, CHROME_NON_WINDOWS}, reason = "Firefox: Window demands focus to work. Other platforms: not properly tested")
+  @Ignore(value = {IE, FIREFOX, REMOTE, CHROME_NON_WINDOWS},
+          reason = "Firefox: Window demands focus to work. Other platforms: not properly tested")
   public void testChangeEventIsFiredAppropriatelyWhenFocusIsLost() {
     driver.get(javascriptPage);
 
     WebElement input = driver.findElement(By.id("changeable"));
     input.sendKeys("test");
     driver.findElement(By.id("clickField")).click(); // move focus
-    assertThat(driver.findElement(By.id("result")).getText().trim(), either(is("focus change blur")).or(is("focus blur change")));
+    assertThat(driver.findElement(By.id("result")).getText().trim(),
+               either(is("focus change blur")).or(is("focus blur change")));
 
     input.sendKeys(Keys.BACK_SPACE, "t");
     driver.findElement(By.xpath("//body")).click();  // move focus
 
-    assertThat(driver.findElement(By.id("result")).getText().trim(), 
-    		either(is("focus change blur focus blur"))
-    		.or(is("focus blur change focus blur"))
-    		.or(is("focus blur change focus blur change"))
-    		.or(is("focus change blur focus change blur"))); //What Chrome does
+    assertThat(driver.findElement(By.id("result")).getText().trim(),
+               either(is("focus change blur focus blur"))
+                   .or(is("focus blur change focus blur"))
+                   .or(is("focus blur change focus blur change"))
+                   .or(is("focus change blur focus change blur"))); //What Chrome does
   }
 
   /**
-  * If the click handler throws an exception, the firefox driver freezes. This is suboptimal.   
-  */
+   * If the click handler throws an exception, the firefox driver freezes. This is suboptimal.
+   */
   @JavascriptEnabled
   public void testShouldBeAbleToClickIfEvenSomethingHorribleHappens() {
     driver.get(javascriptPage);
@@ -233,23 +236,25 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
 
     assertNotNull(text);
   }
-    
+
   @JavascriptEnabled
   public void testShouldBeAbleToGetTheLocationOfAnElement() {
-      driver.get(javascriptPage);
+    driver.get(javascriptPage);
 
-      if (!(driver instanceof JavascriptExecutor))
-        return;
+    if (!(driver instanceof JavascriptExecutor)) {
+      return;
+    }
 
-      ((JavascriptExecutor) driver).executeScript("window.focus();");
-      WebElement element = driver.findElement(By.id("keyUp"));
-      
-      if (!(element instanceof Locatable))
-    	  return;
-      
-      Point point = ((Locatable) element).getLocationOnScreenOnceScrolledIntoView();
+    ((JavascriptExecutor) driver).executeScript("window.focus();");
+    WebElement element = driver.findElement(By.id("keyUp"));
 
-      assertTrue(point.getX() > 1);
-      assertTrue(point.getY() > 1);
+    if (!(element instanceof Locatable)) {
+      return;
+    }
+
+    Point point = ((Locatable) element).getLocationOnScreenOnceScrolledIntoView();
+
+    assertTrue(point.getX() > 1);
+    assertTrue(point.getY() > 1);
   }
 }

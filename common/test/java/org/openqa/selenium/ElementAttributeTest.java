@@ -26,123 +26,124 @@ import static org.openqa.selenium.Ignore.Driver.IE;
 import java.util.List;
 
 public class ElementAttributeTest extends AbstractDriverTestCase {
-	@Ignore(IE)
-	public void testShouldReturnNullWhenGettingTheValueOfAnAttributeThatIsNotListed() {
-        driver.get(simpleTestPage);
-        WebElement head = driver.findElement(By.xpath("/html"));
-        String attribute = head.getAttribute("cheese");
-        assertThat(attribute, is(nullValue()));
-    }
 
-    public void testShouldReturnEmptyAttributeValuesWhenPresentAndTheValueIsActuallyEmpty() {
-        driver.get(simpleTestPage);
-        WebElement body = driver.findElement(By.xpath("//body"));
-        assertThat(body.getAttribute("style"), equalTo(""));
-    }
+  @Ignore(IE)
+  public void testShouldReturnNullWhenGettingTheValueOfAnAttributeThatIsNotListed() {
+    driver.get(simpleTestPage);
+    WebElement head = driver.findElement(By.xpath("/html"));
+    String attribute = head.getAttribute("cheese");
+    assertThat(attribute, is(nullValue()));
+  }
 
-    public void testShouldReturnTheValueOfTheDisabledAttrbuteEvenIfItIsMissing() {
-        driver.get(formPage);
-        WebElement inputElement = driver.findElement(By.xpath("//input[@id='working']"));
-        assertThat(inputElement.getAttribute("disabled"), equalTo("false"));
-    }
+  public void testShouldReturnEmptyAttributeValuesWhenPresentAndTheValueIsActuallyEmpty() {
+    driver.get(simpleTestPage);
+    WebElement body = driver.findElement(By.xpath("//body"));
+    assertThat(body.getAttribute("style"), equalTo(""));
+  }
 
-    @Ignore(IE)
-    public void testShouldReturnTheValueOfTheIndexAttrbuteEvenIfItIsMissing() {
-        driver.get(formPage);
+  public void testShouldReturnTheValueOfTheDisabledAttrbuteEvenIfItIsMissing() {
+    driver.get(formPage);
+    WebElement inputElement = driver.findElement(By.xpath("//input[@id='working']"));
+    assertThat(inputElement.getAttribute("disabled"), equalTo("false"));
+  }
 
-        WebElement multiSelect = driver.findElement(By.id("multi"));
-        List<WebElement> options = multiSelect.findElements(By.tagName("option"));
-        assertThat(options.get(1).getAttribute("index"), equalTo("1"));
-    }
+  @Ignore(IE)
+  public void testShouldReturnTheValueOfTheIndexAttrbuteEvenIfItIsMissing() {
+    driver.get(formPage);
+
+    WebElement multiSelect = driver.findElement(By.id("multi"));
+    List<WebElement> options = multiSelect.findElements(By.tagName("option"));
+    assertThat(options.get(1).getAttribute("index"), equalTo("1"));
+  }
 
 
-    public void testShouldIndicateTheElementsThatAreDisabledAreNotEnabled() {
-        driver.get(formPage);
-        WebElement inputElement = driver.findElement(By.xpath("//input[@id='notWorking']"));
-        assertThat(inputElement.isEnabled(), is(false));
+  public void testShouldIndicateTheElementsThatAreDisabledAreNotEnabled() {
+    driver.get(formPage);
+    WebElement inputElement = driver.findElement(By.xpath("//input[@id='notWorking']"));
+    assertThat(inputElement.isEnabled(), is(false));
 
-        inputElement = driver.findElement(By.xpath("//input[@id='working']"));
-        assertThat(inputElement.isEnabled(), is(true));
-    }
+    inputElement = driver.findElement(By.xpath("//input[@id='working']"));
+    assertThat(inputElement.isEnabled(), is(true));
+  }
 
-    public void testShouldIndicateWhenATextAreaIsDisabled() {
-        driver.get(formPage);
-        WebElement textArea = driver.findElement(By.xpath("//textarea[@id='notWorkingArea']"));
-        assertThat(textArea.isEnabled(), is(false));
-    }
+  public void testShouldIndicateWhenATextAreaIsDisabled() {
+    driver.get(formPage);
+    WebElement textArea = driver.findElement(By.xpath("//textarea[@id='notWorkingArea']"));
+    assertThat(textArea.isEnabled(), is(false));
+  }
 
-    public void testShouldIndicateWhenASelectIsDisabled() {
-      driver.get(formPage);
+  public void testShouldIndicateWhenASelectIsDisabled() {
+    driver.get(formPage);
 
-      WebElement enabled = driver.findElement(By.name("selectomatic"));
-      WebElement disabled = driver.findElement(By.name("no-select"));
+    WebElement enabled = driver.findElement(By.name("selectomatic"));
+    WebElement disabled = driver.findElement(By.name("no-select"));
 
-      assertTrue(enabled.isEnabled());
-      assertFalse(disabled.isEnabled());
-    }
+    assertTrue(enabled.isEnabled());
+    assertFalse(disabled.isEnabled());
+  }
 
-    public void testShouldReturnTheValueOfCheckedForACheckboxEvenIfItLacksThatAttribute() {
-        driver.get(formPage);
-        WebElement checkbox = driver.findElement(By.xpath("//input[@id='checky']"));
-        assertThat(checkbox.getAttribute("checked"), equalTo("false"));
-        checkbox.setSelected();
-        assertThat(checkbox.getAttribute("checked"), equalTo("true"));
-    }
+  public void testShouldReturnTheValueOfCheckedForACheckboxEvenIfItLacksThatAttribute() {
+    driver.get(formPage);
+    WebElement checkbox = driver.findElement(By.xpath("//input[@id='checky']"));
+    assertThat(checkbox.getAttribute("checked"), equalTo("false"));
+    checkbox.setSelected();
+    assertThat(checkbox.getAttribute("checked"), equalTo("true"));
+  }
 
-    public void testShouldReturnTheValueOfSelectedForRadioButtonsEvenIfTheyLackThatAttribute() {
-      driver.get(formPage);
-      WebElement neverSelected = driver.findElement(By.id("cheese"));
-      WebElement initiallyNotSelected = driver.findElement(By.id("peas"));
-      WebElement initiallySelected = driver.findElement(By.id("cheese_and_peas"));
-      
-      assertThat(neverSelected.getAttribute("selected"), equalTo("false"));
-      assertThat(initiallyNotSelected.getAttribute("selected"), equalTo("false"));
-      assertThat(initiallySelected.getAttribute("selected"), equalTo("true"));
-      
-      initiallyNotSelected.setSelected();
-      assertThat(neverSelected.getAttribute("selected"), equalTo("false"));
-      assertThat(initiallyNotSelected.getAttribute("selected"), equalTo("true"));
-      assertThat(initiallySelected.getAttribute("selected"), equalTo("false"));
-    }
+  public void testShouldReturnTheValueOfSelectedForRadioButtonsEvenIfTheyLackThatAttribute() {
+    driver.get(formPage);
+    WebElement neverSelected = driver.findElement(By.id("cheese"));
+    WebElement initiallyNotSelected = driver.findElement(By.id("peas"));
+    WebElement initiallySelected = driver.findElement(By.id("cheese_and_peas"));
 
-    public void testShouldReturnTheValueOfSelectedForOptionsInSelectsEvenIfTheyLackThatAttribute() {
-        driver.get(formPage);
-        WebElement selectBox = driver.findElement(By.xpath("//select[@name='selectomatic']"));
-        List<WebElement> options = selectBox.findElements(By.tagName("option"));
-        WebElement one = options.get(0);
-        WebElement two = options.get(1);
-        assertThat(one.isSelected(), is(true));
-        assertThat(two.isSelected(), is(false));
-        assertThat(one.getAttribute("selected"), equalTo("true"));
-        assertThat(two.getAttribute("selected"), equalTo("false"));
-    }
+    assertThat(neverSelected.getAttribute("selected"), equalTo("false"));
+    assertThat(initiallyNotSelected.getAttribute("selected"), equalTo("false"));
+    assertThat(initiallySelected.getAttribute("selected"), equalTo("true"));
 
-    public void testShouldReturnValueOfClassAttributeOfAnElement() {
-        driver.get(xhtmlTestPage);
+    initiallyNotSelected.setSelected();
+    assertThat(neverSelected.getAttribute("selected"), equalTo("false"));
+    assertThat(initiallyNotSelected.getAttribute("selected"), equalTo("true"));
+    assertThat(initiallySelected.getAttribute("selected"), equalTo("false"));
+  }
 
-        WebElement heading = driver.findElement(By.xpath("//h1"));
-        String className = heading.getAttribute("class");
+  public void testShouldReturnTheValueOfSelectedForOptionsInSelectsEvenIfTheyLackThatAttribute() {
+    driver.get(formPage);
+    WebElement selectBox = driver.findElement(By.xpath("//select[@name='selectomatic']"));
+    List<WebElement> options = selectBox.findElements(By.tagName("option"));
+    WebElement one = options.get(0);
+    WebElement two = options.get(1);
+    assertThat(one.isSelected(), is(true));
+    assertThat(two.isSelected(), is(false));
+    assertThat(one.getAttribute("selected"), equalTo("true"));
+    assertThat(two.getAttribute("selected"), equalTo("false"));
+  }
 
-        assertThat(className, equalTo("header"));
-    }
+  public void testShouldReturnValueOfClassAttributeOfAnElement() {
+    driver.get(xhtmlTestPage);
 
-    public void testShouldReturnTheContentsOfATextAreaAsItsValue() {
-        driver.get(formPage);
+    WebElement heading = driver.findElement(By.xpath("//h1"));
+    String className = heading.getAttribute("class");
 
-        String value = driver.findElement(By.id("withText")).getValue();
+    assertThat(className, equalTo("header"));
+  }
 
-        assertThat(value, equalTo("Example text"));
-    }
+  public void testShouldReturnTheContentsOfATextAreaAsItsValue() {
+    driver.get(formPage);
 
-    public void testShouldTreatReadonlyAsAValue() {
-      driver.get(formPage);
+    String value = driver.findElement(By.id("withText")).getValue();
 
-      WebElement element = driver.findElement(By.name("readonly"));
-      String readonly = element.getAttribute("readonly");
+    assertThat(value, equalTo("Example text"));
+  }
 
-      WebElement textInput = driver.findElement(By.name("x"));
-      String notReadonly = textInput.getAttribute("readonly");
+  public void testShouldTreatReadonlyAsAValue() {
+    driver.get(formPage);
 
-      assertFalse(readonly.equals(notReadonly));
-    }
+    WebElement element = driver.findElement(By.name("readonly"));
+    String readonly = element.getAttribute("readonly");
+
+    WebElement textInput = driver.findElement(By.name("x"));
+    String notReadonly = textInput.getAttribute("readonly");
+
+    assertFalse(readonly.equals(notReadonly));
+  }
 }

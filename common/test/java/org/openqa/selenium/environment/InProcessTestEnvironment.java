@@ -22,22 +22,23 @@ import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.Jetty6AppServer;
 
 public class InProcessTestEnvironment implements TestEnvironment {
-    private AppServer appServer;
 
-    public InProcessTestEnvironment() {
-        appServer = new Jetty6AppServer();
-        appServer.start();
-    }
+  private AppServer appServer;
 
-    public AppServer getAppServer() {
-        return appServer;
-    }
+  public InProcessTestEnvironment() {
+    appServer = new Jetty6AppServer();
+    appServer.start();
+  }
 
-    public void stop() {
-        appServer.stop();
-    }
+  public AppServer getAppServer() {
+    return appServer;
+  }
 
-    public static void main(String[] args) {
-        new InProcessTestEnvironment();
-    }
+  public void stop() {
+    appServer.stop();
+  }
+
+  public static void main(String[] args) {
+    new InProcessTestEnvironment();
+  }
 }

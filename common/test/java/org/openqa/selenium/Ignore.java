@@ -27,10 +27,11 @@ import java.lang.annotation.Target;
 public @interface Ignore {
 
   public static enum Driver {
+
     ALL, HTMLUNIT, IE, FIREFOX, REMOTE, IPHONE, CHROME, CHROME_NON_WINDOWS
   }
 
-  Driver[] value() default { Driver.ALL };
+  Driver[] value() default {Driver.ALL};
 
   String reason() default ("Not implemented in driver yet");
 }

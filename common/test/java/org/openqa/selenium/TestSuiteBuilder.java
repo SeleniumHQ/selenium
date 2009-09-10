@@ -65,8 +65,9 @@ public class TestSuiteBuilder {
   public TestSuiteBuilder addSourceDir(String dirName) {
     File dir = new File(baseDir, dirName + "/test/java");
 
-    if (dir.exists())
+    if (dir.exists()) {
       sourceDirs.add(dir);
+    }
 
     return this;
   }
@@ -114,8 +115,9 @@ public class TestSuiteBuilder {
       toReturn.addTest(suite);
     }
 
-    if (suite.countTestCases() == 0)
-    	System.err.println("No test cases found");
+    if (suite.countTestCases() == 0) {
+      System.err.println("No test cases found");
+    }
     return decorate(toReturn);
   }
 
@@ -195,8 +197,8 @@ public class TestSuiteBuilder {
       if (isIgnored(name, ignore)) {
         if (isIgnored(name, ignore)) {
           System.err.println("Ignoring: "
-              + method.getDeclaringClass() + "."
-              + method.getName() + ": " + ignore.reason());
+                             + method.getDeclaringClass() + "."
+                             + method.getName() + ": " + ignore.reason());
           return false;
         }
       }
@@ -207,7 +209,8 @@ public class TestSuiteBuilder {
       return false;
     }
 
-    return method.getName().startsWith("test") || method.getAnnotation(org.junit.Test.class) != null;
+    return method.getName().startsWith("test")
+           || method.getAnnotation(org.junit.Test.class) != null;
   }
 
   private boolean isIgnored(Ignore.Driver name, Ignore ignore) {
@@ -286,8 +289,8 @@ public class TestSuiteBuilder {
     return this;
   }
 
-	public TestSuiteBuilder leaveRunning() {
-	  System.setProperty("webdriver.singletestsuite.leaverunning", "true");
-	  return this;
-	}
+  public TestSuiteBuilder leaveRunning() {
+    System.setProperty("webdriver.singletestsuite.leaverunning", "true");
+    return this;
+  }
 }

@@ -22,23 +22,24 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
 public class MiscTest extends AbstractDriverTestCase {
-    public void testShouldReportTheCurrentUrlCorrectly() {
-        driver.get(simpleTestPage);
-        assertThat(driver.getCurrentUrl(), equalTo(simpleTestPage));
 
-        driver.get(javascriptPage);
-        assertThat(driver.getCurrentUrl(), equalTo(javascriptPage));
-    }
+  public void testShouldReportTheCurrentUrlCorrectly() {
+    driver.get(simpleTestPage);
+    assertThat(driver.getCurrentUrl(), equalTo(simpleTestPage));
 
-    public void testShouldReturnTheSourceOfAPage() {
-        driver.get(simpleTestPage);
+    driver.get(javascriptPage);
+    assertThat(driver.getCurrentUrl(), equalTo(javascriptPage));
+  }
 
-        String source = driver.getPageSource().toLowerCase();
-        
-        assertThat(source.contains("<html"), is(true));
-        assertThat(source.contains("</html"), is(true));
-        assertThat(source.contains("an inline element"), is(true));
-        assertThat(source.contains("<p id="), is(true));
-        assertThat(source.contains("lotsofspaces"), is(true));
-    }
+  public void testShouldReturnTheSourceOfAPage() {
+    driver.get(simpleTestPage);
+
+    String source = driver.getPageSource().toLowerCase();
+
+    assertThat(source.contains("<html"), is(true));
+    assertThat(source.contains("</html"), is(true));
+    assertThat(source.contains("an inline element"), is(true));
+    assertThat(source.contains("<p id="), is(true));
+    assertThat(source.contains("lotsofspaces"), is(true));
+  }
 }

@@ -18,9 +18,8 @@ limitations under the License.
 package org.openqa.selenium;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.anyOf;
-import org.hamcrest.Matchers;
+import static org.hamcrest.Matchers.equalTo;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.IE;
@@ -28,38 +27,39 @@ import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 
 public class PageLoadingTest extends AbstractDriverTestCase {
-    public void testShouldWaitForDocumentToBeLoaded() {
-        driver.get(simpleTestPage);
 
-        assertThat(driver.getTitle(), equalTo("Hello WebDriver"));
-    }
+  public void testShouldWaitForDocumentToBeLoaded() {
+    driver.get(simpleTestPage);
 
-    public void testShouldFollowRedirectsSentInTheHttpResponseHeaders() {
-        driver.get(redirectPage);
+    assertThat(driver.getTitle(), equalTo("Hello WebDriver"));
+  }
 
-        assertThat(driver.getTitle(), equalTo("We Arrive Here"));
-    }
+  public void testShouldFollowRedirectsSentInTheHttpResponseHeaders() {
+    driver.get(redirectPage);
 
-    public void testShouldFollowMetaRedirects() throws Exception {
-        driver.get(metaRedirectPage);
-        assertThat(driver.getTitle(), equalTo("We Arrive Here"));
-    }
+    assertThat(driver.getTitle(), equalTo("We Arrive Here"));
+  }
 
-    public void testShouldBeAbleToGetAFragmentOnTheCurrentPage() {
-        driver.get(xhtmlTestPage);
-        driver.get(xhtmlTestPage + "#text");
-    }
+  public void testShouldFollowMetaRedirects() throws Exception {
+    driver.get(metaRedirectPage);
+    assertThat(driver.getTitle(), equalTo("We Arrive Here"));
+  }
 
-    public void testShouldReturnWhenGettingAUrlThatDoesNotResolve() {
-      try {
-        // Of course, we're up the creek if this ever does get registered
-        driver.get("http://www.thisurldoesnotexist.comx/");
-      } catch (IllegalStateException e) {
-        if (!isIeDriverTimedOutException(e)) {
-          throw e;
-        }
+  public void testShouldBeAbleToGetAFragmentOnTheCurrentPage() {
+    driver.get(xhtmlTestPage);
+    driver.get(xhtmlTestPage + "#text");
+  }
+
+  public void testShouldReturnWhenGettingAUrlThatDoesNotResolve() {
+    try {
+      // Of course, we're up the creek if this ever does get registered
+      driver.get("http://www.thisurldoesnotexist.comx/");
+    } catch (IllegalStateException e) {
+      if (!isIeDriverTimedOutException(e)) {
+        throw e;
       }
     }
+  }
 
   @Ignore(IPHONE)
   public void testShouldReturnWhenGettingAUrlThatDoesNotConnect() {
@@ -67,17 +67,17 @@ public class PageLoadingTest extends AbstractDriverTestCase {
     driver.get("http://localhost:3001");
   }
 
-    public void testShouldBeAbleToLoadAPageWithFramesetsAndWaitUntilAllFramesAreLoaded() {
-        driver.get(framesetPage);
+  public void testShouldBeAbleToLoadAPageWithFramesetsAndWaitUntilAllFramesAreLoaded() {
+    driver.get(framesetPage);
 
-        driver.switchTo().frame(0);
-        WebElement pageNumber = driver.findElement(By.xpath("//span[@id='pageNumber']"));
-        assertThat(pageNumber.getText().trim(), equalTo("1"));
+    driver.switchTo().frame(0);
+    WebElement pageNumber = driver.findElement(By.xpath("//span[@id='pageNumber']"));
+    assertThat(pageNumber.getText().trim(), equalTo("1"));
 
-        driver.switchTo().frame(1);
-        pageNumber = driver.findElement(By.xpath("//span[@id='pageNumber']"));
-        assertThat(pageNumber.getText().trim(), equalTo("2"));
-    }
+    driver.switchTo().frame(1);
+    pageNumber = driver.findElement(By.xpath("//span[@id='pageNumber']"));
+    assertThat(pageNumber.getText().trim(), equalTo("2"));
+  }
 
   @Ignore(IPHONE)
   @NeedsFreshDriver
@@ -91,53 +91,53 @@ public class PageLoadingTest extends AbstractDriverTestCase {
   }
 
   public void testShouldBeAbleToNavigateBackInTheBrowserHistory() {
-        driver.get(formPage);
+    driver.get(formPage);
 
-        driver.findElement(By.id("imageButton")).submit();
-        assertThat(driver.getTitle(), equalTo("We Arrive Here"));
+    driver.findElement(By.id("imageButton")).submit();
+    assertThat(driver.getTitle(), equalTo("We Arrive Here"));
 
-        driver.navigate().back();
-        assertThat(driver.getTitle(), equalTo("We Leave From Here"));
-    }
+    driver.navigate().back();
+    assertThat(driver.getTitle(), equalTo("We Leave From Here"));
+  }
 
-    public void testShouldBeAbleToNavigateBackInTheBrowserHistoryInPresenceOfIframes() {
-        driver.get(xhtmlTestPage);
+  public void testShouldBeAbleToNavigateBackInTheBrowserHistoryInPresenceOfIframes() {
+    driver.get(xhtmlTestPage);
 
-        driver.findElement(By.name("sameWindow")).click();
-        assertThat(driver.getTitle(), equalTo("This page has iframes"));
+    driver.findElement(By.name("sameWindow")).click();
+    assertThat(driver.getTitle(), equalTo("This page has iframes"));
 
-        driver.navigate().back();
-        assertThat(driver.getTitle(), equalTo("XHTML Test Page"));
-    }
+    driver.navigate().back();
+    assertThat(driver.getTitle(), equalTo("XHTML Test Page"));
+  }
 
-    public void testShouldBeAbleToNavigateForwardsInTheBrowserHistory() {
-        driver.get(formPage);
+  public void testShouldBeAbleToNavigateForwardsInTheBrowserHistory() {
+    driver.get(formPage);
 
-        driver.findElement(By.id("imageButton")).submit();
-        assertThat(driver.getTitle(), equalTo("We Arrive Here"));
+    driver.findElement(By.id("imageButton")).submit();
+    assertThat(driver.getTitle(), equalTo("We Arrive Here"));
 
-        driver.navigate().back();
-        assertThat(driver.getTitle(), equalTo("We Leave From Here"));
+    driver.navigate().back();
+    assertThat(driver.getTitle(), equalTo("We Leave From Here"));
 
-        driver.navigate().forward();
-        assertThat(driver.getTitle(), equalTo("We Arrive Here"));
-    }
+    driver.navigate().forward();
+    assertThat(driver.getTitle(), equalTo("We Arrive Here"));
+  }
 
-    @Ignore({FIREFOX, IE, CHROME})
-    public void testShouldBeAbleToAccessPagesWithAnInsecureSslCertificate() {
-        String url = GlobalTestEnvironment.get().getAppServer().whereIsSecure("simpleTest.html");
-        driver.get(url);
+  @Ignore({FIREFOX, IE, CHROME})
+  public void testShouldBeAbleToAccessPagesWithAnInsecureSslCertificate() {
+    String url = GlobalTestEnvironment.get().getAppServer().whereIsSecure("simpleTest.html");
+    driver.get(url);
 
-        // This should work
-        assertThat(driver.getTitle(), equalTo("Hello WebDriver"));
-    }
+    // This should work
+    assertThat(driver.getTitle(), equalTo("Hello WebDriver"));
+  }
 
-    @Ignore(IE)
-    public void testShouldBeAbleToRefreshAPage() {
-      driver.get(xhtmlTestPage);
+  @Ignore(IE)
+  public void testShouldBeAbleToRefreshAPage() {
+    driver.get(xhtmlTestPage);
 
-      driver.navigate().refresh();
+    driver.navigate().refresh();
 
-      assertThat(driver.getTitle(), equalTo("XHTML Test Page"));
-    }
+    assertThat(driver.getTitle(), equalTo("XHTML Test Page"));
+  }
 }

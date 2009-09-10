@@ -31,10 +31,10 @@ public class VisibilityTest extends AbstractDriverTestCase {
     driver.get(javascriptPage);
 
     assertThat(((RenderedWebElement) driver.findElement(By.id("displayed"))).isDisplayed(),
-            is(true));
+               is(true));
     assertThat(((RenderedWebElement) driver.findElement(By.id("none"))).isDisplayed(), is(false));
     assertThat(((RenderedWebElement) driver.findElement(By.id("suppressedParagraph")))
-            .isDisplayed(), is(false));
+        .isDisplayed(), is(false));
     assertThat(((RenderedWebElement) driver.findElement(By.id("hidden"))).isDisplayed(), is(false));
   }
 

@@ -31,169 +31,171 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Set;
+
 public class CookieImplementationTest extends AbstractDriverTestCase {
+
   //TODO(danielwh): Work out IE issues (probably path-based)
-    @Ignore(value = {IE}, reason = "Non-windows Chrome can't delete cookies, see crbug 14734")
-    public void testAddCookiesWithDifferentPaths() {
-        driver.get(simpleTestPage);
-        driver.manage().deleteAllCookies();
+  @Ignore(value = {IE}, reason = "Non-windows Chrome can't delete cookies, see crbug 14734")
+  public void testAddCookiesWithDifferentPaths() {
+    driver.get(simpleTestPage);
+    driver.manage().deleteAllCookies();
 
-        Cookie cookie1 = new Cookie("fish", "cod", "/common/animals");
-        Cookie cookie2 = new Cookie("planet", "earth", "/common/galaxy");
-        WebDriver.Options options = driver.manage();
-        options.addCookie(cookie1);
-        options.addCookie(cookie2);
+    Cookie cookie1 = new Cookie("fish", "cod", "/common/animals");
+    Cookie cookie2 = new Cookie("planet", "earth", "/common/galaxy");
+    WebDriver.Options options = driver.manage();
+    options.addCookie(cookie1);
+    options.addCookie(cookie2);
 
-        AppServer appServer = GlobalTestEnvironment.get().getAppServer();
-        driver.get(appServer.whereIs("animals"));
-        Set<Cookie> cookies = options.getCookies();
+    AppServer appServer = GlobalTestEnvironment.get().getAppServer();
+    driver.get(appServer.whereIs("animals"));
+    Set<Cookie> cookies = options.getCookies();
 
-        assertThat(cookies.contains(cookie1), is(true));
-        assertThat(cookies.contains(cookie2), is(false));
+    assertThat(cookies.contains(cookie1), is(true));
+    assertThat(cookies.contains(cookie2), is(false));
 
-        driver.get(appServer.whereIs("galaxy"));
-        cookies = options.getCookies();
-        assertThat(cookies.contains(cookie1), is(false));
-        assertThat(cookies.contains(cookie2), is(true));
+    driver.get(appServer.whereIs("galaxy"));
+    cookies = options.getCookies();
+    assertThat(cookies.contains(cookie1), is(false));
+    assertThat(cookies.contains(cookie2), is(true));
+  }
+
+  @Ignore(value = {IE}, reason = "Non-windows Chrome can't delete cookies, see crbug 14734")
+  public void testGetAllCookies() {
+    driver.get(simpleTestPage);
+    driver.manage().deleteAllCookies();
+
+    long time = System.currentTimeMillis() + (60 * 60 * 24);
+    Cookie cookie1 = new Cookie("fish", "cod", "", new Date(time));
+    Cookie cookie2 = new Cookie("planet", "earth");
+    WebDriver.Options options = driver.manage();
+    options.addCookie(cookie1);
+    options.addCookie(cookie2);
+
+    Set<Cookie> cookies = options.getCookies();
+
+    assertThat(cookies.contains(cookie1), is(true));
+    assertThat(cookies.contains(cookie2), is(true));
+  }
+
+  @Ignore({IE})
+  public void testCookieIntegrity() {
+    String url = GlobalTestEnvironment.get().getAppServer().whereElseIs("animals");
+
+    driver.get(url);
+    driver.manage().deleteAllCookies();
+
+    Calendar c = Calendar.getInstance();
+    long time = System.currentTimeMillis() + (60 * 60 * 24);
+    Cookie cookie1 = new Cookie("fish", "cod", "/common/animals", new Date(time));
+    WebDriver.Options options = driver.manage();
+    options.addCookie(cookie1);
+
+    Set<Cookie> cookies = options.getCookies();
+    Iterator<Cookie> iter = cookies.iterator();
+    Cookie retrievedCookie = null;
+    while (iter.hasNext()) {
+      Cookie temp = iter.next();
+
+      if (cookie1.equals(temp)) {
+        retrievedCookie = temp;
+        break;
+      }
     }
 
-    @Ignore(value = {IE}, reason = "Non-windows Chrome can't delete cookies, see crbug 14734")
-    public void testGetAllCookies() {
-        driver.get(simpleTestPage);
-        driver.manage().deleteAllCookies();
-        
-        long time = System.currentTimeMillis() + (60 * 60 * 24);
-        Cookie cookie1 = new Cookie("fish", "cod", "", new Date(time));
-        Cookie cookie2 = new Cookie("planet", "earth");
-        WebDriver.Options options = driver.manage();
-        options.addCookie(cookie1);
-        options.addCookie(cookie2);
-
-        Set<Cookie> cookies = options.getCookies();
-
-        assertThat(cookies.contains(cookie1), is(true));
-        assertThat(cookies.contains(cookie2), is(true));
-    }
-
-    @Ignore({IE})
-    public void testCookieIntegrity() {
-        String url = GlobalTestEnvironment.get().getAppServer().whereElseIs("animals");
-
-        driver.get(url);
-        driver.manage().deleteAllCookies();
-        
-        Calendar c = Calendar.getInstance();
-        long time = System.currentTimeMillis() + (60 * 60 * 24);
-        Cookie cookie1 = new Cookie("fish", "cod", "/common/animals", new Date(time));
-        WebDriver.Options options = driver.manage();
-        options.addCookie(cookie1);
-
-        Set<Cookie> cookies = options.getCookies();
-        Iterator<Cookie> iter = cookies.iterator();
-        Cookie retrievedCookie = null;
-        while(iter.hasNext()) {
-            Cookie temp = iter.next();
-
-            if (cookie1.equals(temp)) {
-              retrievedCookie = temp;
-              break;
-            }
-        }
-
-        assertThat(retrievedCookie, is(notNullValue()));
-        //Cookie.equals only compares name, domain and path
-        assertThat(retrievedCookie, equalTo(cookie1));
-        assertThat(retrievedCookie.getValue(), equalTo(cookie1.getValue()));
+    assertThat(retrievedCookie, is(notNullValue()));
+    //Cookie.equals only compares name, domain and path
+    assertThat(retrievedCookie, equalTo(cookie1));
+    assertThat(retrievedCookie.getValue(), equalTo(cookie1.getValue()));
 //        assertThat(retrievedCookie.getExpiry(), equalTo(cookie1.getExpiry()));
-        assertThat(retrievedCookie.isSecure(), equalTo(cookie1.isSecure()));
-    }
+    assertThat(retrievedCookie.isSecure(), equalTo(cookie1.isSecure()));
+  }
 
-    @Ignore(value = {IE}, reason = "Non-windows Chrome can't delete cookies, see crbug 14734")
-    public void testDeleteAllCookies() {
-        driver.get(simpleTestPage);
-        Cookie cookie1 = new Cookie("fish", "cod");
-        Cookie cookie2 = new Cookie("planet", "earth", "/common");
-        Cookie cookie3 = new Cookie("planet", "earth", "/common/");
-        WebDriver.Options options = driver.manage();
-        options.addCookie(cookie1);
-        options.addCookie(cookie2);
-        options.addCookie(cookie3);
-        Set<Cookie> cookies = options.getCookies();
-        assertThat(cookies.contains(cookie1), is(true));
-        assertThat(cookies.contains(cookie2), is(true));
-        assertThat(cookies.contains(cookie3), is(true));
-        options.deleteAllCookies();
-        driver.get(simpleTestPage);
+  @Ignore(value = {IE}, reason = "Non-windows Chrome can't delete cookies, see crbug 14734")
+  public void testDeleteAllCookies() {
+    driver.get(simpleTestPage);
+    Cookie cookie1 = new Cookie("fish", "cod");
+    Cookie cookie2 = new Cookie("planet", "earth", "/common");
+    Cookie cookie3 = new Cookie("planet", "earth", "/common/");
+    WebDriver.Options options = driver.manage();
+    options.addCookie(cookie1);
+    options.addCookie(cookie2);
+    options.addCookie(cookie3);
+    Set<Cookie> cookies = options.getCookies();
+    assertThat(cookies.contains(cookie1), is(true));
+    assertThat(cookies.contains(cookie2), is(true));
+    assertThat(cookies.contains(cookie3), is(true));
+    options.deleteAllCookies();
+    driver.get(simpleTestPage);
 
-        cookies = options.getCookies();
-        assertThat(cookies.contains(cookie1), is(false));
-        assertThat(cookies.contains(cookie2), is(false));
-        assertThat(cookies.contains(cookie3), is(false));
-    }
+    cookies = options.getCookies();
+    assertThat(cookies.contains(cookie1), is(false));
+    assertThat(cookies.contains(cookie2), is(false));
+    assertThat(cookies.contains(cookie3), is(false));
+  }
 
-    @Ignore(value = {IE}, reason = "Non-windows Chrome can't delete cookies, see crbug 14734")
-    public void testDeleteCookie() {
-        driver.get(simpleTestPage);
-        Cookie cookie1 = new Cookie("fish", "cod");
-        Cookie cookie2 = new Cookie("planet", "earth");
-        WebDriver.Options options = driver.manage();
-        options.addCookie(cookie1);
-        options.addCookie(cookie2);
+  @Ignore(value = {IE}, reason = "Non-windows Chrome can't delete cookies, see crbug 14734")
+  public void testDeleteCookie() {
+    driver.get(simpleTestPage);
+    Cookie cookie1 = new Cookie("fish", "cod");
+    Cookie cookie2 = new Cookie("planet", "earth");
+    WebDriver.Options options = driver.manage();
+    options.addCookie(cookie1);
+    options.addCookie(cookie2);
 
-        options.deleteCookie(cookie1);
-        Set<Cookie> cookies = options.getCookies();
+    options.deleteCookie(cookie1);
+    Set<Cookie> cookies = options.getCookies();
 
-        assertThat(cookies.size(), equalTo(1));
-        assertThat(cookies, hasItem(cookie2));
-    }
+    assertThat(cookies.size(), equalTo(1));
+    assertThat(cookies, hasItem(cookie2));
+  }
 
-    @Ignore(value = {IE}, reason = "Non-windows Chrome can't delete cookies, see crbug 14734")
-    public void testDeleteCookieWithName() {
-        driver.get(simpleTestPage);
-        driver.manage().deleteAllCookies();
-        
-        String cookieOneName = "fish";
-        String cookieTwoName = "planet";
-        String cookieThreeName = "three";
-        Cookie cookie1 = new Cookie(cookieOneName, "cod");
-        Cookie cookie2 = new Cookie(cookieTwoName, "earth");
-        Cookie cookie3 = new Cookie(cookieThreeName, "three");
-        WebDriver.Options options = driver.manage();
-        options.addCookie(cookie1);
-        options.addCookie(cookie2);
-        options.addCookie(cookie3);
+  @Ignore(value = {IE}, reason = "Non-windows Chrome can't delete cookies, see crbug 14734")
+  public void testDeleteCookieWithName() {
+    driver.get(simpleTestPage);
+    driver.manage().deleteAllCookies();
 
-        options.deleteCookieNamed(cookieOneName);
-        options.deleteCookieNamed(cookieTwoName);
-        Set<Cookie> cookies = options.getCookies();
-        //cookie without domain gets deleted
-        assertThat(cookies, not(hasItem(cookie1)));
-        //cookie with domain gets deleted
-        assertThat(cookies, not(hasItem(cookie2)));
-        //cookie not deleted
-        assertThat(cookies, hasItem(cookie3));
-    }
+    String cookieOneName = "fish";
+    String cookieTwoName = "planet";
+    String cookieThreeName = "three";
+    Cookie cookie1 = new Cookie(cookieOneName, "cod");
+    Cookie cookie2 = new Cookie(cookieTwoName, "earth");
+    Cookie cookie3 = new Cookie(cookieThreeName, "three");
+    WebDriver.Options options = driver.manage();
+    options.addCookie(cookie1);
+    options.addCookie(cookie2);
+    options.addCookie(cookie3);
 
-    @Ignore(value = {IE}, reason = "Non-windows Chrome can't delete cookies, see crbug 14734")
-    public void testShouldNotDeleteCookiesWithASimilarName() {
-        driver.get(simpleTestPage);
-        driver.manage().deleteAllCookies();
-        
-        String cookieOneName = "fish";
-        Cookie cookie1 = new Cookie(cookieOneName, "cod");
-        Cookie cookie2 = new Cookie(cookieOneName + "x", "earth");
-        WebDriver.Options options = driver.manage();
-        options.addCookie(cookie1);
-        options.addCookie(cookie2);
+    options.deleteCookieNamed(cookieOneName);
+    options.deleteCookieNamed(cookieTwoName);
+    Set<Cookie> cookies = options.getCookies();
+    //cookie without domain gets deleted
+    assertThat(cookies, not(hasItem(cookie1)));
+    //cookie with domain gets deleted
+    assertThat(cookies, not(hasItem(cookie2)));
+    //cookie not deleted
+    assertThat(cookies, hasItem(cookie3));
+  }
 
-        options.deleteCookieNamed(cookieOneName);
-        Set<Cookie> cookies = options.getCookies();
+  @Ignore(value = {IE}, reason = "Non-windows Chrome can't delete cookies, see crbug 14734")
+  public void testShouldNotDeleteCookiesWithASimilarName() {
+    driver.get(simpleTestPage);
+    driver.manage().deleteAllCookies();
 
-        assertThat(cookies, not(hasItem(cookie1)));
-        assertThat(cookies, hasItem(cookie2));
-    }
+    String cookieOneName = "fish";
+    Cookie cookie1 = new Cookie(cookieOneName, "cod");
+    Cookie cookie2 = new Cookie(cookieOneName + "x", "earth");
+    WebDriver.Options options = driver.manage();
+    options.addCookie(cookie1);
+    options.addCookie(cookie2);
 
-    @Ignore(value = {IE}, reason = "Non-windows Chrome can't delete cookies, see crbug 14734")
+    options.deleteCookieNamed(cookieOneName);
+    Set<Cookie> cookies = options.getCookies();
+
+    assertThat(cookies, not(hasItem(cookie1)));
+    assertThat(cookies, hasItem(cookie2));
+  }
+
+  @Ignore(value = {IE}, reason = "Non-windows Chrome can't delete cookies, see crbug 14734")
   public void testGetCookieDoesNotRetriveBeyondCurrentDomain() {
     driver.get(simpleTestPage);
     driver.manage().deleteAllCookies();
@@ -210,7 +212,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
         System.err.println("Looks like IE timed out. Is the site accessible?");
         return;
       }
-    }    
+    }
     Set<Cookie> cookies = options.getCookies();
     assertThat(cookies, not(hasItem(cookie1)));
   }

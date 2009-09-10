@@ -22,34 +22,37 @@ package org.openqa.selenium.environment;
  * Used to hold a TestEnvironment in a static class-level field.
  */
 public class GlobalTestEnvironment {
-    private static TestEnvironment environment;
 
-    public static boolean isSetUp() {
-        return environment != null;
-    }
+  private static TestEnvironment environment;
 
-    public static TestEnvironment get() {
-        return environment;
-    }
+  public static boolean isSetUp() {
+    return environment != null;
+  }
 
-    public static void set(TestEnvironment environment) {
-        GlobalTestEnvironment.environment = environment;
-    }
+  public static TestEnvironment get() {
+    return environment;
+  }
 
-    public static TestEnvironment get(Class<? extends TestEnvironment> startThisIfNothingIsAlreadyRunning) {
-        if (environment == null) {
-            try {
-                environment = startThisIfNothingIsAlreadyRunning.newInstance();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return environment;
-    }
+  public static void set(TestEnvironment environment) {
+    GlobalTestEnvironment.environment = environment;
+  }
 
-    public static void stop() {
-        if (environment != null)
-            environment.stop();
-        environment = null;
+  public static TestEnvironment get(
+      Class<? extends TestEnvironment> startThisIfNothingIsAlreadyRunning) {
+    if (environment == null) {
+      try {
+        environment = startThisIfNothingIsAlreadyRunning.newInstance();
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
     }
+    return environment;
+  }
+
+  public static void stop() {
+    if (environment != null) {
+      environment.stop();
+    }
+    environment = null;
+  }
 }

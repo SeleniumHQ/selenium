@@ -21,18 +21,26 @@ package org.openqa.selenium.environment.webserver;
 import javax.servlet.Servlet;
 
 public interface AppServer {
-    String getHostName();
-    String getAlternateHostName();
 
-    String whereIs(String relativeUrl);
-    String whereElseIs(String relativeUrl);
-    String whereIsSecure(String relativeUrl);
+  String getHostName();
 
-    void start();
-    void stop();
+  String getAlternateHostName();
 
-    void addAdditionalWebApplication(String context, String absolutePath);
-    void addServlet(String name, String url, Class<? extends Servlet> servletClass);
-    void listenOn(int port);
-    void listenSecurelyOn(int port);
+  String whereIs(String relativeUrl);
+
+  String whereElseIs(String relativeUrl);
+
+  String whereIsSecure(String relativeUrl);
+
+  void start();
+
+  void stop();
+
+  void addAdditionalWebApplication(String context, String absolutePath);
+
+  void addServlet(String name, String url, Class<? extends Servlet> servletClass);
+
+  void listenOn(int port);
+
+  void listenSecurelyOn(int port);
 }

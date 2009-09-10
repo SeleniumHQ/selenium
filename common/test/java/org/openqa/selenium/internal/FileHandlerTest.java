@@ -31,32 +31,32 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 public class FileHandlerTest extends TestCase {
-  
+
   @Test
   public void testUnzip() throws IOException {
     File testZip = writeTestZip(File.createTempFile("testUnzip", "zip"), 25);
     File out = FileHandler.unzip(new FileInputStream(testZip));
     assertEquals(25, out.list().length);
   }
-  
+
   @Test
   public void testFileCopy() throws IOException {
     File newFile = File.createTempFile("testFileCopy", "dst");
     File tmpFile = writeTestFile(File.createTempFile("FileUtilTest", "src"));
     assertTrue(newFile.length() == 0);
     assertTrue(tmpFile.length() > 0);
-    
+
     try {
       // Copy it.
       FileHandler.copy(tmpFile, newFile);
-      
+
       assertEquals(tmpFile.length(), newFile.length());
     } finally {
       tmpFile.delete();
       newFile.delete();
     }
   }
-  
+
   private File writeTestZip(File file, int files) throws IOException {
     ZipOutputStream out = new ZipOutputStream(new FileOutputStream(file));
     for (int i = 0; i < files; i++) {
@@ -66,7 +66,7 @@ public class FileHandlerTest extends TestCase {
     file.deleteOnExit();
     return file;
   }
-  
+
   private ZipOutputStream writeTestZipEntry(ZipOutputStream out) throws IOException {
     File testFile = writeTestFile(File.createTempFile("testZip", "file"));
     ZipEntry entry = new ZipEntry(testFile.getName());
@@ -80,7 +80,7 @@ public class FileHandlerTest extends TestCase {
     out.flush();
     return out;
   }
-  
+
   private File writeTestFile(File file) throws IOException {
     byte[] byteArray = new byte[16384];
     new Random().nextBytes(byteArray);

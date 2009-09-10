@@ -17,15 +17,15 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import static org.openqa.selenium.Ignore.Driver.CHROME;
+import static org.openqa.selenium.Ignore.Driver.FIREFOX;
+import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
+import static org.openqa.selenium.Ignore.Driver.IE;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-
-import static org.openqa.selenium.Ignore.Driver.CHROME;
-import static org.openqa.selenium.Ignore.Driver.FIREFOX;
-import static org.openqa.selenium.Ignore.Driver.IE;
-import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 
 public class ExecutingJavascriptTest extends AbstractDriverTestCase {
 
@@ -85,7 +85,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     assertTrue(result instanceof Boolean);
     assertTrue((Boolean) result);
   }
-  
+
   @SuppressWarnings("unchecked")
   @JavascriptEnabled
   @Ignore(IE)
@@ -103,10 +103,10 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     expectedResult.add(subList);
     Object result = executeScript("return ['zero', [true, false]];");
     assertTrue("result was: " + result + " (" + result.getClass() + ")", result instanceof List);
-    List<Object> list = (List<Object>)result;
+    List<Object> list = (List<Object>) result;
     assertTrue(compareLists(expectedResult, list));
   }
-  
+
   private boolean compareLists(List<?> first, List<?> second) {
     if (first.size() != second.size()) {
       return false;
@@ -116,7 +116,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
         if (!(second instanceof List<?>)) {
           return false;
         } else {
-          if (!compareLists((List<?>)first.get(i), (List<?>)second.get(i))) {
+          if (!compareLists((List<?>) first.get(i), (List<?>) second.get(i))) {
             return false;
           }
         }
@@ -128,7 +128,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     }
     return true;
   }
-  
+
   @JavascriptEnabled
   public void testPassingAndReturningALongShouldReturnAWholeNumber() {
     if (!(driver instanceof JavascriptExecutor)) {
@@ -139,11 +139,12 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     Long expectedResult = 1L;
     Object result = executeScript("return arguments[0];", expectedResult);
     assertTrue("Expected result to be an Integer or Long but was a " +
-        result.getClass(), result instanceof Integer || result instanceof Long);
+               result.getClass(), result instanceof Integer || result instanceof Long);
     assertEquals(expectedResult.longValue(), result);
   }
-  
-  @Ignore(value = {HTMLUNIT, FIREFOX, IE}, reason = "HtmlUnit converts doubles into longs when passing")
+
+  @Ignore(value = {HTMLUNIT, FIREFOX, IE},
+          reason = "HtmlUnit converts doubles into longs when passing")
   @JavascriptEnabled
   public void testPassingAndReturningADoubleShouldReturnADecimal() {
     if (!(driver instanceof JavascriptExecutor)) {
@@ -154,7 +155,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     Double expectedResult = 1.2;
     Object result = executeScript("return arguments[0];", expectedResult);
     assertTrue("Expected result to be a Double or Float but was a " +
-        result.getClass(), result instanceof Float || result instanceof Double);
+               result.getClass(), result instanceof Float || result instanceof Double);
     assertEquals(expectedResult.doubleValue(), result);
   }
 
@@ -245,7 +246,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
 
     assertEquals("plainButton", value);
   }
-  
+
   @JavascriptEnabled
   @Ignore(IE)
   public void testShouldBeAbleToPassAnArrayAsArgument() {
@@ -254,11 +255,11 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     }
 
     driver.get(javascriptPage);
-    Object[] array = new Object[] { "zero", 1, true, 3.14159 };
-    long length = (Long)executeScript("return arguments[0].length", array);
+    Object[] array = new Object[]{"zero", 1, true, 3.14159};
+    long length = (Long) executeScript("return arguments[0].length", array);
     assertEquals(array.length, length);
   }
-  
+
   @JavascriptEnabled
   @Ignore(IE)
   public void testShouldBeAbleToPassACollectionAsArgument() {
@@ -271,18 +272,18 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     collection.add("Cheddar");
     collection.add("Brie");
     collection.add(7);
-    long length = (Long)executeScript("return arguments[0].length", collection);
+    long length = (Long) executeScript("return arguments[0].length", collection);
     assertEquals(collection.size(), length);
-    
+
     collection = new HashSet<Object>();
     collection.add("Gouda");
     collection.add("Stilton");
     collection.add("Stilton");
     collection.add(true);
-    length = (Long)executeScript("return arguments[0].length", collection);
+    length = (Long) executeScript("return arguments[0].length", collection);
     assertEquals(collection.size(), length);
-    
-    
+
+
   }
 
   @JavascriptEnabled

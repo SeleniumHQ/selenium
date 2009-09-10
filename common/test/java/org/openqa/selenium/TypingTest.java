@@ -28,548 +28,553 @@ import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 
 public class TypingTest extends AbstractDriverTestCase {
+
   @JavascriptEnabled
   @Ignore(CHROME_NON_WINDOWS)
-	public void testShouldFireKeyPressEvents() {
-		driver.get(javascriptPage);
+  public void testShouldFireKeyPressEvents() {
+    driver.get(javascriptPage);
 
-		WebElement keyReporter = driver.findElement(By.id("keyReporter"));
-		keyReporter.sendKeys("a");
+    WebElement keyReporter = driver.findElement(By.id("keyReporter"));
+    keyReporter.sendKeys("a");
 
-		WebElement result = driver.findElement(By.id("result"));
-		assertThat(result.getText(), containsString("press:"));
-	}
+    WebElement result = driver.findElement(By.id("result"));
+    assertThat(result.getText(), containsString("press:"));
+  }
 
-	@JavascriptEnabled
-	@Ignore(CHROME_NON_WINDOWS)
-	public void testShouldFireKeyDownEvents() {
-		driver.get(javascriptPage);
+  @JavascriptEnabled
+  @Ignore(CHROME_NON_WINDOWS)
+  public void testShouldFireKeyDownEvents() {
+    driver.get(javascriptPage);
 
-		WebElement keyReporter = driver.findElement(By.id("keyReporter"));
-		keyReporter.sendKeys("I");
+    WebElement keyReporter = driver.findElement(By.id("keyReporter"));
+    keyReporter.sendKeys("I");
 
-		WebElement result = driver.findElement(By.id("result"));
-		assertThat(result.getText(), containsString("down:"));
-	}
+    WebElement result = driver.findElement(By.id("result"));
+    assertThat(result.getText(), containsString("down:"));
+  }
 
-	@JavascriptEnabled
-	@Ignore(CHROME_NON_WINDOWS)
-	public void testShouldFireKeyUpEvents() {
-		driver.get(javascriptPage);
+  @JavascriptEnabled
+  @Ignore(CHROME_NON_WINDOWS)
+  public void testShouldFireKeyUpEvents() {
+    driver.get(javascriptPage);
 
-		WebElement keyReporter = driver.findElement(By.id("keyReporter"));
-		keyReporter.sendKeys("a");
+    WebElement keyReporter = driver.findElement(By.id("keyReporter"));
+    keyReporter.sendKeys("a");
 
-		WebElement result = driver.findElement(By.id("result"));
-		assertThat(result.getText(), containsString("up:"));
-	}
+    WebElement result = driver.findElement(By.id("result"));
+    assertThat(result.getText(), containsString("up:"));
+  }
 
-	public void testShouldTypeLowerCaseLetters() {
-		driver.get(javascriptPage);
+  public void testShouldTypeLowerCaseLetters() {
+    driver.get(javascriptPage);
 
-		WebElement keyReporter = driver.findElement(By.id("keyReporter"));
-		keyReporter.sendKeys("abc def");
+    WebElement keyReporter = driver.findElement(By.id("keyReporter"));
+    keyReporter.sendKeys("abc def");
 
-		assertThat(keyReporter.getValue(), is("abc def"));
-	}
+    assertThat(keyReporter.getValue(), is("abc def"));
+  }
 
-	public void testShouldBeAbleToTypeCapitalLetters() {
-		driver.get(javascriptPage);
+  public void testShouldBeAbleToTypeCapitalLetters() {
+    driver.get(javascriptPage);
 
-		WebElement keyReporter = driver.findElement(By.id("keyReporter"));
-		keyReporter.sendKeys("ABC DEF");
+    WebElement keyReporter = driver.findElement(By.id("keyReporter"));
+    keyReporter.sendKeys("ABC DEF");
 
-		assertThat(keyReporter.getValue(), is("ABC DEF"));
-	}
+    assertThat(keyReporter.getValue(), is("ABC DEF"));
+  }
 
   public void testShouldBeAbleToTypeQuoteMarks() {
-		driver.get(javascriptPage);
+    driver.get(javascriptPage);
 
-		WebElement keyReporter = driver.findElement(By.id("keyReporter"));
-		keyReporter.sendKeys("\"");
+    WebElement keyReporter = driver.findElement(By.id("keyReporter"));
+    keyReporter.sendKeys("\"");
 
-		assertThat(keyReporter.getValue(), is("\""));
-	}
+    assertThat(keyReporter.getValue(), is("\""));
+  }
 
-  	public void testShouldBeAbleToTypeTheAtCharacter() {
-        // simon: I tend to use a US/UK or AUS keyboard layout with English
-	    // as my primary language. There are consistent reports that we're
-	    // not handling i18nised keyboards properly. This test exposes this
-	    // in a lightweight manner when my keyboard is set to the DE mapping
-	    // and we're using IE.
+  public void testShouldBeAbleToTypeTheAtCharacter() {
+    // simon: I tend to use a US/UK or AUS keyboard layout with English
+    // as my primary language. There are consistent reports that we're
+    // not handling i18nised keyboards properly. This test exposes this
+    // in a lightweight manner when my keyboard is set to the DE mapping
+    // and we're using IE.
 
-  		driver.get(javascriptPage);
+    driver.get(javascriptPage);
 
-		WebElement keyReporter = driver.findElement(By.id("keyReporter"));
-		keyReporter.sendKeys("@");
+    WebElement keyReporter = driver.findElement(By.id("keyReporter"));
+    keyReporter.sendKeys("@");
 
-		assertThat(keyReporter.getValue(), is("@"));
-  	}
-  
-	public void testShouldBeAbleToMixUpperAndLowerCaseLetters() {
-		driver.get(javascriptPage);
+    assertThat(keyReporter.getValue(), is("@"));
+  }
 
-		WebElement keyReporter = driver.findElement(By.id("keyReporter"));
-		keyReporter.sendKeys("me@eXample.com");
+  public void testShouldBeAbleToMixUpperAndLowerCaseLetters() {
+    driver.get(javascriptPage);
 
-		assertThat(keyReporter.getValue(), is("me@eXample.com"));
-	}
+    WebElement keyReporter = driver.findElement(By.id("keyReporter"));
+    keyReporter.sendKeys("me@eXample.com");
 
-	@Ignore({HTMLUNIT, CHROME_NON_WINDOWS})
-	public void testArrowKeysShouldNotBePrintable() {
-		driver.get(javascriptPage);
+    assertThat(keyReporter.getValue(), is("me@eXample.com"));
+  }
 
-		WebElement keyReporter = driver.findElement(By.id("keyReporter"));
-		keyReporter.sendKeys(Keys.ARROW_LEFT);
+  @Ignore({HTMLUNIT, CHROME_NON_WINDOWS})
+  public void testArrowKeysShouldNotBePrintable() {
+    driver.get(javascriptPage);
 
-		assertThat(keyReporter.getValue(), is(""));
-	}
+    WebElement keyReporter = driver.findElement(By.id("keyReporter"));
+    keyReporter.sendKeys(Keys.ARROW_LEFT);
 
-	@Ignore({HTMLUNIT, CHROME_NON_WINDOWS})
-	public void testShouldBeAbleToUseArrowKeys() {
-		driver.get(javascriptPage);
+    assertThat(keyReporter.getValue(), is(""));
+  }
 
-		WebElement keyReporter = driver.findElement(By.id("keyReporter"));
-		keyReporter.sendKeys("Tet", Keys.ARROW_LEFT, "s");
+  @Ignore({HTMLUNIT, CHROME_NON_WINDOWS})
+  public void testShouldBeAbleToUseArrowKeys() {
+    driver.get(javascriptPage);
 
-        assertThat(keyReporter.getValue(), is("Test"));
-	}
+    WebElement keyReporter = driver.findElement(By.id("keyReporter"));
+    keyReporter.sendKeys("Tet", Keys.ARROW_LEFT, "s");
 
-	@JavascriptEnabled
-	@Ignore({HTMLUNIT, CHROME_NON_WINDOWS})
-	public void testWillSimulateAKeyUpWhenEnteringTextIntoInputElements() {
-		driver.get(javascriptPage);
+    assertThat(keyReporter.getValue(), is("Test"));
+  }
 
-		WebElement element = driver.findElement(By.id("keyUp"));
-		element.sendKeys("I like cheese");
+  @JavascriptEnabled
+  @Ignore({HTMLUNIT, CHROME_NON_WINDOWS})
+  public void testWillSimulateAKeyUpWhenEnteringTextIntoInputElements() {
+    driver.get(javascriptPage);
 
-		WebElement result = driver.findElement(By.id("result"));
-		assertThat(result.getText(), equalTo("I like cheese"));
-	}
+    WebElement element = driver.findElement(By.id("keyUp"));
+    element.sendKeys("I like cheese");
 
-	@JavascriptEnabled
-	@Ignore(CHROME_NON_WINDOWS)
-	public void testWillSimulateAKeyDownWhenEnteringTextIntoInputElements() {
-		driver.get(javascriptPage);
+    WebElement result = driver.findElement(By.id("result"));
+    assertThat(result.getText(), equalTo("I like cheese"));
+  }
 
-		WebElement element = driver.findElement(By.id("keyDown"));
-		element.sendKeys("I like cheese");
+  @JavascriptEnabled
+  @Ignore(CHROME_NON_WINDOWS)
+  public void testWillSimulateAKeyDownWhenEnteringTextIntoInputElements() {
+    driver.get(javascriptPage);
 
-		WebElement result = driver.findElement(By.id("result"));
-		// Because the key down gets the result before the input element is
-		// filled, we're a letter short here
-		assertThat(result.getText(), equalTo("I like chees"));
-	}
+    WebElement element = driver.findElement(By.id("keyDown"));
+    element.sendKeys("I like cheese");
 
-	@JavascriptEnabled
-	@Ignore(CHROME_NON_WINDOWS)
-	public void testWillSimulateAKeyPressWhenEnteringTextIntoInputElements() {
-		driver.get(javascriptPage);
+    WebElement result = driver.findElement(By.id("result"));
+    // Because the key down gets the result before the input element is
+    // filled, we're a letter short here
+    assertThat(result.getText(), equalTo("I like chees"));
+  }
 
-		WebElement element = driver.findElement(By.id("keyPress"));
-		element.sendKeys("I like cheese");
+  @JavascriptEnabled
+  @Ignore(CHROME_NON_WINDOWS)
+  public void testWillSimulateAKeyPressWhenEnteringTextIntoInputElements() {
+    driver.get(javascriptPage);
 
-		WebElement result = driver.findElement(By.id("result"));
-		// Because the key down gets the result before the input element is
-		// filled, we're a letter short here
-		assertThat(result.getText(), equalTo("I like chees"));
-	}
+    WebElement element = driver.findElement(By.id("keyPress"));
+    element.sendKeys("I like cheese");
 
-	@JavascriptEnabled
-	@Ignore({HTMLUNIT, CHROME_NON_WINDOWS})
-    public void testWillSimulateAKeyUpWhenEnteringTextIntoTextAreas() {
-		driver.get(javascriptPage);
+    WebElement result = driver.findElement(By.id("result"));
+    // Because the key down gets the result before the input element is
+    // filled, we're a letter short here
+    assertThat(result.getText(), equalTo("I like chees"));
+  }
 
-		WebElement element = driver.findElement(By.id("keyUpArea"));
-		element.sendKeys("I like cheese");
+  @JavascriptEnabled
+  @Ignore({HTMLUNIT, CHROME_NON_WINDOWS})
+  public void testWillSimulateAKeyUpWhenEnteringTextIntoTextAreas() {
+    driver.get(javascriptPage);
 
-		WebElement result = driver.findElement(By.id("result"));
-		assertThat(result.getText(), equalTo("I like cheese"));
-	}
+    WebElement element = driver.findElement(By.id("keyUpArea"));
+    element.sendKeys("I like cheese");
 
-	@JavascriptEnabled
-	@Ignore(CHROME_NON_WINDOWS)
-	public void testWillSimulateAKeyDownWhenEnteringTextIntoTextAreas() {
-		driver.get(javascriptPage);
+    WebElement result = driver.findElement(By.id("result"));
+    assertThat(result.getText(), equalTo("I like cheese"));
+  }
 
-		WebElement element = driver.findElement(By.id("keyDownArea"));
-		element.sendKeys("I like cheese");
+  @JavascriptEnabled
+  @Ignore(CHROME_NON_WINDOWS)
+  public void testWillSimulateAKeyDownWhenEnteringTextIntoTextAreas() {
+    driver.get(javascriptPage);
 
-		WebElement result = driver.findElement(By.id("result"));
-		// Because the key down gets the result before the input element is
-		// filled, we're a letter short here
-		assertThat(result.getText(), equalTo("I like chees"));
-	}
+    WebElement element = driver.findElement(By.id("keyDownArea"));
+    element.sendKeys("I like cheese");
 
-	@JavascriptEnabled
-	@Ignore(CHROME_NON_WINDOWS)
-	public void testWillSimulateAKeyPressWhenEnteringTextIntoTextAreas() {
-		driver.get(javascriptPage);
+    WebElement result = driver.findElement(By.id("result"));
+    // Because the key down gets the result before the input element is
+    // filled, we're a letter short here
+    assertThat(result.getText(), equalTo("I like chees"));
+  }
 
-		WebElement element = driver.findElement(By.id("keyPressArea"));
-		element.sendKeys("I like cheese");
+  @JavascriptEnabled
+  @Ignore(CHROME_NON_WINDOWS)
+  public void testWillSimulateAKeyPressWhenEnteringTextIntoTextAreas() {
+    driver.get(javascriptPage);
 
-		WebElement result = driver.findElement(By.id("result"));
-		// Because the key down gets the result before the input element is
-		// filled, we're a letter short here
-		assertThat(result.getText(), equalTo("I like chees"));
-	}
+    WebElement element = driver.findElement(By.id("keyPressArea"));
+    element.sendKeys("I like cheese");
 
-	@JavascriptEnabled
-	@Ignore(value = {FIREFOX, HTMLUNIT, IE, CHROME_NON_WINDOWS}, reason = "firefox specific" +
-	    " not yet tested in htmlunit. Firefox demands to have the focus on the window already")
-	public void testShouldFireFocusKeyEventsInTheRightOrder() {
-		driver.get(javascriptPage);
+    WebElement result = driver.findElement(By.id("result"));
+    // Because the key down gets the result before the input element is
+    // filled, we're a letter short here
+    assertThat(result.getText(), equalTo("I like chees"));
+  }
 
-        WebElement result = driver.findElement(By.id("result"));
-        WebElement element = driver.findElement(By.id("theworks"));
+  @JavascriptEnabled
+  @Ignore(value = {FIREFOX, HTMLUNIT, IE, CHROME_NON_WINDOWS}, reason = "firefox specific" +
+                                                                        " not yet tested in htmlunit. Firefox demands to have the focus on the window already")
+  public void testShouldFireFocusKeyEventsInTheRightOrder() {
+    driver.get(javascriptPage);
 
-		element.sendKeys("a");
-		assertThat(result.getText().trim(), is("focus keydown keypress keyup"));
-	}
+    WebElement result = driver.findElement(By.id("result"));
+    WebElement element = driver.findElement(By.id("theworks"));
 
-    @JavascriptEnabled
-    @Ignore(value = {HTMLUNIT, IE, CHROME}, reason = "firefox-specific")
-    public void testShouldReportKeyCodeOfArrowKeys() {
-        driver.get(javascriptPage);
+    element.sendKeys("a");
+    assertThat(result.getText().trim(), is("focus keydown keypress keyup"));
+  }
 
-        WebElement result = driver.findElement(By.id("result"));
-        WebElement element = driver.findElement(By.id("keyReporter"));
+  @JavascriptEnabled
+  @Ignore(value = {HTMLUNIT, IE, CHROME}, reason = "firefox-specific")
+  public void testShouldReportKeyCodeOfArrowKeys() {
+    driver.get(javascriptPage);
 
-        element.sendKeys(Keys.ARROW_DOWN);
-        assertThat(result.getText().trim(), is("down: 40 press: 40 up: 40"));
+    WebElement result = driver.findElement(By.id("result"));
+    WebElement element = driver.findElement(By.id("keyReporter"));
 
-        element.sendKeys(Keys.ARROW_UP);
-        assertThat(result.getText().trim(), is("down: 38 press: 38 up: 38"));
+    element.sendKeys(Keys.ARROW_DOWN);
+    assertThat(result.getText().trim(), is("down: 40 press: 40 up: 40"));
 
-        element.sendKeys(Keys.ARROW_LEFT);
-        assertThat(result.getText().trim(), is("down: 37 press: 37 up: 37"));
+    element.sendKeys(Keys.ARROW_UP);
+    assertThat(result.getText().trim(), is("down: 38 press: 38 up: 38"));
 
-        element.sendKeys(Keys.ARROW_RIGHT);
-        assertThat(result.getText().trim(), is("down: 39 press: 39 up: 39"));
+    element.sendKeys(Keys.ARROW_LEFT);
+    assertThat(result.getText().trim(), is("down: 37 press: 37 up: 37"));
 
-        // And leave no rubbish/printable keys in the "keyReporter"
-        assertThat(element.getValue(), is(""));
+    element.sendKeys(Keys.ARROW_RIGHT);
+    assertThat(result.getText().trim(), is("down: 39 press: 39 up: 39"));
+
+    // And leave no rubbish/printable keys in the "keyReporter"
+    assertThat(element.getValue(), is(""));
+  }
+
+  @JavascriptEnabled
+  @Ignore(value = {HTMLUNIT, CHROME_NON_WINDOWS}, reason = "untested user agents")
+  public void testShouldReportKeyCodeOfArrowKeysUpDownEvents() {
+    driver.get(javascriptPage);
+
+    WebElement result = driver.findElement(By.id("result"));
+    WebElement element = driver.findElement(By.id("keyReporter"));
+
+    element.sendKeys(Keys.ARROW_DOWN);
+    assertThat(result.getText().trim(), containsString("down: 40"));
+    assertThat(result.getText().trim(), containsString("up: 40"));
+
+    element.sendKeys(Keys.ARROW_UP);
+    assertThat(result.getText().trim(), containsString("down: 38"));
+    assertThat(result.getText().trim(), containsString("up: 38"));
+
+    element.sendKeys(Keys.ARROW_LEFT);
+    assertThat(result.getText().trim(), containsString("down: 37"));
+    assertThat(result.getText().trim(), containsString("up: 37"));
+
+    element.sendKeys(Keys.ARROW_RIGHT);
+    assertThat(result.getText().trim(), containsString("down: 39"));
+    assertThat(result.getText().trim(), containsString("up: 39"));
+
+    // And leave no rubbish/printable keys in the "keyReporter"
+    assertThat(element.getValue(), is(""));
+  }
+
+  @JavascriptEnabled
+  @Ignore(value = HTMLUNIT, reason = "untested user agent")
+  public void testNumericNonShiftKeys() {
+    driver.get(javascriptPage);
+
+    WebElement element = driver.findElement(By.id("keyReporter"));
+
+    String numericLineCharsNonShifted = "`1234567890-=[]\\;,.'/42";
+    element.sendKeys(numericLineCharsNonShifted);
+
+    assertThat(element.getValue(), is(numericLineCharsNonShifted));
+  }
+
+  @JavascriptEnabled
+  @Ignore(value = {HTMLUNIT, CHROME_NON_WINDOWS}, reason = "untested user agent")
+  public void testNumericShiftKeys() {
+    driver.get(javascriptPage);
+
+    WebElement result = driver.findElement(By.id("result"));
+    WebElement element = driver.findElement(By.id("keyReporter"));
+
+    String numericShiftsEtc = "~!@#$%^&*()_+{}:\"<>?|END~";
+    element.sendKeys(numericShiftsEtc);
+
+    assertThat(element.getValue(), is(numericShiftsEtc));
+    assertThat(result.getText().trim(), containsString(" up: 16"));
+  }
+
+  @JavascriptEnabled
+  @Ignore(value = HTMLUNIT, reason = "untested user agent")
+  public void testLowerCaseAlphaKeys() {
+    driver.get(javascriptPage);
+
+    WebElement element = driver.findElement(By.id("keyReporter"));
+
+    String lowerAlphas = "abcdefghijklmnopqrstuvwxyz";
+    element.sendKeys(lowerAlphas);
+
+    assertThat(element.getValue(), is(lowerAlphas));
+  }
+
+  @JavascriptEnabled
+  @Ignore(value = {HTMLUNIT, CHROME_NON_WINDOWS}, reason = "untested user agents")
+  public void testUppercaseAlphaKeys() {
+    driver.get(javascriptPage);
+
+    WebElement result = driver.findElement(By.id("result"));
+    WebElement element = driver.findElement(By.id("keyReporter"));
+
+    String upperAlphas = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    element.sendKeys(upperAlphas);
+
+    assertThat(element.getValue(), is(upperAlphas));
+    assertThat(result.getText().trim(), containsString(" up: 16"));
+  }
+
+  @JavascriptEnabled
+  @Ignore(value = {HTMLUNIT, CHROME_NON_WINDOWS}, reason = "untested user agents")
+  public void testAllPrintableKeys() {
+    driver.get(javascriptPage);
+
+    WebElement result = driver.findElement(By.id("result"));
+    WebElement element = driver.findElement(By.id("keyReporter"));
+
+    String allPrintable =
+        "!\"#$%&'()*+,-./0123456789:;<=>?@ ABCDEFGHIJKLMNO" +
+        "PQRSTUVWXYZ [\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
+    element.sendKeys(allPrintable);
+
+    assertThat(element.getValue(), is(allPrintable));
+    assertThat(result.getText().trim(), containsString(" up: 16"));
+  }
+
+  @Ignore(value = {HTMLUNIT, CHROME_NON_WINDOWS}, reason = "untested user agents")
+  public void testArrowKeysAndPageUpAndDown() {
+    driver.get(javascriptPage);
+
+    WebElement element = driver.findElement(By.id("keyReporter"));
+
+    element.sendKeys("a" + Keys.LEFT + "b" + Keys.RIGHT +
+                     Keys.UP + Keys.DOWN + Keys.PAGE_UP + Keys.PAGE_DOWN + "1");
+    assertThat(element.getValue(), is("ba1"));
+  }
+
+  @JavascriptEnabled
+  @Ignore(value = {HTMLUNIT, CHROME_NON_WINDOWS}, reason = "untested user agents")
+  public void testHomeAndEndAndPageUpAndPageDownKeys() {
+    // FIXME: macs don't have HOME keys, would PGUP work?
+    if (Platform.getCurrent().is(Platform.MAC)) {
+      return;
     }
 
-	@JavascriptEnabled
-    @Ignore(value = {HTMLUNIT, CHROME_NON_WINDOWS}, reason = "untested user agents")
-	public void testShouldReportKeyCodeOfArrowKeysUpDownEvents() {
-		driver.get(javascriptPage);
+    driver.get(javascriptPage);
 
-		WebElement result = driver.findElement(By.id("result"));
-		WebElement element = driver.findElement(By.id("keyReporter"));
+    WebElement element = driver.findElement(By.id("keyReporter"));
 
-		element.sendKeys(Keys.ARROW_DOWN);
-        assertThat(result.getText().trim(), containsString("down: 40"));
-        assertThat(result.getText().trim(), containsString("up: 40"));
+    element.sendKeys("abc" + Keys.HOME + "0" + Keys.LEFT + Keys.RIGHT +
+                     Keys.PAGE_UP + Keys.PAGE_DOWN + Keys.END + "1" + Keys.HOME +
+                     "0" + Keys.PAGE_UP + Keys.END + "111" + Keys.HOME + "00");
+    assertThat(element.getValue(), is("0000abc1111"));
+  }
 
-		element.sendKeys(Keys.ARROW_UP);
-        assertThat(result.getText().trim(), containsString("down: 38"));
-        assertThat(result.getText().trim(), containsString("up: 38"));
+  @JavascriptEnabled
+  @Ignore(value = {HTMLUNIT, CHROME_NON_WINDOWS}, reason = "untested user agents")
+  public void testDeleteAndBackspaceKeys() {
+    driver.get(javascriptPage);
 
-		element.sendKeys(Keys.ARROW_LEFT);
-        assertThat(result.getText().trim(), containsString("down: 37"));
-        assertThat(result.getText().trim(), containsString("up: 37"));
+    WebElement element = driver.findElement(By.id("keyReporter"));
 
-		element.sendKeys(Keys.ARROW_RIGHT);
-        assertThat(result.getText().trim(), containsString("down: 39"));
-        assertThat(result.getText().trim(), containsString("up: 39"));
+    element.sendKeys("abcdefghi");
+    assertThat(element.getValue(), is("abcdefghi"));
 
-        // And leave no rubbish/printable keys in the "keyReporter"
-        assertThat(element.getValue(), is(""));
-	}
+    element.sendKeys(Keys.LEFT, Keys.LEFT, Keys.DELETE);
+    assertThat(element.getValue(), is("abcdefgi"));
 
-    @JavascriptEnabled
-    @Ignore(value = HTMLUNIT, reason = "untested user agent")
-    public void testNumericNonShiftKeys() {
-        driver.get(javascriptPage);
+    element.sendKeys(Keys.LEFT, Keys.LEFT, Keys.BACK_SPACE);
+    assertThat(element.getValue(), is("abcdfgi"));
+  }
 
-        WebElement element = driver.findElement(By.id("keyReporter"));
+  @JavascriptEnabled
+  @Ignore(value = {HTMLUNIT, CHROME_NON_WINDOWS}, reason = "untested user agents")
+  public void testSpecialSpaceKeys() {
+    driver.get(javascriptPage);
 
-        String numericLineCharsNonShifted = "`1234567890-=[]\\;,.'/42";
-        element.sendKeys(numericLineCharsNonShifted);
+    WebElement element = driver.findElement(By.id("keyReporter"));
 
-        assertThat(element.getValue(), is(numericLineCharsNonShifted));
+    element.sendKeys("abcd" + Keys.SPACE + "fgh" + Keys.SPACE + "ij");
+    assertThat(element.getValue(), is("abcd fgh ij"));
+  }
+
+  @JavascriptEnabled
+  @Ignore(value = {HTMLUNIT, CHROME_NON_WINDOWS}, reason = "untested user agents")
+  public void testNumberpadAndFunctionKeys() {
+    driver.get(javascriptPage);
+
+    WebElement element = driver.findElement(By.id("keyReporter"));
+
+    element.sendKeys("abcd" + Keys.MULTIPLY + Keys.SUBTRACT + Keys.ADD +
+                     Keys.DECIMAL + Keys.SEPARATOR + Keys.NUMPAD0 + Keys.NUMPAD9 +
+                     Keys.ADD + Keys.SEMICOLON + Keys.EQUALS + Keys.DIVIDE +
+                     Keys.NUMPAD3 + "abcd");
+    assertThat(element.getValue(), is("abcd*-+.,09+;=/3abcd"));
+
+    element.clear();
+    element.sendKeys("FUNCTION" + Keys.F2 + "-KEYS" + Keys.F2);
+    element.sendKeys("" + Keys.F2 + "-TOO" + Keys.F2);
+    assertThat(element.getValue(), is("FUNCTION-KEYS-TOO"));
+  }
+
+  @JavascriptEnabled
+  @Ignore(value = {HTMLUNIT, CHROME_NON_WINDOWS}, reason = "untested user agents")
+  public void testShiftSelectionDeletes() {
+    driver.get(javascriptPage);
+
+    WebElement element = driver.findElement(By.id("keyReporter"));
+
+    element.sendKeys("abcd efgh");
+    assertThat(element.getValue(), is("abcd efgh"));
+
+    element.sendKeys(Keys.SHIFT, Keys.LEFT, Keys.LEFT, Keys.LEFT);
+    element.sendKeys(Keys.DELETE);
+    assertThat(element.getValue(), is("abcd e"));
+  }
+
+  @JavascriptEnabled
+  @Ignore(value = {HTMLUNIT, CHROME_NON_WINDOWS}, reason = "untested user agents")
+  public void testChordControlHomeShiftEndDelete() {
+    // FIXME: macs don't have HOME keys, would PGUP work?
+    if (Platform.getCurrent().is(Platform.MAC)) {
+      return;
     }
 
-    @JavascriptEnabled
-    @Ignore(value = {HTMLUNIT, CHROME_NON_WINDOWS}, reason = "untested user agent")
-    public void testNumericShiftKeys() {
-        driver.get(javascriptPage);
+    driver.get(javascriptPage);
 
-        WebElement result = driver.findElement(By.id("result"));
-        WebElement element = driver.findElement(By.id("keyReporter"));
+    WebElement result = driver.findElement(By.id("result"));
+    WebElement element = driver.findElement(By.id("keyReporter"));
 
-        String numericShiftsEtc = "~!@#$%^&*()_+{}:\"<>?|END~";
-        element.sendKeys(numericShiftsEtc);
+    element.sendKeys("!\"#$%&'()*+,-./0123456789:;<=>?@ ABCDEFG");
 
-        assertThat(element.getValue(), is(numericShiftsEtc));
-        assertThat(result.getText().trim(), containsString(" up: 16"));
+    element.sendKeys(Keys.HOME);
+    element.sendKeys("" + Keys.SHIFT + Keys.END + Keys.DELETE);
+
+    assertThat(element.getValue(), is(""));
+    assertThat(result.getText(), containsString(" up: 16"));
+  }
+
+  @JavascriptEnabled
+  @Ignore(value = {HTMLUNIT, CHROME_NON_WINDOWS}, reason = "untested user agents")
+  public void testChordReveseShiftHomeSelectionDeletes() {
+    // FIXME: macs don't have HOME keys, would PGUP work?
+    if (Platform.getCurrent().is(Platform.MAC)) {
+      return;
     }
 
-    @JavascriptEnabled
-    @Ignore(value = HTMLUNIT, reason = "untested user agent")
-    public void testLowerCaseAlphaKeys() {
-        driver.get(javascriptPage);
+    driver.get(javascriptPage);
 
-        WebElement element = driver.findElement(By.id("keyReporter"));
+    WebElement result = driver.findElement(By.id("result"));
+    WebElement element = driver.findElement(By.id("keyReporter"));
 
-        String lowerAlphas = "abcdefghijklmnopqrstuvwxyz";
-        element.sendKeys(lowerAlphas);
+    element.sendKeys("done" + Keys.HOME);
+    assertThat(element.getValue(), is("done"));
 
-        assertThat(element.getValue(), is(lowerAlphas));
+    element.sendKeys("" + Keys.SHIFT + "ALL " + Keys.HOME);
+    assertThat(element.getValue(), is("ALL done"));
+
+    element.sendKeys(Keys.DELETE);
+    assertThat(element.getValue(), is("done"));
+
+    element.sendKeys("" + Keys.END + Keys.SHIFT + Keys.HOME);
+    assertThat(element.getValue(), is("done"));
+    assertThat(  // Note: trailing SHIFT up here
+                 result.getText().trim(), containsString(" up: 16"));
+
+    element.sendKeys("" + Keys.DELETE);
+    assertThat(element.getValue(), is(""));
+  }
+
+  // control-x control-v here for cut & paste tests, these work on windows
+  // and linux, but not on the MAC.
+
+  @JavascriptEnabled
+  @Ignore(value = {HTMLUNIT, CHROME_NON_WINDOWS}, reason = "untested user agents")
+  public void testChordControlCutAndPaste() {
+    // FIXME: macs don't have HOME keys, would PGUP work?
+    if (Platform.getCurrent().is(Platform.MAC)) {
+      return;
     }
 
-    @JavascriptEnabled
-    @Ignore(value = {HTMLUNIT, CHROME_NON_WINDOWS}, reason = "untested user agents")
-    public void testUppercaseAlphaKeys() {
-        driver.get(javascriptPage);
+    driver.get(javascriptPage);
 
-        WebElement result = driver.findElement(By.id("result"));
-        WebElement element = driver.findElement(By.id("keyReporter"));
+    WebElement element = driver.findElement(By.id("keyReporter"));
+    WebElement result = driver.findElement(By.id("result"));
 
-        String upperAlphas = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        element.sendKeys(upperAlphas);
-
-        assertThat(element.getValue(), is(upperAlphas));
-        assertThat(result.getText().trim(), containsString(" up: 16"));
-    }
+    String paste = "!\"#$%&'()*+,-./0123456789:;<=>?@ ABCDEFG";
+    element.sendKeys(paste);
+    assertThat(element.getValue(), is(paste));
 
-    @JavascriptEnabled
-    @Ignore(value = {HTMLUNIT, CHROME_NON_WINDOWS}, reason = "untested user agents")
-    public void testAllPrintableKeys() {
-        driver.get(javascriptPage);
+    element.sendKeys("" + Keys.HOME + Keys.SHIFT + Keys.END);
+    assertThat(result.getText().trim(), containsString(" up: 16"));
 
-        WebElement result = driver.findElement(By.id("result"));
-        WebElement element = driver.findElement(By.id("keyReporter"));
+    element.sendKeys(Keys.CONTROL, "x");
+    assertThat(element.getValue(), is(""));
 
-        String allPrintable =
-             "!\"#$%&'()*+,-./0123456789:;<=>?@ ABCDEFGHIJKLMNO" +
-             "PQRSTUVWXYZ [\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
-        element.sendKeys(allPrintable);
-
-        assertThat(element.getValue(), is(allPrintable));
-        assertThat(result.getText().trim(), containsString(" up: 16"));
-    }
+    element.sendKeys(Keys.CONTROL, "v");
+    assertThat(element.getValue(), is(paste));
 
-    @Ignore(value = {HTMLUNIT, CHROME_NON_WINDOWS}, reason = "untested user agents")
-    public void testArrowKeysAndPageUpAndDown() {
-    	driver.get(javascriptPage);
+    element.sendKeys("" + Keys.LEFT + Keys.LEFT + Keys.LEFT +
+                     Keys.SHIFT + Keys.END);
+    element.sendKeys(Keys.CONTROL, "x" + "v");
+    assertThat(element.getValue(), is(paste));
 
-        WebElement element = driver.findElement(By.id("keyReporter"));
+    element.sendKeys(Keys.HOME);
+    element.sendKeys(Keys.CONTROL, "v");
+    element.sendKeys(Keys.CONTROL, "v" + "v");
+    element.sendKeys(Keys.CONTROL, "v" + "v" + "v");
+    assertThat(element.getValue(), is("EFGEFGEFGEFGEFGEFG" + paste));
 
-        element.sendKeys("a" + Keys.LEFT + "b" + Keys.RIGHT +
-            Keys.UP + Keys.DOWN + Keys.PAGE_UP + Keys.PAGE_DOWN + "1");
-        assertThat(element.getValue(), is("ba1"));
-    }
+    element.sendKeys("" + Keys.END + Keys.SHIFT + Keys.HOME +
+                     Keys.NULL + Keys.DELETE);
+    assertThat(element.getValue(), is(""));
+  }
 
-    @JavascriptEnabled
-    @Ignore(value = {HTMLUNIT, CHROME_NON_WINDOWS}, reason = "untested user agents")
-    public void testHomeAndEndAndPageUpAndPageDownKeys() {
-        // FIXME: macs don't have HOME keys, would PGUP work?
-        if (Platform.getCurrent().is(Platform.MAC))
-            return;
-
-        driver.get(javascriptPage);
+  @JavascriptEnabled
+  public void testShouldTypeIntoInputElementsThatHaveNoTypeAttribute() {
+    driver.get(formPage);
 
-        WebElement element = driver.findElement(By.id("keyReporter"));
+    WebElement element = driver.findElement(By.id("no-type"));
 
-        element.sendKeys("abc" + Keys.HOME + "0" + Keys.LEFT + Keys.RIGHT +
-            Keys.PAGE_UP + Keys.PAGE_DOWN + Keys.END + "1" + Keys.HOME +
-            "0" + Keys.PAGE_UP + Keys.END + "111" + Keys.HOME + "00");
-        assertThat(element.getValue(), is("0000abc1111"));
-    }
+    element.sendKeys("Should Say Cheese");
+    assertThat(element.getValue(), is("Should Say Cheese"));
+  }
 
-    @JavascriptEnabled
-    @Ignore(value = {HTMLUNIT, CHROME_NON_WINDOWS}, reason = "untested user agents")
-    public void testDeleteAndBackspaceKeys() {
-        driver.get(javascriptPage);
+  @JavascriptEnabled
+  @Ignore(value = {HTMLUNIT, CHROME_NON_WINDOWS}, reason = "untested user agents")
+  public void testShouldNotTypeIntoElementsThatPreventKeyDownEvents() {
+    driver.get(javascriptPage);
 
-        WebElement element = driver.findElement(By.id("keyReporter"));
+    WebElement silent = driver.findElement(By.name("suppress"));
 
-        element.sendKeys("abcdefghi");
-        assertThat(element.getValue(), is("abcdefghi"));
+    silent.sendKeys("s");
+    assertThat(silent.getValue(), is(""));
+  }
 
-        element.sendKeys(Keys.LEFT, Keys.LEFT, Keys.DELETE);
-        assertThat(element.getValue(), is("abcdefgi"));
+  @JavascriptEnabled
+  @Ignore(value = {HTMLUNIT, IE, CHROME}, reason = "firefox-specific")
+  public void testGenerateKeyPressEventEvenWhenElementPreventsDefault() {
+    driver.get(javascriptPage);
 
-        element.sendKeys(Keys.LEFT, Keys.LEFT, Keys.BACK_SPACE);
-        assertThat(element.getValue(), is("abcdfgi"));
-    }
+    WebElement silent = driver.findElement(By.name("suppress"));
+    WebElement result = driver.findElement(By.id("result"));
 
-    @JavascriptEnabled
-    @Ignore(value = {HTMLUNIT, CHROME_NON_WINDOWS}, reason = "untested user agents")
-    public void testSpecialSpaceKeys() {
-        driver.get(javascriptPage);
-
-        WebElement element = driver.findElement(By.id("keyReporter"));
-
-        element.sendKeys("abcd" + Keys.SPACE + "fgh" + Keys.SPACE + "ij");
-        assertThat(element.getValue(), is("abcd fgh ij"));
-    }
-
-    @JavascriptEnabled
-    @Ignore(value = {HTMLUNIT, CHROME_NON_WINDOWS}, reason = "untested user agents")
-    public void testNumberpadAndFunctionKeys() {
-        driver.get(javascriptPage);
-
-        WebElement element = driver.findElement(By.id("keyReporter"));
-
-        element.sendKeys("abcd" + Keys.MULTIPLY + Keys.SUBTRACT + Keys.ADD +
-            Keys.DECIMAL + Keys.SEPARATOR + Keys.NUMPAD0 + Keys.NUMPAD9 +
-            Keys.ADD + Keys.SEMICOLON + Keys.EQUALS + Keys.DIVIDE +
-            Keys.NUMPAD3 + "abcd");
-        assertThat(element.getValue(), is("abcd*-+.,09+;=/3abcd"));
-
-        element.clear();
-        element.sendKeys("FUNCTION" + Keys.F2 + "-KEYS" + Keys.F2);
-        element.sendKeys("" + Keys.F2 + "-TOO" + Keys.F2);
-        assertThat(element.getValue(), is("FUNCTION-KEYS-TOO"));
-    }
-
-    @JavascriptEnabled
-    @Ignore(value = {HTMLUNIT, CHROME_NON_WINDOWS}, reason = "untested user agents")
-    public void testShiftSelectionDeletes() {
-        driver.get(javascriptPage);
-
-        WebElement element = driver.findElement(By.id("keyReporter"));
-
-        element.sendKeys("abcd efgh");
-        assertThat(element.getValue(), is("abcd efgh"));
-
-        element.sendKeys(Keys.SHIFT, Keys.LEFT, Keys.LEFT, Keys.LEFT);
-        element.sendKeys(Keys.DELETE);
-        assertThat(element.getValue(), is("abcd e"));
-    }
-
-    @JavascriptEnabled
-    @Ignore(value = {HTMLUNIT, CHROME_NON_WINDOWS}, reason = "untested user agents")
-    public void testChordControlHomeShiftEndDelete() {
-        // FIXME: macs don't have HOME keys, would PGUP work?
-        if (Platform.getCurrent().is(Platform.MAC))
-            return;
-
-        driver.get(javascriptPage);
-
-        WebElement result = driver.findElement(By.id("result"));
-        WebElement element = driver.findElement(By.id("keyReporter"));
-
-        element.sendKeys("!\"#$%&'()*+,-./0123456789:;<=>?@ ABCDEFG");
-
-        element.sendKeys(Keys.HOME);
-        element.sendKeys("" + Keys.SHIFT + Keys.END + Keys.DELETE);
-
-        assertThat(element.getValue(), is(""));
-        assertThat(result.getText(), containsString(" up: 16"));
-    }
-
-    @JavascriptEnabled
-    @Ignore(value = {HTMLUNIT, CHROME_NON_WINDOWS}, reason = "untested user agents")
-    public void testChordReveseShiftHomeSelectionDeletes() {
-        // FIXME: macs don't have HOME keys, would PGUP work?
-    	if (Platform.getCurrent().is(Platform.MAC))
-    		return;
-
-        driver.get(javascriptPage);
-
-        WebElement result = driver.findElement(By.id("result"));
-        WebElement element = driver.findElement(By.id("keyReporter"));
-
-        element.sendKeys("done" + Keys.HOME);
-        assertThat(element.getValue(), is("done"));
-
-        element.sendKeys("" + Keys.SHIFT + "ALL " + Keys.HOME);
-        assertThat(element.getValue(), is("ALL done"));
-
-        element.sendKeys(Keys.DELETE);
-        assertThat(element.getValue(), is("done"));
-
-        element.sendKeys("" + Keys.END + Keys.SHIFT + Keys.HOME);
-        assertThat(element.getValue(), is("done"));
-        assertThat(  // Note: trailing SHIFT up here
-            result.getText().trim(), containsString(" up: 16"));
-
-        element.sendKeys("" + Keys.DELETE);
-        assertThat(element.getValue(), is(""));
-    }
-
-    // control-x control-v here for cut & paste tests, these work on windows
-    // and linux, but not on the MAC.
-
-    @JavascriptEnabled
-    @Ignore(value = {HTMLUNIT, CHROME_NON_WINDOWS}, reason = "untested user agents")
-    public void testChordControlCutAndPaste() {
-        // FIXME: macs don't have HOME keys, would PGUP work?
-        if (Platform.getCurrent().is(Platform.MAC))
-            return;
-
-        driver.get(javascriptPage);
-
-        WebElement element = driver.findElement(By.id("keyReporter"));
-        WebElement result = driver.findElement(By.id("result"));
-
-        String paste = "!\"#$%&'()*+,-./0123456789:;<=>?@ ABCDEFG";
-        element.sendKeys(paste);
-        assertThat(element.getValue(), is(paste));
-
-        element.sendKeys("" + Keys.HOME + Keys.SHIFT + Keys.END);
-        assertThat(result.getText().trim(), containsString(" up: 16"));
-
-        element.sendKeys(Keys.CONTROL, "x");
-        assertThat(element.getValue(), is(""));
-
-        element.sendKeys(Keys.CONTROL, "v");
-        assertThat(element.getValue(), is(paste));
-
-        element.sendKeys("" + Keys.LEFT + Keys.LEFT + Keys.LEFT +
-            Keys.SHIFT + Keys.END);
-        element.sendKeys(Keys.CONTROL, "x" + "v");
-        assertThat(element.getValue(), is(paste));
-
-        element.sendKeys(Keys.HOME);
-        element.sendKeys(Keys.CONTROL, "v");
-        element.sendKeys(Keys.CONTROL, "v" + "v");
-        element.sendKeys(Keys.CONTROL, "v" + "v" + "v");
-        assertThat(element.getValue(), is("EFGEFGEFGEFGEFGEFG" + paste));
-
-        element.sendKeys("" + Keys.END + Keys.SHIFT + Keys.HOME +
-            Keys.NULL + Keys.DELETE);
-        assertThat(element.getValue(), is(""));
-    }
-
-    @JavascriptEnabled
-    public void testShouldTypeIntoInputElementsThatHaveNoTypeAttribute() {
-        driver.get(formPage);
-
-        WebElement element = driver.findElement(By.id("no-type"));
-
-        element.sendKeys("Should Say Cheese");
-        assertThat(element.getValue(), is("Should Say Cheese"));
-    }
-
-    @JavascriptEnabled
-    @Ignore(value = {HTMLUNIT, CHROME_NON_WINDOWS}, reason = "untested user agents")
-    public void testShouldNotTypeIntoElementsThatPreventKeyDownEvents() {
-    	driver.get(javascriptPage);
-
-    	WebElement silent = driver.findElement(By.name("suppress"));
-
-		silent.sendKeys("s");
-    	assertThat(silent.getValue(), is(""));
-    }
-
-    @JavascriptEnabled
-    @Ignore(value = {HTMLUNIT, IE, CHROME}, reason = "firefox-specific")
-    public void testGenerateKeyPressEventEvenWhenElementPreventsDefault() {
-    	driver.get(javascriptPage);
-
-    	WebElement silent = driver.findElement(By.name("suppress"));
-    	WebElement result = driver.findElement(By.id("result"));
-
-		silent.sendKeys("s");
-    	assertThat(result.getText(), containsString("press"));
-    }
+    silent.sendKeys("s");
+    assertThat(result.getText(), containsString("press"));
+  }
 
   @JavascriptEnabled
   @Ignore(value = {HTMLUNIT, IE, CHROME}, reason = "Chrome: See crbug 20773")

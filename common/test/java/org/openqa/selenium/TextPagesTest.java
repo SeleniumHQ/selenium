@@ -24,6 +24,7 @@ import static org.openqa.selenium.Ignore.Driver.IE;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 
 public class TextPagesTest extends AbstractDriverTestCase {
+
   private String textPage;
 
   @Override
@@ -40,10 +41,10 @@ public class TextPagesTest extends AbstractDriverTestCase {
     String source = driver.getPageSource();
     assertEquals("Test", source);
   }
-  
+
   public void testFindingAnElementOnAPlainTextPageWillNeverWork() {
     driver.get(textPage);
-    
+
     try {
       driver.findElement(By.id("foo"));
       fail("This shouldn't work");

@@ -18,6 +18,7 @@ limitations under the License.
 package org.openqa.selenium;
 
 public class StaleElementReferenceTest extends AbstractDriverTestCase {
+
   public void testOldPage() {
     driver.get(simpleTestPage);
     WebElement elem = driver.findElement(By.id("links"));

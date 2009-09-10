@@ -24,16 +24,16 @@ import static org.openqa.selenium.Ignore.Driver.REMOTE;
 
 
 public class I18nTest extends AbstractDriverTestCase {
+
   /**
-   * The Hebrew word shalom (peace) encoded in order
-   * Shin (sh) Lamed (L) Vav (O) final-Mem (M).
+   * The Hebrew word shalom (peace) encoded in order Shin (sh) Lamed (L) Vav (O) final-Mem (M).
    */
   private static final String shalom = "\u05E9\u05DC\u05D5\u05DD";
 
 
   /**
-   * The Hebrew word tmunot (images) encoded in order
-   * Taf (t) Mem (m) Vav (u) Nun (n) Vav (o) Taf (t).
+   * The Hebrew word tmunot (images) encoded in order Taf (t) Mem (m) Vav (u) Nun (n) Vav (o) Taf
+   * (t).
    */
   private static final String tmunot = "\u05EA\u05DE\u05D5\u05E0\u05D5\u05EA";
 

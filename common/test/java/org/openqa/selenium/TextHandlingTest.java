@@ -36,95 +36,97 @@ import org.openqa.selenium.environment.GlobalTestEnvironment;
 import java.util.regex.Pattern;
 
 public class TextHandlingTest extends AbstractDriverTestCase {
-	private String newLine;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+  private String newLine;
 
-		newLine = "\n";
-	}
+  @Override
+  protected void setUp() throws Exception {
+    super.setUp();
 
-    public void testShouldReturnTheTextContentOfASingleElementWithNoChildren() {
-        driver.get(simpleTestPage);
-        String selectText = driver.findElement(By.id("oneline")).getText();
-        assertThat(selectText, equalTo("A single line of text"));
+    newLine = "\n";
+  }
 
-        String getText = driver.findElement(By.id("oneline")).getText();
-        assertThat(getText, equalTo("A single line of text"));
-    }
+  public void testShouldReturnTheTextContentOfASingleElementWithNoChildren() {
+    driver.get(simpleTestPage);
+    String selectText = driver.findElement(By.id("oneline")).getText();
+    assertThat(selectText, equalTo("A single line of text"));
 
-    public void testShouldReturnTheEntireTextContentOfChildElements() {
-        driver.get(simpleTestPage);
-        String text = driver.findElement(By.id("multiline")).getText();
+    String getText = driver.findElement(By.id("oneline")).getText();
+    assertThat(getText, equalTo("A single line of text"));
+  }
 
-        assertThat(text.contains("A div containing"), is(true));
-        assertThat(text.contains("More than one line of text"), is(true));
-        assertThat(text.contains("and block level elements"), is(true));
-    }
+  public void testShouldReturnTheEntireTextContentOfChildElements() {
+    driver.get(simpleTestPage);
+    String text = driver.findElement(By.id("multiline")).getText();
 
-    public void testShouldIgnoreScriptElements() {
-        driver.get(javascriptEnhancedForm);
-        WebElement labelForUsername = driver.findElement(By.id("labelforusername"));
-        String text = labelForUsername.getText();
+    assertThat(text.contains("A div containing"), is(true));
+    assertThat(text.contains("More than one line of text"), is(true));
+    assertThat(text.contains("and block level elements"), is(true));
+  }
 
-        assertThat(labelForUsername.findElements(By.tagName("script")).size(), is(1));
-        assertThat(text, not(containsString("document.getElementById")));
-        assertThat(text, is("Username:"));
-    }
+  public void testShouldIgnoreScriptElements() {
+    driver.get(javascriptEnhancedForm);
+    WebElement labelForUsername = driver.findElement(By.id("labelforusername"));
+    String text = labelForUsername.getText();
 
-    public void testShouldRepresentABlockLevelElementAsANewline() {
-        driver.get(simpleTestPage);
-        String text = driver.findElement(By.id("multiline")).getText();
+    assertThat(labelForUsername.findElements(By.tagName("script")).size(), is(1));
+    assertThat(text, not(containsString("document.getElementById")));
+    assertThat(text, is("Username:"));
+  }
 
-        assertThat(text, startsWith("A div containing" + newLine));
-        assertThat(text, containsString("More than one line of text" + newLine));
-        assertThat(text, endsWith("and block level elements"));
-    }
+  public void testShouldRepresentABlockLevelElementAsANewline() {
+    driver.get(simpleTestPage);
+    String text = driver.findElement(By.id("multiline")).getText();
 
-    public void testShouldCollapseMultipleWhitespaceCharactersIntoASingleSpace() {
-        driver.get(simpleTestPage);
-        String text = driver.findElement(By.id("lotsofspaces")).getText();
+    assertThat(text, startsWith("A div containing" + newLine));
+    assertThat(text, containsString("More than one line of text" + newLine));
+    assertThat(text, endsWith("and block level elements"));
+  }
 
-        assertThat(text, equalTo("This line has lots of spaces."));
-    }
+  public void testShouldCollapseMultipleWhitespaceCharactersIntoASingleSpace() {
+    driver.get(simpleTestPage);
+    String text = driver.findElement(By.id("lotsofspaces")).getText();
 
-    public void testShouldTrimText() {
-        driver.get(simpleTestPage);
-        String text = driver.findElement(By.id("multiline")).getText();
+    assertThat(text, equalTo("This line has lots of spaces."));
+  }
 
-        assertThat(text, startsWith("A div containing"));
-        assertThat(text, endsWith("block level elements"));
-    }
+  public void testShouldTrimText() {
+    driver.get(simpleTestPage);
+    String text = driver.findElement(By.id("multiline")).getText();
 
-    public void testShouldConvertANonBreakingSpaceIntoANormalSpaceCharacter() {
-        driver.get(simpleTestPage);
-        String text = driver.findElement(By.id("nbsp")).getText();
+    assertThat(text, startsWith("A div containing"));
+    assertThat(text, endsWith("block level elements"));
+  }
 
-        assertThat(text, equalTo("This line has a non-breaking space"));
-    }
+  public void testShouldConvertANonBreakingSpaceIntoANormalSpaceCharacter() {
+    driver.get(simpleTestPage);
+    String text = driver.findElement(By.id("nbsp")).getText();
 
-    public void testShouldTreatANonBreakingSpaceAsAnyOtherWhitespaceCharacterWhenCollapsingWhitespace() {
-      driver.get(simpleTestPage);
-      WebElement element = driver.findElement(By.id("nbspandspaces"));
-      String text = element.getText();
+    assertThat(text, equalTo("This line has a non-breaking space"));
+  }
 
-      assertThat(text, equalTo("This line has a non-breaking space and spaces"));
-    }
+  public void testShouldTreatANonBreakingSpaceAsAnyOtherWhitespaceCharacterWhenCollapsingWhitespace() {
+    driver.get(simpleTestPage);
+    WebElement element = driver.findElement(By.id("nbspandspaces"));
+    String text = element.getText();
 
-    public void testHavingInlineElementsShouldNotAffectHowTextIsReturned() {
-        driver.get(simpleTestPage);
-        String text = driver.findElement(By.id("inline")).getText();
+    assertThat(text, equalTo("This line has a non-breaking space and spaces"));
+  }
 
-        assertThat(text, equalTo("This line has text within elements that are meant to be displayed inline"));
-    }
+  public void testHavingInlineElementsShouldNotAffectHowTextIsReturned() {
+    driver.get(simpleTestPage);
+    String text = driver.findElement(By.id("inline")).getText();
 
-    public void testShouldReturnTheEntireTextOfInlineElements() {
-        driver.get(simpleTestPage);
-        String text = driver.findElement(By.id("span")).getText();
+    assertThat(text,
+               equalTo("This line has text within elements that are meant to be displayed inline"));
+  }
 
-        assertThat(text, equalTo("An inline element"));
-    }
+  public void testShouldReturnTheEntireTextOfInlineElements() {
+    driver.get(simpleTestPage);
+    String text = driver.findElement(By.id("span")).getText();
+
+    assertThat(text, equalTo("An inline element"));
+  }
 
 //    public void testShouldRetainTheFormatingOfTextWithinAPreElement() {
 //        driver.get(simpleTestPage);
@@ -135,112 +137,113 @@ public class TextHandlingTest extends AbstractDriverTestCase {
 //                "        "));
 //    }
 
-    public void testShouldBeAbleToSetMoreThanOneLineOfTextInATextArea() {
-        driver.get(formPage);
-        WebElement textarea = driver.findElement(By.id("withText"));
-        textarea.clear();
-        String expectedText = "I like cheese" + newLine + newLine  + "It's really nice";
-        textarea.sendKeys(expectedText);
+  public void testShouldBeAbleToSetMoreThanOneLineOfTextInATextArea() {
+    driver.get(formPage);
+    WebElement textarea = driver.findElement(By.id("withText"));
+    textarea.clear();
+    String expectedText = "I like cheese" + newLine + newLine + "It's really nice";
+    textarea.sendKeys(expectedText);
 
-        String seenText = textarea.getValue();
-        assertThat(seenText, equalTo(expectedText));
-    }
+    String seenText = textarea.getValue();
+    assertThat(seenText, equalTo(expectedText));
+  }
 
-    public void testShouldBeAbleToEnterDatesAfterFillingInOtherValuesFirst() {
-        driver.get(formPage);
-        WebElement input = driver.findElement(By.id("working"));
-        String expectedValue = "10/03/2007 to 30/07/1993";
-        input.sendKeys(expectedValue);
-        String seenValue = input.getValue();
+  public void testShouldBeAbleToEnterDatesAfterFillingInOtherValuesFirst() {
+    driver.get(formPage);
+    WebElement input = driver.findElement(By.id("working"));
+    String expectedValue = "10/03/2007 to 30/07/1993";
+    input.sendKeys(expectedValue);
+    String seenValue = input.getValue();
 
-        assertThat(seenValue, equalTo(expectedValue));
-    }
+    assertThat(seenValue, equalTo(expectedValue));
+  }
 
-    public void testShouldReturnEmptyStringWhenTextIsOnlySpaces() {
-        driver.get(xhtmlTestPage);
+  public void testShouldReturnEmptyStringWhenTextIsOnlySpaces() {
+    driver.get(xhtmlTestPage);
 
-        String text = driver.findElement(By.id("spaces")).getText();
-        assertThat(text, equalTo(""));
-    }
+    String text = driver.findElement(By.id("spaces")).getText();
+    assertThat(text, equalTo(""));
+  }
 
-    public void testShouldReturnEmptyStringWhenTextIsEmpty() {
-        driver.get(xhtmlTestPage);
+  public void testShouldReturnEmptyStringWhenTextIsEmpty() {
+    driver.get(xhtmlTestPage);
 
-        String text = driver.findElement(By.id("empty")).getText();
-        assertThat(text, equalTo(""));
-    }
+    String text = driver.findElement(By.id("empty")).getText();
+    assertThat(text, equalTo(""));
+  }
 
-    public void testShouldReturnEmptyStringWhenTagIsSelfClosing() {
-        driver.get(xhtmlTestPage);
+  public void testShouldReturnEmptyStringWhenTagIsSelfClosing() {
+    driver.get(xhtmlTestPage);
 
-        String text = driver.findElement(By.id("self-closed")).getText();
-        assertThat(text, equalTo(""));
-    }
+    String text = driver.findElement(By.id("self-closed")).getText();
+    assertThat(text, equalTo(""));
+  }
 
-    public void testShouldHandleSiblingBlockLevelElements() {
-    	driver.get(simpleTestPage);
+  public void testShouldHandleSiblingBlockLevelElements() {
+    driver.get(simpleTestPage);
 
-    	String text = driver.findElement(By.id("twoblocks")).getText();
+    String text = driver.findElement(By.id("twoblocks")).getText();
 
-    	assertThat(text, is("Some text" + newLine + "Some more text"));
-    }
+    assertThat(text, is("Some text" + newLine + "Some more text"));
+  }
 
-    @Ignore({FIREFOX, HTMLUNIT, IE, CHROME})
-    public void testShouldHandleNestedBlockLevelElements() {
-    	driver.get(simpleTestPage);
+  @Ignore({FIREFOX, HTMLUNIT, IE, CHROME})
+  public void testShouldHandleNestedBlockLevelElements() {
+    driver.get(simpleTestPage);
 
-    	String text = driver.findElement(By.id("nestedblocks")).getText();
+    String text = driver.findElement(By.id("nestedblocks")).getText();
 
-    	assertThat(text, is("Cheese" + newLine + "Some text" + newLine + "Some more text" + newLine + "and also" + newLine + "Brie"));
-    }
+    assertThat(text, is("Cheese" + newLine + "Some text" + newLine + "Some more text" + newLine
+                        + "and also" + newLine + "Brie"));
+  }
 
-    public void testShouldHandleWhitespaceInInlineElements() {
-    	driver.get(simpleTestPage);
+  public void testShouldHandleWhitespaceInInlineElements() {
+    driver.get(simpleTestPage);
 
-    	String text = driver.findElement(By.id("inlinespan")).getText();
+    String text = driver.findElement(By.id("inlinespan")).getText();
 
-    	assertThat(text, is("line has text"));
-    }
+    assertThat(text, is("line has text"));
+  }
 
-    public void testReadALargeAmountOfData() {
-        driver.get(GlobalTestEnvironment.get().getAppServer().whereIs("macbeth.html"));
-        String source = driver.getPageSource().trim().toLowerCase();
+  public void testReadALargeAmountOfData() {
+    driver.get(GlobalTestEnvironment.get().getAppServer().whereIs("macbeth.html"));
+    String source = driver.getPageSource().trim().toLowerCase();
 
-        assertThat(source.endsWith("</html>"), is(true));
-    }
+    assertThat(source.endsWith("</html>"), is(true));
+  }
 
-    public void testGetTextWithLineBreakForInlineElement() {
-        driver.get(simpleTestPage);
+  public void testGetTextWithLineBreakForInlineElement() {
+    driver.get(simpleTestPage);
 
-        WebElement label = driver.findElement(By.id("label1"));
-        String labelText = label.getText();
+    WebElement label = driver.findElement(By.id("label1"));
+    String labelText = label.getText();
 
-        assertThat(labelText, matchesPattern("foo[\\n\\r]+bar"));
-    }
+    assertThat(labelText, matchesPattern("foo[\\n\\r]+bar"));
+  }
 
-    private Matcher<String> matchesPattern(String javaRegex) {
-        final Pattern pattern = Pattern.compile(javaRegex);
+  private Matcher<String> matchesPattern(String javaRegex) {
+    final Pattern pattern = Pattern.compile(javaRegex);
 
-        return new TypeSafeMatcher<String>() {
-            @Override
-            public boolean matchesSafely(String s) {
-                return pattern.matcher(s).matches();
-            }
+    return new TypeSafeMatcher<String>() {
+      @Override
+      public boolean matchesSafely(String s) {
+        return pattern.matcher(s).matches();
+      }
 
-            public void describeTo(Description description) {
-                description.appendText("a string matching the pattern " + pattern);
-            }
-        };
-    }
+      public void describeTo(Description description) {
+        description.appendText("a string matching the pattern " + pattern);
+      }
+    };
+  }
 
-    @JavascriptEnabled
-    public void testShouldOnlyIncludeVisibleText() {
-      driver.get(javascriptPage);
+  @JavascriptEnabled
+  public void testShouldOnlyIncludeVisibleText() {
+    driver.get(javascriptPage);
 
-      String empty = driver.findElement(By.id("suppressedParagraph")).getText();
-      String explicit = driver.findElement(By.id("outer")).getText();
+    String empty = driver.findElement(By.id("suppressedParagraph")).getText();
+    String explicit = driver.findElement(By.id("outer")).getText();
 
-      assertEquals("", empty);
-      assertEquals("sub-element that is explicitly visible", explicit);
-    }
+    assertEquals("", empty);
+    assertEquals("sub-element that is explicitly visible", explicit);
+  }
 }

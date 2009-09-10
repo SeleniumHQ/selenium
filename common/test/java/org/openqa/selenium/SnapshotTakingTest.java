@@ -21,6 +21,7 @@ import java.io.File;
 import java.lang.reflect.Method;
 
 public class SnapshotTakingTest extends AbstractDriverTestCase {
+
   public void testShouldTakeSnapshotsOfThePage() throws Exception {
     if (!isAbleToTakeSnapshots(driver)) {
       return;

@@ -24,12 +24,12 @@ import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
-
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
 
 public class FrameSwitchingTest extends AbstractDriverTestCase {
-	public void testShouldContinueToReferToTheSameFrameOnceItHasBeenSelected() {
+
+  public void testShouldContinueToReferToTheSameFrameOnceItHasBeenSelected() {
     driver.get(framesetPage);
 
     driver.switchTo().frame(2);
@@ -40,7 +40,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     assertThat(driver.findElement(By.xpath("//p")).getText(), equalTo("Success!"));
   }
 
-	public void testShouldAutomaticallyUseTheFirstFrameOnAPage() {
+  public void testShouldAutomaticallyUseTheFirstFrameOnAPage() {
     driver.get(framesetPage);
 
     // Notice that we've not switched to the 0th frame
@@ -48,22 +48,24 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     assertThat(pageNumber.getText().trim(), equalTo("1"));
   }
 
-  @Ignore(FIREFOX) //TODO(danielwh): This test is being very flaky for me in Firefox, I'll look into it
-	public void testShouldFocusOnTheReplacementWhenAFrameFollowsALinkToA_TopTargettedPage() {
+  @Ignore(FIREFOX)
+  //TODO(danielwh): This test is being very flaky for me in Firefox, I'll look into it
+  public void testShouldFocusOnTheReplacementWhenAFrameFollowsALinkToA_TopTargettedPage() {
     driver.get(framesetPage);
 
     driver.findElement(By.linkText("top")).click();
 
     assertThat(driver.getTitle(), equalTo("XHTML Test Page"));
-    assertThat(driver.findElement(By.xpath("/html/head/title")).getText(), equalTo("XHTML Test Page"));
+    assertThat(driver.findElement(By.xpath("/html/head/title")).getText(),
+               equalTo("XHTML Test Page"));
   }
 
-	public void testShouldNotAutomaticallySwitchFocusToAnIFrameWhenAPageContainingThemIsLoaded() {
+  public void testShouldNotAutomaticallySwitchFocusToAnIFrameWhenAPageContainingThemIsLoaded() {
     driver.get(iframePage);
     driver.findElement(By.id("iframe_page_heading"));
   }
 
-	public void testShouldAllowAUserToSwitchFromAnIframeBackToTheMainContentOfThePage() {
+  public void testShouldAllowAUserToSwitchFromAnIframeBackToTheMainContentOfThePage() {
     driver.get(iframePage);
     driver.switchTo().frame(0);
 
@@ -75,8 +77,8 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     }
   }
 
-	@Ignore(value = CHROME, reason = "Can't execute script in iframe, track crbug 20773")
-	public void testShouldAllowTheUserToSwitchToAnIFrameAndRemainFocusedOnIt() {
+  @Ignore(value = CHROME, reason = "Can't execute script in iframe, track crbug 20773")
+  public void testShouldAllowTheUserToSwitchToAnIFrameAndRemainFocusedOnIt() {
     driver.get(iframePage);
     driver.switchTo().frame(0);
 
@@ -94,7 +96,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     assertThat(hello, equalTo("Success!"));
     driver.switchTo().defaultContent();
   }
-  
+
   @Ignore({CHROME, FIREFOX, HTMLUNIT, IE})
   public void testShouldBeAbleToClickInASubFrame() {
     driver.get(framesetPage);
@@ -106,45 +108,45 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     assertThat(hello, equalTo("Success!"));
   }
 
-	public void testShouldBeAbleToSelectAFrameByName() {
+  public void testShouldBeAbleToSelectAFrameByName() {
     driver.get(framesetPage);
-    
+
     driver.switchTo().frame("second");
     assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("2"));
   }
-	
-	@Ignore({FIREFOX, IE, HTMLUNIT})
-	public void testShouldBeAbleToSelectAFrameByNameWhichIncludesADot() {
+
+  @Ignore({FIREFOX, IE, HTMLUNIT})
+  public void testShouldBeAbleToSelectAFrameByNameWhichIncludesADot() {
     driver.get(framesetPage);
 
     driver.switchTo().frame("seventh.withadot");
     assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("3"));
   }
 
-	public void testShouldSelectChildFramesByUsingADotSeparatedString() {
+  public void testShouldSelectChildFramesByUsingADotSeparatedString() {
     driver.get(framesetPage);
 
     driver.switchTo().frame("fourth.child2");
     assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("11"));
   }
 
-	public void testShouldSwitchToChildFramesTreatingNumbersAsIndex() {
+  public void testShouldSwitchToChildFramesTreatingNumbersAsIndex() {
     driver.get(framesetPage);
 
     driver.switchTo().frame("fourth.1");
     assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("11"));
   }
-	
-	@Ignore(FIREFOX)
-	public void testShouldSwitchToChildFramesTreatingParentAndChildNumbersAsIndex() {
+
+  @Ignore(FIREFOX)
+  public void testShouldSwitchToChildFramesTreatingParentAndChildNumbersAsIndex() {
     driver.get(framesetPage);
 
     driver.switchTo().frame("3.1");
     assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("11"));
   }
 
-	@Ignore({CHROME, IE})
-	public void testShouldThrowFrameNotFoundExceptionLookingUpSubFramesWithSuperFrameNames() {
+  @Ignore({CHROME, IE})
+  public void testShouldThrowFrameNotFoundExceptionLookingUpSubFramesWithSuperFrameNames() {
     driver.get(framesetPage);
 
     try {
@@ -153,7 +155,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     } catch (NoSuchFrameException e) {
       //Expected
     }
-    
+
   }
 
   @NoDriverAfterTest
@@ -179,7 +181,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     }
   }
 
-	public void testShouldThrowAnExceptionWhenAFrameCannotBeFound() {
+  public void testShouldThrowAnExceptionWhenAFrameCannotBeFound() {
     driver.get(xhtmlTestPage);
 
     try {
@@ -190,7 +192,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     }
   }
 
-	public void testShouldThrowAnExceptionWhenAFrameCannotBeFoundByIndex() {
+  public void testShouldThrowAnExceptionWhenAFrameCannotBeFoundByIndex() {
     driver.get(xhtmlTestPage);
 
     try {
@@ -201,7 +203,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     }
   }
 
-	public void testShouldBeAbleToFindElementsInIframesByName() {
+  public void testShouldBeAbleToFindElementsInIframesByName() {
     driver.get(iframePage);
 
     driver.switchTo().frame("iframe1");
@@ -210,7 +212,7 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     assertNotNull(element);
   }
 
-	public void testShouldBeAbleToFindElementsInIframesByXPath() {
+  public void testShouldBeAbleToFindElementsInIframesByXPath() {
     driver.get(iframePage);
 
     driver.switchTo().frame("iframe1");
@@ -220,13 +222,12 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     assertNotNull(element);
   }
 
-	public void testGetCurrentUrl() {
+  public void testGetCurrentUrl() {
     AppServer appServer = GlobalTestEnvironment.get().getAppServer();
 
     driver.get(framesetPage);
 
     driver.switchTo().frame("second");
-
 
     String url = appServer.whereIs("page/2");
     assertThat(driver.getCurrentUrl(), equalTo(url + "?title=Fish"));

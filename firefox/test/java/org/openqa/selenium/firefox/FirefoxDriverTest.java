@@ -66,19 +66,18 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
       assertThat(seenText, equalTo(expectedText));
     }
 
-  @Ignore
-    public void testShouldBeAbleToStartMoreThanOneInstanceOfTheFirefoxDriverSimultaneously() {
-      WebDriver secondDriver = new FirefoxDriver();
+  public void testShouldBeAbleToStartMoreThanOneInstanceOfTheFirefoxDriverSimultaneously() {
+    WebDriver secondDriver = new FirefoxDriver();
 
-      driver.get(xhtmlTestPage);
-      secondDriver.get(formPage);
+    driver.get(xhtmlTestPage);
+    secondDriver.get(formPage);
 
-      assertThat(driver.getTitle(), is("XHTML Test Page"));
-      assertThat(secondDriver.getTitle(), is("We Leave From Here"));
+    assertThat(driver.getTitle(), is("XHTML Test Page"));
+    assertThat(secondDriver.getTitle(), is("We Leave From Here"));
 
-      // We only need to quit the second driver if the test passes
-      secondDriver.quit();
-    }
+    // We only need to quit the second driver if the test passes
+    secondDriver.quit();
+  }
 
   @Ignore
     public void testShouldBeAbleToStartFromAUniqueProfile() {

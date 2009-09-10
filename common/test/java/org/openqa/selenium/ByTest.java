@@ -25,6 +25,7 @@ import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByXPath;
 
 public class ByTest extends MockObjectTestCase {
+
   public void testShouldUseFindsByNameToLocateElementsByName() {
     final AllDriver driver = mock(AllDriver.class);
 
@@ -41,17 +42,19 @@ public class ByTest extends MockObjectTestCase {
 
     checking(new Expectations() {{
       one(driver).findElementByXPath("//*[@name='cheese']");
-		}});
+    }});
 
     By by = By.name("cheese");
 
     by.findElement((SearchContext) driver);
   }
 
-  private interface AllDriver extends FindsById, FindsByLinkText, FindsByName, FindsByXPath, SearchContext {
+  private interface AllDriver
+      extends FindsById, FindsByLinkText, FindsByName, FindsByXPath, SearchContext {
     // Place holder
   }
 
   private interface OnlyXPath extends FindsByXPath, SearchContext {
+
   }
 }

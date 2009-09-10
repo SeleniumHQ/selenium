@@ -22,11 +22,12 @@ import static org.hamcrest.Matchers.is;
 import org.junit.Test;
 
 public class TagNameTest extends AbstractDriverTestCase {
-    @Test
-    public void shouldReturnInput() {
-        driver.get(formPage);
-        WebElement selectBox = driver.findElement(By.id("cheese"));
-        assertThat(selectBox.getTagName(), is("input"));
-    }
+
+  @Test
+  public void shouldReturnInput() {
+    driver.get(formPage);
+    WebElement selectBox = driver.findElement(By.id("cheese"));
+    assertThat(selectBox.getTagName(), is("input"));
+  }
 
 }

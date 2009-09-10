@@ -121,7 +121,7 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
 
     assertEquals(current, newHandle);
   }
-  
+
   @NeedsFreshDriver
   @NoDriverAfterTest
   @Ignore(IE)
@@ -135,7 +135,7 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
 
     // There should be two windows. We should also see each of the window titles at least once.
     assertEquals(2, allWindowHandles.size());
-    String handle1 = (String)allWindowHandles.toArray()[1];
+    String handle1 = (String) allWindowHandles.toArray()[1];
     driver.switchTo().window(handle1);
     driver.close();
     allWindowHandles = driver.getWindowHandles();

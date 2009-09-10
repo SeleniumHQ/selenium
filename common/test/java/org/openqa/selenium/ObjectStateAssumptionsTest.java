@@ -24,6 +24,7 @@ package org.openqa.selenium;
  * necessary) is fixed they'll serve as regression tests :)
  */
 public class ObjectStateAssumptionsTest extends AbstractDriverTestCase {
+
   public void testUninitializedWebDriverDoesNotThrowNPE() {
     try {
       variousMethodCallsToCheckAssumptions();

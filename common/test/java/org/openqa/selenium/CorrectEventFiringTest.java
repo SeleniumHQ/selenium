@@ -25,127 +25,128 @@ import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import java.util.List;
 
 public class CorrectEventFiringTest extends AbstractDriverTestCase {
-	@Ignore(value = CHROME, reason = "Webkit bug 22261")
+
+  @Ignore(value = CHROME, reason = "Webkit bug 22261")
   @JavascriptEnabled
-	public void testShouldFireFocusEventWhenClicking() {
-		driver.get(javascriptPage);
+  public void testShouldFireFocusEventWhenClicking() {
+    driver.get(javascriptPage);
 
-		clickOnElementWhichRecordsEvents();
+    clickOnElementWhichRecordsEvents();
 
-		assertEventFired("focus");
-	}
+    assertEventFired("focus");
+  }
 
-	@JavascriptEnabled
-	public void testShouldFireClickEventWhenClicking() {
-		driver.get(javascriptPage);
+  @JavascriptEnabled
+  public void testShouldFireClickEventWhenClicking() {
+    driver.get(javascriptPage);
 
-		clickOnElementWhichRecordsEvents();
+    clickOnElementWhichRecordsEvents();
 
-		assertEventFired("click");
-	}
+    assertEventFired("click");
+  }
 
-	@JavascriptEnabled
-	public void testShouldFireMouseDownEventWhenClicking() {
-		driver.get(javascriptPage);
+  @JavascriptEnabled
+  public void testShouldFireMouseDownEventWhenClicking() {
+    driver.get(javascriptPage);
 
-		clickOnElementWhichRecordsEvents();
+    clickOnElementWhichRecordsEvents();
 
-		assertEventFired("mousedown");
-	}
+    assertEventFired("mousedown");
+  }
 
-	@JavascriptEnabled
-	public void testShouldFireMouseUpEventWhenClicking() {
-		driver.get(javascriptPage);
+  @JavascriptEnabled
+  public void testShouldFireMouseUpEventWhenClicking() {
+    driver.get(javascriptPage);
 
-		clickOnElementWhichRecordsEvents();
+    clickOnElementWhichRecordsEvents();
 
-		assertEventFired("mouseup");
-	}
+    assertEventFired("mouseup");
+  }
 
-	@Ignore(value = CHROME, reason = "Webkit bug 22261")
-	@JavascriptEnabled
-	public void testShouldFireEventsInTheRightOrder() {
-		driver.get(javascriptPage);
+  @Ignore(value = CHROME, reason = "Webkit bug 22261")
+  @JavascriptEnabled
+  public void testShouldFireEventsInTheRightOrder() {
+    driver.get(javascriptPage);
 
-		clickOnElementWhichRecordsEvents();
+    clickOnElementWhichRecordsEvents();
 
-		String text = driver.findElement(By.id("result")).getText();
+    String text = driver.findElement(By.id("result")).getText();
 
-		int lastIndex = -1;
-		for (String event : new String[] { "mousedown", "focus", "mouseup", "click" }) {
-			int index = text.indexOf(event);
+    int lastIndex = -1;
+    for (String event : new String[]{"mousedown", "focus", "mouseup", "click"}) {
+      int index = text.indexOf(event);
 
-			assertTrue(event + " did not fire at all", index != -1);
-			assertTrue(event + " did not fire in the correct order", index > lastIndex);
-		}
-	}
+      assertTrue(event + " did not fire at all", index != -1);
+      assertTrue(event + " did not fire in the correct order", index > lastIndex);
+    }
+  }
 
-	@JavascriptEnabled
-	public void testsShouldIssueMouseDownEvents() {
-		driver.get(javascriptPage);
-		driver.findElement(By.id("mousedown")).click();
+  @JavascriptEnabled
+  public void testsShouldIssueMouseDownEvents() {
+    driver.get(javascriptPage);
+    driver.findElement(By.id("mousedown")).click();
 
-		String result = driver.findElement(By.id("result")).getText();
-		assertThat(result, equalTo("mouse down"));
-	}
+    String result = driver.findElement(By.id("result")).getText();
+    assertThat(result, equalTo("mouse down"));
+  }
 
-	@JavascriptEnabled
-	public void testShouldIssueClickEvents() {
-		driver.get(javascriptPage);
-		driver.findElement(By.id("mouseclick")).click();
+  @JavascriptEnabled
+  public void testShouldIssueClickEvents() {
+    driver.get(javascriptPage);
+    driver.findElement(By.id("mouseclick")).click();
 
-		String result = driver.findElement(By.id("result")).getText();
-		assertThat(result, equalTo("mouse click"));
-	}
+    String result = driver.findElement(By.id("result")).getText();
+    assertThat(result, equalTo("mouse click"));
+  }
 
-	@JavascriptEnabled
-	public void testShouldIssueMouseUpEvents() {
-		driver.get(javascriptPage);
-		driver.findElement(By.id("mouseup")).click();
+  @JavascriptEnabled
+  public void testShouldIssueMouseUpEvents() {
+    driver.get(javascriptPage);
+    driver.findElement(By.id("mouseup")).click();
 
-		String result = driver.findElement(By.id("result")).getText();
-		assertThat(result, equalTo("mouse up"));
-	}
+    String result = driver.findElement(By.id("result")).getText();
+    assertThat(result, equalTo("mouse up"));
+  }
 
-	@JavascriptEnabled
-	@Ignore(IPHONE)
-	public void testMouseEventsShouldBubbleUpToContainingElements() {
-		driver.get(javascriptPage);
-		driver.findElement(By.id("child")).click();
+  @JavascriptEnabled
+  @Ignore(IPHONE)
+  public void testMouseEventsShouldBubbleUpToContainingElements() {
+    driver.get(javascriptPage);
+    driver.findElement(By.id("child")).click();
 
-		String result = driver.findElement(By.id("result")).getText();
-		assertThat(result, equalTo("mouse down"));
-	}
+    String result = driver.findElement(By.id("result")).getText();
+    assertThat(result, equalTo("mouse down"));
+  }
 
-	@JavascriptEnabled
-	@Ignore(IPHONE)
-	public void testShouldEmitOnChangeEventsWhenSelectingElements() {
-		driver.get(javascriptPage);
-		WebElement select = driver.findElement(By.id("selector"));
-		List<WebElement> allOptions = select.findElements(By.tagName("option"));
+  @JavascriptEnabled
+  @Ignore(IPHONE)
+  public void testShouldEmitOnChangeEventsWhenSelectingElements() {
+    driver.get(javascriptPage);
+    WebElement select = driver.findElement(By.id("selector"));
+    List<WebElement> allOptions = select.findElements(By.tagName("option"));
 
-		String initialTextValue = driver.findElement(By.id("result")).getText();
+    String initialTextValue = driver.findElement(By.id("result")).getText();
 
-		WebElement foo = allOptions.get(0);
-		WebElement bar = allOptions.get(1);
+    WebElement foo = allOptions.get(0);
+    WebElement bar = allOptions.get(1);
 
-		foo.setSelected();
-		assertThat(driver.findElement(By.id("result")).getText(),
-				equalTo(initialTextValue));
-		bar.setSelected();
-		assertThat(driver.findElement(By.id("result")).getText(),
-				equalTo("bar"));
-	}
+    foo.setSelected();
+    assertThat(driver.findElement(By.id("result")).getText(),
+               equalTo(initialTextValue));
+    bar.setSelected();
+    assertThat(driver.findElement(By.id("result")).getText(),
+               equalTo("bar"));
+  }
 
-	@JavascriptEnabled
-	public void testShouldEmitOnChangeEventsWhenChangingTheStateOfACheckbox() {
-		driver.get(javascriptPage);
-		WebElement checkbox = driver.findElement(By.id("checkbox"));
+  @JavascriptEnabled
+  public void testShouldEmitOnChangeEventsWhenChangingTheStateOfACheckbox() {
+    driver.get(javascriptPage);
+    WebElement checkbox = driver.findElement(By.id("checkbox"));
 
-		checkbox.setSelected();
-		assertThat(driver.findElement(By.id("result")).getText(),
-				equalTo("checkbox thing"));
-	}
+    checkbox.setSelected();
+    assertThat(driver.findElement(By.id("result")).getText(),
+               equalTo("checkbox thing"));
+  }
 
   @JavascriptEnabled
   public void testShouldEmitClickEventWhenClickingOnATextInputElement() {
@@ -168,13 +169,13 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
     assertThat(result.getText(), equalTo("Cleared"));
   }
 
-        private void clickOnElementWhichRecordsEvents() {
-		driver.findElement(By.id("plainButton")).click();
-	}
+  private void clickOnElementWhichRecordsEvents() {
+    driver.findElement(By.id("plainButton")).click();
+  }
 
-	private void assertEventFired(String eventName) {
-		WebElement result = driver.findElement(By.id("result"));
-		String text = result.getText();
-		assertTrue("No " + eventName + " fired", text.contains(eventName));
-	}
+  private void assertEventFired(String eventName) {
+    WebElement result = driver.findElement(By.id("result"));
+    String text = result.getText();
+    assertTrue("No " + eventName + " fired", text.contains(eventName));
+  }
 }
