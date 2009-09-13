@@ -74,9 +74,15 @@ public class Executable {
     }
 
     // Last, add the contents of the specified system property, defaulting to the binary's path.
+    
+    // On Snow Leopard, beware of problems the sqlite library    
     String firefoxLibraryPath = System.getProperty("webdriver.firefox.library.path", 
         binary.getParentFile().getAbsolutePath());
-    libraryPath.append(firefoxLibraryPath).append(File.pathSeparator).append(libraryPath);
+    if (Platform.getCurrent().is(Platform.MAC) && Platform.getCurrent().getMinorVersion() > 5) {
+      libraryPath.append(libraryPath).append(File.pathSeparator);  
+    } else {
+      libraryPath.append(firefoxLibraryPath).append(File.pathSeparator).append(libraryPath);	
+    }
 
     // Add the library path to the builder.
     builder.environment().put(propertyName, libraryPath.toString());
