@@ -11,7 +11,7 @@ end
 
 def copy_single_resource_(from, to)
   dir = to.sub(/(.*)\/.*?$/, '\1')
-  mkdir_p "#{dir}"
+  mkdir_p "#{dir}", :verbose => false
   
   cp_r find_file(from), "#{to}"
 end
@@ -30,14 +30,14 @@ def copy_prebuilt(prebuilt, out)
   dir = out.split('/')[0..-2].join('/') 
 
   if prebuilt.nil?
-    mkdir_p dir
+    mkdir_p dir, :verbose => false
     File.open(out, 'w') {|f| f.write('')}    
   elsif File.directory? prebuilt
     from = prebuilt + "/" + out
     from = from.sub(/\/build\//, "/")
     if (File.exists?(from))
       puts "Falling back to copy of: #{out}"
-      mkdir_p dir
+      mkdir_p dir, :verbose => false
       cp_r from, out
     else
       puts "Unable to locate prebuilt copy of #{out}"

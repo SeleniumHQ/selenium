@@ -43,7 +43,7 @@ def gcc(srcs, out, args, link_args, is_32_bit, prebuilt)
 
   obj_dir = "#{out}_temp/obj" + (is_32_bit ? "32" : "64")
 
-  mkdir_p obj_dir
+  mkdir_p obj_dir, :verbose => false
 
   is_cpp_code = false
   srcs.each do |src|
@@ -64,7 +64,7 @@ def gcc(srcs, out, args, link_args, is_32_bit, prebuilt)
   # if we've made it this far, try to link. If link fails,
   # copy from prebuilt.
   linker = is_cpp_code ? "g++" : "gcc"
-  sh "#{linker} -o #{out} #{obj_dir}/*.o #{flags}", :verbose => true do |link_ok, res|
+  sh "#{linker} -o #{out} #{obj_dir}/*.o #{flags}", :verbose => false do |link_ok, res|
     if (!link_ok)
       copy_prebuilt(prebuilt, out)
       return
@@ -73,7 +73,7 @@ def gcc(srcs, out, args, link_args, is_32_bit, prebuilt)
 
   copy_to_prebuilt(out, prebuilt)
 
-  rm_rf "#{out}_temp"
+  rm_rf "#{out}_temp", :verbose => false;
 end
 
 def gccbuild_c(src_file, obj_dir, args, is_32_bit)
@@ -82,7 +82,7 @@ def gccbuild_c(src_file, obj_dir, args, is_32_bit)
   cmd = "#{compiler} #{src_file} -Wall -c -fshort-wchar -fPIC -o #{obj_dir}/#{objname} "
   cmd += (is_32_bit ? " -m32" : " -m64")
   cmd += args if args
-  sh cmd, :verbose => true do |ok, res|
+  sh cmd, :verbose => false do |ok, res|
     if !ok
       puts "Unable to build. Aborting compilation"
       return false

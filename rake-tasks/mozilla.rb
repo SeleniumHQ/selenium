@@ -67,7 +67,7 @@ def xpi(args)
     if (File.exists?(target)) 
       rm_rf target
     end
-    mkdir_p target
+    mkdir_p target, :verbose => false
   
     # Copy the sources into it
     args[:src].each do |src|
@@ -81,7 +81,7 @@ def xpi(args)
   
     # Package up into the output file
     rm_r Dir.glob("#{target}/**/.svn")
-    sh "cd #{target} && jar cMf ../#{args[:out]} *", :verbose => true
+    sh "cd #{target} && jar cMf ../#{args[:out]} *", :verbose => false
     rm_r target
   end
   task args[:name] => "build/#{args[:out]}"

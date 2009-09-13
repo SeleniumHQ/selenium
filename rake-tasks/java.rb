@@ -29,7 +29,7 @@ def jar(args)
 
   file out => build_deps_(args[:src]) + deps do
     puts "Building: #{args[:name]}"
-    mkdir_p "build"
+    mkdir_p "build", :verbose => false
 
     javac :jar => "build/#{args[:out]}",
           :sources => FileList[args[:src]],
@@ -124,13 +124,13 @@ def javac(args)
       if (res.kind_of? Hash) 
         res.each do |from, to|
           dir = to.gsub(/\/.*?$/, "")
-          mkdir_p "#{target_dir}/#{dir}"
+          mkdir_p "#{target_dir}/#{dir}", :verbose => false
           cp_r find_file(from), "#{target_dir}/#{to}"
         end
       else
         if (res.index('/'))
           dir = res.gsub(/\.*?/, "")
-          mkdir_p dir
+          mkdir_p dir, :verbose => false
         end
         cp_r find_file(res), "#{target_dir}/#{res}"
       end

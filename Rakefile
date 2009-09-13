@@ -88,7 +88,7 @@ xpt(:name => "commandProcessor_xpt",
     :out => "nsICommandProcessor.xpt")
 
 task :clean do
-  rm_rf 'build/'
+  rm_rf 'build/', :verbose => false
 end
 
 xpi(:name => "firefox_xpi",
@@ -313,12 +313,8 @@ test_java(:name => "test_jsapi",
 task :build => [:common, :htmlunit, :firefox, :ie, :iphone, :support, :remote, :chrome, :selenium]
 task :test => [:test_htmlunit, :test_firefox, :test_ie, :test_iphone, :test_support, :test_remote, :test_jsapi, :test_chrome, :test_selenium]
 
-task :clean do
-  rm_rf 'build/'
-end
-
 task :javadocs => [:common, :firefox, :htmlunit, :jobbie, :remote, :support, :chrome] do
-  mkdir_p "build/javadoc"
+  mkdir_p "build/javadoc", :verbose => false
    sourcepath = ""
    classpath = "support/lib/runtime/hamcrest-all-1.1.jar"
    %w(common firefox jobbie htmlunit support remote/common remote/client chrome).each do |m|
@@ -365,7 +361,7 @@ def version
 end
 
 task :remote_release => [:remote] do
-  mkdir_p "build/dist/remote_client"
+  mkdir_p "build/dist/remote_client", :verbose => false
 
   cp 'remote/build/webdriver-remote-client.jar', 'build/dist/remote_client'
   cp 'remote/build/webdriver-remote-common.jar', 'build/dist/remote_client'
@@ -377,7 +373,7 @@ task :remote_release => [:remote] do
   sh "cd build/dist && zip -r webdriver-remote-client-#{version}.zip remote_client/*"
   rm_rf "build/dist/remote_client"
 
-  mkdir_p "build/dist/remote_server"
+  mkdir_p "build/dist/remote_server", :verbose => false
 
   cp 'remote/build/webdriver-remote-server.jar', 'build/dist/remote_server'
   cp 'remote/build/webdriver-remote-common.jar', 'build/dist/remote_server'
