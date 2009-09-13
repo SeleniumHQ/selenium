@@ -26,18 +26,13 @@ import org.openqa.selenium.remote.server.rest.ResultType;
 
 import java.util.List;
 
-public class DragElement extends WebDriverHandler implements JsonParametersAware {
+public class DragElement extends WebElementHandler implements JsonParametersAware {
 
-  private String id;
   private int x;
   private int y;
 
   public DragElement(DriverSessions sessions) {
     super(sessions);
-  }
-
-  public void setId(String id) {
-    this.id = id;
   }
 
   public void setJsonParameters(List<Object> allParameters) throws Exception {
@@ -46,8 +41,13 @@ public class DragElement extends WebDriverHandler implements JsonParametersAware
   }
 
   public ResultType call() throws Exception {
-    RenderedWebElement element = (RenderedWebElement) getKnownElements().get(id);
+    RenderedWebElement element = (RenderedWebElement) getElement();
     element.dragAndDropBy(x, y);
     return ResultType.SUCCESS;
+  }
+  
+  @Override
+  public String toString() {
+    return String.format("[drag element: %s by (x, y): (%d, %d)]", getElementAsString(), x, y);
   }
 }

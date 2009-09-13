@@ -23,27 +23,27 @@ import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
-public class GetElementEnabled extends WebDriverHandler {
+public class GetElementEnabled extends WebElementHandler {
 
-  private String elementId;
   private Response response;
 
   public GetElementEnabled(DriverSessions sessions) {
     super(sessions);
   }
 
-  public void setId(String elementId) {
-    this.elementId = elementId;
-  }
-
   public ResultType call() throws Exception {
     response = newResponse();
-    response.setValue(getKnownElements().get(elementId).isEnabled());
+    response.setValue(getElement().isEnabled());
 
     return ResultType.SUCCESS;
   }
 
   public Response getResponse() {
     return response;
+  }
+  
+  @Override
+  public String toString() {
+    return String.format("[is enabled: %s]", getElementAsString());
   }
 }

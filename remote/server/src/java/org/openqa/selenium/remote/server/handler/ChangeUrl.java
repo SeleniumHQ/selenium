@@ -40,4 +40,9 @@ public class ChangeUrl extends WebDriverHandler implements JsonParametersAware {
 
     return ResultType.SUCCESS;
   }
+  
+  @Override
+  public String toString() {
+    return "[get: " + url + "]";
+  }
 }

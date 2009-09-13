@@ -36,4 +36,9 @@ public class AddCookie extends CookieHandler {
 
     return ResultType.SUCCESS;
   }
+  
+  @Override
+  public String toString() {
+    return "[add cookie: " + createCookie() + "]";
+  }
 }

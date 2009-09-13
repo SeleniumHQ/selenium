@@ -17,29 +17,25 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
+import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.rest.ResultType;
-import org.openqa.selenium.RenderedWebElement;
-import org.openqa.selenium.WebElement;
 
-public class HoverOverElement extends WebDriverHandler {
-
-  private String elementId;
+public class HoverOverElement extends WebElementHandler {
 
   public HoverOverElement(DriverSessions sessions) {
     super(sessions);
   }
 
-  public void setId(String elementId) {
-    this.elementId = elementId;
-  }
-
-
   public ResultType call() throws Exception {
-    RenderedWebElement element = (RenderedWebElement) getKnownElements().get(elementId);
+    RenderedWebElement element = (RenderedWebElement) getElement();
     element.hover();
 
     return ResultType.SUCCESS;
   }
 
+  @Override
+  public String toString() {
+    return String.format("[hover: %s]", getElementAsString());
+  }
 }

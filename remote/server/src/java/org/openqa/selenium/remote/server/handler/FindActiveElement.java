@@ -44,4 +44,9 @@ public class FindActiveElement extends WebDriverHandler {
     public Response getResponse() {
       return response;
     }
+    
+    @Override
+    public String toString() {
+      return "[find active element]";
+    }
 }

@@ -21,18 +21,13 @@ import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
-public class GetElementAttribute extends WebDriverHandler {
+public class GetElementAttribute extends WebElementHandler {
 
-  private String elementId;
   private String name;
   private Response response;
 
   public GetElementAttribute(DriverSessions sessions) {
     super(sessions);
-  }
-
-  public void setId(String elementId) {
-    this.elementId = elementId;
   }
 
   public void setName(String name) {
@@ -41,7 +36,7 @@ public class GetElementAttribute extends WebDriverHandler {
 
   public ResultType call() throws Exception {
     response = newResponse();
-    response.setValue(getKnownElements().get(elementId).getAttribute(name));
+    response.setValue(getElement().getAttribute(name));
 
     return ResultType.SUCCESS;
   }
@@ -50,4 +45,8 @@ public class GetElementAttribute extends WebDriverHandler {
     return response;
   }
 
+  @Override
+  public String toString() {
+    return String.format("[get element attribute: %s, %s]", getElementAsString(), name);
+  }
 }

@@ -20,26 +20,24 @@ package org.openqa.selenium.remote.server.handler;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
-public class SetElementSelected extends WebDriverHandler {
-
-  private String elementId;
+public class SetElementSelected extends WebElementHandler {
 
   public SetElementSelected(DriverSessions sessions) {
     super(sessions);
   }
 
-  public void setId(String elementId) {
-    this.elementId = elementId;
-  }
-
-
   public ResultType call() throws Exception {
     try {
-      getKnownElements().get(elementId).setSelected();
+      getElement().setSelected();
     } catch (Exception e) {
       throw e;
     }
 
     return ResultType.SUCCESS;
+  }
+  
+  @Override
+  public String toString() {
+    return String.format("[set selected: %s]", getElementAsString());
   }
 }

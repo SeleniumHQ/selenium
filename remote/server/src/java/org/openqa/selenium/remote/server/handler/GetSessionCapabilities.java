@@ -77,4 +77,9 @@ public class GetSessionCapabilities extends WebDriverHandler {
       return supportsJavascript;
     }
   }
+  
+  @Override
+  public String toString() {
+    return "[describe session]";
+  }
 }

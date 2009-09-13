@@ -38,4 +38,9 @@ public class GetCurrentUrl extends WebDriverHandler {
   public Response getResponse() {
     return response;
   }
+  
+  @Override
+  public String toString() {
+    return "[get current url]";
+  }
 }

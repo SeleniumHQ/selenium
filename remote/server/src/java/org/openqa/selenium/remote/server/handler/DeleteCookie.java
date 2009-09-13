@@ -33,4 +33,9 @@ public class DeleteCookie extends CookieHandler {
 
     return ResultType.SUCCESS;
   }
+  
+  @Override
+  public String toString() {
+    return "[delete all cookies]";
+  }
 }

@@ -39,4 +39,9 @@ public class GetCurrentWindowHandle extends WebDriverHandler {
   public Response getResponse() {
     return response;
   }
+  
+  @Override
+  public String toString() {
+    return "[get current window handle]";
+  }
 }

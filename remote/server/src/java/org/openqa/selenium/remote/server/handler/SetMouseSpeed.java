@@ -15,8 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-// Copyright 2008 Google Inc.  All Rights Reserved.
-
 package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.Speed;
@@ -41,5 +39,10 @@ public class SetMouseSpeed extends WebDriverHandler implements JsonParametersAwa
     getDriver().manage().setSpeed(speed);
 
     return ResultType.SUCCESS;
+  }
+  
+  @Override
+  public String toString() {
+    return String.format("[set mouse speed: %s]", speed);
   }
 }

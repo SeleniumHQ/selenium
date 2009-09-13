@@ -33,4 +33,9 @@ public class RefreshPage extends WebDriverHandler {
 
     return ResultType.SUCCESS;
   }
+  
+  @Override
+  public String toString() {
+    return "[refresh]";
+  }
 }

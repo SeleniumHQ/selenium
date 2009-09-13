@@ -15,8 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-// Copyright 2008 Google Inc.  All Rights Reserved.
-
 package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.RenderedWebElement;
@@ -24,22 +22,17 @@ import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
-public class GetElementDisplayed extends WebDriverHandler {
+public class GetElementDisplayed extends WebElementHandler {
 
-  private String id;
   private Response response;
 
   public GetElementDisplayed(DriverSessions sessions) {
     super(sessions);
   }
 
-  public void setId(String id) {
-    this.id = id;
-  }
-
   public ResultType call() throws Exception {
     response = newResponse();
-    RenderedWebElement element = (RenderedWebElement) getKnownElements().get(id);
+    RenderedWebElement element = (RenderedWebElement) getElement();
     response.setValue(element.isDisplayed());
 
     return ResultType.SUCCESS;
@@ -47,5 +40,10 @@ public class GetElementDisplayed extends WebDriverHandler {
 
   public Response getResponse() {
     return response;
+  }
+  
+  @Override
+  public String toString() {
+    return String.format("[is displayed: %s]", getElementAsString());
   }
 }

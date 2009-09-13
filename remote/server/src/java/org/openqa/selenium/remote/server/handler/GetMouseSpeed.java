@@ -15,8 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-// Copyright 2008 Google Inc.  All Rights Reserved.
-
 package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.remote.Response;
@@ -40,5 +38,10 @@ public class GetMouseSpeed extends WebDriverHandler {
 
   public Response getResponse() {
     return response;
+  }
+  
+  @Override
+  public String toString() {
+    return "[get mouse speed]";
   }
 }

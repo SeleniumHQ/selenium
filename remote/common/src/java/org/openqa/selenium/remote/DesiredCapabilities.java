@@ -113,7 +113,17 @@ public class DesiredCapabilities implements Capabilities {
     dc.setJavascriptEnabled(true);
     return dc;
   }
+
   
+  
+  @Override
+  public String toString() {
+    return String
+        .format(
+            "Capabilities [browserName=%s, javascriptEnabled=%s, platform=%s, version=%s]",
+            browserName, javascriptEnabled, platform, version);
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {

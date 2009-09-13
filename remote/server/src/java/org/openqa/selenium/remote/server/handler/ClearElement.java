@@ -32,10 +32,20 @@ public class ClearElement extends WebDriverHandler {
     this.elementId = elementId;
   }
 
-
   public ResultType call() throws Exception {
     getKnownElements().get(elementId).clear();
 
     return ResultType.SUCCESS;
+  }
+  
+  @Override
+  public String toString() {
+    String element = "unknown element";
+    try {
+      element = String.valueOf(getKnownElements().get(elementId));
+    } catch (RuntimeException e) {
+      // Be paranoid!
+    }
+    return String.format("[clear: %s %s]", elementId, element);
   }
 }

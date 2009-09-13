@@ -15,39 +15,36 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-// Copyright 2008 Google Inc.  All Rights Reserved.
-
 package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.RenderedWebElement;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
-public class GetElementLocation extends WebDriverHandler {
+public class GetElementLocation extends WebElementHandler {
 
   private Response response;
-  private String id;
 
   public GetElementLocation(DriverSessions sessions) {
     super(sessions);
   }
 
-  public void setId(String id) {
-    this.id = id;
-  }
-
   public ResultType call() throws Exception {
     response = newResponse();
 
-    WebElement element = getKnownElements().get(id);
-    response.setValue(((RenderedWebElement) element).getLocation());
+    RenderedWebElement element = (RenderedWebElement) getElement();
+    response.setValue(element.getLocation());
 
     return ResultType.SUCCESS;
   }
 
   public Response getResponse() {
     return response;
+  }
+  
+  @Override
+  public String toString() {
+    return String.format("[get location: %s]", getElementAsString());
   }
 }

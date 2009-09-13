@@ -15,8 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-// Copyright 2008 Google Inc.  All Rights Reserved.
-
 package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.remote.server.DriverSessions;
@@ -38,5 +36,10 @@ public class SwitchToWindow extends WebDriverHandler {
     getDriver().switchTo().window(name);
 
     return ResultType.SUCCESS;
+  }
+  
+  @Override
+  public String toString() {
+    return String.format("[switch to window: %s]", name);
   }
 }

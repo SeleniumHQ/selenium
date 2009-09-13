@@ -30,8 +30,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class FindChildElement extends WebDriverHandler implements JsonParametersAware {
-  private String id;
+public class FindChildElement extends WebElementHandler implements JsonParametersAware {
   private By by;
   private Response response;
 
@@ -48,14 +47,10 @@ public class FindChildElement extends WebDriverHandler implements JsonParameters
     by = new BySelector().pickFrom(method, selector);
   }
 
-  public void setId(String id) {
-    this.id = id;
-  }
-
   public ResultType call() throws Exception {
     response = newResponse();
 
-    WebElement element = getKnownElements().get(id).findElement(by);
+    WebElement element = getElement().findElement(by);
     String elementId = getKnownElements().add(element);
 
     response.setValue(Collections.singletonList(String.format("element/%s", elementId)));
@@ -65,5 +60,10 @@ public class FindChildElement extends WebDriverHandler implements JsonParameters
 
   public Response getResponse() {
     return response;
+  }
+  
+  @Override
+  public String toString() {
+    return String.format("[find child element: %s, %s", getElementAsString(), by);
   }
 }

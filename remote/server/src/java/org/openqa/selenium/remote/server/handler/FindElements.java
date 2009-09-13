@@ -67,4 +67,10 @@ public class FindElements extends WebDriverHandler implements JsonParametersAwar
   public Response getResponse() {
     return response;
   }
+  
+  @Override
+  public String toString() {
+    return String.format("[find elements: %s", by);
+  }
+
 }

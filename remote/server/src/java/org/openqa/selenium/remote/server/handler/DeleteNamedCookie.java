@@ -39,4 +39,9 @@ public class DeleteNamedCookie extends WebDriverHandler {
 
     return ResultType.SUCCESS;
   }
+  
+  @Override
+  public String toString() {
+    return String.format("[delete cookie: %s]", name);
+  }
 }

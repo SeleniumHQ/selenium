@@ -20,21 +20,19 @@ package org.openqa.selenium.remote.server.handler;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
-public class ClickElement extends WebDriverHandler {
-
-  private String elementId;
+public class ClickElement extends WebElementHandler {
 
   public ClickElement(DriverSessions sessions) {
     super(sessions);
   }
 
-  public void setId(String elementId) {
-    this.elementId = elementId;
-  }
-
-
   public ResultType call() throws Exception {
-    getKnownElements().get(elementId).click();
+    getElement().click();
     return ResultType.SUCCESS;
+  }
+  
+  @Override
+  public String toString() {
+    return String.format("[click: %s]", getElementAsString());
   }
 }

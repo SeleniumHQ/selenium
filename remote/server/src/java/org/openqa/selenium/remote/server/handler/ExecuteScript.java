@@ -39,7 +39,6 @@ public class ExecuteScript extends WebDriverHandler implements JsonParametersAwa
     super(sessions);
   }
 
-  @SuppressWarnings({"unchecked"})
   public void setJsonParameters(List<Object> allParameters) throws Exception {
     script = (String) allParameters.get(0);
 
@@ -99,5 +98,10 @@ public class ExecuteScript extends WebDriverHandler implements JsonParametersAwa
 
   public Response getResponse() {
     return response;
+  }
+  
+  @Override
+  public String toString() {
+    return String.format("[execute script: %s, %s]", script, args);
   }
 }

@@ -35,4 +35,9 @@ public class CloseWindow extends WebDriverHandler {
 
     return ResultType.SUCCESS;
   }
+  
+  @Override
+  public String toString() {
+    return "[close window]"; 
+  }
 }

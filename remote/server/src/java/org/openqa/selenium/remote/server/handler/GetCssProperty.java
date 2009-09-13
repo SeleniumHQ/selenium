@@ -15,8 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-// Copyright 2008 Google Inc.  All Rights Reserved.
-
 package org.openqa.selenium.remote.server.handler;
 
 import org.openqa.selenium.RenderedWebElement;
@@ -24,9 +22,8 @@ import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.rest.ResultType;
 
-public class GetCssProperty extends WebDriverHandler {
+public class GetCssProperty extends WebElementHandler {
   private String propertyName;
-  private String id;
   private Response response;
 
   public GetCssProperty(DriverSessions sessions) {
@@ -37,14 +34,10 @@ public class GetCssProperty extends WebDriverHandler {
     this.propertyName = propertyName;
   }
 
-  public void setId(String id) {
-    this.id = id;
-  }
-
   public ResultType call() throws Exception {
     response = newResponse();
 
-    RenderedWebElement element = (RenderedWebElement) getKnownElements().get(id);
+    RenderedWebElement element = (RenderedWebElement) getElement();
     response.setValue(element.getValueOfCssProperty(propertyName));
 
     return ResultType.SUCCESS;
@@ -52,5 +45,10 @@ public class GetCssProperty extends WebDriverHandler {
 
   public Response getResponse() {
     return response;
+  }
+  
+  @Override
+  public String toString() {
+    return String.format("[get value of css property: %s, %s]", getElementAsString(), propertyName);
   }
 }
