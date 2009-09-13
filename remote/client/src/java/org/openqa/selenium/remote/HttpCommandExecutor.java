@@ -103,8 +103,6 @@ public class HttpCommandExecutor implements CommandExecutor {
         .put("findElement", new CommandInfo("/session/:sessionId/:context/element", HttpVerb.POST));
     nameToUrl.put("findElements",
                   new CommandInfo("/session/:sessionId/:context/elements", HttpVerb.POST));
-    nameToUrl.put("getChildrenOfType", new CommandInfo(
-        "/session/:sessionId/:context/element/:id/children/:name", HttpVerb.POST));
     nameToUrl.put("getActiveElement", new CommandInfo("/session/:sessionId/:context/element/active", HttpVerb.POST));
 
     nameToUrl

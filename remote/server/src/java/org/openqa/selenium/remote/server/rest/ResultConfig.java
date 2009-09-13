@@ -140,7 +140,7 @@ public class ResultConfig {
     ResultType result;
 
     try {
-      logger.log("Executing: " + pathInfo);
+      logger.log(String.format("Executing: %s at URL: %s)", handler.toString(), pathInfo));
       result = handler.handle();
       addHandlerAttributesToRequest(request, handler);
       logger.log("Done: " + pathInfo);
