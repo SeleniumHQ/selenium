@@ -97,6 +97,26 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
       driver.findElement(By.id("linkId"));
     }
   }
+  
+  @Ignore(IE)
+  @JavascriptEnabled
+  public void testCanCallGetWindowHandlesAfterClosingAWindow() {
+    driver.get(xhtmlTestPage);
+
+    String currentHandle = driver.getWindowHandle();
+
+    driver.findElement(By.name("windowThree")).click();
+
+    driver.switchTo().window("result");
+
+    try {
+      driver.findElement(By.id("close")).click();
+      driver.getWindowHandles();
+      // If we make it this far, we're all good.
+    } finally {
+      driver.switchTo().window(currentHandle);
+    }
+  }
 
   public void testCanObtainAWindowHandle() {
     driver.get(xhtmlTestPage);
