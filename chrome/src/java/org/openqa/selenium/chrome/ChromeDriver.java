@@ -88,9 +88,10 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
       
       System.setProperty("webdriver.reap_profile", "false");
 
-      String[] flags = new String[2];
-      flags[0] = "--user-data-dir=" + wrapInQuotesIfWindows(profileDir.getCanonicalPath());
-      flags[1] = "--load-extension=" + wrapInQuotesIfWindows(extensionDir.getCanonicalPath());
+      String[] flags = {
+          "--user-data-dir=" + wrapInQuotesIfWindows(profileDir.getCanonicalPath()),
+          "--load-extension=" + wrapInQuotesIfWindows(extensionDir.getCanonicalPath())
+      };
       chromeBinary.start(flags);
     } catch (IOException e) {
       throw new WebDriverException(e);

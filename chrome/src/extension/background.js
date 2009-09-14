@@ -34,7 +34,7 @@ ChromeDriver.lastFrameIndexLookedUp = -1;
 ChromeDriver.hasHwnd = false;
 ChromeDriver.xmlHttpRequest = null;
 //TODO(danielwh): Get this from the initial URL
-ChromeDriver.xmlHttpRequestUrl = "http://localhost:9700/chromeCommandExecutor"
+ChromeDriver.xmlHttpRequestUrl = "http://127.0.0.1:9700/chromeCommandExecutor"
 ChromeDriver.requestSequenceNumber = 0;
 ChromeDriver.getUrlRequestSequenceNumber = 0;
 
@@ -107,8 +107,8 @@ chrome.extension.onConnect.addListener(function(port) {
       remainingTabs.push(ChromeDriver.tabs[tab]);
     }
     ChromeDriver.tabs = remainingTabs;
-    if (ChromeDriver.activePort.tab.id == port.tab.id ||
-        ChromeDriver.tabs.length == 0) {
+    if (ChromeDriver.tabs.length == 0 || ChromeDriver.activePort == null ||
+        ChromeDriver.activePort.tab.id == port.tab.id) {
       //If it is the active tab, perhaps we have followed a link,
       //so we should focus on it.
       //We have nothing better to focus on, anyway.
@@ -173,6 +173,7 @@ function sendResponseToParsedRequest(toSend, wait) {
     return;
   }
   ChromeDriver.isBlockedWaitingForResponse = false;
+  console.log("SENDING RESPOND TO PARSED REQUEST");
   sendResponseByXHR(toSend, wait);
   setToolstripsBusy(false);
 }
@@ -185,8 +186,10 @@ function handleXmlHttpRequestReadyStateChange() {
     if (this.status != 200) {
       console.log("Request state was 4 but status: " + this.status + ".  responseText: " + this.responseText);
     } else {
+      console.log("GOT XHR RESPONSE: " + this.responseText);
       if (this.responseText == "QUIT") {
         //We're only allowed to send a response if we're blocked waiting for one, so pretend
+        console.log("SENDING QUIT XHR");
         sendResponseByXHR("", false);
       } else {
         console.log("Got request to execute from XHR: " + this.responseText);
@@ -206,13 +209,6 @@ function parseRequest(request) {
     console.log("Already sent a request which hasn't been replied to yet.  Not parsing any more.");
     return;
   }
-  if (ChromeDriver.hasNoConnectionToPage && request.request != "url" &&
-      request.request != "getTitle" &&
-      request.request != "getElement" && request.request != "getElements") {
-    console.log("On bad page.  Not sending request.")
-    sendResponseByXHR("{statusCode: 500}");
-    return;
-  }
   ChromeDriver.isBlockedWaitingForResponse = true;
   setToolstripsBusy(true);
   
@@ -227,7 +223,8 @@ function parseRequest(request) {
     break;
   case "getWindowHandle":
     //TODO(danielwh): Get window's handle, not frame's
-    sendResponseToParsedRequest("{statusCode: 0, value: '" + ChromeDriver.activePort.name + "'}", false);
+    var handle = (ChromeDriver.activePort == null ? ChromeDriver.activePort.name : "");
+    sendResponseToParsedRequest("{statusCode: 0, value: '" + handle + "'}", false);
     break;
   case "getWindowHandles":
     sendResponseToParsedRequest(getWindowHandles(), false);
@@ -254,25 +251,26 @@ function parseRequest(request) {
       ChromeDriver.activePort.postMessage(wrapInjectEmbedIfNecessary(request));
     } catch (e) {
       console.log("Tried to send request without an active port.  Ditching request and responding with error.");
-      sendResponseToParsedRequest("{statusCode: 500}");
+      sendResponseToParsedRequest("{statusCode: 500, value: {message: 'Tried to send request without an active port.  Ditching request and responding with error.'}}");
     }
     break;
+  case "getCurrentUrl":
   case "getTitle":
-    if (ChromeDriver.hasNoConnectionToPage) {
-      console.log("On bad page, but asked for title, so sending empty string");
+    if (hasNoPage()) {
+      console.log("Not got a page, but asked for string, so sending empty string");
       sendResponseToParsedRequest("{statusCode: 0, value: ''}");
       break;
     }
     //Falling through, as if we do have a page, we want to treat this like a normal request
   case "getElement":
-    if (ChromeDriver.hasNoConnectionToPage) {
+    if (hasNoPage()) {
       console.log("Not got a page, but asked for element, so throwing NoSuchElementException");
       sendResponseToParsedRequest("{statusCode: 7, value: {message: 'Was not on a page, so could not find elements'}}");
       break;
     }
     //Falling through, as if we do have a page, we want to treat this like a normal request
   case "getElements":
-    if (ChromeDriver.hasNoConnectionToPage) {
+    if (hasNoPage()) {
       console.log("Not got a page, but asked for elements, so returning no elements");
       sendResponseToParsedRequest("{statusCode: 0, value: []}");
       break;
@@ -283,7 +281,7 @@ function parseRequest(request) {
       ChromeDriver.activePort.postMessage({request: request, sequenceNumber: ChromeDriver.requestSequenceNumber++});
     } catch (e) {
       console.log("Tried to send request without an active port.  Ditching request and responding with error.");
-      sendResponseToParsedRequest("{statusCode: 500}");
+      sendResponseToParsedRequest("{statusCode: 500, value: {message: 'Tried to send request without an active port.  Ditching request and responding with error.'}}");
     }
     break;
   }
@@ -633,4 +631,8 @@ function setActivePortByWindowName(handle) {
     }
   }
   sendResponseToParsedRequest("{statusCode: 3, value: {message: 'Could not find window to switch to by handle: " + handle + "'}}", false);
+}
+
+function hasNoPage() {
+  return (ChromeDriver.hasNoConnectionToPage || ChromeDriver.activePort == null || ChromeDriver.activeTabId == null);
 }
