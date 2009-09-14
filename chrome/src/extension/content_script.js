@@ -1047,23 +1047,64 @@ function findWhetherElementIsSelected(element) {
 
 /**
  * Gets the coordinates of the top-left corner of the element on the screen
+ * Heavily influenced by com.google.gwt.dom.client.DOMImplSafari,
+ * which is released under Apache 2
  * @return array: [x, y]
  */
-function getElementCoords(element) {
-  var x = y = 0;
-  do {
-    x += element.offsetLeft;
-    y += element.offsetTop;
-  } while (element = element.offsetParent);
-  if (frameElement) {
-    if (frameElement.offsetLeft) {
-      x += frameElement.offsetLeft;
-    }
-    if (frameElement.offsetTop) {
-      y += frameElement.offsetTop;
+function getElementCoords(elem) {
+  // Unattached elements and elements (or their ancestors) with style
+  // 'display: none' have no offset{Top,Left}.
+  if (elem.offsetTop == null || elem.offsetLeft == null) {
+    return 0;
+  }
+
+  var top = 0;
+  var left = 0;
+  var doc = elem.ownerDocument;
+  var curr = elem.parentNode;
+  if (curr) {
+    // This intentionally excludes body which has a null offsetParent.
+    while (curr.offsetParent) {
+      top -= curr.scrollTop;
+      left -= curr.scrollLeft;
+
+      // In RTL mode, offsetLeft is relative to the left edge of the
+      // scrollable area when scrolled all the way to the right, so we need
+      // to add back that difference.
+      if (getStyle(curr, 'direction') == 'rtl') {
+        left += (curr.scrollWidth - curr.clientWidth);
+      }
+
+      curr = curr.parentNode;
     }
   }
-  return [x, y];
+
+  while (elem) {
+    top += elem.offsetTop;
+    left += elem.offsetLeft;
+
+    if (getStyle(elem, 'position') == 'fixed') {
+      top += doc.body.scrollTop;
+      left += doc.body.scrollLeft;
+      return [left, top];
+    }
+
+
+    // Webkit bug: a top-level absolutely positioned element includes the
+    // body's offset position already.
+    var parent = elem.offsetParent;
+    if (parent && (parent.tagName == 'BODY') &&
+        (getStyle(elem, 'position') == 'absolute')) {
+      break;
+    }
+
+    elem = parent;
+  }
+  if (frameElement) {
+    top += frameElement.offsetTop;
+    left += frameElement.offsetLeft;
+  }
+  return [left, top];
 }
 
 /**
