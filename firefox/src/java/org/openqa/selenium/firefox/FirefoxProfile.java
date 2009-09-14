@@ -49,6 +49,7 @@ import javax.xml.xpath.XPathFactory;
 
 public class FirefoxProfile {
   private static final String EXTENSION_NAME = "fxdriver@googlecode.com";
+  private static final String EM_NAMESPACE_URI = "http://www.mozilla.org/2004/em-rdf#";
   private File profileDir;
   private File extensionsDir;
   private File userPrefs;
@@ -174,7 +175,9 @@ public class FirefoxProfile {
       xpath.setNamespaceContext(new NamespaceContext() {
         public String getNamespaceURI(String prefix) {
           if ("em".equals(prefix)) {
-            return "http://www.mozilla.org/2004/em-rdf#";
+            return EM_NAMESPACE_URI;
+          } else if ("RDF".equals(prefix)) {
+            return "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
           }
 
           return XMLConstants.NULL_NS_URI;
@@ -191,12 +194,19 @@ public class FirefoxProfile {
 
       Node idNode = (Node) xpath.compile("//em:id").evaluate(doc, XPathConstants.NODE);
 
+      String id = null;
       if (idNode == null) {
-        throw new WebDriverException(
-            "Cannot locate node containing extension id: " + installRdf.getAbsolutePath());
+        Node descriptionNode =
+            (Node) xpath.compile("//RDF:Description").evaluate(doc, XPathConstants.NODE);
+        Node idAttr = descriptionNode.getAttributes().getNamedItemNS(EM_NAMESPACE_URI, "id");
+        if (idAttr == null) {
+          throw new WebDriverException(
+              "Cannot locate node containing extension id: " + installRdf.getAbsolutePath());
+        }
+        id = idAttr.getNodeValue();
+      } else {
+        id = idNode.getTextContent();
       }
-
-      String id = idNode.getTextContent();
 
       if (id == null || "".equals(id.trim())) {
         throw new FileNotFoundException("Cannot install extension with ID: " + id);
