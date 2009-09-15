@@ -45,7 +45,7 @@ public class SeleniumServerUnitTest {
 		server = new SeleniumServer(configuration);
 
 		server.start();
-
+		
 		assertEquals("Jetty threads given is not correct.",
 				positiveJettyThreads, server.getJettyThreads());
 	}

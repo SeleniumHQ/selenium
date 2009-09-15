@@ -27,6 +27,7 @@ public class LoggingManager {
     private static Map<Handler, Level> originalLogLevels;
     private static Map<File, FileHandler> seleniumFileHandlers = new HashMap<File, FileHandler>();
     private static ShortTermMemoryHandler shortTermMemoryHandler;
+    private static PerSessionLogHandler perSessionLogHandler;
 
     
     public static synchronized Log configureLogging(RemoteControlConfiguration configuration, boolean debugMode) {
@@ -41,6 +42,7 @@ public class LoggingManager {
         resetLoggerToOriginalState();
         overrideSimpleFormatterWithTerseOneForConsoleHandler(currentLogger, debugMode);
         addInMemoryLogger(currentLogger, configuration);
+        addPerSessionLogger(currentLogger, configuration, debugMode);
         if (debugMode) {
             currentLogger.setLevel(Level.FINE);
         }
@@ -58,12 +60,28 @@ public class LoggingManager {
         return shortTermMemoryHandler;
     }
     
+    public static synchronized PerSessionLogHandler perSessionLogHandler() {
+        return perSessionLogHandler;
+    }
+    
     private static void addInMemoryLogger(Logger logger, RemoteControlConfiguration configuration) {
         shortTermMemoryHandler = new ShortTermMemoryHandler(
                 configuration.shortTermMemoryLoggerCapacity(), Level.INFO, new TerseFormatter(true));
         logger.addHandler(shortTermMemoryHandler);
     }
 
+    private static void addPerSessionLogger(Logger logger, 
+        RemoteControlConfiguration configuration, boolean debugMode) {
+        if (debugMode) {
+            perSessionLogHandler = new PerSessionLogHandler(configuration.shortTermMemoryLoggerCapacity(),
+                Level.FINE, new TerseFormatter(true));
+        } else {
+            perSessionLogHandler = new PerSessionLogHandler(configuration.shortTermMemoryLoggerCapacity(),
+                Level.INFO, new TerseFormatter(true));
+        }
+        logger.addHandler(perSessionLogHandler);
+    }
+    
     private static File addNewSeleniumFileHandler(Logger currentLogger, RemoteControlConfiguration configuration) {
         try {
             FileHandler fileHandler;
