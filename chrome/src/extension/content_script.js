@@ -1049,9 +1049,19 @@ function findWhetherElementIsSelected(element) {
  * Gets the coordinates of the top-left corner of the element on the screen
  * Heavily influenced by com.google.gwt.dom.client.DOMImplSafari,
  * which is released under Apache 2
+ * It's not actually correct...
  * @return array: [x, y]
  */
 function getElementCoords(elem) {
+  try {
+    if (elem.getBoundingClientRect) {
+      var rect = elem.getBoundingClientRect();
+      return [rect.left, rect.top];
+    }
+  } catch(e) {}
+  
+  //The below is ugly and NOT ACTUALLY RIGHT
+  
   // Unattached elements and elements (or their ancestors) with style
   // 'display: none' have no offset{Top,Left}.
   if (elem.offsetTop == null || elem.offsetLeft == null) {
