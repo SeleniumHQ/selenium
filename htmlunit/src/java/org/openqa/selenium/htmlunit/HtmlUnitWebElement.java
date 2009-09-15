@@ -586,16 +586,13 @@ public class HtmlUnitWebElement implements WebElement,
   public List<WebElement> findElementsByTagName(String name) {
     assertElementNotStale();
 
-    return findElementsByXPath(".//*[local-name()='" + name + "']");
+    List<HtmlElement> elements = element.getHtmlElementsByTagName(name);
+    ArrayList<WebElement> toReturn = new ArrayList<WebElement>(elements.size());
+    for (HtmlElement element : elements) {
+      toReturn.add(parent.newHtmlUnitWebElement(element));
+    }
 
-//      // TODO(simon.m.stewart): Update this once the next version of HtmlUnit is released
-//      NodeList elements = element.getElementsByTagName(name);
-//      ArrayList<WebElement> toReturn = new ArrayList<WebElement>(elements.getLength());
-//      for (int i = 0; i < elements.getLength(); i++) {
-//        toReturn.add(parent.newHtmlUnitWebElement((HtmlElement) elements.item(i)));
-//      }
-//
-//      return toReturn;
+    return toReturn;
   }
 
   private WebElement findParentForm() {
