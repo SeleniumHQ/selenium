@@ -1046,30 +1046,44 @@ function findWhetherElementIsSelected(element) {
 }
 
 /**
- * Gets the coordinates of the top-left corner of the element on the screen
+ * Gets the coordinates of the top-left corner of the element on the browser window
+ * (NOT the displayed portion, the WHOLE page)
  * Heavily influenced by com.google.gwt.dom.client.DOMImplSafari,
  * which is released under Apache 2
  * It's not actually correct...
  * @return array: [x, y]
  */
 function getElementCoords(elem) {
+  var left = 0;
+  var top = 0;
+  if (frameElement) {
+    left += frameElement.offsetLeft;
+    top += frameElement.offsetTop;
+  }
   try {
     if (elem.getBoundingClientRect) {
       var rect = elem.getBoundingClientRect();
-      return [rect.left, rect.top];
+      left += rect.left + ChromeDriverContentScript.currentDocument.body.scrollLeft;
+      top += rect.top + ChromeDriverContentScript.currentDocument.body.scrollTop;
+      return [left, top];
     }
-  } catch(e) {}
+  } catch(e) {
+    var left = 0;
+    var top = 0;
+    if (frameElement) {
+      left += frameElement.offsetLeft;
+      top += frameElement.offsetTop;
+    }
+  }
   
   //The below is ugly and NOT ACTUALLY RIGHT
   
   // Unattached elements and elements (or their ancestors) with style
   // 'display: none' have no offset{Top,Left}.
   if (elem.offsetTop == null || elem.offsetLeft == null) {
-    return 0;
+    return [left, top];
   }
 
-  var top = 0;
-  var left = 0;
   var doc = elem.ownerDocument;
   var curr = elem.parentNode;
   if (curr) {
@@ -1109,10 +1123,6 @@ function getElementCoords(elem) {
     }
 
     elem = parent;
-  }
-  if (frameElement) {
-    top += frameElement.offsetTop;
-    left += frameElement.offsetLeft;
   }
   return [left, top];
 }
