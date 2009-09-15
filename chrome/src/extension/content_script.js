@@ -899,6 +899,7 @@ function returnFromGetFrameNameFromIndexJavascriptInPage(e) {
 function injectEmbed() {
   ChromeDriverContentScript.injectedEmbedElement = ChromeDriverContentScript.currentDocument.createElement('embed');
   ChromeDriverContentScript.injectedEmbedElement.setAttribute("type", "application/x-chromedriver-reporter");
+  ChromeDriverContentScript.injectedEmbedElement.setAttribute("style", "width: 0; height: 0;");
   ChromeDriverContentScript.currentDocument.getElementsByTagName("body")[0].appendChild(ChromeDriverContentScript.injectedEmbedElement);
   //Give the embed time to render.  Hope that the followup doesn't count embeds or anything
   setTimeout(removeInjectedEmbed, 100);
