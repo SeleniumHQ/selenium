@@ -132,6 +132,32 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     assertThat(cookies.contains(cookie2), is(false));
     assertThat(cookies.contains(cookie3), is(false));
   }
+  
+  @Ignore(value = {IE}, reason = "Non-windows Chrome can't delete cookies, see crbug 14734")
+  public void testDeleteAllCookiesAcrossPaths() {
+    driver.get(simpleTestPage);
+    Cookie cookie1 = new Cookie("fish", "cod");
+    driver.manage().addCookie(cookie1);
+    
+    driver.get(childPage);
+    Cookie cookie2 = new Cookie("rodent", "hamster", "/common/child");
+    driver.manage().addCookie(cookie2);
+    
+    driver.get(grandchildPage);
+    Cookie cookie3 = new Cookie("dog", "dalmation", "/common/child/grandchild/");
+    driver.manage().addCookie(cookie3);
+    
+    Set<Cookie> cookies = driver.manage().getCookies();
+    assertEquals(3, cookies.size());
+    assertTrue(cookies.contains(cookie1));
+    assertTrue(cookies.contains(cookie2));
+    assertTrue(cookies.contains(cookie3));
+    driver.manage().deleteAllCookies();
+    driver.get(grandchildPage);
+
+    cookies = driver.manage().getCookies();
+    assertEquals(0, cookies.size());
+  }
 
   @Ignore(value = {IE}, reason = "Non-windows Chrome can't delete cookies, see crbug 14734")
   public void testDeleteCookie() {

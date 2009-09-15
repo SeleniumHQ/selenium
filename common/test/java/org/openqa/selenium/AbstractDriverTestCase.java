@@ -45,6 +45,8 @@ public class AbstractDriverTestCase extends TestCase implements NeedsDriver {
   protected String nestedPage;
   protected String richTextPage;
   protected String rectanglesPage;
+  protected String childPage;
+  protected String grandchildPage;
 
   public void setDriver(WebDriver driver) {
     this.driver = driver;
@@ -71,6 +73,8 @@ public class AbstractDriverTestCase extends TestCase implements NeedsDriver {
     nestedPage = appServer.whereIs("nestedElements.html");
     richTextPage = appServer.whereIs("rich_text.html");
     rectanglesPage = appServer.whereIs("rectangles.html");
+    childPage = appServer.whereIs("child/childPage.html");
+    grandchildPage = appServer.whereIs("child/grandchild/grandchildPage.html");
 
     String hostName = environment.getAppServer().getHostName();
     String alternateHostName = environment.getAppServer().getAlternateHostName();

@@ -246,7 +246,7 @@ function deleteCookie(cookieName) {
   for (var segment in fullpath) {
     var path = '';
     for (var i = 0; i < segment; ++i) {
-      path += fullpath[segment] + '/';
+      path += fullpath[i + 1] + '/';
     }
     //Delete cookie with trailing /
     ChromeDriverContentScript.currentDocument.cookie = cookieName + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/' + path;
