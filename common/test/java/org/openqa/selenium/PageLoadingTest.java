@@ -48,6 +48,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
   public void testShouldBeAbleToGetAFragmentOnTheCurrentPage() {
     driver.get(xhtmlTestPage);
     driver.get(xhtmlTestPage + "#text");
+    driver.findElement(By.id("id1"));
   }
 
   public void testShouldReturnWhenGettingAUrlThatDoesNotResolve() {

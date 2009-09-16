@@ -17,6 +17,9 @@ ChromeDriver.doFocusOnNextOpenedTab = true;
 
 ChromeDriver.urlBeingLoaded = null;
 
+ChromeDriver.currentUrl = null;
+ChromeDriver.isGettingUrlButOnlyChangingByHash = false;
+
 ChromeDriver.isClosingTab = false;
 
 ChromeDriver.hasSentResponseToThisPageLoading = false;
@@ -442,12 +445,14 @@ function resetActiveTabDetails() {
   ChromeDriver.doFocusOnNextOpenedTab = true;
   ChromeDriver.hasSentResponseToThisPageLoading = false;
   ChromeDriver.portToUseForFrameLookups = null;
+  ChromeDriver.currentUrl = null;
 }
 
 function setActiveTabDetails(tab) {
   ChromeDriver.activeTabId = tab.id;
   ChromeDriver.activeWindowId = tab.windowId;
   ChromeDriver.doFocusOnNextOpenedTab = false;
+  ChromeDriver.currentUrl = tab.url;
 }
 
 function switchToDefaultContent() {
@@ -547,15 +552,24 @@ function getFrameNameFromIndex(index) {
 function getUrl(url) {
   ChromeDriver.urlBeingLoaded = url;
   var tempActiveTagId = ChromeDriver.activeTabId;
-  resetActiveTabDetails();
+  var tempActivePort = ChromeDriver.activePort;
+  if (url.indexOf("#") > -1 && ChromeDriver.currentUrl != null &&
+      ChromeDriver.currentUrl.split("#")[0] == url.split("#")[0]) {
+    ChromeDriver.isGettingUrlButOnlyChangingByHash = true;
+  } else {
+    resetActiveTabDetails();
+  }
+  ChromeDriver.currentUrl = url;
   if (tempActiveTagId == null) {
     chrome.tabs.create({url: url, selected: true}, getUrlCallback);
   } else {
     ChromeDriver.activeTabId = tempActiveTagId;
-    chrome.tabs.remove(ChromeDriver.activeTabId);
-    chrome.tabs.create({url: url, selected: true}, getUrlCallback);
-    //.update is significantly faster, but reuses a port if we are only changing url by #foo, so we hang
-    //chrome.tabs.update(ChromeDriver.activeTabId, {url: url, selected: true}, getUrlCallback);
+    if (ChromeDriver.isGettingUrlButOnlyChangingByHash) {
+      chrome.tabs.update(ChromeDriver.activeTabId, {url: url, selected: true}, getUrlCallback);
+    } else {
+      chrome.tabs.remove(ChromeDriver.activeTabId);
+      chrome.tabs.create({url: url, selected: true}, getUrlCallback);
+    }
   }
 }
 
@@ -567,7 +581,9 @@ function getUrlCallback(tab) {
     getUrl(ChromeDriver.urlBeingLoaded);
     return;
   }
-  if (typeof(tab) == "undefined") {
+  if (tab == null) {
+    //chrome.tabs.update's callback doesn't pass a Tab argument,
+    //so we need to populate it ourselves
     chrome.tabs.get(ChromeDriver.activeTabId, getUrlCallback);
     return;
   }
@@ -581,6 +597,11 @@ function getUrlCallback(tab) {
       sendEmptyResponseWhenTabIsLoaded(tab);
     }
     setActiveTabDetails(tab);
+  }
+  if (ChromeDriver.isGettingUrlButOnlyChangingByHash) {
+    ChromeDriver.urlBeingLoaded = null;
+    sendResponseToParsedRequest("", false);
+    ChromeDriver.isGettingUrlButOnlyChangingByHash = false;
   }
 }
 
