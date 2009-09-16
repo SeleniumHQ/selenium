@@ -15,14 +15,11 @@
  *
  */
 
-// This file has been automatically generated via XSL
 package com.thoughtworks.selenium;
 
 /** The default implementation of the Selenium interface; <i>end users will primarily interact with this object.</i> */
 public class DefaultSelenium implements Selenium {
 
-	// This file has been automatically generated using XSL
-	// This part of the file is hard-coded in the XSL
 	protected CommandProcessor commandProcessor;
 	/** Uses a CommandBridgeClient, specifying a server host/port, a command to launch the browser, and a starting URL for the browser.
      * 
@@ -161,7 +158,6 @@ public class DefaultSelenium implements Selenium {
     }
 
 
-	// From here on, everything in this file has been auto-generated
 
 	public void click(String locator) {
 		commandProcessor.doCommand("click", new String[] {locator,});
@@ -301,6 +297,10 @@ public class DefaultSelenium implements Selenium {
 
 	public String getSpeed() {
 		return commandProcessor.getString("getSpeed", new String[] {});
+	}
+
+	public String getLog() {
+		return commandProcessor.getString("getLog", new String[] {});
 	}
 
 	public void check(String locator) {

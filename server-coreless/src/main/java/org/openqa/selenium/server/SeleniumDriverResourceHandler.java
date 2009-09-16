@@ -37,6 +37,8 @@ import org.openqa.selenium.server.browserlaunchers.InvalidBrowserExecutableExcep
 import org.openqa.selenium.server.commands.*;
 import org.openqa.selenium.server.htmlrunner.HTMLLauncher;
 import org.openqa.selenium.server.log.AntJettyLoggerBuildListener;
+import org.openqa.selenium.server.log.LoggingManager;
+import org.openqa.selenium.server.log.PerSessionLogHandler;
 
 import java.awt.*;
 import java.io.ByteArrayOutputStream;
@@ -101,7 +103,6 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
 
     @Override public void handle(String pathInContext, String pathParams, HttpRequest req, HttpResponse res) throws HttpException, IOException {
         try {
-            LOGGER.debug("Thread name: " + Thread.currentThread().getName());
             res.setField(HttpFields.__ContentType, "text/plain");
             setNoCacheHeaders(res);
 
@@ -119,6 +120,9 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
             boolean retrying = "true".equals(retry);
             boolean closing = "true".equals(closingParam);
 
+            if (sessionId != null) {
+                LoggingManager.perSessionLogHandler().setThreadToSessionMapping(Thread.currentThread().getId(), sessionId);
+            }
             LOGGER.debug("req: "+req);
             // If this is a browser requesting work for the first time...
             if (cmd != null) {
@@ -142,6 +146,8 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
                 }
             }
             throw e;
+        } finally {
+            LoggingManager.perSessionLogHandler().clearThreadToSessionMapping(Thread.currentThread().getId());
         }
     }
 
@@ -409,6 +415,13 @@ public class SeleniumDriverResourceHandler extends ResourceHandler {
         case testComplete:  
         	browserSessionFactory.endBrowserSession(sessionId, remoteControl.getConfiguration());
             results = "OK";
+            break;
+        case getLog:
+            try {
+                results = "OK," + LoggingManager.perSessionLogHandler().getLog(sessionId);
+            } catch (IOException ioex) {
+                results = "Failed to get RC logs for the session: " + sessionId + " exception message: " + ioex.getMessage();
+            }
             break;
         case shutDownSeleniumServer:
             results = "OK";

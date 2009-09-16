@@ -15,7 +15,6 @@
  *
  */
 
-// This file has been automatically generated via XSL
 package com.thoughtworks.selenium;
 /**
 Defines an object that runs Selenium commands.
@@ -314,6 +313,12 @@ See also setSpeed.
 @return the execution speed in milliseconds.
 */
 String getSpeed();
+
+/** Get RC logs associated with this session.
+
+@return  the remote control logs associated with this session
+*/
+String getLog();
 
 /** Check a toggle-button (checkbox/radio)
 @param locator an <a href="#locators">element locator</a>

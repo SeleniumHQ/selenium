@@ -16,8 +16,6 @@ limitations under the License.
 """
 __docformat__ = "restructuredtext en"
 
-# This file has been automatically generated via XSL
-
 import httplib
 import urllib
 import re
@@ -269,9 +267,6 @@ class selenium:
         return boolarr
     
     
-
-### From here on, everything's auto-generated from XML
-
 
     def click(self,locator):
         """
@@ -632,6 +627,13 @@ class selenium:
         
         """
         return self.get_string("getSpeed", [])
+
+    def get_log(self):
+        """
+        Get RC logs associated with current session.
+        
+        """
+        return self.get_string("getLog", [])
 
 
     def check(self,locator):

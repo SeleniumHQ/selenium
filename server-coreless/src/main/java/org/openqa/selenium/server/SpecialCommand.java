@@ -23,6 +23,7 @@ public enum SpecialCommand {
 	launchOnly,
 	slowResources,
 	open,
+	getLog,
 	nonSpecial;
 	
 	public static SpecialCommand getValue(final String command) {
