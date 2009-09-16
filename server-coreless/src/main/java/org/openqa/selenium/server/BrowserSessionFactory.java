@@ -6,9 +6,7 @@ import org.mortbay.log.LogFactory;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
 import org.openqa.selenium.server.browserlaunchers.InvalidBrowserExecutableException;
-import org.openqa.selenium.server.log.LoggingManager;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -210,11 +208,6 @@ public class BrowserSessionFactory {
                     availableSessions.add(sessionInfo);
                 }
             } finally {
-                try {
-                    LoggingManager.perSessionLogHandler().clearSessionLogRecords(sessionId);
-                } catch (IOException ex) {
-                    // ignore
-                }
                 if (ensureClean) {
                     // need to add this to the launcher API.
                     // sessionInfo.launcher.restoreOriginalSessionData();
@@ -228,11 +221,6 @@ public class BrowserSessionFactory {
                     availableSessions.remove(sessionInfo);
                     shutdownBrowserAndClearSessionData(sessionInfo);
                 } finally {
-                    try {
-                        LoggingManager.perSessionLogHandler().clearSessionLogRecords(sessionId);
-                    } catch (IOException e) {
-                        // ignore
-                    }
                     if (ensureClean) {
                         // sessionInfo.launcher.restoreOriginalSessionData();
                     }
@@ -364,10 +352,7 @@ public class BrowserSessionFactory {
         sessionInfo = new BrowserSessionInfo(sessionId, browserString, startURL, launcher, queueSet);
         SeleniumDriverResourceHandler.setLastSessionId(sessionId);
         LOGGER.info("Allocated session " + sessionId + " for " + startURL + ", launching...");
-                
-        LoggingManager.perSessionLogHandler().setThreadToSessionMapping(Thread.currentThread().getId(), sessionId);
-        LoggingManager.perSessionLogHandler().copyThreadTempLogsToSessionLogs(sessionId, Thread.currentThread().getId());
-        
+
         try {
             launcher.launchRemoteSession(startURL);
             queueSet.waitForLoad(configuration.getTimeoutInSeconds() * 1000l);
