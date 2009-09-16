@@ -537,10 +537,7 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
         }
 
         public void deleteAllCookies() {
-            Set<Cookie> cookies = getCookies();
-            for(Cookie c : cookies) {
-                deleteCookie(c);
-            }
+            sendMessage(WebDriverException.class, "deleteAllCookies");
         }
 
         public Speed getSpeed() {

@@ -627,6 +627,14 @@ FirefoxDriver.prototype.deleteCookie = function(respond, cookieString) {
     respond.send();
 };
 
+FirefoxDriver.prototype.deleteAllCookies = function(respond, cookieString) {
+    var cm = Utils.getService("@mozilla.org/cookiemanager;1", "nsICookieManager");
+    handleCookies(this.context, function(cookie) {
+        cm.remove(cookie.host, cookie.name, cookie.path, false);
+    });
+    respond.context = this.context;
+    respond.send();
+};
 
 FirefoxDriver.prototype.setMouseSpeed = function(respond, speed) {
     this.mouseSpeed = speed;
