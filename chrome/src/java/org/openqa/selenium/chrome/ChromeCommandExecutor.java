@@ -533,7 +533,16 @@ public class ChromeCommandExecutor {
           if (parameters[i] instanceof ChromeWebElement) {
             parsedParameter = ((ChromeWebElement)parameters[i]).getElementId().replace("element/", "");
           } else if (parameters[i] instanceof Cookie) {
-            parsedParameter = new JSONObject(parameters[i]).toString();
+            //This is not nice at all...
+            Cookie cookie = (Cookie)parameters[i];
+            Map<String, Object> cookieMap = new HashMap<String, Object>();
+            cookieMap.put("name", cookie.getName());
+            cookieMap.put("value", cookie.getValue());
+            cookieMap.put("domain", cookie.getDomain());
+            cookieMap.put("path", cookie.getPath());
+            cookieMap.put("secure", cookie.isSecure());
+            cookieMap.put("expiry", cookie.getExpiry());
+            parsedParameter = new JSONObject(cookieMap).toString();
           } else if (parameters[i].getClass().isArray()) {
             try {
               parsedParameter = new JSONArray(parameters[i]).toString();

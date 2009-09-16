@@ -243,6 +243,7 @@ function deleteCookie(cookieName) {
   var fullpath = ChromeDriverContentScript.currentDocument.location.pathname;
   fullpath = fullpath.split('/');
   fullpath.pop(); //Get rid of the file
+  //TODO(danielwh): Tidy up these loops and this repeated code
   for (var segment in fullpath) {
     var path = '';
     for (var i = 0; i < segment; ++i) {
@@ -252,6 +253,20 @@ function deleteCookie(cookieName) {
     ChromeDriverContentScript.currentDocument.cookie = cookieName + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/' + path;
     //Delete cookie without trailing /
     ChromeDriverContentScript.currentDocument.cookie = cookieName + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/' + path.substring(0, path.length - 1);
+    
+    var hostParts = ChromeDriverContentScript.currentDocument.location.hostname.split(".");
+    var domain = "";
+    for (var i = hostParts.length - 1; i >= 0; --i) {
+      domain = "." + hostParts[i] + domain;
+      //Delete cookie with trailing /
+      ChromeDriverContentScript.currentDocument.cookie = cookieName + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/' + path + ";domain=" + domain;
+      
+      ChromeDriverContentScript.currentDocument.cookie = cookieName + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/' + path + ";domain=" + domain;
+      //Delete cookie without trailing /
+      ChromeDriverContentScript.currentDocument.cookie = cookieName + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/' + path.substring(0, path.length - 1) + ";domain=" + domain;
+      
+      ChromeDriverContentScript.currentDocument.cookie = cookieName + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/' + path.substring(0, path.length - 1) + ";domain=" + domain.substring(1);
+    }
   }
   return {statusCode: 0};
 }
