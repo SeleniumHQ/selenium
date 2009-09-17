@@ -56,6 +56,7 @@ public class FirefoxProfile {
   private Preferences additionalPrefs = new Preferences();
   private int port;
   private boolean enableNativeEvents;
+  private boolean loadNoFocusLib;
 
   /**
    * Constructs a firefox profile from an existing, physical profile directory.
@@ -72,6 +73,7 @@ public class FirefoxProfile {
 
     port = FirefoxDriver.DEFAULT_PORT;
     enableNativeEvents = FirefoxDriver.DEFAULT_ENABLE_NATIVE_EVENTS;
+    loadNoFocusLib = false;
 
     if (!profileDir.exists()) {
       throw new WebDriverException(MessageFormat.format("Profile directory does not exist: {0}",
@@ -445,6 +447,26 @@ public class FirefoxProfile {
       this.enableNativeEvents = enableNativeEvents;
     }
 
+    /**
+     * Returns whether the no focus library should be loaded for Firefox
+     * profiles launched on Linux, even if native events are disabled.
+     *
+     * @return Whether the no focus library should always be loaded for Firefox
+     *     on Linux.
+     */
+    public boolean alwaysLoadNoFocusLib() {
+      return loadNoFocusLib;
+    }
+
+    /**
+     * Sets whether the no focus library should always be loaded on Linux.
+     *
+     * @param loadNoFocusLib Whether to always load the no focus library.
+     */
+    public void setAlwaysLoadNoFocusLib(boolean loadNoFocusLib) {
+      this.loadNoFocusLib = loadNoFocusLib;
+    }
+
   public boolean isRunning() {
         File macAndLinuxLockFile = new File(profileDir, ".parentlock");
         File windowsLockFile = new File(profileDir, "parent.lock");
@@ -469,6 +491,7 @@ public class FirefoxProfile {
       additionalPrefs.addTo(profile);
       profile.setPort(port);
       profile.setEnableNativeEvents(enableNativeEvents);
+      profile.setAlwaysLoadNoFocusLib(loadNoFocusLib);
       profile.updateUserPrefs();
 
       return profile;

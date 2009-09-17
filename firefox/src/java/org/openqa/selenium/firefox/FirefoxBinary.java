@@ -37,6 +37,8 @@ import java.util.Set;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class FirefoxBinary {
+    private static final String NO_FOCUS_LIBRARY_NAME = "x_ignore_nofocus.so";
+
     private final Map<String, String> extraEnv = new HashMap<String, String>();
     private final Executable executable;
     private Process process;
@@ -55,13 +57,14 @@ public class FirefoxBinary {
     protected boolean isOnLinux() {
       return Platform.getCurrent().is(Platform.UNIX);
     }
-    
+
     public void startProfile(FirefoxProfile profile, String... commandLineFlags) throws IOException {
       String profileAbsPath = profile.getProfileDir().getAbsolutePath();
       setEnvironmentProperty("XRE_PROFILE_PATH", profileAbsPath);
       setEnvironmentProperty("MOZ_NO_REMOTE", "1");
 
-      if (isOnLinux() && profile.enableNativeEvents()) {
+      if (isOnLinux()
+          && (profile.enableNativeEvents() || profile.alwaysLoadNoFocusLib())) {
         modifyLinkLibraryPath(profile);
       }
 
@@ -103,14 +106,13 @@ public class FirefoxBinary {
   }
 
   protected void modifyLinkLibraryPath(FirefoxProfile profile) {
-    String noFocusSoName = "x_ignore_nofocus.so";
     // Extract x_ignore_nofocus.so from x86, amd64 directories inside
     // the jar into a real place in the filesystem and change LD_LIBRARY_PATH
     // to reflect that.
 
     String existingLdLibPath = System.getenv("LD_LIBRARY_PATH");
     // The returned new ld lib path is terminated with ':'
-    String newLdLibPath = extractAndCheck(profile, noFocusSoName, "x86", "amd64");
+    String newLdLibPath = extractAndCheck(profile, NO_FOCUS_LIBRARY_NAME, "x86", "amd64");
     if (existingLdLibPath != null && !existingLdLibPath.equals("")) {
       newLdLibPath += existingLdLibPath;
     }
@@ -118,7 +120,7 @@ public class FirefoxBinary {
     setEnvironmentProperty("LD_LIBRARY_PATH", newLdLibPath);
     // Set LD_PRELOAD to x_ignore_nofocus.so - this will be taken automagically
     // from the LD_LIBRARY_PATH
-    setEnvironmentProperty("LD_PRELOAD", noFocusSoName);
+    setEnvironmentProperty("LD_PRELOAD", NO_FOCUS_LIBRARY_NAME);
   }
 
   protected String extractAndCheck(FirefoxProfile profile, String noFocusSoName,
