@@ -31,6 +31,8 @@ ChromeDriver.restOfCurrentFramePath = [];
 ChromeDriver.portToUseForFrameLookups = null;
 ChromeDriver.lastFrameIndexLookedUp = -1;
 
+ChromeDriver.lastRequestToBeSentWhichHasntBeenAnsweredYet = null;
+
 //Whether the plugin has the OS-specific window handle for the active tab
 //Called HWND rather than window handle to avoid confusion with the other
 //use of window handle to mean 'name of window'
@@ -116,6 +118,15 @@ chrome.extension.onConnect.addListener(function(port) {
       //so we should focus on it.
       //We have nothing better to focus on, anyway.
       resetActiveTabDetails();
+      
+      //Re-parse the last request we sent if we didn't get a response,
+      //because we ain't seeing a response any time soon
+      if (ChromeDriver.lastRequestToBeSentWhichHasntBeenAnsweredYet != null) {
+        ChromeDriver.isBlockedWaitingForResponse = true;
+        var request = ChromeDriver.lastRequestToBeSentWhichHasntBeenAnsweredYet;
+        ChromeDriver.lastRequestToBeSentWhichHasntBeenAnsweredYet = null;
+        parseRequest(request);
+      }
     }
     if (ChromeDriver.isClosingTab) {
       //We are actively closing the tab, and expect a response to this
@@ -251,7 +262,7 @@ function parseRequest(request) {
     //Falling through, as native events are handled the same
   case "sendElementKeys":
     try {
-      ChromeDriver.activePort.postMessage(wrapInjectEmbedIfNecessary(request));
+      sendMessageOnActivePortAndAlsoKeepTrackOfIt(wrapInjectEmbedIfNecessary(request));
     } catch (e) {
       console.log("Tried to send request without an active port.  Ditching request and responding with error.");
       sendResponseToParsedRequest("{statusCode: 500, value: {message: 'Tried to send request without an active port.  Ditching request and responding with error.'}}");
@@ -281,13 +292,18 @@ function parseRequest(request) {
     //Falling through, as if we do have a page, we want to treat this like a normal request
   default:
     try {
-      ChromeDriver.activePort.postMessage({request: request, sequenceNumber: ChromeDriver.requestSequenceNumber++});
+      sendMessageOnActivePortAndAlsoKeepTrackOfIt({request: request, sequenceNumber: ChromeDriver.requestSequenceNumber++});
     } catch (e) {
       console.log("Tried to send request without an active port.  Ditching request and responding with error.");
       sendResponseToParsedRequest("{statusCode: 500, value: {message: 'Tried to send request without an active port.  Ditching request and responding with error.'}}");
     }
     break;
   }
+}
+
+function sendMessageOnActivePortAndAlsoKeepTrackOfIt(message) {
+  ChromeDriver.lastRequestToBeSentWhichHasntBeenAnsweredYet = message;
+  ChromeDriver.activePort.postMessage(message);
 }
 
 /**
@@ -307,6 +323,7 @@ function parsePortMessage(message) {
     console.log("Got invalid response from the content script.");
     return;
   }
+  ChromeDriver.lastRequestToBeSentWhichHasntBeenAnsweredYet = null;
   var toSend = "";
   switch (message.response.value.statusCode) {
   //Error codes are loosely based on native exception codes, see common/src/cpp/webdriver-interactions/errorcodes.h
