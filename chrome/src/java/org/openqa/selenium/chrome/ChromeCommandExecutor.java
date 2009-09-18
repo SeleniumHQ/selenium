@@ -296,9 +296,12 @@ public class ChromeCommandExecutor {
         case 99:
           throw new WebDriverException("An error occured when sending a native event");
         case 500:
-          throw new FatalChromeException("An error occured due to the internals of Chrome. " +
-              "This does not mean your test failed. " +
-              "Try running your test again in isolation.");
+          if (message.equals("")) {
+            message = "An error occured due to the internals of Chrome. " +
+            "This does not mean your test failed. " +
+            "Try running your test again in isolation.";
+          }
+          throw new FatalChromeException(message);
         }
         throw new WebDriverException("An error occured in the page");
       }
