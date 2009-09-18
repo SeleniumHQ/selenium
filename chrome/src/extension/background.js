@@ -122,7 +122,7 @@ chrome.extension.onConnect.addListener(function(port) {
       //Re-parse the last request we sent if we didn't get a response,
       //because we ain't seeing a response any time soon
       if (ChromeDriver.lastRequestToBeSentWhichHasntBeenAnsweredYet != null) {
-        ChromeDriver.isBlockedWaitingForResponse = true;
+        ChromeDriver.isBlockedWaitingForResponse = false;
         var request = ChromeDriver.lastRequestToBeSentWhichHasntBeenAnsweredYet;
         ChromeDriver.lastRequestToBeSentWhichHasntBeenAnsweredYet = null;
         parseRequest(request);
