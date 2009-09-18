@@ -240,7 +240,22 @@ function deleteAllCookies() {
  * @param cookieName name of the cookie to delete
  */
 function deleteCookie(cookieName) {
-  var fullpath = ChromeDriverContentScript.currentDocument.location.pathname;
+  //It's possible we're trying to delete cookies within iframes.
+  //iframe stuff is unsupported in Chrome at the moment (track crbug.com/20773)
+  //But for the iframe to be loaded and have cookies, it must be of same origin,
+  //so we'll try deleting the cookie as if it was on this page anyway...
+  //(Yes, this is a hack)
+  //TODO(danielwh): Remove the cookieDocument stuff when Chrome fix frame support
+  try {
+    var fullpath = ChromeDriverContentScript.currentDocument.location.pathname;
+    var cookieDocument = ChromeDriverContentScript.currentDocument;
+  } catch (e) {
+    console.log("Falling back on non-iframe document to delete cookies");
+    var cookieDocument = document;
+    var fullpath = cookieDocument.location.pathname;
+  }
+  var hostParts = cookieDocument.location.hostname.split(".");
+  
   fullpath = fullpath.split('/');
   fullpath.pop(); //Get rid of the file
   //TODO(danielwh): Tidy up these loops and this repeated code
@@ -250,22 +265,21 @@ function deleteCookie(cookieName) {
       path += fullpath[i + 1] + '/';
     }
     //Delete cookie with trailing /
-    ChromeDriverContentScript.currentDocument.cookie = cookieName + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/' + path;
+    cookieDocument.cookie = cookieName + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/' + path;
     //Delete cookie without trailing /
-    ChromeDriverContentScript.currentDocument.cookie = cookieName + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/' + path.substring(0, path.length - 1);
+    cookieDocument.cookie = cookieName + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/' + path.substring(0, path.length - 1);
     
-    var hostParts = ChromeDriverContentScript.currentDocument.location.hostname.split(".");
     var domain = "";
     for (var i = hostParts.length - 1; i >= 0; --i) {
       domain = "." + hostParts[i] + domain;
       //Delete cookie with trailing /
-      ChromeDriverContentScript.currentDocument.cookie = cookieName + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/' + path + ";domain=" + domain;
+      cookieDocument.cookie = cookieName + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/' + path + ";domain=" + domain;
       
-      ChromeDriverContentScript.currentDocument.cookie = cookieName + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/' + path + ";domain=" + domain;
+      cookieDocument.cookie = cookieName + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/' + path + ";domain=" + domain;
       //Delete cookie without trailing /
-      ChromeDriverContentScript.currentDocument.cookie = cookieName + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/' + path.substring(0, path.length - 1) + ";domain=" + domain;
+      cookieDocument.cookie = cookieName + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/' + path.substring(0, path.length - 1) + ";domain=" + domain;
       
-      ChromeDriverContentScript.currentDocument.cookie = cookieName + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/' + path.substring(0, path.length - 1) + ";domain=" + domain.substring(1);
+      cookieDocument.cookie = cookieName + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/' + path.substring(0, path.length - 1) + ";domain=" + domain.substring(1);
     }
   }
   return {statusCode: 0};
@@ -290,7 +304,19 @@ function getCookies() {
  * key=value strings
  */
 function getAllCookiesAsStrings() {
-  var cookieStrings = ChromeDriverContentScript.currentDocument.cookie.split('; ');
+  //It's possible we're trying to delete cookies within iframes.
+  //iframe stuff is unsupported in Chrome at the moment (track crbug.com/20773)
+  //But for the iframe to be loaded and have cookies, it must be of same origin,
+  //so we'll try deleting the cookie as if it was on this page anyway...
+  //(Yes, this is a hack)
+  //TODO(danielwh): Remove the cookieDocument stuff when Chrome fix frame support
+  var cookieDocument = ChromeDriverContentScript.currentDocument;
+  try {
+    var tempFullpath = ChromeDriverContentScript.currentDocument.location.pathname;
+  } catch (e) {
+    cookieDocument = document;
+  }
+  var cookieStrings = cookieDocument.cookie.split('; ');
   var cookies = [];
   for (var i = 0; i < cookieStrings.length; ++i) {
     if (cookieStrings[i] == '') {
@@ -306,8 +332,22 @@ function getAllCookiesAsStrings() {
  * @param cookie org.openqa.selenium.Cookie to add
  */
 function setCookie(cookie) {
-  var currLocation = ChromeDriverContentScript.currentDocument.location;
-  var currDomain = currLocation.host;
+  //It's possible we're trying to delete cookies within iframes.
+  //iframe stuff is unsupported in Chrome at the moment (track crbug.com/20773)
+  //But for the iframe to be loaded and have cookies, it must be of same origin,
+  //so we'll try deleting the cookie as if it was on this page anyway...
+  //(Yes, this is a hack)
+  //TODO(danielwh): Remove the cookieDocument stuff when Chrome fix frame support
+  try {
+    var currLocation = ChromeDriverContentScript.currentDocument.location;
+    var currDomain = currLocation.host;
+    var cookieDocument = ChromeDriverContentScript.currentDocument;
+  } catch (e) {
+    cookieDocument = document;
+    var currLocation = ChromeDriverContentScript.currentDocument.location;
+    var currDomain = currLocation.host;
+  }
+  
   if (currLocation.port != 80) { currDomain += ":" + currLocation.port; }
   if (cookie.domain != null && cookie.domain != undefined &&
       currDomain.indexOf(cookie.domain) == -1) {
@@ -318,7 +358,7 @@ function setCookie(cookie) {
     return {statusCode: 2, value: {
             message: "You may only set cookies on html documents"}};
   } else {
-    ChromeDriverContentScript.currentDocument.cookie = cookie.name + '=' + escape(cookie.value) +
+    cookieDocument.cookie = cookie.name + '=' + escape(cookie.value) +
         ((cookie.expiry == null || cookie.expiry == undefined) ?
             '' : ';expires=' + (new Date(cookie.expiry.time)).toGMTString()) +
         ((cookie.path == null || cookie.path == undefined) ?
