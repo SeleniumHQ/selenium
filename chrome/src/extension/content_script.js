@@ -589,6 +589,7 @@ function sendElementKeys(element, keys, elementId) {
   } catch (e) {
     return e;
   }
+  ChromeDriverContentScript.currentDocument.activeElement.blur();
   element.focus();
   return {statusCode: "no-op", keys: keys, elementId: elementId};
 }
