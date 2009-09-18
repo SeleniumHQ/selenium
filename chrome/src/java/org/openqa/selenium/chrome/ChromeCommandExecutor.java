@@ -89,6 +89,7 @@ public class ChromeCommandExecutor {
     nameToJson.put("isElementSelected", new JsonCommand("{request: 'isElementSelected', elementId: ?elementId}"));
     nameToJson.put("setElementSelected", new JsonCommand("{request: 'setElementSelected', elementId: ?elementId}"));
     
+    nameToJson.put("switchToActiveElement", new JsonCommand("{request: 'switchToActiveElement'}"));
     nameToJson.put("switchToFrameByIndex", new JsonCommand("{request: 'switchToFrame', using: {index: ?index}}"));
     nameToJson.put("switchToFrameByName", new JsonCommand("{request: 'switchToFrame', using: {name: ?name}}"));
     nameToJson.put("switchToDefaultContent", new JsonCommand("{request: 'switchToDefaultContent'}"));

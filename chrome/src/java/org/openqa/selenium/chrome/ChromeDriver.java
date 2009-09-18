@@ -387,7 +387,7 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
   
   private class ChromeTargetLocator implements TargetLocator {
     public WebElement activeElement() {
-      throw new UnsupportedOperationException("Chrome does not support active element switching yet");
+      return getElementFrom(execute("switchToActiveElement"));
     }
 
     public WebDriver defaultContent() {

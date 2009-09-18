@@ -197,6 +197,11 @@ function parsePortMessage(message) {
   case "setElementSelected":
     response.value = selectElement(element);
     break;
+  case "switchToActiveElement":
+    ChromeDriverContentScript.internalElementArray.push(ChromeDriverContentScript.currentDocument.activeElement);
+    response.value = {statusCode: 0, value: ["element/" + (ChromeDriverContentScript.internalElementArray.length - 1)]};
+    response.wait = false;
+    break;
   case "switchToNamedIFrameIfOneExists":
     response.value = switchToNamedIFrameIfOneExists(message.request.name);
     response.wait = false;

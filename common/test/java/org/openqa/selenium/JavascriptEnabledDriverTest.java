@@ -23,7 +23,6 @@ import org.hamcrest.Matchers;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.Is.is;
 import static org.junit.matchers.JUnitMatchers.either;
-import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.CHROME_NON_WINDOWS;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.IE;
@@ -179,7 +178,6 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     assertEquals("Clicked", element.getValue());
   }
 
-  @Ignore(CHROME)
   @JavascriptEnabled
   public void testShouldBeAbleToSwitchToFocusedElement() {
     driver.get(javascriptPage);
@@ -190,7 +188,6 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
     assertThat(element.getAttribute("id"), is("theworks"));
   }
 
-  @Ignore(CHROME)
   @JavascriptEnabled
   public void testIfNoElementHasFocusTheActiveElementIsTheBody() {
     driver.get(simpleTestPage);
