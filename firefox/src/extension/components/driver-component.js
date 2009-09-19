@@ -1,20 +1,20 @@
 /*
-Copyright 2007-2009 WebDriver committers
-Copyright 2007-2009 Google Inc.
-Portions copyright 2007 ThoughtWorks, Inc
+ Copyright 2007-2009 WebDriver committers
+ Copyright 2007-2009 Google Inc.
+ Portions copyright 2007 ThoughtWorks, Inc
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+ http://www.apache.org/licenses/LICENSE-2.0
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ */
 
 // constants
 const nsISupports = Components.interfaces.nsISupports;
@@ -26,84 +26,93 @@ const CONTRACT_ID = "@googlecode.com/webdriver/fxdriver;1";
 // Its copyrights belong to its original author.
 
 var ExternalScripts = [
-        "context.js",
-        "firefoxDriver.js",
-        "json2.js",
-        "socketListener.js",
-        "utils.js",
-        "webdriverserver.js",
-        "webLoadingListener.js",
-        "wrappedElement.js",
-        "screenshooter.js"
-        ];
+  "context.js",
+  "firefoxDriver.js",
+  "json2.js",
+  "socketListener.js",
+  "utils.js",
+  "webdriverserver.js",
+  "webLoadingListener.js",
+  "wrappedElement.js",
+  "screenshooter.js"
+];
+
 
 (function() {
-    var self;
-    var fileProtocolHandler = Components.classes['@mozilla.org/network/protocol;1?name=file'].createInstance(Components.interfaces.nsIFileProtocolHandler);
-    self = __LOCATION__;
+  var self;
+  var fileProtocolHandler = Components.
+      classes['@mozilla.org/network/protocol;1?name=file'].
+      createInstance(Components.interfaces.nsIFileProtocolHandler);
+  self = __LOCATION__;
 
-    var parent = self.parent;
-    // the directory this file is in
-    var loader = Components.classes['@mozilla.org/moz/jssubscript-loader;1'].createInstance(Components.interfaces.mozIJSSubScriptLoader);
+  var parent = self.parent;
+  // the directory this file is in
+  var loader = Components.classes['@mozilla.org/moz/jssubscript-loader;1'].
+      createInstance(Components.interfaces.mozIJSSubScriptLoader);
 
-    for (var index in ExternalScripts) {
-        var child = parent.clone();
-        child.append(ExternalScripts[index]);
-        // child is a nsILocalFile of the file we want to load
-        var childname = fileProtocolHandler.getURLSpecFromFile(child);
-        loader.loadSubScript(childname);
-    }
+  for (var index in ExternalScripts) {
+    var child = parent.clone();
+    child.append(ExternalScripts[index]);
+    // child is a nsILocalFile of the file we want to load
+    var childname = fileProtocolHandler.getURLSpecFromFile(child);
+    loader.loadSubScript(childname);
+  }
 })();
 
 
-// This code has been derived from the example code at http://developer-stage.mozilla.org/en/docs/How_to_Build_an_XPCOM_Component_in_Javascript
+// This code has been derived from the example code at
+// http://developer-stage.mozilla.org/en/docs/How_to_Build_an_XPCOM_Component_in_Javascript
 // Its copyrights belong to the original author
 
 var ServerFactory = {
-    createInstance: function (aOuter, aIID) {
-        if (aOuter != null)
-            throw Components.results.NS_ERROR_NO_AGGREGATION;
-        if (!this.server)
-            this.server = new WebDriverServer();
-        return (this.server).QueryInterface(aIID);
-    }
+  createInstance: function (aOuter, aIID) {
+    if (aOuter != null)
+      throw Components.results.NS_ERROR_NO_AGGREGATION;
+    if (!this.server)
+      this.server = new WebDriverServer();
+    return (this.server).QueryInterface(aIID);
+  }
 };
+
 
 //module definition (xpcom registration)
 var ServerModule = {
-    _firstTime: true,
+  _firstTime: true,
 
-    registerSelf: function(aCompMgr, aFileSpec, aLocation, aType) {
-        if (this._firstTime) {
-            this._firstTime = false;
-            throw Components.results.NS_ERROR_FACTORY_REGISTER_AGAIN;
-        }
-        ;
-        aCompMgr = aCompMgr.QueryInterface(Components.interfaces.nsIComponentRegistrar);
-        aCompMgr.registerFactoryLocation(CLASS_ID, CLASS_NAME, CONTRACT_ID, aFileSpec, aLocation, aType);
-    },
-
-    unregisterSelf: function(aCompMgr, aLocation, aType) {
-        aCompMgr = aCompMgr.QueryInterface(Components.interfaces.nsIComponentRegistrar);
-        aCompMgr.unregisterFactoryLocation(CLASS_ID, aLocation);
-    },
-
-    getClassObject: function(aCompMgr, aCID, aIID) {
-        if (!aIID.equals(Components.interfaces.nsIFactory))
-            throw Components.results.NS_ERROR_NOT_IMPLEMENTED;
-
-        if (aCID.equals(CLASS_ID))
-            return ServerFactory;
-
-        throw Components.results.NS_ERROR_NO_INTERFACE;
-    },
-
-    canUnload: function(aCompMgr) {
-        return true;
+  registerSelf: function(aCompMgr, aFileSpec, aLocation, aType) {
+    if (this._firstTime) {
+      this._firstTime = false;
+      throw Components.results.NS_ERROR_FACTORY_REGISTER_AGAIN;
     }
+    aCompMgr =
+        aCompMgr.QueryInterface(Components.interfaces.nsIComponentRegistrar);
+    aCompMgr.registerFactoryLocation(
+        CLASS_ID, CLASS_NAME, CONTRACT_ID, aFileSpec, aLocation, aType);
+  },
+
+  unregisterSelf: function(aCompMgr, aLocation, aType) {
+    aCompMgr =
+        aCompMgr.QueryInterface(Components.interfaces.nsIComponentRegistrar);
+    aCompMgr.unregisterFactoryLocation(CLASS_ID, aLocation);
+  },
+
+  getClassObject: function(aCompMgr, aCID, aIID) {
+    if (!aIID.equals(Components.interfaces.nsIFactory))
+      throw Components.results.NS_ERROR_NOT_IMPLEMENTED;
+
+    if (aCID.equals(CLASS_ID))
+      return ServerFactory;
+
+    throw Components.results.NS_ERROR_NO_INTERFACE;
+  },
+
+  canUnload: function(aCompMgr) {
+    return true;
+  }
 };
+
 
 //module initialization
 function NSGetModule(aCompMgr, aFileSpec) {
-    return ServerModule;
+  return ServerModule;
 }

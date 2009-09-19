@@ -1,60 +1,70 @@
 /*
-Copyright 2007-2009 WebDriver committers
-Copyright 2007-2009 Google Inc.
-Portions copyright 2007 ThoughtWorks, Inc
+ Copyright 2007-2009 WebDriver committers
+ Copyright 2007-2009 Google Inc.
+ Portions copyright 2007 ThoughtWorks, Inc
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+ http://www.apache.org/licenses/LICENSE-2.0
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ */
 
-function StaleElementError() {};
+function StaleElementError() {
+}
+
 
 function Utils() {
 }
 
+
 Utils.getUniqueId = function() {
   if (!Utils._generator) {
-    Utils._generator = Utils.getService("@mozilla.org/uuid-generator;1", "nsIUUIDGenerator");
+    Utils._generator =
+    Utils.getService("@mozilla.org/uuid-generator;1", "nsIUUIDGenerator");
   }
   return Utils._generator.generateUUID().toString();
 };
 
+
 Utils.newInstance = function(className, interfaceName) {
-    var clazz = Components.classes[className];
+  var clazz = Components.classes[className];
 
-    if (!clazz)
-      return undefined;
+  if (!clazz)
+    return undefined;
 
-    var iface = Components.interfaces[interfaceName];
-    return clazz.createInstance(iface);
+  var iface = Components.interfaces[interfaceName];
+  return clazz.createInstance(iface);
 };
+
 
 Utils.getService = function(className, serviceName) {
-    var clazz = Components.classes[className];
-    if (clazz == undefined) {
-        throw new Exception();
-    }
+  var clazz = Components.classes[className];
+  if (clazz == undefined) {
+    throw new Exception();
+  }
 
-    return clazz.getService(Components.interfaces[serviceName]);
+  return clazz.getService(Components.interfaces[serviceName]);
 };
+
 
 Utils.getServer = function() {
-    var handle = Utils.newInstance("@googlecode.com/webdriver/fxdriver;1", "nsISupports");
-    return handle.wrappedJSObject;
+  var handle =
+      Utils.newInstance("@googlecode.com/webdriver/fxdriver;1", "nsISupports");
+  return handle.wrappedJSObject;
 };
 
+
 Utils.getBrowser = function(context) {
-    return context.fxbrowser;
+  return context.fxbrowser;
 };
+
 
 Utils.getDocument = function(context) {
   if (context.frame) {
@@ -63,6 +73,7 @@ Utils.getDocument = function(context) {
   return context.fxbrowser.contentDocument;
 };
 
+
 Utils.getActiveElement = function(context) {
   var doc = Utils.getDocument(context);
 
@@ -70,7 +81,8 @@ Utils.getActiveElement = function(context) {
   if (doc["activeElement"]) {
     element = doc.activeElement;
   } else {
-    var commandDispatcher = Utils.getBrowser(context).ownerDocument.commandDispatcher;
+    var commandDispatcher = Utils.getBrowser(context).ownerDocument.
+        commandDispatcher;
 
     doc = Utils.getDocument(context);
     element = commandDispatcher.focusedElement;
@@ -87,64 +99,67 @@ Utils.getActiveElement = function(context) {
   return element;
 };
 
+
 function getTextFromNode(node, toReturn, textSoFar) {
-    if (node['tagName'] && node.tagName == "SCRIPT") {
-        return [toReturn, textSoFar];
-    }
-    var children = node.childNodes;
-
-    var bits;
-    for (var i = 0; i < children.length; i++) {
-        var child = children[i];
-
-        // Do we need to collapse the text so far?
-        if (child["tagName"] && child.tagName == "PRE") {
-            toReturn += collapseWhitespace(textSoFar);
-            textSoFar = "";
-            bits = getTextFromNode(child, toReturn, "", true);
-            toReturn += bits[1];
-            continue;
-        }
-
-        // Or is this just plain text?
-        if (child.nodeName == "#text") {
-            if (Utils.isDisplayed(child)) {
-                var textToAdd = child.nodeValue;
-                textToAdd = textToAdd.replace(new RegExp(String.fromCharCode(160), "gm"), " ");
-                textSoFar += textToAdd;
-            }
-            continue;
-        }
-
-        // Treat as another child node.
-        bits = getTextFromNode(child, toReturn, textSoFar, false);
-        toReturn = bits[0];
-        textSoFar = bits[1];
-    }
-
-    if (isBlockLevel(node)) {
-        if (node["tagName"] && node.tagName != "PRE") {
-            toReturn += collapseWhitespace(textSoFar) + "\n";
-            textSoFar = "";
-        } else {
-            toReturn += "\n";
-        }
-    }
+  if (node['tagName'] && node.tagName == "SCRIPT") {
     return [toReturn, textSoFar];
+  }
+  var children = node.childNodes;
+
+  var bits;
+  for (var i = 0; i < children.length; i++) {
+    var child = children[i];
+
+    // Do we need to collapse the text so far?
+    if (child["tagName"] && child.tagName == "PRE") {
+      toReturn += collapseWhitespace(textSoFar);
+      textSoFar = "";
+      bits = getTextFromNode(child, toReturn, "", true);
+      toReturn += bits[1];
+      continue;
+    }
+
+    // Or is this just plain text?
+    if (child.nodeName == "#text") {
+      if (Utils.isDisplayed(child)) {
+        var textToAdd = child.nodeValue;
+        textToAdd =
+        textToAdd.replace(new RegExp(String.fromCharCode(160), "gm"), " ");
+        textSoFar += textToAdd;
+      }
+      continue;
+    }
+
+    // Treat as another child node.
+    bits = getTextFromNode(child, toReturn, textSoFar, false);
+    toReturn = bits[0];
+    textSoFar = bits[1];
+  }
+
+  if (isBlockLevel(node)) {
+    if (node["tagName"] && node.tagName != "PRE") {
+      toReturn += collapseWhitespace(textSoFar) + "\n";
+      textSoFar = "";
+    } else {
+      toReturn += "\n";
+    }
+  }
+  return [toReturn, textSoFar];
 }
-;
+
 
 function isBlockLevel(node) {
-    if (node["tagName"] && node.tagName == "BR")
-        return true;
+  if (node["tagName"] && node.tagName == "BR")
+    return true;
 
-    try {
-        // Should we think about getting hold of the current document?
-        return "block" == Utils.getStyleProperty(node, "display");
-    } catch (e) {
-        return false;
-    }
-};
+  try {
+    // Should we think about getting hold of the current document?
+    return "block" == Utils.getStyleProperty(node, "display");
+  } catch (e) {
+    return false;
+  }
+}
+
 
 Utils.isInHead = function(element) {
   while (element) {
@@ -162,113 +177,122 @@ Utils.isInHead = function(element) {
   return false;
 };
 
+
 Utils.isDisplayed = function(element) {
-    // Ensure that we're dealing with an element.
-    var el = element;
-    while (el.nodeType != 1 && !(el.nodeType >= 9 && el.nodeType <= 11)) {
-        el = el.parentNode;
+  // Ensure that we're dealing with an element.
+  var el = element;
+  while (el.nodeType != 1 && !(el.nodeType >= 9 && el.nodeType <= 11)) {
+    el = el.parentNode;
+  }
+
+  if (!el) {
+    return false;
+  }
+
+  // Hidden input elements are, by definition, never displayed
+  if (el.tagName == "input" && el.type == "hidden") {
+    return false;
+  }
+
+  var box = Utils.getLocationOnceScrolledIntoView(el);
+  // Elements with zero width or height are never displayed
+  if (box.width == 0 || box.height == 0) {
+    return false;
+  }
+
+  var visibility = Utils.getStyleProperty(el, "visibility");
+
+  var _isDisplayed = function(e) {
+    var display = e.ownerDocument.defaultView.getComputedStyle(e, null).
+        getPropertyValue("display");
+    if (display == "none") return display;
+    if (e && e.parentNode && e.parentNode.style) {
+      return _isDisplayed(e.parentNode);
     }
+    return undefined;
+  };
 
-    if (!el)  {
-      return false;
-    }
+  var displayed = _isDisplayed(el);
 
-    // Hidden input elements are, by definition, never displayed
-    if (el.tagName == "input" && el.type == "hidden") {
-      return false;
-    }
-
-    var box = Utils.getLocationOnceScrolledIntoView(el);
-    // Elements with zero width or height are never displayed
-    if (box.width == 0 || box.height == 0) {
-      return false;
-    }
-
-    var visibility = Utils.getStyleProperty(el, "visibility");
-
-    var _isDisplayed = function(e) {
-      var display = e.ownerDocument.defaultView.getComputedStyle(e, null).getPropertyValue("display");
-      if (display == "none") return display;
-      if (e && e.parentNode && e.parentNode.style) {
-        return _isDisplayed(e.parentNode);
-      }
-      return undefined;
-    };
-
-    var displayed = _isDisplayed(el);
-
-    return displayed != "none" && visibility != "hidden";
+  return displayed != "none" && visibility != "hidden";
 };
+
 
 Utils.getStyleProperty = function(node, propertyName) {
-    if (!node)
-      return undefined;
+  if (!node)
+    return undefined;
 
-    var value = node.ownerDocument.defaultView.getComputedStyle(node, null).getPropertyValue(propertyName);
+  var value = node.ownerDocument.defaultView.getComputedStyle(node, null).
+      getPropertyValue(propertyName);
 
-    // Convert colours to hex if possible
-    var raw = /rgb\((\d{1,3}),\s(\d{1,3}),\s(\d{1,3})\)/.exec(value);
-    if (raw) {
-        var temp = value.substr(0, raw.index);
+  // Convert colours to hex if possible
+  var raw = /rgb\((\d{1,3}),\s(\d{1,3}),\s(\d{1,3})\)/.exec(value);
+  if (raw) {
+    var temp = value.substr(0, raw.index);
 
-        var hex = "#";
-        for (var i = 1; i <= 3; i++) {
-            var colour = (raw[i] - 0).toString(16);
-            if (colour.length == 1)
-                colour = "0" + colour;
-            hex += colour;
-        }
-        hex = hex.toLowerCase();
-        value = temp + hex + value.substr(raw.index + raw[0].length);
+    var hex = "#";
+    for (var i = 1; i <= 3; i++) {
+      var colour = (raw[i] - 0).toString(16);
+      if (colour.length == 1)
+        colour = "0" + colour;
+      hex += colour;
     }
+    hex = hex.toLowerCase();
+    value = temp + hex + value.substr(raw.index + raw[0].length);
+  }
 
-    if (value == "inherit" && element.parentNode.style) {
-      value = Utils.getStyleProperty(node.parentNode, propertyName);
-    }
+  if (value == "inherit" && element.parentNode.style) {
+    value = Utils.getStyleProperty(node.parentNode, propertyName);
+  }
 
-    return value;
+  return value;
 };
+
 
 function collapseWhitespace(textSoFar) {
-    return textSoFar.replace(/\s+/g, " ");
+  return textSoFar.replace(/\s+/g, " ");
 }
-;
+
 
 function getPreformattedText(node) {
-    var textToAdd = "";
-    return getTextFromNode(node, "", textToAdd, true)[1];
+  var textToAdd = "";
+  return getTextFromNode(node, "", textToAdd, true)[1];
 }
-;
+
 
 function isWhiteSpace(character) {
-    return character == '\n' || character == ' ' || character == '\t' || character == '\r';
+  return character == '\n' || character == ' ' || character == '\t' || character
+      == '\r';
 }
 
+
 Utils.getText = function(element) {
-    var bits = getTextFromNode(element, "", "", element.tagName == "PRE");
-    var text = bits[0] + collapseWhitespace(bits[1]);
-    var start = 0;
-    while (start < text.length && isWhiteSpace(text[start])) {
-        ++start;
-    }
-    var end = text.length;
-    while (end > start && isWhiteSpace(text[end - 1])) {
-        --end;
-    }
-    return text.slice(start, end);
+  var bits = getTextFromNode(element, "", "", element.tagName == "PRE");
+  var text = bits[0] + collapseWhitespace(bits[1]);
+  var start = 0;
+  while (start < text.length && isWhiteSpace(text[start])) {
+    ++start;
+  }
+  var end = text.length;
+  while (end > start && isWhiteSpace(text[end - 1])) {
+    --end;
+  }
+  return text.slice(start, end);
 };
+
 
 Utils.addToKnownElements = function(element, context) {
-    var doc = Utils.getDocument(context);
-    if (!doc.fxdriver_elements) {
-        doc.fxdriver_elements = {};
-    }
+  var doc = Utils.getDocument(context);
+  if (!doc.fxdriver_elements) {
+    doc.fxdriver_elements = {};
+  }
 
-    var id = Utils.getUniqueId();
-    doc.fxdriver_elements[id] = element;
+  var id = Utils.getUniqueId();
+  doc.fxdriver_elements[id] = element;
 
-    return id;
+  return id;
 };
+
 
 Utils.getElementAt = function(index, context) {
   var doc = Utils.getDocument(context);
@@ -293,6 +317,7 @@ Utils.getElementAt = function(index, context) {
   return e;
 };
 
+
 Utils.currentDocument = function(context) {
   if (context) {
     return Utils.getDocument(context);
@@ -301,17 +326,20 @@ Utils.currentDocument = function(context) {
   }
 };
 
+
 Utils.platform = function(context) {
   if (!this.userAgentPlatformLowercase) {
     var currentWindow = Utils.currentDocument(context).defaultView;
     this.userAgentPlatformLowercase =
-        currentWindow.navigator.platform.toLowerCase();
+    currentWindow.navigator.platform.toLowerCase();
   }
 
   return this.userAgentPlatformLowercase;
 };
 
+
 Utils.shiftCount = 0;
+
 
 Utils.getNativeEvents = function() {
   try {
@@ -319,17 +347,22 @@ Utils.getNativeEvents = function() {
     var obj = Components.classes[cid].createInstance();
     return obj.QueryInterface(Components.interfaces.nsINativeEvents);
   } catch(e) {
-    // Unable to retrieve native events. No biggie, because we fall back to synthesis later
+    // Unable to retrieve native events. No biggie, because we fall back to
+    // synthesis later
     return undefined;
   }
 };
 
+
 Utils.getNodeForNativeEvents = function(element) {
   try {
-    // This stuff changes between releases. Do as much up-front work in JS as possible
-    var retrieval = Utils.newInstance("@mozilla.org/accessibleRetrieval;1", "nsIAccessibleRetrieval");
+    // This stuff changes between releases.
+    // Do as much up-front work in JS as possible
+    var retrieval = Utils.newInstance(
+        "@mozilla.org/accessibleRetrieval;1", "nsIAccessibleRetrieval");
     var accessible = retrieval.getAccessibleFor(element.ownerDocument);
-    var accessibleDoc = accessible.QueryInterface(Components.interfaces.nsIAccessibleDocument);
+    var accessibleDoc =
+        accessible.QueryInterface(Components.interfaces.nsIAccessibleDocument);
     return accessibleDoc.QueryInterface(Components.interfaces.nsISupports);
   } catch(e) {
     // Unable to retrieve the accessible doc
@@ -337,8 +370,9 @@ Utils.getNodeForNativeEvents = function(element) {
   }
 };
 
+
 Utils.type = function(context, element, text, opt_useNativeEvents) {
-    // Special-case file input elements. This is ugly, but should be okay
+  // Special-case file input elements. This is ugly, but should be okay
   if (element.tagName == "INPUT") {
     var inputtype = element.getAttribute("type");
     if (inputtype && inputtype.toLowerCase() == "file") {
@@ -362,14 +396,17 @@ Utils.type = function(context, element, text, opt_useNativeEvents) {
       // code (otherwise the caller may not find all of the keystrokes it
       // has entered).
 
-        var threadmgr = thmgr_cls.getService(Components.interfaces.nsIThreadManager);
-        var thread = threadmgr.currentThread;
-        var done = false;
-        var the_window = element.ownerDocument.defaultView;
-        the_window.setTimeout(function() { done = true; }, 500);
-        while (!done) thread.processNextEvent(true);
+      var threadmgr =
+          thmgr_cls.getService(Components.interfaces.nsIThreadManager);
+      var thread = threadmgr.currentThread;
+      var done = false;
+      var the_window = element.ownerDocument.defaultView;
+      the_window.setTimeout(function() {
+        done = true;
+      }, 500);
+      while (!done) thread.processNextEvent(true);
 
-        obj.hasUnhandledEvents(node, hasEvents);
+      obj.hasUnhandledEvents(node, hasEvents);
     } while (hasEvents.value == true);
 
     thread.processNextEvent(true);
@@ -378,342 +415,345 @@ Utils.type = function(context, element, text, opt_useNativeEvents) {
 
   Utils.dumpn("Doing sendKeys in a non-native way...")
   var controlKey = false;
-    var shiftKey = false;
-    var altKey = false;
-    var metaKey = false;
+  var shiftKey = false;
+  var altKey = false;
+  var metaKey = false;
 
-    Utils.shiftCount = 0;
+  Utils.shiftCount = 0;
 
-    var upper = text.toUpperCase();
+  var upper = text.toUpperCase();
 
-    for (var i = 0; i < text.length; i++) {
-        var c = text.charAt(i);
+  for (var i = 0; i < text.length; i++) {
+    var c = text.charAt(i);
 
-        // NULL key: reset modifier key states, and continue
+    // NULL key: reset modifier key states, and continue
 
-        if (c == '\uE000') {
-          if (controlKey) {
-            var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_CONTROL;
-            Utils.keyEvent(context, element, "keyup", kCode, 0,
-              controlKey = false, shiftKey, altKey, metaKey);
-          }
+    if (c == '\uE000') {
+      if (controlKey) {
+        var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_CONTROL;
+        Utils.keyEvent(context, element, "keyup", kCode, 0,
+            controlKey = false, shiftKey, altKey, metaKey);
+      }
 
-          if (shiftKey) {
-            var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT;
-            Utils.keyEvent(context, element, "keyup", kCode, 0,
-              controlKey, shiftKey = false, altKey, metaKey);
-          }
+      if (shiftKey) {
+        var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT;
+        Utils.keyEvent(context, element, "keyup", kCode, 0,
+            controlKey, shiftKey = false, altKey, metaKey);
+      }
 
-          if (altKey) {
-            var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_ALT;
-            Utils.keyEvent(context, element, "keyup", kCode, 0,
-              controlKey, shiftKey, altKey = false, metaKey);
-          }
+      if (altKey) {
+        var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_ALT;
+        Utils.keyEvent(context, element, "keyup", kCode, 0,
+            controlKey, shiftKey, altKey = false, metaKey);
+      }
 
-          if (metaKey) {
-            var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_META;
-            Utils.keyEvent(context, element, "keyup", kCode, 0,
-              controlKey, shiftKey, altKey, metaKey = false);
-          }
+      if (metaKey) {
+        var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_META;
+        Utils.keyEvent(context, element, "keyup", kCode, 0,
+            controlKey, shiftKey, altKey, metaKey = false);
+      }
 
-          continue;
-        }
+      continue;
+    }
 
-        // otherwise decode keyCode, charCode, modifiers ...
+    // otherwise decode keyCode, charCode, modifiers ...
 
-        var modifierEvent = "";
-        var charCode = 0;
-        var keyCode = 0;
+    var modifierEvent = "";
+    var charCode = 0;
+    var keyCode = 0;
 
-        if (c == '\uE001') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_CANCEL;
-        } else if (c == '\uE002') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_HELP;
-        } else if (c == '\uE003') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_BACK_SPACE;
-        } else if (c == '\uE004') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_TAB;
-        } else if (c == '\uE005') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_CLEAR;
-        } else if (c == '\uE006') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_RETURN;
-        } else if (c == '\uE007') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_ENTER;
-        } else if (c == '\uE008') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT;
-            shiftKey = !shiftKey;
-            modifierEvent = shiftKey ? "keydown" : "keyup";
-        } else if (c == '\uE009') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_CONTROL;
-            controlKey = !controlKey;
-            modifierEvent = controlKey ? "keydown" : "keyup";
-        } else if (c == '\uE00A') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_ALT;
-            altKey = !altKey;
-            modifierEvent = altKey ? "keydown" : "keyup";
-        } else if (c == '\uE03D') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_META;
-            metaKey = !metaKey;
-            modifierEvent = metaKey ? "keydown" : "keyup";
-        } else if (c == '\uE00B') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_PAUSE;
-        } else if (c == '\uE00C') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_ESCAPE;
-        } else if (c == '\uE00D') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SPACE;
-            keyCode = charCode = ' '.charCodeAt(0);  // printable
-        } else if (c == '\uE00E') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_PAGE_UP;
-        } else if (c == '\uE00F') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_PAGE_DOWN;
-        } else if (c == '\uE010') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_END;
-        } else if (c == '\uE011') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_HOME;
-        } else if (c == '\uE012') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_LEFT;
-        } else if (c == '\uE013') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_UP;
-        } else if (c == '\uE014') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_RIGHT;
-        } else if (c == '\uE015') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_DOWN;
-        } else if (c == '\uE016') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_INSERT;
-        } else if (c == '\uE017') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_DELETE;
-        } else if (c == '\uE018') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SEMICOLON;
-            charCode = ';'.charCodeAt(0);
-        } else if (c == '\uE019') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_EQUALS;
-            charCode = '='.charCodeAt(0);
-        } else if (c == '\uE01A') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_NUMPAD0;
-            charCode = '0'.charCodeAt(0);
-        } else if (c == '\uE01B') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_NUMPAD1;
-            charCode = '1'.charCodeAt(0);
-        } else if (c == '\uE01C') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_NUMPAD2;
-            charCode = '2'.charCodeAt(0);
-        } else if (c == '\uE01D') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_NUMPAD3;
-            charCode = '3'.charCodeAt(0);
-        } else if (c == '\uE01E') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_NUMPAD4;
-            charCode = '4'.charCodeAt(0);
-        } else if (c == '\uE01F') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_NUMPAD5;
-            charCode = '5'.charCodeAt(0);
-        } else if (c == '\uE020') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_NUMPAD6;
-            charCode = '6'.charCodeAt(0);
-        } else if (c == '\uE021') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_NUMPAD7;
-            charCode = '7'.charCodeAt(0);
-        } else if (c == '\uE022') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_NUMPAD8;
-            charCode = '8'.charCodeAt(0);
-        } else if (c == '\uE023') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_NUMPAD9;
-            charCode = '9'.charCodeAt(0);
-        } else if (c == '\uE024') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_MULTIPLY;
-            charCode = '*'.charCodeAt(0);
-        } else if (c == '\uE025') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_ADD;
-            charCode = '+'.charCodeAt(0);
-        } else if (c == '\uE026') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SEPARATOR;
-            charCode = ','.charCodeAt(0);
-        } else if (c == '\uE027') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SUBTRACT;
-            charCode = '-'.charCodeAt(0);
-        } else if (c == '\uE028') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_DECIMAL;
-            charCode = '.'.charCodeAt(0);
-        } else if (c == '\uE029') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_DIVIDE;
-            charCode = '/'.charCodeAt(0);
-        } else if (c == '\uE031') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_F1;
-        } else if (c == '\uE032') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_F2;
-        } else if (c == '\uE033') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_F3;
-        } else if (c == '\uE034') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_F4;
-        } else if (c == '\uE035') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_F5;
-        } else if (c == '\uE036') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_F6;
-        } else if (c == '\uE037') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_F7;
-        } else if (c == '\uE038') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_F8;
-        } else if (c == '\uE039') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_F9;
-        } else if (c == '\uE03A') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_F10;
-        } else if (c == '\uE03B') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_F11;
-        } else if (c == '\uE03C') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_F12;
-        } else if (c == '\r') {
-            if (Utils.platform(context) == "win32")
-              continue;  // skip it
-            if (/mac/.test(Utils.platform(context))) {
-              keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_RETURN;
-              charCode = '\n'.charCodeAt(0);
-            } else {
-              keycode = charCode = '\r'.charCodeAt(0);
-            }
-        } else if (c == '\n') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_RETURN;
-            charCode = c.charCodeAt(0);
-        } else if (c == ',' || c == '<') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_COMMA;
-            charCode = c.charCodeAt(0);
-        } else if (c == '.' || c == '>') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_PERIOD;
-            charCode = c.charCodeAt(0);
-        } else if (c == '/' || c == '?') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SLASH;
-            charCode = text.charCodeAt(i);
-        } else if (c == '`' || c == '~') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_BACK_QUOTE;
-            charCode = c.charCodeAt(0);
-        } else if (c == '{' || c == '[') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_OPEN_BRACKET;
-            charCode = c.charCodeAt(0);
-        } else if (c == '\\' || c == '|') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_BACK_SLASH;
-            charCode = c.charCodeAt(0);
-        } else if (c == '}' || c == ']') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_CLOSE_BRACKET;
-            charCode = c.charCodeAt(0);
-        } else if (c == '\'' || c == '"') {
-            keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_QUOTE;
-            charCode = c.charCodeAt(0);
+    if (c == '\uE001') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_CANCEL;
+    } else if (c == '\uE002') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_HELP;
+    } else if (c == '\uE003') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_BACK_SPACE;
+    } else if (c == '\uE004') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_TAB;
+    } else if (c == '\uE005') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_CLEAR;
+    } else if (c == '\uE006') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_RETURN;
+    } else if (c == '\uE007') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_ENTER;
+    } else if (c == '\uE008') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT;
+      shiftKey = !shiftKey;
+      modifierEvent = shiftKey ? "keydown" : "keyup";
+    } else if (c == '\uE009') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_CONTROL;
+      controlKey = !controlKey;
+      modifierEvent = controlKey ? "keydown" : "keyup";
+    } else if (c == '\uE00A') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_ALT;
+      altKey = !altKey;
+      modifierEvent = altKey ? "keydown" : "keyup";
+    } else if (c == '\uE03D') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_META;
+      metaKey = !metaKey;
+      modifierEvent = metaKey ? "keydown" : "keyup";
+    } else if (c == '\uE00B') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_PAUSE;
+    } else if (c == '\uE00C') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_ESCAPE;
+    } else if (c == '\uE00D') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SPACE;
+      keyCode = charCode = ' '.charCodeAt(0);  // printable
+    } else if (c == '\uE00E') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_PAGE_UP;
+    } else if (c == '\uE00F') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_PAGE_DOWN;
+    } else if (c == '\uE010') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_END;
+    } else if (c == '\uE011') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_HOME;
+    } else if (c == '\uE012') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_LEFT;
+    } else if (c == '\uE013') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_UP;
+    } else if (c == '\uE014') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_RIGHT;
+    } else if (c == '\uE015') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_DOWN;
+    } else if (c == '\uE016') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_INSERT;
+    } else if (c == '\uE017') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_DELETE;
+    } else if (c == '\uE018') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SEMICOLON;
+      charCode = ';'.charCodeAt(0);
+    } else if (c == '\uE019') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_EQUALS;
+      charCode = '='.charCodeAt(0);
+    } else if (c == '\uE01A') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_NUMPAD0;
+      charCode = '0'.charCodeAt(0);
+    } else if (c == '\uE01B') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_NUMPAD1;
+      charCode = '1'.charCodeAt(0);
+    } else if (c == '\uE01C') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_NUMPAD2;
+      charCode = '2'.charCodeAt(0);
+    } else if (c == '\uE01D') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_NUMPAD3;
+      charCode = '3'.charCodeAt(0);
+    } else if (c == '\uE01E') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_NUMPAD4;
+      charCode = '4'.charCodeAt(0);
+    } else if (c == '\uE01F') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_NUMPAD5;
+      charCode = '5'.charCodeAt(0);
+    } else if (c == '\uE020') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_NUMPAD6;
+      charCode = '6'.charCodeAt(0);
+    } else if (c == '\uE021') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_NUMPAD7;
+      charCode = '7'.charCodeAt(0);
+    } else if (c == '\uE022') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_NUMPAD8;
+      charCode = '8'.charCodeAt(0);
+    } else if (c == '\uE023') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_NUMPAD9;
+      charCode = '9'.charCodeAt(0);
+    } else if (c == '\uE024') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_MULTIPLY;
+      charCode = '*'.charCodeAt(0);
+    } else if (c == '\uE025') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_ADD;
+      charCode = '+'.charCodeAt(0);
+    } else if (c == '\uE026') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SEPARATOR;
+      charCode = ','.charCodeAt(0);
+    } else if (c == '\uE027') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SUBTRACT;
+      charCode = '-'.charCodeAt(0);
+    } else if (c == '\uE028') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_DECIMAL;
+      charCode = '.'.charCodeAt(0);
+    } else if (c == '\uE029') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_DIVIDE;
+      charCode = '/'.charCodeAt(0);
+    } else if (c == '\uE031') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_F1;
+    } else if (c == '\uE032') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_F2;
+    } else if (c == '\uE033') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_F3;
+    } else if (c == '\uE034') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_F4;
+    } else if (c == '\uE035') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_F5;
+    } else if (c == '\uE036') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_F6;
+    } else if (c == '\uE037') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_F7;
+    } else if (c == '\uE038') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_F8;
+    } else if (c == '\uE039') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_F9;
+    } else if (c == '\uE03A') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_F10;
+    } else if (c == '\uE03B') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_F11;
+    } else if (c == '\uE03C') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_F12;
+    } else if (c == '\r') {
+      if (Utils.platform(context) == "win32")
+        continue;  // skip it
+      if (/mac/.test(Utils.platform(context))) {
+        keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_RETURN;
+        charCode = '\n'.charCodeAt(0);
+      } else {
+        keycode = charCode = '\r'.charCodeAt(0);
+      }
+    } else if (c == '\n') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_RETURN;
+      charCode = c.charCodeAt(0);
+    } else if (c == ',' || c == '<') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_COMMA;
+      charCode = c.charCodeAt(0);
+    } else if (c == '.' || c == '>') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_PERIOD;
+      charCode = c.charCodeAt(0);
+    } else if (c == '/' || c == '?') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SLASH;
+      charCode = text.charCodeAt(i);
+    } else if (c == '`' || c == '~') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_BACK_QUOTE;
+      charCode = c.charCodeAt(0);
+    } else if (c == '{' || c == '[') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_OPEN_BRACKET;
+      charCode = c.charCodeAt(0);
+    } else if (c == '\\' || c == '|') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_BACK_SLASH;
+      charCode = c.charCodeAt(0);
+    } else if (c == '}' || c == ']') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_CLOSE_BRACKET;
+      charCode = c.charCodeAt(0);
+    } else if (c == '\'' || c == '"') {
+      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_QUOTE;
+      charCode = c.charCodeAt(0);
+    } else {
+      keyCode = upper.charCodeAt(i);
+      charCode = text.charCodeAt(i);
+    }
+
+    // generate modifier key event if needed, and continue
+
+    if (modifierEvent) {
+      Utils.keyEvent(context, element, modifierEvent, keyCode, 0,
+          controlKey, shiftKey, altKey, metaKey);
+      continue;
+    }
+
+    // otherwise, shift down if needed
+
+    var needsShift = false;
+    if (charCode) {
+      needsShift = /[A-Z\!\$\^\*\(\)\+\{\}\:\?\|~@#%&_"<>]/.test(c);
+    }
+
+    if (needsShift && !shiftKey) {
+      var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT;
+      Utils.keyEvent(context, element, "keydown", kCode, 0,
+          controlKey, true, altKey, metaKey);
+      Utils.shiftCount += 1;
+    }
+
+    // generate key[down/press/up] for key
+
+    var pressCode = keyCode;
+    if (charCode >= 32 && charCode < 127) {
+      pressCode = 0;
+      if (!needsShift && shiftKey && charCode > 32) {
+        // If typing a lowercase character key and the shiftKey is down, the
+        // charCode should be mapped to the shifted key value. This assumes
+        // a default 104 international keyboard layout.
+        if (charCode >= 97 && charCode <= 122) {
+          charCode = charCode + 65 - 97;  // [a-z] -> [A-Z]
         } else {
-            keyCode = upper.charCodeAt(i);
-            charCode = text.charCodeAt(i);
-        }
+          var mapFrom = '`1234567890-=[]\\;\',./';
+          var mapTo = '~!@#$%^&*()_+{}|:"<>?';
 
-        // generate modifier key event if needed, and continue
-
-        if (modifierEvent) {
-          Utils.keyEvent(context, element, modifierEvent, keyCode, 0,
-              controlKey, shiftKey, altKey, metaKey);
-          continue;
-        }
-
-        // otherwise, shift down if needed
-
-        var needsShift = false;
-        if (charCode) {
-          needsShift = /[A-Z\!\$\^\*\(\)\+\{\}\:\?\|~@#%&_"<>]/.test(c);
-        }
-
-        if (needsShift && !shiftKey) {
-          var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT;
-          Utils.keyEvent(context, element, "keydown", kCode, 0,
-              controlKey, true, altKey, metaKey);
-          Utils.shiftCount += 1;
-        }
-
-        // generate key[down/press/up] for key
-
-        var pressCode = keyCode;
-        if (charCode >= 32 && charCode < 127) {
-          pressCode = 0;
-          if (!needsShift && shiftKey && charCode > 32) {
-            // If typing a lowercase character key and the shiftKey is down, the
-            // charCode should be mapped to the shifted key value. This assumes
-            // a default 104 international keyboard layout.
-            if (charCode >= 97 && charCode <= 122) {
-              charCode = charCode + 65 - 97;  // [a-z] -> [A-Z]
-            } else {
-              var mapFrom = '`1234567890-=[]\\;\',./';
-              var mapTo   = '~!@#$%^&*()_+{}|:"<>?';
-
-              var value = String.fromCharCode(charCode).
-                  replace(/([\[\\\.])/g, '\\$1');
-              var index = mapFrom.search(value);
-              if (index >= 0) {
-                charCode = mapTo.charCodeAt(index);
-              }
-            }
+          var value = String.fromCharCode(charCode).
+              replace(/([\[\\\.])/g, '\\$1');
+          var index = mapFrom.search(value);
+          if (index >= 0) {
+            charCode = mapTo.charCodeAt(index);
           }
         }
+      }
+    }
 
-        var accepted =
-          Utils.keyEvent(context, element, "keydown", keyCode, 0,
-              controlKey, needsShift || shiftKey, altKey, metaKey);
-
-        Utils.keyEvent(context, element, "keypress", pressCode, charCode,
-            controlKey, needsShift || shiftKey, altKey, metaKey, !accepted);
-
-        Utils.keyEvent(context, element, "keyup", keyCode, 0,
+    var accepted =
+        Utils.keyEvent(context, element, "keydown", keyCode, 0,
             controlKey, needsShift || shiftKey, altKey, metaKey);
 
-        // shift up if needed
+    Utils.keyEvent(context, element, "keypress", pressCode, charCode,
+        controlKey, needsShift || shiftKey, altKey, metaKey, !accepted);
 
-        if (needsShift && !shiftKey) {
-          var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT;
-          Utils.keyEvent(context, element, "keyup", kCode, 0,
-              controlKey, false, altKey, metaKey);
-        }
-    }
+    Utils.keyEvent(context, element, "keyup", keyCode, 0,
+        controlKey, needsShift || shiftKey, altKey, metaKey);
 
-    // exit cleanup: keyup active modifier keys
+    // shift up if needed
 
-    if (controlKey) {
-      var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_CONTROL;
-      Utils.keyEvent(context, element, "keyup", kCode, 0,
-        controlKey = false, shiftKey, altKey, metaKey);
-    }
-
-    if (shiftKey) {
+    if (needsShift && !shiftKey) {
       var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT;
       Utils.keyEvent(context, element, "keyup", kCode, 0,
+          controlKey, false, altKey, metaKey);
+    }
+  }
+
+  // exit cleanup: keyup active modifier keys
+
+  if (controlKey) {
+    var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_CONTROL;
+    Utils.keyEvent(context, element, "keyup", kCode, 0,
+        controlKey = false, shiftKey, altKey, metaKey);
+  }
+
+  if (shiftKey) {
+    var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_SHIFT;
+    Utils.keyEvent(context, element, "keyup", kCode, 0,
         controlKey, shiftKey = false, altKey, metaKey);
-    }
+  }
 
-    if (altKey) {
-      var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_ALT;
-      Utils.keyEvent(context, element, "keyup", kCode, 0,
+  if (altKey) {
+    var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_ALT;
+    Utils.keyEvent(context, element, "keyup", kCode, 0,
         controlKey, shiftKey, altKey = false, metaKey);
-    }
+  }
 
-    if (metaKey) {
-      var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_META;
-      Utils.keyEvent(context, element, "keyup", kCode, 0,
+  if (metaKey) {
+    var kCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_META;
+    Utils.keyEvent(context, element, "keyup", kCode, 0,
         controlKey, shiftKey, altKey, metaKey = false);
-    }
+  }
 };
 
+
 Utils.keyEvent = function(context, element, type, keyCode, charCode,
-    controlState, shiftState, altState, metaState, shouldPreventDefault) {
-  var preventDefault = shouldPreventDefault == undefined ? false : shouldPreventDefault;
+                          controlState, shiftState, altState, metaState,
+                          shouldPreventDefault) {
+  var preventDefault = shouldPreventDefault == undefined ? false
+      : shouldPreventDefault;
 
   var keyboardEvent =
-     Utils.currentDocument(context).createEvent("KeyEvents");
+      Utils.currentDocument(context).createEvent("KeyEvents");
   var currentView =
-     Utils.currentDocument(context).defaultView;
+      Utils.currentDocument(context).defaultView;
 
   keyboardEvent.initKeyEvent(
-    type,         //  in DOMString typeArg,
-    true,         //  in boolean canBubbleArg
-    true,         //  in boolean cancelableArg
-    currentView,  //  in nsIDOMAbstractView viewArg
-    controlState, //  in boolean ctrlKeyArg
-    altState,     //  in boolean altKeyArg
-    shiftState,   //  in boolean shiftKeyArg
-    metaState,    //  in boolean metaKeyArg
-    keyCode,      //  in unsigned long keyCodeArg
-    charCode);    //  in unsigned long charCodeArg
+      type, //  in DOMString typeArg,
+      true, //  in boolean canBubbleArg
+      true, //  in boolean cancelableArg
+      currentView, //  in nsIDOMAbstractView viewArg
+      controlState, //  in boolean ctrlKeyArg
+      altState, //  in boolean altKeyArg
+      shiftState, //  in boolean shiftKeyArg
+      metaState, //  in boolean metaKeyArg
+      keyCode, //  in unsigned long keyCodeArg
+      charCode);    //  in unsigned long charCodeArg
 
   if (preventDefault) {
     keyboardEvent.preventDefault();
@@ -722,215 +762,236 @@ Utils.keyEvent = function(context, element, type, keyCode, charCode,
   return element.dispatchEvent(keyboardEvent);
 };
 
+
 Utils.fireHtmlEvent = function(context, element, eventName) {
-    var doc = element.ownerDocument;
-    var e = doc.createEvent("HTMLEvents");
-    e.initEvent(eventName, true, true);
-    element.dispatchEvent(e);
+  var doc = element.ownerDocument;
+  var e = doc.createEvent("HTMLEvents");
+  e.initEvent(eventName, true, true);
+  element.dispatchEvent(e);
 };
+
 
 Utils.findForm = function(element) {
-    // Are we already on an element that can be used to submit the form?
-    try {
-        element.QueryInterface(Components.interfaces.nsIDOMHTMLButtonElement);
-        return element;
-    } catch(e) {
-    }
+  // Are we already on an element that can be used to submit the form?
+  try {
+    element.QueryInterface(Components.interfaces.nsIDOMHTMLButtonElement);
+    return element;
+  } catch(e) {
+  }
 
-    try {
-        var input = element.QueryInterface(Components.interfaces.nsIDOMHTMLInputElement);
-        if (input.type == "image" || input.type == "submit")
-            return input;
-    } catch(e) {
-    }
+  try {
+    var input =
+        element.QueryInterface(Components.interfaces.nsIDOMHTMLInputElement);
+    if (input.type == "image" || input.type == "submit")
+      return input;
+  } catch(e) {
+  }
 
-    var form = element;
-    while (form) {
-        if (form["submit"])
-            return form;
-        form = form.parentNode;
-    }
-    return undefined;
+  var form = element;
+  while (form) {
+    if (form["submit"])
+      return form;
+    form = form.parentNode;
+  }
+  return undefined;
 };
+
 
 Utils.fireMouseEventOn = function(context, element, eventName) {
-    Utils.triggerMouseEvent(element, eventName, 0, 0);
+  Utils.triggerMouseEvent(element, eventName, 0, 0);
 };
+
 
 Utils.triggerMouseEvent = function(element, eventType, clientX, clientY) {
-    var event = element.ownerDocument.createEvent("MouseEvents");
-    var view = element.ownerDocument.defaultView;
+  var event = element.ownerDocument.createEvent("MouseEvents");
+  var view = element.ownerDocument.defaultView;
 
-    event.initMouseEvent(eventType, true, true, view, 1, 0, 0, clientX, clientY, false, false, false, false, 0, element);
-    element.dispatchEvent(event);
+  event.initMouseEvent(eventType, true, true, view, 1, 0, 0, clientX, clientY,
+      false, false, false, false, 0, element);
+  element.dispatchEvent(event);
 };
+
 
 Utils.findDocumentInFrame = function(browser, frameId) {
-    var frame = Utils.findFrame(browser, frameId);
-    return frame ? frame.document : null;
+  var frame = Utils.findFrame(browser, frameId);
+  return frame ? frame.document : null;
 };
+
 
 Utils.findFrame = function(browser, frameId) {
-    var stringId = "" + frameId;
-    var names = stringId.split(".");
-    var frame = browser.contentWindow;
-    for (var i = 0; i < names.length; i++) {
-        // Try a numerical index first
-        var index = names[i] - 0;
-        if (!isNaN(index)) {
-            frame = frame.frames[index];
-            if (frame) {
-              return frame;
-            }
-        } else {
-            // Fine. Use the name and loop
-            var found = false;
-            for (var j = 0; j < frame.frames.length; j++) {
-                var f = frame.frames[j];
-                if (f.name == names[i] || f.frameElement.id == names[i]) {
-                    frame = f;
-                    found = true;
-                    break;
-                }
-            }
-
-            if (!found) {
-                return null;
-            }
+  var stringId = "" + frameId;
+  var names = stringId.split(".");
+  var frame = browser.contentWindow;
+  for (var i = 0; i < names.length; i++) {
+    // Try a numerical index first
+    var index = names[i] - 0;
+    if (!isNaN(index)) {
+      frame = frame.frames[index];
+      if (frame) {
+        return frame;
+      }
+    } else {
+      // Fine. Use the name and loop
+      var found = false;
+      for (var j = 0; j < frame.frames.length; j++) {
+        var f = frame.frames[j];
+        if (f.name == names[i] || f.frameElement.id == names[i]) {
+          frame = f;
+          found = true;
+          break;
         }
-    }
+      }
 
-    return frame;
+      if (!found) {
+        return null;
+      }
+    }
+  }
+
+  return frame;
 };
 
+
 Utils.dumpText = function(text) {
-  var consoleService = Utils.getService("@mozilla.org/consoleservice;1", "nsIConsoleService");
+  var consoleService = Utils.getService(
+      "@mozilla.org/consoleservice;1", "nsIConsoleService");
   if (consoleService)
     consoleService.logStringMessage(text);
   else
     dump(text);
 };
 
+
 Utils.dumpn = function(text) {
   Utils.dumpText(text + "\n");
 };
 
+
 Utils.dump = function(element) {
-    var dump = "=============\n";
+  var dump = "=============\n";
 
-    var rows = [];
+  var rows = [];
 
-    dump += "Supported interfaces: ";
-    for (var i in Components.interfaces) {
-        try {
-            var view = element.QueryInterface(Components.interfaces[i]);
-            dump += i + ", ";
-        } catch (e) {
-            // Doesn't support the interface
-        }
-    }
-    dump += "\n------------\n";
-
+  dump += "Supported interfaces: ";
+  for (var i in Components.interfaces) {
     try {
-        Utils.dumpProperties(element, rows);
+      var view = element.QueryInterface(Components.interfaces[i]);
+      dump += i + ", ";
     } catch (e) {
-        Utils.dumpText("caught an exception: " + e);
+      // Doesn't support the interface
     }
+  }
+  dump += "\n------------\n";
 
-    rows.sort();
-    for (var i in rows) {
-        dump += rows[i] + "\n";
-    }
+  try {
+    Utils.dumpProperties(element, rows);
+  } catch (e) {
+    Utils.dumpText("caught an exception: " + e);
+  }
 
-    dump += "=============\n\n\n";
-    Utils.dumpText(dump);
+  rows.sort();
+  for (var i in rows) {
+    dump += rows[i] + "\n";
+  }
+
+  dump += "=============\n\n\n";
+  Utils.dumpText(dump);
 };
+
 
 Utils.dumpProperties = function(view, rows) {
-    for (var i in view) {
-        var value = "\t" + i + ": ";
-        try {
-            if (typeof(view[i]) == typeof(Function)) {
-                value += " function()";
-            } else {
-                value += String(view[i]);
-            }
-        } catch (e) {
-            value += " Cannot obtain value";
-        }
-
-        rows.push(value);
+  for (var i in view) {
+    var value = "\t" + i + ": ";
+    try {
+      if (typeof(view[i]) == typeof(Function)) {
+        value += " function()";
+      } else {
+        value += String(view[i]);
+      }
+    } catch (e) {
+      value += " Cannot obtain value";
     }
+
+    rows.push(value);
+  }
 };
+
 
 Utils.stackTrace = function() {
-    var stack = Components.stack;
-    var i = 5;
-    var dump = "";
-    while (i && stack.caller) {
-        stack = stack.caller;
-        dump += stack + "\n";
-    }
+  var stack = Components.stack;
+  var i = 5;
+  var dump = "";
+  while (i && stack.caller) {
+    stack = stack.caller;
+    dump += stack + "\n";
+  }
 
-    Utils.dumpText(dump);
+  Utils.dumpText(dump);
 };
+
 
 Utils.getElementLocation = function(element, context) {
-    var x = element.offsetLeft;
-    var y = element.offsetTop;
-    var elementParent = element.offsetParent;
-    while (elementParent != null) {
-        if(elementParent.tagName == "TABLE") {
-            var parentBorder = parseInt(elementParent.border);
-            if(isNaN(parentBorder)) {
-                var parentFrame = elementParent.getAttribute('frame');
-                if(parentFrame != null) {
-                    x += 1;
-                    y += 1;
-                }
-            } else if(parentBorder > 0) {
-                x += parentBorder;
-                y += parentBorder;
-            }
+  var x = element.offsetLeft;
+  var y = element.offsetTop;
+  var elementParent = element.offsetParent;
+  while (elementParent != null) {
+    if (elementParent.tagName == "TABLE") {
+      var parentBorder = parseInt(elementParent.border);
+      if (isNaN(parentBorder)) {
+        var parentFrame = elementParent.getAttribute('frame');
+        if (parentFrame != null) {
+          x += 1;
+          y += 1;
         }
-        x += elementParent.offsetLeft;
-        y += elementParent.offsetTop;
-        elementParent = elementParent.offsetParent;
+      } else if (parentBorder > 0) {
+        x += parentBorder;
+        y += parentBorder;
+      }
     }
+    x += elementParent.offsetLeft;
+    y += elementParent.offsetTop;
+    elementParent = elementParent.offsetParent;
+  }
 
-    // Netscape can get confused in some cases, such that the height of the parent is smaller
-    // than that of the element (which it shouldn't really be). If this is the case, we need to
-    // exclude this element, since it will result in too large a 'top' return value.
-    if (element.offsetParent && element.offsetParent.offsetHeight && element.offsetParent.offsetHeight < element.offsetHeight) {
-        // skip the parent that's too small
-        element = element.offsetParent.offsetParent;
-    } else {
-        // Next up...
-        element = element.offsetParent;
-    }
-    var location = new Object();
-    location.x = x;
-    location.y = y;
-    return location;
+  // Netscape can get confused in some cases, such that the height of the parent
+  // is smaller than that of the element (which it shouldn't really be). If this
+  // is the case, we need to exclude this element, since it will result in too
+  // large a 'top' return value.
+  if (element.offsetParent && element.offsetParent.offsetHeight
+      && element.offsetParent.offsetHeight < element.offsetHeight) {
+    // skip the parent that's too small
+    element = element.offsetParent.offsetParent;
+  } else {
+    // Next up...
+    element = element.offsetParent;
+  }
+  var location = new Object();
+  location.x = x;
+  location.y = y;
+  return location;
 };
+
 
 Utils.findElementsByXPath = function (xpath, contextNode, context) {
-    var doc = Utils.getDocument(context);
-    var result = doc.evaluate(xpath, contextNode, null, Components.interfaces.nsIDOMXPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
-    var indices = [];
-    var element = result.iterateNext();
-    while (element) {
-        var index = Utils.addToKnownElements(element, context);
-        indices.push(index);
-        element = result.iterateNext();
-    }
-    return indices;
+  var doc = Utils.getDocument(context);
+  var result = doc.evaluate(xpath, contextNode, null,
+      Components.interfaces.nsIDOMXPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
+  var indices = [];
+  var element = result.iterateNext();
+  while (element) {
+    var index = Utils.addToKnownElements(element, context);
+    indices.push(index);
+    element = result.iterateNext();
+  }
+  return indices;
 };
+
 
 Utils.getLocationOnceScrolledIntoView = function(element) {
   element.scrollIntoView(true);
 
-  var retrieval = Utils.newInstance("@mozilla.org/accessibleRetrieval;1", "nsIAccessibleRetrieval");
+  var retrieval = Utils.newInstance(
+      "@mozilla.org/accessibleRetrieval;1", "nsIAccessibleRetrieval");
 
   try {
     element = element.wrappedJSObject ? element.wrappedJSObject : element;
@@ -972,15 +1033,18 @@ Utils.getLocationOnceScrolledIntoView = function(element) {
   var theDoc = element.ownerDocument;
   var box = theDoc.getBoxObjectFor(element);
 
-  // We've seen cases where width is 0, despite the element actually having children with width
+  // We've seen cases where width is 0, despite the element actually having
+  // children with width.
   // This happens particularly with GWT.
   if (box.width == 0 || box.height == 0) {
-    // Check the child, and hope the user doesn't nest this stuff. Walk the children til we find
-    // an element. At this point, we know that width and height are a polite fiction
+    // Check the child, and hope the user doesn't nest this stuff. Walk the
+    // children til we find an element. At this point, we know that width and
+    // height are a polite fiction
     for (var i = 0; i < element.childNodes.length; i++) {
       var c = element.childNodes[i];
       if (c.nodeType == 1) {
-        Utils.dumpn("Width and height are ficticious values, based on child node");
+        Utils.dumpn(
+            "Width and height are ficticious values, based on child node");
         box = theDoc.getBoxObjectFor(c);
         break;
       }
@@ -995,17 +1059,19 @@ Utils.getLocationOnceScrolledIntoView = function(element) {
   };
 };
 
+
 Utils.unwrapParameters = function(wrappedParameters, resultArray, context) {
   while (wrappedParameters && wrappedParameters.length > 0) {
     var t = wrappedParameters.shift();
-    
-    if (t != null && t.length !== undefined && t.length != null && (t['type'] === undefined || t['type'] == null)) {
+
+    if (t != null && t.length !== undefined && t.length != null && (t['type']
+        === undefined || t['type'] == null)) {
       var innerArray = [];
       Utils.unwrapParameters(t, innerArray);
       resultArray.push(innerArray);
       return;
     }
-    
+
     if (t['type'] == "ELEMENT") {
       var element = Utils.getElementAt(t['value'], context);
       t['value'] = element.wrappedJSObject ? element.wrappedJSObject : element;
@@ -1015,11 +1081,14 @@ Utils.unwrapParameters = function(wrappedParameters, resultArray, context) {
   }
 };
 
+
 Utils.wrapResult = function(result, context) {
   // Sophisticated.
   if (result && result['tagName']) {
-    return {resultType: "ELEMENT", response: Utils.addToKnownElements(result, context)};
-  } else if (result !== undefined && result.constructor.toString().indexOf("Array") != -1) {
+    return {resultType: "ELEMENT",
+            response: Utils.addToKnownElements(result, context)};
+  } else if (result !== undefined &&
+             result.constructor.toString().indexOf("Array") != -1) {
     var array = [];
     for (var i = 0; i < result.length; i++) {
       array.push(Utils.wrapResult(result[i], context));
