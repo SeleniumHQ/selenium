@@ -16,6 +16,7 @@
  limitations under the License.
  */
 
+
 FirefoxDriver.prototype.click = function(respond) {
   respond.context = this.context;
 
@@ -31,14 +32,17 @@ FirefoxDriver.prototype.click = function(respond) {
 
   var nativeEvents = Utils.getNativeEvents();
   var node = Utils.getNodeForNativeEvents(element);
-  var appInfo = Components.classes["@mozilla.org/xre/app-info;1"]
-      .getService(Components.interfaces.nsIXULAppInfo);
-  var versionChecker = Components.classes["@mozilla.org/xpcom/version-comparator;1"]
-      .getService(Components.interfaces.nsIVersionComparator);
-  // I'm having trouble getting clicks to work on Firefox 2 on Windows. Always fall back for that
+  var appInfo = Components.classes["@mozilla.org/xre/app-info;1"].
+      getService(Components.interfaces.nsIXULAppInfo);
+  var versionChecker = Components.
+      classes["@mozilla.org/xpcom/version-comparator;1"].
+      getService(Components.interfaces.nsIVersionComparator);
+
+  // I'm having trouble getting clicks to work on Firefox 2 on Windows. Always
+  // fall back for that
   // TODO(simon): Get native clicks working for gecko 1.8+
-  var useNativeClick = versionChecker.compare(appInfo.platformVersion, "1.9")
-      >= 0;
+  var useNativeClick =
+      versionChecker.compare(appInfo.platformVersion, "1.9") >= 0;
 
   if (this.enableNativeEvents && nativeEvents && node && useNativeClick) {
     var loc = Utils.getLocationOnceScrolledIntoView(element);
@@ -92,10 +96,12 @@ FirefoxDriver.prototype.click = function(respond) {
   var contentWindow = browser.contentWindow;
 
   var checkForLoad = function() {
-    // Returning should be handled by the click listener, unless we're not actually loading something. Do a check and return if we are.
-    // There's a race condition here, in that the click event and load may have finished before we get here. For now, let's pretend that
-    // doesn't happen. The other race condition is that we make this check before the load has begun. With all the javascript out there,
-    // this might actually be a bit of a problem.
+    // Returning should be handled by the click listener, unless we're not
+    // actually loading something. Do a check and return if we are. There's a
+    // race condition here, in that the click event and load may have finished
+    // before we get here. For now, let's pretend that doesn't happen. The other
+    // race condition is that we make this check before the load has begun. With
+    // all the javascript out there, this might actually be a bit of a problem.
     var docLoaderService = browser.webProgress;
     if (!docLoaderService.isLoadingDocument) {
       WebLoadingListener.removeListener(browser, clickListener);
@@ -114,6 +120,7 @@ FirefoxDriver.prototype.click = function(respond) {
   contentWindow.setTimeout(checkForLoad, 50);
 };
 
+
 FirefoxDriver.prototype.getElementText = function(respond) {
   respond.context = this.context;
 
@@ -127,6 +134,7 @@ FirefoxDriver.prototype.getElementText = function(respond) {
 
   respond.send();
 };
+
 
 FirefoxDriver.prototype.getElementValue = function(respond) {
   respond.context = this.context;
@@ -149,6 +157,7 @@ FirefoxDriver.prototype.getElementValue = function(respond) {
   respond.response = "No match";
   respond.send();
 };
+
 
 FirefoxDriver.prototype.sendKeys = function(respond, value) {
   respond.context = this.context;
@@ -175,7 +184,8 @@ FirefoxDriver.prototype.sendKeys = function(respond, value) {
   if (tagName == "body" && element.ownerDocument.defaultView.frameElement) {
     element.ownerDocument.defaultView.focus();
 
-    // Turns out, this is what we should be using ass the target to send events to
+    // Turns out, this is what we should be using as the target
+    // to send events to
     use = element.ownerDocument.getElementsByTagName("html")[0];
   }
 
@@ -184,6 +194,7 @@ FirefoxDriver.prototype.sendKeys = function(respond, value) {
   respond.context = this.context;
   respond.send();
 };
+
 
 FirefoxDriver.prototype.clear = function(respond) {
   respond.context = this.context;
@@ -226,12 +237,14 @@ FirefoxDriver.prototype.clear = function(respond) {
   respond.send();
 };
 
+
 FirefoxDriver.prototype.getTagName = function(respond) {
   var element = Utils.getElementAt(respond.elementId, this.context);
 
   respond.response = element.tagName.toLowerCase();
   respond.send();
 };
+
 
 FirefoxDriver.prototype.getElementAttribute = function(respond, value) {
   var element = Utils.getElementAt(respond.elementId, this.context);
@@ -282,6 +295,7 @@ FirefoxDriver.prototype.getElementAttribute = function(respond, value) {
   respond.send();
 };
 
+
 FirefoxDriver.prototype.hover = function(respond) {
   var element = Utils.getElementAt(respond.elementId, this.context);
 
@@ -305,6 +319,7 @@ FirefoxDriver.prototype.hover = function(respond) {
   respond.send();
 };
 
+
 FirefoxDriver.prototype.submitElement = function(respond) {
   var element = Utils.getElementAt(respond.elementId, this.context);
 
@@ -325,19 +340,22 @@ FirefoxDriver.prototype.submitElement = function(respond) {
   }
 };
 
+
 FirefoxDriver.prototype.getElementSelected = function(respond) {
   var element = Utils.getElementAt(respond.elementId, this.context);
 
   var selected = false;
 
   try {
-    var option = element.QueryInterface(Components.interfaces.nsIDOMHTMLOptionElement);
+    var option =
+        element.QueryInterface(Components.interfaces.nsIDOMHTMLOptionElement);
     selected = option.selected;
   } catch(e) {
   }
 
   try {
-    var inputElement = element.QueryInterface(Components.interfaces.nsIDOMHTMLInputElement);
+    var inputElement =
+        element.QueryInterface(Components.interfaces.nsIDOMHTMLInputElement);
     if (inputElement.type == "checkbox" || inputElement.type == "radio") {
       selected = inputElement.checked;
     }
@@ -348,6 +366,7 @@ FirefoxDriver.prototype.getElementSelected = function(respond) {
   respond.response = selected;
   respond.send();
 };
+
 
 FirefoxDriver.prototype.setElementSelected = function(respond) {
   var element = Utils.getElementAt(respond.elementId, this.context);
@@ -365,7 +384,8 @@ FirefoxDriver.prototype.setElementSelected = function(respond) {
   respond.isError = true;
 
   try {
-    var inputElement = element.QueryInterface(Components.interfaces.nsIDOMHTMLInputElement);
+    var inputElement =
+        element.QueryInterface(Components.interfaces.nsIDOMHTMLInputElement);
     if (inputElement.disabled) {
       respond.response = "You may not select a disabled element";
       respond.send();
@@ -375,7 +395,8 @@ FirefoxDriver.prototype.setElementSelected = function(respond) {
   }
 
   try {
-    var option = element.QueryInterface(Components.interfaces.nsIDOMHTMLOptionElement);
+    var option =
+        element.QueryInterface(Components.interfaces.nsIDOMHTMLOptionElement);
     respond.isError = false;
     if (!option.selected) {
       option.selected = true;
@@ -386,7 +407,8 @@ FirefoxDriver.prototype.setElementSelected = function(respond) {
   }
 
   try {
-    var checkbox = element.QueryInterface(Components.interfaces.nsIDOMHTMLInputElement);
+    var checkbox =
+        element.QueryInterface(Components.interfaces.nsIDOMHTMLInputElement);
     respond.isError = false;
     if (checkbox.type == "checkbox" || checkbox.type == "radio") {
       if (!checkbox.checked) {
@@ -402,6 +424,7 @@ FirefoxDriver.prototype.setElementSelected = function(respond) {
   respond.send();
 };
 
+
 FirefoxDriver.prototype.toggleElement = function(respond) {
   respond.context = this.context;
 
@@ -416,7 +439,8 @@ FirefoxDriver.prototype.toggleElement = function(respond) {
   }
 
   try {
-    var checkbox = element.QueryInterface(Components.interfaces.nsIDOMHTMLInputElement);
+    var checkbox =
+        element.QueryInterface(Components.interfaces.nsIDOMHTMLInputElement);
     if (checkbox.type == "checkbox") {
       checkbox.checked = !checkbox.checked;
       Utils.fireHtmlEvent(this.context, checkbox, "change");
@@ -427,7 +451,8 @@ FirefoxDriver.prototype.toggleElement = function(respond) {
   }
 
   try {
-    var option = element.QueryInterface(Components.interfaces.nsIDOMHTMLOptionElement);
+    var option =
+        element.QueryInterface(Components.interfaces.nsIDOMHTMLOptionElement);
 
     // Find our containing select and see if it allows multiple selections
     var select = option.parentNode;
@@ -446,9 +471,11 @@ FirefoxDriver.prototype.toggleElement = function(respond) {
 
   respond.isError = true;
   respond.response =
-  "You may only toggle an element that is either a checkbox or an option in a select that allows multiple selections";
+      "You may only toggle an element that is either a checkbox or an "  +
+      "option in a select that allows multiple selections";
   respond.send();
 };
+
 
 FirefoxDriver.prototype.isElementDisplayed = function(respond) {
   var element = Utils.getElementAt(respond.elementId, this.context);
@@ -457,6 +484,7 @@ FirefoxDriver.prototype.isElementDisplayed = function(respond) {
   respond.response = Utils.isDisplayed(element) ? "true" : "false";
   respond.send();
 };
+
 
 FirefoxDriver.prototype.getElementLocation = function(respond) {
   var element = Utils.getElementAt(respond.elementId, this.context);
@@ -468,6 +496,7 @@ FirefoxDriver.prototype.getElementLocation = function(respond) {
   respond.send();
 };
 
+
 FirefoxDriver.prototype.getElementSize = function(respond) {
   var element = Utils.getElementAt(respond.elementId, this.context);
 
@@ -477,6 +506,7 @@ FirefoxDriver.prototype.getElementSize = function(respond) {
   respond.response = box.width + ", " + box.height;
   respond.send();
 };
+
 
 FirefoxDriver.prototype.dragAndDrop = function(respond, movementString) {
   var element = Utils.getElementAt(respond.elementId, this.context);
@@ -534,7 +564,8 @@ FirefoxDriver.prototype.dragAndDrop = function(respond, movementString) {
 
   Utils.triggerMouseEvent(element, 'mousemove', clientFinishX, clientFinishY);
 
-  // TODO(simon.m.stewart) If we can tell which element is under the cursor, send the mouseup to that
+  // TODO(simon.m.stewart) If we can tell which element is under the cursor,
+  // send the mouseup to that
   Utils.triggerMouseEvent(element, 'mouseup', clientFinishX, clientFinishY);
 
   var finalLoc = Utils.getElementLocation(element, this.context)
@@ -611,8 +642,9 @@ FirefoxDriver.prototype.findElementsByLinkText = function (respond, linkText) {
   respond.send();
 };
 
-FirefoxDriver.prototype.findElementByPartialLinkText =
-function(respond, linkText) {
+
+FirefoxDriver.prototype.findElementByPartialLinkText = function(respond,
+                                                                linkText) {
   var element = Utils.getElementAt(respond.elementId, this.context);
 
   var allLinks = element.getElementsByTagName("A");
@@ -638,8 +670,9 @@ function(respond, linkText) {
   respond.send();
 };
 
-FirefoxDriver.prototype.findElementsByPartialLinkText =
-function (respond, linkText) {
+
+FirefoxDriver.prototype.findElementsByPartialLinkText = function (respond,
+                                                                  linkText) {
   var element = Utils.getElementAt(respond.elementId, this.context);
 
   var children = element.getElementsByTagName("A");
@@ -677,8 +710,8 @@ FirefoxDriver.prototype.findElementByClassName = function(respond, className) {
 };
 
 
-FirefoxDriver.prototype.findChildElementsByClassName =
-function(respond, className) {
+FirefoxDriver.prototype.findChildElementsByClassName = function(respond,
+                                                                className) {
   var element = Utils.getElementAt(respond.elementId, this.context);
 
   if (element["getElementsByClassName"]) {
@@ -697,10 +730,12 @@ function(respond, className) {
     respond.response = response;
     respond.send();
   } else {
-    this.findElementsByXPath(respond, ".//*[contains(concat(' ',normalize-space(@class),' '),' "
-        + className + " ')]");
+    this.findElementsByXPath(respond,
+        ".//*[contains(concat(' ',normalize-space(@class),' '),' " +
+        className + " ')]");
   }
 };
+
 
 FirefoxDriver.prototype.findElementById = function(respond, id) {
   var doc = Utils.getDocument(this.context);
@@ -780,6 +815,7 @@ FirefoxDriver.prototype.findElementByTagName = function(respond, name) {
   respond.send();
 };
 
+
 FirefoxDriver.prototype.findElementsByTagName = function(respond, name) {
   var parentElement = Utils.getElementAt(respond.elementId, this.context);
 
@@ -798,13 +834,15 @@ FirefoxDriver.prototype.findElementsByTagName = function(respond, name) {
   respond.send();
 };
 
-FirefoxDriver.prototype.getElementCssProperty =
-function(respond, propertyName) {
+
+FirefoxDriver.prototype.getElementCssProperty = function(respond,
+                                                         propertyName) {
   var element = Utils.getElementAt(respond.elementId, this.context);
 
   respond.response = Utils.getStyleProperty(element, propertyName); // Coeerce to a string
   respond.send();
 };
+
 
 FirefoxDriver.prototype.getLocationOnceScrolledIntoView = function(respond) {
   var element = Utils.getElementAt(respond.elementId, this.context);
@@ -818,7 +856,8 @@ FirefoxDriver.prototype.getLocationOnceScrolledIntoView = function(respond) {
   element.ownerDocument.body.focus();
   element.scrollIntoView(true);
 
-  var retrieval = Utils.newInstance("@mozilla.org/accessibleRetrieval;1", "nsIAccessibleRetrieval");
+  var retrieval = Utils.newInstance(
+      "@mozilla.org/accessibleRetrieval;1", "nsIAccessibleRetrieval");
 
   try {
     var accessible = retrieval.getAccessibleFor(element);
