@@ -1157,6 +1157,20 @@ int wdAddNumberScriptArg(ScriptArgs* scriptArgs, long number)
 	return SUCCESS;
 }
 
+int wdAddDoubleScriptArg(ScriptArgs* scriptArgs, double number)
+{
+	VARIANT dest;
+	dest.vt = VT_R8;
+	dest.dblVal = (DOUBLE) number;	
+
+	LONG index = scriptArgs->currentIndex;
+	SafeArrayPutElement(scriptArgs->args, &index, &dest);
+
+	scriptArgs->currentIndex++;
+
+	return SUCCESS;
+}
+
 int wdAddElementScriptArg(ScriptArgs* scriptArgs, WebElement* element)
 {
 	VARIANT dest;
@@ -1221,6 +1235,11 @@ int wdGetScriptResultType(ScriptResult* result, int* type)
 			*type = 6;
 			break;
 
+		case VT_R4:
+		case VT_R8:
+			*type = 7;
+			break;
+
 		default:
 			return EUNKNOWNSCRIPTRESULT;
 	}
@@ -1255,6 +1274,15 @@ int wdGetNumberScriptResult(ScriptResult* result, long* value)
 	if (!result) { return ENOSCRIPTRESULT; }
 
 	*value = result->result.lVal;
+
+	return SUCCESS;
+}
+
+int wdGetDoubleScriptResult(ScriptResult* result, double* value)
+{
+	if (!result) { return ENOSCRIPTRESULT; }
+
+	*value = result->result.dblVal;
 
 	return SUCCESS;
 }

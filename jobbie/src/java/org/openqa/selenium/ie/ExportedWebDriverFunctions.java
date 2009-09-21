@@ -5,6 +5,7 @@ import com.sun.jna.Pointer;
 import com.sun.jna.PointerType;
 import com.sun.jna.WString;
 import com.sun.jna.ptr.ByReference;
+import com.sun.jna.ptr.DoubleByReference;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.NativeLongByReference;
 import com.sun.jna.ptr.PointerByReference;
@@ -91,11 +92,13 @@ interface ExportedWebDriverFunctions extends StdCallLibrary {
   int wdAddStringScriptArg(Pointer scriptArgs, WString string);
   int wdAddBooleanScriptArg(Pointer scriptArgs, int trueOrFalse);
   int wdAddNumberScriptArg(Pointer scriptArgs, NativeLong number);
+  int wdAddDoubleScriptArg(Pointer scriptArgs, double number);
   int wdAddElementScriptArg(Pointer scriptArgs, Pointer element);
   int wdExecuteScript(Pointer driver, WString script, Pointer scriptArgs, PointerByReference scriptResultRef);
   int wdGetScriptResultType(Pointer result, IntByReference type);
   int wdGetStringScriptResult(Pointer result, PointerByReference wrapper);
   int wdGetNumberScriptResult(Pointer result, NativeLongByReference value);
+  int wdGetDoubleScriptResult(Pointer result, DoubleByReference value);
   int wdGetBooleanScriptResult(Pointer result, IntByReference value);
   int wdGetElementScriptResult(Pointer result, Pointer driver, PointerByReference element);
 

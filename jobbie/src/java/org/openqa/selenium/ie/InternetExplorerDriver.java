@@ -21,6 +21,7 @@ import com.sun.jna.Native;
 import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
 import com.sun.jna.WString;
+import com.sun.jna.ptr.DoubleByReference;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.NativeLongByReference;
 import com.sun.jna.ptr.PointerByReference;
@@ -188,6 +189,13 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
         errors.verifyErrorCode(result, "Cannot extract string result");
         throw new WebDriverException(new StringWrapper(lib, message).toString());
         
+      case 7:
+    	DoubleByReference doubleVal = new DoubleByReference();
+    	result = lib.wdGetDoubleScriptResult(scriptResult, doubleVal);
+    	errors.verifyErrorCode(result, "Cannot extract double result");
+    	toReturn = doubleVal.getValue();
+        break;
+        
       default:
         throw new WebDriverException("Cannot determine result type");
       }
@@ -204,6 +212,9 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
       } else if (arg instanceof Boolean) {
         Boolean param = (Boolean) arg;
         result = lib.wdAddBooleanScriptArg(scriptArgs, param == null || !param ? 0 : 1);      
+      } else if (arg instanceof Double || arg instanceof Float) {
+    	  Double number = ((Number) arg).doubleValue();
+    	  result = lib.wdAddDoubleScriptArg(scriptArgs, number);
       } else if (arg instanceof Number) {
         long number = ((Number) arg).longValue();
         result = lib.wdAddNumberScriptArg(scriptArgs, new NativeLong(number));

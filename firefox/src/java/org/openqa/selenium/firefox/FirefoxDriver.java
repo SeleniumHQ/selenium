@@ -383,6 +383,9 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
     if (arg instanceof String) {
       converted.put("type", "STRING");
       converted.put("value", arg);
+    } else if (arg instanceof Double || arg instanceof Float) {
+      converted.put("type", "NUMBER");
+      converted.put("value", ((Number) arg).doubleValue());
     } else if (arg instanceof Number) {
       converted.put("type", "NUMBER");
       converted.put("value", ((Number) arg).longValue());

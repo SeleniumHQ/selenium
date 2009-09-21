@@ -18,9 +18,9 @@ limitations under the License.
 package org.openqa.selenium;
 
 import static org.openqa.selenium.Ignore.Driver.CHROME;
-import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
+import static org.openqa.selenium.Ignore.Driver.REMOTE;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -143,7 +143,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     assertEquals(expectedResult.longValue(), result);
   }
 
-  @Ignore(value = {HTMLUNIT, FIREFOX, IE},
+  @Ignore(value = {HTMLUNIT, REMOTE},
           reason = "HtmlUnit converts doubles into longs when passing")
   @JavascriptEnabled
   public void testPassingAndReturningADoubleShouldReturnADecimal() {

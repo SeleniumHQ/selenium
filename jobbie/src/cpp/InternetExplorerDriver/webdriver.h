@@ -128,11 +128,13 @@ EXPORT int wdNewScriptArgs(ScriptArgs** scriptArgs, int maxLength);
 EXPORT int wdAddStringScriptArg(ScriptArgs* scriptArgs, const wchar_t* arg);
 EXPORT int wdAddBooleanScriptArg(ScriptArgs* scriptArgs, int trueOrFalse);
 EXPORT int wdAddNumberScriptArg(ScriptArgs* scriptArgs, long number);
+EXPORT int wdAddDoubleScriptArg(ScriptArgs* scriptArgs, double number);
 EXPORT int wdAddElementScriptArg(ScriptArgs* scriptArgs, WebElement* element);
 EXPORT int wdExecuteScript(WebDriver* driver, const wchar_t* script, ScriptArgs* scriptArgs, ScriptResult** scriptResultRef);
 EXPORT int wdGetScriptResultType(ScriptResult* result, int* type);
 EXPORT int wdGetStringScriptResult(ScriptResult* result, StringWrapper** wrapper);
 EXPORT int wdGetNumberScriptResult(ScriptResult* result, long* value);
+EXPORT int wdGetDoubleScriptResult(ScriptResult* result, double* value);
 EXPORT int wdGetBooleanScriptResult(ScriptResult* result, int* value);
 EXPORT int wdGetElementScriptResult(ScriptResult* result, WebDriver* driver, WebElement** element);
 
