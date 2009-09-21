@@ -503,7 +503,10 @@ function clickElement(element, elementId) {
   }
   element.scrollIntoView(true);
   var coords = getElementCoords(element);
-  return {statusCode: "no-op", elementId: elementId, x: coords[0] - ChromeDriverContentScript.currentDocument.body.scrollLeft, y: coords[1] - ChromeDriverContentScript.currentDocument.body.scrollTop};
+  var size = getOffsetSizeFromSubElements(element);
+  return {statusCode: "no-op", elementId: elementId,
+          x: parseInt(coords[0] - ChromeDriverContentScript.currentDocument.body.scrollLeft + (size.width ? size.width / 2 : 0)),
+          y: parseInt(coords[1] - ChromeDriverContentScript.currentDocument.body.scrollTop + (size.height ? size.height / 2 : 0))};
 }
 
 /**
