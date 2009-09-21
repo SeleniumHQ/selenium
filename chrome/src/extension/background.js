@@ -261,7 +261,7 @@ function parseRequest(request) {
   case "hoverElement":
     //Falling through, as native events are handled the same
   case "sendElementKeys":
-     sendMessageOnActivePortAndAlsoKeepTrackOfIt(wrapInjectEmbedIfNecessary(request));
+    sendMessageOnActivePortAndAlsoKeepTrackOfIt(wrapInjectEmbedIfNecessary(request));
     break;
   case "getCurrentUrl":
   case "getTitle":
