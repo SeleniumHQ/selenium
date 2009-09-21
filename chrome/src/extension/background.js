@@ -123,9 +123,8 @@ chrome.extension.onConnect.addListener(function(port) {
       //because we ain't seeing a response any time soon
       if (ChromeDriver.lastRequestToBeSentWhichHasntBeenAnsweredYet != null) {
         ChromeDriver.isBlockedWaitingForResponse = false;
-        var request = ChromeDriver.lastRequestToBeSentWhichHasntBeenAnsweredYet;
-        ChromeDriver.lastRequestToBeSentWhichHasntBeenAnsweredYet = null;
-        parseRequest(request);
+        console.log("Re-trying request which was sent but not answered");
+        parseRequest(ChromeDriver.lastRequestToBeSentWhichHasntBeenAnsweredYet);
       }
     }
     if (ChromeDriver.isClosingTab) {
@@ -187,6 +186,7 @@ function sendResponseToParsedRequest(toSend, wait) {
     return;
   }
   ChromeDriver.isBlockedWaitingForResponse = false;
+  ChromeDriver.lastRequestToBeSentWhichHasntBeenAnsweredYet = null;
   console.log("SENDING RESPOND TO PARSED REQUEST");
   sendResponseByXHR(toSend, wait);
   setToolstripsBusy(false);
