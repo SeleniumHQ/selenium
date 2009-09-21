@@ -399,6 +399,9 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     }
 
     if (value instanceof Number) {
+      if (value instanceof Float || value instanceof Double) {
+        return ((Number) value).doubleValue();
+      }
       return ((Number) value).longValue();
     }
     

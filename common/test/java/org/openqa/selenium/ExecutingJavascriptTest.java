@@ -143,8 +143,6 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     assertEquals(expectedResult.longValue(), result);
   }
 
-  @Ignore(value = {HTMLUNIT, REMOTE},
-          reason = "HtmlUnit converts doubles into longs when passing")
   @JavascriptEnabled
   public void testPassingAndReturningADoubleShouldReturnADecimal() {
     if (!(driver instanceof JavascriptExecutor)) {
@@ -225,9 +223,9 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     }
 
     driver.get(javascriptPage);
-    long value = (Long) executeScript("return arguments[0] == 1 ? 1 : 0;", 1);
+    boolean value = (Boolean) executeScript("return arguments[0] == 1 ? true : false;", 1);
 
-    assertEquals(1, value);
+    assertTrue(value);
   }
 
   @JavascriptEnabled

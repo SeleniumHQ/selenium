@@ -47,7 +47,10 @@ public class JsonToBeanConverter {
     }
 
     if (text instanceof Number) {
-      // Thank you type erasure. 
+      // Thank you type erasure.
+      if (text instanceof Double || text instanceof Float) {
+        return (T) Double.valueOf(String.valueOf(text));
+      }
       return (T) Long.valueOf(String.valueOf(text));
     }
 

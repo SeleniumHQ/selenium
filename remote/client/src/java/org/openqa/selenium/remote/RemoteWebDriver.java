@@ -252,6 +252,9 @@ public class RemoteWebDriver implements WebDriver, SearchContext, JavascriptExec
       element.setId(parts[parts.length - 1]);
       return element;
     } else if (result.get("value") instanceof Number) {
+      if (result.get("value") instanceof Float || result.get("value") instanceof Double) {
+        return ((Number) result.get("value")).doubleValue();
+      }
       return ((Number) result.get("value")).longValue();
     }
 
@@ -282,7 +285,11 @@ public class RemoteWebDriver implements WebDriver, SearchContext, JavascriptExec
       converted.put("value", arg);
     } else if (arg instanceof Number) {
       converted.put("type", "NUMBER");
-      converted.put("value", ((Number) arg).longValue());
+      if (arg instanceof Float || arg instanceof Double) {
+        converted.put("value", ((Number) arg).doubleValue());
+      } else {
+        converted.put("value", ((Number) arg).longValue());
+      }
     } else if (arg instanceof Boolean) {
       converted.put("type", "BOOLEAN");
       converted.put("value", ((Boolean) arg).booleanValue());
