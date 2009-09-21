@@ -261,12 +261,7 @@ function parseRequest(request) {
   case "hoverElement":
     //Falling through, as native events are handled the same
   case "sendElementKeys":
-    try {
-      sendMessageOnActivePortAndAlsoKeepTrackOfIt(wrapInjectEmbedIfNecessary(request));
-    } catch (e) {
-      console.log("Tried to send request without an active port.  Ditching request and responding with error.");
-      sendResponseToParsedRequest("{statusCode: 500, value: {message: 'Tried to send request without an active port.  Ditching request and responding with error.'}}");
-    }
+     sendMessageOnActivePortAndAlsoKeepTrackOfIt(wrapInjectEmbedIfNecessary(request));
     break;
   case "getCurrentUrl":
   case "getTitle":
@@ -291,19 +286,18 @@ function parseRequest(request) {
     }
     //Falling through, as if we do have a page, we want to treat this like a normal request
   default:
-    try {
-      sendMessageOnActivePortAndAlsoKeepTrackOfIt({request: request, sequenceNumber: ChromeDriver.requestSequenceNumber++});
-    } catch (e) {
-      console.log("Tried to send request without an active port.  Ditching request and responding with error.");
-      sendResponseToParsedRequest("{statusCode: 500, value: {message: 'Tried to send request without an active port.  Ditching request and responding with error.'}}");
-    }
+    sendMessageOnActivePortAndAlsoKeepTrackOfIt({request: request, sequenceNumber: ChromeDriver.requestSequenceNumber++});
     break;
   }
 }
 
 function sendMessageOnActivePortAndAlsoKeepTrackOfIt(message) {
   ChromeDriver.lastRequestToBeSentWhichHasntBeenAnsweredYet = message;
-  ChromeDriver.activePort.postMessage(message);
+  try {
+    ChromeDriver.activePort.postMessage(message);
+  } catch (e) {
+    console.log("Tried to send request without an active port.  Request will retry when connected, but will hang until then.");
+  }
 }
 
 /**
