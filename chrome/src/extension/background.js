@@ -118,14 +118,6 @@ chrome.extension.onConnect.addListener(function(port) {
       //so we should focus on it.
       //We have nothing better to focus on, anyway.
       resetActiveTabDetails();
-      
-      //Re-parse the last request we sent if we didn't get a response,
-      //because we ain't seeing a response any time soon
-      if (ChromeDriver.lastRequestToBeSentWhichHasntBeenAnsweredYet != null) {
-        ChromeDriver.isBlockedWaitingForResponse = false;
-        console.log("Re-trying request which was sent but not answered");
-        parseRequest(ChromeDriver.lastRequestToBeSentWhichHasntBeenAnsweredYet);
-      }
     }
     if (ChromeDriver.isClosingTab) {
       //We are actively closing the tab, and expect a response to this
@@ -464,6 +456,13 @@ function setActiveTabDetails(tab) {
   ChromeDriver.activeWindowId = tab.windowId;
   ChromeDriver.doFocusOnNextOpenedTab = false;
   ChromeDriver.currentUrl = tab.url;
+  //Re-parse the last request we sent if we didn't get a response,
+  //because we ain't seeing a response any time soon
+  if (ChromeDriver.lastRequestToBeSentWhichHasntBeenAnsweredYet != null) {
+    ChromeDriver.isBlockedWaitingForResponse = false;
+    console.log("Re-trying request which was sent but not answered");
+    parseRequest(ChromeDriver.lastRequestToBeSentWhichHasntBeenAnsweredYet);
+  }
 }
 
 function switchToDefaultContent() {
