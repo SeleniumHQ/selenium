@@ -29,6 +29,7 @@ import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.XPathLookupException;
 import org.openqa.selenium.remote.Command;
 
 public class ChromeCommandExecutor {
