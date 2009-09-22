@@ -78,6 +78,13 @@ chrome.extension.onConnect.addListener(function(port) {
   if (ChromeDriver.doFocusOnNextOpenedTab) {
     ChromeDriver.activePort = port;
     setActiveTabDetails(port.tab);
+    //Re-parse the last request we sent if we didn't get a response,
+    //because we ain't seeing a response any time soon
+    if (ChromeDriver.lastRequestToBeSentWhichHasntBeenAnsweredYet != null) {
+      ChromeDriver.isBlockedWaitingForResponse = false;
+      console.log("Re-trying request which was sent but not answered");
+      parseRequest(ChromeDriver.lastRequestToBeSentWhichHasntBeenAnsweredYet);
+    }
   }
   
   if (ChromeDriver.urlBeingLoaded != null) {
@@ -457,13 +464,6 @@ function setActiveTabDetails(tab) {
   ChromeDriver.activeWindowId = tab.windowId;
   ChromeDriver.doFocusOnNextOpenedTab = false;
   ChromeDriver.currentUrl = tab.url;
-  //Re-parse the last request we sent if we didn't get a response,
-  //because we ain't seeing a response any time soon
-  if (ChromeDriver.lastRequestToBeSentWhichHasntBeenAnsweredYet != null) {
-    ChromeDriver.isBlockedWaitingForResponse = false;
-    console.log("Re-trying request which was sent but not answered");
-    parseRequest(ChromeDriver.lastRequestToBeSentWhichHasntBeenAnsweredYet);
-  }
 }
 
 function switchToDefaultContent() {
