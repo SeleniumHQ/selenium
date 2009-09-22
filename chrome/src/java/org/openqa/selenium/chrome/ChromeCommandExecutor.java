@@ -294,6 +294,9 @@ public class ChromeCommandExecutor {
         case 17:
           //Bad javascript
           throw new WebDriverException(message);
+        case 19:
+          //Bad xpath
+          throw new XPathLookupException(message);
         case 99:
           throw new WebDriverException("An error occured when sending a native event");
         case 500:
