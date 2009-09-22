@@ -323,6 +323,7 @@ function parsePortMessage(message) {
   case 11: //org.openqa.selenium.ElementNotVisibleException
   case 12: //java.lang.UnsupportedOperationException [Invalid element state (e.g. disabled)]
   case 17: //org.openqa.selenium.WebDriverException [Bad javascript]
+  case 19: //org.openqa.selenium.XPathLookupException
   case 99: //org.openqa.selenium.WebDriverException [Native event]
     toSend = '{statusCode: ' + message.response.value.statusCode;
     if (typeof(message.response.value) != "undefined" && message.response.value != null &&

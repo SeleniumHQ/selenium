@@ -429,7 +429,12 @@ function getElement(plural, parsed) {
     if (lookupValue[0] == '/') {
       lookupValue = lookupValue.substring(1, lookupValue.length + 1);
     }
-    elements = getElementsByXPath(root + lookupValue);
+    var xpath = root + lookupValue;
+    try {
+      elements = getElementsByXPath(xpath);
+    } catch (e) {
+      return {statusCode: 19, value: {message: "Could not look up element by xpath " + xpath}};
+    }
     break;
   }
   if (attribute != '') {
