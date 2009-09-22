@@ -380,7 +380,7 @@ function setCookie(cookie) {
  *               [{"id": 0, using: "id", value: "cheese"}]
  */
 function getElement(plural, parsed) {
-  var root = "./"; //root always ends with /, so // lookups should only start with one additional /
+  var root = "";
   var lookupBy = "";
   var lookupValue = "";
   var parent = null;
@@ -391,7 +391,7 @@ function getElement(plural, parsed) {
       return e;
     }
     //Looking for children
-    root = getXPathOfElement(parent) + "/";
+    root = getXPathOfElement(parent);
     lookupBy = parsed[0].using;
     lookupValue = parsed[0].value;
   } else {
@@ -405,7 +405,7 @@ function getElement(plural, parsed) {
   switch (lookupBy) {
   case "class name":
     elements = getElementsByXPath(root +
-        "/*[contains(concat(' ',normalize-space(@class),' '),' " +
+        "//*[contains(concat(' ',normalize-space(@class),' '),' " +
         lookupValue + " ')]");
     break;
   case "name":
@@ -421,13 +421,12 @@ function getElement(plural, parsed) {
     elements = getElementsByPartialLinkText(parent, lookupValue);
     break;
   case "tag name":
-    elements = getElementsByXPath(root + "/" + lookupValue);
+    elements = getElementsByXPath(root + "//" + lookupValue);
     break;
   case "xpath":
-    //Because root trails with a /, if the xpath starts with a /,
-    //we need to strip it out, or we'll get unwanted duplication
-    if (lookupValue[0] == '/') {
-      lookupValue = lookupValue.substring(1, lookupValue.length + 1);
+    if (root != "") {
+      //Because xpath is relative to the parent, if there is a parent, we add a /
+      root = root + "/";
     }
     var xpath = root + lookupValue;
     try {
@@ -438,7 +437,7 @@ function getElement(plural, parsed) {
     break;
   }
   if (attribute != '') {
-    elements = getElementsByXPath(root + "/*[@" + attribute + "='" + lookupValue + "']");
+    elements = getElementsByXPath(root + "//*[@" + attribute + "='" + lookupValue + "']");
   }
   if (elements == null || elements.length == 0) {
     if (plural) {
