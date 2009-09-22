@@ -1201,6 +1201,12 @@ function getElementCoords(elem) {
  * @return an object of form: {type: "DIMENSION", width: maxOffsetWidth, height: maxOffsetHeight}
  */
 function getOffsetSizeFromSubElements(element, maxWidth, maxHeight) {
+  if (element.getBoundingClientRect) {
+    var rect = element.getBoundingClientRect();
+    return {type: "DIMENSION", width: rect.width, height: rect.height};
+  }
+  //The below isn't correct, but is a hack with a decent probability of being correct, if the element has no BoundingClientRect
+  //TODO(danielwh): Fix this up a bit
   maxWidth = (typeof(maxWidth) == "undefined" || element.offsetWidth > maxWidth) ? element.offsetWidth : maxWidth;
   maxHeight = (typeof(maxHeight) == "undefined" || element.offsetHeight > maxHeight) ? element.offsetHeight : maxHeight;
   for (var child in element.children) {
