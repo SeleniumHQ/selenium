@@ -299,7 +299,7 @@ function parseRequest(request) {
 }
 
 function sendMessageOnActivePortAndAlsoKeepTrackOfIt(message) {
-  ChromeDriver.lastRequestToBeSentWhichHasntBeenAnsweredYet = message;
+  ChromeDriver.lastRequestToBeSentWhichHasntBeenAnsweredYet = message.request;
   try {
     ChromeDriver.activePort.postMessage(message);
   } catch (e) {

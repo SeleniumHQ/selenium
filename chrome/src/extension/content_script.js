@@ -848,7 +848,7 @@ function execute(script, passedArgs) {
   scriptTag.addEventListener('DOMAttrModified', returnFromJavascriptInPage, false);
   ChromeDriverContentScript.injectedScriptElement = scriptTag;
   console.log("Injecting script element");
-  ChromeDriverContentScript.currentDocument.getElementsByTagName("body")[0].appendChild(ChromeDriverContentScript.injectedScriptElement);
+  ChromeDriverContentScript.currentDocument.getElementsByTagName("html")[0].appendChild(ChromeDriverContentScript.injectedScriptElement);
 }
 
 function parseReturnValueFromScript(result) {
@@ -906,7 +906,7 @@ function returnFromJavascriptInPage(e) {
  */
 function removeInjectedScript() {
   if (ChromeDriverContentScript.injectedScriptElement != null) {
-    ChromeDriverContentScript.currentDocument.getElementsByTagName("body")[0].removeChild(ChromeDriverContentScript.injectedScriptElement);
+    ChromeDriverContentScript.currentDocument.getElementsByTagName("html")[0].removeChild(ChromeDriverContentScript.injectedScriptElement);
     ChromeDriverContentScript.injectedScriptElement = null;
   }
 }
@@ -933,7 +933,7 @@ function getFrameNameFromIndex(index) {
     if (ChromeDriverContentScript.currentDocument.getElementsByTagName("frameset").length > 0) {
       ChromeDriverContentScript.currentDocument.getElementsByTagName("frameset")[0].appendChild(ChromeDriverContentScript.injectedScriptElement);
     } else {
-      ChromeDriverContentScript.currentDocument.getElementsByTagName("body")[0].appendChild(ChromeDriverContentScript.injectedScriptElement);
+      ChromeDriverContentScript.currentDocument.getElementsByTagName("html")[0].appendChild(ChromeDriverContentScript.injectedScriptElement);
     }
   } catch (e) {
     ChromeDriverContentScript.port.postMessage({sequenceNumber: ChromeDriverContentScript.currentSequenceNumber,
@@ -956,7 +956,7 @@ function returnFromGetFrameNameFromIndexJavascriptInPage(e) {
   if (ChromeDriverContentScript.currentDocument.getElementsByTagName("frameset").length > 0) {
     ChromeDriverContentScript.currentDocument.getElementsByTagName("frameset")[0].removeChild(ChromeDriverContentScript.injectedScriptElement);
   } else {
-    ChromeDriverContentScript.currentDocument.getElementsByTagName("body")[0].removeChild(ChromeDriverContentScript.injectedScriptElement);
+    ChromeDriverContentScript.currentDocument.getElementsByTagName("html")[0].removeChild(ChromeDriverContentScript.injectedScriptElement);
   }
   ChromeDriverContentScript.injectedScriptElement = null;
 }
@@ -968,14 +968,14 @@ function injectEmbed() {
   ChromeDriverContentScript.injectedEmbedElement = ChromeDriverContentScript.currentDocument.createElement('embed');
   ChromeDriverContentScript.injectedEmbedElement.setAttribute("type", "application/x-chromedriver-reporter");
   ChromeDriverContentScript.injectedEmbedElement.setAttribute("style", "width: 0; height: 0;");
-  ChromeDriverContentScript.currentDocument.getElementsByTagName("body")[0].appendChild(ChromeDriverContentScript.injectedEmbedElement);
+  ChromeDriverContentScript.currentDocument.getElementsByTagName("html")[0].appendChild(ChromeDriverContentScript.injectedEmbedElement);
   //Give the embed time to render.  Hope that the followup doesn't count embeds or anything
   setTimeout(removeInjectedEmbed, 100);
 }
 
 function removeInjectedEmbed() {
   if (ChromeDriverContentScript.injectedEmbedElement != null) {
-    ChromeDriverContentScript.currentDocument.getElementsByTagName("body")[0].removeChild(ChromeDriverContentScript.injectedEmbedElement);
+    ChromeDriverContentScript.currentDocument.getElementsByTagName("html")[0].removeChild(ChromeDriverContentScript.injectedEmbedElement);
     ChromeDriverContentScript.injectedEmbedElement = null;
   }
 }
