@@ -284,6 +284,14 @@ function parseRequest(request) {
       break;
     }
     //Falling through, as if we do have a page, we want to treat this like a normal request
+  case "deleteAllCookies":
+  case "deleteCookie":
+    if (hasNoPage()) {
+      console.log("Not got a page, but asked to delete cookies, so returning ok");
+      sendResponseToParsedRequest("{statusCode: 0}");
+      break;
+    }
+    //Falling through, as if we do have a page, we want to treat this like a normal request
   default:
     sendMessageOnActivePortAndAlsoKeepTrackOfIt({request: request, sequenceNumber: ChromeDriver.requestSequenceNumber++});
     break;
