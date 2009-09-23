@@ -526,6 +526,16 @@ public class RemoteWebDriver implements WebDriver, SearchContext, JavascriptExec
 
     }
 
+    public Cookie getCookieNamed(String name) {
+      Set<Cookie> allCookies = getCookies();
+      for (Cookie cookie : allCookies) {
+        if (cookie.getName().equals(name)) {
+          return cookie;
+        }
+      }
+      return null;
+    }
+
     public Speed getSpeed() {
       Response response = execute("getSpeed");
 

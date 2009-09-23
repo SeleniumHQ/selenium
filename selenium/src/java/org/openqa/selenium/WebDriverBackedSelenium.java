@@ -1980,12 +1980,8 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return the value of the cookie
    */
   public String getCookieByName(String name) {
-    for (Cookie cookie : driver.manage().getCookies()) {
-      if (name.equals(cookie.getName()))
-        return cookie.getValue();
-    }
-
-    return null;
+    Cookie cookie = driver.manage().getCookieNamed(name);
+    return cookie == null ? null : cookie.getValue();
   }
 
   /**

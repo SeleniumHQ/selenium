@@ -68,6 +68,8 @@ import java.io.IOException;
 import java.net.ConnectException;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -771,8 +773,6 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
         throw new WebDriverException("You may not set cookies on a page that is not HTML");
       }
 
-      // Cookies only make sense if the page is
-
       String domain = getDomainForCookie();
       verifyDomain(cookie, domain);
 
@@ -792,6 +792,11 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
             "Domain must not be an empty string. Consider using null instead");
       }
 
+      // Line-noise-tastic
+      if (domain.matches(".*[^:]:\\d+$")) {
+        domain = domain.replaceFirst(":\\d+$", "");
+      }
+
       expectedDomain = expectedDomain.startsWith(".") ? expectedDomain : "." + expectedDomain;
       domain = domain.startsWith(".") ? domain : "." + domain;
 
@@ -801,6 +806,17 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
                 "You may only add cookies that would be visible to the current domain: %s => %s",
                 domain, expectedDomain));
       }
+    }
+
+    public Cookie getCookieNamed(String name) {
+      Set<Cookie> allCookies = getCookies();
+      for (Cookie cookie : allCookies) {
+        if (name.equals(cookie.getName())) {
+          return cookie;
+        }
+      }
+
+      return null;
     }
 
     public void deleteCookieNamed(String name) {
@@ -857,11 +873,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
 
     private String getDomainForCookie() {
       URL current = lastPage().getWebResponse().getRequestUrl();
-      if (current.getPort() == 80) {
-        return current.getHost();
-      }
-
-      return String.format("%s:%s", current.getHost(), current.getPort());
+      return current.getHost();
     }
   }
 

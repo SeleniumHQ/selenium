@@ -433,7 +433,11 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor {
             return options.getCookies();
         }
 
-        public Speed getSpeed() {
+        public Cookie getCookieNamed(String name) {
+            return options.getCookieNamed(name);  
+        }
+
+      public Speed getSpeed() {
             return options.getSpeed();
         }
 

@@ -480,7 +480,17 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
             return json.toString();
         }
 
-        public Set<Cookie> getCookies() {
+      public Cookie getCookieNamed(String name) {
+        Set<Cookie> allCookies = getCookies();
+        for (Cookie cookie : allCookies) {
+          if (cookie.getName().equals(name)) {
+            return cookie;
+          }
+        }
+        return null;
+      }
+
+      public Set<Cookie> getCookies() {
             String response = sendMessage(WebDriverException.class, "getCookie").trim();
             Set<Cookie> cookies = new HashSet<Cookie>();
 

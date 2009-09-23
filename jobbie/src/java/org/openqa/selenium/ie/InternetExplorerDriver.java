@@ -436,7 +436,18 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
 	        return toReturn;
 		}
 
-		private String getCurrentHost() {
+      public Cookie getCookieNamed(String name) {
+        Set<Cookie> allCookies = getCookies();
+        for (Cookie cookie : allCookies) {
+          if (name.equals(cookie.getName())) {
+            return cookie;
+          }
+        }
+
+        return null;        
+      }
+
+      private String getCurrentHost() {
 			try {
 				URL url = new URL(getCurrentUrl());
 				return url.getHost();

@@ -205,11 +205,19 @@ public interface WebDriver {
 
         /**
          * Get all the cookies for the current domain. This is the equivalent of
-         * calling "document.cookies"
+         * calling "document.cookie" and parsing the result
          *
          * @return A Set of cookies for the current domain.
          */
         Set<Cookie> getCookies();
+
+      /**
+       * Get a cookie with a given name.
+       *
+       * @param name the name of the cookie
+       * @return the cookie, or null if no cookie with the given name is present
+       */
+        Cookie getCookieNamed(String name);
 
         /**
          * Gets the mouse speed for drag and drop

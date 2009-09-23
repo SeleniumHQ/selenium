@@ -154,8 +154,6 @@ FirefoxDriver.prototype.executeScript = function(respond, script) {
 
     var result = runScript(scriptSrc, parameters);
 
-    Utils.dumpn("result is: '" + result + "'");
-
     var wrappedResult = Utils.wrapResult(result, this.context);
 
     if (wrappedResult.resultType !== undefined) {
@@ -564,23 +562,23 @@ FirefoxDriver.prototype.addCookie = function(respond, cookieString) {
 
   if (!cookie.domain) {
     var location = Utils.getBrowser(this.context).contentWindow.location;
-    cookie.domain = location.hostname; // + ":" + location.port;
-    if (location.port != 80) {
-      cookie.domain += ":" + location.port;
-    }
+    cookie.domain = location.hostname;
   } else {
     var currLocation = Utils.getBrowser(this.context).contentWindow.location;
     var currDomain = currLocation.host;
-    if (currLocation.port != 80) {
-      currDomain += ":" + currLocation.port;
-    }
-    if (currDomain.indexOf(cookie.domain)
-        == -1) {  // Not quite right, but close enough
+    if (currDomain.indexOf(cookie.domain) == -1) {  // Not quite right, but close enough
       respond.isError = true;
       respond.response = "You may only set cookies for the current domain";
       respond.send();
       return;
     }
+  }
+
+  // The cookie's domain may include a port. Which is bad. Remove it
+  // We'll catch ip6 addresses by mistake. Since no-one uses those
+  // this will be okay for now.
+  if (cookie.domain.match(/:\d+$/)) {
+    cookie.domain = cookie.domain.replace(/:\d+$/, "");
   }
 
   var document = Utils.getDocument(this.context);
@@ -609,47 +607,33 @@ FirefoxDriver.prototype.addCookie = function(respond, cookieString) {
   respond.send();
 };
 
+function getVisibleCookies(location) {
+  var results = [];
 
-function handleCookies(context, toCall) {
-  var cm = Utils.getService("@mozilla.org/cookiemanager;1", "nsICookieManager");
-
-  var makeStrippedHost = function (aHost) {
-    var formattedHost = aHost.charAt(0) == "." ?
-        aHost.substring(1, aHost.length) : aHost;
-    formattedHost = formattedHost.substring(0, 4) == "www." ?
-        formattedHost.substring(4, formattedHost.length) : formattedHost;
-
-    return formattedHost;
-  };
-
-  var location = Utils.getBrowser(context).contentWindow.location;
-  var currentDomain = makeStrippedHost(location.host);
-  if (location.port != 80) {
-    currentDomain += ":" + location.port;
-  }
-  var isForCurrentHost = function(aHost) {
-    return currentDomain.indexOf(aHost) != -1;
-  };
-
-  var currentPath = Utils.getBrowser(context).contentWindow.location.pathname;
+  var currentPath = location.pathname;
   if (!currentPath) currentPath = "/";
   var isForCurrentPath = function(aPath) {
     return currentPath.indexOf(aPath) != -1;
   };
-
+  var cm = Utils.getService("@mozilla.org/cookiemanager;1", "nsICookieManager");
   var e = cm.enumerator;
   while (e.hasMoreElements()) {
-    var cookie = e.getNext();
-    if (cookie && cookie instanceof Components.interfaces.nsICookie) {
-      var strippedHost = makeStrippedHost(cookie.host);
+    var cookie = e.getNext().QueryInterface(Components.interfaces["nsICookie"]);
 
-      if (isForCurrentHost(strippedHost) && isForCurrentPath(cookie.path)) {
-        toCall(cookie);
+    // Take the hostname and progressively shorten it
+    var hostname = location.hostname;
+    do {
+      if ((cookie.host == "." + hostname || cookie.host == hostname)
+          && isForCurrentPath(cookie.path)) {
+        results.push(cookie);
+        break;
       }
-    }
+      hostname = hostname.replace(/^.*?\./, "");
+    } while (hostname.indexOf(".") != -1);
   }
-}
 
+  return results;
+};
 
 FirefoxDriver.prototype.getCookie = function(respond) {
   var cookieToString = function(c) {
@@ -659,10 +643,11 @@ FirefoxDriver.prototype.getCookie = function(respond) {
   };
 
   var toReturn = "";
-  handleCookies(this.context, function(cookie) {
-    var toAdd = cookieToString(cookie);
+  var cookies = getVisibleCookies(Utils.getBrowser(this.context).contentWindow.location);
+  for (var i = 0; i < cookies.length; i++) {
+    var toAdd = cookieToString(cookies[i]);
     toReturn += toAdd + "\n";
-  });
+  }
 
   respond.response = toReturn;
   respond.send();
@@ -672,15 +657,17 @@ FirefoxDriver.prototype.getCookie = function(respond) {
 // This is damn ugly, but it turns out that just deleting a cookie from the document
 // doesn't always do The Right Thing
 FirefoxDriver.prototype.deleteCookie = function(respond, cookieString) {
-  var cm =
-      Utils.getService("@mozilla.org/cookiemanager;1", "nsICookieManager");
+  var cm = Utils.getService("@mozilla.org/cookiemanager;1", "nsICookieManager");
+  // TODO(simon): Well, this is dumb. Sorry
   var toDelete = eval('(' + cookieString + ')');
 
-  handleCookies(this.context, function(cookie) {
-    if (toDelete.name == cookie.name) {
+  var cookies = getVisibleCookies(Utils.getBrowser(this.context).contentWindow.location);
+  for (var i = 0; i < cookies.length; i++) {
+    var cookie = cookies[i];
+    if (cookie.name == toDelete.name) {
       cm.remove(cookie.host, cookie.name, cookie.path, false);
     }
-  });
+  }
 
   respond.context = this.context;
   respond.send();
@@ -689,9 +676,13 @@ FirefoxDriver.prototype.deleteCookie = function(respond, cookieString) {
 
 FirefoxDriver.prototype.deleteAllCookies = function(respond) {
   var cm = Utils.getService("@mozilla.org/cookiemanager;1", "nsICookieManager");
-  handleCookies(this.context, function(cookie) {
+  var cookies = getVisibleCookies(Utils.getBrowser(this.context).contentWindow.location);
+
+  for (var i = 0; i < cookies.length; i++) {
+    var cookie = cookies[i];
     cm.remove(cookie.host, cookie.name, cookie.path, false);
-  });
+  }
+
   respond.context = this.context;
   respond.send();
 };
