@@ -886,6 +886,7 @@ function returnFromJavascriptInPage(e) {
     console.log("Somehow the returnFromJavascriptInPage hander was reached.");
     return;
   }
+  removeInjectedScript();
   if (e.prevValue == "EXCEPTION") {
     ChromeDriverContentScript.port.postMessage({sequenceNumber: ChromeDriverContentScript.currentSequenceNumber,
         response: {response: "execute", value: {statusCode: 17,
@@ -896,7 +897,6 @@ function returnFromJavascriptInPage(e) {
   console.log("Result was: " + e.newValue.value);
   var result = JSON.parse(e.newValue).value;
   var value = parseReturnValueFromScript(result);
-  removeInjectedScript();
   console.log("reutrn value: " + JSON.stringify(value));
   ChromeDriverContentScript.port.postMessage({sequenceNumber: ChromeDriverContentScript.currentSequenceNumber, response: {response: "execute", value: {statusCode: 0, value: value}}});
 }
