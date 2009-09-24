@@ -120,6 +120,13 @@
 			remoteGlobalIDString = 53EF4D400DC247B3005F5E6D;
 			remoteInfo = bench;
 		};
+		193EDAFC1062F5C6006762AC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 831964870F296888005D1D21 /* JSON.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = FE2BBD7F0D8B0D3900184787;
+			remoteInfo = libjson;
+		};
 		8319647A0F29686E005D1D21 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 831964740F29686E005D1D21 /* CocoaHTTPServerLibrary.xcodeproj */;
@@ -512,6 +519,7 @@
 			);
 			dependencies = (
 				831964AA0F296940005D1D21 /* PBXTargetDependency */,
+				193EDAFD1062F5C6006762AC /* PBXTargetDependency */,
 			);
 			name = iWebDriver;
 			productName = iWebDriver;
@@ -732,6 +740,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		193EDAFD1062F5C6006762AC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = libjson;
+			targetProxy = 193EDAFC1062F5C6006762AC /* PBXContainerItemProxy */;
+		};
 		831964AA0F296940005D1D21 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = CocoaHTTPServer;
