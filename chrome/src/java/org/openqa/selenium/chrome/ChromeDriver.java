@@ -90,7 +90,8 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
 
       String[] flags = {
           "--user-data-dir=" + wrapInQuotesIfWindows(profileDir.getCanonicalPath()),
-          "--load-extension=" + wrapInQuotesIfWindows(extensionDir.getCanonicalPath())
+          "--load-extension=" + wrapInQuotesIfWindows(extensionDir.getCanonicalPath()),
+          "--activate-on-launch"
       };
       chromeBinary.start(flags);
     } catch (IOException e) {
