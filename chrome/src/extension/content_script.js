@@ -100,6 +100,10 @@ function parsePortMessage(message) {
     response.value = getCookies();
     response.wait = false;
     break;
+  case "getCookieNamed":
+    response.value = getCookieNamed(message.request.name);
+    response.wait = false;
+    break;
   case "getElement":
     response.value = getElement(false, message.request.by);
     response.wait = false;
@@ -302,6 +306,22 @@ function getCookies() {
     cookies.push({type: "COOKIE", name: cookie[0], value: cookie[1], secure: false});
   }
   return {statusCode: 0, value: cookies};
+}
+
+/**
+ * Get the cookie accessible from the current page with the passed name
+ * @param name name of the cookie
+ */
+function getCookieNamed(name) {
+  var cookies = [];
+  var cookieStrings = getAllCookiesAsStrings();
+  for (var i = 0; i < cookieStrings.length; ++i) {
+    var cookie = cookieStrings[i].split("=");
+    if (cookie[0] == name) {
+      return {statusCode: 0, value: {type: "COOKIE", name: cookie[0], value: cookie[1], secure: false}};
+    }
+  }
+  return {statusCode: 0, value: null};
 }
 
 /**
@@ -787,7 +807,7 @@ function parseWrappedArguments(argument) {
  * @param passedArgs array of arguments to pass to the script
  */
 function execute(script, passedArgs) {
-  console.log("execing " + script + ", args: " + passedArgs);
+  console.log("execing " + script + ", args: " + JSON.stringify(passedArgs));
   var func = "function(){" + script + "}";
   var args = [];
   for (var i = 0; i < passedArgs.length; ++i) {

@@ -62,6 +62,7 @@ public class ChromeCommandExecutor {
     
     nameToJson.put("addCookie", new JsonCommand("{request: 'addCookie', cookie: ?cookie}"));
     nameToJson.put("getCookies", new JsonCommand("{request: 'getCookies'}"));
+    nameToJson.put("getCookieNamed", new JsonCommand("{request: 'getCookieNamed', name: ?name}"));
     nameToJson.put("deleteAllCookies", new JsonCommand("{request: 'deleteAllCookies'}"));
     nameToJson.put("deleteCookie", new JsonCommand("{request: 'deleteCookie', name: ?name}"));
     

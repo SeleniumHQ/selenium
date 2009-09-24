@@ -354,6 +354,10 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
       return cookies;
     }
 
+    public Cookie getCookieNamed(String name) {
+      return (Cookie)execute("getCookieNamed", name).getValue();
+    }
+    
     public Speed getSpeed() {
       throw new UnsupportedOperationException("Not yet supported in Chrome");
     }
