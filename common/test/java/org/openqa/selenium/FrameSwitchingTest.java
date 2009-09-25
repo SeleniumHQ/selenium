@@ -48,8 +48,6 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
     assertThat(pageNumber.getText().trim(), equalTo("1"));
   }
 
-  @Ignore(FIREFOX)
-  //TODO(danielwh): This test is being very flaky for me in Firefox, I'll look into it
   public void testShouldFocusOnTheReplacementWhenAFrameFollowsALinkToA_TopTargettedPage() {
     driver.get(framesetPage);
 
