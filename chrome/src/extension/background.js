@@ -13,46 +13,60 @@ ChromeDriver.activePort = null;
 //ID of the currently active tab
 ChromeDriver.activeTabId = null;
 
+//Whether we should switch to the next tab which opens.
+//Should be set if the last active tab was closed.
 ChromeDriver.doFocusOnNextOpenedTab = true;
 
+//Place to temporarily store the URL currently being loaded, so that we can retry if needed,
+//because opening a url is an async callback
 ChromeDriver.urlBeingLoaded = null;
 
+//URL we believe we're currently on
 ChromeDriver.currentUrl = null;
-ChromeDriver.isGettingUrlButOnlyChangingByHash = false;
+//Flag whether we're ChromeDriver.get(url)ing a url which differs from ChromeDriver.currentUrl by its fragment
+ChromeDriver.isGettingUrlButOnlyChangingByFragment = false;
 
+//Whether we are currently executing a ChromeDriver.close(),
+//and accordingly should send a success response when the tab closes
 ChromeDriver.isClosingTab = false;
 
+//Whether we have sent a response to the {currently, most recently} loading page
 ChromeDriver.hasSentResponseToThisPageLoading = false;
 
+//Whether we believe a page is open to which we have no content script
 ChromeDriver.hasNoConnectionToPage = true;
 
+//If we are switching frames, and we are switching to children (e.g. switchTo().frame(foo.bar.baz)),
+//stores the rest of the path we are still to traverse (e.g. ["bar", "baz"], if we have found foo)
 ChromeDriver.restOfCurrentFramePath = [];
 
+//Port to the frameset or main content page we currently have loaded,
+//so that we can probe it for information about its frames
 ChromeDriver.portToUseForFrameLookups = null;
-ChromeDriver.lastFrameIndexLookedUp = -1;
 
+//We store the last request we sent, until it has been answered,
+//so that if we change page between sending a request and receiving the response,
+//we can re-send it to the newly loaded page
 ChromeDriver.lastRequestToBeSentWhichHasntBeenAnsweredYet = null;
 
 //Whether the plugin has the OS-specific window handle for the active tab
 //Called HWND rather than window handle to avoid confusion with the other
 //use of window handle to mean 'name of window'
 ChromeDriver.hasHwnd = false;
+
+//The last xmlHttpRequest we made (used for communication with test language bindings)
 ChromeDriver.xmlHttpRequest = null;
-//TODO(danielwh): Get this from the initial URL
+//TODO(danielwh): Get this from the initial URL - see http://crbug.com/11547, the ChromeDriverInternals wiki page.
+//There is a patch to fix this on the Downloads page of the Selenium project
 ChromeDriver.xmlHttpRequestUrl = "http://127.0.0.1:9700/chromeCommandExecutor"
 ChromeDriver.requestSequenceNumber = 0;
 ChromeDriver.getUrlRequestSequenceNumber = 0;
 
+//Prefix we prepend to the hopefully unique javascript window name, in hopes of further removing conflict
 ChromeDriver.windowHandlePrefix = '__webdriver_chromedriver_windowhandle';
-ChromeDriver.windowHandleId = 0;
 
 //Indicates we will not execute any commands because we are already executing one
 ChromeDriver.isBlockedWaitingForResponse = false;
-
-//We will try to re-send a request a few times if we don't have a port,
-//in case a page is loading/changing and we get a port.
-//This keeps track of how many attempts we have made.
-ChromeDriver.attemptsToSendWithNoPort = 0;
 
 chrome.extension.onConnect.addListener(function(port) {
   console.log("Connected to " + port.name);
@@ -72,7 +86,7 @@ chrome.extension.onConnect.addListener(function(port) {
   if (!foundTab) {
     //New tab!
     //We don't know if it's a frameset yet, so we leave that as undefined
-    ChromeDriver.tabs.push({tabId: port.tab.id, windowName: ChromeDriver.windowHandlePrefix + ChromeDriver.windowHandleId + "_" + port.tab.id, mainPort: port, frames: []});
+    ChromeDriver.tabs.push({tabId: port.tab.id, windowName: ChromeDriver.windowHandlePrefix + "_" + port.tab.id, mainPort: port, frames: []});
   }
   
   if (ChromeDriver.doFocusOnNextOpenedTab) {
@@ -563,7 +577,6 @@ function switchToFrameByName(name) {
 }
 
 function getFrameNameFromIndex(index) {
-  ChromeDriver.lastFrameIndexLookedUp = index;
   var message = {request: {request: "getFrameNameFromIndex", index: index}, sequenceNumber: ChromeDriver.requestSequenceNumber++};
   ChromeDriver.portToUseForFrameLookups.postMessage(message);
 }
@@ -579,7 +592,7 @@ function getUrl(url) {
   var tempActivePort = ChromeDriver.activePort;
   if (url.indexOf("#") > -1 && ChromeDriver.currentUrl != null &&
       ChromeDriver.currentUrl.split("#")[0] == url.split("#")[0]) {
-    ChromeDriver.isGettingUrlButOnlyChangingByHash = true;
+    ChromeDriver.isGettingUrlButOnlyChangingByFragment = true;
   } else {
     resetActiveTabDetails();
   }
@@ -588,7 +601,7 @@ function getUrl(url) {
     chrome.tabs.create({url: url, selected: true}, getUrlCallback);
   } else {
     ChromeDriver.activeTabId = tempActiveTagId;
-    if (ChromeDriver.isGettingUrlButOnlyChangingByHash) {
+    if (ChromeDriver.isGettingUrlButOnlyChangingByFragment) {
       chrome.tabs.update(ChromeDriver.activeTabId, {url: url, selected: true}, getUrlCallback);
     } else {
       chrome.tabs.remove(ChromeDriver.activeTabId);
@@ -622,10 +635,10 @@ function getUrlCallback(tab) {
     }
     setActiveTabDetails(tab);
   }
-  if (ChromeDriver.isGettingUrlButOnlyChangingByHash) {
+  if (ChromeDriver.isGettingUrlButOnlyChangingByFragment) {
     ChromeDriver.urlBeingLoaded = null;
     sendResponseToParsedRequest("", false);
-    ChromeDriver.isGettingUrlButOnlyChangingByHash = false;
+    ChromeDriver.isGettingUrlButOnlyChangingByFragment = false;
   }
 }
 
