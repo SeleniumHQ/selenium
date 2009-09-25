@@ -8,7 +8,6 @@ ChromeDriverContentScript = {};
 ChromeDriverContentScript.internalElementArray = [];
 ChromeDriverContentScript.port = null;
 ChromeDriverContentScript.currentDocument = window.document;
-ChromeDriverContentScript.injectedScriptElement = null;
 ChromeDriverContentScript.injectedEmbedElement = null;
 //Record this for async calls (execute), so returner knows what to return
 //(Also so that we can not re-start commands we have already started executing)
@@ -826,7 +825,6 @@ function execute(script, passedArgs) {
   scriptTag.innerText = 'var e = document.createEvent("MutationEvent");' +
                         //Dump our arguments in an array
                         'var args = JSON.parse("' + argsString + '");' +
-                        'var error = false;' +
                         'var element = null;' +
                         'for (var i = 0; i < args.length; ++i) {' +
                           'if (args[i] && typeof(args[i]) == "object" && args[i].webdriverElementXPath) {' +
@@ -835,14 +833,7 @@ function execute(script, passedArgs) {
                           '}' +
                         '}' +
                         'try {' +
-                        'var val = eval(' + func + ').apply(window, args);' +
-                        '} catch (exn) {' +
-                          //Fire mutation event with prevValue set to EXCEPTION to indicate an error in the script
-                          'e.initMutationEvent("DOMAttrModified", true, false, null, "EXCEPTION", null, null, 0);' +
-                          'document.getElementsByTagName("script")[document.getElementsByTagName("script").length - 1].dispatchEvent(e);' +
-                           'error = true;' +
-                        '}' +
-                        'if (!error) {' +
+                          'var val = eval(' + func + ').apply(window, args);' +
                           'if (typeof(val) == "string") { val = JSON.stringify(val); }' +
                           'else if (typeof(val) == "undefined") { val = null; }' +
                           'else if (typeof(val) == "object" && val && val.nodeType == 1) {' +
@@ -863,12 +854,15 @@ function execute(script, passedArgs) {
                           '}' +
                           //Fire mutation event with newValue set to the JSON of our return value
                           'e.initMutationEvent("DOMAttrModified", true, false, null, null, "{value: " + val + "}", null, 0);' +
-                          'document.getElementsByTagName("script")[document.getElementsByTagName("script").length - 1].dispatchEvent(e);' +
-                        '};' +
+                        '} catch (exn) {' +
+                          //Fire mutation event with prevValue set to EXCEPTION to indicate an error in the script
+                          'e.initMutationEvent("DOMAttrModified", true, false, null, "EXCEPTION", null, null, 0);' +
+                        '}' +
+                        'document.getElementsByTagName("script")[document.getElementsByTagName("script").length - 1].dispatchEvent(e);' +
+                        'document.getElementsByTagName("html")[0].removeChild(document.getElementsByTagName("script")[document.getElementsByTagName("script").length - 1]);';
   scriptTag.addEventListener('DOMAttrModified', returnFromJavascriptInPage, false);
-  ChromeDriverContentScript.injectedScriptElement = scriptTag;
   console.log("Injecting script element");
-  ChromeDriverContentScript.currentDocument.getElementsByTagName("html")[0].appendChild(ChromeDriverContentScript.injectedScriptElement);
+  ChromeDriverContentScript.currentDocument.getElementsByTagName("html")[0].appendChild(scriptTag);
 }
 
 function parseReturnValueFromScript(result) {
@@ -902,11 +896,6 @@ function parseReturnValueFromScript(result) {
  * Callback from execute
  */
 function returnFromJavascriptInPage(e) {
-    if (ChromeDriverContentScript.injectedScriptElement == null) {
-    console.log("Somehow the returnFromJavascriptInPage hander was reached.");
-    return;
-  }
-  removeInjectedScript();
   if (e.prevValue == "EXCEPTION") {
     ChromeDriverContentScript.port.postMessage({sequenceNumber: ChromeDriverContentScript.currentSequenceNumber,
         response: {response: "execute", value: {statusCode: 17,
@@ -921,45 +910,29 @@ function returnFromJavascriptInPage(e) {
   ChromeDriverContentScript.port.postMessage({sequenceNumber: ChromeDriverContentScript.currentSequenceNumber, response: {response: "execute", value: {statusCode: 0, value: value}}});
 }
 
-/**
- * Removes the script tag injected in the page by execute
- */
-function removeInjectedScript() {
-  if (ChromeDriverContentScript.injectedScriptElement != null) {
-    ChromeDriverContentScript.currentDocument.getElementsByTagName("html")[0].removeChild(ChromeDriverContentScript.injectedScriptElement);
-    ChromeDriverContentScript.injectedScriptElement = null;
-  }
-}
-
 function getFrameNameFromIndex(index) {
   var scriptTag = ChromeDriverContentScript.currentDocument.createElement('script');
   scriptTag.innerText = 'var e = document.createEvent("MutationEvent");' +
-                        'var error = false;' +
                         'try {' +
                           'var val = window.frames[' + index + '].name;' +
+                          'e.initMutationEvent("DOMAttrModified", true, false, null, null, val, null, 0);' +
                         '} catch (exn) {' +
                           //Fire mutation event with prevValue set to EXCEPTION to indicate an error in the script
                           'e.initMutationEvent("DOMAttrModified", true, false, null, "EXCEPTION", null, null, 0);' +
-                          'document.getElementsByTagName("script")[document.getElementsByTagName("script").length - 1].dispatchEvent(e);' +
-                           'error = true;' +
                         '}' +
-                        'if (!error) {' +
-                          'e.initMutationEvent("DOMAttrModified", true, false, null, null, val, null, 0);' +
-                          'document.getElementsByTagName("script")[document.getElementsByTagName("script").length - 1].dispatchEvent(e);' +
-                        '}';
+                        'document.getElementsByTagName("script")[document.getElementsByTagName("script").length - 1].dispatchEvent(e);' +
+                        'document.getElementsByTagName("html")[0].removeChild(document.getElementsByTagName("script")[document.getElementsByTagName("script").length - 1]);';
   scriptTag.addEventListener('DOMAttrModified', returnFromGetFrameNameFromIndexJavascriptInPage, false);
   try {
-    ChromeDriverContentScript.injectedScriptElement = scriptTag;
     if (ChromeDriverContentScript.currentDocument.getElementsByTagName("frameset").length > 0) {
-      ChromeDriverContentScript.currentDocument.getElementsByTagName("frameset")[0].appendChild(ChromeDriverContentScript.injectedScriptElement);
+      ChromeDriverContentScript.currentDocument.getElementsByTagName("frameset")[0].appendChild(scriptTag);
     } else {
-      ChromeDriverContentScript.currentDocument.getElementsByTagName("html")[0].appendChild(ChromeDriverContentScript.injectedScriptElement);
+      ChromeDriverContentScript.currentDocument.getElementsByTagName("html")[0].appendChild(scriptTag);
     }
   } catch (e) {
     ChromeDriverContentScript.port.postMessage({sequenceNumber: ChromeDriverContentScript.currentSequenceNumber,
         response: {response: "getFrameNameFromIndex", value: {statusCode: 8,
         message: "Page seemed not to be a frameset.  Couldn't find frame"}}});
-    ChromeDriverContentScript.injectedScriptElement = null;
   }
 }
 
@@ -973,12 +946,6 @@ function returnFromGetFrameNameFromIndexJavascriptInPage(e) {
         response: {response: "getFrameNameFromIndex", value: {statusCode: "no-op",
         name: e.newValue}}});
   }
-  if (ChromeDriverContentScript.currentDocument.getElementsByTagName("frameset").length > 0) {
-    ChromeDriverContentScript.currentDocument.getElementsByTagName("frameset")[0].removeChild(ChromeDriverContentScript.injectedScriptElement);
-  } else {
-    ChromeDriverContentScript.currentDocument.getElementsByTagName("html")[0].removeChild(ChromeDriverContentScript.injectedScriptElement);
-  }
-  ChromeDriverContentScript.injectedScriptElement = null;
 }
 
 /**
