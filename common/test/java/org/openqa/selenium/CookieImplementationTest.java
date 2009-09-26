@@ -21,6 +21,7 @@ import org.openqa.selenium.environment.webserver.AppServer;
 import static org.openqa.selenium.Ignore.Driver.IE;
 
 import java.net.URI;
+import java.net.InetAddress;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
@@ -206,7 +207,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
   @Ignore(IE)
   public void testShouldBeAbleToIncludeLeadingPeriodInDomainName() throws Exception {
     String name = gotoValidDomainAndClearCookies();
-    if (name == null) {
+    if (name == null || name.matches("\\d{1,3}(?:\\.\\d{1,3}){3}")) {
       System.out.println("Skipping test: unable to find domain name to use");
       return;
     }
