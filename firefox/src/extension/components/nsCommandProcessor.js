@@ -145,7 +145,7 @@ var DelayedCommand = function(driver, command, response, opt_sleepDelay) {
   this.sleepDelay_ = opt_sleepDelay || DelayedCommand.DEFAULT_SLEEP_DELAY;
 
   var activeWindow =
-      driver.context.frame || driver.context.fxbrowser.contentWindow;
+      response.context.frame || response.context.fxbrowser.contentWindow;
   this.loadGroup_ = activeWindow.
       QueryInterface(Components.interfaces.nsIInterfaceRequestor).
       getInterface(Components.interfaces.nsIWebNavigation).
@@ -204,14 +204,12 @@ DelayedCommand.prototype.executeInternal_ = function() {
         // subscripts with proper components.
         if (e.isStaleElementError) {
           this.response_.isError = true;
-          this.response_.context = this.driver_.context;
           this.response_.response = 'element is obsolete';
           this.response_.send();
         } else {
           Utils.dumpn(
               'Exception caught by driver: ' + this.command_.commandName +
               '(' + this.command_.parameters + ')\n' + e);
-          this.response_.context = this.driver_.context;
           this.response_.reportError(e);
         }
       }
@@ -297,6 +295,7 @@ nsCommandProcessor.prototype.execute = function(wrappedJsonCommand) {
   }
   // TODO(jmleyba): /DELETE FOR RELEASE ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+  command.context = Context.fromString(command.context);
   var response = new Response(command);
 
   // These are used to locate a new driver, and so not having one is a fine
@@ -308,15 +307,11 @@ nsCommandProcessor.prototype.execute = function(wrappedJsonCommand) {
     return this[command.commandName](response, command.parameters);
   }
 
-  var res = command.context.split(" ", 2);
-  var context = new Context(res[0], res[1]);
-  command.context = command.context.toString();
-
   var win, fxbrowser, driver;
   var allWindows = this.wm.getEnumerator(null);
   while (allWindows.hasMoreElements()) {
     win = allWindows.getNext();
-    if (win["fxdriver"] && win.fxdriver.id == context.windowId) {
+    if (win["fxdriver"] && win.fxdriver.id == response.context.windowId) {
       fxbrowser = win.getBrowser();
       driver = win.fxdriver;
       break;
@@ -325,14 +320,15 @@ nsCommandProcessor.prototype.execute = function(wrappedJsonCommand) {
 
   if (!fxbrowser) {
     response.isError = true;
-    response.response = 'Unable to find browser with id ' + context.windowId;
+    response.response = 'Unable to find browser with id ' +
+                        response.context.windowId;
     return response.send();
   }
 
   if (!driver) {
     response.isError = true;
-    response.response =
-        'Unable to find the driver for browser with id ' + context.windowId;
+    response.response = 'Unable to find the driver for browser with id ' +
+                        response.context.windowId;
     return response.send();
   }
 
@@ -342,25 +338,25 @@ nsCommandProcessor.prototype.execute = function(wrappedJsonCommand) {
     return response.send();
   }
 
-  driver.context = context;
-  driver.context.fxbrowser = fxbrowser;
+  response.context.fxbrowser = fxbrowser;
 
   // Determine whether or not we need to care about frames.
   var frames = fxbrowser.contentWindow.frames;
-  if ("?" == driver.context.frameId) {
+  if ("?" == response.context.frameId) {
     if (frames && frames.length) {
       if ("FRAME" == frames[0].frameElement.tagName) {
-          driver.context.frameId = 0;
+          response.context.frameId = 0;
       } else {
-          driver.context.frameId = undefined;
+          response.context.frameId = undefined;
       }
     } else {
-      driver.context.frameId = undefined;
+      response.context.frameId = undefined;
     }
   }
 
-  if (driver.context.frameId !== undefined) {
-    driver.context.frame = Utils.findFrame(fxbrowser, driver.context.frameId);
+  if (response.context.frameId !== undefined) {
+    response.context.frame = Utils.findFrame(
+        fxbrowser, response.context.frameId);
   }
 
   response.startCommand(win);
@@ -481,7 +477,7 @@ nsCommandProcessor.prototype.findActiveDriver = function(response) {
     response.isError = true;
     response.response = 'No drivers associated with the window';
   } else {
-    response.context = driver.context;
+    response.context = new Context(driver.id);
     response.response = driver.id;
   }
   response.send();

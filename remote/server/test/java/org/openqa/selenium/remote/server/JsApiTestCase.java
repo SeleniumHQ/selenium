@@ -42,7 +42,6 @@ public class JsApiTestCase extends TestCase {
     long start = System.currentTimeMillis();
 
     do {
-      Thread.sleep(HALF_SECOND);
       Object result = executor.executeScript(IS_FINISHED_SCRIPT);
       if (null != result && (Boolean) result) {
         break;

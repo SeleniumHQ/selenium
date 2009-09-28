@@ -18,9 +18,7 @@
 
 
 FirefoxDriver.prototype.click = function(respond) {
-  respond.context = this.context;
-
-  var element = Utils.getElementAt(respond.elementId, this.context);
+  var element = Utils.getElementAt(respond.elementId, respond.context);
 
   if (!Utils.isDisplayed(element) && !Utils.isInHead(element)) {
     respond.isError = true;
@@ -72,21 +70,21 @@ FirefoxDriver.prototype.click = function(respond) {
   }
 
   Utils.dumpn("Falling back to synthesized click");
-  var currentlyActive = Utils.getActiveElement(this.context);
+  var currentlyActive = Utils.getActiveElement(respond.context);
 
-  Utils.fireMouseEventOn(this.context, element, "mousedown");
+  Utils.fireMouseEventOn(respond.context, element, "mousedown");
   if (element != currentlyActive) {
     currentlyActive.blur();
     element.focus();
   }
 
-  Utils.fireMouseEventOn(this.context, element, "mouseup");
-  Utils.fireMouseEventOn(this.context, element, "click");
+  Utils.fireMouseEventOn(respond.context, element, "mouseup");
+  Utils.fireMouseEventOn(respond.context, element, "click");
 
-  var browser = Utils.getBrowser(this.context);
+  var browser = Utils.getBrowser(respond.context);
   var alreadyReplied = false;
 
-  var clickListener = new WebLoadingListener(this, function(event) {
+  var clickListener = new WebLoadingListener(browser, function(event) {
     if (!alreadyReplied) {
       alreadyReplied = true;
       respond.send();
@@ -122,12 +120,10 @@ FirefoxDriver.prototype.click = function(respond) {
 
 
 FirefoxDriver.prototype.getElementText = function(respond) {
-  respond.context = this.context;
-
-  var element = Utils.getElementAt(respond.elementId, this.context);
+  var element = Utils.getElementAt(respond.elementId, respond.context);
 
   if (element.tagName == "TITLE") {
-    respond.response = Utils.getBrowser(this.context).contentTitle;
+    respond.response = Utils.getBrowser(respond.context).contentTitle;
   } else {
     respond.response = Utils.getText(element, true);
   }
@@ -137,9 +133,7 @@ FirefoxDriver.prototype.getElementText = function(respond) {
 
 
 FirefoxDriver.prototype.getElementValue = function(respond) {
-  respond.context = this.context;
-
-  var element = Utils.getElementAt(respond.elementId, this.context);
+  var element = Utils.getElementAt(respond.elementId, respond.context);
 
   if (element["value"] !== undefined) {
     respond.response = element.value;
@@ -160,9 +154,7 @@ FirefoxDriver.prototype.getElementValue = function(respond) {
 
 
 FirefoxDriver.prototype.sendKeys = function(respond, value) {
-  respond.context = this.context;
-
-  var element = Utils.getElementAt(respond.elementId, this.context);
+  var element = Utils.getElementAt(respond.elementId, respond.context);
 
   if (!Utils.isDisplayed(element) && !Utils.isInHead(element)) {
     respond.isError = true;
@@ -172,7 +164,7 @@ FirefoxDriver.prototype.sendKeys = function(respond, value) {
     return;
   }
 
-  var currentlyActive = Utils.getActiveElement(this.context);
+  var currentlyActive = Utils.getActiveElement(respond.context);
   if (currentlyActive != element) {
     currentlyActive.blur();
     element.focus();
@@ -189,17 +181,14 @@ FirefoxDriver.prototype.sendKeys = function(respond, value) {
     use = element.ownerDocument.getElementsByTagName("html")[0];
   }
 
-  Utils.type(this.context, use, value[0], this.enableNativeEvents);
+  Utils.type(respond.context, use, value[0], this.enableNativeEvents);
 
-  respond.context = this.context;
   respond.send();
 };
 
 
 FirefoxDriver.prototype.clear = function(respond) {
-  respond.context = this.context;
-
-  var element = Utils.getElementAt(respond.elementId, this.context);
+  var element = Utils.getElementAt(respond.elementId, respond.context);
 
   if (!Utils.isDisplayed(element) && !Utils.isInHead(element)) {
     respond.isError = true;
@@ -211,7 +200,7 @@ FirefoxDriver.prototype.clear = function(respond) {
 
   var isTextField = element["value"] !== undefined;
 
-  var currentlyActive = Utils.getActiveElement(this.context);
+  var currentlyActive = Utils.getActiveElement(respond.context);
   if (currentlyActive != element) {
     currentlyActive.blur();
     element.focus();
@@ -231,7 +220,7 @@ FirefoxDriver.prototype.clear = function(respond) {
   }
 
   if (currentValue !== undefined && currentValue != "") {
-    Utils.fireHtmlEvent(this.context, element, "change");
+    Utils.fireHtmlEvent(respond.context, element, "change");
   }
 
   respond.send();
@@ -239,7 +228,7 @@ FirefoxDriver.prototype.clear = function(respond) {
 
 
 FirefoxDriver.prototype.getTagName = function(respond) {
-  var element = Utils.getElementAt(respond.elementId, this.context);
+  var element = Utils.getElementAt(respond.elementId, respond.context);
 
   respond.response = element.tagName.toLowerCase();
   respond.send();
@@ -247,7 +236,7 @@ FirefoxDriver.prototype.getTagName = function(respond) {
 
 
 FirefoxDriver.prototype.getElementAttribute = function(respond, value) {
-  var element = Utils.getElementAt(respond.elementId, this.context);
+  var element = Utils.getElementAt(respond.elementId, respond.context);
 
   var attributeName = value[0];
 
@@ -297,7 +286,7 @@ FirefoxDriver.prototype.getElementAttribute = function(respond, value) {
 
 
 FirefoxDriver.prototype.hover = function(respond) {
-  var element = Utils.getElementAt(respond.elementId, this.context);
+  var element = Utils.getElementAt(respond.elementId, respond.context);
 
   var events = Utils.getNativeEvents();
   var node = Utils.getNodeForNativeEvents(element);
@@ -321,13 +310,11 @@ FirefoxDriver.prototype.hover = function(respond) {
 
 
 FirefoxDriver.prototype.submitElement = function(respond) {
-  var element = Utils.getElementAt(respond.elementId, this.context);
+  var element = Utils.getElementAt(respond.elementId, respond.context);
 
   var submitElement = Utils.findForm(element);
   if (submitElement) {
-    var driver = this;
-    new WebLoadingListener(this, function() {
-      respond.context = driver.context;
+    new WebLoadingListener(Utils.getBrowser(respond.context), function() {
       respond.send();
     });
     if (submitElement["submit"])
@@ -335,14 +322,13 @@ FirefoxDriver.prototype.submitElement = function(respond) {
     else
       submitElement.click();
   } else {
-    respond.context = this.context;
     respond.send();
   }
 };
 
 
 FirefoxDriver.prototype.getElementSelected = function(respond) {
-  var element = Utils.getElementAt(respond.elementId, this.context);
+  var element = Utils.getElementAt(respond.elementId, respond.context);
 
   var selected = false;
 
@@ -362,14 +348,13 @@ FirefoxDriver.prototype.getElementSelected = function(respond) {
   } catch(e) {
   }
 
-  respond.context = this.context;
   respond.response = selected;
   respond.send();
 };
 
 
 FirefoxDriver.prototype.setElementSelected = function(respond) {
-  var element = Utils.getElementAt(respond.elementId, this.context);
+  var element = Utils.getElementAt(respond.elementId, respond.context);
 
   if (!Utils.isDisplayed(element) && !Utils.isInHead(element)) {
     respond.isError = true;
@@ -380,7 +365,6 @@ FirefoxDriver.prototype.setElementSelected = function(respond) {
   }
 
   var wasSet = "You may not select an unselectable element";
-  respond.context = this.context;
   respond.isError = true;
 
   try {
@@ -400,7 +384,7 @@ FirefoxDriver.prototype.setElementSelected = function(respond) {
     respond.isError = false;
     if (!option.selected) {
       option.selected = true;
-      Utils.fireHtmlEvent(this.context, option, "change");
+      Utils.fireHtmlEvent(respond.context, option, "change");
     }
     wasSet = "";
   } catch(e) {
@@ -413,7 +397,7 @@ FirefoxDriver.prototype.setElementSelected = function(respond) {
     if (checkbox.type == "checkbox" || checkbox.type == "radio") {
       if (!checkbox.checked) {
         checkbox.checked = true;
-        Utils.fireHtmlEvent(this.context, checkbox, "change");
+        Utils.fireHtmlEvent(respond.context, checkbox, "change");
       }
       wasSet = "";
     }
@@ -426,9 +410,7 @@ FirefoxDriver.prototype.setElementSelected = function(respond) {
 
 
 FirefoxDriver.prototype.toggleElement = function(respond) {
-  respond.context = this.context;
-
-  var element = Utils.getElementAt(respond.elementId, this.context);
+  var element = Utils.getElementAt(respond.elementId, respond.context);
 
   if (!Utils.isDisplayed(element) && !Utils.isInHead(element)) {
     respond.isError = true;
@@ -443,7 +425,7 @@ FirefoxDriver.prototype.toggleElement = function(respond) {
         element.QueryInterface(Components.interfaces.nsIDOMHTMLInputElement);
     if (checkbox.type == "checkbox") {
       checkbox.checked = !checkbox.checked;
-      Utils.fireHtmlEvent(this.context, checkbox, "change");
+      Utils.fireHtmlEvent(respond.context, checkbox, "change");
       respond.send();
       return;
     }
@@ -462,7 +444,7 @@ FirefoxDriver.prototype.toggleElement = function(respond) {
 
     if (select && select.multiple) {
       option.selected = !option.selected;
-      Utils.fireHtmlEvent(this.context, option, "change");
+      Utils.fireHtmlEvent(respond.context, option, "change");
       respond.send();
       return;
     }
@@ -478,38 +460,35 @@ FirefoxDriver.prototype.toggleElement = function(respond) {
 
 
 FirefoxDriver.prototype.isElementDisplayed = function(respond) {
-  var element = Utils.getElementAt(respond.elementId, this.context);
+  var element = Utils.getElementAt(respond.elementId, respond.context);
 
-  respond.context = this.context;
   respond.response = Utils.isDisplayed(element) ? "true" : "false";
   respond.send();
 };
 
 
 FirefoxDriver.prototype.getElementLocation = function(respond) {
-  var element = Utils.getElementAt(respond.elementId, this.context);
+  var element = Utils.getElementAt(respond.elementId, respond.context);
 
-  var location = Utils.getElementLocation(element, this.context);
+  var location = Utils.getElementLocation(element, respond.context);
 
-  respond.context = this.context;
   respond.response = location.x + ", " + location.y;
   respond.send();
 };
 
 
 FirefoxDriver.prototype.getElementSize = function(respond) {
-  var element = Utils.getElementAt(respond.elementId, this.context);
+  var element = Utils.getElementAt(respond.elementId, respond.context);
 
   var box = Utils.getLocationOnceScrolledIntoView(element);
 
-  respond.context = this.context;
   respond.response = box.width + ", " + box.height;
   respond.send();
 };
 
 
 FirefoxDriver.prototype.dragAndDrop = function(respond, movementString) {
-  var element = Utils.getElementAt(respond.elementId, this.context);
+  var element = Utils.getElementAt(respond.elementId, respond.context);
 
   if (!Utils.isDisplayed(element) && !Utils.isInHead(element)) {
     respond.isError = true;
@@ -522,7 +501,7 @@ FirefoxDriver.prototype.dragAndDrop = function(respond, movementString) {
   // Scroll the first element into view
   //  element.scrollIntoView(true);
 
-  var clientStartXY = Utils.getElementLocation(element, this.context);
+  var clientStartXY = Utils.getElementLocation(element, respond.context);
 
   var clientStartX = clientStartXY.x;
   var clientStartY = clientStartXY.y;
@@ -568,17 +547,16 @@ FirefoxDriver.prototype.dragAndDrop = function(respond, movementString) {
   // send the mouseup to that
   Utils.triggerMouseEvent(element, 'mouseup', clientFinishX, clientFinishY);
 
-  var finalLoc = Utils.getElementLocation(element, this.context)
+  var finalLoc = Utils.getElementLocation(element, respond.context)
 
-  respond.context = this.context;
   respond.response = finalLoc.x + "," + finalLoc.y;
   respond.send();
 };
 
 
 FirefoxDriver.prototype.findElementByXPath = function(respond, xpath) {
-  var element = Utils.getElementAt(respond.elementId, this.context);
-  var elements = Utils.findElementsByXPath(xpath, element, this.context)
+  var element = Utils.getElementAt(respond.elementId, respond.context);
+  var elements = Utils.findElementsByXPath(xpath, element, respond.context)
   if (elements.length > 0) {
     respond.response = elements[0];
   } else {
@@ -590,16 +568,15 @@ FirefoxDriver.prototype.findElementByXPath = function(respond, xpath) {
 
 
 FirefoxDriver.prototype.findElementsByXPath = function (respond, xpath) {
-  var element = Utils.getElementAt(respond.elementId, this.context);
+  var element = Utils.getElementAt(respond.elementId, respond.context);
 
-  var indices = Utils.findElementsByXPath(xpath, element, this.context)
+  var indices = Utils.findElementsByXPath(xpath, element, respond.context)
   var response = ""
   for (var i = 0; i < indices.length; i++) {
     response += indices[i] + ",";
   }
   response = response.substring(0, response.length - 1);
 
-  respond.context = this.context;
   respond.response = response;
 
   respond.send();
@@ -607,12 +584,12 @@ FirefoxDriver.prototype.findElementsByXPath = function (respond, xpath) {
 
 
 FirefoxDriver.prototype.findElementByLinkText = function(respond, linkText) {
-  var element = Utils.getElementAt(respond.elementId, this.context);
+  var element = Utils.getElementAt(respond.elementId, respond.context);
 
   var children = element.getElementsByTagName('a');
   for (var i = 0; i < children.length; i++) {
     if (linkText == Utils.getText(children[i])) {
-      respond.response = Utils.addToKnownElements(children[i], this.context);
+      respond.response = Utils.addToKnownElements(children[i], respond.context);
       respond.send();
       return;
     }
@@ -625,18 +602,17 @@ FirefoxDriver.prototype.findElementByLinkText = function(respond, linkText) {
 
 
 FirefoxDriver.prototype.findElementsByLinkText = function (respond, linkText) {
-  var element = Utils.getElementAt(respond.elementId, this.context);
+  var element = Utils.getElementAt(respond.elementId, respond.context);
 
   var children = element.getElementsByTagName("A");
   var response = "";
   for (var i = 0; i < children.length; i++) {
 
     if (linkText == Utils.getText(children[i])) {
-      response += Utils.addToKnownElements(children[i], this.context) + ",";
+      response += Utils.addToKnownElements(children[i], respond.context) + ",";
     }
   }
   response = response.substring(0, response.length - 1);
-  respond.context = this.context;
   respond.response = response;
 
   respond.send();
@@ -645,19 +621,17 @@ FirefoxDriver.prototype.findElementsByLinkText = function (respond, linkText) {
 
 FirefoxDriver.prototype.findElementByPartialLinkText = function(respond,
                                                                 linkText) {
-  var element = Utils.getElementAt(respond.elementId, this.context);
+  var element = Utils.getElementAt(respond.elementId, respond.context);
 
   var allLinks = element.getElementsByTagName("A");
   var index;
   for (var i = 0; i < allLinks.length && !index; i++) {
     var text = Utils.getText(allLinks[i], true);
     if (text.indexOf(linkText) != -1) {
-      index = Utils.addToKnownElements(allLinks[i], this.context);
+      index = Utils.addToKnownElements(allLinks[i], respond.context);
       break;
     }
   }
-
-  respond.context = this.context;
 
   if (index !== undefined) {
     respond.response = index;
@@ -673,30 +647,29 @@ FirefoxDriver.prototype.findElementByPartialLinkText = function(respond,
 
 FirefoxDriver.prototype.findElementsByPartialLinkText = function (respond,
                                                                   linkText) {
-  var element = Utils.getElementAt(respond.elementId, this.context);
+  var element = Utils.getElementAt(respond.elementId, respond.context);
 
   var children = element.getElementsByTagName("A");
   var response = "";
   for (var i = 0; i < children.length; i++) {
     if (Utils.getText(children[i]).indexOf(linkText) != -1) {
-      response += Utils.addToKnownElements(children[i], this.context) + ",";
+      response += Utils.addToKnownElements(children[i], respond.context) + ",";
     }
   }
   response = response.substring(0, response.length - 1);
 
-  respond.context = this.context;
   respond.response = response;
   respond.send();
 };
 
 
 FirefoxDriver.prototype.findElementByClassName = function(respond, className) {
-  var element = Utils.getElementAt(respond.elementId, this.context);
+  var element = Utils.getElementAt(respond.elementId, respond.context);
 
   var xpath =
       ".//*[contains(concat(' ',normalize-space(@class),' '),' " +
       className + " ')]";
-  var elements = Utils.findElementsByXPath(xpath, element, this.context)
+  var elements = Utils.findElementsByXPath(xpath, element, respond.context)
 
   if (elements.length > 0) {
     respond.response = elements[0];
@@ -712,7 +685,7 @@ FirefoxDriver.prototype.findElementByClassName = function(respond, className) {
 
 FirefoxDriver.prototype.findChildElementsByClassName = function(respond,
                                                                 className) {
-  var element = Utils.getElementAt(respond.elementId, this.context);
+  var element = Utils.getElementAt(respond.elementId, respond.context);
 
   if (element["getElementsByClassName"]) {
     var result = element.getElementsByClassName(className);
@@ -720,13 +693,12 @@ FirefoxDriver.prototype.findChildElementsByClassName = function(respond,
     var response = "";
     for (var i = 0; i < result.length; i++) {
       var e = result[i];
-      var index = Utils.addToKnownElements(e, this.context);
+      var index = Utils.addToKnownElements(e, respond.context);
       response += index + ",";
     }
     // Strip the trailing comma
     response = response.substring(0, response.length - 1);
 
-    respond.context = this.context;
     respond.response = response;
     respond.send();
   } else {
@@ -738,8 +710,8 @@ FirefoxDriver.prototype.findChildElementsByClassName = function(respond,
 
 
 FirefoxDriver.prototype.findElementById = function(respond, id) {
-  var doc = Utils.getDocument(this.context);
-  var parentElement = Utils.getElementAt(respond.elementId, this.context);
+  var doc = Utils.getDocument(respond.context);
+  var parentElement = Utils.getElementAt(respond.elementId, respond.context);
 
   var element = doc.getElementById(id);
   var isChild = false;
@@ -754,12 +726,12 @@ FirefoxDriver.prototype.findElementById = function(respond, id) {
       tmp = tmp.parentNode
     }
     if (isChild) {
-      respond.response = Utils.addToKnownElements(element, this.context);
+      respond.response = Utils.addToKnownElements(element, respond.context);
     } else {
       //The first match is not a child of the current node, fall back
       //to xpath to see if there are any children nodes with that id
       elements = Utils.findElementsByXPath("*[@id = '" + id
-          + "']", parentElement, this.context)
+          + "']", parentElement, respond.context)
       if (elements.length > 0) {
         respond.response = elements[0];
       } else {
@@ -782,8 +754,8 @@ FirefoxDriver.prototype.findElementsById = function(respond, id) {
 
 FirefoxDriver.prototype.findElementByName = function(respond, name) {
   var xpath = './/*[@name = "' + name + '"]';
-  var element = Utils.getElementAt(respond.elementId, this.context);
-  var elements = Utils.findElementsByXPath(xpath, element, this.context)
+  var element = Utils.getElementAt(respond.elementId, respond.context);
+  var elements = Utils.findElementsByXPath(xpath, element, respond.context)
   if (elements.length > 0) {
     respond.response = elements[0];
   } else {
@@ -802,11 +774,11 @@ FirefoxDriver.prototype.findElementsByName = function(respond, name) {
 
 
 FirefoxDriver.prototype.findElementByTagName = function(respond, name) {
-  var parentElement = Utils.getElementAt(respond.elementId, this.context);
+  var parentElement = Utils.getElementAt(respond.elementId, respond.context);
 
   var elements = parentElement.getElementsByTagName(name);
   if (elements.length) {
-    respond.response = Utils.addToKnownElements(elements[0], this.context);
+    respond.response = Utils.addToKnownElements(elements[0], respond.context);
   } else {
     respond.isError = true;
     respond.response = "Unable to find element with tag name '" + name + "'";
@@ -817,19 +789,18 @@ FirefoxDriver.prototype.findElementByTagName = function(respond, name) {
 
 
 FirefoxDriver.prototype.findElementsByTagName = function(respond, name) {
-  var parentElement = Utils.getElementAt(respond.elementId, this.context);
+  var parentElement = Utils.getElementAt(respond.elementId, respond.context);
 
   var elements = parentElement.getElementsByTagName(name);
   var response = "";
   for (var i = 0; i < elements.length; i++) {
     var element = elements[i];
-    var index = Utils.addToKnownElements(element, this.context);
+    var index = Utils.addToKnownElements(element, respond.context);
     response += index + ",";
   }
   // Strip the trailing comma
   response = response.substring(0, response.length - 1);
 
-  respond.context = this.context;
   respond.response = response;
   respond.send();
 };
@@ -837,7 +808,7 @@ FirefoxDriver.prototype.findElementsByTagName = function(respond, name) {
 
 FirefoxDriver.prototype.getElementCssProperty = function(respond,
                                                          propertyName) {
-  var element = Utils.getElementAt(respond.elementId, this.context);
+  var element = Utils.getElementAt(respond.elementId, respond.context);
 
   respond.response = Utils.getStyleProperty(element, propertyName); // Coeerce to a string
   respond.send();
@@ -845,7 +816,7 @@ FirefoxDriver.prototype.getElementCssProperty = function(respond,
 
 
 FirefoxDriver.prototype.getLocationOnceScrolledIntoView = function(respond) {
-  var element = Utils.getElementAt(respond.elementId, this.context);
+  var element = Utils.getElementAt(respond.elementId, respond.context);
 
   if (!Utils.isDisplayed(element)) {
     respond.response = undefined;
@@ -877,7 +848,7 @@ FirefoxDriver.prototype.getLocationOnceScrolledIntoView = function(respond) {
   // Fallback. Use the (deprecated) method to find out where the element is in
   // the viewport. This should be fine to use because we only fall down this
   // code path on older versions of Firefox (I think!)
-  var theDoc = Utils.getDocument(this.context);
+  var theDoc = Utils.getDocument(respond.context);
   var box = theDoc.getBoxObjectFor(element);
 
   respond.response = {

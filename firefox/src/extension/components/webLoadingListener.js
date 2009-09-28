@@ -19,9 +19,8 @@
 var STATE_START = Components.interfaces.nsIWebProgressListener.STATE_START;
 var STATE_STOP = Components.interfaces.nsIWebProgressListener.STATE_STOP;
 
-function WebLoadingListener(driver, toCall) {
+function WebLoadingListener(browser, toCall) {
   var listener = this;
-  var browser = Utils.getBrowser(driver.context);
 
   this.handler = {
     QueryInterface: function(iid) {
