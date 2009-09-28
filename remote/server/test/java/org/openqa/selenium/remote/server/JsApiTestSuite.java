@@ -41,10 +41,11 @@ public class JsApiTestSuite extends TestCase {
 
     for (File file : testsDir.listFiles(new TestFilenameFilter())) {
       String path = file.getAbsolutePath()
-          .replace(rootDir.getAbsolutePath() + File.separator, "");
+          .replace(rootDir.getAbsolutePath() + File.separator, "")
+          .replace(File.separator, "/");
       URL url = new URL(testServer.whereIs("/remote", path));
       TestCase test = new JsApiTestCase(url, driver);
-      LOG.info("Adding test: " + test.getName());
+      LOG.info("Adding test: " + test.getName() + ": " + url);
       suite.addTest(test);
     }
 
