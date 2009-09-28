@@ -278,8 +278,15 @@ webdriver.TestRunner.prototype.findTestFunctions_ = function() {
     }
   }
   webdriver.logging.info('...found ' + this.tests_.length + ' test(s)');
-  this.setUpFn_ = goog.isFunction(win['setUp']) ? win['setUp'] : null;
-  this.tearDownFn_ = goog.isFunction(win['tearDown']) ? win['tearDown'] : null;
+
+  function getGlobal(name) {
+    var fn = goog.global[name];
+    return goog.isFunction(fn) ? fn : goog.nullFunction;
+  }
+  this.setUpPageFn_ = getGlobal('setUpPage');
+  this.setUpFn_ = getGlobal('setUp');
+  this.tearDownFn_ = getGlobal('tearDown');
+  this.tearDownPageFn_ = getGlobal('tearDownPage');
 };
 
 
@@ -422,6 +429,7 @@ webdriver.TestRunner.prototype.go = function() {
     return;
   }
   this.started_ = true;
+  this.setUpPageFn_();
   this.executeNextTest_();
 };
 
@@ -473,6 +481,7 @@ webdriver.TestRunner.prototype.executeNextTest_ = function() {
   this.currentTest_ += 1;
   if (this.currentTest_ >= this.tests_.length) {
     webdriver.logging.info('No more tests');
+    this.tearDownPageFn_();
     this.finished_ = true;
     return;
   }
@@ -533,12 +542,8 @@ webdriver.TestRunner.prototype.collectAndRunDriverCommands_ = function(
  * @private
  */
 webdriver.TestRunner.prototype.setUp_ = function(result, driver) {
-  if (this.setUpFn_) {
-    this.collectAndRunDriverCommands_(
-        result, driver, this.setUpFn_, this.runTest_);
-  } else {
-    this.runTest_(result, driver);
-  }
+  this.collectAndRunDriverCommands_(
+      result, driver, this.setUpFn_, this.runTest_);
 };
 
 
@@ -563,12 +568,8 @@ webdriver.TestRunner.prototype.runTest_ = function(result, driver) {
  * @private
  */
 webdriver.TestRunner.prototype.tearDown_ = function(result, driver) {
-  if (this.tearDownFn_) {
-    this.collectAndRunDriverCommands_(
-        result, driver, this.tearDownFn_, this.reportResult_);
-  } else {
-    this.reportResult_(result, driver);
-  }
+  this.collectAndRunDriverCommands_(
+      result, driver, this.tearDownFn_, this.reportResult_);
 };
 
 

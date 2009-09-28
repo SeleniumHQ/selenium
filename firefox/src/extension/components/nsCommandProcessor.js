@@ -196,11 +196,17 @@ DelayedCommand.prototype.executeInternal_ = function() {
         this.driver_[this.command_.commandName](
             this.response_, this.command_.parameters);
       } catch (e) {
-        if (e instanceof StaleElementError) {
+        // if (e instanceof StaleElementError) won't work here since
+        // StaleElementError is defined in the utils.js subscript which is
+        // loaded independently in this component and in the main driver
+        // component.
+        // TODO(jmleyba): Continue cleaning up the extension and replacing the
+        // subscripts with proper components.
+        if (e.isStaleElementError) {
           this.response_.isError = true;
           this.response_.context = this.driver_.context;
           this.response_.response = 'element is obsolete';
-          this.response.send();
+          this.response_.send();
         } else {
           Utils.dumpn(
               'Exception caught by driver: ' + this.command_.commandName +

@@ -12,15 +12,20 @@ import java.io.File;
  */
 public class JsApiTestServer extends Jetty6AppServer {
 
+  private static File rootDirectory = null;
+
   public JsApiTestServer() {
-    File path = findWebSrc();
+    File path = getRootDirectory();
     if (null == path) {
       throw new IllegalStateException("Unable to locate remote/server/src/web");
     }
     addAdditionalWebApplication("/remote", path.getAbsolutePath());
   }
 
-  protected static File findWebSrc() {
+  public static synchronized File getRootDirectory() {
+    if (rootDirectory != null) {
+      return rootDirectory;
+    }
     String[] possiblePaths = {
         "remote/server/src/web",
         "../remote/server/src/web",
@@ -30,7 +35,8 @@ public class JsApiTestServer extends Jetty6AppServer {
     for (String potential : possiblePaths) {
       File current = new File(potential);
       if (current.exists()) {
-        return current;
+        rootDirectory = current;
+        return rootDirectory;
       }
     }
     return null;

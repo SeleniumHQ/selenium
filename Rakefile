@@ -94,13 +94,13 @@ end
 xpi(:name => "firefox_xpi",
     :src  => [ "firefox/src/extension" ],
     :deps => [
-	       :commandProcessor_xpt,
+               :commandProcessor_xpt,
                :events_xpt,
                :firefox_dll,
                :libwebdriver_firefox,
              ],
     :resources => [
-	            { "nsICommandProcessor.xpt" => "components/nsICommandProcessor.xpt" },
+                    { "nsICommandProcessor.xpt" => "components/nsICommandProcessor.xpt" },
                     { "nsINativeEvents.xpt" => "components/nsINativeEvents.xpt" },
                     { "Win32/Release/webdriver-firefox.dll" => "platform/WINNT_x86-msvc/components/webdriver-firefox.dll" },
                     { "linux/Release/libwebdriver-firefox.so" => "platform/Linux_x86-gcc3/components/libwebdriver-firefox.so" },
@@ -301,12 +301,12 @@ test_java(:name => "test_chrome",
           :out  => "webdriver-chrome-test.jar")
 
 jar(:name => "jsapi",
-    :src => [ "remote/server/test/java/**/JsApiTestServer.java" ],
+    :src => [ "remote/server/test/java/**/JsApi*.java" ],
     :deps => [ :firefox, :test_common ],
     :out => "webdriver-jsapi.jar")
 
 test_java(:name => "test_jsapi",
-          :src => [ "remote/server/test/java/**/JsApiTestSuite.java" ],
+          :src => [ "remote/server/test/java/**/JsApi*.java" ],
           :deps => [ :jsapi ],
           :out  => "webdriver-jsapi-test.jar")
 

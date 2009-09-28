@@ -1,9 +1,24 @@
-/**
- * @fileoverview Implements the tests in
- * org.openqa.selenium.DragAndDropTest using the JS API.  This file
- * should be loaded by the test_suite.js test bootstrap.
- * @author jmleyba@gmail.com (Jason Leyba)
- */
+<!DOCTYPE html>
+<html>
+<head>
+  <title>draganddrop_test</title>
+  <script src="../webdriver-bootstrap.js"></script>
+  <script src="testbase.js"></script>
+  <script>
+    function setUpPage() {
+      openTestWindow();
+    }
+
+
+    function tearDownPage() {
+      closeTestWindow();
+    }
+
+
+    function setUp(driver) {
+      switchToTestWindow(driver);
+    }
+
 
 // TODO(jmleyba): Need to limit the tests in this file to FF only. (Limit them
 // so the page under test is FF only, not limit them to only being run from FF).
@@ -19,7 +34,7 @@ function drag(element, initialLocation, moveRightBy, moveDownBy) {
 
 
 function testDragAndDrop(driver) {
-  driver.get(TEST_PAGES.dragAndDropPage);
+  driver.get(TEST_PAGE.dragAndDropPage);
   var img = driver.findElement({id:'test1'});
   img.getLocation();
   driver.callFunction(function(response) {
@@ -41,7 +56,7 @@ function testDragAndDrop(driver) {
 
 
 function testDragAndDropToElement(driver) {
-  driver.get(TEST_PAGES.dragAndDropPage);
+  driver.get(TEST_PAGE.dragAndDropPage);
   var img1 = driver.findElement({id:'test1'});
   var img2 = driver.findElement({id:'test2'});
   var img1Location = img1.dragAndDropBy(100, 100);
@@ -51,7 +66,7 @@ function testDragAndDropToElement(driver) {
 
 
 function testDragElementInDiv(driver) {
-  driver.get(TEST_PAGES.dragAndDropPage);
+  driver.get(TEST_PAGE.dragAndDropPage);
   var img = driver.findElement({id:'test3'});
   img.getLocation();
   driver.callFunction(function(response) {
@@ -63,7 +78,7 @@ function testDragElementInDiv(driver) {
 
 
 function testDragTooFar(driver) {
-  driver.get(TEST_PAGES.dragAndDropPage);
+  driver.get(TEST_PAGE.dragAndDropPage);
   var img = driver.findElement({id:'test1'});
   img.getLocation();
   driver.callFunction(function(response) {
@@ -78,7 +93,7 @@ function testDragTooFar(driver) {
 
 
 function testMouseSpeed(driver) {
-  driver.get(TEST_PAGES.dragAndDropPage);
+  driver.get(TEST_PAGE.dragAndDropPage);
   driver.setMouseSpeed(webdriver.WebDriver.Speed.SLOW);
   assertThat(driver.getMouseSpeed(), equals(webdriver.WebDriver.Speed.SLOW));
   driver.setMouseSpeed(webdriver.WebDriver.Speed.MEDIUM);
@@ -86,3 +101,8 @@ function testMouseSpeed(driver) {
   driver.setMouseSpeed(webdriver.WebDriver.Speed.FAST);
   assertThat(driver.getMouseSpeed(), equals(webdriver.WebDriver.Speed.FAST));
 }
+  </script>
+</head>
+<body>
+</body>
+</html>

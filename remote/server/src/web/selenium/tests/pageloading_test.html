@@ -1,24 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>pageloading_test</title>
+  <script src="../webdriver-bootstrap.js"></script>
+  <script src="testbase.js"></script>
+  <script>
+    function setUpPage() {
+      openTestWindow();
+    }
+
+
+    function tearDownPage() {
+      closeTestWindow();
+    }
+
+
+    function setUp(driver) {
+      switchToTestWindow(driver);
+    }
+
+
 function testShouldWaitForDocumentToBeLoaded(driver) {
-  driver.get(TEST_PAGES.simpleTestPage);
+  driver.get(TEST_PAGE.simpleTestPage);
   assertThat(driver.getTitle(), equals("Hello WebDriver"));
 }
 
 
 function testShouldFollowRedirectsSentInTheHttpResponseHeaders(driver) {
-  driver.get(TEST_PAGES.redirectPage);
+  driver.get(TEST_PAGE.redirectPage);
   assertThat(driver.getTitle(), equals("We Arrive Here"));
 }
 
 
 function testShouldFollowMetaRedirects(driver) {
-  driver.get(TEST_PAGES.metaRedirectPage);
+  driver.get(TEST_PAGE.metaRedirectPage);
   assertThat(driver.getTitle(), equals("We Arrive Here"));
 }
 
 
 function testShouldBeAbleToGetAFragmentOnTheCurrentPage(driver) {
-  driver.get(TEST_PAGES.xhtmlTestPage);
-  driver.get(TEST_PAGES.xhtmlTestPage + "#text");
+  driver.get(TEST_PAGE.xhtmlTestPage);
+  driver.get(TEST_PAGE.xhtmlTestPage + "#text");
 }
 
 
@@ -36,7 +58,7 @@ function testShouldReturnWhenGettingAUrlThatDoesNotConnect(driver) {
 
 function testShouldBeAbleToLoadAPageWithFramesetsAndWaitUntilAllFramesAreLoaded(
     driver) {
-  driver.get(TEST_PAGES.framesetPage);
+  driver.get(TEST_PAGE.framesetPage);
   driver.switchToFrame(0);
   var pageNumber = driver.findElement({id: 'pageNumber'});
   assertThat(pageNumber.getText(), equals("1"));
@@ -51,7 +73,7 @@ function testShouldDoNothingIfThereIsNothingToGoBackTo(driver) {
     window.open('', 'a_clean_test_window');
   });
   driver.switchToWindow('a_clean_test_window');
-  driver.get(TEST_PAGES.formPage);
+  driver.get(TEST_PAGE.formPage);
   driver.back();
   assertThat(driver.getTitle(), equals("We Leave From Here"));
   driver.close();
@@ -59,7 +81,7 @@ function testShouldDoNothingIfThereIsNothingToGoBackTo(driver) {
 
 
 function testShouldBeAbleToNavigateBackInTheBrowserHistory(driver) {
-  driver.get(TEST_PAGES.formPage);
+  driver.get(TEST_PAGE.formPage);
   driver.findElement({id: "imageButton"}).submit();
   assertThat(driver.getTitle(), equals("We Arrive Here"));
   driver.back();
@@ -69,7 +91,7 @@ function testShouldBeAbleToNavigateBackInTheBrowserHistory(driver) {
 
 function testShouldBeAbleToNavigateBackInTheBrowserHistoryInPresenceOfIframes(
     driver) {
-  driver.get(TEST_PAGES.xhtmlTestPage);
+  driver.get(TEST_PAGE.xhtmlTestPage);
   driver.findElement({name: "sameWindow"}).click();
   assertThat(driver.getTitle(), equals("This page has iframes"));
   driver.back();
@@ -78,7 +100,7 @@ function testShouldBeAbleToNavigateBackInTheBrowserHistoryInPresenceOfIframes(
 
 
 function testShouldBeAbleToNavigateForwardsInTheBrowserHistory(driver) {
-  driver.get(TEST_PAGES.formPage);
+  driver.get(TEST_PAGE.formPage);
   driver.findElement({id: "imageButton"}).submit();
   assertThat(driver.getTitle(), equals("We Arrive Here"));
   driver.back();
@@ -94,7 +116,7 @@ function testShouldBeAbleToNavigateForwardsInTheBrowserHistory(driver) {
 if (!goog.userAgent.GECKO) {
   var testShouldBeAbleToAccessPagesWithAnInsecureSslCertificate = function(
       driver) {
-    var url = toSecureUrl(TEST_PAGES.simpleTestPage);
+    var url = toSecureUrl(TEST_PAGE.simpleTestPage);
     driver.get(url);
     assertThat(driver.getTitle(), equals("Hello WebDriver"));
   };
@@ -102,7 +124,12 @@ if (!goog.userAgent.GECKO) {
 
 
 function testShouldBeAbleToRefreshAPage(driver) {
-  driver.get(TEST_PAGES.xhtmlTestPage);
+  driver.get(TEST_PAGE.xhtmlTestPage);
   driver.refresh();
   assertThat(driver.getTitle(), equals("XHTML Test Page"));
 }
+  </script>
+</head>
+<body>
+</body>
+</html>

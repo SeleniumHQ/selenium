@@ -1,5 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>executingjavascript_test</title>
+  <script src="../webdriver-bootstrap.js"></script>
+  <script src="testbase.js"></script>
+  <script>
+    function setUpPage() {
+      openTestWindow();
+    }
+
+
+    function tearDownPage() {
+      closeTestWindow();
+    }
+
+
+    function setUp(driver) {
+      switchToTestWindow(driver);
+    }
+
+
 function testCanExecuteJavascriptThatReturnsAString(driver) {
-  driver.get(TEST_PAGES.xhtmlTestPage);
+  driver.get(TEST_PAGE.xhtmlTestPage);
   driver.executeScript('return document.title');
   assertThat(driver.executeScript('return document.title'),
       equals('XHTML Test Page'));
@@ -7,15 +29,24 @@ function testCanExecuteJavascriptThatReturnsAString(driver) {
 
 
 function testCanExecuteJavascriptThatReturnsANumber(driver) {
-  driver.get(TEST_PAGES.nestedPage);
+  driver.get(TEST_PAGE.nestedPage);
   var result = driver.executeScript(
       'return document.getElementsByName("checky").length;');
   assertThat(result, equals(8));
 }
 
 
+function testScriptsWithFalsyReturnValues(driver) {
+  assertThat('undefind', driver.executeScript('return undefined;'), equals(null));
+  assertThat('null', driver.executeScript('return null;'), equals(null));
+  assertThat('empty string', driver.executeScript('return "";'), equals(''));
+  assertThat('0', driver.executeScript('return 0;'), equals(0));
+  assertThat('false', driver.executeScript('return false;'), equals(false));
+}
+
+
 function testCanExecuteJavascriptThatReturnsAWebElement(driver) {
-  driver.get(TEST_PAGES.xhtmlTestPage);
+  driver.get(TEST_PAGE.xhtmlTestPage);
   // TODO(jmleyba): Need a way to say "when future is set, execute this command"
   var result = driver.executeScript('return document.getElementById("id1");');
   driver.callFunction(function() {
@@ -29,13 +60,13 @@ function testCanExecuteJavascriptThatReturnsAWebElement(driver) {
 
 
 function testCanExecuteScriptThatReturnsABoolean(driver) {
-  driver.get(TEST_PAGES.xhtmlTestPage);
+  driver.get(TEST_PAGE.xhtmlTestPage);
   assertThat(driver.executeScript('return true;'), is(true));
 }
 
 
 function testThrowsAnExceptionWhenTheJavascriptIsBad(driver) {
-  driver.get(TEST_PAGES.xhtmlTestPage);
+  driver.get(TEST_PAGE.xhtmlTestPage);
   driver.executeScript('return squiggle();');
   driver.catchExpectedError(
       'Expected an exception from bad javascript');
@@ -43,7 +74,7 @@ function testThrowsAnExceptionWhenTheJavascriptIsBad(driver) {
 
 
 function testCanCallFunctionsDefinedOnThePage(driver) {
-  driver.get(TEST_PAGES.javascriptPage);
+  driver.get(TEST_PAGE.javascriptPage);
   driver.executeScript('displayMessage("I like cheese");');
   assertThat(
       driver.findElement({id: 'result'}).getText(), equals('I like cheese'));
@@ -52,7 +83,7 @@ function testCanCallFunctionsDefinedOnThePage(driver) {
 
 function testCanPassAStringAsAnArgument(driver) {
   var script = 'return arguments[0] == "fish" ? "fish" : "not fish";';
-  driver.get(TEST_PAGES.javascriptPage);
+  driver.get(TEST_PAGE.javascriptPage);
   assertThat(driver.executeScript(script, 'fish'), equals('fish'));
   assertThat(driver.executeScript(script, 'chicken'), equals('not fish'));
 }
@@ -60,7 +91,7 @@ function testCanPassAStringAsAnArgument(driver) {
 
 function testCanPassABooleanAsAScriptArgument(driver) {
   var script = 'return arguments[0] == true;';
-  driver.get(TEST_PAGES.javascriptPage);
+  driver.get(TEST_PAGE.javascriptPage);
   assertThat(driver.executeScript(script, true), is(true));
   assertThat(driver.executeScript(script, false), is(false));
 }
@@ -68,7 +99,7 @@ function testCanPassABooleanAsAScriptArgument(driver) {
 
 function testCanPassANumberAsAnArgument(driver) {
   var script = 'return arguments[0] + arguments[1];';
-  driver.get(TEST_PAGES.javascriptPage);
+  driver.get(TEST_PAGE.javascriptPage);
   assertThat(driver.executeScript(script, 1, 2), equals(3));
   assertThat(driver.executeScript(script, 27, -15), equals(12));
   assertThat(driver.executeScript(script, 27.5, -15.25), equals(12.25));
@@ -76,7 +107,7 @@ function testCanPassANumberAsAnArgument(driver) {
 
 
 function testCanPassAWebElementAsAnArgument(driver) {
-  driver.get(TEST_PAGES.javascriptPage);
+  driver.get(TEST_PAGE.javascriptPage);
   var button = driver.findElement({id: 'plainButton'});
   driver.executeScript(
       "arguments[0]['flibble'] = arguments[0].getAttribute('id');" +
@@ -120,7 +151,7 @@ function testThrowsAnExceptionIfAnArgumentIsNotValid(driver) {
 
 
 function testShouldBeAbleToGrabTheBodyOfFrameOnceSwitchedTo(driver) {
-  driver.get(TEST_PAGES.richtextPage);
+  driver.get(TEST_PAGE.richtextPage);
   driver.switchToFrame('editFrame');
   // TODO(jmleyba): This is ugly.
   var body = driver.executeScript('return document.body;');
@@ -128,3 +159,18 @@ function testShouldBeAbleToGrabTheBodyOfFrameOnceSwitchedTo(driver) {
     assertThat(body.getValue().getText(), equals(''));
   });
 }
+
+
+function testScriptsExecuteInSelectedFrame(driver) {
+  var script = 'return window.location.href';
+  driver.get(TEST_PAGE.framesetPage);
+  assertThat(driver.executeScript(script), equals(whereIs('page/1')));
+  driver.switchToFrame('second');
+  assertThat(driver.executeScript(script),
+             equals(decodeURIComponent(whereIs('page/2?title=Fish'))));
+}
+  </script>
+</head>
+<body>
+</body>
+</html>

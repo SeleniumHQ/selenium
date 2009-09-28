@@ -1,26 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>formhandling_test</title>
+  <script src="../webdriver-bootstrap.js"></script>
+  <script src="testbase.js"></script>
+  <script>
+    function setUpPage() {
+      openTestWindow();
+    }
+
+
+    function tearDownPage() {
+      closeTestWindow();
+    }
+
+
+    function setUp(driver) {
+      switchToTestWindow(driver);
+    }
+
+
 function testClickingOnSubmitInputElements(driver) {
-  driver.get(TEST_PAGES.formPage);
+  driver.get(TEST_PAGE.formPage);
   driver.findElement({id: 'submitButton'}).click();
   assertThat(driver.getTitle(), equals('We Arrive Here'));
 }
 
 
 function testClickingOnUnclickableElementsDoesNothing(driver) {
-  driver.get(TEST_PAGES.formPage);
+  driver.get(TEST_PAGE.formPage);
   driver.findElement({xpath: '//body'}).click();
   assertThat(driver.getTitle(), equals('We Leave From Here'));
 }
 
 
 function testShouldBeAbleToClickImageButtons(driver) {
-  driver.get(TEST_PAGES.formPage);
+  driver.get(TEST_PAGE.formPage);
   driver.findElement({id: 'imageButton'}).click();
   assertThat(driver.getTitle(), equals('We Arrive Here'));
 }
 
 
 function testShouldBeAbleToSubmitForms(driver) {
-  driver.get(TEST_PAGES.formPage);
+  driver.get(TEST_PAGE.formPage);
   driver.findElement({name: 'login'}).submit();
   assertThat(driver.getTitle(), equals('We Arrive Here'));
 }
@@ -28,28 +50,28 @@ function testShouldBeAbleToSubmitForms(driver) {
 
 function testShouldSubmitAFormWhenAnyInputElementWithinThatFormIsSubmitted(
     driver) {
-  driver.get(TEST_PAGES.formPage);
+  driver.get(TEST_PAGE.formPage);
   driver.findElement({id: 'checky'}).submit();
   assertThat(driver.getTitle(), equals('We Arrive Here'));
 }
 
 
 function testShouldSubmitAFormWhenAnyElementWithinThatFormIsSubmitted(driver) {
-  driver.get(TEST_PAGES.formPage);
+  driver.get(TEST_PAGE.formPage);
   driver.findElement({xpath: '//form/p'}).submit();
   assertThat(driver.getTitle(), equals('We Arrive Here'));
 }
 
 
 function testCannotSubmitANonFormElement(driver) {
-  driver.get(TEST_PAGES.formPage);
+  driver.get(TEST_PAGE.formPage);
   driver.findElement({xpath: '//body'}).submit();
   assertThat(driver.getTitle(), equals('We Leave From Here'));
 }
 
 
 function testShouldBeAbleToEnterTextIntoATextAreaBySettingItsValue(driver) {
-  driver.get(TEST_PAGES.javascriptPage);
+  driver.get(TEST_PAGE.javascriptPage);
   var textarea = driver.findElement({id: 'keyUpArea'});
   var cheesey = 'Brie and cheddar';
   textarea.sendKeys(cheesey);
@@ -58,7 +80,7 @@ function testShouldBeAbleToEnterTextIntoATextAreaBySettingItsValue(driver) {
 
 
 function testShouldEnterDataIntoFormFields(driver) {
-  driver.get(TEST_PAGES.xhtmlTestPage);
+  driver.get(TEST_PAGE.xhtmlTestPage);
   var xpath = {xpath: '//form[@name="someForm"]/input[@id="username"]'};
   var element = driver.findElement(xpath);
   element.getValue();
@@ -75,7 +97,7 @@ function testShouldEnterDataIntoFormFields(driver) {
 
 
 function testShouldBeAbleToSelectACheckBox(driver) {
-  driver.get(TEST_PAGES.formPage);
+  driver.get(TEST_PAGE.formPage);
   var checkbox = driver.findElement({id: 'checky'});
   checkbox.isChecked();
   assertThat(checkbox.isChecked(), is(false));
@@ -87,7 +109,7 @@ function testShouldBeAbleToSelectACheckBox(driver) {
 
 
 function testTogglingACheckboxReturnsItsCurrentState(driver) {
-  driver.get(TEST_PAGES.formPage);
+  driver.get(TEST_PAGE.formPage);
   var checkbox = driver.findElement({id: 'checky'});
   assertThat(checkbox.isChecked(), is(false));
   assertThat(checkbox.toggle(), equals(true));
@@ -96,7 +118,7 @@ function testTogglingACheckboxReturnsItsCurrentState(driver) {
 
 
 function testCannotSelectSomethingThatIsDisabled(driver) {
-  driver.get(TEST_PAGES.formPage);
+  driver.get(TEST_PAGE.formPage);
   var radioButton = driver.findElement({id: 'nothing'});
   assertThat(radioButton.isEnabled(), is(false));
   radioButton.setSelected();
@@ -106,7 +128,7 @@ function testCannotSelectSomethingThatIsDisabled(driver) {
 
 
 function testCanSelectARadioButton(driver) {
-  driver.get(TEST_PAGES.formPage);
+  driver.get(TEST_PAGE.formPage);
   var radioButton = driver.findElement({id: 'peas'});
   assertThat(radioButton.isChecked(), is(false));
   radioButton.setSelected();
@@ -115,7 +137,7 @@ function testCanSelectARadioButton(driver) {
 
 
 function testCanSelectARadioButtonByClickingOnIt(driver) {
-  driver.get(TEST_PAGES.formPage);
+  driver.get(TEST_PAGE.formPage);
   var radioButton = driver.findElement({id: 'peas'});
   assertThat(radioButton.isChecked(), is(false));
   radioButton.click();
@@ -124,7 +146,7 @@ function testCanSelectARadioButtonByClickingOnIt(driver) {
 
 
 function testRadioButtonsInSameGroupChangeWhenNewButtonIsSelected(driver) {
-  driver.get(TEST_PAGES.formPage);
+  driver.get(TEST_PAGE.formPage);
 
   var cheeseAndPeas = driver.findElement({id: 'cheese_and_peas'});
   var cheese = driver.findElement({id: 'cheese'});
@@ -152,7 +174,7 @@ function testRadioButtonsInSameGroupChangeWhenNewButtonIsSelected(driver) {
 
 
 function testThrowsAnExceptionWhenTogglingTheStateOfARadioButton(driver) {
-  driver.get(TEST_PAGES.formPage);
+  driver.get(TEST_PAGE.formPage);
   var cheese = driver.findElement({id: 'cheese'});
   cheese.toggle();
   driver.catchExpectedError(
@@ -161,7 +183,7 @@ function testThrowsAnExceptionWhenTogglingTheStateOfARadioButton(driver) {
 
 
 function testThrowsAnExceptionWhenTogglingOptionNotInAMultiSelect(driver) {
-  driver.get(TEST_PAGES.formPage);
+  driver.get(TEST_PAGE.formPage);
   driver.findElement({name: 'selectomatic'}).
       findElements({tagName: 'option'});
   driver.callFunction(function(response) {
@@ -173,7 +195,7 @@ function testThrowsAnExceptionWhenTogglingOptionNotInAMultiSelect(driver) {
 
 
 function testCanToggleOptionsInAMultiSelect(driver) {
-  driver.get(TEST_PAGES.formPage);
+  driver.get(TEST_PAGE.formPage);
   driver.findElement({name: 'multi'}).
       findElements({tagName: 'option'});
   driver.callFunction(function(response) {
@@ -188,7 +210,7 @@ function testCanToggleOptionsInAMultiSelect(driver) {
 
 
 function testCanAlterTheContentsOfAFileUploadInputElement(driver) {
-  driver.get(TEST_PAGES.formPage);
+  driver.get(TEST_PAGE.formPage);
   var uploadElement = driver.findElement({id: 'upload'});
   assertThat(uploadElement.getValue(), equals(''));
   uploadElement.sendKeys('/some/file/path');
@@ -197,7 +219,7 @@ function testCanAlterTheContentsOfAFileUploadInputElement(driver) {
 
 
 function testThrowsAnExceptionWhenSelectingAnUnselectableElement(driver) {
-  driver.get(TEST_PAGES.formPage);
+  driver.get(TEST_PAGE.formPage);
   driver.findElement({xpath: '//title'}).setSelected();
   driver.catchExpectedError(
       'Should not be able to select unselectable element');
@@ -205,7 +227,7 @@ function testThrowsAnExceptionWhenSelectingAnUnselectableElement(driver) {
 
 
 function testSendkingKeyboardEventsShouldAppendTextInInputs(driver) {
-  driver.get(TEST_PAGES.formPage);
+  driver.get(TEST_PAGE.formPage);
   var element = driver.findElement({id: 'working'});
   element.sendKeys('Some');
   assertThat(element.getValue(), equals('Some'));
@@ -215,7 +237,7 @@ function testSendkingKeyboardEventsShouldAppendTextInInputs(driver) {
 
 
 function testSendingKeyboardEventsShouldAppendTextInTextAreas(driver) {
-  driver.get(TEST_PAGES.formPage);
+  driver.get(TEST_PAGE.formPage);
   var element = driver.findElement({id: 'withText'});
   element.sendKeys('. Some text');
   assertThat(element.getValue(), equals('Example text. Some text'));
@@ -223,7 +245,7 @@ function testSendingKeyboardEventsShouldAppendTextInTextAreas(driver) {
 
 
 function testCanClearTextFromInputElements(driver) {
-  driver.get(TEST_PAGES.formPage);
+  driver.get(TEST_PAGE.formPage);
   var element = driver.findElement({id: 'working'});
   element.sendKeys('Some text');
   assertThat(element.getValue(), equals('Some text'));
@@ -233,10 +255,15 @@ function testCanClearTextFromInputElements(driver) {
 
 
 function testCanClearTextFromTextAreas(driver) {
-  driver.get(TEST_PAGES.formPage);
+  driver.get(TEST_PAGE.formPage);
   var element = driver.findElement({id: 'withText'});
   element.sendKeys('. Some text');
   assertThat(element.getValue(), equals('Example text. Some text'));
   element.clear();
   assertThat(element.getValue(), equals(''));
 }
+  </script>
+</head>
+<body>
+</body>
+</html>

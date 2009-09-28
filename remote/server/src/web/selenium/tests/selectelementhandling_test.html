@@ -1,6 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>selectelementhandling_test</title>
+  <script src="../webdriver-bootstrap.js"></script>
+  <script src="testbase.js"></script>
+  <script>
+    function setUpPage() {
+      openTestWindow();
+    }
+
+
+    function tearDownPage() {
+      closeTestWindow();
+    }
+
+
+    function setUp(driver) {
+      switchToTestWindow(driver);
+    }
+
+
 function testCanDeselectASingleOptionFromASelectWhichAllowsMultipleChoices(
     driver) {
-  driver.get(TEST_PAGES.formPage);
+  driver.get(TEST_PAGE.formPage);
   var multiSelect = driver.findElement({id: "multi"});
   multiSelect.findElements({tagName: "option"});
   driver.callFunction(function(response) {
@@ -17,7 +39,7 @@ function testCanDeselectASingleOptionFromASelectWhichAllowsMultipleChoices(
 
 
 function testShouldNotBeAbleToDeselectAnOptionFromANormalSelect(driver) {
-  driver.get(TEST_PAGES.formPage);
+  driver.get(TEST_PAGE.formPage);
   var select = driver.findElement({xpath:"//select[@name='selectomatic']"});
   select.findElements({tagName: "option"});
   driver.callFunction(function(response) {
@@ -28,7 +50,7 @@ function testShouldNotBeAbleToDeselectAnOptionFromANormalSelect(driver) {
 }
 
 function testShouldBeAbleToChangeTheSelectedOptionInASelect(driver) {
-  driver.get(TEST_PAGES.formPage);
+  driver.get(TEST_PAGE.formPage);
   var selectBox = driver.findElement({xpath:"//select[@name='selectomatic']"});
   selectBox.findElements({tagName: "option"});
   driver.callFunction(function(response) {
@@ -47,7 +69,7 @@ function testShouldBeAbleToChangeTheSelectedOptionInASelect(driver) {
 
 function testCanSelectMoreThanOneOptionFromASelectWhichAllowsMultipleChoices(
     driver) {
-  driver.get(TEST_PAGES.formPage);
+  driver.get(TEST_PAGE.formPage);
   var multiSelect = driver.findElement({id: "multi"});
   multiSelect.findElements({tagName: "option"});
   driver.callFunction(function(response) {
@@ -62,3 +84,8 @@ function testCanSelectMoreThanOneOptionFromASelectWhichAllowsMultipleChoices(
     });
   });
 }
+  </script>
+</head>
+<body>
+</body>
+</html>

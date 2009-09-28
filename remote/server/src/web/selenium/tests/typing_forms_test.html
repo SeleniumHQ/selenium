@@ -1,3 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>typing_forms_test</title>
+  <script src="../webdriver-bootstrap.js"></script>
+  <script src="testbase.js"></script>
+  <script>
+    function setUpPage() {
+      openTestWindow();
+    }
+
+
+    function tearDownPage() {
+      closeTestWindow();
+    }
+
+
+    function setUp(driver) {
+      switchToTestWindow(driver);
+    }
+
+
 /**
  * @fileoverview Tests for typing on INPUT and TEXTAREA elements.
  */
@@ -11,7 +33,7 @@ function runInputTypingTest(driver, expectedValue, var_args) {
   } else {
     keySequence = goog.array.slice(arguments, 2);
   }
-  driver.get(TEST_PAGES.javascriptPage);
+  driver.get(TEST_PAGE.javascriptPage);
   var element = driver.findElement({id: 'keyReporter'});
   element.sendKeys.apply(element, keySequence);
   assertThat(element.getValue(), equals(expectedValue));
@@ -26,7 +48,7 @@ function runTextAreaTypingTest(driver, expectedValue, var_args) {
   } else {
     keySequence = goog.array.slice(arguments, 2);
   }
-  driver.get(TEST_PAGES.javascriptPage);
+  driver.get(TEST_PAGE.javascriptPage);
   var element = driver.findElement({id: 'keyUpArea'});
   element.sendKeys.apply(element, keySequence);
   assertThat(element.getValue(), equals(expectedValue));
@@ -95,13 +117,13 @@ function testTypingSpaceOnAnInputElement(driver) {
 
 function testCanSubmitFormByTypingEnterOnAnInputElement(driver) {
   function runTest(key) {
-    driver.get(TEST_PAGES.formPage);
+    driver.get(TEST_PAGE.formPage);
     var nestedForm = driver.findElement({id: 'nested_form'});
     var input = nestedForm.findElement({name: 'x'});
     input.sendKeys(key);
     assertThat(driver.getTitle(), equals('We Arrive Here'));
     assertThat(driver.getCurrentUrl(),
-               equals(TEST_PAGES.resultPage + '?x=name'));
+               equals(TEST_PAGE.resultPage + '?x=name'));
   }
 
   runTest('\n');
@@ -224,7 +246,7 @@ function testCutCopyPasteInAnInputElement(driver) {
   var copy = key.chord(modifier, 'c');
   var paste = key.chord(modifier, 'v');
 
-  driver.get(TEST_PAGES.javascriptPage);
+  driver.get(TEST_PAGE.javascriptPage);
   var element = driver.findElement({id: 'keyReporter'});
   element.sendKeys('world');
   assertThat(element.getValue(), equals('world'));
@@ -352,7 +374,7 @@ function testTypingSpaceOnATextAreaElement(driver) {
 
 
 function testCanStartNewlinesByTypingEnterInATextArea(driver) {
-  driver.get(TEST_PAGES.javascriptPage);
+  driver.get(TEST_PAGE.javascriptPage);
   var textArea = driver.findElement({id: 'keyUpArea'});
   textArea.sendKeys('line one');
   assertThat(textArea.getValue(), equals('line one'));
@@ -502,7 +524,7 @@ function testCutCopyPasteInATextAreaElement(driver) {
   var copy = key.chord(modifier, 'c');
   var paste = key.chord(modifier, 'v');
 
-  driver.get(TEST_PAGES.javascriptPage);
+  driver.get(TEST_PAGE.javascriptPage);
   var element = driver.findElement({id: 'keyUpArea'});
   element.sendKeys('world');
   assertThat(element.getValue(), equals('world'));
@@ -531,7 +553,7 @@ function testMultilineSelectionEditingInTextAreaElement(driver) {
   var pageDownChord = goog.userAgent.MAC ?
       key.chord(key.COMMAND, key.ARROW_DOWN) : key.chord(key.PAGE_DOWN);
 
-  driver.get(TEST_PAGES.javascriptPage);
+  driver.get(TEST_PAGE.javascriptPage);
   var element = driver.findElement({id: 'keyUpArea'});
 
   element.sendKeys('line1\nline2\nline3');
@@ -601,3 +623,8 @@ if (goog.userAgent.MAC) {
   };
 }
 
+  </script>
+</head>
+<body>
+</body>
+</html>

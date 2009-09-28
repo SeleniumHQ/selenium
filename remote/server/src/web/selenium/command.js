@@ -206,9 +206,11 @@ webdriver.CommandName = {
   WAIT: 'wait',
   PAUSE: 'pause',
   NEW_SESSION: 'newSession',
+  DELETE_SESSION: 'deleteSession',
   QUIT: 'quit',
   GET_CURRENT_WINDOW_HANDLE: 'getCurrentWindowHandle',
   GET_ALL_WINDOW_HANDLES: 'getAllWindowHandles',
+  GET_CURRENT_URL: 'getCurrentUrl',
   CLOSE: 'close',
   SWITCH_TO_WINDOW: 'switchToWindow',
   SWITCH_TO_FRAME: 'switchToFrame',
@@ -280,4 +282,5 @@ webdriver.Response = function(isFailure, context, value, opt_error) {
   this.context = context;
   this.value = value;
   this.errors = goog.array.slice(arguments, 3);
+  this.extraData = {};
 };

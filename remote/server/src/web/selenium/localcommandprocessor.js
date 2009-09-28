@@ -61,6 +61,7 @@ webdriver.LocalCommandProcessor.DRIVER_METHOD_NAMES_ = goog.object.transpose({
   'findActiveDriver': webdriver.CommandName.NEW_SESSION,
   'getCurrentWindowHandle': webdriver.CommandName.GET_CURRENT_WINDOW_HANDLE,
   'getAllWindowHandles': webdriver.CommandName.GET_ALL_WINDOW_HANDLES,
+  'getCurrentUrl': webdriver.CommandName.GET_CURRENT_URL,
   'get': webdriver.CommandName.GET,
   'goForward': webdriver.CommandName.FORWARD,
   'goBack': webdriver.CommandName.BACK,
@@ -93,7 +94,7 @@ webdriver.LocalCommandProcessor.DRIVER_METHOD_NAMES_ = goog.object.transpose({
   'getElementSize': webdriver.CommandName.GET_SIZE,
   'getElementAttribute': webdriver.CommandName.GET_ATTRIBUTE,
   'dragAndDrop': webdriver.CommandName.DRAG,
-  'getValueOfCssProperty': webdriver.CommandName.GET_CSS_PROPERTY
+  'getElementCssProperty': webdriver.CommandName.GET_CSS_PROPERTY
 });
 
 
@@ -163,10 +164,12 @@ webdriver.LocalCommandProcessor.LOCATOR_UNDER_ELEMENT_ = {
 webdriver.LocalCommandProcessor.prototype.executeDriverCommand = function(
     command, sessionId, context) {
   var respond = goog.bind(function(rawResponse) {
-    command.setResponse(new webdriver.Response(
+    var response = new webdriver.Response(
         rawResponse['isError'],
         webdriver.Context.fromString(rawResponse['context']),
-        rawResponse['response']));
+        rawResponse['response']);
+    response.extraData['resultType'] = rawResponse['resultType'];
+    command.setResponse(response);
   }, this);
 
   var methodName;

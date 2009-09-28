@@ -1,12 +1,27 @@
-/**
- * @fileoverview Implements the tests in org.openqa.selenium.ChildrenFindingTest
- * using the JS API.  This file should be loaded by the test_suite.js test
- * bootstrap.
- * @author jmleyba@gmail.com (Jason Leyba)
- */
+<!DOCTYPE html>
+<html>
+<head>
+  <title>childrenfinding_test.html</title>
+  <script src="../webdriver-bootstrap.js"></script>
+  <script src="testbase.js"></script>
+  <script>
+function setUpPage() {
+  openTestWindow();
+}
+
+
+function tearDownPage() {
+  closeTestWindow();
+}
+
+
+function setUp(driver) {
+  switchToTestWindow(driver);
+}
+
 
 function testReturnAnEmptyListWhenThereAreNoChildrenOfANode(driver) {
-  driver.get(TEST_PAGES.xhtmlTestPage);
+  driver.get(TEST_PAGE.xhtmlTestPage);
   driver.findElement({id: 'table'}).
       findElements({tagName: 'tr'});
   driver.callFunction(function(response) {
@@ -16,7 +31,7 @@ function testReturnAnEmptyListWhenThereAreNoChildrenOfANode(driver) {
 
 
 function testShouldNotFindElementOutsideTree(driver) {
-  driver.get(TEST_PAGES.formPage);
+  driver.get(TEST_PAGE.formPage);
   var login = driver.findElement({name: 'login'});
   assertThat(login.isElementPresent({name: 'x'}), is(false));
   login.findElement({name: 'x'});
@@ -25,14 +40,14 @@ function testShouldNotFindElementOutsideTree(driver) {
 
 
 function testShouldFindGrandChildren(driver) {
-  driver.get(TEST_PAGES.formPage);
+  driver.get(TEST_PAGE.formPage);
   driver.findElement({id: 'nested_form'}).
       findElement({name: 'x'});
 }
 
 
 function testFindElementByIdWhenMultipleMatchesExist(driver) {
-  driver.get(TEST_PAGES.nestedPage);
+  driver.get(TEST_PAGE.nestedPage);
   var text = driver.findElement({id: 'test_id_div'}).
       findElement({id: 'test_id'}).
       getText();
@@ -41,7 +56,7 @@ function testFindElementByIdWhenMultipleMatchesExist(driver) {
 
 
 function testFindElementByIdWhenNoMatchInContext(driver) {
-  driver.get(TEST_PAGES.nestedPage);
+  driver.get(TEST_PAGE.nestedPage);
   driver.findElement({id: 'test_id_div'}).
       findElement({id: 'test_id_out'});
   driver.catchExpectedError(
@@ -51,7 +66,7 @@ function testFindElementByIdWhenNoMatchInContext(driver) {
 
 
 function testCanDetectWhenElementsArePresentByXPath(driver) {
-  driver.get(TEST_PAGES.nestedPage);
+  driver.get(TEST_PAGE.nestedPage);
   var xpath = {xpath: '//form[@name="form2"]/select/x'};
   assertThat(driver.isElementPresent(xpath), is(false));
   var select = driver.findElement({xpath: '//form[@name="form2"]/select'});
@@ -60,7 +75,7 @@ function testCanDetectWhenElementsArePresentByXPath(driver) {
 
 
 function testRaisesAnErrorWhenChildElementIsNotFoundByXPath(driver) {
-  driver.get(TEST_PAGES.nestedPage);
+  driver.get(TEST_PAGE.nestedPage);
   var xpath = {xpath: '//form[@name="form2"]/select/x'};
   assertThat(driver.isElementPresent(xpath), is(false));
   var select = driver.findElement({xpath: '//form[@name="form2"]/select'});
@@ -70,7 +85,7 @@ function testRaisesAnErrorWhenChildElementIsNotFoundByXPath(driver) {
 
 
 function testFindElementsById(driver) {
-  driver.get(TEST_PAGES.nestedPage);
+  driver.get(TEST_PAGE.nestedPage);
   driver.findElement({name: 'form2'}).
       findElements({id: '2'});
   driver.callFunction(function(response) {
@@ -80,7 +95,7 @@ function testFindElementsById(driver) {
 
 
 function testFindElementsByLinkTest(driver) {
-  driver.get(TEST_PAGES.nestedPage);
+  driver.get(TEST_PAGE.nestedPage);
   driver.findElement({name: 'div1'}).
       findElements({linkText: 'hello world'});
   driver.callFunction(function(response) {
@@ -93,7 +108,7 @@ function testFindElementsByLinkTest(driver) {
 
 
 function testFindElementsByLinkText(driver) {
-  driver.get(TEST_PAGES.nestedPage);
+  driver.get(TEST_PAGE.nestedPage);
   driver.findElement({name: 'div1'}).
       findElements({linkText: 'hello world'});
   driver.callFunction(function(response) {
@@ -103,7 +118,7 @@ function testFindElementsByLinkText(driver) {
 
 
 function testShouldFindChildElementsByClassName(driver) {
-  driver.get(TEST_PAGES.nestedPage);
+  driver.get(TEST_PAGE.nestedPage);
   var one = driver.findElement({name: 'classes'}).
       findElement({className: 'one'});
   assertThat(one.getText(), equals('Find me'));
@@ -111,7 +126,7 @@ function testShouldFindChildElementsByClassName(driver) {
 
 
 function testShouldFindChildrenByClassName(driver) {
-  driver.get(TEST_PAGES.nestedPage);
+  driver.get(TEST_PAGE.nestedPage);
   driver.findElement({name: 'classes'}).
       findElements({className: 'one'});
   driver.callFunction(function(response) {
@@ -121,23 +136,23 @@ function testShouldFindChildrenByClassName(driver) {
 
 
 function testShouldFindChildElementByTagName(driver) {
-  driver.get(TEST_PAGES.nestedPage);
+  driver.get(TEST_PAGE.nestedPage);
   var name = driver.findElement({name: 'div1'}).findElement({tagName: 'A'}).
       getAttribute('name');
   assertThat(name, is('link1'));
-//  assertThat(
-//      driver.findElement({name: 'div1'}).
-//          findElement({tagName: 'A'}).
-//          getAttribute('name'),
-//      is('link1'));
 }
 
 
 function testShouldFindChildrenByTagName(driver) {
-  driver.get(TEST_PAGES.nestedPage);
+  driver.get(TEST_PAGE.nestedPage);
   driver.findElement({name: 'div1'}).
       findElements({tagName: 'A'});
   driver.callFunction(function(response) {
     assertEquals(2, response.value.length);
   });
 }
+  </script>
+</head>
+<body>
+</body>
+</html>

@@ -1,7 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>correcteventfiring_test</title>
+  <script src="../webdriver-bootstrap.js"></script>
+  <script src="testbase.js"></script>
+  <script>
+    function setUpPage() {
+      openTestWindow();
+    }
+
+
+    function tearDownPage() {
+      closeTestWindow();
+    }
+
+
+    function setUp(driver) {
+      switchToTestWindow(driver);
+    }
+
+
 /**
  * @fileoverview Implements the tests in
  * org.openqa.selenium.CorrectEventFiringTest using the JS API.  This file
- * should be loaded by the test_suite.js test bootstrap.
+ * should be loaded by the testbase.js test bootstrap.
  * @author jmleyba@gmail.com (Jason Leyba)
  */
 
@@ -26,35 +48,35 @@ function assertEventFired(driver, event) {
 
 
 function testShouldFireFocusEventWhenClicking(driver) {
-  driver.get(TEST_PAGES.javascriptPage);
+  driver.get(TEST_PAGE.javascriptPage);
   clickOnElementWhichRecordsEvents(driver);
   assertEventFired(driver, 'focus');
 }
 
 
 function testShouldFireClickEventWhenClicking(driver) {
-  driver.get(TEST_PAGES.javascriptPage);
+  driver.get(TEST_PAGE.javascriptPage);
   clickOnElementWhichRecordsEvents(driver);
   assertEventFired(driver, 'click');
 }
 
 
 function testShouldFireMouseDownEventWhenClicking(driver) {
-  driver.get(TEST_PAGES.javascriptPage);
+  driver.get(TEST_PAGE.javascriptPage);
   clickOnElementWhichRecordsEvents(driver);
   assertEventFired(driver, 'mousedown');
 }
 
 
 function testShouldFireMouseUpEventWhenClicking(driver) {
-  driver.get(TEST_PAGES.javascriptPage);
+  driver.get(TEST_PAGE.javascriptPage);
   clickOnElementWhichRecordsEvents(driver);
   assertEventFired(driver, 'mouseup');
 }
 
 
 function testShouldFireEventsInTheRightOrder(driver) {
-  driver.get(TEST_PAGES.javascriptPage);
+  driver.get(TEST_PAGE.javascriptPage);
   clickOnElementWhichRecordsEvents(driver);
   var text = driver.findElement({id: 'result'}).getText();
   // In Firefox, the focus event will not fire if Firefox is not on top. Also,
@@ -66,28 +88,28 @@ function testShouldFireEventsInTheRightOrder(driver) {
 
 
 function testShouldIssueMouseDownEvents(driver) {
-  driver.get(TEST_PAGES.javascriptPage);
+  driver.get(TEST_PAGE.javascriptPage);
   driver.findElement({id: 'mousedown'}).click();
   assertResultTextIs(driver, 'mouse down');
 }
 
 
 function testShouldIssueClickEvents(driver) {
-  driver.get(TEST_PAGES.javascriptPage);
+  driver.get(TEST_PAGE.javascriptPage);
   driver.findElement({id: 'mouseclick'}).click();
   assertResultTextIs(driver, 'mouse click');
 }
 
 
 function testShouldIssueMouseUpEvents(driver) {
-  driver.get(TEST_PAGES.javascriptPage);
+  driver.get(TEST_PAGE.javascriptPage);
   driver.findElement({id: 'mouseup'}).click();
   assertResultTextIs(driver, 'mouse up');
 }
 
 
 function testMouseEventsShouldBubbleUpToContainingElements(driver) {
-  driver.get(TEST_PAGES.javascriptPage);
+  driver.get(TEST_PAGE.javascriptPage);
   driver.findElement({id: 'child'}).click();
   assertResultTextIs(driver, 'mouse down');
 }
@@ -97,7 +119,7 @@ function testShouldEmitOnChangeEventsWhenSelectingElements(driver) {
   var fooOption;
   var barOption;
 
-  driver.get(TEST_PAGES.javascriptPage);
+  driver.get(TEST_PAGE.javascriptPage);
   driver.findElement({id: 'selector'}).
       findElements({tagName: 'option'});
   driver.callFunction(function(response) {
@@ -119,21 +141,26 @@ function testShouldEmitOnChangeEventsWhenSelectingElements(driver) {
 
 
 function testShouldEmitOnChangeEventsWhenChangingTheStateOfACheckbox(driver) {
-  driver.get(TEST_PAGES.javascriptPage);
+  driver.get(TEST_PAGE.javascriptPage);
   driver.findElement({id: 'checkbox'}).setSelected();
   assertResultTextIs(driver, 'checkbox thing');
 }
 
 
 function testShouldEmitClickEventWhenClickingOnATextInputElement(driver) {
-  driver.get(TEST_PAGES.javascriptPage);
+  driver.get(TEST_PAGE.javascriptPage);
   var clicker = driver.findElement({id: 'clickField'});
   clicker.click();
   assertThat(clicker.getValue(), equals('Clicked'));
 }
 
 function testClearingAnElementCausesTheOnChangeHandlerToFire(driver) {
-  driver.get(TEST_PAGES.javascriptPage);
+  driver.get(TEST_PAGE.javascriptPage);
   driver.findElement({id: 'clearMe'}).clear();
   assertResultTextIs(driver, 'Cleared');
 }
+  </script>
+</head>
+<body>
+</body>
+</html>

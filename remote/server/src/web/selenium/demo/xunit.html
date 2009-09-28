@@ -43,7 +43,8 @@
     function testPassingExample(driver) {
       // sleep commands are used to make it easier to watch the test run (so you
       // can see the driver execute each command).
-      driver.get('http://localhost:3000/common/javascriptPage.html');
+      driver.get(window.location.protocol + '//' + window.location.host +
+                '/common/javascriptPage.html');
       driver.sleep(SLEEP);
 
       // Before you can manipulate an element on the page, you have to find it.

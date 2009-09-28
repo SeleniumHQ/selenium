@@ -1,3 +1,10 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>expectederrors_test.html</title>
+  <script src="../webdriver-bootstrap.js"></script>
+  <script src="testbase.js"></script>
+  <script type="text/javascript">
 function testCanHandleExpectedErrors(driver) {
   driver.callFunction(function() {
     fail('This command triggers an error, but it should be caught as an\n' +
@@ -12,7 +19,7 @@ function testCanHandleExpectedErrors(driver) {
 }
 
 
-function testCanHandleExpectedErrorsFromANestedCommand(driver) {  
+function testCanHandleExpectedErrorsFromANestedCommand(driver) {
   driver.callFunction(function() {
     var failFunc = function() {
       fail('This command triggers an error, but it should be caught as an\n' +
@@ -46,3 +53,9 @@ function testCanExpectErrorsFromInsideANestedCommand(driver) {
         'fail with this error message');
   });
 }
+  </script>
+</head>
+<body>
+</body>
+</html>
+

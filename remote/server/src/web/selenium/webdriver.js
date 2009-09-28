@@ -552,14 +552,20 @@ webdriver.WebDriver.prototype.switchToWindow = function(name) {
  * name 'main' and hten its child 'child'.  If a frame name is a number, then it
  * will be treated as an index into the {@code window.frames} array of the
  * current window.
- * @param {string|number} name The name of the window to transfer control to.
+ * @param {string|number|webdriver.WebElement} frame Identifier for the frame
+ *     to transfer control to.
  */
-webdriver.WebDriver.prototype.switchToFrame = function(name) {
-  this.addCommand(new webdriver.Command(webdriver.CommandName.SWITCH_TO_FRAME).
-      setParameters(name).
-      setSuccessCallback(function(response) {
-        this.context_ = response.context;
-      }, this));
+webdriver.WebDriver.prototype.switchToFrame = function(frame) {
+  var commandName = webdriver.CommandName.SWITCH_TO_FRAME;
+  var command;
+  if (goog.isString(frame) || goog.isNumber(frame)) {
+    command = new webdriver.Command(commandName).setParameters(frame);
+  } else {
+    command = new webdriver.Command(commandName, frame);
+  }
+  this.addCommand(command.setSuccessCallback(function(response) {
+    this.context_ = response.context;
+  }, this));
 };
 
 
@@ -670,11 +676,20 @@ webdriver.WebDriver.prototype.executeScript = function(script, var_args) {
   this.addCommand(new webdriver.Command(webdriver.CommandName.EXECUTE_SCRIPT).
       setParameters(script, args).
       setSuccessCallback(function(response) {
-        if (goog.isString(response.value) &&
-            webdriver.WebElement.UUID_REGEX.test(response.value)) {
-          var id = response.value;
-          response.value = new webdriver.WebElement(this);
-          response.value.getId().setValue(id);
+        switch(response.extraData['resultType']) {
+          case 'NULL':
+            response.value = null;
+            break;
+
+          case 'ELEMENT':
+            var id = response.value;
+            response.value = new webdriver.WebElement(this);
+            response.value.getId().setValue(id);
+            break;
+
+          case 'OTHER':  // Fall-through
+          default:
+            break;
         }
         result.setValue(response.value);
       }, this));
@@ -724,7 +739,10 @@ webdriver.WebDriver.prototype.refresh = function() {
  * @return {webdriver.Future} The current URL in a webdriver.Future.
  */
 webdriver.WebDriver.prototype.getCurrentUrl = function() {
-  return this.executeScript('return window.location.href');
+  var url = new webdriver.Future(this);
+  this.addCommand(new webdriver.Command(webdriver.CommandName.GET_CURRENT_URL).
+      setSuccessCallback(url.setValueFromResponse, url));
+  return url;
 };
 
 

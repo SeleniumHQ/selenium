@@ -1,24 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>windowswitching_test</title>
+  <script src="../webdriver-bootstrap.js"></script>
+  <script src="testbase.js"></script>
+  <script>
+function setUpPage() {
+  openTestWindow();
+}
+
+
+function tearDownPage() {
+  closeTestWindow();
+}
+
+
+function setUp(driver) {
+  switchToTestWindow(driver);
+}
+
+
 function testSwitchesFocusToANewWindowWhenItIsOpenedAndNotStopFutureOperations(
     driver) {
-  driver.get(TEST_PAGES.xhtmlTestPage);
+  driver.get(TEST_PAGE.xhtmlTestPage);
   driver.findElement({linkText: 'Open new window'}).click();
   assertThat(driver.getTitle(), equals('XHTML Test Page'));
   driver.switchToWindow('result');
   assertThat(driver.getTitle(), equals('We Arrive Here'));
-  driver.get(TEST_PAGES.formPage);  // Tests for blocking
+  driver.get(TEST_PAGE.formPage);  // Tests for blocking
   driver.close();
 }
 
 
 function testThrowsAnErrorWhenNoMatchingWindowsAreFound(driver) {
-  driver.get(TEST_PAGES.xhtmlTestPage);
+  driver.get(TEST_PAGE.xhtmlTestPage);
   driver.switchToWindow('invalid name');
   driver.catchExpectedError('Should not have succeeded');
 }
 
 
 function testAbleToIterateOverAllOpenWindows(driver) {
-  driver.get(TEST_PAGES.xhtmlTestPage);
+  driver.get(TEST_PAGE.xhtmlTestPage);
   driver.findElement({name: 'windowOne'}).click();
   driver.getAllWindowHandles();
   driver.callFunction(function(response) {
@@ -44,9 +66,14 @@ function testAbleToIterateOverAllOpenWindows(driver) {
 
 function testClickingOnAButtonThatClosesAnOpenWindowDoesNotHangTheBrowser(
     driver) {
-  driver.get(TEST_PAGES.xhtmlTestPage);
+  driver.get(TEST_PAGE.xhtmlTestPage);
   driver.findElement({name: 'windowThree'}).click();
   driver.switchToWindow('result');
   driver.findElement({id: 'close'}).click();
   // Coolness, all good if we get here.
 }
+  </script>
+</head>
+<body>
+</body>
+</html>

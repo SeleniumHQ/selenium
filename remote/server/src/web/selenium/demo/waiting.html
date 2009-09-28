@@ -49,8 +49,10 @@
 
 
       window.open('', 'slave');
+      driver.newSession(true);
       driver.switchToWindow('slave');
-      driver.get('http://localhost:3000/common/javascriptPage.html');
+      driver.get(window.location.protocol + '//' + window.location.host +
+                '/common/javascriptPage.html');
 
       var clickToShow = driver.findElement({id: 'clickToShow'});
       var clickToHide = driver.findElement({id: 'clickToHide'});

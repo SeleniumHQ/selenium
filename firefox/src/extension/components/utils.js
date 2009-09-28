@@ -17,6 +17,7 @@
  */
 
 function StaleElementError() {
+  this.isStaleElementError = true;
 }
 
 
@@ -218,31 +219,35 @@ Utils.isDisplayed = function(element) {
 };
 
 
-Utils.getStyleProperty = function(node, propertyName) {
-  if (!node)
+/**
+ * Gets the computed style of a DOM {@code element}. If the computed style is
+ * inherited from the element's parent, the parent will be queried for its
+ * style value. If the style value is an RGB color string, it will be converted
+ * to hex ("#rrggbb").
+ * @param {Element} element The DOM element whose computed style to retrieve.
+ * @param {string} propertyName The name of the CSS style proeprty to get.
+ * @return {string} The computed style as a string.
+ */
+Utils.getStyleProperty = function(element, propertyName) {
+  if (!element) {
     return undefined;
-
-  var value = node.ownerDocument.defaultView.getComputedStyle(node, null).
-      getPropertyValue(propertyName);
-
-  // Convert colours to hex if possible
-  var raw = /rgb\((\d{1,3}),\s(\d{1,3}),\s(\d{1,3})\)/.exec(value);
-  if (raw) {
-    var temp = value.substr(0, raw.index);
-
-    var hex = "#";
-    for (var i = 1; i <= 3; i++) {
-      var colour = (raw[i] - 0).toString(16);
-      if (colour.length == 1)
-        colour = "0" + colour;
-      hex += colour;
-    }
-    hex = hex.toLowerCase();
-    value = temp + hex + value.substr(raw.index + raw[0].length);
   }
 
-  if (value == "inherit" && element.parentNode.style) {
-    value = Utils.getStyleProperty(node.parentNode, propertyName);
+  var value = element.ownerDocument.defaultView.getComputedStyle(element, null).
+      getPropertyValue(propertyName);
+
+  if ('inherit' == value && element.parentNode.style) {
+    value = Utils.getStyleProperty(element.parentNode, propertyName);
+  }
+
+  // Convert colours to hex if possible
+  var raw = /rgb\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})\)/.exec(value);
+  if (raw) {
+    var hex = (Number(raw[1]) << 16) +
+              (Number(raw[2]) << 8) +
+              (Number(raw[3]));
+    hex = (hex & 0x00ffffff) | 0x1000000;
+    value = '#' + hex.toString(16).substring(1);
   }
 
   return value;
@@ -372,6 +377,13 @@ Utils.getNodeForNativeEvents = function(element) {
 
 
 Utils.type = function(context, element, text, opt_useNativeEvents) {
+
+  // For consistency between native and synthesized events, convert common
+  // escape sequences to their Key enum aliases.
+  text = text.replace(new RegExp('\b', 'g'), '\uE003').   // DOM_VK_BACK_SPACE
+      replace(/\t/g, '\uE004').                           // DOM_VK_TAB
+      replace(/(\r\n|\n|\r)/g, '\uE006');                 // DOM_VK_RETURN
+
   // Special-case file input elements. This is ugly, but should be okay
   if (element.tagName == "INPUT") {
     var inputtype = element.getAttribute("type");
@@ -597,18 +609,6 @@ Utils.type = function(context, element, text, opt_useNativeEvents) {
       keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_F11;
     } else if (c == '\uE03C') {
       keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_F12;
-    } else if (c == '\r') {
-      if (Utils.platform(context) == "win32")
-        continue;  // skip it
-      if (/mac/.test(Utils.platform(context))) {
-        keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_RETURN;
-        charCode = '\n'.charCodeAt(0);
-      } else {
-        keycode = charCode = '\r'.charCodeAt(0);
-      }
-    } else if (c == '\n') {
-      keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_RETURN;
-      charCode = c.charCodeAt(0);
     } else if (c == ',' || c == '<') {
       keyCode = Components.interfaces.nsIDOMKeyEvent.DOM_VK_COMMA;
       charCode = c.charCodeAt(0);
@@ -1084,7 +1084,9 @@ Utils.unwrapParameters = function(wrappedParameters, resultArray, context) {
 
 Utils.wrapResult = function(result, context) {
   // Sophisticated.
-  if (result && result['tagName']) {
+  if (null === result || undefined === result) {
+    return {resultType: "NULL"};
+  } else if (result['tagName']) {
     return {resultType: "ELEMENT",
             response: Utils.addToKnownElements(result, context)};
   } else if (result !== undefined &&
@@ -1094,9 +1096,7 @@ Utils.wrapResult = function(result, context) {
       array.push(Utils.wrapResult(result[i], context));
     }
     return {resultType: "ARRAY", response: array};
-  } else if (result !== undefined) {
-    return {resultType: "OTHER", response: result};
   } else {
-    return {resultType: "NULL"};
+    return {resultType: "OTHER", response: result};
   }
 }

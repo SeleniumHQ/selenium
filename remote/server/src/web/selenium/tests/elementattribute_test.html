@@ -1,3 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>elementattribute_test</title>
+  <script src="../webdriver-bootstrap.js"></script>
+  <script src="testbase.js"></script>
+  <script>
+    function setUpPage() {
+      openTestWindow();
+    }
+
+
+    function tearDownPage() {
+      closeTestWindow();
+    }
+
+
+    function setUp(driver) {
+      switchToTestWindow(driver);
+    }
+
+
 /**
  * @fileoverview Implements the tests in
  * org.openqa.selenium.ElementAttributeTest using the JS API.  This file
@@ -6,21 +28,21 @@
  */
 
 function testReturnsNullForValueOfAnAttributeThatIsNotListed(driver) {
-  driver.get(TEST_PAGES.simpleTestPage);
+  driver.get(TEST_PAGE.simpleTestPage);
   assertThat(
       driver.findElement({xpath: '//body'}).getAttribute('cheese'), is(null));
 }
 
 
 function testReturnsEmptyAttributeValuesWhenPresentAndValueIsEmpty(driver) {
-  driver.get(TEST_PAGES.simpleTestPage);
+  driver.get(TEST_PAGE.simpleTestPage);
   assertThat(
       driver.findElement({xpath: '//body'}).getAttribute('style'), is(''));
 }
 
 
 function testReturnsTheValueOfTheDisabledAttributeEventIfItIsMissing(driver) {
-  driver.get(TEST_PAGES.formPage);
+  driver.get(TEST_PAGE.formPage);
   assertThat(
       driver.findElement({xpath: "//input[@id='working']"}).
           getAttribute('disabled'),
@@ -29,7 +51,7 @@ function testReturnsTheValueOfTheDisabledAttributeEventIfItIsMissing(driver) {
 
 
 function testReturnsTheValueOfTheIndexAttributeEvenIfItIsMissing(driver) {
-  driver.get(TEST_PAGES.formPage);
+  driver.get(TEST_PAGE.formPage);
   driver.findElement({id: 'multi'}).
       findElements({tagName: 'option'});
   driver.callFunction(function(response) {
@@ -41,7 +63,7 @@ function testReturnsTheValueOfTheIndexAttributeEvenIfItIsMissing(driver) {
 
 function testIndicatesTheElementsThatAreDisabledAreNotEnabled(driver) {
   var element;
-  driver.get(TEST_PAGES.formPage);
+  driver.get(TEST_PAGE.formPage);
   element = driver.findElement({xpath: "//input[@id='notWorking']"});
   assertThat(element.isEnabled(), is(false));
   element = driver.findElement({xpath: "//input[@id='working']"});
@@ -50,7 +72,7 @@ function testIndicatesTheElementsThatAreDisabledAreNotEnabled(driver) {
 
 
 function testIndicatesWhenATextAreaIsDisabled(driver) {
-  driver.get(TEST_PAGES.formPage);
+  driver.get(TEST_PAGE.formPage);
   driver.findElement({xpath: "//textarea[@id='notWorkingArea']"}).
       isEnabled();
   driver.callFunction(function(response) {
@@ -60,7 +82,7 @@ function testIndicatesWhenATextAreaIsDisabled(driver) {
 
 
 function testIndicatesWhenASelectIsDisabled(driver) {
-  driver.get(TEST_PAGES.formPage);
+  driver.get(TEST_PAGE.formPage);
   var element = driver.findElement({name: 'selectomatic'});
   assertThat(element.isEnabled(), is(true));
   element = driver.findElement({name: 'no-select'});
@@ -70,7 +92,7 @@ function testIndicatesWhenASelectIsDisabled(driver) {
 
 function testReturnsTheValueOfCheckedForACheckboxEvenIfItLacksThatAttribute(
     driver) {
-  driver.get(TEST_PAGES.formPage);
+  driver.get(TEST_PAGE.formPage);
   var checkbox = driver.findElement({xpath: "//input[@id='checky']"});
   assertThat(checkbox.getAttribute('checked'), is(false));
   checkbox.setSelected();
@@ -80,7 +102,7 @@ function testReturnsTheValueOfCheckedForACheckboxEvenIfItLacksThatAttribute(
 
 function testReturnsTheValueOfCheckedForRadioButtonsEvenIfTheyLackTheAttribute(
     driver) {
-  driver.get(TEST_PAGES.formPage);
+  driver.get(TEST_PAGE.formPage);
   var cheese = driver.findElement({id: 'cheese'});
   var peas = driver.findElement({id: 'peas'});
   var cheeseAndPeas = driver.findElement({id: 'cheese_and_peas'});
@@ -104,7 +126,7 @@ function testReturnsTheValueOfCheckedForRadioButtonsEvenIfTheyLackTheAttribute(
 
 function testReturnsTheValueOfSelectedForOptionsEvenIfTheyLackTheAttribute(
     driver) {
-  driver.get(TEST_PAGES.formPage);
+  driver.get(TEST_PAGE.formPage);
   driver.findElement({xpath: "//select[@name='selectomatic']"}).
       findElements({tagName: 'option'});
   driver.callFunction(function(response) {
@@ -116,14 +138,14 @@ function testReturnsTheValueOfSelectedForOptionsEvenIfTheyLackTheAttribute(
 
 
 function testReturnsValueOfClassAttributeOfAnElement(driver) {
-  driver.get(TEST_PAGES.xhtmlTestPage);
+  driver.get(TEST_PAGE.xhtmlTestPage);
   var h1 = driver.findElement({xpath: '//h1'});
   assertThat(h1.getAttribute('class'), equals('header'));
 }
 
 
 function testReturnsTheContentsOfATextAreaAsItsValue(driver) {
-  driver.get(TEST_PAGES.formPage);
+  driver.get(TEST_PAGE.formPage);
   driver.findElement({id: 'withText'}).getValue();
   driver.callFunction(function(response) {
     assertEquals(response.value, 'Example text');
@@ -132,10 +154,15 @@ function testReturnsTheContentsOfATextAreaAsItsValue(driver) {
 
 
 function testTreatsReadonlyAsAValue(driver) {
-  driver.get(TEST_PAGES.formPage);
+  driver.get(TEST_PAGE.formPage);
   var readonly = driver.findElement({name: 'readonly'}).
       getAttribute('readonly');
   var notReadonly = driver.findElement({name: 'x'}).
       getAttribute('readonly');
   assertThat(readonly, not(equals(notReadonly)));
 }
+  </script>
+</head>
+<body>
+</body>
+</html>

@@ -375,6 +375,28 @@ webdriver.WebElement.prototype.getTagName = function() {
 
 
 /**
+ * Queries for the computed style of the element represented by this instance.
+ * If the element inherits the named style from its parent, the parent will be
+ * queried for its value.  Where possible, color values will be converted to
+ * their hex representation (#00ff00 instead of rgb(0, 255, 0)).
+ * <em>Warning:</em> the value returned will be as the browser interprets it, so
+ * it may be tricky to form a proper assertion.
+ * @param {string} cssStyleProperty The name of the CSS style property to look
+ *     up.
+ * @return {webdriver.Future<string>} The computed style property wrapped in a
+ *    Future.
+ */
+webdriver.WebElement.prototype.getComputedStyle = function(cssStyleProperty) {
+  var value = new webdriver.Future(this.driver_);
+  var command = this.createCommand_(webdriver.CommandName.GET_CSS_PROPERTY).
+      setParameters(cssStyleProperty).
+      setSuccessCallback(value.setValueFromResponse, value);
+  this.driver_.addCommand(command);
+  return value;
+};
+
+
+/**
  * Queries for the specified attribute.
  * @param {string} attributeName The name of the attribute to query.
  */
