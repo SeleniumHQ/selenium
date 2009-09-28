@@ -49,16 +49,16 @@ WebDriverServer.prototype.newDriver = function(window) {
 
 WebDriverServer.prototype.getNextId = function() {
   return this.generator.generateUUID().toString();
-}
+};
 
 
 WebDriverServer.prototype.onSocketAccepted = function(socket, transport) {
   try {
-    var socketListener = new SocketListener(this, transport);
+    var socketListener = new SocketListener(transport);
   } catch(e) {
     dump(e);
   }
-}
+};
 
 
 WebDriverServer.prototype.startListening = function(port) {
@@ -75,7 +75,7 @@ WebDriverServer.prototype.startListening = function(port) {
     this.serverSocket.asyncListen(this);
     this.isListening = true;
   }
-}
+};
 
 
 WebDriverServer.prototype.onStopListening = function(socket, status)
@@ -98,4 +98,4 @@ WebDriverServer.prototype.QueryInterface = function(aIID) {
 WebDriverServer.prototype.createInstance = function(ignore1, ignore2, ignore3) {
   var port = WebDriverServer.readPort();
   this.startListening(port);
-}
+};
