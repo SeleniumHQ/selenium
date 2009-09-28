@@ -70,6 +70,7 @@ import org.openqa.selenium.remote.server.handler.SubmitElement;
 import org.openqa.selenium.remote.server.handler.SwitchToFrame;
 import org.openqa.selenium.remote.server.handler.SwitchToWindow;
 import org.openqa.selenium.remote.server.handler.ToggleElement;
+import org.openqa.selenium.remote.server.handler.ElementEquality;
 import org.openqa.selenium.remote.server.renderer.EmptyResult;
 import org.openqa.selenium.remote.server.renderer.ForwardResult;
 import org.openqa.selenium.remote.server.renderer.JsonErrorExceptionResult;
@@ -195,6 +196,8 @@ public class DriverServlet extends HttpServlet {
         .on(ResultType.SUCCESS, new EmptyResult());
 
     getMapper.bind("/session/:sessionId/:context/element/:id/attribute/:name", GetElementAttribute.class)
+        .on(ResultType.SUCCESS, new JsonResult(":response"));
+    getMapper.bind("/session/:sessionId/:context/element/:id/equals/:other", ElementEquality.class)
         .on(ResultType.SUCCESS, new JsonResult(":response"));
 
     getMapper.bind("/session/:sessionId/:context/cookie", GetAllCookies.class)

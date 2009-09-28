@@ -141,6 +141,7 @@ public class HttpCommandExecutor implements CommandExecutor {
 
     nameToUrl.put("getElementAttribute",
                   new CommandInfo("/session/:sessionId/:context/element/:id/attribute/:name", HttpVerb.GET));
+    nameToUrl.put("equals", new CommandInfo("/session/:sessionId/:context/element/:id/equals/:other", HttpVerb.GET));
 
     nameToUrl
         .put("getAllCookies", new CommandInfo("/session/:sessionId/:context/cookie", HttpVerb.GET));

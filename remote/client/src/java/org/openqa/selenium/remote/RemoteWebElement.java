@@ -186,4 +186,20 @@ public class RemoteWebElement implements WebElement, SearchContext,
   protected List<WebElement> getElementsFrom(Response response) {
     return parent.getElementsFrom(response);
   }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (!(obj instanceof RemoteWebElement)) {
+      return false;
+    }
+
+    Response response = execute("equals", map("id", id, "other", ((RemoteWebElement) obj).id));
+    Object value = response.getValue();
+    return value != null && value instanceof Boolean && (Boolean) value;
+  }
+
+  @Override
+  public int hashCode() {
+    return id.hashCode();
+  }
 }

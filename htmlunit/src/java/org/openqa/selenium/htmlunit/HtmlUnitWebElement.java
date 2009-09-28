@@ -646,4 +646,14 @@ public class HtmlUnitWebElement implements WebElement,
                                                + " This means that a user cannot interact with it.");
     }
   }
+
+  @Override
+  public boolean equals(Object obj) {
+    return obj instanceof HtmlUnitWebElement && element.equals(((HtmlUnitWebElement) obj).element);
+  }
+
+  @Override
+  public int hashCode() {
+    return element.hashCode();
+  }
 }

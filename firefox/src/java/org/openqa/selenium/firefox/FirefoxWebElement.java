@@ -295,4 +295,19 @@ public class FirefoxWebElement implements RenderedWebElement, Locatable,
             throw new RuntimeException(e);
         }
     }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (!(obj instanceof FirefoxWebElement)) {
+      return false;
+    }
+    Object result = parent.executeScript("return arguments[0] === arguments[1]", this, obj);
+    return result != null && result instanceof Boolean && (Boolean) result;
+  }
+
+  @Override
+  public int hashCode() {
+    // Distinctly sub-optimal
+    return elementId.hashCode();
+  }
 }

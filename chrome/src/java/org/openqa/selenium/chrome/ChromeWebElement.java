@@ -4,6 +4,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.*;
+import static org.openqa.selenium.remote.MapMaker.map;
 import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
@@ -194,4 +196,18 @@ FindsByXPath, FindsByLinkText, FindsById, FindsByName, FindsByTagName, FindsByCl
     execute("hoverElement", this);
   }
 
+  @Override
+  public int hashCode() {
+    return elementId.hashCode();
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (!(obj instanceof ChromeWebElement)) {
+      return false;
+    }
+
+    Object result = parent.executeScript("return arguments[0] === arguments[1]", this, obj);
+    return result != null && result instanceof Boolean && (Boolean) result;
+  }
 }

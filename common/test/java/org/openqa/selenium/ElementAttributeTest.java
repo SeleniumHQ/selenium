@@ -146,4 +146,13 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
 
     assertFalse(readonly.equals(notReadonly));
   }
+
+  public void testElementEqualityShouldWork() {
+    driver.get(simpleTestPage);
+
+    WebElement body = driver.findElement(By.tagName("body"));
+    WebElement xbody = driver.findElement(By.xpath("//body"));
+
+    assertEquals(body, xbody);
+  }
 }

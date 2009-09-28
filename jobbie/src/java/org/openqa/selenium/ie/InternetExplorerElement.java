@@ -292,4 +292,19 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
   protected int addToScriptArgs(Pointer scriptArgs) {
     return lib.wdAddElementScriptArg(scriptArgs, element);
   }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (!(obj instanceof InternetExplorerElement)) {
+      return false;
+    }
+    Boolean result = (Boolean) parent.executeScript("return arguments[0] === arguments[1];", this, obj);
+    return result != null && result;
+  }
+
+  @Override
+  public int hashCode() {
+    // TODO(simon): Implement something better
+    return element.hashCode();
+  }
 }

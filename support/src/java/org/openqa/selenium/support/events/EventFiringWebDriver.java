@@ -333,6 +333,25 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor {
       public WebElement getUnderlyingElement() {
         return underlyingElement;
       }
+
+      @Override
+      public boolean equals(Object obj) {
+        if (!(obj instanceof WebElement)) {
+          return false;
+        }
+
+        WebElement other = (WebElement) obj;
+        if (other instanceof EventFiringWebElement) {
+          other = ((EventFiringWebElement) other).getUnderlyingElement();
+        }
+
+        return underlyingElement.equals(other);
+      }
+
+      @Override
+      public int hashCode() {
+        return underlyingElement.hashCode();
+      }
     }
 
     private class EventFiringRenderedWebElement extends EventFiringWebElement implements RenderedWebElement {
@@ -473,5 +492,4 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor {
             return targetLocator.activeElement();
         }
     }
-
 }

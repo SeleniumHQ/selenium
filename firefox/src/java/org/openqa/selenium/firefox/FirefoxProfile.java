@@ -382,6 +382,8 @@ public class FirefoxProfile {
         prefs.put("dom.disable_open_during_load", "false");
         prefs.put("extensions.update.enabled", "false");
         prefs.put("extensions.update.notifyUser", "false");
+        prefs.put("security.fileuri.origin_policy", "3");
+        prefs.put("security.fileuri.strict_origin_policy", "false");
         prefs.put("security.warn_entering_secure", "false");
         prefs.put("security.warn_submit_insecure", "false");
         prefs.put("security.warn_entering_secure.show_once", "false");
