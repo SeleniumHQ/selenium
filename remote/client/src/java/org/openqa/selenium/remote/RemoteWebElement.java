@@ -25,6 +25,7 @@ import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByXPath;
+import org.openqa.selenium.internal.WrapsElement;
 import static org.openqa.selenium.remote.MapMaker.map;
 
 import java.util.List;
@@ -189,11 +190,20 @@ public class RemoteWebElement implements WebElement, SearchContext,
 
   @Override
   public boolean equals(Object obj) {
-    if (!(obj instanceof RemoteWebElement)) {
+    if (!(obj instanceof WebElement)) {
       return false;
     }
 
-    Response response = execute("equals", map("id", id, "other", ((RemoteWebElement) obj).id));
+    WebElement other = (WebElement) obj;
+    if (other instanceof WrapsElement) {
+      other = ((WrapsElement) obj).getWrappedElement();
+    }
+
+    if (!(other instanceof RemoteWebElement)) {
+      return false;
+    }
+
+    Response response = execute("equals", map("id", id, "other", ((RemoteWebElement) other).id));
     Object value = response.getValue();
     return value != null && value instanceof Boolean && (Boolean) value;
   }

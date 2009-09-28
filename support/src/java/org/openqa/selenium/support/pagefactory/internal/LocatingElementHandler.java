@@ -34,6 +34,10 @@ public class LocatingElementHandler implements InvocationHandler {
   public Object invoke(Object object, Method method, Object[] objects) throws Throwable {
     WebElement element = locator.findElement();
 
+    if ("getWrappedElement".equals(method.getName())) {
+      return element;
+    }
+
     try {
       return method.invoke(element, objects);
     } catch (InvocationTargetException e) {

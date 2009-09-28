@@ -19,6 +19,7 @@ package org.openqa.selenium.remote.server;
 
 import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.internal.WrapsElement;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -71,8 +72,7 @@ public class KnownElements {
                                                handler);
   }
 
-  public interface ProxiedElement {
+  public interface ProxiedElement extends WrapsElement {
     String getId();
-    WebElement getWrappedElement();
   }
 }

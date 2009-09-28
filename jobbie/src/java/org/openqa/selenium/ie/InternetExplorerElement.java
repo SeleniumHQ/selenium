@@ -28,6 +28,7 @@ import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.ie.ExportedWebDriverFunctions.HWNDByReference;
 import org.openqa.selenium.internal.Locatable;
+import org.openqa.selenium.internal.WrapsElement;
 
 import com.sun.jna.Pointer;
 import com.sun.jna.WString;
@@ -295,10 +296,20 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
 
   @Override
   public boolean equals(Object obj) {
-    if (!(obj instanceof InternetExplorerElement)) {
+    if (!(obj instanceof WebElement)) {
       return false;
     }
-    Boolean result = (Boolean) parent.executeScript("return arguments[0] === arguments[1];", this, obj);
+
+    WebElement other = (WebElement) obj;
+    if (other instanceof WrapsElement) {
+      other = ((WrapsElement) obj).getWrappedElement();
+    }
+
+    if (!(other instanceof InternetExplorerElement)) {
+      return false;
+    }
+
+    Boolean result = (Boolean) parent.executeScript("return arguments[0] === arguments[1];", this, other);
     return result != null && result;
   }
 

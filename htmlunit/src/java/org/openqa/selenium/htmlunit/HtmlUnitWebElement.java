@@ -65,6 +65,7 @@ import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
+import org.openqa.selenium.internal.WrapsElement;
 import org.w3c.dom.Attr;
 import org.w3c.dom.NamedNodeMap;
 
@@ -649,7 +650,16 @@ public class HtmlUnitWebElement implements WebElement,
 
   @Override
   public boolean equals(Object obj) {
-    return obj instanceof HtmlUnitWebElement && element.equals(((HtmlUnitWebElement) obj).element);
+    if (!(obj instanceof WebElement)) {
+      return false;
+    }
+
+    WebElement other = (WebElement) obj;
+    if (other instanceof WrapsElement) {
+      other = ((WrapsElement) obj).getWrappedElement();
+    }
+
+    return other instanceof HtmlUnitWebElement && element.equals(((HtmlUnitWebElement) other).element);
   }
 
   @Override

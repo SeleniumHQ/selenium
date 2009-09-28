@@ -172,7 +172,7 @@ public class HttpCommandExecutor implements CommandExecutor {
 
   public Response execute(Command command) throws Exception {
     CommandInfo info = nameToUrl.get(command.getMethodName());
-      HttpMethod httpMethod = info.getMethod(remotePath, command);
+    HttpMethod httpMethod = info.getMethod(remotePath, command);
 
     httpMethod.addRequestHeader("Accept", "application/json, image/png");
 

@@ -22,6 +22,7 @@ import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.KnownElements;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.internal.WrapsElement;
 
 public class ElementEquality extends WebElementHandler {
   private String otherId;
@@ -43,8 +44,8 @@ public class ElementEquality extends WebElementHandler {
     WebElement two = getKnownElements().get(otherId);
 
     // Unwrap the elements, if necessary
-    if (one instanceof KnownElements.ProxiedElement) {
-      one = ((KnownElements.ProxiedElement) one).getWrappedElement();
+    if (one instanceof WrapsElement) {
+      one = ((WrapsElement) one).getWrappedElement();
     }
     if (two instanceof KnownElements.ProxiedElement) {
       two = ((KnownElements.ProxiedElement) two).getWrappedElement();

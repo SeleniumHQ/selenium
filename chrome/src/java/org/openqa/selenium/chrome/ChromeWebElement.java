@@ -13,6 +13,7 @@ import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.internal.Locatable;
+import org.openqa.selenium.internal.WrapsElement;
 
 import java.awt.Dimension;
 import java.awt.Point;
@@ -203,11 +204,20 @@ FindsByXPath, FindsByLinkText, FindsById, FindsByName, FindsByTagName, FindsByCl
 
   @Override
   public boolean equals(Object obj) {
-    if (!(obj instanceof ChromeWebElement)) {
+    if (!(obj instanceof WebElement)) {
       return false;
     }
 
-    Object result = parent.executeScript("return arguments[0] === arguments[1]", this, obj);
+    WebElement other = (WebElement) obj;
+    if (other instanceof WrapsElement) {
+      other = ((WrapsElement) obj).getWrappedElement();
+    }
+
+    if (!(other instanceof ChromeWebElement)) {
+      return false;
+    }
+
+    Object result = parent.executeScript("return arguments[0] === arguments[1]", this, other);
     return result != null && result instanceof Boolean && (Boolean) result;
   }
 }

@@ -19,6 +19,7 @@ package org.openqa.selenium.support.pagefactory;
 
 import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.support.pagefactory.ElementLocator;
 import org.openqa.selenium.support.pagefactory.ElementLocatorFactory;
 import org.openqa.selenium.support.pagefactory.internal.LocatingElementHandler;
@@ -63,10 +64,10 @@ public class DefaultFieldDecorator implements FieldDecorator {
     WebElement proxy;
     if (renderedProxy) {
       proxy = (RenderedWebElement) Proxy.newProxyInstance(
-          loader, new Class[]{RenderedWebElement.class}, handler);
+          loader, new Class[]{RenderedWebElement.class, WrapsElement.class}, handler);
     } else {
       proxy = (WebElement) Proxy.newProxyInstance(
-          loader, new Class[]{WebElement.class}, handler);
+          loader, new Class[]{WebElement.class, WrapsElement.class}, handler);
     }
     return proxy;
   }
