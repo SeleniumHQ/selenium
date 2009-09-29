@@ -6,9 +6,13 @@ goog.addDependency('../abstractcommandprocessor.js',
 goog.addDependency('../asserts.js',
                    ['webdriver.asserts', 'webdriver.asserts.Matcher'],
                    ['goog.math.Coordinate', 'webdriver.Future']);
+goog.addDependency('../by.js',
+                   ['webdriver.By', 'webdriver.By.Locator',
+                    'webdriver.By.Strategy'],
+                   ['goog.object']);
 goog.addDependency('../command.js',
                    ['webdriver.Command', 'webdriver.CommandName',
-                    'webdriver.LocatorStrategy', 'webdriver.Response'],
+                    'webdriver.Response'],
                    ['goog.array']);
 goog.addDependency('../context.js', ['webdriver.Context'], []);
 goog.addDependency('../factory.js', ['webdriver.factory'],
@@ -45,7 +49,7 @@ goog.addDependency('../webdriver.js',
                     'webdriver.WebElement', 'webdriver.logging',
                     'webdriver.timing']);
 goog.addDependency('../webelement.js', ['webdriver.WebElement'],
-                   ['goog.array', 'goog.json', 'goog.math.Coordinate',
+                   ['goog.array', 'goog.math.Coordinate',
                     'goog.math.Size', 'webdriver.Command',
                     'webdriver.CommandName', 'webdriver.Future',
-                    'webdriver.LocatorStrategy']);
+                    'webdriver.By.Locator', 'webdriver.By.Strategy']);

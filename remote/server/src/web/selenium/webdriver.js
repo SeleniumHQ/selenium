@@ -761,7 +761,8 @@ webdriver.WebDriver.prototype.getTitle = function() {
 /**
  * Find an element on the current page. If the element cannot be found, an
  * {@code webdriver.WebDriver.EventType.ERROR} event will be dispatched.
- * @param {Object} by The strategy to use for finding the element.
+ * @param {webdriver.By.Locator|object} by An object describing the locator
+ *     strategy to use.
  * @return {webdriver.WebElement} A WebElement wrapper that can be used to
  *     issue commands against the located element.
  */
@@ -772,10 +773,12 @@ webdriver.WebDriver.prototype.findElement = function(by) {
 
 /**
  * Determine if an element is present on the page.
- * @param {Object} by The strategy to use for finding the element.
+ * @param {webdriver.By.Locator|{*: string}} by The locator to use for finding
+ *     the element, or a short-hand object that can be converted into a locator.
  * @return {webdriver.Future} Whether the element was present on the page. The
  *    return value is wrapped in a Future that will be defined when the driver
  *    completes the command.
+ * @see webdriver.By.Locator.createFromObj
  */
 webdriver.WebDriver.prototype.isElementPresent = function(by) {
   return webdriver.WebElement.isElementPresent(this, by);
@@ -793,7 +796,9 @@ webdriver.WebDriver.prototype.isElementPresent = function(by) {
  *   response.value[1].click();
  *   // etc.
  * });
- * @param {Object} by The strategy to use for finding the element.
+ * @param {webdriver.By.Locator|{*: string}} by The locator to use for finding
+ *     the element, or a short-hand object that can be converted into a locator.
+ * @see webdriver.By.Locator.createFromObj
  */
 webdriver.WebDriver.prototype.findElements = function(by) {
   return webdriver.WebElement.findElements(this, by);

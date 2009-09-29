@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>by_test.html</title>
+  <script src="../webdriver-bootstrap.js"></script>
+  <script src="testbase.js"></script>
+  <script>
+
+    var TARGET = 'some-value';
+
+    function testMappedLocatorStrategyFactoryFunctions() {
+      for (var prop in webdriver.By.Strategy) {
+        assertTrue('No such factory function: "' + prop + '"',
+            prop in webdriver.By);
+
+        var locator = webdriver.By[prop](TARGET);
+        assertEquals('Wrong type for "' + prop + '"',
+            webdriver.By.Strategy[prop], locator.type);
+        assertEquals('Wrong target for "' + prop + '"',
+            TARGET, locator.target);
+      }
+    }
+
+
+    function testCreatingLocatorsFromHashObjects() {
+      function doTest(expectedType, expectedTarget, locator) {
+        locator = webdriver.By.Locator.createFromObj(locator);
+        assertEquals('Wrong type', expectedType, locator.type);
+        assertEquals('Wrong target', expectedTarget, locator.target);
+      }
+
+      for (var prop in webdriver.By.Strategy) {
+        var obj = {};
+        obj[prop] = TARGET;
+        doTest(prop, TARGET, obj);
+      }
+
+      try {
+        webdriver.By.Locator.createFromObj({unknownLocator: TARGET});
+        fail('Should reject unmappable locator object');
+      } catch (expected) {}
+
+      try {
+        webdriver.By.Locator.createFromObj({});
+        fail('Should reject unmappable locator object');
+      } catch (expected) {}
+    }
+  </script>
+</head>
+<body>
+</body>
+</html>

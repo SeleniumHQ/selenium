@@ -22,7 +22,6 @@ limitations under the License.
 
 goog.provide('webdriver.Command');
 goog.provide('webdriver.CommandName');
-goog.provide('webdriver.LocatorStrategy');
 goog.provide('webdriver.Response');
 
 goog.require('goog.array');
@@ -246,22 +245,6 @@ webdriver.CommandName = {
   GET_ATTRIBUTE: 'getAttribute',
   DRAG: 'drag',
   GET_CSS_PROPERTY: 'getCssProperty'
-};
-
-
-/**
- * Enumeration of the supported strategies for finding
- * {@code webdriver.WebElement} on the page.
- * @enum {string}
- */
-webdriver.LocatorStrategy = {
-  id: 'id',
-  name: 'name',
-  className: 'className',
-  linkText: 'linkText',
-  partialLinkText: 'partialLinkText',
-  tagName: 'tagName',
-  xpath: 'xpath'
 };
 
 

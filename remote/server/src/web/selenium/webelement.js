@@ -23,13 +23,13 @@ limitations under the License.
 goog.provide('webdriver.WebElement');
 
 goog.require('goog.array');
-goog.require('goog.json');
 goog.require('goog.math.Coordinate');
 goog.require('goog.math.Size');
+goog.require('webdriver.By.Locator');
+goog.require('webdriver.By.Strategy');
 goog.require('webdriver.Command');
 goog.require('webdriver.CommandName');
 goog.require('webdriver.Future');
-goog.require('webdriver.LocatorStrategy');
 
 
 /**
@@ -86,7 +86,9 @@ webdriver.WebElement.UUID_REGEX =
  * search for an element whose ID is "myButton".
  * 
  * @param {webdriver.WebDriver} driver Instance to add the command to.
- * @param {object} locator Hash object describing the locator strategy to use.
+ * @param {webdriver.By.Locator|{*: string}} locator The locator to use for
+ *     finding the element, or a short-hand object that can be converted into a
+ *     locator.
  * @param {webdriver.WebElement} opt_element The element to search under. If not
  *     provided, will search from the document root.
  * @param {boolean} opt_findMany Whether to find many elements or just one;
@@ -94,6 +96,7 @@ webdriver.WebElement.UUID_REGEX =
  * @param {function} opt_callbackFn Function to call if the command succeeds.
  * @param {function} opt_errorCallbackFn Function to call if the command fails.
  * @throws If {@code locator} does not define a supported strategy.
+ * @see webdriver.By.Locator.createFromObj
  * @static
  */
 webdriver.WebElement.buildFindElementCommand = function(driver,
@@ -102,24 +105,16 @@ webdriver.WebElement.buildFindElementCommand = function(driver,
                                                         opt_findMany,
                                                         opt_callbackFn,
                                                         opt_errorCallbackFn) {
-  var type, target;
-  for (var key in locator) {
-    if (key in webdriver.LocatorStrategy) {
-      type = key;
-      target = locator[key];
-      break;
-    }
+  if (!locator.type || !locator.target) {
+    locator = webdriver.By.Locator.createFromObj(locator);
   }
 
-  if (!type) {
-    throw new Error('Unsupported locator: ' + goog.json.serialize(locator));
-
-  } else if (type == 'className') {
-    var normalized = goog.string.normalizeWhitespace(target);
-    target = goog.string.trim(normalized);
-    if (target.search(/\s/) >= 0) {
+  if (locator.type == 'className') {
+    var normalized = goog.string.normalizeWhitespace(locator.target);
+    locator.target = goog.string.trim(normalized);
+    if (locator.target.search(/\s/) >= 0) {
       throw new Error('Compound class names are not allowed for searches: ' +
-                      goog.string.quote(target));
+                      goog.string.quote(locator.target));
     }
   }
 
@@ -128,7 +123,7 @@ webdriver.WebElement.buildFindElementCommand = function(driver,
       webdriver.CommandName.FIND_ELEMENT;
 
   var command = new webdriver.Command(commandName, opt_element).
-      setParameters(type, target).
+      setParameters(locator.type, locator.target).
       setSuccessCallback(function(response) {
         var ids = response.value.split(',');
         var elements = [];
@@ -153,11 +148,13 @@ webdriver.WebElement.buildFindElementCommand = function(driver,
  * Adds a command to the given {@code webdriver.WebDriver} instance to find an
  * element on the page.
  * @param {webdriver.WebDriver} driver The driver to perform the search with.
- * @param {Object} locator A hash object describing how to find the element. For
- *     more information, see {@code #buildFindElementCommand()}.
+ * @param {webdriver.By.Locator|{*: string}} locator The locator to use for
+ *     finding the element, or a short-hand object that can be converted into a
+ *     locator.
  * @return {webdriver.WebElement} A WebElement that can be used to issue
  *     commands on the found element.  The element's ID will be set
  *     asynchronously once the driver successfully finds the element.
+ * @see webdriver.By.Locator.createFromObj
  */
 webdriver.WebElement.findElement = function(driver, locator) {
   var webElement = new webdriver.WebElement(driver);
@@ -173,11 +170,13 @@ webdriver.WebElement.findElement = function(driver, locator) {
  * Adds a command to the given {@code webdriver.WebDriver} instance to test if
  * an element is present on the page.
  * @param {webdriver.WebDriver} driver The driver to perform the search with.
- * @param {Object} locator A hash object describing how to find the element. For
- *     more information, see {@code #buildFindElementCommand()}.
+ * @param {webdriver.By.Locator|{*: string}} locator The locator to use for
+ *     finding the element, or a short-hand object that can be converted into a
+ *     locator.
  * @return {webdriver.Future} A future whose value will be set when the driver
  *     completes the search; value will be {@code true} if the element was
  *     found, false otherwise.
+ * @see webdriver.By.Locator.createFromObj
  */
 webdriver.WebElement.isElementPresent = function(driver, locator) {
   var isPresent = new webdriver.Future(driver);
@@ -201,8 +200,10 @@ webdriver.WebElement.isElementPresent = function(driver, locator) {
  * Adds a command to the given {@code webdriver.WebDriver} instance to find
  * multiple elements on the page.
  * @param {webdriver.WebDriver} driver The driver to perform the search with.
- * @param {Object} locator A hash object describing how to find the element. For
- *     more information, see {@code #buildFindElementCommand()}.
+ * @param {webdriver.By.Locator|{*: string}} locator The locator to use for
+ *     finding the element, or a short-hand object that can be converted into a
+ *     locator.
+ * @see webdriver.By.Locator.createFromObj
  */
 webdriver.WebElement.findElements = function(driver, locator) {
   webdriver.WebElement.buildFindElementCommand(driver, locator, null, true);
@@ -212,11 +213,13 @@ webdriver.WebElement.findElements = function(driver, locator) {
 /**
  * Adds a command to determine if an element is present under this element in
  * the DOM tree.
- * @param {Object} locator A hash object describing how to find the element. For
- *     more information, see {@code #buildFindElementCommand()}.
+ * @param {webdriver.By.Locator|{*: string}} locator The locator to use for
+ *     finding the element, or a short-hand object that can be converted into a
+ *     locator.
  * @return {webdriver.Future} A future whose value will be set when the driver
  *     completes the search; value will be {@code true} if the element was
  *     found, false otherwise.
+ * @see webdriver.By.Locator.createFromObj
  */
 webdriver.WebElement.prototype.isElementPresent = function(locator) {
   var isPresent = new webdriver.Future(this.driver_);
@@ -240,11 +243,13 @@ webdriver.WebElement.prototype.isElementPresent = function(locator) {
 /**
  * Adds a command to search for a single element on the page, restricting the
  * search to the descendants of the element represented by this instance.
- * @param {Object} locator A hash object describing how to find the element. For
- *     more information, see {@code #buildFindElementCommand()}.
+ * @param {webdriver.By.Locator|{*: string}} locator The locator to use for
+ *     finding the element, or a short-hand object that can be converted into a
+ *     locator.
  * @return {webdriver.WebElement} A WebElement that can be used to issue
  *     commands on the found element.  The element's ID will be set
  *     asynchronously once the element is successfully located.
+ * @see webdriver.By.Locator.createFromObj
  */
 webdriver.WebElement.prototype.findElement = function(locator) {
   var webElement = new webdriver.WebElement(this.driver_);
@@ -260,8 +265,10 @@ webdriver.WebElement.prototype.findElement = function(locator) {
 /**
  * Adds a command to search for multiple elements on the page, restricting the
  * search to the descendants of hte element represented by this instance.
- * @param {Object} locator A hash object describing how to find the element. For
- *     more information, see {@code #buildFindElementCommand()}.
+ * @param {webdriver.By.Locator|{*: string}} locator The locator to use for
+ *     finding the element, or a short-hand object that can be converted into a
+ *     locator.
+ * @see webdriver.By.Locator.createFromObj
  */
 webdriver.WebElement.prototype.findElements = function(locator) {
   webdriver.WebElement.buildFindElementCommand(
