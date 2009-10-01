@@ -860,7 +860,7 @@ int IeThread::getLocationWhenScrolledIntoView(IHTMLElement *pElement, HWND* hwnd
     CComQIPtr<IHTMLDOMNode2> node(pElement);
 
     if (!node) {
-            return ENOSUCHELEMENT;
+        return ENOSUCHELEMENT;
     }
 
     bool displayed;
@@ -881,7 +881,12 @@ int IeThread::getLocationWhenScrolledIntoView(IHTMLElement *pElement, HWND* hwnd
 	const HWND ieWindow = getIeServerWindow(hWnd);
 
     // Scroll the element into view
-	pElement->scrollIntoView(CComVariant(VARIANT_TRUE));
+	HRESULT hr = pElement->scrollIntoView(CComVariant(VARIANT_TRUE));
+	if (FAILED(hr)) {
+		LOG(WARN) << "Element disappeared while being scrolled into view. Page may be refreshing";
+		return EOBSOLETEELEMENT;
+	}
+
 	wait(100);
 
     // getBoundingClientRect. Note, the docs talk about this possibly being off by 2,2
@@ -889,9 +894,15 @@ int IeThread::getLocationWhenScrolledIntoView(IHTMLElement *pElement, HWND* hwnd
     // http://ejohn.org/blog/getboundingclientrect-is-awesome/
 
     CComQIPtr<IHTMLElement2> element2(pElement);
+	if (!element2) {
+		LOG(WARN) << "Unable to cast element to correct type when clicking";
+		return EOBSOLETEELEMENT;
+	}
     CComPtr<IHTMLRect> rect;
-    if (FAILED(element2->getBoundingClientRect(&rect))) {
-            return EUNHANDLEDERROR;
+	hr = element2->getBoundingClientRect(&rect);
+    if (FAILED(hr)) {
+		LOG(WARN) << "Cannot figure out where the element is on screen";
+		return EUNHANDLEDERROR;
     }
 
     long top, left, bottom, right = 0;
@@ -909,8 +920,8 @@ int IeThread::getLocationWhenScrolledIntoView(IHTMLElement *pElement, HWND* hwnd
 	LOG(DEBUG) << "(x, y, w, h): " << clickX << ", " << clickY << ", " << width << ", " << height << endl;
 
     if (height == 0 || width == 0) {
-            cerr << "Element would not be visible because it lacks height and/or width." << endl;
-            return EELEMENTNOTDISPLAYED;
+        LOG(INFO) << "Element would not be visible because it lacks height and/or width.";
+        return EELEMENTNOTDISPLAYED;
     }
 
 	// This is a little funky.
@@ -923,18 +934,35 @@ int IeThread::getLocationWhenScrolledIntoView(IHTMLElement *pElement, HWND* hwnd
 	*h = height;
 
     CComPtr<IDispatch> ownerDocDispatch;
-    node->get_ownerDocument(&ownerDocDispatch);
+    hr = node->get_ownerDocument(&ownerDocDispatch);
+	if (FAILED(hr)) {
+		LOG(WARN) << "Unable to locate owning document";
+		return ENOSUCHDOCUMENT;
+	}
     CComQIPtr<IHTMLDocument3> ownerDoc(ownerDocDispatch);
+	if (!ownerDoc) {
+		LOG(WARN) << "Found document but it's not the expected type";
+		return ENOSUCHDOCUMENT;
+	}
+
     CComPtr<IHTMLElement> docElement;
-    ownerDoc->get_documentElement(&docElement);
+    hr = ownerDoc->get_documentElement(&docElement);
+	if (FAILED(hr)) {
+		LOG(WARN) << "Unable to locate document element";
+		return ENOSUCHDOCUMENT;
+	}
 
     CComQIPtr<IHTMLElement2> e2(docElement);
     if (!e2) {
-            cerr << "Unable to get underlying html element from the document" << endl;
-            return EUNHANDLEDERROR;
+        LOG(WARN) << "Unable to get underlying html element from the document";
+        return EUNHANDLEDERROR;
     }
 
     CComQIPtr<IHTMLDocument2> doc2(ownerDoc);
+	if (!doc2) {
+		LOG(WARN) << "Have the owning document, but unable to process";
+		return ENOSUCHDOCUMENT;
+	}
 
     long clientLeft, clientTop;
     e2->get_clientLeft(&clientLeft);
@@ -955,11 +983,27 @@ int IeThread::getLocationWhenScrolledIntoView(IHTMLElement *pElement, HWND* hwnd
     clickY -= winInfo.rcWindow.top;
 
     CComPtr<IHTMLWindow2> win2;
-    doc2->get_parentWindow(&win2);
+    hr = doc2->get_parentWindow(&win2);
+	if (FAILED(hr)) {
+		LOG(WARN) << "Cannot obtain parent window";
+		return ENOSUCHWINDOW;
+	}
     CComQIPtr<IHTMLWindow3> win3(win2);
+	if (!win3) {
+		LOG(WARN) << "Can't obtain parent window";
+		return ENOSUCHWINDOW;
+	}
     long screenLeft, screenTop;
-    win3->get_screenLeft(&screenLeft);
-    win3->get_screenTop(&screenTop);
+    hr = win3->get_screenLeft(&screenLeft);
+	if (FAILED(hr)) {
+		LOG(WARN) << "Unable to determine left corner of window";
+		return ENOSUCHWINDOW;
+	}
+    hr = win3->get_screenTop(&screenTop);
+	if (FAILED(hr)) {
+		LOG(WARN) << "Unable to determine top edge of window";
+		return ENOSUCHWINDOW;
+	}
 
     clickX += screenLeft;
     clickY += screenTop;
