@@ -29,9 +29,8 @@ public class UploadTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {CHROME, IE},
-          reason = "Chrome: File input elements are not supported; " +
-                   "IE: Untested user-agent")
+  @Ignore(value = {CHROME},
+          reason = "Chrome: File input elements are not supported yet")
   public void testFileUploading() throws Exception {
     driver.get(uploadPage);
     driver.findElement(By.id("upload")).sendKeys(testFile.getAbsolutePath());
