@@ -47,6 +47,7 @@ public class AbstractDriverTestCase extends TestCase implements NeedsDriver {
   protected String rectanglesPage;
   protected String childPage;
   protected String grandchildPage;
+  protected String uploadPage;
 
   public void setDriver(WebDriver driver) {
     this.driver = driver;
@@ -75,6 +76,7 @@ public class AbstractDriverTestCase extends TestCase implements NeedsDriver {
     rectanglesPage = appServer.whereIs("rectangles.html");
     childPage = appServer.whereIs("child/childPage.html");
     grandchildPage = appServer.whereIs("child/grandchild/grandchildPage.html");
+    uploadPage = appServer.whereIs("upload.html");
 
     String hostName = environment.getAppServer().getHostName();
     String alternateHostName = environment.getAppServer().getAlternateHostName();

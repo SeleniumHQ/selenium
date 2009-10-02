@@ -21,9 +21,11 @@ import junit.framework.Assert;
 
 import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Server;
+import org.mortbay.jetty.Handler;
 import org.mortbay.jetty.nio.SelectChannelConnector;
 import org.mortbay.jetty.security.SslSocketConnector;
 import org.mortbay.jetty.webapp.WebAppContext;
+import org.mortbay.servlet.MultiPartFilter;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,6 +52,8 @@ public class Jetty6AppServer implements AppServer {
 
     addServlet("Redirecter", "/redirect", RedirectServlet.class);
     addServlet("InfinitePagerServer", "/page/*", PageServlet.class);
+    addServlet("Uploader", "/upload", UploadServlet.class);
+    addFilter(MultiPartFilter.class, "/upload", Handler.DEFAULT);
 
     listenOn(findFreePort());
     listenSecurelyOn(findFreePort());
@@ -189,6 +193,10 @@ public class Jetty6AppServer implements AppServer {
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
+  }
+
+  public void addFilter(Class filter, String path, int dispatches) {
+    context.addFilter(filter, path, dispatches);
   }
 
 
