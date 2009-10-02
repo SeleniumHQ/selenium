@@ -753,7 +753,12 @@ void IeThread::waitForNavigateToFinish()
 	safeIO::CoutA("IE is not busy", true);
 
 	READYSTATE readyState;
-	pBody->ieThreaded->get_ReadyState(&readyState);
+	hr = pBody->ieThreaded->get_ReadyState(&readyState);
+	if (FAILED(hr)) {
+		LOGHR(DEBUG, hr) << "Unable to get ready state";
+		startNavigationCompletionTimer();
+		return;
+	}
 	int counter = 0;
 	if(readyState != READYSTATE_COMPLETE)
 	{
@@ -765,8 +770,18 @@ void IeThread::waitForNavigateToFinish()
 	safeIO::CoutA("IE is READY", true);
 
 	CComPtr<IDispatch> dispatch;
-	pBody->ieThreaded->get_Document(&dispatch);
+	hr = pBody->ieThreaded->get_Document(&dispatch);
+	if (FAILED(hr)) {
+		LOGHR(DEBUG, hr) << "Unable to get document";
+		startNavigationCompletionTimer();
+		return;
+	}
 	CComQIPtr<IHTMLDocument2> doc(dispatch);
+	if (!doc) {
+		LOG(DEBUG) << "Document obtained but cannot cast";
+		startNavigationCompletionTimer();
+		return;
+	}
 
 	if (0==waitForDocumentToComplete(doc)) 
 	{
@@ -777,11 +792,20 @@ void IeThread::waitForNavigateToFinish()
 
 	CComPtr<IHTMLFramesCollection2> frames;
 	hr = doc->get_frames(&frames);
-
+	if (FAILED(hr)) {
+		LOGHR(DEBUG, hr) << "Unable to obtain frames";
+		startNavigationCompletionTimer();
+		return;
+	}
 
 	if (frames != NULL) {
 		long framesLength = 0;
-		frames->get_length(&framesLength);
+		hr = frames->get_length(&framesLength);
+		if (FAILED(hr)) {
+			LOGHR(DEBUG, hr) << "Frame length is unknown";
+			startNavigationCompletionTimer();
+			return;
+		}
 
 		CComVariant index;
 		index.vt = VT_I4;
@@ -789,11 +813,25 @@ void IeThread::waitForNavigateToFinish()
 		for (long i = 0; i < framesLength; i++) {
 			index.lVal = i;
 			CComVariant result;
-			frames->item(&index, &result);
+			hr = frames->item(&index, &result);
+			if (FAILED(hr)) {
+				LOGHR(DEBUG, hr) << "Cannot obtain frame at index: " << i;
+				startNavigationCompletionTimer();
+				return;
+			}
 
 			CComQIPtr<IHTMLWindow2> window(result.pdispVal);
+			if (!window) {
+				LOG(DEBUG) << "Window at frame index " << i << " is not HTML. Skipping.";
+				continue;
+			}
 			CComPtr<IHTMLDocument2> frameDoc;
-			window->get_document(&frameDoc);
+			hr = window->get_document(&frameDoc);
+			if (FAILED(hr)) {
+				LOGHR(DEBUG, hr) << "No document in subframe though one expected";
+				startNavigationCompletionTimer();
+				return;
+			}
 
 			if (0==waitForDocumentToComplete(frameDoc))
 			{
@@ -820,6 +858,10 @@ int IeThread::waitForDocumentToComplete(IHTMLDocument2* doc)
 
 	HRESULT hr = doc->get_readyState(&state);
 	hr = doc->get_readyState(&state);
+	if (FAILED(hr)) {
+		LOGHR(DEBUG, hr) << "Unable to obtain document's ready state";
+		return 0;
+	}
 	if ( _wcsicmp( combstr2cw(state) , L"complete") != 0) {
 		// Still NOT complete
 		safeIO::CoutL(combstr2cw(state), true);

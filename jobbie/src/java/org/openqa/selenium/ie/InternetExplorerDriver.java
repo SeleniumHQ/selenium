@@ -17,6 +17,31 @@ limitations under the License.
 
 package org.openqa.selenium.ie;
 
+import static org.openqa.selenium.ie.ExportedWebDriverFunctions.SUCCESS;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.openqa.selenium.Alert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Cookie;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoSuchWindowException;
+import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.Speed;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.internal.FileHandler;
+import org.openqa.selenium.internal.ReturnedCookie;
+import org.openqa.selenium.internal.TemporaryFilesystem;
+
 import com.sun.jna.Native;
 import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
@@ -25,31 +50,6 @@ import com.sun.jna.ptr.DoubleByReference;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.NativeLongByReference;
 import com.sun.jna.ptr.PointerByReference;
-
-import org.openqa.selenium.Alert;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Cookie;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.SearchContext;
-import org.openqa.selenium.Speed;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.NoSuchWindowException;
-import static org.openqa.selenium.ie.ExportedWebDriverFunctions.SUCCESS;
-import org.openqa.selenium.internal.FileHandler;
-import org.openqa.selenium.internal.ReturnedCookie;
-import org.openqa.selenium.internal.TemporaryFilesystem;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 public class InternetExplorerDriver implements WebDriver, SearchContext, JavascriptExecutor {
     private static ExportedWebDriverFunctions lib;

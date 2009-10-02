@@ -34,6 +34,7 @@ limitations under the License.
  #include <unistd.h>
 #else
  #include <io.h>
+ #include <comdef.h>
 #endif
 #include <stdio.h>
 #include <sys/timeb.h>
@@ -73,26 +74,26 @@ template <class _LOGGER> class Logger {
     return level;
   }
 
-  std::ostringstream& Stream(LogLevel level) {
+  std::wostringstream& Stream(LogLevel level) {
     static char severity[] = { 'F', 'E', 'W', 'I', 'D' };
     os_ << severity[level] << Time();
     if (level == logFATAL)
-      fatal_ = true, os_ << "FATAL ";
+      fatal_ = true, os_ << L"FATAL ";
     return os_;
   }
 
-  static std::string Time() {
+  static std::wstring Time() {
     struct timeb tb; ftime(&tb);
 
-    char time[20];
-    size_t length = strftime(time, sizeof(time), "%H:%M:%S:",
+    wchar_t time[20];
+    size_t length = wcsftime(time, sizeof(time), L"%H:%M:%S:",
       localtime(reinterpret_cast<const time_t*>(&tb.time)));
-    sprintf(time + length, "%03u ", tb.millitm);
+    swprintf(time + length, L"%03u ", tb.millitm);
     return time;
   }
 
  private:
-  std::ostringstream os_;
+  std::wostringstream os_;
   bool fatal_;
 };
 
@@ -131,7 +132,7 @@ class LOG : public Logger<LOG> {
     return size_limit;
   }
 
-  static void Log(const std::string& str, bool fatal) {
+  static void Log(const std::wstring& str, bool fatal) {
     if (fatal) Limit() = 0;
 
     FILE* output = File();
@@ -147,7 +148,7 @@ class LOG : public Logger<LOG> {
     }
 
     if (fatal && !isatty(fileno(output))) {
-      fputs(str.c_str(), stderr);
+      fputws(str.c_str(), stderr);
     }
   }
 
@@ -158,8 +159,14 @@ class LOG : public Logger<LOG> {
  #pragma warning(pop)
 #endif
 
+
 #define LOG(LEVEL)                        \
   if (LOG::log ## LEVEL > LOG::Level()) ; \
-  else LOG().Stream(LOG::log ## LEVEL) /* << stuff here */
+  else LOG().Stream(LOG::log ## LEVEL) << __FILE__ << "(" << __LINE__ << ") " /* << stuff here */
+
+#ifdef _WIN32
+  #define LOGHR(LEVEL,HR) LOG( ## LEVEL) << HR<< "[" << (_com_error((DWORD) HR).ErrorMessage()) << "]: "
+#endif
+
 
 #endif  // logging_h

@@ -31,6 +31,7 @@ limitations under the License.
 	{ \
 		if (m.find(L"TIME OUT") != std::wstring::npos) { return ETIMEOUT; } \
 		wcerr << m.c_str() << endl; \
+		LOG(WARN) << "Last error: " << GetLastError(); \
 		return EEXPECTEDERROR; \
 	} \
 	catch (...) \

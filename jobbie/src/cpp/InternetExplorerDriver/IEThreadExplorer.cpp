@@ -71,7 +71,12 @@ void IeThread::OnGetCurrentUrl(WPARAM w, LPARAM lp)
 	}
 
 	CComBSTR url;
-	doc->get_URL(&url);
+	HRESULT hr = doc->get_URL(&url);
+	if (FAILED(hr)) {
+//	HRLO(WARN, hr) << "Unable to get current URL";
+		ret = L"";
+		return;
+	}
 	ret = combstr2cw(url);
 }
 
@@ -87,21 +92,21 @@ void IeThread::OnGetUrl(WPARAM w, LPARAM lp)
 	CComVariant dummy;
 	tryTransferEventReleaserToNotifyNavigCompleted(&SC);
 	HRESULT hr = pBody->ieThreaded->Navigate2(&spec, &dummy, &dummy, &dummy, &dummy);
-
 	pBody->pathToFrame = L"";
 
 	try{
 	if(FAILED(hr))
 	{
+		_com_error e = _com_error(hr);
 		 _com_issue_error( hr );
 	}}
 	catch (_com_error &e)
 	 {
-	  cerr << "COM Error" << " J[" << hex << GetCurrentThreadId() << "]" << endl;
-	  cerr << "Message = " << e.ErrorMessage() << endl;
+	  LOG(WARN) << "COM Error" << " J[" << hex << GetCurrentThreadId() << "]" << endl;
+	  LOG(WARN) << "Message = " << e.ErrorMessage() << endl;
 
-		  if ( e.ErrorInfo() )
-			 cerr << e.Description() << endl;
+	  if ( e.ErrorInfo() )
+		 LOG(WARN) << e.Description() << endl;
 
 		tryTransferEventReleaserToNotifyNavigCompleted(&SC, false);
 	 }
@@ -124,14 +129,25 @@ void IeThread::getPageSource(std::wstring& res)
 	getDocument3(&doc);
 	
 	if (!doc) {
+		res = L"";
 		return;
 	}
 
 	CComPtr<IHTMLElement> docElement;
-	doc->get_documentElement(&docElement);
+	HRESULT hr = doc->get_documentElement(&docElement);
+	if (FAILED(hr)) {
+		LOGHR(WARN, hr) << "Unable to get document element from page";
+		res = L"";
+		return;
+	}
 	
 	CComBSTR html;
-	docElement->get_outerHTML(&html);
+	hr = docElement->get_outerHTML(&html);
+	if (FAILED(hr)) {
+		LOGHR(WARN, hr) << "Have document element but cannot read source.";
+		res = L"";
+		return;
+	}
 
 	res = combstr2cw(html);
 }
@@ -155,7 +171,12 @@ void IeThread::getTitle(std::wstring& res)
 	}
 
 	CComBSTR title;
-	doc->get_title(&title);
+	HRESULT hr = doc->get_title(&title);
+	if (FAILED(hr)) {
+		LOGHR(WARN, hr) << "Unable to get document title";
+		res = L"";
+		return;
+	}
 	res = combstr2cw(title);
 }
 
