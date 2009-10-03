@@ -127,7 +127,7 @@ class FirefoxProfile(object):
 
         if force_create or not os.path.exists(extension_dir):
             extension_source_path = utils.unzip_to_temp_dir(
-                "webdriver-extension.zip")
+                "build/webdriver-extension.zip")
 
             if (extension_source_path is None or
                 not os.path.exists(extension_source_path)):

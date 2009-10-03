@@ -81,12 +81,7 @@ class WebDriver(object):
 
     def find_element_by_xpath(self, xpath):
         """Finds an element by xpath."""
-        try:
-            elem_id = self._command("selectElementUsingXPath", xpath)
-            elem = WebElement(self, elem_id)
-        except ErrorInResponseException, ex:
-            utils.handle_find_element_exception(ex)
-        return elem
+        return self._find_element_by("xpath", xpath)
 
     def find_element_by_link_text(self, link):
         """Finds an element by its link text.
@@ -94,12 +89,7 @@ class WebDriver(object):
         throws NoSuchElementException when no element is found 
         with the link text.
         """
-        try:
-            elem_id = self._command("selectElementUsingLink", link)
-            elem = WebElement(self, elem_id)
-            return elem
-        except ErrorInResponseException, ex:
-            utils.handle_find_element_exception(ex)
+        return self._find_element_by("link text", link)
 
     def find_elements_by_link_text(self, link):
         """Finds all elements with the same link text.
@@ -107,16 +97,7 @@ class WebDriver(object):
         throws NoSuchElementException when no element is found 
         with the link text.
         """
-        try:
-            elem_id_list = self._command("selectElementsUsingLink", link)
-            elem_list = []
-            for elem_id in elem_id_list.split(","):
-                if elem_id:
-                    elem = WebElement(self, elem_id)
-                    elem_list.append(elem)
-            return elem_list
-        except ErrorInResponseException, ex:
-            utils.handle_find_element_exception(ex)
+        return self._find_elements_by("link text", link)
 
     def find_element_by_partial_link_text(self, text):
         """Finds an element by a segment of its link text
@@ -124,12 +105,7 @@ class WebDriver(object):
         throws NoSuchElementException when no element is found 
         with the link text.
         """
-        try:
-            elem_id = self._command("selectElementUsingPartialLinkText", text)
-            elem = WebElement(self, elem_id)
-            return elem
-        except ErrorInResponseException, ex:
-            utils.handle_find_element_exception(ex)
+        return self._find_element_by("partial link text", text)
 
     def find_elements_by_partial_link_text(self, text):
         """Finds all elements by a segment of the link text.
@@ -137,40 +113,28 @@ class WebDriver(object):
         throws NoSuchElementException when no element is found 
         with the link text.
         """
-        try:
-            elem_id_list = self._command("selectElementsUsingPartialLinkText",
-                                         text)
-            elem_list = []
-            for elem_id in elem_id_list.split(","):
-                if elem_id:
-                    elem = WebElement(self, elem_id)
-                    elem_list.append(elem)
-            return elem_list
-        except ErrorInResponseException, ex:
-            utils.handle_find_element_exception(ex)
+        return self._find_elements_by("partial link text", text)
 
     def find_element_by_id(self, id_):
         """Finds an element by its id."""
-        try:
-            return self.find_element_by_xpath("//*[@id=\"%s\"]" % id_)
-        except ErrorInResponseException, ex:
-            utils.handle_find_element_exception(ex)
+        return self._find_element_by("id", id_)
 
     def find_element_by_name(self, name):
         """Finds and element by its name."""
-        try:
-            return self.find_element_by_xpath("//*[@name=\"%s\"]" % name)
-        except ErrorInResponseException, ex:
-            utils.handle_find_element_exception(ex)
+        return self._find_element_by("name", name)
 
     def find_elements_by_xpath(self, xpath):
         """Finds all the elements for the given xpath query."""
-        return self._find_elements_by("XPath", xpath)
+        return self._find_elements_by("xpath", xpath)
 
+    def find_element_by_tag_name(self, tag_name):
+        """Finds and element by its tag name."""
+        return self._find_element_by("tag name", tag_name)
+    
     def find_elements_by_tag_name(self, tag_name):
         """Finds all the elements with the given tag"""
-        return self._find_elements_by("TagName", tag_name)
-    
+        return self._find_elements_by("tag name", tag_name)
+
     def get_page_source(self):
         """Gets the page source."""
         return self._command("getPageSource")
@@ -279,9 +243,16 @@ class WebDriver(object):
     def conn(self):
         return self._conn
 
+    def _find_element_by(self, selector, key):
+        try:
+          elem_id = self._command("findElement", selector, key)
+          return WebElement(self, elem_id)
+        except ErrorInResponseException, ex:
+            utils.handle_find_element_exception(ex)
+
     def _find_elements_by(self, selector, key):
         try:
-            elem_ids = self._command("selectElementsUsing%s" % selector, key)
+            elem_ids = self._command("findElements", selector, key)
             elems = []
             if len(elem_ids):
                 for elem_id in elem_ids.split(","):

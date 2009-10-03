@@ -190,269 +190,288 @@ FirefoxDriver.prototype.getPageSource = function(respond) {
 };
 
 
-FirefoxDriver.prototype.selectElementUsingXPath = function(respond, xpath) {
-  var doc = Utils.getDocument(respond.context);
-  var result = doc.evaluate(xpath, doc, null,
+/**
+ * Searches for the first element in {@code theDocument} matching the given
+ * {@code xpath} expression.
+ * @param {nsIDOMDocument} theDocument The document to search in.
+ * @param {string} xpath The XPath expression to evaluate.
+ * @param {nsIDOMNode} opt_contextNode The context node for the query; defaults
+ *     to {@code theDocument}.
+ * @return {nsIDOMNode} The first matching node.
+ * @private
+ */
+FirefoxDriver.prototype.findElementByXPath_ = function(theDocument, xpath,
+                                                       opt_contextNode) {
+  var contextNode = opt_contextNode || theDocument;
+  return theDocument.evaluate(xpath, contextNode, null,
       Components.interfaces.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE, null).
       singleNodeValue;
-
-  if (result) {
-    respond.response = Utils.addToKnownElements(result, respond.context);
-  } else {
-    respond.isError = true;
-    respond.response = "Unable to locate element using " + xpath;
-  }
-
-  respond.send();
 };
 
 
-FirefoxDriver.prototype.selectElementByName = function(respond, name) {
-  var doc = Utils.getDocument(respond.context);
-
-  var elements = doc.getElementsByName(name);
-  if (elements.length) {
-    respond.response = Utils.addToKnownElements(elements[0], respond.context);
-  } else {
-    respond.isError = true;
-    respond.response = "Unable to locate element with name '" + name + "'";
+/**
+ * Searches for elements matching the given {@code xpath} expression in the
+ * specified document.
+ * @param {nsIDOMDocument} theDocument The document to search in.
+ * @param {string} xpath The XPath expression to evaluate.
+ * @param {nsIDOMNode} opt_contextNode The context node for the query; defaults
+ *     to {@code theDocument}.
+ * @return {Array.<nsIDOMNode>} The matching nodes.
+ * @private
+ */
+FirefoxDriver.prototype.findElementsByXPath_ = function(theDocument, xpath,
+                                                        opt_contextNode) {
+  var contextNode = opt_contextNode || theDocument;
+  var result = theDocument.evaluate(xpath, contextNode, null,
+      Components.interfaces.nsIDOMXPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
+  var elements = [];
+  var element = result.iterateNext();
+  while (element) {
+    elements.push(element);
+    element = result.iterateNext();
   }
-
-  respond.send();
+  return elements;
 };
 
 
-FirefoxDriver.prototype.selectElementsUsingName = function(respond, name) {
-  var doc = Utils.getDocument(respond.context);
-
-  var elements = doc.getElementsByName(name);
-  var response = "";
-  for (var i = 0; i < elements.length; i++) {
-    var element = elements[i];
-    var index = Utils.addToKnownElements(element, respond.context);
-    response += index + ",";
-  }
-  // Strip the trailing comma
-  response = response.substring(0, response.length - 1);
-
-  respond.response = response;
-  respond.send();
+/**
+ * An enumeration of the supported element locator methods.
+ * @enum {string}
+ */
+FirefoxDriver.ElementLocator = {
+  ID: 'id',
+  NAME: 'name',
+  CLASS_NAME: 'class name',
+  TAG_NAME: 'tag name',
+  LINK_TEXT: 'link text',
+  PARTIAL_LINK_TEXT: 'partial link text',
+  XPATH: 'xpath'
 };
 
 
-FirefoxDriver.prototype.selectElementUsingTagName = function(respond, name) {
-  var doc = Utils.getDocument(respond.context);
+/**
+ * Finds an element on the current page. The response value will be the UUID of
+ * the located element, or an error message if an element could not be found.
+ * @param {Response} respond Object to send the command response with.
+ * @param {FirefoxDriver.ElementLocator} method The locator method to use.
+ * @param {string} selector What to search for; see {@code ElementLocator} for
+ *     details on what the selector should be for each element.
+ * @param {string} opt_parentElementId If defined, the search will be restricted
+ *     to the corresponding element's subtree.
+ * @private
+ */
+FirefoxDriver.prototype.findElementInternal_ = function(respond, method,
+                                                        selector,
+                                                        opt_parentElementId) {
+  var theDocument = Utils.getDocument(respond.context);
+  var rootNode = typeof opt_parentElementId == 'string' ?
+      Utils.getElementAt(opt_parentElementId, respond.context) : theDocument;
 
-  var elements = doc.getElementsByTagName(name);
-  if (elements.length) {
-    respond.response = Utils.addToKnownElements(elements[0], respond.context);
-  } else {
-    respond.isError = true;
-    respond.response = "Unable to locate element with name '" + name + "'";
-  }
-
-  respond.send();
-};
-
-
-FirefoxDriver.prototype.selectElementsUsingTagName = function(respond, name) {
-  var doc = Utils.getDocument(respond.context);
-
-  var elements = doc.getElementsByTagName(name);
-  var response = "";
-  for (var i = 0; i < elements.length; i++) {
-    var element = elements[i];
-    var index = Utils.addToKnownElements(element, respond.context);
-    response += index + ",";
-  }
-  // Strip the trailing comma
-  response = response.substring(0, response.length - 1);
-
-  respond.response = response;
-  respond.send();
-};
-
-
-FirefoxDriver.prototype.selectElementUsingClassName = function(respond, name) {
-  var doc = Utils.getDocument(respond.context);
-
-  if (doc["getElementsByClassName"]) {
-    var elements = doc.getElementsByClassName(name);
-
-    if (elements.length) {
-      respond.response = Utils.addToKnownElements(elements[0], respond.context);
-    } else {
-      respond.isError = true;
-      respond.response =
-      "Unable to locate element with class name '" + name + "'";
-    }
-
-    respond.send();
-  } else {
-    this.selectElementUsingXPath(respond,
-        "//*[contains(concat(' ',normalize-space(@class),' '),' " + name +
-        " ')]");
-  }
-};
-
-
-FirefoxDriver.prototype.selectElementsUsingClassName = function(respond, name) {
-  var doc = Utils.getDocument(respond.context);
-
-  if (doc["getElementsByClassName"]) {
-    var result = doc.getElementsByClassName(name);
-
-    var response = "";
-    for (var i = 0; i < result.length; i++) {
-      var element = result[i];
-      var index = Utils.addToKnownElements(element, respond.context);
-      response += index + ",";
-    }
-    // Strip the trailing comma
-    response = response.substring(0, response.length - 1);
-
-    respond.response = response;
-    respond.send();
-  } else {
-    this.selectElementsUsingXPath(respond,
-        "//*[contains(concat(' ',normalize-space(@class),' '),' " + name +
-        " ')]");
-  }
-};
-
-
-FirefoxDriver.prototype.selectElementUsingLink = function(respond, linkText) {
-  var allLinks = Utils.getDocument(respond.context).getElementsByTagName("a");
-  var index;
-  for (var i = 0; i < allLinks.length && !index; i++) {
-    var text = Utils.getText(allLinks[i], true);
-    if (linkText == text) {
-      index = Utils.addToKnownElements(allLinks[i], respond.context);
-    }
-  }
-
-  if (index !== undefined) {
-    respond.response = index;
-  } else {
-    respond.isError = true;
-    respond.response =
-    "Unable to locate element with link text '" + linkText + "'";
-  }
-
-  respond.send();
-};
-
-
-FirefoxDriver.prototype.selectElementsUsingLink = function(respond, linkText) {
-  var allLinks = Utils.getDocument(respond.context).getElementsByTagName("a");
-  var indices = "";
-  for (var i = 0; i < allLinks.length; i++) {
-    var text = Utils.getText(allLinks[i], true);
-    if (linkText == text) {
-      indices += Utils.addToKnownElements(allLinks[i], respond.context) + ",";
-    }
-
-  }
-
-  // Strip the trailing comma
-  indices = indices.substring(0, indices.length - 1);
-
-  respond.response = indices;
-  respond.send();
-};
-
-
-FirefoxDriver.prototype.selectElementsUsingPartialLinkText = function(
-    respond, linkText) {
-  var allLinks = Utils.getDocument(respond.context).getElementsByTagName("a");
-  var indices = "";
-  for (var i = 0; i < allLinks.length; i++) {
-    var text = Utils.getText(allLinks[i], true);
-    if (text.indexOf(linkText) != -1) {
-      indices += Utils.addToKnownElements(allLinks[i], respond.context) + ",";
-    }
-  }
-
-  respond.response = indices;
-  respond.send();
-};
-
-
-FirefoxDriver.prototype.selectElementUsingPartialLinkText = function(respond,
-                                                                     linkText) {
-  var allLinks = Utils.getDocument(respond.context).getElementsByTagName("a");
-  var index;
-  for (var i = 0; i < allLinks.length && !index; i++) {
-    var text = Utils.getText(allLinks[i], true);
-    if (text.indexOf(linkText) != -1) {
-      index = Utils.addToKnownElements(allLinks[i], respond.context);
+  var element;
+  switch (method) {
+    case FirefoxDriver.ElementLocator.ID:
+      element = rootNode === theDocument ?
+          theDocument.getElementById(selector) :
+          this.findElementByXPath_(
+              theDocument, './/*[@id="' + selector + '"]', rootNode);
       break;
-    }
+
+    case FirefoxDriver.ElementLocator.NAME:
+      element = rootNode.getElementsByName ?
+          rootNode.getElementsByName(selector)[0] :
+          this.findElementByXPath_(
+              theDocument, './/*[@name ="' + selector + '"]', rootNode);
+      break;
+
+    case FirefoxDriver.ElementLocator.CLASS_NAME:
+      element = rootNode.getElementsByClassName ?
+                rootNode.getElementsByClassName(selector)[0] :  // FF 3+
+                this.findElementByXPath_(theDocument,           // FF 2
+                    '//*[contains(concat(" ",normalize-space(@class)," ")," ' +
+                    selector + ' ")]', rootNode);
+      break;
+
+    case FirefoxDriver.ElementLocator.TAG_NAME:
+      element = rootNode.getElementsByTagName(selector)[0];
+      break;
+
+    case FirefoxDriver.ElementLocator.XPATH:
+      element = this.findElementByXPath_(theDocument, selector, rootNode);
+      break;
+
+    case FirefoxDriver.ElementLocator.LINK_TEXT:
+    case FirefoxDriver.ElementLocator.PARTIAL_LINK_TEXT:
+      var allLinks = rootNode.getElementsByTagName('A');
+      for (var i = 0; i < allLinks.length && !element; i++) {
+        var text = Utils.getText(allLinks[i], true);
+        if (FirefoxDriver.ElementLocator.PARTIAL_LINK_TEXT == method) {
+          if (text.indexOf(selector) != -1) {
+            element = allLinks[i];
+          }
+        } else if (text == selector) {
+          element = allLinks[i];
+        }
+      }
+      break;
+
+    default:
+      respond.response = 'Unsupported element locator method: ' + method;
+      respond.isError = true;
+      respond.send();
+      return;
   }
-
-  if (index !== undefined) {
-    respond.response = index;
-  } else {
-    respond.isError = true;
-    respond.response =
-    "Unable to locate element with link text contains '" + linkText + "'";
-  }
-
-  respond.send();
-};
-
-
-FirefoxDriver.prototype.selectElementById = function(respond, id) {
-  var doc = Utils.getDocument(respond.context);
-  var element = doc.getElementById(id);
 
   if (element) {
     respond.response = Utils.addToKnownElements(element, respond.context);
   } else {
+    respond.response = 'Unable to locate element: ' + JSON.stringify({
+      method: method,
+      selector: selector
+    });
     respond.isError = true;
-    respond.response = "Unable to locate element with id '" + id + "'";
   }
-
   respond.send();
 };
 
 
-FirefoxDriver.prototype.selectElementsUsingId = function(respond, id) {
-  var doc = Utils.getDocument(respond.context);
-  var allElements = doc.evaluate("//*[@id='" + id + "']", doc, null,
-      Components.interfaces.nsIDOMXPathResult.ORDERED_NODE_ITERATOR_TYPE,
-      null);
-  var indices = "";
-  var element = allElements.iterateNext();
-  while (element) {
-    var index = Utils.addToKnownElements(element, respond.context);
-    indices += index + ",";
-    element = allElements.iterateNext();
-  }
-  // Strip the trailing comma
-  indices = indices.substring(0, indices.length - 1);
+/**
+ * Finds an element on the current page. The response value will be the UUID of
+ * the located element, or an error message if an element could not be found.
+ * @param {Response} respond Object to send the command response with.
+ * @param {Array.<string>} parameters A two-element array: the first element
+ *     should be a method listen in the {@code Firefox.ElementLocator} enum, and
+ *     the second should be what to search for.
+ */
+FirefoxDriver.prototype.findElement = function(respond, parameters) {
+  this.findElementInternal_(respond, parameters[0], parameters[1]);
+};
 
-  respond.response = indices;
+
+/**
+ * Finds an element on the current page that is the child of a corresponding
+ * search parameter. The response value will be the UUID of the located element,
+ * or an error message if an element could not be found.
+ * @param {Response} respond Object to send the command response with.
+ * @param {Array.<{id:string, using:string, value:string}>} parameters A single
+ *     element array. The array element should define what to search for with
+ *     the following fields:
+ *     - id: UUID of the element to base the search from.
+ *     - using: A method to search with, as defined in the
+ *       {@code Firefox.ElementLocator} enum.
+ *     - value: What to search for.
+ */
+FirefoxDriver.prototype.findChildElement = function(respond, parameters) {
+  var map = parameters[0];
+  this.findElementInternal_(respond, map.using, map.value, map.id);
+};
+
+
+/**
+ * Finds elements on the current page. The response value will an array of UUIDs
+ * for the located elements.
+ * @param {Response} respond Object to send the command response with.
+ * @param {FirefoxDriver.ElementLocator} method The locator method to use.
+ * @param {string} selector What to search for; see {@code ElementLocator} for
+ *     details on what the selector should be for each element.
+ * @param {string} opt_parentElementId If defined, the search will be restricted
+ *     to the corresponding element's subtree.
+ * @private
+ */
+FirefoxDriver.prototype.findElementsInternal_ = function(respond, method,
+                                                         selector,
+                                                         opt_parentElementId) {
+  var theDocument = Utils.getDocument(respond.context);
+  var rootNode = typeof opt_parentElementId == 'string' ?
+      Utils.getElementAt(opt_parentElementId, respond.context) : theDocument;
+
+  var elements;
+  switch (method) {
+    case FirefoxDriver.ElementLocator.ID:
+      selector = './/*[@id="' + selector + '"]';
+      // Fall-through
+    case FirefoxDriver.ElementLocator.XPATH:
+      elements = this.findElementsByXPath_(
+          theDocument, selector, rootNode);
+      break;
+
+    case FirefoxDriver.ElementLocator.NAME:
+      elements = rootNode.getElementsByName ?
+          rootNode.getElementsByName(selector) :
+          this.findElementsByXPath_(
+              theDocument, './/*[@name="' + selector + '"]', rootNode);
+      break;
+
+    case FirefoxDriver.ElementLocator.TAG_NAME:
+      elements = rootNode.getElementsByTagName(selector);
+      break;
+
+    case FirefoxDriver.ElementLocator.CLASS_NAME:
+      elements = rootNode.getElementsByClassName ?
+      rootNode.getElementsByClassName(selector) :  // FF 3+
+      this.findElementsByXPath_(theDocument,       // FF 2
+          './/*[contains(concat(" ",normalize-space(@class)," ")," ' +
+          selector + ' ")]', rootNode);
+      break;
+
+    case FirefoxDriver.ElementLocator.LINK_TEXT:
+    case FirefoxDriver.ElementLocator.PARTIAL_LINK_TEXT:
+      elements =  rootNode.getElementsByTagName('A');
+      elements = Array.filter(elements, function(element) {
+        var text = Utils.getText(element, true);
+        if (FirefoxDriver.ElementLocator.PARTIAL_LINK_TEXT == method) {
+          return text.indexOf(selector) != -1;
+        } else {
+          return text == selector;
+        }
+      });
+      break;
+
+    default:
+      respond.response = 'Unsupported element locator method: ' + method;
+      respond.isError = true;
+      respond.send();
+      return;
+  }
+
+  var elementIds = [];
+  for (var j = 0; j < elements.length; j++) {
+    var element = elements[j];
+    elementIds.push(Utils.addToKnownElements(element, respond.context));
+  }
+
+  respond.response = elementIds.join(',');
   respond.send();
 };
 
 
-FirefoxDriver.prototype.selectElementsUsingXPath = function(respond, xpath) {
-  var doc = Utils.getDocument(respond.context);
-  var result = doc.evaluate(xpath, doc, null,
-      Components.interfaces.nsIDOMXPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
-  var response = "";
-  var element = result.iterateNext();
-  while (element) {
-    var index = Utils.addToKnownElements(element, respond.context);
-    response += index + ",";
-    element = result.iterateNext();
-  }
-  // Strip the trailing comma
-  response = response.substring(0, response.length - 1);
+/**
+ * Searches for multiple elements on the page. The response value will be an
+ * array of UUIDs for the located elements.
+ * @param {Response} respond Object to send the command response with.
+ * @param {Array.<string>} parameters A two-element array: the first element
+ *     should be the type of locator strategy to use, the second is the target
+ *     of the search.
+ */
+FirefoxDriver.prototype.findElements = function(respond, parameters) {
+  this.findElementsInternal_(respond, parameters[0], parameters[1]);
+};
 
-  respond.response = response;
-  respond.send();
+
+/**
+ * Searches for multiple elements on the page that are children of the
+ * corresponding search parameter. The response value will be an array of UUIDs
+ * for the located elements.
+ * @param {Array.<{id:string, using:string, value:string}>} parameters A single
+ *     element array. The array element should define what to search for with
+ *     the following fields:
+ *     - id: UUID of the element to base the search from.
+ *     - using: A method to search with, as defined in the
+ *       {@code Firefox.ElementLocator} enum.
+ *     - value: What to search for.
+ */
+FirefoxDriver.prototype.findChildElements = function(respond, parameters) {
+  var map = parameters[0];
+  this.findElementsInternal_(respond, map.using, map.value, map.id);
 };
 
 

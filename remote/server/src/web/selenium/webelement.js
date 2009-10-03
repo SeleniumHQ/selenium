@@ -76,75 +76,6 @@ webdriver.WebElement.UUID_REGEX =
 
 
 /**
- * Adds a command to the given driver to find an element on the current page
- * under test.
- * <p/>
- * The {@code locator} object should define the strategy to use by having a
- * property whose key matches one of the keys in
- * {@code webdriver.LocatorStrategy}. The value of this property defines the
- * target of the search.  For example, {@code locator = {id: 'myButton'}}, would
- * search for an element whose ID is "myButton".
- * 
- * @param {webdriver.WebDriver} driver Instance to add the command to.
- * @param {webdriver.By.Locator|{*: string}} locator The locator to use for
- *     finding the element, or a short-hand object that can be converted into a
- *     locator.
- * @param {webdriver.WebElement} opt_element The element to search under. If not
- *     provided, will search from the document root.
- * @param {boolean} opt_findMany Whether to find many elements or just one;
- *     defaults to {@code false}.
- * @param {function} opt_callbackFn Function to call if the command succeeds.
- * @param {function} opt_errorCallbackFn Function to call if the command fails.
- * @throws If {@code locator} does not define a supported strategy.
- * @see webdriver.By.Locator.createFromObj
- * @static
- */
-webdriver.WebElement.buildFindElementCommand = function(driver,
-                                                        locator,
-                                                        opt_element,
-                                                        opt_findMany,
-                                                        opt_callbackFn,
-                                                        opt_errorCallbackFn) {
-  if (!locator.type || !locator.target) {
-    locator = webdriver.By.Locator.createFromObj(locator);
-  }
-
-  if (locator.type == 'className') {
-    var normalized = goog.string.normalizeWhitespace(locator.target);
-    locator.target = goog.string.trim(normalized);
-    if (locator.target.search(/\s/) >= 0) {
-      throw new Error('Compound class names are not allowed for searches: ' +
-                      goog.string.quote(locator.target));
-    }
-  }
-
-  var commandName = opt_findMany ?
-      webdriver.CommandName.FIND_ELEMENTS :
-      webdriver.CommandName.FIND_ELEMENT;
-
-  var command = new webdriver.Command(commandName, opt_element).
-      setParameters(locator.type, locator.target).
-      setSuccessCallback(function(response) {
-        var ids = response.value.split(',');
-        var elements = [];
-        for (var i = 0, id; id = ids[i]; i++) {
-          if (id) {
-            var element = new webdriver.WebElement(driver);
-            element.getId().setValue(id);
-            elements.push(element);
-          }
-        }
-        response.value = elements;
-        if (opt_callbackFn) {
-          opt_callbackFn(response);
-        }
-      }).
-      setFailureCallback(opt_errorCallbackFn);
-  driver.addCommand(command);
-};
-
-
-/**
  * Adds a command to the given {@code webdriver.WebDriver} instance to find an
  * element on the page.
  * @param {webdriver.WebDriver} driver The driver to perform the search with.
@@ -158,10 +89,13 @@ webdriver.WebElement.buildFindElementCommand = function(driver,
  */
 webdriver.WebElement.findElement = function(driver, locator) {
   var webElement = new webdriver.WebElement(driver);
-  webdriver.WebElement.buildFindElementCommand(driver, locator, null, false,
-      function(response) {
-        webElement.getId().setValue(response.value[0].getId().getValue());
+  locator = webdriver.By.Locator.checkLocator(locator);
+  var command = new webdriver.Command(webdriver.CommandName.FIND_ELEMENT).
+      setParameters(locator.type, locator.target).
+      setSuccessCallback(function(response) {
+        webElement.getId().setValue(response.value);
       });
+  driver.addCommand(command);
   return webElement;
 };
 
@@ -180,18 +114,18 @@ webdriver.WebElement.findElement = function(driver, locator) {
  */
 webdriver.WebElement.isElementPresent = function(driver, locator) {
   var isPresent = new webdriver.Future(driver);
-  webdriver.WebElement.buildFindElementCommand(driver, locator, null, false,
-      // If returns without an error, element is present
-      function(response) {
-        response.value = response.value.length > 0;
-        isPresent.setValue(response.value);
-      },
-      // If returns with an error, element is not present (clear the error!)
-      function(response) {
-        response.isFailure = false;
-        response.value = false;
-        isPresent.setValue(false);
-      });
+  var callback = function(response) {
+    // If returns without an error, element is present.
+    isPresent.setValue(response.value = !response.isFailure);
+    // Go ahead and clear the error.
+    response.isFailure = false;
+  };
+  locator = webdriver.By.Locator.checkLocator(locator);
+  var command = new webdriver.Command(webdriver.CommandName.FIND_ELEMENT).
+      setParameters(locator.type, locator.target).
+      setSuccessCallback(callback).
+      setFailureCallback(callback);
+  driver.addCommand(command);
   return isPresent;
 };
 
@@ -206,7 +140,22 @@ webdriver.WebElement.isElementPresent = function(driver, locator) {
  * @see webdriver.By.Locator.createFromObj
  */
 webdriver.WebElement.findElements = function(driver, locator) {
-  webdriver.WebElement.buildFindElementCommand(driver, locator, null, true);
+  locator = webdriver.By.Locator.checkLocator(locator);
+  var command = new webdriver.Command(webdriver.CommandName.FIND_ELEMENTS).
+      setParameters(locator.type, locator.target).
+      setSuccessCallback(function(response) {
+        var ids = response.value.split(',');
+        var elements = [];
+        for (var i = 0, id; id = ids[i]; i++) {
+          if (id) {
+            var element = new webdriver.WebElement(driver);
+            element.getId().setValue(id);
+            elements.push(element);
+          }
+        }
+        response.value = elements;
+      });
+  driver.addCommand(command);
 };
 
 
@@ -223,19 +172,22 @@ webdriver.WebElement.findElements = function(driver, locator) {
  */
 webdriver.WebElement.prototype.isElementPresent = function(locator) {
   var isPresent = new webdriver.Future(this.driver_);
-  webdriver.WebElement.buildFindElementCommand(
-      this.driver_, locator, this, false,
-      // If returns without an error, element could be present (check response).
-      function(response) {
-        response.value = response.value.length > 0;
-        isPresent.setValue(response.value);
-      },
-      // If returns with an error, element is not present (clear the error!)
-      function(response) {
-        response.isFailure = false;
-        response.value = false;
-        isPresent.setValue(false);
-      });
+  var callback = function(response) {
+    // If returns without an error, element is present.
+    isPresent.setValue(response.value = !response.isFailure);
+    // Go ahead and clear the error (if any).
+    response.isFailure = false;
+  };
+  locator = webdriver.By.Locator.checkLocator(locator);
+  var command = new webdriver.Command(webdriver.CommandName.FIND_CHILD_ELEMENT).
+      setParameters({
+        'id': this.getId(),
+        'using': locator.type,
+        'value': locator.target
+      }).
+      setSuccessCallback(callback).
+      setFailureCallback(callback);
+  this.driver_.addCommand(command);
   return isPresent;
 };
 
@@ -253,11 +205,17 @@ webdriver.WebElement.prototype.isElementPresent = function(locator) {
  */
 webdriver.WebElement.prototype.findElement = function(locator) {
   var webElement = new webdriver.WebElement(this.driver_);
-  webdriver.WebElement.buildFindElementCommand(
-      this.driver_, locator, this, false,
-      function(response) {
-        webElement.getId().setValue(response.value[0].getId().getValue());
+  locator = webdriver.By.Locator.checkLocator(locator);
+  var command = new webdriver.Command(webdriver.CommandName.FIND_CHILD_ELEMENT).
+      setParameters({
+        'id': this.getId(),
+        'using': locator.type,
+        'value': locator.target
+      }).
+      setSuccessCallback(function(response) {
+        webElement.getId().setValue(response.value);
       });
+  this.driver_.addCommand(command);
   return webElement;
 };
 
@@ -271,8 +229,27 @@ webdriver.WebElement.prototype.findElement = function(locator) {
  * @see webdriver.By.Locator.createFromObj
  */
 webdriver.WebElement.prototype.findElements = function(locator) {
-  webdriver.WebElement.buildFindElementCommand(
-      this.driver_, locator, this, true);
+  locator = webdriver.By.Locator.checkLocator(locator);
+  var command =
+      new webdriver.Command(webdriver.CommandName.FIND_CHILD_ELEMENTS).
+          setParameters({
+            'id': this.getId(),
+            'using': locator.type,
+            'value': locator.target
+          }).
+          setSuccessCallback(function(response) {
+            var ids = response.value.split(',');
+            var elements = [];
+            for (var i = 0, id; id = ids[i]; i++) {
+              if (id) {
+                var element = new webdriver.WebElement(this.driver_);
+                element.getId().setValue(id);
+                elements.push(element);
+              }
+            }
+            response.value = elements;
+          }, this);
+  this.driver_.addCommand(command);
 };
 
 

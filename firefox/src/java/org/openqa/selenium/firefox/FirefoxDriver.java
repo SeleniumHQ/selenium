@@ -174,31 +174,35 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
   }
 
   public WebElement findElementById(String using) {
-      return findElement("selectElementById", using);
+      return findElement("id", using);
   }
 
   public List<WebElement> findElementsById(String using) {
-      return findElements("selectElementsUsingId", using);
+      return findElements("id", using);
   }
 
   public WebElement findElementByLinkText(String using) {
-    return findElement("selectElementUsingLink", using);
+    return findElement("link text", using);
   }
 
   public List<WebElement> findElementsByLinkText(String using) {
-    return findElements("selectElementsUsingLink", using);
+    return findElements("link text", using);
   }
 
   public WebElement findElementByPartialLinkText(String using) {
-      return findElement("selectElementUsingPartialLinkText", using);
+      return findElement("partial link text", using);
   }
 
   public List<WebElement> findElementsByPartialLinkText(String using) {
-    return findElements("selectElementsUsingPartialLinkText", using);
+    return findElements("partial link text", using);
   }
 
   public List<WebElement> findElementsByXPath(String using) {
-      return findElements("selectElementsUsingXPath", using);
+      return findElements("xpath", using);
+  }
+
+  public WebElement findElementByXPath(String using) {
+      return findElement("xpath", using);
   }
 
   public List<WebElement> findElementsByClassName(String using) {
@@ -210,7 +214,7 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
           "Compound class names are not supported. Consider searching for one class name and filtering the results.");
     }
         
-    return findElements("selectElementsUsingClassName", using);
+    return findElements("class name", using);
   }
 
   public WebElement findElementByClassName(String using) {
@@ -222,37 +226,35 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
           "Compound class names are not supported. Consider searching for one class name and filtering the results.");
     }
 
-    return findElement("selectElementUsingClassName", using);
+    return findElement("class name", using);
   }
 
   public WebElement findElementByName(String using) {
-      return findElement("selectElementByName", using);
+      return findElement("name", using);
   }
 
   public List<WebElement> findElementsByName(String using) {
-      return findElements("selectElementsUsingName", using);
+      return findElements("name", using);
   }
 
   public WebElement findElementByTagName(String using) {
-    return findElement("selectElementUsingTagName", using);
+    return findElement("tag name", using);
   }
 
   public List<WebElement> findElementsByTagName(String using) {
-    return findElements("selectElementsUsingTagName", using);
+    return findElements("tag name", using);
   }
   
-  public WebElement findElementByXPath(String using) {
-    return findElement("selectElementUsingXPath", using);
-  }
-
-  private WebElement findElement(String commandName, String argument) {
-    String elementId = sendMessage(NoSuchElementException.class, commandName, argument);
+  private WebElement findElement(String method, String selector) {
+    String elementId = sendMessage(NoSuchElementException.class,
+        "findElement", method, selector);
 
     return new FirefoxWebElement(this, elementId);
   }
 
-  private List<WebElement> findElements(String commandName, String argument) {
-    String returnedIds = sendMessage(WebDriverException.class, commandName, argument);
+  private List<WebElement> findElements(String method, String selector) {
+    String returnedIds = sendMessage(WebDriverException.class,
+        "findElements", method, selector);
     List<WebElement> elements = new ArrayList<WebElement>();
 
     if (returnedIds.length() == 0)
@@ -626,7 +628,9 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
 
 
         public WebElement activeElement() {
-            return findElement("switchToActiveElement", "active element");
+          String elementId = sendMessage(NoSuchElementException.class,
+              "switchToActiveElement");
+          return new FirefoxWebElement(FirefoxDriver.this, elementId);
         }
 
         public Alert alert() {

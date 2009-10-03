@@ -20,6 +20,8 @@ package org.openqa.selenium.firefox;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONWriter;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.RenderedWebElement;
@@ -38,6 +40,10 @@ import org.openqa.selenium.internal.WrapsElement;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 public class FirefoxWebElement implements RenderedWebElement, Locatable, 
         FindsByXPath, FindsByLinkText, FindsById, FindsByName, FindsByTagName, FindsByClassName, SearchContext {
@@ -124,12 +130,6 @@ public class FirefoxWebElement implements RenderedWebElement, Locatable,
         return sendMessage(WebDriverException.class, "getElementText");
     }
 
-  public List<WebElement> getElementsByTagName(String tagName) {
-        String response = sendMessage(WebDriverException.class, "getElementChildren", tagName);
-
-        return getElementsFromIndices(response);
-    }
-
   public boolean isDisplayed() {
     return Boolean.parseBoolean(sendMessage(WebDriverException.class, "isElementDisplayed"));
     }
@@ -173,101 +173,90 @@ public class FirefoxWebElement implements RenderedWebElement, Locatable,
     }
 
     public WebElement findElementByXPath(String xpath) {
-        List<WebElement> elements = findElementsByXPath(xpath);
-        if (elements.size() == 0) {
-            throw new NoSuchElementException(
-                    "Unable to find element with xpath " + xpath);
-        }
-        return elements.get(0);
+      return findChildElement("xpath", xpath);
     }
 
     public List<WebElement> findElementsByXPath(String xpath) {
-        String indices = sendMessage(WebDriverException.class,
-                "findElementsByXPath", xpath);
-        return getElementsFromIndices(indices);
+      return findChildElements("xpath", xpath);
     }
 
     public WebElement findElementByLinkText(String linkText) {
-        List<WebElement> elements = findElementsByLinkText(linkText);
-        if (elements.size() == 0) {
-            throw new NoSuchElementException(
-                    "Unable to find element with linkText" + linkText);
-        }
-        return elements.get(0);
+      return findChildElement("link text", linkText);
     }
 
     public List<WebElement> findElementsByLinkText(String linkText) {
-        String indices = sendMessage(WebDriverException.class,
-                "findElementsByLinkText", linkText);
-        return getElementsFromIndices(indices);
+      return findChildElements("link text", linkText);
     }
 
-    public WebElement findElementByPartialLinkText(String using) {
-      String id = sendMessage(WebDriverException.class,
-                "findElementByPartialLinkText", using);
-      return new FirefoxWebElement(parent, id);
+    public WebElement findElementByPartialLinkText(String text) {
+      return findChildElement("partial link text", text);
     }
 
-    public List<WebElement> findElementsByPartialLinkText(String using) {
-        String indices = sendMessage(WebDriverException.class,
-                "findElementsByPartialLinkText", using);
-        return getElementsFromIndices(indices);
-    }
-
-
-    private List<WebElement> getElementsFromIndices(String indices) {
-        List<WebElement> elements = new ArrayList<WebElement>();
-
-        if (indices.length() == 0)
-            return elements;
-
-        String[] ids = indices.split(",");
-        for (String id : ids) {
-            elements.add(new FirefoxWebElement(parent, id));
-        }
-        return elements;
+    public List<WebElement> findElementsByPartialLinkText(String text) {
+      return findChildElements("partial link text", text);
     }
 
     public WebElement findElementById(String id) {
-      String elementId =
-          sendMessage(NoSuchElementException.class, "findElementById", id);
-      return new FirefoxWebElement(parent, elementId);
+      return findChildElement("id", id);
     }
 
     public List<WebElement> findElementsById(String id) {
-    	return findElementsByXPath(".//*[@id = '" + id + "']");
+      return findChildElements("id", id);
     }
 
     public WebElement findElementByName(String name) {
-        return findElementByXPath(".//*[@name = '" + name + "']");
+      return findChildElement("name", name);
     }
 
     public List<WebElement> findElementsByName(String name) {
-        return findElementsByXPath(".//*[@name = '" + name + "']");
+      return findChildElements("name", name);
     }
 
-    public WebElement findElementByClassName(String using) {
-        List<WebElement> elements = findElementsByClassName(using);
-        if (elements.size() == 0) {
-            throw new NoSuchElementException(
-                    "Unable to find element by class name " + using);
-        }
-        return elements.get(0);
+    public WebElement findElementByTagName(String tagName) {
+      return findChildElement("tag name", tagName);
+    }
+    
+    public List<WebElement> findElementsByTagName(String tagName) {
+      return findChildElements("tag name", tagName);
+    }
+    
+    public WebElement findElementByClassName(String className) {
+      return findChildElement("class name", className);
     }
 
-    public WebElement findElementByTagName(String using) {
-      String response = sendMessage(NoSuchElementException.class, "findElementByTagName", using);
-      return new FirefoxWebElement(parent, response);
+    public List<WebElement> findElementsByClassName(String className) {
+      return findChildElements("class name", className);
     }
-    
-    public List<WebElement> findElementsByTagName(String using) {
-      String indices = sendMessage(WebDriverException.class, "findElementsByTagName", using);
-      return getElementsFromIndices(indices);
+
+    private WebElement findChildElement(String using, String value) {
+      String id = sendMessage(NoSuchElementException.class,
+          "findChildElement", buildSearchParamsMap(using, value));
+      return new FirefoxWebElement(parent, id);
     }
-    
-    public List<WebElement> findElementsByClassName(String using) {
-    	String indices = sendMessage(WebDriverException.class, "findChildElementsByClassName", using);
-        return getElementsFromIndices(indices);
+
+    private List<WebElement> findChildElements(String using, String value) {
+      String indices = sendMessage(WebDriverException.class,
+          "findChildElements", buildSearchParamsMap(using, value));
+
+      List<WebElement> elements = new ArrayList<WebElement>();
+
+      if (indices.length() == 0) {
+        return elements;
+      }
+
+      String[] ids = indices.split(",");
+      for (String id : ids) {
+        elements.add(new FirefoxWebElement(parent, id));
+      }
+      return elements;
+    }
+
+    private Map<String, String> buildSearchParamsMap(String using, String value) {
+      Map<String, String> map = new HashMap<String, String>();
+      map.put("id", elementId);
+      map.put("using", using);
+      map.put("value", value);
+      return map;
     }
 
     public String getValueOfCssProperty(String propertyName) {

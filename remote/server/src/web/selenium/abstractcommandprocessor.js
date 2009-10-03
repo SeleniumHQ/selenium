@@ -23,6 +23,7 @@ limitations under the License.
 goog.provide('webdriver.AbstractCommandProcessor');
 
 goog.require('goog.array');
+goog.require('goog.object');
 goog.require('webdriver.CommandName');
 goog.require('webdriver.Context');
 goog.require('webdriver.Future');
@@ -47,13 +48,17 @@ webdriver.AbstractCommandProcessor = function() {
  *     {@code webdriver.Future} that hasn't been computed yet.
  * @private
  */
-webdriver.AbstractCommandProcessor.prototype.mapFutureParams_ = function(
+webdriver.AbstractCommandProcessor.resolveFutureParams_ = function(
     command) {
   function getValue(obj) {
     if (obj instanceof webdriver.Future) {
       return obj.getValue();
-    } else if (obj && obj['type'] && obj['value']) {
-      obj['value'] = getValue(obj['value']);
+    } else if (goog.isFunction(obj)) {
+      return obj;
+    } else if (goog.isObject(obj)) {
+      goog.object.forEach(obj, function(value, key) {
+        obj[key] = getValue(value);
+      });
     }
     return obj;
   }
@@ -77,7 +82,7 @@ webdriver.AbstractCommandProcessor.prototype.mapFutureParams_ = function(
 webdriver.AbstractCommandProcessor.prototype.execute = function(command,
                                                                 sessionId,
                                                                 context) {
-  this.mapFutureParams_(command);
+  webdriver.AbstractCommandProcessor.resolveFutureParams_(command);
   switch (command.name) {
     case webdriver.CommandName.SLEEP:
       var ms = command.parameters[0];

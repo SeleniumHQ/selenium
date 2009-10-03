@@ -94,68 +94,12 @@ webdriver.LocalCommandProcessor.DRIVER_METHOD_NAMES_ = goog.object.transpose({
   'getElementSize': webdriver.CommandName.GET_SIZE,
   'getElementAttribute': webdriver.CommandName.GET_ATTRIBUTE,
   'dragAndDrop': webdriver.CommandName.DRAG,
-  'getElementCssProperty': webdriver.CommandName.GET_CSS_PROPERTY
+  'getElementCssProperty': webdriver.CommandName.GET_CSS_PROPERTY,
+  'findElement': webdriver.CommandName.FIND_ELEMENT,
+  'findElements': webdriver.CommandName.FIND_ELEMENTS,
+  'findChildElement': webdriver.CommandName.FIND_CHILD_ELEMENT,
+  'findChildElements': webdriver.CommandName.FIND_CHILD_ELEMENTS
 });
-
-
-webdriver.LocalCommandProcessor.mapLocator_ = function(findOneMethod,
-                                                       findManyMethod) {
-  var map = {};
-  map[webdriver.CommandName.FIND_ELEMENT] = findOneMethod;
-  map[webdriver.CommandName.FIND_ELEMENTS] = findManyMethod;
-  return map;
-};
-
-
-/**
- * Map of {@code webdriver.LocatorStrategy} to the corresponding method name for
- * a local command processor.
- * TODO(jmleyba): Currently this is FF-specific. When we add other local command
- * processors, we'll need to standardize on names.
- * @enum {Array.<string>}
- */
-webdriver.LocalCommandProcessor.LOCATOR_UNDER_ROOT_ = {
-  id: webdriver.LocalCommandProcessor.mapLocator_(
-      'selectElementById', 'selectElementsUsingId'),
-  name: webdriver.LocalCommandProcessor.mapLocator_(
-      'selectElementByName', 'selectElementsUsingName'),
-  className: webdriver.LocalCommandProcessor.mapLocator_(
-      'selectElementUsingClassName', 'selectElementsUsingClassName'),
-  linkText: webdriver.LocalCommandProcessor.mapLocator_(
-      'selectElementUsingLink', 'selectElementsUsingLink'),
-  partialLinkText: webdriver.LocalCommandProcessor.mapLocator_(
-      'selectElementUsingPartialLinkText',
-      'selectElementsUsingPartialLinkText'),
-  tagName: webdriver.LocalCommandProcessor.mapLocator_(
-      'selectElementUsingTagName', 'selectElementsUsingTagName'),
-  xpath: webdriver.LocalCommandProcessor.mapLocator_(
-      'selectElementUsingXPath', 'selectElementsUsingXPath')
-};
-
-
-/**
- * Map of {@code webdriver.LocatorStrategy} to the corresponding method name for
- * a local command processor.
- * TODO(jmleyba): Currently this is FF-specific. When we add other local command
- * processors, we'll need to standardize on names.
- * @enum {Array.<string>}
- */
-webdriver.LocalCommandProcessor.LOCATOR_UNDER_ELEMENT_ = {
-  id: webdriver.LocalCommandProcessor.mapLocator_(
-      'findElementById', 'findElementsById'),
-  name: webdriver.LocalCommandProcessor.mapLocator_(
-      'findElementByName', 'findElementsByName'),
-  className: webdriver.LocalCommandProcessor.mapLocator_(
-      'findElementByClassName', 'findChildElementsByClassName'),
-  linkText: webdriver.LocalCommandProcessor.mapLocator_(
-      'findElementByLinkText', 'findElementsByLinkText'),
-  partialLinkText: webdriver.LocalCommandProcessor.mapLocator_(
-      'findElementByPartialLinkText', 'findElementsByPartialLinkText'),
-  tagName: webdriver.LocalCommandProcessor.mapLocator_(
-      'findElementByTagName', 'findElementsByTagName'),
-  xpath: webdriver.LocalCommandProcessor.mapLocator_(
-      'findElementByXPath', 'findElementsByXPath')
-};
 
 
 /**
@@ -164,6 +108,10 @@ webdriver.LocalCommandProcessor.LOCATOR_UNDER_ELEMENT_ = {
 webdriver.LocalCommandProcessor.prototype.executeDriverCommand = function(
     command, sessionId, context) {
   var respond = goog.bind(function(rawResponse) {
+    webdriver.logging.info(
+        'receiving:\n' +
+        webdriver.logging.describe(rawResponse, '  '));
+
     var response = new webdriver.Response(
         rawResponse['isError'],
         webdriver.Context.fromString(rawResponse['context']),
@@ -174,15 +122,6 @@ webdriver.LocalCommandProcessor.prototype.executeDriverCommand = function(
 
   var methodName;
   switch (command.name) {
-    case webdriver.CommandName.FIND_ELEMENT:
-    case webdriver.CommandName.FIND_ELEMENTS:
-      var map = command.element ?
-          webdriver.LocalCommandProcessor.LOCATOR_UNDER_ELEMENT_ :
-          webdriver.LocalCommandProcessor.LOCATOR_UNDER_ROOT_;
-      methodName = map[command.parameters[0]][command.name];
-      command.parameters = [command.parameters[1]];
-      break;
-
     case webdriver.CommandName.SEND_KEYS:
       command.parameters = [command.parameters.join('')];
       // Fall-through
@@ -208,6 +147,10 @@ webdriver.LocalCommandProcessor.prototype.executeDriverCommand = function(
   if (command.element) {
     jsonCommand['elementId'] = command.element.getId().getValue();
   }
+
+  webdriver.logging.info(
+      'sending:\n' +
+      webdriver.logging.describe(jsonCommand, '  '));
 
   this.cp_.execute({'wrappedJSObject': jsonCommand});
 };

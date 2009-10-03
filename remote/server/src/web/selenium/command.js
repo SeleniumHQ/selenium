@@ -225,6 +225,8 @@ webdriver.CommandName = {
   SET_MOUSE_SPEED: 'setMouseSpeed',
   FIND_ELEMENT: 'findElement',
   FIND_ELEMENTS: 'findElements',
+  FIND_CHILD_ELEMENT: 'findChildElement',
+  FIND_CHILD_ELEMENTS: 'findChildElements',
   GET_ACTIVE_ELEMENT: 'getActiveElement',
   SET_VISIBLE: 'setVisible',
   GET_VISIBLE: 'getVisible',

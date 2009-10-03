@@ -27,7 +27,6 @@ goog.provide('webdriver.By.Strategy');
 goog.require('goog.object');
 
 
-
 /**
  * An element locator.
  * @param {webdriver.By.Strategy} type The type of strategy to use for this
@@ -52,9 +51,35 @@ webdriver.By.Locator = function(type, target) {
 webdriver.By.Locator.createFromObj = function(obj) {
   var key = goog.object.getAnyKey(obj);
   if (key && key in webdriver.By.Strategy) {
-    return new webdriver.By.Locator(key, obj[key]);
+    return new webdriver.By.Locator(webdriver.By.Strategy[key], obj[key]);
   }
   throw new Error('Unsupported locator strategy: ' + key);
+};
+
+
+/**
+ * Verifies that a {@code locator} is a valid locator to use for searching for
+ * elements on the page.
+ * @param {webdriver.By.Locator|{*: string}} locator The locator to verify, or
+ *     a short-hand object that can be converted into a locator to verify.
+ * @return {webdriver.By.Locator} The validated locator.
+ * @throws If the {@code locator} is not valid.
+ */
+webdriver.By.Locator.checkLocator = function(locator) {
+  if (!locator.type || !locator.target) {
+    locator = webdriver.By.Locator.createFromObj(locator);
+  }
+
+  if (locator.type == webdriver.By.Strategy.className) {
+    var normalized = goog.string.normalizeWhitespace(locator.target);
+    locator.target = goog.string.trim(normalized);
+    if (locator.target.search(/\s/) >= 0) {
+      throw new Error('Compound class names are not allowed for searches: ' +
+                      goog.string.quote(locator.target));
+    }
+  }
+
+  return locator;
 };
 
 
@@ -80,27 +105,32 @@ webdriver.By.Strategy = {
    * Find an element by one of its class names. Only one class name may be
    * specified per search.
    */
-  className: 'className',
+  className: 'class name',
 
   /**
    * Find an A tag by its text context.
    */
-  linkText: 'linkText',
+  linkText: 'link text',
 
   /**
    * Find an A tag by partially matching its text context.
    */
-  partialLinkText: 'partialLinkText',
+  partialLinkText: 'partial link text',
 
   /**
    * Find an element by its tagName property.
    */
-  tagName: 'tagName',
+  tagName: 'tag name',
 
   /**
    * Find an element by evaluating an XPath expression.
    */
-  xpath: 'xpath'
+  xpath: 'xpath',
+
+  /**
+   * Find an element by evaluating a javascript expression.
+   */
+  js: 'js'
 };
 
 
