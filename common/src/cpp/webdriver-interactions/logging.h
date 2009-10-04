@@ -32,6 +32,7 @@ limitations under the License.
 #ifdef unix
  #include <sys/types.h>
  #include <unistd.h>
+ #include <stdlib.h>
 #else
  #include <io.h>
  #include <comdef.h>
