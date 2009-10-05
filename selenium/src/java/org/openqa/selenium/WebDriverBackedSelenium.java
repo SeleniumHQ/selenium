@@ -678,10 +678,8 @@ public class WebDriverBackedSelenium implements Selenium {
     WebElement select = findElement(locator);
     List<WebElement> options = select.findElements(By.tagName("option"));
 
-    if (select.getAttribute("multiple") == null) {
-      if (options.size() > 0) {
-        options.get(0).setSelected();
-      }
+    String multiple = select.getAttribute("multiple");
+    if (multiple == null || "".equals(multiple)) {
       return;
     }
 
@@ -1490,11 +1488,15 @@ public class WebDriverBackedSelenium implements Selenium {
    */
   public boolean isEditable(String locator) {
     WebElement element = findElement(locator);
-    String value = element.getValue();
-    String readonly = element.getAttribute("readonly");
-    if (readonly == null) readonly = "";
+    String tagName = element.getTagName().toLowerCase();
+    boolean acceptableTagName = "input".equals(tagName) || "select".equals(tagName);
+    String readonly = "";
+    if ("input".equals(tagName)) {
+      readonly = element.getAttribute("readonly");
+      if (readonly == null) readonly = "";
+    }
 
-    return value != null && element.isEnabled() && "".equals(readonly);
+    return element.isEnabled() && acceptableTagName && "".equals(readonly);
   }
 
   /**
@@ -1941,7 +1943,29 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param timeout a timeout in milliseconds, after which this command will return with an error
    */
   public void waitForPageToLoad(String timeout) {
-    // no-op. WebDriver should be blocking
+    // Wait until things look like they've been stable for a second
+    if (!(driver instanceof JavascriptExecutor)) {
+      // Assume that we Do The Right Thing
+      return;
+    }
+
+    new Wait() {
+      private long started = System.currentTimeMillis();
+
+      public boolean until() {
+        Object result = ((JavascriptExecutor) driver).executeScript(
+            "return document['readyState'] ? 'complete' == document.readyState : true");
+        if (result != null && result instanceof Boolean && (Boolean) result) {
+          long now = System.currentTimeMillis();
+          if (now - started > 1000) {
+            return true;
+          }
+        } else {
+          started = System.currentTimeMillis();
+        }
+        return false;
+      }
+    }.wait(timeout);
   }
 
   /**
@@ -2366,7 +2390,7 @@ public class WebDriverBackedSelenium implements Selenium {
     boolean isMultiple = false;
 
     String multiple = select.getAttribute("multiple");
-    if (multiple != null && "".equals(multiple))
+    if (multiple != null && !"".equals(multiple))
       isMultiple = true;
 
     if (onlyOneOption && isMultiple) {

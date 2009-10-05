@@ -19,6 +19,7 @@ package org.openqa.selenium;
 
 import java.util.Date;
 import java.security.cert.CertPathBuilder;
+import java.text.SimpleDateFormat;
 
 public class Cookie {
     private final String name;
@@ -115,7 +116,7 @@ public class Cookie {
     @Override
     public String toString() {
         return name + "=" + value 
-                + (expiry == null ? "" : "; expires=" + expiry)
+                + (expiry == null ? "" : "; expires=" + new SimpleDateFormat("EEE, dd-MM-yyyy hh:mm:ss z").format(expiry))
                 + ("".equals(path) ? "" : "; path=" + path)
                 + (domain == null ? "" : "; domain=" + domain);
 //                + (isSecure ? ";secure;" : "");
@@ -124,20 +125,26 @@ public class Cookie {
     /**
      *  Two cookies are equal if the name and value match
      */
+    @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Cookie)) return false;
-
-        Cookie cookie = (Cookie) o;
-    
-        if (!name.equals(cookie.name)) return false;
-        if (value != null ? !value.equals(cookie.value) : cookie.value != null) return false;
-
+      if (this == o) {
         return true;
+      }
+      if (!(o instanceof Cookie)) {
+        return false;
+      }
+
+      Cookie cookie = (Cookie) o;
+
+      if (!name.equals(cookie.name)) {
+        return false;
+      }
+      return !(value != null ? !value.equals(cookie.value) : cookie.value != null);
     }
 
+    @Override
     public int hashCode() {
-        return name.hashCode();
+      return name.hashCode();
     }
 
   public static class Builder {

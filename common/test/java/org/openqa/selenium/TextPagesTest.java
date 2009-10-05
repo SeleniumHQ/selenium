@@ -53,6 +53,7 @@ public class TextPagesTest extends AbstractDriverTestCase {
     }
   }
 
+  @Ignore(IE)
   public void testShouldThrowExceptionWhenAddingCookieToAPageThatIsNotHtml() {
     driver.get(textPage);
 

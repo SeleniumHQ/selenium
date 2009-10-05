@@ -706,7 +706,12 @@ void IeThread::OnElementToggle(WPARAM w, LPARAM lp)
 
 	// It only makes sense to toggle check boxes or options in a multi-select
 	CComBSTR tagName;
-	pElement->get_tagName(&tagName);
+	HRESULT hr = pElement->get_tagName(&tagName);
+	if (FAILED(hr)) {
+		LOGHR(WARN, hr) << "Unable to get tag name";
+		data.error_code = ENOSUCHELEMENT;
+		return;
+	}
 
 	if ((tagName != L"OPTION") &&
 		!isCheckbox(pElement)) 
@@ -717,6 +722,59 @@ void IeThread::OnElementToggle(WPARAM w, LPARAM lp)
 
 	int res = click(pElement, &SC);
 	data.error_code = res;
+	if (res == SUCCESS || res != EELEMENTNOTDISPLAYED) {
+		data.error_code = res;
+		return;
+	} 
+
+	if (tagName == L"OPTION") {
+		CComQIPtr<IHTMLOptionElement> option(pElement);
+		if (!option) {
+			LOG(ERROR) << "Cannot convert an element to an option, even though the tag name is right";
+			data.error_code = ENOSUCHELEMENT;
+			return;
+		}
+
+		VARIANT_BOOL selected;
+		hr = option->get_selected(&selected);
+		if (FAILED(hr)) {
+			LOGHR(WARN, hr) << "Cannot tell whether or not the element is selected";
+			data.error_code = ENOSUCHELEMENT;
+			return;
+		}
+
+		if (selected == VARIANT_TRUE) {
+			hr = option->put_selected(VARIANT_FALSE);
+		} else {
+			hr = option->put_selected(VARIANT_TRUE);
+		}
+		if (FAILED(hr)) {
+			LOGHR(WARN, hr) << "Failed to set selection";
+			data.error_code = EEXPECTEDERROR;
+			return;
+		}
+
+		//Looks like we'll need to fire the event on the select element and not the option. Assume for now that the parent node is a select. Which is dumb
+		CComQIPtr<IHTMLDOMNode> node(pElement);
+		if (!node) {
+			LOG(WARN) << "Current element is not an DOM node";
+			data.error_code = ENOSUCHELEMENT;
+			return;
+		}
+		CComPtr<IHTMLDOMNode> parent;
+		hr = node->get_parentNode(&parent);
+		if (FAILED(hr)) {
+			LOGHR(WARN, hr) << "Cannot get parent node";
+			data.error_code = ENOSUCHELEMENT;
+			return;
+		}
+
+		CComPtr<IHTMLEventObj> eventObj;
+		newEventObject(pElement, eventObj);
+		fireEvent(pElement, parent, eventObj, L"onchange");
+
+		data.error_code = SUCCESS;
+	}
 }
 
 void IeThread::OnElementGetValueOfCssProp(WPARAM w, LPARAM lp)
@@ -830,7 +888,38 @@ void IeThread::getAttribute(IHTMLElement *pElement, LPCWSTR name, std::wstring& 
 
 	CComVariant value;
 	HRESULT hr = pElement->getAttribute(attributeName, 0, &value);
+	if (FAILED(hr)) {
+		LOGHR(WARN, hr) << "Unable to read attribute: " << attributeName << ". Returning default value";
+		res = L"";
+		return;
+	}
+
+	// Handle "read-only" with care. Any value indicates the field would be readonly, so
+	// returning "false" actually means the field is disabled. *sigh*
 	res = comvariant2cw(value);
+	if (_wcsicmp(L"readonly", attributeName) == 0) {
+		if (_wcsicmp(L"false", res.c_str()) == 0) {
+			res = L"";
+		} else {
+			res = L"true";
+		}
+	} else if (_wcsicmp(L"multiple", attributeName) == 0) {
+		CComBSTR tagName;
+		hr = pElement->get_tagName(&tagName);
+		if (FAILED(hr)) {
+			LOGHR(WARN, hr) << "Unable to determine tag name. Returning default value";
+			res = L"";
+			return;
+		}
+		if (tagName == L"SELECT") {
+			if (_wcsicmp(L"false", res.c_str()) == 0) {
+				res = L"";
+			} else {
+				res = L"multiple";
+			}
+		}
+	}
+
 }
 
 bool IeThread::isSelected(IHTMLElement *pElement)

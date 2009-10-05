@@ -666,16 +666,16 @@ int wdeSetSelected(WebElement* element)
 
 int wdeToggle(WebElement* element, int* result)
 {
+	*result = 0;
     int res = verifyFresh(element);	if (res != SUCCESS) { return res; }
 
 	try {
 		int res = element->element->toggle();
 
-		if (res != SUCCESS) {
-			return res;
+		if (res == SUCCESS) {
+			return wdeIsSelected(element, result);
 		}
-
-		return wdeIsSelected(element, result);
+		return res;
 	} END_TRY;
 }
 

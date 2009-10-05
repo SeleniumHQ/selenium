@@ -78,12 +78,12 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     driver.get(simpleTestPage);
     cookies = driver.manage().getCookies();
     assertEquals(count + 2, cookies.size());
+
     assertTrue(cookies.contains(one));
     assertTrue(cookies.contains(two));
   }
 
   @JavascriptEnabled
-  @Ignore(IE)
   public void testDeleteAllCookies() {
     ((JavascriptExecutor) driver).executeScript("document.cookie = 'foo=set';");
     int count = driver.manage().getCookies().size();
@@ -96,7 +96,6 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(IE)
   public void testDeleteCookieWithName() {
     Random random = new Random();
     String key1 = String.format("key_%d", random.nextInt());
@@ -129,7 +128,6 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     assertTrue(cookies.contains(cookie2));
   }
 
-  @Ignore(IE)
   public void testAddCookiesWithDifferentPathsThatAreRelatedToOurs() {
     driver.get(simpleTestPage);
     driver.manage().deleteAllCookies();
@@ -186,7 +184,6 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     assertNull(String.valueOf(cookie), cookie);
   }
 
-  @Ignore(IE)  
   public void testShouldBeAbleToAddToADomainWhichIsRelatedToTheCurrentDomain() {
     String name = gotoValidDomainAndClearCookies();
     if (name == null) {
@@ -205,7 +202,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     assertNotNull(driver.manage().getCookieNamed("name"));
   }
 
-  @Ignore({IE, REMOTE})
+  @Ignore({REMOTE})
   public void testShouldBeAbleToIncludeLeadingPeriodInDomainName() throws Exception {
     String name = gotoValidDomainAndClearCookies();
     if (name == null || name.matches("\\d{1,3}(?:\\.\\d{1,3}){3}")) {
@@ -226,7 +223,6 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     assertNotNull(driver.manage().getCookieNamed("name"));
   }
 
-  @Ignore(IE)
   public void testGetCookieDoesNotRetriveBeyondCurrentDomain() {
     Cookie cookie1 = new Cookie("fish", "cod");
     WebDriver.Options options = driver.manage();
@@ -253,7 +249,6 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     assertTrue(cookies.contains(cookie1));
   }
 
-  @Ignore(IE)
   public void testShouldWalkThePathToDeleteACookie() {
     Cookie cookie1 = new Cookie("fish", "cod");
     driver.manage().addCookie(cookie1);
@@ -295,14 +290,12 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     assertNotNull(driver.manage().getCookieNamed("name"));
   }
 
-  @Ignore(IE)  
   public void testCookieIntegrity() {
     String url = GlobalTestEnvironment.get().getAppServer().whereElseIs("animals");
 
     driver.get(url);
     driver.manage().deleteAllCookies();
 
-    Calendar c = Calendar.getInstance();
     long time = System.currentTimeMillis() + (60 * 60 * 24);
     Cookie cookie1 = new Cookie("fish", "cod", "/common/animals", new Date(time));
     WebDriver.Options options = driver.manage();

@@ -45,10 +45,13 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.text.SimpleDateFormat;
 
 public class InternetExplorerDriver implements WebDriver, SearchContext, JavascriptExecutor {
 
@@ -84,17 +87,9 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
   }
 
   public void quit() {
-    Set<String> handles = null;
 
     try {
-      handles = getWindowHandles();
-    } catch (IllegalStateException e) {
-      // Stuff happens. Bail out
-      lib.wdFreeDriver(driver);
-      driver = null;
-    }
-
-    for (String handle : handles) {
+      for (String handle : getWindowHandles()) {
       try {
         switchTo().window(handle);
         close();
@@ -102,6 +97,12 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
         // doesn't matter one jot.
       }
     }
+    } catch (IllegalStateException e) {
+      // Stuff happens. Bail out
+      lib.wdFreeDriver(driver);
+      driver = null;
+    }
+    
     lib.wdFreeDriver(driver);
     driver = null;
   }
@@ -402,9 +403,25 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
   private class InternetExplorerOptions implements Options {
 
     public void addCookie(Cookie cookie) {
-      int result = lib.wdAddCookie(driver, new WString(cookie.toString()));
+      StringBuilder sb = new StringBuilder(cookie.getName());
+      sb.append("=").append(cookie.getValue()).append("; ");
+      if (cookie.getPath() != null && !"".equals(cookie.getPath())) {
+        sb.append("path=").append(cookie.getPath()).append("; ");
+      }
+      if (cookie.getDomain() != null && !"".equals(cookie.getDomain())) {
+        String domain = cookie.getDomain();
+        int colon = domain.indexOf(":");
+        if (colon != -1) {
+          domain = domain.substring(0, colon);
+        }
+        sb.append("domain=").append(domain).append("; ");
+      }
+      if (cookie.getExpiry() != null) {
+        sb.append("expires=");
+        sb.append(new SimpleDateFormat("EEE, d MMM yyyy hh:mm:ss z").format(cookie.getExpiry()));
+      }
 
-      errors.verifyErrorCode(result, ("Unable to add cookie: " + cookie));
+      executeScript("document.cookie = arguments[0]", sb.toString());
     }
 
     public void deleteAllCookies() {
@@ -415,16 +432,74 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
     }
 
     public void deleteCookie(Cookie cookie) {
-      Date dateInPast = new Date(0);
-      Cookie
-          toDelete =
-          new ReturnedCookie(cookie.getName(), cookie.getValue(), cookie.getDomain(),
-                             cookie.getPath(), dateInPast, false);
-      addCookie(toDelete);
+      String currentUrl = getCurrentUrl();
+      try {
+        URI uri = new URI(currentUrl);
+
+        Cookie toDelete = new NullPathCookie(cookie.getName(), cookie.getValue(), uri.getHost(),
+                                             uri.getPath(), new Date(0));
+
+        deleteCookieByPath(toDelete);
+      } catch (URISyntaxException e) {
+        throw new WebDriverException("Cannot delete cookie: " + e.getMessage());
+      }
+    }
+
+    private void deleteCookieByPath(Cookie cookie) {
+      String path = cookie.getPath();
+
+      if (path != null) {
+        String[] segments = cookie.getPath().split("/");
+        StringBuilder currentPath = new StringBuilder();
+        for (String segment : segments) {
+          if ("".equals(segment)) continue;
+
+          currentPath.append("/").append(segment);
+
+          Cookie toDelete = new NullPathCookie(cookie.getName(), cookie.getValue(),
+                                               cookie.getDomain(), currentPath.toString(),
+                                               new Date(0));
+
+          recursivelyDeleteCookieByDomain(toDelete);
+        }
+      }
+      Cookie toDelete = new NullPathCookie(cookie.getName(), cookie.getValue(),
+                                               cookie.getDomain(), "/",
+                                               new Date(0));
+      recursivelyDeleteCookieByDomain(toDelete);
+
+      toDelete = new NullPathCookie(cookie.getName(), cookie.getValue(),
+                                               cookie.getDomain(), null,
+                                               new Date(0));
+      recursivelyDeleteCookieByDomain(toDelete);
+    }
+
+    private void recursivelyDeleteCookieByDomain(Cookie cookie) {
+      addCookie(cookie);
+
+      int dotIndex = cookie.getDomain().indexOf('.');
+      if (dotIndex == 0) {
+        String domain = cookie.getDomain().substring(1);
+        Cookie toDelete =
+          new NullPathCookie(cookie.getName(), cookie.getValue(), domain,
+                             cookie.getPath(), new Date(0));
+        recursivelyDeleteCookieByDomain(toDelete);
+      } else if (dotIndex != -1) {
+        String domain = cookie.getDomain().substring(dotIndex);
+        Cookie toDelete =
+          new NullPathCookie(cookie.getName(), cookie.getValue(), domain,
+                             cookie.getPath(), new Date(0));
+        recursivelyDeleteCookieByDomain(toDelete);
+      } else {
+        Cookie toDelete =
+          new NullPathCookie(cookie.getName(), cookie.getValue(), "",
+                             cookie.getPath(), new Date(0));
+        addCookie(toDelete);
+      }
     }
 
     public void deleteCookieNamed(String name) {
-      deleteCookie(new ReturnedCookie(name, "", getCurrentHost(), "", null, false));
+      deleteCookie(getCookieNamed(name));
     }
 
     public Set<Cookie> getCookies() {
@@ -514,6 +589,20 @@ public class InternetExplorerDriver implements WebDriver, SearchContext, Javascr
           "InternetExplorerDriver", ExportedWebDriverFunctions.class);
     } catch (UnsatisfiedLinkError e) {
       System.out.println("new File(\".\").getAbsolutePath() = " + new File(".").getAbsolutePath());
+    }
+  }
+
+  private class NullPathCookie extends Cookie {
+    private final String path;
+
+    private NullPathCookie(String name, String value, String domain, String path, Date expiry) {
+      super(name, value, domain, path, expiry);
+      this.path = path;
+    }
+
+    @Override
+    public String getPath() {
+      return path;
     }
   }
 }

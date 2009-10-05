@@ -24,9 +24,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.Date;
+import java.text.SimpleDateFormat;
 
 public class ReturnedCookie extends Cookie {
-  private boolean isSecure;
+  private final boolean isSecure;
 
   public ReturnedCookie(String name, String value, String domain, String path, Date expiry, boolean isSecure) {
     super(name, value, domain, path, expiry);
@@ -62,8 +63,8 @@ public class ReturnedCookie extends Cookie {
   @Override
   public String toString() {
     return getName() + "=" + getValue()
-        + (getExpiry() == null ? "" : ";expires=" + getExpiry())
         + ("".equals(getPath()) ? "" : ";path=" + getPath())
+        + (getExpiry() == null ? "" : ";expires=" + new SimpleDateFormat("EEE, d MMM yyyy hh:mm:ss z").format(getExpiry()))
         + (isSecure ? ";secure;" : "");
   }
 }

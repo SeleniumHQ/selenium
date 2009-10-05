@@ -38,6 +38,8 @@ public class SeleneseTestNgHelper extends SeleneseTestBase
           System.setProperty("webdriver.development", "true");
           driver = new FirefoxDriver();
         } else if (browserString.contains("ie") || browserString.contains("hta")) {
+//          System.setProperty("webdriver.development", "true");
+//          System.setProperty("jna.library.path", "..\\build;build");
           driver = new InternetExplorerDriver();
         } else {
           fail("Cannot determine which browser to load: " + browserString);
