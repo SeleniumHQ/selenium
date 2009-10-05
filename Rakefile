@@ -392,6 +392,7 @@ end
 uber_jar(:name => "all",
          :src  => [
                     "build/webdriver-common.jar",
+                    "build/webdriver-chrome.jar",
                     "build/webdriver-htmlunit.jar",
                     "build/webdriver-firefox.jar",
                     "build/webdriver-ie.jar",
@@ -404,6 +405,7 @@ uber_jar(:name => "all",
                     :ie,
                     :firefox,
                     :remote_client,
+                    :chrome,
                     :support
                   ],
          :out  => "webdriver-all.jar")
@@ -417,6 +419,7 @@ zip(:name => "all_zip",
              FileList.new("jobbie/lib/runtime/*.jar") +
              FileList.new("remote/client/lib/runtime/*.jar") +
              FileList.new("remote/common/lib/runtime/*.jar") +
+             FileList.new("chrome/lib/runtime/*.jar") +
              FileList.new("support/lib/runtime/*.jar"),
       :deps => [
                  :all
