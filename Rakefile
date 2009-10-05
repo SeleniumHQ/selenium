@@ -321,7 +321,10 @@ task :javadocs => [:common, :firefox, :htmlunit, :jobbie, :remote, :support, :ch
      sourcepath += ":#{m}/src/java"
    end
    cmd = "javadoc -d build/javadoc -sourcepath #{sourcepath} -classpath #{classpath} -subpackages org.openqa.selenium"
-  sh cmd
+   if (windows?) 
+     cmd = cmd.gsub(/\//, "\\").gsub(/:/, ";") 
+   end
+   sh cmd
 end
 
 task :test_firefox_py => :test_firefox do
