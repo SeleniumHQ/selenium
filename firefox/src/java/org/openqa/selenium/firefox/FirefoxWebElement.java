@@ -20,7 +20,6 @@ package org.openqa.selenium.firefox;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONWriter;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
@@ -42,8 +41,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 
 public class FirefoxWebElement implements RenderedWebElement, Locatable, 
         FindsByXPath, FindsByLinkText, FindsById, FindsByName, FindsByTagName, FindsByClassName, SearchContext {
@@ -92,14 +89,7 @@ public class FirefoxWebElement implements RenderedWebElement, Locatable,
         return name;
     }
 
-    /**
-     * @deprecated Use {@link #getTagName()} instead, this method will be removed in the near future.
-     */
-    public String getElementName() {
-        return getTagName();
-    }
-
-    public String getAttribute(String name) {
+  public String getAttribute(String name) {
         try {
             return sendMessage(WebDriverException.class, "getElementAttribute", name);
         } catch (WebDriverException e) {

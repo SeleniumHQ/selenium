@@ -4,8 +4,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.remote.*;
-import static org.openqa.selenium.remote.MapMaker.map;
 import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
@@ -83,11 +81,6 @@ FindsByXPath, FindsByLinkText, FindsById, FindsByName, FindsByTagName, FindsByCl
   public String getAttribute(String name) {
     Object value = execute("getElementAttribute", this, name).getValue();
     return (value == null) ? null : value.toString();
-  }
-
-  @Deprecated
-  public String getElementName() {
-    return getTagName();
   }
 
   public String getTagName() {

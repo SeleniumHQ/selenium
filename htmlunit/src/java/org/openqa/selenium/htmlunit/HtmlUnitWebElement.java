@@ -241,15 +241,6 @@ public class HtmlUnitWebElement implements WebElement,
     return element.getNodeName();
   }
 
-  /**
-   * @deprecated Use {@link #getTagName()} instead, this method will be removed in the near
-   *             future.
-   */
-  @Deprecated
-  public String getElementName() {
-    return getTagName();
-  }
-
   public String getAttribute(String name) {
     assertElementNotStale();
 

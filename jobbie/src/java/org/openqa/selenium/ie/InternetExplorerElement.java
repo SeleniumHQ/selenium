@@ -71,13 +71,6 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
     return new StringWrapper(lib, wrapper).toString();
   }
 
-  /**
-   * @deprecated Use {@link #getTagName()} instead, this method will be removed in the near future.
-   */
-  public String getElementName() {
-    return getTagName();
-  }
-
   public String getAttribute(String name) {
     PointerByReference wrapper = new PointerByReference();
     int result = lib.wdeGetAttribute(element, new WString(name), wrapper);

@@ -279,14 +279,7 @@ public class EventFiringWebDriver implements WebDriver, JavascriptExecutor {
             return element.getTagName();
         }
 
-        /**
-         * @deprecated Use {@link #getTagName()} instead, this method will be removed in the near future.
-         */
-        public String getElementName() {
-            return element.getElementName();
-        }
-
-        public String getAttribute(String name) {
+      public String getAttribute(String name) {
             return element.getAttribute(name);
         }
 

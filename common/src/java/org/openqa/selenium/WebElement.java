@@ -77,11 +77,6 @@ public interface WebElement {
     String getTagName();
 
     /**
-     * @deprecated Use {@link #getTagName()} instead, this method will be removed in the near future.
-     */
-    String getElementName();
-
-    /**
      * Get the value of a the given attribute of the element. Will return the
      * current value, even if this has been modified after the page has been
      * loaded. Note that the value of the attribute "checked" will return
