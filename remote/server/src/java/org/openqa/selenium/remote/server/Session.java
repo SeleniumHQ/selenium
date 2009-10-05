@@ -31,6 +31,9 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class Session {
   private final WebDriver driver;
@@ -40,7 +43,9 @@ public class Session {
   private volatile String base64EncodedImage;
 
   public Session(final Capabilities capabilities) throws Exception {
-    executor = Executors.newSingleThreadExecutor();
+    executor = new ThreadPoolExecutor(1, 1,
+                                    5L, TimeUnit.MINUTES,
+                                    new LinkedBlockingQueue<Runnable>());
 
     // Ensure that the browser is created on the single thread.
     FutureTask<WebDriver> createBrowser = new FutureTask<WebDriver>(new Callable<WebDriver>() {
