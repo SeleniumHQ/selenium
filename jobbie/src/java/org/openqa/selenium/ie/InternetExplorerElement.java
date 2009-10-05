@@ -18,9 +18,12 @@ limitations under the License.
 
 package org.openqa.selenium.ie;
 
-import java.awt.Dimension;
-import java.awt.Point;
-import java.util.List;
+import com.sun.jna.NativeLong;
+import com.sun.jna.Pointer;
+import com.sun.jna.WString;
+import com.sun.jna.ptr.IntByReference;
+import com.sun.jna.ptr.NativeLongByReference;
+import com.sun.jna.ptr.PointerByReference;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.RenderedWebElement;
@@ -30,12 +33,8 @@ import org.openqa.selenium.ie.ExportedWebDriverFunctions.HWNDByReference;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsElement;
 
-import com.sun.jna.Pointer;
-import com.sun.jna.WString;
-import com.sun.jna.NativeLong;
-import com.sun.jna.ptr.IntByReference;
-import com.sun.jna.ptr.NativeLongByReference;
-import com.sun.jna.ptr.PointerByReference;
+import java.awt.*;
+import java.util.List;
 
 public class InternetExplorerElement implements RenderedWebElement, SearchContext, Locatable {
 
@@ -45,7 +44,8 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
   private final ErrorHandler errors = new ErrorHandler();
 
   // Called from native code
-  public InternetExplorerElement(ExportedWebDriverFunctions lib, InternetExplorerDriver parent, Pointer element) {
+  public InternetExplorerElement(ExportedWebDriverFunctions lib, InternetExplorerDriver parent,
+                                 Pointer element) {
     this.lib = lib;
     this.parent = parent;
 //    this.driver = parent.;
@@ -107,7 +107,7 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
     }
 
     int result = lib.wdeSendKeys(element, new WString(builder.toString()));
-    
+
     errors.verifyErrorCode(result, "send keys to");
 
     parent.waitForLoadToComplete();
@@ -122,18 +122,18 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
   public boolean isEnabled() {
     IntByReference selected = new IntByReference();
     int result = lib.wdeIsEnabled(element, selected);
-    
+
     errors.verifyErrorCode(result, "get enabled state");
-    
+
     return selected.getValue() == 1;
   }
 
   public boolean isSelected() {
     IntByReference selected = new IntByReference();
     int result = lib.wdeIsSelected(element, selected);
-        
+
     errors.verifyErrorCode(result, "get selected state");
-    
+
     return selected.getValue() == 1;
   }
 
@@ -155,17 +155,17 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
 
     long midX = x.getValue().longValue() + (width.getValue().longValue() / 2);
     long midY = y.getValue().longValue() + (height.getValue().longValue() / 2);
-                                                                                                                           
+
     result = lib.wdeMouseMoveTo(hwnd.getValue(), new NativeLong(100),
-                       new NativeLong(0), new NativeLong(0),
-                       new NativeLong(midX), new NativeLong(midY));
+                                new NativeLong(0), new NativeLong(0),
+                                new NativeLong(midX), new NativeLong(midY));
 
     errors.verifyErrorCode(result, "hover mouse move");
   }
 
   public void submit() {
     int result = lib.wdeSubmit(element);
-    
+
     errors.verifyErrorCode(result, "submit");
   }
 
@@ -176,7 +176,7 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
     if (result == 9) {
       throw new UnsupportedOperationException("You may not toggle this element: " + getTagName());
     }
-    
+
     errors.verifyErrorCode(result, "toggle");
 
     return toReturn.getValue() == 1;
@@ -197,8 +197,9 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
     NativeLongByReference y = new NativeLongByReference();
     NativeLongByReference width = new NativeLongByReference();
     NativeLongByReference height = new NativeLongByReference();
-    if (lib.wdeGetDetailsOnceScrolledOnToScreen(element, hwnd, x, y, width, height) != 0) 
-            return null;
+    if (lib.wdeGetDetailsOnceScrolledOnToScreen(element, hwnd, x, y, width, height) != 0) {
+      return null;
+    }
 
     return new Point(x.getValue().intValue(), y.getValue().intValue());
   }
@@ -209,7 +210,7 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
 
     int result = lib.wdeGetLocation(element, x, y);
     errors.verifyErrorCode(result, "Unable to get location of element");
-    
+
     return new Point(x.getValue().intValue(), y.getValue().intValue());
   }
 
@@ -217,9 +218,9 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
     NativeLongByReference width = new NativeLongByReference();
     NativeLongByReference height = new NativeLongByReference();
     int result = lib.wdeGetSize(element, width, height);
-    
+
     errors.verifyErrorCode(result, "Unable to get element size");
-    
+
     return new Dimension(width.getValue().intValue(), height.getValue().intValue());
   }
 
@@ -227,7 +228,7 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
     PointerByReference wrapper = new PointerByReference();
     int result = lib.wdeGetValueOfCssProperty(element, new WString(propertyName), wrapper);
     errors.verifyErrorCode(result, ("Unable to get value of css property: " + propertyName));
-    
+
     return new StringWrapper(lib, wrapper).toString();
   }
 
@@ -252,7 +253,8 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
     long endY = y.getValue().longValue() + moveDownBy;
 
     int duration = parent.manage().getSpeed().getTimeOut();
-    lib.wdeMouseMoveTo(hwnd.getValue(), new NativeLong(duration), x.getValue(), y.getValue(), new NativeLong(endX), new NativeLong(endY));
+    lib.wdeMouseMoveTo(hwnd.getValue(), new NativeLong(duration), x.getValue(), y.getValue(),
+                       new NativeLong(endX), new NativeLong(endY));
     lib.wdeMouseUpAt(hwnd.getValue(), new NativeLong(endX), new NativeLong(endY));
   }
 
@@ -265,31 +267,38 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
     int result = lib.wdeGetDetailsOnceScrolledOnToScreen(element, hwnd, x, y, width, height);
     errors.verifyErrorCode(result, "Unable to determine location once scrolled on to screen");
 
-    NativeLong startX = new NativeLong(x.getValue().longValue() + (width.getValue().longValue() / 2));
-    NativeLong startY = new NativeLong(y.getValue().longValue() + (height.getValue().longValue() / 2));
+    NativeLong
+        startX =
+        new NativeLong(x.getValue().longValue() + (width.getValue().longValue() / 2));
+    NativeLong
+        startY =
+        new NativeLong(y.getValue().longValue() + (height.getValue().longValue() / 2));
 
     lib.wdeMouseDownAt(hwnd.getValue(), startX, startY);
 
     Pointer other = ((InternetExplorerElement) toElement).element;
     result = lib.wdeGetDetailsOnceScrolledOnToScreen(other, hwnd, x, y, width, height);
-    errors.verifyErrorCode(result, "Unable to determine location of target once scrolled on to screen");
+    errors.verifyErrorCode(result,
+                           "Unable to determine location of target once scrolled on to screen");
 
     NativeLong endX = new NativeLong(x.getValue().longValue() + (width.getValue().longValue() / 2));
-    NativeLong endY = new NativeLong(y.getValue().longValue() + (height.getValue().longValue() / 2));
+    NativeLong
+        endY =
+        new NativeLong(y.getValue().longValue() + (height.getValue().longValue() / 2));
 
     int duration = parent.manage().getSpeed().getTimeOut();
     lib.wdeMouseMoveTo(hwnd.getValue(), new NativeLong(duration), startX, startY, endX, endY);
     lib.wdeMouseUpAt(hwnd.getValue(), endX, endY);
   }
-  
+
   public WebElement findElement(By by) {
     return new Finder(lib, parent, element).findElement(by);
   }
-  
+
   public List<WebElement> findElements(By by) {
     return new Finder(lib, parent, element).findElements(by);
   }
-  
+
   protected int addToScriptArgs(Pointer scriptArgs) {
     return lib.wdAddElementScriptArg(scriptArgs, element);
   }
@@ -309,7 +318,9 @@ public class InternetExplorerElement implements RenderedWebElement, SearchContex
       return false;
     }
 
-    Boolean result = (Boolean) parent.executeScript("return arguments[0] === arguments[1];", this, other);
+    Boolean
+        result =
+        (Boolean) parent.executeScript("return arguments[0] === arguments[1];", this, other);
     return result != null && result;
   }
 
