@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.seleniumhq.webdriver</groupId>
+		<artifactId>webdriver-parent</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+	<artifactId>webdriver-chrome</artifactId>
+	<name>webdriver-chrome</name>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.seleniumhq.webdriver</groupId>
+			<artifactId>webdriver-common</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.seleniumhq.webdriver</groupId>
+			<artifactId>webdriver-remote-client</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<!-- Test dependencies ... -->
+		<dependency>
+			<groupId>org.seleniumhq.webdriver</groupId>
+			<artifactId>webdriver-common</artifactId>
+			<version>${project.version}</version>
+			<classifier>tests</classifier>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<sourceDirectory>src/java</sourceDirectory>
+		<testSourceDirectory>test/java</testSourceDirectory>
+		<plugins>
+			<!-- See http://maven.apache.org/plugins/maven-antrun-plugin -->
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>create_extension</id>
+						<phase>generate-resources</phase>
+						<configuration>
+							<tasks>
+								<copy todir="target/chrome-extension">
+									<fileset dir="src/extension" excludes="**/.svn/**" />
+								</copy>
+								<copy file="prebuilt/Win32/Release/npchromedriver.dll" todir="target/chrome-extension" />
+								<mkdir dir="target/classes" />
+								<zip destfile="target/classes/chrome-extension.zip" basedir="target/chrome-extension" />
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- See http://maven.apache.org/plugins/maven-surefire-plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<includes>
+						<include>**/*TestSuite.java</include>
+					</includes>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

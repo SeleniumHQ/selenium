@@ -25,6 +25,7 @@
 	</scm>
 
 	<modules>
+		<module>chrome</module>
 		<module>common</module>
 		<module>htmlunit</module>
 		<module>firefox</module>
