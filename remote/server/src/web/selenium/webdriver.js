@@ -212,8 +212,9 @@ webdriver.WebDriver.prototype.getPendingCommand = function() {
 
 
 /**
- * Aborts the pending command, if any. If the pending command is part of a
- * {@code #wait()}, then the entire wait operation will be aborted.
+ * Aborts the pending command, if any.  Aborting a command will also abort all
+ * remaining commands in that command frame.  Aborting a {@code #wait()} will
+ * abort the entire wait operation.
  */
 webdriver.WebDriver.prototype.abortPendingCommand = function() {
   goog.array.forEach(this.pendingCommands_, function(command) {
@@ -221,6 +222,12 @@ webdriver.WebDriver.prototype.abortPendingCommand = function() {
   });
   this.pendingCommands_ = [];
   this.waitFrame_ = null;
+
+  // Clear out all remaining commands for the current frame.
+  this.frames_.pop();
+  if (!this.frames_.length) {
+    this.frames_.push([]);
+  }
 };
 
 
@@ -263,6 +270,13 @@ webdriver.WebDriver.prototype.processCommands_ = function() {
 
   var currentFrame = goog.array.peek(this.frames_);
   var nextCommand = currentFrame.shift();
+  while (!nextCommand && this.frames_.length > 1 &&
+      currentFrame != this.waitFrame_) {
+    this.frames_.pop();
+    currentFrame = goog.array.peek(this.frames_);
+    nextCommand = currentFrame.shift();
+  }
+
   if (nextCommand) {
     this.pendingCommands_.push(nextCommand);
     if (nextCommand.name == webdriver.CommandName.FUNCTION) {
@@ -274,10 +288,6 @@ webdriver.WebDriver.prototype.processCommands_ = function() {
 
     nextCommand.setCompleteCallback(this.onCommandComplete_, this);
     this.commandProcessor_.execute(nextCommand, this.sessionId_, this.context_);
-  } else if (this.frames_.length > 1) {
-    if (currentFrame !== this.waitFrame_) {
-      this.frames_.pop();
-    }
   }
 };
 
@@ -367,11 +377,10 @@ webdriver.WebDriver.prototype.catchExpectedError = function(opt_errorMsg,
     // Errors cause the pending command to hang. Go ahead and abort that command
     // so we can proceed.
     this.abortPendingCommand();
-    var frame = goog.array.peek(this.frames_);
-    while (frame !== currentFrame) {
-      this.frames_.pop();
-      frame = goog.array.peek(this.frames_);
-    }
+
+    // Aborting the command aborts the entire frame.  Add the remaining commands
+    // back in so we can continue the test.
+    this.frames_.push(currentFrame);
     return false;
   };
 
