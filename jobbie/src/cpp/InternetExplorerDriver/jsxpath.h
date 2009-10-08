@@ -20,7 +20,8 @@
 
 // The JS XPath library from http://coderepos.org/share/wiki/JavaScript-XPath
 
-wchar_t* XPATHJS[] = {L"(function(){var ca=void(0);var da={targetFrame:ca,exportInstaller:false,useNative:true,useInnerText:true};var ea;if(window.jsxpath){ea=window.jsxpath;}\n",
+wchar_t* XPATHJS[] = {
+L"(function(){var ca=void(0);var da={targetFrame:ca,exportInstaller:false,useNative:true,useInnerText:true};var ea;if(window.jsxpath){ea=window.jsxpath;}\n",
 L"else{var fa=document.getElementsByTagName('script');var ga=fa[fa.length-1];var ha=ga.src;ea={};var ia=ha.match(/\\?(.*)$/);if(ia){var ja=ia[1].split('&');for(var i=0,l=ja.length;i<l;i++){var ka=ja[i];var la=ka.split('=');var ma=la[0];var na=la[1];if(na==ca){na==true;}\n",
 L"else if(na=='false'||/^-?\\d+$/.test(na)){na=eval(na);}\n",
 L"ea[ma]=na;}}}\n",
@@ -116,7 +117,7 @@ L"for(t='',stack=[],i=0;Jc;){do{if(Jc.nodeType!=1){t+=Jc.nodeValue;} /*@cc_on \n
 L"else if(Jc.nodeName.toLowerCase()=='title'){t+=Jc.text;}@*/stack[i++]=Jc;}\n",
 L"while(Jc=Jc.firstChild);while(i&&!(Jc=stack[--i].nextSibling)){}}}\n",
 L"else{t=Jc.nodeValue;}}\n",
-L"switch(Ic){case 'number':return+t;case 'boolean':return!!t;default:return t;}},attrPropMap:{name:'name','class':'className',dir:'dir',id:'id',name:'name',title:'title'},attrMatch:function(Kc,Lc,Mc){ /*@cc_on @if(@_jscript)var Nc=wa.attrPropMap[Lc];if(!Lc||Mc==null&&(Nc&&Kc[Nc]||!Nc&&Kc.getAttribute&&Kc.getAttribute(Lc))||Mc!=null&&(Nc&&Kc[Nc]==Mc||!Nc&&Kc.getAttribute&&Kc.getAttribute(Lc)==Mc)){@else @*/ \n",
+L"switch(Ic){case 'number':return+t;case 'boolean':return!!t;default:return t;}},attrPropMap:{name:'name','class':'className',dir:'dir',id:'id',name:'name',title:'title'},attrMatch:function(Kc,Lc,Mc){ /*@cc_on @if(@_jscript)var Nc=wa.attrPropMap[Lc];if(!Lc||Mc==null&&(Nc&&Kc[Nc]||!Nc&&Kc.getAttribute&&Kc.getAttribute(Lc,2))||Mc!=null&&(Nc&&Kc[Nc]==Mc||!Nc&&Kc.getAttribute&&Kc.getAttribute(Lc,2)==Mc)){@else @*/ \n",
 L"if(!Lc||Mc==null&&Kc.hasAttribute&&Kc.hasAttribute(Lc)||Mc!=null&&Kc.getAttribute&&Kc.getAttribute(Lc)==Mc){/*@end @*/ \n",
 L"return true;}\n",
 L"else{return false;}},getDescendantNodes:function(Oc,Kc,Pc,Lc,Mc,Qc,Rc){if(Qc){Qc.delDescendant(Kc,Rc);} /*@cc_on \n",
