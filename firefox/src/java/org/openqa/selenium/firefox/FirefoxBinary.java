@@ -143,15 +143,6 @@ public class FirefoxBinary {
         FileHandler.copyResource(profile.getProfileDir(), getClass(), path +
             File.separator + noFocusSoName);
         
-        String outSoPath = profile.getProfileDir().getAbsolutePath() + File.separator + path;
-
-        File file = new File(outSoPath, noFocusSoName);
-        if (!file.exists()) {
-          throw new WebDriverException("Could not locate " + path + ": "
-                                       + "native events will not work.");
-        }
-
-        builtPath.append(outSoPath).append(":");
       } catch (IOException e) {
         if (Boolean.getBoolean("webdriver.development")) {
           System.err.println(
@@ -159,7 +150,17 @@ public class FirefoxBinary {
         } else {
           throw new WebDriverException(e);
         }
+      } // End catch.
+
+      String outSoPath = profile.getProfileDir().getAbsolutePath() + File.separator + path;
+
+      File file = new File(outSoPath, noFocusSoName);
+      if (!file.exists()) {
+        throw new WebDriverException("Could not locate " + path + ": "
+                                     + "native events will not work.");
       }
+
+      builtPath.append(outSoPath).append(":");
     }
 
     return builtPath.toString();

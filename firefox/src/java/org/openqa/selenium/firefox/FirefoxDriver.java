@@ -80,7 +80,8 @@ public class FirefoxDriver implements WebDriver, SearchContext, JavascriptExecut
         FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, FindsByXPath {
     public static final int DEFAULT_PORT = 7055;
     // For now, only enable native events on Windows
-    public static final boolean DEFAULT_ENABLE_NATIVE_EVENTS = Platform.getCurrent().is(Platform.WINDOWS);
+    public static final boolean DEFAULT_ENABLE_NATIVE_EVENTS =
+      Platform.getCurrent().is(Platform.WINDOWS);
 
     private final ExtensionConnection extension;
     protected Context context;

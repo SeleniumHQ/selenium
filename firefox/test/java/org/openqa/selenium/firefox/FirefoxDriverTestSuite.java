@@ -27,6 +27,7 @@ import junit.framework.TestSuite;
 import junit.framework.TestResult;
 import junit.extensions.TestDecorator;
 
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.TestSuiteBuilder;
 import org.openqa.selenium.internal.TemporaryFilesystem;
 import org.openqa.selenium.internal.FileHandler;
@@ -76,11 +77,20 @@ public class FirefoxDriverTestSuite extends TestCase {
 
       // Copy in the native events library/libraries
       Map<String, String> fromTo = new HashMap<String, String>();
-      fromTo.put("Debug/webdriver-firefox.dll",
-          "platform/WINNT_x86-msvc/components/webdriver-firefox.dll");
+      if (Platform.getCurrent().equals(Platform.WINDOWS)) {
+        fromTo.put("Debug/webdriver-firefox.dll",
+        "platform/WINNT_x86-msvc/components/webdriver-firefox.dll");
+      } else if (Platform.getCurrent().equals(Platform.UNIX)) {
+        fromTo.put("../linux64/Release/libwebdriver-firefox.so",
+        "platform/Linux/components/libwebdriver-firefox.so");
       
-      fromTo.put("../linux64/Release/libwebdriver-firefox.so",
-          "platform/Linux/components/libwebdriver-firefox.so");
+        fromTo.put("../linux64/Release/x_ignore_nofocus.so",
+        "amd64/x_ignore_nofocus.so");
+        
+        fromTo.put("../linux/Release/x_ignore_nofocus.so",
+        "x86/x_ignore_nofocus.so");
+      }
+      
 
       // We know the location of the "from" in relation to the extension source
       for (Map.Entry<String, String> entry : fromTo.entrySet()) {
@@ -89,7 +99,12 @@ public class FirefoxDriverTestSuite extends TestCase {
           System.out.println("File does not exist. Skipping: " + source);
           continue;
         }
-        File dest = new File(extension, entry.getValue());
+        File toDir = extension;
+        if (entry.getValue().contains("x_ignore_nofocus.so")) {
+          toDir = dir;
+        }
+        
+        File dest = new File(toDir, entry.getValue());
         dest.getParentFile().mkdirs(); // Ignore the return code, cos we're about to throw an exception
         try {
           FileHandler.copy(source, dest);

@@ -28,10 +28,14 @@ import org.openqa.selenium.AbstractDriverTestCase;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Ignore;
 import org.openqa.selenium.NeedsFreshDriver;
+import org.openqa.selenium.NoDriverAfterTest;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
+
+import java.util.Set;
 
 
 public class FirefoxDriverTest extends AbstractDriverTestCase {
@@ -128,5 +132,123 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
 
     // We will have an infinite hang if this driver does not start properly
     new FirefoxDriver(binary, null).quit();
+  }
+  
+  private static boolean platformHasNativeEvents() {
+    return FirefoxDriver.DEFAULT_ENABLE_NATIVE_EVENTS;
+  }
+
+  private void sleepBecauseWindowsTakeTimeToOpen() {
+    try {
+      Thread.sleep(1000);
+    } catch (InterruptedException e) {
+      fail("Interrupted");
+    }
+  }
+  
+  @NeedsFreshDriver
+  @NoDriverAfterTest
+  public void testFocusRemainsInOriginalWindowWhenOpeningNewWindow() {
+    if (platformHasNativeEvents() == false) {
+      return;
+    }
+    // Scenario: Open a new window, make sure the current window still gets
+    // native events (keyboard events in this case).
+
+    driver.get(xhtmlTestPage);
+    
+    driver.findElement(By.name("windowOne")).click();
+    
+    sleepBecauseWindowsTakeTimeToOpen();
+    
+    driver.get(javascriptPage);
+
+    WebElement keyReporter = driver.findElement(By.id("keyReporter"));
+    keyReporter.sendKeys("ABC DEF");
+
+    assertThat(keyReporter.getValue(), is("ABC DEF"));
+  }
+
+  @NeedsFreshDriver
+  @NoDriverAfterTest
+  public void testSwitchingWindowSwitchesFocus() {
+    if (platformHasNativeEvents() == false) {
+      return;
+    }
+    // Scenario: Open a new window, switch to it, make sure it gets native events.
+    // Then switch back to the original window, make sure it gets native events.
+    
+    driver.get(xhtmlTestPage);
+    
+    String originalWinHandle = driver.getWindowHandle();
+    
+    driver.findElement(By.name("windowOne")).click();
+    
+    sleepBecauseWindowsTakeTimeToOpen();
+    
+    Set<String> allWindowHandles = driver.getWindowHandles();
+
+    // There should be two windows. We should also see each of the window titles at least once.
+    assertEquals(2, allWindowHandles.size());
+    
+    allWindowHandles.remove(originalWinHandle);
+    String newWinHandle = (String) allWindowHandles.toArray()[0];
+    
+    // Key events in new window.
+    driver.switchTo().window(newWinHandle);
+    sleepBecauseWindowsTakeTimeToOpen();
+    driver.get(javascriptPage);
+    
+    WebElement keyReporter = driver.findElement(By.id("keyReporter"));
+    keyReporter.sendKeys("ABC DEF");
+    assertThat(keyReporter.getValue(), is("ABC DEF"));
+    
+    // Key events in original window.
+    driver.switchTo().window(originalWinHandle);
+    sleepBecauseWindowsTakeTimeToOpen();
+    driver.get(javascriptPage);
+
+    WebElement keyReporter2 = driver.findElement(By.id("keyReporter"));
+    keyReporter2.sendKeys("QWERTY");
+    assertThat(keyReporter2.getValue(), is("QWERTY"));
+  }
+  
+  @NeedsFreshDriver
+  @NoDriverAfterTest
+  public void testClosingWindowAndSwitchingToOriginalSwitchesFocus() {
+    if (platformHasNativeEvents() == false) {
+      return;
+    }
+    // Scenario: Open a new window, switch to it, close it, switch back to the
+    // original window - make sure it gets native events.
+    
+    driver.get(xhtmlTestPage);
+    String originalWinHandle = driver.getWindowHandle();
+    
+    driver.findElement(By.name("windowOne")).click();
+    
+    sleepBecauseWindowsTakeTimeToOpen();
+    
+    Set<String> allWindowHandles = driver.getWindowHandles();
+    // There should be two windows. We should also see each of the window titles at least once.
+    assertEquals(2, allWindowHandles.size());
+    
+    allWindowHandles.remove(originalWinHandle);
+    String newWinHandle = (String) allWindowHandles.toArray()[0];
+    // Switch to the new window.
+    driver.switchTo().window(newWinHandle);
+    sleepBecauseWindowsTakeTimeToOpen();
+    // Close new window.
+    driver.close();
+    
+    // Switch back to old window.
+    driver.switchTo().window(originalWinHandle);
+    sleepBecauseWindowsTakeTimeToOpen();
+
+    // Send events to the new window.
+    driver.get(javascriptPage);
+    WebElement keyReporter = driver.findElement(By.id("keyReporter"));
+    keyReporter.sendKeys("ABC DEF");
+    assertThat(keyReporter.getValue(), is("ABC DEF"));
   }
 }

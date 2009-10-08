@@ -387,6 +387,11 @@ nsCommandProcessor.prototype.switchToWindow = function(response, windowId,
 
   var windowFound = this.searchWindows_('navigator:browser', function(win) {
     if (matches(win, lookFor)) {
+      // Create a switch indicator file so the native events library
+      // will know a window switch is in progress and will indeed
+      // switch focus.
+      createSwitchFile("switch:" + win.fxdriver.id);
+
       win.focus();
       if (win.top.fxdriver) {
         response.response = new Context(win.fxdriver.id).toString();
@@ -488,6 +493,9 @@ nsCommandProcessor.prototype.findActiveDriver = function(response) {
  * Forcefully shuts down the Firefox application.
  */
 nsCommandProcessor.prototype.quit = function() {
+  // Create a switch file so the native events library will
+  // let all events through in case of a close.
+  createSwitchFile("close:<ALL>");
   Components.classes['@mozilla.org/toolkit/app-startup;1'].
       getService(Components.interfaces.nsIAppStartup).
       quit(Components.interfaces.nsIAppStartup.eForceQuit);

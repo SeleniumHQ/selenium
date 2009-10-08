@@ -26,7 +26,6 @@ function FirefoxDriver(server, enableNativeEvents) {
   this.currentY = 0;
 }
 
-
 FirefoxDriver.prototype.__defineGetter__("id", function() {
   if (!this.id_) {
     this.id_ = this.server.getNextId();
@@ -91,6 +90,7 @@ FirefoxDriver.prototype.close = function(respond) {
   // Here we go!
   try {
     var browser = Utils.getBrowser(respond.context);
+    createSwitchFile("close:" + browser.id);
     browser.contentWindow.close();
   } catch(e) {
     dump(e);
