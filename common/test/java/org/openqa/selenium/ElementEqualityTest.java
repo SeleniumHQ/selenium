@@ -15,6 +15,14 @@ public class ElementEqualityTest extends AbstractDriverTestCase {
     
     assertEquals(body, xbody);
   }
+  
+  public void testElementInequalityShouldWork() {
+    driver.get(simpleTestPage);
+    
+    List<WebElement> ps = driver.findElements(By.tagName("p"));
+    
+    assertFalse(ps.get(0).equals(ps.get(1)));
+  }
 
   @Ignore({IE, REMOTE})
   public void testFindElementHashCodeShouldMatchEquality() {
