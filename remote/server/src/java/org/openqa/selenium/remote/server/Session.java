@@ -44,7 +44,7 @@ public class Session {
 
   public Session(final Capabilities capabilities) throws Exception {
     executor = new ThreadPoolExecutor(1, 1,
-                                    5L, TimeUnit.MINUTES,
+                                    600L, TimeUnit.SECONDS,
                                     new LinkedBlockingQueue<Runnable>());
 
     // Ensure that the browser is created on the single thread.
