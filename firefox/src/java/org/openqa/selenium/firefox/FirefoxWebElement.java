@@ -290,13 +290,11 @@ public class FirefoxWebElement implements RenderedWebElement, Locatable,
     if (!(other instanceof FirefoxWebElement)) {
       return false;
     }
-    Object result = parent.executeScript("return arguments[0] === arguments[1]", this, other);
-    return result != null && result instanceof Boolean && (Boolean) result;
+    return elementId.equals(((FirefoxWebElement)other).elementId);
   }
 
   @Override
   public int hashCode() {
-    // Distinctly sub-optimal
     return elementId.hashCode();
   }
 }

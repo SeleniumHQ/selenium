@@ -210,7 +210,6 @@ FindsByXPath, FindsByLinkText, FindsById, FindsByName, FindsByTagName, FindsByCl
       return false;
     }
 
-    Object result = parent.executeScript("return arguments[0] === arguments[1]", this, other);
-    return result != null && result instanceof Boolean && (Boolean) result;
+    return elementId.equals(((ChromeWebElement)other).elementId);
   }
 }
