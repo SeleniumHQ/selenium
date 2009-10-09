@@ -318,6 +318,12 @@ Utils.addToKnownElements = function(element, context) {
     doc.fxdriver_elements = {};
   }
 
+  for (var e in doc.fxdriver_elements) {
+    if (doc.fxdriver_elements[e] == element) {
+      return e;
+    }
+  }
+  
   var id = Utils.getUniqueId();
   doc.fxdriver_elements[id] = element;
 

@@ -25,7 +25,7 @@ public class ElementEqualityTest extends AbstractDriverTestCase {
     assertEquals(body.hashCode(), xbody.hashCode());
   }
   
-  @Ignore({FIREFOX, IE, REMOTE, HTMLUNIT})
+  @Ignore({IE, REMOTE, HTMLUNIT})
   public void testFindElementsHashCodeShouldMatchEquality() {
     driver.get(simpleTestPage);
     List<WebElement> body = driver.findElements(By.tagName("body"));
