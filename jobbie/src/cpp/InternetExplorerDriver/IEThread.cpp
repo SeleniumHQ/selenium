@@ -29,7 +29,6 @@ limitations under the License.
 #include "windows.h"
 
 using namespace std;
-extern wchar_t* XPATHJS[];
 extern IeThread* g_IE_Thread;
 
 // IeThread
@@ -136,8 +135,6 @@ BOOL IeThread::DispatchThreadMessageEx(MSG* pMsg)
 	CUSTOM_MESSAGE_MAP ( _WD_GOBACK, OnGoBack )
 	CUSTOM_MESSAGE_MAP ( _WD_GET_HANDLE, OnGetHandle )
 	CUSTOM_MESSAGE_MAP ( _WD_GET_HANDLES, OnGetHandles )
-	CUSTOM_MESSAGE_MAP ( _WD_SELELEMENTBYXPATH, OnSelectElementByXPath )
-	CUSTOM_MESSAGE_MAP ( _WD_SELELEMENTSBYXPATH, OnSelectElementsByXPath )
 	CUSTOM_MESSAGE_MAP ( _WD_SELELEMENTBYID, OnSelectElementById )
 	CUSTOM_MESSAGE_MAP ( _WD_SELELEMENTSBYID, OnSelectElementsById )
 	CUSTOM_MESSAGE_MAP ( _WD_SELELEMENTBYLINK, OnSelectElementByLink )
@@ -593,7 +590,7 @@ bool IeThread::createAnonymousFunction(IDispatch* scriptEngine, DISPID evalId, c
 	  if (DISP_E_EXCEPTION == hr) {
 		  wcerr << "Exception message was: " << exception.bstrDescription << endl;
 	  } else {
-		  wcerr << "Error code: " << GetLastError() << ". Failed to compile: " << script << endl;
+		  LOGHR(DEBUG, hr) << "Error code: " << GetLastError() << ". Failed to compile: " << script;
 	  }
 
   	  if (result) {
@@ -629,7 +626,7 @@ void IeThread::executeScript(const wchar_t *script, SAFEARRAY* args, CComVariant
 
 	CComVariant tempFunction;
 	if (!createAnonymousFunction(scriptEngine, evalId, script, &tempFunction)) {
-		wcerr << L"Cannot create anonymous function: " << script << endl;
+		LOG(DEBUG) << L"Cannot create anonymous function: " << script;
 		if (added) { removeScript(doc); }
 		return;
 	}
@@ -679,7 +676,7 @@ void IeThread::executeScript(const wchar_t *script, SAFEARRAY* args, CComVariant
 	  if (DISP_E_EXCEPTION == hr4) {
 		  wcerr << L"Exception message was: " << exception.bstrDescription << endl;
 	  } else {
-		  wcerr << L"Failed to execute: " << script << endl;
+		  LOGHR(DEBUG, hr4) << "Failed to execute: " << _bstr_t(script);
 	  }
 
 	  if (result) {
@@ -869,49 +866,6 @@ int IeThread::waitForDocumentToComplete(IHTMLDocument2* doc)
 	}
 
 	return 1;
-}
-
-bool IeThread::addEvaluateToDocument(const IHTMLDOMNode* node, int count)
-{
-	SCOPETRACER
-
-	// Is there an evaluate method on the document?
-	CComPtr<IHTMLDocument2> doc;
-	getDocument2(node, &doc);
-
-	if (!doc) {
-		cerr << "No HTML document found" << endl;
-		return false;
-	}
-
-	CComPtr<IDispatch> evaluate;
-	DISPID dispid;
-	OLECHAR FAR* szMember = L"__webdriver_evaluate";
-    HRESULT hr = doc->GetIDsOfNames(IID_NULL, &szMember, 1, LOCALE_USER_DEFAULT, &dispid);
-	if (SUCCEEDED(hr)) {
-		return true;
-	}
-
-	// Create it if necessary
-	CComPtr<IHTMLWindow2> win;
-	doc->get_parentWindow(&win);
-
-	std::wstring script;
-	for (int i = 0; XPATHJS[i]; i++) {
-		script += XPATHJS[i];
-	}
-	executeScript(script.c_str(), NULL, NULL);
-
-	hr = doc->GetIDsOfNames(IID_NULL, &szMember, 1, LOCALE_USER_DEFAULT, &dispid);
-	if (FAILED(hr)) {
-		cerr << "After attempting to add the xpath engine, the evaluate method is still missing" << endl;
-		if (count < 1) {
-			return addEvaluateToDocument(node, ++count);
-		}
-
-		return false;
-	}
-	return true;
 }
 
 void IeThread::tryNotifyNavigCompleted()

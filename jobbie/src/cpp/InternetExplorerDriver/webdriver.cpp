@@ -21,6 +21,7 @@ limitations under the License.
 #include "interactions.h"
 #include "InternetExplorerDriver.h"
 #include "logging.h"
+#include "jsxpath.h"
 #include "utils.h"
 #include <stdio.h>
 #include <iostream>
@@ -1054,48 +1055,163 @@ int wdFindElementsByTagName(WebDriver* driver, WebElement* element, const wchar_
 	} END_TRY;
 }
 
-int wdFindElementByXPath(WebDriver* driver, WebElement* element, const wchar_t* xpath, WebElement** result)
+int injectXPathEngine(WebDriver* driver) 
 {
-	*result = NULL;
-	if (!driver || !driver->ie) { return ENOSUCHDRIVER; }
-
-	InternetExplorerDriver* ie = driver->ie;
-	CComPtr<IHTMLElement> elem;
-	if (element && element->element) {
-		elem = element->element->getWrappedElement();
+	// Inject the XPath engine
+	std::wstring script;
+	for (int i = 0; XPATHJS[i]; i++) {
+		script += XPATHJS[i];
+	}
+	ScriptArgs* args;
+	int result = wdNewScriptArgs(&args, 0);
+	if (result != SUCCESS) {
+		return result;
 	}
 
-	try {
-		ElementWrapper* wrapper;
-		int res = ie->selectElementByXPath(elem, xpath, &wrapper);
+	ScriptResult* scriptResult = NULL;
+	result = wdExecuteScript(driver, script.c_str(), args, &scriptResult);
+	wdFreeScriptArgs(args);
+	if (scriptResult) delete scriptResult;
 
-		if (res != SUCCESS) {
-			return res;
+	return result;
+}
+
+int wdFindElementByXPath(WebDriver* driver, WebElement* element, const wchar_t* xpath, WebElement** out)
+{
+	*out = NULL;
+	if (!driver || !driver->ie) { return ENOSUCHDRIVER; }
+
+	try {
+		int result = injectXPathEngine(driver);
+		if (result != SUCCESS) {
+			return result;
 		}
 
-		WebElement* toReturn = new WebElement();
-		toReturn->element = wrapper;
+		// Call it
+		std::wstring query;
+		if (element) {
+			query += L"(function() { return function(){var res = document.__webdriver_evaluate(arguments[0], arguments[1], null, 7, null); return res.snapshotItem(0) ;};})();";
+		} else {
+			query += L"(function() { return function(){var res = document.__webdriver_evaluate(arguments[0], document, null, 7, null); return res.snapshotLength != 0 ? res.snapshotItem(0) : undefined ;};})();";
+		}
 
-		*result = toReturn;
-		return SUCCESS;
+		ScriptArgs* queryArgs;
+		result = wdNewScriptArgs(&queryArgs, 2);
+		if (result != SUCCESS) {
+			wdFreeScriptArgs(queryArgs);
+			return result;
+		}
+		result = wdAddStringScriptArg(queryArgs, xpath);
+		if (result != SUCCESS) {
+			wdFreeScriptArgs(queryArgs);
+			return result;
+		}
+		if (element) {
+			result = wdAddElementScriptArg(queryArgs, element);
+		}
+		if (result != SUCCESS) {
+			wdFreeScriptArgs(queryArgs);
+			return result;
+		}
+
+		ScriptResult* queryResult;
+		result = wdExecuteScript(driver, query.c_str(), queryArgs, &queryResult);
+		wdFreeScriptArgs(queryArgs);
+
+		// And be done
+		if (result == SUCCESS) {
+			int type = 0;
+			result = wdGetScriptResultType(queryResult, &type);
+			if (type != 5) {
+				result = wdGetElementScriptResult(queryResult, driver, out);
+			} else {
+				result = ENOSUCHELEMENT;
+			}
+		}
+		wdFreeScriptResult(queryResult);
+
+		return result;
 	} END_TRY;
 }
 
-int wdFindElementsByXPath(WebDriver* driver, WebElement* element, const wchar_t* xpath, ElementCollection** result)
+int wdFindElementsByXPath(WebDriver* driver, WebElement* element, const wchar_t* xpath, ElementCollection** out)
 {
-	*result = NULL;
+	*out = NULL;
+	if (!driver || !driver->ie) { return ENOSUCHDRIVER; }
+
 	try {
-		InternetExplorerDriver* ie = driver->ie;
-		CComPtr<IHTMLElement> elem;
-		if (element && element->element) {
-			elem = element->element->getWrappedElement();
+		int result = injectXPathEngine(driver);
+		if (result != SUCCESS) {
+			return result;
 		}
 
-		ElementCollection* collection = new ElementCollection();
-		collection->elements = driver->ie->selectElementsByXPath(elem, xpath);
+		// Call it
+		std::wstring query;
+		if (element)
+			query += L"(function() { return function() {var res = document.__webdriver_evaluate(arguments[0], arguments[1], null, 7, null); return res;};})();";
+		else
+			query += L"(function() { return function() {var res = document.__webdriver_evaluate(arguments[0], document, null, 7, null); return res;};})();";
 
-		*result = collection;
+		// We need to use the raw functions because we don't allow random objects
+		// to be returned from the executeScript method normally
+		SAFEARRAYBOUND bounds;
+		bounds.cElements = 2;
+		bounds.lLbound = 0;
+		SAFEARRAY* queryArgs = SafeArrayCreate(VT_VARIANT, 1, &bounds);
 
+		CComVariant queryArg(xpath);
+		LONG index = 0;
+		SafeArrayPutElement(queryArgs, &index, &queryArg);
+		
+		if (element) {
+			CComVariant elementArg(element->element->getWrappedElement());
+			LONG index = 1;
+			SafeArrayPutElement(queryArgs, &index, &elementArg);
+		}
+
+		CComVariant snapshot = driver->ie->executeScript(query.c_str(), queryArgs);
+		SafeArrayDestroy(queryArgs);
+
+		bounds.cElements = 1;
+		SAFEARRAY* lengthArgs = SafeArrayCreate(VT_VARIANT, 1, &bounds);
+		index = 0;
+		SafeArrayPutElement(lengthArgs, &index, &snapshot);
+		CComVariant lengthVar = driver->ie->executeScript(L"(function(){return function() {return arguments[0].snapshotLength;}})();", lengthArgs);
+
+		if (lengthVar.vt != VT_I4) {
+			return EUNEXPECTEDJSERROR;
+		}
+
+		SafeArrayDestroy(lengthArgs);
+		long length = lengthVar.lVal;
+
+		bounds.cElements = 2;
+		SAFEARRAY* snapshotArgs = SafeArrayCreate(VT_VARIANT, 1, &bounds);
+		index = 0;
+		SafeArrayPutElement(snapshotArgs, &index, &snapshot);
+		
+		ElementCollection* elements = new ElementCollection();
+		elements->elements = new std::vector<ElementWrapper*>();
+
+		index = 1;
+		for (long i = 0; i < length; i++) {
+			ScriptArgs* getElemArgs;
+			wdNewScriptArgs(&getElemArgs, 2);
+			// Cheat
+			index = 0;
+			SafeArrayPutElement(getElemArgs->args, &index, &snapshot);
+			getElemArgs->currentIndex++;
+			wdAddNumberScriptArg(getElemArgs, i);
+
+			ScriptResult* getElemRes;
+			wdExecuteScript(driver, L"(function(){return function() {return arguments[0].iterateNext();}})();", getElemArgs, &getElemRes);
+			WebElement* e;
+			wdGetElementScriptResult(getElemRes, driver, &e);
+			elements->elements->push_back(e->element);
+		}
+		SafeArrayDestroy(queryArgs);
+
+		*out = elements;
 		return SUCCESS;
 	} END_TRY;
 }
@@ -1175,8 +1291,14 @@ int wdAddDoubleScriptArg(ScriptArgs* scriptArgs, double number)
 int wdAddElementScriptArg(ScriptArgs* scriptArgs, WebElement* element)
 {
 	VARIANT dest;
-	dest.vt = VT_DISPATCH;
-	dest.pdispVal = element->element->getWrappedElement();
+	VariantClear(&dest);
+
+	if (!element || !element->element) {
+		dest.vt = VT_EMPTY;
+	} else {
+		dest.vt = VT_DISPATCH;
+		dest.pdispVal = element->element->getWrappedElement();
+	}
 
 	LONG index = scriptArgs->currentIndex;
 	SafeArrayPutElement(scriptArgs->args, &index, &dest);
@@ -1190,7 +1312,8 @@ int wdExecuteScript(WebDriver* driver, const wchar_t* script, ScriptArgs* script
 {
 	try {
 		*scriptResultRef = NULL;
-		CComVariant &result = driver->ie->executeScript(script, scriptArgs->args);
+		CComVariant result;
+		result = driver->ie->executeScript(script, scriptArgs->args);
 
 		ScriptResult* toReturn = new ScriptResult();
 		HRESULT hr = VariantCopy(&(toReturn->result), &result);

@@ -20,7 +20,6 @@ limitations under the License.
 #include "utils.h"
 #include "InternalCustomMessage.h"
 #include "errorcodes.h"
-#include "jsxpath.h"
 #include "logging.h"
 #include <mshtml.h>
 #include <SHLGUID.h>
@@ -161,36 +160,6 @@ ElementWrapper* InternetExplorerDriver::getActiveElement()
 	SEND_MESSAGE_WITH_MARSHALLED_DATA(_WD_GETACTIVEELEMENT,)
 	
 	return new ElementWrapper(this, data.output_html_element_);
-}
-
-int InternetExplorerDriver::selectElementByXPath(IHTMLElement *pElem, const wchar_t *input_string, ElementWrapper** element)
-{
-	SCOPETRACER
-	SEND_MESSAGE_ABOUT_ELEM(_WD_SELELEMENTBYXPATH)
-
-	if (data.error_code != SUCCESS) { return data.error_code; };
-
-	*element = new ElementWrapper(this, data.output_html_element_);
-	return SUCCESS;
-}
-
-std::vector<ElementWrapper*>* InternetExplorerDriver::selectElementsByXPath(IHTMLElement *pElem, const wchar_t *input_string)
-{
-	SCOPETRACER
-	SEND_MESSAGE_ABOUT_ELEM(_WD_SELELEMENTSBYXPATH)
-
-	std::vector<ElementWrapper*> *toReturn = new std::vector<ElementWrapper*>();
-
-	if(data.output_long_) {std::wstring Err(L"Cannot find elements by Xpath"); throw Err;}
-
-	std::vector<IHTMLElement*>& allElems = data.output_list_html_element_;
-	std::vector<IHTMLElement*>::const_iterator cur, end = allElems.end();
-	for(cur = allElems.begin();cur < end; cur++)
-	{
-		IHTMLElement* elem = *cur;
-		toReturn->push_back(new ElementWrapper(this, elem));
-	}
-	return toReturn;
 }
 
 int InternetExplorerDriver::selectElementById(IHTMLElement *pElem, const wchar_t *input_string, ElementWrapper** element) 

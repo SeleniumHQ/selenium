@@ -19,8 +19,6 @@ limitations under the License.
 #include "errorcodes.h"
 #include "utils.h"
 
-extern wchar_t* XPATHJS[];
-
 using namespace std;
 
 void IeThread::OnSelectElementById(WPARAM w, LPARAM lp)

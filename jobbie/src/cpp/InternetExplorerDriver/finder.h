@@ -37,7 +37,4 @@ void findElementsByClassName(std::vector<ElementWrapper*>*toReturn, InternetExpl
 void findElementByLinkText(IHTMLDOMNode** result, InternetExplorerDriver* ie, const IHTMLDOMNode* node, const wchar_t* text);
 void findElementsByLinkText(std::vector<ElementWrapper*>*toReturn, InternetExplorerDriver* ie, IHTMLDOMNode* node, const wchar_t* text);
 
-void findElementByXPath(IHTMLDOMNode** res, InternetExplorerDriver* ie, const IHTMLDOMNode* node, const wchar_t* xpath);
-void findElementsByXPath(std::vector<ElementWrapper*>*toReturn, InternetExplorerDriver* ie, IHTMLDOMNode* node, const wchar_t* xpath);
-
 #endif

@@ -1953,15 +1953,19 @@ public class WebDriverBackedSelenium implements Selenium {
       private long started = System.currentTimeMillis();
 
       public boolean until() {
-        Object result = ((JavascriptExecutor) driver).executeScript(
-            "return document['readyState'] ? 'complete' == document.readyState : true");
-        if (result != null && result instanceof Boolean && (Boolean) result) {
-          long now = System.currentTimeMillis();
-          if (now - started > 1000) {
-            return true;
+        try {
+          Object result = ((JavascriptExecutor) driver).executeScript(
+              "return document['readyState'] ? 'complete' == document.readyState : true");
+          if (result != null && result instanceof Boolean && (Boolean) result) {
+            long now = System.currentTimeMillis();
+            if (now - started > 1000) {
+              return true;
+            }
+          } else {
+            started = System.currentTimeMillis();
           }
-        } else {
-          started = System.currentTimeMillis();
+        } catch (Exception e) {
+          // Possible page reload. Fine 
         }
         return false;
       }

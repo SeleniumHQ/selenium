@@ -1009,7 +1009,7 @@ int IeThread::getLocationWhenScrolledIntoView(IHTMLElement *pElement, HWND* hwnd
 	LOG(DEBUG) << "(x, y, w, h): " << clickX << ", " << clickY << ", " << width << ", " << height << endl;
 
     if (height == 0 || width == 0) {
-        LOG(INFO) << "Element would not be visible because it lacks height and/or width.";
+        LOG(DEBUG) << "Element would not be visible because it lacks height and/or width.";
         return EELEMENTNOTDISPLAYED;
     }
 
