@@ -201,8 +201,7 @@ function parsePortMessage(message) {
     response.value = selectElement(element);
     break;
   case "switchToActiveElement":
-    ChromeDriverContentScript.internalElementArray.push(ChromeDriverContentScript.currentDocument.activeElement);
-    response.value = {statusCode: 0, value: ["element/" + (ChromeDriverContentScript.internalElementArray.length - 1)]};
+    response.value = {statusCode: 0, value: ["element/" + addElementToInternalArray(ChromeDriverContentScript.currentDocument.activeElement)]};
     response.wait = false;
     break;
   case "switchToNamedIFrameIfOneExists":
@@ -471,10 +470,9 @@ function getElement(plural, parsed) {
     var elementsToReturnArray = [];
     if (plural) {
       //Add all found elements to the page's elements, and push each to the array to return
-      var from = ChromeDriverContentScript.internalElementArray.length;
-      ChromeDriverContentScript.internalElementArray = ChromeDriverContentScript.internalElementArray.concat(elements);
-      for (var i = from; i < ChromeDriverContentScript.internalElementArray.length; i++) {
-        elementsToReturnArray.push('element/' + i);
+      var addedElements = addElementsToInternalArray(elements);
+      for (var addedElement in addedElements) {
+        elementsToReturnArray.push('element/' + addedElements[addedElement]);
       }
     } else {
       if (!elements[0]) {
@@ -482,11 +480,28 @@ function getElement(plural, parsed) {
           message: "Unable to locate element with " + lookupBy + " " + lookupValue}};
       }
       //Add the first found elements to the page's elements, and push it to the array to return
-      ChromeDriverContentScript.internalElementArray.push(elements[0]);
-      elementsToReturnArray.push('element/' + (ChromeDriverContentScript.internalElementArray.length - 1));
+      elementsToReturnArray.push('element/' + addElementToInternalArray(elements[0]));
     }
     return {statusCode: 0, value: elementsToReturnArray};
   }
+}
+
+function addElementToInternalArray(element) {
+  for (var existingElement in ChromeDriverContentScript.internalElementArray) {
+    if (element == ChromeDriverContentScript.internalElementArray[existingElement]) {
+      return existingElement;
+    }
+  }
+  ChromeDriverContentScript.internalElementArray.push(element);
+  return (ChromeDriverContentScript.internalElementArray.length - 1);
+}
+
+function addElementsToInternalArray(elements) {
+  var toReturn = [];
+  for (var element in elements) {
+    toReturn.push(addElementToInternalArray(elements[element]));
+  }
+  return toReturn;
 }
 
 /**
@@ -871,8 +886,7 @@ function parseReturnValueFromScript(result) {
   if (result !== undefined && result != null && typeof(result) == "object") {
     if (result.webdriverElementXPath) {
       //If we're returning an element, turn it into an actual element object
-      ChromeDriverContentScript.internalElementArray.push(getElementsByXPath(result.webdriverElementXPath)[0]);
-      value = {value:"element/" + (ChromeDriverContentScript.internalElementArray.length - 1), type:"ELEMENT"};
+      value = {value:"element/" + addElementToInternalArray(getElementsByXPath(result.webdriverElementXPath)[0]), type:"ELEMENT"};
     } else if (result.length !== undefined) {
       value = [];
       for (var i = 0; i < result.length; ++i) {
