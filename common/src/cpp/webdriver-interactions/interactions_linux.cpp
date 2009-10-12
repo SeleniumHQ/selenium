@@ -583,8 +583,12 @@ static guint32 gLatestEventTime = 0;
 void sendKeys(WINDOW_HANDLE windowHandle, const wchar_t* value, int timePerKey)
 {
 #ifdef INTERACTIONS_DEBUG
-  LOG::Level("DEBUG");
-  LOG::File(INTERACTIONS_LOG_FILE, "a");
+  static bool log_initalized = false;
+  if (!log_initalized) {
+    LOG::Level("DEBUG");
+    LOG::File(INTERACTIONS_LOG_FILE, "a");
+    log_initalized = true;
+  }
 #endif
 
   const int minTimePerKey = 10 /* ms */;
