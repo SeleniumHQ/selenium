@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.IllegalLocatorException;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.FindsByClassName;
@@ -178,7 +179,12 @@ class Finder implements SearchContext, FindsByClassName, FindsById, FindsByLinkT
     PointerByReference rawElement = new PointerByReference();
     int result = lib.wdFindElementByXPath(driver, element, new WString(using), rawElement);
 
-    handleErrorCode("xpath", using, result);
+    try {
+      handleErrorCode("xpath", using, result);
+    } catch (UnexpectedJavascriptExecutionException e) {
+      // Looks like the page was reloading. Fine. We didn't find the element
+      throw new NoSuchElementException("Unable to find element by xpath: " + using);
+    }
 
     return new InternetExplorerElement(lib, parent, rawElement.getValue());
   }
@@ -187,7 +193,12 @@ class Finder implements SearchContext, FindsByClassName, FindsById, FindsByLinkT
     PointerByReference elements = new PointerByReference();
     int result = lib.wdFindElementsByXPath(driver, element, new WString(using), elements);
 
-    handleErrorCode("xpath", using, result);
+    try {
+      handleErrorCode("xpath", using, result);
+    } catch (UnexpectedJavascriptExecutionException e) {
+      // Looks like the page was reloading. Fine. We didn't find the element
+      throw new NoSuchElementException("Unable to find element by xpath: " + using);
+    }
 
     return new ElementCollection(lib, parent, elements.getValue()).toList();
   }

@@ -21,6 +21,7 @@ limitations under the License.
 #include "stdafx.h"
 #include <comutil.h>
 
+#include "errorcodes.h"
 #include "logging.h"
 
 #include "utils.h"
@@ -367,41 +368,73 @@ void IeThread::getDocument(IHTMLDocument2** pdoc)
 	CComPtr<IHTMLWindow2> window;
 	findCurrentFrame(&window);
 
-	if (window)
-		window->get_document(pdoc);
+	if (window) {
+		HRESULT hr = window->get_document(pdoc);
+		if (FAILED(hr)) {
+			LOGHR(WARN, hr) << "Cannot get document";
+		}
+	}
 }
 
 void IeThread::getDefaultContentFromDoc(IHTMLWindow2 **result, IHTMLDocument2* doc)
 {
 	SCOPETRACER
 	CComQIPtr<IHTMLFramesCollection2> frames;
-	doc->get_frames(&frames);
+	HRESULT hr = doc->get_frames(&frames);
+	if (FAILED(hr)) {
+		LOGHR(WARN, hr) << "Unable to get frames from document";
+		return;
+	}
 
 	if (frames == NULL) {
-		doc->get_parentWindow(result);
+		hr = doc->get_parentWindow(result);
+		if (FAILED(hr)) 
+			LOGHR(WARN, hr) << "Unable to get parent window.";
 		return;
 	}
 
 	long length = 0;
-	frames->get_length(&length);
+	hr = frames->get_length(&length);
+	if (FAILED(hr)) {
+		LOGHR(WARN, hr) << "Cannot determine length of frames";
+	}
 
 	if (!length) {
-		doc->get_parentWindow(result);
+		hr = doc->get_parentWindow(result);
+		if (FAILED(hr)) 
+			LOGHR(WARN, hr) << "Unable to get parent window.";
 		return;
 	}
 
-	CComQIPtr<IHTMLDocument3> doc3(doc);
+	CComPtr<IHTMLDocument3> doc3;
+	hr = doc->QueryInterface(&doc3);
+	if (FAILED(hr)) {
+		LOGHR(WARN, hr) << "Have document, but it's not the right type";
+		hr = doc->get_parentWindow(result);
+		if (FAILED(hr)) 
+			LOGHR(WARN, hr) << "Unable to get parent window.";
+		return;
+	}
 
 	CComPtr<IHTMLElementCollection> bodyTags;
 	CComBSTR bodyTagName(L"BODY");
-	doc3->getElementsByTagName(bodyTagName, &bodyTags);
+	hr = doc3->getElementsByTagName(bodyTagName, &bodyTags);
+	if (FAILED(hr)) {
+		LOGHR(WARN, hr) << "Cannot locate body";
+		return;
+	}
 
 	long numberOfBodyTags = 0;
-	bodyTags->get_length(&numberOfBodyTags);
+	hr = bodyTags->get_length(&numberOfBodyTags);
+	if (FAILED(hr)) {
+		LOGHR(WARN, hr) << "Unable to establish number of tags seen";
+	}
 
 	if (numberOfBodyTags) {
 		// Not in a frameset. Return the current window
-		doc->get_parentWindow(result);
+		hr = doc->get_parentWindow(result);
+		if (FAILED(hr)) 
+			LOGHR(WARN, hr) << "Unable to get parent window.";
 		return;
 	}
 
@@ -410,7 +443,10 @@ void IeThread::getDefaultContentFromDoc(IHTMLWindow2 **result, IHTMLDocument2* d
 	index.lVal = 0;
 
 	CComVariant frameHolder;
-	frames->item(&index, &frameHolder);
+	hr = frames->item(&index, &frameHolder);
+	if (FAILED(hr)) {
+		LOGHR(WARN, hr) << "Unable to get frame at index 0";
+	}
 
 	frameHolder.pdispVal->QueryInterface(__uuidof(IHTMLWindow2), (void**) result);
 }
@@ -421,11 +457,17 @@ void IeThread::findCurrentFrame(IHTMLWindow2 **result)
 	SCOPETRACER
 	// Frame location is from _top. This is a good start
 	CComPtr<IDispatch> dispatch;
-	pBody->ieThreaded->get_Document(&dispatch);
-	if (!dispatch)
+	HRESULT hr = pBody->ieThreaded->get_Document(&dispatch);
+	if (FAILED(hr)) {
+		LOGHR(DEBUG, hr) << "Unable to get document";
 		return;
+	}
 
-	CComQIPtr<IHTMLDocument2> doc(dispatch);
+	CComPtr<IHTMLDocument2> doc;
+	hr = dispatch->QueryInterface(&doc);
+	if (FAILED(hr)) {
+		LOGHR(WARN, hr) << "Have document but cannot cast";
+	}
 
 	// If the current frame path is null or empty, find the default content
 	// The default content is either the first frame in a frameset or the body
@@ -508,9 +550,13 @@ void IeThread::getDocument3(IHTMLDocument3** pOutDoc)
 
 	CComPtr<IHTMLDocument2> doc2;
 	getDocument(&doc2);
+	if (!doc2) {	
+		return;
+	}
 
 	CComQIPtr<IHTMLDocument3> doc(doc2);
-	*pOutDoc = doc.Detach();
+	if (doc)
+		*pOutDoc = doc.Detach();
 }
 
 
@@ -526,7 +572,10 @@ bool IeThread::getEval(IHTMLDocument2* doc, DISPID* evalId, bool* added)
 		*added = true;
 		// Start the script engine by adding a script tag to the page
 		CComPtr<IHTMLElement> scriptTag;
-		doc->createElement(L"<span>", &scriptTag);
+		hr = doc->createElement(L"span", &scriptTag);
+		if (FAILED(hr)) {
+			LOGHR(WARN, hr) << "Failed to create span tag";
+		}
 		CComBSTR addMe(L"<span id='__webdriver_private_span'>&nbsp;<script defer></script></span>");
 		scriptTag->put_innerHTML(addMe);
 
@@ -560,16 +609,31 @@ void IeThread::removeScript(IHTMLDocument2* doc)
 
 	CComPtr<IHTMLElement> element;
 	CComBSTR id(L"__webdriver_private_span");
-	doc3->getElementById(id, &element);
+	HRESULT hr = doc3->getElementById(id, &element);
+	if (FAILED(hr)) {
+		LOGHR(WARN, hr) << "Cannot find the script tag. Bailing.";
+		return;
+	}
 
 	CComQIPtr<IHTMLDOMNode> elementNode(element);
 
 	if (elementNode) {
 		CComPtr<IHTMLElement> body;
-		doc->get_body(&body);
+		hr = doc->get_body(&body);
+		if (FAILED(hr)) {
+			LOGHR(WARN, hr) << "Cannot locate body of document";
+			return;
+		}
 		CComQIPtr<IHTMLDOMNode> bodyNode(body);
+		if (!bodyNode) {
+			LOG(WARN) << "Cannot cast body to a standard html node";
+			return;
+		}
 		CComPtr<IHTMLDOMNode> removed;
-		bodyNode->removeChild(elementNode, &removed);
+		hr = bodyNode->removeChild(elementNode, &removed);
+		if (FAILED(hr)) {
+			LOGHR(DEBUG, hr) << "Cannot remove child node. Shouldn't matter. Bailing";
+		}
 	}
 }
 
@@ -588,10 +652,10 @@ bool IeThread::createAnonymousFunction(IDispatch* scriptEngine, DISPID evalId, c
 	HRESULT hr = scriptEngine->Invoke(evalId, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &parameters, result, &exception, 0);
 	if (FAILED(hr)) {
 	  if (DISP_E_EXCEPTION == hr) {
-		  wcerr << "Exception message was: " << exception.bstrDescription << endl;
+		  LOGHR(INFO, hr) << "Exception message was: " << _bstr_t(exception.bstrDescription) << ": " << _bstr_t(script);
 	  } else {
-		  LOGHR(DEBUG, hr) << "Error code: " << GetLastError() << ". Failed to compile: " << script;
-	  }
+		  LOGHR(DEBUG, hr) << "Failed to compile: " << script;
+	}
 
   	  if (result) {
 		  result->vt = VT_USERDEFINED;
@@ -605,43 +669,61 @@ bool IeThread::createAnonymousFunction(IDispatch* scriptEngine, DISPID evalId, c
 }
 
 
-void IeThread::executeScript(const wchar_t *script, SAFEARRAY* args, CComVariant* result, bool tryAgain)
-
+int IeThread::executeScript(const wchar_t *script, SAFEARRAY* args, VARIANT* result, bool tryAgain)
 {
 	SCOPETRACER
+
+	VariantClear(result);
+
 	CComPtr<IHTMLDocument2> doc;
 	getDocument(&doc);
+	if (!doc) {
+		LOG(WARN) << "Unable to get document reference";
+		return EUNEXPECTEDJSERROR;
+	}
 
 	CComPtr<IDispatch> scriptEngine;
-	doc->get_Script(&scriptEngine);
+	HRESULT hr = doc->get_Script(&scriptEngine);
+	if (FAILED(hr)) {
+		LOGHR(WARN, hr) << "Cannot obtain script engine";
+		return EUNEXPECTEDJSERROR;
+	}
 
 	DISPID evalId;
 	bool added;
 	bool ok = getEval(doc, &evalId, &added);
 
 	if (!ok) {
-		wcerr << L"Unable to locate eval method" << endl;
-		return;
+		LOG(WARN) << "Unable to locate eval method";
+		if (added) { removeScript(doc); }
+		return EUNEXPECTEDJSERROR;
 	}
 
 	CComVariant tempFunction;
 	if (!createAnonymousFunction(scriptEngine, evalId, script, &tempFunction)) {
-		LOG(DEBUG) << L"Cannot create anonymous function: " << script;
+		// Debug level since this is normally the point we find out that 
+		// a page refresh has occured. *sigh*
+		LOG(DEBUG) << "Cannot create anonymous function: " << _bstr_t(script) << endl;
 		if (added) { removeScript(doc); }
-		return;
+		return EUNEXPECTEDJSERROR;
 	}
 
 	if (tempFunction.vt != VT_DISPATCH) {
+		// No return value that we care about
+		VariantClear(result);
+		result->vt = VT_EMPTY;
 		if (added) { removeScript(doc); }
-		return;
+		return SUCCESS;
 	}
 
 	// Grab the "call" method out of the returned function
 	DISPID callid;
 	OLECHAR FAR* szCallMember = L"call";
-    HRESULT hr3 = tempFunction.pdispVal->GetIDsOfNames(IID_NULL, &szCallMember, 1, LOCALE_USER_DEFAULT, &callid);
-	if (FAILED(hr3)) {
-		wcerr << L"Cannot locate call method on anonymous function: " << script << endl;
+    hr = tempFunction.pdispVal->GetIDsOfNames(IID_NULL, &szCallMember, 1, LOCALE_USER_DEFAULT, &callid);
+	if (FAILED(hr)) {
+		if (added) { removeScript(doc); }
+		LOGHR(DEBUG, hr) << "Cannot locate call method on anonymous function: " << _bstr_t(script) << endl;
+		return EUNEXPECTEDJSERROR;
 	}
 
 	DISPPARAMS callParameters = { 0 };
@@ -650,7 +732,12 @@ void IeThread::executeScript(const wchar_t *script, SAFEARRAY* args, CComVariant
 	callParameters.cArgs = nargs + 1;
 
 	CComPtr<IHTMLWindow2> win;
-	doc->get_parentWindow(&win);
+	hr = doc->get_parentWindow(&win);
+	if (FAILED(hr)) {
+		if (added) { removeScript(doc); }
+		LOGHR(WARN, hr) << "Cannot get parent window";
+		return EUNEXPECTEDJSERROR;
+	}
 	_variant_t *vargs = new _variant_t[nargs + 1];
 	VariantCopy(&(vargs[nargs]), &CComVariant(win));
 
@@ -667,29 +754,30 @@ void IeThread::executeScript(const wchar_t *script, SAFEARRAY* args, CComVariant
 
 	EXCEPINFO exception;
 	memset(&exception, 0, sizeof exception);
-	CComVariant callResult;
-	HRESULT hr4 = tempFunction.pdispVal->Invoke(callid, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &callParameters, 
-		(result) ? (&(*result)):&callResult, 
+	hr = tempFunction.pdispVal->Invoke(callid, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &callParameters, 
+		result,
 		&exception, 0);
-	if (FAILED(hr4)) {
+	if (FAILED(hr)) {
 	  CComBSTR errorDescription(exception.bstrDescription);
-	  if (DISP_E_EXCEPTION == hr4) {
-		  wcerr << L"Exception message was: " << exception.bstrDescription << endl;
+	  if (DISP_E_EXCEPTION == hr) {
+		  LOG(INFO) << "Exception message was: " << _bstr_t(exception.bstrDescription);
 	  } else {
-		  LOGHR(DEBUG, hr4) << "Failed to execute: " << _bstr_t(script);
+		  LOGHR(DEBUG, hr) << "Failed to execute: " << _bstr_t(script);
+		  if (added) { removeScript(doc); }
+		  return EUNEXPECTEDJSERROR;
 	  }
-
-	  if (result) {
-		  CComVariant& ref_result = *result;
-		  ref_result.Clear();
-		  ref_result.vt = VT_USERDEFINED;
-		  ref_result.bstrVal = CopyBSTR(exception.bstrDescription);
-	  }
+	  
+	  VariantClear(result);
+	  result->vt = VT_USERDEFINED;
+	  result->bstrVal = CopyBSTR(exception.bstrDescription);
+	  wcout << _bstr_t(exception.bstrDescription) << endl;
 	}
 
 	if (added) { removeScript(doc); }
 
 	delete[] vargs;
+
+	return SUCCESS;
 }
 
 

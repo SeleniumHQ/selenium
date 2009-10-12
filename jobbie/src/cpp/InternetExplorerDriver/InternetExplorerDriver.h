@@ -59,8 +59,6 @@ public:
 
 	ElementWrapper* getActiveElement();
 
-	int selectElementByXPath(IHTMLElement *p, const wchar_t *xpath, ElementWrapper** element);
-	std::vector<ElementWrapper*>* selectElementsByXPath(IHTMLElement *p, const wchar_t *xpath);
 	int selectElementById(IHTMLElement *p, const wchar_t *elementId, ElementWrapper** element);
 	std::vector<ElementWrapper*>* selectElementsById(IHTMLElement *p, const wchar_t *elementId);
 	int selectElementByLink(IHTMLElement *p, const wchar_t *elementLink, ElementWrapper** element);
@@ -83,7 +81,7 @@ public:
 
 	IeThread* p_IEthread;
 
-	CComVariant& executeScript(const wchar_t *script, SAFEARRAY* args, bool tryAgain = true);
+	int executeScript(const wchar_t *script, SAFEARRAY* args, CComVariant* result, bool tryAgain = true);
 
 private:
 

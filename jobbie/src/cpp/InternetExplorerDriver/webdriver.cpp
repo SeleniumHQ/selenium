@@ -480,7 +480,13 @@ int wdSwitchToFrame(WebDriver* driver, const wchar_t* path)
     if (!driver || !driver->ie) return ENOSUCHDRIVER;
 
 	try {
-		return driver->ie->switchToFrame(path) ? SUCCESS : ENOSUCHFRAME;
+		// TODO(simon): Make this configurable
+		for (int i = 0; i < 8; i++) {
+			bool result = driver->ie->switchToFrame(path);
+			if (result) { return SUCCESS; }
+			wait(500);
+		}
+		return ENOSUCHFRAME;
 	} END_TRY;
 }
 
@@ -1083,9 +1089,12 @@ int wdFindElementByXPath(WebDriver* driver, WebElement* element, const wchar_t* 
 
 	try {
 		int result = injectXPathEngine(driver);
+		// TODO(simon): Why does the injecting sometimes fail?
+		/*
 		if (result != SUCCESS) {
 			return result;
 		}
+		*/
 
 		// Call it
 		std::wstring query;
@@ -1169,20 +1178,28 @@ int wdFindElementsByXPath(WebDriver* driver, WebElement* element, const wchar_t*
 			SafeArrayPutElement(queryArgs, &index, &elementArg);
 		}
 
-		CComVariant snapshot = driver->ie->executeScript(query.c_str(), queryArgs);
+		CComVariant snapshot;
+		result = driver->ie->executeScript(query.c_str(), queryArgs, &snapshot);
 		SafeArrayDestroy(queryArgs);
+		if (result != SUCCESS) {
+			return result;
+		}
 
 		bounds.cElements = 1;
 		SAFEARRAY* lengthArgs = SafeArrayCreate(VT_VARIANT, 1, &bounds);
 		index = 0;
 		SafeArrayPutElement(lengthArgs, &index, &snapshot);
-		CComVariant lengthVar = driver->ie->executeScript(L"(function(){return function() {return arguments[0].snapshotLength;}})();", lengthArgs);
+		CComVariant lengthVar;
+		result = driver->ie->executeScript(L"(function(){return function() {return arguments[0].snapshotLength;}})();", lengthArgs, &lengthVar);
+		SafeArrayDestroy(lengthArgs);
+		if (result != SUCCESS) {
+			return result;
+		}
 
 		if (lengthVar.vt != VT_I4) {
 			return EUNEXPECTEDJSERROR;
 		}
 
-		SafeArrayDestroy(lengthArgs);
 		long length = lengthVar.lVal;
 
 		bounds.cElements = 2;
@@ -1313,7 +1330,10 @@ int wdExecuteScript(WebDriver* driver, const wchar_t* script, ScriptArgs* script
 	try {
 		*scriptResultRef = NULL;
 		CComVariant result;
-		result = driver->ie->executeScript(script, scriptArgs->args);
+		int res = driver->ie->executeScript(script, scriptArgs->args, &result);
+		if (res != SUCCESS) {
+			return res;
+		}
 
 		ScriptResult* toReturn = new ScriptResult();
 		HRESULT hr = VariantCopy(&(toReturn->result), &result);

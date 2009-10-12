@@ -30,7 +30,6 @@ limitations under the License.
 
 using namespace std;
 
-
 void IeThread::OnGetVisible(WPARAM w, LPARAM lp)
 {
 	SCOPETRACER
@@ -352,17 +351,20 @@ void IeThread::OnExecuteScript(WPARAM w, LPARAM lp)
 	// TODO/MAYBE
 	// the input WebElement(s) may need to have their IHTMLElement QI-converted into IHTMLDOMNode
 
-	executeScript(data.input_string_, data.input_safe_array_, &data.output_variant_);
+	CComVariant out;
+	int result = executeScript(data.input_string_, data.input_safe_array_, &out);
+	data.error_code = result;
 
-	if( VT_DISPATCH == data.output_variant_.vt )
+	if( VT_DISPATCH == out.vt )
 	{
-		CComQIPtr<IHTMLElement> element(data.output_variant_.pdispVal);
+		CComQIPtr<IHTMLElement> element(out.pdispVal);
 		if(element)
 		{
-			IHTMLElement* &pDom = * (IHTMLElement**) &(data.output_variant_.pdispVal);
+			IHTMLElement* &pDom = * (IHTMLElement**) &(out.pdispVal);
 			element.CopyTo(&pDom);
 		}
 	}
+	data.output_variant_ = out;
 }
 
 void IeThread::getDocument3(const IHTMLDOMNode* extractFrom, IHTMLDocument3** pdoc) {
@@ -408,7 +410,11 @@ bool IeThread::isOrUnder(const IHTMLDOMNode* root, IHTMLElement* child)
 		return true;
 
 	VARIANT_BOOL toReturn;
-	parent->contains(child, &toReturn);
+	HRESULT hr = parent->contains(child, &toReturn);
+	if (FAILED(hr)) {
+		LOGHR(WARN, hr) << "Cannot determine if parent contains child node";
+		return false;
+	}
 
 	return toReturn == VARIANT_TRUE;
 }

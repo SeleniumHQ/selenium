@@ -64,6 +64,9 @@ class ErrorHandler {
     case 16:
       throw new NoSuchElementException(message + " (no document found)");
 
+    case 17:
+      throw new UnexpectedJavascriptExecutionException(message);
+
     case 21:
       throw new TimedOutException("The driver reported that the command timed out. There may "
                                       + "be several reasons for this. Check that the destination"

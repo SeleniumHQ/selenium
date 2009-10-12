@@ -391,14 +391,16 @@ int InternetExplorerDriver::addCookie(const wchar_t *cookieString)
 
 
 
-CComVariant& InternetExplorerDriver::executeScript(const wchar_t *script, SAFEARRAY* args, bool tryAgain)
+int InternetExplorerDriver::executeScript(const wchar_t *script, SAFEARRAY* args, CComVariant* result, bool tryAgain)
 {
 	SCOPETRACER
 	DataMarshaller& data = prepareCmData(script);
 	data.input_safe_array_ = args;
 	sendThreadMsg(_WD_EXECUTESCRIPT, data);
 
-	return data.output_variant_;
+	*result = data.output_variant_;
+
+	return data.error_code;
 }
 
 void InternetExplorerDriver::setSpeed(int speed)
