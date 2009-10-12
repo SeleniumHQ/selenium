@@ -24,27 +24,33 @@ function createSwitchFile(file_content) {
   var filename = "/tmp/switch_window_started";
   var cc = Components.classes;
   var ci = Components.interfaces;
-  var tmpdir = cc['@mozilla.org/file/local;1'].createInstance(ci.nsILocalFile);
-  tmpdir.initWithPath("/tmp");
 
-  // Do not create a switch file on systems that do not have a /tmp directory
-  // - this serves to prevent creation of a switch file on Windows systems.
-  if (!tmpdir.exists()) {
-    return;
+  try {
+    // TODO(eran): Look at the OS and only do this where it makes sense.
+    var tmpdir = cc['@mozilla.org/file/local;1'].createInstance(ci.nsILocalFile);
+    tmpdir.initWithPath("/tmp");
+
+    // Do not create a switch file on systems that do not have a /tmp directory
+    // - this serves to prevent creation of a switch file on Windows systems.
+    if (!tmpdir.exists()) {
+      return;
+    }
+
+    var file = cc['@mozilla.org/file/local;1'].createInstance(ci.nsILocalFile);
+    file.initWithPath(filename);
+    var fileOutputStream = cc['@mozilla.org/network/safe-file-output-stream;1'].createInstance(ci.nsIFileOutputStream);
+    fileOutputStream.init(file, -1, -1, null);
+
+    fileOutputStream.write(file_content, file_content.length);
+    if (fileOutputStream instanceof ci.nsISafeOutputStream) {
+        fileOutputStream.finish();
+    } else {
+        fileOutputStream.close();
+    }
+  } catch (e) {
+    // Fine. Log it and continue
+    Utils.dumpn(e);
   }
-
-  var file = cc['@mozilla.org/file/local;1'].createInstance(ci.nsILocalFile);
-  file.initWithPath(filename);
-  var fileOutputStream = cc['@mozilla.org/network/safe-file-output-stream;1'].createInstance(ci.nsIFileOutputStream);
-  fileOutputStream.init(file, -1, -1, null);
-
-  fileOutputStream.write(file_content, file_content.length);
-  if (fileOutputStream instanceof ci.nsISafeOutputStream) {
-      fileOutputStream.finish();
-  } else {
-      fileOutputStream.close();
-  }
-
 }
 
 function Utils() {
