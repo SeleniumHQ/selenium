@@ -22,7 +22,7 @@ setup(
    name='webdriver',
    version="0.6",
    description='Python bidings for WebDriver',
-   url='http://code.google.com/p/webdriver/',
+   url='http://code.google.com/p/selenium/',
    package_dir={
                 'webdriver_firefox': 'firefox/src/py',
                 'webdriver_common': 'common/src/py',
