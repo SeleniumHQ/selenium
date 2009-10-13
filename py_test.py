@@ -29,6 +29,8 @@ def run_script(script_name, *args):
 
 if __name__ == "__main__":
     os.environ["WEBDRIVER"] = "."
+    os.environ["WEBDRIVER_EXT"] = os.path.join("build",
+                                               "webdriver-extension.zip")
     os.environ["PYTHONPATH"] = os.pathsep.join([os.environ.get("PYTHONPATH", ""),
                                              os.path.join("firefox", "lib-src"),
                                              os.path.join("build", "lib")])
@@ -43,4 +45,3 @@ if __name__ == "__main__":
             os.kill(process.pid, 9)
         except:
             pass
-
