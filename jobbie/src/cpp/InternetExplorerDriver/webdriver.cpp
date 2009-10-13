@@ -289,6 +289,7 @@ int wdGet(WebDriver* driver, const wchar_t* url)
 
 	try {
 		driver->ie->get(url);
+		driver->ie->waitForNavigateToFinish();
 
 		return SUCCESS;
 	} END_TRY;

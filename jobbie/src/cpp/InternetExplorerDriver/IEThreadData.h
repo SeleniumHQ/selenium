@@ -26,7 +26,7 @@ class IeThreadData
 public:
 	IeThreadData(void);
 	IeSink mSink;
-	CComQIPtr<IWebBrowser2> ieThreaded;
+	CComPtr<IWebBrowser2> ieThreaded;
 
 	std::wstring pathToFrame;
 

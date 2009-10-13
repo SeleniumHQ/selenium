@@ -808,7 +808,10 @@ bool IeThread::isStillBusy()
 {
 	VARIANT_BOOL busy;
  
-	pBody->ieThreaded->get_Busy(&busy);
+	HRESULT hr = pBody->ieThreaded->get_Busy(&busy);
+	if (FAILED(hr)) {
+		return true;
+	}
 	return (busy == VARIANT_TRUE);
 }
 
@@ -833,7 +836,6 @@ void IeThread::waitForNavigateToFinish()
 		startNavigationCompletionTimer();
 		return;
 	}
-
 
 	safeIO::CoutA("IE is not busy", true);
 
@@ -980,6 +982,5 @@ void IeThread::tryTransferEventReleaserToNotifyNavigCompleted(CScopeCaller *pSC,
 	sc.m_releaseOnDestructor = !setETNWNC;
 	m_EventToNotifyWhenNavigationCompleted = (setETNWNC) ? sc.getSync() : NULL;
 }
-
 
 

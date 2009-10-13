@@ -943,13 +943,86 @@ bool IeThread::isSelected(IHTMLElement *pElement)
 	return false;
 }
 
+int getLocation(HWND hwnd, IHTMLElement* element, long* left, long* right, long* top, long* bottom)
+{
+	*top, *left, *bottom, *right = 0;
+
+	wait(100);
+
+	// getBoundingClientRect. Note, the docs talk about this possibly being off by 2,2
+    // and Jon Resig mentions some problems too. For now, we'll hope for the best
+    // http://ejohn.org/blog/getboundingclientrect-is-awesome/
+
+    CComPtr<IHTMLElement2> element2;
+	HRESULT hr = element->QueryInterface(&element2);
+	if (FAILED(hr)) {
+		LOGHR(WARN, hr) << "Unable to cast element to correct type";
+		return EOBSOLETEELEMENT;
+	}
+
+    CComPtr<IHTMLRect> rect;
+	hr = element2->getBoundingClientRect(&rect);
+    if (FAILED(hr)) {
+		LOGHR(WARN, hr) << "Cannot figure out where the element is on screen";
+		return EUNHANDLEDERROR;
+    }
+
+	long t, b, l, r = 0;
+
+    rect->get_top(&t);
+    rect->get_left(&l);
+	rect->get_bottom(&b);
+    rect->get_right(&r);
+
+	// On versions of IE prior to 8 on Vista, if the element is out of the 
+	// viewport this would seem to return 0,0,0,0. IE 8 returns position in 
+	// the DOM regardless of whether it's in the browser viewport.
+
+	// Handle the easy case first: does the element have size
+	long w = r - l;
+	long h = b - t;
+	if (w < 0 || h < 0) { return EELEMENTNOTDISPLAYED; }
+
+	// The element has a location, but is it in the viewport?
+	// Turns out that the dimensions given (at least on IE 8 on vista)
+	// are relative to the view port so get the dimensions of the window
+	WINDOWINFO winInfo;
+	if (!GetWindowInfo(hwnd, &winInfo)) {
+		LOG(WARN) << "Cannot determine size of window";
+		return EELEMENTNOTDISPLAYED;
+	}
+    long winWidth = winInfo.rcClient.right - winInfo.rcClient.left;
+    long winHeight = winInfo.rcClient.bottom - winInfo.rcClient.top;
+
+	// Hurrah! Now we know what the visible area of the viewport is
+	// Is the element visible in the X axis?
+	if (l < 0 || l > winWidth) {
+		return EELEMENTNOTDISPLAYED;
+	}
+
+	// And in the Y?
+	if (t < 0 || t > winHeight) {
+		return EELEMENTNOTDISPLAYED;
+	}
+
+	// TODO(simon): we should clip the size returned to the viewport
+	*left = l;
+	*right = r;
+	*top = t;
+	*bottom = b;
+
+	return SUCCESS;
+}
+
 int IeThread::getLocationWhenScrolledIntoView(IHTMLElement *pElement, HWND* hwnd, long *x, long *y, long* w, long* h)
 {
 	SCOPETRACER
-    CComQIPtr<IHTMLDOMNode2> node(pElement);
+    CComPtr<IHTMLDOMNode2> node;
+	HRESULT hr = pElement->QueryInterface(&node);
 
-    if (!node) {
-        return ENOSUCHELEMENT;
+    if (FAILED(hr)) {
+		LOGHR(WARN, hr) << "Cannot cast html element to node";
+		return ENOSUCHELEMENT;
     }
 
     bool displayed;
@@ -969,36 +1042,23 @@ int IeThread::getLocationWhenScrolledIntoView(IHTMLElement *pElement, HWND* hwnd
     const HWND hWnd = getHwnd();
 	const HWND ieWindow = getIeServerWindow(hWnd);
 
-    // Scroll the element into view
-	HRESULT hr = pElement->scrollIntoView(CComVariant(VARIANT_TRUE));
-	if (FAILED(hr)) {
-		LOG(WARN) << "Element disappeared while being scrolled into view. Page may be refreshing";
-		return EOBSOLETEELEMENT;
+	long top, left, bottom, right = 0;
+	result = getLocation(ieWindow, pElement, &left, &right, &top, &bottom);
+	if (result != SUCCESS) {
+		// Scroll the element into view
+		LOG(DEBUG) << "Will need to scroll element into view";
+		HRESULT hr = pElement->scrollIntoView(CComVariant(VARIANT_TRUE));
+		if (FAILED(hr)) {
+			LOGHR(WARN, hr) << "Cannot scroll element into view";
+			return EOBSOLETEELEMENT;
+		}
+
+		result = getLocation(ieWindow, pElement, &left, &right, &top, &bottom);
 	}
 
-	wait(100);
-
-    // getBoundingClientRect. Note, the docs talk about this possibly being off by 2,2
-    // and Jon Resig mentions some problems too. For now, we'll hope for the best
-    // http://ejohn.org/blog/getboundingclientrect-is-awesome/
-
-    CComQIPtr<IHTMLElement2> element2(pElement);
-	if (!element2) {
-		LOG(WARN) << "Unable to cast element to correct type when clicking";
-		return EOBSOLETEELEMENT;
+	if (result != SUCCESS) {
+		return result;
 	}
-    CComPtr<IHTMLRect> rect;
-	hr = element2->getBoundingClientRect(&rect);
-    if (FAILED(hr)) {
-		LOG(WARN) << "Cannot figure out where the element is on screen";
-		return EUNHANDLEDERROR;
-    }
-
-    long top, left, bottom, right = 0;
-    rect->get_top(&top);
-    rect->get_left(&left);
-	rect->get_bottom(&bottom);
-    rect->get_right(&right);
 
 	long width = right - left;
 	long height = bottom - top;
@@ -1019,8 +1079,11 @@ int IeThread::getLocationWhenScrolledIntoView(IHTMLElement *pElement, HWND* hwnd
 		clickY += 2;
 	}
 
+	*x = clickX;
+	*y = clickY;
 	*w = width;
 	*h = height;
+
 
     CComPtr<IDispatch> ownerDocDispatch;
     hr = node->get_ownerDocument(&ownerDocDispatch);
