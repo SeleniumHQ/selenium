@@ -436,30 +436,88 @@ Utils.type = function(context, element, text, opt_useNativeEvents) {
   const thmgr_cls = Components.classes["@mozilla.org/thread-manager;1"];
 
   if (opt_useNativeEvents && obj && node && thmgr_cls) {
+
+    // This indicates that a the page has been unloaded
+    var pageHasBeenUnloaded = false;
+    
+    // This is the standard indicator that a page has been unloaded, but
+    // due to Firefox's caching policy, will occur only when Firefox works
+    // *without* caching at all.
+    var unloadFunction = function() { pageHasBeenUnloaded = true; };
+
+    element.ownerDocument.body.addEventListener("unload",
+        unloadFunction, false);
+
+    // This is a Firefox specific event - See:
+    // https://developer.mozilla.org/En/Using_Firefox_1.5_caching
+    element.ownerDocument.defaultView.addEventListener("pagehide",
+        unloadFunction, false);
+
     // Now do the native thing.
     obj.sendKeys(node, text);
 
     var hasEvents = {};
+    var threadmgr =
+        thmgr_cls.getService(Components.interfaces.nsIThreadManager);
+    var thread = threadmgr.currentThread;
+    
     do {
+
       // This sleep is needed so that Firefox on Linux will manage to process
       // all of the keyboard events before returning control to the caller
       // code (otherwise the caller may not find all of the keystrokes it
       // has entered).
-
-      var threadmgr =
-          thmgr_cls.getService(Components.interfaces.nsIThreadManager);
-      var thread = threadmgr.currentThread;
-      var done = false;
       var the_window = element.ownerDocument.defaultView;
+
+      var doneNativeEventWait = false;
+      
       the_window.setTimeout(function() {
-        done = true;
-      }, 500);
-      while (!done) thread.processNextEvent(true);
+        doneNativeEventWait = true; }, 100);
+      
+      // Do it as long as the timeout function has not been called and the
+      // page has not been unloaded. If the page has been unloaded, there is no
+      // point in waiting for other native events to be processed in this page
+      // as they "belong" to the next page.
+      while ((!doneNativeEventWait) && (!pageHasBeenUnloaded)) {
+          thread.processNextEvent(true);
+      }
 
       obj.hasUnhandledEvents(node, hasEvents);
-    } while (hasEvents.value == true);
 
-    thread.processNextEvent(true);
+    } while ((hasEvents.value == true) && (!pageHasBeenUnloaded));
+
+    if (pageHasBeenUnloaded) {
+        Utils.dumpn("Page has been reloaded while waiting for native events to "
+            + "be processed. Remaining events? " + hasEvents.value);
+    } else {
+        // Remove event listeners...
+        element.ownerDocument.body.removeEventListener("unload",
+            unloadFunction, false);
+        element.ownerDocument.defaultView.removeEventListener("pagehide",
+        	unloadFunction, false);
+    }
+
+    // It is possible that, even though the native code reports all of the
+    // keyboard events are out of the GDK event queue, the process is not done.
+    // These keyboard events are converted into Javascript events - and not all
+    // of them may have been processed. In fact, this is the common case when
+    // the sleep timeout above is less than 500 msec.
+    // The appropriate thing to do is process all the remaining JS events.
+    // Only existing events in the queue should be processed - hence the call
+    // to processNextEvent with false.
+    
+    var numExtraEventsProcessed = 0;
+    var hasMoreEvents = thread.processNextEvent(false);
+    // A safety net to prevent the code from endlessly staying in this loop,
+    // in case there is some source of events that's constantly generating them.
+    var MAX_EXTRA_EVENTS_TO_PROCESS = 150;
+    
+    while ((hasMoreEvents) &&
+    		(numExtraEventsProcessed < MAX_EXTRA_EVENTS_TO_PROCESS)) {
+    	hasMoreEvents = thread.processNextEvent(false);
+    	numExtraEventsProcessed += 1;
+    }
+
     return;
   }
 
