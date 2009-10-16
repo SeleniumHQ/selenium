@@ -21,6 +21,7 @@ package org.openqa.selenium;
 
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.IE;
+import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 
 public class TextPagesTest extends AbstractDriverTestCase {
@@ -34,7 +35,7 @@ public class TextPagesTest extends AbstractDriverTestCase {
     textPage = GlobalTestEnvironment.get().getAppServer().whereIs("plain.txt");
   }
 
-  @Ignore({IE, FIREFOX})
+  @Ignore({IE, FIREFOX, SELENESE})
   public void testShouldBeAbleToLoadASimplePageOfText() {
     driver.get(textPage);
 

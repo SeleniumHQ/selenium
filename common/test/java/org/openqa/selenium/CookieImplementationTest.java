@@ -16,6 +16,7 @@ limitations under the License.
 */
 package org.openqa.selenium;
 
+import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
 import static org.openqa.selenium.Ignore.Driver.IE;
@@ -40,6 +41,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Ignore(SELENESE)
   public void testShouldGetCookieByName() {
     String key = String.format("key_%d", new Random().nextInt());
     ((JavascriptExecutor) driver).executeScript("document.cookie = arguments[0] + '=set';", key);
@@ -49,6 +51,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Ignore(SELENESE)
   public void testShouldBeAbleToAddCookie() {
     String key = String.format("key_%d", new Random().nextInt());
     Cookie cookie = new Cookie(key, "foo");
@@ -61,6 +64,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     assertTrue(current.contains(key));
   }
 
+  @Ignore(SELENESE)
   public void testGetAllCookies() {
     Random random = new Random();
     String key1 = String.format("key_%d", random.nextInt());
@@ -84,6 +88,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Ignore(SELENESE)
   public void testDeleteAllCookies() {
     ((JavascriptExecutor) driver).executeScript("document.cookie = 'foo=set';");
     int count = driver.manage().getCookies().size();
@@ -96,6 +101,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Ignore(SELENESE)
   public void testDeleteCookieWithName() {
     Random random = new Random();
     String key1 = String.format("key_%d", random.nextInt());
@@ -113,6 +119,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     assertNotNull(driver.manage().getCookieNamed(key2));
   }
 
+  @Ignore(SELENESE)
   public void testShouldNotDeleteCookiesWithASimilarName() {
     String cookieOneName = "fish";
     Cookie cookie1 = new Cookie(cookieOneName, "cod");
@@ -128,6 +135,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     assertTrue(cookies.contains(cookie2));
   }
 
+  @Ignore(SELENESE)
   public void testAddCookiesWithDifferentPathsThatAreRelatedToOurs() {
     driver.get(simpleTestPage);
     driver.manage().deleteAllCookies();
@@ -151,6 +159,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     assertTrue(cookies.contains(cookie2));
   }
 
+  @Ignore(SELENESE)
   public void testCanSetCookiesOnADifferentPathOfTheSameHost() {
     Cookie cookie1 = new Cookie("fish", "cod", "/common/animals");
     Cookie cookie2 = new Cookie("planet", "earth", "/common/galaxy");
@@ -172,6 +181,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     assertTrue(cookies.contains(cookie2));
   }
 
+  @Ignore(SELENESE)
   public void testShouldNotBeAbleToSetDomainToSomethingThatIsUnrelatedToTheCurrentDomain() {
     Cookie cookie1 = new Cookie("fish", "cod");
     WebDriver.Options options = driver.manage();
@@ -184,6 +194,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     assertNull(String.valueOf(cookie), cookie);
   }
 
+  @Ignore(SELENESE)
   public void testShouldBeAbleToAddToADomainWhichIsRelatedToTheCurrentDomain() {
     String name = gotoValidDomainAndClearCookies();
     if (name == null) {
@@ -202,7 +213,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     assertNotNull(driver.manage().getCookieNamed("name"));
   }
 
-  @Ignore({REMOTE})
+  @Ignore({REMOTE, SELENESE})
   public void testShouldBeAbleToIncludeLeadingPeriodInDomainName() throws Exception {
     String name = gotoValidDomainAndClearCookies();
     if (name == null || name.matches("\\d{1,3}(?:\\.\\d{1,3}){3}")) {
@@ -223,6 +234,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     assertNotNull(driver.manage().getCookieNamed("name"));
   }
 
+  @Ignore(SELENESE)
   public void testGetCookieDoesNotRetriveBeyondCurrentDomain() {
     Cookie cookie1 = new Cookie("fish", "cod");
     WebDriver.Options options = driver.manage();
@@ -235,7 +247,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     assertFalse(cookies.contains(cookie1));
   }
 
-  @Ignore(IE)
+  @Ignore({IE, SELENESE})
   public void testShouldBeAbleToSetDomainToTheCurrentDomain() throws Exception {
     URI url = new URI(driver.getCurrentUrl());
     String host = url.getHost() + ":" + url.getPort();
@@ -249,6 +261,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     assertTrue(cookies.contains(cookie1));
   }
 
+  @Ignore(SELENESE)
   public void testShouldWalkThePathToDeleteACookie() {
     Cookie cookie1 = new Cookie("fish", "cod");
     driver.manage().addCookie(cookie1);
@@ -278,7 +291,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     assertEquals(0, cookies.size());
   }
 
-  @Ignore(IE)
+  @Ignore({IE, SELENESE})
   public void testShouldIgnoreThePortNumberOfTheHostWhenSettingTheCookie() throws Exception {
     URI uri = new URI(driver.getCurrentUrl());
     String host = String.format("%s:%d", uri.getHost(), uri.getPort());
@@ -290,6 +303,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     assertNotNull(driver.manage().getCookieNamed("name"));
   }
 
+  @Ignore(SELENESE)
   public void testCookieIntegrity() {
     String url = GlobalTestEnvironment.get().getAppServer().whereElseIs("animals");
 
@@ -318,6 +332,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     assertEquals(cookie1, retrievedCookie);
   }
 
+  @Ignore(SELENESE)
   private String gotoValidDomainAndClearCookies() {
     AppServer appServer = GlobalTestEnvironment.get().getAppServer();
 

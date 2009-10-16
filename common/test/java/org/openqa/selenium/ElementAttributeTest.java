@@ -22,12 +22,13 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.openqa.selenium.Ignore.Driver.IE;
+import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 import java.util.List;
 
 public class ElementAttributeTest extends AbstractDriverTestCase {
 
-  @Ignore(IE)
+  @Ignore({IE, SELENESE})
   public void testShouldReturnNullWhenGettingTheValueOfAnAttributeThatIsNotListed() {
     driver.get(simpleTestPage);
     WebElement head = driver.findElement(By.xpath("/html"));
@@ -35,19 +36,21 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertThat(attribute, is(nullValue()));
   }
 
+  @Ignore(SELENESE)
   public void testShouldReturnEmptyAttributeValuesWhenPresentAndTheValueIsActuallyEmpty() {
     driver.get(simpleTestPage);
     WebElement body = driver.findElement(By.xpath("//body"));
     assertThat(body.getAttribute("style"), equalTo(""));
   }
 
+  @Ignore(SELENESE)
   public void testShouldReturnTheValueOfTheDisabledAttrbuteEvenIfItIsMissing() {
     driver.get(formPage);
     WebElement inputElement = driver.findElement(By.xpath("//input[@id='working']"));
     assertThat(inputElement.getAttribute("disabled"), equalTo("false"));
   }
 
-  @Ignore(IE)
+  @Ignore({IE, SELENESE})
   public void testShouldReturnTheValueOfTheIndexAttrbuteEvenIfItIsMissing() {
     driver.get(formPage);
 
@@ -82,6 +85,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertFalse(disabled.isEnabled());
   }
 
+  @Ignore(SELENESE)
   public void testShouldReturnTheValueOfCheckedForACheckboxEvenIfItLacksThatAttribute() {
     driver.get(formPage);
     WebElement checkbox = driver.findElement(By.xpath("//input[@id='checky']"));
@@ -90,6 +94,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertThat(checkbox.getAttribute("checked"), equalTo("true"));
   }
 
+  @Ignore(SELENESE)
   public void testShouldReturnTheValueOfSelectedForRadioButtonsEvenIfTheyLackThatAttribute() {
     driver.get(formPage);
     WebElement neverSelected = driver.findElement(By.id("cheese"));
@@ -106,6 +111,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertThat(initiallySelected.getAttribute("selected"), equalTo("false"));
   }
 
+  @Ignore(SELENESE)
   public void testShouldReturnTheValueOfSelectedForOptionsInSelectsEvenIfTheyLackThatAttribute() {
     driver.get(formPage);
     WebElement selectBox = driver.findElement(By.xpath("//select[@name='selectomatic']"));
@@ -135,6 +141,7 @@ public class ElementAttributeTest extends AbstractDriverTestCase {
     assertThat(value, equalTo("Example text"));
   }
 
+  @Ignore(SELENESE)
   public void testShouldTreatReadonlyAsAValue() {
     driver.get(formPage);
 

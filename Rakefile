@@ -1,5 +1,3 @@
-# Build file for WebDriver. I wonder if this could be run with JRuby?
-
 require 'rake'
 require 'rake/testtask'
 require 'rake/rdoctask'
@@ -184,33 +182,6 @@ test_java(:name => "test_firefox",
                    ],
           :out  => "webdriver-firefox-test.jar")
 
-jar(:name => "selenium",
-    :src  => [ "selenium/src/java/**/*.java" ],
-    :deps => [
-               :ie,
-               :firefox,
-               :support,
-               "selenium/lib/runtime/*.jar"
-             ],
-    :resources => [
-                    { "selenium/src/java/org/openqa/selenium/internal/injectableSelenium.js", "org/openqa/selenium/internal/injectableSelenium.js" },
-                    { "selenium/src/java/org/openqa/selenium/internal/htmlutils.js", "org/openqa/selenium/internal/htmlutils.js" }
-                  ],
-    :zip  => true,
-    :out => "webdriver-selenium.jar" )
-
-test_java(:name => "test_selenium",
-          :src  => [ "selenium/test/java/**/*.java" ],
-          :deps => [
-                     :test_common,
-                     :htmlunit,
-                     :selenium,
-                     "selenium/lib/buildtime/*.jar",
-                   ],
-          :main => "org.testng.TestNG",
-          :args => "selenium/test/java/webdriver-selenium-suite.xml",
-          :out  => "webdriver-selenium-test.jar")
-
 jar(:name => "support",
     :src  => [ "support/src/java/**/*.java" ],
     :deps => [
@@ -299,6 +270,46 @@ test_java(:name => "test_chrome",
                      :test_remote
                    ],
           :out  => "webdriver-chrome-test.jar")
+
+jar(:name => "selenium",
+    :src  => [ "selenium/src/java/**/*.java" ],
+    :deps => [
+               :ie,
+               :firefox,
+               :remote_client,
+               :support,
+               "selenium/lib/runtime/*.jar"
+             ],
+    :resources => [
+                    { "selenium/src/java/org/openqa/selenium/internal/injectableSelenium.js", "org/openqa/selenium/internal/injectableSelenium.js" },
+                    { "selenium/src/java/org/openqa/selenium/internal/htmlutils.js", "org/openqa/selenium/internal/htmlutils.js" }
+                  ],
+    :zip  => true,
+    :out => "webdriver-selenium.jar" )
+
+test_java(:name => "test_selenium",
+          :src  => [ "selenium/test/java/**/*.java" ],
+          :deps => [
+                     :test_common,
+                     :htmlunit,
+                     :selenium,
+                     "selenium/lib/buildtime/*.jar",
+                   ],
+          :main => "org.testng.TestNG",
+          :args => "selenium/test/java/webdriver-selenium-suite.xml",
+          :out  => "webdriver-selenium-test.jar")
+
+test_java(:name => "test_selenesewd",
+          :src  => [ "selenium/test/java/**/*.java" ],
+          :deps => [
+                     :test_common,
+                     :htmlunit,
+                     :selenium,
+                     "selenium/lib/buildtime/*.jar",
+                   ],
+          :out  => "webdriver-selenese-test.jar")
+
+task :test_selenium => :test_selenesewd
 
 jar(:name => "jsapi",
     :src => [ "remote/server/test/java/**/JsApi*.java" ],

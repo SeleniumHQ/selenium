@@ -3,6 +3,7 @@ package org.openqa.selenium;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
+import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,7 +30,7 @@ public class UploadTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {CHROME},
+  @Ignore(value = {CHROME, SELENESE},
           reason = "Chrome: File input elements are not supported yet")
   public void testFileUploading() throws Exception {
     driver.get(uploadPage);

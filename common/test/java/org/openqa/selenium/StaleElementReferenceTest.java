@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import static org.openqa.selenium.Ignore.Driver.SELENESE;
+
 public class StaleElementReferenceTest extends AbstractDriverTestCase {
 
   public void testOldPage() {
@@ -32,6 +34,7 @@ public class StaleElementReferenceTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Ignore(SELENESE)
   public void testShouldNotCrashWhenCallingGetSizeOnAnObsoleteElement() {
     driver.get(simpleTestPage);
     RenderedWebElement elem = (RenderedWebElement) driver.findElement(By.id("links"));

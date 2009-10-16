@@ -22,11 +22,14 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 import java.util.List;
 
-public class ElementFindingTest extends AbstractDriverTestCase {
+public class
+    ElementFindingTest extends AbstractDriverTestCase {
 
+  
   public void testShouldReturnTitleOfPageIfSet() {
     driver.get(xhtmlTestPage);
     assertThat(driver.getTitle(), equalTo(("XHTML Test Page")));
@@ -59,7 +62,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     assertThat(driver.getTitle(), equalTo("We Arrive Here"));
   }
 
-  public void shouldBeAbleToClickOnLinkIdentifiedById() {
+  public void testshouldBeAbleToClickOnLinkIdentifiedById() {
     driver.get(xhtmlTestPage);
     driver.findElement(By.id("linkId")).click();
     assertThat(driver.getTitle(), equalTo("We Arrive Here"));
@@ -95,6 +98,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     }
   }
 
+  @Ignore(SELENESE)
   public void testShouldBeAbleToFindChildrenOfANode() {
     driver.get(xhtmlTestPage);
     List<WebElement> elements = driver.findElements(By.xpath("/html/head"));
@@ -103,6 +107,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     assertThat(importedScripts.size(), equalTo(2));
   }
 
+  @Ignore(SELENESE)
   public void testReturnAnEmptyListWhenThereAreNoChildrenOfANode() {
     driver.get(xhtmlTestPage);
     WebElement table = driver.findElement(By.id("table"));
@@ -111,6 +116,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     assertThat(rows.size(), equalTo(0));
   }
 
+  @Ignore(SELENESE)
   public void testShouldFindElementsByName() {
     driver.get(formPage);
 
@@ -158,6 +164,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     }
   }
 
+  @Ignore(SELENESE)
   public void testShouldBeAbleToFindMultipleElementsByXPath() {
     driver.get(xhtmlTestPage);
 
@@ -166,6 +173,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     assertTrue(elements.size() > 1);
   }
 
+  @Ignore(SELENESE)
   public void testShouldBeAbleToFindMultipleElementsByLinkText() {
     driver.get(xhtmlTestPage);
 
@@ -174,6 +182,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     assertTrue("Expected 2 links, got " + elements.size(), elements.size() == 2);
   }
 
+  @Ignore(SELENESE)
   public void testShouldBeAbleToFindMultipleElementsByPartialLinkText() {
     driver.get(xhtmlTestPage);
 
@@ -182,6 +191,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     assertTrue(elements.size() == 2);
   }
 
+  @Ignore(SELENESE)
   public void testShouldBeAbleToFindElementByPartialLinkText() {
     driver.get(xhtmlTestPage);
 
@@ -192,6 +202,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     }
   }
 
+  @Ignore(SELENESE)
   public void testShouldBeAbleToFindMultipleElementsByName() {
     driver.get(nestedPage);
 
@@ -200,6 +211,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     assertTrue(elements.size() > 1);
   }
 
+  @Ignore(SELENESE)
   public void testShouldBeAbleToFindMultipleElementsById() {
     driver.get(nestedPage);
 
@@ -208,6 +220,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     assertEquals(8, elements.size());
   }
 
+  @Ignore(SELENESE)
   public void testShouldBeAbleToFindMultipleElementsByClassName() {
     driver.get(xhtmlTestPage);
 
@@ -233,13 +246,14 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     assertThat(element.getValue(), is("id"));
   }
 
+  @Ignore(SELENESE)
   public void testShouldFindGrandChildren() {
     driver.get(formPage);
     WebElement form = driver.findElement(By.id("nested_form"));
     form.findElement(By.name("x"));
   }
 
-
+  @Ignore(SELENESE)
   public void testShouldNotFindElementOutSideTree() {
     driver.get(formPage);
     WebElement element = driver.findElement(By.name("login"));
@@ -250,6 +264,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     }
   }
 
+  @Ignore(SELENESE)
   public void testShouldReturnElementsThatDoNotSupportTheNameProperty() {
     driver.get(nestedPage);
 
@@ -275,6 +290,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     assertNotNull(element);
   }
 
+  @Ignore(SELENESE)
   public void testShouldfindElementsBasedOnTagName() {
     driver.get(formPage);
 

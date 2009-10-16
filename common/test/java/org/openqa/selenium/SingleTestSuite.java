@@ -22,6 +22,9 @@ import junit.framework.TestCase;
 
 import static org.openqa.selenium.Ignore.Driver.*;
 
+import java.io.IOException;
+import java.net.ServerSocket;
+
 @SuppressWarnings("unused")
 public class SingleTestSuite extends TestCase {
 
@@ -30,12 +33,14 @@ public class SingleTestSuite extends TestCase {
   private final static String HTML_UNIT_JS = "org.openqa.selenium.htmlunit.JavascriptEnabledHtmlUnitDriverTestSuite$HtmlUnitDriverForTest";
   private final static String IE = "org.openqa.selenium.ie.InternetExplorerDriver";
   private final static String REMOTE = "org.openqa.selenium.remote.RemoteWebDriverTestSuite$RemoteWebDriverForTest";
+  private final static String SELENIUM = "org.openqa.selenium.SeleneseBackedWebDriver";
 
   public static Test suite() throws Exception {
-    String driver = IE;
+    String driver = SELENIUM;
 
     System.setProperty("webdriver.development", "true");
     System.setProperty("jna.library.path", "..\\build;build");
+    System.setProperty("webdriver.selenium.server.port", String.valueOf(findFreePort()));
 //    System.setProperty("webdriver.firefox.useExisting", "true");
 //    System.setProperty("webdriver.firefox.reap_profile", "false");
 
@@ -48,16 +53,26 @@ public class SingleTestSuite extends TestCase {
         .includeJavascriptTests()
         .onlyRun("FormHandlingTest")
 //        .method("testClickingOnUnclickableElementsDoesNothing")
-        .exclude(ALL)  
-        .exclude(Ignore.Driver.IE)
+        .exclude(ALL)
+        .exclude(Ignore.Driver.SELENESE)
         .leaveRunning()
         ;  // Yeah, this look strange :)
 
     if (REMOTE.equals(driver)) {
       builder.addSuiteDecorator(
           "org.openqa.selenium.remote.RemoteWebDriverTestSuite$RemoteDriverServerStarter");
+    } else if (SELENIUM.equals(driver)) {
+      builder.addSuiteDecorator(
+          "org.openqa.selenium.SeleniumServerStarter");
     }
 
     return builder.create();
+  }
+
+  private static int findFreePort() throws IOException {
+    ServerSocket serverSocket = new ServerSocket(0);
+    int port = serverSocket.getLocalPort();
+    serverSocket.close();
+    return port;
   }
 }

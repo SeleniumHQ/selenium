@@ -19,6 +19,7 @@ package org.openqa.selenium;
 
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.TestEnvironment;
 
@@ -35,7 +36,7 @@ public class AlertsTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({IE, IPHONE})
+  @Ignore({IE, IPHONE, SELENESE})
   public void testShouldBeAbleToOverrideTheWindowAlertMethod() {
     driver.get(alertPage);
 

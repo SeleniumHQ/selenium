@@ -416,12 +416,12 @@ public class RemoteWebDriver implements WebDriver, SearchContext, JavascriptExec
       throw new RuntimeException(String.valueOf(response.getValue()));
     }
 
-    String screenGrab = (String) rawException.get("screen");
-    String message = (String) rawException.get("message");
-    String className = (String) rawException.get("class");
-
     RuntimeException toThrow = null;
     try {
+      String screenGrab = (String) rawException.get("screen");
+      String message = (String) rawException.get("message");
+      String className = (String) rawException.get("class");
+
       Class<?> aClass;
       try {
         aClass = Class.forName(className);

@@ -27,6 +27,7 @@ import static org.openqa.selenium.Ignore.Driver.CHROME_NON_WINDOWS;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
+import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import org.openqa.selenium.internal.Locatable;
 
 import java.awt.*;
@@ -97,7 +98,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
 //	}
 
   @JavascriptEnabled
-  @Ignore(IE)
+  @Ignore({IE, SELENESE})
   public void testShouldWaitForLoadsToCompleteAfterJavascriptCausesANewPageToLoad() {
     driver.get(formPage);
 
@@ -107,7 +108,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(IE)
+  @Ignore({IE, SELENESE})
   public void testShouldBeAbleToFindElementAfterJavascriptCausesANewPageToLoad()
       throws InterruptedException {
     driver.get(formPage);
@@ -118,6 +119,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Ignore(SELENESE)
   public void testShouldBeAbleToDetermineTheLocationOfAnElement() {
     driver.get(xhtmlTestPage);
 
@@ -129,6 +131,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Ignore(SELENESE)
   public void testShouldBeAbleToDetermineTheSizeOfAnElement() {
     driver.get(xhtmlTestPage);
 
@@ -179,6 +182,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Ignore(SELENESE)
   public void testShouldBeAbleToSwitchToFocusedElement() {
     driver.get(javascriptPage);
 
@@ -189,6 +193,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Ignore(SELENESE)
   public void testIfNoElementHasFocusTheActiveElementIsTheBody() {
     driver.get(simpleTestPage);
 
@@ -198,7 +203,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IE, FIREFOX, REMOTE, CHROME_NON_WINDOWS},
+  @Ignore(value = {IE, FIREFOX, REMOTE, CHROME_NON_WINDOWS, SELENESE},
           reason = "Firefox: Window demands focus to work. Other platforms: not properly tested")
   public void testChangeEventIsFiredAppropriatelyWhenFocusIsLost() {
     driver.get(javascriptPage);
@@ -235,6 +240,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Ignore(SELENESE)
   public void testShouldBeAbleToGetTheLocationOfAnElement() {
     driver.get(javascriptPage);
 

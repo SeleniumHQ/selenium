@@ -15,9 +15,9 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="common" exported="" />
-    <orderEntry type="module" module-name="firefox" />
-    <orderEntry type="module" module-name="htmlunit" />
-    <orderEntry type="module" module-name="jobbie" />
+    <orderEntry type="module" module-name="firefox" exported="" />
+    <orderEntry type="module" module-name="htmlunit" exported="" />
+    <orderEntry type="module" module-name="jobbie" exported="" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
@@ -63,19 +63,10 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
           <root url="jar://$MODULE_DIR$/common/lib/runtime/json-20080701.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$APPLICATION_HOME_DIR$/lib/javaee.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -90,7 +81,7 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="support" />
+    <orderEntry type="module" module-name="support" exported="" />
   </component>
 </module>
 

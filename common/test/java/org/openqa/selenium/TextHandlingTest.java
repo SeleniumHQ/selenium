@@ -31,6 +31,7 @@ import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
+import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 
 import java.util.regex.Pattern;
@@ -64,6 +65,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
     assertThat(text.contains("and block level elements"), is(true));
   }
 
+  @Ignore(SELENESE)
   public void testShouldIgnoreScriptElements() {
     driver.get(javascriptEnhancedForm);
     WebElement labelForUsername = driver.findElement(By.id("labelforusername"));
@@ -105,6 +107,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
     assertThat(text, equalTo("This line has a non-breaking space"));
   }
 
+  @Ignore(SELENESE)
   public void testShouldTreatANonBreakingSpaceAsAnyOtherWhitespaceCharacterWhenCollapsingWhitespace() {
     driver.get(simpleTestPage);
     WebElement element = driver.findElement(By.id("nbspandspaces"));
@@ -137,6 +140,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
 //                "        "));
 //    }
 
+  @Ignore(SELENESE)
   public void testShouldBeAbleToSetMoreThanOneLineOfTextInATextArea() {
     driver.get(formPage);
     WebElement textarea = driver.findElement(By.id("withText"));
@@ -148,6 +152,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
     assertThat(seenText, equalTo(expectedText));
   }
 
+  @Ignore(SELENESE)
   public void testShouldBeAbleToEnterDatesAfterFillingInOtherValuesFirst() {
     driver.get(formPage);
     WebElement input = driver.findElement(By.id("working"));
@@ -187,7 +192,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
     assertThat(text, is("Some text" + newLine + "Some more text"));
   }
 
-  @Ignore({FIREFOX, HTMLUNIT, IE, CHROME})
+  @Ignore({FIREFOX, HTMLUNIT, IE, CHROME, SELENESE})
   public void testShouldHandleNestedBlockLevelElements() {
     driver.get(simpleTestPage);
 
@@ -205,6 +210,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
     assertThat(text, is("line has text"));
   }
 
+  @Ignore(SELENESE)
   public void testReadALargeAmountOfData() {
     driver.get(GlobalTestEnvironment.get().getAppServer().whereIs("macbeth.html"));
     String source = driver.getPageSource().trim().toLowerCase();
@@ -237,6 +243,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Ignore(SELENESE)
   public void testShouldOnlyIncludeVisibleText() {
     driver.get(javascriptPage);
 

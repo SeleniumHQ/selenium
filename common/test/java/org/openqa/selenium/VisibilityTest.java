@@ -23,6 +23,7 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.core.Is.is;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
+import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 public class VisibilityTest extends AbstractDriverTestCase {
 
@@ -81,6 +82,7 @@ public class VisibilityTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Ignore(SELENESE)
   public void testShouldNotBeAbleToClickOnAnElementThatIsNotDisplayed() {
     driver.get(javascriptPage);
     WebElement element = driver.findElement(By.id("unclickable"));
@@ -94,6 +96,7 @@ public class VisibilityTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Ignore(SELENESE)
   public void testShouldNotBeAbleToToggleAnElementThatIsNotDisplayed() {
     driver.get(javascriptPage);
     WebElement element = driver.findElement(By.id("untogglable"));
@@ -107,6 +110,7 @@ public class VisibilityTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Ignore(SELENESE)
   public void testShouldNotBeAbleToSelectAnElementThatIsNotDisplayed() {
     driver.get(javascriptPage);
     WebElement element = driver.findElement(By.id("untogglable"));
@@ -120,6 +124,7 @@ public class VisibilityTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Ignore(SELENESE)
   public void testShouldNotBeAbleToTypeAnElementThatIsNotDisplayed() {
     driver.get(javascriptPage);
     WebElement element = driver.findElement(By.id("unclickable"));
@@ -135,7 +140,7 @@ public class VisibilityTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({HTMLUNIT, IE})
+  @Ignore({HTMLUNIT, IE, SELENESE})
   public void testShouldNotAllowAnElementWithZeroHeightToBeCountedAsDisplayed() {
     driver.get(javascriptPage);
 
@@ -145,7 +150,7 @@ public class VisibilityTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({HTMLUNIT, IE})
+  @Ignore({HTMLUNIT, IE, SELENESE})
   public void testShouldNotAllowAnElementWithZeroWidthToBeCountedAsDisplayed() {
     driver.get(javascriptPage);
 

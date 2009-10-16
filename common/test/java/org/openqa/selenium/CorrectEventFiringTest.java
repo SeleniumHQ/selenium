@@ -21,6 +21,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 import java.util.List;
 
@@ -46,6 +47,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Ignore(SELENESE)
   public void testShouldFireMouseDownEventWhenClicking() {
     driver.get(javascriptPage);
 
@@ -55,6 +57,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Ignore(SELENESE)
   public void testShouldFireMouseUpEventWhenClicking() {
     driver.get(javascriptPage);
 
@@ -63,7 +66,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
     assertEventFired("mouseup");
   }
 
-  @Ignore(value = CHROME, reason = "Webkit bug 22261")
+  @Ignore(value = {CHROME, SELENESE}, reason = "Webkit bug 22261")
   @JavascriptEnabled
   public void testShouldFireEventsInTheRightOrder() {
     driver.get(javascriptPage);
@@ -82,6 +85,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Ignore(SELENESE)
   public void testsShouldIssueMouseDownEvents() {
     driver.get(javascriptPage);
     driver.findElement(By.id("mousedown")).click();
@@ -100,6 +104,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Ignore(SELENESE)
   public void testShouldIssueMouseUpEvents() {
     driver.get(javascriptPage);
     driver.findElement(By.id("mouseup")).click();
@@ -109,7 +114,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(IPHONE)
+  @Ignore({IPHONE, SELENESE})
   public void testMouseEventsShouldBubbleUpToContainingElements() {
     driver.get(javascriptPage);
     driver.findElement(By.id("child")).click();
@@ -119,7 +124,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(IPHONE)
+  @Ignore({IPHONE, SELENESE})
   public void testShouldEmitOnChangeEventsWhenSelectingElements() {
     driver.get(javascriptPage);
     WebElement select = driver.findElement(By.id("selector"));
@@ -139,6 +144,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Ignore(SELENESE)
   public void testShouldEmitOnChangeEventsWhenChangingTheStateOfACheckbox() {
     driver.get(javascriptPage);
     WebElement checkbox = driver.findElement(By.id("checkbox"));

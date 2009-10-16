@@ -24,6 +24,7 @@ import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 
 public class PageLoadingTest extends AbstractDriverTestCase {
@@ -45,12 +46,14 @@ public class PageLoadingTest extends AbstractDriverTestCase {
     assertThat(driver.getTitle(), equalTo("We Arrive Here"));
   }
 
+  @Ignore(SELENESE)
   public void testShouldBeAbleToGetAFragmentOnTheCurrentPage() {
     driver.get(xhtmlTestPage);
     driver.get(xhtmlTestPage + "#text");
     driver.findElement(By.id("id1"));
   }
 
+  @Ignore(SELENESE)
   public void testShouldReturnWhenGettingAUrlThatDoesNotResolve() {
     try {
       // Of course, we're up the creek if this ever does get registered
@@ -62,12 +65,13 @@ public class PageLoadingTest extends AbstractDriverTestCase {
     }
   }
 
-  @Ignore(IPHONE)
+  @Ignore({IPHONE, SELENESE})
   public void testShouldReturnWhenGettingAUrlThatDoesNotConnect() {
     // Here's hoping that there's nothing here. There shouldn't be
     driver.get("http://localhost:3001");
   }
 
+  @Ignore(SELENESE)
   public void testShouldBeAbleToLoadAPageWithFramesetsAndWaitUntilAllFramesAreLoaded() {
     driver.get(framesetPage);
 
@@ -80,7 +84,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
     assertThat(pageNumber.getText().trim(), equalTo("2"));
   }
 
-  @Ignore(IPHONE)
+  @Ignore({IPHONE, SELENESE})
   @NeedsFreshDriver
   public void testSouldDoNothingIfThereIsNothingToGoBackTo() {
     String originalTitle = driver.getTitle();
@@ -91,6 +95,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
     assertThat(driver.getTitle(), anyOf(equalTo(originalTitle), equalTo("We Leave From Here")));
   }
 
+  @Ignore(SELENESE)
   public void testShouldBeAbleToNavigateBackInTheBrowserHistory() {
     driver.get(formPage);
 
@@ -101,6 +106,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
     assertThat(driver.getTitle(), equalTo("We Leave From Here"));
   }
 
+  @Ignore(SELENESE)
   public void testShouldBeAbleToNavigateBackInTheBrowserHistoryInPresenceOfIframes() {
     driver.get(xhtmlTestPage);
 
@@ -111,6 +117,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
     assertThat(driver.getTitle(), equalTo("XHTML Test Page"));
   }
 
+  @Ignore(SELENESE)
   public void testShouldBeAbleToNavigateForwardsInTheBrowserHistory() {
     driver.get(formPage);
 
@@ -124,7 +131,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
     assertThat(driver.getTitle(), equalTo("We Arrive Here"));
   }
 
-  @Ignore({FIREFOX, IE, CHROME})
+  @Ignore({FIREFOX, IE, CHROME, SELENESE})
   public void testShouldBeAbleToAccessPagesWithAnInsecureSslCertificate() {
     String url = GlobalTestEnvironment.get().getAppServer().whereIsSecure("simpleTest.html");
     driver.get(url);
@@ -133,7 +140,7 @@ public class PageLoadingTest extends AbstractDriverTestCase {
     assertThat(driver.getTitle(), equalTo("Hello WebDriver"));
   }
 
-  @Ignore(IE)
+  @Ignore({IE, SELENESE})
   public void testShouldBeAbleToRefreshAPage() {
     driver.get(xhtmlTestPage);
 

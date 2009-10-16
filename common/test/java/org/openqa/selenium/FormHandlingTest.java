@@ -25,11 +25,13 @@ import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
+import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 import java.io.File;
 
 public class FormHandlingTest extends AbstractDriverTestCase {
 
+  @Ignore(SELENESE)
   public void testShouldClickOnSubmitInputElements() {
     driver.get(formPage);
     driver.findElement(By.id("submitButton")).click();
@@ -189,7 +191,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
     }
   }
 
-  @Ignore({FIREFOX, IE})
+  @Ignore({FIREFOX, IE, SELENESE})
   public void testTogglingAnOptionShouldThrowAnExceptionIfTheOptionIsNotInAMultiSelect() {
     driver.get(formPage);
 
@@ -204,7 +206,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
     }
   }
 
-  @Ignore({FIREFOX, IE})
+  @Ignore({FIREFOX, IE, SELENESE})
   public void testTogglingAnOptionShouldToggleOptionsInAMultiSelect() {
     driver.get(formPage);
 
@@ -220,7 +222,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
   }
 
 
-  @Ignore(value = CHROME, reason = "ChromeDriver does not yet support file uploads")
+  @Ignore(value = {CHROME, SELENESE}, reason = "ChromeDriver does not yet support file uploads")
   public void testShouldBeAbleToAlterTheContentsOfAFileUploadInputElement() throws Exception {
     driver.get(formPage);
     WebElement uploadElement = driver.findElement(By.id("upload"));
@@ -260,7 +262,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
     assertThat(value, is("Some text"));
   }
 
-  @Ignore(value = {IE, HTMLUNIT, CHROME},
+  @Ignore(value = {IE, HTMLUNIT, CHROME, SELENESE},
           reason = "Not implemented going to the end of the line first")
   public void testSendingKeyboardEventsShouldAppendTextinTextAreas() {
     driver.get(formPage);

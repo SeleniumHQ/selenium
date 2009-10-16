@@ -21,6 +21,7 @@ import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
+import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,6 +31,7 @@ import java.util.List;
 public class ExecutingJavascriptTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
+  @Ignore(SELENESE)
   public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAString() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -44,6 +46,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Ignore(SELENESE)
   public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnALong() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -58,6 +61,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Ignore(SELENESE)
   public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAWebElement() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -72,6 +76,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Ignore(SELENESE)
   public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnABoolean() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -88,7 +93,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
 
   @SuppressWarnings("unchecked")
   @JavascriptEnabled
-  @Ignore(IE)
+  @Ignore({IE, SELENESE})
   public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAnArray() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -130,6 +135,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Ignore(SELENESE)
   public void testPassingAndReturningALongShouldReturnAWholeNumber() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -144,6 +150,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Ignore(SELENESE)
   public void testPassingAndReturningADoubleShouldReturnADecimal() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -158,6 +165,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Ignore(SELENESE)
   public void testShouldThrowAnExceptionWhenTheJavascriptIsBad() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -174,6 +182,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Ignore(SELENESE)
   public void testShouldBeAbleToCallFunctionsDefinedOnThePage() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -191,6 +200,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Ignore(SELENESE)
   public void testShouldBeAbleToPassAStringAnAsArgument() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -205,6 +215,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Ignore(SELENESE)
   public void testShouldBeAbleToPassABooleanAnAsArgument() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -217,6 +228,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Ignore(SELENESE)
   public void testShouldBeAbleToPassANumberAnAsArgument() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -229,6 +241,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Ignore(SELENESE)
   public void testShouldBeAbleToPassAWebElementAsArgument() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -246,7 +259,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(IE)
+  @Ignore({IE, SELENESE})
   public void testShouldBeAbleToPassAnArrayAsArgument() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -259,7 +272,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(IE)
+  @Ignore({IE, SELENESE})
   public void testShouldBeAbleToPassACollectionAsArgument() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -285,6 +298,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Ignore(SELENESE)
   public void testShouldThrowAnExceptionIfAnArgumentIsNotValid() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -300,6 +314,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Ignore(SELENESE)
   public void testShouldBeAbleToPassInMoreThanOneArgument() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -311,7 +326,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     assertEquals("onetwo", result);
   }
 
-  @Ignore(value = CHROME, reason = "Can't execute script in iframe, track crbug 20773")
+  @Ignore(value = {CHROME, SELENESE}, reason = "Can't execute script in iframe, track crbug 20773")
   @JavascriptEnabled
   public void testShouldBeAbleToGrabTheBodyOfFrameOnceSwitchedTo() {
     driver.get(richTextPage);
@@ -325,6 +340,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Ignore(SELENESE)
   public void testJavascriptStringHandlingShouldWorkAsExpected() {
     driver.get(javascriptPage);
 
