@@ -6,9 +6,7 @@ import junit.framework.Test;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.Socket;
+import java.net.*;
 
 public class SeleniumServerStarter extends TestSetup {
 
@@ -73,13 +71,19 @@ public class SeleniumServerStarter extends TestSetup {
   }
 
   private void pollPort(int port) {
-    try {
-      InetSocketAddress address = new InetSocketAddress(InetAddress.getByName(null), port);
+    long end = System.currentTimeMillis() + 150000;
+    while (System.currentTimeMillis() < end) {
+      try {
+        InetSocketAddress address = new InetSocketAddress(InetAddress.getByName(null), port);
 
-      Socket socket = new Socket();
-      socket.connect(address, 15000);
-    } catch (Exception e) {
-      throw new RuntimeException(e);
+        Socket socket = new Socket();
+        socket.connect(address, 15000);
+        return;
+      } catch (ConnectException e) {
+        // Ignore this
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
     }
   }
 
