@@ -27,7 +27,6 @@ import com.sun.jna.ptr.PointerByReference;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.RenderedWebElement;
-import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.ie.ExportedWebDriverFunctions.HWNDByReference;
 import org.openqa.selenium.internal.Locatable;
@@ -36,7 +35,7 @@ import org.openqa.selenium.internal.WrapsElement;
 import java.awt.*;
 import java.util.List;
 
-public class InternetExplorerElement implements RenderedWebElement, SearchContext, Locatable {
+public class InternetExplorerElement implements RenderedWebElement, Locatable {
 
   private final ExportedWebDriverFunctions lib;
   private final InternetExplorerDriver parent;

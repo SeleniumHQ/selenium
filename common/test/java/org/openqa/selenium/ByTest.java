@@ -34,7 +34,7 @@ public class ByTest extends MockObjectTestCase {
     }});
 
     By by = By.name("cheese");
-    by.findElement((SearchContext) driver);
+    by.findElement(driver);
   }
 
   public void xtestShouldUseXPathToFindByNameIfDriverDoesNotImplementFindsByName() {
@@ -46,7 +46,7 @@ public class ByTest extends MockObjectTestCase {
 
     By by = By.name("cheese");
 
-    by.findElement((SearchContext) driver);
+    by.findElement(driver);
   }
 
   private interface AllDriver

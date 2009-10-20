@@ -2,7 +2,6 @@ package org.openqa.selenium.chrome;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.RenderedWebElement;
-import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsById;
@@ -18,7 +17,7 @@ import java.awt.Point;
 import java.util.List;
 
 public class ChromeWebElement implements RenderedWebElement, Locatable, 
-FindsByXPath, FindsByLinkText, FindsById, FindsByName, FindsByTagName, FindsByClassName, SearchContext {
+FindsByXPath, FindsByLinkText, FindsById, FindsByName, FindsByTagName, FindsByClassName {
 
   private final ChromeDriver parent;
   private final String elementId;
@@ -71,11 +70,11 @@ FindsByXPath, FindsByLinkText, FindsById, FindsByName, FindsByTagName, FindsByCl
   }
 
   public WebElement findElement(By by) {
-    return by.findElement((SearchContext)this);
+    return by.findElement(this);
   }
 
   public List<WebElement> findElements(By by) {
-    return by.findElements((SearchContext)this);
+    return by.findElements(this);
   }
 
   public String getAttribute(String name) {

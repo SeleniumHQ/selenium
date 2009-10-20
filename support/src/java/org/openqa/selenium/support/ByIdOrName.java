@@ -37,24 +37,24 @@ public class ByIdOrName extends By {
   }
 
   @Override
-  public WebElement findElement(SearchContext finder) {
+  public WebElement findElement(SearchContext context) {
     try {
       // First, try to locate by id
-      return idFinder.findElement(finder);
+      return idFinder.findElement(context);
     } catch (NoSuchElementException e) {
       // Then by name
-      return nameFinder.findElement(finder);
+      return nameFinder.findElement(context);
     }
   }
 
   @Override
-  public List<WebElement> findElements(SearchContext finder) {
+  public List<WebElement> findElements(SearchContext context) {
     List<WebElement> elements = new ArrayList<WebElement>();
 
     // First: Find by id ...
-    elements.addAll(idFinder.findElements(finder));
+    elements.addAll(idFinder.findElements(context));
     // Second: Find by name ...
-    elements.addAll(nameFinder.findElements(finder));
+    elements.addAll(nameFinder.findElements(context));
 
     return elements;
   }

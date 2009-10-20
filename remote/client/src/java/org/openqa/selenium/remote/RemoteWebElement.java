@@ -18,7 +18,6 @@ limitations under the License.
 package org.openqa.selenium.remote;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsById;
@@ -30,8 +29,7 @@ import static org.openqa.selenium.remote.MapMaker.map;
 
 import java.util.List;
 
-public class RemoteWebElement implements WebElement, SearchContext,
-    FindsByLinkText, FindsById, FindsByName, FindsByClassName, FindsByXPath {
+public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById, FindsByName, FindsByClassName, FindsByXPath {
 
   protected String id;
   protected RemoteWebDriver parent;

@@ -13,7 +13,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.Speed;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -30,7 +29,7 @@ import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.Context;
 import org.openqa.selenium.remote.SessionId;
 
-public class ChromeDriver implements WebDriver, SearchContext, JavascriptExecutor,
+public class ChromeDriver implements WebDriver, JavascriptExecutor,
 FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, FindsByXPath {
 
   private ChromeCommandExecutor executor;
@@ -183,11 +182,11 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
   }
 
   public WebElement findElement(By by) {
-    return by.findElement((SearchContext)this);
+    return by.findElement(this);
   }
 
   public List<WebElement> findElements(By by) {
-    return by.findElements((SearchContext)this);
+    return by.findElements(this);
   }
 
   public void get(String url) {

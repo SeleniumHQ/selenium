@@ -31,7 +31,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchWindowException;
-import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.Speed;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -53,7 +52,7 @@ import java.util.List;
 import java.util.Set;
 import java.text.SimpleDateFormat;
 
-public class InternetExplorerDriver implements WebDriver, SearchContext, JavascriptExecutor {
+public class InternetExplorerDriver implements WebDriver, JavascriptExecutor {
 
   private static ExportedWebDriverFunctions lib;
   private Pointer driver;

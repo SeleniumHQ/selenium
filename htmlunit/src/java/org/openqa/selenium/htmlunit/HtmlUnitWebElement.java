@@ -57,7 +57,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextArea;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
@@ -73,9 +72,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HtmlUnitWebElement implements WebElement,
-                                           FindsById, FindsByLinkText, FindsByXPath, FindsByTagName,
-                                           SearchContext {
+public class HtmlUnitWebElement implements WebElement, FindsById, FindsByLinkText, FindsByXPath, FindsByTagName {
 
   protected final HtmlUnitDriver parent;
   protected final HtmlElement element;

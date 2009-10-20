@@ -21,7 +21,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.Speed;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -45,7 +44,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.LinkedHashSet;
 
-public class RemoteWebDriver implements WebDriver, SearchContext, JavascriptExecutor,
+public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByXPath {
 
   private CommandExecutor executor;
@@ -115,11 +114,11 @@ public class RemoteWebDriver implements WebDriver, SearchContext, JavascriptExec
   }
 
   public List<WebElement> findElements(By by) {
-    return by.findElements((SearchContext) this);
+    return by.findElements(this);
   }
 
   public WebElement findElement(By by) {
-    return by.findElement((SearchContext) this);
+    return by.findElement(this);
   }
 
 

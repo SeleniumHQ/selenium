@@ -19,7 +19,6 @@ package org.openqa.selenium.lift.find;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.By;
-import org.openqa.selenium.SearchContext;
 import org.hamcrest.Description;
 
 import java.util.Collection;

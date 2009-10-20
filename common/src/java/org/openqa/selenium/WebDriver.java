@@ -51,7 +51,7 @@ import java.util.Set;
  * @see org.openqa.selenium.ie.InternetExplorerDriver
  * @see org.openqa.selenium.htmlunit.HtmlUnitDriver
  */
-public interface WebDriver {
+public interface WebDriver extends SearchContext {
     // Navigation
     /**
      * Load a new web page in the current browser window. This is done using an

@@ -40,7 +40,7 @@ public class ByChainedTest extends MockObjectTestCase {
 
     ByChained by = new ByChained();
     try {
-      by.findElement((SearchContext) driver);
+      by.findElement(driver);
       fail("Expected NoSuchElementException!");
     } catch (NoSuchElementException e) {
       // Expected
@@ -51,7 +51,7 @@ public class ByChainedTest extends MockObjectTestCase {
     final AllDriver driver = mock(AllDriver.class);
 
     ByChained by = new ByChained();
-    assertThat(by.findElements((SearchContext) driver),
+    assertThat(by.findElements(driver),
                equalTo((List<WebElement>) new ArrayList<WebElement>()));
   }
 
@@ -68,7 +68,7 @@ public class ByChainedTest extends MockObjectTestCase {
     }});
 
     ByChained by = new ByChained(By.name("cheese"));
-    assertThat(by.findElement((SearchContext) driver), equalTo(elem1));
+    assertThat(by.findElement(driver), equalTo(elem1));
   }
 
   public void testFindElementsOneBy() {
@@ -84,7 +84,7 @@ public class ByChainedTest extends MockObjectTestCase {
     }});
 
     ByChained by = new ByChained(By.name("cheese"));
-    assertThat(by.findElements((SearchContext) driver), equalTo(elems12));
+    assertThat(by.findElements(driver), equalTo(elems12));
   }
 
   public void testFindElementOneByEmpty() {
@@ -99,7 +99,7 @@ public class ByChainedTest extends MockObjectTestCase {
 
     ByChained by = new ByChained(By.name("cheese"));
     try {
-      by.findElement((SearchContext) driver);
+      by.findElement(driver);
       fail("Expected NoSuchElementException!");
     } catch (NoSuchElementException e) {
       // Expected
@@ -117,7 +117,7 @@ public class ByChainedTest extends MockObjectTestCase {
     }});
 
     ByChained by = new ByChained(By.name("cheese"));
-    assertThat(by.findElements((SearchContext) driver), equalTo(elems));
+    assertThat(by.findElements(driver), equalTo(elems));
   }
 
   public void testFindElementTwoBy() {
@@ -146,7 +146,7 @@ public class ByChainedTest extends MockObjectTestCase {
     }});
 
     ByChained by = new ByChained(By.name("cheese"), By.name("photo"));
-    assertThat(by.findElement((SearchContext) driver), equalTo(elem3));
+    assertThat(by.findElement(driver), equalTo(elem3));
   }
 
   public void testFindElementTwoByEmptyParent() {
@@ -176,7 +176,7 @@ public class ByChainedTest extends MockObjectTestCase {
 
     ByChained by = new ByChained(By.name("cheese"), By.name("photo"));
     try {
-      by.findElement((SearchContext) driver);
+      by.findElement(driver);
       fail("Expected NoSuchElementException!");
     } catch (NoSuchElementException e) {
       // Expected
@@ -209,7 +209,7 @@ public class ByChainedTest extends MockObjectTestCase {
     }});
 
     ByChained by = new ByChained(By.name("cheese"), By.name("photo"));
-    assertThat(by.findElements((SearchContext) driver), equalTo(elems));
+    assertThat(by.findElements(driver), equalTo(elems));
   }
 
   public void testFindElementTwoByEmptyChild() {
@@ -240,7 +240,7 @@ public class ByChainedTest extends MockObjectTestCase {
     }});
 
     ByChained by = new ByChained(By.name("cheese"), By.name("photo"));
-    assertThat(by.findElement((SearchContext) driver), equalTo(elem5));
+    assertThat(by.findElement(driver), equalTo(elem5));
   }
 
   public void testFindElementsTwoByEmptyChild() {
@@ -271,7 +271,7 @@ public class ByChainedTest extends MockObjectTestCase {
     }});
 
     ByChained by = new ByChained(By.name("cheese"), By.name("photo"));
-    assertThat(by.findElements((SearchContext) driver), equalTo(elems5));
+    assertThat(by.findElements(driver), equalTo(elems5));
   }
 
   public void testEquals() {

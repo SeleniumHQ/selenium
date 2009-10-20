@@ -272,11 +272,11 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
   }
 
   public WebElement findElement(By by) {
-    return by.findElement((SearchContext) this);
+    return by.findElement(this);
   }
 
   public List<WebElement> findElements(By by) {
-    return by.findElements((SearchContext) this);
+    return by.findElements(this);
   }
 
   public String getPageSource() {

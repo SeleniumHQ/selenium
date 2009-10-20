@@ -24,7 +24,7 @@ import java.util.List;
  * Represents an HTML element. Generally, all interesting operations to do with
  * interacting with a page will be performed through this interface.
  */
-public interface WebElement {
+public interface WebElement extends SearchContext {
     /**
      * Click this element. If this causes a new page to load, this method will
      * block until the page has loaded. At this point, you should discard all

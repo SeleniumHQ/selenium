@@ -283,27 +283,6 @@ public abstract class By {
      */
     public abstract List<WebElement> findElements(SearchContext context);
     
-    /**
-     * Find many elements.
-     *
-     * @param driver A driver to use to find the element
-     * @return A list of WebElements matching the selector
-     * @deprecated use findElements(SearchContext) instead
-     */
-    public List<WebElement> findElements(WebDriver driver) {
-    	return findElements((SearchContext) driver);
-    }
-    
-    /**
-     * Find a single element. Override this method if necessary.
-     * @param driver A driver to use to find the element
-     * @return The WebElement that matches the selector
-     * @deprecated use findElement(SearchContext) instead
-     */
-    public WebElement findElement(WebDriver driver) {
-        return findElement((SearchContext) driver);
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
