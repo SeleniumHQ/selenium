@@ -340,7 +340,8 @@ end
 
 task :test_firefox_py => :test_firefox do
   if python? then
-    sh "python py_test.py", :verbose => true
+    sh "python setup.py build", :verbose => true
+    sh "python build/lib/webdriver/py_test.py", :verbose => true
   end
 end
 

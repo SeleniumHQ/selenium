@@ -26,7 +26,7 @@ from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 
 
 try:
-    HTML_ROOT = os.path.join(os.getenv("WEBDRIVER"), "common/src/web")
+    HTML_ROOT = os.path.join(os.getenv("WEBDRIVER"), "common_web")
 except Exception:
     logging.error("Environment variable 'WEBDRIVER' is not set, unable to"
                  " locate the test html files.")

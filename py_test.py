@@ -28,19 +28,19 @@ def run_script(script_name, *args):
                              " ".join(args)), shell=True)
 
 if __name__ == "__main__":
-    os.environ["WEBDRIVER"] = "."
-    os.environ["WEBDRIVER_EXT"] = os.path.join("build",
-                                               "webdriver-extension.zip")
+    base_dir = os.path.abspath(os.path.dirname(__file__))
+    print 'base_dir:',base_dir
+    os.environ["WEBDRIVER"] = base_dir
+    os.environ["WEBDRIVER_EXT"] = os.path.join(base_dir,
+                                               "../../webdriver-extension.zip")
     os.environ["PYTHONPATH"] = os.pathsep.join([os.environ.get("PYTHONPATH", ""),
-                                             os.path.join("firefox", "lib-src"),
-                                             os.path.join("build", "lib")])
-    run_script("setup.py", "build").wait()
+                                             os.path.join(base_dir, "../../../", "firefox", "lib-src"),
+                                             os.path.join(base_dir, '..')])
     try:
         for test in ["api_examples", "cookie_tests", "firefox_launcher_tests"]:
-            process = run_script("firefox/test/py/%s.py" % test)
+            process = run_script(os.path.join(base_dir, "firefox_tests/%s.py" % test))
             assert process.wait() == 0, "Test %s failed" % test
     finally:
-        shutil.rmtree("build/lib")
         try:
             os.kill(process.pid, 9)
         except:
