@@ -143,7 +143,6 @@ class ApiExampleTest (unittest.TestCase):
         self._loadPage("simpleTest")
         elems = self.driver.find_elements_by_tag_name("div")
         num_by_xpath = len(self.driver.find_elements_by_xpath("//div"))
-        print num_by_xpath
         self.assertEquals(num_by_xpath, len(elems))
         elems = self.driver.find_elements_by_tag_name("iframe")
         self.assertEquals(0, len(elems))
