@@ -675,6 +675,7 @@ function sendElementKeys(element, keys, elementId) {
   } catch (e) {
     return e;
   }
+  //TODO(danielwh): Fire events
   ChromeDriverContentScript.currentDocument.activeElement.blur();
   element.focus();
   return {statusCode: "no-op", keys: keys, elementId: elementId};

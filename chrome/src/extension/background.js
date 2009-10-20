@@ -397,7 +397,11 @@ function parsePortMessage(message) {
       break;
     case "sendElementKeys":
       try {
-        if (document.embeds[0].sendKeys(message.response.value.keys)) {
+        var keys = message.response.value.keys;
+        if (typeof(keys) == "object" && keys.length !== undefined) {
+          keys = keys.join("");
+        }
+        if (document.embeds[0].sendKeys(keys)) {
           sendResponseToParsedRequest({statusCode: 0}, true);
         } else {
           sendResponseToParsedRequest({statusCode: 99}, true);
