@@ -21,7 +21,7 @@ import unittest
 
 
 def run_tests(test_case, driver, webserver):
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.WARN)
 
     webserver.start()
     try:
