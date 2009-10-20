@@ -17,25 +17,18 @@ limitations under the License.
 
 package org.openqa.selenium.firefox;
 
-import static org.openqa.selenium.Ignore.Driver.FIREFOX;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestListener;
-import junit.framework.AssertionFailedError;
-import junit.framework.TestSuite;
-import junit.framework.TestResult;
-import junit.extensions.TestDecorator;
-
+import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.TestSuiteBuilder;
-import org.openqa.selenium.internal.TemporaryFilesystem;
 import org.openqa.selenium.internal.FileHandler;
+import org.openqa.selenium.internal.TemporaryFilesystem;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 public class FirefoxDriverTestSuite extends TestCase {
   public static Test suite() throws Exception {
@@ -124,7 +117,36 @@ public class FirefoxDriverTestSuite extends TestCase {
         throw new RuntimeException(e);
       }
 
+      xpt = FileHandler.locateInProject("build/nsICommandProcessor.xpt");
+      outXpt = new File(extension, "components/nsICommandProcessor.xpt");
+
+      try {
+        if (xpt.exists()) {
+          FileHandler.copy(xpt, outXpt);
+        }
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+
+
+      // Now delete all the .svn directories
+      deleteSvnDirectories(extension);
+
       return new FirefoxProfile(dir);
+    }
+
+    private static void deleteSvnDirectories(File file) {
+      if (file.isDirectory()) {
+        File svn = new File(file, ".svn");
+        if (svn.exists()) {
+          FileHandler.delete(svn);
+        }
+
+        File[] allChildren = file.listFiles();
+        for (File child : allChildren) {
+          deleteSvnDirectories(child);
+        }
+      }
     }
   }
 }
