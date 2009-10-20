@@ -1,3 +1,5 @@
+//TODO(danielwh): Actually use JSON for the commands.  In fact, even valid JSON strings would be nice.
+
 package org.openqa.selenium.chrome;
 
 import java.awt.Dimension;
@@ -53,7 +55,7 @@ public class ChromeCommandExecutor {
    */
   public ChromeCommandExecutor(int port) {
     nameToJson.put("close", new JsonCommand("{request: 'close'}"));
-    nameToJson.put("quit", new JsonCommand("QUIT"));
+    nameToJson.put("quit", new JsonCommand("{request: 'quit'}"));
     
     nameToJson.put("get", new JsonCommand("{request: 'url', url: ?url}"));
     nameToJson.put("goBack", new JsonCommand("{request: 'goBack'}"));
