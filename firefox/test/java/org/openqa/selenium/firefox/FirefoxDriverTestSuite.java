@@ -106,33 +106,32 @@ public class FirefoxDriverTestSuite extends TestCase {
         }
       }
 
-      File xpt = FileHandler.locateInProject("build/nsINativeEvents.xpt");
-      File outXpt = new File(extension, "components/nsINativeEvents.xpt");
-
-      try {
-        if (xpt.exists()) {
-          FileHandler.copy(xpt, outXpt);
-        }
-      } catch (IOException e) {
-        throw new RuntimeException(e);
-      }
-
-      xpt = FileHandler.locateInProject("build/nsICommandProcessor.xpt");
-      outXpt = new File(extension, "components/nsICommandProcessor.xpt");
-
-      try {
-        if (xpt.exists()) {
-          FileHandler.copy(xpt, outXpt);
-        }
-      } catch (IOException e) {
-        throw new RuntimeException(e);
-      }
-
+      copyXpts(extension);
 
       // Now delete all the .svn directories
       deleteSvnDirectories(extension);
 
       return new FirefoxProfile(dir);
+    }
+
+    private static void copyXpts(File extension) {
+      Map<String, String> components = new HashMap<String, String>() {{
+        put("build/nsINativeEvents.xpt", "components/nsINativeEvents.xpt");
+        put("build/nsICommandProcessor.xpt", "components/nsICommandProcessor.xpt");
+      }};
+
+      for (Map.Entry<String, String> component : components.entrySet()) {
+        File xpt = FileHandler.locateInProject(component.getKey());
+        File outXpt = new File(extension, component.getValue());
+
+        try {
+          if (xpt.exists()) {
+            FileHandler.copy(xpt, outXpt);
+          }
+        } catch (IOException e) {
+          throw new RuntimeException(e);
+        }
+      }
     }
 
     private static void deleteSvnDirectories(File file) {
