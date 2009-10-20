@@ -15,9 +15,9 @@
 
 """WebElement implementation."""
 import urllib
-from webdriver_remote import utils
-from webdriver_common.exceptions import ErrorInResponseException
-from webdriver_common.exceptions import NoSuchElementException
+import utils
+from ..common.exceptions import ErrorInResponseException
+from ..common.exceptions import NoSuchElementException
 
 class WebElement(object):
     """Represents an HTML element.

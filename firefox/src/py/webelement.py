@@ -13,11 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from webdriver_common.exceptions import ErrorInResponseException
-from webdriver_common.exceptions import NoSuchElementException
-from webdriver_firefox.extensionconnection import ExtensionConnection
-from webdriver_firefox import utils
-from webdriver_remote import utils as remote_utils
+from ..common.exceptions import ErrorInResponseException
+from ..common.exceptions import NoSuchElementException
+from extensionconnection import ExtensionConnection
+import utils
+from ..remote import utils as remote_utils
 
 class WebElement(object):
     """Represents an HTML element.

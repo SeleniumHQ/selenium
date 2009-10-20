@@ -15,8 +15,8 @@
 
 import unittest
 import logging
-from webdriver_firefox.webdriver import FirefoxLauncher
-from webdriver_firefox.webdriver import WebDriver
+from webdriver.firefox.webdriver import FirefoxLauncher
+from webdriver.firefox.webdriver import WebDriver
 
 
 class FirefoxLauncherTests (unittest.TestCase):

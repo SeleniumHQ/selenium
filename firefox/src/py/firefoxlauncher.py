@@ -25,9 +25,9 @@ import tempfile
 import time
 import platform
 import os
-from webdriver_firefox.extensionconnection import ExtensionConnection
-from webdriver_firefox.firefox_profile import FirefoxProfile
-from webdriver_firefox import utils
+from extensionconnection import ExtensionConnection
+from firefox_profile import FirefoxProfile
+import utils
 
 MAX_START_ATTEMPTS = 20
 

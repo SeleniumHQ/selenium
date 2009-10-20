@@ -2,9 +2,9 @@ import datetime
 import simplejson
 import time
 import unittest
-from webdriver_common.webserver import SimpleWebServer
-from webdriver_common_tests import utils
-from webdriver_common_tests.utils import require_online
+from webdriver.common.webserver import SimpleWebServer
+from webdriver.common_tests import utils
+from webdriver.common_tests.utils import require_online
 
 webserver = SimpleWebServer()
 
@@ -37,7 +37,9 @@ class CookieTest(unittest.TestCase):
     @require_online
     def testGetGoogleCookie(self):
         self.driver.get("http://www.google.com")
-        cookie = self.driver.get_cookies()
+        cookies = self.driver.get_cookies()
+        cookie = [c for c in cookies if c['name'] == 'PREF']
+        self.assertTrue(len(cookie) > 0)
         self.assertEquals("PREF", cookie[0]["name"])
         self.assertTrue("google" in cookie[0]["domain"])
                 

@@ -14,13 +14,13 @@
 # limitations under the License.
 
 from datetime import datetime
-from webdriver_common.exceptions import ErrorInResponseException
-from webdriver_common.exceptions import InvalidSwitchToTargetException
-from webdriver_firefox.webelement import WebElement
-from webdriver_firefox.firefoxlauncher import FirefoxLauncher
-from webdriver_firefox.firefox_profile import FirefoxProfile
-from webdriver_firefox.extensionconnection import ExtensionConnection
-from webdriver_firefox import utils
+from ..common.exceptions import ErrorInResponseException
+from ..common.exceptions import InvalidSwitchToTargetException
+from webelement import WebElement
+from firefoxlauncher import FirefoxLauncher
+from firefox_profile import FirefoxProfile
+from extensionconnection import ExtensionConnection
+import utils
 
 
 class WebDriver(object):

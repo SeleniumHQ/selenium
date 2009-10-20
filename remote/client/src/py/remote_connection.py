@@ -16,10 +16,10 @@
 import httplib
 import simplejson
 import logging
-from webdriver_remote import utils
-from webdriver_common.exceptions import ErrorInResponseException
-from webdriver_common.exceptions import NoSuchElementException
-from webdriver_common.exceptions import RemoteDriverServerException
+import utils
+from ..common.exceptions import ErrorInResponseException
+from ..common.exceptions import NoSuchElementException
+from ..common.exceptions import RemoteDriverServerException
 
 
 class RemoteConnection(object):

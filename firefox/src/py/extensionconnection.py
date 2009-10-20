@@ -21,7 +21,7 @@ import re
 import threading
 import time
 import simplejson
-from webdriver_common.exceptions import ErrorInResponseException
+from ..common.exceptions import ErrorInResponseException
 
 _DEFAULT_TIMEOUT = 20
 _DEFAULT_PORT = 7055

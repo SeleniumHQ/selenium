@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from webdriver_common.exceptions import *
+from webdriver.common.exceptions import *
 from results_page import ResultsPage
 from page_loader import require_loaded
 class GoogleOneBox(object):

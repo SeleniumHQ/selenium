@@ -20,8 +20,8 @@ import os
 import socket
 import subprocess
 import time
-from webdriver_common_tests import api_examples
-from webdriver_remote.webdriver import WebDriver
+from webdriver.common_tests import api_examples
+from webdriver.remote.webdriver import WebDriver
 
 SERVER_ADDR = "localhost"
 DEFAULT_PORT = 6001

@@ -24,7 +24,7 @@ import shutil
 import subprocess
 import tempfile
 import zipfile
-from webdriver_firefox import utils
+import utils
 
 DEFAULT_PORT = 7055
 ANONYMOUS_PROFILE_NAME = "WEBDRIVER_ANONYMOUS_PROFILE"
@@ -216,7 +216,7 @@ class FirefoxProfile(object):
         except IOError:
             logging.debug("user.js doesn't exist, creating one...")
         preference.update(self._get_webdriver_prefs())
-        preference["webdriver_firefox_port"] = self.port
+        preference["webdriver.firefox_port"] = self.port
         user_pref_file = open(user_pref_file_name, "w")
         for key, value in preference.items():
             user_pref_file.write('user_pref("%s", %s);\n' % (key, value))

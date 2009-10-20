@@ -15,13 +15,12 @@
 
 """The WebDriver implementation."""
 
-from webdriver_common.exceptions import ErrorInResponseException
-from webdriver_common.exceptions import InvalidSwitchToTargetException
-from webdriver_common.exceptions import NoSuchElementException
-from webdriver_remote import utils
-from webdriver_remote.webelement import WebElement
-from webdriver_remote.remote_connection import RemoteConnection
-
+from ..common.exceptions import ErrorInResponseException
+from ..common.exceptions import InvalidSwitchToTargetException
+from ..common.exceptions import NoSuchElementException
+import utils
+from webelement import WebElement
+from remote_connection import RemoteConnection
 
 class WebDriver(object):
     def __init__(self, remote_server_addr, browser_name, platform):

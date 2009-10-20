@@ -14,7 +14,7 @@
 # limitations under the License.
 
 import simplejson
-from webdriver_common.exceptions import NoSuchElementException
+from ..common.exceptions import NoSuchElementException
 
 
 def format_json(json_struct):

@@ -22,7 +22,7 @@ import os
 import platform
 import tempfile
 import zipfile
-from webdriver_common.exceptions import NoSuchElementException
+from ..common.exceptions import NoSuchElementException
 
 
 def handle_find_element_exception(ex):
