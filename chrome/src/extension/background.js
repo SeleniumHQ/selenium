@@ -290,14 +290,16 @@ function parseRequest(request) {
       break;
     }
     //Falling through, as if we do have a page, we want to treat this like a normal request
-  case "getElement":
+  case "findElement":
+  case "findChildElement":
     if (hasNoPage()) {
       console.log("Not got a page, but asked for element, so throwing NoSuchElementException");
       sendResponseToParsedRequest({statusCode: 7, value: {message: 'Was not on a page, so could not find elements'}});
       break;
     }
     //Falling through, as if we do have a page, we want to treat this like a normal request
-  case "getElements":
+  case "findElements":
+  case "findChildElements":
     if (hasNoPage()) {
       console.log("Not got a page, but asked for elements, so returning no elements");
       sendResponseToParsedRequest({statusCode: 0, value: []});

@@ -72,10 +72,10 @@ public class ChromeCommandExecutor {
     commands.put("deleteAllCookies", NO_ARGS);
     commands.put("deleteCookie", new String[] {"name"});
     
-    nameToJson.put("findElement", new JsonCommand("{request: 'getElement', by: [?using, ?value]}"));
-    nameToJson.put("findElements", new JsonCommand("{request: 'getElements', by: [?using, ?value]}"));
-    nameToJson.put("findChildElement", new JsonCommand("{request: 'getElement', by: [{id: ?element, using: ?using, value: ?value}]}"));
-    nameToJson.put("findChildElements", new JsonCommand("{request: 'getElements', by: [{id: ?element, using: ?using, value: ?value}]}"));
+    commands.put("findElement", new String[] {"using", "value"});
+    commands.put("findElements", new String[] {"using", "value"});
+    commands.put("findChildElement", new String[] {"id", "using", "value"});
+    commands.put("findChildElements", new String[] {"id", "using", "value"});
     
     commands.put("clearElement", ELEMENT_ID_ARG);
     commands.put("clickElement", ELEMENT_ID_ARG);

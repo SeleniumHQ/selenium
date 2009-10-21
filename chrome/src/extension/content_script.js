@@ -103,12 +103,20 @@ function parsePortMessage(message) {
     response.value = getCookieNamed(message.request.name);
     response.wait = false;
     break;
-  case "getElement":
-    response.value = getElement(false, message.request.by);
+  case "findChildElement":
+    response.value = getElement(false, message.request.using, message.request.value, message.request.id);
     response.wait = false;
     break;
-  case "getElements":
-    response.value = getElement(true, message.request.by);
+  case "findChildElements":
+    response.value = getElement(true, message.request.using, message.request.value, message.request.id);
+    response.wait = false;
+    break;
+  case "findElement":
+    response.value = getElement(false, message.request.using, message.request.value);
+    response.wait = false;
+    break;
+  case "findElements":
+    response.value = getElement(true, message.request.using, message.request.value);
     response.wait = false;
     break;
   case "getElementAttribute":
@@ -397,24 +405,18 @@ function setCookie(cookie) {
  * @param parsed array showing how to look up, e.g. ["id", "cheese"] or
  *               [{"id": 0, using: "id", value: "cheese"}]
  */
-function getElement(plural, parsed) {
+function getElement(plural, lookupBy, lookupValue, id) {
   var root = "";
-  var lookupBy = "";
-  var lookupValue = "";
   var parent = null;
-  if (parsed[0].id != null) {
+  if (id !== undefined && id != null) {
     try {
-      parent = internalGetElement(parsed[0].id);
+      parent = internalGetElement(id);
     } catch (e) {
       return e;
     }
     //Looking for children
     root = getXPathOfElement(parent);
-    lookupBy = parsed[0].using;
-    lookupValue = parsed[0].value;
   } else {
-    lookupBy = parsed[0];
-    lookupValue = parsed[1];
     parent = ChromeDriverContentScript.currentDocument;
   }
 
