@@ -17,23 +17,20 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server;
 
-import junit.framework.TestCase;
-
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.openqa.selenium.remote.Capabilities;
 import org.openqa.selenium.remote.Context;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.support.events.EventFiringWebDriver;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.LinkedBlockingQueue;
 
 public class Session {
   private final WebDriver driver;
@@ -113,14 +110,17 @@ public class Session {
 
   private WebDriver createNewInstanceOf(String browser) throws Exception {
     if ("htmlunit".equals(browser)) {
-      return (WebDriver) Class.forName("org.openqa.selenium.htmlunit.HtmlUnitDriver")
-          .newInstance();
+      return Class.forName("org.openqa.selenium.htmlunit.HtmlUnitDriver")
+          .asSubclass(WebDriver.class).newInstance();
     } else if ("firefox".equals(browser)) {
-      return (WebDriver) Class.forName("org.openqa.selenium.firefox.FirefoxDriver")
-          .newInstance();
+      return Class.forName("org.openqa.selenium.firefox.FirefoxDriver")
+          .asSubclass(WebDriver.class).newInstance();
     } else if ("internet explorer".equals(browser)) {
-      return (WebDriver) Class.forName("org.openqa.selenium.ie.InternetExplorerDriver")
-          .newInstance();
+      return Class.forName("org.openqa.selenium.ie.InternetExplorerDriver")
+          .asSubclass(WebDriver.class).newInstance();
+    } else if ("chrome".equals(browser)) {
+      return Class.forName("org.openqa.selenium.chrome.ChromeDriver")
+          .asSubclass(WebDriver.class).newInstance();
     }
 
     throw new WebDriverException("Unable to match browser: " + browser);
