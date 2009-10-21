@@ -31,6 +31,7 @@ import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.internal.ReturnedCookie;
+import org.openqa.selenium.internal.FindsByTagName;
 import static org.openqa.selenium.remote.MapMaker.map;
 
 import java.lang.reflect.Constructor;
@@ -45,7 +46,7 @@ import java.util.Set;
 import java.util.LinkedHashSet;
 
 public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
-    FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByXPath {
+    FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, FindsByXPath {
 
   private CommandExecutor executor;
   private Capabilities capabilities;
@@ -153,6 +154,16 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     return getElementsFrom(response);
   }
 
+  public WebElement findElementByTagName(String using) {
+    Response response = execute("findElement", "tag name", using);
+    return getElementFrom(response);
+  }
+
+  public List<WebElement> findElementsByTagName(String using) {
+    Response response = execute("findElements", "tag name", using);
+    return getElementsFrom(response);
+
+  }
 
   public WebElement findElementByName(String using) {
     Response response = execute("findElement", "name", using);

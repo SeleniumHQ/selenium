@@ -25,11 +25,13 @@ import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.internal.WrapsElement;
+import org.openqa.selenium.internal.FindsByTagName;
 import static org.openqa.selenium.remote.MapMaker.map;
 
 import java.util.List;
 
-public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById, FindsByName, FindsByClassName, FindsByXPath {
+public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById, FindsByName,
+    FindsByTagName, FindsByClassName, FindsByXPath {
 
   protected String id;
   protected RemoteWebDriver parent;
@@ -164,6 +166,16 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
 
   public List<WebElement> findElementsByPartialLinkText(String using) {
     Response response = execute("findElementsUsingElement", map("id", id, "using", "partial link text", "value", using));
+    return getElementsFrom(response);
+  }
+
+  public WebElement findElementByTagName(String using) {
+    Response response = execute("findElementUsingElement", map("id", id, "using", "tag name", "value", using));
+    return getElementFrom(response);
+  }
+
+  public List<WebElement> findElementsByTagName(String using) {
+    Response response = execute("findElementsUsingElement", map("id", id, "using", "tag name", "value", using));
     return getElementsFrom(response);
   }
 
