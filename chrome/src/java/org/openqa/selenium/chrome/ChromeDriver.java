@@ -190,7 +190,7 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
   }
 
   public void get(String url) {
-    execute("get", url);
+    execute("url", url);
   }
 
   public String getCurrentUrl() {

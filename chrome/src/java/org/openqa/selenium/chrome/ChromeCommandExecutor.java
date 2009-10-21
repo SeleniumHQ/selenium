@@ -35,6 +35,9 @@ import org.openqa.selenium.XPathLookupException;
 import org.openqa.selenium.remote.Command;
 
 public class ChromeCommandExecutor {
+  private static final String[] ELEMENT_ID_ARG = new String[] {"elementId"};
+  private static final String[] NO_ARGS = new String[] {};
+  
   private final ServerSocket serverSocket;
   //Whether the listening thread should listen
   private volatile boolean listen = false;
@@ -44,6 +47,7 @@ public class ChromeCommandExecutor {
   private boolean hasClient = false;
   ListeningThread listeningThread;
   private Map<String, JsonCommand> nameToJson = new HashMap<String, JsonCommand>();
+  private Map<String, String[]> commands = new HashMap<String, String[]>();
   
   /**
    * Creates a new ChromeCommandExecutor which listens on a TCP port.
@@ -54,59 +58,59 @@ public class ChromeCommandExecutor {
    * TODO(danielwh): Bind to a random port (blocked on crbug.com 11547)
    */
   public ChromeCommandExecutor(int port) {
-    nameToJson.put("close", new JsonCommand("{request: 'close'}"));
-    nameToJson.put("quit", new JsonCommand("{request: 'quit'}"));
+    commands.put("close", NO_ARGS);
+    commands.put("quit", NO_ARGS);
+
+    commands.put("url", new String[] {"url"});
+    commands.put("goBack", NO_ARGS);
+    commands.put("goForward", NO_ARGS);
+    commands.put("refresh", NO_ARGS);
     
-    nameToJson.put("get", new JsonCommand("{request: 'url', url: ?url}"));
-    nameToJson.put("goBack", new JsonCommand("{request: 'goBack'}"));
-    nameToJson.put("goForward", new JsonCommand("{request: 'goForward'}"));
-    nameToJson.put("refresh", new JsonCommand("{request: 'refresh'}"));
-    
-    nameToJson.put("addCookie", new JsonCommand("{request: 'addCookie', cookie: ?cookie}"));
-    nameToJson.put("getCookies", new JsonCommand("{request: 'getCookies'}"));
-    nameToJson.put("getCookieNamed", new JsonCommand("{request: 'getCookieNamed', name: ?name}"));
-    nameToJson.put("deleteAllCookies", new JsonCommand("{request: 'deleteAllCookies'}"));
-    nameToJson.put("deleteCookie", new JsonCommand("{request: 'deleteCookie', name: ?name}"));
+    commands.put("addCookie", new String[] {"cookie"});
+    commands.put("getCookies", NO_ARGS);
+    commands.put("getCookieNamed", new String[] {"name"});
+    commands.put("deleteAllCookies", NO_ARGS);
+    commands.put("deleteCookie", new String[] {"name"});
     
     nameToJson.put("findElement", new JsonCommand("{request: 'getElement', by: [?using, ?value]}"));
     nameToJson.put("findElements", new JsonCommand("{request: 'getElements', by: [?using, ?value]}"));
     nameToJson.put("findChildElement", new JsonCommand("{request: 'getElement', by: [{id: ?element, using: ?using, value: ?value}]}"));
     nameToJson.put("findChildElements", new JsonCommand("{request: 'getElements', by: [{id: ?element, using: ?using, value: ?value}]}"));
     
-    nameToJson.put("clearElement", new JsonCommand("{request: 'clearElement', elementId: ?elementId}"));
-    nameToJson.put("clickElement", new JsonCommand("{request: 'clickElement', elementId: ?elementId}"));
-    nameToJson.put("hoverElement", new JsonCommand("{request: 'hoverElement', elementId: ?elementId}"));
-    nameToJson.put("sendElementKeys", new JsonCommand("{request: 'sendElementKeys', elementId: ?elementId, keys: ?keys}"));
-    nameToJson.put("submitElement", new JsonCommand("{request: 'submitElement', elementId: ?elementId}"));
-    nameToJson.put("toggleElement", new JsonCommand("{request: 'toggleElement', elementId: ?elementId}"));
+    commands.put("clearElement", ELEMENT_ID_ARG);
+    commands.put("clickElement", ELEMENT_ID_ARG);
+    commands.put("hoverElement", ELEMENT_ID_ARG);
+    commands.put("sendElementKeys", new String[] {"elementId", "keys"});
+    commands.put("submitElement", ELEMENT_ID_ARG);
+    commands.put("toggleElement", ELEMENT_ID_ARG);
     
-    nameToJson.put("getElementAttribute", new JsonCommand("{request: 'getElementAttribute', elementId: ?elementId, attribute: ?attribute}"));
-    nameToJson.put("getElementLocationOnceScrolledIntoView", new JsonCommand("{request: 'getElementLocationOnceScrolledIntoView', elementId: ?elementId}"));
-    nameToJson.put("getElementLocation", new JsonCommand("{request: 'getElementLocation', elementId: ?elementId}"));
-    nameToJson.put("getElementSize", new JsonCommand("{request: 'getElementSize', elementId: ?elementId}"));
-    nameToJson.put("getElementTagName", new JsonCommand("{request: 'getElementTagName', elementId: ?elementId}"));
-    nameToJson.put("getElementText", new JsonCommand("{request: 'getElementText', elementId: ?elementId}"));
-    nameToJson.put("getElementValue", new JsonCommand("{request: 'getElementValue', elementId: ?elementId}"));
-    nameToJson.put("getElementValueOfCssProperty", new JsonCommand("{request: 'getElementValueOfCssProperty', elementId: ?elementId, css: ?property}"));
-    nameToJson.put("isElementDisplayed", new JsonCommand("{request: 'isElementDisplayed', elementId: ?elementId}"));
-    nameToJson.put("isElementEnabled", new JsonCommand("{request: 'isElementEnabled', elementId: ?elementId}"));
-    nameToJson.put("isElementSelected", new JsonCommand("{request: 'isElementSelected', elementId: ?elementId}"));
-    nameToJson.put("setElementSelected", new JsonCommand("{request: 'setElementSelected', elementId: ?elementId}"));
+    commands.put("getElementAttribute", new String[] {"elementId", "attribute"});
+    commands.put("getElementLocationOnceScrolledIntoView", ELEMENT_ID_ARG);
+    commands.put("getElementLocation", ELEMENT_ID_ARG);
+    commands.put("getElementSize", ELEMENT_ID_ARG);
+    commands.put("getElementTagName", ELEMENT_ID_ARG);
+    commands.put("getElementText", ELEMENT_ID_ARG);
+    commands.put("getElementValue", ELEMENT_ID_ARG);
+    commands.put("getElementValueOfCssProperty", new String[] {"elementId", "css"});
+    commands.put("isElementDisplayed", ELEMENT_ID_ARG);
+    commands.put("isElementEnabled", ELEMENT_ID_ARG);
+    commands.put("isElementSelected", ELEMENT_ID_ARG);
+    commands.put("setElementSelected", ELEMENT_ID_ARG);
     
-    nameToJson.put("switchToActiveElement", new JsonCommand("{request: 'switchToActiveElement'}"));
+    commands.put("switchToActiveElement", NO_ARGS);
     nameToJson.put("switchToFrameByIndex", new JsonCommand("{request: 'switchToFrame', using: {index: ?index}}"));
     nameToJson.put("switchToFrameByName", new JsonCommand("{request: 'switchToFrame', using: {name: ?name}}"));
-    nameToJson.put("switchToDefaultContent", new JsonCommand("{request: 'switchToDefaultContent'}"));
+    commands.put("switchToDefaultContent", NO_ARGS);
     
-    nameToJson.put("getWindowHandle", new JsonCommand("{request: 'getWindowHandle'}"));
-    nameToJson.put("getWindowHandles", new JsonCommand("{request: 'getWindowHandles'}"));
-    nameToJson.put("switchToWindow", new JsonCommand("{request: 'switchToWindow', windowName: ?name}"));
+    commands.put("getWindowHandle", NO_ARGS);
+    commands.put("getWindowHandles", NO_ARGS);
+    commands.put("switchToWindow", new String[] {"windowName"});
     
     nameToJson.put("execute", new JsonCommand("EXECUTE")); //Dealt with specially
     
-    nameToJson.put("getCurrentUrl", new JsonCommand("{request: 'getCurrentUrl'}"));
-    nameToJson.put("getPageSource", new JsonCommand("{request: 'getPageSource'}"));
-    nameToJson.put("getTitle", new JsonCommand("{request: 'getTitle'}"));
+    commands.put("getCurrentUrl", NO_ARGS);
+    commands.put("getPageSource", NO_ARGS);
+    commands.put("getTitle", NO_ARGS);
     
     try {
       serverSocket = new ServerSocket(port);
@@ -156,13 +160,18 @@ public class ChromeCommandExecutor {
     }
     try {
       //Respond to request with the command
-      JsonCommand commandToPopulate = 
-        nameToJson.get(command.getMethodName());
-      if (commandToPopulate == null) {
-        throw new UnsupportedOperationException("Didn't know how to execute: " +
-            command.getMethodName());
+      String commandStringToSend;
+      if (commands.containsKey(command.getMethodName())) {
+        commandStringToSend = fillArgs(command);
+      } else {
+        JsonCommand commandToPopulate = 
+          nameToJson.get(command.getMethodName());
+        if (commandToPopulate == null) {
+          throw new UnsupportedOperationException("Didn't know how to execute: " +
+              command.getMethodName());
+        }
+        commandStringToSend = commandToPopulate.populate(command.getParameters());
       }
-      String commandStringToSend = commandToPopulate.populate(command.getParameters());
       socket.getOutputStream().write(fillTwoHundredWithJson(commandStringToSend));
       socket.getOutputStream().flush();
     } finally {
@@ -171,6 +180,49 @@ public class ChromeCommandExecutor {
     }
   }
   
+  private String fillArgs(Command command) {
+    String[] parameterNames = commands.get(command.getMethodName());
+    JSONObject json = new JSONObject();
+    if (parameterNames.length != command.getParameters().length) {
+      throw new WebDriverException(new IllegalArgumentException(
+          "Did not supply the expected number of parameters"));
+    }
+    try {
+      json.put("request", command.getMethodName());
+      for (int i = 0; i < parameterNames.length; ++i) {
+        json.put(parameterNames[i], convertToJsonObject(command.getParameters()[i]));
+      }
+    } catch (JSONException e) {
+      throw new WebDriverException(e);
+    }
+    return json.toString();
+  }
+  
+  private Object convertToJsonObject(Object object) throws JSONException {
+    if (object.getClass().isArray()) {
+      JSONArray array = new JSONArray();
+      for (Object o : (Iterable<?>)object) {
+        array.put(o);
+      }
+      return array;
+    }
+    else if (object instanceof Cookie) {
+      Cookie cookie = (Cookie)object;
+      Map<String, Object> cookieMap = new HashMap<String, Object>();
+      cookieMap.put("name", cookie.getName());
+      cookieMap.put("value", cookie.getValue());
+      cookieMap.put("domain", cookie.getDomain());
+      cookieMap.put("path", cookie.getPath());
+      cookieMap.put("secure", cookie.isSecure());
+      cookieMap.put("expiry", cookie.getExpiry());
+      return new JSONObject(cookieMap);
+    } else if (object instanceof ChromeWebElement) {
+      return ((ChromeWebElement)object).getElementId();
+    } else {
+      return object;
+    }
+  }
+
   /**
    * Wraps the passed message up in an HTTP 200 response, with the Content-type
    * header set to application/json
@@ -542,7 +594,7 @@ public class ChromeCommandExecutor {
           }
           String parsedParameter;
           if (parameters[i] instanceof ChromeWebElement) {
-            parsedParameter = ((ChromeWebElement)parameters[i]).getElementId().replace("element/", "");
+            parsedParameter = ((ChromeWebElement)parameters[i]).getElementId();
           } else if (parameters[i] instanceof Cookie) {
             //This is not nice at all...
             Cookie cookie = (Cookie)parameters[i];

@@ -201,7 +201,7 @@ function parsePortMessage(message) {
     response.value = selectElement(element);
     break;
   case "switchToActiveElement":
-    response.value = {statusCode: 0, value: ["element/" + addElementToInternalArray(ChromeDriverContentScript.currentDocument.activeElement)]};
+    response.value = {statusCode: 0, value: [addElementToInternalArray(ChromeDriverContentScript.currentDocument.activeElement).toString()]};
     response.wait = false;
     break;
   case "switchToNamedIFrameIfOneExists":
@@ -372,7 +372,7 @@ function setCookie(cookie) {
   }
   
   if (currLocation.port != 80) { currDomain += ":" + currLocation.port; }
-  if (cookie.domain != null && cookie.domain != undefined &&
+  if (cookie.domain != null && cookie.domain !== undefined &&
       currDomain.indexOf(cookie.domain) == -1) {
       // Not quite right, but close enough. (See r783)
     return {statusCode: 2, value: {
@@ -472,7 +472,7 @@ function getElement(plural, parsed) {
       //Add all found elements to the page's elements, and push each to the array to return
       var addedElements = addElementsToInternalArray(elements);
       for (var addedElement in addedElements) {
-        elementsToReturnArray.push('element/' + addedElements[addedElement]);
+        elementsToReturnArray.push(addedElements[addedElement].toString());
       }
     } else {
       if (!elements[0]) {
@@ -480,7 +480,7 @@ function getElement(plural, parsed) {
           message: "Unable to locate element with " + lookupBy + " " + lookupValue}};
       }
       //Add the first found elements to the page's elements, and push it to the array to return
-      elementsToReturnArray.push('element/' + addElementToInternalArray(elements[0]));
+      elementsToReturnArray.push(addElementToInternalArray(elements[0]).toString());
     }
     return {statusCode: 0, value: elementsToReturnArray};
   }
@@ -791,7 +791,7 @@ function parseWrappedArguments(argument) {
   switch (argument.type) {
   case "ELEMENT":
     //Wrap up as a special object with the element's canonical xpath, which the page can work out
-    var element_id = argument.value.replace("element/", "");
+    var element_id = argument.value;
     var element = null;
     try {
       element = internalGetElement(element_id);
@@ -887,7 +887,7 @@ function parseReturnValueFromScript(result) {
   if (result !== undefined && result != null && typeof(result) == "object") {
     if (result.webdriverElementXPath) {
       //If we're returning an element, turn it into an actual element object
-      value = {value:"element/" + addElementToInternalArray(getElementsByXPath(result.webdriverElementXPath)[0]), type:"ELEMENT"};
+      value = {value: addElementToInternalArray(getElementsByXPath(result.webdriverElementXPath)[0]).toString(), type:"ELEMENT"};
     } else if (result.length !== undefined) {
       value = [];
       for (var i = 0; i < result.length; ++i) {
