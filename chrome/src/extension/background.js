@@ -265,8 +265,11 @@ function parseRequest(request) {
   case "switchToDefaultContent":
     switchToDefaultContent();
     break;
-  case "switchToFrame":
-    switchToFrame(request.using);
+  case "switchToFrameByIndex":
+    switchToFrame(null, request.index);
+    break;
+  case "switchToFrameByName":
+    switchToFrame(request.name, null);
     break;
   case "switchToWindow":
     ChromeDriver.hasHwnd = false;
@@ -505,7 +508,7 @@ function switchToDefaultContent() {
     if (ChromeDriver.tabs[tab].tabId == ChromeDriver.activeTabId) {
       if (ChromeDriver.tabs[tab].isFrameset) {
         ChromeDriver.isBlockedWaitingForResponse = false;
-        parseRequest({request: 'switchToFrame', using: {index: 0}});
+        parseRequest({request: 'switchToFrameByIndex', index: 0});
       } else {
         ChromeDriver.activePort = ChromeDriver.tabs[tab].mainPort;
         sendResponseToParsedRequest({statusCode: 0}, false);
@@ -515,7 +518,7 @@ function switchToDefaultContent() {
   }
 }
 
-function switchToFrame(using) {
+function switchToFrame(name, index) {
   ChromeDriver.hasHwnd = false;
   for (var tab in ChromeDriver.tabs) {
     if (ChromeDriver.tabs[tab].tabId == ChromeDriver.activeTabId) {
@@ -523,10 +526,10 @@ function switchToFrame(using) {
       break;
     }
   }
-  if (typeof(using.name) != "undefined") {
-    switchToFrameByName(using.name);
-  } else if (typeof(using.index != "undefined")) {
-    getFrameNameFromIndex(using.index);
+  if (name !== undefined && name != null) {
+    switchToFrameByName(name);
+  } else if (index !== undefined && index != null) {
+    getFrameNameFromIndex(index);
   } else {
     sendResponseToParsedRequest({statusCode: 9, value: {message: "Switching frames other than by name or id is unsupported"}});
   }

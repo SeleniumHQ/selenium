@@ -98,8 +98,8 @@ public class ChromeCommandExecutor {
     commands.put("setElementSelected", ELEMENT_ID_ARG);
     
     commands.put("switchToActiveElement", NO_ARGS);
-    nameToJson.put("switchToFrameByIndex", new JsonCommand("{request: 'switchToFrame', using: {index: ?index}}"));
-    nameToJson.put("switchToFrameByName", new JsonCommand("{request: 'switchToFrame', using: {name: ?name}}"));
+    commands.put("switchToFrameByIndex", new String[] {"index"});
+    commands.put("switchToFrameByName", new String[] {"name"});
     commands.put("switchToDefaultContent", NO_ARGS);
     
     commands.put("getWindowHandle", NO_ARGS);
