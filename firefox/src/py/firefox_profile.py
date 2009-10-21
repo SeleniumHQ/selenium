@@ -65,7 +65,11 @@ class FirefoxProfile(object):
         """
         self.name = name
         self.port = port
-        self.extension_path = extension_path
+        if (extension_path is None):
+            self.extension_path = os.path.join(os.path.dirname(__file__), '..',
+              'build_artifacts', 'webdriver-extension.zip')
+        else:
+	    self.extension_path = extension_path
 
         if name == ANONYMOUS_PROFILE_NAME:
             self._create_anonymous_profile(template_profile)
@@ -113,8 +117,7 @@ class FirefoxProfile(object):
                which can be created using 'rake firefox_xpi' in
                %webdriver_directory%, and
            (2) zipped files pointed by extension_zip_path, and
-           (3) zipped file specified by the environment variable WEBDRIVER_EXT.
-           (4) unzipped files specified by environment variable WEBDRIVER;
+           (3) unzipped files specified by environment variable WEBDRIVER;
                these unzipped files must include the generated xpt files,
                see %webdriver_directory%/firefox/prebuilt, or run
                'rake firefox_xpi' and use the built files generated in
@@ -138,13 +141,6 @@ class FirefoxProfile(object):
                 not os.path.exists(extension_source_path)):
                 extension_source_path = utils.unzip_to_temp_dir(
                     extension_zip_path)
-
-            if (extension_source_path is None or
-                not os.path.exists(extension_source_path)):
-              webdriver_dir = os.getenv("WEBDRIVER_EXT")
-              if webdriver_dir is not None:
-                  extension_source_path = utils.unzip_to_temp_dir(
-                      webdriver_dir)
 
             if (extension_source_path is None or
                 not os.path.exists(extension_source_path)):

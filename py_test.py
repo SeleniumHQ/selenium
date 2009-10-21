@@ -31,8 +31,6 @@ if __name__ == "__main__":
     base_dir = os.path.abspath(os.path.dirname(__file__))
     print 'base_dir:',base_dir
     os.environ["WEBDRIVER"] = base_dir
-    os.environ["WEBDRIVER_EXT"] = os.path.join(base_dir,
-                                               "../../webdriver-extension.zip")
     os.environ["PYTHONPATH"] = os.pathsep.join([os.environ.get("PYTHONPATH", ""),
                                              os.path.join(base_dir, "../../../", "firefox", "lib-src"),
                                              os.path.join(base_dir, '..')])
