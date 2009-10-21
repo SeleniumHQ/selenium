@@ -466,7 +466,7 @@ function getElement(plural, lookupBy, lookupValue, id) {
     } else {
       //Problem - we were expecting an element
       return {statusCode: 7, value: {
-          message: "Unable to locate element with " + lookupBy + " " + lookupValue}};
+          message: "Unable to find element with " + lookupBy + " " + lookupValue}};
     }
   } else {
     var elementsToReturnArray = [];
@@ -479,7 +479,7 @@ function getElement(plural, lookupBy, lookupValue, id) {
     } else {
       if (!elements[0]) {
         return {statusCode: 7, value: {
-          message: "Unable to locate element with " + lookupBy + " " + lookupValue}};
+          message: "Unable to find element with " + lookupBy + " " + lookupValue}};
       }
       //Add the first found elements to the page's elements, and push it to the array to return
       elementsToReturnArray.push(addElementToInternalArray(elements[0]).toString());
