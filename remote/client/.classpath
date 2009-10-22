@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src/java"/>
+	<classpathentry kind="src" output="build/classes" path="src/java"/>
+	<classpathentry kind="src" output="build/test-classes" path="test/java"/>
 	<classpathentry kind="lib" path="lib/runtime/commons-collections-3.2.jar"/>
 	<classpathentry kind="lib" path="lib/runtime/commons-httpclient-3.1.jar"/>
 	<classpathentry kind="lib" path="lib/runtime/commons-io-1.4.jar"/>
@@ -10,5 +11,5 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-common"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-remote-common"/>
 	<classpathentry kind="lib" path="C:/work/webdriver-trunk/third_party/java/google-collect-1.0-rc3.jar"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry kind="output" path="build/classes"/>
 </classpath>
