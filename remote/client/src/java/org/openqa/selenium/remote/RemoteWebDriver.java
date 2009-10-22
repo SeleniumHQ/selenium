@@ -275,7 +275,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
   }
 
   public boolean isJavascriptEnabled() {
-    throw new UnsupportedOperationException("isJavascriptEnabled");
+    return capabilities.isJavascriptEnabled();
   }
 
   private Object[] convertToJsObjects(Object[] args) {

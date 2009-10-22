@@ -26,6 +26,8 @@ import org.openqa.selenium.remote.ScreenshotException;
 import org.openqa.selenium.AbstractDriverTestCase;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.JavascriptEnabled;
+import org.openqa.selenium.JavascriptExecutor;
 
 import java.io.File;
 
@@ -40,5 +42,14 @@ public class RemoteWebDriverTest extends AbstractDriverTestCase {
       assertTrue(e.getCause() instanceof ScreenshotException);
       assertTrue(((ScreenshotException) e.getCause()).getBase64EncodedScreenshot().length() > 0);
     }
+  }
+
+  /**
+   * Issue 248
+   * @see <a href="http://code.google.com/p/webdriver/issues/detail?id=248">Issue 248</a>
+   */
+  @JavascriptEnabled
+  public void testShouldBeAbleToCallIsJavascriptEnabled() {
+    assertTrue(((JavascriptExecutor) driver).isJavascriptEnabled());
   }
 }
