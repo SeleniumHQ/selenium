@@ -30,7 +30,7 @@ import java.util.List;
 
 public class FindElement implements SeleneseFunction<List<String>> {
 
-  public List<String> apply(Selenium selenium, Object[] args) {
+  public List<String> apply(Selenium selenium, Object... args) {
     String how = (String) args[0];
     String using = (String) args[1];
 
