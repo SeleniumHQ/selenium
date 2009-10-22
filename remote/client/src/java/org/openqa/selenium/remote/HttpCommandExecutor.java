@@ -95,8 +95,8 @@ public class HttpCommandExecutor implements CommandExecutor {
         .put(GET_TITLE, get("/session/:sessionId/:context/title"))
         .put(GET_PAGE_SOURCE, get("/session/:sessionId/:context/source"))
         .put(SCREENSHOT, get("/session/:sessionId/:context/screenshot"))
-        .put(SET_ELEMENT_VISIBLE, post("/session/:sessionId/:context/visible"))
-        .put(IS_ELEMENT_VISIBLE, get("/session/:sessionId/:context/visible"))
+        .put(SET_BROWSER_VISIBLE, post("/session/:sessionId/:context/visible"))
+        .put(IS_BROWSER_VISIBLE, get("/session/:sessionId/:context/visible"))
         .put(FIND_ELEMENT, post("/session/:sessionId/:context/element"))
         .put(FIND_ELEMENTS, post("/session/:sessionId/:context/elements"))
         .put(GET_ACTIVE_ELEMENT,

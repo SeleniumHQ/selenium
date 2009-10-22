@@ -76,8 +76,9 @@ public enum DriverCommand {
   GET_SPEED("getSpeed"),
   SET_SPEED("setSpeed"),
 
-  SET_ELEMENT_VISIBLE("setElementVisibile"),
-  IS_ELEMENT_VISIBLE("isElementVisible"),
+  SET_BROWSER_VISIBLE("setBrowserVisible"),
+  IS_BROWSER_VISIBLE("isBrowserVisible"),
+
   GET_ELEMENT_TEXT("getElementText"),
   GET_ELEMENT_VALUE("getElementValue"),
   GET_ELEMENT_TAG_NAME("getElementTagName"),
