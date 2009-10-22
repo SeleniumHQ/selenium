@@ -103,8 +103,7 @@ public class ChromeCommandExecutor {
         .put(GET_CURRENT_URL, NO_ARGS)
         .put(GET_PAGE_SOURCE, NO_ARGS)
         .put(GET_TITLE, NO_ARGS)
-        // This actually takes arguments, but we handle it in a special case.
-        .put(EXECUTE_SCRIPT, NO_ARGS)
+        .put(EXECUTE_SCRIPT, new String[] {"script", "args"})
         .build();
 
     try {
@@ -156,11 +155,7 @@ public class ChromeCommandExecutor {
     try {
       //Respond to request with the command
       String commandStringToSend;
-      if (EXECUTE_SCRIPT.equals(command.getName())) {
-        commandStringToSend = createExecuteScriptCommandString(command);
-      } else {
-        commandStringToSend = fillArgs(command);
-      }
+      commandStringToSend = fillArgs(command);
       socket.getOutputStream().write(fillTwoHundredWithJson(commandStringToSend));
       socket.getOutputStream().flush();
     } finally {
@@ -169,8 +164,7 @@ public class ChromeCommandExecutor {
     }
   }
   
-  @SuppressWarnings({"ThrowableInstanceNeverThrown"})
-  private String fillArgs(Command command) {
+  String fillArgs(Command command) {
     String[] parameterNames = commands.get(command.getName());
     JSONObject json = new JSONObject();
     if (parameterNames.length != command.getParameters().length) {
@@ -180,45 +174,28 @@ public class ChromeCommandExecutor {
     try {
       json.put("request", command.getName());
       for (int i = 0; i < parameterNames.length; ++i) {
-        json.put(parameterNames[i], convertToJsonObject(command.getParameters()[i]));
+        //Icky icky special case
+        // TODO(jleyba): This is a temporary solution and will be going away _very_
+        // soon.
+        boolean isArgs = (EXECUTE_SCRIPT.equals(command.getName()) &&
+            "args".equals(parameterNames[i]));
+        json.put(parameterNames[i], convertToJsonObject(command.getParameters()[i], isArgs));
       }
-    } catch (JSONException e) {
-      throw new WebDriverException(e);
-    }
-    return json.toString();
-  }
-
-  // TODO(jleyba): This is a temporary solution and will be going away _very_
-  // soon.
-  @SuppressWarnings({"ThrowableInstanceNeverThrown"})
-  private String createExecuteScriptCommandString(Command command) {
-    Object[] args = command.getParameters();
-    if (args.length < 2) {
-      throw new WebDriverException(new IllegalArgumentException(
-          "Did not supply the expected number of parameters"));
-    }
-    JSONObject json = new JSONObject();
-    try {
-      json.put("request", command.getName());
-      json.put("script", (String) args[0]);
-
-      JSONArray array = new JSONArray();
-      Object[] scriptArgs = (Object[]) args[1];
-      for (Object scriptArg : scriptArgs) {
-        array.put(wrapArgumentForScriptExecution(scriptArg));
-      }
-      json.put("args", array);
     } catch (JSONException e) {
       throw new WebDriverException(e);
     }
     return json.toString();
   }
   
-  private Object convertToJsonObject(Object object) throws JSONException {
+  Object convertToJsonObject(Object object, boolean wrapArgs) throws JSONException {
     if (object.getClass().isArray()) {
       JSONArray array = new JSONArray();
-      for (Object o : (Iterable<?>)object) {
-        array.put(o);
+      for (Object o : (Object[])object) {
+        if (wrapArgs) {
+          array.put(wrapArgumentForScriptExecution(o));
+        } else {
+          array.put(o);
+        }
       }
       return array;
     }
@@ -532,6 +509,7 @@ public class ChromeCommandExecutor {
    * Wraps up values as {type: some_type, value: some_value} objects
    * @param argument value to wrap up
    * @return wrapped up value; will be either a JSONObject or a JSONArray.
+   * TODO(jleyba): Remove this
    */
   Object wrapArgumentForScriptExecution(Object argument) {
     JSONObject wrappedArgument = new JSONObject();
