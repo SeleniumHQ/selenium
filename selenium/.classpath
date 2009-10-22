@@ -9,5 +9,8 @@
 	<classpathentry kind="lib" path="lib/buildtime/testng-5.8-jdk15.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-htmlunit"/>
 	<classpathentry kind="lib" path="lib/runtime/selenium-java-client-driver-1.0.1.jar"/>
+	<classpathentry kind="lib" path="C:/work/webdriver-trunk/third_party/java/google-collect-1.0-rc3.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-remote-common"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-remote-client"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
