@@ -532,9 +532,8 @@ public class ChromeCommandExecutor {
    * Wraps up values as {type: some_type, value: some_value} objects
    * @param argument value to wrap up
    * @return wrapped up value; will be either a JSONObject or a JSONArray.
-   * TODO(danielwh): See if JSONObject and JSONArray have a useful common superclass
    */
-  static Object wrapArgumentForScriptExecution(Object argument) {
+  Object wrapArgumentForScriptExecution(Object argument) {
     JSONObject wrappedArgument = new JSONObject();
     try {
       if (argument instanceof String) {
