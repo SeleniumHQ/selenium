@@ -26,8 +26,8 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="common-buildtime" level="project" />
-    <orderEntry type="module" module-name="common" />
+    <orderEntry type="library" exported="" name="common-buildtime" level="project" />
+    <orderEntry type="module" module-name="common" exported="" />
   </component>
 </module>
 
