@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>by_test.html</title>
+  <script src="webdriver-bootstrap.js"></script>
+  <script src="testbase.js"></script>
+  <script>
+
+    function assertArraysEqual(expected, actual) {
+      assertTrue('Expected is not an array', goog.isArray(expected));
+      assertTrue('Actual is not an array', goog.isArray(actual));
+      for (var i = 0; i < expected.length; i++) {
+        assertEquals('Differenece at index ' + i, expected[i], actual[i]);
+      }
+    }
+
+
+    function testShouldResolvePrimitiveParamsToThemselves() {
+      var command = {
+        parameters: [123, 'abc', true, false, undefined, null, 456.789,
+                     goog.nullFunction]
+      };
+      webdriver.AbstractCommandProcessor.resolveFutureParams_(command);
+
+      var expected = [123, 'abc', true, false, undefined, null, 456.789,
+                      goog.nullFunction];
+      assertArraysEqual(expected, command.parameters);
+    }
+
+
+    function testShouldResolveFutureParametersToTheirValue() {
+      var command = {
+        parameters: [new webdriver.Future(null)]
+      };
+      command.parameters[0].setValue('abc123');
+      webdriver.AbstractCommandProcessor.resolveFutureParams_(command);
+      assertArraysEqual(['abc123'], command.parameters);
+    }
+
+
+    function testShouldResolveFuturesEmbeddedInRecordObjectsToTheirValue() {
+      var command = {
+        parameters: [{future: new webdriver.Future(null)}]
+      };
+      command.parameters[0].future.setValue('abc123');
+      webdriver.AbstractCommandProcessor.resolveFutureParams_(command);
+      assertEquals(1, command.parameters.length);
+      assertEquals('abc123', command.parameters[0].future);
+    }
+
+    function testShouldResolveFuturesInAnArrayToTheirValue() {
+      var command = {
+        parameters: [[new webdriver.Future(null), new webdriver.Future(null)]]
+      };
+      command.parameters[0][0].setValue('abc123');
+      command.parameters[0][1].setValue('456def');
+      webdriver.AbstractCommandProcessor.resolveFutureParams_(command);
+      assertEquals(1, command.parameters.length);
+      assertArraysEqual(['abc123', '456def'], command.parameters[0]);
+    }
+  </script>
+</head>
+<body>
+</body>
+</html>

@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>typing_forms_test</title>
+  <script src="webdriver-bootstrap.js"></script>
+  <script src="testbase.js"></script>
+  <script>
+    function setUpPage() {
+      openTestWindow();
+    }
+
+
+    function tearDownPage() {
+      closeTestWindow();
+    }
+
+
+    function setUp(driver) {
+      switchToTestWindow(driver);
+    }
+
+
+/**
+ * @fileoverview Tests for typing on INPUT and TEXTAREA elements.
+ */
+
+
+function runInputTypingTest(driver, expectedValue, var_args) {
+  var keySequence;
+  if (arguments.length == 2) {
+    keySequence = goog.array.slice(arguments, 1);
+    expectedValue = keySequence[0];
+  } else {
+    keySequence = goog.array.slice(arguments, 2);
+  }
+  driver.get(TEST_PAGE.javascriptPage);
+  var element = driver.findElement({id: 'keyReporter'});
+  element.sendKeys.apply(element, keySequence);
+  assertThat(element.getValue(), equals(expectedValue));
+}
+
+
+function runTextAreaTypingTest(driver, expectedValue, var_args) {
+  var keySequence;
+  if (arguments.length == 2) {
+    keySequence = goog.array.slice(arguments, 1);
+    expectedValue = keySequence[0];
+  } else {
+    keySequence = goog.array.slice(arguments, 2);
+  }
+  driver.get(TEST_PAGE.javascriptPage);
+  var element = driver.findElement({id: 'keyUpArea'});
+  element.sendKeys.apply(element, keySequence);
+  assertThat(element.getValue(), equals(expectedValue));
+}
+
+
+// ----------------------------------------------------------------------------
+//
+//  Tests for typing on an INPUT element.
+//
+// ----------------------------------------------------------------------------
+
+
+function testTypingLowercaseOnAnInputElement(driver) {
+  runInputTypingTest(driver, 'abcdefghijklmnopqrstuvwxyz');
+}
+
+function testTypingUppercaseLettersOnAnInputElement(driver) {
+  runInputTypingTest(driver, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+}
+
+
+function testTypingNumberRowKeysOnAnInputElement(driver) {
+  runInputTypingTest(driver, '`1234567890-=');
+}
+
+
+function testTypingNumberRowKeysShiftedOnAnInputElement(driver) {
+  runInputTypingTest(driver, '~!@#$%^&*()_+');
+}
+
+
+function testTypingNumberPadKeysOnAnInputElement(driver) {
+  runInputTypingTest(driver, '0123456789',
+      webdriver.Key.NUMPAD0, webdriver.Key.NUMPAD1,
+      webdriver.Key.NUMPAD2, webdriver.Key.NUMPAD3,
+      webdriver.Key.NUMPAD4, webdriver.Key.NUMPAD5,
+      webdriver.Key.NUMPAD6, webdriver.Key.NUMPAD7,
+      webdriver.Key.NUMPAD8, webdriver.Key.NUMPAD9);
+}
+
+
+function testTypingAllPrintableKeysWithoutShiftOnAnInputElement(driver) {
+  runInputTypingTest(driver,
+      '`1234567890-=abcdefghijklmnopqrstuvwxyz[]\\;\',./');
+}
+
+
+function testTypingAllPrintableKeysWithShiftOnAnInputElement(driver) {
+  runInputTypingTest(driver, '~!@#$%^&*()_+ABCDEFGHIJKLMNOPQRSTUVWXYZ{}|:"<>?');
+}
+
+
+function testTypingAllPrintableKeysOnAnInputElement(driver) {
+  var printableKeys =  // Mmmmm..scrambled
+      '`123$%^&*()4567890-=abcdefg{}|:"<>?hijklmntuvwxQRSTUyz[]\\;\',./' +
+      '~!@#_+ABCDEFGHIopqrsJKLMNOPVWXYZ';
+  runInputTypingTest(driver, printableKeys);
+}
+
+
+function testTypingSpaceOnAnInputElement(driver) {
+  runInputTypingTest(driver, 'a b c', 'a b', webdriver.Key.SPACE, 'c');
+}
+
+
+function testCanSubmitFormByTypingEnterOnAnInputElement(driver) {
+  function runTest(key) {
+    driver.get(TEST_PAGE.formPage);
+    var nestedForm = driver.findElement({id: 'nested_form'});
+    var input = nestedForm.findElement({name: 'x'});
+    input.sendKeys(key);
+    assertThat(driver.getTitle(), equals('We Arrive Here'));
+    assertThat(driver.getCurrentUrl(),
+               equals(TEST_PAGE.resultPage + '?x=name'));
+  }
+
+  runTest('\n');
+  runTest(webdriver.Key.ENTER);
+}
+
+
+function testArrowKeysAreNotPrintableInAnInputElement(driver) {
+  var key = webdriver.Key;
+  runInputTypingTest(driver, '',
+      key.ARROW_LEFT, key.ARROW_UP, key.ARROW_RIGHT, key.ARROW_DOWN);
+}
+
+
+function testNavigatingWithArrowKeysInAnInputElement(driver) {
+  runInputTypingTest(driver, goog.userAgent.MAC ? 'dbac1' : 'bacd1',
+      'a', webdriver.Key.LEFT,
+      'b', webdriver.Key.RIGHT,
+      'c', webdriver.Key.UP,
+      'd', webdriver.Key.DOWN,
+      '1');
+}
+
+
+function testTypingBackspaceAndDeleteInAnInputElement(driver) {
+  runInputTypingTest(driver, 'acdfgi',
+      'abcdefghi',
+      webdriver.Key.LEFT, webdriver.Key.LEFT, webdriver.Key.DELETE,
+      webdriver.Key.LEFT, webdriver.Key.LEFT, webdriver.Key.BACK_SPACE,
+      webdriver.Key.LEFT, webdriver.Key.LEFT, '\b');
+}
+
+
+if (goog.userAgent.MAC) {
+  var testCmdLeftRightJumpToEndsInAnInputElement = function(driver) {
+    runInputTypingTest(driver, 'begin middle end',
+        'middle',
+        webdriver.Key.chord(webdriver.Key.COMMAND, webdriver.Key.ARROW_LEFT),
+        'begin ',
+        webdriver.Key.chord(webdriver.Key.COMMAND, webdriver.Key.ARROW_RIGHT),
+        ' end');
+  };
+
+
+  var testCmdUpDownJumpToEndsInAnInputElement = function(driver) {
+    runInputTypingTest(driver, 'begin middle end',
+        'middle',
+        webdriver.Key.chord(webdriver.Key.COMMAND, webdriver.Key.ARROW_UP),
+        'begin ',
+        webdriver.Key.chord(webdriver.Key.COMMAND, webdriver.Key.ARROW_DOWN),
+        ' end');
+  };
+} else {
+  var testHomeAndEndJumpToEndsInAnInputElement = function(driver) {
+    runInputTypingTest(driver, 'begin middle end',
+        'middle', webdriver.Key.HOME, 'begin ', webdriver.Key.END, ' end');
+  };
+
+
+  if (goog.userAgent.IE) {
+    var testPageUpDownJumpToEndsInAnInputElementOnIe = function(driver) {
+      runInputTypingTest(driver, 'begin middle end',
+          'middle',
+          webdriver.Key.PAGE_UP, 'begin ',
+          webdriver.Key.PAGE_DOWN, ' end');
+    };
+  }
+}
+
+
+function testForwardSelectionReplacementInAnInputElement(driver) {
+  var key = webdriver.Key;
+  var jumpToFrontChord = goog.userAgent.MAC ?
+      key.chord(key.COMMAND, key.ARROW_LEFT) : key.HOME;
+  runInputTypingTest(driver, 'middle',
+      'red', jumpToFrontChord,
+      key.chord(key.SHIFT, key.ARROW_RIGHT, key.ARROW_RIGHT, key.ARROW_RIGHT),
+      'middle');
+}
+
+
+function testReverseSelectionReplacementInAnInputElement(driver) {
+  var key = webdriver.Key;
+  runInputTypingTest(driver, 'middle',
+      'red',
+      key.chord(key.SHIFT, key.ARROW_LEFT, key.ARROW_LEFT, key.ARROW_LEFT),
+      'middle');
+}
+
+
+function testSelectAllAndTypeInAnInputElement(driver) {
+  var key = webdriver.Key;
+  var selectAll =
+      key.chord(goog.userAgent.MAC ? key.COMMAND : key.CONTROL, 'a');
+  runInputTypingTest(driver, 'now is', 'was', selectAll, 'now is');
+}
+
+
+function testSelectAllAndBackspaceInAnInputElement(driver) {
+  var key = webdriver.Key;
+  var selectAll =
+      key.chord(goog.userAgent.MAC ? key.COMMAND : key.CONTROL, 'a');
+  runInputTypingTest(driver, '', 'was', selectAll, '\b');
+}
+
+
+function testSelectAllAndDeleteInAnInputElement(driver) {
+  var key = webdriver.Key;
+  var selectAll =
+      key.chord(goog.userAgent.MAC ? key.COMMAND : key.CONTROL, 'a');
+  runInputTypingTest(driver, '', 'was', selectAll, key.DELETE);
+}
+
+
+function testCutCopyPasteInAnInputElement(driver) {
+  var key = webdriver.Key;
+  var modifier = goog.userAgent.MAC ? key.COMMAND : key.CONTROL;
+  var selectAll = key.chord(modifier, 'a');
+  var cut = key.chord(modifier, 'x');
+  var copy = key.chord(modifier, 'c');
+  var paste = key.chord(modifier, 'v');
+
+  driver.get(TEST_PAGE.javascriptPage);
+  var element = driver.findElement({id: 'keyReporter'});
+  element.sendKeys('world');
+  assertThat(element.getValue(), equals('world'));
+  element.sendKeys(selectAll, cut);
+  assertThat(element.getValue(), equals(''));
+  element.sendKeys('hello, ', paste);
+  assertThat(element.getValue(), equals('hello, world'));
+  element.sendKeys(selectAll, copy, paste, key.RIGHT);
+  element.sendKeys(paste);
+  assertThat(element.getValue(), equals('hello, worldhello, world'));
+}
+
+
+if (goog.userAgent.MAC) {
+  var testCmdLeftSelectionInAnInputElement = function (driver) {
+    var key = webdriver.Key;
+    var selectToFrontChord = key.chord(key.SHIFT, key.COMMAND, key.ARROW_LEFT);
+    runInputTypingTest(driver, 'now is',
+        'was', selectToFrontChord, 'now is');
+  };
+
+
+  var testCmdRightSelectionInAnInputElement = function(driver) {
+    var key = webdriver.Key;
+    var jumpToFrontChord = key.chord(key.COMMAND, key.ARROW_LEFT);
+    var selectToEndChord = key.chord(key.SHIFT, key.COMMAND, key.ARROW_RIGHT);
+    runInputTypingTest(driver, 'now is',
+        'was', jumpToFrontChord, selectToEndChord, 'now is');
+  };
+} else {
+  var testHomeSelectionInAnInputElement = function (driver) {
+    var key = webdriver.Key;
+    var selectToFrontChord = key.chord(key.SHIFT, key.HOME);
+    runInputTypingTest(driver, 'now is',
+        'was', selectToFrontChord, 'now is');
+  };
+
+
+  var testEndSelectionInAnInputElement = function(driver) {
+    var key = webdriver.Key;
+    var selectToEndChord = key.chord(key.SHIFT, key.END);
+    runInputTypingTest(driver, 'now is',
+        'was', key.HOME, selectToEndChord, 'now is');
+  };
+
+
+  if (goog.userAgent.IE) {
+    var testPageUpSelectionInAnInputElement = function (driver) {
+      var key = webdriver.Key;
+      var selectToFrontChord = key.chord(key.SHIFT, key.PAGE_UP);
+      runInputTypingTest(driver, 'now is',
+          'was', selectToFrontChord, 'now is');
+    };
+
+
+    var testPageDownSelectionInAnInputElement = function(driver) {
+      var key = webdriver.Key;
+      var selectToEndChord = key.chord(key.SHIFT, key.PAGE_DOWN);
+      runInputTypingTest(driver, 'now is',
+          'was', key.HOME, selectToEndChord, 'now is');
+    };
+  }
+}
+
+
+// ----------------------------------------------------------------------------
+//
+//  Tests for typing on a TEXT AREA element.
+//
+// ----------------------------------------------------------------------------
+
+
+function testTypingLowercaseOnATextAreaElement(driver) {
+  runTextAreaTypingTest(driver, 'abcdefghijklmnopqrstuvwxyz');
+}
+
+function testTypingUppercaseLettersOnATextAreaElement(driver) {
+  runTextAreaTypingTest(driver, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+}
+
+
+function testTypingNumberRowKeysOnATextAreaElement(driver) {
+  runTextAreaTypingTest(driver, '`1234567890-=');
+}
+
+
+function testTypingNumberRowKeysShiftedOnATextAreaElement(driver) {
+  runTextAreaTypingTest(driver, '~!@#$%^&*()_+');
+}
+
+
+function testTypingNumberPadKeysOnATextAreaElement(driver) {
+  runTextAreaTypingTest(driver, '0123456789',
+      webdriver.Key.NUMPAD0, webdriver.Key.NUMPAD1,
+      webdriver.Key.NUMPAD2, webdriver.Key.NUMPAD3,
+      webdriver.Key.NUMPAD4, webdriver.Key.NUMPAD5,
+      webdriver.Key.NUMPAD6, webdriver.Key.NUMPAD7,
+      webdriver.Key.NUMPAD8, webdriver.Key.NUMPAD9);
+}
+
+
+function testTypingAllPrintableKeysWithoutShiftOnATextAreaElement(driver) {
+  runTextAreaTypingTest(driver,
+      '`1234567890-=abcdefghijklmnopqrstuvwxyz[]\\;\',./');
+}
+
+
+function testTypingAllPrintableKeysWithShiftOnATextAreaElement(driver) {
+  runTextAreaTypingTest(driver,
+      '~!@#$%^&*()_+ABCDEFGHIJKLMNOPQRSTUVWXYZ{}|:"<>?');
+}
+
+
+function testTypingAllPrintableKeysOnATextAreaElement(driver) {
+  var printableKeys =  // Mmmmm..scrambled
+      '`123$%^&*()4567890-=abcdefg{}|:"<>?hijklmntuvwxQRSTUyz[]\\;\',./' +
+      '~!@#_+ABCDEFGHIopqrsJKLMNOPVWXYZ';
+  runTextAreaTypingTest(driver, printableKeys);
+}
+
+
+function testTypingSpaceOnATextAreaElement(driver) {
+  runTextAreaTypingTest(driver, 'a b c', 'a b', webdriver.Key.SPACE, 'c');
+}
+
+
+function testCanStartNewlinesByTypingEnterInATextArea(driver) {
+  driver.get(TEST_PAGE.javascriptPage);
+  var textArea = driver.findElement({id: 'keyUpArea'});
+  textArea.sendKeys('line one');
+  assertThat(textArea.getValue(), equals('line one'));
+  textArea.sendKeys('\nline two');
+  assertThat(textArea.getValue(), equals('line one\nline two'));
+  textArea.sendKeys(webdriver.Key.ENTER, 'line three');
+  assertThat(textArea.getValue(), equals('line one\nline two\nline three'));
+}
+
+
+function testArrowKeysAreNotPrintableInATextAreaElement(driver) {
+  var key = webdriver.Key;
+  runTextAreaTypingTest(driver, '',
+      key.ARROW_LEFT, key.ARROW_UP, key.ARROW_RIGHT, key.ARROW_DOWN);
+}
+
+
+function testNavigatingWithArrowKeysInATextAreaElement(driver) {
+  runTextAreaTypingTest(driver, 'dbac1',
+      'a', webdriver.Key.LEFT,
+      'b', webdriver.Key.RIGHT,
+      'c', webdriver.Key.UP,
+      'd', webdriver.Key.DOWN,
+      '1');
+}
+
+
+function testNavigatingBetweenLinesWithArrowKeysInATextAreaElement(driver) {
+  runTextAreaTypingTest(driver, '------\nline 1\nline 2\nline 3',
+      'line 2\n', webdriver.Key.UP,
+      'line 1\n', webdriver.Key.DOWN,
+      'line 3',
+      webdriver.Key.UP, webdriver.Key.UP, webdriver.Key.UP,
+      '------\n');
+}
+
+
+function testTypingBackspaceAndDeleteInATextAreaElement(driver) {
+  runTextAreaTypingTest(driver, 'acdfgi',
+      'abcdefghi',
+      webdriver.Key.LEFT, webdriver.Key.LEFT, webdriver.Key.DELETE,
+      webdriver.Key.LEFT, webdriver.Key.LEFT, webdriver.Key.BACK_SPACE,
+      webdriver.Key.LEFT, webdriver.Key.LEFT, '\b');
+}
+
+
+if (goog.userAgent.MAC) {
+  var testCmdLeftRightJumpToLineEndsInATextAreaElement = function(driver) {
+    runTextAreaTypingTest(driver, 'line 1\nbegin middle end\nline 3\n',
+        'line 1\nline 3\n',
+        webdriver.Key.ARROW_UP,
+        'middle\n', webdriver.Key.ARROW_LEFT,
+        webdriver.Key.chord(webdriver.Key.COMMAND, webdriver.Key.ARROW_LEFT),
+        'begin ',
+        webdriver.Key.chord(webdriver.Key.COMMAND, webdriver.Key.ARROW_RIGHT),
+        ' end');
+  };
+
+
+  var testCmdUpDownJumpToEndsInATextAreaElement = function(driver) {
+    runTextAreaTypingTest(driver, 'line 1\nline 2\nline 3\nline 4',
+        'line 2\nline 3\n',
+        webdriver.Key.chord(webdriver.Key.COMMAND, webdriver.Key.ARROW_UP),
+        'line 1\n',
+        webdriver.Key.chord(webdriver.Key.COMMAND, webdriver.Key.ARROW_DOWN),
+        'line 4');
+  };
+} else {
+  var testHomeAndEndJumpToEndsInATextAreaElement = function(driver) {
+    runTextAreaTypingTest(driver, 'line 1\nbegin middle end\nline 3\n',
+        'line 1\nline 3\n',
+        webdriver.Key.ARROW_UP,
+        'middle\n', webdriver.Key.ARROW_LEFT,
+        webdriver.Key.HOME,
+        'begin ',
+        webdriver.Key.END,
+        ' end');
+  };
+
+
+  var testPageUpDownJumpToEndsInATextAreaElement = function(driver) {
+    runTextAreaTypingTest(driver, 'line 1\nline 2\nline 3\nline 4',
+        'line 2\nline 3\n',
+        webdriver.Key.PAGE_UP,
+        'line 1\n',
+        webdriver.Key.PAGE_DOWN,
+        'line 4');
+  };
+}
+
+
+function testForwardSelectionReplacementInATextAreaElement(driver) {
+  var key = webdriver.Key;
+  var jumpToEndChord = goog.userAgent.MAC ?
+      key.chord(key.COMMAND, key.ARROW_RIGHT) : key.chord(key.END);
+  runTextAreaTypingTest(driver, 'line 1\nmiddle\nline 3\n',
+      'line 1\nline 2\nline 3\n',
+      webdriver.Key.ARROW_UP, webdriver.Key.ARROW_UP,
+      key.SHIFT, jumpToEndChord,
+      'middle');
+}
+
+
+function testReverseSelectionReplacementInATextAreaElement(driver) {
+  var key = webdriver.Key;
+  var jumpToStartChord = goog.userAgent.MAC ?
+      key.chord(key.COMMAND, key.ARROW_LEFT) : key.chord(key.HOME);
+  var jumpToEndChord = goog.userAgent.MAC ?
+      key.chord(key.COMMAND, key.ARROW_RIGHT) : key.chord(key.END);
+  runTextAreaTypingTest(driver, 'line 1\nmiddle\nline 3\n',
+      'line 1\nline 2\nline 3\n',
+      webdriver.Key.ARROW_UP, webdriver.Key.ARROW_UP, jumpToEndChord,
+      key.SHIFT, jumpToStartChord,
+      'middle');
+}
+
+
+function testSelectAllAndTypeInATextAreaElement(driver) {
+  var key = webdriver.Key;
+  var selectAll =
+      key.chord(goog.userAgent.MAC ? key.COMMAND : key.CONTROL, 'a');
+  runTextAreaTypingTest(driver, 'now is', 'was', selectAll, 'now is');
+}
+
+
+function testSelectAllAndBackspaceInATextAreaElement(driver) {
+  var key = webdriver.Key;
+  var selectAll =
+      key.chord(goog.userAgent.MAC ? key.COMMAND : key.CONTROL, 'a');
+  runTextAreaTypingTest(driver, '', 'was', selectAll, '\b');
+}
+
+
+function testSelectAllAndDeleteInATextAreaElement(driver) {
+  var key = webdriver.Key;
+  var selectAll =
+      key.chord(goog.userAgent.MAC ? key.COMMAND : key.CONTROL, 'a');
+  runTextAreaTypingTest(driver, '', 'was', selectAll, key.DELETE);
+}
+
+
+function testCutCopyPasteInATextAreaElement(driver) {
+  var key = webdriver.Key;
+  var modifier = goog.userAgent.MAC ? key.COMMAND : key.CONTROL;
+  var selectAll = key.chord(modifier, 'a');
+  var cut = key.chord(modifier, 'x');
+  var copy = key.chord(modifier, 'c');
+  var paste = key.chord(modifier, 'v');
+
+  driver.get(TEST_PAGE.javascriptPage);
+  var element = driver.findElement({id: 'keyUpArea'});
+  element.sendKeys('world');
+  assertThat(element.getValue(), equals('world'));
+
+  element.sendKeys(selectAll, cut);
+  assertThat(element.getValue(), equals(''));
+
+  element.sendKeys('hello, ', paste, key.ENTER);
+  assertThat(element.getValue(), equals('hello, world\n'));
+
+  element.sendKeys(selectAll, copy, paste, key.RIGHT);
+  element.sendKeys(paste);
+  assertThat('Double paste failed',
+      element.getValue(), equals('hello, world\nhello, world\n'));
+}
+
+
+function testMultilineSelectionEditingInTextAreaElement(driver) {
+  var key = webdriver.Key;
+  var jumpToStartChord = goog.userAgent.MAC ?
+      key.chord(key.COMMAND, key.ARROW_LEFT) : key.chord(key.HOME);
+  var jumpToEndChord = goog.userAgent.MAC ?
+      key.chord(key.COMMAND, key.ARROW_RIGHT) : key.chord(key.END);
+  var pageUpChord = goog.userAgent.MAC ?
+      key.chord(key.COMMAND, key.ARROW_UP) : key.chord(key.PAGE_UP);
+  var pageDownChord = goog.userAgent.MAC ?
+      key.chord(key.COMMAND, key.ARROW_DOWN) : key.chord(key.PAGE_DOWN);
+
+  driver.get(TEST_PAGE.javascriptPage);
+  var element = driver.findElement({id: 'keyUpArea'});
+
+  element.sendKeys('line1\nline2\nline3');
+  assertThat(element.getValue(), equals('line1\nline2\nline3'));
+  element.sendKeys(key.ARROW_UP, jumpToStartChord,
+                   key.SHIFT, jumpToEndChord,
+                   'middle');
+  assertThat(element.getValue(), equals('line1\nmiddle\nline3'));
+
+  element.sendKeys(jumpToStartChord, key.SHIFT, key.UP);
+  element.sendKeys('beginning\n');
+  assertThat(element.getValue(), equals('beginning\nmiddle\nline3'));
+
+  element.sendKeys(jumpToStartChord, key.SHIFT, jumpToEndChord);
+  element.sendKeys(key.SHIFT, pageUpChord);
+  element.sendKeys(key.SHIFT, pageDownChord);
+  element.sendKeys('the end');
+  assertThat(element.getValue(), equals('beginning\nthe end'));
+}
+
+
+if (goog.userAgent.MAC) {
+  var testCmdLeftSelectionInATextAreaElement = function (driver) {
+    var key = webdriver.Key;
+    var selectToFrontChord = key.chord(key.SHIFT, key.COMMAND, key.ARROW_LEFT);
+    runTextAreaTypingTest(driver, 'now is',
+        'was', selectToFrontChord, 'now is');
+  };
+
+
+  var testCmdRightSelectionInATextAreaElement = function(driver) {
+    var key = webdriver.Key;
+    var jumpToFrontChord = key.chord(key.COMMAND, key.ARROW_LEFT);
+    var selectToEndChord = key.chord(key.SHIFT, key.COMMAND, key.ARROW_RIGHT);
+    runTextAreaTypingTest(driver, 'now is',
+        'was', jumpToFrontChord, selectToEndChord, 'now is');
+  };
+} else {
+  var testHomeSelectionInATextAreaElement = function (driver) {
+    var key = webdriver.Key;
+    var selectToFrontChord = key.chord(key.SHIFT, key.HOME);
+    runTextAreaTypingTest(driver, 'now is',
+        'was', selectToFrontChord, 'now is');
+  };
+
+
+  var testEndSelectionInATextAreaElement = function(driver) {
+    var key = webdriver.Key;
+    var selectToEndChord = key.chord(key.SHIFT, key.END);
+    runTextAreaTypingTest(driver, 'now is',
+        'was', key.HOME, selectToEndChord, 'now is');
+  };
+
+
+  var testPageUpSelectionInATextAreaElement = function (driver) {
+    var key = webdriver.Key;
+    var selectToFrontChord = key.chord(key.SHIFT, key.PAGE_UP);
+    runTextAreaTypingTest(driver, 'now is',
+        'content\nwas\n', selectToFrontChord, 'now is');
+  };
+
+  var testPageDownSelectionInATextAreaElement = function(driver) {
+    var key = webdriver.Key;
+    var selectToEndChord = key.chord(key.SHIFT, key.PAGE_DOWN);
+    runTextAreaTypingTest(driver, 'now is',
+        'content\nwas\n', key.PAGE_UP, selectToEndChord, 'now is');
+  };
+}
+
+  </script>
+</head>
+<body>
+</body>
+</html>

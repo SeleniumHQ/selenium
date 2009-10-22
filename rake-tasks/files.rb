@@ -4,6 +4,16 @@ def find_file(file)
   elsif File.exists?("build/#{file}")
     return "build/#{file}"
   else
+    fl = FileList.new(file).existing!()
+    if fl.length > 0
+      return fl
+    end
+
+    fl = FileList.new("build/#{file}").existing!()
+    if fl.length > 0
+      return fl
+    end
+
     puts "Unable to locate #{file}"
     exit -1
   end
@@ -12,8 +22,15 @@ end
 def copy_single_resource_(from, to)
   dir = to.sub(/(.*)\/.*?$/, '\1')
   mkdir_p "#{dir}", :verbose => false
-  
-  cp_r find_file(from), "#{to}"
+
+  from = find_file(from)
+  if from.kind_of? FileList
+    from.each do |f|
+      cp_r f, "#{to}"
+    end
+  else
+    cp_r from, "#{to}"
+  end
 end
 
 def copy_resource_(from, to)

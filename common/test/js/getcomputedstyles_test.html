@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>webdriver.WebElement.prototype.getComputedStyles Test</title>
+    <script src="webdriver-bootstrap.js"></script>
+    <script src="testbase.js"></script>
+    <script>
+
+      function assertComputedStyle(element, propertyName, expectedValue) {
+        var style = element.getComputedStyle(propertyName);
+        assertThat('Wrong value for "' + propertyName + '"',
+            style, equals(expectedValue));
+      }
+
+      function testGettingFontWeightFromABoldTag(driver) {
+        var element = driver.findElement({tagName: 'b'});
+        assertComputedStyle(element, 'font-weight', '401');
+      }
+
+
+      function testGettingStyleInheritedFromGrandParent(driver) {
+        var element = driver.findElement({tagName: 'b'});
+        assertComputedStyle(element, 'background-color', '#cccccc');
+      }
+
+
+      function testGettingStyleInheritedFromParent(driver) {
+        var element = driver.findElement({tagName: 'b'});
+        assertComputedStyle(element, 'font-family', 'monospace');
+      }
+
+
+      function testGettingColorStylesThatAreNotSetAsHex(driver) {
+        var element = driver.findElement({id: 'redDiv'});
+        assertComputedStyle(element, 'background-color', '#ff0000');
+      }
+
+
+      function testGettingStylesDefinedInCss(driver) {
+        var element = driver.findElement({tagName: 'SPAN'});
+        assertComputedStyle(element, 'font-style', 'italic');
+        assertComputedStyle(element, 'text-decoration', 'underline');
+      }
+    </script>
+    <style>
+      p { display: none; }
+      span {
+        font-style: italic;
+        text-decoration: underline;
+        font-weight: bolder;
+        font-size: 10pt;
+      }
+    </style>
+  </head>
+  <body style="background-color: #ccc">
+    <div style="background-color: inherit; font-family: monospace">
+      <b style="background-color: inherit; font-family: inherit">
+        this text is bold
+      </b>
+    </div>
+    <div id="redDiv" style="background-color: red; width: 1px; height: 1px">
+    </div>
+    <p>spanning <span>text</span></p>
+  </body>
+</html>

@@ -8,7 +8,9 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="remote" />
+    <orderEntry type="module" module-name="remote-common" />
+    <orderEntry type="module" module-name="common" />
+    <orderEntry type="module" module-name="remote-client" />
   </component>
 </module>
 

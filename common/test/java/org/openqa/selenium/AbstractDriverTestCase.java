@@ -29,6 +29,8 @@ import org.openqa.selenium.environment.webserver.AppServer;
 
 public class AbstractDriverTestCase extends TestCase implements NeedsDriver {
 
+  protected TestEnvironment environment;
+  protected AppServer appServer;
   protected WebDriver driver;
 
   protected String simpleTestPage;
@@ -57,9 +59,9 @@ public class AbstractDriverTestCase extends TestCase implements NeedsDriver {
   protected void setUp() throws Exception {
     super.setUp();
 
-    TestEnvironment environment = GlobalTestEnvironment.get();
+    environment = GlobalTestEnvironment.get();
+    appServer = environment.getAppServer();
 
-    AppServer appServer = environment.getAppServer();
     simpleTestPage = appServer.whereIs("simpleTest.html");
     xhtmlTestPage = appServer.whereIs("xhtmlTest.html");
     formPage = appServer.whereIs("formPage.html");

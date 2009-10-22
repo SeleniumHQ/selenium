@@ -17,15 +17,17 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
 import java.io.File;
+import java.io.FilenameFilter;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashSet;
@@ -33,6 +35,8 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class TestSuiteBuilder {
+
+  private static final File JS_TEST_DIR = new File("common/test/js");
 
   private File baseDir;
   private Set<File> sourceDirs = new HashSet<File>();
@@ -45,6 +49,7 @@ public class TestSuiteBuilder {
   private String onlyRun;
   private String testMethodName;
   private Set<String> decorators = new LinkedHashSet<String>();
+  private boolean includeJsApiTests = false;
 
   public TestSuiteBuilder() {
     String[] possiblePaths = {"common", "../common",};
@@ -108,6 +113,10 @@ public class TestSuiteBuilder {
       addTestsRecursively(suite, dir);
     }
 
+    if (includeJsApiTests && includeJavascript) {
+      addJsApiTests(suite);
+    }
+
     TestSuite toReturn = new TestSuite();
     if (withEnvironment) {
       toReturn.addTest(new EnvironmentStarter(suite));
@@ -146,11 +155,15 @@ public class TestSuiteBuilder {
   }
 
   private void addTestsFromFile(TestSuite suite, File file) {
-    @SuppressWarnings("unchecked")
-    Class<? extends TestCase> clazz = (Class<? extends TestCase>) getClassFrom(file);
-    if (clazz == null) {
+    Class<?> rawClass = getClassFrom(file);
+    if (rawClass == null
+        || !TestCase.class.isAssignableFrom(rawClass)
+        || JsApiTestCase.class.isAssignableFrom(rawClass)) {
       return;
     }
+
+    @SuppressWarnings("unchecked")
+    Class<? extends TestCase> clazz = (Class<? extends TestCase>) rawClass;
 
     int modifiers = clazz.getModifiers();
 
@@ -192,16 +205,12 @@ public class TestSuiteBuilder {
       return method.getName().equals(testMethodName);
     }
 
-    Ignore ignore = method.getAnnotation(Ignore.class);
-    for (Ignore.Driver name : ignored) {
-      if (isIgnored(name, ignore)) {
-        if (isIgnored(name, ignore)) {
-          System.err.println("Ignoring: "
-                             + method.getDeclaringClass() + "."
-                             + method.getName() + ": " + ignore.reason());
-          return false;
-        }
-      }
+    if (isIgnored(method)) {
+      System.err.println("Ignoring: "
+                         + method.getDeclaringClass() + "."
+                         + method.getName() + ": "
+                         + method.getAnnotation(Ignore.class).reason());
+      return false;
     }
 
     if (!includeJavascript
@@ -213,18 +222,17 @@ public class TestSuiteBuilder {
            || method.getAnnotation(org.junit.Test.class) != null;
   }
 
-  private boolean isIgnored(Ignore.Driver name, Ignore ignore) {
-    if (ignore == null) {
+  private boolean isIgnored(AnnotatedElement annotatedElement) {
+    Ignore ignore = annotatedElement.getAnnotation(Ignore.class);
+    if (ignore == null || ignore.value().length == 0) {
       return false;
     }
 
-    if (ignore.value().length == 0) {
-      return true;
-    }
-
     for (Ignore.Driver value : ignore.value()) {
-      if (value == name || value == Ignore.Driver.ALL) {
-        return true;
+      for (Ignore.Driver name : ignored) {
+        if (value == name || value == Ignore.Driver.ALL) {
+          return true;
+        }
       }
     }
 
@@ -260,6 +268,18 @@ public class TestSuiteBuilder {
     return this;
   }
 
+  /**
+   * Include tests for WebDriverJS; implies {@link #includeJavascriptTests()}.
+   * No tests will be run if {@link #usingNoDriver()} is set.
+   * @return A self reference.
+   * @see #includeJavascriptTests()
+   * @see #usingNoDriver()
+   */
+  public TestSuiteBuilder includeJsApiTests() {
+    this.includeJsApiTests = true;
+    return includeJavascriptTests();
+  }
+
   public TestSuiteBuilder usingNoDriver() {
     withDriver = false;
 
@@ -292,5 +312,43 @@ public class TestSuiteBuilder {
   public TestSuiteBuilder leaveRunning() {
     System.setProperty("webdriver.singletestsuite.leaverunning", "true");
     return this;
+  }
+
+  /**
+   * Adds the tests for the WebDriver JS API to the given TestSuite. The tests
+   * will not be added if the given WebDriver instance is not supported by
+   * WebDriverJS or if the suite is configured to run tests without a WebDriver
+   * instance.
+   *
+   * @param suite The suite to add the JS API tests to.
+   */
+  private void addJsApiTests(TestSuite suite) {
+    if (isIgnored(JsApiTestCase.class)) {
+      System.err.println("Ignoring JS API tests for " + driverClass.getName() + ": "
+                         + JsApiTestCase.class.getAnnotation(Ignore.class).reason());
+      return;
+    } else if (!withDriver) {
+      System.err.println("Skipping JS API tests: tests require a driver instance");
+      return;
+    }
+
+    for (File file : JS_TEST_DIR.listFiles(new TestFilenameFilter())) {
+      String path = file.getAbsolutePath()
+          .replace(JS_TEST_DIR.getAbsolutePath() + File.separator, "")
+          .replace(File.separator, "/");
+      TestCase test = new JsApiTestCase("/js/test/" + path);
+      suite.addTest(new DriverTestDecorator(test, driverClass,
+          /*keepDriver=*/true, /*freshDriver=*/false, /*refreshDriver=*/false));
+    }
+  }
+
+  /**
+   * Filter used to identify JS API test case files in a directory.
+   */
+  private static class TestFilenameFilter implements FilenameFilter {
+    /** @inheritDoc */
+    public boolean accept(File dir, String name) {
+      return name.endsWith("_test.html");
+    }
   }
 }

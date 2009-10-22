@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>typing_contenteditable_test</title>
+  <script src="webdriver-bootstrap.js"></script>
+  <script src="testbase.js"></script>
+  <script>
+    function setUpPage() {
+      openTestWindow();
+    }
+
+
+    function tearDownPage() {
+      closeTestWindow();
+    }
+
+
+    function setUp(driver) {
+      switchToTestWindow(driver);
+    }
+
+
+/**
+ * @fileoverview Tests for typing on an element with contentEditable enabled.
+ */
+
+if (goog.userAgent.IE || IS_FF_3) {
+  function runContentEditableTypingTest(driver, expected, var_args) {
+    var keySequence;
+    if (arguments.length == 2) {
+      keySequence = goog.array.slice(arguments, 1);
+      expected = keySequence[0];
+    } else {
+      keySequence = goog.array.slice(arguments, 2);
+    }
+    driver.get(TEST_PAGE.richtextPage);
+    var element = driver.findElement({id: 'editDiv'});
+    element.sendKeys.apply(element, keySequence);
+    assertThat(
+        'In firefox, typing certain keys will not work if Firefox is not the ' +
+        'active application: Arrow UP|DOWN|LEFT|RIGHT',
+        element.getText(), equals(expected));
+  }
+
+
+  function testTypingLowercaseInAContentEditableElement(driver) {
+    runContentEditableTypingTest(driver, 'abcdefghijklmnopqrstuvwxyz');
+  }
+
+
+  function testTypingUppercaseLettersInAContentEditableElement(driver) {
+    runContentEditableTypingTest(driver, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+  }
+
+
+  function testTypingNumberRowKeysInAContentEditableElement(driver) {
+    runContentEditableTypingTest(driver, '`1234567890-=');
+  }
+
+
+  function testTypingNumberRowKeysShiftedInAContentEditableElement(driver) {
+    runContentEditableTypingTest(driver, '~!@#$%^&*()_+');
+  }
+
+
+  function testTypingNumberPadKeysInAContentEditableElement(driver) {
+    runContentEditableTypingTest(driver, '0123456789',
+        webdriver.Key.NUMPAD0, webdriver.Key.NUMPAD1,
+        webdriver.Key.NUMPAD2, webdriver.Key.NUMPAD3,
+        webdriver.Key.NUMPAD4, webdriver.Key.NUMPAD5,
+        webdriver.Key.NUMPAD6, webdriver.Key.NUMPAD7,
+        webdriver.Key.NUMPAD8, webdriver.Key.NUMPAD9);
+  }
+
+
+  function testTypingAllPrintableKeysWithoutShiftInAContentEditableElement(
+      driver) {
+    runContentEditableTypingTest(driver,
+        '`1234567890-=abcdefghijklmnopqrstuvwxyz[]\\;\',./');
+  }
+
+
+  function testTypingAllPrintableKeysWithShiftInAContentEditableElement(
+      driver) {
+    runContentEditableTypingTest(driver,
+        '~!@#$%^&*()_+ABCDEFGHIJKLMNOPQRSTUVWXYZ{}|:"<>?');
+  }
+
+
+  function testTypingAllPrintableKeysInAContentEditableElement(driver) {
+    var printableKeys =  // Mmmmm..scrambled
+        '`123$%^&*()4567890-=abcdefg{}|:"<>?hijklmntuvwxQRSTUyz[]\\;\',./' +
+        '~!@#_+ABCDEFGHIopqrsJKLMNOPVWXYZ';
+    runContentEditableTypingTest(driver, printableKeys);
+  }
+
+
+  function testTypingSpaceInAContentEditableElement(driver) {
+    runContentEditableTypingTest(driver, 'a b c',
+        'a b', webdriver.Key.SPACE, 'c');
+  }
+
+
+  function testCanStartNewlinesByTypingReturnInAContentEditableElement(driver) {
+    driver.get(TEST_PAGE.richtextPage);
+    var element = driver.findElement({id: 'editDiv'});
+    element.sendKeys('line one');
+    assertThat(element.getText(), equals('line one'));
+    element.sendKeys('\nline two');
+    assertThat(element.getText(), equals('line one\nline two'));
+    element.sendKeys(webdriver.Key.RETURN, 'line three');
+    assertThat(element.getText(), equals('line one\nline two\nline three'));
+  }
+
+
+  function testTypingReturnWithAliasKeys(driver) {
+    runContentEditableTypingTest(driver, 'a\nb\nc\nd\n\ne',
+        'a\nb\rc\r\nd\r\r\ne');
+  }
+
+
+  function testArrowKeysAreNotPrintableInAContentEditableElement(
+      driver) {
+    var key = webdriver.Key;
+    runContentEditableTypingTest(driver, '',
+        key.ARROW_LEFT, key.ARROW_UP, key.ARROW_RIGHT, key.ARROW_DOWN);
+  }
+
+
+  function testNavigatingWithArrowKeysInAContentEditableElement(driver) {
+    runContentEditableTypingTest(driver, 'dbac1',
+        'a', webdriver.Key.LEFT,
+        'b', webdriver.Key.RIGHT,
+        'c', webdriver.Key.UP,
+        'd', webdriver.Key.DOWN,
+        '1');
+  }
+
+
+  function testNavigatingBetweenLinesWithArrowKeysInAContentEditableElement(
+      driver) {
+    runContentEditableTypingTest(driver, '------\nline 1\nline 2\nline 3',
+        'line 2\n', webdriver.Key.UP,
+        'line 1\n', webdriver.Key.DOWN,
+        'line 3',
+        webdriver.Key.UP, webdriver.Key.UP, webdriver.Key.UP,
+        '------\n');
+  }
+
+
+  function testTypingBackspaceAndDeleteInAContentEditableElement(driver) {
+    runContentEditableTypingTest(driver, 'acdfgi',
+        'abcdefghi',
+        webdriver.Key.LEFT, webdriver.Key.LEFT, webdriver.Key.DELETE,
+        webdriver.Key.LEFT, webdriver.Key.LEFT, webdriver.Key.BACK_SPACE,
+        webdriver.Key.LEFT, webdriver.Key.LEFT, '\b');
+  }
+
+
+  if (!goog.userAgent.MAC) {
+    var testHomeAndEndJumpToEndsInAContentEditableElement = function(driver) {
+      runContentEditableTypingTest(driver, 'line 1\nbegin middle end\nline 3',
+          'line 1\nline 3\n',
+          webdriver.Key.ARROW_UP,
+          'middle\n', webdriver.Key.ARROW_LEFT,
+          webdriver.Key.HOME,
+          'begin ',
+          webdriver.Key.END,
+          ' end');
+    };
+
+
+    // In FF3, PageUp/Down default to navigating the page, not jumping to the
+    // ends of content.
+    if (goog.userAgent.IE) {
+      var testPageUpDownJumpToEndsInAContentEditableElement = function(driver) {
+        runContentEditableTypingTest(driver, 'line 1\nline 2\nline 3\nline 4',
+            'line 2\nline 3\n',
+            webdriver.Key.PAGE_UP,
+            'line 1\n',
+            webdriver.Key.PAGE_DOWN,
+            'line 4');
+      };
+    }
+  }
+
+
+  function testForwardSelectionReplacementInAContentEditableElement(driver) {
+    var key = webdriver.Key;
+    runContentEditableTypingTest(driver, 'a\nMIDDLE\nc',
+        'a\nb\nc\n',
+        key.UP, key.UP, key.SHIFT, key.RIGHT,
+        'middle');
+  }
+
+
+  function testReverseSelectionReplacementInAContentEditableElement(driver) {
+    var key = webdriver.Key;
+    runContentEditableTypingTest(driver, 'a\n!@#',
+        'a\nb\nc\n',
+        key.SHIFT, key.LEFT, key.LEFT, key.LEFT, key.LEFT,
+        '123');
+  }
+
+
+  function testSelectionReplacementInAContentEditableElement(driver) {
+    driver.get(TEST_PAGE.richtextPage);
+    var element = driver.findElement({id: 'editDiv'});
+    element.sendKeys("one");
+    assertThat(element.getText(), equals("one"));
+
+    element.sendKeys(webdriver.Key.SHIFT, webdriver.Key.UP);
+    element.sendKeys("two");
+    assertThat(element.getText(), equals("two"));
+
+    element.sendKeys(webdriver.Key.UP);
+    element.sendKeys(webdriver.Key.SHIFT, webdriver.Key.DOWN);
+    element.sendKeys("three");
+    assertThat(element.getText(), equals("three"));
+  }
+
+
+  function testSelectAllAndTypeInAContentEditableElement(driver) {
+    var key = webdriver.Key;
+    var selectAll =
+        key.chord(goog.userAgent.MAC ? key.COMMAND : key.CONTROL, 'a');
+    runContentEditableTypingTest(driver, 'now is', 'was', selectAll, 'now is');
+  }
+
+
+  function testSelectAllAndBackspaceInAContentEditableElement(driver) {
+    var key = webdriver.Key;
+    var selectAll =
+        key.chord(goog.userAgent.MAC ? key.COMMAND : key.CONTROL, 'a');
+    runContentEditableTypingTest(driver, '', 'was', selectAll, '\b');
+  }
+
+
+  function testSelectAllAndDeleteInAContentEditableElement(driver) {
+    var key = webdriver.Key;
+    var selectAll =
+        key.chord(goog.userAgent.MAC ? key.COMMAND : key.CONTROL, 'a');
+    runContentEditableTypingTest(driver, '', 'was', selectAll, key.DELETE);
+  }
+
+
+  function testCutCopyPasteInAContentEditableElement(driver) {
+    var key = webdriver.Key;
+    var modifier = goog.userAgent.MAC ? key.COMMAND : key.CONTROL;
+    var cut = key.chord(modifier, 'x');
+    var copy = key.chord(modifier, 'c');
+    var paste = key.chord(modifier, 'v');
+
+    driver.get(TEST_PAGE.richtextPage);
+    var element = driver.findElement({id: 'editDiv'});
+    element.sendKeys('abc');
+    assertThat(element.getText(), equals('abc'));
+    element.sendKeys(key.LEFT, key.LEFT, key.SHIFT, key.LEFT);
+    element.sendKeys(cut);
+    assertThat(element.getText(), equals('bc'));
+    element.sendKeys(key.RIGHT, key.RIGHT);
+    element.sendKeys(paste, paste);
+    assertThat(element.getText(), equals('bcaa'));
+    element.sendKeys(key.SHIFT, key.LEFT, key.LEFT);
+    element.sendKeys(copy);
+    element.sendKeys(key.RIGHT, paste, paste, paste);
+    assertThat(element.getText(), equals('bcaaaaaaaa'));
+  }
+
+
+  if (!goog.userAgent.MAC) {
+    var testHomeSelectionInAContentEditableElement = function (driver) {
+      var key = webdriver.Key;
+      var selectToFrontChord = key.chord(key.SHIFT, key.HOME);
+      runContentEditableTypingTest(driver, 'now is',
+          'was', selectToFrontChord, 'now is');
+    };
+
+
+    var testEndSelectionInAContentEditableElement = function(driver) {
+      var key = webdriver.Key;
+      var selectToEndChord = key.chord(key.SHIFT, key.END);
+      runContentEditableTypingTest(driver, 'now is',
+          'was', key.HOME, selectToEndChord, 'now is');
+    };
+
+
+    // Shift+PageUp/Down doesn't work for contentEditable in FF3
+    if (goog.userAgent.IE) {
+      var testPageUpSelectionInAContentEditableElement = function (driver) {
+        var key = webdriver.Key;
+        var selectToFrontChord = key.chord(key.SHIFT, key.PAGE_UP);
+        runContentEditableTypingTest(driver, 'now is',
+            'was', selectToFrontChord, 'now is');
+      };
+
+      var testPageDownSelectionInAContentEditableElement = function(driver) {
+        var key = webdriver.Key;
+        var selectToEndChord = key.chord(key.SHIFT, key.PAGE_DOWN);
+        runContentEditableTypingTest(driver, 'now is',
+            'was', key.HOME, selectToEndChord, 'now is');
+      };
+    }
+  }
+}
+  </script>
+</head>
+<body>
+</body>
+</html>

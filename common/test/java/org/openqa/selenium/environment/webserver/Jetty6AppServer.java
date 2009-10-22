@@ -38,17 +38,29 @@ import javax.servlet.Servlet;
 public class Jetty6AppServer implements AppServer {
 
   private static final String DEFAULT_CONTEXT_PATH = "/common";
+  private static final String JS_SRC_CONTEXT_PATH = "/js/src";
+  private static final String JS_TEST_CONTEXT_PATH = "/js/test";
+  private static final String THIRD_PARTY_JS_CONTEXT_PATH = "/third_party/goog";
 
   private int port;
   private int securePort;
   private File path;
+  private File jsSrcRoot;
+  private File jsTestRoot;
+  private File thirdPartyJsRoot;
   private final Server server = new Server();
   private WebAppContext context;
 
   public Jetty6AppServer() {
     path = findRootOfWebApp();
+    jsSrcRoot = findJsSrcWebAppRoot();
+    jsTestRoot = findJsTestWebAppRoot();
+    thirdPartyJsRoot = findThirdPartyJsWebAppRoot();
 
-    context = addWebApplication(DEFAULT_CONTEXT_PATH, path.getAbsolutePath());
+    context = addWebApplication(DEFAULT_CONTEXT_PATH, path);
+    addWebApplication(JS_SRC_CONTEXT_PATH, jsSrcRoot);
+    addWebApplication(JS_TEST_CONTEXT_PATH, jsTestRoot);
+    addWebApplication(THIRD_PARTY_JS_CONTEXT_PATH, thirdPartyJsRoot);
 
     addServlet("Redirecter", "/redirect", RedirectServlet.class);
     addServlet("InfinitePagerServer", "/page/*", PageServlet.class);
@@ -75,7 +87,10 @@ public class Jetty6AppServer implements AppServer {
         }
       }
     }
+  }
 
+  public File getJsTestRoot() {
+    return jsTestRoot;
   }
 
   protected File findRootOfWebApp() {
@@ -98,6 +113,40 @@ public class Jetty6AppServer implements AppServer {
     return null;
   }
 
+  private static File findJsSrcWebAppRoot() {
+    return findWebAppRoot(new String[] {
+        "common/src/js",
+        "../common/src/js",
+        "../../common/src/js"
+    });
+  }
+
+  private static File findJsTestWebAppRoot() {
+    return findWebAppRoot(new String[] {
+        "common/test/js",
+        "../common/test/js",
+        "../../common/test/js"
+    });
+  }
+
+  private static File findThirdPartyJsWebAppRoot() {
+    return findWebAppRoot(new String[] {
+        "third_party/goog",
+        "../third_party/goog",
+        "../../third_party/goog"
+    });
+  }
+
+  private static File findWebAppRoot(String[] possiblePaths) {
+    for (String potential : possiblePaths) {
+      File current = new File(potential);
+      if (current.exists()) {
+        return current;
+      }
+    }
+    return null;
+  }
+
   public String getHostName() {
     return "localhost";
   }
@@ -111,28 +160,24 @@ public class Jetty6AppServer implements AppServer {
   }
 
   public String whereIs(String relativeUrl) {
-    return whereIs(DEFAULT_CONTEXT_PATH, relativeUrl);
-  }
-
-  public String whereIs(String context, String relativeUrl) {
-    return "http://" + getHostName() + ":" + port + context + "/" + relativeUrl;
+    if (!relativeUrl.startsWith("/")) {
+      relativeUrl = DEFAULT_CONTEXT_PATH + "/" + relativeUrl;
+    }
+    return "http://" + getHostName() + ":" + port + relativeUrl;
   }
 
   public String whereElseIs(String relativeUrl) {
-    return whereElseIs(DEFAULT_CONTEXT_PATH, relativeUrl);
-  }
-
-  public String whereElseIs(String context, String relativeUrl) {
-    return "http://" + getAlternateHostName() + ":" + port + context + "/" + relativeUrl;
+    if (!relativeUrl.startsWith("/")) {
+      relativeUrl = DEFAULT_CONTEXT_PATH + "/" + relativeUrl;
+    }
+    return "http://" + getAlternateHostName() + ":" + port + relativeUrl;
   }
 
   public String whereIsSecure(String relativeUrl) {
-    return whereIsSecure(DEFAULT_CONTEXT_PATH, relativeUrl);
-  }
-
-
-  public String whereIsSecure(String context, String relativeUrl) {
-    return "https://" + getHostName() + ":" + securePort + context + "/" + relativeUrl;
+    if (!relativeUrl.startsWith("/")) {
+      relativeUrl = DEFAULT_CONTEXT_PATH + "/" + relativeUrl;
+    }
+    return "https://" + getHostName() + ":" + securePort + relativeUrl;
   }
 
   public void start() {
@@ -204,11 +249,19 @@ public class Jetty6AppServer implements AppServer {
     addWebApplication(context, absolutePath);
   }
 
+  private WebAppContext addWebApplication(String contextPath, File rootDir) {
+    return addWebApplication(contextPath, rootDir.getAbsolutePath());
+  }
+
   private WebAppContext addWebApplication(String contextPath, String absolutePath) {
     WebAppContext app = new WebAppContext();
     app.setContextPath(contextPath);
     app.setWar(absolutePath);
     server.addHandler(app);
     return app;
+  }
+
+  public static void main(String[] args) {
+    new Jetty6AppServer().start();
   }
 }

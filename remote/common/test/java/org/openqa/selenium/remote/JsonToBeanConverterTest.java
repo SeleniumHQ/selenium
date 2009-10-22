@@ -77,7 +77,7 @@ public class JsonToBeanConverterTest extends TestCase {
 
     Map map = new JsonToBeanConverter().convert(Map.class, toConvert.toString());
 
-    assertThat(3, is(map.get("magicNumber")));
+    assertThat(3L, is(map.get("magicNumber")));
   }
 
   @SuppressWarnings("unchecked")
@@ -222,13 +222,13 @@ public class JsonToBeanConverterTest extends TestCase {
   public void testShouldBeAbleToConvertACommand() throws Exception {
     SessionId sessionId = new SessionId("session id");
     Context context = new Context("context");
-    Command original = new Command(sessionId, context, "methodName", "cheese");
+    Command original = new Command(sessionId, context, DriverCommand.NEW_SESSION, "cheese");
     String raw = new BeanToJsonConverter().convert(original);
     Command converted = new JsonToBeanConverter().convert(Command.class, raw);
 
     assertEquals(sessionId.toString(), converted.getSessionId().toString());
     assertEquals(context.toString(), converted.getContext().toString());
-    assertEquals(original.getMethodName(), converted.getMethodName());
+    assertEquals(original.getName(), converted.getName());
 
     assertTrue(converted.getParameters().length == 1);
     assertEquals("cheese", converted.getParameters()[0]);

@@ -91,7 +91,7 @@ function parsePortMessage(message) {
     response.value = deleteCookie(message.request.name);
     response.wait = false;
     break;
-  case "execute":
+  case "executeScript":
     execute(message.request.script, message.request.args);
     //Sends port message back to background page from its own callback
     break;
@@ -99,7 +99,7 @@ function parsePortMessage(message) {
     response.value = getCookies();
     response.wait = false;
     break;
-  case "getCookieNamed":
+  case "getCookie":
     response.value = getCookieNamed(message.request.name);
     response.wait = false;
     break;
@@ -177,7 +177,7 @@ function parsePortMessage(message) {
     history.forward();
     response.value = {statusCode: 0};
     break;
-  case "hoverElement":
+  case "hoverOverElement":
     response.value = hoverElement(element, message.request.elementId);
     break;
   case "injectEmbed":
@@ -199,16 +199,18 @@ function parsePortMessage(message) {
     ChromeDriverContentScript.currentDocument.location.reload(true);
     response.value = {statusCode: 0};
     break;
-  case "sendElementKeys":
+  case "sendKeysToElement":
     response.value = sendElementKeys(element, message.request.keys, message.request.elementId);
+    response.wait = false;
     break;
   case "sendElementNonNativeKeys":
     response.value = sendElementNonNativeKeys(element, message.request.keys);
+    response.wait = false;
     break;
   case "setElementSelected":
     response.value = selectElement(element);
     break;
-  case "switchToActiveElement":
+  case "getActiveElement":
     response.value = {statusCode: 0, value: [addElementToInternalArray(ChromeDriverContentScript.currentDocument.activeElement).toString()]};
     response.wait = false;
     break;

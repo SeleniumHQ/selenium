@@ -10,6 +10,9 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="common" />
+    <orderEntry type="module" module-name="firefox" />
+    <orderEntry type="module" module-name="jobbie" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
@@ -20,7 +23,10 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="remote" />
+    <orderEntry type="module" module-name="htmlunit" />
+    <orderEntry type="module" module-name="remote-common" />
+    <orderEntry type="module" module-name="remote-client" />
+    <orderEntry type="library" name="third_party-buildtime" level="project" />
   </component>
 </module>
 

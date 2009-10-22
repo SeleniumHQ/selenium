@@ -17,16 +17,16 @@ limitations under the License.
 
 package org.openqa.selenium.remote;
 
+import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
+import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.internal.WrapsElement;
-import org.openqa.selenium.internal.FindsByTagName;
-import static org.openqa.selenium.remote.MapMaker.map;
 
 import java.util.List;
 
@@ -49,31 +49,32 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
   }
 
   public void click() {
-    execute("clickElement", map("id", id));
+    execute(DriverCommand.CLICK_ELEMENT, ImmutableMap.of("id", id));
   }
 
   public void submit() {
-    execute("submitElement", map("id", id));
+    execute(DriverCommand.SUBMIT_ELEMENT, ImmutableMap.of("id", id));
   }
 
   public String getValue() {
-    return (String) execute("getElementValue", map("id", id)).getValue();
+    return (String) execute(DriverCommand.GET_ELEMENT_VALUE, ImmutableMap.of("id", id)).getValue();
   }
 
   public void sendKeys(CharSequence... keysToSend) {
-    execute("sendKeys", map("id", id, "value", keysToSend));
+    execute(DriverCommand.SEND_KEYS_TO_ELEMENT, ImmutableMap.of("id", id, "value", keysToSend));
   }
 
   public void clear() {
-    execute("clearElement", map("id", id));
+    execute(DriverCommand.CLEAR_ELEMENT, ImmutableMap.of("id", id));
   }
 
   public String getTagName() {
-    return (String) execute("getTagName", map("id", id)).getValue();
+    return (String) execute(DriverCommand.GET_ELEMENT_TAG_NAME, ImmutableMap.of("id", id)).getValue();
   }
 
   public String getAttribute(String name) {
-    Object value = execute("getElementAttribute", map("id", id, "name", name)).getValue();
+    Object value = execute(DriverCommand.GET_ELEMENT_ATTRIBUTE, ImmutableMap.of("id", id, "name", name))
+        .getValue();
     if (value == null) {
       return null;
     }
@@ -81,23 +82,23 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
   }
 
   public boolean toggle() {
-    return (Boolean) execute("toggleElement", map("id", id)).getValue();
+    return (Boolean) execute(DriverCommand.TOGGLE_ELEMENT, ImmutableMap.of("id", id)).getValue();
   }
 
   public boolean isSelected() {
-    return (Boolean) execute("isElementSelected", map("id", id)).getValue();
+    return (Boolean) execute(DriverCommand.IS_ELEMENT_SELECTED, ImmutableMap.of("id", id)).getValue();
   }
 
   public void setSelected() {
-    execute("setElementSelected", map("id", id));
+    execute(DriverCommand.SET_ELEMENT_SELECTED, ImmutableMap.of("id", id));
   }
 
   public boolean isEnabled() {
-    return (Boolean) execute("isElementEnabled", map("id", id)).getValue();
+    return (Boolean) execute(DriverCommand.IS_ELEMENT_ENABLED, ImmutableMap.of("id", id)).getValue();
   }
 
   public String getText() {
-    Response response = execute("getElementText", map("id", id));
+    Response response = execute(DriverCommand.GET_ELEMENT_TEXT, ImmutableMap.of("id", id));
     return (String) response.getValue();
   }
 
@@ -110,77 +111,91 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
   }
 
  public WebElement findElementById(String using) {
-    Response response = execute("findElementUsingElement", map("id", id, "using", "id", "value", using));
+    Response response = execute(DriverCommand.FIND_CHILD_ELEMENT,
+        ImmutableMap.of("id", id, "using", "id", "value", using));
     return getElementFrom(response);
   }
 
   public List<WebElement> findElementsById(String using) {
-    Response response = execute("findElementsUsingElement", map("id", id, "using", "id", "value", using));
+    Response response = execute(DriverCommand.FIND_CHILD_ELEMENTS,
+        ImmutableMap.of("id", id, "using", "id", "value", using));
     return getElementsFrom(response);
   }
 
   public WebElement findElementByLinkText(String using) {
-    Response response = execute("findElementUsingElement", map("id", id, "using", "link text", "value", using));
+    Response response = execute(DriverCommand.FIND_CHILD_ELEMENT,
+        ImmutableMap.of("id", id, "using", "link text", "value", using));
     return getElementFrom(response);
   }
 
   public List<WebElement> findElementsByLinkText(String using) {
-    Response response = execute("findElementsUsingElement", map("id", id, "using", "link text", "value", using));
+    Response response = execute(DriverCommand.FIND_CHILD_ELEMENTS,
+        ImmutableMap.of("id", id, "using", "link text", "value", using));
     return getElementsFrom(response);
   }
 
   public WebElement findElementByName(String using) {
-    Response response = execute("findElementUsingElement", map("id", id, "using", "name", "value", using));
+    Response response = execute(DriverCommand.FIND_CHILD_ELEMENT,
+        ImmutableMap.of("id", id, "using", "name", "value", using));
     return getElementFrom(response);
   }
 
   public List<WebElement> findElementsByName(String using) {
-    Response response = execute("findElementsUsingElement", map("id", id, "using", "name", "value", using));
+    Response response = execute(DriverCommand.FIND_CHILD_ELEMENTS,
+        ImmutableMap.of("id", id, "using", "name", "value", using));
     return getElementsFrom(response);
   }
 
   public WebElement findElementByClassName(String using) {
-    Response response = execute("findElementUsingElement", map("id", id, "using", "class name", "value", using));
+    Response response = execute(DriverCommand.FIND_CHILD_ELEMENT,
+        ImmutableMap.of("id", id, "using", "class name", "value", using));
     return getElementFrom(response);
   }
 
   public List<WebElement> findElementsByClassName(String using) {
-    Response response = execute("findElementsUsingElement", map("id", id, "using", "class name", "value", using));
+    Response response = execute(DriverCommand.FIND_CHILD_ELEMENTS,
+        ImmutableMap.of("id", id, "using", "class name", "value", using));
     return getElementsFrom(response);
   }
 
   public WebElement findElementByXPath(String using) {
-    Response response = execute("findElementUsingElement", map("id", id, "using", "xpath", "value", using));
+    Response response = execute(DriverCommand.FIND_CHILD_ELEMENT,
+        ImmutableMap.of("id", id, "using", "xpath", "value", using));
     return getElementFrom(response);
   }
 
   public List<WebElement> findElementsByXPath(String using) {
-    Response response = execute("findElementsUsingElement", map("id", id, "using", "xpath", "value", using));
+    Response response = execute(DriverCommand.FIND_CHILD_ELEMENTS,
+        ImmutableMap.of("id", id, "using", "xpath", "value", using));
     return getElementsFrom(response);
   }
 
   public WebElement findElementByPartialLinkText(String using) {
-    Response response = execute("findElementUsingElement", map("id", id, "using", "partial link text", "value", using));
+    Response response = execute(DriverCommand.FIND_CHILD_ELEMENT,
+        ImmutableMap.of("id", id, "using", "partial link text", "value", using));
     return getElementFrom(response); 
   }
 
   public List<WebElement> findElementsByPartialLinkText(String using) {
-    Response response = execute("findElementsUsingElement", map("id", id, "using", "partial link text", "value", using));
+    Response response = execute(DriverCommand.FIND_CHILD_ELEMENTS,
+        ImmutableMap.of("id", id, "using", "partial link text", "value", using));
     return getElementsFrom(response);
   }
 
   public WebElement findElementByTagName(String using) {
-    Response response = execute("findElementUsingElement", map("id", id, "using", "tag name", "value", using));
+    Response response = execute(DriverCommand.FIND_CHILD_ELEMENT,
+        ImmutableMap.of("id", id, "using", "tag name", "value", using));
     return getElementFrom(response);
   }
 
   public List<WebElement> findElementsByTagName(String using) {
-    Response response = execute("findElementsUsingElement", map("id", id, "using", "tag name", "value", using));
+    Response response = execute(DriverCommand.FIND_CHILD_ELEMENTS,
+        ImmutableMap.of("id", id, "using", "tag name", "value", using));
     return getElementsFrom(response);
   }
 
-  protected Response execute(String commandName, Object... parameters) {
-    return parent.execute(commandName, parameters);
+  protected Response execute(DriverCommand command, Object... parameters) {
+    return parent.execute(command, parameters);
   }
 
   protected WebElement getElementFrom(Response response) {
@@ -206,7 +221,8 @@ public class RemoteWebElement implements WebElement, FindsByLinkText, FindsById,
       return false;
     }
 
-    Response response = execute("equals", map("id", id, "other", ((RemoteWebElement) other).id));
+    Response response = execute(DriverCommand.ELEMENT_EQUALS,
+        ImmutableMap.of("id", id, "other", ((RemoteWebElement) other).id));
     Object value = response.getValue();
     return value != null && value instanceof Boolean && (Boolean) value;
   }

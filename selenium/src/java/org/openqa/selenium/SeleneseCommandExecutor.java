@@ -22,6 +22,7 @@ import com.thoughtworks.selenium.DefaultSelenium;
 import com.thoughtworks.selenium.HttpCommandProcessor;
 import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.SeleniumException;
+import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.firefox.internal.Executable;
 import org.openqa.selenium.internal.selenesedriver.SeleneseFunction;
@@ -52,6 +53,8 @@ import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.Response;
+import org.openqa.selenium.remote.DriverCommand;
+import static org.openqa.selenium.remote.DriverCommand.*;
 
 import java.io.File;
 import java.net.URL;
@@ -60,7 +63,7 @@ import java.util.Map;
 
 public class SeleneseCommandExecutor implements CommandExecutor {
   private final Selenium instance;
-  private Map<String, SeleneseFunction> functions = new HashMap<String, SeleneseFunction>();
+  private Map<DriverCommand, SeleneseFunction> functions;
 
   public SeleneseCommandExecutor(URL seleniumServer, URL remoteAddress, Capabilities capabilities) {
     this(new HttpCommandProcessor(
@@ -75,10 +78,10 @@ public class SeleneseCommandExecutor implements CommandExecutor {
   }
 
   public Response execute(Command command) throws Exception {
-    SeleneseFunction function = functions.get(command.getMethodName());
+    SeleneseFunction function = functions.get(command.getName());
     if (function == null) {
-      System.out.println("command.getMethodName() = " + command.getMethodName());
-      throw new UnsupportedOperationException("cannot execute: " + command.getMethodName());
+      System.out.println("command.getMethodName() = " + command.getName());
+      throw new UnsupportedOperationException("cannot execute: " + command.getName());
     }
 
     try {
@@ -109,26 +112,28 @@ public class SeleneseCommandExecutor implements CommandExecutor {
   }
 
   private void prepareCommands() {
-    functions.put("clearElement", new ClearElement());
-    functions.put("clickElement", new ClickElement());
-    functions.put("currentUrl", new GetCurrentUrl());
-    functions.put("findElement", new FindElement());
-    functions.put("get", new GetUrl());
-    functions.put("getElementAttribute", new GetElementAttribute());
-    functions.put("getElementText", new GetElementText());
-    functions.put("getElementValue", new GetElementValue());
-    functions.put("getTagName", new GetTagName());
-    functions.put("getTitle", new GetTitle());
-    functions.put("isElementDisplayed", new IsElementDisplayed());
-    functions.put("isElementEnabled", new IsElementEnabled());
-    functions.put("isElementSelected", new IsElementSelected());
-    functions.put("newSession", new NewSession());
-    functions.put("pageSource", new GetPageSource());
-    functions.put("sendKeys", new SendKeys());
-    functions.put("setElementSelected", new SetElementSelected());
-    functions.put("submitElement", new SubmitElement());
-    functions.put("toggleElement", new ToggleElement());
-    functions.put("quit", new QuitSelenium());
+    functions = ImmutableMap.<DriverCommand, SeleneseFunction>builder()
+        .put(CLEAR_ELEMENT, new ClearElement())
+        .put(CLICK_ELEMENT, new ClickElement())
+        .put(GET_CURRENT_URL, new GetCurrentUrl())
+        .put(FIND_ELEMENT, new FindElement())
+        .put(GET, new GetUrl())
+        .put(GET_ELEMENT_ATTRIBUTE, new GetElementAttribute())
+        .put(GET_ELEMENT_TEXT, new GetElementText())
+        .put(GET_ELEMENT_VALUE, new GetElementValue())
+        .put(GET_ELEMENT_TAG_NAME, new GetTagName())
+        .put(GET_TITLE, new GetTitle())
+        .put(IS_ELEMENT_DISPLAYED, new IsElementDisplayed())
+        .put(IS_ELEMENT_ENABLED, new IsElementEnabled())
+        .put(IS_ELEMENT_SELECTED, new IsElementSelected())
+        .put(NEW_SESSION, new NewSession())
+        .put(GET_PAGE_SOURCE, new GetPageSource())
+        .put(SEND_KEYS_TO_ELEMENT, new SendKeys())
+        .put(SET_ELEMENT_SELECTED, new SetElementSelected())
+        .put(SUBMIT_ELEMENT, new SubmitElement())
+        .put(TOGGLE_ELEMENT, new ToggleElement())
+        .put(QUIT, new QuitSelenium())
+        .build();
   }
 
   private static String startCommand(Capabilities capabilities) {

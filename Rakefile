@@ -80,8 +80,14 @@ xpt(:name => "events_xpt",
     :prebuilt => "firefox/prebuilt",
     :out  => "nsINativeEvents.xpt")
 
+xpt(:name => "responseHandler_xpt",
+    :src => [ "firefox/src/extension/idl/nsIResponseHandler.idl" ],
+    :prebuilt => "firefox/prebuilt",
+    :out => "nsIResponseHandler.xpt")
+
 xpt(:name => "commandProcessor_xpt",
-    :src => [ "firefox/src/extension/components/nsICommandProcessor.idl" ],
+    :src => [ "firefox/src/extension/idl/nsICommandProcessor.idl" ],
+    :deps => [ :responseHandler_xpt ],
     :prebuilt => "firefox/prebuilt",
     :out => "nsICommandProcessor.xpt")
 
@@ -94,12 +100,13 @@ xpi(:name => "firefox_xpi",
     :deps => [
                :commandProcessor_xpt,
                :events_xpt,
+               :responseHandler_xpt,
                :firefox_dll,
                :libwebdriver_firefox,
              ],
     :resources => [
-                    { "nsICommandProcessor.xpt" => "components/nsICommandProcessor.xpt" },
-                    { "nsINativeEvents.xpt" => "components/nsINativeEvents.xpt" },
+                    { "common/src/js/extension/*.js" => "content/" },
+                    { "*.xpt" => "components/" },
                     { "Win32/Release/webdriver-firefox.dll" => "platform/WINNT_x86-msvc/components/webdriver-firefox.dll" },
                     { "linux/Release/libwebdriver-firefox.so" => "platform/Linux_x86-gcc3/components/libwebdriver-firefox.so" },
                     { "linux64/Release/libwebdriver-firefox.so" => "platform/Linux_x86_64-gcc3/components/libwebdriver-firefox.so" },
@@ -199,42 +206,58 @@ test_java(:name => "test_support",
                    ],
           :out  => "webdriver-support-test.jar")
 
-jar(:name => "remote_client",
-    :src  => [ "remote/client/src/java/**/*.java", "remote/common/src/java/**/*.java" ],
+jar(:name => "remote_common",
+    :src => [ "remote/common/src/java/**/*.java" ],
     :deps => [
                :common,
                "remote/common/lib/runtime/*.jar",
+               "third_party/java/google-collect-1.0-rc3.jar"
+             ],
+    :zip => true,
+    :out => "webdriver-remote-common.jar")
+
+jar(:name => "remote_client",
+    :src  => [ "remote/client/src/java/**/*.java" ],
+    :deps => [
+               :common,
+               :remote_common,
                "remote/client/lib/runtime/*.jar",
              ],
     :zip  => true,
     :out  => "webdriver-remote-client.jar")
 
 jar(:name => "remote_server",
-    :src  => [ "remote/server/src/java/**/*.java", "remote/common/src/java/**/*.java" ],
+    :src  => [ "remote/server/src/java/**/*.java" ],
     :deps => [
                :htmlunit,
                :ie,
                :firefox,
+               :remote_common,
                :support,
-               "remote/common/lib/runtime/*.jar",
                "remote/server/lib/runtime/*.jar"
              ],
     :out  => "webdriver-remote-server.jar")
 
-test_java(:name => "test_remote",
-          :src  => [
-                     "remote/common/test/java/**/*.java",
-                     "remote/client/test/java/**/*.java",
-                     "remote/server/test/java/**/*.java"
-                   ],
+test_java(:name => "test_remote_common",
+          :src => [ "remote/common/test/java/**/*.java" ],
           :deps => [
-                     :test_common,
+                     :remote_common,
+                     :test_common
+                   ],
+          :out => "webdriver-remote-common-test.jar")
+
+test_java(:name => "test_remote",
+          :src  => [ "remote/client/test/java/**/*.java",
+                     "remote/server/test/java/**/*.java" ],
+          :deps => [
                      :remote_client,
-                     :remote_server
+                     :remote_server,
+                     :test_common,
+                     :test_remote_common
                    ],
           :out => "webdriver-remote-test.jar")
 
-task :remote => [:remote_server, :remote_client]
+task :remote => [:remote_common, :remote_server, :remote_client]
 
 dll(:name => "chrome_dll",
     :src  => [ "common/src/cpp/webdriver-interactions/**/*", "chome/src/cpp/**/*" ],
@@ -316,13 +339,34 @@ jar(:name => "jsapi",
     :deps => [ :firefox, :test_common ],
     :out => "webdriver-jsapi.jar")
 
+# Comprehensive test suite for testing the JS API in isolation against all of
+# the supported browsers. This should be included in the :test task; for that we
+# defer to the suites for the individual drivers.
 test_java(:name => "test_jsapi",
-          :src => [ "remote/server/test/java/**/JsApi*.java" ],
-          :deps => [ :jsapi ],
+          :src => [ "jsapi/test/java/**/*.java" ],
+          :deps => [ :firefox, :chrome, :test_common ],
           :out  => "webdriver-jsapi-test.jar")
 
+# Simply starts the Jetty6AppServer for manually testing the JS API tests.
+# After starting, open a browser to http://localhost:$PORT/js/test, where $PORT
+# is the port the server was started on.
+test_java(:name => "debug_jsapi",
+          :deps => [ :firefox, :test_common ],
+          :main => "org.openqa.selenium.environment.webserver.Jetty6AppServer")
+
 task :build => [:common, :htmlunit, :firefox, :ie, :iphone, :support, :remote, :chrome, :selenium]
-task :test => [:test_htmlunit, :test_firefox, :test_ie, :test_iphone, :test_support, :test_remote, :test_jsapi, :test_chrome, :test_selenium]
+task :test => [
+                :test_htmlunit,
+                :test_firefox,
+                :test_ie,
+                :test_chrome,
+                :test_iphone,
+                :test_support,
+                :test_remote_common,
+                :test_remote,
+                :test_selenium
+              ]
+
 
 task :javadocs => [:common, :firefox, :htmlunit, :jobbie, :remote, :support, :chrome] do
   mkdir_p "build/javadoc", :verbose => false
@@ -384,6 +428,7 @@ task :remote_release => [:remote] do
 
   cp Dir.glob('remote/common/lib/runtime/*.jar'), 'build/dist/remote_client'
   cp Dir.glob('remote/client/lib/runtime/*.jar'), 'build/dist/remote_client'
+  cp 'third_party/java/google-collect-1.0-rc3.jar', 'build/dist/remote_client'
 
   sh "cd build/dist && zip -r webdriver-remote-client-#{version}.zip remote_client/*"
   rm_rf "build/dist/remote_client"
@@ -396,6 +441,7 @@ task :remote_release => [:remote] do
 
   cp Dir.glob('remote/common/lib/runtime/*.jar'), 'build/dist/remote_server'
   cp Dir.glob('remote/server/lib/runtime/*.jar'), 'build/dist/remote_server'
+  cp 'third_party/java/google-collect-1.0-rc3.jar', 'build/dist/remote_server'
 
   rm Dir.glob('build/dist/remote_server/servlet*.jar')
 
@@ -435,7 +481,8 @@ zip(:name => "all_zip",
              FileList.new("remote/client/lib/runtime/*.jar") +
              FileList.new("remote/common/lib/runtime/*.jar") +
              FileList.new("chrome/lib/runtime/*.jar") +
-             FileList.new("support/lib/runtime/*.jar"),
+             FileList.new("support/lib/runtime/*.jar") +
+             FileList.new("third_party/java/*.jar"),
       :deps => [
                  :all
                ],

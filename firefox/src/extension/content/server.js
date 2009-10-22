@@ -17,10 +17,38 @@ limitations under the License.
 */
 
 var driver = false;
+var domMessenger = null;
 
+// This will configure a FirefoxDriver and DomMessenger for each
+// _browser window_ (not chrome window). Multiple tabs in the same window will
+// share a FirefoxDriver and DomMessenger instance.
 window.addEventListener("load", function(e) {
     handle = Components.classes["@googlecode.com/webdriver/fxdriver;1"].createInstance(Components.interfaces.nsISupports);
     var server = handle.wrappedJSObject;
+
+  if (!domMessenger) {
+    var appcontent = document.getElementById('appcontent');
+    if (appcontent) {
+      try {
+        var commandProcessor = Components.
+            classes['@googlecode.com/webdriver/command-processor;1'].
+            getService(Components.interfaces.nsICommandProcessor);
+        domMessenger = new DomMessenger(commandProcessor);
+        appcontent.addEventListener('DOMContentLoaded',
+            function(e) {
+              domMessenger.onPageLoad(e);
+            }, true);
+        appcontent.addEventListener('pagehide',
+            function(e) {
+              domMessenger.onPageUnload(e);
+            }, true);
+      } catch (ex) {
+        // Not catching this can really mess things up and lead to inexplicable
+        // and hard to debug behavior.
+        Components.utils.reportError(ex);
+      }
+    }
+  }
 
     if (!driver) {
         driver = server.newDriver(window);

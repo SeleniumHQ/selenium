@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>staleelementhandling_test</title>
+  <script src="webdriver-bootstrap.js"></script>
+  <script src="testbase.js"></script>
+  <script>
+    function setUpPage() {
+      openTestWindow();
+    }
+
+
+    function tearDownPage() {
+      closeTestWindow();
+    }
+
+
+    function setUp(driver) {
+      switchToTestWindow(driver);
+    }
+
+
+function testOldPage(driver) {
+  driver.get(TEST_PAGE.simpleTestPage);
+  var element = driver.findElement({id: 'links'});
+  driver.get(TEST_PAGE.xhtmlTestPage);
+  element.click();
+  driver.catchExpectedError('Element should be stale');
+}
+
+
+function testShouldNotCrashWhenCallingGetSizeOnAnObsoleteElement(driver) {
+  driver.get(TEST_PAGE.simpleTestPage);
+  var element = driver.findElement({id: 'links'});
+  driver.get(TEST_PAGE.xhtmlTestPage);
+  element.getSize();
+  driver.catchExpectedError('Element should be stale');
+}
+
+
+function testDynamicallyRemovingAnElementFromTheDomCausesAStaleReference(
+    driver) {
+  driver.get(TEST_PAGE.javascriptPage);
+  var toDelete = driver.findElement({id: 'deleted'});
+  assertThat(toDelete.isDisplayed(), is(true));
+  driver.findElement({id: 'delete'}).click();
+  toDelete.isDisplayed();
+  driver.catchExpectedError(
+      'Element should be stale at this point');
+}
+  </script>
+</head>
+<body>
+</body>
+</html>

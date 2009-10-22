@@ -277,7 +277,7 @@ public class FirefoxDriver implements WebDriver, JavascriptExecutor,
     }
 
     protected WebDriver findActiveDriver() {
-        String response = sendMessage(WebDriverException.class, "findActiveDriver");
+        String response = sendMessage(WebDriverException.class, "newSession");
 
         Context newContext = new Context(response);
         if (newContext.getDriverId().equals(newContext.getDriverId())) {
@@ -298,7 +298,7 @@ public class FirefoxDriver implements WebDriver, JavascriptExecutor,
     }
 
     private void fixId() {
-        String response = sendMessage(WebDriverException.class, "findActiveDriver");
+        String response = sendMessage(WebDriverException.class, "newSession");
         this.context = new Context(response);
     }
 
@@ -311,7 +311,7 @@ public class FirefoxDriver implements WebDriver, JavascriptExecutor,
   }
 
   public Set<String> getWindowHandles() {
-    String allHandles = sendMessage(WebDriverException.class, "getAllWindowHandles");
+    String allHandles = sendMessage(WebDriverException.class, "getWindowHandles");
     String[] handles = allHandles.split(",");
     HashSet<String> toReturn = new HashSet<String>();
     toReturn.addAll(Arrays.asList(handles));

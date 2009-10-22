@@ -76,12 +76,13 @@ public class JsonToBeanConverter {
       if (rawCommand.has("context"))
         context = convert(Context.class, rawCommand.getString("context"));
 
+      DriverCommand name = DriverCommand.fromName(rawCommand.getString("name"));
       if (rawCommand.has("parameters")) {
         List args = convert(ArrayList.class, rawCommand.getJSONArray("parameters"));
-        return (T) new Command(sessionId, context, rawCommand.getString("methodName"), args.toArray());
+        return (T) new Command(sessionId, context, name, args.toArray());
       }
 
-      return (T) new Command(sessionId, context, rawCommand.getString("methodName"));
+      return (T) new Command(sessionId, context, name);
     }
 
     if (Context.class.equals(clazz)) {

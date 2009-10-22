@@ -47,19 +47,6 @@ setup(
    version="0.7",
    description='Python bindings for WebDriver',
    url='http://code.google.com/p/selenium/',
-   author='WebDriver development team',
-   author_email='webdriver AT googlegroups.com',
-   license='ApacheV2',
-   classifiers=[
-      "Intended Audience :: Developers",
-      "License :: DFSG approved",
-      "License :: OSI Approved :: Apache Software License",
-      "Programming Language :: Java",
-      "Programming Language :: JavaScript",
-      "Programming Language :: Python",
-      "Topic :: Internet :: WWW/HTTP",
-      "Topic :: Software Development :: Testing"
-   ],
    package_dir={
                 'webdriver':'.',
                 'webdriver.firefox': 'firefox/src/py',
@@ -69,7 +56,6 @@ setup(
                 'webdriver.common_web': 'common/src/web',
                 'webdriver.firefox_tests': 'firefox/test/py',
                 'webdriver.remote_tests': 'remote/client/test/py',
-                'webdriver.build_artifacts': 'build'
                 },
    packages=['webdriver', 
              'webdriver.common',
@@ -78,11 +64,8 @@ setup(
              'webdriver.common_tests',
              'webdriver.common_web',
              'webdriver.firefox_tests',
-             'webdriver.remote_tests',
-             'webdriver.build_artifacts'],
+             'webdriver.remote_tests'],
    include_package_data=True,
    package_data={'': ['*.' + t for t in test_web_extensions], 
-                'webdriver.common_web':all_dirs_and_extensions,
-                'webdriver.build_artifacts': ['webdriver-extension.zip']},
-   install_requires='simplejson'
+                'webdriver.common_web':all_dirs_and_extensions}
 )

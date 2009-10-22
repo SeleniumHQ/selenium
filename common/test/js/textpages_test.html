@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>textpages_test.html</title>
+  <script src="webdriver-bootstrap.js"></script>
+  <script src="testbase.js"></script>
+  <script type="text/javascript">
+    goog.global.setUpPage = function() {
+      openTestWindow();
+    };
+
+
+    goog.global.tearDownPage = function() {
+      closeTestWindow();
+    };
+
+
+    function setUp(driver) {
+      driver.switchToWindow('test_window');
+    }
+
+
+    function testShouldBeAbleToLoadASimplePageOfText(driver) {
+      driver.get(TEST_PAGE.textPage);
+      assertThat(
+          driver.getPageSource(),
+          equals('<html><head></head><body><pre>Test</pre></body></html>'));
+    }
+
+
+    function testFindingAnElementOnAPlainTextPageWillNeverWork(driver) {
+      driver.get(TEST_PAGE.textPage);
+      assertThat(driver.isElementPresent({id: 'foo'}), equals(false));
+      driver.findElement({id: 'foo'});
+      driver.catchExpectedError('This shouldn\'t work!');
+    }
+  </script>
+</head>
+<body>
+</body>
+</html>

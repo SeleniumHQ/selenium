@@ -95,7 +95,7 @@ class ExtensionConnection(object):
         """Connects to the extension and retrieves the context id."""
         self._connect()
         self.context = "null"
-        self.context = self.driver_command("findActiveDriver")["response"]
+        self.context = self.driver_command("newSession")["response"]
 
     def _connect(self):
         """Connects to the extension."""

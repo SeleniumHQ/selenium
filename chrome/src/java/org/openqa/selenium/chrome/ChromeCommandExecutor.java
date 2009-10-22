@@ -2,25 +2,7 @@
 
 package org.openqa.selenium.chrome;
 
-import java.awt.Dimension;
-import java.awt.Point;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-
+import com.google.common.collect.ImmutableMap;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,6 +15,25 @@ import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.XPathLookupException;
 import org.openqa.selenium.remote.Command;
+import org.openqa.selenium.remote.DriverCommand;
+import static org.openqa.selenium.remote.DriverCommand.*;
+
+import java.awt.Dimension;
+import java.awt.Point;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ChromeCommandExecutor {
   private static final String[] ELEMENT_ID_ARG = new String[] {"elementId"};
@@ -46,72 +47,66 @@ public class ChromeCommandExecutor {
   //Whether a client has ever been connected
   private boolean hasClient = false;
   ListeningThread listeningThread;
-  private Map<String, JsonCommand> nameToJson = new HashMap<String, JsonCommand>();
-  private Map<String, String[]> commands = new HashMap<String, String[]>();
+  private Map<DriverCommand, String[]> commands;
   
   /**
    * Creates a new ChromeCommandExecutor which listens on a TCP port.
    * Doesn't return until the TCP port is connected to.
    * @param port port on which to listen for the initial connection,
    * and dispatch commands
-   * @throws IOException if could not bind to port
+   * @throws WebDriverException if could not bind to port
    * TODO(danielwh): Bind to a random port (blocked on crbug.com 11547)
    */
   public ChromeCommandExecutor(int port) {
-    commands.put("close", NO_ARGS);
-    commands.put("quit", NO_ARGS);
+    commands = ImmutableMap.<DriverCommand, String[]> builder()
+        .put(CLOSE, NO_ARGS)
+        .put(QUIT, NO_ARGS)
+        .put(GET, new String[] {"url"})
+        .put(GO_BACK, NO_ARGS)
+        .put(GO_FORWARD, NO_ARGS)
+        .put(REFRESH, NO_ARGS)
+        .put(ADD_COOKIE, new String[] {"cookie"})
+        .put(GET_ALL_COOKIES,  NO_ARGS)
+        .put(GET_COOKIE, new String[] {"name"})
+        .put(DELETE_ALL_COOKIES, NO_ARGS)
+        .put(DELETE_COOKIE, new String[] {"name"})
+        .put(FIND_ELEMENT, new String[] {"using", "value"})
+        .put(FIND_ELEMENTS, new String[] {"using", "value"})
+        .put(FIND_CHILD_ELEMENT, new String[] {"id", "using", "value"})
+        .put(FIND_CHILD_ELEMENTS, new String[] {"id", "using", "value"})
+        .put(CLEAR_ELEMENT, ELEMENT_ID_ARG)
+        .put(CLICK_ELEMENT, ELEMENT_ID_ARG)
+        .put(HOVER_OVER_ELEMENT, ELEMENT_ID_ARG)
+        .put(SEND_KEYS_TO_ELEMENT, new String[] {"elementId", "keys"})
+        .put(SUBMIT_ELEMENT, ELEMENT_ID_ARG)
+        .put(TOGGLE_ELEMENT, ELEMENT_ID_ARG)
+        .put(GET_ELEMENT_ATTRIBUTE, new String[] {"elementId", "attribute"})
+        .put(GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW, ELEMENT_ID_ARG)
+        .put(GET_ELEMENT_LOCATION, ELEMENT_ID_ARG)
+        .put(GET_ELEMENT_SIZE, ELEMENT_ID_ARG)
+        .put(GET_ELEMENT_TAG_NAME, ELEMENT_ID_ARG)
+        .put(GET_ELEMENT_TEXT, ELEMENT_ID_ARG)
+        .put(GET_ELEMENT_VALUE, ELEMENT_ID_ARG)
+        .put(GET_ELEMENT_VALUE_OF_CSS_PROPERTY,
+             new String[] {"elementId", "css"})
+        .put(IS_ELEMENT_DISPLAYED, ELEMENT_ID_ARG)
+        .put(IS_ELEMENT_ENABLED, ELEMENT_ID_ARG)
+        .put(IS_ELEMENT_SELECTED, ELEMENT_ID_ARG)
+        .put(SET_ELEMENT_SELECTED, ELEMENT_ID_ARG)
+        .put(GET_ACTIVE_ELEMENT, NO_ARGS)
+        .put(SWITCH_TO_FRAME_BY_INDEX, new String[] {"index"})
+        .put(SWITCH_TO_FRAME_BY_NAME, new String[] {"name"})
+        .put(SWITCH_TO_DEFAULT_CONTENT, NO_ARGS)
+        .put(GET_CURRENT_WINDOW_HANDLE, NO_ARGS)
+        .put(GET_WINDOW_HANDLES, NO_ARGS)
+        .put(SWITCH_TO_WINDOW, new String[] {"windowName"})
+        .put(GET_CURRENT_URL, NO_ARGS)
+        .put(GET_PAGE_SOURCE, NO_ARGS)
+        .put(GET_TITLE, NO_ARGS)
+        // This actually takes arguments, but we handle it in a special case.
+        .put(EXECUTE_SCRIPT, NO_ARGS)
+        .build();
 
-    commands.put("url", new String[] {"url"});
-    commands.put("goBack", NO_ARGS);
-    commands.put("goForward", NO_ARGS);
-    commands.put("refresh", NO_ARGS);
-    
-    commands.put("addCookie", new String[] {"cookie"});
-    commands.put("getCookies", NO_ARGS);
-    commands.put("getCookieNamed", new String[] {"name"});
-    commands.put("deleteAllCookies", NO_ARGS);
-    commands.put("deleteCookie", new String[] {"name"});
-    
-    commands.put("findElement", new String[] {"using", "value"});
-    commands.put("findElements", new String[] {"using", "value"});
-    commands.put("findChildElement", new String[] {"id", "using", "value"});
-    commands.put("findChildElements", new String[] {"id", "using", "value"});
-    
-    commands.put("clearElement", ELEMENT_ID_ARG);
-    commands.put("clickElement", ELEMENT_ID_ARG);
-    commands.put("hoverElement", ELEMENT_ID_ARG);
-    commands.put("sendElementKeys", new String[] {"elementId", "keys"});
-    commands.put("submitElement", ELEMENT_ID_ARG);
-    commands.put("toggleElement", ELEMENT_ID_ARG);
-    
-    commands.put("getElementAttribute", new String[] {"elementId", "attribute"});
-    commands.put("getElementLocationOnceScrolledIntoView", ELEMENT_ID_ARG);
-    commands.put("getElementLocation", ELEMENT_ID_ARG);
-    commands.put("getElementSize", ELEMENT_ID_ARG);
-    commands.put("getElementTagName", ELEMENT_ID_ARG);
-    commands.put("getElementText", ELEMENT_ID_ARG);
-    commands.put("getElementValue", ELEMENT_ID_ARG);
-    commands.put("getElementValueOfCssProperty", new String[] {"elementId", "css"});
-    commands.put("isElementDisplayed", ELEMENT_ID_ARG);
-    commands.put("isElementEnabled", ELEMENT_ID_ARG);
-    commands.put("isElementSelected", ELEMENT_ID_ARG);
-    commands.put("setElementSelected", ELEMENT_ID_ARG);
-    
-    commands.put("switchToActiveElement", NO_ARGS);
-    commands.put("switchToFrameByIndex", new String[] {"index"});
-    commands.put("switchToFrameByName", new String[] {"name"});
-    commands.put("switchToDefaultContent", NO_ARGS);
-    
-    commands.put("getWindowHandle", NO_ARGS);
-    commands.put("getWindowHandles", NO_ARGS);
-    commands.put("switchToWindow", new String[] {"windowName"});
-    
-    nameToJson.put("execute", new JsonCommand("EXECUTE")); //Dealt with specially
-    
-    commands.put("getCurrentUrl", NO_ARGS);
-    commands.put("getPageSource", NO_ARGS);
-    commands.put("getTitle", NO_ARGS);
-    
     try {
       serverSocket = new ServerSocket(port);
     } catch (IOException e) {
@@ -161,16 +156,10 @@ public class ChromeCommandExecutor {
     try {
       //Respond to request with the command
       String commandStringToSend;
-      if (commands.containsKey(command.getMethodName())) {
-        commandStringToSend = fillArgs(command);
+      if (EXECUTE_SCRIPT.equals(command.getName())) {
+        commandStringToSend = createExecuteScriptCommandString(command);
       } else {
-        JsonCommand commandToPopulate = 
-          nameToJson.get(command.getMethodName());
-        if (commandToPopulate == null) {
-          throw new UnsupportedOperationException("Didn't know how to execute: " +
-              command.getMethodName());
-        }
-        commandStringToSend = commandToPopulate.populate(command.getParameters());
+        commandStringToSend = fillArgs(command);
       }
       socket.getOutputStream().write(fillTwoHundredWithJson(commandStringToSend));
       socket.getOutputStream().flush();
@@ -180,18 +169,45 @@ public class ChromeCommandExecutor {
     }
   }
   
+  @SuppressWarnings({"ThrowableInstanceNeverThrown"})
   private String fillArgs(Command command) {
-    String[] parameterNames = commands.get(command.getMethodName());
+    String[] parameterNames = commands.get(command.getName());
     JSONObject json = new JSONObject();
     if (parameterNames.length != command.getParameters().length) {
       throw new WebDriverException(new IllegalArgumentException(
           "Did not supply the expected number of parameters"));
     }
     try {
-      json.put("request", command.getMethodName());
+      json.put("request", command.getName());
       for (int i = 0; i < parameterNames.length; ++i) {
         json.put(parameterNames[i], convertToJsonObject(command.getParameters()[i]));
       }
+    } catch (JSONException e) {
+      throw new WebDriverException(e);
+    }
+    return json.toString();
+  }
+
+  // TODO(jleyba): This is a temporary solution and will be going away _very_
+  // soon.
+  @SuppressWarnings({"ThrowableInstanceNeverThrown"})
+  private String createExecuteScriptCommandString(Command command) {
+    Object[] args = command.getParameters();
+    if (args.length < 2) {
+      throw new WebDriverException(new IllegalArgumentException(
+          "Did not supply the expected number of parameters"));
+    }
+    JSONObject json = new JSONObject();
+    try {
+      json.put("request", command.getName());
+      json.put("script", (String) args[0]);
+
+      JSONArray array = new JSONArray();
+      Object[] scriptArgs = (Object[]) args[1];
+      for (Object scriptArg : scriptArgs) {
+        array.put(wrapArgumentForScriptExecution(scriptArg));
+      }
+      json.put("args", array);
     } catch (JSONException e) {
       throw new WebDriverException(e);
     }
@@ -512,174 +528,41 @@ public class ChromeCommandExecutor {
     }
   }
   
-  static class JsonCommand {
-    private final String json;
-    
-    /**
-     * @param json String of form {var:?val, var2: "foo"}
-     * where things starting with ? are placeholders for parameters
-     */
-    JsonCommand(String json) {
-      if (json == null) {
-        throw new NullPointerException("JSON cannot be null in JsonCommand");
+  /**
+   * Wraps up values as {type: some_type, value: some_value} objects
+   * @param argument value to wrap up
+   * @return wrapped up value; will be either a JSONObject or a JSONArray.
+   * TODO(danielwh): See if JSONObject and JSONArray have a useful common superclass
+   */
+  static Object wrapArgumentForScriptExecution(Object argument) {
+    JSONObject wrappedArgument = new JSONObject();
+    try {
+      if (argument instanceof String) {
+        wrappedArgument.put("type", "STRING");
+        wrappedArgument.put("value", argument);
+      } else if (argument instanceof Boolean) {
+        wrappedArgument.put("type", "BOOLEAN");
+        wrappedArgument.put("value", argument);
+      } else if (argument instanceof Number) {
+        wrappedArgument.put("type", "NUMBER");
+        wrappedArgument.put("value", argument);
+      } else if (argument instanceof ChromeWebElement) {
+        wrappedArgument.put("type", "ELEMENT");
+        wrappedArgument.put("value", ((ChromeWebElement)argument).getElementId());
+      } else if (argument instanceof Collection<?>) {
+        JSONArray array = new JSONArray();
+        for (Object o : (Collection<?>)argument) {
+          array.put(wrapArgumentForScriptExecution(o));
+        }
+        return array;
+      } else {
+        throw new IllegalArgumentException("Could not wrap up " +
+              "javascript parameter " + argument +
+              "(class: " + argument.getClass() + ")");
       }
-      this.json = json;
+    } catch (JSONException e) {
+      throw new WebDriverException(e);
     }
-    
-    /**
-     * Populates the JsonCommand with the passed parameters.
-     * Replaces things starting with ? in the json string with
-     * the passed parameters in order.
-     * i.e. looks for ?anything and replaces the ?anything with the variable, in order
-     * This is ugly.
-     * @param parameters parameters to put in place of ?s
-     * @return json string filled with parameters
-     * @throws IllegalArgumentException if arguments.length != number of variables
-     */
-    public String populate(Object... parameters) {
-      if (json.equals("EXECUTE")) {
-        //Special case execution, because it needs arguments wrapped up as
-        //type/value objects, rather than just in JSON.
-        
-        //Fill in the script we are executing, ignoring args to the script entirely
-        JsonCommand jsonCommand = new JsonCommand("{request: 'execute', script: ?script}");
-        String populated = jsonCommand.populate(parameters[0]);
-        JSONObject jsonObject;
-        try {
-          jsonObject = new JSONObject(populated);
-        } catch (JSONException e) {
-          throw new RuntimeException(e);
-        }
-        
-        //Fill in the args, if we were passed any
-        JSONArray args = new JSONArray();
-        if (parameters.length > 1 && parameters[1].getClass().isArray()) {
-          Object[] argumentsFromParameters = (Object[])parameters[1];
-          for (int i = 0; i < argumentsFromParameters.length; ++i) {
-            args.put(wrapArgumentForScriptExecution(argumentsFromParameters[i]));
-          }
-        }
-        try {
-          jsonObject.put("args", args);
-        } catch (JSONException e) {
-          throw new RuntimeException(e);
-        }
-        return jsonObject.toString();
-      }
-      
-      //If we are not filling in a script, we just fill in the args as needed
-      List<String> parts = Arrays.asList(json.split(","));
-      int i = 0;
-      //The output won't be exactly of length json.length, but it's a convenient indication
-      StringBuilder builder = new StringBuilder(json.length());
-      Iterator<String> it = parts.iterator();
-      while (it.hasNext()) {
-        String part = it.next();
-        String[] nameAndValue = part.split("\\?");
-        builder.append(nameAndValue[0]);
-        if (nameAndValue.length == 2) {
-          if (i >= parameters.length) {
-            throw new IllegalArgumentException(
-                "More variables than parameters passed (" + parameters.length +
-                ") when populating command");
-          }
-          String value = nameAndValue[1];
-          while (value.indexOf(']') > -1 || value.indexOf('}') > -1) {
-            if (value.indexOf(']') > -1) {
-              value = value.substring(0, value.indexOf(']'));
-            }
-            if (value.indexOf('}') > -1) {
-              value = value.substring(0, value.indexOf('}'));
-            }
-          }
-          String parsedParameter;
-          if (parameters[i] instanceof ChromeWebElement) {
-            parsedParameter = ((ChromeWebElement)parameters[i]).getElementId();
-          } else if (parameters[i] instanceof Cookie) {
-            //This is not nice at all...
-            Cookie cookie = (Cookie)parameters[i];
-            Map<String, Object> cookieMap = new HashMap<String, Object>();
-            cookieMap.put("name", cookie.getName());
-            cookieMap.put("value", cookie.getValue());
-            cookieMap.put("domain", cookie.getDomain());
-            cookieMap.put("path", cookie.getPath());
-            cookieMap.put("secure", cookie.isSecure());
-            cookieMap.put("expiry", cookie.getExpiry());
-            parsedParameter = new JSONObject(cookieMap).toString();
-          } else if (parameters[i].getClass().isArray()) {
-            try {
-              parsedParameter = new JSONArray(parameters[i]).toString();
-            } catch (JSONException e) {
-              throw new RuntimeException(e);
-            }
-          } else {
-            parsedParameter = parameters[i].toString();
-          }
-          parsedParameter = sanitize(parsedParameter);
-          if (parameters[i] instanceof String) {
-            parsedParameter = "\'" + parsedParameter + "\'";
-          }
-          
-          i++;
-          String restOfValue = nameAndValue[1].substring(value.length());
-          builder.append(parsedParameter).append(restOfValue);
-        }
-        if (it.hasNext()) {
-          builder.append(",");
-        }
-      }
-      if (i != parameters.length) {
-        throw new IllegalArgumentException("More parameters (" +
-            parameters.length + ") than variables ( " + i + ") when populating command");
-      }
-      return builder.toString();
-    }
-
-    /**
-     * Wraps up values as {type: some_type, value: some_value} objects
-     * @param argument value to wrap up
-     * @return wrapped up value
-     * TODO(danielwh): See if JSONObject and JSONArray have a useful common superclass
-     */
-    static Object wrapArgumentForScriptExecution(Object argument) {
-      JSONObject wrappedArgument = new JSONObject();
-      try {
-        if (argument instanceof String) {
-          wrappedArgument.put("type", "STRING");
-          wrappedArgument.put("value", argument);
-        } else if (argument instanceof Boolean) {
-          wrappedArgument.put("type", "BOOLEAN");
-          wrappedArgument.put("value", argument);
-        } else if (argument instanceof Number) {
-          wrappedArgument.put("type", "NUMBER");
-          wrappedArgument.put("value", argument);
-        } else if (argument instanceof ChromeWebElement) {
-          wrappedArgument.put("type", "ELEMENT");
-          wrappedArgument.put("value", ((ChromeWebElement)argument).getElementId());
-        } else if (argument instanceof Collection<?>) {
-          JSONArray array = new JSONArray();
-          for (Object o : (Collection<?>)argument) {
-            array.put(wrapArgumentForScriptExecution(o));
-          }
-          return array;
-        } else {
-          throw new IllegalArgumentException("Could not wrap up " +
-                "javascript parameter " + argument +
-                "(class: " + argument.getClass() + ")");
-        }
-      } catch (JSONException e) {
-        throw new WebDriverException(e);
-      }
-      return wrappedArgument;
-    }
-    
-    /**
-     * Escapes \, ' and \n for JSON as \\, \' and \\n respectively
-     * @param string string to escape
-     * @return escaped string
-     */
-    static String sanitize(String string) {
-      return string.replace("\\", "\\\\").replace("\'", "\\\'").replace("\n", "\\n");
-    }
+    return wrappedArgument;
   }
 }

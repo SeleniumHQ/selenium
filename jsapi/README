@@ -1,0 +1,6 @@
+This module is only used for easily running the WebDriverJS (and only the
+WebDriverJS) tests against all of its supported browsers without adding any
+circular dependencies between the other modules.
+
+The source files for WebDriverJS can be found at common/src/js, and the test
+files can be found at common/test/js.

@@ -151,24 +151,9 @@ SocketListener.prototype.onDataAvailable = function(request, context,
  */
 SocketListener.prototype.executeCommand_ = function() {
   var self = this;
-
-  try {
-    var command = JSON.parse(this.data);
-  } catch (e) {
-    Utils.dump(e);
-    Utils.dumpn(this.data);
-
-    // Something has gone seriously wrong. Quit the browser
-    this.commandProcessor_.execute({
-      wrappedJSObject: {
-        commandName: 'quit'
-      }
-    });
-  }
-
-  command.callbackFn = function(response) {
-    response = JSON.stringify(response);
-
+  var command = this.data;
+  var callback = function(response) {
+    Utils.dumpn('writing to socket:\n' + response);
     var data = self.converter_.convertToByteArray(response, {});
     var header = "Length: " + data.length + "\n\n";
     self.outstream.write(header, header.length);
@@ -186,10 +171,15 @@ SocketListener.prototype.executeCommand_ = function() {
   this.step = 0;
   this.readLength = 0;
 
-  // The command needs to be wrapped in an anonymous object so XPConnect can
-  // properly convert it to a nsISupports object. The command processor will
-  // unwrap the command on the other end.
-  this.commandProcessor_.execute({
-    wrappedJSObject: command
-  });
+  try {
+    this.commandProcessor_.execute(command, callback);
+  } catch (e) {
+    Utils.dump(e);
+    Utils.dumpn(command);
+
+    // Something has gone seriously wrong. Quit the browser.
+    this.commandProcessor_.execute(
+        JSON.stringify({'commandName': 'quit'}),
+        function() {});
+  }
 };

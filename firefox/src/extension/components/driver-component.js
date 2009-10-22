@@ -28,7 +28,6 @@ const CONTRACT_ID = "@googlecode.com/webdriver/fxdriver;1";
 var ExternalScripts = [
   "context.js",
   "firefoxDriver.js",
-  "json2.js",
   "socketListener.js",
   "utils.js",
   "webdriverserver.js",
@@ -49,6 +48,12 @@ var ExternalScripts = [
   // the directory this file is in
   var loader = Components.classes['@mozilla.org/moz/jssubscript-loader;1'].
       createInstance(Components.interfaces.mozIJSSubScriptLoader);
+
+  // Firefox 3.5+ has native JSON support; prefer that over our script from
+  // www.json.org, which may be slower.
+  if (!JSON) {
+    ExternalScripts.push('json2.js');
+  }
 
   for (var index in ExternalScripts) {
     var child = parent.clone();

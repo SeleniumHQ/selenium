@@ -172,7 +172,7 @@ class WebDriver(object):
 
     def get_window_handles(self):
         return filter(lambda handle: handle,
-                      self._command("getAllWindowHandles").split(","))
+                      self._command("getWindowHandles").split(","))
 
     def switch_to_frame(self, index_or_name):
         """Switches focus to a frame by index or name."""

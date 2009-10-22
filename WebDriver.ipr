@@ -26,8 +26,119 @@
     <option name="USE_PROJECT_LEVEL_SETTINGS" value="false" />
   </component>
   <component name="CodeStyleSettingsManager">
-    <option name="PER_PROJECT_SETTINGS" />
-    <option name="USE_PER_PROJECT_SETTINGS" value="false" />
+    <option name="PER_PROJECT_SETTINGS">
+      <value>
+        <option name="JAVA_INDENT_OPTIONS">
+          <value>
+            <option name="INDENT_SIZE" value="2" />
+            <option name="CONTINUATION_INDENT_SIZE" value="4" />
+            <option name="TAB_SIZE" value="2" />
+            <option name="USE_TAB_CHARACTER" value="false" />
+            <option name="SMART_TABS" value="false" />
+            <option name="LABEL_INDENT_SIZE" value="0" />
+            <option name="LABEL_INDENT_ABSOLUTE" value="true" />
+          </value>
+        </option>
+        <option name="XML_INDENT_OPTIONS">
+          <value>
+            <option name="INDENT_SIZE" value="2" />
+            <option name="CONTINUATION_INDENT_SIZE" value="4" />
+            <option name="TAB_SIZE" value="2" />
+            <option name="USE_TAB_CHARACTER" value="false" />
+            <option name="SMART_TABS" value="false" />
+            <option name="LABEL_INDENT_SIZE" value="0" />
+            <option name="LABEL_INDENT_ABSOLUTE" value="false" />
+          </value>
+        </option>
+        <option name="OTHER_INDENT_OPTIONS">
+          <value>
+            <option name="INDENT_SIZE" value="2" />
+            <option name="CONTINUATION_INDENT_SIZE" value="4" />
+            <option name="TAB_SIZE" value="2" />
+            <option name="USE_TAB_CHARACTER" value="false" />
+            <option name="SMART_TABS" value="false" />
+            <option name="LABEL_INDENT_SIZE" value="0" />
+            <option name="LABEL_INDENT_ABSOLUTE" value="true" />
+          </value>
+        </option>
+        <option name="ALIGN_MULTILINE_BINARY_OPERATION" value="true" />
+        <option name="ALIGN_MULTILINE_TERNARY_OPERATION" value="true" />
+        <option name="CLASS_COUNT_TO_USE_IMPORT_ON_DEMAND" value="999" />
+        <option name="NAMES_COUNT_TO_USE_IMPORT_ON_DEMAND" value="10" />
+        <option name="PACKAGES_TO_USE_IMPORT_ON_DEMAND">
+          <value />
+        </option>
+        <option name="IMPORT_LAYOUT_TABLE">
+          <value>
+            <package name="orq.openqa.selenium" withSubpackages="true" />
+            <emptyLine />
+            <package name="" withSubpackages="true" />
+            <emptyLine />
+            <package name="junit" withSubpackages="true" />
+            <emptyLine />
+            <package name="javax" withSubpackages="true" />
+            <package name="java" withSubpackages="true" />
+          </value>
+        </option>
+        <option name="RIGHT_MARGIN" value="100" />
+        <option name="CALL_PARAMETERS_WRAP" value="1" />
+        <option name="EXTENDS_LIST_WRAP" value="1" />
+        <option name="THROWS_LIST_WRAP" value="1" />
+        <option name="EXTENDS_KEYWORD_WRAP" value="1" />
+        <option name="THROWS_KEYWORD_WRAP" value="1" />
+        <option name="METHOD_CALL_CHAIN_WRAP" value="2" />
+        <option name="BINARY_OPERATION_WRAP" value="1" />
+        <option name="BINARY_OPERATION_SIGN_ON_NEXT_LINE" value="true" />
+        <option name="TERNARY_OPERATION_WRAP" value="1" />
+        <option name="TERNARY_OPERATION_SIGNS_ON_NEXT_LINE" value="true" />
+        <option name="FOR_STATEMENT_WRAP" value="1" />
+        <option name="ARRAY_INITIALIZER_WRAP" value="2" />
+        <option name="ARRAY_INITIALIZER_LBRACE_ON_NEXT_LINE" value="true" />
+        <option name="ARRAY_INITIALIZER_RBRACE_ON_NEXT_LINE" value="true" />
+        <option name="ASSIGNMENT_WRAP" value="1" />
+        <option name="IF_BRACE_FORCE" value="3" />
+        <option name="DOWHILE_BRACE_FORCE" value="3" />
+        <option name="WHILE_BRACE_FORCE" value="3" />
+        <option name="FOR_BRACE_FORCE" value="3" />
+        <ADDITIONAL_INDENT_OPTIONS fileType="java">
+          <option name="INDENT_SIZE" value="2" />
+          <option name="CONTINUATION_INDENT_SIZE" value="4" />
+          <option name="TAB_SIZE" value="2" />
+          <option name="USE_TAB_CHARACTER" value="false" />
+          <option name="SMART_TABS" value="false" />
+          <option name="LABEL_INDENT_SIZE" value="0" />
+          <option name="LABEL_INDENT_ABSOLUTE" value="true" />
+        </ADDITIONAL_INDENT_OPTIONS>
+        <ADDITIONAL_INDENT_OPTIONS fileType="js">
+          <option name="INDENT_SIZE" value="2" />
+          <option name="CONTINUATION_INDENT_SIZE" value="4" />
+          <option name="TAB_SIZE" value="2" />
+          <option name="USE_TAB_CHARACTER" value="false" />
+          <option name="SMART_TABS" value="false" />
+          <option name="LABEL_INDENT_SIZE" value="0" />
+          <option name="LABEL_INDENT_ABSOLUTE" value="false" />
+        </ADDITIONAL_INDENT_OPTIONS>
+        <ADDITIONAL_INDENT_OPTIONS fileType="txt">
+          <option name="INDENT_SIZE" value="4" />
+          <option name="CONTINUATION_INDENT_SIZE" value="8" />
+          <option name="TAB_SIZE" value="4" />
+          <option name="USE_TAB_CHARACTER" value="false" />
+          <option name="SMART_TABS" value="false" />
+          <option name="LABEL_INDENT_SIZE" value="0" />
+          <option name="LABEL_INDENT_ABSOLUTE" value="false" />
+        </ADDITIONAL_INDENT_OPTIONS>
+        <ADDITIONAL_INDENT_OPTIONS fileType="xml">
+          <option name="INDENT_SIZE" value="2" />
+          <option name="CONTINUATION_INDENT_SIZE" value="4" />
+          <option name="TAB_SIZE" value="2" />
+          <option name="USE_TAB_CHARACTER" value="false" />
+          <option name="SMART_TABS" value="false" />
+          <option name="LABEL_INDENT_SIZE" value="0" />
+          <option name="LABEL_INDENT_ABSOLUTE" value="false" />
+        </ADDITIONAL_INDENT_OPTIONS>
+      </value>
+    </option>
+    <option name="USE_PER_PROJECT_SETTINGS" value="true" />
   </component>
   <component name="CompilerConfiguration">
     <option name="DEFAULT_COMPILER" value="Javac" />
@@ -858,12 +969,17 @@
       <module fileurl="file://$PROJECT_DIR$/htmlunit/htmlunit.iml" filepath="$PROJECT_DIR$/htmlunit/htmlunit.iml" />
       <module fileurl="file://$PROJECT_DIR$/iphone/iphone.iml" filepath="$PROJECT_DIR$/iphone/iphone.iml" />
       <module fileurl="file://$PROJECT_DIR$/jobbie/jobbie.iml" filepath="$PROJECT_DIR$/jobbie/jobbie.iml" />
-      <module fileurl="file://$PROJECT_DIR$/remote/remote.iml" filepath="$PROJECT_DIR$/remote/remote.iml" />
+      <module fileurl="file://$PROJECT_DIR$/jsapi/jsapi.iml" filepath="$PROJECT_DIR$/jsapi/jsapi.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rake-tasks/rake-tasks.iml" filepath="$PROJECT_DIR$/rake-tasks/rake-tasks.iml" />
+      <module fileurl="file://$PROJECT_DIR$/remote/client/remote-client.iml" filepath="$PROJECT_DIR$/remote/client/remote-client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/remote/common/remote-common.iml" filepath="$PROJECT_DIR$/remote/common/remote-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/remote/server/remote-server.iml" filepath="$PROJECT_DIR$/remote/server/remote-server.iml" />
       <module fileurl="file://$PROJECT_DIR$/selenium/selenium.iml" filepath="$PROJECT_DIR$/selenium/selenium.iml" />
       <module fileurl="file://$PROJECT_DIR$/support/support.iml" filepath="$PROJECT_DIR$/support/support.iml" />
+      <module fileurl="file://$PROJECT_DIR$/third_party/third_party.iml" filepath="$PROJECT_DIR$/third_party/third_party.iml" />
     </modules>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_5" assert-keyword="true" jdk-15="true" project-jdk-name="1.5" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_5" assert-keyword="true" jdk-15="true" project-jdk-name="1.5 (1)" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/eclipse" />
   </component>
   <component name="ProjectRunConfigurationManager">
@@ -872,7 +988,7 @@
         <option name="PATTERN" value="com.googlecode.webdriver.*" />
         <option name="ENABLED" value="true" />
       </pattern>
-      <module name="remote" />
+      <module name="" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" value="" />
       <option name="PACKAGE_NAME" value="org.openqa.selenium" />
@@ -949,6 +1065,13 @@
         <root url="jar://$PROJECT_DIR$/common/lib/buildtime/slf4j-simple-1.3.1.jar!/" />
         <root url="jar://$PROJECT_DIR$/common/lib/buildtime/servlet-api-2.5-6.1.9.jar!/" />
         <root url="jar://$PROJECT_DIR$/common/lib/buildtime/jetty-6.1.9.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="third_party-buildtime">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/third_party/java/google-collect-1.0-rc3.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />

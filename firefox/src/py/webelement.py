@@ -33,7 +33,7 @@ class WebElement(object):
 
     def get_text(self):
         """Gets the inner text of the element."""
-        return self._command("getElementText")
+        return self._command("getText")
 
     def click(self):
         """Clicks the element."""
@@ -41,11 +41,11 @@ class WebElement(object):
 
     def submit(self):
         """Submits a form."""
-        self._command("submitElement")
+        self._command("submit")
 
     def get_value(self):
         """Gets the value of the element's value attribute."""
-        return self._command("getElementValue")
+        return self._command("getValue")
 
     def clear(self):
         """Clears the text if it's a text entry element."""
@@ -53,19 +53,19 @@ class WebElement(object):
 
     def get_attribute(self, name):
         """Gets the attribute value."""
-        return self._command("getElementAttribute", name)
+        return self._command("getAttribute", name)
 
     def toggle(self):
         """Toggles the element state."""
-        self._command("toggleElement")
+        self._command("toggle")
 
     def is_selected(self):
         """Whether the element is selected."""
-        return self._command("getElementSelected")
+        return self._command("isSelected")
 
     def set_selected(self):
         """Selects an elmeent."""
-        self._command("setElementSelected")
+        self._command("setSelected")
 
     def is_enabled(self):
         """Whether the element is enabled."""

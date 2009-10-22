@@ -30,9 +30,12 @@
 (function() {
   var scripts = [
     'context.js',
-    'json2.js',
     'utils.js'
   ];
+
+  if (!JSON) {
+    scripts.push('json2.js');
+  }
 
   var fileProtocolHandler = Components.
       classes['@mozilla.org/network/protocol;1?name=file'].
@@ -53,11 +56,13 @@
 /**
  * Encapsulates the result of a command to the {@code nsCommandProcessor}.
  * @param {Object} command JSON object describing the command to execute.
+ * @param {nsIResponseHandler} responseHandler The handler to send the response
+ *     to.
  * @constructor
  */
-var Response = function(command) {
+var Response = function(command, responseHandler) {
   this.statusBarLabel_ = null;
-  this.callbackFn_ = command.callbackFn;
+  this.responseHandler_ = responseHandler;
   this.json_ = {
     commandName: command ? command.commandName : 'Unknown command',
     isError: false,
@@ -90,9 +95,7 @@ Response.prototype = {
       this.statusBarLabel_.style.color = 'black';
     }
     this.context = this.context.toString();
-    if (this.callbackFn_) {
-      this.callbackFn_(this.json_);
-    }
+    this.responseHandler_.handleResponse(JSON.stringify(this.json_));
   },
 
   /**
@@ -259,50 +262,33 @@ nsCommandProcessor.logError = function(message) {
 
 /**
  * Processes a command request for the {@code FirefoxDriver}.
- * @param {nsISupports} wrappedJsonCommand The command to
- *     execute, specified in a JSON object that is wrapped in a nsISupports
- *     instance.
+ * @param {string} jsonCommandString The command to execute, specified in a
+ *     JSON string.
+ * @param {nsIResponseHandler} responseHandler The callback to send the response
+ *     to.
  */
-nsCommandProcessor.prototype.execute = function(wrappedJsonCommand) {
-  if (!(wrappedJsonCommand instanceof Components.interfaces.nsISupports)) {
-    nsCommandProcessor.logError(
-        'wrappedJsonCommand does not implement nsISupports!');
-  }
-
-  var command = wrappedJsonCommand.wrappedJSObject;
-  if (!command) {
-    nsCommandProcessor.logError(
-        'wrappedJsonCommand must have a wrappedJSObject property!');
-  }
-
-  // TODO(jmleyba): DELETE FOR RELEASE vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-  // The magic "reload" command makes us reload this script file and monkey
-  // patch it in.  Iterative development without restarting firefox everytime :)
-  if (command.commandName == 'reload') {
-    var fileProtocolHandler = Components.
-        classes['@mozilla.org/network/protocol;1?name=file'].
-        createInstance(Components.interfaces.nsIFileProtocolHandler);
-    var file = fileProtocolHandler.getURLSpecFromFile(__LOCATION__);
-    Utils.dumpn('Reloading >>> ' + file);
-    var obj = {};
-    Components.classes['@mozilla.org/moz/jssubscript-loader;1'].
-        createInstance(Components.interfaces.mozIJSSubScriptLoader).
-        loadSubScript(file, obj);
-    DelayedCommand = obj.DelayedCommand;
-    Response = obj.Response;
-    this.__proto__ = obj.nsCommandProcessor.prototype;
+nsCommandProcessor.prototype.execute = function(jsonCommandString,
+                                                responseHandler) {
+  var command, response;
+  try {
+    command = JSON.parse(jsonCommandString);
+  } catch (ex) {
+    response = JSON.stringify({
+      'isError': true,
+      'value': 'Error parsing command: "' + jsonCommandString + '"'
+    });
+    responseHandler.handleResponse(response);
     return;
   }
-  // TODO(jmleyba): /DELETE FOR RELEASE ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
   command.context = Context.fromString(command.context);
-  var response = new Response(command);
+  response = new Response(command, responseHandler);
 
   // These are used to locate a new driver, and so not having one is a fine
   // thing to do
-  if (command.commandName == 'findActiveDriver' ||
+  if (command.commandName == 'newSession' ||
       command.commandName == 'switchToWindow' ||
-      command.commandName == 'getAllWindowHandles' ||
+      command.commandName == 'getWindowHandles' ||
       command.commandName == 'quit') {
     return this[command.commandName](response, command.parameters);
   }
@@ -431,7 +417,7 @@ nsCommandProcessor.prototype.switchToWindow = function(response, windowId,
  * @param {Response} response The response object to send the command response
  *     in.
  */
-nsCommandProcessor.prototype.getAllWindowHandles = function(response) {
+nsCommandProcessor.prototype.getWindowHandles = function(response) {
   var res = [];
   this.searchWindows_('navigator:browser', function(win) {
     if (win.top && win.top.fxdriver) {
@@ -475,7 +461,7 @@ nsCommandProcessor.prototype.searchWindows_ = function(search_criteria,
  * @param {Response} response The response object to send the command response
  *     in.
  */
-nsCommandProcessor.prototype.findActiveDriver = function(response) {
+nsCommandProcessor.prototype.newSession = function(response) {
   var win = this.wm.getMostRecentWindow("navigator:browser");
   var driver = win.fxdriver;
   if (!driver) {
@@ -505,7 +491,6 @@ nsCommandProcessor.prototype.quit = function() {
 nsCommandProcessor.prototype.getInterfaces = function(count) {
   var ifaces = [
     Components.interfaces.nsICommandProcessor,
-    Components.interfaces.nsIClassInfo,
     Components.interfaces.nsISupports
   ];
   count.value = ifaces.length;
@@ -515,7 +500,6 @@ nsCommandProcessor.prototype.getInterfaces = function(count) {
 
 nsCommandProcessor.prototype.QueryInterface = function (aIID) {
   if (!aIID.equals(Components.interfaces.nsICommandProcessor) &&
-      !aIID.equals(Components.interfaces.nsIClassInfo) &&
       !aIID.equals(Components.interfaces.nsISupports)) {
     throw Components.results.NS_ERROR_NO_INTERFACE;
   }
@@ -523,15 +507,11 @@ nsCommandProcessor.prototype.QueryInterface = function (aIID) {
 };
 
 
-nsCommandProcessor.prototype.getHelperForLanguage = function() {
-  return null;
-};
-
 nsCommandProcessor.CLASS_ID =
     Components.ID('{692e5117-a4a2-4b00-99f7-0685285b4db5}');
 nsCommandProcessor.CLASS_NAME = 'Firefox WebDriver CommandProcessor';
-nsCommandProcessor.CONTRACT_ID = '@googlecode.com/webdriver/command-processor;1';
-nsCommandProcessor.EXPOSED_NAME = '__webDriverCommandProcessor';
+nsCommandProcessor.CONTRACT_ID =
+    '@googlecode.com/webdriver/command-processor;1';
 
 
 /**
@@ -570,27 +550,11 @@ nsCommandProcessor.Module = {
             nsCommandProcessor.CLASS_NAME,
             nsCommandProcessor.CONTRACT_ID,
             aFileSpec, aLocation, aType);
-
-    Components.classes['@mozilla.org/categorymanager;1']
-        .getService(Components.interfaces.nsICategoryManager)
-        .addCategoryEntry(
-            'JavaScript global property',
-            nsCommandProcessor.EXPOSED_NAME,
-            nsCommandProcessor.CONTRACT_ID,
-            true,   // Persist this entry
-            true);  // Replace existing entry
   },
 
   unregisterSelf: function(aCompMgr, aLocation) {
     aCompMgr.QueryInterface(Components.interfaces.nsIComponentRegistrar).
         unregisterFactoryLocation(nsCommandProcessor.CLASS_ID, aLocation);
-    Components.classes['@mozilla.org/categorymanager;1'].
-        getService(Components.interfaces.nsICategoryManager).
-        deleteCategoryEntry(
-            'JavaScript global property',
-            nsCommandProcessor.EXPOSED_NAME,
-            nsCommandProcessor.CONTRACT_ID,
-            true);
   },
 
   getClassObject: function(aCompMgr, aCID, aIID) {

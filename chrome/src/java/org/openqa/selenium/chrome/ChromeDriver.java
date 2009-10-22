@@ -1,18 +1,10 @@
 package org.openqa.selenium.chrome;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.Speed;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -27,9 +19,20 @@ import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.internal.TemporaryFilesystem;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.Context;
+import org.openqa.selenium.remote.DriverCommand;
+import static org.openqa.selenium.remote.DriverCommand.*;
 import org.openqa.selenium.remote.SessionId;
 
-public class ChromeDriver implements WebDriver, JavascriptExecutor,
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+public class ChromeDriver implements WebDriver, SearchContext, JavascriptExecutor,
 FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, FindsByXPath {
 
   private ChromeCommandExecutor executor;
@@ -111,14 +114,14 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
   
   /**
    * Executes a passed command using the current ChromeCommandExecutor
-   * @param commandName command to execute
+   * @param driverCommand command to execute
    * @param parameters parameters of command being executed
    * @return response to the command (a Response wrapping a null value if none) 
    */
-  ChromeResponse execute(String commandName, Object... parameters) {
+  ChromeResponse execute(DriverCommand driverCommand, Object... parameters) {
     Command command = new Command(new SessionId("[No sessionId]"),
                                   new Context("[No context]"),
-                                  commandName,
+                                  driverCommand,
                                   parameters);
     try {
       return executor.execute(command);
@@ -127,9 +130,6 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
           e instanceof FatalChromeException) {
         //These exceptions may leave the extension hung, or in an
         //inconsistent state, so we restart Chrome
-        /*if (e instanceof FatalChromeException) {
-          try { Thread.sleep(100000000); } catch (InterruptedException e2) {}
-        }*/
         stopClient();
         init();
       }
@@ -178,7 +178,7 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
   }
 
   public void close() {
-    execute("close");
+    execute(CLOSE);
   }
 
   public WebElement findElement(By by) {
@@ -190,27 +190,27 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
   }
 
   public void get(String url) {
-    execute("url", url);
+    execute(GET, url);
   }
 
   public String getCurrentUrl() {
-    return execute("getCurrentUrl").getValue().toString();
+    return execute(GET_CURRENT_URL).getValue().toString();
   }
 
   public String getPageSource() {
-    return execute("getPageSource").getValue().toString();
+    return execute(GET_PAGE_SOURCE).getValue().toString();
   }
 
   public String getTitle() {
-    return execute("getTitle").getValue().toString();
+    return execute(GET_TITLE).getValue().toString();
   }
 
   public String getWindowHandle() {
-    return execute("getWindowHandle").getValue().toString();
+    return execute(GET_CURRENT_WINDOW_HANDLE).getValue().toString();
   }
 
   public Set<String> getWindowHandles() {
-    List<?> windowHandles = (List<?>)execute("getWindowHandles").getValue();
+    List<?> windowHandles = (List<?>)execute(GET_WINDOW_HANDLES).getValue();
     Set<String> setOfHandles = new HashSet<String>();
     for (Object windowHandle : windowHandles) {
       setOfHandles.add((String)windowHandle);
@@ -228,7 +228,7 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
 
   public void quit() {
     try {
-      execute("quit");
+      execute(QUIT);
     } finally {
       stopClient();
     }
@@ -240,7 +240,7 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
 
   public Object executeScript(String script, Object... args) {
     ChromeResponse response;
-    response = execute("execute", script, args);
+    response = execute(EXECUTE_SCRIPT, script, args);
     if (response.getStatusCode() == -1) {
       return new ChromeWebElement(this, response.getValue().toString());
     } else {
@@ -253,59 +253,59 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
   }
 
   public WebElement findElementById(String using) {
-    return getElementFrom(execute("findElement", "id", using));
+    return getElementFrom(execute(FIND_ELEMENT, "id", using));
   }
 
   public List<WebElement> findElementsById(String using) {
-    return getElementsFrom(execute("findElements", "id", using));
+    return getElementsFrom(execute(FIND_ELEMENTS, "id", using));
   }
 
   public WebElement findElementByClassName(String using) {
-    return getElementFrom(execute("findElement", "class name", using));
+    return getElementFrom(execute(FIND_ELEMENT, "class name", using));
   }
 
   public List<WebElement> findElementsByClassName(String using) {
-    return getElementsFrom(execute("findElements", "class name", using));
+    return getElementsFrom(execute(FIND_ELEMENTS, "class name", using));
   }
 
   public WebElement findElementByLinkText(String using) {
-    return getElementFrom(execute("findElement", "link text", using));
+    return getElementFrom(execute(FIND_ELEMENT, "link text", using));
   }
 
   public List<WebElement> findElementsByLinkText(String using) {
-    return getElementsFrom(execute("findElements", "link text", using));
+    return getElementsFrom(execute(FIND_ELEMENTS, "link text", using));
   }
 
   public WebElement findElementByName(String using) {
-    return getElementFrom(execute("findElement", "name", using));
+    return getElementFrom(execute(FIND_ELEMENT, "name", using));
   }
 
   public List<WebElement> findElementsByName(String using) {
-    return getElementsFrom(execute("findElements", "name", using));
+    return getElementsFrom(execute(FIND_ELEMENTS, "name", using));
   }
 
   public WebElement findElementByTagName(String using) {
-    return getElementFrom(execute("findElement", "tag name", using));
+    return getElementFrom(execute(FIND_ELEMENT, "tag name", using));
   }
 
   public List<WebElement> findElementsByTagName(String using) {
-    return getElementsFrom(execute("findElements", "tag name", using));
+    return getElementsFrom(execute(FIND_ELEMENTS, "tag name", using));
   }
 
   public WebElement findElementByXPath(String using) {
-    return getElementFrom(execute("findElement", "xpath", using));
+    return getElementFrom(execute(FIND_ELEMENT, "xpath", using));
   }
 
   public List<WebElement> findElementsByXPath(String using) {
-    return getElementsFrom(execute("findElements", "xpath", using));
+    return getElementsFrom(execute(FIND_ELEMENTS, "xpath", using));
   }
 
   public WebElement findElementByPartialLinkText(String using) {
-    return getElementFrom(execute("findElement", "partial link text", using));
+    return getElementFrom(execute(FIND_ELEMENT, "partial link text", using));
   }
   
   public List<WebElement> findElementsByPartialLinkText(String using) {
-    return getElementsFrom(execute("findElements", "partial link text", using));
+    return getElementsFrom(execute(FIND_ELEMENTS, "partial link text", using));
   }
   
   WebElement getElementFrom(ChromeResponse response) {
@@ -324,29 +324,29 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
   }
   
   List<WebElement> findChildElements(ChromeWebElement parent, String by, String using) {
-    return getElementsFrom(execute("findChildElements", parent, by, using));
+    return getElementsFrom(execute(FIND_CHILD_ELEMENTS, parent, by, using));
   }
   
   private class ChromeOptions implements Options {
 
     public void addCookie(Cookie cookie) {
-      execute("addCookie", cookie);
+      execute(ADD_COOKIE, cookie);
     }
 
     public void deleteAllCookies() {
-      execute("deleteAllCookies");
+      execute(DELETE_ALL_COOKIES);
     }
 
     public void deleteCookie(Cookie cookie) {
-      execute("deleteCookie", cookie.getName());
+      execute(DELETE_COOKIE, cookie.getName());
     }
 
     public void deleteCookieNamed(String name) {
-      execute("deleteCookie", name);
+      execute(DELETE_COOKIE, name);
     }
 
     public Set<Cookie> getCookies() {
-      List<?> result = (List<?>)execute("getCookies").getValue();
+      List<?> result = (List<?>)execute(GET_ALL_COOKIES).getValue();
       Set<Cookie> cookies = new HashSet<Cookie>();
       for (Object cookie : result) {
         cookies.add((Cookie)cookie);
@@ -355,7 +355,7 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
     }
 
     public Cookie getCookieNamed(String name) {
-      return (Cookie)execute("getCookieNamed", name).getValue();
+      return (Cookie)execute(GET_COOKIE, name).getValue();
     }
     
     public Speed getSpeed() {
@@ -369,11 +369,11 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
   
   private class ChromeNavigation implements Navigation {
     public void back() {
-      execute("goBack");
+      execute(GO_BACK);
     }
 
     public void forward() {
-      execute("goForward");
+      execute(GO_FORWARD);
     }
 
     public void to(String url) {
@@ -385,32 +385,32 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
     }
 
     public void refresh() {
-      execute("refresh");
+      execute(REFRESH);
     }
   }
   
   private class ChromeTargetLocator implements TargetLocator {
     public WebElement activeElement() {
-      return getElementFrom(execute("switchToActiveElement"));
+      return getElementFrom(execute(GET_ACTIVE_ELEMENT));
     }
 
     public WebDriver defaultContent() {
-      execute("switchToDefaultContent");
+      execute(SWITCH_TO_DEFAULT_CONTENT);
       return ChromeDriver.this;
     }
 
     public WebDriver frame(int frameIndex) {
-      execute("switchToFrameByIndex", frameIndex);
+      execute(SWITCH_TO_FRAME_BY_INDEX, frameIndex);
       return ChromeDriver.this;
     }
 
     public WebDriver frame(String frameName) {
-      execute("switchToFrameByName", frameName);
+      execute(SWITCH_TO_FRAME_BY_NAME, frameName);
       return ChromeDriver.this;
     }
 
     public WebDriver window(String windowName) {
-      execute("switchToWindow", windowName);
+      execute(SWITCH_TO_WINDOW, windowName);
       return ChromeDriver.this;
     }
     

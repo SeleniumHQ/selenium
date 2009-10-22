@@ -21,14 +21,14 @@ public class Command {
 
   private SessionId sessionId;
   private Context context;
-  private String methodName;
+  private DriverCommand name;
   private Object[] parameters;
 
-  public Command(SessionId sessionId, Context context, String methodName, Object... parameters) {
+  public Command(SessionId sessionId, Context context, DriverCommand name, Object... parameters) {
     this.sessionId = sessionId;
     this.context = context;
-    this.methodName = methodName;
     this.parameters = parameters;
+    this.name = name;
   }
 
   public SessionId getSessionId() {
@@ -39,8 +39,8 @@ public class Command {
     return context;
   }
 
-  public String getMethodName() {
-    return methodName;
+  public DriverCommand getName() {
+    return name;
   }
 
   public Object[] getParameters() {

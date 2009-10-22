@@ -20,6 +20,7 @@ package org.openqa.selenium.iphone;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.remote.DriverCommand;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -42,7 +43,7 @@ public class IPhoneDriver extends RemoteWebDriver {
    * @param remoteAddress The full URL of the remote client (device or 
    *                      simulator).
    * @throws Exception
-   * @see IPhoneDriver(String remoteAddress)
+   * @see IPhoneDriver(String)
    */
   public IPhoneDriver(URL remoteAddress) throws Exception {
     super(remoteAddress, DesiredCapabilities.iphone());
@@ -52,7 +53,7 @@ public class IPhoneDriver extends RemoteWebDriver {
    * Create an IPhoneDriver connected to the remote address passed in.
    * @param remoteAddress The full URL of the remote client running iWebDriver.
    * @throws Exception
-   * @see IPhoneDriver(URL remoteAddress)
+   * @see IPhoneDriver(URL)
    */
   public IPhoneDriver(String remoteAddress) throws Exception {
     this(new URL(remoteAddress));
@@ -72,7 +73,7 @@ public class IPhoneDriver extends RemoteWebDriver {
   }
 
   public byte[] getScreenshot() {
-    return (byte[]) execute("screenshot").getValue();
+    return (byte[]) execute(DriverCommand.SCREENSHOT).getValue();
   }
 
   /** Saves a screenshot of the current page into the given file. */

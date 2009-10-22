@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>getinnerouterhtml_test.html</title>
+  <script src="webdriver-bootstrap.js"></script>
+  <script src="testbase.js"></script>
+  <script type="text/javascript">
+    function testGetOuterHtml(driver) {
+      var a = driver.findElement({id: "id1"});
+      assertThat(a.getOuterHtml(), equals('<a id="id1" href="#">Foo</a>'));
+    }
+
+
+    function testGetInnerHtml(driver) {
+      var a = driver.findElement({id: "id1"});
+      assertThat(a.getInnerHtml(), equals('Foo'));
+    }
+  </script>
+</head>
+<body>
+  <a id="id1" href="#">Foo</a>
+</body>
+</html>

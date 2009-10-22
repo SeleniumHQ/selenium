@@ -119,7 +119,7 @@ FirefoxDriver.prototype.click = function(respond) {
 };
 
 
-FirefoxDriver.prototype.getElementText = function(respond) {
+FirefoxDriver.prototype.getText = function(respond) {
   var element = Utils.getElementAt(respond.elementId, respond.context);
 
   if (element.tagName == "TITLE") {
@@ -132,7 +132,7 @@ FirefoxDriver.prototype.getElementText = function(respond) {
 };
 
 
-FirefoxDriver.prototype.getElementValue = function(respond) {
+FirefoxDriver.prototype.getValue = function(respond) {
   var element = Utils.getElementAt(respond.elementId, respond.context);
 
   if (element["value"] !== undefined) {
@@ -235,7 +235,7 @@ FirefoxDriver.prototype.getTagName = function(respond) {
 };
 
 
-FirefoxDriver.prototype.getElementAttribute = function(respond, value) {
+FirefoxDriver.prototype.getAttribute = function(respond, value) {
   var element = Utils.getElementAt(respond.elementId, respond.context);
 
   var attributeName = value[0];
@@ -309,7 +309,7 @@ FirefoxDriver.prototype.hover = function(respond) {
 };
 
 
-FirefoxDriver.prototype.submitElement = function(respond) {
+FirefoxDriver.prototype.submit = function(respond) {
   var element = Utils.getElementAt(respond.elementId, respond.context);
 
   var submitElement = Utils.findForm(element);
@@ -327,7 +327,7 @@ FirefoxDriver.prototype.submitElement = function(respond) {
 };
 
 
-FirefoxDriver.prototype.getElementSelected = function(respond) {
+FirefoxDriver.prototype.isSelected = function(respond) {
   var element = Utils.getElementAt(respond.elementId, respond.context);
 
   var selected = false;
@@ -353,7 +353,7 @@ FirefoxDriver.prototype.getElementSelected = function(respond) {
 };
 
 
-FirefoxDriver.prototype.setElementSelected = function(respond) {
+FirefoxDriver.prototype.setSelected = function(respond) {
   var element = Utils.getElementAt(respond.elementId, respond.context);
 
   if (!Utils.isDisplayed(element) && !Utils.isInHead(element)) {
@@ -409,7 +409,7 @@ FirefoxDriver.prototype.setElementSelected = function(respond) {
 };
 
 
-FirefoxDriver.prototype.toggleElement = function(respond) {
+FirefoxDriver.prototype.toggle = function(respond) {
   var element = Utils.getElementAt(respond.elementId, respond.context);
 
   if (!Utils.isDisplayed(element) && !Utils.isInHead(element)) {
@@ -459,7 +459,7 @@ FirefoxDriver.prototype.toggleElement = function(respond) {
 };
 
 
-FirefoxDriver.prototype.isElementDisplayed = function(respond) {
+FirefoxDriver.prototype.isDisplayed = function(respond) {
   var element = Utils.getElementAt(respond.elementId, respond.context);
 
   respond.response = Utils.isDisplayed(element) ? "true" : "false";
@@ -467,7 +467,7 @@ FirefoxDriver.prototype.isElementDisplayed = function(respond) {
 };
 
 
-FirefoxDriver.prototype.getElementLocation = function(respond) {
+FirefoxDriver.prototype.getLocation = function(respond) {
   var element = Utils.getElementAt(respond.elementId, respond.context);
 
   var location = Utils.getElementLocation(element, respond.context);
@@ -477,7 +477,7 @@ FirefoxDriver.prototype.getElementLocation = function(respond) {
 };
 
 
-FirefoxDriver.prototype.getElementSize = function(respond) {
+FirefoxDriver.prototype.getSize = function(respond) {
   var element = Utils.getElementAt(respond.elementId, respond.context);
 
   var box = Utils.getLocationOnceScrolledIntoView(element);
@@ -487,7 +487,7 @@ FirefoxDriver.prototype.getElementSize = function(respond) {
 };
 
 
-FirefoxDriver.prototype.dragAndDrop = function(respond, movementString) {
+FirefoxDriver.prototype.dragElement = function(respond, movementString) {
   var element = Utils.getElementAt(respond.elementId, respond.context);
 
   if (!Utils.isDisplayed(element) && !Utils.isInHead(element)) {
@@ -554,7 +554,7 @@ FirefoxDriver.prototype.dragAndDrop = function(respond, movementString) {
 };
 
 
-FirefoxDriver.prototype.getElementCssProperty = function(respond,
+FirefoxDriver.prototype.getValueOfCssProperty = function(respond,
                                                          propertyName) {
   var element = Utils.getElementAt(respond.elementId, respond.context);
 
