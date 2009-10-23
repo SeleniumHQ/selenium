@@ -47,7 +47,6 @@ public class InternetExplorerElement implements RenderedWebElement, Locatable {
                                  Pointer element) {
     this.lib = lib;
     this.parent = parent;
-//    this.driver = parent.;
     this.element = element;
 
     if (element == null) {
@@ -227,7 +226,7 @@ public class InternetExplorerElement implements RenderedWebElement, Locatable {
   @Override
   protected void finalize() throws Throwable {
     super.finalize();
-    lib.wdFreeElement(element);
+    lib.wdeFreeElement(element);
   }
 
   public void dragAndDropBy(int moveRightBy, int moveDownBy) {

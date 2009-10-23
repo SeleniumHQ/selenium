@@ -16,7 +16,7 @@ interface ExportedWebDriverFunctions extends StdCallLibrary {
   
   int wdNewDriverInstance(PointerByReference ptr);
   int wdFreeDriver(Pointer driver);
-  int wdFreeElement(Pointer element);
+  int wdeFreeElement(Pointer element);
   int wdFreeElementCollection(Pointer collection, int alsoFreeElements);
   int wdFreeStringCollection(Pointer collection);
   int wdFreeScriptArgs(Pointer scriptArgs);
