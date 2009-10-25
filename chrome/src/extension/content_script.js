@@ -51,7 +51,7 @@ function parsePortMessage(message) {
   console.log("Received request: " + JSON.stringify(message) + " (" + window.name + ")");
   //wait indicates whether this is a potentially page-changing change (see background.js's sendResponseByXHR)
   var response = {response: message.request.request, value: null, wait: true};
-  if (typeof(message.request.elementId) != "undefined" && message.request.elementId != null) {
+  if (message.request.elementId !== undefined && message.request.elementId != null) {
     //If it seems an elementId has been passed, try to resolve that to an element
     try {
       var element = internalGetElement(message.request.elementId);
@@ -392,9 +392,9 @@ function setCookie(cookie) {
             message: "You may only set cookies on html documents"}};
   } else {
     cookieDocument.cookie = cookie.name + '=' + escape(cookie.value) +
-        ((cookie.expiry == null || cookie.expiry == undefined) ?
+        ((cookie.expiry == null || cookie.expiry === undefined) ?
             '' : ';expires=' + (new Date(cookie.expiry.time)).toGMTString()) +
-        ((cookie.path == null || cookie.path == undefined) ?
+        ((cookie.path == null || cookie.path === undefined) ?
             '' : ';path=' + cookie.path);
     return {statusCode: 0};
   }
@@ -859,7 +859,8 @@ function execute(script, passedArgs) {
                         'try {' +
                           'var val = eval(' + func + ').apply(window, args);' +
                           'if (typeof(val) == "string") { val = JSON.stringify(val); }' +
-                          'else if (typeof(val) == "undefined") { val = null; }' +
+                          //TODO(danielwh): Deal with the undefined != null case better
+                          'else if (val === undefined) { val = null; }' +
                           'else if (typeof(val) == "object" && val && val.nodeType == 1) {' +
                             //If we're returning an element, turn it into a special xpath-containing object
                             'var path = "";' +
@@ -1221,8 +1222,8 @@ function getOffsetSizeFromSubElements(element, maxWidth, maxHeight) {
   }
   //The below isn't correct, but is a hack with a decent probability of being correct, if the element has no BoundingClientRect
   //TODO(danielwh): Fix this up a bit
-  maxWidth = (typeof(maxWidth) == "undefined" || element.offsetWidth > maxWidth) ? element.offsetWidth : maxWidth;
-  maxHeight = (typeof(maxHeight) == "undefined" || element.offsetHeight > maxHeight) ? element.offsetHeight : maxHeight;
+  maxWidth = (maxWidth === undefined || element.offsetWidth > maxWidth) ? element.offsetWidth : maxWidth;
+  maxHeight = (maxHeight === undefined || element.offsetHeight > maxHeight) ? element.offsetHeight : maxHeight;
   for (var child in element.children) {
     var childSize = getOffsetSizeFromSubElements(element.children[child], maxWidth, maxHeight);
     maxWidth = (childSize.width > maxWidth) ? childSize.width : maxWidth;

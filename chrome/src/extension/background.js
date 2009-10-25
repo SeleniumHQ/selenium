@@ -287,7 +287,7 @@ function sendResponseByXHR(result, wait) {
       "Content-type", "application/json");
   //Default to waiting for page changes, just in case
   //TODO(danielwh): Iterate over tabs checking their status
-  if (typeof(wait) == "undefined" || wait == null || wait) {
+  if (wait === undefined || wait == null || wait) {
     setTimeout(sendResult, 600, [result]);
   } else {
     sendResult(result);
@@ -391,7 +391,7 @@ function parseRequest(request) {
     break;
   case "switchToWindow":
     ChromeDriver.hasHwnd = false;
-    if (typeof("request.windowName") != "undefined") {
+    if (request.windowName !== undefined) {
       setActivePortByWindowName(request.windowName);
     } else {
       sendResponseToParsedRequest({
@@ -481,9 +481,9 @@ function parsePortMessage(message) {
   console.log(
       "Received response from content script: " + JSON.stringify(message));
   if (!message || !message.response || !message.response.value ||
-      typeof(message.response.value.statusCode) == "undefined" ||
+      message.response.value.statusCode === undefined ||
       message.response.value.statusCode == null ||
-      typeof(message.sequenceNumber) == "undefined") {
+      message.sequenceNumber === undefined) {
     // Should only ever happen if we sent a bad request,
     // or the content script is broken
     console.log("Got invalid response from the content script.");
@@ -507,8 +507,8 @@ function parsePortMessage(message) {
   case 19: //org.openqa.selenium.XPathLookupException
   case 99: //org.openqa.selenium.WebDriverException [Native event]
     toSend = {statusCode: message.response.value.statusCode, value: null};
-    if (typeof(message.response.value) != "undefined" && message.response.value != null &&
-        typeof(message.response.value.value) != "undefined") {
+    if (message.response.value !== undefined && message.response.value != null &&
+        message.response.value.value !== undefined) {
       toSend.value = message.response.value.value;
     }
     sendResponseToParsedRequest(toSend, message.response.wait);
@@ -576,13 +576,13 @@ function parsePortMessage(message) {
         //This call should happen before another content script
         //connects and returns this value,
         //but if it doesn't, we may get mismatched information
-        if (typeof(ChromeDriver.tabs[tab].isFrameset) == "undefined") {
+        if (ChromeDriver.tabs[tab].isFrameset === undefined) {
           ChromeDriver.tabs[tab].isFrameset = response.isFrameset;
           return;
         } else {
           for (var frame in ChromeDriver.tabs[tab].frames) {
             var theFrame = ChromeDriver.tabs[tab].frames[frame];
-            if (typeof(theFrame.isFrameset) == "undefined") {
+            if (theFrame.isFrameset === undefined) {
               theFrame.isFrameset = response.isFrameset;
               return;
             }
