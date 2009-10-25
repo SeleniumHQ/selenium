@@ -672,6 +672,7 @@ function selectElement(element) {
 
 /**
  * Focus the element so that native code can type to it
+ * @param keys the string to type.  Must not be an array.
  */
 function sendElementKeys(element, keys, elementId) {
   try {
@@ -685,6 +686,9 @@ function sendElementKeys(element, keys, elementId) {
   return {statusCode: "no-op", keys: keys, elementId: elementId};
 }
 
+/**
+ * @param keys the string to type.  Must not be an array.
+ */
 function sendElementNonNativeKeys(element, keys) {
   //TODO(danielwh): Any kind of actually support for non-native keys
   for (var i = 0; i < keys.length; i++) {

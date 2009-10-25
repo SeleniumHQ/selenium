@@ -406,6 +406,9 @@ function parseRequest(request) {
   case "hoverOverElement":
     // Falling through, as native events are handled the same
   case "sendKeysToElement":
+    if (typeof(request.keys) == "object" && request.keys.length !== undefined) {
+      request.keys = request.keys.join("");
+    }
     sendMessageOnActivePortAndAlsoKeepTrackOfIt(
         wrapInjectEmbedIfNecessary(request));
     break;
@@ -543,11 +546,7 @@ function parsePortMessage(message) {
       break;
     case "sendKeysToElement":
       try {
-        var keys = message.response.value.keys;
-        if (typeof(keys) == "object" && keys.length !== undefined) {
-          keys = keys.join("");
-        }
-        if (document.embeds[0].sendKeys(keys)) {
+        if (document.embeds[0].sendKeys(message.response.value.keys)) {
           sendResponseToParsedRequest({statusCode: 0}, true);
         } else {
           sendResponseToParsedRequest({statusCode: 99}, true);
