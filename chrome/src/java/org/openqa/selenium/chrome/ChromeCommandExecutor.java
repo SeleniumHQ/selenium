@@ -234,11 +234,11 @@ public class ChromeCommandExecutor {
    * @return The HTTP 200 message encoded in UTF-8 as an array of bytes
    */
   private byte[] fillTwoHundred(String message, String contentType) {
-    String httpMessage = "HTTP/1.1 200 OK" +
-    "\r\nContent-Length: " + message.length() + 
-    "\r\nContent-Type: " + contentType + 
-    "\r\n\r\n" + message;
     try {
+      String httpMessage = "HTTP/1.1 200 OK" +
+      "\r\nContent-Length: " + message.getBytes("UTF-8").length + 
+      "\r\nContent-Type: " + contentType + 
+      "\r\n\r\n" + message;
       return httpMessage.getBytes("UTF-8");
     } catch (UnsupportedEncodingException e) {
       //Should never happen - Java ships with UTF-8
