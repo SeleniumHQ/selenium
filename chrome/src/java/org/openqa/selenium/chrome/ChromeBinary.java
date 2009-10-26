@@ -12,21 +12,25 @@ public class ChromeBinary {
   
   Process chromeProcess = null;
   
-  public void start(String[] flags) throws IOException {
-    File chromeFile = getChromeFile();
-    if (Platform.getCurrent().is(Platform.XP)) {
-      String toExec = chromeFile.getCanonicalPath();
-      for (String flag : flags) {
-        toExec += " " + flag;
-      }
-      chromeProcess = Runtime.getRuntime().exec(toExec);
-    } else {
-      String[] toExec = new String[flags.length + 1];
-      toExec[0] = chromeFile.getCanonicalPath();
-      for (int i = 0; i < flags.length; ++i) {
-        toExec[i + 1] = flags[i];
-      }
-      chromeProcess = Runtime.getRuntime().exec(toExec);
+  /**
+   * Starts the Chrome process for WebDriver.
+   * Assumes the passed directories exist.
+   * @param profileDir directory to use as the profile.
+   * Should contain the empty text file "First Run Dev".
+   * @param extensionDir directory which contains the WebDriver extension.
+   * @throws IOException wrapped in WebDriverException if process couldn't be
+   * started.
+   */
+  public void start(String profileDir, String extensionDir) throws IOException {
+    try {
+      chromeProcess = new ProcessBuilder(
+          getChromeFile(),
+          "--user-data-dir=" + profileDir,
+          "--load-extension=" + extensionDir,
+          "--activate-on-launch")
+          .start();
+    } catch (IOException e) {
+      throw new WebDriverException(e);
     }
     try {
       Thread.sleep(2500 * linearBackoffCoefficient);
@@ -53,7 +57,7 @@ public class ChromeBinary {
    * @return chrome.exe
    * @throws IOException if file could not be found/accessed
    */
-  protected File getChromeFile() throws IOException {
+  protected String getChromeFile() throws IOException {
     File chromeFile = null;
     String chromeFileSystemProperty = System.getProperty(
         "webdriver.chrome.bin");
@@ -96,6 +100,6 @@ public class ChromeBinary {
       }
       chromeFile = new File(chromeFileString.toString());
     }
-    return chromeFile;
+    return chromeFile.getCanonicalFile().toString();
   }
 }

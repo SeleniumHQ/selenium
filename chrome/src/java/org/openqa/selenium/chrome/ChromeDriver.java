@@ -89,13 +89,10 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
       //TODO(danielwh): Maybe add Local State file with window_placement
       
       System.setProperty("webdriver.reap_profile", "false");
-
-      String[] flags = {
-          "--user-data-dir=" + wrapInQuotesIfWindows(profileDir.getCanonicalPath()),
-          "--load-extension=" + wrapInQuotesIfWindows(extensionDir.getCanonicalPath()),
-          "--activate-on-launch"
-      };
-      chromeBinary.start(flags);
+      
+      chromeBinary.start(
+          profileDir.getCanonicalFile().toString(),
+          extensionDir.getCanonicalFile().toString());
     } catch (IOException e) {
       throw new WebDriverException(e);
     }
@@ -162,19 +159,6 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
           "/chrome-extension.zip"));
     }
     return extensionDir;
-  }
-
-  /**
-   * Wraps the passed argument in "s if the platform is Windows
-   * @param arg string to wrap
-   * @return "arg"
-   */
-  private String wrapInQuotesIfWindows(String arg) {
-    if (Platform.getCurrent().is(Platform.WINDOWS)) {
-      return "\"" + arg + "\"";
-    } else {
-      return arg;
-    }
   }
 
   public void close() {
