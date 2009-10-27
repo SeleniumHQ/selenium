@@ -51,7 +51,11 @@ var ExternalScripts = [
 
   // Firefox 3.5+ has native JSON support; prefer that over our script from
   // www.json.org, which may be slower.
-  if (!JSON) {
+  var appInfo = Components.classes['@mozilla.org/xre/app-info;1'].
+      getService(Components.interfaces.nsIXULAppInfo);
+  var versionChecker = Components.classes['@mozilla.org/xpcom/version-comparator;1'].
+      getService(Components.interfaces.nsIVersionComparator);
+  if (versionChecker.compare(appInfo.version, '3.5') < 0) {
     ExternalScripts.push('json2.js');
   }
 
