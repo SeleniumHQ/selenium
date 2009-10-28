@@ -20,6 +20,7 @@ package org.openqa.selenium.remote.server.renderer;
 import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.server.rest.Handler;
+import org.json.JSONObject;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -40,12 +41,11 @@ public class JsonErrorExceptionResult extends ErrorJsonResult {
     res.setError(true);
 
     String raw = new BeanToJsonConverter().convert(e);
+    JSONObject error = new JSONObject(raw);
     if (raw.startsWith("{")) {
-      res.setValue(String.format("{ screen: \"%s\", %s",
-                   request.getAttribute("screen"), raw.substring(1))); 
-    } else {
-      res.setValue(raw);
+      error.put("screen", request.getAttribute("screen"));
     }
+    res.setValue(error.toString());
 
     request.setAttribute(propertyName, res);
 
