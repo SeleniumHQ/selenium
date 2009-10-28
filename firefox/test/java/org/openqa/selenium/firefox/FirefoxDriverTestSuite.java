@@ -84,7 +84,15 @@ public class FirefoxDriverTestSuite extends TestCase {
         fromTo.put("../linux/Release/x_ignore_nofocus.so",
         "x86/x_ignore_nofocus.so");
       }
-      
+
+      // Grab the dommessenger
+      File domMessenger = FileHandler.locateInProject("common/src/js/extension/dommessenger.js");
+      File targetDomMessenger = new File(extension, "content/dommessenger.js");
+      try {
+        FileHandler.copy(domMessenger, targetDomMessenger);
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
 
       // We know the location of the "from" in relation to the extension source
       for (Map.Entry<String, String> entry : fromTo.entrySet()) {
@@ -119,6 +127,7 @@ public class FirefoxDriverTestSuite extends TestCase {
       Map<String, String> components = new HashMap<String, String>() {{
         put("build/nsINativeEvents.xpt", "components/nsINativeEvents.xpt");
         put("build/nsICommandProcessor.xpt", "components/nsICommandProcessor.xpt");
+        put("build/nsIResponseHandler.xpt", "components/nsIResponseHandler.xpt");
       }};
 
       for (Map.Entry<String, String> component : components.entrySet()) {
