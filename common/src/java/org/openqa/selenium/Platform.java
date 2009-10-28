@@ -58,12 +58,12 @@ public enum Platform {
     }
   },
   MAC("mac", "darwin") {},
-  UNIX("solaris", "bsd") {
+  UNIX("solaris", "bsd") {},
+  LINUX("linux") {
     public boolean is(Platform compareWith) {
       return compareWith == UNIX || compareWith == LINUX;
     }
   },
-  LINUX("linux") {},
   /**
    * Never returned, but can be used to request a browser running on
    * any operating system

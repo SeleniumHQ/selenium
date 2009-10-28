@@ -28,6 +28,22 @@ public class PlatformTest extends TestCase {
   public void testShouldIdentifyMacVariants() {
     assertAllAre(Platform.MAC, "Darwin", "Mac OS X");
   }
+  
+  public void testShouldIdentifyUnixVariants() {
+    assertAllAre(Platform.UNIX, "solaris", "bsd");
+  }
+  
+  public void testShouldIdentifyLinux() {
+    assertAllAre(Platform.LINUX, "Linux");
+  }
+  
+  public void testShouldDistinctLinuxFromUnix() {
+    Platform linPlatform = Platform.extractFromSysProperty("Linux");
+    assertTrue("Linux should be identified as Unix", linPlatform.is(Platform.UNIX));
+    
+    Platform anyUnixPlatform = Platform.extractFromSysProperty("solaris");
+    assertFalse("Unix should NOT be identified as Linux", anyUnixPlatform.is(Platform.LINUX));
+  }
 
   private void assertAllAre(Platform platform, String... osNames) {
     for (String osName : osNames) {
