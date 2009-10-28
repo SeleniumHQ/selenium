@@ -17,6 +17,9 @@ limitations under the License.
 
 package org.openqa.selenium.firefox.internal;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -31,9 +34,18 @@ public class CircularOutputStream extends OutputStream {
   private int end;
   private boolean filled = false;
   private byte[] buffer;
+  private FileOutputStream out_log;
 
   public CircularOutputStream(int maxSize) {
     buffer = new byte[maxSize];
+    String firefoxLogFile = System.getProperty("webdriver.firefox.logfile");
+    if (firefoxLogFile != null) {
+      try {
+        out_log = new FileOutputStream(new File(firefoxLogFile));
+      } catch (FileNotFoundException e) {
+        out_log = null;
+      }
+    }
   }
 
   public CircularOutputStream() {
@@ -52,6 +64,10 @@ public class CircularOutputStream extends OutputStream {
     }
 
     buffer[end++] = (byte) b;
+    if (out_log != null) {
+      out_log.write(b);
+    }
+    
   }
 
   @Override
