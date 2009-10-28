@@ -282,6 +282,7 @@ public class
     }
   }
 
+  @Ignore(SELENESE)
   public void testShouldfindAnElementBasedOnTagName() {
     driver.get(formPage);
 
@@ -328,7 +329,7 @@ public class
     assertEquals("Changed", driver.getTitle());
   }
 
-  @Ignore(HTMLUNIT)
+  @Ignore({HTMLUNIT, SELENESE})
   public void testShouldNotBeAbleToFindAnElementOnABlankPage() {
     driver.get("about:blank");
 
