@@ -458,6 +458,7 @@ uber_jar(:name => "all",
                     "build/webdriver-firefox.jar",
                     "build/webdriver-ie.jar",
                     "build/webdriver-remote-client.jar",
+                    "build/webdriver-remote-common.jar",
                     "build/webdriver-support.jar",
                   ],
          :deps => [
