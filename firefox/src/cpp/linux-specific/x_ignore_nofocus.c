@@ -20,13 +20,13 @@
 #endif
 
 // Define this to prevent events from being faked.
-#undef NO_FAKING
+//#undef NO_FAKING
 
-//#define DEBUG_PRINTOUTS
+#define DEBUG_PRINTOUTS
 
 #ifdef DEBUG_PRINTOUTS
 FILE* g_out_stream = 0;
-#define LOG(...) if (g_out_stream != NULL) { fprintf(g_out_stream, __VA_ARGS__); }
+#define LOG(...) if (g_out_stream != NULL) { fprintf(g_out_stream, __VA_ARGS__); fflush(g_out_stream); }
 #define OPEN_LOGGING_FILE { g_out_stream = fopen("/tmp/x_ignore_focus_log.txt", "a+"); }
 #define CLOSE_LOGGING_FILE { fclose(g_out_stream); g_out_stream = NULL; }
 #else
@@ -46,6 +46,7 @@ struct _FocusKeepStatus {
   int during_close;
   int should_steal_focus;
   int encountered_focus_in_event;
+  int active_window_from_close;
 };
 
 typedef struct _FocusKeepStatus FocusKeepStatus;
@@ -61,6 +62,8 @@ void init_focus_keep_struct(FocusKeepStatus* stat)
   // never re-send that event as well, not to break clients which expect to get
   // FocusOut before FocusIn
   stat->encountered_focus_in_event = FALSE;
+  // This remembers if the active was learnt due to a close
+  stat->active_window_from_close = FALSE;
 };
 
 Window get_active_window(FocusKeepStatus* stat)
@@ -110,8 +113,17 @@ int cache_xquery_result(Display* dpy, Window for_win) {
   unsigned int num_childs = 0;
   int k = 0;
 
-  if (g_cached_xquerytree.window_id == for_win) {
+  if ((g_cached_xquerytree.window_id == for_win) &&
+      (g_cached_xquerytree.related_windows != NULL)) {
     return TRUE;
+  }
+
+  LOG("Invoking XQueryTree for window %#lx\n", for_win);
+  int queryRes = XQueryTree(dpy, for_win, &root_win,
+                            &parent_win, &childs_list, &num_childs);
+  if (queryRes == 0) {
+    LOG("XQueryTree failed, rc=%d\n", queryRes);
+    return FALSE;
   }
 
   if (g_cached_xquerytree.related_windows != NULL) {
@@ -119,16 +131,13 @@ int cache_xquery_result(Display* dpy, Window for_win) {
     g_cached_xquerytree.related_windows = NULL;
   }
 
-  int queryRes = XQueryTree(dpy, for_win, &root_win,
-                            &parent_win, &childs_list, &num_childs);
-  if (queryRes == 0) {
-    return FALSE;
-  }
-
   int numRelatedWindows = (1 /* parent_win */ +
                            1 /* actual win */ + num_childs + 1 /* NULL */);
 
+
   g_cached_xquerytree.related_windows = malloc(sizeof(Window) * numRelatedWindows);
+  LOG("Allocated at address %p , numRelWindows: %d\n",
+      g_cached_xquerytree.related_windows, numRelatedWindows);
   int relatedWinsIndex = 0;
   g_cached_xquerytree.related_windows[relatedWinsIndex++] = parent_win;
   g_cached_xquerytree.related_windows[relatedWinsIndex++] = for_win;
@@ -151,6 +160,10 @@ int lookup_in_xquery_cache(Window ev_win)
 {
   int ret_val = FALSE;
   int k = 0;
+  if (g_cached_xquerytree.related_windows == NULL) {
+    LOG("related_windows is NULL, cache is inconsistent.\n");
+    return FALSE;
+  }
   while ((g_cached_xquerytree.related_windows[k] != 0) && (!ret_val)) {
     if (g_cached_xquerytree.related_windows[k] == ev_win) {
       ret_val = TRUE;
@@ -159,6 +172,11 @@ int lookup_in_xquery_cache(Window ev_win)
   }
 
   return ret_val;
+}
+
+int window_ids_difference(Window win_one, Window win_two)
+{
+  return (abs(win_one - win_two));
 }
 
 int event_on_active_or_adj_window(Display* dpy, XEvent* ev, Window active_win)
@@ -211,10 +229,16 @@ void identify_switch_situation(FocusKeepStatus* stat)
 void set_active_window(FocusKeepStatus* stat, XEvent* ev)
 {
   stat->active_window = extract_window_id(ev);
+  if (stat->during_close) {
+    stat->active_window_from_close = TRUE;
+  } else {
+    stat->active_window_from_close = FALSE;
+  }
   stat->encountered_focus_in_event = FALSE;
   stat->during_switch = FALSE;
   unlink("/tmp/switch_window_started");
-  LOG("Setting Active Window due to FocusIn: %#lx\n", get_active_window(stat));
+  LOG("Setting Active Window due to FocusIn: %#lx (from close: %d)\n",
+      get_active_window(stat), stat->active_window_from_close);
 }
 
 void identify_new_window_situation(FocusKeepStatus* stat, XEvent* ev)
@@ -245,18 +269,21 @@ void steal_focus_back_if_needed(FocusKeepStatus* stat, Display* dpy)
   if ((stat->should_steal_focus) && (get_active_window(stat) != 0)) {
     stat->should_steal_focus = FALSE;
 
-    if (!stat->during_close) {
+    if ((!stat->during_close) || (stat->active_window_from_close)) {
       LOG("Stealing focus back to %#lx\n", get_active_window(stat));
       stat->new_window = 0;
 
+      sleep(1);
       XSetInputFocus(dpy, get_active_window(stat), RevertToParent, CurrentTime);
       // Allow a focus in event to flow again to the window considered
       // active.
       stat->encountered_focus_in_event = FALSE;
     } else {
-      LOG("Not stealing focus back, during close.\n");
-      //TODO(eranm): Was gDuringClose = FALSE, but it makes
-      // no sense.
+      LOG("Not stealing focus back. During close: %d Active from close: %d.\n",
+          stat->during_close, stat->active_window_from_close);
+      // Set during_close to false here - This is the point where the state
+      // transition is done - specifically, we consider the entire close
+      // process to be completed.
       stat->during_close = FALSE;
     }
   }
@@ -273,13 +300,15 @@ int should_discard_focus_out_event(FocusKeepStatus* stat, Display* dpy,
   const int detail = ev->xfocus.detail;
 
   if (stat->new_window != 0) {
+    /*
     if (!(event_on_active_or_adj_window(dpy, ev, stat->new_window)
         || event_on_active_or_adj_window(dpy, ev, get_active_window(stat)))) {
       LOG( "ERROR - Event on window %#lx, which is neither new nor active.\n",
            extract_window_id(ev));
-    } else {
-      LOG("Event on new/active (%#lx) during new window creation, allowing.\n",
+    } else */ {
+      LOG("Event on new/active (%#lx) during new window creation, allowing.",
           extract_window_id(ev));
+      LOG(" New: %#lx Active: %#lx\n", stat->new_window, stat->active_window);
     }
     return FALSE;
   }
@@ -292,7 +321,11 @@ int should_discard_focus_out_event(FocusKeepStatus* stat, Display* dpy,
       stat->encountered_focus_in_event = FALSE;
     } else {
       // Disallow transfer of focus to outside windows.
-      ret_val = TRUE;
+      if (!stat->active_window_from_close) {
+        ret_val = TRUE;
+      } else {
+        LOG("FocusOut event, but active window from close. Not discarding.\n");
+      }
     }
   } else {
     LOG("Got Focus out event on window %#lx but active window is %#lx\n",
@@ -324,10 +357,12 @@ int should_discard_focus_in_event(FocusKeepStatus* stat, Display* dpy,
       // event for a child window (not the new window itself), then
       // steal focus back from it afterwards.
       ret_val = FALSE;
-      if (extract_window_id(ev) == stat->new_window) {
+      Window curr_win = extract_window_id(ev);
+      if (curr_win == stat->new_window) {
         LOG("FocusIn event on new window - allowing.\n");
       } else {
-        if (event_on_active_or_adj_window(dpy, ev, stat->new_window) == FALSE) {
+        //if (event_on_active_or_adj_window(dpy, ev, stat->new_window) == FALSE) {
+        if (window_ids_difference(curr_win, stat->new_window) > 4) {
           LOG("ERROR - Event on window %#lx\n", extract_window_id(ev));
         } else {
           LOG("FocusIn event on child of new window - steal focus!\n");
@@ -364,7 +399,7 @@ void fake_keymap_notify_event(XEvent* outEvent, XEvent* sourceEvent)
   ev.xkeymap.send_event = sourceEvent->xfocus.send_event;
   ev.xkeymap.display = sourceEvent->xfocus.display;
   ev.xkeymap.window = sourceEvent->xfocus.window;
-  bzero(ev.xkeymap.key_vector, 32);
+  //bzero(ev.xkeymap.key_vector, 32);
   *outEvent = ev;
 }
 
@@ -492,7 +527,7 @@ void* get_xlib_handle()
 void print_event_to_log(Display* dpy, XEvent* ev)
 {
 #ifdef DEBUG_PRINTOUTS
-  if ((ev->type != PropertyNotify) && (ev->type != ConfigureNotify)) {
+  /*if ((ev->type != PropertyNotify) && (ev->type != ConfigureNotify))*/ {
     print_event(g_out_stream, ev, dpy);
   }
 #endif
@@ -535,8 +570,8 @@ int XNextEvent(Display *display, XEvent *outEvent) {
 
   // This display object will be used to inquire X server
   // about inferior and parent windows.
-  Display* dpy = XOpenDisplay (NULL);
-  assert(dpy != NULL);
+  Display* dpy = display;
+  //assert(dpy != NULL);
 
   print_event_to_log(dpy, &realEvent);
 
@@ -580,10 +615,6 @@ int XNextEvent(Display *display, XEvent *outEvent) {
 
   steal_focus_back_if_needed(&g_focus_status, dpy);
 
-  if (dpy != NULL) {
-    XCloseDisplay(dpy);
-    dpy = NULL;
-  }
   dlclose(handle);
   LOG("--- Call ended. ---\n");
   CLOSE_LOGGING_FILE;

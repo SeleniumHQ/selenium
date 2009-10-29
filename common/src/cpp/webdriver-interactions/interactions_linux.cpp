@@ -36,7 +36,7 @@ limitations under the License.
 #include "translate_keycode_linux.h"
 
 using namespace std;
-#define INTERACTIONS_DEBUG
+//#define INTERACTIONS_DEBUG
 
 #define INTERACTIONS_LOG_FILE "/tmp/native_ff_events_log"
 
