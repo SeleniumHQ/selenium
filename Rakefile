@@ -389,6 +389,56 @@ task :test_firefox_py => :test_firefox do
   end
 end
 
+task :test_remote_rb => [:test_common, :remote_server] do
+  jruby :include  => [".", "common/src/rb/lib", "remote/client/src/rb/lib", "common/test/rb/lib"],
+        :require  => ["third_party/jruby/json-jruby.jar"],
+        :command  => "-S spec",
+        :files    => Dir['common/test/rb/spec/**/*spec.rb']
+        # :headless => true
+end
+
+task :test_ie_rb => :test_common do
+  jruby :include => [".", "common/src/rb/lib", "jobbie/src/rb/lib", "common/test/rb/lib"],
+        :require => ["third_party/jruby/json-jruby.jar"],
+        :command => "-X+O -S spec", # needs ObjectSpace
+        :files   => Dir['common/test/rb/spec/**/*spec.rb']
+end
+
+task :test_chrome_rb => :test_common do
+  jruby :include => [".", "common/src/rb/lib", "chrome/src/rb/lib", "common/test/rb/lib"],
+        :require => ["third_party/jruby/json-jruby.jar"],
+        :command => "-S spec",
+        :files   => Dir['common/test/rb/spec/**/*spec.rb']
+end
+
+task :test_firefox_rb => :test_common do
+  jruby :include => [".", "common/src/rb/lib", "firefox/src/rb/lib", "common/test/rb/lib"],
+        :require => ["third_party/jruby/json-jruby.jar"],
+        :command => "-S spec ",
+        :files   => Dir['common/test/rb/spec/**/*spec.rb']
+end
+
+task :test_remote_chrome_rb => :test_common do
+  ENV['REMOTE_BROWSER_VERSION'] = 'chrome'
+  Rake::Task[:test_remote_rb].invoke # bad
+end
+
+task :test_remote_firefox_rb => :firefox do
+  ENV['REMOTE_BROWSER_VERSION'] = 'firefox'
+  Rake::Task[:test_remote_rb].invoke # bad
+end
+
+task :test_remote_ie_rb => :ie do
+  ENV['REMOTE_BROWSER_VERSION'] = 'internet_explorer'
+  Rake::Task[:test_remote_rb].invoke # bad
+end
+
+task :test_remote_chrome_rb => :chrome do
+  ENV['REMOTE_BROWSER_VERSION'] = 'chrome'
+  Rake::Task[:test_remote_rb].invoke # bad
+end
+
+
 task :iphone => [:iphone_server, :iphone_client]
 
 # Place-holder tasks
