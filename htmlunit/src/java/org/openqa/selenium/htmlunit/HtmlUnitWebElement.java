@@ -56,6 +56,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextArea;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriverException;
@@ -71,6 +72,9 @@ import org.w3c.dom.NamedNodeMap;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.openqa.selenium.Keys.ENTER;
+import static org.openqa.selenium.Keys.RETURN;
 
 public class HtmlUnitWebElement implements WebElement, FindsById, FindsByLinkText, FindsByXPath, FindsByTagName {
 
@@ -91,14 +95,20 @@ public class HtmlUnitWebElement implements WebElement, FindsById, FindsByLinkTex
     assertElementNotStale();
 
     try {
-      if (parent.isJavascriptEnabled() && !(element instanceof HtmlInput)) {
-        element.focus();
+      if (parent.isJavascriptEnabled()) {
+        if (!(element instanceof HtmlInput)) {
+          element.focus();
+        }
+        
+        element.mouseOver();
+        element.mouseMove();
       }
 
       element.click();
     } catch (IOException e) {
       throw new WebDriverException(e);
     } catch (ScriptException e) {
+      // TODO(simon): This isn't good enough.
       System.out.println(e.getMessage());
       // Press on regardless
     }
@@ -210,16 +220,20 @@ public class HtmlUnitWebElement implements WebElement, FindsById, FindsByLinkTex
       builder.append(seq);
     }
 
+    // If the element is an input element, and the string contains one of
+    // ENTER or RETURN, break the string at that point and submit the form
+    int indexOfSubmitKey = indexOfSubmitKey(element, builder);
+    if (indexOfSubmitKey != -1) {
+      builder.delete(indexOfSubmitKey, builder.length());
+    }
+
     if (parent.isJavascriptEnabled() && !(element instanceof HtmlFileInput)) {
       try {
         element.type(builder.toString());
-        return;
       } catch (IOException e) {
         throw new WebDriverException(e);
       }
-    }
-
-    if (element instanceof HtmlInput) {
+    } else if (element instanceof HtmlInput) {
       String currentValue = getValue();
       element
           .setAttribute("value", (currentValue == null ? "" : currentValue) + builder.toString());
@@ -231,6 +245,25 @@ public class HtmlUnitWebElement implements WebElement, FindsById, FindsByLinkTex
       throw new UnsupportedOperationException(
           "You may only set the value of elements that are input elements");
     }
+
+    if (indexOfSubmitKey != -1) {
+      submit();
+    }
+  }
+
+  private int indexOfSubmitKey(HtmlElement element, StringBuilder builder) {
+    if (!(element instanceof HtmlInput))
+      return -1;
+
+    CharSequence[] terminators = { "\n", ENTER, RETURN };
+    for (CharSequence terminator : terminators) {
+      String needle = String.valueOf(terminator);
+      int index = builder.indexOf(needle);
+      if (index != -1) {
+        return index;
+      }
+    }
+    return -1;
   }
 
   public String getTagName() {

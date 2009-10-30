@@ -93,6 +93,26 @@ public class FormHandlingTest extends AbstractDriverTestCase {
     assertThat(textarea.getValue(), equalTo(cheesey));
   }
 
+  @Ignore(SELENESE)
+  public void testShouldSubmitAFormUsingTheNewlineLiteral() {
+    driver.get(formPage);
+    WebElement nestedForm = driver.findElement(By.id("nested_form"));
+    WebElement input = nestedForm.findElement(By.name("x"));
+    input.sendKeys("\n");
+    assertEquals("We Arrive Here", driver.getTitle());
+    assertTrue(driver.getCurrentUrl().endsWith("?x=name"));
+  }
+
+  @Ignore(SELENESE)
+  public void testShouldSubmitAFormUsingTheEnterKey() {
+    driver.get(formPage);
+    WebElement nestedForm = driver.findElement(By.id("nested_form"));
+    WebElement input = nestedForm.findElement(By.name("x"));
+    input.sendKeys(Keys.ENTER);
+    assertEquals("We Arrive Here", driver.getTitle());
+    assertTrue(driver.getCurrentUrl().endsWith("?x=name"));
+  }
+
   public void testShouldEnterDataIntoFormFields() {
     driver.get(xhtmlTestPage);
     WebElement element = driver.findElement(By

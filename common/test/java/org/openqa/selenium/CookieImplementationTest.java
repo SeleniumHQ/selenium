@@ -194,7 +194,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     assertNull(String.valueOf(cookie), cookie);
   }
 
-  @Ignore(SELENESE)
+  @Ignore({SELENESE, IE})
   public void testShouldBeAbleToAddToADomainWhichIsRelatedToTheCurrentDomain() {
     String name = gotoValidDomainAndClearCookies();
     if (name == null) {
@@ -213,7 +213,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     assertNotNull(driver.manage().getCookieNamed("name"));
   }
 
-  @Ignore({REMOTE, SELENESE})
+  @Ignore({REMOTE, SELENESE, IE})
   public void testShouldBeAbleToIncludeLeadingPeriodInDomainName() throws Exception {
     String name = gotoValidDomainAndClearCookies();
     if (name == null || name.matches("\\d{1,3}(?:\\.\\d{1,3}){3}")) {
@@ -303,7 +303,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
     assertNotNull(driver.manage().getCookieNamed("name"));
   }
 
-  @Ignore(SELENESE)
+  @Ignore({SELENESE, IE})
   public void testCookieIntegrity() {
     String url = GlobalTestEnvironment.get().getAppServer().whereElseIs("animals");
 

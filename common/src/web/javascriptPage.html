@@ -3,6 +3,8 @@
 <head>
     <title>Testing Javascript</title>
     <script type="text/javascript">
+        var seen = {};
+
         function updateContent(input) {
             document.getElementById('result').innerHTML = "<p>" + input.value + "</p>";
         }
@@ -13,6 +15,13 @@
 
         function appendMessage(message) {
             document.getElementById('result').innerHTML += message + " ";
+        }
+
+        function register(message) {
+          if (!seen[message]) {
+            appendMessage(message);
+            seen[message] = true;
+          }
         }
 
         function delayedShowHide(delay, show) {
@@ -143,6 +152,8 @@
            	onclick="appendMessage('click')"
            	onmousedown="appendMessage('mousedown ')" 
            	onmouseup="appendMessage('mouseup ')"
+            onmouseover="register('mouseover ')"
+            onmousemove="register('mousemove ')"
     >
         <b>Go somewhere</b>
     </button>

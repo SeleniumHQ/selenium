@@ -72,6 +72,8 @@ FirefoxDriver.prototype.click = function(respond) {
   Utils.dumpn("Falling back to synthesized click");
   var currentlyActive = Utils.getActiveElement(respond.context);
 
+  Utils.fireMouseEventOn(respond.context, element, "mouseover");
+  Utils.fireMouseEventOn(respond.context, element, "mousemove");
   Utils.fireMouseEventOn(respond.context, element, "mousedown");
   if (element != currentlyActive) {
     currentlyActive.blur();

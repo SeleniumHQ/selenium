@@ -20,6 +20,7 @@ package org.openqa.selenium;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
+import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
@@ -64,6 +65,26 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
     clickOnElementWhichRecordsEvents();
 
     assertEventFired("mouseup");
+  }
+
+  @JavascriptEnabled
+  @Ignore({SELENESE, CHROME})
+  public void testShouldFireMouseOverEventWhenClicking() {
+    driver.get(javascriptPage);
+
+    clickOnElementWhichRecordsEvents();
+
+    assertEventFired("mouseover");
+  }
+
+  @JavascriptEnabled
+  @Ignore({SELENESE, CHROME, FIREFOX})
+  public void testShouldFireMouseMoveEventWhenClicking() {
+    driver.get(javascriptPage);
+
+    clickOnElementWhichRecordsEvents();
+
+    assertEventFired("mousemove");
   }
 
   @Ignore(value = {CHROME, SELENESE}, reason = "Webkit bug 22261")
@@ -182,6 +203,6 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   private void assertEventFired(String eventName) {
     WebElement result = driver.findElement(By.id("result"));
     String text = result.getText();
-    assertTrue("No " + eventName + " fired", text.contains(eventName));
+    assertTrue("No " + eventName + " fired: " + text, text.contains(eventName));
   }
 }

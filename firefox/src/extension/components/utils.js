@@ -470,9 +470,11 @@ Utils.type = function(context, element, text, opt_useNativeEvents) {
       var the_window = element.ownerDocument.defaultView;
 
       var doneNativeEventWait = false;
-      
-      the_window.setTimeout(function() {
-        doneNativeEventWait = true; }, 100);
+
+      if (the_window) {
+        the_window.setTimeout(function() {
+          doneNativeEventWait = true; }, 100);
+      }
       
       // Do it as long as the timeout function has not been called and the
       // page has not been unloaded. If the page has been unloaded, there is no

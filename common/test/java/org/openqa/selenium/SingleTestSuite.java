@@ -36,7 +36,7 @@ public class SingleTestSuite extends TestCase {
   private final static String SELENIUM = "org.openqa.selenium.SeleneseBackedWebDriver";
 
   public static Test suite() throws Exception {
-    String driver = SELENIUM;
+    String driver = IE;
 
     System.setProperty("webdriver.development", "true");
     System.setProperty("jna.library.path", "..\\build;build");
@@ -51,10 +51,10 @@ public class SingleTestSuite extends TestCase {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("FormHandlingTest")
+        .onlyRun("JavascriptEnabledDriverTest")
 //        .method("testClickingOnUnclickableElementsDoesNothing")
         .exclude(ALL)
-        .exclude(Ignore.Driver.SELENESE)
+        .exclude(Ignore.Driver.IE)
         .leaveRunning()
         ;  // Yeah, this look strange :)
 

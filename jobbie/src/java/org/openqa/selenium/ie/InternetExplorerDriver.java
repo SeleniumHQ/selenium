@@ -431,6 +431,10 @@ public class InternetExplorerDriver implements WebDriver, JavascriptExecutor {
     }
 
     public void deleteCookie(Cookie cookie) {
+      if (cookie == null) {
+        throw new WebDriverException("Cookie to delete cannot be null");
+      }
+
       String currentUrl = getCurrentUrl();
       try {
         URI uri = new URI(currentUrl);
