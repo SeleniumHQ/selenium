@@ -47,7 +47,7 @@ public class TestSuiteBuilder {
   private boolean withDriver = true;
   private boolean withEnvironment = true;
   private String onlyRun;
-  private String testMethodName;
+  private Set<String> testMethodNames = new HashSet<String>();
   private Set<String> decorators = new LinkedHashSet<String>();
   private boolean includeJsApiTests = false;
 
@@ -201,8 +201,8 @@ public class TestSuiteBuilder {
   }
 
   private boolean isTestMethod(Method method) {
-    if (testMethodName != null) {
-      return method.getName().equals(testMethodName);
+    if (!testMethodNames.isEmpty()) {
+      return testMethodNames.contains(method.getName());
     }
 
     if (isIgnored(method)) {
@@ -299,7 +299,7 @@ public class TestSuiteBuilder {
   }
 
   public TestSuiteBuilder method(String testMethodName) {
-    this.testMethodName = testMethodName;
+    this.testMethodNames.add(testMethodName);
 
     return this;
   }
