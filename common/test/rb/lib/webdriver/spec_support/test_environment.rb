@@ -29,26 +29,30 @@ module WebDriver
       end
 
       def driver_instance
-        @driver_instance ||= begin
-          if driver == :remote
-            cap = WebDriver::Remote::Capabilities.send(ENV['REMOTE_BROWSER_VERSION'] || 'firefox')
-            WebDriver::Driver.for :remote,  :server_url           => "http://localhost:6000/",
-                                            :desired_capabilities => cap
-          else
-            WebDriver::Driver.for driver
-          end
+        @driver_instance ||= new_driver_instance
+      end
+
+      def new_driver_instance
+        if driver == :remote
+          cap = WebDriver::Remote::Capabilities.send(ENV['REMOTE_BROWSER_VERSION'] || 'firefox')
+          WebDriver::Driver.for :remote,  :server_url           => "http://localhost:6000/",
+                                          :desired_capabilities => cap
+        else
+          WebDriver::Driver.for driver
         end
-      rescue => e
-        p $!, $@
-        raise e
       end
 
       def app_server
-        raise NotImplementedError, "need a simple rack app to serve static files from common/web/"
+        @app_server ||= begin
+          s = RackServer.new
+          s.start
+
+          s
+        end
       end
 
       def remote_server
-        raise NotImplementedError, "no remote server impl. on MRI yet"
+        raise NotImplementedError, "no remote server impl. in ruby/MRI yet"
       end
 
       def quit
@@ -62,6 +66,24 @@ module WebDriver
 
       def url_for(filename)
         app_server.where_is filename
+      end
+
+      private
+
+      #
+      # wrap the driver instance in this for a quick and dirty debugging tool
+      #
+
+      def wrap_in_tracing_delegator(object)
+        delegator = Object.new
+
+        def delegator.method_missing(meth, *args, &blk)
+          p :meth => meth, :args => args
+          @delegate.send(meth, *args, &blk)
+        end
+
+        delegator.instance_variable_set("@delegate", object)
+        delegator
       end
 
     end # TestEnvironment
