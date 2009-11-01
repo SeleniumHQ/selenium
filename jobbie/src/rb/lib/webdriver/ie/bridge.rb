@@ -14,6 +14,10 @@ module WebDriver
         @speed          = :fast
       end
 
+      def browser
+        :internet_explorer
+      end
+
       def get(url)
         check_error_code Lib.wdGet(@driver_pointer, wstring_ptr(url)),
                          "Cannot get url #{url.inspect}"

@@ -55,6 +55,10 @@ module WebDriver
         @capabilities = create_session opts[:desired_capabilities]
       end
 
+      def browser
+        @browser ||= @capabilities.browser_name.gsub(" ", "_").to_sym
+      end
+
       #
       # Returns the current session ID.
       #

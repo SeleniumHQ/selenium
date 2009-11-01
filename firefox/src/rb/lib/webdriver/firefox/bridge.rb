@@ -10,6 +10,10 @@ module WebDriver
         @context    = newSession
       end
 
+      def browser
+        :firefox
+      end
+
       def quit
         @connection.quit
         @binary.wait

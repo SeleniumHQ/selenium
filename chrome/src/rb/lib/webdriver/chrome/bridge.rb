@@ -11,6 +11,10 @@ module WebDriver
         # TODO: @launcher.kill
       end
 
+      def browser
+        :chrome
+      end
+
       def get(url)
         execute :request => 'get',
                 :url     => url
