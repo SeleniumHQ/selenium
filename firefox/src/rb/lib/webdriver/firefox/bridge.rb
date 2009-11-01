@@ -4,13 +4,16 @@ module WebDriver
       include BridgeHelper
 
       def initialize
-        @launcher   = Launcher.new(Binary.new).launch
+        @binary     = Binary.new
+        @launcher   = Launcher.new(@binary).launch
         @connection = @launcher.connection
         @context    = newSession
       end
 
       def quit
         @connection.quit
+        @binary.wait
+        nil
       end
 
       def getPageSource
