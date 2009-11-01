@@ -68,6 +68,10 @@ HTTP
         length      = resp.split(":")[1].lstrip!.to_i
         json_string = @socket.recv length
 
+        if json_string.empty?
+          raise Error::WebDriverError, "empty response from extension"
+        end
+
         JSON.parse json_string
       end
 
