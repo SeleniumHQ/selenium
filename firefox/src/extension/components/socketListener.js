@@ -153,7 +153,7 @@ SocketListener.prototype.executeCommand_ = function() {
   var self = this;
   var command = this.data;
   var callback = function(response) {
-    Utils.dumpn('writing to socket:\n' + response);
+    //Utils.dumpn('writing to socket:\n' + response);
     var data = self.converter_.convertToByteArray(response, {});
     var header = "Length: " + data.length + "\n\n";
     self.outstream.write(header, header.length);

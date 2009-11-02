@@ -27,8 +27,9 @@ import java.net.ServerSocket;
 
 @SuppressWarnings("unused")
 public class SingleTestSuite extends TestCase {
-
-  private final static String FIREFOX = "org.openqa.selenium.firefox.FirefoxDriverTestSuite$TestFirefoxDriver";
+  private final static String FIREFOX = "org.openqa.selenium.firefox.FirefoxDriver";
+  private final static String FIREFOX_TEST = "org.openqa.selenium.firefox.FirefoxDriverTestSuite$TestFirefoxDriver";
+ 
   private final static String HTML_UNIT = "org.openqa.selenium.htmlunit.HtmlUnitDriver";
   private final static String HTML_UNIT_JS = "org.openqa.selenium.htmlunit.JavascriptEnabledHtmlUnitDriverTestSuite$HtmlUnitDriverForTest";
   private final static String IE = "org.openqa.selenium.ie.InternetExplorerDriver";
@@ -36,9 +37,9 @@ public class SingleTestSuite extends TestCase {
   private final static String SELENIUM = "org.openqa.selenium.SeleneseBackedWebDriver";
 
   public static Test suite() throws Exception {
-    String driver = IE;
+    String driver = FIREFOX;
 
-    System.setProperty("webdriver.development", "true");
+//    System.setProperty("webdriver.development", "true");
     System.setProperty("jna.library.path", "..\\build;build");
     System.setProperty("webdriver.selenium.server.port", String.valueOf(findFreePort()));
 //    System.setProperty("webdriver.firefox.useExisting", "true");
@@ -51,10 +52,12 @@ public class SingleTestSuite extends TestCase {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("JavascriptEnabledDriverTest")
+        .includeJsApiTests()
+        .onlyRun("FirefoxDriverTest")
+        //.onlyRun("JavascriptEnabledDriverTest")
 //        .method("testClickingOnUnclickableElementsDoesNothing")
         .exclude(ALL)
-        .exclude(Ignore.Driver.IE)
+        .exclude(Ignore.Driver.FIREFOX)
         .leaveRunning()
         ;  // Yeah, this look strange :)
 

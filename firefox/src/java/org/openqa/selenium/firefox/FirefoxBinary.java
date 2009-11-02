@@ -55,7 +55,7 @@ public class FirefoxBinary {
     }
 
     protected boolean isOnLinux() {
-      return Platform.getCurrent().is(Platform.UNIX);
+      return Platform.getCurrent().is(Platform.LINUX);
     }
 
     public void startProfile(FirefoxProfile profile, String... commandLineFlags) throws IOException {

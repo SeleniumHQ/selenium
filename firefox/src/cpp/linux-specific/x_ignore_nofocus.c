@@ -22,7 +22,7 @@
 // Define this to prevent events from being faked.
 //#undef NO_FAKING
 
-#define DEBUG_PRINTOUTS
+//#define DEBUG_PRINTOUTS
 
 #ifdef DEBUG_PRINTOUTS
 FILE* g_out_stream = 0;
@@ -273,7 +273,6 @@ void steal_focus_back_if_needed(FocusKeepStatus* stat, Display* dpy)
       LOG("Stealing focus back to %#lx\n", get_active_window(stat));
       stat->new_window = 0;
 
-      sleep(1);
       XSetInputFocus(dpy, get_active_window(stat), RevertToParent, CurrentTime);
       // Allow a focus in event to flow again to the window considered
       // active.
@@ -527,7 +526,7 @@ void* get_xlib_handle()
 void print_event_to_log(Display* dpy, XEvent* ev)
 {
 #ifdef DEBUG_PRINTOUTS
-  /*if ((ev->type != PropertyNotify) && (ev->type != ConfigureNotify))*/ {
+  if ((ev->type != PropertyNotify) && (ev->type != ConfigureNotify)) {
     print_event(g_out_stream, ev, dpy);
   }
 #endif
@@ -566,7 +565,6 @@ int XNextEvent(Display *display, XEvent *outEvent) {
     init_focus_keep_struct(&g_focus_status);
   }
 
-  LOG("--- Call started. ---\n");
 
   // This display object will be used to inquire X server
   // about inferior and parent windows.
@@ -616,7 +614,6 @@ int XNextEvent(Display *display, XEvent *outEvent) {
   steal_focus_back_if_needed(&g_focus_status, dpy);
 
   dlclose(handle);
-  LOG("--- Call ended. ---\n");
   CLOSE_LOGGING_FILE;
   return rf_ret;
 }
