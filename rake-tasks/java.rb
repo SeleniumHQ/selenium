@@ -59,7 +59,7 @@ class Java < BaseGenerator
       puts "Building: #{args[:name]} as #{out}"
 
       # Compile
-      cmd = "javac -cp #{classpath.join(':')} -g -source 5 -target 5 -d #{temp} #{FileList[args[:srcs]]} " 
+      cmd = "javac -cp #{classpath.join(classpath_separator?)} -g -source 5 -target 5 -d #{temp} #{FileList[args[:srcs]]} " 
       sh cmd, :verbose => false
 
       # TODO(simon): make copy_resource_ handle this for us
