@@ -24,6 +24,7 @@ import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.ProxyConfig;
 import com.gargoylesoftware.htmlunit.ScriptResult;
+import com.gargoylesoftware.htmlunit.TopLevelWindow;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebResponse;
 import com.gargoylesoftware.htmlunit.WebWindow;
@@ -73,7 +74,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicLong;
 
 public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecutor,
                                        FindsById, FindsByLinkText, FindsByXPath, FindsByName,
@@ -285,6 +285,10 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
   }
 
   public void close() {
+    if (currentWindow != null) {
+      ((TopLevelWindow) currentWindow.getTopWindow()).close();
+    }
+    
     webClient = createWebClient(version);
   }
 
