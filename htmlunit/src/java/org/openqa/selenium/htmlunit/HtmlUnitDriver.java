@@ -84,7 +84,6 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
 
   private boolean enableJavascript;
   private ProxyConfig proxyConfig;
-  private AtomicLong windowNamer = new AtomicLong(System.currentTimeMillis());
   private final BrowserVersion version;
 
   public HtmlUnitDriver(BrowserVersion version) {
@@ -302,27 +301,14 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     List<WebWindow> allWindows = webClient.getWebWindows();
     for (WebWindow window : allWindows) {
       WebWindow top = window.getTopWindow();
-      if (top.getName() == null || "".equals(top.getName())) {
-        nameWindow(top);
-      }
-      allHandles.add(top.getName());
+      allHandles.add(String.valueOf(System.identityHashCode(top)));
     }
 
     return allHandles;
   }
 
   public String getWindowHandle() {
-    WebWindow window = webClient.getCurrentWindow();
-    if (window.getName() == null || "".equals(window.getName())) {
-      nameWindow(window);
-    }
-    return window.getName();
-  }
-
-  private String nameWindow(WebWindow window) {
-    String windowName = "webdriver" + windowNamer.incrementAndGet();
-    window.setName(windowName);
-    return windowName;
+    return String.valueOf(System.identityHashCode(currentWindow));
   }
 
   public Object executeScript(String script, Object... args) {
@@ -653,12 +639,22 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     }
 
     public WebDriver window(String windowId) {
-      WebWindow window;
       try {
-        window = webClient.getWebWindowByName(windowId);
+        WebWindow window = webClient.getWebWindowByName(windowId);
+        return finishSelecting(window);
       } catch (WebWindowNotFoundException e) {
+
+        List<WebWindow> allWindows = webClient.getWebWindows();
+        for (WebWindow current : allWindows) {
+          WebWindow top = current.getTopWindow();
+          if (String.valueOf(System.identityHashCode(top)).equals(windowId))
+            return finishSelecting(top);
+        }
         throw new NoSuchWindowException("Cannot find window: " + windowId);
       }
+    }
+
+    private WebDriver finishSelecting(WebWindow window) {
       webClient.setCurrentWindow(window);
       currentWindow = window;
       pickWindow();
