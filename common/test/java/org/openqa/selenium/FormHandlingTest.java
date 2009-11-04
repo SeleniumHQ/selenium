@@ -22,6 +22,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
+import static org.openqa.selenium.Ignore.Driver.CHROME_NON_WINDOWS;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
@@ -93,7 +94,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
     assertThat(textarea.getValue(), equalTo(cheesey));
   }
 
-  @Ignore(SELENESE)
+  @Ignore({SELENESE, CHROME_NON_WINDOWS})
   public void testShouldSubmitAFormUsingTheNewlineLiteral() {
     driver.get(formPage);
     WebElement nestedForm = driver.findElement(By.id("nested_form"));
@@ -103,7 +104,7 @@ public class FormHandlingTest extends AbstractDriverTestCase {
     assertTrue(driver.getCurrentUrl().endsWith("?x=name"));
   }
 
-  @Ignore(SELENESE)
+  @Ignore({SELENESE, CHROME_NON_WINDOWS})
   public void testShouldSubmitAFormUsingTheEnterKey() {
     driver.get(formPage);
     WebElement nestedForm = driver.findElement(By.id("nested_form"));
