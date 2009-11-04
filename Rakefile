@@ -2,6 +2,7 @@ require 'rake'
 require 'rake/testtask'
 require 'rake/rdoctask'
 
+require 'rake-tasks/task-gen.rb'
 require 'rake-tasks/checks.rb'
 require 'rake-tasks/zip.rb'
 require 'rake-tasks/c.rb'
@@ -10,70 +11,121 @@ require 'rake-tasks/mozilla.rb'
 
 task :default => [:test]
 
-# TODO(simon): All "outs" should be arrays
+# TODO(simon): Shatter the build file into subdirectories, then remove these
+task :all => [:'webdriver-all']
+task :chrome => [:'webdriver-chrome']
+task :common => [:'webdriver-common']
+task :htmlunit => [:'webdriver-htmlunit']
+task :ie => [:'webdriver-ie']
+task :firefox => [:'webdriver-firefox']
+task :jobbie => [:ie]
+task :jsapi => :'webdriver-jsapi'
+task :remote => [:remote_common, :remote_server, :remote_client]
+task :remote_common => [:'webdriver-remote-common']
+task :remote_client => [:'webdriver-remote-client']
+task :remote_server => [:'webdriver-remote-server']
+task :selenium => [:'webdriver-selenium']
+task :support => [:'webdriver-support']
 
-jar(:name => "common",
-    :src  => [ "common/src/java/**/*.java" ],
-    :zip  => true,
-    :out  => "webdriver-common.jar")
+task :test_common => [:'webdriver-common-test']
+task :test_chrome => [:'webdriver-chrome-test']
+task :test_htmlunit => [:'webdriver-htmlunit-test']
+task :test_ie => [:'webdriver-ie-test']
+task :test_jobbie => [:test_ie]
+task :test_jsapi => :'webdriver-jsapi-test'
+task :test_firefox => [:'webdriver-firefox-test']
+task :test_remote => [:'webdriver-remote-test']
+task :test_selenium => [:'webdriver-selenium-test', :'webdriver-selenese-test']
+task :test_support => [:'webdriver-support-test']
 
-jar(:name => "test_common",
-    :src  => [ "common/test/java/**/*.java" ],
+task :build => [:all, :iphone, :remote, :selenium]
+task :test => [
+                :test_htmlunit,
+                :test_firefox,
+                :test_ie,
+                :test_chrome,
+                :test_iphone,
+                :test_support,
+                :test_remote,
+                :test_selenium
+              ]
+
+task :clean do
+  rm_rf 'build/', :verbose => false
+end
+
+java_jar(:name => "webdriver-chrome",
+    :srcs  => [ "chrome/src/java/**/*.java" ],
     :deps => [
                :common,
-               "common/lib/buildtime/*.jar"
+               :remote_client,
+               :chrome_extension,
+               "remote/common/lib/runtime/*.jar"
              ],
-    :resources => [ "common/test/java/org/openqa/selenium/messages.properties" => "org/openqa/selenium/messages.properties" ],
-    :out  => "webdriver-common-test.jar")
+    :resources => [ :'chrome_extension' ])
 
-jar(:name => "htmlunit",
-    :src  => [ "htmlunit/src/java/**/*.java" ],
-    :deps => [
-               :common,
-               "htmlunit/lib/runtime/*.jar"
-             ],
-    :zip  => true,
-    :out  => "webdriver-htmlunit.jar")
-
-test_java(:name => "test_htmlunit",
-          :src  => [ "htmlunit/test/java/**/*.java" ],
+java_test(:name => "webdriver-chrome-test",
+          :srcs  => [ "chrome/test/java/**/*.java" ],
           :deps => [
-                     :htmlunit,
-                     :test_common,
-                   ],
-          :out  => "webdriver-htmlunit-test.jar")
+                     :chrome,
+                     :'webdriver-remote-common-test'
+                   ])
 
-dll(:name => "ie_dll",
+java_jar(:name => 'webdriver-common',
+         :srcs => [ 'common/src/java/**/*.java' ])
+
+java_jar(:name => 'webdriver-common-test',
+         :srcs  => [ "common/test/java/**/*.java" ],
+         :resources => [ "common/test/java/org/openqa/selenium/messages.properties" => "org/openqa/selenium/messages.properties" ],
+         :deps => [
+           :'webdriver-common',
+           "common/lib/buildtime/*.jar"
+         ])
+
+java_jar(:name => 'webdriver-htmlunit',
+         :srcs => [ 'htmlunit/src/java/**/*.java'],
+         :deps => [
+           :'webdriver-common',
+           'htmlunit/lib/runtime/*.jar'
+          ])
+
+java_test(:name => 'webdriver-htmlunit-test',
+          :srcs  => [ "htmlunit/test/java/**/*.java" ],
+          :deps => [
+            :htmlunit,
+            :'webdriver-common-test',
+          ])
+
+dll(:name => "ie_win32_dll",
     :src  => [ "common/src/cpp/webdriver-interactions/**/*", "jobbie/src/cpp/InternetExplorerDriver/**/*" ],
     :solution => "WebDriver.sln",
-    :out  => [ "Win32/Release/InternetExplorerDriver.dll", "x64/Release/InternetExplorerDriver.dll" ],
-    :prebuilt => "jobbie/prebuilt",
-    :spoof => true)  # Dump "spoof" files in the right place if you can't build
+    :out  => "Win32/Release/InternetExplorerDriver.dll",
+    :prebuilt => "jobbie/prebuilt")
 
-jar(:name => "ie",
-    :src  => [ "jobbie/src/java/**/*.java" ],
+dll(:name => "ie_x64_dll",
+    :src  => [ "common/src/cpp/webdriver-interactions/**/*", "jobbie/src/cpp/InternetExplorerDriver/**/*" ],
+    :solution => "WebDriver.sln",
+    :out  => "x64/Release/InternetExplorerDriver.dll",
+    :prebuilt => "jobbie/prebuilt")
+
+java_jar(:name => "webdriver-ie",
+    :srcs  => [ "jobbie/src/java/**/*.java" ],
     :deps => [
-               :common,
-               :ie_dll,
+               :'webdriver-common',
                "jobbie/lib/runtime/*.jar"
              ],
     :resources => [
-               {"Win32/Release/InternetExplorerDriver.dll" => "x86/InternetExplorerDriver.dll"},
-               {"x64/Release/InternetExplorerDriver.dll" => "amd64/InternetExplorerDriver.dll"},
-             ],
-    :zip  => true,
-    :out  => "webdriver-ie.jar")
-task :jobbie => :ie
+               {:ie_win32_dll => "x86/InternetExplorerDriver.dll"},
+               {:ie_x64_dll => "amd64/InternetExplorerDriver.dll"},
+             ])
 
-test_java(:name => "test_ie",
-          :src  => [ "jobbie/test/java/**/*.java" ],
+java_test(:name => "webdriver-ie-test",
+          :srcs  => [ "jobbie/test/java/**/*.java" ],
           :deps => [
                      :ie,
                      :test_common
                    ],
-          :run  => windows?,
-          :out  => "webdriver-ie-test.jar")
-task :test_jobbie => :test_ie
+          :run  => windows?)
 
 xpt(:name => "events_xpt",
     :src  => [ "firefox/src/cpp/webdriver-firefox/nsINativeEvents.idl" ],
@@ -91,37 +143,31 @@ xpt(:name => "commandProcessor_xpt",
     :prebuilt => "firefox/prebuilt",
     :out => "nsICommandProcessor.xpt")
 
-task :clean do
-  rm_rf 'build/', :verbose => false
-end
-
 xpi(:name => "firefox_xpi",
-    :src  => [ "firefox/src/extension" ],
+    :srcs  => [ "firefox/src/extension/**" ],
     :deps => [
-               :commandProcessor_xpt,
-               :events_xpt,
-               :responseHandler_xpt,
                :firefox_dll,
                :libwebdriver_firefox,
              ],
     :resources => [
                     { "common/src/js/extension/*.js" => "content/" },
-                    { "*.xpt" => "components/" },
-                    { "Win32/Release/webdriver-firefox.dll" => "platform/WINNT_x86-msvc/components/webdriver-firefox.dll" },
-                    { "linux/Release/libwebdriver-firefox.so" => "platform/Linux_x86-gcc3/components/libwebdriver-firefox.so" },
-                    { "linux64/Release/libwebdriver-firefox.so" => "platform/Linux_x86_64-gcc3/components/libwebdriver-firefox.so" },
+                    { :commandProcessor_xpt => "components/" },
+                    { :events_xpt => "components/" },
+                    { :responseHandler_xpt => "components/" },
+                    { :firefox_dll => "platform/WINNT_x86-msvc/components/webdriver-firefox.dll" },
+                    { :libnoblur_so => "platform/Linux_x86-gcc3/components/libwebdriver-firefox.so" },
+                    { :libnoblur_so_64 => "platform/Linux_x86_64-gcc3/components/libwebdriver-firefox.so" },
                   ],
     :out  => "webdriver-extension.zip")
 
 dll(:name => "firefox_dll",
     :src  => [ "common/src/cpp/webdriver-interactions/**/*", "jobbie/src/cpp/webdriver-firefox/**/*" ],
     :solution => "WebDriver.sln",
-    :out  => [ "Win32/Release/webdriver-firefox.dll" ],
+    :out  => "Win32/Release/webdriver-firefox.dll",
     :deps  => [ 
                 :events_xpt,
               ],
-    :prebuilt => "firefox/prebuilt",
-    :spoof => true)  # Dump "spoof" files in the right place if you can't build
+    :prebuilt => "firefox/prebuilt")
 
 dll(:name => "libnoblur_so_64",
     :src  => FileList['firefox/src/cpp/linux-specific/*.c'],
@@ -165,8 +211,8 @@ dll(:name => "libwebdriver_firefox_so64",
 
 task :libwebdriver_firefox => [:libwebdriver_firefox_so, :libwebdriver_firefox_so64]
 
-jar(:name => "firefox",
-    :src  => [ "firefox/src/java/**/*.java" ],
+java_jar(:name => "webdriver-firefox",
+    :srcs  => [ "firefox/src/java/**/*.java" ],
     :deps => [
                :common,
                :firefox_xpi,
@@ -174,60 +220,50 @@ jar(:name => "firefox",
                "firefox/lib/runtime/*.jar"
              ],
     :resources => [ 
-                    "webdriver-extension.zip",
+                    :firefox_xpi,
                     { "linux/Release/x_ignore_nofocus.so" => "x86/x_ignore_nofocus.so" },
                     { "linux64/Release/x_ignore_nofocus.so" => "amd64/x_ignore_nofocus.so" }
-                  ],
-    :zip  => true,
-    :out  => "webdriver-firefox.jar")
+                  ])
 
-test_java(:name => "test_firefox",
-          :src  => [ "firefox/test/java/**/*.java" ],
+java_test(:name => "webdriver-firefox-test",
+          :srcs  => [ "firefox/test/java/**/*.java" ],
           :deps => [
-                     :firefox,
-                     :test_common,
-                   ],
-          :out  => "webdriver-firefox-test.jar")
+                     :'webdriver-firefox',
+                     :'webdriver-common-test',
+                   ])
 
-jar(:name => "support",
-    :src  => [ "support/src/java/**/*.java" ],
+java_jar(:name => "webdriver-support",
+    :srcs  => [ "support/src/java/**/*.java" ],
     :deps => [
                :common,
                "support/lib/runtime/*.jar"
-             ],
-    :zip  => true,
-    :out  => "webdriver-support.jar")
+             ])
 
-test_java(:name => "test_support",
-          :src  => [ "support/test/java/**/*.java" ],
+java_test(:name => "webdriver-support-test",
+          :srcs  => [ "support/test/java/**/*.java" ],
           :deps => [
                      :support,
                      :test_common,
-                   ],
-          :out  => "webdriver-support-test.jar")
+                   ])
 
-jar(:name => "remote_common",
-    :src => [ "remote/common/src/java/**/*.java" ],
-    :deps => [
+java_jar(:name => "webdriver-remote-common",
+         :srcs => [ "remote/common/src/java/**/*.java" ],
+         :deps => [
                :common,
                "remote/common/lib/runtime/*.jar",
-               "third_party/java/google-collect-1.0-rc3.jar"
-             ],
-    :zip => true,
-    :out => "webdriver-remote-common.jar")
+               "third_party/java/google-collect-1.0-rc3.jar",
+             ])
 
-jar(:name => "remote_client",
-    :src  => [ "remote/client/src/java/**/*.java" ],
+java_jar(:name => "webdriver-remote-client",
+    :srcs  => [ "remote/client/src/java/**/*.java" ],
     :deps => [
                :common,
-               :remote_common,
+               :'webdriver-remote-common',
                "remote/client/lib/runtime/*.jar",
-             ],
-    :zip  => true,
-    :out  => "webdriver-remote-client.jar")
+             ])
 
-jar(:name => "remote_server",
-    :src  => [ "remote/server/src/java/**/*.java" ],
+java_jar(:name => "webdriver-remote-server",
+    :srcs  => [ "remote/server/src/java/**/*.java" ],
     :deps => [
                :htmlunit,
                :ie,
@@ -235,67 +271,41 @@ jar(:name => "remote_server",
                :remote_common,
                :support,
                "remote/server/lib/runtime/*.jar"
-             ],
-    :out  => "webdriver-remote-server.jar")
+             ])
 
-test_java(:name => "test_remote_common",
-          :src => [ "remote/common/test/java/**/*.java" ],
+java_jar(:name => "webdriver-remote-common-test",
+          :srcs => [ "remote/common/test/java/**/*.java" ],
           :deps => [
                      :remote_common,
                      :test_common
-                   ],
-          :out => "webdriver-remote-common-test.jar")
+                   ])
 
-test_java(:name => "test_remote",
-          :src  => [ "remote/client/test/java/**/*.java",
+java_test(:name => "webdriver-remote-test",
+          :srcs  => [ "remote/client/test/java/**/*.java",
                      "remote/server/test/java/**/*.java" ],
           :deps => [
                      :remote_client,
                      :remote_server,
                      :test_common,
-                     :test_remote_common
-                   ],
-          :out => "webdriver-remote-test.jar")
-
-task :remote => [:remote_common, :remote_server, :remote_client]
+                     :'webdriver-remote-common-test'
+                   ])
 
 dll(:name => "chrome_dll",
     :src  => [ "common/src/cpp/webdriver-interactions/**/*", "chome/src/cpp/**/*" ],
     :solution => "WebDriver.sln",
-    :out  => [ "Win32/Release/npchromedriver.dll", "x64/Release/npchromedriver.dll" ],
+    :out  => 'Win32/Release/npchromedriver.dll',
     :prebuilt => "chrome/prebuilt")
 
 xpi(:name => "chrome_extension",
-    :src  => [ "chrome/src/extension" ],
+    :srcs  => [ "chrome/src/extension/**" ],
     :deps => [ :chrome_dll ],
     :resources => [
-                     { "Win32/Release/npchromedriver.dll" => "npchromedriver.dll" }
+                     { :chrome_dll => "npchromedriver.dll" }
                   ],
     :out => "chrome-extension.zip")
 
-    jar(:name => "chrome",
-    :src  => [ "chrome/src/java/**/*.java" ],
-    :deps => [
-               :common,
-               :remote_client,
-               :chrome_extension,
-               "remote/common/lib/runtime/*.jar"
-             ],
-    :resources => [ "chrome-extension.zip" ],
-    :zip  => true,
-    :out  => "webdriver-chrome.jar")
-
-test_java(:name => "test_chrome",
-          :src  => [ "chrome/test/java/**/*.java" ],
-          :deps => [
-                     :chrome,
-                     :test_common,
-                     :test_remote
-                   ],
-          :out  => "webdriver-chrome-test.jar")
-
-jar(:name => "selenium",
-    :src  => [ "selenium/src/java/**/*.java" ],
+java_jar(:name => "webdriver-selenium",
+    :srcs  => [ "selenium/src/java/**/*.java" ],
     :deps => [
                :ie,
                :firefox,
@@ -306,12 +316,10 @@ jar(:name => "selenium",
     :resources => [
                     { "selenium/src/java/org/openqa/selenium/internal/injectableSelenium.js", "org/openqa/selenium/internal/injectableSelenium.js" },
                     { "selenium/src/java/org/openqa/selenium/internal/htmlutils.js", "org/openqa/selenium/internal/htmlutils.js" }
-                  ],
-    :zip  => true,
-    :out => "webdriver-selenium.jar" )
+                  ])
 
-test_java(:name => "test_selenium",
-          :src  => [ "selenium/test/java/**/*.java" ],
+java_test(:name => "webdriver-selenium-test",
+          :srcs  => [ "selenium/test/java/**/*.java" ],
           :deps => [
                      :test_common,
                      :htmlunit,
@@ -319,54 +327,34 @@ test_java(:name => "test_selenium",
                      "selenium/lib/buildtime/*.jar",
                    ],
           :main => "org.testng.TestNG",
-          :args => "selenium/test/java/webdriver-selenium-suite.xml",
-          :out  => "webdriver-selenium-test.jar")
+          :args => "selenium/test/java/webdriver-selenium-suite.xml")
 
-test_java(:name => "test_selenesewd",
-          :src  => [ "selenium/test/java/**/*.java" ],
+java_test(:name => "webdriver-selenese-test",
+          :srcs  => [ "selenium/test/java/**/*.java" ],
           :deps => [
                      :test_common,
                      :htmlunit,
                      :selenium,
                      "selenium/lib/buildtime/*.jar",
-                   ],
-          :out  => "webdriver-selenese-test.jar")
+                   ])
 
-task :test_selenium => :test_selenesewd
-
-jar(:name => "jsapi",
-    :src => [ "remote/server/test/java/**/JsApi*.java" ],
-    :deps => [ :firefox, :test_common ],
-    :out => "webdriver-jsapi.jar")
+java_jar(:name => "webdriver-jsapi",
+    :srcs => [ "remote/server/test/java/**/JsApi*.java" ],
+    :deps => [ :firefox, :test_common ])
 
 # Comprehensive test suite for testing the JS API in isolation against all of
 # the supported browsers. This should be included in the :test task; for that we
 # defer to the suites for the individual drivers.
-test_java(:name => "test_jsapi",
-          :src => [ "jsapi/test/java/**/*.java" ],
-          :deps => [ :firefox, :chrome, :test_common ],
-          :out  => "webdriver-jsapi-test.jar")
+java_test(:name => "webdriver-jsapi-test",
+          :srcs => [ "jsapi/test/java/**/*.java" ],
+          :deps => [ :firefox, :chrome, :test_common ])
 
 # Simply starts the Jetty6AppServer for manually testing the JS API tests.
 # After starting, open a browser to http://localhost:$PORT/js/test, where $PORT
 # is the port the server was started on.
-test_java(:name => "debug_jsapi",
+java_test(:name => "debug_jsapi",
           :deps => [ :firefox, :test_common ],
           :main => "org.openqa.selenium.environment.webserver.Jetty6AppServer")
-
-task :build => [:common, :htmlunit, :firefox, :ie, :iphone, :support, :remote, :chrome, :selenium]
-task :test => [
-                :test_htmlunit,
-                :test_firefox,
-                :test_ie,
-                :test_chrome,
-                :test_iphone,
-                :test_support,
-                :test_remote_common,
-                :test_remote,
-                :test_selenium
-              ]
-
 
 task :javadocs => [:common, :firefox, :htmlunit, :jobbie, :remote, :support, :chrome] do
   mkdir_p "build/javadoc", :verbose => false
@@ -500,44 +488,15 @@ task :remote_release => [:remote] do
 end
 
 # TODO(simon): This should pick up the "out" files from the deps
-uber_jar(:name => "all",
-         :src  => [
-                    "build/webdriver-common.jar",
-                    "build/webdriver-chrome.jar",
-                    "build/webdriver-htmlunit.jar",
-                    "build/webdriver-firefox.jar",
-                    "build/webdriver-ie.jar",
-                    "build/webdriver-remote-client.jar",
-                    "build/webdriver-remote-common.jar",
-                    "build/webdriver-support.jar",
-                  ],
-         :deps => [
-                    :common,
+java_uberjar(:name => "webdriver-all",
+             :deps => [
+                    :chrome,
                     :htmlunit,
                     :ie,
                     :firefox,
                     :remote_client,
-                    :chrome,
                     :support
-                  ],
-         :out  => "webdriver-all.jar")
-
-zip(:name => "all_zip",
-    :src  => [
-               "build/webdriver-all.jar",
-             ] +
-             FileList.new("htmlunit/lib/runtime/*.jar") +
-             FileList.new("firefox/lib/runtime/*.jar") +
-             FileList.new("jobbie/lib/runtime/*.jar") +
-             FileList.new("remote/client/lib/runtime/*.jar") +
-             FileList.new("remote/common/lib/runtime/*.jar") +
-             FileList.new("chrome/lib/runtime/*.jar") +
-             FileList.new("support/lib/runtime/*.jar") +
-             FileList.new("third_party/java/*.jar"),
-      :deps => [
-                 :all
-               ],
-      :out  => "webdriver-all.zip")
+                  ])
 
 task :release => [:common_zip, :firefox_zip, :htmlunit_zip, :ie_zip, :support_zip, :selenium_zip, :all_zip]
 

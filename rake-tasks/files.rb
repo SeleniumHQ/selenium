@@ -1,4 +1,10 @@
 def find_file(file) 
+  if file.is_a? Symbol
+    # Grab the "out" of the task represented by this symbol
+    t = Rake::Task[file]
+    file = t.out
+  end
+  
   if File.exists?(file)
     return file
   elsif File.exists?("build/#{file}")
@@ -39,6 +45,8 @@ def copy_resource_(from, to)
       from.each do |key,value|
         copy_single_resource_ key, to + "/" + value
       end
+    else
+      copy_single_resource_ from, to
     end
   end
 end

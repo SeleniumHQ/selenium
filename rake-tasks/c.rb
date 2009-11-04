@@ -19,7 +19,11 @@ def dll(args)
         exit -1
       end
     end
+    
+    # TODO(simon): Yuck. Not Good Enough
     task "#{args[:name]}" => out
+    task args[:out] => out
+    Rake::Task[args[:name]].out = "#{out}"
   end
 end
 
