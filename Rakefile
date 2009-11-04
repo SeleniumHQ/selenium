@@ -370,7 +370,7 @@ task :javadocs => [:common, :firefox, :htmlunit, :jobbie, :remote, :support, :ch
    sh cmd
 end
 
-task :test_firefox_py => :test_firefox do
+task :test_firefox_py => :firefox do
   if python? then
     sh "python setup.py build", :verbose => true
     sh "python build/lib/webdriver/py_test.py", :verbose => true
