@@ -274,8 +274,7 @@ sendResponseByXHR({statusCode: 0}, false);
  * we wait until we think these effects are done
  */
 function sendResponseByXHR(result, wait) {
-  result = JSON.stringify(result);
-  console.log("Sending result by XHR: " + result);
+  console.log("Sending result by XHR: " + JSON.stringify(result));
   if (ChromeDriver.xmlHttpRequest != null) {
     ChromeDriver.xmlHttpRequest.abort();
   }
@@ -305,7 +304,7 @@ function sendResponseByXHR(result, wait) {
 function sendResult(result) {
   //TODO(danielwh): Iterate over tabs checking their status
   ChromeDriver.xmlHttpRequest.send(result + "\nEOResponse\n");
-  console.log("Sent result by XHR: " + result);
+  console.log("Sent result by XHR: " + JSON.stringify(result));
 }
 
 /**
