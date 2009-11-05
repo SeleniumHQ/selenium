@@ -85,6 +85,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
   private boolean enableJavascript;
   private ProxyConfig proxyConfig;
   private final BrowserVersion version;
+  private Speed speed = Speed.FAST;
 
   public HtmlUnitDriver(BrowserVersion version) {
     this.version = version;
@@ -860,11 +861,18 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     }
 
     public Speed getSpeed() {
-      throw new UnsupportedOperationException();
+      return HtmlUnitDriver.this.speed;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * This method makes absolutely no difference to the behaviour of the htmlunit driver
+
+     * @param speed which is ignored.
+     */
     public void setSpeed(Speed speed) {
-      throw new UnsupportedOperationException();
+      HtmlUnitDriver.this.speed = speed;
     }
 
     private String getDomainForCookie() {
