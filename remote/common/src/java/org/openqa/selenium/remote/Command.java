@@ -17,6 +17,8 @@ limitations under the License.
 
 package org.openqa.selenium.remote;
 
+import java.util.Arrays;
+
 public class Command {
 
   private SessionId sessionId;
@@ -45,5 +47,9 @@ public class Command {
 
   public Object[] getParameters() {
     return parameters;
+  }
+  
+  public String toString() {
+    return "[" + sessionId + ", " + context + "]: " + name + " " + Arrays.toString(parameters);
   }
 }
