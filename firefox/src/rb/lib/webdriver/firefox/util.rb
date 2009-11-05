@@ -8,9 +8,9 @@ module WebDriver
         when :windows
           "#{ENV['APPDATA']}\\Mozilla\\Firefox"
         when :macosx
-          "#{ENV['HOME']}/Library/Application Support/Firefox"
+          "#{Platform.home}/Library/Application Support/Firefox"
         when :unix
-          "#{ENV['HOME']}/.mozilla/firefox"
+          "#{Platform.home}/.mozilla/firefox"
         else
           raise "Unknown os: #{Platform.os}"
         end
