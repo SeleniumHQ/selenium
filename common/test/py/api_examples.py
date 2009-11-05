@@ -254,6 +254,13 @@ class ApiExampleTest (unittest.TestCase):
         self._loadPage("xhtmlTest")
         elem = self.driver.find_element_by_partial_link_text("new window")
         elem.click()
+        
+    def testIsElementDisplayed(self):
+        self._loadPage("javascriptPage.html")
+        visible = self.driver.find_element_by_id("displayed").is_displayed()
+        not_visible = self.driver.find_element_by_id("hidden").is_displayed()
+        self.assertTrue("Should be visible", visible)
+        self.assertFalse("Should not be visible", not_visible)
 
     @not_available_on_remote
     def testScreenshot(self):

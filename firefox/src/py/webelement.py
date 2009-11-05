@@ -74,6 +74,10 @@ class WebElement(object):
         else:
             # The "disabled" attribute may not exist
             return True
+            
+    def is_displayed(self):
+        """Whether the element would be visible to a user"""
+        return self._command("isDisplayed")
 
     def find_element_by_id(self, id_):
         """Finds element by id."""

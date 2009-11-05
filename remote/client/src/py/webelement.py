@@ -67,6 +67,10 @@ class WebElement(object):
     def is_enabled(self):
         """Whether the element is enabled."""
         return self._get("enabled")
+        
+    def is_displayed(self):
+        """Whether the element would be visible to a user"""
+        return self._get("displayed")
 
     def find_element_by_id(self, id_):
         """Finds element by id."""
