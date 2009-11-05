@@ -27,7 +27,8 @@ public class ChromeBinary {
           getChromeFile(),
           "--user-data-dir=" + profileDir,
           "--load-extension=" + extensionDir,
-          "--activate-on-launch")
+          "--activate-on-launch",
+          "--no-first-run")
           .start();
     } catch (IOException e) {
       throw new WebDriverException(e);
