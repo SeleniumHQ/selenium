@@ -236,7 +236,8 @@ java_jar(:name => "webdriver-support",
     :srcs  => [ "support/src/java/**/*.java" ],
     :deps => [
                :common,
-               "support/lib/runtime/*.jar"
+               "support/lib/runtime/*.jar",
+               "third_party/java/google-collect-1.0-rc3.jar",
              ])
 
 java_test(:name => "webdriver-support-test",
