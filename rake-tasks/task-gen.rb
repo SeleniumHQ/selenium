@@ -2,8 +2,8 @@
 
 module Rake
   class Task
-    attr :deps, []
-    attr :out, ''
+    attr_accessor :deps
+    attr_accessor :out
   end
 end
 

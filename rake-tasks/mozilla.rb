@@ -40,7 +40,7 @@ end
 def xpt(args)
   deps = build_deps_(args[:deps])
 
-  args[:out].each do |result|
+  Array(args[:out]).each do |result|
     out = "build/#{result}"
 
     file out => build_deps_(args[:src]) + deps do

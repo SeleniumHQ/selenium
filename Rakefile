@@ -314,8 +314,8 @@ java_jar(:name => "webdriver-selenium",
                "selenium/lib/runtime/*.jar"
              ],
     :resources => [
-                    { "selenium/src/java/org/openqa/selenium/internal/injectableSelenium.js", "org/openqa/selenium/internal/injectableSelenium.js" },
-                    { "selenium/src/java/org/openqa/selenium/internal/htmlutils.js", "org/openqa/selenium/internal/htmlutils.js" }
+                    { "selenium/src/java/org/openqa/selenium/internal/injectableSelenium.js" => "org/openqa/selenium/internal/injectableSelenium.js" },
+                    { "selenium/src/java/org/openqa/selenium/internal/htmlutils.js" => "org/openqa/selenium/internal/htmlutils.js" }
                   ])
 
 java_test(:name => "webdriver-selenium-test",
