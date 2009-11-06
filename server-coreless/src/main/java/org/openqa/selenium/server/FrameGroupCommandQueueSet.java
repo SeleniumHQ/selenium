@@ -100,7 +100,8 @@ public class FrameGroupCommandQueueSet {
      */
     public static final String DEFAULT_SELENIUM_WINDOW_NAME = "";
     private int portDriversShouldContact;
-    
+    private RemoteControlConfiguration configuration;
+
     /**
      * The extension Javascript particular to this session.
      */
@@ -111,6 +112,7 @@ public class FrameGroupCommandQueueSet {
 
         this.sessionId = sessionId;
         this.portDriversShouldContact = portDriversShouldContact;
+        this.configuration = configuration;
         this.extensionJs = "";
         proxyInjectionMode = configuration.getProxyInjectionModeArg();
 
@@ -251,7 +253,7 @@ public class FrameGroupCommandQueueSet {
           LOGGER.debug("---------allocating new CommandQueue for " + uniqueId);
         }            
          
-		q = new CommandQueue(sessionId, uniqueId, millisecondDelayBetweenOperations.get(), new RemoteControlConfiguration());
+		q = new CommandQueue(sessionId, uniqueId, millisecondDelayBetweenOperations.get(), configuration);
         uniqueIdToCommandQueue.put(uniqueId, q);
       } else {
           if (LOGGER.isDebugEnabled()) {
