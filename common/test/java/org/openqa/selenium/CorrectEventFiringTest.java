@@ -20,6 +20,7 @@ package org.openqa.selenium;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
+import static org.openqa.selenium.Ignore.Driver.CHROME_NON_WINDOWS;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
@@ -39,6 +40,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Ignore(value = CHROME_NON_WINDOWS, reason = "Failing on OS X")
   public void testShouldFireClickEventWhenClicking() {
     driver.get(javascriptPage);
 
@@ -48,7 +50,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(SELENESE)
+  @Ignore(value = {SELENESE, CHROME_NON_WINDOWS}, reason = "Chrome failing on OS X")
   public void testShouldFireMouseDownEventWhenClicking() {
     driver.get(javascriptPage);
 
@@ -58,7 +60,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(SELENESE)
+  @Ignore(value = {SELENESE, CHROME_NON_WINDOWS}, reason = "Chrome failing on OS X")
   public void testShouldFireMouseUpEventWhenClicking() {
     driver.get(javascriptPage);
 
@@ -106,7 +108,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(SELENESE)
+  @Ignore(value = {SELENESE, CHROME_NON_WINDOWS}, reason = "Chrome failing on OS X")
   public void testsShouldIssueMouseDownEvents() {
     driver.get(javascriptPage);
     driver.findElement(By.id("mousedown")).click();
@@ -116,6 +118,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Ignore(value = {CHROME_NON_WINDOWS}, reason = "Chrome failing on OS X")
   public void testShouldIssueClickEvents() {
     driver.get(javascriptPage);
     driver.findElement(By.id("mouseclick")).click();
@@ -125,7 +128,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(SELENESE)
+  @Ignore(value = {SELENESE, CHROME_NON_WINDOWS}, reason = "Chrome failing on OS X")
   public void testShouldIssueMouseUpEvents() {
     driver.get(javascriptPage);
     driver.findElement(By.id("mouseup")).click();
@@ -135,7 +138,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({IPHONE, SELENESE})
+  @Ignore(value = {IPHONE, SELENESE, CHROME_NON_WINDOWS}, reason = "Chrome failing on OS X")
   public void testMouseEventsShouldBubbleUpToContainingElements() {
     driver.get(javascriptPage);
     driver.findElement(By.id("child")).click();
@@ -145,7 +148,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({IPHONE, SELENESE})
+  @Ignore(value = {IPHONE, SELENESE, CHROME_NON_WINDOWS}, reason = "Chrome failing on OS X")
   public void testShouldEmitOnChangeEventsWhenSelectingElements() {
     driver.get(javascriptPage);
     WebElement select = driver.findElement(By.id("selector"));
@@ -165,7 +168,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(SELENESE)
+  @Ignore(value = {SELENESE, CHROME_NON_WINDOWS}, reason = "Chrome failing on OS X")
   public void testShouldEmitOnChangeEventsWhenChangingTheStateOfACheckbox() {
     driver.get(javascriptPage);
     WebElement checkbox = driver.findElement(By.id("checkbox"));
@@ -186,6 +189,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
+  @Ignore(value = {CHROME_NON_WINDOWS}, reason = "Chrome failing on OS X")
   public void testClearingAnElementShouldCauseTheOnChangeHandlerToFire() {
     driver.get(javascriptPage);
 

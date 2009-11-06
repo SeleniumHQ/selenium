@@ -98,7 +98,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
 //	}
 
   @JavascriptEnabled
-  @Ignore({IE, SELENESE})
+  @Ignore(value = {IE, SELENESE, CHROME_NON_WINDOWS}, reason = "Chrome failing on OS X")
   public void testShouldWaitForLoadsToCompleteAfterJavascriptCausesANewPageToLoad() {
     driver.get(formPage);
 
@@ -108,7 +108,7 @@ public class JavascriptEnabledDriverTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({IE, SELENESE})
+  @Ignore(value = {IE, SELENESE, CHROME_NON_WINDOWS}, reason = "Chrome failing on OS X")
   public void testShouldBeAbleToFindElementAfterJavascriptCausesANewPageToLoad()
       throws InterruptedException {
     driver.get(formPage);

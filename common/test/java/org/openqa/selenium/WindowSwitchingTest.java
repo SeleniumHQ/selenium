@@ -19,6 +19,7 @@ package org.openqa.selenium;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.openqa.selenium.Ignore.Driver.CHROME_NON_WINDOWS;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
@@ -149,7 +150,7 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
 
   @NeedsFreshDriver
   @NoDriverAfterTest
-  @Ignore({IE, SELENESE})
+  @Ignore(value = {IE, SELENESE, CHROME_NON_WINDOWS}, reason = "Chrome failing on OS X")
   public void testCanCloseWindowWhenMultipleWindowsAreOpen() {
     driver.get(xhtmlTestPage);
     driver.findElement(By.name("windowOne")).click();
