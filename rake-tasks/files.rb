@@ -1,8 +1,12 @@
-def find_file(file) 
+def find_file(file)
   if file.is_a? Symbol
     # Grab the "out" of the task represented by this symbol
     t = Rake::Task[file]
     file = t.out
+  end
+  
+  if (file.is_a? Symbol)
+    puts "Symbol! #{file}"
   end
   
   if File.exists?(file)
@@ -44,6 +48,10 @@ def copy_resource_(from, to)
     if (from.kind_of? Hash) 
       from.each do |key,value|
         copy_single_resource_ key, to + "/" + value
+      end
+    elsif (from.kind_of? Array)
+      from.each do |res|
+        copy_resource_ res, to
       end
     else
       copy_single_resource_ from, to

@@ -23,8 +23,8 @@ class Java < BaseGenerator
     FileList[dep_name].each do |match|
       classpath.push match if match =~ /\.jar/
     end
-    classpath.push t.out unless t.out.nil?
-    classpath
+    classpath.push t.out.to_s unless t.out.nil?
+    classpath.sort.uniq
   end
   
   def out_path_(args)
@@ -58,33 +58,59 @@ class Java < BaseGenerator
 
       puts "Building: #{args[:name]} as #{out}"
 
-      # Compile
-      cmd = "javac -cp #{classpath.join(classpath_separator?)} -g -source 5 -target 5 -d #{temp} #{FileList[args[:srcs]]} " 
-      sh cmd, :verbose => false
+      if args[:srcs]
+        # Compile
+        cmd = "javac -cp #{classpath.join(classpath_separator?)} -g -source 5 -target 5 -d #{temp} #{FileList[args[:srcs]]} " 
+        sh cmd, :verbose => false 
 
-      # TODO(simon): make copy_resource_ handle this for us
-      # Copy resources over
-      resources = args[:resources] || []
-      resources.each do |res|
-        if (res.kind_of? Symbol)
-          res = Rake::Task[res].out
-        end
-        
-        if (res.kind_of? Hash) 
-          res.each do |from, to|
-            dir = to.gsub(/\/.*?$/, "")
-            mkdir_p "#{temp}/#{dir}", :verbose => false
-            cp_r find_file(from), "#{temp}/#{to}"
+        # TODO(simon): make copy_resource_ handle this for us
+        # Copy resources over
+        resources = args[:resources] || []
+        resources.each do |res|
+          if (res.kind_of? Symbol)
+            res = Rake::Task[res].out
           end
-        else
-          target = res.gsub(/build\//, '')
-          copy_resource_(target, temp)
+        
+          if (res.kind_of? Hash) 
+            res.each do |from, to|
+              dir = to.gsub(/\/.*?$/, "")
+              mkdir_p "#{temp}/#{dir}", :verbose => false
+              cp_r find_file(from), "#{temp}/#{to}"
+            end
+          else
+            target = res.gsub(/build\//, '')
+            copy_resource_(target, temp)
+          end
         end
+
+        cmd = "cd #{temp} && jar cMf ../../#{out} *"
+        sh cmd, :verbose => false
+
+        rm_rf temp
       end
-
-      cmd = "cd #{temp} && jar cMf ../../#{out} *"
-      sh cmd, :verbose => false
-
+    end
+    
+    add_zip_task_(args)
+  end
+  
+  def add_zip_task_(args)
+    # Now to add the implicit targets
+    out = out_path_(args)
+    zip_out = out.to_s.sub(".jar", ".zip")
+    task :"#{args[:name]}_zip" => FileList[zip_out]
+    
+    file zip_out => out do
+      classpath = build_classpath_(args[:name].to_sym)
+      temp = "#{zip_out}_temp"
+      
+      mkdir_p temp
+      
+      classpath.each do |f|
+        copy_resource_(f, temp) if f =~ /\.jar/
+      end
+      
+      sh "cd #{temp} && jar cMf ../../#{zip_out} *", :verbose => true
+      
       rm_rf temp
     end
   end
@@ -139,6 +165,8 @@ class Java < BaseGenerator
   def uberjar(args)
     out = out_path_(args)
     
+    jar(args)
+    
     create_deps_(out_path_(args), args)
     
     file out do
@@ -156,6 +184,11 @@ class Java < BaseGenerator
       sh "cd #{temp} && jar cMf ../../#{out} *", :verbose => false
       rm_rf temp
     end
+    
+    add_zip_task_(args)
+    t = Rake::Task[args[:name].to_sym]
+    t.deps = args[:deps]
+    t.out = out    
   end
   
   def build_uberlist_(task_names)
@@ -173,6 +206,62 @@ class Java < BaseGenerator
     
     all.uniq
   end
+  
+  def war(args)
+    out = "build/#{args[:name]}.war"
+    
+    deps = args[:deps] || []
+    deps += args[:resources] || []
+    deps.each do |dep|
+      if (dep.is_a? Symbol)
+        task args[:name] => [dep]
+      elsif (dep.is_a? String)
+        task args[:name] => FileList[dep]
+      end
+    end
+    
+    file out do
+      temp = "#{out}_temp"
+      mkdir_p "#{temp}/WEB-INF/lib"
+      
+      # Copy the resources. They're easy
+      copy_resource_(args[:resources], temp) unless args[:resources].nil?
+      
+      # Now the JARs we depend on
+      jars = build_classpath_(args[:name].to_sym).collect do |jar|
+        jar.to_s =~ /\.jar/ ? jar : nil
+      end
+      copy_resource_(jars, "#{temp}/WEB-INF/lib")
+      
+      Dir["#{temp}/**/.svn"].each do |f|
+        rm_rf f
+      end
+      
+      sh "cd #{temp} && jar cMf ../../#{out} *", :verbose => false
+      rm_rf temp
+    end
+        
+    task args[:name] => out
+    t = Rake::Task[args[:name]]
+    t.out = out
+    t.deps = args[:deps]
+  end
+end
+
+def walk_war_deps_(dep, dest)
+  puts "Dep: #{dep} is a #{dep.class}"
+  if (dep.is_a? Symbol)
+    t = Rake::Task[dep]
+    copy_resource_(t.out, dest) if dep.to_s =~ /\.jar/
+    walk_war_deps_(t.deps, dest)
+    walk_war_deps_(t.prerequisites, dest)
+  elsif dep.is_a? String
+    copy_resource_(dep, dest) if dep.to_s =~ /\.jar/
+  elsif dep.is_a? Array
+    dep.each do |child|
+      walk_war_deps_(child, dest)
+    end
+  end
 end
 
 def java_jar(args)
@@ -185,6 +274,10 @@ end
 
 def java_uberjar(args)
   Java.new().uberjar(args)
+end
+
+def java_war(args)
+  Java.new().war(args)
 end
 
 def jruby(args)

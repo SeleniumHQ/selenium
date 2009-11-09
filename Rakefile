@@ -24,6 +24,7 @@ task :remote => [:remote_common, :remote_server, :remote_client]
 task :remote_common => [:'webdriver-remote-common']
 task :remote_client => [:'webdriver-remote-client']
 task :remote_server => [:'webdriver-remote-server']
+# task :remote_server_app => [:'webdriver-remote-server-app']
 task :selenium => [:'webdriver-selenium']
 task :support => [:'webdriver-support']
 
@@ -150,6 +151,7 @@ xpi(:name => "firefox_xpi",
                :libwebdriver_firefox,
              ],
     :resources => [
+                    { "firefox/src/extension/components/*.js" => "components/" },
                     { "common/src/js/extension/*.js" => "content/" },
                     { :commandProcessor_xpt => "components/" },
                     { :events_xpt => "components/" },
@@ -290,6 +292,13 @@ java_test(:name => "webdriver-remote-test",
                      :test_common,
                      :'webdriver-remote-common-test'
                    ])
+
+java_war(:name => "webdriver-remote-servlet",
+         :deps => [ :'webdriver-remote-server' ],
+         :resources => [
+                         "remote/server/src/web/**"
+                       ]
+         )
 
 dll(:name => "chrome_dll",
     :src  => [ "common/src/cpp/webdriver-interactions/**/*", "chome/src/cpp/**/*" ],
