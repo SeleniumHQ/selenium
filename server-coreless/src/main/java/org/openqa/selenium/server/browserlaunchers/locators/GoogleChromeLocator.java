@@ -33,7 +33,7 @@ public class GoogleChromeLocator extends SingleBrowserLocator {
     }
 
     protected String[] standardlauncherFilenames() {
-        return new String[]{"chrome.exe"};
+        return new String[]{"chrome.exe", "google-chrome"};
     }
 
     protected String browserPathOverridePropertyName() {
@@ -41,7 +41,8 @@ public class GoogleChromeLocator extends SingleBrowserLocator {
     }
 
     protected String[] usualLauncherLocations() {
-        return WindowsUtils.thisIsWindows() ? usualWindowsLauncherLocations() : new String[0];
+        return WindowsUtils.thisIsWindows() ? usualWindowsLauncherLocations() : 
+            usualUnixLauncherLocations();
     }
 
     /**
@@ -56,6 +57,16 @@ public class GoogleChromeLocator extends SingleBrowserLocator {
                 WindowsUtils.getLocalAppDataPath() + "\\Google\\Chrome\\Application"
         };
     }
-
+    
+    /**
+     * Returns usual Google Chrome installation location on Linux.
+     *
+     * @return Usual Google Chrome installation location on Linux
+     */
+    protected String[] usualUnixLauncherLocations() {
+        return new String[]{
+                "/usr/bin"
+        };
+    }
 
 }

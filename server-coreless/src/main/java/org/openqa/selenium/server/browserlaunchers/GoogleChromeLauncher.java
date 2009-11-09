@@ -69,7 +69,7 @@ public class GoogleChromeLauncher extends AbstractBrowserLauncher {
         LOGGER.info("Launching Google Chrome...");
 
         try {
-            createProfile(sessionId);
+            createProfile(sessionId, url);
             final String[] cmdArray = createCommandArray(url);
             final AsyncExecute exe = new AsyncExecute();
             exe.setCommandline(cmdArray);
@@ -104,23 +104,11 @@ public class GoogleChromeLauncher extends AbstractBrowserLauncher {
         return process;
     }
 
-    private void createProfile(String sessionId) {
+    private void createProfile(String sessionId, String url) {
         try {
             customProfileDir = LauncherUtils.createCustomProfileDir(sessionId);
         } catch (RuntimeException e) {
             final String errorMessage = "Couldn't create custom profile directory";
-            LOGGER.error(errorMessage, e);
-            throw new RuntimeException(errorMessage, e);
-        }
-
-        try {
-            // Creating this file prevents the first run UI from being shown.
-            // This only matters the first time Google Chrome is run.
-            File exeDir = new File(browserInstallation.launcherFilePath()).getParentFile();
-            File firstRun = new File(exeDir, "First Run");
-            firstRun.createNewFile();
-        } catch (IOException e) {
-            final String errorMessage = "Couldn't create first run file";
             LOGGER.error(errorMessage, e);
             throw new RuntimeException(errorMessage, e);
         }
@@ -177,10 +165,12 @@ public class GoogleChromeLauncher extends AbstractBrowserLauncher {
                 // of a post.
                 "--disable-prompt-on-repost",
                 // Set the proxy server.
-                "--proxy-server=\"localhost:" + getPort() + "\"",
+                "--proxy-server=localhost:" + getPort(),
                 // Always start the window maximized.  This is a poor man's
                 // replacement for windowMaximize (which does not work).
                 "--start-maximized",
+                // Makes sure that no first time run dialog boxes are shown
+                "--no-first-run",
                 // Set the user data (i.e. profile) directory.
                 "--user-data-dir=\"" + customProfileDir.getAbsolutePath() + "\"",
                 url
