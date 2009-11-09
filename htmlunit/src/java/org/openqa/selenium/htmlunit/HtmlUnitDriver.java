@@ -186,6 +186,12 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     proxyConfig = new ProxyConfig(host, port);
     webClient.setProxyConfig(proxyConfig);
   }
+  
+  public void setAutoProxy(String autoProxyUrl) {
+	  proxyConfig = new ProxyConfig();
+	  proxyConfig.setProxyAutoConfigUrl(autoProxyUrl);
+	  webClient.setProxyConfig(proxyConfig);
+  }
 
   public void get(String url) {
     // Prevent the malformed url exception.
