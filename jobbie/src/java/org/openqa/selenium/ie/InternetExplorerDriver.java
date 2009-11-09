@@ -124,6 +124,28 @@ public class InternetExplorerDriver implements WebDriver, JavascriptExecutor {
     return new StringWrapper(lib, handle).toString();
   }
 
+  /**
+   * Execute javascript in the context of the currently selected frame or
+   * window. This means that "document" will refer to the current document.
+   * If the script has a return value, then the following steps will be taken:
+   *
+   * <ul> <li>For an HTML element, this method returns a WebElement</li>
+   * <li>For a number, a Long is returned</li>
+   * <li>For a boolean, a Boolean is returned</li>
+   * <li>For all other cases, a String is returned.</li>
+   * <li>Unless the value is null or there is no return value,
+   * in which null is returned</li>
+   * <li>Does not support lists or arrays. See Webdriver issue #110</li></ul>
+   *
+   * <p>Arguments must be a number, a boolean, a String or WebElement.
+   * An exception will be thrown if the arguments do not meet these criteria.
+   * The arguments will be made available to the javascript via the "arguments"
+   * magic variable, as if the function were called via "Function.apply"
+   *
+   * @param script The javascript to execute
+   * @param args The arguments to the script. May be empty
+   * @return One of Boolean, Long, String or WebElement. Or null.
+   */
   public Object executeScript(String script, Object... args) {
     PointerByReference scriptArgsRef = new PointerByReference();
     int result = lib.wdNewScriptArgs(scriptArgsRef, args.length);

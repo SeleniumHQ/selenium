@@ -22,20 +22,24 @@ package org.openqa.selenium;
  */
 public interface JavascriptExecutor {
     /**
-     * Execute javascript in the context of the currently selected frame or window. This means that
-     * "document" will refer to the current document. If the script has a return value, then the
-     * following steps will be taken:
+     * Execute javascript in the context of the currently selected frame or
+     * window. This means that "document" will refer to the current document.
+     * If the script has a return value, then the following steps will be taken:
      *
-     * <ul> <li>For an HTML element, this method returns a WebElement</li> <li>For a number, a Long is
-     * returned</li> <li>For a boolean, a Boolean is returned</li> <li>For all other cases, a String is
-     * returned.</li> <li>For an array, we check the first element, and attempt to return a List of
-     * that type, following the rules above. We do not support nested lists.</li> <li>Unless the value
-     * is null or there is no return value, in which null is returned</li> </ul>
+     * <ul> <li>For an HTML element, this method returns a WebElement</li>
+     * <li>For a number, a Long is returned</li>
+     * <li>For a boolean, a Boolean is returned</li>
+     * <li>For all other cases, a String is returned.</li>
+     * <li>For an array, return a List&lt;Object&gt; with each object
+     * following the rules above.  We support nested lists.</li>
+     * <li>Unless the value is null or there is no return value,
+     * in which null is returned</li> </ul>
      *
-     * <p>Arguments must be a number (which will be converted to a Long), a boolean, String or
-     * WebElement. An exception will be thrown if the arguments do not meet these criteria. The
-     * arguments will be made available to the javascript via the "arguments" magic variable, as if
-     * the function were called via "Function.apply"
+     * <p>Arguments must be a number, a boolean, a String, WebElement,
+     * or a List of any combination of the above. An exception will be
+     * thrown if the arguments do not meet these criteria. The arguments
+     * will be made available to the javascript via the "arguments" magic
+     * variable, as if the function were called via "Function.apply"
      *
      * @param script The javascript to execute
      * @param args The arguments to the script. May be empty
