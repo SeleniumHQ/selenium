@@ -199,6 +199,26 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
     WebElement result = driver.findElement(By.id("result"));
     assertThat(result.getText(), equalTo("Cleared"));
   }
+  
+  @JavascriptEnabled
+  @Ignore(value = SELENESE, reason = "Fails when running in firefox")
+  public void testSendingKeysToAnotherElementShouldCauseTheBlurEventToFire() {
+  	driver.get(javascriptPage);
+  	WebElement element = driver.findElement(By.id("theworks"));
+  	element.sendKeys("foo");
+  	WebElement element2 = driver.findElement(By.id("changeable"));
+  	element2.sendKeys("bar");
+  	assertEventFired("blur");
+  }
+  
+  @JavascriptEnabled
+  @Ignore(value = SELENESE, reason = "Fails when running in firefox")
+  public void testSendingKeysToAnElementShouldCauseTheFocusEventToFire() {
+  	driver.get(javascriptPage);
+  	WebElement element = driver.findElement(By.id("theworks"));
+  	element.sendKeys("foo");
+  	assertEventFired("focus");
+  }
 
   private void clickOnElementWhichRecordsEvents() {
     driver.findElement(By.id("plainButton")).click();

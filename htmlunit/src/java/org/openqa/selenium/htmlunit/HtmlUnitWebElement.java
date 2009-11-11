@@ -227,6 +227,14 @@ public class HtmlUnitWebElement implements WebElement, FindsById, FindsByLinkTex
       builder.delete(indexOfSubmitKey, builder.length());
     }
 
+    HtmlUnitWebElement oldActiveElement =
+        ((HtmlUnitWebElement)parent.switchTo().activeElement());
+    if (parent.isJavascriptEnabled() &&
+        !oldActiveElement.equals(element) &&
+        !oldActiveElement.getTagName().toLowerCase().equals("body")) {
+      oldActiveElement.element.blur();
+      element.focus();
+    }
     if (parent.isJavascriptEnabled() && !(element instanceof HtmlFileInput)) {
       try {
         element.type(builder.toString());
