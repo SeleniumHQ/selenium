@@ -58,6 +58,8 @@ module WebDriver
       def quit
         app_server.stop
         @driver_instance = @app_server = @remote_server = nil
+
+        Guards.report
       end
 
       def unguarded?
