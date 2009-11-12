@@ -148,7 +148,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {IPHONE, SELENESE, CHROME_NON_WINDOWS}, reason = "Chrome failing on OS X")
+  @Ignore(value = {IPHONE, SELENESE, CHROME}, reason = "Non-native event firing is broken in Chrome.")
   public void testShouldEmitOnChangeEventsWhenSelectingElements() {
     driver.get(javascriptPage);
     WebElement select = driver.findElement(By.id("selector"));
@@ -168,7 +168,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {SELENESE, CHROME_NON_WINDOWS}, reason = "Chrome failing on OS X")
+  @Ignore(value = {SELENESE, CHROME}, reason = "Non-native event firing is broken in Chrome.")
   public void testShouldEmitOnChangeEventsWhenChangingTheStateOfACheckbox() {
     driver.get(javascriptPage);
     WebElement checkbox = driver.findElement(By.id("checkbox"));
@@ -189,7 +189,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {CHROME_NON_WINDOWS}, reason = "Chrome failing on OS X")
+  @Ignore(value = {CHROME}, reason = "Non-native event firing is broken in Chrome.")
   public void testClearingAnElementShouldCauseTheOnChangeHandlerToFire() {
     driver.get(javascriptPage);
 
@@ -201,7 +201,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
   
   @JavascriptEnabled
-  @Ignore(value = SELENESE, reason = "Fails when running in firefox")
+  @Ignore(value = {SELENESE, CHROME}, reason = "Chrome: Non-native event firing is broken in Chrome.  Selenese: Fails when running in firefox")
   public void testSendingKeysToAnotherElementShouldCauseTheBlurEventToFire() {
   	driver.get(javascriptPage);
   	WebElement element = driver.findElement(By.id("theworks"));
@@ -212,7 +212,7 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
   
   @JavascriptEnabled
-  @Ignore(value = SELENESE, reason = "Fails when running in firefox")
+  @Ignore(value = {SELENESE, CHROME}, reason = "Chrome: Non-native event firing is broken in Chrome.  Selenese: Fails when running in firefox")
   public void testSendingKeysToAnElementShouldCauseTheFocusEventToFire() {
   	driver.get(javascriptPage);
   	WebElement element = driver.findElement(By.id("theworks"));

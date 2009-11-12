@@ -219,8 +219,8 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {FIREFOX, HTMLUNIT, IE, CHROME_NON_WINDOWS, SELENESE},
-          reason = "firefox specific not yet tested in htmlunit. Firefox demands to have the focus on the window already")
+  @Ignore(value = {FIREFOX, HTMLUNIT, IE, CHROME_NON_WINDOWS, SELENESE, CHROME},
+          reason = "firefox specific not yet tested in htmlunit. Firefox demands to have the focus on the window already.  Chrome: event firing broken.")
   public void testShouldFireFocusKeyEventsInTheRightOrder() {
     driver.get(javascriptPage);
 

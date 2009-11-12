@@ -75,6 +75,8 @@ function parsePortMessage(message) {
   case "nonNativeClickElement":
     //TODO(danielwh): Focus/blur events for non-native clicking
     element.scrollIntoView(true);
+    //TODO: Work out a way of firing events,
+    //now that synthesising them gives appendMessage errors
     Utils.fireMouseEventOn(element, "mousedown");
     Utils.fireMouseEventOn(element, "mouseup");
     Utils.fireMouseEventOn(element, "click");
@@ -579,6 +581,8 @@ function clearElement(element) {
   var oldValue = element.value;
   element.value = '';
   if (oldValue != '') {
+    //TODO: Work out a way of firing events,
+    //now that synthesising them gives appendMessage errors
     Utils.fireHtmlEvent(element, "change");
   }
   return {statusCode: 0};
@@ -665,6 +669,8 @@ function selectElement(element) {
     return e;
   }
   if (!oldValue) {
+    //TODO: Work out a way of firing events,
+    //now that synthesising them gives appendMessage errors
     Utils.fireHtmlEvent(element, "change");
   }
   return {statusCode: 0};
@@ -680,9 +686,15 @@ function sendElementKeys(element, keys, elementId) {
   } catch (e) {
     return e;
   }
-  //TODO(danielwh): Fire events
-  ChromeDriverContentScript.currentDocument.activeElement.blur();
-  element.focus();
+  var oldFocusedElement = ChromeDriverContentScript.currentDocument.activeElement;
+  if (oldFocusedElement != element) {
+    //TODO: Work out a way of firing events,
+    //now that synthesising them gives appendMessage errors
+    oldFocusedElement.blur();
+    Utils.fireHtmlEvent(oldFocusedElement, "blur");
+    element.focus();
+    Utils.fireHtmlEvent(element, "focus");
+  }
   return {statusCode: "no-op", keys: keys, elementId: elementId};
 }
 
@@ -752,6 +764,8 @@ function toggleElement(element) {
     return e;
   }
   if (changed) {
+    //TODO: Work out a way of firing events,
+    //now that synthesising them gives appendMessage errors
     Utils.fireHtmlEvent(element, "change");
   }
   return {statusCode: 0, value: newValue};
