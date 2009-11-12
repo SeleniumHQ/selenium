@@ -104,7 +104,6 @@ begin
   end
 
   namespace :gem do
-    # desc 'Create ruby gem'
     Rake::GemPackageTask.new(GEM_SPEC) do |pkg|
       pkg.package_dir = "build"
     end
