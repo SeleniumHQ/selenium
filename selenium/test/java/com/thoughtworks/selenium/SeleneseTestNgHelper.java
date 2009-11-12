@@ -5,6 +5,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverBackedSelenium;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxDriverTestSuite;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterTest;
@@ -35,8 +36,12 @@ public class SeleneseTestNgHelper extends SeleneseTestBase
 
         WebDriver driver = null;
         if (browserString.contains("firefox") || browserString.contains("chrome")) {
-          System.setProperty("webdriver.development", "true");
-          driver = new FirefoxDriver();
+          if (FirefoxDriver.class.getResource("webdriver-extension.zip") == null) {
+            System.setProperty("webdriver.development", "true");
+            driver = new FirefoxDriverTestSuite.TestFirefoxDriver();
+          } else {
+            driver = new FirefoxDriver();
+          }
         } else if (browserString.contains("ie") || browserString.contains("hta")) {
 //          System.setProperty("webdriver.development", "true");
 //          System.setProperty("jna.library.path", "..\\build;build");
@@ -44,14 +49,14 @@ public class SeleneseTestNgHelper extends SeleneseTestBase
         } else {
           fail("Cannot determine which browser to load: " + browserString);
         }
-        
+
         if (url == null)
           url = "http://localhost:4444/selenium-server";
         selenium = new WebDriverBackedSelenium(driver, url);
 
         staticSelenium = selenium;
     }
-    
+
     @BeforeClass
     @Parameters({"selenium.restartSession"})
     public void getSelenium(@Optional("false") boolean restartSession) {
@@ -61,11 +66,11 @@ public class SeleneseTestNgHelper extends SeleneseTestBase
             selenium.start();
         }
     }
-    
+
     @BeforeMethod
     public void setTestContext(Method method) {
         selenium.setContext(method.getDeclaringClass().getSimpleName() + "." + method.getName());
-        
+
     }
 
     @AfterMethod
@@ -73,28 +78,28 @@ public class SeleneseTestNgHelper extends SeleneseTestBase
     public void checkForVerificationErrors() {
         super.checkForVerificationErrors();
     }
-    
+
     @AfterMethod(alwaysRun=true)
     public void selectDefaultWindow() {
         if (selenium != null) selenium.selectWindow("null");
     }
-    
+
     @AfterTest(alwaysRun=true)
     @Override
     public void tearDown() throws Exception {
         super.tearDown();
     }
-    
+
     //@Override static method of super class (which assumes JUnit conventions)
     public static void assertEquals(Object actual, Object expected) {
         SeleneseTestBase.assertEquals(expected, actual);
     }
-    
+
     //@Override static method of super class (which assumes JUnit conventions)
     public static void assertEquals(String actual, String expected) {
         SeleneseTestBase.assertEquals(expected, actual);
     }
-    
+
     //@Override static method of super class (which assumes JUnit conventions)
     public static void assertEquals(String actual, String[] expected) {
         SeleneseTestBase.assertEquals(expected, actual);
@@ -104,12 +109,12 @@ public class SeleneseTestNgHelper extends SeleneseTestBase
     public static void assertEquals(String[] actual, String[] expected) {
         SeleneseTestBase.assertEquals(expected, actual);
     }
-    
+
     //@Override static method of super class (which assumes JUnit conventions)
     public static boolean seleniumEquals(Object actual, Object expected) {
         return SeleneseTestBase.seleniumEquals(expected, actual);
     }
-    
+
     //@Override static method of super class (which assumes JUnit conventions)
     public static boolean seleniumEquals(String actual, String expected) {
         return SeleneseTestBase.seleniumEquals(expected, actual);
@@ -119,7 +124,7 @@ public class SeleneseTestNgHelper extends SeleneseTestBase
     public void verifyEquals(Object actual, Object expected) {
         super.verifyEquals(expected, actual);
     }
-    
+
     @Override
     public void verifyEquals(String[] actual, String[] expected) {
         super.verifyEquals(expected, actual);
