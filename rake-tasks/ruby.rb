@@ -29,7 +29,7 @@ end
 
 #
 # remote
-# 
+#
 
 task :test_remote_chrome_rb => :test_common do
   ENV['REMOTE_BROWSER_VERSION'] = 'chrome'
@@ -53,12 +53,12 @@ end
 
 #
 # gem
-# 
+#
 
 begin
   require "rubygems"
   require "rake/gempackagetask"
-  
+
   GEM_VERSION = ENV['VERSION'] ||= '0.0.1'
   GEM_SPEC    = Gem::Specification.new do |s|
    s.name          = 'selenium-webdriver'
@@ -68,40 +68,47 @@ begin
    s.authors       = ["Jari Bakken"]
    s.email         = "jari.bakken@gmail.com"
    s.homepage      = "http://selenium.googlecode.com"
-   
+
    s.add_dependency "json_pure"
    s.add_dependency "ffi"
    s.add_development_dependency "rspec"
    s.add_development_dependency "rack"
 
    s.require_paths = []
-   
+
    # Common
    s.require_paths << 'common/src/rb/lib'
    s.files         += FileList['common/src/rb/**/*']
    s.files         += FileList['common/src/js/**/*']
-   
+
    # Firefox
    s.require_paths << 'firefox/src/rb/lib'
    s.files         += FileList['firefox/src/rb/**/*']
    s.files         += FileList['firefox/src/extension/**/*']
    s.files         += FileList['firefox/prebuilt/*.xpt']
-   
+
+   # Chrome
+   s.require_paths << "chrome/src/rb/lib"
+   s.files         += FileList['chrome/src/rb/**/*']
+   s.files         += FileList['chrome/src/extension/**/*']
+   s.files         += FileList['chrome/prebuilt/**/*.dll']
+
    # IE
    s.require_paths << 'jobbie/src/rb/lib'
    s.files         += FileList['jobbie/src/rb/**/*']
-   
+   s.files         += FileList['jobbie/prebuilt/**/*.dll']
+
    # Remote
    s.require_paths << 'remote/client/src/rb/lib'
    s.files         += FileList['remote/client/src/rb/**/*']
   end
-  
+
   namespace :gem do
     # desc 'Create ruby gem'
     Rake::GemPackageTask.new(GEM_SPEC) do |pkg|
       pkg.package_dir = "build"
     end
-    
+
     # desc 'Release the ruby gem to Gemcutter'
     # task :release do
     #   begin
@@ -112,7 +119,7 @@ begin
     #   end
     # end
   end
-  
-rescue LoadError 
+
+rescue LoadError
   # $stderr.puts "rubygems not installed - gem tasks unavailable"
 end

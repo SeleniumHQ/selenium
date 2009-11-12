@@ -73,6 +73,8 @@ module WebDriver
             return entry.last
           end
         end
+      rescue Win32::Registry::Error
+        raise Error::WebDriverError, "Firefox not found in Windows registry, please make sure you have it installed."
       end
 
     end # Binary

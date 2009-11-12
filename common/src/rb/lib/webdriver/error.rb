@@ -1,31 +1,32 @@
 module WebDriver
   module Error
-    class IndexOutOfBoundsError < StandardError; end        # 1
-    class NoCollectionError < StandardError; end            # 2
-    class NoStringError < StandardError; end                # 3
-    class NoStringLengthError < StandardError; end          # 4
-    class NoStringWrapperError < StandardError; end         # 5
-    class NoSuchDriverError < StandardError; end            # 6
-    class NoSuchElementError < StandardError; end           # 7
-    class NoSuchFrameError < StandardError; end             # 8
-    # NotImplementedError                                   # 9 - just use Ruby's
-    class ObsoleteElementError < StandardError; end         # 10
-    class ElementNotDisplayedError < StandardError; end     # 11
-    class ElementNotEnabledError < StandardError; end       # 12
-    class UnhandledError < StandardError; end               # 13
-    class ExpectedError < StandardError; end                # 14
-    class ElementNotSelectedError < StandardError; end      # 15
-    class NoSuchDocumentError < StandardError; end          # 16
-    class UnexpectedJavascriptError < StandardError; end    # 17
-    class NoScriptResultError < StandardError; end          # 18
-    class UnknownScriptResultError < StandardError; end     # 19
-    class NoSuchCollectionError < StandardError; end        # 20
-    class TimeOutError < StandardError; end                 # 21
-    class NullPointerError < StandardError; end             # 22
-    class NoSuchWindowError < StandardError; end            # 23
-
-    class UnsupportedOperationError < StandardError; end
     class WebDriverError < StandardError; end
+
+
+    class IndexOutOfBoundsError < WebDriverError; end        # 1
+    class NoCollectionError < WebDriverError; end            # 2
+    class NoStringError < WebDriverError; end                # 3
+    class NoStringLengthError < WebDriverError; end          # 4
+    class NoStringWrapperError < WebDriverError; end         # 5
+    class NoSuchDriverError < WebDriverError; end            # 6
+    class NoSuchElementError < WebDriverError; end           # 7
+    class NoSuchFrameError < WebDriverError; end             # 8
+    # NotImplementedError                                    # 9 - just use Ruby's
+    class ObsoleteElementError < WebDriverError; end         # 10
+    class ElementNotDisplayedError < WebDriverError; end     # 11
+    class ElementNotEnabledError < WebDriverError; end       # 12
+    class UnhandledError < WebDriverError; end               # 13
+    class ExpectedError < WebDriverError; end                # 14
+    class ElementNotSelectedError < WebDriverError; end      # 15
+    class NoSuchDocumentError < WebDriverError; end          # 16
+    class UnexpectedJavascriptError < WebDriverError; end    # 17
+    class NoScriptResultError < WebDriverError; end          # 18
+    class UnknownScriptResultError < WebDriverError; end     # 19
+    class NoSuchCollectionError < WebDriverError; end        # 20
+    class TimeOutError < WebDriverError; end                 # 21
+    class NullPointerError < WebDriverError; end             # 22
+    class NoSuchWindowError < WebDriverError; end            # 23
+    class UnsupportedOperationError < WebDriverError; end
 
     Errors = [
       IndexOutOfBoundsError,

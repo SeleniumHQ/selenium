@@ -70,11 +70,21 @@ module WebDriver
       end
 
       def tmp_extension_dir
-        @tmp_extension_dir ||= Dir.mktmpdir("webdriver-chrome-extension")
+        @tmp_extension_dir ||= begin
+          dir = Dir.mktmpdir("webdriver-chrome-extension")
+          File.chmod 0755, dir
+
+          dir
+        end
       end
 
       def tmp_profile_dir
-        @tmp_profile_dir ||= Dir.mktmpdir("webdriver-chrome-profile")
+        @tmp_profile_dir ||= begin
+          dir = Dir.mktmpdir("webdriver-chrome-profile")
+          File.chmod 0755, dir
+
+          dir
+        end
       end
 
       class WindowsLauncher < Launcher
@@ -100,7 +110,6 @@ module WebDriver
         def binary_path
           @binary_path ||= "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
         end
-
       end
 
     end # Launcher
