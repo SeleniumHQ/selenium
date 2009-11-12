@@ -19,6 +19,7 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
@@ -35,7 +36,7 @@ public class TextPagesTest extends AbstractDriverTestCase {
     textPage = GlobalTestEnvironment.get().getAppServer().whereIs("plain.txt");
   }
 
-  @Ignore({IE, FIREFOX, SELENESE})
+  @Ignore({IE, FIREFOX, SELENESE, CHROME})
   public void testShouldBeAbleToLoadASimplePageOfText() {
     driver.get(textPage);
 
@@ -43,6 +44,7 @@ public class TextPagesTest extends AbstractDriverTestCase {
     assertEquals("Test", source);
   }
 
+  @Ignore(CHROME)
   public void testFindingAnElementOnAPlainTextPageWillNeverWork() {
     driver.get(textPage);
 
@@ -54,7 +56,7 @@ public class TextPagesTest extends AbstractDriverTestCase {
     }
   }
 
-  @Ignore(IE)
+  @Ignore({IE, CHROME})
   public void testShouldThrowExceptionWhenAddingCookieToAPageThatIsNotHtml() {
     driver.get(textPage);
 
