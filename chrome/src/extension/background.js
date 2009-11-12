@@ -818,7 +818,7 @@ function getUrl(url) {
       // we need to create the new tab before deleting the old one
       // in order to avoid hanging on OS X
       var oldId = ChromeDriver.activeTabId;
-      ChromeDriver.activeTabId = undefined;
+      resetActiveTabDetails();
       chrome.tabs.create({url: url, selected: true}, getUrlCallback);
       chrome.tabs.remove(oldId);
     }

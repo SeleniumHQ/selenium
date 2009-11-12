@@ -30,7 +30,8 @@ public class ChromeBinary {
           "--user-data-dir=" + profileDir,
           "--load-extension=" + extensionDir,
           "--activate-on-launch",
-          "--no-first-run")
+          "--no-first-run",
+          "about:blank")
           .start();
     } catch (IOException e) {
       throw new WebDriverException(e);
