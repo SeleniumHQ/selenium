@@ -815,8 +815,12 @@ function getUrl(url) {
       chrome.tabs.update(ChromeDriver.activeTabId, {url: url, selected: true},
           getUrlCallback);
     } else {
-      chrome.tabs.remove(ChromeDriver.activeTabId);
+      // we need to create the new tab before deleting the old one
+      // in order to avoid hanging on OS X
+      var oldId = ChromeDriver.activeTabId;
+      ChromeDriver.activeTabId = undefined;
       chrome.tabs.create({url: url, selected: true}, getUrlCallback);
+      chrome.tabs.remove(oldId);
     }
   }
 }
