@@ -2130,8 +2130,12 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param strategyName       the name of the strategy to define; this should use only   letters [a-zA-Z] with no spaces or other punctuation.
    * @param functionDefinition a string defining the body of a function in JavaScript.   For example: <code>return inDocument.getElementById(locator);</code>
    */
-  public void addLocationStrategy(String strategyName, String functionDefinition) {
-    throw new UnsupportedOperationException("addLocationStrategy");
+  public void addLocationStrategy(String strategyName, final String functionDefinition) {
+    lookupStrategies.put(strategyName, new LookupStrategy() {
+      public WebElement find(WebDriver driver, String use) {
+        return (WebElement) ((JavascriptExecutor) driver).executeScript("(function(locator, inWindow, inDocument) { " + functionDefinition + " }).call(this,'" + use + "', window, document)");
+      }
+    });
   }
 
   /**
