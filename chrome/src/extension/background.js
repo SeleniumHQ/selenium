@@ -161,6 +161,32 @@ ChromeDriver.windowHandlePrefix = '__webdriver_chromedriver_windowhandle';
  */
 ChromeDriver.isBlockedWaitingForResponse = false;
 
+/**
+ * It's possible that the page has completed loading,
+ * but the content script has not yet fired.
+ * In this case, to not report that there is no page,
+ * when we are just too fast, we wait up to this amount of time.
+ * @type {number} unit: milliseconds
+ */
+ChromeDriver.timeoutUntilGiveUpOnContentScriptLoading = 5000;
+
+/**
+ * How long we are currently waiting for the content script to load
+ * after loading the page
+ * @type {number} unit: milliseconds
+ */
+ChromeDriver.currentlyWaitingUntilGiveUpOnContentScriptLoading;
+
+//Set ChromeDriver.currentlyWaitingUntilGiveUpOnContentScriptLoading;
+resetCurrentlyWaitingOnContentScriptTime();
+
+/**
+ * How long we wait between poling whether we have a content script,
+ * when loading a new page, up until
+ * ChromeDriver.timeoutUntilGiveUpOnContentScriptLoading
+ * @type {number} unit: milliseconds
+ */
+ChromeDriver.waitForContentScriptIncrement = 100;
 
 chrome.extension.onConnect.addListener(function(port) {
   console.log("Connected to " + port.name);
@@ -651,6 +677,7 @@ function resetActiveTabDetails() {
   ChromeDriver.hasSentResponseToThisPageLoading = false;
   ChromeDriver.portToUseForFrameLookups = null;
   ChromeDriver.currentUrl = null;
+  resetCurrentlyWaitingOnContentScriptTime();
 }
 
 function setActiveTabDetails(tab) {
@@ -658,6 +685,7 @@ function setActiveTabDetails(tab) {
   ChromeDriver.activeWindowId = tab.windowId;
   ChromeDriver.doFocusOnNextOpenedTab = false;
   ChromeDriver.currentUrl = tab.url;
+  resetCurrentlyWaitingOnContentScriptTime();
 }
 
 function switchToDefaultContent() {
@@ -816,13 +844,21 @@ function getUrlCallback(tab) {
   } else {
     ChromeDriver.getUrlRequestSequenceNumber++;
     if (ChromeDriver.activePort == null) {
-      ChromeDriver.hasNoConnectionToPage = true;
-      sendEmptyResponseWhenTabIsLoaded(tab);
+      if (ChromeDriver.currentlyWaitingUntilGiveUpOnContentScriptLoading <= 0) {
+        ChromeDriver.hasNoConnectionToPage = true;
+        sendEmptyResponseWhenTabIsLoaded(tab);
+      } else {
+        ChromeDriver.currentlyWaitingUntilGiveUpOnContentScriptLoading -=
+          ChromeDriver.waitForContentScriptIncrement;
+        setTimeout("getUrlCallbackById(" + tab.id + ")", ChromeDriver.waitForContentScriptIncrement);
+        return;
+      }
     }
     setActiveTabDetails(tab);
   }
   if (ChromeDriver.isGettingUrlButOnlyChangingByFragment) {
     ChromeDriver.urlBeingLoaded = null;
+    resetCurrentlyWaitingOnContentScriptTime();
     sendResponseToParsedRequest({statusCode: 0}, false);
     ChromeDriver.isGettingUrlButOnlyChangingByFragment = false;
   }
@@ -885,4 +921,9 @@ function hasNoPage() {
   return ChromeDriver.hasNoConnectionToPage ||
          ChromeDriver.activePort == null ||
          ChromeDriver.activeTabId == null;
+}
+
+function resetCurrentlyWaitingOnContentScriptTime() {
+  ChromeDriver.currentlyWaitingUntilGiveUpOnContentScriptLoading =
+      ChromeDriver.timeoutUntilGiveUpOnContentScriptLoading;
 }
