@@ -7,17 +7,16 @@ module WebDriver
       EM_NAMESPACE_URI       = "http://www.mozilla.org/2004/em-rdf#"
 
       # TODO: hardcoded paths
-      DEFAULT_EXTENSION_SOURCE = File.expand_path("#{File.dirname(__FILE__)}/../../../../extension")
-      WD_ROOT                  = File.expand_path("#{File.dirname(__FILE__)}/../../../../../../")
+      DEFAULT_EXTENSION_SOURCE = File.expand_path("#{WebDriver.root}/firefox/src/extension")
 
       XPTS                     = {
-        "#{WD_ROOT}/firefox/prebuilt/nsINativeEvents.xpt"     => "components/nsINativeEvents.xpt",
-        "#{WD_ROOT}/firefox/prebuilt/nsICommandProcessor.xpt" => "components/nsICommandProcessor.xpt",
-        "#{WD_ROOT}/firefox/prebuilt/nsIResponseHandler.xpt"  => "components/nsIResponseHandler.xpt"
+        "#{WebDriver.root}/firefox/prebuilt/nsINativeEvents.xpt"     => "components/nsINativeEvents.xpt",
+        "#{WebDriver.root}/firefox/prebuilt/nsICommandProcessor.xpt" => "components/nsICommandProcessor.xpt",
+        "#{WebDriver.root}/firefox/prebuilt/nsIResponseHandler.xpt"  => "components/nsIResponseHandler.xpt"
       }
 
       SHARED = {
-        "#{WD_ROOT}/common/src/js/extension/dommessenger.js" => "content/dommessenger.js"
+        "#{WebDriver.root}/common/src/js/extension/dommessenger.js" => "content/dommessenger.js"
       }
 
       attr_reader :name, :directory

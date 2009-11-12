@@ -2,12 +2,13 @@ require 'rake'
 require 'rake/testtask'
 require 'rake/rdoctask'
 
-require 'rake-tasks/task-gen.rb'
-require 'rake-tasks/checks.rb'
-require 'rake-tasks/zip.rb'
-require 'rake-tasks/c.rb'
-require 'rake-tasks/java.rb'
-require 'rake-tasks/mozilla.rb'
+require 'rake-tasks/task-gen'
+require 'rake-tasks/checks'
+require 'rake-tasks/zip'
+require 'rake-tasks/c'
+require 'rake-tasks/java'
+require 'rake-tasks/mozilla'
+require 'rake-tasks/ruby'
 
 task :default => [:test]
 
@@ -386,56 +387,6 @@ task :test_firefox_py => :firefox do
     sh "python build/lib/webdriver/py_test.py", :verbose => true
   end
 end
-
-task :test_remote_rb => [:test_common, :remote_server] do
-  jruby :include  => [".", "common/src/rb/lib", "remote/client/src/rb/lib", "common/test/rb/lib"],
-        :require  => ["third_party/jruby/json-jruby.jar"],
-        :command  => "-S spec",
-        :files    => Dir['common/test/rb/spec/**/*spec.rb']
-        # :headless => true
-end
-
-task :test_ie_rb => :test_common do
-  jruby :include => [".", "common/src/rb/lib", "jobbie/src/rb/lib", "common/test/rb/lib"],
-        :require => ["third_party/jruby/json-jruby.jar"],
-        :command => "-X+O -S spec", # needs ObjectSpace
-        :files   => Dir['common/test/rb/spec/**/*spec.rb']
-end
-
-task :test_chrome_rb => :test_common do
-  jruby :include => [".", "common/src/rb/lib", "chrome/src/rb/lib", "common/test/rb/lib"],
-        :require => ["third_party/jruby/json-jruby.jar"],
-        :command => "-S spec",
-        :files   => Dir['common/test/rb/spec/**/*spec.rb']
-end
-
-task :test_firefox_rb => :test_common do
-  jruby :include => [".", "common/src/rb/lib", "firefox/src/rb/lib", "common/test/rb/lib"],
-        :require => ["third_party/jruby/json-jruby.jar"],
-        :command => "-S spec ",
-        :files   => Dir['common/test/rb/spec/**/*spec.rb']
-end
-
-task :test_remote_chrome_rb => :test_common do
-  ENV['REMOTE_BROWSER_VERSION'] = 'chrome'
-  Rake::Task[:test_remote_rb].invoke # bad
-end
-
-task :test_remote_firefox_rb => :firefox do
-  ENV['REMOTE_BROWSER_VERSION'] = 'firefox'
-  Rake::Task[:test_remote_rb].invoke # bad
-end
-
-task :test_remote_ie_rb => :ie do
-  ENV['REMOTE_BROWSER_VERSION'] = 'internet_explorer'
-  Rake::Task[:test_remote_rb].invoke # bad
-end
-
-task :test_remote_chrome_rb => :chrome do
-  ENV['REMOTE_BROWSER_VERSION'] = 'chrome'
-  Rake::Task[:test_remote_rb].invoke # bad
-end
-
 
 task :iphone => [:iphone_server, :iphone_client]
 

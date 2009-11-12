@@ -66,8 +66,7 @@ module WebDriver
       end
 
       def ext_path
-        # TODO: get rid of hardcoded paths
-        @ext_path ||= "#{File.dirname(__FILE__)}/../../../../extension"
+        @ext_path ||= "#{WebDriver.root}/chrome/src/extension"
       end
 
       def tmp_extension_dir
@@ -80,8 +79,8 @@ module WebDriver
 
       class WindowsLauncher < Launcher
         def linked_lib_path
-          # TODO: get rid of hardcoded paths
-          @linked_lib_path ||= "#{File.dirname(__FILE__)}/../../../../../prebuilt/Win32/Release/npchromedriver.dll"
+          # TODO: x64
+          @linked_lib_path ||= "#{WebDriver.root}/chrome/prebuilt/Win32/Release/npchromedriver.dll"
         end
 
         def binary_path
@@ -91,11 +90,6 @@ module WebDriver
       end
 
       class UnixLauncher < Launcher
-        def linked_lib_path
-          # TODO: get rid of hardcoded paths
-          @linked_lib_path ||= "#{File.dirname(__FILE__)}/../../../../../prebuilt/Win32/Release/npchromedriver.dll"
-        end
-
         def binary_path
           @binary_path ||= "/usr/bin/google-chrome"
         end

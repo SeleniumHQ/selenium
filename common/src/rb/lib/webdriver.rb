@@ -37,7 +37,15 @@ module WebDriver
   autoload :Remote,  'webdriver/remote'
   autoload :Chrome,  'webdriver/chrome'
   autoload :Firefox, 'webdriver/firefox'
+
+  def self.root
+    @root ||= File.expand_path(File.join(File.dirname(__FILE__), "..", "..", "..", ".."))
+  end
+
+  def self.for(*args)
+    WebDriver::Driver.for(*args)
+  end
+
 end
 
 Thread.abort_on_exception = true
-
