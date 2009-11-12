@@ -7,7 +7,7 @@ module WebDriver
       end
 
       def create_base_profile(name)
-        out = `#{path} --verbose -CreateProfile #{name} 2>&1`
+        out = `#{Platform.wrap_in_quotes_if_necessary path} --verbose -CreateProfile #{Platform.wrap_in_quotes_if_necessary name} 2>&1`
         unless $?.success?
           raise Error::WebDriverError, "could not create base profile: (#{$?.exitstatus})\n#{out}"
         end

@@ -50,19 +50,15 @@ module WebDriver
       end
 
       def launch_chrome
-        @process = ChildProcess.new wrap_in_quotes_if_neccessary(binary_path),
-                                    "--load-extension=#{wrap_in_quotes_if_neccessary tmp_extension_dir}",
-                                    "--user-data-dir=#{wrap_in_quotes_if_neccessary tmp_profile_dir}",
+        @process = ChildProcess.new Platform.wrap_in_quotes_if_necessary(binary_path),
+                                    "--load-extension=#{Platform.wrap_in_quotes_if_necessary tmp_extension_dir}",
+                                    "--user-data-dir=#{Platform.wrap_in_quotes_if_necessary tmp_profile_dir}",
                                     "--activate-on-launch"
         @process.start
       end
 
       def ext_files
         Dir["#{ext_path}/*"]
-      end
-
-      def wrap_in_quotes_if_neccessary(str)
-        Platform.win? ? %{"#{str}"} : str
       end
 
       def ext_path

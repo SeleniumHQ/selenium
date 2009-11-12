@@ -109,6 +109,10 @@ begin
       pkg.package_dir = "build"
     end
 
+    task :clean do
+      Dir['build/*.gem'].each { |file| rm file }
+    end
+
     # desc 'Release the ruby gem to Gemcutter'
     # task :release do
     #   begin

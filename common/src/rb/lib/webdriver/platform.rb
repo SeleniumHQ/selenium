@@ -59,7 +59,9 @@ module WebDriver
     end
     alias_method :windows?, :win?
 
-
+    def wrap_in_quotes_if_necessary(str)
+      win? ? %{"#{str}"} : str
+    end
 
   end # Platform
 end # WebDriver
