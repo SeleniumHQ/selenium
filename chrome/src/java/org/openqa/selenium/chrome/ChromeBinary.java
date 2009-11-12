@@ -31,6 +31,9 @@ public class ChromeBinary {
           "--load-extension=" + extensionDir,
           "--activate-on-launch",
           "--no-first-run",
+          "--disable-hang-monitor",
+          "--disable-popup-blocking",
+          "--disable-prompt-on-repost",
           "about:blank")
           .start();
     } catch (IOException e) {
