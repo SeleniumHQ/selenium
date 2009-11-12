@@ -1,6 +1,8 @@
 require "spec"
-require "webdriver"
-require "webdriver/spec_support"
+require "selenium-webdriver"
+require "selenium/webdriver/spec_support"
+
+include Selenium
 
 if WebDriver::Platform.jruby?
   require "java"
