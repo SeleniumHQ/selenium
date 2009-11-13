@@ -3,6 +3,10 @@
   "version": "0.3",
   "description": "WebDriver extension for Chrome",
   "toolstrips": ["toolstrip.html"],
+  "browser_action": {
+    "default_title": "WebDriver",
+    "default_icon": "icons/free.png"
+  },
   "background_page": "background.html",
   "content_scripts": [
     {
