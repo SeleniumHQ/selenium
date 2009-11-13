@@ -891,6 +891,11 @@ function sendEmptyResponseWhenTabIsLoaded(tab) {
 
 function setToolstripsBusy(busy) {
   var toolstrips = chrome.extension.getToolstrips(ChromeDriver.activeWindowId);
+  if (busy) {
+    chrome.browserAction.setIcon({path: "icons/busy.png"})
+  } else {
+    chrome.browserAction.setIcon({path: "icons/free.png"})
+  }
   for (var toolstrip in toolstrips) {
     if (toolstrips[toolstrip].setWebdriverToolstripBusy && 
         toolstrips[toolstrip].setWebdriverToolstripFree) {
