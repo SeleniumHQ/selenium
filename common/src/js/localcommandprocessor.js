@@ -95,10 +95,10 @@ webdriver.LocalCommandProcessor.MessageAttribute_ = {
 /**
  * @override
  */
-webdriver.LocalCommandProcessor.prototype.dispose = function() {
+webdriver.LocalCommandProcessor.prototype.disposeInternal = function() {
   goog.events.removeAll(this.documentElement_,
       webdriver.LocalCommandProcessor.EventType_.RESPONSE);
-  webdriver.LocalCommandProcessor.superClass_.dispose.call(this);
+  webdriver.LocalCommandProcessor.superClass_.disposeInternal.call(this);
 };
 
 
