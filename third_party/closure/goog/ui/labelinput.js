@@ -1,0 +1,410 @@
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// Copyright 2006 Google Inc. All Rights Reserved.
+
+/**
+ * @fileoverview This behavior is applied to a text input and it shows a text
+ * message inside the element if the user hasn't entered any text.
+ *
+ * This is ported from http://go/labelinput.js
+ *
+ * Known issue: Safari does not allow you get to the window object from a
+ * document. We need that to listen to the onload event. For now we hard code
+ * the window to the current window.
+ *
+ * Known issue: We need to listen to the form submit event but we attach the
+ * event only once (when created or when it is changed) so if you move the DOM
+ * node to another form it will not be cleared correctly before submitting.
+ *
+ * @see ../demos/labelinput.html
+ */
+
+goog.provide('goog.ui.LabelInput');
+
+
+goog.require('goog.Timer');
+goog.require('goog.dom');
+goog.require('goog.dom.classes');
+goog.require('goog.events');
+goog.require('goog.events.EventHandler');
+goog.require('goog.events.EventType');
+goog.require('goog.ui.Component');
+
+
+/**
+ * This creates the label input object.
+ * @param {string} opt_label The text to show as the label.
+ * @param {goog.dom.DomHelper} opt_domHelper Optional DOM helper.
+ * @extends {goog.ui.Component}
+ * @constructor
+ */
+goog.ui.LabelInput = function(opt_label, opt_domHelper) {
+  goog.ui.Component.call(this, opt_domHelper);
+
+  /**
+   * The text to show as the label.
+   * @type {string}
+   * @private
+   */
+  this.label_ = opt_label || '';
+};
+goog.inherits(goog.ui.LabelInput, goog.ui.Component);
+
+
+/**
+ * Variable used to store the element value on keydown and restore it on
+ * keypress.  See {@link #handleEscapeKeys_}
+ * @type {string?}
+ * @private
+ */
+goog.ui.LabelInput.prototype.ffKeyRestoreValue_ = null;
+
+
+/**
+ * @type {goog.events.EventHandler}
+ * @private
+ */
+goog.ui.LabelInput.prototype.eventHandler_;
+
+
+/**
+ * Creates the DOM nodes needed for the label input.
+ */
+goog.ui.LabelInput.prototype.createDom = function() {
+  this.setElementInternal(
+      this.getDomHelper().createDom('input', {'type': 'text'}));
+};
+
+
+/**
+ * Decorates an existing HTML input element as a label input. If the element
+ * has a "label" attribute then that will be used as the label property for the
+ * label input object.
+ * @param {HTMLInputElement} element The HTML input element to decorate.
+ */
+goog.ui.LabelInput.prototype.decorateInternal = function(element) {
+  goog.ui.LabelInput.superClass_.decorateInternal.call(this, element);
+  if (!this.label_) {
+    this.label_ = element.getAttribute('label') || '';
+  }
+};
+
+
+/**
+ * Called when the DOM for the component is for sure in the document.
+ */
+goog.ui.LabelInput.prototype.enterDocument = function() {
+  goog.ui.LabelInput.superClass_.enterDocument.call(this);
+  this.attachEvents_();
+  this.check_();
+
+  // Make it easy for other closure widgets to play nicely with inputs using
+  // LabelInput:
+  this.getElement().labelInput_ = this;
+};
+
+
+/**
+ * Called when the DOM for the component is removed from the document or
+ * when the component no longer is managing the DOM.
+ */
+goog.ui.LabelInput.prototype.exitDocument = function() {
+  goog.ui.LabelInput.superClass_.exitDocument.call(this);
+  this.detachEvents_();
+
+  this.getElement().labelInput_ = null;
+};
+
+/**
+ * Attaches the events we need to listen to.
+ * @private
+ */
+goog.ui.LabelInput.prototype.attachEvents_ = function() {
+  var eh = new goog.events.EventHandler(this);
+  eh.listen(this.getElement(), goog.events.EventType.FOCUS, this.handleFocus_);
+  eh.listen(this.getElement(), goog.events.EventType.BLUR, this.handleBlur_);
+
+  if (goog.userAgent.GECKO) {
+    eh.listen(this.getElement(), [goog.events.EventType.KEYPRESS,
+        goog.events.EventType.KEYDOWN, goog.events.EventType.KEYUP],
+        this.handleEscapeKeys_);
+  }
+
+  // IE sets defaultValue upon load so we need to test that as well.
+  var d = goog.dom.getOwnerDocument(this.getElement());
+  var w = goog.dom.getWindow(d);
+  eh.listen(w, goog.events.EventType.LOAD, this.handleWindowLoad_);
+
+  this.eventHandler_ = eh;
+  this.attachEventsToForm_();
+};
+
+
+/**
+ * Adds a listener to the form so that we can clear the input before it is
+ * submitted.
+ * @private
+ */
+goog.ui.LabelInput.prototype.attachEventsToForm_ = function() {
+  // in case we have are in a form we need to make sure the label is not
+  // submitted
+  if (!this.formAttached_ && this.eventHandler_ && this.getElement().form) {
+    this.eventHandler_.listen(this.getElement().form,
+                              goog.events.EventType.SUBMIT,
+                              this.handleFormSubmit_);
+    this.formAttached_ = true;
+  }
+};
+
+
+/**
+ * Stops listening to the events.
+ * @private
+ */
+goog.ui.LabelInput.prototype.detachEvents_ = function() {
+  if (this.eventHandler_) {
+    this.eventHandler_.dispose();
+    this.eventHandler_ = null;
+  }
+};
+
+
+/** @inheritDoc */
+goog.ui.LabelInput.prototype.disposeInternal = function() {
+  goog.ui.LabelInput.superClass_.disposeInternal.call(this);
+  this.detachEvents_();
+};
+
+
+/**
+ * The CSS class name to add to the input when the user has not entered a
+ * value.
+ */
+goog.ui.LabelInput.prototype.LABEL_CLASS_NAME = 'label-input-label';
+
+
+/**
+ * Handler for the focus event.
+ * @param {goog.events.Event} e The event object passed in to the event handler.
+ * @private
+ */
+goog.ui.LabelInput.prototype.handleFocus_ = function(e) {
+  this.hasFocus_ = true;
+  goog.dom.classes.remove(this.getElement(), this.LABEL_CLASS_NAME);
+  if (!this.hasChanged() && !this.inFocusAndSelect_) {
+    var me = this;
+    var clearValue = function() {
+      me.getElement().value = '';
+    };
+    if (goog.userAgent.IE) {
+      goog.Timer.callOnce(clearValue, 10);
+    } else {
+      clearValue();
+    }
+  }
+};
+
+
+/**
+ * Handler for the blur event.
+ * @param {goog.events.Event} e The event object passed in to the event handler.
+ * @private
+ */
+goog.ui.LabelInput.prototype.handleBlur_ = function(e) {
+  this.ffKeyRestoreValue_ = null;
+  this.hasFocus_ = false;
+  this.check_();
+};
+
+
+/**
+ * Handler for key events in Firefox.
+ *
+ * If the escape key is pressed when a text input has not been changed manually
+ * since being focussed, the text input will revert to it's previous value.
+ * Firefox does not honor preventDefault for the escape key. The revert happens
+ * after the keydown event and before every keypress. We therefore store the
+ * element's value on keydown and restore it on keypress. The restore value is
+ * nullified on keyup so that {@link #getValue} returns the correct value.
+ *
+ * IE and Chrome don't have this problem, Opera blurs in the input box
+ * completely in a way that preventDefault on the escape key has no effect.
+ *
+ * @param {goog.events.BrowserEvent} e The event object passed in to
+ *     the event handler.
+ * @private
+ */
+goog.ui.LabelInput.prototype.handleEscapeKeys_ = function(e) {
+  if (e.keyCode == 27) {
+    if (e.type == goog.events.EventType.KEYDOWN) {
+      this.ffKeyRestoreValue_ = this.getElement().value;
+    } else if (e.type == goog.events.EventType.KEYPRESS) {
+      this.getElement().value = /** @type {string} */ (this.ffKeyRestoreValue_);
+    } else if (e.type == goog.events.EventType.KEYUP) {
+      this.ffKeyRestoreValue_ = null;
+    }
+    e.preventDefault();
+  }
+};
+
+
+
+/**
+ * Handler for the submit event of the form element.
+ * @param {goog.events.Event} e The event object passed in to the event handler.
+ * @private
+ */
+goog.ui.LabelInput.prototype.handleFormSubmit_ = function(e) {
+  if (!this.hasChanged()) {
+    this.getElement().value = '';
+    // allow form to be sent before restoring value
+    goog.Timer.callOnce(this.handleAfterSubmit_, 10, this);
+  }
+};
+
+
+/**
+ * Restore value after submit
+ * @param {Event} e The event object passed in to the event handler.
+ * @private
+ */
+goog.ui.LabelInput.prototype.handleAfterSubmit_ = function(e) {
+  if (!this.hasChanged()) {
+    this.getElement().value = this.label_;
+  }
+};
+
+
+/**
+ * Handler for the load event the window. This is needed because
+ * IE sets defaultValue upon load.
+ * @param {Event} e The event object passed in to the event handler.
+ * @private
+ */
+goog.ui.LabelInput.prototype.handleWindowLoad_ = function(e) {
+  this.check_();
+};
+
+
+/**
+ * @return {boolean} Whether the value has changed been changed by the user.
+ */
+goog.ui.LabelInput.prototype.hasChanged = function() {
+  return this.getElement().value != '' &&
+      this.getElement().value != this.label_;
+};
+
+
+/**
+ * Clears the value of the input element without resetting the default text.
+ */
+goog.ui.LabelInput.prototype.clear = function() {
+  this.getElement().value = '';
+
+  // Reset ffKeyRestoreValue_ when non-null
+  if (this.ffKeyRestoreValue_ != null) {
+    this.ffKeyRestoreValue_ = '';
+  }
+};
+
+
+/**
+ * Use this to set the value through script to ensure that the label state is
+ * up to date
+ * @param {string} s The new value for the input.
+ */
+goog.ui.LabelInput.prototype.setValue = function(s) {
+  if (this.ffKeyRestoreValue_ != null) {
+    this.ffKeyRestoreValue_ = s;
+  }
+  this.getElement().value = s;
+  this.check_();
+};
+
+
+/**
+ * Returns the current value of the text box, returning an empty string if the
+ * search box is the default value
+ * @return {string} The value of the input box.
+ */
+goog.ui.LabelInput.prototype.getValue = function() {
+  if (this.ffKeyRestoreValue_ != null) {
+    // Fix the Firefox from incorrectly reporting the value to calling code
+    // that attached the listener to keypress before the labelinput
+    return this.ffKeyRestoreValue_;
+  }
+  return this.hasChanged() ? /** @type {string} */ (this.getElement().value) :
+      '';
+};
+
+
+/**
+ * Checks the state of the input element
+ * @private
+ */
+goog.ui.LabelInput.prototype.check_ = function() {
+  // if we haven't got a form yet try now
+  this.attachEventsToForm_();
+
+  if (!this.hasChanged()) {
+    if (!this.inFocusAndSelect_ && !this.hasFocus_) {
+      goog.dom.classes.add(this.getElement(), this.LABEL_CLASS_NAME);
+    }
+
+    // Allow browser to catchup with CSS changes before restoring the label.
+    goog.Timer.callOnce(this.restoreLabel_, 10, this);
+  } else {
+    goog.dom.classes.remove(this.getElement(), this.LABEL_CLASS_NAME);
+  }
+};
+
+
+/**
+ * This method focuses the input and if selects all the text. If the value
+ * hasn't changed it will set the value to the label so that the label text is
+ * selected.
+ */
+goog.ui.LabelInput.prototype.focusAndSelect = function() {
+  // We need to check whether the input has changed before focusing
+  var hc = this.hasChanged();
+  this.inFocusAndSelect_ = true;
+  this.getElement().focus();
+  if (!hc) {
+    this.getElement().value = this.label_;
+  }
+  this.getElement().select();
+  // set to false in timer to let IE trigger the focus event
+  goog.Timer.callOnce(this.focusAndSelect_, 10, this);
+};
+
+
+/**
+ * @private
+ */
+goog.ui.LabelInput.prototype.focusAndSelect_ = function() {
+  this.inFocusAndSelect_ = false;
+};
+
+
+/**
+ * Sets the value of the input element to label.
+ * @private
+ */
+goog.ui.LabelInput.prototype.restoreLabel_ = function() {
+  // Check again in case something changed since this was scheduled.
+  // We check that the element is still there since this is called by a timer
+  // and the dispose method may have been called prior to this.
+  if (this.getElement() && !this.hasChanged()) {
+    this.getElement().value = this.label_;
+  }
+};

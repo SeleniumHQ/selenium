@@ -1,0 +1,374 @@
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// Copyright 2005 Google Inc. All Rights Reserved.
+
+/**
+ * @fileoverview A patched, standardized event object for browser events.
+ *
+ * <pre>
+ * The patched event object contains the following members:
+ * - type           {String}    Event type, e.g. 'click'
+ * - timestamp      {Date}      A date object for when the event was fired
+ * - target         {Object}    The element that actually triggered the event
+ * - currentTarget  {Object}    The element the listener is attached to
+ * - relatedTarget  {Object}    For mouseover and mouseout, the previous object
+ * - offsetX        {Number}    X-coordinate relative to target
+ * - offsetY        {Number}    Y-coordinate relative to target
+ * - clientX        {Number}    X-coordinate relative to viewport
+ * - clientY        {Number}    Y-coordinate relative to viewport
+ * - screenX        {Number}    X-coordinate relative to the edge of the screen
+ * - screenY        {Number}    Y-coordinate relative to the edge of the screen
+ * - button         {Number}    Mouse button. Use isButton() to test.
+ * - keyCode        {Number}    Key-code
+ * - ctrlKey        {Boolean}   Was ctrl key depressed
+ * - altKey         {Boolean}   Was alt key depressed
+ * - shiftKey       {Boolean}   Was shift key depressed
+ * - metaKey        {Boolean}   Was meta key depressed
+ *
+ * NOTE: The keyCode member contains the raw browser keyCode. For normalized
+ * key and character code use {@link goog.events.KeyHandler}.
+ * </pre>
+ *
+ */
+
+goog.provide('goog.events.BrowserEvent');
+goog.provide('goog.events.BrowserEvent.MouseButton');
+
+goog.require('goog.events.Event');
+goog.require('goog.userAgent');
+
+
+
+/**
+ * Accepts a browser event object and creates a patched, cross browser event
+ * object.
+ * The content of this object will not be initialized if no event object is
+ * provided. If this is the case, init() needs to be invoked separately.
+ * @param {Event} opt_e Browser event object.
+ * @param {Node} opt_currentTarget Current target for event.
+ * @constructor
+ * @extends {goog.events.Event}
+ */
+goog.events.BrowserEvent = function(opt_e, opt_currentTarget) {
+ if (opt_e) {
+   this.init(opt_e, opt_currentTarget);
+ }
+};
+goog.inherits(goog.events.BrowserEvent, goog.events.Event);
+
+
+/**
+ * Normalized button constants for the mouse.
+ * @enum {number}
+ */
+goog.events.BrowserEvent.MouseButton = {
+  LEFT: 0,
+  MIDDLE: 1,
+  RIGHT: 2
+};
+
+
+/**
+ * Static data for mapping mouse buttons.
+ * @type {Array.<number>}
+ * @private
+ */
+goog.events.BrowserEvent.IEButtonMap_ = [
+  1, // LEFT
+  4, // MIDDLE
+  2  // RIGHT
+];
+
+
+/**
+ * Target that fired the event.
+ * @override
+ * @type {Node}
+ */
+goog.events.BrowserEvent.prototype.target = null;
+
+
+/**
+ * Node that had the listener attached.
+ * @override
+ * @type {Node|undefined}
+ */
+goog.events.BrowserEvent.prototype.currentTarget;
+
+
+/**
+ * For mouseover and mouseout events, the related object for the event.
+ * @type {Node}
+ */
+goog.events.BrowserEvent.prototype.relatedTarget = null;
+
+
+/**
+ * X-coordinate relative to target.
+ * @type {number}
+ */
+goog.events.BrowserEvent.prototype.offsetX = 0;
+
+
+/**
+ * Y-coordinate relative to target.
+ * @type {number}
+ */
+goog.events.BrowserEvent.prototype.offsetY = 0;
+
+
+/**
+ * X-coordinate relative to the window.
+ * @type {number}
+ */
+goog.events.BrowserEvent.prototype.clientX = 0;
+
+
+/**
+ * Y-coordinate relative to the window.
+ * @type {number}
+ */
+goog.events.BrowserEvent.prototype.clientY = 0;
+
+
+/**
+ * X-coordinate relative to the monitor.
+ * @type {number}
+ */
+goog.events.BrowserEvent.prototype.screenX = 0;
+
+
+/**
+ * Y-coordinate relative to the monitor.
+ * @type {number}
+ */
+goog.events.BrowserEvent.prototype.screenY = 0;
+
+
+/**
+ * Which mouse button was pressed.
+ * @type {number}
+ */
+goog.events.BrowserEvent.prototype.button = 0;
+
+
+/**
+ * Keycode of key press.
+ * @type {number}
+ */
+goog.events.BrowserEvent.prototype.keyCode = 0;
+
+
+/**
+ * Keycode of key press.
+ * @type {number}
+ */
+goog.events.BrowserEvent.prototype.charCode = 0;
+
+
+/**
+ * Whether control was pressed at time of event.
+ * @type {boolean}
+ */
+goog.events.BrowserEvent.prototype.ctrlKey = false;
+
+
+/**
+ * Whether alt was pressed at time of event.
+ * @type {boolean}
+ */
+goog.events.BrowserEvent.prototype.altKey = false;
+
+
+/**
+ * Whether shift was pressed at time of event.
+ * @type {boolean}
+ */
+goog.events.BrowserEvent.prototype.shiftKey = false;
+
+
+/**
+ * Whether the meta key was pressed at time of event.
+ * @type {boolean}
+ */
+goog.events.BrowserEvent.prototype.metaKey = false;
+
+
+/**
+ * The browser event object.
+ * @type {Event}
+ * @private
+ */
+goog.events.BrowserEvent.prototype.event_ = null;
+
+
+/**
+ * Accepts a browser event object and creates a patched, cross browser event
+ * object.
+ * @param {Event} e Browser event object.
+ * @param {Node} opt_currentTarget Current target for event.
+ */
+goog.events.BrowserEvent.prototype.init = function(e, opt_currentTarget) {
+  var type = this.type = e.type;
+  this.target = e.target || e.srcElement;
+  this.currentTarget = opt_currentTarget;
+
+  var relatedTarget = /** @type {Node} */ (e.relatedTarget);
+  if (relatedTarget) {
+    // There's a bug in FireFox where sometimes, relatedTarget will be a
+    // chrome element, and accessing any property of it will get a permission
+    // denied exception. See:
+    // https://bugzilla.mozilla.org/show_bug.cgi?id=497780
+    if (goog.userAgent.GECKO) {
+      /** @preserveTry */
+      try {
+        relatedTarget = relatedTarget.nodeName && relatedTarget;
+      } catch (err) {}
+    }
+    // TODO: Use goog.events.EventType when it has been refactored into its
+    // own file.
+  } else if (type == 'mouseover') {
+    relatedTarget = e.fromElement;
+  } else if (type == 'mouseout') {
+    relatedTarget = e.toElement;
+  }
+
+  this.relatedTarget = relatedTarget;
+
+  this.offsetX = e.offsetX !== undefined ? e.offsetX : e.layerX;
+  this.offsetY = e.offsetY !== undefined ? e.offsetY : e.layerY;
+  this.clientX = e.clientX !== undefined ? e.clientX : e.pageX;
+  this.clientY = e.clientY !== undefined ? e.clientY : e.pageY;
+  this.screenX = e.screenX || 0;
+  this.screenY = e.screenY || 0;
+
+  this.button = e.button;
+
+  this.keyCode = e.keyCode || 0;
+  this.charCode = e.charCode || (type == 'keypress' ? e.keyCode : 0);
+  this.ctrlKey = e.ctrlKey;
+  this.altKey = e.altKey;
+  this.shiftKey = e.shiftKey;
+  this.metaKey = e.metaKey;
+  this.event_ = e;
+  delete this.returnValue_;
+  delete this.propagationStopped_;
+};
+
+/**
+ * Tests to see which button was pressed during the event. This is really only
+ * useful in IE and Gecko browsers. And in IE, it's only useful for
+ * mousedown/mouseup events, because click only fires for the left mouse button.
+ *
+ * Safari 2 only reports the left button being clicked, and uses the value '1'
+ * instead of 0. Opera only reports a mousedown event for the middle button, and
+ * no mouse events for the right button. Opera has default behavior for left and
+ * middle click that can only be overridden via a configuration setting.
+ *
+ * There's a nice table of this mess at http://www.unixpapa.com/js/mouse.html.
+ *
+ * @param {goog.events.BrowserEvent.MouseButton} button The button
+ *     to test for.
+ * @return {boolean} True if button was pressed.
+ */
+goog.events.BrowserEvent.prototype.isButton = function(button) {
+  if (goog.userAgent.IE) {
+    if (this.type == 'click') {
+      return button == goog.events.BrowserEvent.MouseButton.LEFT;
+    } else {
+      return !!(this.event_.button &
+          goog.events.BrowserEvent.IEButtonMap_[button]);
+    }
+  } else {
+    return this.event_.button == button;
+  }
+};
+
+
+/**
+ * @inheritDoc
+ */
+goog.events.BrowserEvent.prototype.stopPropagation = function() {
+  this.propagationStopped_ = true;
+  if (this.event_.stopPropagation) {
+    this.event_.stopPropagation();
+  } else {
+    this.event_.cancelBubble = true;
+  }
+};
+
+
+/**
+ * To prevent default in IE7 for certain keydown events we need set the keyCode
+ * to -1.
+ * @type {boolean}
+ * @private
+ */
+goog.events.BrowserEvent.IE7_SET_KEY_CODE_TO_PREVENT_DEFAULT_ =
+    goog.userAgent.IE && !goog.userAgent.isVersion('8')
+
+
+/**
+ * @inheritDoc
+ */
+goog.events.BrowserEvent.prototype.preventDefault = function() {
+  this.returnValue_ = false;
+  var be = this.event_;
+  if (!be.preventDefault) {
+    be.returnValue = false;
+    if (goog.events.BrowserEvent.IE7_SET_KEY_CODE_TO_PREVENT_DEFAULT_) {
+      /** @preserveTry */
+      try {
+        // Most keys can be prevented using returnValue, just like in IE8 but
+        // some special keys require setting the keyCode to -1 as well:
+        //
+        // F3, F5, F10, F11, Ctrl+P, Crtl+O, Ctrl+F (these are taken from IE6)
+        //
+        // We therefore do this for all function keys as well as when Ctrl key
+        // is pressed.
+        var VK_F1 = 112;
+        var VK_F12 = 123;
+        if (be.ctrlKey || be.keyCode >= VK_F1 && be.keyCode <= VK_F12) {
+          be.keyCode = -1;
+        }
+      } catch (ex) {
+        // IE throws an 'access denied' exception when trying to change
+        // keyCode in some situations (e.g. srcElement is input[type=file],
+        // or srcElement is an anchor tag rewritten by parent's innerHTML).
+        // Do nothing in this case.
+      }
+    }
+  } else {
+    be.preventDefault();
+  }
+};
+
+
+/**
+ * @return {Event} The underlying browser event object.
+ */
+goog.events.BrowserEvent.prototype.getBrowserEvent = function() {
+  return this.event_;
+};
+
+
+/**
+ * @inheritDoc
+ */
+goog.events.BrowserEvent.prototype.disposeInternal = function() {
+  goog.events.BrowserEvent.superClass_.disposeInternal.call(this);
+  this.event_ = null;
+  this.target = null;
+  this.currentTarget = null;
+  this.relatedTarget = null;
+};

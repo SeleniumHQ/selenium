@@ -1,0 +1,38 @@
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// Copyright 2008 Google Inc. All Rights Reserved.
+
+/**
+ * @fileoverview Provides a function that decorates an element based on its CSS
+ * class name.
+ */
+
+goog.provide('goog.ui.decorate');
+
+goog.require('goog.ui.registry');
+
+
+
+/**
+ * Decorates the element with a suitable {@link goog.ui.Component} instance, if
+ * a matching decorator is found.
+ * @param {Element} element Element to decorate.
+ * @return {goog.ui.Component?} New component instance, decorating the element.
+ */
+goog.ui.decorate = function(element) {
+  var decorator = goog.ui.registry.getDecorator(element);
+  if (decorator) {
+    decorator.decorate(element);
+  }
+  return decorator;
+};
