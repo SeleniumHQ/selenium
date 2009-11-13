@@ -17,7 +17,7 @@ module Selenium
         end
 
         def start_with(profile, *args)
-          ENV['XRE_PROFILE_PATH'] = profile.directory
+          ENV['XRE_PROFILE_PATH'] = profile.absolute_path
 
           # TODO: native lib loading
           # if Platform.os == :unix && (profile.enable_native_events || profile.always_load_no_focus_lib)

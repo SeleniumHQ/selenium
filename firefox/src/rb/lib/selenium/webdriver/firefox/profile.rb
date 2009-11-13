@@ -49,6 +49,14 @@ module Selenium
           @extension_source = DEFAULT_EXTENSION_SOURCE # make configurable?
         end
 
+        def absolute_path
+          if Platform.win?
+            directory.gsub("/", "\\")
+          else
+            directory
+          end
+        end
+
         def update_user_prefs
           prefs = existing_user_prefs.merge DEFAULT_PREFERENCES
           prefs['webdriver.firefox_port'] = @port

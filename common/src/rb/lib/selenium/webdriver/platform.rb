@@ -58,12 +58,11 @@ module Selenium
       def win?
         os == :windows
       end
-      alias_method :windows?, :win?
 
       def wrap_in_quotes_if_necessary(str)
         win? ? %{"#{str}"} : str
       end
-      
+
       def make_writable(file)
         File.chmod 0766, file
       end
