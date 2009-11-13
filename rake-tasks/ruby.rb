@@ -59,7 +59,7 @@ begin
   require "rubygems"
   require "rake/gempackagetask"
 
-  GEM_VERSION = ENV['VERSION'] ||= '0.0.1'
+  GEM_VERSION = ENV['VERSION'] ||= '0.0.0'
   GEM_SPEC    = Gem::Specification.new do |s|
    s.name          = 'selenium-webdriver'
    s.version       = GEM_VERSION
@@ -112,15 +112,15 @@ begin
       Dir['build/*.gem'].each { |file| rm file }
     end
 
-    # desc 'Release the ruby gem to Gemcutter'
-    # task :release do
-    #   begin
-    #     require 'gemcutter'
-    #     sh "gem push build/#{GEM_SPEC.name}-#{GEM_VERSION}.gem"
-    #   rescue LoadError
-    #     $stderr.puts "you need to install the gemcutter gem: `(sudo) gem install gemcutter`"
-    #   end
-    # end
+    desc 'Release the ruby gem to Gemcutter'
+    task :release do
+      begin
+        require 'gemcutter'
+        sh "gem push build/#{GEM_SPEC.name}-#{GEM_VERSION}.gem"
+      rescue LoadError
+        $stderr.puts "you need to install the gemcutter gem: `(sudo) gem install gemcutter`"
+      end
+    end
   end
 
 rescue LoadError
