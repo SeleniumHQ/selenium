@@ -64,6 +64,7 @@ public class WebDriverBackedSelenium implements Selenium {
   protected WebDriver driver;
   private final String baseUrl;
   private final Map<String, LookupStrategy> lookupStrategies = new HashMap<String, LookupStrategy>();
+  private final Map<String, String> lastFrame = new HashMap<String, String>();
   private final Map<String, OptionSelectStrategy> optionSelectStrategies = new HashMap<String, OptionSelectStrategy>();
   private final Map<String, TextMatchingStrategy> textMatchingStrategies = new HashMap<String, TextMatchingStrategy>();
   private final Pattern NAME_VALUE_PAIR_PATTERN = Pattern.compile("([^\\s=\\[\\]\\(\\),\"\\/\\?@:;]+)=([^=\\[\\]\\(\\),\"\\/\\?@:;]*)");
@@ -800,6 +801,10 @@ public class WebDriverBackedSelenium implements Selenium {
         selectWindowWithTitle(windowID);
       }
     }
+
+    if (lastFrame.containsKey(driver.getWindowHandle())) {
+      selectFrame(lastFrame.get(driver.getWindowHandle()));
+    }
   }
 
   private void selectWindowWithTitle(String title) {
@@ -836,10 +841,16 @@ public class WebDriverBackedSelenium implements Selenium {
     // Find the first window without a "name" attribute
     List<String> handles = new ArrayList<String>(driver.getWindowHandles());
     for (String handle: handles) {
+      // the original window will never be a _blank window, so don't even look at it
+      // this is also important to skip, because the original/root window won't have
+      // a name either, so if we didn't know better we might think it's a _blank popup!
+      if (handle.equals(originalWindowHandle)) {
+        continue;
+      }
       driver.switchTo().window(handle);
       String value = (String) 
           ((JavascriptExecutor) driver).executeScript("return window.name;");
-      if (value == null) {
+      if (value == null || "".equals(value)) {
         // We found it!
         return;
       }
@@ -892,10 +903,12 @@ public class WebDriverBackedSelenium implements Selenium {
   public void selectFrame(String locator) {
     if ("relative=top".equals(locator)) {
       driver.switchTo().defaultContent();
+      lastFrame.remove(driver.getWindowHandle());
       return;
     }
     
     try {
+      lastFrame.put(driver.getWindowHandle(), locator);
       driver.switchTo().frame(locator);
     } catch (NoSuchFrameException e) {
       throw new SeleniumException(e.getMessage(), e);
