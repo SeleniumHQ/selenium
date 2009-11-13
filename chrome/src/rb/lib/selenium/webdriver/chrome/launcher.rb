@@ -57,7 +57,8 @@ module Selenium
                                       "--activate-on-launch",
                                       "--disable-hang-monitor",
                                       "--disable-popup-blocking",
-                                      "--disable-prompt-on-repost"
+                                      "--disable-prompt-on-repost",
+                                      "about:blank"
           @process.start
         end
 
