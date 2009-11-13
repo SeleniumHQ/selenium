@@ -112,14 +112,9 @@ begin
       Dir['build/*.gem'].each { |file| rm file }
     end
 
-    desc 'Release the ruby gem to Gemcutter'
-    task :release do
-      begin
-        require 'gemcutter'
-        sh "gem push build/#{GEM_SPEC.name}-#{GEM_VERSION}.gem"
-      rescue LoadError
-        $stderr.puts "you need to install the gemcutter gem: `(sudo) gem install gemcutter`"
-      end
+    desc 'Build and release the ruby gem to Gemcutter'
+    task :release => :gem do
+      sh "gem push build/#{GEM_SPEC.name}-#{GEM_SPEC.version}.gem"
     end
   end
 

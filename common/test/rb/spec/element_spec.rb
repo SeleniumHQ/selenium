@@ -17,9 +17,17 @@ describe "Element" do
     driver.find_element(:id, "cheese").value.should == "cheese"
   end
 
-  it "should send keys" do
+  it "should send string keys" do
     driver.navigate.to url_for("formPage.html")
     driver.find_element(:id, "working").send_keys("foo", "bar")
+  end
+
+  it "should send key presses" do
+    driver.navigate.to url_for("javascriptPage.html")
+    key_reporter = driver.find_element(:id, 'keyReporter')
+
+    key_reporter.send_keys("Tet", :arrow_left, "s")
+    key_reporter.value.should == "Test"
   end
 
   it "should get attribute value" do

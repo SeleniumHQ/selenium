@@ -29,10 +29,16 @@ module Selenium
         bridge.getElementText @id
       end
 
-      # FIXME: send_keys args
       def send_keys(*args)
-        args.each { |str| bridge.sendKeysToElement(@id, str) }
+        args.each do |arg|
+          if arg.kind_of?(Symbol)
+            arg = Keys[arg]
+          end
+
+          bridge.sendKeysToElement(@id, arg.to_s)
+        end
       end
+      alias_method :send_key, :send_keys
 
       def clear
         bridge.clearElement @id
