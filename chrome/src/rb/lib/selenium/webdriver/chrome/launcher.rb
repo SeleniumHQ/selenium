@@ -54,7 +54,10 @@ module Selenium
           @process = ChildProcess.new Platform.wrap_in_quotes_if_necessary(binary_path),
                                       "--load-extension=#{Platform.wrap_in_quotes_if_necessary tmp_extension_dir}",
                                       "--user-data-dir=#{Platform.wrap_in_quotes_if_necessary tmp_profile_dir}",
-                                      "--activate-on-launch"
+                                      "--activate-on-launch",
+                                      "--disable-hang-monitor",
+                                      "--disable-popup-blocking",
+                                      "--disable-prompt-on-repost"
           @process.start
         end
 
