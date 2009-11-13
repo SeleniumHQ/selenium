@@ -37,9 +37,9 @@ module Selenium
 
         def create_extension
           ext_files.each { |file| cp file, tmp_extension_dir }
-          cp linked_lib_path, tmp_extension_dir
 
           if Platform.win?
+            cp linked_lib_path, tmp_extension_dir
             mv "#{tmp_extension_dir}/manifest-win.json", "#{tmp_extension_dir}/manifest.json"
           else
             mv "#{tmp_extension_dir}/manifest-nonwin.json", "#{tmp_extension_dir}/manifest.json"
