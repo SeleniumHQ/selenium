@@ -64,7 +64,7 @@ begin
    s.name          = 'selenium-webdriver'
    s.version       = GEM_VERSION
    s.summary       = "The next generation developer focused tool for automated testing of webapps"
-   s.description   = "WebDriver is a tool to automate various browsers throug a common API"
+   s.description   = "WebDriver is a tool for writing automated tests of websites. It aims to mimic the behaviour of a real user, and as such interacts with the HTML of the application."
    s.authors       = ["Jari Bakken"]
    s.email         = "jari.bakken@gmail.com"
    s.homepage      = "http://selenium.googlecode.com"
