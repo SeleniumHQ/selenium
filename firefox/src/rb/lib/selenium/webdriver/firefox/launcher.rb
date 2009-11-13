@@ -73,7 +73,7 @@ module Selenium
           connection = ExtensionConnection.new(@host, @port)
           connection.connect(1)
           connection.quit
-        rescue Errno::ECONNREFUSED, Timeout::Error => e
+        rescue Errno::ECONNREFUSED, Errno::ENOTCONN, Timeout::Error => e
           # ok
         end
 
