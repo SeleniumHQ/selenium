@@ -1,11 +1,12 @@
 package com.thoughtworks.selenium;
 
+import java.lang.reflect.Method;
+
 import org.openqa.selenium.SeleniumTestEnvironment;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverBackedSelenium;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxDriverTestSuite;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterTest;
@@ -15,18 +16,18 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 
-import java.lang.reflect.Method;
-
 public class SeleneseTestNgHelper extends SeleneseTestBase
 {
     private static Selenium staticSelenium;
 
-    @BeforeClass
-    public synchronized void startWebServer() {
+  @BeforeClass
+  public void startWebServer() {
+    synchronized (this) {
       if (!GlobalTestEnvironment.isSetUp()) {
         GlobalTestEnvironment.set(new SeleniumTestEnvironment());
       }
     }
+  }
 
     @BeforeTest
     @Override
@@ -36,9 +37,10 @@ public class SeleneseTestNgHelper extends SeleneseTestBase
 
         WebDriver driver = null;
         if (browserString.contains("firefox") || browserString.contains("chrome")) {
-          if (FirefoxDriver.class.getResource("webdriver-extension.zip") == null) {
+          if (FirefoxDriver.class.getResource("/webdriver-extension.zip") == null) {
             System.setProperty("webdriver.development", "true");
-            driver = new FirefoxDriverTestSuite.TestFirefoxDriver();
+            driver = Class.forName("org.openqa.selenium.firefox.FirefoxDriverTestSuite$TestFirefoxDriver")
+                .asSubclass(WebDriver.class).newInstance();
           } else {
             driver = new FirefoxDriver();
           }
