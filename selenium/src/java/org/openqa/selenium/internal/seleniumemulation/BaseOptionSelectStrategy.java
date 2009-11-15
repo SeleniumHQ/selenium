@@ -18,10 +18,10 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
-import org.openqa.selenium.WebElement;
-
 import java.util.Iterator;
 import java.util.List;
+
+import org.openqa.selenium.WebElement;
 
 public abstract class BaseOptionSelectStrategy implements OptionSelectStrategy {
     public boolean select(List<WebElement> fromOptions, String selectThis, boolean setSelected, boolean allowMultipleSelect) {

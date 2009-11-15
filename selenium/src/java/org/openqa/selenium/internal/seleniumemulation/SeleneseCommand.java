@@ -22,14 +22,19 @@ import org.openqa.selenium.WebDriver;
 
 public abstract class SeleneseCommand<T> {
   public T apply(WebDriver driver, Object... args) {
-    if (args.length < 1 || args.length > 2) {
-      throw new SeleniumException("Too many arguments! " + args.length);
-    }
+    switch (args.length) {
+      case 0:
+        return handleSeleneseCommand(driver, null, null);
 
-    if (args.length == 1) {
-      return handleSeleneseCommand(driver, (String) args[0], null);
+      case 1:
+        return handleSeleneseCommand(driver, (String) args[0], null);
+
+      case 2:
+        return handleSeleneseCommand(driver, (String) args[0], (String) args[1]);
+
+      default:
+        throw new SeleniumException("Too many arguments! " + args.length);
     }
-    return handleSeleneseCommand(driver, (String) args[0], (String) args[1]);
   }
 
   protected abstract T handleSeleneseCommand(WebDriver driver, String locator, String value);

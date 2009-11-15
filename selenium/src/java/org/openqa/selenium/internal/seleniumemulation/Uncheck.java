@@ -1,7 +1,6 @@
 /*
 Copyright 2007-2009 WebDriver committers
 Copyright 2007-2009 Google Inc.
-Portions copyright 2007 ThoughtWorks, Inc
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18,24 +17,22 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
-import java.util.List;
-
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-public class IndexOptionSelectStrategy implements OptionSelectStrategy {
-    public boolean select(List<WebElement> fromOptions, String selectThis, boolean setSelected, boolean allowMultipleSelect) {
-        try {
-            int index = Integer.parseInt(selectThis);
-            WebElement option = (WebElement) fromOptions.get(index);
-            if (setSelected)
-                option.setSelected();
-            else if (option.isSelected()) {
-                option.toggle();
-            }
-            return true;
-        } catch (Exception e) {
-            // Do nothing. Handled below
-        }
-        return false;
-    }
+public class Uncheck extends SeleneseCommand<Void> {
+  private final ElementFinder finder;
+
+  public Uncheck(ElementFinder finder) {
+    this.finder = finder;
+  }
+
+  @Override
+  protected Void handleSeleneseCommand(WebDriver driver, String locator, String value) {
+    WebElement element = finder.findElement(driver, locator);
+    if (element.isSelected())
+      element.toggle();
+
+    return null;
+  }
 }

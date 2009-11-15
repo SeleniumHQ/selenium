@@ -18,11 +18,11 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
-import org.openqa.selenium.WebElement;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import org.openqa.selenium.WebElement;
 
 public abstract class BaseFilterFunction implements FilterFunction {
     public List<WebElement> filterElements(List<WebElement> allElements, String filterValue) {

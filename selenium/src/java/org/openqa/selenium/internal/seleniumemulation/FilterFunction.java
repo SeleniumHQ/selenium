@@ -18,9 +18,9 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
-import org.openqa.selenium.WebElement;
-
 import java.util.List;
+
+import org.openqa.selenium.WebElement;
 
 public interface FilterFunction {
     List<WebElement> filterElements(List<WebElement> allElements, String filterValue);

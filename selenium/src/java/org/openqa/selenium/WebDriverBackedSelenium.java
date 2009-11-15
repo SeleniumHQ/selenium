@@ -19,10 +19,7 @@ package org.openqa.selenium;
 
 import java.awt.Dimension;
 import java.awt.Point;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +32,10 @@ import com.thoughtworks.selenium.SeleniumException;
 import com.thoughtworks.selenium.Wait;
 import org.openqa.selenium.internal.seleniumemulation.AddLocationStrategy;
 import org.openqa.selenium.internal.seleniumemulation.AddSelection;
+import org.openqa.selenium.internal.seleniumemulation.Check;
 import org.openqa.selenium.internal.seleniumemulation.Click;
+import org.openqa.selenium.internal.seleniumemulation.CreateCookie;
+import org.openqa.selenium.internal.seleniumemulation.DeleteAllVisibleCookies;
 import org.openqa.selenium.internal.seleniumemulation.DoubleClick;
 import org.openqa.selenium.internal.seleniumemulation.ElementFinder;
 import org.openqa.selenium.internal.seleniumemulation.ExactTextMatchingStrategy;
@@ -55,6 +55,8 @@ import org.openqa.selenium.internal.seleniumemulation.SeleneseCommand;
 import org.openqa.selenium.internal.seleniumemulation.SeleniumSelect;
 import org.openqa.selenium.internal.seleniumemulation.TextMatchingStrategy;
 import org.openqa.selenium.internal.seleniumemulation.Type;
+import org.openqa.selenium.internal.seleniumemulation.TypeKeys;
+import org.openqa.selenium.internal.seleniumemulation.Uncheck;
 
 public class WebDriverBackedSelenium implements Selenium {
   private static final Pattern TEXT_MATCHING_STRATEGY_AND_VALUE_PATTERN = Pattern.compile("^(\\p{Alpha}+):(.*)");
@@ -65,9 +67,6 @@ public class WebDriverBackedSelenium implements Selenium {
   private final Map<String, TextMatchingStrategy> textMatchingStrategies = Maps.newHashMap();
 
   private final Map<String, SeleneseCommand> seleneseMethods = Maps.newHashMap();
-  private final Pattern NAME_VALUE_PAIR_PATTERN = Pattern.compile("([^\\s=\\[\\]\\(\\),\"\\/\\?@:;]+)=([^=\\[\\]\\(\\),\"\\/\\?@:;]*)");
-  private static final Pattern MAX_AGE_PATTERN = Pattern.compile("max_age=(\\d+)");
-  private static final Pattern PATH_PATTERN = Pattern.compile("path=([^\\s,]+)[,]?");
   private static final Pattern TABLE_PARTS = Pattern.compile("(.*)\\.(\\d+)\\.(\\d+)");
 
   // Keyboard related stuff
@@ -500,13 +499,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param value   the value to type
    */
   public void typeKeys(String locator, String value) {
-    value = value.replace("\\38", Keys.ARROW_UP);
-    value = value.replace("\\40", Keys.ARROW_DOWN);
-    value = value.replace("\\37", Keys.ARROW_LEFT);
-    value = value.replace("\\39", Keys.ARROW_RIGHT);
-
-    elementFinder.findElement(driver, locator)
-        .sendKeys(value);
+    seleneseMethods.get("typeKeys").apply(driver, locator, value);
   }
 
   /**
@@ -538,8 +531,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param locator an <a href="#locators">element locator</a>
    */
   public void check(String locator) {
-    elementFinder.findElement(driver, locator)
-        .setSelected();
+    seleneseMethods.get("check").apply(driver, locator);
   }
 
   /**
@@ -548,9 +540,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param locator an <a href="#locators">element locator</a>
    */
   public void uncheck(String locator) {
-    WebElement element = elementFinder.findElement(driver, locator);
-    if (element.isSelected())
-      element.toggle();
+    seleneseMethods.get("uncheck").apply(driver, locator);
   }
 
   /**
@@ -1967,35 +1957,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param optionsString options for the cookie. Currently supported options include 'path', 'max_age' and 'domain'.      the optionsString's format is "path=/path/, max_age=60, domain=.foo.com". The order of options are irrelevant, the unit      of the value of 'max_age' is second.  Note that specifying a domain that isn't a subset of the current domain will      usually fail.
    */
   public void createCookie(String nameValuePair, String optionsString) {
-    Matcher nameValuePairMatcher = NAME_VALUE_PAIR_PATTERN.matcher(nameValuePair);
-    if (!nameValuePairMatcher.find())
-      throw new SeleniumException("Invalid parameter: " + nameValuePair);
-
-    String name = nameValuePairMatcher.group(1);
-    String value = nameValuePairMatcher.group(2);
-
-    Matcher maxAgeMatcher = MAX_AGE_PATTERN.matcher(optionsString);
-    Date maxAge = null;
-
-    if (maxAgeMatcher.find()) {
-      maxAge = new Date(System.currentTimeMillis() + Integer.parseInt(maxAgeMatcher.group(1)) * 1000);
-    }
-
-    String path = null;
-    Matcher pathMatcher = PATH_PATTERN.matcher(optionsString);
-    if (pathMatcher.find()) {
-      path = pathMatcher.group(1);
-      try {
-        if (path.startsWith("http")) {
-          path = new URL(path).getPath();
-        }
-      } catch (MalformedURLException e) {
-        // Fine. 
-      }
-    }
-
-    Cookie cookie = new Cookie(name, value, path, maxAge);
-    driver.manage().addCookie(cookie);
+    seleneseMethods.get("createCookie").apply(driver, nameValuePair, optionsString);
   }
 
   /**
@@ -2023,7 +1985,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * than simply deleting the cookies using a known domain/path.
    */
   public void deleteAllVisibleCookies() {
-    driver.manage().deleteAllCookies();
+    seleneseMethods.get("deleteAllVisibleCookies").apply(driver);
   }
 
   /**
@@ -2334,6 +2296,9 @@ public class WebDriverBackedSelenium implements Selenium {
     seleneseMethods.put("addLocationStrategy", new AddLocationStrategy(elementFinder));
     seleneseMethods.put("addSelection", new AddSelection(elementFinder, select));
     seleneseMethods.put("click", new Click(elementFinder));
+    seleneseMethods.put("check", new Check(elementFinder));
+    seleneseMethods.put("createCookie", new CreateCookie());
+    seleneseMethods.put("deleteAllVisibleCookies", new DeleteAllVisibleCookies());
     seleneseMethods.put("doubleClick", new DoubleClick(elementFinder));
     seleneseMethods.put("fireEvent", new FireEvent(elementFinder, javascriptLibrary));
     seleneseMethods.put("getEval", new GetEval());
@@ -2351,5 +2316,7 @@ public class WebDriverBackedSelenium implements Selenium {
     seleneseMethods.put("removeSelection", new RemoveSelection(elementFinder, select));
     seleneseMethods.put("select", new SelectOption(select));
     seleneseMethods.put("type", new Type(javascriptLibrary, elementFinder, keyState));
+    seleneseMethods.put("typeKeys", new TypeKeys(elementFinder));
+    seleneseMethods.put("uncheck", new Uncheck(elementFinder));
   }
 }

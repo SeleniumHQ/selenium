@@ -18,12 +18,11 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
-import com.thoughtworks.selenium.SeleniumException;
-
-import org.openqa.selenium.WebElement;
-
 import java.util.Collections;
 import java.util.List;
+
+import com.thoughtworks.selenium.SeleniumException;
+import org.openqa.selenium.WebElement;
 
 public class IndexFilterFunction implements FilterFunction {
     public List<WebElement> filterElements(List<WebElement> allElements, String filterValue) {

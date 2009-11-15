@@ -18,18 +18,17 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
-import com.thoughtworks.selenium.SeleniumException;
-
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.thoughtworks.selenium.SeleniumException;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
 public class NameLookupStrategy implements LookupStrategy {
     private static final Pattern NAME_AND_VALUE_PATTERN = Pattern.compile("^(\\p{Alpha}+)=(.+)");

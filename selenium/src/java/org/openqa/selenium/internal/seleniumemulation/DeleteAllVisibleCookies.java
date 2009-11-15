@@ -1,7 +1,6 @@
 /*
 Copyright 2007-2009 WebDriver committers
 Copyright 2007-2009 Google Inc.
-Portions copyright 2007 ThoughtWorks, Inc
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18,10 +17,12 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
-import java.util.List;
+import org.openqa.selenium.WebDriver;
 
-import org.openqa.selenium.WebElement;
-
-public interface OptionSelectStrategy {
-    public boolean select(List<WebElement> fromOptions, String selectThis, boolean setSelected, boolean allowMultipleSelect);
+public class DeleteAllVisibleCookies extends SeleneseCommand<Void> {
+  @Override
+  protected Void handleSeleneseCommand(WebDriver driver, String locator, String value) {
+    driver.manage().deleteAllCookies();
+    return null;
+  }
 }
