@@ -17,93 +17,71 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import com.thoughtworks.selenium.Selenium;
-import com.thoughtworks.selenium.SeleniumException;
-import com.thoughtworks.selenium.Wait;
-
-import org.openqa.selenium.internal.AltLookupStrategy;
-import org.openqa.selenium.internal.ClassLookupStrategy;
-import org.openqa.selenium.internal.DomTraversalLookupStrategy;
-import org.openqa.selenium.internal.ExactTextMatchingStrategy;
-import org.openqa.selenium.internal.GlobTextMatchingStrategy;
-import org.openqa.selenium.internal.IdLookupStrategy;
-import org.openqa.selenium.internal.IdOptionSelectStrategy;
-import org.openqa.selenium.internal.IdentifierLookupStrategy;
-import org.openqa.selenium.internal.ImplicitLookupStrategy;
-import org.openqa.selenium.internal.IndexOptionSelectStrategy;
-import org.openqa.selenium.internal.LabelOptionSelectStrategy;
-import org.openqa.selenium.internal.LinkLookupStrategy;
-import org.openqa.selenium.internal.LookupStrategy;
-import org.openqa.selenium.internal.NameLookupStrategy;
-import org.openqa.selenium.internal.OptionSelectStrategy;
-import org.openqa.selenium.internal.RegExTextMatchingStrategy;
-import org.openqa.selenium.internal.TextMatchingStrategy;
-import org.openqa.selenium.internal.ValueOptionSelectStrategy;
-import org.openqa.selenium.internal.XPathLookupStrategy;
-
-import java.awt.*;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.awt.Dimension;
+import java.awt.Point;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.common.collect.Maps;
+import com.thoughtworks.selenium.Selenium;
+import com.thoughtworks.selenium.SeleniumException;
+import com.thoughtworks.selenium.Wait;
+import org.openqa.selenium.internal.seleniumemulation.AddLocationStrategy;
+import org.openqa.selenium.internal.seleniumemulation.AddSelection;
+import org.openqa.selenium.internal.seleniumemulation.Click;
+import org.openqa.selenium.internal.seleniumemulation.DoubleClick;
+import org.openqa.selenium.internal.seleniumemulation.ElementFinder;
+import org.openqa.selenium.internal.seleniumemulation.ExactTextMatchingStrategy;
+import org.openqa.selenium.internal.seleniumemulation.FireEvent;
+import org.openqa.selenium.internal.seleniumemulation.GetEval;
+import org.openqa.selenium.internal.seleniumemulation.GlobTextMatchingStrategy;
+import org.openqa.selenium.internal.seleniumemulation.JavascriptLibrary;
+import org.openqa.selenium.internal.seleniumemulation.KeyEvent;
+import org.openqa.selenium.internal.seleniumemulation.KeyState;
+import org.openqa.selenium.internal.seleniumemulation.MouseEvent;
+import org.openqa.selenium.internal.seleniumemulation.MouseEventAt;
+import org.openqa.selenium.internal.seleniumemulation.RegExTextMatchingStrategy;
+import org.openqa.selenium.internal.seleniumemulation.RemoveAllSelections;
+import org.openqa.selenium.internal.seleniumemulation.RemoveSelection;
+import org.openqa.selenium.internal.seleniumemulation.SelectOption;
+import org.openqa.selenium.internal.seleniumemulation.SeleneseCommand;
+import org.openqa.selenium.internal.seleniumemulation.SeleniumSelect;
+import org.openqa.selenium.internal.seleniumemulation.TextMatchingStrategy;
+import org.openqa.selenium.internal.seleniumemulation.Type;
+
 public class WebDriverBackedSelenium implements Selenium {
-  private static final Pattern STRATEGY_AND_VALUE_PATTERN = Pattern.compile("^(\\p{Alpha}+)=(.*)");
   private static final Pattern TEXT_MATCHING_STRATEGY_AND_VALUE_PATTERN = Pattern.compile("^(\\p{Alpha}+):(.*)");
   protected WebDriver driver;
   private final String baseUrl;
-  private final Map<String, LookupStrategy> lookupStrategies = new HashMap<String, LookupStrategy>();
-  private final Map<String, String> lastFrame = new HashMap<String, String>();
-  private final Map<String, OptionSelectStrategy> optionSelectStrategies = new HashMap<String, OptionSelectStrategy>();
-  private final Map<String, TextMatchingStrategy> textMatchingStrategies = new HashMap<String, TextMatchingStrategy>();
+
+  private final Map<String, String> lastFrame = Maps.newHashMap();
+  private final Map<String, TextMatchingStrategy> textMatchingStrategies = Maps.newHashMap();
+
+  private final Map<String, SeleneseCommand> seleneseMethods = Maps.newHashMap();
   private final Pattern NAME_VALUE_PAIR_PATTERN = Pattern.compile("([^\\s=\\[\\]\\(\\),\"\\/\\?@:;]+)=([^=\\[\\]\\(\\),\"\\/\\?@:;]*)");
   private static final Pattern MAX_AGE_PATTERN = Pattern.compile("max_age=(\\d+)");
   private static final Pattern PATH_PATTERN = Pattern.compile("path=([^\\s,]+)[,]?");
   private static final Pattern TABLE_PARTS = Pattern.compile("(.*)\\.(\\d+)\\.(\\d+)");
 
-  private static final String injectableSelenium = "/org/openqa/selenium/internal/injectableSelenium.js";
-  private static final String htmlUtils = "/org/openqa/selenium/internal/htmlutils.js";
-
-  /**
-   * Regular expression for scripts passed to {@link #getEval(String)} that
-   * reference the current window.
-   */
-  private static final Pattern SELENIUM_WINDOW_REF_REGEX = Pattern.compile(
-        "selenium\\.(browserbot|page\\(\\))\\.getCurrentWindow\\(\\)");
-
-  /**
-   * Regular expression for scripts passed to {@link #getEval(String)} that
-   * reference the current window's document.
-   */
-  private static final Pattern SELENIUM_DOCUMENT_REF_REGEX = Pattern.compile(
-        "selenium\\.(browserbot|page\\(\\))\\.getDocument\\(\\)");
-
   // Keyboard related stuff
-  private boolean metaKeyDown;
-  private boolean altKeyDown;
-  private boolean controlKeyDown;
-  private boolean shiftKeyDown;
+  private KeyState keyState = new KeyState();
   private String originalWindowHandle;
   
   // Emulated timeout in milliseconds.
   private long timeout = 30000;
   // Thread to emulate the timeout
   private TimeoutThread timeoutThread;
+  private ElementFinder elementFinder = new ElementFinder();
+  private JavascriptLibrary javascriptLibrary = new JavascriptLibrary();
 
   public WebDriverBackedSelenium(WebDriver baseDriver, String baseUrl) {
-    setUpElementFindingStrategies();
-    setUpOptionFindingStrategies();
     setUpTextMatchingStrategies();
 
     this.driver = baseDriver;
@@ -113,6 +91,8 @@ public class WebDriverBackedSelenium implements Selenium {
       this.baseUrl = baseUrl;
     }
     originalWindowHandle = driver.getWindowHandle();
+
+    setUpMethodMap();
   }
 
   /**
@@ -144,26 +124,6 @@ public class WebDriverBackedSelenium implements Selenium {
     textMatchingStrategies.put("glob", new GlobTextMatchingStrategy());
     textMatchingStrategies.put("regexp", new RegExTextMatchingStrategy());
     textMatchingStrategies.put("exact", new ExactTextMatchingStrategy());
-  }
-
-  private void setUpOptionFindingStrategies() {
-    optionSelectStrategies.put("implicit", new LabelOptionSelectStrategy());
-    optionSelectStrategies.put("id", new IdOptionSelectStrategy());
-    optionSelectStrategies.put("index", new IndexOptionSelectStrategy());
-    optionSelectStrategies.put("label", new LabelOptionSelectStrategy());
-    optionSelectStrategies.put("value", new ValueOptionSelectStrategy());
-  }
-
-  private void setUpElementFindingStrategies() {
-    lookupStrategies.put("alt", new AltLookupStrategy());
-    lookupStrategies.put("class", new ClassLookupStrategy());
-    lookupStrategies.put("id", new IdLookupStrategy());
-    lookupStrategies.put("identifier", new IdentifierLookupStrategy());
-    lookupStrategies.put("implicit", new ImplicitLookupStrategy());
-    lookupStrategies.put("link", new LinkLookupStrategy());
-    lookupStrategies.put("name", new NameLookupStrategy());
-    lookupStrategies.put("xpath", new XPathLookupStrategy());
-    lookupStrategies.put("dom", new DomTraversalLookupStrategy());
   }
 
   /**
@@ -227,8 +187,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param locator an element locator
    */
   public void click(String locator) {
-    WebElement element = findElement(locator);
-    element.click();
+    seleneseMethods.get("click").apply(driver, locator);
   }
 
   /**
@@ -239,9 +198,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param locator an element locator
    */
   public void doubleClick(String locator) {
-    WebElement element = findElement(locator);
-    element.click();
-    element.click();
+    seleneseMethods.get("doubleClick").apply(driver, locator);
   }
 
   /**
@@ -295,8 +252,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param eventName the event name, e.g. "focus" or "blur"
    */
   public void fireEvent(String locator, String eventName) {
-    WebElement element = findElement(locator);
-    callEmbeddedSelenium("doFireEvent", element, eventName);
+    seleneseMethods.get("fireEvent").apply(driver, locator, eventName);
   }
 
   /**
@@ -322,56 +278,56 @@ public class WebDriverBackedSelenium implements Selenium {
    * Press the shift key and hold it down until doShiftUp() is called or a new page is loaded.
    */
   public void shiftKeyDown() {
-    shiftKeyDown = true;
+    keyState.shiftKeyDown = true;
   }
 
   /**
    * Release the shift key.
    */
   public void shiftKeyUp() {
-    shiftKeyDown = false;
+    keyState.shiftKeyDown = false;
   }
 
   /**
    * Press the meta key and hold it down until doMetaUp() is called or a new page is loaded.
    */
   public void metaKeyDown() {
-    metaKeyDown = true;
+    keyState.metaKeyDown = true;
   }
 
   /**
    * Release the meta key.
    */
   public void metaKeyUp() {
-    metaKeyDown = false;
+    keyState.metaKeyDown = false;
   }
 
   /**
    * Press the alt key and hold it down until doAltUp() is called or a new page is loaded.
    */
   public void altKeyDown() {
-    altKeyDown = true;
+    keyState.altKeyDown = true;
   }
 
   /**
    * Release the alt key.
    */
   public void altKeyUp() {
-    altKeyDown = true;
+    keyState.altKeyDown = true;
   }
 
   /**
    * Press the control key and hold it down until doControlUp() is called or a new page is loaded.
    */
   public void controlKeyDown() {
-    controlKeyDown = true;
+    keyState.controlKeyDown = true;
   }
 
   /**
    * Release the control key.
    */
   public void controlKeyUp() {
-    controlKeyDown = false;
+    keyState.controlKeyDown = false;
   }
 
   /**
@@ -381,7 +337,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param keySequence Either be a string("\" followed by the numeric keycode  of the key to be pressed, normally the ASCII value of that key), or a single  character. For example: "w", "\119".
    */
   public void keyDown(String locator, String keySequence) {
-    callEmbeddedSelenium("doKeyDown", findElement(locator), keySequence, controlKeyDown, altKeyDown, shiftKeyDown, metaKeyDown);
+    seleneseMethods.get("keyDown").apply(driver, "doKeyDown", locator, keySequence, keyState);
   }
 
   /**
@@ -391,7 +347,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param keySequence Either be a string("\" followed by the numeric keycode  of the key to be pressed, normally the ASCII value of that key), or a single  character. For example: "w", "\119".
    */
   public void keyUp(String locator, String keySequence) {
-    callEmbeddedSelenium("doKeyUp", findElement(locator), keySequence, controlKeyDown, altKeyDown, shiftKeyDown, metaKeyDown);
+    seleneseMethods.get("keyUp").apply(driver, "doKeyUp", locator, keySequence, keyState);
   }
 
   /**
@@ -400,8 +356,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param locator an <a href="#locators">element locator</a>
    */
   public void mouseOver(String locator) {
-    WebElement element = findElement(locator);
-    callEmbeddedSelenium("triggerMouseEvent", element, "mouseover", true);
+    seleneseMethods.get("mouseOver").apply(driver, locator);
   }
 
   /**
@@ -410,8 +365,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param locator an <a href="#locators">element locator</a>
    */
   public void mouseOut(String locator) {
-    WebElement element = findElement(locator);
-    callEmbeddedSelenium("triggerMouseEvent", element, "mouseout", true);
+    seleneseMethods.get("mouseOut").apply(driver, locator);
   }
 
   /**
@@ -421,8 +375,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param locator an <a href="#locators">element locator</a>
    */
   public void mouseDown(String locator) {
-    WebElement element = findElement(locator);
-    callEmbeddedSelenium("triggerMouseEvent", element, "mousedown", true);
+    seleneseMethods.get("mouseDown").apply(driver, locator);
   }
 
   /**
@@ -443,8 +396,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param coordString specifies the x,y position (i.e. - 10,20) of the mouse      event relative to the element returned by the locator.
    */
   public void mouseDownAt(String locator, String coordString) {
-    WebElement element = findElement(locator);
-    callEmbeddedSelenium("triggerMouseEventAt", element, "mousedown", coordString);
+    seleneseMethods.get("mouseDownAt").apply(driver, locator, coordString);
   }
 
   /**
@@ -465,8 +417,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param locator an <a href="#locators">element locator</a>
    */
   public void mouseUp(String locator) {
-    WebElement element = findElement(locator);
-    callEmbeddedSelenium("triggerMouseEvent", element, "mouseup", true);
+    seleneseMethods.get("mouseUp").apply(driver, locator);
   }
 
   /**
@@ -487,8 +438,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param coordString specifies the x,y position (i.e. - 10,20) of the mouse      event relative to the element returned by the locator.
    */
   public void mouseUpAt(String locator, String coordString) {
-    WebElement element = findElement(locator);
-    callEmbeddedSelenium("triggerMouseEventAt", element, "mouseup", coordString);
+    seleneseMethods.get("mouseUpAt").apply(driver, locator, coordString);
   }
 
   /**
@@ -509,8 +459,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param locator an <a href="#locators">element locator</a>
    */
   public void mouseMove(String locator) {
-    WebElement element = findElement(locator);
-    callEmbeddedSelenium("triggerMouseEvent", element, "mousemove", true);
+    seleneseMethods.get("mouseUpAt").apply(driver, locator);
   }
 
   /**
@@ -521,8 +470,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param coordString specifies the x,y position (i.e. - 10,20) of the mouse      event relative to the element returned by the locator.
    */
   public void mouseMoveAt(String locator, String coordString) {
-    WebElement element = findElement(locator);
-    callEmbeddedSelenium("triggerMouseEventAt", element, "mousemove", coordString);
+    seleneseMethods.get("mouseMoveAt").apply(driver, locator, coordString);
   }
 
   /**
@@ -535,18 +483,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param value   the value to type
    */
   public void type(String locator, String value) {
-    if (controlKeyDown || altKeyDown || metaKeyDown)
-      throw new SeleniumException("type not supported immediately after call to controlKeyDown() or altKeyDown() or metaKeyDown()");
-
-    if (shiftKeyDown)
-      value = value.toUpperCase();
-
-    WebElement element = findElement(locator);
-    if(driver instanceof JavascriptExecutor && ((JavascriptExecutor) driver).isJavascriptEnabled()) {
-        callEmbeddedSelenium("replaceText", element, value);
-    } else {
-        element.sendKeys(value);
-    }
+    seleneseMethods.get("type").apply(driver, locator, value);
   }
 
   /**
@@ -568,7 +505,8 @@ public class WebDriverBackedSelenium implements Selenium {
     value = value.replace("\\37", Keys.ARROW_LEFT);
     value = value.replace("\\39", Keys.ARROW_RIGHT);
 
-    findElement(locator).sendKeys(value);
+    elementFinder.findElement(driver, locator)
+        .sendKeys(value);
   }
 
   /**
@@ -600,7 +538,8 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param locator an <a href="#locators">element locator</a>
    */
   public void check(String locator) {
-    findElement(locator).setSelected();
+    elementFinder.findElement(driver, locator)
+        .setSelected();
   }
 
   /**
@@ -609,7 +548,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param locator an <a href="#locators">element locator</a>
    */
   public void uncheck(String locator) {
-    WebElement element = findElement(locator);
+    WebElement element = elementFinder.findElement(driver, locator);
     if (element.isSelected())
       element.toggle();
   }
@@ -640,8 +579,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param optionLocator an option locator (a label by default)
    */
   public void select(String selectLocator, String optionLocator) {
-    removeAllSelections(selectLocator);
-    select(selectLocator, optionLocator, true, true);
+    seleneseMethods.get("select").apply(driver, selectLocator, optionLocator);
   }
 
   /**
@@ -651,10 +589,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param optionLocator an option locator (a label by default)
    */
   public void addSelection(String locator, String optionLocator) {
-    WebElement select = findElement(locator);
-    if (!"multiple".equals(select.getAttribute("multiple")))
-      throw new SeleniumException("You may only add a selection to a select that supports multiple selections");
-    select(locator, optionLocator, true, false);
+    seleneseMethods.get("addSelection").apply(driver, locator, optionLocator);
   }
 
   /**
@@ -664,10 +599,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param optionLocator an option locator (a label by default)
    */
   public void removeSelection(String locator, String optionLocator) {
-    WebElement select = findElement(locator);
-    if (!"multiple".equals(select.getAttribute("multiple")))
-      throw new SeleniumException("You may only remove a selection to a select that supports multiple selections");
-    select(locator, optionLocator, false, false);
+    seleneseMethods.get("removeSelection").apply(driver, locator, optionLocator);
   }
 
   /**
@@ -676,22 +608,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param locator an <a href="#locators">element locator</a> identifying a multi-select box
    */
   public void removeAllSelections(String locator) {
-    WebElement select = findElement(locator);
-    List<WebElement> options = select.findElements(By.tagName("option"));
-
-    String multiple = select.getAttribute("multiple");
-    if (multiple == null || "".equals(multiple)) {
-      return;
-    }
-
-    removeAllSelections(options);
-  }
-
-  private void removeAllSelections(List<WebElement> options) {
-    for (WebElement option : options) {
-      if (option.isSelected())
-        option.toggle();
-    }
+    seleneseMethods.get("removeAllSelections").apply(driver, locator);
   }
 
   /**
@@ -701,7 +618,8 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param formLocator an <a href="#locators">element locator</a> for the form you want to submit
    */
   public void submit(String formLocator) {
-    findElement(formLocator).submit();
+    elementFinder.findElement(driver, formLocator)
+        .submit();
   }
 
   /**
@@ -803,7 +721,12 @@ public class WebDriverBackedSelenium implements Selenium {
     }
 
     if (lastFrame.containsKey(driver.getWindowHandle())) {
-      selectFrame(lastFrame.get(driver.getWindowHandle()));
+      // If the frame has gone, fall back
+      try {
+        selectFrame(lastFrame.get(driver.getWindowHandle()));
+      } catch (SeleniumException e) {
+        lastFrame.remove(driver.getWindowHandle());
+      }
     }
   }
 
@@ -1197,7 +1120,8 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return the element value, or "on/off" for checkbox/radio elements
    */
   public String getValue(String locator) {
-    return findElement(locator).getValue();
+    return elementFinder.findElement(driver, locator)
+        .getValue();
   }
 
   /**
@@ -1210,7 +1134,8 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return the text of the element
    */
   public String getText(String locator) {
-    return findElement(locator).getText().trim();
+    return elementFinder.findElement(driver, locator)
+        .getText().trim();
   }
 
   /**
@@ -1219,7 +1144,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param locator an <a href="#locators">element locator</a>
    */
   public void highlight(String locator) {
-    callEmbeddedHtmlUtils("highlight", findElement(locator));
+    javascriptLibrary.callEmbeddedHtmlUtils(driver, "highlight", elementFinder.findElement(driver, locator));
   }
 
   /**
@@ -1236,11 +1161,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return the results of evaluating the snippet
    */
   public String getEval(String script) {
-    script = script.replaceAll("\n", "\\\\n");
-    script = SELENIUM_WINDOW_REF_REGEX.matcher(script).replaceAll("window");
-    script = SELENIUM_DOCUMENT_REF_REGEX.matcher(script).replaceAll("window.document");
-    script = String.format("return eval(\"%s\");", script);
-    return String.valueOf(((JavascriptExecutor) driver).executeScript(script));
+    return (String) seleneseMethods.get("getEval").apply(driver, script);
   }
 
   /**
@@ -1250,7 +1171,8 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return true if the checkbox is checked, false otherwise
    */
   public boolean isChecked(String locator) {
-    return findElement(locator).isSelected();
+    return elementFinder.findElement(driver, locator)
+        .isSelected();
   }
 
   /**
@@ -1270,7 +1192,7 @@ public class WebDriverBackedSelenium implements Selenium {
     long row = Long.parseLong(matcher.group(2));
     long col = Long.parseLong(matcher.group(3));
 
-    WebElement table = findElement(tableName);
+    WebElement table = elementFinder.findElement(driver, tableName);
 
     String script =
         "var table = arguments[0]; var row = arguments[1]; var col = arguments[2];" +
@@ -1391,7 +1313,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return true if some option has been selected, false otherwise
    */
   public boolean isSomethingSelected(String selectLocator) {
-    WebElement select = findElement(selectLocator);
+    WebElement select = elementFinder.findElement(driver, selectLocator);
     String tagName = select.getTagName().toLowerCase();
     if (!"select".equals(tagName)) {
       throw new SeleniumException("Specified element is not a Select");
@@ -1413,7 +1335,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return an array of all option labels in the specified select drop-down
    */
   public String[] getSelectOptions(String selectLocator) {
-    WebElement select = findElement(selectLocator);
+    WebElement select = elementFinder.findElement(driver, selectLocator);
     List<WebElement> options = select.findElements(By.tagName("option"));
     List<String> optionValues = new ArrayList<String>();
     for (WebElement option : options) {
@@ -1437,7 +1359,7 @@ public class WebDriverBackedSelenium implements Selenium {
     String attributeName = attributeLocator.substring(attributePos + 1);
 
     // Find the element.
-    WebElement element = findElement(elementLocator);
+    WebElement element = elementFinder.findElement(driver, elementLocator);
     return element.getAttribute(attributeName);
   }
 
@@ -1471,7 +1393,7 @@ public class WebDriverBackedSelenium implements Selenium {
    */
   public boolean isElementPresent(String locator) {
     try {
-      findElement(locator);
+      elementFinder.findElement(driver, locator);
       return true;
     } catch (SeleniumException e) {
       return false;
@@ -1489,7 +1411,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return true if the specified element is visible, false otherwise
    */
   public boolean isVisible(String locator) {
-    return ((RenderedWebElement) findElement(locator)).isDisplayed();
+    return ((RenderedWebElement) elementFinder.findElement(driver, locator)).isDisplayed();
   }
 
   /**
@@ -1500,7 +1422,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return true if the input element is editable, false otherwise
    */
   public boolean isEditable(String locator) {
-    WebElement element = findElement(locator);
+    WebElement element = elementFinder.findElement(driver, locator);
     String tagName = element.getTagName().toLowerCase();
     boolean acceptableTagName = "input".equals(tagName) || "select".equals(tagName);
     String readonly = "";
@@ -1640,7 +1562,7 @@ public class WebDriverBackedSelenium implements Selenium {
     int xDelta = Integer.parseInt(parts[0].trim());
     int yDelta = Integer.parseInt(parts[1].trim());
 
-    ((RenderedWebElement) findElement(locator)).dragAndDropBy(xDelta, yDelta);
+    ((RenderedWebElement) elementFinder.findElement(driver, locator)).dragAndDropBy(xDelta, yDelta);
   }
 
   /**
@@ -1650,8 +1572,10 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param locatorOfDragDestinationObject an element whose location (i.e., whose center-most pixel) will be the point where locatorOfObjectToBeDragged  is dropped
    */
   public void dragAndDropToObject(String locatorOfObjectToBeDragged, String locatorOfDragDestinationObject) {
-    RenderedWebElement dragger = (RenderedWebElement) findElement(locatorOfObjectToBeDragged);
-    RenderedWebElement draggee = (RenderedWebElement) findElement(locatorOfDragDestinationObject);
+    RenderedWebElement dragger = (RenderedWebElement) elementFinder.findElement(driver,
+        locatorOfObjectToBeDragged);
+    RenderedWebElement draggee = (RenderedWebElement) elementFinder.findElement(driver,
+        locatorOfDragDestinationObject);
 
     dragger.dragAndDropOn(draggee);
   }
@@ -1736,7 +1660,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return of relative index of the element to its parent (starting from 0)
    */
   public Number getElementIndex(String locator) {
-    WebElement element = findElement(locator);
+    WebElement element = elementFinder.findElement(driver, locator);
     String script = 
       "var _isCommentOrEmptyTextNode = function(node) {\n" + 
       "    return node.nodeType == 8 || ((node.nodeType == 3) && !(/[^\\t\\n\\r ]/.test(node.data)));\n" + 
@@ -1763,8 +1687,8 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return true if element1 is the previous sibling of element2, false otherwise
    */
   public boolean isOrdered(String locator1, String locator2) {
-    WebElement one = findElement(locator1);
-    WebElement two = findElement(locator2);
+    WebElement one = elementFinder.findElement(driver, locator1);
+    WebElement two = elementFinder.findElement(driver, locator2);
     
     String ordered =
       "    if (arguments[0] === arguments[1]) return false;\n" + 
@@ -1789,7 +1713,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return of pixels from the edge of the frame.
    */
   public Number getElementPositionLeft(String locator) {
-    Point location = ((RenderedWebElement) findElement(locator)).getLocation();
+    Point location = ((RenderedWebElement) elementFinder.findElement(driver, locator)).getLocation();
     return (int) location.getX();
   }
 
@@ -1800,7 +1724,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return of pixels from the edge of the frame.
    */
   public Number getElementPositionTop(String locator) {
-    Point location = ((RenderedWebElement) findElement(locator)).getLocation();
+    Point location = ((RenderedWebElement) elementFinder.findElement(driver, locator)).getLocation();
     return (int) location.getY();
   }
 
@@ -1811,7 +1735,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return width of an element in pixels
    */
   public Number getElementWidth(String locator) {
-    Dimension size = ((RenderedWebElement) findElement(locator)).getSize();
+    Dimension size = ((RenderedWebElement) elementFinder.findElement(driver, locator)).getSize();
     return (int) size.getWidth();
   }
 
@@ -1822,7 +1746,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return height of an element in pixels
    */
   public Number getElementHeight(String locator) {
-    Dimension size = ((RenderedWebElement) findElement(locator)).getSize();
+    Dimension size = ((RenderedWebElement) elementFinder.findElement(driver, locator)).getSize();
     return (int) size.getHeight();
   }
 
@@ -1873,7 +1797,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param identifier a string to be used as the ID of the specified element
    */
   public void assignId(String locator, String identifier) {
-    executeScript("arguments[0].id = arguments[1]", findElement(locator), identifier);
+    executeScript("arguments[0].id = arguments[1]", elementFinder.findElement(driver, locator), identifier);
   }
 
   /**
@@ -2144,11 +2068,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param functionDefinition a string defining the body of a function in JavaScript.   For example: <code>return inDocument.getElementById(locator);</code>
    */
   public void addLocationStrategy(String strategyName, final String functionDefinition) {
-    lookupStrategies.put(strategyName, new LookupStrategy() {
-      public WebElement find(WebDriver driver, String use) {
-        return (WebElement) ((JavascriptExecutor) driver).executeScript("(function(locator, inWindow, inDocument) { " + functionDefinition + " }).call(this,'" + use + "', window, document)");
-      }
-    });
+    seleneseMethods.get("addLocationStrategy").apply(driver, strategyName, functionDefinition);
   }
 
   /**
@@ -2208,7 +2128,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param fileLocator  a URL pointing to the specified file. Before the file  can be set in the input field (fieldLocator), Selenium RC may need to transfer the file    to the local machine before attaching the file in a web page form. This is common in selenium  grid configurations where the RC server driving the browser is not the same  machine that started the test.   Supported Browsers: Firefox ("*chrome") only.
    */
   public void attachFile(String fieldLocator, String fileLocator) {
-    WebElement element = findElement(fieldLocator);
+    WebElement element = elementFinder.findElement(driver, fieldLocator);
     element.clear();
 
     throw new UnsupportedOperationException("attachFile");
@@ -2320,123 +2240,6 @@ public class WebDriverBackedSelenium implements Selenium {
     throw new UnsupportedOperationException("keyPressNative");
   }
 
-  protected WebElement findElement(String locator) {
-    LookupStrategy strategy = findStrategy(locator);
-    String use = determineWebDriverLocator(locator);
-
-    try {
-      return strategy.find(driver, use);
-    } catch (NoSuchElementException e) {
-      throw new SeleniumException("Element " + locator + " not found");
-    }
-  }
-
-  protected LookupStrategy findStrategy(String locator) {
-    String strategyName = "implicit";
-
-    Matcher matcher = STRATEGY_AND_VALUE_PATTERN.matcher(locator);
-    if (matcher.matches()) {
-      strategyName = matcher.group(1);
-    }
-
-    LookupStrategy strategy = lookupStrategies.get(strategyName);
-    if (strategy == null)
-      throw new SeleniumException("No matcher found for " + strategyName);
-
-    return strategy;
-  }
-
-  protected String determineWebDriverLocator(String locator) {
-    String use = locator;
-
-    Matcher matcher = STRATEGY_AND_VALUE_PATTERN.matcher(locator);
-    if (matcher.matches()) {
-      use = matcher.group(2);
-    }
-
-    return use;
-  }
-
-  private void callEmbeddedSelenium(String functionName, WebElement element, Object... values) {
-    StringBuilder builder = new StringBuilder(readScript(injectableSelenium));
-    builder.append("return browserbot.").append(functionName).append(".apply(browserbot, arguments);");
-
-    List<Object> args = new ArrayList<Object>();
-    args.add(element);
-    args.addAll(Arrays.asList(values));
-
-    ((JavascriptExecutor) driver).executeScript(builder.toString(), args.toArray());
-  }
-
-  private void callEmbeddedHtmlUtils(String functionName, WebElement element, Object... values) {
-    StringBuilder builder = new StringBuilder(readScript(htmlUtils));
-
-    builder.append("return htmlutils.").append(functionName).append(".apply(htmlutils, arguments);");
-
-    List<Object> args = new ArrayList<Object>();
-    args.add(element);
-    args.addAll(Arrays.asList(values));
-
-    ((JavascriptExecutor) driver).executeScript(builder.toString(), args.toArray());
-  }
-
-  private String readScript(String script) {
-    InputStream raw = WebDriverBackedSelenium.class.getResourceAsStream(script);
-    if (raw == null) {
-      throw new RuntimeException("Cannot locate the embedded selenium instance");
-    }
-
-    try {
-      BufferedReader reader = new BufferedReader(new InputStreamReader(raw));
-      StringBuilder builder = new StringBuilder();
-      for (String line = reader.readLine(); line != null; line = reader.readLine()) {
-        builder.append(line).append("\n");
-      }
-      return builder.toString();
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    } finally {
-      try {
-        raw.close();
-      } catch (IOException e) {
-        // Nothing sane to do
-      }
-    }
-  }
-
-  protected void select(String selectLocator, String optionLocator, boolean setSelected, boolean onlyOneOption) {
-    WebElement select = findElement(selectLocator);
-    List<WebElement> allOptions = select.findElements(By.tagName("option"));
-
-    boolean isMultiple = false;
-
-    String multiple = select.getAttribute("multiple");
-    if (multiple != null && !"".equals(multiple))
-      isMultiple = true;
-
-    if (onlyOneOption && isMultiple) {
-      removeAllSelections(allOptions);
-    }
-
-    Matcher matcher = STRATEGY_AND_VALUE_PATTERN.matcher(optionLocator);
-    String strategyName = "implicit";
-    String use = optionLocator;
-
-    if (matcher.matches()) {
-      strategyName = matcher.group(1);
-      use = matcher.group(2);
-    }
-    if (use == null)
-      use = "";
-
-    OptionSelectStrategy strategy = optionSelectStrategies.get(strategyName);
-    if (strategy == null)
-      throw new SeleniumException(strategyName + " (from " + optionLocator + ") is not a method for selecting options");
-
-    if (!strategy.select(allOptions, use, setSelected, isMultiple))
-      throw new SeleniumException(optionLocator + " is not an option");
-  }
-
   private String[] findSelectedOptionProperties(String selectLocator, String property) {
     List<WebElement> options = getOptions(selectLocator);
 
@@ -2462,7 +2265,7 @@ public class WebDriverBackedSelenium implements Selenium {
   }
 
   private List<WebElement> getOptions(String selectLocator) {
-    WebElement element = findElement(selectLocator);
+    WebElement element = elementFinder.findElement(driver, selectLocator);
     List<WebElement> options = element.findElements(By.tagName("option"));
     if (options.size() == 0) {
       throw new SeleniumException("Specified element is not a Select (has no options)");
@@ -2520,5 +2323,33 @@ public class WebDriverBackedSelenium implements Selenium {
       callback.interrupt();
     }
     
+  }
+
+  private void setUpMethodMap() {
+    SeleniumSelect select = new SeleniumSelect(elementFinder);
+
+    // Note the we use the names used by the CommandProcessor
+    // TODO(simon): Add a "getCommandProcessor" method to DefaultSelenium and move this to a
+    //              command processor
+    seleneseMethods.put("addLocationStrategy", new AddLocationStrategy(elementFinder));
+    seleneseMethods.put("addSelection", new AddSelection(elementFinder, select));
+    seleneseMethods.put("click", new Click(elementFinder));
+    seleneseMethods.put("doubleClick", new DoubleClick(elementFinder));
+    seleneseMethods.put("fireEvent", new FireEvent(elementFinder, javascriptLibrary));
+    seleneseMethods.put("getEval", new GetEval());
+    seleneseMethods.put("keyDown", new KeyEvent(elementFinder, javascriptLibrary, keyState, "doKeyDown"));
+    seleneseMethods.put("keyUp", new KeyEvent(elementFinder, javascriptLibrary, keyState, "doKeyUp"));
+    seleneseMethods.put("mouseOver", new MouseEvent(elementFinder, javascriptLibrary, "mouseover"));
+    seleneseMethods.put("mouseOut", new MouseEvent(elementFinder, javascriptLibrary, "mouseout"));
+    seleneseMethods.put("mouseDown", new MouseEvent(elementFinder, javascriptLibrary, "mousedown"));
+    seleneseMethods.put("mouseDownAt", new MouseEventAt(elementFinder, javascriptLibrary, "mousedown"));
+    seleneseMethods.put("mouseMove", new MouseEvent(elementFinder, javascriptLibrary, "mousemove"));
+    seleneseMethods.put("mouseMoveAt", new MouseEventAt(elementFinder, javascriptLibrary, "mousemove"));
+    seleneseMethods.put("mouseUp", new MouseEvent(elementFinder, javascriptLibrary, "mouseup"));
+    seleneseMethods.put("mouseUpAt", new MouseEventAt(elementFinder, javascriptLibrary, "mouseup"));
+    seleneseMethods.put("removeAllSelections", new RemoveAllSelections(elementFinder));
+    seleneseMethods.put("removeSelection", new RemoveSelection(elementFinder, select));
+    seleneseMethods.put("select", new SelectOption(select));
+    seleneseMethods.put("type", new Type(javascriptLibrary, elementFinder, keyState));
   }
 }

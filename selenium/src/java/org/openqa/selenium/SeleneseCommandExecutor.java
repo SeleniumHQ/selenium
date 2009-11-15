@@ -144,6 +144,9 @@ public class SeleneseCommandExecutor implements CommandExecutor {
     } else if ("safari".equals(browser)) {
       String path = findSafari();
       return "*safari " + path;
+    } else if (DesiredCapabilities.chrome().getBrowserName().equals(browser)) {
+
+      return "*googlechrome /Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
     }
 
     throw new IllegalArgumentException(
