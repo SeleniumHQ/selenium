@@ -32,16 +32,23 @@ import com.thoughtworks.selenium.SeleniumException;
 import com.thoughtworks.selenium.Wait;
 import org.openqa.selenium.internal.seleniumemulation.AddLocationStrategy;
 import org.openqa.selenium.internal.seleniumemulation.AddSelection;
+import org.openqa.selenium.internal.seleniumemulation.AssignId;
+import org.openqa.selenium.internal.seleniumemulation.AttachFile;
 import org.openqa.selenium.internal.seleniumemulation.Check;
 import org.openqa.selenium.internal.seleniumemulation.Click;
 import org.openqa.selenium.internal.seleniumemulation.CreateCookie;
 import org.openqa.selenium.internal.seleniumemulation.DeleteAllVisibleCookies;
+import org.openqa.selenium.internal.seleniumemulation.DeleteCookie;
 import org.openqa.selenium.internal.seleniumemulation.DoubleClick;
 import org.openqa.selenium.internal.seleniumemulation.ElementFinder;
 import org.openqa.selenium.internal.seleniumemulation.ExactTextMatchingStrategy;
 import org.openqa.selenium.internal.seleniumemulation.FireEvent;
+import org.openqa.selenium.internal.seleniumemulation.GetXpathCount;
+import org.openqa.selenium.internal.seleniumemulation.GetCookie;
+import org.openqa.selenium.internal.seleniumemulation.GetCookieByName;
 import org.openqa.selenium.internal.seleniumemulation.GetEval;
 import org.openqa.selenium.internal.seleniumemulation.GlobTextMatchingStrategy;
+import org.openqa.selenium.internal.seleniumemulation.IsCookiePresent;
 import org.openqa.selenium.internal.seleniumemulation.JavascriptLibrary;
 import org.openqa.selenium.internal.seleniumemulation.KeyEvent;
 import org.openqa.selenium.internal.seleniumemulation.KeyState;
@@ -57,6 +64,7 @@ import org.openqa.selenium.internal.seleniumemulation.TextMatchingStrategy;
 import org.openqa.selenium.internal.seleniumemulation.Type;
 import org.openqa.selenium.internal.seleniumemulation.TypeKeys;
 import org.openqa.selenium.internal.seleniumemulation.Uncheck;
+import org.openqa.selenium.internal.seleniumemulation.WaitForPageToLoad;
 
 public class WebDriverBackedSelenium implements Selenium {
   private static final Pattern TEXT_MATCHING_STRATEGY_AND_VALUE_PATTERN = Pattern.compile("^(\\p{Alpha}+):(.*)");
@@ -1190,7 +1198,7 @@ public class WebDriverBackedSelenium implements Selenium {
         "if (col > table.rows[row].cells.length) { return \"Cannot access column \" + col + \" - table row has \" + table.rows[row].cells.length + \" columns\"; }" +
         "return table.rows[row].cells[col];";
 
-    Object value = executeScript(script, table, row, col);
+    Object value = javascriptLibrary.executeScript(driver, script, table, row, col);
     if (value instanceof WebElement) {
       return ((WebElement) value).getText().trim();
     }
@@ -1574,14 +1582,14 @@ public class WebDriverBackedSelenium implements Selenium {
    * Gives focus to the currently selected window
    */
   public void windowFocus() {
-    executeScript("window.focus()");
+    javascriptLibrary.executeScript(driver, "window.focus()");
   }
 
   /**
    * Resize currently selected window to take up the entire screen
    */
   public void windowMaximize() {
-    executeScript("if (window.screen) { window.moveTo(0, 0); window.resizeTo(window.screen.availWidth, window.screen.availHeight);};");
+    javascriptLibrary.executeScript(driver, "if (window.screen) { window.moveTo(0, 0); window.resizeTo(window.screen.availWidth, window.screen.availHeight);};");
   }
 
   /**
@@ -1665,7 +1673,7 @@ public class WebDriverBackedSelenium implements Selenium {
       "        element = previousSibling;\n" + 
       "    }\n" + 
       "    return index;";
-    return (Long) executeScript(script, element);
+    return (Long) javascriptLibrary.executeScript(driver, script, element);
   }
 
   /**
@@ -1692,7 +1700,7 @@ public class WebDriverBackedSelenium implements Selenium {
       "    }\n" + 
       "    return false;\n";
     
-    Boolean result = (Boolean) executeScript(ordered, one, two);
+    Boolean result = (Boolean) javascriptLibrary.executeScript(driver, ordered, one, two);
     return result == null ? false : result.booleanValue();
   }
 
@@ -1775,7 +1783,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return the number of nodes that match the specified xpath
    */
   public Number getXpathCount(String xpath) {
-    return driver.findElements(By.xpath(xpath)).size();
+    return (Number) seleneseMethods.get("getXpathCount").apply(driver, xpath);
   }
 
   /**
@@ -1787,7 +1795,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param identifier a string to be used as the ID of the specified element
    */
   public void assignId(String locator, String identifier) {
-    executeScript("arguments[0].id = arguments[1]", elementFinder.findElement(driver, locator), identifier);
+    seleneseMethods.get("assignId").apply(driver, locator, identifier);
   }
 
   /**
@@ -1870,33 +1878,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param timeout a timeout in milliseconds, after which this command will return with an error
    */
   public void waitForPageToLoad(String timeout) {
-    // Wait until things look like they've been stable for a second
-    if (!(driver instanceof JavascriptExecutor)) {
-      // Assume that we Do The Right Thing
-      return;
-    }
-
-    new Wait() {
-      private long started = System.currentTimeMillis();
-
-      public boolean until() {
-        try {
-          Object result = ((JavascriptExecutor) driver).executeScript(
-              "return document['readyState'] ? 'complete' == document.readyState : true");
-          if (result != null && result instanceof Boolean && (Boolean) result) {
-            long now = System.currentTimeMillis();
-            if (now - started > 1000) {
-              return true;
-            }
-          } else {
-            started = System.currentTimeMillis();
-          }
-        } catch (Exception e) {
-          // Possible page reload. Fine 
-        }
-        return false;
-      }
-    }.wait(timeout);
+    seleneseMethods.get("waitForPageToLoad").apply(driver, timeout);
   }
 
   /**
@@ -1920,12 +1902,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return all cookies of the current page under test
    */
   public String getCookie() {
-    StringBuilder builder = new StringBuilder();
-    for (Cookie c : driver.manage().getCookies()) {
-      builder.append(c.toString());
-      builder.append("; ");
-    }
-    return builder.toString();
+    return (String) seleneseMethods.get("getCookie").apply(driver);
   }
 
   /**
@@ -1935,8 +1912,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return the value of the cookie
    */
   public String getCookieByName(String name) {
-    Cookie cookie = driver.manage().getCookieNamed(name);
-    return cookie == null ? null : cookie.getValue();
+    return (String) seleneseMethods.get("getCookieByName").apply(driver, name);
   }
 
   /**
@@ -1946,7 +1922,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return true if a cookie with the specified name is present, or false otherwise.
    */
   public boolean isCookiePresent(String name) {
-    return getCookieByName(name) != null;
+    return (Boolean) seleneseMethods.get("isCookiePresent").apply(driver, name);
   }
 
   /**
@@ -1976,7 +1952,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param optionsString options for the cookie. Currently supported options include 'path', 'domain'      and 'recurse.' The optionsString's format is "path=/path/, domain=.foo.com, recurse=true".      The order of options are irrelevant. Note that specifying a domain that isn't a subset of      the current domain will usually fail.
    */
   public void deleteCookie(String name, String optionsString) {
-    driver.manage().deleteCookieNamed(name);
+    seleneseMethods.get("deleteCookie").apply(driver, name);
   }
 
   /**
@@ -2011,7 +1987,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param script the JavaScript snippet to run
    */
   public void runScript(String script) {
-    executeScript(script);
+    javascriptLibrary.executeScript(driver, script);
   }
 
   /**
@@ -2090,10 +2066,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param fileLocator  a URL pointing to the specified file. Before the file  can be set in the input field (fieldLocator), Selenium RC may need to transfer the file    to the local machine before attaching the file in a web page form. This is common in selenium  grid configurations where the RC server driving the browser is not the same  machine that started the test.   Supported Browsers: Firefox ("*chrome") only.
    */
   public void attachFile(String fieldLocator, String fileLocator) {
-    WebElement element = elementFinder.findElement(driver, fieldLocator);
-    element.clear();
-
-    throw new UnsupportedOperationException("attachFile");
+    seleneseMethods.get("attachFile").apply(driver, fieldLocator);
   }
 
   /**
@@ -2235,15 +2208,6 @@ public class WebDriverBackedSelenium implements Selenium {
     return options;
   }
 
-  private Object executeScript(String script, Object... args) {
-    if (driver instanceof JavascriptExecutor) {
-      return ((JavascriptExecutor) driver).executeScript(script, args);
-    }
-
-    throw new UnsupportedOperationException(
-        "The underlying WebDriver instance does not support executing javascript");
-  }
-
   public void captureEntirePageScreenshot(String s) {
       throw new UnsupportedOperationException("captureEntirePageScreenshot");
   }
@@ -2295,13 +2259,20 @@ public class WebDriverBackedSelenium implements Selenium {
     //              command processor
     seleneseMethods.put("addLocationStrategy", new AddLocationStrategy(elementFinder));
     seleneseMethods.put("addSelection", new AddSelection(elementFinder, select));
+    seleneseMethods.put("assignId", new AssignId(javascriptLibrary, elementFinder));
+    seleneseMethods.put("attachFile", new AttachFile(elementFinder));
     seleneseMethods.put("click", new Click(elementFinder));
     seleneseMethods.put("check", new Check(elementFinder));
     seleneseMethods.put("createCookie", new CreateCookie());
     seleneseMethods.put("deleteAllVisibleCookies", new DeleteAllVisibleCookies());
+    seleneseMethods.put("deleteCookie", new DeleteCookie());
     seleneseMethods.put("doubleClick", new DoubleClick(elementFinder));
     seleneseMethods.put("fireEvent", new FireEvent(elementFinder, javascriptLibrary));
     seleneseMethods.put("getEval", new GetEval());
+    seleneseMethods.put("getCookie", new GetCookie());
+    seleneseMethods.put("getCookieByName", new GetCookieByName());
+    seleneseMethods.put("getXpathCount", new GetXpathCount());
+    seleneseMethods.put("isCookiePresent", new IsCookiePresent());
     seleneseMethods.put("keyDown", new KeyEvent(elementFinder, javascriptLibrary, keyState, "doKeyDown"));
     seleneseMethods.put("keyUp", new KeyEvent(elementFinder, javascriptLibrary, keyState, "doKeyUp"));
     seleneseMethods.put("mouseOver", new MouseEvent(elementFinder, javascriptLibrary, "mouseover"));
@@ -2318,5 +2289,6 @@ public class WebDriverBackedSelenium implements Selenium {
     seleneseMethods.put("type", new Type(javascriptLibrary, elementFinder, keyState));
     seleneseMethods.put("typeKeys", new TypeKeys(elementFinder));
     seleneseMethods.put("uncheck", new Uncheck(elementFinder));
+    seleneseMethods.put("waitForPageToLoad", new WaitForPageToLoad());
   }
 }

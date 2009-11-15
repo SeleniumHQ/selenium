@@ -59,6 +59,14 @@ public class JavascriptLibrary {
     ((JavascriptExecutor) driver).executeScript(builder.toString(), args.toArray());
   }
 
+  public Object executeScript(WebDriver driver, String script, Object... args) {
+    if (driver instanceof JavascriptExecutor) {
+      return ((JavascriptExecutor) driver).executeScript(script, args);
+    }
+
+    throw new UnsupportedOperationException(
+        "The underlying WebDriver instance does not support executing javascript");
+  }
 
   private String readScript(String script) {
     InputStream raw = getClass().getResourceAsStream(script);
