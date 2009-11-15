@@ -252,7 +252,7 @@ FirefoxDriver.prototype.getAttribute = function(respond, value) {
     } else if (attributeName.toLowerCase() == "checked") {
       respond.response = element.checked;
     } else if (attributeName.toLowerCase() == "readonly") {
-      respond.response = element.getAttribute('readonly');
+      respond.response = element.readOnly;
     }
 
     respond.send();
