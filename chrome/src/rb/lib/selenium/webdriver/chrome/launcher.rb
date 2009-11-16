@@ -36,7 +36,10 @@ module Selenium
         private
 
         def create_extension
-          ext_files.each { |file| cp file, tmp_extension_dir }
+          # TODO: find a better way to do this
+          rm_rf tmp_extension_dir
+          mkdir_p File.dirname(tmp_extension_dir), :mode => 0700
+          cp_r ext_path, tmp_extension_dir
 
           if Platform.win?
             cp linked_lib_path, tmp_extension_dir
@@ -62,10 +65,6 @@ module Selenium
           @process.start
         end
 
-        def ext_files
-          Dir["#{ext_path}/*"]
-        end
-
         def ext_path
           @ext_path ||= "#{WebDriver.root}/chrome/src/extension"
         end
@@ -87,7 +86,7 @@ module Selenium
             dir
           end
         end
-        
+
         class WindowsLauncher < Launcher
           def linked_lib_path
             # TODO: x64
