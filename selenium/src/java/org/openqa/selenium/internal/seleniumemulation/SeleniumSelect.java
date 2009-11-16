@@ -36,7 +36,16 @@ public class SeleniumSelect {
     setUpOptionFindingStrategies();
   }
 
-  protected void select(WebDriver driver, String selectLocator, String optionLocator, boolean setSelected, boolean onlyOneOption) {
+  public List<WebElement> getOptions(WebDriver driver, String selectLocator) {
+    WebElement element = finder.findElement(driver, selectLocator);
+    List<WebElement> options = element.findElements(By.tagName("option"));
+    if (options.size() == 0) {
+      throw new SeleniumException("Specified element is not a Select (has no options)");
+    }
+    return options;
+  }
+
+  public void select(WebDriver driver, String selectLocator, String optionLocator, boolean setSelected, boolean onlyOneOption) {
     WebElement select = finder.findElement(driver, selectLocator);
     List<WebElement> allOptions = select.findElements(By.tagName("option"));
 

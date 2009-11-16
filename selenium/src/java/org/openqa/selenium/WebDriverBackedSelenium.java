@@ -32,6 +32,8 @@ import com.thoughtworks.selenium.SeleniumException;
 import com.thoughtworks.selenium.Wait;
 import org.openqa.selenium.internal.seleniumemulation.AddLocationStrategy;
 import org.openqa.selenium.internal.seleniumemulation.AddSelection;
+import org.openqa.selenium.internal.seleniumemulation.AltKeyDown;
+import org.openqa.selenium.internal.seleniumemulation.AltKeyUp;
 import org.openqa.selenium.internal.seleniumemulation.AssignId;
 import org.openqa.selenium.internal.seleniumemulation.AttachFile;
 import org.openqa.selenium.internal.seleniumemulation.Check;
@@ -42,16 +44,22 @@ import org.openqa.selenium.internal.seleniumemulation.DeleteCookie;
 import org.openqa.selenium.internal.seleniumemulation.DoubleClick;
 import org.openqa.selenium.internal.seleniumemulation.ElementFinder;
 import org.openqa.selenium.internal.seleniumemulation.ExactTextMatchingStrategy;
+import org.openqa.selenium.internal.seleniumemulation.FindSelectedOptionProperties;
 import org.openqa.selenium.internal.seleniumemulation.FireEvent;
-import org.openqa.selenium.internal.seleniumemulation.GetXpathCount;
+import org.openqa.selenium.internal.seleniumemulation.FireNamedEvent;
 import org.openqa.selenium.internal.seleniumemulation.GetCookie;
 import org.openqa.selenium.internal.seleniumemulation.GetCookieByName;
 import org.openqa.selenium.internal.seleniumemulation.GetEval;
+import org.openqa.selenium.internal.seleniumemulation.GetSelectedIndex;
+import org.openqa.selenium.internal.seleniumemulation.GetSelectedIndexes;
+import org.openqa.selenium.internal.seleniumemulation.GetXpathCount;
 import org.openqa.selenium.internal.seleniumemulation.GlobTextMatchingStrategy;
 import org.openqa.selenium.internal.seleniumemulation.IsCookiePresent;
 import org.openqa.selenium.internal.seleniumemulation.JavascriptLibrary;
 import org.openqa.selenium.internal.seleniumemulation.KeyEvent;
 import org.openqa.selenium.internal.seleniumemulation.KeyState;
+import org.openqa.selenium.internal.seleniumemulation.MetaKeyDown;
+import org.openqa.selenium.internal.seleniumemulation.MetaKeyUp;
 import org.openqa.selenium.internal.seleniumemulation.MouseEvent;
 import org.openqa.selenium.internal.seleniumemulation.MouseEventAt;
 import org.openqa.selenium.internal.seleniumemulation.RegExTextMatchingStrategy;
@@ -60,6 +68,8 @@ import org.openqa.selenium.internal.seleniumemulation.RemoveSelection;
 import org.openqa.selenium.internal.seleniumemulation.SelectOption;
 import org.openqa.selenium.internal.seleniumemulation.SeleneseCommand;
 import org.openqa.selenium.internal.seleniumemulation.SeleniumSelect;
+import org.openqa.selenium.internal.seleniumemulation.ShiftKeyDown;
+import org.openqa.selenium.internal.seleniumemulation.ShiftKeyUp;
 import org.openqa.selenium.internal.seleniumemulation.TextMatchingStrategy;
 import org.openqa.selenium.internal.seleniumemulation.Type;
 import org.openqa.selenium.internal.seleniumemulation.TypeKeys;
@@ -268,7 +278,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param locator an <a href="#locators">element locator</a>
    */
   public void focus(String locator) {
-    fireEvent(locator, "focus");
+    seleneseMethods.get("focus").apply(driver, locator);
   }
 
   /**
@@ -278,28 +288,28 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param keySequence Either be a string("\" followed by the numeric keycode  of the key to be pressed, normally the ASCII value of that key), or a single  character. For example: "w", "\119".
    */
   public void keyPress(String locator, String keySequence) {
-    typeKeys(locator, keySequence);
+    seleneseMethods.get("keyPress").apply(driver, locator, keySequence);
   }
 
   /**
    * Press the shift key and hold it down until doShiftUp() is called or a new page is loaded.
    */
   public void shiftKeyDown() {
-    keyState.shiftKeyDown = true;
+    seleneseMethods.get("shiftKeyDown").apply(driver);
   }
 
   /**
    * Release the shift key.
    */
   public void shiftKeyUp() {
-    keyState.shiftKeyDown = false;
+    seleneseMethods.get("shiftKeyUp").apply(driver);
   }
 
   /**
    * Press the meta key and hold it down until doMetaUp() is called or a new page is loaded.
    */
   public void metaKeyDown() {
-    keyState.metaKeyDown = true;
+    seleneseMethods.get("metaKeyDown").apply(driver);
   }
 
   /**
@@ -313,7 +323,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * Press the alt key and hold it down until doAltUp() is called or a new page is loaded.
    */
   public void altKeyDown() {
-    keyState.altKeyDown = true;
+    seleneseMethods.get("altKeyDown").apply(driver);
   }
 
   /**
@@ -1254,16 +1264,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return an array of all selected option indexes in the specified select drop-down
    */
   public String[] getSelectedIndexes(String selectLocator) {
-    List<WebElement> options = getOptions(selectLocator);
-
-    List<String> selected = new ArrayList<String>();
-    for (int i = 0; i < options.size(); i++) {
-      WebElement option = options.get(i);
-      if (option.isSelected())
-        selected.add(String.valueOf(i));
-    }
-
-    return selected.toArray(new String[selected.size()]);
+    return (String[]) seleneseMethods.get("getSelectedIndexes").apply(driver, selectLocator);
   }
 
   /**
@@ -1273,15 +1274,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return the selected option index in the specified select drop-down
    */
   public String getSelectedIndex(String selectLocator) {
-    List<WebElement> options = getOptions(selectLocator);
-
-    for (int i = 0; i < options.size(); i++) {
-      WebElement option = options.get(i);
-      if (option.isSelected())
-        return String.valueOf(i);
-    }
-
-    throw new SeleniumException("No option is selected: " + selectLocator);
+    return (String) seleneseMethods.get("getSelectedIndex").apply(driver, selectLocator);
   }
 
   /**
@@ -1701,7 +1694,7 @@ public class WebDriverBackedSelenium implements Selenium {
       "    return false;\n";
     
     Boolean result = (Boolean) javascriptLibrary.executeScript(driver, ordered, one, two);
-    return result == null ? false : result.booleanValue();
+    return result != null && result.booleanValue();
   }
 
   /**
@@ -2176,36 +2169,8 @@ public class WebDriverBackedSelenium implements Selenium {
   }
 
   private String[] findSelectedOptionProperties(String selectLocator, String property) {
-    List<WebElement> options = getOptions(selectLocator);
-
-    List<String> selectedOptions = new ArrayList<String>();
-
-    for (WebElement option : options) {
-      if (option.isSelected()) {
-        if ("text".equals(property)) {
-          selectedOptions.add(option.getText());
-        } else if ("value".equals(property)) {
-          selectedOptions.add(option.getValue());
-        } else {
-          String propVal = option.getAttribute(property);
-          if (propVal != null)
-            selectedOptions.add(propVal);
-        }
-      }
-    }
-
-    if (selectedOptions.size() == 0)
-      throw new SeleniumException("No option selected");
-    return selectedOptions.toArray(new String[selectedOptions.size()]);
-  }
-
-  private List<WebElement> getOptions(String selectLocator) {
-    WebElement element = elementFinder.findElement(driver, selectLocator);
-    List<WebElement> options = element.findElements(By.tagName("option"));
-    if (options.size() == 0) {
-      throw new SeleniumException("Specified element is not a Select (has no options)");
-    }
-    return options;
+    return (String[]) seleneseMethods.get("findSelectedOptionProperties")
+        .apply(driver, selectLocator, property);
   }
 
   public void captureEntirePageScreenshot(String s) {
@@ -2259,6 +2224,8 @@ public class WebDriverBackedSelenium implements Selenium {
     //              command processor
     seleneseMethods.put("addLocationStrategy", new AddLocationStrategy(elementFinder));
     seleneseMethods.put("addSelection", new AddSelection(elementFinder, select));
+    seleneseMethods.put("altKeyDown", new AltKeyDown(keyState));
+    seleneseMethods.put("altKeyUp", new AltKeyUp(keyState));
     seleneseMethods.put("assignId", new AssignId(javascriptLibrary, elementFinder));
     seleneseMethods.put("attachFile", new AttachFile(elementFinder));
     seleneseMethods.put("click", new Click(elementFinder));
@@ -2267,14 +2234,21 @@ public class WebDriverBackedSelenium implements Selenium {
     seleneseMethods.put("deleteAllVisibleCookies", new DeleteAllVisibleCookies());
     seleneseMethods.put("deleteCookie", new DeleteCookie());
     seleneseMethods.put("doubleClick", new DoubleClick(elementFinder));
+    seleneseMethods.put("findSelectedOptionProperties", new FindSelectedOptionProperties(select));    
     seleneseMethods.put("fireEvent", new FireEvent(elementFinder, javascriptLibrary));
+    seleneseMethods.put("focus", new FireNamedEvent(elementFinder, javascriptLibrary, "focus"));
     seleneseMethods.put("getEval", new GetEval());
     seleneseMethods.put("getCookie", new GetCookie());
     seleneseMethods.put("getCookieByName", new GetCookieByName());
+    seleneseMethods.put("getSelectedIndex", new GetSelectedIndex(select));
+    seleneseMethods.put("getSelectedIndexes", new GetSelectedIndexes(select));
     seleneseMethods.put("getXpathCount", new GetXpathCount());
     seleneseMethods.put("isCookiePresent", new IsCookiePresent());
     seleneseMethods.put("keyDown", new KeyEvent(elementFinder, javascriptLibrary, keyState, "doKeyDown"));
+    seleneseMethods.put("keyPress", new TypeKeys(elementFinder));
     seleneseMethods.put("keyUp", new KeyEvent(elementFinder, javascriptLibrary, keyState, "doKeyUp"));
+    seleneseMethods.put("metaKeyDown", new MetaKeyDown(keyState));
+    seleneseMethods.put("metaKeyUp", new MetaKeyUp(keyState));
     seleneseMethods.put("mouseOver", new MouseEvent(elementFinder, javascriptLibrary, "mouseover"));
     seleneseMethods.put("mouseOut", new MouseEvent(elementFinder, javascriptLibrary, "mouseout"));
     seleneseMethods.put("mouseDown", new MouseEvent(elementFinder, javascriptLibrary, "mousedown"));
@@ -2286,6 +2260,8 @@ public class WebDriverBackedSelenium implements Selenium {
     seleneseMethods.put("removeAllSelections", new RemoveAllSelections(elementFinder));
     seleneseMethods.put("removeSelection", new RemoveSelection(elementFinder, select));
     seleneseMethods.put("select", new SelectOption(select));
+    seleneseMethods.put("shiftKeyDown", new ShiftKeyDown(keyState));
+    seleneseMethods.put("shiftKeyUp", new ShiftKeyUp(keyState));
     seleneseMethods.put("type", new Type(javascriptLibrary, elementFinder, keyState));
     seleneseMethods.put("typeKeys", new TypeKeys(elementFinder));
     seleneseMethods.put("uncheck", new Uncheck(elementFinder));
