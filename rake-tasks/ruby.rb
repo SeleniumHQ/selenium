@@ -76,6 +76,8 @@ begin
 
    s.require_paths = []
 
+   s.files         += FileList['COPYING']
+
    # Common
    s.require_paths << 'common/src/rb/lib'
    s.files         += FileList['common/src/rb/**/*']
