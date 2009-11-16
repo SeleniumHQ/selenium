@@ -115,7 +115,7 @@ begin
     end
 
     desc 'Build and release the ruby gem to Gemcutter'
-    task :release => :gem do
+    task :release => [:clean, :gem] do
       sh "gem push build/#{GEM_SPEC.name}-#{GEM_SPEC.version}.gem"
     end
   end
