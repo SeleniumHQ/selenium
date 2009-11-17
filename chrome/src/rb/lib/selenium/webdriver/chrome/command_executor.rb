@@ -28,6 +28,10 @@ module Selenium
          JSON.parse read_response(@queue.pop)
        end
 
+       def close
+         @server.close rescue nil
+       end
+
        private
 
        def start_run_loop
