@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>menu</key>
+	<dict>
+		<key>id</key>
+		<string>file</string>
+		<key>popup</key>
+		<dict>
+			<key>menuitem</key>
+			<array>
+				<dict>
+					<key>onclick</key>
+					<string>CreateNewDoc()</string>
+					<key>value</key>
+					<string>New</string>
+				</dict>
+				<dict>
+					<key>onclick</key>
+					<string>OpenDoc()</string>
+					<key>value</key>
+					<string>Open</string>
+				</dict>
+				<dict>
+					<key>onclick</key>
+					<string>CloseDoc()</string>
+					<key>value</key>
+					<string>Close</string>
+				</dict>
+			</array>
+		</dict>
+		<key>value</key>
+		<string>File</string>
+	</dict>
+</dict>
+</plist>

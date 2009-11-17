@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>[]</key>
+    <array/>
+    
+    <key>["foo"]</key>
+    <array>
+        <string>foo</string>
+    </array>
+
+    <key>["foo",["bar"]]</key>
+    <array>
+        <string>foo</string>
+        <array>
+            <string>bar</string>
+        </array>
+    </array>
+
+    <key>["foo",["bar",["quux"]]]</key>
+    <array>
+        <string>foo</string>
+        <array>
+            <string>bar</string>
+            <array>
+                <string>quux</string>
+            </array>
+        </array>
+    </array>
+</dict>
+</plist>

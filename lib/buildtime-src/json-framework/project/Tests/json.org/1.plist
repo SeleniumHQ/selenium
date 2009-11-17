@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>glossary</key>
+	<dict>
+		<key>GlossDiv</key>
+		<dict>
+			<key>GlossList</key>
+			<dict>
+				<key>GlossEntry</key>
+				<dict>
+					<key>Abbrev</key>
+					<string>ISO 8879:1986</string>
+					<key>Acronym</key>
+					<string>SGML</string>
+					<key>GlossDef</key>
+					<dict>
+						<key>GlossSeeAlso</key>
+						<array>
+							<string>GML</string>
+							<string>XML</string>
+						</array>
+						<key>para</key>
+						<string>A meta-markup language, used to create markup languages such as DocBook.</string>
+					</dict>
+					<key>GlossSee</key>
+					<string>markup</string>
+					<key>GlossTerm</key>
+					<string>Standard Generalized Markup Language</string>
+					<key>ID</key>
+					<string>SGML</string>
+					<key>SortAs</key>
+					<string>SGML</string>
+				</dict>
+			</dict>
+			<key>title</key>
+			<string>S</string>
+		</dict>
+		<key>title</key>
+		<string>example glossary</string>
+	</dict>
+</dict>
+</plist>

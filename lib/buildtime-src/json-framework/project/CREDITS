@@ -1,0 +1,19 @@
+Blake Seely
+    A lot of the inspiration to early versions of this framework
+    came from Blake's BSJSONAdditions project.
+
+Marc Lehmann
+    Part of the inspiration for my JSON work has been from Marc's
+    JSON::XS Perl module. I also adopted the way he organised the
+    tests. Having a separate fixture for testing error conditions
+    makes a lot of sense.
+
+Jens Alfke <jens@mooseyard.com> - http://mooseyard.com/Jens
+    Jens emailed me out of the blue one day with a couple of patches
+    that gave a speedup of 11x for generation and 5x for parsing of
+    the long (12k) JSON string I've been using for testing.
+
+Greg Bolsinga
+    Provided patches for dropping the dependency on AppKit and thus
+    truly making this a Foundation framework, and for building a
+    static library suitable for use with the iPhone.

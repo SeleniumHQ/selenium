@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AlternateSDK</key>
+	<string>jsoniphonesimulator2.0</string>
+	<key>CanonicalName</key>
+	<string>jsoniphoneos2.0</string>
+	<key>CustomProperties</key>
+	<dict/>
+	<key>DefaultProperties</key>
+	<dict>
+		<key>AD_HOC_CODE_SIGNING_ALLOWED</key>
+		<string>NO</string>
+		<key>CODE_SIGN_ENTITLEMENTS</key>
+		<string></string>
+		<key>CODE_SIGN_RESOURCE_RULES_PATH</key>
+		<string>$(SDKROOT)/ResourceRules.plist</string>
+		<key>DEAD_CODE_STRIPPING</key>
+		<string>YES</string>
+		<key>ENTITLEMENTS_REQUIRED</key>
+		<string>YES</string>
+		<key>GCC_THUMB_SUPPORT</key>
+		<string>YES</string>
+		<key>IPHONEOS_DEPLOYMENT_TARGET</key>
+		<string>2.0</string>
+		<key>MACOSX_DEPLOYMENT_TARGET</key>
+		<string>10.5</string>
+		<key>PLATFORM_NAME</key>
+		<string>iphoneos</string>
+	</dict>
+	<key>DisplayName</key>
+	<string>Device - iPhone OS 2.0</string>
+	<key>FamilyIdentifier</key>
+	<string>iphoneos</string>
+	<key>FamilyName</key>
+	<string>iPhone OS</string>
+	<key>IsBaseSDK</key>
+	<string>NO</string>
+	<key>MaximumOSDeploymentTarget</key>
+	<string>10.5</string>
+	<key>MinimalDisplayName</key>
+	<string>Device</string>
+	<key>MinimumSupportedToolsVersion</key>
+	<string>3.1</string>
+	<key>Version</key>
+	<string>2.0</string>
+</dict>
+</plist>

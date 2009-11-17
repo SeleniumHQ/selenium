@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>widget</key>
+	<dict>
+		<key>debug</key>
+		<string>on</string>
+		<key>image</key>
+		<dict>
+			<key>alignment</key>
+			<string>center</string>
+			<key>hOffset</key>
+			<real>250</real>
+			<key>name</key>
+			<string>sun1</string>
+			<key>src</key>
+			<string>Images/Sun.png</string>
+			<key>vOffset</key>
+			<real>250</real>
+		</dict>
+		<key>text</key>
+		<dict>
+			<key>alignment</key>
+			<string>center</string>
+			<key>data</key>
+			<string>Click Here</string>
+			<key>hOffset</key>
+			<real>250</real>
+			<key>name</key>
+			<string>text1</string>
+			<key>onMouseUp</key>
+			<string>sun1.opacity = (sun1.opacity / 100) * 90;</string>
+			<key>size</key>
+			<real>36</real>
+			<key>style</key>
+			<string>bold</string>
+			<key>vOffset</key>
+			<real>100</real>
+		</dict>
+		<key>window</key>
+		<dict>
+			<key>height</key>
+			<real>500</real>
+			<key>name</key>
+			<string>main_window</string>
+			<key>title</key>
+			<string>Sample Konfabulator Widget</string>
+			<key>width</key>
+			<real>500</real>
+		</dict>
+	</dict>
+</dict>
+</plist>

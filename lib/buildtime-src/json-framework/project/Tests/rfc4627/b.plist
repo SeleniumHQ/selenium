@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<dict>
+		<key>Address</key>
+		<string></string>
+		<key>City</key>
+		<string>SAN FRANCISCO</string>
+		<key>Country</key>
+		<string>US</string>
+		<key>Latitude</key>
+		<real>37.766800000000003</real>
+		<key>Longitude</key>
+		<real>-122.39590000000001</real>
+		<key>State</key>
+		<string>CA</string>
+		<key>Zip</key>
+		<string>94107</string>
+		<key>precision</key>
+		<string>zip</string>
+	</dict>
+	<dict>
+		<key>Address</key>
+		<string></string>
+		<key>City</key>
+		<string>SUNNYVALE</string>
+		<key>Country</key>
+		<string>US</string>
+		<key>Latitude</key>
+		<real>37.371991000000001</real>
+		<key>Longitude</key>
+		<real>-122.02601999999999</real>
+		<key>State</key>
+		<string>CA</string>
+		<key>Zip</key>
+		<string>94085</string>
+		<key>precision</key>
+		<string>zip</string>
+	</dict>
+</array>
+</plist>

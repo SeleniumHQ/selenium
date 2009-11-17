@@ -1,0 +1,37 @@
+In this first benchmark I decided to try speeding up the parser by
+speeding up -[NSScanner scanJSONValue:]. I used the same strings as
+JSON::XS uses for its benchmarking. The things I tried were:
+
+ * Firstly, reordering the calls in -[NSScanner scanJSONValue:] to
+   scan for more common (from my subjective point of view) types first.
+
+ * Further, I wanted to test whether skipping white space before
+   successively trying to match each JSON type would yield a speedup.
+
+ * Finally, I looked at the next character in the string and did
+   dispatched directly to the correct type.
+
+Decoded short/long JSON strings per second (higher is better):
+
+          |  original | reordered | +skip ws | +dispatch |
+    ------+-----------+-----------+----------+-----------|
+    Short |  7468.818 |  7817.630 | 6381.824 |  7626.370 |
+    Long  |   110.255 |   117.472 |  106.309 |   110.573 |
+
+For the test data I used reordering calls yields a 4.6 to 6.5 percent
+increase in performance. The new order is approximately the reverse of
+the original. (The old order was chosen because the right edge of the
+calls made a pleasant curve, so an improvement here is not unexpected.)
+
+The test data has little optional white space, so skipping white space
+actually turns out to be slower. (Particularly so for short strings.)
+
+The white-space skipping is necessary for the dispatching logic. With
+that added the speed is it back up to about the same as the original.
+But now the code is uglier and there's more of it.
+
+It's my assumption that the performance of parsing human-readable JSON
+will matter less than the performance of parsing JSON meant for
+machine consumption. Given this assumption it makes sense to skip the
+white space skipping and dispatch table, as they make the code more
+complex.

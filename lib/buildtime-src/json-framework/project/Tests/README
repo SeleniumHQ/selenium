@@ -1,0 +1,10 @@
+The directories here contains tests from the following sources:
+
+json.org:
+   http://json.org/example.html
+
+jsonchecker:
+    http://json.org/JSON_checker/
+
+rfc4627:
+    http://www.ietf.org/rfc/rfc4627.txt?number=4627

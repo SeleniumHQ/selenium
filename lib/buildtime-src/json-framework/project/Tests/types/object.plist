@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>{}</key>
+    <dict/>
+
+    <key>{"foo":"bar"}</key>
+    <dict>
+        <key>foo</key>
+        <string>bar</string>
+    </dict>
+
+    <key>{"foo":{"bar":"quux"}}</key>
+    <dict>
+        <key>foo</key>
+        <dict>
+            <key>bar</key>
+            <string>quux</string>
+        </dict>
+    </dict>
+
+    <key>{"foo":{"bar":{"quux":{}}}}</key>
+    <dict>
+        <key>foo</key>
+        <dict>
+            <key>bar</key>
+            <dict>
+                <key>quux</key>
+                <dict/>
+            </dict>
+        </dict>
+    </dict>
+</dict>
+</plist>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Image</key>
+	<dict>
+		<key>Height</key>
+		<real>600</real>
+		<key>IDs</key>
+		<array>
+			<real>116</real>
+			<real>943</real>
+			<real>234</real>
+			<real>38793</real>
+		</array>
+		<key>Thumbnail</key>
+		<dict>
+			<key>Height</key>
+			<real>125</real>
+			<key>Url</key>
+			<string>http://www.example.com/image/481989943</string>
+			<key>Width</key>
+			<string>100</string>
+		</dict>
+		<key>Title</key>
+		<string>View from 15th Floor</string>
+		<key>Width</key>
+		<real>800</real>
+	</dict>
+</dict>
+</plist>

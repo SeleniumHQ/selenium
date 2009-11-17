@@ -1,0 +1,32 @@
+
+JSON SDK (iPhone / iPhone Simulator / MacOS 10.5)
+=================================================
+
+Copy the content of the 'SDKs' folder to ~/Library/SDKs. (You may have
+to create that directory.)
+
+To make use of this SDK, select your target in the left-hand menu and
+click the blue Info button (Apple-i). Add the following new line to
+the "Additional SDKs" option: "$HOME/Library/SDKs/JSON/$(PLATFORM_NAME).sdk". 
+Finally you have to add the entry '-ObjC -ljson' to the "Other Linker
+Flags" option.
+
+Embedded Framework
+==================
+
+Copy the '$PROJECT.framework' bundle to ~/Library/Frameworks. (You may
+have to create that directory.)
+
+Use the "Add existing file" menu to add the framework to your
+application. You also have to add a "Copy files" build phase to copy the
+framework into your application. This should copy files to the
+Frameworks folder inside Resources.
+
+http://developer.apple.com/documentation/MacOSX/Conceptual/BPFrameworks/Tasks/CreatingFrameworks.html#//apple_ref/doc/uid/20002258-106880-BAJJBIEF
+
+Documentation
+=============
+
+You can install the API documentation in this dmg by copying the
+'Documentation/html' directory to a writable location on your
+hard-drive, cd into the directory and type 'make install'.

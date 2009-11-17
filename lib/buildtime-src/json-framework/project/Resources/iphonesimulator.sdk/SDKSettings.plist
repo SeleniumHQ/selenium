@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CanonicalName</key>
+	<string>jsoniphonesimulator2.0</string>
+	<key>CustomProperties</key>
+	<dict/>
+	<key>DefaultProperties</key>
+	<dict>
+		<key>GCC_PRODUCT_TYPE_PREPROCESSOR_DEFINITIONS</key>
+		<string> __IPHONE_OS_VERSION_MIN_REQUIRED=20000</string>
+		<key>MACOSX_DEPLOYMENT_TARGET</key>
+		<string>10.5</string>
+		<key>PLATFORM_NAME</key>
+		<string>iphonesimulator</string>
+	</dict>
+	<key>DisplayName</key>
+	<string>Simulator - iPhone OS 2.0</string>
+	<key>FamilyIdentifier</key>
+	<string>iphoneos</string>
+	<key>FamilyName</key>
+	<string>iPhone OS</string>
+	<key>MaximumDeploymentTarget</key>
+	<string>10.5</string>
+	<key>MinimalDisplayName</key>
+	<string>Simulator</string>
+	<key>MinimumSupportedToolsVersion</key>
+	<string>3.1</string>
+	<key>Version</key>
+	<string>2.0</string>
+	<key>isBaseSDK</key>
+	<string>NO</string>
+</dict>
+</plist>
