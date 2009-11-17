@@ -6,6 +6,8 @@ module Selenium
     #
 
     class ChildProcess
+      attr_reader :pid
+
       def initialize(*args)
         @args = args
 

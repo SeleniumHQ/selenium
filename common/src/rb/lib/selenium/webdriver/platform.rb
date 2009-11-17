@@ -59,6 +59,10 @@ module Selenium
         os == :windows
       end
 
+      def mac?
+        os == :macosx
+      end
+
       def wrap_in_quotes_if_necessary(str)
         win? ? %{"#{str}"} : str
       end

@@ -2,6 +2,7 @@ module Selenium
   module WebDriver
     module Firefox
       class Binary
+
         def initialize
           ENV['MOZ_NO_REMOTE'] = '1' # able to launch multiple instances
           check_binary_exists
@@ -29,11 +30,33 @@ module Selenium
           # end
 
           execute(*args)
+          cope_with_mac_strangeness(args) if Platform.mac?
         end
 
         def execute(*extra_args)
           args = [path, "-no-remote", "--verbose"] + extra_args
           @process = ChildProcess.new(*args).start
+        end
+
+        def cope_with_mac_strangeness(args)
+          sleep 0.3
+          pid, status = Process.waitpid2(@process.pid, Process::WNOHANG)
+          if pid
+            return if status.exitstatus == 0
+            # process crashed, trying a restart
+            sleep 5
+            execute(*args)
+          end
+
+          # ensure we're ok
+          pid, status = nil
+          sleep 0.3
+          pid, status = Process.waitpid2(@process.pid, Process::WNOHANG)
+          if pid && status.exitstatus != 0
+            raise Error::WebDriverError, "Unable to start Firefox cleanly, args: #{args.inspect}, status: #{status.inspect}"
+          end
+
+          # all good
         end
 
         def kill
@@ -42,6 +65,14 @@ module Selenium
 
         def wait
           @process.wait if @process
+        end
+
+        def alive?
+          @process.alive? if @process
+        end
+
+        def pid
+          @process.pid if @process
         end
 
         private

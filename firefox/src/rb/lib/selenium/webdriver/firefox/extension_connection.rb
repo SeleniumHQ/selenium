@@ -15,7 +15,7 @@ module Selenium
                 return new_socket
               rescue Errno::ECONNREFUSED, Errno::ENOTCONN => e
                 $stderr.puts "#{self} caught #{e.message}" if $DEBUG
-                sleep 0.250
+                sleep 0.25
               end
             end
           }
