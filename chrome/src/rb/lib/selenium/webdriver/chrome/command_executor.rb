@@ -29,7 +29,8 @@ module Selenium
        end
 
        def close
-         @server.close rescue nil
+         @server.close
+       rescue IOError
        end
 
        private
@@ -46,6 +47,8 @@ module Selenium
 
            @accepted_any ||= true
          end
+       rescue IOError => e
+         raise e unless @server.closed?
        end
 
        def read_response(socket)

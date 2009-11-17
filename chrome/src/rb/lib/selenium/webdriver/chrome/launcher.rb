@@ -50,6 +50,7 @@ module Selenium
         end
 
         def create_profile
+          touch "#{tmp_profile_dir}/First Run"
           touch "#{tmp_profile_dir}/First Run Dev"
         end
 
