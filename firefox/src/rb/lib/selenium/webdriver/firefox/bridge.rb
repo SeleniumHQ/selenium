@@ -366,8 +366,14 @@ module Selenium
           puts "<-- #{resp.inspect}" if $DEBUG
 
           if resp['isError']
-            msg = resp['response']['message'] rescue nil
-            msg ||= resp['response'] || resp.inspect
+            case resp['response']
+            when String
+              msg = resp['response']
+            when Hash
+              msg = resp['response']['message']
+            end
+
+            msg ||= resp.inspect
             raise Error::WebDriverError, msg
           end
 
