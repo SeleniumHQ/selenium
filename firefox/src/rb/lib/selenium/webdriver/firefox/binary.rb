@@ -40,23 +40,18 @@ module Selenium
 
         def cope_with_mac_strangeness(args)
           sleep 0.3
-          pid, status = Process.waitpid2(@process.pid, Process::WNOHANG)
-          if pid
-            return if status.exitstatus == 0
-            # process crashed, trying a restart
+
+          if @process.ugly_death?
+            # process crashed, trying a restart. sleeping 5 seconds shorter than the java driver
             sleep 5
             execute(*args)
           end
 
           # ensure we're ok
-          pid, status = nil
           sleep 0.3
-          pid, status = Process.waitpid2(@process.pid, Process::WNOHANG)
-          if pid && status.exitstatus != 0
+          if @process.ugly_death?
             raise Error::WebDriverError, "Unable to start Firefox cleanly, args: #{args.inspect}, status: #{status.inspect}"
           end
-
-          # all good
         end
 
         def kill
@@ -65,10 +60,6 @@ module Selenium
 
         def wait
           @process.wait if @process
-        end
-
-        def alive?
-          @process.alive? if @process
         end
 
         def pid

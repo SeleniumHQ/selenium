@@ -18,14 +18,15 @@ module Selenium
         end
       end
 
-      def alive?
-        return false unless @pid
+      def ugly_death?
+        code = exit_value()
+        # if exit_val is nil, the process is still alive
+        code && code != 0
+      end
 
-        # TODO: check if this works on windows
-        Process.kill 0, @pid
-        true
-      rescue Errno::ESRCH
-        false
+      def exit_value
+        pid, status = Process.waitpid2(@pid, Process::WNOHANG)
+        status.exitstatus if pid
       end
 
       def start
@@ -79,6 +80,12 @@ module Selenium
 
         def wait
           @process.waitFor
+        end
+
+        def exit_value
+          @process.exitValue
+        rescue java.lang.IllegalThreadStateException
+          nil
         end
       end
 
