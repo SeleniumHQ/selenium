@@ -22,7 +22,6 @@
 		289233AE0DB2D0DB0083E9F9 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 289233A90DB2D0DB0083E9F9 /* MainViewController.m */; };
 		289233AF0DB2D0DB0083E9F9 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 289233AB0DB2D0DB0083E9F9 /* RootViewController.m */; };
 		289233B00DB2D0DB0083E9F9 /* FlipsideViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 289233AD0DB2D0DB0083E9F9 /* FlipsideViewController.m */; };
-		644F14ED10AB4EF400858ECA /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 644F14EC10AB4EF400858ECA /* Settings.bundle */; };
 		8301250C0EFF044900BA9BE6 /* Session.m in Sources */ = {isa = PBXBuildFile; fileRef = 839988650EE515C90074D106 /* Session.m */; };
 		8311AB7A0F44EF0500921B78 /* selenium-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 8311AB790F44EF0500921B78 /* selenium-icon.png */; };
 		8316A1BF0EECCCA300FE869C /* Context.m in Sources */ = {isa = PBXBuildFile; fileRef = 8316A1BE0EECCCA300FE869C /* Context.m */; };
@@ -172,7 +171,6 @@
 		289233AD0DB2D0DB0083E9F9 /* FlipsideViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FlipsideViewController.m; path = Classes/FlipsideViewController.m; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* iWebDriver_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iWebDriver_Prefix.pch; sourceTree = "<group>"; };
-		644F14EC10AB4EF400858ECA /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		8311AB790F44EF0500921B78 /* selenium-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "selenium-icon.png"; sourceTree = "<group>"; };
 		8316A1BD0EECCCA300FE869C /* Context.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Context.h; sourceTree = "<group>"; };
 		8316A1BE0EECCCA300FE869C /* Context.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Context.m; sourceTree = "<group>"; };
@@ -340,6 +338,7 @@
 			isa = PBXGroup;
 			children = (
 				839988BA0EE5F0500074D106 /* Tests */,
+				838B332C0F1422F600F72BC4 /* REST Service */,
 				839986AC0EE3AA720074D106 /* Web server extensions */,
 				289233A00DB2D0730083E9F9 /* Main View */,
 				281C6CD70DB2D82200F60ACC /* Flipside View */,
@@ -349,7 +348,6 @@
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 				833103FC0F1D7F57000A38DB /* Info.plist */,
-				644F14EC10AB4EF400858ECA /* Settings.bundle */,
 			);
 			name = CustomTemplate;
 			sourceTree = "<group>";
@@ -432,12 +430,12 @@
 				8331047F0F1EB2F7000A38DB /* NSException+WebDriver.m */,
 			);
 			name = "REST Service";
+			path = src/objc;
 			sourceTree = "<group>";
 		};
 		839986AC0EE3AA720074D106 /* Web server extensions */ = {
 			isa = PBXGroup;
 			children = (
-				838B332C0F1422F600F72BC4 /* REST Service */,
 				17D715530FE1078C00CC479E /* HTTP + PNG */,
 				FD61E6970FE150E5006E1274 /* WebDriverUtilities.h */,
 				FD61E6980FE150E5006E1274 /* WebDriverUtilities.m */,
@@ -636,7 +634,6 @@
 				280E754F0DD40C5E005A515E /* MainWindow.xib in Resources */,
 				8399863C0EE3A2E70074D106 /* MainView.xib in Resources */,
 				8311AB7A0F44EF0500921B78 /* selenium-icon.png in Resources */,
-				644F14ED10AB4EF400858ECA /* Settings.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -919,7 +916,6 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				JSON_HEADERS = "$(PROJECT_DIR)/lib/buildtime-src/json-framework/project/Source/";
 				OBJROOT = "$(SYMROOT)";
-				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos2.2.1;
