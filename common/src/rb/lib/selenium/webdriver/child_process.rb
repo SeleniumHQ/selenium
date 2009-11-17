@@ -34,7 +34,7 @@ module Selenium
 
       def wait
         raise "called wait with no pid" unless @pid
-        Process.waitpid @pid
+        Process.waitpid2 @pid
       end
 
       def kill

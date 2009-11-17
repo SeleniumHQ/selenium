@@ -9,10 +9,14 @@ module Selenium
 
         def create_base_profile(name)
           execute("-CreateProfile", name)
-          Timeout.timeout(15, Error::TimeOutError) { wait }
 
-          unless $?.success?
-            raise Error::WebDriverError, "could not create base profile: (#{$?.exitstatus})"
+          status = nil
+          Timeout.timeout(15, Error::TimeOutError) do
+            _, status = wait
+          end
+
+          if status && !status.success?
+            raise Error::WebDriverError, "could not create base profile: (exit status: #{status.exitstatus})"
           end
         end
 
