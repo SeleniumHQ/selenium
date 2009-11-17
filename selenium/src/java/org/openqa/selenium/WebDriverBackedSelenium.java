@@ -29,7 +29,6 @@ import java.util.regex.Pattern;
 import com.google.common.collect.Maps;
 import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.SeleniumException;
-import com.thoughtworks.selenium.Wait;
 import org.openqa.selenium.internal.seleniumemulation.AddLocationStrategy;
 import org.openqa.selenium.internal.seleniumemulation.AddSelection;
 import org.openqa.selenium.internal.seleniumemulation.AltKeyDown;
@@ -38,6 +37,8 @@ import org.openqa.selenium.internal.seleniumemulation.AssignId;
 import org.openqa.selenium.internal.seleniumemulation.AttachFile;
 import org.openqa.selenium.internal.seleniumemulation.Check;
 import org.openqa.selenium.internal.seleniumemulation.Click;
+import org.openqa.selenium.internal.seleniumemulation.ControlKeyDown;
+import org.openqa.selenium.internal.seleniumemulation.ControlKeyUp;
 import org.openqa.selenium.internal.seleniumemulation.CreateCookie;
 import org.openqa.selenium.internal.seleniumemulation.DeleteAllVisibleCookies;
 import org.openqa.selenium.internal.seleniumemulation.DeleteCookie;
@@ -54,6 +55,7 @@ import org.openqa.selenium.internal.seleniumemulation.GetSelectedIndex;
 import org.openqa.selenium.internal.seleniumemulation.GetSelectedIndexes;
 import org.openqa.selenium.internal.seleniumemulation.GetXpathCount;
 import org.openqa.selenium.internal.seleniumemulation.GlobTextMatchingStrategy;
+import org.openqa.selenium.internal.seleniumemulation.GoBack;
 import org.openqa.selenium.internal.seleniumemulation.IsCookiePresent;
 import org.openqa.selenium.internal.seleniumemulation.JavascriptLibrary;
 import org.openqa.selenium.internal.seleniumemulation.KeyEvent;
@@ -62,41 +64,49 @@ import org.openqa.selenium.internal.seleniumemulation.MetaKeyDown;
 import org.openqa.selenium.internal.seleniumemulation.MetaKeyUp;
 import org.openqa.selenium.internal.seleniumemulation.MouseEvent;
 import org.openqa.selenium.internal.seleniumemulation.MouseEventAt;
+import org.openqa.selenium.internal.seleniumemulation.NoOp;
+import org.openqa.selenium.internal.seleniumemulation.Open;
+import org.openqa.selenium.internal.seleniumemulation.OpenWindow;
+import org.openqa.selenium.internal.seleniumemulation.Refresh;
 import org.openqa.selenium.internal.seleniumemulation.RegExTextMatchingStrategy;
 import org.openqa.selenium.internal.seleniumemulation.RemoveAllSelections;
 import org.openqa.selenium.internal.seleniumemulation.RemoveSelection;
+import org.openqa.selenium.internal.seleniumemulation.RunScript;
+import org.openqa.selenium.internal.seleniumemulation.SelectFrame;
 import org.openqa.selenium.internal.seleniumemulation.SelectOption;
+import org.openqa.selenium.internal.seleniumemulation.SelectWindow;
 import org.openqa.selenium.internal.seleniumemulation.SeleneseCommand;
 import org.openqa.selenium.internal.seleniumemulation.SeleniumSelect;
+import org.openqa.selenium.internal.seleniumemulation.SetTimeout;
 import org.openqa.selenium.internal.seleniumemulation.ShiftKeyDown;
 import org.openqa.selenium.internal.seleniumemulation.ShiftKeyUp;
+import org.openqa.selenium.internal.seleniumemulation.Submit;
 import org.openqa.selenium.internal.seleniumemulation.TextMatchingStrategy;
+import org.openqa.selenium.internal.seleniumemulation.Timer;
 import org.openqa.selenium.internal.seleniumemulation.Type;
 import org.openqa.selenium.internal.seleniumemulation.TypeKeys;
 import org.openqa.selenium.internal.seleniumemulation.Uncheck;
+import org.openqa.selenium.internal.seleniumemulation.WaitForCondition;
 import org.openqa.selenium.internal.seleniumemulation.WaitForPageToLoad;
+import org.openqa.selenium.internal.seleniumemulation.WaitForPopup;
+import org.openqa.selenium.internal.seleniumemulation.Windows;
 
 public class WebDriverBackedSelenium implements Selenium {
   private static final Pattern TEXT_MATCHING_STRATEGY_AND_VALUE_PATTERN = Pattern.compile("^(\\p{Alpha}+):(.*)");
-  protected WebDriver driver;
+  private static final Pattern TABLE_PARTS = Pattern.compile("(.*)\\.(\\d+)\\.(\\d+)");
+
+  private final WebDriver driver;
+
   private final String baseUrl;
 
-  private final Map<String, String> lastFrame = Maps.newHashMap();
   private final Map<String, TextMatchingStrategy> textMatchingStrategies = Maps.newHashMap();
-
   private final Map<String, SeleneseCommand> seleneseMethods = Maps.newHashMap();
-  private static final Pattern TABLE_PARTS = Pattern.compile("(.*)\\.(\\d+)\\.(\\d+)");
+  private final ElementFinder elementFinder = new ElementFinder();
+
+  private final JavascriptLibrary javascriptLibrary = new JavascriptLibrary();
 
   // Keyboard related stuff
   private KeyState keyState = new KeyState();
-  private String originalWindowHandle;
-  
-  // Emulated timeout in milliseconds.
-  private long timeout = 30000;
-  // Thread to emulate the timeout
-  private TimeoutThread timeoutThread;
-  private ElementFinder elementFinder = new ElementFinder();
-  private JavascriptLibrary javascriptLibrary = new JavascriptLibrary();
 
   public WebDriverBackedSelenium(WebDriver baseDriver, String baseUrl) {
     setUpTextMatchingStrategies();
@@ -107,35 +117,14 @@ public class WebDriverBackedSelenium implements Selenium {
     } else {
       this.baseUrl = baseUrl;
     }
-    originalWindowHandle = driver.getWindowHandle();
 
     setUpMethodMap();
-  }
-
-  /**
-   * Stops the timeout thread if it exists.
-   */
-  private void stopTimeoutThreadIfExists() {
-    if (timeoutThread != null) {
-      timeoutThread.interrupt();
-      timeoutThread = null;
-    }
   }
 
   public WebDriver getUnderlyingWebDriver() {
     return driver;
   }
 
-  /**
-   * Creates a new timeout thread. If exists a previous existing timeout will
-   * be stopped.
-   */
-  private void startTimeoutThread() {
-    stopTimeoutThreadIfExists();
-    timeoutThread = new TimeoutThread(Thread.currentThread(), timeout);
-    timeoutThread.start();
-  }
-  
   private void setUpTextMatchingStrategies() {
     textMatchingStrategies.put("implicit", new GlobTextMatchingStrategy());
     textMatchingStrategies.put("glob", new GlobTextMatchingStrategy());
@@ -316,7 +305,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * Release the meta key.
    */
   public void metaKeyUp() {
-    keyState.metaKeyDown = false;
+    seleneseMethods.get("metaKeyUp").apply(driver);
   }
 
   /**
@@ -330,21 +319,21 @@ public class WebDriverBackedSelenium implements Selenium {
    * Release the alt key.
    */
   public void altKeyUp() {
-    keyState.altKeyDown = true;
+    seleneseMethods.get("altKeyUp").apply(driver);
   }
 
   /**
    * Press the control key and hold it down until doControlUp() is called or a new page is loaded.
    */
   public void controlKeyDown() {
-    keyState.controlKeyDown = true;
+    seleneseMethods.get("controlKeyUp").apply(driver);
   }
 
   /**
    * Release the control key.
    */
   public void controlKeyUp() {
-    keyState.controlKeyDown = false;
+    seleneseMethods.get("controlKeyUp").apply(driver);
   }
 
   /**
@@ -527,7 +516,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param value the number of milliseconds to pause after operation
    */
   public void setSpeed(String value) {
-    // no-op
+    seleneseMethods.get("setSpeed").apply(driver, value);
   }
 
   /**
@@ -540,7 +529,7 @@ public class WebDriverBackedSelenium implements Selenium {
    */
   public String getSpeed() {
     // no-op. Pretend we work instantly. Which we do
-    return "0";
+    return (String) seleneseMethods.get("getSpeed").apply(driver);
   }
 
   /**
@@ -626,8 +615,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param formLocator an <a href="#locators">element locator</a> for the form you want to submit
    */
   public void submit(String formLocator) {
-    elementFinder.findElement(driver, formLocator)
-        .submit();
+    seleneseMethods.get("submit").apply(driver, formLocator);
   }
 
   /**
@@ -645,15 +633,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param url the URL to open; may be relative or absolute
    */
   public void open(String url) {
-    String urlToOpen = url;
-
-    if (url.indexOf("://") == -1) {
-      urlToOpen = baseUrl + (!url.startsWith("/") ? "/" : "") + url;
-    }
-    
-    startTimeoutThread();
-    driver.get(urlToOpen);
-    stopTimeoutThreadIfExists();
+    seleneseMethods.get("open").apply(driver, url);
   }
 
   /**
@@ -669,9 +649,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param windowID the JavaScript window ID of the window to select
    */
   public void openWindow(String url, String windowID) {
-    startTimeoutThread();
-    getEval(String.format("window.open('%s', '%s');", url, windowID));
-    stopTimeoutThreadIfExists();
+    seleneseMethods.get("openWindow").apply(driver, url, windowID);
   }
 
   /**
@@ -706,89 +684,8 @@ public class WebDriverBackedSelenium implements Selenium {
    *
    * @param windowID the JavaScript window ID of the window to select
    */
-  public void selectWindow(String windowID) { 
-    if ("null".equals(windowID)) {
-      driver.switchTo().window(originalWindowHandle);
-    } else if ("_blank".equals(windowID)) {
-      selectBlankWindow();
-    } else {
-      if (windowID.startsWith("title=")) {
-        selectWindowWithTitle(windowID.substring("title=".length()));
-        return;
-      }
-
-      if (windowID.startsWith("name=")) {
-        windowID = windowID.substring("name=".length());
-      }
-
-      try {
-        driver.switchTo().window(windowID);
-      } catch (NoSuchWindowException e) {
-        selectWindowWithTitle(windowID);
-      }
-    }
-
-    if (lastFrame.containsKey(driver.getWindowHandle())) {
-      // If the frame has gone, fall back
-      try {
-        selectFrame(lastFrame.get(driver.getWindowHandle()));
-      } catch (SeleniumException e) {
-        lastFrame.remove(driver.getWindowHandle());
-      }
-    }
-  }
-
-  private void selectWindowWithTitle(String title) {
-    String current = driver.getWindowHandle();
-    for (String handle : driver.getWindowHandles()) {
-      driver.switchTo().window(handle);
-      if (title.equals(driver.getTitle())) {
-        return;
-      }
-    }
-    
-    driver.switchTo().window(current);
-    throw new SeleniumException("Unable to select window with title: " + title);
-  }
-
-  /**
-   * Selects the only <code>_blank</code> window. A window open with 
-   * <code>target='_blank'</code> will have a <code>window.name = null</code>.
-   * 
-   * <p>This method assumes that there will only be one single
-   * <code>_blank</code> window and selects the first one with no name.
-   * Therefore if for any reasons there are multiple windows with
-   * <code>window.name = null</code> the first found one will be selected.
-   * 
-   * <p>If none of the windows have <code>window.name = null</code> the last
-   * selected one will be re-selected and a {@link SeleniumException} will
-   * be thrown.
-   * 
-   * @throws NoSuchWindowException if no window with
-   *     <code>window.name = null</code> is found.
-   */
-  private void selectBlankWindow() {
-    String current = driver.getWindowHandle();
-    // Find the first window without a "name" attribute
-    List<String> handles = new ArrayList<String>(driver.getWindowHandles());
-    for (String handle: handles) {
-      // the original window will never be a _blank window, so don't even look at it
-      // this is also important to skip, because the original/root window won't have
-      // a name either, so if we didn't know better we might think it's a _blank popup!
-      if (handle.equals(originalWindowHandle)) {
-        continue;
-      }
-      driver.switchTo().window(handle);
-      String value = (String) 
-          ((JavascriptExecutor) driver).executeScript("return window.name;");
-      if (value == null || "".equals(value)) {
-        // We found it!
-        return;
-      }
-    }
-    // We couldn't find it
-    driver.switchTo().window(current);
-    throw new SeleniumException("Unable to select window _blank");
+  public void selectWindow(String windowID) {
+    seleneseMethods.get("selectWindow").apply(driver, windowID);
   }
 
   /** Simplifies the process of selecting a popup window (and does not offer
@@ -832,18 +729,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param locator an <a href="#locators">element locator</a> identifying a frame or iframe
    */
   public void selectFrame(String locator) {
-    if ("relative=top".equals(locator)) {
-      driver.switchTo().defaultContent();
-      lastFrame.remove(driver.getWindowHandle());
-      return;
-    }
-    
-    try {
-      lastFrame.put(driver.getWindowHandle(), locator);
-      driver.switchTo().frame(locator);
-    } catch (NoSuchFrameException e) {
-      throw new SeleniumException(e.getMessage(), e);
-    }
+    seleneseMethods.get("selectFrame").apply(driver, locator);
   }
 
   /**
@@ -887,35 +773,11 @@ public class WebDriverBackedSelenium implements Selenium {
    * of searching the window by ID it is necessary to search for the only window
    * without a name.
    * 
-   * @see #selectBlankWindow()
-   *
    * @param windowID the JavaScript window "name" of the window that will appear (not the text of the title bar)
    * @param timeout  a timeout in milliseconds, after which the action will return with an error
    */
   public void waitForPopUp(final String windowID, String timeout) {
-    final long millis = Long.parseLong(timeout);
-    final String current = driver.getWindowHandle();
-    
-    startTimeoutThread();
-    new Wait() {
-      @Override
-      public boolean until() {
-        try {
-          if ("_blank".equals(windowID)) {
-            selectBlankWindow();
-          } else {
-            driver.switchTo().window(windowID);
-          }
-          return !"about:blank".equals(driver.getCurrentUrl());
-        } catch (SeleniumException e) {
-          // Swallow
-        }
-        return false;
-      }
-    }.wait(String.format("Timed out waiting for %s. Waited %s", windowID, timeout), millis);
-    stopTimeoutThreadIfExists();
-    
-    driver.switchTo().window(current);
+    seleneseMethods.get("waitForPopUp").apply(driver, windowID, timeout);
   }
 
   /**
@@ -971,18 +833,14 @@ public class WebDriverBackedSelenium implements Selenium {
    * Simulates the user clicking the "back" button on their browser.
    */
   public void goBack() {
-    startTimeoutThread();
-    driver.navigate().back();
-    stopTimeoutThreadIfExists();
+    seleneseMethods.get("goBack").apply(driver);
   }
 
   /**
    * Simulates the user clicking the "Refresh" button on their browser.
    */
   public void refresh() {
-    startTimeoutThread();
-    driver.navigate().refresh();
-    stopTimeoutThreadIfExists();
+    seleneseMethods.get("refresh").apply(driver);
   }
 
   /**
@@ -1836,14 +1694,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param timeout a timeout in milliseconds, after which this command will return with an error
    */
   public void waitForCondition(final String script, String timeout) {
-    startTimeoutThread();
-    new Wait() {
-      @Override
-      public boolean until() {
-        return (Boolean) ((JavascriptExecutor) driver).executeScript(script);
-      }
-    }.wait("Failed to resolve " + script, Long.valueOf(timeout));
-    stopTimeoutThreadIfExists();
+    seleneseMethods.get("waitForCondition").apply(driver, script, timeout);
   }
   
 
@@ -1856,7 +1707,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param timeout a timeout in milliseconds, after which the action will return with an error
    */
   public void setTimeout(String timeout) {
-      this.timeout = Long.parseLong(timeout); 
+    seleneseMethods.get("setTimeout").apply(driver, timeout);
   }
   
   /**
@@ -1886,7 +1737,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param timeout      a timeout in milliseconds, after which this command will return with an error
    */
   public void waitForFrameToLoad(String frameAddress, String timeout) {
-    // no-op
+    seleneseMethods.get("waitForFrameToLoad").apply(driver, frameAddress, timeout);
   }
 
   /**
@@ -1966,6 +1817,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param logLevel one of the following: "debug", "info", "warn", "error" or "off"
    */
   public void setBrowserLogLevel(String logLevel) {
+    seleneseMethods.get("setBrowserLogLevel").apply(driver, logLevel);
   }
 
   /**
@@ -1980,7 +1832,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param script the JavaScript snippet to run
    */
   public void runScript(String script) {
-    javascriptLibrary.executeScript(driver, script);
+    seleneseMethods.get("runScript").apply(driver, script);
   }
 
   /**
@@ -2039,7 +1891,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param libraryName name of the desired library Only the following two can be chosen:   ajaxslt - Google's library   javascript - Cybozu Labs' faster library The default library is ajaxslt. If libraryName isn't one of them, then  no change will be made.
    */
   public void useXpathLibrary(String libraryName) {
-    // no-op
+    seleneseMethods.get("useXpathLibrary").apply(driver, libraryName);
   }
 
   /**
@@ -2049,7 +1901,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param context the message to be sent to the browser
    */
   public void setContext(String context) {
-    // no-op
+    seleneseMethods.get("setContext").apply(driver, context);
   }
 
   /**
@@ -2189,35 +2041,12 @@ public class WebDriverBackedSelenium implements Selenium {
     throw new UnsupportedOperationException("Selenium.addCustomRequestHeader() not implemented yet.");
   }
 
-  /**
-   * Fake timeout thread to emulate the timeout feature in Selenium.
-   */
-  private final class TimeoutThread extends Thread {
-
-    private long wait = 0;
-    private Thread callback;
-
-    public TimeoutThread(Thread callback, long wait) {
-      this.callback = callback;
-      this.wait = wait;
-    }
-    
-    @Override
-    public void run() {
-      try {
-        Thread.sleep(wait);
-      } catch (InterruptedException e) {
-        // The timeoput has been interrupted.
-        return;
-      }
-      // The timeout has been reach, interrupting the original thread.
-      callback.interrupt();
-    }
-    
-  }
-
   private void setUpMethodMap() {
+    // TODO(simon): Switch to wrapping all calls in a timed future
+    // Default to 30 seconds on the timer
+    Timer timer = new Timer(30000);
     SeleniumSelect select = new SeleniumSelect(elementFinder);
+    Windows windows = new Windows(driver);
 
     // Note the we use the names used by the CommandProcessor
     // TODO(simon): Add a "getCommandProcessor" method to DefaultSelenium and move this to a
@@ -2231,6 +2060,8 @@ public class WebDriverBackedSelenium implements Selenium {
     seleneseMethods.put("click", new Click(elementFinder));
     seleneseMethods.put("check", new Check(elementFinder));
     seleneseMethods.put("createCookie", new CreateCookie());
+    seleneseMethods.put("controlKeyDown", new ControlKeyDown(keyState));
+    seleneseMethods.put("controlKeyUp", new ControlKeyUp(keyState));
     seleneseMethods.put("deleteAllVisibleCookies", new DeleteAllVisibleCookies());
     seleneseMethods.put("deleteCookie", new DeleteCookie());
     seleneseMethods.put("doubleClick", new DoubleClick(elementFinder));
@@ -2242,7 +2073,9 @@ public class WebDriverBackedSelenium implements Selenium {
     seleneseMethods.put("getCookieByName", new GetCookieByName());
     seleneseMethods.put("getSelectedIndex", new GetSelectedIndex(select));
     seleneseMethods.put("getSelectedIndexes", new GetSelectedIndexes(select));
+    seleneseMethods.put("getSpeed", new NoOp("0"));
     seleneseMethods.put("getXpathCount", new GetXpathCount());
+    seleneseMethods.put("goBack", new GoBack(timer));
     seleneseMethods.put("isCookiePresent", new IsCookiePresent());
     seleneseMethods.put("keyDown", new KeyEvent(elementFinder, javascriptLibrary, keyState, "doKeyDown"));
     seleneseMethods.put("keyPress", new TypeKeys(elementFinder));
@@ -2257,14 +2090,29 @@ public class WebDriverBackedSelenium implements Selenium {
     seleneseMethods.put("mouseMoveAt", new MouseEventAt(elementFinder, javascriptLibrary, "mousemove"));
     seleneseMethods.put("mouseUp", new MouseEvent(elementFinder, javascriptLibrary, "mouseup"));
     seleneseMethods.put("mouseUpAt", new MouseEventAt(elementFinder, javascriptLibrary, "mouseup"));
+    seleneseMethods.put("open", new Open(timer, baseUrl));
+    seleneseMethods.put("openWindow", new OpenWindow(timer, new GetEval()));
+    seleneseMethods.put("refresh", new Refresh(timer));
     seleneseMethods.put("removeAllSelections", new RemoveAllSelections(elementFinder));
     seleneseMethods.put("removeSelection", new RemoveSelection(elementFinder, select));
+    seleneseMethods.put("runScript", new RunScript(javascriptLibrary));
     seleneseMethods.put("select", new SelectOption(select));
+    seleneseMethods.put("selectFrame", new SelectFrame(windows));
+    seleneseMethods.put("selectWindow", new SelectWindow(windows));
+    seleneseMethods.put("setBrowserLogLevel", new NoOp(null));
+    seleneseMethods.put("setContext", new NoOp(null));
+    seleneseMethods.put("setSpeed", new NoOp(null));
+    seleneseMethods.put("setTimeout", new SetTimeout(timer));
     seleneseMethods.put("shiftKeyDown", new ShiftKeyDown(keyState));
     seleneseMethods.put("shiftKeyUp", new ShiftKeyUp(keyState));
+    seleneseMethods.put("submit", new Submit(elementFinder));
     seleneseMethods.put("type", new Type(javascriptLibrary, elementFinder, keyState));
     seleneseMethods.put("typeKeys", new TypeKeys(elementFinder));
     seleneseMethods.put("uncheck", new Uncheck(elementFinder));
+    seleneseMethods.put("useXpathLibrary", new NoOp(null));
+    seleneseMethods.put("waitForCondition", new WaitForCondition(timer));
+    seleneseMethods.put("waitForFrameToLoad", new NoOp(null));
     seleneseMethods.put("waitForPageToLoad", new WaitForPageToLoad());
+    seleneseMethods.put("waitForPopUp", new WaitForPopup(timer, windows));
   }
 }
