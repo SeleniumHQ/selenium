@@ -18,6 +18,7 @@ limitations under the License.
 package org.openqa.selenium;
 
 import org.openqa.selenium.internal.FindsByClassName;
+import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
@@ -262,6 +263,43 @@ public abstract class By {
          }
        };
      }
+
+      /**
+       * Finds elements via the driver's underlying W3 Selector engine. If the browser does not
+       * implement the Selector API an exception will be thrown.
+       */
+      public static By cssSelector(final String selector) {
+        if (selector == null)
+          throw new IllegalArgumentException("Cannot find elements when the selector is null");
+
+        return new By() {
+          @Override
+          public WebElement findElement(SearchContext context) {
+            if (context instanceof FindsByCssSelector) {
+              return ((FindsByCssSelector) context).findElementByCssSelector(selector);
+            }
+
+            throw new WebDriverException(
+                "Driver does not support finding an element by selector: " + selector);
+          }
+
+          public List<WebElement> findElements(SearchContext context) {
+            if (context instanceof FindsByCssSelector) {
+              return ((FindsByCssSelector) context).findElementsByCssSelector(selector);
+            }
+
+            throw new WebDriverException(
+                "Driver does not support finding elements by selector: " + selector);
+          }
+
+          @Override
+          public String toString() {
+            return "By.selector: " + selector;
+          }
+        };
+
+      }
+
 
     /**
      * Find a single element. Override this method if necessary.

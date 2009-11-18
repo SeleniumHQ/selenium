@@ -242,6 +242,7 @@ FirefoxDriver.ElementLocator = {
   ID: 'id',
   NAME: 'name',
   CLASS_NAME: 'class name',
+  CSS_SELECTOR: 'css selector',
   TAG_NAME: 'tag name',
   LINK_TEXT: 'link text',
   PARTIAL_LINK_TEXT: 'partial link text',
@@ -289,6 +290,16 @@ FirefoxDriver.prototype.findElementInternal_ = function(respond, method,
                 this.findElementByXPath_(theDocument,           // FF 2
                     '//*[contains(concat(" ",normalize-space(@class)," ")," ' +
                     selector + ' ")]', rootNode);
+      break;
+
+    case FirefoxDriver.ElementLocator.CSS_SELECTOR:
+      if (rootNode['querySelector']) {
+        element = rootNode.querySelector(selector);
+      } else {
+        respond.isError = true;
+        respond.response = "CSS Selectors not supported natively";
+        respond.send();
+      }      
       break;
 
     case FirefoxDriver.ElementLocator.TAG_NAME:
@@ -399,6 +410,16 @@ FirefoxDriver.prototype.findElementsInternal_ = function(respond, method,
           rootNode.getElementsByName(selector) :
           this.findElementsByXPath_(
               theDocument, './/*[@name="' + selector + '"]', rootNode);
+      break;
+
+    case FirefoxDriver.ElementLocator.CSS_SELECTOR:
+      if (rootNode['querySelector']) {
+        elements = rootNode.querySelectorAll(selector);
+      } else {
+        respond.isError = true;
+        respond.response = "CSS Selectors not supported natively";
+        respond.send();
+      }
       break;
 
     case FirefoxDriver.ElementLocator.TAG_NAME:

@@ -27,6 +27,7 @@ import org.openqa.selenium.RenderedWebElement;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.FindsByClassName;
+import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
@@ -42,7 +43,8 @@ import java.util.Map;
 import java.util.HashMap;
 
 public class FirefoxWebElement implements RenderedWebElement, Locatable, 
-        FindsByXPath, FindsByLinkText, FindsById, FindsByName, FindsByTagName, FindsByClassName {
+        FindsByXPath, FindsByLinkText, FindsById, FindsByCssSelector,
+    FindsByName, FindsByTagName, FindsByClassName {
     private final FirefoxDriver parent;
     private final String elementId;
 
@@ -217,7 +219,15 @@ public class FirefoxWebElement implements RenderedWebElement, Locatable,
       return findChildElements("class name", className);
     }
 
-    private WebElement findChildElement(String using, String value) {
+    public WebElement findElementByCssSelector(String using) {
+      return findChildElement("css selector", using);
+    }
+
+    public List<WebElement> findElementsByCssSelector(String using) {
+      return findChildElements("css selector", using);
+    }
+
+  private WebElement findChildElement(String using, String value) {
       String id = sendMessage(NoSuchElementException.class,
           "findChildElement", buildSearchParamsMap(using, value));
       return new FirefoxWebElement(parent, id);

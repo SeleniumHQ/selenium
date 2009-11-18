@@ -43,6 +43,7 @@ import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.internal.ReturnedCookie;
+import org.openqa.selenium.internal.FindsByCssSelector;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -76,7 +77,8 @@ import java.util.Set;
  * This allows multiple instances of firefox to be started.
  */
 public class FirefoxDriver implements WebDriver, JavascriptExecutor,
-        FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, FindsByXPath {
+        FindsById, FindsByClassName, FindsByCssSelector,
+        FindsByLinkText, FindsByName, FindsByTagName, FindsByXPath {
     public static final int DEFAULT_PORT = 7055;
     // For now, only enable native events on Windows
     public static final boolean DEFAULT_ENABLE_NATIVE_EVENTS =
@@ -227,6 +229,20 @@ public class FirefoxDriver implements WebDriver, JavascriptExecutor,
     }
 
     return findElement("class name", using);
+  }
+
+  public WebElement findElementByCssSelector(String using) {
+    if (using == null)
+     throw new IllegalArgumentException("Cannot find elements when the css selector is null.");
+
+    return findElement("css selector", using);
+  }
+
+  public List<WebElement> findElementsByCssSelector(String using) {
+    if (using == null)
+     throw new IllegalArgumentException("Cannot find elements when the css selector is null.");
+
+    return findElements("css selector", using);
   }
 
   public WebElement findElementByName(String using) {
