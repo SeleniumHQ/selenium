@@ -465,7 +465,8 @@ webdriver.WebElement.prototype.getSize = function() {
 webdriver.WebElement.createCoordinatesFromResponse_ = function(future,
                                                                response) {
   var xy = response.value.replace(/\s/g, '').split(',');
-  response.value = new goog.math.Coordinate(xy[0], xy[1]);
+  response.value = new goog.math.Coordinate(
+      Number(xy[0]), Number(xy[1]));
   future.setValue(response.value);
 };
 
