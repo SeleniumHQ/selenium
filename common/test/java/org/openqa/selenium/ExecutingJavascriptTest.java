@@ -22,11 +22,14 @@ import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
+import org.apache.commons.io.FileUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.io.File;
+import java.io.IOException;
 
 public class ExecutingJavascriptTest extends AbstractDriverTestCase {
 
@@ -352,5 +355,17 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
 
     value = (String) executeScript("return ' '");
     assertEquals(" ", value);
+  }
+
+  @JavascriptEnabled
+  public void testShouldBeAbleToExecuteABigChunkOfJavascriptCode() throws IOException {
+    driver.get(javascriptPage);
+
+    File jqueryFile = new File("common/src/web/jquery-1.2.6.min.js");
+    assertTrue(jqueryFile.getAbsolutePath() + " should exist.", jqueryFile.exists());
+    String jquery = FileUtils.readFileToString(jqueryFile, "US-ASCII");
+    assertTrue("The javascript code should be at least 50 KB.", jquery.length() > 50000);
+    // This should not throw an exception ...
+    executeScript(jquery);
   }
 }
