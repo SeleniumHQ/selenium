@@ -50,6 +50,7 @@ public class AbstractDriverTestCase extends TestCase implements NeedsDriver {
   protected String childPage;
   protected String grandchildPage;
   protected String uploadPage;
+  protected String svgPage;
 
   public void setDriver(WebDriver driver) {
     this.driver = driver;
@@ -79,6 +80,7 @@ public class AbstractDriverTestCase extends TestCase implements NeedsDriver {
     childPage = appServer.whereIs("child/childPage.html");
     grandchildPage = appServer.whereIs("child/grandchild/grandchildPage.html");
     uploadPage = appServer.whereIs("upload.html");
+    svgPage = appServer.whereIs("svgPiechart.xhtml");
 
     String hostName = environment.getAppServer().getHostName();
     String alternateHostName = environment.getAppServer().getAlternateHostName();

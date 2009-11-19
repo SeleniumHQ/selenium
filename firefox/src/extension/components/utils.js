@@ -1086,7 +1086,11 @@ Utils.findElementsByXPath = function (xpath, contextNode, context) {
 
 
 Utils.getLocationOnceScrolledIntoView = function(element) {
-  element.scrollIntoView(true);
+  // Some elements may not a scrollIntoView function - for example,
+  // elements under an SVG element. Call those only if they exist.
+  if (typeof element.scrollIntoView == 'function') {
+    element.scrollIntoView(true);
+  }
 
   var retrieval = Utils.newInstance(
       "@mozilla.org/accessibleRetrieval;1", "nsIAccessibleRetrieval");
@@ -1104,6 +1108,18 @@ Utils.getLocationOnceScrolledIntoView = function(element) {
         width: clientRect.width,
         height: clientRect.height
       };
+    }
+
+    // Firefox 3.0.14 seems to have top, bottom attributes.
+    if (clientRect['top'] !== undefined) {
+      var retWidth = clientRect.right - clientRect.left;
+      var retHeight = clientRect.bottom - clientRect.top;
+      return {
+        x : clientRect.left,
+        y : clientRect.top,
+        width: retWidth,
+        height: retHeight
+      }
     }
 
     // Firefox 3.0
@@ -1125,6 +1141,7 @@ Utils.getLocationOnceScrolledIntoView = function(element) {
 
   // Firefox 2.0
 
+  Utils.dumpn("Falling back to firefox2 mechanism");
   // Fallback. Use the (deprecated) method to find out where the element is in
   // the viewport. This should be fine to use because we only fall down this
   // code path on older versions of Firefox (I think!)
