@@ -21,16 +21,16 @@ import com.thoughtworks.selenium.SeleniumException;
 import org.openqa.selenium.WebDriver;
 
 public abstract class SeleneseCommand<T> {
-  public T apply(WebDriver driver, Object... args) {
+  public T apply(WebDriver driver, String[] args) {
     switch (args.length) {
       case 0:
         return handleSeleneseCommand(driver, null, null);
 
       case 1:
-        return handleSeleneseCommand(driver, (String) args[0], null);
+        return handleSeleneseCommand(driver, args[0], null);
 
       case 2:
-        return handleSeleneseCommand(driver, (String) args[0], (String) args[1]);
+        return handleSeleneseCommand(driver, args[0], args[1]);
 
       default:
         throw new SeleniumException("Too many arguments! " + args.length);

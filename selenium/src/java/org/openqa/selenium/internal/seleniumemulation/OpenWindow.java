@@ -33,10 +33,10 @@ public class OpenWindow extends SeleneseCommand<Void> {
     timer.run(new Runnable() {
 
       public void run() {
-        opener.apply(driver, String.format("window.open('%s', '%s');", url, windowID));
+        String[] args = {String.format("window.open('%s', '%s');", url, windowID)};
+        opener.apply(driver, args);
       }
     });
-
 
     return null;
   }

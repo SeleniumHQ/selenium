@@ -91,7 +91,7 @@ public class SeleniumSelect {
     }
 
     if (onlyOneOption && isMultiple) {
-      new RemoveAllSelections(finder).apply(driver, selectLocator);
+      new RemoveAllSelections(finder).apply(driver, new String[] { selectLocator });
     }
 
     Matcher matcher = ElementFinder.STRATEGY_AND_VALUE_PATTERN

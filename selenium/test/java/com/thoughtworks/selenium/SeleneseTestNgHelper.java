@@ -46,6 +46,10 @@ public class SeleneseTestNgHelper extends SeleneseTestBase
           }
         } else if (browserString.contains("ie") || browserString.contains("hta")) {
 //          System.setProperty("webdriver.development", "true");
+//          driver = Class.forName("org.openqa.selenium.firefox.FirefoxDriverTestSuite$TestFirefoxDriver")
+//              .asSubclass(WebDriver.class).newInstance();
+//            driver = new FirefoxDriver();
+//          System.setProperty("webdriver.development", "true");
 //          System.setProperty("jna.library.path", "..\\build;build");
           driver = new InternetExplorerDriver();
         } else {
