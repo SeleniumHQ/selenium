@@ -17,43 +17,22 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import com.thoughtworks.selenium.SeleniumException;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 
 public class FindSelectedOptionProperties extends SeleneseCommand<String[]> {
   private final SeleniumSelect select;
+  private final SeleniumSelect.Property property;
 
-  public FindSelectedOptionProperties(SeleniumSelect select) {
+  public FindSelectedOptionProperties(SeleniumSelect select, SeleniumSelect.Property property) {
     this.select = select;
+    this.property = property;
   }
 
   @Override
-  protected String[] handleSeleneseCommand(WebDriver driver, String selectLocator, String property) {
-    List<WebElement> options = select.getOptions(driver, selectLocator);
-
-    List<String> selectedOptions = new ArrayList<String>();
-
-    for (WebElement option : options) {
-      if (option.isSelected()) {
-        if ("text".equals(property)) {
-          selectedOptions.add(option.getText());
-        } else if ("value".equals(property)) {
-          selectedOptions.add(option.getValue());
-        } else {
-          String propVal = option.getAttribute(property);
-          if (propVal != null)
-            selectedOptions.add(propVal);
-        }
-      }
-    }
-
-    if (selectedOptions.size() == 0)
-      throw new SeleniumException("No option selected");
-    return selectedOptions.toArray(new String[selectedOptions.size()]);
-
+  protected String[] handleSeleneseCommand(WebDriver driver, String selectLocator, String ignored) {
+    List<String> options = select.getOptions(driver, selectLocator, property, false);
+    return options.toArray(new String[options.size()]);
   }
 }

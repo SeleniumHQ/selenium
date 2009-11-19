@@ -17,6 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -36,13 +37,46 @@ public class SeleniumSelect {
     setUpOptionFindingStrategies();
   }
 
-  public List<WebElement> getOptions(WebDriver driver, String selectLocator) {
+  public static enum Property {
+    ID,
+    INDEX,
+    TEXT,
+    VALUE,
+  }
+
+  public List<String> getOptions(WebDriver driver, String selectLocator, Property property, boolean fetchAll) {
     WebElement element = finder.findElement(driver, selectLocator);
     List<WebElement> options = element.findElements(By.tagName("option"));
+
     if (options.size() == 0) {
       throw new SeleniumException("Specified element is not a Select (has no options)");
     }
-    return options;
+
+    List<String> selectedOptions = new ArrayList<String>();
+
+    for (WebElement option : options) {
+      if (fetchAll || option.isSelected()) {
+        switch (property) {
+          case TEXT:
+            selectedOptions.add(option.getText());
+            break;
+
+          case VALUE:
+            selectedOptions.add(option.getValue());
+            break;
+
+          case ID:
+            selectedOptions.add(option.getAttribute("id"));
+            break;
+
+          case INDEX:
+            selectedOptions.add(option.getAttribute("index"));
+            break;
+        }
+      }
+    }
+
+    return selectedOptions;
   }
 
   public void select(WebDriver driver, String selectLocator, String optionLocator, boolean setSelected, boolean onlyOneOption) {

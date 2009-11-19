@@ -19,10 +19,6 @@ package org.openqa.selenium.internal.seleniumemulation;
 
 import junit.framework.TestCase;
 
-import org.openqa.selenium.internal.seleniumemulation.ElementFinder;
-import org.openqa.selenium.internal.seleniumemulation.IdLookupStrategy;
-import org.openqa.selenium.internal.seleniumemulation.LookupStrategy;
-
 public class ElementFinderTest extends TestCase {
 
   public void testShouldBeAbleToConvertLocatorsToStrategies() {

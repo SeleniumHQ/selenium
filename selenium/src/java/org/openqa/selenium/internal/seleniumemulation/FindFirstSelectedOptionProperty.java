@@ -19,28 +19,20 @@ package org.openqa.selenium.internal.seleniumemulation;
 
 import java.util.List;
 
-import com.thoughtworks.selenium.SeleniumException;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 
-public class GetSelectedIndex extends SeleneseCommand<String> {
+public class FindFirstSelectedOptionProperty extends SeleneseCommand<String> {
   private final SeleniumSelect select;
+  private final SeleniumSelect.Property property;
 
-  public GetSelectedIndex(SeleniumSelect select) {
+  public FindFirstSelectedOptionProperty(SeleniumSelect select, SeleniumSelect.Property property) {
     this.select = select;
+    this.property = property;
   }
 
   @Override
   protected String handleSeleneseCommand(WebDriver driver, String selectLocator, String ignored) {
-    List<WebElement> options = select.getOptions(driver, selectLocator);
-
-    for (int i = 0; i < options.size(); i++) {
-      WebElement option = options.get(i);
-      if (option.isSelected())
-        return String.valueOf(i);
-    }
-
-    throw new SeleniumException("No option is selected: " + selectLocator);
-
+    List<String> options = select.getOptions(driver, selectLocator, property, false);
+    return options.get(0);
   }
 }

@@ -17,18 +17,12 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import java.awt.Dimension;
-import java.awt.Point;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import com.google.common.collect.Maps;
 import com.thoughtworks.selenium.Selenium;
-import com.thoughtworks.selenium.SeleniumException;
 import org.openqa.selenium.internal.seleniumemulation.AddLocationStrategy;
 import org.openqa.selenium.internal.seleniumemulation.AddSelection;
 import org.openqa.selenium.internal.seleniumemulation.AltKeyDown;
@@ -37,26 +31,53 @@ import org.openqa.selenium.internal.seleniumemulation.AssignId;
 import org.openqa.selenium.internal.seleniumemulation.AttachFile;
 import org.openqa.selenium.internal.seleniumemulation.Check;
 import org.openqa.selenium.internal.seleniumemulation.Click;
+import org.openqa.selenium.internal.seleniumemulation.Close;
 import org.openqa.selenium.internal.seleniumemulation.ControlKeyDown;
 import org.openqa.selenium.internal.seleniumemulation.ControlKeyUp;
 import org.openqa.selenium.internal.seleniumemulation.CreateCookie;
 import org.openqa.selenium.internal.seleniumemulation.DeleteAllVisibleCookies;
 import org.openqa.selenium.internal.seleniumemulation.DeleteCookie;
 import org.openqa.selenium.internal.seleniumemulation.DoubleClick;
+import org.openqa.selenium.internal.seleniumemulation.DragAndDrop;
+import org.openqa.selenium.internal.seleniumemulation.DragAndDropToObject;
 import org.openqa.selenium.internal.seleniumemulation.ElementFinder;
-import org.openqa.selenium.internal.seleniumemulation.ExactTextMatchingStrategy;
+import org.openqa.selenium.internal.seleniumemulation.FindFirstSelectedOptionProperty;
 import org.openqa.selenium.internal.seleniumemulation.FindSelectedOptionProperties;
 import org.openqa.selenium.internal.seleniumemulation.FireEvent;
 import org.openqa.selenium.internal.seleniumemulation.FireNamedEvent;
+import org.openqa.selenium.internal.seleniumemulation.GetAllButtons;
+import org.openqa.selenium.internal.seleniumemulation.GetAllFields;
+import org.openqa.selenium.internal.seleniumemulation.GetAllLinks;
+import org.openqa.selenium.internal.seleniumemulation.GetAllWindowTitles;
+import org.openqa.selenium.internal.seleniumemulation.GetAttribute;
+import org.openqa.selenium.internal.seleniumemulation.GetAttributeFromAllWindows;
+import org.openqa.selenium.internal.seleniumemulation.GetBodyText;
 import org.openqa.selenium.internal.seleniumemulation.GetCookie;
 import org.openqa.selenium.internal.seleniumemulation.GetCookieByName;
+import org.openqa.selenium.internal.seleniumemulation.GetElementHeight;
+import org.openqa.selenium.internal.seleniumemulation.GetElementIndex;
+import org.openqa.selenium.internal.seleniumemulation.GetElementPositionLeft;
+import org.openqa.selenium.internal.seleniumemulation.GetElementPositionTop;
+import org.openqa.selenium.internal.seleniumemulation.GetElementWidth;
 import org.openqa.selenium.internal.seleniumemulation.GetEval;
-import org.openqa.selenium.internal.seleniumemulation.GetSelectedIndex;
-import org.openqa.selenium.internal.seleniumemulation.GetSelectedIndexes;
+import org.openqa.selenium.internal.seleniumemulation.GetHtmlSource;
+import org.openqa.selenium.internal.seleniumemulation.GetLocation;
+import org.openqa.selenium.internal.seleniumemulation.GetSelectOptions;
+import org.openqa.selenium.internal.seleniumemulation.GetTable;
+import org.openqa.selenium.internal.seleniumemulation.GetText;
+import org.openqa.selenium.internal.seleniumemulation.GetTitle;
+import org.openqa.selenium.internal.seleniumemulation.GetValue;
 import org.openqa.selenium.internal.seleniumemulation.GetXpathCount;
-import org.openqa.selenium.internal.seleniumemulation.GlobTextMatchingStrategy;
 import org.openqa.selenium.internal.seleniumemulation.GoBack;
+import org.openqa.selenium.internal.seleniumemulation.Highlight;
+import org.openqa.selenium.internal.seleniumemulation.IsChecked;
 import org.openqa.selenium.internal.seleniumemulation.IsCookiePresent;
+import org.openqa.selenium.internal.seleniumemulation.IsEditable;
+import org.openqa.selenium.internal.seleniumemulation.IsElementPresent;
+import org.openqa.selenium.internal.seleniumemulation.IsOrdered;
+import org.openqa.selenium.internal.seleniumemulation.IsSomethingSelected;
+import org.openqa.selenium.internal.seleniumemulation.IsTextPresent;
+import org.openqa.selenium.internal.seleniumemulation.IsVisible;
 import org.openqa.selenium.internal.seleniumemulation.JavascriptLibrary;
 import org.openqa.selenium.internal.seleniumemulation.KeyEvent;
 import org.openqa.selenium.internal.seleniumemulation.KeyState;
@@ -68,7 +89,6 @@ import org.openqa.selenium.internal.seleniumemulation.NoOp;
 import org.openqa.selenium.internal.seleniumemulation.Open;
 import org.openqa.selenium.internal.seleniumemulation.OpenWindow;
 import org.openqa.selenium.internal.seleniumemulation.Refresh;
-import org.openqa.selenium.internal.seleniumemulation.RegExTextMatchingStrategy;
 import org.openqa.selenium.internal.seleniumemulation.RemoveAllSelections;
 import org.openqa.selenium.internal.seleniumemulation.RemoveSelection;
 import org.openqa.selenium.internal.seleniumemulation.RunScript;
@@ -81,7 +101,6 @@ import org.openqa.selenium.internal.seleniumemulation.SetTimeout;
 import org.openqa.selenium.internal.seleniumemulation.ShiftKeyDown;
 import org.openqa.selenium.internal.seleniumemulation.ShiftKeyUp;
 import org.openqa.selenium.internal.seleniumemulation.Submit;
-import org.openqa.selenium.internal.seleniumemulation.TextMatchingStrategy;
 import org.openqa.selenium.internal.seleniumemulation.Timer;
 import org.openqa.selenium.internal.seleniumemulation.Type;
 import org.openqa.selenium.internal.seleniumemulation.TypeKeys;
@@ -89,17 +108,20 @@ import org.openqa.selenium.internal.seleniumemulation.Uncheck;
 import org.openqa.selenium.internal.seleniumemulation.WaitForCondition;
 import org.openqa.selenium.internal.seleniumemulation.WaitForPageToLoad;
 import org.openqa.selenium.internal.seleniumemulation.WaitForPopup;
+import org.openqa.selenium.internal.seleniumemulation.WindowFocus;
+import org.openqa.selenium.internal.seleniumemulation.WindowMaximize;
 import org.openqa.selenium.internal.seleniumemulation.Windows;
 
-public class WebDriverBackedSelenium implements Selenium {
-  private static final Pattern TEXT_MATCHING_STRATEGY_AND_VALUE_PATTERN = Pattern.compile("^(\\p{Alpha}+):(.*)");
-  private static final Pattern TABLE_PARTS = Pattern.compile("(.*)\\.(\\d+)\\.(\\d+)");
+import static org.openqa.selenium.internal.seleniumemulation.SeleniumSelect.Property.ID;
+import static org.openqa.selenium.internal.seleniumemulation.SeleniumSelect.Property.INDEX;
+import static org.openqa.selenium.internal.seleniumemulation.SeleniumSelect.Property.TEXT;
+import static org.openqa.selenium.internal.seleniumemulation.SeleniumSelect.Property.VALUE;
 
+public class WebDriverBackedSelenium implements Selenium {
   private final WebDriver driver;
 
   private final String baseUrl;
 
-  private final Map<String, TextMatchingStrategy> textMatchingStrategies = Maps.newHashMap();
   private final Map<String, SeleneseCommand> seleneseMethods = Maps.newHashMap();
   private final ElementFinder elementFinder = new ElementFinder();
 
@@ -109,8 +131,6 @@ public class WebDriverBackedSelenium implements Selenium {
   private KeyState keyState = new KeyState();
 
   public WebDriverBackedSelenium(WebDriver baseDriver, String baseUrl) {
-    setUpTextMatchingStrategies();
-
     this.driver = baseDriver;
     if (baseUrl.endsWith("/")) {
       this.baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
@@ -125,12 +145,7 @@ public class WebDriverBackedSelenium implements Selenium {
     return driver;
   }
 
-  private void setUpTextMatchingStrategies() {
-    textMatchingStrategies.put("implicit", new GlobTextMatchingStrategy());
-    textMatchingStrategies.put("glob", new GlobTextMatchingStrategy());
-    textMatchingStrategies.put("regexp", new RegExTextMatchingStrategy());
-    textMatchingStrategies.put("exact", new ExactTextMatchingStrategy());
-  }
+
 
   /**
    * Sets the per-session extension Javascript
@@ -848,7 +863,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * window or tab.
    */
   public void close() {
-    driver.close();
+    seleneseMethods.get("close").apply(driver);
   }
 
   /**
@@ -956,7 +971,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return the absolute URL of the current page
    */
   public String getLocation() {
-    return driver.getCurrentUrl();
+    return (String) seleneseMethods.get("getLocation").apply(driver);
   }
 
   /**
@@ -965,7 +980,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return the title of the current page
    */
   public String getTitle() {
-    return driver.getTitle();
+    return (String) seleneseMethods.get("getTitle").apply(driver);
   }
 
   /**
@@ -974,7 +989,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return the entire text of the page
    */
   public String getBodyText() {
-    return driver.findElement(By.xpath("//body")).getText();
+    return (String) seleneseMethods.get("getBodyText").apply(driver);
   }
 
   /**
@@ -986,8 +1001,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return the element value, or "on/off" for checkbox/radio elements
    */
   public String getValue(String locator) {
-    return elementFinder.findElement(driver, locator)
-        .getValue();
+    return (String) seleneseMethods.get("getValue").apply(driver, locator);
   }
 
   /**
@@ -1000,8 +1014,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return the text of the element
    */
   public String getText(String locator) {
-    return elementFinder.findElement(driver, locator)
-        .getText().trim();
+    return (String) seleneseMethods.get("getText").apply(driver, locator);
   }
 
   /**
@@ -1010,7 +1023,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param locator an <a href="#locators">element locator</a>
    */
   public void highlight(String locator) {
-    javascriptLibrary.callEmbeddedHtmlUtils(driver, "highlight", elementFinder.findElement(driver, locator));
+    seleneseMethods.get("highlight").apply(driver, locator);
   }
 
   /**
@@ -1037,8 +1050,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return true if the checkbox is checked, false otherwise
    */
   public boolean isChecked(String locator) {
-    return elementFinder.findElement(driver, locator)
-        .isSelected();
+    return (Boolean) seleneseMethods.get("isChecked").apply(driver, locator);
   }
 
   /**
@@ -1049,29 +1061,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return the text from the specified cell
    */
   public String getTable(String tableCellAddress) {
-    Matcher matcher = TABLE_PARTS.matcher(tableCellAddress);
-    if (!matcher.matches()) {
-      throw new SeleniumException("Invalid target format. Correct format is tableName.rowNum.columnNum");
-    }
-
-    String tableName = matcher.group(1);
-    long row = Long.parseLong(matcher.group(2));
-    long col = Long.parseLong(matcher.group(3));
-
-    WebElement table = elementFinder.findElement(driver, tableName);
-
-    String script =
-        "var table = arguments[0]; var row = arguments[1]; var col = arguments[2];" +
-        "if (row > table.rows.length) { return \"Cannot access row \" + row + \" - table has \" + table.rows.length + \" rows\"; }" +
-        "if (col > table.rows[row].cells.length) { return \"Cannot access column \" + col + \" - table row has \" + table.rows[row].cells.length + \" columns\"; }" +
-        "return table.rows[row].cells[col];";
-
-    Object value = javascriptLibrary.executeScript(driver, script, table, row, col);
-    if (value instanceof WebElement) {
-      return ((WebElement) value).getText().trim();
-    }
-
-    throw new SeleniumException((String) value);
+    return (String) seleneseMethods.get("getTable").apply(driver, tableCellAddress);
   }
 
   /**
@@ -1081,7 +1071,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return an array of all selected option labels in the specified select drop-down
    */
   public String[] getSelectedLabels(String selectLocator) {
-    return findSelectedOptionProperties(selectLocator, "text");
+    return (String[]) seleneseMethods.get("getSelectedLabels").apply(driver, selectLocator);
   }
 
   /**
@@ -1091,8 +1081,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return the selected option label in the specified select drop-down
    */
   public String getSelectedLabel(String selectLocator) {
-    String[] labels = findSelectedOptionProperties(selectLocator, "text");
-    return labels[0];  // Since we know that there must have been at least one thing selected
+    return (String) seleneseMethods.get("getSelectedLabel").apply(driver, selectLocator);
   }
 
   /**
@@ -1102,7 +1091,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return an array of all selected option values in the specified select drop-down
    */
   public String[] getSelectedValues(String selectLocator) {
-    return findSelectedOptionProperties(selectLocator, "value");
+    return (String[]) seleneseMethods.get("getSelectedValues").apply(driver, selectLocator);
   }
 
   /**
@@ -1112,7 +1101,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return the selected option value in the specified select drop-down
    */
   public String getSelectedValue(String selectLocator) {
-    return findSelectedOptionProperties(selectLocator, "value")[0];
+    return (String) seleneseMethods.get("getSelectedValue").apply(driver, selectLocator);
   }
 
   /**
@@ -1142,7 +1131,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return an array of all selected option IDs in the specified select drop-down
    */
   public String[] getSelectedIds(String selectLocator) {
-    return findSelectedOptionProperties(selectLocator, "id");
+    return (String[]) seleneseMethods.get("getSelectedIds").apply(driver, selectLocator);
   }
 
   /**
@@ -1152,7 +1141,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return the selected option ID in the specified select drop-down
    */
   public String getSelectedId(String selectLocator) {
-    return findSelectedOptionProperties(selectLocator, "id")[0];
+    return (String) seleneseMethods.get("getSelectedId").apply(driver, selectLocator);
   }
 
   /**
@@ -1162,19 +1151,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return true if some option has been selected, false otherwise
    */
   public boolean isSomethingSelected(String selectLocator) {
-    WebElement select = elementFinder.findElement(driver, selectLocator);
-    String tagName = select.getTagName().toLowerCase();
-    if (!"select".equals(tagName)) {
-      throw new SeleniumException("Specified element is not a Select");
-    }
-
-    for (WebElement option : select.findElements(By.tagName("option"))) {
-      if (option.isSelected()) {
-        return true;
-      }
-    }
-
-    return false;
+    return (Boolean) seleneseMethods.get("isSomethingSelected").apply(driver, selectLocator);
   }
 
   /**
@@ -1184,14 +1161,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return an array of all option labels in the specified select drop-down
    */
   public String[] getSelectOptions(String selectLocator) {
-    WebElement select = elementFinder.findElement(driver, selectLocator);
-    List<WebElement> options = select.findElements(By.tagName("option"));
-    List<String> optionValues = new ArrayList<String>();
-    for (WebElement option : options) {
-      optionValues.add(option.getText());
-    }
-
-    return optionValues.toArray(new String[optionValues.size()]);
+    return (String[]) seleneseMethods.get("getSelectOptions").apply(driver, selectLocator);
   }
 
   /**
@@ -1203,13 +1173,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return the value of the specified attribute
    */
   public String getAttribute(String attributeLocator) {
-    int attributePos = attributeLocator.lastIndexOf("@");
-    String elementLocator = attributeLocator.substring(0, attributePos);
-    String attributeName = attributeLocator.substring(attributePos + 1);
-
-    // Find the element.
-    WebElement element = elementFinder.findElement(driver, elementLocator);
-    return element.getAttribute(attributeName);
+    return (String) seleneseMethods.get("getAttribute").apply(driver, attributeLocator);
   }
 
   /**
@@ -1219,19 +1183,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return true if the pattern matches the text, false otherwise
    */
   public boolean isTextPresent(String pattern) {
-    String text = driver.findElement(By.xpath("/html/body")).getText();
-    text = text.trim();
-
-    String strategyName = "implicit";
-    String use = pattern;
-    Matcher matcher = TEXT_MATCHING_STRATEGY_AND_VALUE_PATTERN.matcher(pattern);
-    if (matcher.matches()) {
-      strategyName = matcher.group(1);
-      use = matcher.group(2);
-    }
-    TextMatchingStrategy strategy = textMatchingStrategies.get(strategyName);
-
-    return strategy.isAMatch(use, text);
+    return (Boolean) seleneseMethods.get("isTextPresent").apply(driver, pattern);
   }
 
   /**
@@ -1241,12 +1193,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return true if the element is present, false otherwise
    */
   public boolean isElementPresent(String locator) {
-    try {
-      elementFinder.findElement(driver, locator);
-      return true;
-    } catch (SeleniumException e) {
-      return false;
-    }
+    return (Boolean) seleneseMethods.get("isElementPresent").apply(driver, locator);
   }
 
   /**
@@ -1260,7 +1207,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return true if the specified element is visible, false otherwise
    */
   public boolean isVisible(String locator) {
-    return ((RenderedWebElement) elementFinder.findElement(driver, locator)).isDisplayed();
+    return (Boolean) seleneseMethods.get("isVisible").apply(driver, locator);
   }
 
   /**
@@ -1271,16 +1218,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return true if the input element is editable, false otherwise
    */
   public boolean isEditable(String locator) {
-    WebElement element = elementFinder.findElement(driver, locator);
-    String tagName = element.getTagName().toLowerCase();
-    boolean acceptableTagName = "input".equals(tagName) || "select".equals(tagName);
-    String readonly = "";
-    if ("input".equals(tagName)) {
-      readonly = element.getAttribute("readonly");
-      if (readonly == null) readonly = "";
-    }
-
-    return element.isEnabled() && acceptableTagName && "".equals(readonly);
+    return (Boolean) seleneseMethods.get("isEditable").apply(driver, locator);
   }
 
   /**
@@ -1291,16 +1229,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return the IDs of all buttons on the page
    */
   public String[] getAllButtons() {
-    List<WebElement> allInputs = driver.findElements(By.xpath("//input"));
-    List<String> ids = new ArrayList<String>();
-
-    for (WebElement input : allInputs) {
-      String type = input.getAttribute("type").toLowerCase();
-      if ("button".equals(type) || "submit".equals(type) || "reset".equals(type))
-        ids.add(input.getAttribute("id"));
-    }
-
-    return ids.toArray(new String[ids.size()]);
+    return (String[]) seleneseMethods.get("getAllButtons").apply(driver);
   }
 
   /**
@@ -1311,19 +1240,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return the IDs of all links on the page
    */
   public String[] getAllLinks() {
-    List<WebElement> allLinks = driver.findElements(By.xpath("//a"));
-    Iterator<WebElement> i = allLinks.iterator();
-    List<String> links = new ArrayList<String>();
-    while (i.hasNext()) {
-      WebElement link = i.next();
-      String id = link.getAttribute("id");
-      if (id == null)
-        links.add("");
-      else
-        links.add(id);
-    }
-
-    return links.toArray(new String[links.size()]);
+    return (String[]) seleneseMethods.get("getAllLinks").apply(driver);
   }
 
   /**
@@ -1334,16 +1251,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return the IDs of all field on the page
    */
   public String[] getAllFields() {
-    List<WebElement> allInputs = driver.findElements(By.xpath("//input"));
-    List<String> ids = new ArrayList<String>();
-
-    for (WebElement input : allInputs) {
-      String type = input.getAttribute("type").toLowerCase();
-      if ("text".equals(type))
-        ids.add(input.getAttribute("id"));
-    }
-
-    return ids.toArray(new String[ids.size()]);
+    return (String[]) seleneseMethods.get("getAllLinks").apply(driver);
   }
 
   /**
@@ -1353,19 +1261,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return the set of values of this attribute from all known windows.
    */
   public String[] getAttributeFromAllWindows(String attributeName) {
-    String current = driver.getWindowHandle();
-
-    List<String> attributes = new ArrayList<String>();
-    for (String handle : driver.getWindowHandles()) {
-      driver.switchTo().window(handle);
-      String value = (String) ((JavascriptExecutor) driver).executeScript(
-          "return '' + window[arguments[0]];", attributeName);
-      attributes.add(value);
-    }
-
-    driver.switchTo().window(current);
-
-    return attributes.toArray(new String[attributes.size()]);
+    return (String[]) seleneseMethods.get("getAttributeFromAllWindows").apply(driver, attributeName);
   }
 
   /**
@@ -1375,7 +1271,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param movementsString offset in pixels from the current location to which the element should be moved, e.g., "+70,-300"
    */
   public void dragdrop(String locator, String movementsString) {
-    dragAndDrop(locator, movementsString);
+    seleneseMethods.get("dragdrop").apply(driver, locator, movementsString);
   }
 
   /**
@@ -1407,11 +1303,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param movementsString offset in pixels from the current location to which the element should be moved, e.g., "+70,-300"
    */
   public void dragAndDrop(String locator, String movementsString) {
-    String[] parts = movementsString.split("\\s*,\\s*", 2);
-    int xDelta = Integer.parseInt(parts[0].trim());
-    int yDelta = Integer.parseInt(parts[1].trim());
-
-    ((RenderedWebElement) elementFinder.findElement(driver, locator)).dragAndDropBy(xDelta, yDelta);
+    seleneseMethods.get("dragAndDrop").apply(driver, locator, movementsString);
   }
 
   /**
@@ -1421,26 +1313,21 @@ public class WebDriverBackedSelenium implements Selenium {
    * @param locatorOfDragDestinationObject an element whose location (i.e., whose center-most pixel) will be the point where locatorOfObjectToBeDragged  is dropped
    */
   public void dragAndDropToObject(String locatorOfObjectToBeDragged, String locatorOfDragDestinationObject) {
-    RenderedWebElement dragger = (RenderedWebElement) elementFinder.findElement(driver,
-        locatorOfObjectToBeDragged);
-    RenderedWebElement draggee = (RenderedWebElement) elementFinder.findElement(driver,
-        locatorOfDragDestinationObject);
-
-    dragger.dragAndDropOn(draggee);
+    seleneseMethods.get("dragAndDropToObject").apply(driver, locatorOfObjectToBeDragged, locatorOfDragDestinationObject);
   }
 
   /**
    * Gives focus to the currently selected window
    */
   public void windowFocus() {
-    javascriptLibrary.executeScript(driver, "window.focus()");
+    seleneseMethods.get("windowFocus").apply(driver);
   }
 
   /**
    * Resize currently selected window to take up the entire screen
    */
   public void windowMaximize() {
-    javascriptLibrary.executeScript(driver, "if (window.screen) { window.moveTo(0, 0); window.resizeTo(window.screen.availWidth, window.screen.availHeight);};");
+    seleneseMethods.get("windowMaximize").apply(driver);
   }
 
   /**
@@ -1467,17 +1354,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return the titles of all windows that the browser knows about.
    */
   public String[] getAllWindowTitles() {
-    String current = driver.getWindowHandle();
-
-    List<String> attributes = new ArrayList<String>();
-    for (String handle : driver.getWindowHandles()) {
-      driver.switchTo().window(handle);
-      attributes.add(driver.getTitle());
-    }
-
-    driver.switchTo().window(current);
-
-    return attributes.toArray(new String[attributes.size()]);
+    return (String[]) seleneseMethods.get("getAllWindowTitles").apply(driver);
   }
 
   /**
@@ -1487,7 +1364,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return the entire HTML source
    */
   public String getHtmlSource() {
-    return driver.getPageSource();
+    return (String) seleneseMethods.get("getHtmlSource").apply(driver);
   }
 
   /**
@@ -1509,22 +1386,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return of relative index of the element to its parent (starting from 0)
    */
   public Number getElementIndex(String locator) {
-    WebElement element = elementFinder.findElement(driver, locator);
-    String script = 
-      "var _isCommentOrEmptyTextNode = function(node) {\n" + 
-      "    return node.nodeType == 8 || ((node.nodeType == 3) && !(/[^\\t\\n\\r ]/.test(node.data)));\n" + 
-      "}\n" +
-      "    var element = arguments[0];\n" +
-      "    var previousSibling;\n" + 
-      "    var index = 0;\n" + 
-      "    while ((previousSibling = element.previousSibling) != null) {\n" + 
-      "        if (!_isCommentOrEmptyTextNode(previousSibling)) {\n" + 
-      "            index++;\n" + 
-      "        }\n" + 
-      "        element = previousSibling;\n" + 
-      "    }\n" + 
-      "    return index;";
-    return (Long) javascriptLibrary.executeScript(driver, script, element);
+    return (Number) seleneseMethods.get("getElementIndex").apply(driver, locator);
   }
 
   /**
@@ -1536,23 +1398,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return true if element1 is the previous sibling of element2, false otherwise
    */
   public boolean isOrdered(String locator1, String locator2) {
-    WebElement one = elementFinder.findElement(driver, locator1);
-    WebElement two = elementFinder.findElement(driver, locator2);
-    
-    String ordered =
-      "    if (arguments[0] === arguments[1]) return false;\n" + 
-      "\n" + 
-      "    var previousSibling;\n" + 
-      "    while ((previousSibling = arguments[1].previousSibling) != null) {\n" + 
-      "        if (previousSibling === arguments[0]) {\n" + 
-      "            return true;\n" + 
-      "        }\n" + 
-      "        arguments[1] = previousSibling;\n" + 
-      "    }\n" + 
-      "    return false;\n";
-    
-    Boolean result = (Boolean) javascriptLibrary.executeScript(driver, ordered, one, two);
-    return result != null && result.booleanValue();
+    return (Boolean) seleneseMethods.get("isOrdered").apply(driver, locator1, locator2);
   }
 
   /**
@@ -1562,8 +1408,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return of pixels from the edge of the frame.
    */
   public Number getElementPositionLeft(String locator) {
-    Point location = ((RenderedWebElement) elementFinder.findElement(driver, locator)).getLocation();
-    return (int) location.getX();
+    return (Number) seleneseMethods.get("getElementPositionLeft").apply(driver, locator);
   }
 
   /**
@@ -1573,8 +1418,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return of pixels from the edge of the frame.
    */
   public Number getElementPositionTop(String locator) {
-    Point location = ((RenderedWebElement) elementFinder.findElement(driver, locator)).getLocation();
-    return (int) location.getY();
+return (Number) seleneseMethods.get("getElementPositionTop").apply(driver, locator);
   }
 
   /**
@@ -1584,8 +1428,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return width of an element in pixels
    */
   public Number getElementWidth(String locator) {
-    Dimension size = ((RenderedWebElement) elementFinder.findElement(driver, locator)).getSize();
-    return (int) size.getWidth();
+    return (Number) seleneseMethods.get("getElementWidth").apply(driver, locator);
   }
 
   /**
@@ -1595,8 +1438,7 @@ public class WebDriverBackedSelenium implements Selenium {
    * @return height of an element in pixels
    */
   public Number getElementHeight(String locator) {
-    Dimension size = ((RenderedWebElement) elementFinder.findElement(driver, locator)).getSize();
-    return (int) size.getHeight();
+    return (Number) seleneseMethods.get("getElementHeight").apply(driver, locator);
   }
 
   /**
@@ -2020,11 +1862,6 @@ public class WebDriverBackedSelenium implements Selenium {
     throw new UnsupportedOperationException("keyPressNative");
   }
 
-  private String[] findSelectedOptionProperties(String selectLocator, String property) {
-    return (String[]) seleneseMethods.get("findSelectedOptionProperties")
-        .apply(driver, selectLocator, property);
-  }
-
   public void captureEntirePageScreenshot(String s) {
       throw new UnsupportedOperationException("captureEntirePageScreenshot");
   }
@@ -2059,24 +1896,60 @@ public class WebDriverBackedSelenium implements Selenium {
     seleneseMethods.put("attachFile", new AttachFile(elementFinder));
     seleneseMethods.put("click", new Click(elementFinder));
     seleneseMethods.put("check", new Check(elementFinder));
+    seleneseMethods.put("close", new Close());
     seleneseMethods.put("createCookie", new CreateCookie());
     seleneseMethods.put("controlKeyDown", new ControlKeyDown(keyState));
     seleneseMethods.put("controlKeyUp", new ControlKeyUp(keyState));
     seleneseMethods.put("deleteAllVisibleCookies", new DeleteAllVisibleCookies());
     seleneseMethods.put("deleteCookie", new DeleteCookie());
     seleneseMethods.put("doubleClick", new DoubleClick(elementFinder));
-    seleneseMethods.put("findSelectedOptionProperties", new FindSelectedOptionProperties(select));    
+    seleneseMethods.put("dragdrop", new DragAndDrop(elementFinder));
+    seleneseMethods.put("dragAndDrop", new DragAndDrop(elementFinder));
+    seleneseMethods.put("dragAndDropToObject", new DragAndDropToObject(elementFinder));
     seleneseMethods.put("fireEvent", new FireEvent(elementFinder, javascriptLibrary));
     seleneseMethods.put("focus", new FireNamedEvent(elementFinder, javascriptLibrary, "focus"));
-    seleneseMethods.put("getEval", new GetEval());
+    seleneseMethods.put("getAllButtons", new GetAllButtons());
+    seleneseMethods.put("getAllFields", new GetAllFields());
+    seleneseMethods.put("getAllLinks", new GetAllLinks());
+    seleneseMethods.put("getAllWindowTitles", new GetAllWindowTitles());
+    seleneseMethods.put("getAttribute", new GetAttribute(elementFinder));
+    seleneseMethods.put("getAttributeFromAllWindows", new GetAttributeFromAllWindows());
+    seleneseMethods.put("getBodyText", new GetBodyText());
     seleneseMethods.put("getCookie", new GetCookie());
     seleneseMethods.put("getCookieByName", new GetCookieByName());
-    seleneseMethods.put("getSelectedIndex", new GetSelectedIndex(select));
-    seleneseMethods.put("getSelectedIndexes", new GetSelectedIndexes(select));
+    seleneseMethods.put("getElementHeight", new GetElementHeight(elementFinder));
+    seleneseMethods.put("getElementIndex", new GetElementIndex(elementFinder, javascriptLibrary));
+    seleneseMethods.put("getElementPositionLeft", new GetElementPositionLeft(elementFinder));
+    seleneseMethods.put("getElementPositionTop", new GetElementPositionTop(elementFinder));
+    seleneseMethods.put("getElementWidth", new GetElementWidth(elementFinder));
+    seleneseMethods.put("getEval", new GetEval());
+    seleneseMethods.put("getHtmlSource", new GetHtmlSource());
+    seleneseMethods.put("getLocation", new GetLocation());
+    seleneseMethods.put("getSelectedId", new FindFirstSelectedOptionProperty(select, ID));
+    seleneseMethods.put("getSelectedIds", new FindSelectedOptionProperties(select, ID));
+    seleneseMethods.put("getSelectedIndex", new FindFirstSelectedOptionProperty(select, INDEX));
+    seleneseMethods.put("getSelectedIndexes", new FindSelectedOptionProperties(select, INDEX));
+    seleneseMethods.put("getSelectedLabel", new FindFirstSelectedOptionProperty(select, TEXT));
+    seleneseMethods.put("getSelectedLabels", new FindSelectedOptionProperties(select, TEXT));
+    seleneseMethods.put("getSelectedValue", new FindFirstSelectedOptionProperty(select, VALUE));
+    seleneseMethods.put("getSelectedValues", new FindSelectedOptionProperties(select, VALUE));
+    seleneseMethods.put("getSelectOptions", new GetSelectOptions(select));
     seleneseMethods.put("getSpeed", new NoOp("0"));
+    seleneseMethods.put("getTable", new GetTable(elementFinder, javascriptLibrary));
+    seleneseMethods.put("getText", new GetText(elementFinder));
+    seleneseMethods.put("getTitle", new GetTitle());
+    seleneseMethods.put("getValue", new GetValue(elementFinder));
     seleneseMethods.put("getXpathCount", new GetXpathCount());
     seleneseMethods.put("goBack", new GoBack(timer));
+    seleneseMethods.put("highlight", new Highlight(elementFinder, javascriptLibrary));
+    seleneseMethods.put("isChecked", new IsChecked(elementFinder));
     seleneseMethods.put("isCookiePresent", new IsCookiePresent());
+    seleneseMethods.put("isEditable", new IsEditable(elementFinder));
+    seleneseMethods.put("isElementPresent", new IsElementPresent(elementFinder));
+    seleneseMethods.put("isOrdered", new IsOrdered(elementFinder, javascriptLibrary));
+    seleneseMethods.put("isSomethingSelected", new IsSomethingSelected(select));
+    seleneseMethods.put("isTextPresent", new IsTextPresent());
+    seleneseMethods.put("isVisible", new IsVisible(elementFinder));
     seleneseMethods.put("keyDown", new KeyEvent(elementFinder, javascriptLibrary, keyState, "doKeyDown"));
     seleneseMethods.put("keyPress", new TypeKeys(elementFinder));
     seleneseMethods.put("keyUp", new KeyEvent(elementFinder, javascriptLibrary, keyState, "doKeyUp"));
@@ -2114,5 +1987,7 @@ public class WebDriverBackedSelenium implements Selenium {
     seleneseMethods.put("waitForFrameToLoad", new NoOp(null));
     seleneseMethods.put("waitForPageToLoad", new WaitForPageToLoad());
     seleneseMethods.put("waitForPopUp", new WaitForPopup(timer, windows));
+    seleneseMethods.put("windowFocus", new WindowFocus(javascriptLibrary));
+    seleneseMethods.put("windowMaximize", new WindowMaximize(javascriptLibrary));
   }
 }
