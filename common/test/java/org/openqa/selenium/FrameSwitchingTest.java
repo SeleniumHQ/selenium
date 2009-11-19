@@ -119,9 +119,15 @@ public class FrameSwitchingTest extends AbstractDriverTestCase {
 
     driver.switchTo().frame("second");
     assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("2"));
+
+    driver.switchTo().frame("third");
+    driver.findElement(By.id("changeme")).setSelected();
+
+    driver.switchTo().frame("second");
+    assertThat(driver.findElement(By.id("pageNumber")).getText(), equalTo("2"));
   }
 
-  @Ignore({FIREFOX, IE, HTMLUNIT, SELENESE})
+  @Ignore({FIREFOX, IE, SELENESE, HTMLUNIT})
   public void testShouldBeAbleToSelectAFrameByNameWhichIncludesADot() {
     driver.get(framesetPage);
 

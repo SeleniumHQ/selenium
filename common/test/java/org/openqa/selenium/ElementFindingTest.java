@@ -20,7 +20,6 @@ package org.openqa.selenium;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import org.openqa.selenium.internal.FindsByCssSelector;
@@ -328,7 +327,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     assertEquals("Changed", driver.getTitle());
   }
 
-  @Ignore({HTMLUNIT, SELENESE})
+  @Ignore({SELENESE})
   public void testShouldNotBeAbleToFindAnElementOnABlankPage() {
     driver.get("about:blank");
 
@@ -341,7 +340,7 @@ public class ElementFindingTest extends AbstractDriverTestCase {
     }
   }
 
-  @Ignore({HTMLUNIT, IPHONE})
+  @Ignore({IPHONE})
   @NeedsFreshDriver
   public void testShouldNotBeAbleToLocateASingleElementOnABlankPage() {
     // Note we're on the default start page for the browser at this point.

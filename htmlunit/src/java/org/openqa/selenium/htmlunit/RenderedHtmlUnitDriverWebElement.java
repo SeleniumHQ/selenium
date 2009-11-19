@@ -29,6 +29,8 @@ import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.WebDriverException;
 
 import java.awt.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.sourceforge.htmlunit.corejs.javascript.Undefined;
 
@@ -92,53 +94,30 @@ public class RenderedHtmlUnitDriverWebElement extends HtmlUnitWebElement
   public Point getLocation() {
     assertElementNotStale();
 
-    // Try the bounding client rect first.
-    String script = "var e = arguments[0]; "
-                    + "if (e.getBoundingClientRect instanceof Function) {"
-                    + "var r = e.getBoundingClientRect();"
-                    + "return r.left + ',' + r.top;"
-                    + "} return undefined;";
-    String result = (String) parent.executeScript(script, element);
-    if (result == null) {
-      // fall back to returning some value
-      // TODO(simon): This is wrong, but better something than nothing
-      result = (String) parent.executeScript(
-        "var w = arguments[0].offsetLeft; var h = arguments[0].offsetTop; return w + ',' + h;",
-        element);
-    }
-
     try {
-      String[] sizes = result.split(",", 2);
-      return new Point(Integer.parseInt(sizes[0]), Integer.parseInt(sizes[1]));
+      return new Point(readAndRound("left"), readAndRound("top"));
     } catch (Exception e) {
-      throw new WebDriverException("Cannot determine size of element from: " + result);
+      throw new WebDriverException("Cannot determine size of element", e);
     }
+  }
+
+  private int readAndRound(final String property) {
+    final String cssValue = getValueOfCssProperty(property).replaceAll("[^0-9\\.]", "");
+    if (cssValue.length() == 0) {
+      return 5; // wrong... but better than nothing
+    }
+    return Math.round(Float.parseFloat(cssValue));
   }
 
   public Dimension getSize() {
     assertElementNotStale();
 
-    // Try the bounding client rect first.
-    String script = "var e = arguments[0]; "
-                    + "if (e.getBoundingClientRect instanceof Function) {"
-                    + "var r = e.getBoundingClientRect();"
-                    + "var w = r.left - r.right; var h = r.top - r.bottom;"
-                    + "return w + ',' + h;"
-                    + "} return undefined;";
-    String result = (String) parent.executeScript(script, element);
-    if (result == null) {
-      // fall back to returning some value
-      // TODO(simon): This is probably very lame.
-      result = (String) parent.executeScript(
-        "var w = arguments[0].scrollWidth; var h = arguments[0].scrollHeight; return w + ',' + h;",
-        element);
-    }
-
     try {
-      String[] sizes = result.split(",", 2);
-      return new Dimension(Integer.parseInt(sizes[0]), Integer.parseInt(sizes[1]));
+      final int width = readAndRound("width");
+      final int height = readAndRound("height");
+      return new Dimension(width, height);
     } catch (Exception e) {
-      throw new WebDriverException("Cannot determine size of element from: " + result);
+      throw new WebDriverException("Cannot determine size of element", e);
     }
   }
 
@@ -169,7 +148,7 @@ public class RenderedHtmlUnitDriverWebElement extends HtmlUnitWebElement
       // Hat-tip to the Selenium team
       Object result = parent.executeScript(
           "if (window.getComputedStyle) { " +
-          "    return window.getComputedStyle(arguments[0], null)[arguments[1]]; " +
+          "    return window.getComputedStyle(arguments[0], null).getPropertyValue(arguments[1]); " +
           "} " +
           "if (arguments[0].currentStyle) { " +
           "    return arguments[0].currentStyle[arguments[1]]; " +
@@ -186,6 +165,30 @@ public class RenderedHtmlUnitDriverWebElement extends HtmlUnitWebElement
       }
 
       current = (HtmlElement) current.getParentNode();
+    }
+
+    if (value.startsWith("rgb")) {
+      return rgbToHex(value);
+    }
+    
+    return value;
+  }
+
+  // Convert colours to hex if possible
+  private String rgbToHex(final String value) {
+    final Pattern pattern = Pattern.compile("rgb\\((\\d{1,3}),\\s(\\d{1,3}),\\s(\\d{1,3})\\)");
+    final Matcher matcher = pattern.matcher(value);
+    if (matcher.find()) {
+      String hex = "#";
+      for (int i = 1; i <= 3; i++) {
+        int colour = Integer.parseInt(matcher.group(i));
+        String s = Integer.toHexString(colour);
+        if (s.length() == 1)
+          s = "0" + s;
+        hex += s;
+      }
+      hex = hex.toLowerCase();
+      return hex;
     }
 
     return value;

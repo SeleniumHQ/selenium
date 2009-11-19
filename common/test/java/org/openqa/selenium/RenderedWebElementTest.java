@@ -17,17 +17,17 @@ limitations under the License.
 package org.openqa.selenium;
 
 import static org.openqa.selenium.Ignore.Driver.CHROME;
-import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Point;
 
 public class RenderedWebElementTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
-  @Ignore({HTMLUNIT, SELENESE})
+  @Ignore({SELENESE})
   public void testShouldPickUpStyleOfAnElement() {
     driver.get(javascriptPage);
 
@@ -42,7 +42,8 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
     assertEquals("#ff0000", backgroundColour);
   }
 
-  @Ignore({HTMLUNIT, IE, CHROME, SELENESE})
+  @JavascriptEnabled
+  @Ignore({IE, CHROME, SELENESE})
   //Reason for Chrome: WebKit bug 28804
   public void testShouldHandleNonIntegerPositionAndSize() {
     driver.get(rectanglesPage);
@@ -52,7 +53,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
     assertTrue("left (\"" + left + "\") should start with \"10.9\".", left.startsWith("10.9"));
     String top = r2.getValueOfCssProperty("top");
     assertTrue("top (\"" + top + "\") should start with \"10.1\".", top.startsWith("10.1"));
-    assertEquals(r2.getLocation(), new Point(11, 10));
+    assertEquals(new Point(11, 10), r2.getLocation());
     String width = r2.getValueOfCssProperty("width");
     assertTrue("width (\"" + left + "\") should start with \"48.6\".", width.startsWith("48.6"));
     String height = r2.getValueOfCssProperty("height");
@@ -61,7 +62,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({HTMLUNIT, SELENESE})
+  @Ignore({SELENESE})
   public void testShouldAllowInheritedStylesToBeUsed() {
     driver.get(javascriptPage);
 
@@ -72,7 +73,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({HTMLUNIT, IPHONE, CHROME, SELENESE})
+  @Ignore({IPHONE, CHROME, SELENESE})
   public void testShouldAllowUsersToHoverOverElements() {
     driver.get(javascriptPage);
 

@@ -118,7 +118,8 @@ public class TypingTest extends AbstractDriverTestCase {
     assertThat(keyReporter.getValue(), is("me@eXample.com"));
   }
 
-  @Ignore({HTMLUNIT, CHROME_NON_WINDOWS, SELENESE})
+  @JavascriptEnabled
+  @Ignore({CHROME_NON_WINDOWS, SELENESE})
   public void testArrowKeysShouldNotBePrintable() {
     driver.get(javascriptPage);
 
@@ -139,7 +140,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({HTMLUNIT, CHROME_NON_WINDOWS, SELENESE})
+  @Ignore({CHROME_NON_WINDOWS, SELENESE})
   public void testWillSimulateAKeyUpWhenEnteringTextIntoInputElements() {
     driver.get(javascriptPage);
 
@@ -179,7 +180,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({HTMLUNIT, CHROME_NON_WINDOWS, SELENESE})
+  @Ignore({CHROME_NON_WINDOWS, SELENESE})
   public void testWillSimulateAKeyUpWhenEnteringTextIntoTextAreas() {
     driver.get(javascriptPage);
 
@@ -219,7 +220,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {FIREFOX, HTMLUNIT, IE, CHROME_NON_WINDOWS, SELENESE, CHROME},
+  @Ignore(value = {FIREFOX, IE, CHROME_NON_WINDOWS, SELENESE, CHROME},
           reason = "firefox specific not yet tested in htmlunit. Firefox demands to have the focus on the window already.  Chrome: event firing broken.")
   public void testShouldFireFocusKeyEventsInTheRightOrder() {
     driver.get(javascriptPage);
@@ -284,7 +285,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, SELENESE}, reason = "untested user agent")
+  @Ignore(value = {SELENESE}, reason = "untested user agent")
   public void testNumericNonShiftKeys() {
     driver.get(javascriptPage);
 
@@ -312,7 +313,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT,SELENESE}, reason = "untested user agent")
+  @Ignore(value = {SELENESE}, reason = "untested user agent")
   public void testLowerCaseAlphaKeys() {
     driver.get(javascriptPage);
 
@@ -557,7 +558,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, CHROME_NON_WINDOWS, SELENESE}, reason = "untested user agents")
+  @Ignore(value = {CHROME_NON_WINDOWS, SELENESE}, reason = "untested user agents")
   public void testShouldNotTypeIntoElementsThatPreventKeyDownEvents() {
     driver.get(javascriptPage);
 
@@ -568,7 +569,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, IE, CHROME}, reason = "firefox-specific")
+  @Ignore(value = {IE, CHROME}, reason = "firefox-specific")
   public void testGenerateKeyPressEventEvenWhenElementPreventsDefault() {
     driver.get(javascriptPage);
 

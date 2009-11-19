@@ -42,7 +42,11 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
     assertThat(driver.getTitle(), equalTo("We Arrive Here"));
 
     driver.get(iframePage);
+    final String handle = driver.getWindowHandle();
     driver.findElement(By.id("iframe_page_heading"));
+    driver.switchTo().frame("iframe1");
+    assertThat(driver.getWindowHandle(), equalTo(handle));
+
     driver.switchTo().window(current);
   }
 
