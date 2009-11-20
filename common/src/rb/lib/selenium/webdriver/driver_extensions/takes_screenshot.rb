@@ -14,7 +14,7 @@ module Selenium
           when :png
             bridge.getScreenshotAsBase64.unpack("m")[0]
           else
-            raise Error::WebDriverError, "unsupported format: #{format.inspect}"
+            raise Error::UnsupportedOperationError, "unsupported format: #{format.inspect}"
           end
         end
 

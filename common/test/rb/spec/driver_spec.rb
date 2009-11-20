@@ -45,6 +45,10 @@ describe "Driver" do
       ss.should be_kind_of(String)
       ss.size.should > 0
     end
+    
+    it "raises an error when given an unknown format" do
+      lambda { driver.screenshot_as(:jpeg) }.should raise_error(WebDriver::Error::UnsupportedOperationError)
+    end
   end
 
   # it "should refresh the page" do
