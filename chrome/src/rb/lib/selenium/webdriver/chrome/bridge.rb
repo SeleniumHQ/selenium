@@ -16,6 +16,10 @@ module Selenium
           :chrome
         end
 
+        def driver_extensions
+          []
+        end
+
         def get(url)
           execute :request => 'get',
                   :url     => url

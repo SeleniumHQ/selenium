@@ -44,6 +44,11 @@ module Selenium
           yield unless opts.all? { |key, value| GlobalTestEnv.send(key) == value}
         end
 
+        def compliant_on(opts = {}, &blk)
+          Guards.record(:compliant_on, opts, :file => caller.first)
+          yield if opts.all? { |key, value| GlobalTestEnv.send(key) == value}
+        end
+
       end # Guards
     end # SpecSupport
   end # WebDriver

@@ -15,6 +15,10 @@ module Selenium
           :firefox
         end
 
+        def driver_extensions
+          [DriverExtensions::TakesScreenshot]
+        end
+
         def quit
           @connection.quit
           @binary.wait
@@ -33,6 +37,9 @@ module Selenium
           execute :getCurrentWindowHandle
         end
 
+        def getScreenshotAsBase64
+          execute :getScreenshotAsBase64
+        end
 
         def get(url)
           execute :get,

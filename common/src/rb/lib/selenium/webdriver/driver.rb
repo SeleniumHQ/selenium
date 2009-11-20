@@ -6,19 +6,27 @@ module Selenium
       attr_reader :bridge
 
       class << self
-        def for(driver, *args)
-          case driver
-          when :ie, :internet_explorer
-            new WebDriver::IE::Bridge.new(*args)
-          when :remote
-            new WebDriver::Remote::Bridge.new(*args)
-          when :chrome
-            new WebDriver::Chrome::Bridge.new(*args)
-          when :firefox, :ff
-            new WebDriver::Firefox::Bridge.new(*args)
-          else
-            raise ArgumentError, "unknown driver: #{driver.inspect}"
-          end
+        def for(browser, *args)
+          bridge = case browser
+                   when :ie, :internet_explorer
+                     WebDriver::IE::Bridge.new(*args)
+                   when :remote
+                     WebDriver::Remote::Bridge.new(*args)
+                   when :chrome
+                     WebDriver::Chrome::Bridge.new(*args)
+                   when :firefox, :ff
+                     WebDriver::Firefox::Bridge.new(*args)
+                   else
+                     raise ArgumentError, "unknown driver: #{driver.inspect}"
+                   end
+
+           driver = new(bridge)
+
+           unless bridge.driver_extensions.empty?
+             driver.extend(*bridge.driver_extensions)
+           end
+
+           driver
         end
       end
 

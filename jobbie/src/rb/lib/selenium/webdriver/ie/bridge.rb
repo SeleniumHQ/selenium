@@ -19,6 +19,10 @@ module Selenium
           :internet_explorer
         end
 
+        def driver_extensions
+          []
+        end
+
         def get(url)
           check_error_code Lib.wdGet(@driver_pointer, wstring_ptr(url)),
                            "Cannot get url #{url.inspect}"

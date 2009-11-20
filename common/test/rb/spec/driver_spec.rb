@@ -24,6 +24,29 @@ describe "Driver" do
     driver.page_source.should match(%r[<title>XHTML Test Page</title>]i)
   end
 
+  compliant_on :driver => :firefox do
+    it "should save a screenshot" do
+      driver.navigate.to url_for("xhtmlTest.html")
+      path = "screenshot_tmp.png"
+
+      begin
+        driver.save_screenshot path
+        File.exist?(path).should be_true # sic
+        File.size(path).should > 0
+      ensure
+        File.delete(path) if File.exist?(path)
+      end
+    end
+
+    it "should return a screenshot in the specified format" do
+      driver.navigate.to url_for("xhtmlTest.html")
+
+      ss = driver.screenshot_as(:png)
+      ss.should be_kind_of(String)
+      ss.size.should > 0
+    end
+  end
+
   # it "should refresh the page" do
   #   driver.navigate.to url_for("xhtmlTest.html")
   #   driver.execute_script %Q{document.innerHTML = '<div id="refresh-me">testing refresh</div>'}
