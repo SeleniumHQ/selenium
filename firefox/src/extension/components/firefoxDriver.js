@@ -725,3 +725,17 @@ FirefoxDriver.prototype.saveScreenshot = function(respond, pngFile) {
   }
   respond.send();
 };
+
+
+FirefoxDriver.prototype.getScreenshotAsBase64 = function(respond) {
+  var window = Utils.getBrowser(respond.context).contentWindow;
+  try {
+    var canvas = Screenshooter.grab(window);
+    respond.isError = false;
+    respond.response = Screenshooter.toBase64(canvas);
+  } catch (e) {
+    respond.isError = true;
+    respond.response = 'Could not take screenshot of current page - ' + e;
+  }
+  respond.send();
+};

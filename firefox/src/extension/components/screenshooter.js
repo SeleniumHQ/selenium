@@ -42,6 +42,17 @@ Screenshooter.grab = function(window) {
 };
 
 
+Screenshooter.toBase64 = function(canvas) {
+  var dataUrl = canvas.toDataURL('image/png');
+  var index = dataUrl.indexOf('base64,');
+  if (index == -1) {
+    // No base64 data marker.
+    throw new Error("Invalid base64 data: " + dataUrl);
+  }
+  return dataUrl.substring(index + 'base64,'.length);
+};
+
+
 Screenshooter.save = function(canvas, filepath) {
   var cc = Components.classes;
   var ci = Components.interfaces;

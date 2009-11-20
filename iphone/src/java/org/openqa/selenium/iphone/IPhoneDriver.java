@@ -17,7 +17,11 @@ limitations under the License.
 
 package org.openqa.selenium.iphone;
 
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.Base64Encoder;
+import org.openqa.selenium.internal.FileHandler;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.DriverCommand;
@@ -29,6 +33,8 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.net.URL;
 
+import static org.openqa.selenium.OutputType.FILE;
+
 /**
  * IPhoneDriver is a driver for running tests on Mobile Safari on the iPhone
  *  and iPod Touch.
@@ -36,7 +42,7 @@ import java.net.URL;
  * The driver uses WebDriver's remote REST interface to communicate with the
  * iphone. The iphone (or iphone simulator) must be running the iWebDriver app.
  */
-public class IPhoneDriver extends RemoteWebDriver {
+public class IPhoneDriver extends RemoteWebDriver implements TakesScreenshot {
 
   /**
    * Create an IPhoneDriver connected to the remote address passed in.
@@ -76,32 +82,35 @@ public class IPhoneDriver extends RemoteWebDriver {
     return (byte[]) execute(DriverCommand.SCREENSHOT).getValue();
   }
 
-  /** Saves a screenshot of the current page into the given file. */
+  public <X> X getScreenshotAs(OutputType<X> target) {
+    byte[] rawPng = getScreenshot();
+    String base64Png = new Base64Encoder().encode(rawPng);
+    // ... and convert it.
+    return target.convertFromBase64Png(base64Png);
+  }
+
+  /**
+   * Saves a screenshot of the current page into the given file.
+   *
+   * @deprecated Use getScreenshotAs(file), which returns a temporary file.
+   */
+  @Deprecated
   public void saveScreenshot(File pngFile) {
     if (pngFile == null) {
       throw new IllegalArgumentException("Method parameter pngFile must not be null");
     }
+
+    File tmpfile = getScreenshotAs(FILE);
+
     File dir = pngFile.getParentFile();
     if (dir != null && !dir.exists() && !dir.mkdirs()) {
       throw new WebDriverException("Could not create directory " + dir.getAbsolutePath());
     }
 
-    OutputStream out = null;
     try {
-      out = new BufferedOutputStream(new FileOutputStream(pngFile));
-      out.write(getScreenshot());
-      out.flush();
+      FileHandler.copy(tmpfile, pngFile);
     } catch (IOException e) {
       throw new WebDriverException(e);
-    } finally {
-      if (out != null) {
-        try {
-          out.close();
-        } catch (IOException e) {
-          // Nothing sane to do. Swallow and fall through
-        }
-      }
     }
-
   }
 }
