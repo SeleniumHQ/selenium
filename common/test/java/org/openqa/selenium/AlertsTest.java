@@ -62,13 +62,30 @@ public class AlertsTest extends AbstractDriverTestCase {
     assertEquals("Testing Alerts", driver.getTitle());
   }
 
+  @Ignore
+  public void testShouldThrowAnExceptionIfAnAlertHasNotBeenDealtWith() {
+    driver.get(alertPage);
+
+    driver.findElement(By.id("alert")).click();
+    try {
+      driver.getTitle();
+    } catch (UnhandledAlertException e) {
+      // this is expected
+    }
+
+    // But the next call should be good.
+    assertEquals("Testing Alerts", driver.getTitle());
+  }
+
   private Alert switchToAlert(WebDriver driver) {
     WebDriver.TargetLocator locator = driver.switchTo();
 
     try {
       Method alertMethod = locator.getClass().getMethod("alert");
+      alertMethod.setAccessible(true);
       return (Alert) alertMethod.invoke(locator);
     } catch (Exception e) {
+      e.printStackTrace();
     }
     return null;
   }

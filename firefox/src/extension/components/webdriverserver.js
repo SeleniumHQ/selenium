@@ -22,8 +22,7 @@ function WebDriverServer() {
   this.serverSocket =
   Components.classes["@mozilla.org/network/server-socket;1"].
       createInstance(Components.interfaces.nsIServerSocket);
-  this.generator =
-  Utils.getService("@mozilla.org/uuid-generator;1", "nsIUUIDGenerator");
+  this.generator = Utils.getService("@mozilla.org/uuid-generator;1", "nsIUUIDGenerator");
   this.enableNativeEvents = null;
 }
 
@@ -43,6 +42,7 @@ WebDriverServer.prototype.newDriver = function(window) {
   window.fxdriver = new FirefoxDriver(this, this.enableNativeEvents);
   // Yuck. But it allows us to refer to it later.
   window.fxdriver.window = window;
+
   return window.fxdriver;
 };
 

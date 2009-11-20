@@ -86,11 +86,11 @@ var ServerFactory = {
 
 //module definition (xpcom registration)
 var ServerModule = {
-  _firstTime: true,
+  firstTime_: true,
 
   registerSelf: function(aCompMgr, aFileSpec, aLocation, aType) {
-    if (this._firstTime) {
-      this._firstTime = false;
+    if (this.firstTime_) {
+      this.firstTime_ = false;
       throw Components.results.NS_ERROR_FACTORY_REGISTER_AGAIN;
     }
     aCompMgr =

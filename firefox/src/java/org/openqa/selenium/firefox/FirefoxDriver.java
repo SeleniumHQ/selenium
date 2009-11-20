@@ -26,6 +26,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.IllegalLocatorException;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.NoSuchWindowException;
@@ -33,6 +34,7 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.Speed;
+import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
@@ -90,10 +92,15 @@ public class FirefoxDriver implements WebDriver, JavascriptExecutor, TakesScreen
     public static final boolean DEFAULT_ENABLE_NATIVE_EVENTS =
       Platform.getCurrent().is(Platform.WINDOWS);
 
+    // Commands we can execute with needing to dismiss an active alert
+    private final Set<String> alertWhiteListedCommands = new HashSet<String>() {{
+      add("dismissAlert");
+    }};
     private final ExtensionConnection extension;
     protected Context context;
+    private FirefoxAlert currentAlert;
 
-    public FirefoxDriver() {
+  public FirefoxDriver() {
       this(new FirefoxBinary(), null);
     }
 
@@ -313,10 +320,32 @@ public class FirefoxDriver implements WebDriver, JavascriptExecutor, TakesScreen
     }
 
     protected String sendMessage(Class<? extends RuntimeException> throwOnFailure, Command command) {
-        Response response = extension.sendMessageAndWaitForResponse(throwOnFailure, command);
-        context = response.getContext();
-        response.ifNecessaryThrow(throwOnFailure);
-        return response.getResponseText();
+      if (currentAlert != null) {
+        if (!alertWhiteListedCommands.contains(command.getCommandName())) {
+          ((FirefoxTargetLocator) switchTo()).alert().dismiss();
+          throw new UnhandledAlertException(command.getCommandName());
+        }
+      }
+
+      Response response = extension.sendMessageAndWaitForResponse(throwOnFailure, command);
+      context = response.getContext();
+      response.ifNecessaryThrow(throwOnFailure);
+
+      String text = response.getResponseText();
+      if (text != null && text.startsWith("{") && text.indexOf("__webdriverType") != -1) {
+        // Looks like have an alert. construct it
+        try {
+          JSONObject jsonObject = new JSONObject(text);
+
+          currentAlert = new FirefoxAlert(jsonObject.getString("text"));
+
+          return null;
+        } catch (JSONException e) {
+          // Or maybe not. Fall through
+        }
+      }
+
+      return text;
     }
 
     private void fixId() {
@@ -656,7 +685,11 @@ public class FirefoxDriver implements WebDriver, JavascriptExecutor, TakesScreen
         }
 
         public Alert alert() {
-            throw new UnsupportedOperationException("alert");
+          if (currentAlert != null) {
+            return currentAlert;
+          }
+
+          throw new NoAlertPresentException();
         }
     }
 
@@ -713,4 +746,24 @@ public class FirefoxDriver implements WebDriver, JavascriptExecutor, TakesScreen
         throw new WebDriverException(e);
       }
     }
+
+  private class FirefoxAlert implements Alert {
+    private String text;
+
+    public FirefoxAlert(String text) {
+      this.text = text;
+    }
+
+    public void dismiss() {
+      sendMessage(WebDriverException.class, "dismissAlert", text);
+      currentAlert = null;
+    }
+
+    public void accept() {
+    }
+
+    public String getText() {
+      return text;
+    }
+  }
 }

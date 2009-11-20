@@ -19,5 +19,7 @@ limitations under the License.
 package org.openqa.selenium;
 
 public class UnhandledAlertException extends WebDriverException {
-
+  public UnhandledAlertException(String commandName) {
+    super(commandName);
+  }
 }

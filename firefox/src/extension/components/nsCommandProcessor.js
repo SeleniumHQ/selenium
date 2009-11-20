@@ -96,12 +96,20 @@ Response.prototype = {
    * Sends the encapsulated response to the registered callback.
    */
   send: function() {
+    if (this.responseSent_) {
+      // We shouldn't ever send the same response twice.
+      return;
+    }
     // Indicate that we are no longer executing a command.
     if (this.statusBarLabel_) {
       this.statusBarLabel_.style.color = 'black';
     }
+
     this.context = this.context.toString();
     this.responseHandler_.handleResponse(JSON.stringify(this.json_));
+
+    // Neuter ourselves
+    this.responseSent_ = true;
   },
 
   /**
@@ -202,6 +210,10 @@ DelayedCommand.prototype.executeInternal_ = function() {
     } else {
       try {
         this.response_.commandName = this.command_.commandName;
+        // TODO(simon): This is rampantly ugly, but allows an alert to kill the command
+        // TODO(simon): This is never cleared, but _should_ be okay, because send wipes itself
+        this.driver_.response_ = this.response_;
+
         this.driver_[this.command_.commandName](
             this.response_, this.command_.parameters);
       } catch (e) {

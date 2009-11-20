@@ -739,3 +739,19 @@ FirefoxDriver.prototype.getScreenshotAsBase64 = function(respond) {
   }
   respond.send();
 };
+
+FirefoxDriver.prototype.dismissAlert = function(respond, alertText) {
+  // TODO(simon): Is there a type for alerts?
+  var wm = Utils.getService("@mozilla.org/appshell/window-mediator;1", "nsIWindowMediator");
+  var allWindows = wm.getEnumerator("");
+  while (allWindows.hasMoreElements()) {
+    var alert = allWindows.getNext();
+    var doc = alert.document;
+    if (doc && doc.documentURI == "chrome://global/content/commonDialog.xul") {
+      var dialog = doc.getElementsByTagName("dialog")[0];
+      dialog.getButton("accept").click();
+      break;
+    }
+  }
+  respond.send();
+};
