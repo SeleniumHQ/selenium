@@ -30,7 +30,13 @@ module Selenium
       end
 
       def start
-        @pid = fork { exec(*@args) }
+        @pid = fork do
+          unless $DEBUG
+            [STDOUT, STDERR].each { |io| io.reopen("/dev/null") }
+          end
+
+          exec(*@args)
+        end
 
         self
       end
