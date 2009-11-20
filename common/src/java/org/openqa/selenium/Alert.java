@@ -19,7 +19,7 @@ limitations under the License.
 package org.openqa.selenium;
 
 public interface Alert {
-    void dimiss();
+    void dismiss();
 
     void accept();
 
