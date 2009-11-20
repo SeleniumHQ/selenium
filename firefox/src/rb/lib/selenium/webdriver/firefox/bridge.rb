@@ -4,9 +4,15 @@ module Selenium
       class Bridge
         include BridgeHelper
 
-        def initialize
+        def initialize(opts = {})
           @binary     = Binary.new
-          @launcher   = Launcher.new(@binary).launch
+          @launcher   = Launcher.new(
+            @binary,
+            opts[:port]    || DEFAULT_PORT,
+            opts[:profile] || DEFAULT_PROFILE_NAME
+          )
+
+          @launcher.launch
           @connection = @launcher.connection
           @context    = newSession
         end

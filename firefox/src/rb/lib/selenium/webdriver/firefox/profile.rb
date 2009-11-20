@@ -88,6 +88,10 @@ module Selenium
 
         def create_copy
           tmp_directory = Dir.mktmpdir("webdriver-rb-profilecopy")
+
+          # TODO: must be a better way..
+          FileUtils.rm_rf tmp_directory
+          FileUtils.mkdir_p File.dirname(tmp_directory), :mode => 0700
           FileUtils.cp_r @directory, tmp_directory
 
           Profile.new(tmp_directory)
