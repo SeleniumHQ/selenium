@@ -54,7 +54,7 @@ class Java < BaseGenerator
       classpath = build_classpath_(args[:name].to_sym)
 
       temp = "#{out}_classes"
-      mkdir_p temp
+      mkdir_p temp, :verbose => false
 
       puts "Building: #{args[:name]} as #{out}"
 
@@ -86,7 +86,7 @@ class Java < BaseGenerator
         cmd = "cd #{temp} && jar cMf ../../#{out} *"
         sh cmd, :verbose => false
 
-        rm_rf temp
+        rm_rf temp, :verbose => false
       end
     end
     
@@ -103,15 +103,15 @@ class Java < BaseGenerator
       classpath = build_classpath_(args[:name].to_sym)
       temp = "#{zip_out}_temp"
       
-      mkdir_p temp
+      mkdir_p temp, :verbose => false
       
       classpath.each do |f|
         copy_resource_(f, temp) if f =~ /\.jar/
       end
       
-      sh "cd #{temp} && jar cMf ../../#{zip_out} *", :verbose => true
+      sh "cd #{temp} && jar cMf ../../#{zip_out} *", :verbose => false
       
-      rm_rf temp
+      rm_rf temp, :verbose => false
     end
   end
   
@@ -174,7 +174,7 @@ class Java < BaseGenerator
       
       # Take each dependency, extract and then rezip
       temp = "#{out}_temp"
-      mkdir_p temp
+      mkdir_p temp, :verbose => false
       
       all = build_uberlist_(args[:deps])
       all.each do |dep|
@@ -182,7 +182,7 @@ class Java < BaseGenerator
       end
       
       sh "cd #{temp} && jar cMf ../../#{out} *", :verbose => false
-      rm_rf temp
+      rm_rf temp, :verbose => false
     end
     
     add_zip_task_(args)
@@ -222,7 +222,7 @@ class Java < BaseGenerator
     
     file out do
       temp = "#{out}_temp"
-      mkdir_p "#{temp}/WEB-INF/lib"
+      mkdir_p "#{temp}/WEB-INF/lib", :verbose => false
       
       # Copy the resources. They're easy
       copy_resource_(args[:resources], temp) unless args[:resources].nil?
@@ -234,11 +234,11 @@ class Java < BaseGenerator
       copy_resource_(jars, "#{temp}/WEB-INF/lib")
       
       Dir["#{temp}/**/.svn"].each do |f|
-        rm_rf f
+        rm_rf f, :verbose => false
       end
       
       sh "cd #{temp} && jar cMf ../../#{out} *", :verbose => false
-      rm_rf temp
+      rm_rf temp, :verbose => false
     end
         
     task args[:name] => out

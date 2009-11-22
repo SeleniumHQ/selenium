@@ -437,7 +437,7 @@ task :remote_release => [:remote] do
   cp 'third_party/java/google-collect-1.0-rc3.jar', 'build/dist/remote_client'
 
   sh "cd build/dist && zip -r webdriver-remote-client-#{version}.zip remote_client/*"
-  rm_rf "build/dist/remote_client"
+  rm_rf "build/dist/remote_client", :verbose => false
 
   mkdir_p "build/dist/remote_server", :verbose => false
 
@@ -452,7 +452,7 @@ task :remote_release => [:remote] do
   rm Dir.glob('build/dist/remote_server/servlet*.jar')
 
   sh "cd build/dist && zip -r webdriver-remote-server-#{version}.zip remote_server/*"
-  rm_rf "build/dist/remote_server"
+  rm_rf "build/dist/remote_server", :verbose => false
 end
 
 # TODO(simon): This should pick up the "out" files from the deps
@@ -463,6 +463,7 @@ java_uberjar(:name => "webdriver-all",
                     :ie,
                     :firefox,
                     :remote_client,
+                    :selenium,
                     :support
                   ])
 

@@ -14,7 +14,7 @@ class Mozilla < BaseGenerator
       # Set up a temporary directory
       target = "build/#{args[:out]}.temp"
       if (File.exists?(target))
-        rm_rf target
+        rm_rf target, :verbose => false
       end
       mkdir_p target, :verbose => false
 
@@ -29,9 +29,9 @@ class Mozilla < BaseGenerator
       end
 
       # Package up into the output file
-      rm_r Dir.glob("#{target}/**/.svn")
+      rm_r Dir.glob("#{target}/**/.svn"), :verbose => false
       sh "cd #{target} && jar cMf ../#{args[:out]} *", :verbose => false
-      rm_r target
+      rm_r target, :verbose => false
     end
   end
 end
