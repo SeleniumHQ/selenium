@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>typing_richtext_test</title>
+  <script src="webdriver-bootstrap.js"></script>
+  <script src="testbase.js"></script>
+  <script>
+    function setUpPage() {
+      openTestWindow();
+    }
+
+
+    function tearDownPage() {
+      closeTestWindow();
+    }
+
+
+    function setUp(driver) {
+      switchToTestWindow(driver);
+    }
+
+
+/**
+ * @fileoverview Tests for typing on a richtext enabled document (for IE the
+ * BODY element has contentEditable enabled, for W3 browsers the DOCUMENT
+ * element has designMode enabled.
+ */
+
+
+if (!goog.userAgent.IE) {
+  function runDesignModeEnabledDocumentTypingTest(driver, expected, var_args) {
+    var keySequence;
+    if (arguments.length == 2) {
+      keySequence = goog.array.slice(arguments, 1);
+      expected = keySequence[0];
+    } else {
+      keySequence = goog.array.slice(arguments, 2);
+    }
+    driver.get(TEST_PAGE.richtextPage);
+    driver.switchToFrame('editFrame');
+    var element = driver.findElement({xpath: '//body'});
+    element.sendKeys.apply(element, keySequence);
+    assertThat(element.getText(), equals(expected));
+  }
+
+
+  function testTypingLowercaseInADesignModeEnabledDocument(driver) {
+    runDesignModeEnabledDocumentTypingTest(driver,
+        'abcdefghijklmnopqrstuvwxyz');
+  }
+
+
+  function testTypingUppercaseLettersInADesignModeEnabledDocument(driver) {
+    runDesignModeEnabledDocumentTypingTest(driver,
+        'ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+  }
+
+
+  function testTypingNumberRowKeysInADesignModeEnabledDocument(driver) {
+    runDesignModeEnabledDocumentTypingTest(driver, '`1234567890-=');
+  }
+
+
+  function testTypingNumberRowKeysShiftedInADesignModeEnabledDocument(driver) {
+    runDesignModeEnabledDocumentTypingTest(driver, '~!@#$%^&*()_+');
+  }
+
+
+  function testTypingNumberPadKeysInADesignModeEnabledDocument(driver) {
+    runDesignModeEnabledDocumentTypingTest(driver, '0123456789',
+        webdriver.Key.NUMPAD0, webdriver.Key.NUMPAD1,
+        webdriver.Key.NUMPAD2, webdriver.Key.NUMPAD3,
+        webdriver.Key.NUMPAD4, webdriver.Key.NUMPAD5,
+        webdriver.Key.NUMPAD6, webdriver.Key.NUMPAD7,
+        webdriver.Key.NUMPAD8, webdriver.Key.NUMPAD9);
+  }
+
+
+  function testTypingAllPrintableKeysWithoutShiftInADesignModeEnabledDocument(
+      driver) {
+    runDesignModeEnabledDocumentTypingTest(driver,
+        '`1234567890-=abcdefghijklmnopqrstuvwxyz[]\\;\',./');
+  }
+
+
+  function testTypingAllPrintableKeysWithShiftInADesignModeEnabledDocument(
+      driver) {
+    runDesignModeEnabledDocumentTypingTest(driver,
+        '~!@#$%^&*()_+ABCDEFGHIJKLMNOPQRSTUVWXYZ{}|:"<>?');
+  }
+
+
+  function testTypingAllPrintableKeysInADesignModeEnabledDocument(driver) {
+    var printableKeys =  // Mmmmm..scrambled
+        '`123$%^&*()4567890-=abcdefg{}|:"<>?hijklmntuvwxQRSTUyz[]\\;\',./' +
+        '~!@#_+ABCDEFGHIopqrsJKLMNOPVWXYZ';
+    runDesignModeEnabledDocumentTypingTest(driver, printableKeys);
+  }
+
+
+  function testTypingSpaceInADesignModeEnabledDocument(driver) {
+    runDesignModeEnabledDocumentTypingTest(driver, 'a b c',
+        'a b', webdriver.Key.SPACE, 'c');
+  }
+
+
+  function testCanStartNewlinesByTypingReturnInADesignModeEnabledDocument(
+      driver) {
+    driver.get(TEST_PAGE.richtextPage);
+    driver.switchToFrame('editFrame');
+    var element = driver.findElement({xpath: '//body'});
+    element.sendKeys('line one');
+    assertThat(element.getText(), equals('line one'));
+    element.sendKeys('\nline two');
+    assertThat(element.getText(), equals('line one\nline two'));
+    element.sendKeys(webdriver.Key.RETURN, 'line three');
+    assertThat(element.getText(), equals('line one\nline two\nline three'));
+  }
+
+
+  function testTypingReturnWithAliasKeys(driver) {
+    runDesignModeEnabledDocumentTypingTest(driver, 'a\nb\nc\nd\n\ne',
+        'a\nb\rc\r\nd\r\r\ne');
+  }
+
+
+  function testArrowKeysAreNotPrintableInADesignModeEnabledDocument(
+      driver) {
+    var key = webdriver.Key;
+    runDesignModeEnabledDocumentTypingTest(driver, '',
+        key.ARROW_LEFT, key.ARROW_UP, key.ARROW_RIGHT, key.ARROW_DOWN);
+  }
+
+
+  function testNavigatingWithArrowKeysInADesignModeEnabledDocument(driver) {
+    runDesignModeEnabledDocumentTypingTest(driver, 'dbac1',
+        'a', webdriver.Key.LEFT,
+        'b', webdriver.Key.RIGHT,
+        'c', webdriver.Key.UP,
+        'd', webdriver.Key.DOWN,
+        '1');
+  }
+
+
+  function testNavigatingBetweenLinesWithArrowKeysInADesignModeEnabledDocument(
+      driver) {
+    runDesignModeEnabledDocumentTypingTest(driver,
+        '------\nline 1\nline 2\nline 3',
+        'line 2\n', webdriver.Key.UP,
+        'line 1\n', webdriver.Key.DOWN,
+        'line 3',
+        webdriver.Key.UP, webdriver.Key.UP, webdriver.Key.UP,
+        '------\n');
+  }
+
+
+  function testTypingBackspaceAndDeleteInADesignModeEnabledDocument(driver) {
+    runDesignModeEnabledDocumentTypingTest(driver, 'acdfgi',
+        'abcdefghi',
+        webdriver.Key.LEFT, webdriver.Key.LEFT, webdriver.Key.DELETE,
+        webdriver.Key.LEFT, webdriver.Key.LEFT, webdriver.Key.BACK_SPACE,
+        webdriver.Key.LEFT, webdriver.Key.LEFT, '\b');
+  }
+
+
+  if (!goog.userAgent.MAC) {
+    var testHomeAndEndJumpToEndsInADesignModeEnabledDocument = function(
+        driver) {
+      runDesignModeEnabledDocumentTypingTest(driver,
+          'line 1\nbegin middle end\nline 3',
+          'line 1\nline 3\n',
+          webdriver.Key.ARROW_UP,
+          'middle\n', webdriver.Key.ARROW_LEFT,
+          webdriver.Key.HOME,
+          'begin ',
+          webdriver.Key.END,
+          ' end');
+    };
+
+
+    var testPageUpDownJumpToEndsInADesignModeEnabledDocument = function(
+        driver) {
+      runDesignModeEnabledDocumentTypingTest(driver,
+          'line 1\nline 2\nline 3\nline 4',
+          'line 2\nline 3\n',
+          webdriver.Key.PAGE_UP,
+          'line 1\n',
+          webdriver.Key.PAGE_DOWN,
+          'line 4');
+    };
+  }
+
+
+  function testForwardSelectionReplacementInADesignModeEnabledDocument(driver) {
+    var key = webdriver.Key;
+    runDesignModeEnabledDocumentTypingTest(driver, 'a\nMIDDLE\nc',
+        'a\nb\nc\n',
+        key.UP, key.UP, key.SHIFT, key.RIGHT,
+        'middle');
+  }
+
+
+  function testSelectionReplacementInADesignModeEnabledDocument(driver) {
+    driver.get(TEST_PAGE.richtextPage);
+    driver.switchToFrame('editFrame');
+    var element = driver.findElement({xpath: '//body'});
+    element.sendKeys("one");
+    assertThat(element.getText(), equals("one"));
+
+    element.sendKeys(webdriver.Key.SHIFT, webdriver.Key.UP);
+    element.sendKeys("two");
+    assertThat(element.getText(), equals("two"));
+
+    element.sendKeys(webdriver.Key.UP);
+    element.sendKeys(webdriver.Key.SHIFT, webdriver.Key.DOWN);
+    element.sendKeys("three");
+    assertThat(element.getText(), equals("three"));
+  }
+
+
+  function testReverseSelectionReplacementInADesignModeEnabledDocument(driver) {
+    var key = webdriver.Key;
+    runDesignModeEnabledDocumentTypingTest(driver, 'a\n!@#',
+        'a\nb\nc\n',
+        key.SHIFT, key.LEFT, key.LEFT, key.LEFT, key.LEFT,
+        '123');
+  }
+
+
+  function testSelectAllAndTypeInADesignModeEnabledDocument(driver) {
+    var key = webdriver.Key;
+    var selectAll =
+        key.chord(goog.userAgent.MAC ? key.COMMAND : key.CONTROL, 'a');
+    runDesignModeEnabledDocumentTypingTest(driver, 'now is',
+        'was', selectAll, 'now is');
+  }
+
+
+  function testSelectAllAndBackspaceInADesignModeEnabledDocument(driver) {
+    var key = webdriver.Key;
+    var selectAll =
+        key.chord(goog.userAgent.MAC ? key.COMMAND : key.CONTROL, 'a');
+    runDesignModeEnabledDocumentTypingTest(driver, '', 'was', selectAll, '\b');
+  }
+
+
+  function testSelectAllAndDeleteInADesignModeEnabledDocument(driver) {
+    var key = webdriver.Key;
+    var selectAll =
+        key.chord(goog.userAgent.MAC ? key.COMMAND : key.CONTROL, 'a');
+    runDesignModeEnabledDocumentTypingTest(driver, '',
+        'was', selectAll, key.DELETE);
+  }
+
+
+  function testCutCopyPasteInADesignModeEnabledDocument(driver) {
+    var key = webdriver.Key;
+    var modifier = goog.userAgent.MAC ? key.COMMAND : key.CONTROL;
+    var cut = key.chord(modifier, 'x');
+    var copy = key.chord(modifier, 'c');
+    var paste = key.chord(modifier, 'v');
+
+    driver.get(TEST_PAGE.richtextPage);
+    driver.switchToFrame('editFrame');
+    var element = driver.findElement({xpath: '//body'});
+    element.sendKeys('abc');
+    assertThat(element.getText(), equals('abc'));
+    element.sendKeys(key.LEFT, key.LEFT, key.SHIFT, key.LEFT);
+    element.sendKeys(cut);
+    assertThat(element.getText(), equals('bc'));
+    element.sendKeys(key.RIGHT, key.RIGHT);
+    element.sendKeys(paste, paste);
+    assertThat(element.getText(), equals('bcaa'));
+    element.sendKeys(key.SHIFT, key.LEFT, key.LEFT);
+    element.sendKeys(copy);
+    element.sendKeys(key.RIGHT, paste, paste, paste);
+    assertThat(element.getText(), equals('bcaaaaaaaa'));
+  }
+
+
+  if (!goog.userAgent.MAC) {
+    var testHomeSelectionInADesignModeEnabledDocument = function (driver) {
+      var key = webdriver.Key;
+      var selectToFrontChord = key.chord(key.SHIFT, key.HOME);
+      runDesignModeEnabledDocumentTypingTest(driver, 'now is',
+          'was', selectToFrontChord, 'now is');
+    };
+
+
+    var testEndSelectionInADesignModeEnabledDocument = function(driver) {
+      var key = webdriver.Key;
+      var selectToEndChord = key.chord(key.SHIFT, key.END);
+      runDesignModeEnabledDocumentTypingTest(driver, 'now is',
+          'was', key.HOME, selectToEndChord, 'now is');
+    };
+
+
+    var testPageUpSelectionInADesignModeEnabledDocument = function (driver) {
+      var key = webdriver.Key;
+      var selectToFrontChord = key.chord(key.SHIFT, key.PAGE_UP);
+      runDesignModeEnabledDocumentTypingTest(driver, 'now is',
+          'content\nwas\n', selectToFrontChord, 'now is');
+    };
+
+    var testPageDownSelectionInADesignModeEnabledDocument = function(driver) {
+      var key = webdriver.Key;
+      var selectToEndChord = key.chord(key.SHIFT, key.PAGE_DOWN);
+      runDesignModeEnabledDocumentTypingTest(driver, 'now is',
+          'content\nwas\n', key.PAGE_UP, selectToEndChord, 'now is');
+    };
+  }
+}
+  </script>
+</head>
+<body>
+</body>
+</html>

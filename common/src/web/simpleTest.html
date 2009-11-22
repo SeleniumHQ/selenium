@@ -1,0 +1,63 @@
+<html>
+<head>
+    <title>Hello WebDriver</title>
+</head>
+<body style="" name="body">
+<h1>Heading</h1>
+
+<p id="oneline">A single line of text</p>
+
+<div id="multiline">
+    <p>A div containing</p>
+    More than one line of text<br/>
+
+    <div>and block level elements</div>
+</div>
+
+<span id="span">An inline element</span>
+
+<p id="lotsofspaces">This line has lots
+
+    of spaces.
+</p>
+
+<p id="nbsp">This line has a&nbsp;non-breaking space</p>
+
+<p id="nbspandspaces">This line has a &nbsp; non-breaking space and spaces</p>
+
+<p id="inline">This <span id="inlinespan">    line has <em>text</em>	</span> within elements that are meant to be displayed
+    <!-- not as a block but --> inline</p>
+
+<p id="preformatted">This section has a <pre>preformatted
+    text block
+  within in
+        </pre>
+</p>
+
+<div id="twoblocks"><p>Some text</p><p>Some more text</p></div>
+
+<div id="nestedblocks">Cheese <div><p>Some text</p><div><p>Some more text</p><p>and also</p></div></div>Brie</div>
+
+<div id="collapsingtext"><span></span><div>Hello, world</div><span></span></div>
+
+<div id="withDocumentWrite">
+<script>
+document.write("with document.write");
+document.write(" and with document.write again");
+</script>
+</div>
+
+<form action="resultPage.html">
+    <p>
+        <input type="checkbox" id="checkbox1">
+        <label id="label1" for="checkbox1">foo<br />bar</label>
+    </p>
+</form>
+
+<div id="links">
+<a href="">   link with leading space</a>
+<a href="">link with trailing space   </a>
+<a href=""><b>link with formatting tags</b></a>
+</div>
+</body>
+</html>

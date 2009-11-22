@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" output="build/test-classes" path="test/java"/>
+	<classpathentry kind="src" output="build/classes" path="src/java"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-common"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/runtime/json-20080701.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

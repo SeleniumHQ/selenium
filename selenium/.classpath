@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" output="build/client/classes" path="src/java"/>
+	<classpathentry kind="src" output="build/client/test-classes" path="test/java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-common"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-firefox"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-internet-explorer"/>
+	<classpathentry kind="lib" path="lib/buildtime/testng-5.8-jdk15.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-htmlunit"/>
+	<classpathentry kind="lib" path="lib/runtime/selenium-java-client-driver-1.0.1.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-remote-common"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-remote-client"/>
+	<classpathentry kind="lib" path="/third-party/java/google-collect-1.0-rc3.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

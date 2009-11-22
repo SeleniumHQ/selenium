@@ -1,0 +1,149 @@
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// Copyright 2008 Google Inc. All Rights Reserved.
+
+/**
+ * @fileoverview Class that allows for simple text editing tests.
+ *
+ */
+
+goog.provide('goog.testing.editor.TestHelper');
+
+goog.require('goog.Disposable');
+goog.require('goog.dom.Range');
+goog.require('goog.editor.BrowserFeature');
+goog.require('goog.testing.dom');
+
+
+/**
+ * Create a new test controller.
+ * @param {Element} root The root editable element.
+ * @constructor
+ * @extends {goog.Disposable}
+ */
+goog.testing.editor.TestHelper = function(root) {
+  /**
+   * Convenience variable for root DOM element.
+   * @type {Element}
+   * @private
+   */
+  this.root_ = root;
+
+  /**
+   * The starting HTML of the editable element.
+   * @type {string}
+   * @private
+   */
+   this.savedHtml_ = '';
+
+};
+goog.inherits(goog.testing.editor.TestHelper, goog.Disposable);
+
+
+/**
+ * Selects a new root element.
+ * @param {Element} root The root editable element.
+ */
+goog.testing.editor.TestHelper.prototype.setRoot = function(root) {
+  this.root_ = root;
+};
+
+
+/**
+ * Make the root element editable.  Alse saves its HTML to be restored
+ * in tearDown.
+ */
+goog.testing.editor.TestHelper.prototype.setUpEditableElement = function() {
+  this.savedHtml_ = this.root_.innerHTML;
+  if (goog.editor.BrowserFeature.HAS_CONTENT_EDITABLE) {
+    this.root_.contentEditable = true;
+  } else {
+    this.root_.ownerDocument.designMode = 'on';
+  }
+  this.root_.setAttribute('g_editable', 'true');
+};
+
+
+/**
+ * Reset the element previously initialized, restoring its HTML and making it
+ * non editable.
+ */
+goog.testing.editor.TestHelper.prototype.tearDownEditableElement = function() {
+  if (goog.editor.BrowserFeature.HAS_CONTENT_EDITABLE) {
+    this.root_.contentEditable = false;
+  } else {
+    this.root_.ownerDocument.designMode = 'off';
+  }
+  this.root_.innerHTML = this.savedHtml_;
+  this.root_.removeAttribute('g_editable');
+};
+
+
+/**
+ * Assert that the html in 'root' is substantially similar to htmlPattern.
+ * This method tests for the same set of styles, and for the same order of
+ * nodes.  Breaking whitespace nodes are ignored.  Elements can be annotated
+ * with classnames corresponding to keys in goog.userAgent and will be
+ * expected to show up in that user agent and expected not to show up in
+ * others.
+ * @param {string} htmlPattern The pattern to match.
+ */
+goog.testing.editor.TestHelper.prototype.assertHtmlMatches = function(
+    htmlPattern) {
+  goog.testing.dom.assertHtmlContentsMatch(htmlPattern, this.root_);
+};
+
+
+/**
+ * Finds the first text node descendant of root with the given content.
+ * @param {string|RegExp} textOrRegexp The text to find, or a regular
+ *     expression to find a match of.
+ * @return {Node?} The first text node that matches, or null if none is found.
+ */
+goog.testing.editor.TestHelper.prototype.findTextNode = function(textOrRegexp) {
+  return goog.testing.dom.findTextNode(textOrRegexp, this.root_);
+};
+
+
+/**
+ * Select from the given from offset in the given from node to the given
+ * to offset in the optionally given to node. If nodes are passed in, uses them,
+ * otherwise uses findTextNode to find the nodes to select. Selects a caret
+ * if opt_to and opt_toOffset are not given.
+ * @param {Node|string} from Node or text of the node to start the selection at.
+ * @param {number} fromOffset Offset within the above node to start the
+ *     selection at.
+ * @param {Node|string} opt_to Node or text of the node to end the selection at.
+ * @param {number} opt_toOffset Offset within the above node to end the
+ *     selection at.
+ */
+goog.testing.editor.TestHelper.prototype.select = function(from, fromOffset,
+    opt_to, opt_toOffset) {
+  var end;
+  var start = end = goog.isString(from) ? this.findTextNode(from) : from;
+  var endOffset;
+  var startOffset = endOffset = fromOffset;
+
+  if (opt_to && goog.isNumber(opt_toOffset)) {
+    end = goog.isString(opt_to) ? this.findTextNode(opt_to) : opt_to;
+    endOffset = opt_toOffset;
+  }
+
+  goog.dom.Range.createFromNodes(start, startOffset, end, endOffset).select();
+};
+
+
+/** @inheritDoc */
+goog.testing.editor.TestHelper.prototype.disposeInternal = function() {
+  delete this.root_;
+};

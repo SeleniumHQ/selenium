@@ -1,0 +1,28 @@
+#pragma once
+
+#define SUCCESS 0
+
+#define EINDEXOUTOFBOUNDS    1
+#define ENOCOLLECTION        2
+#define ENOSTRING            3
+#define ENOSTRINGLENGTH      4
+#define ENOSTRINGWRAPPER     5
+#define ENOSUCHDRIVER        6
+#define ENOSUCHELEMENT       7
+#define ENOSUCHFRAME         8
+#define ENOTIMPLEMENTED      9
+#define EOBSOLETEELEMENT     10
+#define EELEMENTNOTDISPLAYED 11
+#define EELEMENTNOTENABLED   12
+#define EUNHANDLEDERROR      13
+#define EEXPECTEDERROR       14
+#define EELEMENTNOTSELECTED  15
+#define ENOSUCHDOCUMENT      16
+#define EUNEXPECTEDJSERROR   17
+#define ENOSCRIPTRESULT      18
+#define EUNKNOWNSCRIPTRESULT 19
+#define ENOSUCHCOLLECTION    20
+#define ETIMEOUT			 21 
+#define ENULLPOINTER		 22
+#define ENOSUCHWINDOW        23
+

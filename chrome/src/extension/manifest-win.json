@@ -1,0 +1,20 @@
+{
+  "name": "WebDriver",
+  "version": "0.2",
+  "description": "WebDriver extension for Chrome",
+  "toolstrips": ["toolstrip.html"],
+  "browser_action": {
+    "default_title": "WebDriver",
+    "default_icon": "icons/free.png"
+  },
+  "background_page": "background.html",
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*", "file:///*"],
+      "js": ["utils.js", "content_script.js"],
+      "run_at": "document_start"
+    }
+  ],
+  "plugins": [{"path": "npchromedriver.dll", "public": true}],
+  "permissions": ["http://*/*", "tabs"]
+}

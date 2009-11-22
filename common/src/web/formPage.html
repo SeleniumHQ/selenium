@@ -1,0 +1,95 @@
+<html>
+<head>
+    <title>We Leave From Here</title>
+
+    <script type="text/javascript">
+        function changePage() {
+            var newLocation = '/common/page/3';
+            window.location = newLocation;
+        }
+    </script>
+</head>
+<body>
+There should be a form here:
+
+<form method="get" action="resultPage.html" name="login">
+    <input type="submit" id="submitButton" value="Hello there"/>
+</form>
+
+<form method="get" action="resultPage.html" name="image">
+    <input type="image" id="imageButton" alt="click me!" src="images/button.gif"/>
+</form>
+
+<form method="get" action="resultPage.html" name="optional" style="display: block">
+    Here's a checkbox: <input type="checkbox" id="checky" name="checky" value="furrfu"/><br/>
+    <select name="selectomatic">
+        <option selected="selected">One</option>
+        <option>Two</option>
+        <option>Four</option>
+        <option>Still learning how to count, apparently</option>
+    </select>
+
+    <select name="multi" id="multi" multiple="multiple">
+        <option selected="selected">Eggs</option>
+        <option>Ham</option>
+        <option selected="selected">Sausages</option>
+        <option>Onion gravy</option>
+    </select>
+
+    <select name="no-select" disabled="disabled">
+      <option value="foo">Foo</option>
+    </select>
+
+    <br/>
+
+    <input type="radio" id="cheese" name="snack" value="cheese"/>Cheese<br/>
+    <input type="radio" id="peas" name="snack" value="peas"/>Peas<br/>
+    <input type="radio" id="cheese_and_peas" name="snack" value="cheese and peas" checked/>Cheese and peas<br/>
+    <input type="radio" id="nothing" name="snack" value="nowt" disabled="disabled"/>Not a sausage
+
+    <input type="hidden" name="hidden" value="fromage" />
+
+    <p>I like cheese</p>
+    <input type="submit" value="Click!"/>
+</form>
+
+<form method="get" action="resultPage.html" name="disable">
+    <input type="text" id="working"/>
+    <input type="text" id="notWorking" disabled="true"/>
+
+    <textarea id="notWorkingArea" disabled="disabled" cols="5" rows="5"></textarea>
+
+    <textarea id="withText" rows="5" cols="5">Example text</textarea>
+    <textarea id="emptyTextArea" rows="5" cols="5"></textarea>
+</form>
+
+<form method="post" action="resultPage.html">
+    <select id="redirect" onchange="javascript:changePage();">
+        <option selected="selected">One</option>
+        <option id="changeme">Two</option>
+    </select>
+
+    <input id="no-type" />
+    <input type="file" id="upload" />
+</form>
+
+<form method="get" action="resultPage.html">
+  <input type="text" value="name" name="id-name1"/>
+  <input type="text" value="id"   id="id-name1"/>
+
+  <!-- Reverse the ordering -->
+  <input type="text" value="id"   id="id-name2"/>
+  <input type="text" value="name" name="id-name2"/>
+  <input name="readonly" readonly="readonly" />
+</form>
+
+<!-- form with nested children -->
+<form method="get" action="resultPage.html" id="nested_form">
+  <div>
+    <input type="text" value="name" name="x"/>
+  </div>
+  <input type="submit" />
+</form>  
+
+</body>
+</html>

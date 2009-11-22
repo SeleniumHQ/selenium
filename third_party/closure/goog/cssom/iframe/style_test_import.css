@@ -1,0 +1,10 @@
+/*
+Copyright 2009 Google Inc.
+
+Use of this source code is governed by an Apache 2.0 License.
+See the COPYING file for details.
+*/
+
+div div strong { 
+  font-style: italic;
+}

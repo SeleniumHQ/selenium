@@ -1,0 +1,45 @@
+/*
+Use of this source code is governed by an Apache 2.0 License.
+See the COPYING file for details.
+*/
+
+/* Copyright 2009 Google Inc.  All Rights Reserved. */
+/**/
+/**/
+
+table.test-results {
+  font: 12px "Courier New", Courier, monospace;
+}
+
+table.test-results thead th {
+  padding: 2px;
+  color: #fff;
+  background-color: #369;
+  text-align: center;
+}
+
+table.test-results tbody td {
+  padding: 2px;
+  color: #333;
+  background-color: #ffc;
+  text-align: right;
+}
+
+table.test-results tbody td.test-description {
+  text-align: left;
+}
+
+table.test-results tbody td.test-average {
+  color: #000;
+  font-weight: bold;
+}
+
+table.test-results tbody tr.test-suspicious td.test-standard-deviation {
+  color: #800;
+}
+
+table.test-results tbody td.test-error {
+  color: #800;
+  font-weight: bold;
+  text-align: center;
+}

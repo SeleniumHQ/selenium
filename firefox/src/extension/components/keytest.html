@@ -1,0 +1,554 @@
+<html>
+
+<head>
+ <title>Key Test</title>
+
+ <script>
+   // Derived from javascript for http://unixpapa.com/js/testkey.html by
+   // Jan Wolter and modified to test drive WebDriver's utils.js code in
+   // situ on FireFox to test the keyboard event generation code - noel
+   //
+   // NOTE don't run the keyboard tests in FireFox 3 on Win32 Vista with
+   // keyevent display on (turns your machine to sludge) - noel
+   
+   var lines = 0;
+   var maxlines = 32 - 1;
+
+   function initPage() {
+     if (document.addEventListener) {
+       var script = document.createElement('script');
+       script.src = "utils.js";
+       document['body'].appendChild(script);
+       document.addEventListener("keydown", keydown, false);
+       document.addEventListener("keypress", keypress, false);
+       document.addEventListener("keyup", keyup, false);
+     } else if (document.attachEvent) {
+       document.attachEvent("onkeydown", keydown);
+       document.attachEvent("onkeypress", keypress);
+       document.attachEvent("onkeyup", keyup);
+     } else {
+       document.onkeydown = keydown;
+       document.onkeypress = keypress;
+       document.onkeyup = keyup;
+     }
+
+     document.testform.t.value += '';
+     resetlines();
+   }
+
+   function showmesg(t) {
+     var old = document.testform.t.value;
+
+     if (lines >= maxlines) {
+       var i = old.indexOf('\n');
+       if (i >= 0) {
+         old = old.substr(i + 1);
+       }
+     } else {
+       ++lines;
+     }
+
+     document.testform.t.value = old + t + '\n';
+   }
+
+   function keyval(n) {
+     if (n == null)
+       return 'undefined';
+     var s = '' + n;
+     if (n >= 32 && n < 127)
+       s += ' (' + String.fromCharCode(n) + ')';
+     while (s.length < 9)
+       s += ' ';
+     return s;
+   }
+
+   function pressmesg(w, e) {
+     showmesg(w + '  keyCode=' + keyval(e.keyCode) +
+       ' which=' + keyval(e.which) +
+       ' charCode=' + keyval(e.charCode));
+     showmesg('          shiftKey=' + e.shiftKey +
+       ' ctrlKey=' + e.ctrlKey +
+       ' altKey=' + e.altKey +
+       ' metaKey=' + e.metaKey);
+    }
+
+    function keymesg(w, e) {
+      showmesg(w + '  keyCode=' + keyval(e.keyCode) +
+        ' which=' + keyval(e.which) +
+        ' charCode=' + keyval(e.charCode));
+      // showmesg('          keyIdentifier=' + e.keyIdentifier +
+      //  ' keyLocation=' + e.keyLocation);
+      showmesg('          shiftKey=' + e.shiftKey +
+        ' ctrlKey=' + e.ctrlKey +
+        ' altKey=' + e.altKey +
+        ' metaKey=' + e.metaKey);
+    }
+
+    function keydown(e) {
+      if (document.testform.keydown.checked)
+        keymesg('keydown ', !e ? event : e);
+    }
+
+    function keyup(e) {
+      if (document.testform.keyup.checked)
+        keymesg('keyup   ', !e ? event : e);
+    }
+
+    function keypress(e) {
+      if (document.testform.keypress.checked)
+        pressmesg('keypress', !e ? event : e);
+    }
+
+    function resetlines() {
+      lines = 0;
+      var elem = document.getElementById('typer');
+      elem.onclick = cleartype;
+      return false;
+    }
+
+    function cleartype() {
+      var elem = document.getElementById('typer');
+      elem.onclick = null;
+      elem.value = '';
+    }
+
+    function firefoxuseragent() {
+      var agent = navigator.userAgent;
+      if (!window.netscape) {
+        alert('userAgent Firefox required\n(' + agent + ')');
+        return false;
+      } else {
+        return true;
+      }
+    }
+
+    function trytype() {
+      /*
+       * we could just generate key tables one day ...
+      var elem = document.getElementById('typer');
+      elem.value = '';
+      elem.focus();
+      for (var charCode = 0; charCode != 127; ++charCode)
+        Utils.type(null, elem, String.fromCharCode(charCode));
+      return false;
+      */
+
+     window.setTimeout(function () {
+       var test = document.getElementById('results');
+       var elem = document.getElementById('typer');
+
+       /*
+        * security privileges needed to emit keyboard events
+        */
+       if (firefoxuseragent()) {
+         var securityManager = netscape.security.PrivilegeManager;
+         securityManager.enablePrivilege('UniversalBrowserWrite');
+         securityManager.enablePrivilege('UniversalXPConnect');
+       } else {
+         return;  // fail: wrong user agent
+       }
+
+       // Utils.debug = true;
+
+       test.innerHTML = "basic strings ...";
+
+       /*
+        * simple lowercase char string
+        */
+       elem.value = '';
+       elem.focus();
+       Utils.type(null, elem, "abc def\r");
+       if (elem.value != "abc def")
+         alert("[" + elem.value + "]");
+
+       /*
+        * simple uppercase char string
+        */
+       elem.value = '';
+       elem.focus();
+       Utils.type(null, elem, "ABC DEF");
+       if (elem.value != "ABC DEF")
+         alert("[" + elem.value + "]");
+       if (Utils.shiftCount != 6)
+         alert("[" + elem.value + "] 6 shifts expected");
+
+       /*
+        * simple mixedcase char string
+        */
+       elem.value = '';
+       elem.focus();
+       Utils.type(null, elem, "me at eXample dot com");
+       if (elem.value != "me at eXample dot com")
+         alert("[" + elem.value + "]");
+       if (Utils.shiftCount != 1)
+         alert("[" + elem.value + "] 1 shift expected");
+
+       test.innerHTML = "arrow/movement keys ...";
+
+       var kLeft = '\uE012';
+       var kUp = '\uE013';
+       var kRight = '\uE014';
+       var kDown  = '\uE015';
+
+       /*
+        * left arrow should not be printable
+        */
+       elem.value = '';
+       elem.focus();
+       Utils.type(null, elem, kLeft);
+       if (elem.value != "")
+         alert("[" + elem.value + "]");
+       if (Utils.shiftCount != 0)
+         alert("[" + elem.value + "] 0 shifts expected");
+
+       /*
+        * same for all arrow keys, non printable
+        */
+       elem.value = '';
+       elem.focus();
+       Utils.type(null, elem, "" + kDown + kUp + kLeft + kRight);
+       if (elem.value != "")
+         alert("[" + elem.value + "]");
+       if (Utils.shiftCount != 0)
+         alert("[" + elem.value + "] 0 shifts expected");
+
+       var kHome = '\uE011';
+       var kEnd  = '\uE010';
+       var kPageUp = '\uE00E';
+       var kPageDown = '\uE00F';
+
+       /*
+        * should like all movement keys
+        */
+       elem.value = '';
+       elem.focus();
+       Utils.type(null, elem, "abc" + kHome + "0" + kLeft +
+         kRight + kPageUp + kPageDown + kEnd + "1" + kHome +
+         "0" + kPageUp + kEnd + "111" + kHome + "00" + kEnd);
+       if (elem.value != "0000abc1111")
+         alert("[" + elem.value + "]");
+       if (Utils.shiftCount != 0)
+         alert("[" + elem.value + "] 0 shifts expected");
+
+       test.innerHTML = "delete/backspace keys ...";
+
+       var kDelete = '\uE017';
+       var kBackspace = '\uE003';
+
+       /*
+        * and delete and backspace keys too
+        */
+       elem.value = '';
+       elem.focus();
+       Utils.type(null, elem, "abcdefghi" + kHome + kDelete +
+         kEnd + kBackspace + kLeft + kLeft + kBackspace +
+         kDelete + kDelete + '0' + kBackspace + kHome + '0' +
+         kDelete + kBackspace + 'E' + kDelete + kHome + 'C');
+       if (elem.value != "CEde")
+         alert("[" + elem.value + "]");
+       if (Utils.shiftCount != 2)
+         alert("[" + elem.value + "] 2 shifts expected");
+
+       test.innerHTML = "special space, number pad, function keys ...";
+
+       var kSpace = '\uE00D';
+
+       /*
+        * should print space special char
+        */
+       elem.value = '';
+       elem.focus();
+       Utils.type(null, elem, "abcd" + kSpace + "fghi" +
+         kLeft + kLeft + kHome + kEnd + kSpace + "a");
+       if (elem.value != "abcd fghi a")
+         alert("[" + elem.value + "]");
+
+       var codes = "", result = elem.value;
+       for (var i = 0; i < result.length; ++i)
+         codes += result.charCodeAt(i) + '|';
+       if (codes != "97|98|99|100|32|102|103|104|105|32|97|")
+         alert("[" + codes + "]");
+
+       /*
+        * number pad and function keys
+        */
+       var kSemiColon = '\uE018';
+       var kEquals = '\uE019';
+       var kNumberPad0 = '\uE01A';
+       var kNumberPad3 = '\uE01D';
+       var kNumberPad9 = '\uE023';
+       var kMulitply = '\uE024';
+       var kAdd = '\uE025';
+       var kSepartor = '\uE026';
+       var kSubtract = '\uE027';
+       var kDecimal = '\uE028';
+       var kDivide = '\uE029';
+       var kF2 = '\uE032';
+
+       elem.value = '';
+       elem.focus();
+       Utils.type(null, elem, "abcd" + kMulitply + kSubtract +
+         kAdd + kDecimal + kSepartor + kNumberPad0 + kNumberPad9 +
+         kAdd + kSemiColon + kEquals + kDivide + kNumberPad3);
+       if (elem.value != "abcd*-+.,09+;=/3")
+         alert("[" + elem.value + "]");
+
+       elem.value = '';
+       elem.focus();
+       Utils.type(null, elem, "FUNCTION" + kF2 + "-KEYS" + kF2);
+       if (Utils.shiftCount != 12)
+         alert("[" + elem.value + "] 12 shifts expected");
+       Utils.type(null, elem, kF2 + "-TO" + kF2 + "O");
+       if (elem.value != "FUNCTION-KEYS-TOO")
+         alert("[" + elem.value + "]");
+
+       test.innerHTML = "text selection and deletion ...";
+
+       var kShift = '\uE008';
+
+       /*
+        * should do full shift selection delete
+        */
+       elem.value = '';
+       elem.focus();
+       Utils.type(null, elem, "abcd efgh")
+       if (elem.value != "abcd efgh")
+         alert("[" + elem.value + "]");
+       Utils.type(null, elem, kHome + kShift + kEnd + kDelete);
+       if (elem.value != "")
+         alert("[" + elem.value + "]");
+
+       /*
+        * various partial shift selection deletes
+        */
+       elem.value = '';
+       elem.focus();
+       Utils.type(null, elem, "abcd efgh ijkl mnop qrst uvw xyz")
+       Utils.type(null, elem, kHome);
+       Utils.type(null, elem, kShift + kRight + kRight + kRight +
+         kRight + kRight + kDelete);
+       if (elem.value != "efgh ijkl mnop qrst uvw xyz")
+         alert("[" + elem.value + "]");
+
+       Utils.type(null, elem, kEnd + kShift + kLeft + kLeft +
+         kLeft + kLeft + kDelete);
+       if (elem.value != "efgh ijkl mnop qrst uvw")
+         alert("[" + elem.value + "]");
+
+       Utils.type(null, elem, kLeft + kLeft + kLeft + kLeft +
+         kShift + kEnd + kDelete);
+       if (elem.value != "efgh ijkl mnop qrst")
+         alert("[" + elem.value + "]");
+
+       Utils.type(null, elem, kHome + kRight + kRight + kRight +
+         kRight + kRight + kShift + kHome + kDelete);
+       if (elem.value != "ijkl mnop qrst")
+         alert("[" + elem.value + "]");
+
+       test.innerHTML = "non-shifted chars ...";
+
+       /*
+        * all numeric line chars etc, non shifted
+        */
+       elem.focus();
+       elem.value = '';
+       Utils.type(null, elem, "`1234567890-=[]\\;,.\'");
+       if (elem.value != "`1234567890-=[]\\;,.\'")
+         alert("[" + elem.value + "]");
+       if (Utils.shiftCount != 0)
+         alert("[" + elem.value + "] zero shifts expected");
+
+       /*
+        * all lower alpha chars, non shifted
+        */
+       elem.focus();
+       elem.value = '';
+       Utils.type(null, elem, "abcdefghijklmnopqrstuvwxyz");
+       if (elem.value != "abcdefghijklmnopqrstuvwxyz")
+         alert("[" + elem.value + "]");
+       if (Utils.shiftCount != 0)
+         alert("[" + elem.value + "] wrong shift count");
+
+       test.innerHTML = "shifted chars ...";
+
+       /*
+        * all upper alpha chars that need a shift key
+        */
+       elem.focus();
+       elem.value = '';
+       Utils.type(null, elem, "ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+       if (elem.value != "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+         alert("[" + elem.value + "]");
+       if (Utils.shiftCount != 26)
+         alert("[" + elem.value + "] wrong shift count");
+
+       /*
+        * all special chars that need a shift key
+        */
+       elem.focus();
+       elem.value = '';
+       Utils.type(null, elem, '~!@#$%^&*()_+{}:"<>?|END~');
+       if (elem.value != '~!@#$%^&*()_+{}:"<>?|END~')
+         alert("[" + elem.value + "]");
+       var expect = '~!@#$%^&*()_+{}:"<>?|END~'.length;
+       if (Utils.shiftCount != expect)
+         alert("[" + elem.value + "] wrong shift count: " +
+           Utils.shiftCount + " expected " + expect);
+
+       test.innerHTML = "ascii printables ...";
+
+       /*
+        * the lot: max ascii printables
+        */
+       elem.focus();
+       elem.value = '';
+       var printables = "!\"#$%&'()*+,-./0123456789:;<=>?@ ABCDEFG" +
+         "HIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
+       Utils.type(null, elem, printables);
+       if (elem.value != printables)
+         alert("[" + elem.value + "]");
+
+       test.innerHTML = "select all, delete ...";
+
+       var kControl = '\uE009';
+
+       /*
+        * chord delete the lot: control home, shift end, delete
+        */
+       Utils.type(null, elem, kControl + kHome);
+       Utils.type(null, elem, kShift + kEnd + kHome + kEnd +
+         kHome + kEnd + kHome + kEnd);
+
+       var selection = elem.selectionStart;
+       if (selection != 0)
+         alert(selection + " expect selection start 0");
+       selection = elem.selectionEnd;
+       var end = printables.length;
+       if (selection != end)
+         alert(selection + " expect selection end " + end);
+
+       Utils.type(null, elem, kDelete);
+       if (elem.value != "")
+         alert("[" + elem.value + "]");
+
+       test.innerHTML = "control key cut and paste ...";
+
+       var kNull = '\uE000';
+
+       /*
+        * chord select all, control cut (^x) and paste (^v)
+        */
+       elem.focus();
+       elem.value = '';
+       var paste = "!\"#$%&'()*+,-./0123456789:;<=>?@ ABCD";
+       Utils.type(null, elem, paste);
+       if (elem.value != paste)
+         alert("[" + elem.value + "]");
+
+       Utils.type(null, elem, kHome + kNull + kShift + kEnd);
+       selection = elem.selectionStart;
+       if (selection != 0)
+         alert(selection + " expect selection start 0");
+       selection = elem.selectionEnd;
+       if (selection != (end = paste.length))
+         alert(selection + " expect selection end " + end);
+
+       Utils.type(null, elem, kControl + 'x');  // cut
+       if (elem.value != "")
+         alert("[" + elem.value + "]");
+
+       Utils.type(null, elem, kControl + 'v');  // paste
+       if (elem.value != paste)
+         alert("[" + elem.value + "]");
+
+       Utils.type(null, elem, kLeft + kLeft + kLeft + kShift + kEnd);
+       Utils.type(null, elem, kControl + 'x' + 'v');
+       if (elem.value != paste)
+         alert("[" + elem.value + "]");
+
+       Utils.type(null, elem, kHome + kControl + 'v');
+       Utils.type(null, elem, kHome + kControl + 'v' + 'v');
+       Utils.type(null, elem, kHome + kControl + 'v' + 'v' + 'v');
+       if (elem.value != "BCDBCDBCDBCDBCDBCD" + paste)
+         alert("[" + elem.value + "]");
+       Utils.type(null, elem, kEnd + kBackspace + "D");
+       if (elem.value != "BCDBCDBCDBCDBCDBCD" + paste)
+         alert("[" + elem.value + "]");
+
+       /*
+        * chord reverse selects and deletes
+        */
+       Utils.type(null, elem, kShift + kHome + kNull + kDelete);
+       if (elem.value != "")
+         alert("[" + elem.value + "]");
+
+       Utils.type(null, elem, "done" + kHome);
+       Utils.type(null, elem, kShift + "ALL " + kHome);  // note ALL
+
+       selection = elem.selectionStart;
+       if (selection != 0)
+         alert(selection + " expect selection start 0");
+       selection = elem.selectionEnd;
+       if (selection != (end = "ALL ".length))
+         alert(selection + " expect selection end " + end);
+
+       Utils.type(null, elem, kDelete);
+       if (elem.value != "done")
+         alert("[" + elem.value + "]");
+
+       Utils.type(null, elem, kEnd + kShift + kHome);
+       selection = elem.selectionStart;
+       if (selection != 0)
+         alert(selection + " expect selection start 0");
+       selection = elem.selectionEnd;
+       if (selection != (end = "done".length))
+         alert(selection + " expect selection end " + end);
+
+       Utils.type(null, elem, kDelete);
+       if (elem.value != "")
+         alert("[" + elem.value + "]");
+
+       test.innerHTML = "tests done ...";
+
+      }, 250);
+
+      return false;
+    }
+
+ </script>
+
+</head>
+
+<body id="body" onload="initPage();" topmargin="20" leftmargin="40">
+
+<form name="testform">
+  <h2>KeyEvent Test</h2>
+  <p>
+  Hit keys to see the Javascript events triggered and the values
+  returned.
+
+  <p>
+  Show event handling for: &nbsp;
+  <input type="checkbox" name="keydown" value="1" checked> keydown
+  &nbsp;&nbsp;&nbsp;
+  <input type="checkbox" name="keypress" value="1" checked> keypress
+  &nbsp;&nbsp;&nbsp;
+  <input type="checkbox" name="keyup" value="1" checked> keyup
+
+  <br>
+  <textarea id="testarea" name="t" rows="32" cols="90"></textarea>
+
+  <p>
+  <input id="typer" type="input" value="Type here ..." size="120">
+  </p>
+
+  <input type="reset" onclick="resetlines();">
+  <input type="button" value="Run Tests" onclick="trytype();">
+
+  <pre id="results"></pre>
+</form>
+
+</body>
+</html>
+
+

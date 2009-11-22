@@ -1,0 +1,74 @@
+<html>
+<!--
+Copyright 2006 ThoughtWorks, Inc
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html">
+	<title>theTitle</title>
+</head>
+<body>
+<img style="width: 644px; height: 41px;" alt="banner" src="banner.gif"><br>
+<div id="spaces">
+<kbd>1 space|2  space|3   space|1&nbsp;nbsp|2&nbsp;&nbsp;nbsp|3&nbsp;&nbsp;&nbsp;nbsp|2 &nbsp;space_nbsp|2&nbsp; nbsp_space|3 &nbsp; space_nbsp_space|3&nbsp; &nbsp;nbsp_space_nbsp</kbd>
+</div>
+<div>
+<kbd>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</kbd>
+</div>
+<hr/>
+<div id="tabcharacter">
+<kbd>	tab		character			between</kbd>
+</div>
+<hr/>
+<div id="nonTextMarkup">
+There is <span>non-visible</span> and <a href="javascript:void()"><strong><em>visible</em></strong></a> markup here that <!-- comment -->doesn't change the text content
+</div>
+<hr/>
+<div id="nonVisibleNewlines">
+non
+visible
+newlines
+between
+</div>
+<hr/>
+<div id="visibleNewlines">
+visible<br/>newlines<br/>between
+</div>
+<hr/>
+<div id="paragraphs">
+<p>First paragraph</p><p>Second paragraph</p>
+</div>
+<hr/>
+<div id="preformatted">
+<pre>preformatted
+newline</pre>
+</div>
+<hr/>
+<div id="mixedMarkup">
+visible<br/>
+newlines <b>and markup</b> and non-visible
+newlines and <span id="foo">markup</span>
+With
+<p>
+  a paragraph
+</p>
+and
+<pre>
+pre
+formatted
+text
+</pre>
+</div>
+</body>
+ </html>

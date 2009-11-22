@@ -1,0 +1,52 @@
+<html>
+<!--
+Copyright 2006 ThoughtWorks, Inc
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html">
+</head>
+<body>
+<img style="width: 644px; height: 41px;" alt="banner" src="banner.gif"><br>
+<form name="theForm">
+  <input id="theField" value="oldValue"/>
+  <br>
+  <input type="button" name="theButton" value="Delayed Field Change" onclick="javascript: changeFieldValue();"/>
+  <br>
+  <br>
+  <span id="theSpan">Some text</span>
+  <br>
+  <br>
+  <input type="button" name="theSpanButton" value="Delayed Text Change" onclick="javascript: changeSpanText();"/>
+  <br>
+  <br>
+  <input type="button" name="theAlertButton" value="Delayed Alert" onclick="javascript: delayedAlert();"/>
+</form>
+</body>
+
+<script language="javascript">
+<!--
+function changeFieldValue() {
+  setTimeout("document.theForm.theField.value = 'newValue'", 1500);
+}
+function changeSpanText() {
+  setTimeout("document.getElementById('theSpan').innerHTML = 'Some new text'", 1500);
+}
+function delayedAlert() {
+  setTimeout("alert('An alert')", 1500);
+}
+-->
+</script>
+
+</html>

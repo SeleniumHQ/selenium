@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.seleniumhq.webdriver</groupId>
+	<artifactId>webdriver-parent</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<name>WebDriver</name>
+	<description>A developer focused tool for automated testing of webapps</description>
+	<url>http://code.google.com/p/selenium/</url>
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<scm>
+		<connection>scm:svn:http://selenium.googlecode.com/svn/webdriver</connection> 
+		<developerConnection>scm:svn:https://selenium.googlecode.com/svn/webdriver</developerConnection>
+		<url>http://selenium.googlecode.com/svn/webdriver</url>
+	</scm>
+
+	<modules>
+		<module>chrome</module>
+		<module>common</module>
+		<module>htmlunit</module>
+		<module>firefox</module>
+		<module>support</module>
+		<module>remote/common</module>
+		<module>remote/client</module>
+		<module>remote/server</module>
+		<module>selenium</module>
+	</modules>
+
+	<profiles>
+		<profile>
+			<id>windows</id>
+			<activation>
+				<os><family>windows</family></os>
+			</activation>
+			<modules>
+				<module>jobbie</module>
+			</modules>
+		</profile>
+	</profiles>
+
+	<dependencies>
+		<!-- Test dependencies ... -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit-dep</artifactId>
+			<version>4.4</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-all</artifactId>
+			<version>1.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jmock</groupId>
+			<artifactId>jmock-junit3</artifactId>
+			<version>2.4.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mortbay.jetty</groupId>
+			<artifactId>jetty</artifactId>
+			<version>6.1.9</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>1.4</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<!-- See http://maven.apache.org/plugins/maven-compiler-plugin -->
+				<plugin>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<configuration>
+						<encoding>Windows-1252</encoding>
+						<source>1.5</source>
+						<target>1.5</target>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+
+	<distributionManagement>
+		<repository>
+			<id>openqa-releases</id>
+			<url>http://nexus.openqa.org/content/repositories/releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>openqa-snapshots</id>
+			<url>http://nexus.openqa.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+</project>

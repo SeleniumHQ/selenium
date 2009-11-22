@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" output="build/classes" path="src/java">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="webdriver-internet-explorer/build"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" output="build/test-classes" path="test/java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-common"/>
+	<classpathentry kind="lib" path="lib/runtime/jna.jar"/>
+	<classpathentry kind="output" path="build"/>
+</classpath>

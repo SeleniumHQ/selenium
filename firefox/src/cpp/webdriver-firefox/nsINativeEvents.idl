@@ -1,0 +1,17 @@
+#include "nsISupports.idl"
+
+[scriptable, uuid(5A86850B-F376-4ae6-860D-53A441CAFCE4)]
+interface nsINativeEvents : nsISupports
+{
+/* Send keyboard input to the window of this element */
+void sendKeys(in nsISupports aNode, in wstring value);
+
+/* Move the mouse from start to end */
+void mouseMove(in nsISupports aNode, in long startX, in long startY, in long endX, in long endY);
+
+/* Click the mouse at this point */
+void click(in nsISupports aNode, in long x, in long y);
+
+/* Check if there are unhandled keyboard events. */
+void hasUnhandledEvents(in nsISupports aNode, out boolean hasEvents);
+};

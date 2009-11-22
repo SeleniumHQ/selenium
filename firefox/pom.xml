@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.seleniumhq.webdriver</groupId>
+		<artifactId>webdriver-parent</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+	<artifactId>webdriver-firefox</artifactId>
+	<name>webdriver-firefox</name>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.seleniumhq.webdriver</groupId>
+			<artifactId>webdriver-common</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20080701</version>
+		</dependency>
+		<!-- Test dependencies ... -->
+		<dependency>
+			<groupId>org.seleniumhq.webdriver</groupId>
+			<artifactId>webdriver-common</artifactId>
+			<version>${project.version}</version>
+			<classifier>tests</classifier>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<sourceDirectory>src/java</sourceDirectory>
+		<testSourceDirectory>test/java</testSourceDirectory>
+		<plugins>
+			<!-- See http://maven.apache.org/plugins/maven-antrun-plugin -->
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>create_extension_and_copy_libraries</id>
+						<phase>generate-resources</phase>
+						<configuration>
+							<tasks>
+								<copy todir="target/webdriver-extension">
+									<fileset dir="src/extension" excludes="**/.svn/**" />
+								</copy>
+								<copy todir="target/webdriver-extension/components">
+									<fileset dir="prebuilt" includes="*.xpt" />
+								</copy>
+								<copy todir="target/webdriver-extension/components">
+									<fileset dir="prebuilt" includes="*.xpt" />
+								</copy>
+								<copy file="prebuilt/Win32/Release/webdriver-firefox.dll" todir="target/webdriver-extension/platform/WINNT_x86-msvc/components" />
+								<copy file="prebuilt/linux/Release/libwebdriver-firefox.so" todir="target/webdriver-extension/platform/Linux_x86-gcc3/components" />
+								<copy file="prebuilt/linux64/Release/libwebdriver-firefox.so" todir="target/webdriver-extension/platform/Linux_x86_64-gcc3/components" />
+								<mkdir dir="target/classes" />
+								<zip destfile="target/classes/webdriver-extension.zip" basedir="target/webdriver-extension" />
+								<copy file="prebuilt/linux/Release/x_ignore_nofocus.so" todir="target/classes/x86" />
+								<copy file="prebuilt/linux64/Release/x_ignore_nofocus.so" todir="target/classes/amd64" />
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+            <!-- See http://maven.apache.org/plugins/maven-surefire-plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <includes>
+                        <include>**/*TestSuite.java</include>
+                    </includes>
+                </configuration>
+            </plugin>
+		</plugins>
+	</build>
+
+</project>

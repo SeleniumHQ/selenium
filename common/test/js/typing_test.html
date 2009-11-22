@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>typing_test</title>
+  <script src="webdriver-bootstrap.js"></script>
+  <script src="testbase.js"></script>
+  <script>
+    function setUpPage() {
+      openTestWindow();
+    }
+
+
+    function tearDownPage() {
+      closeTestWindow();
+    }
+
+
+    function setUp(driver) {
+      switchToTestWindow(driver);
+    }
+
+
+goog.require('webdriver.Key');
+
+
+function testFiresKeyPressEvents(driver) {
+  driver.get(TEST_PAGE.javascriptPage);
+  driver.findElement({id: 'keyReporter'}).sendKeys('a');
+  assertThat(driver.findElement({id: 'result'}).getText(),
+      contains('press:'));
+}
+
+
+function testFiresKeyDownEvents(driver) {
+  driver.get(TEST_PAGE.javascriptPage);
+  driver.findElement({id: 'keyReporter'}).sendKeys('a');
+  assertThat(driver.findElement({id: 'result'}).getText(), contains('down:'));
+}
+
+
+function testFiresKeyUpEvents(driver) {
+  driver.get(TEST_PAGE.javascriptPage);
+  driver.findElement({id: 'keyReporter'}).sendKeys('a');
+  assertThat(driver.findElement({id: 'result'}).getText(), contains('up:'));
+}
+
+
+function testWillSimulateAKeyUpWhenEnteringTextIntoInputElements(driver) {
+  driver.get(TEST_PAGE.javascriptPage);
+  driver.findElement({id: 'keyUp'}).sendKeys('I like cheese');
+  assertThat(
+      driver.findElement({id: 'result'}).getText(), equals('I like cheese'));
+}
+
+
+function testWillSimulateAKeyDownWhenEnteringTextIntoInputElements(driver) {
+  driver.get(TEST_PAGE.javascriptPage);
+  driver.findElement({id: 'keyDown'}).sendKeys('I like cheese');
+  assertThat(
+      driver.findElement({id: 'result'}).getText(),
+      // Because the key down gets the result before the input element is
+      // filled, we're a letter short here
+      equals('I like chees'));
+}
+
+
+function testWillSimulateAKeyPressWhenEnteringTextIntoInputElements(driver) {
+  driver.get(TEST_PAGE.javascriptPage);
+  driver.findElement({id: 'keyPress'}).sendKeys('I like cheese');
+  assertThat(
+      driver.findElement({id: 'result'}).getText(),
+      // Because the key down gets the result before the input element is
+      // filled, we're a letter short here
+      equals('I like chees'));
+}
+
+
+function testWillSimulateAKeyUpWhenEnteringTextIntoTextArea(driver) {
+  driver.get(TEST_PAGE.javascriptPage);
+  driver.findElement({id: 'keyUpArea'}).sendKeys('I like cheese');
+  assertThat(
+      driver.findElement({id: 'result'}).getText(), equals('I like cheese'));
+}
+
+
+function testWillSimulateAKeyDownWhenEnteringTextIntoTextArea(driver) {
+  driver.get(TEST_PAGE.javascriptPage);
+  driver.findElement({id: 'keyDownArea'}).sendKeys('I like cheese');
+  assertThat(
+      driver.findElement({id: 'result'}).getText(),
+      // Because the key down gets the result before the input element is
+      // filled, we're a letter short here
+      equals('I like chees'));
+}
+
+
+function testWillSimulateAKeyPressWhenEnteringTextIntoTextArea(driver) {
+  driver.get(TEST_PAGE.javascriptPage);
+  driver.findElement({id: 'keyPressArea'}).sendKeys('I like cheese');
+  assertThat(
+      driver.findElement({id: 'result'}).getText(),
+      // Because the key down gets the result before the input element is
+      // filled, we're a letter short here
+      equals('I like chees'));
+}
+
+
+function testFiresFocusKeyEventsInTheRightOrder(driver) {
+  driver.get(TEST_PAGE.javascriptPage);
+  var result = driver.findElement({id: 'result'});
+  driver.findElement({id: 'theworks'}).sendKeys('a');
+  assertThat(
+      'Firefox will not fire the focus event if it is not the active app',
+      result.getText(),
+      matchesRegex(/(focus )?keydown keypress keyup/));
+}
+
+
+function testReportsKeyCodeOfArrowKeys(driver) {
+  driver.get(TEST_PAGE.javascriptPage);
+  var result = driver.findElement({id: 'result'});
+  var element = driver.findElement({id: 'keyReporter'});
+
+  function testKey(key, code) {
+    element.sendKeys(key);
+    assertThat(result.getText(),
+        is('down: X press: X up: X'.replace(/X/g, code)));
+  }
+
+  testKey(webdriver.Key.ARROW_LEFT, 37);
+  testKey(webdriver.Key.ARROW_UP, 38);
+  testKey(webdriver.Key.ARROW_RIGHT, 39);
+  testKey(webdriver.Key.ARROW_DOWN, 40);
+
+  assertThat('Arrow keys are not printable', element.getValue(), is(''));
+}
+
+
+function testShouldTypeIntoInputElementsThatHaveNoTypeAttribute(driver) {
+  driver.get(TEST_PAGE.formPage);
+  var element = driver.findElement({id: 'no-type'});
+  element.sendKeys('Should Say Cheese');
+  assertThat(element.getValue(), is('Should Say Cheese'));
+}
+
+
+function testShouldNotTypeIntoElementsThatPreventKeyDownEvents(driver) {
+  driver.get(TEST_PAGE.javascriptPage);
+  var silent = driver.findElement({name: 'suppress'});
+  silent.sendKeys('silent sammy');
+  assertThat(silent.getValue(), is(''));
+}
+
+
+function testGenerateKeyPressEventEvenWhenElementPreventsDefault(driver) {
+  driver.get(TEST_PAGE.javascriptPage);
+  var silent = driver.findElement({name: 'suppress'});
+  var result = driver.findElement({id: 'result'});
+  silent.sendKeys('ss');
+  assertThat(result.getText(), contains('press'));
+}
+
+
+// TODO(jmleyba): Test cases below need to be duplicated for:
+// - textarea elements
+// - contentEditable enabled elements (IE & FF3+ only)
+// - richtext enabled documents (in iframes)
+
+
+function testTypingLowercaseLettersOnAnInputElement(driver) {
+  driver.get(TEST_PAGE.javascriptPage);
+  var element = driver.findElement({id: 'keyReporter'});
+  element.sendKeys('abcdefghijklmnopqrstuvwxyz');
+  assertThat(element.getValue(), is('abcdefghijklmnopqrstuvwxyz'));
+}
+
+
+function testTypingUppercaseLettersOnAnInputElement(driver) {
+  driver.get(TEST_PAGE.javascriptPage);
+  var element = driver.findElement({id: 'keyReporter'});
+  element.sendKeys('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+  assertThat(element.getValue(), is('ABCDEFGHIJKLMNOPQRSTUVWXYZ'));
+}
+
+
+function testTypignQuotationMarksOnAnInputElement(driver) {
+  driver.get(TEST_PAGE.javascriptPage);
+  var element = driver.findElement({id: 'keyReporter'});
+  element.sendKeys('"');
+  assertThat(element.getValue(), is('"'));
+}
+
+
+function testTypingTheAtCharacterOnAnInputElement(driver) {
+  // NOTE(jmleyba): The following comment was copied from
+  // org.openqa.selenium.TypingTest.java when this was converted to the JS API:
+  //
+  // simon: I tend to use a US/UK or AUS keyboard layout with English
+  // as my primary language. There are consistent reports that we're
+  // not handling i18nised keyboards properly. This test exposes this
+  // in a lightweight manner when my keyboard is set to the DE mapping
+  // and we're using IE.
+  driver.get(TEST_PAGE.javascriptPage);
+  var element = driver.findElement({id: 'keyReporter'});
+  element.sendKeys('@');
+  assertThat(element.getValue(), is('@'));
+}
+
+
+function testTypingAMixOfUpperAndLowercaseLettersOnAnInputElement(driver) {
+  driver.get(TEST_PAGE.javascriptPage);
+  var element = driver.findElement({id: 'keyReporter'});
+  element.sendKeys('me@eXample.com');
+  assertThat(element.getValue(), is('me@eXample.com'));
+}
+
+
+function testArrowKeysAreNotPrintableOnInputElements(driver) {
+  driver.get(TEST_PAGE.javascriptPage);
+  var element = driver.findElement({id: 'keyReporter'});
+  element.sendKeys(webdriver.Key.ARROW_LEFT);
+  assertThat(element.getValue(), is(''));
+}
+
+
+function testUsingArrowKeysOnAnInputElement(driver) {
+  driver.get(TEST_PAGE.javascriptPage);
+  var element = driver.findElement({id: 'keyReporter'});
+  element.sendKeys('Tet', webdriver.Key.ARROW_LEFT, 's');
+  assertThat(element.getValue(), is('Test'));
+}
+
+
+function testNumericNonShiftKeysOnAnInputElement(driver) {
+  driver.get(TEST_PAGE.javascriptPage);
+  var element = driver.findElement({id: 'keyReporter'});
+  var numericLineCharsNonShifted = "`1234567890-=[]\\;,.'/42";
+  element.sendKeys(numericLineCharsNonShifted);
+  assertThat(element.getValue(), is(numericLineCharsNonShifted));
+}
+
+
+function testNumericShiftKeysOnAnInputElement(driver) {
+  driver.get(TEST_PAGE.javascriptPage);
+  var element = driver.findElement({id: 'keyReporter'});
+  var numericShiftsEtc = '~!@#$%^&*()_+{}:"<>?|END~';
+  element.sendKeys(numericShiftsEtc);
+  assertThat(element.getValue(), is(numericShiftsEtc));
+  assertThat(driver.findElement({id: 'result'}).getText(), contains(' up: 16'));
+}
+
+
+function testAllPrintableKeysOnAnInputElement(driver) {
+  driver.get(TEST_PAGE.javascriptPage);
+  var element = driver.findElement({id: 'keyReporter'});
+  var allPrintable =
+      "!\"#$%&'()*+,-./0123456789:;<=>?@ ABCDEFGHIJKLMNO" +
+      "PQRSTUVWXYZ [\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
+  element.sendKeys(allPrintable);
+  assertThat(element.getValue(), is(allPrintable));
+}
+
+
+function testArrowKeysOnAnInputElement(driver) {
+  driver.get(TEST_PAGE.javascriptPage);
+  var element = driver.findElement({id: 'keyReporter'});
+  element.sendKeys(
+      'a', webdriver.Key.LEFT,
+      'b', webdriver.Key.RIGHT,
+      'c', webdriver.Key.UP,
+      'd', webdriver.Key.DOWN,
+      '1');
+  if (goog.userAgent.MAC) {
+    // On a mac, the up and down arrow keys jump to the beginning and end of the
+    // field.
+    assertThat(element.getValue(), is('dbac1'));
+  } else {
+    assertThat(element.getValue(), is('bacd1'));
+  }
+}
+
+
+// NOTE(jmleyba): Mac's don't have PageUp/Down, but we can get the same behavior
+// with CMD+UP and CMD+DOWN.  Of course, this all assumes the user hasn't
+// changed their keyboard mapping...
+if (goog.userAgent.MAC) {
+  var testHomeEndPageUpAndPageDownOnAnInputElementOnAMac = function(driver) {
+    driver.get(TEST_PAGE.javascriptPage);
+    var element = driver.findElement({id: 'keyReporter'});
+    element.sendKeys(
+        // CMD+UP = PageUp
+        'a', webdriver.Key.chord(webdriver.Key.COMMAND, webdriver.Key.UP),
+        // CMD+DOWN = PageDown
+        'b', webdriver.Key.chord(webdriver.Key.COMMAND, webdriver.Key.DOWN),
+        // CMD+LEFT = Home
+        'c', webdriver.Key.chord(webdriver.Key.COMMAND, webdriver.Key.LEFT),
+        // CMD+RIGHT = End
+        'd', webdriver.Key.chord(webdriver.Key.COMMAND, webdriver.Key.RIGHT),
+        '1');
+    assertThat(element.getValue(), is('dbac1'));
+  };
+} else {
+  var testHomeAndEndOnAnInputElementOnANonMac = function(driver) {
+    driver.get(TEST_PAGE.javascriptPage);
+    var element = driver.findElement({id: 'keyReporter'});
+    element.sendKeys('a', webdriver.Key.HOME, 'b', webdriver.Key.END, 'd');
+    assertThat(element.getValue(), is('bad'));
+  };
+}
+
+
+function testDeleteAndBackspaceKeysOnAnInputElement(driver) {
+  driver.get(TEST_PAGE.javascriptPage);
+  var element = driver.findElement({id: 'keyReporter'});
+
+  element.sendKeys('abcdefghi');
+  assertThat(element.getValue(), is('abcdefghi'));
+  element.sendKeys(
+      webdriver.Key.LEFT, webdriver.Key.LEFT, webdriver.Key.DELETE);
+  assertThat(element.getValue(), is('abcdefgi'));
+  element.sendKeys(
+      webdriver.Key.LEFT, webdriver.Key.LEFT, webdriver.Key.BACK_SPACE);
+  assertThat(element.getValue(), is('abcdfgi'));
+  element.sendKeys(
+      webdriver.Key.LEFT, webdriver.Key.LEFT, '\b');
+  assertThat(element.getValue(), is('acdfgi'));
+}
+
+
+function testSpecialSpaceKeysOnAnInputElement(driver) {
+  driver.get(TEST_PAGE.javascriptPage);
+  var element = driver.findElement({id: 'keyReporter'});
+  element.sendKeys(
+      'abcd', webdriver.Key.SPACE, 'efg', webdriver.Key.SPACE, 'hij');
+  assertThat(element.getValue(), is('abcd efg hij'));
+}
+
+
+function testNumberpadKeysOnAnInputElement(driver) {
+  driver.get(TEST_PAGE.javascriptPage);
+  var element = driver.findElement({id: 'keyReporter'});
+  element.sendKeys(
+      'abcd', webdriver.Key.MULTIPLY, webdriver.Key.SUBTRACT, webdriver.Key.ADD,
+      webdriver.Key.DECIMAL, webdriver.Key.SEPARATOR, webdriver.Key.NUMPAD0,
+      webdriver.Key.NUMPAD9, webdriver.Key.ADD, webdriver.Key.SEMICOLON,
+      webdriver.Key.EQUALS, webdriver.Key.DIVIDE, webdriver.Key.NUMPAD3,
+      'abcd');
+  assertThat(element.getValue(), is('abcd*-+.,09+;=/3abcd'));
+}
+
+
+function testFunctionKeysAreNotPrintableOnAnInputElement(driver) {
+  driver.get(TEST_PAGE.javascriptPage);
+  var element = driver.findElement({id: 'keyReporter'});
+  element.sendKeys('FUNCTION' + webdriver.Key.F2 + '-KEYS' + webdriver.Key.F2);
+  element.sendKeys(webdriver.Key.F2, '-TOO', webdriver.Key.F2);
+  assertThat(element.getValue(), is('FUNCTION-KEYS-TOO'));
+}
+
+
+function testShiftSelectionDeletesOnAnInputElement(driver) {
+  driver.get(TEST_PAGE.javascriptPage);
+  var element = driver.findElement({id: 'keyReporter'});
+  element.sendKeys("abcd efgh");
+  assertThat(element.getValue(), is("abcd efgh"));
+
+  element.sendKeys(webdriver.Key.SHIFT, webdriver.Key.LEFT, webdriver.Key.LEFT,
+                   webdriver.Key.LEFT);
+  element.sendKeys(webdriver.Key.DELETE);
+  assertThat(element.getValue(), is("abcd e"));
+}
+
+
+if (goog.userAgent.MAC) {
+  var testChordControlHomeShiftEndDeleteOnAnInputElementMac = function(driver) {
+    driver.get(TEST_PAGE.javascriptPage);
+    var result = driver.findElement({id: 'result'});
+    var element = driver.findElement({id: 'keyReporter'});
+    element.sendKeys("!\"#$%&'()*+,-./0123456789:;<=>?@ ABCDEFG");
+    element.sendKeys(
+        webdriver.Key.chord(webdriver.Key.COMMAND, webdriver.Key.LEFT));
+    element.sendKeys(
+        webdriver.Key.SHIFT,
+        webdriver.Key.chord(webdriver.Key.COMMAND, webdriver.Key.RIGHT),
+        webdriver.Key.DELETE);
+    assertThat(element.getValue(), is(''));
+    assertThat(result.getText(), contains(" up: 46"));
+  };
+
+  var testChordReverseShiftHomeSelectionDeletesMac = function(driver) {
+    driver.get(TEST_PAGE.javascriptPage);
+    var element = driver.findElement({id: 'keyReporter'});
+    element.sendKeys(
+        'done',
+        webdriver.Key.chord(webdriver.Key.COMMAND, webdriver.Key.LEFT));
+    element.sendKeys(
+        webdriver.Key.chord(webdriver.Key.SHIFT, 'ALL ',
+                            webdriver.Key.COMMAND, webdriver.Key.LEFT));
+    assertThat(element.getValue(), is('ALL done'));
+    element.sendKeys(webdriver.Key.DELETE);
+    assertThat(element.getValue(), is('done'));
+    element.sendKeys(
+        webdriver.Key.chord(webdriver.Key.COMMAND, webdriver.Key.RIGHT),
+        webdriver.Key.SHIFT,
+        webdriver.Key.chord(webdriver.Key.COMMAND, webdriver.Key.LEFT));
+    assertThat(element.getValue(), is('done'));
+    element.sendKeys(webdriver.Key.DELETE);
+    assertThat(element.getValue(), is(''));
+  };
+
+
+  var testChordControlCutAndPasteMac = function(driver) {
+    driver.get(TEST_PAGE.javascriptPage);
+    var element = driver.findElement({id: 'keyReporter'});
+    var paste = "!\"#$%&'()*+,-./0123456789:;<=>?@ ABCDEFG";
+    element.sendKeys(paste);
+    assertThat(element.getValue(), is(paste));
+
+    element.sendKeys(
+        webdriver.Key.chord(webdriver.Key.COMMAND, webdriver.Key.LEFT),
+        webdriver.Key.SHIFT,
+        webdriver.Key.chord(webdriver.Key.COMMAND, webdriver.Key.RIGHT));
+    element.sendKeys(webdriver.Key.COMMAND, 'x');
+    assertThat(element.getValue(), is(''));
+
+    element.sendKeys(webdriver.Key.COMMAND, 'v');
+    assertThat(element.getValue(), is(paste));
+
+    element.sendKeys(
+        webdriver.Key.LEFT, webdriver.Key.LEFT, webdriver.Key.LEFT,
+        webdriver.Key.SHIFT,
+        webdriver.Key.chord(webdriver.Key.COMMAND, webdriver.Key.RIGHT));
+    element.sendKeys(webdriver.Key.COMMAND, 'xv');
+    assertThat(element.getValue(), is(paste));
+
+    element.sendKeys(
+        webdriver.Key.chord(webdriver.Key.COMMAND, webdriver.Key.LEFT));
+    element.sendKeys(webdriver.Key.COMMAND, 'v');
+    element.sendKeys(webdriver.Key.COMMAND, 'vv');
+    element.sendKeys(webdriver.Key.COMMAND, 'vvv');
+    assertThat(element.getValue(), is('EFGEFGEFGEFGEFGEFG' + paste));
+
+    element.sendKeys(
+        webdriver.Key.chord(webdriver.Key.COMMAND, webdriver.Key.RIGHT),
+        webdriver.Key.SHIFT,
+        webdriver.Key.chord(webdriver.Key.COMMAND, webdriver.Key.LEFT),
+        webdriver.Key.DELETE);
+    assertThat(element.getValue(), is(''));
+  };
+} else {
+  var testChordControlHomeShiftEndDeleteOnAnInputElementNonMac = function(
+      driver) {
+    driver.get(TEST_PAGE.javascriptPage);
+    var result = driver.findElement({id: 'result'});
+    var element = driver.findElement({id: 'keyReporter'});
+    element.sendKeys("!\"#$%&'()*+,-./0123456789:;<=>?@ ABCDEFG");
+    element.sendKeys(webdriver.Key.HOME);
+    element.sendKeys(webdriver.Key.chord(
+        webdriver.Key.SHIFT, webdriver.Key.END, webdriver.Key.DELETE));
+    assertThat(element.getValue(), is(''));
+    assertThat(result.getText(), contains(" up: 16"));
+  };
+
+
+  var testChordReverseShiftHomeSelectionDeletesNonMac = function(driver) {
+    driver.get(TEST_PAGE.javascriptPage);
+    var element = driver.findElement({id: 'keyReporter'});
+    element.sendKeys('done', webdriver.Key.HOME);
+    element.sendKeys(webdriver.Key.chord(
+        webdriver.Key.SHIFT, 'ALL ', webdriver.Key.HOME));
+    assertThat(element.getValue(), is('ALL done'));
+    element.sendKeys(webdriver.Key.DELETE);
+    assertThat(element.getValue(), is('done'));
+    element.sendKeys(webdriver.Key.chord(
+        webdriver.Key.END, webdriver.Key.SHIFT, webdriver.Key.HOME));
+    assertThat(element.getValue(), is('done'));
+    element.sendKeys(webdriver.Key.DELETE);
+    assertThat(element.getValue(), is(''));
+  };
+
+
+  var testChordControlCutAndPasteNonMac = function(driver) {
+    driver.get(TEST_PAGE.javascriptPage);
+    var element = driver.findElement({id: 'keyReporter'});
+    var paste = "!\"#$%&'()*+,-./0123456789:;<=>?@ ABCDEFG";
+    element.sendKeys(paste);
+    assertThat(element.getValue(), is(paste));
+
+    element.sendKeys(webdriver.Key.HOME, webdriver.Key.SHIFT,
+                     webdriver.Key.END);
+    element.sendKeys(webdriver.Key.CONTROL, 'x');
+    assertThat(element.getValue(), is(''));
+
+    element.sendKeys(webdriver.Key.CONTROL, 'v');
+    assertThat(element.getValue(), is(paste));
+
+    element.sendKeys(webdriver.Key.LEFT, webdriver.Key.LEFT, webdriver.Key.LEFT,
+                     webdriver.Key.SHIFT, webdriver.Key.END);
+    element.sendKeys(webdriver.Key.CONTROL, 'x');
+    element.sendKeys(webdriver.Key.CONTROL, 'v');
+    assertThat('Cut and paste failed',
+        element.getValue(), is(paste));
+
+    element.sendKeys(webdriver.Key.HOME);
+    element.sendKeys(webdriver.Key.CONTROL, 'v');
+    element.sendKeys(webdriver.Key.CONTROL, 'vv');
+    element.sendKeys(webdriver.Key.CONTROL, 'vvv');
+    assertThat(element.getValue(), is('EFGEFGEFGEFGEFGEFG' + paste));
+
+    element.sendKeys(webdriver.Key.END, webdriver.Key.SHIFT, webdriver.Key.HOME,
+                     webdriver.Key.NULL, webdriver.Key.DELETE);
+    assertThat(element.getValue(), is(''));
+  };
+}
+
+
+function testTypingAsciiCharactersThatDoNotNeedShiftWithAShift(driver) {
+  driver.get(TEST_PAGE.javascriptPage);
+  var element = driver.findElement({id: 'keyReporter'});
+
+  function runTest(text, expect) {
+    element.clear();
+    var sentKeys = '; sent keys <SHIFT + "' + text + '">';
+    element.sendKeys(webdriver.Key.SHIFT,  text);
+    assertThat('Incorrect text' + sentKeys, element.getValue(), equals(expect));
+  }
+
+  var alphabetsoup = 'abcdefghijklmnopqrstuvwxyz';
+  for (var i = 0, character; character = alphabetsoup[i]; i++) {
+    runTest(character, character.toUpperCase());
+  }
+
+  runTest('`', '~');
+  runTest('1', '!');
+  runTest('2', '@');
+  runTest('3', '#');
+  runTest('4', '$');
+  runTest('5', '%');
+  runTest('6', '^');
+  runTest('7', '&');
+  runTest('8', '*');
+  runTest('9', '(');
+  runTest('0', ')');
+  runTest('-', '_');
+  runTest('=', '+');
+  runTest('[', '{');
+  runTest(']', '}');
+  runTest('\\', '|');
+  runTest(';', ':');
+  runTest('\'', '"');
+  runTest(',', '<');
+  runTest('.', '>');
+  runTest('/', '?');
+}
+
+
+function testShiftingMultipleTimesInOneKeySequenceTogglesShiftState(driver) {
+  driver.get(TEST_PAGE.javascriptPage);
+  var element = driver.findElement({id: 'keyReporter'});
+  element.sendKeys(
+      'abc', webdriver.Key.SHIFT, 'def', webdriver.Key.SHIFT, 'ghi');
+  assertThat(element.getValue(), equals('abcDEFghi'));
+}
+
+
+function testCannotShiftUnshiftWhenTypingCapitalLetters(driver) {
+  driver.get(TEST_PAGE.javascriptPage);
+  var element = driver.findElement({id: 'keyReporter'});
+  element.sendKeys(
+      'ABC', webdriver.Key.SHIFT, 'DEF', webdriver.Key.SHIFT, 'GHI');
+  assertThat(element.getValue(), equals('ABCDEFGHI'));
+}
+
+
+function testCanTerminateShiftWithSpecialNullKey(driver) {
+  driver.get(TEST_PAGE.javascriptPage);
+  var element = driver.findElement({id: 'keyReporter'});
+  element.sendKeys(
+      'abc', webdriver.Key.SHIFT, 'def', webdriver.Key.NULL, 'ghi');
+  assertThat(element.getValue(), equals('abcDEFghi'));
+}
+  </script>
+</head>
+<body>
+</body>
+</html>

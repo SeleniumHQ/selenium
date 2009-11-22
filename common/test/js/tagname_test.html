@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>tagname_test.html</title>
+  <script src="webdriver-bootstrap.js"></script>
+  <script src="testbase.js"></script>
+  <script type="text/javascript">
+    function testGetTagName(driver) {
+      assertTagName(driver.findElement({xpath: '//body'}), 'body');
+      assertTagName(driver.findElement({id: 'one'}), 'div');
+      assertTagName(driver.findElement({id: 'two'}), 'a');
+    }
+
+    function assertTagName(element, tagName) {
+      assertThat(element.getTagName(), equals(tagName));
+    }
+  </script>
+</head>
+<body>
+  <div id="one">
+    <a href="tagname_test.html#" id="two">test link</a>
+  </div>
+</body>
+</html>
