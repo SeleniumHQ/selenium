@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import junit.framework.Assert;
 import junit.framework.Test;
 import junit.framework.TestCase;
 
@@ -73,7 +74,7 @@ public class ChromeDriverTestSuite extends TestCase {
       File dllToUse = new File(System.getProperty("webdriver.chrome.extensiondir"),
           "npchromedriver.dll");
       if (System.getProperty("webdriver.chrome.extensiondir") == null ||
-          !System.getProperty("webdriver.chrome.extensiondir").equals(extensionDstDir) ||
+          !System.getProperty("webdriver.chrome.extensiondir").equals(extensionDstDir.getAbsolutePath()) ||
           !dllToUse.exists()) {
         System.setProperty("webdriver.chrome.extensiondir", extensionDst);
         try {
@@ -87,16 +88,35 @@ public class ChromeDriverTestSuite extends TestCase {
 
     private void copyDll() throws IOException {
       if (System.getProperty("os.name").startsWith("Windows")) {
+        File topLevel = locateTopLevelProjectDirectory();
         File dllFrom = new File(System.getProperty("user.dir"),
-            "../build/Win32/Debug/npchromedriver.dll");
+            topLevel.getAbsolutePath() + "/build/Win32/Debug/npchromedriver.dll");
         if (!dllFrom.exists()) {
-          throw new FileNotFoundException("Could not find " + dllFrom.getCanonicalFile());
+          // Fall back to the prebuilt, if possible
+          dllFrom = new File(topLevel, "chrome/prebuilt/Win32/Release/npchromedriver.dll");
+          if (!dllFrom.exists())
+            throw new FileNotFoundException("Could not find " + dllFrom.getCanonicalFile());
+          System.out.println("Falling back to prebuilt chrome DLL");
         }
         File dllToUse = new File(System.getProperty("webdriver.chrome.extensiondir"),
             "npchromedriver.dll");
         dllToUse.deleteOnExit();
         FileHandler.copy(dllFrom, dllToUse);
       }
+    }
+
+    private File locateTopLevelProjectDirectory() {
+      File dir = new File(".");
+      do {
+        File rakefile = new File(dir, "Rakefile");
+        if (rakefile.exists()) {
+          return dir;
+        }
+        dir = dir.getParentFile();
+      } while (dir != null);
+
+      Assert.fail("Cannot locate top-level directory");
+      return null;
     }
   }
 }
