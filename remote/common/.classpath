@@ -2,9 +2,9 @@
 <classpath>
 	<classpathentry kind="src" output="build/classes" path="src/java"/>
 	<classpathentry kind="src" output="build/test-classes" path="test/java"/>
-	<classpathentry kind="lib" path="lib/runtime/commons-codec-1.3.jar"/>
 	<classpathentry kind="lib" path="lib/runtime/json-20080701.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-common"/>
+	<classpathentry kind="lib" path="lib/runtime/commons-codec-1.4.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

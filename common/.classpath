@@ -18,5 +18,6 @@
 	<classpathentry kind="lib" path="lib/buildtime/jsp-api-2.0.jar"/>
 	<classpathentry kind="lib" path="lib/buildtime/commons-el-1.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/buildtime/jetty-6.1.9.jar"/>
+	<classpathentry kind="lib" path="lib/buildtime/commons-io-1.4.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

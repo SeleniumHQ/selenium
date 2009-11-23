@@ -27,6 +27,9 @@ import java.net.ServerSocket;
 
 @SuppressWarnings("unused")
 public class SingleTestSuite extends TestCase {
+  private final static String CHROME = "org.openqa.selenium.chrome.ChromeDriver";
+  private final static String CHROME_TEST = "org.openqa.selenium.chrome.ChromeDriverTestSuite$TestChromeDriver";
+
   private final static String FIREFOX = "org.openqa.selenium.firefox.FirefoxDriver";
   private final static String FIREFOX_TEST = "org.openqa.selenium.firefox.FirefoxDriverTestSuite$TestFirefoxDriver";
  
