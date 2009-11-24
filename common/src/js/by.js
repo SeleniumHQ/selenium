@@ -25,6 +25,8 @@ goog.provide('webdriver.By.Locator');
 goog.provide('webdriver.By.Strategy');
 
 goog.require('goog.object');
+goog.require('goog.string');
+
 
 
 /**
