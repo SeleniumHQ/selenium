@@ -1,7 +1,7 @@
 package org.openqa.selenium.server.commands;
 
-import org.mortbay.http.HttpRequest;
-import org.mortbay.http.HttpResponse;
+import org.openqa.jetty.http.HttpRequest;
+import org.openqa.jetty.http.HttpResponse;
 
 import java.util.*;
 import java.text.SimpleDateFormat;

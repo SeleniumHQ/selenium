@@ -12,10 +12,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
-import org.mortbay.http.HttpRequest;
-import org.mortbay.http.HttpResponse;
-import org.mortbay.log.LogFactory;
-import org.mortbay.util.IO;
+import org.openqa.jetty.http.HttpRequest;
+import org.openqa.jetty.http.HttpResponse;
+import org.openqa.jetty.log.LogFactory;
+import org.openqa.jetty.util.IO;
 
 public class InjectionHelper {
     static Log log = LogFactory.getLog(InjectionHelper.class);

@@ -1,6 +1,6 @@
 package org.openqa.selenium.server;
 
-import org.mortbay.util.IO;
+import org.openqa.jetty.util.IO;
 
 import java.io.*;
 

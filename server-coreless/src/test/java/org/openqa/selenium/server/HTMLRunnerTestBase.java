@@ -19,7 +19,7 @@ package org.openqa.selenium.server;
 import java.io.*;
 
 import org.openqa.selenium.server.htmlrunner.*;
-import org.mortbay.http.HttpRequest;
+import org.openqa.jetty.http.HttpRequest;
 
 import junit.framework.*;
 

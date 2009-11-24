@@ -1,7 +1,7 @@
 package org.openqa.selenium.server.log;
 
 import org.apache.commons.logging.Log;
-import org.mortbay.log.LogFactory;
+import org.openqa.jetty.log.LogFactory;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.SeleniumServer;
 

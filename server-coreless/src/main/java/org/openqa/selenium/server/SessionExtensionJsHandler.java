@@ -4,8 +4,8 @@ import java.net.MalformedURLException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.mortbay.util.Resource;
-import org.mortbay.http.handler.ResourceHandler;
+import org.openqa.jetty.util.Resource;
+import org.openqa.jetty.http.handler.ResourceHandler;
 
 /**
  * We want to take advantage of the handling capabilities of the standard

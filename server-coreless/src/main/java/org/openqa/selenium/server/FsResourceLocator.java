@@ -3,8 +3,8 @@ package org.openqa.selenium.server;
 import java.io.File;
 import java.io.IOException;
 
-import org.mortbay.http.HttpContext;
-import org.mortbay.util.Resource;
+import org.openqa.jetty.http.HttpContext;
+import org.openqa.jetty.util.Resource;
 
 public class FsResourceLocator implements ResourceLocator {
     private File rootDir;

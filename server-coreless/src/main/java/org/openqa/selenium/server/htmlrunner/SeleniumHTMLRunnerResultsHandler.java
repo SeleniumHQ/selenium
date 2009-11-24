@@ -14,13 +14,13 @@ import java.util.List;
 import java.util.Vector;
 
 import org.apache.commons.logging.Log;
-import org.mortbay.http.HttpContext;
-import org.mortbay.http.HttpException;
-import org.mortbay.http.HttpHandler;
-import org.mortbay.http.HttpRequest;
-import org.mortbay.http.HttpResponse;
-import org.mortbay.log.LogFactory;
-import org.mortbay.util.StringUtil;
+import org.openqa.jetty.http.HttpContext;
+import org.openqa.jetty.http.HttpException;
+import org.openqa.jetty.http.HttpHandler;
+import org.openqa.jetty.http.HttpRequest;
+import org.openqa.jetty.http.HttpResponse;
+import org.openqa.jetty.log.LogFactory;
+import org.openqa.jetty.util.StringUtil;
 
 /**
  * Handles results of HTMLRunner (aka TestRunner, FITRunner) in automatic mode.

@@ -18,7 +18,7 @@ import java.util.zip.ZipFile;
 
 import org.apache.commons.logging.Log;
 import org.apache.tools.ant.util.FileUtils;
-import org.mortbay.log.LogFactory;
+import org.openqa.jetty.log.LogFactory;
 import static org.openqa.selenium.server.browserlaunchers.LauncherUtils.getSeleniumResourceAsStream;
 
 

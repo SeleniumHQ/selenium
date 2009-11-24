@@ -8,9 +8,9 @@ import java.net.URL;
 
 import org.apache.tools.ant.filters.StringInputStream;
 
-import org.mortbay.http.ResourceCache;
-import org.mortbay.util.IO;
-import org.mortbay.util.URLResource;
+import org.openqa.jetty.http.ResourceCache;
+import org.openqa.jetty.util.IO;
+import org.openqa.jetty.util.URLResource;
 
 /**
  * Represents a sessioned extension Javascript resource. This class provides

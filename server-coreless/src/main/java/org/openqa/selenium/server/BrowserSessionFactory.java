@@ -2,7 +2,7 @@ package org.openqa.selenium.server;
 
 
 import org.apache.commons.logging.Log;
-import org.mortbay.log.LogFactory;
+import org.openqa.jetty.log.LogFactory;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
 import org.openqa.selenium.server.browserlaunchers.InvalidBrowserExecutableException;

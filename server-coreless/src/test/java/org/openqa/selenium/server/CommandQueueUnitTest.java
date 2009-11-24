@@ -2,7 +2,7 @@ package org.openqa.selenium.server;
 
 import junit.framework.TestCase;
 import org.apache.commons.logging.Log;
-import org.mortbay.log.LogFactory;
+import org.openqa.jetty.log.LogFactory;
 import org.openqa.selenium.server.log.LoggingManager;
 import org.openqa.selenium.server.log.StdOutHandler;
 import org.openqa.selenium.server.log.TerseFormatter;

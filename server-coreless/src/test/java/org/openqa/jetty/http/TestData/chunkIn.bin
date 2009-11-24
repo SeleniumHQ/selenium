@@ -1,0 +1,31 @@
+2; ignore-stuff-here
+ab
+12
+cdefghijklmnopqrst
+
+  6 ; forgiving whitespace 
+uvwxyz
+
+6
+12
+34
+c;CRLF not in data
+567890abcdef
+0 ; The end
+some-trailer: some-value
+another-trailer: another-value
+
+2; ignore-stuff-here
+ab
+12
+cdefghijklmnopqrst
+
+  6 ; forgiving whitespace 
+uvwxyz
+
+6
+12
+34
+c;CRLF not in data
+567890abcdef
+0

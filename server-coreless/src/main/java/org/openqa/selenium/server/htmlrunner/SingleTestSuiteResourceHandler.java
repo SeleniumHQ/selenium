@@ -7,9 +7,9 @@ package org.openqa.selenium.server.htmlrunner;
 import java.io.*;
 import java.text.*;
 
-import org.mortbay.http.*;
-import org.mortbay.http.handler.*;
-import org.mortbay.util.*;
+import org.openqa.jetty.http.*;
+import org.openqa.jetty.http.handler.*;
+import org.openqa.jetty.util.*;
 
 /** Generates a test suite table designed to run a single Selenium test; to use it, point TestRunner.html to /singleTest/http://my.com/single/test.html
  * 

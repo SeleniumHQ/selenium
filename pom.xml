@@ -244,11 +244,6 @@
 				<version>1.7.1</version>
 			</dependency>
 			<dependency>
-				<groupId>jetty</groupId>
-				<artifactId>org.mortbay.jetty</artifactId>
-				<version>5.1.12</version>
-			</dependency>
-			<dependency>
 				<groupId>commons-logging</groupId>
 				<artifactId>commons-logging</artifactId>
 				<version>1.0.4</version>

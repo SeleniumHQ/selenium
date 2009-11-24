@@ -18,7 +18,7 @@
 package org.openqa.selenium.server;
 
 import org.apache.commons.logging.Log;
-import org.mortbay.log.LogFactory;
+import org.openqa.jetty.log.LogFactory;
 
 /**
  * <p>Holds the command to be next run in the browser</p>

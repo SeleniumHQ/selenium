@@ -4,7 +4,7 @@ import java.io.*;
 import java.net.*;
 
 import org.apache.commons.logging.*;
-import org.mortbay.log.LogFactory;
+import org.openqa.jetty.log.LogFactory;
 
 /**
  * Base class to perform out-of-thread HTTP requests.  We use these to start a request X,

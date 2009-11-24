@@ -27,7 +27,7 @@ import org.apache.tools.ant.*;
 import org.apache.tools.ant.taskdefs.*;
 import org.apache.tools.ant.taskdefs.condition.*;
 import org.apache.tools.ant.types.*;
-import org.mortbay.log.LogFactory;
+import org.openqa.jetty.log.LogFactory;
 import org.openqa.selenium.server.log.*;
 
 /** A handy wrapper around Ant's Execute class that can spawn a process

@@ -9,7 +9,7 @@ import java.lang.reflect.Field;
 import org.apache.commons.logging.Log;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.ExecTask;
-import org.mortbay.log.LogFactory;
+import org.openqa.jetty.log.LogFactory;
 
 /** Handy utilities for managing Unix/Linux processes */
 public class UnixUtils {

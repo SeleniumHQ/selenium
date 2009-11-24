@@ -11,7 +11,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import org.junit.Test;
-import org.mortbay.http.HttpResponse;
+import org.openqa.jetty.http.HttpResponse;
 import org.openqa.selenium.server.commands.CaptureScreenshotToStringCommand;
 import org.openqa.selenium.server.commands.CaptureEntirePageScreenshotToStringCommand;
 import org.openqa.selenium.server.commands.SeleniumCoreCommand;

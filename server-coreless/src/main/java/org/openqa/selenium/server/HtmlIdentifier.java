@@ -38,7 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
-import org.mortbay.log.LogFactory;
+import org.openqa.jetty.log.LogFactory;
 
 public class HtmlIdentifier {
     static Log log = LogFactory.getLog(HtmlIdentifier.class);

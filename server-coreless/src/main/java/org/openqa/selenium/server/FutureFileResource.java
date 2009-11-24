@@ -20,8 +20,8 @@ import java.net.URI;
 import java.security.*;
 
 import org.apache.commons.logging.*;
-import org.mortbay.log.LogFactory;
-import org.mortbay.util.*;
+import org.openqa.jetty.log.LogFactory;
+import org.openqa.jetty.util.*;
 
 
 /* ------------------------------------------------------------ */
@@ -37,7 +37,7 @@ import org.mortbay.util.*;
  * This class can check for aliasing in the filesystem (eg case
  * insensitivity).  By default this is turned on if the platform does
  * not have the "/" path separator, or it can be controlled with the
- * "org.mortbay.util.FileResource.checkAliases" system parameter.
+ * "org.openqa.jetty.util.FileResource.checkAliases" system parameter.
  *
  * If alias checking is turned on, then aliased resources are
  * treated as if they do not exist, nor can they be created.
@@ -53,7 +53,7 @@ public class FutureFileResource extends URLResource
     {
         __checkAliases=
             "true".equalsIgnoreCase
-            (System.getProperty("org.mortbay.util.FileResource.checkAliases","true"));
+            (System.getProperty("org.openqa.jetty.util.FileResource.checkAliases","true"));
  
        if (__checkAliases)
             log.info("Checking Resource aliases");
@@ -101,7 +101,7 @@ public class FutureFileResource extends URLResource
                 // Assume that File.toURL produced unencoded chars. So try
                 // encoding them.
                 String urls=
-                    "file:"+org.mortbay.util.URI.encodePath(url.toString().substring(5));
+                    "file:"+org.openqa.jetty.util.URI.encodePath(url.toString().substring(5));
                 _file =new File(new URI(urls));
             }
             catch (Exception e2)
@@ -140,7 +140,7 @@ public class FutureFileResource extends URLResource
         }
         else
         {
-            path = org.mortbay.util.URI.canonicalPath(path);
+            path = org.openqa.jetty.util.URI.canonicalPath(path);
             
             // treat all paths being added as relative
             String rel=path;
@@ -151,7 +151,7 @@ public class FutureFileResource extends URLResource
             r=new FutureFileResource(newFile.toURI().toURL(),null,newFile);
         }
         
-        String encoded=org.mortbay.util.URI.encodePath(path);
+        String encoded=org.openqa.jetty.util.URI.encodePath(path);
         int expected=r._urlString.length()-encoded.length();
         int index = r._urlString.lastIndexOf(encoded, expected);
         

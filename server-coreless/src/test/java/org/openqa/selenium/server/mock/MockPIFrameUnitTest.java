@@ -4,7 +4,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.apache.commons.logging.Log;
-import org.mortbay.log.LogFactory;
+import org.openqa.jetty.log.LogFactory;
 import org.openqa.selenium.server.DefaultRemoteCommand;
 import org.openqa.selenium.server.InjectionHelper;
 import org.openqa.selenium.server.RemoteCommand;

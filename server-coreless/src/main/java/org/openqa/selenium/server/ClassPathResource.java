@@ -16,8 +16,8 @@
  */
 package org.openqa.selenium.server;
 
-import org.mortbay.util.IO;
-import org.mortbay.util.Resource;
+import org.openqa.jetty.util.IO;
+import org.openqa.jetty.util.Resource;
 import static org.openqa.selenium.server.browserlaunchers.LauncherUtils.getSeleniumResourceAsStream;
 
 import java.io.*;

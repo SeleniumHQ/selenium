@@ -23,12 +23,12 @@ import java.util.*;
 import javax.net.ssl.*;
 
 import org.apache.commons.logging.*;
-import org.mortbay.http.*;
-import org.mortbay.http.handler.*;
-import org.mortbay.jetty.*;
-import org.mortbay.log.LogFactory;
-import org.mortbay.util.*;
-import org.mortbay.util.URI;
+import org.openqa.jetty.http.*;
+import org.openqa.jetty.http.handler.*;
+import org.openqa.jetty.jetty.*;
+import org.openqa.jetty.log.LogFactory;
+import org.openqa.jetty.util.*;
+import org.openqa.jetty.util.URI;
 import org.openqa.selenium.server.browserlaunchers.*;
 import org.openqa.selenium.server.commands.CaptureNetworkTrafficCommand;
 import org.openqa.selenium.server.commands.AddCustomRequestHeaderCommand;
@@ -708,7 +708,7 @@ public class ProxyHandler extends AbstractHttpHandler {
                 if (log.isDebugEnabled()) log.debug("chain proxy socket=" + chain_socket);
 
                 LineInput line_in = new LineInput(chain_socket.getInputStream());
-                byte[] connect = request.toString().getBytes(org.mortbay.util.StringUtil.__ISO_8859_1);
+                byte[] connect = request.toString().getBytes(org.openqa.jetty.util.StringUtil.__ISO_8859_1);
                 chain_socket.getOutputStream().write(connect);
 
                 String chain_response_line = line_in.readLine();

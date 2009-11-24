@@ -113,8 +113,9 @@
             <artifactId>ant</artifactId>
         </dependency>
         <dependency>
-            <groupId>jetty</groupId>
-            <artifactId>org.mortbay.jetty</artifactId>
+            <groupId>mx4j</groupId>
+            <artifactId>mx4j-tools</artifactId>
+            <version>3.0.1</version>
         </dependency>
         <dependency>
             <groupId>commons-logging</groupId>

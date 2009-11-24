@@ -34,7 +34,7 @@ import java.util.HashMap;
 
 import org.apache.commons.logging.Log;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.mortbay.log.LogFactory;
+import org.openqa.jetty.log.LogFactory;
 
 /**
  * This is the main entry point into the Cybervillains CA.

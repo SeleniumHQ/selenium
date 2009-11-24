@@ -4,9 +4,9 @@ import java.io.*;
 import java.lang.reflect.*;
 import java.util.*;
 
-import org.mortbay.http.*;
-import org.mortbay.http.handler.*;
-import org.mortbay.util.*;
+import org.openqa.jetty.http.*;
+import org.openqa.jetty.http.handler.*;
+import org.openqa.jetty.util.*;
 
 public class StaticContentHandler extends ResourceHandler {
 	private static final long serialVersionUID = 8031049889874827358L;

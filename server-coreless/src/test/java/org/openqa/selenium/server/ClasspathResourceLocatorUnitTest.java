@@ -1,8 +1,8 @@
 package org.openqa.selenium.server;
 
 import junit.framework.TestCase;
-import org.mortbay.http.HttpContext;
-import org.mortbay.util.Resource;
+import org.openqa.jetty.http.HttpContext;
+import org.openqa.jetty.util.Resource;
 
 import java.io.IOException;
 

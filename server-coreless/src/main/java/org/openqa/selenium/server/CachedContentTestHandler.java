@@ -4,12 +4,12 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.Calendar;
 
-import org.mortbay.http.HttpContext;
-import org.mortbay.http.HttpException;
-import org.mortbay.http.HttpFields;
-import org.mortbay.http.HttpHandler;
-import org.mortbay.http.HttpRequest;
-import org.mortbay.http.HttpResponse;
+import org.openqa.jetty.http.HttpContext;
+import org.openqa.jetty.http.HttpException;
+import org.openqa.jetty.http.HttpFields;
+import org.openqa.jetty.http.HttpHandler;
+import org.openqa.jetty.http.HttpRequest;
+import org.openqa.jetty.http.HttpResponse;
 
 /** This test handler is only needed for testing caching. It prints out the current time, but instructs the browser to cache the result. */
 public class CachedContentTestHandler implements HttpHandler {

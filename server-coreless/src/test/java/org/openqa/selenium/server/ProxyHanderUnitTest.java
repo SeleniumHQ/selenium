@@ -5,8 +5,8 @@ import static org.easymock.classextension.EasyMock.createMock;
 import static org.easymock.classextension.EasyMock.expectLastCall;
 import static org.easymock.classextension.EasyMock.replay;
 import static org.easymock.classextension.EasyMock.verify;
-import org.mortbay.http.HttpRequest;
-import org.mortbay.http.HttpResponse;
+import org.openqa.jetty.http.HttpRequest;
+import org.openqa.jetty.http.HttpResponse;
 
 public class ProxyHanderUnitTest extends TestCase {
 

@@ -18,13 +18,13 @@
 package org.openqa.selenium.server;
 
 import org.apache.commons.logging.Log;
-import org.mortbay.http.HashUserRealm;
-import org.mortbay.http.HttpContext;
-import org.mortbay.http.SecurityConstraint;
-import org.mortbay.http.SocketListener;
-import org.mortbay.http.handler.SecurityHandler;
-import org.mortbay.jetty.Server;
-import org.mortbay.util.MultiException;
+import org.openqa.jetty.http.HashUserRealm;
+import org.openqa.jetty.http.HttpContext;
+import org.openqa.jetty.http.SecurityConstraint;
+import org.openqa.jetty.http.SocketListener;
+import org.openqa.jetty.http.handler.SecurityHandler;
+import org.openqa.jetty.jetty.Server;
+import org.openqa.jetty.util.MultiException;
 import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
 import org.openqa.selenium.server.browserlaunchers.AsyncExecute;
 import static org.openqa.selenium.server.browserlaunchers.LauncherUtils.getSeleniumResourceAsStream;
@@ -183,7 +183,7 @@ public class SeleniumServer {
         configuration = RemoteControlLauncher.parseLauncherOptions(args);
         checkArgsSanity(configuration);
 
-        System.setProperty("org.mortbay.http.HttpRequest.maxFormContentSize", "0"); // default max is 200k; zero is infinite
+        System.setProperty("org.openqa.jetty.http.HttpRequest.maxFormContentSize", "0"); // default max is 200k; zero is infinite
         seleniumProxy = new SeleniumServer(slowResourceProperty(), configuration);
         seleniumProxy.boot();
     }
@@ -370,7 +370,7 @@ public class SeleniumServer {
      * @throws Exception on error.
      */
     public void start() throws Exception {
-        System.setProperty("org.mortbay.http.HttpRequest.maxFormContentSize", "0"); // default max is 200k; zero is infinite
+        System.setProperty("org.openqa.jetty.http.HttpRequest.maxFormContentSize", "0"); // default max is 200k; zero is infinite
         try {
             server.start();
         } catch (MultiException e) {
@@ -435,7 +435,7 @@ public class SeleniumServer {
                 // If we reached here stop didnt throw an exception.
                 // So we assume it was successful.
                 break;
-            } catch (Exception ex) { // org.mortbay.jetty.Server.stop() throws Exception
+            } catch (Exception ex) { // org.openqa.jetty.jetty.Server.stop() throws Exception
                 LOGGER.error(ex);
                 shutDownException = ex;
                 // If Exception is thrown we try to stop the jetty server again
