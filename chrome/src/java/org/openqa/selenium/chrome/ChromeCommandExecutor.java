@@ -104,6 +104,7 @@ public class ChromeCommandExecutor {
         .put(GET_PAGE_SOURCE, NO_ARGS)
         .put(GET_TITLE, NO_ARGS)
         .put(EXECUTE_SCRIPT, new String[] {"script", "args"})
+        .put(SCREENSHOT, NO_ARGS)
         .build();
 
     try {

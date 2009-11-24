@@ -3,9 +3,11 @@ package org.openqa.selenium.chrome;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.Speed;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
@@ -32,7 +34,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class ChromeDriver implements WebDriver, SearchContext, JavascriptExecutor,
+public class ChromeDriver implements WebDriver, SearchContext, JavascriptExecutor, TakesScreenshot,
 FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, FindsByXPath {
 
   private ChromeCommandExecutor executor;
@@ -309,6 +311,10 @@ FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, Finds
   
   List<WebElement> findChildElements(ChromeWebElement parent, String by, String using) {
     return getElementsFrom(execute(FIND_CHILD_ELEMENTS, parent, by, using));
+  }
+
+  public <X> X getScreenshotAs(OutputType<X> target) {
+    return target.convertFromBase64Png(execute(SCREENSHOT).getValue().toString());
   }
   
   private class ChromeOptions implements Options {

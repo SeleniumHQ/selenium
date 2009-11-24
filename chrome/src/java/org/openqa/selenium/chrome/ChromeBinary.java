@@ -30,10 +30,12 @@ public class ChromeBinary {
           "--user-data-dir=" + profileDir,
           "--load-extension=" + extensionDir,
           "--activate-on-launch",
+          "--homepage=about:blank",
           "--no-first-run",
           "--disable-hang-monitor",
           "--disable-popup-blocking",
           "--disable-prompt-on-repost",
+          "--no-default-browser-check",
           "about:blank")
           .start();
     } catch (IOException e) {

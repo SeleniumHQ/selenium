@@ -57,15 +57,11 @@ class WebDriver(object):
                 converted_args.append({"type": "ELEMENT", "value": arg.id})
             else:
                 converted_args.append({"type": "STRING", "value": arg})
-        resp = self._conn.driver_command("executeScript", script,
-                                         converted_args)
-
-        if "NULL" == resp["resultType"]:
-            pass
-        elif "ELEMENT" == resp["resultType"]:
-            return WebElement(self, resp["response"])
+        resp = self._command("executeScript", script, converted_args)
+        if "ELEMENT" == resp["type"]:
+            return WebElement(self, resp["value"])
         else:
-            return resp["response"]
+            return resp["value"]
 
     def get(self, url):
         """Loads a web page in the current browser."""
@@ -171,8 +167,7 @@ class WebDriver(object):
         return handle
 
     def get_window_handles(self):
-        return filter(lambda handle: handle,
-                      self._command("getWindowHandles").split(","))
+        return self._command("getWindowHandles")
 
     def switch_to_frame(self, index_or_name):
         """Switches focus to a frame by index or name."""
@@ -193,11 +188,9 @@ class WebDriver(object):
         except ErrorInResponseException:
             return []
 
-        #cookie_response is of type unicode, with cookies seperated by "\n".
-        cookie_unicodes = cookie_response.split("\n") 
+        #cookie_response is a list of cookies of type unicode
         cookies = []
-
-        for cookie_unicode in cookie_unicodes:
+        for cookie_unicode in cookie_response:
             cookie = self.get_cookie_in_dict(cookie_unicode)
             if cookie:
                 cookies.append(cookie)
@@ -254,8 +247,8 @@ class WebDriver(object):
         try:
             elem_ids = self._command("findElements", selector, key)
             elems = []
-            if len(elem_ids):
-                for elem_id in elem_ids.split(","):
+            if elem_ids:
+                for elem_id in elem_ids:
                     elem = WebElement(self, elem_id)
                     elems.append(elem)
             return elems

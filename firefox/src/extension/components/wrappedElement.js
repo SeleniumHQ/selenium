@@ -287,8 +287,7 @@ FirefoxDriver.prototype.getAttribute = function(respond, value) {
     respond.send();
     return;
   }
-  respond.isError = true;
-  respond.response = "No match";
+  respond.response = null;
   respond.send();
 };
 
@@ -469,8 +468,7 @@ FirefoxDriver.prototype.toggle = function(respond) {
 
 FirefoxDriver.prototype.isDisplayed = function(respond) {
   var element = Utils.getElementAt(respond.elementId, respond.context);
-
-  respond.response = Utils.isDisplayed(element) ? "true" : "false";
+  respond.response = Utils.isDisplayed(element);
   respond.send();
 };
 
@@ -480,7 +478,10 @@ FirefoxDriver.prototype.getLocation = function(respond) {
 
   var location = Utils.getElementLocation(element, respond.context);
 
-  respond.response = location.x + ", " + location.y;
+  respond.response = {
+    x: Math.round(location.x),
+    y: Math.round(location.y)
+  };
   respond.send();
 };
 
@@ -490,7 +491,10 @@ FirefoxDriver.prototype.getSize = function(respond) {
 
   var box = Utils.getLocationOnceScrolledIntoView(element);
 
-  respond.response = box.width + ", " + box.height;
+  respond.response = {
+    width: Math.round(box.width),
+    height: Math.round(box.height)
+  };
   respond.send();
 };
 

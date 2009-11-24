@@ -623,12 +623,8 @@ webdriver.WebDriver.prototype.getWindowHandle = function() {
  * Retrieves the handles for all known windows.
  */
 webdriver.WebDriver.prototype.getAllWindowHandles = function() {
-  var command =
-      new webdriver.Command(webdriver.CommandName.GET_WINDOW_HANDLES).
-          setSuccessCallback(function(response) {
-            response.value = response.value.split(',');
-          });
-  this.addCommand(command);
+  this.addCommand(
+      new webdriver.Command(webdriver.CommandName.GET_WINDOW_HANDLES));
 };
 
 
@@ -664,7 +660,7 @@ webdriver.WebDriver.prototype.close = function() {
  * @see {webdriver.WebDriver.prototype.executeScript}
  * @private
  */
-webdriver.WebDriver.mapToExecuteScriptArgument_ = function(arg) {
+webdriver.WebDriver.wrapScriptArgument_ = function(arg) {
   var type, value;
   if (arg instanceof webdriver.WebElement) {
     type = 'ELEMENT';
@@ -674,10 +670,37 @@ webdriver.WebDriver.mapToExecuteScriptArgument_ = function(arg) {
              goog.isString(arg)) {
     type = goog.typeOf(arg).toUpperCase();
     value = arg;
+  } else if (goog.isArray(arg)) {
+    type = goog.typeOf(arg).toUpperCase();
+    value = goog.array.map(arg, webdriver.WebDriver.wrapScriptArgument_);
   } else {
     throw new Error('Invalid script argument type: ' + goog.typeOf(arg));
   }
   return {'type': type, 'value': value};
+};
+
+
+/**
+ * Helper function for unwrapping an executeScript result.
+ * @param {{type:string,value:*}|Array.<{type:string,value:*}>} result The
+ *     result to unwrap.
+ * @return {*} The unwrapped result.
+ * @private
+ */
+webdriver.WebDriver.prototype.unwrapScriptResult_ = function(result) {
+  switch (result.type) {
+    case 'ELEMENT':
+      var element = new webdriver.WebElement(this);
+      element.getId().setValue(result.value);
+      return element;
+
+    case 'ARRAY':
+      return goog.array.map(result.value, goog.bind(
+          this.unwrapScriptResult_, this));
+
+    default:
+      return result.value;
+  }
 };
 
 
@@ -692,26 +715,12 @@ webdriver.WebDriver.mapToExecuteScriptArgument_ = function(arg) {
 webdriver.WebDriver.prototype.executeScript = function(script, var_args) {
   var args = goog.array.map(
       goog.array.slice(arguments, 1),
-      webdriver.WebDriver.mapToExecuteScriptArgument_);
+      webdriver.WebDriver.wrapScriptArgument_);
   var result = new webdriver.Future(this);
   this.addCommand(new webdriver.Command(webdriver.CommandName.EXECUTE_SCRIPT).
       setParameters(script, args).
       setSuccessCallback(function(response) {
-        switch(response.extraData['resultType']) {
-          case 'NULL':
-            response.value = null;
-            break;
-
-          case 'ELEMENT':
-            var id = response.value;
-            response.value = new webdriver.WebElement(this);
-            response.value.getId().setValue(id);
-            break;
-
-          case 'OTHER':  // Fall-through
-          default:
-            break;
-        }
+        response.value = this.unwrapScriptResult_(response.value);
         result.setValue(response.value);
       }, this));
   return result;
@@ -845,9 +854,6 @@ webdriver.WebDriver.prototype.getMouseSpeed = function() {
   var speed = new webdriver.Future(this);
   this.addCommand(
       new webdriver.Command(webdriver.CommandName.GET_MOUSE_SPEED).
-          setSuccessCallback(function(response) {
-            response.value = Number(response.value);
-            speed.setValue(response.value);
-          }));
+          setSuccessCallback(speed.setValueFromResponse, speed));
   return speed;
 };

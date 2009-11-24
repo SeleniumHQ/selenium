@@ -32,22 +32,33 @@ module Selenium
           def current_env
             {:browser => GlobalTestEnv.browser, :driver => GlobalTestEnv.driver, :platform => Platform.os}
           end
+
+          def env_matches?(env)
+            env.all? do |key, value|
+              if value.kind_of?(Array)
+                value.include? current_env[key]
+              else
+                value == current_env[key]
+              end
+            end
+          end
         end
 
         def not_compliant_on(opts = {}, &blk)
           Guards.record(:not_compliant, opts, :file => caller.first)
-          yield unless opts.all? { |key, value| GlobalTestEnv.send(key) == value}
+          yield unless Guards.env_matches?(opts)
         end
 
         def deviates_on(opts = {}, &blk)
           Guards.record(:deviates, opts, :file => caller.first)
-          yield unless opts.all? { |key, value| GlobalTestEnv.send(key) == value}
+          yield unless Guards.env_matches?(opts)
         end
 
         def compliant_on(opts = {}, &blk)
           Guards.record(:compliant_on, opts, :file => caller.first)
-          yield if opts.all? { |key, value| GlobalTestEnv.send(key) == value}
+          yield if Guards.env_matches?(opts)
         end
+
 
       end # Guards
     end # SpecSupport

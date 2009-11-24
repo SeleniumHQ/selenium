@@ -282,17 +282,19 @@ public class FirefoxDriver implements WebDriver, JavascriptExecutor, TakesScreen
   }
 
   private List<WebElement> findElements(String method, String selector) {
-    String returnedIds = sendMessage(WebDriverException.class,
-        "findElements", method, selector);
+    JSONArray returnedIds = (JSONArray) executeCommand(
+        WebDriverException.class, "findElements", method, selector);
     List<WebElement> elements = new ArrayList<WebElement>();
 
-    if (returnedIds.length() == 0)
-        return elements;
-
-    String[] ids = returnedIds.split(",");
-    for (String id : ids) {
+    try {
+      for (int i = 0; i < returnedIds.length(); i++) {
+        String id = returnedIds.getString(i);
         elements.add(new FirefoxWebElement(this, id));
+      }
+    } catch (JSONException e) {
+      throw new WebDriverException(e);
     }
+
     return elements;
   }
 
@@ -320,6 +322,16 @@ public class FirefoxDriver implements WebDriver, JavascriptExecutor, TakesScreen
     }
 
     protected String sendMessage(Class<? extends RuntimeException> throwOnFailure, Command command) {
+      return String.valueOf(executeCommand(throwOnFailure, command));
+    }
+
+    protected Object executeCommand(Class<? extends RuntimeException> throwOnFailure,
+                                    String methodName, Object... parameters) {
+      return executeCommand(throwOnFailure, new Command(context, methodName, parameters));
+    }
+
+    protected Object executeCommand(Class<? extends RuntimeException> throwOnFailure,
+                                    Command command) {
       if (currentAlert != null) {
         if (!alertWhiteListedCommands.contains(command.getCommandName())) {
           ((FirefoxTargetLocator) switchTo()).alert().dismiss();
@@ -331,21 +343,20 @@ public class FirefoxDriver implements WebDriver, JavascriptExecutor, TakesScreen
       context = response.getContext();
       response.ifNecessaryThrow(throwOnFailure);
 
-      String text = response.getResponseText();
-      if (text != null && text.startsWith("{") && text.indexOf("__webdriverType") != -1) {
-        // Looks like have an alert. construct it
-        try {
-          JSONObject jsonObject = new JSONObject(text);
-
-          currentAlert = new FirefoxAlert(jsonObject.getString("text"));
-
-          return null;
-        } catch (JSONException e) {
-          // Or maybe not. Fall through
+      Object rawResponse = response.getExtraResult("response");
+      if (rawResponse instanceof JSONObject) {
+        JSONObject jsonObject = (JSONObject) rawResponse;
+        if (jsonObject.has("__webdriverType")) {
+          // Looks like have an alert. construct it
+          try {
+            currentAlert = new FirefoxAlert(jsonObject.getString("text"));
+            return null;
+          } catch (JSONException e) {
+            // Or maybe not. Fall through
+          }
         }
       }
-
-      return text;
+      return rawResponse;
     }
 
     private void fixId() {
@@ -362,10 +373,14 @@ public class FirefoxDriver implements WebDriver, JavascriptExecutor, TakesScreen
   }
 
   public Set<String> getWindowHandles() {
-    String allHandles = sendMessage(WebDriverException.class, "getWindowHandles");
-    String[] handles = allHandles.split(",");
+    JSONArray allHandles = (JSONArray) executeCommand(WebDriverException.class, "getWindowHandles");
     HashSet<String> toReturn = new HashSet<String>();
-    toReturn.addAll(Arrays.asList(handles));
+    for (int i = 0; i < allHandles.length(); i++) {
+      String handle = allHandles.optString(i, null);
+      if (handle != null) {
+        toReturn.add(handle);
+      }
+    }
     return toReturn;
   }
 
@@ -375,15 +390,16 @@ public class FirefoxDriver implements WebDriver, JavascriptExecutor, TakesScreen
 
         Object[] convertedArgs = convertToJsObjects(args);
 
-        Command command = new Command(context, null, "executeScript", script, convertedArgs);
-    	Response response = extension.sendMessageAndWaitForResponse(WebDriverException.class, command);
-        context = response.getContext();
-        response.ifNecessaryThrow(WebDriverException.class);
-
-        return parseJavascriptObjectFromResponse(
-            (String)response.getExtraResult("resultType"),
-            response.getExtraResult("response"));
-    }
+        try {
+          JSONObject jsonResponse = (JSONObject) executeCommand(
+              WebDriverException.class, "executeScript", script, convertedArgs);
+          return parseJavascriptObjectFromResponse(
+              jsonResponse.getString("type"),
+              jsonResponse.get("value"));
+        } catch (JSONException e) {
+          throw new WebDriverException(e);
+        }
+  }
   
   public Object parseJavascriptObjectFromResponse(String resultType, Object response) {
     if ("NULL".equals(resultType))
@@ -397,7 +413,7 @@ public class FirefoxDriver implements WebDriver, JavascriptExecutor, TakesScreen
           //They really should all be JSONObjects of form {resultType, response}
           JSONObject subObject = (JSONObject)array.get(i);
           list.add(parseJavascriptObjectFromResponse(
-              subObject.getString("resultType"), subObject.get("response")));
+              subObject.getString("type"), subObject.get("value")));
         }
       } catch (JSONException e) {
         throw new WebDriverException(e);
@@ -544,53 +560,57 @@ public class FirefoxDriver implements WebDriver, JavascriptExecutor, TakesScreen
       }
 
       public Set<Cookie> getCookies() {
-            String response = sendMessage(WebDriverException.class, "getCookie").trim();
+            JSONArray response = (JSONArray) executeCommand(WebDriverException.class, "getCookie");
             Set<Cookie> cookies = new HashSet<Cookie>();
 
-            if(!"".equals(response)) {
-                for(String cookieString : response.split("\n")) {
-                    if ("".equals(cookieString.trim())) continue;
+            try {
+              for (int i = 0; i < response.length(); i++) {
+                String cookieString = response.getString(i).trim();
+                if ("".equals(cookieString)) {
+                  continue;
+                }
+                HashMap<String, String> attributesMap = new HashMap<String, String>();
+                attributesMap.put("name", "");
+                attributesMap.put("value", "");
+                attributesMap.put("domain", "");
+                attributesMap.put("path", "");
+                attributesMap.put("expires", "");
+                attributesMap.put("secure", "false");
 
-                    HashMap<String, String> attributesMap = new HashMap<String, String>();
-                    attributesMap.put("name", "");
-                    attributesMap.put("value", "");
-                    attributesMap.put("domain", "");
-                    attributesMap.put("path", "");
-                    attributesMap.put("expires", "");
-                    attributesMap.put("secure", "false");
-
-                    for (String attribute : cookieString.split(";")) {
-                        if(attribute.contains("=")) {
-                            String[] tokens = attribute.trim().split("=", 2);
-                            if(attributesMap.get("name").equals("")) {
-                                attributesMap.put("name", tokens[0]);
-                                attributesMap.put("value", tokens[1]);
-                            } else if("domain".equals(tokens[0])
-                                    && tokens[1].trim().startsWith(".")) {
-                                //convert " .example.com" into "example.com" format
-                                int offset = tokens[1].indexOf(".") + 1;
-                                attributesMap.put("domain", tokens[1].substring(offset));
-                            } else if (tokens.length > 1) {
-                                attributesMap.put(tokens[0], tokens[1]);
-                            }
-                        } else if (attribute.equals("secure")) {
-                            attributesMap.put("secure", "true");
+                for (String attribute : cookieString.split(";")) {
+                    if(attribute.contains("=")) {
+                        String[] tokens = attribute.trim().split("=", 2);
+                        if(attributesMap.get("name").equals("")) {
+                            attributesMap.put("name", tokens[0]);
+                            attributesMap.put("value", tokens[1]);
+                        } else if("domain".equals(tokens[0])
+                                && tokens[1].trim().startsWith(".")) {
+                            //convert " .example.com" into "example.com" format
+                            int offset = tokens[1].indexOf(".") + 1;
+                            attributesMap.put("domain", tokens[1].substring(offset));
+                        } else if (tokens.length > 1) {
+                            attributesMap.put(tokens[0], tokens[1]);
                         }
+                    } else if (attribute.equals("secure")) {
+                        attributesMap.put("secure", "true");
                     }
-                    Date expires = null;
-                  String expiry = attributesMap.get("expires");
-                  if (expiry != null && !"".equals(expiry) && !expiry.equals("0")) {
-                        //firefox stores expiry as number of seconds
-                        expires = new Date(Long.parseLong(attributesMap.get("expires")) * 1000);
-                    }
-
-                    cookies.add(new ReturnedCookie(attributesMap.get("name"), attributesMap.get("value"),
-                            attributesMap.get("domain"), attributesMap.get("path"),
-                            expires, Boolean.parseBoolean(attributesMap.get("secure"))));
+                }
+                Date expires = null;
+              String expiry = attributesMap.get("expires");
+              if (expiry != null && !"".equals(expiry) && !expiry.equals("0")) {
+                    //firefox stores expiry as number of seconds
+                    expires = new Date(Long.parseLong(attributesMap.get("expires")) * 1000);
                 }
 
+                cookies.add(new ReturnedCookie(attributesMap.get("name"), attributesMap.get("value"),
+                        attributesMap.get("domain"), attributesMap.get("path"),
+                        expires, Boolean.parseBoolean(attributesMap.get("secure"))));
+              }
+            } catch (JSONException e) {
+              throw new WebDriverException(e);
             }
-            return cookies;
+
+          return cookies;
         }
 
         public void deleteCookieNamed(String name) {
@@ -607,7 +627,7 @@ public class FirefoxDriver implements WebDriver, JavascriptExecutor, TakesScreen
         }
 
         public Speed getSpeed() {
-            int pixelSpeed = Integer.parseInt(sendMessage(WebDriverException.class, "getMouseSpeed"));
+            int pixelSpeed = (Integer) executeCommand(WebDriverException.class, "getMouseSpeed");
             Speed speed;
 
             // TODO: simon 2007-02-01; Delegate to the enum
@@ -645,13 +665,14 @@ public class FirefoxDriver implements WebDriver, JavascriptExecutor, TakesScreen
                 default:
                     throw new IllegalArgumentException();
             }
-            sendMessage(WebDriverException.class, "setMouseSpeed", "" + pixelSpeed);
+            sendMessage(WebDriverException.class, "setMouseSpeed", pixelSpeed);
         }
     }
 
     private class FirefoxTargetLocator implements TargetLocator {
         public WebDriver frame(int frameIndex) {
-            return frame(String.valueOf(frameIndex));
+            sendMessage(NoSuchFrameException.class, "switchToFrame", frameIndex);
+            return FirefoxDriver.this;
         }
 
         public WebDriver frame(String frameName) {

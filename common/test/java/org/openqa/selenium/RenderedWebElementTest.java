@@ -17,6 +17,7 @@ limitations under the License.
 package org.openqa.selenium;
 
 import static org.openqa.selenium.Ignore.Driver.CHROME;
+import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
@@ -73,7 +74,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({IPHONE, CHROME, SELENESE})
+  @Ignore({IPHONE, CHROME, SELENESE, HTMLUNIT})
   public void testShouldAllowUsersToHoverOverElements() {
     driver.get(javascriptPage);
 

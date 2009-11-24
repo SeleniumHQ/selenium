@@ -26,10 +26,10 @@
 
 function drag(element, initialLocation, moveRightBy, moveDownBy) {
   element.dragAndDropBy(moveRightBy, moveDownBy);
-  var expectedLocation = initialLocation.clone();
-  expectedLocation.x += moveRightBy;
-  expectedLocation.y += moveDownBy;
-  return expectedLocation;
+  return {
+    x: initialLocation.x + moveRightBy,
+    y: initialLocation.y + moveDownBy
+  };
 }
 
 

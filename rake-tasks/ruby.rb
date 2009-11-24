@@ -1,6 +1,6 @@
 task :test_remote_rb => [:test_common, :remote_server] do
   jruby :include  => [".", "common/src/rb/lib", "remote/client/src/rb/lib", "common/test/rb/lib"],
-        :require  => ["third_party/jruby/json-jruby.jar"],
+        :require  => ["third_party/jruby/json-jruby.jar", "third_party/java/google-collect-1.0-rc3.jar"],
         :command  => "-S spec",
         :files    => Dir['common/test/rb/spec/**/*spec.rb']
         # :headless => true

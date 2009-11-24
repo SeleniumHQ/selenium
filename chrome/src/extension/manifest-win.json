@@ -12,7 +12,7 @@
     {
       "matches": ["http://*/*", "https://*/*", "file:///*"],
       "js": ["utils.js", "content_script.js"],
-      "run_at": "document_start"
+      "run_at": "document_end"
     }
   ],
   "plugins": [{"path": "npchromedriver.dll", "public": true}],

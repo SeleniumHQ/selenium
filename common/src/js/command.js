@@ -259,7 +259,7 @@ webdriver.CommandName = {
  *     {@code true}, then {@code value} contains the error message.
  * @param {webdriver.Context} context The (potentially new) context resulting
  *     from the command.
- * @param {string} value The value of the response, the meaning of which depends
+ * @param {*} value The value of the response, the meaning of which depends
  *     on the command.
  * @parma {Error} opt_error An error that caused this command to fail
  *     prematurely.

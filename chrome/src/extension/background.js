@@ -429,6 +429,9 @@ function parseRequest(request) {
       }, false);
     }
     break;
+  case "screenshot":
+    getScreenshot();
+    break;
   case "clickElement":
   case "hoverOverElement":
     // Falling through, as native events are handled the same
@@ -486,6 +489,19 @@ function parseRequest(request) {
   }
 }
 
+function getScreenshot() {
+  chrome.tabs.captureVisibleTab(null, getScreenshotResult);
+}
+
+function getScreenshotResult(snapshotDataUrl) {
+  var index = snapshotDataUrl.indexOf('base64,');
+  if (index == -1) {
+    sendResponseToParsedRequest({statusCode: 99}, false);
+    return;
+  }
+  var base64 = snapshotDataUrl.substring(index + 'base64,'.length);
+  sendResponseToParsedRequest({statusCode: 0, value: base64}, false);
+}
 
 function sendMessageOnActivePortAndAlsoKeepTrackOfIt(message) {
   ChromeDriver.lastRequestToBeSentWhichHasntBeenAnsweredYet = message.request;
