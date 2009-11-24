@@ -363,7 +363,12 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     driver.get(javascriptPage);
 
     File jqueryFile = new File("common/src/web/jquery-1.2.6.min.js");
-    assertTrue(jqueryFile.getAbsolutePath() + " should exist.", jqueryFile.exists());
+    if(!jqueryFile.isFile()) {
+      jqueryFile = new File("../common/src/web/jquery-1.2.6.min.js");
+      if(!jqueryFile.isFile()) {
+        jqueryFile = new File("../../common/src/web/jquery-1.2.6.min.js");
+      }
+    }
     String jquery = FileUtils.readFileToString(jqueryFile, "US-ASCII");
     assertTrue("The javascript code should be at least 50 KB.", jquery.length() > 50000);
     // This should not throw an exception ...
