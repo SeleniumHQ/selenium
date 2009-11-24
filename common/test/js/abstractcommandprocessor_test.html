@@ -1,9 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>by_test.html</title>
+  <title>webdriver.AbstractCommandProcessor Test</title>
   <script src="webdriver-bootstrap.js"></script>
-  <script src="testbase.js"></script>
+  <script>
+    goog.require('goog.testing.jsunit');
+    goog.require('webdriver.AbstractCommandProcessor');
+    goog.require('webdriver.asserts');
+  </script>
   <script>
 
     function assertArraysEqual(expected, actual) {

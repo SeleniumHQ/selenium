@@ -3,7 +3,12 @@
 <head>
   <title>by_test.html</title>
   <script src="webdriver-bootstrap.js"></script>
-  <script src="testbase.js"></script>
+  <script>
+    goog.require('goog.testing.jsunit');
+    goog.require('webdriver.By');
+    goog.require('webdriver.By.Strategy');
+    goog.require('webdriver.By.Locator');
+  </script>
   <script>
 
     var TARGET = 'some-value';
@@ -72,8 +77,9 @@
           fail('Should have thrown for locator: ' +
                goog.json.serialize(locator));
         } catch (expected) {
-          assertThat(expected.message,
-              contains('Compound class names are not allowed for searches: '));
+          assertContains(
+              'Compound class names are not allowed for searches: ',
+              expected.message);
         }
       }
 
