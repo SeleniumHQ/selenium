@@ -1,0 +1,54 @@
+            Coding standards for Selenium Core Javascript code
+            --------------------------------------------------
+
+  Here is a set of conventions agreed by the active Selenium Core
+  developers at ThoughtWorks.  Please stick to these guidelines when
+  working on the Selenium Core code-base.
+
+Whitespace: we use spaces, NOT TABS.  Indent in 4-space increments.
+
+Braces: we place open-braces on the same line as the associated keyword,
+  for example:
+
+        if (command.isBreakpoint) {
+            this.pause();
+        } else {
+            window.setTimeout(this.resume.bind(this), delay);
+        }
+
+Encapsulation: we prefer to encapsulate functions and variables inside
+  objects, where possible.
+
+Variable declarations: declare variables (using "var") ... even if they're
+  "global".
+
+Class definitions: we're shifting to "prototype.js" style for
+  definition of classes, e.g.
+
+        var MyClass = Class.create();
+        Object.extend(MyClass.prototype, {
+        
+            initialize: function() {
+                // ... constructor code ...
+            },
+        
+            doStuff: function() {
+                // ... method body ...
+            }
+        
+        });
+
+'Private' functions/properties: we simulate "private" properties by
+  prepended the name with an underscore ("_"), e.g.
+
+        _resumeAfterDelay : function() {
+            // ...etc...
+        },
+
+Element addressing: use "$(id)" rather than
+  "document.getElementById('id')".
+
+Timeout functions: pass function objects to setTimeout(), rather than
+  strings, e.g.
+
+        window.setTimeout(this.resume.bind(this), delay);

@@ -1,0 +1,2 @@
+selenium.core.version=@VERSION@
+selenium.core.revision=@REVISION@

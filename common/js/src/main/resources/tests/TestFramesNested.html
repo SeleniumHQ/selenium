@@ -1,0 +1,207 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!--
+Copyright 2004 ThoughtWorks, Inc
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>TestFramesNested</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td rowspan="1" colspan="3">TestFramesNested<br>
+      </td>
+    </tr>
+    <tr>
+      <td>open</td>
+      <td>../tests/html/NestedFrames.html</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyTitle</td>
+      <td>NestedFrames</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyTextNotPresent</td>
+      <td>This is a test</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>selectFrame</td>
+      <td>mainFrame</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyTitle</td>
+      <td>NestedFrames2</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>selectFrame</td>
+      <td>mainFrame</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyTitle</td>
+      <td>AUT</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>selectFrame</td>
+      <td>mainFrame</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyLocation</td>
+      <td>*/tests/html/test_open.html</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyTextPresent</td>
+      <td>This is a test</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>selectFrame</td>
+      <td>relative=up</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyTitle</td>
+      <td>AUT</td>
+      <td>&nbsp;</td>
+    </tr>
+	<tr>
+      <td>verifyTextNotPresent</td>
+      <td>This is a test</td>
+      <td>&nbsp;</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Select a frame using a DOM expression pointing to the frame itself</p>
+
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td>selectFrame</td>
+      <td>relative=top</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyTitle</td>
+      <td>NestedFrames</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>selectFrame</td>
+      <td>dom=window.frames[1]</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyTitle</td>
+      <td>NestedFrames2</td>
+      <td>&nbsp;</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Select a frame by index</p>
+
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td>selectFrame</td>
+      <td>relative=top</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyTitle</td>
+      <td>NestedFrames</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>selectFrame</td>
+      <td>index=1</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyTitle</td>
+      <td>NestedFrames2</td>
+      <td>&nbsp;</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Select a frame using a locator expression pointing to the frame element (in this case, "foo" is the ID of the mainFrame element)</p>
+
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td>selectFrame</td>
+      <td>relative=top</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyTitle</td>
+      <td>NestedFrames</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>selectFrame</td>
+      <td>foo</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyTitle</td>
+      <td>NestedFrames2</td>
+      <td>&nbsp;</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Select a frame using a DOM expression pointing to a nested frame</p>
+
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td>selectFrame</td>
+      <td>relative=top</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyTitle</td>
+      <td>NestedFrames</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>selectFrame</td>
+      <td>dom=window.frames["mainFrame"].frames["mainFrame"]</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyTitle</td>
+      <td>AUT</td>
+      <td>&nbsp;</td>
+    </tr>
+  </tbody>
+</table>
+
+</body>
+</html>

@@ -1,0 +1,25 @@
+<html debug="true"><head>
+        <script language="JavaScript" type="text/javascript" src="../core/scripts/htmlutils.js"></script>
+        <script language="JavaScript" type="text/javascript" src="../core/lib/cssQuery/cssQuery-p.js"></script>
+        <script language="JavaScript" type="text/javascript" src="../core/scripts/selenium-browserdetect.js"></script>
+        <script language="JavaScript" type="text/javascript" src="../core/scripts/selenium-browserbot.js"></script>
+        <script language="JavaScript" type="text/javascript" src="../core/scripts/find_matching_child.js"></script>
+        <script language="JavaScript" type="text/javascript" src="../core/scripts/selenium-api.js"></script>
+        <script language="JavaScript" type="text/javascript" src="../core/scripts/selenium-logging.js"></script>
+        <script language="JavaScript" type="text/javascript" src="../core/xpath/util.js"></script>
+        <script language="JavaScript" type="text/javascript" src="../core/xpath/xmltoken.js"></script>
+        <script language="JavaScript" type="text/javascript" src="../core/xpath/dom.js"></script>
+        <script language="JavaScript" type="text/javascript" src="../core/xpath/xpath.js"></script>
+        <script src="strands.js"></script>
+        <script src="compiler.js"></script>
+<script src="selenium-strands.js"></script>        
+<body ><iframe id="seleniumframe" src="about:blank"></iframe>
+
+
+<script>
+    var selWin = document.getElementById("seleniumframe").contentWindow;
+    selenium = Selenium.createForWindow(selWin);
+    selenium.loadAndRunTest("simpletest.js");
+</script>
+    
+    </body></html>

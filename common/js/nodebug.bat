@@ -1,0 +1,1 @@
+java -jar jsunit-debugger\js.jar jsunit-debugger\AllTests.js

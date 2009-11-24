@@ -1,0 +1,222 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!--
+Copyright 2004 ThoughtWorks, Inc
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>Test Click Javascript Href Chrome</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td rowspan="1" colspan="3">TestClickJavaScriptHref<br>
+      </td>
+    </tr>
+    <tr>
+      <td>open</td>
+      <td>../tests/html/test_click_javascript_chrome_page.html</td>
+      <td>&nbsp;</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Click a regular javascript href</p>
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td>click</td>
+      <td>id=a</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyAlert</td>
+      <td>exact:a</td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Click a javascript href with leading whitespace</p>
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td>click</td>
+      <td>id=b</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyAlert</td>
+      <td>exact:b</td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Click a javascript href with mixed cases</p>
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td>click</td>
+      <td>id=c</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyAlert</td>
+      <td>exact:c</td>
+      <td/>
+    </tr>
+  </tbody>
+</table>
+
+<p>Click a javascript href that removes itself</p>
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td>click</td>
+      <td>id=d</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyElementNotPresent</td>
+      <td>id=d</td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Click a javascript href that removes itself and then raises an alert</p>
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td>click</td>
+      <td>id=e</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyAlert</td>
+      <td>exact:e</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyElementNotPresent</td>
+      <td>id=e</td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Click a javascript href that opens a window</p>
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td>click</td>
+      <td>id=f</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>waitForPopUp</td>
+      <td>f-window</td>
+      <td>10000</td>
+    </tr>
+    <tr>
+      <td>selectWindow</td>
+      <td>name=f-window</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyElementPresent</td>
+      <td>id=visibleParagraph</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>close</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>selectWindow</td>
+      <td></td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Click a javascript href that opens a window and then raises an alert</p>
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td>click</td>
+      <td>id=g</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyAlert</td>
+      <td>exact:g</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>waitForPopUp</td>
+      <td>g-window</td>
+      <td>10000</td>
+    </tr>
+    <tr>
+      <td>selectWindow</td>
+      <td>name=g-window</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyElementPresent</td>
+      <td>id=visibleParagraph</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>close</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>selectWindow</td>
+      <td></td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Click a javascript href that raises an alert, then navigates to a new URL</p>
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td>clickAndWait</td>
+      <td>id=h</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyAlert</td>
+      <td>exact:h</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyElementPresent</td>
+      <td>id=visibleParagraph</td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+
+</body>
+</html>

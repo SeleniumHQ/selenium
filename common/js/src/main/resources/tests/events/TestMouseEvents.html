@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!--
+Copyright 2004 ThoughtWorks, Inc
+
+Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+        http-equiv="content-type">
+  <title>Test Selenium</title>
+</head>
+
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td rowspan="1" colspan="3">Test Mouse Events<br>
+      </td>
+    </tr>
+    <tr>
+      <td>open</td>
+      <td>../tests/html/test_form_events.html</td>
+      <td>&nbsp;</td>
+    </tr>
+    <!-- SEL-620: Different Events Recorded for Firefox when AUT Window is Focused / Blurred -->
+    <tr>
+      <td>getEval</td>
+      <td>javascript{ selenium.browserbot.getUserWindow().blur(); true; }</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>mouseOver</td>
+      <td>theTextbox</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>mouseOver</td>
+      <td>theButton</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>controlKeyDown</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>mouseDown</td>
+      <td>theTextbox</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>controlKeyUp</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>mouseDown</td>
+      <td>theButton</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>contextMenu</td>
+      <td>theButton</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>mouseDownRight</td>
+      <td>theButton</td>
+      <td>&nbsp;</td>
+    </tr> 
+    <tr>
+      <td>verifyValue</td>
+      <td>eventlog</td>
+      <td>{mouseover(theTextbox)} {mouseover(theButton)} {mousedown(theTextbox ctrlKeyDown)} {mousedown(theButton)}  {focus(theButton)} {contextmenu(theButton)} {mousedown(theButton)}</td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>

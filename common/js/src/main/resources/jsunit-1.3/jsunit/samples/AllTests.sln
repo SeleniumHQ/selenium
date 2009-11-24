@@ -1,0 +1,13 @@
+Microsoft Visual Studio Solution File, Format Version 1.00
+Project("{2CA5CB9B-D322-11D0-AD8F-00C04FB6BE4C}") = "AllTests", "AllTests.vup", "{668BE26D-BA6D-4F1D-9F08-554468AF84A1}"
+EndProject
+Global
+	GlobalSection(LocalDeployment) = postSolution
+		StartupProject = {668BE26D-BA6D-4F1D-9F08-554468AF84A1}
+	EndGlobalSection
+	GlobalSection(BuildOrder) = postSolution
+		0 = {668BE26D-BA6D-4F1D-9F08-554468AF84A1}
+	EndGlobalSection
+	GlobalSection(DeploymentRoot) = postSolution
+	EndGlobalSection
+EndGlobal

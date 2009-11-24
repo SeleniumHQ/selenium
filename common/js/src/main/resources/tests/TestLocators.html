@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!--
+Copyright 2004 ThoughtWorks, Inc
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>Test Locators</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td rowspan="1" colspan="3">Test Locators<br>
+      </td>
+    </tr>
+
+    <tr>
+      <td>open</td>
+      <td>../tests/html/test_locators.html</td>
+      <td>&nbsp;</td>
+    </tr>
+
+    <!-- Id location -->
+    <tr>
+      <td>verifyText</td>
+      <td>id=id1</td>
+      <td>this is the first element</td>
+    </tr>
+    <tr>
+      <td>verifyElementNotPresent</td>
+      <td>id=name1</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyElementNotPresent</td>
+      <td>id=id4</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyAttribute</td>
+      <td>id=id1@class</td>
+      <td>a1</td>
+    </tr>
+
+    <!-- name location -->
+    <tr>
+      <td>verifyText</td>
+      <td>name=name1</td>
+      <td>this is the second element</td>
+    </tr>
+    <tr>
+      <td>verifyElementNotPresent</td>
+      <td>name=id1</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyElementNotPresent</td>
+      <td>name=notAName</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyAttribute</td>
+      <td>name=name1@class</td>
+      <td>a2</td>
+    </tr>
+
+    <!-- class location -->
+
+    <tr>
+      <td>verifyText</td>
+      <td>class=a3</td>
+      <td>this is the third element</td>
+    </tr>
+
+    <!-- alt location -->
+
+    <tr>
+      <td>verifyElementPresent</td>
+      <td>alt=banner</td>
+      <td></td>
+    </tr>
+
+    <!-- identifier location -->
+    <tr>
+      <td>verifyText</td>
+      <td>identifier=id1</td>
+      <td>this is the first element</td>
+    </tr>
+    <tr>
+      <td>verifyElementNotPresent</td>
+      <td>identifier=id4</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyAttribute</td>
+      <td>identifier=id1@class</td>
+      <td>a1</td>
+    </tr>
+    <tr>
+      <td>verifyText</td>
+      <td>identifier=name1</td>
+      <td>this is the second element</td>
+    </tr>
+    <tr>
+      <td>verifyAttribute</td>
+      <td>identifier=name1@class</td>
+      <td>a2</td>
+    </tr>
+
+
+    <!-- DOM Traversal location -->
+    <tr>
+      <td>verifyText</td>
+      <td>dom=document.links[1]</td>
+      <td>this is the second element</td>
+    </tr>
+    <tr>
+      <td>verifyText</td>
+      <td>dom=function foo() {return document.links[1];}; foo();</td>
+      <td>this is the second element</td>
+    </tr>
+    <tr>
+      <td>verifyAttribute</td>
+      <td>dom=document.links[1]@class</td>
+      <td>a2</td>
+    </tr>
+    <tr>
+      <td>verifyElementNotPresent</td>
+      <td>dom=document.links[9]</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyElementNotPresent</td>
+      <td>dom=foo</td>
+      <td></td>
+    </tr>
+
+    <!-- Link location -->
+    <tr>
+      <td>verifyElementPresent</td>
+      <td>link=this is the second element</td>
+      <td>a2</td>
+    </tr>
+    <tr>
+        <td>assertTextPresent</td>
+        <td>this is the second element</td>
+        <td></td>
+    </tr>
+    <tr>
+      <td>verifyElementPresent</td>
+      <td>link=this * second element</td>
+      <td>a2</td>
+    </tr>
+    <tr>
+      <td>verifyElementPresent</td>
+      <td>link=regexp:this [aeiou]s the second element</td>
+      <td>a2</td>
+    </tr>
+    <tr>
+      <td>verifyAttribute</td>
+      <td>link=this is the second element@class</td>
+      <td>a2</td>
+    </tr>
+    <tr>
+      <td>verifyElementNotPresent</td>
+      <td>link=this is not an element</td>
+      <td></td>
+    </tr>
+    
+    <!-- SEL-484:  IE: Can't select element by ID when there's another earlier element whose "name" matches the ID -->
+    <tr>
+      <td>verifyElementPresent</td>
+      <td>name=foobar</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyElementPresent</td>
+      <td>id=foobar</td>
+      <td></td>
+    </tr>
+    
+    <!-- SEL-608: "ID selector does not work when an element on the page has a name parameter equal to id" -->
+    <tr>
+      <td>verifyElementPresent</td>
+      <td>id=myForm</td>
+      <td></td>
+    </tr>
+
+  </tbody>
+</table>
+</body>
+</html>

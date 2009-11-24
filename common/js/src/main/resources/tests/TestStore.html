@@ -1,0 +1,193 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!--
+Copyright 2004 ThoughtWorks, Inc
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>Test store*</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td rowspan="1" colspan="3">Test store and variations<br>
+      </td>
+    </tr>
+
+    <tr>
+      <td>open</td>
+      <td>../tests/html/test_verifications.html</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>storeValue</td>
+      <td>theHidden</td>
+      <td>storedHiddenValue</td>
+    </tr>
+    <tr>
+      <td>storeText</td>
+      <td>theSpan</td>
+      <td>storedSpanText</td>
+    </tr>
+    <tr>
+      <td>storeAttribute</td>
+      <td>theText@class</td>
+      <td>storedTextClass</td>
+    </tr>
+    <tr>
+        <td>storeTitle</td>
+    	<td>storedTitle</td>
+        <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>store</td>
+      <td>PLAIN TEXT</td>
+      <td>textVariable</td>
+    </tr>
+    <tr>
+              <!-- The expression for the 2nd parm used to be: javascript{'javascript' + 'Variable'}
+      For me to support this kind of thing, I would need to save "stored" variables in a 
+      hash, since the names wouldn't be known at compile time.  I think this is not the
+      best translation; surely test writers will prefer that new variables in the native
+      language be instantiated.  So I'm changing the expression to a literal:  -ns  -->
+
+      <td>store</td>
+      <td>javascript{'Pi ~= ' +
+                     (Math.round(Math.PI * 100) / 100)}</td> 
+      <td>javascriptVariable</td>
+    </tr>
+
+    <tr>
+      <td>open</td>
+      <td>../tests/html/test_store_value.html</td>
+      <td/>
+    </tr>
+    <tr>
+      <td>type</td>
+      <td>theText</td>
+      <td>${storedHiddenValue}</td>
+    </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>theText</td>
+      <td>the hidden value</td>
+    </tr>
+    <tr>
+      <td>type</td>
+      <td>theText</td>
+      <td>${storedSpanText}</td>
+    </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>theText</td>
+      <td>this is the span</td>
+    </tr>
+    <tr>
+      <td>type</td>
+      <td>theText</td>
+      <td>${storedTextClass}</td>
+    </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>theText</td>
+      <td>foo</td>
+    </tr>
+    <tr>
+      <td>type</td>
+      <td>theText</td>
+      <td>${textVariable}</td>
+    </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>theText</td>
+      <td>PLAIN TEXT</td>
+    </tr>
+    <tr>
+      <td>type</td>
+      <td>theText</td>
+      <td>${javascriptVariable}</td>
+    </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>theText</td>
+      <td>Pi ~= 3.14</td>
+    </tr>
+    <tr>
+      <td>type</td>
+      <td>theText</td>
+      <td>${storedTitle}</td>
+    </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>theText</td>
+      <td>theTitle</td>
+    </tr>
+
+    <!-- Test multiple output variables in a single expression -->
+    <tr>
+      <td>type</td>
+      <td>theText</td>
+      <td>'${storedHiddenValue}'_'${storedSpanText}'</td>
+    </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>theText</td>
+      <td>'the hidden value'_'this is the span'</td>
+    </tr>
+
+    <!-- backward compatibility -->
+    <tr>
+      <td>open</td>
+      <td>../tests/html/test_just_text.html</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr> <!-- This new command should replace the old usage of storeValue -->
+      <td>storeBodyText</td>
+      <td>storedBodyText</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>open</td>
+      <td>../tests/html/test_store_value.html</td>
+      <td/>
+    </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>theText</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>type</td>
+      <td>theText</td>
+      <td>${storedBodyText}</td>
+    </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>theText</td>
+      <td>This is the entire text of the page.</td>
+    </tr>
+
+    <tr>
+      <td>verifyExpression</td>
+      <td>${storedBodyText}</td>
+      <td>This is the entire text of the page.</td>
+    </tr>
+
+  </tbody>
+</table>
+</body>
+</html>
