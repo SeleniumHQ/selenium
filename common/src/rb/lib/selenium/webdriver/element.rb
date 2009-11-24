@@ -9,6 +9,10 @@ module Selenium
         @bridge, @id = bridge, id
       end
 
+      def inspect
+        '#<%s:0x%x id=%s tag_name=%s>' % [self.class, hash*2, @id.inspect, tag_name.inspect]
+      end
+
       def click
         bridge.clickElement @id
       end
