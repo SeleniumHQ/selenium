@@ -40,11 +40,11 @@ public class SingleTestSuite extends TestCase {
   private final static String SELENIUM = "org.openqa.selenium.SeleneseBackedWebDriver";
 
   public static Test suite() throws Exception {
-    String driver = HTML_UNIT_JS;
+    String driver = FIREFOX;
 
-//    System.setProperty("webdriver.development", "true");
+    //System.setProperty("webdriver.development", "true");
     System.setProperty("jna.library.path", "..\\build;build");
-    System.setProperty("webdriver.selenium.server.port", String.valueOf(findFreePort()));
+    //System.setProperty("webdriver.selenium.server.port", String.valueOf(findFreePort()));
 //    System.setProperty("webdriver.firefox.useExisting", "true");
 //    System.setProperty("webdriver.firefox.reap_profile", "false");
 
@@ -54,13 +54,14 @@ public class SingleTestSuite extends TestCase {
         .addSourceDir("firefox")
         .usingDriver(driver)
         .keepDriverInstance()
-        .includeJavascriptTests()
-        .onlyRun("MiscTest")
+        //.includeJavascriptT ests()
+        .onlyRun("FirefoxDriverTest")
         //.onlyRun("JavascriptEnabledDriverTest")
         //.method("testShouldReturnTheSourceOfAPage")
+        .method("testCanBlockInvalidSslCertificates")
         .exclude(ALL)
-        .exclude(Ignore.Driver.HTMLUNIT)
-        .leaveRunning()
+        .exclude(Ignore.Driver.FIREFOX)
+        //.leaveRunning()
         ;  // Yeah, this look strange :)
 
     if (REMOTE.equals(driver)) {

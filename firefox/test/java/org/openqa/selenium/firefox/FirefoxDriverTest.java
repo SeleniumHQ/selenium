@@ -33,6 +33,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.firefox.internal.ProfilesIni;
 
 import java.util.Set;
@@ -250,5 +251,22 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     WebElement keyReporter = driver.findElement(By.id("keyReporter"));
     keyReporter.sendKeys("ABC DEF");
     assertThat(keyReporter.getValue(), is("ABC DEF"));
+  }
+  
+  public void testCanBlockInvalidSslCertificates() {
+    FirefoxProfile profile = new FirefoxProfile();
+    profile.setAcceptUntrustedCertificates(false);
+    String url = GlobalTestEnvironment.get().getAppServer().whereIsSecure("simpleTest.html");
+
+    try {
+      WebDriver secondDriver = new FirefoxDriver(profile);
+      secondDriver.get(url);
+      String gotTitle = secondDriver.getTitle();
+      secondDriver.quit();
+      assertEquals("Page Load Error", gotTitle);
+    } catch (Exception e) {
+      e.printStackTrace();
+      fail("Creating driver with untrusted certificates set to false failed.");
+    }
   }
 }

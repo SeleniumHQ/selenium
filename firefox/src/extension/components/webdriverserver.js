@@ -24,6 +24,11 @@ function WebDriverServer() {
       createInstance(Components.interfaces.nsIServerSocket);
   this.generator = Utils.getService("@mozilla.org/uuid-generator;1", "nsIUUIDGenerator");
   this.enableNativeEvents = null;
+
+  // Force our cert override service to be loaded - otherwise, it will not be
+  // loaded and cause a "too deep recursion" error.
+  var overrideService = Components.classes["@mozilla.org/security/certoverride;1"]
+      .getService(Components.interfaces.nsICertOverrideService);
 }
 
 
