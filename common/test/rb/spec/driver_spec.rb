@@ -24,7 +24,7 @@ describe "Driver" do
     driver.page_source.should match(%r[<title>XHTML Test Page</title>]i)
   end
 
-  compliant_on :driver => :firefox do
+  compliant_on :driver => [:firefox, :chrome] do
     it "should save a screenshot" do
       driver.navigate.to url_for("xhtmlTest.html")
       path = "screenshot_tmp.png"
@@ -45,7 +45,7 @@ describe "Driver" do
       ss.should be_kind_of(String)
       ss.size.should > 0
     end
-    
+
     it "raises an error when given an unknown format" do
       lambda { driver.screenshot_as(:jpeg) }.should raise_error(WebDriver::Error::UnsupportedOperationError)
     end

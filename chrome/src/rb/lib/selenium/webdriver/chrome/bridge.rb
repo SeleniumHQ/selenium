@@ -17,7 +17,7 @@ module Selenium
         end
 
         def driver_extensions
-          []
+          [DriverExtensions::TakesScreenshot]
         end
 
         def get(url)
@@ -71,6 +71,10 @@ module Selenium
 
         def getCurrentWindowHandle
           execute :request => 'getCurrentWindowHandle'
+        end
+
+        def getScreenshotAsBase64
+          execute :request => "screenshot"
         end
 
         def setSpeed(value)
