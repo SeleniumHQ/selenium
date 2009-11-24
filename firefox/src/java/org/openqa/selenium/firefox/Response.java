@@ -77,7 +77,7 @@ public class Response {
 
   public Object getExtraResult(String fieldName) {
     try {
-      return result.get(fieldName);
+      return result.isNull(fieldName) ? null : result.get(fieldName);
     } catch (JSONException e) {
       throw new WebDriverException(e);
     }

@@ -1200,18 +1200,18 @@ Utils.unwrapParameters = function(wrappedParameters, resultArray, context) {
 Utils.wrapResult = function(result, context) {
   // Sophisticated.
   if (null === result || undefined === result) {
-    return {resultType: "NULL"};
+    return {type: "NULL", value: null};
   } else if (result['tagName']) {
-    return {resultType: "ELEMENT",
-            response: Utils.addToKnownElements(result, context)};
+    return {type: "ELEMENT",
+            value: Utils.addToKnownElements(result, context)};
   } else if (result !== undefined &&
              result.constructor.toString().indexOf("Array") != -1) {
     var array = [];
     for (var i = 0; i < result.length; i++) {
       array.push(Utils.wrapResult(result[i], context));
     }
-    return {resultType: "ARRAY", response: array};
+    return {type: "ARRAY", value: array};
   } else {
-    return {resultType: "OTHER", response: result};
+    return {type: "OTHER", value: result};
   }
 }

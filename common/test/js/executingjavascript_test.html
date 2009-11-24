@@ -65,6 +65,35 @@ function testCanExecuteScriptThatReturnsABoolean(driver) {
 }
 
 
+function testScriptsWithArrayReturnValues(driver) {
+  driver.executeScript(
+      'return [document.body, false, true, null, undefined, "abc", ' +
+      '123, ["def", 456]]');
+  driver.callFunction(function(response) {
+    assertTrue('Should have returned an array', goog.isArray(response.value));
+    assertEquals(8, response.value.length);
+
+    var element = response.value.shift();
+    assertTrue(element instanceof webdriver.WebElement);
+    assertThat(element.getTagName(), equals('body'));
+
+    assertFalse(response.value.shift());
+    assertTrue(response.value.shift());
+
+    assertEquals(null, response.value.shift());
+    assertEquals(null, response.value.shift());
+    assertEquals('abc', response.value.shift());
+    assertEquals(123, response.value.shift());
+
+    var array = response.value.shift();
+    assertTrue(goog.isArray(array));
+    assertEquals(2, array.length);
+    assertEquals('def', array.shift());
+    assertEquals(456, array.shift());
+  });
+}
+
+
 function testThrowsAnExceptionWhenTheJavascriptIsBad(driver) {
   driver.get(TEST_PAGE.xhtmlTestPage);
   driver.executeScript('return squiggle();');
@@ -119,6 +148,12 @@ function testCanPassAWebElementAsAnArgument(driver) {
 }
 
 
+function testCanPassAnArrayAsAnArgument(driver) {
+  var result = driver.executeScript('return arguments[0].length;', [1, 2, 3, 4]);
+  assertThat(result, equals(4));
+}
+
+
 function testThrowsAnExceptionIfAnArgumentIsNotValid(driver) {
   var script = 'return arguments[0];';
   try {
@@ -128,15 +163,6 @@ function testThrowsAnExceptionIfAnArgumentIsNotValid(driver) {
          'webdriver.WebElement objects');
   } catch (expected) {
     assertEquals('Invalid script argument type: function', expected.message);
-  }
-
-  try {
-    driver.executeScript(script, []);
-    fail('Should have rejected invalid argument type: array' +
-         '\nValid argument types are: string, boolean, number, and ' +
-         'webdriver.WebElement objects');
-  } catch (expected) {
-    assertEquals('Invalid script argument type: array', expected.message);
   }
 
   try {
