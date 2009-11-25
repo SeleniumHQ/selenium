@@ -275,6 +275,12 @@ java_jar(:name => "webdriver-remote-client",
 
 java_jar(:name => "webdriver-remote-server",
     :srcs  => [ "remote/server/src/java/**/*.java" ],
+    :resources => [
+      {
+        "remote/server/src/java/org/openqa/jetty/http/mime.properties" => "org/openqa/jetty/http/mime.properties",
+        "remote/server/src/java/org/openqa/jetty/http/encoding.properties" => "org/openqa/jetty/http/encoding.properties",
+      }  
+    ],
     :deps => [
                :htmlunit,
                :ie,
