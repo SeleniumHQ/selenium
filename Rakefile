@@ -291,14 +291,31 @@ java_jar(:name => "webdriver-remote-common-test",
                      :test_common
                    ])
 
-java_test(:name => "webdriver-remote-test",
-          :srcs  => [ "remote/client/test/java/**/*.java",
-                     "remote/server/test/java/**/*.java" ],
+java_jar(:name => "webdriver-remote-server-base",
+         :srcs  => [ 
+                     "remote/client/test/java/**/*.java",
+                     "remote/server/test/java/org/openqa/selenium/remote/**/*.java" 
+                   ],
+         :deps => [
+           :remote_client,
+           :remote_server,
+           :test_common,
+           :'webdriver-remote-common-test'
+         ])
+
+java_jar(:name => "webdriver-remote-test",
           :deps => [
-                     :remote_client,
-                     :remote_server,
-                     :test_common,
-                     :'webdriver-remote-common-test'
+                     :'webdriver-remote-server-base'
+                   ])
+
+java_test(:name => "webdriver-selenium-server-test",
+          :srcs => [
+                     "remote/server/test/java/org/openqa/selenium/server/**/*.java",
+                     "remote/server/test/java/org/openqa/selenium/testworker/**/*.java"
+                   ],
+          :deps => [
+                     :'webdriver-remote-server-base',
+                     "remote/server/lib/buildtime/*.jar"
                    ])
 
 java_war(:name => "webdriver-remote-servlet",

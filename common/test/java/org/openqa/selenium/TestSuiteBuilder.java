@@ -17,10 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -33,6 +29,10 @@ import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 
 public class TestSuiteBuilder {
 
@@ -47,6 +47,7 @@ public class TestSuiteBuilder {
   private boolean withDriver = true;
   private boolean withEnvironment = true;
   private String onlyRun;
+  private Set<String> patterns = new HashSet<String>();
   private Set<String> testMethodNames = new HashSet<String>();
   private Set<String> decorators = new LinkedHashSet<String>();
   private boolean includeJsApiTests = false;
@@ -64,7 +65,6 @@ public class TestSuiteBuilder {
     assertThat(baseDir.exists(), is(true));
 
     baseDir = baseDir.getParentFile();
-//    exclude("all");
   }
 
   public TestSuiteBuilder addSourceDir(String dirName) {
@@ -172,6 +172,16 @@ public class TestSuiteBuilder {
     }
 
     if (onlyRun != null && !clazz.getName().endsWith(onlyRun)) {
+      return;
+    }
+
+    boolean include = false;
+    if (patterns.size() >0) {
+      for (String pattern : patterns) {
+        include |= clazz.getName().matches(pattern);
+      }
+    }
+    if (!include) {
       return;
     }
 
@@ -340,6 +350,11 @@ public class TestSuiteBuilder {
       suite.addTest(new DriverTestDecorator(test, driverClass,
           /*keepDriver=*/true, /*freshDriver=*/false, /*refreshDriver=*/false));
     }
+  }
+
+  public TestSuiteBuilder pattern(String pattern) {
+    patterns.add(pattern);
+    return this;
   }
 
   /**
