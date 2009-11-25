@@ -586,13 +586,13 @@ webdriver.TestRunner.prototype.tearDown_ = function(result, driver) {
  */
 webdriver.TestRunner.prototype.handleDriverError_ = function(result, e) {
   result.passed = false;
-  var failingCommand = e.target.getPendingCommand();
-  var response = failingCommand ? failingCommand.response : null;
+  var failingCommand = e.target;
+  var response = failingCommand.getResponse();
   if (response) {
     result.errMsg = response.getErrorMessage();
   } else {
     // Should never happen, but just in case.
     result.errMsg = 'Unknown error!';
   }
-  this.reportResult_(result, e.target);
+  this.reportResult_(result, failingCommand.getDriver());
 };
