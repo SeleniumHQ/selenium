@@ -230,12 +230,13 @@ webdriver.TestRunner.SINGLETON = null;
 
 
 webdriver.TestRunner.start = function(factoryFn) {
-  if (webdriver.TestRunner.SINGLETON) {
-    throw new Error('Singleton already initialized');
+  if (!webdriver.TestRunner.SINGLETON) {
+    webdriver.TestRunner.SINGLETON = new webdriver.TestRunner(factoryFn);
+    webdriver.TestRunner.SINGLETON.go();
   }
-  webdriver.TestRunner.SINGLETON = new webdriver.TestRunner(factoryFn);
-  webdriver.TestRunner.SINGLETON.go();
+  return webdriver.TestRunner.SINGLETON;
 };
+goog.exportSymbol('WD_getTestRunner', webdriver.TestRunner.start);
 
 
 /**
@@ -591,7 +592,7 @@ webdriver.TestRunner.prototype.handleDriverError_ = function(result, e) {
     result.errMsg = [];
     if (goog.isString(response.value)) {
       result.errMsg.push('  ' + response.value);
-    } else if (goog.isDef(response.value) &&
+    } else if (goog.isDefAndNotNull(response.value) &&
                goog.isDef(response.value.message)) {
       result.errMsg.push(response.value.message);
       if (goog.isDef(response.value.fileName)) {

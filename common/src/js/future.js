@@ -55,6 +55,14 @@ webdriver.Future = function(driver) {
    * @private
    */
   this.value_ = webdriver.Future.NOT_SET_;
+
+  /**
+   * Futures whose values are linked to this one. When this future's value is
+   * set, all of the linked futures will also be updated.
+   * @type {Array.<webdriver.Future>}
+   * @private
+   */
+  this.linkedFutures_ = [];
 };
 goog.inherits(webdriver.Future,  goog.events.EventTarget);
 
@@ -66,6 +74,15 @@ goog.inherits(webdriver.Future,  goog.events.EventTarget);
  * @private
  */
 webdriver.Future.NOT_SET_ = {};
+
+
+/** @override */
+webdriver.Future.prototype.disposeInternal = function() {
+  delete this.driver_;
+  delete this.value_;
+  delete this.linkedFutures_;
+  webdriver.Future.superClass_.disposeInternal.call(this);
+};
 
 
 /**
@@ -90,13 +107,30 @@ webdriver.Future.prototype.getDriver = function() {
 
 
 /**
- * Sets the value of this Future. Dispatches a
- * {@code goog.events.EventType.CHANGE} event.
+ * Sets the value of this Future and dispatches a
+ * {@code goog.events.EventType.CHANGE} event. If the given value is another
+ * future and its value has not been set, a callback will be registered to
+ * set this instance's value when the input future's value is set. Note that
+ * the value of a future may only be set once.
  * @param {*} value The new value.
  */
 webdriver.Future.prototype.setValue = function(value) {
-  this.value_ = value;
-  this.dispatchEvent(goog.events.EventType.CHANGE);
+  if (this.isSet()) {
+    return;
+  }
+  if (value instanceof webdriver.Future) {
+    if (value.isSet()) {
+      this.value_ = value.getValue();
+    } else {
+      value.linkedFutures_.push(this);
+    }
+  } else {
+    this.value_ = value;
+    goog.array.forEach(this.linkedFutures_, function(future) {
+      future.setValue(value);
+    });
+    this.dispatchEvent(goog.events.EventType.CHANGE);
+  }
 };
 
 

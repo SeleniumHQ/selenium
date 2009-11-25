@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>functioncommands_test.html</title>
+  <script src="webdriver-bootstrap.js"></script>
+  <script src="testbase.js"></script>
+  <script>
+    goog.require('goog.testing.asserts');
+  </script>
+  <script type="text/javascript">
+    function testNestedCommands(driver) {
+      var message = [];
+      function log(value) {
+        message.push(value);
+      }
+      driver.callFunction(log, null, 'a');
+      driver.callFunction(function() {
+        driver.callFunction(log, null, 'c');
+        driver.callFunction(function() {
+          driver.callFunction(log, null, 'e');
+          driver.callFunction(log, null, 'f');
+        });
+        driver.callFunction(log, null, 'd');
+      });
+      driver.callFunction(log, null, 'b');
+      driver.callFunction(function() {
+        assertEquals('acefdb', message.join(''));
+      });
+    }
+
+
+    function testShouldResultOfPreviousCommandToFunction(driver) {
+      driver.callFunction(function() {
+        return 'abc';
+      });
+      driver.callFunction(function(response) {
+        assertNotUndefined(response);
+        assertNotNull(response);
+        assertEquals('abc', response.value);
+      });
+    }
+
+
+    function testShouldPreserveFunctionCommandArguments(driver) {
+      driver.callFunction(function(a, b, c) {
+        assertEquals('abc', a);
+        assertEquals(123, b);
+        assertEquals('red', c);
+      }, null, 'abc', 123, 'red');
+    }
+
+
+    function testFunctionReturnsValueInAFuture(driver) {
+      var result = driver.callFunction(function() {
+        return 'abc123';
+      });
+      assertNotUndefined(result);
+      assertNotNull(result);
+      assertTrue(result instanceof webdriver.Future);
+      assertThat(result, equals('abc123'));
+    }
+
+
+    function testShouldReturnValuesFromNestedFunctions(driver) {
+      var result = driver.callFunction(function() {
+        return driver.callFunction(function() {
+          return driver.callFunction(function() {
+            return driver.callFunction(function() {
+              return 343;
+            });
+          });
+        });
+      });
+      assertNotUndefined(result);
+      assertNotNull(result);
+      assertTrue(result instanceof webdriver.Future);
+      assertThat(result, equals(343));
+    };
+  </script>
+</head>
+<body></body>
+</html>

@@ -28,10 +28,7 @@ function testCanHandleExpectedErrorsFromANestedCommand(driver) {
            'error message, that means the event propagation was not stopped\n' +
            '(or the this error was not cauhgt).');
     };
-    driver.addCommand(
-        new webdriver.Command(webdriver.CommandName.FUNCTION).
-            setParameters(failFunc),
-      /*addToFront=*/true);
+    driver.callFunction(failFunc);
   });
   driver.catchExpectedError(
       'If the previous command did not raise an error, the test should fail\n' +

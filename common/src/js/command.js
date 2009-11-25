@@ -24,23 +24,43 @@ goog.provide('webdriver.Command');
 goog.provide('webdriver.CommandName');
 goog.provide('webdriver.Response');
 
+goog.require('goog.Disposable');
 goog.require('goog.array');
 
 
 /**
  * Describes a command to be executed by a
  * {@code webdriver.AbstractCommandProcessor}.
- * @param {string} name The name of this command.
- * @param {webdriver.WebElement} opt_element The element to perform this command
- *     on. If not defined, the command will be performed relative to the
- *     document root.
+ * @param {webdriver.WebDriver} driver The driver that this is a command for.
+ * @param {webdriver.CommandName} name The name of this command.
+ * @param {webdriver.WebElement} opt_element The element to perform this
+ *     command on. If not defined, the command will be performed relative to
+ *     the document root.
  * @constructor
+ * @extends {goog.Disposable}
  */
-webdriver.Command = function(name, opt_element) {
+webdriver.Command = function(driver, name, opt_element) {
+  goog.Disposable.call(this);
+
+  /**
+   * The driver that this is a command to.
+   * @type {webdriver.WebDriver}
+   * @private
+   */
+  this.driver_ = driver;
+
+  /**
+   * A future that will be automatically updated with the value of this
+   * command's response when it is ready. If the command fails, the
+   * future's value will not be set.
+   * @type {webdriver.Future}
+   * @private
+   */
+  this.futureResult_ = new webdriver.Future(this.driver_);
 
   /**
    * The name of this command.
-   * @type {string}
+   * @type {webdriver.CommandName}
    */
   this.name = name;
 
@@ -95,6 +115,37 @@ webdriver.Command = function(name, opt_element) {
    * @type {boolean}
    */
   this.abort = false;
+};
+goog.inherits(webdriver.Command, goog.Disposable);
+
+
+/** @override */
+webdriver.Command.prototype.toString = function() {
+  return this.name;
+};
+
+
+/**
+ * @return {webdriver.WebDriver} The driver that this is a command to.
+ */
+webdriver.Command.prototype.getDriver = function() {
+  return this.driver_;
+};
+
+
+/**
+ * @return {webdriver.CommandName} This command's name.
+ */
+webdriver.Command.prototype.getName = function() {
+  return this.name;
+};
+
+
+/**
+ * @return {webdriver.Future} The future result (value-only) of this command.
+ */
+webdriver.Command.prototype.getFutureResult = function() {
+  return this.futureResult_;
 };
 
 
@@ -186,6 +237,10 @@ webdriver.Command.prototype.setResponse = function(response) {
                goog.isFunction(this.onSuccessCallbackFn)) {
       sandbox(this.onSuccessCallbackFn);
     }
+  }
+
+  if (!this.response.isFailure) {
+    this.futureResult_.setValue(this.response.value);
   }
 
   if (this.onCompleteCallbackFn_) {

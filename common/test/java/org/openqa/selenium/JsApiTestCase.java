@@ -44,26 +44,37 @@ public class JsApiTestCase extends AbstractDriverTestCase {
     } while (true);
 
     Object result = executor.executeScript(Query.NUM_PASSED.script);
-    Long numPassed = result == null ? 0: (Long) result;
+    long numPassed = result == null ? 0: (Long) result;
 
     result = executor.executeScript(Query.NUM_TESTS.script);
-    Long numTests = result == null ? 0: (Long) result;
+    long numTests = result == null ? 0: (Long) result;
+
+    result = executor.executeScript(Query.NUM_ERRORS.script);
+    long numErrors = result == null ? 0 : (Long) result;
+
 
     String report = (String) executor.executeScript(Query.GET_REPORT.script);
     assertEquals(report, numTests, numPassed);
+    assertEquals(report, 0L, numErrors);
     assertTrue("No tests run!", numTests >= 0);
   }
 
   private static enum Query {
-    IS_FINISHED("return !!wd && wd.TestRunner.SINGLETON.isFinished();"),
-    NUM_PASSED("return wd.TestRunner.SINGLETON.getNumPassed();"),
-    NUM_TESTS("return wd.TestRunner.SINGLETON.getNumTests();"),
-    GET_REPORT("return wd.TestRunner.SINGLETON.getReport();");
+    // Need to support webdriver and closure for now. webdriver runner is going away soon
+    IS_FINISHED("return !!tr && tr.isFinished();"),
+    NUM_PASSED("return tr.getNumPassed ? tr.getNumPassed() : tr.testCase.result_.successCount;"),
+    NUM_TESTS("return tr.getNumTests ? tr.getNumTests() : tr.testCase.result_.totalCount;"),
+    NUM_ERRORS("return tr.testCase ? tr.testCase.result_.errors.length : 0;"),
+    GET_REPORT("return tr.getReport();");
+
+    private static final String TEST_RUNNER =
+        "var tr = window.G_testRunner || "
+        + "(window.WD_getTestRunner ? window.WD_getTestRunner() : null);";
 
     private final String script;
 
     private Query(String script) {
-      this.script = "var wd = window.webdriver; " + script;
+      this.script = TEST_RUNNER + script;
     }
   }
 }
