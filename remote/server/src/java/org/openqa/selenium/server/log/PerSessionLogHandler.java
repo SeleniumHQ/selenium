@@ -1,14 +1,14 @@
 package org.openqa.selenium.server.log;
 
-import java.util.logging.LogRecord;
-import java.util.logging.Formatter;
-import java.util.logging.Level;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.io.IOException;
-import java.io.StringWriter;
+import java.util.logging.Formatter;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
 
 /**
  * Handler which keeps in memory the log records per session so that users can
@@ -144,7 +144,7 @@ public class PerSessionLogHandler extends java.util.logging.Handler {
         List<LogRecord> records = perThreadTempRecords.get(threadId);
         List<LogRecord> sessionRecords = new ArrayList<LogRecord>();
 
-        if (perSessionRecords.get(sessionId) == null) {
+        if (perSessionRecords.get(sessionId) == null && records != null) {
             sessionRecords.addAll(records);
             perSessionRecords.put(sessionId, sessionRecords);
             perThreadTempRecords.remove(threadId);

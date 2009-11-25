@@ -1,18 +1,24 @@
 package org.openqa.selenium.server;
 
+import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
+import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
+import org.openqa.selenium.server.browserlaunchers.DummyLauncher;
+import org.openqa.selenium.server.log.LoggingManager;
+import org.openqa.selenium.server.log.StdOutHandler;
+import org.openqa.selenium.server.log.TerseFormatter;
+
+import junit.framework.TestCase;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.logging.Handler;
+import java.util.logging.Logger;
+
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.isA;
 import static org.easymock.classextension.EasyMock.createMock;
 import static org.easymock.classextension.EasyMock.replay;
-import junit.framework.TestCase;
-
-import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
-import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
-import org.openqa.selenium.server.browserlaunchers.DummyLauncher;
-
-import java.util.HashSet;
-import java.util.Set;
 
 public class BrowserSessionFactoryUnitTest extends TestCase {
 
@@ -24,7 +30,25 @@ public class BrowserSessionFactoryUnitTest extends TestCase {
     private static final String BROWSER2 = "*firefox";
     private static final String BASEURL2 = "http://maps.google.com";
 
-    public void testBrowserSessionFactorySetsLastSessionIdOfSeleniumDriverResourceHandler() throws Exception {
+  @Override
+  protected void setUp() throws Exception {
+    super.setUp();
+
+    configureLogging();
+  }
+
+  private void configureLogging() throws Exception {
+      LoggingManager.configureLogging(new RemoteControlConfiguration(), true);
+      Logger logger = Logger.getLogger("");
+      for (Handler handler : logger.getHandlers()) {
+          if (handler instanceof StdOutHandler) {
+              handler.setFormatter(new TerseFormatter(true));
+              break;
+          }
+      }
+  }
+
+  public void testBrowserSessionFactorySetsLastSessionIdOfSeleniumDriverResourceHandler() throws Exception {
 
         final RemoteControlConfiguration configuration;
         
