@@ -26,6 +26,7 @@ goog.provide('webdriver.Response');
 
 goog.require('goog.Disposable');
 goog.require('goog.array');
+goog.require('goog.testing.stacktrace');
 
 
 /**
@@ -326,4 +327,34 @@ webdriver.Response = function(isFailure, context, value, opt_error) {
   this.value = value;
   this.errors = goog.array.slice(arguments, 3);
   this.extraData = {};
+};
+
+
+/**
+ * @return {?string} A formatted error message, or {@code null} if this is not a
+ *     failure response.
+ */
+webdriver.Response.prototype.getErrorMessage = function() {
+  if (!this.isFailure) {
+    return null;
+  }
+  var message = [];
+  if (goog.isString(this.value)) {
+    message.push(this.value);
+  } else if (null != this.value && goog.isDef(this.value.message)) {
+    message.push(this.value.message);
+    if (goog.isDef(this.value.fileName)) {
+      message.push(this.value.fileName + '@' + this.value.lineNumber);
+    }
+  }
+  goog.array.extend(message, goog.array.map(this.errors, function(error) {
+    if (goog.isString(error)) {
+      return error;
+    }
+    var errMsg = error.message || error.description || error.toString();
+    var stack = error.stack ?
+        goog.testing.stacktrace.canonicalize(error.stack) : error['stackTrace'];
+    return errMsg + '\n' + stack;
+  }));
+  return message.join('\n');
 };

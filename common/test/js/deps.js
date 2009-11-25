@@ -2,7 +2,7 @@
 goog.addDependency('../../../js/src/abstractcommandprocessor.js', ['webdriver.AbstractCommandProcessor'], ['goog.Disposable', 'goog.array', 'goog.object', 'webdriver.CommandName', 'webdriver.Context', 'webdriver.Future', 'webdriver.Response', 'webdriver.timing']);
 goog.addDependency('../../../js/src/asserts.js', ['webdriver.asserts'], ['goog.math.Coordinate', 'goog.string', 'webdriver.Future']);
 goog.addDependency('../../../js/src/by.js', ['webdriver.By', 'webdriver.By.Locator', 'webdriver.By.Strategy'], ['goog.object', 'goog.string']);
-goog.addDependency('../../../js/src/command.js', ['webdriver.Command', 'webdriver.CommandName', 'webdriver.Response'], ['goog.array']);
+goog.addDependency('../../../js/src/command.js', ['webdriver.Command', 'webdriver.CommandName', 'webdriver.Response'], ['goog.Disposable', 'goog.array', 'goog.testing.stacktrace']);
 goog.addDependency('../../../js/src/context.js', ['webdriver.Context'], []);
 goog.addDependency('../../../js/src/factory.js', ['webdriver.factory'], ['goog.userAgent', 'webdriver.LocalCommandProcessor', 'webdriver.WebDriver']);
 goog.addDependency('../../../js/src/future.js', ['webdriver.Future'], ['goog.events.EventType', 'goog.events.EventTarget']);
