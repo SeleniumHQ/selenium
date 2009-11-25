@@ -22,6 +22,7 @@ limitations under the License.
 
 goog.provide('webdriver.WebDriver');
 goog.provide('webdriver.WebDriver.EventType');
+goog.provide('webdriver.WebDriver.Speed');
 
 goog.require('goog.events');
 goog.require('goog.events.EventTarget');
@@ -75,31 +76,23 @@ webdriver.WebDriver = function(commandProcessor) {
   this.commandProcessor_ = commandProcessor;
 
   /**
-   * List of commands that have been sent to the command processor and are
-   * await results. This array should only ever have three sizes:
-   * 0: there are no pending commands with the command processor
-   * 1: a single command is pending with the command processor
-   * 2: a command within a wait condition is pending with the command
-   *    processor
+   * A stack of frames for queued commands. The list of commands at index 0
+   * are global commands.  When the stack has more than 1 frame, the commands
+   * in the list at the top of the stack are the remaining subcommands for the
+   * command at the top of the {@code pendingCommands_} stack.
+   * @type {Array.<Array.<webdriver.Command>>}
+   * @private
+   */
+  this.queuedCommands_ = [[]];
+
+  /**
+   * A list of commands that are currently being executed. The command at index
+   * N+1 is a subcommand to the command at index N. It will always be the case
+   * that {@code queuedCommands_.length == pendingCommands_.length + 1;}.
    * @type {Array.<webdriver.Command>}
    * @private
    */
   this.pendingCommands_ = [];
-
-  /**
-   * A stack of frames for managing batched command execution order.
-   * @type {Array.<Array.<webdriver.Command>>}
-   * @private
-   */
-  this.frames_ = [[]];
-
-  /**
-   * A list of commands that have been successfully completed since the last
-   * reset.
-   * @type {Array.<webdriver.Command>}
-   * @priate
-   */
-  this.commandHistory_ = [];
 
   /**
    * Whether this instance is paused. When paused, commands can still be issued,
@@ -186,10 +179,18 @@ webdriver.WebDriver.prototype.disposeInternal = function() {
   this.commandProcessor_.dispose();
   webdriver.timing.clearInterval(this.commandInterval_);
 
+  goog.array.forEach(this.pendingCommands_, function(command) {
+    command.dispose();
+  });
+  goog.array.forEach(this.queuedCommands_, function(frame) {
+    goog.array.forEach(frame, function(command) {
+      command.dispose();
+    });
+  });
+
   delete this.commandProcessor_;
   delete this.pendingCommands_;
-  delete this.frames_;
-  delete this.commandHistory_;
+  delete this.queuedCommands_;
   delete this.isPaused_;
   delete this.context_;
   delete this.sessionLocked_;
@@ -210,7 +211,7 @@ webdriver.WebDriver.prototype.disposeInternal = function() {
  */
 webdriver.WebDriver.prototype.addCommand = function(name, opt_element) {
   var command = new webdriver.Command(this, name, opt_element);
-  goog.array.peek(this.frames_).push(command);
+  goog.array.peek(this.queuedCommands_).push(command);
   return command;
 };
 
@@ -220,29 +221,42 @@ webdriver.WebDriver.prototype.addCommand = function(name, opt_element) {
  *     commands).
  */
 webdriver.WebDriver.prototype.isIdle = function() {
-  return !this.pendingCommands_.length && this.frames_.length == 1 &&
-         !this.frames_[0].length;
+  // If there is a finished command on the pending command queue, but it
+  // failed, then the failure hasn't been dealt with yet and the driver will
+  // not process any more commands, so we consider this idle.
+  var pendingCommand = goog.array.peek(this.pendingCommands_);
+  if (pendingCommand && pendingCommand.isFinished() &&
+      pendingCommand.getResponse().isFailure) {
+    return true;
+  }
+  return !pendingCommand && this.queuedCommands_.length == 1 &&
+         !this.queuedCommands_[0].length;
 };
 
 
 /**
- * @return {webdriver.Command} The command currently being executed or
- *     {@code undefined}.
+ * Aborts the specified command and all of its pending subcommands.
+ * @param {webdriver.Command} command The command to abort.
+ * @return {number} The total number of commands aborted. A value of 0
+ *     indicates that the given command was not a pending command.
  */
-webdriver.WebDriver.prototype.getPendingCommand = function() {
-  return goog.array.peek(this.pendingCommands_);
-};
-
-
-/**
- * Aborts the pending command, if any. If the pending command is part of a
- * {@code #wait()}, then the entire wait operation will be aborted.
- */
-webdriver.WebDriver.prototype.abortPendingCommand = function() {
-  goog.array.forEach(this.pendingCommands_, function(command) {
-    command.abort = true;
+webdriver.WebDriver.prototype.abortCommand = function(command) {
+  var index = goog.array.findIndexRight(this.pendingCommands_, function(cmd) {
+    return cmd == command;
   });
-  this.pendingCommands_ = [];
+  if (index >= 0) {
+    var numAborted = this.pendingCommands_.length - index;
+    var totalNumAborted = numAborted;
+    for (var i = 0; i < numAborted; i++) {
+      this.pendingCommands_.pop().dispose();
+      goog.array.forEach(this.queuedCommands_.pop(), function(subCommand) {
+        totalNumAborted += 1;
+        subCommand.dispose();
+      });
+    }
+    return totalNumAborted;
+  }
+  return 0;
 };
 
 
@@ -274,40 +288,36 @@ webdriver.WebDriver.prototype.resume = function() {
  * @private
  */
 webdriver.WebDriver.prototype.processCommands_ = function() {
-  if (this.isPaused_ || this.getPendingCommand()) {
+  var pendingCommand = goog.array.peek(this.pendingCommands_);
+  if (this.isPaused_ || (pendingCommand && !pendingCommand.isFinished())) {
     return;
   }
 
-  var currentFrame = goog.array.peek(this.frames_);
+  if (pendingCommand && pendingCommand.getResponse().isFailure) {
+    // Or should we be throwing this to be caught by window.onerror?
+    webdriver.logging.error(
+        'Unhandled command failure; halting command processing:\n' +
+        pendingCommand.getResponse().getErrorMessage());
+    return;
+  }
+
+  var currentFrame = goog.array.peek(this.queuedCommands_);
   var nextCommand = currentFrame.shift();
-  while (!nextCommand && this.frames_.length > 1) {
-    this.frames_.pop();
-    currentFrame = goog.array.peek(this.frames_);
+  while (!nextCommand && this.queuedCommands_.length > 1) {
+    this.queuedCommands_.pop();
+    this.pendingCommands_.pop();
+    currentFrame = goog.array.peek(this.queuedCommands_);
     nextCommand = currentFrame.shift();
   }
 
   if (nextCommand) {
+    var parentTarget = goog.array.peek(this.pendingCommands_) || this;
+    nextCommand.setParentEventTarget(parentTarget);
     this.pendingCommands_.push(nextCommand);
-    this.frames_.push([]);
-    nextCommand.setCompleteCallback(this.onCommandComplete_, this);
+    this.queuedCommands_.push([]);
     this.commandProcessor_.execute(nextCommand, this.sessionId_, this.context_);
   }
 };
-
-
-/**
- * Callback for when a pending {@code webdriver.Command} is finished.
- * @private
- */
-webdriver.WebDriver.prototype.onCommandComplete_ = function(command) {
-  this.commandHistory_.push(command);
-  if (command.response.isFailure || command.response.errors.length) {
-    this.dispatchEvent(webdriver.WebDriver.EventType.ERROR);
-  } else {
-    this.pendingCommands_.pop();
-  }
-};
-
 
 
 /**
@@ -327,6 +337,15 @@ webdriver.WebDriver.prototype.getContext = function() {
 };
 
 
+/**
+ * Sets this driver's context.
+ * @param {webdriver.Context} context The new context.
+ */
+webdriver.WebDriver.prototype.setContext = function(context) {
+  return this.context_ = context;
+};
+
+
 // ----------------------------------------------------------------------------
 // Client command functions:
 // ----------------------------------------------------------------------------
@@ -342,60 +361,32 @@ webdriver.WebDriver.prototype.getContext = function() {
  */
 webdriver.WebDriver.prototype.catchExpectedError = function(opt_errorMsg,
                                                             opt_handlerFn) {
-  var currentFrame = goog.array.peek(this.frames_);
-  var previousCommand = currentFrame.pop();
+  var currentFrame = goog.array.peek(this.queuedCommands_);
+  var previousCommand = goog.array.peek(currentFrame);
   if (!previousCommand) {
     throw new Error('No commands in the queue to expect an error from');
   }
 
-  var listener =
-      goog.events.getListener(this, webdriver.WebDriver.EventType.ERROR, true);
-  if (listener) {
-    throw new Error('IllegalState: Driver already has a registered ' +
-                    'expected error handler');
-  }
+  var failedCommand = null;
+  var key = goog.events.listenOnce(previousCommand,
+      webdriver.Command.ERROR_EVENT, function(e) {
+        failedCommand = e.target;
+        this.abortCommand(e.currentTarget);
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }, /*capture phase*/true, this);
 
-  var caughtError = false;
-  var handleError = function(e) {
-    caughtError = true;
-    e.stopPropagation();
-    e.preventDefault();
-    if (goog.isFunction(opt_handlerFn)) {
-      opt_handlerFn(e.target.getPendingCommand());
-    }
-    goog.events.removeAll(
-        e.target, webdriver.WebDriver.EventType.ERROR, /*capture=*/true);
-
-    // Errors cause the pending command to hang. Go ahead and abort that command
-    // so we can proceed.
-    this.abortPendingCommand();
-    var frame = goog.array.peek(this.frames_);
-    while (frame !== currentFrame) {
-      this.frames_.pop();
-      frame = goog.array.peek(this.frames_);
-    }
-    return false;
-  };
-
-  // Surround the last command with two new commands. The first enables our
-  // error listener which cancels any errors. The second verifies that we
-  // caught an error. If not, it fails the test.
   this.callFunction(function() {
-    goog.events.listenOnce(this,
-        webdriver.WebDriver.EventType.ERROR, handleError, /*capture=*/true);
-  }, this);
-  currentFrame.push(previousCommand);
-  this.callFunction(function() {
-    // Need to unlisten for error events so the error below doesn't get
-    // blocked.
-    goog.events.unlisten(this, webdriver.WebDriver.EventType.ERROR,
-                         handleError, /*capture=*/true);
-    if (!caughtError) {
+    if (null == failedCommand) {
+      goog.events.unlistenByKey(key);
       throw new Error(
           (opt_errorMsg ? (opt_errorMsg + '\n') : '') +
           'Expected an error but none were raised.');
+    } else if (goog.isFunction(opt_handlerFn)) {
+      opt_handlerFn(failedCommand);
     }
-  }, this);
+  });
 };
 
 
@@ -432,9 +423,10 @@ webdriver.WebDriver.prototype.sleep = function(ms) {
 webdriver.WebDriver.prototype.callFunction = function(fn, opt_selfObj,
                                                       var_args) {
   var args = goog.array.slice(arguments, 2);
+  var frame = goog.array.peek(this.queuedCommands_);
+  var previousCommand = goog.array.peek(frame);
   var wrappedFunction = goog.bind(function() {
-    var lastCommand = goog.array.peek(this.commandHistory_);
-    args.push(lastCommand ? lastCommand.response :null);
+    args.push(previousCommand ? previousCommand.getResponse() : null);
     return fn.apply(opt_selfObj, args);
   }, this);
   return this.addCommand(webdriver.CommandName.FUNCTION).

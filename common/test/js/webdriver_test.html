@@ -35,9 +35,10 @@
       control = new goog.testing.MockControl();
       commandProcessor = new webdriver.FakeCommandProcessor();
       driver = new webdriver.WebDriver(commandProcessor);
-      goog.events.listen(driver, webdriver.WebDriver.EventType.ERROR,
-          function() {
-            fail(driver.getPendingCommand().getErrorMessage());
+      goog.events.listen(driver, webdriver.Command.ERROR_EVENT,
+          function(e) {
+            var failingCommand = e.target;
+            fail(failingCommand.getResponse().getErrorMessage());
           });
     }
 
@@ -72,6 +73,7 @@
       assertIsNotIdle('Has a queued command again');
     }
 
+
     function testShouldKnowWhenTheDriverIsIdleWithNestedCommands() {
       assertIsIdle('No commands issued yet!');
       driver.callFunction(function() {
@@ -88,6 +90,125 @@
       assertIsIdle('Still done...');
       driver.callFunction(goog.nullFunction);
       assertIsNotIdle('Has a queued command again');
+    }
+
+
+    function testShouldBeAbleToSuppressErrorsFromFailingCommands() {
+      var caughtError = false;
+      var continued = false;
+      driver.callFunction(goog.functions.error('boom'));
+      driver.callFunction(function() { continued = true; });
+      goog.events.listen(driver, webdriver.Command.ERROR_EVENT, function(e) {
+        caughtError = true;
+        e.preventDefault();
+        e.stopPropagation();
+        assertEquals('Should have aborted 1 command',
+            1, driver.abortCommand(e.target));
+        return false;
+      }, /*capture=*/true);
+      dispatchAllCommands();
+      assertTrue(caughtError);
+      assertTrue('Should have continued processing', continued);
+    }
+
+
+    function testShouldHaltExecutionIfErrorsAreNotCaught() {
+      // setUp registers an event listener, so remove it so nothing else runs.
+      goog.events.removeAll(driver);
+      var caughtError = false;
+      var continued = false;
+      driver.callFunction(goog.functions.error('boom'));
+      driver.callFunction(function() { continued = true; });
+      goog.events.listen(driver, webdriver.Command.ERROR_EVENT, function(e) {
+        caughtError = true;
+      }, /*capture=*/true);
+      dispatchAllCommands();
+      assertTrue(caughtError);
+      assertFalse('Should not have continued processing', continued);
+    }
+
+
+    function testShouldBeAbleToContinueWithSubCommandsAfterSuppressingAnError() {
+      var caughtError = false;
+      var continued = false;
+      driver.callFunction(function() {
+        driver.callFunction(goog.functions.error('boom'));
+        driver.callFunction(function() { continued = true; });
+        goog.events.listen(driver, webdriver.Command.ERROR_EVENT, function(e) {
+          caughtError = true;
+          e.preventDefault();
+          e.stopPropagation();
+          assertEquals('Should have aborted 1 command',
+              1, driver.abortCommand(e.target));
+          return false;
+        }, /*capture=*/true);
+      });
+      dispatchAllCommands();
+      assertTrue(caughtError);
+      assertTrue('Should have continued processing', continued);
+    }
+
+
+    function testShouldBeAbleToCatchBubblyFailures() {
+      var caughtError = false;
+      var continued = false;
+      driver.callFunction(function() {
+        driver.callFunction(goog.functions.error('boom'));
+      });
+      driver.callFunction(function() { continued = true; });
+      goog.events.listen(driver, webdriver.Command.ERROR_EVENT, function(e) {
+        caughtError = true;
+        e.preventDefault();
+        e.stopPropagation();
+        assertEquals('Should have aborted 1 command',
+            1, driver.abortCommand(e.target));
+        return false;
+      }, /*capture=*/true);
+      dispatchAllCommands();
+      assertTrue(caughtError);
+      assertTrue('Should have continued processing', continued);
+    }
+
+
+    function testShouldBeAbleToAbortAllPendingSubCommandsAfterBubblyFailure() {
+      var caughtError = false;
+      var count = 0;
+      driver.callFunction(function() {
+        driver.callFunction(function() {
+          count += 1;
+          driver.callFunction(function() {
+            driver.callFunction(goog.functions.error('boom'));
+            // Should be aborted.
+            driver.callFunction(function() { count += 1; });
+            driver.callFunction(function() { count += 1; });
+            driver.callFunction(function() { count += 1; });
+          });
+          // Should be aborted.
+          driver.callFunction(function() { count += 1; });
+        });
+        var command = goog.array.peek(goog.array.peek(driver.queuedCommands_));
+        goog.events.listen(command, webdriver.Command.ERROR_EVENT, function(e) {
+          caughtError = true;
+          e.preventDefault();
+          e.stopPropagation();
+          assertEquals('Wrong # aborted commands',
+              7, driver.abortCommand(e.currentTarget));
+          return false;
+        }, /*capture=*/true);
+        driver.callFunction(function() { count += 1; });
+      });
+      driver.callFunction(function() { count += 1; });
+      dispatchAllCommands();
+      assertTrue(caughtError);
+      assertEquals(3, count);
+    }
+
+
+    function dispatchAllCommands() {
+      while (!driver.isIdle()) {
+        dispatchNextCommand();
+      }
+      dispatchNextCommand();
     }
 
 

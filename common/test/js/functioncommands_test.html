@@ -3,12 +3,62 @@
 <head>
   <title>functioncommands_test.html</title>
   <script src="webdriver-bootstrap.js"></script>
-  <script src="testbase.js"></script>
   <script>
-    goog.require('goog.testing.asserts');
+    goog.require('goog.functions');
+    goog.require('goog.testing.MockClock');
+    goog.require('goog.testing.MockControl');
+    goog.require('goog.testing.PropertyReplacer');
+    goog.require('goog.testing.jsunit');
+    goog.require('webdriver.FakeCommandProcessor');
+    goog.require('webdriver.WebDriver');
+    goog.require('webdriver.timing');
   </script>
-  <script type="text/javascript">
-    function testNestedCommands(driver) {
+  <script>
+    var mockClock;
+    var propertyReplacer;
+    var control;
+    var commandProcessor;
+    var driver;
+
+
+    function setUp() {
+      mockClock = new goog.testing.MockClock();
+      mockClock.install();
+
+      var timing = webdriver.timing;
+      propertyReplacer = new goog.testing.PropertyReplacer();
+      propertyReplacer.set(timing, 'setTimeout', window.setTimeout);
+      propertyReplacer.set(timing, 'setInterval', window.setInterval);
+      propertyReplacer.set(timing, 'clearTimeout', window.clearTimeout);
+      propertyReplacer.set(timing, 'clearInterval', window.clearInterval);
+
+      control = new goog.testing.MockControl();
+      commandProcessor = new webdriver.FakeCommandProcessor();
+      driver = new webdriver.WebDriver(commandProcessor);
+      goog.events.listen(driver, webdriver.WebDriver.EventType.ERROR,
+          function() {
+            fail(driver.getPendingCommand().getErrorMessage());
+          });
+    }
+
+
+    function tearDown() {
+      driver.dispose();
+
+      control.$tearDown();
+
+      propertyReplacer.reset();
+      mockClock.uninstall();
+
+      delete commandProcessor;
+      delete driver;
+      delete control;
+      delete mockClock;
+      delete propertyReplacer;
+    }
+
+
+    function testNestedCommands() {
       var message = [];
       function log(value) {
         message.push(value);
@@ -26,10 +76,11 @@
       driver.callFunction(function() {
         assertEquals('acefdb', message.join(''));
       });
+      dispatchAllCommands();
     }
 
 
-    function testShouldResultOfPreviousCommandToFunction(driver) {
+    function testShouldResultOfPreviousCommandToFunction() {
       driver.callFunction(function() {
         return 'abc';
       });
@@ -38,30 +89,33 @@
         assertNotNull(response);
         assertEquals('abc', response.value);
       });
+      dispatchAllCommands();
     }
 
 
-    function testShouldPreserveFunctionCommandArguments(driver) {
+    function testShouldPreserveFunctionCommandArguments() {
       driver.callFunction(function(a, b, c) {
         assertEquals('abc', a);
         assertEquals(123, b);
         assertEquals('red', c);
       }, null, 'abc', 123, 'red');
+      dispatchAllCommands();
     }
 
 
-    function testFunctionReturnsValueInAFuture(driver) {
+    function testFunctionReturnsValueInAFuture() {
       var result = driver.callFunction(function() {
         return 'abc123';
       });
+      dispatchAllCommands();
       assertNotUndefined(result);
       assertNotNull(result);
       assertTrue(result instanceof webdriver.Future);
-      assertThat(result, equals('abc123'));
+      assertEquals('abc123', result.getValue());
     }
 
 
-    function testShouldReturnValuesFromNestedFunctions(driver) {
+    function testShouldReturnValuesFromNestedFunctions() {
       var result = driver.callFunction(function() {
         return driver.callFunction(function() {
           return driver.callFunction(function() {
@@ -71,11 +125,26 @@
           });
         });
       });
+      dispatchAllCommands();
       assertNotUndefined(result);
       assertNotNull(result);
       assertTrue(result instanceof webdriver.Future);
-      assertThat(result, equals(343));
+      assertEquals(343, result.getValue());
     };
+
+
+    function dispatchAllCommands() {
+      while (!driver.isIdle()) {
+        dispatchNextCommand();
+      }
+      dispatchNextCommand();
+    }
+
+
+    function dispatchNextCommand() {
+      mockClock.tick(webdriver.WebDriver.COMMAND_INTERVAL_LENGTH_);
+    }
+
   </script>
 </head>
 <body></body>
