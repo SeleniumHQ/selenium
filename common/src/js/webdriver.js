@@ -29,7 +29,6 @@ goog.require('webdriver.Command');
 goog.require('webdriver.CommandName');
 goog.require('webdriver.Context');
 goog.require('webdriver.Response');
-goog.require('webdriver.Wait');
 goog.require('webdriver.WebElement');
 goog.require('webdriver.logging');
 goog.require('webdriver.timing');
@@ -217,6 +216,16 @@ webdriver.WebDriver.prototype.addCommand = function(name, opt_element) {
 
 
 /**
+ * @return {boolean} Whether this driver is idle (there are no pending
+ *     commands).
+ */
+webdriver.WebDriver.prototype.isIdle = function() {
+  return !this.pendingCommands_.length && this.frames_.length == 1 &&
+         !this.frames_[0].length;
+};
+
+
+/**
  * @return {webdriver.Command} The command currently being executed or
  *     {@code undefined}.
  */
@@ -234,7 +243,6 @@ webdriver.WebDriver.prototype.abortPendingCommand = function() {
     command.abort = true;
   });
   this.pendingCommands_ = [];
-  this.waitFrame_ = null;
 };
 
 
@@ -266,32 +274,23 @@ webdriver.WebDriver.prototype.resume = function() {
  * @private
  */
 webdriver.WebDriver.prototype.processCommands_ = function() {
-  if (this.isPaused_) {
-    return;
-  }
-
-  var pendingCommand = this.getPendingCommand();
-  if (pendingCommand && webdriver.CommandName.WAIT != pendingCommand.name) {
+  if (this.isPaused_ || this.getPendingCommand()) {
     return;
   }
 
   var currentFrame = goog.array.peek(this.frames_);
   var nextCommand = currentFrame.shift();
+  while (!nextCommand && this.frames_.length > 1) {
+    this.frames_.pop();
+    currentFrame = goog.array.peek(this.frames_);
+    nextCommand = currentFrame.shift();
+  }
+
   if (nextCommand) {
     this.pendingCommands_.push(nextCommand);
-    if (nextCommand.name == webdriver.CommandName.FUNCTION) {
-      this.frames_.push([]);
-    } else if (nextCommand.name == webdriver.CommandName.WAIT) {
-      this.waitFrame_ = [];
-      this.frames_.push(this.waitFrame_);
-    }
-
+    this.frames_.push([]);
     nextCommand.setCompleteCallback(this.onCommandComplete_, this);
     this.commandProcessor_.execute(nextCommand, this.sessionId_, this.context_);
-  } else if (this.frames_.length > 1) {
-    if (currentFrame !== this.waitFrame_) {
-      this.frames_.pop();
-    }
   }
 };
 
@@ -303,20 +302,9 @@ webdriver.WebDriver.prototype.processCommands_ = function() {
 webdriver.WebDriver.prototype.onCommandComplete_ = function(command) {
   this.commandHistory_.push(command);
   if (command.response.isFailure || command.response.errors.length) {
-    if (webdriver.CommandName.WAIT == command.name) {
-      // The wait terminated early. Abort all other commands issued inside the
-      // wait condition.
-      for (var i = 1; i < this.pendingCommands_.length; i++) {
-        this.pendingCommands_[i].abort = true;
-      }
-      this.pendingCommands_ = [this.pendingCommands_[0]];
-    }
     this.dispatchEvent(webdriver.WebDriver.EventType.ERROR);
   } else {
     this.pendingCommands_.pop();
-    if (webdriver.CommandName.WAIT == command.name) {
-      this.waitFrame_ = null;
-    }
   }
 };
 
@@ -458,7 +446,7 @@ webdriver.WebDriver.prototype.callFunction = function(fn, opt_selfObj,
 /**
  * Waits for a condition to be true before executing the next command. If the
  * condition does not hold after the given {@code timeout}, an error will be
- * raised. Only one wait may be performed at a time (e.g. no nesting).
+ * raised.
  * Example:
  * <code>
  *   driver.get('http://www.google.com');
@@ -469,22 +457,46 @@ webdriver.WebDriver.prototype.callFunction = function(fn, opt_selfObj,
  * @param {number} timeout The maximum amount of time to wait, in milliseconds.
  * @param {Object} opt_self (Optional) The object in whose context to execute
  *     the {@code conditionFn}.
- * @throws If this driver is currently executing another wait command.
- * @see webdriver.Wait
+ * @param {boolean} opt_waitNot (Optional) Whether to wait for the inverse of
+ *     the {@code conditionFn}.
  */
-webdriver.WebDriver.prototype.wait = function(conditionFn, timeout, opt_self) {
-  if (this.pendingCommands_.length) {
-    var command = this.pendingCommands_[0];
-    if (webdriver.CommandName.WAIT == command.name) {
-      throw new Error('Nested waits are not supported');
+webdriver.WebDriver.prototype.wait = function(conditionFn, timeout, opt_self,
+                                              opt_waitNot) {
+  conditionFn = goog.bind(conditionFn, opt_self);
+  var waitOnInverse = !!opt_waitNot;
+  var callFunction = goog.bind(this.callFunction, this);
+
+  function pollFunction(opt_startTime, opt_future) {
+    var startTime = opt_startTime || goog.now();
+
+    function checkValue(value) {
+      var pendingFuture = null;
+      if (value instanceof webdriver.Future) {
+        if (value.isSet()) {
+          value = value.getValue();
+        } else {
+          pendingFuture = value;
+          value = null;
+        }
+      }
+
+      var done = !pendingFuture && (waitOnInverse != !!value);
+      if (!done) {
+        var ellapsed = goog.now() - startTime;
+        if (ellapsed > timeout) {
+          throw Error('Wait timed out after ' + ellapsed + 'ms');
+        }
+        callFunction(pollFunction, null, startTime, pendingFuture);
+      }
     }
+
+    var result = opt_future || conditionFn();
+    checkValue(result);
   }
 
-  if (opt_self) {
-    conditionFn = goog.bind(conditionFn, opt_self);
-  }
-  var waitOp = new webdriver.Wait(conditionFn, timeout);
-  this.addCommand(webdriver.CommandName.WAIT).setParameters(waitOp);
+  // Binding pollFunction for our initial values.
+  var initialPoll = goog.bind(pollFunction, null, 0, null);
+  this.addCommand(webdriver.CommandName.WAIT).setParameters(initialPoll);
 };
 
 
@@ -501,16 +513,10 @@ webdriver.WebDriver.prototype.wait = function(conditionFn, timeout, opt_self) {
  * @param {number} timeout The maximum amount of time to wait, in milliseconds.
  * @param {Object} opt_self (Optional) The object in whose context to execute
  *     the {@code conditionFn}.
- * @see webdriver.Wait
  */
 webdriver.WebDriver.prototype.waitNot = function(conditionFn, timeout,
                                                  opt_self) {
-  if (opt_self) {
-    conditionFn = goog.bind(conditionFn, opt_self);
-  }
-  var waitOp = new webdriver.Wait(conditionFn, timeout);
-  waitOp.waitOnInverse(true);
-  this.addCommand(webdriver.CommandName.WAIT).setParameters(waitOp);
+  this.wait(conditionFn, timeout, opt_self, true);
 };
 
 

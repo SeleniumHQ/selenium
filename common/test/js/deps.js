@@ -11,7 +11,10 @@ goog.addDependency('../../../js/src/localcommandprocessor.js', ['webdriver.Local
 goog.addDependency('../../../js/src/logging.js', ['webdriver.logging', 'webdriver.logging.Level'], ['goog.dom', 'goog.string']);
 goog.addDependency('../../../js/src/testrunner.js', ['webdriver.TestCase', 'webdriver.TestResult', 'webdriver.TestRunner'], ['goog.Uri', 'goog.dom', 'goog.style', 'webdriver.WebDriver.EventType', 'webdriver.factory', 'webdriver.logging', 'webdriver.timing']);
 goog.addDependency('../../../js/src/timing.js', ['webdriver.timing'], ['goog.userAgent']);
-goog.addDependency('../../../js/src/wait.js', ['webdriver.Wait'], ['goog.events', 'webdriver.Future', 'webdriver.timing']);
-goog.addDependency('../../../js/src/webdriver.js', ['webdriver.WebDriver', 'webdriver.WebDriver.EventType'], ['goog.events', 'goog.events.EventTarget', 'webdriver.Command', 'webdriver.CommandName', 'webdriver.Context', 'webdriver.Future', 'webdriver.Response', 'webdriver.Wait', 'webdriver.WebElement', 'webdriver.logging', 'webdriver.timing']);
+goog.addDependency('../../../js/src/webdriver.js', ['webdriver.WebDriver', 'webdriver.WebDriver.EventType'], ['goog.events', 'goog.events.EventTarget', 'webdriver.Command', 'webdriver.CommandName', 'webdriver.Context', 'webdriver.Response', 'webdriver.WebElement', 'webdriver.logging', 'webdriver.timing']);
 goog.addDependency('../../../js/src/webelement.js', ['webdriver.WebElement'], ['goog.array', 'webdriver.By.Locator', 'webdriver.By.Strategy', 'webdriver.Command', 'webdriver.CommandName', 'webdriver.Future']);
 goog.addDependency('../../../js/src/extension/dommessenger.js', [], []);
+goog.addDependency('../../../js/test/deps.js', [], []);
+goog.addDependency('../../../js/test/fakecommandprocessor.js', ['webdriver.FakeCommandProcessor'], ['goog.structs.Map', 'goog.testing.asserts', 'webdriver.AbstractCommandProcessor', 'webdriver.Context']);
+goog.addDependency('../../../js/test/testbase.js', [], ['goog.Uri', 'goog.dom', 'goog.events', 'goog.math.Coordinate', 'goog.math.Size', 'goog.string', 'goog.userAgent', 'webdriver.Key', 'webdriver.TestRunner', 'webdriver.WebElement', 'webdriver.asserts', 'webdriver.factory', 'webdriver.logging']);
+goog.addDependency('../../../js/test/webdriver-bootstrap.js', [], []);
