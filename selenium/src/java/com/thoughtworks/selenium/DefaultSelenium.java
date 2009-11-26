@@ -17,6 +17,8 @@
 
 package com.thoughtworks.selenium;
 
+import org.openqa.selenium.WebDriverCommandProcessor;
+
 /** The default implementation of the Selenium interface; <i>end users will primarily interact with this object.</i> */
 public class DefaultSelenium implements Selenium {
 
@@ -50,10 +52,17 @@ public class DefaultSelenium implements Selenium {
      * e.g. "http://www.google.com" would send the browser to "http://www.google.com/selenium-server/SeleneseRunner.html"
      */
     public DefaultSelenium(String serverHost, int serverPort, String browserStartCommand, String browserURL) {
-        this.commandProcessor = new HttpCommandProcessor(serverHost, serverPort, browserStartCommand, browserURL);
+        this.commandProcessor = detectCommandProcessor(serverHost, serverPort, browserStartCommand, browserURL);
     }
-    
-    /** Uses an arbitrary CommandProcessor */
+
+  private CommandProcessor detectCommandProcessor(String serverHost, int serverPort, String browserStartCommand, String browserURL) {
+    if ("*webdriver".equals(browserStartCommand)) {
+      return new WebDriverCommandProcessor(browserURL);
+    }
+    return new HttpCommandProcessor(serverHost, serverPort, browserStartCommand, browserURL);
+  }
+
+  /** Uses an arbitrary CommandProcessor */
     public DefaultSelenium(CommandProcessor processor) {
         this.commandProcessor = processor;
     }

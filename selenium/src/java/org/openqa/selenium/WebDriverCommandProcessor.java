@@ -21,6 +21,10 @@ import java.util.Map;
 
 import com.google.common.collect.Maps;
 import com.thoughtworks.selenium.CommandProcessor;
+import com.thoughtworks.selenium.SeleniumException;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.internal.seleniumemulation.AddLocationStrategy;
 import org.openqa.selenium.internal.seleniumemulation.AddSelection;
 import org.openqa.selenium.internal.seleniumemulation.AltKeyDown;
@@ -109,6 +113,8 @@ import org.openqa.selenium.internal.seleniumemulation.WaitForPopup;
 import org.openqa.selenium.internal.seleniumemulation.WindowFocus;
 import org.openqa.selenium.internal.seleniumemulation.WindowMaximize;
 import org.openqa.selenium.internal.seleniumemulation.Windows;
+import org.openqa.selenium.remote.Capabilities;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import static org.openqa.selenium.internal.seleniumemulation.SeleniumSelect.Property.ID;
 import static org.openqa.selenium.internal.seleniumemulation.SeleniumSelect.Property.INDEX;
@@ -117,18 +123,25 @@ import static org.openqa.selenium.internal.seleniumemulation.SeleniumSelect.Prop
 
 public class WebDriverCommandProcessor implements CommandProcessor {
   private final Map<String, SeleneseCommand> seleneseMethods = Maps.newHashMap();
+  private final String baseUrl;
   private WebDriver driver;
-  private String baseUrl;
 
-  public WebDriverCommandProcessor(WebDriver baseDriver, String baseUrl) {
-    this.driver = baseDriver;
+  public WebDriverCommandProcessor(String baseUrl) {
     if (baseUrl.endsWith("/")) {
       this.baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
     } else {
       this.baseUrl = baseUrl;
     }
-    
+  }
+
+  public WebDriverCommandProcessor(WebDriver driver, String baseUrl) {
+    this(baseUrl);
+    this.driver = driver;
     setUpMethodMap();
+  }
+
+  public WebDriver getUnderlyingWebDriver() {
+    return driver;
   }
 
   public String getRemoteControlServerLocation() {
@@ -144,19 +157,49 @@ public class WebDriverCommandProcessor implements CommandProcessor {
   }
 
   public void start() {
-    // no-op
+    // Default to using the Firefox driver
+    start(DesiredCapabilities.firefox());
   }
 
   public void start(String s) {
-    // no-op
+    throw new UnsupportedOperationException("Unsure how to process: " + s);
   }
 
   public void start(Object o) {
-    // no-op
+    if (driver != null) {
+      throw new SeleniumException("You may not start more than one session at a time");
+    }
+
+    if (o == null) {
+      throw new SeleniumException("Please specify a Capabilities object to allow configuration");
+    }
+
+    if (!(o instanceof Capabilities)) {
+      throw new SeleniumException("Unable to process: " + o);
+    }
+
+    driver = newDriverFrom((Capabilities) o);
+    setUpMethodMap();
+  }
+
+  protected WebDriver newDriverFrom(Capabilities capabilities) {
+    String browser = capabilities.getBrowserName();
+    if (DesiredCapabilities.firefox().getBrowserName().equals(browser)) {
+      return new FirefoxDriver();
+    } else if (DesiredCapabilities.internetExplorer().getBrowserName().equals(browser)) {
+      return new InternetExplorerDriver();
+    } else if (DesiredCapabilities.chrome().getBrowserName().equals(browser)) {
+      return new ChromeDriver();
+    }
+
+    throw new SeleniumException("Unable to determine which driver to use: " + capabilities);
   }
 
   public void stop() {
-    // no-op
+    if (driver != null) {
+      driver.quit();
+    }
+    driver = null;
   }
 
   public String getString(String commandName, String[] args) {
