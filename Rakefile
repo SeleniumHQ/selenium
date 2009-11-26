@@ -37,7 +37,7 @@ task :test_jobbie => [:test_ie]
 task :test_jsapi => :'webdriver-jsapi-test'
 task :test_firefox => [:'webdriver-firefox-test']
 task :test_remote => [:'webdriver-remote-test']
-task :test_selenium => [:'webdriver-selenium-test', :'webdriver-selenese-test']
+task :test_selenium => [:'webdriver-selenium-server-test', :'webdriver-selenium-test', :'webdriver-selenese-test']
 task :test_support => [:'webdriver-support-test']
 
 task :build => [:all, :iphone, :remote, :selenium]
@@ -279,9 +279,17 @@ java_jar(:name => "webdriver-remote-server",
       {
         "remote/server/src/java/org/openqa/jetty/http/mime.properties" => "org/openqa/jetty/http/mime.properties",
         "remote/server/src/java/org/openqa/jetty/http/encoding.properties" => "org/openqa/jetty/http/encoding.properties",
-      }  
+      },
+      "remote/server/src/java/customProfileDir*",
+      "remote/server/src/java/cybervillains",
+      "remote/server/src/java/hudsuckr",
+      "remote/server/src/java/killableprocess",
+      "remote/server/src/java/konqueror",
+      "remote/server/src/java/opera",
+      "remote/server/src/java/sslSupport",
     ],
     :deps => [
+               :chrome,
                :htmlunit,
                :ie,
                :firefox,
@@ -290,6 +298,14 @@ java_jar(:name => "webdriver-remote-server",
                "remote/server/lib/runtime/*.jar"
              ])
 
+java_uberjar(:name => "selenium-server-standalone",
+             :deps => [ "webdriver-remote-server" ],
+             :standalone => true,
+             :exclude => [
+                           "META-INF/BCKEY.*"
+                         ],
+             :main => "org.openqa.selenium.server.SeleniumServer")
+
 java_jar(:name => "webdriver-remote-common-test",
           :srcs => [ "remote/common/test/java/**/*.java" ],
           :deps => [
@@ -297,7 +313,7 @@ java_jar(:name => "webdriver-remote-common-test",
                      :test_common
                    ])
 
-java_jar(:name => "webdriver-remote-server-base",
+java_jar(:name => "webdriver-remote-server-test-base",
          :srcs  => [ 
                      "remote/client/test/java/**/*.java",
                      "remote/server/test/java/org/openqa/selenium/remote/**/*.java" 
@@ -311,7 +327,7 @@ java_jar(:name => "webdriver-remote-server-base",
 
 java_jar(:name => "webdriver-remote-test",
           :deps => [
-                     :'webdriver-remote-server-base'
+                     :'webdriver-remote-server-test-base'
                    ])
 
 java_test(:name => "webdriver-selenium-server-test",
@@ -320,7 +336,7 @@ java_test(:name => "webdriver-selenium-server-test",
                      "remote/server/test/java/org/openqa/selenium/testworker/**/*.java"
                    ],
           :deps => [
-                     :'webdriver-remote-server-base',
+                     :'webdriver-remote-server-test-base',
                      "remote/server/lib/buildtime/*.jar"
                    ])
 
@@ -348,9 +364,11 @@ xpi(:name => "chrome_extension",
 java_jar(:name => "webdriver-selenium",
     :srcs  => [ "selenium/src/java/**/*.java" ],
     :deps => [
+               :chrome,
                :ie,
                :firefox,
                :remote_client,
+               :remote_server,
                :support,
                "selenium/lib/runtime/*.jar"
              ],
@@ -478,7 +496,6 @@ task :remote_release => [:remote] do
   rm_rf "build/dist/remote_server", :verbose => false
 end
 
-# TODO(simon): This should pick up the "out" files from the deps
 java_uberjar(:name => "webdriver-all",
              :deps => [
                     :chrome,

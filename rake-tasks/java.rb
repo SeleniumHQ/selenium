@@ -59,6 +59,11 @@ class Java < BaseGenerator
       puts "Building: #{args[:name]} as #{out}"
 
       if args[:srcs]
+        # Remove anything that's not a JAR from the classpath
+        classpath = classpath.collect do |path|
+          path if path.to_s =~ /.jar$/
+        end
+
         # Compile
         cmd = "javac -cp #{classpath.join(classpath_separator?)} -g -source 5 -target 5 -d #{temp} #{FileList[args[:srcs]]} " 
         sh cmd, :verbose => false 
@@ -176,11 +181,30 @@ class Java < BaseGenerator
       temp = "#{out}_temp"
       mkdir_p temp, :verbose => false
       
-      all = build_uberlist_(args[:deps])
+      all = build_uberlist_(args[:deps], args[:standalone])
       all.each do |dep|
         sh "cd #{temp} && jar xf ../../#{dep}", :verbose => false
       end
-      
+
+      excludes = args[:exclude] || []
+      excludes.each do |to_exclude|
+        rm_rf FileList["#{temp}/#{to_exclude}"]
+      end
+
+      if args[:main]
+        # Read any MANIFEST.MF file into memory, ignoring the main class line
+        manifest = []
+        manifest.push "Main-Class: #{args[:main]}\n"
+        manifest_file = "#{temp}/META-INF/MANIFEST.MF"
+        File.open(manifest_file, "r") do |f|
+          while (line = f.gets)
+            manifest.push line unless line =~ /^Main-Class:/
+          end
+        end
+        
+        File.open(manifest_file, "w") do |f| f.write(manifest.join("")) end
+      end
+            
       sh "cd #{temp} && jar cMf ../../#{out} *", :verbose => false
       rm_rf temp, :verbose => false
     end
@@ -191,17 +215,20 @@ class Java < BaseGenerator
     t.out = out    
   end
   
-  def build_uberlist_(task_names)
+  def build_uberlist_(task_names, standalone)
     all = []
     tasks = task_names || []
     tasks.each do |dep|
-      next unless Rake::Task.task_defined? dep.to_sym
-      t = Rake::Task[dep.to_sym]
+      if Rake::Task.task_defined? dep.to_sym then
+        t = Rake::Task[dep.to_sym]
       
-      all.push t.out if t.out.to_s =~ /\.jar$/
+        all.push t.out if t.out.to_s =~ /\.jar$/
       
-      all += build_uberlist_(t.deps)
-      all += build_uberlist_(t.prerequisites)
+        all += build_uberlist_(t.deps, standalone)
+        all += build_uberlist_(t.prerequisites, standalone)
+      elsif standalone
+        all += FileList[dep]
+      end
     end
     
     all.uniq
