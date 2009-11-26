@@ -1,1 +1,0 @@
-java -cp jsunit-debugger\js.jar org.mozilla.javascript.tools.debugger.Main jsunit-debugger\AllTests.js

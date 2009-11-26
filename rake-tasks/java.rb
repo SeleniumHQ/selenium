@@ -191,6 +191,8 @@ class Java < BaseGenerator
         rm_rf FileList["#{temp}/#{to_exclude}"]
       end
 
+      Dir["#{temp}/**/.svn"].each { |file| rm_rf file }
+
       if args[:main]
         # Read any MANIFEST.MF file into memory, ignoring the main class line
         manifest = []
