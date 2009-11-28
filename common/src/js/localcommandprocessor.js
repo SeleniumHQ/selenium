@@ -131,7 +131,6 @@ webdriver.LocalCommandProcessor.onResponse_ = function(command, e) {
       rawResponse['isError'],
       webdriver.Context.fromString(rawResponse['context']),
       rawResponse['response']);
-  response.extraData['resultType'] = rawResponse['resultType'];
 
   // Only code in this file should be dispatching command events and listening
   // for response events, so this is safe. If someone else decided to attach a

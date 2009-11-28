@@ -17,53 +17,21 @@
 			<artifactId>webdriver-remote-common</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-        <dependency>
-            <groupId>org.seleniumhq.webdriver</groupId>
-            <artifactId>webdriver-support</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-httpclient</groupId>
-            <artifactId>commons-httpclient</artifactId>
-            <version>3.1</version>
-        </dependency>
-        <!-- Test dependencies ... -->
-        <dependency>
-            <groupId>org.seleniumhq.webdriver</groupId>
-            <artifactId>webdriver-common</artifactId>
-            <version>${project.version}</version>
-            <classifier>tests</classifier>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.seleniumhq.webdriver</groupId>
-            <artifactId>webdriver-remote-server</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.seleniumhq.webdriver</groupId>
-            <artifactId>webdriver-firefox</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+		<dependency>
+			<groupId>com.google.collections</groupId> 
+			<artifactId>google-collections</artifactId> 
+			<version>1.0-rc3</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>3.1</version>
+		</dependency>
+	</dependencies>
 
 	<build>
 		<sourceDirectory>src/java</sourceDirectory>
 		<testSourceDirectory>test/java</testSourceDirectory>
-		<plugins>
-			<!-- See http://maven.apache.org/plugins/maven-surefire-plugin -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<includes>
-						<include>**/*TestSuite.java</include>
-					</includes>
-				</configuration>
-			</plugin>
-		</plugins>
 	</build>
 
 </project>

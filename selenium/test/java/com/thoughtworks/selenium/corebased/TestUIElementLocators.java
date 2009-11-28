@@ -18,6 +18,7 @@ public class TestUIElementLocators extends SeleneseTestNgHelper {
 		verifyEquals(selenium.getText("ui=pageset1::linksWithId()->//span"), "element");
 		verifyEquals(selenium.getText("ui=pageset2::cell(text=theHeaderText)"), "theHeaderText");
 		verifyEquals(selenium.getText("ui=pageset2::cell(text=theCellText)"), "theCellText");
+		verifyEquals(selenium.getEval("map.getUISpecifierString(selenium.browserbot.findElement('id=firstChild'), selenium.browserbot.getDocument())"), "ui=pageset3::anyDiv()->/child::span");
 		selenium.removeScript("uimap");
 	}
 }

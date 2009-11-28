@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>future_test.html</title>
+    <script src="webdriver-bootstrap.js"></script>
+    <script>
+      goog.require('goog.testing.jsunit');
+      goog.require('webdriver.Future');
+    </script>
+    <script>
+
+      var future;
+
+      function setUp() {
+        future = new webdriver.Future();
+      }
+
+      function testShouldThrowIfValueHasNotBeenSet() {
+        try {
+          future.getValue();
+          fail('Should have thrown');
+        } catch (expected) {
+          // ignored
+        }
+      }
+
+
+      function testShouldOnlyBeAbleToSetTheValueOnce() {
+        future.setValue('foo');
+        assertEquals('foo', future.getValue());
+        future.setValue('bar');
+        assertEquals('foo', future.getValue());
+      }
+
+
+      function testShouldBeAbleToChainFutureValues() {
+        var future2 = new webdriver.Future();
+        var future3 = new webdriver.Future();
+
+        future.setValue(future2);
+        future2.setValue(future3);
+        assertFalse(future.isSet());
+
+        future3.setValue('abc123');
+        assertTrue(future3.isSet());
+        assertTrue(future2.isSet());
+        assertTrue(future.isSet());
+        assertEquals('abc123', future3.getValue());
+        assertEquals('abc123', future2.getValue());
+        assertEquals('abc123', future.getValue());
+      }
+    </script>
+  </head>
+  <body></body>
+</html>

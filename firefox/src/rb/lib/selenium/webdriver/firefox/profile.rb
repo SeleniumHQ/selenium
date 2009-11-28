@@ -21,7 +21,7 @@ module Selenium
         }
 
         attr_reader :name, :directory
-        attr_accessor :port
+        attr_accessor :port, :secure_ssl
 
         class << self
 
@@ -60,6 +60,7 @@ module Selenium
         def update_user_prefs
           prefs = existing_user_prefs.merge DEFAULT_PREFERENCES
           prefs['webdriver.firefox_port'] = @port
+          prefs['webdriver_accept_untrusted_certs'] = "true" unless @secure_ssl == true
 
           write_prefs prefs
         end

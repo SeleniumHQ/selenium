@@ -2,7 +2,6 @@
   "name": "WebDriver",
   "version": "0.2",
   "description": "WebDriver extension for Chrome",
-  "toolstrips": ["toolstrip.html"],
   "browser_action": {
     "default_title": "WebDriver",
     "default_icon": "icons/free.png"

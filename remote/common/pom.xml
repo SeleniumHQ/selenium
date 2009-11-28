@@ -25,7 +25,15 @@
 		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
-			<version>1.3</version>
+			<version>1.4</version>
+		</dependency>
+		<!-- Test dependencies ... -->
+		<dependency>
+			<groupId>org.seleniumhq.webdriver</groupId>
+			<artifactId>webdriver-common</artifactId>
+			<version>${project.version}</version>
+			<classifier>tests</classifier>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
@@ -39,7 +47,7 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
 					<includes>
-						<include>**/*Test.java</include>
+						<include>**/*TestSuite.java</include>
 					</includes>
 				</configuration>
 			</plugin>

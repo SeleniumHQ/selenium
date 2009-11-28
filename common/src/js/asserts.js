@@ -164,7 +164,7 @@ webdriver.asserts.Matcher.isTheSameLocationAs = function(expected) {
       function () {
         return 'equal ' + webdriver.asserts.objToString(expected);
       });
-}
+};
 goog.exportSymbol('isTheSameLocationAs',
                   webdriver.asserts.Matcher.isTheSameLocationAs);
 
@@ -200,7 +200,7 @@ webdriver.asserts.assertThat = function(a, b, opt_c) {
           'Expected to ' + matcher.describe() +
           '\n  but was ' + webdriver.asserts.objToString(future));
     }
-  }
+  };
 
   if (future instanceof webdriver.Future) {
     // Schedule a function with the Future's controlling driver so the value

@@ -230,12 +230,13 @@ webdriver.TestRunner.SINGLETON = null;
 
 
 webdriver.TestRunner.start = function(factoryFn) {
-  if (webdriver.TestRunner.SINGLETON) {
-    throw new Error('Singleton already initialized');
+  if (!webdriver.TestRunner.SINGLETON) {
+    webdriver.TestRunner.SINGLETON = new webdriver.TestRunner(factoryFn);
+    webdriver.TestRunner.SINGLETON.go();
   }
-  webdriver.TestRunner.SINGLETON = new webdriver.TestRunner(factoryFn);
-  webdriver.TestRunner.SINGLETON.go();
+  return webdriver.TestRunner.SINGLETON;
 };
+goog.exportSymbol('WD_getTestRunner', webdriver.TestRunner.start);
 
 
 /**
@@ -585,28 +586,13 @@ webdriver.TestRunner.prototype.tearDown_ = function(result, driver) {
  */
 webdriver.TestRunner.prototype.handleDriverError_ = function(result, e) {
   result.passed = false;
-  var failingCommand = e.target.getPendingCommand();
-  var response = failingCommand ? failingCommand.response : null;
+  var failingCommand = e.target;
+  var response = failingCommand.getResponse();
   if (response) {
-    result.errMsg = [];
-    if (goog.isString(response.value)) {
-      result.errMsg.push('  ' + response.value);
-    } else if (goog.isDef(response.value) &&
-               goog.isDef(response.value.message)) {
-      result.errMsg.push(response.value.message);
-      if (goog.isDef(response.value.fileName)) {
-        result.errMsg.push(
-            response.value.fileName + '@' + response.value.lineNumber);
-      }
-    }
-    goog.array.extend(
-        result.errMsg, goog.array.map(response.errors, function(error) {
-          return error.message + (error.stack ? ('\n' + error.stack) : '');
-        }));
-    result.errMsg = result.errMsg.join('\n');
+    result.errMsg = response.getErrorMessage();
   } else {
     // Should never happen, but just in case.
     result.errMsg = 'Unknown error!';
   }
-  this.reportResult_(result, e.target);
+  this.reportResult_(result, failingCommand.getDriver());
 };

@@ -13,7 +13,7 @@ public class TestStore extends SeleneseTestNgHelper {
 		String storedTextClass = selenium.getAttribute("theText@class");
 		String storedTitle = selenium.getTitle();
 		String textVariable = "PLAIN TEXT";
-		String javascriptVariable = selenium.getEval("'Pi ~= ' +\r\n (Math.round(Math.PI * 100) / 100)");
+		String javascriptVariable = selenium.getEval("'Pi ~= ' +\n (Math.round(Math.PI * 100) / 100)");
 		selenium.open("../tests/html/test_store_value.html");
 		selenium.type("theText", storedHiddenValue);
 		verifyEquals(selenium.getValue("theText"), "the hidden value");

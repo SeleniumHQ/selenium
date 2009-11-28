@@ -348,7 +348,7 @@ function sendResponseToParsedRequest(toSend, wait) {
   ChromeDriver.lastRequestToBeSentWhichHasntBeenAnsweredYet = null;
   console.log("SENDING RESPOND TO PARSED REQUEST");
   sendResponseByXHR(JSON.stringify(toSend), wait);
-  setToolstripsBusy(false);
+  setExtensionBusyIndicator(false);
 }
 
 /**
@@ -387,7 +387,7 @@ function parseRequest(request) {
     return;
   }
   ChromeDriver.isBlockedWaitingForResponse = true;
-  setToolstripsBusy(true);
+  setExtensionBusyIndicator(true);
   
   switch (request.request) {
   case "get":
@@ -905,22 +905,11 @@ function sendEmptyResponseWhenTabIsLoaded(tab) {
 }
       
 
-function setToolstripsBusy(busy) {
-  var toolstrips = chrome.extension.getToolstrips(ChromeDriver.activeWindowId);
+function setExtensionBusyIndicator(busy) {
   if (busy) {
     chrome.browserAction.setIcon({path: "icons/busy.png"})
   } else {
     chrome.browserAction.setIcon({path: "icons/free.png"})
-  }
-  for (var toolstrip in toolstrips) {
-    if (toolstrips[toolstrip].setWebdriverToolstripBusy && 
-        toolstrips[toolstrip].setWebdriverToolstripFree) {
-      if (busy) {
-        toolstrips[toolstrip].setWebdriverToolstripBusy();
-      } else {
-        toolstrips[toolstrip].setWebdriverToolstripFree();
-      }
-    }
   }
 }
 

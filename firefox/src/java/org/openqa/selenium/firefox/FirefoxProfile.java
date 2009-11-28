@@ -57,6 +57,7 @@ public class FirefoxProfile {
   private int port;
   private boolean enableNativeEvents;
   private boolean loadNoFocusLib;
+  private boolean acceptUntrustedCerts;
 
   /**
    * Constructs a firefox profile from an existing, physical profile directory.
@@ -74,6 +75,7 @@ public class FirefoxProfile {
     port = FirefoxDriver.DEFAULT_PORT;
     enableNativeEvents = FirefoxDriver.DEFAULT_ENABLE_NATIVE_EVENTS;
     loadNoFocusLib = false;
+    acceptUntrustedCerts = FirefoxDriver.ACCEPT_UNTRUSTED_CERTIFICATES;
 
     if (!profileDir.exists()) {
       throw new WebDriverException(MessageFormat.format("Profile directory does not exist: {0}",
@@ -403,6 +405,10 @@ public class FirefoxProfile {
         // Should we use native events?
         prefs.put("webdriver_enable_native_events",
             Boolean.toString(enableNativeEvents));
+        
+        // Should we accept untrusted certificates or not?
+        prefs.put("webdriver_accept_untrusted_certs",
+            Boolean.toString(acceptUntrustedCerts));
 
         // Settings to facilitate debugging the driver
         prefs.put("javascript.options.showInConsole", "true"); // Logs errors in chrome files to the Error Console.
@@ -468,6 +474,19 @@ public class FirefoxProfile {
     public void setAlwaysLoadNoFocusLib(boolean loadNoFocusLib) {
       this.loadNoFocusLib = loadNoFocusLib;
     }
+    
+    /**
+     * Sets whether Firefox should accept SSL certificates which have expired,
+     * signed by an unknown authority or are generally untrusted.
+     * This is set to true by defaul.t
+     * 
+     * @param acceptUntrustedSsl Whether untrusted SSL certificates should be
+     * accepted.
+     */
+    
+    public void setAcceptUntrustedCertificates(boolean acceptUntrustedSsl) {
+      this.acceptUntrustedCerts = acceptUntrustedSsl;
+    }
 
   public boolean isRunning() {
         File macAndLinuxLockFile = new File(profileDir, ".parentlock");
@@ -494,6 +513,7 @@ public class FirefoxProfile {
       profile.setPort(port);
       profile.setEnableNativeEvents(enableNativeEvents);
       profile.setAlwaysLoadNoFocusLib(loadNoFocusLib);
+      profile.setAcceptUntrustedCertificates(acceptUntrustedCerts);
       profile.updateUserPrefs();
 
       return profile;

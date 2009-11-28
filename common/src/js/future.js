@@ -23,24 +23,20 @@ limitations under the License.
 
 goog.provide('webdriver.Future');
 
-goog.require('goog.events.EventType');
-goog.require('goog.events.EventTarget');
+goog.require('goog.Disposable');
+goog.require('goog.array');
 
 
 /**
  * Represents the result of an asynchronous {@code webdriver.Command}. Methods
  * are provided to check if the result has been set and to retrieve the result.
- * <p/>
- * This instance will dispatch a {@code goog.events.EventType.CHANGE} event when
- * its value is set. An {@code Error} will be thrown if {@code #getValue()} is
- * called before the value has been set.
  * @param {webdriver.WebDriver} driver The WebDriver instance that will
  *     eventually set this instance's value.
  * @constructor
- * @extends {goog.events.EventTarget}
+ * @extends {goog.Disposable}
  */
 webdriver.Future = function(driver) {
-  goog.events.EventTarget.call(this);
+  goog.Disposable.call(this);
 
   /**
    * The WebDriver that will eventaully set this instance's value.
@@ -55,8 +51,16 @@ webdriver.Future = function(driver) {
    * @private
    */
   this.value_ = webdriver.Future.NOT_SET_;
+
+  /**
+   * Futures whose values are linked to this one. When this future's value is
+   * set, all of the linked futures will also be updated.
+   * @type {Array.<webdriver.Future>}
+   * @private
+   */
+  this.linkedFutures_ = [];
 };
-goog.inherits(webdriver.Future,  goog.events.EventTarget);
+goog.inherits(webdriver.Future,  goog.Disposable);
 
 
 /**
@@ -66,6 +70,15 @@ goog.inherits(webdriver.Future,  goog.events.EventTarget);
  * @private
  */
 webdriver.Future.NOT_SET_ = {};
+
+
+/** @override */
+webdriver.Future.prototype.disposeInternal = function() {
+  delete this.driver_;
+  delete this.value_;
+  delete this.linkedFutures_;
+  webdriver.Future.superClass_.disposeInternal.call(this);
+};
 
 
 /**
@@ -90,23 +103,29 @@ webdriver.Future.prototype.getDriver = function() {
 
 
 /**
- * Sets the value of this Future. Dispatches a
- * {@code goog.events.EventType.CHANGE} event.
+ * Sets the value of this Future and dispatches a
+ * {@code goog.events.EventType.CHANGE} event. If the given value is another
+ * future and its value has not been set, a callback will be registered to
+ * set this instance's value when the input future's value is set. Note that
+ * the value of a future may only be set once.
  * @param {*} value The new value.
  */
 webdriver.Future.prototype.setValue = function(value) {
-  this.value_ = value;
-  this.dispatchEvent(goog.events.EventType.CHANGE);
-};
-
-
-/**
- * Sets the value of this future from the value of a Response object.
- * @param {webdriver.Response} response The webdriver.Response to set the value
- *     from.
- */
-webdriver.Future.prototype.setValueFromResponse = function(response) {
-  this.setValue(response.value);
+  if (this.isSet()) {
+    return;
+  }
+  if (value instanceof webdriver.Future) {
+    if (value.isSet()) {
+      this.value_ = value.getValue();
+    } else {
+      value.linkedFutures_.push(this);
+    }
+  } else {
+    this.value_ = value;
+    goog.array.forEach(this.linkedFutures_, function(future) {
+      future.setValue(value);
+    });
+  }
 };
 
 

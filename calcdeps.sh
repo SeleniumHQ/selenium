@@ -9,7 +9,8 @@ readonly ROOT="$(cd `dirname $0` && pwd)"
 readonly CLOSURE="${ROOT}/third_party/closure"
 readonly CALCDEPS="${CLOSURE}/bin/calcdeps.py"
 readonly GOOG_DIR="${CLOSURE}/goog"
-readonly JS_PATH_RELATIVE_TO_GOOG_DIR="../../../common/src/js"
+readonly JS_RELATIVE_SRC="../../../common/src/js"
+readonly JS_RELATIVE_TEST="../../../common/test/js"
 readonly OUTPUT_FILE="${ROOT}/common/test/js/deps.js"
 
 main() {
@@ -17,7 +18,8 @@ main() {
   local command=""
   command=( "${CALCDEPS}" )
   command=( "${command[@]}" "--output_mode=deps" )
-  command=( "${command[@]}" "--path=${JS_PATH_RELATIVE_TO_GOOG_DIR}" )
+  command=( "${command[@]}" "--path=${JS_RELATIVE_SRC}" )
+  command=( "${command[@]}" "--path=${JS_RELATIVE_TEST}" )
 
   echo
   count=${#command[@]}
@@ -30,7 +32,7 @@ main() {
   # but for our tests, the WebDriverJS source files are served from /js/src and
   # the Closure Library source is under /third_party/closure/goog, so we need
   # to modify the generated paths to match that scheme.
-  "${command[@]}" | sed "s/common\/src\/js\//js\/src\//" > ${OUTPUT_FILE}
+  "${command[@]}" | sed "s/common\/\(.*\)\/js/js\/\1/" > ${OUTPUT_FILE}
 }
 
 main $*

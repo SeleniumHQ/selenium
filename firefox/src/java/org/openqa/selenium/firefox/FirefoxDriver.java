@@ -91,6 +91,8 @@ public class FirefoxDriver implements WebDriver, JavascriptExecutor, TakesScreen
     // For now, only enable native events on Windows
     public static final boolean DEFAULT_ENABLE_NATIVE_EVENTS =
       Platform.getCurrent().is(Platform.WINDOWS);
+    // Accept untrusted SSL certificates.
+    public static final boolean ACCEPT_UNTRUSTED_CERTIFICATES = true;
 
     // Commands we can execute with needing to dismiss an active alert
     private final Set<String> alertWhiteListedCommands = new HashSet<String>() {{

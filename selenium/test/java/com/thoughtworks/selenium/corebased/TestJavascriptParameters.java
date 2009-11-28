@@ -14,7 +14,7 @@ public class TestJavascriptParameters extends SeleneseTestNgHelper {
 		verifyEquals(selenium.getValue("theText"), "50");
 		verifyEquals(selenium.getValue("theText"), selenium.getEval("10 + 10 + 10 + 10 + 10"));
 		//  Check a complex expression 
-		selenium.type("theText", selenium.getEval("\r\n function square(n) {\r\n return n * n;\r\n };\r\n '25 * 25 = ' + square(25);\r\n "));
+		selenium.type("theText", selenium.getEval("\n function square(n) {\n return n * n;\n };\n '25 * 25 = ' + square(25);\n "));
 		verifyTrue(selenium.getValue("theText").matches("^25 [\\s\\S]* 25 = 625$"));
 		//  Demonstrate interation between variable substitution and javascript 
 		String var1 = "the value";

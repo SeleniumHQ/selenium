@@ -53,11 +53,11 @@ public class TestSuiteBuilder {
   private boolean includeJsApiTests = false;
 
   public TestSuiteBuilder() {
-    String[] possiblePaths = {"common", "../common",};
+    String[] possiblePaths = {"common", "../common", "../../common",};
 
     for (String potential : possiblePaths) {
       baseDir = new File(potential);
-      if (baseDir.exists()) {
+      if (new File(baseDir, "src/java/org/openqa/selenium/WebDriver.java").exists()) {
         break;
       }
     }

@@ -34,6 +34,10 @@ module Selenium
         @bridge = bridge
       end
 
+      def inspect
+        '#<%s:0x%x browser=%s>' % [self.class, hash*2, bridge.browser.inspect]
+      end
+
       def navigate
         @navigate ||= WebDriver::Navigation.new(self)
       end

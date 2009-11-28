@@ -96,10 +96,6 @@ webdriver.AbstractCommandProcessor.prototype.execute = function(command,
       break;
 
     case webdriver.CommandName.WAIT:
-      var callback = goog.bind(this.waitCallback_, this, command, context);
-      command.parameters[0].start(callback);
-      break;
-
     case webdriver.CommandName.FUNCTION:
       try {
         var result = command.parameters[0]();
@@ -117,35 +113,6 @@ webdriver.AbstractCommandProcessor.prototype.execute = function(command,
       }
       break;
   }
-};
-
-
-/**
- * Callback for {@code webdriver.CommandName.WAIT} commands.
- * @param {webdriver.Command} command The wait command.
- * @param {webdriver.Context} context The context the command executed in.
- * @param {boolean} isTimeout Whether the wait finished from a timeout.
- * @param {number} elapsedTime The amount of time spent waiting, in
- *     milliseconds.
- * @param {Error} opt_ex If defined, an error that caused the wait to terminate
- *     early.
- */
-webdriver.AbstractCommandProcessor.prototype.waitCallback_ = function(
-    command, context, isTimeout, elapsedTime, opt_ex) {
-  var message;
-  if (opt_ex) {
-    message = 'Error';
-  } else if (isTimeout) {
-    message = 'Timeout';
-  } else {
-    message = 'Ready';
-  }
-  var response = new webdriver.Response(isTimeout || opt_ex, context,
-      message + ' after ' + elapsedTime + 'ms');
-  if (opt_ex) {
-    response.errors.push(opt_ex);
-  }
-  command.setResponse(response);
 };
 
 
