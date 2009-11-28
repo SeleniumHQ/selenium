@@ -29,7 +29,8 @@ cp -R ../non-generated/src/test/java/org/openqa/selenium/* "$TO/test/java/org/op
 
 # Modify tests to remove nasty dependency on internals of selenium core
 for tst in ${TO}/test/java/com/thoughtworks/selenium/corebased/*.java; do
-  sed -e 's/selenium.getEval("parseUrl(canonicalize(absolutify(\\"html\\", selenium.browserbot.baseUrl))).pathname;");/"http:\/\/localhost:4444\/tests\/html";/' -i "$tst"
+  echo "$tst"
+  sed -e 's/selenium.getEval("parseUrl(canonicalize(absolutify(\\"html\\", selenium.browserbot.baseUrl))).pathname;");/"http:\/\/localhost:4444\/tests\/html";/' -i '' "$tst"
 done
 
 # Delete the tests that make no sense for us
