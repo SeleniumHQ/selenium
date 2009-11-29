@@ -1,0 +1,368 @@
+= 0.9.2 / unreleased
+
+ * This version is compatible with Rack 1.0. [Rein Henrichs]
+
+ * The development-mode unhandled exception / error page has been
+   greatly enhanced, functionally and aesthetically. The error
+   page is used when the :show_exceptions option is enabled and an
+   exception propagates outside of a route handler or before filter.
+   [Simon Rozet / Matte Noble / Ryan Tomayko]
+
+ * Backtraces that move through templates now include filenames and
+   line numbers where possible. [#51 / S. Brent Faulkner]
+
+ * All templates now have an app-level option for setting default
+   template options (:haml, :sass, :erb, :builder). The app-level
+   option value must be a Hash if set and is merged with the
+   template options specified to the render method (Base#haml,
+   Base#erb, Base#builder). [S. Brent Faulkner, Ryan Tomayko]
+
+ * The method signature for all template rendering methods has
+   been unified: "def engine(template, options={}, locals={})".
+   The options Hash now takes the generic :views, :layout, and
+   :locals options but also any template-specific options. The
+   generic options are removed before calling the template specific
+   render method. Locals may be specified using either the
+   :locals key in the options hash or a second Hash option to the
+   rendering method. [#191 / Ryan Tomayko]
+
+ * The receiver is now passed to "configure" blocks. This
+   allows for the following idiom in top-level apps:
+   configure { |app| set :foo, app.root + '/foo' }
+   [TJ Holowaychuck / Ryan Tomayko]
+
+ * The "sinatra/test" lib is deprecated and will be removed in
+   Sinatra 1.0. This includes the Sinatra::Test module and
+   Sinatra::TestHarness class in addition to all the framework
+   test helpers that were deprecated in 0.9.1. The Rack::Test
+   lib should be used instead: http://gitrdoc.com/brynary/rack-test
+   [#176 / Simon Rozet]
+
+ * Development mode source file reloading has been removed. The
+   "shotgun" (http://rtomayko.github.com/shotgun/) program can be
+   used to achieve the same basic functionality in most situations.
+   Passenger users should use the "tmp/always_restart.txt"
+   file (http://tinyurl.com/c67o4h). [#166 / Ryan Tomayko]
+
+ * Auto-requiring template libs in the erb, builder, haml, and
+   sass methods is deprecated due to thread-safety issues. You must
+   require the template libs explicitly in your app file. [Simon Rozet]
+
+ * A new Sinatra::Base#route_missing method was added. route_missing
+   is sent when no route matches the request or all route handlers
+   pass.  The default implementation forwards the request to the
+   downstream app when running as middleware (i.e., "@app" is
+   non-nil), or raises a NotFound exception when no downstream app
+   is defined. Subclasses can override this method to perform custom
+   route miss logic. [Jon Crosby]
+
+ * A new Sinatra::Base#route_eval method was added. The method
+   yields to the block and throws :halt with the result. Subclasses
+   can override this method to tap into the route execution logic.
+   [TJ Holowaychuck]
+
+ * Fix the "-x" (enable request mutex / locking) command line
+   argument. Passing -x now properly sets the :lock option.
+   [S. Brent Faulkner, Ryan Tomayko]
+
+ * Fix writer ("foo=") and predicate ("foo?") methods in extension
+   modules not being added to the registering class.
+   [#172 / Pat Nakajima]
+
+ * Fix in-file templates when running alongside activesupport and
+   fatal errors when requiring activesupport before sinatra
+   [#178 / Brian Candler]
+
+ * Fix various issues running on Google AppEngine.
+   [Samuel Goebert, Simon Rozet]
+
+ * Fix in-file templates __END__ detection when __END__ exists with
+   other stuff on a line [Yoji Shidara]
+
+= 0.9.1.1 / 2009-03-09
+
+ * Fix directory traversal vulnerability in default static files
+   route. See [#177] for more info.
+
+= 0.9.1 / 2009-03-01
+
+ * Sinatra now runs under Ruby 1.9.1 [#61]
+
+ * Route patterns (splats, :named, or Regexp captures) are now
+   passed as arguments to the block. [#140]
+
+ * The "helpers" method now takes a variable number of modules
+   along with the normal block syntax. [#133]
+
+ * New request-level #forward method for middleware components: passes
+   the env to the downstream app and merges the response status, headers,
+   and body into the current context. [#126]
+
+ * Requests are now automatically forwarded to the downstream app when
+   running as middleware and no matching route is found or all routes
+   pass.
+
+ * New simple API for extensions/plugins to add DSL-level and
+   request-level methods. Use Sinatra.register(mixin) to extend
+   the DSL with all public methods defined in the mixin module;
+   use Sinatra.helpers(mixin) to make all public methods defined
+   in the mixin module available at the request level. [#138]
+   See http://www.sinatrarb.com/extensions.html for details.
+
+ * Named parameters in routes now capture the "." character. This makes
+   routes like "/:path/:filename" match against requests like
+   "/foo/bar.txt"; in this case, "params[:filename]" is "bar.txt".
+   Previously, the route would not match at all.
+
+ * Added request-level "redirect back" to redirect to the referring
+   URL.
+
+ * Added a new "clean_trace" option that causes backtraces dumped
+   to rack.errors and displayed on the development error page to
+   omit framework and core library backtrace lines. The option is
+   enabled by default. [#77]
+
+ * The ERB output buffer is now available to helpers via the @_out_buf
+   instance variable.
+
+ * It's now much easier to test sessions in unit tests by passing a
+   ":session" option to any of the mock request methods. e.g.,
+       get '/', {}, :session => { 'foo' => 'bar' }
+
+ * The testing framework specific files ('sinatra/test/spec',
+   'sinatra/test/bacon', 'sinatra/test/rspec', etc.) have been deprecated.
+   See http://sinatrarb.com/testing.html for instructions on setting up
+   a testing environment with these frameworks.
+
+ * The request-level #send_data method from Sinatra 0.3.3 has been added
+   for compatibility but is deprecated.
+
+ * Fix :provides causing crash on any request when request has no
+   Accept header [#139]
+
+ * Fix that ERB templates were evaluated twice per "erb" call.
+
+ * Fix app-level middleware not being run when the Sinatra application is
+   run as middleware.
+
+ * Fixed some issues with running under Rack's CGI handler caused by
+   writing informational stuff to stdout.
+
+ * Fixed that reloading was sometimes enabled when starting from a
+   rackup file [#110]
+
+ * Fixed that "." in route patterns erroneously matched any character
+   instead of a literal ".". [#124]
+
+= 0.9.0.4 / 2009-01-25
+
+ * Using halt with more than 1 args causes ArgumentError [#131]
+ * using halt in a before filter doesn't modify response [#127]
+ * Add deprecated Sinatra::EventContext to unbreak plugins [#130]
+ * Give access to GET/POST params in filters [#129]
+ * Preserve non-nested params in nested params hash [#117]
+ * Fix backtrace dump with Rack::Lint [#116]
+
+= 0.9.0.3 / 2009-01-21
+
+ * Fall back on mongrel then webrick when thin not found. [#75]
+ * Use :environment instead of :env in test helpers to
+   fix deprecation warnings coming from framework.
+ * Make sinatra/test/rspec work again [#113]
+ * Fix app_file detection on windows [#118]
+ * Fix static files with Rack::Lint in pipeline [#121]
+
+= 0.9.0.2 / 2009-01-18
+
+ * Halting a before block should stop processing of routes [#85]
+ * Fix redirect/halt in before filters [#85]
+
+= 0.9.0 / 2009-01-18
+
+ * Works with and requires Rack >= 0.9.1
+
+ * Multiple Sinatra applications can now co-exist peacefully within a
+   single process. The new "Sinatra::Base" class can be subclassed to
+   establish a blank-slate Rack application or middleware component.
+   Documentation on using these features is forth-coming; the following
+   provides the basic gist: http://gist.github.com/38605
+
+ * Parameters with subscripts are now parsed into a nested/recursive
+   Hash structure. e.g., "post[title]=Hello&post[body]=World" yields
+   params: {'post' => {'title' => 'Hello', 'body' => 'World'}}.
+
+ * Regular expressions may now be used in route pattens; captures are
+   available at "params[:captures]".
+
+ * New ":provides" route condition takes an array of mime types and
+   matches only when an Accept request header is present with a
+   corresponding type. [cypher]
+
+ * New request-level "pass" method; immediately exits the current block
+   and passes control to the next matching route.
+
+ * The request-level "body" method now takes a block; evaluation is
+   deferred until an attempt is made to read the body. The block must
+   return a String or Array.
+
+ * New "route conditions" system for attaching rules for when a route
+   matches. The :agent and :host route options now use this system.
+
+ * New "dump_errors" option controls whether the backtrace is dumped to
+   rack.errors when an exception is raised from a route. The option is
+   enabled by default for top-level apps.
+
+ * Better default "app_file", "root", "public", and "views" location
+   detection; changes to "root" and "app_file" automatically cascade to
+   other options that depend on them.
+
+ * Error mappings are now split into two distinct layers: exception
+   mappings and custom error pages. Exception mappings are registered
+   with "error(Exception)" and are run only when the app raises an
+   exception. Custom error pages are registered with "error(status_code)",
+   where "status_code" is an integer, and are run any time the response
+   has the status code specified. It's also possible to register an error
+   page for a range of status codes: "error(500..599)".
+
+ * In-file templates are now automatically imported from the file that
+   requires 'sinatra'. The use_in_file_templates! method is still available
+   for loading templates from other files.
+
+ * Sinatra's testing support is no longer dependent on Test::Unit. Requiring
+   'sinatra/test' adds the Sinatra::Test module and Sinatra::TestHarness
+   class, which can be used with any test framework. The 'sinatra/test/unit',
+   'sinatra/test/spec', 'sinatra/test/rspec', or 'sinatra/test/bacon' files
+   can be required to setup a framework-specific testing environment. See the
+   README for more information.
+
+ * Added support for Bacon (test framework). The 'sinatra/test/bacon' file
+   can be required to setup Sinatra test helpers on Bacon::Context.
+
+ * Deprecated "set_option" and "set_options"; use "set" instead.
+
+ * Deprecated the "env" option ("options.env"); use "environment" instead.
+
+ * Deprecated the request level "stop" method; use "halt" instead.
+
+ * Deprecated the request level "entity_tag" method; use "etag" instead.
+   Both "entity_tag" and "etag" were previously supported.
+
+ * Deprecated the request level "headers" method (HTTP response headers);
+   use "response['Header-Name']" instead.
+
+ * Deprecated "Sinatra.application"; use "Sinatra::Application" instead.
+
+ * Deprecated setting Sinatra.application = nil to reset an application.
+   This should no longer be necessary.
+
+ * Deprecated "Sinatra.default_options"; use
+   "Sinatra::Default.set(key, value)" instead.
+
+ * Deprecated the "ServerError" exception. All Exceptions are now
+   treated as internal server errors and result in a 500 response
+   status.
+
+ * Deprecated the "get_it", "post_it", "put_it", "delete_it", and "head_it"
+   test helper methods. Use "get", "post", "put", "delete", and "head",
+   respectively, instead.
+
+ * Removed Event and EventContext classes. Applications are defined in a
+   subclass of Sinatra::Base; each request is processed within an
+   instance.
+
+= 0.3.3 / 2009-01-06
+
+ * Pin to Rack 0.4.0 (this is the last release on Rack 0.4)
+
+ * Log unhandled exception backtraces to rack.errors.
+
+ * Use RACK_ENV environment variable to establish Sinatra
+   environment when given. Thin sets this when started with
+   the -e argument.
+
+ * BUG: raising Sinatra::NotFound resulted in a 500 response
+   code instead of 404.
+
+ * BUG: use_in_file_templates! fails with CR/LF (#45)
+
+ * BUG: Sinatra detects the app file and root path when run under
+   thin/passenger.
+
+= 0.3.2
+
+ * BUG: Static and send_file read entire file into String before
+   sending. Updated to stream with 8K chunks instead.
+
+ * Rake tasks and assets for building basic documentation website.
+   See http://sinatra.rubyforge.org
+
+ * Various minor doc fixes.
+
+= 0.3.1
+
+ * Unbreak optional path parameters [jeremyevans]
+
+= 0.3.0
+
+ * Add sinatra.gemspec w/ support for github gem builds. Forks can now
+   enable the build gem option in github to get free username-sinatra.gem
+   builds: gem install username-sinatra.gem --source=http://gems.github.com/
+
+ * Require rack-0.4 gem; removes frozen rack dir.
+
+ * Basic RSpec support; require 'sinatra/test/rspec' instead of
+   'sinatra/test/spec' to use. [avdi]
+
+ * before filters can modify request environment vars used for
+   routing (e.g., PATH_INFO, REQUEST_METHOD, etc.) for URL rewriting
+   type functionality.
+
+ * In-file templates now uses @@ instead of ## as template separator.
+
+ * Top-level environment test predicates: development?, test?, production?
+
+ * Top-level "set", "enable", and "disable" methods for tweaking
+   app options. [rtomayko]
+
+ * Top-level "use" method for building Rack middleware pipelines
+   leading to app. See README for usage. [rtomayko]
+
+ * New "reload" option - set false to disable reloading in development.
+
+ * New "host" option - host/ip to bind to [cschneid]
+
+ * New "app_file" option - override the file to reload in development
+   mode [cschneid]
+
+ * Development error/not_found page cleanup [sr, adamwiggins]
+
+ * Remove a bunch of core extensions (String#to_param, String#from_param,
+   Hash#from_params, Hash#to_params, Hash#symbolize_keys, Hash#pass)
+
+ * Various grammar and formatting fixes to README; additions on
+   community and contributing [cypher]
+
+ * Build RDoc using Hanna template: http://sinatrarb.rubyforge.org/api
+
+ * Specs, documentation and fixes for splat'n routes [vic]
+
+ * Fix whitespace errors across all source files. [rtomayko]
+
+ * Fix streaming issues with Mongrel (body not closed). [bmizerany]
+
+ * Fix various issues with environment not being set properly (configure
+   blocks not running, error pages not registering, etc.) [cypher]
+
+ * Fix to allow locals to be passed to ERB templates [cschneid]
+
+ * Fix locking issues causing random errors during reload in development.
+
+ * Fix for escaped paths not resolving static files [Matthew Walker]
+
+= 0.2.1
+
+ * File upload fix and minor tweaks.
+
+= 0.2.0
+
+ * Initial gem release of 0.2 codebase.
