@@ -175,8 +175,9 @@ public class TestSuiteBuilder {
       return;
     }
 
-    boolean include = false;
+    boolean include = true;
     if (patterns.size() >0) {
+      include = false;
       for (String pattern : patterns) {
         include |= clazz.getName().matches(pattern);
       }
