@@ -19,9 +19,9 @@ CLEAN.include('lib/selenium/client/generated_driver.rb', '**/*.log', "target", "
 if ENV["SELENIUM_RC_JAR"]
 	# User override
 	SELENIUM_RC_JAR = ENV["SELENIUM_RC_JAR"] 
-elsif not Dir[File.dirname(__FILE__) + "/../../selenium-server/target/selenium-server-*-standalone.jar"].empty?
+elsif File.exist?(jar = "#{File.dirname(__FILE__)}/../../../build/selenium-server-standalone.jar")
 	# We are part of the global Selenium RC Build
-	SELENIUM_RC_JAR = Dir[File.dirname(__FILE__) + "/../../selenium-server/target/selenium-server-*-standalone.jar"].first
+	SELENIUM_RC_JAR = jar
 else
 	# Bundled version
 	SELENIUM_RC_JAR = Dir[File.dirname(__FILE__) + "/vendor/selenium-remote-control/selenium-server-*.jar"].first
