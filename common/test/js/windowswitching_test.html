@@ -53,9 +53,9 @@ function _testAbleToIterateOverAllOpenWindows(driver) {
         'If there are more windows than this, another test probably did not ' +
         'clean up after itself...\n' +
         'if there are fewer than this, something bad happened',
-        3, response.value.length);
-    for (var i = 0; i < response.value.length; i++) {
-      driver.switchToWindow(response.value[i]);
+        3, response.length);
+    for (var i = 0; i < response.length; i++) {
+      driver.switchToWindow(response[i]);
     }
     // Everything is a-ok, now clean up after ourselves and delete the window
     // opened by clicking on windowOne.

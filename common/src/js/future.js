@@ -116,7 +116,11 @@ webdriver.Future.prototype.setValue = function(value) {
   }
   if (value instanceof webdriver.Future) {
     if (value.isSet()) {
-      this.value_ = value.getValue();
+      value = value.getValue();
+      this.value_ = value;
+      goog.array.forEach(this.linkedFutures_, function(future) {
+        future.setValue(value);
+      });
     } else {
       value.linkedFutures_.push(this);
     }

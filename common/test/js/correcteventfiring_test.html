@@ -122,16 +122,14 @@ function testShouldEmitOnChangeEventsWhenSelectingElements(driver) {
   driver.get(TEST_PAGE.javascriptPage);
   driver.findElement({id: 'selector'}).
       findElements({tagName: 'option'});
-  driver.callFunction(function(response) {
-    var optionElements = response.value;
+  driver.callFunction(function(optionElements) {
     fooOption = optionElements[0];
     barOption = optionElements[1];
     assertTrue('fooOption is undefined', goog.isDef(fooOption));
     assertTrue('barOption is undefined', goog.isDef(barOption));
   });
   driver.findElement({id: 'result'}).getText();
-  driver.callFunction(function(response) {
-    var initialText = response.value;
+  driver.callFunction(function(initialText) {
     fooOption.setSelected();
     assertResultTextIs(driver, initialText);
     barOption.setSelected();

@@ -84,8 +84,7 @@ function testShouldEnterDataIntoFormFields(driver) {
   var xpath = {xpath: '//form[@name="someForm"]/input[@id="username"]'};
   var element = driver.findElement(xpath);
   element.getValue();
-  driver.callFunction(function(response) {
-    var originalValue = response.value;
+  driver.callFunction(function(originalValue) {
     assertEquals('change', originalValue);
 
     element.clear();
@@ -187,7 +186,7 @@ function testThrowsAnExceptionWhenTogglingOptionNotInAMultiSelect(driver) {
   driver.findElement({name: 'selectomatic'}).
       findElements({tagName: 'option'});
   driver.callFunction(function(response) {
-    response.value[0].toggle();
+    response[0].toggle();
     driver.catchExpectedError(
         'Should not be able to toggle an option not in a multi-select');
   });
@@ -199,7 +198,7 @@ function testCanToggleOptionsInAMultiSelect(driver) {
   driver.findElement({name: 'multi'}).
       findElements({tagName: 'option'});
   driver.callFunction(function(response) {
-    var option = response.value[0];
+    var option = response[0];
     assertThat(option.isSelected(), is(true));
     assertThat(option.toggle(), is(false));
     assertThat(option.isSelected(), is(false));

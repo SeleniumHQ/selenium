@@ -144,20 +144,25 @@ webdriver.LocalCommandProcessor.onResponse_ = function(command, e) {
 /**
  * @override
  */
-webdriver.LocalCommandProcessor.prototype.executeDriverCommand = function(
-    command, sessionId, context) {
-  if (command.name == webdriver.CommandName.SEND_KEYS) {
-    command.parameters = [command.parameters.join('')];
+webdriver.LocalCommandProcessor.prototype.dispatchDriverCommand = function(
+    command) {
+  if (command.getName() == webdriver.CommandName.SEND_KEYS) {
+    command.setParameters(command.getParameters().join(''));
   }
 
   var jsonCommand = {
-    'commandName': command.name,
-    'context': context.toString(),
-    'parameters': command.parameters
+    'commandName': command.getName(),
+    'context': command.getDriver().getContext().toString(),
+    'parameters': command.getParameters()
   };
 
   if (command.element) {
-    jsonCommand['elementId'] = command.element.getId().getValue();
+    try {
+      jsonCommand['elementId'] = command.element.getId().getValue();
+    } catch (ex) {
+      window.console.dir(command);
+      throw ex;
+    }
   }
 
   webdriver.logging.info(

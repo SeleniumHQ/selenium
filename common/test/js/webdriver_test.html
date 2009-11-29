@@ -203,6 +203,31 @@
       assertEquals(3, count);
     }
 
+    function testShouldBeAbleToAbortAllPendingSubCommands() {
+      var msg = [];
+      driver.callFunction(function() {
+        driver.callFunction(function() {
+          msg.push('a');
+          driver.callFunction(function() {
+            msg.push('b');
+            // Should be aborted.
+            driver.callFunction(function() { msg.push('c'); });
+            driver.callFunction(function() { msg.push('d'); });
+            driver.callFunction(function() { msg.push('e'); });
+            // Should abort all pending commands.
+            driver.abortCommand(null);
+          });
+          // Should be aborted.
+          driver.callFunction(function() { msg.push('f'); });
+        });
+        // Should be aborted.
+        driver.callFunction(function() { msg.push('g'); });
+      });
+      driver.callFunction(function() { msg.push('h'); });
+      dispatchAllCommands();
+      assertEquals('abh', msg.join(''));
+    }
+
 
     function dispatchAllCommands() {
       while (!driver.isIdle()) {

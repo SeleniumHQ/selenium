@@ -24,8 +24,8 @@ function testReturnAnEmptyListWhenThereAreNoChildrenOfANode(driver) {
   driver.get(TEST_PAGE.xhtmlTestPage);
   driver.findElement({id: 'table'}).
       findElements({tagName: 'tr'});
-  driver.callFunction(function(response) {
-    assertEquals(0, response.value.length);
+  driver.callFunction(function(elements) {
+    assertEquals(0, elements.length);
   });
 }
 
@@ -88,8 +88,8 @@ function testFindElementsById(driver) {
   driver.get(TEST_PAGE.nestedPage);
   driver.findElement({name: 'form2'}).
       findElements({id: '2'});
-  driver.callFunction(function(response) {
-    assertEquals('Should find two elements', 2, response.value.length);
+  driver.callFunction(function(elements) {
+    assertEquals('Should find two elements', 2, elements.length);
   });
 }
 
@@ -98,8 +98,7 @@ function testFindElementsByLinkTest(driver) {
   driver.get(TEST_PAGE.nestedPage);
   driver.findElement({name: 'div1'}).
       findElements({linkText: 'hello world'});
-  driver.callFunction(function(response) {
-    var webElements = response.value;
+  driver.callFunction(function(webElements) {
     assertEquals('Should find two elements', 2, webElements.length);
     assertThat(webElements[0].getAttribute('name'), is('link1'));
     assertThat(webElements[1].getAttribute('name'), is('link2'));
@@ -111,8 +110,8 @@ function testFindElementsByLinkText(driver) {
   driver.get(TEST_PAGE.nestedPage);
   driver.findElement({name: 'div1'}).
       findElements({linkText: 'hello world'});
-  driver.callFunction(function(response) {
-    assertEquals('Should find two elements', 2, response.value.length);
+  driver.callFunction(function(elements) {
+    assertEquals('Should find two elements', 2, elements.length);
   });
 }
 
@@ -129,8 +128,8 @@ function testShouldFindChildrenByClassName(driver) {
   driver.get(TEST_PAGE.nestedPage);
   driver.findElement({name: 'classes'}).
       findElements({className: 'one'});
-  driver.callFunction(function(response) {
-    assertEquals(2, response.value.length);
+  driver.callFunction(function(elements) {
+    assertEquals(2, elements.length);
   });
 }
 
@@ -147,8 +146,8 @@ function testShouldFindChildrenByTagName(driver) {
   driver.get(TEST_PAGE.nestedPage);
   driver.findElement({name: 'div1'}).
       findElements({tagName: 'A'});
-  driver.callFunction(function(response) {
-    assertEquals(2, response.value.length);
+  driver.callFunction(function(elements) {
+    assertEquals(2, elements.length);
   });
 }
   </script>

@@ -55,7 +55,7 @@ function testReturnsTheValueOfTheIndexAttributeEvenIfItIsMissing(driver) {
   driver.findElement({id: 'multi'}).
       findElements({tagName: 'option'});
   driver.callFunction(function(response) {
-    var index = response.value[1].getAttribute('index');
+    var index = response[1].getAttribute('index');
     assertThat(index, equals(1));
   });
 }
@@ -76,7 +76,7 @@ function testIndicatesWhenATextAreaIsDisabled(driver) {
   driver.findElement({xpath: "//textarea[@id='notWorkingArea']"}).
       isEnabled();
   driver.callFunction(function(response) {
-    assertFalse(response.value);
+    assertFalse(response);
   });
 }
 
@@ -129,8 +129,7 @@ function testReturnsTheValueOfSelectedForOptionsEvenIfTheyLackTheAttribute(
   driver.get(TEST_PAGE.formPage);
   driver.findElement({xpath: "//select[@name='selectomatic']"}).
       findElements({tagName: 'option'});
-  driver.callFunction(function(response) {
-    var webElements = response.value;
+  driver.callFunction(function(webElements) {
     assertThat(webElements[0].isSelected(), is(true));
     assertThat(webElements[1].isSelected(), is(false));
   });
@@ -148,7 +147,7 @@ function testReturnsTheContentsOfATextAreaAsItsValue(driver) {
   driver.get(TEST_PAGE.formPage);
   driver.findElement({id: 'withText'}).getValue();
   driver.callFunction(function(response) {
-    assertEquals(response.value, 'Example text');
+    assertEquals(response, 'Example text');
   });
 }
 
