@@ -24,6 +24,7 @@ goog.provide('webdriver.WebDriver');
 goog.provide('webdriver.WebDriver.EventType');
 goog.provide('webdriver.WebDriver.Speed');
 
+goog.require('goog.debug.Logger');
 goog.require('goog.events');
 goog.require('goog.events.EventTarget');
 goog.require('webdriver.By.Locator');
@@ -32,7 +33,6 @@ goog.require('webdriver.CommandName');
 goog.require('webdriver.Context');
 goog.require('webdriver.Response');
 goog.require('webdriver.WebElement');
-goog.require('webdriver.logging');
 goog.require('webdriver.timing');
 
 
@@ -68,6 +68,13 @@ goog.require('webdriver.timing');
  */
 webdriver.WebDriver = function(commandProcessor) {
   goog.events.EventTarget.call(this);
+
+  /**
+   * The logger for this instance.
+   * @type {!goog.debug.Logger}
+   * @private
+   */
+  this.logger_ = goog.debug.Logger.getLogger('webdriver.WebDriver');
 
   /**
    * The command processor to use for executing commands.
@@ -213,6 +220,10 @@ webdriver.WebDriver.prototype.addCommand = function(name, opt_element) {
  *     commands).
  */
 webdriver.WebDriver.prototype.isIdle = function() {
+  if (this.isDisposed()) {
+    return true;
+  }
+
   // If there is a finished command on the pending command queue, but it
   // failed, then the failure hasn't been dealt with yet and the driver will
   // not process any more commands, so we consider this idle.
@@ -260,7 +271,7 @@ webdriver.WebDriver.prototype.abortCommand = function(command) {
  */
 webdriver.WebDriver.prototype.pauseImmediately = function() {
   this.isPaused_ = true;
-  webdriver.logging.debug('Webdriver paused');
+  this.logger_.fine('WebDriver paused');
   this.dispatchEvent(webdriver.WebDriver.EventType.PAUSED);
 };
 
@@ -271,7 +282,7 @@ webdriver.WebDriver.prototype.pauseImmediately = function() {
  */
 webdriver.WebDriver.prototype.resume = function() {
   this.isPaused_ = false;
-  webdriver.logging.debug('Webdriver resumed');
+  this.logger_.fine('WebDriver resumed');
   this.dispatchEvent(webdriver.WebDriver.EventType.RESUMED);
 };
 
@@ -288,7 +299,7 @@ webdriver.WebDriver.prototype.processCommands_ = function() {
 
   if (pendingCommand && pendingCommand.getResponse().isFailure) {
     // Or should we be throwing this to be caught by window.onerror?
-    webdriver.logging.error(
+    this.logger_.severe(
         'Unhandled command failure; halting command processing:\n' +
         pendingCommand.getResponse().getErrorMessage());
     return;
@@ -682,7 +693,6 @@ webdriver.WebDriver.wrapScriptArgument_ = function(arg) {
 webdriver.WebDriver.prototype.unwrapScriptResult_ = function(result) {
   switch (result.type) {
     case 'ELEMENT':
-      webdriver.logging.debug('unwrapping element');
       var element = new webdriver.WebElement(this);
       element.getId().setValue(result.value);
       return element;

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>webdriver.TestCase</title>
+    <script src="webdriver-bootstrap.js"></script>
+    <script>
+      goog.require('goog.functions');
+      goog.require('goog.testing.AsyncTestCase');
+      goog.require('goog.testing.MockControl');
+      goog.require('goog.testing.PropertyReplacer');
+      goog.require('goog.testing.jsunit');
+      goog.require('goog.testing.mockmatchers.IgnoreArgument');
+      goog.require('webdriver.FakeCommandProcessor');
+      goog.require('webdriver.Command');
+      goog.require('webdriver.CommandName');
+      goog.require('webdriver.Context');
+      goog.require('webdriver.Response');
+      goog.require('webdriver.TestCase');
+      goog.require('webdriver.TestCase.Test');
+      goog.require('webdriver.WebDriver');
+      goog.require('webdriver.timing');
+    </script>
+  </head>
+  <body>
+    <script>
+      var ASYNC_TEST_CASE = goog.testing.AsyncTestCase.createAndInstall();
+      var IGNORE_ARGUMENT = new goog.testing.mockmatchers.IgnoreArgument();
+      var TEST_CONTEXT = new webdriver.Context('windowId', 'frameId');
+      var TEST_SESSION = 'testSessionId';
+
+      var RESPOND_OK = new webdriver.Response(false, TEST_CONTEXT, 'ok');
+      var RESPOND_FAILURE = new webdriver.Response(true, TEST_CONTEXT, 'failure');
+      var RESPOND_ERROR = new webdriver.Response(
+          true, TEST_CONTEXT, null, Error('boom'));
+
+      // goog.testing.AsyncTestCase incorrectly hooks into the global test
+      // runner so it can record any async errors (such as when fail is
+      // called in a timeout. This will clutter up our log output since we
+      // are trying to test control flow. If we just use a error function
+      // instead, AsyncTestCase will not interfere. Bam!
+      var FAIL_FN = goog.functions.error('fail');
+
+      var driver;
+      var commandProcessor;
+      var control;
+      var propertyReplacer;
+
+
+      function setUp() {
+        propertyReplacer = new goog.testing.PropertyReplacer();
+        control = new goog.testing.MockControl();
+        commandProcessor = new webdriver.FakeCommandProcessor();
+
+        // Set a canned response for the new session command, which will be
+        // issued for each test.
+        commandProcessor.setCannedResponse(webdriver.CommandName.NEW_SESSION,
+            false, new webdriver.Context('windowId', 'frameId'));
+
+        driver = new webdriver.WebDriver(commandProcessor);
+      }
+
+
+      function tearDown() {
+        driver.dispose();
+
+        control.$tearDown();
+        propertyReplacer.reset();
+
+        delete commandProcessor;
+        delete driver;
+        delete control;
+        delete propertyReplacer;
+      }
+
+
+      function testRunningATestThatPasses() {
+        var test = createMockTest();
+        test.setUpPage();
+        test.setUp(driver);
+        test.testFn(driver);
+        test.tearDown(driver);
+        test.tearDownPage().$does(function() {
+          ASYNC_TEST_CASE.continueTesting();
+          control.$verifyAll();
+          assertTrue(testCase.isSuccess());
+        });
+        control.$replayAll();
+
+        var testCase = createTestCase(test, '');
+        ASYNC_TEST_CASE.waitForAsync('testCase.runTests');
+        testCase.runTests();
+      }
+
+
+      function testRunningATestThatFailsInSetup() {
+        var test = createMockTest();
+        test.setUpPage();
+        test.setUp(driver).$does(FAIL_FN);
+        test.tearDown(driver);
+        test.tearDownPage().$does(function() {
+          ASYNC_TEST_CASE.continueTesting();
+          control.$verifyAll();
+          assertFalse(testCase.isSuccess());
+        });
+        control.$replayAll();
+
+        var testCase = createTestCase(test, '');
+        ASYNC_TEST_CASE.waitForAsync('testCase.runTests');
+        testCase.runTests();
+      }
+
+
+      function testRunningATestThatHasASetupCommandFail() {
+        var test = createMockTest();
+        test.setUpPage();
+        test.setUp(driver).$does(function() {
+          driver.callFunction(FAIL_FN);
+        });
+        test.tearDown(driver);
+        test.tearDownPage().$does(function() {
+          ASYNC_TEST_CASE.continueTesting();
+          control.$verifyAll();
+          assertFalse(testCase.isSuccess());
+        });
+        control.$replayAll();
+
+        var testCase = createTestCase(test, '');
+        ASYNC_TEST_CASE.waitForAsync('testCase.runTests');
+        testCase.runTests();
+      }
+
+
+      function testRunningATestThatFailsInTheTestFunction() {
+        var test = createMockTest();
+        test.setUpPage();
+        test.setUp(driver);
+        test.testFn(driver).$does(FAIL_FN);
+        test.tearDown(driver);
+        test.tearDownPage().$does(function() {
+          ASYNC_TEST_CASE.continueTesting();
+          control.$verifyAll();
+          assertFalse(testCase.isSuccess());
+        });
+        control.$replayAll();
+
+        var testCase = createTestCase(test, '');
+        ASYNC_TEST_CASE.waitForAsync('testCase.runTests');
+        testCase.runTests();
+      }
+
+
+      function testRunningATestThatHasATestFunctionCommandFail() {
+        var test = createMockTest();
+        test.setUpPage();
+        test.setUp(driver);
+        test.testFn(driver).$does(function() {
+          driver.callFunction(FAIL_FN);
+        });
+        test.tearDown(driver);
+        test.tearDownPage().$does(function() {
+          ASYNC_TEST_CASE.continueTesting();
+          control.$verifyAll();
+          assertFalse(testCase.isSuccess());
+        });
+        control.$replayAll();
+
+        var testCase = createTestCase(test, '');
+        ASYNC_TEST_CASE.waitForAsync('testCase.runTests');
+        testCase.runTests();
+      }
+
+
+      function testRunningATestThatFailsInTearDown() {
+        var test = createMockTest();
+        test.setUpPage();
+        test.setUp(driver);
+        test.testFn(driver);
+        test.tearDown(driver).$does(FAIL_FN);
+        test.tearDownPage().$does(function() {
+          ASYNC_TEST_CASE.continueTesting();
+          control.$verifyAll();
+          assertFalse(testCase.isSuccess());
+        });
+        control.$replayAll();
+
+        var testCase = createTestCase(test, '');
+        ASYNC_TEST_CASE.waitForAsync('testCase.runTests');
+        testCase.runTests();
+      }
+
+
+      function testRunningATestThatHasATearDownCommandFail() {
+        var test = createMockTest();
+        test.setUpPage();
+        test.setUp(driver);
+        test.testFn(driver);
+        test.tearDown(driver).$does(function() {
+          driver.callFunction(FAIL_FN);
+        });
+        test.tearDownPage().$does(function() {
+          ASYNC_TEST_CASE.continueTesting();
+          control.$verifyAll();
+          assertFalse(testCase.isSuccess());
+        });
+        control.$replayAll();
+
+        var testCase = createTestCase(test, '');
+        ASYNC_TEST_CASE.waitForAsync('testCase.runTests');
+        testCase.runTests();
+      }
+
+
+      function testRunningATestThatFailsInSetupAndAgainInTearDown() {
+        var test = createMockTest();
+        test.setUpPage();
+        test.setUp(driver).$does(FAIL_FN);
+        test.tearDown(driver).$does(FAIL_FN);
+        test.tearDownPage().$does(function() {
+          ASYNC_TEST_CASE.continueTesting();
+          control.$verifyAll();
+          assertFalse(testCase.isSuccess());
+        });
+        control.$replayAll();
+
+        var testCase = createTestCase(test, '');
+        ASYNC_TEST_CASE.waitForAsync('testCase.runTests');
+        testCase.runTests();
+      }
+
+
+      function testRunningATestThatFailsInTheTestFunctionAndAgainInTearDown() {
+        var test = createMockTest();
+        test.setUpPage();
+        test.setUp(driver);
+        test.testFn(driver).$does(FAIL_FN);
+        test.tearDown(driver).$does(FAIL_FN);
+        test.tearDownPage().$does(function() {
+          ASYNC_TEST_CASE.continueTesting();
+          control.$verifyAll();
+          assertFalse(testCase.isSuccess());
+        });
+        control.$replayAll();
+
+        var testCase = createTestCase(test, '');
+        ASYNC_TEST_CASE.waitForAsync('testCase.runTests');
+        testCase.runTests();
+      }
+
+
+
+      /**
+       * Creates a mock object with the expected test scaffolding.
+       * @return {goog.testing.StrictMock} A mock test object.
+       */
+      function createMockTest() {
+        var fakeTestObj = {
+          setUpPage: goog.nullFunction,
+          setUp: goog.nullFunction,
+          testFn: goog.nullFunction,
+          tearDown: goog.nullFunction,
+          tearDownPage: goog.nullFunction
+        };
+        return control.createStrictMock(fakeTestObj, true);
+      }
+
+
+      /**
+       * Creates a new webdriver.TestCase.
+       * @param {goog.testing.StrictMock} mock A mock test object to add to the
+       *     test case.
+       * @param {string} testName The name of the test.
+       * @return {webdriver.TestCase} A new test case.
+       */
+      function createTestCase(mock, testName) {
+        var testCase = new webdriver.TestCase(testName, function() {
+          return driver;
+        });
+
+        // Make sure the testsToRun parameter is null (it is automatically set
+        // frm the URL parameter upon testCase creation).
+        testCase.testsToRun_ = null;
+
+        // Patch in the test functions.
+        testCase.setUpPage = goog.bind(mock.setUpPage, mock);
+        testCase.setUp = goog.bind(mock.setUp, mock);
+        testCase.add(new webdriver.TestCase.Test(testName, mock.testFn, mock));
+        testCase.tearDown = goog.bind(mock.tearDown, mock);
+        testCase.tearDownPage = goog.bind(mock.tearDownPage, mock);
+
+        testCase.setTestRunner({
+          hasErrors : goog.functions.FALSE,
+          isStrict: goog.functions.TRUE
+        });
+        testCase.setCompletedCallback(goog.nullFunction);
+
+        return testCase;
+      }
+    </script>
+  </body>
+</html>

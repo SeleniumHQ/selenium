@@ -24,6 +24,7 @@ limitations under the License.
 goog.provide('webdriver.LocalCommandProcessor');
 
 goog.require('goog.array');
+goog.require('goog.debug.Logger');
 goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('goog.json');
@@ -123,9 +124,8 @@ webdriver.LocalCommandProcessor.onResponse_ = function(command, e) {
   }
 
   var rawResponse = goog.json.parse(jsonResponse);
-  webdriver.logging.info(
-      'receiving:\n' +
-      webdriver.logging.describe(rawResponse, '  '));
+  goog.debug.Logger.getLogger('webdriver.LocalCommandProcessor').fine(
+      'receiving:\n' + jsonResponse);
 
   var response = new webdriver.Response(
       rawResponse['isError'],
@@ -165,13 +165,13 @@ webdriver.LocalCommandProcessor.prototype.dispatchDriverCommand = function(
     }
   }
 
-  webdriver.logging.info(
-      'sending:\n' +
-      webdriver.logging.describe(jsonCommand, '  '));
+  jsonCommand = goog.json.serialize(jsonCommand);
+  goog.debug.Logger.getLogger('webdriver.LocalCommandProcessor').fine(
+      'sending:\n' + jsonCommand);
 
   this.documentElement_.setAttribute(
       webdriver.LocalCommandProcessor.MessageAttribute_.COMMAND,
-      goog.json.serialize(jsonCommand));
+      jsonCommand);
 
   goog.events.listen(this.documentElement_,
       webdriver.LocalCommandProcessor.EventType_.RESPONSE,

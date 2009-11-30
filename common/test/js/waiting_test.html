@@ -42,14 +42,10 @@
       var clickToHide = driver.findElement({id: 'clickToHide'});
 
       clickToShow.click();
-      driver.callFunction(webdriver.logging.info, null,
-          'waiting for black box to be visible');
       driver.wait(clickToHide.isDisplayed, 4000, clickToHide);
       assertThat(clickToHide.isDisplayed(), equals(true));
 
       clickToHide.click();
-      driver.callFunction(webdriver.logging.info, null,
-          'waiting for black box to not be visible');
       driver.waitNot(clickToHide.isDisplayed, 4000, clickToHide);
       assertThat(clickToHide.isDisplayed(), equals(false));
     }

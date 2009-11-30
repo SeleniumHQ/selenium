@@ -66,7 +66,8 @@ function testCanExecuteScriptThatReturnsABoolean(driver) {
 
 
 function testScriptsWithArrayReturnValues(driver) {
-  var result = driver.executeScript(
+  driver.get(TEST_PAGE.xhtmlTestPage);
+  driver.executeScript(
       'return [document.body, false, true, null, undefined, "abc", ' +
       '123, ["def", 456]]');
   driver.callFunction(function(response) {

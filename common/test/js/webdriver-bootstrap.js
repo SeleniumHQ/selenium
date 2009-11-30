@@ -26,11 +26,12 @@ limitations under the License.
  *   <head>
  *     <script src="webdriver-bootstrap.js"></script>
  *     <script>
- *       goog.require('webdriver.logging');
+ *       goog.require('goog.debug.Logger');
  *     </script>
  *     <script>
  *       window.onload = function() {
- *         webdriver.logging.info('The page has finished loading');
+ *         goog.debug.Logger.getLogger('').info(
+ *             'The page has finished loading');
  *       };
  *     </script>
  *   </head>

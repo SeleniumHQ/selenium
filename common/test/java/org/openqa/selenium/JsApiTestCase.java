@@ -60,21 +60,16 @@ public class JsApiTestCase extends AbstractDriverTestCase {
   }
 
   private static enum Query {
-    // Need to support webdriver and closure for now. webdriver runner is going away soon
     IS_FINISHED("return !!tr && tr.isFinished();"),
-    NUM_PASSED("return tr.getNumPassed ? tr.getNumPassed() : tr.testCase.result_.successCount;"),
-    NUM_TESTS("return tr.getNumTests ? tr.getNumTests() : tr.testCase.result_.totalCount;"),
-    NUM_ERRORS("return tr.testCase ? tr.testCase.result_.errors.length : 0;"),
+    NUM_PASSED("return tr.testCase.result_.successCount;"),
+    NUM_TESTS("return tr.testCase.result_.totalCount;"),
+    NUM_ERRORS("return tr.testCase.result_.errors.length;"),
     GET_REPORT("return tr.getReport();");
-
-    private static final String TEST_RUNNER =
-        "var tr = window.G_testRunner || "
-        + "(window.WD_getTestRunner ? window.WD_getTestRunner() : null);";
 
     private final String script;
 
     private Query(String script) {
-      this.script = TEST_RUNNER + script;
+      this.script = "var tr = window.G_testRunner;" + script;
     }
   }
 }

@@ -5,6 +5,11 @@
   <script src="webdriver-bootstrap.js"></script>
   <script src="testbase.js"></script>
   <script type="text/javascript">
+    goog.require('goog.testing.MockClock');
+  </script>
+  <script type="text/javascript">
+var mockClock = new goog.testing.MockClock();
+
 function setUpPage() {
   openTestWindow();
 }
@@ -17,6 +22,11 @@ function tearDownPage() {
 
 function setUp(driver) {
   switchToTestWindow(driver);
+}
+
+
+function tearDown() {
+  mockClock.uninstall();
 }
 
 
@@ -40,7 +50,7 @@ function testShouldReturnTheSourceOfAPage(driver) {
 
 
 function testUsersCanOverrideSetTimeoutWithoutBreakingWebDriver(driver) {
-  window.setTimeout = goog.nullFunction;
+  mockClock.install();
   var count = 0;
   function incrementCount() {
     count += 1;
@@ -50,6 +60,8 @@ function testUsersCanOverrideSetTimeoutWithoutBreakingWebDriver(driver) {
   driver.sleep(5);
   driver.callFunction(function() {
     assertEquals(0, count);
+    mockClock.tick(5);
+    assertEquals(2, count);
   });
   // If this doesn't work, it will most likely result in the tests timing out.
 }
