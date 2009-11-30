@@ -617,14 +617,8 @@ BrowserBot.prototype.openWindow = function(url, windowID) {
     if (url != "") {
         url = absolutify(url, this.baseUrl);
     }
-    if (browserVersion.isHTA) {
-        // in HTA mode, calling .open on the window interprets the url relative to that window
-        // we need to absolute-ize the URL to make it consistent
-        var child = this.getCurrentWindow().open(url, windowID);
-        selenium.browserbot.openedWindows[windowID] = child;
-    } else {
-        this.getCurrentWindow().open(url, windowID);
-    }
+    var child = this.getCurrentWindow().open(url, windowID);
+    selenium.browserbot.openedWindows[windowID] = child;
 };
 
 BrowserBot.prototype.setIFrameLocation = function(iframe, location) {
@@ -929,11 +923,16 @@ BrowserBot.prototype._isSamePage = function(windowObject, originalDocument, orig
 };
 
 BrowserBot.prototype._isSameDocument = function(originalDocument, currentDocument) {
+    if (currentDocument == null) return false;
     return originalDocument === currentDocument;
 };
 
 
 BrowserBot.prototype.getReadyState = function(windowObject, currentDocument) {
+     if (currentDocument == null) {
+       return null;
+    }
+
     var rs = currentDocument.readyState;
     if (rs == null) {
        if ((this.buttonWindow!=null && this.buttonWindow.document.readyState == null) // not proxy injection mode (and therefore buttonWindow isn't null)
@@ -1701,7 +1700,6 @@ BrowserBot.prototype._modifyElementTarget = function(element) {
     }
 }
 
-
 BrowserBot.prototype._handleClickingImagesInsideLinks = function(targetWindow, element) {
     var itrElement = element;
     while (itrElement != null) {
@@ -2378,6 +2376,26 @@ SafariBrowserBot.prototype.refresh = function() {
         win.location.reload(true);
     }
 };
+
+SafariBrowserBot.prototype._modifyElementTarget = function(element) {
+    LOG.info("safari modifyElement is called");
+    if (element.target) {
+        if (element.target == "_blank" || /^selenium_blank/.test(element.target) ) {
+            var tagName = getTagName(element);
+            if (tagName == "a" || tagName == "form") {
+                var newTarget = "selenium_blank" + Math.round(100000 * Math.random());
+                LOG.warn("Link has target '_blank', which is not supported in Selenium!  Randomizing target to be: " + newTarget);
+                if (tagName == "a") {
+                    this.browserbot.openWindow(element.href, newTarget);
+                } else {
+                    this.browserbot.openWindow('', newTarget);
+                }
+                element.target = newTarget;
+            }
+        }
+    }
+};
+
 
 IEBrowserBot.prototype._fireEventOnElement = function(eventType, element, clientX, clientY) {
     var win = this.getCurrentWindow();
