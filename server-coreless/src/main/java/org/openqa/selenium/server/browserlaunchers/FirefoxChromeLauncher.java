@@ -17,17 +17,17 @@
 package org.openqa.selenium.server.browserlaunchers;
 
 
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
 import org.openqa.selenium.server.ApplicationRegistry;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.browserlaunchers.locators.Firefox2or3Locator;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
 
@@ -60,8 +60,11 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
         	throw new InvalidBrowserExecutableException("The specified path to the browser executable is invalid.");
         }
         this.browserInstallation = browserInstallation;
-      
-        shell.setLibraryPath(browserInstallation.libraryPath());
+
+        // sqlite on Snow Leopard clashes with the one that Firefox provides 
+        if (isSnowLeopard()) {
+            shell.setLibraryPath(browserInstallation.libraryPath());
+        }
         // Set MOZ_NO_REMOTE in order to ensure we always get a new Firefox process
         // http://blog.dojotoolkit.org/2005/12/01/running-multiple-versions-of-firefox-side-by-side
         shell.setEnvironmentVariable("MOZ_NO_REMOTE", "1");
@@ -75,7 +78,6 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
     protected void launch(String url) {
         final String profilePath;
         final String homePage;
-        String profile = "";
 
         try {
             homePage = new ChromeUrlConvert().convert(url);

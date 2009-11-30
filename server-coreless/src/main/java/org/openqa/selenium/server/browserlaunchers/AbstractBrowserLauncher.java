@@ -4,6 +4,9 @@ package org.openqa.selenium.server.browserlaunchers;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * Runs the specified command path to start the browser, and kills the process to quit.
  *
@@ -52,4 +55,26 @@ public abstract class AbstractBrowserLauncher implements BrowserLauncher {
         }
     }
 
+    protected boolean isSnowLeopard() {
+        boolean isSnowLeopard = false;
+        String osName = System.getProperty("os.name", "unknown").toLowerCase();
+        String osVersion = System.getProperty("os.version", "0.0.0");
+
+        if (osName.contains("darwin")) {
+            Pattern pattern = Pattern.compile("^\\d+\\.(\\d+).*");
+            Matcher matcher = pattern.matcher(osVersion);
+            if (matcher.matches()) {
+                try {
+                    int min = Integer.parseInt(matcher.group());
+                    if (min == 6) {
+                        isSnowLeopard = true;
+                    }
+                } catch (NumberFormatException e) {
+                    // Not to worry
+                }
+            }
+
+        }
+        return isSnowLeopard;
+    }
 }

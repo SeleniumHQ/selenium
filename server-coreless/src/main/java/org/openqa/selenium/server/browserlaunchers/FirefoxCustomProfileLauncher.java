@@ -21,7 +21,6 @@ import org.openqa.jetty.log.LogFactory;
 import org.openqa.selenium.server.ApplicationRegistry;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
-import org.openqa.selenium.server.browserlaunchers.FirefoxChromeLauncher.FileLockRemainedException;
 import org.openqa.selenium.server.browserlaunchers.locators.Firefox2or3Locator;
 
 import java.io.File;
@@ -54,7 +53,11 @@ public class FirefoxCustomProfileLauncher extends AbstractBrowserLauncher {
         super(sessionId, configuration, browserOptions);
         init();
         this.browserInstallation = browserInstallation;
-        shell.setLibraryPath(browserInstallation.libraryPath());
+
+        // sqlite on Snow Leopard clashes with the one that Firefox provides
+        if (isSnowLeopard()) {
+            shell.setLibraryPath(browserInstallation.libraryPath());
+        }
         // Set MOZ_NO_REMOTE in order to ensure we always get a new Firefox process
         // http://blog.dojotoolkit.org/2005/12/01/running-multiple-versions-of-firefox-side-by-side
         shell.setEnvironmentVariable("MOZ_NO_REMOTE", "1");
