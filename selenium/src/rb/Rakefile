@@ -14,7 +14,7 @@ require 'spec/rake/spectask'
 require 'selenium/rake/tasks'
 
 CLEAN.include("COMMENTS")
-CLEAN.include('lib/selenium/client/generated_driver.rb', '**/*.log', "target", "pkg", "test/integration/reporting/dummy_project/target")
+CLEAN.include('**/*.log', "target", "pkg", "test/integration/reporting/dummy_project/target")
 
 if ENV["SELENIUM_RC_JAR"]
 	# User override
@@ -57,17 +57,12 @@ file "target/iedoc.xml" do
   end
 end
 
-desc "Generate driver from iedoc.xml"
-file "lib/selenium/client/generated_driver.rb" => [ "target/iedoc.xml" ] do
-  sh "ant generate-sources"
-end
-
 desc "Run unit tests"
 Rake::TestTask.new(:'test:unit') do |t|
   t.test_files = FileList['test/unit/**/*_tests.rb']
   t.warning = true
 end
-task :"test:unit" => "lib/selenium/client/generated_driver.rb"
+task :"test:unit"
 
 Selenium::Rake::RemoteControlStartTask.new do |rc|
   rc.port = 4444
@@ -99,7 +94,7 @@ Spec::Rake::SpecTask.new("test:integration") do |t|
     t.spec_opts << "--format=Selenium::RSpec::SeleniumTestReportFormatter:./target/integration_tests_report.html"
     t.spec_opts << "--format=progress"                
 end
-task :"test:integration" => ["lib/selenium/client/generated_driver.rb"]
+task :"test:integration"
 
 begin
   gem "deep_test", ">=1.2.1"
@@ -223,7 +218,7 @@ Rake::GemPackageTask.new(specification) do |package|
 end
 
 desc "Build the RubyGem"
-task :gem => "lib/selenium/client/generated_driver.rb"
+task :gem
  
 desc "Generate documentation"
 Rake::RDocTask.new("rdoc") do |rdoc|
