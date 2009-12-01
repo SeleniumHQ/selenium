@@ -23,6 +23,13 @@
 		289233AF0DB2D0DB0083E9F9 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 289233AB0DB2D0DB0083E9F9 /* RootViewController.m */; };
 		289233B00DB2D0DB0083E9F9 /* FlipsideViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 289233AD0DB2D0DB0083E9F9 /* FlipsideViewController.m */; };
 		644F14ED10AB4EF400858ECA /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 644F14EC10AB4EF400858ECA /* Settings.bundle */; };
+		649EDC0210C5981B00E66D06 /* WebDriverUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = FD61E6980FE150E5006E1274 /* WebDriverUtilities.m */; };
+		649EDC0310C5983700E66D06 /* FlipsideViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 289233AD0DB2D0DB0083E9F9 /* FlipsideViewController.m */; };
+		649EDC0410C5984B00E66D06 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 289233AB0DB2D0DB0083E9F9 /* RootViewController.m */; };
+		649EDC0510C5986400E66D06 /* WebDriverRequestFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = FD61E6A80FE151D2006E1274 /* WebDriverRequestFetcher.m */; };
+		649EDC0610C5986B00E66D06 /* WebDriverPreferences.m in Sources */ = {isa = PBXBuildFile; fileRef = FD61E6A60FE151D2006E1274 /* WebDriverPreferences.m */; };
+		649EDC8510C5988000E66D06 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
+		649EDC8610C5989200E66D06 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = FD61E69D0FE151A4006E1274 /* libsqlite3.dylib */; };
 		8301250C0EFF044900BA9BE6 /* Session.m in Sources */ = {isa = PBXBuildFile; fileRef = 839988650EE515C90074D106 /* Session.m */; };
 		8311AB7A0F44EF0500921B78 /* selenium-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 8311AB790F44EF0500921B78 /* selenium-icon.png */; };
 		8316A1BF0EECCCA300FE869C /* Context.m in Sources */ = {isa = PBXBuildFile; fileRef = 8316A1BE0EECCCA300FE869C /* Context.m */; };
@@ -259,9 +266,11 @@
 			files = (
 				17C3C9FE0FE141BD00D65EA0 /* libjson.a in Frameworks */,
 				83998A1D0EE763490074D106 /* Foundation.framework in Frameworks */,
+				649EDC8510C5988000E66D06 /* UIKit.framework in Frameworks */,
 				839D64580F2EB4A7009645BF /* CoreGraphics.framework in Frameworks */,
 				83998A1C0EE763490074D106 /* CFNetwork.framework in Frameworks */,
 				839D642B0F2EB400009645BF /* libCocoaHTTPServer.a in Frameworks */,
+				649EDC8610C5989200E66D06 /* libsqlite3.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -710,6 +719,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				649EDC0610C5986B00E66D06 /* WebDriverPreferences.m in Sources */,
+				649EDC0510C5986400E66D06 /* WebDriverRequestFetcher.m in Sources */,
+				649EDC0410C5984B00E66D06 /* RootViewController.m in Sources */,
+				649EDC0310C5983700E66D06 /* FlipsideViewController.m in Sources */,
+				649EDC0210C5981B00E66D06 /* WebDriverUtilities.m in Sources */,
 				839989060EE605910074D106 /* GTMIPhoneUnitTestDelegate.m in Sources */,
 				839989070EE605920074D106 /* GTMIPhoneUnitTestMain.m in Sources */,
 				839989080EE605930074D106 /* GTMSenTestCase.m in Sources */,
