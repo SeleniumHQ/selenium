@@ -82,7 +82,7 @@ WdCertOverrideService.prototype.hasMatchingOverride = function(
         this.ERROR_TIME;
     localdump("Bits: " + aOverrideBits.value);
   } else {
-    retval = this.origListener.hasMatchingOverride(aHostName, aPort,
+    retval = this.origListener_.hasMatchingOverride(aHostName, aPort,
               aCert, aOverrideBits, aIsTemporary);
   }
 
