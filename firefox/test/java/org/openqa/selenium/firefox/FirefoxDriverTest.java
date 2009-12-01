@@ -258,15 +258,19 @@ public class FirefoxDriverTest extends AbstractDriverTestCase {
     profile.setAcceptUntrustedCertificates(false);
     String url = GlobalTestEnvironment.get().getAppServer().whereIsSecure("simpleTest.html");
 
+    WebDriver secondDriver = null;
     try {
-      WebDriver secondDriver = new FirefoxDriver(profile);
+      secondDriver = new FirefoxDriver(profile);
       secondDriver.get(url);
       String gotTitle = secondDriver.getTitle();
-      secondDriver.quit();
-      assertEquals("Page Load Error", gotTitle);
+      assertFalse("Hello WebDriver".equals(gotTitle));
     } catch (Exception e) {
       e.printStackTrace();
       fail("Creating driver with untrusted certificates set to false failed.");
+    } finally {
+      if (secondDriver != null) {
+        secondDriver.quit();
+      }
     }
   }
 }

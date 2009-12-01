@@ -83,7 +83,7 @@ function testShouldFireEventsInTheRightOrder(driver) {
   // there may be an additional blur/focus events captured if the window's focus
   // state changes before the mouseup event fires.
   assertThat(text,
-      matchesRegex(/mousedown (focus ((focus|blur) )*)?mouseup click/));
+      matchesRegex(/mousedown (focus ((focus|blur) )*)?((mouseover) *)?mouseup click/));
 }
 
 
