@@ -25,8 +25,7 @@ function testCanDeselectASingleOptionFromASelectWhichAllowsMultipleChoices(
   driver.get(TEST_PAGE.formPage);
   var multiSelect = driver.findElement({id: "multi"});
   multiSelect.findElements({tagName: "option"});
-  driver.callFunction(function(response) {
-    var options = response.value;
+  driver.callFunction(function(options) {
     var option = options[0];
     assertThat(option.isSelected(), is(true));
     option.toggle();
@@ -42,8 +41,7 @@ function testShouldNotBeAbleToDeselectAnOptionFromANormalSelect(driver) {
   driver.get(TEST_PAGE.formPage);
   var select = driver.findElement({xpath:"//select[@name='selectomatic']"});
   select.findElements({tagName: "option"});
-  driver.callFunction(function(response) {
-    var options = response.value;
+  driver.callFunction(function(options) {
     options[0].toggle();
     driver.catchExpectedError();
   });
@@ -53,8 +51,7 @@ function testShouldBeAbleToChangeTheSelectedOptionInASelect(driver) {
   driver.get(TEST_PAGE.formPage);
   var selectBox = driver.findElement({xpath:"//select[@name='selectomatic']"});
   selectBox.findElements({tagName: "option"});
-  driver.callFunction(function(response) {
-    var options = response.value;
+  driver.callFunction(function(options) {
     var one = options[0];
     var two = options[1];
     assertThat(one.isSelected(), is(true));
@@ -72,8 +69,7 @@ function testCanSelectMoreThanOneOptionFromASelectWhichAllowsMultipleChoices(
   driver.get(TEST_PAGE.formPage);
   var multiSelect = driver.findElement({id: "multi"});
   multiSelect.findElements({tagName: "option"});
-  driver.callFunction(function(response) {
-    var options = response.value;
+  driver.callFunction(function(options) {
     goog.array.forEach(options, function(option) {
       option.setSelected();
     });

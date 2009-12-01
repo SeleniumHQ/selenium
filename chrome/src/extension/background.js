@@ -226,6 +226,8 @@ chrome.extension.onConnect.addListener(function(port) {
   }
   
   if (ChromeDriver.doFocusOnNextOpenedTab) {
+    console.log("Setting active port");
+    console.log(port);
     ChromeDriver.activePort = port;
     setActiveTabDetails(port.tab);
     //Re-parse the last request we sent if we didn't get a response,
@@ -686,6 +688,7 @@ function getWindowHandles() {
 }
 
 function resetActiveTabDetails() {
+  console.log("resetting active port. Nothing will be active");
   ChromeDriver.activePort = null;
   ChromeDriver.hasHwnd = false;
   ChromeDriver.activeTabId = null;
@@ -712,8 +715,11 @@ function switchToDefaultContent() {
         ChromeDriver.isBlockedWaitingForResponse = false;
         parseRequest({request: 'switchToFrameByIndex', index: 0});
       } else {
+        console.log("switching to default content port");
         ChromeDriver.activePort = ChromeDriver.tabs[tab].mainPort;
+        console.log(ChromeDriver.activePort);
         sendResponseToParsedRequest({statusCode: 0}, false);
+        break;
       }
       return;
     }
@@ -917,6 +923,7 @@ function setActivePortByWindowName(handle) {
   for (var tab in ChromeDriver.tabs) {
     if (ChromeDriver.tabs[tab].windowName == handle || 
         ChromeDriver.tabs[tab].mainPort.name == handle) {
+      console.log("Setting active port by window handle");
       ChromeDriver.activePort = ChromeDriver.tabs[tab].mainPort;
       chrome.tabs.get(ChromeDriver.tabs[tab].tabId, setActiveTabDetails);
       chrome.tabs.update(ChromeDriver.tabs[tab].tabId, {selected: true});

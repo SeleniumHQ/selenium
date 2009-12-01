@@ -40,9 +40,9 @@ public class SingleTestSuite extends TestCase {
   private final static String SELENIUM = "org.openqa.selenium.SeleneseBackedWebDriver";
 
   public static Test suite() throws Exception {
-    String driver = FIREFOX;
+    String driver = FIREFOX_TEST;
 
-    //System.setProperty("webdriver.development", "true");
+    System.setProperty("webdriver.development", "true");
     System.setProperty("jna.library.path", "..\\build;build");
     //System.setProperty("webdriver.selenium.server.port", String.valueOf(findFreePort()));
 //    System.setProperty("webdriver.firefox.useExisting", "true");
@@ -54,7 +54,7 @@ public class SingleTestSuite extends TestCase {
         .addSourceDir("firefox")
         .usingDriver(driver)
         .keepDriverInstance()
-        //.includeJavascriptT ests()
+        //.includeJavascriptTests()
         .onlyRun("FirefoxDriverTest")
         //.onlyRun("JavascriptEnabledDriverTest")
         //.method("testShouldReturnTheSourceOfAPage")

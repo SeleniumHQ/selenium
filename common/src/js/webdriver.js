@@ -24,14 +24,15 @@ goog.provide('webdriver.WebDriver');
 goog.provide('webdriver.WebDriver.EventType');
 goog.provide('webdriver.WebDriver.Speed');
 
+goog.require('goog.debug.Logger');
 goog.require('goog.events');
 goog.require('goog.events.EventTarget');
+goog.require('webdriver.By.Locator');
 goog.require('webdriver.Command');
 goog.require('webdriver.CommandName');
 goog.require('webdriver.Context');
 goog.require('webdriver.Response');
 goog.require('webdriver.WebElement');
-goog.require('webdriver.logging');
 goog.require('webdriver.timing');
 
 
@@ -67,6 +68,13 @@ goog.require('webdriver.timing');
  */
 webdriver.WebDriver = function(commandProcessor) {
   goog.events.EventTarget.call(this);
+
+  /**
+   * The logger for this instance.
+   * @type {!goog.debug.Logger}
+   * @private
+   */
+  this.logger_ = goog.debug.Logger.getLogger('webdriver.WebDriver');
 
   /**
    * The command processor to use for executing commands.
@@ -108,15 +116,6 @@ webdriver.WebDriver = function(commandProcessor) {
    * @private
    */
   this.context_ = new webdriver.Context();
-
-  /**
-   * Whether this instance is locked into its current session. Once locked in,
-   * any further calls to {@code webdriver.WebDriver.prototype.newSession} will
-   * be ignored.
-   * @type {boolean}
-   * @private
-   */
-  this.sessionLocked_ = false;
 
   /**
    * This instance's current session ID.  Set with the
@@ -221,6 +220,10 @@ webdriver.WebDriver.prototype.addCommand = function(name, opt_element) {
  *     commands).
  */
 webdriver.WebDriver.prototype.isIdle = function() {
+  if (this.isDisposed()) {
+    return true;
+  }
+
   // If there is a finished command on the pending command queue, but it
   // failed, then the failure hasn't been dealt with yet and the driver will
   // not process any more commands, so we consider this idle.
@@ -236,14 +239,15 @@ webdriver.WebDriver.prototype.isIdle = function() {
 
 /**
  * Aborts the specified command and all of its pending subcommands.
- * @param {webdriver.Command} command The command to abort.
+ * @param {webdriver.Command|webdriver.WebDriver} command The command to abort.
  * @return {number} The total number of commands aborted. A value of 0
  *     indicates that the given command was not a pending command.
  */
 webdriver.WebDriver.prototype.abortCommand = function(command) {
-  var index = goog.array.findIndexRight(this.pendingCommands_, function(cmd) {
-    return cmd == command;
-  });
+  var index = (null == command || this == command) ? 0 :
+      goog.array.findIndexRight(this.pendingCommands_, function(cmd) {
+        return cmd == command;
+      });
   if (index >= 0) {
     var numAborted = this.pendingCommands_.length - index;
     var totalNumAborted = numAborted;
@@ -267,7 +271,7 @@ webdriver.WebDriver.prototype.abortCommand = function(command) {
  */
 webdriver.WebDriver.prototype.pauseImmediately = function() {
   this.isPaused_ = true;
-  webdriver.logging.debug('Webdriver paused');
+  this.logger_.fine('WebDriver paused');
   this.dispatchEvent(webdriver.WebDriver.EventType.PAUSED);
 };
 
@@ -278,7 +282,7 @@ webdriver.WebDriver.prototype.pauseImmediately = function() {
  */
 webdriver.WebDriver.prototype.resume = function() {
   this.isPaused_ = false;
-  webdriver.logging.debug('Webdriver resumed');
+  this.logger_.fine('WebDriver resumed');
   this.dispatchEvent(webdriver.WebDriver.EventType.RESUMED);
 };
 
@@ -295,7 +299,7 @@ webdriver.WebDriver.prototype.processCommands_ = function() {
 
   if (pendingCommand && pendingCommand.getResponse().isFailure) {
     // Or should we be throwing this to be caught by window.onerror?
-    webdriver.logging.error(
+    this.logger_.severe(
         'Unhandled command failure; halting command processing:\n' +
         pendingCommand.getResponse().getErrorMessage());
     return;
@@ -315,7 +319,7 @@ webdriver.WebDriver.prototype.processCommands_ = function() {
     nextCommand.setParentEventTarget(parentTarget);
     this.pendingCommands_.push(nextCommand);
     this.queuedCommands_.push([]);
-    this.commandProcessor_.execute(nextCommand, this.sessionId_, this.context_);
+    this.commandProcessor_.execute(nextCommand);
   }
 };
 
@@ -391,6 +395,40 @@ webdriver.WebDriver.prototype.catchExpectedError = function(opt_errorMsg,
 
 
 /**
+ * Queueus a command to call the given function if and only if the previous
+ * command fails. Since failed commands do not have a result, the function
+ * called will not be given the return value of the previous command.
+ * @param {function} fn The function to call if the previous command fails.
+ * @param {Object} opt_selfObj The object in whose scope to call the function.
+ * @param {*} var_args Any arguments to pass to the function.
+ */
+webdriver.WebDriver.prototype.ifPreviousCommandFailsCall = function(
+    fn, opt_selfObj, var_args) {
+  var args = arguments;
+  var currentFrame = goog.array.peek(this.queuedCommands_);
+  var previousCommand = goog.array.peek(currentFrame);
+  if (!previousCommand) {
+    throw new Error('No commands in the queue to expect an error from');
+  }
+  var commandFailed = false;
+  var key = goog.events.listenOnce(previousCommand,
+      webdriver.Command.ERROR_EVENT, function(e) {
+        commandFailed = true;
+        this.abortCommand(e.currentTarget);
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }, /*capture phase*/true, this);
+  this.callFunction(function() {
+    goog.events.unlistenByKey(key);
+    if (commandFailed) {
+      return this.callFunction.apply(this, args);
+    }
+  }, this);
+};
+
+
+/**
  * Adds a command to pause this driver so it will not execute anymore commands
  * until {@code #resume()} is called. When this command executes, a
  * {@code webdriver.WebDriver.EventType.PAUSED} event will be dispatched.
@@ -425,12 +463,9 @@ webdriver.WebDriver.prototype.callFunction = function(fn, opt_selfObj,
   var args = goog.array.slice(arguments, 2);
   var frame = goog.array.peek(this.queuedCommands_);
   var previousCommand = goog.array.peek(frame);
-  var wrappedFunction = goog.bind(function() {
-    args.push(previousCommand ? previousCommand.getResponse() : null);
-    return fn.apply(opt_selfObj, args);
-  }, this);
+  args.push(previousCommand ? previousCommand.getFutureResult() : null);
   return this.addCommand(webdriver.CommandName.FUNCTION).
-      setParameters(wrappedFunction).
+      setParameters(fn, opt_selfObj, args).
       getFutureResult();
 };
 
@@ -478,7 +513,13 @@ webdriver.WebDriver.prototype.wait = function(conditionFn, timeout, opt_self,
         if (ellapsed > timeout) {
           throw Error('Wait timed out after ' + ellapsed + 'ms');
         }
-        callFunction(pollFunction, null, startTime, pendingFuture);
+        // If we pass the pending future in as is, the AbstractCommandProcessor
+        // will try to resolve it to its value. However, if we're scheduling
+        // this function, it's because the future has not been set yet, which
+        // will lead to an error. To avoid this, wrap up the pollFunction in an
+        // anonymous function so the AbstractCommandProcessor does not
+        // interfere.
+        callFunction(goog.bind(pollFunction, null, startTime, pendingFuture));
       }
     }
 
@@ -486,9 +527,8 @@ webdriver.WebDriver.prototype.wait = function(conditionFn, timeout, opt_self,
     checkValue(result);
   }
 
-  // Binding pollFunction for our initial values.
-  var initialPoll = goog.bind(pollFunction, null, 0, null);
-  this.addCommand(webdriver.CommandName.WAIT).setParameters(initialPoll);
+  this.addCommand(webdriver.CommandName.WAIT).
+      setParameters(pollFunction, null, [0, null]);
 };
 
 
@@ -513,24 +553,15 @@ webdriver.WebDriver.prototype.waitNot = function(conditionFn, timeout,
 
 
 /**
- * Request a new session ID.  This is a no-op if this instance is already locked
- * into a session.
- * @param {boolean} lockSession Whether to lock this instance into the returned
- *     session. Once locked into a session, the driver cannot ask for a new
- *     session (a new instance must be created).
+ * Request a new session ID.
  */
-webdriver.WebDriver.prototype.newSession = function(lockSession) {
-  if (lockSession) {
-    this.addCommand(webdriver.CommandName.NEW_SESSION).
-        setSuccessCallback(function(response) {
-          this.sessionLocked_ = lockSession;
-          this.sessionId_ = response.value;
-          this.context_ = response.context;
-        }, this);
-  } else {
-    webdriver.logging.warn(
-        'Cannot start new session; driver is locked into current session');
-  }
+webdriver.WebDriver.prototype.newSession = function() {
+  this.callFunction(function() {
+    this.addCommand(webdriver.CommandName.NEW_SESSION);
+    this.callFunction(function(value) {
+      this.sessionId_ = value;
+    }, this);
+  }, this);
 };
 
 
@@ -542,11 +573,11 @@ webdriver.WebDriver.prototype.newSession = function(lockSession) {
  *     {@code #getWindowHandle()} or {@code #getAllWindowHandles()}.
  */
 webdriver.WebDriver.prototype.switchToWindow = function(name) {
-  this.addCommand(webdriver.CommandName.SWITCH_TO_WINDOW).
-      setParameters(name).
-      setSuccessCallback(function(response) {
-        this.context_ = response.value;
-      }, this);
+  this.callFunction(function() {
+    this.addCommand(webdriver.CommandName.SWITCH_TO_WINDOW).
+        setParameters(name);
+    this.callFunction(this.setContext, this);
+  }, this);
 };
 
 
@@ -561,15 +592,14 @@ webdriver.WebDriver.prototype.switchToWindow = function(name) {
  *     to transfer control to.
  */
 webdriver.WebDriver.prototype.switchToFrame = function(frame) {
-  var commandName = webdriver.CommandName.SWITCH_TO_FRAME;
-  var command;
-  if (goog.isString(frame) || goog.isNumber(frame)) {
-    command = this.addCommand(commandName).setParameters(frame);
-  } else {
-    command = this.addCommand(commandName, frame);
-  }
-  command.setSuccessCallback(function(response) {
-    this.context_ = response.context;
+  this.callFunction(function() {
+    var commandName = webdriver.CommandName.SWITCH_TO_FRAME;
+    var command;
+    if (goog.isString(frame) || goog.isNumber(frame)) {
+      command = this.addCommand(commandName).setParameters(frame);
+    } else {
+      command = this.addCommand(commandName, frame);
+    }
   }, this);
 };
 
@@ -579,11 +609,10 @@ webdriver.WebDriver.prototype.switchToFrame = function(frame) {
  * contains iframes.
  */
 webdriver.WebDriver.prototype.switchToDefaultContent = function() {
-  this.addCommand(webdriver.CommandName.SWITCH_TO_DEFAULT_CONTENT).
-      setParameters(null).
-      setSuccessCallback(function(response) {
-        this.context_ = response.context;
-      }, this);
+  this.callFunction(function() {
+    this.addCommand(webdriver.CommandName.SWITCH_TO_DEFAULT_CONTENT).
+        setParameters(null);
+  }, this);
 };
 
 
@@ -690,12 +719,13 @@ webdriver.WebDriver.prototype.executeScript = function(script, var_args) {
   var args = goog.array.map(
       goog.array.slice(arguments, 1),
       webdriver.WebDriver.wrapScriptArgument_);
-  return this.addCommand(webdriver.CommandName.EXECUTE_SCRIPT).
-      setParameters(script, args).
-      setSuccessCallback(function(response) {
-        response.value = this.unwrapScriptResult_(response.value);
-      }, this).
-      getFutureResult();
+  return this.callFunction(function() {
+    this.addCommand(webdriver.CommandName.EXECUTE_SCRIPT).
+        setParameters(script, args);
+    return this.callFunction(function(prevResult) {
+      return this.unwrapScriptResult_(prevResult);
+    }, this);
+  }, this);
 };
 
 
@@ -704,11 +734,10 @@ webdriver.WebDriver.prototype.executeScript = function(script, var_args) {
  * @param {goog.Uri|string} url The URL to fetch.
  */
 webdriver.WebDriver.prototype.get = function(url) {
-  this.addCommand(webdriver.CommandName.GET).
-      setParameters(url.toString()).
-      setSuccessCallback(function(response) {
-        this.context_ = response.context;
-      }, this);
+  this.callFunction(function() {
+    this.addCommand(webdriver.CommandName.GET).
+        setParameters(url.toString());
+  }, this);
 };
 
 
@@ -765,7 +794,12 @@ webdriver.WebDriver.prototype.getTitle = function() {
  *     issue commands against the located element.
  */
 webdriver.WebDriver.prototype.findElement = function(by) {
-  return webdriver.WebElement.findElement(this, by);
+  var webElement = new webdriver.WebElement(this);
+  var locator = webdriver.By.Locator.checkLocator(by);
+  var command = this.addCommand(webdriver.CommandName.FIND_ELEMENT).
+      setParameters(locator.type, locator.target);
+  webElement.getId().setValue(command.getFutureResult());
+  return webElement;
 };
 
 
@@ -779,7 +813,24 @@ webdriver.WebDriver.prototype.findElement = function(by) {
  * @see webdriver.By.Locator.createFromObj
  */
 webdriver.WebDriver.prototype.isElementPresent = function(by) {
-  return webdriver.WebElement.isElementPresent(this, by);
+  var locator = webdriver.By.Locator.checkLocator(by);
+  return this.callFunction(function() {
+    var findCommand = this.addCommand(webdriver.CommandName.FIND_ELEMENT).
+        setParameters(locator.type, locator.target);
+    var commandFailed = false;
+    var key = goog.events.listenOnce(findCommand,
+        webdriver.Command.ERROR_EVENT, function(e) {
+          commandFailed = true;
+          this.abortCommand(e.currentTarget);
+          e.preventDefault();
+          e.stopPropagation();
+          return false;
+        }, /*capture phase*/true, this);
+    return this.callFunction(function() {
+      goog.events.unlistenByKey(key);
+      return !commandFailed;
+    });
+  }, this);
 };
 
 
@@ -789,9 +840,9 @@ webdriver.WebDriver.prototype.isElementPresent = function(by) {
  * operation can be accessed from the last saved {@code webdriver.Response}
  * object:
  * driver.findElements({xpath: '//div'});
- * driver.callFunction(function(response) {
- *   response.value[0].click();
- *   response.value[1].click();
+ * driver.callFunction(function(value) {
+ *   value[0].click();
+ *   value[1].click();
  *   // etc.
  * });
  * @param {webdriver.By.Locator|{*: string}} by The locator to use for finding
@@ -799,7 +850,22 @@ webdriver.WebDriver.prototype.isElementPresent = function(by) {
  * @see webdriver.By.Locator.createFromObj
  */
 webdriver.WebDriver.prototype.findElements = function(by) {
-  return webdriver.WebElement.findElements(this, by);
+  var locator = webdriver.By.Locator.checkLocator(by);
+  return this.callFunction(function() {
+    this.addCommand(webdriver.CommandName.FIND_ELEMENTS).
+        setParameters(locator.type, locator.target);
+    return this.callFunction(function(ids) {
+      var elements = [];
+      for (var i = 0; i < ids.length; i++) {
+        if (ids[i]) {
+          var element = new webdriver.WebElement(this);
+          element.getId().setValue(ids[i]);
+          elements.push(element);
+        }
+      }
+      return elements;
+    }, this);
+  }, this);
 };
 
 

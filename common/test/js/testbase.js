@@ -6,31 +6,20 @@ goog.require('goog.math.Size');
 goog.require('goog.string');
 goog.require('goog.userAgent');
 goog.require('webdriver.Key');
-goog.require('webdriver.TestRunner');
 goog.require('webdriver.WebElement');
 goog.require('webdriver.asserts');
 goog.require('webdriver.factory');
-goog.require('webdriver.logging');
+goog.require('webdriver.jsunit');
 
 
 
 window.IS_FF_3 = navigator.userAgent.search(/Firefox\/3\.\d+/) > -1;
 
 
-window.onload = function() {
-
+(function() {
   goog.global.whereIs = function(file) {
-    return new goog.Uri(window.location.href).
-        setPath('/common/' + file).
-        setQueryData('').
-        toString();
-  };
-
-  goog.global.toSecureUrl = function(url) {
-    return new goog.Uri(url).
-        setScheme('https').
-        setPort(3443).
-        toString();
+    return window.location.protocol + '//' + window.location.host +
+           '/common/' + file;
   };
 
   var testWindow;
@@ -69,9 +58,4 @@ window.onload = function() {
     richtextPage: whereIs('rich_text.html'),
     resultPage: whereIs('resultPage.html')
   };
-
-  webdriver.logging.setLevel(webdriver.logging.Level.ERROR);
-  webdriver.logging.enableDomLogging(true);
-  webdriver.logging.enableFirebugLogging(false);
-  webdriver.TestRunner.start(webdriver.factory.createLocalWebDriver);
-};
+})();

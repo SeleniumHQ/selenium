@@ -36,8 +36,8 @@
       commandProcessor = new webdriver.FakeCommandProcessor();
       driver = new webdriver.WebDriver(commandProcessor);
       goog.events.listen(driver, webdriver.WebDriver.EventType.ERROR,
-          function() {
-            fail(driver.getPendingCommand().getErrorMessage());
+          function(e) {
+            fail(e.target.getResponse().getErrorMessage());
           });
     }
 
@@ -84,10 +84,10 @@
       driver.callFunction(function() {
         return 'abc';
       });
-      driver.callFunction(function(response) {
-        assertNotUndefined(response);
-        assertNotNull(response);
-        assertEquals('abc', response.value);
+      driver.callFunction(function(prevResult) {
+        assertNotUndefined(prevResult);
+        assertNotNull(prevResult);
+        assertEquals('abc', prevResult);
       });
       dispatchAllCommands();
     }
@@ -104,9 +104,7 @@
 
 
     function testFunctionReturnsValueInAFuture() {
-      var result = driver.callFunction(function() {
-        return 'abc123';
-      });
+      var result = driver.callFunction(goog.functions.constant('abc123'));
       dispatchAllCommands();
       assertNotUndefined(result);
       assertNotNull(result);
@@ -119,9 +117,7 @@
       var result = driver.callFunction(function() {
         return driver.callFunction(function() {
           return driver.callFunction(function() {
-            return driver.callFunction(function() {
-              return 343;
-            });
+            return driver.callFunction(goog.functions.constant(343));
           });
         });
       });
@@ -131,6 +127,73 @@
       assertTrue(result instanceof webdriver.Future);
       assertEquals(343, result.getValue());
     };
+
+
+    function testShouldReturnLastValueOfNestedFunctions() {
+      var result = driver.callFunction(function() {
+        driver.callFunction(goog.functions.constant(15));
+        return driver.callFunction(function(prevResult) {
+          return prevResult + 7;
+        });
+      });
+      dispatchAllCommands();
+      assertNotUndefined(result);
+      assertNotNull(result);
+      assertTrue(result instanceof webdriver.Future);
+      assertEquals(22, result.getValue());
+    }
+
+
+    function testShouldPassNullIfThereWasNoPreviousCommandInTheCurrentFrame() {
+      driver.callFunction(function(prevResult) {
+        assertNull('no prior commands in this frame', prevResult);
+        driver.callFunction(function(prevResult) {
+          assertNull('no prior commands in this frame', prevResult);
+          return 16;
+        });
+        driver.callFunction(function(prevResult) {
+          assertEquals(16, prevResult);
+        });
+        return 17;
+      });
+      driver.callFunction(function(prevResult) {
+        assertEquals(17, prevResult);
+      });
+      dispatchAllCommands();
+    }
+
+
+    function testCapturesUndefinedReturnTypes() {
+      driver.callFunction(goog.nullFunction);
+      driver.callFunction(function(prevResult) {
+        assertUndefined(prevResult);
+      });
+      dispatchAllCommands();
+    }
+
+
+    function testPassesTheLastResultFromTheSameFrameToSequentialFunctions() {
+      driver.callFunction(goog.functions.constant('abc123'));
+      driver.callFunction(function(prevResult) {
+        assertEquals('abc123', prevResult);
+        driver.callFunction(goog.functions.constant('456def'));
+        return 17;
+      });
+      driver.callFunction(function(prevResult) {
+        assertEquals(17, prevResult);
+      });
+      dispatchAllCommands();
+    }
+
+
+    function testShouldResolveFutureArgumentsToTheirSetValueBeforeUse() {
+      var result = driver.callFunction(goog.functions.constant(123));
+      driver.callFunction(goog.functions.constant('abc123'));
+      driver.callFunction(function(value, prevResult) {
+        assertEquals(123, value);
+        assertEquals('abc123', prevResult);
+      }, null, result);
+    }
 
 
     function dispatchAllCommands() {

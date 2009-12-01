@@ -13,7 +13,6 @@
     goog.require('webdriver.FakeCommandProcessor');
     goog.require('webdriver.WebDriver');
     goog.require('webdriver.timing');
-    goog.require('webdriver.util');
   </script>
   <script type="text/javascript">
     var mockClock;
@@ -23,9 +22,7 @@
     var driver;
 
 
-    var TEST;
     function setUp() {
-      TEST = this;
       mockClock = new goog.testing.MockClock();
       mockClock.install();
 

@@ -78,10 +78,10 @@ webdriver.FakeCommandProcessor.prototype.clearCannedResponses = function() {
 /**
  * Responds to the driver command with the preset canned response. If no canned
  * response has been set for the given command, an error is thrown.
- * @param {webdriver.Command} The command to execute.
+ * @param {webdriver.Command} command The command to execute.
  * @override
  */
-webdriver.FakeCommandProcessor.prototype.executeDriverCommand = function(
+webdriver.FakeCommandProcessor.prototype.dispatchDriverCommand = function(
     command) {
   var cannedResponse = this.cannedResponses_.get(command.name, null);
   if (!cannedResponse) {

@@ -71,10 +71,10 @@ public class FirefoxDriverTestSuite extends TestCase {
 
       // Copy in the native events library/libraries
       Map<String, String> fromTo = new HashMap<String, String>();
-      if (Platform.getCurrent().equals(Platform.WINDOWS)) {
+      if (Platform.getCurrent().is(Platform.WINDOWS)) {
         fromTo.put("Debug/webdriver-firefox.dll",
         "platform/WINNT_x86-msvc/components/webdriver-firefox.dll");
-      } else if (Platform.getCurrent().equals(Platform.UNIX)) {
+      } else if (Platform.getCurrent().is(Platform.UNIX)) {
         fromTo.put("../linux64/Release/libwebdriver-firefox.so",
         "platform/Linux/components/libwebdriver-firefox.so");
       

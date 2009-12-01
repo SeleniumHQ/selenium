@@ -80,24 +80,6 @@ webdriver.Command = function(driver, name, opt_element) {
   this.parameters = [];
 
   /**
-   * Callback for when the command processor successfully finishes this command.
-   * The result of this function is included in the final result of the command.
-   * @type {?function}
-   */
-  this.onSuccessCallbackFn = null;
-  
-  /**
-   * Callback for when the command processor fails to successfully finish a
-   * command. The function should take a single argument, the
-   * {@code webdriver.Response} from the command processor. The response may be
-   * modified (for example, to turn an expect failure into a success). If the
-   * error state is cleared, the {@code onSucessCallbackFn} will still not be
-   * called.
-   * @type {?function}
-   */
-  this.onFailureCallbackFn = null;
-
-  /**
    * The response to this command.
    * @type {?webdriver.Response}
    */
@@ -123,8 +105,6 @@ webdriver.Command.prototype.disposeInternal = function() {
   delete this.name;
   delete this.element;
   delete this.parameters;
-  delete this.onSuccessCallbackFn;
-  delete this.onFailureCallbackFn;
   delete this.response;
 };
 
@@ -180,35 +160,10 @@ webdriver.Command.prototype.setParameters = function(var_args) {
 
 
 /**
- * Set the function to call with the {@code webdriver.Response} when the
- * command processor successfully runs this command. This function is considered
- * part of the command and any errors will cause the command as a whole to fail.
- * @param {function} callbackFn The function to call on success.
- * @param {Object} opt_selfObj The object in whose context to execute the
- *     function.
+ * @return {Array.<*>} The parameters to send with this command.
  */
-webdriver.Command.prototype.setSuccessCallback = function(callbackFn,
-                                                          opt_selfObj) {
-  if (callbackFn) {
-    this.onSuccessCallbackFn = goog.bind(callbackFn, opt_selfObj);
-  }
-  return this;
-};
-
-
-/**
- * Set the function to call with the {@code webdriver.Response} when the
- * command processor encounters an error while executing this command.
- * @param {function} callbackFn The function to call on failure.
- * @param {Object} opt_selfObj The object in whose context to execute the
- *     function.
- */
-webdriver.Command.prototype.setFailureCallback = function(callbackFn,
-                                                          opt_selfObj) {
-  if (callbackFn) {
-    this.onFailureCallbackFn = goog.bind(callbackFn, opt_selfObj);
-  }
-  return this;
+webdriver.Command.prototype.getParameters = function() {
+  return this.parameters;
 };
 
 
@@ -231,26 +186,7 @@ webdriver.Command.prototype.setResponse = function(response) {
     return;
   }
   this.response = response;
-
-  var sandbox = goog.bind(function(fn) {
-    try {
-      fn.call(this, this.response);
-    } catch (ex) {
-      this.response.isFailure = true;
-      this.response.errors.push(ex);
-    }
-  }, this);
-
-  if (!this.response.errors.length) {
-    if (this.response.isFailure &&
-        goog.isFunction(this.onFailureCallbackFn)) {
-      sandbox(this.onFailureCallbackFn);
-    } else if (!this.response.isFailure &&
-               goog.isFunction(this.onSuccessCallbackFn)) {
-      sandbox(this.onSuccessCallbackFn);
-    }
-  }
-
+  this.driver_.setContext(this.response.context);
   if (!this.response.isFailure) {
     this.futureResult_.setValue(this.response.value);
   } else {

@@ -92,6 +92,7 @@ module Selenium
                          :script  => script,
                          :args    => typed_args
 
+          return if resp.nil?
           unwrap_script_argument resp
         end
 
@@ -310,7 +311,10 @@ module Selenium
         private
 
         def execute(command)
+          puts "--> #{command.inspect}" if $DEBUG
           resp = raw_execute command
+          puts "<-- #{resp.inspect}" if $DEBUG
+
           code = resp['statusCode']
           if e = Error.for_code(code)
             msg = resp['value']['message'] if resp['value']

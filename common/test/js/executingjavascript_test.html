@@ -66,26 +66,27 @@ function testCanExecuteScriptThatReturnsABoolean(driver) {
 
 
 function testScriptsWithArrayReturnValues(driver) {
+  driver.get(TEST_PAGE.xhtmlTestPage);
   driver.executeScript(
       'return [document.body, false, true, null, undefined, "abc", ' +
       '123, ["def", 456]]');
   driver.callFunction(function(response) {
-    assertTrue('Should have returned an array', goog.isArray(response.value));
-    assertEquals(8, response.value.length);
+    assertTrue('Should have returned an array', goog.isArray(response));
+    assertEquals(8, response.length);
 
-    var element = response.value.shift();
+    var element = response.shift();
     assertTrue(element instanceof webdriver.WebElement);
     assertThat(element.getTagName(), equals('body'));
 
-    assertFalse(response.value.shift());
-    assertTrue(response.value.shift());
+    assertFalse(response.shift());
+    assertTrue(response.shift());
 
-    assertEquals(null, response.value.shift());
-    assertEquals(null, response.value.shift());
-    assertEquals('abc', response.value.shift());
-    assertEquals(123, response.value.shift());
+    assertEquals(null, response.shift());
+    assertEquals(null, response.shift());
+    assertEquals('abc', response.shift());
+    assertEquals(123, response.shift());
 
-    var array = response.value.shift();
+    var array = response.shift();
     assertTrue(goog.isArray(array));
     assertEquals(2, array.length);
     assertEquals('def', array.shift());
@@ -143,7 +144,7 @@ function testCanPassAWebElementAsAnArgument(driver) {
           "return arguments[0]['flibble'];",
       button);
   driver.callFunction(function(response) {
-    assertEquals('plainButton', response.value);
+    assertEquals('plainButton', response);
   });
 }
 

@@ -81,7 +81,7 @@ function testShouldBeAbleToFindMultipleElementsById(driver) {
   driver.findElements({id: '2'});
   driver.callFunction(function(response) {
     assertEquals('Should have found 8 elements with id "2"', 8,
-                 response.value.length);
+                 response.length);
   });
 }
 
@@ -132,8 +132,7 @@ function testShouldFindElementsByName(driver) {
 function testShouldBeAbleToFindMultipleElementsByName(driver) {
   driver.get(TEST_PAGE.formPage);
   driver.findElements({name: 'snack'});
-  driver.callFunction(function(response) {
-    var elements = response.value;
+  driver.callFunction(function(elements) {
     assertTrue(
         'Should find more than 1 element, but found ' + elements.length,
         elements.length > 1);
@@ -216,8 +215,8 @@ function testShouldBeAbleToFindMultipleElementsByClassName(driver) {
   driver.callFunction(function(response) {
     assertTrue(
         'Should have found more than 1 element with class "nameC", but found ' +
-            response.value.length,
-        response.value.length > 1);
+            response.length,
+        response.length > 1);
   });
 }
 
@@ -287,7 +286,7 @@ function testShouldBeAbleToFindMultipleElementsByLinkText(driver) {
   driver.get(TEST_PAGE.xhtmlTestPage);
   driver.findElements({linkText: 'click me'});
   driver.callFunction(function(response) {
-    assertEquals(2, response.value.length);
+    assertEquals(2, response.length);
   });
 }
 
@@ -309,7 +308,7 @@ function testShouldBeAbleToFindMultipleElementsByPartialLinkText(driver) {
   driver.get(TEST_PAGE.xhtmlTestPage);
   driver.findElements({partialLinkText: 'ick me'});
   driver.callFunction(function(response) {
-    assertEquals(2, response.value.length);
+    assertEquals(2, response.length);
   });
 }
 
@@ -318,7 +317,7 @@ function testFindElementByPartialLinkTextWhenTextIsBeginningOfLink(driver) {
   driver.get(TEST_PAGE.xhtmlTestPage);
   driver.findElement({partialLinkText: 'Create a '}).getText();
   driver.callFunction(function(response) {
-    assertEquals('Create a new anonymous window', response.value);
+    assertEquals('Create a new anonymous window', response);
   });
 }
 
@@ -327,7 +326,7 @@ function testFindElementByPartialLinkTextWhenTextIsInMiddleOfLink(driver) {
   driver.get(TEST_PAGE.xhtmlTestPage);
   driver.findElement({partialLinkText: 'anonymous'}).getText();
   driver.callFunction(function(response) {
-    assertEquals('Create a new anonymous window', response.value);
+    assertEquals('Create a new anonymous window', response);
   });
 }
 
@@ -336,7 +335,7 @@ function testFindElementByPartialLinkTextWhenTextIsAtEndOfLink(driver) {
   driver.get(TEST_PAGE.xhtmlTestPage);
   driver.findElement({partialLinkText: 'anonymous window'}).getText();
   driver.callFunction(function(response) {
-    assertEquals('Create a new anonymous window', response.value);
+    assertEquals('Create a new anonymous window', response);
   });
 }
 
@@ -356,7 +355,7 @@ function testFindElementsReturnsEmptyArrayWhenNoMatchesByPartialLinkText(
   driver.get(TEST_PAGE.xhtmlTestPage);
   driver.findElements({partialLinkText: 'anon window'});
   driver.callFunction(function(response) {
-    assertEquals(0, response.value.length);
+    assertEquals(0, response.length);
   });
 }
 
@@ -390,7 +389,7 @@ function testFindMultipleElements(driver) {
   var elem = driver.findElement({id: "links"});
   elem.findElements({partialLinkText: "link"});
   driver.callFunction(function(response) {
-    assertEquals(3, response.value.length);
+    assertEquals(3, response.length);
   });
 }
 
@@ -414,7 +413,7 @@ function testShouldFindElementsByTagName(driver) {
   driver.callFunction(function(response) {
     assertEquals(
         'Should have found 20 input elements',
-        20, response.value.length);
+        20, response.length);
   });
 }
 
@@ -435,8 +434,7 @@ function testFindElementByXpath(driver) {
 function testShouldBeAbleToFindMultipleElementsByXPath(driver) {
   driver.get(TEST_PAGE.xhtmlTestPage);
   driver.findElements({xpath: '//div'});
-  driver.callFunction(function(response) {
-    var elements = response.value;
+  driver.callFunction(function(elements) {
     assertTrue(
         'Should find more than 1 element, but found ' + elements.length,
         elements.length > 1);
@@ -470,7 +468,7 @@ function testCanFindElementsByXPath(driver) {
   driver.get(TEST_PAGE.xhtmlTestPage);
   driver.findElements({xpath: '//div'});
   driver.callFunction(function(response) {
-    assertEquals(8, response.value.length);
+    assertEquals(8, response.length);
   });
 }
 
@@ -480,11 +478,11 @@ function testCanFindManyElementsRepeatedlyByXPath(driver) {
   driver.get(TEST_PAGE.xhtmlTestPage);
   driver.findElements({xpath: '//node()[contains(@id, "id")]'});
   driver.callFunction(function(response) {
-    assertEquals(3, response.value.length);
+    assertEquals(3, response.length);
   });
   driver.findElements({xpath: '//node()[contains(@id, "nope")]'});
   driver.callFunction(function(response) {
-    assertEquals(0, response.value.length);
+    assertEquals(0, response.length);
   });
 }
 

@@ -48,11 +48,11 @@ HTTP
           command = {'commandName' => 'quit', 'context' => ''}
           send_string(command.to_json)
         ensure
-          @socket.close
+          close
         end
 
         def close
-          @socket.close
+          @socket.close if connected?
         end
 
         def read_response
