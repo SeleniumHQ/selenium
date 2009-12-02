@@ -67,32 +67,33 @@ class Java < BaseGenerator
         # Compile
         cmd = "javac -cp #{classpath.join(classpath_separator?)} -g -source 5 -target 5 -d #{temp} #{FileList[args[:srcs]]} " 
         sh cmd, :verbose => false 
-
-        # TODO(simon): make copy_resource_ handle this for us
-        # Copy resources over
-        resources = args[:resources] || []
-        resources.each do |res|
-          if (res.kind_of? Symbol)
-            res = Rake::Task[res].out
-          end
-        
-          if (res.kind_of? Hash) 
-            res.each do |from, to|
-              dir = to.gsub(/\/.*?$/, "")
-              mkdir_p "#{temp}/#{dir}", :verbose => false
-              cp_r find_file(from), "#{temp}/#{to}"
-            end
-          else
-            target = res.gsub(/build\//, '')
-            copy_resource_(target, temp)
-          end
-        end
-
-        cmd = "cd #{temp} && jar cMf ../../#{out} *"
-        sh cmd, :verbose => false
-
-        rm_rf temp, :verbose => false
       end
+      
+      # TODO(simon): make copy_resource_ handle this for us
+      # Copy resources over
+      resources = args[:resources] || []
+      resources.each do |res|
+        if (res.kind_of? Symbol)
+          res = Rake::Task[res].out
+        end
+        
+        if (res.kind_of? Hash) 
+          res.each do |from, to|
+            dir = to.gsub(/\/.*?$/, "")
+            mkdir_p "#{temp}/#{dir}", :verbose => false
+            cp_r find_file(from), "#{temp}/#{to}"
+          end
+        else
+          target = res.gsub(/build\//, '')
+          copy_resource_(target, temp)
+        end
+      end
+
+      Dir["#{temp}/**/.svn"].each { |file| rm_rf file }
+      cmd = "cd #{temp} && jar cMf ../../#{out} *"
+      sh cmd, :verbose => false
+
+      rm_rf temp, :verbose => false
     end
     
     add_zip_task_(args)
@@ -170,12 +171,10 @@ class Java < BaseGenerator
   def uberjar(args)
     out = out_path_(args)
     
-    jar(args)
-    
     create_deps_(out_path_(args), args)
     
     file out do
-      puts "Building #{args[:name]} as #{out}"
+      puts "Building uber-jar: #{args[:name]} as #{out}"
       
       # Take each dependency, extract and then rezip
       temp = "#{out}_temp"
@@ -262,10 +261,8 @@ class Java < BaseGenerator
       end
       copy_resource_(jars, "#{temp}/WEB-INF/lib")
       
-      Dir["#{temp}/**/.svn"].each do |f|
-        rm_rf f, :verbose => false
-      end
-      
+      Dir["#{temp}/**/.svn"].each { |file| rm_rf file }
+            
       sh "cd #{temp} && jar cMf ../../#{out} *", :verbose => false
       rm_rf temp, :verbose => false
     end

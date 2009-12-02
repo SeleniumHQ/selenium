@@ -7,6 +7,7 @@ require 'rake-tasks/checks'
 require 'rake-tasks/zip'
 require 'rake-tasks/c'
 require 'rake-tasks/java'
+require 'rake-tasks/selenium'
 require 'rake-tasks/mozilla'
 require 'rake-tasks/ruby'
 
@@ -379,7 +380,7 @@ java_jar(:name => "webdriver-selenium",
                   ])
 
 java_test(:name => "webdriver-selenium-test",
-          :srcs  => [ "selenium/test/java/**/*.java" ],
+          :srcs => [ "selenium/test/java/**/*.java" ],
           :deps => [
                      :test_common,
                      :htmlunit,
@@ -390,13 +391,35 @@ java_test(:name => "webdriver-selenium-test",
           :args => "selenium/test/java/webdriver-selenium-suite.xml")
 
 java_test(:name => "webdriver-selenese-test",
-          :srcs  => [ "selenium/test/java/**/*.java" ],
+          :srcs => [ "selenium/test/java/**/*.java" ],
           :deps => [
                      :test_common,
                      :htmlunit,
                      :selenium,
                      "selenium/lib/buildtime/*.jar",
                    ])
+
+java_jar(:name => "selenium-core",
+         :resources => [
+           {"selenium/test/js/*" => "tests"},
+           "common/src/js/core"
+         ])
+
+selenium_test(:name => "selenium-core-firefox",
+              :srcs => [ "common/test/js/core/*.js" ],
+              :deps => [ 
+                :"webdriver-remote-server",
+                :"selenium-core" 
+              ],
+              :browser => "*chrome" )
+        
+selenium_test(:name => "selenium-core-ie",
+              :srcs => [ "common/test/js/core/*.js" ],
+              :deps => [ 
+                :"webdriver-remote-server",
+                :"selenium-core" 
+              ],
+              :browser => "*iexplore")
 
 java_jar(:name => "webdriver-jsapi",
     :srcs => [ "remote/server/test/java/**/JsApi*.java" ],

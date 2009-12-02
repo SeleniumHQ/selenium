@@ -16,7 +16,7 @@ class BaseGenerator
     add_deps_(out, args[:deps])
     add_deps_(out, args[:resources])
 
-    task args[:name].to_sym => out
+    task args[:name].to_sym => out unless args[:name] == out
 
     t = Rake::Task[args[:name].to_sym]
     t.deps = args[:deps]

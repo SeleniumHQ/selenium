@@ -1,0 +1,60 @@
+<html>
+<!--
+Copyright 2006 ThoughtWorks, Inc
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html">
+</head>
+<body>
+<img style="width: 644px; height: 41px;" alt="banner" src="banner.gif"><br>
+This is a test of internationalization (i18n).
+
+<ul><li>Romance: <span id="romance">&#x00FC;&#x00F6;&#x00E4;&#x00DC;&#x00D6;&#x00C4; &#x00E7;&#x00E8;&#x00E9; &#x00BF;&#x00F1; &#x00E8;&#x00E0;&#x00F9;&#x00F2;</span>
+<ul>
+<li>HTML encoded: &amp;#x00FC;&amp;#x00F6;&amp;#x00E4;&amp;#x00DC;&amp;#x00D6;&amp;#x00C4; &amp;#x00E7;&amp;#x00E8;&amp;#x00E9; &amp;#x00BF;&amp;#x00F1; &amp;#x00E8;&amp;#x00E0;&amp;#x00F9;&amp;#x00F2;
+<li>URI encoded (UTF-8): %C3%BC%C3%B6%C3%A4%C3%9C%C3%96%C3%84+%C3%A7%C3%A8%C3%A9+%C2%BF%C3%B1+%C3%A8%C3%A0%C3%B9%C3%B2
+</ul>
+</li>
+<li>Korean: <span id="korean">&#xC5F4;&#xC5D0;</span>
+<ul>
+<li>HTML encoded: &amp;#xC5F4;&amp;#xC5D0;
+<li>URI encoded (UTF-8): %EC%97%B4%EC%97%90
+</ul>
+</li>
+<li>Chinese: <span id="chinese">&#x4E2D;&#x6587;</span>
+<ul>
+<li>HTML encoded: &amp;#x4E2D;&amp;#x6587;
+<li>URI encoded (UTF-8): %E4%B8%AD%E6%96%87
+</ul>
+</li>
+<li>Japanese: <span id="japanese">&#x307E;&#x3077;</span>
+<ul>
+<li>HTML encoded: &amp;#x307E;&amp;#x3077;
+<li>URI encoded (UTF-8): %E3%81%BE%E3%81%B7
+</ul>
+</li>
+<li>Dangerous: <span id="dangerous">&amp;%?\+|,%*</span>
+</li>
+<li>Dangerous Link IDs: <a id="veni, vidi, vici">veni, vidi, vici</a>, <a id="c:\foo\bar">c:\foo\bar</a>, <a id="c:\I came, I \saw\, I conquered">c:\I came, I \saw\, I conquered</a>
+</li>
+<li>
+Dangerous Labels: <select id="dangerous-labels">
+<option id="veni, vidi, vici">veni, vidi, vici</option>
+<option id="c:\foo\bar">c:\foo\bar</option>
+<option id="c:\I came, I \saw\, I conquered">c:\I came, I \saw\, I conquered</option>
+</select>
+</li>
+</body>
+</html>

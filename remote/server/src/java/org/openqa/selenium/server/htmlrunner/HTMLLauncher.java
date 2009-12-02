@@ -9,6 +9,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.logging.Log;
 import org.apache.tools.ant.Project;
@@ -283,7 +284,21 @@ public class HTMLLauncher implements HTMLResultsListener {
         boolean result = false;
         try {
             server.start();
-            result = new HTMLLauncher(server).runSelfTests(dir);
+
+            if (args.length > 1) {
+              String browser = args[1];
+              String startUrl = "http://localhost:" + server.getPort();
+              String suite = args[2];
+              File results = new File(dir, args[3]);
+
+              System.out.println("startUrl = " + startUrl);
+              System.out.println("browser = " + browser);
+              String value = new HTMLLauncher(server).runHTMLSuite(browser, startUrl, suite, results, 600, true);
+
+              result = "PASSED".equals(value);
+            } else {
+              result = new HTMLLauncher(server).runSelfTests(dir);
+            }
         } finally {
             server.stop();
         }
