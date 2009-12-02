@@ -175,6 +175,12 @@ public class TestSuiteBuilder {
       return;
     }
 
+    if (isIgnored(clazz)) {
+      System.err.println("Ignoring test class: " + clazz + ": "
+                         + clazz.getAnnotation(Ignore.class).reason());
+      return;
+    }
+
     Method[] methods = clazz.getMethods();
     for (Method method : methods) {
       if (isTestMethod(method)) {
