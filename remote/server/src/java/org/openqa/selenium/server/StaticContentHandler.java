@@ -31,7 +31,7 @@ public class StaticContentHandler extends ResourceHandler {
                     "/core/InjectedRemoteRunner.html");
         }
         callSuperHandle(pathInContext, pathParams, httpRequest, httpResponse);
-        
+
         String resourceName = getResource(pathInContext).getName();
         if (resourceName.endsWith("MISSING RESOURCE")) {
         	httpResponse.setAttribute("NotFound", "True");

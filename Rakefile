@@ -289,6 +289,7 @@ java_jar(:name => "webdriver-remote-server",
       "remote/server/src/java/opera",
       "remote/server/src/java/sslSupport",
       "common/src/js/core",
+      "common/src/js/jsunit",
     ],
     :deps => [
                :chrome,

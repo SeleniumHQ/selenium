@@ -9,8 +9,8 @@ class Selenium < BaseGenerator
     
     file "#{args[:name]}_never_there" do
       cmd = "java -cp #{classpath.join(classpath_separator?)} org.openqa.selenium.server.htmlrunner.HTMLLauncher "
-      cmd += "build #{args[:browser]} TestSuite.html #{args[:browser]}.results"
-      sh cmd, :verbose => true
+      cmd += "build #{args[:browser]} ../tests/TestSuite.html #{args[:browser]}.results"
+      sh cmd, :verbose => false
     end
     
     task args[:name] => "#{args[:name]}_never_there"

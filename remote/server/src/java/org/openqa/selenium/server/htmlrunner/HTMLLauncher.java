@@ -287,12 +287,10 @@ public class HTMLLauncher implements HTMLResultsListener {
 
             if (args.length > 1) {
               String browser = args[1];
-              String startUrl = "http://localhost:" + server.getPort();
+              String startUrl = "http://localhost:" + server.getPort() + "/selenium-server/tests/";
               String suite = args[2];
               File results = new File(dir, args[3]);
 
-              System.out.println("startUrl = " + startUrl);
-              System.out.println("browser = " + browser);
               String value = new HTMLLauncher(server).runHTMLSuite(browser, startUrl, suite, results, 600, true);
 
               result = "PASSED".equals(value);
