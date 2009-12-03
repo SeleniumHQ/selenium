@@ -40,7 +40,7 @@ public class SingleTestSuite extends TestCase {
   private final static String SELENIUM = "org.openqa.selenium.SeleneseBackedWebDriver";
 
   public static Test suite() throws Exception {
-    String driver = FIREFOX_TEST;
+    String driver = CHROME_TEST;
 
     System.setProperty("webdriver.development", "true");
     System.setProperty("jna.library.path", "..\\build;build");
@@ -49,19 +49,16 @@ public class SingleTestSuite extends TestCase {
 //    System.setProperty("webdriver.firefox.reap_profile", "false");
 
     TestSuiteBuilder builder = new TestSuiteBuilder()
-        .addSourceDir("../common")
         .addSourceDir("common")
         .addSourceDir("firefox")
         .usingDriver(driver)
         .keepDriverInstance()
-        //.includeJavascriptTests()
-        .onlyRun("FirefoxDriverTest")
-        //.onlyRun("JavascriptEnabledDriverTest")
-        //.method("testShouldReturnTheSourceOfAPage")
-        .method("testCanBlockInvalidSslCertificates")
+        .includeJavascriptTests()
+        .onlyRun("JavascriptEnabledDriverTest")
+        .method("testShouldBeAbleToSubmitFormsByCausingTheOnClickEventToFire")
         .exclude(ALL)
-        .exclude(Ignore.Driver.FIREFOX)
-        //.leaveRunning()
+        .exclude(Ignore.Driver.CHROME_NON_WINDOWS)
+        .leaveRunning()
         ;  // Yeah, this look strange :)
 
     if (REMOTE.equals(driver)) {

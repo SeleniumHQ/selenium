@@ -77,11 +77,16 @@ function parsePortMessage(message) {
     element.scrollIntoView(true);
     //TODO: Work out a way of firing events,
     //now that synthesising them gives appendMessage errors
+    console.log("mouse downing");
     Utils.fireMouseEventOn(element, "mousedown");
+      console.log("mouse up");
     Utils.fireMouseEventOn(element, "mouseup");
+      console.log("mouse click");
     Utils.fireMouseEventOn(element, "click");
+
     if (element.click) {
-      execute("arguments[0].click();", {type: "ELEMENT", value: getElementId_(element)});
+      console.log("click");
+      execute("try { arguments[0].click(); } catch(e){}", {type: "ELEMENT", value: getElementId_(element)});
     }
     response.value = {statusCode: 0};
     break;

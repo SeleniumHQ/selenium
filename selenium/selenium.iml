@@ -28,6 +28,7 @@
     <orderEntry type="module" module-name="remote-client" />
     <orderEntry type="library" name="third_party-buildtime" level="project" />
     <orderEntry type="module" module-name="support" />
+    <orderEntry type="module" module-name="chrome" />
   </component>
 </module>
 
