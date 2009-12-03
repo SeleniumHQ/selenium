@@ -53,15 +53,13 @@ public class TestSuiteBuilder {
   private boolean includeJsApiTests = false;
 
   public TestSuiteBuilder() {
-    String[] possiblePaths = {"common", "../common", "../../common",};
+    baseDir = new File(".");
 
-    for (String potential : possiblePaths) {
-      baseDir = new File(potential);
-      if (new File(baseDir, "src/java/org/openqa/selenium/WebDriver.java").exists()) {
-        break;
-      }
+    while (baseDir != null && !(new File(baseDir, "Rakefile").exists())) {
+      baseDir = baseDir.getParentFile();
     }
 
+    assertThat(baseDir, notNullValue());
     assertThat(baseDir.exists(), is(true));
 
     baseDir = baseDir.getParentFile();
