@@ -290,6 +290,10 @@ java_jar(:name => "webdriver-remote-server",
       "remote/server/src/java/sslSupport",
       "common/src/js/core",
       "common/src/js/jsunit",
+      {
+        "common/src/js/core/TestRunner.html" => "core/TestRunner.hta",
+        "common/src/js/core/RemoteRunner.html" => "core/RemoteRunner.hta",
+      },
     ],
     :deps => [
                :chrome,
@@ -406,7 +410,7 @@ java_jar(:name => "selenium-core",
            "common/src/js/core"
          ])
 
-selenium_test(:name => "selenium-core-firefox",
+selenium_test(:name => "test_core_firefox",
               :srcs => [ "common/test/js/core/*.js" ],
               :deps => [ 
                 :"webdriver-remote-server",
@@ -414,13 +418,13 @@ selenium_test(:name => "selenium-core-firefox",
               ],
               :browser => "*chrome" )
         
-selenium_test(:name => "selenium-core-ie",
+selenium_test(:name => "test_core_ie",
               :srcs => [ "common/test/js/core/*.js" ],
               :deps => [ 
                 :"webdriver-remote-server",
                 :"selenium-core" 
               ],
-              :browser => "*iexplore")
+              :browser => "*iexploreproxy")
 
 java_jar(:name => "webdriver-jsapi",
     :srcs => [ "remote/server/test/java/**/JsApi*.java" ],
