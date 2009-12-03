@@ -4,29 +4,21 @@
  */
 package org.openqa.selenium.server.htmlrunner;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
 import org.apache.commons.logging.Log;
-import org.apache.tools.ant.Project;
-import org.apache.tools.ant.taskdefs.Tar;
-import org.apache.tools.ant.taskdefs.condition.Os;
-import org.apache.tools.ant.types.FileSet;
 import org.openqa.jetty.log.LogFactory;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
+import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.SeleniumCommandTimedOutException;
 import org.openqa.selenium.server.SeleniumServer;
-import org.openqa.selenium.server.StaticContentHandler;
-import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
 import org.openqa.selenium.server.browserlaunchers.AsyncExecute;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncher;
 import org.openqa.selenium.server.browserlaunchers.BrowserLauncherFactory;
 import org.openqa.selenium.server.browserlaunchers.LauncherUtils;
-import org.openqa.selenium.server.browserlaunchers.WindowsUtils;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 /**
  * Runs HTML Selenium test suites.
@@ -180,114 +172,48 @@ public class HTMLLauncher implements HTMLResultsListener {
         this.results = resultsParm;
     }
 
-    public boolean runSelfTests(File dir) throws IOException {
-        String[] browsers;
-        if (WindowsUtils.thisIsWindows()) {
-            browsers = new String[] { "firefox", "iexplore", "opera", "chrome",
-                    }; // TODO safari // TODO "iehta" is just too unreliable!
-        } else if (Os.isFamily("mac")) {
-            browsers = new String[] {"firefox", "safari", "chrome"};
-        } else { // assume Linux (a pretty bold assumption)
-            browsers = new String[] {"firefox", "opera", "konqueror", "chrome"};
-        }
-        
-        boolean allPassed = true;
-        boolean result;
-        for (String browser : browsers) {
-            result = runSelfTest(dir, browser, true, false);
-            if (!result) allPassed = false;
-        }
-        for (String browser : browsers) {
-            result = runSelfTest(dir, browser, false, false);
-            if (!result) allPassed = false;
-        }
-        for (String browser : browsers) {
-            result = runSelfTest(dir, browser, true, true);
-            if (!result) allPassed = false;
-        }
-//        DGF singleWindow slowResources never turns up anything
-//        for (String browser : browsers) {
-//            result = runSelfTest(dir, browser, true, false);
-//            if (!result) allPassed = false;
-//        }
-        //runSelfTest(dir, browser, false, true); // DGF singleWindow slowResources never turns up anything
-        if (allPassed) {
-            log.info("ALL TESTS PASSED");
-        } else {
-            log.error("TESTS FAILED, see " + dir.getAbsolutePath());
-        }
-        bzipTestResults(dir);
-        return allPassed;
-    }
-
-    private void bzipTestResults(File dir) {
-        File destFile = new File(dir, "results.tar.bz2");
-        Tar bzipTask = new Tar();
-        Tar.TarCompressionMethod bzip2 = new Tar.TarCompressionMethod();
-        bzip2.setValue("bzip2");
-        bzipTask.setCompression(bzip2);
-        bzipTask.setProject(new Project());
-        bzipTask.setDestFile(destFile);
-        FileSet fs = bzipTask.createTarFileSet();
-        fs.setDir(dir);
-        fs.setIncludes("*.html");
-        bzipTask.execute();
-        log.info("bzipped test results: " + destFile.getAbsolutePath());
-    }
-
-    private boolean runSelfTest(File dir, String browser, boolean multiWindow, boolean slowResources) throws IOException {
-        String options = (multiWindow ? "multiWindow-" : "") + (slowResources ? "slowResources-" : "");
-        String name = "results-" + browser + '-' + options + "TestSuite.html";
-        File resultsFile = new File(dir, name);
-        String baseUrl = "http://localhost:" + remoteControl.getPort();
-        String suiteUrl = baseUrl + "/selenium-server/tests/TestSuite.html";
-        StaticContentHandler.setSlowResources(slowResources);
-        String result = null;
-        int timeoutInSeconds = remoteControl.getConfiguration().getTimeoutInSeconds();
-        try {
-            result = runHTMLSuite("*"+browser, baseUrl, suiteUrl, resultsFile, timeoutInSeconds, multiWindow, "info");
-            if ("PASSED".equals(result)) {
-                log.info(result + ' ' + resultsFile.getAbsolutePath());
-            } else {
-                log.error(result + ' ' + resultsFile.getAbsolutePath());
-            }
-            
-        } catch (SeleniumCommandTimedOutException e) {
-            result = "FAIL (timed out)";
-            log.error(result + ' ' + resultsFile.getAbsolutePath());
-            FileWriter fw = new FileWriter(resultsFile);
-            fw.write("<html><head><title>Error</title></head><body>Error: timed out after " + timeoutInSeconds + " seconds</body></html>");
-            fw.close();
-        } catch (Exception e) {
-            result = "ERROR";
-            StringWriter sw = new StringWriter();
-            e.printStackTrace(new PrintWriter(sw));
-            log.error(result + ' ' + resultsFile.getAbsolutePath(), e);
-            FileWriter fw = new FileWriter(resultsFile);
-            fw.write("<html><head><title>Error</title></head><body><pre>" +
-                    HTMLTestResults.quoteCharacters(sw.toString()) +
-            		"</pre></body></html>");
-            fw.close();
-        }
-        results = null;
-        return "PASSED".equals(result);
-    }
-    
     public static int mainInt(String... args) throws Exception {
-        if (args.length == 0) {
-            throw new IllegalArgumentException("Please pass a directory argument on the command line");
+        if (args.length != 5 && args.length != 4) {
+          throw new IllegalAccessException("Usage: HTMLLauncher outputDir testSuite startUrl multiWindow browser");
         }
+
         File dir = new File(args[0]);
-        dir.mkdirs();
-        SeleniumServer server = new SeleniumServer();
-        boolean result = false;
-        try {
-            server.start();
-            result = new HTMLLauncher(server).runSelfTests(dir);
-        } finally {
-            server.stop();
+        if (!dir.exists() && !dir.mkdirs()) {
+          throw new RuntimeException("Cannot create output directory for: " + dir);
         }
-        return result ? 0 : 1;
+
+        String suite = args[1];
+        String startURL = args[2];
+        boolean multiWindow = Boolean.parseBoolean(args[3]);
+        String[] browsers;
+        if (args.length == 4) {
+          log.info("Running self tests");
+          browsers = new String[] { "firefox", "iexploreproxy", "opera", "chrome" };
+        } else {
+          browsers = new String[] { args[4] };
+        }
+
+        SeleniumServer server = new SeleniumServer(false, new RemoteControlConfiguration());
+        server.start();
+        HTMLLauncher launcher = new HTMLLauncher(server);
+
+        boolean passed = true;
+        for (String browser : browsers) {
+          // Turns out that Windows doesn't like "*" in a path name
+          File results = new File(dir, browser.substring(1) + ".results");
+          String result = "FAILED";
+
+          try {
+            result = launcher.runHTMLSuite(browser, startURL, suite, results, 600, multiWindow);
+            passed &= "PASSED".equals(result);
+          } catch (Throwable e) {
+            log.warn("Test of browser failed: " + browser, e);
+            passed = false;
+          }
+        }
+        server.stop();
+
+        return passed ? 1 : 0;
     }
     
     public static void main(String[] args) throws Exception {

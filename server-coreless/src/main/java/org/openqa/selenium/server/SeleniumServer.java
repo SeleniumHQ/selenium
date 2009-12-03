@@ -225,9 +225,6 @@ public class SeleniumServer {
         if (null != configuration.getUserExtensions()) {
             addNewStaticContent(configuration.getUserExtensions().getParentFile());
         }
-        if (configuration.isSelfTest()) {
-            System.exit(runSelfTests() ? 0 : 1);
-        }
         if (configuration.isHTMLSuite()) {
             runHtmlSuite();
             return;
@@ -599,10 +596,6 @@ public class SeleniumServer {
             });
             t.start();
         }
-    }
-
-    protected boolean runSelfTests() throws IOException {
-        return new HTMLLauncher(this).runSelfTests(configuration.getSelfTestDir());
     }
 
     protected static void checkArgsSanity(RemoteControlConfiguration configuration) throws Exception {
