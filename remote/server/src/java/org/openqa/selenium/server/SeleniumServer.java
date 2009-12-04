@@ -24,9 +24,14 @@ import org.openqa.jetty.http.SecurityConstraint;
 import org.openqa.jetty.http.SocketListener;
 import org.openqa.jetty.http.handler.SecurityHandler;
 import org.openqa.jetty.jetty.Server;
+import org.openqa.jetty.jetty.servlet.ServletHandler;
 import org.openqa.jetty.util.MultiException;
+import org.openqa.selenium.remote.server.DriverServlet;
 import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
 import org.openqa.selenium.server.browserlaunchers.AsyncExecute;
+
+import static java.lang.String.format;
+import static java.net.InetAddress.getLocalHost;
 import static org.openqa.selenium.server.browserlaunchers.LauncherUtils.getSeleniumResourceAsStream;
 import org.openqa.selenium.server.cli.RemoteControlLauncher;
 import org.openqa.selenium.server.htmlrunner.HTMLLauncher;
@@ -36,9 +41,11 @@ import org.openqa.selenium.server.htmlrunner.SingleTestSuiteResourceHandler;
 import org.openqa.selenium.server.log.LoggingManager;
 
 import java.io.*;
+import java.net.InetAddress;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.BindException;
+import java.net.UnknownHostException;
 import java.util.Properties;
 
 /**
@@ -281,6 +288,7 @@ public class SeleniumServer {
         server.addContext(context);
 
         server.addContext(createDriverContextWithSeleniumDriverResourceHandler(context));
+        server.addContext(createWebDriverRemoteContext());
     }
 
     private HttpContext createDriverContextWithSeleniumDriverResourceHandler(HttpContext context) {
@@ -290,6 +298,23 @@ public class SeleniumServer {
         driver = new SeleniumDriverResourceHandler(this);
         context.addHandler(driver);
         return driverContext;
+    }
+
+    private HttpContext createWebDriverRemoteContext() {
+        HttpContext webdriverContext = new HttpContext();
+        webdriverContext.setContextPath("/wd");
+        ServletHandler handler = new ServletHandler();
+        handler.addServlet("WebDriver remote server", "/hub", DriverServlet.class.getName());
+        webdriverContext.addHandler(handler);
+
+      try {
+        LOGGER.info(format("RemoteWebDriver instances should connect to: http://%s:%d/wd/hub",
+            getLocalHost().getCanonicalHostName().toLowerCase(), getPort()));
+      } catch (UnknownHostException e) {
+        LOGGER.info("RemoteWebDriver instances should connect to this machine with path 'wd/hub'");
+      }
+
+      return webdriverContext;
     }
 
     private void addStaticContentHandler(boolean slowResources, RemoteControlConfiguration configuration, HttpContext context) {
