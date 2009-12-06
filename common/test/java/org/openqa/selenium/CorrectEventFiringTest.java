@@ -203,7 +203,12 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore(value = {SELENESE, CHROME}, reason = "Chrome: Non-native event firing is broken in Chrome.  Selenese: Fails when running in firefox")
   public void testSendingKeysToAnotherElementShouldCauseTheBlurEventToFire() {
-  	driver.get(javascriptPage);
+    if (browserNeedsFocusOnThisOs(driver)) {
+      System.out.println("Skipping this test because browser demands focus");
+      return;
+    }
+
+    driver.get(javascriptPage);
   	WebElement element = driver.findElement(By.id("theworks"));
   	element.sendKeys("foo");
   	WebElement element2 = driver.findElement(By.id("changeable"));
@@ -214,6 +219,11 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   @JavascriptEnabled
   @Ignore(value = {SELENESE, CHROME}, reason = "Chrome: Non-native event firing is broken in Chrome.  Selenese: Fails when running in firefox")
   public void testSendingKeysToAnElementShouldCauseTheFocusEventToFire() {
+    if (browserNeedsFocusOnThisOs(driver)) {
+      System.out.println("Skipping this test because browser demands focus");
+      return;
+    }
+    
   	driver.get(javascriptPage);
   	WebElement element = driver.findElement(By.id("theworks"));
   	element.sendKeys("foo");

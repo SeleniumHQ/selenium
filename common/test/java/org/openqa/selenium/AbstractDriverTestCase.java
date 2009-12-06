@@ -92,4 +92,16 @@ public class AbstractDriverTestCase extends TestCase implements NeedsDriver {
     // The IE driver may throw a timed out exception
     return e.getClass().getName().contains("TimedOutException");
   }
+
+  protected boolean browserNeedsFocusOnThisOs(WebDriver driver) {
+    // No browser yet demands focus on window
+    if (Platform.getCurrent().is(Platform.WINDOWS))
+      return false;
+
+    if (Boolean.getBoolean("webdriver.focus.override")) {
+      return false;
+    }
+
+    return driver.getClass().getName().contains("Firefox");
+  }
 }
