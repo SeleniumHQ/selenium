@@ -40,7 +40,7 @@ public class SingleTestSuite extends TestCase {
   private final static String SELENIUM = "org.openqa.selenium.SeleneseBackedWebDriver";
 
   public static Test suite() throws Exception {
-    String driver = FIREFOX_TEST;
+    String driver = CHROME_TEST;
 
     System.setProperty("webdriver.development", "true");
     System.setProperty("jna.library.path", "..\\build;build");
@@ -54,10 +54,12 @@ public class SingleTestSuite extends TestCase {
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("CorrectEventFiringTest")
-//        .method("testShouldBeAbleToSubmitFormsByCausingTheOnClickEventToFire")
+        .onlyRun("WindowSwitchingTest")
+        .method("testCanCallGetWindowHandlesAfterClosingAWindow")
+        .method("testCanObtainAWindowHandle")
+        .method("testFailingToSwitchToAWindowLeavesTheCurrentWindowAsIs")
         .exclude(ALL)
-        .exclude(Ignore.Driver.FIREFOX)
+        .exclude(Ignore.Driver.CHROME_NON_WINDOWS)
         .leaveRunning()
         ;  // Yeah, this look strange :)
 
