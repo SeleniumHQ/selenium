@@ -26,7 +26,6 @@ task :remote => [:remote_common, :remote_server, :remote_client]
 task :remote_common => [:'webdriver-remote-common']
 task :remote_client => [:'webdriver-remote-client']
 task :remote_server => [:'webdriver-remote-server']
-# task :remote_server_app => [:'webdriver-remote-server-app']
 task :selenium => [:'webdriver-selenium']
 task :support => [:'webdriver-support']
 
@@ -37,20 +36,26 @@ task :test_ie => [:'webdriver-ie-test']
 task :test_jobbie => [:test_ie]
 task :test_jsapi => :'webdriver-jsapi-test'
 task :test_firefox => [:'webdriver-firefox-test']
-task :test_remote => [:'webdriver-remote-test']
+task :test_remote => [:'webdriver-selenium-server-test']
 task :test_selenium => [:'webdriver-selenium-server-test', :'webdriver-selenium-test', :'webdriver-selenese-test']
 task :test_support => [:'webdriver-support-test']
+
+task :test_core => [:'test_core_firefox']
+if (windows?)
+  task :test_core => [:'test_core_ie']
+end
 
 task :build => [:all, :iphone, :remote, :selenium]
 task :test => [
                 :test_htmlunit,
                 :test_firefox,
                 :test_ie,
-                :test_chrome,
                 :test_iphone,
                 :test_support,
+                :test_chrome,
                 :test_remote,
-                :test_selenium
+                :test_selenium,
+                :test_core
               ]
 
 task :clean do
@@ -332,11 +337,6 @@ java_jar(:name => "webdriver-remote-server-test-base",
            :'webdriver-remote-common-test'
          ])
 
-java_jar(:name => "webdriver-remote-test",
-          :deps => [
-                     :'webdriver-remote-server-test-base'
-                   ])
-
 java_test(:name => "webdriver-selenium-server-test",
           :srcs => [
                      "remote/server/test/java/org/openqa/selenium/server/**/*.java",
@@ -386,6 +386,9 @@ java_jar(:name => "webdriver-selenium",
 
 java_test(:name => "webdriver-selenium-test",
           :srcs => [ "selenium/test/java/**/*.java" ],
+          :resources => [
+                     { "selenium/test/java/com/thoughtworks/selenium/testHelpers.js" => "com/thoughtworks/selenium/testHelpers.js" },
+                   ],
           :deps => [
                      :test_common,
                      :htmlunit,

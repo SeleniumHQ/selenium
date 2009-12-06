@@ -119,8 +119,8 @@ public class WindowSwitchingTest extends AbstractDriverTestCase {
 
     try {
       driver.findElement(By.id("close")).click();
-      driver.getWindowHandles();
-      // If we make it this far, we're all good.
+      Set<String> allHandles = driver.getWindowHandles();
+      assertEquals(1, allHandles.size());
     } finally {
       driver.switchTo().window(currentHandle);
     }

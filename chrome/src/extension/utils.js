@@ -150,13 +150,11 @@ Utils.getStyleProperty = function(node, propertyName) {
 function collapseWhitespace(textSoFar) {
     return textSoFar.replace(/\s+/g, " ");
 }
-;
 
 function getPreformattedText(node) {
     var textToAdd = "";
     return getTextFromNode(node, "", textToAdd, true)[1];
 }
-;
 
 function isWhiteSpace(character) {
     return character == '\n' || character == ' ' || character == '\t' || character == '\r';
@@ -177,9 +175,19 @@ Utils.getText = function(element) {
 };
 
 Utils.fireHtmlEvent = function(element, eventName) {
-    var e = document.createEvent("HTMLEvents");
-    e.initEvent(eventName, true, true);
-    element.dispatchEvent(e);
+    var args = [
+      {type: "ELEMENT", value: getElementId_(element)},
+      {type: "STRING", value: eventName}
+    ];
+
+    // We need to do this because event handlers refer to functions that
+    // the content script can't reah. See:
+    // http://code.google.com/p/chromium/issues/detail?id=29071
+    var script = "var e = document.createEvent('HTMLEvents'); "
+      + "e.initEvent(arguments[1], true, true); " 
+      + "arguments[0].dispatchEvent(e);";
+
+    execute_(script, args, function(){});
 };
 
 
@@ -188,9 +196,22 @@ Utils.fireMouseEventOn = function(element, eventName) {
 };
 
 Utils.triggerMouseEvent = function(element, eventType, clientX, clientY) {
-    var event = element.ownerDocument.createEvent("MouseEvents");
-    var view = element.ownerDocument.defaultView;
+    var args = [
+      {type: "ELEMENT", value: getElementId_(element)},
+      {type: "STRING", value: eventType},
+      {type: "NUMBER", value: clientX},
+      {type: "NUMBER", value: clientY}
+    ];
 
-    event.initMouseEvent(eventType, true, true, view, 1, 0, 0, clientX, clientY, false, false, false, false, 0, element);
-    element.dispatchEvent(event);
+    // We need to do this because event handlers refer to functions that
+    // the content script can't reah. See:
+    // http://code.google.com/p/chromium/issues/detail?id=29071
+    var script =
+        "var event = arguments[0].ownerDocument.createEvent('MouseEvents'); "
+        + "var view = arguments[0].ownerDocument.defaultView; "
+        + "event.initMouseEvent(arguments[1], true, true, view, 1, 0, 0, arguments[2], arguments[3], false, false, false, false, 0, arguments[0]);"
+        + " arguments[0].dispatchEvent(event);";
+
+    execute_(script, args, function(){});
 };
+

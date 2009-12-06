@@ -31,6 +31,10 @@ public interface WebElement extends SearchContext {
      * references to this element and any further operations performed on this
      * element will have undefined behaviour unless you know that the element
      * and the page will still be present.
+     * If click() causes a new page to be loaded via an event or is done by
+     * sending a native event (which is a common case on Firefox, IE on Windows)
+     * then the method will *not* wait for it to be loaded and the caller should
+     * verify that a new page has been loaded.
      * <p/>
      * If this element is not clickable, then this operation is a no-op since
      * it's pretty common for someone to accidentally miss the target when

@@ -47,11 +47,11 @@ module Selenium
       end
 
       def kill
-        Process.kill("TERM", @pid) if @pid
+        Process.kill(:TERM, @pid) if @pid
       end
 
       def kill!
-        Process.kill("KILL", @pid) if @pid
+        Process.kill(:KILL, @pid) if @pid
       end
 
       module WindowsProcess

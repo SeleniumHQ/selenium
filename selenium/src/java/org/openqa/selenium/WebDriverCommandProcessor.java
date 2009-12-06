@@ -284,7 +284,7 @@ public class WebDriverCommandProcessor implements CommandProcessor {
     seleneseMethods.put("getElementPositionLeft", new GetElementPositionLeft(elementFinder));
     seleneseMethods.put("getElementPositionTop", new GetElementPositionTop(elementFinder));
     seleneseMethods.put("getElementWidth", new GetElementWidth(elementFinder));
-    seleneseMethods.put("getEval", new GetEval());
+    seleneseMethods.put("getEval", new GetEval(baseUrl));
     seleneseMethods.put("getHtmlSource", new GetHtmlSource());
     seleneseMethods.put("getLocation", new GetLocation());
     seleneseMethods.put("getSelectedId", new FindFirstSelectedOptionProperty(select, ID));
@@ -326,7 +326,7 @@ public class WebDriverCommandProcessor implements CommandProcessor {
     seleneseMethods.put("mouseUp", new MouseEvent(elementFinder, javascriptLibrary, "mouseup"));
     seleneseMethods.put("mouseUpAt", new MouseEventAt(elementFinder, javascriptLibrary, "mouseup"));
     seleneseMethods.put("open", new Open(timer, baseUrl));
-    seleneseMethods.put("openWindow", new OpenWindow(timer, new GetEval()));
+    seleneseMethods.put("openWindow", new OpenWindow(timer, new GetEval(baseUrl)));
     seleneseMethods.put("refresh", new Refresh(timer));
     seleneseMethods.put("removeAllSelections", new RemoveAllSelections(elementFinder));
     seleneseMethods.put("removeSelection", new RemoveSelection(elementFinder, select));

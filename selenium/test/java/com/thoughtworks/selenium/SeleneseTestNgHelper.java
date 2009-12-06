@@ -1,10 +1,17 @@
 package com.thoughtworks.selenium;
 
 import java.lang.reflect.Method;
+import java.io.InputStream;
+import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Set;
+import java.util.List;
 
 import org.openqa.selenium.SeleniumTestEnvironment;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverBackedSelenium;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
@@ -15,6 +22,8 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
+import org.testng.Assert;
+import com.google.common.collect.Lists;
 
 public class SeleneseTestNgHelper extends SeleneseTestBase
 {
@@ -70,6 +79,38 @@ public class SeleneseTestNgHelper extends SeleneseTestBase
     @BeforeMethod
     public void setTestContext(Method method) {
         selenium.setContext(method.getDeclaringClass().getSimpleName() + "." + method.getName());
+    }
+
+
+    @BeforeMethod
+    public void addNecessaryJavascriptCommands() {
+      if (!(selenium instanceof WebDriverBackedSelenium))
+        return;
+
+      // Read the testHelper.js script in
+      String path = "/com/thoughtworks/selenium/testHelpers.js";
+
+      InputStream is = getClass().getResourceAsStream(path);
+      try {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        StringBuilder builder = new StringBuilder();
+        for (String line = reader.readLine(); line != null; line = reader.readLine()) {
+          builder.append(line)
+              .append("\n");
+        }
+        String script = builder.toString();
+
+        WebDriver driver = ((WebDriverBackedSelenium) selenium).getUnderlyingWebDriver();
+        ((JavascriptExecutor) driver).executeScript(script);
+      } catch (IOException e) {
+        Assert.fail("Cannot read script", e);
+      } finally {
+        if (is != null) try {
+          is.close();
+        } catch (IOException e) {
+          // Throw this away. Nothing sane to do
+        }
+      }
     }
 
     @AfterMethod

@@ -35,12 +35,23 @@ public class GetEval extends SeleneseCommand<String> {
   private static final Pattern SELENIUM_DOCUMENT_REF_REGEX = Pattern.compile(
         "selenium\\.(browserbot|page\\(\\))\\.getDocument\\(\\)");
 
+  private final Pattern seleniumBaseUrl;
+  private String baseUrl;
+
+  public GetEval(String baseUrl) {
+    this.baseUrl = '"' + baseUrl + '"';
+
+    seleniumBaseUrl = Pattern.compile("selenium\\.browserbot\\.baseUrl");
+  }
+
   @Override
   protected String handleSeleneseCommand(WebDriver driver, String locator, String value) {
     String script = locator.replaceAll("\n", "\\\\n");
     script = SELENIUM_WINDOW_REF_REGEX.matcher(script).replaceAll("window");
     script = SELENIUM_DOCUMENT_REF_REGEX.matcher(script).replaceAll("window.document");
-    script = String.format("return eval(\"%s\");", script);
+    script = seleniumBaseUrl.matcher(script).replaceAll(baseUrl);
+    script = script.replaceAll("\"", "\\\"");
+    script = String.format("return eval('%s');", script);
 
     return String.valueOf(((JavascriptExecutor) driver).executeScript(script));
   }

@@ -23,7 +23,7 @@ module Selenium
 
         def stop
           if @pid
-            Process.kill(:INT, @pid)
+            Process.kill(:TERM, @pid)
             Process.waitpid(@pid)
           end
         end

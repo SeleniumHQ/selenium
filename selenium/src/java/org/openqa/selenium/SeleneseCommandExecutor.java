@@ -46,6 +46,7 @@ import org.openqa.selenium.internal.selenesedriver.SendKeys;
 import org.openqa.selenium.internal.selenesedriver.SetElementSelected;
 import org.openqa.selenium.internal.selenesedriver.SubmitElement;
 import org.openqa.selenium.internal.selenesedriver.ToggleElement;
+import org.openqa.selenium.internal.selenesedriver.ExecuteScript;
 import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.Capabilities;
 import org.openqa.selenium.remote.Command;
@@ -116,6 +117,7 @@ public class SeleneseCommandExecutor implements CommandExecutor {
         .put(CLEAR_ELEMENT, new ClearElement())
         .put(CLICK_ELEMENT, new ClickElement())
         .put(GET_CURRENT_URL, new GetCurrentUrl())
+        .put(EXECUTE_SCRIPT, new ExecuteScript())
         .put(FIND_ELEMENT, new FindElement())
         .put(GET, new GetUrl())
         .put(GET_ELEMENT_ATTRIBUTE, new GetElementAttribute())

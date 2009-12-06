@@ -6,12 +6,13 @@ describe "Driver" do
     driver.current_url.should == url_for("formPage.html")
 
     driver.find_element(:id, 'imageButton').submit
-    # TODO: assert
+    driver.find_element(:id, 'greeting').text.should == "Success!"
+
     driver.navigate.back
     driver.current_url.should == url_for("formPage.html")
 
     driver.navigate.forward
-    # TODO: assert
+    driver.find_element(:id, 'greeting').text.should == "Success!"
   end
 
   it "should get the page title" do
