@@ -17,8 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import junit.framework.TestCase;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -26,6 +24,11 @@ import static org.hamcrest.core.IsNot.not;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.TestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
+
+import junit.framework.TestCase;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
 
 public class AbstractDriverTestCase extends TestCase implements NeedsDriver {
 
@@ -94,7 +97,7 @@ public class AbstractDriverTestCase extends TestCase implements NeedsDriver {
   }
 
   protected boolean browserNeedsFocusOnThisOs(WebDriver driver) {
-    // No browser yet demands focus on window
+    // No browser yet demands focus on windows
     if (Platform.getCurrent().is(Platform.WINDOWS))
       return false;
 
@@ -102,6 +105,25 @@ public class AbstractDriverTestCase extends TestCase implements NeedsDriver {
       return false;
     }
 
-    return driver.getClass().getName().contains("Firefox");
+    String browserName = getBrowserName(driver);
+    return browserName.toLowerCase().contains("firefox");
+  }
+
+  // It's methods like this that make me think we need a "HasCapabilities" interface
+  private String getBrowserName(WebDriver driver) {
+    try {
+    // is there a "getCababilities" method?
+    Method getCapabilities = driver.getClass().getMethod("getCapabilities");
+    Object capabilities = getCapabilities.invoke(driver);
+    return (String) capabilities.getClass().getMethod("getBrowserName") .invoke(capabilities);
+    } catch (NoSuchMethodException e) {
+      // Fall through
+    } catch (IllegalAccessException e) {
+      // Fall through
+    } catch (InvocationTargetException e) {
+      // Fall through
+    }
+
+    return driver.getClass().getName();
   }
 }
