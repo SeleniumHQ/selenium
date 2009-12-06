@@ -40,26 +40,24 @@ public class SingleTestSuite extends TestCase {
   private final static String SELENIUM = "org.openqa.selenium.SeleneseBackedWebDriver";
 
   public static Test suite() throws Exception {
-    String driver = CHROME_TEST;
+    String driver = SELENIUM;
 
     System.setProperty("webdriver.development", "true");
     System.setProperty("jna.library.path", "..\\build;build");
-    //System.setProperty("webdriver.selenium.server.port", String.valueOf(findFreePort()));
+    System.setProperty("webdriver.selenium.server.port", String.valueOf(findFreePort()));
 //    System.setProperty("webdriver.firefox.useExisting", "true");
 //    System.setProperty("webdriver.firefox.reap_profile", "false");
-
+                                                      
     TestSuiteBuilder builder = new TestSuiteBuilder()
         .addSourceDir("common")
         .addSourceDir("firefox")
         .usingDriver(driver)
         .keepDriverInstance()
         .includeJavascriptTests()
-        .onlyRun("WindowSwitchingTest")
-        .method("testCanCallGetWindowHandlesAfterClosingAWindow")
-        .method("testCanObtainAWindowHandle")
-        .method("testFailingToSwitchToAWindowLeavesTheCurrentWindowAsIs")
+        .onlyRun("ExecutingJavascriptTest")
+        .method("testJavascriptStringHandlingShouldWorkAsExpected")
         .exclude(ALL)
-        .exclude(Ignore.Driver.CHROME_NON_WINDOWS)
+        .exclude(Ignore.Driver.SELENESE)
         .leaveRunning()
         ;  // Yeah, this look strange :)
 
