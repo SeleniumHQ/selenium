@@ -39,7 +39,7 @@ public class Session {
   private Executor executor;
   private volatile String base64EncodedImage;
 
-  public Session(final Capabilities capabilities) throws Exception {
+  public Session(final DriverFactory factory, final Capabilities capabilities) throws Exception {
     executor = new ThreadPoolExecutor(1, 1,
                                     600L, TimeUnit.SECONDS,
                                     new LinkedBlockingQueue<Runnable>());
@@ -48,7 +48,7 @@ public class Session {
     FutureTask<WebDriver> createBrowser = new FutureTask<WebDriver>(new Callable<WebDriver>() {
       public WebDriver call() throws Exception {
         EventFiringWebDriver driver =
-            new EventFiringWebDriver(createNewDriverMatching(capabilities));
+            new EventFiringWebDriver(factory.newInstance(capabilities));
         driver.register(new SnapshotScreenListener(Session.this));
         return driver;
       }
@@ -86,44 +86,6 @@ public class Session {
     String browser = capabilities.getBrowserName();
 
     return browser != null && !"".equals(browser) && !"htmlunit".equals(browser);
-  }
-
-  private WebDriver createNewDriverMatching(Capabilities capabilities) throws Exception {
-    Platform platform = capabilities.getPlatform();
-    if (platform != null && !Platform.ANY.equals(platform) && !Platform.getCurrent().is(platform)) {
-      throw new WebDriverException("Desired operating system does not match current OS");
-    }
-
-    String browser = capabilities.getBrowserName();
-    if (browser != null) {
-      return createNewInstanceOf(browser);
-    }
-
-    if (capabilities.isJavascriptEnabled()) {
-      return (WebDriver) Class.forName("org.openqa.selenium.firefox.FirefoxDriver")
-          .newInstance();
-    }
-
-    return (WebDriver) Class.forName("org.openqa.selenium.htmlunit.HtmlUnitDriver")
-        .newInstance();
-  }
-
-  private WebDriver createNewInstanceOf(String browser) throws Exception {
-    if ("htmlunit".equals(browser)) {
-      return Class.forName("org.openqa.selenium.htmlunit.HtmlUnitDriver")
-          .asSubclass(WebDriver.class).newInstance();
-    } else if ("firefox".equals(browser)) {
-      return Class.forName("org.openqa.selenium.firefox.FirefoxDriver")
-          .asSubclass(WebDriver.class).newInstance();
-    } else if ("internet explorer".equals(browser)) {
-      return Class.forName("org.openqa.selenium.ie.InternetExplorerDriver")
-          .asSubclass(WebDriver.class).newInstance();
-    } else if ("chrome".equals(browser)) {
-      return Class.forName("org.openqa.selenium.chrome.ChromeDriver")
-          .asSubclass(WebDriver.class).newInstance();
-    }
-
-    throw new WebDriverException("Unable to match browser: " + browser);
   }
 
   public void attachScreenshot(String base64EncodedImage) {

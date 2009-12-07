@@ -17,19 +17,54 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server;
 
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.Capabilities;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.SessionId;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class DriverSessions {
+  private DriverFactory factory;
 
   private static Map<SessionId, Session> sessionIdToDriver =
       new ConcurrentHashMap<SessionId, Session>();
 
+  private static Map<Capabilities, String> defaultDrivers = new HashMap<Capabilities, String>() {{
+    put(DesiredCapabilities.chrome(), "org.openqa.selenium.chrome.ChromeDriver");
+    put(DesiredCapabilities.firefox(), "org.openqa.selenium.firefox.FirefoxDriver");
+    put(DesiredCapabilities.htmlUnit(), "org.openqa.selenium.htmlunit.HtmlUnitDriver");
+    put(DesiredCapabilities.internetExplorer(), "org.openqa.selenium.ie.InternetExplorerDriver");
+  }};
+
+  public DriverSessions() {
+    registerDefaults(Platform.getCurrent());
+  }
+
+  private void registerDefaults(Platform current) {
+    for (Map.Entry<Capabilities, String> entry : defaultDrivers.entrySet()) {
+      Capabilities caps = entry.getKey();
+      if (caps.getPlatform() != null && current.is(caps.getPlatform())) {
+        registerDriver(caps, entry.getValue());
+      } else if (caps.getPlatform() == null) {
+        registerDriver(caps, entry.getValue());
+      }
+    }
+  }
+
+  private void registerDriver(Capabilities caps, String className) {
+    try {
+      registerDriver(caps, Class.forName(className).asSubclass(WebDriver.class));
+    } catch (ClassNotFoundException e) {
+      // OK. Fall through. We just won't be able to create these
+    }
+  }
+
   public SessionId newSession(Capabilities desiredCapabilities) throws Exception {
-    Session session = new Session(desiredCapabilities);
+    Session session = new Session(factory, desiredCapabilities);
     
     SessionId sessionId = new SessionId(String.valueOf(System.currentTimeMillis()));
     sessionIdToDriver.put(sessionId, session);
@@ -42,5 +77,9 @@ public class DriverSessions {
 
   public void deleteSession(SessionId sessionId) {
     sessionIdToDriver.remove(sessionId);
+  }
+
+  public void registerDriver(Capabilities capabilities, Class<? extends WebDriver> implementation) {
+    factory.registerDriver(capabilities, implementation);
   }
 }

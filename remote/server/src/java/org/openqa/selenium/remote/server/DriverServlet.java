@@ -76,6 +76,7 @@ import org.openqa.selenium.remote.server.renderer.ForwardResult;
 import org.openqa.selenium.remote.server.renderer.JsonErrorExceptionResult;
 import org.openqa.selenium.remote.server.renderer.JsonResult;
 import org.openqa.selenium.remote.server.renderer.RedirectResult;
+import org.openqa.selenium.remote.server.rest.Handler;
 import org.openqa.selenium.remote.server.rest.ResultConfig;
 import org.openqa.selenium.remote.server.rest.ResultType;
 import org.openqa.selenium.remote.server.rest.UrlMapper;
@@ -93,6 +94,10 @@ public class DriverServlet extends HttpServlet {
 
     ServletLogTo logger = new ServletLogTo();
 
+    setupMappings(driverSessions, logger);
+  }
+
+  private void setupMappings(DriverSessions driverSessions, ServletLogTo logger) {
     getMapper = new UrlMapper(driverSessions, logger);
     postMapper = new UrlMapper(driverSessions, logger);
     deleteMapper = new UrlMapper(driverSessions, logger);
@@ -103,6 +108,11 @@ public class DriverServlet extends HttpServlet {
                                 new JsonErrorExceptionResult(":exception", ":response"));
     deleteMapper.addGlobalHandler(ResultType.EXCEPTION,
                                   new JsonErrorExceptionResult(":exception", ":response"));
+
+//    postMapper.bind("/config/drivers", AddConfig.class).on(ResultType.SUCCESS, new ForwardResult(""));
+//    deleteMapper.bind("/config/drivers/:config", RemoveConfig.class).on(ResultType.SUCCESS, new EmptyResult());
+//    getMapper.bind("/config/drivers/:config", ShowSpecificConig.class).on(ResultType.SUCCESS, new EmptyResult());
+//    getMapper.bind("/config/drivers", SpecificConigs.class).on(ResultType.SUCCESS, new EmptyResult());
 
     postMapper.bind("/session", NewSession.class)
         .on(ResultType.SUCCESS, new RedirectResult("/session/:sessionId/:context"));
@@ -167,8 +177,8 @@ public class DriverServlet extends HttpServlet {
         .on(ResultType.SUCCESS, new EmptyResult());
     getMapper.bind("/session/:sessionId/:context/element/:id/value", GetElementValue.class)
         .on(ResultType.SUCCESS, new JsonResult(":response"));
-        getMapper.bind("/session/:sessionId/:context/element/:id/name", GetTagName.class)
-        .on(ResultType.SUCCESS, new JsonResult(":response"));
+    getMapper.bind("/session/:sessionId/:context/element/:id/name", GetTagName.class)
+    .on(ResultType.SUCCESS, new JsonResult(":response"));
 
     postMapper.bind("/session/:sessionId/:context/element/:id/clear", ClearElement.class)
         .on(ResultType.SUCCESS, new EmptyResult());
@@ -222,6 +232,18 @@ public class DriverServlet extends HttpServlet {
         .on(ResultType.SUCCESS, new JsonResult(":response"));
     postMapper.bind("/session/:sessionId/:context/speed", SetMouseSpeed.class)
         .on(ResultType.SUCCESS, new EmptyResult());
+  }
+
+  protected ResultConfig addNewGetMapping(String path, Class<? extends Handler> implementationClass) {
+    return getMapper.bind(path, implementationClass);
+  }
+
+  protected ResultConfig addNewPostMapping(String path, Class<? extends Handler> implementationClass) {
+    return postMapper.bind(path, implementationClass);
+  }
+
+  protected ResultConfig addNewDeleteMapping(String path, Class<? extends Handler> implementationClass) {
+    return deleteMapper.bind(path, implementationClass);
   }
 
   @Override
