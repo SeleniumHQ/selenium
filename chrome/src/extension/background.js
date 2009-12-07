@@ -285,6 +285,13 @@ chrome.extension.onConnect.addListener(function(port) {
       //We are actively closing the tab, and expect a response to this
       sendResponseToParsedRequest({statusCode: 0}, false)
       ChromeDriver.isClosingTab = false;
+      if (ChromeDriver.tabs.length == 0) {
+        chrome.windows.getAll({}, function(windows) {
+          for (var window in windows) {
+            chrome.windows.remove(windows[window].id);
+          }
+        });
+      }
     }
   });
 });
