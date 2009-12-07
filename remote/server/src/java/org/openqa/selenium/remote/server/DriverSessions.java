@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class DriverSessions {
-  private DriverFactory factory;
+  private DriverFactory factory = new DriverFactory();
 
   private static Map<SessionId, Session> sessionIdToDriver =
       new ConcurrentHashMap<SessionId, Session>();
