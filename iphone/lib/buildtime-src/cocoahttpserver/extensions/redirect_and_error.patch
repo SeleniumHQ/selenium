@@ -76,7 +76,7 @@ diff -Naur old/HTTPConnection.m new/HTTPConnection.m
  	// If they issue a 'HEAD' command, we don't have to include the file
  	// If they issue a 'GET' command, we need to include the file
 -	if([method isEqual:@"HEAD"])
-+	if([method isEqualToString:@"HEAD"] || [method isEqualToString:@"DELETE"])
++	if([method isEqualToString:@"HEAD"])
  	{
  		NSData *responseData = [self preprocessResponse:response];
  		[asyncSocket writeData:responseData withTimeout:WRITE_HEAD_TIMEOUT tag:HTTP_RESPONSE];
