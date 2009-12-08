@@ -42,9 +42,17 @@
 
 - (id<HTTPResource>)elementWithQuery:(NSString *)query {
   NSString *queriedAttribute = [query substringFromIndex:1];
-  NSString *attribute = [element_ attribute:queriedAttribute];
-  return [HTTPStaticResource
-          resourceWithResponse:[WebDriverResponse responseWithValue:attribute]];
+  id<HTTPResource> resource;
+  @try {
+    NSString *attribute = [element_ attribute:queriedAttribute];
+    resource = [HTTPStaticResource resourceWithResponse:
+                [WebDriverResponse responseWithValue:attribute]];
+  }
+  @catch (NSException* e) {
+    resource = [HTTPStaticResource resourceWithResponse:
+                [WebDriverResponse responseWithError:e]];
+  }
+  return resource;
 }
 
 @end

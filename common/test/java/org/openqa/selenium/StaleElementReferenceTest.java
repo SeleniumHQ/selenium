@@ -46,4 +46,18 @@ public class StaleElementReferenceTest extends AbstractDriverTestCase {
       // do nothing. this is what we expected.
     }
   }
+
+  @JavascriptEnabled
+  @Ignore(SELENESE)
+  public void testShouldNotCrashWhenQueryingTheAttributeOfAStaleElement() {
+    driver.get(xhtmlTestPage);
+    WebElement heading = driver.findElement(By.xpath("//h1"));
+    driver.get(simpleTestPage);
+    try {
+      heading.getAttribute("class");
+      fail();
+    } catch (StaleElementReferenceException e) {
+      // do nothing. this is what we expected.
+    }
+  }
 }
