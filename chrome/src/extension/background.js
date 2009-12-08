@@ -406,10 +406,34 @@ function parseRequest(request) {
     ChromeDriver.isClosingTab = true;
     break;
   case "getCurrentWindowHandle":
-    //TODO(danielwh): Get window's handle, not frame's
-    var handle =
-        (ChromeDriver.activePort == null ? ChromeDriver.activePort.name : "");
-    sendResponseToParsedRequest({statusCode: 0, value:  handle}, false);
+    if (ChromeDriver.activePort == null) {
+      //        console.log("No active port right now.");
+      // Fine. Find the active tab.
+      // TODO(simon): This is lame and error prone
+      var len = ChromeDriver.tabs.length;
+      for (var i = 0; i < len; i++) {
+        if (ChromeDriver.tabs[i].selected) {
+          sendResponseToParsedRequest({statusCode: 0, value:  ChromeDriver.tabs[i].id}, false);
+        }
+      }
+
+      // Hohoho. The first argument to tabs.getSelected is optional, but must be set.
+      chrome.windows.getCurrent(function(win) {
+        chrome.tabs.getSelected(win.id, function(tab) {
+          var len = ChromeDriver.tabs.length;
+          for (var i = 0; i < len; i++) {
+            if (ChromeDriver.tabs[i].tabId == tab.id) {
+              sendResponseToParsedRequest({statusCode: 0, value: ChromeDriver.tabs[i].tabId}, false);
+              return;
+            }
+          }
+        });
+      });
+    } else {
+      // Wow. I can't see this being error prone in the slightest
+      var handle = ChromeDriver.activePort.sender.tab.id;
+      sendResponseToParsedRequest({statusCode: 0, value:  handle}, false);
+    };
     break;
   case "getWindowHandles":
     sendResponseToParsedRequest(getWindowHandles(), false);
@@ -923,7 +947,8 @@ function setExtensionBusyIndicator(busy) {
 function setActivePortByWindowName(handle) {
   for (var tab in ChromeDriver.tabs) {
     if (ChromeDriver.tabs[tab].windowName == handle || 
-        ChromeDriver.tabs[tab].mainPort.name == handle) {
+        ChromeDriver.tabs[tab].mainPort.name == handle ||
+        ChromeDriver.tabs[tab].tabId.toString() == handle) {
       ChromeDriver.activePort = ChromeDriver.tabs[tab].mainPort;
       chrome.tabs.get(ChromeDriver.tabs[tab].tabId, setActiveTabDetails);
       chrome.tabs.update(ChromeDriver.tabs[tab].tabId, {selected: true});
