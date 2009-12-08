@@ -531,6 +531,12 @@ task :test_firefox_py => :firefox do
   end
 end
 
+task :test_selenium_py => :selenium do
+    if python? then
+        sh "python selenium/test/py/runtests.py", :verbose => true
+    end
+end
+
 task :iphone => [:iphone_server, :iphone_client]
 
 # Place-holder tasks
