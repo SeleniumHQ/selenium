@@ -4,6 +4,7 @@ require 'rake/rdoctask'
 
 require 'rake-tasks/task-gen'
 require 'rake-tasks/checks'
+require 'rake-tasks/dotnet'
 require 'rake-tasks/zip'
 require 'rake-tasks/c'
 require 'rake-tasks/java'
@@ -109,6 +110,68 @@ dll(:name => "ie_x64_dll",
     :solution => "WebDriver.sln",
     :out  => "x64/Release/InternetExplorerDriver.dll",
     :prebuilt => "jobbie/prebuilt")
+
+dotnet_library(:name => "build/Win32/Release/webdriver-common.dll",
+               :srcs => [ "common/src/csharp/**/*.cs" ],
+               :solution => "WebDriver.sln",
+               :project => "webdriver-common",
+               :arch => "Win32",
+               :prebuilt => "common/prebuilt")
+
+dotnet_library(:name => "build/x64/Release/webdriver-common.dll",
+               :srcs => [ "common/src/csharp/**/*.cs" ],
+               :solution => "WebDriver.sln",
+               :project => "webdriver-common",
+               :arch => "x64",
+               :prebuilt => "common/prebuilt")
+
+dotnet_library(:name => "build/Win32/Release/webdriver-common-test.dll",
+               :srcs => [ "common/test/csharp/**/*.cs" ],
+               :solution => "WebDriver.sln",
+               :project => "webdriver-common-test",
+               :arch => "Win32",
+               :prebuilt => "common/prebuilt")
+
+dotnet_library(:name => "build/x64/Release/webdriver-common-test.dll",
+               :srcs => [ "common/test/csharp/**/*.cs" ],
+               :solution => "WebDriver.sln",
+               :project => "webdriver-common-test",
+               :arch => "x64",
+               :prebuilt => "common/prebuilt")
+
+dotnet_library(:name => "build/Win32/Release/webdriver-ie.dll",
+               :srcs => [ "jobbie/src/csharp/**/*.cs" ],
+               :solution => "WebDriver.sln",
+               :project => "webdriver-ie",
+               :arch => "Win32",
+               :prebuilt => "jobbie/prebuilt")
+
+dotnet_library(:name => "build/x64/Release/webdriver-ie.dll",
+               :srcs => [ "jobbie/src/csharp/**/*.cs" ],
+               :solution => "WebDriver.sln",
+               :project => "webdriver-ie",
+               :arch => "x64",
+               :prebuilt => "jobbie/prebuilt")
+
+dotnet_library(:name => "build/Win32/Release/webdriver-ie-test.dll",
+               :srcs => [ "jobbie/test/csharp/**/*.cs" ],
+               :solution => "WebDriver.sln",
+               :project => "webdriver-ie-test",
+               :arch => "Win32",
+               :prebuilt => "jobbie/prebuilt")
+
+dotnet_library(:name => "build/x64/Release/webdriver-ie-test.dll",
+               :srcs => [ "jobbie/test/csharp/**/*.cs" ],
+               :solution => "WebDriver.sln",
+               :project => "webdriver-ie-test",
+               :arch => "x64",
+               :prebuilt => "jobbie/prebuilt")
+
+task :dotnet => [ :'build/x64/Release/webdriver-ie-test.dll', :'build/Win32/Release/webdriver-ie-test.dll',
+                  :'build/x64/Release/webdriver-ie.dll', :'build/Win32/Release/webdriver-ie.dll',
+                  :'build/x64/Release/webdriver-common-test.dll', :'build/Win32/Release/webdriver-common-test.dll',
+                  :'build/x64/Release/webdriver-common.dll', :'build/Win32/Release/webdriver-common.dll',
+                  :ie_win32_dll, :ie_x64_dll ]
 
 java_jar(:name => "webdriver-ie",
     :srcs  => [ "jobbie/src/java/**/*.java" ],
