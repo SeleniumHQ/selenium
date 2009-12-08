@@ -7,8 +7,8 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-common"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-remote-common"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-support"/>
-	<classpathentry kind="lib" path="/webdriver-remote-common/lib/runtime/commons-codec-1.3.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/webdriver-remote-client"/>
 	<classpathentry kind="lib" path="/webdriver-remote-common/lib/runtime/json-20080701.jar"/>
+	<classpathentry kind="lib" path="/webdriver-remote-common/lib/runtime/commons-codec-1.4.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

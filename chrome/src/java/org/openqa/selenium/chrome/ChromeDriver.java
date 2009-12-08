@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Set;
 
 public class ChromeDriver implements WebDriver, SearchContext, JavascriptExecutor, TakesScreenshot,
-FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, FindsByXPath {
+  FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, FindsByXPath {
 
   private ChromeCommandExecutor executor;
   private ChromeBinary chromeBinary = new ChromeBinary();

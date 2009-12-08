@@ -226,8 +226,6 @@ chrome.extension.onConnect.addListener(function(port) {
   }
   
   if (ChromeDriver.doFocusOnNextOpenedTab) {
-    console.log("Setting active port");
-    console.log(port);
     ChromeDriver.activePort = port;
     setActiveTabDetails(port.tab);
     //Re-parse the last request we sent if we didn't get a response,
@@ -287,6 +285,13 @@ chrome.extension.onConnect.addListener(function(port) {
       //We are actively closing the tab, and expect a response to this
       sendResponseToParsedRequest({statusCode: 0}, false)
       ChromeDriver.isClosingTab = false;
+      if (ChromeDriver.tabs.length == 0) {
+        chrome.windows.getAll({}, function(windows) {
+          for (var window in windows) {
+            chrome.windows.remove(windows[window].id);
+          }
+        });
+      }
     }
   });
 });
@@ -401,10 +406,34 @@ function parseRequest(request) {
     ChromeDriver.isClosingTab = true;
     break;
   case "getCurrentWindowHandle":
-    //TODO(danielwh): Get window's handle, not frame's
-    var handle =
-        (ChromeDriver.activePort == null ? ChromeDriver.activePort.name : "");
-    sendResponseToParsedRequest({statusCode: 0, value:  handle}, false);
+    if (ChromeDriver.activePort == null) {
+      //        console.log("No active port right now.");
+      // Fine. Find the active tab.
+      // TODO(simon): This is lame and error prone
+      var len = ChromeDriver.tabs.length;
+      for (var i = 0; i < len; i++) {
+        if (ChromeDriver.tabs[i].selected) {
+          sendResponseToParsedRequest({statusCode: 0, value:  ChromeDriver.tabs[i].id}, false);
+        }
+      }
+
+      // Hohoho. The first argument to tabs.getSelected is optional, but must be set.
+      chrome.windows.getCurrent(function(win) {
+        chrome.tabs.getSelected(win.id, function(tab) {
+          var len = ChromeDriver.tabs.length;
+          for (var i = 0; i < len; i++) {
+            if (ChromeDriver.tabs[i].tabId == tab.id) {
+              sendResponseToParsedRequest({statusCode: 0, value: ChromeDriver.tabs[i].tabId}, false);
+              return;
+            }
+          }
+        });
+      });
+    } else {
+      // Wow. I can't see this being error prone in the slightest
+      var handle = ChromeDriver.activePort.sender.tab.id;
+      sendResponseToParsedRequest({statusCode: 0, value:  handle}, false);
+    };
     break;
   case "getWindowHandles":
     sendResponseToParsedRequest(getWindowHandles(), false);
@@ -688,7 +717,6 @@ function getWindowHandles() {
 }
 
 function resetActiveTabDetails() {
-  console.log("resetting active port. Nothing will be active");
   ChromeDriver.activePort = null;
   ChromeDriver.hasHwnd = false;
   ChromeDriver.activeTabId = null;
@@ -715,11 +743,8 @@ function switchToDefaultContent() {
         ChromeDriver.isBlockedWaitingForResponse = false;
         parseRequest({request: 'switchToFrameByIndex', index: 0});
       } else {
-        console.log("switching to default content port");
         ChromeDriver.activePort = ChromeDriver.tabs[tab].mainPort;
-        console.log(ChromeDriver.activePort);
         sendResponseToParsedRequest({statusCode: 0}, false);
-        break;
       }
       return;
     }
@@ -922,8 +947,8 @@ function setExtensionBusyIndicator(busy) {
 function setActivePortByWindowName(handle) {
   for (var tab in ChromeDriver.tabs) {
     if (ChromeDriver.tabs[tab].windowName == handle || 
-        ChromeDriver.tabs[tab].mainPort.name == handle) {
-      console.log("Setting active port by window handle");
+        ChromeDriver.tabs[tab].mainPort.name == handle ||
+        ChromeDriver.tabs[tab].tabId.toString() == handle) {
       ChromeDriver.activePort = ChromeDriver.tabs[tab].mainPort;
       chrome.tabs.get(ChromeDriver.tabs[tab].tabId, setActiveTabDetails);
       chrome.tabs.update(ChromeDriver.tabs[tab].tabId, {selected: true});

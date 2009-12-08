@@ -36,6 +36,8 @@
                             @"id",
                             @"link+text",
                             @"class+name",
+                            @"tag+name",
+                            @"partial+link+text",
                             nil];
   
   for (NSString *method in searchMethods) {
@@ -194,6 +196,13 @@
   return [elementStore_ elementsFromJSArray:container];
 }
 
+- (NSArray *)findElementsByTagName:(NSString *)tagName
+                                to:(NSString *)container {
+  [[self viewController] jsEval:@"var %@ = %@.getElementsByTagName('%@');",
+   container, [self jsLocator], [tagName uppercaseString]];
+  return [elementStore_ elementsFromJSArray:container];
+}
+
 // Find elements by the given method passed in as a string.
 - (NSArray *)findElementsByMethod:(NSString *)method query:(NSString *)query {
   NSString *tempStore = @"_WEBDRIVER_elems";
@@ -214,8 +223,14 @@
   else if ([method isEqualToString:@"link text"]) {
     result = [self findElementsByLinkText:query to:tempStore];
   }
+  else if ([method isEqualToString:@"partial link text"]) {
+    result = [self findElementsByPartialLinkText:query to:tempStore];
+  }
   else if ([method isEqualToString:@"class name"]) {
     result = [self findElementsByClassName:query to:tempStore];
+  }
+  else if ([method isEqualToString:@"tag name"]) {
+    result = [self findElementsByTagName:query to:tempStore];
   }
   else {
     NSLog(@"Cannot search by method %@", method);

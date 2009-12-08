@@ -347,11 +347,11 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
   public void testShouldBeAbleToExecuteABigChunkOfJavascriptCode() throws IOException {
     driver.get(javascriptPage);
 
-    File jqueryFile = new File("common/src/web/jquery-1.2.6.min.js");
+    File jqueryFile = new File("common/src/web/jquery-1.3.2.js");
     if(!jqueryFile.isFile()) {
-      jqueryFile = new File("../common/src/web/jquery-1.2.6.min.js");
+      jqueryFile = new File("../common/src/web/jquery-1.3.2.js");
       if(!jqueryFile.isFile()) {
-        jqueryFile = new File("../../common/src/web/jquery-1.2.6.min.js");
+        jqueryFile = new File("../../common/src/web/jquery-1.3.2.js");
       }
     }
     String jquery = FileUtils.readFileToString(jqueryFile, "US-ASCII");

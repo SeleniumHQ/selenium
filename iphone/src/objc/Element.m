@@ -138,6 +138,7 @@
 #pragma mark Webdriver methods
 
 - (void)click:(NSDictionary *)dict {
+  [self verifyIsDisplayed];
   // TODO: Get the pixel coordinates and simulate a tap. Wait for page to
   // load before continuing.
   NSString *locator = [self jsLocator];
@@ -203,6 +204,7 @@
 }
 
 - (void)clear {
+  [self verifyIsDisplayed];
   NSString *locator = [self jsLocator];
   [[self viewController] jsEval:[NSString stringWithFormat:
   @"if (%@['value']) { %@.value = ''; }\r"
@@ -215,6 +217,7 @@
 }
 
 - (void)submit {
+  [self verifyIsDisplayed];
   NSString *locator = [self jsLocator];
   [[self viewController] jsEvalAndBlock:[NSString stringWithFormat:
     @"if (%@ instanceof HTMLFormElement) %@.submit(); else %@.form.submit();",
@@ -232,6 +235,7 @@
 }
 
 - (void)sendKeys:(NSDictionary *)dict {
+  [self verifyIsDisplayed];
   [[self viewController] 
    jsEval:[NSString stringWithFormat:@"%@.value=\"%@\"", [self jsLocator], [[dict objectForKey:@"value"] componentsJoinedByString:@""]]];	
 }
@@ -253,6 +257,7 @@
 
 // This method is only valid on option elements, checkboxes and radio buttons.
 - (void)setChecked:(NSNumber *)numValue {
+  [self verifyIsDisplayed];
   NSString *locator = [self jsLocator];
   
   [[self viewController] jsEval:[NSString stringWithFormat:
@@ -267,6 +272,7 @@
 
 // Like |checked| above, we should check that the element is valid.
 - (void)toggleSelected {
+  [self verifyIsDisplayed];
   NSString *jsLocator = [self jsLocator];
   [[self viewController] jsEval:[NSString
                 stringWithFormat:@"%@.focus(); %@.checked = !%@.checked",
@@ -282,8 +288,50 @@
 }
 
 - (NSNumber *)isDisplayed {
-  @throw [NSException webDriverExceptionWithMessage:@"Not Implemented"
-                                     webDriverClass:nil];
+  // iteratively walk up the DOM tree and see if the given element or any of
+  // it's parents are currently hidden.  We check for "visibility=hidden" and
+  // "display=none".  We will also try and use the getComputedStyle to deal
+  // with style applied to the element in an external style sheet. If, while
+  // traversing up the tree, we encounter a node with "visibility=visible", the
+  // visibility style for all other ancestors will be ignored. Once we determine
+  // whether the element has been hidden by CSS, we make one final check that it
+  // has width and height.
+  NSString *visibleTest =
+      [[self viewController] jsEval:
+       @"(function(obj) {\n"
+       "  var ownerDoc = obj.ownerDocument;\n"
+       "  var win = ownerDoc.defaultView;\n"
+       "  var current = obj;\n"
+       "  var explicitlyVisible = false;\n"
+       "  while(current && current != ownerDoc) {\n"
+       "    if(current.style) {\n"
+       "      if (current.style.display == 'none') return false;\n"
+       "      explicitlyVisible = explicitlyVisible ||\n"
+       "          current.style.visibility == 'visible';\n"
+       "      if (!explicitlyVisible && current.style.visibility == 'hidden')\n"
+       "          return false;\n"
+       "    }\n"
+       "    var computedStyle = win.getComputedStyle(current, null);\n"
+       "    if (computedStyle.display == 'none') return false;\n"
+       "    explicitlyVisible = explicitlyVisible ||\n"
+       "        computedStyle.visibility == 'visible';\n"
+       "    if (!explicitlyVisible && computedStyle.visibility == 'hidden')\n"
+       "      return false;\n"
+       "    current = current.parentNode;\n"
+       "  }\n"
+       "  return obj.offsetWidth > 0 && obj.offsetHeight > 0;\n"
+       "})(%@)", [self jsLocator]];
+  
+  BOOL visible = [visibleTest isEqualToString:@"true"];
+  return [NSNumber numberWithBool:visible];
+}
+
+- (void)verifyIsDisplayed {
+  if ([self isDisplayed] == [NSNumber numberWithBool:NO]) {
+    @throw [NSException
+            webDriverExceptionWithMessage:@"Element is not visible"
+            webDriverClass:@"org.openqa.selenium.ElementNotVisibleException"];
+  }
 }
 
 - (NSDictionary *)locationAsDictionary {

@@ -93,6 +93,9 @@
 // Is the element displayed on the screen?
 - (NSNumber *)isDisplayed;
 
+// Throws an error if this element is not displayed on the screen.
+- (void) verifyIsDisplayed;
+
 // Get the attribute with the given name.
 - (NSString *)attribute:(NSString *)attributeName;
 

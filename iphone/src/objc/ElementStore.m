@@ -24,6 +24,7 @@
 #import "WebDriverResource.h"
 #import "ElementStore+FindElement.h"
 #import "Element.h"
+#import "NSException+WebDriver.h"
 
 static const NSString *JSARRAY = @"_WEBDRIVER_ELEM_CACHE";
 
@@ -73,6 +74,30 @@ static const NSString *JSARRAY = @"_WEBDRIVER_ELEM_CACHE";
   // everywhere that it counts.
   if ([elementId isEqualToString:@"0"])
     return @"document";
+
+  // If the element is no longer attached to the DOM, remove it from the cache
+  // and throw an error.
+  NSLog(@"Checking if element is stale");
+  NSString *isStale = [[self viewController] jsEval:
+      @"(function(cache, id, currentDocumentElement) {\r"
+       "  if (id in cache) {\r"
+       "    var e = cache[id];\r"
+       "    var parent = e;\r"
+       "    while (parent && parent != currentDocumentElement) {\r"
+       "      parent = parent.parentNode;\r"
+       "    }\r"
+       "    if (parent !== currentDocumentElement) {\r"
+       "      delete cache[id];\r"
+       "      return true;\r"
+       "    }\r"
+       "  }\r"
+       "  return false;\r"
+       "})(%@, %@, window.document.documentElement);\r", JSARRAY, elementId];
+  if (![isStale isEqualToString:@"false"]) {
+    @throw [NSException
+            webDriverExceptionWithMessage:@"Element is stale"
+            webDriverClass:@"org.openqa.selenium.StaleElementReferenceException"];
+  }
   return [NSString stringWithFormat:@"%@[%@]", JSARRAY, elementId];
 }
 

@@ -25,10 +25,7 @@
 #import "WebDriverUtilities.h"
 #import "HTTPVirtualDirectory+Remove.h"
 
-@implementation Session
-
-static NSMutableDictionary *sessions = nil;
-static NSMutableDictionary *contexts = nil;
+@implementation SessionRoot
 
 - (id)init {
   if (![super init])
@@ -43,16 +40,7 @@ static NSMutableDictionary *contexts = nil;
   // Session IDs start at 1001.
   nextId_ = 1001;
 	
-	sessions = [NSMutableDictionary new];
-	contexts = [NSMutableDictionary new];
-	
 	return self;
-}
-
-- (void)cleanSessionStatus{
-  [WebDriverUtilities cleanCookies];
-  [WebDriverUtilities cleanCache];
-  [WebDriverUtilities cleanDatabases];
 }
 
 // TODO (josephg): We really only support one session. Error (or ignore the
@@ -75,52 +63,69 @@ static NSMutableDictionary *contexts = nil;
 
   // But we would like to give a clean status by cleaning up application data,
   // in particular, cookies, cache and HTML5 client-side storage.  
-  [self cleanSessionStatus];
-  
-  HTTPVirtualDirectory *session = [HTTPVirtualDirectory virtualDirectory];
-  [session setIndex:[WebDriverResource resourceWithTarget:self
-                                                GETAction:NULL
-                                               POSTAction:NULL
-                                                PUTAction:NULL
-                                             DELETEAction:@selector(deleteSessionWithSessionId:)]];
+  Session* session = [[[Session alloc]
+                       initWithSessionRootAndSessionId:self
+                       sessionId:sessionId] autorelease];
 	
   NSString *sessionIdStr = [NSString stringWithFormat:@"%d", sessionId];
   [self setResource:session withName:sessionIdStr];
-
-  Context *context = [[[Context alloc] initWithSessionId:sessionId] autorelease];
-	[contexts setObject:context forKey:sessionIdStr];
- 
-  // The context has a static name.
-  [session setResource:context withName:[Context contextName]];
-  [sessions setObject:session forKey:sessionIdStr];
-	
-  [self deleteAllCookies];
 
   return [HTTPRedirectResponse redirectToURL:
           [NSString stringWithFormat:@"session/%d/%@/", sessionId,
            [Context contextName]]];
 }
-
-- (void)deleteSessionWithSessionId:(NSString *)sessionId {
-  Context *ctx = (Context *)[contexts objectForKey:sessionId];
-  Session *sess = [sessions objectForKey:sessionId];
-  if (ctx == nil || sess == nil) {
-      NSLog(@"Session %@ doesn't exist.", sessionId);
-      return;
+  
+- (void) deleteSessionWithId:(int)sessionId {
+  NSString *sessionIdStr = [NSString stringWithFormat:@"%d", sessionId];
+  [self setResource:nil withName:sessionIdStr];
+  NSLog(@"session %d deleted", sessionId);
+  if (sessionId == nextId_ - 1) {
+    nextId_--;
   }
-  [contexts removeObjectForKey:sessionId];
-  [sessions removeObjectForKey:sessionId];
-  [ctx deleteContext];
-  [ctx release];
-  [contents removeAllObjects];
-
-  NSLog(@"Session %@ deleted", sessionId);
-  if ([sessionId intValue] == nextId_ -1)
-      nextId_--;
 }
 
 - (void)dealloc {
   [super dealloc];
+}
+
+@end
+
+@implementation Session
+  
+- (id) initWithSessionRootAndSessionId:(SessionRoot*)root
+                             sessionId:(int)sessionId {
+  self = [super init];
+  if (!self) {
+    return nil;
+  }
+  sessionRoot_ = root;
+  sessionId_ = sessionId;
+  context_ = [[[Context alloc] initWithSessionId:sessionId] autorelease];
+  
+  [self setIndex:[WebDriverResource
+                  resourceWithTarget:self
+                  GETAction:NULL
+                  POSTAction:NULL
+                  PUTAction:NULL
+                  DELETEAction:@selector(deleteSession)]];
+  [self setResource:context_ withName:[Context contextName]];
+
+  [self cleanSessionStatus];
+
+  return self;
+}
+
+- (void)cleanSessionStatus{
+  [WebDriverUtilities cleanCookies];
+  [WebDriverUtilities cleanCache];
+  [WebDriverUtilities cleanDatabases];
+}
+  
+- (void)deleteSession {
+  [context_ deleteContext];
+  [contents removeAllObjects];
+  // Tell the session root to remove this resource.
+  [sessionRoot_ deleteSessionWithId:sessionId_];
 }
 
 - (void)deleteAllCookies {
@@ -130,6 +135,10 @@ static NSMutableDictionary *contexts = nil;
   while ((cookie = [enumerator nextObject])) {
     [[NSHTTPCookieStorage sharedHTTPCookieStorage] deleteCookie:cookie];
   }
+}
+
+- (void)dealloc {
+  [super dealloc];
 }
 
 @end

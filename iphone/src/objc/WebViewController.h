@@ -59,6 +59,7 @@
 
 - (void)forward;
 - (void)back;
+- (void)refresh;
 
 // Evaluate a javascript string and return the result.
 // Arguments can be passed in in NSFormatter (printf) style.

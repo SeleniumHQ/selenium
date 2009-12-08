@@ -17,13 +17,15 @@
 //  limitations under the License.
 #import "WebViewController.h"
 #import "HTTPServerController.h"
+#import "NSException+WebDriver.h"
+#import "NSURLRequest+IgnoreSSL.h"
 #import "UIResponder+SimulateTouch.h"
 #import "WebDriverPreferences.h"
 #import "WebDriverRequestFetcher.h"
 #import "WebDriverUtilities.h"
 #import <objc/runtime.h>
 #import "RootViewController.h"
-#import <QuartzCore/QuartzCore.h>œ
+#import <QuartzCore/QuartzCore.h>
 
 @implementation WebViewController
 
@@ -195,6 +197,13 @@
                 waitUntilLoad:YES];
 }
 
+- (void)refresh {
+  [self describeLastAction:@"refresh"];
+  [self performSelectorOnView:@selector(reload)
+                   withObject:nil
+                waitUntilLoad:YES];
+}
+
 - (id)visible {
   // The WebView is always visible.
   return [NSNumber numberWithBool:YES];  
@@ -287,7 +296,11 @@
 }
 
 - (NSString *)source {
-  return [self jsEval:@"document.documentElement.innerHTML"];
+  return [self jsEval:@"(function() {\n"
+                       "  var div = document.createElement('div');\n"
+                       "  div.appendChild(document.documentElement.cloneNode(true));\n"
+                       "  return div.innerHTML;\n"
+                       "})();"];
 }
 
 // Takes a screenshot.

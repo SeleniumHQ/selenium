@@ -263,6 +263,8 @@ public class Jetty6AppServer implements AppServer {
   }
 
   public static void main(String[] args) {
-    new Jetty6AppServer().start();
+    Jetty6AppServer server = new Jetty6AppServer();
+    server.port = 2310;
+    server.start();
   }
 }

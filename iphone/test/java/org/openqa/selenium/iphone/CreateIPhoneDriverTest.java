@@ -9,9 +9,9 @@ public class CreateIPhoneDriverTest extends TestCase {
 
   public void testDeleteSession() throws Exception {
     IPhoneDriver driver = new IPhoneDriver();
-    driver.close();
+    driver.quit();
   }
-  
+
   public void testCreateDriverWithTrailingSlash() throws Exception {
     new IPhoneDriver("http://localhost:16000/hub/");
   }

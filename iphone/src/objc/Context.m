@@ -96,6 +96,11 @@ static NSString * const CONTEXT_NAME = @"foo";
                               POST:@selector(forward)
                           withName:@"forward"];
   
+  // Refresh the page.
+  [self setResourceToViewMethodGET:NULL
+                              POST:@selector(refresh)
+                          withName:@"refresh"];
+  
   // Get the loaded HTML
   [self setResourceToViewMethodGET:@selector(source)
                               POST:NULL

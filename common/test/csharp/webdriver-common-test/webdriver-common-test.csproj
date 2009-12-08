@@ -1,0 +1,138 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <OutputPath>..\..\..\..\build\cli\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{1580564D-B6B8-4BD8-A120-001E3E8E5BE6}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>OpenQa.Selenium</RootNamespace>
+    <AssemblyName>webdriver-common-test</AssemblyName>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\..\..\build\cli\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\..\..\build\cli\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\..\..\..\build\cli\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="nunit.core, Version=2.4.5.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\third_party\nunit\NUnit-2.4.5-net-2.0\bin\nunit.core.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.core.interfaces, Version=2.4.5.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\third_party\nunit\NUnit-2.4.5-net-2.0\bin\nunit.core.interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework, Version=2.4.5.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\third_party\nunit\NUnit-2.4.5-net-2.0\bin\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.mocks, Version=2.4.5.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\third_party\nunit\NUnit-2.4.5-net-2.0\bin\nunit.mocks.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyTeardown.cs" />
+    <Compile Include="Browser.cs" />
+    <Compile Include="ByTest.cs" />
+    <Compile Include="ChildrenFindingTest.cs" />
+    <Compile Include="CookieImplementationTest.cs" />
+    <Compile Include="CookieTest.cs" />
+    <Compile Include="CorrectEventFiringTest.cs" />
+    <Compile Include="DragAndDropTest.cs" />
+    <Compile Include="DriverElementFindingTest.cs" />
+    <Compile Include="DriverTestFixture.cs" />
+    <Compile Include="ElementAttributeTest.cs" />
+    <Compile Include="ElementElementFindingTest.cs" />
+    <Compile Include="ElementEqualityTest.cs" />
+    <Compile Include="ElementFindingTest.cs" />
+    <Compile Include="Environment\EnvironmentManager.cs" />
+    <Compile Include="Environment\UrlBuilder.cs" />
+    <Compile Include="ExecutingJavascriptTest.cs" />
+    <Compile Include="FormHandlingTests.cs" />
+    <Compile Include="FrameSwitchingTest.cs" />
+    <Compile Include="IgnoreBrowserAttribute.cs" />
+    <Compile Include="IgnoredBrowserTestDecorator.cs" />
+    <Compile Include="MiscTest.cs" />
+    <Compile Include="NavigationTest.cs" />
+    <Compile Include="ObjectStateAssumptionsTest.cs" />
+    <Compile Include="PageLoadingTest.cs" />
+    <Compile Include="PartialLinkTextMatchTest.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RenderedWebElementTest.cs" />
+    <Compile Include="SelectElementHandlingTest.cs" />
+    <Compile Include="StaleElementReferenceTest.cs" />
+    <Compile Include="TagNameTest.cs" />
+    <Compile Include="TargetLocatorTest.cs" />
+    <Compile Include="TextHandlingTest.cs" />
+    <Compile Include="TextPagesTest.cs" />
+    <Compile Include="TypingTest.cs" />
+    <Compile Include="UploadTest.cs" />
+    <Compile Include="VisibilityTest.cs" />
+    <Compile Include="WebElementTest.cs" />
+    <Compile Include="WindowSwitchingTest.cs" />
+    <Compile Include="XPathElementFindingTest.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\csharp\webdriver-common\webdriver-common.csproj">
+      <Project>{ABB9B87F-FEEA-410E-ACBF-26479B8C72B0}</Project>
+      <Name>webdriver-common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PostBuildEvent>copy /y $(TargetDir) $(SolutionDir)build\Win32\$(ConfigurationName)
+$(SolutionDir)build\x64\$(ConfigurationName)
+copy /y $(TargetDir) $(SolutionDir)build\x64\$(ConfigurationName)</PostBuildEvent>
+  </PropertyGroup>
+</Project>

@@ -54,7 +54,7 @@
   [restRoot setIndex:[HTTPStaticResource resourceWithResponse:response]];
   [response release];
   
-  [restRoot setResource:[[[Session alloc] init] autorelease]
+  [restRoot setResource:[[[SessionRoot alloc] init] autorelease]
                withName:@"session"];
   	
   return self;
@@ -102,10 +102,6 @@
                                                 encoding:NSUTF8StringEncoding]
                             autorelease]);
   }
-	
-  if ([method isEqualToString:@"DELETE"] && [data length] == 0)
-    data = [[NSString stringWithFormat:@"[\"%@\"]", [query lastPathComponent]]
-            dataUsingEncoding:NSASCIIStringEncoding];
 
 	// Do the actual work.
   id<HTTPResponse,NSObject> response =
