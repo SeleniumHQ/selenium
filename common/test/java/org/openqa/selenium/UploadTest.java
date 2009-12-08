@@ -1,14 +1,13 @@
 package org.openqa.selenium;
 
 import static org.openqa.selenium.Ignore.Driver.CHROME;
-import static org.openqa.selenium.Ignore.Driver.IE;
-import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
+import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.FileOutputStream;
 import java.io.PrintWriter;
 
 /**
@@ -16,6 +15,7 @@ import java.io.PrintWriter;
  * 
  * @author jmleyba@gmail.com (Jason Leyba)
  */
+@Ignore(value = IPHONE, reason = "File uploads not allowed on the iPhone")
 public class UploadTest extends AbstractDriverTestCase {
 
   private static final String LOREM_IPSUM_TEXT = "lorem ipsum dolor sit amet";

@@ -18,22 +18,20 @@ limitations under the License.
 package org.openqa.selenium.iphone;
 
 import org.openqa.selenium.OutputType;
+import static org.openqa.selenium.OutputType.FILE;
 import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.Base64Encoder;
 import org.openqa.selenium.internal.FileHandler;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.DriverCommand;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
 import java.io.IOException;
 import java.net.URL;
-
-import static org.openqa.selenium.OutputType.FILE;
 
 /**
  * IPhoneDriver is a driver for running tests on Mobile Safari on the iPhone
@@ -111,6 +109,42 @@ public class IPhoneDriver extends RemoteWebDriver implements TakesScreenshot {
       FileHandler.copy(tmpfile, pngFile);
     } catch (IOException e) {
       throw new WebDriverException(e);
+    }
+  }
+
+  @Override
+  public void close() {
+    throw new UnsupportedOperationException("Not yet implemented");
+  }
+
+  @Override
+  public TargetLocator switchTo() {
+    return new IPhoneTargetLocator();
+  }
+
+  private class IPhoneTargetLocator implements TargetLocator {
+
+    public WebDriver frame(int frameIndex) {
+      // is this even possible to do on the iphone?
+      throw new UnsupportedOperationException("Frame switching is not supported on the iPhone");
+    }
+
+    public WebDriver frame(String frameName) {
+      // is this even possible to do on the iphone?
+      throw new UnsupportedOperationException("Frame switching is not supported on the iPhone");
+    }
+
+    public WebDriver window(String windowName) {
+      throw new UnsupportedOperationException("Window switching is unsupported on the iPhone");
+    }
+
+    public WebDriver defaultContent() {
+      // is this even possible to do on the iphone?
+      throw new UnsupportedOperationException("Frame switching is not supported on the iPhone");
+    }
+
+    public WebElement activeElement() {
+      return (WebElement) executeScript("return document.activeElement || document.body;");
     }
   }
 }

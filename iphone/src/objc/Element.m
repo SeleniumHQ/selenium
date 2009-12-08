@@ -143,13 +143,27 @@
   // load before continuing.
   NSString *locator = [self jsLocator];
   [[self viewController] jsEvalAndBlock:
-   @"if (%@['click'])\r"
-    "%@.click();\r"
-    "var event = document.createEvent('MouseEvents');\r"
-    "event.initMouseEvent('click', true, true, null, 1, 0, 0, 0, 0, false,"
-         "false, false, false, 0, null);\r"
-    "%@.dispatchEvent(event);\r",
-                       locator, locator, locator];
+   @"(function(element) {\n"
+    "  function triggerMouseEvent(element, eventType) {\n"
+    "    var event = element.ownerDocument.createEvent('MouseEvents');\n"
+    "    var view = element.ownerDocument.defaultView;\n"
+    "    event.initMouseEvent(eventType, true, true, view, 1, 0, 0, 0, 0,\n"
+    "        false, false, false, false, 0, element);\n"
+    "    element.dispatchEvent(event);\n"
+    "  }\n"
+    "  triggerMouseEvent(element, 'mouseover');\n"
+    "  triggerMouseEvent(element, 'mousemove');\n"
+    "  triggerMouseEvent(element, 'mousedown');\n"
+    "  document.title = 'checking focus';\n"
+    "  if (element.ownerDocument.activeElement != element) {\n"
+    "    if (element.ownerDocument.activeElement) {\n"
+    "      element.ownerDocument.activeElement.blur();\n"
+    "    }\n"
+    "    element.focus();\n"
+    "  }\n"
+    "  triggerMouseEvent(element, 'mouseup');\n"
+    "  triggerMouseEvent(element, 'click');\n"
+    "})(%@);\n", locator];
 }
 
 // This returns the pixel position of the element on the page in page
@@ -206,10 +220,17 @@
 - (void)clear {
   [self verifyIsDisplayed];
   NSString *locator = [self jsLocator];
-  [[self viewController] jsEval:[NSString stringWithFormat:
-  @"if (%@['value']) { %@.value = ''; }\r"
-   "else { %@.setAttribute('value', ''); }",
-                                 locator, locator, locator]];
+  [[self viewController] jsEval:
+   [NSString stringWithFormat:
+    @"(function(elem) {\n"
+     "  if (((elem instanceof HTMLInputElement && elem.type == 'text') ||\n"
+     "       elem instanceof HTMLTextAreaElement) && elem.value) {\n"
+     "    elem.value = '';\n"
+     "    var e = elem.ownerDocument.createEvent('HTMLEvents');\n"
+     "    e.initEvent('change', true, true);\n"
+     "    elem.dispatchEvent(e);\n"
+     "  }\n"
+     "})(%@);", locator]];
 }
 
 - (void)clearWrapper:(NSDictionary *)ignored {
@@ -219,24 +240,37 @@
 - (void)submit {
   [self verifyIsDisplayed];
   NSString *locator = [self jsLocator];
-  [[self viewController] jsEvalAndBlock:[NSString stringWithFormat:
-    @"if (%@ instanceof HTMLFormElement) %@.submit(); else %@.form.submit();",
-                                 locator, locator, locator]];
+  [[self viewController] jsEvalAndBlock:
+   [NSString stringWithFormat:
+    @"(function(elem) {\n"
+    "  var current = elem;\n"
+    "  while (current && current != elem.ownerDocument.body) {\n"
+    "    if (current.tagName.toLowerCase() == 'form') {\n"
+    "      current.submit();\n"
+    "      return;\n"
+    "    }\n"
+    "    current = current.parentNode;\n"
+    "  }\n"
+    "})(%@);", locator]];
 }
 - (void)submitWrapper:(NSDictionary *)ignored {
   return [self submit];
 }
 
 - (NSString *)text {
+  // TODO(webdriver-eng): Fix nbsp handling and hidden divs.
   return [[[self viewController] jsEval:[NSString stringWithFormat:
-                                        @"%@.innerText", [self jsLocator]]]
+      @"%@.innerText.\r"
+       "    replace(new RegExp(String.fromCharCode(160), 'gm'), ' ').\r"
+       "    replace(/[\\f\\r\\t\\v\\u00A0\\u2028\\u2029]+/g, ' ').\r"
+       "    replace(/\\n+/g, '\\n')", [self jsLocator]]]
           stringByTrimmingCharactersInSet:
             [NSCharacterSet whitespaceAndNewlineCharacterSet]];
 }
 
 - (void)sendKeys:(NSDictionary *)dict {
   [self verifyIsDisplayed];
-  [[self viewController] 
+  [[self viewController]
    jsEval:[NSString stringWithFormat:@"%@.value=\"%@\"", [self jsLocator], [[dict objectForKey:@"value"] componentsJoinedByString:@""]]];	
 }
 
@@ -245,34 +279,86 @@
           jsEval:[NSString stringWithFormat:@"%@.value", [self jsLocator]]];
 }
 
-// This method is only valid on checkboxes and radio buttons.
-// TODO(josephg): Check that the element is a checkbox or radio button
+// This method is only valid on option elements, checkboxes and radio buttons.
 - (NSNumber *)isChecked {
-  BOOL checked = [[[self viewController]
-                   jsEval:[NSString stringWithFormat:@"%@.checked",
-                           [self jsLocator]]] isEqualToString:@"true"];
+  BOOL isSelectable = [[[self viewController]
+                        jsEval:[NSString stringWithFormat:
+                                @"var elem = %@;\n"
+                                 "elem instanceof HTMLOptionElement ||\n"
+                                 "(elem instanceof HTMLInputElement &&\n"
+                                 " elem.type in {'checkbox':0, 'radio':0});",
+                                [self jsLocator]]] isEqualToString:@"true"];
+  if (!isSelectable) {
+    return [NSNumber numberWithBool:NO];
+  }
+
+  BOOL selected = [[[self viewController] jsEval:
+   [NSString stringWithFormat:
+    @"(function(elem) {\n"
+     "  if (elem.tagName.toLowerCase() == 'option') {\n"
+     "    return elem.selected;\n"
+     "  } else {\n"
+     "    return elem.checked;\n"
+     "  }\n"
+     "})(%@)", [self jsLocator]]] isEqualToString:@"true"];
   
-  return [NSNumber numberWithBool:checked];
+  return [NSNumber numberWithBool:selected];
 }
 
 // This method is only valid on option elements, checkboxes and radio buttons.
 - (void)setChecked:(NSNumber *)numValue {
-  [self verifyIsDisplayed];
-  NSString *locator = [self jsLocator];
+  NSString* name = [self name];
+  if (![name isEqualToString:@"option"] && ![name isEqualToString:@"input"]) {
+    @throw [NSException
+            webDriverExceptionWithMessage:@"You may not select an unselectable "
+                                           "element"
+            webDriverClass:@"java.lang.UnsupportedOperationException"];
+  }
+
+  if ([self isEnabled] == [NSNumber numberWithBool:NO]) {
+    @throw [NSException
+            webDriverExceptionWithMessage:@"You may not select a disabled "
+                                           "element"
+            webDriverClass:@"java.lang.UnsupportedOperationException"];
+  }
+
+  NSString* locator = [self jsLocator];
+  if ([name isEqualToString:@"input"]) {
+    BOOL isSelectable = [[[self viewController]
+                         jsEval:@"%@.type in {'checkbox':1, 'radio':1}",
+                          locator] isEqualToString:@"true"];
+    if (!isSelectable) {
+      @throw [NSException
+              webDriverExceptionWithMessage:@"You may not select an "
+                                             "unselectable element"
+              webDriverClass:@"java.lang.UnsupportedOperationException"];
+    }
+  }
   
-  [[self viewController] jsEval:[NSString stringWithFormat:
-      @"if (%@ instanceof HTMLOptionElement) {\r"
-          "%@.selected = true;\r"
-          "%@.parentNode.onchange();\r"
-       "} else {\r"
-          "%@.checked = true;\r"
-       "}",
-      locator, locator, locator, locator]];
+  [self verifyIsDisplayed];
+  [[self viewController] jsEval:
+   [NSString stringWithFormat:
+    @"(function(elem) {\n"
+     "  var changed = false;\n"
+     "  if (elem.tagName.toLowerCase() == 'option') {\n"
+     "    if (!elem.selected) {\n"
+     "      elem.selected = changed = true;\n"
+     "    }\n"
+     "  } else {\n"
+     "    if (!elem.checked) {\n"
+     "      elem.checked = changed = true;\n"
+     "    }\n"
+     "  }\n"
+     "  if (changed) {\n"
+     "    var e = elem.ownerDocument.createEvent('HTMLEvents');\n"
+     "    e.initEvent('change', true, true);\n"
+     "    elem.dispatchEvent(e);\n"
+     "  }\n"
+     "})(%@)", locator]];
 }
 
 // Like |checked| above, we should check that the element is valid.
 - (void)toggleSelected {
-  [self verifyIsDisplayed];
   NSString *jsLocator = [self jsLocator];
   [[self viewController] jsEval:[NSString
                 stringWithFormat:@"%@.focus(); %@.checked = !%@.checked",
@@ -319,9 +405,12 @@
        "      return false;\n"
        "    current = current.parentNode;\n"
        "  }\n"
-       "  return obj.offsetWidth > 0 && obj.offsetHeight > 0;\n"
+       // Option elements may not have width and height if they aren't currently
+       // visible in the select, but we should still count them as visible.
+       "  return obj.nodeName == 'OPTION' ||\n"
+       "      obj.offsetWidth > 0 && obj.offsetHeight > 0;\n"
        "})(%@)", [self jsLocator]];
-  
+
   BOOL visible = [visibleTest isEqualToString:@"true"];
   return [NSNumber numberWithBool:visible];
 }
@@ -352,10 +441,34 @@
 
 // Get an attribute with the given name.
 - (NSString *)attribute:(NSString *)name {
-  return [[self viewController] jsEval:
-          @"%@.getAttribute('%@')",
-          [self jsLocator],
-          name];
+  NSString* locator = [self jsLocator];
+  BOOL hasAttribute = [[[self viewController] jsEval:
+                        @"%@.hasAttribute('%@')", locator, name]
+                       isEqualToString:@"true"];
+  if (hasAttribute) {
+    NSString* result = [[self viewController] jsEval:@"%@.getAttribute('%@')",
+                        locator, name];
+    if ([name isEqualToString:@"selected"]) {
+      result = [result isEqualToString:name] ? @"true" : @"false";
+    }
+    return result;
+  }
+  
+  if ([name isEqualToString:@"disabled"]) {
+    return [[self viewController] jsEval:@"%@.disabled", locator];
+  } else if (([name isEqualToString:@"checked"]
+              || [name isEqualToString:@"selected"])
+             && [[self name] isEqualToString:@"input"]) {
+    return [[self viewController] jsEval:@"%@.checked", locator];
+  } else if ([name isEqualToString:@"selected"]
+             && [[self name] isEqualToString:@"option"]) {
+    return [[self viewController] jsEval:@"%@.selected", locator];
+  } else if ([name isEqualToString:@"index"]
+             && [[self name] isEqualToString:@"option"]) {
+    return [[self viewController] jsEval:@"%@.index", locator];
+  }
+  
+  return nil;
 }
 
 // Get the tag name of this element, not the value of the name attribute:

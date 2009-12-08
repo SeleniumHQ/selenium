@@ -31,6 +31,7 @@ import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
+import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 
@@ -107,7 +108,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
     assertThat(text, equalTo("This line has a non-breaking space"));
   }
 
-  @Ignore(SELENESE)
+  @Ignore(IPHONE)
   public void testShouldTreatANonBreakingSpaceAsAnyOtherWhitespaceCharacterWhenCollapsingWhitespace() {
     driver.get(simpleTestPage);
     WebElement element = driver.findElement(By.id("nbspandspaces"));
@@ -116,6 +117,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
     assertThat(text, equalTo("This line has a non-breaking space and spaces"));
   }
 
+  @Ignore(IPHONE)
   public void testHavingInlineElementsShouldNotAffectHowTextIsReturned() {
     driver.get(simpleTestPage);
     String text = driver.findElement(By.id("inline")).getText();
@@ -140,7 +142,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
 //                "        "));
 //    }
 
-  @Ignore(SELENESE)
+  @Ignore(value = {SELENESE, IPHONE}, reason = "iPhone: sendKeys is broken")
   public void testShouldBeAbleToSetMoreThanOneLineOfTextInATextArea() {
     driver.get(formPage);
     WebElement textarea = driver.findElement(By.id("withText"));
@@ -210,7 +212,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
     assertThat(text, is("line has text"));
   }
 
-  @Ignore(SELENESE)
+  @Ignore(value = {SELENESE, IPHONE})
   public void testReadALargeAmountOfData() {
     driver.get(GlobalTestEnvironment.get().getAppServer().whereIs("macbeth.html"));
     String source = driver.getPageSource().trim().toLowerCase();
@@ -243,7 +245,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(SELENESE)
+  @Ignore({SELENESE, IPHONE})
   public void testShouldOnlyIncludeVisibleText() {
     driver.get(javascriptPage);
 

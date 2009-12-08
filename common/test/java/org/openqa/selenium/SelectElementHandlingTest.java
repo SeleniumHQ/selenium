@@ -20,13 +20,14 @@ package org.openqa.selenium;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.openqa.selenium.Ignore.Driver.IE;
+import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 import java.util.List;
 
 public class SelectElementHandlingTest extends AbstractDriverTestCase {
 
-  @Ignore({IE, SELENESE})
+  @Ignore({IE, SELENESE, IPHONE})
   public void testShouldBePossibleToDeselectASingleOptionFromASelectWhichAllowsMultipleChoices() {
     driver.get(formPage);
 
@@ -44,7 +45,7 @@ public class SelectElementHandlingTest extends AbstractDriverTestCase {
     assertThat(option.isSelected(), is(true));
   }
 
-  @Ignore({IE, SELENESE})
+  @Ignore({IE, SELENESE, IPHONE})
   public void testShouldNotBeAbleToDeselectAnOptionFromANormalSelect() {
     driver.get(formPage);
 

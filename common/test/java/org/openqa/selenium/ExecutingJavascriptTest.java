@@ -20,6 +20,7 @@ package org.openqa.selenium;
 import org.apache.commons.io.FileUtils;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.IE;
+import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 import java.io.File;
@@ -91,7 +92,7 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
 
   @SuppressWarnings("unchecked")
   @JavascriptEnabled
-  @Ignore({IE, SELENESE})
+  @Ignore({IE, SELENESE, IPHONE})
   public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAnArray() {
     if (!(driver instanceof JavascriptExecutor)) {
       return;
@@ -241,11 +242,9 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
 
     driver.get(javascriptPage);
     WebElement button = driver.findElement(By.id("plainButton"));
-    String
-        value =
-        (String) executeScript(
-            "arguments[0]['flibble'] = arguments[0].getAttribute('id'); return arguments[0]['flibble'];",
-            button);
+    String value = (String) executeScript(
+        "arguments[0]['flibble'] = arguments[0].getAttribute('id'); return arguments[0]['flibble'];",
+        button);
 
     assertEquals("plainButton", value);
   }
@@ -314,7 +313,9 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     assertEquals("onetwo", result);
   }
 
-  @Ignore(value = {CHROME, SELENESE}, reason = "Can't execute script in iframe, track crbug 20773")
+  @Ignore(value = {CHROME, SELENESE, IPHONE},
+      reason = "Can't execute script in iframe, track crbug 20773\n"
+               + "iPhone: Frame switching not yet implemented.")
   @JavascriptEnabled
   public void testShouldBeAbleToGrabTheBodyOfFrameOnceSwitchedTo() {
     driver.get(richTextPage);

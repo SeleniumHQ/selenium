@@ -201,7 +201,10 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
   
   @JavascriptEnabled
-  @Ignore(value = {SELENESE, CHROME}, reason = "Chrome: Non-native event firing is broken in Chrome.  Selenese: Fails when running in firefox")
+  @Ignore(value = {SELENESE, CHROME, IPHONE},
+      reason = "Chrome: Non-native event firing is broken in Chrome.\n"
+               + "  Selenese: Fails when running in firefox.\n"
+               + "  iPhone: sendKeys implementation is incorrect")
   public void testSendingKeysToAnotherElementShouldCauseTheBlurEventToFire() {
     if (browserNeedsFocusOnThisOs(driver)) {
       System.out.println("Skipping this test because browser demands focus");
@@ -217,7 +220,10 @@ public class CorrectEventFiringTest extends AbstractDriverTestCase {
   }
   
   @JavascriptEnabled
-  @Ignore(value = {SELENESE, CHROME}, reason = "Chrome: Non-native event firing is broken in Chrome.  Selenese: Fails when running in firefox")
+  @Ignore(value = {SELENESE, CHROME, IPHONE},
+      reason = "Chrome: Non-native event firing is broken in Chrome.\n"
+               + "  Selenese: Fails when running in firefox.\n"
+               + "  iPhone: sendKeys implementation is incorrect")
   public void testSendingKeysToAnElementShouldCauseTheFocusEventToFire() {
     if (browserNeedsFocusOnThisOs(driver)) {
       System.out.println("Skipping this test because browser demands focus");

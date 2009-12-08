@@ -28,6 +28,7 @@ import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
 
+@Ignore(IPHONE)
 public class FrameSwitchingTest extends AbstractDriverTestCase {
 
   @Ignore(SELENESE)

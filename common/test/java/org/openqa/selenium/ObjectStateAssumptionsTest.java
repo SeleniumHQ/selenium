@@ -17,6 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium;
 
+import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 /**
@@ -67,7 +68,7 @@ public class ObjectStateAssumptionsTest extends AbstractDriverTestCase {
   /**
    * Test the various options, again for an uninitialized driver, NPEs are thrown.
    */
-  @Ignore(SELENESE)
+  @Ignore({SELENESE, IPHONE})
   public void testOptionsForUninitializedWebDriver() {
     WebDriver.Options options = driver.manage();
     try {

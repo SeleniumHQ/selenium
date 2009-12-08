@@ -28,7 +28,7 @@ import java.awt.Point;
 public class RenderedWebElementTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
-  @Ignore({SELENESE})
+  @Ignore({SELENESE, IPHONE})
   public void testShouldPickUpStyleOfAnElement() {
     driver.get(javascriptPage);
 
@@ -44,7 +44,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({IE, CHROME, SELENESE})
+  @Ignore({IE, CHROME, SELENESE, IPHONE})
   //Reason for Chrome: WebKit bug 28804
   public void testShouldHandleNonIntegerPositionAndSize() {
     driver.get(rectanglesPage);
@@ -63,7 +63,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore({SELENESE})
+  @Ignore({SELENESE, IPHONE})
   public void testShouldAllowInheritedStylesToBeUsed() {
     driver.get(javascriptPage);
 
@@ -98,7 +98,7 @@ public class RenderedWebElementTest extends AbstractDriverTestCase {
   public void testShouldCorrectlyIdentifyThatAnElementHasWidth() {
     driver.get(xhtmlTestPage);
 
-    RenderedWebElement shrinko = (RenderedWebElement) driver.findElement(By.id("amazing"));
+    RenderedWebElement shrinko = (RenderedWebElement) driver.findElement(By.id("linkId"));
     Dimension size = shrinko.getSize();
     assertTrue("Width expected to be greater than 0", size.width > 0);
     assertTrue("Height expected to be greater than 0", size.height > 0);

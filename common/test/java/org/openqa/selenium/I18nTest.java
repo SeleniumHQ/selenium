@@ -20,6 +20,7 @@ package org.openqa.selenium;
 import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
+import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
 
 
@@ -37,7 +38,7 @@ public class I18nTest extends AbstractDriverTestCase {
    */
   private static final String tmunot = "\u05EA\u05DE\u05D5\u05E0\u05D5\u05EA";
 
-  @Ignore({HTMLUNIT, IE, FIREFOX})
+  @Ignore({HTMLUNIT, IE, FIREFOX, IPHONE})
   public void testCn() {
     driver.get(chinesePage);
     driver.findElement(By.linkText(Messages.getString("I18nTest.link1"))).click();

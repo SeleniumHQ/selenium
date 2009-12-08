@@ -3,9 +3,11 @@ package org.openqa.selenium;
 import java.util.List;
 
 import static org.openqa.selenium.Ignore.Driver.IE;
+import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
+@Ignore(IPHONE)
 public class ElementEqualityTest extends AbstractDriverTestCase {
   @Ignore(SELENESE)
   public void testElementEqualityShouldWork() {

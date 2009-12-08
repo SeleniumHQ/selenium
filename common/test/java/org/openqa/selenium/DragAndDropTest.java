@@ -20,10 +20,12 @@ package org.openqa.selenium;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
+import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 import java.awt.*;
 
+@Ignore(IPHONE)
 public class DragAndDropTest extends AbstractDriverTestCase {
 
   @JavascriptEnabled
