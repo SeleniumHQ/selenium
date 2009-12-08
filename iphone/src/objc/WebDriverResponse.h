@@ -55,7 +55,7 @@
 @property (nonatomic, copy) NSString *context;
 
 - (id)initWithValue:(id)value;
-- (id)initWithError:(NSException *)error;
+- (id)initWithError:(id)error;
 
 + (WebDriverResponse *)responseWithValue:(id)value;
 + (WebDriverResponse *)responseWithError:(id)error;

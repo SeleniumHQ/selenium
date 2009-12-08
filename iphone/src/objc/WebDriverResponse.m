@@ -39,8 +39,10 @@
   return self;
 }
 
-- (id)initWithError:(NSException *)error {
-  if (![self initWithValue:[error userInfo]])
+- (id)initWithError:(id)error {
+  id value = [error isKindOfClass:[NSException class]] ? [error userInfo]
+                                                       : error;
+  if (![self initWithValue:value])
     return nil;
   
   [self setIsError:YES];
