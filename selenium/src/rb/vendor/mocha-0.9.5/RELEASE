@@ -1,0 +1,269 @@
+= 0.9.5 (93cad010345ce5d68f31422cfc32ed9dd6de13ec)
+* Fixed Lighthouse bug #32 - stub_everything should mean mock responds to anything.
+* Added Expectation#twice to improve readability. Tthanks to pull request from Celestino Gomes.
+* In Ruby 1.9, requiring 'test/unit' loads a thin wrapper around MiniTest and Test::Unit::TestCase ends up inheriting from MiniTest::Unit::TestCase. So we need to avoid including the Mocha modules more than once to avoid nasty consequences. Thanks to Matthias Hennemeyer for help with this.
+* Ruby 1.9 includes rake, but not rake/contrib. For the moment I've moved the sshpublisher require into the only rake task that needs it, so that I can at least run the tests in Ruby 1.9. It looks like I will need to build a rake/contrib gem or similar to get this working properly - http://intertwingly.net/blog/2008/01/07/Rake-Contrib-for-1-9
+
+= 0.9.4 (8a59c6ff0f99f34b02bd99f19536a7893be2b340)
+* Added mocha.gemspec file generated with Chad Woolley's new rake task, so that a floehopper-mocha gem will get built on GitHub.
+* Add rake task to update mocha.gemspec with unique version, which will cause gem to be auto-built on github
+* As Tobias Crawley correctly pointed out in feature request #23055 "stubs(with_hash) not working with existing object" [1], following the principle of least surprise, it should be possible to call ObjectMethods#expects & ObjectMethods#stubs with a Hash of method_names vs return_values like you can with Mock#expects & Mock#stubs. I've also updated & improved the docs to reflect the changes. [1] http://rubyforge.org/tracker/index.php?func=detail&aid=23055&group_id=1917&atid=7480
+* Removed deprecated gem autorequire.
+
+= 0.9.3 (8219bb2d2881c8529c93fc21e97a11d01203c759)
+* Added support for MiniTest thanks to Jeff Smick.
+* Fixed a possible bug with some of the non-default Configuration options relating to the argument to Object#respond_to?
+* As per Jay Fields recommendations [1] and with further impetus from a talk at Ruby Manor, any methods added to core classes are now added by including a module. This means that Mocha is a better citizen of the Ruby world and it's behaviour is more easily extended. [1] http://blog.jayfields.com/2008/07/ruby-underuse-of-modules.html & http://blog.jayfields.com/2008/07/ruby-redefine-method-behavior.html
+* Removed deprecated gem autorequire.
+
+= 0.9.2 (r355)
+* Improved documentation to address [#22530] 'Mock methods with multiple return values not possible?'
+* respond_with parameter matcher was not available in tests.
+* Patch [#22630] Fix for a bug in running Rails tests with Ruby 1.8.7. Array#flatten was being called which in turn was checking whether each element responded to #to_ary. This check was using the two parameter version of #respond_to?, but Mock was only defining a one parameter version.
+
+= 0.9.1 (r349)
+
+* Fixed bug #21465 - expects & stubs should support method names as strings (as well as symbols) or fail fast. Convert all expectation method names to a symbol in case they were supplied as a string.
+* By removing Mock#unexpected_method_called we reduce the number of methods vulnerable to the problem that surfaced in bug #21563.
+* Fix bug #21563 - stubbing 'verified?' method is unsafe. Instance method names on the Mock class should be more obscure.
+* Performance improvement. StubbaExampleTest goes twice as fast on my local machine.
+* Added primitive performance test to default rake task.
+* Fix format of case statements which don't work in Ruby 1.9 and make others consistent.
+* There is no point in running (potentially expensive) checks if configuration is set to allow such checks to fail. This is a relatively quick fix in response to Chris McGrath's performance problems.
+* Fix for bug #21161 - 'uninitialized constant Deprecation in stubba.rb'.
+* It's more readable to talk about 'once' and 'twice' rather than '1 time' and '2 times'.
+* Fix bug #20883 - never should raise when called to prevent follow up errors. Fail fast when there are no matching invokable expectations and handle the stub_everything case sensibly. This might not be entirely backwards compatible, but I think the benefits outweigh the risks. The most likely change is that a test that was already failing will now fail faster, which doesn't seem so awful.
+
+= 0.9.0 (r316)
+
+* Configurable warnings or errors
+  * when a method on a non-public method is stubbed
+  * when a method on a non-existent method is stubbed
+  * when a method on a non-mock object is stubbed
+  * when a method is stubbed unnecessarily (i.e. the stubbed method is not called during the test)
+  
+* Improved error messages
+  * User-friendly list of unsatisfied expectations, satisfied expectations and state machines.
+  * Improved readability of cardinality description.
+  * Display sensible failure message for any_instance expectations e.g. "#<AnyInstance:Foo>.bar - expected calls: 1, actual calls: 0"
+
+* Parameter matchers
+  * New to this release
+    * optionally (allows matching of optional parameters if available)
+    * yaml_equivalent (allows matching of YAML that represents the specified object)
+    * responds_with (tests the quack not the duck)
+  * Nesting of parameter matchers is now supported.
+
+* Optional block passed into mock initializer is evaluated in the context of the new mock instance and can be used as a shortcut to set up expectations.
+
+* Added JMock-style sequences for constraining the order of expected invocations. See Standalone#sequence and Expectation#in_sequence.
+
+* Added JMock-style states for constraining the order of expected invocations. See Standalone#states, Expectation#then, Expectation#when and StateMachine.
+
+* Compatibility with versions of Ruby
+  * Compatibility with Ruby v1.9. All test errors and warnings fixed.
+  * Nasty fix so that TestCaseAdaptor works consistently with earlier versions of Test::Unit as well as more recent versions.
+  * Added platform to gem specification to avoid bug in rubygems 0.9.5 - see http://www.dcmanges.com/blog/rubygems-0-9-5-platform-bug and http://rubygems.org/read/chapter/20#platform.
+  * Make ExpectationRaiser deal with subclasses of Interrupt which seem to need a message supplied in the raise statement in Ruby 1.8.6 (but not 1.8.4 or 1.9). Not sure this is really Mocha's responsibility.
+
+* Added deprecation warning in stubba.rb which is no longer needed and will be removed.
+
+* Supply positioning information to evals to improve any error messages. See http://ola-bini.blogspot.com/2008/01/ruby-antipattern-using-eval-without.html
+
+* Bug fixes
+  * 18914 in revision 296 - http://rubyforge.org/tracker/index.php?func=detail&aid=18914&group_id=1917&atid=7477
+  * 18917 in revision 295 - http://rubyforge.org/tracker/index.php?func=detail&aid=18917&group_id=1917&atid=7477
+  * 18336 in revision 287 - http://rubyforge.org/tracker/index.php?func=detail&aid=18336&group_id=1917&atid=7477
+  * 17835 in revision 255 - http://rubyforge.org/tracker/index.php?func=detail&aid=17835&group_id=1917&atid=7477
+  * 17412 in revision 242 - http://rubyforge.org/tracker/index.php?func=detail&aid=17412&group_id=1917&atid=7477
+  * 15977 in revision 198 - http://rubyforge.org/tracker/index.php?func=detail&aid=15977&group_id=1917&atid=7477
+  * 11885 in revision 156 - http://rubyforge.org/tracker/index.php?func=detail&aid=11885&group_id=1917&atid=7477
+
+= 0.5.5 (r167)
+
+- Renamed Matches parameter matcher to RegexpMatches for clarity.
+- Added noframes tag to rdoc index to assist Google.
+
+= 0.5.4 (r166)
+
+- Added matches parameter matcher for matching regular expressions.
+
+= 0.5.3 (r165)
+
+- Attempt to fix packaging problems by switching to newer version (1.15.1) of gnutar and setting COPY_EXTENDED_ATTRIBUTES_DISABLE environment variable.
+- Removed unused ExpectationSequenceError exception.
+- Added instance_of and kind_of parameter matchers.
+- Added Google Webmaster meta tag to rdoc template header.
+- Put Google Webmaster meta tag in the right header i.e. the one for the index page.
+
+= 0.5.2 (r159)
+
+- Fix bug 11885 - "never doesn't work with stub_everything" submitted by Alexander Lang. In fixing this bug, also fixed undiscoverd bug where expected & actual invocation counts were being incorrectly reported which seems to have been introduced when fixes were added for invocation dispatch (see MockedMethodDispatchAcceptanceTest).
+- Previously when an expectation did not allow more invocations, it was treated as not matching. Now we prefer matching expectations which allow more invocations, but still match expectations which cannot allow more invocations. I think this may be overcomplicating things, but let's see how it goes.
+
+= 0.5.1 (r149)
+
+- Fixed bug #11583 "Mocha 0.5.0 throwing unexpected warnings". Also switched on ruby warning for all rake test tasks. Fixed majority of warnings, but some left to fix.
+
+= 0.5.0 (r147)
+
+- Parameter Matchers - I’ve added a few Hamcrest-style parameter matchers which are designed to be used inside Expectation#with. The following matchers are currently available: anything(), includes(), has_key(), has_value(), has_entry(), all_of() & any_of(). More to follow soon. The idea is eventually to get rid of the nasty parameter_block option on Expectation#with.
+
+  object = mock()
+  object.expects(:method).with(has_key('key_1'))
+  object.method('key_1' => 1, 'key_2' => 2)
+  # no verification error raised
+
+  object = mock()
+  object.expects(:method).with(has_key('key_1'))
+  object.method('key_2' => 2)
+  # verification error raised, because method was not called with Hash containing key: 'key_1'
+
+- Values Returned and Exceptions Raised on Consecutive Invocations - Allow multiple calls to Expectation#returns and Expectation#raises to build up a sequence of responses to invocations on the mock. Added syntactic sugar method Expectation#then to allow more readable expectations.
+
+  object = mock()
+  object.stubs(:method).returns(1, 2).then.raises(Exception).then.returns(4)
+  object.method # => 1
+  object.method # => 2
+  object.method # => raises exception of class Exception
+  object.method # => 4
+
+- Yields on Consecutive Invocations - Allow multiple calls to yields on single expectation to allow yield parameters to be specified for consecutive invocations.
+
+  object = mock()
+  object.stubs(:method).yields(1, 2).then.yields(3)
+  object.method { |*values| p values } # => [1, 2]
+  object.method { |*values| p values } # => [3]
+
+- Multiple Yields on Single Invocation - Added Expectation#multiple_yields to allow a mocked or stubbed method to yield multiple times for a single invocation.
+
+  object = mock()
+  object.stubs(:method).multiple_yields([1, 2], [3])
+  object.method { |*values| p values } # => [1, 2] # => [3]
+
+- Invocation Dispatch - Expectations were already being matched in reverse order i.e. the most recently defined one was being found first. This is still the case, but we now stop matching an expectation when its maximum number of expected invocations is reached. c.f. JMock v1. A stub will never stop matching by default. Hopefully this means we can soon get rid of the need to pass a Proc to Expectation#returns.
+
+  object = mock()
+  object.stubs(:method).returns(2)
+  object.expects(:method).once.returns(1)
+  object.method # => 1
+  object.method # => 2
+  object.method # => 2
+  # no verification error raised
+
+  # The following should still work...
+
+  Time.stubs(:now).returns(Time.parse('Mon Jan 01 00:00:00 UTC 2007'))
+  Time.now # => Mon Jan 01 00:00:00 UTC 2007
+  Time.stubs(:now).returns(Time.parse('Thu Feb 01 00:00:00 UTC 2007'))
+  Time.now # => Thu Feb 01 00:00:00 UTC 2007
+  
+- Deprecate passing an instance of Proc to Expectation#returns.
+- Explicitly include all Rakefile dependencies in project.
+- Fixed old Stubba example.
+- Fix so that it is possible for a stubbed method to raise an Interrupt exception without a message in Ruby 1.8.6
+- Added responds_like and quacks_like.
+- Capture standard object methods before Mocha adds any.
+- Added Expectation#once method to make interface less surprising.
+- Use Rake::TestTask to run tests. Created three separate tasks to run unit, integration & acceptance tests. Split inspect_test into one file per TestCase. Deleted superfluous all_tests file.
+- Fiddled with mocha_inspect and tests to give more sensible results on x86 platform.
+- Fixed bug #7834 "infinite_range.rb makes incorrect assumption about to_f" logged by James Moore.
+
+= 0.4.0 (r92)
+
+- Allow naming of mocks (patch from Chris Roos).
+- Specify multiple return values for consecutive calls.
+- Improved consistency of expectation error messages.
+- Allow mocking of Object instance methods e.g. kind_of?, type.
+- Provide aliased versions of #expects and #stubs to allow mocking of these methods.
+- Added at_least, at_most, at_most_once methods to expectation.
+- Allow expects and stubs to take a hash of method and return values.
+- Eliminate warning: "instance variable @yield not initialized" (patch from Xavier Shay).
+- Restore instance methods on partial mocks (patch from Chris Roos).
+- Allow stubbing of a method with non-word characters in its name (patch from Paul Battley).
+- Removed coupling to Test::Unit.
+- Allow specified exception instance to be raised (patch from Chris Roos).
+- Make mock object_id appear in hex like normal Ruby inspect (patch from Paul Battley).
+- Fix path to object.rb in rdoc rake task (patch from Tomas Pospisek).
+- Reverse order in which expectations are matched, so that last expectation is matched first. This allows e.g. a call to #stubs to be effectively overridden by a call to #expects (patch from Tobias Lutke).
+- Stubba & SmartTestCase modules incorporated into Mocha module so only need to require 'mocha' - no longer need to require 'stubba'.
+- AutoMocha removed.
+
+= 0.3.3
+
+- Quick bug fix to restore instance methods on partial mocks (for Kevin Clark).
+
+= 0.3.2
+
+- Examples added.
+
+= 0.3.1
+
+- Dual licensing with MIT license added.
+
+= 0.3.0
+
+* Rails plugin.
+* Auto-verify for expectations on concrete classes.
+* Include each expectation verification in the test result assertion count.
+* Filter out noise from assertion backtraces.
+* Point assertion backtrace to line where failing expectation was created.
+* New yields method for expectations.
+* Create stubs which stub all method calls.
+* Mocks now respond_to? expected methods.
+
+= 0.2.1
+
+* Rename MochaAcceptanceTest::Rover#move method to avoid conflict with Rake (in Ruby 1.8.4 only?)
+
+= 0.2.0
+
+* Small change to SetupAndTeardown#teardown_stubs suggested by Luke Redpath (http://www.lukeredpath.co.uk) to allow use of Stubba with RSpec (http://rspec.rubyforge.org).
+* Reorganized directory structure and extracted addition of setup and teardown methods into SmartTestCase mini-library.
+* Addition of auto-verify for Mocha (but not Stubba). This means there is more significance in the choice of expects or stubs in that any expects on a mock will automatically get verified.
+
+So instead of...
+
+  wotsit = Mocha.new
+  wotsit.expects(:thingummy).with(5).returns(10)
+  doobrey = Doobrey.new(wotsit)
+  doobrey.hoojamaflip
+  wotsit.verify
+
+you need to do...
+
+  wotsit = mock()
+  wotsit.expects(:thingummy).with(5).returns(10)
+  doobrey = Doobrey.new(wotsit)
+  doobrey.hoojamaflip
+  # no need to verify
+
+There are also shortcuts as follows...
+
+instead of...
+
+  wotsit = Mocha.new
+  wotsit.expects(:thingummy).returns(10)
+  wotsit.expects(:summat).returns(25)
+
+you can have...
+
+  wotsit = mock(:thingummy => 5, :summat => 25)
+
+and instead of...
+
+  wotsit = Mocha.new
+  wotsit.stubs(:thingummy).returns(10)
+  wotsit.stubs(:summat).returns(25)
+
+you can have...
+
+  wotsit = stub(:thingummy => 5, :summat => 25)
+
+= 0.1.2
+
+* Minor tweaks
+
+= 0.1.1
+
+* Initial release.

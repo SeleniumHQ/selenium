@@ -17,10 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -33,6 +29,10 @@ import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 
 public class TestSuiteBuilder {
 
@@ -47,16 +47,19 @@ public class TestSuiteBuilder {
   private boolean withDriver = true;
   private boolean withEnvironment = true;
   private String onlyRun;
+  private Set<String> patterns = new HashSet<String>();
   private Set<String> testMethodNames = new HashSet<String>();
   private Set<String> decorators = new LinkedHashSet<String>();
   private boolean includeJsApiTests = false;
 
   public TestSuiteBuilder() {
     baseDir = new File(".");
-    while (baseDir != null && !new File(baseDir, "Rakefile").exists()) {
+
+    while (baseDir != null && !(new File(baseDir, "Rakefile").exists())) {
       baseDir = baseDir.getParentFile();
     }
-    assertThat(baseDir, is(notNullValue()));
+
+    assertThat(baseDir, notNullValue());
     assertThat(baseDir.exists(), is(true));
 
     baseDir = baseDir.getParentFile();
@@ -170,9 +173,14 @@ public class TestSuiteBuilder {
       return;
     }
 
-    if (isIgnored(clazz)) {
-      System.err.println("Ignoring test class: " + clazz + ": "
-                         + clazz.getAnnotation(Ignore.class).reason());
+    boolean include = true;
+    if (patterns.size() >0) {
+      include = false;
+      for (String pattern : patterns) {
+        include |= clazz.getName().matches(pattern);
+      }
+    }
+    if (!include) {
       return;
     }
 
@@ -341,6 +349,11 @@ public class TestSuiteBuilder {
       suite.addTest(new DriverTestDecorator(test, driverClass,
           /*keepDriver=*/true, /*freshDriver=*/false, /*refreshDriver=*/false));
     }
+  }
+
+  public TestSuiteBuilder pattern(String pattern) {
+    patterns.add(pattern);
+    return this;
   }
 
   /**

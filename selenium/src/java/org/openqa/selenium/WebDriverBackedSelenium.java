@@ -20,14 +20,11 @@ package org.openqa.selenium;
 import com.thoughtworks.selenium.DefaultSelenium;
 
 public class WebDriverBackedSelenium extends DefaultSelenium {
-  private final WebDriver driver;
-
   public WebDriverBackedSelenium(WebDriver baseDriver, String baseUrl) {
     super(new WebDriverCommandProcessor(baseDriver, baseUrl));
-    this.driver = baseDriver;
   }
 
   public WebDriver getUnderlyingWebDriver() {
-    return driver;
+    return ((WebDriverCommandProcessor) commandProcessor).getUnderlyingWebDriver();
   }
 }

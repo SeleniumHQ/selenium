@@ -1,0 +1,172 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!--
+Copyright 2004 ThoughtWorks, Inc
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>Test Verifications</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td rowspan="1" colspan="3">Test Verifications<br>
+      </td>
+    </tr>
+
+    <tr>
+      <td>open</td>
+      <td>../tests/html/test_verifications.html?foo=bar</td>
+      <td>&nbsp;</td>
+    </tr>
+
+    <tr>
+      <td>verifyLocation</td>
+      <td>*/tests/html/test_verifications.html*</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyLocation</td>
+      <td>*/tests/html/test_verifications.html?foo=bar</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>theText</td>
+      <td>the text value</td>
+    </tr>
+    <tr>
+      <td>verifyNotValue</td>
+      <td>theText</td>
+      <td>not the text value</td>
+    </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>theHidden</td>
+      <td>the hidden value</td>
+    </tr>
+    <tr>
+      <td>verifyText</td>
+      <td>theSpan</td>
+      <td>this is the span</td>
+    </tr>
+    <tr>
+      <td>verifyNotText</td>
+      <td>theSpan</td>
+      <td>blah blah</td>
+    </tr>
+    <tr>
+      <td>verifyTextPresent</td>
+      <td>this is the span</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyTextNotPresent</td>
+      <td>this is not the span</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyElementPresent</td>
+      <td>theSpan</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyElementPresent</td>
+      <td>theText</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyElementNotPresent</td>
+      <td>unknown</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>verifyTable</td>
+      <td>theTable.0.0</td>
+      <td>th1</td>
+    </tr>
+    <tr>
+      <td>verifyTable</td>
+      <td>theTable.1.0</td>
+      <td>a</td>
+    </tr>
+    <tr>
+      <td>verifyTable</td>
+      <td>theTable.2.1</td>
+      <td>d</td>
+    </tr>
+    <tr>
+      <td>verifyTable</td>
+      <td>theTable.3.1</td>
+      <td>f2</td>
+    </tr>
+    <tr>
+      <td>verifySelected
+
+</td>
+      <td>theSelect</td>
+      <td>index=1</td>
+    </tr>
+    <tr>
+      <td>verifySelected</td>
+      <td>theSelect</td>
+      <td>value=option2</td>
+    </tr>
+    <tr>
+      <td>verifySelected</td>
+      <td>theSelect</td>
+      <td>label=second option</td>
+    </tr>
+    <tr>
+      <td>verifySelected</td>
+      <td>theSelect</td>
+      <td>second option</td>
+    </tr>
+    <tr>
+      <td>verifySelected</td>
+      <td>theSelect</td>
+      <td>id=o2</td>
+    </tr>
+    <tr>
+      <td>verifySelectOptions</td>
+      <td>theSelect</td>
+      <td>first option,second option,third\,\,option</td>
+    </tr>
+    <tr>
+      <td>verifyAttribute</td>
+      <td>theText@class</td>
+      <td>foo</td>
+    </tr>
+    <tr>
+      <td>verifyNotAttribute</td>
+      <td>theText@class</td>
+      <td>fox</td>
+    </tr>
+    <tr>
+      <td>verifyTitle</td>
+      <td>theTitle</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyNotTitle</td>
+      <td>Blah Blah</td>
+      <td>&nbsp;</td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>

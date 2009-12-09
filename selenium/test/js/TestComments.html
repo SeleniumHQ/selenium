@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!--
+Copyright 2004 ThoughtWorks, Inc
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>Test Comments</title>
+</head>
+<body>
+
+<!-- These are just excerpts from TestVerifications.html, with comments added -->
+
+<p>Here we demonstrate how comments can be interspersed within Selenium
+tests.</p>
+
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <th colspan="3">Test Comments</th>
+    </tr>
+
+    <tr>
+      <td>open</td>
+      <td>../tests/html/test_verifications.html?foo=bar</td>
+      <td>&nbsp;</td>
+    </tr>
+
+    <tr>
+      <td colspan="3"><i>Any row with fewer than 3 cells is ignored</i></td>
+    </tr>
+
+    <tr>
+      <td>verifyLocation</td>
+      <td>*/tests/html/test_verifications.html*</td>
+      <td>&nbsp;</td>
+      <td><i>anything after the 3rd cell is ignored</i></td>
+    </tr>
+
+    <tr>
+      <td>verifyValue</td>
+      <td>theText</td>
+      <td>the text value</td>
+    </tr>
+
+  </tbody>
+</table>
+
+<ul>
+  <li>Multiple test-tables may occur.
+  <li>Any text/markup outside of tables is ignored.
+</ul>
+
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td>verifyValue</td>
+      <td>theHidden</td>
+      <td>the hidden value</td>
+    </tr>
+    <tr>
+      <td>verifyText</td>
+      <td>theSpan</td>
+      <td>this is the span</td>
+    </tr>
+  </tbody>
+</table>
+
+</body>
+</html>

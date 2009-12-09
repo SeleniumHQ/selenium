@@ -12,7 +12,7 @@ public class TestDomainCookie extends SeleneseTestNgHelper {
 		assertTrue(selenium.getExpression(host).matches("^[\\s\\S]*\\.[\\s\\S]*\\.[\\s\\S]*$"));
 		String domain = selenium.getEval("var host = parseUrl(canonicalize(absolutify(\"html\", selenium.browserbot.baseUrl))).host; host.replace(/^[^\\.]*/, \"\");");
 		System.out.println(domain);
-		String base = "http://localhost:4444/tests/html";
+		String base = selenium.getEval("parseUrl(canonicalize(absolutify(\"html\", selenium.browserbot.baseUrl))).pathname;");
 		System.out.println(base);
 		selenium.open(base + "/path1/cookie1.html");
 		selenium.deleteCookie("testCookieWithSameName", "path=/");

@@ -54,40 +54,46 @@ class Java < BaseGenerator
       classpath = build_classpath_(args[:name].to_sym)
 
       temp = "#{out}_classes"
-      mkdir_p temp
+      mkdir_p temp, :verbose => false
 
       puts "Building: #{args[:name]} as #{out}"
 
       if args[:srcs]
+        # Remove anything that's not a JAR from the classpath
+        classpath = classpath.collect do |path|
+          path if path.to_s =~ /.jar$/
+        end
+
         # Compile
         cmd = "javac -cp #{classpath.join(classpath_separator?)} -g -source 5 -target 5 -d #{temp} #{FileList[args[:srcs]]} " 
         sh cmd, :verbose => false 
-
-        # TODO(simon): make copy_resource_ handle this for us
-        # Copy resources over
-        resources = args[:resources] || []
-        resources.each do |res|
-          if (res.kind_of? Symbol)
-            res = Rake::Task[res].out
-          end
-        
-          if (res.kind_of? Hash) 
-            res.each do |from, to|
-              dir = to.gsub(/\/.*?$/, "")
-              mkdir_p "#{temp}/#{dir}", :verbose => false
-              cp_r find_file(from), "#{temp}/#{to}"
-            end
-          else
-            target = res.gsub(/build\//, '')
-            copy_resource_(target, temp)
-          end
-        end
-
-        cmd = "cd #{temp} && jar cMf ../../#{out} *"
-        sh cmd, :verbose => false
-
-        rm_rf temp
       end
+      
+      # TODO(simon): make copy_resource_ handle this for us
+      # Copy resources over
+      resources = args[:resources] || []
+      resources.each do |res|
+        if (res.kind_of? Symbol)
+          res = Rake::Task[res].out
+        end
+        
+        if (res.kind_of? Hash) 
+          res.each do |from, to|
+            dir = to.gsub(/\/.*?$/, "")
+            mkdir_p "#{temp}/#{dir}", :verbose => false
+            cp_r find_file(from), "#{temp}/#{to}"
+          end
+        else
+          target = res.gsub(/build\//, '')
+          copy_resource_(target, temp)
+        end
+      end
+
+      Dir["#{temp}/**/.svn"].each { |file| rm_rf file }
+      cmd = "cd #{temp} && jar cMf ../../#{out} *"
+      sh cmd, :verbose => false
+
+      rm_rf temp, :verbose => false
     end
     
     add_zip_task_(args)
@@ -103,15 +109,15 @@ class Java < BaseGenerator
       classpath = build_classpath_(args[:name].to_sym)
       temp = "#{zip_out}_temp"
       
-      mkdir_p temp
+      mkdir_p temp, :verbose => false
       
       classpath.each do |f|
         copy_resource_(f, temp) if f =~ /\.jar/
       end
       
-      sh "cd #{temp} && jar cMf ../../#{zip_out} *", :verbose => true
+      sh "cd #{temp} && jar cMf ../../#{zip_out} *", :verbose => false
       
-      rm_rf temp
+      rm_rf temp, :verbose => false
     end
   end
   
@@ -165,24 +171,43 @@ class Java < BaseGenerator
   def uberjar(args)
     out = out_path_(args)
     
-    jar(args)
-    
     create_deps_(out_path_(args), args)
     
     file out do
-      puts "Building #{args[:name]} as #{out}"
+      puts "Building uber-jar: #{args[:name]} as #{out}"
       
       # Take each dependency, extract and then rezip
       temp = "#{out}_temp"
-      mkdir_p temp
+      mkdir_p temp, :verbose => false
       
-      all = build_uberlist_(args[:deps])
+      all = build_uberlist_(args[:deps], args[:standalone])
       all.each do |dep|
         sh "cd #{temp} && jar xf ../../#{dep}", :verbose => false
       end
-      
+
+      excludes = args[:exclude] || []
+      excludes.each do |to_exclude|
+        rm_rf FileList["#{temp}/#{to_exclude}"]
+      end
+
+      Dir["#{temp}/**/.svn"].each { |file| rm_rf file }
+
+      if args[:main]
+        # Read any MANIFEST.MF file into memory, ignoring the main class line
+        manifest = []
+        manifest.push "Main-Class: #{args[:main]}\n"
+        manifest_file = "#{temp}/META-INF/MANIFEST.MF"
+        File.open(manifest_file, "r") do |f|
+          while (line = f.gets)
+            manifest.push line unless line =~ /^Main-Class:/
+          end
+        end
+        
+        File.open(manifest_file, "w") do |f| f.write(manifest.join("")) end
+      end
+            
       sh "cd #{temp} && jar cMf ../../#{out} *", :verbose => false
-      rm_rf temp
+      rm_rf temp, :verbose => false
     end
     
     add_zip_task_(args)
@@ -191,17 +216,20 @@ class Java < BaseGenerator
     t.out = out    
   end
   
-  def build_uberlist_(task_names)
+  def build_uberlist_(task_names, standalone)
     all = []
     tasks = task_names || []
     tasks.each do |dep|
-      next unless Rake::Task.task_defined? dep.to_sym
-      t = Rake::Task[dep.to_sym]
+      if Rake::Task.task_defined? dep.to_sym then
+        t = Rake::Task[dep.to_sym]
       
-      all.push t.out if t.out.to_s =~ /\.jar$/
+        all.push t.out if t.out.to_s =~ /\.jar$/
       
-      all += build_uberlist_(t.deps)
-      all += build_uberlist_(t.prerequisites)
+        all += build_uberlist_(t.deps, standalone)
+        all += build_uberlist_(t.prerequisites, standalone)
+      elsif standalone
+        all += FileList[dep]
+      end
     end
     
     all.uniq
@@ -222,7 +250,7 @@ class Java < BaseGenerator
     
     file out do
       temp = "#{out}_temp"
-      mkdir_p "#{temp}/WEB-INF/lib"
+      mkdir_p "#{temp}/WEB-INF/lib", :verbose => false
       
       # Copy the resources. They're easy
       copy_resource_(args[:resources], temp) unless args[:resources].nil?
@@ -233,12 +261,10 @@ class Java < BaseGenerator
       end
       copy_resource_(jars, "#{temp}/WEB-INF/lib")
       
-      Dir["#{temp}/**/.svn"].each do |f|
-        rm_rf f
-      end
-      
+      Dir["#{temp}/**/.svn"].each { |file| rm_rf file }
+            
       sh "cd #{temp} && jar cMf ../../#{out} *", :verbose => false
-      rm_rf temp
+      rm_rf temp, :verbose => false
     end
         
     task args[:name] => out

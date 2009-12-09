@@ -36,10 +36,10 @@ def copy_single_resource_(from, to)
   from = find_file(from)
   if from.kind_of? FileList
     from.each do |f|
-      cp_r f, "#{to}"
+      cp_r f, "#{to}", :verbose => false
     end
   else
-    cp_r from, "#{to}"
+    cp_r from, "#{to}", :verbose => false
   end
 end
 
@@ -71,7 +71,7 @@ def copy_prebuilt(prebuilt, out)
     if (File.exists?(from))
       puts "Falling back to copy of: #{out}"
       mkdir_p dir, :verbose => false
-      cp_r from, out
+      cp_r from, out, :verbose => false
     else
       puts "Unable to locate prebuilt copy of #{out}"
     end
@@ -84,5 +84,5 @@ def copy_to_prebuilt(out, prebuilt)
   dest = "#{prebuilt}/#{out}".sub(/\/build\//, "/")
   src = out
 
-  cp src, dest
+  cp src, dest, :verbose => false
 end

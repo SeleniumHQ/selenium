@@ -1,0 +1,66 @@
+<project name="selenium" default="all">
+	<target name="generate-sources">
+    	<mkdir dir="target" />
+    </target>
+    <target name="pydoc" depends="generate-sources" if="use.pydoc">
+    	<property name="python.executable" value="python" />
+    	<exec executable="${python.executable}" failonerror="true">
+			<arg value="mypydoc.py"/>
+			<arg value="-w" />
+			<arg value="selenium" />
+		</exec>
+		<mkdir dir="doc"/>
+		<move file="selenium.html" todir="doc" />
+    </target>
+    <target name="doc" depends="generate-sources, pydoc" unless="use.pydoc">
+    	<property name="python.executable" value="python" />
+		<property name="epydoc.script" value="lib\myepydoc.py" />
+		<exec executable="${python.executable}" failonerror="true">
+			<arg file="${epydoc.script}"/>
+			<arg value="selenium.py" />
+			<arg value="-v" />
+			<arg value="-o" />
+			<arg file="doc" />
+		</exec>
+    </target>
+    <target name="all" depends="generate-sources, test, doc"/>
+    <target name="test" depends="generate-sources" unless="skiptests">
+    	<echo>${selenium-server}</echo>
+        <java jar="${selenium-server}" fork="true" spawn="true"/>
+        <sleep seconds="20"/>
+        <!--  output="${tmp}/ruby_out.txt" -->
+        <property name="python.executable" value="python" />
+        <!--<fail message="autofail ${python.executable}" />-->
+        <condition property="_headless" value="_headless">
+            <istrue value="${headless}" />
+        </condition>
+        <property name="_headless" value="" />
+        <exec executable="${python.executable}" resultproperty="result">
+            <arg line="selenium_test_suite${_headless}.py"/>
+        </exec>
+        <get taskname="selenium-shutdown" src="http://localhost:4444/selenium-server/driver/?cmd=shutDownSeleniumServer" dest="target/shutdown-result.txt" ignoreerrors="true" />
+        <sleep seconds="20"/>
+        <condition property="build.failed">
+        	<not><equals arg1="0" arg2="${result}" /></not>
+        </condition>
+        <fail if="build.failed" message="python tests failed!" />
+    </target>
+    <target name="dist" depends="generate-sources, doc">
+        <property name="project.version" value="UNKNOWNVERSION" />
+        <property name="python.release" value="selenium-python-client-driver-${project.version}"/>
+        <zip zipfile="target/${python.release}.zip">
+            <zipfileset dir="." prefix="${python.release}">
+                <include name="*.py"/>
+                <exclude name="mypydoc.py"/>
+                <include name="doc/**" />
+            </zipfileset>
+        </zip>
+        <zip zipfile="target/${python.release}-doc.zip">
+            <zipfileset dir="doc" prefix="python" />
+        </zip>
+    </target>
+    <target name="clean">
+    	<mkdir dir="doc" />
+    	<delete dir="doc" />
+    </target>
+</project>

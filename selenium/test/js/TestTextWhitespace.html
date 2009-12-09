@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!--
+Copyright 2004 ThoughtWorks, Inc
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>Test Verifications</title>
+</head>
+<body>
+<br>
+Test for markup and newlines in text content.
+<p>Our rule for whitespace is that all non-visible whitespace (including &amp;nbsp;) should be replaced with a single space, but all visible newlines (&lt;br&gt;, &lt;p&gt;, and &lt;pre&gt;formatted newlines) should be preserved.</p>
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td rowspan="1" colspan="3">Test Text Content<br>
+      </td>
+    </tr>
+
+    <tr>
+      <td>open</td>
+      <td>../tests/html/test_text_content.html</td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td>verifyText</td>
+      <td>nonTextMarkup</td>
+      <td>
+      There is non-visible and visible markup here that doesn't change the text content
+      </td>
+    </tr>
+    <!-- Match exactly the same space characters -->
+    <tr>
+      <td>verifyText</td>
+      <td>spaces</td>
+      <td>exact:1 space|2  space|3   space|1&nbsp;nbsp|2&nbsp;&nbsp;nbsp|3&nbsp;&nbsp;&nbsp;nbsp|2 &nbsp;space_nbsp|2&nbsp; nbsp_space|3 &nbsp; space_nbsp_space|3&nbsp; &nbsp;nbsp_space_nbsp</td>
+    </tr>
+      <tr>
+        <td>verifyText</td>
+      <td>tabcharacter</td>
+      <td>tab character between</td>
+    </tr>
+      <tr>
+        <td>verifyText</td>
+        <td>nonVisibleNewlines</td>
+        <td>non visible newlines between</td>
+      </tr>
+
+      <tr>
+        <td>verifyText</td>
+        <td>visibleNewlines</td>
+        <td>regexp:visible\s*newlines\s*between</td>
+      </tr>
+      <tr>
+        <td>verifyNotText</td>
+        <td>visibleNewlines</td>
+        <td>visible newlines between</td>
+      </tr>
+      <tr>
+        <td>verifyText</td>
+        <td>paragraphs</td>
+        <td>First paragraph*Second paragraph</td>
+      </tr>
+      <tr>
+        <td>verifyNotText</td>
+        <td>paragraphs</td>
+        <td>First paragraph Second paragraph</td>
+      </tr>
+    <tr>
+      <td>verifyText</td>
+      <td>preformatted</td>
+      <td>preformatted*newline</td>
+    </tr>
+    <tr>
+      <td>verifyNotText</td>
+      <td>preformatted</td>
+      <td>preformatted newline</td>
+    </tr>
+    <tr>
+      <td>verifyText</td>
+      <td>mixedMarkup</td>
+      <td>visible*newlines and markup and non-visible newlines and markup*With*a paragraph*and*pre*formatted*text</td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>

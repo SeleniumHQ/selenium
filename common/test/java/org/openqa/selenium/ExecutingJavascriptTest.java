@@ -321,11 +321,19 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     driver.get(richTextPage);
 
     driver.switchTo().frame("editFrame");
-    WebElement
-        body =
+    WebElement body =
         (WebElement) ((JavascriptExecutor) driver).executeScript("return document.body");
 
     assertEquals("", body.getText());
+  }
+
+  public void testShouldBeAbleToReturnAnArrayOfWebElements() {
+    driver.get(formPage);
+
+    List<WebElement> items = (List<WebElement>) ((JavascriptExecutor) driver)
+        .executeScript("return document.getElementsByName('snack');");
+
+    assertTrue(items.size() > 0);
   }
 
   @JavascriptEnabled

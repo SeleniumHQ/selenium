@@ -27,6 +27,11 @@ task :test_firefox_rb => :test_common do
         :files   => Dir['common/test/rb/spec/**/*spec.rb']
 end
 
+task :test_selenium_rb => %w[selenium-server-standalone] do
+  jruby :include => ["selenium/src/rb/lib"],
+        :command => "-S rake -f selenium/src/rb/Rakefile ci:integration --trace"
+end
+
 #
 # remote
 #
