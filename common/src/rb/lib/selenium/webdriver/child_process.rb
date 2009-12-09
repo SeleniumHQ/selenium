@@ -47,22 +47,28 @@ module Selenium
       end
 
       def kill
-        Process.kill(:TERM, @pid) if @pid
+        Process.kill('TERM', @pid) if @pid
       end
 
       def kill!
-        Process.kill(:KILL, @pid) if @pid
+        Process.kill('KILL', @pid) if @pid
       end
 
       module WindowsProcess
         def start
           require "win32/process" # adds a dependency on windows
-          @pid = Process.create(:app_name        => @args.join(" "),
-                                :process_inherit => true,
-                                :thread_inherit  => true,
-                                :inherit         => true).process_id
+          @pid = Process.create(
+            :app_name        => @args.join(" "),
+            :process_inherit => true,
+            :thread_inherit  => true,
+            :inherit         => true
+          ).process_id
 
           self
+        end
+
+        def kill
+          kill!
         end
       end
 
