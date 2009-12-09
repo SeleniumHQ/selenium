@@ -1,20 +1,6 @@
 require "#{File.dirname(__FILE__)}/spec_helper"
 
 describe "Driver" do
-  it "should navigate back and forward" do
-    driver.navigate.to url_for("formPage.html")
-    driver.current_url.should == url_for("formPage.html")
-
-    driver.find_element(:id, 'imageButton').submit
-    driver.find_element(:id, 'greeting').text.should == "Success!"
-
-    driver.navigate.back
-    driver.current_url.should == url_for("formPage.html")
-
-    driver.navigate.forward
-    driver.find_element(:id, 'greeting').text.should == "Success!"
-  end
-
   it "should get the page title" do
     driver.navigate.to url_for("xhtmlTest.html")
     driver.title.should == "XHTML Test Page"
@@ -51,18 +37,6 @@ describe "Driver" do
       lambda { driver.screenshot_as(:jpeg) }.should raise_error(WebDriver::Error::UnsupportedOperationError)
     end
   end
-
-  # it "should refresh the page" do
-  #   driver.navigate.to url_for("xhtmlTest.html")
-  #   driver.execute_script %Q{document.innerHTML = '<div id="refresh-me">testing refresh</div>'}
-  #   pp driver.find_elements(:xpath, "//*")
-  #   sleep 1000
-  #   driver.find_element(:id, 'refresh-me').text.should == "testing refresh"
-  #
-  #   driver.refresh
-  #
-  #   lambda { driver.find_element(:id, 'refresh-me') }.should raise_error
-  # end
 
   describe "one element" do
     it "should find by id" do

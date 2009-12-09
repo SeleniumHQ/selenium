@@ -107,6 +107,10 @@ module Selenium
           check_error_code Lib.wdClose(@driver_pointer), "Unable to close driver"
         end
 
+        def refresh
+          raise Error::UnsupportedOperationError
+        end
+
         def getWindowHandles
           raw_handles = FFI::MemoryPointer.new :pointer
           check_error_code Lib.wdGetAllWindowHandles(@driver_pointer, raw_handles),

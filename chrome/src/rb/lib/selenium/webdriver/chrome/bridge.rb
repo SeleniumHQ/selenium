@@ -69,6 +69,10 @@ module Selenium
           execute :request => 'close'
         end
 
+        def refresh
+          execute :request => 'refresh'
+        end
+
         def getWindowHandles
           execute :request => 'getWindowHandles'
         end

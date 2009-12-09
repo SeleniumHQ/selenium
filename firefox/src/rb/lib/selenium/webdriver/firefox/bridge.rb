@@ -35,6 +35,10 @@ module Selenium
           execute :getPageSource
         end
 
+        def refresh
+          execute :refresh
+        end
+
         def getWindowHandles
           execute :getWindowHandles
         end

@@ -3,19 +3,23 @@ module Selenium
     class Navigation
 
       def initialize(driver)
-        @driver = driver
+        @bridge = driver.bridge
       end
 
       def to(url)
-        @driver.bridge.get url
+        @bridge.get url
       end
 
       def back
-        @driver.bridge.goBack
+        @bridge.goBack
       end
 
       def forward
-        @driver.bridge.goForward
+        @bridge.goForward
+      end
+
+      def refresh
+        @bridge.refresh
       end
 
     end # Navigation
