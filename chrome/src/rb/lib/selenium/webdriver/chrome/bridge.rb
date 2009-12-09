@@ -56,8 +56,12 @@ module Selenium
         end
 
         def quit
-          @launcher.kill # FIXME: let chrome extension take care of this
-          execute :request => 'quit'
+          begin
+            execute :request => 'quit'
+          rescue IOError
+          end
+
+          @launcher.kill
           @executor.close
         end
 
