@@ -3,7 +3,8 @@
 def main(argv=None):
     from os.path import join, isfile, dirname
     from tempfile import mkstemp
-    from os import chdir, close, environ, pathsep, kill
+    from os import chdir, close, environ, pathsep
+    import os # So we can look kill up later
     from subprocess import Popen, call
     import sys
     import signal
@@ -43,8 +44,12 @@ def main(argv=None):
     except AttributeError:
         pass
 
-    # Need this to work on python 2.4 as well. Sadly
-    kill(server.pid, signal.SIGTERM)
+    # try the python 2.6 way of killing the task
+    try:
+        server.kill
+    except:
+        os.kill(server.pid, signal.SIGTERM)
+        
     raise SystemExit(ok)
 
 if __name__ == "__main__":
