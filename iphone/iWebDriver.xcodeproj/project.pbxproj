@@ -30,6 +30,8 @@
 		649EDC0610C5986B00E66D06 /* WebDriverPreferences.m in Sources */ = {isa = PBXBuildFile; fileRef = FD61E6A60FE151D2006E1274 /* WebDriverPreferences.m */; };
 		649EDC8510C5988000E66D06 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		649EDC8610C5989200E66D06 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = FD61E69D0FE151A4006E1274 /* libsqlite3.dylib */; };
+		64CF265310D190820029D641 /* Cookie.m in Sources */ = {isa = PBXBuildFile; fileRef = 64CF265210D190820029D641 /* Cookie.m */; };
+		64CF265410D190820029D641 /* Cookie.m in Sources */ = {isa = PBXBuildFile; fileRef = 64CF265210D190820029D641 /* Cookie.m */; };
 		8301250C0EFF044900BA9BE6 /* Session.m in Sources */ = {isa = PBXBuildFile; fileRef = 839988650EE515C90074D106 /* Session.m */; };
 		8311AB7A0F44EF0500921B78 /* selenium-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 8311AB790F44EF0500921B78 /* selenium-icon.png */; };
 		8316A1BF0EECCCA300FE869C /* Context.m in Sources */ = {isa = PBXBuildFile; fileRef = 8316A1BE0EECCCA300FE869C /* Context.m */; };
@@ -180,6 +182,8 @@
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* iWebDriver_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iWebDriver_Prefix.pch; sourceTree = "<group>"; };
 		644F14EC10AB4EF400858ECA /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
+		64CF265110D190820029D641 /* Cookie.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Cookie.h; sourceTree = "<group>"; };
+		64CF265210D190820029D641 /* Cookie.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Cookie.m; sourceTree = "<group>"; };
 		8311AB790F44EF0500921B78 /* selenium-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "selenium-icon.png"; sourceTree = "<group>"; };
 		8316A1BD0EECCCA300FE869C /* Context.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Context.h; sourceTree = "<group>"; };
 		8316A1BE0EECCCA300FE869C /* Context.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Context.m; sourceTree = "<group>"; };
@@ -427,6 +431,8 @@
 				8316A1BE0EECCCA300FE869C /* Context.m */,
 				838B334A0F14254C00F72BC4 /* Context+ExecuteScript.h */,
 				838B334B0F14254C00F72BC4 /* Context+ExecuteScript.m */,
+				64CF265110D190820029D641 /* Cookie.h */,
+				64CF265210D190820029D641 /* Cookie.m */,
 				83615D900EEE47940028DAE5 /* ElementStore.h */,
 				83615D910EEE47940028DAE5 /* ElementStore.m */,
 				838B33730F14286600F72BC4 /* ElementStore+FindElement.h */,
@@ -712,6 +718,7 @@
 				FD61E6A90FE151D2006E1274 /* WebDriverPreferences.m in Sources */,
 				FD61E6AA0FE151D2006E1274 /* WebDriverRequestFetcher.m in Sources */,
 				17D715560FE107B500CC479E /* HTTPPNGResponse.m in Sources */,
+				64CF265310D190820029D641 /* Cookie.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -751,6 +758,7 @@
 				839D645E0F2EB4CB009645BF /* WebViewController.m in Sources */,
 				839D645F0F2EB4CC009645BF /* MainViewController.m in Sources */,
 				839D64600F2EB4D0009645BF /* UIResponder+SimulateTouch.m in Sources */,
+				64CF265410D190820029D641 /* Cookie.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

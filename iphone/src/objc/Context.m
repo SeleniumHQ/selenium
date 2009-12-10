@@ -17,6 +17,7 @@
 //  limitations under the License.
 
 #import "Context.h"
+#import "Cookie.h"
 #import "JSONRESTResource.h"
 #import "HTTPResponse+Utility.h"
 #import "HTTPJSONResponse.h"
@@ -136,6 +137,9 @@ static NSString * const CONTEXT_NAME = @"foo";
                                                 GETAction:NULL
                                                POSTAction:@selector(findElementsByMethod:query:)]
            withName:@"elements"];
+  
+  [self setResource:[Cookie cookieWithSessionId:sessionId_]
+           withName:@"cookie"];
   
   return self;
 }
