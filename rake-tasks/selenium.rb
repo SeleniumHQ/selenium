@@ -2,7 +2,7 @@ class Selenium < BaseGenerator
   def selenium_test(args)
     create_deps_(args[:name], args)
     
-    classpath = Java.new().build_classpath_(args[:name]).collect do |c|
+    classpath = JavaGen.new().build_classpath_(args[:name]).collect do |c|
       c.to_s =~ /\.jar/ ? c : nil
     end
     classpath.uniq!

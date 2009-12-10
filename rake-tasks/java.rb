@@ -1,6 +1,6 @@
 # Used to map a name to a set of dependencies
 
-class Java < BaseGenerator
+class JavaGen < BaseGenerator
   def build_classpath_(dep_name)
     t = Rake::Task[dep_name.to_sym]
     if t.nil? 
@@ -296,19 +296,19 @@ def walk_war_deps_(dep, dest)
 end
 
 def java_jar(args)
-  Java.new().jar(args)
+  JavaGen.new().jar(args)
 end
 
 def java_test(args)
-  Java.new().test(args)
+  JavaGen.new().test(args)
 end
 
 def java_uberjar(args)
-  Java.new().uberjar(args)
+  JavaGen.new().uberjar(args)
 end
 
 def java_war(args)
-  Java.new().war(args)
+  JavaGen.new().war(args)
 end
 
 def jruby(args)
