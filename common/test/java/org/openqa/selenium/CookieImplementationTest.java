@@ -20,7 +20,6 @@ import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
 import static org.openqa.selenium.Ignore.Driver.IE;
-import static org.openqa.selenium.Ignore.Driver.IPHONE;
 import static org.openqa.selenium.Ignore.Driver.REMOTE;
 
 import java.net.URI;
@@ -29,7 +28,6 @@ import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
 
-@Ignore(IPHONE)
 public class CookieImplementationTest extends AbstractDriverTestCase {
 
   @Override
