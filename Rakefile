@@ -357,6 +357,7 @@ java_jar(:name => "webdriver-remote-server",
       "remote/server/src/java/konqueror",
       "remote/server/src/java/opera",
       "remote/server/src/java/sslSupport",
+      "remote/server/src/java/VERSION.txt",
       "common/src/js/core",
       "common/src/js/jsunit",
       {

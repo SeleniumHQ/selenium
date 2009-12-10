@@ -1,6 +1,6 @@
 {
   "name": "WebDriver",
-  "version": "0.3",
+  "version": "2.0a1",
   "description": "WebDriver extension for Chrome",
   "browser_action": {
     "default_title": "WebDriver",
