@@ -1,0 +1,4 @@
+selenium.rc.version=2.0
+selenium.rc.revision=a1
+selenium.core.version=2.0
+selenium.core.revision=a1
