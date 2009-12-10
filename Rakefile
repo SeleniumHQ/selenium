@@ -15,7 +15,8 @@ require 'rake-tasks/ruby'
 task :default => [:test]
 
 # TODO(simon): Shatter the build file into subdirectories, then remove these
-task :all => [:'webdriver-all']
+task :all => [:'selenium-java-client']
+task :all_zip => [:'selenium-java-client_zip']
 task :chrome => [:'webdriver-chrome']
 task :common => [:'webdriver-common']
 task :htmlunit => [:'webdriver-htmlunit']
@@ -597,7 +598,7 @@ task :remote_release => [:remote] do
   rm_rf "build/dist/remote_server", :verbose => false
 end
 
-java_uberjar(:name => "webdriver-all",
+java_uberjar(:name => "selenium-java-client",
              :deps => [
                     :chrome,
                     :htmlunit,

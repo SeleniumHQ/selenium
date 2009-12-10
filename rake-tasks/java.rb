@@ -106,6 +106,7 @@ class Java < BaseGenerator
     task :"#{args[:name]}_zip" => FileList[zip_out]
     
     file zip_out => out do
+      puts "Building: #{args[:name]}_zip as #{zip_out}"
       classpath = build_classpath_(args[:name].to_sym)
       temp = "#{zip_out}_temp"
       
