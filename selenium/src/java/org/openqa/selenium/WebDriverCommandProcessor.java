@@ -121,25 +121,61 @@ import static org.openqa.selenium.internal.seleniumemulation.SeleniumSelect.Prop
 import static org.openqa.selenium.internal.seleniumemulation.SeleniumSelect.Property.TEXT;
 import static org.openqa.selenium.internal.seleniumemulation.SeleniumSelect.Property.VALUE;
 
+/**
+ * A CommandProcessor which delegates commands down to an underlying webdriver
+ * instance.
+ */
 public class WebDriverCommandProcessor implements CommandProcessor {
   private final Map<String, SeleneseCommand> seleneseMethods = Maps.newHashMap();
   private final String baseUrl;
   private WebDriver driver;
+  private Capabilities likeThis;
 
+  /**
+   * Create an instance that will later be configured by calling
+   * {@link #start(Object)} with a {@link org.openqa.selenium.remote.Capabilities}
+   * instance.
+   *
+   * @param baseUrl The URL from which relative URLs should be based on
+   */
   public WebDriverCommandProcessor(String baseUrl) {
+    this(baseUrl, null);
+  }
+
+  /**
+   * Create an instance that will later be started by calling
+   * {@link #start()}
+   *
+   * @param baseUrl The URL from which relative URLs should be based on
+   * @param likeThis Typically a {@link org.openqa.selenium.remote.DesiredCapabilities} instance
+   */
+  public WebDriverCommandProcessor(String baseUrl, Capabilities likeThis) {
     if (baseUrl.endsWith("/")) {
       this.baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
     } else {
       this.baseUrl = baseUrl;
     }
+
+    this.likeThis = likeThis;
   }
 
+  /**
+   * Wrap an already running webdriver instance. Under no circumstances should
+   * the {@link #start()}  method be called for this instance of the command
+   * processor
+   *
+   * @param driver The driver to wrap
+   * @param baseUrl The URL from which relative URLs should be based on
+   */
   public WebDriverCommandProcessor(WebDriver driver, String baseUrl) {
     this(baseUrl);
     this.driver = driver;
     setUpMethodMap();
   }
 
+  /**
+   * @return the instance of webdriver that this processor is wrapping.
+   */
   public WebDriver getUnderlyingWebDriver() {
     return driver;
   }
@@ -157,8 +193,7 @@ public class WebDriverCommandProcessor implements CommandProcessor {
   }
 
   public void start() {
-    // Default to using the Firefox driver
-    start(DesiredCapabilities.firefox());
+    start(likeThis);
   }
 
   public void start(String s) {
