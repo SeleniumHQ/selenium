@@ -17,8 +17,8 @@ version = "2.0a1"
 task :default => [:test]
 
 # TODO(simon): Shatter the build file into subdirectories, then remove these
-task :all => [:'selenium-java-client']
-task :all_zip => [:'selenium-java-client_zip']
+task :all => [:'selenium-java']
+task :all_zip => [:'selenium-java_zip']
 task :chrome => [:'webdriver-chrome']
 task :common => [:'webdriver-common']
 task :htmlunit => [:'webdriver-htmlunit']
@@ -617,7 +617,7 @@ task :remote_release => [:remote] do
   rm_rf "build/dist/remote_server", :verbose => false
 end
 
-java_uberjar(:name => "selenium-java-client",
+java_uberjar(:name => "selenium-java",
              :deps => [
                     :chrome,
                     :htmlunit,
@@ -628,18 +628,18 @@ java_uberjar(:name => "selenium-java-client",
                     :support
                   ])
 
-task :release => [:'selenium-java-client_zip', :'selenium-server-standalone', :'selenium-server_zip'] do
+task :release => [:'selenium-java_zip', :'selenium-server-standalone', :'selenium-server_zip'] do
   cp "build/selenium-server-standalone.jar", "build/selenium-server-standalone-#{version}.jar"
-  cp "build/selenium-java-client.zip", "build/selenium-java-client-#{version}.zip"
+  cp "build/selenium-java.zip", "build/selenium-java-#{version}.zip"
   cp "build/selenium-server.zip", "build/selenium-server-#{version}.zip"
 end
 
-task :'selenium-java-client_zip' do
-  temp = "build/selenium-java-client_zip"
+task :'selenium-java_zip' do
+  temp = "build/selenium-java_zip"
   mkdir_p temp
-  sh "cd #{temp} && jar xf ../selenium-java-client.zip", :verbose => false
-  rm_f "build/selenium-java-client.zip"
+  sh "cd #{temp} && jar xf ../selenium-java.zip", :verbose => false
+  rm_f "build/selenium-java.zip"
   Dir["#{temp}/webdriver-*.jar"].each { |file| rm_rf file }
-  mv "#{temp}/selenium-java-client.jar", "#{temp}/selenium-java-client-#{version}.jar"
-  sh "cd #{temp} && jar cMf ../selenium-java-client.zip *", :verbose => false
+  mv "#{temp}/selenium-java.jar", "#{temp}/selenium-java-#{version}.jar"
+  sh "cd #{temp} && jar cMf ../selenium-java.zip *", :verbose => false
 end
