@@ -24,10 +24,6 @@ import java.io.StringWriter;
 import java.lang.reflect.Method;
 import java.util.regex.Pattern;
 
-import junit.framework.AssertionFailedError;
-
-//import junit.framework.*;
-
 /**
  * Provides a base class that implements some handy functionality 
  * for Selenium testing (you are <i>not</i> required to extend this class).
@@ -335,7 +331,7 @@ public class SeleneseTestBase {
     public void verifyNotEquals(Object s1, Object s2) {
         try {
             assertNotEquals(s1, s2);
-        } catch (AssertionFailedError e) {
+        } catch (AssertionError e) {
             verificationErrors.append(throwableToString(e));
         }
     }
@@ -344,7 +340,7 @@ public class SeleneseTestBase {
     public void verifyNotEquals(boolean s1, boolean s2) {
         try {
             assertNotEquals(new Boolean(s1), new Boolean(s2));
-        } catch (AssertionFailedError e) {
+        } catch (AssertionError e) {
             verificationErrors.append(throwableToString(e));
         }
     }
