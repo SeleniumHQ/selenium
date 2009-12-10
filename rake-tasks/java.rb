@@ -198,6 +198,10 @@ class Java < BaseGenerator
         manifest = []
         manifest.push "Main-Class: #{args[:main]}\n"
         manifest_file = "#{temp}/META-INF/MANIFEST.MF"
+        if (!File.exists? manifest_file)
+          mkdir_p "#{temp}/META-INF"
+          touch(manifest_file)
+        end
         File.open(manifest_file, "r") do |f|
           while (line = f.gets)
             manifest.push line unless line =~ /^Main-Class:/

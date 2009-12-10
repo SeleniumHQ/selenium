@@ -12,6 +12,8 @@ require 'rake-tasks/selenium'
 require 'rake-tasks/mozilla'
 require 'rake-tasks/ruby'
 
+version = "2.0a1"
+
 task :default => [:test]
 
 # TODO(simon): Shatter the build file into subdirectories, then remove these
@@ -371,12 +373,21 @@ java_jar(:name => "webdriver-remote-server",
                :ie,
                :firefox,
                :remote_common,
+               :selenium,
                :support,
                "remote/server/lib/runtime/*.jar"
              ])
 
+java_uberjar(:name => "selenium-server",
+             :deps => [ "webdriver-remote-server", :selenium ],
+             :exclude => [
+                           "META-INF/BCKEY.*"
+                         ],
+             :main => "org.openqa.selenium.server.SeleniumServer")
+
+
 java_uberjar(:name => "selenium-server-standalone",
-             :deps => [ "webdriver-remote-server" ],
+             :deps => [ :'selenium-server' ],
              :standalone => true,
              :exclude => [
                            "META-INF/BCKEY.*"
@@ -440,7 +451,6 @@ java_jar(:name => "webdriver-selenium",
                :ie,
                :firefox,
                :remote_client,
-               :remote_server,
                :support,
                "selenium/lib/runtime/*.jar"
              ],
@@ -457,7 +467,7 @@ java_test(:name => "webdriver-selenium-test",
           :deps => [
                      :test_common,
                      :htmlunit,
-                     :selenium,
+                     :'selenium-server',
                      "selenium/lib/buildtime/*.jar",
                    ],
           :main => "org.testng.TestNG",
@@ -468,7 +478,7 @@ java_test(:name => "webdriver-selenese-test",
           :deps => [
                      :test_common,
                      :htmlunit,
-                     :selenium,
+                     :'selenium-server',
                      "selenium/lib/buildtime/*.jar",
                    ])
 
@@ -610,6 +620,18 @@ java_uberjar(:name => "selenium-java-client",
                     :support
                   ])
 
-task :release => [:common_zip, :firefox_zip, :htmlunit_zip, :ie_zip, :support_zip, :selenium_zip, :all_zip]
+task :release => [:'selenium-java-client_zip', :'selenium-server-standalone', :'selenium-server_zip'] do
+  cp "build/selenium-server-standalone.jar", "build/selenium-server-standalone-#{version}.jar"
+  cp "build/selenium-java-client.zip", "build/selenium-java-client-#{version}.zip"
+  cp "build/selenium-server.zip", "build/selenium-server-#{version}.zip"
+end
 
-
+task :'selenium-java-client_zip' do
+  temp = "build/selenium-java-client_zip"
+  mkdir_p temp
+  sh "cd #{temp} && jar xf ../selenium-java-client.zip", :verbose => false
+  rm_f "build/selenium-java-client.zip"
+  Dir["#{temp}/webdriver-*.jar"].each { |file| rm_rf file }
+  mv "#{temp}/selenium-java-client.jar", "#{temp}/selenium-java-client-#{version}.jar"
+  sh "cd #{temp} && jar cMf ../selenium-java-client.zip *", :verbose => false
+end
