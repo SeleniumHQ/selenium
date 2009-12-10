@@ -17,6 +17,17 @@
 
 package org.openqa.selenium.server;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.BindException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.Properties;
+
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.http.HashUserRealm;
 import org.openqa.jetty.http.HttpContext;
@@ -26,13 +37,10 @@ import org.openqa.jetty.http.handler.SecurityHandler;
 import org.openqa.jetty.jetty.Server;
 import org.openqa.jetty.jetty.servlet.ServletHandler;
 import org.openqa.jetty.util.MultiException;
+import org.openqa.selenium.NetworkUtils;
 import org.openqa.selenium.remote.server.DriverServlet;
 import org.openqa.selenium.server.BrowserSessionFactory.BrowserSessionInfo;
 import org.openqa.selenium.server.browserlaunchers.AsyncExecute;
-
-import static java.lang.String.format;
-import static java.net.InetAddress.getLocalHost;
-import static org.openqa.selenium.server.browserlaunchers.LauncherUtils.getSeleniumResourceAsStream;
 import org.openqa.selenium.server.cli.RemoteControlLauncher;
 import org.openqa.selenium.server.htmlrunner.HTMLLauncher;
 import org.openqa.selenium.server.htmlrunner.HTMLResultsListener;
@@ -40,13 +48,8 @@ import org.openqa.selenium.server.htmlrunner.SeleniumHTMLRunnerResultsHandler;
 import org.openqa.selenium.server.htmlrunner.SingleTestSuiteResourceHandler;
 import org.openqa.selenium.server.log.LoggingManager;
 
-import java.io.*;
-import java.net.InetAddress;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.BindException;
-import java.net.UnknownHostException;
-import java.util.Properties;
+import static java.lang.String.format;
+import static org.openqa.selenium.server.browserlaunchers.LauncherUtils.getSeleniumResourceAsStream;
 
 /**
  * Provides a server that can launch/terminate browsers and can receive remote Selenium commands
@@ -307,12 +310,8 @@ public class SeleniumServer {
         handler.addServlet("WebDriver remote server", "/hub", DriverServlet.class.getName());
         webdriverContext.addHandler(handler);
 
-      try {
         LOGGER.info(format("RemoteWebDriver instances should connect to: http://%s:%d/wd/hub",
-            getLocalHost().getCanonicalHostName().toLowerCase(), getPort()));
-      } catch (UnknownHostException e) {
-        LOGGER.info("RemoteWebDriver instances should connect to this machine with path 'wd/hub'");
-      }
+            NetworkUtils.getPrivateLocalAddress(), getPort()));
 
       return webdriverContext;
     }

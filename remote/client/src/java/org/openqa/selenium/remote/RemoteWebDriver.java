@@ -17,6 +17,19 @@ limitations under the License.
 
 package org.openqa.selenium.remote;
 
+import java.lang.reflect.Constructor;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.JavascriptExecutor;
@@ -29,23 +42,9 @@ import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
+import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.internal.ReturnedCookie;
-import org.openqa.selenium.internal.FindsByTagName;
-
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
-
-import java.lang.reflect.Constructor;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, FindsByXPath {
@@ -529,7 +528,7 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
           String path = (String) rawCookie.get("path");
           String domain = (String) rawCookie.get("domain");
           Boolean secure = (Boolean) rawCookie.get("secure");
-          toReturn.add(new ReturnedCookie(name, value, domain, path, null, secure));
+          toReturn.add(new ReturnedCookie(name, value, domain, path, null, secure, getCurrentUrl()));
         }
 
         return toReturn;

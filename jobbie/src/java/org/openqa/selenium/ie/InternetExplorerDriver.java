@@ -17,6 +17,18 @@ limitations under the License.
 
 package org.openqa.selenium.ie;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import com.sun.jna.Native;
 import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
@@ -25,7 +37,6 @@ import com.sun.jna.ptr.DoubleByReference;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.NativeLongByReference;
 import com.sun.jna.ptr.PointerByReference;
-
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
@@ -35,22 +46,11 @@ import org.openqa.selenium.Speed;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
-import static org.openqa.selenium.ie.ExportedWebDriverFunctions.SUCCESS;
 import org.openqa.selenium.internal.FileHandler;
 import org.openqa.selenium.internal.ReturnedCookie;
 import org.openqa.selenium.internal.TemporaryFilesystem;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.text.SimpleDateFormat;
+import static org.openqa.selenium.ie.ExportedWebDriverFunctions.SUCCESS;
 
 public class InternetExplorerDriver implements WebDriver, JavascriptExecutor {
 
@@ -546,7 +546,7 @@ public class InternetExplorerDriver implements WebDriver, JavascriptExecutor {
           continue;
         }
 
-        toReturn.add(new ReturnedCookie(parts[0], parts[1], currentUrl, "", null, false));
+        toReturn.add(new ReturnedCookie(parts[0], parts[1], currentUrl, "", null, false, currentUrl));
       }
 
       return toReturn;

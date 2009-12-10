@@ -19,21 +19,19 @@ package org.openqa.selenium.environment.webserver;
 
 import junit.framework.Assert;
 
+import javax.servlet.Servlet;
+import java.io.File;
+import java.io.IOException;
+import java.net.ServerSocket;
+
 import org.mortbay.jetty.Connector;
-import org.mortbay.jetty.Server;
 import org.mortbay.jetty.Handler;
+import org.mortbay.jetty.Server;
 import org.mortbay.jetty.nio.SelectChannelConnector;
 import org.mortbay.jetty.security.SslSocketConnector;
 import org.mortbay.jetty.webapp.WebAppContext;
 import org.mortbay.servlet.MultiPartFilter;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.net.UnknownHostException;
-
-import javax.servlet.Servlet;
+import org.openqa.selenium.NetworkUtils;
 
 public class Jetty6AppServer implements AppServer {
 
@@ -153,11 +151,7 @@ public class Jetty6AppServer implements AppServer {
   }
 
   public String getAlternateHostName() {
-    try {
-      return InetAddress.getLocalHost().getCanonicalHostName();
-    } catch (UnknownHostException e) {
-      throw new RuntimeException(e);
-    }
+    return NetworkUtils.getPrivateLocalAddress();
   }
 
   public String whereIs(String relativeUrl) {

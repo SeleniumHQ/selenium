@@ -19,19 +19,19 @@ package org.openqa.selenium;
 
 import junit.framework.TestCase;
 
-import org.openqa.selenium.internal.ReturnedCookie;
-
 import java.util.Date;
+
+import org.openqa.selenium.internal.ReturnedCookie;
 
 public class CookieTest extends TestCase {
 
   public void testCanCreateAWellFormedCookie() {
-    new ReturnedCookie("Fish", "cod", "", "", null, false);
+    new ReturnedCookie("Fish", "cod", "", "", null, false, null);
   }
 
   public void testShouldThrowAnExceptionWhenTheDomainIsBad() {
     try {
-      new ReturnedCookie("Fish", "cod", "127.0.0.-1", null, null, false);
+      new ReturnedCookie("Fish", "cod", "127.0.0.-1", null, null, false, null);
       fail();
     } catch (IllegalArgumentException e) {
       // This is expected
@@ -40,7 +40,7 @@ public class CookieTest extends TestCase {
 
   public void testShouldThrowAnExceptionWhenSemiColonExistsInTheCookieAttribute() {
     try {
-      new ReturnedCookie("hi;hi", "value", null, null, null, false);
+      new ReturnedCookie("hi;hi", "value", null, null, null, false, null);
       fail();
     } catch (IllegalArgumentException e) {
       //Expected
@@ -49,7 +49,7 @@ public class CookieTest extends TestCase {
 
   public void testShouldThrowAnExceptionTheNameIsNull() {
     try {
-      new ReturnedCookie(null, "value", null, null, null, false);
+      new ReturnedCookie(null, "value", null, null, null, false, null);
       fail();
     } catch (IllegalArgumentException e) {
       //expected
@@ -57,7 +57,7 @@ public class CookieTest extends TestCase {
   }
 
   public void testCookiesShouldAllowSecureToBeSet() {
-    Cookie cookie = new ReturnedCookie("name", "value", "", "/", new Date(), true);
+    Cookie cookie = new ReturnedCookie("name", "value", "", "/", new Date(), true, null);
     assertTrue(cookie.isSecure());
   }
 }

@@ -18,6 +18,18 @@ limitations under the License.
 
 package org.openqa.selenium.htmlunit;
 
+import java.io.IOException;
+import java.net.ConnectException;
+import java.net.URL;
+import java.net.UnknownHostException;
+import java.security.GeneralSecurityException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.CookieManager;
 import com.gargoylesoftware.htmlunit.ElementNotFoundException;
@@ -63,18 +75,6 @@ import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.internal.ReturnedCookie;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import java.io.IOException;
-import java.net.ConnectException;
-import java.net.URL;
-import java.net.UnknownHostException;
-import java.security.GeneralSecurityException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 
 public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecutor,
                                        FindsById, FindsByLinkText, FindsByXPath, FindsByName,
@@ -885,7 +885,7 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
       for (org.apache.commons.httpclient.Cookie c : rawCookies) {
         if (c.getPath() != null && getPath().startsWith(c.getPath())) {
           retCookies.add(new ReturnedCookie(c.getName(), c.getValue(), c.getDomain(), c.getPath(),
-                                            c.getExpiryDate(), c.getSecure()));
+                                            c.getExpiryDate(), c.getSecure(), getCurrentUrl()));
         }
       }
       return retCookies;

@@ -19,12 +19,12 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server.handler;
 
+import java.util.List;
+import java.util.Map;
+
 import org.openqa.selenium.internal.ReturnedCookie;
 import org.openqa.selenium.remote.server.DriverSessions;
 import org.openqa.selenium.remote.server.JsonParametersAware;
-
-import java.util.List;
-import java.util.Map;
 
 public abstract class CookieHandler extends WebDriverHandler implements JsonParametersAware {
 
@@ -54,7 +54,7 @@ public abstract class CookieHandler extends WebDriverHandler implements JsonPara
     String domain = (String) rawCookie.get("domain");
     Boolean secure = (Boolean) rawCookie.get("secure");
 
-    return new ReturnedCookie(name, value, domain, path, null, secure);
+    return new ReturnedCookie(name, value, domain, path, null, secure, getDriver().getCurrentUrl());
   }
 
 }

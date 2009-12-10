@@ -17,22 +17,35 @@ limitations under the License.
 
 package org.openqa.selenium.internal;
 
-import org.openqa.selenium.Cookie;
-
 import java.net.InetAddress;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.UnknownHostException;
-import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import org.openqa.selenium.Cookie;
+import org.openqa.selenium.WebDriverException;
 
 public class ReturnedCookie extends Cookie {
   private final boolean isSecure;
+  private String currentHost;
 
-  public ReturnedCookie(String name, String value, String domain, String path, Date expiry, boolean isSecure) {
+  public ReturnedCookie(String name, String value, String domain, String path, Date expiry, boolean isSecure, String currentUrl) {
     super(name, value, domain, path, expiry);
 
     this.isSecure = isSecure;
+
+    // get the host from the current URL
+    if (currentUrl != null) {
+      try {
+        this.currentHost = new URI(currentUrl).getHost();
+      } catch (URISyntaxException e) {
+        throw new WebDriverException("Couldn't convert currentUrl to URI, which should be impossible!", e);
+      }
+    }
 
     validate();
   }
@@ -46,13 +59,11 @@ public class ReturnedCookie extends Cookie {
     super.validate();
 
     String domain = getDomain();
-    InetAddress localhost = null;
 
     if (domain != null && !"".equals(domain)) {
       try {
         String domainToUse = domain.startsWith("http") ? domain : "http://" + domain;
         URL url = new URL(domainToUse);
-        localhost = InetAddress.getLocalHost();
         InetAddress.getByName(url.getHost());
       } catch (MalformedURLException e) {
         throw new IllegalArgumentException(String.format("URL not valid: %s", domain));
@@ -61,11 +72,9 @@ public class ReturnedCookie extends Cookie {
         // have an IP address - hence, just throwing is incorrect. As a safety measure,
         // check to see if the domain is a part of the fqdn of the local host - this will
         // make sure some tests in CookieImplementationTest will pass.
-        if (localhost != null) {
-          if (!localhost.getCanonicalHostName().contains(domain)) {
-            throw new IllegalArgumentException(String.format("Domain unknown: %s", domain));
-          }
-        } // If localhost is null, it means it triggered UnknownHostException, as this host has
+        if (currentHost == null || !currentHost.contains(domain)) {
+          throw new IllegalArgumentException(String.format("Domain unknown: %s", domain));
+        }
         // no IP - unreasonable in any modern os has localhost address.
       }
     }
