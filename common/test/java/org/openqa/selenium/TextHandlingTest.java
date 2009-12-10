@@ -108,7 +108,7 @@ public class TextHandlingTest extends AbstractDriverTestCase {
     assertThat(text, equalTo("This line has a non-breaking space"));
   }
 
-  @Ignore(IPHONE)
+  @Ignore({IPHONE, SELENESE})
   public void testShouldTreatANonBreakingSpaceAsAnyOtherWhitespaceCharacterWhenCollapsingWhitespace() {
     driver.get(simpleTestPage);
     WebElement element = driver.findElement(By.id("nbspandspaces"));

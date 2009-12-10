@@ -25,6 +25,7 @@ import java.util.regex.Matcher;
 import com.google.common.collect.Maps;
 import com.thoughtworks.selenium.SeleniumException;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
@@ -70,7 +71,10 @@ public class SeleniumSelect {
             break;
 
           case INDEX:
-            selectedOptions.add(option.getAttribute("index"));
+            // TODO(simon): Implement this in the IE driver as "getAttribute"
+            Object result  = ((JavascriptExecutor) driver)
+                .executeScript("return arguments[0].index", option);
+            selectedOptions.add(String.valueOf(result));
             break;
         }
       }
