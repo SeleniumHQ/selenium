@@ -1,1 +1,0 @@
-xml.foo "No Layout!"
