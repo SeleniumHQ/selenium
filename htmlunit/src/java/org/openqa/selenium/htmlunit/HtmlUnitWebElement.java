@@ -54,6 +54,8 @@ import com.gargoylesoftware.htmlunit.html.HtmlScript;
 import com.gargoylesoftware.htmlunit.html.HtmlSelect;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextArea;
+import com.gargoylesoftware.htmlunit.html.HtmlHiddenInput;
+import com.gargoylesoftware.htmlunit.html.StyledElement;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
@@ -61,6 +63,8 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.RenderedWebElement;
+import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByTagName;
@@ -72,11 +76,17 @@ import org.w3c.dom.NamedNodeMap;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+import java.awt.Point;
+import java.awt.Dimension;
 
 import static org.openqa.selenium.Keys.ENTER;
 import static org.openqa.selenium.Keys.RETURN;
+import net.sourceforge.htmlunit.corejs.javascript.Undefined;
 
-public class HtmlUnitWebElement implements WebElement, FindsById, FindsByLinkText, FindsByXPath, FindsByTagName {
+public class HtmlUnitWebElement implements RenderedWebElement,
+    FindsById, FindsByLinkText, FindsByXPath, FindsByTagName {
 
   protected final HtmlUnitDriver parent;
   protected final HtmlElement element;
@@ -93,6 +103,9 @@ public class HtmlUnitWebElement implements WebElement, FindsById, FindsByLinkTex
 
   public void click() {
     assertElementNotStale();
+
+    if (!isDisplayed())
+      throw new ElementNotVisibleException("You may only click visible elements");
 
     try {
       if (parent.isJavascriptEnabled()) {
@@ -214,6 +227,9 @@ public class HtmlUnitWebElement implements WebElement, FindsById, FindsByLinkTex
 
   public void sendKeys(CharSequence... value) {
     assertElementNotStale();
+
+    if (!isDisplayed())
+      throw new ElementNotVisibleException("You may only sendKeys to visible elements");
 
     StringBuilder builder = new StringBuilder();
     for (CharSequence seq : value) {
@@ -337,6 +353,10 @@ public class HtmlUnitWebElement implements WebElement, FindsById, FindsByLinkTex
   public boolean toggle() {
     assertElementNotStale();
 
+    if (!isDisplayed())
+      throw new ElementNotVisibleException("You may only toggle visible elements");
+
+
     try {
       if (element instanceof HtmlCheckBoxInput) {
         element.click();
@@ -376,6 +396,10 @@ public class HtmlUnitWebElement implements WebElement, FindsById, FindsByLinkTex
   public void setSelected() {
     assertElementNotStale();
 
+    if (!isDisplayed())
+      throw new ElementNotVisibleException("You may only select visible elements");
+
+
     String disabledValue = element.getAttribute("disabled");
     if (disabledValue.length() > 0) {
       throw new UnsupportedOperationException("You may not select a disabled element");
@@ -391,10 +415,62 @@ public class HtmlUnitWebElement implements WebElement, FindsById, FindsByLinkTex
     }
   }
 
+  public void hover() {
+    throw new UnsupportedOperationException("Hover is not supported by the htmlunit driver");
+  }
+
   public boolean isEnabled() {
     assertElementNotStale();
 
     return !element.hasAttribute("disabled");
+  }
+
+  public boolean isDisplayed() {
+    assertElementNotStale();
+
+    if (!parent.isJavascriptEnabled())
+      return true;
+    return !(element instanceof HtmlHiddenInput) && element.isDisplayed();
+  }
+
+  public Point getLocation() {
+    assertElementNotStale();
+
+    try {
+      return new Point(readAndRound("left"), readAndRound("top"));
+    } catch (Exception e) {
+      throw new WebDriverException("Cannot determine size of element", e);
+    }
+  }
+
+  public Dimension getSize() {
+    assertElementNotStale();
+
+    try {
+      final int width = readAndRound("width");
+      final int height = readAndRound("height");
+      return new Dimension(width, height);
+    } catch (Exception e) {
+      throw new WebDriverException("Cannot determine size of element", e);
+    }
+  }
+
+  private int readAndRound(final String property) {
+    final String cssValue = getValueOfCssProperty(property).replaceAll("[^0-9\\.]", "");
+    if (cssValue.length() == 0) {
+      return 5; // wrong... but better than nothing
+    }
+    return Math.round(Float.parseFloat(cssValue));
+  }
+
+    public void dragAndDropBy(int moveRightBy, int moveDownBy) {
+    assertElementNotStale();
+    throw new UnsupportedOperationException("dragAndDropBy");
+  }
+
+  public void dragAndDropOn(RenderedWebElement element) {
+    assertElementNotStale();
+    throw new UnsupportedOperationException("dragAndDropOn");
   }
 
   // This isn't very pretty. Sorry.
@@ -675,6 +751,69 @@ public class HtmlUnitWebElement implements WebElement, FindsById, FindsByLinkTex
       throw new StaleElementReferenceException("The element seems to be disconnected from the DOM. "
                                                + " This means that a user cannot interact with it.");
     }
+  }
+
+  public String getValueOfCssProperty(String propertyName) {
+    assertElementNotStale();
+
+    return getEffectiveStyle(element, propertyName);
+  }
+
+  private String getEffectiveStyle(HtmlElement htmlElement, String propertyName) {
+    if (!(htmlElement instanceof StyledElement)) {
+      return "";
+    }
+
+    HtmlElement current = htmlElement;
+    String value = "inherit";
+    while (current instanceof StyledElement && "inherit".equals(value)) {
+      // Hat-tip to the Selenium team
+      Object result = parent.executeScript(
+          "if (window.getComputedStyle) { " +
+          "    return window.getComputedStyle(arguments[0], null).getPropertyValue(arguments[1]); " +
+          "} " +
+          "if (arguments[0].currentStyle) { " +
+          "    return arguments[0].currentStyle[arguments[1]]; " +
+          "} " +
+          "if (window.document.defaultView && window.document.defaultView.getComputedStyle) { " +
+          "    return window.document.defaultView.getComputedStyle(arguments[0], null)[arguments[1]]; "
+          +
+          "} ",
+          current, propertyName
+      );
+
+      if (!(result instanceof Undefined)) {
+        value = String.valueOf(result);
+      }
+
+      current = (HtmlElement) current.getParentNode();
+    }
+
+    if (value.startsWith("rgb")) {
+      return rgbToHex(value);
+    }
+
+    return value;
+  }
+
+  // Convert colours to hex if possible
+  private String rgbToHex(final String value) {
+    final Pattern pattern = Pattern.compile("rgb\\((\\d{1,3}),\\s(\\d{1,3}),\\s(\\d{1,3})\\)");
+    final Matcher matcher = pattern.matcher(value);
+    if (matcher.find()) {
+      String hex = "#";
+      for (int i = 1; i <= 3; i++) {
+        int colour = Integer.parseInt(matcher.group(i));
+        String s = Integer.toHexString(colour);
+        if (s.length() == 1)
+          s = "0" + s;
+        hex += s;
+      }
+      hex = hex.toLowerCase();
+      return hex;
+    }
+
+    return value;
   }
 
   @Override

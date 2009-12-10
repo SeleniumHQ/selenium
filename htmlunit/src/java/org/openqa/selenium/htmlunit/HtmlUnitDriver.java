@@ -466,9 +466,6 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
   }
 
   protected WebElement newHtmlUnitWebElement(HtmlElement element) {
-    if (isJavascriptEnabled()) {
-      return new RenderedHtmlUnitDriverWebElement(this, element);
-    }
     return new HtmlUnitWebElement(this, element);
   }
 
