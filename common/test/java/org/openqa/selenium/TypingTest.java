@@ -343,7 +343,7 @@ public class TypingTest extends AbstractDriverTestCase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {HTMLUNIT, CHROME_NON_WINDOWS, SELENESE}, reason = "untested user agents")
+  @Ignore(value = {HTMLUNIT, CHROME, SELENESE}, reason = "untested user agents")
   public void testAllPrintableKeys() {
     driver.get(javascriptPage);
 

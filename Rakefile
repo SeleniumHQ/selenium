@@ -118,14 +118,14 @@ dll(:name => "ie_x64_dll",
     :out  => "x64/Release/InternetExplorerDriver.dll",
     :prebuilt => "jobbie/prebuilt")
 
-dotnet_library(:name => "build/Win32/Release/webdriver-common.dll",
+dotnet_library(:name => "build/Win32/Release/WebDriver.Common.dll",
                :srcs => [ "common/src/csharp/**/*.cs" ],
                :solution => "WebDriver.sln",
                :project => "webdriver-common",
                :arch => "Win32",
                :prebuilt => "common/prebuilt")
 
-dotnet_library(:name => "build/x64/Release/webdriver-common.dll",
+dotnet_library(:name => "build/x64/Release/WebDriver.Common.dll",
                :srcs => [ "common/src/csharp/**/*.cs" ],
                :solution => "WebDriver.sln",
                :project => "webdriver-common",
@@ -146,14 +146,14 @@ dotnet_library(:name => "build/x64/Release/webdriver-common-test.dll",
                :arch => "x64",
                :prebuilt => "common/prebuilt")
 
-dotnet_library(:name => "build/Win32/Release/webdriver-ie.dll",
+dotnet_library(:name => "build/Win32/Release/WebDriver.Ie.dll",
                :srcs => [ "jobbie/src/csharp/**/*.cs" ],
                :solution => "WebDriver.sln",
                :project => "webdriver-ie",
                :arch => "Win32",
                :prebuilt => "jobbie/prebuilt")
 
-dotnet_library(:name => "build/x64/Release/webdriver-ie.dll",
+dotnet_library(:name => "build/x64/Release/WebDriver.Ie.dll",
                :srcs => [ "jobbie/src/csharp/**/*.cs" ],
                :solution => "WebDriver.sln",
                :project => "webdriver-ie",
@@ -175,9 +175,9 @@ dotnet_library(:name => "build/x64/Release/webdriver-ie-test.dll",
                :prebuilt => "jobbie/prebuilt")
 
 task :dotnet => [ :'build/x64/Release/webdriver-ie-test.dll', :'build/Win32/Release/webdriver-ie-test.dll',
-                  :'build/x64/Release/webdriver-ie.dll', :'build/Win32/Release/webdriver-ie.dll',
+                  :'build/x64/Release/Webdriver.Ie.dll', :'build/Win32/Release/Webdriver.Ie.dll',
                   :'build/x64/Release/webdriver-common-test.dll', :'build/Win32/Release/webdriver-common-test.dll',
-                  :'build/x64/Release/webdriver-common.dll', :'build/Win32/Release/webdriver-common.dll',
+                  :'build/x64/Release/Webdriver.Common.dll', :'build/Win32/Release/Webdriver.Common.dll',
                   :ie_win32_dll, :ie_x64_dll ]
 
 java_jar(:name => "webdriver-ie",
