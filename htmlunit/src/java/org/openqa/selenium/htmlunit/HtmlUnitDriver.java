@@ -50,6 +50,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlFrame;
 import com.gargoylesoftware.htmlunit.html.HtmlInlineFrame;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.javascript.host.html.HTMLCollection;
 import com.gargoylesoftware.htmlunit.javascript.host.html.HTMLElement;
 import net.sourceforge.htmlunit.corejs.javascript.Function;
 import net.sourceforge.htmlunit.corejs.javascript.NativeArray;
@@ -384,6 +385,11 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     }
   }
 
+  protected interface JavaScriptResultsCollection {
+    int getLength();
+    Object item(int index);
+  }
+  
   private Object parseNativeJavascriptResult(Object result) {
     Object value;
     if (result instanceof ScriptResult) {
@@ -403,14 +409,27 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     }
     
     if (value instanceof NativeArray) {
-      NativeArray array = (NativeArray)value;
-      List<Object> list = new ArrayList<Object>((int)array.getLength());
-      for (int i = 0; i < array.getLength(); ++i) {
-        list.add(parseNativeJavascriptResult(array.get(i)));
-      }
-      return list;
+      final NativeArray array = (NativeArray)value;
+      
+      JavaScriptResultsCollection collection = new JavaScriptResultsCollection() {
+        public int getLength() { return (int) array.getLength(); }
+        public Object item(int index) { return array.get(index); }  
+      };
+      
+      return parseJavascriptResultsList(collection);
     }
 
+    if (value instanceof HTMLCollection) {
+      final HTMLCollection array = (HTMLCollection) value;
+
+      JavaScriptResultsCollection collection = new JavaScriptResultsCollection() {
+        public int getLength() { return array.getLength(); }
+        public Object item(int index) { return array.get(index); }  
+      };
+
+      return parseJavascriptResultsList(collection);
+    }
+    
     if (value instanceof Undefined) {
       return null;
     }
@@ -418,6 +437,14 @@ public class HtmlUnitDriver implements WebDriver, SearchContext, JavascriptExecu
     return value;
   }
 
+  private List<Object> parseJavascriptResultsList(JavaScriptResultsCollection array) {
+    List<Object> list = new ArrayList<Object>(array.getLength());
+    for (int i = 0; i < array.getLength(); ++i) {
+      list.add(parseNativeJavascriptResult(array.item(i)));
+    }
+    return list;
+  }
+  
   public TargetLocator switchTo() {
     return new HtmlUnitTargetLocator();
   }

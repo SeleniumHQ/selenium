@@ -21,6 +21,7 @@ import org.apache.commons.io.FileUtils;
 import static org.openqa.selenium.Ignore.Driver.CHROME;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 
 import java.io.File;
@@ -368,5 +369,18 @@ public class ExecutingJavascriptTest extends AbstractDriverTestCase {
     assertTrue("The javascript code should be at least 50 KB.", jquery.length() > 50000);
     // This should not throw an exception ...
     executeScript(jquery);
+  }
+  
+  @SuppressWarnings("unchecked")
+  @JavascriptEnabled
+  @Ignore({SELENESE, IE, CHROME, REMOTE, IPHONE})
+  public void testShouldBeAbleToExecuteScriptAndReturnElementsList() {
+    driver.get(formPage);
+    String scriptToExec = "return document.getElementsByName('snack');";
+    
+    List<WebElement> resultsList = (List<WebElement>) ((JavascriptExecutor) driver)
+      .executeScript(scriptToExec);
+    
+    assertTrue(resultsList.size() > 0);
   }
 }

@@ -1197,6 +1197,18 @@ Utils.unwrapParameters = function(wrappedParameters, resultArray, context) {
 };
 
 
+Utils.isArray_ = function(obj) {
+  return (obj !== undefined &&
+    obj.constructor.toString().indexOf("Array") != -1);
+}
+
+
+Utils.isHtmlCollection_ = function(obj) {
+  return (obj !== undefined && obj['length'] &&
+    obj['item'] && obj['namedItem']); 
+}
+
+
 Utils.wrapResult = function(result, context) {
   // Sophisticated.
   if (null === result || undefined === result) {
@@ -1204,8 +1216,7 @@ Utils.wrapResult = function(result, context) {
   } else if (result['tagName']) {
     return {type: "ELEMENT",
             value: Utils.addToKnownElements(result, context)};
-  } else if (result !== undefined &&
-             result.constructor.toString().indexOf("Array") != -1) {
+  } else if (Utils.isArray_(result) || Utils.isHtmlCollection_(result)) {
     var array = [];
     for (var i = 0; i < result.length; i++) {
       array.push(Utils.wrapResult(result[i], context));
