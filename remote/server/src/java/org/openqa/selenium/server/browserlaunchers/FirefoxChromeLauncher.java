@@ -24,14 +24,13 @@ import java.net.URL;
 
 import org.apache.commons.logging.Log;
 import org.openqa.jetty.log.LogFactory;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.server.ApplicationRegistry;
 import org.openqa.selenium.server.BrowserConfigurationOptions;
 import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.browserlaunchers.locators.Firefox2or3Locator;
 
 public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
-
-  public static final String CHROME_URL = "chrome://killff/content/kill.html";
   private static Log LOGGER = LogFactory.getLog(FirefoxChromeLauncher.class);
 
   private File customProfileDir = null;
@@ -65,7 +64,11 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
     }
     this.browserInstallation = browserInstallation;
 
-    shell.setLibraryPath(browserInstallation.libraryPath());
+    // don't set the library path on Snow Leopard
+    Platform platform = Platform.getCurrent();
+    if (!platform.is(Platform.MAC) || ((platform.is(Platform.MAC)) && platform.getMajorVersion() <= 10 && platform.getMinorVersion() <= 5)) {
+      shell.setLibraryPath(browserInstallation.libraryPath());
+    }
     // Set MOZ_NO_REMOTE in order to ensure we always get a new Firefox process
     // http://blog.dojotoolkit.org/2005/12/01/running-multiple-versions-of-firefox-side-by-side
     shell.setEnvironmentVariable("MOZ_NO_REMOTE", "1");
@@ -93,6 +96,7 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
           "-profile",
           profilePath
       };
+      shell.setEnvironmentVariable("NO_EM_RESTART", "1");
       shell.setCommandline(cmdarray);
       process = shell.asyncSpawn();
     } catch (IOException e) {
@@ -112,8 +116,7 @@ public class FirefoxChromeLauncher extends AbstractBrowserLauncher {
         browserInstallation.launcherFilePath(),
         "-profile",
         profilePath,
-        "-chrome",
-        CHROME_URL
+        "-silent"
     };
     LOGGER.info("Preparing Firefox profile...");
     shell.setCommandline(cmdarray);
