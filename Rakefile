@@ -384,7 +384,15 @@ java_uberjar(:name => "selenium-server",
                            "META-INF/BCKEY.*"
                          ],
              :main => "org.openqa.selenium.server.SeleniumServer")
-
+task :'selenium-server_zip' do
+  temp = "build/selenium-server_zip"
+  mkdir_p temp
+  sh "cd #{temp} && jar xf ../selenium-server.zip", :verbose => false
+  rm_f "build/selenium-server.zip"
+  Dir["#{temp}/webdriver-*.jar"].each { |file| rm_rf file }
+  mv "#{temp}/selenium-server.jar", "#{temp}/selenium-server-#{version}.jar"
+  sh "cd #{temp} && jar cMf ../selenium-server.zip *", :verbose => false
+end
 
 java_uberjar(:name => "selenium-server-standalone",
              :deps => [ :'selenium-server' ],
