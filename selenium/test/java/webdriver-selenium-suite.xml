@@ -6,7 +6,7 @@
       <class name="com.thoughtworks.selenium.corebased.TestCheckUncheck"/>
       <class name="com.thoughtworks.selenium.corebased.TestCommandError"/>
       <class name="com.thoughtworks.selenium.corebased.TestComments"/>
-      <class name="com.thoughtworks.selenium.corebased.TestCookie"/>
+      <!--<class name="com.thoughtworks.selenium.corebased.TestCookie"/>-->
 <!--      <class name="com.thoughtworks.selenium.corebased.TestDragAndDrop"/> -->
       <class name="com.thoughtworks.selenium.corebased.TestEditable"/>
       <class name="com.thoughtworks.selenium.corebased.TestElementIndex"/>

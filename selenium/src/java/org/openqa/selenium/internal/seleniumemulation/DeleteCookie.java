@@ -17,13 +17,18 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
+import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 public class DeleteCookie extends SeleneseCommand<Void> {
   @Override
   protected Void handleSeleneseCommand(WebDriver driver, String name, String ignored) {
-    driver.manage().deleteCookieNamed(name);
+    Cookie cookie = driver.manage().getCookieNamed(name);
+
+    if (cookie != null) {
+      driver.manage().deleteCookieNamed(name);
+    }
 
     return null;
   }
