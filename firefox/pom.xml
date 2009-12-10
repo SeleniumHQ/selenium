@@ -4,17 +4,17 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.seleniumhq.webdriver</groupId>
-		<artifactId>webdriver-parent</artifactId>
-		<version>1.0-SNAPSHOT</version>
+		<groupId>org.seleniumhq.selenium2</groupId>
+		<artifactId>selenium2-parent</artifactId>
+		<version>2.0-SNAPSHOT</version>
 	</parent>
-	<artifactId>webdriver-firefox</artifactId>
-	<name>webdriver-firefox</name>
+	<artifactId>selenium2-firefox</artifactId>
+	<name>selenium2-firefox</name>
 
 	<dependencies>
 		<dependency>
-			<groupId>org.seleniumhq.webdriver</groupId>
-			<artifactId>webdriver-common</artifactId>
+			<groupId>org.seleniumhq.selenium2</groupId>
+			<artifactId>selenium2-common</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
@@ -24,8 +24,8 @@
 		</dependency>
 		<!-- Test dependencies ... -->
 		<dependency>
-			<groupId>org.seleniumhq.webdriver</groupId>
-			<artifactId>webdriver-common</artifactId>
+			<groupId>org.seleniumhq.selenium2</groupId>
+			<artifactId>selenium2-common</artifactId>
 			<version>${project.version}</version>
 			<classifier>tests</classifier>
 			<scope>test</scope>

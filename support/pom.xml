@@ -4,17 +4,17 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.seleniumhq.webdriver</groupId>
-		<artifactId>webdriver-parent</artifactId>
-		<version>1.0-SNAPSHOT</version>
+		<groupId>org.seleniumhq.selenium2</groupId>
+		<artifactId>selenium2-parent</artifactId>
+		<version>2.0-SNAPSHOT</version>
 	</parent>
-	<artifactId>webdriver-support</artifactId>
-	<name>webdriver-support</name>
+	<artifactId>selenium2-support</artifactId>
+	<name>selenium2-support</name>
 
 	<dependencies>
 		<dependency>
-			<groupId>org.seleniumhq.webdriver</groupId>
-			<artifactId>webdriver-common</artifactId>
+			<groupId>org.seleniumhq.selenium2</groupId>
+			<artifactId>selenium2-common</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
@@ -34,15 +34,15 @@
 		</dependency>
 		<!-- Test dependencies ... -->
 		<dependency>
-			<groupId>org.seleniumhq.webdriver</groupId>
-			<artifactId>webdriver-common</artifactId>
+			<groupId>org.seleniumhq.selenium2</groupId>
+			<artifactId>selenium2-common</artifactId>
 			<version>${project.version}</version>
 			<classifier>tests</classifier>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.seleniumhq.webdriver</groupId>
-			<artifactId>webdriver-htmlunit</artifactId>
+			<groupId>org.seleniumhq.selenium2</groupId>
+			<artifactId>selenium2-htmlunit</artifactId>
 			<version>${project.version}</version>
 			<scope>test</scope>
 		</dependency>

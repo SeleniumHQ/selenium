@@ -4,33 +4,28 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.seleniumhq.webdriver</groupId>
-		<artifactId>webdriver-parent</artifactId>
-		<version>1.0-SNAPSHOT</version>
+		<groupId>org.seleniumhq.selenium2</groupId>
+		<artifactId>selenium2-parent</artifactId>
+		<version>2.0-SNAPSHOT</version>
 	</parent>
-	<artifactId>webdriver-remote-server</artifactId>
-	<name>webdriver-remote-server</name>
+	<artifactId>selenium2-remote-server</artifactId>
+	<name>selenium2-remote-server</name>
 
 	<dependencies>
 		<dependency>
-			<groupId>org.seleniumhq.webdriver</groupId>
-			<artifactId>webdriver-chrome</artifactId>
-			<version>${project.version}</version>
+			<groupId>ant</groupId>
+			<artifactId>ant</artifactId> 
+			<version>1.6.5</version>
 		</dependency>
 		<dependency>
-			<groupId>org.seleniumhq.webdriver</groupId>
-			<artifactId>webdriver-htmlunit</artifactId>
-			<version>${project.version}</version>
+			<groupId>bouncycastle</groupId>
+			<artifactId>bcprov-jdk15</artifactId>
+			<version>135</version>
 		</dependency>
 		<dependency>
-			<groupId>org.seleniumhq.webdriver</groupId>
-			<artifactId>webdriver-firefox</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.seleniumhq.webdriver</groupId>
-			<artifactId>webdriver-ie</artifactId>
-			<version>${project.version}</version>
+			<groupId>mx4j</groupId>
+			<artifactId>mx4j-tools</artifactId>
+			<version>3.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.mortbay.jetty</groupId>
@@ -38,10 +33,41 @@
 			<version>6.1.9</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.seleniumhq.selenium2</groupId>
+			<artifactId>selenium2-chrome</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.seleniumhq.selenium2</groupId>
+			<artifactId>selenium2-firefox</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.seleniumhq.selenium2</groupId>
+			<artifactId>selenium2-htmlunit</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.seleniumhq.selenium2</groupId>
+			<artifactId>selenium2-ie</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.seleniumhq.selenium2</groupId>
+			<artifactId>selenium2-support</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 		<!-- Test dependencies ... -->
 		<dependency>
-			<groupId>org.seleniumhq.webdriver</groupId>
-			<artifactId>webdriver-common</artifactId>
+			<groupId>org.easymock</groupId>
+			<artifactId>easymockclassextension</artifactId>
+			<version>2.4</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.seleniumhq.selenium2</groupId>
+			<artifactId>selenium2-common</artifactId>
 			<version>${project.version}</version>
 			<classifier>tests</classifier>
 			<scope>test</scope>

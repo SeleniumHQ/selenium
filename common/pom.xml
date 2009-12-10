@@ -4,12 +4,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.seleniumhq.webdriver</groupId>
-		<artifactId>webdriver-parent</artifactId>
-		<version>1.0-SNAPSHOT</version>
+		<groupId>org.seleniumhq.selenium2</groupId>
+		<artifactId>selenium2-parent</artifactId>
+		<version>2.0-SNAPSHOT</version>
 	</parent>
-	<artifactId>webdriver-common</artifactId>
-	<name>webdriver-common</name>
+	<artifactId>selenium2-common</artifactId>
+	<name>selenium2-common</name>
 
 	<build>
 		<sourceDirectory>src/java</sourceDirectory>

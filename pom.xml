@@ -3,14 +3,14 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.seleniumhq.webdriver</groupId>
-	<artifactId>webdriver-parent</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<groupId>org.seleniumhq.selenium2</groupId>
+	<artifactId>selenium2-parent</artifactId>
+	<version>2.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<name>WebDriver</name>
-	<description>A developer focused tool for automated testing of webapps</description>
-	<url>http://code.google.com/p/selenium/</url>
+	<name>selenium2-parent</name>
+	<description>Browser automation framework</description>
+	<url>http://selenium.googlecode.com/</url>
 	<licenses>
 		<license>
 			<name>The Apache Software License, Version 2.0</name>
@@ -19,34 +19,23 @@
 		</license>
 	</licenses>
 	<scm>
-		<connection>scm:svn:http://selenium.googlecode.com/svn/webdriver</connection> 
-		<developerConnection>scm:svn:https://selenium.googlecode.com/svn/webdriver</developerConnection>
-		<url>http://selenium.googlecode.com/svn/webdriver</url>
+		<connection>scm:svn:http://selenium.googlecode.com/svn</connection> 
+		<developerConnection>scm:svn:https://selenium.googlecode.com/svn</developerConnection>
+		<url>http://selenium.googlecode.com/svn</url>
 	</scm>
 
 	<modules>
 		<module>chrome</module>
 		<module>common</module>
-		<module>htmlunit</module>
 		<module>firefox</module>
-		<module>support</module>
+		<module>htmlunit</module>
+		<module>jobbie</module>
 		<module>remote/common</module>
 		<module>remote/client</module>
 		<module>remote/server</module>
 		<module>selenium</module>
+		<module>support</module>
 	</modules>
-
-	<profiles>
-		<profile>
-			<id>windows</id>
-			<activation>
-				<os><family>windows</family></os>
-			</activation>
-			<modules>
-				<module>jobbie</module>
-			</modules>
-		</profile>
-	</profiles>
 
 	<dependencies>
 		<!-- Test dependencies ... -->
