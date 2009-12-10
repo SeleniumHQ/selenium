@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
+using System.Collections.ObjectModel;
 
-namespace OpenQa.Selenium
+namespace OpenQA.Selenium
 {
     [TestFixture]
     public class ChildrenFindingTest : DriverTestFixture
@@ -31,7 +32,7 @@ namespace OpenQa.Selenium
         {
             driver.Url = nestedPage;
             IWebElement element = driver.FindElement(By.Name("form2"));
-            List<IWebElement> children = element.FindElements(By.XPath("select/option"));
+            ReadOnlyCollection<IWebElement> children = element.FindElements(By.XPath("select/option"));
             Assert.AreEqual(children.Count, 8);
             Assert.AreEqual(children[0].Text, "One");
             Assert.AreEqual(children[1].Text, "Two");
@@ -42,7 +43,7 @@ namespace OpenQa.Selenium
         {
             driver.Url = nestedPage;
             IWebElement element = driver.FindElement(By.Name("form2"));
-            List<IWebElement> children = element.FindElements(By.XPath("select/x"));
+            ReadOnlyCollection<IWebElement> children = element.FindElements(By.XPath("select/x"));
             Assert.AreEqual(0, children.Count);
         }
 
@@ -60,7 +61,7 @@ namespace OpenQa.Selenium
         {
             driver.Url = nestedPage;
             IWebElement element = driver.FindElement(By.Name("form2"));
-            List<IWebElement> children = element.FindElements(By.Name("selectomatic"));
+            ReadOnlyCollection<IWebElement> children = element.FindElements(By.Name("selectomatic"));
             Assert.AreEqual(children.Count, 2);
         }
 
@@ -99,7 +100,7 @@ namespace OpenQa.Selenium
         {
             driver.Url = nestedPage;
             IWebElement element = driver.FindElement(By.Name("form2"));
-            List<IWebElement> children = element.FindElements(By.Id("2"));
+            ReadOnlyCollection<IWebElement> children = element.FindElements(By.Id("2"));
             Assert.AreEqual(children.Count, 2);
         }
 
@@ -119,7 +120,7 @@ namespace OpenQa.Selenium
         {
             driver.Url = nestedPage;
             IWebElement element = driver.FindElement(By.Name("div1"));
-            List<IWebElement> elements = element.FindElements(By.LinkText("hello world"));
+            ReadOnlyCollection<IWebElement> elements = element.FindElements(By.LinkText("hello world"));
 
             Assert.AreEqual(2, elements.Count);
             Assert.AreEqual(elements[0].GetAttribute("name"), "link1");
@@ -132,7 +133,7 @@ namespace OpenQa.Selenium
         {
             driver.Url = nestedPage;
             IWebElement element = driver.FindElement(By.Name("div1"));
-            List<IWebElement> children = element.FindElements(By.LinkText("hello world"));
+            ReadOnlyCollection<IWebElement> children = element.FindElements(By.LinkText("hello world"));
             Assert.AreEqual(children.Count, 2);
         }
 
@@ -155,7 +156,7 @@ namespace OpenQa.Selenium
             driver.Url = nestedPage;
             IWebElement parent = driver.FindElement(By.Name("classes"));
 
-            List<IWebElement> elements = parent.FindElements(By.ClassName("one"));
+            ReadOnlyCollection<IWebElement> elements = parent.FindElements(By.ClassName("one"));
 
             Assert.AreEqual(2, elements.Count);
         }
@@ -179,7 +180,7 @@ namespace OpenQa.Selenium
             driver.Url = nestedPage;
             IWebElement parent = driver.FindElement(By.Name("div1"));
 
-            List<IWebElement> elements = parent.FindElements(By.TagName("a"));
+            ReadOnlyCollection<IWebElement> elements = parent.FindElements(By.TagName("a"));
 
             Assert.AreEqual(2, elements.Count);
         }

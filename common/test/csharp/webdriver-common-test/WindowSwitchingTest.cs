@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
-using OpenQa.Selenium.Environment;
+using OpenQA.Selenium.Environment;
+using System.Collections.ObjectModel;
 
-namespace OpenQa.Selenium
+namespace OpenQA.Selenium
 {
     [TestFixture]
     public class WindowSwitchingTest : DriverTestFixture
@@ -43,7 +44,7 @@ namespace OpenQa.Selenium
             driver.SwitchTo().Window("result");
             handle2 = driver.GetWindowHandle();
 
-            List<string> handles = driver.GetWindowHandles();
+            ReadOnlyCollection<string> handles = driver.GetWindowHandles();
 
             // At least the two handles we want should be there.
             Assert.Contains(handle1, handles, "Should have contained current handle");
@@ -70,7 +71,7 @@ namespace OpenQa.Selenium
             driver.Close();
             // TODO(andre.nogueira): IE: Safe handles don't allow this, as the
             // handle has already been closed! (Throws exception)
-            List<string> handles = driver.GetWindowHandles();
+            ReadOnlyCollection<string> handles = driver.GetWindowHandles();
 
             Assert.IsFalse(handles.Contains(handle2), "Invalid handle still in handle list");
             Assert.IsTrue(handles.Contains(handle1), "Valid handle not in handle list");
@@ -108,7 +109,7 @@ namespace OpenQa.Selenium
             driver.FindElement(By.Name("windowOne")).Click();
             driver.FindElement(By.Name("windowTwo")).Click();
 
-            List<string> allWindowHandles = driver.GetWindowHandles();
+            ReadOnlyCollection<string> allWindowHandles = driver.GetWindowHandles();
 
             // There should be three windows. We should also see each of the window titles at least once.
             List<string> seenHandles = new List<string>();
@@ -214,7 +215,7 @@ namespace OpenQa.Selenium
 
             SleepBecauseWindowsTakeTimeToOpen();
 
-            List<string> allWindowHandles = driver.GetWindowHandles();
+            ReadOnlyCollection<string> allWindowHandles = driver.GetWindowHandles();
 
             // There should be two windows. We should also see each of the window titles at least once.
             Assert.AreEqual(2, allWindowHandles.Count);

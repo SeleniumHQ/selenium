@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
+using System.Collections.ObjectModel;
 
-namespace OpenQa.Selenium
+namespace OpenQA.Selenium
 {
     [TestFixture]
     public class CorrectEventFiringTest : DriverTestFixture
@@ -161,7 +162,7 @@ namespace OpenQa.Selenium
         {
             driver.Url = javascriptPage;
             IWebElement select = driver.FindElement(By.Id("selector"));
-            List<IWebElement> allOptions = select.FindElements(By.TagName("option"));
+            ReadOnlyCollection<IWebElement> allOptions = select.FindElements(By.TagName("option"));
 
             String initialTextValue = driver.FindElement(By.Id("result")).Text;
 

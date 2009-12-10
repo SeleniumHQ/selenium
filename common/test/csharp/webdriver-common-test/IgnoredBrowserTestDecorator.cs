@@ -1,9 +1,9 @@
 using System.Reflection;
 using NUnit.Core;
 using NUnit.Core.Extensibility;
-using OpenQa.Selenium.Environment;
+using OpenQA.Selenium.Environment;
 
-namespace OpenQa.Selenium
+namespace OpenQA.Selenium
 {
 	[NUnitAddin(Description="Ignores a given test on a given browser")]
 	public class IgnoredBrowserTestDecorator : ITestDecorator, IAddin

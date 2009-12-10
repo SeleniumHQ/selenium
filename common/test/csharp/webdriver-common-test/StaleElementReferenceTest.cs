@@ -4,7 +4,7 @@ using System.Text;
 using NUnit.Framework;
 using System.Drawing;
 
-namespace OpenQa.Selenium
+namespace OpenQA.Selenium
 {
     [TestFixture]
     public class StaleElementReferenceTest : DriverTestFixture

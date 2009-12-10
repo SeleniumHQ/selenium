@@ -1,25 +1,24 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
+using System.Collections.ObjectModel;
+using System.Globalization;
+using System.Security.Permissions;
 using System.Text;
 
-namespace OpenQa.Selenium.IE
+namespace OpenQA.Selenium.IE
 {
-    public class InternetExplorerDriver : IWebDriver, ISearchContext, IJavascriptExecutor
+    public sealed class InternetExplorerDriver : IWebDriver, ISearchContext, IJavaScriptExecutor
     {
-
-        private bool disposed = false;
+        private bool disposed;
         private SafeInternetExplorerDriverHandle handle;
 
-        [DllImport("InternetExplorerDriver")]
-        private static extern int wdNewDriverInstance(ref SafeInternetExplorerDriverHandle handle);
         public InternetExplorerDriver()
         {
             handle = new SafeInternetExplorerDriverHandle();
-            int result = wdNewDriverInstance(ref handle);
-            if (result != 0)
+            WebDriverResult result = NativeMethods.wdNewDriverInstance(ref handle);
+            if (result != WebDriverResult.Success)
             {
-                throw new Exception("Doh!");
+                throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Cannot create new browser instance: {0}", result.ToString()));
             }
         }
 
@@ -32,22 +31,24 @@ namespace OpenQa.Selenium.IE
             }
         }
 
-        [DllImport("InternetExplorerDriver", CharSet = CharSet.Unicode)]
-        private static extern void wdGet(SafeHandle handle, string url);
-        [DllImport("InternetExplorerDriver", CharSet = CharSet.Unicode)]
-        private static extern int wdGetCurrentUrl(SafeHandle handle, ref StringWrapperHandle result);
         public string Url
         {
             get
             {
-                StringWrapperHandle result = new StringWrapperHandle();
+                SafeStringWrapperHandle stringHandle = new SafeStringWrapperHandle();
 
-                int r = wdGetCurrentUrl(handle, ref result);
-                if (r != 0)
+                WebDriverResult result = NativeMethods.wdGetCurrentUrl(handle, ref stringHandle);
+                if (result != WebDriverResult.Success)
                 {
-                    throw new Exception("wdGetCurrentUrl Doomed");
+                    stringHandle.Dispose();
+                    throw new InvalidOperationException("Unable to get current URL:" + result.ToString());
                 }
-                return result.Value;
+                string returnValue = string.Empty;
+                using (StringWrapper wrapper = new StringWrapper(stringHandle))
+                {
+                    returnValue = wrapper.Value;
+                }
+                return returnValue;
             }
             set
             {
@@ -57,329 +58,320 @@ namespace OpenQa.Selenium.IE
                 }
                 if (value == null)
                 {
-                    throw new ArgumentNullException("Argument 'url' cannot be null.");
+                    throw new ArgumentNullException("value", "Argument 'url' cannot be null.");
                 }
-                wdGet(handle, value);
+                WebDriverResult result = NativeMethods.wdGet(handle, value);
+                if (result != WebDriverResult.Success)
+                {
+                    ResultHandler.VerifyResultCode(result, string.Format(CultureInfo.InvariantCulture, "Cannot go to '{0}': {1}", value, result.ToString()));
+                }
             }
         }
 
-        [DllImport("InternetExplorerDriver", CharSet = CharSet.Unicode)]
-        private static extern int wdGetTitle(SafeHandle handle, ref StringWrapperHandle result);
         public string Title
         {
             get
             {
-                StringWrapperHandle result = new StringWrapperHandle();
+                SafeStringWrapperHandle stringHandle = new SafeStringWrapperHandle();
 
-
-                if (wdGetTitle(handle, ref result) != 0)
+                WebDriverResult result = NativeMethods.wdGetTitle(handle, ref stringHandle);
+                if (result != WebDriverResult.Success)
                 {
-                    throw new Exception("wdGetTitle Doomed");
+                    stringHandle.Dispose();
+                    throw new InvalidOperationException("Unable to get current title:" + result.ToString());
                 }
-                return result.Value;
+                string returnValue = string.Empty;
+                using (StringWrapper wrapper = new StringWrapper(stringHandle))
+                {
+                    returnValue = wrapper.Value;
+                }
+                return returnValue;
             }
         }
 
-        [DllImport("InternetExplorerDriver", CharSet = CharSet.Unicode)]
-        private static extern int wdSetVisible(SafeHandle handle, int visible);
-        [DllImport("InternetExplorerDriver", CharSet = CharSet.Unicode)]
-        private static extern int wdGetVisible(SafeHandle handle, ref int visible);
         public bool Visible
         {
             get
             {
                 int visible = 0;
-                wdGetVisible(handle, ref visible);
-                return (visible == 1) ? true : false;
+                WebDriverResult result = NativeMethods.wdGetVisible(handle, ref visible);
+                ResultHandler.VerifyResultCode(result, "Unable to determine if browser is visible");
+                return (visible == 1);
             }
 
             set
             {
-                wdSetVisible(handle, value ? 1 : 0);
+                WebDriverResult result = NativeMethods.wdSetVisible(handle, value ? 1 : 0);
+                ResultHandler.VerifyResultCode(result, "Unable to change the visibility of the browser");
             }
         }
 
-        public List<IWebElement> FindElements(By by)
+        public ReadOnlyCollection<IWebElement> FindElements(By by)
         {
-            return by.FindElements(new Finder(this, new ElementWrapper()));
+            return by.FindElements(new Finder(this, new SafeInternetExplorerWebElementHandle()));
         }
 
         public IWebElement FindElement(By by)
         {
-            return by.FindElement(new Finder(this, new ElementWrapper()));
+            return by.FindElement(new Finder(this, new SafeInternetExplorerWebElementHandle()));
         }
 
-        [DllImport("InternetExplorerDriver")]
-        private static extern int wdWaitForLoadToComplete(SafeInternetExplorerDriverHandle driver);
         internal void WaitForLoadToComplete()
         {
-            wdWaitForLoadToComplete(handle);
+            NativeMethods.wdWaitForLoadToComplete(handle);
         }
 
         public void Close()
         {
-            handle.CloseDriver();
+            WebDriverResult result = NativeMethods.wdClose(handle);
+            if (result != WebDriverResult.Success)
+            {
+                throw new InvalidOperationException("Unable to close driver: " + result.ToString());
+            }
         }
 
         public void Quit()
         {
             // This code mimics the Java implementation.
-            try 
+            try
             {
-                List<string> closedHandleList = new List<string>();
-                List<string> handleList = GetWindowHandles();
-                foreach (string handle in handleList)
-                try 
+                ReadOnlyCollection<string> handleList = GetWindowHandles();
+                foreach (string windowHandle in handleList)
                 {
-                    // OPTIMIZATION: Only handle windows once. If we encounter duplicate
-                    // handles in the list, skip them.
-                    if (!closedHandleList.Contains(handle))
+                    try
                     {
-                        closedHandleList.Add(handle);
-                        SwitchTo().Window(handle);
+                        SwitchTo().Window(windowHandle);
                         Close();
                     }
-                } 
-                catch (NoSuchWindowException e)
-                {
-                    // doesn't matter one jot.
+                    catch (NoSuchWindowException)
+                    {
+                        // doesn't matter one jot.
+                    }
                 }
             }
-            catch (NotSupportedException e) 
+            catch (NotSupportedException)
             {
                 // Stuff happens. Bail out
-                handle.Close();
+                Dispose();
             }
 
-            handle.Close();
             Dispose();
-            handle = null;
         }
 
-        [DllImport("InternetExplorerDriver")]
-        private static extern int wdGetPageSource(SafeInternetExplorerDriverHandle driver, ref StringWrapperHandle wrapper);
         public string PageSource
         {
             get
             {
-                StringWrapperHandle result = new StringWrapperHandle();
-                if (wdGetPageSource(handle, ref result) != 0)
+                SafeStringWrapperHandle stringHandle = new SafeStringWrapperHandle();
+                WebDriverResult result = NativeMethods.wdGetPageSource(handle, ref stringHandle);
+                ResultHandler.VerifyResultCode(result, "Unable to get page source");
+                string returnValue = string.Empty;
+                using (StringWrapper wrapper = new StringWrapper(stringHandle))
                 {
-                    throw new Exception("wdGetPageSource Doomed");
+                    returnValue = wrapper.Value;
                 }
-                return result.Value;
+                return returnValue;
             }
         }
 
-        [DllImport("InternetExplorerDriver")]
-        private static extern int wdNewScriptArgs(ref IntPtr scriptArgs, int maxLength);
-        [DllImport("InternetExplorerDriver", CharSet = CharSet.Unicode)]
-        private static extern int wdExecuteScript(SafeInternetExplorerDriverHandle driver, string script, IntPtr scriptArgs, ref IntPtr scriptRes);
-        [DllImport("InternetExplorerDriver")]
-        private static extern int wdFreeScriptArgs(IntPtr scriptArgs);
-        public Object ExecuteScript(String script, params Object[] args)
+        public object ExecuteScript(String script, params Object[] args)
         {
-
-            Object toReturn = null;
-            IntPtr scriptArgsRef = new IntPtr();
-            int result = wdNewScriptArgs(ref scriptArgsRef, args.Length);
-            ErrorHandler.VerifyErrorCode(result, "Unable to create new script arguments array");
-            IntPtr scriptArgs = scriptArgsRef;
+            object toReturn = null;
+            SafeScriptArgsHandle scriptArgsHandle = new SafeScriptArgsHandle();
+            WebDriverResult result = NativeMethods.wdNewScriptArgs(ref scriptArgsHandle, args.Length);
+            ResultHandler.VerifyResultCode(result, "Unable to create new script arguments array");
 
             try
             {
-                PopulateArguments(scriptArgs, args);
+                PopulateArguments(scriptArgsHandle, args);
 
                 script = "(function() { return function(){" + script + "};})();";
 
-                IntPtr scriptResultRef = new IntPtr();
-                result = wdExecuteScript(handle, script, scriptArgs, ref scriptResultRef);
+                SafeScriptResultHandle scriptResultHandle = new SafeScriptResultHandle();
+                result = NativeMethods.wdExecuteScript(handle, script, scriptArgsHandle, ref scriptResultHandle);
 
-                ErrorHandler.VerifyErrorCode(result,"Cannot execute script");
-                toReturn = ExtractReturnValue(scriptResultRef);
-                
+                ResultHandler.VerifyResultCode(result,"Cannot execute script");
+                try
+                {
+                    toReturn = ExtractReturnValue(scriptResultHandle);
+                }
+                finally
+                {
+                    scriptResultHandle.Dispose();
+                }
             }
             finally
             {
-                wdFreeScriptArgs(scriptArgs);
+                scriptArgsHandle.Dispose();
             }
             return toReturn;
         }
 
-        [DllImport("InternetExplorerDriver")]
-        private static extern int wdGetScriptResultType(IntPtr scriptArgs, out int type);
-        [DllImport("InternetExplorerDriver", CharSet = CharSet.Unicode)]
-        private static extern int wdGetStringScriptResult(IntPtr scriptArgs, ref StringWrapperHandle resultString);
-        [DllImport("InternetExplorerDriver")]
-        private static extern int wdGetNumberScriptResult(IntPtr scriptArgs, out long resultNumber);
-        [DllImport("InternetExplorerDriver")]
-        private static extern int wdGetDoubleScriptResult(IntPtr scriptArgs, out double resultDouble);
-        [DllImport("InternetExplorerDriver")]
-        private static extern int wdGetBooleanScriptResult(IntPtr scriptArgs, out int resultNumber);
-        [DllImport("InternetExplorerDriver")]
-        private static extern int wdFreeScriptResult(IntPtr scriptArgs);
-        [DllImport("InternetExplorerDriver")]
-        private static extern int wdGetElementScriptResult(IntPtr scriptArgs, SafeInternetExplorerDriverHandle driver, out ElementWrapper value );
-        private object ExtractReturnValue(IntPtr scriptResult)
+        private object ExtractReturnValue(SafeScriptResultHandle scriptResult)
         {
-            int result;
+            WebDriverResult result;
 
             int type;
-            result = wdGetScriptResultType(scriptResult, out type);
+            result = NativeMethods.wdGetScriptResultType(scriptResult, out type);
 
-            ErrorHandler.VerifyErrorCode(result, "Cannot determine result type");
+            ResultHandler.VerifyResultCode(result, "Cannot determine result type");
 
-            try
+            object toReturn = null;
+            switch (type)
             {
-                object toReturn = null;
-                switch (type)
-                {
-                    case 1:
-                        StringWrapperHandle wrapper = new StringWrapperHandle();
-                        result = wdGetStringScriptResult(scriptResult, ref wrapper);
-                        ErrorHandler.VerifyErrorCode(result, "Cannot extract string result");
+                case 1:
+                    SafeStringWrapperHandle stringHandle = new SafeStringWrapperHandle();
+                    result = NativeMethods.wdGetStringScriptResult(scriptResult, ref stringHandle);
+                    ResultHandler.VerifyResultCode(result, "Cannot extract string result");
+                    using (StringWrapper wrapper = new StringWrapper(stringHandle))
+                    {
                         toReturn = wrapper.Value;
-                        break;
+                    }
+                    break;
 
-                    case 2:
-                        long longVal;
-                        result = wdGetNumberScriptResult(scriptResult, out longVal);
-                        ErrorHandler.VerifyErrorCode(result, "Cannot extract number result");
-                        toReturn = longVal;
-                        break;
+                case 2:
+                    long longVal;
+                    result = NativeMethods.wdGetNumberScriptResult(scriptResult, out longVal);
+                    ResultHandler.VerifyResultCode(result, "Cannot extract number result");
+                    toReturn = longVal;
+                    break;
 
-                    case 3:
-                        int boolVal;
-                        result = wdGetBooleanScriptResult(scriptResult, out boolVal);
-                        ErrorHandler.VerifyErrorCode(result, "Cannot extract boolean result");
-                        toReturn = boolVal == 1 ? true : false;
-                        break;
+                case 3:
+                    int boolVal;
+                    result = NativeMethods.wdGetBooleanScriptResult(scriptResult, out boolVal);
+                    ResultHandler.VerifyResultCode(result, "Cannot extract boolean result");
+                    toReturn = boolVal == 1 ? true : false;
+                    break;
 
-                    case 4:
-                        ElementWrapper element;
-                        result = wdGetElementScriptResult(scriptResult, handle, out element);
-                        ErrorHandler.VerifyErrorCode(result, "Cannot extract element result");
-                        toReturn = new InternetExplorerWebElement(this, element);
-                        break;
+                case 4:
+                    SafeInternetExplorerWebElementHandle element;
+                    result = NativeMethods.wdGetElementScriptResult(scriptResult, handle, out element);
+                    ResultHandler.VerifyResultCode(result, "Cannot extract element result");
+                    toReturn = new InternetExplorerWebElement(this, element);
+                    break;
 
-                    case 5:
-                        toReturn = null;
-                        break;
+                case 5:
+                    toReturn = null;
+                    break;
 
-                    case 6:
-                        StringWrapperHandle message = new StringWrapperHandle();
-                        result = wdGetStringScriptResult(scriptResult, ref message);
-                        ErrorHandler.VerifyErrorCode(result, "Cannot extract string result");
-                        throw new WebDriverException(message.Value);
-                    case 7:
-                        double doubleVal;
-                        result = wdGetDoubleScriptResult(scriptResult, out doubleVal);
-                        ErrorHandler.VerifyErrorCode(result, "Cannot extract number result");
-                        toReturn = doubleVal;
-                        break;
-                    default:
-                        throw new WebDriverException("Cannot determine result type");
-                }
-                return toReturn;
+                case 6:
+                    SafeStringWrapperHandle messageHandle = new SafeStringWrapperHandle();
+                    result = NativeMethods.wdGetStringScriptResult(scriptResult, ref messageHandle);
+                    ResultHandler.VerifyResultCode(result, "Cannot extract string result");
+                    string message = string.Empty;
+                    using (StringWrapper wrapper = new StringWrapper(messageHandle))
+                    {
+                        message = wrapper.Value;
+                    }
+                    throw new WebDriverException(message);
+                case 7:
+                    double doubleVal;
+                    result = NativeMethods.wdGetDoubleScriptResult(scriptResult, out doubleVal);
+                    ResultHandler.VerifyResultCode(result, "Cannot extract number result");
+                    toReturn = doubleVal;
+                    break;
+                default:
+                    throw new WebDriverException("Cannot determine result type");
             }
-            finally
-            {
-                wdFreeScriptResult(scriptResult);
-            }
+            return toReturn;
         }
 
-        [DllImport("InternetExplorerDriver", CharSet = CharSet.Unicode)]
-        private static extern int wdAddStringScriptArg(IntPtr scriptArgs, string arg);
-        [DllImport("InternetExplorerDriver")]
-        private static extern int wdAddBooleanScriptArg(IntPtr scriptArgs, int boolean);
-        [DllImport("InternetExplorerDriver")]
-        private static extern int wdAddNumberScriptArg(IntPtr scriptArgs, long param);
-        [DllImport("InternetExplorerDriver")]
-        private static extern int wdAddDoubleScriptArg(IntPtr scriptArgs, double param);
-        private int PopulateArguments(IntPtr scriptArgs, Object[] args)
+        private static WebDriverResult PopulateArguments(SafeScriptArgsHandle scriptArgs, object[] args)
         {
-            int result = 0;
+            WebDriverResult result = WebDriverResult.Success;
 
-            foreach(Object arg in args)
+            foreach(object arg in args)
             {
+                string stringArg = arg as string;
+                InternetExplorerWebElement webElementArg = arg as InternetExplorerWebElement;
 
-                if (arg is String)
+                if (stringArg != null)
                 {
-                    result = wdAddStringScriptArg(scriptArgs, (String)arg);
+                    result = NativeMethods.wdAddStringScriptArg(scriptArgs, stringArg);
                 }
-                else if (arg is Boolean)
+                else if (arg is bool)
                 {
-                    Boolean param = (Boolean)arg;
-                    result = wdAddBooleanScriptArg(scriptArgs, !param ? 0 : 1);
+                    bool param = (bool)arg;
+                    result = NativeMethods.wdAddBooleanScriptArg(scriptArgs, !param ? 0 : 1);
                 }
-                else if (arg is InternetExplorerWebElement)
+                else if (webElementArg != null)
                 {
-                    result = ((InternetExplorerWebElement)arg).AddToScriptArgs(scriptArgs);
+                    result = webElementArg.AddToScriptArgs(scriptArgs);
                 }
                 else if (arg is int || arg is short || arg is long)
                 {
                     int param;
-                    Int32.TryParse(arg.ToString(), out param);
-                    result = wdAddNumberScriptArg(scriptArgs, param);
+                    bool parseSucceeded = int.TryParse(arg.ToString(), out param);
+                    if (!parseSucceeded)
+                    {
+                        throw new ArgumentException("Parameter is not recognized as an int: " + arg);
+                    }
+
+                    result = NativeMethods.wdAddNumberScriptArg(scriptArgs, param);
                 }
                 else if (arg is float || arg is double)
                 {
                     double param;
-                    Double.TryParse(arg.ToString(), out param);
-                    result = wdAddDoubleScriptArg(scriptArgs, param);
+                    bool parseSucceeded = double.TryParse(arg.ToString(), out param);
+                    if (!parseSucceeded)
+                    {
+                        throw new ArgumentException("Parameter is not of recognized as a double: " + arg);
+                    }
+                    result = NativeMethods.wdAddDoubleScriptArg(scriptArgs, param);
                 }
                 else
                 {
                     throw new ArgumentException("Parameter is not of recognized type: " + arg);
                 }
 
-                ErrorHandler.VerifyErrorCode(result, "Unable to add argument: " + arg);
+                ResultHandler.VerifyResultCode(result, "Unable to add argument: " + arg);
             }
 
             return result;
         }
 
-        //StringWrapperHandle wrapper = new StringWrapperHandle();
-        //                result = wdGetStringScriptResult(scriptResult, ref wrapper);
-        //                ErrorHandler.VerifyErrorCode(result, "Cannot extract string result");
-        //                toReturn = wrapper.Value;
-        //                break;
-        
-        [DllImport("InternetExplorerDriver")]
-        private static extern int wdGetAllWindowHandles(IntPtr driver, ref IntPtr handles);
-        public List<String> GetWindowHandles()
+        public ReadOnlyCollection<string> GetWindowHandles()
         {
-            IntPtr handlesPtr = new IntPtr();
-            int result = wdGetAllWindowHandles(handle.DangerousGetHandle(), ref handlesPtr);
+            SafeStringCollectionHandle handlesPtr = new SafeStringCollectionHandle();
+            WebDriverResult result = NativeMethods.wdGetAllWindowHandles(handle, ref handlesPtr);
 
-            ErrorHandler.VerifyErrorCode(result, "Unable to obtain all window handles");
+            ResultHandler.VerifyResultCode(result, "Unable to obtain all window handles");
 
-            return new StringCollection(this, handle, handlesPtr).ToList();
+            List<string> windowHandleList = new List<string>();
+            using (StringCollection windowHandleStringCollection = new StringCollection(handlesPtr))
+            {
+                windowHandleList = windowHandleStringCollection.ToList();
+            }
+
+            return new ReadOnlyCollection<string>(windowHandleList);
         }
 
-        [DllImport("InternetExplorerDriver")]
-        private static extern int wdGetCurrentWindowHandle(SafeInternetExplorerDriverHandle driver, out StringWrapperHandle handle);
         public String GetWindowHandle()
         {
-            StringWrapperHandle handleName = new StringWrapperHandle();
-            int result = wdGetCurrentWindowHandle(handle, out handleName);
-            ErrorHandler.VerifyErrorCode(result, "Unable to obtain current window handle");
-            return handleName.Value;
+            SafeStringWrapperHandle stringHandle = new SafeStringWrapperHandle();
+            WebDriverResult result = NativeMethods.wdGetCurrentWindowHandle(handle, out stringHandle);
+            ResultHandler.VerifyResultCode(result, "Unable to obtain current window handle");
+            string handleValue = string.Empty;
+            using (StringWrapper wrapper = new StringWrapper(stringHandle))
+            {
+                handleValue = wrapper.Value;
+            }
+            return handleValue;
         }
 
         public ITargetLocator SwitchTo()
         {
-            return new InternetExplorerTargetLocator(handle, this);
+            return new InternetExplorerTargetLocator(this);
         }
 
         public IOptions Manage()
         {
-            return new InternetExplorerOptions(handle, this);
+            return new InternetExplorerOptions(this);
         }
 
         public INavigation Navigate()
         {
-            return new InternetExplorerNavigation(handle, this);
+            return new InternetExplorerNavigation(this);
         }
 
         internal SafeInternetExplorerDriverHandle GetUnderlayingHandle()
@@ -390,13 +382,10 @@ namespace OpenQa.Selenium.IE
         private class InternetExplorerOptions : IOptions
         {
             private Speed internalSpeed = Speed.Fast;
-            private SafeInternetExplorerDriverHandle handle;
             private InternetExplorerDriver driver;
 
-            public InternetExplorerOptions(SafeInternetExplorerDriverHandle handle,
-                                           InternetExplorerDriver driver)
+            public InternetExplorerOptions(InternetExplorerDriver driver)
             {
-                this.handle = handle;
                 this.driver = driver;
             }
 
@@ -406,35 +395,32 @@ namespace OpenQa.Selenium.IE
                 set { internalSpeed = value; }
             }
 
-            [DllImport("InternetExplorerDriver", CharSet = CharSet.Unicode)]
-            private static extern int wdAddCookie(SafeHandle handle, string cookie);
             public void AddCookie(Cookie cookie)
             {
                 String cookieString = cookie.ToString();
-                int result = wdAddCookie(handle, cookieString);
-                ErrorHandler.VerifyErrorCode(result, "Add Cookie");
+                WebDriverResult result = NativeMethods.wdAddCookie(driver.handle, cookieString);
+                ResultHandler.VerifyResultCode(result, "Add Cookie");
             }
 
-            [DllImport("InternetExplorerDriver", CharSet = CharSet.Unicode)]
-            private static extern int wdGetCookies(SafeHandle handle, ref StringWrapperHandle cookies);
-            public Dictionary<String, Cookie> GetCookies()
+            public Dictionary<string, Cookie> GetCookies()
             {
-                String currentUrl = GetCurrentHost();
+                string currentUrl = GetCurrentHost();
 
-                StringWrapperHandle wrapper = new StringWrapperHandle();
-                int result = wdGetCookies(handle, ref wrapper);
-                ErrorHandler.VerifyErrorCode(result, "Getting Cookies");
-                
-                Dictionary<String, Cookie> toReturn = new Dictionary<String, Cookie>();
-                String allDomainCookies = wrapper.Value;
-
-
-                String[] cookies =
-                    allDomainCookies.Split(new String[] { "; " },
-                                           StringSplitOptions.RemoveEmptyEntries);
-                foreach (String cookie in cookies)
+                SafeStringWrapperHandle stringHandle = new SafeStringWrapperHandle();
+                WebDriverResult result = NativeMethods.wdGetCookies(driver.handle, ref stringHandle);
+                ResultHandler.VerifyResultCode(result, "Getting Cookies");
+                string allDomainCookies = string.Empty;
+                using (StringWrapper wrapper = new StringWrapper(stringHandle))
                 {
-                    String[] parts = cookie.Split(new String[] { "=" }, StringSplitOptions.RemoveEmptyEntries);
+                    allDomainCookies = wrapper.Value;
+                }
+                Dictionary<String, Cookie> toReturn = new Dictionary<string, Cookie>();
+
+
+                string[] cookies = allDomainCookies.Split(new string[] { "; " }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (string cookie in cookies)
+                {
+                    string[] parts = cookie.Split(new string[] { "=" }, StringSplitOptions.RemoveEmptyEntries);
                     if (parts.Length != 2)
                     {
                         continue;
@@ -455,7 +441,7 @@ namespace OpenQa.Selenium.IE
                 }
             }
 
-            private String GetCurrentHost()
+            private string GetCurrentHost()
             {
                 Uri uri = new Uri(driver.Url);
                 return uri.Host;
@@ -468,25 +454,20 @@ namespace OpenQa.Selenium.IE
                 AddCookie(new Cookie(cookie.Name, "", cookie.Path, cookie.Domain, dateInPast));
             }
 
-            public void DeleteCookieNamed(String name)
+            public void DeleteCookieNamed(string name)
             {
                 Cookie cookieToDelete = new Cookie(name, "", "/", "");
-                String c = cookieToDelete.ToString();
-
                 DeleteCookie(cookieToDelete);
             }
         }
 
         private class InternetExplorerTargetLocator : ITargetLocator
         {
-
             InternetExplorerDriver driver;
-            SafeInternetExplorerDriverHandle handle;
-            public InternetExplorerTargetLocator(SafeInternetExplorerDriverHandle handle,
-                InternetExplorerDriver driver)
+
+            public InternetExplorerTargetLocator(InternetExplorerDriver driver)
             {
                 this.driver = driver;
-                this.handle = handle;
             }
 
             // TODO(andre.nogueira): Documentation should mention
@@ -494,11 +475,9 @@ namespace OpenQa.Selenium.IE
             // when frames are named as integers.
             public IWebDriver Frame(int frameIndex)
             {
-                return Frame(frameIndex.ToString());
+                return Frame(frameIndex.ToString(CultureInfo.InvariantCulture));
             }
 
-            [DllImport("InternetExplorerDriver", CharSet = CharSet.Unicode)]
-            private static extern int wdSwitchToFrame(SafeInternetExplorerDriverHandle handle, string frameName);
             public IWebDriver Frame(string frameName)
             {
                 if (frameName == null)
@@ -507,22 +486,19 @@ namespace OpenQa.Selenium.IE
                     // a null is received. I'd much rather move this to the driver itself.
                     // In Java this is not a problem because of "new WString" which
                     // does this check for us.
-                    throw new ArgumentNullException("Frame name cannot be null");
+                    throw new ArgumentNullException("frameName", "Frame name cannot be null");
                 }
-                int res;
-                res = wdSwitchToFrame(handle, frameName);
-                ErrorHandler.VerifyErrorCode(res, "switch to frame " + frameName);
+                WebDriverResult res = NativeMethods.wdSwitchToFrame(driver.handle, frameName);
+                ResultHandler.VerifyResultCode(res, "switch to frame " + frameName);
                 //TODO(andre.nogueira): If this fails, driver cannot be used and has to be
                 //set to a valid frame... What's the best way of doing this?
                 return driver;
             }
 
-            [DllImport("InternetExplorerDriver", CharSet = CharSet.Unicode)]
-            private static extern int wdSwitchToWindow(SafeInternetExplorerDriverHandle handle, string windowName);
             public IWebDriver Window(string windowName)
             {
-                int result = wdSwitchToWindow(handle, windowName);
-                ErrorHandler.VerifyErrorCode(result, "Could not switch to window " + windowName);
+                WebDriverResult result = NativeMethods.wdSwitchToWindow(driver.handle, windowName);
+                ResultHandler.VerifyResultCode(result, "Could not switch to window " + windowName);
                 return driver;
             }
 
@@ -540,44 +516,36 @@ namespace OpenQa.Selenium.IE
 
         private class InternetExplorerNavigation : INavigation
         {
-
-            SafeInternetExplorerDriverHandle handle;
             InternetExplorerDriver driver;
 
-            public InternetExplorerNavigation(SafeInternetExplorerDriverHandle handle,
-                InternetExplorerDriver driver)
+            public InternetExplorerNavigation(InternetExplorerDriver driver)
             {
-                this.handle = handle;
                 this.driver = driver;
             }
 
-            [DllImport("InternetExplorerDriver")]
-            private static extern int wdGoBack(SafeInternetExplorerDriverHandle driver);
             public void Back()
             {
-                int result = wdGoBack(handle);
-                ErrorHandler.VerifyErrorCode(result, "Going back in history");
+                WebDriverResult result = NativeMethods.wdGoBack(driver.handle);
+                ResultHandler.VerifyResultCode(result, "Going back in history");
             }
 
-            [DllImport("InternetExplorerDriver")]
-            private static extern int wdGoForward(SafeInternetExplorerDriverHandle driver);
             public void Forward()
             {
-                int result = wdGoForward(handle);
-                ErrorHandler.VerifyErrorCode(result, "Going forward in history");
+                WebDriverResult result = NativeMethods.wdGoForward(driver.handle);
+                ResultHandler.VerifyResultCode(result, "Going forward in history");
             }
 
-            public void To(Uri url)
+            public void GoToUrl(Uri url)
             {
                 if (url == null)
                 {
-                    throw new ArgumentNullException("Argument 'url' cannot be null.");
+                    throw new ArgumentNullException("url", "URL cannot be null.");
                 }
                 String address = url.AbsoluteUri;
                 driver.Url = address;
             }
 
-            public void To(string url)
+            public void GoToUrl(string url)
             {
                 driver.Url = url;
 
@@ -585,7 +553,7 @@ namespace OpenQa.Selenium.IE
 
             public void Refresh()
             {
-                throw new Exception("The method or operation is not implemented.");
+                throw new NotImplementedException("The refresh operation is not implemented.");
             }
         }
     }

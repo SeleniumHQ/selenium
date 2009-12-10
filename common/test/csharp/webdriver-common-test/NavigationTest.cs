@@ -1,7 +1,7 @@
 using System;
 using NUnit.Framework;
 
-namespace OpenQa.Selenium
+namespace OpenQA.Selenium
 {
 
     [TestFixture]
@@ -40,8 +40,8 @@ namespace OpenQa.Selenium
             INavigation navigation;
             navigation = driver.Navigate();
 
-            navigation.To("isidsji30342όϊώ®ιεµρ©ζ");
-            navigation.To("");
+            navigation.GoToUrl("isidsji30342όϊώ®ιεµρ©ζ");
+            navigation.GoToUrl("");
         }
 
         [Test]
@@ -50,7 +50,7 @@ namespace OpenQa.Selenium
         {
             INavigation navigation;
             navigation = driver.Navigate();
-            navigation.To((Uri)null);
+            navigation.GoToUrl((Uri)null);
             // new Uri("") and new Uri("isidsji30342όϊώ®ιεµρ©ζ") 
             // throw an exception, so we needn't worry about them.
         }
@@ -61,12 +61,12 @@ namespace OpenQa.Selenium
             INavigation navigation;
             navigation = driver.Navigate();
 
-            navigation.To(macbethPage);
+            navigation.GoToUrl(macbethPage);
             Assert.AreEqual(driver.Title, macbethTitle);
 
             // We go to two pages to ensure that the browser wasn't
             // already at the desired page through a previous test.
-            navigation.To(simpleTestPage);
+            navigation.GoToUrl(simpleTestPage);
             Assert.AreEqual(driver.Title, simpleTestTitle);
         }
 
@@ -78,12 +78,12 @@ namespace OpenQa.Selenium
             INavigation navigation;
             navigation = driver.Navigate();
 
-            navigation.To(macBeth);
+            navigation.GoToUrl(macBeth);
             Assert.AreEqual(driver.Title, macbethTitle);
 
             // We go to two pages to ensure that the browser wasn't
             // already at the desired page through a previous test.
-            navigation.To(simpleTest);
+            navigation.GoToUrl(simpleTest);
             Assert.AreEqual(driver.Title, simpleTestTitle);
         }
 

@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Collections.ObjectModel;
 
-namespace OpenQa.Selenium.Internal
+namespace OpenQA.Selenium.Internal
 {
     public interface IFindsByClassName
     {
         IWebElement FindElementByClassName(String className);
-        List<IWebElement> FindElementsByClassName(String className);
+        ReadOnlyCollection<IWebElement> FindElementsByClassName(String className);
     }
 }

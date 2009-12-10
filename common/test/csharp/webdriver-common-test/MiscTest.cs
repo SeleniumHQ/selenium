@@ -1,7 +1,7 @@
 using System;
 using NUnit.Framework;
 
-namespace OpenQa.Selenium
+namespace OpenQA.Selenium
 {
     [TestFixture]
     public class MiscTest : DriverTestFixture

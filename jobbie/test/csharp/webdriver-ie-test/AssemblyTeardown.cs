@@ -1,5 +1,5 @@
 ﻿using NUnit.Framework;
-using OpenQa.Selenium.Environment;
+using OpenQA.Selenium.Environment;
 
 [SetUpFixture]
 // Outside a namespace to affect the entire assembly

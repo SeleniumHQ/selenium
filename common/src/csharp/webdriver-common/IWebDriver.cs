@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Collections.ObjectModel;
 
-namespace OpenQa.Selenium
+namespace OpenQA.Selenium
 {
     public interface IWebDriver : IDisposable
     {
@@ -19,7 +20,7 @@ namespace OpenQa.Selenium
 
         IWebElement FindElement(By mechanism);
 
-        List<IWebElement> FindElements(By mechanism);
+        ReadOnlyCollection<IWebElement> FindElements(By mechanism);
 
         String PageSource
         {
@@ -36,7 +37,7 @@ namespace OpenQa.Selenium
 
         ITargetLocator SwitchTo();
 
-        List<String> GetWindowHandles();
+        ReadOnlyCollection<String> GetWindowHandles();
 
         String GetWindowHandle();
     }

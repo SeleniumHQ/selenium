@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using OpenQa.Selenium;
+using OpenQA.Selenium;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
+using System.Collections.ObjectModel;
 
-namespace OpenQa.Selenium
+namespace OpenQA.Selenium
 {
     [TestFixture]
     public class DriverElementFindingTest : DriverTestFixture
@@ -77,7 +78,7 @@ namespace OpenQa.Selenium
         public void ShouldFindElementsById()
         {
             driver.Url = nestedPage;
-            List<IWebElement> elements = driver.FindElements(By.Id("test_id"));
+            ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.Id("test_id"));
             Assert.That(2, Is.EqualTo(elements.Count));
         }
 
@@ -85,7 +86,7 @@ namespace OpenQa.Selenium
         public void ShouldFindElementsByLinkText()
         {
             driver.Url = nestedPage;
-            List<IWebElement> elements = driver.FindElements(By.LinkText("hello world"));
+            ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.LinkText("hello world"));
             Assert.That(12, Is.EqualTo(elements.Count));
         }
 
@@ -93,7 +94,7 @@ namespace OpenQa.Selenium
         public void ShouldFindElementsByName()
         {
             driver.Url = nestedPage;
-            List<IWebElement> elements = driver.FindElements(By.Name("form1"));
+            ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.Name("form1"));
             Assert.That(4, Is.EqualTo(elements.Count));
         }
 
@@ -101,7 +102,7 @@ namespace OpenQa.Selenium
         public void ShouldFindElementsByXPath()
         {
             driver.Url = nestedPage;
-            List<IWebElement> elements = driver.FindElements(By.XPath("//a"));
+            ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.XPath("//a"));
             Assert.That(12, Is.EqualTo(elements.Count));
         }
 
@@ -109,7 +110,7 @@ namespace OpenQa.Selenium
         public void ShouldFindElementsByClassName()
         {
             driver.Url = nestedPage;
-            List<IWebElement> elements = driver.FindElements(By.ClassName("one"));
+            ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.ClassName("one"));
             Assert.That(3, Is.EqualTo(elements.Count));
         }
 
@@ -117,7 +118,7 @@ namespace OpenQa.Selenium
         public void ShouldFindElementsByPartialLinkText()
         {
             driver.Url = nestedPage;
-            List<IWebElement> elements = driver.FindElements(By.PartialLinkText("world"));
+            ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.PartialLinkText("world"));
             Assert.That(12, Is.EqualTo(elements.Count));
         }
 
@@ -125,10 +126,9 @@ namespace OpenQa.Selenium
         public void ShouldFindElementsByTagName()
         {
             driver.Url = nestedPage;
-            List<IWebElement> elements = driver.FindElements(By.TagName("a"));
+            ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.TagName("a"));
             Assert.That(12, Is.EqualTo(elements.Count));
         }
-
         #endregion
     }
 }

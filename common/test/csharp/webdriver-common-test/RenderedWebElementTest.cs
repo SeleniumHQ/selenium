@@ -4,7 +4,7 @@ using System.Text;
 using NUnit.Framework;
 using System.Drawing;
 
-namespace OpenQa.Selenium
+namespace OpenQA.Selenium
 {
     [TestFixture]
     public class RenderedWebElementTest : DriverTestFixture
@@ -78,7 +78,7 @@ namespace OpenQa.Selenium
             IRenderedWebElement item = (IRenderedWebElement)driver.FindElement(By.Id("item1"));
             Assert.AreEqual("", item.Text);
 
-            ((IJavascriptExecutor)driver).ExecuteScript("arguments[0].style.background = 'green'", element);
+            ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].style.background = 'green'", element);
             element.Hover();
 
             Assert.AreEqual("Item 1", item.Text);

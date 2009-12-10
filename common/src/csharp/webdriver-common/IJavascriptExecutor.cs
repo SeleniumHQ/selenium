@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace OpenQa.Selenium
+namespace OpenQA.Selenium
 {
-    public interface IJavascriptExecutor
+    public interface IJavaScriptExecutor
     {
-        Object ExecuteScript(String script, params Object[] args);
+        object ExecuteScript(string script, params object[] args);
     }
 }

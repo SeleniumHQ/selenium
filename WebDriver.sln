@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "web", "common\src\web\", "{DB560F4B-1F41-4E8E-AC06-640D736E8A72}"
@@ -19,6 +19,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "web", "common\src\web\", "{
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
 		VWDPort = "2310"
+		VWDDynamicPort = "false"
 		DefaultWebSiteLanguage = "Visual C#"
 	EndProjectSection
 EndProject
@@ -30,11 +31,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "webdriver-firefox", "firefo
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "npchromedriver", "chrome\src\cpp\npchromedriver\npchromedriver.vcproj", "{2A4FDEBC-1AB8-4E35-8806-E4CC12285526}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "webdriver-common", "common\src\csharp\webdriver-common\webdriver-common.csproj", "{ABB9B87F-FEEA-410E-ACBF-26479B8C72B0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver.Common", "common\src\csharp\webdriver-common\WebDriver.Common.csproj", "{ABB9B87F-FEEA-410E-ACBF-26479B8C72B0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "webdriver-common-test", "common\test\csharp\webdriver-common-test\webdriver-common-test.csproj", "{1580564D-B6B8-4BD8-A120-001E3E8E5BE6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "webdriver-ie", "jobbie\src\csharp\webdriver-ie\webdriver-ie.csproj", "{388643B5-2270-4E89-99CC-DA761E4E4AC1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDriver.IE", "jobbie\src\csharp\webdriver-ie\WebDriver.IE.csproj", "{388643B5-2270-4E89-99CC-DA761E4E4AC1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "webdriver-ie-test", "jobbie\test\csharp\webdriver-ie-test\webdriver-ie-test.csproj", "{ECF3B49F-68B0-4A2A-8559-6D7FB906AA88}"
 EndProject
@@ -58,6 +59,16 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+{DB560F4B-1F41-4E8E-AC06-640D736E8A72}.Debug|.NET.ActiveCfg = Debug|.NET
+		{DB560F4B-1F41-4E8E-AC06-640D736E8A72}.Debug|Any CPU.ActiveCfg = Debug|.NET
+		{DB560F4B-1F41-4E8E-AC06-640D736E8A72}.Debug|Mixed Platforms.ActiveCfg = Debug|.NET
+		{DB560F4B-1F41-4E8E-AC06-640D736E8A72}.Debug|Win32.ActiveCfg = Debug|.NET
+		{DB560F4B-1F41-4E8E-AC06-640D736E8A72}.Debug|x64.ActiveCfg = Debug|.NET
+		{DB560F4B-1F41-4E8E-AC06-640D736E8A72}.Release|.NET.ActiveCfg = Debug|.NET
+		{DB560F4B-1F41-4E8E-AC06-640D736E8A72}.Release|Any CPU.ActiveCfg = Debug|.NET
+		{DB560F4B-1F41-4E8E-AC06-640D736E8A72}.Release|Mixed Platforms.ActiveCfg = Debug|.NET
+		{DB560F4B-1F41-4E8E-AC06-640D736E8A72}.Release|Win32.ActiveCfg = Debug|.NET
+		{DB560F4B-1F41-4E8E-AC06-640D736E8A72}.Release|x64.ActiveCfg = Debug|.NET
 		{DB560F4B-1F41-4E8E-AC06-640D736E8A72}.Debug|.NET.ActiveCfg = Debug|.NET
 		{DB560F4B-1F41-4E8E-AC06-640D736E8A72}.Debug|Any CPU.ActiveCfg = Debug|.NET
 		{DB560F4B-1F41-4E8E-AC06-640D736E8A72}.Debug|Mixed Platforms.ActiveCfg = Debug|.NET

@@ -1,7 +1,7 @@
 using NUnit.Framework;
-using OpenQa.Selenium.IE;
+using OpenQA.Selenium.IE;
 
-namespace OpenQa.Selenium
+namespace OpenQA.Selenium
 {
     [TestFixture]
     public class IeSpecificTests : DriverTestFixture
@@ -13,8 +13,8 @@ namespace OpenQa.Selenium
         {
             for (int i = 0; i < 5; i++)
             {
-                driver.Quit();
-                driver = new InternetExplorerDriver();
+                Environment.EnvironmentManager.Instance.CloseCurrentDriver();
+                CreateFreshDriver();
             }
         }
 

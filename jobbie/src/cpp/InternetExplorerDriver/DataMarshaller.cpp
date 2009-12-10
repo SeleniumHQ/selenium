@@ -42,6 +42,7 @@ void DataMarshaller::resetOutputs()
 	output_string_ = L"";
 	output_bool_ = true;
 	output_list_html_element_.clear();
+	output_list_string_.clear();
 	output_variant_.Clear();
 	error_code = SUCCESS;
 	if (output_safe_array_) {

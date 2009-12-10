@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace OpenQa.Selenium.Internal
+namespace OpenQA.Selenium.Internal
 {
     public class ReturnedCookie : Cookie
     {
@@ -22,10 +22,10 @@ namespace OpenQa.Selenium.Internal
 
         public override String ToString()
         {
-            return name + "=" + value
-                + (expiry.Equals(DateTime.MinValue) ? "" : "; expires=" + expiry.ToLongDateString())
-                    + ("".Equals(path) ? "" : "; path=" + path)
-                    + ("".Equals(domain) ? "" : "; domain=" + domain)
+            return Name + "=" + Value
+                + (Expiry.Equals(DateTime.MinValue) ? string.Empty : "; expires=" + Expiry.ToLongDateString())
+                    + (string.IsNullOrEmpty(Path) ? string.Empty : "; path=" + Path)
+                    + (string.IsNullOrEmpty(Domain) ? string.Empty : "; domain=" + Domain)
                     + (isSecure ? ";secure;" : "");
         }
     }

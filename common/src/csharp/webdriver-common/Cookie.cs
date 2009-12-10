@@ -2,109 +2,116 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace OpenQa.Selenium
+namespace OpenQA.Selenium
 {
 
     public class Cookie
     {
-        protected String name;
-        protected String value;
-        protected String path;
-        protected String domain;
-        protected DateTime expiry = DateTime.MinValue;
+        private string cookieName;
+        private string cookieValue;
+        private string cookiePath;
+        private string cookieDomain;
+        private DateTime cookieExpiry = DateTime.MinValue;
 
-        public Cookie(String name, String value, String path, String domain, DateTime expiry)
+        public Cookie(string name, string value, string path, string domain, DateTime expiry)
         {
-            this.name = name;
-            this.value = value;
-            this.path = path;
-            this.domain = domain;
-            this.expiry = expiry;
+            this.cookieName = name;
+            this.cookieValue = value;
+            this.cookiePath = path;
+            this.cookieDomain = domain;
+            this.cookieExpiry = expiry;
             Validate();
         }
 
-        public Cookie(String name, String value, String path, String domain)
+        public Cookie(string name, string value, string path, string domain)
             : this(name, value, path, domain, DateTime.MinValue)
         {
         }
 
-        public Cookie(String name, String value)
+        public Cookie(string name, string value)
             : this(name, value, "/", "")
         {
 
         }
 
-        public override String ToString()
+        public override string ToString()
         {
-            return name + "=" + value
-                + (expiry.Equals(DateTime.MinValue) ? "" : "; expires=" + expiry.ToLongDateString())
-                    + ("".Equals(path) ? "" : "; path=" + path);
+            return cookieName + "=" + cookieValue
+                + (cookieExpiry.Equals(DateTime.MinValue) ? string.Empty : "; expires=" + cookieExpiry.ToLongDateString())
+                    + (string.IsNullOrEmpty(cookiePath) ? string.Empty : "; path=" + cookiePath);
                     //+ ("".Equals(domain) ? "" : "; domain=" + domain);
             //                + (isSecure ? ";secure;" : "");
         }
 
         protected void Validate()
         {
-            if (name == null || "".Equals(name) || value == null || path == null)
-                throw new ArgumentOutOfRangeException("Required attributes are not set or " +
-                        "any non-null attribute set to null");
+            if (string.IsNullOrEmpty(cookieName) || cookieValue == null || cookiePath == null)
+            {
+                throw new InvalidOperationException("Required attributes are not set or any non-null attribute set to null");
+            }
 
-            if (name.IndexOf(';') != -1)
-                throw new ArgumentOutOfRangeException(
-                        "Cookie names cannot contain a ';': " + name);
+            if (cookieName.IndexOf(';') != -1)
+            {
+                throw new InvalidOperationException("Cookie names cannot contain a ';': " + cookieName);
+            }
         }
 
         /**
          *  Two cookies are equal if the name and value match
          */
-        public override bool Equals(Object o)
+        public override bool Equals(object obj)
         {
-            if (this == o)
+            Cookie cookie = obj as Cookie;
+
+            if (this == obj)
             {
                 return true;
             }
-            if (!(o is Cookie))
+            if (cookie == null)
             {
                 return false;
             }
 
-            Cookie cookie = (Cookie)o;
-
-            if (!name.Equals(cookie.name))
+            if (!cookieName.Equals(cookie.cookieName))
             {
                 return false;
             }
-            return !(value != null ? !value.Equals(cookie.value) : cookie.Value != null);
+            return !(cookieValue != null ? !cookieValue.Equals(cookie.cookieValue) : cookie.Value != null);
         }
 
         public override int GetHashCode()
         {
-            return name.GetHashCode();
+            return cookieName.GetHashCode();
         }
 
         public String Name
         {
-            get { return name; }
+            get { return cookieName; }
         }
 
         public String Value
         {
-            get { return value; }
+            get { return cookieValue; }
         }
 
         public String Domain
         {
-            get { return domain; }
+            get { return cookieDomain; }
         }
 
         public String Path
         {
-            get { return path; }
+            get { return cookiePath; }
         }
 
         public virtual bool Secure
         {
             get { return false; } 
+        }
+
+        public DateTime Expiry
+        {
+            get { return cookieExpiry; }
         }
     }
 }

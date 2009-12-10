@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 
-namespace OpenQa.Selenium.Internal
+namespace OpenQA.Selenium.Internal
 {
     public interface IFindsByPartialLinkText
     {
         IWebElement FindElementByPartialLinkText(String partialLinkText);
-        List<IWebElement> FindElementsByPartialLinkText(String partialLinkText);
+        ReadOnlyCollection<IWebElement> FindElementsByPartialLinkText(String partialLinkText);
     }
 }

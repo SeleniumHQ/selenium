@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
-using OpenQa.Selenium.Environment;
+using OpenQA.Selenium.Environment;
 
-namespace OpenQa.Selenium
+namespace OpenQA.Selenium
 {
     [TestFixture]
     public class PageLoadingTest : DriverTestFixture

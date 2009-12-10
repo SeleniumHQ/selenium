@@ -1,6 +1,6 @@
 using System;
 
-namespace OpenQa.Selenium
+namespace OpenQA.Selenium
 {
 
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]

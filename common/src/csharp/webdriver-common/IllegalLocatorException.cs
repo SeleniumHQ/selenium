@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Runtime.Serialization;
 
-namespace OpenQa.Selenium
+namespace OpenQA.Selenium
 {
+    [Serializable]
     public class IllegalLocatorException : WebDriverException
     {
         public IllegalLocatorException()
@@ -13,6 +15,16 @@ namespace OpenQa.Selenium
 
         public IllegalLocatorException(string message)
             : base(message)
+        {
+        }
+
+        public IllegalLocatorException(string message, Exception innerException)
+            : base(message, innerException)
+        {
+        }
+
+        protected IllegalLocatorException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
         {
         }
     }

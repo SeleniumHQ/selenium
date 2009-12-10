@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
+using System.Collections.ObjectModel;
 
-namespace OpenQa.Selenium
+namespace OpenQA.Selenium
 {
     [TestFixture]
     public class PartialLinkTextMatchTest : DriverTestFixture
@@ -57,7 +58,7 @@ namespace OpenQa.Selenium
             driver.Url = simpleTestPage;
             IWebElement elem = driver.FindElement(By.Id("links"));
 
-            List<IWebElement> elements = elem.FindElements(By.PartialLinkText("link"));
+            ReadOnlyCollection<IWebElement> elements = elem.FindElements(By.PartialLinkText("link"));
             Assert.IsNotNull(elements);
             Assert.AreEqual(3, elements.Count);
         }

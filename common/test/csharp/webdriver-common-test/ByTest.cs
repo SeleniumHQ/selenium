@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
 using NUnit.Mocks;
-using OpenQa.Selenium.Internal;
+using OpenQA.Selenium.Internal;
 
-namespace OpenQa.Selenium
+namespace OpenQA.Selenium
 {
     [TestFixture]
     public class ByTest

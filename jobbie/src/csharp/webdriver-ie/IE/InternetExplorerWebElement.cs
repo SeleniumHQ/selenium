@@ -3,105 +3,108 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Drawing;
-using OpenQa.Selenium.Internal;
+using OpenQA.Selenium.Internal;
+using System.Collections.ObjectModel;
+using System.Globalization;
 
-namespace OpenQa.Selenium.IE
+namespace OpenQA.Selenium.IE
 {
-    class InternetExplorerWebElement : IRenderedWebElement, ISearchContext, ILocatable
+    class InternetExplorerWebElement : IRenderedWebElement, ISearchContext, ILocatable, IDisposable
     {
-        private ElementWrapper wrapper;
+        private SafeInternetExplorerWebElementHandle elementHandle;
         private InternetExplorerDriver driver;
 
-        public InternetExplorerWebElement(InternetExplorerDriver driver, ElementWrapper wrapper)
+        public InternetExplorerWebElement(InternetExplorerDriver driver, SafeInternetExplorerWebElementHandle wrapper)
         {
             this.driver = driver;
-            this.wrapper = wrapper;
+            this.elementHandle = wrapper;
         }
 
-        internal ElementWrapper Wrapper
+        internal SafeInternetExplorerWebElementHandle Wrapper
         {
-            get { return wrapper; }
+            get { return elementHandle; }
         }
 
-        [DllImport("InternetExplorerDriver", CharSet = CharSet.Unicode)]
-        private static extern int wdeGetText(ElementWrapper wrapper, ref StringWrapperHandle result);
         public string Text
         {
             get 
             {
-                StringWrapperHandle result = new StringWrapperHandle();
-                int returnValue = wdeGetText(wrapper, ref result);
-                ErrorHandler.VerifyErrorCode(returnValue, "get the Text property");
-                return result.Value;
+                SafeStringWrapperHandle stringHandle = new SafeStringWrapperHandle();
+                WebDriverResult result = NativeMethods.wdeGetText(elementHandle, ref stringHandle);
+                ResultHandler.VerifyResultCode(result, "get the Text property");
+                string returnValue = string.Empty;
+                using (StringWrapper wrapper = new StringWrapper(stringHandle))
+                {
+                    // StringWrapper correctly disposes of the handle
+                    returnValue = wrapper.Value;
+                }
+                return returnValue;
             }
         }
 
-        [DllImport("InternetExplorerDriver")]
-        private static extern int wdeGetTagName(ElementWrapper wrapper, ref StringWrapperHandle result);
         public string TagName
         {
             get
             {
-                StringWrapperHandle result = new StringWrapperHandle();
-                int returnValue = wdeGetTagName(wrapper, ref result);
-                ErrorHandler.VerifyErrorCode(returnValue, "get the Value property");
-                return result.Value;
+                SafeStringWrapperHandle stringHandle = new SafeStringWrapperHandle();
+                WebDriverResult result = NativeMethods.wdeGetTagName(elementHandle, ref stringHandle);
+                ResultHandler.VerifyResultCode(result, "get the Value property");
+                string returnValue = string.Empty;
+                using (StringWrapper wrapper = new StringWrapper(stringHandle))
+                {
+                    // StringWrapper correctly disposes of the handle
+                    returnValue = wrapper.Value;
+                }
+                return returnValue;
             }
         }
 
-        [DllImport("InternetExplorerDriver")]
-        private static extern int wdeIsEnabled(ElementWrapper handle, ref int enabled);
         public bool Enabled
         {
             get 
             {
                 int enabled = 0;
-                int result = wdeIsEnabled(wrapper, ref enabled);
-                ErrorHandler.VerifyErrorCode(result, "get the Enabled property");
+                WebDriverResult result = NativeMethods.wdeIsEnabled(elementHandle, ref enabled);
+                ResultHandler.VerifyResultCode(result, "get the Enabled property");
                 return (enabled == 1);
             }
         }
 	
-        [DllImport("InternetExplorerDriver")]
-        private static extern int wdeClear(ElementWrapper handle);
         public void Clear()
         {
-            int result = wdeClear(wrapper);
-            ErrorHandler.VerifyErrorCode(result, "clear the element");
+            WebDriverResult result = NativeMethods.wdeClear(elementHandle);
+            ResultHandler.VerifyResultCode(result, "clear the element");
         }
 
-        [DllImport("InternetExplorerDriver", CharSet = CharSet.Unicode)]
-        private static extern int wdeSendKeys(ElementWrapper wrapper, [MarshalAs(UnmanagedType.LPWStr)] string text);
         public void SendKeys(string text)
         {
-            int result = wdeSendKeys(wrapper, text);            
-            ErrorHandler.VerifyErrorCode(result, "send keystrokes to the element");
+            WebDriverResult result = NativeMethods.wdeSendKeys(elementHandle, text);            
+            ResultHandler.VerifyResultCode(result, "send keystrokes to the element");
         }
 
-        [DllImport("InternetExplorerDriver")]
-        private static extern int wdeSubmit(ElementWrapper wrapper);
         public void Submit()
         {
-            int result = wdeSubmit(wrapper);
-            ErrorHandler.VerifyErrorCode(result, "submit the element");
+            WebDriverResult result = NativeMethods.wdeSubmit(elementHandle);
+            ResultHandler.VerifyResultCode(result, "submit the element");
         }
 
-        [DllImport("InternetExplorerDriver")]
-        private static extern int wdeClick(ElementWrapper wrapper);
         public void Click()
         {
-            int result = wdeClick(wrapper);
-            ErrorHandler.VerifyErrorCode(result, "click the element");
+            WebDriverResult result = NativeMethods.wdeClick(elementHandle);
+            ResultHandler.VerifyResultCode(result, "click the element");
         }
 
-        [DllImport("InternetExplorerDriver", CharSet = CharSet.Unicode)]
-        private static extern int wdeGetAttribute(ElementWrapper wrapper, [MarshalAs(UnmanagedType.LPWStr)] string attributeName, ref StringWrapperHandle result);
         public string GetAttribute(string attributeName)
         {
-            StringWrapperHandle result = new StringWrapperHandle();
-            int returnValue = wdeGetAttribute(wrapper, attributeName, ref result);
-            ErrorHandler.VerifyErrorCode(returnValue, string.Format("getting attribute '{0}' of the element", attributeName));
-            return result.Value;
+            SafeStringWrapperHandle stringHandle = new SafeStringWrapperHandle();
+            WebDriverResult result = NativeMethods.wdeGetAttribute(elementHandle, attributeName, ref stringHandle);
+            ResultHandler.VerifyResultCode(result, string.Format(CultureInfo.InvariantCulture, "getting attribute '{0}' of the element", attributeName));
+            string returnValue = string.Empty;
+            using (StringWrapper wrapper = new StringWrapper(stringHandle))
+            {
+                returnValue = wrapper.Value;
+            }
+            return returnValue;
         }
 
         public string Value
@@ -110,57 +113,47 @@ namespace OpenQa.Selenium.IE
         }
 
 
-        [DllImport("InternetExplorerDriver")]
-        private static extern int wdeIsSelected(ElementWrapper handle, ref int selected);
-        [DllImport("InternetExplorerDriver")]
-        private static extern int wdeSetSelected(ElementWrapper handle);
         public bool Selected
         {
             get
             {
                 int selected = 0;
-                int result = wdeIsSelected(wrapper, ref selected);
-                ErrorHandler.VerifyErrorCode(result, "Checking if element is selected");
+                WebDriverResult result = NativeMethods.wdeIsSelected(elementHandle, ref selected);
+                ResultHandler.VerifyResultCode(result, "Checking if element is selected");
                 return (selected == 1);
             }
             set
             {
-                int result = wdeSetSelected(wrapper);
-                ErrorHandler.VerifyErrorCode(result, "(Un)selecting element");
+                WebDriverResult result = NativeMethods.wdeSetSelected(elementHandle);
+                ResultHandler.VerifyResultCode(result, "(Un)selecting element");
             }
         }
 
-        [DllImport("InternetExplorerDriver")]
-        private static extern int wdeToggle(ElementWrapper handle, ref int toggled);
         public bool Toggle()
         {
             int toggled = 0;
-            int result = wdeToggle(wrapper, ref toggled);
-            ErrorHandler.VerifyErrorCode(result, "Toggling element");
+            WebDriverResult result = NativeMethods.wdeToggle(elementHandle, ref toggled);
+            ResultHandler.VerifyResultCode(result, "Toggling element");
             return (toggled == 1);
         }
 
-        public List<IWebElement> FindElements(By by)
+        public ReadOnlyCollection<IWebElement> FindElements(By by)
         {
-            return by.FindElements(new Finder(driver, wrapper));
+            return by.FindElements(new Finder(driver, elementHandle));
         }
 
         public IWebElement FindElement(By by)
         {
-            return by.FindElement(new Finder(driver, wrapper));
+            return by.FindElement(new Finder(driver, elementHandle));
         }
 
-        [DllImport("InternetExplorerDriver")]
-        private static extern int wdAddElementScriptArg(IntPtr scriptArgs, ElementWrapper handle);
-        public int AddToScriptArgs(IntPtr scriptArgs)
+        public WebDriverResult AddToScriptArgs(SafeScriptArgsHandle scriptArgs)
         {
-            int result = wdAddElementScriptArg(scriptArgs, wrapper);
-            ErrorHandler.VerifyErrorCode(result, "adding to script arguments");
+            WebDriverResult result = NativeMethods.wdAddElementScriptArg(scriptArgs, elementHandle);
+            ResultHandler.VerifyResultCode(result, "adding to script arguments");
             return result;
         }
 
-        [DllImport("InternetExplorerDriver")]
-        private static extern int wdeGetDetailsOnceScrolledOnToScreen(ElementWrapper element, ref IntPtr hwnd, ref int x, ref int y, ref int width, ref int height);
         public Point LocationOnScreenOnceScrolledIntoView
         {
             get
@@ -172,15 +165,13 @@ namespace OpenQa.Selenium.IE
                 int height = 0;
                 IntPtr hwnd = IntPtr.Zero;
 
-                int result = wdeGetDetailsOnceScrolledOnToScreen(wrapper, ref hwnd, ref x, ref y, ref width, ref height);
-                ErrorHandler.VerifyErrorCode(result, "get the location once scrolled onto the screen");
+                WebDriverResult result = NativeMethods.wdeGetDetailsOnceScrolledOnToScreen(elementHandle, ref hwnd, ref x, ref y, ref width, ref height);
+                ResultHandler.VerifyResultCode(result, "get the location once scrolled onto the screen");
                 location = new Point(x, y);
                 return location;
             }
         }
 
-        [DllImport("InternetExplorerDriver")]
-        private static extern int wdeGetLocation(ElementWrapper element, ref int x, ref int y);
         public Point Location
         {
             get
@@ -188,16 +179,14 @@ namespace OpenQa.Selenium.IE
                 Point elementLocation = Point.Empty;
                 int x = 0;
                 int y = 0;
-                int result = wdeGetLocation(wrapper, ref x, ref y);
-                ErrorHandler.VerifyErrorCode(result, "get the location");
+                WebDriverResult result = NativeMethods.wdeGetLocation(elementHandle, ref x, ref y);
+                ResultHandler.VerifyResultCode(result, "get the location");
                 elementLocation = new Point(x, y);
                 return elementLocation;
             }
         }
 
 
-        [DllImport("InternetExplorerDriver")]
-        private static extern int wdeGetSize(ElementWrapper element, ref int width, ref int height);
         public Size Size
         {
             get
@@ -205,39 +194,38 @@ namespace OpenQa.Selenium.IE
                 Size elementSize = Size.Empty;
                 int width = 0;
                 int height = 0;
-                int result = wdeGetSize(wrapper, ref width, ref height);
+                WebDriverResult result = NativeMethods.wdeGetSize(elementHandle, ref width, ref height);
 
-                ErrorHandler.VerifyErrorCode(result, "get the size");
+                ResultHandler.VerifyResultCode(result, "get the size");
                 elementSize = new Size(width, height);
                 return elementSize;
             }
         }
 
-        [DllImport("InternetExplorerDriver")]
-        private static extern int wdeIsDisplayed(ElementWrapper handle, ref int displayed);
         public bool Displayed
         {
             get
             {
                 int displayed = 0;
-                int result = wdeIsDisplayed(wrapper, ref displayed);
-                ErrorHandler.VerifyErrorCode(result, "get the Displayed property");
+                WebDriverResult result = NativeMethods.wdeIsDisplayed(elementHandle, ref displayed);
+                ResultHandler.VerifyResultCode(result, "get the Displayed property");
                 return (displayed == 1);
             }
         }
 
-        [DllImport("InternetExplorerDriver")]
-        private static extern int wdeGetValueOfCssProperty(ElementWrapper handle, [MarshalAs(UnmanagedType.LPWStr)] string attributeName, ref StringWrapperHandle result);
         public string GetValueOfCssProperty(string propertyName)
         {
-            StringWrapperHandle result = new StringWrapperHandle();
-            int returnValue = wdeGetValueOfCssProperty(wrapper, propertyName, ref result);
-            ErrorHandler.VerifyErrorCode(returnValue, string.Format("get the value of CSS property '{0}'", propertyName));
-            return result.Value;
+            SafeStringWrapperHandle stringHandle = new SafeStringWrapperHandle();
+            WebDriverResult result = NativeMethods.wdeGetValueOfCssProperty(elementHandle, propertyName, ref stringHandle);
+            ResultHandler.VerifyResultCode(result, string.Format(CultureInfo.InvariantCulture, "get the value of CSS property '{0}'", propertyName));
+            string returnValue = string.Empty;
+            using (StringWrapper wrapper = new StringWrapper(stringHandle))
+            {
+                returnValue = wrapper.Value;
+            }
+            return returnValue;
         }
 
-        [DllImport("InternetExplorerDriver")]
-        private static extern int wdeMouseMoveTo(IntPtr hwnd, int duration, int fromX, int fromY, int toX, int toY);
         public void Hover()
         {
             IntPtr hwnd = IntPtr.Zero;
@@ -245,22 +233,18 @@ namespace OpenQa.Selenium.IE
             int y = 0;
             int width = 0;
             int height = 0;
-            int result = wdeGetDetailsOnceScrolledOnToScreen(wrapper, ref hwnd, ref x, ref y, ref width, ref height);
+            WebDriverResult result = NativeMethods.wdeGetDetailsOnceScrolledOnToScreen(elementHandle, ref hwnd, ref x, ref y, ref width, ref height);
 
-            ErrorHandler.VerifyErrorCode(result, "hover");
+            ResultHandler.VerifyResultCode(result, "hover");
 
             int midX = x + (width / 2);
             int midY = y + (height / 2);
 
-            result = wdeMouseMoveTo(hwnd, 100, 0, 0, midX, midY);
+            result = NativeMethods.wdeMouseMoveTo(hwnd, 100, 0, 0, midX, midY);
 
-            ErrorHandler.VerifyErrorCode(result, "hover mouse move");
+            ResultHandler.VerifyResultCode(result, "hover mouse move");
         }
 
-        [DllImport("InternetExplorerDriver")]
-        private static extern int wdeMouseDownAt(IntPtr hwnd, int windowX, int windowY);
-        [DllImport("InternetExplorerDriver")]
-        private static extern int wdeMouseUpAt(IntPtr hwnd, int windowX, int windowY);
         public void DragAndDropBy(int moveRightBy, int moveDownBy)
         {
             IntPtr hwnd = IntPtr.Zero;
@@ -268,17 +252,17 @@ namespace OpenQa.Selenium.IE
             int y = 0;
             int width = 0;
             int height = 0;
-            int result = wdeGetDetailsOnceScrolledOnToScreen(wrapper, ref hwnd, ref x, ref y, ref width, ref height);
-            ErrorHandler.VerifyErrorCode(result, "Unable to determine location once scrolled on to screen");
+            WebDriverResult result = NativeMethods.wdeGetDetailsOnceScrolledOnToScreen(elementHandle, ref hwnd, ref x, ref y, ref width, ref height);
+            ResultHandler.VerifyResultCode(result, "Unable to determine location once scrolled on to screen");
 
-            wdeMouseDownAt(hwnd, x, y);
+            NativeMethods.wdeMouseDownAt(hwnd, x, y);
 
             int endX = x + moveRightBy;
             int endY = y + moveDownBy;
 
             int duration = driver.Manage().Speed.Timeout;
-            wdeMouseMoveTo(hwnd, duration, x, y, endX, endY);
-            wdeMouseUpAt(hwnd, endX, endY);
+            NativeMethods.wdeMouseMoveTo(hwnd, duration, x, y, endX, endY);
+            NativeMethods.wdeMouseUpAt(hwnd, endX, endY);
         }
 
         public void DragAndDropOn(IRenderedWebElement toElement)
@@ -288,36 +272,36 @@ namespace OpenQa.Selenium.IE
             int y = 0;
             int width = 0;
             int height = 0;
-            int result = wdeGetDetailsOnceScrolledOnToScreen(wrapper, ref hwnd, ref x, ref y, ref width, ref height);
-            ErrorHandler.VerifyErrorCode(result, "Unable to determine location once scrolled on to screen");
+            WebDriverResult result = NativeMethods.wdeGetDetailsOnceScrolledOnToScreen(elementHandle, ref hwnd, ref x, ref y, ref width, ref height);
+            ResultHandler.VerifyResultCode(result, "Unable to determine location once scrolled on to screen");
 
             int startX = x + (width / 2);
             int startY = y + (height / 2);
 
-            wdeMouseDownAt(hwnd, startX, startY);
+            NativeMethods.wdeMouseDownAt(hwnd, startX, startY);
 
-            ElementWrapper other = ((InternetExplorerWebElement)toElement).Wrapper;
-            result = wdeGetDetailsOnceScrolledOnToScreen(other, ref hwnd, ref x, ref y, ref width, ref height);
-            ErrorHandler.VerifyErrorCode(result, "Unable to determine location of target once scrolled on to screen");
+            SafeInternetExplorerWebElementHandle other = ((InternetExplorerWebElement)toElement).Wrapper;
+            result = NativeMethods.wdeGetDetailsOnceScrolledOnToScreen(other, ref hwnd, ref x, ref y, ref width, ref height);
+            ResultHandler.VerifyResultCode(result, "Unable to determine location of target once scrolled on to screen");
 
             int endX = x + (width / 2);
             int endY = y + (height / 2);
 
             int duration = driver.Manage().Speed.Timeout;
-            wdeMouseMoveTo(hwnd, duration, startX, startY, endX, endY);
-            wdeMouseUpAt(hwnd, endX, endY);
+            NativeMethods.wdeMouseMoveTo(hwnd, duration, startX, startY, endX, endY);
+            NativeMethods.wdeMouseUpAt(hwnd, endX, endY);
         }
 
         public override bool Equals(object obj)
         {
-            if (!(obj is IWebElement))
+            IWebElement other = obj as IWebElement;
+
+            if (other == null)
             {
                 return false;
             }
 
-            IWebElement other = obj as IWebElement;
-
-            if (other == null && other is IWrapsElement)
+            if (other is IWrapsElement)
             {
                 other = ((IWrapsElement)obj).WrappedElement;
             }
@@ -333,7 +317,17 @@ namespace OpenQa.Selenium.IE
 
         public override int GetHashCode()
         {
-            return wrapper.GetHashCode();
+            return elementHandle.GetHashCode();
         }
+
+        #region IDisposable Members
+
+        public void Dispose()
+        {
+            elementHandle.Dispose();
+            GC.SuppressFinalize(this);
+        }
+
+        #endregion
     }
 }

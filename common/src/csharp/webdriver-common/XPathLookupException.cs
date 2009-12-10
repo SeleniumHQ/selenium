@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Runtime.Serialization;
 
-namespace OpenQa.Selenium
+namespace OpenQA.Selenium
 {
+    [Serializable]
     public class XPathLookupException : WebDriverException
     {
         public XPathLookupException()
@@ -13,6 +15,16 @@ namespace OpenQa.Selenium
 
         public XPathLookupException(string message)
             : base(message)
+        {
+        }
+
+        public XPathLookupException(string message, Exception innerException)
+            : base(message, innerException)
+        {
+        }
+
+        protected XPathLookupException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
         {
         }
     }

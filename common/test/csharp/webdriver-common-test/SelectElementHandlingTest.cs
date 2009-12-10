@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
+using System.Collections.ObjectModel;
 
-namespace OpenQa.Selenium
+namespace OpenQA.Selenium
 {
     [TestFixture]
     public class SelectElementHandlingTest : DriverTestFixture
@@ -15,7 +16,7 @@ namespace OpenQa.Selenium
             driver.Url = formsPage;
 
             IWebElement multiSelect = driver.FindElement(By.Id("multi"));
-            List<IWebElement> options = multiSelect.FindElements(By.TagName("option"));
+            ReadOnlyCollection<IWebElement> options = multiSelect.FindElements(By.TagName("option"));
 
             IWebElement option = options[0];
             Assert.IsTrue(option.Selected);
@@ -36,7 +37,7 @@ namespace OpenQa.Selenium
             driver.Url = formsPage;
 
             IWebElement select = driver.FindElement(By.XPath("//select[@name='selectomatic']"));
-            List<IWebElement> options = select.FindElements(By.TagName("option"));
+            ReadOnlyCollection<IWebElement> options = select.FindElements(By.TagName("option"));
             IWebElement option = options[0];
             option.Toggle();
         }
@@ -46,7 +47,7 @@ namespace OpenQa.Selenium
         {
             driver.Url = formsPage;
             IWebElement selectBox = driver.FindElement(By.XPath("//select[@name='selectomatic']"));
-            List<IWebElement> options = selectBox.FindElements(By.TagName("option"));
+            ReadOnlyCollection<IWebElement> options = selectBox.FindElements(By.TagName("option"));
             IWebElement one = options[0];
             IWebElement two = options[1];
             Assert.IsTrue(one.Selected);
@@ -63,7 +64,7 @@ namespace OpenQa.Selenium
             driver.Url = formsPage;
 
             IWebElement multiSelect = driver.FindElement(By.Id("multi"));
-            List<IWebElement> options = multiSelect.FindElements(By.TagName("option"));
+            ReadOnlyCollection<IWebElement> options = multiSelect.FindElements(By.TagName("option"));
             foreach (IWebElement option in options)
             {
                 option.Selected = true;

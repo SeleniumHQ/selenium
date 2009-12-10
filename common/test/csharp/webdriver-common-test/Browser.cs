@@ -1,4 +1,4 @@
-namespace OpenQa.Selenium
+namespace OpenQA.Selenium
 {
     public enum Browser
     {

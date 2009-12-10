@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Drawing;
 
-namespace OpenQa.Selenium
+namespace OpenQA.Selenium
 {
     public interface IRenderedWebElement : IWebElement
     {

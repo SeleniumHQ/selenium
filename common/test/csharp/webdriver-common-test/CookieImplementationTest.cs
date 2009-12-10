@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using OpenQa.Selenium.Environment;
+using OpenQA.Selenium.Environment;
 
-namespace OpenQa.Selenium
+namespace OpenQA.Selenium
 {
     [TestFixture]
     public class CookieImplementationTest : DriverTestFixture

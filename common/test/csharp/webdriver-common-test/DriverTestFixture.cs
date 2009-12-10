@@ -1,8 +1,8 @@
 using NUnit.Framework;
-using OpenQa.Selenium.Environment;
+using OpenQA.Selenium.Environment;
 using System;
 
-namespace OpenQa.Selenium
+namespace OpenQA.Selenium
 {
     
     public abstract class DriverTestFixture

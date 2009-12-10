@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
 
-namespace OpenQa.Selenium
+namespace OpenQA.Selenium
 {
     [TestFixture]
     public class ExecutingJavascriptTest : DriverTestFixture
@@ -13,7 +13,7 @@ namespace OpenQa.Selenium
         [Test]
         public void ShouldBeAbleToExecuteSimpleJavascriptAndReturnAString()
         {
-            if (!(driver is IJavascriptExecutor))
+            if (!(driver is IJavaScriptExecutor))
                 return;
 
             driver.Url = xhtmlTestPage;
@@ -28,7 +28,7 @@ namespace OpenQa.Selenium
         [Test]
         public void ShouldBeAbleToExecuteSimpleJavascriptAndReturnALong()
         {
-            if (!(driver is IJavascriptExecutor))
+            if (!(driver is IJavaScriptExecutor))
                 return;
 
             driver.Url = xhtmlTestPage;
@@ -43,7 +43,7 @@ namespace OpenQa.Selenium
         [Test]
         public void ShouldBeAbleToExecuteSimpleJavascriptAndReturnAWebElement()
         {
-            if (!(driver is IJavascriptExecutor))
+            if (!(driver is IJavaScriptExecutor))
                 return;
 
             driver.Url = xhtmlTestPage;
@@ -58,7 +58,7 @@ namespace OpenQa.Selenium
         [Test]
         public void ShouldBeAbleToExecuteSimpleJavascriptAndReturnABoolean()
         {
-            if (!(driver is IJavascriptExecutor))
+            if (!(driver is IJavaScriptExecutor))
                 return;
 
             driver.Url = xhtmlTestPage;
@@ -75,7 +75,7 @@ namespace OpenQa.Selenium
         [IgnoreBrowser(Browser.IE)]
         public void ShouldBeAbleToExecuteSimpleJavascriptAndReturnAnArray()
         {
-            if (!(driver is IJavascriptExecutor))
+            if (!(driver is IJavaScriptExecutor))
             {
                 return;
             }
@@ -121,7 +121,7 @@ namespace OpenQa.Selenium
         [Category("Javascript")]
         public void PassingAndReturningALongShouldReturnAWholeNumber()
         {
-            if (!(driver is IJavascriptExecutor))
+            if (!(driver is IJavaScriptExecutor))
             {
                 return;
             }
@@ -137,7 +137,7 @@ namespace OpenQa.Selenium
         [Category("Javascript")]
         public void PassingAndReturningADoubleShouldReturnADecimal()
         {
-            if (!(driver is IJavascriptExecutor))
+            if (!(driver is IJavaScriptExecutor))
             {
                 return;
             }
@@ -154,7 +154,7 @@ namespace OpenQa.Selenium
         [Test]
         public void ShouldThrowAnExceptionWhenTheJavascriptIsBad()
         {
-            if (!(driver is IJavascriptExecutor))
+            if (!(driver is IJavaScriptExecutor))
                 return;
 
             driver.Url = xhtmlTestPage;
@@ -165,7 +165,7 @@ namespace OpenQa.Selenium
         [Category("Javascript")]
         public void ShouldBeAbleToCallFunctionsDefinedOnThePage()
         {
-            if (!(driver is IJavascriptExecutor))
+            if (!(driver is IJavaScriptExecutor))
                 return;
 
             driver.Url = javascriptPage;
@@ -179,7 +179,7 @@ namespace OpenQa.Selenium
         [Category("Javascript")]
         public void ShouldBeAbleToPassAStringAsAnArgument()
         {
-            if (!(driver is IJavascriptExecutor))
+            if (!(driver is IJavaScriptExecutor))
                 return;
 
             driver.Url = javascriptPage;
@@ -193,7 +193,7 @@ namespace OpenQa.Selenium
         [Category("Javascript")]
         public void ShouldBeAbleToPassMoreThanOneStringAsArguments()
         {
-            if (!(driver is IJavascriptExecutor))
+            if (!(driver is IJavaScriptExecutor))
                 return;
 
             driver.Url = javascriptPage;
@@ -210,7 +210,7 @@ namespace OpenQa.Selenium
 
             string function = "displayMessage(arguments[0] ? 'True' : 'False');";
 
-            if (!(driver is IJavascriptExecutor))
+            if (!(driver is IJavaScriptExecutor))
                 return;
 
             driver.Url = javascriptPage;
@@ -231,7 +231,7 @@ namespace OpenQa.Selenium
 
             string function = "displayMessage((arguments[0] ? 'True' : 'False') + (arguments[1] ? 'True' : 'False'));";
 
-            if (!(driver is IJavascriptExecutor))
+            if (!(driver is IJavaScriptExecutor))
                 return;
 
             driver.Url = javascriptPage;
@@ -259,7 +259,7 @@ namespace OpenQa.Selenium
         {
             string function = "displayMessage(arguments[0]);";
 
-            if (!(driver is IJavascriptExecutor))
+            if (!(driver is IJavaScriptExecutor))
                 return;
 
             driver.Url = javascriptPage;
@@ -288,7 +288,7 @@ namespace OpenQa.Selenium
         {
             string function = "displayMessage(arguments[0]+arguments[1]);";
 
-            if (!(driver is IJavascriptExecutor))
+            if (!(driver is IJavaScriptExecutor))
                 return;
 
             driver.Url = javascriptPage;
@@ -317,7 +317,7 @@ namespace OpenQa.Selenium
         {
             string function = "displayMessage(arguments[0]);";
 
-            if (!(driver is IJavascriptExecutor))
+            if (!(driver is IJavaScriptExecutor))
                 return;
 
             driver.Url = javascriptPage;
@@ -354,7 +354,7 @@ namespace OpenQa.Selenium
         {
             String function = "displayMessage(arguments[0]+arguments[1]);";
 
-            if (!(driver is IJavascriptExecutor))
+            if (!(driver is IJavaScriptExecutor))
                 return;
 
             driver.Url = javascriptPage;
@@ -381,7 +381,7 @@ namespace OpenQa.Selenium
         [Category("Javascript")]
         public void ShouldBeAbleToPassAWebElementAsArgument()
         {
-            if (!(driver is IJavascriptExecutor))
+            if (!(driver is IJavaScriptExecutor))
                 return;
 
             driver.Url = javascriptPage;
@@ -396,7 +396,7 @@ namespace OpenQa.Selenium
         [IgnoreBrowser(Browser.IE)]
         public void ShouldBeAbleToPassAnArrayAsArgument()
         {
-            if (!(driver is IJavascriptExecutor))
+            if (!(driver is IJavaScriptExecutor))
             {
                 return;
             }
@@ -411,7 +411,7 @@ namespace OpenQa.Selenium
         [Category("Javascript")]
         public void ShouldBeAbleToPassMoreThanOneWebElementAsArguments()
         {
-            if (!(driver is IJavascriptExecutor))
+            if (!(driver is IJavaScriptExecutor))
                 return;
 
             driver.Url = javascriptPage;
@@ -427,7 +427,7 @@ namespace OpenQa.Selenium
         [ExpectedException(typeof(ArgumentException))]
         public void ShouldThrowAnExceptionIfAnArgumentIsNotValid()
         {
-            if (!(driver is IJavascriptExecutor))
+            if (!(driver is IJavaScriptExecutor))
                 return;
 
             driver.Url = javascriptPage;
@@ -438,7 +438,7 @@ namespace OpenQa.Selenium
         [Category("Javascript")]
         public void ShouldBeAbleToPassInMixedArguments()
         {
-            if (!(driver is IJavascriptExecutor))
+            if (!(driver is IJavaScriptExecutor))
                 return;
 
             driver.Url = javascriptPage;
@@ -463,7 +463,7 @@ namespace OpenQa.Selenium
             driver.Url = richTextPage;
 
             driver.SwitchTo().Frame("editFrame");
-            IWebElement body = (IWebElement)((IJavascriptExecutor)driver).ExecuteScript("return document.body");
+            IWebElement body = (IWebElement)((IJavaScriptExecutor)driver).ExecuteScript("return document.body");
 
             Assert.AreEqual("", body.Text);
         }
@@ -501,7 +501,7 @@ namespace OpenQa.Selenium
 
         private object ExecuteScript(String script, params Object[] args)
         {
-            return ((IJavascriptExecutor)driver).ExecuteScript(script, args);
+            return ((IJavaScriptExecutor)driver).ExecuteScript(script, args);
         }
 
     }

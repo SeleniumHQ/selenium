@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 
-namespace OpenQa.Selenium.Internal
+namespace OpenQA.Selenium.Internal
 {
     public interface IFindsByXPath
     {
         IWebElement FindElementByXPath(String xpath);
-        List<IWebElement> FindElementsByXPath(String xpath);
+        ReadOnlyCollection<IWebElement> FindElementsByXPath(String xpath);
     }
 }

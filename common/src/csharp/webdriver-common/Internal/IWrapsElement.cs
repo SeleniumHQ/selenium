@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace OpenQa.Selenium.Internal
+namespace OpenQA.Selenium.Internal
 {
     public interface IWrapsElement
     {

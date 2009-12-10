@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 
-namespace OpenQa.Selenium
+namespace OpenQA.Selenium
 {
     public interface IWebElement
     {
@@ -43,7 +44,7 @@ namespace OpenQa.Selenium
 
         bool Toggle();
 
-        List<IWebElement> FindElements(By by);
+        ReadOnlyCollection<IWebElement> FindElements(By by);
 
         IWebElement FindElement(By by);
     }

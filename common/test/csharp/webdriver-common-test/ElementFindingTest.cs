@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
+using System.Collections.ObjectModel;
 
-namespace OpenQa.Selenium
+namespace OpenQA.Selenium
 {
     [TestFixture]
     public class ElementFindingTest : DriverTestFixture
@@ -90,9 +91,9 @@ namespace OpenQa.Selenium
         public void ShouldBeAbleToFindChildrenOfANode()
         {
             driver.Url = xhtmlTestPage;
-            List<IWebElement> elements = driver.FindElements(By.XPath("/html/head"));
+            ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.XPath("/html/head"));
             IWebElement head = elements[0];
-            List<IWebElement> importedScripts = head.FindElements(By.TagName("script"));
+            ReadOnlyCollection<IWebElement> importedScripts = head.FindElements(By.TagName("script"));
             Assert.AreEqual(importedScripts.Count, 2);
         }
 
@@ -101,7 +102,7 @@ namespace OpenQa.Selenium
         {
             driver.Url = xhtmlTestPage;
             IWebElement table = driver.FindElement(By.Id("table"));
-            List<IWebElement> rows = table.FindElements(By.TagName("tr"));
+            ReadOnlyCollection<IWebElement> rows = table.FindElements(By.TagName("tr"));
 
             Assert.AreEqual(rows.Count, 0);
         }
@@ -166,7 +167,7 @@ namespace OpenQa.Selenium
         {
             driver.Url = xhtmlTestPage;
 
-            List<IWebElement> elements = driver.FindElements(By.XPath("//div"));
+            ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.XPath("//div"));
 
             Assert.IsTrue(elements.Count > 1);
         }
@@ -176,7 +177,7 @@ namespace OpenQa.Selenium
         {
             driver.Url = xhtmlTestPage;
 
-            List<IWebElement> elements = driver.FindElements(By.LinkText("click me"));
+            ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.LinkText("click me"));
 
             Assert.IsTrue(elements.Count == 2, "Expected 2 links, got " + elements.Count);
         }
@@ -186,7 +187,7 @@ namespace OpenQa.Selenium
         {
             driver.Url = xhtmlTestPage;
 
-            List<IWebElement> elements = driver.FindElements(By.PartialLinkText("ick me"));
+            ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.PartialLinkText("ick me"));
 
             Assert.IsTrue(elements.Count == 2);
         }
@@ -204,7 +205,7 @@ namespace OpenQa.Selenium
         {
             driver.Url = nestedPage;
 
-            List<IWebElement> elements = driver.FindElements(By.Name("checky"));
+            ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.Name("checky"));
 
             Assert.IsTrue(elements.Count > 1);
         }
@@ -214,7 +215,7 @@ namespace OpenQa.Selenium
         {
             driver.Url = nestedPage;
 
-            List<IWebElement> elements = driver.FindElements(By.Id("2"));
+            ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.Id("2"));
 
             Assert.AreEqual(8, elements.Count);
         }
@@ -224,7 +225,7 @@ namespace OpenQa.Selenium
         {
             driver.Url = xhtmlTestPage;
 
-            List<IWebElement> elements = driver.FindElements(By.ClassName("nameC"));
+            ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.ClassName("nameC"));
 
             Assert.IsTrue(elements.Count > 1);
         }
@@ -297,7 +298,7 @@ namespace OpenQa.Selenium
         {
             driver.Url = formsPage;
 
-            List<IWebElement> elements = driver.FindElements(By.TagName("input"));
+            ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.TagName("input"));
 
             Assert.IsNotNull(elements);
         }

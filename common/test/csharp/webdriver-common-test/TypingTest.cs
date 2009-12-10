@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
 
-namespace OpenQa.Selenium
+namespace OpenQA.Selenium
 {
     [TestFixture]
     public class TypingTest : DriverTestFixture
@@ -470,9 +470,9 @@ namespace OpenQa.Selenium
             IWebElement element = driver.FindElement(By.Id("keyReporter"));
 
             element.SendKeys("abcd" + Keys.Multiply + Keys.Subtract + Keys.Add +
-                             Keys.Decimal + Keys.Separator + Keys.NumPad0 + Keys.NumPad9 +
-                             Keys.Add + Keys.Semicolon + Keys.Equals + Keys.Divide +
-                             Keys.NumPad3 + "abcd");
+                             Keys.Decimal + Keys.Separator + Keys.NumberPad0 + Keys.NumberPad9 +
+                             Keys.Add + Keys.Semicolon + Keys.Equal + Keys.Divide +
+                             Keys.NumberPad3 + "abcd");
             Assert.AreEqual(element.Value, "abcd*-+.,09+;=/3abcd");
 
             element.Clear();

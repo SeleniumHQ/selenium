@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace OpenQa.Selenium.Environment
+namespace OpenQA.Selenium.Environment
 {
    
     // As of yet we don't need the complexity of the Java bindings' AppServers,
@@ -37,7 +37,7 @@ namespace OpenQa.Selenium.Environment
         public string WhereIs(string page)
         {
             // TODO(andre.nogueira): Is it a problem if folder==""?
-            return protocol + "://" + hostName + ":" + port + "/common/" + page;
+            return protocol + "://" + hostName + ":" + port + "/" + path + "/" + page;
         }
 
     }

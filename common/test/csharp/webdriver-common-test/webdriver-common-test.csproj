@@ -117,9 +117,9 @@
     <Compile Include="XPathElementFindingTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\csharp\webdriver-common\webdriver-common.csproj">
+    <ProjectReference Include="..\..\..\src\csharp\webdriver-common\WebDriver.Common.csproj">
       <Project>{ABB9B87F-FEEA-410E-ACBF-26479B8C72B0}</Project>
-      <Name>webdriver-common</Name>
+      <Name>WebDriver.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

@@ -4,7 +4,7 @@ using System.Text;
 using NUnit.Framework;
 using System.Drawing;
 
-namespace OpenQa.Selenium
+namespace OpenQA.Selenium
 {
     [TestFixture]
     public class DragAndDropTest : DriverTestFixture
@@ -100,7 +100,7 @@ namespace OpenQa.Selenium
         {
             driver.Url = dragAndDropPage;
 
-            IJavascriptExecutor js = (IJavascriptExecutor)driver;
+            IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
             int height = (int)js.ExecuteScript("return window.outerHeight;");
             int width = (int)js.ExecuteScript("return window.outerWidth;");
             js.ExecuteScript("window.resizeTo(300, 300);");

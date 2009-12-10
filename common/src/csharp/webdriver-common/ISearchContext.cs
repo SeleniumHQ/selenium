@@ -1,13 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Collections.ObjectModel;
 
-namespace OpenQa.Selenium
+namespace OpenQA.Selenium
 {
     public interface ISearchContext
     {
         IWebElement FindElement(By by);
 
-        List<IWebElement> FindElements(By by);
+        ReadOnlyCollection<IWebElement> FindElements(By by);
     }
 }

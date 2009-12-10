@@ -1,6 +1,6 @@
 using System;
 
-namespace OpenQa.Selenium
+namespace OpenQA.Selenium
 {
     public interface INavigation
     {
@@ -27,14 +27,14 @@ namespace OpenQa.Selenium
          *
          * @param url The URL to load. It is best to use a fully qualified URL
          */
-        void To(String url);
+        void GoToUrl(string url);
 
         /**
          * Overloaded version of {@link #to(String)} that makes it easy to pass in a URL.
          *
          * @param url
          */
-        void To(Uri url);
+        void GoToUrl(Uri url);
 
         /**
          * Refresh the current page 

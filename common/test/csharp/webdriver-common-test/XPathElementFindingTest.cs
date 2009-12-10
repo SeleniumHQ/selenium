@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
+using System.Collections.ObjectModel;
 
-namespace OpenQa.Selenium
+namespace OpenQA.Selenium
 {
     [TestFixture]
     public class XPathElementFindingTest : DriverTestFixture
@@ -36,7 +37,7 @@ namespace OpenQa.Selenium
         public void ShouldFindElementsByXPath()
         {
             driver.Url = xhtmlTestPage;
-            List<IWebElement> divs = driver.FindElements(By.XPath("//div"));
+            ReadOnlyCollection<IWebElement> divs = driver.FindElements(By.XPath("//div"));
 
             Assert.AreEqual(divs.Count, 8);
         }

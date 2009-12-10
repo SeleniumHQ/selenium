@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
+using System.Collections.ObjectModel;
 
-namespace OpenQa.Selenium
+namespace OpenQA.Selenium
 {
     [TestFixture]
     public class ElementEqualityTest : DriverTestFixture
@@ -24,7 +25,7 @@ namespace OpenQa.Selenium
         {
             driver.Url = (simpleTestPage);
 
-            List<IWebElement> ps = driver.FindElements(By.TagName("p"));
+            ReadOnlyCollection<IWebElement> ps = driver.FindElements(By.TagName("p"));
 
             Assert.AreNotEqual(ps[0], ps[1]);
         }
@@ -47,8 +48,8 @@ namespace OpenQa.Selenium
         public void FindElementsHashCodeShouldMatchEquality()
         {
             driver.Url = (simpleTestPage);
-            List<IWebElement> body = driver.FindElements(By.TagName("body"));
-            List<IWebElement> xbody = driver.FindElements(By.XPath("//body"));
+            ReadOnlyCollection<IWebElement> body = driver.FindElements(By.TagName("body"));
+            ReadOnlyCollection<IWebElement> xbody = driver.FindElements(By.XPath("//body"));
 
             Assert.AreEqual(body[0].GetHashCode(), xbody[0].GetHashCode());
         }

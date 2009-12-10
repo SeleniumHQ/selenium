@@ -1,60 +1,61 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Globalization;
+using System.Security.Permissions;
 
-namespace OpenQa.Selenium.IE
+namespace OpenQA.Selenium.IE
 {
     // TODO(andre.nogueira): StringCollection, ElementCollection and StringWrapperHandle should be consistent among them
-    class StringCollection
+    [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.UnmanagedCode)]
+    class StringCollection : IDisposable
     {
-        SafeInternetExplorerDriverHandle driverHandle;
-        InternetExplorerDriver driver;
-        IntPtr elements;
+        private SafeStringCollectionHandle handle;
 
-        public StringCollection(InternetExplorerDriver driver, SafeInternetExplorerDriverHandle driverHandle, IntPtr elements)
+        public StringCollection(SafeStringCollectionHandle elementCollectionHandle)
         {
-            this.driver = driver;
-            this.driverHandle = driverHandle;
-            this.elements = elements;
+            handle = elementCollectionHandle;
         }
 
-        [DllImport("InternetExplorerDriver")]
-        private static extern int wdcGetStringCollectionLength(IntPtr elementCollection, ref int count);
-        [DllImport("InternetExplorerDriver")]
-        private static extern int wdcGetStringAtIndex(IntPtr elementCollection, int index, ref StringWrapperHandle result);
-        public List<String> ToList()
+        public List<string> ToList()
         {
-            List<String> toReturn = new List<String>();
-            int nelements = 0;
-            wdcGetStringCollectionLength(elements, ref nelements);
-            for (int i = 0; i < nelements; i++)
+            int elementCount = 0;
+            WebDriverResult result = NativeMethods.wdcGetStringCollectionLength(handle, ref elementCount);
+            if (result != WebDriverResult.Success)
             {
-                StringWrapperHandle wrapper = new StringWrapperHandle();
-                int result = wdcGetStringAtIndex(elements, i, ref wrapper);
-                //TODO(andre.nogueira): I don't like this very much... Maybe add a ErrorHandler.IsError or something?
-                try
+                Dispose();
+                throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Cannot extract strings from collection: {0}", result));
+            }
+
+            List<string> toReturn = new List<String>();
+            for (int i = 0; i < elementCount; i++)
+            {
+                SafeStringWrapperHandle stringHandle = new SafeStringWrapperHandle();
+                result = NativeMethods.wdcGetStringAtIndex(handle, i, ref stringHandle);
+                if (result != WebDriverResult.Success)
                 {
-                    ErrorHandler.VerifyErrorCode(result, "");
-                } 
-                catch (Exception)
-                {
-                    //TODO(andre.nogueira): More suitable exception
-                    throw new Exception("Could not retrieve element " + i + " from element collection");
+                    stringHandle.Dispose();
+                    Dispose();
+                    throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, "Cannot extract string from collection at index: {0} ({1})", i, result));
                 }
-                toReturn.Add(wrapper.Value);
-                
+                using (StringWrapper wrapper = new StringWrapper(stringHandle))
+                {
+                    toReturn.Add(wrapper.Value);
+                }
             }
             //TODO(andre.nogueira): from the java code (elementcollection.java)... "Free memory from the collection"
-            FreeCollection(elements);
+            //Dispose();
             return toReturn;
         }
 
-        [DllImport("InternetExplorerDriver")]
-        private static extern int wdFreeStringCollection(IntPtr elementCollection);
-        private void FreeCollection(IntPtr rawElements)
+        #region IDisposable Members
+
+        public void Dispose()
         {
-            wdFreeStringCollection(rawElements);
+            handle.Dispose();
+            GC.SuppressFinalize(this);
         }
 
+        #endregion
     }
 }

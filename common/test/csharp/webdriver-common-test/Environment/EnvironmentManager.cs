@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Reflection;
 using System.Text;
-using OpenQa.Selenium;
+using OpenQA.Selenium;
 
-namespace OpenQa.Selenium.Environment
+namespace OpenQA.Selenium.Environment
 {
     public class EnvironmentManager
     {
@@ -19,13 +19,11 @@ namespace OpenQa.Selenium.Environment
         private EnvironmentManager()
         {
             // TODO(andre.nogueira): Error checking to guard against malformed config files
-            String driverClassName = GetSettingValue("Driver");
-            String assemblyName = GetSettingValue("Assembly");
+            string driverClassName = GetSettingValue("Driver");
+            string assemblyName = GetSettingValue("Assembly");
             Assembly assembly = Assembly.Load(assemblyName);
             driverType = assembly.GetType(driverClassName);
-            browser = (Browser) Enum.Parse(
-                typeof(Browser), 
-                GetSettingValue("DriverName"));
+            browser = (Browser) Enum.Parse(typeof(Browser), GetSettingValue("DriverName"));
 
             urlBuilder = new UrlBuilder();
         }
@@ -50,8 +48,14 @@ namespace OpenQa.Selenium.Environment
 
         public IWebDriver GetCurrentDriver()
         {
-            if (driver != null) { return driver; }
-            else { return CreateFreshDriver(); }
+            if (driver != null)
+            { 
+                return driver; 
+            }
+            else 
+            { 
+                return CreateFreshDriver(); 
+            }
         }
 
         public IWebDriver CreateSecondDriver()
@@ -68,7 +72,8 @@ namespace OpenQa.Selenium.Environment
 
         public void CloseCurrentDriver()
         {
-            if (driver != null) {
+            if (driver != null) 
+            {
                 driver.Quit(); 
             }
             driver = null;

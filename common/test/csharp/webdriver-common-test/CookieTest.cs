@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.SyntaxHelpers;
-using OpenQa.Selenium.Internal;
+using OpenQA.Selenium.Internal;
 
-namespace OpenQa.Selenium
+namespace OpenQA.Selenium
 {
     [TestFixture]
     public class CookieTest
@@ -16,21 +16,21 @@ namespace OpenQa.Selenium
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        [ExpectedException(typeof(InvalidOperationException))]
         public void ShouldThrowAnExceptionWhenTheDomainIsBad()
         {
             new ReturnedCookie("Fish", "cod", "127.0.0.-1", null, DateTime.Now, false);
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        [ExpectedException(typeof(InvalidOperationException))]
         public void ShouldThrowAnExceptionWhenSemiColonExistsInTheCookieAttribute()
         {
             new ReturnedCookie("hi;hi", "value", null, null, DateTime.Now, false);
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        [ExpectedException(typeof(InvalidOperationException))]
         public void ShouldThrowAnExceptionTheNameIsNull()
         {
             new ReturnedCookie(null, "value", null, null, DateTime.Now, false);

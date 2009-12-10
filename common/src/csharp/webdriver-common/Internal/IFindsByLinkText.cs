@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 
-namespace OpenQa.Selenium.Internal
+namespace OpenQA.Selenium.Internal
 {
     public interface IFindsByLinkText
     {
         IWebElement FindElementByLinkText(String linkText);
-        List<IWebElement> FindElementsByLinkText(String linkText);
+        ReadOnlyCollection<IWebElement> FindElementsByLinkText(String linkText);
     }
 }
