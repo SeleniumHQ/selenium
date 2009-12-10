@@ -315,6 +315,20 @@ int wdGoForward(WebDriver* driver)
 	} END_TRY;
 }
 
+int wdRefresh(WebDriver* driver) 
+{
+	if (!driver || !driver->ie) return ENOSUCHDRIVER;
+
+	StringWrapper* wrapper;
+	int result = wdGetCurrentUrl(driver, &wrapper);
+	if (result != SUCCESS) {
+		return result;
+	}
+	result = wdGet(driver, wrapper->text);
+	wdFreeString(wrapper);
+	return result;
+}
+
 int wdClose(WebDriver* driver)
 {
 	if (!driver || !driver->ie) return ENOSUCHDRIVER;

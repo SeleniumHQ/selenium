@@ -417,7 +417,8 @@ public class InternetExplorerDriver implements WebDriver, JavascriptExecutor {
     }
 
     public void refresh() {
-      throw new UnsupportedOperationException("refresh");
+      int result = lib.wdRefresh(driver);
+      errors.verifyErrorCode(result, "Unable to refresh current page");
     }
   }
 
@@ -580,40 +581,43 @@ public class InternetExplorerDriver implements WebDriver, JavascriptExecutor {
     }
   }
 
-  private synchronized void initializeLib() {
-    if (lib != null) {
-      return;
-    }
+  private void initializeLib() {
+    synchronized (this) {
+      if (lib != null) {
+        return;
+      }
 
-    File parentDir = TemporaryFilesystem.createTempDir("webdriver", "libs");
+      File parentDir = TemporaryFilesystem.createTempDir("webdriver", "libs");
 
-    // We need to do this before calling any JNA methods because
-    // the map of paths to search is static. Apparently.
-    StringBuilder jnaPath = new StringBuilder(System.getProperty("jna.library.path", ""));
-    jnaPath.append(File.pathSeparator);
-    jnaPath.append(System.getProperty("java.class.path"));
-    jnaPath.append(File.pathSeparator);
-    jnaPath.append(parentDir.getAbsolutePath());
-    jnaPath.append(File.pathSeparator);
+      // We need to do this before calling any JNA methods because
+      // the map of paths to search is static. Apparently.
+      StringBuilder jnaPath = new StringBuilder(System.getProperty("jna.library.path", ""));
+      jnaPath.append(File.pathSeparator);
+      jnaPath.append(System.getProperty("java.class.path"));
+      jnaPath.append(File.pathSeparator);
+      jnaPath.append(parentDir.getAbsolutePath());
+      jnaPath.append(File.pathSeparator);
 
-    try {
-      FileHandler.copyResource(parentDir, getClass(), "InternetExplorerDriver.dll");
-    } catch (IOException e) {
-      if (Boolean.getBoolean("webdriver.development")) {
-        System.err.println(
-            "Exception unpacking required libraries, but in development mode. Continuing");
-      } else {
+      try {
+        FileHandler.copyResource(parentDir, getClass(), "InternetExplorerDriver.dll");
+      } catch (IOException e) {
+        if (Boolean.getBoolean("webdriver.development")) {
+          System.err.println(
+                  "Exception unpacking required libraries, but in development mode. Continuing");
+        } else {
+          throw new WebDriverException(e);
+        }
+      }
+
+      System.setProperty("jna.library.path", jnaPath.toString());
+
+      try {
+        lib = (ExportedWebDriverFunctions) Native.loadLibrary(
+            "InternetExplorerDriver", ExportedWebDriverFunctions.class);
+      } catch (UnsatisfiedLinkError e) {
+        System.out.println("new File(\".\").getAbsolutePath() = " + new File(".").getAbsolutePath());
         throw new WebDriverException(e);
       }
-    }
-
-    System.setProperty("jna.library.path", jnaPath.toString());
-
-    try {
-      lib = (ExportedWebDriverFunctions) Native.loadLibrary(
-          "InternetExplorerDriver", ExportedWebDriverFunctions.class);
-    } catch (UnsatisfiedLinkError e) {
-      System.out.println("new File(\".\").getAbsolutePath() = " + new File(".").getAbsolutePath());
     }
   }
 

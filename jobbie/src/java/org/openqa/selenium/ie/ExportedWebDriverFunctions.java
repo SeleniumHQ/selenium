@@ -71,6 +71,7 @@ interface ExportedWebDriverFunctions extends StdCallLibrary {
   int wdSwitchToFrame(Pointer driver, WString string);
   int wdGoBack(Pointer driver);
   int wdGoForward(Pointer driver);
+  int wdRefresh(Pointer driver);
   
   // Options
   int wdAddCookie(Pointer driver, WString string);
