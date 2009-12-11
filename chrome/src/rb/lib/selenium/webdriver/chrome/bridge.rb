@@ -217,8 +217,10 @@ module Selenium
         end
 
         def getElementSize(element)
-          execute :request   => 'getElementSize',
-                  :elementId => element
+          data = execute :request   => 'getElementSize',
+                         :elementId => element
+
+          Dimension.new data['width'], data['height']
         end
 
         def sendKeysToElement(element, string)

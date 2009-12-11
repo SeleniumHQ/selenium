@@ -185,13 +185,16 @@ module Selenium
           # data = execute :getElementLocation, :element_id => element
           data = execute :getLocation,
                          :element_id => element
-          Point.new(data["x"], data["y"])
+
+          Point.new data["x"], data["y"]
         end
 
         def getElementSize(element)
           # execute :getElementSize, :element_id => element
-          execute :getSize,
-                  :element_id => element
+          data = execute :getSize,
+                         :element_id => element
+
+          Dimension.new data['width'], data['height']
         end
 
         def sendKeysToElement(element, string)

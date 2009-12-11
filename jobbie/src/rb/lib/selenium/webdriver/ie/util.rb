@@ -12,12 +12,11 @@ module Selenium
 
         def string_array_from(raw_strings)
           strings_ptr = raw_strings.get_pointer(0)
-
-          length_ptr = FFI::MemoryPointer.new :int
-          result     = Lib.wdcGetStringCollectionLength(strings_ptr, length_ptr)
+          length_ptr  = FFI::MemoryPointer.new :int
+          result      = Lib.wdcGetStringCollectionLength(strings_ptr, length_ptr)
 
           if result != 0
-            raise "Cannot extract strings from collection, error code: #{result.inspect}"
+            raise Error::WebDriverError, "cannot extract strings from collection, error code: #{result.inspect}"
           end
 
           arr    = []
@@ -27,7 +26,7 @@ module Selenium
             result = Lib.wdcGetStringAtIndex(strings_ptr, idx, str_ptr_ref)
 
             if result != 0
-              raise "Unable to get string at index: #{idx}, error: #{result}"
+              raise Error::WebDriverError, "unable to get string at index: #{idx}, error: #{result}"
             end
 
             arr << extract_string_from(str_ptr_ref)
@@ -67,16 +66,16 @@ module Selenium
           length_ptr = FFI::MemoryPointer.new :int
 
           if Lib.wdStringLength(string_ptr, length_ptr) != 0
-            raise "Cannot determine length of string"
+            raise Error::WebDriverError, "cannot determine length of string"
           end
 
           length     = length_ptr.get_int(0)
           raw_string = wstring_ptr(" "*length)
 
           if Lib.wdCopyString(string_ptr, length, raw_string) != 0
-            raise "Cannot copy string from native data to Ruby string"
+            raise Error::WebDriverError, "cannot copy string from native data to Ruby string"
           end
-          #
+
           wstring_to_bytestring raw_string
         ensure
           Lib.wdFreeString(string_ptr)
@@ -117,7 +116,7 @@ module Selenium
           size = Kernel32.MultiByteToWideChar(CP_UTF8, 0, str, -1, nil, 0)
 
           unless size > 0
-            raise "Could not convert #{str.inspect} to wchar ptr"
+            raise Error::WebDriverError, "could not convert #{str.inspect} to wchar ptr"
           end
 
           buf = FFI::MemoryPointer.new :pointer, size
@@ -130,7 +129,7 @@ module Selenium
           size = Kernel32.WideCharToMultiByte(CP_UTF8, 0, wstring, -1, nil, 0, nil, nil)
 
           unless size > 0
-            raise "Could not convert wstring pointer to bytestring"
+            raise Error::WebDriverError, "could not convert wstring pointer to bytestring"
           end
 
           buf = FFI::MemoryPointer.new :pointer, size

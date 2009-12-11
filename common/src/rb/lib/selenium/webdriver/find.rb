@@ -14,12 +14,21 @@ module Selenium
         :xpath             => 'ByXpath',
       }
 
+      #
+      # Find the first element matching the given arguments.
+      #
+      # @param [:class, :class_name, :id, :link_text, :link, :partial_link_text, :name, :tag_name, :xpath] how
+      # @param [String] what
+      # @return [WebDriver::Element]
+      #
+      # @raise [NoSuchElementError] if the element doesn't exist
+      #
 
       def find_element(*args)
         how, what = extract_args(args)
 
         unless by = FINDERS[how.to_sym]
-          raise Error::UnsupportedOperationError, "Cannot find element by #{how.inspect}"
+          raise ArgumentError, "cannot find element by #{how.inspect}"
         end
 
         meth = "findElement#{by}"
@@ -28,11 +37,19 @@ module Selenium
         bridge.send meth, ref, what
       end
 
+      #
+      # Find all elements matching the given arguments
+      #
+      # @param [:class, :class_name, :id, :link_text, :link, :partial_link_text, :name, :tag_name, :xpath] how
+      # @param [String] what
+      # @return [Array<WebDriver::Element>]
+      #
+
       def find_elements(*args)
         how, what = extract_args(args)
 
         unless by = FINDERS[how.to_sym]
-          raise Error::UnsupportedOperationError, "Cannot find elements by #{how.inspect}"
+          raise ArgumentError, "cannot find elements by #{how.inspect}"
         end
 
         meth = "findElements#{by}"

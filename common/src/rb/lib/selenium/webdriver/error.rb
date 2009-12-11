@@ -1,9 +1,8 @@
 module Selenium
   module WebDriver
     module Error
+
       class WebDriverError < StandardError; end
-
-
       class IndexOutOfBoundsError < WebDriverError; end        # 1
       class NoCollectionError < WebDriverError; end            # 2
       class NoStringError < WebDriverError; end                # 3

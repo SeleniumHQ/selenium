@@ -57,6 +57,27 @@ task :test_remote_chrome_rb => :chrome do
 end
 
 #
+# docs
+#
+
+begin
+  require 'yard'
+  YARD::Rake::YardocTask.new(:rubydocs) do |t|
+    t.files   += Dir['chrome/src/rb/lib/**/*.rb']
+    t.files   += Dir['common/src/rb/lib/**/*.rb']
+    t.files   += Dir['firefox/src/rb/lib/**/*.rb']
+    t.files   += Dir['jobbie/src/rb/lib/**/*.rb']
+    t.files   += Dir['remote/client/src/rb/lib/**/*.rb']
+    t.options += %w[--verbose --readme common/src/rb/README --output-dir build/rubydocs]
+  end
+rescue LoadError
+  task :rubydocs do
+    abort "YARD is not available. In order to run yardoc, you must: sudo gem install yard"
+  end
+end
+
+
+#
 # gem
 #
 

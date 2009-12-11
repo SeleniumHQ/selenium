@@ -2,8 +2,12 @@ module Selenium
   module WebDriver
     module Keys
 
-      # \x works on both 1.8.6/1.9
+      #
+      # @see Element#send_keys
+      #
+
       KEYS = {
+      # \x works on both 1.8.6/1.9
         :null         => "\xEE\x80\x80",
         :cancel       => "\xEE\x80\x81",
         :help         => "\xEE\x80\x82",
