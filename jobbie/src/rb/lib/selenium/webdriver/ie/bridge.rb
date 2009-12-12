@@ -93,7 +93,7 @@ module Selenium
         def quit
           getWindowHandles.each do |handle|
             begin
-              switch_to_window handle
+              switchToWindow handle
               close
             rescue Error::NoSuchWindowError
             end
