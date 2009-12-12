@@ -19,6 +19,8 @@ package org.openqa.selenium;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.openqa.selenium.Ignore.Driver.FIREFOX;
+import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import org.openqa.selenium.internal.FindsByCssSelector;
@@ -32,6 +34,17 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
     WebElement element = driver.findElement(By.name("form2"));
     WebElement child = element.findElement(By.xpath("select"));
     assertThat(child.getAttribute("id"), is("2"));
+  }
+  
+  @Ignore({SELENESE, FIREFOX, HTMLUNIT})
+  //Reason for ignore in Firefox and HtmlUnit: Multiple items of ID 1 exist in the page,
+  //returns subelements of *all* of them, not the one we selected
+  //See issue 278
+  public void testFindElementsByXPath() {
+    driver.get(nestedPage);
+    WebElement select = driver.findElement(By.id("1"));
+    List<WebElement> elements = select.findElements(By.xpath("//option"));
+    assertEquals(4, elements.size());
   }
 
   @Ignore(SELENESE)

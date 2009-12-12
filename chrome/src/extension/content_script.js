@@ -453,8 +453,8 @@ function getElement(plural, lookupBy, lookupValue, id) {
     elements = getElementsByXPath(root + "//" + lookupValue);
     break;
   case "xpath":
-    if (root != "") {
-      //Because xpath is relative to the parent, if there is a parent, we add a /
+    if (root != "" && lookupValue[0] != "/") {
+      //Because xpath is relative to the parent, if there is a parent, and the lookup seems to be implied sub-lookup, we add a /
       root = root + "/";
     }
     var xpath = root + lookupValue;
