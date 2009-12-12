@@ -341,6 +341,9 @@ public class ChromeCommandExecutor {
         case 12: 
           //Invalid element state (e.g. disabled)
           throw new UnsupportedOperationException(message);
+        case 13:
+          //Unhandled error
+          throw new WebDriverException(message);
         case 17:
           //Bad javascript
           throw new WebDriverException(message);

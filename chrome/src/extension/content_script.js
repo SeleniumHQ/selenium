@@ -61,185 +61,190 @@ function parsePortMessage(message) {
       return;
     }
   }
-  switch (message.request.request) {
-  case "addCookie":
-    response.value = setCookie(message.request.cookie);
-    response.wait = false;
-    break;
-  case "clearElement":
-    response.value = clearElement(element);
-    break;
-  case "clickElement":
-    response.value = clickElement(element, message.request.elementId);
-    break;
-  case "nonNativeClickElement":
-    //TODO(danielwh): Focus/blur events for non-native clicking
-    element.scrollIntoView(true);
-    //TODO: Work out a way of firing events,
-    //now that synthesising them gives appendMessage errors
-    console.log("mouse downing");
-    Utils.fireMouseEventOn(element, "mousedown");
-      console.log("mouse up");
-    Utils.fireMouseEventOn(element, "mouseup");
-      console.log("mouse click");
-    Utils.fireMouseEventOn(element, "click");
+  try {
+    switch (message.request.request) {
+    case "addCookie":
+      response.value = setCookie(message.request.cookie);
+      response.wait = false;
+      break;
+    case "clearElement":
+      response.value = clearElement(element);
+      break;
+    case "clickElement":
+      response.value = clickElement(element, message.request.elementId);
+      break;
+    case "nonNativeClickElement":
+      //TODO(danielwh): Focus/blur events for non-native clicking
+      element.scrollIntoView(true);
+      //TODO: Work out a way of firing events,
+      //now that synthesising them gives appendMessage errors
+      console.log("mouse downing");
+      Utils.fireMouseEventOn(element, "mousedown");
+        console.log("mouse up");
+      Utils.fireMouseEventOn(element, "mouseup");
+        console.log("mouse click");
+      Utils.fireMouseEventOn(element, "click");
 
-    if (element.click) {
-      console.log("click");
-      execute("try { arguments[0].click(); } catch(e){}", {type: "ELEMENT", value: getElementId_(element)});
+      if (element.click) {
+        console.log("click");
+        execute("try { arguments[0].click(); } catch(e){}", {type: "ELEMENT", value: getElementId_(element)});
+      }
+      response.value = {statusCode: 0};
+      break;
+    case "deleteAllCookies":
+      response.value = deleteAllCookies();
+      response.wait = false;
+      break;
+    case "deleteCookie":
+      response.value = deleteCookie(message.request.name);
+      response.wait = false;
+      break;
+    case "executeScript":
+      execute(message.request.script, message.request.args);
+      //Sends port message back to background page from its own callback
+      break;
+    case "getCookies":
+      response.value = getCookies();
+      response.wait = false;
+      break;
+    case "getCookie":
+      response.value = getCookieNamed(message.request.name);
+      response.wait = false;
+      break;
+    case "findChildElement":
+      response.value = getElement(false, message.request.using, message.request.value, message.request.id);
+      response.wait = false;
+      break;
+    case "findChildElements":
+      response.value = getElement(true, message.request.using, message.request.value, message.request.id);
+      response.wait = false;
+      break;
+    case "findElement":
+      response.value = getElement(false, message.request.using, message.request.value);
+      response.wait = false;
+      break;
+    case "findElements":
+      response.value = getElement(true, message.request.using, message.request.value);
+      response.wait = false;
+      break;
+    case "getElementAttribute":
+      response.value = getElementAttribute(element, message.request.attribute);
+      response.wait = false;
+      break;
+    case "getElementValueOfCssProperty":
+      response.value = {statusCode: 0, value: getStyle(element, message.request.css)};
+      response.wait = false;
+      break;
+    case "getElementLocation":
+      var coords = getElementCoords(element);
+      response.value = {statusCode: 0, value: {type: "POINT", x: coords[0], y: coords[1]}};
+      response.wait = false;
+      break;
+    case "getElementLocationOnceScrolledIntoView":
+      element.scrollIntoView(true);
+      var coords = getElementCoords(element);
+      response.value = {statusCode: 0, value: {type: "POINT", x: coords[0], y: coords[1]}};
+      break;
+    case "getElementSize":
+      response.value = {statusCode: 0, value: getOffsetSizeFromSubElements(element)};
+      response.wait = false;
+      break;
+    case "getElementTagName":
+      response.value = {statusCode: 0, value: element.tagName.toLowerCase()};
+      response.wait = false;
+      break;
+    case "getElementText":
+      response.value = {statusCode: 0, value: Utils.getText(element)};
+      response.wait = false;
+      break;
+    case "getElementValue":
+      response.value = {statusCode: 0, value: element.value};
+      response.wait = false;
+      break;
+    case "getFrameNameFromIndex":
+      //TODO(danielwh): Do this by simply looking it up in window.frames when Chrome is fixed.  Track: crbug.com 20773
+      getFrameNameFromIndex(message.request.index);
+      break;
+    case "getPageSource":
+      response.value = getSource();
+      response.wait = false;
+      break;
+    case "getTitle":
+      response.value = {statusCode: 0, value: ChromeDriverContentScript.currentDocument.title};
+      response.wait = false;
+      break;
+    case "getCurrentUrl":
+      response.value = {statusCode: 0, value: ChromeDriverContentScript.currentDocument.location.href};
+      response.wait = false;
+      break;
+    case "goBack":
+      history.back();
+      response.value = {statusCode: 0};
+      break;
+    case "goForward":
+      history.forward();
+      response.value = {statusCode: 0};
+      break;
+    case "hoverOverElement":
+      response.value = hoverElement(element, message.request.elementId);
+      break;
+    case "injectEmbed":
+      injectEmbed();
+      break;
+    case "isElementDisplayed":
+      response.value = {statusCode: 0, value: isElementDisplayed(element)};
+      response.wait = false;
+      break;
+    case "isElementEnabled":
+      response.value = {statusCode: 0, value: !element.disabled};
+      response.wait = false;
+      break;
+    case "isElementSelected":
+      response.value = {statusCode: 0, value: findWhetherElementIsSelected(element)};
+      response.wait = false;
+      break;
+    case "refresh":
+      ChromeDriverContentScript.currentDocument.location.reload(true);
+      response.value = {statusCode: 0};
+      break;
+    case "sendKeysToElement":
+      response.value = sendElementKeys(element, message.request.keys, message.request.elementId);
+      response.wait = false;
+      break;
+    case "sendElementNonNativeKeys":
+      response.value = sendElementNonNativeKeys(element, message.request.keys);
+      response.wait = false;
+      break;
+    case "setElementSelected":
+      response.value = selectElement(element);
+      break;
+    case "getActiveElement":
+      response.value = {statusCode: 0, value: [addElementToInternalArray(ChromeDriverContentScript.currentDocument.activeElement).toString()]};
+      response.wait = false;
+      break;
+    case "switchToNamedIFrameIfOneExists":
+      response.value = switchToNamedIFrameIfOneExists(message.request.name);
+      response.wait = false;
+      break;
+    case "submitElement":
+      response.value = submitElement(element);
+      break;
+    case "toggleElement":
+      response.value = toggleElement(element);
+      break;
+    case "sniffForMetaRedirects":
+      response.value = sniffForMetaRedirects();
+      break;
+    default:
+      response.value = {statusCode: 9, value: {message: message.request.request + " is unsupported"}};
+      break;
     }
-    response.value = {statusCode: 0};
-    break;
-  case "deleteAllCookies":
-    response.value = deleteAllCookies();
-    response.wait = false;
-    break;
-  case "deleteCookie":
-    response.value = deleteCookie(message.request.name);
-    response.wait = false;
-    break;
-  case "executeScript":
-    execute(message.request.script, message.request.args);
-    //Sends port message back to background page from its own callback
-    break;
-  case "getCookies":
-    response.value = getCookies();
-    response.wait = false;
-    break;
-  case "getCookie":
-    response.value = getCookieNamed(message.request.name);
-    response.wait = false;
-    break;
-  case "findChildElement":
-    response.value = getElement(false, message.request.using, message.request.value, message.request.id);
-    response.wait = false;
-    break;
-  case "findChildElements":
-    response.value = getElement(true, message.request.using, message.request.value, message.request.id);
-    response.wait = false;
-    break;
-  case "findElement":
-    response.value = getElement(false, message.request.using, message.request.value);
-    response.wait = false;
-    break;
-  case "findElements":
-    response.value = getElement(true, message.request.using, message.request.value);
-    response.wait = false;
-    break;
-  case "getElementAttribute":
-    response.value = getElementAttribute(element, message.request.attribute);
-    response.wait = false;
-    break;
-  case "getElementValueOfCssProperty":
-    response.value = {statusCode: 0, value: getStyle(element, message.request.css)};
-    response.wait = false;
-    break;
-  case "getElementLocation":
-    var coords = getElementCoords(element);
-    response.value = {statusCode: 0, value: {type: "POINT", x: coords[0], y: coords[1]}};
-    response.wait = false;
-    break;
-  case "getElementLocationOnceScrolledIntoView":
-    element.scrollIntoView(true);
-    var coords = getElementCoords(element);
-    response.value = {statusCode: 0, value: {type: "POINT", x: coords[0], y: coords[1]}};
-    break;
-  case "getElementSize":
-    response.value = {statusCode: 0, value: getOffsetSizeFromSubElements(element)};
-    response.wait = false;
-    break;
-  case "getElementTagName":
-    response.value = {statusCode: 0, value: element.tagName.toLowerCase()};
-    response.wait = false;
-    break;
-  case "getElementText":
-    response.value = {statusCode: 0, value: Utils.getText(element)};
-    response.wait = false;
-    break;
-  case "getElementValue":
-    response.value = {statusCode: 0, value: element.value};
-    response.wait = false;
-    break;
-  case "getFrameNameFromIndex":
-    //TODO(danielwh): Do this by simply looking it up in window.frames when Chrome is fixed.  Track: crbug.com 20773
-    getFrameNameFromIndex(message.request.index);
-    break;
-  case "getPageSource":
-    response.value = getSource();
-    response.wait = false;
-    break;
-  case "getTitle":
-    response.value = {statusCode: 0, value: ChromeDriverContentScript.currentDocument.title};
-    response.wait = false;
-    break;
-  case "getCurrentUrl":
-    response.value = {statusCode: 0, value: ChromeDriverContentScript.currentDocument.location.href};
-    response.wait = false;
-    break;
-  case "goBack":
-    history.back();
-    response.value = {statusCode: 0};
-    break;
-  case "goForward":
-    history.forward();
-    response.value = {statusCode: 0};
-    break;
-  case "hoverOverElement":
-    response.value = hoverElement(element, message.request.elementId);
-    break;
-  case "injectEmbed":
-    injectEmbed();
-    break;
-  case "isElementDisplayed":
-    response.value = {statusCode: 0, value: isElementDisplayed(element)};
-    response.wait = false;
-    break;
-  case "isElementEnabled":
-    response.value = {statusCode: 0, value: !element.disabled};
-    response.wait = false;
-    break;
-  case "isElementSelected":
-    response.value = {statusCode: 0, value: findWhetherElementIsSelected(element)};
-    response.wait = false;
-    break;
-  case "refresh":
-    ChromeDriverContentScript.currentDocument.location.reload(true);
-    response.value = {statusCode: 0};
-    break;
-  case "sendKeysToElement":
-    response.value = sendElementKeys(element, message.request.keys, message.request.elementId);
-    response.wait = false;
-    break;
-  case "sendElementNonNativeKeys":
-    response.value = sendElementNonNativeKeys(element, message.request.keys);
-    response.wait = false;
-    break;
-  case "setElementSelected":
-    response.value = selectElement(element);
-    break;
-  case "getActiveElement":
-    response.value = {statusCode: 0, value: [addElementToInternalArray(ChromeDriverContentScript.currentDocument.activeElement).toString()]};
-    response.wait = false;
-    break;
-  case "switchToNamedIFrameIfOneExists":
-    response.value = switchToNamedIFrameIfOneExists(message.request.name);
-    response.wait = false;
-    break;
-  case "submitElement":
-    response.value = submitElement(element);
-    break;
-  case "toggleElement":
-    response.value = toggleElement(element);
-    break;
-  case "sniffForMetaRedirects":
-    response.value = sniffForMetaRedirects();
-    break;
-  default:
-    response.value = {statusCode: 9, value: {message: message.request.request + " is unsupported"}};
-    break;
+  } catch (e) {
+    console.log("Caught exception " + e + ", sending error response");
+    ChromeDriverContentScript.port.postMessage({response: {statusCode: 13, value: {message: "An unexpected error occured while executing " + message.request.request + ", exception dump: " + e}}, sequenceNumber: message.sequenceNumber});
   }
   if (response.value != null) {
-    ChromeDriverContentScript.port.postMessage({response: response, sequenceNumber: message.sequenceNumber})
+    ChromeDriverContentScript.port.postMessage({response: response, sequenceNumber: message.sequenceNumber});
     console.log("Sent response: " + JSON.stringify(response) + " (seq:" + message.sequenceNumber + ")");
   }
   if (message.request.followup) {

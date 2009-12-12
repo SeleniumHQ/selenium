@@ -577,6 +577,7 @@ function parsePortMessage(message) {
   case 10: //org.openqa.selenium.StaleElementReferenceException
   case 11: //org.openqa.selenium.ElementNotVisibleException
   case 12: //java.lang.UnsupportedOperationException [Invalid element state ]
+  case 13: //org.openqa.selenium.WebDriverException [Unhandled error]
   case 17: //org.openqa.selenium.WebDriverException [Bad javascript]
   case 19: //org.openqa.selenium.XPathLookupException
   case 99: //org.openqa.selenium.WebDriverException [Native event]
