@@ -6,22 +6,32 @@ module Selenium
         ANONYMOUS_PROFILE_NAME = "WEBDRIVER_ANONYMOUS_PROFILE"
         EXTENSION_NAME         = "fxdriver@googlecode.com"
         EM_NAMESPACE_URI       = "http://www.mozilla.org/2004/em-rdf#"
+        NO_FOCUS_LIBRARY_NAME  = "x_ignore_nofocus.so"
 
-        # TODO: hardcoded paths
         DEFAULT_EXTENSION_SOURCE = File.expand_path("#{WebDriver.root}/firefox/src/extension")
 
-        XPTS                     = {
-          "#{WebDriver.root}/firefox/prebuilt/nsINativeEvents.xpt"     => "components/nsINativeEvents.xpt",
-          "#{WebDriver.root}/firefox/prebuilt/nsICommandProcessor.xpt" => "components/nsICommandProcessor.xpt",
-          "#{WebDriver.root}/firefox/prebuilt/nsIResponseHandler.xpt"  => "components/nsIResponseHandler.xpt"
+        XPTS = [
+          ["#{WebDriver.root}/firefox/prebuilt/nsINativeEvents.xpt", "components/nsINativeEvents.xpt"],
+          ["#{WebDriver.root}/firefox/prebuilt/nsICommandProcessor.xpt", "components/nsICommandProcessor.xpt"],
+          ["#{WebDriver.root}/firefox/prebuilt/nsIResponseHandler.xpt", "components/nsIResponseHandler.xpt"],
+        ]
+
+        NATIVE = {
+          :windows => ["#{WebDriver.root}/firefox/prebuilt/Win32/Release/webdriver-firefox.dll", "platform/WINNT_x86-msvc/components/webdriver-firefox.dll"],
+          :linux   => ["#{WebDriver.root}/firefox/prebuilt/linux64/Release/libwebdriver-firefox.so", "platform/Linux/components/libwebdriver-firefox.so"]
         }
 
-        SHARED = {
-          "#{WebDriver.root}/common/src/js/extension/dommessenger.js" => "content/dommessenger.js"
-        }
+        NO_FOCUS = [
+          ["#{WebDriver.root}/firefox/prebuilt/linux64/Release/x_ignore_nofocus.so"    , "amd64/x_ignore_nofocus.so"],
+          ["#{WebDriver.root}/firefox/prebuilt/linux/Release/x_ignore_nofocus.so"      , "x86/x_ignore_nofocus.so"],
+        ]
+
+        SHARED = [
+          ["#{WebDriver.root}/common/src/js/extension/dommessenger.js", "content/dommessenger.js"]
+        ]
 
         attr_reader :name, :directory
-        attr_accessor :port, :secure_ssl
+        attr_accessor :port, :secure_ssl, :native_events, :load_no_focus_lib
 
         class << self
 
@@ -60,7 +70,8 @@ module Selenium
         def update_user_prefs
           prefs = existing_user_prefs.merge DEFAULT_PREFERENCES
           prefs['webdriver.firefox_port'] = @port
-          prefs['webdriver_accept_untrusted_certs'] = "true" unless @secure_ssl == true
+          prefs['webdriver_accept_untrusted_certs'] = 'true' unless @secure_ssl == true
+          prefs['webdriver_enable_native_events'] = 'true' if native_events?
 
           write_prefs prefs
         end
@@ -76,12 +87,22 @@ module Selenium
           FileUtils.mkdir_p File.dirname(ext_path), :mode => 0700
           FileUtils.cp_r @extension_source, ext_path
 
-          XPTS.each do |source, destination|
-            FileUtils.cp source, File.join(ext_path, destination)
+          from_to = XPTS + SHARED
+
+          if native_events?
+            from_to << (NATIVE[Platform.os] || raise(Error::WebDriverError,
+                                                        "can't enable native events on #{Platform.os.inspect}"))
           end
 
-          SHARED.each do |source, destination|
-            FileUtils.cp source, File.join(ext_path, destination)
+          if Platform.os == :linux || load_no_focus_lib?
+            from_to += NO_FOCUS
+            modify_link_library_path(NO_FOCUS.map { |source, dest| File.join(ext_path, dest) })
+          end
+
+          from_to.each do |source, destination|
+            dest = File.join(ext_path, destination)
+            FileUtils.mkdir_p File.dirname(dest)
+            FileUtils.cp source, dest
           end
 
           delete_extensions_cache
@@ -111,9 +132,29 @@ module Selenium
         end
 
         def delete_extensions_cache
-          cache = File.join(@directory, "extensions.cache")
+          cache = File.join(directory, "extensions.cache")
           FileUtils.rm_f cache if File.exist?(cache)
         end
+
+        def modify_link_library_path(paths)
+          old_path = ENV['LD_LIBRARY_PATH']
+
+          unless [nil, ''].include?(old_path)
+            paths << old_path
+          end
+
+          ENV['LD_LIBRARY_PATH'] = paths.join(File::PATH_SEPARATOR)
+          ENV['LD_PRELOAD']      = NO_FOCUS_LIBRARY_NAME
+        end
+
+        def native_events?
+          !!(@native_events ||= Firefox::DEFAULT_ENABLE_NATIVE_EVENTS)
+        end
+
+        def load_no_focus_lib?
+          !!(@load_no_focus_lib ||= false)
+        end
+
 
         private
 

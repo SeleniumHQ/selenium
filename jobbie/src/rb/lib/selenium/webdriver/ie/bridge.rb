@@ -92,8 +92,11 @@ module Selenium
 
         def quit
           getWindowHandles.each do |handle|
-            switch_to_window handle rescue nil # TODO: rescue specific exceptions
-            close
+            begin
+              switch_to_window handle
+              close
+            rescue Error::NoSuchWindowError
+            end
           end
 
           # hack
@@ -170,8 +173,6 @@ module Selenium
           str = create_string do |wrapper|
             check_error_code Lib.wdGetCookies(@driver_pointer, wrapper), "Unable to get cookies"
           end
-
-          p :cookie_string => str
 
           str.split("; ").map do |cookie_string|
             parts = cookie_string.split("=")
@@ -416,7 +417,7 @@ module Selenium
           end
         end
 
-        def hoverOverElement
+        def hoverOverElement(element_pointer)
           raise NotImplementedError
         end
 

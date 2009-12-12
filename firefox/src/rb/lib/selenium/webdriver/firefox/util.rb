@@ -10,7 +10,7 @@ module Selenium
             "#{ENV['APPDATA']}\\Mozilla\\Firefox"
           when :macosx
             "#{Platform.home}/Library/Application Support/Firefox"
-          when :unix
+          when :unix, :linux
             "#{Platform.home}/.mozilla/firefox"
           else
             raise "Unknown os: #{Platform.os}"

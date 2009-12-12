@@ -275,7 +275,7 @@ module Selenium
         end
         alias_method :switchToActiveElement, :getActiveElement
 
-        def hoverOverElement
+        def hoverOverElement(element)
           execute :request   => 'hoverOverElement',
                   :elementId => element
         end

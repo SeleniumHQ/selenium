@@ -23,7 +23,7 @@ end
 task :test_firefox_rb => :test_common do
   jruby :include => [".", "common/src/rb/lib", "firefox/src/rb/lib", "common/test/rb/lib"],
         :require => ["third_party/jruby/json-jruby.jar"],
-        :command => "-S spec ",
+        :command => '-S spec',
         :files   => Dir['common/test/rb/spec/**/*spec.rb']
 end
 
@@ -116,7 +116,7 @@ begin
    s.require_paths << 'firefox/src/rb/lib'
    s.files         += FileList['firefox/src/rb/**/*']
    s.files         += FileList['firefox/src/extension/**/*']
-   s.files         += FileList['firefox/prebuilt/*.xpt']
+   s.files         += FileList['firefox/prebuilt/**/*']
 
    # Chrome
    s.require_paths << "chrome/src/rb/lib"
@@ -127,7 +127,7 @@ begin
    # IE
    s.require_paths << 'jobbie/src/rb/lib'
    s.files         += FileList['jobbie/src/rb/**/*']
-   s.files         += FileList['jobbie/prebuilt/**/*.dll']
+   s.files         += FileList['jobbie/prebuilt/**/InternetExplorerDriver.dll']
 
    # Remote
    s.require_paths << 'remote/client/src/rb/lib'

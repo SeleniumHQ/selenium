@@ -12,7 +12,7 @@ module Selenium
                         WindowsLauncher.new
                       when :macosx
                         MacOSXLauncher.new
-                      when :unix
+                      when :unix, :linux
                         UnixLauncher.new
                       else
                         raise "unknown OS: #{Platform.os}"

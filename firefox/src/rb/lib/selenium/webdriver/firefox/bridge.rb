@@ -252,7 +252,7 @@ module Selenium
                   :parameters => [prop]
         end
 
-        def hoverOverElement
+        def hoverOverElement(element)
           execute :hover,
                   :element_id => element
           # execute :hoverOverElement, :element_id => element

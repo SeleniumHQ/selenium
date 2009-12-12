@@ -17,7 +17,9 @@ module Selenium
                         :windows
                       when /darwin/
                         :macosx
-                      when /linux|solaris|bsd/
+                      when /linux/
+                        :linux
+                      when /solaris|bsd/
                         :unix
                       else
                         RUBY_PLATFORM
@@ -34,7 +36,7 @@ module Selenium
             os = case os_name
                   when /windows/i then :windows
                   when /mac os/i  then :macosx
-                  when /linux/i   then :unix
+                  when /linux/i   then :linux
                   else                 os_name
                   end
           end

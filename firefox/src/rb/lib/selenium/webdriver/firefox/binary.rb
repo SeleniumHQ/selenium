@@ -23,12 +23,6 @@ module Selenium
 
         def start_with(profile, *args)
           ENV['XRE_PROFILE_PATH'] = profile.absolute_path
-
-          # TODO: native lib loading
-          # if Platform.os == :unix && (profile.enable_native_events || profile.always_load_no_focus_lib)
-          #   modify_link_library_path profile
-          # end
-
           execute(*args)
           cope_with_mac_strangeness(args) if Platform.mac?
         end
@@ -74,7 +68,7 @@ module Selenium
                               "/Applications/Firefox.app/Contents/MacOS/firefox-bin"
                             when :windows
                               windows_path
-                            when :unix
+                            when :linux, :unix
                               "/usr/bin/firefox"
                             else
                               raise "Unknown platform: #{Platform.os}"
