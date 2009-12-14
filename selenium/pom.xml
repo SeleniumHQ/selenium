@@ -4,49 +4,39 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.seleniumhq.selenium2</groupId>
-        <artifactId>selenium2-parent</artifactId>
+        <groupId>org.seleniumhq.selenium</groupId>
+        <artifactId>selenium-parent</artifactId>
         <version>2.0-SNAPSHOT</version>
     </parent>
-    <artifactId>selenium2</artifactId>
-    <name>selenium2</name>
+    <artifactId>selenium</artifactId>
+    <name>selenium</name>
 
     <dependencies>
-        <dependency>
-            <groupId>org.seleniumhq.selenium2</groupId>
-            <artifactId>selenium2-common</artifactId>
-            <version>${project.version}</version>
-        </dependency>
 		<dependency>
-			<groupId>org.seleniumhq.selenium2</groupId>
-			<artifactId>selenium2-chrome</artifactId>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-chrome-driver</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.seleniumhq.selenium2</groupId>
-			<artifactId>selenium2-htmlunit</artifactId>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-htmlunit-driver</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.seleniumhq.selenium2</groupId>
-			<artifactId>selenium2-firefox</artifactId>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-firefox-driver</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.seleniumhq.selenium2</groupId>
-			<artifactId>selenium2-ie</artifactId>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-ie-driver</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.google.collections</groupId> 
-			<artifactId>google-collections</artifactId> 
-			<version>1.0-rc3</version>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-support</artifactId>
+			<version>${project.version}</version>
 		</dependency>
-        <dependency>
-            <groupId>org.seleniumhq.selenium.client-drivers</groupId>
-            <artifactId>selenium-java-client-driver</artifactId>
-            <version>1.0.1</version>
-        </dependency>
         <!-- Test dependencies ... -->
         <dependency>
             <groupId>org.easymock</groupId>
@@ -55,15 +45,15 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.seleniumhq.selenium2</groupId>
-            <artifactId>selenium2-common</artifactId>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-common</artifactId>
             <version>${project.version}</version>
             <classifier>tests</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.seleniumhq.selenium2</groupId>
-            <artifactId>selenium2-remote-server</artifactId>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-server</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
@@ -79,14 +69,6 @@
     <build>
         <sourceDirectory>src/java</sourceDirectory>
         <testSourceDirectory>test/java</testSourceDirectory>
-        <resources>
-            <resource>
-                <directory>src/java</directory>
-                <includes>
-                    <include>**/*.js</include>
-                </includes>
-            </resource>
-        </resources>
     </build>
 
 </project>

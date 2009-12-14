@@ -4,16 +4,24 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.seleniumhq.selenium2</groupId>
-		<artifactId>selenium2-parent</artifactId>
+		<groupId>org.seleniumhq.selenium</groupId>
+		<artifactId>selenium-parent</artifactId>
 		<version>2.0-SNAPSHOT</version>
 	</parent>
-	<artifactId>selenium2-common</artifactId>
-	<name>selenium2-common</name>
+	<artifactId>selenium-common</artifactId>
+	<name>selenium-common</name>
 
 	<build>
 		<sourceDirectory>src/java</sourceDirectory>
 		<testSourceDirectory>test/java</testSourceDirectory>
+		<testResources>
+			<testResource>
+				<directory>test/java</directory>
+				<excludes>
+					<exclude>**/*.java</exclude>
+				</excludes>
+			</testResource>
+		</testResources>
 		<plugins>
 			<!-- See http://maven.apache.org/plugins/maven-surefire-plugin -->
 			<plugin>

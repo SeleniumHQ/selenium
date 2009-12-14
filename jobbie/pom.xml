@@ -4,17 +4,17 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.seleniumhq.selenium2</groupId>
-		<artifactId>selenium2-parent</artifactId>
+		<groupId>org.seleniumhq.selenium</groupId>
+		<artifactId>selenium-parent</artifactId>
 		<version>2.0-SNAPSHOT</version>
 	</parent>
-	<artifactId>selenium2-ie</artifactId>
-	<name>selenium2-ie</name>
+	<artifactId>selenium-ie-driver</artifactId>
+	<name>selenium-ie-driver</name>
 
 	<dependencies>
 		<dependency>
-			<groupId>org.seleniumhq.selenium2</groupId>
-			<artifactId>selenium2-common</artifactId>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-common</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
@@ -24,8 +24,8 @@
 		</dependency>
 		<!-- Test dependencies ... -->
 		<dependency>
-			<groupId>org.seleniumhq.selenium2</groupId>
-			<artifactId>selenium2-common</artifactId>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-common</artifactId>
 			<version>${project.version}</version>
 			<classifier>tests</classifier>
 			<scope>test</scope>
@@ -34,29 +34,18 @@
 
 	<build>
 		<sourceDirectory>src/java</sourceDirectory>
+		<resources>
+			<resource>
+				<directory>prebuilt/Win32/Release</directory>
+				<targetPath>x86</targetPath>
+			</resource>
+			<resource>
+				<directory>prebuilt/x64/Release</directory>
+				<targetPath>amd64</targetPath>
+			</resource>
+		</resources>
 		<testSourceDirectory>test/java</testSourceDirectory>
 		<plugins>
-			<!-- See http://maven.apache.org/plugins/maven-antrun-plugin -->
-			<plugin>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>copy_InternetExplorerDriver.dll</id>
-						<phase>generate-resources</phase>
-						<configuration>
-							<tasks>
-								<mkdir dir="target/classes/x86" />
-								<mkdir dir="target/classes/amd64" />
-								<copy file="prebuilt/Win32/Release/InternetExplorerDriver.dll" todir="target/classes/x86" />
-								<copy file="prebuilt/x64/Release/InternetExplorerDriver.dll" todir="target/classes/amd64" />
-							</tasks>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
             <!-- See http://maven.apache.org/plugins/maven-surefire-plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

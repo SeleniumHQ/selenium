@@ -4,17 +4,17 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.seleniumhq.selenium2</groupId>
-		<artifactId>selenium2-parent</artifactId>
+		<groupId>org.seleniumhq.selenium</groupId>
+		<artifactId>selenium-parent</artifactId>
 		<version>2.0-SNAPSHOT</version>
 	</parent>
-	<artifactId>selenium2-firefox</artifactId>
-	<name>selenium2-firefox</name>
+	<artifactId>selenium-firefox-driver</artifactId>
+	<name>selenium-firefox-driver</name>
 
 	<dependencies>
 		<dependency>
-			<groupId>org.seleniumhq.selenium2</groupId>
-			<artifactId>selenium2-common</artifactId>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-common</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
@@ -24,8 +24,8 @@
 		</dependency>
 		<!-- Test dependencies ... -->
 		<dependency>
-			<groupId>org.seleniumhq.selenium2</groupId>
-			<artifactId>selenium2-common</artifactId>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-common</artifactId>
 			<version>${project.version}</version>
 			<classifier>tests</classifier>
 			<scope>test</scope>
@@ -34,6 +34,16 @@
 
 	<build>
 		<sourceDirectory>src/java</sourceDirectory>
+		<resources>
+			<resource>
+				<directory>prebuilt/linux/release</directory>
+				<targetPath>x86</targetPath>
+			</resource>
+			<resource>
+				<directory>prebuilt/linux64/release</directory>
+				<targetPath>amd64</targetPath>
+			</resource>
+		</resources>
 		<testSourceDirectory>test/java</testSourceDirectory>
 		<plugins>
 			<!-- See http://maven.apache.org/plugins/maven-antrun-plugin -->
@@ -41,7 +51,7 @@
 				<artifactId>maven-antrun-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>create_extension_and_copy_libraries</id>
+						<id>create webdriver-extension.zip</id>
 						<phase>generate-resources</phase>
 						<configuration>
 							<tasks>
@@ -59,8 +69,6 @@
 								<copy file="prebuilt/linux64/Release/libwebdriver-firefox.so" todir="target/webdriver-extension/platform/Linux_x86_64-gcc3/components" />
 								<mkdir dir="target/classes" />
 								<zip destfile="target/classes/webdriver-extension.zip" basedir="target/webdriver-extension" />
-								<copy file="prebuilt/linux/Release/x_ignore_nofocus.so" todir="target/classes/x86" />
-								<copy file="prebuilt/linux64/Release/x_ignore_nofocus.so" todir="target/classes/amd64" />
 							</tasks>
 						</configuration>
 						<goals>
