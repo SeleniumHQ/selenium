@@ -36,9 +36,8 @@ import static org.hamcrest.Matchers.notNullValue;
 
 public class TestSuiteBuilder {
 
-  private static final File JS_TEST_DIR = new File("common/test/js");
-
   private File baseDir;
+  private File jsTestDir;
   private Set<File> sourceDirs = new HashSet<File>();
   private Set<Ignore.Driver> ignored = new HashSet<Ignore.Driver>();
   private Class<? extends WebDriver> driverClass;
@@ -61,6 +60,9 @@ public class TestSuiteBuilder {
 
     assertThat(baseDir, notNullValue());
     assertThat(baseDir.exists(), is(true));
+
+    jsTestDir = new File(baseDir, "common/test/js");
+    assertThat(jsTestDir.isDirectory(), is(true));
   }
 
   public TestSuiteBuilder addSourceDir(String dirName) {
@@ -339,9 +341,9 @@ public class TestSuiteBuilder {
       return;
     }
 
-    for (File file : JS_TEST_DIR.listFiles(new TestFilenameFilter())) {
+    for (File file : jsTestDir.listFiles(new TestFilenameFilter())) {
       String path = file.getAbsolutePath()
-          .replace(JS_TEST_DIR.getAbsolutePath() + File.separator, "")
+          .replace(jsTestDir.getAbsolutePath() + File.separator, "")
           .replace(File.separator, "/");
       TestCase test = new JsApiTestCase("/js/test/" + path);
       suite.addTest(new DriverTestDecorator(test, driverClass,
