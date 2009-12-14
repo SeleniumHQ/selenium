@@ -53,7 +53,7 @@ public class TestSuiteBuilder {
   private boolean includeJsApiTests = false;
 
   public TestSuiteBuilder() {
-    baseDir = new File(".");
+    baseDir = new File(".").getAbsoluteFile();
 
     while (baseDir != null && !(new File(baseDir, "Rakefile").exists())) {
       baseDir = baseDir.getParentFile();
@@ -61,8 +61,6 @@ public class TestSuiteBuilder {
 
     assertThat(baseDir, notNullValue());
     assertThat(baseDir.exists(), is(true));
-
-    baseDir = baseDir.getParentFile();
   }
 
   public TestSuiteBuilder addSourceDir(String dirName) {
