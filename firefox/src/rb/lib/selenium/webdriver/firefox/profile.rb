@@ -69,7 +69,7 @@ module Selenium
 
         def update_user_prefs
           prefs = existing_user_prefs.merge DEFAULT_PREFERENCES
-          prefs['webdriver.firefox_port'] = @port
+          prefs['webdriver_firefox_port'] = @port
           prefs['webdriver_accept_untrusted_certs'] = 'true' unless @secure_ssl == true
           prefs['webdriver_enable_native_events'] = 'true' if native_events?
 
