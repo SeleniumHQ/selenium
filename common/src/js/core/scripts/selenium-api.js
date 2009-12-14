@@ -198,7 +198,7 @@ Selenium.decorateFunctionWithTimeout = function(f, timeout, callback) {
             if (callback != null) {
                  callback();
             }
-            throw new SeleniumError("Timed out after " + timeout + "ms" + " time = " + new Date().getTime());
+            throw new SeleniumError("Timed out after " + timeout + "ms");
         }
         return f();
     };
