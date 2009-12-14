@@ -27,7 +27,8 @@ module Selenium
 
         def quit
           @connection.quit
-          @binary.wait
+          @binary.wait rescue nil # might raise on windows
+          
           nil
         end
 
