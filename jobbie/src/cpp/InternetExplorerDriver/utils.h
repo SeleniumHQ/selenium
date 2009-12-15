@@ -62,6 +62,8 @@ bool checkValidDOM(IHTMLElement* r);
 char* ConvertLPCWSTRToLPSTR (LPCWSTR lpwszStrIn);
 void ConvertLPCWSTRToLPSTR (LPCWSTR lpwszStrIn, std::string &out);
 
+wchar_t *StripTrailingWhitespace(wchar_t *str);
+
 #define END_TRY_CATCH_ANY  catch(std::wstring& message) \
 	{ \
 		throwRunTimeException(env, message.c_str()); \

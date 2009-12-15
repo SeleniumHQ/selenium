@@ -67,4 +67,15 @@ public class PartialLinkTextMatchTest extends AbstractDriverTestCase {
     assertNotNull(elements);
     assertEquals(3, elements.size());
   }
+  
+  public void testCanGetLinkByLinkTestIgnoringTrailingWhitespace() {
+    driver.get(simpleTestPage);
+    WebElement link = null;
+    try {
+      link = driver.findElement(By.linkText("link with trailing space"));
+    } catch (NoSuchElementException e) {
+      fail("Should have found link");
+    }
+    assertEquals("linkWithTrailingSpace", link.getAttribute("id"));
+  }
 }

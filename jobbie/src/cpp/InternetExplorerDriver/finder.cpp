@@ -232,7 +232,7 @@ void IeThread::OnSelectElementByLink(WPARAM w, LPARAM lp)
 	CComQIPtr<IHTMLElement> inputElement(data.input_html_element_);
 	checkValidDOM(inputElement);
 	IHTMLElement* &pDom = data.output_html_element_;
-	const wchar_t *elementLink= data.input_string_;
+	const wchar_t *elementLink = StripTrailingWhitespace((wchar_t *)data.input_string_);
 
 	pDom = NULL;
 	errorKind = SUCCESS;
@@ -298,7 +298,7 @@ void IeThread::OnSelectElementByLink(WPARAM w, LPARAM lp)
 			continue;
 		}
 
-		if (wcscmp(combstr2cw(linkText),elementLink)==0 && isOrUnder(node, element)) {
+		if (wcscmp(StripTrailingWhitespace((wchar_t *)combstr2cw(linkText)),elementLink)==0 && isOrUnder(node, element)) {
 			element.CopyTo(&pDom);
 			return;
 		}
@@ -315,7 +315,7 @@ void IeThread::OnSelectElementsByLink(WPARAM w, LPARAM lp)
 	CComQIPtr<IHTMLElement> inputElement(data.input_html_element_);
 	checkValidDOM(inputElement);
 	std::vector<IHTMLElement*> &allElems = data.output_list_html_element_;
-	const wchar_t *elementLink = data.input_string_;
+	const wchar_t *elementLink = StripTrailingWhitespace((wchar_t *)data.input_string_);
 
 	errorKind = SUCCESS;
 
@@ -377,7 +377,7 @@ void IeThread::OnSelectElementsByLink(WPARAM w, LPARAM lp)
 		CComBSTR linkText;
 		element->get_innerText(&linkText);
 
-		if (wcscmp(combstr2cw(linkText),elementLink)==0 && isOrUnder(node, element)) {
+		if (wcscmp(StripTrailingWhitespace((wchar_t *)combstr2cw(linkText)),elementLink)==0 && isOrUnder(node, element)) {
 			IHTMLElement *pDom = NULL;
 			element.CopyTo(&pDom);
 			allElems.push_back(pDom);

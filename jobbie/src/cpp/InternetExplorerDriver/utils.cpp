@@ -190,7 +190,22 @@ char* ConvertLPCWSTRToLPSTR (LPCWSTR lpwszStrIn)
   }
   return pszOut;
 }
- 
+
+wchar_t *StripTrailingWhitespace(wchar_t *instr) {
+  size_t len = wcslen(instr);
+  wchar_t *str = new wchar_t[len + 1];
+  wcsncpy_s(str, len + 1, instr, len);
+  str[len] = 0;
+  
+  for (size_t i = len - 1; i >= 0; --i) {
+    if (str[i] == L' ' || str[i] == L'\f' || str[i] == L'\n' || str[i] == L'\r' || str[i] == L'\t' || str[i] == L'\v') {
+      str[i] = 0;
+    } else {
+      break;
+    }
+  }
+  return str;
+} 
 
 void cw2string(LPCWSTR inp, std::string &out)
 {
