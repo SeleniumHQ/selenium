@@ -194,7 +194,14 @@ FirefoxDriver.prototype.getPageSource = function(respond) {
  */
 FirefoxDriver.prototype.findElementByXPath_ = function(theDocument, xpath,
                                                        opt_contextNode) {
-  var contextNode = opt_contextNode || theDocument;
+  if (opt_contextNode) {
+    var contextNode = opt_contextNode;
+    if (xpath) {
+      xpath = Utils.getXPathOfElement(contextNode) + (xpath[0] == "/" ? "" : "/") + xpath;
+    }
+  } else {
+    var contextNode = theDocument;
+  }
   return theDocument.evaluate(xpath, contextNode, null,
       Components.interfaces.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE, null).
       singleNodeValue;
@@ -213,7 +220,14 @@ FirefoxDriver.prototype.findElementByXPath_ = function(theDocument, xpath,
  */
 FirefoxDriver.prototype.findElementsByXPath_ = function(theDocument, xpath,
                                                         opt_contextNode) {
-  var contextNode = opt_contextNode || theDocument;
+  if (opt_contextNode) {
+    var contextNode = opt_contextNode;
+    if (xpath) {
+      xpath = Utils.getXPathOfElement(contextNode) + (xpath[0] == "/" ? "" : "/") + xpath;
+    }
+  } else {
+    var contextNode = theDocument;
+  }
   var result = theDocument.evaluate(xpath, contextNode, null,
       Components.interfaces.nsIDOMXPathResult.ORDERED_NODE_ITERATOR_TYPE, null);
   var elements = [];

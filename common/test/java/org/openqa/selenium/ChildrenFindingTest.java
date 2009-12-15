@@ -19,9 +19,9 @@ package org.openqa.selenium;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.openqa.selenium.Ignore.Driver.FIREFOX;
 import static org.openqa.selenium.Ignore.Driver.HTMLUNIT;
 import static org.openqa.selenium.Ignore.Driver.IE;
+import static org.openqa.selenium.Ignore.Driver.REMOTE;
 import static org.openqa.selenium.Ignore.Driver.SELENESE;
 import org.openqa.selenium.internal.FindsByCssSelector;
 
@@ -36,8 +36,8 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
     assertThat(child.getAttribute("id"), is("2"));
   }
   
-  @Ignore({SELENESE, FIREFOX, HTMLUNIT})
-  //Reason for ignore in Firefox and HtmlUnit: Multiple items of ID 1 exist in the page,
+  @Ignore({SELENESE, HTMLUNIT, IE, REMOTE})
+  //Reason for ignores: Multiple items of ID 1 exist in the page,
   //returns subelements of *all* of them, not the one we selected
   //See issue 278
   public void testFindElementsByXPath() {
@@ -45,6 +45,15 @@ public class ChildrenFindingTest extends AbstractDriverTestCase {
     WebElement select = driver.findElement(By.id("1"));
     List<WebElement> elements = select.findElements(By.xpath("//option"));
     assertEquals(4, elements.size());
+  }
+
+  @Ignore(value = {SELENESE, HTMLUNIT, IE, REMOTE}, reason = "Issue 278")
+  public void testFindsSubElementNotTopLevelElementWhenLookingUpSubElementByXPath() {
+    driver.get(simpleTestPage);
+    WebElement parent = driver.findElement(By.id("containsSomeDiv"));
+    WebElement child = parent.findElement(By.xpath("//div[@name='someDiv']"));
+    assertFalse("Child should not contain text Top level", child.getText().contains("Top level"));
+    assertTrue("Child should contain text Nested", child.getText().contains("Nested"));
   }
 
   @Ignore(SELENESE)

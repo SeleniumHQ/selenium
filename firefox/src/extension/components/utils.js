@@ -1226,3 +1226,28 @@ Utils.wrapResult = function(result, context) {
     return {type: "OTHER", value: result};
   }
 }
+
+/**
+ * Gets canonical xpath of the passed element, e.g. /HTML[1]/BODY[1]/P[1]
+ */
+Utils.getXPathOfElement = function(element) {
+  var path = "";
+  for (; element && element.nodeType == 1; element = element.parentNode) {
+    index = Utils.getElementIndexForXPath_(element);
+    path = "/" + element.tagName + "[" + index + "]" + path;
+  }
+  return path;	
+}
+
+/**
+ * Returns n for the nth child of the parent of that element, of type element.tagName, starting at 1
+ */
+Utils.getElementIndexForXPath_ = function (element) {
+  var index = 1;
+  for (var sibling = element.previousSibling; sibling ; sibling = sibling.previousSibling) {
+    if (sibling.nodeType == 1 && sibling.tagName == element.tagName) {
+      index++;
+    }
+  }
+  return index;
+}
