@@ -7,7 +7,7 @@ describe "Error" do
       driver.navigate.to url_for("xhtmlTest.html")
 
       lambda { driver.find_element(:id, "nonexistant") }.should raise_error(
-          WebDriver::Error::NoSuchElementError, /Unable to (find|locate) element/ # TODO: pick one of "find" vs "locate"
+          WebDriver::Error::NoSuchElementError, /unable to (find|locate) element/i # TODO: pick one of "find" vs "locate"
       )
     end
   end

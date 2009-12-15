@@ -97,7 +97,7 @@ module Selenium
 
               if e = WebDriver::Error.for_code(result)
                 Lib.wdFreeElementCollection(elements_ptr, 1)
-                raise e, "Unable to create element from collection at index #{idx} (#{result})"
+                raise e, "unable to create element from collection at index #{idx} (#{result})"
               end
             end
           end
@@ -116,7 +116,7 @@ module Selenium
           size = Kernel32.MultiByteToWideChar(CP_UTF8, 0, str, -1, nil, 0)
 
           unless size > 0
-            raise Error::WebDriverError, "could not convert #{str.inspect} to wchar ptr"
+            raise Error::WebDriverError, "unable to convert #{str.inspect} to wchar ptr"
           end
 
           buf = FFI::MemoryPointer.new :pointer, size

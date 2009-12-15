@@ -31,7 +31,7 @@ module Selenium
         def getCurrentUrl
           create_string do |wrapper|
             check_error_code Lib.wdGetCurrentUrl(@driver_pointer, wrapper),
-                             "Unable to get current URL"
+                             "unable to get current URL"
           end
         end
 
@@ -48,20 +48,20 @@ module Selenium
         def getTitle
           create_string do |wrapper|
             check_error_code Lib.wdGetTitle(@driver_pointer, wrapper),
-                             "Unable to get title"
+                             "unable to get title"
           end
         end
 
         def getPageSource
           create_string do |wrapper|
             check_error_code Lib.wdGetPageSource(@driver_pointer, wrapper),
-                             "Unable to get page source"
+                             "unable to get page source"
           end
         end
 
         def getBrowserVisible
           int_ptr = FFI::MemoryPointer.new :int
-          check_error_code Lib.wdGetVisible(@driver_pointer, int_ptr), "Unable to determine if browser is visible"
+          check_error_code Lib.wdGetVisible(@driver_pointer, int_ptr), "unable to determine if browser is visible"
 
           int_ptr.get_int(0) == 1
         ensure
@@ -70,23 +70,23 @@ module Selenium
 
         def setBrowserVisible(bool)
           check_error_code Lib.wdSetVisible(@driver_pointer, bool ? 1 : 0),
-                           "Unable to change the visibility of the browser"
+                           "unable to change the visibility of the browser"
         end
 
         def switchToWindow(id)
           check_error_code Lib.wdSwitchToWindow(@driver_pointer, wstring_ptr(id)),
-                           "Unable to locate window #{id.inspect}"
+                           "unable to locate window #{id.inspect}"
         end
 
         def switchToFrame(id)
           check_error_code Lib.wdSwitchToFrame(@driver_pointer, wstring_ptr(id)),
-                           "Unable to locate frame #{id.inspect}"
+                           "unable to locate frame #{id.inspect}"
         end
 
         def switchToActiveElement
           create_element do |ptr|
             check_error_code Lib.wdSwitchToActiveElement(@driver_pointer, ptr),
-                             "Unable to switch to active element"
+                             "unable to switch to active element"
           end
         end
 
@@ -107,17 +107,17 @@ module Selenium
         end
 
         def close
-          check_error_code Lib.wdClose(@driver_pointer), "Unable to close driver"
+          check_error_code Lib.wdClose(@driver_pointer), "unable to close driver"
         end
 
         def refresh
-          raise Error::UnsupportedOperationError
+          check_error_code Lib.wdRefresh(@driver_pointer), "unable to refresh current page"
         end
 
         def getWindowHandles
           raw_handles = FFI::MemoryPointer.new :pointer
           check_error_code Lib.wdGetAllWindowHandles(@driver_pointer, raw_handles),
-                           "Unable to obtain all window handles"
+                           "unable to obtain all window handles"
 
           string_array_from(raw_handles).uniq
           # TODO: who calls raw_handles.free if exception is raised?
@@ -126,7 +126,7 @@ module Selenium
         def getCurrentWindowHandle
           create_string do |string_pointer|
             check_error_code Lib.wdGetCurrentWindowHandle(@driver_pointer, string_pointer),
-                             "Unable to obtain current window handle"
+                             "unable to obtain current window handle"
           end
         end
 
@@ -134,7 +134,7 @@ module Selenium
           script_args_ref = FFI::MemoryPointer.new :pointer
           result          = Lib.wdNewScriptArgs(script_args_ref, args.size)
 
-          check_error_code result, "Unable to create new script arguments array"
+          check_error_code result, "unable to create new script arguments array"
 
           args_pointer = script_args_ref.get_pointer(0)
           populate_arguments(result, args_pointer, args)
@@ -166,12 +166,12 @@ module Selenium
           cookie_string << "domain=#{opts[:domain][/^(.+?):/, 1]};" if opts[:domain] && !opts[:domain].empty?
 
           check_error_code Lib.wdAddCookie(@driver_pointer, wstring_ptr(cookie_string)),
-                           "Unable to add cookie"
+                           "unable to add cookie"
         end
 
         def getAllCookies
           str = create_string do |wrapper|
-            check_error_code Lib.wdGetCookies(@driver_pointer, wrapper), "Unable to get cookies"
+            check_error_code Lib.wdGetCookies(@driver_pointer, wrapper), "unable to get cookies"
           end
 
           str.split("; ").map do |cookie_string|
@@ -214,7 +214,7 @@ module Selenium
 
           create_element do |raw_element|
             check_error_code Lib.wdFindElementByClassName(@driver_pointer, parent, wstring_ptr(class_name), raw_element),
-                             "Unable to find element by class name using #{class_name.inspect}"
+                             "unable to find element by class name using #{class_name.inspect}"
           end
         end
 
@@ -223,84 +223,84 @@ module Selenium
 
           create_element_collection do |raw_elements|
             check_error_code Lib.wdFindElementsByClassName(@driver_pointer, parent, wstring_ptr(class_name), raw_elements),
-                             "Unable to find elements by class name using #{class_name.inspect}"
+                             "unable to find elements by class name using #{class_name.inspect}"
           end
         end
 
         def findElementById(parent, id)
           create_element do |raw_element|
             check_error_code Lib.wdFindElementById(@driver_pointer, parent, wstring_ptr(id), raw_element),
-                             "Unable to find element by id using #{id.inspect}"
+                             "unable to find element by id using #{id.inspect}"
           end
         end
 
         def findElementsById(parent, id)
           create_element_collection do |raw_elements|
             check_error_code Lib.wdFindElementsById(@driver_pointer, parent, wstring_ptr(id), raw_elements),
-                             "Unable to find elements by id using #{id.inspect}"
+                             "unable to find elements by id using #{id.inspect}"
           end
         end
 
         def findElementByLinkText(parent, link_text)
           create_element do |raw_element|
             check_error_code Lib.wdFindElementByLinkText(@driver_pointer, parent, wstring_ptr(link_text), raw_element),
-                             "Unable to find element by link text using #{link_text.inspect}"
+                             "unable to find element by link text using #{link_text.inspect}"
           end
         end
 
         def findElementsByLinkText(parent, link_text)
           create_element_collection do |raw_elements|
             check_error_code Lib.wdFindElementsByLinkText(@driver_pointer, parent, wstring_ptr(link_text), raw_elements),
-                             "Unable to find elements by link text using #{link_text.inspect}"
+                             "unable to find elements by link text using #{link_text.inspect}"
           end
         end
 
         def findElementByPartialLinkText(parent, link_text)
           create_element do |raw_element|
             check_error_code Lib.wdFindElementByPartialLinkText(@driver_pointer, parent, wstring_ptr(link_text), raw_element),
-                             "Unable to find element by partial link text using #{link_text.inspect}"
+                             "unable to find element by partial link text using #{link_text.inspect}"
           end
         end
 
         def findElementsByPartialLinkText(parent, link_text)
           create_element_collection do |raw_elements|
             check_error_code Lib.wdFindElementsByPartialLinkText(@driver_pointer, parent, wstring_ptr(link_text), raw_elements),
-                             "Unable to find elements by partial link text using #{link_text.inspect}"
+                             "unable to find elements by partial link text using #{link_text.inspect}"
           end
         end
 
         def findElementByName(parent, name)
           create_element do |raw_element|
             check_error_code Lib.wdFindElementByName(@driver_pointer, parent, wstring_ptr(name), raw_element),
-                             "Unable to find element by name using #{name.inspect}"
+                             "unable to find element by name using #{name.inspect}"
           end
         end
 
         def findElementsByName(parent, name)
           create_element_collection do |raw_elements|
             check_error_code Lib.wdFindElementsByName(@driver_pointer, parent, wstring_ptr(name), raw_elements),
-                             "Unable to find elements by name using #{name.inspect}"
+                             "unable to find elements by name using #{name.inspect}"
           end
         end
 
         def findElementByTagName(parent, tag_name)
           create_element do |raw_element|
             check_error_code Lib.wdFindElementByTagName(@driver_pointer, parent, wstring_ptr(tag_name), raw_element),
-                             "Unable to find element by tag name using #{tag_name.inspect}"
+                             "unable to find element by tag name using #{tag_name.inspect}"
           end
         end
 
         def findElementsByTagName(parent, tag_name)
           create_element_collection do |raw_elements|
             check_error_code Lib.wdFindElementsByTagName(@driver_pointer, parent, wstring_ptr(tag_name), raw_elements),
-                             "Unable to find elements by tag name using #{tag_name.inspect}"
+                             "unable to find elements by tag name using #{tag_name.inspect}"
           end
         end
 
         def findElementByXpath(parent, xpath)
           create_element do |raw_element|
             check_error_code Lib.wdFindElementByXPath(@driver_pointer, parent, wstring_ptr(xpath), raw_element),
-                             "Unable to find element by xpath using #{xpath.inspect}"
+                             "unable to find element by xpath using #{xpath.inspect}"
             # TODO: Additional error handling
           end
         end
@@ -308,7 +308,7 @@ module Selenium
         def findElementsByXpath(parent, xpath)
           create_element_collection do |raw_elements|
             check_error_code Lib.wdFindElementsByXPath(@driver_pointer, parent, wstring_ptr(xpath), raw_elements),
-                             "Unable to find elements by xpath using #{xpath.inspect}"
+                             "unable to find elements by xpath using #{xpath.inspect}"
             # TODO: Additional error handling
           end
         end
@@ -319,20 +319,20 @@ module Selenium
         #
 
         def clickElement(element_pointer)
-          check_error_code Lib.wdeClick(element_pointer), "Unable to click element"
+          check_error_code Lib.wdeClick(element_pointer), "unable to click element"
         end
 
         def getElementTagName(element_pointer)
           create_string do |string_pointer|
             check_error_code Lib.wdeGetTagName(element_pointer, string_pointer),
-                             "Unable to get tag name"
+                             "unable to get tag name"
           end
         end
 
         def getElementAttribute(element_pointer, name)
           create_string do |string_pointer|
             check_error_code Lib.wdeGetAttribute(element_pointer, wstring_ptr(name), string_pointer),
-                             "Unable to get attribute #{name.inspect}"
+                             "unable to get attribute #{name.inspect}"
           end
         end
 
@@ -343,24 +343,24 @@ module Selenium
         def getElementText(element_pointer)
           create_string do |string_pointer|
             check_error_code Lib.wdeGetText(element_pointer, string_pointer),
-                             "Unable to get text"
+                             "unable to get text"
           end.gsub("\r\n", "\n")
         end
 
         def sendKeysToElement(element_pointer, string)
           check_error_code Lib.wdeSendKeys(element_pointer, wstring_ptr(string)),
-                           "Unable to send keys to #{self}"
+                           "unable to send keys to #{self}"
           waitForLoadToComplete
         end
 
         def clearElement(element_pointer)
-          check_error_code Lib.wdeClear(element_pointer), "Unable to clear element"
+          check_error_code Lib.wdeClear(element_pointer), "unable to clear element"
         end
 
         def isElementEnabled(element_pointer)
           int_ptr = FFI::MemoryPointer.new(:int)
           check_error_code Lib.wdeIsEnabled(element_pointer, int_ptr),
-                           "Unable to get enabled state"
+                           "unable to get enabled state"
 
           int_ptr.get_int(0) == 1
         ensure
@@ -370,7 +370,7 @@ module Selenium
         def isElementSelected(element_pointer)
           int_ptr = FFI::MemoryPointer.new(:int)
           check_error_code Lib.wdeIsSelected(element_pointer, int_ptr),
-                           "Unable to get selected state"
+                           "unable to get selected state"
 
           int_ptr.get_int(0) == 1
         ensure
@@ -379,7 +379,7 @@ module Selenium
 
         def isElementDisplayed(element_pointer)
           int_ptr = FFI::MemoryPointer.new :int
-          check_error_code Lib.wdeIsDisplayed(element_pointer, int_ptr), "Unable to check visibilty"
+          check_error_code Lib.wdeIsDisplayed(element_pointer, int_ptr), "unable to check visibilty"
 
           int_ptr.get_int(0) == 1;
         ensure
@@ -387,7 +387,7 @@ module Selenium
         end
 
         def submitElement(element_pointer)
-          check_error_code Lib.wdeSubmit(element_pointer), "Unable to submit element"
+          check_error_code Lib.wdeSubmit(element_pointer), "unable to submit element"
         end
 
         def toggleElement(element_pointer)
@@ -399,7 +399,7 @@ module Selenium
               "You may not toggle this element: #{get_element_tag_name(element_pointer)}"
           end
 
-          check_error_code result, "Unable to toggle element"
+          check_error_code result, "unable to toggle element"
 
           int_ptr.get_int(0) == 1
         ensure
@@ -407,13 +407,13 @@ module Selenium
         end
 
         def setElementSelected(element_pointer)
-          check_error_code Lib.wdeSetSelected(element_pointer), "Unable to select element"
+          check_error_code Lib.wdeSetSelected(element_pointer), "unable to select element"
         end
 
         def getElementValueOfCssProperty(element_pointer, prop)
           create_string do |string_pointer|
             check_error_code Lib.wdeGetValueOfCssProperty(element_pointer, wstring_ptr(prop), string_pointer),
-                             "Unable to get value of css property: #{prop.inspect}"
+                             "unable to get value of css property: #{prop.inspect}"
           end
         end
 
@@ -427,7 +427,7 @@ module Selenium
           x, y, width, height = Array.new(4) { FFI::MemoryPointer.new :long }
 
           check_error_code Lib.wdeGetDetailsOnceScrolledOnToScreen(element_pointer, hwnd, x, y, width, height),
-                           "Unable to determine location once scrolled on to screen"
+                           "unable to determine location once scrolled on to screen"
 
           Lib.wdeMouseDownAt(hwnd.get_pointer(0), x.get_long(0), y.get_long(0))
 
@@ -445,7 +445,7 @@ module Selenium
           x = FFI::MemoryPointer.new :long
           y = FFI::MemoryPointer.new :long
 
-          check_error_code Lib.wdeGetLocation(element_pointer, x, y), "Unable to get location of element"
+          check_error_code Lib.wdeGetLocation(element_pointer, x, y), "unable to get location of element"
 
           Point.new x.get_int(0), y.get_int(0)
         ensure
@@ -457,7 +457,7 @@ module Selenium
           width  = FFI::MemoryPointer.new :long
           height = FFI::MemoryPointer.new :long
 
-          check_error_code Lib.wdeGetSize(element_pointer, width, height), "Unable to get size of element"
+          check_error_code Lib.wdeGetSize(element_pointer, width, height), "unable to get size of element"
 
           Dimension.new width.get_int(0), height.get_int(0)
         ensure
@@ -467,7 +467,7 @@ module Selenium
 
         def finalize(element_pointer)
           check_error_code Lib.wdeFreeElement(element_pointer),
-                           "Unable to finalize #{element_pointer} for #{self}"
+                           "unable to finalize #{element_pointer} for #{self}"
         end
 
         private
@@ -489,7 +489,7 @@ module Selenium
               raise TypeError, "Parameter is not of recognized type: #{arg.inspect}:#{arg.class}"
             end
 
-            check_error_code result, "Unable to add argument: #{arg.inspect}"
+            check_error_code result, "unable to add argument: #{arg.inspect}"
           end
 
 

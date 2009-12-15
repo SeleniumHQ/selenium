@@ -44,7 +44,7 @@ module Selenium
           # ensure we're ok
           sleep 0.3
           if @process.ugly_death?
-            raise Error::WebDriverError, "Unable to start Firefox cleanly, args: #{args.inspect}, status: #{status.inspect}"
+            raise Error::WebDriverError, "unable to start Firefox cleanly, args: #{args.inspect}, status: #{status.inspect}"
           end
         end
 

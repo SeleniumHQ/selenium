@@ -11,6 +11,16 @@ describe "Driver" do
     driver.page_source.should match(%r[<title>XHTML Test Page</title>]i)
   end
 
+  not_compliant_on :browser => :ie do
+    it "should refresh the page" do
+      driver.navigate.to url_for("javascriptPage.html")
+      driver.find_element(:link_text, 'Update a div').click
+      driver.find_element(:id, 'dynamo').text.should == "Fish and chips!"
+      driver.navigate.refresh
+      driver.find_element(:id, 'dynamo').text.should == "What's for dinner?"
+    end
+  end
+
   compliant_on :driver => [:firefox, :chrome] do
     it "should save a screenshot" do
       driver.navigate.to url_for("xhtmlTest.html")
