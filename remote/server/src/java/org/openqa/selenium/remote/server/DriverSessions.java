@@ -47,7 +47,7 @@ public class DriverSessions {
   private void registerDefaults(Platform current) {
     for (Map.Entry<Capabilities, String> entry : defaultDrivers.entrySet()) {
       Capabilities caps = entry.getKey();
-      if (caps.getPlatform() != null && current.is(caps.getPlatform())) {
+      if (caps.getPlatform() != null && caps.getPlatform().is(current)) {
         registerDriver(caps, entry.getValue());
       } else if (caps.getPlatform() == null) {
         registerDriver(caps, entry.getValue());
@@ -60,6 +60,9 @@ public class DriverSessions {
       registerDriver(caps, Class.forName(className).asSubclass(WebDriver.class));
     } catch (ClassNotFoundException e) {
       // OK. Fall through. We just won't be able to create these
+    } catch (NoClassDefFoundError e) {
+      // OK. Missing a dependency, which is obviously a Bad Thing
+      // TODO(simon): Log this!
     }
   }
 

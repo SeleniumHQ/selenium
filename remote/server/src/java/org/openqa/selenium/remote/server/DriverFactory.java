@@ -43,11 +43,11 @@ public class DriverFactory {
       if (matches(caps.getBrowserName(), desired.getBrowserName())) {
         count++;
       }
-      if (matches(caps.getVersion(), caps.getVersion())) {
+      if (matches(caps.getVersion(), desired.getVersion())) {
         count++;
       }
       Platform capPlatform = caps.getPlatform();
-      Platform desiredPlatform = caps.getPlatform();
+      Platform desiredPlatform = desired.getPlatform();
 
       if (capPlatform != null && desiredPlatform != null) {
         if (capPlatform.is(desiredPlatform)) {

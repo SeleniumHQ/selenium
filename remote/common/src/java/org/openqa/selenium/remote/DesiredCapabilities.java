@@ -108,10 +108,7 @@ public class DesiredCapabilities implements Capabilities {
   }
   
   public static DesiredCapabilities chrome() {
-    //This is strangely inconsistent.
-    DesiredCapabilities dc = new DesiredCapabilities("chrome", "", Platform.WINDOWS);
-    dc.setJavascriptEnabled(true);
-    return dc;
+    return new DesiredCapabilities("chrome", "", Platform.ANY);
   }
 
   
