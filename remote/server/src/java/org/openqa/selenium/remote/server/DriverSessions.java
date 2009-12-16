@@ -28,9 +28,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class DriverSessions {
-  private DriverFactory factory = new DriverFactory();
+  private final DriverFactory factory;
 
-  private static Map<SessionId, Session> sessionIdToDriver =
+  private final Map<SessionId, Session> sessionIdToDriver =
       new ConcurrentHashMap<SessionId, Session>();
 
   private static Map<Capabilities, String> defaultDrivers = new HashMap<Capabilities, String>() {{
@@ -41,7 +41,12 @@ public class DriverSessions {
   }};
 
   public DriverSessions() {
-    registerDefaults(Platform.getCurrent());
+    this(Platform.getCurrent(), new DriverFactory());
+  }
+
+  protected DriverSessions(Platform runningOn, DriverFactory factory) {
+    this.factory = factory;
+    registerDefaults(runningOn);
   }
 
   private void registerDefaults(Platform current) {
@@ -60,6 +65,7 @@ public class DriverSessions {
       registerDriver(caps, Class.forName(className).asSubclass(WebDriver.class));
     } catch (ClassNotFoundException e) {
       // OK. Fall through. We just won't be able to create these
+      e.printStackTrace();
     } catch (NoClassDefFoundError e) {
       // OK. Missing a dependency, which is obviously a Bad Thing
       // TODO(simon): Log this!

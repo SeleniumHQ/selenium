@@ -17,13 +17,13 @@ limitations under the License.
 
 package org.openqa.selenium.remote.server;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.Capabilities;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class DriverFactory {
   private Map<Capabilities, Class<? extends WebDriver>> capabilitiesToDriver =
@@ -33,7 +33,7 @@ public class DriverFactory {
     capabilitiesToDriver.put(capabilities, implementation);
   }
 
-  public Class<? extends WebDriver> getBestMatchFor(Capabilities desired) {
+  protected Class<? extends WebDriver> getBestMatchFor(Capabilities desired) {
     int numberOfFieldsMatched = 0;
     Class<? extends WebDriver> bestMatch = null;
 
@@ -79,5 +79,9 @@ public class DriverFactory {
     } catch (IllegalAccessException e) {
       throw new WebDriverException(e);
     }
+  }
+
+  public boolean hasMappingFor(Capabilities capabilities) {
+    return capabilitiesToDriver.containsKey(capabilities);
   }
 }

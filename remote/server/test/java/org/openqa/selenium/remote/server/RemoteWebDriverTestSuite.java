@@ -41,7 +41,6 @@ public class RemoteWebDriverTestSuite extends TestCase {
     Test rawSuite =
         new TestSuiteBuilder()
             .addSourceDir("common")
-            .addSourceDir("../common")
             .addSourceDir("remote/client")
             .addSourceDir("remote/server")
             .keepDriverInstance()
@@ -49,6 +48,16 @@ public class RemoteWebDriverTestSuite extends TestCase {
             .usingDriver(RemoteWebDriverForTest.class)
             .exclude(FIREFOX)
             .exclude(REMOTE)
+            .excludePattern(".*IntegrationTest")
+            .excludePattern(".*CaptureNetworkTrafficTest")
+            .excludePattern(".*FirefoxMiniHTMLRunnerTest")
+            .excludePattern(".*LinuxHTMLRunnerMultiWindowTest")
+            .excludePattern(".*CaptureNetworkTrafficCommandTest")
+            .excludePattern(".*HtmlIdentifierTest")
+            .excludePattern(".*\\.browserlaunchers\\..*")
+            .excludePattern(".*FunctionalTest")
+            .excludePattern(".*UnitTest")
+            .excludePattern(".*LauncherTest")
             .create();
 
     TestSuite toReturn = new TestSuite();

@@ -1,6 +1,9 @@
 package org.openqa.selenium.server;
 
+import org.openqa.selenium.Ignore;
 
+
+@Ignore
 public class FirefoxMiniHTMLRunnerTest extends HTMLRunnerTestBase {
     
     public FirefoxMiniHTMLRunnerTest() { 

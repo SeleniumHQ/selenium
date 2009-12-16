@@ -17,9 +17,9 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="common" />
-    <orderEntry type="module" module-name="remote-client" />
-    <orderEntry type="module" module-name="remote-common" />
+    <orderEntry type="module" module-name="common" exported="" />
+    <orderEntry type="module" module-name="remote-client" exported="" />
+    <orderEntry type="module" module-name="remote-common" exported="" />
     <orderEntry type="module" module-name="support" />
     <orderEntry type="module-library">
       <library>
@@ -39,7 +39,6 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="remote-client" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
@@ -94,6 +93,10 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="module" module-name="chrome" exported="" />
+    <orderEntry type="module" module-name="firefox" exported="" />
+    <orderEntry type="module" module-name="htmlunit" exported="" />
+    <orderEntry type="module" module-name="jobbie" exported="" />
   </component>
 </module>
 
