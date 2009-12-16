@@ -16,24 +16,50 @@
 
 package org.openqa.selenium.server;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLHandshakeException;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.InetAddress;
+import java.net.MalformedURLException;
+import java.net.Socket;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
 
-import javax.net.ssl.*;
-
-import org.apache.commons.logging.*;
-import org.openqa.jetty.http.*;
-import org.openqa.jetty.http.handler.*;
-import org.openqa.jetty.jetty.*;
+import cybervillains.ca.KeyStoreManager;
+import org.apache.commons.logging.Log;
+import org.openqa.jetty.http.HttpConnection;
+import org.openqa.jetty.http.HttpContext;
+import org.openqa.jetty.http.HttpException;
+import org.openqa.jetty.http.HttpFields;
+import org.openqa.jetty.http.HttpMessage;
+import org.openqa.jetty.http.HttpRequest;
+import org.openqa.jetty.http.HttpResponse;
+import org.openqa.jetty.http.HttpServer;
+import org.openqa.jetty.http.HttpTunnel;
+import org.openqa.jetty.http.SocketListener;
+import org.openqa.jetty.http.SslListener;
+import org.openqa.jetty.http.handler.AbstractHttpHandler;
+import org.openqa.jetty.jetty.Server;
 import org.openqa.jetty.log.LogFactory;
-import org.openqa.jetty.util.*;
+import org.openqa.jetty.util.IO;
+import org.openqa.jetty.util.InetAddrPort;
+import org.openqa.jetty.util.LineInput;
+import org.openqa.jetty.util.LogSupport;
+import org.openqa.jetty.util.StringMap;
 import org.openqa.jetty.util.URI;
-import org.openqa.selenium.server.browserlaunchers.*;
-import org.openqa.selenium.server.commands.CaptureNetworkTrafficCommand;
+import org.openqa.selenium.server.browserlaunchers.LauncherUtils;
+import org.openqa.selenium.server.browserlaunchers.ResourceExtractor;
 import org.openqa.selenium.server.commands.AddCustomRequestHeaderCommand;
-
-import cybervillains.ca.*;
+import org.openqa.selenium.server.commands.CaptureNetworkTrafficCommand;
 
 /* ------------------------------------------------------------ */
 
@@ -600,7 +626,7 @@ public class ProxyHandler extends AbstractHttpHandler {
         }
     }
 
-    private SslRelay getSslRelayOrCreateNew(URI uri, InetAddrPort addrPort, HttpServer server) throws Exception {
+    protected SslRelay getSslRelayOrCreateNew(URI uri, InetAddrPort addrPort, HttpServer server) throws Exception {
         SslRelay listener;
         synchronized(_sslMap) {
             listener = _sslMap.get(uri.toString());
@@ -642,7 +668,7 @@ public class ProxyHandler extends AbstractHttpHandler {
         return listener;
     }
 
-    private void wireUpSslWithRemoteService(String host, SslRelay listener) throws IOException {
+    protected void wireUpSslWithRemoteService(String host, SslRelay listener) throws IOException {
         // grab a keystore that has been signed by a CA cert that has already been imported in to the browser
         // note: this logic assumes the tester is using *custom and has imported the CA cert in to IE/Firefox/etc
         // the CA cert can be found at http://dangerous-certificate-authority.openqa.org
@@ -667,7 +693,7 @@ public class ProxyHandler extends AbstractHttpHandler {
         listener.setNukeDirOrFile(keystore);
     }
 
-    private void wireUpSslWithCyberVilliansCA(String host, SslRelay listener) {
+    protected void wireUpSslWithCyberVilliansCA(String host, SslRelay listener) {
         try {
             File root = File.createTempFile("seleniumSslSupport", host);
             root.delete();
