@@ -307,7 +307,7 @@ public class SeleniumServer {
         HttpContext webdriverContext = new HttpContext();
         webdriverContext.setContextPath("/wd");
         ServletHandler handler = new ServletHandler();
-        handler.addServlet("WebDriver remote server", "/hub", DriverServlet.class.getName());
+        handler.addServlet("WebDriver remote server", "/hub/*", DriverServlet.class.getName());
         webdriverContext.addHandler(handler);
 
         LOGGER.info(format("RemoteWebDriver instances should connect to: http://%s:%d/wd/hub",
