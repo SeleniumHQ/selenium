@@ -19,6 +19,7 @@ limitations under the License.
 #include "stdafx.h"
 
 #include <ctime>
+#include <ctype.h>
 
 #include "utils.h"
 #include "logging.h"
@@ -198,7 +199,7 @@ wchar_t *StripTrailingWhitespace(wchar_t *instr) {
   str[len] = 0;
   
   for (size_t i = len - 1; i >= 0; --i) {
-    if (str[i] == L' ' || str[i] == L'\f' || str[i] == L'\n' || str[i] == L'\r' || str[i] == L'\t' || str[i] == L'\v') {
+    if (iswspace(str[i])) {
       str[i] = 0;
     } else {
       break;
