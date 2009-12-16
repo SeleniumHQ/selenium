@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.openqa.selenium.remote.server.handler.AddConfig;
 import org.openqa.selenium.remote.server.handler.AddCookie;
 import org.openqa.selenium.remote.server.handler.ChangeUrl;
 import org.openqa.selenium.remote.server.handler.ClearElement;
@@ -109,10 +110,7 @@ public class DriverServlet extends HttpServlet {
     deleteMapper.addGlobalHandler(ResultType.EXCEPTION,
                                   new JsonErrorExceptionResult(":exception", ":response"));
 
-//    postMapper.bind("/config/drivers", AddConfig.class).on(ResultType.SUCCESS, new ForwardResult(""));
-//    deleteMapper.bind("/config/drivers/:config", RemoveConfig.class).on(ResultType.SUCCESS, new EmptyResult());
-//    getMapper.bind("/config/drivers/:config", ShowSpecificConig.class).on(ResultType.SUCCESS, new EmptyResult());
-//    getMapper.bind("/config/drivers", SpecificConigs.class).on(ResultType.SUCCESS, new EmptyResult());
+    postMapper.bind("/config/drivers", AddConfig.class).on(ResultType.SUCCESS, new EmptyResult());
 
     postMapper.bind("/session", NewSession.class)
         .on(ResultType.SUCCESS, new RedirectResult("/session/:sessionId/:context"));

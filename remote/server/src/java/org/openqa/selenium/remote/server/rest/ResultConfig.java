@@ -158,6 +158,10 @@ public class ResultConfig {
       if (handler instanceof WebDriverHandler) {
         request.setAttribute("screen", ((WebDriverHandler) handler).getScreenshot());
       }
+    } catch (Error e) {
+      logger.log("Error: " + e.getMessage());
+      result = ResultType.EXCEPTION;
+      request.setAttribute("exception", e);
     }
 
     Set<Result> results = resultToRender.get(result);
