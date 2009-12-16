@@ -47,6 +47,7 @@ public class TestSuiteBuilder {
   private boolean withEnvironment = true;
   private String onlyRun;
   private Set<String> patterns = new HashSet<String>();
+  private Set<String> excludePatterns = new HashSet<String>();
   private Set<String> testMethodNames = new HashSet<String>();
   private Set<String> decorators = new LinkedHashSet<String>();
   private boolean includeJsApiTests = false;
@@ -182,6 +183,12 @@ public class TestSuiteBuilder {
     }
     if (!include) {
       return;
+    }
+
+    for (String excludePattern : excludePatterns) {
+      if (clazz.getName().matches(excludePattern)) {
+        return;
+      }
     }
 
     Method[] methods = clazz.getMethods();
@@ -353,6 +360,11 @@ public class TestSuiteBuilder {
 
   public TestSuiteBuilder pattern(String pattern) {
     patterns.add(pattern);
+    return this;
+  }
+
+  public TestSuiteBuilder excludePattern(String pattern) {
+    excludePatterns.add(pattern);
     return this;
   }
 
