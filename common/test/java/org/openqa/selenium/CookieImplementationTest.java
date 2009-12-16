@@ -195,7 +195,7 @@ public class CookieImplementationTest extends AbstractDriverTestCase {
   @Ignore({SELENESE, IE})
   public void testShouldBeAbleToAddToADomainWhichIsRelatedToTheCurrentDomain() {
     String name = gotoValidDomainAndClearCookies();
-    if (name == null) {
+    if (name == null || name.matches("\\d{1,3}(?:\\.\\d{1,3}){3}")) {
       System.out.println("Skipping test: unable to find domain name to use");
       return;
     }

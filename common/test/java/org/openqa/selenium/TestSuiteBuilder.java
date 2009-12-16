@@ -174,6 +174,12 @@ public class TestSuiteBuilder {
       return;
     }
 
+    if (isIgnored(clazz)) {
+      System.err.println("Ignoring test class: " + clazz + ": "
+                         + clazz.getAnnotation(Ignore.class).reason());
+      return;
+    }
+
     boolean include = true;
     if (patterns.size() >0) {
       include = false;
