@@ -31,7 +31,7 @@ import java.util.List;
  * of the locators in sequence, eg.
  *
  * <pre>
- * driver.findElements(ByChained(by1, by2))
+ * driver.findElements(new ByChained(by1, by2))
  * </pre>
  *
  * will find all elements that match by2 and appear under an element
