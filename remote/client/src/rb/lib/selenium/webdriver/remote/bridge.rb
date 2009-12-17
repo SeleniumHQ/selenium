@@ -370,14 +370,14 @@ module Selenium
         #
 
         def raw_execute(command, opts = {}, *args)
-          verb, path = COMMANDS[command] || raise("Unknown command #{command.inspect}")
+          verb, path = COMMANDS[command] || raise("unknown command #{command.inspect}")
           path       = path.dup
 
           path[':session_id'] = @session_id if path.include?(":session_id")
           path[':context']    = @context if path.include?(":context")
 
           begin
-            opts.each { |key, value| path[key.inspect] = value }
+            opts.each { |key, value| path[key.inspect] = URI.escape(value.to_s) }
           rescue IndexError
             raise ArgumentError, "#{opts.inspect} invalid for #{command.inspect}"
           end

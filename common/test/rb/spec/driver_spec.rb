@@ -83,8 +83,19 @@ describe "Driver" do
 
     it "should find child element" do
       driver.navigate.to url_for("nestedElements.html")
+
       element = driver.find_element(:name, "form2")
-      child = element.find_element(:name, "selectomatic")
+      child   = element.find_element(:name, "selectomatic")
+
+      child.attribute("id").should == "2"
+    end
+
+    it "should find child element by tag name" do
+      driver.navigate.to url_for("nestedElements.html")
+
+      element = driver.find_element(:name, "form2")
+      child   = element.find_element(:tag_name, "select")
+
       child.attribute("id").should == "2"
     end
 
