@@ -192,47 +192,86 @@ DelayedCommand.prototype.execute = function(ms) {
 
 
 /**
+ * @return {boolean} Whether this instance should delay execution of its
+ *     command for a pending request in the current window's nsILoadGroup.
+ */
+DelayedCommand.prototype.shouldDelayExecutionForPendingRequest_ = function() {
+  if (this.loadGroup_.isPending()) {
+    var hasOnLoadBlocker = false;
+    var numPending = 0;
+    var requests = this.loadGroup_.requests;
+    while (requests.hasMoreElements()) {
+      var request =
+          requests.getNext().QueryInterface(Components.interfaces.nsIRequest);
+      if (request.isPending()) {
+        numPending += 1;
+        hasOnLoadBlocker = hasOnLoadBlocker ||
+            (request.name == 'about:document-onload-blocker');
+
+        if (numPending > 1) {
+          // More than one pending request, need to wait.
+          return true;
+        }
+      }
+    }
+
+    if (numPending && !hasOnLoadBlocker) {
+      Utils.dumpn('Ignoring pending about:document-onload-blocker request');
+      // If we only have one pending request and it is not a
+      // document-onload-blocker, we need to wait.  We do not wait for
+      // document-onload-blocker requests since these are created when
+      // one of document.[open|write|writeln] is called. If document.close is
+      // never called, the document-onload-blocker request will not be
+      // completed.
+      return true;
+    }
+  }
+  return false;
+};
+
+
+/**
  * Attempts to execute the command.  If the window is not ready for the command
  * to execute, will set a timeout to try again.
  * @private
  */
 DelayedCommand.prototype.executeInternal_ = function() {
-  if (this.loadGroup_.isPending()) {
+  if (this.shouldDelayExecutionForPendingRequest_()) {
+    return this.execute(this.sleepDelay_);
+  }
+
+  // Ugh! New windows open on "about:blank" before going to their
+  // destination URL. This check attempts to tell the difference between a
+  // newly opened window and someone actually wanting to do something on
+  // about:blank.
+  if (this.driver_.window.location == 'about:blank' && !this.onBlank_) {
+    this.onBlank_ = true;
     return this.execute(this.sleepDelay_);
   } else {
-    // Ugh! New windows open on "about:blank" before going to their
-    // destination URL. This check attempts to tell the difference between a
-    // newly opened window and someone actually wanting to do something on
-    // about:blank.
-    if (this.driver_.window.location == 'about:blank' && !this.onBlank_) {
-      this.onBlank_ = true;
-      return this.execute(this.sleepDelay_);
-    } else {
-      try {
-        this.response_.commandName = this.command_.commandName;
-        // TODO(simon): This is rampantly ugly, but allows an alert to kill the command
-        // TODO(simon): This is never cleared, but _should_ be okay, because send wipes itself
-        this.driver_.response_ = this.response_;
+    try {
+      this.response_.commandName = this.command_.commandName;
+      // TODO(simon): This is rampantly ugly, but allows an alert to kill the command
+      // TODO(simon): This is never cleared, but _should_ be okay, because send wipes itself
+      this.driver_.response_ = this.response_;
 
-        this.driver_[this.command_.commandName](
-            this.response_, this.command_.parameters);
-      } catch (e) {
-        // if (e instanceof StaleElementError) won't work here since
-        // StaleElementError is defined in the utils.js subscript which is
-        // loaded independently in this component and in the main driver
-        // component.
-        // TODO(jmleyba): Continue cleaning up the extension and replacing the
-        // subscripts with proper components.
-        if (e.isStaleElementError) {
-          this.response_.isError = true;
-          this.response_.response = 'element is obsolete';
-          this.response_.send();
-        } else {
-          Utils.dumpn(
-              'Exception caught by driver: ' + this.command_.commandName +
-              '(' + this.command_.parameters + ')\n' + e);
-          this.response_.reportError(e);
-        }
+      this.driver_[this.command_.commandName](
+          this.response_, this.command_.parameters);
+    } catch (e) {
+      // if (e instanceof StaleElementError) won't work here since
+      // StaleElementError is defined in the utils.js subscript which is
+      // loaded independently in this component and in the main driver
+      // component.
+      // TODO(jmleyba): Continue cleaning up the extension and replacing the
+      // subscripts with proper components.
+      if (e.isStaleElementError) {
+        this.response_.isError = true;
+        this.response_.response = 'element is obsolete';
+        this.response_.send();
+      } else {
+        Utils.dumpn(
+            'Exception caught by driver: ' + this.command_.commandName +
+            '(' + this.command_.parameters + ')\n' + e);
+        this.response_.reportError(e);
       }
     }
   }

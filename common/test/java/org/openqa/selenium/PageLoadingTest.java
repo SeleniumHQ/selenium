@@ -147,4 +147,19 @@ public class PageLoadingTest extends AbstractDriverTestCase {
 
     assertThat(driver.getTitle(), equalTo("XHTML Test Page"));
   }
+
+  /**
+   * @throws Exception If the test fails.
+   * @see <a href="http://code.google.com/p/selenium/issues/detail?id=208">
+   *     Issue 208</a>
+   */
+  @Ignore(value = {IE, SELENESE, CHROME, IPHONE}, reason = "Untested user-agents")
+  @JavascriptEnabled
+  public void testShouldNotHangIfDocumentOpenCallIsNeverFollowedByDocumentCloseCall()
+      throws Exception {
+    driver.get(documentWrite);
+
+    // If this command succeeds, then all is well.
+    driver.findElement(By.xpath("//body"));
+  }
 }

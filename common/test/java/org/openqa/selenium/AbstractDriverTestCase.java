@@ -27,8 +27,8 @@ import org.openqa.selenium.environment.webserver.AppServer;
 
 import junit.framework.TestCase;
 
-import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class AbstractDriverTestCase extends TestCase implements NeedsDriver {
 
@@ -54,6 +54,7 @@ public class AbstractDriverTestCase extends TestCase implements NeedsDriver {
   protected String grandchildPage;
   protected String uploadPage;
   protected String svgPage;
+  protected String documentWrite;
 
   public void setDriver(WebDriver driver) {
     this.driver = driver;
@@ -84,6 +85,7 @@ public class AbstractDriverTestCase extends TestCase implements NeedsDriver {
     grandchildPage = appServer.whereIs("child/grandchild/grandchildPage.html");
     uploadPage = appServer.whereIs("upload.html");
     svgPage = appServer.whereIs("svgPiechart.xhtml");
+    documentWrite = appServer.whereIs("document_write_in_onload.html");
 
     String hostName = environment.getAppServer().getHostName();
     String alternateHostName = environment.getAppServer().getAlternateHostName();
