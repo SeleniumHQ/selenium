@@ -25,6 +25,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.Base64Encoder;
 import org.openqa.selenium.internal.FileHandler;
+import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -41,6 +42,23 @@ import java.net.URL;
  * iphone. The iphone (or iphone simulator) must be running the iWebDriver app.
  */
 public class IPhoneDriver extends RemoteWebDriver implements TakesScreenshot {
+
+  /**
+   * This is the default port and URL for iWebDriver. Eventually it would
+   * be nice to use DNS-SD to detect iWebDriver instances running non
+   * locally or on non-default ports.
+   */
+  protected static final String DEFAULT_IWEBDRIVER_URL = "http://localhost:3001/hub";
+
+  /**
+   * Create an IPhoneDriver that will use the given {@code executor} to
+   * communicate with the iWebDriver app.
+   *
+   * @param executor The executor to use for communicating with the iPhone.
+   */
+  public IPhoneDriver(CommandExecutor executor) {
+    super(executor, DesiredCapabilities.iphone());
+  }
 
   /**
    * Create an IPhoneDriver connected to the remote address passed in.
@@ -70,9 +88,6 @@ public class IPhoneDriver extends RemoteWebDriver implements TakesScreenshot {
    * @throws Exception
    */
   public IPhoneDriver() throws Exception {
-    // This is the default port and URL for iWebDriver. Eventually it would
-    // be nice to use DNS-SD to detect iWebDriver instances running non
-    // locally or on non-default ports.
     this("http://localhost:3001/hub");
   }
 

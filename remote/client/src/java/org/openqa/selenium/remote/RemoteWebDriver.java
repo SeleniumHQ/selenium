@@ -17,17 +17,6 @@ limitations under the License.
 
 package org.openqa.selenium.remote;
 
-import java.lang.reflect.Constructor;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import org.openqa.selenium.By;
@@ -45,6 +34,17 @@ import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.internal.ReturnedCookie;
+
+import java.lang.reflect.Constructor;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, FindsByXPath {
@@ -90,12 +90,23 @@ public class RemoteWebDriver implements WebDriver, JavascriptExecutor,
     sessionId = new SessionId(response.getSessionId());
   }
 
+  /**
+   * Method called before
+   * {@link #startSession(Capabilities) starting a new session}.  The default
+   * implementation is a no-op, but subtypes should override this method to
+   * define custom behavior. 
+   */
   protected void startClient() {
-    
   }
-  
-  protected void stopClient() {
 
+  /**
+   * Method called after executing a {@link #quit()} command. Subtypes
+   */
+  protected void stopClient() {
+  }
+
+  public CommandExecutor getCommandExecutor() {
+    return executor;
   }
   
   public Capabilities getCapabilities() {

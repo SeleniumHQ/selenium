@@ -13,6 +13,6 @@ public class CreateIPhoneDriverTest extends TestCase {
   }
 
   public void testCreateDriverWithTrailingSlash() throws Exception {
-    new IPhoneDriver("http://localhost:16000/hub/");
+    new IPhoneDriver(IPhoneDriver.DEFAULT_IWEBDRIVER_URL + "/");
   }
 }

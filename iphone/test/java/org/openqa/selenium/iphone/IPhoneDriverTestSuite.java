@@ -17,11 +17,15 @@ limitations under the License.
 
 package org.openqa.selenium.iphone;
 
+import static org.openqa.selenium.Ignore.Driver.IPHONE;
+import static org.openqa.selenium.Ignore.Driver.REMOTE;
+import org.openqa.selenium.TestSuiteBuilder;
+import org.openqa.selenium.internal.FileHandler;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
-import static org.openqa.selenium.Ignore.Driver.*;
-import org.openqa.selenium.TestSuiteBuilder;
-import org.openqa.selenium.iphone.IPhoneDriver;
+
+import java.io.File;
 
 public class IPhoneDriverTestSuite extends TestCase {
 
@@ -30,11 +34,23 @@ public class IPhoneDriverTestSuite extends TestCase {
         .addSourceDir("iphone")
         .addSourceDir("remote")
         .addSourceDir("common")
-        .usingDriver(IPhoneDriver.class)
+        .usingDriver(TestIPhoneSimulatorDriver.class)
         .exclude(IPHONE)
         .exclude(REMOTE)
         .keepDriverInstance()
         .includeJavascriptTests()
         .create();
+  }
+
+  public static class TestIPhoneSimulatorDriver extends IPhoneSimulatorDriver {
+    public TestIPhoneSimulatorDriver() throws Exception {
+      super(locateSimulatorBinary());
+    }
+
+    private static IPhoneSimulatorBinary locateSimulatorBinary() throws Exception {
+      File iWebDriverApp = FileHandler.locateInProject(
+          "iphone/build/Release-iphonesimulator/iWebDriver.app/iWebDriver");
+      return new IPhoneSimulatorBinary(iWebDriverApp);
+    }
   }
 }
