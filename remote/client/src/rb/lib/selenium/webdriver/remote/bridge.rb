@@ -81,13 +81,13 @@ module Selenium
         #
 
         def session_id
-          @session_id || raise(StandardError, "no current session exists")
+          @session_id || raise(Error::WebDriverError, "no current session exists")
         end
 
 
         def create_session(desired_capabilities)
-          resp  = raw_execute :newSession, {}, desired_capabilities
-          @session_id = resp['sessionId'] || raise('no sessionId in returned payload')
+          resp = raw_execute :newSession, {}, desired_capabilities
+          @session_id = resp['sessionId'] || raise(Error::WebDriverError, 'no sessionId in returned payload')
           Capabilities.json_create resp['value']
         end
 
@@ -160,7 +160,9 @@ module Selenium
         end
 
         def executeScript(script, *args)
-          raise UnsupportedOperationError, "underlying webdriver instace does not support javascript" unless capabilities.javascript?
+          unless capabilities.javascript?
+            raise Error::UnsupportedOperationError, "underlying webdriver instance does not support javascript"
+          end
 
           typed_args = args.map { |arg| wrap_script_argument(arg) }
           response   = raw_execute :executeScript, {}, script, typed_args

@@ -5,13 +5,15 @@ module Selenium
       #
       # @see Element#send_keys
       #
+      # http://www.google.com.au/search?&q=unicode+pua&btnG=Search
+      #
 
       KEYS = {
       # \x works on both 1.8.6/1.9
         :null         => "\xEE\x80\x80",
         :cancel       => "\xEE\x80\x81",
         :help         => "\xEE\x80\x82",
-        :back_space   => "\xEE\x80\x83",
+        :backspace    => "\xEE\x80\x83",
         :tab          => "\xEE\x80\x84",
         :clear        => "\xEE\x80\x85",
         :return       => "\xEE\x80\x86",
@@ -72,7 +74,7 @@ module Selenium
       }
 
       def self.[](key)
-        KEYS[key] || raise(Error::UnsupportedOperationError, "no such key #{e.inspect}")
+        KEYS[key] || raise(Error::UnsupportedOperationError, "no such key #{key.inspect}")
       end
 
     end # Keys

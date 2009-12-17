@@ -71,10 +71,10 @@ module Selenium
           end
         end
 
-        # @option browser_name        [String] required browser name
-        # @option version             [String] required browser version number
-        # @option platform            [Symbol] one of :any, :win, :mac, or :x
-        # @option javascript_enabled  [Boolean] should the test run with javascript enabled?
+        # @option :browser_name        [String] required browser name
+        # @option :version             [String] required browser version number
+        # @option :platform            [Symbol] one of :any, :win, :mac, or :x
+        # @option :javascript_enabled  [Boolean] should the test run with javascript enabled?
         #
         # @api public
         #

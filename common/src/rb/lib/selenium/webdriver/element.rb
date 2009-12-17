@@ -73,15 +73,25 @@ module Selenium
       #
       # Send keystrokes to this element
       #
-      # @param [String, Symbol]
+      # @param [String, Symbol, Array]
+      #
+      # Examples:
+      #
+      #     element.send_keys "foo"                     #=> value: 'foo'
+      #     element.send_keys "tet", :arrow_left, "s"   #=> value: 'test'
+      #     element.send_keys [:control, 'a'], :space   #=> value: ' '
       #
       # @see Keys::KEYS
       #
 
       def send_keys(*args)
         args.each do |arg|
-          if arg.kind_of?(Symbol)
+          case arg
+          when Symbol
             arg = Keys[arg]
+          when Array
+            arg = arg.map { |e| e.kind_of?(Symbol) ? Keys[e] : e }.join
+            arg << Keys[:null]
           end
 
           bridge.sendKeysToElement(@id, arg.to_s)
