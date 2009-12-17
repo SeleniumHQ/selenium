@@ -8,6 +8,7 @@ require 'rake-tasks/dotnet'
 require 'rake-tasks/zip'
 require 'rake-tasks/c'
 require 'rake-tasks/java'
+require 'rake-tasks/iphone'
 require 'rake-tasks/selenium'
 require 'rake-tasks/mozilla'
 require 'rake-tasks/ruby'
@@ -32,6 +33,8 @@ task :remote_client => [:'webdriver-remote-client']
 task :remote_server => [:'webdriver-remote-server']
 task :selenium => [:'webdriver-selenium']
 task :support => [:'webdriver-support']
+task :iphone_client => [:'webdriver-iphone-client']
+task :iphone => [:iphone_server, :iphone_client]
 
 task :test_common => [:'webdriver-common-test']
 task :test_chrome => [:'webdriver-chrome-test']
@@ -43,6 +46,8 @@ task :test_firefox => [:'webdriver-firefox-test']
 task :test_remote => [:'webdriver-selenium-server-test']
 task :test_selenium => [:'webdriver-selenium-server-test', :'webdriver-selenium-test', :'webdriver-selenese-test']
 task :test_support => [:'webdriver-support-test']
+task :test_iphone_client => [:'webdriver-iphone-client-test']
+task :test_iphone => [:test_iphone_server, :test_iphone_client]
 
 task :test_core => [:'test_core_firefox']
 if (windows?)
@@ -54,7 +59,6 @@ task :test => [
                 :test_htmlunit,
                 :test_firefox,
                 :test_ie,
-                :test_iphone,
                 :test_support,
                 :test_chrome,
                 :test_remote,
@@ -64,6 +68,7 @@ task :test => [
 
 task :clean do
   rm_rf 'build/', :verbose => false
+  rm_rf 'iphone/build/', :verbose => false
 end
 
 java_jar(:name => "webdriver-chrome",
@@ -550,18 +555,30 @@ task :test_selenium_py => [:'selenium-core', :'selenium-server-standalone'] do
     end
 end
 
-task :iphone => [:iphone_server, :iphone_client]
-
 # Place-holder tasks
-task :iphone_client
-task :test_iphone_client
-task :test_iphone => [:test_iphone_server, :test_iphone_client, :remote_client]
+java_jar(:name => "webdriver-iphone-client",
+         :srcs  => [ "iphone/src/java/**/*.java" ],
+         :deps => [
+                    :common,
+                    :remote_common,
+                    :remote_client
+                  ])
+
+iphone_test(:name => "webdriver-iphone-client-test",
+            :srcs => [ "iphone/test/java/**/*.java" ],
+            :deps => [
+                       :test_common,
+                       :iphone_server,
+                       :iphone_client
+                     ])
+
 
 #### iPhone ####
 task :iphone_server => FileList['iphone/src/objc/**'] do
-  if iPhoneSDKPresent? then
+  sdk = iPhoneSDK?
+  if sdk != nil then
     puts "Building iWebDriver iphone app"
-    sh "cd iphone && xcodebuild -sdk iphonesimulator2.2 ARCHS=i386 -target iWebDriver >/dev/null", :verbose => false
+    sh "cd iphone && xcodebuild -sdk #{sdk} ARCHS=i386 -target iWebDriver >/dev/null", :verbose => false
   else
     puts "XCode not found. Not building the iphone driver."
   end
@@ -569,10 +586,11 @@ end
 
 # This does not depend on :iphone_server because the dependancy is specified in xcode
 task :test_iphone_server do
-  if iPhoneSDKPresent? then
-    sh "cd iphone && xcodebuild -sdk iphonesimulator2.2 ARCHS=i386 -target Tests"
+  sdk = iPhoneSDK?
+  if sdk != nil then
+    sh "cd iphone && xcodebuild -sdk #{sdk} ARCHS=i386 -target Tests"
   else
-    puts "XCode not found. Not testing the iphone driver."
+    puts "XCode and/or iPhoneSDK not found. Not testing iphone_server."
   end
 end
 

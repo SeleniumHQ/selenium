@@ -65,16 +65,42 @@ def msbuild?
   windows? && present?("msbuild.exe")
 end
 
+def xcode?
+  return mac? && present?('xcodebuild')
+end
+
 def iPhoneSDKPresent?
-  return false # For now
-  
-  return false unless mac? && present?('xcodebuild')
-  begin
-    sdks = sh "xcodebuild -showsdks 2>/dev/null", :verbose => false
-    !!(sdks =~ /simulator2.2/)
-    true
-  rescue
-    puts "Ouch"
-    false
+  return false unless xcode?
+  sdks = sh "xcodebuild -showsdks 1>/dev/null 2>/dev/null", :verbose => false
+  !!(sdks =~ /iphonesimulator/)
+  return true
+end
+
+def iPhoneSDK?
+  return nil unless iPhoneSDKPresent?
+  if $iPhoneSDK == nil then
+    cmd = open("|xcodebuild -showsdks | grep iphonesimulator | awk '{print $7}'")
+    sdks = cmd.readlines.map {|x| x.gsub(/\b(.*)\b.*/m, '\1')}
+    cmd.close
+    if ENV['IPHONE_SDK_VERSION'] == nil then
+      puts "No SDK specified, using #{sdks[0]}"
+      $iPhoneSDK = sdks[0]
+    else
+      $iPhoneSDK = "iphonesimulator#{ENV['IPHONE_SDK_VERSION']}"
+      puts "Testing for SDK #{$iPhoneSDK}"
+      if sdks.index($iPhoneSDK) == nil then
+        puts "...#{$iPhoneSDK} not found; Defaulting to #{sdks[0]}"
+        $iPhoneSDK = sdks[0]
+      end
+    end
+    puts "Using iPhoneSDK: #{$iPhoneSDK}"
+  end
+  $iPhoneSDK
+end
+
+def iPhoneSDKVersion?
+  sdk = iPhoneSDK?
+  if sdk != nil then
+    sdk.gsub(/iphonesimulator(.*)/, '\1')
   end
 end

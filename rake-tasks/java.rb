@@ -129,6 +129,11 @@ class JavaGen < BaseGenerator
     
     test_string = 'java -Xmx128m -Xms128m '
     test_string += '-cp "' + classpath.join(classpath_separator?) + '" ' if classpath.length > 1
+
+    args[:system_properties].each do |prop|
+      test_string += '-D#{prop} '
+    end
+
     test_string += main
     test_string += ' ' + args[:args] if args[:args]
 
