@@ -21,9 +21,22 @@ module Selenium
       #
       # switch to the frame with the given id
       #
+      # If given a block, this method will return to the original window after
+      # block execution.
+      #
+      # @param id
+      #   A window handle
+      #
 
       def window(id)
-        @bridge.switchToWindow id
+        if block_given?
+          original = @bridge.getCurrentWindowHandle
+          @bridge.switchToWindow id
+          yield
+          @bridge.switchToWindow original
+        else
+          @bridge.switchToWindow id
+        end
       end
 
       #
