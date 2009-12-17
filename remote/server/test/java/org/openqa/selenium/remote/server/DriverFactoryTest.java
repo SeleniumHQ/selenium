@@ -89,6 +89,18 @@ public class DriverFactoryTest extends TestCase {
 
     assertEquals(DriverTwo.class, result);
   }
+
+  public void testShouldConsiderJavascriptCapabilities() {
+    DesiredCapabilities nojavascript = new DesiredCapabilities("browser", "v1", Platform.LINUX);
+    DesiredCapabilities javascript = new DesiredCapabilities("browser", "v1", Platform.LINUX);
+    javascript.setJavascriptEnabled(true);
+
+    factory.registerDriver(nojavascript, DriverOne.class);
+    factory.registerDriver(javascript, DriverTwo.class);
+
+    assertEquals(DriverOne.class, factory.getBestMatchFor(nojavascript));
+    assertEquals(DriverTwo.class, factory.getBestMatchFor(javascript));
+  }
   
   public static abstract class DriverOne implements WebDriver {}
   public static abstract class DriverTwo implements WebDriver {}
