@@ -677,7 +677,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "~/src/google-toolbox-for-mac/UnitTesting/RunIPhoneUnitTest.sh";
+			shellScript = "${TARGET_BUILD_DIR}/../../RunIPhoneUnitTest.sh";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
