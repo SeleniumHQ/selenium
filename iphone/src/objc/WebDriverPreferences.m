@@ -56,8 +56,44 @@ static WebDriverPreferences *singleton = nil;
   }
 }
 
-- (id)init {	
-  // Fetching paramters from [NSUserDefaults standardUserDefaults].	
++ (void) initPreferences {
+  NSString* mode = [[NSUserDefaults standardUserDefaults]
+                    stringForKey:PREF_MODE];
+  if (mode == nil) {
+    NSLog(@"Initializing app settings to default values.");
+
+    NSString* bundlePath = [[NSBundle mainBundle] bundlePath];
+    NSString* settingsPath = [bundlePath stringByAppendingPathComponent:
+                              @"Settings.bundle"];
+    NSString* rootPlist = [settingsPath stringByAppendingPathComponent:
+                           @"Root.plist"];
+
+    NSDictionary* settings = [NSDictionary dictionaryWithContentsOfFile:
+                              rootPlist];
+    NSArray* preferences = [settings objectForKey:@"PreferenceSpecifiers"];
+
+    NSMutableDictionary* defaultPrefs =
+        [NSMutableDictionary dictionaryWithCapacity:[preferences count]];
+    for (NSDictionary* item in preferences) {
+      id key = [item objectForKey:@"Key"];
+      if (key != nil) {
+        [defaultPrefs setObject:[item objectForKey:@"DefaultValue"]
+                         forKey:key];
+      }
+    }
+
+    [[NSUserDefaults standardUserDefaults] registerDefaults:defaultPrefs];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+  } else {
+    NSLog(@"App settings already initialized. Mode is %@", mode);
+  }
+}
+
+
+- (id)init {
+  [WebDriverPreferences initPreferences];
+
+  // Fetching paramters from [NSUserDefaults standardUserDefaults].
   NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 
   // mode can be "Server" or "Client"
@@ -95,7 +131,8 @@ static WebDriverPreferences *singleton = nil;
     }
     [WebDriverPreferences validateRequesterId:requesterId_];
   } else if ([mode_ isEqualToString:@"Server"]) {
-    serverPortNumber_ = [defaults integerForKey:PREF_SERVER_MODE_PORT_NUMBER];
+    serverPortNumber_ =
+        (UInt16) [defaults integerForKey:PREF_SERVER_MODE_PORT_NUMBER];
   } else {
     @throw [NSException exceptionWithName:NSInvalidArgumentException
                                    reason:@"Invalid mode." 

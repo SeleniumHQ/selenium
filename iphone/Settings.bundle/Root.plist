@@ -20,7 +20,7 @@
 			<key>Key</key>
 			<string>preference_server_mode_port_number</string>
 			<key>DefaultValue</key>
-			<string>0</string>
+			<string>3001</string>
 			<key>IsSecure</key>
 			<false/>
 			<key>KeyboardType</key>
