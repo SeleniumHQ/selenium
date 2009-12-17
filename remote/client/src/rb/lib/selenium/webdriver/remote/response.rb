@@ -30,7 +30,10 @@ module Selenium
         def assert_ok
           if @code.nil? || @code > 400
             if e = error()
-              raise Error.for_remote_class(e['class']), e['message']
+              raise(
+                Error.for_remote_class(e['class']),
+                e['message'] || self
+              )
             else
               raise ServerError, self
             end

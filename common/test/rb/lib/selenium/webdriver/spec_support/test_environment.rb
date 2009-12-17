@@ -36,8 +36,8 @@ module Selenium
         def new_driver_instance
           if driver == :remote
             cap = WebDriver::Remote::Capabilities.send(ENV['REMOTE_BROWSER_VERSION'] || 'firefox')
-            WebDriver::Driver.for :remote,  :server_url           => "http://localhost:6000/",
-                                            :desired_capabilities => cap
+            WebDriver::Driver.for :remote, :url => "http://localhost:6000/",
+                                           :desired_capabilities => cap
           else
             WebDriver::Driver.for driver
           end

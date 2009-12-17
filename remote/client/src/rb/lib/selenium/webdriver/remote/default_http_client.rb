@@ -5,7 +5,6 @@ module Selenium
     module Remote
       class DefaultHttpClient
         CONTENT_TYPE = "application/json"
-        DEBUG        = $VERBOSE == true
 
         class RetryException < StandardError; end
 
@@ -21,7 +20,7 @@ module Selenium
           if args.any?
             headers.merge!("Content-Type" => "#{CONTENT_TYPE}; charset=utf-8")
             payload = args.to_json
-            puts "   >>> #{payload}" if DEBUG
+            puts "   >>> #{payload}" if $DEBUG
           end
 
           begin
@@ -52,7 +51,7 @@ module Selenium
         end
 
         def create_response(res)
-          puts "<- #{res.body}\n" if DEBUG
+          puts "<- #{res.body}\n" if $DEBUG
           if res.content_type == CONTENT_TYPE
             Response.new do |r|
               r.code         = res.code.to_i

@@ -1,7 +1,6 @@
 module Selenium
   module WebDriver
     module Remote
-      DEBUG = $VERBOSE == true
 
       COMMANDS = {}
 
@@ -16,7 +15,7 @@ module Selenium
         include BridgeHelper
 
         DEFAULT_OPTIONS = {
-          :server_url           => "http://localhost:7055/",
+          :url                  => "http://localhost:7055/",
           :http_client          => DefaultHttpClient,
           :desired_capabilities => Capabilities.firefox
         }
@@ -46,21 +45,26 @@ module Selenium
         #
         # Initializes the bridge with the given server URL.
         #
-        # @param server_url [String] base URL for all commands.  FIXME: Note that a trailing '/' is very important!
+        # @param url         [String] url for the remote server
+        # @param http_client [Class] an HTTP client class that implements the same interface as DefaultHttpClient
+        # @param desired_capabilities [Capabilities] an instance of Remote::Capabilities describing the capabilities you want
         #
 
         def initialize(opts = {})
           opts                 = DEFAULT_OPTIONS.merge(opts)
           http_client_class    = opts.delete(:http_client)
           desired_capabilities = opts.delete(:desired_capabilities)
-          server_url           = opts.delete(:server_url)
+          url                  = opts.delete(:url)
 
           unless opts.empty?
             raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
           end
 
+          uri = URI.parse(url)
+          uri.path += "/" unless uri.path =~ /\/$/
+
           @context      = "context"
-          @http         = http_client_class.new URI.parse(server_url)
+          @http         = http_client_class.new uri
           @capabilities = create_session(desired_capabilities)
         end
 
@@ -378,7 +382,7 @@ module Selenium
             raise ArgumentError, "#{opts.inspect} invalid for #{command.inspect}"
           end
 
-          puts "-> #{verb.to_s.upcase} #{path}" if DEBUG
+          puts "-> #{verb.to_s.upcase} #{path}" if $DEBUG
           http.call verb, path, *args
         end
 

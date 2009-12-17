@@ -6,8 +6,8 @@ module Selenium
         def initialize(response)
           return super(response) if response.kind_of?(String)
 
-          if response.error
-            super(response.error["message"])
+          if response.respond_to?(:error) && err = response.error
+            super(err["message"] || err['class'])
           else
             super("status code #{response.code}")
           end
