@@ -20,11 +20,9 @@ package org.openqa.selenium.internal.seleniumemulation;
 import org.openqa.selenium.WebDriver;
 
 public class Open extends SeleneseCommand<Void> {
-  private final Timer timer;
   private final String baseUrl;
 
-  public Open(Timer timer, String baseUrl) {
-    this.timer = timer;
+  public Open(String baseUrl) {
     this.baseUrl = baseUrl;
   }
 
@@ -35,12 +33,7 @@ public class Open extends SeleneseCommand<Void> {
                              baseUrl + (!url.startsWith("/") ? "/" : "") + url :
                              url;
 
-    timer.run(new Runnable() {
-
-      public void run() {
-        driver.get(urlToOpen);
-      }
-    });
+    driver.get(urlToOpen);
 
     return null;
   }

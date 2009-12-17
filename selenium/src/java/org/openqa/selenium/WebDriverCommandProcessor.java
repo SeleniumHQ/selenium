@@ -18,6 +18,7 @@ limitations under the License.
 package org.openqa.selenium;
 
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 import com.google.common.collect.Maps;
 import com.thoughtworks.selenium.CommandProcessor;
@@ -128,6 +129,7 @@ import static org.openqa.selenium.internal.seleniumemulation.SeleniumSelect.Prop
 public class WebDriverCommandProcessor implements CommandProcessor {
   private final Map<String, SeleneseCommand> seleneseMethods = Maps.newHashMap();
   private final String baseUrl;
+  private final Timer timer;
   private WebDriver driver;
   private Capabilities likeThis;
 
@@ -157,6 +159,8 @@ public class WebDriverCommandProcessor implements CommandProcessor {
     }
 
     this.likeThis = likeThis;
+
+    this.timer = new Timer(30000);
   }
 
   /**
@@ -231,6 +235,7 @@ public class WebDriverCommandProcessor implements CommandProcessor {
   }
 
   public void stop() {
+    timer.stop();
     if (driver != null) {
       driver.quit();
     }
@@ -261,13 +266,17 @@ public class WebDriverCommandProcessor implements CommandProcessor {
     throw new UnsupportedOperationException();
   }
 
-  private Object execute(String commandName, String[] args) {
-    SeleneseCommand command = seleneseMethods.get(commandName);
+  private Object execute(String commandName, final String[] args) {
+    final SeleneseCommand command = seleneseMethods.get(commandName);
     if (command == null) {
       throw new UnsupportedOperationException(commandName);
     }
 
-    return command.apply(driver, args);
+    return timer.run(new Callable<Object>() {
+      public Object call() throws Exception {
+        return command.apply(driver, args);
+      }
+    });
   }
 
   private void setUpMethodMap() {
@@ -277,13 +286,10 @@ public class WebDriverCommandProcessor implements CommandProcessor {
 
     // TODO(simon): Switch to wrapping all calls in a timed future
     // Default to 30 seconds on the timer
-    Timer timer = new Timer(30000);
     SeleniumSelect select = new SeleniumSelect(elementFinder);
     Windows windows = new Windows(driver);
 
     // Note the we use the names used by the CommandProcessor
-    // TODO(simon): Add a "getCommandProcessor" method to DefaultSelenium and move this to a
-    //              command processor
     seleneseMethods.put("addLocationStrategy", new AddLocationStrategy(elementFinder));
     seleneseMethods.put("addSelection", new AddSelection(elementFinder, select));
     seleneseMethods.put("altKeyDown", new AltKeyDown(keyState));
@@ -337,7 +343,7 @@ public class WebDriverCommandProcessor implements CommandProcessor {
     seleneseMethods.put("getTitle", new GetTitle());
     seleneseMethods.put("getValue", new GetValue(elementFinder));
     seleneseMethods.put("getXpathCount", new GetXpathCount());
-    seleneseMethods.put("goBack", new GoBack(timer));
+    seleneseMethods.put("goBack", new GoBack());
     seleneseMethods.put("highlight", new Highlight(elementFinder, javascriptLibrary));
     seleneseMethods.put("isChecked", new IsChecked(elementFinder));
     seleneseMethods.put("isCookiePresent", new IsCookiePresent());
@@ -360,9 +366,9 @@ public class WebDriverCommandProcessor implements CommandProcessor {
     seleneseMethods.put("mouseMoveAt", new MouseEventAt(elementFinder, javascriptLibrary, "mousemove"));
     seleneseMethods.put("mouseUp", new MouseEvent(elementFinder, javascriptLibrary, "mouseup"));
     seleneseMethods.put("mouseUpAt", new MouseEventAt(elementFinder, javascriptLibrary, "mouseup"));
-    seleneseMethods.put("open", new Open(timer, baseUrl));
-    seleneseMethods.put("openWindow", new OpenWindow(timer, new GetEval(baseUrl)));
-    seleneseMethods.put("refresh", new Refresh(timer));
+    seleneseMethods.put("open", new Open(baseUrl));
+    seleneseMethods.put("openWindow", new OpenWindow(new GetEval(baseUrl)));
+    seleneseMethods.put("refresh", new Refresh());
     seleneseMethods.put("removeAllSelections", new RemoveAllSelections(elementFinder));
     seleneseMethods.put("removeSelection", new RemoveSelection(elementFinder, select));
     seleneseMethods.put("runScript", new RunScript(javascriptLibrary));
@@ -380,10 +386,10 @@ public class WebDriverCommandProcessor implements CommandProcessor {
     seleneseMethods.put("typeKeys", new TypeKeys(elementFinder));
     seleneseMethods.put("uncheck", new Uncheck(elementFinder));
     seleneseMethods.put("useXpathLibrary", new NoOp(null));
-    seleneseMethods.put("waitForCondition", new WaitForCondition(timer));
+    seleneseMethods.put("waitForCondition", new WaitForCondition());
     seleneseMethods.put("waitForFrameToLoad", new NoOp(null));
     seleneseMethods.put("waitForPageToLoad", new WaitForPageToLoad());
-    seleneseMethods.put("waitForPopUp", new WaitForPopup(timer, windows));
+    seleneseMethods.put("waitForPopUp", new WaitForPopup(windows));
     seleneseMethods.put("windowFocus", new WindowFocus(javascriptLibrary));
     seleneseMethods.put("windowMaximize", new WindowMaximize(javascriptLibrary));
   }

@@ -20,23 +20,17 @@ package org.openqa.selenium.internal.seleniumemulation;
 import org.openqa.selenium.WebDriver;
 
 public class OpenWindow extends SeleneseCommand<Void> {
-  private final Timer timer;
   private final GetEval opener;
 
-  public OpenWindow(Timer timer, GetEval opener) {
-    this.timer = timer;
+  public OpenWindow(GetEval opener) {
     this.opener = opener;
   }
 
   @Override
   protected Void handleSeleneseCommand(final WebDriver driver, final String url, final String windowID) {
-    timer.run(new Runnable() {
+    String[] args = {String.format("window.open('%s', '%s');", url, windowID)};
 
-      public void run() {
-        String[] args = {String.format("window.open('%s', '%s');", url, windowID)};
-        opener.apply(driver, args);
-      }
-    });
+    opener.apply(driver, args);
 
     return null;
   }

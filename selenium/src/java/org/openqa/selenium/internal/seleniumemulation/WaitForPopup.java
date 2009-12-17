@@ -22,11 +22,9 @@ import com.thoughtworks.selenium.Wait;
 import org.openqa.selenium.WebDriver;
 
 public class WaitForPopup extends SeleneseCommand<Void> {
-  private final Timer timer;
   private final Windows windows;
 
-  public WaitForPopup(Timer timer, Windows windows) {
-    this.timer = timer;
+  public WaitForPopup(Windows windows) {
     this.windows = windows;
   }
 
@@ -35,31 +33,25 @@ public class WaitForPopup extends SeleneseCommand<Void> {
     final long millis = Long.parseLong(timeout);
     final String current = driver.getWindowHandle();
 
-    timer.run(new Runnable() {
-
-      public void run() {
-        new Wait() {
-          @Override
-          public boolean until() {
-            try {
-              if ("_blank".equals(windowID)) {
-                windows.selectBlankWindow(driver);
-              } else {
-                driver.switchTo()
-                    .window(windowID);
-              }
-              return !"about:blank".equals(driver.getCurrentUrl());
-            } catch (SeleniumException e) {
-              // Swallow
-            }
-            return false;
+    new Wait() {
+      @Override
+      public boolean until() {
+        try {
+          if ("_blank".equals(windowID)) {
+            windows.selectBlankWindow(driver);
+          } else {
+            driver.switchTo()
+                .window(windowID);
           }
-        }.wait(String.format("Timed out waiting for %s. Waited %s", windowID, timeout), millis);
+          return !"about:blank".equals(driver.getCurrentUrl());
+        } catch (SeleniumException e) {
+          // Swallow
+        }
+        return false;
       }
-    });
+    }.wait(String.format("Timed out waiting for %s. Waited %s", windowID, timeout), millis);
 
-    driver.switchTo()
-        .window(current);
+    driver.switchTo().window(current);
 
     return null;
   }

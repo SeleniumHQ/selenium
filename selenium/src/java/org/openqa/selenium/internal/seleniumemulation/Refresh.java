@@ -20,20 +20,10 @@ package org.openqa.selenium.internal.seleniumemulation;
 import org.openqa.selenium.WebDriver;
 
 public class Refresh extends SeleneseCommand<Void> {
-  private final Timer timer;
-
-  public Refresh(Timer timer) {
-    this.timer = timer;
-  }
 
   @Override
   protected Void handleSeleneseCommand(final WebDriver driver, String ignored, String alsoIgnored) {
-    timer.run(new Runnable() {
-
-      public void run() {
-        driver.navigate().refresh();
-      }
-    });
+    driver.navigate().refresh();
 
     return null;
   }

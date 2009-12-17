@@ -20,20 +20,10 @@ package org.openqa.selenium.internal.seleniumemulation;
 import org.openqa.selenium.WebDriver;
 
 public class GoBack extends SeleneseCommand<Void> {
-  private final Timer timer;
-
-  public GoBack(Timer timer) {
-    this.timer = timer;
-  }
 
   @Override
   protected Void handleSeleneseCommand(final WebDriver driver, String ignored, String alsoIgnored) {
-    timer.run(new Runnable() {
-
-      public void run() {
-        driver.navigate().back();
-      }
-    });
+    driver.navigate().back();
 
     return null;
   }

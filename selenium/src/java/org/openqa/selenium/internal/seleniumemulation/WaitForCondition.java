@@ -22,24 +22,15 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 
 public class WaitForCondition extends SeleneseCommand<Void> {
-  private final Timer timer;
-
-  public WaitForCondition(Timer timer) {
-    this.timer = timer;
-  }
 
   @Override
   protected Void handleSeleneseCommand(final WebDriver driver, final String script, final String timeout) {
-    timer.run(new Runnable() {
-      public void run() {
-        new Wait() {
-          @Override
-          public boolean until() {
-            return (Boolean) ((JavascriptExecutor) driver).executeScript(script);
-          }
-        }.wait("Failed to resolve " + script, Long.valueOf(timeout));
+    new Wait() {
+      @Override
+      public boolean until() {
+        return (Boolean) ((JavascriptExecutor) driver).executeScript(script);
       }
-    });
+    }.wait("Failed to resolve " + script, Long.valueOf(timeout));
 
     return null;
   }

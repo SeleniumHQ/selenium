@@ -17,6 +17,7 @@ limitations under the License.
 
 package org.openqa.selenium.internal.seleniumemulation;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -34,15 +35,19 @@ public class Timer {
     this.timeout = timeout;
   }
 
-  public void run(Runnable evaluate) {
-    Future<?> future = executor.submit(evaluate);
+  public <T> T run(Callable<T> evaluate) {
+    Future<T> future = executor.submit(evaluate);
 
     try {
-      future.get(timeout, TimeUnit.MILLISECONDS);
+      return future.get(timeout, TimeUnit.MILLISECONDS);
     } catch (InterruptedException e) {
       throw new SeleniumException("Timed out waiting for action to finish", e);
     } catch (ExecutionException e) {
-      throw new SeleniumException("Timed out waiting for action to finish", e);
+      Throwable cause = e.getCause();
+      if (cause instanceof RuntimeException) {
+        throw (RuntimeException) cause;
+      }
+      throw new RuntimeException(cause);
     } catch (TimeoutException e) {
       throw new SeleniumException("Timed out waiting for action to finish", e);
     }
@@ -50,5 +55,14 @@ public class Timer {
 
   public void setTimeout(long timeout) {
     this.timeout = timeout;
+  }
+
+  public void stop() {
+    executor.shutdownNow();
+    try {
+      executor.awaitTermination(timeout, TimeUnit.MILLISECONDS);
+    } catch (InterruptedException e) {
+      // There is nothing sensible to do.
+    }
   }
 }
