@@ -1,0 +1,956 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta name="Content-Type" content="text/html; charset=UTF-8" />
+<title>Class: Selenium::WebDriver::Remote::Capabilities</title>
+<link rel="stylesheet" href="../../../css/style.css" type="text/css" media="screen" charset="utf-8" />
+<link rel="stylesheet" href="../../../css/common.css" type="text/css" media="screen" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  relpath = '../../..';
+  if (relpath != '') relpath += '/';
+</script>
+<script type="text/javascript" charset="utf-8" src="../../../js/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="../../../js/app.js"></script>
+
+  </head>
+  <body>
+    <div id="header">
+      <div id="menu">
+  
+    <a href="../../../_index.html">Index (C)</a> &raquo; 
+    <a href="../../../Selenium.html" title="Selenium">Selenium</a> &raquo; <a href="../../WebDriver.html" title="WebDriver">WebDriver</a> &raquo; <a href="../Remote.html" title="Remote">Remote</a>
+     &raquo; 
+    <span class="title">Capabilities</span>
+  
+</div>
+
+      <div id="search">
+  <a id="class_list_link" href="#">Namespace List</a>
+  <a id="method_list_link" href="#">Method List</a>
+  <a id ="file_list_link" href="#">File List</a>
+</div>
+
+      <div class="clear"></div>
+    </div>
+    
+    <iframe id="search_frame"></iframe>
+    
+    <div id="content"><h1>Class: Selenium::WebDriver::Remote::Capabilities 
+  
+  
+</h1>
+
+<dl class="box">
+  
+    <dt class="r1">Inherits:</dt>
+    <dd class="r1">
+      <span class="inheritName">Object</span>
+      
+        <ul class="fullTree">
+          <li>Object</li>
+          
+            <li class="next">Selenium::WebDriver::Remote::Capabilities</li>
+          
+        </ul>
+        <a href="#" class="inheritanceTree">show all</a>
+      
+      </dd>
+    
+  
+  
+    
+  
+    
+  
+  
+    <dt class="r2 last">Defined in:</dt>
+    <dd class="r2 last">remote/client/src/rb/lib/selenium/webdriver/remote/capabilities.rb</dd>
+  
+</dl>
+<div class="clear"></div>
+
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    <p>
+Specification of the desired and/or actual capabilities of the browser that
+the server is being asked to create.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div>
+
+  <h2>Instance Attribute Summary</h2>
+  <ul class="summary">
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#browser_name-instance_method" title="#browser_name (instance method)">- (Object) <strong>browser_name</strong> </a>
+    
+
+    
+  </span>
+  
+  
+    
+    
+  
+  
+  
+  
+
+  
+    <span class="summary_desc">
+Returns the value of attribute browser_name.
+
+</span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#javascript_enabled-instance_method" title="#javascript_enabled (instance method)">- (Object) <strong>javascript_enabled</strong> </a>
+    
+
+    
+      (also: #javascript?)
+    
+  </span>
+  
+  
+    
+    
+  
+  
+  
+  
+
+  
+    <span class="summary_desc">
+Returns the value of attribute javascript_enabled.
+
+</span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#platform-instance_method" title="#platform (instance method)">- (Object) <strong>platform</strong> </a>
+    
+
+    
+  </span>
+  
+  
+    
+    
+  
+  
+  
+  
+
+  
+    <span class="summary_desc">
+Returns the value of attribute platform.
+
+</span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#version-instance_method" title="#version (instance method)">- (Object) <strong>version</strong> </a>
+    
+
+    
+  </span>
+  
+  
+    
+    
+  
+  
+  
+  
+
+  
+    <span class="summary_desc">
+Returns the value of attribute version.
+
+</span>
+  
+</li>
+
+    
+  </ul>
+
+
+  <h2>Class Method Summary</h2>
+
+  <ul class="summary">
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#chrome-class_method" title="chrome (class method)">+ (Object) <strong>chrome</strong>(opts = {}) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#firefox-class_method" title="firefox (class method)">+ (Object) <strong>firefox</strong>(opts = {}) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#htmlunit-class_method" title="htmlunit (class method)">+ (Object) <strong>htmlunit</strong>(opts = {}) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#internet_explorer-class_method" title="internet_explorer (class method)">+ (Object) <strong>internet_explorer</strong>(opts = {}) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#iphone-class_method" title="iphone (class method)">+ (Object) <strong>iphone</strong>(opts = {}) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#json_create-class_method" title="json_create (class method)">+ (Object) <strong>json_create</strong>(data) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#safari-class_method" title="safari (class method)">+ (Object) <strong>safari</strong>(opts = {}) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+  </ul>
+
+  <h2>Instance Method Summary</h2>
+
+  <ul class="summary">
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#initialize-instance_method" title="#initialize (instance method)">- (Capabilities) <strong>initialize</strong>(opts = {}) </a>
+    
+
+    
+  </span>
+  
+    <span class="note title constructor">constructor</span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc">
+A new instance of Capabilities.
+
+</span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#to_json-instance_method" title="#to_json (instance method)">- (Object) <strong>to_json</strong>(*args) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+  </ul>
+<div id="constructor_details" class="method_details_list">
+  <h2>Constructor Details</h2>
+  
+    <div class="method_details first">
+  <p class="signature first" id="initialize-instance_method">
+  
+    - (<tt><a href="" title="Capabilities">Capabilities</a></tt>) <strong>initialize</strong>(opts = {}) 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+A new instance of Capabilities
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+  
+    
+    
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+82
+83
+84
+85
+86
+87</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/capabilities.rb', line 82</span>
+
+<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
+  <span class='@browser_name ivar id'>@browser_name</span>       <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='lbrack token'>[</span><span class='symbol val'>:browser_name</span><span class='rbrack token'>]</span>       <span class='orop op'>||</span> <span class='string val'>&quot;&quot;</span>
+  <span class='@version ivar id'>@version</span>            <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='lbrack token'>[</span><span class='symbol val'>:version</span><span class='rbrack token'>]</span>            <span class='orop op'>||</span> <span class='string val'>&quot;&quot;</span>
+  <span class='@platform ivar id'>@platform</span>           <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='lbrack token'>[</span><span class='symbol val'>:platform</span><span class='rbrack token'>]</span>           <span class='orop op'>||</span> <span class='symbol val'>:any</span>
+  <span class='@javascript_enabled ivar id'>@javascript_enabled</span> <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='lbrack token'>[</span><span class='symbol val'>:javascript_enabled</span><span class='rbrack token'>]</span> <span class='orop op'>||</span> <span class='false false kw'>false</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+  
+</div>
+
+  <div id="instance_attr_details" class="attr_details">
+    <h2>Instance Attribute Details</h2>
+    
+      
+      <span id="browser_name=-instance_method"></span>
+      <span id="browser_name-instance_method"></span>
+      <div class="method_details first">
+  <p class="signature first" id="browser_name-instance_method">
+  
+    - (<tt>Object</tt>) <strong>browser_name</strong> 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Returns the value of attribute browser_name
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+11
+12
+13</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/capabilities.rb', line 11</span>
+
+<span class='def def kw'>def</span> <span class='browser_name identifier id'>browser_name</span>
+  <span class='@browser_name ivar id'>@browser_name</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id="javascript_enabled=-instance_method"></span>
+      <span id="javascript_enabled-instance_method"></span>
+      <div class="method_details ">
+  <p class="signature " id="javascript_enabled-instance_method">
+  
+    - (<tt>Object</tt>) <strong>javascript_enabled</strong> 
+  
+
+  
+    <span class="aliases">Also known as:
+    <span class="names"><span id='javascript?-instance_method'>javascript?</span></span>
+    </span>
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Returns the value of attribute javascript_enabled
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+11
+12
+13</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/capabilities.rb', line 11</span>
+
+<span class='def def kw'>def</span> <span class='javascript_enabled identifier id'>javascript_enabled</span>
+  <span class='@javascript_enabled ivar id'>@javascript_enabled</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id="platform=-instance_method"></span>
+      <span id="platform-instance_method"></span>
+      <div class="method_details ">
+  <p class="signature " id="platform-instance_method">
+  
+    - (<tt>Object</tt>) <strong>platform</strong> 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Returns the value of attribute platform
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+11
+12
+13</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/capabilities.rb', line 11</span>
+
+<span class='def def kw'>def</span> <span class='platform identifier id'>platform</span>
+  <span class='@platform ivar id'>@platform</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id="version=-instance_method"></span>
+      <span id="version-instance_method"></span>
+      <div class="method_details ">
+  <p class="signature " id="version-instance_method">
+  
+    - (<tt>Object</tt>) <strong>version</strong> 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Returns the value of attribute version
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+11
+12
+13</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/capabilities.rb', line 11</span>
+
+<span class='def def kw'>def</span> <span class='version identifier id'>version</span>
+  <span class='@version ivar id'>@version</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+
+  <div id="class_method_details" class="method_details_list">
+    <h2>Class Method Details</h2>
+    
+    
+      <div class="method_details first">
+  <p class="signature first" id="chrome-class_method">
+  
+    + (<tt>Object</tt>) <strong>chrome</strong>(opts = {}) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+53
+54
+55
+56
+57
+58</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/capabilities.rb', line 53</span>
+
+<span class='def def kw'>def</span> <span class='chrome identifier id'>chrome</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
+  <span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='lbrace token'>{</span>
+    <span class='symbol val'>:browser_name</span>       <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;chrome&quot;</span><span class='comma token'>,</span>
+    <span class='symbol val'>:javascript_enabled</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='true true kw'>true</span>
+  <span class='rbrace token'>}</span><span class='dot token'>.</span><span class='merge identifier id'>merge</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span><span class='rparen token'>)</span><span class='rparen token'>)</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="firefox-class_method">
+  
+    + (<tt>Object</tt>) <strong>firefox</strong>(opts = {}) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+19
+20
+21
+22
+23
+24</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/capabilities.rb', line 19</span>
+
+<span class='def def kw'>def</span> <span class='firefox identifier id'>firefox</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
+  <span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='lbrace token'>{</span>
+    <span class='symbol val'>:browser_name</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;firefox&quot;</span><span class='comma token'>,</span>
+    <span class='symbol val'>:javascript_enabled</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='true true kw'>true</span>
+  <span class='rbrace token'>}</span><span class='dot token'>.</span><span class='merge identifier id'>merge</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span><span class='rparen token'>)</span><span class='rparen token'>)</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="htmlunit-class_method">
+  
+    + (<tt>Object</tt>) <strong>htmlunit</strong>(opts = {}) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+33
+34
+35
+36
+37</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/capabilities.rb', line 33</span>
+
+<span class='def def kw'>def</span> <span class='htmlunit identifier id'>htmlunit</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
+  <span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='lbrace token'>{</span>
+    <span class='symbol val'>:browser_name</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;htmlunit&quot;</span>
+  <span class='rbrace token'>}</span><span class='dot token'>.</span><span class='merge identifier id'>merge</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span><span class='rparen token'>)</span><span class='rparen token'>)</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="internet_explorer-class_method">
+  
+    + (<tt>Object</tt>) <strong>internet_explorer</strong>(opts = {}) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+26
+27
+28
+29
+30
+31</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/capabilities.rb', line 26</span>
+
+<span class='def def kw'>def</span> <span class='internet_explorer identifier id'>internet_explorer</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
+  <span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='lbrace token'>{</span>
+    <span class='symbol val'>:browser_name</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;internet explorer&quot;</span><span class='comma token'>,</span>
+    <span class='symbol val'>:platform</span>     <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='symbol val'>:windows</span>
+  <span class='rbrace token'>}</span><span class='dot token'>.</span><span class='merge identifier id'>merge</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span><span class='rparen token'>)</span><span class='rparen token'>)</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="iphone-class_method">
+  
+    + (<tt>Object</tt>) <strong>iphone</strong>(opts = {}) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+46
+47
+48
+49
+50
+51</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/capabilities.rb', line 46</span>
+
+<span class='def def kw'>def</span> <span class='iphone identifier id'>iphone</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
+  <span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='lbrace token'>{</span>
+    <span class='symbol val'>:browser_name</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;iphone&quot;</span><span class='comma token'>,</span>
+    <span class='symbol val'>:platform</span>     <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='symbol val'>:mac</span>
+  <span class='rbrace token'>}</span><span class='dot token'>.</span><span class='merge identifier id'>merge</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span><span class='rparen token'>)</span><span class='rparen token'>)</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="json_create-class_method">
+  
+    + (<tt>Object</tt>) <strong>json_create</strong>(data) 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+64
+65
+66
+67
+68
+69
+70
+71</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/capabilities.rb', line 64</span>
+
+<span class='def def kw'>def</span> <span class='json_create identifier id'>json_create</span><span class='lparen token'>(</span><span class='data identifier id'>data</span><span class='rparen token'>)</span>
+  <span class='new identifier id'>new</span><span class='lparen token'>(</span>
+    <span class='symbol val'>:browser_name</span>       <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='data identifier id'>data</span><span class='lbrack token'>[</span><span class='string val'>&quot;browserName&quot;</span><span class='rbrack token'>]</span><span class='comma token'>,</span>
+    <span class='symbol val'>:version</span>            <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='data identifier id'>data</span><span class='lbrack token'>[</span><span class='string val'>&quot;version&quot;</span><span class='rbrack token'>]</span><span class='comma token'>,</span>
+    <span class='symbol val'>:platform</span>           <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='data identifier id'>data</span><span class='lbrack token'>[</span><span class='string val'>&quot;platform&quot;</span><span class='rbrack token'>]</span><span class='dot token'>.</span><span class='downcase identifier id'>downcase</span><span class='dot token'>.</span><span class='to_sym identifier id'>to_sym</span><span class='comma token'>,</span>
+    <span class='symbol val'>:javascript_enabled</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='data identifier id'>data</span><span class='lbrack token'>[</span><span class='string val'>&quot;javascriptEnabled&quot;</span><span class='rbrack token'>]</span>
+  <span class='rparen token'>)</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="safari-class_method">
+  
+    + (<tt>Object</tt>) <strong>safari</strong>(opts = {}) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+39
+40
+41
+42
+43
+44</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/capabilities.rb', line 39</span>
+
+<span class='def def kw'>def</span> <span class='safari identifier id'>safari</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
+  <span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='lbrace token'>{</span>
+    <span class='symbol val'>:browser_name</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;safari&quot;</span><span class='comma token'>,</span>
+    <span class='symbol val'>:platform</span>     <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='symbol val'>:mac</span>
+  <span class='rbrace token'>}</span><span class='dot token'>.</span><span class='merge identifier id'>merge</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span><span class='rparen token'>)</span><span class='rparen token'>)</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+    
+    
+      <div class="method_details first">
+  <p class="signature first" id="to_json-instance_method">
+  
+    - (<tt>Object</tt>) <strong>to_json</strong>(*args) 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+93
+94
+95
+96
+97
+98
+99
+100</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/capabilities.rb', line 93</span>
+
+<span class='def def kw'>def</span> <span class='to_json identifier id'>to_json</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
+  <span class='lbrace token'>{</span>
+    <span class='string val'>&quot;browserName&quot;</span>       <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='browser_name identifier id'>browser_name</span><span class='comma token'>,</span>
+    <span class='string val'>&quot;version&quot;</span>           <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='version identifier id'>version</span><span class='comma token'>,</span>
+    <span class='string val'>&quot;platform&quot;</span>          <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='platform identifier id'>platform</span><span class='dot token'>.</span><span class='to_s identifier id'>to_s</span><span class='dot token'>.</span><span class='upcase identifier id'>upcase</span><span class='comma token'>,</span>
+    <span class='string val'>&quot;javascriptEnabled&quot;</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='javascript? fid id'>javascript?</span>
+  <span class='rbrace token'>}</span><span class='dot token'>.</span><span class='to_json identifier id'>to_json</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+    
+    <div id="footer">
+  Generated on Thu Dec 17 12:58:06 2009 by 
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
+  0.5.2 (ruby-1.8.7).
+</div>
+
+  </body>
+</html>

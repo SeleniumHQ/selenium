@@ -1,0 +1,215 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta name="Content-Type" content="text/html; charset=UTF-8" />
+<title>Class: Selenium::WebDriver::Chrome::Launcher::WindowsLauncher</title>
+<link rel="stylesheet" href="../../../../css/style.css" type="text/css" media="screen" charset="utf-8" />
+<link rel="stylesheet" href="../../../../css/common.css" type="text/css" media="screen" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  relpath = '../../../..';
+  if (relpath != '') relpath += '/';
+</script>
+<script type="text/javascript" charset="utf-8" src="../../../../js/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="../../../../js/app.js"></script>
+
+  </head>
+  <body>
+    <div id="header">
+      <div id="menu">
+  
+    <a href="../../../../_index.html">Index (W)</a> &raquo; 
+    <a href="../../../../Selenium.html" title="Selenium">Selenium</a> &raquo; <a href="../../../WebDriver.html" title="WebDriver">WebDriver</a> &raquo; <a href="../../Chrome.html" title="Chrome">Chrome</a> &raquo; <a href="../Launcher.html" title="Launcher">Launcher</a>
+     &raquo; 
+    <span class="title">WindowsLauncher</span>
+  
+</div>
+
+      <div id="search">
+  <a id="class_list_link" href="#">Namespace List</a>
+  <a id="method_list_link" href="#">Method List</a>
+  <a id ="file_list_link" href="#">File List</a>
+</div>
+
+      <div class="clear"></div>
+    </div>
+    
+    <iframe id="search_frame"></iframe>
+    
+    <div id="content"><h1>Class: Selenium::WebDriver::Chrome::Launcher::WindowsLauncher 
+  
+  
+</h1>
+
+<dl class="box">
+  
+    <dt class="r1">Inherits:</dt>
+    <dd class="r1">
+      <span class="inheritName"><a href="../Launcher.html" title="Selenium::WebDriver::Chrome::Launcher">Selenium::WebDriver::Chrome::Launcher</a></span>
+      
+        <ul class="fullTree">
+          <li>Object</li>
+          
+            <li class="next"><a href="../Launcher.html" title="Selenium::WebDriver::Chrome::Launcher">Selenium::WebDriver::Chrome::Launcher</a></li>
+          
+            <li class="next">Selenium::WebDriver::Chrome::Launcher::WindowsLauncher</li>
+          
+        </ul>
+        <a href="#" class="inheritanceTree">show all</a>
+      
+      </dd>
+    
+  
+  
+    
+  
+    
+  
+  
+    <dt class="r2 last">Defined in:</dt>
+    <dd class="r2 last">chrome/src/rb/lib/selenium/webdriver/chrome/launcher.rb</dd>
+  
+</dl>
+<div class="clear"></div>
+
+
+
+  
+  
+  
+  
+  
+
+  <h2>Instance Method Summary</h2>
+
+  <ul class="summary">
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#binary_path-instance_method" title="#binary_path (instance method)">- (Object) <strong>binary_path</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#linked_lib_path-instance_method" title="#linked_lib_path (instance method)">- (Object) <strong>linked_lib_path</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+  </ul>
+
+  
+  
+  
+  
+  
+  <h3 class="inherited">Methods inherited from <a href="../Launcher.html" title="Selenium::WebDriver::Chrome::Launcher">Selenium::WebDriver::Chrome::Launcher</a></h3>
+  <p class="inherited"><a href="../Launcher.html#kill-instance_method" title="#kill">#kill</a>, <a href="../Launcher.html#launch-instance_method" title="#launch">#launch</a>, <a href="../Launcher.html#launcher-class_method" title="launcher">launcher</a></p>
+
+  
+
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+    
+    
+      <div class="method_details first">
+  <p class="signature first" id="binary_path-instance_method">
+  
+    - (<tt>Object</tt>) <strong>binary_path</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+97
+98
+99</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/launcher.rb', line 97</span>
+
+<span class='def def kw'>def</span> <span class='binary_path identifier id'>binary_path</span>
+  <span class='@binary_path ivar id'>@binary_path</span> <span class='opasgn op'>||=</span> <span class='dstring node'>&quot;#{Platform.home}\\Local Settings\\Application Data\\Google\\Chrome\\Application\\chrome.exe&quot;</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="linked_lib_path-instance_method">
+  
+    - (<tt>Object</tt>) <strong>linked_lib_path</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+92
+93
+94
+95</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/launcher.rb', line 92</span>
+
+<span class='def def kw'>def</span> <span class='linked_lib_path identifier id'>linked_lib_path</span>
+  <span class='comment val'># TODO: x64</span>
+  <span class='@linked_lib_path ivar id'>@linked_lib_path</span> <span class='opasgn op'>||=</span> <span class='dstring node'>&quot;#{WebDriver.root}/chrome/prebuilt/Win32/Release/npchromedriver.dll&quot;</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+    
+    <div id="footer">
+  Generated on Thu Dec 17 12:58:08 2009 by 
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
+  0.5.2 (ruby-1.8.7).
+</div>
+
+  </body>
+</html>

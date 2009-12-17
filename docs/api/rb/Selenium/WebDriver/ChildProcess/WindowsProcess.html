@@ -1,0 +1,198 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta name="Content-Type" content="text/html; charset=UTF-8" />
+<title>Module: Selenium::WebDriver::ChildProcess::WindowsProcess</title>
+<link rel="stylesheet" href="../../../css/style.css" type="text/css" media="screen" charset="utf-8" />
+<link rel="stylesheet" href="../../../css/common.css" type="text/css" media="screen" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  relpath = '../../..';
+  if (relpath != '') relpath += '/';
+</script>
+<script type="text/javascript" charset="utf-8" src="../../../js/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="../../../js/app.js"></script>
+
+  </head>
+  <body>
+    <div id="header">
+      <div id="menu">
+  
+    <a href="../../../_index.html">Index (W)</a> &raquo; 
+    <a href="../../../Selenium.html" title="Selenium">Selenium</a> &raquo; <a href="../../WebDriver.html" title="WebDriver">WebDriver</a> &raquo; <a href="../ChildProcess.html" title="ChildProcess">ChildProcess</a>
+     &raquo; 
+    <span class="title">WindowsProcess</span>
+  
+</div>
+
+      <div id="search">
+  <a id="class_list_link" href="#">Namespace List</a>
+  <a id="method_list_link" href="#">Method List</a>
+  <a id ="file_list_link" href="#">File List</a>
+</div>
+
+      <div class="clear"></div>
+    </div>
+    
+    <iframe id="search_frame"></iframe>
+    
+    <div id="content"><h1>Module: Selenium::WebDriver::ChildProcess::WindowsProcess 
+  
+  
+</h1>
+
+<dl class="box">
+  
+  
+    
+  
+    
+  
+  
+    <dt class="r1 last">Defined in:</dt>
+    <dd class="r1 last">common/src/rb/lib/selenium/webdriver/child_process.rb</dd>
+  
+</dl>
+<div class="clear"></div>
+
+
+
+
+  <h2>Instance Method Summary</h2>
+
+  <ul class="summary">
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#kill-instance_method" title="#kill (instance method)">- (Object) <strong>kill</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#start-instance_method" title="#start (instance method)">- (Object) <strong>start</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+  </ul>
+
+
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+    
+    
+      <div class="method_details first">
+  <p class="signature first" id="kill-instance_method">
+  
+    - (<tt>Object</tt>) <strong>kill</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+72
+73
+74</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 72</span>
+
+<span class='def def kw'>def</span> <span class='kill identifier id'>kill</span>
+  <span class='kill! fid id'>kill!</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="start-instance_method">
+  
+    - (<tt>Object</tt>) <strong>start</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 60</span>
+
+<span class='def def kw'>def</span> <span class='start identifier id'>start</span>
+  <span class='require identifier id'>require</span> <span class='string val'>&quot;win32/process&quot;</span> <span class='comment val'># adds a dependency on windows</span>
+  <span class='@pid ivar id'>@pid</span> <span class='assign token'>=</span> <span class='Process constant id'>Process</span><span class='dot token'>.</span><span class='create identifier id'>create</span><span class='lparen token'>(</span>
+    <span class='symbol val'>:app_name</span>        <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='@args ivar id'>@args</span><span class='dot token'>.</span><span class='join identifier id'>join</span><span class='lparen token'>(</span><span class='string val'>&quot; &quot;</span><span class='rparen token'>)</span><span class='comma token'>,</span>
+    <span class='symbol val'>:process_inherit</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='true true kw'>true</span><span class='comma token'>,</span>
+    <span class='symbol val'>:thread_inherit</span>  <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='true true kw'>true</span><span class='comma token'>,</span>
+    <span class='symbol val'>:inherit</span>         <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='true true kw'>true</span>
+  <span class='rparen token'>)</span><span class='dot token'>.</span><span class='process_id identifier id'>process_id</span>
+
+  <span class='self self kw'>self</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+    
+    <div id="footer">
+  Generated on Thu Dec 17 12:58:03 2009 by 
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
+  0.5.2 (ruby-1.8.7).
+</div>
+
+  </body>
+</html>

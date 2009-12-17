@@ -1,0 +1,162 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta name="Content-Type" content="text/html; charset=UTF-8" />
+<title>Module: Selenium::WebDriver::Firefox::Util</title>
+<link rel="stylesheet" href="../../../css/style.css" type="text/css" media="screen" charset="utf-8" />
+<link rel="stylesheet" href="../../../css/common.css" type="text/css" media="screen" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  relpath = '../../..';
+  if (relpath != '') relpath += '/';
+</script>
+<script type="text/javascript" charset="utf-8" src="../../../js/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="../../../js/app.js"></script>
+
+  </head>
+  <body>
+    <div id="header">
+      <div id="menu">
+  
+    <a href="../../../_index.html">Index (U)</a> &raquo; 
+    <a href="../../../Selenium.html" title="Selenium">Selenium</a> &raquo; <a href="../../WebDriver.html" title="WebDriver">WebDriver</a> &raquo; <a href="../Firefox.html" title="Firefox">Firefox</a>
+     &raquo; 
+    <span class="title">Util</span>
+  
+</div>
+
+      <div id="search">
+  <a id="class_list_link" href="#">Namespace List</a>
+  <a id="method_list_link" href="#">Method List</a>
+  <a id ="file_list_link" href="#">File List</a>
+</div>
+
+      <div class="clear"></div>
+    </div>
+    
+    <iframe id="search_frame"></iframe>
+    
+    <div id="content"><h1>Module: Selenium::WebDriver::Firefox::Util 
+  
+  
+</h1>
+
+<dl class="box">
+  
+  
+    
+  
+    
+  
+  
+    <dt class="r1 last">Defined in:</dt>
+    <dd class="r1 last">firefox/src/rb/lib/selenium/webdriver/firefox/util.rb</dd>
+  
+</dl>
+<div class="clear"></div>
+
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    <p>
+Util
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div>
+
+
+  <h2>Instance Method Summary</h2>
+
+  <ul class="summary">
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#app_data_path-instance_method" title="#app_data_path (instance method)">- (Object) <strong>app_data_path</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+  </ul>
+
+
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+    
+    
+      <div class="method_details first">
+  <p class="signature first" id="app_data_path-instance_method">
+  
+    - (<tt>Object</tt>) <strong>app_data_path</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'firefox/src/rb/lib/selenium/webdriver/firefox/util.rb', line 7</span>
+
+<span class='def def kw'>def</span> <span class='app_data_path identifier id'>app_data_path</span>
+  <span class='case case kw'>case</span> <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='os identifier id'>os</span>
+  <span class='when when kw'>when</span> <span class='symbol val'>:windows</span>
+    <span class='dstring node'>&quot;#{ENV['APPDATA']}\\Mozilla\\Firefox&quot;</span>
+  <span class='when when kw'>when</span> <span class='symbol val'>:macosx</span>
+    <span class='dstring node'>&quot;#{Platform.home}/Library/Application Support/Firefox&quot;</span>
+  <span class='when when kw'>when</span> <span class='symbol val'>:unix</span><span class='comma token'>,</span> <span class='symbol val'>:linux</span>
+    <span class='dstring node'>&quot;#{Platform.home}/.mozilla/firefox&quot;</span>
+  <span class='else else kw'>else</span>
+    <span class='raise identifier id'>raise</span> <span class='dstring node'>&quot;Unknown os: #{Platform.os}&quot;</span>
+  <span class='end end kw'>end</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+    
+    <div id="footer">
+  Generated on Thu Dec 17 12:58:10 2009 by 
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
+  0.5.2 (ruby-1.8.7).
+</div>
+
+  </body>
+</html>

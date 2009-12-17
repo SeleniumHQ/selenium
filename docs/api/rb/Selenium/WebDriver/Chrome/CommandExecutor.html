@@ -1,0 +1,324 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta name="Content-Type" content="text/html; charset=UTF-8" />
+<title>Class: Selenium::WebDriver::Chrome::CommandExecutor</title>
+<link rel="stylesheet" href="../../../css/style.css" type="text/css" media="screen" charset="utf-8" />
+<link rel="stylesheet" href="../../../css/common.css" type="text/css" media="screen" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  relpath = '../../..';
+  if (relpath != '') relpath += '/';
+</script>
+<script type="text/javascript" charset="utf-8" src="../../../js/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="../../../js/app.js"></script>
+
+  </head>
+  <body>
+    <div id="header">
+      <div id="menu">
+  
+    <a href="../../../_index.html">Index (C)</a> &raquo; 
+    <a href="../../../Selenium.html" title="Selenium">Selenium</a> &raquo; <a href="../../WebDriver.html" title="WebDriver">WebDriver</a> &raquo; <a href="../Chrome.html" title="Chrome">Chrome</a>
+     &raquo; 
+    <span class="title">CommandExecutor</span>
+  
+</div>
+
+      <div id="search">
+  <a id="class_list_link" href="#">Namespace List</a>
+  <a id="method_list_link" href="#">Method List</a>
+  <a id ="file_list_link" href="#">File List</a>
+</div>
+
+      <div class="clear"></div>
+    </div>
+    
+    <iframe id="search_frame"></iframe>
+    
+    <div id="content"><h1>Class: Selenium::WebDriver::Chrome::CommandExecutor 
+  
+  
+</h1>
+
+<dl class="box">
+  
+    <dt class="r1">Inherits:</dt>
+    <dd class="r1">
+      <span class="inheritName">Object</span>
+      
+        <ul class="fullTree">
+          <li>Object</li>
+          
+            <li class="next">Selenium::WebDriver::Chrome::CommandExecutor</li>
+          
+        </ul>
+        <a href="#" class="inheritanceTree">show all</a>
+      
+      </dd>
+    
+  
+  
+    
+  
+    
+  
+  
+    <dt class="r2 last">Defined in:</dt>
+    <dd class="r2 last">chrome/src/rb/lib/selenium/webdriver/chrome/command_executor.rb</dd>
+  
+</dl>
+<div class="clear"></div>
+
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    <p>
+CommandExecutor
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div>
+  <h2>Constant Summary</h2>
+  
+    <dl class="constants">
+      
+        <dt id="TEMPLATE-constant ">TEMPLATE =
+            <span class="summary_desc"></span>
+        </dt>
+        <dd><pre class="code"><span class='string val'>&quot;HTTP/1.1 200 OK\r\nContent-Length: %d\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n%s&quot;</span>
+</pre></dd>
+      
+    </dl>
+  
+
+
+
+  <h2>Instance Method Summary</h2>
+
+  <ul class="summary">
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#close-instance_method" title="#close (instance method)">- (Object) <strong>close</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#execute-instance_method" title="#execute (instance method)">- (Object) <strong>execute</strong>(command) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#initialize-instance_method" title="#initialize (instance method)">- (CommandExecutor) <strong>initialize</strong> </a>
+    
+
+    
+  </span>
+  
+    <span class="note title constructor">constructor</span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc">
+A new instance of CommandExecutor.
+
+</span>
+  
+</li>
+
+    
+  </ul>
+<div id="constructor_details" class="method_details_list">
+  <h2>Constructor Details</h2>
+  
+    <div class="method_details first">
+  <p class="signature first" id="initialize-instance_method">
+  
+    - (<tt><a href="" title="CommandExecutor">CommandExecutor</a></tt>) <strong>initialize</strong> 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+A new instance of CommandExecutor
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+7
+8
+9
+10
+11
+12
+13
+14</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/command_executor.rb', line 7</span>
+
+<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span>
+  <span class='@server ivar id'>@server</span>       <span class='assign token'>=</span> <span class='TCPServer constant id'>TCPServer</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='string val'>&quot;0.0.0.0&quot;</span><span class='comma token'>,</span> <span class='integer val'>9700</span><span class='rparen token'>)</span>
+  <span class='@queue ivar id'>@queue</span>        <span class='assign token'>=</span> <span class='Queue constant id'>Queue</span><span class='dot token'>.</span><span class='new identifier id'>new</span>
+  <span class='@accepted_any ivar id'>@accepted_any</span> <span class='assign token'>=</span> <span class='false false kw'>false</span>
+  <span class='@next_socket ivar id'>@next_socket</span>  <span class='assign token'>=</span> <span class='nil nil kw'>nil</span>
+
+  <span class='Thread constant id'>Thread</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='lbrace token'>{</span> <span class='start_run_loop identifier id'>start_run_loop</span> <span class='rbrace token'>}</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+  
+</div>
+
+
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+    
+    
+      <div class="method_details first">
+  <p class="signature first" id="close-instance_method">
+  
+    - (<tt>Object</tt>) <strong>close</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+31
+32
+33
+34</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/command_executor.rb', line 31</span>
+
+<span class='def def kw'>def</span> <span class='close identifier id'>close</span>
+  <span class='@server ivar id'>@server</span><span class='dot token'>.</span><span class='close identifier id'>close</span>
+<span class='rescue rescue kw'>rescue</span> <span class='IOError constant id'>IOError</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="execute-instance_method">
+  
+    - (<tt>Object</tt>) <strong>execute</strong>(command) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'chrome/src/rb/lib/selenium/webdriver/chrome/command_executor.rb', line 16</span>
+
+<span class='def def kw'>def</span> <span class='execute identifier id'>execute</span><span class='lparen token'>(</span><span class='command identifier id'>command</span><span class='rparen token'>)</span>
+  <span class='until until kw'>until</span> <span class='accepted_any? fid id'>accepted_any?</span>
+    <span class='Thread constant id'>Thread</span><span class='dot token'>.</span><span class='pass identifier id'>pass</span>
+    <span class='sleep identifier id'>sleep</span> <span class='integer val'>0</span><span class='integer val'>.01</span>
+  <span class='end end kw'>end</span>
+
+  <span class='json identifier id'>json</span> <span class='assign token'>=</span> <span class='command identifier id'>command</span><span class='dot token'>.</span><span class='to_json identifier id'>to_json</span>
+  <span class='data identifier id'>data</span> <span class='assign token'>=</span> <span class='TEMPLATE constant id'>TEMPLATE</span> <span class='mod op'>%</span> <span class='lbrack token'>[</span><span class='json identifier id'>json</span><span class='dot token'>.</span><span class='length identifier id'>length</span><span class='comma token'>,</span> <span class='json identifier id'>json</span><span class='rbrack token'>]</span>
+
+  <span class='@next_socket ivar id'>@next_socket</span><span class='dot token'>.</span><span class='write identifier id'>write</span> <span class='data identifier id'>data</span>
+  <span class='@next_socket ivar id'>@next_socket</span><span class='dot token'>.</span><span class='close identifier id'>close</span>
+
+  <span class='JSON constant id'>JSON</span><span class='dot token'>.</span><span class='parse identifier id'>parse</span> <span class='read_response identifier id'>read_response</span><span class='lparen token'>(</span><span class='@queue ivar id'>@queue</span><span class='dot token'>.</span><span class='pop identifier id'>pop</span><span class='rparen token'>)</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+    
+    <div id="footer">
+  Generated on Thu Dec 17 12:58:04 2009 by 
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
+  0.5.2 (ruby-1.8.7).
+</div>
+
+  </body>
+</html>

@@ -1,0 +1,3595 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta name="Content-Type" content="text/html; charset=UTF-8" />
+<title>Class: Selenium::WebDriver::Remote::Bridge</title>
+<link rel="stylesheet" href="../../../css/style.css" type="text/css" media="screen" charset="utf-8" />
+<link rel="stylesheet" href="../../../css/common.css" type="text/css" media="screen" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  relpath = '../../..';
+  if (relpath != '') relpath += '/';
+</script>
+<script type="text/javascript" charset="utf-8" src="../../../js/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="../../../js/app.js"></script>
+
+  </head>
+  <body>
+    <div id="header">
+      <div id="menu">
+  
+    <a href="../../../_index.html">Index (B)</a> &raquo; 
+    <a href="../../../Selenium.html" title="Selenium">Selenium</a> &raquo; <a href="../../WebDriver.html" title="WebDriver">WebDriver</a> &raquo; <a href="../Remote.html" title="Remote">Remote</a>
+     &raquo; 
+    <span class="title">Bridge</span>
+  
+</div>
+
+      <div id="search">
+  <a id="class_list_link" href="#">Namespace List</a>
+  <a id="method_list_link" href="#">Method List</a>
+  <a id ="file_list_link" href="#">File List</a>
+</div>
+
+      <div class="clear"></div>
+    </div>
+    
+    <iframe id="search_frame"></iframe>
+    
+    <div id="content"><h1>Class: Selenium::WebDriver::Remote::Bridge 
+  
+  
+</h1>
+
+<dl class="box">
+  
+    <dt class="r1">Inherits:</dt>
+    <dd class="r1">
+      <span class="inheritName">Object</span>
+      
+        <ul class="fullTree">
+          <li>Object</li>
+          
+            <li class="next">Selenium::WebDriver::Remote::Bridge</li>
+          
+        </ul>
+        <a href="#" class="inheritanceTree">show all</a>
+      
+      </dd>
+    
+  
+  
+    
+  
+    
+      <dt class="r2">Includes:</dt>
+      <dd class="r2"><a href="../BridgeHelper.html" title="Selenium::WebDriver::BridgeHelper">Selenium::WebDriver::BridgeHelper</a>, <a href="../Find.html" title="Selenium::WebDriver::Find">Selenium::WebDriver::Find</a></dd>
+      
+    
+  
+  
+    <dt class="r1 last">Defined in:</dt>
+    <dd class="r1 last">remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb<span class="defines">,<br />
+  remote/client/src/rb/lib/selenium/webdriver/remote/commands.rb</span>
+</dd>
+  
+</dl>
+<div class="clear"></div>
+
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    <p>
+Low level bridge to the remote server, through which the rest of the API
+works.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div>
+  <h2>Constant Summary</h2>
+  
+    <dl class="constants">
+      
+        <dt id="DEFAULT_OPTIONS-constant ">DEFAULT_OPTIONS =
+            <span class="summary_desc"></span>
+        </dt>
+        <dd><pre class="code"><span class='lbrace token'>{</span>
+  <span class='symbol val'>:server_url</span>           <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;http://localhost:7055/&quot;</span><span class='comma token'>,</span>
+  <span class='symbol val'>:http_client</span>          <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='DefaultHttpClient constant id'>DefaultHttpClient</span><span class='comma token'>,</span>
+  <span class='symbol val'>:desired_capabilities</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='Capabilities constant id'>Capabilities</span><span class='dot token'>.</span><span class='firefox identifier id'>firefox</span>
+<span class='rbrace token'>}</span>
+</pre></dd>
+      
+    </dl>
+  
+
+
+  
+  
+  
+  
+  <h3 class="inherited">Constants included from <a href="../Find.html" title="Selenium::WebDriver::Find">Selenium::WebDriver::Find</a></h3>
+  <p class="inherited"><a href="../Find.html#FINDERS-constant" title="FINDERS">FINDERS</a></p>
+
+  
+  
+  
+  
+  <h2>Instance Attribute Summary</h2>
+  <ul class="summary">
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#capabilities-instance_method" title="#capabilities (instance method)">- (Object) <strong>capabilities</strong> </a>
+    
+
+    
+  </span>
+  
+  
+    <span class="note title readonly">readonly</span>
+    
+  
+  
+  
+  
+
+  
+    <span class="summary_desc">
+Returns the value of attribute capabilities.
+
+</span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#context-instance_method" title="#context (instance method)">- (Object) <strong>context</strong> </a>
+    
+
+    
+  </span>
+  
+  
+    
+    
+  
+  
+  
+  
+
+  
+    <span class="summary_desc">
+Returns the value of attribute context.
+
+</span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#http-instance_method" title="#http (instance method)">- (Object) <strong>http</strong> </a>
+    
+
+    
+  </span>
+  
+  
+    
+    
+  
+  
+  
+  
+
+  
+    <span class="summary_desc">
+Returns the value of attribute http.
+
+</span>
+  
+</li>
+
+    
+  </ul>
+
+
+  <h2>Class Method Summary</h2>
+
+  <ul class="summary">
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#command-class_method" title="command (class method)">+ (Object) <strong>command</strong>(name, verb, url) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc">
+Defines a wrapper method for a command, which ultimately calls #execute.
+
+</span>
+  
+</li>
+
+    
+  </ul>
+
+  <h2>Instance Method Summary</h2>
+
+  <ul class="summary">
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#addCookie-instance_method" title="#addCookie (instance method)">- (Object) <strong>addCookie</strong>(cookie) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#browser-instance_method" title="#browser (instance method)">- (Object) <strong>browser</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#clearElement-instance_method" title="#clearElement (instance method)">- (Object) <strong>clearElement</strong>(element) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#clickElement-instance_method" title="#clickElement (instance method)">- (Object) <strong>clickElement</strong>(element) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc">
+Element functions.
+
+</span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#close-instance_method" title="#close (instance method)">- (Object) <strong>close</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#create_session-instance_method" title="#create_session (instance method)">- (Object) <strong>create_session</strong>(desired_capabilities) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#deleteAllCookies-instance_method" title="#deleteAllCookies (instance method)">- (Object) <strong>deleteAllCookies</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#deleteCookie-instance_method" title="#deleteCookie (instance method)">- (Object) <strong>deleteCookie</strong>(name) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#dragElement-instance_method" title="#dragElement (instance method)">- (Object) <strong>dragElement</strong>(element, rigth_by, down_by) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#driver_extensions-instance_method" title="#driver_extensions (instance method)">- (Object) <strong>driver_extensions</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#executeScript-instance_method" title="#executeScript (instance method)">- (Object) <strong>executeScript</strong>(script, *args) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#findElementByClassName-instance_method" title="#findElementByClassName (instance method)">- (Object) <strong>findElementByClassName</strong>(parent, class_name) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#findElementById-instance_method" title="#findElementById (instance method)">- (Object) <strong>findElementById</strong>(parent, id) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#findElementByLinkText-instance_method" title="#findElementByLinkText (instance method)">- (Object) <strong>findElementByLinkText</strong>(parent, link_text) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#findElementByName-instance_method" title="#findElementByName (instance method)">- (Object) <strong>findElementByName</strong>(parent, name) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#findElementByPartialLinkText-instance_method" title="#findElementByPartialLinkText (instance method)">- (Object) <strong>findElementByPartialLinkText</strong>(parent, link_text) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#findElementByTagName-instance_method" title="#findElementByTagName (instance method)">- (Object) <strong>findElementByTagName</strong>(parent, tag_name) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#findElementByXpath-instance_method" title="#findElementByXpath (instance method)">- (Object) <strong>findElementByXpath</strong>(parent, xpath) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#findElementsByClassName-instance_method" title="#findElementsByClassName (instance method)">- (Object) <strong>findElementsByClassName</strong>(parent, class_name) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#findElementsById-instance_method" title="#findElementsById (instance method)">- (Object) <strong>findElementsById</strong>(parent, id) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#findElementsByLinkText-instance_method" title="#findElementsByLinkText (instance method)">- (Object) <strong>findElementsByLinkText</strong>(parent, link_text) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#findElementsByName-instance_method" title="#findElementsByName (instance method)">- (Object) <strong>findElementsByName</strong>(parent, name) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#findElementsByPartialLinkText-instance_method" title="#findElementsByPartialLinkText (instance method)">- (Object) <strong>findElementsByPartialLinkText</strong>(parent, link_text) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#findElementsByTagName-instance_method" title="#findElementsByTagName (instance method)">- (Object) <strong>findElementsByTagName</strong>(parent, tag_name) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#findElementsByXpath-instance_method" title="#findElementsByXpath (instance method)">- (Object) <strong>findElementsByXpath</strong>(parent, xpath) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#get-instance_method" title="#get (instance method)">- (Object) <strong>get</strong>(url) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#getActiveElement-instance_method" title="#getActiveElement (instance method)">- (Object) <strong>getActiveElement</strong> </a>
+    
+
+    
+      (also: #switchToActiveElement)
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#getAllCookies-instance_method" title="#getAllCookies (instance method)">- (Object) <strong>getAllCookies</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#getCurrentUrl-instance_method" title="#getCurrentUrl (instance method)">- (Object) <strong>getCurrentUrl</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#getCurrentWindowHandle-instance_method" title="#getCurrentWindowHandle (instance method)">- (Object) <strong>getCurrentWindowHandle</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#getElementAttribute-instance_method" title="#getElementAttribute (instance method)">- (Object) <strong>getElementAttribute</strong>(element, name) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#getElementLocation-instance_method" title="#getElementLocation (instance method)">- (Object) <strong>getElementLocation</strong>(element) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#getElementSize-instance_method" title="#getElementSize (instance method)">- (Object) <strong>getElementSize</strong>(element) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#getElementTagName-instance_method" title="#getElementTagName (instance method)">- (Object) <strong>getElementTagName</strong>(element) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#getElementText-instance_method" title="#getElementText (instance method)">- (Object) <strong>getElementText</strong>(element) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#getElementValue-instance_method" title="#getElementValue (instance method)">- (Object) <strong>getElementValue</strong>(element) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#getElementValueOfCssProperty-instance_method" title="#getElementValueOfCssProperty (instance method)">- (Object) <strong>getElementValueOfCssProperty</strong>(element, prop) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#getPageSource-instance_method" title="#getPageSource (instance method)">- (Object) <strong>getPageSource</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#getSpeed-instance_method" title="#getSpeed (instance method)">- (Object) <strong>getSpeed</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#getTitle-instance_method" title="#getTitle (instance method)">- (Object) <strong>getTitle</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#getVisible-instance_method" title="#getVisible (instance method)">- (Object) <strong>getVisible</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#getWindowHandles-instance_method" title="#getWindowHandles (instance method)">- (Object) <strong>getWindowHandles</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#goBack-instance_method" title="#goBack (instance method)">- (Object) <strong>goBack</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#goForward-instance_method" title="#goForward (instance method)">- (Object) <strong>goForward</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#hoverOverElement-instance_method" title="#hoverOverElement (instance method)">- (Object) <strong>hoverOverElement</strong>(element) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#initialize-instance_method" title="#initialize (instance method)">- (Bridge) <strong>initialize</strong>(opts = {}) </a>
+    
+
+    
+  </span>
+  
+    <span class="note title constructor">constructor</span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc">
+Initializes the bridge with the given server URL.
+
+</span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#isElementDisplayed-instance_method" title="#isElementDisplayed (instance method)">- (Object) <strong>isElementDisplayed</strong>(element) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#isElementEnabled-instance_method" title="#isElementEnabled (instance method)">- (Object) <strong>isElementEnabled</strong>(element) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#isElementSelected-instance_method" title="#isElementSelected (instance method)">- (Object) <strong>isElementSelected</strong>(element) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#quit-instance_method" title="#quit (instance method)">- (Object) <strong>quit</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#refresh-instance_method" title="#refresh (instance method)">- (Object) <strong>refresh</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#sendKeysToElement-instance_method" title="#sendKeysToElement (instance method)">- (Object) <strong>sendKeysToElement</strong>(element, string) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#session_id-instance_method" title="#session_id (instance method)">- (Object) <strong>session_id</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc">
+Returns the current session ID.
+
+</span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#setElementSelected-instance_method" title="#setElementSelected (instance method)">- (Object) <strong>setElementSelected</strong>(element) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#setSpeed-instance_method" title="#setSpeed (instance method)">- (Object) <strong>setSpeed</strong>(value) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#setVisible-instance_method" title="#setVisible (instance method)">- (Object) <strong>setVisible</strong>(bool) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#submitElement-instance_method" title="#submitElement (instance method)">- (Object) <strong>submitElement</strong>(element) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#switchToFrame-instance_method" title="#switchToFrame (instance method)">- (Object) <strong>switchToFrame</strong>(id) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#switchToWindow-instance_method" title="#switchToWindow (instance method)">- (Object) <strong>switchToWindow</strong>(name) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#toggleElement-instance_method" title="#toggleElement (instance method)">- (Object) <strong>toggleElement</strong>(element) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+  </ul>
+
+  
+  
+  
+  
+  
+  <h3 class="inherited">Methods included from <a href="../Find.html" title="Selenium::WebDriver::Find">Selenium::WebDriver::Find</a></h3>
+  <p class="inherited"><a href="../Find.html#find_element-instance_method" title="#find_element">#find_element</a>, <a href="../Find.html#find_elements-instance_method" title="#find_elements">#find_elements</a></p>
+
+  
+  
+  
+  
+  
+  <h3 class="inherited">Methods included from <a href="../BridgeHelper.html" title="Selenium::WebDriver::BridgeHelper">Selenium::WebDriver::BridgeHelper</a></h3>
+  <p class="inherited"><a href="../BridgeHelper.html#element_id_from-instance_method" title="#element_id_from">#element_id_from</a>, <a href="../BridgeHelper.html#parse_cookie_string-instance_method" title="#parse_cookie_string">#parse_cookie_string</a>, <a href="../BridgeHelper.html#unwrap_script_argument-instance_method" title="#unwrap_script_argument">#unwrap_script_argument</a>, <a href="../BridgeHelper.html#wrap_script_argument-instance_method" title="#wrap_script_argument">#wrap_script_argument</a></p>
+<div id="constructor_details" class="method_details_list">
+  <h2>Constructor Details</h2>
+  
+    <div class="method_details first">
+  <p class="signature first" id="initialize-instance_method">
+  
+    - (<tt><a href="" title="Bridge">Bridge</a></tt>) <strong>initialize</strong>(opts = {}) 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Initializes the bridge with the given server URL.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  <h3>Parameters:</h3>
+<ul class="param">
+  
+    <li>
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <span class='name'>server_url</span>
+      
+      
+      
+        &mdash;
+        
+base URL for all commands. FIXME: Note that a trailing &#8217;/&#8217; is
+very important!
+
+
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 52</span>
+
+<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span> <span class='assign token'>=</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='rparen token'>)</span>
+  <span class='opts identifier id'>opts</span>                 <span class='assign token'>=</span> <span class='DEFAULT_OPTIONS constant id'>DEFAULT_OPTIONS</span><span class='dot token'>.</span><span class='merge identifier id'>merge</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span><span class='rparen token'>)</span>
+  <span class='http_client_class identifier id'>http_client_class</span>    <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='dot token'>.</span><span class='delete identifier id'>delete</span><span class='lparen token'>(</span><span class='symbol val'>:http_client</span><span class='rparen token'>)</span>
+  <span class='desired_capabilities identifier id'>desired_capabilities</span> <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='dot token'>.</span><span class='delete identifier id'>delete</span><span class='lparen token'>(</span><span class='symbol val'>:desired_capabilities</span><span class='rparen token'>)</span>
+  <span class='server_url identifier id'>server_url</span>           <span class='assign token'>=</span> <span class='opts identifier id'>opts</span><span class='dot token'>.</span><span class='delete identifier id'>delete</span><span class='lparen token'>(</span><span class='symbol val'>:server_url</span><span class='rparen token'>)</span>
+
+  <span class='unless unless kw'>unless</span> <span class='opts identifier id'>opts</span><span class='dot token'>.</span><span class='empty? fid id'>empty?</span>
+    <span class='raise identifier id'>raise</span> <span class='ArgumentError constant id'>ArgumentError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;unknown option#{'s' if opts.size != 1}: #{opts.inspect}&quot;</span>
+  <span class='end end kw'>end</span>
+
+  <span class='@context ivar id'>@context</span>      <span class='assign token'>=</span> <span class='string val'>&quot;context&quot;</span>
+  <span class='@http ivar id'>@http</span>         <span class='assign token'>=</span> <span class='http_client_class identifier id'>http_client_class</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='URI constant id'>URI</span><span class='dot token'>.</span><span class='parse identifier id'>parse</span><span class='lparen token'>(</span><span class='server_url identifier id'>server_url</span><span class='rparen token'>)</span>
+  <span class='@capabilities ivar id'>@capabilities</span> <span class='assign token'>=</span> <span class='create_session identifier id'>create_session</span><span class='lparen token'>(</span><span class='desired_capabilities identifier id'>desired_capabilities</span><span class='rparen token'>)</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+  
+</div>
+
+  <div id="instance_attr_details" class="attr_details">
+    <h2>Instance Attribute Details</h2>
+    
+      
+      <span id=""></span>
+      <span id="capabilities-instance_method"></span>
+      <div class="method_details first">
+  <p class="signature first" id="capabilities-instance_method">
+  
+    - (<tt>Object</tt>) <strong>capabilities</strong>  <span class="extras">(readonly)</span>
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Returns the value of attribute capabilities
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+44
+45
+46</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 44</span>
+
+<span class='def def kw'>def</span> <span class='capabilities identifier id'>capabilities</span>
+  <span class='@capabilities ivar id'>@capabilities</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id="context=-instance_method"></span>
+      <span id="context-instance_method"></span>
+      <div class="method_details ">
+  <p class="signature " id="context-instance_method">
+  
+    - (<tt>Object</tt>) <strong>context</strong> 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Returns the value of attribute context
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+43
+44
+45</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 43</span>
+
+<span class='def def kw'>def</span> <span class='context identifier id'>context</span>
+  <span class='@context ivar id'>@context</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id="http=-instance_method"></span>
+      <span id="http-instance_method"></span>
+      <div class="method_details ">
+  <p class="signature " id="http-instance_method">
+  
+    - (<tt>Object</tt>) <strong>http</strong> 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Returns the value of attribute http
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+43
+44
+45</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 43</span>
+
+<span class='def def kw'>def</span> <span class='http identifier id'>http</span>
+  <span class='@http ivar id'>@http</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+
+  <div id="class_method_details" class="method_details_list">
+    <h2>Class Method Details</h2>
+    
+    
+      <div class="method_details first">
+  <p class="signature first" id="command-class_method">
+  
+    + (<tt>Object</tt>) <strong>command</strong>(name, verb, url) 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Defines a wrapper method for a command, which ultimately calls #execute.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  <h3>Parameters:</h3>
+<ul class="param">
+  
+    <li>
+      
+        <span class='type'>(<tt>Symbol</tt>)</span>
+      
+      
+        <span class='name'>name</span>
+      
+      
+      
+        &mdash;
+        
+name of the resulting method
+
+
+      
+    </li>
+  
+    <li>
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <span class='name'>url</span>
+      
+      
+      
+        &mdash;
+        
+a URL template, which can include some arguments, much like the definitions
+on the server. the :session_id and :context parameters are implicitly
+handled, but the remainder will become required method arguments. e.g.,
+&quot;session/:session_id/:context/element/:id/text&quot; will define a
+method that takes id as it&#8217;s first argument.
+
+
+      
+    </li>
+  
+    <li>
+      
+        <span class='type'>(<tt>Symbol</tt>)</span>
+      
+      
+        <span class='name'>verb</span>
+      
+      
+      
+        &mdash;
+        
+the appropriate http verb, such as :get, :post, or :delete
+
+
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+39
+40
+41</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 39</span>
+
+<span class='def def kw'>def</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='command identifier id'>command</span><span class='lparen token'>(</span><span class='name identifier id'>name</span><span class='comma token'>,</span> <span class='verb identifier id'>verb</span><span class='comma token'>,</span> <span class='url identifier id'>url</span><span class='rparen token'>)</span>
+  <span class='COMMANDS constant id'>COMMANDS</span><span class='lbrack token'>[</span><span class='name identifier id'>name</span><span class='rbrack token'>]</span> <span class='assign token'>=</span> <span class='lbrack token'>[</span><span class='verb identifier id'>verb</span><span class='comma token'>,</span> <span class='url identifier id'>url</span><span class='dot token'>.</span><span class='freeze identifier id'>freeze</span><span class='rbrack token'>]</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+    
+    
+      <div class="method_details first">
+  <p class="signature first" id="addCookie-instance_method">
+  
+    - (<tt>Object</tt>) <strong>addCookie</strong>(cookie) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+167
+168
+169</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 167</span>
+
+<span class='def def kw'>def</span> <span class='addCookie identifier id'>addCookie</span><span class='lparen token'>(</span><span class='cookie identifier id'>cookie</span><span class='rparen token'>)</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:addCookie</span><span class='comma token'>,</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='comma token'>,</span> <span class='cookie identifier id'>cookie</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="browser-instance_method">
+  
+    - (<tt>Object</tt>) <strong>browser</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+67
+68
+69</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 67</span>
+
+<span class='def def kw'>def</span> <span class='browser identifier id'>browser</span>
+  <span class='@browser ivar id'>@browser</span> <span class='opasgn op'>||=</span> <span class='@capabilities ivar id'>@capabilities</span><span class='dot token'>.</span><span class='browser_name identifier id'>browser_name</span><span class='dot token'>.</span><span class='gsub identifier id'>gsub</span><span class='lparen token'>(</span><span class='string val'>&quot; &quot;</span><span class='comma token'>,</span> <span class='string val'>&quot;_&quot;</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='to_sym identifier id'>to_sym</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="clearElement-instance_method">
+  
+    - (<tt>Object</tt>) <strong>clearElement</strong>(element) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+280
+281
+282</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 280</span>
+
+<span class='def def kw'>def</span> <span class='clearElement identifier id'>clearElement</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:clearElement</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="clickElement-instance_method">
+  
+    - (<tt>Object</tt>) <strong>clickElement</strong>(element) 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Element functions
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+244
+245
+246</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 244</span>
+
+<span class='def def kw'>def</span> <span class='clickElement identifier id'>clickElement</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:clickElement</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="close-instance_method">
+  
+    - (<tt>Object</tt>) <strong>close</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+134
+135
+136</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 134</span>
+
+<span class='def def kw'>def</span> <span class='close identifier id'>close</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:close</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="create_session-instance_method">
+  
+    - (<tt>Object</tt>) <strong>create_session</strong>(desired_capabilities) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+84
+85
+86
+87
+88</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 84</span>
+
+<span class='def def kw'>def</span> <span class='create_session identifier id'>create_session</span><span class='lparen token'>(</span><span class='desired_capabilities identifier id'>desired_capabilities</span><span class='rparen token'>)</span>
+  <span class='resp identifier id'>resp</span>  <span class='assign token'>=</span> <span class='raw_execute identifier id'>raw_execute</span> <span class='symbol val'>:newSession</span><span class='comma token'>,</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='comma token'>,</span> <span class='desired_capabilities identifier id'>desired_capabilities</span>
+  <span class='@session_id ivar id'>@session_id</span> <span class='assign token'>=</span> <span class='resp identifier id'>resp</span><span class='lbrack token'>[</span><span class='string val'>'sessionId'</span><span class='rbrack token'>]</span> <span class='orop op'>||</span> <span class='raise identifier id'>raise</span><span class='lparen token'>(</span><span class='string val'>'no sessionId in returned payload'</span><span class='rparen token'>)</span>
+  <span class='Capabilities constant id'>Capabilities</span><span class='dot token'>.</span><span class='json_create identifier id'>json_create</span> <span class='resp identifier id'>resp</span><span class='lbrack token'>[</span><span class='string val'>'value'</span><span class='rbrack token'>]</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="deleteAllCookies-instance_method">
+  
+    - (<tt>Object</tt>) <strong>deleteAllCookies</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+179
+180
+181</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 179</span>
+
+<span class='def def kw'>def</span> <span class='deleteAllCookies identifier id'>deleteAllCookies</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:deleteAllCookies</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="deleteCookie-instance_method">
+  
+    - (<tt>Object</tt>) <strong>deleteCookie</strong>(name) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+171
+172
+173</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 171</span>
+
+<span class='def def kw'>def</span> <span class='deleteCookie identifier id'>deleteCookie</span><span class='lparen token'>(</span><span class='name identifier id'>name</span><span class='rparen token'>)</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:deleteCookie</span><span class='comma token'>,</span> <span class='symbol val'>:name</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='name identifier id'>name</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="dragElement-instance_method">
+  
+    - (<tt>Object</tt>) <strong>dragElement</strong>(element, rigth_by, down_by) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+321
+322
+323
+324</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 321</span>
+
+<span class='def def kw'>def</span> <span class='dragElement identifier id'>dragElement</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='comma token'>,</span> <span class='rigth_by identifier id'>rigth_by</span><span class='comma token'>,</span> <span class='down_by identifier id'>down_by</span><span class='rparen token'>)</span>
+  <span class='comment val'># TODO: why is element sent twice in the payload?</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:dragElement</span><span class='comma token'>,</span> <span class='lbrace token'>{</span><span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span><span class='rbrace token'>}</span><span class='comma token'>,</span> <span class='element identifier id'>element</span><span class='comma token'>,</span> <span class='rigth_by identifier id'>rigth_by</span><span class='comma token'>,</span> <span class='down_by identifier id'>down_by</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="driver_extensions-instance_method">
+  
+    - (<tt>Object</tt>) <strong>driver_extensions</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+71
+72
+73</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 71</span>
+
+<span class='def def kw'>def</span> <span class='driver_extensions identifier id'>driver_extensions</span>
+  <span class='lbrack token'>[</span><span class='rbrack token'>]</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="executeScript-instance_method">
+  
+    - (<tt>Object</tt>) <strong>executeScript</strong>(script, *args) 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  <h3>Raises:</h3>
+<ul class="raise">
+  
+    <li>
+      
+        <span class='type'>(<tt>UnsupportedOperationError</tt>)</span>
+      
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+158
+159
+160
+161
+162
+163
+164
+165</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 158</span>
+
+<span class='def def kw'>def</span> <span class='executeScript identifier id'>executeScript</span><span class='lparen token'>(</span><span class='script identifier id'>script</span><span class='comma token'>,</span> <span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
+  <span class='raise identifier id'>raise</span> <span class='UnsupportedOperationError constant id'>UnsupportedOperationError</span><span class='comma token'>,</span> <span class='string val'>&quot;underlying webdriver instace does not support javascript&quot;</span> <span class='unless unless_mod kw'>unless</span> <span class='capabilities identifier id'>capabilities</span><span class='dot token'>.</span><span class='javascript? fid id'>javascript?</span>
+
+  <span class='typed_args identifier id'>typed_args</span> <span class='assign token'>=</span> <span class='args identifier id'>args</span><span class='dot token'>.</span><span class='map identifier id'>map</span> <span class='lbrace token'>{</span> <span class='bitor op'>|</span><span class='arg identifier id'>arg</span><span class='bitor op'>|</span> <span class='wrap_script_argument identifier id'>wrap_script_argument</span><span class='lparen token'>(</span><span class='arg identifier id'>arg</span><span class='rparen token'>)</span> <span class='rbrace token'>}</span>
+  <span class='response identifier id'>response</span>   <span class='assign token'>=</span> <span class='raw_execute identifier id'>raw_execute</span> <span class='symbol val'>:executeScript</span><span class='comma token'>,</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='comma token'>,</span> <span class='script identifier id'>script</span><span class='comma token'>,</span> <span class='typed_args identifier id'>typed_args</span>
+
+  <span class='unwrap_script_argument identifier id'>unwrap_script_argument</span> <span class='response identifier id'>response</span><span class='lbrack token'>[</span><span class='string val'>'value'</span><span class='rbrack token'>]</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="findElementByClassName-instance_method">
+  
+    - (<tt>Object</tt>) <strong>findElementByClassName</strong>(parent, class_name) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+183
+184
+185</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 183</span>
+
+<span class='def def kw'>def</span> <span class='findElementByClassName identifier id'>findElementByClassName</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='class_name identifier id'>class_name</span><span class='rparen token'>)</span>
+  <span class='find_element_by identifier id'>find_element_by</span> <span class='string val'>'class name'</span><span class='comma token'>,</span> <span class='class_name identifier id'>class_name</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="findElementById-instance_method">
+  
+    - (<tt>Object</tt>) <strong>findElementById</strong>(parent, id) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+191
+192
+193</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 191</span>
+
+<span class='def def kw'>def</span> <span class='findElementById identifier id'>findElementById</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='id identifier id'>id</span><span class='rparen token'>)</span>
+  <span class='find_element_by identifier id'>find_element_by</span> <span class='string val'>'id'</span><span class='comma token'>,</span> <span class='id identifier id'>id</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="findElementByLinkText-instance_method">
+  
+    - (<tt>Object</tt>) <strong>findElementByLinkText</strong>(parent, link_text) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+199
+200
+201</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 199</span>
+
+<span class='def def kw'>def</span> <span class='findElementByLinkText identifier id'>findElementByLinkText</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='link_text identifier id'>link_text</span><span class='rparen token'>)</span>
+  <span class='find_element_by identifier id'>find_element_by</span> <span class='string val'>'link text'</span><span class='comma token'>,</span> <span class='link_text identifier id'>link_text</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="findElementByName-instance_method">
+  
+    - (<tt>Object</tt>) <strong>findElementByName</strong>(parent, name) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+215
+216
+217</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 215</span>
+
+<span class='def def kw'>def</span> <span class='findElementByName identifier id'>findElementByName</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='name identifier id'>name</span><span class='rparen token'>)</span>
+  <span class='find_element_by identifier id'>find_element_by</span> <span class='string val'>'name'</span><span class='comma token'>,</span> <span class='name identifier id'>name</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="findElementByPartialLinkText-instance_method">
+  
+    - (<tt>Object</tt>) <strong>findElementByPartialLinkText</strong>(parent, link_text) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+207
+208
+209</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 207</span>
+
+<span class='def def kw'>def</span> <span class='findElementByPartialLinkText identifier id'>findElementByPartialLinkText</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='link_text identifier id'>link_text</span><span class='rparen token'>)</span>
+  <span class='find_element_by identifier id'>find_element_by</span> <span class='string val'>'partial link text'</span><span class='comma token'>,</span> <span class='link_text identifier id'>link_text</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="findElementByTagName-instance_method">
+  
+    - (<tt>Object</tt>) <strong>findElementByTagName</strong>(parent, tag_name) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+223
+224
+225</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 223</span>
+
+<span class='def def kw'>def</span> <span class='findElementByTagName identifier id'>findElementByTagName</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='tag_name identifier id'>tag_name</span><span class='rparen token'>)</span>
+  <span class='find_element_by identifier id'>find_element_by</span> <span class='string val'>'tag name'</span><span class='comma token'>,</span> <span class='tag_name identifier id'>tag_name</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="findElementByXpath-instance_method">
+  
+    - (<tt>Object</tt>) <strong>findElementByXpath</strong>(parent, xpath) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+231
+232
+233</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 231</span>
+
+<span class='def def kw'>def</span> <span class='findElementByXpath identifier id'>findElementByXpath</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='xpath identifier id'>xpath</span><span class='rparen token'>)</span>
+  <span class='find_element_by identifier id'>find_element_by</span> <span class='string val'>'xpath'</span><span class='comma token'>,</span> <span class='xpath identifier id'>xpath</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="findElementsByClassName-instance_method">
+  
+    - (<tt>Object</tt>) <strong>findElementsByClassName</strong>(parent, class_name) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+187
+188
+189</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 187</span>
+
+<span class='def def kw'>def</span> <span class='findElementsByClassName identifier id'>findElementsByClassName</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='class_name identifier id'>class_name</span><span class='rparen token'>)</span>
+  <span class='find_elements_by identifier id'>find_elements_by</span> <span class='string val'>'class name'</span><span class='comma token'>,</span> <span class='class_name identifier id'>class_name</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="findElementsById-instance_method">
+  
+    - (<tt>Object</tt>) <strong>findElementsById</strong>(parent, id) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+195
+196
+197</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 195</span>
+
+<span class='def def kw'>def</span> <span class='findElementsById identifier id'>findElementsById</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='id identifier id'>id</span><span class='rparen token'>)</span>
+  <span class='find_elements_by identifier id'>find_elements_by</span> <span class='string val'>'id'</span><span class='comma token'>,</span> <span class='id identifier id'>id</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="findElementsByLinkText-instance_method">
+  
+    - (<tt>Object</tt>) <strong>findElementsByLinkText</strong>(parent, link_text) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+203
+204
+205</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 203</span>
+
+<span class='def def kw'>def</span> <span class='findElementsByLinkText identifier id'>findElementsByLinkText</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='link_text identifier id'>link_text</span><span class='rparen token'>)</span>
+  <span class='find_elements_by identifier id'>find_elements_by</span> <span class='string val'>'link text'</span><span class='comma token'>,</span> <span class='link_text identifier id'>link_text</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="findElementsByName-instance_method">
+  
+    - (<tt>Object</tt>) <strong>findElementsByName</strong>(parent, name) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+219
+220
+221</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 219</span>
+
+<span class='def def kw'>def</span> <span class='findElementsByName identifier id'>findElementsByName</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='name identifier id'>name</span><span class='rparen token'>)</span>
+  <span class='find_elements_by identifier id'>find_elements_by</span> <span class='string val'>'name'</span><span class='comma token'>,</span> <span class='name identifier id'>name</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="findElementsByPartialLinkText-instance_method">
+  
+    - (<tt>Object</tt>) <strong>findElementsByPartialLinkText</strong>(parent, link_text) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+211
+212
+213</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 211</span>
+
+<span class='def def kw'>def</span> <span class='findElementsByPartialLinkText identifier id'>findElementsByPartialLinkText</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='link_text identifier id'>link_text</span><span class='rparen token'>)</span>
+  <span class='find_elements_by identifier id'>find_elements_by</span> <span class='string val'>'partial link text'</span><span class='comma token'>,</span> <span class='link_text identifier id'>link_text</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="findElementsByTagName-instance_method">
+  
+    - (<tt>Object</tt>) <strong>findElementsByTagName</strong>(parent, tag_name) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+227
+228
+229</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 227</span>
+
+<span class='def def kw'>def</span> <span class='findElementsByTagName identifier id'>findElementsByTagName</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='tag_name identifier id'>tag_name</span><span class='rparen token'>)</span>
+  <span class='find_elements_by identifier id'>find_elements_by</span> <span class='string val'>'tag name'</span><span class='comma token'>,</span> <span class='tag_name identifier id'>tag_name</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="findElementsByXpath-instance_method">
+  
+    - (<tt>Object</tt>) <strong>findElementsByXpath</strong>(parent, xpath) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+235
+236
+237</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 235</span>
+
+<span class='def def kw'>def</span> <span class='findElementsByXpath identifier id'>findElementsByXpath</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='xpath identifier id'>xpath</span><span class='rparen token'>)</span>
+  <span class='find_elements_by identifier id'>find_elements_by</span> <span class='string val'>'xpath'</span><span class='comma token'>,</span> <span class='xpath identifier id'>xpath</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="get-instance_method">
+  
+    - (<tt>Object</tt>) <strong>get</strong>(url) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+90
+91
+92</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 90</span>
+
+<span class='def def kw'>def</span> <span class='get identifier id'>get</span><span class='lparen token'>(</span><span class='url identifier id'>url</span><span class='rparen token'>)</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:get</span><span class='comma token'>,</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='comma token'>,</span> <span class='url identifier id'>url</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="getActiveElement-instance_method">
+  
+    - (<tt>Object</tt>) <strong>getActiveElement</strong> 
+  
+
+  
+    <span class="aliases">Also known as:
+    <span class="names"><span id='switchToActiveElement-instance_method'>switchToActiveElement</span></span>
+    </span>
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+312
+313
+314</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 312</span>
+
+<span class='def def kw'>def</span> <span class='getActiveElement identifier id'>getActiveElement</span>
+  <span class='Element constant id'>Element</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='self self kw'>self</span><span class='comma token'>,</span> <span class='element_id_from identifier id'>element_id_from</span><span class='lparen token'>(</span><span class='execute identifier id'>execute</span><span class='lparen token'>(</span><span class='symbol val'>:getActiveElement</span><span class='rparen token'>)</span><span class='rparen token'>)</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="getAllCookies-instance_method">
+  
+    - (<tt>Object</tt>) <strong>getAllCookies</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+175
+176
+177</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 175</span>
+
+<span class='def def kw'>def</span> <span class='getAllCookies identifier id'>getAllCookies</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:getAllCookies</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="getCurrentUrl-instance_method">
+  
+    - (<tt>Object</tt>) <strong>getCurrentUrl</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+102
+103
+104</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 102</span>
+
+<span class='def def kw'>def</span> <span class='getCurrentUrl identifier id'>getCurrentUrl</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:getCurrentUrl</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="getCurrentWindowHandle-instance_method">
+  
+    - (<tt>Object</tt>) <strong>getCurrentWindowHandle</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+146
+147
+148</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 146</span>
+
+<span class='def def kw'>def</span> <span class='getCurrentWindowHandle identifier id'>getCurrentWindowHandle</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:getCurrentWindowHandle</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="getElementAttribute-instance_method">
+  
+    - (<tt>Object</tt>) <strong>getElementAttribute</strong>(element, name) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+252
+253
+254</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 252</span>
+
+<span class='def def kw'>def</span> <span class='getElementAttribute identifier id'>getElementAttribute</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='comma token'>,</span> <span class='name identifier id'>name</span><span class='rparen token'>)</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:getElementAttribute</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span><span class='comma token'>,</span> <span class='symbol val'>:name</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='name identifier id'>name</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="getElementLocation-instance_method">
+  
+    - (<tt>Object</tt>) <strong>getElementLocation</strong>(element) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+264
+265
+266
+267
+268</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 264</span>
+
+<span class='def def kw'>def</span> <span class='getElementLocation identifier id'>getElementLocation</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
+  <span class='data identifier id'>data</span> <span class='assign token'>=</span> <span class='execute identifier id'>execute</span> <span class='symbol val'>:getElementLocation</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span>
+
+  <span class='Point constant id'>Point</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='data identifier id'>data</span><span class='lbrack token'>[</span><span class='string val'>'x'</span><span class='rbrack token'>]</span><span class='comma token'>,</span> <span class='data identifier id'>data</span><span class='lbrack token'>[</span><span class='string val'>'y'</span><span class='rbrack token'>]</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="getElementSize-instance_method">
+  
+    - (<tt>Object</tt>) <strong>getElementSize</strong>(element) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+270
+271
+272
+273
+274</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 270</span>
+
+<span class='def def kw'>def</span> <span class='getElementSize identifier id'>getElementSize</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
+  <span class='data identifier id'>data</span> <span class='assign token'>=</span> <span class='execute identifier id'>execute</span> <span class='symbol val'>:getElementSize</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span>
+
+  <span class='Dimension constant id'>Dimension</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='data identifier id'>data</span><span class='lbrack token'>[</span><span class='string val'>'width'</span><span class='rbrack token'>]</span><span class='comma token'>,</span> <span class='data identifier id'>data</span><span class='lbrack token'>[</span><span class='string val'>'height'</span><span class='rbrack token'>]</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="getElementTagName-instance_method">
+  
+    - (<tt>Object</tt>) <strong>getElementTagName</strong>(element) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+248
+249
+250</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 248</span>
+
+<span class='def def kw'>def</span> <span class='getElementTagName identifier id'>getElementTagName</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:getElementTagName</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="getElementText-instance_method">
+  
+    - (<tt>Object</tt>) <strong>getElementText</strong>(element) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+260
+261
+262</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 260</span>
+
+<span class='def def kw'>def</span> <span class='getElementText identifier id'>getElementText</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:getElementText</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="getElementValue-instance_method">
+  
+    - (<tt>Object</tt>) <strong>getElementValue</strong>(element) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+256
+257
+258</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 256</span>
+
+<span class='def def kw'>def</span> <span class='getElementValue identifier id'>getElementValue</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:getElementValue</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="getElementValueOfCssProperty-instance_method">
+  
+    - (<tt>Object</tt>) <strong>getElementValueOfCssProperty</strong>(element, prop) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+308
+309
+310</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 308</span>
+
+<span class='def def kw'>def</span> <span class='getElementValueOfCssProperty identifier id'>getElementValueOfCssProperty</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='comma token'>,</span> <span class='prop identifier id'>prop</span><span class='rparen token'>)</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:getElementValueOfCssProperty</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span><span class='comma token'>,</span> <span class='symbol val'>:property_name</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='prop identifier id'>prop</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="getPageSource-instance_method">
+  
+    - (<tt>Object</tt>) <strong>getPageSource</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+110
+111
+112</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 110</span>
+
+<span class='def def kw'>def</span> <span class='getPageSource identifier id'>getPageSource</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:getPageSource</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="getSpeed-instance_method">
+  
+    - (<tt>Object</tt>) <strong>getSpeed</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+154
+155
+156</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 154</span>
+
+<span class='def def kw'>def</span> <span class='getSpeed identifier id'>getSpeed</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:getSpeed</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="getTitle-instance_method">
+  
+    - (<tt>Object</tt>) <strong>getTitle</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+106
+107
+108</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 106</span>
+
+<span class='def def kw'>def</span> <span class='getTitle identifier id'>getTitle</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:getTitle</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="getVisible-instance_method">
+  
+    - (<tt>Object</tt>) <strong>getVisible</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+114
+115
+116</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 114</span>
+
+<span class='def def kw'>def</span> <span class='getVisible identifier id'>getVisible</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:getVisible</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="getWindowHandles-instance_method">
+  
+    - (<tt>Object</tt>) <strong>getWindowHandles</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+142
+143
+144</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 142</span>
+
+<span class='def def kw'>def</span> <span class='getWindowHandles identifier id'>getWindowHandles</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:getWindowHandles</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="goBack-instance_method">
+  
+    - (<tt>Object</tt>) <strong>goBack</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+94
+95
+96</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 94</span>
+
+<span class='def def kw'>def</span> <span class='goBack identifier id'>goBack</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:goBack</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="goForward-instance_method">
+  
+    - (<tt>Object</tt>) <strong>goForward</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+98
+99
+100</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 98</span>
+
+<span class='def def kw'>def</span> <span class='goForward identifier id'>goForward</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:goForward</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="hoverOverElement-instance_method">
+  
+    - (<tt>Object</tt>) <strong>hoverOverElement</strong>(element) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+317
+318
+319</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 317</span>
+
+<span class='def def kw'>def</span> <span class='hoverOverElement identifier id'>hoverOverElement</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:hoverOverElement</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="isElementDisplayed-instance_method">
+  
+    - (<tt>Object</tt>) <strong>isElementDisplayed</strong>(element) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+292
+293
+294</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 292</span>
+
+<span class='def def kw'>def</span> <span class='isElementDisplayed identifier id'>isElementDisplayed</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:isElementDisplayed</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="isElementEnabled-instance_method">
+  
+    - (<tt>Object</tt>) <strong>isElementEnabled</strong>(element) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+284
+285
+286</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 284</span>
+
+<span class='def def kw'>def</span> <span class='isElementEnabled identifier id'>isElementEnabled</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:isElementEnabled</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="isElementSelected-instance_method">
+  
+    - (<tt>Object</tt>) <strong>isElementSelected</strong>(element) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+288
+289
+290</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 288</span>
+
+<span class='def def kw'>def</span> <span class='isElementSelected identifier id'>isElementSelected</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:isElementSelected</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="quit-instance_method">
+  
+    - (<tt>Object</tt>) <strong>quit</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+130
+131
+132</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 130</span>
+
+<span class='def def kw'>def</span> <span class='quit identifier id'>quit</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:quit</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="refresh-instance_method">
+  
+    - (<tt>Object</tt>) <strong>refresh</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+138
+139
+140</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 138</span>
+
+<span class='def def kw'>def</span> <span class='refresh identifier id'>refresh</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:refresh</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="sendKeysToElement-instance_method">
+  
+    - (<tt>Object</tt>) <strong>sendKeysToElement</strong>(element, string) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+276
+277
+278</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 276</span>
+
+<span class='def def kw'>def</span> <span class='sendKeysToElement identifier id'>sendKeysToElement</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='comma token'>,</span> <span class='string identifier id'>string</span><span class='rparen token'>)</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:sendKeysToElement</span><span class='comma token'>,</span> <span class='lbrace token'>{</span><span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span><span class='rbrace token'>}</span><span class='comma token'>,</span> <span class='lbrace token'>{</span><span class='symbol val'>:value</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string identifier id'>string</span><span class='dot token'>.</span><span class='split identifier id'>split</span><span class='lparen token'>(</span><span class='regexp val'>//</span><span class='u identifier id'>u</span><span class='rparen token'>)</span><span class='rbrace token'>}</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="session_id-instance_method">
+  
+    - (<tt>Object</tt>) <strong>session_id</strong> 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Returns the current session ID.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+79
+80
+81</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 79</span>
+
+<span class='def def kw'>def</span> <span class='session_id identifier id'>session_id</span>
+  <span class='@session_id ivar id'>@session_id</span> <span class='orop op'>||</span> <span class='raise identifier id'>raise</span><span class='lparen token'>(</span><span class='StandardError constant id'>StandardError</span><span class='comma token'>,</span> <span class='string val'>&quot;no current session exists&quot;</span><span class='rparen token'>)</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="setElementSelected-instance_method">
+  
+    - (<tt>Object</tt>) <strong>setElementSelected</strong>(element) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+304
+305
+306</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 304</span>
+
+<span class='def def kw'>def</span> <span class='setElementSelected identifier id'>setElementSelected</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:setElementSelected</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="setSpeed-instance_method">
+  
+    - (<tt>Object</tt>) <strong>setSpeed</strong>(value) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+150
+151
+152</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 150</span>
+
+<span class='def def kw'>def</span> <span class='setSpeed identifier id'>setSpeed</span><span class='lparen token'>(</span><span class='value identifier id'>value</span><span class='rparen token'>)</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:setSpeed</span><span class='comma token'>,</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='comma token'>,</span> <span class='value identifier id'>value</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="setVisible-instance_method">
+  
+    - (<tt>Object</tt>) <strong>setVisible</strong>(bool) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+118
+119
+120</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 118</span>
+
+<span class='def def kw'>def</span> <span class='setVisible identifier id'>setVisible</span><span class='lparen token'>(</span><span class='bool identifier id'>bool</span><span class='rparen token'>)</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:setVisible</span><span class='comma token'>,</span> <span class='lbrace token'>{</span><span class='rbrace token'>}</span><span class='comma token'>,</span> <span class='bool identifier id'>bool</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="submitElement-instance_method">
+  
+    - (<tt>Object</tt>) <strong>submitElement</strong>(element) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+296
+297
+298</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 296</span>
+
+<span class='def def kw'>def</span> <span class='submitElement identifier id'>submitElement</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:submitElement</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="switchToFrame-instance_method">
+  
+    - (<tt>Object</tt>) <strong>switchToFrame</strong>(id) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+126
+127
+128</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 126</span>
+
+<span class='def def kw'>def</span> <span class='switchToFrame identifier id'>switchToFrame</span><span class='lparen token'>(</span><span class='id identifier id'>id</span><span class='rparen token'>)</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:switchToFrame</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='id identifier id'>id</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="switchToWindow-instance_method">
+  
+    - (<tt>Object</tt>) <strong>switchToWindow</strong>(name) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+122
+123
+124</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 122</span>
+
+<span class='def def kw'>def</span> <span class='switchToWindow identifier id'>switchToWindow</span><span class='lparen token'>(</span><span class='name identifier id'>name</span><span class='rparen token'>)</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:switchToWindow</span><span class='comma token'>,</span> <span class='symbol val'>:name</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='name identifier id'>name</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="toggleElement-instance_method">
+  
+    - (<tt>Object</tt>) <strong>toggleElement</strong>(element) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+300
+301
+302</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'remote/client/src/rb/lib/selenium/webdriver/remote/bridge.rb', line 300</span>
+
+<span class='def def kw'>def</span> <span class='toggleElement identifier id'>toggleElement</span><span class='lparen token'>(</span><span class='element identifier id'>element</span><span class='rparen token'>)</span>
+  <span class='execute identifier id'>execute</span> <span class='symbol val'>:toggleElement</span><span class='comma token'>,</span> <span class='symbol val'>:id</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='element identifier id'>element</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+    
+    <div id="footer">
+  Generated on Thu Dec 17 12:58:03 2009 by 
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
+  0.5.2 (ruby-1.8.7).
+</div>
+
+  </body>
+</html>

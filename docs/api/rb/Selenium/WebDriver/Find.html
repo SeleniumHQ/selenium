@@ -1,0 +1,377 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta name="Content-Type" content="text/html; charset=UTF-8" />
+<title>Module: Selenium::WebDriver::Find</title>
+<link rel="stylesheet" href="../../css/style.css" type="text/css" media="screen" charset="utf-8" />
+<link rel="stylesheet" href="../../css/common.css" type="text/css" media="screen" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  relpath = '../..';
+  if (relpath != '') relpath += '/';
+</script>
+<script type="text/javascript" charset="utf-8" src="../../js/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="../../js/app.js"></script>
+
+  </head>
+  <body>
+    <div id="header">
+      <div id="menu">
+  
+    <a href="../../_index.html">Index (F)</a> &raquo; 
+    <a href="../../Selenium.html" title="Selenium">Selenium</a> &raquo; <a href="../WebDriver.html" title="WebDriver">WebDriver</a>
+     &raquo; 
+    <span class="title">Find</span>
+  
+</div>
+
+      <div id="search">
+  <a id="class_list_link" href="#">Namespace List</a>
+  <a id="method_list_link" href="#">Method List</a>
+  <a id ="file_list_link" href="#">File List</a>
+</div>
+
+      <div class="clear"></div>
+    </div>
+    
+    <iframe id="search_frame"></iframe>
+    
+    <div id="content"><h1>Module: Selenium::WebDriver::Find 
+  
+  
+</h1>
+
+<dl class="box">
+  
+  
+    
+  
+    
+  
+  
+    <dt class="r1 last">Defined in:</dt>
+    <dd class="r1 last">common/src/rb/lib/selenium/webdriver/find.rb</dd>
+  
+</dl>
+<div class="clear"></div>
+
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    <p>
+Find
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div>
+  <h2>Constant Summary</h2>
+  
+    <dl class="constants">
+      
+        <dt id="FINDERS-constant ">FINDERS =
+            <span class="summary_desc"></span>
+        </dt>
+        <dd><pre class="code"><span class='lbrace token'>{</span>
+  <span class='symbol val'>:class</span>             <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'ByClassName'</span><span class='comma token'>,</span>
+  <span class='symbol val'>:class_name</span>        <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'ByClassName'</span><span class='comma token'>,</span>
+  <span class='symbol val'>:id</span>                <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'ById'</span><span class='comma token'>,</span>
+  <span class='symbol val'>:link_text</span>         <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'ByLinkText'</span><span class='comma token'>,</span>
+  <span class='symbol val'>:link</span>              <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'ByLinkText'</span><span class='comma token'>,</span>
+  <span class='symbol val'>:partial_link_text</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'ByPartialLinkText'</span><span class='comma token'>,</span>
+  <span class='symbol val'>:name</span>              <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'ByName'</span><span class='comma token'>,</span>
+  <span class='symbol val'>:tag_name</span>          <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'ByTagName'</span><span class='comma token'>,</span>
+  <span class='symbol val'>:xpath</span>             <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>'ByXpath'</span><span class='comma token'>,</span>
+<span class='rbrace token'>}</span>
+</pre></dd>
+      
+    </dl>
+  
+
+
+
+  <h2>Instance Method Summary</h2>
+
+  <ul class="summary">
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#find_element-instance_method" title="#find_element (instance method)">- (WebDriver::Element) <strong>find_element</strong>(*args) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc">
+Find the first element matching the given arguments.
+
+</span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#find_elements-instance_method" title="#find_elements (instance method)">- (Array&lt;WebDriver::Element&gt;) <strong>find_elements</strong>(*args) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc">
+Find all elements matching the given arguments.
+
+</span>
+  
+</li>
+
+    
+  </ul>
+
+
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+    
+    
+      <div class="method_details first">
+  <p class="signature first" id="find_element-instance_method">
+  
+    - (<tt><a href="Element.html" title="WebDriver::Element">WebDriver::Element</a></tt>) <strong>find_element</strong>(*args) 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Find the first element matching the given arguments.
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  <h3>Parameters:</h3>
+<ul class="param">
+  
+    <li>
+      
+        <span class='type'>(<tt>:class</tt>, <tt>:class_name</tt>, <tt>:id</tt>, <tt>:link_text</tt>, <tt>:link</tt>, <tt>:partial_link_text</tt>, <tt>:name</tt>, <tt>:tag_name</tt>, <tt>:xpath</tt>)</span>
+      
+      
+        <span class='name'>how</span>
+      
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <span class='name'>what</span>
+      
+      
+      
+    </li>
+  
+</ul>
+<h3>Returns:</h3>
+<ul class="return">
+  
+    <li>
+      
+        <span class='type'>(<tt><a href="Element.html" title="WebDriver::Element">WebDriver::Element</a></tt>)</span>
+      
+      
+      
+      
+    </li>
+  
+</ul>
+<h3>Raises:</h3>
+<ul class="raise">
+  
+    <li>
+      
+        <span class='type'>(<tt>NoSuchElementError</tt>)</span>
+      
+      
+      
+      
+        &mdash;
+        
+if the element doesn&#8217;t exist
+
+
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/find.rb', line 27</span>
+
+<span class='def def kw'>def</span> <span class='find_element identifier id'>find_element</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
+  <span class='how identifier id'>how</span><span class='comma token'>,</span> <span class='what identifier id'>what</span> <span class='assign token'>=</span> <span class='extract_args identifier id'>extract_args</span><span class='lparen token'>(</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
+
+  <span class='unless unless kw'>unless</span> <span class='by identifier id'>by</span> <span class='assign token'>=</span> <span class='FINDERS constant id'>FINDERS</span><span class='lbrack token'>[</span><span class='how identifier id'>how</span><span class='dot token'>.</span><span class='to_sym identifier id'>to_sym</span><span class='rbrack token'>]</span>
+    <span class='raise identifier id'>raise</span> <span class='ArgumentError constant id'>ArgumentError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;cannot find element by #{how.inspect}&quot;</span>
+  <span class='end end kw'>end</span>
+
+  <span class='meth identifier id'>meth</span> <span class='assign token'>=</span> <span class='dstring node'>&quot;findElement#{by}&quot;</span>
+  <span class='what identifier id'>what</span> <span class='assign token'>=</span> <span class='what identifier id'>what</span><span class='dot token'>.</span><span class='to_s identifier id'>to_s</span>
+
+  <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='send identifier id'>send</span> <span class='meth identifier id'>meth</span><span class='comma token'>,</span> <span class='ref identifier id'>ref</span><span class='comma token'>,</span> <span class='what identifier id'>what</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="find_elements-instance_method">
+  
+    - (<tt>Array&lt;<a href="Element.html" title="WebDriver::Element">WebDriver::Element</a>&gt;</tt>) <strong>find_elements</strong>(*args) 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Find all elements matching the given arguments
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  <h3>Parameters:</h3>
+<ul class="param">
+  
+    <li>
+      
+        <span class='type'>(<tt>:class</tt>, <tt>:class_name</tt>, <tt>:id</tt>, <tt>:link_text</tt>, <tt>:link</tt>, <tt>:partial_link_text</tt>, <tt>:name</tt>, <tt>:tag_name</tt>, <tt>:xpath</tt>)</span>
+      
+      
+        <span class='name'>how</span>
+      
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <span class='name'>what</span>
+      
+      
+      
+    </li>
+  
+</ul>
+<h3>Returns:</h3>
+<ul class="return">
+  
+    <li>
+      
+        <span class='type'>(<tt>Array&lt;<a href="Element.html" title="WebDriver::Element">WebDriver::Element</a>&gt;</tt>)</span>
+      
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/find.rb', line 48</span>
+
+<span class='def def kw'>def</span> <span class='find_elements identifier id'>find_elements</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
+  <span class='how identifier id'>how</span><span class='comma token'>,</span> <span class='what identifier id'>what</span> <span class='assign token'>=</span> <span class='extract_args identifier id'>extract_args</span><span class='lparen token'>(</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
+
+  <span class='unless unless kw'>unless</span> <span class='by identifier id'>by</span> <span class='assign token'>=</span> <span class='FINDERS constant id'>FINDERS</span><span class='lbrack token'>[</span><span class='how identifier id'>how</span><span class='dot token'>.</span><span class='to_sym identifier id'>to_sym</span><span class='rbrack token'>]</span>
+    <span class='raise identifier id'>raise</span> <span class='ArgumentError constant id'>ArgumentError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;cannot find elements by #{how.inspect}&quot;</span>
+  <span class='end end kw'>end</span>
+
+  <span class='meth identifier id'>meth</span> <span class='assign token'>=</span> <span class='dstring node'>&quot;findElements#{by}&quot;</span>
+  <span class='what identifier id'>what</span> <span class='assign token'>=</span> <span class='what identifier id'>what</span><span class='dot token'>.</span><span class='to_s identifier id'>to_s</span>
+
+  <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='send identifier id'>send</span> <span class='meth identifier id'>meth</span><span class='comma token'>,</span> <span class='ref identifier id'>ref</span><span class='comma token'>,</span> <span class='what identifier id'>what</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+    
+    <div id="footer">
+  Generated on Thu Dec 17 12:58:10 2009 by 
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
+  0.5.2 (ruby-1.8.7).
+</div>
+
+  </body>
+</html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta name="Content-Type" content="text/html; charset=UTF-8" />
+<title>Module: Selenium::WebDriver::DriverExtensions::TakesScreenshot</title>
+<link rel="stylesheet" href="../../../css/style.css" type="text/css" media="screen" charset="utf-8" />
+<link rel="stylesheet" href="../../../css/common.css" type="text/css" media="screen" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  relpath = '../../..';
+  if (relpath != '') relpath += '/';
+</script>
+<script type="text/javascript" charset="utf-8" src="../../../js/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="../../../js/app.js"></script>
+
+  </head>
+  <body>
+    <div id="header">
+      <div id="menu">
+  
+    <a href="../../../_index.html">Index (T)</a> &raquo; 
+    <a href="../../../Selenium.html" title="Selenium">Selenium</a> &raquo; <a href="../../WebDriver.html" title="WebDriver">WebDriver</a> &raquo; <a href="../DriverExtensions.html" title="DriverExtensions">DriverExtensions</a>
+     &raquo; 
+    <span class="title">TakesScreenshot</span>
+  
+</div>
+
+      <div id="search">
+  <a id="class_list_link" href="#">Namespace List</a>
+  <a id="method_list_link" href="#">Method List</a>
+  <a id ="file_list_link" href="#">File List</a>
+</div>
+
+      <div class="clear"></div>
+    </div>
+    
+    <iframe id="search_frame"></iframe>
+    
+    <div id="content"><h1>Module: Selenium::WebDriver::DriverExtensions::TakesScreenshot 
+  
+  
+</h1>
+
+<dl class="box">
+  
+  
+    
+  
+    
+  
+  
+    <dt class="r1 last">Defined in:</dt>
+    <dd class="r1 last">common/src/rb/lib/selenium/webdriver/driver_extensions/takes_screenshot.rb</dd>
+  
+</dl>
+<div class="clear"></div>
+
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    <p>
+TakesScreenshot
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div>
+
+
+  <h2>Instance Method Summary</h2>
+
+  <ul class="summary">
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#save_screenshot-instance_method" title="#save_screenshot (instance method)">- (Object) <strong>save_screenshot</strong>(png_path) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#screenshot_as-instance_method" title="#screenshot_as (instance method)">- (Object) <strong>screenshot_as</strong>(format) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+  </ul>
+
+
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+    
+    
+      <div class="method_details first">
+  <p class="signature first" id="save_screenshot-instance_method">
+  
+    - (<tt>Object</tt>) <strong>save_screenshot</strong>(png_path) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+6
+7
+8</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/driver_extensions/takes_screenshot.rb', line 6</span>
+
+<span class='def def kw'>def</span> <span class='save_screenshot identifier id'>save_screenshot</span><span class='lparen token'>(</span><span class='png_path identifier id'>png_path</span><span class='rparen token'>)</span>
+  <span class='File constant id'>File</span><span class='dot token'>.</span><span class='open identifier id'>open</span><span class='lparen token'>(</span><span class='png_path identifier id'>png_path</span><span class='comma token'>,</span> <span class='string val'>'w'</span><span class='rparen token'>)</span> <span class='lbrace token'>{</span> <span class='bitor op'>|</span><span class='f identifier id'>f</span><span class='bitor op'>|</span> <span class='f identifier id'>f</span> <span class='lshft op'>&lt;&lt;</span> <span class='screenshot_as identifier id'>screenshot_as</span><span class='lparen token'>(</span><span class='symbol val'>:png</span><span class='rparen token'>)</span> <span class='rbrace token'>}</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="screenshot_as-instance_method">
+  
+    - (<tt>Object</tt>) <strong>screenshot_as</strong>(format) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/driver_extensions/takes_screenshot.rb', line 10</span>
+
+<span class='def def kw'>def</span> <span class='screenshot_as identifier id'>screenshot_as</span><span class='lparen token'>(</span><span class='format identifier id'>format</span><span class='rparen token'>)</span>
+  <span class='case case kw'>case</span> <span class='format identifier id'>format</span>
+  <span class='when when kw'>when</span> <span class='symbol val'>:base64</span>
+    <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='getScreenshotAsBase64 identifier id'>getScreenshotAsBase64</span>
+  <span class='when when kw'>when</span> <span class='symbol val'>:png</span>
+    <span class='bridge identifier id'>bridge</span><span class='dot token'>.</span><span class='getScreenshotAsBase64 identifier id'>getScreenshotAsBase64</span><span class='dot token'>.</span><span class='unpack identifier id'>unpack</span><span class='lparen token'>(</span><span class='string val'>&quot;m&quot;</span><span class='rparen token'>)</span><span class='lbrack token'>[</span><span class='integer val'>0</span><span class='rbrack token'>]</span>
+  <span class='else else kw'>else</span>
+    <span class='raise identifier id'>raise</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='UnsupportedOperationError constant id'>UnsupportedOperationError</span><span class='comma token'>,</span> <span class='dstring node'>&quot;unsupported format: #{format.inspect}&quot;</span>
+  <span class='end end kw'>end</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+    
+    <div id="footer">
+  Generated on Thu Dec 17 12:58:07 2009 by 
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
+  0.5.2 (ruby-1.8.7).
+</div>
+
+  </body>
+</html>

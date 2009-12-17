@@ -1,0 +1,613 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta name="Content-Type" content="text/html; charset=UTF-8" />
+<title>Class: Selenium::WebDriver::ChildProcess</title>
+<link rel="stylesheet" href="../../css/style.css" type="text/css" media="screen" charset="utf-8" />
+<link rel="stylesheet" href="../../css/common.css" type="text/css" media="screen" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  relpath = '../..';
+  if (relpath != '') relpath += '/';
+</script>
+<script type="text/javascript" charset="utf-8" src="../../js/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="../../js/app.js"></script>
+
+  </head>
+  <body>
+    <div id="header">
+      <div id="menu">
+  
+    <a href="../../_index.html">Index (C)</a> &raquo; 
+    <a href="../../Selenium.html" title="Selenium">Selenium</a> &raquo; <a href="../WebDriver.html" title="WebDriver">WebDriver</a>
+     &raquo; 
+    <span class="title">ChildProcess</span>
+  
+</div>
+
+      <div id="search">
+  <a id="class_list_link" href="#">Namespace List</a>
+  <a id="method_list_link" href="#">Method List</a>
+  <a id ="file_list_link" href="#">File List</a>
+</div>
+
+      <div class="clear"></div>
+    </div>
+    
+    <iframe id="search_frame"></iframe>
+    
+    <div id="content"><h1>Class: Selenium::WebDriver::ChildProcess 
+  
+  
+</h1>
+
+<dl class="box">
+  
+    <dt class="r1">Inherits:</dt>
+    <dd class="r1">
+      <span class="inheritName">Object</span>
+      
+        <ul class="fullTree">
+          <li>Object</li>
+          
+            <li class="next">Selenium::WebDriver::ChildProcess</li>
+          
+        </ul>
+        <a href="#" class="inheritanceTree">show all</a>
+      
+      </dd>
+    
+  
+  
+    
+  
+    
+  
+  
+    <dt class="r2 last">Defined in:</dt>
+    <dd class="r2 last">common/src/rb/lib/selenium/webdriver/child_process.rb</dd>
+  
+</dl>
+<div class="clear"></div>
+
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    <p>
+Cross platform child process launcher
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div>
+
+  <h2>Instance Attribute Summary</h2>
+  <ul class="summary">
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#pid-instance_method" title="#pid (instance method)">- (Object) <strong>pid</strong> </a>
+    
+
+    
+  </span>
+  
+  
+    <span class="note title readonly">readonly</span>
+    
+  
+  
+  
+  
+
+  
+    <span class="summary_desc">
+Returns the value of attribute pid.
+
+</span>
+  
+</li>
+
+    
+  </ul>
+
+
+  <h2>Instance Method Summary</h2>
+
+  <ul class="summary">
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#exit_value-instance_method" title="#exit_value (instance method)">- (Object) <strong>exit_value</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#initialize-instance_method" title="#initialize (instance method)">- (ChildProcess) <strong>initialize</strong>(*args) </a>
+    
+
+    
+  </span>
+  
+    <span class="note title constructor">constructor</span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc">
+A new instance of ChildProcess.
+
+</span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#kill-instance_method" title="#kill (instance method)">- (Object) <strong>kill</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#kill%21-instance_method" title="#kill! (instance method)">- (Object) <strong>kill!</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#start-instance_method" title="#start (instance method)">- (Object) <strong>start</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#ugly_death%3F-instance_method" title="#ugly_death? (instance method)">- (Boolean) <strong>ugly_death?</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#wait-instance_method" title="#wait (instance method)">- (Object) <strong>wait</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+  </ul>
+<div id="constructor_details" class="method_details_list">
+  <h2>Constructor Details</h2>
+  
+    <div class="method_details first">
+  <p class="signature first" id="initialize-instance_method">
+  
+    - (<tt><a href="" title="ChildProcess">ChildProcess</a></tt>) <strong>initialize</strong>(*args) 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+A new instance of ChildProcess
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+11
+12
+13
+14
+15
+16
+17
+18
+19</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 11</span>
+
+<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
+  <span class='@args ivar id'>@args</span> <span class='assign token'>=</span> <span class='args identifier id'>args</span>
+
+  <span class='if if kw'>if</span> <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='jruby? fid id'>jruby?</span>
+    <span class='extend identifier id'>extend</span> <span class='JRubyProcess constant id'>JRubyProcess</span>
+  <span class='elsif elsif kw'>elsif</span> <span class='Platform constant id'>Platform</span><span class='dot token'>.</span><span class='os identifier id'>os</span> <span class='eq op'>==</span> <span class='symbol val'>:windows</span>
+    <span class='extend identifier id'>extend</span> <span class='WindowsProcess constant id'>WindowsProcess</span>
+  <span class='end end kw'>end</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+  
+</div>
+
+  <div id="instance_attr_details" class="attr_details">
+    <h2>Instance Attribute Details</h2>
+    
+      
+      <span id=""></span>
+      <span id="pid-instance_method"></span>
+      <div class="method_details first">
+  <p class="signature first" id="pid-instance_method">
+  
+    - (<tt>Object</tt>) <strong>pid</strong>  <span class="extras">(readonly)</span>
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Returns the value of attribute pid
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+9
+10
+11</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 9</span>
+
+<span class='def def kw'>def</span> <span class='pid identifier id'>pid</span>
+  <span class='@pid ivar id'>@pid</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+    
+    
+      <div class="method_details first">
+  <p class="signature first" id="exit_value-instance_method">
+  
+    - (<tt>Object</tt>) <strong>exit_value</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+27
+28
+29
+30</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 27</span>
+
+<span class='def def kw'>def</span> <span class='exit_value identifier id'>exit_value</span>
+  <span class='pid identifier id'>pid</span><span class='comma token'>,</span> <span class='status identifier id'>status</span> <span class='assign token'>=</span> <span class='Process constant id'>Process</span><span class='dot token'>.</span><span class='waitpid2 identifier id'>waitpid2</span><span class='lparen token'>(</span><span class='@pid ivar id'>@pid</span><span class='comma token'>,</span> <span class='Process constant id'>Process</span><span class='colon2 op'>::</span><span class='WNOHANG constant id'>WNOHANG</span><span class='rparen token'>)</span>
+  <span class='status identifier id'>status</span><span class='dot token'>.</span><span class='exitstatus identifier id'>exitstatus</span> <span class='if if_mod kw'>if</span> <span class='pid identifier id'>pid</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="kill-instance_method">
+  
+    - (<tt>Object</tt>) <strong>kill</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+51
+52
+53</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 51</span>
+
+<span class='def def kw'>def</span> <span class='kill identifier id'>kill</span>
+  <span class='Process constant id'>Process</span><span class='dot token'>.</span><span class='kill identifier id'>kill</span><span class='lparen token'>(</span><span class='string val'>'TERM'</span><span class='comma token'>,</span> <span class='@pid ivar id'>@pid</span><span class='rparen token'>)</span> <span class='if if_mod kw'>if</span> <span class='@pid ivar id'>@pid</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="kill!-instance_method">
+  
+    - (<tt>Object</tt>) <strong>kill!</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+55
+56
+57</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 55</span>
+
+<span class='def def kw'>def</span> <span class='kill! fid id'>kill!</span>
+  <span class='Process constant id'>Process</span><span class='dot token'>.</span><span class='kill identifier id'>kill</span><span class='lparen token'>(</span><span class='string val'>'KILL'</span><span class='comma token'>,</span> <span class='@pid ivar id'>@pid</span><span class='rparen token'>)</span> <span class='if if_mod kw'>if</span> <span class='@pid ivar id'>@pid</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="start-instance_method">
+  
+    - (<tt>Object</tt>) <strong>start</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 32</span>
+
+<span class='def def kw'>def</span> <span class='start identifier id'>start</span>
+  <span class='@pid ivar id'>@pid</span> <span class='assign token'>=</span> <span class='fork identifier id'>fork</span> <span class='do do kw'>do</span>
+    <span class='unless unless kw'>unless</span> <span class='$DEBUG gvar id'>$DEBUG</span>
+      <span class='lbrack token'>[</span><span class='STDOUT constant id'>STDOUT</span><span class='comma token'>,</span> <span class='STDERR constant id'>STDERR</span><span class='rbrack token'>]</span><span class='dot token'>.</span><span class='each identifier id'>each</span> <span class='lbrace token'>{</span> <span class='bitor op'>|</span><span class='io identifier id'>io</span><span class='bitor op'>|</span> <span class='io identifier id'>io</span><span class='dot token'>.</span><span class='reopen identifier id'>reopen</span><span class='lparen token'>(</span><span class='string val'>&quot;/dev/null&quot;</span><span class='rparen token'>)</span> <span class='rbrace token'>}</span>
+    <span class='end end kw'>end</span>
+
+    <span class='exec identifier id'>exec</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='@args ivar id'>@args</span><span class='rparen token'>)</span>
+  <span class='end end kw'>end</span>
+
+  <span class='self self kw'>self</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="ugly_death?-instance_method">
+  
+    - (<tt>Boolean</tt>) <strong>ugly_death?</strong> 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  <h3>Returns:</h3>
+<ul class="return">
+  
+    <li>
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+21
+22
+23
+24
+25</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 21</span>
+
+<span class='def def kw'>def</span> <span class='ugly_death? fid id'>ugly_death?</span>
+  <span class='code identifier id'>code</span> <span class='assign token'>=</span> <span class='exit_value identifier id'>exit_value</span><span class='lparen token'>(</span><span class='rparen token'>)</span>
+  <span class='comment val'># if exit_val is nil, the process is still alive</span>
+  <span class='code identifier id'>code</span> <span class='andop op'>&amp;&amp;</span> <span class='code identifier id'>code</span> <span class='neq op'>!=</span> <span class='integer val'>0</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="wait-instance_method">
+  
+    - (<tt>Object</tt>) <strong>wait</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+44
+45
+46
+47
+48
+49</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'common/src/rb/lib/selenium/webdriver/child_process.rb', line 44</span>
+
+<span class='def def kw'>def</span> <span class='wait identifier id'>wait</span>
+  <span class='raise identifier id'>raise</span> <span class='string val'>&quot;called wait with no pid&quot;</span> <span class='unless unless_mod kw'>unless</span> <span class='@pid ivar id'>@pid</span>
+  <span class='Process constant id'>Process</span><span class='dot token'>.</span><span class='waitpid2 identifier id'>waitpid2</span> <span class='@pid ivar id'>@pid</span>
+<span class='rescue rescue kw'>rescue</span> <span class='Errno constant id'>Errno</span><span class='colon2 op'>::</span><span class='ECHILD constant id'>ECHILD</span>
+  <span class='nil nil kw'>nil</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+    
+    <div id="footer">
+  Generated on Thu Dec 17 12:58:04 2009 by 
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
+  0.5.2 (ruby-1.8.7).
+</div>
+
+  </body>
+</html>

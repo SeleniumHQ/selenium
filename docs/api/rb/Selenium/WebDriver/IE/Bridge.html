@@ -1,0 +1,3621 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta name="Content-Type" content="text/html; charset=UTF-8" />
+<title>Class: Selenium::WebDriver::IE::Bridge</title>
+<link rel="stylesheet" href="../../../css/style.css" type="text/css" media="screen" charset="utf-8" />
+<link rel="stylesheet" href="../../../css/common.css" type="text/css" media="screen" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  relpath = '../../..';
+  if (relpath != '') relpath += '/';
+</script>
+<script type="text/javascript" charset="utf-8" src="../../../js/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="../../../js/app.js"></script>
+
+  </head>
+  <body>
+    <div id="header">
+      <div id="menu">
+  
+    <a href="../../../_index.html">Index (B)</a> &raquo; 
+    <a href="../../../Selenium.html" title="Selenium">Selenium</a> &raquo; <a href="../../WebDriver.html" title="WebDriver">WebDriver</a> &raquo; <a href="../IE.html" title="IE">IE</a>
+     &raquo; 
+    <span class="title">Bridge</span>
+  
+</div>
+
+      <div id="search">
+  <a id="class_list_link" href="#">Namespace List</a>
+  <a id="method_list_link" href="#">Method List</a>
+  <a id ="file_list_link" href="#">File List</a>
+</div>
+
+      <div class="clear"></div>
+    </div>
+    
+    <iframe id="search_frame"></iframe>
+    
+    <div id="content"><h1>Class: Selenium::WebDriver::IE::Bridge 
+  
+  
+</h1>
+
+<dl class="box">
+  
+    <dt class="r1">Inherits:</dt>
+    <dd class="r1">
+      <span class="inheritName">Object</span>
+      
+        <ul class="fullTree">
+          <li>Object</li>
+          
+            <li class="next">Selenium::WebDriver::IE::Bridge</li>
+          
+        </ul>
+        <a href="#" class="inheritanceTree">show all</a>
+      
+      </dd>
+    
+  
+  
+    
+  
+    
+      <dt class="r2">Includes:</dt>
+      <dd class="r2"><a href="Util.html" title="Selenium::WebDriver::IE::Util">Selenium::WebDriver::IE::Util</a></dd>
+      
+    
+  
+  
+    <dt class="r1 last">Defined in:</dt>
+    <dd class="r1 last">jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb</dd>
+  
+</dl>
+<div class="clear"></div>
+
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    <p>
+Bridge
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div>
+  <h2>Constant Summary</h2>
+  
+
+
+  
+  
+  
+  
+  <h3 class="inherited">Constants included from <a href="Util.html" title="Selenium::WebDriver::IE::Util">Selenium::WebDriver::IE::Util</a></h3>
+  <p class="inherited"><a href="Util.html#CP_ACP-constant" title="CP_ACP">CP_ACP</a>, <a href="Util.html#CP_MACCP-constant" title="CP_MACCP">CP_MACCP</a>, <a href="Util.html#CP_OEMCP-constant" title="CP_OEMCP">CP_OEMCP</a>, <a href="Util.html#CP_SYMBOL-constant" title="CP_SYMBOL">CP_SYMBOL</a>, <a href="Util.html#CP_THREAD_ACP-constant" title="CP_THREAD_ACP">CP_THREAD_ACP</a>, <a href="Util.html#CP_UTF7-constant" title="CP_UTF7">CP_UTF7</a>, <a href="Util.html#CP_UTF8-constant" title="CP_UTF8">CP_UTF8</a></p>
+
+
+  <h2>Instance Method Summary</h2>
+
+  <ul class="summary">
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#addCookie-instance_method" title="#addCookie (instance method)">- (Object) <strong>addCookie</strong>(opts) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc">
+Configuration.
+
+</span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#browser-instance_method" title="#browser (instance method)">- (Object) <strong>browser</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#clearElement-instance_method" title="#clearElement (instance method)">- (Object) <strong>clearElement</strong>(element_pointer) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#clickElement-instance_method" title="#clickElement (instance method)">- (Object) <strong>clickElement</strong>(element_pointer) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc">
+Element functions.
+
+</span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#close-instance_method" title="#close (instance method)">- (Object) <strong>close</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#deleteAllCookies-instance_method" title="#deleteAllCookies (instance method)">- (Object) <strong>deleteAllCookies</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#deleteCookie-instance_method" title="#deleteCookie (instance method)">- (Object) <strong>deleteCookie</strong>(name) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#dragElement-instance_method" title="#dragElement (instance method)">- (Object) <strong>dragElement</strong>(element_pointer, right_by, down_by) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#driver_extensions-instance_method" title="#driver_extensions (instance method)">- (Object) <strong>driver_extensions</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#executeScript-instance_method" title="#executeScript (instance method)">- (Object) <strong>executeScript</strong>(script, *args) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#finalize-instance_method" title="#finalize (instance method)">- (Object) <strong>finalize</strong>(element_pointer) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#findElementByClassName-instance_method" title="#findElementByClassName (instance method)">- (Object) <strong>findElementByClassName</strong>(parent, class_name) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc">
+Finders.
+
+</span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#findElementById-instance_method" title="#findElementById (instance method)">- (Object) <strong>findElementById</strong>(parent, id) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#findElementByLinkText-instance_method" title="#findElementByLinkText (instance method)">- (Object) <strong>findElementByLinkText</strong>(parent, link_text) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#findElementByName-instance_method" title="#findElementByName (instance method)">- (Object) <strong>findElementByName</strong>(parent, name) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#findElementByPartialLinkText-instance_method" title="#findElementByPartialLinkText (instance method)">- (Object) <strong>findElementByPartialLinkText</strong>(parent, link_text) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#findElementByTagName-instance_method" title="#findElementByTagName (instance method)">- (Object) <strong>findElementByTagName</strong>(parent, tag_name) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#findElementByXpath-instance_method" title="#findElementByXpath (instance method)">- (Object) <strong>findElementByXpath</strong>(parent, xpath) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#findElementsByClassName-instance_method" title="#findElementsByClassName (instance method)">- (Object) <strong>findElementsByClassName</strong>(parent, class_name) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#findElementsById-instance_method" title="#findElementsById (instance method)">- (Object) <strong>findElementsById</strong>(parent, id) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#findElementsByLinkText-instance_method" title="#findElementsByLinkText (instance method)">- (Object) <strong>findElementsByLinkText</strong>(parent, link_text) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#findElementsByName-instance_method" title="#findElementsByName (instance method)">- (Object) <strong>findElementsByName</strong>(parent, name) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#findElementsByPartialLinkText-instance_method" title="#findElementsByPartialLinkText (instance method)">- (Object) <strong>findElementsByPartialLinkText</strong>(parent, link_text) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#findElementsByTagName-instance_method" title="#findElementsByTagName (instance method)">- (Object) <strong>findElementsByTagName</strong>(parent, tag_name) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#findElementsByXpath-instance_method" title="#findElementsByXpath (instance method)">- (Object) <strong>findElementsByXpath</strong>(parent, xpath) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#get-instance_method" title="#get (instance method)">- (Object) <strong>get</strong>(url) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#getAllCookies-instance_method" title="#getAllCookies (instance method)">- (Object) <strong>getAllCookies</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#getBrowserVisible-instance_method" title="#getBrowserVisible (instance method)">- (Object) <strong>getBrowserVisible</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#getCurrentUrl-instance_method" title="#getCurrentUrl (instance method)">- (Object) <strong>getCurrentUrl</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#getCurrentWindowHandle-instance_method" title="#getCurrentWindowHandle (instance method)">- (Object) <strong>getCurrentWindowHandle</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#getElementAttribute-instance_method" title="#getElementAttribute (instance method)">- (Object) <strong>getElementAttribute</strong>(element_pointer, name) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#getElementLocation-instance_method" title="#getElementLocation (instance method)">- (Object) <strong>getElementLocation</strong>(element_pointer) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#getElementSize-instance_method" title="#getElementSize (instance method)">- (Object) <strong>getElementSize</strong>(element_pointer) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#getElementTagName-instance_method" title="#getElementTagName (instance method)">- (Object) <strong>getElementTagName</strong>(element_pointer) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#getElementText-instance_method" title="#getElementText (instance method)">- (Object) <strong>getElementText</strong>(element_pointer) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#getElementValue-instance_method" title="#getElementValue (instance method)">- (Object) <strong>getElementValue</strong>(element_pointer) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#getElementValueOfCssProperty-instance_method" title="#getElementValueOfCssProperty (instance method)">- (Object) <strong>getElementValueOfCssProperty</strong>(element_pointer, prop) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#getPageSource-instance_method" title="#getPageSource (instance method)">- (Object) <strong>getPageSource</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#getSpeed-instance_method" title="#getSpeed (instance method)">- (Object) <strong>getSpeed</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#getTitle-instance_method" title="#getTitle (instance method)">- (Object) <strong>getTitle</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#getWindowHandles-instance_method" title="#getWindowHandles (instance method)">- (Object) <strong>getWindowHandles</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#goBack-instance_method" title="#goBack (instance method)">- (Object) <strong>goBack</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#goForward-instance_method" title="#goForward (instance method)">- (Object) <strong>goForward</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#hoverOverElement-instance_method" title="#hoverOverElement (instance method)">- (Object) <strong>hoverOverElement</strong>(element_pointer) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#initialize-instance_method" title="#initialize (instance method)">- (Bridge) <strong>initialize</strong> </a>
+    
+
+    
+  </span>
+  
+    <span class="note title constructor">constructor</span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc">
+A new instance of Bridge.
+
+</span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#isElementDisplayed-instance_method" title="#isElementDisplayed (instance method)">- (Object) <strong>isElementDisplayed</strong>(element_pointer) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#isElementEnabled-instance_method" title="#isElementEnabled (instance method)">- (Object) <strong>isElementEnabled</strong>(element_pointer) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#isElementSelected-instance_method" title="#isElementSelected (instance method)">- (Object) <strong>isElementSelected</strong>(element_pointer) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#quit-instance_method" title="#quit (instance method)">- (Object) <strong>quit</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#refresh-instance_method" title="#refresh (instance method)">- (Object) <strong>refresh</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#sendKeysToElement-instance_method" title="#sendKeysToElement (instance method)">- (Object) <strong>sendKeysToElement</strong>(element_pointer, string) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#setBrowserVisible-instance_method" title="#setBrowserVisible (instance method)">- (Object) <strong>setBrowserVisible</strong>(bool) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#setElementSelected-instance_method" title="#setElementSelected (instance method)">- (Object) <strong>setElementSelected</strong>(element_pointer) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#setSpeed-instance_method" title="#setSpeed (instance method)">- (Object) <strong>setSpeed</strong>(speed) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#submitElement-instance_method" title="#submitElement (instance method)">- (Object) <strong>submitElement</strong>(element_pointer) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#switchToActiveElement-instance_method" title="#switchToActiveElement (instance method)">- (Object) <strong>switchToActiveElement</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#switchToFrame-instance_method" title="#switchToFrame (instance method)">- (Object) <strong>switchToFrame</strong>(id) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#switchToWindow-instance_method" title="#switchToWindow (instance method)">- (Object) <strong>switchToWindow</strong>(id) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#toggleElement-instance_method" title="#toggleElement (instance method)">- (Object) <strong>toggleElement</strong>(element_pointer) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#waitForLoadToComplete-instance_method" title="#waitForLoadToComplete (instance method)">- (Object) <strong>waitForLoadToComplete</strong> </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"></span>
+  
+</li>
+
+    
+  </ul>
+
+  
+  
+  
+  
+  
+  <h3 class="inherited">Methods included from <a href="Util.html" title="Selenium::WebDriver::IE::Util">Selenium::WebDriver::IE::Util</a></h3>
+  <p class="inherited"><a href="Util.html#create_element-instance_method" title="#create_element">#create_element</a>, <a href="Util.html#create_element_collection-instance_method" title="#create_element_collection">#create_element_collection</a>, <a href="Util.html#create_string-instance_method" title="#create_string">#create_string</a>, <a href="Util.html#extract_elements_from-instance_method" title="#extract_elements_from">#extract_elements_from</a>, <a href="Util.html#extract_string_from-instance_method" title="#extract_string_from">#extract_string_from</a>, <a href="Util.html#string_array_from-instance_method" title="#string_array_from">#string_array_from</a>, <a href="Util.html#wstring_ptr-instance_method" title="#wstring_ptr">#wstring_ptr</a>, <a href="Util.html#wstring_to_bytestring-instance_method" title="#wstring_to_bytestring">#wstring_to_bytestring</a></p>
+<div id="constructor_details" class="method_details_list">
+  <h2>Constructor Details</h2>
+  
+    <div class="method_details first">
+  <p class="signature first" id="initialize-instance_method">
+  
+    - (<tt><a href="" title="Bridge">Bridge</a></tt>) <strong>initialize</strong> 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+A new instance of Bridge
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+8
+9
+10
+11
+12
+13
+14
+15
+16</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 8</span>
+
+<span class='def def kw'>def</span> <span class='initialize identifier id'>initialize</span>
+  <span class='ptr_ref identifier id'>ptr_ref</span> <span class='assign token'>=</span> <span class='FFI constant id'>FFI</span><span class='colon2 op'>::</span><span class='MemoryPointer constant id'>MemoryPointer</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='symbol val'>:pointer</span>
+
+  <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdNewDriverInstance identifier id'>wdNewDriverInstance</span><span class='lparen token'>(</span><span class='ptr_ref identifier id'>ptr_ref</span><span class='rparen token'>)</span><span class='comma token'>,</span>
+                   <span class='string val'>&quot;could not create driver instance&quot;</span>
+
+  <span class='@driver_pointer ivar id'>@driver_pointer</span> <span class='assign token'>=</span> <span class='ptr_ref identifier id'>ptr_ref</span><span class='dot token'>.</span><span class='get_pointer identifier id'>get_pointer</span><span class='lparen token'>(</span><span class='integer val'>0</span><span class='rparen token'>)</span>
+  <span class='@speed ivar id'>@speed</span>          <span class='assign token'>=</span> <span class='symbol val'>:fast</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+  
+</div>
+
+
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+    
+    
+      <div class="method_details first">
+  <p class="signature first" id="addCookie-instance_method">
+  
+    - (<tt>Object</tt>) <strong>addCookie</strong>(opts) 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Configuration
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+163
+164
+165
+166
+167
+168
+169
+170</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 163</span>
+
+<span class='def def kw'>def</span> <span class='addCookie identifier id'>addCookie</span><span class='lparen token'>(</span><span class='opts identifier id'>opts</span><span class='rparen token'>)</span>
+  <span class='cookie_string identifier id'>cookie_string</span>  <span class='assign token'>=</span> <span class='dstring node'>&quot;#{opts[:name]}=#{opts[:value]}; &quot;</span>
+  <span class='cookie_string identifier id'>cookie_string</span> <span class='lshft op'>&lt;&lt;</span> <span class='dstring node'>&quot;path=#{opts[:path]}; &quot;</span>                  <span class='if if_mod kw'>if</span> <span class='opts identifier id'>opts</span><span class='lbrack token'>[</span><span class='symbol val'>:path</span><span class='rbrack token'>]</span> <span class='andop op'>&amp;&amp;</span> <span class='notop op'>!</span><span class='opts identifier id'>opts</span><span class='lbrack token'>[</span><span class='symbol val'>:path</span><span class='rbrack token'>]</span><span class='dot token'>.</span><span class='empty? fid id'>empty?</span>
+  <span class='cookie_string identifier id'>cookie_string</span> <span class='lshft op'>&lt;&lt;</span> <span class='dstring node'>&quot;domain=#{opts[:domain][/^(.+?):/, 1]};&quot;</span> <span class='if if_mod kw'>if</span> <span class='opts identifier id'>opts</span><span class='lbrack token'>[</span><span class='symbol val'>:domain</span><span class='rbrack token'>]</span> <span class='andop op'>&amp;&amp;</span> <span class='notop op'>!</span><span class='opts identifier id'>opts</span><span class='lbrack token'>[</span><span class='symbol val'>:domain</span><span class='rbrack token'>]</span><span class='dot token'>.</span><span class='empty? fid id'>empty?</span>
+
+  <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdAddCookie identifier id'>wdAddCookie</span><span class='lparen token'>(</span><span class='@driver_pointer ivar id'>@driver_pointer</span><span class='comma token'>,</span> <span class='wstring_ptr identifier id'>wstring_ptr</span><span class='lparen token'>(</span><span class='cookie_string identifier id'>cookie_string</span><span class='rparen token'>)</span><span class='rparen token'>)</span><span class='comma token'>,</span>
+                   <span class='string val'>&quot;unable to add cookie&quot;</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="browser-instance_method">
+  
+    - (<tt>Object</tt>) <strong>browser</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+18
+19
+20</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 18</span>
+
+<span class='def def kw'>def</span> <span class='browser identifier id'>browser</span>
+  <span class='symbol val'>:internet_explorer</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="clearElement-instance_method">
+  
+    - (<tt>Object</tt>) <strong>clearElement</strong>(element_pointer) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+356
+357
+358</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 356</span>
+
+<span class='def def kw'>def</span> <span class='clearElement identifier id'>clearElement</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='rparen token'>)</span>
+  <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdeClear identifier id'>wdeClear</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='string val'>&quot;unable to clear element&quot;</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="clickElement-instance_method">
+  
+    - (<tt>Object</tt>) <strong>clickElement</strong>(element_pointer) 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Element functions
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+321
+322
+323</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 321</span>
+
+<span class='def def kw'>def</span> <span class='clickElement identifier id'>clickElement</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='rparen token'>)</span>
+  <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdeClick identifier id'>wdeClick</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='string val'>&quot;unable to click element&quot;</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="close-instance_method">
+  
+    - (<tt>Object</tt>) <strong>close</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+109
+110
+111</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 109</span>
+
+<span class='def def kw'>def</span> <span class='close identifier id'>close</span>
+  <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdClose identifier id'>wdClose</span><span class='lparen token'>(</span><span class='@driver_pointer ivar id'>@driver_pointer</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='string val'>&quot;unable to close driver&quot;</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="deleteAllCookies-instance_method">
+  
+    - (<tt>Object</tt>) <strong>deleteAllCookies</strong> 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  <h3>Raises:</h3>
+<ul class="raise">
+  
+    <li>
+      
+        <span class='type'>(<tt>NotImplementedError</tt>)</span>
+      
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+196
+197
+198</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 196</span>
+
+<span class='def def kw'>def</span> <span class='deleteAllCookies identifier id'>deleteAllCookies</span>
+  <span class='raise identifier id'>raise</span> <span class='NotImplementedError constant id'>NotImplementedError</span><span class='comma token'>,</span> <span class='string val'>&quot;missing from IE driver&quot;</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="deleteCookie-instance_method">
+  
+    - (<tt>Object</tt>) <strong>deleteCookie</strong>(name) 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  <h3>Raises:</h3>
+<ul class="raise">
+  
+    <li>
+      
+        <span class='type'>(<tt>NotImplementedError</tt>)</span>
+      
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+192
+193
+194</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 192</span>
+
+<span class='def def kw'>def</span> <span class='deleteCookie identifier id'>deleteCookie</span><span class='lparen token'>(</span><span class='name identifier id'>name</span><span class='rparen token'>)</span>
+  <span class='raise identifier id'>raise</span> <span class='NotImplementedError constant id'>NotImplementedError</span><span class='comma token'>,</span> <span class='string val'>&quot;missing from IE driver&quot;</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="dragElement-instance_method">
+  
+    - (<tt>Object</tt>) <strong>dragElement</strong>(element_pointer, right_by, down_by) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+424
+425
+426
+427
+428
+429
+430
+431
+432
+433
+434
+435
+436
+437
+438
+439
+440
+441
+442</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 424</span>
+
+<span class='def def kw'>def</span> <span class='dragElement identifier id'>dragElement</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='comma token'>,</span> <span class='right_by identifier id'>right_by</span><span class='comma token'>,</span> <span class='down_by identifier id'>down_by</span><span class='rparen token'>)</span>
+  <span class='comment val'># TODO: check return values?</span>
+  <span class='hwnd identifier id'>hwnd</span>                <span class='assign token'>=</span> <span class='FFI constant id'>FFI</span><span class='colon2 op'>::</span><span class='MemoryPointer constant id'>MemoryPointer</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='symbol val'>:pointer</span>
+  <span class='x identifier id'>x</span><span class='comma token'>,</span> <span class='y identifier id'>y</span><span class='comma token'>,</span> <span class='width identifier id'>width</span><span class='comma token'>,</span> <span class='height identifier id'>height</span> <span class='assign token'>=</span> <span class='Array constant id'>Array</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='integer val'>4</span><span class='rparen token'>)</span> <span class='lbrace token'>{</span> <span class='FFI constant id'>FFI</span><span class='colon2 op'>::</span><span class='MemoryPointer constant id'>MemoryPointer</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='symbol val'>:long</span> <span class='rbrace token'>}</span>
+
+  <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdeGetDetailsOnceScrolledOnToScreen identifier id'>wdeGetDetailsOnceScrolledOnToScreen</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='comma token'>,</span> <span class='hwnd identifier id'>hwnd</span><span class='comma token'>,</span> <span class='x identifier id'>x</span><span class='comma token'>,</span> <span class='y identifier id'>y</span><span class='comma token'>,</span> <span class='width identifier id'>width</span><span class='comma token'>,</span> <span class='height identifier id'>height</span><span class='rparen token'>)</span><span class='comma token'>,</span>
+                   <span class='string val'>&quot;unable to determine location once scrolled on to screen&quot;</span>
+
+  <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdeMouseDownAt identifier id'>wdeMouseDownAt</span><span class='lparen token'>(</span><span class='hwnd identifier id'>hwnd</span><span class='dot token'>.</span><span class='get_pointer identifier id'>get_pointer</span><span class='lparen token'>(</span><span class='integer val'>0</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='x identifier id'>x</span><span class='dot token'>.</span><span class='get_long identifier id'>get_long</span><span class='lparen token'>(</span><span class='integer val'>0</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='y identifier id'>y</span><span class='dot token'>.</span><span class='get_long identifier id'>get_long</span><span class='lparen token'>(</span><span class='integer val'>0</span><span class='rparen token'>)</span><span class='rparen token'>)</span>
+
+  <span class='destination_x identifier id'>destination_x</span> <span class='assign token'>=</span> <span class='x identifier id'>x</span><span class='dot token'>.</span><span class='get_long identifier id'>get_long</span><span class='lparen token'>(</span><span class='integer val'>0</span><span class='rparen token'>)</span> <span class='plus op'>+</span> <span class='right_by identifier id'>right_by</span>
+  <span class='destination_y identifier id'>destination_y</span> <span class='assign token'>=</span> <span class='y identifier id'>y</span><span class='dot token'>.</span><span class='get_long identifier id'>get_long</span><span class='lparen token'>(</span><span class='integer val'>0</span><span class='rparen token'>)</span> <span class='plus op'>+</span> <span class='down_by identifier id'>down_by</span>
+  <span class='duration identifier id'>duration</span>      <span class='assign token'>=</span> <span class='integer val'>500</span> <span class='comment val'># TODO: parent.manage().getSpeed().getTimeOut();</span>
+
+  <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdeMouseMoveTo identifier id'>wdeMouseMoveTo</span><span class='lparen token'>(</span><span class='hwnd identifier id'>hwnd</span><span class='dot token'>.</span><span class='get_pointer identifier id'>get_pointer</span><span class='lparen token'>(</span><span class='integer val'>0</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='duration identifier id'>duration</span><span class='comma token'>,</span> <span class='x identifier id'>x</span><span class='dot token'>.</span><span class='get_long identifier id'>get_long</span><span class='lparen token'>(</span><span class='integer val'>0</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='y identifier id'>y</span><span class='dot token'>.</span><span class='get_long identifier id'>get_long</span><span class='lparen token'>(</span><span class='integer val'>0</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='destination_x identifier id'>destination_x</span><span class='comma token'>,</span> <span class='destination_y identifier id'>destination_y</span><span class='rparen token'>)</span>
+  <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdeMouseUpAt identifier id'>wdeMouseUpAt</span><span class='lparen token'>(</span><span class='hwnd identifier id'>hwnd</span><span class='dot token'>.</span><span class='get_pointer identifier id'>get_pointer</span><span class='lparen token'>(</span><span class='integer val'>0</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='destination_x identifier id'>destination_x</span><span class='comma token'>,</span> <span class='destination_y identifier id'>destination_y</span><span class='rparen token'>)</span>
+<span class='ensure ensure kw'>ensure</span>
+  <span class='lbrack token'>[</span><span class='hwnd identifier id'>hwnd</span><span class='comma token'>,</span> <span class='x identifier id'>x</span><span class='comma token'>,</span> <span class='y identifier id'>y</span><span class='comma token'>,</span> <span class='width identifier id'>width</span><span class='comma token'>,</span> <span class='height identifier id'>height</span><span class='rbrack token'>]</span><span class='dot token'>.</span><span class='each identifier id'>each</span> <span class='lbrace token'>{</span> <span class='bitor op'>|</span><span class='pointer identifier id'>pointer</span><span class='bitor op'>|</span> <span class='pointer identifier id'>pointer</span><span class='dot token'>.</span><span class='free identifier id'>free</span> <span class='rbrace token'>}</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="driver_extensions-instance_method">
+  
+    - (<tt>Object</tt>) <strong>driver_extensions</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+22
+23
+24</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 22</span>
+
+<span class='def def kw'>def</span> <span class='driver_extensions identifier id'>driver_extensions</span>
+  <span class='lbrack token'>[</span><span class='rbrack token'>]</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="executeScript-instance_method">
+  
+    - (<tt>Object</tt>) <strong>executeScript</strong>(script, *args) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 133</span>
+
+<span class='def def kw'>def</span> <span class='executeScript identifier id'>executeScript</span><span class='lparen token'>(</span><span class='script identifier id'>script</span><span class='comma token'>,</span> <span class='mult op'>*</span><span class='args identifier id'>args</span><span class='rparen token'>)</span>
+  <span class='script_args_ref identifier id'>script_args_ref</span> <span class='assign token'>=</span> <span class='FFI constant id'>FFI</span><span class='colon2 op'>::</span><span class='MemoryPointer constant id'>MemoryPointer</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='symbol val'>:pointer</span>
+  <span class='result identifier id'>result</span>          <span class='assign token'>=</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdNewScriptArgs identifier id'>wdNewScriptArgs</span><span class='lparen token'>(</span><span class='script_args_ref identifier id'>script_args_ref</span><span class='comma token'>,</span> <span class='args identifier id'>args</span><span class='dot token'>.</span><span class='size identifier id'>size</span><span class='rparen token'>)</span>
+
+  <span class='check_error_code identifier id'>check_error_code</span> <span class='result identifier id'>result</span><span class='comma token'>,</span> <span class='string val'>&quot;unable to create new script arguments array&quot;</span>
+
+  <span class='args_pointer identifier id'>args_pointer</span> <span class='assign token'>=</span> <span class='script_args_ref identifier id'>script_args_ref</span><span class='dot token'>.</span><span class='get_pointer identifier id'>get_pointer</span><span class='lparen token'>(</span><span class='integer val'>0</span><span class='rparen token'>)</span>
+  <span class='populate_arguments identifier id'>populate_arguments</span><span class='lparen token'>(</span><span class='result identifier id'>result</span><span class='comma token'>,</span> <span class='args_pointer identifier id'>args_pointer</span><span class='comma token'>,</span> <span class='args identifier id'>args</span><span class='rparen token'>)</span>
+
+  <span class='script identifier id'>script</span>            <span class='assign token'>=</span> <span class='string val'>&quot;(function() { return function(){&quot;</span> <span class='plus op'>+</span> <span class='script identifier id'>script</span> <span class='plus op'>+</span> <span class='string val'>&quot;};})();&quot;</span>
+  <span class='script_result_ref identifier id'>script_result_ref</span> <span class='assign token'>=</span> <span class='FFI constant id'>FFI</span><span class='colon2 op'>::</span><span class='MemoryPointer constant id'>MemoryPointer</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='symbol val'>:pointer</span>
+
+  <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdExecuteScript identifier id'>wdExecuteScript</span><span class='lparen token'>(</span><span class='@driver_pointer ivar id'>@driver_pointer</span><span class='comma token'>,</span> <span class='wstring_ptr identifier id'>wstring_ptr</span><span class='lparen token'>(</span><span class='script identifier id'>script</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='args_pointer identifier id'>args_pointer</span><span class='comma token'>,</span> <span class='script_result_ref identifier id'>script_result_ref</span><span class='rparen token'>)</span><span class='comma token'>,</span>
+                   <span class='string val'>&quot;Cannot execute script&quot;</span>
+
+  <span class='extract_return_value identifier id'>extract_return_value</span> <span class='script_result_ref identifier id'>script_result_ref</span>
+<span class='ensure ensure kw'>ensure</span>
+  <span class='script_args_ref identifier id'>script_args_ref</span><span class='dot token'>.</span><span class='free identifier id'>free</span>
+  <span class='script_result_ref identifier id'>script_result_ref</span><span class='dot token'>.</span><span class='free identifier id'>free</span> <span class='if if_mod kw'>if</span> <span class='script_result_ref identifier id'>script_result_ref</span>
+  <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdFreeScriptArgs identifier id'>wdFreeScriptArgs</span><span class='lparen token'>(</span><span class='args_pointer identifier id'>args_pointer</span><span class='rparen token'>)</span> <span class='if if_mod kw'>if</span> <span class='args_pointer identifier id'>args_pointer</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="finalize-instance_method">
+  
+    - (<tt>Object</tt>) <strong>finalize</strong>(element_pointer) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+468
+469
+470
+471</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 468</span>
+
+<span class='def def kw'>def</span> <span class='finalize identifier id'>finalize</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='rparen token'>)</span>
+  <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdeFreeElement identifier id'>wdeFreeElement</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='rparen token'>)</span><span class='comma token'>,</span>
+                   <span class='dstring node'>&quot;unable to finalize #{element_pointer} for #{self}&quot;</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="findElementByClassName-instance_method">
+  
+    - (<tt>Object</tt>) <strong>findElementByClassName</strong>(parent, class_name) 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>
+Finders
+</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+212
+213
+214
+215
+216
+217
+218
+219</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 212</span>
+
+<span class='def def kw'>def</span> <span class='findElementByClassName identifier id'>findElementByClassName</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='class_name identifier id'>class_name</span><span class='rparen token'>)</span>
+  <span class='comment val'># TODO: argument checks</span>
+
+  <span class='create_element identifier id'>create_element</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='raw_element identifier id'>raw_element</span><span class='bitor op'>|</span>
+    <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdFindElementByClassName identifier id'>wdFindElementByClassName</span><span class='lparen token'>(</span><span class='@driver_pointer ivar id'>@driver_pointer</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='wstring_ptr identifier id'>wstring_ptr</span><span class='lparen token'>(</span><span class='class_name identifier id'>class_name</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='raw_element identifier id'>raw_element</span><span class='rparen token'>)</span><span class='comma token'>,</span>
+                     <span class='dstring node'>&quot;unable to find element by class name using #{class_name.inspect}&quot;</span>
+  <span class='end end kw'>end</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="findElementById-instance_method">
+  
+    - (<tt>Object</tt>) <strong>findElementById</strong>(parent, id) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+230
+231
+232
+233
+234
+235</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 230</span>
+
+<span class='def def kw'>def</span> <span class='findElementById identifier id'>findElementById</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='id identifier id'>id</span><span class='rparen token'>)</span>
+  <span class='create_element identifier id'>create_element</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='raw_element identifier id'>raw_element</span><span class='bitor op'>|</span>
+    <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdFindElementById identifier id'>wdFindElementById</span><span class='lparen token'>(</span><span class='@driver_pointer ivar id'>@driver_pointer</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='wstring_ptr identifier id'>wstring_ptr</span><span class='lparen token'>(</span><span class='id identifier id'>id</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='raw_element identifier id'>raw_element</span><span class='rparen token'>)</span><span class='comma token'>,</span>
+                     <span class='dstring node'>&quot;unable to find element by id using #{id.inspect}&quot;</span>
+  <span class='end end kw'>end</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="findElementByLinkText-instance_method">
+  
+    - (<tt>Object</tt>) <strong>findElementByLinkText</strong>(parent, link_text) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+244
+245
+246
+247
+248
+249</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 244</span>
+
+<span class='def def kw'>def</span> <span class='findElementByLinkText identifier id'>findElementByLinkText</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='link_text identifier id'>link_text</span><span class='rparen token'>)</span>
+  <span class='create_element identifier id'>create_element</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='raw_element identifier id'>raw_element</span><span class='bitor op'>|</span>
+    <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdFindElementByLinkText identifier id'>wdFindElementByLinkText</span><span class='lparen token'>(</span><span class='@driver_pointer ivar id'>@driver_pointer</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='wstring_ptr identifier id'>wstring_ptr</span><span class='lparen token'>(</span><span class='link_text identifier id'>link_text</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='raw_element identifier id'>raw_element</span><span class='rparen token'>)</span><span class='comma token'>,</span>
+                     <span class='dstring node'>&quot;unable to find element by link text using #{link_text.inspect}&quot;</span>
+  <span class='end end kw'>end</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="findElementByName-instance_method">
+  
+    - (<tt>Object</tt>) <strong>findElementByName</strong>(parent, name) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+272
+273
+274
+275
+276
+277</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 272</span>
+
+<span class='def def kw'>def</span> <span class='findElementByName identifier id'>findElementByName</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='name identifier id'>name</span><span class='rparen token'>)</span>
+  <span class='create_element identifier id'>create_element</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='raw_element identifier id'>raw_element</span><span class='bitor op'>|</span>
+    <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdFindElementByName identifier id'>wdFindElementByName</span><span class='lparen token'>(</span><span class='@driver_pointer ivar id'>@driver_pointer</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='wstring_ptr identifier id'>wstring_ptr</span><span class='lparen token'>(</span><span class='name identifier id'>name</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='raw_element identifier id'>raw_element</span><span class='rparen token'>)</span><span class='comma token'>,</span>
+                     <span class='dstring node'>&quot;unable to find element by name using #{name.inspect}&quot;</span>
+  <span class='end end kw'>end</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="findElementByPartialLinkText-instance_method">
+  
+    - (<tt>Object</tt>) <strong>findElementByPartialLinkText</strong>(parent, link_text) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+258
+259
+260
+261
+262
+263</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 258</span>
+
+<span class='def def kw'>def</span> <span class='findElementByPartialLinkText identifier id'>findElementByPartialLinkText</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='link_text identifier id'>link_text</span><span class='rparen token'>)</span>
+  <span class='create_element identifier id'>create_element</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='raw_element identifier id'>raw_element</span><span class='bitor op'>|</span>
+    <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdFindElementByPartialLinkText identifier id'>wdFindElementByPartialLinkText</span><span class='lparen token'>(</span><span class='@driver_pointer ivar id'>@driver_pointer</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='wstring_ptr identifier id'>wstring_ptr</span><span class='lparen token'>(</span><span class='link_text identifier id'>link_text</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='raw_element identifier id'>raw_element</span><span class='rparen token'>)</span><span class='comma token'>,</span>
+                     <span class='dstring node'>&quot;unable to find element by partial link text using #{link_text.inspect}&quot;</span>
+  <span class='end end kw'>end</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="findElementByTagName-instance_method">
+  
+    - (<tt>Object</tt>) <strong>findElementByTagName</strong>(parent, tag_name) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+286
+287
+288
+289
+290
+291</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 286</span>
+
+<span class='def def kw'>def</span> <span class='findElementByTagName identifier id'>findElementByTagName</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='tag_name identifier id'>tag_name</span><span class='rparen token'>)</span>
+  <span class='create_element identifier id'>create_element</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='raw_element identifier id'>raw_element</span><span class='bitor op'>|</span>
+    <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdFindElementByTagName identifier id'>wdFindElementByTagName</span><span class='lparen token'>(</span><span class='@driver_pointer ivar id'>@driver_pointer</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='wstring_ptr identifier id'>wstring_ptr</span><span class='lparen token'>(</span><span class='tag_name identifier id'>tag_name</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='raw_element identifier id'>raw_element</span><span class='rparen token'>)</span><span class='comma token'>,</span>
+                     <span class='dstring node'>&quot;unable to find element by tag name using #{tag_name.inspect}&quot;</span>
+  <span class='end end kw'>end</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="findElementByXpath-instance_method">
+  
+    - (<tt>Object</tt>) <strong>findElementByXpath</strong>(parent, xpath) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+300
+301
+302
+303
+304
+305
+306</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 300</span>
+
+<span class='def def kw'>def</span> <span class='findElementByXpath identifier id'>findElementByXpath</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='xpath identifier id'>xpath</span><span class='rparen token'>)</span>
+  <span class='create_element identifier id'>create_element</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='raw_element identifier id'>raw_element</span><span class='bitor op'>|</span>
+    <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdFindElementByXPath identifier id'>wdFindElementByXPath</span><span class='lparen token'>(</span><span class='@driver_pointer ivar id'>@driver_pointer</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='wstring_ptr identifier id'>wstring_ptr</span><span class='lparen token'>(</span><span class='xpath identifier id'>xpath</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='raw_element identifier id'>raw_element</span><span class='rparen token'>)</span><span class='comma token'>,</span>
+                     <span class='dstring node'>&quot;unable to find element by xpath using #{xpath.inspect}&quot;</span>
+    <span class='comment val'># TODO: Additional error handling</span>
+  <span class='end end kw'>end</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="findElementsByClassName-instance_method">
+  
+    - (<tt>Object</tt>) <strong>findElementsByClassName</strong>(parent, class_name) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+221
+222
+223
+224
+225
+226
+227
+228</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 221</span>
+
+<span class='def def kw'>def</span> <span class='findElementsByClassName identifier id'>findElementsByClassName</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='class_name identifier id'>class_name</span><span class='rparen token'>)</span>
+  <span class='comment val'># TODO: argument checks</span>
+
+  <span class='create_element_collection identifier id'>create_element_collection</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='raw_elements identifier id'>raw_elements</span><span class='bitor op'>|</span>
+    <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdFindElementsByClassName identifier id'>wdFindElementsByClassName</span><span class='lparen token'>(</span><span class='@driver_pointer ivar id'>@driver_pointer</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='wstring_ptr identifier id'>wstring_ptr</span><span class='lparen token'>(</span><span class='class_name identifier id'>class_name</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='raw_elements identifier id'>raw_elements</span><span class='rparen token'>)</span><span class='comma token'>,</span>
+                     <span class='dstring node'>&quot;unable to find elements by class name using #{class_name.inspect}&quot;</span>
+  <span class='end end kw'>end</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="findElementsById-instance_method">
+  
+    - (<tt>Object</tt>) <strong>findElementsById</strong>(parent, id) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+237
+238
+239
+240
+241
+242</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 237</span>
+
+<span class='def def kw'>def</span> <span class='findElementsById identifier id'>findElementsById</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='id identifier id'>id</span><span class='rparen token'>)</span>
+  <span class='create_element_collection identifier id'>create_element_collection</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='raw_elements identifier id'>raw_elements</span><span class='bitor op'>|</span>
+    <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdFindElementsById identifier id'>wdFindElementsById</span><span class='lparen token'>(</span><span class='@driver_pointer ivar id'>@driver_pointer</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='wstring_ptr identifier id'>wstring_ptr</span><span class='lparen token'>(</span><span class='id identifier id'>id</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='raw_elements identifier id'>raw_elements</span><span class='rparen token'>)</span><span class='comma token'>,</span>
+                     <span class='dstring node'>&quot;unable to find elements by id using #{id.inspect}&quot;</span>
+  <span class='end end kw'>end</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="findElementsByLinkText-instance_method">
+  
+    - (<tt>Object</tt>) <strong>findElementsByLinkText</strong>(parent, link_text) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+251
+252
+253
+254
+255
+256</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 251</span>
+
+<span class='def def kw'>def</span> <span class='findElementsByLinkText identifier id'>findElementsByLinkText</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='link_text identifier id'>link_text</span><span class='rparen token'>)</span>
+  <span class='create_element_collection identifier id'>create_element_collection</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='raw_elements identifier id'>raw_elements</span><span class='bitor op'>|</span>
+    <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdFindElementsByLinkText identifier id'>wdFindElementsByLinkText</span><span class='lparen token'>(</span><span class='@driver_pointer ivar id'>@driver_pointer</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='wstring_ptr identifier id'>wstring_ptr</span><span class='lparen token'>(</span><span class='link_text identifier id'>link_text</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='raw_elements identifier id'>raw_elements</span><span class='rparen token'>)</span><span class='comma token'>,</span>
+                     <span class='dstring node'>&quot;unable to find elements by link text using #{link_text.inspect}&quot;</span>
+  <span class='end end kw'>end</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="findElementsByName-instance_method">
+  
+    - (<tt>Object</tt>) <strong>findElementsByName</strong>(parent, name) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+279
+280
+281
+282
+283
+284</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 279</span>
+
+<span class='def def kw'>def</span> <span class='findElementsByName identifier id'>findElementsByName</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='name identifier id'>name</span><span class='rparen token'>)</span>
+  <span class='create_element_collection identifier id'>create_element_collection</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='raw_elements identifier id'>raw_elements</span><span class='bitor op'>|</span>
+    <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdFindElementsByName identifier id'>wdFindElementsByName</span><span class='lparen token'>(</span><span class='@driver_pointer ivar id'>@driver_pointer</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='wstring_ptr identifier id'>wstring_ptr</span><span class='lparen token'>(</span><span class='name identifier id'>name</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='raw_elements identifier id'>raw_elements</span><span class='rparen token'>)</span><span class='comma token'>,</span>
+                     <span class='dstring node'>&quot;unable to find elements by name using #{name.inspect}&quot;</span>
+  <span class='end end kw'>end</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="findElementsByPartialLinkText-instance_method">
+  
+    - (<tt>Object</tt>) <strong>findElementsByPartialLinkText</strong>(parent, link_text) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+265
+266
+267
+268
+269
+270</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 265</span>
+
+<span class='def def kw'>def</span> <span class='findElementsByPartialLinkText identifier id'>findElementsByPartialLinkText</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='link_text identifier id'>link_text</span><span class='rparen token'>)</span>
+  <span class='create_element_collection identifier id'>create_element_collection</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='raw_elements identifier id'>raw_elements</span><span class='bitor op'>|</span>
+    <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdFindElementsByPartialLinkText identifier id'>wdFindElementsByPartialLinkText</span><span class='lparen token'>(</span><span class='@driver_pointer ivar id'>@driver_pointer</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='wstring_ptr identifier id'>wstring_ptr</span><span class='lparen token'>(</span><span class='link_text identifier id'>link_text</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='raw_elements identifier id'>raw_elements</span><span class='rparen token'>)</span><span class='comma token'>,</span>
+                     <span class='dstring node'>&quot;unable to find elements by partial link text using #{link_text.inspect}&quot;</span>
+  <span class='end end kw'>end</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="findElementsByTagName-instance_method">
+  
+    - (<tt>Object</tt>) <strong>findElementsByTagName</strong>(parent, tag_name) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+293
+294
+295
+296
+297
+298</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 293</span>
+
+<span class='def def kw'>def</span> <span class='findElementsByTagName identifier id'>findElementsByTagName</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='tag_name identifier id'>tag_name</span><span class='rparen token'>)</span>
+  <span class='create_element_collection identifier id'>create_element_collection</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='raw_elements identifier id'>raw_elements</span><span class='bitor op'>|</span>
+    <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdFindElementsByTagName identifier id'>wdFindElementsByTagName</span><span class='lparen token'>(</span><span class='@driver_pointer ivar id'>@driver_pointer</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='wstring_ptr identifier id'>wstring_ptr</span><span class='lparen token'>(</span><span class='tag_name identifier id'>tag_name</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='raw_elements identifier id'>raw_elements</span><span class='rparen token'>)</span><span class='comma token'>,</span>
+                     <span class='dstring node'>&quot;unable to find elements by tag name using #{tag_name.inspect}&quot;</span>
+  <span class='end end kw'>end</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="findElementsByXpath-instance_method">
+  
+    - (<tt>Object</tt>) <strong>findElementsByXpath</strong>(parent, xpath) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+308
+309
+310
+311
+312
+313
+314</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 308</span>
+
+<span class='def def kw'>def</span> <span class='findElementsByXpath identifier id'>findElementsByXpath</span><span class='lparen token'>(</span><span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='xpath identifier id'>xpath</span><span class='rparen token'>)</span>
+  <span class='create_element_collection identifier id'>create_element_collection</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='raw_elements identifier id'>raw_elements</span><span class='bitor op'>|</span>
+    <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdFindElementsByXPath identifier id'>wdFindElementsByXPath</span><span class='lparen token'>(</span><span class='@driver_pointer ivar id'>@driver_pointer</span><span class='comma token'>,</span> <span class='parent identifier id'>parent</span><span class='comma token'>,</span> <span class='wstring_ptr identifier id'>wstring_ptr</span><span class='lparen token'>(</span><span class='xpath identifier id'>xpath</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='raw_elements identifier id'>raw_elements</span><span class='rparen token'>)</span><span class='comma token'>,</span>
+                     <span class='dstring node'>&quot;unable to find elements by xpath using #{xpath.inspect}&quot;</span>
+    <span class='comment val'># TODO: Additional error handling</span>
+  <span class='end end kw'>end</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="get-instance_method">
+  
+    - (<tt>Object</tt>) <strong>get</strong>(url) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+26
+27
+28
+29</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 26</span>
+
+<span class='def def kw'>def</span> <span class='get identifier id'>get</span><span class='lparen token'>(</span><span class='url identifier id'>url</span><span class='rparen token'>)</span>
+  <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdGet identifier id'>wdGet</span><span class='lparen token'>(</span><span class='@driver_pointer ivar id'>@driver_pointer</span><span class='comma token'>,</span> <span class='wstring_ptr identifier id'>wstring_ptr</span><span class='lparen token'>(</span><span class='url identifier id'>url</span><span class='rparen token'>)</span><span class='rparen token'>)</span><span class='comma token'>,</span>
+                   <span class='dstring node'>&quot;Cannot get url #{url.inspect}&quot;</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="getAllCookies-instance_method">
+  
+    - (<tt>Object</tt>) <strong>getAllCookies</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 172</span>
+
+<span class='def def kw'>def</span> <span class='getAllCookies identifier id'>getAllCookies</span>
+  <span class='str identifier id'>str</span> <span class='assign token'>=</span> <span class='create_string identifier id'>create_string</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='wrapper identifier id'>wrapper</span><span class='bitor op'>|</span>
+    <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdGetCookies identifier id'>wdGetCookies</span><span class='lparen token'>(</span><span class='@driver_pointer ivar id'>@driver_pointer</span><span class='comma token'>,</span> <span class='wrapper identifier id'>wrapper</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='string val'>&quot;unable to get cookies&quot;</span>
+  <span class='end end kw'>end</span>
+
+  <span class='str identifier id'>str</span><span class='dot token'>.</span><span class='split identifier id'>split</span><span class='lparen token'>(</span><span class='string val'>&quot;; &quot;</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='map identifier id'>map</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='cookie_string identifier id'>cookie_string</span><span class='bitor op'>|</span>
+    <span class='parts identifier id'>parts</span> <span class='assign token'>=</span> <span class='cookie_string identifier id'>cookie_string</span><span class='dot token'>.</span><span class='split identifier id'>split</span><span class='lparen token'>(</span><span class='string val'>&quot;=&quot;</span><span class='rparen token'>)</span>
+    <span class='next next kw'>next</span> <span class='unless unless_mod kw'>unless</span> <span class='parts identifier id'>parts</span><span class='dot token'>.</span><span class='size identifier id'>size</span> <span class='eq op'>==</span> <span class='integer val'>2</span>
+
+    <span class='lbrace token'>{</span>
+      <span class='string val'>'name'</span>    <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='parts identifier id'>parts</span><span class='lbrack token'>[</span><span class='integer val'>0</span><span class='rbrack token'>]</span><span class='comma token'>,</span>
+      <span class='string val'>'value'</span>   <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='parts identifier id'>parts</span><span class='lbrack token'>[</span><span class='integer val'>1</span><span class='rbrack token'>]</span><span class='comma token'>,</span>
+      <span class='string val'>'domain'</span>  <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='getCurrentUrl identifier id'>getCurrentUrl</span><span class='comma token'>,</span>
+      <span class='string val'>'path'</span>    <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='string val'>&quot;&quot;</span><span class='comma token'>,</span>
+      <span class='string val'>'expires'</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='nil nil kw'>nil</span><span class='comma token'>,</span>
+      <span class='string val'>'secure'</span>  <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='false false kw'>false</span>
+    <span class='rbrace token'>}</span>
+  <span class='end end kw'>end</span><span class='dot token'>.</span><span class='compact identifier id'>compact</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="getBrowserVisible-instance_method">
+  
+    - (<tt>Object</tt>) <strong>getBrowserVisible</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+62
+63
+64
+65
+66
+67
+68
+69</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 62</span>
+
+<span class='def def kw'>def</span> <span class='getBrowserVisible identifier id'>getBrowserVisible</span>
+  <span class='int_ptr identifier id'>int_ptr</span> <span class='assign token'>=</span> <span class='FFI constant id'>FFI</span><span class='colon2 op'>::</span><span class='MemoryPointer constant id'>MemoryPointer</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='symbol val'>:int</span>
+  <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdGetVisible identifier id'>wdGetVisible</span><span class='lparen token'>(</span><span class='@driver_pointer ivar id'>@driver_pointer</span><span class='comma token'>,</span> <span class='int_ptr identifier id'>int_ptr</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='string val'>&quot;unable to determine if browser is visible&quot;</span>
+
+  <span class='int_ptr identifier id'>int_ptr</span><span class='dot token'>.</span><span class='get_int identifier id'>get_int</span><span class='lparen token'>(</span><span class='integer val'>0</span><span class='rparen token'>)</span> <span class='eq op'>==</span> <span class='integer val'>1</span>
+<span class='ensure ensure kw'>ensure</span>
+  <span class='int_ptr identifier id'>int_ptr</span><span class='dot token'>.</span><span class='free identifier id'>free</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="getCurrentUrl-instance_method">
+  
+    - (<tt>Object</tt>) <strong>getCurrentUrl</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+31
+32
+33
+34
+35
+36</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 31</span>
+
+<span class='def def kw'>def</span> <span class='getCurrentUrl identifier id'>getCurrentUrl</span>
+  <span class='create_string identifier id'>create_string</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='wrapper identifier id'>wrapper</span><span class='bitor op'>|</span>
+    <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdGetCurrentUrl identifier id'>wdGetCurrentUrl</span><span class='lparen token'>(</span><span class='@driver_pointer ivar id'>@driver_pointer</span><span class='comma token'>,</span> <span class='wrapper identifier id'>wrapper</span><span class='rparen token'>)</span><span class='comma token'>,</span>
+                     <span class='string val'>&quot;unable to get current URL&quot;</span>
+  <span class='end end kw'>end</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="getCurrentWindowHandle-instance_method">
+  
+    - (<tt>Object</tt>) <strong>getCurrentWindowHandle</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+126
+127
+128
+129
+130
+131</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 126</span>
+
+<span class='def def kw'>def</span> <span class='getCurrentWindowHandle identifier id'>getCurrentWindowHandle</span>
+  <span class='create_string identifier id'>create_string</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='string_pointer identifier id'>string_pointer</span><span class='bitor op'>|</span>
+    <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdGetCurrentWindowHandle identifier id'>wdGetCurrentWindowHandle</span><span class='lparen token'>(</span><span class='@driver_pointer ivar id'>@driver_pointer</span><span class='comma token'>,</span> <span class='string_pointer identifier id'>string_pointer</span><span class='rparen token'>)</span><span class='comma token'>,</span>
+                     <span class='string val'>&quot;unable to obtain current window handle&quot;</span>
+  <span class='end end kw'>end</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="getElementAttribute-instance_method">
+  
+    - (<tt>Object</tt>) <strong>getElementAttribute</strong>(element_pointer, name) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+332
+333
+334
+335
+336
+337</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 332</span>
+
+<span class='def def kw'>def</span> <span class='getElementAttribute identifier id'>getElementAttribute</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='comma token'>,</span> <span class='name identifier id'>name</span><span class='rparen token'>)</span>
+  <span class='create_string identifier id'>create_string</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='string_pointer identifier id'>string_pointer</span><span class='bitor op'>|</span>
+    <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdeGetAttribute identifier id'>wdeGetAttribute</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='comma token'>,</span> <span class='wstring_ptr identifier id'>wstring_ptr</span><span class='lparen token'>(</span><span class='name identifier id'>name</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='string_pointer identifier id'>string_pointer</span><span class='rparen token'>)</span><span class='comma token'>,</span>
+                     <span class='dstring node'>&quot;unable to get attribute #{name.inspect}&quot;</span>
+  <span class='end end kw'>end</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="getElementLocation-instance_method">
+  
+    - (<tt>Object</tt>) <strong>getElementLocation</strong>(element_pointer) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+444
+445
+446
+447
+448
+449
+450
+451
+452
+453
+454</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 444</span>
+
+<span class='def def kw'>def</span> <span class='getElementLocation identifier id'>getElementLocation</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='rparen token'>)</span>
+  <span class='x identifier id'>x</span> <span class='assign token'>=</span> <span class='FFI constant id'>FFI</span><span class='colon2 op'>::</span><span class='MemoryPointer constant id'>MemoryPointer</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='symbol val'>:long</span>
+  <span class='y identifier id'>y</span> <span class='assign token'>=</span> <span class='FFI constant id'>FFI</span><span class='colon2 op'>::</span><span class='MemoryPointer constant id'>MemoryPointer</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='symbol val'>:long</span>
+
+  <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdeGetLocation identifier id'>wdeGetLocation</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='comma token'>,</span> <span class='x identifier id'>x</span><span class='comma token'>,</span> <span class='y identifier id'>y</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='string val'>&quot;unable to get location of element&quot;</span>
+
+  <span class='Point constant id'>Point</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='x identifier id'>x</span><span class='dot token'>.</span><span class='get_int identifier id'>get_int</span><span class='lparen token'>(</span><span class='integer val'>0</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='y identifier id'>y</span><span class='dot token'>.</span><span class='get_int identifier id'>get_int</span><span class='lparen token'>(</span><span class='integer val'>0</span><span class='rparen token'>)</span>
+<span class='ensure ensure kw'>ensure</span>
+  <span class='x identifier id'>x</span><span class='dot token'>.</span><span class='free identifier id'>free</span>
+  <span class='y identifier id'>y</span><span class='dot token'>.</span><span class='free identifier id'>free</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="getElementSize-instance_method">
+  
+    - (<tt>Object</tt>) <strong>getElementSize</strong>(element_pointer) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+456
+457
+458
+459
+460
+461
+462
+463
+464
+465
+466</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 456</span>
+
+<span class='def def kw'>def</span> <span class='getElementSize identifier id'>getElementSize</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='rparen token'>)</span>
+  <span class='width identifier id'>width</span>  <span class='assign token'>=</span> <span class='FFI constant id'>FFI</span><span class='colon2 op'>::</span><span class='MemoryPointer constant id'>MemoryPointer</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='symbol val'>:long</span>
+  <span class='height identifier id'>height</span> <span class='assign token'>=</span> <span class='FFI constant id'>FFI</span><span class='colon2 op'>::</span><span class='MemoryPointer constant id'>MemoryPointer</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='symbol val'>:long</span>
+
+  <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdeGetSize identifier id'>wdeGetSize</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='comma token'>,</span> <span class='width identifier id'>width</span><span class='comma token'>,</span> <span class='height identifier id'>height</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='string val'>&quot;unable to get size of element&quot;</span>
+
+  <span class='Dimension constant id'>Dimension</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='width identifier id'>width</span><span class='dot token'>.</span><span class='get_int identifier id'>get_int</span><span class='lparen token'>(</span><span class='integer val'>0</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='height identifier id'>height</span><span class='dot token'>.</span><span class='get_int identifier id'>get_int</span><span class='lparen token'>(</span><span class='integer val'>0</span><span class='rparen token'>)</span>
+<span class='ensure ensure kw'>ensure</span>
+  <span class='width identifier id'>width</span><span class='dot token'>.</span><span class='free identifier id'>free</span>
+  <span class='height identifier id'>height</span><span class='dot token'>.</span><span class='free identifier id'>free</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="getElementTagName-instance_method">
+  
+    - (<tt>Object</tt>) <strong>getElementTagName</strong>(element_pointer) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+325
+326
+327
+328
+329
+330</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 325</span>
+
+<span class='def def kw'>def</span> <span class='getElementTagName identifier id'>getElementTagName</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='rparen token'>)</span>
+  <span class='create_string identifier id'>create_string</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='string_pointer identifier id'>string_pointer</span><span class='bitor op'>|</span>
+    <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdeGetTagName identifier id'>wdeGetTagName</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='comma token'>,</span> <span class='string_pointer identifier id'>string_pointer</span><span class='rparen token'>)</span><span class='comma token'>,</span>
+                     <span class='string val'>&quot;unable to get tag name&quot;</span>
+  <span class='end end kw'>end</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="getElementText-instance_method">
+  
+    - (<tt>Object</tt>) <strong>getElementText</strong>(element_pointer) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+343
+344
+345
+346
+347
+348</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 343</span>
+
+<span class='def def kw'>def</span> <span class='getElementText identifier id'>getElementText</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='rparen token'>)</span>
+  <span class='create_string identifier id'>create_string</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='string_pointer identifier id'>string_pointer</span><span class='bitor op'>|</span>
+    <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdeGetText identifier id'>wdeGetText</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='comma token'>,</span> <span class='string_pointer identifier id'>string_pointer</span><span class='rparen token'>)</span><span class='comma token'>,</span>
+                     <span class='string val'>&quot;unable to get text&quot;</span>
+  <span class='end end kw'>end</span><span class='dot token'>.</span><span class='gsub identifier id'>gsub</span><span class='lparen token'>(</span><span class='string val'>&quot;\r\n&quot;</span><span class='comma token'>,</span> <span class='string val'>&quot;\n&quot;</span><span class='rparen token'>)</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="getElementValue-instance_method">
+  
+    - (<tt>Object</tt>) <strong>getElementValue</strong>(element_pointer) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+339
+340
+341</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 339</span>
+
+<span class='def def kw'>def</span> <span class='getElementValue identifier id'>getElementValue</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='rparen token'>)</span>
+  <span class='getElementAttribute identifier id'>getElementAttribute</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='comma token'>,</span> <span class='string val'>'value'</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='gsub identifier id'>gsub</span><span class='lparen token'>(</span><span class='string val'>&quot;\r\n&quot;</span><span class='comma token'>,</span> <span class='string val'>&quot;\n&quot;</span><span class='rparen token'>)</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="getElementValueOfCssProperty-instance_method">
+  
+    - (<tt>Object</tt>) <strong>getElementValueOfCssProperty</strong>(element_pointer, prop) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+413
+414
+415
+416
+417
+418</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 413</span>
+
+<span class='def def kw'>def</span> <span class='getElementValueOfCssProperty identifier id'>getElementValueOfCssProperty</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='comma token'>,</span> <span class='prop identifier id'>prop</span><span class='rparen token'>)</span>
+  <span class='create_string identifier id'>create_string</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='string_pointer identifier id'>string_pointer</span><span class='bitor op'>|</span>
+    <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdeGetValueOfCssProperty identifier id'>wdeGetValueOfCssProperty</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='comma token'>,</span> <span class='wstring_ptr identifier id'>wstring_ptr</span><span class='lparen token'>(</span><span class='prop identifier id'>prop</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='string_pointer identifier id'>string_pointer</span><span class='rparen token'>)</span><span class='comma token'>,</span>
+                     <span class='dstring node'>&quot;unable to get value of css property: #{prop.inspect}&quot;</span>
+  <span class='end end kw'>end</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="getPageSource-instance_method">
+  
+    - (<tt>Object</tt>) <strong>getPageSource</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+55
+56
+57
+58
+59
+60</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 55</span>
+
+<span class='def def kw'>def</span> <span class='getPageSource identifier id'>getPageSource</span>
+  <span class='create_string identifier id'>create_string</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='wrapper identifier id'>wrapper</span><span class='bitor op'>|</span>
+    <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdGetPageSource identifier id'>wdGetPageSource</span><span class='lparen token'>(</span><span class='@driver_pointer ivar id'>@driver_pointer</span><span class='comma token'>,</span> <span class='wrapper identifier id'>wrapper</span><span class='rparen token'>)</span><span class='comma token'>,</span>
+                     <span class='string val'>&quot;unable to get page source&quot;</span>
+  <span class='end end kw'>end</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="getSpeed-instance_method">
+  
+    - (<tt>Object</tt>) <strong>getSpeed</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+204
+205
+206</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 204</span>
+
+<span class='def def kw'>def</span> <span class='getSpeed identifier id'>getSpeed</span>
+  <span class='@speed ivar id'>@speed</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="getTitle-instance_method">
+  
+    - (<tt>Object</tt>) <strong>getTitle</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+48
+49
+50
+51
+52
+53</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 48</span>
+
+<span class='def def kw'>def</span> <span class='getTitle identifier id'>getTitle</span>
+  <span class='create_string identifier id'>create_string</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='wrapper identifier id'>wrapper</span><span class='bitor op'>|</span>
+    <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdGetTitle identifier id'>wdGetTitle</span><span class='lparen token'>(</span><span class='@driver_pointer ivar id'>@driver_pointer</span><span class='comma token'>,</span> <span class='wrapper identifier id'>wrapper</span><span class='rparen token'>)</span><span class='comma token'>,</span>
+                     <span class='string val'>&quot;unable to get title&quot;</span>
+  <span class='end end kw'>end</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="getWindowHandles-instance_method">
+  
+    - (<tt>Object</tt>) <strong>getWindowHandles</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+117
+118
+119
+120
+121
+122
+123
+124</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 117</span>
+
+<span class='def def kw'>def</span> <span class='getWindowHandles identifier id'>getWindowHandles</span>
+  <span class='raw_handles identifier id'>raw_handles</span> <span class='assign token'>=</span> <span class='FFI constant id'>FFI</span><span class='colon2 op'>::</span><span class='MemoryPointer constant id'>MemoryPointer</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='symbol val'>:pointer</span>
+  <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdGetAllWindowHandles identifier id'>wdGetAllWindowHandles</span><span class='lparen token'>(</span><span class='@driver_pointer ivar id'>@driver_pointer</span><span class='comma token'>,</span> <span class='raw_handles identifier id'>raw_handles</span><span class='rparen token'>)</span><span class='comma token'>,</span>
+                   <span class='string val'>&quot;unable to obtain all window handles&quot;</span>
+
+  <span class='string_array_from identifier id'>string_array_from</span><span class='lparen token'>(</span><span class='raw_handles identifier id'>raw_handles</span><span class='rparen token'>)</span><span class='dot token'>.</span><span class='uniq identifier id'>uniq</span>
+  <span class='comment val'># TODO: who calls raw_handles.free if exception is raised?</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="goBack-instance_method">
+  
+    - (<tt>Object</tt>) <strong>goBack</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+38
+39
+40
+41</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 38</span>
+
+<span class='def def kw'>def</span> <span class='goBack identifier id'>goBack</span>
+  <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdGoBack identifier id'>wdGoBack</span><span class='lparen token'>(</span><span class='@driver_pointer ivar id'>@driver_pointer</span><span class='rparen token'>)</span><span class='comma token'>,</span>
+                   <span class='string val'>&quot;Cannot navigate back&quot;</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="goForward-instance_method">
+  
+    - (<tt>Object</tt>) <strong>goForward</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+43
+44
+45
+46</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 43</span>
+
+<span class='def def kw'>def</span> <span class='goForward identifier id'>goForward</span>
+  <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdGoForward identifier id'>wdGoForward</span><span class='lparen token'>(</span><span class='@driver_pointer ivar id'>@driver_pointer</span><span class='rparen token'>)</span><span class='comma token'>,</span>
+                   <span class='string val'>&quot;Cannot navigate back&quot;</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="hoverOverElement-instance_method">
+  
+    - (<tt>Object</tt>) <strong>hoverOverElement</strong>(element_pointer) 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  <h3>Raises:</h3>
+<ul class="raise">
+  
+    <li>
+      
+        <span class='type'>(<tt>NotImplementedError</tt>)</span>
+      
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+420
+421
+422</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 420</span>
+
+<span class='def def kw'>def</span> <span class='hoverOverElement identifier id'>hoverOverElement</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='rparen token'>)</span>
+  <span class='raise identifier id'>raise</span> <span class='NotImplementedError constant id'>NotImplementedError</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="isElementDisplayed-instance_method">
+  
+    - (<tt>Object</tt>) <strong>isElementDisplayed</strong>(element_pointer) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+380
+381
+382
+383
+384
+385
+386
+387</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 380</span>
+
+<span class='def def kw'>def</span> <span class='isElementDisplayed identifier id'>isElementDisplayed</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='rparen token'>)</span>
+  <span class='int_ptr identifier id'>int_ptr</span> <span class='assign token'>=</span> <span class='FFI constant id'>FFI</span><span class='colon2 op'>::</span><span class='MemoryPointer constant id'>MemoryPointer</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='symbol val'>:int</span>
+  <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdeIsDisplayed identifier id'>wdeIsDisplayed</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='comma token'>,</span> <span class='int_ptr identifier id'>int_ptr</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='string val'>&quot;unable to check visibilty&quot;</span>
+
+  <span class='int_ptr identifier id'>int_ptr</span><span class='dot token'>.</span><span class='get_int identifier id'>get_int</span><span class='lparen token'>(</span><span class='integer val'>0</span><span class='rparen token'>)</span> <span class='eq op'>==</span> <span class='integer val'>1</span><span class='semicolon token'>;</span>
+<span class='ensure ensure kw'>ensure</span>
+  <span class='int_ptr identifier id'>int_ptr</span><span class='dot token'>.</span><span class='free identifier id'>free</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="isElementEnabled-instance_method">
+  
+    - (<tt>Object</tt>) <strong>isElementEnabled</strong>(element_pointer) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+360
+361
+362
+363
+364
+365
+366
+367
+368</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 360</span>
+
+<span class='def def kw'>def</span> <span class='isElementEnabled identifier id'>isElementEnabled</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='rparen token'>)</span>
+  <span class='int_ptr identifier id'>int_ptr</span> <span class='assign token'>=</span> <span class='FFI constant id'>FFI</span><span class='colon2 op'>::</span><span class='MemoryPointer constant id'>MemoryPointer</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='symbol val'>:int</span><span class='rparen token'>)</span>
+  <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdeIsEnabled identifier id'>wdeIsEnabled</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='comma token'>,</span> <span class='int_ptr identifier id'>int_ptr</span><span class='rparen token'>)</span><span class='comma token'>,</span>
+                   <span class='string val'>&quot;unable to get enabled state&quot;</span>
+
+  <span class='int_ptr identifier id'>int_ptr</span><span class='dot token'>.</span><span class='get_int identifier id'>get_int</span><span class='lparen token'>(</span><span class='integer val'>0</span><span class='rparen token'>)</span> <span class='eq op'>==</span> <span class='integer val'>1</span>
+<span class='ensure ensure kw'>ensure</span>
+  <span class='int_ptr identifier id'>int_ptr</span><span class='dot token'>.</span><span class='free identifier id'>free</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="isElementSelected-instance_method">
+  
+    - (<tt>Object</tt>) <strong>isElementSelected</strong>(element_pointer) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+370
+371
+372
+373
+374
+375
+376
+377
+378</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 370</span>
+
+<span class='def def kw'>def</span> <span class='isElementSelected identifier id'>isElementSelected</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='rparen token'>)</span>
+  <span class='int_ptr identifier id'>int_ptr</span> <span class='assign token'>=</span> <span class='FFI constant id'>FFI</span><span class='colon2 op'>::</span><span class='MemoryPointer constant id'>MemoryPointer</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='symbol val'>:int</span><span class='rparen token'>)</span>
+  <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdeIsSelected identifier id'>wdeIsSelected</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='comma token'>,</span> <span class='int_ptr identifier id'>int_ptr</span><span class='rparen token'>)</span><span class='comma token'>,</span>
+                   <span class='string val'>&quot;unable to get selected state&quot;</span>
+
+  <span class='int_ptr identifier id'>int_ptr</span><span class='dot token'>.</span><span class='get_int identifier id'>get_int</span><span class='lparen token'>(</span><span class='integer val'>0</span><span class='rparen token'>)</span> <span class='eq op'>==</span> <span class='integer val'>1</span>
+<span class='ensure ensure kw'>ensure</span>
+  <span class='int_ptr identifier id'>int_ptr</span><span class='dot token'>.</span><span class='free identifier id'>free</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="quit-instance_method">
+  
+    - (<tt>Object</tt>) <strong>quit</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 93</span>
+
+<span class='def def kw'>def</span> <span class='quit identifier id'>quit</span>
+  <span class='getWindowHandles identifier id'>getWindowHandles</span><span class='dot token'>.</span><span class='each identifier id'>each</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='handle identifier id'>handle</span><span class='bitor op'>|</span>
+    <span class='begin begin kw'>begin</span>
+      <span class='switchToWindow identifier id'>switchToWindow</span> <span class='handle identifier id'>handle</span>
+      <span class='close identifier id'>close</span>
+    <span class='rescue rescue kw'>rescue</span> <span class='Error constant id'>Error</span><span class='colon2 op'>::</span><span class='NoSuchWindowError constant id'>NoSuchWindowError</span>
+    <span class='end end kw'>end</span>
+  <span class='end end kw'>end</span>
+
+  <span class='comment val'># hack</span>
+  <span class='ObjectSpace constant id'>ObjectSpace</span><span class='dot token'>.</span><span class='each_object identifier id'>each_object</span><span class='lparen token'>(</span><span class='WebDriver constant id'>WebDriver</span><span class='colon2 op'>::</span><span class='Element constant id'>Element</span><span class='rparen token'>)</span> <span class='lbrace token'>{</span> <span class='bitor op'>|</span><span class='e identifier id'>e</span><span class='bitor op'>|</span> <span class='finalize identifier id'>finalize</span> <span class='e identifier id'>e</span><span class='dot token'>.</span><span class='ref identifier id'>ref</span> <span class='if if_mod kw'>if</span> <span class='e identifier id'>e</span><span class='dot token'>.</span><span class='bridge identifier id'>bridge</span> <span class='eq op'>==</span> <span class='self self kw'>self</span> <span class='rbrace token'>}</span>
+<span class='ensure ensure kw'>ensure</span>
+  <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdFreeDriver identifier id'>wdFreeDriver</span><span class='lparen token'>(</span><span class='@driver_pointer ivar id'>@driver_pointer</span><span class='rparen token'>)</span>
+  <span class='@driver_pointer ivar id'>@driver_pointer</span> <span class='assign token'>=</span> <span class='nil nil kw'>nil</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="refresh-instance_method">
+  
+    - (<tt>Object</tt>) <strong>refresh</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+113
+114
+115</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 113</span>
+
+<span class='def def kw'>def</span> <span class='refresh identifier id'>refresh</span>
+  <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdRefresh identifier id'>wdRefresh</span><span class='lparen token'>(</span><span class='@driver_pointer ivar id'>@driver_pointer</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='string val'>&quot;unable to refresh current page&quot;</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="sendKeysToElement-instance_method">
+  
+    - (<tt>Object</tt>) <strong>sendKeysToElement</strong>(element_pointer, string) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+350
+351
+352
+353
+354</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 350</span>
+
+<span class='def def kw'>def</span> <span class='sendKeysToElement identifier id'>sendKeysToElement</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='comma token'>,</span> <span class='string identifier id'>string</span><span class='rparen token'>)</span>
+  <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdeSendKeys identifier id'>wdeSendKeys</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='comma token'>,</span> <span class='wstring_ptr identifier id'>wstring_ptr</span><span class='lparen token'>(</span><span class='string identifier id'>string</span><span class='rparen token'>)</span><span class='rparen token'>)</span><span class='comma token'>,</span>
+                   <span class='dstring node'>&quot;unable to send keys to #{self}&quot;</span>
+  <span class='waitForLoadToComplete identifier id'>waitForLoadToComplete</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="setBrowserVisible-instance_method">
+  
+    - (<tt>Object</tt>) <strong>setBrowserVisible</strong>(bool) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+71
+72
+73
+74</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 71</span>
+
+<span class='def def kw'>def</span> <span class='setBrowserVisible identifier id'>setBrowserVisible</span><span class='lparen token'>(</span><span class='bool identifier id'>bool</span><span class='rparen token'>)</span>
+  <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdSetVisible identifier id'>wdSetVisible</span><span class='lparen token'>(</span><span class='@driver_pointer ivar id'>@driver_pointer</span><span class='comma token'>,</span> <span class='bool identifier id'>bool</span> <span class='integer val'>? </span><span class='integer val'>1</span> <span class='colon op'>:</span> <span class='integer val'>0</span><span class='rparen token'>)</span><span class='comma token'>,</span>
+                   <span class='string val'>&quot;unable to change the visibility of the browser&quot;</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="setElementSelected-instance_method">
+  
+    - (<tt>Object</tt>) <strong>setElementSelected</strong>(element_pointer) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+409
+410
+411</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 409</span>
+
+<span class='def def kw'>def</span> <span class='setElementSelected identifier id'>setElementSelected</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='rparen token'>)</span>
+  <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdeSetSelected identifier id'>wdeSetSelected</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='string val'>&quot;unable to select element&quot;</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="setSpeed-instance_method">
+  
+    - (<tt>Object</tt>) <strong>setSpeed</strong>(speed) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+200
+201
+202</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 200</span>
+
+<span class='def def kw'>def</span> <span class='setSpeed identifier id'>setSpeed</span><span class='lparen token'>(</span><span class='speed identifier id'>speed</span><span class='rparen token'>)</span>
+  <span class='@speed ivar id'>@speed</span> <span class='assign token'>=</span> <span class='speed identifier id'>speed</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="submitElement-instance_method">
+  
+    - (<tt>Object</tt>) <strong>submitElement</strong>(element_pointer) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+389
+390
+391</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 389</span>
+
+<span class='def def kw'>def</span> <span class='submitElement identifier id'>submitElement</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='rparen token'>)</span>
+  <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdeSubmit identifier id'>wdeSubmit</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='rparen token'>)</span><span class='comma token'>,</span> <span class='string val'>&quot;unable to submit element&quot;</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="switchToActiveElement-instance_method">
+  
+    - (<tt>Object</tt>) <strong>switchToActiveElement</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+86
+87
+88
+89
+90
+91</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 86</span>
+
+<span class='def def kw'>def</span> <span class='switchToActiveElement identifier id'>switchToActiveElement</span>
+  <span class='create_element identifier id'>create_element</span> <span class='do do kw'>do</span> <span class='bitor op'>|</span><span class='ptr identifier id'>ptr</span><span class='bitor op'>|</span>
+    <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdSwitchToActiveElement identifier id'>wdSwitchToActiveElement</span><span class='lparen token'>(</span><span class='@driver_pointer ivar id'>@driver_pointer</span><span class='comma token'>,</span> <span class='ptr identifier id'>ptr</span><span class='rparen token'>)</span><span class='comma token'>,</span>
+                     <span class='string val'>&quot;unable to switch to active element&quot;</span>
+  <span class='end end kw'>end</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="switchToFrame-instance_method">
+  
+    - (<tt>Object</tt>) <strong>switchToFrame</strong>(id) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+81
+82
+83
+84</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 81</span>
+
+<span class='def def kw'>def</span> <span class='switchToFrame identifier id'>switchToFrame</span><span class='lparen token'>(</span><span class='id identifier id'>id</span><span class='rparen token'>)</span>
+  <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdSwitchToFrame identifier id'>wdSwitchToFrame</span><span class='lparen token'>(</span><span class='@driver_pointer ivar id'>@driver_pointer</span><span class='comma token'>,</span> <span class='wstring_ptr identifier id'>wstring_ptr</span><span class='lparen token'>(</span><span class='id identifier id'>id</span><span class='rparen token'>)</span><span class='rparen token'>)</span><span class='comma token'>,</span>
+                   <span class='dstring node'>&quot;unable to locate frame #{id.inspect}&quot;</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="switchToWindow-instance_method">
+  
+    - (<tt>Object</tt>) <strong>switchToWindow</strong>(id) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+76
+77
+78
+79</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 76</span>
+
+<span class='def def kw'>def</span> <span class='switchToWindow identifier id'>switchToWindow</span><span class='lparen token'>(</span><span class='id identifier id'>id</span><span class='rparen token'>)</span>
+  <span class='check_error_code identifier id'>check_error_code</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdSwitchToWindow identifier id'>wdSwitchToWindow</span><span class='lparen token'>(</span><span class='@driver_pointer ivar id'>@driver_pointer</span><span class='comma token'>,</span> <span class='wstring_ptr identifier id'>wstring_ptr</span><span class='lparen token'>(</span><span class='id identifier id'>id</span><span class='rparen token'>)</span><span class='rparen token'>)</span><span class='comma token'>,</span>
+                   <span class='dstring node'>&quot;unable to locate window #{id.inspect}&quot;</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="toggleElement-instance_method">
+  
+    - (<tt>Object</tt>) <strong>toggleElement</strong>(element_pointer) 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+393
+394
+395
+396
+397
+398
+399
+400
+401
+402
+403
+404
+405
+406
+407</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 393</span>
+
+<span class='def def kw'>def</span> <span class='toggleElement identifier id'>toggleElement</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='rparen token'>)</span>
+  <span class='int_ptr identifier id'>int_ptr</span> <span class='assign token'>=</span> <span class='FFI constant id'>FFI</span><span class='colon2 op'>::</span><span class='MemoryPointer constant id'>MemoryPointer</span><span class='dot token'>.</span><span class='new identifier id'>new</span> <span class='symbol val'>:int</span>
+  <span class='result identifier id'>result</span> <span class='assign token'>=</span> <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdeToggle identifier id'>wdeToggle</span><span class='lparen token'>(</span><span class='element_pointer identifier id'>element_pointer</span><span class='comma token'>,</span> <span class='int_ptr identifier id'>int_ptr</span><span class='rparen token'>)</span>
+
+  <span class='if if kw'>if</span> <span class='result identifier id'>result</span> <span class='eq op'>==</span> <span class='integer val'>9</span>
+    <span class='raise identifier id'>raise</span> <span class='WebDriver constant id'>WebDriver</span><span class='colon2 op'>::</span><span class='UnsupportedOperationError constant id'>UnsupportedOperationError</span><span class='comma token'>,</span>
+      <span class='dstring node'>&quot;You may not toggle this element: #{get_element_tag_name(element_pointer)}&quot;</span>
+  <span class='end end kw'>end</span>
+
+  <span class='check_error_code identifier id'>check_error_code</span> <span class='result identifier id'>result</span><span class='comma token'>,</span> <span class='string val'>&quot;unable to toggle element&quot;</span>
+
+  <span class='int_ptr identifier id'>int_ptr</span><span class='dot token'>.</span><span class='get_int identifier id'>get_int</span><span class='lparen token'>(</span><span class='integer val'>0</span><span class='rparen token'>)</span> <span class='eq op'>==</span> <span class='integer val'>1</span>
+<span class='ensure ensure kw'>ensure</span>
+  <span class='int_ptr identifier id'>int_ptr</span><span class='dot token'>.</span><span class='free identifier id'>free</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="waitForLoadToComplete-instance_method">
+  
+    - (<tt>Object</tt>) <strong>waitForLoadToComplete</strong> 
+  
+
+  
+</p><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+155
+156
+157</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'jobbie/src/rb/lib/selenium/webdriver/ie/bridge.rb', line 155</span>
+
+<span class='def def kw'>def</span> <span class='waitForLoadToComplete identifier id'>waitForLoadToComplete</span>
+  <span class='Lib constant id'>Lib</span><span class='dot token'>.</span><span class='wdWaitForLoadToComplete identifier id'>wdWaitForLoadToComplete</span><span class='lparen token'>(</span><span class='@driver_pointer ivar id'>@driver_pointer</span><span class='rparen token'>)</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+    
+    <div id="footer">
+  Generated on Thu Dec 17 12:58:05 2009 by 
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
+  0.5.2 (ruby-1.8.7).
+</div>
+
+  </body>
+</html>
