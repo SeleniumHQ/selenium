@@ -80,6 +80,9 @@ public class IPhoneSimulatorBinary extends SubProcess {
         .append(String.format("export DYLD_ROOT_PATH=%s\n", sdkRoot))
         .append(String.format("export IPHONE_SIMULATOR_ROOT=%s\n", sdkRoot))
         .append(String.format("export CFFIXED_USER_HOME=%s\n", tmp.getAbsolutePath()))
+        // Be a good citizen; make sure we quit when #shutdown() is called.
+        .append("trap \"/usr/bin/killall \\\"iWebDriver\\\" || :;\n")
+        .append("       /usr/bin/killall \\\"iPhone Simulator\\\" || :\" SIGINT SIGTERM\n")
         .append(String.format("\"%s\" -RegisterForSystemEvents\n", executable.getAbsolutePath()))
         .toString());
     writer.close();
