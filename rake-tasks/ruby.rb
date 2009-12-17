@@ -85,6 +85,7 @@ begin
   require "rubygems"
   require "rake/gempackagetask"
 
+  PKG_DIR     = "build/gem"
   GEM_VERSION = ENV['VERSION'] ||= '0.0.0'
   GEM_SPEC    = Gem::Specification.new do |s|
    s.name          = 'selenium-webdriver'
@@ -136,16 +137,16 @@ begin
 
   namespace :gem do
     Rake::GemPackageTask.new(GEM_SPEC) do |pkg|
-      pkg.package_dir = "build"
+      pkg.package_dir = PKG_DIR
     end
 
     task :clean do
-      Dir['build/*.gem'].each { |file| rm file }
+      rm_rf PKG_DIR
     end
 
     desc 'Build and release the ruby gem to Gemcutter'
     task :release => [:clean, :gem] do
-      sh "gem push build/#{GEM_SPEC.name}-#{GEM_SPEC.version}.gem"
+      sh "gem push #{PKG_DIR}/#{GEM_SPEC.name}-#{GEM_SPEC.version}.gem"
     end
   end
 
