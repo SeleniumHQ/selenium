@@ -8,9 +8,13 @@ module Selenium
           @binary     = Binary.new
           @launcher   = Launcher.new(
             @binary,
-            opts[:port]    || DEFAULT_PORT,
-            opts[:profile] || DEFAULT_PROFILE_NAME
+            opts.delete(:port)    || DEFAULT_PORT,
+            opts.delete(:profile) || DEFAULT_PROFILE_NAME
           )
+
+          unless opts.empty?
+            raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
+          end
 
           @launcher.launch
           @connection = @launcher.connection
@@ -28,7 +32,7 @@ module Selenium
         def quit
           @connection.quit
           @binary.wait rescue nil # might raise on windows
-          
+
           nil
         end
 

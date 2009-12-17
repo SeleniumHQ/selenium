@@ -50,10 +50,18 @@ module Selenium
         #
 
         def initialize(opts = {})
-          opts          = DEFAULT_OPTIONS.merge(opts)
+          opts                 = DEFAULT_OPTIONS.merge(opts)
+          http_client_class    = opts.delete(:http_client)
+          desired_capabilities = opts.delete(:desired_capabilities)
+          server_url           = opts.delete(:server_url)
+
+          unless opts.empty?
+            raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
+          end
+
           @context      = "context"
-          @http         = opts[:http_client].new URI.parse(opts[:server_url])
-          @capabilities = create_session opts[:desired_capabilities]
+          @http         = http_client_class.new URI.parse(server_url)
+          @capabilities = create_session(desired_capabilities)
         end
 
         def browser

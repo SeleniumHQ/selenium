@@ -44,6 +44,8 @@ module Selenium
       def wait
         raise "called wait with no pid" unless @pid
         Process.waitpid2 @pid
+      rescue Errno::ECHILD
+        nil
       end
 
       def kill
