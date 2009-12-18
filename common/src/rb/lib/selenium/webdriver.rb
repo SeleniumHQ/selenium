@@ -1,6 +1,34 @@
 require "tmpdir"
 require "fileutils"
 
+def have_yajl?
+  require "yajl/json_gem"
+  true
+rescue LoadError
+  false
+end
+
+def have_json?
+  require "json"
+  true
+rescue LoadError
+  false
+end
+
+unless have_yajl? || have_json?
+  raise LoadError, <<-END
+
+       You need to require rubygems or install one of these gems:
+
+           yajl-ruby (best on MRI)
+           json
+           json-jruby (native JRuby)
+           json_pure (any platform)
+
+  END
+end
+
+
 require "selenium/webdriver/core_ext/dir"
 require "selenium/webdriver/error"
 require "selenium/webdriver/platform"
@@ -14,21 +42,6 @@ require "selenium/webdriver/keys"
 require "selenium/webdriver/bridge_helper"
 require "selenium/webdriver/driver"
 require "selenium/webdriver/element"
-
-begin
-  require "json" # gem dependency
-rescue LoadError => e
-  msg = Selenium::WebDriver::Platform.jruby? ? "jruby -S gem install json-jruby" : "gem install json"
-
-
-  raise LoadError, <<-END
-       #{e.message}
-
-       You need to install the json gem or (require rubygems):
-           #{msg}
-  END
-end
-
 
 module Selenium
   module WebDriver
