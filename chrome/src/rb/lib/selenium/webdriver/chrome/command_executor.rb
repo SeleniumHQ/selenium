@@ -29,8 +29,10 @@ module Selenium
        end
 
        def close
+         close_sockets
          @server.close
        rescue IOError
+         nil
        end
 
        private
@@ -47,8 +49,8 @@ module Selenium
 
            @accepted_any ||= true
          end
-       rescue IOError => e
-         raise e unless @server.closed?
+       rescue IOError, Errno::EBADF
+         raise unless @server.closed?
        end
 
        def read_response(socket)
@@ -63,12 +65,14 @@ module Selenium
          @next_socket = socket
 
          result.strip!
-         # p result
-         result
        end
 
        def accepted_any?
          @accepted_any
+       end
+
+       def close_sockets
+         @queue.pop.close until @queue.empty?
        end
 
      end # CommandExecutor
