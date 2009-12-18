@@ -37,6 +37,7 @@ import java.util.Set;
 public class ChromeDriver implements WebDriver, SearchContext, JavascriptExecutor, TakesScreenshot,
   FindsById, FindsByClassName, FindsByLinkText, FindsByName, FindsByTagName, FindsByXPath {
 
+  private final static int MAX_START_RETRIES = 5;
   private ChromeCommandExecutor executor;
   private ChromeBinary chromeBinary = new ChromeBinary();
   
@@ -49,16 +50,23 @@ public class ChromeDriver implements WebDriver, SearchContext, JavascriptExecuto
   }
   
   private void init() {
-    while (executor == null || !executor.hasClient()) {
+    int retries = MAX_START_RETRIES;
+    while ((executor == null || !executor.hasClient()) && retries > 0) {
       stopClient();
       //TODO(danielwh): Remove explicit port (blocked on crbug.com 11547)
       this.executor = new ChromeCommandExecutor(9700);
       startClient();
       //In case this attempt fails, we increment how long we wait before sending a command
       chromeBinary.incrementBackoffBy(1);
+      retries--;
     }
     //The last one attempt succeeded, so we reduce back to that time
     chromeBinary.incrementBackoffBy(-1);
+
+    if (executor == null || !executor.hasClient()) {
+      stopClient();
+      throw new FatalChromeException("Cannot create chrome driver");  
+    }
   }
   
   /**
