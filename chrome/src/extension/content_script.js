@@ -698,6 +698,18 @@ function selectElement(element) {
   if (!oldValue) {
     //TODO: Work out a way of firing events,
     //now that synthesising them gives appendMessage errors
+    if (tagName == "option") {
+      var select = element;
+      while (select.parentElement != null && select.tagName.toLowerCase() != "select") {
+        select = select.parentElement;
+      }
+      if (select.tagName.toLowerCase() == "select") {
+        element = select;
+      } else {
+        //If we're not within a select element, fire the event from the option, and hope that it bubbles up
+        console.log("Falling back to event firing from option, not select element");
+      }
+    }
     Utils.fireHtmlEvent(element, "change");
   }
   return {statusCode: 0};

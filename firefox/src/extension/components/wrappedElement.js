@@ -388,10 +388,21 @@ FirefoxDriver.prototype.setSelected = function(respond) {
   try {
     var option =
         element.QueryInterface(Components.interfaces.nsIDOMHTMLOptionElement);
+    var select = element;
+    while (select.parentElement != null && select.tagName.toLowerCase() != "select") {
+      select = select.parentElement;
+    }
+    if (select.tagName.toLowerCase() == "select") {
+      select = select.QueryInterface(Components.interfaces.nsIDOMHTMLSelectElement);
+    } else {
+      //If we're not within a select element, fire the event from the option, and hope that it bubbles up
+      Utils.dumpn("Falling back to event firing from option, not select element");
+      select = option;
+    }
     respond.isError = false;
     if (!option.selected) {
       option.selected = true;
-      Utils.fireHtmlEvent(respond.context, option, "change");
+      Utils.fireHtmlEvent(respond.context, select, "change");
     }
     wasSet = "";
   } catch(e) {
