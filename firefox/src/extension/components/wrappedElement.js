@@ -389,8 +389,8 @@ FirefoxDriver.prototype.setSelected = function(respond) {
     var option =
         element.QueryInterface(Components.interfaces.nsIDOMHTMLOptionElement);
     var select = element;
-    while (select.parentElement != null && select.tagName.toLowerCase() != "select") {
-      select = select.parentElement;
+    while (select.parentNode != null && select.tagName.toLowerCase() != "select") {
+      select = select.parentNode;
     }
     if (select.tagName.toLowerCase() == "select") {
       select = select.QueryInterface(Components.interfaces.nsIDOMHTMLSelectElement);
