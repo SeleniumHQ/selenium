@@ -39,7 +39,7 @@ module Selenium
                    when :firefox, :ff
                      WebDriver::Firefox::Bridge.new(*args)
                    else
-                     raise ArgumentError, "unknown driver: #{driver.inspect}"
+                     raise ArgumentError, "unknown driver: #{browser.inspect}"
                    end
 
            driver = new(bridge)
